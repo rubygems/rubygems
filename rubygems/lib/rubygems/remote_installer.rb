@@ -77,7 +77,7 @@ module Gem
     def get_caches(sources, install_dir)
       source_caches_file = File.join(install_dir, "source_caches")
       if File.exist?(source_caches_file)
-        caches = YAML.load(File.read(source_caches_file))
+        caches = YAML.load(File.read(source_caches_file)) || {}
       else
         caches = {}
       end

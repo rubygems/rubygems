@@ -9,6 +9,20 @@ def load_data(relpath)
   return File.read(path)
 end
 
+class TestDefaultSpecification < Test::Unit::TestCase
+  def test_defaults
+    spec = Gem::Specification.new do |s|
+      s.name = "blah"
+      s.version = "1.3.5"
+    end
+    assert_equal "blah", spec.name
+    assert_equal "1.3.5", spec.version.to_s
+    assert_equal Gem::Platform::RUBY, spec.platform
+    assert_equal nil, spec.summary
+    assert_equal [], spec.files
+  end
+end
+
 class TestSimpleSpecification < Test::Unit::TestCase
   def setup
     @spec = Gem::Specification.new do |s|

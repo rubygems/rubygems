@@ -117,7 +117,7 @@ module Gem
 	"<"  =>  lambda { |v, r| v < r },
 	">=" =>  lambda { |v, r| v >= r },
 	"<=" =>  lambda { |v, r| v <= r },
-	">*" =>  lambda { |v, r| v >= r && v < r.bump }
+	"~>" =>  lambda { |v, r| v >= r && v < r.bump }
       }
         
       OP_RE = Regexp.new(OPS.keys.collect{|k| Regexp.quote(k)}.join("|"))

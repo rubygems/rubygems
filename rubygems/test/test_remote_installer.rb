@@ -23,7 +23,7 @@ class RemoteInstallerTest < Test::Unit::TestCase
     attr_accessor :caches
     attr_accessor :responses
 
-    def get_caches(sources)
+    def get_caches(sources, install_dir = Gem.dir)
       @caches
     end
 

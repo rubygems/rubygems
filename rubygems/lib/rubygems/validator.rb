@@ -84,7 +84,7 @@ module Gem
             format = Gem::Format.from_file_by_path(gem_path)
             format.file_entries.each do |entry, data|
               # Found this file.  Delete it from list
-	      installed_files.delete entry['path']
+	      installed_files.delete remove_leading_dot_dir(entry['path'])
               File.open(File.join(gem_directory, entry['path']), 'rb') do |f|
                 unless MD5.md5(f.read).to_s == MD5.md5(data).to_s
 	          errors[gem_name] << ErrorData.new(entry['path'], "installed file doesn't match original from gem")
@@ -105,6 +105,10 @@ module Gem
         end
       end
       errors
+    end
+
+    def remove_leading_dot_dir(path)
+      path.sub(/^\.\//, "")
     end
   end
 end

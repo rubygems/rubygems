@@ -1,4 +1,9 @@
-2004-07-13  Gavin Sinclair  <gsinclair@soyabean.com.au>
+2004-07-18  Chad Fowler	    <chad@chadfowler.com>
+	* lib/rubygems/validator.rb: Fixed a bug that would cause "managed"
+	files to appear to be unmanaged due to differences in how the paths
+	were formatted.
+
+2004-07-17  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* lib/rubygems/gem_commands.rb (InstallCommand#execute): removed clear
 	  bug (name -> gem.name).

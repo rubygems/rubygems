@@ -387,7 +387,7 @@ TEXT
 
     def has_dependents?(spec)
       spec.dependent_gems.each do |gem,dep,satlist|
-        msg = ["#{gem.name}-#{gem.version} depends on [#{dep.name} (#{dep.version_requirement})], which is satisifed by this gem.  This dependency is satisfied by:"]
+        msg = ["#{gem.name}-#{gem.version} depends on [#{dep.name} (#{dep.version_requirements})], which is satisifed by this gem.  This dependency is satisfied by:"]
         satlist.each do |sat|
           msg << "\t#{sat.name}-#{sat.version}"
         end

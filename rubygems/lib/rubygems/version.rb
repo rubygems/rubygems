@@ -19,11 +19,26 @@ module Gem
     # Constructs the dependency
     #
     # name:: [String] name of the Gem
-    # version_requirement:: [String Array] version requirement (e.g. ["> 1.2"])
+    # version_requirements:: [String Array] version requirement (e.g. ["> 1.2"])
     #
     def initialize(name, version_requirements)
       @name = name
       @version_requirements = Version::Requirement.new(version_requirements)
+    end
+
+    def version_requirements
+      normalize if @version_requirement
+      @version_requirements
+    end
+
+    def requirement_list
+      version_requirements.as_list
+    end
+
+    def normalize
+      ver = @version_requirement.instance_eval { @version }
+      @version_requirements = Version::Requirement.new([ver])
+      @version_requirement = nil
     end
   end
   
@@ -110,6 +125,8 @@ module Gem
     # to a version number.
     #
     class Requirement
+      include Comparable
+
       OPS = {
 	"="  =>  lambda { |v, r| v == r },
 	"!=" =>  lambda { |v, r| v != r },
@@ -122,6 +139,18 @@ module Gem
         
       OP_RE = Regexp.new(OPS.keys.collect{|k| Regexp.quote(k)}.join("|"))
       REQ_RE = /\s*(#{OP_RE})\s*/
+
+      ##
+      # Constructs a version requirement instance
+      #
+      # str:: [String Array] the version requirement string (e.g. ["> 1.23"])
+      #
+      def initialize(reqs)
+	@requirements = reqs.collect do |rq|
+	  op, version_string = parse(rq)
+	  [op, Version.new(version_string)]
+	end
+      end
 
       ##
       # Used to simplify conversion code, especially from strings
@@ -140,22 +169,23 @@ module Gem
         /^#{REQ_RE}#{NUM_RE}$/.match(str)
       end
       
-      ##
-      # Constructs a version requirement instance
-      #
-      # str:: [String Array] the version requirement string (e.g. ["> 1.23"])
-      #
-      def initialize(reqs)
-	@requirements = reqs.collect do |rq|
-	  op, version_string = parse(rq)
-	  [op, Version.new(version_string)]
-	end
+      def to_s
+	as_list.join(", ")
       end
 
-      def to_s
-        @requirements.collect {|req|
-          req[1]
-        }.join(", ")
+      def as_list
+	normalize
+	@requirements.collect { |req|
+          "#{req[0]} #{req[1]}"
+	}
+      end
+      
+      def normalize
+	return if @version.nil?
+	@requirements = [parse(@version)]
+	@nums = nil
+	@version = nil
+	@op = nil
       end
       
       ##
@@ -166,6 +196,7 @@ module Gem
       #          the version, otherwise false 
       #
       def satisfied_by?(version)
+	normalize
 	@requirements.all? { |op, rv| satisfy?(op, version, rv) }
       end
   
@@ -193,6 +224,11 @@ module Gem
 	  fail ArgumentError, "Illformed requirement [#{str}]"
 	end
       end
+
+      def <=>(other)
+	to_s <=> other.to_s
+      end
+
     end
   end
 end

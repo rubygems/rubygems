@@ -53,25 +53,20 @@ module Gem
 	  out << "  gem #{cmd_name}#{" "*(indent - cmd_name.size)}#{command_manager[cmd_name].summary}\n"
 	end
 	say out
-	return true
       elsif options[:help_options] || begins?("options", arg)
-	return false
+	say Gem::HELP
       elsif options[:help_examples] || begins?("examples", arg)
 	say Gem::EXAMPLES
-	return true
       elsif options[:help]
 	command = command_manager[options[:help]]
 	if command
 	  # help with provided command
 	  command.invoke("--help")
-	  return true
 	else
 	  alert_error "Unknown command #{options[:help]}.  Try gem --help-commands"
-	  return true
 	end
       else
 	say Gem::HELP
-	return true
       end
     end
     
@@ -131,7 +126,6 @@ module Gem
     end
     
     def execute(options)
-      return false if options[:help]
       gem_name = get_one_gem_name(options)
       if options[:domain] == :both || options[:domain] == :local
 	begin
@@ -143,7 +137,6 @@ module Gem
 	      say "Local gem file not found: #{filename}"
 	    else
 	      alert_error "Local gem file not found: #{filename}"
-	      return true
 	    end
 	  else
 	    result = Gem::Installer.new(filename).install(options[:force], options[:install_dir], options[:stub])
@@ -154,7 +147,7 @@ module Gem
 	  say " -> Local installation can't proceed: #{e.message}"
 	rescue => e
 	  alert_error "Error installing gem #{gem_name}[.gem]: #{e.message}"
-	  return true # If a local installation actually fails, we don't try remote.
+	  return
 	end
       end
       
@@ -170,13 +163,13 @@ module Gem
 	  say "Remote gem file not found: #{gem_name}"
 	rescue => e
 	  alert_error "Error remotely installing gem #{gem_name}: #{e.message + e.backtrace.join("\n")}"
-	  return true
+	  return
 	end
       end
       
       unless installed_gems
 	alert_error "Could not install a local or remote copy of the gem: #{gem_name}"
-	return true
+	return
       end
       
       if options[:generate_rdoc]
@@ -209,7 +202,6 @@ module Gem
 	  end
 	end
       end
-      return true
     end
     
   end
@@ -226,7 +218,6 @@ module Gem
     end
     
     def execute(options)
-      return false if options[:help]
       gem_name = get_one_gem_name(options)
       say "Attempting to uninstall gem '#{gem_name}'"
       begin
@@ -252,7 +243,6 @@ module Gem
     end
     
     def execute(options)
-      return false if options[:help]
       if options[:alien]
 	say "Performing the 'alien' operation"
 	Gem::Validator.new.alien.each do |key, val|
@@ -273,11 +263,11 @@ module Gem
 	gem_name = options[:verify]
 	unless gem_name
 	  alert_error "Must specifiy a .gem file with --verify NAME"
-	  return true
+	  return
 	end
 	unless File.exist?(gem_name)
 	  alert_error "Unknown file: #{gem_name}."
-	  return true
+	  return
 	end
 	say "Verifying gem: '#{gem_name}'"
 	begin
@@ -286,7 +276,6 @@ module Gem
 	  alert_error "#{gem_name} is invalid."
 	end
       end
-      return true
     end
     
   end # class
@@ -300,7 +289,6 @@ module Gem
     end
     
     def execute(options)
-      return false if options[:help]
       gemspec = get_one_gem_name(options)
       if File.exist?(gemspec)
 	say "Attempting to build gem spec '#{gemspec}'"
@@ -309,14 +297,13 @@ module Gem
 	  Gem::Specification.list.each do |spec|
 	    Gem::Builder.new(spec).build
 	  end
-	  return true
+	  return
 	rescue => err
 	  alert_error "Unexpected error building gemspec #{gemspec}: #{err}\nDetails:\n#{err.backtrace}"
 	end
       else
 	alert_error "Gemspec file not found: #{gemspec}"
       end
-      return true
     end
   end
 
@@ -346,7 +333,6 @@ module Gem
     end
     
     def execute(options)
-      return false if options[:help]
       if options[:domain]==:local || options[:domain]==:both
 	say
 	say "*** LOCAL GEMS ***"
@@ -361,7 +347,6 @@ module Gem
 	  alert_error e.to_s
 	end
       end
-      return true
     end
 
     private
@@ -450,7 +435,6 @@ module Gem
     end
     
     def execute(options)
-      return false if options[:help]
       say "Upgrading installed gems..."
       hig = highest_installed_gems = {}
       Gem::Cache.from_installed_gems.each do |name, spec|
@@ -479,7 +463,6 @@ module Gem
 	process_install_command(options)
       end
       say "All gems up to date"
-      return true
     end
   end
 

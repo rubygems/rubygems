@@ -63,7 +63,7 @@ module Gem
     def process_args(args)
       args = args.to_str.split(/\s/) if args.respond_to?(:to_str)
       if args.size==0
-	self['help'].invoke(*args)
+	say Gem::HELP
 	terminate_interaction(1)
       elsif args[0]=~/--/
 	self['help'].invoke(*args)

@@ -18,12 +18,19 @@ module Gem
       @parser = nil
     end
     
+    def show_help
+      @parser.program_name = @program_name
+      say @parser
+    end
+
     def invoke(*args)
       options = handle_options(args)
-      need_help = ! (@when_invoked ? @when_invoked.call(options) : execute(options) )
-      if need_help
-	@parser.program_name = @program_name
-	say @parser
+      if options[:help]
+	show_help
+      elsif @when_invoked
+	@when_invoked.call(options)
+      else
+	execute(options)
       end
     end
     

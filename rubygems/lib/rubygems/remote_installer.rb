@@ -117,7 +117,7 @@ module Gem
       to_install = []
       dependencies.each do |dependency|
         begin
-          require_gem(dependency.name, dependency.version_requirement.version)
+          require_gem(dependency.name, *dependency.requirement_list)
         rescue LoadError => e
           to_install.push dependency
         end

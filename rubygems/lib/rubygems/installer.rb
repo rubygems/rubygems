@@ -65,7 +65,7 @@ module Gem
 
       extract_files(directory, format)
       generate_bin_scripts(format.spec)
-      generate_library_stubs(format.spec) if install_stub
+      #generate_library_stubs(format.spec) if install_stub
       build_extensions(directory, format.spec)
       
       # Build spec/cache/doc dir.
@@ -537,7 +537,7 @@ TEXT
       FileUtils.rm_rf File.join(spec.installation_path, 'specifications', "#{spec.full_name}.gemspec")
       FileUtils.rm_rf File.join(spec.installation_path, 'cache', "#{spec.full_name}.gem")
       DocManager.new(spec).uninstall_doc
-      remove_stub_files(spec, list - [spec])
+      #remove_stub_files(spec, list - [spec])
       say "Successfully uninstalled #{spec.name} version #{spec.version}"
       list.delete(spec)
     end

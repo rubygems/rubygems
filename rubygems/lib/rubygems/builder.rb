@@ -78,7 +78,7 @@ __END__
     end
     
     ##
-    # Builds the gem from the specification
+    # Builds the gem from the specification.  Returns the name of the file written.
     #
     def build
       @spec.mark_version
@@ -97,7 +97,8 @@ __END__
       md5 = file_contents.md5
       File.open(file_name, "w") do |file|
         file.write(file_contents.string.gsub(/MD5SUM =.*$/, "MD5SUM = \"#{md5.to_s}\""))
-      end 
+      end
+      file_name
     end
     
     def success

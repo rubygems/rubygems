@@ -293,6 +293,11 @@ module Gem
       nil
     end
 
+    
+    overwrite_accessor :files do
+      @files | @test_files | @executables | @extra_rdoc_files | @library_stubs | @extensions
+    end
+
     overwrite_accessor :test_files do
       # Handle the possibility that we have @test_suite_file but not @test_files.  This will
       # happen when an old gem is loaded via YAML.

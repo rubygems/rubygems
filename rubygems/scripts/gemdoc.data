@@ -19,7 +19,7 @@ This reference covers 'gem' version
 === Basic 'gem' Usage, and Getting Help ===
 
 <tt>gem</tt> is based on ''commands'', like <tt>build</tt>, <tt>install</tt>,
-and <tt>search</tt>.  See the [[#toc]] for a full list.
+and <tt>search</tt>.  See the Table of Contents for a full list.
 
 Each command takes ''arguments'' and/or ''options''.  For example, if you run
 
@@ -86,6 +86,8 @@ $ rake gem
   File: rake-0.4.0.gem
 </pre>
 
+!toc-link
+
 
 == [#check]gem check -- Check installed gems for problems ==
 
@@ -151,6 +153,8 @@ activerecord-0.8.1 has 2 problems
 [... remaining output elided ...]
 </pre>
 
+!toc-link
+
 
 == [#environment] gem environment -- Display information about the gem environment ==
 
@@ -174,6 +178,8 @@ Rubygems Environment:
      - http://gems.rubyforge.org
 </pre>
 
+!toc-link
+
 
 == [#help] gem help -- Provide help about gem commands ==
 
@@ -183,6 +189,8 @@ available on the gem command.
 === Usage ===
 
 !usage help
+
+!toc-link
 
 
 == [#install]gem install -- Installing a gem ==
@@ -236,6 +244,8 @@ Install required dependency log4r? [Yn]   y
 Successfully installed copland, version 0.3.0
 </pre>
 
+!toc-link
+
 
 == [#list]gem list -- List gems starting with a string ==
 
@@ -275,6 +285,8 @@ $ gem list --both
 
   ...
 </pre>
+
+!toc-link
 
 
 == [#query]gem query -- Query for a list of gems ==
@@ -316,6 +328,8 @@ midilib (0.8.0)
     MIDI file and event manipulation library
 </pre>
 
+!toc-link
+
 
 == [#search]gem search -- List gems containing a string ==
 
@@ -342,6 +356,8 @@ rublog (0.8.0)
     RubLog is a simple web log, based around the idea of displaying a
     set of regular files in a log-format.
 </pre>
+
+!toc-link
 
 
 == [#specification]gem specification -- Extract the Gem::Specification from a gem file ==
@@ -381,6 +397,8 @@ files:
   - lib/rake/clean.rb
   ......
 </pre>
+
+!toc-link
 
 
 == [#uninstall]gem uninstall -- Uninstalling a gem ==
@@ -423,6 +441,8 @@ Proceed? [Y/n]  y
 Removing rake
 </pre>
 
+!toc-link
+
 
 == [#update]gem update -- Update your installed gems ==
 
@@ -446,6 +466,8 @@ Attempting remote installation of 'csbattery'
 Successfully installed csbattery, version 0.2.2
 All gems up to date
 </pre>
+
+!toc-link
 
 
 == See Also ==

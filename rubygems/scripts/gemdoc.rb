@@ -41,16 +41,19 @@ end
 while line = gets
   if line =~ /^!/
     cmd, arg = line.split
-    if cmd == "!usage"
+    case cmd
+    when "!usage"
       begin
 	cmdobj = $gm[arg]
 	pre(cmdobj, "--help")
       rescue NoMethodError
 	puts "Usage of command #{arg} failed"
       end
-    elsif cmd == "!toc"
+    when "!toc"
       puts table_of_contents()
-    elsif cmd == "!version"
+    when "!toc-link"
+      puts "''[http://rubygems.rubyforge.org/wiki/wiki.pl?GemReference#toc ^ Table of Contents]''"
+    when "!version"
       puts Gem::RubyGemsPackageVersion
     end
   else

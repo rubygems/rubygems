@@ -5,7 +5,7 @@ require 'net/http'
 require 'yaml'
 
 class MockFetcher
-  def initialize(uri)
+  def initialize(uri, proxy)
     @uri = uri
   end
 

@@ -195,7 +195,7 @@ SCRIPT
         response = gets.strip.to_i - 1
         if response == list.size
           list.each {|gem| remove(gem)}
-        elsif response < list.size
+        elsif response >= 0 && response < list.size
           remove(list[response])
         else
           puts "Error: must enter a number [1-#{list.size+1}]"

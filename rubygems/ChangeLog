@@ -1,3 +1,7 @@
+2004-05-08 21:57  chadfowler
+
+	* Using Gem::RubyGemsVersion to match the release number.  If we need to use this as an internal version format specifier in the future, we can use the Gem::Version semantics.
+
 2004-05-30 14:33 gsinclair
 
         * bin/gem: Split --help into --help (basic), --help-options (what

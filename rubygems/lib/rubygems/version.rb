@@ -24,6 +24,7 @@ module Gem
     def initialize(name, version_requirements)
       @name = name
       @version_requirements = Version::Requirement.new(version_requirements)
+      @version_requirement = nil   # Avoid warnings.
     end
 
     undef version_requirements
@@ -151,6 +152,7 @@ module Gem
 	  op, version_string = parse(rq)
 	  [op, Version.new(version_string)]
 	end
+        @version = nil   # Avoid warnings.
       end
 
       ##

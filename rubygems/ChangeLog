@@ -1,3 +1,10 @@
+2004-07-22  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* lib/rubygems/version.rb:
+	  * (Requirement#initialize) initialize @version to avoid warning
+	  * (Dependency#initialize) initialize @version_requirement to avoid
+	    warning
+
 2004-07-19  Chad Fowler     <chad@chadfowler.com>
         * install.rb: Shebang line should point to the ruby version used during
 	installation.

@@ -37,15 +37,17 @@ module Gem
     # Search Gem repository for a gem by specifying all of part of
     # the Gem's name   
     def search(pattern_to_match)
+      #TODO - move all of this logic into cache.rb
+      #Gem::Cache.new(caches).search(pattern_to_match)
       items = []
       pattern_to_match = /#{ pattern_to_match }/i if String === pattern_to_match
       sources = get_cache_sources()
       caches = get_caches(sources)
       caches.sort.each { |key,value|
         value.each do |entry|
-        if entry[0] =~ pattern_to_match
-            items.push entry
-        end
+          if entry[0] =~ pattern_to_match
+              items.push entry
+          end
         end
       }
       items

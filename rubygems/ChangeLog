@@ -1,5 +1,40 @@
 2004-06-25  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/gem_commands.rb (Gem::InfoCommand): Dropped the
+	version command (its available via gem env).  Added a gem info
+	command to extract the yaml from a gemfile.
+	(Gem::LocalRemoteOptions): Refactored the local/remote options
+	(adding and testing) into a mixin module.
+
+	* test/test_version_comparison.rb
+	(TestDependencies::test_normalization): Added some tests for the
+	normalization issues mentions below.
+
+	* lib/rubygems/version.rb (Gem::Dependency::normalize): Old gems
+	have requirements and dependencies incoded in the Yaml spec in an
+	out of date format.  When loaded, they have incorrect instance
+	variables for modern objects.  I added a normalize call to handle
+	transforming out dated objects in to modern objects. (Remember
+	this next time we change the data structure of something in the
+	spec file.)
+	(Gem::Version::Requirement::parse): Requirements are comparable
+	now, just so that we can test them with asserts.
+
+	* lib/rubygems/remote_installer.rb
+	(Gem::RemoteInstaller::find_dependencies_not_installed): Fixed
+	recursive call to require_gem to properly pass dependency
+	information.
+	
+	* lib/rubygems/installer.rb (Gem::Uninstaller::has_dependents):
+	Fixed reference to version_requirement (needs to be plural).
+
+	* lib/rubygems/command.rb (Gem::Command::invoke): Command now
+	handles it own help messages.  Commands no longer have to return
+	true/false to trigger help messages.
+
+	* lib/rubygems/cmd_manager.rb (Gem::CommandManager::process_args):
+	Moved help handling into the help command.
+
 	* lib/rubygems/gem_commands.rb (Gem::HelpCommand): Renamed the
 	base command to HelpCommand and made it handle a lot of the help
 	options.  Still need work on individual command helps.

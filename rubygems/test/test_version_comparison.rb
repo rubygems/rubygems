@@ -2,7 +2,7 @@ require 'test/unit'
 require 'rubygems'
 Gem::manage_gems
 
-module VersionTestingHelp
+module VersionAsserts
   def assert_adequate(version, requirement)
     ver = Gem::Version.new(version)
     req = Gem::Version::Requirement.new(requirement)
@@ -20,7 +20,7 @@ end
 
 
 class Versions < Test::Unit::TestCase
-  include VersionTestingHelp
+  include VersionAsserts
 
   def test_ok
       assert_adequate( "0.2.33",      "= 0.2.33")
@@ -99,7 +99,7 @@ end
     
 
 class TestExtendedVersionComparisons < Test::Unit::TestCase
-  include VersionTestingHelp
+  include VersionAsserts
 
   def test_multiple
     req = [">= 1.4", "<= 1.6", "!= 1.5"]
@@ -118,4 +118,56 @@ class TestExtendedVersionComparisons < Test::Unit::TestCase
     assert_inadequate("2.0", "~> 1.4")
   end
 
+end
+
+class TestDependencies < Test::Unit::TestCase
+  def test_create
+    dep = Gem::Dependency.new("pkg", ["> 1.0"])
+    assert_equal "pkg", dep.name
+    assert_equal "> 1.0".to_requirement, dep.version_requirements
+  end
+
+  def test_create_single
+    dep = Gem::Dependency.new("pkg", "> 1.0")
+    assert_equal "> 1.0".to_requirement, dep.version_requirements
+  end
+
+  def test_create_double
+    dep = Gem::Dependency.new("pkg", ["> 1.0", "< 2.0"])
+    assert_equal Gem::Version::Requirement.new(["> 1.0", "< 2.0"]), dep.version_requirements
+  end
+
+  def test_create_wacked
+    require 'yaml'
+    dep = Gem::Dependency.new("pkg", [])
+    old_req = Gem::Version::Requirement.new(["> 1.0"])
+    old_req.instance_eval do
+      @version = ">= 1.0"
+      @op = ">="
+      @nums = [1,0]
+      @requirements = nil
+    end
+    dep.instance_eval do
+      @version_requirement = old_req
+      @version_requirements = nil
+    end
+    assert_equal Gem::Version::Requirement.new([">= 1.0"]), dep.version_requirements
+  end
+
+  # We may get some old gems that have requirements in old formats.
+  # We need to be able to handle those old requirements by normalizing
+  # them to the latest format.
+  def test_normalization
+    require 'yaml'
+    yamldep = %{--- !ruby/object:Gem::Version::Requirement
+      nums: 
+        - 1
+        - 0
+        - 4
+      op: ">="
+      version: ">= 1.0.4"}
+    dep = YAML.load(yamldep)
+    dep.normalize
+    assert_equal ">= 1.0.4", dep.to_s
+  end
 end

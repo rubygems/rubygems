@@ -35,7 +35,7 @@ module Gem
       register_command ListCommand.new
       register_command UpdateCommand.new
       register_command EnvironmentCommand.new
-      register_command VersionCommand.new
+      register_command InfoCommand.new
     end
     
     def register_command(command)

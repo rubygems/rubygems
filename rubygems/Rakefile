@@ -6,7 +6,7 @@ require 'rake/testtask'
 require 'rake/packagetask'
 
 PKG_NAME = 'rubygems'
-PKG_VERSION = '0.6.0'
+PKG_VERSION = '0.6.0.1'
 
 CLOBBER.include( "testdata/one/one-0.0.1.gem", "test/temp" )
 

@@ -24,6 +24,28 @@ module Gem
     end
   end
 
+  module LocalRemoteOptions
+    def add_local_remote_options
+      add_option('-l', '--local', 'Restrict operations to the LOCAL domain (default)') do |value, options|
+	options[:domain] = :local
+      end
+      add_option('-r', '--remote', 'Restrict operations to the REMOTE domain') do |value, options|
+	options[:domain] = :remote
+      end
+      add_option('-b', '--both', 'Allow LOCAL and REMOTE operations') do |value, options|
+	options[:domain] = :both
+      end
+    end
+
+    def local?(opts)
+      opts[:domain] == :local || opts[:domain] == :both
+    end
+
+    def remote?(opts)
+      opts[:domain] == :remote || opts[:domain] == :both
+    end
+  end
+
   ####################################################################
   class HelpCommand < Command
     include CommandAids
@@ -78,6 +100,7 @@ module Gem
   ####################################################################
   class InstallCommand < Command
     include CommandAids
+    include LocalRemoteOptions
 
     def initialize
       super(
@@ -96,15 +119,7 @@ module Gem
       add_option('-v', '--version VERSION', 'Specify version of gem to install') do |value, options|
 	options[:version] = value
       end
-      add_option('-l', '--local', 'Restrict operations to the LOCAL domain') do |value, options|
-	options[:domain] = :local
-      end
-      add_option('-r', '--remote', 'Restrict operations to the REMOTE domain') do |value, options|
-	options[:domain] = :remote
-      end
-      add_option('-b', '--both', 'Allow operations on both the LOCAL and REMOTE domains') do |value, options|
-	options[:domain] = :both
-      end
+      add_local_remote_options
       add_option('-d', '--gen-rdoc', 'Generate RDoc documentation for the gem on install') do |value, options|
 	options[:generate_rdoc] = true
       end
@@ -127,7 +142,7 @@ module Gem
     
     def execute(options)
       gem_name = get_one_gem_name(options)
-      if options[:domain] == :both || options[:domain] == :local
+      if local?(options)
 	begin
 	  say "Attempting local installation of '#{options[:name]}'"
 	  filename = gem_name
@@ -151,7 +166,7 @@ module Gem
 	end
       end
       
-      if options[:domain] == :remote || options[:domain]==:both && installed_gems.nil?
+      if remote?(options) && installed_gems.nil?
 	begin
 	  say "Attempting remote installation of '#{gem_name}'"
 	  installer = Gem::RemoteInstaller.new(options[:http_proxy])
@@ -169,7 +184,7 @@ module Gem
       
       unless installed_gems
 	alert_error "Could not install a local or remote copy of the gem: #{gem_name}"
-	return
+	terminate_interaction(1)
       end
       
       if options[:generate_rdoc]
@@ -309,6 +324,7 @@ module Gem
 
   ####################################################################
   class QueryCommand < Command
+    include LocalRemoteOptions
       
     def initialize(name='query', summary='Query gem information in local or remote repositories')
       super(name,
@@ -321,24 +337,16 @@ module Gem
       add_option('-d', '--details', 'Display detailed information of gem(s)') do |value, options|
 	options[:details] = true
       end
-      add_option('-l', '--local', 'Restrict operations to the LOCAL domain (default)') do |value, options|
-	options[:domain] = :local
-      end
-      add_option('-r', '--remote', 'Restrict operations to the REMOTE domain') do |value, options|
-	options[:domain] = :remote
-      end
-      add_option('-b', '--both', 'Allow LOCAL and REMOTE operations') do |value, options|
-	options[:domain] = :both
-      end
+      add_local_remote_options
     end
     
     def execute(options)
-      if options[:domain]==:local || options[:domain]==:both
+      if local?(options)
 	say
 	say "*** LOCAL GEMS ***"
 	output_query_results(Gem::cache.search(options[:name]))
       end
-      if options[:domain]==:remote || options[:domain]==:both
+      if remote?(options)
 	say
 	say "*** REMOTE GEMS ***"
 	begin
@@ -506,17 +514,38 @@ module Gem
   end
 
   ####################################################################
-  class VersionCommand < Command
+  class InfoCommand < Command
+    include LocalRemoteOptions
+    include CommandAids
+    
     def initialize
-      super('version', 'RubyGems Version')
+      super('info', 'Display gem information', {:domain=>:local, :version=>"> 0.0.0"})
+      add_option('-v', '--version VERSION', 'Specify version of gem to examine') do |value, options|
+	options[:version] = value
+      end
+      add_local_remote_options
     end
 
     def execute(options)
-      say Gem::RubyGemsVersion
-      true
+      if local?(options)
+	gem = get_one_gem_name(options)
+	gem_specs = Gem::Cache.from_installed_gems.search(gem, options[:version])
+	if gem_specs.size > 0
+	  require 'yaml'
+	  gem_specs.each {|spec| say spec.to_yaml; say "\n"}
+	else
+	  alert_error "Unkown gem #{gem}"
+	end
+      end
+      
+      if remote?(options)
+	say "(Remote 'info' operation is not yet implemented.)"
+	# NOTE: when we do implement remote info, make sure we don't duplicate huge swabs of
+	# local data.  If it's the same, just say it's the same.
+      end
     end
   end
-
+  
 end # module
 
 ## Documentation Constants

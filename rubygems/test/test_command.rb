@@ -78,8 +78,7 @@ class TestCommand < Test::Unit::TestCase
       @cmd.add_option('-h', '--help [COMMAND]', 'Get help on COMMAND') do |value, options|
 	options[:help] = true
       end
-      @cmd.when_invoked do |opts| false end
-      @cmd.invoke
+      @cmd.invoke('--help')
       assert_match /Usage/, ui.output
       assert_match /gem doit/, ui.output
       assert_match /\[options\]/, ui.output

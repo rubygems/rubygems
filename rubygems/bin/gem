@@ -116,7 +116,7 @@ class RubyGemsOptions
   
   # The operation the user has asked us to perform.
   attr_accessor :operation
-  VALID_OPERATIONS = [:install, :uninstall, :list, :search, :info, :build, :alien, :verify]
+  VALID_OPERATIONS = [:install, :uninstall, :list, :search, :info, :build, :alien, :verify, :upgrade_dist]
 
   # Most operations require an argument (e.g. gemfile, pattern).
   attr_accessor :argument
@@ -190,6 +190,8 @@ class RubyGemsApp
       facade.uninstall(arg)
     when :list
       facade.list(arg)
+    when :upgrade_dist
+      facade.upgrade_dist
     when :search
       facade.search(arg)
     when :info
@@ -288,13 +290,17 @@ BANNER
         o.operation = :uninstall
         o.argument  = gem
       }
-  
+
       op.separator("")
       op.separator("  List/Search/Info:")
   
       op.on('-l', '--list [STR]', "List all local and/or remote gems (beginning with STR)") { |str|
         o.operation = :list
         o.argument  = str
+      }
+
+      op.on('-U', '--update-dist', "Upgrade all previously installed gems") { 
+        o.operation = :upgrade_dist
       }
       op.on('-s', '--search STR', "List local and/or remote gems containing STR") { |str|
         o.operation = :search
@@ -532,6 +538,14 @@ class RubyGemsFacade
     _list_gems(/^#{str}/i)
   end
 
+  #
+  # Upgrades all previously installed gems
+  #   gem --update-dist
+  #
+  def upgrade_dist
+    _upgrade_dist
+  end
+
 
   #
   # List local and remote gems containing the given string.
@@ -703,6 +717,34 @@ class RubyGemsFacade
         exit 1
       end
     end
+  end
+  
+  # Upgrades all gems that are currently installed
+  # to the newest version.
+  def _upgrade_dist
+    @options.domain = :remote # Get gems remotely
+    puts "Upgrading previously installed gems..."
+    gemlist = {}
+    Gem::Cache.from_installed_gems.each do |name, spec|
+        gemlist[spec.name] = spec  if (!gemlist[spec.name] || gemlist[spec.name].version < spec.version)
+    end  
+    installer = _get_remote_installer
+    gems = installer.search(//)
+    gems_to_update = []
+    gemlist.each do |key,spec|
+      #puts s.name, v.version
+      #This is a list of arrays--name, spec
+      gems.each do |gem|
+        if(gem[1].name == spec.name && spec.version < gem[1].version)
+          gems_to_update << gem[1].name
+        end
+      end
+    end
+    gems_to_update.each do |to_upgrade|
+      puts "Attempting remote upgrade of #{to_upgrade}"
+      _install_remote(to_upgrade)
+    end
+    puts "All gems up to date"
   end
 
   # +gems+ is actually an Array: [[name, gemspec], [name, gemspec], ...]

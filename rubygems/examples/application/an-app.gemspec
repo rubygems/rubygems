@@ -3,7 +3,7 @@ require 'rubygems'
 
 spec = Gem::Specification.new do |s|
   s.name = 'an-app'
-  s.version = "0.0.1"
+  s.version = "0.0.2"
   s.platform = Gem::Platform::RUBY
   s.summary = "This gem demonstrates executable scripts"
   s.requirements << 'a computer processor'

@@ -82,16 +82,24 @@ and add this location to Ruby's LOAD_PATH.</p>
 <h3> Installing a Gem </h3>
 <p>The easiest way to install a gem is to actually run the gem itself.  Each Ruby Gem is a valid 
 Ruby script which, when executed, will extract and install itself.  The command is, simply:</p>
-<pre> % ruby myproject-0.0.1.gem [--help | --dir=<dirname> | --force]</pre>
+<pre> % ruby myproject-0.0.1.gem [--help | --dir=<dirname> | --force | --gen-rdoc]</pre>
 <p>By default, <nowiki>RubyGems</nowiki> maintains installed content in a central directory 
 located off of the root of your Ruby installation.  The <b>--dirname</b> command-line option 
 allows you to change this default installation location, which would be useful, for example, 
 if you were on a computer for which you lacked write access to the standard Ruby distribution.</p>
+<p>Alternatively, you can use the <b>gem</b> command with these same plus the <b>--install</b> option:</p>
+<pre> % gem --install myproject-0.0.1.gem [--dir=<dirname> | --force | --gen-rdoc]</pre>
 <p>The <b>--force</b> option disables dependency checking.  By default, <nowiki>RubyGems</nowiki> 
 will fail to install a Gem if the required dependencies are not already present in your Gem 
 directory.</p>
-<p>Alternatively, you can use the <b>gem</b> command with these same plus the <b>--install</b> option:</p>
-<pre> % gem --install myproject-0.0.1.gem [--dir=<dirname> | --force]</pre>
+<h4> Installing  and Using a Gem's RDoc Documentation </h4>
+<p>The <b>--gen-rdoc</b> option generates rdoc documentation for the installed gem (if the gem source
+has rdoc comments in it).  </p>
+<p>To view the generated rdoc documentation in your web browser for all of your installed gems, RubyGems includes a WEBrick-based web server which lets you browse your gem repository.  To start this web service execute:</p>
+<pre> % gem_server</pre>
+<p>Then browse to: <a class="external" href="http://localhost:8808">http://localhost:8808</a> which will display an index of your installed gems, and links
+to the RDoc indexes for the gems that you have generated the documentation for.</p>
+<h4> Managing Gem Directories </h4>
 <p>To use gems from multiple directories, RubyGems uses a global variable <b>$GEM_PATH</b> and an (optional)
 environment variable <b>RUBY_GEMS</b>.  The RUBY_GEMS environment variable (if set) should be a delimited
 list of directories which are the root of a gem directories structure.  These paths will be prepended to the
@@ -218,5 +226,6 @@ feedback to the rubygems team, and report bugs, suggestions, etc at the rubygems
 <p>Or visit the RubyGems project wiki at:</p>
 <pre> <a class="extlink" href="http://rubygems.rubyforge.org/">RubyGems Wiki</a></pre>
 <p>Thanks for your support, and let's make this RubyGems effort successful!</p>
-- <i>The RubyGems Team</i></body>
+- <i>The RubyGems Team</i>
+</body>
 </html>

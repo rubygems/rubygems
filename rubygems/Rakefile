@@ -172,3 +172,7 @@ task :dbg do
   egrep /DBG/
 end
 
+task :rubyfiles do
+  puts Dir['**/*.rb']
+  puts Dir['bin/*'].reject { |fn| fn =~ /CVS|(~$)/ }
+end

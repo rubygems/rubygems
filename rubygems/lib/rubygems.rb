@@ -57,7 +57,7 @@ module Gem
 
   DIRECTORIES = ['cache', 'doc', 'gems', 'specifications']
   
-  @@cache = nil  
+  @@source_index = nil  
   
   class << self
   
@@ -79,10 +79,13 @@ module Gem
     #
     # return:: [Gem::Cache] cache of Gem::Specifications
     #
-    def cache
-      @@cache ||= Cache.from_installed_gems
-      @@cache.refresh!
+    def source_index
+      @@source_index ||= Cache.from_installed_gems
+      @@source_index.refresh!
     end
+
+    # Provide an alias for the old name.
+    alias cache source_index
     
     ##
     # The directory path where Gems are to be installed.
@@ -126,9 +129,9 @@ module Gem
       end
       
       gem_name_pattern = /^#{gem.name}$/
-      matches = Gem.cache.search(gem_name_pattern, gem.version_requirements)
+      matches = Gem.source_index.search(gem_name_pattern, gem.version_requirements)
       if matches.size==0
-        matches = Gem.cache.search(gem_name_pattern)
+        matches = Gem.source_index.search(gem_name_pattern)
         if matches.size==0
           error = Gem::LoadError.new("\nCould not find RubyGem #{gem.name} (#{gem.version_requirements})\n")
           error.name = gem.name
@@ -179,7 +182,7 @@ module Gem
     def clear_paths
       @gem_home = nil
       @gem_path = nil
-      @@cache = nil  
+      @@source_index = nil  
     end
     
     # Use the +home+ and (optional) +paths+ values for +dir+ and +path+.
@@ -218,7 +221,7 @@ module Gem
 
     def required_location(gemname, libfile, *version_constraints)
       version_constraints = [">0"] if version_constraints.empty?
-      matches = Gem.cache.search(gemname, version_constraints)
+      matches = Gem.source_index.search(gemname, version_constraints)
       return nil if matches.empty?
       spec = matches.last
       spec.require_paths.each do |path|

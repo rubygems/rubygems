@@ -1,3 +1,8 @@
+2004-06-17  Chad FOwler <chad@chadfowler.com>
+
+	* lib/rubygems/installer.rb: Fixed bug in windows batch file generation
+	which was causing file not found errors.
+
 2004-06-17  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/doc_manager.rb (Gem::DocManager::generate_rdoc):

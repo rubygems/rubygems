@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'rubygems/command'
 
 module Gem
@@ -168,8 +169,8 @@ module Gem;
 	  :test => false, 
 	  :stub => true, 
 	  :version => "> 0",
-	  :install_dir => Gem.dir}
-	
+	  :install_dir => Gem.dir
+	}
 	cmd.add_option('-n', '--name NAME', 'Name of gem to install') do |value, options|
 	  options[:name] = value
 	end
@@ -314,20 +315,20 @@ module Gem;
       end
       
       def add_check_command
-	cmd = @cmd_manager.add_command('check')
-	cmd.summary = 'Check installed gems'
-	cmd.defaults = {:verify => false, :alien => false}
-	cmd.add_option('-v', '--verify FILE', 'Verify gem file against its internal checksum') do |value, options|
-	  options[:verify] = value
-	end
-	cmd.add_option('-a', '--alien', "Report 'unmanaged' or rogue files in the gem repository") do |value, options|
-	  options[:alien] = true
-	end
-	cmd.when_invoked &method(:process_check_command)
+ 	cmd = @cmd_manager.add_command('check')
+ 	cmd.summary = 'Check installed gems'
+ 	cmd.defaults = {:verify => false, :alien => false}
+ 	cmd.add_option('-v', '--verify FILE', 'Verify gem file against its internal checksum') do |value, options|
+ 	  options[:verify] = value
+ 	end
+ 	cmd.add_option('-a', '--alien', "Report 'unmanaged' or rogue files in the gem repository") do |value, options|
+ 	  options[:alien] = true
+ 	end
+ 	cmd.when_invoked &method(:process_check_command)
       end
       
       def process_check_command(options)
-	return false if options[:help]
+ 	return false if options[:help]
 	if options[:alien]
 	  say "Performing the 'alien' operation"
 	  Gem::Validator.new.alien.each do |key, val|
@@ -361,7 +362,7 @@ module Gem;
 	    alert_error "#{gem_name} is invalid."
 	  end
 	end
-	return true
+ 	return true
       end
       
       def add_build_command

@@ -61,12 +61,12 @@ def install_sources
   $: << "lib"
   require 'rubygems'
   Gem::manage_gems
-  Dir.chdir "pkgs/sources"
-  load "sources.gemspec"
-  spec = Gem.sources_spec
-  gem_file = Gem::Builder.new(spec).build
-  Gem::Installer.new(gem_file).install(true, Gem.dir, false)
-  Dir.chdir("../..")
+  Dir.chdir("pkgs/sources") do
+    load "sources.gemspec"
+    spec = Gem.sources_spec
+    gem_file = Gem::Builder.new(spec).build
+    Gem::Installer.new(gem_file).install(true, Gem.dir, false)
+  end
 end
 
 install_windows_batch_files

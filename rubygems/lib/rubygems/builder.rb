@@ -58,7 +58,7 @@ __END__
         end
         self.puts file_header.to_yaml
         file_header.each do |entry|
-          data = [Zlib::Deflate.deflate(File.read(entry['path']))].pack("m")
+          data = [Zlib::Deflate.deflate(File.open(entry['path'], "rb") {|f| f.read})].pack("m")
           self.puts "---"
           self.puts data
         end

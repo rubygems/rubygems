@@ -25,7 +25,9 @@ module Gem
     # gem_path:: [String] Path to gem file
     def verify_gem_file(gem_path)
       begin
-        gem_data = File.read(gem_path)
+        File.open(gem_path, 'rb') do |file|
+          gem_data = file.read
+        end
         verify_gem(gem_data)
       rescue Errno::ENOENT
         raise Gem::VerificationError.new("Missing gem file #{gem_path}")
@@ -99,8 +101,10 @@ module Gem
             format.file_entries.each do |entry, data|
               # Found this file.  Delete it from list
 	      installed_files.delete entry['path']
-              unless MD5.md5(File.read(File.join(gem_directory, entry['path']))).to_s == MD5.md5(data).to_s
-	        errors[gem_name] << ErrorData.new(entry['path'], "installed file doesn't match original from gem")
+              File.open(File.join(gem_directory, entry['path']), 'rb') do |f|
+                unless MD5.md5(f.read).to_s == MD5.md5(data).to_s
+	          errors[gem_name] << ErrorData.new(entry['path'], "installed file doesn't match original from gem")
+                end
               end
             end
           end

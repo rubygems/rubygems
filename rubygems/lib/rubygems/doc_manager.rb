@@ -44,7 +44,6 @@ module Gem
         raise DocumentError, "ERROR: RDoc documentation generator not installed!"
       end
       say "Installing RDoc documentation for #{@spec.full_name}..."
-      say "WARNING: Generating RDoc on .gem that may not have RDoc." unless @spec.has_rdoc?
       rdoc_dir = File.join(@doc_dir, "rdoc")
       begin
         source_dirs = @spec.require_paths.clone.concat(@spec.extra_rdoc_files)

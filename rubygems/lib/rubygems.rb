@@ -303,7 +303,7 @@ module Gem
         fn = File.join(gemdir, filename)
 	unless File.exist?(fn)
           $stderr.puts "warning: GEM_PATH path #{fn} does not exist" 
-	  Dir.mkdir(fn)
+	  FileUtils.mkdir_p(fn)
         end
       end
     end

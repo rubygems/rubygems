@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'rubygems/installer'
 require 'test/mockgemui'
+require 'rake'
 
 module TestEnvironment
   include Gem::DefaultUserInteraction

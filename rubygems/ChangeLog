@@ -1,8 +1,18 @@
 2004-07-04  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* lib/rubygems/gem_commands.rb:
+	  - modified generic help and examples
+	  - improved 'list' and 'search' help, and fixed bug in 'search'
+
+	* lib/rubygems/cmd_manager.rb: 
+	  - explicit support for top-level commands --help and --version
+	  - no more support for --examples and --commands
+
+2004-07-04  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* lib/rubygems/gem_commands.rb:
 	  - added 'list' and 'search' commands ('list' is no longer an alias
-	    for 'query').
+	    for 'query')
 	  - modified return value from all 'arguments' methods (see command.rb)
 
 	* lib/rubygems/cmd_manager.rb: added 'search' command.

@@ -413,7 +413,7 @@ module Gem
     end
 
     def arguments
-      "STRING   ..."
+      "STRING   start of gem name to look for"
     end
 
     def execute
@@ -440,11 +440,11 @@ module Gem
     end
 
     def arguments
-      "STRING   ..."
+      "STRING   fragment of gem name to look for"
     end
 
     def execute
-      string = get_one_mandatory_argument
+      string = get_one_optional_argument
       options[:name] = /#{string}/i
       super
     end
@@ -681,16 +681,28 @@ module Gem
   HELP = %{
     RubyGems is a sophisticated package manager for Ruby.  This is a
     basic help message containing pointers to more information.
-    
-    Usage: gem command [arguments...] [options...]
 
-    For more help:
-      gem help examples           for a list of examples
-      gem help commands           for a list of commands
-      gem help COMMAND_NAME       for help with a specific command
-      gem help                    for this message
+      Usage:
+        gem -h/--help
+        gem -v/--version
+        gem command [arguments...] [options...]
 
-    Detailed online information can be found at http://rubygems.rubyforge.org
+      Examples:
+        gem install rake
+        gem list --local
+        gem build package.gemspec
+        gem help install
+
+      Further help:
+        gem help commands            list all 'gem' commands
+        gem help examples            show some examples of usage
+        gem help <COMMAND>           show help on COMMAND
+                                       (e.g. 'gem help install')
+      Further information:
+        http://rubygems.rubyforge.org
+
+    Commands may be abbreviated, so long as they are unambiguous.
+    e.g. 'gem i rake' is short for 'gem install rake'.
     }.gsub(/^    /, "")
 
   EXAMPLES = %{
@@ -707,36 +719,32 @@ module Gem
     * Install 'rake' from remote server, and run unit tests,
       generate RDocs, and not install a library stub:
 
-        gem install --remote rake --test --gen-rdoc --no-install-stub
+        gem install --remote rake --test --rdoc --no-install-stub
 
     * Install 'rake', but only version 0.3.1, even if dependencies
       are not met, and into a specific directory:
 
         gem install rake --version 0.3.1 --force --install-dir $HOME/.gems
 
-    * Query local and remote gems beginning with 'D':
+    * List local gems whose name begins with 'D':
 
-        gem query --name-match ^D
+        gem list D
 
-    * List all local, and all remote, gems:
+    * List local and remote gems whose name contains 'log':
 
-        gem query --local
-        gem query --remote
-     or
-        gem list --local
-        gem list --remote
+        gem search log --both
 
-    * Search for local and remote gems including the string 'log':
+    * List only remote gems whose name contains 'log':
 
-        gem query --name-matches log --both
+        gem search log --remote
 
-    * See information about all versions of 'rake' installed:
-
-        gem query --name-matches rake --details
-    
     * Uninstall 'rake':
 
         gem uninstall rake
+    
+    * Create a gem:
+
+        See http://rubygems.rubyforge.org/wiki/wiki.pl?CreateAGemInTenMinutes
 
     * See information about RubyGems:
     

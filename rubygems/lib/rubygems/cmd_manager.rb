@@ -69,8 +69,17 @@ module Gem
       if args.size == 0
         say Gem::HELP
         terminate_interaction(1)
-      elsif args[0] =~ /--/
-        self['help'].invoke(*args)
+      end 
+      case args[0]
+      when '-h', '--help'
+        say Gem::HELP
+        terminate_interaction(0)
+      when '-v', '--version'
+        say Gem::RubyGemsPackageVersion
+        terminate_interaction(0)
+      when /^-/
+        alert_error "Invalid option: #{args[0]}.  See 'gem --help'."
+        terminate_interaction(1)
       else
         cmd_name = args.shift.downcase
         cmd = find_command(cmd_name)

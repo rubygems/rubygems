@@ -26,13 +26,15 @@ module Kernel
         return false if spec.loaded?
         
         spec.loaded = true
-        spec.require_paths.each do |path|
-          $:.unshift File.join(spec.full_gem_path, path)
-        end
         
         # Load dependent gems first
         spec.dependencies.each do |dep_gem|
           require_gem(dep_gem)
+        end
+        
+        # Now add the require_paths to the LOAD_PATH
+        spec.require_paths.each do |path|
+          $:.unshift File.join(spec.full_gem_path, path)
         end
         
         require spec.autorequire if spec.autorequire

@@ -138,7 +138,7 @@ class TestLocalCache < Test::Unit::TestCase
       [lc.user_cache_file, 'usr'],
     ].each do |fn, data|
       FileUtils.mkdir_p File.dirname(fn)
-      open(fn, "w") { |f| f.puts({'key' => data}.to_yaml) }
+      open(fn, "w") { |f| f.puts(Marshal.dump({'key' => data})) }
     end
   end
 
@@ -150,7 +150,7 @@ class TestLocalCache < Test::Unit::TestCase
   end
 
   def read_cache(fn)
-    open(fn) { |f| YAML.load(f) }
+    open(fn) { |f| Marshal.load(f) }
   end
 
 end

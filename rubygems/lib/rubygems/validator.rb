@@ -1,21 +1,33 @@
 module Gem
-
+  class VerificationError < Exception
+  end
   ##
   # Validator performs various gem file and gem database validation
   class Validator
 
     ##
-    # Given a gem file's contents, validates against is own MD5 checksum
-    # 
+    # Given a gem file's contents, validates against its own MD5 checksum
     # gem_data:: [String] Contents of the gem file
-    def verify_gem(gem_path)
-      gem_data = File.read(gem_path)
+    def verify_gem(gem_data)
       if(gem_data.size == 0) then
-        raise "Empty Gem file"
+        raise VerificationError.new("Empty Gem file")
       end
       require 'md5'
       unless (MD5.md5(gem_data.gsub(/MD5SUM = "([a-z0-9]+)"/, "MD5SUM = \"" + ("F" * 32) + "\"")) == $1.to_s) 
-        raise "Invalid checksum for Gem file"
+        raise VerificationError.new("Invalid checksum for Gem file")
+      end
+    end
+
+    ##
+    # Given the path to a gem file, validates against its own MD5 checksum
+    # 
+    # gem_path:: [String] Path to gem file
+    def verify_gem_file(gem_path)
+      begin
+        gem_data = File.read(gem_path)
+        verify_gem(gem_data)
+      rescue Errno::ENOENT
+        raise Gem::VerificationError.new("Missing gem file #{gem_path}")
       end
     end
 
@@ -82,7 +94,7 @@ module Gem
         # Gem file reader/writer class probably.
         begin
           require 'rubygems/format.rb'
-          verify_gem(gem_path)
+          verify_gem_file(gem_path)
           File.open(gem_path) do |file|
             format = Gem::Format.from_file(gem_path)
             format.file_entries.each do |entry, data|

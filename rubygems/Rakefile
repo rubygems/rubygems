@@ -8,7 +8,10 @@ require 'rake/gempackagetask'
 require 'rake/rdoctask'
 
 PKG_NAME = 'rubygems'
-PKG_VERSION = `ruby -Ilib bin/gem environment packageversion`.chomp
+def package_version
+  `ruby -Ilib bin/gem environment packageversion`.chomp
+end
+PKG_VERSION = package_version
 
 CLEAN.include("COMMENTS")
 CLOBBER.include(
@@ -208,7 +211,7 @@ PKG_FILES.exclude(%r(^test/temp(/|$)))
 
 Rake::PackageTask.new("package") do |p|
   p.name = PKG_NAME
-  p.version = PKG_VERSION
+  p.version = package_version
   p.need_tar = true
   p.need_zip = true
   p.package_files = PKG_FILES
@@ -216,7 +219,7 @@ end
 
 spec = Gem::Specification.new do |s|
   s.name = PKG_NAME + "-update"  
-  s.version = PKG_VERSION
+  s.version = package_version
   s.summary = "RubyGems Update GEM"
   s.description = %{RubyGems is a package management framework for Ruby.  This Gem
 is a update for the base RubyGems software.  You must have a base

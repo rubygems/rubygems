@@ -23,10 +23,13 @@ module Gem
     # return:: Cache instance
     #
     def self.from_installed_gems(source_dir = File.join(Gem.dir, "specifications"))
-      require 'yaml'
       gems = {}
       Dir[File.join(source_dir, "*")].each do |file_name|
-        gem = YAML.load(File.read(file_name))
+        begin
+          gem = eval(File.read(file_name))
+        rescue
+          raise "Could not read .gemspec from cache: #{source_dir}"
+        end
         key = File.basename(file_name).gsub(/\.gemspec/, "")
         gems[key] = gem
       end

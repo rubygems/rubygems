@@ -20,8 +20,8 @@ module Kernel
     
     error_message = "\nCould not find RubyGem #{gem.name}\n"
     
-    Gem.specifications.each do |spec|
-      next unless spec.name == gem.name
+    Gem.cache.each do |spec_name, spec|
+      next unless spec_name == gem.name
       
       if gem.version_requirement.satisfied_by?(spec.version)
       
@@ -55,20 +55,15 @@ end
 module Gem
   RubyGemsVersion = "1.0"
   
-  @@specification_list = []
+  @@cache = nil
   
   ##
-  # Returns an Array of specifications that are in the $GEM_PATH
+  # Returns an Cache of specifications that are in the $GEM_PATH
   #
-  # return:: [Array] array of Gem::Specifications
+  # return:: [Gem::Cache] cache of Gem::Specifications
   #
-  def self.specifications
-    return @@specification_list if @@specification_list.size > 0
-    require 'yaml'
-    Dir[File.join("#{Gem.dir}","specifications","*.gemspec")].each do |specfile|
-      @@specification_list << YAML.load(File.read(specfile))
-    end
-    @@specification_list
+  def self.cache
+    @@cache ||= Cache.from_installed_gems
   end
   
   ##

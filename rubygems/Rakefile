@@ -4,10 +4,18 @@ require 'rubygems'
 require 'rake/clean'
 require 'rake/testtask'
 
-CLOBBER.include("packages/sources/*.gem")
+CLOBBER.include( "testdata/one/one-0.0.1.gem" )
 
 task :default => [:test]
 
 Rake::TestTask.new do |t|
   t.verbose = true
 end
+
+Rake::TestTask.new(:functional) do |t|
+  t.verbose = true
+  t.pattern = 'test/functional.rb'
+end
+
+desc "Shortcut for running functional tests"
+task :ft => [:functional]

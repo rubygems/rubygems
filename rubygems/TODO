@@ -10,3 +10,4 @@ After alpha:
 ------------
 * RPM, Mac OS dmg/pkg, Debian pkg conversion
 * Deal with applications (installing executable scripts..."running" a gem)
+* require_gem 'ruby', '= 1.8.1'

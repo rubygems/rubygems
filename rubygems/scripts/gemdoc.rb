@@ -41,8 +41,8 @@ while line = gets
       use_ui(cs) do
 	gm['help'].invoke 'commands'
       end
-      out = cs.string.gsub(/^  gem (\S+)(.*)$/) {
-	'  gem ' + $1 + $2 +
+      out = cs.string.gsub(/^    (\S+)(.*)$/) {
+	'    ' + $1 + $2 +
 	  ' [http://rubygems.rubyforge.org/wiki/wiki.pl?GemReference#' +
 	  $1 + " goto]"
       }

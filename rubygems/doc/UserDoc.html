@@ -46,7 +46,7 @@ multiple versions of a single library (because the files would overwrite each ot
 version) into its own unique directory instead of into the site_ruby directory. These 
 directories are located along side the ../ruby/1.8 and ../ruby/site_ruby directories:</p>
 <pre> /usr/local/lib/ruby/<b>gems/1.8</b></pre>
-<p>In addtion to installing each gem in a directory under this base directory, when
+<p>In addition to installing each gem in a directory under this base directory, when
 you require a particular gem (see usage below), the RubyGems infrastructure modifies the
 $LOAD_PATH to include that gems' unique directory.  For example, if you require the jabber4r
 gem (v 0.7.0) the $LOAD_PATH would then look like this:</p>
@@ -68,7 +68,7 @@ community, so we believe that the RubyGems approach will grow in popularity very
 managing the gems on your computer, and then concludes with how to use RubyGems.</p>
 <h2> Installing the <nowiki>RubyGems</nowiki> library </h2>
 <p>This section describes installing the RubyGems library itself.  This may not be necessary in 
-furture versions of Ruby if/when RubyGems is included in the distribution.  Installation is 
+future versions of Ruby if/when RubyGems is included in the distribution.  Installation is 
 fairly simple.</p>
 <ul><li> <a class="extlink" href="http://rubyforge.org/project/showfiles.php?group_id=126">Download</a> <nowiki>RubyGems</nowiki>
 </li><li> Unpack the distribution (zip or tar.gz)
@@ -215,7 +215,7 @@ the strscan gem would be loaded first, then the amrita gem would be loaded.  Whe
 is loaded (as well as its dependencies), and if that gem has an 'autorequire' statement in its
 gemspec, you should be able to just use the library as if you loaded it with a traditional
 'require' command.</p>
-<p>So that is all there is to using gems.  You just 'require' the rubygems library, then 'gem_require'
+<p>So that is all there is to using gems.  You just 'require' the rubygems library, then 'require_gem'
 each gem you want to use.  From that point on, you write Ruby just as you always have (accessing
 modules, classes, etc.).</p>
 <h2> Conclusion </h2>

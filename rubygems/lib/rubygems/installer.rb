@@ -56,7 +56,7 @@ module Gem
         # Check the dependent gems.
         spec.dependencies.each do |dep_gem|
           # XXX: Does this take account of *versions*?
-          require_gem(dep_gem, false) #no autorequire
+          require_gem_with_options(dep_gem, [], :auto_require=>false)
         end
       end
       

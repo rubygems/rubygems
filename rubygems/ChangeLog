@@ -1,5 +1,17 @@
 2004-06-26  Jim Weirich  <jim@weirichhouse.org>
 
+	* test/functional.rb (FunctionalTest::test_all_command_helps):
+	Added functional test to show all commands have usage messaegs.
+
+	* lib/rubygems/gem_commands.rb (Gem::HelpCommand::execute): Added
+	version option to help (gem help version).
+	(Gem): Cleaned up the help text.  Dropped unneeded verbage.
+
+	* lib/rubygems/cmd_manager.rb
+	(Gem::CommandManager::find_command_possibilities): Added
+	find_command_possibilities to help the Help command look for
+	commands.
+
 	* lib/rubygems/installer.rb (Gem::Uninstaller::uninstall): Fixed
 	null pointer bug where a list was destroyed in a method.
 

@@ -76,8 +76,7 @@ module Gem
     end
 
     def find_command(cmd_name)
-      len = cmd_name.length
-      possibilities = self.command_names.select { |n| cmd_name == n[0,len] }
+      possibilities = find_command_possibilities(cmd_name)
       if possibilities.size > 1
         raise "Ambiguous command #{cmd_name} matches [#{possibilities.join(', ')}]"
       end
@@ -86,7 +85,12 @@ module Gem
       end
       self[possibilities.first]
     end
-    
+
+    def find_command_possibilities(cmd_name)
+      len = cmd_name.length
+      self.command_names.select { |n| cmd_name == n[0,len] }
+    end
+
     #  - a config file may be specified on the command line
     #  - if it's specified multiple times, the first one wins 
     #  - there is a default config file location HOME/.gemrc

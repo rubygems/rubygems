@@ -47,57 +47,6 @@ module Gem
   end
 
   ####################################################################
-  class HelpCommand < Command
-    include CommandAids
-
-    def initialize
-      super('help', "Provide help on the gem command")
-      add_option('-h', '--help [COMMAND]', 'Get help on COMMAND') do |value, options|
-	options[:help] = value.nil? ? true : value
-      end
-      add_option('--commands', 'List available commands') do |value, options|
-	options[:help_commands] = true
-      end
-      add_option('--options', 'List available options on base gem command') do |value, options|
-	options[:help_options] = true
-      end
-      add_option('--examples', 'Show examples of using the gem command') do |value, options|
-	options[:help_examples] = true
-      end
-    end
-
-    def execute
-      arg = options[:args][0]
-      if options[:help_commands] || begins?("commands", arg)
-	out = "GEM commands are:\n"
-	indent = command_manager.command_names.collect {|n| n.size}.max+4
-	command_manager.command_names.each do |cmd_name|
-	  out << "  gem #{cmd_name}#{" "*(indent - cmd_name.size)}#{command_manager[cmd_name].summary}\n"
-	end
-	say out
-      elsif options[:help_options] || begins?("options", arg)
-	say Gem::HELP
-      elsif options[:help_examples] || begins?("examples", arg)
-	say Gem::EXAMPLES
-      elsif options[:help]
-	command = command_manager[options[:help]]
-	if command
-	  # help with provided command
-	  command.invoke("--help")
-	else
-	  alert_error "Unknown command #{options[:help]}.  Try gem --help-commands"
-	end
-      else
-	say Gem::HELP
-      end
-    end
-    
-    def command_manager
-      Gem::CommandManager.instance
-    end
-  end
-
-  ####################################################################
   class InstallCommand < Command
     include CommandAids
     include LocalRemoteOptions
@@ -571,6 +520,69 @@ module Gem
     end
   end
   
+  ####################################################################
+  class HelpCommand < Command
+    include CommandAids
+
+    def initialize
+      super('help', "Provide help on the gem command")
+      add_option('-h', '--help [COMMAND]', 'Get help on COMMAND') do |value, options|
+	options[:help] = value.nil? ? true : value
+      end
+      add_option('--commands', 'List available commands') do |value, options|
+	options[:help_commands] = true
+      end
+      add_option('--options', 'List available options on base gem command') do |value, options|
+	options[:help_options] = true
+      end
+      add_option('--examples', 'Show examples of using the gem command') do |value, options|
+	options[:help_examples] = true
+      end
+    end
+
+    def execute
+      arg = options[:args][0]
+      if options[:help_commands] || begins?("commands", arg)
+	out = "GEM commands are:\n"
+	indent = command_manager.command_names.collect {|n| n.size}.max+4
+	command_manager.command_names.each do |cmd_name|
+	  out << "  gem #{cmd_name}#{" "*(indent - cmd_name.size)}#{command_manager[cmd_name].summary}\n"
+	end
+	say out
+      elsif options[:help_options] || begins?("options", arg)
+	say Gem::HELP
+      elsif options[:help_examples] || begins?("examples", arg)
+	say Gem::EXAMPLES
+      elsif begins?("version", arg)
+	say "RubyGems version #{Gem::RubyGemsPackageVersion}"
+      elsif options[:help]
+	command = command_manager[options[:help]]
+	if command
+	  # help with provided command
+	  command.invoke("--help")
+	else
+	  alert_error "Unknown command #{options[:help]}.  Try gem help commands"
+	end
+      elsif arg
+	possibilities = command_manager.find_command_possibilities(arg)
+	if possibilities.size == 1
+	  command = command_manager[possibilities.first]
+	  command.invoke("--help")
+	elsif possibilities.size > 1
+	  alert_warning "Ambiguous command #{arg} (#{possibilities.join(', ')})"
+	else
+	  alert_warning "Unknown command #{arg}. Try gem help commands"
+	end
+      else
+	say Gem::HELP
+      end
+    end
+    
+    def command_manager
+      Gem::CommandManager.instance
+    end
+  end
+
 end # module
 
 ## Documentation Constants
@@ -581,27 +593,15 @@ module Gem
     RubyGems is a sophisticated package manager for Ruby.  This is a
     basic help message containing pointers to more information.
     
-    Usage: gem command [common-options] [command-options-and-arguments]
-      where common-options are --help, etc.
-        (specify --help-options for a list of options)
-      where command is install, uninstall, etc.
-        (specify --help-commands for a list of commands)
-      where command-options-and-arguments depend on the specific command
-        (specify --help followed by a command name for command-specific help)
+    Usage: gem command [arguments...] [options...]
 
-   Use:
+    For more help:
       gem help examples           for a list of examples
       gem help commands           for a list of commands
+      gem help COMMAND_NAME       for help with a specific command
       gem help                    for this message
 
-    For detailed online information, go to http://rubygems.rubyforge.org.
-    The following documents, among others, can be found in the
-    "Documentation" section:
-      * Quick Introduction
-      * Users Guide
-      * 'gem' Command Line Reference
-        -> This includes information about environment variables,
-           configuration files, and more.
+    Detailed online information can be found at http://rubygems.rubyforge.org
     }.gsub(/^    /, "")
 
   EXAMPLES = %{

@@ -103,6 +103,14 @@ class FunctionalTest < Test::Unit::TestCase
     assert_status 1
   end
 
+  def test_all_command_helps
+    mgr = Gem::CommandManager.new
+    mgr.command_names.each do |cmdname|
+      gem "help #{cmdname}"
+      assert_match /Usage: gem #{cmdname}/, @out, "should see help for #{cmdname}"
+    end
+  end
+
   private
 
   def gem(options="")

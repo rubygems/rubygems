@@ -8,6 +8,7 @@ require 'rake/packagetask'
 PKG_NAME = 'rubygems'
 PKG_VERSION = `ruby -Ilib bin/gem environment packageversion`.chomp
 
+CLEAN.include("COMMENTS")
 CLOBBER.include( "test/data/one/one-0.0.1.gem", "test/temp" )
 
 task :default => [:test]

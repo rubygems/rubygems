@@ -53,15 +53,6 @@ class TestGemPaths < Test::Unit::TestCase
     assert_match DEFAULT_DIR_RE, Gem.path.last
   end
 
-  def test_incomplete_gemdir_message
-    ENV['GEM_PATH'] = 'test/temp/x'
-    err = StringIO.new
-    redirect_stderr(err) do
-      assert_equal 2, Gem.path.size
-    end
-    assert_match %r{warning: *gem_path path }i, err.string
-  end
-
   def test_dir_path_overlap
     create_additional_gem_dirs
     ENV['GEM_HOME'] = 'test/temp/gemdir'

@@ -55,7 +55,7 @@ module Gem
         # Check the dependent gems.
         spec.dependencies.each do |dep_gem|
           # XXX: Does this take account of *versions*?
-          require_gem(dep_gem)
+          require_gem(dep_gem, false) #no autorequire
         end
       end
       
@@ -66,7 +66,7 @@ module Gem
       FileUtils.mkdir_p directory
 
       extract_files(directory, format)
-      generate_bin_scripts(format.spec)
+      generate_bin_scripts(format.spec, install_dir)
       #generate_library_stubs(format.spec) if install_stub
       build_extensions(directory, format.spec)
       
@@ -133,9 +133,14 @@ module Gem
     ##
     # Creates the scripts to run the applications in the gem.
     #
-    def generate_bin_scripts(spec)
+    def generate_bin_scripts(spec, install_dir=Gem.dir)
       if spec.executables && ! spec.executables.empty?
-        bindir = Config::CONFIG['bindir']
+        bindir = if(install_dir == Gem.default_dir)
+	  Config::CONFIG['bindir'] 
+	else
+	  File.join(install_dir, "bin")
+	end
+        Dir.mkdir(bindir) unless File.exist?(bindir)
         raise Gem::FilePermissionError.new(bindir) unless File.writable?(bindir)
         spec.executables.each do |filename|
           File.open(File.join(bindir, File.basename(filename)), "w", 0755) do |file|

@@ -44,7 +44,7 @@ module Gem
   class Exception < RuntimeError
   end
 
-  RubyGemsVersion = "0.8.1"
+  RubyGemsVersion = "0.8.1.2"
   RubyGemsPackageVersion = RubyGemsVersion 
 
   DIRECTORIES = ['cache', 'doc', 'gems', 'specifications']
@@ -274,6 +274,7 @@ module Gem
     
     # Default home directory path to be used if an alternate value is
     # not specified in the environment.
+    public
     def default_dir
       #rbconfig = Dir.glob("{#{($LOAD_PATH).join(',')}}/rbconfig.rb").first
       #if rbconfig
@@ -283,7 +284,7 @@ module Gem
       #end
       File.join(Config::CONFIG['libdir'], 'ruby', 'gems', Config::CONFIG['ruby_version'])
     end
-    
+    private 
     # Ensure the named Gem directory contains all the proper subdirectories.
     def ensure_gem_subdirectories(gemdir)
       DIRECTORIES.each do |filename|
@@ -300,7 +301,10 @@ module Gem
     def check_gem_subdirectories(gemdir)
       DIRECTORIES.each do |filename|
         fn = File.join(gemdir, filename)
-        $stderr.puts "warning: GEM_PATH path #{fn} does not exist" unless File.exist?(fn)
+	unless File.exist?(fn)
+          $stderr.puts "warning: GEM_PATH path #{fn} does not exist" 
+	  Dir.mkdir(fn)
+        end
       end
     end
 

@@ -1,3 +1,9 @@
+2004-11-07  Chad Fowler <chad@chadfowler.com>
+	* lib/rubygems.rb,lib/rubygems/installer.rb,lib/rubygems/cache.rb
+	lib/rubygems/remote_installer.rb,lib/rubygems/gem_commands.rb: 
+	Fixes to make non-root installation work properly.  Still need to
+	fix uninstallation.
+
 2004-10-31  Chad Fowler <chad@chadfowler.com>
 	* lib/rubygems/version.rb,test/test_version_comparison.rb: Patrick May's
 	* post-install.rb: Patrick May's fix for rubygems lib not being found

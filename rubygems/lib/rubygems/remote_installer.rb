@@ -44,7 +44,7 @@ module Gem
       caches = get_caches(sources, install_dir)
       spec, source = find_gem_to_install(gem_name, version_requirement, caches)
       dependencies = find_dependencies_not_installed(spec.dependencies)
-      installed_gems << install_dependencies(dependencies)
+      installed_gems << install_dependencies(dependencies, force, install_dir)
       cache_dir = File.join(install_dir, "cache")
       destination_file = File.join(cache_dir, spec.full_name + ".gem")
       download_gem(destination_file, source, spec)
@@ -182,7 +182,7 @@ module Gem
     # 
     # TODO: For now, we recursively install, but this is not the right way to do things (e.g.
     # if a package fails to download, we shouldn't install anything).
-    def install_dependencies(dependencies)
+    def install_dependencies(dependencies, force, install_dir)
       installed_gems = []
       dependencies.each do |dependency|
         if ask_yes_no("Install required dependency #{dependency.name}?", true) then
@@ -195,7 +195,7 @@ module Gem
             end
           )
 
-          installed_gems << remote_installer.install(dependency.name, dependency.version_requirements)
+          installed_gems << remote_installer.install(dependency.name, dependency.version_requirements, force, install_dir)
         else
           raise DependencyError.new("Required dependency #{dependency.name} not installed")
         end

@@ -28,7 +28,6 @@ module Gem
     def self.from_installed_gems(*source_dirs)
       gems = {}
       source_dirs = Gem.path.collect {|dir| File.join(dir, "specifications")} if source_dirs.empty?
-      
       Dir.glob("{#{source_dirs.join(',')}}/*.gemspec").each do |file_name|
         gemspec = load_specification(file_name)
         gems[gemspec.full_name] = gemspec if gemspec
@@ -103,7 +102,7 @@ module Gem
       spec_dirs = Gem.path.collect {|dir| File.join(dir, "specifications")}
       files = Dir.glob("{#{spec_dirs.join(',')}}/*.gemspec")
       current_loaded_files = @gems.values.collect {|spec| spec.loaded_from}
-      (current_loaded_files - files).each do |spec_file|
+      (files - current_loaded_files).each do |spec_file|
         gemspec = Gem::Cache.load_specification(spec_file)
         @gems[gemspec.full_name] = gemspec if gemspec
       end

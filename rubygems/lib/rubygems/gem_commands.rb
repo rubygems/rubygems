@@ -119,6 +119,7 @@ module Gem
     end
 
     def execute
+      ENV['GEM_PATH'] = options[:install_dir]
       gem_name = get_one_gem_name
       if local?
         begin

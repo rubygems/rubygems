@@ -230,13 +230,14 @@ module Gem
 
     def required_location(gemname, libfile, *version_constraints)
       version_constraints = [">0"] if version_constraints.empty?
-      matches = Gem.source_index.search(gemname, version_constraints)
+      matches = Gem.source_index.find_name(gemname, version_constraints)
       return nil if matches.empty?
       spec = matches.last
       spec.require_paths.each do |path|
         result = File.join(spec.full_gem_path, path, libfile)
         return result if File.exists?(result)
       end
+      nil
     end
 
 

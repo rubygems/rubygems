@@ -111,11 +111,17 @@ class FunctionalTest < Test::Unit::TestCase
     end
   end
 
-  def test_gemrc
+  def test_gemrc_paths
     gem "env --config-file test/testgem.rc"
     assert_match %{/usr/local/rubygems}, @out
     assert_match %{/another/spot/for/rubygems}, @out
     assert_match %{test/data/gemhome}, @out
+  end
+
+  def test_gemrc_args
+    gem "help --config-file test/testgem.rc"
+    assert_match %{gem build}, @out
+    assert_match %{gem install}, @out
   end
 
   private

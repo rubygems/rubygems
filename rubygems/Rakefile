@@ -19,7 +19,8 @@ CLOBBER.include(
   'scripts/*.wiki',
   'data__',
   'html',
-  'pkgs/sources/sources*.gem'
+  'pkgs/sources/sources*.gem',
+  '.config'
   )
 
 task :default => [:test]
@@ -180,15 +181,6 @@ Rake::PackageTask.new("package") do |p|
   p.package_files = PKG_FILES
 end
 
-file "pkgs/sources/sources.gem" => [] do
-  gemcmd = File.expand_path("bin/gem")
-  gemlib = File.expand_path("lib")
-  Dir.chdir("pkgs/sources") do
-    ruby %{-I#{gemlib} #{gemcmd} build sources.gemspec}
-  end
-end
-
-
 spec = Gem::Specification.new do |s|
   s.name = PKG_NAME + "-update"  
   s.version = PKG_VERSION
@@ -249,7 +241,7 @@ end
 
 desc "Look for Debugging print lines"
 task :dbg do
-  egrep /DBG/
+  egrep /\bDBG|\bbreakpoint\b/
 end
 
 desc "List all ruby files"

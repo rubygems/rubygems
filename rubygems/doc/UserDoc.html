@@ -7,21 +7,66 @@
 <h1> <nowiki>RubyGems</nowiki> User's Guide </h1>
 <h2> Background </h2>
 <p>Welcome to the new world of RubyGems.  RubyGems is a vision that started (in discussion) at 
-RubyConf 2001.  Unfortunately, like many open-source projects, it never was quite realized.
+RubyConf 2001.  Unfortunately, like many open-source projects, it was never quite realized.
 At RubyConf 2003, the specter of RubyGems was again revived, and a few enterprising Rubyist
 were just tired of the discussion and over the weekend of RubyConf got the initial skeleton
-of RubyGems created.  Due to life and all that the first release of RubyGems did not come 
-out spring of 2004, but its cooking now.</p>
+of RubyGems created, and has now advanced to this initial release.</p>
 <p>So, enough of that, what is RubyGems?  Well, that is a great question, because RubyGems is
-a lot of things.   Its a way to package ruby libraries/applications for distribution, its a
+a lot of things.   Its a way to package Ruby libraries/applications for distribution, its a
 distribution manager, its a package manager.  RubyGems brings to the world of Ruby a 
-very valuable capability, the ability to manage concurrent versions of libraries and dependencies
+very valuable capability--the ability to manage concurrent versions of libraries and dependencies
 between those libraries.  This last aspect of RubyGems is one of the most important to the 
 end user, because its value is continuous as you use and program Ruby, but to understand its 
 impact an explanation of how Ruby manages libraries is in order.</p>
 <h2> How Ruby Manages Packages </h2>
+<p>There are two main ways that you can load files into Ruby script you are writing.  The first
+is the <b>require</b> function, the second is <b>load</b>.  Both of these methods search out and 
+load a Ruby source or native library file, but <b>require</b> will do so only once per session, 
+while <b>load</b> will reload the file each call.  The way in which Ruby finds files to load
+is what will be discussed in this section.  Within the Ruby interpreter there is a global variable
+defined <b>$LOAD_PATH</b> that holds the paths that Ruby searches (in order) for the file that
+you request.  For example, with Ruby 1.8 on OS X the $LOAD_PATH looks like this:</p>
+<pre> /usr/local/lib/ruby/site_ruby/1.8
+ /usr/local/lib/ruby/site_ruby/1.8/powerpc-darwin
+ /usr/local/lib/ruby/site_ruby
+ /usr/local/lib/ruby/1.8
+ /usr/local/lib/ruby/1.8/powerpc-darwin
+ .</pre>
+<p>Starting from the bottom of this list, we see the core Ruby directories (../ruby/1.8,
+../ruby/1.8/powerpc-darwin) which contain all the libraries that the Ruby distribution
+ships with.  The upper three paths (../site_ruby) are where third party libraries are 
+installed.  Every time you install a Ruby libary that you download, the Ruby/native 
+files are installed in site_ruby.  The reason for this is that these paths are in the 
+$LOAD_PATH, and are thus searched when you do a <b>require</b> or <b>load</b>.  The problem
+with this is all the files from different third-party libaries are all merged into this
+single directory structure, which makes it difficult to remove libraries (you have to 
+manually delete the files that you think were part of a library), and impossible to install
+multiple versions of a single library (because the files would overwrite each other).</p>
+<p>This is where RubyGems enters the picture.  What RubyGems does is install each library (and
+version) into its own unique directory instead of into the site_ruby directory. These 
+directories are located along side the ../ruby/1.8 and ../ruby/site_ruby directories:</p>
+<pre> /usr/local/lib/ruby/<b>gems/1.8</b></pre>
+<p>In addtion to installing each gem in a directory under this base directory, when
+you require a particular gem (see usage below), the RubyGems infrastructure modifies the
+$LOAD_PATH to include that gems' unique directory.  For example, if you require the jabber4r
+gem (v 0.7.0) the $LOAD_PATH would then look like this:</p>
+<pre> /usr/local/lib/ruby/gems/1.8/jabber4r-0.7.0/lib
+ /usr/local/lib/ruby/site_ruby/1.8
+ /usr/local/lib/ruby/site_ruby/1.8/powerpc-darwin
+ /usr/local/lib/ruby/site_ruby
+ /usr/local/lib/ruby/1.8
+ /usr/local/lib/ruby/1.8/powerpc-darwin
+ .</pre>
+<p>So, since RubyGems is managing this $LOAD_PATH dynamically, gems can be added, removed and
+multiple version can exist on your hard drive at the same time, and different scripts can
+require different versions as needed.  Hopefully this explains one of the main benefits of
+using RubyGems, but the benefits don't stop there.  RubyGems also allows you to install, 
+uninstall, remotely install (over the Net) and search for gems.  As a developer it is quite
+easy to turn an existing library into a gem, and post it for distribution to the Ruby
+community, so we believe that the RubyGems approach will grow in popularity very quickly.</p>
+<p>The next sections document downloading and installing the RubyGems library as well as 
+managing the gems on your computer, and then concludes with how to use RubyGems.</p>
 <h2> Installing the <nowiki>RubyGems</nowiki> library </h2>
-
 <p>This section describes installing the RubyGems library itself.  This may not be necessary in 
 furture versions of Ruby if/when RubyGems is included in the distribution.  Installation is 
 fairly simple.</p>
@@ -145,7 +190,7 @@ The operator can be one of the following:</p>
 <pre> example:
  "> 1.1"
  "= 4.56.4"  </pre>
-<p>When a gem is 'required' the RubyGems tries to find a gem that meets the version requirements.
+<p>When a gem is 'required' RubyGems tries to find a gem that meets the version requirements.
 Additionally, RubyGems recursively require_gem's all gems that the gem you are loading is
 dependant on.  So, if you loaded a gem (amrita) and it was dependant on another gem (strscan),
 the strscan gem would be loaded first, then the amrita gem would be loaded.  When the gem

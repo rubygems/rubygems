@@ -73,7 +73,9 @@ module Gem
     end
     
     ##
-    # Given a list of sources, return a hash of all the caches from those sources, where the key is the source and the value is the cache.
+    # Given a list of sources, return a hash of all the caches from
+    # those sources, where the key is the source and the value is the
+    # cache.
     def get_caches(sources, install_dir)
       source_caches_file = File.join(install_dir, "source_caches")
       if File.exist?(source_caches_file)

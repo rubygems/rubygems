@@ -224,7 +224,14 @@ TEXT
 
 require 'rubygems'
 $".delete('#{file_name}')
-require_gem '#{name}'
+version = "> 0"
+if ARGV.size > 0 && ARGV[0][0]==95 && ARGV[0][-1]==95
+  if Gem::Version.correct?(ARGV[0][1..-2])
+    version = ARGV[0][1..-2] 
+    ARGV.shift
+  end
+end
+require_gem '#{name}', version
 TEXT
       text
     end

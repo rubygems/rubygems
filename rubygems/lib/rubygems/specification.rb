@@ -314,40 +314,40 @@ module Gem
     def to_ruby
       mark_version
       result =  "Gem::Specification.new do |s|\n"
-      result << "s.name = %q{#{name}}\n"
-      result << "s.version = %q{#{version}}\n"
-      result << "s.platform = %q{#{platform}}\n" if @platform
-      result << "s.has_rdoc = #{has_rdoc?}\n" if has_rdoc?
-      result << "s.test_suite_file = %q{#{test_suite_file}}\n" if has_test_suite?
-      result << "s.summary = %q{#{summary}}\n"
+      result << "  s.name = %q{#{name}}\n"
+      result << "  s.version = %q{#{version}}\n"
+      result << "  s.platform = %q{#{platform}}\n" if @platform
+      result << "  s.has_rdoc = #{has_rdoc?}\n" if has_rdoc?
+      result << "  s.test_suite_file = %q{#{test_suite_file}}\n" if has_test_suite?
+      result << "  s.summary = %q{#{summary}}\n"
       if requirements.size>0
-        result << "s.requirements.concat [" + (requirements.collect {|req| '%q{'+req+'}'}).join(', ') + "]\n"
+        result << "  s.requirements.concat [" + (requirements.collect {|req| '%q{'+req+'}'}).join(', ') + "]\n"
       end
       dependencies.each do |dep|
-        result << "s.add_dependency(%q{" + dep.name + "}, %q{" + dep.version_requirement.to_s + "})\n"
+        result << "  s.add_dependency(%q{" + dep.name + "}, %q{" + dep.version_requirement.to_s + "})\n"
       end
-      result << "s.files = [" + (files.collect {|f| '"' + f + '"'}).join(', ') + "]\n"
+      result << "  s.files = [" + (files.collect {|f| '"' + f + '"'}).join(', ') + "]\n"
       if require_paths
-        result << "s.require_paths = [" + (require_paths.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
+        result << "  s.require_paths = [" + (require_paths.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
       end
       if executables.size > 0
-        result << "s.executables = [" + (executables.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
+        result << "  s.executables = [" + (executables.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
       end
       if extensions.size > 0
-        result << "s.extensions = [" + (extensions.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
+        result << "  s.extensions = [" + (extensions.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
       end
       if extension_requirements.size > 0
-        result << "s.extension_requirements = [" + (extension_requirements.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
+        result << "  s.extension_requirements = [" + (extension_requirements.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
       end
       # optional 
-      result << "s.autorequire = %q{#{autorequire}}\n" if autorequire
-      result << "s.author = %q{#{author}}\n" if author
-      result << "s.email = %q{#{email}}\n" if email
-      result << "s.homepage = %q{#{homepage}}\n" if homepage
-      result << "s.default_executable = %q{#{default_executable}}\n" if default_executable
-      result << "s.bindir = %q{#{bindir}}\n" if bindir
-      result << "s.rubyforge_project = %q{#{rubyforge_project}}\n" if rubyforge_project
-      result << "s.description = <<-EOS\n#{description}\nEOS\n" if description
+      result << "  s.autorequire = %q{#{autorequire}}\n" if autorequire
+      result << "  s.author = %q{#{author}}\n" if author
+      result << "  s.email = %q{#{email}}\n" if email
+      result << "  s.homepage = %q{#{homepage}}\n" if homepage
+      result << "  s.default_executable = %q{#{default_executable}}\n" if default_executable
+      result << "  s.bindir = %q{#{bindir}}\n" if bindir
+      result << "  s.rubyforge_project = %q{#{rubyforge_project}}\n" if rubyforge_project
+      result << "  s.description = <<-EOS\n#{description}\nEOS\n" if description
       result << "end\n"
       result
     end

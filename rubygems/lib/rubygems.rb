@@ -20,8 +20,8 @@ module Kernel
     
     error_message = "\nCould not find RubyGem #{gem.name}\n"
     
-    Gem.cache.each do |spec_name, spec|
-      next unless spec_name == gem.name
+    Gem.cache.each do |full_spec_name, spec|
+      next unless spec.name == gem.name
       
       if gem.version_requirement.satisfied_by?(spec.version)
       

@@ -53,7 +53,9 @@ module Gem
 	end
       end
       deps.all? { |dep|
-	siblings.any? { |s| s.satisfies_requirement?(dep) }
+	siblings.any? { |s| 
+	  s.satisfies_requirement?(dep)
+	}
       }
     end
 

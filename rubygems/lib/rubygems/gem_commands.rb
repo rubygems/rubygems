@@ -65,13 +65,10 @@ module Gem
       add_option('-t', '--[no-]test', 'Run unit tests prior to installation') do |value, options|
         options[:test] = value
       end
-      add_option('-s', '--[no-]install-stub', 'Install a library stub in site_ruby') do |value, options|
-        options[:stub] = value
-      end
     end
 
     def install_update_defaults_str
-      '--rdoc --no-force --no-test --install-stub'
+      '--rdoc --no-force --no-test'
     end
   end
 
@@ -99,7 +96,6 @@ module Gem
           :generate_rdoc => true, 
           :force => false, 
           :test => false, 
-          :stub => true, 
           :version => "> 0",
           :install_dir => Gem.dir
         })
@@ -117,7 +113,7 @@ module Gem
     end
 
     def defaults_str
-      "--both --version '> 0' --rdoc --no-force --no-test --install-stub\n" +
+      "--both --version '> 0' --rdoc --no-force --no-test\n" +
       "--install-dir #{Gem.dir}"
     end
 
@@ -140,7 +136,7 @@ module Gem
               alert_error "Local gem file not found: #{filepattern}"
             end
           else
-            result = Gem::Installer.new(entries.last).install(options[:force], options[:install_dir], options[:stub])
+            result = Gem::Installer.new(entries.last).install(options[:force], options[:install_dir])
             installed_gems = [result].flatten
             say "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}" if installed_gems
           end
@@ -157,7 +153,7 @@ module Gem
       if remote? && installed_gems.nil?
         say "Attempting remote installation of '#{gem_name}'"
         installer = Gem::RemoteInstaller.new(options[:http_proxy])
-        installed_gems = installer.install(gem_name, options[:version], options[:force], options[:install_dir], options[:stub])
+        installed_gems = installer.install(gem_name, options[:version], options[:force], options[:install_dir])
         say "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}" if installed_gems
       end
       
@@ -502,14 +498,13 @@ module Gem
           :generate_rdoc => true, 
           :force => false, 
           :test => false, 
-          :stub => true, 
           :install_dir => Gem.dir
         })
       add_install_update_options
     end
     
     def defaults_str
-      "--rdoc --no-force --no-test --install-stub\n" +
+      "--rdoc --no-force --no-test\n" +
       "--install-dir #{Gem.dir}"
     end
 
@@ -887,9 +882,9 @@ module Gem
         gem install rake --remote
 
     * Install 'rake' from remote server, and run unit tests,
-      generate RDocs, and not install a library stub:
+      and generate RDocs:
 
-        gem install --remote rake --test --rdoc --no-install-stub
+        gem install --remote rake --test --rdoc
 
     * Install 'rake', but only version 0.3.1, even if dependencies
       are not met, and into a specific directory:

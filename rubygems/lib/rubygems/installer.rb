@@ -6,6 +6,8 @@ require 'rbconfig'
 
 module Gem
 
+  class DependencyRemovalException < Gem::Exception; end
+
   ##
   # The installer class processes RubyGem .gem files and installs the
   # files contained in the .gem into the Gem.path.
@@ -41,7 +43,7 @@ module Gem
     #
     # return:: [Gem::Specification] The specification for the newly installed Gem.
     #
-    def install(force=false, install_dir=Gem.dir, install_stub=true)
+    def install(force=false, install_dir=Gem.dir, install_stub=false)
       require 'fileutils'
       format = Gem::Format.from_file_by_path(@gem)
       unless force
@@ -500,8 +502,7 @@ TEXT
           end
         end
         return if executables.size == 0
-        alert_warning("About to remove executables and scripts for: #{gemspec.executables.join(", ")}")
-        answer = ask_yes_no("Proceed?", true)
+        answer = ask_yes_no("Remove executables and scripts for\n'#{gemspec.executables.join(", ")}' in addtion to the gem?", true)
         unless answer
           say "Executables and scripts will remain installed."
           return
@@ -535,7 +536,7 @@ TEXT
     #
     def remove(spec, list)
       if(has_dependents?(spec)) then
-        raise "Uninstallation aborted due to dependent gem(s)"
+        raise DependencyRemovalException.new("Uninstallation aborted due to dependent gem(s)")
       end
       raise Gem::FilePermissionError.new(spec.installation_path) unless File.writable?(spec.installation_path)
       FileUtils.rm_rf spec.full_gem_path
@@ -549,12 +550,14 @@ TEXT
 
     def has_dependents?(spec)
       spec.dependent_gems.each do |gem,dep,satlist|
-        msg = ["#{gem.name}-#{gem.version} depends on [#{dep.name} (#{dep.version_requirements})], which is satisifed by this gem.  This dependency is satisfied by:"]
+        msg = ['You have requested to uninstall the gem:']
         satlist.each do |sat|
           msg << "\t#{sat.name}-#{sat.version}"
         end
-        alert_warning(msg.join("\n"))
-        return !ask_yes_no("Uninstall anyway?", false)
+        msg << "#{gem.name}-#{gem.version} depends on [#{dep.name} (#{dep.version_requirements})]"
+        msg << 'If you remove this gem, the dependency will not be met.'
+        msg << 'Uninstall anyway?'
+        return !ask_yes_no(msg.join("\n"), false)
       end
       false
     end

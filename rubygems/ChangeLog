@@ -1,3 +1,7 @@
+2004-12-07  Jim Weirich  <jim@weirichhouse.org>
+
+	* Released 0.8.3
+
 2004-12-06  Jim Weirich  <jim@weirichhouse.org>
 
 	* test/test_specification.rb
@@ -26,7 +30,7 @@
 	(Gem::LocalSourceInfoCache::read_cache): Fixed initialization of
 	cache.
 
-	* lib/rubygems.rb: Updated version to 1.8.2.
+	* lib/rubygems.rb: Updated version to 0.8.2.
 
 2004-12-04  Jim Weirich  <jim@weirichhouse.org>
 
@@ -256,6 +260,8 @@
 	by Rich).
 	* lib/rubygems.rb:  Fixed small bug in #latest_load_paths
 
+	(NOTE: It looks like 0.8.0/0.8.1 was released in this timeframe)
+	
 2004-09-14  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems.rb: Fixed bug in require_gem (thanks Jamis Buck!)
 	that would require a gem based on an inexact search of its name

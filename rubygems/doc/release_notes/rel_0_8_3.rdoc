@@ -1,0 +1,113 @@
+= Announce: RubyGems Release 0.8.3
+
+Wow, over 8000 download of either the RubyGems package or the
+RubyGems-update gem!  And over 150 different packages available as a
+gem.  Things have really moved foreward.
+
+I am pleased to announce that a new point release of RubyGems is now
+available on RubyForge.  This release is mostly a bug fix and code
+cleanup release.  But the good news is that there are several really
+annoying issues that have been addressed in 0.8.3.
+
+But first ...
+
+== What is RubyGems?
+
+RubyGems is a package management system for Ruby applications and
+libraries.  RubyGems one command download makes installing Ruby
+software fun and enjoyable again. (Ok, not really.)
+
+Many gems are available for download from the RubyForge site.  Browse
+the list of gems with a "gem list --remote" command and download what
+you need with a simple "gem install <name-of-gem>".  RubyGems takes
+care of the details of installing, not only the gem you requested, but
+also any gems needed by the software you selected.
+
+So now you are asking ...
+
+== How can I get all this great stuff?
+
+Well, here's how ...
+
+To download and install:
+
+1. DOWNLOAD FROM: http://rubyforge.org/frs/?group_id=126
+2. UNPACK INTO A DIRECTORY AND CD THERE
+3. INSTALL WITH:  ruby setup.rb all  (you may need admin/root privilege)
+
+... or, if you have an existing RubyGem installation ....
+
+  $ gem install rubygems-update  (again, might need to be admin/root)
+  $ update_rubygems              (... here too)
+
+I bet you are wondering...
+
+== So What's Changed in this Release?
+
+No real earth shattering news here, but there were a number of really
+annoying issues involving other libraries that RubyGems depends upon.
+0.8.3 contains some workarounds for these issues.  In particular:
+
+* Added workaround for the null byte in Dir string issue. (see
+  http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/121702).
+  (Thanks to Mauricio Fernández for the quick response on this one).
+
+* Added workaround for old version of Zlib on windows that caused
+  Ruwiki to fail to install. (see
+  http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/121770)
+
+* Added workaround for large YAML file issues.  (We dynamically cut
+  down the size of the source index YAML file and seem to have worked
+  around immediate issues.
+
+There has been some minor usability enhancements and changes ...
+
+* A user specific source index cache can be used when the site-wide
+  cache is unwritable (i.e. because you are running as a non-admin).
+  This *greatly* speeds up gem commands run in non-admin mode when the
+  site-wide cache is out of date.
+
+* The gem command now used an HTTP HEAD command to detect if the
+  server's source index needs to be downloaed.
+
+* gem check gemname --test will run unit tests on installed gems that
+  have unit tests.
+
+* Multiple gem names are allowed on the gem install command line.
+  This means you can do:
+
+    gem install rake rails needle postgres-pr pimki
+
+  (Ok, you get the idea)
+
+* Multiple authors my be specified in a Gem spec.
+
+* Switched to using setup.rb (rather than a custom install script) for
+  the installation of RubyGems itself.  If you have installed RubyGems
+  before, double check the installation instructions and make sure you
+  use setup.rb instead of install.rb.
+
+* Ryan Davis has provided a patch so you can use an env variable
+  (GEM_SKIP), to tell loadpath_manager not to load gems of those
+  names.  This was useful for him while testing libs that he had in
+  development.
+
+And finally there have been a number of internal changes, enhancements
+and just general cleanup.  A lot of work has been done in the remote
+installer area (some of which you can see in the caching changes noted
+above) in preparation for unifying the local and remote logic so that
+there is less difference in installing local gems and remote gems.  In
+particular, we want to be able to satisfy dependencies from locally
+available gem files.  We are not there yet, but we are working on it.
+
+== Summary
+
+Thanks to everyone for the great feedback we have been getting.
+Please continue to let us know what you think and what you want.  Many
+minor changes in this release were initiated/requested by folks other
+than the core gems team.  That's great.
+
+And most of all, keep making and releasing those gems!
+
+-- Jim (for the RubyGems team)
+

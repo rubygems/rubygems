@@ -1,5 +1,34 @@
 = RubyGems Release History
 
+== Release 0.8.3: Dec 7, 2004
+
+* Added workaround for the null byte in Dir string issue. (see
+  http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/121702).
+  (Thanks to Mauricio Fernández for the quick response on this one).
+
+* Added workaround for old version of Zlib on windows that caused
+  Ruwiki to fail to install. (see
+  http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/121770)
+
+* Added workaround for large YAML file issues.  (We dynamically cut
+  down the size of the source index YAML file and seem to have worked
+  around immediate issues.
+
+* A user specific source index cache can be used when the site-wide
+  cache is unwritable (i.e. because you are running as a non-admin).
+  This *greatly* speeds up gem commands run in non-admin mode when the
+  site-wide cache is out of date.
+
+* The gem command now used an HTTP HEAD command to detect if the
+  server's source index needs to be downloaed.
+
+* gem check gemname --test will run unit tests on installed gems that
+  have unit tests.
+
+== Release 0.8.1: Sep 14, 2004
+
+* Quick release to capture some bug fixes.
+
 == Release 0.8.0: Sep 12, 2004
 
 * Remove need for library stubs.  Set the RUBYOPT environment variable

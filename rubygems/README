@@ -1,0 +1,30 @@
+This marks the initial alpha 1 release of RubyGems.
+
+For user documentation (and installation instructions) see:
+
+./doc/UserDoc.html
+
+For developer docs see:
+
+./doc/DevDoc.html
+./doc/GemSpecification.html
+
+All of these documents (in there latest versions) are available on 
+the RubyGems wiki at:
+
+http://rubygems.rubyforge.org
+
+Additional directories:
+
+./bin/...      binary commands (gem, gem_server, etc)
+./lib/...      the RubyGems library
+./packages/... default RubyGems packages (currently only 'sources')
+./test/...     unit tests
+./example/...  example library w/gemspec for generating and installing gems
+./gemspecs/... example gemspecs
+
+Please provide us feedback at http://rubyforge.org/projects/rubygems
+
+Thanks!
+
+-The RubyGems Team

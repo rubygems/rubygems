@@ -153,6 +153,10 @@ module Gem
           rescue Gem::LoadError => e
             say " -> Local installation can't proceed due to LoadError: #{e.message}"
           rescue => e
+	    # TODO: Fix this handle to allow the error to propagate to
+	    # the top level handler.  Example the other errors as
+	    # well.  This implementation here looks suspicious to me --
+	    # JimWeirich (4/Jan/05) 
             alert_error "Error installing gem #{gem_name}[.gem]: #{e.message}"
             return
           end

@@ -605,45 +605,41 @@ module Gem
     include CommandAids
 
     def initialize
-      super('help', "Provide help on the gem command")
-      add_option('-h', '--help [COMMAND]', 'Get help on COMMAND') do |value, options|
-        options[:help] = value.nil? ? true : value
-      end
-      add_option('--commands', 'List available commands') do |value, options|
-        options[:help_commands] = true
-      end
-      add_option('--examples', 'Show examples of using the gem command') do |value, options|
-        options[:help_examples] = true
-      end
+      super('help', "Provide help on the 'gem' command")
     end
 
     def usage
-      "#{program_name} [arg]"
+      "#{program_name} ARGUMENT"
     end
 
     def arguments
       args = <<-EOF
-        commands      Provide a list of gem commands
-        examples      Provide a list of gem command examples
+        commands      List all 'gem' commands
+        examples      Show examples of 'gem' usage
+        <command>     Show specific help for <command>
       EOF
       return args.gsub(/^\s+/, '')
     end
 
     def execute
       arg = options[:args][0]
-      if options[:help_commands] || begins?("commands", arg)
-        out = "GEM commands are:\n"
-        indent = command_manager.command_names.collect {|n| n.size}.max + 4
+      if begins?("commands", arg)
+        require 'stringio'
+        out = StringIO.new
+        out.puts "\nGEM commands are:\n\n"
+        desc_indent = command_manager.command_names.collect {|n| n.size}.max + 4
+        format = "    %-#{desc_indent}s %s\n"
         command_manager.command_names.each do |cmd_name|
-          out << "  gem #{cmd_name}#{" "*(indent - cmd_name.size)}#{command_manager[cmd_name].summary}\n"
+          out.printf format, "#{cmd_name}", command_manager[cmd_name].summary
         end
-        say out
-      elsif options[:help_options] || begins?("options", arg)
+        out.puts "\nFor help on a particular command, use 'gem help COMMAND'."
+        out.puts "\nCommands may be abbreviated, so long as they are unambiguous."
+        out.puts "e.g. 'gem i rake' is short for 'gem install rake'."
+        say out.string
+      elsif begins?("options", arg)
         say Gem::HELP
-      elsif options[:help_examples] || begins?("examples", arg)
+      elsif begins?("examples", arg)
         say Gem::EXAMPLES
-      elsif begins?("version", arg)
-        say "RubyGems version #{Gem::RubyGemsPackageVersion}"
       elsif options[:help]
         command = command_manager[options[:help]]
         if command
@@ -700,9 +696,6 @@ module Gem
                                        (e.g. 'gem help install')
       Further information:
         http://rubygems.rubyforge.org
-
-    Commands may be abbreviated, so long as they are unambiguous.
-    e.g. 'gem i rake' is short for 'gem install rake'.
     }.gsub(/^    /, "")
 
   EXAMPLES = %{

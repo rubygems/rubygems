@@ -648,7 +648,13 @@ module Gem
         end
       end
       if ! options[:args].empty?
-	gems_to_cleanup = options[:args]
+        gems_to_cleanup = []
+        options[:args].each do |gem_name|
+          specs = Gem.cache.search(/^#{gem_name}$/i)
+          if specs.size > 1 then
+            gems_to_cleanup << specs.sort{|a,b| a.version <=> b.version}.first
+          end
+        end
       else
 	gems_to_cleanup = []
 	srcindex.each do |name, spec|

@@ -706,23 +706,25 @@ class RubyGemsFacade
 
   # +gems+ is actually an Array: [[name, gemspec], [name, gemspec], ...]
   def _display_gems(gems)
-    already_seen = []
+    gem_list_with_version = {}
     gems.sort {|a,b| 
       a[0].downcase <=> b[0].downcase
     }.each do |gem|
-      unless(already_seen.include?(gem[0])) 
-        puts
-        _display_gem(gem)
-        already_seen << gem[0]
-      end
+	gem = gem[1]
+        gem_list_with_version[gem.name] ||= []
+        gem_list_with_version[gem.name] << gem
     end
+   gem_list_with_version.each do |gem_name, list_of_matching| 
+     puts
+     _display_gem(gem_name, list_of_matching)
+   end
   end
 
-  # +gem+ is actually an Array: [name, gemspec]
-  def _display_gem(gem)
-    name, spec = gem
-    puts spec.full_name
-    puts spec.summary.wrap(68).indent(4)
+  def _display_gem(gem_name, list_of_matching)
+    print gem_name, " ("
+    print(list_of_matching.map{|gem| gem.version.to_s}.join(", "))
+    puts ")"
+    puts list_of_matching[0].summary.wrap(68).indent(4)
   end
 
 end  # class RubyGemsFacade

@@ -1,3 +1,8 @@
+2004-06-04  Chad Fowler  <chad@chadfowler.com>
+	* bin/gem:  Reformatted --search and --list output such that
+	multiple versions of a gem are compressed into a single entry
+	(with version numbers in parentheses)
+
 2004-05-31  Jim Weirich  <jweirich@one.net>
 
 	* lib/rubygems/version.rb (Gem::Dependency): Dependency attribute

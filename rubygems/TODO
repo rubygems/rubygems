@@ -9,3 +9,7 @@
 
 DONE:
 - some kind of versioning change (mauricio, eivind, or jim's idea(s)) should go into 0.5 for feedback/testing
+- Group gem search output when multiple versions exist for a given gem: 
+  activerecord (0.7.5, 0.7.6, 0.7.7, 0.7.8)
+    Implements the ActiveRecord pattern for ORM.
+

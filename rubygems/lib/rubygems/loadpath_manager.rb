@@ -8,10 +8,12 @@ end
 
 module Gem
   module LoadPathManager
+    @paths = nil
     module Gem
       class Specification
         def initialize(&block)
           @require_paths = ['lib']
+          @platform = nil
           yield self
         end
         attr_reader :version
@@ -24,7 +26,12 @@ module Gem
           @version = ::Gem::Version.create(version)
         end
         def full_name
-          @full_name ||= "#{@name}-#{@version}#{@platform ? "-#{@platform}" : ''}"
+          @full_name ||=
+            if @platform == "ruby"
+              "#{@name}-#{@version}"
+            else
+              "#{@name}-#{@version}-#{platform}"
+            end
         end
         def method_missing(method, *args)
         end

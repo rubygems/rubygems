@@ -5,12 +5,23 @@ module Gem
 
   class RemoteInstaller
     ##
-    # http_proxy:: [String] URL of http proxy.  Will override any environment 
-    #   variable setting if supplied.
+    # <tt>http_proxy</tt>::
+    #   * [String]: explicit specification of proxy; overrides any environment variable
+    #     setting
+    #   * nil: respect environment variables
+    #   * <tt>:no_proxy</tt>: ignore environment variables and _don't_ use a proxy
+    #
     def initialize(http_proxy=nil)
-	  
-	  # ensure http_proxy env vars are used if no proxy explicitly supplied
-      @http_proxy=http_proxy || true
+      # Ensure http_proxy env vars are used if no proxy explicitly supplied.
+      @http_proxy =
+        case proxy
+        when :no_proxy
+          false
+        when nil
+          true
+        else
+          proxy.to_str
+        end
     end
 
     ##
@@ -150,9 +161,8 @@ module Gem
 
     def fetch( uri_str )
       require 'open-uri'
-	  open(	uri_str,
-         	:proxy => @http_proxy) do |input|
-	 	 input.read
+      open(uri_str, :proxy => @http_proxy) do |input|
+        input.read
       end
     end
 

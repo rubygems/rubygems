@@ -280,13 +280,10 @@ module Gem
     end
 
     def find_gem_to_install(gem_name, version_requirement, caches)
-      puts "DBG: find_gem_to_installer #{gem_name}"
       max_version = Version.new("0.0.0")
       specs_n_sources = []
       caches.each do |source, cache|
-	puts "DBG: PROCESSING SOURCE #{source}"
         cache.each do |name, spec|
-	  puts "DBG: CHECKING #{name}"
           if (/#{gem_name}/i === name && version_requirement.satisfied_by?(spec.version))
             specs_n_sources << [spec, source]
           end

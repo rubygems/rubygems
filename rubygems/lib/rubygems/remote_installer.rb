@@ -34,7 +34,8 @@ module Gem
     # Return a list of the sources that we can download gems from
     def get_cache_sources
       # TODO
-      return ["http://www.chadfowler.com:8808", "http://localhost:8080"]
+      #return ["http://www.chadfowler.com:8808", "http://localhost:8080"]
+      return ["http://www.chadfowler.com:8808"]
     end
 
     ##
@@ -64,8 +65,15 @@ module Gem
     end
 
     def find_dependencies_not_installed(dependencies)
-      # TODO
-      return []
+      to_install = []
+      dependencies.each do |dependency|
+        begin
+          require_gem(dependency.name, dependency.version_requirement.version)
+        rescue LoadError => e
+          to_install.push dependency
+        end
+      end
+      to_install
     end
 
     # TODO: For now, we recursively install, but this is not the right way to do things (e.g. if a package fails to download, we shouldn't install anything).
@@ -73,7 +81,7 @@ module Gem
       dependencies.each do |dependency|
         remote_installer = RemoteInstaller.new(
             dependency.name,
-            dependency.version_expression)
+            dependency.version_requirement)
         remote_installer.install
       end
     end

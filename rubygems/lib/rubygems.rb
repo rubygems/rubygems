@@ -19,10 +19,8 @@ module Kernel
     end
     
     error_message = "\nCould not find RubyGem #{gem.name}\n"
-    
-    Gem.cache.each do |full_spec_name, spec|
+    Gem::Cache.from_installed_gems.each do |full_spec_name, spec|
       next unless spec.name == gem.name
-      
       if gem.version_requirement.satisfied_by?(spec.version)
       
         return false if spec.loaded?

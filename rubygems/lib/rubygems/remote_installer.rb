@@ -22,7 +22,8 @@ module Gem
       end
     end
 
-    # Return the (uncompressed) size of the source info.
+    # The uncompressed +size+ of the source's directory (e.g. source
+    # info).
     def size
       @size ||= get_size("/yaml")
     end
@@ -32,10 +33,13 @@ module Gem
       read_data(@uri + path)
     end
 
-    # Get the source info stored on the source.  Source info is a hash
-    # map of gem long names to gem specs.  Notice that the gem specs
-    # returned by this method are adequate for searches and queries,
-    # but may have some information elided.
+    # Get the source info stored on the source.  Source info is a
+    # directory of the gems available on a source formatted as a hash
+    # map of gem long names to (abbreviated) gem specs.
+    #
+    # Notice that the gem specs returned by this method are adequate
+    # for searches and queries, but may have some information elided
+    # (hence "abbreviated").
     def source_info
       say "Updating Gem source index for: #{@uri}"
       begin
@@ -161,10 +165,12 @@ module Gem
 	ENV['GEMCACHE'] || File.join(Gem.user_home, ".gem/source_cache")
     end
 
+    # Mark the cache as updated (i.e. dirty).
     def update
       @dirty = true
     end
 
+    # Write the cache to a local file (if it is dirty).
     def flush
       write_cache if @dirty
       @dirty = false
@@ -206,19 +212,32 @@ module Gem
   # CachedFetcher is a decorator that adds local file caching to
   # RemoteSourceFetcher objects.
   class CachedFetcher
+
+    # Create a cached fetcher (based on a RemoteSourceFetcher) for the
+    # source at +source_uri+ (through the proxy +proxy+).
     def initialize(source_uri, proxy)
       @source_uri = source_uri
       @fetcher = RemoteSourceFetcher.new(source_uri, proxy)
     end
 
+    # The uncompressed +size+ of the source's directory (e.g. source
+    # info).
     def size
       @fetcher.size
     end
 
+    # Fetch the data from the source at the given path.
     def fetch_path(path="")
       @fetcher.fetch_path(path)
     end
 
+    # Get the source info stored on the source.  Source info is a
+    # directory of the gems available on a source formatted as a hash
+    # map of gem long names to (abbreviated) gem specs.
+    #
+    # Notice that the gem specs returned by this method are adequate
+    # for searches and queries, but may have some information elided
+    # (hence "abbreviated").
     def source_info
       cache = manager.cache_data[@source_uri]
       if cache && cache['size'] == @fetcher.size
@@ -234,12 +253,14 @@ module Gem
       end
     end
 
+    # Flush the cache to a local file, if needed.
     def flush
       manager.flush
     end
 
     private
 
+    # The cache manager for this cached source.
     def manager
       self.class.manager
     end
@@ -247,12 +268,10 @@ module Gem
     # The cache is shared between all caching fetchers, so the cache
     # is put in the class object.
     class << self
+
+      # The Cache manager for all instances of this class.
       def manager
 	@manager ||= LocalSourceInfoCache.new
-      end
-
-      def flush
-	manager.flush
       end
     end
     

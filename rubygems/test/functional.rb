@@ -6,6 +6,7 @@ Gem.manage_gems
 require 'yaml'
 require 'fileutils'
 require 'test/insure_session'
+require 'test/onegem'
 
 class FunctionalTest < Test::Unit::TestCase
   def setup
@@ -62,36 +63,26 @@ class FunctionalTest < Test::Unit::TestCase
     assert_equal Gem::RemoteInstaller.new.sources, @out.chomp.split("\n")
   end
 
-  ONEDIR = "test/data/one"
-  ONENAME = "one-0.0.1.gem"
-  ONEGEM = "#{ONEDIR}/#{ONENAME}"
-
   def test_build
-    FileUtils.rm_f ONEGEM
-    Dir.chdir(ONEDIR) do
-      gem "build one.gemspec"
-    end
-    assert File.exist?(ONEGEM), "Gem file (#{ONEGEM}) should exist"
+    OneGem.rebuild(self)
+    assert File.exist?(OneGem::ONEGEM), "Gem file (#{OneGem::ONEGEM}) should exist"
     assert_match /Successfully built RubyGem/, @out
     assert_match /Name: one$/, @out
     assert_match /Version: 0.0.1$/, @out
-    assert_match /File: #{ONENAME}/, @out
-    spec = read_gem_file(ONEGEM)
+    assert_match /File: #{OneGem::ONENAME}/, @out
+    spec = read_gem_file(OneGem::ONEGEM)
     assert_equal "one", spec.name
     assert_equal "Test GEM One", spec.summary
   end
 
   def test_build_from_yaml
-    FileUtils.rm_f ONEGEM
-    Dir.chdir(ONEDIR) do
-      gem "build one.yaml"
-    end
-    assert File.exist?(ONEGEM), "Gem file (#{ONEGEM}) should exist"
+    OneGem.rebuild(self)
+    assert File.exist?(OneGem::ONEGEM), "Gem file (#{OneGem::ONEGEM}) should exist"
     assert_match /Successfully built RubyGem/, @out
     assert_match /Name: one$/, @out
     assert_match /Version: 0.0.1$/, @out
-    assert_match /File: #{ONENAME}/, @out
-    spec = read_gem_file(ONEGEM)
+    assert_match /File: #{OneGem::ONENAME}/, @out
+    spec = read_gem_file(OneGem::ONEGEM)
     assert_equal "one", spec.name
     assert_equal "Test GEM One", spec.summary
   end
@@ -124,8 +115,6 @@ class FunctionalTest < Test::Unit::TestCase
     assert_match %{gem install}, @out
   end
 
-  private
-
   def gem(options="")
     shell = Session::Shell.new
     options = options + " --config-file missing_file" if options !~ /--config-file/
@@ -139,6 +128,8 @@ class FunctionalTest < Test::Unit::TestCase
     puts "PWD:     [#{Dir.pwd}]" if @verbose
     shell.close
   end
+
+  private
 
   def assert_status(expected_status=0)
     assert_equal expected_status, @status

@@ -91,6 +91,49 @@ class TestGemPaths < Test::Unit::TestCase
     end
   end
 
+  def test_ensure_gem_directories_new
+    FileUtils.rm_r("test/temp/gemdir")
+    Gem.use_paths("test/temp/gemdir")
+    Gem.send(:ensure_gem_subdirectories, "test/temp/gemdir")
+    assert File.exist?("test/temp/gemdir/cache")
+  end
+
+  def test_ensure_gem_directories_missing_parents
+    gemdir = "test/temp/a/b/c/gemdir"
+    FileUtils.rm_r("test/temp/a") rescue nil
+    Gem.use_paths(gemdir)
+    Gem.send(:ensure_gem_subdirectories, gemdir)
+    assert File.exist?("#{gemdir}/cache")
+  end
+
+  def test_ensure_gem_directories_write_protected
+    gemdir = "test/temp/egd"
+    FileUtils.rm_r gemdir rescue nil
+    FileUtils.mkdir_p gemdir
+    FileUtils.chmod 0400, gemdir
+    Gem.use_paths(gemdir)
+    Gem.send(:ensure_gem_subdirectories, gemdir)
+    assert ! File.exist?("#{gemdir}/cache")
+  ensure
+    FileUtils.chmod(0600, gemdir) rescue nil
+    FileUtils.rm_r gemdir rescue nil
+  end
+
+  def test_ensure_gem_directories_with_parents_write_protected
+    parent = "test/temp/egd"
+    gemdir = "#{parent}/a/b/c"
+    
+    FileUtils.rm_r parent rescue nil
+    FileUtils.mkdir_p parent
+    FileUtils.chmod 0400, parent
+    Gem.use_paths(gemdir)
+    Gem.send(:ensure_gem_subdirectories, gemdir)
+    assert ! File.exist?("#{gemdir}/cache")
+  ensure
+    FileUtils.chmod(0600, parent) rescue nil
+    FileUtils.rm_r parent rescue nil
+  end
+
   private
 
   def create_additional_gem_dirs

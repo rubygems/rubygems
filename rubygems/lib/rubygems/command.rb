@@ -55,12 +55,36 @@ module Gem
       new_options.each do |k,v| @options[k] = v end
     end
 
+    def handles?(args)
+      begin
+	parser.parse!(args.dup)
+	return true
+      rescue
+	return false
+      end
+    end
+
     private
 
     def handle_options(args)
+      args = add_extra_args(args)
       @options = @defaults.clone
       parser.parse!(args)
       @options[:args] = args
+    end
+    
+    def add_extra_args(args)
+      result = []
+      extra = Command.extra_args.dup
+      while ! extra.empty?
+	ex = []
+	ex << extra.shift
+	ex << extra.shift if extra.first.to_s =~ /^[^-]/
+	result << ex if handles?(ex)
+      end
+      result.flatten!
+      result.concat(args)
+      result
     end
     
     # Create on demand parser.
@@ -98,6 +122,19 @@ module Gem
     
       def add_common_option(*args, &handler)
 	Gem::Command.common_options << [args, handler]
+      end
+
+      def extra_args
+	@extra_args ||= []
+      end
+
+      def extra_args=(value)
+	case value
+	when Array
+	  @extra_args = value
+	when String
+	  @extra_args = value.split
+	end
       end
     end
 

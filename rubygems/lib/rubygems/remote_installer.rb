@@ -125,6 +125,59 @@ module Gem
 
   end
 
+  # LocalSourceInfoCache implements the cache management policy on
+  # where the source info is stored on local file system.  There are
+  # two possible cache locations: (1) the system wide cache, and (2)
+  # the user specific cache.
+  #
+  # * Data is always read from the newest cache file.
+  # * Data is written to
+  #   * the system cache if it is writable
+  #   * the user specific cache, if the system cache is not writable.
+  #
+  class LocalSourceInfoCache
+
+    # The most recent cache data.
+    def cache_data
+      fn = if File.stat(system_cache_file).mtime >= File.stat(user_cache_file).mtime
+	     system_cache_file
+	   else
+	     user_cache_file
+	   end
+      open(fn) { |f| YAML.load(f) }
+    end
+
+    # Write data to the proper cache.
+    def write_cache(data)
+      open(writable_file, "w") do |f|
+	f.puts data.to_yaml
+      end
+    end
+
+    # The name of the system cache file.
+    def system_cache_file
+      @sysetm_cache ||= File.join(Gem.dir, "source_cache")
+    end
+
+    # The name of the user cache file.
+    def user_cache_file
+      @user_cache ||=
+	ENV['GEMCACHE'] || File.join(Gem.user_home, ".gem/source_cache")
+    end
+
+    private 
+
+    # Find a writable cache file.
+    def writable_file
+      if File.writable? system_cache_file
+	system_cache_file
+      else
+	FileUtils.mkdir_p File.dirname(user_cache_file)
+	user_cache_file
+      end
+    end
+  end
+
   class CachedFetcher
     def initialize(source_uri, proxy)
       @source_uri = source_uri
@@ -152,10 +205,9 @@ module Gem
     private
 
     def read_local_cache
-      source_cache_fn = File.join(Gem.dir, "source_cache")
-      @local_cache = open(source_cache_fn) { |f| YAML.load(f.read) }
+      fn = File.join(Gem.dir, "source_cache")
+      @local_cache = open(fn) { |f| YAML.load(f.read) }
     end
-
   end
 
   class RemoteInstaller

@@ -768,6 +768,15 @@ class RubyGemsFacade
   end
 
   def _display_gem(gem_name, list_of_matching)
+    seen_versions = []
+    list_of_matching.delete_if {|item|
+      if(seen_versions.member?(item.version)) then
+        true
+      else 
+        seen_versions << item.version
+        false
+      end
+    }
     print gem_name, " ("
     print(list_of_matching.map{|gem| gem.version.to_s}.join(", "))
     puts ")"

@@ -27,8 +27,8 @@ module Gem
       begin
         File.open(gem_path, 'rb') do |file|
           gem_data = file.read
+          verify_gem(gem_data)
         end
-        verify_gem(gem_data)
       rescue Errno::ENOENT
         raise Gem::VerificationError.new("Missing gem file #{gem_path}")
       end

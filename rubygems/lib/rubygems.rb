@@ -66,7 +66,7 @@ module Gem
 
   class Exception < ::Exception; end
 
-  RubyGemsVersion = "0.5"
+  RubyGemsVersion = "0.6"
   DIRECTORIES = ['cache', 'doc', 'gems', 'specifications']
   
   @@cache = nil  

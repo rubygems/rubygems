@@ -192,7 +192,7 @@ BANNER
       op.on(      '--force',           "Force gem to intall, bypassing dependency checks") {|o.force|}
       op.on(      '--gen-rdoc',        "Generate RDoc documentation for the gem on install") {|o.gen_rdoc|}
       op.on(      '--run-tests',       "Run unit tests prior to installation") {|o.run_tests|}
-      op.on(      '--http-proxy HOST', "(unimplemented) HTTP Proxy to use for remote operations") {|o.http_proxy|}
+      op.on(      '--http-proxy', "Use HTTP Proxy for remote operations. Proxy must be specified in http_proxy or HTTP_PROXY environment variable") {|o.http_proxy|}
       op.on(      '--version VERSION', "Specify version of gem to perform operation on") {|o.gem_version|}
       op.on('-L', '--local',           "Restrict operations to the LOCAL domain") { o.domain = :local }
       op.on('-R', '--remote',          "Restrict operations to the REMOTE domain") { o.domain = :remote }

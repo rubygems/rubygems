@@ -99,7 +99,7 @@ __END__
   Successfully built RubyGem
   Name: #{@spec.name}
   Version: #{@spec.version}
-  File: #{@spec.full_name+'.gem'}"
+  File: #{@spec.full_name+'.gem'}
 EOM
     end
   end

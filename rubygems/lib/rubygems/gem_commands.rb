@@ -608,10 +608,6 @@ module Gem
       end
       result
     end
-
-    def command_manager
-      Gem::CommandManager.instance
-    end
   end
 
   ####################################################################
@@ -647,22 +643,22 @@ module Gem
           primary_gems[spec.name] = spec
         end
       end
+      gems_to_cleanup = []
       if ! options[:args].empty?
-        gems_to_cleanup = []
         options[:args].each do |gem_name|
           specs = Gem.cache.search(/^#{gem_name}$/i)
-          if specs.size > 1 then
-            gems_to_cleanup << specs.sort{|a,b| a.version <=> b.version}.first
-          end
-        end
-      else
-	gems_to_cleanup = []
-	srcindex.each do |name, spec|
-	  if primary_gems[spec.name].version != spec.version
+	  specs.each do |spec|
 	    gems_to_cleanup << spec
 	  end
+        end
+      else
+	srcindex.each do |name, spec|
+	    gems_to_cleanup << spec
 	end
       end
+      gems_to_cleanup = gems_to_cleanup.select { |spec|
+	primary_gems[spec.name].version != spec.version
+      }
       uninstall_command = command_manager['uninstall']
       deplist = DependencyList.new
       gems_to_cleanup.uniq.each do |spec| deplist.add(spec) end
@@ -682,34 +678,7 @@ module Gem
 	  end
 	end
       end
-      say "Gem repository has been cleaned"
-    end
-
-    def do_rubygems_update
-      # Need to clear out the argument list because the
-      # update_rubygems script expects to handle command line
-      # argument.
-      ARGV.clear		
-      require_gem 'rubygems-update'
-      load 'update_rubygems'  
-    end
-
-    def which_to_update(highest_installed_gems, remote_gemspecs)
-      result = []
-      highest_installed_gems.each do |l_name, l_spec|
-        highest_remote_gem =
-          remote_gemspecs.select  { |spec| spec.name == l_name }.
-                          sort_by { |spec| spec.version }.
-                          last
-        if highest_remote_gem and l_spec.version < highest_remote_gem.version
-          result << l_name
-        end
-      end
-      result
-    end
-
-    def command_manager
-      Gem::CommandManager.instance
+      say "Clean Up Complete"
     end
   end
 
@@ -999,10 +968,6 @@ module Gem
       else
         say Gem::HELP
       end
-    end
-    
-    def command_manager
-      Gem::CommandManager.instance
     end
   end
 

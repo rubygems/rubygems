@@ -9,7 +9,7 @@ class RemoteInstallerTest < Test::Unit::TestCase
       # TODO
     end
 
-    def install(force, directory)
+    def install(force, directory, stub)
       # TODO
     end
   end

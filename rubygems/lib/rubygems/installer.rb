@@ -85,23 +85,30 @@ module Gem
     end
 
     ##
+    # Creates windows .cmd files for easy running of commands
+    #
+    def generate_windows_script(bindir, filename)
+      if Config::CONFIG["arch"] =~ /dos|win32/i
+        script_name = filename + ".cmd"
+        File.open(File.join(bindir, File.basename(script_name)), "w") do |file|
+          file.puts "@ruby #{filename} %1 %2 %3 %4 %5 %6 %7 %8 %9"
+        end
+      end
+    end
+
+    ##
     # Creates the scripts to run the applications in the gem.
     #
     def generate_bin_scripts(spec)
       if spec.executables
         require 'rbconfig'
         bindir = Config::CONFIG['bindir']
-        is_windows_platform = Config::CONFIG["arch"] =~ /dos|win32/i
         spec.executables.each do |filename|
           File.open(File.join(bindir, File.basename(filename)), "w", 0755) do |file|
             file.print(app_script_text(spec.name, spec.version.version, filename))
           end
+          generate_windows_script(bindir, filename)
         end
-      #if is_windows_platform
-        #File.open(target+".cmd", "w") do |file|
-          #file.puts "@ruby #{target} %1 %2 %3 %4 %5 %6 %7 %8 %9"
-        #end
-      #end
       end
     end
 

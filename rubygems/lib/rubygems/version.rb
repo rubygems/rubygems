@@ -151,6 +151,12 @@ module Gem
 	  [op, Version.new(version_string)]
 	end
       end
+
+      def to_s
+        @requirements.collect {|req|
+          req[1]
+        }.join(", ")
+      end
       
       ##
       # Is the requirement satifised by +version+.

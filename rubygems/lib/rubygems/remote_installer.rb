@@ -117,7 +117,7 @@ module Gem
           end
         end
       end
-      raise GemNotFoundException.new("Could not find #{package_name} (#{version_requirement.version}) in the repository") unless max_version > Version.new("0.0.0")
+      raise GemNotFoundException.new("Could not find #{package_name} (#{version_requirement}) in the repository") unless max_version > Version.new("0.0.0")
       package
     end
 

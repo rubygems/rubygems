@@ -24,6 +24,15 @@ end
 
 require 'rubygems'
 
+def display_gems(gems)
+  gems.sort {|a,b| 
+    a[0].downcase <=> b[0].downcase
+  }.each do |gem|
+    puts "#{gem[0]} - #{gem[1].summary}"
+    puts 
+  end
+end
+
 spec_file = options[:build]
 install_file = options[:install]
 gem_to_uninstall = options[:uninstall]
@@ -65,12 +74,7 @@ end
 if gem_to_search_for
   installer = Gem::RemoteInstaller.new
   gems = installer.search(gem_to_search_for)
-  gems.sort {|a,b| 
-    a[0].downcase <=> b[0].downcase
-  }.each do |gem|
-    puts "#{gem[0]} - #{gem[1].summary}"
-    puts 
-  end
+  display_gems(gems)
 end
 
 if remote_install
@@ -97,9 +101,11 @@ if info
 end
 
 if list
-  Gem::Cache.from_installed_gems.each do |gem_name, gem_spec|
-    puts gem_name
-  end
+  gemlist = []
+  Gem::Cache.from_installed_gems.each {|name, spec|
+    gemlist << [name, spec]
+  }
+  display_gems(gemlist)
 end
 
 if verify_gem

@@ -1,3 +1,8 @@
+2004-06-18  Rich Kilmer <rich@infoether.com>
+        * added new unit test file: test/test_cmd_manager.rb to test the 
+        command manager classes.  this is just the first few tests which
+        will be expanded to a full test suite.
+
 2004-06-17  Chad FOwler <chad@chadfowler.com>
 
 	* lib/rubygems/installer.rb: Fixed bug in windows batch file generation

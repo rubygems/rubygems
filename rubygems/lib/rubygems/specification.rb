@@ -224,6 +224,9 @@ module Gem
     end
 
     undef :platform=
+    ##
+    # Specify the platform that the gem targets.  Defaults to a pure-Ruby gem.
+    #
     def platform=(platform=Gem::Platform::RUBY)
       @platform = platform
     end

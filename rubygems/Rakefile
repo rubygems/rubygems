@@ -5,6 +5,9 @@ require 'rake/clean'
 require 'rake/testtask'
 require 'rake/packagetask'
 
+PKG_NAME = 'rubygems'
+PKG_VERSION = '0.3.0'
+
 CLOBBER.include( "testdata/one/one-0.0.1.gem", "test/temp" )
 
 task :default => [:test]
@@ -35,8 +38,8 @@ task :gemtest do
 end
 
 Rake::PackageTask.new("package") do |p|
-  p.name = 'rubygems'
-  p.version = '0.3.0'
+  p.name = PKG_NAME
+  p.version = PKG_VERSION
   p.need_tar = true
   p.need_zip = true
   p.package_files.include(

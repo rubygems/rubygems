@@ -30,59 +30,29 @@ module Gem
     #
     def install(force=false, to_dir=Gem.dir)
       require 'fileutils'
-      File.open(@gem, 'r') do |file|
-        skip_ruby(file)
-        spec = read_spec(file)
-        unless force
-          spec.dependencies.each do |dep_gem|
-            require_gem(dep_gem)
-          end
-        end
-        #build spec dir
-        directory = File.join(to_dir, spec.full_name)
-        FileUtils.mkdir_p directory
-        extract_files(directory, file)
-        
-        #build spec/cache dir
-        unless File.exist? File.join(to_dir, "specifications")
-          FileUtils.mkdir_p File.join(to_dir, "specifications")
-        end
-        unless File.exist? File.join(to_dir, "cache")
-          FileUtils.mkdir_p File.join(to_dir, "cache")
-        end
-        write_spec(spec, File.join(to_dir, "specifications"))
-        FileUtils.cp(@gem, File.join(to_dir, "cache"))
-        puts "Successfully installed #{spec.name} version #{spec.version}"
-      end
+      format = Gem::Format.from_file(@gem)
+      unless force
+         format.spec.dependencies.each do |dep_gem|
+           require_gem(dep_gem)
+         end
+       end
+       #build spec dir
+       directory = File.join(to_dir, format.spec.full_name)
+       FileUtils.mkdir_p directory
+       extract_files(directory, format)
+       
+       #build spec/cache dir
+       unless File.exist? File.join(to_dir, "specifications")
+         FileUtils.mkdir_p File.join(to_dir, "specifications")
+       end
+       unless File.exist? File.join(to_dir, "cache")
+         FileUtils.mkdir_p File.join(to_dir, "cache")
+       end
+       write_spec(format.spec, File.join(to_dir, "specifications"))
+       FileUtils.cp(@gem, File.join(to_dir, "cache"))
+       puts "Successfully installed #{format.spec.name} version #{format.spec.version}"
     end
     
-    
-    ##
-    # Skips the Ruby self-install header.  After calling this method, the
-    # IO index will be set after the Ruby code.
-    #
-    # file:: [IO] The IO to process (skip the Ruby code)
-    #
-    def skip_ruby(file)
-      while(file.gets.chomp != "__END__") do
-      end
-    end
-     
-    ##
-    # Reads the specification YAML from the supplied IO and constructs
-    # a Gem::Specification from it.  After calling this method, the
-    # IO index will be set after the specification header.
-    #
-    # file:: [IO] The IO to process
-    #
-    def read_spec(file)
-      require 'yaml'
-      yaml = ''
-      read_until_dashes(file) do |line|
-        yaml << line
-      end
-      YAML.load(yaml)
-    end
     
     ##
     # Writes the .gemspec specification (in Ruby) to the supplied spec_path.
@@ -97,45 +67,6 @@ module Gem
     end
     
     ##
-    # Reads lines from the supplied IO until a end-of-yaml (---) is
-    # reached
-    #
-    # file:: [IO] The IO to process
-    # block:: [String] The read line
-    #
-    def read_until_dashes(file)
-      while((line = file.gets) && line.chomp.strip != "---") do
-        yield line
-      end
-    end
-
-
-    ##
-    # Reads the embedded file data from a gem file, yielding an entry
-    # containing metadata about the file and the file contents themselves
-    # for each file that's archived in the gem.
-    # NOTE: Many of these methods should be extracted into some kind of
-    # Gem file read/writer
-    #
-    # gem_file:: [IO] The IO to process
-    #
-    def read_files_from_gem(gem_file)
-      require 'zlib'
-      require 'yaml'
-        header_yaml = ''
-        read_until_dashes(gem_file) do |line|
-          header_yaml << line
-        end
-        header = YAML.load(header_yaml)
-        header.each do |entry|
-          file_data = ''
-          read_until_dashes(gem_file) do |line|
-            file_data << line
-          end
-          yield [entry, Zlib::Inflate.inflate(file_data.strip.unpack("m")[0])]
-        end
-    end
-    ##
     # Reads the YAML file index and then extracts each file
     # into the supplied directory, building directories for the
     # extracted files as needed.
@@ -143,12 +74,12 @@ module Gem
     # directory:: [String] The root directory to extract files into
     # file:: [IO] The IO that contains the file data
     #
-    def extract_files(directory, file)
+    def extract_files(directory, format)
       require 'fileutils'
       wd = Dir.getwd
       Dir.chdir directory
       begin
-        read_files_from_gem(file) do |entry, file_data|
+        format.file_entries do |entry, file_data|
           path = entry['path']
           mode = entry['mode']
           FileUtils.mkdir_p File.dirname(path)

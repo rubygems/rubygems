@@ -81,7 +81,7 @@ end
 
 if @verify_gem
   begin
-    Gem::Validator.new.verify(File.read(@verify_gem)) 
+    Gem::Validator.new.verify_gem(File.read(@verify_gem)) 
     puts "#{@verify_gem} is valid"
   rescue => e
     puts "#{@verify_gem} is invalid"

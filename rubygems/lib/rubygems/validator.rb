@@ -77,12 +77,12 @@ module Gem
         # Need to factor read_files_from_gem out into some kind of
         # Gem file reader/writer class probably.
         begin
-          verify(File.read(gem_path)) 
+          require 'rubygems/format.rb'
+          verify_gem(File.read(gem_path)) 
           File.open(gem_path) do |file|
-            installer = Gem::Installer.new(gem_name)
-            installer.skip_ruby(file)
-            installer.read_spec(file)
-            installer.read_files_from_gem(file) do |entry, data|
+            format = Gem::Format.from_file(gem_path)
+
+            format.file_entries.each do |entry, data|
               # Found this file.  Delete it from list
 	      installed_files.delete entry['path']
               unless MD5.md5(File.read(File.join(gem_directory, entry['path']))).to_s == MD5.md5(data).to_s

@@ -208,7 +208,7 @@ module Gem
     end
     
     def fetch_size( uri_str )
-      require 'open-uri'
+      require 'rubygems/open-uri'
       size = nil
       begin
         open(uri_str, :proxy => @http_proxy, :content_length_proc => lambda {|t| size = t; raise "break"}) {|i| }
@@ -218,7 +218,7 @@ module Gem
     end
     
     def fetch( uri_str )
-      require 'open-uri'
+      require 'rubygems/open-uri'
       open(uri_str, :proxy => @http_proxy) do |input|
         input.read
       end

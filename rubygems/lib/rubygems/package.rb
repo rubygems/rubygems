@@ -6,6 +6,10 @@
 require 'yaml'
 require 'yaml/syck'
 require 'fileutils'
+require 'zlib'
+require 'digest/md5'
+require 'fileutils'
+require 'find'
 
 require 'rubygems/specification'
 
@@ -14,7 +18,6 @@ module Gem
 # Wrapper for FileUtils meant to provide logging and additional operations if
 # needed.
 class FileOperations
-    require 'fileutils'
     extend FileUtils
     class << self
             # additional methods not implemented in FileUtils
@@ -464,8 +467,6 @@ class TarInput
     include FSyncDir
     include Enumerable
     attr_reader :metadata
-    require 'zlib'
-    require 'digest/md5'
     class << self; private :new end
 
     def initialize(io)
@@ -580,8 +581,6 @@ class TarInput
 end
 
 class TarOutput
-    require 'zlib'
-    require 'yaml'
     
     class << self; private :new end
 
@@ -712,7 +711,6 @@ module Package
         end
 
         def find_class
-            require 'find'
             Find
         end
     end

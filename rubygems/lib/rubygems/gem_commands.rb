@@ -187,8 +187,7 @@ module Gem
           require 'test/unit/ui/console/testrunner'
           result = Test::Unit::UI::Console::TestRunner.run(suite, Test::Unit::UI::SILENT)
           unless result.passed?
-            answer = ask(result.to_s + "...keep Gem? [Y/n] ")
-            unless (answer =~ /^y/i || answer =~ /^[^a-zA-Z0-9]*$/) then
+            unless ask_yes_no(result.to_s + "...keep Gem?", true) then
               Gem::Uninstaller.new(spec.name, spec.version.version).uninstall
             end
           end

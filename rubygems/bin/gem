@@ -549,7 +549,12 @@ class RubyGemsFacade
   #
   def _install_remote(name)
     installer = _get_remote_installer
-    installed_gems = installer.install(name, @options.gem_version, @options.force, @options.directory)
+    begin
+      installed_gems = installer.install(name, @options.gem_version, @options.force, @options.directory)
+    rescue Gem::RemoteSourceException => e
+        $stderr.puts e.to_s
+        exit 1
+    end
     if @options.run_tests
       cache_dir = File.join(Gem::dir, "cache")
       destination_file = File.join(cache_dir, installed_gems[0].full_name + ".gem")
@@ -601,7 +606,12 @@ class RubyGemsFacade
       puts
       puts "*** REMOTE GEMS ***"
       installer = _get_remote_installer
-      _display_gems(installer.search(pattern))
+      begin
+        _display_gems(installer.search(pattern))
+      rescue Gem::RemoteSourceException => e
+        $stderr.puts e.to_s
+        exit 1
+      end
     end
   end
 

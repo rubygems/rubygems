@@ -1,9 +1,8 @@
 module Gem
   class DependencyError < Exception; end
+  class RemoteSourceException < Exception; end
 
   class RemoteInstaller
-
-
     ##
     # http_proxy:: [String] URL of http proxy.  Will override any environment 
     #   variable setting
@@ -69,14 +68,17 @@ module Gem
 
       caches = {}
       sources.each do |source|
-    open(source + "/yaml",
-         :proxy => @http_proxy) do |yaml_source|
-
-      spec = YAML.load(yaml_source.read)
-
-      raise "Didn't get a valid YAML document" if not spec
-      caches[source] = spec
-    end
+        begin
+          open(source + "/yaml", :proxy => @http_proxy) do |yaml_source|
+  
+            spec = YAML.load(yaml_source.read)
+  
+            raise "Didn't get a valid YAML document" if not spec
+            caches[source] = spec
+          end
+        rescue SocketError => e
+          raise RemoteSourceException.new("Error fetching remote gem cache: #{e.to_s}")
+        end
       end
       return caches
     end

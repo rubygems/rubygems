@@ -718,7 +718,7 @@ class RubyGemsFacade
      puts
      list_of_matching.sort! do |a,b|
        a.version <=> b.version
-     end
+     end.reverse!
      _display_gem(gem_name, list_of_matching)
    end
   end

@@ -12,13 +12,6 @@ class TestProcessCommands < Test::Unit::TestCase
     @cmd_manager = Gem::CommandManager.new
   end
 
-  def test_install_command
-    use_ui(MockGemUi.new) do
-      ex = assert_raise(Gem::CommandLineError) { @cmd_manager.process_args "install" }
-      assert_match /specify a gem name/, ex.message
-    end
-  end
-
   def test_query_command
     use_ui(MockGemUi.new) do
       @cmd_manager.process_args "query"

@@ -13,12 +13,15 @@ module Kernel
   # return:: [Boolean] true if the Gem is loaded, otherwise false.
   # raises:: [LoadError] if Gem cannot be found or version requirement not met.
   #
-  def require_gem(gem, version_requirement="> 0.0.0")
+  def require_gem(gem, *version_requirements)
+    unless version_requirements.size > 0
+      version_requirements = ["> 0.0.0"]
+    end
     unless gem.respond_to?(:name) && gem.respond_to?(:version_requirement)
-      gem = Gem::Dependency.new(gem, version_requirement)
+      gem = Gem::Dependency.new(gem, version_requirements)
     end
     
-    matches = Gem.cache.search(gem.name, gem.version_requirement)
+    matches = Gem.cache.search(gem.name, gem.version_requirements)
     if matches.size==0
       matches = Gem.cache.search(gem.name)
       if matches.size==0

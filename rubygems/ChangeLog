@@ -1,3 +1,7 @@
+2004-08-12  Chad Fowler <chad@chadfowler.com>
+       * Added "gem rdoc" command for generating docs for already-installed
+       gems
+
 2004-08-11  Rich Kilmer <rich@infoether.com>
        * bin/generate_yaml_index: updated to work with new gem format (and use the Gem::Format
          class to read).  Will deploy after testing on RubyForge.

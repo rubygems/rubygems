@@ -540,6 +540,50 @@ module Gem
   end
 
   ####################################################################
+  class RDocCommand < Command
+    include VersionOption
+    include CommandAids
+
+    def initialize
+      super('rdoc', 'Generates RDoc for pre-installed gems', {:version=>"> 0.0.0"})
+      add_option('--all', 'Generate RDoc documentation for all installed gems') do |value, options|
+        options[:all] = value
+      end
+      add_version_option('rdoc')
+    end
+
+    def defaults_str
+      "--version '> 0.0.0'"
+    end
+
+    def usage
+      "#{program_name} [args]"
+    end
+
+    def arguments
+      "GEMNAME		The gem to generate RDoc for (unless --all)"
+    end
+
+    def execute
+      if(options[:all])
+        Gem::Cache.from_installed_gems.each do |gem|
+          say "Doing gem #{gem[1].name}"
+          Gem::DocManager.new(gem[1]).generate_rdoc
+        end
+      else
+        gem_name = get_one_gem_name
+	gem = Gem::Cache.from_installed_gems.search(gem_name, options[:version])
+	if(gem == nil || gem.size < 1)
+		#version = options[:version] || "> 0.0.0"
+		fail "Failed to find gem #{gem_name} to generate RDoc for #{options[:version]}"
+	end
+        Gem::DocManager.new(gem[0]).generate_rdoc
+      end
+      true
+    end
+  end
+
+  ####################################################################
   class EnvironmentCommand < Command
     include CommandAids
 

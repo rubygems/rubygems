@@ -31,64 +31,7 @@ module Kernel
   # raises:: [Gem::LoadError] if Gem cannot be found or version requirement not met.
   #
   def require_gem(gem, *version_requirements)
-    if gem.respond_to?(:index)
-      if gem.index('/')
-        # We have been given a gem name like 'rake/packagetask', which is a shortcut.
-        gemname = gem.sub(%r[/.*$], '')
-        library = gem
-        require_gem gemname
-        require library
-        return
-      end
-    end
-
-    unless version_requirements.size > 0
-      version_requirements = ["> 0.0.0"]
-    end
-    unless gem.respond_to?(:name) && gem.respond_to?(:version_requirements)
-      gem = Gem::Dependency.new(gem, version_requirements)
-    end
-    
-    matches = Gem.cache.search(gem.name, gem.version_requirements)
-    if matches.size==0
-      matches = Gem.cache.search(gem.name)
-      if matches.size==0
-        error = Gem::LoadError.new("\nCould not find RubyGem #{gem.name} (#{gem.version_requirements})\n")
-        error.name = gem.name
-        error.version_requirement = gem.version_requirements
-        raise error
-      else
-        error = Gem::LoadError.new("\nRubyGem version error: #{gem.name}(#{matches.first.version} not #{gem.version_requirements})\n")
-        error.name = gem.name
-        error.version_requirement = gem.version_requirements
-        raise error
-      end
-    else
-      # Get highest matching version
-      spec = matches.last
-      return false if spec.loaded?
-      
-      spec.loaded = true
-      
-      # Load dependent gems first
-      spec.dependencies.each do |dep_gem|
-        require_gem(dep_gem)
-      end
-      
-      # add bin dir to require_path
-      if(spec.bindir) then
-        spec.require_paths << spec.bindir
-      end
-
-      # Now add the require_paths to the LOAD_PATH
-      spec.require_paths.each do |path|
-        $:.unshift File.join(spec.full_gem_path, path)
-      end
-      
-      require spec.autorequire if spec.autorequire
-      
-      return true
-    end
+    Gem.activate(gem, true, *version_requirements)
   end
 end
 
@@ -153,6 +96,59 @@ module Gem
       @gem_path ||= nil
       set_paths(ENV['GEM_PATH']) unless @gem_path
       @gem_path
+    end
+    
+    def activate(gem, autorequire, *version_requirements)
+      unless version_requirements.size > 0
+        version_requirements = ["> 0.0.0"]
+      end
+      unless gem.respond_to?(:name) && gem.respond_to?(:version_requirements)
+        gem = Gem::Dependency.new(gem, version_requirements)
+      end
+      
+      matches = Gem.cache.search(gem.name, gem.version_requirements)
+      if matches.size==0
+        matches = Gem.cache.search(gem.name)
+        if matches.size==0
+          error = Gem::LoadError.new("\nCould not find RubyGem #{gem.name} (#{gem.version_requirements})\n")
+          error.name = gem.name
+          error.version_requirement = gem.version_requirements
+          raise error
+        else
+          error = Gem::LoadError.new("\nRubyGem version error: #{gem.name}(#{matches.first.version} not #{gem.version_requirements})\n")
+          error.name = gem.name
+          error.version_requirement = gem.version_requirements
+          raise error
+        end
+      else
+        # Get highest matching version
+        spec = matches.last
+        if spec.loaded?
+          result = spec.autorequire ? require(spec.autorequire) : false
+          return result || false 
+        end
+        
+        spec.loaded = true
+        
+        # Load dependent gems first
+        spec.dependencies.each do |dep_gem|
+          activate(dep_gem, autorequire)
+        end
+        
+        # add bin dir to require_path
+        if(spec.bindir) then
+          spec.require_paths << spec.bindir
+        end
+
+        # Now add the require_paths to the LOAD_PATH
+        spec.require_paths.each do |path|
+          $:.unshift File.join(spec.full_gem_path, path)
+        end
+        
+        require spec.autorequire if autorequire && spec.autorequire
+        return true
+      end
+    
     end
     
     ##
@@ -288,3 +284,4 @@ end
 require 'rubygems/cache'
 require 'rubygems/specification'
 require 'rubygems/version'
+require 'rubygems/loadpath_manager'

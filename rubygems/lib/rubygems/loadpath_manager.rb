@@ -1,7 +1,7 @@
 module Kernel
   alias require__ require
   def require(file)
-    file = Gem::LoadPathManager.search_loadpath(file) || Gem::LoadPathManager.search_gempath(file)
+    Gem::LoadPathManager.search_loadpath(file) || Gem::LoadPathManager.search_gempath(file)
     require__(file)
   end
 end
@@ -47,19 +47,21 @@ module Gem
     end
     
     def self.search_loadpath(file)
-      return file if Dir.glob("{#{($LOAD_PATH).join(',')}}/#{file}{,.rb,.so}").delete_if {|f| File.directory?(f)}.size > 0
+      result = Dir.glob("{#{($LOAD_PATH).join(',')}}/#{file}{,.rb,.so}").delete_if {|f| File.directory?(f)}.size > 0
+      result
     end
     
     def self.search_gempath(file)
       build_paths unless @paths
       fullname = Dir.glob("{#{(@paths).join(',')}}/#{file}{,.rb,.so}").delete_if {|f| File.directory?(f)}.first
-      return file unless fullname
+      return false unless fullname
       @specs.each do |spec|
         if fullname.include?("/#{spec.full_name}/")
-          require_gem(spec.name, spec.version.to_s) 
-          return file
+          ::Gem.activate(spec.name, false, spec.version.to_s) 
+          return true
         end
       end
+      false
     end
   end
 end

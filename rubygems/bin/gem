@@ -71,11 +71,24 @@ def run_tests(name, version)
   end
 end
 
+def display_indented_text(text, indent=4)
+  line = " " * (indent-1)
+  text.split.each do |word|
+    if line.size + word.size + 1 > 78
+      puts line
+      line = " " * (indent-1)
+    end
+    line << " " << word
+  end
+  puts line if line.size > indent.size
+end
+
 def display_gems(gems)
   gems.sort {|a,b| 
     a[0].downcase <=> b[0].downcase
   }.each do |gem|
-    puts "#{gem[0]} - #{gem[1].summary}"
+    puts gem[0]
+    display_indented_text(gem[1].summary)
     puts 
   end
 end

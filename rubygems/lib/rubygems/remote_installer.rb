@@ -1,3 +1,5 @@
+require 'socket'
+
 module Gem
   class DependencyError < Gem::Exception; end
   class RemoteSourceException < Gem::Exception; end

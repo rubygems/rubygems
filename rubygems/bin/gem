@@ -1,11 +1,10 @@
 #!/usr/bin/env ruby
 
-# gem, modified (heavily) by Gavin Sinclair to improve the command-line interface, and make the
-# operations "smart" with respect to local and remote domains.
-
 require 'optparse'
 require 'ostruct'
 require 'rubygems'
+require 'yaml'
+require 'pp'
 
 
 #
@@ -36,7 +35,8 @@ end
 class RubyGemsOptions
   
   def initialize
-    @directory = Gem.dir
+    @directory = Gem.dir  # TODO: should this be done here?
+    @domain    = :both
   end
 
   # --- Operations ---
@@ -50,12 +50,16 @@ class RubyGemsOptions
 
   # --- Modifiers ---
 
-  attr_accessor :directory, :force, :gen_rdoc, :run_tests, :http_proxy, :gem_version
+  attr_accessor :config_file, :directory, :force, :gen_rdoc, :run_tests, :http_proxy, :gem_version
 
   # Specifies whether we are working in the :local or :remote domain (or +nil+ for
   # both/neither).
   attr_accessor :domain
-  VALID_DOMAINS = [nil, :local, :remote]
+  VALID_DOMAINS = [:local, :remote, :both]
+
+  # --- Other attributes (not taken from command-line yet) ---
+  
+  attr_accessor :rdoc_args
 
   # --- Methods ---
 
@@ -68,12 +72,20 @@ class RubyGemsOptions
 
   # Are local operations permitted?
   def local?
-    domain == nil or domain == :local
+    domain == :both or domain == :local
   end
 
   # Are remote operations permitted?
   def remote?
-    domain == nil or domain == :remote
+    domain == :both or domain == :remote
+  end
+
+  def [](attr)
+    self.send(attr)
+  end
+
+  def []=(attr, value)
+    self.send("#{attr}=", value)
   end
 
 end  # class RubyGemsOptions
@@ -94,7 +106,7 @@ class RubyGemsApp
   # the work for us.
   #
   def run(args)
-    options = _parse(args)
+    options = _determine_options(args)
     facade = RubyGemsFacade.new(options)
     arg = options.argument
     case options.operation
@@ -122,18 +134,70 @@ class RubyGemsApp
   private
 
   #
+  # From the given argument array +args+, we return a RubyGemsOptions
+  # object.  The parsing is done in <tt>_parse_options</tt>, but this
+  # method also takes account of the configuration file, if there is
+  # one.
+  #
+  def _determine_options(args)
+    args = args.dup       # So we can manipulate it.
+    options = RubyGemsOptions.new
+
+    config = _get_config_data(args)
+    if config
+      if gem_opts = config['gem']
+        # Prepend the 'gem' arguments to our current command line so they'll be read first.
+        # REMOVE THIS args.unshift(gem_opts.split).flatten!
+        args = gem_opts.split + args
+      end
+      options.rdoc_args = config['rdoc']
+      if gempath = config['gempath']
+        gempath = [gempath] unless gempath.is_a? Array
+        # TODO: Set GEMPATH now -- how?
+        options.directory = gempath[0]
+      end
+    end
+
+    options = _parse_options(args, options)
+  end
+
+  #
+  # Returns a hash of the config file data, taking the following into
+  # account:
+  #  - a config file may be specified on the command line
+  #  - if it's specified multiple times, the last one wins 
+  #  - there is a default config file location
+  #
+  # TODO: improve exception handling 
+  #
+  def _get_config_data(args)
+    config_file = File.join(ENV['HOME'], ".gemrc")
+    specified = false
+    args.each_with_index do |arg, i|
+      if arg == '--config-file'
+        config_file = args[i+1]
+        specified = true
+      end
+    end
+    if File.exist?(config_file)
+      return YAML.load(File.read(config_file))
+    else
+      _die "Config file #{config_file} not found" if specified
+    end
+  rescue YAML::Error # XXX: Is this the correct error?
+    _die "Config file #{config_file} is not valid YAML"
+  end
+  
+  #
   # Parse the arguments given and return a RubyGemsOptions object.
   #
-  def _parse(args)
-    options = RubyGemsOptions.new
+  def _parse_options(args, options=nil)
+    options ||= RubyGemsOptions.new
     o = options
     parser = OptionParser.new do |op|
       op.banner = <<BANNER
-
-'gem' is the user interface to RubyGems, the Ruby package manager.
- See http://rubygems.rubyforge.org for user and developer documentation.
     
-    Usage: gem <action> [modifier ...]
+Usage: gem <action> [modifier ...]
 BANNER
   
       op.separator("")
@@ -188,14 +252,17 @@ BANNER
       op.separator("")
       op.separator("Modifiers:")
   
-      op.on(      '--install-dir DIR', "Specify RubyGems installation directory") {|o.directory|}
-      op.on(      '--force',           "Force gem to intall, bypassing dependency checks") {|o.force|}
-      op.on(      '--gen-rdoc',        "Generate RDoc documentation for the gem on install") {|o.gen_rdoc|}
-      op.on(      '--run-tests',       "Run unit tests prior to installation") {|o.run_tests|}
-      op.on(      '--http-proxy', "Use HTTP Proxy for remote operations. Proxy must be specified in http_proxy or HTTP_PROXY environment variable") {|o.http_proxy|}
-      op.on(      '--version VERSION', "Specify version of gem to perform operation on") {|o.gem_version|}
-      op.on('-L', '--local',           "Restrict operations to the LOCAL domain") { o.domain = :local }
-      op.on('-R', '--remote',          "Restrict operations to the REMOTE domain") { o.domain = :remote }
+      op.on(      '--config-file FILE', "Use this config file instead of default") {}
+          # We ignore config files at this stage; they should have been dealt with already.
+      op.on(      '--install-dir DIR',  "Specify RubyGems installation directory") {|o.directory|}
+      op.on(      '--force',            "Force gem to intall, bypassing dependency checks") {|o.force|}
+      op.on(      '--gen-rdoc',         "Generate RDoc documentation for the gem on install") {|o.gen_rdoc|}
+      op.on(      '--run-tests',        "Run unit tests prior to installation") {|o.run_tests|}
+      op.on(      '--http-proxy PROXY', "Use HTTP proxy (full http:// URL) for remote operations") { |o.http_proxy| }
+      op.on(      '--version VERSION',  "Specify version of gem to perform operation on") {|o.gem_version|}
+      op.on('-L', '--local',            "Restrict operations to the LOCAL domain") { o.domain = :local }
+      op.on('-R', '--remote',           "Restrict operations to the REMOTE domain") { o.domain = :remote }
+      op.on('-B', '--both',             "Allow LOCAL and REMOTE operations") { o.domain = :both }
   
       op.separator("")
       op.separator("Miscellaneous:")
@@ -209,6 +276,14 @@ BANNER
   
       op.separator("")
       message = <<-INFO
+
+'gem' is the user interface to RubyGems, the Ruby package manager.
+
+See http://rubygems.rubyforge.org for:
+   * gem command-line reference
+   * quick introduction to RubyGems
+   * user and developer documentation
+
 In the above information, "GEM" typically refers to the name of a gem;
 all of the following are valid (perhaps in different circumstances):
 
@@ -216,9 +291,8 @@ all of the following are valid (perhaps in different circumstances):
       ruby-dbi-0.20.1
       ruby-dbi-0.20.1.gem
 
-Set $GEMPATH to delimited list of directories (delimiter is platform-specific 
-as in LOAD_PATH)) where you have gems installed.  The first entry will 
-be used as the default installation directory.
+See the online 'gem reference' for more information on environment
+variables, configuration files, and more.
 INFO
       message.each do |line|
         op.separator(line.chomp)
@@ -253,7 +327,7 @@ INFO
     puts " - GEM PATH:"
     puts $GEM_PATH.map { |p| "     - #{p}" }
     puts " - REMOTE SOURCES:"
-    puts Gem::RemoteInstaller.new.get_cache_sources.map { |s| "     - #{s}" }
+    puts Gem::Installer.new.get_cache_sources.map { |s| "     - #{s}" }
     exit
   end
 
@@ -333,12 +407,13 @@ class RubyGemsFacade
       rescue RemoteError => e
         _info " -> Remote installation can't proceed: #{e.message}"
       rescue => e
-        $stderr.puts "Error installing gem #{gem}: #{e.message}"
+        $stderr.puts "Error installing gem #{gem}: #{e.message + e.backtrace.join("\n")}"
         return false
       end
     end
 
     if @options.gen_rdoc
+      installed_gems = [installed_gems] unless installed_gems.respond_to?(:each)
       installed_gems.each do |gem|
         Gem::DocManager.new(gem).generate_rdoc
       end

@@ -92,8 +92,8 @@ def install_rb(srcdir = nil)
   Dir.chdir("packages/sources")
     load("sources.gemspec")
     spec = Gem.sources_spec
-    Gem::Builder.new(spec).build
-    Gem::Installer.new(spec.name +  "-" + Gem::Platform::RUBY + "-" + spec.version.to_s + ".gem").install(true, Gem.dir)
+    gem_file = Gem::Builder.new(spec).build
+    Gem::Installer.new(gem_file).install(true, Gem.dir)
   Dir.chdir("../..")
 end
 

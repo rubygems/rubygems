@@ -1,5 +1,11 @@
 2005-02-26  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/gem_commands.rb
+	(Gem::UpdateCommand::do_rubygems_update): Added --system option to
+	update to specifically update the version of rubygems.
+	(Gem::UpdateCommand::which_to_update): Fixed some refactoring bugs
+	in the which_to_update method.
+
 	* lib/rubygems/remote_installer.rb
 	(Gem::LocalSourceInfoCache::read_cache): switched to Marshal
 	rather than Yaml for local cache.

@@ -18,17 +18,21 @@ class MockFetcher
       fail Gem::RemoteSourceException,
 	"Error fetching remote gem cache: Mock Socket Exception"
     end
-    {
-      'size' => 1000,
-      'cache' => true,
+    result = {
+      'cache' => {
+	'foo-1.2.3' => Gem::Specification.new do |s|
+	  s.name = 'foo'
+	  s.version = "1.2.3"
+	  s.summary = "This is a cool package"
+	end
+      }
     }
+    result['size'] = result['cache'].to_yaml.size
+    result
   end
 end
 
 class TestRemoteInstaller < Test::Unit::TestCase
-
-  # Things to fix eventually:
-  # * Get rid of the "get_" syndrome in remote_installer.
 
   PROPER_SOURCES = %w( http://gems.rubyforge.org )
 
@@ -48,11 +52,14 @@ class TestRemoteInstaller < Test::Unit::TestCase
   end
 
   def test_source_info
-    info = @installer.source_info(Gem.dir)
-    assert info.has_key?("http://gems.rubyforge.org")
-    assert_equal 1, info.size
-    hash = info['http://gems.rubyforge.org']
-    assert_equal 1000, hash['size']
+    source_hash = @installer.source_info(Gem.dir)
+    assert source_hash.has_key?("http://gems.rubyforge.org")
+    assert_equal 1, source_hash.size
+    gem_hash = source_hash['http://gems.rubyforge.org']
+    spec = gem_hash['cache']['foo-1.2.3']
+    assert_equal 'foo', spec.name
+    assert_equal '1.2.3', spec.version.to_s
+    assert_equal gem_hash['cache'].to_yaml.size, gem_hash['size']
   end
 
   def test_missing_source_exception

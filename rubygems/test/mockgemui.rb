@@ -34,7 +34,7 @@ class MockGemUi < Gem::StreamUI
 
   def terminate_interaction!(status=1)
     @terminated = true 
-   @banged = true
+    @banged = true
     fail TermError
   end
 

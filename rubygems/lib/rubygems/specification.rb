@@ -204,37 +204,31 @@ module Gem
       result
     end
 
-    def escape(input)
-      input
-      #return unless input.respond_to?(:gsub)
-      #input.gsub(/'/, "\\'")
-    end 
-
     def to_ruby
       mark_version
       result =  "Gem::Specification.new do |s|\n"
-      result << "s.name = '#{escape(name)}'\n"
-      result << "s.version = '#{escape(version)}'\n"
-      result << "s.platform = '#{escape(platform)}'\n" if @platform
+      result << "s.name = %q{#{name}}\n"
+      result << "s.version = %q{#{version}}\n"
+      result << "s.platform = %q{#{platform}}\n" if @platform
       result << "s.has_rdoc = #{has_rdoc?}\n" if has_rdoc?
-      result << "s.summary = '#{escape(summary)}'\n"
+      result << "s.summary = %q{#{summary}}\n"
       if requirements.size>0
-        result << "s.requirements.concat [" + (requirements.collect {|req| '"'+escape(req)+'"'}).join(', ') + "]\n"
+        result << "s.requirements.concat [" + (requirements.collect {|req| '%q{'+req+'}'}).join(', ') + "]\n"
       end
       dependencies.each do |dep|
-        result << "s.add_dependency('" + escape(dep.name) + "', '" + escape(dep.version_requirement.to_s) + "')\n"
+        result << "s.add_dependency(%q{" + dep.name + "}, %q{" + dep.version_requirement.to_s + "})\n"
       end
-      result << "s.files = [" + (files.collect {|f| '"' + escape(f) + '"'}).join(', ') + "]\n"
+      result << "s.files = [" + (files.collect {|f| '"' + f + '"'}).join(', ') + "]\n"
       if require_paths
-        result << "s.require_paths = [" + (require_paths.collect {|p| '"' + escape(p) + '"'}).join(', ') + "]\n"
+        result << "s.require_paths = [" + (require_paths.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
       end
       # optional 
-      result << "s.autorequire = '#{escape(autorequire)}'\n" if autorequire
-      result << "s.author = '#{escape(author)}'\n" if author
-      result << "s.email = '#{escape(email)}'\n" if email
-      result << "s.homepage = '#{escape(homepage)}'\n" if homepage
-      result << "s.rubyforge_project = '#{escape(rubyforge_project)}'\n" if rubyforge_project
-      result << "s.description = <<-EOS\n#{escape(description)}\nEOS\n" if description
+      result << "s.autorequire = %q{#{autorequire}}\n" if autorequire
+      result << "s.author = %q{#{author}}\n" if author
+      result << "s.email = %q{#{email}}\n" if email
+      result << "s.homepage = %q{#{homepage}}\n" if homepage
+      result << "s.rubyforge_project = %q{#{rubyforge_project}}\n" if rubyforge_project
+      result << "s.description = <<-EOS\n#{description}\nEOS\n" if description
       result << "end\n"
       result
     end

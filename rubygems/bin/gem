@@ -62,9 +62,9 @@ def run_tests(name, version)
   require 'test/unit/ui/console/testrunner'
   result = Test::Unit::UI::Console::TestRunner.run(suite, Test::Unit::UI::SILENT)
   unless(result.passed?)
-    print result.to_s + "...remove Gem? [y/N] "
+    print result.to_s + "...keep Gem? [Y/n] "
     answer = gets
-    if(answer =~ /^y/i) then
+    if(answer !~ /^y/i) then
       Gem::Uninstaller.new(name, version.version).uninstall
     end
   end

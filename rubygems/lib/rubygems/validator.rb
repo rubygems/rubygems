@@ -9,7 +9,7 @@ module Gem
     # 
     # gem_data:: [String] Contents of the gem file
     def verify_gem(gem_path)
-      gem_data = File.read(gem_data)
+      gem_data = File.read(gem_path)
       if(gem_data.size == 0) then
         raise "Empty Gem file"
       end

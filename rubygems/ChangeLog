@@ -1,4 +1,9 @@
 2004-06-10  Rich Kilmer <rich@infoether.com>
+        * Isolated all user interaction to pass through module methods on a new
+          Gem::UserInteraction module.  Those methods will be the method of abstracting
+          the interaction of RubyGems for use in a GUI-based solution.
+
+2004-06-10  Rich Kilmer <rich@infoether.com>
         * require 'rubygems' now minimally requires only the files needed
           for runtime access to gems...not management of gems.  To manage
           gems you now additionally need to execute Gem::manage_gems prior

@@ -1,3 +1,11 @@
+2005-02-26  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/remote_installer.rb
+	(Gem::LocalSourceInfoCache::read_cache): switched to Marshal
+	rather than Yaml for local cache.
+
+	* bin/gem: Added requirement for Ruby >= 1.8.0.
+
 2005-02-10  Chad Fowler  <chad@chadfowler.com>
 	* bin/gem_server: Added Martin Ankerl's wonderful new gem_server
 	template

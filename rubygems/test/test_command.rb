@@ -13,8 +13,9 @@ class TestCommand < Test::Unit::TestCase
   include Gem::DefaultUserInteraction
 
   def setup 
-    opt_list = [ [ ['-x', '--exe', 'Execute'], lambda do @xopt = true end] ]
-    @cmd = Gem::Command.new("doit", "summary", opt_list)
+    Gem::Command.common_options.clear
+    Gem::Command.common_options <<  [ ['-x', '--exe', 'Execute'], lambda do @xopt = true end]
+    @cmd = Gem::Command.new("doit", "summary")
     self.ui = Noop.new
   end
 
@@ -101,5 +102,9 @@ class TestCommand < Test::Unit::TestCase
       assert options[:help], "Help options should default true"
     end
     @cmd.invoke 
+  end
+
+  def test_common_option_in_class
+    assert Array === Gem::Command.common_options
   end
 end

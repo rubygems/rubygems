@@ -1,0 +1,13 @@
+# Rakefile for RubyGems      -*- ruby -*-
+
+require 'rubygems'
+require 'rake/clean'
+require 'rake/testtask'
+
+CLOBBER.include("packages/sources/*.gem")
+
+task :default => [:test]
+
+Rake::TestTask.new do |t|
+  t.verbose = true
+end

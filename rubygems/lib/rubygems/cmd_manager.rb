@@ -5,8 +5,8 @@ require 'rubygems/gem_commands'
 
 module Gem
 
-  # Signals that local installation will not proceed, not that it has been tried and
-  # failed.  TODO: better name.
+  # Signals that local installation will not proceed, not that it has
+  # been tried and failed.  TODO: better name.
   class LocalInstallationError < Gem::Exception; end
   
   class FilePermissionError < Gem::Exception

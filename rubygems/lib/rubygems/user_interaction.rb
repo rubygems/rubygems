@@ -87,6 +87,7 @@ module Gem
         @outs.puts " #{index+1}. #{item}"
       end
       @outs.print "> "
+      @outs.flush
       result = @ins.gets.strip.to_i - 1
       return list[result], result
     end
@@ -94,6 +95,7 @@ module Gem
     # Ask a question.  Returns an answer.  
     def ask(question)
       @outs.print(question + "  ")
+      @outs.flush
       result = @ins.gets
       result.chomp! if result
       result

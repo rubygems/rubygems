@@ -54,12 +54,15 @@ module Gem
           end
         end
         # Check the dependent gems.
-	unless @options[:ignore_dependencies]
-	  spec.dependencies.each do |dep_gem|
-	    # TODO: Does this take account of *versions*?
-	    require_gem_with_options(dep_gem, [], :auto_require=>false)
-	  end
-	end
+	# NOTE: THe dependent gem check is disabled.  WE SHOULD NOT
+	# REQUIRE GEMS DURING INSTALLTION.  If we need to check
+	# dependencies, we need a different way. 
+# 	unless @options[:ignore_dependencies]
+# 	  spec.dependencies.each do |dep_gem|
+# 	    # TODO: Does this take account of *versions*?
+# 	    require_gem_with_options(dep_gem, [], :auto_require=>false)
+# 	  end
+# 	end
       end
       
       raise Gem::FilePermissionError.new(install_dir) unless File.writable?(install_dir)

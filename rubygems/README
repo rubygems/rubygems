@@ -1,17 +1,17 @@
-This marks the initial alpha 1 release of RubyGems.
+(See "Releases" for release-specific information)
 
 For user documentation (and installation instructions) see:
 
-./doc/UserDoc.html
+http://rubygems.rubyforge.org/wiki/wiki.pl?Quick_Introduction
+http://rubygems.rubyforge.org/wiki/wiki.pl?UserGuide
 
 For developer docs see:
 
-./doc/DevDoc.html
-./doc/GemSpecification.html
+http://rubygems.rubyforge.org/wiki/wiki.pl?CreateAGemInTenMinutes
+http://rubygems.rubyforge.org/wiki/wiki.pl?DeveloperGuide
+http://rubygems.rubyforge.org/wiki/wiki.pl?GemSpecification
 
-All of these documents (in there latest versions) are available on 
-the RubyGems wiki at:
-
+The home page of the RubyGems wiki:
 http://rubygems.rubyforge.org
 
 Additional directories:
@@ -19,20 +19,26 @@ Additional directories:
 ./bin/...      binary commands (gem, gem_server, etc)
 ./lib/...      the RubyGems library
 ./packages/... default RubyGems packages (currently only 'sources')
-./test/...     unit tests
-./example/...  example library w/gemspec for generating and installing gems
+./test/...     unit and functional tests
+./examples/...  example library w/gemspec for generating and installing gems
 ./gemspecs/... example gemspecs
 
 Credits:
 
 RubyGems was originally developed at RubyConf 2003 by:
-RichKilmer -- rich(at)infoether.com
-ChadFowler -- chad(at)chadfowler.com
-DavidBlack -- dblack(at)wobblini.net
-PaulBrannan -- paul(at)atdesk.com
-JimWeirch -- jim(at)weirichhouse.org
+Rich Kilmer -- rich(at)infoether.com
+Chad Fowler -- chad(at)chadfowler.com
+David Black -- dblack(at)wobblini.net
+Paul Brannan -- paul(at)atdesk.com
+Jim Weirch -- jim(at)weirichhouse.org
 
-Gavin Sinclair (gsinclair(at)soyabean.com.au) provided some fixes for the installer.
+Contributors since then:
+Gavin Sinclair -- gsinclair(at)soyabean.com.au
+George Marrows-- george.marrows(at)ntlworld.com
+Dick Davies -- rasputnik(at)hellooperator.net
+Mauricio Fernandez -- batsman.geo(at)yahoo.com
+Simon Strandgaard -- neoneye(at)adslhome.dk
+Ville Aine -- vaine(at)cs.helsinki.fi
 
 Please provide us feedback at http://rubyforge.org/projects/rubygems
 

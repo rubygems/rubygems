@@ -1,0 +1,1181 @@
+2004-04-30 15:57  chadfowler
+
+	* bin/gem: --install-stub is no longer the default ;)
+
+2004-04-30 15:51  chadfowler
+
+	* lib/rubygems/installer.rb: Rich Kilmer (who kicks butt) figured
+	  out how to fix the library stub stuff.
+
+2004-04-29 19:12  chadfowler
+
+	* lib/rubygems/doc_manager.rb: Dick Davies fixed a bug in the doc
+	  generator.
+
+2004-04-29 13:41  gsinclair
+
+	* lib/rubygems/installer.rb: Added skeleton code and comments to
+	  uninstall stub apps and libs
+
+2004-04-29 12:20  gsinclair
+
+	* install.rb: Don't install library stub for 'sources'
+
+2004-04-29 12:20  gsinclair
+
+	* lib/rubygems/installer.rb: Improvements to library stub
+	  installation: * don't overwrite existing file (emit warning) *
+	  nice warning if there's a permission problem * observe
+	  --[no-]install-stub flag (rather, observe the argument to
+	  #install)
+
+2004-04-29 12:16  gsinclair
+
+	* bin/gem: --install-stub is now the default
+
+2004-04-26 20:20  chadfowler
+
+	* test/test_remote_installer.rb: Cleaning up after Gavin and his
+	  test-breaking self. ;)
+
+2004-04-26 12:06  gsinclair
+
+	* bin/gem, lib/rubygems/installer.rb,
+	  lib/rubygems/remote_installer.rb: Installing a gem now causes a
+	  library stub to be installed as well, allowing you to require
+	  'package' without knowing it's a gem.
+
+2004-04-25 23:18  chadfowler
+
+	* lib/rubygems/: installer.rb, specification.rb: Prompt user if
+	  trying to uninstall a gem that other gems *may* depend on.
+
+2004-04-25 09:27  chadfowler
+
+	* test/test_remote_installer.rb: Changed expected test results to
+	  match new (old) gem naming scheme--"ruby" doesn't appear as a
+	  platform in the gem name.
+
+2004-04-25 05:50  gsinclair
+
+	* bin/gem: Changed @directory -> @install_dir for clarity
+
+2004-04-25 05:47  gsinclair
+
+	* bin/gem: Improved display of gems, platform-wise
+
+2004-04-25 05:46  gsinclair
+
+	* lib/rubygems/specification.rb: Added documentation
+
+2004-04-25 04:17  jimweirich
+
+	* test/functional.rb: Fixed functional test to properly name a Ruby
+	  platform gem.
+
+2004-04-25 04:17  jimweirich
+
+	* packages/sources/.cvsignore, test/data/one/.cvsignore: Ignore the
+	  proper gem name.
+
+2004-04-25 04:17  jimweirich
+
+	* lib/rubygems/specification.rb: Undefined several attributes that
+	  were redefined to avoid warnings.
+
+2004-04-25 04:17  jimweirich
+
+	* lib/rubygems.rb: Need to initialize @gem_home and @gem_path with
+	  ||= to avoid warning.
+
+2004-04-25 03:40  gsinclair
+
+	* lib/rubygems.rb, test/test_gempaths.rb: RUBY_GEMS -> GEM_PATH
+	  (environment variable)
+
+2004-04-25 03:33  gsinclair
+
+	* lib/rubygems/specification.rb: Pretty-print the specification
+
+2004-04-25 03:18  gsinclair
+
+	* lib/rubygems/specification.rb: Handle platform in a (hopefully)
+	  consistent manner
+
+2004-04-25 03:16  gsinclair
+
+	* install.rb: Use return value from Builder#build to locate gem
+	  file
+
+2004-04-25 03:09  gsinclair
+
+	* lib/rubygems/builder.rb: Return file name from #build
+
+2004-04-25 02:32  gsinclair
+
+	* lib/rubygems/specification.rb: Platform goes at the *end* of the
+	  full name now.
+
+2004-04-22 06:19  chadfowler
+
+	* test/test_remote_installer.rb: Fixed test to reflect fewer cache
+	  sources :(
+
+2004-04-21 17:19  rich
+
+	* lib/rubygems/remote_installer.rb: added support to download the
+	  yaml index as a .Z (zlib compressed) file if it exists, then move
+	  on to the plain yaml file if it does not
+
+2004-04-20 20:23  chadfowler
+
+	* examples/application/an-app.gemspec, lib/rubygems/format.rb,
+	  packages/sources/lib/sources.rb: Committed Dick Davies' patch to
+	  fix broken tests.
+
+2004-04-18 01:51  gsinclair
+
+	* bin/gem, lib/rubygems/doc_manager.rb: RDoc generation observes
+	  'rdoc' config file value
+
+2004-04-17 12:15  gsinclair
+
+	* bin/gem: Improved 'build' error output
+
+2004-04-17 12:12  gsinclair
+
+	* lib/: rubygems.rb, rubygems/remote_installer.rb,
+	  rubygems/specification.rb, rubygems/validator.rb: All
+	  gems-related exceptions now extend Gem::Exception
+
+2004-04-17 12:11  gsinclair
+
+	* lib/rubygems/specification.rb: Improved handling of summary and
+	  decription strings - convert to single line
+
+2004-04-17 01:09  gsinclair
+
+	* bin/gem: Prevent remote install attempt if local install was
+	  successful
+
+2004-04-17 00:49  gsinclair
+
+	* lib/rubygems/builder.rb: Better formatted the output code
+
+2004-04-16 21:31  gsinclair
+
+	* lib/rubygems/remote_installer.rb: Stoopid coding error (thanks
+	  Kent Sibilev)
+
+2004-04-16 00:00  rich
+
+	* lib/rubygems/installer.rb: added code to optionally use nmake
+	  instead of make on win32 systems
+
+2004-04-15 20:12  gsinclair
+
+	* bin/gem, lib/rubygems/remote_installer.rb: Clarified proxy
+	  handling and interface: --[no-]http-proxy [URL]
+
+2004-04-13 00:16  jimweirich
+
+	* bin/gem, test/bogussources.rb, test/functional.rb: Oops, missed
+	  an instance of GEM_PATH in the gem binary.
+
+2004-04-12 21:28  jimweirich
+
+	* lib/rubygems/cache.rb: Oops.	Missed a GEM_PATH.
+
+2004-04-12 21:11  jimweirich
+
+	* test/test_remote_installer.rb: removed setting of environment
+	  variable for now.
+
+2004-04-12 21:09  jimweirich
+
+	* Rakefile, lib/rubygems.rb, lib/rubygems/cache.rb,
+	  lib/rubygems/installer.rb, packages/sources/.cvsignore,
+	  scripts/runtest.rb, test/.cvsignore, test/bogussources.rb,
+	  test/test_format.rb, test/test_gempaths.rb,
+	  test/test_remote_installer.rb, test/test_validator.rb: Added
+	  test/temp to the clobber list.  Broke out tests into inline to
+	  avoid test dependencies on rubygem.
+
+2004-04-12 07:52  chadfowler
+
+	* lib/: rubygems.rb, rubygems/installer.rb,
+	  rubygems/remote_installer.rb: Cleaning up output strings wrt
+	  formating of "gem (version)".
+
+2004-04-12 07:41  chadfowler
+
+	* lib/rubygems/installer.rb: Gavin Sinclair's uninstall bug.
+
+2004-04-11 15:26  jimweirich
+
+	* test/data/one/: .cvsignore, one-ruby-0.0.1.gem:  removed
+	  one-ruby*.gem from source control.  This gem is automatically
+	  generated in testing.
+
+2004-04-11 10:50  chadfowler
+
+	* bin/gem: Gavin Sinclair's test code enhancements
+
+2004-04-11 07:50  chadfowler
+
+	* bin/gem, lib/rubygems/installer.rb,
+	  lib/rubygems/remote_installer.rb, lib/rubygems/specification.rb,
+	  test/insure_session.rb, test/test_remote_installer.rb,
+	  test/data/one/one-ruby-0.0.1.gem: Gavin Sinclair patches to make
+	  installer return types less ambiguous.
+
+2004-04-09 10:29  chadfowler
+
+	* lib/rubygems/installer.rb, test/data/one/one-ruby-0.0.1.gem: gem
+	  -u input validation patch by Ville Aine
+
+2004-04-07 07:49  chadfowler
+
+	* bin/gem, lib/rubygems/cache.rb, test/data/one/one-ruby-0.0.1.gem:
+	  Finally have passing tests.
+
+2004-04-07 07:24  chadfowler
+
+	* lib/rubygems/remote_installer.rb,
+	  test/data/one/one-ruby-0.0.1.gem: Allow default option to work on
+	  remote dependency prompt.
+
+2004-04-07 07:05  chadfowler
+
+	* lib/rubygems/remote_installer.rb, test/test_remote_installer.rb,
+	  test/data/one/one-ruby-0.0.1.gem: Applied George Marrows' patch
+	  to remote_install
+
+2004-04-07 06:23  chadfowler
+
+	* bin/gem, test/data/one/one-ruby-0.0.1.gem: No longer "seeing"
+	  double on remote searches
+
+2004-04-05 07:39  chadfowler
+
+	* Rakefile, test/test_remote_installer.rb,
+	  test/data/one/one-ruby-0.0.1.gem: remote_installer tests aren't
+	  completely hosed anymore.
+
+2004-04-05 06:16  chadfowler
+
+	* Rakefile, test/data/one/one-ruby-0.0.1.gem: Rake target for
+	  running all tests (unit + functional) "alltests"
+
+2004-04-05 00:48  jimweirich
+
+	* test/: insure_session.rb, data/one/README.one,
+	  data/one/one-ruby-0.0.1.gem, data/one/one.gemspec,
+	  data/one/lib/one.rb: added for functional tests
+
+2004-04-05 00:48  jimweirich
+
+	* test/functional.rb: Moved session gem detection to insure_session
+	  file.  Modified functional tests to use gem command.	Removed
+	  some directory stuff because rake guarantees the starting
+	  directory.  Added test_info functional test.	Added test_build
+	  functional test.  Added assert status.
+
+2004-04-05 00:48  jimweirich
+
+	* lib/rubygems/remote_installer.rb: Changed exceptions to inherit
+	  from RunTimeError
+
+2004-04-05 00:48  jimweirich
+
+	* bin/gem: Changed Installer to RemoteInstaller in rubygems-info.
+
+2004-04-05 00:48  jimweirich
+
+	* Rakefile: Added generated test gem to clobber list.  Added
+	  functional test target to rakefile.
+
+2004-04-04 21:17  chadfowler
+
+	* packages/sources/lib/sources.rb: Added gems mirror at
+	  http://gems.chadfowler.com
+
+2004-04-04 20:51  chadfowler
+
+	* bin/gem, lib/rubygems/remote_installer.rb, test/functional.rb:
+	  More improved error messages (don't show stack trace when using
+	  bin/gem)
+
+2004-04-04 20:43  chadfowler
+
+	* lib/rubygems/cache.rb: Only read specs that end in "gemspec".
+	  The code doesn't handle non-gemspecs very well at all.
+
+2004-04-04 20:15  chadfowler
+
+	* test/mock/gems/specifications/sources-0.0.1.gemspec: [no log
+	  message]
+
+2004-04-04 20:09  chadfowler
+
+	* test/mock/gems/gems/sources-0.0.1/lib/sources.rb: Rearranging
+	  things a bit
+
+2004-04-04 20:02  chadfowler
+
+	* bin/gem, lib/rubygems/remote_installer.rb, test/bogussources.rb,
+	  test/functional.rb: Better error messages on unresolvable host.
+
+2004-04-04 12:50  chadfowler
+
+	* redist/session.gem, test/bogussources.rb, test/functional.rb:
+	  Added the beginnings of a functional test suite.
+
+2004-04-03 22:02  chadfowler
+
+	* lib/rubygems/validator.rb: Just had to explicitly rescue
+	  VerificationError.  All is well.
+
+2004-04-03 22:01  chadfowler
+
+	* lib/rubygems/validator.rb: Mauricio fixed a problem with alien
+	  (just failed to update it when we changed the gem directory), but
+	  now there's another issue I can't find.  Anyway, this fix is
+	  obviously needed.  But alien is broken anyway.
+
+2004-04-03 21:57  chadfowler
+
+	* install.rb, lib/rubygems/builder.rb: Batsman's bug report and
+	  code for the bugs I introduced today. :)
+
+2004-04-03 09:50  chadfowler
+
+	* lib/rubygems/specification.rb: Defaulting a spec's require_path
+	  to [] to avoid downstream errors.
+
+2004-04-03 09:06  chadfowler
+
+	* lib/rubygems/builder.rb, test/test_builder.rb: builder now
+	  validates the gemspec.
+
+2004-04-03 08:48  chadfowler
+
+	* lib/rubygems/specification.rb, test/test_specification.rb: Added
+	  checking for gem specs to make sure they have all required
+	  attributes.
+
+2004-04-03 08:06  chadfowler
+
+	* gemspecs/rublog.gemspec: My original rublog gem was broken, in
+	  that it didn't have a require_path.
+
+2004-04-02 07:48  chadfowler
+
+	* lib/rubygems/remote_installer.rb: Prompt for installation of
+	  dependenciees.
+
+	  For now, there is a puts/gets in the middle of
+	  remote_installer.rb  This should probably be cleaned up later
+	  (return control flow to the gem program to install the
+	  dependencies, for example.
+
+2004-04-02 07:37  chadfowler
+
+	* TODO: [no log message]
+
+2004-04-02 07:34  chadfowler
+
+	* test/: simple_gem.rb, test_format.rb: Some things I forgot to cvs
+	  add earlier.
+
+2004-04-02 07:29  chadfowler
+
+	* example/: test.gemspec, lib/test.rb, lib/test/wow.rb: Removing
+	  example directory in favor of "examples" directory (just better
+	  organized).
+
+2004-04-02 07:26  chadfowler
+
+	* test/test_all.rb: Removed test_all.rb.  Rake is obviously a
+	  better way to do it.
+
+2004-03-31 19:13  chadfowler
+
+	* lib/rubygems/format.rb, lib/rubygems/installer.rb,
+	  lib/rubygems/validator.rb, test/test_all.rb,
+	  test/test_validator.rb: More tests and refactoring to support
+	  them.
+
+2004-03-30 02:41  rich
+
+	* lib/rubygems/installer.rb: allow passing parameters to extconf.rb
+	  with:
+
+	  ruby -i blah.gem --local -- --with-option
+
+	  everything past the -- will go to the extconf.rb...just like
+	  setup.rb
+
+2004-03-30 02:34  rich
+
+	* lib/rubygems/: installer.rb, specification.rb: very initial
+	  capability to build source gems.  this only lets you build native
+	  extensions so long as you do not have to specify --with-
+	  directories
+
+2004-03-29 08:31  rich
+
+	* install.rb: switched migration of old gems to new ./gems subdir
+	  to use FileUtils rather than ftools...hope to fix reported win32
+	  error.
+
+2004-03-29 01:04  rich
+
+	* lib/rubygems/doc_manager.rb: fixed bug in pathing based on new
+	  directory structure
+
+2004-03-29 01:03  rich
+
+	* lib/rubygems/remote_installer.rb: fixed bug in default for proxy
+	  (should default to nil not true)
+
+2004-03-29 01:03  rich
+
+	* bin/gem: updated with patch to allow for config file with minor
+	  difference from gavin's patch which passes a nil to the
+	  RemoteInstaller if the proxy does not exist
+
+2004-03-28 23:22  rich
+
+	* install.rb: added code to migrate gems if they are in the old
+	  directory structure
+
+2004-03-28 21:30  rich
+
+	* install.rb, lib/rubygems.rb, lib/rubygems/installer.rb,
+	  lib/rubygems/specification.rb: changed path of installed gems to
+	  be:
+
+	  ruby/gems/1.8/gems
+
+	  which cleans up the root.
+
+2004-03-28 18:53  chadfowler
+
+	* test/test_all.rb: This is the file to run for all of the tests.
+
+	  test_remote_installer is commented out for now.  The open URI
+	  patch that George gave us makes the code a lot nicer to look at,
+	  but a little harder to test.
+
+2004-03-28 18:50  chadfowler
+
+	* lib/rubygems/remote_installer.rb, test/test_cache.rb,
+	  test/test_remote_installer.rb: Added some tests for cache search
+
+2004-03-28 12:19  chadfowler
+
+	* bin/gem, lib/rubygems/validator.rb, test/test_validator.rb: Some
+	  tests for the validator.
+
+	  Made the validator more testable.
+
+2004-03-28 09:30  chadfowler
+
+	* bin/gem, lib/rubygems/validator.rb: Fixed a problem with false
+	  alarms in the validator.
+
+2004-03-27 08:23  chadfowler
+
+	* bin/gem: No longer have an option to pass http proxy host into
+	  the gem program.  Only reads it from the environment.  This is
+	  because George's patch (and open-uri) work this way, and I'm lazy
+	  right now.
+
+2004-03-27 08:17  chadfowler
+
+	* lib/rubygems/remote_installer.rb: George Marrows' nice patch to
+	  remove a bunch of code from remote_installer.
+
+	  Our remote_installer tests are failing.  We really need to start
+	  paying attention to the test directory. :(`
+
+2004-03-24 23:26  jimweirich
+
+	* install.rb: Do not install commands ending in ~.
+
+2004-03-24 23:25  jimweirich
+
+	* lib/rubygems/specification.rb: Changed executables from accessor
+	  to writer to avoid redefinition.
+
+2004-03-21 21:10  jimweirich
+
+	* bin/gem: fixed uninitialized directory option
+
+2004-03-21 15:34  jimweirich
+
+	* bin/gem: removed carriage returns that screwed up the #! line
+
+2004-03-21 09:02  chadfowler
+
+	* bin/gem: Gavin's bin/gem refactoring.
+
+2004-03-20 17:03  jimweirich
+
+	* bin/gem: added wrapping to gem listing
+
+2004-03-20 12:22  chadfowler
+
+	* install.rb: More cleaning by Gavin Sinclair
+
+2004-03-20 12:08  chadfowler
+
+	* examples/application/an-app.gemspec,
+	  examples/application/bin/myapp,
+	  examples/application/lib/somefunctionality.rb, lib/rubygems.rb,
+	  lib/rubygems/installer.rb, lib/rubygems/specification.rb: Added
+	  functionality for installing applications into the system bindir.
+	  Needs cleaning and refactoring.
+
+2004-03-20 07:53  chadfowler
+
+	* bin/gem: [no log message]
+
+2004-03-19 23:03  chadfowler
+
+	* bin/gem: More intuitive default.
+
+2004-03-19 10:45  chadfowler
+
+	* bin/gem: * Some minor rearranging of the test stuff so that
+	  installation errors will also abort the test run * Don't try to
+	  run tests if none are included with the gem
+
+2004-03-18 22:27  chadfowler
+
+	* bin/gem, example/lib/test.rb, lib/rubygems/cache.rb,
+	  lib/rubygems/specification.rb: * Preliminary support for: gem -i
+	  blah-0.0.1.gem --run-tests Needs to be cleaned up considerably.
+	  * Introduction of new gemspec metadata "unit_test_suite", which
+	  will be require'd in order to load all unit tests
+
+2004-03-17 09:33  chadfowler
+
+	* bin/gem: Applied Gavin Sinclair's patch to make help output
+	  better.
+
+2004-03-16 21:55  chadfowler
+
+	* bin/gem: Added --remote-list option for gem command to display
+	  all gems on server.
+
+2004-03-16 21:50  chadfowler
+
+	* bin/gem, doc/UserDoc.html: Fixed --help case inconsistencies and
+	  documentation typos as per Scott Harper's email.
+
+2004-03-16 21:41  chadfowler
+
+	* bin/gem: --list and --search display are the same.
+
+2004-03-16 21:33  chadfowler
+
+	* bin/gem: Implemented some of Scott Harper's search suggestions:
+	  case insensitive sort of returned gems and display description
+	  with gem name in search results.
+
+2004-03-16 21:20  chadfowler
+
+	* bin/gem, lib/rubygems/remote_installer.rb: http_proxy  option
+	  implemented
+
+2004-03-15 07:19  chadfowler
+
+	* lib/rubygems/remote_installer.rb: Installation is now case
+	  insensitive (like search)
+
+2004-03-15 07:07  chadfowler
+
+	* TODO, bin/gem, lib/rubygems/remote_installer.rb: Better error
+	  messages.  updated TODO list.
+
+2004-03-14 21:02  chadfowler
+
+	* bin/gem, lib/rubygems/remote_installer.rb: --dir didn't work with
+	  remote-install.  Now it does.
+
+2004-03-14 17:48  rich
+
+	* bin/gem: fixed uninstall bug
+
+2004-03-14 17:18  rich
+
+	* lib/rubygems/doc_manager.rb: changed to remove <drive>: on
+	  win32...ug
+
+2004-03-14 16:15  rich
+
+	* install.rb: fixed typo
+
+2004-03-14 16:13  rich
+
+	* install.rb: generate cmd files
+
+2004-03-14 16:13  rich
+
+	* bin/: gem.cmd, gem_server.cmd: now generate cmd files
+
+2004-03-14 15:52  chadfowler
+
+	* bin/gem: Fixed a small bug with --gen-rdoc and the remote
+	  installer.
+
+2004-03-14 15:38  chadfowler
+
+	* lib/rubygems.rb: Back to version 1.0 ;)
+
+2004-03-14 15:36  chadfowler
+
+	* lib/rubygems.rb: Updated rubygemsversion
+
+2004-03-14 15:31  chadfowler
+
+	* README: credits
+
+2004-03-14 15:24  rich
+
+	* README: initial readme
+
+2004-03-14 15:12  rich
+
+	* doc/UserDoc.html: updated w/doc on documentation ;-)
+
+2004-03-14 15:01  rich
+
+	* gemspecs/jabber4r.gemspec: added jabber4r gemspec
+
+2004-03-14 14:58  rich
+
+	* bin/gem_server: change the documentation path to /
+
+2004-03-14 14:57  rich
+
+	* install.rb: remove installing .rb files from ./bin
+
+2004-03-14 14:32  rich
+
+	* doc/: DevDoc.txt, GemSpecification.txt, UserDoc.html,
+	  UserDoc.txt: updated with latest docs
+
+2004-03-14 12:05  chadfowler
+
+	* test/test_remote_installer.rb: Fixed tests.
+
+2004-03-14 11:31  chadfowler
+
+	* lib/rubygems/specification.rb: Fixed bug that would manifest
+	  itself if a gem creator put apostrophes/single-quotes in the gem
+	  spec.
+
+2004-03-14 00:04  rich
+
+	* doc/: UserDoc.html, UserDoc.txt: finished user's guide
+
+2004-03-13 21:48  rich
+
+	* doc/: DevDoc.html, UserDoc.html, UserDoc.txt: updated user's
+	  guide...will finish section on ruby's library mgt soon ;-)
+
+2004-03-13 20:48  chadfowler
+
+	* doc/DevDoc.txt: Added documentation on making and distributing
+	  gems
+
+2004-03-13 20:20  chadfowler
+
+	* TODO: [no log message]
+
+2004-03-13 19:51  rich
+
+	* doc/: DevDoc.html, DevDoc.txt, GemSpecification.html,
+	  GemSpecification.txt, UserDoc.html, UserDoc.txt, doc.css,
+	  makedoc.rb: added these doc (wiki) files from
+	  http://rubygems.rubyforge.org/
+
+2004-03-13 17:56  chadfowler
+
+	* TODO, gemspecs/README, gemspecs/cgikit-1.1.0.gemspec,
+	  gemspecs/linguistics.gemspec, gemspecs/ook.gemspec,
+	  gemspecs/progressbar.gemspec, gemspecs/redcloth.gemspec,
+	  gemspecs/rublog.gemspec, gemspecs/ruby-doom.gemspec,
+	  gemspecs/rubyjdwp.gemspec, gemspecs/statistics.gemspec: Added
+	  some gemspecs for actual RAA packages.
+
+2004-03-13 14:35  chadfowler
+
+	* TODO, lib/rubygems/remote_installer.rb: Preliminary HTTP Proxy
+	  support.  Untested.
+
+2004-03-13 09:11  chadfowler
+
+	* packages/sources/lib/sources.rb: Changed to point to rubyforge
+
+2004-03-12 22:40  rich
+
+	* bin/generate_yaml_index.rb: generates a yaml index for a gems
+	  repository
+
+2004-03-12 22:02  chadfowler
+
+	* bin/gem_server: No longer serving gem specs.
+
+2004-03-12 21:42  chadfowler
+
+	* TODO, bin/gem_server.cgi: We decided to trash gem_server.cgi in
+	  favor of the static content generator Rich is working on.
+
+2004-03-12 21:15  chadfowler
+
+	* TODO: [no log message]
+
+2004-03-12 20:11  chadfowler
+
+	* bin/gem, lib/rubygems/installer.rb,
+	  lib/rubygems/remote_installer.rb: Basic search funtionality in.
+
+	  Slight refactoring of Installer and RemoteInstaller
+
+2004-03-12 18:28  chadfowler
+
+	* TODO: [no log message]
+
+2004-03-12 16:37  chadfowler
+
+	* TODO: [no log message]
+
+2004-03-12 16:14  chadfowler
+
+	* TODO: More TODO items
+
+2004-03-08 13:50  chadfowler
+
+	* TODO, bin/gem_server, example/test.gemspec: Use rdoc templates
+	  for HTML.  Nearly XHTML compliant.
+
+2004-03-08 08:21  chadfowler
+
+	* TODO: Added TODO list
+
+2004-03-08 08:12  chadfowler
+
+	* lib/rubygems/validator.rb: Fixed a small (but crippling) bug in
+	  the validator.
+
+2004-01-24 13:49  chadfowler
+
+	* bin/gem, lib/rubygems.rb, lib/rubygems/cache.rb,
+	  lib/rubygems/validator.rb, lib/rubygems/version.rb: More cleanup.
+
+2004-01-24 13:29  chadfowler
+
+	* bin/gem, lib/rubygems/remote_installer.rb: A little cleaning of
+	  (Remote)Installer inconsistencies
+
+2004-01-24 13:23  chadfowler
+
+	* bin/gem: Removed the weird instance variable thing we had going
+	  on. :)
+
+2004-01-07 17:34  chadfowler
+
+	* bin/gem: removed old cruft
+
+2003-12-24 11:32  chadfowler
+
+	* lib/rubygems/validator.rb: Gem validation was returning false
+	  negatives (corrupted gems were not reporting their corruption).
+
+2003-12-18 14:18  chadfowler
+
+	* lib/rubygems/cache.rb: Lyle noticed some out of date rdoc
+	  documentation.  Thanks Lyle!
+
+2003-12-03 08:05  chadfowler
+
+	* install.rb: Gavin's patch for installing the files in bin/ on
+	  rubygems installation.
+
+2003-11-30 00:36  chadfowler
+
+	* lib/rubygems/specification.rb: Little warnings adjustment
+
+2003-11-29 17:27  jimweirich
+
+	* Rakefile: added Rakefile to package
+
+2003-11-29 16:23  jimweirich
+
+	* lib/rubygems/specification.rb: Removed defined? and initialized
+	  @platform
+
+2003-11-29 16:08  jimweirich
+
+	* lib/rubygems/specification.rb: Initialized @loaded and check
+	  defined?(@platform) to silence some -w warnings.
+
+2003-11-29 09:26  rich
+
+	* bin/gem_server, lib/rubygems/doc_manager.rb: updated to support
+	  /doc URL to generate list of installed gems w/doc link for rdoc
+	  generated links.
+
+2003-11-29 08:30  rich
+
+	* lib/rubygems/doc_manager.rb: minor format change of error message
+
+2003-11-29 08:29  rich
+
+	* bin/gem, lib/rubygems/builder.rb, lib/rubygems/doc_manager.rb,
+	  lib/rubygems/installer.rb: instantiates DocManager now.  errors
+	  out on no install of RDoc.  warns if .gemspec does not specify
+	  having rdoc, but rdoc is generated
+
+2003-11-29 02:13  rich
+
+	* bin/gem, lib/rubygems.rb, lib/rubygems/doc_manager.rb,
+	  lib/rubygems/format.rb, lib/rubygems/installer.rb,
+	  lib/rubygems/specification.rb: added capability to generate rdoc
+	  on install of gem (--gen-rdoc).  this doc is placed in
+	  Gem.dir+doc+gem.full_name fixed but in installer when moving to
+	  format (not calling each) added doc manager to add/remove
+	  documenatation (right now only rdoc)
+
+2003-11-29 01:28  rich
+
+	* lib/rubygems/specification.rb: should not define the attr_readers
+	  for requirements/dependencies so undef is unnecessary
+
+2003-11-29 00:12  jimweirich
+
+	* lib/rubygems/specification.rb: Undefing dependencies and
+	  requirements removes warning when used with -w.
+
+2003-11-29 00:12  jimweirich
+
+	* lib/rubygems.rb: Using defined?($GEM_PATH) avoids warning when
+	  used with -w switch.
+
+2003-11-28 15:58  chadfowler
+
+	* bin/gem, example/test.gemspec, lib/rubygems.rb,
+	  lib/rubygems/installer.rb, lib/rubygems/validator.rb,
+	  lib/rubygems/format.rb: Separated gem file reading into a
+	  separate class/file.
+
+2003-11-28 15:20  rich
+
+	* lib/rubygems/specification.rb: added has_rdoc?/has_rdoc methods
+	  ... will be used to autogenerate rdoc
+
+2003-11-28 12:30  chadfowler
+
+	* lib/rubygems/validator.rb: Rdoc added
+
+2003-11-28 11:51  chadfowler
+
+	* bin/gem, lib/rubygems.rb, lib/rubygems/validator.rb: A little
+	  rearranging of the validation/alien code.  It's still ugly, but
+	  at least it's in its own file now. :)
+
+2003-11-28 11:40  chadfowler
+
+	* bin/gem: Removed a little cruft.
+
+2003-11-27 11:04  chadfowler
+
+	* bin/gem: Print success message for each gem *not* containing
+	  errors.
+
+2003-11-27 11:00  chadfowler
+
+	* bin/gem, lib/rubygems/installer.rb: Preliminary support for gem
+	  directory validation (--alien).  Looks for bad or missing gem
+	  files, missing spec files, files installed that aren't part of
+	  the gem, checksum mismatches, etc.
+
+	  Very ugly code.  Very ugly output.  Work in progress.
+
+2003-11-24 11:58  rich
+
+	* lib/rubygems/specification.rb: change full_name to include
+	  platform
+
+2003-11-24 09:15  chadfowler
+
+	* bin/gem: Option for HTTP Proxy server for remote-install.  Not
+	  yet implemented.
+
+2003-11-23 20:22  chadfowler
+
+	* lib/rubygems/builder.rb: Removed a stray \" in builder's success
+	  message
+
+2003-11-23 20:16  chadfowler
+
+	* lib/rubygems/specification.rb: Leaving escape in but commenting
+	  out its functionality because it hosed some other things up.
+	  Need to revisit this for the case where:
+
+	   s.summary = "Chad's Thing" # It's the apostrophe
+
+2003-11-23 20:08  chadfowler
+
+	* lib/rubygems/specification.rb: Escape quotes to avoid invalid
+	  gemspecs in the #{Gem.dir}/specifications directory
+
+2003-11-23 19:21  chadfowler
+
+	* bin/gem: Less ugly error message on file IO problems.
+
+2003-11-22 22:34  chadfowler
+
+	* bin/gem: Very simple support for validating a gem.  Will probably
+	  move this into the libs eventually.
+
+2003-11-22 20:53  chadfowler
+
+	* example/test.gemspec, lib/rubygems/builder.rb: Generate MD5
+	  checksum for gem and store it in the file.  Will be used to
+	  validate gem file before installation.
+
+2003-11-22 13:58  chadfowler
+
+	* install.rb, lib/rubygems/remote_installer.rb,
+	  packages/sources/sources.gemspec,
+	  packages/sources/lib/sources.rb: remote-install sources are now
+	  installed as a ruby gem at the time of rubygems installation.
+	  sources gemspec included in the rubygems distribution.
+
+2003-11-22 12:52  chadfowler
+
+	* bin/gem: Allow gem info by --version
+
+2003-11-22 11:50  chadfowler
+
+	* lib/: rubygems.rb, rubygems/cache.rb: Fixed the bug I introduced
+	  by fixing Rich's bug with gem cache caching. ;)
+
+	  Gem::Cache now has a #refresh! method.
+
+2003-11-22 10:16  chadfowler
+
+	* bin/gem, lib/rubygems.rb, lib/rubygems/installer.rb,
+	  lib/rubygems/remote_installer.rb: - Fixed bug in Gem.cache
+	  (though we may want to revisit it for in-memory caching - Command
+	  line configurable version for uninstall
+
+2003-11-22 00:28  rich
+
+	* lib/rubygems/cache.rb: rdoc'd search method
+
+2003-11-22 00:24  rich
+
+	* bin/gem, lib/rubygems/cache.rb, lib/rubygems/version.rb,
+	  test/test_version_comparison.rb: removed search_by_name because
+	  search does the same thing.  version::requirement was updated to
+	  that if you did not specific a version operation, it assumes an =
+	  sign.  updated tests accordingly
+
+2003-11-21 23:58  rich
+
+	* lib/rubygems/: cache.rb, installer.rb: allow version to be
+	  specified in uninstall (if called programatically)
+
+2003-11-21 23:52  rich
+
+	* lib/: rubygems.rb, rubygems/cache.rb, rubygems/installer.rb,
+	  rubygems/specification.rb: > moved all searching into cache..and
+	  now search by name/version and return an
+	  ordered list (.last == highest version).
+	  > modified uninstaller to allow selecting a specific version to
+	  uninstall if
+	  multiple versions are installed.
+	  > implemented comparison function on specification.
+	  > changed require_gem to use new search of cache function
+
+2003-11-21 21:06  chadfowler
+
+	* bin/gem, lib/rubygems/remote_installer.rb: Added ability to
+	  specify optional version requirement for remote installations
+
+2003-11-21 20:25  chadfowler
+
+	* test/test_remote_installer.rb: Removed carriage returns
+
+2003-11-21 19:04  chadfowler
+
+	* bin/gem_server: Converted from getopts to optparse.
+
+2003-11-21 18:31  rich
+
+	* lib/rubygems.rb: changed the order in which operations are
+	  performed in require_gem.  it now requires dependent gems prior
+	  to adding the require_paths to a gem.  otherwise we could have
+	  had a LoadError on a dependent gem but the paths were already
+	  added...potential problem
+
+2003-11-21 18:21  rich
+
+	* lib/rubygems/installer.rb: updated to ensure
+	  (specifications/cache) directories exist for a provided path
+
+2003-11-21 18:01  rich
+
+	* lib/rubygems/specification.rb: updated rdoc
+
+2003-11-21 17:59  rich
+
+	* bin/gem, lib/rubygems/builder.rb, lib/rubygems/installer.rb,
+	  lib/rubygems/specification.rb: fixed various bugs with the
+	  $GEM_PATH stuff, specifically on uninstall.  Also, changed to
+	  allow specifying a directory on install (--dir) and force install
+	  (--force).  Changed the builder generated ruby header to use
+	  optparse.
+
+2003-11-21 07:03  chadfowler
+
+	* lib/: rubygems.rb, rubygems/cache.rb,
+	  rubygems/remote_installer.rb: Remote installation of dependencies
+	  now works.  It downloads all dependent gems or errors out.
+
+	  Fixed bug in require_gem.  Wrong call to cache.
+
+2003-11-21 00:59  rich
+
+	* bin/gem, example/test.gemspec, lib/rubygems.rb,
+	  lib/rubygems/cache.rb, lib/rubygems/installer.rb,
+	  lib/rubygems/specification.rb: added capability to support
+	  multiple paths $GEM_PATH in Ruby and RUBY_GEMS in the ARGV.  Lots
+	  of changes were needed to support this.  also added the --force
+	  and --dir options to gem installtion
+
+2003-11-20 22:50  chadfowler
+
+	* bin/gem: Switched to optparse.  Not a whole lot gained, but it
+	  seems to be the way Ruby is going.  It's nice not to have to do
+	  the "when" stuff, I guess.
+
+2003-11-19 23:41  chadfowler
+
+	* lib/rubygems/: installer.rb, remote_installer.rb: Added
+	  chadfowler.com to the hardcoded remote install list.
+
+	  Fixed a dangling YAML.load that broke uninstall.
+
+2003-11-19 22:56  rich
+
+	* lib/rubygems.rb: fixed bug in loading rubygems
+
+2003-11-19 22:51  chadfowler
+
+	* bin/: gem_server, gem_server.cgi: require 'yaml' :)
+
+2003-11-19 22:44  rich
+
+	* lib/: rubygems.rb, rubygems/cache.rb, rubygems/specification.rb:
+	  changed the format of stuff stored in the spec directory to ruby
+	  instead of YAML.  This allows us to not have to load yaml in
+	  'require_gem'.  switched the specification list to a Cache
+	  object.
+
+2003-11-19 21:56  rich
+
+	* lib/rubygems/installer.rb: write the spec file in ruby and not in
+	  yaml format (in the spec dir)
+
+2003-11-19 20:32  rich
+
+	* lib/rubygems/specification.rb: added to_ruby method to generate a
+	  ruby string that can be eval'ed in to build a Gem Specification
+
+2003-11-17 21:37  jimweirich
+
+	* bin/: gem_server, gem_server.cgi: removed carriage returns
+
+2003-11-17 21:19  chadfowler
+
+	* install.rb: Accidentally left some junk in the file.
+
+2003-11-17 19:50  dblack
+
+	* test/test_version_comparison.rb: * Test cases for Version.rb
+
+2003-11-17 19:50  dblack
+
+	* lib/rubygems/version.rb: * Split off tests into
+	  rubygems/tests/test_version_comparison.rb
+
+2003-11-17 12:37  chadfowler
+
+	* install.rb: Create File.join(Config::CONFIG['libdir'], "ruby",
+	  "gems") + "specifications" and + "cache" during installation.
+
+	  Need to remove this from rubygems.rb and replace with
+	  ensure_directory call.
+
+2003-11-17 12:29  rich
+
+	* lib/rubygems/version.rb: rdoc added
+
+2003-11-17 11:31  rich
+
+	* lib/rubygems/specification.rb: rdoc added
+
+2003-11-17 10:38  rich
+
+	* lib/rubygems/: cache.rb, installer.rb: made rdoc comments and
+	  renamed some variables
+
+2003-11-17 08:48  dblack
+
+	* lib/rubygems/version.rb: * Added stricter checking of incoming
+	  Requirement string
+
+	  * Added unit tests at end of file
+
+2003-11-17 07:32  chadfowler
+
+	* bin/: gem_server, gem_server.cgi: Refactored gem_server program
+	  and added an equivalent CGI version.
+
+2003-11-17 00:14  rich
+
+	* lib/: rubygems.rb, rubygems/builder.rb, rubygems/cache.rb: added
+	  rdoc documentation
+
+2003-11-16 17:15  chadfowler
+
+	* bin/: gem.cmd, gem_server.cmd: Added some batch files for Windows
+
+2003-11-16 17:08  rich
+
+	* install.rb, bin/gem, bin/gem_server, example/test.gemspec,
+	  example/lib/test.rb, example/lib/test/wow.rb, lib/rubygems.rb,
+	  lib/rubygems/builder.rb, lib/rubygems/cache.rb,
+	  lib/rubygems/installer.rb, lib/rubygems/remote_installer.rb,
+	  lib/rubygems/specification.rb, lib/rubygems/version.rb,
+	  test/test_remote_installer.rb: Initial import developed at
+	  RubyConf 2003 by:
+
+	  Rich Kilmer Chad Fowler David Black Paul Brannon Jim Weirich
+
+2003-11-16 17:08  rich
+
+	* install.rb, bin/gem, bin/gem_server, example/test.gemspec,
+	  example/lib/test.rb, example/lib/test/wow.rb, lib/rubygems.rb,
+	  lib/rubygems/builder.rb, lib/rubygems/cache.rb,
+	  lib/rubygems/installer.rb, lib/rubygems/remote_installer.rb,
+	  lib/rubygems/specification.rb, lib/rubygems/version.rb,
+	  test/test_remote_installer.rb: Initial revision
+

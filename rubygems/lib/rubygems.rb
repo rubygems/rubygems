@@ -8,12 +8,32 @@ module Kernel
   # a required Gem is not found, a LoadError is raised. More information on 
   # version requirements can be found in the Gem::Version documentation.
   #
+  # As a shortcut, the +gem+ parameter can be a _path_, for example:
+  #
+  #   require_gem 'rake/packagetask'
+  #
+  # This is strictly short for
+  #
+  #   require_gem 'rake'
+  #   require 'rake/packagetask' 
+  #
+  # <i>This is an experimental feature added after versoin 0.7, on 2004-07-13. </i>
+  #
   # gem:: [String or Gem::Dependency] The gem name or dependency instance.
   # version_requirement:: [default="> 0.0.0"] The version requirement.
   # return:: [Boolean] true if the Gem is loaded, otherwise false.
   # raises:: [LoadError] if Gem cannot be found or version requirement not met.
   #
   def require_gem(gem, *version_requirements)
+    if gem.index('/')
+      # We have been given a gem name like 'rake/packagetask', which is a shortcut.
+      gemname = gem.sub(%r[/.*$], '')
+      library = gem
+      require_gem gemname
+      require library
+      return
+    end
+
     unless version_requirements.size > 0
       version_requirements = ["> 0.0.0"]
     end

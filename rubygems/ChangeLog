@@ -1,5 +1,11 @@
 2004-07-13  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
+	* lib/rubygems.rb: (#require_gem) added the ability to do
+	  "require_gem 'rake/packagetask'", for instance, which is a
+	  shortcut for "require_gem 'rake'; require 'rake/packagetask'".
+
+2004-07-13  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
 	* lib/rubygems/gem_commands.rb: refactored --version option
 	  in all cases to the new VersionOption module.
 

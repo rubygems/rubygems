@@ -26,12 +26,12 @@ module Gem
     end
     
     def alert_warning(statement, question=nil)
-      puts "WARNING:\n#{statement}"
+      STDERR.puts "WARNING:\n#{statement}"
       ask(question) if question 
     end
     
     def alert_error(statement, question=nil)
-      puts "ERROR:\n#{statement}"
+      STDERR.puts "ERROR:\n#{statement}"
       ask(question) if question
     end
 

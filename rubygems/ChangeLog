@@ -1,3 +1,12 @@
+2004-09-11  Rich Kilmer <rich@infoether.com>
+
+  * lib/rubygems/gem_commands.rb - got rid of stub options
+
+  * lib/rubygems/install.rb - changed output of messages so the UI would format
+    better 
+
+  * bin/gem_server - exit! from ^c
+
 2004-09-09  Chad Fowler <chad@chadfowler.com>
   * lib/rubygems/loadpath_manager.rb: Small bug when gem specs have ruby 
   version requirements.

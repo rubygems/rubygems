@@ -1,4 +1,5 @@
 require 'date'
+require 'rubygems'
 require 'rubygems/version'
 
 module Gem
@@ -540,6 +541,10 @@ module Gem
         end
       end
       out
+    end
+
+    def to_s
+      "#<Gem::Specification name=#{@name} version=#{@version}>"
     end
 
     private

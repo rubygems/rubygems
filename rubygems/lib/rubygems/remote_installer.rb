@@ -37,13 +37,13 @@ module Gem
     end
 
     def fetch_size(uri)
-      require 'rubygems/open-uri'
-      size = nil
-      begin
-        open(uri, "User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}",:proxy => @http_proxy, :content_length_proc => lambda {|t| size = t; raise "break"}) {|i| }
-      rescue
-      end
-      return size
+      require 'net/http'
+      require 'uri'
+      u = URI.parse(uri)
+      http = Net::HTTP.new(u.host, u.port)
+      path = (u.path == "") ? "/" : u.path
+      resp = http.head(path)
+      resp['content-length'].to_i
     end
     
     private

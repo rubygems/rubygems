@@ -53,26 +53,34 @@ module Gem
         end
       end
 
-       # Build spec dir.
-       directory = File.join(install_dir, "gems", format.spec.full_name)
-       FileUtils.mkdir_p directory
+      # Build spec dir.
+      directory = File.join(install_dir, "gems", format.spec.full_name)
+      FileUtils.mkdir_p directory
 
-       extract_files(directory, format)
-       generate_bin_scripts(format.spec)
-       generate_library_stubs(format.spec) if install_stub
-       build_extensions(directory, format.spec)
-       
-       # Build spec/cache/doc dir.
-       build_support_directories(install_dir)
-       
-       # Write the spec and cache files.
-       write_spec(format.spec, File.join(install_dir, "specifications"))
-       unless(File.exist?(File.join(File.join(install_dir, "cache"), @gem.split(/\//).pop))) 
-         FileUtils.cp(@gem, File.join(install_dir, "cache"))
-       end
+      extract_files(directory, format)
+      generate_bin_scripts(format.spec)
+      generate_library_stubs(format.spec) if install_stub
+      build_extensions(directory, format.spec)
+      
+      # Build spec/cache/doc dir.
+      build_support_directories(install_dir)
+      
+      # Write the spec and cache files.
+      write_spec(format.spec, File.join(install_dir, "specifications"))
+      unless(File.exist?(File.join(File.join(install_dir, "cache"), @gem.split(/\//).pop))) 
+        FileUtils.cp(@gem, File.join(install_dir, "cache"))
+      end
 
-       format.spec.loaded_from = File.join(install_dir, 'specifications', format.spec.full_name+".gemspec")
-       return format.spec
+      format.spec.loaded_from = File.join(install_dir, 'specifications', format.spec.full_name+".gemspec")
+      return format.spec
+    end
+
+    # 
+    # Unpacks the gem into the given directory.
+    #
+    def unpack(directory)
+      format = Gem::Format.from_file_by_path(@gem)
+      extract_files(directory, format)
     end
 
     # Given a root gem directory, build supporting directories for gem

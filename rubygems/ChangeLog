@@ -1,3 +1,11 @@
+2004-07-13  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* lib/rubygems/cmd_manager.rb: added 'unpack' command.
+
+	* lib/rubygems/gem_commands.rb (UnpackCommand): added.
+
+	* lib/rubygems/installer.rb (Installer#unpack): added.
+
 2004-07-09  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/user_interaction.rb (Gem::StreamUI::ask and

@@ -1,10 +1,32 @@
 module Gem
 
+  ##
+  # The installer class processes RubyGem .gem files and installs
+  # the files contained in the .gem into the $GEM_PATH.
+  #
   class Installer
+  
+    ##
+    # Constructs a Installer instance
+    #
+    # gem:: [String] The file name of the gem
+    #
     def initialize(gem)
       @gem = gem
     end
     
+    ##
+    # Installs the gem in the $GEM_PATH.  This will fail (unless force=true)
+    # if a Gem has a requirement on another Gem that is not installed.  The
+    # installation will install in the following structure:
+    #
+    #  $GEM_PATH/
+    #      specifications/<gem-version>.gemspec #=> the extracted YAML gemspec
+    #      <gem-version>/... #=> the extracted Gem files
+    #      cache/<gem-version>.gem #=> a cached copy of the installed Gem
+    # 
+    # force:: [default = false] if false will fail if a required Gem is not installed
+    #
     def install(force=false)
       require 'fileutils'
       File.open(@gem, 'r') do |file|
@@ -17,7 +39,7 @@ module Gem
         end
         directory = File.join(Gem.dir, spec.full_name)
         FileUtils.mkdir_p directory
-        extract_data(directory, file)
+        extract_files(directory, file)
         write_spec(spec, File.join(Gem.dir, "specifications"))
         FileUtils.cp(@gem, File.join(Gem.dir, "cache"))
         puts "Successfully installed #{spec.name} version #{spec.version}"
@@ -26,18 +48,24 @@ module Gem
     
     private
     
+    ##
+    # Skips the Ruby self-install header.  After calling this method, the
+    # IO index will be set after the Ruby code.
+    #
+    # file:: [IO] The IO to process (skip the Ruby code)
+    #
     def skip_ruby(file)
       while(file.gets.chomp != "__END__") do
       end
     end
     
-    def write_spec(spec, location)
-      require 'yaml'
-      File.open(File.join(location, spec.full_name+".gemspec"), "w") do |file|
-        file.puts spec.to_yaml
-      end
-    end
-    
+    ##
+    # Reads the specification YAML from the supplied IO and constructs
+    # a Gem::Specification from it.  After calling this method, the
+    # IO index will be set after the specification header.
+    #
+    # file:: [IO] The IO to process
+    #
     def read_spec(file)
       require 'yaml'
       yaml = ''
@@ -47,13 +75,41 @@ module Gem
       YAML.load(yaml)
     end
     
+    ##
+    # Writes the .gemspec specification (in YAML) to the supplied spec_path.
+    #
+    # spec:: [Gem::Specification] The Gem specification to output
+    # spec_path:: [String] The location (path) to write the gemspec to
+    #
+    def write_spec(spec, spec_path)
+      require 'yaml'
+      File.open(File.join(spec_path, spec.full_name+".gemspec"), "w") do |file|
+        file.puts spec.to_yaml
+      end
+    end
+    
+    ##
+    # Reads lines from the supplied IO until a end-of-yaml (---) is
+    # reached
+    #
+    # file:: [IO] The IO to process
+    # block:: [String] The read line
+    #
     def read_until_dashes(file)
       while((line = file.gets) && line.chomp.strip != "---") do
         yield line
       end
     end
     
-    def extract_data(directory, file)
+    ##
+    # Reads the YAML file index and then extracts each file
+    # into the supplied directory, building directories for the
+    # extracted files as needed.
+    #
+    # directory:: [String] The root directory to extract files into
+    # file:: [IO] The IO that contains the file data
+    #
+    def extract_files(directory, file)
       require 'zlib'
       require 'fileutils'
       require 'yaml'
@@ -83,11 +139,24 @@ module Gem
     end
   end
   
+  ##
+  # The Uninstaller class uninstalls a Gem
+  #
   class Uninstaller
+  
+    ##
+    # Constructs and Uninstaller instance
+    # 
+    # gem:: [String] The Gem name to uninstall
+    #
     def initialize(gem)
       @gem = gem
     end
     
+    ##
+    # Performs the uninstall of the Gem.  This removes the spec, the Gem
+    # directory, and the cached .gem file.
+    #
     def uninstall
       require 'yaml'
       require 'fileutils'

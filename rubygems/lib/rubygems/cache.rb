@@ -35,6 +35,7 @@ module Gem
 
     ##
     # Iterate over the specifications in the cache
+    #
     # &block:: [yields Gem::Specification]
     #
     def each(&block)

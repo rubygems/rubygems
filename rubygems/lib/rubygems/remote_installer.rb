@@ -16,7 +16,7 @@ module Gem
     # Initialize a remote fetcher using the source URI (and possible
     # proxy information).
     def initialize(source_uri, proxy)
-      @uri = source_uri
+      @uri = normalize_uri(source_uri)
       @http_proxy = proxy
       if @http_proxy == true
 	@http_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
@@ -60,6 +60,11 @@ module Gem
     end
 
     private
+
+    # Normalize the URI by adding "http://" if it is missing.
+    def normalize_uri(uri)
+      (uri =~ /^(https?|ftp):/) ? uri : "http://#{uri}"
+    end
 
     # Connect to the source host/port, using a proxy if needed.
     def connect_to(host, port)

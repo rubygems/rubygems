@@ -320,16 +320,40 @@ TEXT
         gem_name, index = choose_from_list("Select RubyGem to uninstall:", gem_list)
         if index == list.size
           remove_all(list) 
+	  remove_executables(list.last)
         elsif index >= 0 && index < list.size
           remove(list[index], list)
+	  remove_executables(list[index])
         else
           say "Error: must enter a number [1-#{list.size+1}]"
         end
       else
+        remove_executables(list.last)
         remove(list[0], list)
       end
     end
     
+    #
+    # Remove executables and batch files (windows only) for the gem as it is being installed
+    #
+    # gemspec::[Specification] the gem whose executables need to be removed.
+    def remove_executables(gemspec)
+      if(gemspec.executables.size > 0) then
+      answer = alert_warning("About to remove executables and scripts for: #{gemspec.executables.join(", ")}", "Proceed? [Y/n]")
+      if(answer =~/^n/i) then
+        say "Executables and scripts will remain installed."
+	return
+      else
+        require 'rbconfig'
+        bindir = Config::CONFIG['bindir']
+        gemspec.executables.each do |exe_name|
+	  say "Removing #{exe_name}"
+	  File.unlink(File.join(bindir, exe_name))      
+	  File.unlink(File.join(bindir, exe_name + ".cmd"))
+	end
+      end
+      end
+    end
 
     #
     # list:: the list of all gems to remove

@@ -1,3 +1,13 @@
+2005-03-10  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/remote_installer.rb
+	(Gem::RemoteSourceFetcher::normalize_uri): Normialize a URI to
+	start with http:// if it does not already.
+
+	* test/test_deployment.rb (TestDeployment::xtest_deploy_sources):
+	Disabled this test.  It is part of the new deployment software and
+	is not working yet.
+
 2005-03-09  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/gemconfigure.rb (Gem::self): Added to aid dynamic

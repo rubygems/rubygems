@@ -444,6 +444,37 @@ Removing rake
 !toc-link
 
 
+== [#unpack]gem unpack -- Unpack an installed gem to the current directory ==
+
+''(Not in version 0.7.)''
+
+The unpack command creates a private copy of the named gem's contents into a
+new directory.  This enables you to examine the contents without interfering
+with the gem repository.
+
+You can only unpack gems that you have installed, and you must specify the gem
+name exactly.
+
+=== Usage ===
+
+!usage unpack
+
+=== Examples ===
+
+<pre>
+$ gem unpack rake
+Unpacked gem: 'rake-0.4.3'
+
+$ ls rake-0.4.3/
+CHANGES  MIT-LICENSE  README  Rakefile  TODO  bin  doc  install.rb  lib  test
+
+$ gem unpack wazoo
+ERROR:  Gem 'wazoo' not installed.
+</pre>
+
+!toc-link
+
+
 == [#update]gem update -- Update your installed gems ==
 
 The update command will check all of your installed gems and update

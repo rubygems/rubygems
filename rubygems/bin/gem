@@ -35,6 +35,10 @@ end
 #
 class RubyGemsOptions
   
+  def initialize
+    @directory = Gem.dir
+  end
+
   # --- Operations ---
   
   # The operation the user has asked us to perform.
@@ -222,7 +226,7 @@ INFO
     end  # OptionParser.new
   
     begin
-    parser.parse!(args)
+      parser.parse!(args)
     rescue => err
       puts err.message
       exit!
@@ -230,10 +234,10 @@ INFO
     options = o
     _show_help(parser, 1) if options.operation.nil?
   
-    require 'pp'
-    pp options
-    puts
-    #exit
+#     require 'pp'
+#     pp options
+#     puts
+#     exit
     options
   end  # _parse
 

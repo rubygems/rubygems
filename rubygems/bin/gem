@@ -45,7 +45,11 @@ if @install_file
     end
   end
   installer = Gem::Installer.new(@install_file)
-  installer.install(@force, @directory)
+  begin
+    installer.install(@force, @directory)
+  rescue => e
+    puts "Error installing #{@install_file}: #{e.message}"
+  end
 end
 
 if @gem

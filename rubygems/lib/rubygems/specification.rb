@@ -87,6 +87,13 @@ module Gem
     end
 
     ##
+    # return:: [Array] list of require paths as strings
+    #
+    def require_paths
+      @require_paths ||= []
+    end
+
+    ##
     # Returns executables array
     #
     # return:: [Array] array of Strings

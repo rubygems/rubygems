@@ -1,5 +1,9 @@
 2004-07-03  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/gem_commands.rb (Gem::InstallCommand::initialize):
+	Added --no-gen-rdoc and --no-test to allow the user to override
+	.gemrc default options.
+
 	* lib/rubygems/doc_manager.rb (Gem::DocManager::generate_rdoc):
 	Concatenate the local rdoc options to the end of the spec's rdoc
 	options.

@@ -52,6 +52,7 @@ end
 
 def run_tests(name, version)
   gem_specs = Gem::Cache.from_installed_gems.search(name, version.version)
+  return if !gem_specs[0].test_suite_file
   require_gem name, "= #{version.version}"
   require gem_specs[0].test_suite_file
   suite = Test::Unit::TestSuite.new("#{name}-#{version}")
@@ -111,11 +112,11 @@ if install_file
   installer = Gem::Installer.new(install_file)
   begin
     installed_gems << installer.install(force, directory)
+    if options[:run_tests]
+      run_tests(installed_gems[0].name, installed_gems[0].version)
+    end
   rescue => e
     $stderr.puts "Error installing gem #{install_file}: #{e.message}"
-  end
-  if options[:run_tests]
-    run_tests(installed_gems[0].name, installed_gems[0].version)
   end
 end
 
@@ -134,14 +135,14 @@ if remote_install
   begin
     installer = get_remote_installer(options)
     installed_gems << installer.install(remote_install, options[:gem_version] || "> 0.0.0", force, directory)
+    if options[:run_tests]
+      cache_dir = File.join(Gem::dir, "cache")
+      destination_file = File.join(cache_dir, installed_gems[0].full_name + ".gem")
+      run_tests(installed_gems[0].name, installed_gems[0].version)
+    end
   rescue => e
     $stderr.puts "Error installing gem #{remote_install}: #{e.message}"
     exit(2)
-  end
-  if options[:run_tests]
-    cache_dir = File.join(Gem::dir, "cache")
-    destination_file = File.join(cache_dir, installed_gems[0].full_name + ".gem")
-    run_tests(installed_gems[0].name, installed_gems[0].version)
   end
 end
 

@@ -1,5 +1,12 @@
 2005-03-11  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/gem_commands.rb (Gem::DependencyCommand): Added a
+	new command "gem dependency" to show the dependencies of an
+	installed gem.
+
+	* lib/rubygems/cmd_manager.rb (Gem::CommandManager::initialize):
+	Added DependencyCommand to the command manager registrar.
+
 	* lib/rubygems/version.rb (Gem::Requirement): Unnested Requirement
 	from the Version class.  There was no benefit to having it nested.
 	Gem::Version::Requirement is set to point to the new class so to

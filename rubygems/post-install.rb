@@ -58,6 +58,7 @@ def install_windows_batch_files
 end
 
 def install_sources
+  $: << "lib"
   require 'rubygems'
   Gem::manage_gems
   Dir.chdir "pkgs/sources"

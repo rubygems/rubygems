@@ -635,7 +635,7 @@ module Gem
       elsif begins?("gempath", arg)
         Gem.path.collect { |p| out << "#{p}\n" }
       elsif begins?("remotesources", arg)
-        Gem::RemoteInstaller.new.get_cache_sources.collect do |s|
+        Gem::RemoteInstaller.new.sources.collect do |s|
           out << "#{s}\n"
         end
       elsif arg
@@ -647,7 +647,7 @@ module Gem
         out << "  - GEM PATH:\n"
         Gem.path.collect { |p| out << "     - #{p}\n" }
         out << "  - REMOTE SOURCES:\n"
-        Gem::RemoteInstaller.new.get_cache_sources.collect do |s|
+        Gem::RemoteInstaller.new.sources.collect do |s|
           out << "     - #{s}\n"
         end
       end

@@ -203,10 +203,8 @@ module Gem
     end
 
     overwrite_accessor :platform= do |platform|
-      # Checks the provided platform for Platform::CURRENT and changes
-      # it to be binary specific to the current platform (i383-mswin32, etc).
-      #
-      # XXX: does this method do as the comment says? 
+      # Checks the provided platform for the special value Platform::CURRENT and
+      # changes it to be binary specific to the current platform (i386-mswin32, etc).
       @platform = (platform == Platform::CURRENT ? RUBY_PLATFORM : platform)
     end
 
@@ -262,6 +260,11 @@ module Gem
     # further initialization.
     #
     def initialize
+      # Each attribute has a default value (possibly nil).  Here, we initialize all
+      # attributes to their default value.  This is done through the accessor
+      # methods, so special behaviours will be honored.  Furthermore, we take a
+      # _copy_ of the default so each specification instance has its own empty
+      # arrays, etc.
       @@attributes.each do |name, default|
         self.send "#{name}=", _copy(default)
       end

@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'rubygems/installer'
+require 'rubygems/builder'
 require 'test/mockgemui'
 require 'rake'
 
@@ -10,7 +11,7 @@ module TestEnvironment
 
   # Create a testing environment for gems.
   def create
-    return if File.exist? "test/data/gemhome/gems/a-0.0.1"
+#    return if File.exist? "test/data/gemhome/gems/a-0.0.1"
     Dir.chdir("test/data") do
       mkdir "lib" unless File.exists? "lib"
       open("lib/code.rb", "w") do |f| f.puts "CODE = 1" end unless

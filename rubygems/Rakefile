@@ -81,6 +81,7 @@ rd = Rake::RDocTask.new("rdoc") { |rdoc|
   rdoc.options << '--line-numbers' << '--inline-source' << '--main' << 'README'
   rdoc.rdoc_files.include('README', 'TODO', 'Releases')
   rdoc.rdoc_files.include('lib/**/*.rb')
+  rdoc.rdoc_files.include('test/**/*.rb')
 }
 
 file "html/index.html" => [:rdoc]

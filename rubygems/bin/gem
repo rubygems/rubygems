@@ -327,7 +327,7 @@ INFO
     puts " - GEM PATH:"
     puts $GEM_PATH.map { |p| "     - #{p}" }
     puts " - REMOTE SOURCES:"
-    puts Gem::Installer.new.get_cache_sources.map { |s| "     - #{s}" }
+    puts Gem::RemoteInstaller.new.get_cache_sources.map { |s| "     - #{s}" }
     exit
   end
 

@@ -37,10 +37,21 @@ module Gem
       version_requirements.as_list
     end
 
+    alias requirements_list requirement_list
+
     def normalize
       ver = @version_requirement.instance_eval { @version }
       @version_requirements = Version::Requirement.new([ver])
       @version_requirement = nil
+    end
+
+    def to_s
+      "#{name} (#{version_requirements})"
+    end
+
+    def ==(other)
+      self.name = other.name and
+        self.version_requirements == other.version_requirements
     end
   end
   
@@ -125,6 +136,9 @@ module Gem
     ##
     # Requirement version includes a prefaced comparator in addition
     # to a version number.
+    #
+    # A Requirement object can actually contain multiple, er, requirements, as
+    # in (> 1.2, < 2.0).
     #
     class Requirement
       include Comparable

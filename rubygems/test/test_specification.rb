@@ -2,9 +2,9 @@ require 'test/unit'
 require 'rubygems'
 Gem::manage_gems
 
-class TestSpecification < Test::Unit::TestCase
+class TestSpecificationSimple < Test::Unit::TestCase
   def setup
-    @gem_spec = Gem::Specification.new do |s|
+    @spec = Gem::Specification.new do |s|
       s.version = "1.0.0"
       s.name = "boo"
       s.platform = Gem::Platform::RUBY
@@ -12,7 +12,7 @@ class TestSpecification < Test::Unit::TestCase
       s.summary = "Hello"
       s.require_paths = ["."]
     end
-    @gem_spec.mark_version 
+    @spec.mark_version 
   end
 
   def test_empty_specification_is_invalid
@@ -23,35 +23,185 @@ class TestSpecification < Test::Unit::TestCase
   end
 
   def test_empty_non_nil_require_paths_is_invalid
-    @gem_spec.require_paths = []
+    @spec.require_paths = []
     assert_raises(Gem::InvalidSpecificationException) {
-      @gem_spec.validate
+      @spec.validate
     }
   end
 
   def test_spec_with_all_required_attributes_validates
     assert_nothing_raised {
-      @gem_spec.validate
+      @spec.validate
     }
   end
 
   def test_rdoc_files_included
-    @gem_spec.files = %w(a b c d)
-    @gem_spec.extra_rdoc_files = %w(x y z)
-    @gem_spec.normalize
-    assert @gem_spec.files.include?('x')
+    @spec.files = %w(a b c d)
+    @spec.extra_rdoc_files = %w(x y z)
+    @spec.normalize
+    assert @spec.files.include?('x')
   end
 
   def test_duplicate_files_removed
-    @gem_spec.files = %w(a b c d b)
-    @gem_spec.extra_rdoc_files = %w(x y z x)
-    @gem_spec.normalize
-    assert_equal 1, @gem_spec.files.select{|n| n=='b'}.size
-    assert_equal 1, @gem_spec.extra_rdoc_files.select{|n| n=='x'}.size
+    @spec.files = %w(a b c d b)
+    @spec.extra_rdoc_files = %w(x y z x)
+    @spec.normalize
+    assert_equal 1, @spec.files.select{|n| n=='b'}.size
+    assert_equal 1, @spec.extra_rdoc_files.select{|n| n=='x'}.size
   end
 
   def test_invalid_version_in_gem_spec_makes_spec_invalid
-    @gem_spec.rubygems_version = "3"
-    assert_raises(Gem::InvalidSpecificationException) { @gem_spec.validate }
+    @spec.rubygems_version = "3"
+    assert_raises(Gem::InvalidSpecificationException) { @spec.validate }
   end
-end
+
+  def test_singular_attributes
+    @spec.require_path = 'mylib'
+    @spec.test_file = 'test/suite.rb'
+    @spec.executable = 'bin/app'
+    assert_equal ['mylib'], @spec.require_paths
+    assert_equal ['test/suite.rb'], @spec.test_files
+    assert_equal ['bin/app'], @spec.executables
+  end
+
+  def test_deprecated_attributes
+    @spec.test_suite_file = 'test/suite.rb'
+    assert_equal ['test/suite.rb'], @spec.test_files
+    # XXX: what about the warning?
+  end
+
+  def test_attributes
+    expected_attributes = %w{
+      rubygems_version specification_version name version date summary
+      require_paths author email homepage rubyforge_project description
+      autorequire default_executable bindir has_rdoc required_ruby_version
+      platform files test_files library_stubs rdoc_options extra_rdoc_files
+      executables extensions requirements dependencies
+    }.sort
+    actual_attributes = Gem::Specification.attributes.map { |a| a.to_s }.sort
+    assert_equal expected_attributes, actual_attributes
+  end
+
+  def test_defaults
+    # @spec is pretty plain, so we'll test some of the default values.
+    assert_equal [], @spec.test_files
+    assert_equal [], @spec.rdoc_options
+    assert_equal [], @spec.extra_rdoc_files
+    assert_equal [], @spec.executables
+    assert_equal [], @spec.extensions
+    assert_equal [], @spec.requirements
+    assert_equal [], @spec.dependencies
+    assert_equal 'bin', @spec.bindir
+    assert_equal false, @spec.has_rdoc
+    assert_equal false, @spec.has_rdoc?
+    assert_equal '> 0.0.0', @spec.required_ruby_version.to_s
+  end
+
+  def test_directly_setting_dependencies_doesnt_work
+    assert_raises(NoMethodError) do
+      @spec.dependencies = [1,2,3]
+    end
+  end
+
+  def test_equality
+    same_spec = @spec.dup
+    assert_equal @spec, same_spec
+  end
+
+  def test_to_yaml_and_back
+    yaml_str = @spec.to_yaml
+    same_spec = YAML.load(yaml_str)
+    assert_equal @spec, same_spec
+  end
+
+  def test_to_ruby_and_back
+    ruby_code = @spec.to_ruby
+    same_spec = eval ruby_code
+    assert_equal @spec, same_spec
+  end
+
+end  # class TestSpecificationSimple
+
+class TestSpecificationComplex < Test::Unit::TestCase
+
+  def setup
+    @spec = Gem::Specification.new do |s|
+      s.name = "rfoo"
+      s.version = "0.1"
+      # Omit 'platform' and test for default.
+      # Omit 'date' and test for default.
+      s.summary = <<-EOF
+        Ruby/Foo is an example RubyGem used for
+        unit testing.
+      EOF
+      # Omit 'require_paths' and test for default.
+      s.author = "The RubyGems Team"
+      s.description = s.summary
+      s.executable = 'foo1'          # We'll test default_executable.
+      s.has_rdoc = 'true'            # We'll test has_rdoc?
+      s.test_file = 'test/suite.rb'  # We'll test has_unit_tests?
+      s.extensions << 'ext/rfoo/extconf.rb'
+      s.requirements << 'A working computer'
+      s.add_dependency('rake', '> 0.4')
+      s.add_dependency('jabber4r')
+      s.add_dependency('pqa', '> 0.4', '<= 0.6')
+    end
+    @spec.mark_version 
+  end
+
+  def test_basics
+    @spec.normalize
+    summary_value = "Ruby/Foo is an example RubyGem used for unit testing."
+    assert_equal 'rfoo',                  @spec.name
+    assert_equal '0.1',                   @spec.version.to_s
+    assert_equal Gem::Platform::RUBY,     @spec.platform
+    assert_equal Date.today,              @spec.date
+    assert_equal summary_value,           @spec.summary
+    assert_equal summary_value,           @spec.description
+    assert_equal "The RubyGems Team",     @spec.author
+    assert_equal ['foo1'],                @spec.executables
+    assert_equal 'foo1',                  @spec.default_executable
+    assert_equal true,                    @spec.has_rdoc?
+    assert_equal ['test/suite.rb'],       @spec.test_files
+    assert_equal ['ext/rfoo/extconf.rb'], @spec.extensions
+    assert_equal ['A working computer'],  @spec.requirements
+  end
+
+  def test_dependencies
+    deps = @spec.dependencies.map { |d| d.to_s }
+    assert_equal 3, deps.size
+    assert deps.include?('rake (> 0.4)')
+    assert deps.include?('jabber4r (> 0.0.0)')
+    assert deps.include?('pqa (> 0.4, <= 0.6)')
+  end
+
+  def test_equality
+    same_spec = @spec.dup
+    assert_equal @spec, same_spec
+  end
+
+  def xtest_to_yaml_and_back
+    yaml_str = @spec.to_yaml
+    same_spec = YAML.load(yaml_str)
+    assert_equal @spec, same_spec
+  end
+
+  def test_to_ruby_and_back
+    ruby_code = @spec.to_ruby
+    same_spec = eval ruby_code
+    assert_equal @spec, same_spec
+  end
+
+  # Test different mechanisms for setting the gem's date: String, Time, and
+  # Date.  It should always come out as a Date.
+  def test_date_settings
+    @spec.date = '2003-09-17'
+    assert_equal Date.new(2003, 9, 17), @spec.date
+    @spec.date = Time.local(2003, 9, 17)
+    assert_equal Date.new(2003, 9, 17), @spec.date
+    @spec.date = Date.new(2003, 9, 17)
+    assert_equal Date.new(2003, 9, 17), @spec.date
+  end
+
+end  # class TestSpecificationComplex
+

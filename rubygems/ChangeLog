@@ -1,17 +1,80 @@
+
+2004-08-01  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* lib/rubygems/specification.rb:
+	  - (Re)defined class methods: attribute, attributes,
+	    required_attribute, read_only, overwrite_accessor.	@@attributes
+	    contains a list of attribute names and default values.  This
+	    allows higher-level specification of gemspec attributes, and the
+	    handling of them in a DRY fashion.
+
+	  - to_yaml_properties now includes all properties, to ensure
+	    correct deserialization of a Gem::Specification object.
+
+	  - #to_ruby and #to_yaml_properties rewritten to use @@attributes
+
+	  - Introduced 'specification_version' attribute and three constants:
+	    NONEXISTENT_SPECIFICATION_VERSION, CURRENT_SPECIFICATION_VERSION, and
+	    SPECIFICATION_VERSION_HISTORY.  This allows us to track changes to
+	    the spec format.
+
+	  - Refactored several "helper" methods, using the new class method
+	    'attribute_alias_singular', which provides a "singular" alias for
+	    a "plural" attribute (e.g. require_path and require_paths).
+
+	  - All gemspec attributes now defined in a uniform fashion, which
+	    implies that they all have valid instance variables on
+	    initialization.  Previously, some attributes were lazily
+	    initialized.
+
+	  - Introduced attribute 'library_stubs', to allow the specification
+	    of several stub files.  (That feature not implemented, though.)
+
+	  - Introduced attribute 'test_files' and deprecated 'test_suite_file'.
+
+	  - Provided #warn_deprecated stub of a method, but don't know what to
+	    do with it.
+
+	  - Deprecated #has_test_suite? in favour of (new) #has_unit_tests?
+
+	  - Used overwrite_accessor to provide special behaviour for the
+	    setting of some attributes.
+
+	  - The 'date' attribute is now a Date object.  We don't need high
+	    resolution, and Time objects, being system-dependent, are not nice
+	    to deal with.
+
+	  - Various code style changes.
+
+	  - Summary: uniform treatment of gemspec attributes; reduced code by
+	    refactoring; 'test_suite_file' deprecated for 'test_files';
+	    'library_stubs' introduced; spec versioning introduced.
+
+	* lib/rubygems/version.rb: (Dependency) added #to_s, #==, and an
+	  alias (requirements_list -> requirement_list).
+
+	* test/test_specification.rb: several new tests: _singular_attributes,
+	  _deprecated_attributes, _defaults, _to_{yaml,ruby}_and_back,
+          _directly_setting_dependencies_doesnt_work, and more.  Plus a new
+          class to give Specification a more thorough workout (TestSpecificationComplex).
+
+	* scripts/runtest.rb: require 'pp' so it's always available in unit
+	  tests.
+
 2004-07-30  Rich Kilmer  <rich@infoether.com>
 
-       * lib/rubygems/installer.rb The application stub now defaults 
-         to the latest version of the library, and optionally allows 
-         an initial parameter conforming to _VERSION_ to be passed
-         to select a prior version of the library (this initial 
-         parameter, if present, is shifted off of ARGV).
+	* lib/rubygems/installer.rb The application stub now defaults 
+	  to the latest version of the library, and optionally allows 
+	  an initial parameter conforming to _VERSION_ to be passed
+	  to select a prior version of the library (this initial 
+	  parameter, if present, is shifted off of ARGV).
 
-       * lib/rubygems/version.rb correct? is now a class method on
-         Version enabling Gem::Version.correct?(...)
+	* lib/rubygems/version.rb correct? is now a class method on
+	  Version enabling Gem::Version.correct?(...)
        
-       * lib/rubygems/install.rb make it so uninstalling a gem will
-         not remove executables if another version of that gem is 
-         installed and needs those executables
+	* lib/rubygems/install.rb make it so uninstalling a gem will
+	  not remove executables if another version of that gem is 
+	  installed and needs those executables
 
 2004-07-26  Jim Weirich  <jim@tardis>
 
@@ -20,13 +83,13 @@
 	code.
 
 2004-07-25  Rich Kilmer  <rich@infoether.com>
-        * fixed bug in using --source in command.rb (removed short -s version)
+	* fixed bug in using --source in command.rb (removed short -s version)
 
-        * changed spec to use the RUBY_PLATFORM for Platform::CURRENT
+	* changed spec to use the RUBY_PLATFORM for Platform::CURRENT
 
-        * added ability to choose from list of available gems on remote install
-          if (1) some of the gems are binary and (2) there are move than one.
-          If the gems are all source gems, the latest is selected.
+	* added ability to choose from list of available gems on remote install
+	  if (1) some of the gems are binary and (2) there are move than one.
+	  If the gems are all source gems, the latest is selected.
 
 2004-07-25  Jim Weirich  <jim@weirichhouse.org>
 
@@ -48,7 +111,7 @@
 	    warning
 
 2004-07-19  Chad Fowler     <chad@chadfowler.com>
-        * install.rb: Shebang line should point to the ruby version used during
+	* install.rb: Shebang line should point to the ruby version used during
 	installation.
 
 2004-07-19  Assaph Mehr     <assaph@avaya.com>
@@ -146,7 +209,7 @@
 
 	* lib/rubygems/command.rb:
 	    (Command#create_option_parser): enhanced the option parser for 'help'
-	                                    display
+					    display
 	    (Command#remove_option): added (to support 'list' and 'search')
 
 	* Rakefile: added 'gem' target.  Runs "local" (not installed) command
@@ -215,7 +278,7 @@
 
 	* test/test_specification.rb
 	(TestSpecification::test_rdoc_files_included): Test for rdoc files
-	included in file list.  Test for redundent file removal.
+	included in file list.	Test for redundent file removal.
 
 	* lib/rubygems/specification.rb (Gem::Specification::validate):
 	Added gem version to validation requirement.  Added normalize to
@@ -393,7 +456,7 @@
 
 	* lib/rubygems/version.rb (Gem::Version::Requirement): Changed the
 	pessimistic version comparison operator to "~>".  I like to think
-	of it as "approximately greater than".  (It was ">*").
+	of it as "approximately greater than".	(It was ">*").
 
 	* bin/gem: Moved gem2 into the standard gem script location.  It
 	is now stable enough to use as the standard command.
@@ -445,7 +508,7 @@
 	* lib/rubygems/doc_manager.rb (Gem::DocManager::generate_rdoc):
 	Changed rdoc generation to do a chdir into the base source
 	directory and then to use a relative path for all the source
-	files.  This makes the generated RDOC html look better and may fix
+	files.	This makes the generated RDOC html look better and may fix
 	the windows drive/rdoc bug as a side effect.
 
 2004-06-17  Rich Kilmer <rich@infoether.com>

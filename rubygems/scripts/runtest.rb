@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'test/unit'
+require 'pp'
 
 def run_tests(pattern='test/test*.rb', log_enabled=false)
   Dir["#{pattern}"].each { |fn|

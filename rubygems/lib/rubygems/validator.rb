@@ -1,8 +1,14 @@
 module Gem
 
+  ##
+  # Validator performs various gem file and gem database validation
   class Validator
- 
-    def verify(gem_data)
+
+    ##
+    # Given a gem file's contents, validates against is own MD5 checksum
+    # 
+    # gem_data:: [String] Contents of the gem file
+    def verify_gem(gem_data)
       if(gem_data.size == 0) then
         raise "Empty Gem file"
       end
@@ -12,6 +18,7 @@ module Gem
       end
     end
 
+    private
     def display_alien_report(errors)
       errors.each do |key, val|
         if(val.size > 0) then 
@@ -37,14 +44,18 @@ module Gem
       }
       installed_files
     end
-  
-      ErrorData = Struct.new(:path, :problem)
-    # This is really ugly for now.  Sorry. :)  Will clean up later.  
-    # Work in progress
+ 
+
+    public 
+    ErrorData = Struct.new(:path, :problem)
+
+    ##
+    # Checks the gem directory for the following potential 
+    # inconsistencies/problems:
     # * Checksum gem itself
-    # * Foreach file in each gem, check consistency of installed versions
-    # * check for files that aren't part of the gem but are in the gems directory
-    # * 1 cache - 1 spec - 1 directory.  check for inconsistencies
+    # * For each file in each gem, check consistency of installed versions
+    # * Check for files that aren't part of the gem but are in the gems directory
+    # * 1 cache - 1 spec - 1 directory.  
     def alien
       puts "Checking gem database for inconsistencies"
       require 'rubygems/installer'

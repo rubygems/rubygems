@@ -134,7 +134,7 @@ module Gem
     # Creates the scripts to run the applications in the gem.
     #
     def generate_bin_scripts(spec)
-      if spec.executables
+      if spec.executables && ! spec.executables.empty?
         bindir = Config::CONFIG['bindir']
         raise Gem::FilePermissionError.new(bindir) unless File.writable?(bindir)
         spec.executables.each do |filename|

@@ -1,3 +1,9 @@
+2005-01-27  Chad Fowler  <chad@chadfowler.com>
+	* lib/rubygems/gem_commands.rb: Fixed
+	`gem update` so it accepts a list of gems to update and _only_
+	updates those.
+	* lib/rubygems/installer.rb: Fixed a bug in the new shebang code.
+
 2005-01-22  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems/custom_require.rb: Lyle Johnson's fix for Bug #1379
 

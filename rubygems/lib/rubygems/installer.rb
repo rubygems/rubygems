@@ -153,10 +153,14 @@ module Gem
 
     def shebang(spec, install_dir, file_name)
       first_line = ""
-      File.open(File.join(install_dir, "gems", spec.full_name, file_name), "rb") do |file|
+      File.open(File.join(install_dir, "gems", spec.full_name, spec.bindir,file_name), "rb") do |file|
         first_line = file.readlines("\n").first 
       end
-      first_line.sub(/\A\#!\s*\S*ruby\S*/, "#!" + File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])) #Thanks RPA
+      if first_line =~ /^#!/ then
+        first_line.sub(/\A\#!\s*\S*ruby\S*/, "#!" + File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])) #Thanks RPA
+      else
+        File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])
+      end
     end
 
     ##

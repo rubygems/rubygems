@@ -206,7 +206,8 @@ module Gem
       latest = {}
       all_partials(gemdir).each do |gp|
 	base = File.basename(gp)
-	name, version = base.split('-')
+        matches = /(.*)-([0-9]+\.[0-9]+\.[0-9]+)/.match(base)
+	name, version = [matches[1], matches[2]]
 	ver = Gem::Version.new(version)
 	if latest[name].nil? || ver > latest[name][0]
 	  latest[name] = [ver, gp]

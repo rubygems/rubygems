@@ -2,6 +2,7 @@
 	* lib/rubygems/gem_commands.rb:  If file match during local install is
 	a directory, don't try to treat it erroneously as a gem (bug reported
 	by Rich).
+	* lib/rubygems.rb:  Fixed small bug in #latest_load_paths
 
 2004-09-14  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems.rb: Fixed bug in require_gem (thanks Jamis Buck!)

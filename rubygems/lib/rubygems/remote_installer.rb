@@ -1,9 +1,12 @@
 module Gem
 
   class RemoteInstaller
-    def initialize(package_name, version_req = nil)
+    # package_name:: [String] Name of the Gem to install
+    # version_requirement:: [default = "> 0.0.0"] Gem version requirement to install
+    #
+    def initialize(package_name, version_requirement = "> 0.0.0")
       @package_name = package_name
-      @version_req = version_req
+      @version_requirement = Version::Requirement.new(version_requirement)
     end
 
     ##
@@ -34,7 +37,6 @@ module Gem
     # Return a list of the sources that we can download gems from
     def get_cache_sources
       # TODO
-      #return ["http://www.chadfowler.com:8808", "http://localhost:8080"]
       return ["http://www.chadfowler.com:8808"]
     end
 
@@ -53,15 +55,20 @@ module Gem
     end
 
     def find_latest_valid_package_in_caches(caches)
-      # TODO: For now, we just return the first package we find that matches
+      max_version = Version.new("0.0.0")
+      package = []
       caches.each do |source, cache|
         cache.each do |name, spec|
-          if /#{@package_name}/ === name then
-            return spec, source
+          if (/#{@package_name}/ === name && 
+                spec.version > max_version &&
+                @version_requirement.satisfied_by?(spec.version)) then
+            package = [spec, source]
+            max_version = spec.version
           end
         end
       end
-      raise "Could not find #{@package_name}"
+      raise "Could not find #{@package_name} #{@version_requirement.version}" unless max_version > Version.new("0.0.0")
+      package
     end
 
     def find_dependencies_not_installed(dependencies)

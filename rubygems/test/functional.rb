@@ -12,7 +12,7 @@ class FunctionalTest < Test::Unit::TestCase
   end
 
   def test_gem_help
-    gem '--help'
+    gem '--help-options'
     assert_match(/Usage:/, @out)
     assert_status
   end

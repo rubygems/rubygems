@@ -80,7 +80,7 @@ module Gem
     # return:: [Gem::Cache] cache of Gem::Specifications
     #
     def source_index
-      @@source_index ||= Cache.from_installed_gems
+      @@source_index ||= SourceIndex.from_installed_gems
       @@source_index.refresh!
     end
 

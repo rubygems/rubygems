@@ -71,7 +71,7 @@ module Gem
       require 'find'
       require 'md5'
       errors = {}
-      Gem::Cache.from_installed_gems.each do |gem_name, gem_spec|
+      Gem::SourceIndex.from_installed_gems.each do |gem_name, gem_spec|
         errors[gem_name] ||= []
         gem_path = File.join(Gem.dir, "cache", gem_spec.full_name) + ".gem"
         spec_path = File.join(Gem.dir, "specifications", gem_spec.full_name) + ".gemspec"

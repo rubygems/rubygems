@@ -178,7 +178,7 @@ module Gem
         end
         if options[:test]
           installed_gems.each do |spec|
-            gem_spec = Gem::Cache.from_installed_gems.search(spec.name, spec.version.version).first
+            gem_spec = Gem::SourceIndex.from_installed_gems.search(spec.name, spec.version.version).first
             result = Gem::Validator.new.unit_test(gem_spec)
             unless result.passed?
               unless ask_yes_no("...keep Gem?", true) then
@@ -244,7 +244,7 @@ module Gem
     def execute
       if options[:test]
         version = options[:version] || "> 0.0.0"
-        gem_spec = Gem::Cache.from_installed_gems.search(get_one_gem_name, version).first
+        gem_spec = Gem::SourceIndex.from_installed_gems.search(get_one_gem_name, version).first
         Gem::Validator.new.unit_test(gem_spec)
       end
       if options[:alien]
@@ -516,7 +516,7 @@ module Gem
     def execute
       say "Upgrading installed gems..."
       hig = highest_installed_gems = {}
-      Gem::Cache.from_installed_gems.each do |name, spec|
+      Gem::SourceIndex.from_installed_gems.each do |name, spec|
         if hig[spec.name].nil? or hig[spec.name].version < spec.version
           hig[spec.name] = spec
         end
@@ -579,13 +579,13 @@ module Gem
 
     def execute
       if options[:all]
-        Gem::Cache.from_installed_gems.each do |name, spec|
+        Gem::SourceIndex.from_installed_gems.each do |name, spec|
           say "Doing gem #{spec.name}"
           Gem::DocManager.new(spec).generate_rdoc
         end
       else
         gem_name = get_one_gem_name
-        specs = Gem::Cache.from_installed_gems.search(gem_name, options[:version])
+        specs = Gem::SourceIndex.from_installed_gems.search(gem_name, options[:version])
         if specs.empty?
           #version = options[:version] || "> 0.0.0"
           fail "Failed to find gem #{gem_name} to generate RDoc for #{options[:version]}"
@@ -685,7 +685,7 @@ module Gem
     def execute
       if local?
         gem = get_one_gem_name
-        gem_specs = Gem::Cache.from_installed_gems.search(gem, options[:version])
+        gem_specs = Gem::SourceIndex.from_installed_gems.search(gem, options[:version])
         unless gem_specs.empty?
           require 'yaml'
           output = lambda { |spec| say spec.to_yaml; say "\n" }
@@ -763,7 +763,7 @@ module Gem
     # XXX: It just uses Gem.dir for now.  What's an easy way to get the list of source directories? 
     #
     def get_path(gemname, version_req)
-      specs = Cache.from_installed_gems.search(gemname, version_req)
+      specs = SourceIndex.from_installed_gems.search(gemname, version_req)
       selected = specs.sort_by { |s| s.full_name }.last
       return nil if selected.nil?
       # We expect to find (basename).gem in the 'cache' directory.  Furthermore, the name match

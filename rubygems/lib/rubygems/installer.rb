@@ -466,7 +466,7 @@ TEXT
     #
     def uninstall
       require 'fileutils'
-      list = Cache.from_installed_gems.search(@gem, @version)
+      list = Gem::SourceIndex.from_installed_gems.search(@gem, @version)
       if list.size == 0 
         raise "Unknown RubyGem: #{@gem} (#{@version})"
       elsif list.size > 1

@@ -75,13 +75,13 @@ if __FILE__ == $0
     fn = File.join(options[:gemdir] || Gem.dir, "specifications")
     res['content-type'] = 'text/plain'
     res['date'] = File.stat(fn).mtime
-    res.body << Gem::Cache.from_installed_gems(fn).to_yaml
+    res.body << Gem::SourceIndex.from_installed_gems(fn).to_yaml
   }
 
   s.mount_proc("/") { |req, res|
     specs = []
     specifications_dir = File.join(options[:gemdir] || Gem.dir, "specifications")
-    Gem::Cache.from_installed_gems(specifications_dir).each do |path, spec|
+    Gem::SourceIndex.from_installed_gems(specifications_dir).each do |path, spec|
       specs << {
         "name"           => spec.name,
         "version"        => spec.version,

@@ -1,5 +1,6 @@
 require 'test/unit'
 require 'rubygems'
+Gem::manage_gems
 
 class TestCache < Test::Unit::TestCase
 

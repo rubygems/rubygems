@@ -1,3 +1,11 @@
+2004-06-10  Rich Kilmer <rich@infoether.com>
+        * require 'rubygems' now minimally requires only the files needed
+          for runtime access to gems...not management of gems.  To manage
+          gems you now additionally need to execute Gem::manage_gems prior
+          to using the builder/installer/etc.  This makes gemspecs not 
+          backward compatible unless they add that line to the gemspec 
+          after the require 'rubygems' line.
+
 2004-06-10  Gavin Sinclair <gsinclair@soyabean.com.au>
 	* bin/gem: --upgrade-all was broken, probably as a result of the
 	  search changes listed below.

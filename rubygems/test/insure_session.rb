@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
+Gem::manage_gems
 
 def install_session
   path_to_gem = File.join("redist", "session.gem")

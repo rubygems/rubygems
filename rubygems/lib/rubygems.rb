@@ -72,6 +72,16 @@ module Gem
   @@cache = nil  
   
   class << self
+  
+    def manage_gems
+      require 'rubygems/builder'
+      require 'rubygems/format'
+      require 'rubygems/remote_installer'
+      require 'rubygems/installer'
+      require 'rubygems/validator'
+      require 'rubygems/doc_manager'
+    end
+  
     ##
     # Returns an Cache of specifications that are in the Gem.path
     #
@@ -173,11 +183,5 @@ module Gem
 end
 
 require 'rubygems/cache'
-require 'rubygems/builder'
-require 'rubygems/installer'
 require 'rubygems/specification'
-require 'rubygems/remote_installer'
 require 'rubygems/version'
-require 'rubygems/validator'
-require 'rubygems/format'
-require 'rubygems/doc_manager'

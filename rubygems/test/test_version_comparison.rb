@@ -1,5 +1,6 @@
 require 'test/unit'
 require 'rubygems'
+Gem::manage_gems
 
 module VersionTestingHelp
   def assert_adequate(version, requirement)

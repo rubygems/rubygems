@@ -1,5 +1,6 @@
 require 'test/unit'
 require 'rubygems'
+Gem::manage_gems
 
 class TestSpecification < Test::Unit::TestCase
   def setup

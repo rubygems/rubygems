@@ -1,4 +1,5 @@
 require 'rubygems'
+Gem::manage_gems
 require 'test/unit'
 require 'stringio'
 

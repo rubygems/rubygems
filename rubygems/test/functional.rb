@@ -1,5 +1,6 @@
 require 'test/unit'
 require 'rubygems'
+Gem::manage_gems
 require 'yaml'
 require 'fileutils'
 require 'test/insure_session'

@@ -1,5 +1,6 @@
 require 'test/unit'
 require 'rubygems'
+Gem::manage_gems
 
 class TestValidator < Test::Unit::TestCase
   def test_missing_gem_throws_error

@@ -1,4 +1,5 @@
 require 'rubygems'
+Gem::manage_gems
 
 spec = Gem::Specification.new do |s|
   s.name = 'cgikit'
@@ -12,5 +13,6 @@ spec = Gem::Specification.new do |s|
   s.homepage = 'http://www.spice-of-life.net/download/cgikit/'
 end
 if $0==__FILE__
+  Gem::manage_gems
   Gem::Builder.new(spec).build
 end

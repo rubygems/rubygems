@@ -1,5 +1,6 @@
 require 'test/unit'
 require 'rubygems'
+Gem::manage_gems
 
 class TestBuilder < Test::Unit::TestCase
   def test_invalid_spec_does_not_build

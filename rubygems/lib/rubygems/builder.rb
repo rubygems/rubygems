@@ -27,6 +27,7 @@ if $0 == __FILE__
   end
 
   require 'rubygems'
+  Gem::manage_gems
   @directory = options[:directory] || Gem.dir  
   @force = options[:force]
 

@@ -6,6 +6,8 @@ require 'rubygems'
 require 'yaml'
 require 'pp'
 
+Gem.manage_gems
+
 class RubyGemsInfo
 
   HELP = %{

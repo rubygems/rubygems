@@ -5,6 +5,7 @@ require 'fileutils'
 
 require 'rubygems/remote_installer'
 require 'test/yaml_data'
+require 'test/gemutilities'
 
 class TestCachedFetcher < Test::Unit::TestCase
   SOURCE_URI = "http://localhost:12344"
@@ -28,7 +29,7 @@ class TestCachedFetcher < Test::Unit::TestCase
   end
 
   def setup
-    make_cache_area(GEMHOME)
+    make_cache_area(GEMHOME, "http://localhost:12344")
     Gem.clear_paths
     Gem.use_paths(GEMHOME)
     @cf = Gem::CachedFetcher.new(SOURCE_URI, nil)
@@ -53,9 +54,7 @@ class TestCachedFetcher < Test::Unit::TestCase
     assert_equal 0, @mf.count
   end
 
-  def make_cache_area(path)
-    FileUtils.mkdir_p path unless File.exists? path
-    sc_filename = File.join(path, 'source_cache')
-    open(sc_filename, 'w') do |f| f.write cache_hash(SOURCE_URI).to_yaml end
+  def make_cache_area(path, *uris)
+    Utilities.make_cache_area(path, *uris)
   end
 end

@@ -1,3 +1,9 @@
+2004-10-02  Chad Fowler <chad@chadfowler.com>
+
+	* lib/rubygems/validator.rb,lib/rubygems/gem_commands.rb: Added
+	--test option for "gem check" that runs unit tests on already-
+	installed gems.
+
 2004-09-30  Rich Kilmer  <rich@infoether.com>
 
         * lib/rubygems/specification.rb -  externalized the loaded_from runtime 

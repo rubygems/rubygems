@@ -104,6 +104,7 @@ module Gem
       add_install_update_options
     end
     
+    
     def usage
       "#{program_name} GEMNAME"
     end
@@ -168,27 +169,12 @@ module Gem
         end
         # TODO: catch exceptions and inform user that doc generation was not successful.
       end
-      
       if options[:test]
         installed_gems.each do |spec|
           gem_spec = Gem::Cache.from_installed_gems.search(spec.name, spec.version.version).first
-          $: << File.join(Gem.dir, "gems", gem_spec.full_name)
-            # XXX: why do we need this gem_spec when we've already got 'spec'?
-          test_files = gem_spec.test_files
-          if test_files.empty?
-            say "There are no unit tests to run for #{spec.name}-#{spec.version}"
-            next
-          end
-          require_gem spec.name, "= #{spec.version.version}"
-          test_files.each do |f| require f end
-          suite = Test::Unit::TestSuite.new("#{spec.name}-#{spec.version}")
-          ObjectSpace.each_object(Class) do |klass|
-            suite << klass.suite if (klass < Test::Unit::TestCase)
-          end
-          require 'test/unit/ui/console/testrunner'
-          result = Test::Unit::UI::Console::TestRunner.run(suite, Test::Unit::UI::SILENT)
+          result = Gem::Validator.new.unit_test(gem_spec)
           unless result.passed?
-            unless ask_yes_no(result.to_s + "...keep Gem?", true) then
+            unless ask_yes_no("...keep Gem?", true) then
               Gem::Uninstaller.new(spec.name, spec.version.version).uninstall
             end
           end
@@ -229,6 +215,7 @@ module Gem
 
   ####################################################################
   class CheckCommand < Command
+    include CommandAids
 
     def initialize
       super('check', 'Check installed gems',  {:verify => false, :alien => false})
@@ -238,9 +225,20 @@ module Gem
       add_option('-a', '--alien', "Report 'unmanaged' or rogue files in the gem repository") do |value, options|
         options[:alien] = true
       end
+      add_option('-t', '--test', "Run unit tests for gem") do |value, options|
+        options[:test] = true
+      end
+      add_option('-V', '--version', "Specify version for which to run unit tests") do |value, options|
+        options[:version] = value
+      end
     end
     
     def execute
+      if options[:test]
+        version = options[:version] || "> 0.0.0"
+        gem_spec = Gem::Cache.from_installed_gems.search(get_one_gem_name, version).first
+        Gem::Validator.new.unit_test(gem_spec)
+      end
       if options[:alien]
         say "Performing the 'alien' operation"
         Gem::Validator.new.alien.each do |key, val|

@@ -5,6 +5,7 @@ module Gem
   ##
   # Validator performs various gem file and gem database validation
   class Validator
+    include UserInteraction
 
     ##
     # Given a gem file's contents, validates against its own MD5 checksum
@@ -14,6 +15,11 @@ module Gem
         raise VerificationError.new("Empty Gem file")
       end
       require 'md5'
+     unless(gem_data =~ /MD5SUM/m)
+       return # Don't worry about it...this sucks.  Need to fix MD5 stuff for
+		# new format
+		# FIXME
+      end
       unless (MD5.md5(gem_data.gsub(/MD5SUM = "([a-z0-9]+)"/, "MD5SUM = \"" + ("F" * 32) + "\"")) == $1.to_s) 
         raise VerificationError.new("Invalid checksum for Gem file")
       end
@@ -70,7 +76,6 @@ module Gem
         gem_path = File.join(Gem.dir, "cache", gem_spec.full_name) + ".gem"
         spec_path = File.join(Gem.dir, "specifications", gem_spec.full_name) + ".gemspec"
         gem_directory = File.join(Gem.dir, "gems", gem_spec.full_name)
-    
         installed_files = find_files_for_gem(gem_directory)
     
         if(!File.exist?(spec_path)) then
@@ -105,6 +110,32 @@ module Gem
         end
       end
       errors
+    end
+   
+    ##
+    # Runs unit tests for a given gem specification
+    def unit_test(gem_spec)
+      $: << File.join(Gem.dir, "gems", gem_spec.full_name)
+        # XXX: why do we need this gem_spec when we've already got 'spec'?
+      test_files = gem_spec.test_files
+      if test_files.empty?
+        say "There are no unit tests to run for #{gem_spec.name}-#{gem_spec.version}"
+        return
+      end
+      require_gem gem_spec.name, "= #{gem_spec.version.version}"
+      test_files.each do |f| require f end
+      require 'test/unit/ui/console/testrunner'
+      suite = Test::Unit::TestSuite.new("#{gem_spec.name}-#{gem_spec.version}")
+      ObjectSpace.each_object(Class) do |klass|
+        suite << klass.suite if (klass < Test::Unit::TestCase)
+      end
+      result = Test::Unit::UI::Console::TestRunner.run(suite, Test::Unit::UI::SILENT)
+      unless result.passed?
+        alert_error(result.to_s)
+        #unless ask_yes_no(result.to_s + "...keep Gem?", true) then
+          #Gem::Uninstaller.new(gem_spec.name, gem_spec.version.version).uninstall
+        #end
+      end
     end
 
     def remove_leading_dot_dir(path)

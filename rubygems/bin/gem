@@ -35,7 +35,7 @@ end
 class RubyGemsOptions
   
   def initialize
-    @directory = Gem.dir  # TODO: should this be done here?
+    @install_dir = Gem.dir  # TODO: should this be done here?
     @domain    = :both
   end
 
@@ -50,7 +50,7 @@ class RubyGemsOptions
 
   # --- Modifiers ---
 
-  attr_accessor :config_file, :directory, :force, :gen_rdoc, :run_tests, :http_proxy, :gem_version
+  attr_accessor :config_file, :install_dir, :force, :gen_rdoc, :run_tests, :http_proxy, :gem_version
 
   # Specifies whether we are working in the :local or :remote domain (or +nil+ for
   # both/neither).
@@ -154,7 +154,7 @@ class RubyGemsApp
       if gempath = config['gempath']
         gempath = [gempath] unless gempath.is_a? Array
         # TODO: Set GEMPATH now -- how?
-        options.directory = gempath[0]
+        options.install_dir = gempath[0]
       end
     end
 
@@ -254,7 +254,7 @@ BANNER
   
       op.on(      '--config-file FILE', "Use this config file instead of default") {}
           # We ignore config files at this stage; they should have been dealt with already.
-      op.on(      '--install-dir DIR',  "Specify RubyGems installation directory") {|o.directory|}
+      op.on(      '--install-dir DIR',  "Specify RubyGems installation directory") {|o.install_dir|}
       op.on(      '--force',            "Force gem to intall, bypassing dependency checks") {|o.force|}
       op.on(      '--gen-rdoc',         "Generate RDoc documentation for the gem on install") {|o.gen_rdoc|}
       op.on(      '--run-tests',        "Run unit tests prior to installation") {|o.run_tests|}
@@ -547,7 +547,7 @@ class RubyGemsFacade
       end
     end
     installer = Gem::Installer.new(path)
-    result = installer.install(@options.force, @options.directory)
+    result = installer.install(@options.force, @options.install_dir)
     [result].flatten
   end
 
@@ -561,7 +561,7 @@ class RubyGemsFacade
   def _install_remote(name)
     installer = _get_remote_installer
     begin
-      installed_gems = installer.install(name, @options.gem_version, @options.force, @options.directory)
+      installed_gems = installer.install(name, @options.gem_version, @options.force, @options.install_dir)
     rescue Exception => e
         $stderr.puts e.to_s
         exit 1

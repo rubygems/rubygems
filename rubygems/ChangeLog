@@ -1,3 +1,21 @@
+2004-07-03  Jim Weirich  <jim@weirichhouse.org>
+
+	* test/functional.rb (FunctionalTest::test_gemrc): Added
+	functional test for gemrc.
+
+	* scripts/gemdoc.data: Added an example to the specification command.
+
+	* lib/rubygems.rb (Gem::Exception::manage_gems): Added gem_runner
+	and config_file to manage_gems.
+	(Gem::Exception::use_paths): use_paths now accepts (and ignores)
+	nil parameters.
+
+	* bin/gem: Make Gem::GemRunner the top level object.  It now
+	creates and calls the CommandManager /after/ the arguments are
+	processed.
+
+	* Rakefile: Added test/data/gemhome to clobber list.
+
 2004-07-01  Jim Weirich  <jim@weirichhouse.org>
 
 	* test/test_specification.rb

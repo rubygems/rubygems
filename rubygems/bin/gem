@@ -111,7 +111,7 @@ class RubyGemsApp
     when :build
       facade.build(arg)
     when :alien
-      facade.alien(arg)
+      facade.alien()
     when :verify
       facade.verify(arg)
     else

@@ -85,7 +85,6 @@ module Gem
           verify_gem(gem_path)
           File.open(gem_path) do |file|
             format = Gem::Format.from_file(gem_path)
-
             format.file_entries.each do |entry, data|
               # Found this file.  Delete it from list
 	      installed_files.delete entry['path']
@@ -97,7 +96,12 @@ module Gem
         rescue => e
           errors[gem_name] << ErrorData.new(gem_path, e.message)
         end
-    
+        # Clean out directories that weren't explicitly included in the gemspec
+        # FIXME: This still allows arbitrary incorrect directories.
+        installed_files.delete_if {|potential_directory|	
+          File.directory?(File.join(gem_directory, potential_directory))
+        }
+
         if(installed_files.size > 0) then
           errors[gem_name] << ErrorData.new(gem_path, "Unmanaged files in gem: #{installed_files.inspect}")
         end

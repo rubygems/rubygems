@@ -7,6 +7,8 @@ SECTIONS:
       - description                     
       - platform                        
       - required_ruby_version           
+      - requirements
+      - dependencies
   
   - name: "Files, Libraries, and Executables"
     attributes:
@@ -116,6 +118,17 @@ ATTRIBUTES:
       This is not an in-demand feature.
 
       ''XXX: Is the full path necessary?''"
+
+  - name: dependencies
+    klass: ???
+    mandatory: false
+    default: 
+    description:
+      "XXX: Write me!"
+    usage:
+        ...
+    notes:
+      ...
 
   - name: description
     klass: String
@@ -329,6 +342,17 @@ ATTRIBUTES:
         spec.required_ruby_version = '>= 1.8.1'
     notes:
       See the RubyGems wiki for documentation on specifying versions.
+
+  - name: requirements
+    klass: ???
+    mandatory: false
+    default: 
+    description:
+      "XXX: Write me!"
+    usage:
+        ...
+    notes:
+      ...
 
   - name: rubyforge_project
     klass: String

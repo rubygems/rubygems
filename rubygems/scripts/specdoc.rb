@@ -17,7 +17,7 @@ end
 
   # Returns a link to the given anchor on the page.
 def _link(attribute, text=nil)
-  link = "http://rubygems.rubyforge.org/wiki/wiki.pl?GemspecsInDetail##{attribute}"
+  link = "http://rubygems.rubyforge.org/wiki/wiki.pl?GemspecReference##{attribute}"
   "[#{link} #{text || attribute}]"
 end
 

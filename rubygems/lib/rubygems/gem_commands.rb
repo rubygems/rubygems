@@ -337,7 +337,7 @@ module Gem
         {:name=>/.*/, :domain=>:local, :details=>false}
         )
       add_option('-n', '--name-matches REGEXP', 'Name of gem(s) to query on maches the provided REGEXP') do |value, options|
-        options[:name] = Regexp.compile(value)
+        options[:name] = /#{value}/i
       end
       add_option('-d', '--[no-]details', 'Display detailed information of gem(s)') do |value, options|
         options[:details] = value

@@ -1,3 +1,6 @@
+2004-08-11  Chad Fowler <chad@chadfowler.com>
+       * lib/rubygems/gem_commands.rb: query is now case insensitive (as it used to be)
+
 2004-08-11  Rich Kilmer <rich@infoether.com>
 
         * removed String.to_requirement...we should not modify 

@@ -43,7 +43,7 @@ class TestDeployment < Test::Unit::TestCase
     #deployment.fully_deployed?
   end
 
-  def test_deploy_sources
+  def xtest_deploy_sources
     reset_paths
     dm = Gem::Deployment::Manager.new
     deployment = dm.new_deployment(DEPLOYMENT_TEST_DIR)

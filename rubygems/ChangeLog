@@ -1,3 +1,8 @@
+2005-03-06  Rich Kilmer <rich@infoether.com>
+	* lib/rubygems/deployment.rb: beginning of a deployment capability
+
+	* test/test_deployment.rb: first tests of new deployment system
+
 2005-03-04  Chad Fowler <chad@chadfowler.com>
 	* lib/rubygems/gem_commands.rb: Small bugfix for the case when you
 	pass in a gem name (or more) to cleanup for the cleanup command.

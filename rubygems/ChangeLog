@@ -1,5 +1,16 @@
 2004-07-03  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/doc_manager.rb (Gem::DocManager::generate_rdoc):
+	Concatenate the local rdoc options to the end of the spec's rdoc
+	options.
+	(Gem::DocManager::configured_args): Added configured_args as a
+	place to store local rdoc options.
+
+	* lib/rubygems/gem_runner.rb (Gem::GemRunner::do_configuration):
+	Configuration handled in do_configuration now.
+	(Gem::GemRunner::do_configuration): Set the local rdoc
+	configuration from the config file.
+
 	* lib/rubygems/command.rb (Gem::Command::handles): Added a
 	handles? method to Command so that we can detect which extra
 	arguments can be used with a command.

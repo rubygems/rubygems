@@ -55,7 +55,7 @@ end
 #
 module Gem
 
-  RubyGemsVersion = "0.2.0"
+  RubyGemsVersion = "1.0"
   @@cache = nil  
   
   ##

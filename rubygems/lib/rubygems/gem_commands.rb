@@ -530,16 +530,11 @@ module Gem
       # the first and only element.  If there were more remote sources, perhaps there would be
       # more.
       remote_gemspecs = remote_gemspecs.flatten
-      gems_to_update = []
-      highest_installed_gems.each do |l_name, l_spec|
-        hrg = highest_remote_gem =
-          remote_gemspecs.select  { |spec| spec.name == l_name }.
-                          sort_by { |spec| spec.version }.
-                          last
-        if hrg and l_spec.version < hrg.version
-          gems_to_update << l_name
-        end
-      end
+      gems_to_update =  if(options[:args].empty?) then
+                          which_to_install(highest_installed_gems)
+                        else
+                          options[:args]
+                        end
       options[:domain] = :remote # install from remote source
       install_command = command_manager['install']
       gems_to_update.uniq.sort.each do |name|
@@ -549,6 +544,18 @@ module Gem
         install_command.execute
       end
       say "All gems up to date"
+    end
+
+    def which_to_update(highest_installed_gems)
+      highest_installed_gems.each do |l_name, l_spec|
+        hrg = highest_remote_gem =
+          remote_gemspecs.select  { |spec| spec.name == l_name }.
+                          sort_by { |spec| spec.version }.
+                          last
+        if hrg and l_spec.version < hrg.version
+          gems_to_update << l_name
+        end
+      end
     end
 
     def command_manager

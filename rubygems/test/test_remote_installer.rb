@@ -38,6 +38,7 @@ class TestRemoteInstaller < Test::Unit::TestCase
   PROPER_SOURCES = %w( http://gems.rubyforge.org )
 
   def setup
+    Gem.clear_paths
     @installer = Gem::RemoteInstaller.new
     @installer.instance_variable_set("@fetcher_class", MockFetcher)
   end

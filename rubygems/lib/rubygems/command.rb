@@ -34,14 +34,19 @@ module Gem
       ""
     end
 
+    # This is just like the 'arguments' method, except it describes the default options used.
+    def defaults_str
+      ""
+    end
+
     def invoke(*args)
       handle_options(args)
       if options[:help]
-	show_help
+        show_help
       elsif @when_invoked
-	@when_invoked.call(options)
+        @when_invoked.call(options)
       else
-	execute
+        execute
       end
     end
     
@@ -64,10 +69,10 @@ module Gem
 
     def handles?(args)
       begin
-	parser.parse!(args.dup)
-	return true
+        parser.parse!(args.dup)
+        return true
       rescue
-	return false
+        return false
       end
     end
 
@@ -84,10 +89,10 @@ module Gem
       result = []
       extra = Command.extra_args.dup
       while ! extra.empty?
-	ex = []
-	ex << extra.shift
-	ex << extra.shift if extra.first.to_s =~ /^[^-]/
-	result << ex if handles?(ex)
+        ex = []
+        ex << extra.shift
+        ex << extra.shift if extra.first.to_s =~ /^[^-]/
+        result << ex if handles?(ex)
       end
       result.flatten!
       result.concat(args)
@@ -105,56 +110,63 @@ module Gem
       @parser = OptionParser.new
       option_names = {}
       @parser.separator("")
-      if @option_list.size > 0
-	@parser.separator("  Options:")
-	configure_options(@option_list, option_names)
-	@parser.separator("")
+      unless @option_list.empty?
+        @parser.separator("  Options:")
+        configure_options(@option_list, option_names)
+        @parser.separator("")
       end
       @parser.separator("  Common Options:")
       configure_options(Command.common_options, option_names)
       @parser.separator("")
-      if arguments != ""
-	@parser.separator("  Arguments:")
-	arguments.split(/\n/).each do |arg_desc|
-	  @parser.separator("    #{arg_desc}")
-	end
-	@parser.separator("")
+      unless arguments.empty?
+        @parser.separator("  Arguments:")
+        arguments.split(/\n/).each do |arg_desc|
+          @parser.separator("    #{arg_desc}")
+        end
+        @parser.separator("")
       end
       @parser.separator("  Summary:")
       @parser.separator("    #@summary")
+      unless defaults_str.empty?
+        @parser.separator("")
+        @parser.separator("  Defaults:")
+        defaults_str.split(/\n/).each do |line|
+          @parser.separator("    #{line}")
+        end
+      end
     end
 
     def configure_options(option_list, option_names)
       option_list.each do |args, handler|
-	dashes = args.select { |arg| arg =~ /^-/ }
-	next if dashes.any? { |arg| option_names[arg] }
-	@parser.on(*args) do |value|
-	  handler.call(value, @options)
-	end
-	dashes.each do |arg| option_names[arg] = true end
+        dashes = args.select { |arg| arg =~ /^-/ }
+        next if dashes.any? { |arg| option_names[arg] }
+        @parser.on(*args) do |value|
+          handler.call(value, @options)
+        end
+        dashes.each do |arg| option_names[arg] = true end
       end
     end
 
     class << self
       def common_options
-	@common_options ||= []
+        @common_options ||= []
       end
     
       def add_common_option(*args, &handler)
-	Gem::Command.common_options << [args, handler]
+        Gem::Command.common_options << [args, handler]
       end
 
       def extra_args
-	@extra_args ||= []
+        @extra_args ||= []
       end
 
       def extra_args=(value)
-	case value
-	when Array
-	  @extra_args = value
-	when String
-	  @extra_args = value.split
-	end
+        case value
+        when Array
+          @extra_args = value
+        when String
+          @extra_args = value.split
+        end
       end
     end
 

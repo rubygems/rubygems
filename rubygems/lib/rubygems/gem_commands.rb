@@ -69,6 +69,10 @@ module Gem
         options[:stub] = value
       end
     end
+
+    def install_update_defaults_str
+      '--no-rdoc --no-force --no-test --install-stub'
+    end
   end
 
   ####################################################################
@@ -103,6 +107,11 @@ module Gem
 
     def arguments
       "GEMNAME   name of gem to install"
+    end
+
+    def defaults_str
+      "--both --version '> 0' --no-rdoc --no-force --no-test --install-stub\n" +
+      "--install-dir #{Gem.dir}"
     end
 
     def execute
@@ -186,6 +195,10 @@ module Gem
       add_option('-v', '--version VERSION', 'Specify version of gem to uninstall') do |value, options|
         options[:version] = value
       end
+    end
+
+    def defaults_str
+      "--version '> 0'"
     end
     
     def usage
@@ -324,10 +337,14 @@ module Gem
       add_option('-n', '--name-matches REGEXP', 'Name of gem(s) to query on maches the provided REGEXP') do |value, options|
         options[:name] = Regexp.compile(value)
       end
-      add_option('-d', '--details', 'Display detailed information of gem(s)') do |value, options|
-        options[:details] = true
+      add_option('-d', '--[no-]details', 'Display detailed information of gem(s)') do |value, options|
+        options[:details] = value
       end
       add_local_remote_options
+    end
+
+    def defaults_str
+      "--local --name-matches '.*' --no-details"
     end
     
     def execute
@@ -408,6 +425,10 @@ module Gem
       remove_option('--name-matches')
     end
 
+    def defaults_str
+      "--local --no-details"
+    end
+
     def usage
       "#{program_name} [STRING]"
     end
@@ -435,6 +456,10 @@ module Gem
       remove_option('--name-matches')
     end
 
+    def defaults_str
+      "--local --no-details"
+    end
+
     def usage
       "#{program_name} [STRING]"
     end
@@ -458,11 +483,21 @@ module Gem
       super(
         'update',
         'Upgrade all currently installed gems in the local repository',
-        {:stub=>true, :generate_rdoc=>false}
-        )
+        {
+          :generate_rdoc => false, 
+          :force => false, 
+          :test => false, 
+          :stub => true, 
+          :install_dir => Gem.dir
+        })
       add_install_update_options
     end
     
+    def defaults_str
+      "--no-rdoc --no-force --no-test --install-stub\n" +
+      "--install-dir #{Gem.dir}"
+    end
+
     def execute
       say "Upgrading installed gems..."
       hig = highest_installed_gems = {}
@@ -480,8 +515,8 @@ module Gem
       highest_installed_gems.each do |l_name, l_spec|
         hrg = highest_remote_gem =
           remote_gemspecs.select  { |spec| spec.name == l_name }.
-          sort_by { |spec| spec.version }.
-          last
+                          sort_by { |spec| spec.version }.
+                          last
         if hrg and l_spec.version < hrg.version
           gems_to_update << l_name
         end
@@ -570,6 +605,10 @@ module Gem
         options[:version] = value
       end
       add_local_remote_options
+    end
+
+    def defaults_str
+      "--local --version '> 0.0.0'"
     end
 
     def usage

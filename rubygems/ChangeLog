@@ -1,6 +1,16 @@
+2004-07-05  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* lib/rubygems/command.rb (Gem::Command#defaults_str): added.
+
+	* lib/rubygems/command.rb (Gem::Command#create_option_parser):
+	  Defaults for the options are included in the parser output.
+
+	* lib/rubygems/gem_commands.rb: all commands which have options
+	  and defaults now have #defaults_str implemented.
+
 2004-07-05  Jim Weirich  <jim@weirichhouse.org>
 
-	* lib/rubygems/command.rb (Gem::Command::create_option_parser):
+	* lib/rubygems/command.rb (Gem::Command#create_option_parser):
 	Make the argument and option sections optional.  They are only
 	printed if there are options or arguments defined.
 

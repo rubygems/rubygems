@@ -5,6 +5,8 @@
 	* lib/rubygems/gem_commands.rb: Print which gems are updated on 'gem
 	update'.  If --system is used, report that the rubygems system
 	software has been updated.
+	* lib/rubygems/installer.rb: Cleaned up the uninstall has_dependents
+	logic and output.  It was misleading and buggy before.
 
 2005-02-27  Jim Weirich  <jim@weirichhouse.org>
 

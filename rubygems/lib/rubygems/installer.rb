@@ -566,17 +566,15 @@ TEXT
     end
 
     def has_dependents?(spec)
+      return false if spec.dependent_gems.size < 1
+      msg = ['You have requested to uninstall the gem:']
+      msg << "\t#{spec.name}-#{spec.version}"
       spec.dependent_gems.each do |gem,dep,satlist|
-        msg = ['You have requested to uninstall the gem:']
-        satlist.each do |sat|
-          msg << "\t#{sat.name}-#{sat.version}"
-        end
         msg << "#{gem.name}-#{gem.version} depends on [#{dep.name} (#{dep.version_requirements})]"
-        msg << 'If you remove this gem, the dependency will not be met.'
-        msg << 'Uninstall anyway?'
-        return !ask_yes_no(msg.join("\n"), false)
       end
-      false
+      msg << 'If you remove this gems, one or more dependencies will not be met.'
+      msg << 'Uninstall anyway?'
+      return !ask_yes_no(msg.join("\n"), false)
     end
 
     private

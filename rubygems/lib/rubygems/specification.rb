@@ -134,10 +134,20 @@ module Gem
       "#{@name}-#{@version}"
     end
     
+    ##
+    # The full path to the gem (install path + full name)
+    #
+    # return:: [String] the full gem path
+    #
     def full_gem_path
       File.join(installation_path, full_name)
     end
     
+    ##
+    # The root directory that the gem was installed into
+    #
+    # return:: [String] the installation path
+    #
     def installation_path
       (File.dirname(@loaded_from).split(File::SEPARATOR)[0..-2]).join(File::SEPARATOR)
     end

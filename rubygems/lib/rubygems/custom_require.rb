@@ -93,8 +93,8 @@ module Gem
     # Return a list of all installed gemspecs, sorted by alphabetical order and in reverse
     # version order.
     def init_gemspecs
-      Gem.source_index.map { |_, spec| spec }.sort_by { |spec|
-        [spec.name, spec.version.to_ints.map { |n| -n } ]
+      Gem.source_index.map { |_, spec| spec }.sort { |a,b|
+	(a.name <=> b.name).nonzero? || (b.version <=> a.version)
       }
     end
 

@@ -3,7 +3,7 @@ class String
   # To simplify conversion code.
   #
   def to_requirement
-    Gem::Version::Requirement.new(self)
+    Gem::Version::Requirement.new([self])
   end
 end
 
@@ -13,17 +13,17 @@ module Gem
   # The Dependency class holds a Gem name and Version::Requirement
   #
   class Dependency
-    attr_accessor :name, :version_requirement
+    attr_accessor :name, :version_requirements
     
     ##
     # Constructs the dependency
     #
     # name:: [String] name of the Gem
-    # version_requirement:: [String] version requirement (e.g. "> 1.2")
+    # version_requirement:: [String Array] version requirement (e.g. ["> 1.2"])
     #
-    def initialize(name, version_requirement)
+    def initialize(name, version_requirements)
       @name = name
-      @version_requirement = Version::Requirement.new(version_requirement)
+      @version_requirements = Version::Requirement.new(version_requirements)
     end
   end
   
@@ -96,28 +96,32 @@ module Gem
       return r <=> v
     end
 
+    # Return a new version object where the next to the last revision
+    # number is one greater. (e.g.  5.3.1 => 5.4)
+    def bump
+      ints = to_ints
+      ints.pop if ints.size > 1
+      ints[-1] += 1
+      self.class.new(ints.join("."))
+    end
     
     ##
     # Requirement version includes a prefaced comparator in addition
     # to a version number.
     #
-    class Requirement < Version
-  
-      EQ = 0
-      GT = 1
-      LT = -1
-  
+    class Requirement
       OPS = {
-              "=" =>  [ EQ ],
-              "!=" => [ GT, LT ],
-              ">" =>  [ GT ],
-              "<" =>  [ LT ],
-              ">=" => [ EQ, GT ],
-              "<=" => [ EQ, LT ]
+	"="  =>  lambda { |v, r| v == r },
+	"!=" =>  lambda { |v, r| v != r },
+	">"  =>  lambda { |v, r| v > r },
+	"<"  =>  lambda { |v, r| v < r },
+	">=" =>  lambda { |v, r| v >= r },
+	"<=" =>  lambda { |v, r| v <= r },
+	">*" =>  lambda { |v, r| v >= r && v < r.bump }
       }
         
-      OP_RE = Regexp.new(OPS.keys.join("|"))
-      REQ_RE = /\s*(#{OP_RE})\s*/
+      OP_RE = Regexp.new(OPS.keys.collect{|k| Regexp.quote(k)}.join("|"))
+      REQ_RE = /\s*(#{OP_RE}|>\*)\s*/
 
       ##
       # Used to simplify conversion code, especially from strings
@@ -139,23 +143,30 @@ module Gem
       ##
       # Constructs a version requirement instance
       #
-      # str:: [String] the version requirement string (e.g. "> 1.23")
+      # str:: [String Array] the version requirement string (e.g. ["> 1.23"])
       #
-      def initialize(str)
-        str = "= #{str}" unless str =~ OP_RE
-        super
-        @op, @nums = parse
+      def initialize(reqs)
+	@requirements = reqs.collect do |rq|
+	  rq = "= #{rq}" unless rq =~ OP_RE
+	  op, nums = parse(rq)
+	  fail ArgumentError, "Unknown Requirement Operator [#{op}]" if OPS[op].nil?
+	  version = Version.new(nums.join("."))
+	  [op, version]
+	end
       end
       
       ##
-      # Determines if the version requirement is satisfied by the supplied version
+      # Is the version requirement is satisfied by the supplied version?
       #
       # vn:: [Gem::Version] the version to compare against
-      # return:: [Boolean] true if this requirement is satisfied by the version, otherwise false
+      # return:: [Boolean] true if this requirement is satisfied by
+      #          the version, otherwise false 
       #
       def satisfied_by?(vn)
-        relation = vn <=> self
-        OPS[@op].include?(relation)
+	@requirements.each do |op, ver|
+	  return false unless OPS[op].call(vn, ver)
+	end
+	true
       end
   
       private
@@ -164,9 +175,9 @@ module Gem
       # parses the version requirement string, returning the
       # comparator and the number
       #
-      def parse
-        return @version.scan(/^\D+/).join.strip,
-               @version.scan(/\d+/).map {|s| s.to_i}
+      def parse(str)
+        return str.scan(/^\D+/).join.strip,
+               str.scan(/\d+/).map {|s| s.to_i}
       end
     end
   end

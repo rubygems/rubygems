@@ -292,6 +292,12 @@ TEXT
     end
     
 
+    #
+    # list:: the list of all gems to remove
+    #
+    # Warning: this method modifies the +list+ parameter.  Once it has uninstalled a gem, it is
+    # removed from that list.
+    #
     def remove_all(list)
       list.dup.each { |gem| remove(gem, list) }
     end

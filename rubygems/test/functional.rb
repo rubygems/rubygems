@@ -59,7 +59,7 @@ class FunctionalTest < Test::Unit::TestCase
 
   def test_env_remotesources
     gem 'environment remotesources'
-    assert_equal Gem::RemoteInstaller.new.get_cache_sources, @out.chomp.split("\n")
+    assert_equal Gem::RemoteInstaller.new.sources, @out.chomp.split("\n")
   end
 
   ONEDIR = "test/data/one"

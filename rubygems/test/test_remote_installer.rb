@@ -58,24 +58,24 @@ class RemoteInstallerTest < Test::Unit::TestCase
     end
   end
 
-  CACHE_SOURCE = "http://www.chadfowler.com:8808"
+  CACHE_SOURCE = "http://gems.rubyforge.org"
 
   def test_get_cache_sources
-    @remote_installer = RemoteInstaller.new('foo')
+    @remote_installer = RemoteInstaller.new
     assert_equal [CACHE_SOURCE], @remote_installer.get_cache_sources
     # TODO
   end
 
   def test_get_caches
-    @remote_installer = RemoteInstaller.new('foo')
+    @remote_installer = RemoteInstaller.new
   end
 
   def test_find_latest_valid_package_in_caches(cache)
-    @remote_installer = RemoteInstaller.new('foo')
+    @remote_installer = RemoteInstaller.new
   end
 
   def test_download_file
-    @remote_installer = RemoteInstaller.new('foo')
+    @remote_installer = RemoteInstaller.new
   end
 
   SAMPLE_SPEC = Gem::Specification.new do |s|
@@ -92,14 +92,14 @@ class RemoteInstallerTest < Test::Unit::TestCase
   CACHE_DIR = File.join(Gem.dir, 'cache')
 
   def test_install
-    @remote_installer = RemoteInstaller.new('foo')
+    @remote_installer = RemoteInstaller.new
     MockNetHTTP.responses = {
       CACHE_SOURCE + "/yaml" => http_success(SAMPLE_CACHE_YAML),
       "#{CACHE_SOURCE}/gems/foo-1.2.3.gem" => http_success(FOO_GEM)
     }
     @remote_installer.expected_destination_files = [File.join(CACHE_DIR, 'foo-1.2.3.gem')]
     @remote_installer.expected_bodies = [FOO_GEM]
-    result = @remote_installer.install
+    result = @remote_installer.install('foo')
     assert_equal nil, result
   end
 

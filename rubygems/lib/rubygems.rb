@@ -145,10 +145,10 @@ module Gem
     # Set the Gem search path (as reported by +path+).
     def set_paths(gpaths)
       if gpaths
-	@gem_path = gpaths.split(File::PATH_SEPARATOR)
-	@gem_path << Gem.dir
+        @gem_path = gpaths.split(File::PATH_SEPARATOR)
+        @gem_path << Gem.dir
       else
-	@gem_path = [Gem.dir]
+        @gem_path = [Gem.dir]
       end      
       @gem_path.uniq!
       @gem_path.each do |gp| check_gem_subdirectories(gp) end
@@ -177,7 +177,7 @@ module Gem
     def check_gem_subdirectories(gemdir)
       DIRECTORIES.each do |filename|
         fn = File.join(gemdir, filename)
-        puts "WARNING: GEM_PATH path #{path} does not exist" unless File.exist?(fn)
+        $stderr.puts "warning: GEM_PATH path #{fn} does not exist" unless File.exist?(fn)
       end
     end
   end

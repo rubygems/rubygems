@@ -26,6 +26,7 @@ class FunctionalTest < Test::Unit::TestCase
 
   def test_info
     gem '--rubygems-info'
+    
     assert_match /VERSION:\s+\d+\.\d+$/, @out
     assert_match /INSTALLATION DIRECTORY:/, @out
     assert_match /GEM PATH:/, @out

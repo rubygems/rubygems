@@ -35,12 +35,12 @@ module Gem
       ask(question) if question
     end
 
-    def terminate_interaction!(code=nil)
-      exit!
+    def terminate_interaction!(status=-1)
+      exit!(status)
     end
     
-    def terminate_interaction(code=nil)
-      exit(code)
+    def terminate_interaction(status=0)
+      exit(status)
     end
   end
 end

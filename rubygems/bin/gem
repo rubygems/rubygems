@@ -400,7 +400,7 @@ INFO
 
   def _show_rubygems_info
     say "RubyGems:"
-    say " - VERSION:                #{Gem::RubyGemsVersion}"
+    say " - VERSION: #{Gem::RubyGemsVersion}"
     say " - INSTALLATION DIRECTORY: #{Gem.dir}"
     say " - GEM PATH:"
     say Gem.path.map { |p| "     - #{p}" }

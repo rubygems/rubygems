@@ -115,7 +115,7 @@ module Gem
       dependencies.each do |dependency|
         print "Install required dependency #{dependency.name}? [Yn] "
         answer = STDIN.gets
-        if answer =~ /^y/i then
+        if(answer =~ /^y/i || answer =~ /^[^a-zA-Z0-9]$/) then
           remote_installer = RemoteInstaller.new
           remote_installer.install(dependency.name, dependency.version_requirement)
         else

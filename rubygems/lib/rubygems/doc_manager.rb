@@ -46,12 +46,12 @@ module Gem
       say "WARNING: Generating RDoc on .gem that may not have RDoc." unless @spec.has_rdoc?
       rdoc_dir = File.join(@doc_dir, "rdoc")
       begin
-        drive = nil
         source_dirs = @spec.require_paths.clone.concat(@spec.extra_rdoc_files)
         current_dir = Dir.pwd
         Dir.chdir(@spec.full_gem_path)
         begin
           @rdoc_args = rdoc_args_from_spec(@rdoc_args)
+	  @rdoc_args.concat(DocManager.configured_args)
           r = RDoc::RDoc.new
           r.document(['--op', rdoc_dir, '--template', 'kilmer'] + @rdoc_args.flatten + source_dirs)
         ensure
@@ -65,6 +65,21 @@ module Gem
     def uninstall_doc
       doc_dir = File.join(@spec.installation_path, "doc", @spec.full_name)
       FileUtils.rm_rf doc_dir
+    end
+
+    class << self
+      def configured_args
+	@configured_args ||= []
+      end
+
+      def configured_args=(args)
+	case args
+	when Array
+	  @configured_args = args
+	when String
+	  @configured_args = args.split
+	end
+      end
     end
     
   end

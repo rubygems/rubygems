@@ -174,6 +174,8 @@ module Gem
       def self.create(input)
         if input.kind_of?(Requirement)
           return input
+	elsif input.kind_of?(Array)
+	  return self.new(input)
         elsif input.respond_to? :to_str
           return self.new([input.to_str])
         else

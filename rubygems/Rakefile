@@ -113,11 +113,10 @@ spec = Gem::Specification.new do |s|
   s.name = PKG_NAME + "-update"  
   s.version = PKG_VERSION
   s.summary = "RubyGems Update GEM"
-  s.description = <<-EOF
-RubyGems is a package management framework for Ruby.  This Gem
+  s.description = %{RubyGems is a package management framework for Ruby.  This Gem
 is a update for the base RubyGems software.  You must have a base
 installation of RubyGems before this update can be applied.
-    EOF
+}
   s.files = PKG_FILES.to_a
   s.require_path = 'lib'
   s.author = "RubyGems Team"
@@ -146,3 +145,30 @@ task :rungem do
   ARGV.shift
   exec "ruby -Ilib bin/gem #{ARGV.join(' ')}"
 end
+
+# Misc Tasks ---------------------------------------------------------
+
+def egrep(pattern)
+  Dir['**/*.rb'].each do |fn|
+    count = 0
+    open(fn) do |f|
+      while line = f.gets
+	count += 1
+	if line =~ pattern
+	  puts "#{fn}:#{count}:#{line}"
+	end
+      end
+    end
+  end
+end
+
+desc "Look for TODO and FIXME tags in the code"
+task :todo do
+  egrep /#.*(FIXME|TODO|TBD)/
+end
+
+desc "Look for Debugging print lines"
+task :dbg do
+  egrep /DBG/
+end
+

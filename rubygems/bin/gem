@@ -89,7 +89,7 @@ def _info(message)
 end
 
 
-def _die(message)
+def die(message)
   STDERR.puts message
   exit!
 end
@@ -203,7 +203,7 @@ class RubyGemsApp
     when :verify
       facade.verify(arg)
     else
-      _die "Invalid operation: #{options.operation}"
+      die "Invalid operation: #{options.operation}"
     end
   end
 
@@ -258,10 +258,10 @@ class RubyGemsApp
     if File.exist?(config_file)
       return YAML.load(File.read(config_file))
     else
-      _die "Config file #{config_file} not found" if specified
+      die "Config file #{config_file} not found" if specified
     end
   rescue YAML::Error # XXX: Is this the correct error?
-    _die "Config file #{config_file} is not valid YAML"
+    die "Config file #{config_file} is not valid YAML"
   end
   
   #
@@ -481,6 +481,7 @@ class RubyGemsFacade
       begin
         _info "Attempting local installation of '#{gem}'"
         installed_gems = _install_local(gem)
+        puts "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}"
       rescue LocalInstallationError => e
         _info " -> Local installation can't proceed: #{e.message}"
       rescue => e
@@ -525,7 +526,11 @@ class RubyGemsFacade
   #    all versions of the named gem are uninstalled.
   def uninstall(gem)
     _info "Attempting to uninstall gem '#{gem}'"
-    Gem::Uninstaller.new(gem, @options.gem_version).uninstall
+    begin
+      Gem::Uninstaller.new(gem, @options.gem_version).uninstall
+    rescue => e
+      die e.message
+    end
   end
 
 
@@ -538,6 +543,13 @@ class RubyGemsFacade
   end
 
   #
+  # List local and remote gems containing the given string.
+  #
+  def search(str)
+    _list_gems(/#{str}/i)
+  end
+
+  #
   # Upgrades all previously installed gems
   #   gem --upgrade-all
   #
@@ -545,13 +557,6 @@ class RubyGemsFacade
     _upgrade_all
   end
 
-
-  #
-  # List local and remote gems containing the given string.
-  #
-  def search(str)
-    _list_gems(/#{str}/i)
-  end
 
 
   # 
@@ -606,7 +611,19 @@ class RubyGemsFacade
   #
   def alien
     _info "Performing the 'alien' operation"  # TODO: better (or no) message.
-    Gem::Validator.new.alien
+    Gem::Validator.new.alien.each do |key, val|
+      if(val.size > 0) then 
+        puts "#{key} has #{val.size} problems"
+        val.each do |error_entry|
+          puts "\t#{error_entry.path}:"
+          puts "\t#{error_entry.problem}"
+          puts
+        end
+        else  
+          puts "#{key} is error-free"
+        end
+        puts
+      end
   end
 
 
@@ -639,8 +656,8 @@ class RubyGemsFacade
         raise LocalInstallationError, "Unknown gem file '#{path}'"
       end
     end
-    installer = Gem::Installer.new(path)
-    result = installer.install(@options.force, @options.install_dir, @options.install_stub)
+    
+    result = Gem::Installer.new(path).install(@options.force, @options.install_dir, @options.install_stub)
     [result].flatten
   end
 
@@ -652,9 +669,8 @@ class RubyGemsFacade
   # TODO: make use of RemoteError, if possible. 
   #
   def _install_remote(name)
-    installer = _get_remote_installer
     begin
-      installed_gems = installer.install(name, @options.gem_version, @options.force,
+      installed_gems = Gem::RemoteInstaller.new(@options.http_proxy).install(name, @options.gem_version, @options.force,
                                          @options.install_dir, @options.install_stub)
     rescue Exception => e
         $stderr.puts e.to_s
@@ -686,10 +702,6 @@ class RubyGemsFacade
     end
   end
 
-  def _get_remote_installer
-    Gem::RemoteInstaller.new(@options.http_proxy)
-  end
-
   # List all gems, local and/or remote, that match the given pattern.  This provides the
   # common factor between 'list' and 'search'.
   #
@@ -698,19 +710,20 @@ class RubyGemsFacade
     if @options.local?
       puts
       puts "*** LOCAL GEMS ***"
-      gemlist = []
-      Gem::Cache.from_installed_gems.each do |name, spec|
-        gemlist << [name, spec]
-      end  # FIXME: Gem::Cache.search already does this.
-      _display_gems(gemlist.select { |name, spec| name =~ pattern })
+      _display_gems(Gem::cache.search(pattern))
+      #gemlist = []
+      #Gem::Cache.from_installed_gems.each do |name, spec|
+        #gemlist << [name, spec]
+      #end  # FIXME: Gem::Cache.search already does this.
+      #_display_gems(gemlist.select { |name, spec| name =~ pattern })
     end
 
     if @options.remote?
       puts
       puts "*** REMOTE GEMS ***"
-      installer = _get_remote_installer
+      installer = 
       begin
-        _display_gems(installer.search(pattern))
+        _display_gems(Gem::RemoteInstaller.new(@options.http_proxy).search(pattern))
       rescue Gem::RemoteSourceException => e
         $stderr.puts e.to_s
         exit 1
@@ -729,7 +742,7 @@ class RubyGemsFacade
         hig[spec.name] = spec
       end
     end
-    remote_gems = _get_remote_installer.search(//)
+    remote_gems = Gem::RemoteInstaller.new(@options.http_proxy).search(//)
     gems_to_update = []
     highest_installed_gems.each do |l_name, l_spec|
       hrg = highest_remote_gem =
@@ -751,8 +764,7 @@ class RubyGemsFacade
   # +gems+ is actually an Array: [[name, gemspec], [name, gemspec], ...]
   def _display_gems(gems)
     gem_list_with_version = {}
-    gems.each do |gem|
-      gem = gem[1]
+    gems.flatten.each do |gem|
       gem_list_with_version[gem.name] ||= []
       gem_list_with_version[gem.name] << gem
     end

@@ -31,8 +31,7 @@ module Gem
     #
     # Returns: an array of Gem::Specification objects, one for each gem installed. 
     #
-    def install(package_name, version_requirement = "> 0.0.0", force=false, install_dir=Gem.dir,
-               install_stub=true)
+    def install(package_name, version_requirement = "> 0.0.0", force=false, install_dir=Gem.dir, install_stub=true)
       unless version_requirement.respond_to?(:version)
         version_requirement = Version::Requirement.new(version_requirement)
       end
@@ -54,20 +53,12 @@ module Gem
     # Search Gem repository for a gem by specifying all of part of
     # the Gem's name   
     def search(pattern_to_match)
-      #TODO - move all of this logic into cache.rb
-      #Gem::Cache.new(caches).search(pattern_to_match)
-      items = []
-      pattern_to_match = /#{ pattern_to_match }/i if String === pattern_to_match
-      sources = get_cache_sources()
-      caches = get_caches(sources)
-      caches.sort.each { |key,value|
-        value.each do |entry|
-          if entry[0] =~ pattern_to_match
-              items.push entry
-          end
-        end
-      }
-      items
+      results = []
+      caches = get_caches(get_cache_sources)
+      caches.each do |cache|
+        results << cache[1].search(pattern_to_match)
+      end
+      results
     end
 
 
@@ -155,7 +146,6 @@ module Gem
     end
 
     def download_gem(destination_file, source, spec)
-      # TODO
       uri = source + "/gems/#{spec.full_name}.gem"
       response = fetch(uri)
       write_gem_to_file(response, destination_file)

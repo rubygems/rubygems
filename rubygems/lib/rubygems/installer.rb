@@ -33,7 +33,7 @@ module Gem
     #
     # return:: [Gem::Specification] The specification for the newly installed Gem.
     #
-    def install(force=false, install_dir=Gem.dir, install_stub=false)
+    def install(force=false, install_dir=Gem.dir, install_stub=true)
       require 'fileutils'
       format = Gem::Format.from_file_by_path(@gem)
       unless force
@@ -54,12 +54,28 @@ module Gem
        # Build spec dir.
        directory = File.join(install_dir, "gems", format.spec.full_name)
        FileUtils.mkdir_p directory
+
        extract_files(directory, format)
        generate_bin_scripts(format.spec)
        generate_library_stubs(format.spec) if install_stub
        build_extensions(directory, format.spec)
        
        # Build spec/cache/doc dir.
+       build_support_directories(install_dir)
+       
+       # Write the spec and cache files.
+       write_spec(format.spec, File.join(install_dir, "specifications"))
+       unless(File.exist?(File.join(File.join(install_dir, "cache"), @gem.split(/\//).pop))) 
+         FileUtils.cp(@gem, File.join(install_dir, "cache"))
+       end
+
+       format.spec.loaded_from = File.join(install_dir, 'specifications', format.spec.full_name+".gemspec")
+       return format.spec
+    end
+
+    # Given a root gem directory, build supporting directories for gem
+    # if they do not already exist
+    def build_support_directories(install_dir)
        unless File.exist? File.join(install_dir, "specifications")
          FileUtils.mkdir_p File.join(install_dir, "specifications")
        end
@@ -69,16 +85,6 @@ module Gem
        unless File.exist? File.join(install_dir, "doc")
          FileUtils.mkdir_p File.join(install_dir, "doc")
        end
-       
-       # Write the spec and cache files.
-       write_spec(format.spec, File.join(install_dir, "specifications"))
-       unless(File.exist?(File.join(File.join(install_dir, "cache"), @gem.split(/\//).pop))) 
-         FileUtils.cp(@gem, File.join(install_dir, "cache"))
-       end
-
-       puts "Successfully installed #{format.spec.name} version #{format.spec.version}"
-       format.spec.loaded_from = File.join(install_dir, 'specifications', format.spec.full_name+".gemspec")
-       return format.spec
     end
     
     ##
@@ -296,10 +302,9 @@ TEXT
     #
     def uninstall
       require 'fileutils'
-      cache = Cache.from_installed_gems
-      list = cache.search(@gem, @version)
+      list = Cache.from_installed_gems.search(@gem, @version)
       if list.size == 0 
-        puts "Unknown RubyGem: #{@gem} (#{@version})"
+        raise "Unknown RubyGem: #{@gem} (#{@version})"
       elsif list.size > 1
         puts "Select RubyGem to uninstall:"
         list.each_with_index do |gem, index|
@@ -346,7 +351,7 @@ TEXT
       FileUtils.rm_rf File.join(spec.installation_path, 'specifications', "#{spec.full_name}.gemspec")
       FileUtils.rm_rf File.join(spec.installation_path, 'cache', "#{spec.full_name}.gem")
       DocManager.new(spec).uninstall_doc
-      _remove_stub_files(spec, list - [spec])
+      remove_stub_files(spec, list - [spec])
       puts "Successfully uninstalled #{spec.name} version #{spec.version}"
       list.delete(spec)
     end
@@ -379,12 +384,12 @@ TEXT
     # assumed that +other_specs+ contains only *installed* gems, except the one that's about to
     # be uninstalled.
     #
-    def _remove_stub_files(spec, other_specs)
-      _remove_app_stubs(spec, other_specs)
-      _remove_lib_stub(spec, other_specs)
+    def remove_stub_files(spec, other_specs)
+      remove_app_stubs(spec, other_specs)
+      remove_lib_stub(spec, other_specs)
     end
 
-    def _remove_app_stubs(spec, other_specs)
+    def remove_app_stubs(spec, other_specs)
       # App stubs are tricky, because each version of an app gem could install different
       # applications.  We need to make sure that what we delete isn't needed by any remaining
       # versions of the gem.
@@ -401,7 +406,7 @@ TEXT
       # The Installer class doesn't really support this approach very well at the moment.
     end
 
-    def _remove_lib_stub(spec, other_specs)
+    def remove_lib_stub(spec, other_specs)
       # Library stubs are a bit easier than application stubs.  They do not refer to a specific
       # version; they just load the latest version of the library available as a gem.  The only
       # corner case is that different versions of the same gem may have different autorequire

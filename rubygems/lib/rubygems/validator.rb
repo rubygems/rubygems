@@ -35,22 +35,6 @@ module Gem
     end
 
     private
-    def display_alien_report(errors)
-      errors.each do |key, val|
-        if(val.size > 0) then 
-          puts "#{key} has #{val.size} problems"
-        else 
-          puts "#{key} is error-free"
-        end
-        val.each do |error_entry|
-          puts "\t#{error_entry.path}:"
-          puts "\t#{error_entry.problem}"
-          puts
-        end
-        puts
-      end
-    end
-  
     def find_files_for_gem(gem_directory)
       installed_files = []
       Find.find(gem_directory) {|file_name|
@@ -74,8 +58,9 @@ module Gem
     # * For each file in each gem, check consistency of installed versions
     # * Check for files that aren't part of the gem but are in the gems directory
     # * 1 cache - 1 spec - 1 directory.  
+    # 
+    # returns a hash of ErrorData objects, keyed on the problem gem's name.
     def alien
-      puts "Checking gem database for inconsistencies"
       require 'rubygems/installer'
       require 'find'
       require 'md5'
@@ -87,7 +72,6 @@ module Gem
         gem_directory = File.join(Gem.dir, "gems", gem_spec.full_name)
     
         installed_files = find_files_for_gem(gem_directory)
-        puts gem_directory
     
         if(!File.exist?(spec_path)) then
           errors[gem_name] << ErrorData.new(spec_path, "Spec file doesn't exist for installed gem")
@@ -116,13 +100,11 @@ module Gem
         installed_files.delete_if {|potential_directory|	
           File.directory?(File.join(gem_directory, potential_directory))
         }
-
         if(installed_files.size > 0) then
           errors[gem_name] << ErrorData.new(gem_path, "Unmanaged files in gem: #{installed_files.inspect}")
         end
-    
       end
-      display_alien_report(errors)
+      errors
     end
   end
 end

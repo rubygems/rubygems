@@ -1,3 +1,6 @@
 pkg
 .project
+.config
 build
+InstalledFiles
+pkgs

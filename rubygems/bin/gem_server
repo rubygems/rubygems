@@ -96,6 +96,6 @@ if __FILE__ == $0
   {"/gems" => "/cache/", "/doc_root" => "/doc/"}.each do |mount_point, mount_dir|
     s.mount(mount_point, WEBrick::HTTPServlet::FileHandler, File.join(options[:gemdir] || Gem.dir, mount_dir), true)
   end
-  trap("INT"){ s.shutdown }
+  trap("INT") { s.shutdown; exit! }
   s.start
 end

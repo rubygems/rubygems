@@ -13,6 +13,7 @@ ARGV.options do |opts|
   opts.on('--gen-rdoc', "Generate RDoc documentation for the gem") {|options[:gen_rdoc]|}
   opts.on('--list', "List installed gems") {|options[:list]|}
   opts.on('--search=SEARCHPATTERN', "Search for gems in the remote repository") {|options[:search]|}
+  opts.on('--remote-list', "List all gems in the remote repository") {|options[:remote_list]|}
   opts.on('--force', "Force gem to intall, bypassing dependency checks") {|options[:force]|}
   opts.on('--remote-install=GEMNAME', "Auto-download and install a gem and its dependencies") {|options[:remote_install]|}
   opts.on('--http-proxy=HTTPPROXYHOST', "(unimplemented) HTTP Proxy to use for remote operations") {|options[:http_proxy]|}
@@ -23,6 +24,10 @@ ARGV.options do |opts|
 end
 
 require 'rubygems'
+
+def get_remote_installer(options)
+  Gem::RemoteInstaller.new(options[:http_proxy])
+end
 
 def display_gems(gems)
   gems.sort {|a,b| 
@@ -71,15 +76,20 @@ if install_file
   end
 end
 
+if options[:remote_list]
+  installer = get_remote_installer(options)
+  display_gems(installer.search(//))
+end
+
 if gem_to_search_for
-  installer = Gem::RemoteInstaller.new
+  installer = get_remote_installer(options)
   gems = installer.search(gem_to_search_for)
   display_gems(gems)
 end
 
 if remote_install
   begin
-    installed_gems << Gem::RemoteInstaller.new(options[:http_proxy]).install(remote_install, options[:gem_version] || "> 0.0.0", force, directory)
+    installed_gems << get_remote_installer(options).install(remote_install, options[:gem_version] || "> 0.0.0", force, directory)
   rescue => e
     $stderr.puts "Error installing gem #{remote_install}: #{e.message}"
     exit(2)

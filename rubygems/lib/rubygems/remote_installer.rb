@@ -1,7 +1,7 @@
 module Gem
-  class DependencyError < RuntimeError; end
-  class RemoteSourceException < RuntimeError; end
-  class GemNotFoundException < RuntimeError; end
+  class DependencyError < Gem::Exception; end
+  class RemoteSourceException < Gem::Exception; end
+  class GemNotFoundException < Gem::Exception; end
 
   class RemoteInstaller
     ##

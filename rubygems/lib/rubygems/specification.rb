@@ -14,7 +14,7 @@ module Gem
   ##
   # Potentially raised when a specification is validated 
   #
-  class InvalidSpecificationException<Exception; end
+  class InvalidSpecificationException < Gem::Exception; end
   
   ##
   # The Specification class contains the metadata for a Gem.  A

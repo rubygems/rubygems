@@ -212,7 +212,7 @@ TEXT
           say results.join("\n")
         else
           File.open(File.join(Dir.pwd, 'gem_make.out'), 'wb') {|f| f.puts results.join("\n")}
-          raise "ERROR: Failed to build gem native extension.\nGem files will remain installed in #{directory} for inspection.\n  See #{File.join(Dir.pwd, 'gem_make.out')}"
+          raise "ERROR: Failed to build gem native extension.\nGem files will remain installed in #{directory} for inspection.\n  #{results.join('\n')}\n\nResults logged to #{File.join(Dir.pwd, 'gem_make.out')}"
         end
         File.open('gem_make.out', 'wb') {|f| f.puts results.join("\n")}
       end

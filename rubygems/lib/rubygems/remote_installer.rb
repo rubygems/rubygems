@@ -51,7 +51,7 @@ module Gem
       end
       begin
 	yaml_spec = fetch_path("/yaml") unless yaml_spec
-	convert_spec(yaml_spec)
+	r = convert_spec(yaml_spec)
       rescue SocketError => e
 	raise RemoteSourceException.new("Error fetching remote gem cache: #{e.to_s}")
       end
@@ -369,17 +369,18 @@ module Gem
     
     # Given a list of sources, return a hash of interesting
     # information from those sources, where the key is the source and
-    # the value that interesting information.
+    # the value is a Gem::Cache object containing a map of long gem
+    # names (name & version) to gem specification.
     def source_info(install_dir)
       result = {}
       sources.each do |source|
-	rsf = @fetcher_class.new(source, @http_proxy)
-	result[source] = rsf.source_info
+	result[source] = fetch_source(source)
       end
       @fetcher_class.finish
       result
     end
     
+    # Return the source info for the given source.  The 
     def fetch_source(source)
       rsf = @fetcher_class.new(source, @http_proxy)
       rsf.source_info

@@ -32,7 +32,7 @@ class MockFetcher
   def fetch_path(path)
   end
 
-  def self.flush
+  def self.finish
   end
 end
 

@@ -4,3 +4,5 @@ pkg
 build
 InstalledFiles
 pkgs
+html
+rg_*.yaml

@@ -3,14 +3,6 @@ require 'rubygems/package'
 module Gem
 
   ##
-  # Used to raise parsing and loading errors
-  #
-  class FormatException < Gem::Exception
-    attr_accessor :file_path
-    #I go back and forth on whether or not to create custom exception classes
-  end
-
-  ##
   # The format class knows the guts of the RubyGem .gem file format
   # and provides the capability to read gem files
   #
@@ -35,10 +27,8 @@ module Gem
     # file_path:: [String] Path to the gem file
     #
     def self.from_file_by_path(file_path)
-      if(!File.exist?(file_path)) then
-        exception = FormatException.new("Cannot load gem\nFile not found")
-        exception.file_path = file_path
-        raise exception
+      unless File.exist?(file_path)
+        raise Gem::Exception, "Cannot load gem at [#{file_path}]"
       end
       require 'fileutils'
       # check for old version gem

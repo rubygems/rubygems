@@ -85,6 +85,7 @@ module Gem
     # return:: [String] The directory path
     #
     def dir
+      @gem_home ||= nil
       set_home(ENV['GEM_HOME'] || default_dir) unless @gem_home
       @gem_home
     end
@@ -95,6 +96,7 @@ module Gem
     # return:: [List<String>] List of directory paths.
     #
     def path
+      @gem_path ||= nil
       set_paths(ENV['GEM_PATH']) unless @gem_path
       @gem_path
     end

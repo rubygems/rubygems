@@ -13,10 +13,10 @@ class TestParseCommands < Test::Unit::TestCase
 
   def test_parsing_bad_options
     use_ui(MockGemUi.new) do
-      ex = assert_raise(OptionParser::InvalidOption) {
+      assert_raises(MockGemUi::TermError) {
 	@cmd_manager.process_args("--bad-arg")
       }
-      assert_match /invalid option: --bad-arg/, ex.message
+      assert_match /invalid option: --bad-arg/i, ui.error
     end
   end
 

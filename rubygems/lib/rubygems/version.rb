@@ -1,12 +1,3 @@
-class String
-  ##
-  # To simplify conversion code.
-  #
-  def to_requirement
-    Gem::Version::Requirement.new([self])
-  end
-end
-
 module Gem
   
   ##
@@ -162,13 +153,13 @@ module Gem
       include Comparable
 
       OPS = {
-	"="  =>  lambda { |v, r| v == r },
-	"!=" =>  lambda { |v, r| v != r },
-	">"  =>  lambda { |v, r| v > r },
-	"<"  =>  lambda { |v, r| v < r },
-	">=" =>  lambda { |v, r| v >= r },
-	"<=" =>  lambda { |v, r| v <= r },
-	"~>" =>  lambda { |v, r| v >= r && v < r.bump }
+        "="  =>  lambda { |v, r| v == r },
+        "!=" =>  lambda { |v, r| v != r },
+        ">"  =>  lambda { |v, r| v > r },
+        "<"  =>  lambda { |v, r| v < r },
+        ">=" =>  lambda { |v, r| v >= r },
+        "<=" =>  lambda { |v, r| v <= r },
+        "~>" =>  lambda { |v, r| v >= r && v < r.bump }
       }
         
       OP_RE = Regexp.new(OPS.keys.collect{|k| Regexp.quote(k)}.join("|"))
@@ -181,12 +172,10 @@ module Gem
       # If the input is "weird", the default version requirement is returned.
       #
       def self.create(input)
-        if input.respond_to? :version
+        if input.kind_of?(Requirement)
           return input
-        elsif input.nil?
-          return self.default
         elsif input.respond_to? :to_str
-          return self.new(input.to_str)
+          return self.new([input.to_str])
         else
           return self.default
         end
@@ -196,7 +185,7 @@ module Gem
       # A default "version requirement" can surely _only_ be '> 0'.
       #
       def self.default
-        Requirement.new('> 0')
+        self.new(['> 0'])
       end
 
       ##
@@ -205,18 +194,11 @@ module Gem
       # str:: [String Array] the version requirement string (e.g. ["> 1.23"])
       #
       def initialize(reqs)
-	@requirements = reqs.collect do |rq|
-	  op, version_string = parse(rq)
-	  [op, Version.new(version_string)]
-	end
+        @requirements = reqs.collect do |rq|
+          op, version_string = parse(rq)
+          [op, Version.new(version_string)]
+        end
         @version = nil   # Avoid warnings.
-      end
-
-      ##
-      # Used to simplify conversion code, especially from strings
-      #
-      def to_requirement
-        self
       end
       
       ##
@@ -230,22 +212,22 @@ module Gem
       end
       
       def to_s
-	as_list.join(", ")
+        as_list.join(", ")
       end
 
       def as_list
-	normalize
-	@requirements.collect { |req|
-          "#{req[0]} #{req[1]}"
-	}
+        normalize
+        @requirements.collect { |req|
+                "#{req[0]} #{req[1]}"
+        }
       end
       
       def normalize
-	return if @version.nil?
-	@requirements = [parse(@version)]
-	@nums = nil
-	@version = nil
-	@op = nil
+        return if @version.nil?
+        @requirements = [parse(@version)]
+        @nums = nil
+        @version = nil
+        @op = nil
       end
       
       ##
@@ -256,8 +238,8 @@ module Gem
       #          the version, otherwise false 
       #
       def satisfied_by?(version)
-	normalize
-	@requirements.all? { |op, rv| satisfy?(op, version, rv) }
+        normalize
+        @requirements.all? { |op, rv| satisfy?(op, version, rv) }
       end
   
       private
@@ -266,7 +248,7 @@ module Gem
       # Is "version op required_version" satisfied?
       #
       def satisfy?(op, version, required_version)
-	OPS[op].call(version, required_version)
+        OPS[op].call(version, required_version)
       end
 
       ##
@@ -274,19 +256,19 @@ module Gem
       # version strings.
       #
       def parse(str)
-	if md = /^\s*(#{OP_RE})\s*([0-9.]+)\s*$/.match(str)
-	  [md[1], md[2]]
-	elsif md = /^\s*([0-9.]+)\s*$/.match(str)
-	  ["=", md[1]]
-	elsif md = /^\s*(#{OP_RE})\s*$/.match(str)
-	  [md[1], "0"]
-	else
-	  fail ArgumentError, "Illformed requirement [#{str}]"
-	end
+        if md = /^\s*(#{OP_RE})\s*([0-9.]+)\s*$/.match(str)
+          [md[1], md[2]]
+        elsif md = /^\s*([0-9.]+)\s*$/.match(str)
+          ["=", md[1]]
+        elsif md = /^\s*(#{OP_RE})\s*$/.match(str)
+          [md[1], "0"]
+        else
+          fail ArgumentError, "Illformed requirement [#{str}]"
+        end
       end
 
       def <=>(other)
-	to_s <=> other.to_s
+        to_s <=> other.to_s
       end
 
     end

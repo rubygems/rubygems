@@ -124,12 +124,12 @@ class TestDependencies < Test::Unit::TestCase
   def test_create
     dep = Gem::Dependency.new("pkg", ["> 1.0"])
     assert_equal "pkg", dep.name
-    assert_equal "> 1.0".to_requirement, dep.version_requirements
+    assert_equal Gem::Version::Requirement.new(["> 1.0"]), dep.version_requirements
   end
 
   def test_create_single
     dep = Gem::Dependency.new("pkg", "> 1.0")
-    assert_equal "> 1.0".to_requirement, dep.version_requirements
+    assert_equal Gem::Version::Requirement.new(["> 1.0"]), dep.version_requirements
   end
 
   def test_create_double

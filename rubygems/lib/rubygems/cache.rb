@@ -69,7 +69,7 @@ module Gem
     def search(gem_name, version_requirement=Version::Requirement.new(">= 0"))
       #FIXME - remove duplication between this and RemoteInstaller.search
       gem_name = /#{ gem_name }/i if String === gem_name
-      version_requirement = version_requirement.to_requirement
+      version_requirement = Gem::Version::Requirement.create(version_requirement)
       result = []
       @gems.each do |full_spec_name, spec|
         next unless spec.name =~ gem_name

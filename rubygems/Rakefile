@@ -17,5 +17,10 @@ Rake::TestTask.new(:functional) do |t|
   t.pattern = 'test/functional.rb'
 end
 
+Rake::TestTask.new(:alltests) do |t|
+  t.verbose = true
+  t.pattern = 'test/{test,functional}*.rb'
+end
+
 desc "Shortcut for running functional tests"
 task :ft => [:functional]

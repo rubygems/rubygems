@@ -1,4 +1,3 @@
-require 'rubygems/timer'
 require 'rbconfig'
 
 module Gem

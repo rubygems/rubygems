@@ -286,9 +286,8 @@ TEXT
     #
     def uninstall
       require 'fileutils'
-      Gem.source_index.refresh!
       list = Gem.source_index.search(@gem, @version)
-      if list.size == 0 
+      if list.empty?
         raise "Unknown RubyGem: #{@gem} (#{@version})"
       elsif list.size > 1 && @force_all
 	remove_all(list.dup) 

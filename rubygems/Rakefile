@@ -22,5 +22,7 @@ Rake::TestTask.new(:alltests) do |t|
   t.pattern = 'test/{test,functional}*.rb'
 end
 
-desc "Shortcut for running functional tests"
+desc "Shortcuts for running tests"
 task :ft => [:functional]
+task :ut => [:test]
+task :at => [:alltests]

@@ -31,7 +31,7 @@ class RemoteInstallerTest < Test::Unit::TestCase
       # TODO
     end
 
-    def install
+    def install(force, directory)
       # TODO
     end
   end
@@ -41,9 +41,14 @@ class RemoteInstallerTest < Test::Unit::TestCase
 
     attr_accessor :expected_destination_files
     attr_accessor :expected_bodies
+    attr_accessor :caches
 
     def http_class
       return MockNetHTTP
+    end
+
+    def get_caches(sources)
+      @caches
     end
 
     def write_gem_to_file(body, destination_file)
@@ -54,7 +59,6 @@ class RemoteInstallerTest < Test::Unit::TestCase
     end
 
     def new_installer(gem)
-puts "NEW INSTALLER"
       return MockInstaller.new(gem)
     end
   end
@@ -96,12 +100,13 @@ puts "NEW INSTALLER"
     @remote_installer = RemoteInstallerTest::RemoteInstaller.new
     MockNetHTTP.responses = {
       CACHE_SOURCE + "/yaml" => http_success(SAMPLE_CACHE_YAML),
-      "#{CACHE_SOURCE}/gems/foo-1.2.3.gem" => http_success(FOO_GEM)
+      "#{CACHE_SOURCE}/gems/foo-ruby-1.2.3.gem" => http_success(FOO_GEM)
     }
-    @remote_installer.expected_destination_files = [File.join(CACHE_DIR, 'foo-1.2.3.gem')]
+    @remote_installer.caches = { CACHE_SOURCE  => SAMPLE_CACHE }
+    @remote_installer.expected_destination_files = [File.join(CACHE_DIR, 'foo-ruby-1.2.3.gem')]
     @remote_installer.expected_bodies = [FOO_GEM]
     result = @remote_installer.install('foo')
-    #assert_equal nil, result
+    assert_equal nil, result
   end
 
   def http_success(body)

@@ -38,7 +38,7 @@ module Gem
     #
     attr_accessor :autorequire, :author, :email, :homepage, :description, :files, :docs, :test_suite_file, :default_executable, :bindir
     attr_accessor :rubyforge_project
-    attr_writer :has_rdoc, :executables
+    attr_writer :has_rdoc, :executables, :extensions
     
     ##
     # Runtime attributes (not persisted)
@@ -91,6 +91,27 @@ module Gem
     #
     def requirements
       @requirements ||= []
+    end
+
+    ##
+    # Returns the extensions array.  This should contain lists of extconf.rb
+    # files for use in source distributions.
+    #
+    # return:: [Array] array of Strings
+    #
+    def extensions
+      @extensions ||= []
+    end
+    
+    ##
+    # Returns the extension requirements array.  This should contain lists of 
+    # library/method pairs that are required for the extensions to built.  This
+    # is populated during gem creation.
+    #
+    # return:: [Array] array of Strings
+    #
+    def extension_requirements
+      @extension_requirements ||= []
     end
     
     ##
@@ -231,6 +252,8 @@ module Gem
       result << '@requirements' if requirements.size > 0
       result << '@executables' if executables.size > 0
       result << '@dependencies' if dependencies.size > 0
+      result << '@extensions' if extensions.size > 0
+      result << '@extension_requirements' if extension_requirements.size > 0
       result << '@description' if @description
       result
     end
@@ -256,6 +279,12 @@ module Gem
       end
       if executables.size > 0
         result << "s.executables = [" + (executables.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
+      end
+      if extensions.size > 0
+        result << "s.extensions = [" + (extensions.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
+      end
+      if extension_requirements.size > 0
+        result << "s.extension_requirements = [" + (extension_requirements.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
       end
       # optional 
       result << "s.autorequire = %q{#{autorequire}}\n" if autorequire

@@ -43,6 +43,7 @@ module Gem
        FileUtils.mkdir_p directory
        extract_files(directory, format)
        generate_bin_scripts(directory, format.spec)
+       build_extensions(directory, format.spec)
        
        #build spec/cache/doc dir
        unless File.exist? File.join(to_dir, "specifications")
@@ -103,6 +104,32 @@ require_gem '#{name}', "#{version}"
 load '#{file}'  
 SCRIPT
       script
+    end
+    
+    def build_extensions(directory, spec)
+      return unless spec.extensions.size > 0
+      start_dir = Dir.pwd
+      dest_path = File.join(directory, spec.require_paths[0])
+      spec.extensions.each do |extension|
+        Dir.chdir File.join(directory, File.dirname(extension))
+        results = ["ruby #{File.basename(extension)}"]
+        results << `ruby #{File.basename(extension)}`
+        if File.exist?('Makefile')
+          mf = File.read('Makefile')
+          mf = mf.gsub(/^RUBYARCHDIR\s*=\s*\$.*/, "RUBYARCHDIR = #{dest_path}")
+          mf = mf.gsub(/^RUBYLIBDIR\s*=\s*\$.*/, "RUBYLIBDIR = #{dest_path}")
+          File.open('Makefile', 'wb') {|f| f.print mf}
+          results << 'make'
+          results << `make`
+          results << 'make install'
+          results << `make install`
+          puts results.join("\n")
+        else
+          puts "ERROR: Failed to build gem native extension.\n  See #{File.join(Dir.pwd, 'gem_make.out')}"
+        end
+        File.open('gem_make.out', 'wb') {|f| f.puts results.join("\n")}
+      end
+      Dir.chdir start_dir
     end
     
     ##

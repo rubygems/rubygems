@@ -20,8 +20,9 @@ module Gem
     #
     # gem:: [String] The file name of the gem
     #
-    def initialize(gem)
+    def initialize(gem, options)
       @gem = gem
+      @options = options
     end
     
     ##
@@ -54,10 +55,12 @@ module Gem
           end
         end
         # Check the dependent gems.
-        spec.dependencies.each do |dep_gem|
-          # XXX: Does this take account of *versions*?
-          require_gem_with_options(dep_gem, [], :auto_require=>false)
-        end
+	unless @options[:ignore_dependencies]
+	  spec.dependencies.each do |dep_gem|
+	    # TODO: Does this take account of *versions*?
+	    require_gem_with_options(dep_gem, [], :auto_require=>false)
+	  end
+	end
       end
       
       raise Gem::FilePermissionError.new(install_dir) unless File.writable?(install_dir)
@@ -612,8 +615,9 @@ TEXT
     end
 
     def ask_if_ok(spec)
-      msg = ['You have requested to uninstall the gem:']
-      msg << "\t#{spec.name}-#{spec.version}"
+      msg = ['']
+      msg << 'You have requested to uninstall the gem:'
+      msg << "\t#{spec.full_name}"
       spec.dependent_gems.each do |gem,dep,satlist|
         msg <<
 	  ("#{gem.name}-#{gem.version} depends on " +

@@ -11,7 +11,7 @@ module Utilities
   def make_cache_area(path, *uris)
     make_gemhome(path)
     fn = File.join(path, 'source_cache')
-    open(fn, 'w') do |f| f.write cache_hash(*uris).to_yaml end
+    open(fn, 'w') do |f| f.write Marshal.dump(cache_hash(*uris)) end
   end
 
   extend self

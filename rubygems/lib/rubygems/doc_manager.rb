@@ -13,6 +13,7 @@ module Gem
     def initialize(spec, rdoc_args="")
       @spec = spec
       @doc_dir = File.join(spec.installation_path, "doc", spec.full_name)
+      Gem::FilePermissionError.new(spec.installation_path) unless File.writable?(spec.installation_path)
       @rdoc_args = rdoc_args.nil? ? [] : rdoc_args.split
     end
     
@@ -35,6 +36,7 @@ module Gem
     
     def generate_rdoc
       require 'fileutils'
+      Gem::FilePermissionError.new(@doc_dir) if File.exist?(@doc_dir) && !File.writable?(@doc_dir)
       FileUtils.mkdir_p @doc_dir unless File.exist?(@doc_dir)
       begin
         require 'rdoc/rdoc'
@@ -52,7 +54,11 @@ module Gem
           @rdoc_args = rdoc_args_from_spec(@rdoc_args)
           @rdoc_args.concat(DocManager.configured_args)
           r = RDoc::RDoc.new
-          r.document(['--op', rdoc_dir] + @rdoc_args.flatten + source_dirs)
+          begin
+            r.document(['--quiet', '--op', rdoc_dir] + @rdoc_args.flatten + source_dirs)
+          rescue Errno::EACCES => e
+            raise Gem::FilePermissionError.new(File.dirname(e.message.split("-")[1].strip))
+          end
 	 #TODO: Why is this throwing an error?
           #ri = RDoc::RDoc.new
           #ri.document(['-R'] + source_dirs)

@@ -8,6 +8,12 @@ module Gem
   # Signals that local installation will not proceed, not that it has been tried and
   # failed.  TODO: better name.
   class LocalInstallationError < Gem::Exception; end
+  
+  class FilePermissionError < Gem::Exception
+    def initialize(path)
+      super("You don't have write permissions into the #{path} directory.")
+    end
+  end
 
   # Signals that a remote operation cannot be conducted, probably due to not being
   # connected (or just not finding host).

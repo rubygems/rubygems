@@ -1,6 +1,15 @@
 2004-08-28  Rich Kilmer <rich@infoether.com>
 
+        * /lib/rubygems/installer.rb, /lib/rubygems/doc_manager.rb, 
+          /lib/rubygems/cmd_manager.rb - Added an exception: FilePermissionError
+          which checks to ensure write access to the install/uninstall/rdoc 
+          destination directories and raises a nice error instead of the standard
+          one. 
+
+2004-08-28  Rich Kilmer <rich@infoether.com>
+
         * /lib/rubygems/installer.rb - commented out stub addition and removal
+
 2004-08-28  Rich Kilmer <rich@infoether.com>
 
         * /lib/rubygems.rb, /lib/rubygems/loadpath_manager.rb -
@@ -19,6 +28,7 @@
         * lib/rubygems/installer.rb, lib/rubygems/remote_installer.rb, 
           lib/rubygems/command_manager.rb - changed all places where ask 
           was used with [Yn] to ask_yes_no
+
 2004-08-24  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* lib/rubygems/installer.rb: Library stubs are now installed as per

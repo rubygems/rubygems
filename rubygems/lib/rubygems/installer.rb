@@ -58,6 +58,8 @@ module Gem
           require_gem(dep_gem)
         end
       end
+      
+      raise Gem::FilePermissionError.new(install_dir) unless File.writable?(install_dir)
 
       # Build spec dir.
       directory = File.join(install_dir, "gems", format.spec.full_name)
@@ -134,6 +136,7 @@ module Gem
     def generate_bin_scripts(spec)
       if spec.executables
         bindir = Config::CONFIG['bindir']
+        raise Gem::FilePermissionError.new(bindir) unless File.writable?(bindir)
         spec.executables.each do |filename|
           File.open(File.join(bindir, File.basename(filename)), "w", 0755) do |file|
             file.print(app_script_text(spec.name, spec.version.version, filename))
@@ -488,6 +491,7 @@ TEXT
     def remove_executables(gemspec)
       return if gemspec.nil?
       if(gemspec.executables.size > 0) then
+        raise Gem::FilePermissionError.new(Config::CONFIG['bindir']) unless File.writable?(Config::CONFIG['bindir'])
         list = Gem.cache.search(gemspec.name).delete_if {|spec| spec.version == gemspec.version}
         executables = gemspec.executables.clone
         list.each do |spec|
@@ -533,6 +537,7 @@ TEXT
       if(has_dependents?(spec)) then
         raise "Uninstallation aborted due to dependent gem(s)"
       end
+      raise Gem::FilePermissionError.new(spec.installation_path) unless File.writable?(spec.installation_path)
       FileUtils.rm_rf spec.full_gem_path
       FileUtils.rm_rf File.join(spec.installation_path, 'specifications', "#{spec.full_name}.gemspec")
       FileUtils.rm_rf File.join(spec.installation_path, 'cache', "#{spec.full_name}.gem")

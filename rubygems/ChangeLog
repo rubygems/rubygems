@@ -1,3 +1,16 @@
+2005-03-23  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/remote_installer.rb
+	(Gem::RemoteInstaller::find_dependencies_not_installed): Switched
+	to using SourceIndex#find_name to detect missing dependencies,
+	avoiding a gem activation during an install.
+
+	* lib/rubygems/installer.rb (Gem::Installer::install): Removed
+	activate call from install step.  If we need to do something about
+	dependencies at this time, then we need a better way to do them.
+
+	* lib/rubygems.rb: Removed the require for rubygems/timer.
+
 2005-03-16  Jim Weirich  <jim@weirichhouse.org>
 
 	* test/gemenvironment.rb (TestEnvironment::create): Added require

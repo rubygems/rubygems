@@ -1,3 +1,8 @@
+2005-03-13  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* lib/rubygems/installer.rb (Gem::Installer#shebang): Refactored and
+	stripped result to avoid ^M issues.
+
 2005-03-11  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/gem_commands.rb (Gem::DependencyCommand): Added a

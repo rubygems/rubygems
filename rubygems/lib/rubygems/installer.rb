@@ -156,20 +156,19 @@ module Gem
       end
     end
 
-    def shebang(spec, install_dir, file_name)
-      first_line = ""
-      File.open(
-	File.join(install_dir,
-	  "gems",
-	  spec.full_name,
-	  spec.bindir,
-	  file_name), "rb") do |file|
+    def shebang(spec, install_dir, bin_file_name)
+      path = File.join(install_dir, "gems", spec.full_name, spec.bindir, bin_file_name)
+      File.open(path, "rb") do |file|
         first_line = file.readlines("\n").first 
-      end
-      if first_line =~ /^#!/ then
-        first_line.sub(/\A\#!\s*\S*ruby\S*/, "#!" + File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])) #Thanks RPA
-      else
-        "\#!#{File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])}"
+        path_to_ruby = File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])
+        if first_line =~ /^#!/
+          # Preserve extra words on shebang line, like "-w".  Thanks RPA.
+          shebang = first_line.sub(/\A\#!\s*\S*ruby\S*/, "#!" + path_to_ruby)
+        else
+          # Create a plain shebang line.
+          shebang = "#!" + path_to_ruby
+        end
+        return shebang.strip  # Avoid nasty ^M issues.
       end
     end
 

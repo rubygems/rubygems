@@ -75,9 +75,18 @@ module Gem
     end
   end
 
+  module VersionOption
+    def add_version_option(taskname)
+      add_option('-v', '--version VERSION', "Specify version of gem to #{taskname}") do |value, options|
+        options[:version] = value
+      end
+    end
+  end
+
   ####################################################################
   class InstallCommand < Command
     include CommandAids
+    include VersionOption
     include LocalRemoteOptions
     include InstallUpdateOptions
 
@@ -94,9 +103,7 @@ module Gem
           :version => "> 0",
           :install_dir => Gem.dir
         })
-      add_option('-v', '--version VERSION', 'Specify version of gem to install') do |value, options|
-        options[:version] = value
-      end
+      add_version_option('install')
       add_local_remote_options
       add_install_update_options
     end
@@ -188,13 +195,12 @@ module Gem
   
   ####################################################################
   class UninstallCommand < Command
+    include VersionOption
     include CommandAids
 
     def initialize
       super('uninstall', 'Uninstall a gem from the local repository', {:version=>"> 0"})
-      add_option('-v', '--version VERSION', 'Specify version of gem to uninstall') do |value, options|
-        options[:version] = value
-      end
+      add_version_option('uninstall')
     end
 
     def defaults_str
@@ -596,14 +602,13 @@ module Gem
 
   ####################################################################
   class SpecificationCommand < Command
+    include VersionOption
     include LocalRemoteOptions
     include CommandAids
     
     def initialize
       super('specification', 'Display gem specification (in yaml)', {:domain=>:local, :version=>"> 0.0.0"})
-      add_option('-v', '--version VERSION', 'Specify version of gem to examine') do |value, options|
-        options[:version] = value
-      end
+      add_version_option('examine')
       add_local_remote_options
     end
 
@@ -641,6 +646,7 @@ module Gem
   
   ####################################################################
   class UnpackCommand < Command
+    include VersionOption
     include CommandAids
 
     def initialize
@@ -649,10 +655,7 @@ module Gem
         'Unpack an installed gem to the current directory',
         { :version => '> 0' }
       )
-      # TODO: Refactor this: create module VersionOption.  Then: add_version_option('unpack').
-      add_option('-v', '--version VERSION', 'Specify version of gem to unpack') do |value, options|
-        options[:version] = value
-      end
+      add_version_option('unpack')
     end
 
     def defaults_str

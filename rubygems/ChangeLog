@@ -1,5 +1,10 @@
 2004-07-13  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
+	* lib/rubygems/gem_commands.rb: refactored --version option
+	  in all cases to the new VersionOption module.
+
+2004-07-13  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
 	* lib/rubygems/cmd_manager.rb: added 'unpack' command.
 
 	* lib/rubygems/gem_commands.rb (UnpackCommand): added.

@@ -1,4 +1,9 @@
 2004-06-08  Gavin Sinclair <gsinclair@soyabean.com.au>
+	* lib/rubygems/installer.rb: don't warn about not being able to
+	  install a library stub if a library stub is already installed.
+	  Still warn if it's not a library stub that's there already.
+
+2004-06-08  Gavin Sinclair <gsinclair@soyabean.com.au>
 	* bin/gem: renamed --upgrade-dist to --upgrade--all and fixed bug.
 	* lib/rubygems/installer.rb: fixed bug with Ruby version assertion.
 

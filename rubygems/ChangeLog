@@ -1,4 +1,9 @@
 2004-06-18  Rich Kilmer <rich@infoether.com>
+        * broke test_cmd_manager.rb into test_parse_commands and 
+        test_process_commands to test the parsing of command line options
+        and the funtionality, respectively. 
+
+2004-06-18  Rich Kilmer <rich@infoether.com>
         * added new unit test file: test/test_cmd_manager.rb to test the 
         command manager classes.  this is just the first few tests which
         will be expanded to a full test suite.

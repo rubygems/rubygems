@@ -26,9 +26,9 @@ runs the install command.  The argument <tt>rake</tt> is the name of
 the gem to install, and the option <tt>--remote</tt> tell gem to look
 for rake on a remote download site.  Options always start with a dash
 (-) for short options or a double dash (--) for long options.
-Arguments never have a dask.
+Arguments never have a dash.
 
-Gem commands and options may be abbreviated to the 
+Gem commands and options may be abbreviated to any unambiguous length.
 
 !toc
 
@@ -105,8 +105,8 @@ Verifying gem: 'pkg/rake-0.4.0.gem'
 ERROR:  pkg/rake-0.4.0.gem is invalid.
 </pre>
 
-In this installation of ActiveRecord, the postgreSQL driver has been
-locally patched after the gem was installed.  This is how the alien
+In this installation of <nowiki>ActiveRecord</nowiki>, the postgreSQL driver
+has been locally patched after the gem was installed.  This is how the alien
 option reports it.
 
 <pre>

@@ -1,3 +1,7 @@
+2004-10-31  Chad Fowler <chad@chadfowler.com>
+	* lib/rubygems/version.rb,test/test_version_comparison.rb: Patrick May's
+	 fix for nil version comparisons.
+
 2004-10-29  Chad Fowler <chad@chadfowler.com>
 	* packages/,pkgs,install.rb: renamed "packages" to "pkgs" to avoid
 	* remote_installer.rb: Added user-agent reporting for remote

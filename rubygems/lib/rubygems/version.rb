@@ -120,6 +120,7 @@ module Gem
     # return:: [Fixnum] -1, 0, 1
     #
     def <=>(other)
+      return 1 unless other
       rnums, vnums = to_ints, other.to_ints
       [rnums.size, vnums.size].max.times {|i|
         rnums[i] ||= 0

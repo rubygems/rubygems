@@ -172,6 +172,12 @@ class TestDependencies < Test::Unit::TestCase
     assert req.satisfied_by?(Gem::Version.new("1.3"))
   end
 
+  def test_compare_to_nil
+    assert(Gem::Version.new("0.0") > nil)
+    req = Gem::Version::Requirement.create("1.3")
+    assert ! req.satisfied_by?(nil)
+  end
+
   def test_create_from_list
     req = Gem::Version::Requirement.create([">1", "<2"])
     assert ! req.satisfied_by?(Gem::Version.new("1.0"))

@@ -510,6 +510,10 @@ module Gem
           :install_dir => Gem.dir
         })
       add_install_update_options
+      add_option('--system',
+	'Update the RubyGems system software') do |value, options|
+        options[:system] = value
+      end
     end
     
     def defaults_str
@@ -523,7 +527,15 @@ module Gem
 
 
     def execute
-      say "Upgrading installed gems..."
+      if options[:system]
+	say "Upgrading RubyGems..."
+	if ! options[:args].empty?
+	  fail "No gem names are allowed with the --system option"
+	end
+	options[:args] = ["rubygems-update"]
+      else
+	say "Upgrading installed gems..."
+      end
       hig = highest_installed_gems = {}
       Gem::SourceIndex.from_installed_gems.each do |name, spec|
         if hig[spec.name].nil? or hig[spec.name].version < spec.version
@@ -531,12 +543,12 @@ module Gem
         end
       end
       remote_gemspecs = Gem::RemoteInstaller.new(options).search(//)
-      # For some reason, this is an array of arrays.  The actual list of specifications is
-      # the first and only element.  If there were more remote sources, perhaps there would be
-      # more.
+      # For some reason, this is an array of arrays.  The actual list
+      # of specifications is the first and only element.  If there
+      # were more remote sources, perhaps there would be more.
       remote_gemspecs = remote_gemspecs.flatten
       gems_to_update =  if(options[:args].empty?) then
-                          which_to_install(highest_installed_gems)
+                          which_to_update(highest_installed_gems, remote_gemspecs)
                         else
                           options[:args]
                         end
@@ -548,19 +560,34 @@ module Gem
         install_command.merge_options(options)
         install_command.execute
       end
+      if gems_to_update.include?("rubygems-update")
+	say "Updating version of RubyGems"
+	do_rubygems_update
+      end
       say "All gems up to date"
     end
 
-    def which_to_update(highest_installed_gems)
+    def do_rubygems_update
+      # Need to clear out the argument list because the
+      # update_rubygems script expects to handle command line
+      # argument.
+      ARGV.clear		
+      require_gem 'rubygems-update'
+      load 'update_rubygems'  
+    end
+
+    def which_to_update(highest_installed_gems, remote_gemspecs)
+      result = []
       highest_installed_gems.each do |l_name, l_spec|
-        hrg = highest_remote_gem =
+        highest_remote_gem =
           remote_gemspecs.select  { |spec| spec.name == l_name }.
                           sort_by { |spec| spec.version }.
                           last
-        if hrg and l_spec.version < hrg.version
-          gems_to_update << l_name
+        if highest_remote_gem and l_spec.version < highest_remote_gem.version
+          result << l_name
         end
       end
+      result
     end
 
     def command_manager

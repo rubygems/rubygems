@@ -88,7 +88,7 @@ end
 
 PKG_FILES = FileList[
   "Rakefile", "ChangeLog", "Releases", "TODO", "README", 
-  "install.rb",
+  "setup.rb",
   "bin/*",
   "doc/*.css", "doc/*.rb",
   "examples/**/*",

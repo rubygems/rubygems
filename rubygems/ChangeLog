@@ -1,5 +1,8 @@
 2005-02-26  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/doc_manager.rb (Gem::DocManager::generate_rdoc):
+	Removed warning about generating rdocs on gems w/o an rdoc flag.
+
 	* lib/rubygems/gem_commands.rb
 	(Gem::UpdateCommand::do_rubygems_update): Added --system option to
 	update to specifically update the version of rubygems.

@@ -43,15 +43,8 @@ def alpha_toc
   }.sort_by { |l, _| l }                                      # [ ['A', ['author', ...], ...]
   attributes = attributes.map { |letter, attrs|
     "'''#{letter}''' " << attrs.map { |a| _link(a) }.join(' | ')
-  }
+  }                                                           # [ 'A author | autorequire', 'B bindir', ...]
   puts attributes.join(' ')
-#  puts attributes.map { |str|
-#    if str =~ /^[A-Z]$/
-#      "'''#{str}'''"
-#    else
-#      _link(str)
-#    end
-#  }.join(' | ')
 end
 
 def _metadata(attribute)

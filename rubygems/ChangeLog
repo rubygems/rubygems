@@ -1,3 +1,9 @@
+2004-08-17  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* lib/rubygems/gem_commands.rb: --rdoc is default on 'update' command,
+	  consistent with 'install'.  'default_str' methods changed to reflect
+	  --rdoc being default now.
+
 2004-08-21  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems/gem_commands.rb: Proper checking for gems in local 
 	directory on local install.  rescue Gem::LoadError to avoid ugly

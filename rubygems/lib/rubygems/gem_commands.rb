@@ -71,7 +71,7 @@ module Gem
     end
 
     def install_update_defaults_str
-      '--no-rdoc --no-force --no-test --install-stub'
+      '--rdoc --no-force --no-test --install-stub'
     end
   end
 
@@ -117,7 +117,7 @@ module Gem
     end
 
     def defaults_str
-      "--both --version '> 0' --no-rdoc --no-force --no-test --install-stub\n" +
+      "--both --version '> 0' --rdoc --no-force --no-test --install-stub\n" +
       "--install-dir #{Gem.dir}"
     end
 
@@ -491,7 +491,7 @@ module Gem
         'update',
         'Upgrade all currently installed gems in the local repository',
         {
-          :generate_rdoc => false, 
+          :generate_rdoc => true, 
           :force => false, 
           :test => false, 
           :stub => true, 
@@ -501,7 +501,7 @@ module Gem
     end
     
     def defaults_str
-      "--no-rdoc --no-force --no-test --install-stub\n" +
+      "--rdoc --no-force --no-test --install-stub\n" +
       "--install-dir #{Gem.dir}"
     end
 

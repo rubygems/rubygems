@@ -325,7 +325,7 @@ INFO
     puts " - VERSION:                #{Gem::RubyGemsVersion}"
     puts " - INSTALLATION DIRECTORY: #{Gem.dir}"
     puts " - GEM PATH:"
-    puts $GEM_PATH.map { |p| "     - #{p}" }
+    puts Gem.path.map { |p| "     - #{p}" }
     puts " - REMOTE SOURCES:"
     puts Gem::RemoteInstaller.new.get_cache_sources.map { |s| "     - #{s}" }
     exit

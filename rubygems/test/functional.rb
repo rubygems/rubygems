@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'rubygems'
 require 'yaml'
-
+require 'fileutils'
 require 'test/insure_session'
 
 class FunctionalTest < Test::Unit::TestCase

@@ -1,3 +1,18 @@
+2004-12-04  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/remote_installer.rb
+	(Gem::LocalSourceInfoCache::writable_file): Now just returns the
+	selected cache file (which was selected based on writability).
+	(Gem::LocalSourceInfoCache::try_file): Added try_file to determine
+	if a file is a candidate for a cache file.
+	(Gem::LocalSourceInfoCache::select_cache_file): Added failure if
+	there are not valid cache file candidates.
+
+	* lib/rubygems.rb (Gem::Exception): Renamed @@cache to
+	@@source_index.
+	(Gem::Exception::source_index): Renamed Gem.cache to
+	Gem.source_index (but left cache as an alias).
+
 2004-12-03  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/remote_installer.rb (Gem::LocalSourceInfoCache):

@@ -121,7 +121,7 @@ module Gem
       }
         
       OP_RE = Regexp.new(OPS.keys.collect{|k| Regexp.quote(k)}.join("|"))
-      REQ_RE = /\s*(#{OP_RE}|>\*)\s*/
+      REQ_RE = /\s*(#{OP_RE})\s*/
 
       ##
       # Used to simplify conversion code, especially from strings
@@ -147,37 +147,45 @@ module Gem
       #
       def initialize(reqs)
 	@requirements = reqs.collect do |rq|
-	  rq = "= #{rq}" unless rq =~ OP_RE
-	  op, nums = parse(rq)
-	  fail ArgumentError, "Unknown Requirement Operator [#{op}]" if OPS[op].nil?
-	  version = Version.new(nums.join("."))
-	  [op, version]
+	  op, version_string = parse(rq)
+	  [op, Version.new(version_string)]
 	end
       end
       
       ##
-      # Is the version requirement is satisfied by the supplied version?
+      # Is the requirement satifised by +version+.
       #
-      # vn:: [Gem::Version] the version to compare against
+      # version:: [Gem::Version] the version to compare against
       # return:: [Boolean] true if this requirement is satisfied by
       #          the version, otherwise false 
       #
-      def satisfied_by?(vn)
-	@requirements.each do |op, ver|
-	  return false unless OPS[op].call(vn, ver)
-	end
-	true
+      def satisfied_by?(version)
+	@requirements.all? { |op, rv| satisfy?(op, version, rv) }
       end
   
       private
-      
+       
       ##
-      # parses the version requirement string, returning the
-      # comparator and the number
+      # Is "version op required_version" satisfied?
+      #
+      def satisfy?(op, version, required_version)
+	OPS[op].call(version, required_version)
+      end
+
+      ##
+      # Parse the version requirement string. Return the operator and
+      # version strings.
       #
       def parse(str)
-        return str.scan(/^\D+/).join.strip,
-               str.scan(/\d+/).map {|s| s.to_i}
+	if md = /^\s*(#{OP_RE})\s*([0-9.]+)\s*$/.match(str)
+	  [md[1], md[2]]
+	elsif md = /^\s*([0-9.]+)\s*$/.match(str)
+	  ["=", md[1]]
+	elsif md = /^\s*(#{OP_RE})\s*$/.match(str)
+	  [md[1], "0"]
+	else
+	  fail ArgumentError, "Illformed requirement [#{str}]"
+	end
       end
     end
   end

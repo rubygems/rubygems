@@ -107,6 +107,13 @@ module Gem
     end
 
     ##
+    # return:: [Array] list of extra rdoc files as strings
+    #
+    def extra_rdoc_files
+      @extra_rdoc_files ||= []
+    end
+
+    ##
     # Returns executables array
     #
     # return:: [Array] array of Strings
@@ -124,6 +131,18 @@ module Gem
     #
     def requirements
       @requirements ||= []
+    end
+
+    ##
+    # Sets additional files (beyond just ruby source files)  to be
+    # included in rdoc generation. 
+    # Ruby source files will automatically be added
+    # 
+    # Adding files to this list will automatically add them to the file list
+    # (causing them to be added to the gem)
+    def extra_rdoc_files=(extra_rdoc_files)
+      @files.concat(extra_rdoc_files)
+      @extra_rdoc_files = extra_rdoc_files
     end
 
     ##
@@ -326,9 +345,9 @@ module Gem
       result << '@dependencies' if dependencies.size > 0
       result << '@extensions' if extensions.size > 0
       result << '@rdoc_options' if rdoc_options.size > 0
+      result << '@extra_rdoc_files' if extra_rdoc_files.size > 0
       result << '@extension_requirements' if extension_requirements.size > 0
       result << '@description' if @description
-      result << '@rdoc_options' if @rdoc_options
       result
     end
 
@@ -353,6 +372,9 @@ module Gem
       end
       if rdoc_options.size > 0
         result << "  s.rdoc_options = [" + (rdoc_options.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
+      end
+      if extra_rdoc_files.size > 0
+        result << "  s.extra_rdoc_files = [" + (extra_rdoc_files.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
       end
       if executables.size > 0
         result << "  s.executables = [" + (executables.collect {|p| '"' + p + '"'}).join(', ') + "]\n"

@@ -12,6 +12,7 @@ spec = Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.autorequire = 'somefunctionality'
   s.executables = ["myapp"]
+  s.extra_rdoc_files = ["README", "Changes.rdoc"]
   #s.default_executable = "myapp"
   s.bindir = "bin"
 end

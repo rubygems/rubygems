@@ -5,11 +5,10 @@
 * support for installing binary (pre-compiled), platform-dependent gems.  This already works as long as you pick the right gem manually, but I'd like the remote installer to intelligently select the right one and for the installer to throw an error (or a warning) if you attempt o install (e.g.) a Windows gem on a linux system.
 * Allowing a gem to specify a required ruby version
 * Integration with platform-native packaging systems
-* Add arbitrary RDoc-able files via gemspec (not just Ruby source files)
 
 DONE:
 - some kind of versioning change (mauricio, eivind, or jim's idea(s)) should go into 0.5 for feedback/testing
 - Group gem search output when multiple versions exist for a given gem: 
   activerecord (0.7.5, 0.7.6, 0.7.7, 0.7.8)
     Implements the ActiveRecord pattern for ORM.
-
+- Add arbitrary RDoc-able files via gemspec (not just Ruby source files)

@@ -1,4 +1,9 @@
 2004-06-04  Chad Fowler  <chad@chadfowler.com>
+	* lib/rubygems/specification.rb, lib/rubygems/doc_manager.rb:  
+	Allow arbitrary files to be added for rdoc to run over them (as per
+	Jim's request).
+
+2004-06-04  Chad Fowler  <chad@chadfowler.com>
 	* bin/gem:  Reformatted --search and --list output such that
 	multiple versions of a gem are compressed into a single entry
 	(with version numbers in parentheses)

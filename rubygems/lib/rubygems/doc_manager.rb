@@ -47,7 +47,7 @@ module Gem
           path = File.join(@spec.full_gem_path, req)
           path = path[2..-1] if path =~ /^[a-zA-Z]\:/
           path
-        end
+        end.concat(@spec.extra_rdoc_files)
         @rdoc_args = rdoc_args_from_spec(@rdoc_args)
         r = RDoc::RDoc.new
         r.document(['--op', rdoc_dir, '--template', 'kilmer'] + @rdoc_args.flatten + source_dirs)

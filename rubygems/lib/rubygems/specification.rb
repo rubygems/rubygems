@@ -36,7 +36,7 @@ module Gem
     ##
     # These attributes are optional
     #
-    attr_accessor :autorequire, :author, :email, :homepage, :description, :files, :docs, :test_suite_file
+    attr_accessor :autorequire, :author, :email, :homepage, :description, :files, :docs, :test_suite_file, :executables, :default_executable, :bindir
     attr_accessor :rubyforge_project
     attr_writer :has_rdoc
     
@@ -50,7 +50,7 @@ module Gem
     #
     def initialize
       @date = Time.now
-      @test_suite_file,@has_rdoc,@email,@homepage,@rubyforge_project,@description,@author = nil
+      @bindir, @default_executable,@test_suite_file,@has_rdoc,@email,@homepage,@rubyforge_project,@description,@author = nil
       @loaded = false
       @platform = nil
       @@list << self
@@ -71,6 +71,15 @@ module Gem
     #
     def dependencies
       @dependencies ||= []
+    end
+
+    ##
+    # Returns executables array
+    #
+    # return:: [Array] array of Strings
+    #
+    def executables
+      @executables ||= []
     end
     
     ##
@@ -130,6 +139,15 @@ module Gem
     #
     def require_path=(path)
       @require_paths = [path]
+    end
+
+    ##
+    # Helper method if their is only one executable to install
+    #
+    # file_path:: [String] The path to the executable script (relative to the gem)
+    #
+    def executable=(file_path)
+      @executables = [file_path]
     end
     
     ##
@@ -208,7 +226,10 @@ module Gem
       result << '@rubyforge_project' if @rubyforge_project
       result << '@has_rdoc' if @has_rdoc
       result << '@test_suite_file' if @test_suite_file
+      result << '@default_executable' if default_executable
+      result << '@bindir' if bindir
       result << '@requirements' if requirements.size > 0
+      result << '@executables' if executables.size > 0
       result << '@dependencies' if dependencies.size > 0
       result << '@description' if @description
       result
@@ -233,11 +254,16 @@ module Gem
       if require_paths
         result << "s.require_paths = [" + (require_paths.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
       end
+      if executables.size > 0
+        result << "s.executables = [" + (executables.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
+      end
       # optional 
       result << "s.autorequire = %q{#{autorequire}}\n" if autorequire
       result << "s.author = %q{#{author}}\n" if author
       result << "s.email = %q{#{email}}\n" if email
       result << "s.homepage = %q{#{homepage}}\n" if homepage
+      result << "s.default_executable = %q{#{default_executable}}\n" if default_executable
+      result << "s.bindir = %q{#{bindir}}\n" if bindir
       result << "s.rubyforge_project = %q{#{rubyforge_project}}\n" if rubyforge_project
       result << "s.description = <<-EOS\n#{description}\nEOS\n" if description
       result << "end\n"

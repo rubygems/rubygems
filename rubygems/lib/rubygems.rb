@@ -38,6 +38,11 @@ module Kernel
         require_gem(dep_gem)
       end
       
+      # add bin dir to require_path
+      if(spec.bindir) then
+        spec.require_paths << spec.bindir
+      end
+
       # Now add the require_paths to the LOAD_PATH
       spec.require_paths.each do |path|
         $:.unshift File.join(spec.full_gem_path, path)

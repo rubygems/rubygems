@@ -42,6 +42,7 @@ module Gem
        directory = File.join(to_dir, format.spec.full_name)
        FileUtils.mkdir_p directory
        extract_files(directory, format)
+       generate_bin_scripts(directory, format.spec)
        
        #build spec/cache/doc dir
        unless File.exist? File.join(to_dir, "specifications")
@@ -74,6 +75,34 @@ module Gem
       File.open(File.join(spec_path, spec.full_name+".gemspec"), "w") do |file|
         file.puts spec.to_ruby
       end
+    end
+
+    def generate_bin_scripts(directory,spec)
+      if(spec.executables)
+        require 'rbconfig'
+        bindir = Config::CONFIG['bindir']
+        is_windows_platform = Config::CONFIG["arch"] =~ /dos|win32/i
+        spec.executables.each do |file_name|
+          File.open(File.join(bindir, File.basename(file_name)), "w", 0755) do |file|
+            file.print(generate_script_text(spec.name, spec.version.version, file_name))
+          end
+        end
+      #if is_windows_platform
+        #File.open(target+".cmd", "w") do |file|
+          #file.puts "@ruby #{target} %1 %2 %3 %4 %5 %6 %7 %8 %9"
+        #end
+      #end
+      end
+    end
+
+    def generate_script_text(name, version, file)
+      script = <<-SCRIPT
+#!#{File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])}
+require 'rubygems'
+require_gem '#{name}', "#{version}"
+load '#{file}'  
+SCRIPT
+      script
     end
     
     ##

@@ -294,8 +294,19 @@ module Gem
       nil
     end
 
+    def add_bindir(executables)
+      if(@executables.nil?) 
+        return nil
+      end
+      if(@bindir)
+        @executables.map {|e| File.join(@bindir, e) }
+      else
+        @executables
+      end
+    end
+
     overwrite_accessor :files do
-      (@files || []) | (@test_files || []) | (@executables || []) |
+      (@files || []) | (@test_files || []) | (add_bindir(@executables) || []) |
         (@extra_rdoc_files || []) | (@library_stubs || []) | (@extensions || [])
     end
 

@@ -118,6 +118,8 @@ task :install do
 end
 
 # Run 'gem' (using local bin and lib directories).
+# e.g.
+#     rake rungem -- install -r blahblah --test
 
 desc "Run local 'gem'"
 task :rungem do

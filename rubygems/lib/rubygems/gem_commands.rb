@@ -328,8 +328,7 @@ module Gem
           end
         end
       else
-        load filename
-        result = Gem::Specification.list
+        result = [Gem::Specification.load(filename)]
       end
       result
     end

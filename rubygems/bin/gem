@@ -16,8 +16,8 @@ ARGV.options do |opts|
   opts.on('--remote-install=GEMNAME', "Auto-download and install a Gem and its dependencies") {|options[:remote_install]|}
   opts.on('--http-proxy=HTTPPROXYHOST', "(unimplemented) HTTP Proxy to use for remote operations") {|options[:remote_install]|}
   opts.on('--version=GEMVERSION', "Version of Gem to perform operation on") {|options[:gem_version]|}
-  opts.on('--verify=GEMFILE', "Verify gem file against its internal checksum") {|options[:verify_gem]|}
-  opts.on('--alien', "Report 'unmanaged' or rogue files in the gem repository") {options[:alien] = true}
+  opts.on('--verify=GEMFILE', "Verify Gem file against its internal checksum") {|options[:verify_gem]|}
+  opts.on('--alien', "Report 'unmanaged' or rogue files in the Gem repository") {options[:alien] = true}
   opts.parse!
 end
 
@@ -60,6 +60,10 @@ if install_file
   end
 end
 
+if remote_install
+  installed_gems = Gem::RemoteInstaller.new(remote_install, options[:gem_version] || "> 0.0.0").install
+end
+
 if gem_to_uninstall
   Gem::Uninstaller.new(gem_to_uninstall, options[:gem_version] || "> 0.0.0").uninstall
 end
@@ -78,10 +82,6 @@ if list
   Gem::Cache.from_installed_gems.each do |gem_name, gem_spec|
     puts gem_name
   end
-end
-
-if remote_install
-  Gem::RemoteInstaller.new(remote_install, options[:gem_version] || "> 0.0.0").install
 end
 
 if verify_gem

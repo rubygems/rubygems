@@ -33,7 +33,6 @@ module Gem
       download_gem(destination_file, source, spec)
       installer = new_installer(destination_file)
       installer.install()
-      return nil
     end
 
     ##

@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rubygems/command'
+require 'rubygems/user_interaction'
 
 module Gem
 
@@ -16,6 +17,8 @@ module Gem
   class RemoteError < StandardError; end
 
   class CommandManager
+    include UserInteraction
+
     def initialize
       @commands = {}
       @base_command = BaseCommand.new
@@ -26,6 +29,8 @@ module Gem
       register_command BuildCommand.new
       register_command QueryCommand.new
       register_command UpdateCommand.new
+      register_command RubyGemsInfoCommand.new
+      register_command VersionCommand.new
     end
     
     def register_command(command)
@@ -40,10 +45,18 @@ module Gem
       @commands.keys.collect {|key| key.to_s}.sort
     end
     
+    def run(args)
+      process_args(args)
+    rescue Gem::Exception => ex
+      alert_error "While executing gem ...\n    #{ex.to_s}\n    (#{ex.class})"
+      terminate_interaction(1)
+    end
+
     def process_args(args)
       args = args.to_str.split(/\s/) if args.respond_to?(:to_str)
       if args.size==0
         @base_command.invoke(*args)
+	terminate_interaction(1)
       elsif args[0]=~/--/
         @base_command.invoke(*args)
       else
@@ -94,23 +107,26 @@ module Gem;
       add_option('-h', '--help [COMMAND]', 'Get help on COMMAND') do |value, options|
 	options[:help] = value.nil? ? true : value
       end
-      add_option(nil, '--help-commands', 'List available commands') do |value, options|
+      add_option('--help-commands', 'List available commands') do |value, options|
 	options[:help_commands] = true
       end
-      add_option(nil, '--help-options', 'List available options on base gem command') do |value, options|
+      add_option('--help-options', 'List available options on base gem command') do |value, options|
 	options[:help_options] = true
       end
-      add_option(nil, '--help-examples', 'Show examples of using the gem command') do |value, options|
+      add_option('--help-examples', 'Show examples of using the gem command') do |value, options|
 	options[:help_examples] = true
       end
+      add_option('--rubygems-info', 'List RubyGems information') do |value, options|
+	options[:rubygems_info] = true
+      end
     end
-    
+
     def execute(options)
       if options[:help]==true
-	say HELP
+	say Gem::CommandManager::HELP
 	return true
       elsif options[:help]
-	command = @cmd_manager[options[:help]]
+	command = command_manager[options[:help]]
 	if command
 	  # help with provided command
 	  command.invoke("--help")
@@ -121,9 +137,9 @@ module Gem;
 	end
       elsif options[:help_commands]
 	say "GEM commands are:"
-	indent = @cmd_manager.command_names.collect {|n| n.size}.max+4
-	@cmd_manager.command_names.each do |cmd_name|
-	  say "  #{cmd_name}#{" "*(indent - cmd_name.size)}#{@cmd_manager[cmd_name].summary}"
+	indent = command_manager.command_names.collect {|n| n.size}.max+4
+	command_manager.command_names.each do |cmd_name|
+	  say "  #{cmd_name}#{" "*(indent - cmd_name.size)}#{command_manager[cmd_name].summary}"
 	end
 	return true
       elsif options[:help_options]
@@ -132,6 +148,10 @@ module Gem;
 	say EXAMPLES
 	return true
       end
+    end
+    
+    def command_manager
+      Gem::CommandManager.instance
     end
     
   end
@@ -533,6 +553,40 @@ module Gem;
       return true
     end
   end
+
+  ####################################################################
+  class RubyGemsInfoCommand < Command
+    def initialize
+      super('rubygems-info', 'RubyGems Environmental Information')
+    end
+
+    def execute(options)
+      out = "Rubygems:\n"
+      out << "  - VERSION: #{Gem::RubyGemsVersion}\n"
+      out << "  - INSTALLATION DIRECTORY: #{Gem.dir}\n"
+      out << "  - GEM PATH:\n"
+      Gem.path.collect { |p| out << "     - #{p}\n" }
+      out << "  - REMOTE SOURCES:\n"
+      Gem::RemoteInstaller.new.get_cache_sources.collect do |s|
+	out << "     - #{s}\n"
+      end
+      say out
+      true
+    end
+  end
+
+  ####################################################################
+  class VersionCommand < Command
+    def initialize
+      super('version', 'RubyGems Version')
+    end
+
+    def execute(options)
+      say Gem::RubyGemsVersion
+      true
+    end
+  end
+
 end # module
 
 ## Documentation Constants

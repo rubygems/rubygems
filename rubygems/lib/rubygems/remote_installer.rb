@@ -414,7 +414,7 @@ module Gem
       specs_n_sources = []
       caches.each do |source, cache|
         cache.each do |name, spec|
-          if (/#{gem_name}/i === name &&
+          if (/^#{gem_name}-/i === name &&
 	      version_requirement.satisfied_by?(spec.version))
             specs_n_sources << [spec, source]
           end

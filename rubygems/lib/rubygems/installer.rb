@@ -125,7 +125,7 @@ module Gem
       if Config::CONFIG["arch"] =~ /dos|win32/i
         script_name = filename + ".cmd"
         File.open(File.join(bindir, File.basename(script_name)), "w") do |file|
-          file.puts "@ruby #{File.join(bindir,filename)} %*"
+          file.puts "@ruby \"#{File.join(bindir,filename)}\" %*"
         end
       end
     end

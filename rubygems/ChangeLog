@@ -1,3 +1,7 @@
+2004-09-06  Rich Kilmer <rich@infoether.com>
+  * lib/rubygems/remote_installer.rb - enabled caching of source caches
+     based on the size of the yaml.Z/yaml file.
+     
 2004-08-29  Chad Fowler <chad@chadfowler.com>
 	* /lib/rubygems/gem_command.rb: small big fix for local gem installs
 	on Windows.

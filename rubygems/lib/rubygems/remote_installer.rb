@@ -41,11 +41,11 @@ module Gem
       end
       installed_gems = []
       sources = get_cache_sources()
-      caches = get_caches(sources)
+      caches = get_caches(sources, install_dir)
       spec, source = find_gem_to_install(gem_name, version_requirement, caches)
       dependencies = find_dependencies_not_installed(spec.dependencies)
       installed_gems << install_dependencies(dependencies)
-      cache_dir = File.join(Gem::dir, "cache")
+      cache_dir = File.join(install_dir, "cache")
       destination_file = File.join(cache_dir, spec.full_name + ".gem")
       download_gem(destination_file, source, spec)
       installer = new_installer(destination_file)
@@ -72,31 +72,83 @@ module Gem
       require_gem("sources")
       Gem.sources
     end
-
+    
     ##
     # Given a list of sources, return a hash of all the caches from those sources, where the key is the source and the value is the cache.
-    def get_caches(sources)
+    def get_caches(sources, install_dir)
+      source_caches_file = File.join(install_dir, "source_caches")
+      if File.exist?(source_caches_file)
+        caches = YAML.load(File.read(source_caches_file))
+      else
+        caches = {}
+      end
+      updated = false
+      sources.each do |source|
+        if caches.has_key?(source)
+          size = fetch_source_size(source)
+          if caches[source]["size"] != size
+            caches[source]["size"] = size
+            caches[source]["cache"] = fetch_source(source)
+            updated = true
+          end
+        else
+          updated = true
+          caches[source] = {"size" => fetch_source_size(source), "cache" => fetch_source(source)}
+        end
+      end
+      if updated
+        File.open(source_caches_file, "wb") do |file|
+          file.print caches.to_yaml
+        end
+      end
+      result = {}
+      caches.each do |source, data|
+        result[source] = data["cache"]
+      end
+      result
+    end
+
+    def get_caches_old(sources)
       require 'yaml'
 
       caches = {}
       sources.each do |source|
         begin
-          begin
-            require 'zlib'
-            yaml_spec = fetch(source + "/yaml.Z")
-            yaml_spec = Zlib::Inflate.inflate(yaml_spec)
-          rescue
-            yaml_spec = nil
-          end
-          yaml_spec = fetch(source + "/yaml") unless yaml_spec
-          spec = YAML.load(yaml_spec)
-          raise "Didn't get a valid YAML document" if not spec
+          spec = fetch_source(source)
           caches[source] = spec
         rescue SocketError => e
           raise RemoteSourceException.new("Error fetching remote gem cache: #{e.to_s}")
         end
       end
       return caches
+    end
+    
+    def fetch_source_size(source)
+      require 'yaml'
+      begin
+        yaml_spec_size = fetch_size(source + "/yaml.Z")
+      rescue
+        yaml_spec_size = nil
+      end
+      yaml_spec_size = fetch_size(source + "/yaml") unless yaml_spec_size
+      yaml_spec_size
+    end
+    
+    def fetch_source(source)
+        begin
+          require 'zlib'
+          yaml_spec = fetch(source + "/yaml.Z")
+          yaml_spec = Zlib::Inflate.inflate(yaml_spec)
+        rescue
+          yaml_spec = nil
+        end
+        yaml_spec = fetch(source + "/yaml") unless yaml_spec
+        spec = YAML.load(yaml_spec)
+        raise "Didn't get a valid YAML document" if not spec
+        spec
+    end
+    
+    def get_cache(source)
     end
 
     def find_gem_to_install(gem_name, version_requirement, caches)
@@ -168,7 +220,17 @@ module Gem
         out.write(body)
       end
     end
-
+    
+    def fetch_size( uri_str )
+      require 'open-uri'
+      size = nil
+      begin
+        open(uri_str, :proxy => @http_proxy, :content_length_proc => lambda {|t| size = t; raise "break"}) {|i| }
+      rescue
+      end
+      return size
+    end
+    
     def fetch( uri_str )
       require 'open-uri'
       open(uri_str, :proxy => @http_proxy) do |input|

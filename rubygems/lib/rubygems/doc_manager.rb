@@ -21,6 +21,13 @@ module Gem
       require 'fileutils'
       FileUtils.mkdir_p @doc_dir unless File.exist?(@doc_dir)
     end
+
+    ##
+    # Return Rdoc args as specified in gem spec.  If args exist in gemspec,
+    # append any user-defined args.  This behavior is open for a vote. 
+    def rdoc_args_from_spec(non_spec_args)
+      @spec.rdoc_options << non_spec_args 
+    end
     
     def generate_rdoc
       require 'fileutils'
@@ -41,6 +48,7 @@ module Gem
           path = path[2..-1] if path =~ /^[a-zA-Z]\:/
           path
         end
+        @rdoc_args = rdoc_args_from_spec(@rdoc_args)
         r = RDoc::RDoc.new
         r.document(['--op', rdoc_dir, '--template', 'kilmer'] + @rdoc_args.flatten + source_dirs)
       rescue RDoc::RDocError => e

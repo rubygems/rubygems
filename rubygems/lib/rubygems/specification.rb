@@ -50,7 +50,7 @@ module Gem
     # These attributes are optional
     #
     attr_accessor :autorequire, :author, :email, :homepage, :description, :files, :docs
-    attr_accessor :test_suite_file, :default_executable, :bindir, :platform
+    attr_accessor :test_suite_file, :default_executable, :bindir, :platform, :rdoc_options
     attr_accessor :rubyforge_project
     attr_writer :has_rdoc, :executables, :extensions
     
@@ -96,6 +96,14 @@ module Gem
     #
     def require_paths
       @require_paths ||= []
+    end
+
+    undef :rdoc_options
+    ##
+    # return:: [Array] list of rdoc arguments as strings
+    #
+    def rdoc_options
+      @rdoc_options ||= []
     end
 
     ##
@@ -317,8 +325,10 @@ module Gem
       result << '@executables' if executables.size > 0
       result << '@dependencies' if dependencies.size > 0
       result << '@extensions' if extensions.size > 0
+      result << '@rdoc_options' if rdoc_options.size > 0
       result << '@extension_requirements' if extension_requirements.size > 0
       result << '@description' if @description
+      result << '@rdoc_options' if @rdoc_options
       result
     end
 
@@ -340,6 +350,9 @@ module Gem
       result << "  s.files = [" + (files.collect {|f| '"' + f + '"'}).join(', ') + "]\n"
       if require_paths
         result << "  s.require_paths = [" + (require_paths.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
+      end
+      if rdoc_options.size > 0
+        result << "  s.rdoc_options = [" + (rdoc_options.collect {|p| '"' + p + '"'}).join(', ') + "]\n"
       end
       if executables.size > 0
         result << "  s.executables = [" + (executables.collect {|p| '"' + p + '"'}).join(', ') + "]\n"

@@ -1,3 +1,7 @@
+2004-05-31 18:38 chadfowler
+
+	* gemspec now supports #rdoc_options, to which you can append strings that will be passed to rdoc as additional options.
+
 2004-05-08 21:57  chadfowler
 
 	* Using Gem::RubyGemsVersion to match the release number.  If we need to use this as an internal version format specifier in the future, we can use the Gem::Version semantics.

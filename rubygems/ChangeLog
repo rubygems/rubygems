@@ -1,3 +1,8 @@
+2004-07-09  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/user_interaction.rb (Gem::StreamUI::ask and
+	Gem::StreamUI::choose_from_list): Added flush before each gets.
+
 2004-07-05  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* lib/rubygems/command.rb (Gem::Command#defaults_str): added.

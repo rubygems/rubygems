@@ -38,9 +38,18 @@ module Gem
             require_gem(dep_gem)
           end
         end
+        #build spec dir
         directory = File.join(to_dir, spec.full_name)
         FileUtils.mkdir_p directory
         extract_files(directory, file)
+        
+        #build spec/cache dir
+        unless File.exist? File.join(to_dir, "specifications")
+          FileUtils.mkdir_p File.join(to_dir, "specifications")
+        end
+        unless File.exist? File.join(to_dir, "cache")
+          FileUtils.mkdir_p File.join(to_dir, "cache")
+        end
         write_spec(spec, File.join(to_dir, "specifications"))
         FileUtils.cp(@gem, File.join(to_dir, "cache"))
         puts "Successfully installed #{spec.name} version #{spec.version}"

@@ -1,3 +1,9 @@
+2004-12-28  Jim Weirich  <jim@tardis>
+
+	* lib/rubygems.rb (Gem::Exception::ensure_gem_subdirectories):
+	Fixed the Ryan Davis patch to work correctly when directories are
+	not writable.
+	
 2004-12-18  Chad Fowler <chad@chadfowler.com>
 	* lib/rubygems/version.rb: Erik Veenstra's sort patch.
 	* lib/rubygems.rb: Ryan Davis's installation bug fix.

@@ -87,7 +87,7 @@ if __FILE__ == $0
     res['content-type'] = 'text/html'
     template.write_html_on(res.body, {"specs" => specs})      
   }
-  {"/" => "/specifications/", "/gems" => "/cache/", "/doc_root" => "/doc/"}.each do |mount_point, mount_dir|
+  {"/gems" => "/cache/", "/doc_root" => "/doc/"}.each do |mount_point, mount_dir|
     s.mount(mount_point, WEBrick::HTTPServlet::FileHandler, File.join(options[:gemdir] || Gem.dir, mount_dir), true)
   end
   trap("INT"){ s.shutdown }

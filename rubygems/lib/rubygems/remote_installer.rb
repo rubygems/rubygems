@@ -14,13 +14,13 @@ module Gem
     def initialize(http_proxy=nil)
       # Ensure http_proxy env vars are used if no proxy explicitly supplied.
       @http_proxy =
-        case proxy
+        case http_proxy
         when :no_proxy
           false
         when nil
           true
         else
-          proxy.to_str
+          http_proxy.to_str
         end
     end
 

@@ -1,4 +1,5 @@
 module Gem
+  class DependencyError < Exception; end
 
   class RemoteInstaller
 
@@ -112,8 +113,14 @@ module Gem
     # TODO: For now, we recursively install, but this is not the right way to do things (e.g. if a package fails to download, we shouldn't install anything).
     def install_dependencies(dependencies)
       dependencies.each do |dependency|
-        remote_installer = RemoteInstaller.new
-        remote_installer.install(dependency.name, dependency.version_requirement)
+        print "Install required dependency #{dependency.name}? [Yn] "
+        answer = STDIN.gets
+        if answer =~ /^y/i then
+          remote_installer = RemoteInstaller.new
+          remote_installer.install(dependency.name, dependency.version_requirement)
+        else
+          raise DependencyError.new("Required dependency #{dependency.name} not installed")
+        end
       end
     end
 

@@ -1,5 +1,9 @@
 2004-12-12  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
+	* lib/rubygems/custom_require.rb: simple bug fix.
+
+2004-12-12  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
 	* lib/rubygems/custom_require.rb: new file to replace
 	loadpath_manager.rb and speed up the custom require functionality.
 

@@ -280,7 +280,6 @@ TEXT
         print "> "
         response = STDIN.gets.strip.to_i - 1
         if response == list.size
-          # list.each { |gem| remove(gem) }
           remove_all(list) 
         elsif response >= 0 && response < list.size
           remove(list[response], list)
@@ -292,6 +291,11 @@ TEXT
       end
     end
     
+
+    def remove_all(list)
+      list.dup.each { |gem| remove(gem, list) }
+    end
+
     #
     # spec:: the spec of the gem to be uninstalled
     # list:: the list of all such gems

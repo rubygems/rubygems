@@ -183,7 +183,7 @@ module Gem
     end
     
     def usage
-      "gem #{program_name} GEMNAME"
+      "#{program_name} GEMNAME"
     end
 
     def arguments
@@ -259,7 +259,7 @@ module Gem
     end
 
     def usage
-      "gem #{program_name} GEMSPEC_FILE"
+      "#{program_name} GEMSPEC_FILE"
     end
 
     def arguments
@@ -478,7 +478,7 @@ module Gem
     end
 
     def usage
-      "gem #{program_name} [args]"
+      "#{program_name} [args]"
     end
 
     def arguments
@@ -539,7 +539,7 @@ module Gem
     end
 
     def usage
-      "gem #{program_name} GEMFILE"
+      "#{program_name} GEMFILE"
     end
 
     def arguments

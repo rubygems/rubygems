@@ -1,6 +1,7 @@
 require 'rbconfig'
 require 'find'
 require 'ftools'
+require 'fileutils'
 
 include Config
 
@@ -49,9 +50,19 @@ def install_rb(srcdir = nil)
   
   # move old gems if they are present into gems subdir (TEMPORARY)
   
-  Dir.glob(File.join(gem_dir, "*")) do |file|
-    next unless file =~ /.*-[0-9]+\..*/
-    File::move(file, File.join(gem_dir, "gems"))
+  begin
+    Dir.glob(File.join(gem_dir, "*")) do |file|
+      next unless file =~ /.*-[0-9]+\..*/
+      FileUtils.mv(file, File.join(gem_dir, "gems"))
+    end
+  rescue
+    puts "ERROR: Failed to migrate the old gems located in..."
+    puts "  #{gem_dir}"
+    puts "  ...to the #{File.join(gem_dir, 'gems')} directory"
+    puts "  You should move them manually, or your gems DB will be an invalid state"
+    puts "Backtrace follows:"
+    puts $!
+    puts $!.backtrace.join("\n")
   end
   
   ## Install the 'bin' files.

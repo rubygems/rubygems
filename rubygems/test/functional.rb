@@ -33,7 +33,7 @@ class FunctionalTest < Test::Unit::TestCase
   end
 
   ONEDIR = "test/data/one"
-  ONENAME = "one-ruby-0.0.1.gem"
+  ONENAME = "one-0.0.1.gem"
   ONEGEM = "#{ONEDIR}/#{ONENAME}"
 
   def test_build

@@ -80,10 +80,10 @@ class RemoteInstallerTest < Test::Unit::TestCase
     @remote_installer = RemoteInstallerTest::RemoteInstaller.new
     @remote_installer.responses = {
       CACHE_SOURCES[0] + "/yaml" => SAMPLE_CACHE_YAML,
-      "#{CACHE_SOURCES[0]}/gems/foo-ruby-1.2.3.gem" => FOO_GEM
+      "#{CACHE_SOURCES[0]}/gems/foo-1.2.3.gem" => FOO_GEM
     }
     @remote_installer.caches = { CACHE_SOURCES[0]  => SAMPLE_CACHE }
-    @remote_installer.expected_destination_files = [File.join(CACHE_DIR, 'foo-ruby-1.2.3.gem')]
+    @remote_installer.expected_destination_files = [File.join(CACHE_DIR, 'foo-1.2.3.gem')]
     @remote_installer.expected_bodies = [FOO_GEM]
 
     result = @remote_installer.install('foo')

@@ -707,14 +707,14 @@ class RubyGemsFacade
   # +gems+ is actually an Array: [[name, gemspec], [name, gemspec], ...]
   def _display_gems(gems)
     gem_list_with_version = {}
-    gems.sort {|a,b| 
-      a[0].downcase <=> b[0].downcase
-    }.each do |gem|
-	gem = gem[1]
-        gem_list_with_version[gem.name] ||= []
-        gem_list_with_version[gem.name] << gem
+    gems.each do |gem|
+      gem = gem[1]
+      gem_list_with_version[gem.name] ||= []
+      gem_list_with_version[gem.name] << gem
     end
-   gem_list_with_version.each do |gem_name, list_of_matching| 
+    gem_list_with_version.sort do |first, second|
+     first[0].downcase <=> second[0].downcase
+    end.each do |gem_name, list_of_matching| 
      puts
      list_of_matching.sort! do |a,b|
        a.version <=> b.version

@@ -1,3 +1,16 @@
+2005-03-11  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/gem_commands.rb
+	(Gem::InstallUpdateOptions::add_install_update_options): Added
+	--ignore-dependencies option.  Still needs to be wired to logic.
+
+	* lib/rubygems/installer.rb (Gem::Installer::install): Added call
+	to require_gem_with_options.
+
+	* lib/rubygems.rb (Kernel::require_gem_with_options): Added to
+	allow easier specification of the autorequire flag for
+	Gem.activate.
+
 2005-03-10  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/remote_installer.rb

@@ -72,6 +72,9 @@ module Gem
       add_option('-d', '--gen-rdoc', 'Generate RDoc documentation for the gem on install') do |value, options|
 	options[:generate_rdoc] = true
       end
+      add_option('--no-gen-rdoc', 'Do not generate RDoc documentation for the gem on install') do |value, options|
+	options[:generate_rdoc] = false
+      end
       add_option('-i', '--install-dir DIR', '') do |value, options|
 	options[:install_dir] = value
       end
@@ -80,6 +83,9 @@ module Gem
       end
       add_option('-t', '--test', 'Run unit tests prior to installation') do |value, options|
 	options[:test] = true
+      end
+      add_option('-t', '--no-test', 'Do not run unit tests prior to installation') do |value, options|
+	options[:test] = false
       end
       add_option('-s', '--install-stub', 'Install a library stub in site_ruby') do |value, options|
 	options[:stub] = true

@@ -1,3 +1,14 @@
+2005-03-09  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/gemconfigure.rb (Gem::self): Added to aid dynamic
+	versioning.
+
+	* lib/rubygems/command.rb (Gem::Command::command_manager): Moved
+	command_manager to base class.
+
+	* lib/rubygems/gem_commands.rb (Gem::CleanupCommand::execute):
+	Both implicit and explicit gems now work with cleanup.  
+
 2005-03-08  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/installer.rb (Gem::Uninstaller::ok_to_remove):

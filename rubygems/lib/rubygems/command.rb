@@ -186,5 +186,6 @@ module Gem
     # options get parsed.
     add_common_option('--config-file FILE', "Use this config file instead of default") do end
     add_common_option('--backtrace', 'Show stack backtrace on errors') do end
+    add_common_option('--debug', 'Turn on Ruby debugging') do end
   end # class
 end # module

@@ -36,6 +36,8 @@ module Gem
 	  case arg
 	  when /^--backtrace$/
 	    @backtrace = true
+          when /^--debug$/
+            $DEBUG = true
 	  when /^--config-file$/
 	    need_cfg_name = true
 	  when /^--config-file=(.+)$/

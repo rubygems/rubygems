@@ -1,3 +1,8 @@
+2004-08-11  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* lib/rubygems/command.rb: --debug option to turn on $DEBUG
+	* lib/rubygems/config_file.rb: ditto
+
 2004-08-11  Rich Kilmer <rich@infoether.com>
         * lib/rubygems/installer.rb: The application stub now defaults to 
           the latest version of the library, and optionally allows an initial 

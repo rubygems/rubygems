@@ -256,7 +256,7 @@ module Gem
     def default_dir
       rbconfig = Dir.glob("{#{($LOAD_PATH).join(',')}}/rbconfig.rb").first
       if rbconfig
-        module_eval File.read(rbconfig)
+        module_eval File.read(rbconfig) unless const_defined?("Config")
       else
         require 'rbconfig'
       end

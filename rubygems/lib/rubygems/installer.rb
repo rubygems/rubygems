@@ -172,7 +172,7 @@ module Gem
       cache = Cache.from_installed_gems
       list = cache.search(@gem, @version)
       if list.size == 0 
-        puts "Unknown RubyGem: #{@gem}"
+        puts "Unknown RubyGem: #{@gem}-#{@version}"
       elsif list.size>1
         puts "Select RubyGem to uninstall:"
         list.each_with_index do |gem, index|

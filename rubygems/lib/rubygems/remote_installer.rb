@@ -5,8 +5,11 @@ module Gem
     # version_requirement:: [default = "> 0.0.0"] Gem version requirement to install
     #
     def initialize(package_name, version_requirement = "> 0.0.0")
+      unless version_requirement.respond_to?(:version)
+        version_requirement = Version::Requirement.new(version_requirement)
+      end
       @package_name = package_name
-      @version_requirement = Version::Requirement.new(version_requirement)
+      @version_requirement = version_requirement
     end
 
     ##

@@ -57,7 +57,6 @@ module Gem
 
   RubyGemsVersion = "1.0"
   
-  @@cache = nil
   
   ##
   # Returns an Cache of specifications that are in the $GEM_PATH
@@ -65,7 +64,12 @@ module Gem
   # return:: [Gem::Cache] cache of Gem::Specifications
   #
   def self.cache
-    @@cache ||= Cache.from_installed_gems
+    # Note that it doesn't make sense to outright cache the gem store in
+    # memory here, because it may be added to or deleted from during the
+    # lifetime of a single instantiation.
+    # If we want to do in-memory caching, we're going to have to check file
+    # timestamps.
+    Cache.from_installed_gems
   end
   
   ##

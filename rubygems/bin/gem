@@ -47,7 +47,7 @@ if @install_file
 end
 
 if @gem
-  Gem::Uninstaller.new(@gem).uninstall
+  Gem::Uninstaller.new(@gem, options[:gem_version] || "> 0.0.0").uninstall
 end
 
 if @info

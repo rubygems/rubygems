@@ -1,5 +1,15 @@
 2004-07-03  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/command.rb (Gem::Command::handles): Added a
+	handles? method to Command so that we can detect which extra
+	arguments can be used with a command.
+	(Gem::Command::add_extra_args): New method to add the config
+	file's extra arguments to the front of the argument list.
+	(Gem::Command::extra_args): Added extra_args to Command class to
+	hold the extra args discovered in the config file.
+
+	* Rakefile: Added TEST=filename option to all the test targets.
+
 	* test/functional.rb (FunctionalTest::test_gemrc): Added
 	functional test for gemrc.
 

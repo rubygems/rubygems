@@ -413,15 +413,18 @@ class RubyGemsFacade
     end
 
     if @options.gen_rdoc
-      installed_gems = [installed_gems] unless installed_gems.respond_to?(:each)
       installed_gems.each do |gem|
         Gem::DocManager.new(gem).generate_rdoc
       end
       # TODO: catch exceptions and inform user that doc generation was not successful.
     end
 
-    # TODO: test-running logic.  This is currently embedded in the sub-methods.  Can we
-    # factor it out?
+    if @options.run_tests
+      installed_gems.each do |gem|
+        _run_tests(gem.name, gem.version)
+      end
+    end
+
     return true 
   end
 
@@ -522,7 +525,6 @@ class RubyGemsFacade
   # fails.
   #
   def _install_local(path)
-    installed_gems = []
     unless File.exist?(path)
       if File.exist?(path + ".gem")
         path << ".gem"
@@ -533,11 +535,8 @@ class RubyGemsFacade
       end
     end
     installer = Gem::Installer.new(path)
-    installed_gems << installer.install(@options.force, @options.directory)
-    if @options.run_tests
-      _run_tests(installed_gems[0].name, installed_gems[0].version)
-    end
-    installed_gems
+    result = installer.install(@options.force, @options.directory)
+    [result].flatten
   end
 
   #
@@ -554,11 +553,6 @@ class RubyGemsFacade
     rescue Exception => e
         $stderr.puts e.to_s
         exit 1
-    end
-    if @options.run_tests
-      cache_dir = File.join(Gem::dir, "cache")
-      destination_file = File.join(cache_dir, installed_gems[0].full_name + ".gem")
-      _run_tests(installed_gems[0].name, installed_gems[0].version)
     end
     installed_gems
   end

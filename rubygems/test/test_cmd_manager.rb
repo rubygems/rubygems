@@ -1,9 +1,14 @@
 require 'test/unit'
-$:.unshift '../lib'
+#$:.unshift '../lib'
 require 'rubygems'
 Gem::manage_gems
 
-class TestValidator < Test::Unit::TestCase
+class TestCmdManager < Test::Unit::TestCase
+
+  def setup
+    @ui = Gem::UserInteraction.capture
+    @cmd_manager = Gem::CommandManager.instance
+  end
 
   def test_parsing_bad_options
     #check bad argument
@@ -172,9 +177,4 @@ class TestValidator < Test::Unit::TestCase
     assert_equal check_options[:force], true
     assert_equal check_options[:install_dir], '.'
   end 
-    
-  def setup
-    @ui = Gem::UserInteraction.capture
-    @cmd_manager = Gem::CommandManager.instance
-  end
 end

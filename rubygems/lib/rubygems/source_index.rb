@@ -3,7 +3,7 @@ module Gem
 
   # The SourceIndex object indexes all the gems available from a
   # particular source (e.g. a list of gem directories, or a remote
-  # source).  A SourceIndex maps a gem long name to a gem
+  # source).  A SourceIndex maps a gem full name to a gem
   # specification.
   #
   # NOTE:: The class used to be named Cache, but that became
@@ -82,7 +82,7 @@ module Gem
     # Search for a gem by name and optional version
     #
     # gem_name::
-    #   [String] the long name of the gem
+    #   [String] the (short) name of the gem
     # version_requirement::
     #   [String | default=Version::Requirement.new(">= 0")] version to
     #   find

@@ -114,6 +114,11 @@ module Gem
       File.join(Gem.user_home, '.gemrc')
     end
 
+    # Return the Ruby command to use to execute the Ruby interpreter.
+    def ruby
+      "ruby"
+    end
+
     ##
     # Activate a gem (i.e. add it to the Ruby load path).  The gem
     # must satisfy all the specified version constraints.  If

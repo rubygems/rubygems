@@ -131,7 +131,7 @@ module Gem
       if Config::CONFIG["arch"] =~ /dos|win32/i
         script_name = filename + ".cmd"
         File.open(File.join(bindir, File.basename(script_name)), "w") do |file|
-          file.puts "@ruby \"#{File.join(bindir,filename)}\" %*"
+          file.puts "@#{Gem.ruby} \"#{File.join(bindir,filename)}\" %*"
         end
       end
     end
@@ -207,8 +207,8 @@ TEXT
       dest_path = File.join(directory, spec.require_paths[0])
       spec.extensions.each do |extension|
         Dir.chdir File.join(directory, File.dirname(extension))
-        results = ["ruby #{File.basename(extension)} #{ARGV.join(" ")}"]
-        results << `ruby #{File.basename(extension)} #{ARGV.join(" ")}`
+        results = ["#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}"]
+        results << `#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}`
         if File.exist?('Makefile')
           mf = File.read('Makefile')
           mf = mf.gsub(/^RUBYARCHDIR\s*=\s*\$.*/, "RUBYARCHDIR = #{dest_path}")

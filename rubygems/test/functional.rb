@@ -121,7 +121,7 @@ class FunctionalTest < Test::Unit::TestCase
   def gem(options="")
     shell = Session::Shell.new
     options = options + " --config-file missing_file" if options !~ /--config-file/
-    command = "ruby #{@ruby_options} #{@gem_path} #{options}"
+    command = "#{Gem.ruby} #{@ruby_options} #{@gem_path} #{options}"
     puts "COMMAND: [#{command}]" if @verbose
     @out, @err = shell.execute command
     @status = shell.exit_status

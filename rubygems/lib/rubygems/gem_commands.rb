@@ -709,7 +709,7 @@ module Gem
       update_dir = File.join(Gem.dir, "gems", "rubygems-update-#{version_string}")
       Dir.chdir(update_dir) do
 	puts "Installing RubyGems #{version_string}"
-	system "ruby setup.rb"
+	system "#{Gem.ruby} setup.rb"
       end
     end
 

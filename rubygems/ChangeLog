@@ -1,3 +1,13 @@
+2004-11-26  Jim Weirich  <jim@weirichhouse.org>
+
+	* test/test_specification.rb
+	(TestDefaultSpecification::test_defaults): Added test for some
+	basic defaults in a gem spec.
+
+	* test/test_remote_installer.rb (MockFetcher::source_info): Made
+	the fake test data more realistic.
+	(TestRemoteInstaller::test_source_info): Improved tests.
+
 2004-11-26  Jim Weirich  <jim@tardis>
 
 	* test/test_remote_installer.rb (MockFetcher): Added MockFetcher

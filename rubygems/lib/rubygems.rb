@@ -301,7 +301,15 @@ module Gem
       if ENV['HOMEDRIVE'] && ENV['HOMEPATH']
 	return "#{ENV['HOMEDRIVE']}:#{ENV['HOMEPATH']}"
       end
-      File.expand_path("~")
+      begin
+	File.expand_path("~")
+      rescue Exception => ex
+	if File::ALT_SEPARATOR
+	  "C:/"
+	else
+	  "/"
+	end
+      end
     end
     
     public

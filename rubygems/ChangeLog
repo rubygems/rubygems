@@ -1,3 +1,54 @@
+2004-10-24  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/version.rb (Gem::Version::Requirement::self): Now
+	properly handles arrays of version constraints.
+
+	* lib/rubygems/loadpath_manager.rb
+	(Gem::LoadPathManager::Gem::Specification): Added comments
+	describing the fast Spec class purpose. Added to_s to
+	Gem::Specification (both fast and slow versions).
+	(Gem::LoadPathManager.paths): Returns (cached) list of gem paths.
+	(Gem::LoadPathManager::self): Refactored to use glob_over in
+	search_loadpaths and search_gempaths.
+
+	* lib/rubygems/installer.rb: Added some requires.
+
+	* lib/rubygems/cache.rb (Gem::Cache::refresh): Fixed refresh! to
+	call load_specification on the Cache class, not on itself.
+
+	* lib/rubygems.rb (Gem::Exception::activate): added comments to
+	activate.  Also made sure that partial name matches in the gem
+	cache search were avoided.
+	(Gem::Exception::clear_paths): Added code to clear the gem cache
+	when reseting the gem paths.
+	(Gem::Exception::require): Added a function to take a gem name and
+	a library file name (in that gem) and return a path to the library
+	in the gem.  David HH was interested in this in order to speed up
+	some require statements under ModRuby.  Eventually I hope we won't
+	need these special tricks.
+	(Gem::Exception::latest_partials): Fixed bug that assumed exactly
+	three digits in a version number.
+
+	* Rakefile (egrep): Added two tasks to find all the FIXME/TODO
+	markers in the source code comments and to find the DBG print
+	lines.
+
+2004-10-23  Jim Weirich  <jim@weirichhouse.org>
+
+	* test/test_specification.rb
+	(TestSimpleSpecification::test_add_bindir_to_list_of_files):
+	Verify that an executable doesn't need the bindir if bindir is
+	set.
+	(TestSimpleSpecification::test_no_bindir_in_list_of_files): Added
+	test the verify that exectuable can be written without a default
+	binder.
+
+	* lib/rubygems/installer.rb
+	(Gem::Installer::generate_bin_scripts): Added check so that the
+	bindir is access only when there are actually executables to
+	install.  Checking for an installable bindir was giving permission
+	errors when installing test gems.
+
 2004-10-21  Chad Fowler <chad@chadfowler.com>
 	* lib/rubygems/installer.rb: Show extension build errors during install
 	in addition to logging them to gem_make.out

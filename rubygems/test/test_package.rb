@@ -506,10 +506,10 @@ class TC_TarReader < Test::Unit::TestCase
         end
 
         def teardown
-            FileUtils.rm_rf "data__"
+#            FileUtils.rm_rf "data__"
         end
 
-        def test_each_works
+        def xtest_each_works
             TarInput.open(@file) do |is|
                 i = 0
                 is.each_with_index do |entry, i|

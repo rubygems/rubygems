@@ -31,7 +31,11 @@ module Gem
       puts "WARNING: Generating RDoc on .gem that may not have RDoc." unless @spec.has_rdoc?
       rdoc_dir = File.join(@doc_dir, "rdoc")
       begin
-        source_dirs = @spec.require_paths.collect {|req| File.join(@spec.installation_path, @spec.full_name, req)}
+        source_dirs = @spec.require_paths.collect do |req|         
+          path = File.join(@spec.installation_path, @spec.full_name, req)
+          path = path[2..-1] if path =~ /^[a-zA-Z]\:/
+          path
+        end
         r = RDoc::RDoc.new
         r.document(['--op', rdoc_dir, '--template', 'kilmer'] + source_dirs)
       rescue RDoc::RDocError => e

@@ -39,7 +39,9 @@ class TestLocalCache < Test::Unit::TestCase
   def test_write_system_cache
     lc = Gem::LocalSourceInfoCache.new
     prep_cache_files(lc)
-    lc.write_cache(['new'])
+
+    lc.cache_data[0] = 'new'
+    lc.write_cache
 
     assert_equal ['new'], read_cache(lc.system_cache_file)
     assert_equal ['usr'], read_cache(lc.user_cache_file)
@@ -50,7 +52,8 @@ class TestLocalCache < Test::Unit::TestCase
     prep_cache_files(lc)
     FileUtils.chmod 0544, lc.system_cache_file
 
-    lc.write_cache(['new'])
+    lc.cache_data[0] = 'new'
+    lc.write_cache
 
     assert_equal ['sys'], read_cache(lc.system_cache_file)
     assert_equal ['new'], read_cache(lc.user_cache_file)
@@ -62,7 +65,8 @@ class TestLocalCache < Test::Unit::TestCase
     FileUtils.rm_rf File.dirname(lc.user_cache_file)
     FileUtils.chmod 0544, lc.system_cache_file
 
-    lc.write_cache(['new'])
+    lc.cache_data[0] = 'new'
+    lc.write_cache
 
     assert_equal ['sys'], read_cache(lc.system_cache_file)
     assert_equal ['new'], read_cache(lc.user_cache_file)

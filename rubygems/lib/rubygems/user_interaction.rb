@@ -25,17 +25,17 @@ module Gem
     # this module.
     class << self
       def ui
-	@ui ||= Gem::ConsoleUI.new
+        @ui ||= Gem::ConsoleUI.new
       end
       def ui=(new_ui)
-	@ui = new_ui
+        @ui = new_ui
       end
       def use_ui(new_ui)
-	old_ui = @ui
-	@ui = new_ui
-	yield
+        old_ui = @ui
+        @ui = new_ui
+        yield
       ensure
-	@ui = old_ui
+        @ui = old_ui
       end
     end
   end
@@ -58,7 +58,7 @@ module Gem
   module UserInteraction
     include DefaultUserInteraction
     [
-      :choose_from_list, :ask, :say, :alert, :alert_warning,
+      :choose_from_list, :ask, :ask_yes_no, :say, :alert, :alert_warning,
       :alert_error, :terminate_interaction!, :terminate_interaction
     ].each do |methname|
       class_eval %{
@@ -90,6 +90,31 @@ module Gem
       @outs.flush
       result = @ins.gets.strip.to_i - 1
       return list[result], result
+    end
+
+    # Ask a question.  Returns a true for yes, false for no.
+    def ask_yes_no(question, default=nil)
+      qstr = case default
+      when nil
+        'yn'
+      when true
+        'Yn'
+      else
+        'yN'
+      end
+      result = nil
+      while result.nil?
+        result = ask("#{question} [#{qstr}]")
+        result = case result
+        when /^[Yy].*/
+          true
+        when /^[Nn].*/
+          false
+        else
+          default
+        end
+      end
+      return result
     end
     
     # Ask a question.  Returns an answer.  
@@ -148,5 +173,4 @@ module Gem
     end
   end
 end
-
 

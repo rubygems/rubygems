@@ -44,12 +44,13 @@ module Gem
     ##
     # These attributes are required
     #
-    required_attribute :rubygems_version, :name, :platform, :date, :summary, :require_paths, :version
+    required_attribute :rubygems_version, :name, :date, :summary, :require_paths, :version
     
     ##
     # These attributes are optional
     #
-    attr_accessor :autorequire, :author, :email, :homepage, :description, :files, :docs, :test_suite_file, :default_executable, :bindir
+    attr_accessor :autorequire, :author, :email, :homepage, :description, :files, :docs
+    attr_accessor :test_suite_file, :default_executable, :bindir, :platform
     attr_accessor :rubyforge_project
     attr_writer :has_rdoc, :executables, :extensions
     
@@ -63,11 +64,12 @@ module Gem
     #
     def initialize
       @date = Time.now
-      @bindir, @default_executable,@test_suite_file,@has_rdoc,@email,@homepage,@rubyforge_project,@description,@author = nil
+      @bindir, @default_executable, @test_suite_file, @has_rdoc = nil
+      @description, @author, @email, @homepage, @rubyforge_project = nil
       @loaded = false
       @has_rdoc = false
       @test_suite_file = nil
-      @platform = nil
+      self.platform = nil
       @@list << self
       yield self if block_given?
     end
@@ -213,6 +215,10 @@ module Gem
     def executable=(file_path)
       @executables = [file_path]
     end
+
+    def platform=(platform=Gem::Platform::RUBY)
+      @platform = platform
+    end
     
     ##
     # Adds a dependency to this Gem
@@ -233,7 +239,11 @@ module Gem
     # return:: [String] The full name name-version
     #
     def full_name
-      "#{@name}-#{@version}#{@platform ? '-' + @platform : ''}"
+      if @platform.nil? or @platform == Gem::Platform::RUBY
+        "#{@name}-#{@version}"
+      else
+        "#{@name}-#{@version}-#{@platform}"
+      end 
     end
     
     ##

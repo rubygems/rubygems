@@ -2,9 +2,14 @@ module Gem
   
   class DocManager
   
-    def initialize(spec)
+    #
+    # spec::      The Gem::Specification object representing the gem.
+    # rdoc_args:: Optional arguments for RDoc (template etc.) as a String.
+    #
+    def initialize(spec, rdoc_args="")
       @spec = spec
       @doc_dir = File.join(spec.installation_path, "doc", spec.full_name)
+      @rdoc_args = rdoc_args.split
     end
     
     def rdoc_installed?
@@ -37,7 +42,7 @@ module Gem
           path
         end
         r = RDoc::RDoc.new
-        r.document(['--op', rdoc_dir, '--template', 'kilmer'] + source_dirs)
+        r.document(['--op', rdoc_dir, '--template', 'kilmer'] + @rdoc_args.flatten + source_dirs)
       rescue RDoc::RDocError => e
         $stderr.puts e.message
       end

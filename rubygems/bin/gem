@@ -418,7 +418,7 @@ class RubyGemsFacade
 
     if @options.gen_rdoc
       installed_gems.each do |gem|
-        Gem::DocManager.new(gem).generate_rdoc
+        Gem::DocManager.new(gem, @options.rdoc_args).generate_rdoc
       end
       # TODO: catch exceptions and inform user that doc generation was not successful.
     end

@@ -4,6 +4,68 @@ Gem::manage_gems
 require 'net/http'
 require 'yaml'
 
+class MockFetcher
+  def initialize(uri)
+    @uri = uri
+  end
+
+  def size
+    1000
+  end
+  
+  def source_info
+    if @uri =~ /non.existent.url/
+      fail Gem::RemoteSourceException,
+	"Error fetching remote gem cache: Mock Socket Exception"
+    end
+    {
+      'size' => 1000,
+      'cache' => true,
+    }
+  end
+end
+
+class TestRemoteInstaller < Test::Unit::TestCase
+
+  # Things to fix eventually:
+  # * Get rid of the "get_" syndrome in remote_installer.
+
+  PROPER_SOURCES = %w( http://gems.rubyforge.org )
+
+  def setup
+    @installer = Gem::RemoteInstaller.new
+    @installer.instance_variable_set("@fetcher_class", MockFetcher)
+  end
+
+  def test_create
+    assert_not_nil(@installer)
+  end
+  
+  # Make sure that the installer knows the proper list of places to go
+  # to get packages.
+  def test_source_list
+    assert_equal PROPER_SOURCES, @installer.sources
+  end
+
+  def test_source_info
+    info = @installer.source_info(Gem.dir)
+    assert info.has_key?("http://gems.rubyforge.org")
+    assert_equal 1, info.size
+    hash = info['http://gems.rubyforge.org']
+    assert_equal 1000, hash['size']
+  end
+
+  def test_missing_source_exception
+    @installer.instance_variable_set("@sources", ["http://non.existent.url"])
+    assert_raise(Gem::RemoteSourceException) {
+      info = @installer.source_info(Gem.dir)
+    }
+  end
+end
+
+# This test suite has a number of TODOs in the test cases.  The
+# TestRemoteInstaller test suite is a reworking of this class from
+# scratch.
 class RemoteInstallerTest < Test::Unit::TestCase
   class MockInstaller
     def initialize(gem)
@@ -23,7 +85,7 @@ class RemoteInstallerTest < Test::Unit::TestCase
     attr_accessor :caches
     attr_accessor :responses
 
-    def get_caches(sources, install_dir = Gem.dir)
+    def source_info(install_dir)
       @caches
     end
 
@@ -46,13 +108,13 @@ class RemoteInstallerTest < Test::Unit::TestCase
 
   CACHE_SOURCES = ["http://gems.rubyforge.org"]
 
-  def test_get_cache_sources
+  def test_sources
     @remote_installer = RemoteInstaller.new
-    assert_equal CACHE_SOURCES, @remote_installer.get_cache_sources
+    assert_equal CACHE_SOURCES, @remote_installer.sources
     # TODO
   end
 
-  def test_get_caches
+  def test_source_info
     @remote_installer = RemoteInstaller.new
   end
 

@@ -319,12 +319,14 @@ module Gem
       ##   require 'rbconfig'
       ## end
       #
-      # Note on above code: we have an issue if a Config class is already defined and we load
-      # 'rbconfig'.  The above code is supposed to work around that but it's been commented
-      # out.  In any case, I moved "require 'rbconfig'" to the top of this file, because there
-      # was a circular dependency between this method and our custom require.  In any case,
-      # rbconfig is a fundamental RubyGems dependency, so it might as well be up the top.
-      #   -- Gavin Sinclair, 2004-12-12
+      # Note on above code: we have an issue if a Config class is
+      # already defined and we load 'rbconfig'.  The above code is
+      # supposed to work around that but it's been commented out.  In
+      # any case, I moved "require 'rbconfig'" to the top of this
+      # file, because there was a circular dependency between this
+      # method and our custom require.  In any case, rbconfig is a
+      # fundamental RubyGems dependency, so it might as well be up the
+      # top.  -- Gavin Sinclair, 2004-12-12
       #
       File.join(Config::CONFIG['libdir'], 'ruby', 'gems', Config::CONFIG['ruby_version'])
     end
@@ -337,9 +339,9 @@ module Gem
     def ensure_gem_subdirectories(gemdir)
       DIRECTORIES.each do |filename|
         fn = File.join(gemdir, filename)
-        if ! (File.exists?(fn) && File.writable?(fn))
+        unless File.exists?(fn)
           require 'fileutils'
-          FileUtils.mkdir_p(fn)
+          FileUtils.mkdir_p(fn) rescue nil
         end
       end
     end

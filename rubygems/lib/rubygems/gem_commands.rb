@@ -54,7 +54,7 @@ module Gem
     def initialize
       super(
 	'install',
-	'Install a gem from a local file or remote server into the local repository',
+	'Install a gem into the local repository',
 	{
 	  :domain => :both, 
 	  :generate_rdoc => false, 

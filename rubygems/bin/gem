@@ -65,8 +65,11 @@ end
 if gem_to_search_for
   installer = Gem::RemoteInstaller.new
   gems = installer.search(gem_to_search_for)
-  gems.each do |gem|
-    puts gem[0]
+  gems.sort {|a,b| 
+    a[0].downcase <=> b[0].downcase
+  }.each do |gem|
+    puts "#{gem[0]} - #{gem[1].summary}"
+    puts 
   end
 end
 

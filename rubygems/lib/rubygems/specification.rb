@@ -143,7 +143,6 @@ module Gem
     # Adding files to this list will automatically add them to the file list
     # (causing them to be added to the gem)
     def extra_rdoc_files=(extra_rdoc_files)
-      @files.concat(extra_rdoc_files)
       @extra_rdoc_files = extra_rdoc_files
     end
 
@@ -411,12 +410,16 @@ module Gem
     end
     
     ##
-    # Checks that the specification contains all required fields, and does a 
-    # very basic sanity check.  
-    # Raises InvalidSpecificationException if the spec does not 
-    # pass the checks..
+    # Checks that the specification contains all required fields, and
+    # does a very basic sanity check.
     #
+    # Raises InvalidSpecificationException if the spec does not pass
+    # the checks..
     def validate
+      normalize
+      if @rubygems_version != RubyGemsVersion
+	raise InvalidSpecificationException.new("Expected RubyGems Version #{RubyGemsVersion}, was #{@rubygems_version}")
+      end
       @@required_attributes.each do |symbol|
         unless(self.send(symbol)) 
           raise InvalidSpecificationException.new("Missing value for attribute #{symbol.to_s}")
@@ -425,6 +428,18 @@ module Gem
       if(@require_paths.size < 1) then
         raise InvalidSpecificationException.new("Gem spec needs to have at least one require_path")
       end
+    end
+
+    ##
+    # Normalize the list of files so that:
+    # * All file lists have redundancies removed.
+    # * Files referenced in the extra_rdoc_files are included in the package file list.
+    def normalize
+      if @extra_rdoc_files
+	@extra_rdoc_files.uniq!
+	@files.concat(@extra_rdoc_files) if @files
+      end
+      @files.uniq! if @files
     end
 
     ##

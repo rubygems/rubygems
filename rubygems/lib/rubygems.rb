@@ -45,7 +45,7 @@ module Gem
   end
 
   RubyGemsVersion = "0.8.1"
-  RubyGemsPackageVersion = RubyGemsVersion + ".0"
+  RubyGemsPackageVersion = RubyGemsVersion 
 
   DIRECTORIES = ['cache', 'doc', 'gems', 'specifications']
   

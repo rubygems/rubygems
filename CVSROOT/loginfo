@@ -24,4 +24,4 @@
 #DEFAULT (echo ""; id; echo %s; date; cat) >> $CVSROOT/CVSROOT/commitlog
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
-DEFAULT /var/cvs/commitmailer.sh %s tom@infoether.com,jim-keyword-cvsrubygems.4be010@weirichhouse.org
+DEFAULT /var/cvs/commitmailer.sh %s jim-keyword-cvsrubygems.4be010@weirichhouse.org

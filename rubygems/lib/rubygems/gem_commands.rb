@@ -646,7 +646,7 @@ module Gem
           # help with provided command
           command.invoke("--help")
         else
-          alert_error "Unknown command #{options[:help]}.  Try gem help commands"
+          alert_error "Unknown command #{options[:help]}.  Try 'gem help commands'"
         end
       elsif arg
         possibilities = command_manager.find_command_possibilities(arg.downcase)

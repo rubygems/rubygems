@@ -414,7 +414,7 @@ module Gem; class CommandManager
         say "Verifying gem: '#{gem_name}'"
         begin
           Gem::Validator.new.verify_gem_file(gem_name)
-        rescue => e
+        rescue Exception => e
           alert_error "#{gem_name} is invalid."
         end
       end

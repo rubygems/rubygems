@@ -38,9 +38,11 @@ module Gem
     def find_files_for_gem(gem_directory)
       installed_files = []
       Find.find(gem_directory) {|file_name|
-        file_name.slice!((gem_directory.size)..(file_name.size-1)).sub(/^\//, "")
-        Find.prune if (file_name =~ /CVS/ || File.directory?(file_name) || file_name == "")
-        installed_files << file_name
+        fn = file_name.slice((gem_directory.size)..(file_name.size-1)).sub(/^\//, "")
+        if(!(fn =~ /CVS/ || File.directory?(fn) || fn == "")) then 
+          installed_files << fn
+        end
+        
       }
       installed_files
     end
@@ -69,6 +71,7 @@ module Gem
         gem_directory = File.join(Gem.dir, gem_spec.full_name)
     
         installed_files = find_files_for_gem(gem_directory)
+        puts gem_directory
     
         if(!File.exist?(spec_path)) then
           errors[gem_name] << ErrorData.new(spec_path, "Spec file doesn't exist for installed gem")

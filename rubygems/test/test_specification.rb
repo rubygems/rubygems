@@ -2,7 +2,14 @@ require 'test/unit'
 require 'rubygems'
 Gem::manage_gems
 
-class TestSpecificationSimple < Test::Unit::TestCase
+# Load a file relative to the 'test/data' directory.  Return its contents as a String.
+def load_data(relpath)
+  this_dir = File.dirname(__FILE__)       # The 'test' directory.
+  path = File.join(this_dir, 'data', relpath)
+  return File.read(path)
+end
+
+class TestSimpleSpecification < Test::Unit::TestCase
   def setup
     @spec = Gem::Specification.new do |s|
       s.version = "1.0.0"
@@ -70,17 +77,19 @@ class TestSpecificationSimple < Test::Unit::TestCase
     # XXX: what about the warning?
   end
 
-  def test_attributes
-    expected_attributes = %w{
+  def test_attribute_names
+    expected_value = %w{
       rubygems_version specification_version name version date summary
       require_paths author email homepage rubyforge_project description
       autorequire default_executable bindir has_rdoc required_ruby_version
       platform files test_files library_stubs rdoc_options extra_rdoc_files
       executables extensions requirements dependencies
     }.sort
-    actual_attributes = Gem::Specification.attributes.map { |a| a.to_s }.sort
-    assert_equal expected_attributes, actual_attributes
+    actual_value = Gem::Specification.attribute_names.map { |a| a.to_s }.sort
+    assert_equal expected_value, actual_value
   end
+
+  # TODO: test all the methods in the "convenience class methods" section of specification.rb
 
   def test_defaults
     # @spec is pretty plain, so we'll test some of the default values.
@@ -119,10 +128,10 @@ class TestSpecificationSimple < Test::Unit::TestCase
     same_spec = eval ruby_code
     assert_equal @spec, same_spec
   end
+end  # class TestSimpleSpecification
 
-end  # class TestSpecificationSimple
 
-class TestSpecificationComplex < Test::Unit::TestCase
+class TestComplexSpecification < Test::Unit::TestCase
 
   def setup
     @spec = Gem::Specification.new do |s|
@@ -202,6 +211,47 @@ class TestSpecificationComplex < Test::Unit::TestCase
     @spec.date = Date.new(2003, 9, 17)
     assert_equal Date.new(2003, 9, 17), @spec.date
   end
+end  # class TestComplexSpecification
 
-end  # class TestSpecificationComplex
 
+class TestLegacyRubySpecification < Test::Unit::TestCase
+  def setup
+    @ruby_spec = load_data('legacy/keyedlist-0.4.0.ruby')
+  end
+
+  def test_eval
+    s = gemspec = eval(@ruby_spec)
+    assert_equal 'keyedlist', s.name
+    assert_equal '0.4.0', s.version.to_s
+    assert_equal true, s.has_rdoc?
+    assert_equal Date.today, s.date
+    assert s.required_ruby_version.satisfied_by?(Gem::Version.new('0.0.1'))
+    assert_equal false, s.has_unit_tests?
+  end
+
+  def test_to_ruby_and_back
+    gemspec1 = eval(@ruby_spec)
+    ruby_code = gemspec1.to_ruby
+    gemspec2 = eval(ruby_code)
+    require_gem 'dev-utils/debug'
+    assert_equal gemspec1, gemspec2
+  end
+end  # class TestLegacyRubySpecification
+
+
+class TestLegacyYamlSpecification < Test::Unit::TestCase
+  def setup
+    @yaml_spec = load_data('legacy/keyedlist-0.4.0.yaml')
+  end
+
+  def test_load
+    s = gemspec = YAML.load(@yaml_spec)
+    assert_equal 'keyedlist', s.name
+    assert_equal '0.4.0', s.version.to_s
+    assert_equal true, s.has_rdoc?
+    #assert_equal Date.today, s.date
+    #assert s.required_ruby_version.satisfied_by?(Gem::Version.new('0.0.1'))
+    assert_equal false, s.has_unit_tests?
+  end
+
+end  # class TestLegacyYamlSpecification

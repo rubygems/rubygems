@@ -24,18 +24,26 @@ module Gem
     #
     def self.from_installed_gems(*source_dirs)
       gems = {}
-      source_dirs = Gem.path.collect {|dir| File.join(dir, "specifications")} if source_dirs.size==0
+      source_dirs = Gem.path.collect {|dir| File.join(dir, "specifications")} if source_dirs.empty?
       source_dirs.each do |source_dir|
         Dir[File.join(source_dir, "*gemspec")].each do |file_name|
           begin
-            gem = eval(File.read(file_name))
-            gem.loaded_from = file_name
+            spec_code = File.read(file_name)
+            gemspec = eval spec_code
+            unless gemspec.is_a? Gem::Specification
+              raise Exception, "File '#{file_name}' does not evaluate to a gem specification"
+            end
+            gemspec.loaded_from = file_name
           rescue Exception => e
-            alert_error(e.inspect.to_s+"\n"+File.read(file_name))
-            raise "Invalid .gemspec format in: #{source_dir}"
+            STDERR.puts(e.inspect.to_s + "\n" + spec_code)
+            raise "Invalid .gemspec format in '#{file_name}'"
+          rescue SyntaxError => e
+            STDERR.puts e
+            STDERR.puts spec_code
+            next
           end
           key = File.basename(file_name).gsub(/\.gemspec/, "")
-          gems[key] = gem
+          gems[key] = gemspec
         end
       end
       self.new(gems)

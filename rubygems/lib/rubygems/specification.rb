@@ -66,18 +66,62 @@ module Gem
     @@required_attributes = []
     # List of _all_ attributes and default values: [[:name, nil], [:bindir, 'bin'], ...]
     @@attributes = []
+    # Map of attribute names to default values.
+    @@default_value = {}
+
+    # ------------------------- Convenience class methods.
+
+    def self.attribute_names
+      @@attributes.map { |name, default| name }
+    end
+
+    def self.attribute_defaults
+      @@attributes.dup
+    end
+
+    def self.default_value(name)
+      @@default_value[name]
+    end
+
+    def self.required_attributes
+      @@required_attributes.dup
+    end
+
+    def self.required_attribute?(name)
+      @@required_attributes.include? name.to_sym
+    end
     
-    # ------------------------- Class methods.
+    # ------------------------- Infrastructure class methods.
 
     # A list of Specification instances that have been defined in this Ruby instance.
     def self.list
       @@list
     end
 
-    # Used to specify the name and default value of a specification attribute.
+    ##
+    # Used to specify the name and default value of a specification attribute.  The side
+    # effects are:
+    # * the name and default value are added to the @@attributes list and
+    #   @@default_value map
+    # * a standard _writer_ method (<tt>attribute=</tt>) is created
+    # * a non-standard _reader method (<tt>attribute</tt>) is created
+    #
+    # The reader method behaves like this:
+    #   def attribute
+    #     @attribute ||= (copy of default value)
+    #   end
+    #
+    # This allows lazy initialization of attributes to their default values.
+    #
     def self.attribute(name, default=nil)
       @@attributes << [name, default]
-      attr_accessor(name)
+      @@default_value[name] = default
+      attr_writer(name)
+      class_eval %{
+        def #{name}
+          @#{name} ||= _copy_of(@@default_value[:#{name}])
+        end
+      }
     end
 
     # Same as attribute above, but also records this attribute as mandatory.
@@ -95,9 +139,8 @@ module Gem
     end
 
     # Shortcut for creating several attributes at once (each with a default value of
-    # +nil+).  Called _without_ any arguments, returns a list of all attribute names. 
+    # +nil+).
     def self.attributes(*args)
-      if args.empty? then return @@attributes.map { |name, default| name } end
       args.each do |arg|
         attribute(arg, nil)
       end
@@ -194,12 +237,7 @@ module Gem
     # ------------------------- Special accessor behaviours (overwriting default).
     
     overwrite_accessor :version= do |version|
-      unless version.nil?
-        unless version.respond_to? :version
-          version = Version.new(version)
-        end
-      end
-      @version = version
+      @version = Version.create(version)
     end
 
     overwrite_accessor :platform= do |platform|
@@ -208,8 +246,9 @@ module Gem
       @platform = (platform == Platform::CURRENT ? RUBY_PLATFORM : platform)
     end
 
-    overwrite_accessor :required_ruby_version= do |version|
-      @required_ruby_version = Gem::Version::Requirement.new(version)
+    overwrite_accessor :required_ruby_version= do |value|
+      @required_ruby_version = Version::Requirement.create(value)
+      #STDERR.puts @name, @required_ruby_version
     end
 
     overwrite_accessor :date= do |date|
@@ -223,6 +262,14 @@ module Gem
         date = nil
       end
       @date = date || Date.today
+    end
+
+    overwrite_accessor :date do
+      # Legacy gems might have a Time object directly loaded from the YAML.  We fix it here.
+      unless @date.is_a? Date
+        date = @date
+      end
+      @date
     end
 
     overwrite_accessor :summary= do |str|
@@ -248,8 +295,8 @@ module Gem
     # ------------------------- Predicates.
     
     def loaded?; @loaded ? true : false ; end
-    def has_rdoc?; @has_rdoc ? true : false ; end
-    def has_unit_tests?; not @test_files.empty?; end
+    def has_rdoc?; has_rdoc ? true : false ; end
+    def has_unit_tests?; not test_files.empty?; end
     alias has_test_suite? has_unit_tests?               # (deprecated)
     
     # ------------------------- Constructor.
@@ -266,7 +313,7 @@ module Gem
       # _copy_ of the default so each specification instance has its own empty
       # arrays, etc.
       @@attributes.each do |name, default|
-        self.send "#{name}=", _copy(default)
+        self.send "#{name}=", _copy_of(default)
       end
       @loaded = false
       @@list << self
@@ -304,10 +351,10 @@ module Gem
     # (name-version-platform) if it is specified (and not the default Ruby platform).
     #
     def full_name
-      if @platform.nil? or @platform == Gem::Platform::RUBY
+      if platform == Gem::Platform::RUBY
         "#{@name}-#{@version}"
       else
-        "#{@name}-#{@version}-#{@platform}"
+        "#{@name}-#{@version}-#{platform}"
       end 
     end
     
@@ -375,7 +422,7 @@ module Gem
       result = "Gem::Specification.new do |s|\n"
       @@attributes.each do |name, default|
         next if name == :dependencies
-        current_value = instance_variable_get "@#{name}"
+        current_value = self.send(name)
         result << "  s.#{name} = #{_ruby_code(current_value)}\n" unless current_value == default
       end
       @dependencies.each do |dep|
@@ -395,9 +442,9 @@ module Gem
     # the checks..
     def validate
       normalize
-      if @rubygems_version != RubyGemsVersion
+      if rubygems_version != RubyGemsVersion
         raise InvalidSpecificationException.new(%[
-          Expected RubyGems Version #{RubyGemsVersion}, was #{@rubygems_version}
+          Expected RubyGems Version #{RubyGemsVersion}, was #{rubygems_version}
         ].strip)
       end
       @@required_attributes.each do |symbol|
@@ -405,7 +452,7 @@ module Gem
           raise InvalidSpecificationException.new("Missing value for attribute #{symbol}")
         end
       end 
-      if @require_paths.empty?
+      if require_paths.empty?
         raise InvalidSpecificationException.new("Gem spec needs to have at least one require_path")
       end
     end
@@ -457,20 +504,27 @@ module Gem
     end
 
     # Duplicate an object unless it's an immediate value.
-    def _copy(obj)
+    def self._copy_of(obj)
       case obj
       when Numeric, Symbol, true, false, nil then obj
       else obj.dup
       end
     end
 
+    # Duplicate an object unless it's an immediate value.
+    def _copy_of(obj)
+      self.class._copy_of(obj)
+    end
+
     # Return a string containing a Ruby code representation of the given object.
     def _ruby_code(obj)
       case obj
-      when String       then '%q{' + obj + '}'
-      when Array        then obj.inspect
-      when Gem::Version then obj.to_s.inspect
-      when Date         then '%q{' + obj.strftime + '}'
+      when String           then '%q{' + obj + '}'
+      when Array            then obj.inspect
+      when Gem::Version     then obj.to_s.inspect
+      when Date, Time       then '%q{' + obj.strftime('%Y-%m-%d') + '}'
+      when true, false, nil then obj.inspect
+      else raise Exception, "_ruby_code case not handled: #{obj.class}"
       end
     end
 

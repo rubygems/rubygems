@@ -74,7 +74,25 @@ module Gem
     def self.correct?(str)
       /^#{NUM_RE}$/.match(str)
     end
-    
+
+    ##
+    # Factory method to create a Version object.  Input may be a Version or a
+    # String.  Intended to simplify client code.
+    #
+    #   ver1 = Version.create('1.3.17')   # -> (Version object)
+    #   ver2 = Version.create(ver1)       # -> (ver1)
+    #   ver3 = Version.create(nil)        # -> nil
+    #
+    def self.create(input)
+      if input.respond_to? :version
+        return input
+      elsif input.nil?
+        return nil
+      else
+        return Version.new(input)
+      end
+    end
+
     ##
     # Constructs a version from the supplied string
     #
@@ -155,6 +173,31 @@ module Gem
         
       OP_RE = Regexp.new(OPS.keys.collect{|k| Regexp.quote(k)}.join("|"))
       REQ_RE = /\s*(#{OP_RE})\s*/
+
+      ##
+      # Factory method to create a Version::Requirement object.  Input may be a
+      # Version, a String, or nil.  Intended to simplify client code.
+      #
+      # If the input is "weird", the default version requirement is returned.
+      #
+      def self.create(input)
+        if input.respond_to? :version
+          return input
+        elsif input.nil?
+          return self.default
+        elsif input.respond_to? :to_str
+          return self.new(input.to_str)
+        else
+          return self.default
+        end
+      end
+
+      ##
+      # A default "version requirement" can surely _only_ be '> 0'.
+      #
+      def self.default
+        VersionRequirement.new('> 0')
+      end
 
       ##
       # Constructs a version requirement instance

@@ -1,3 +1,13 @@
+2004-07-30  Rich Kilmer  <rich@infoether.com>
+
+       * lib/rubygems/installer.rb The application stub now defaults 
+         to the latest version of the library, and optionally allows 
+         an initial parameter conforming to _VERSION_ to be passed
+         to select a prior version of the library (this initial 
+         parameter, if present, is shifted off of ARGV).
+       * lib/rubygems/version.rb correct? is now a class method on
+         Version enabling Gem::Version.correct?(...)
+
 2004-07-26  Jim Weirich  <jim@tardis>
 
 	* lib/rubygems.rb (Gem::Exception::latest_load_paths): Added

@@ -21,13 +21,13 @@ module Gem
       say "Updating Gem source index for: #{@uri}"
       begin
         require 'zlib'
-        yaml_spec = fetch(@uri + "/yaml.Z")
+        yaml_spec = read(@uri + "/yaml.Z")
         yaml_spec = Zlib::Inflate.inflate(yaml_spec)
       rescue
         yaml_spec = nil
       end
       begin
-	yaml_spec = fetch(@uri + "/yaml") unless yaml_spec
+	yaml_spec = read(@uri + "/yaml") unless yaml_spec
 	spec = YAML.load(yaml_spec)
 	raise "Didn't get a valid YAML document" if not spec
 	spec
@@ -35,6 +35,12 @@ module Gem
 	raise RemoteSourceException.new("Error fetching remote gem cache: #{e.to_s}")
       end
     end
+
+    def fetch
+      read(@uri)
+    end
+
+    private
 
     def fetch_size(uri)
       require 'net/http'
@@ -46,8 +52,6 @@ module Gem
       resp['content-length'].to_i
     end
     
-    private
-
     def get_size
       require 'yaml'
       begin
@@ -59,9 +63,13 @@ module Gem
       yaml_spec_size
     end
 
-    def fetch(uri)
+    def read(uri)
       require 'rubygems/open-uri'
-      open(uri, "User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}", :proxy => @http_proxy) do |input|
+      open(uri,
+	"User-Agent" =>
+	"RubyGems/#{Gem::RubyGemsVersion}",
+	:proxy => @http_proxy
+	) do |input|
         input.read
       end
     end
@@ -266,6 +274,14 @@ module Gem
     def new_installer(gem)
       return Installer.new(gem)
     end
+
+    private
+
+    def fetch(uri)
+      rsf = @fetcher_class.new(uri)
+      rsf.fetch(uri)
+    end
+
   end
 
 end

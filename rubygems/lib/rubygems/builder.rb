@@ -13,27 +13,27 @@ module Gem
     class FileContents < StringIO
       def add_ruby_header
         self.puts <<-EOS
-        MD5SUM = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
-        if $0 == __FILE__
-          require 'optparse'
-        
-          options = {}
-          ARGV.options do |opts|
-            opts.on_tail("--help", "show this message") {puts opts; exit}
-            opts.on('--dir=DIRNAME', "Installation directory for the Gem") {|options[:directory]|}
-            opts.on('--force', "Force Gem to intall, bypassing dependency checks") {|options[:force]|}
-            opts.on('--gen-rdoc', "Generate RDoc documentation for the Gem") {|options[:gen_rdoc]|}
-            opts.parse!
-          end
+MD5SUM = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+if $0 == __FILE__
+  require 'optparse'
 
-          require 'rubygems'
-          @directory = options[:directory] || Gem.dir  
-          @force = options[:force]
-  
-          gem = Gem::Installer.new(__FILE__).install(@force, @directory)      
-          if options[:gen_rdoc]
-            Gem::DocManager.new(gem).generate_rdoc
-          end
+  options = {}
+  ARGV.options do |opts|
+    opts.on_tail("--help", "show this message") {puts opts; exit}
+    opts.on('--dir=DIRNAME', "Installation directory for the Gem") {|options[:directory]|}
+    opts.on('--force', "Force Gem to intall, bypassing dependency checks") {|options[:force]|}
+    opts.on('--gen-rdoc', "Generate RDoc documentation for the Gem") {|options[:gen_rdoc]|}
+    opts.parse!
+  end
+
+  require 'rubygems'
+  @directory = options[:directory] || Gem.dir  
+  @force = options[:force]
+
+  gem = Gem::Installer.new(__FILE__).install(@force, @directory)      
+  if options[:gen_rdoc]
+    Gem::DocManager.new(gem).generate_rdoc
+  end
 end
 
 __END__

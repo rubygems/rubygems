@@ -54,6 +54,7 @@ def install_rb(srcdir = nil)
     next if f =~ /\bCVS\b/
     next if f =~ /\.cmd$/ and not is_windows_platform
     next if FileTest.directory?(f)
+    next if f =~ /\.rb$/
     source = f
     target = File.join(bindir, File.basename(f))
     File::install(source, target, 0755, true)

@@ -1,3 +1,12 @@
+2004-09-30  Rich Kilmer  <rich@infoether.com>
+
+        * lib/rubygems/specification.rb -  externalized the loaded_from runtime 
+          var on specification
+        * lib/rubygems/cache.rb - optimized cache refresh! method and refactored 
+          processing of files when building cache.
+        * lib/rubygems/loadpath_manager.rb - fixed bug in loadpath manager in 
+          finding native extensions that have ext on os x, win32 and solaris
+
 2004-09-20  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems/gem_commands.rb:  If file match during local install is
 	a directory, don't try to treat it erroneously as a gem (bug reported

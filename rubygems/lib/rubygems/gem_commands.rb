@@ -46,10 +46,31 @@ module Gem
     end
   end
 
+  module InstallUpdateOptions
+    def add_install_update_options
+      add_option('-i', '--install-dir DIR', '') do |value, options|
+	options[:install_dir] = value
+      end
+      add_option('-d', '--[no-]rdoc', 'Generate RDoc documentation for the gem on install') do |value, options|
+	options[:generate_rdoc] = value
+      end
+      add_option('-f', '--[no-]force', 'Force gem to install, bypassing dependency checks') do |value, options|
+	options[:force] = value
+      end
+      add_option('-t', '--[no-]test', 'Run unit tests prior to installation') do |value, options|
+	options[:test] = value
+      end
+      add_option('-s', '--[no-]install-stub', 'Install a library stub in site_ruby') do |value, options|
+	options[:stub] = value
+      end
+    end
+  end
+
   ####################################################################
   class InstallCommand < Command
     include CommandAids
     include LocalRemoteOptions
+    include InstallUpdateOptions
 
     def initialize
       super(
@@ -63,36 +84,12 @@ module Gem
 	  :stub => true, 
 	  :version => "> 0",
 	  :install_dir => Gem.dir
-
 	})
       add_option('-v', '--version VERSION', 'Specify version of gem to install') do |value, options|
 	options[:version] = value
       end
       add_local_remote_options
-      add_option('-d', '--gen-rdoc', 'Generate RDoc documentation for the gem on install') do |value, options|
-	options[:generate_rdoc] = true
-      end
-      add_option('--no-gen-rdoc', 'Do not generate RDoc documentation for the gem on install') do |value, options|
-	options[:generate_rdoc] = false
-      end
-      add_option('-i', '--install-dir DIR', '') do |value, options|
-	options[:install_dir] = value
-      end
-      add_option('-f', '--force', 'Force gem to install, bypassing dependency checks') do |value, options|
-	options[:force] = true
-      end
-      add_option('-t', '--test', 'Run unit tests prior to installation') do |value, options|
-	options[:test] = true
-      end
-      add_option('-t', '--no-test', 'Do not run unit tests prior to installation') do |value, options|
-	options[:test] = false
-      end
-      add_option('-s', '--install-stub', 'Install a library stub in site_ruby') do |value, options|
-	options[:stub] = true
-      end
-      add_option('--no-install-stub', 'Do not install a library stub in site_ruby') do |value, options|
-	options[:stub] = false
-      end
+      add_install_update_options
     end
     
     def usage
@@ -109,7 +106,7 @@ module Gem
       gem_name = get_one_gem_name
       if local?
 	begin
-	  say "Attempting local installation of '#{options[:name]}'"
+	  say "Attempting local installation of '#{gem_name}'"
 	  filename = gem_name
 	  filename += ".gem" unless File.exist?(filename)
 	  unless File.exist?(filename)
@@ -183,7 +180,7 @@ module Gem
 
     def initialize
       super('uninstall', 'Uninstall a gem from the local repository', {:version=>"> 0"})
-      add_option('-v', '--version VERSION', 'Specify version of gem to install') do |value, options|
+      add_option('-v', '--version VERSION', 'Specify version of gem to uninstall') do |value, options|
 	options[:version] = value
       end
     end
@@ -410,30 +407,15 @@ module Gem
 
   ####################################################################
   class UpdateCommand < Command
+    include InstallUpdateOptions
+
     def initialize
       super(
 	'update',
 	'Upgrade all currently installed gems in the local repository',
 	{:stub=>true, :generate_rdoc=>false}
 	)
-      add_option('-d', '--gen-rdoc', 'Generate RDoc documentation for the gem on install') do |value, options|
-	options[:generate_rdoc] = value
-      end
-      add_option('-i', '--install-dir DIR', '') do |value, options|
-	options[:install_dir] = value
-      end
-      add_option('-f', '--force', 'Force gem to install, bypassing dependency checks') do |value, options|
-	options[:force] = true
-      end
-      add_option('-t', '--test', 'Run unit tests prior to installation') do |value, options|
-	options[:test] = true
-      end
-      add_option('-s', '--install-stub', 'Install a library stub in site_ruby/1.x') do |value, options|
-	options[:stub] = true
-      end
-      add_option(nil, '--no-install-stub', 'Do not install a library stub in site_ruby/1.x') do |value, options|
-	options[:stub] = false
-      end
+      add_install_update_options
     end
     
     def execute
@@ -606,7 +588,7 @@ module Gem
       arg = options[:args][0]
       if options[:help_commands] || begins?("commands", arg)
 	out = "GEM commands are:\n"
-	indent = command_manager.command_names.collect {|n| n.size}.max+4
+	indent = command_manager.command_names.collect {|n| n.size}.max + 4
 	command_manager.command_names.each do |cmd_name|
 	  out << "  gem #{cmd_name}#{" "*(indent - cmd_name.size)}#{command_manager[cmd_name].summary}\n"
 	end

@@ -42,7 +42,7 @@ class TestParseCommands < Test::Unit::TestCase
       #check settings
       check_options = nil
       @cmd_manager.process_args(
-	"install --force --test --no-install-stub --local --gen-rdoc --install-dir . --version 3.0")
+	"install --force --test --no-install-stub --local --rdoc --install-dir . --version 3.0")
       assert_equal false, check_options[:stub]
       assert_equal true, check_options[:test]
       assert_equal true, check_options[:generate_rdoc]
@@ -172,7 +172,7 @@ class TestParseCommands < Test::Unit::TestCase
     
     #check settings
     check_options = nil
-    @cmd_manager.process_args("update --force --test --no-install-stub --gen-rdoc --install-dir .")
+    @cmd_manager.process_args("update --force --test --no-install-stub --rdoc --install-dir .")
     assert_equal false, check_options[:stub]
     assert_equal true, check_options[:test]
     assert_equal true, check_options[:generate_rdoc]

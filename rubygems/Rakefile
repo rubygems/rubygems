@@ -48,6 +48,7 @@ end
 
 # Wiki Doc Targets
 
+desc "Build the Wiki documentation"
 task :wiki => ['scripts/gemdoc.wiki', 'scripts/specdoc.wiki']
 
 file 'scripts/gemdoc.wiki' => ['scripts/gemdoc.rb', 'scripts/gemdoc.data'] do
@@ -83,4 +84,11 @@ Rake::PackageTask.new("package") do |p|
     "scripts/*.rb",
     "test/**/*"
     )
+end
+
+# Install task
+
+desc "Install RubyGems"
+task :install do
+  ruby 'install.rb'
 end

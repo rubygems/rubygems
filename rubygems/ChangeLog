@@ -1,3 +1,19 @@
+2004-07-04  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* Rakefile: added 'install' target.
+
+	* lib/rubygems/cmd_manager.rb: code formatting.
+
+	* lib/rubygems/gem_commands.rb:
+	  - refactored common install and update options into new module
+	    InstallUpdateOptions
+	      . consolidated option pairs (e.g. --test & --no-test ==> --[no-]test)
+	      . --gen-rdoc is now --rdoc
+	  - (UninstallCommand) corrected typo
+	  - (InstallCommand) corrected output with local install
+
+	* test/test_parse_commands.rb: :%s/--gen-rdoc/--rdoc/g
+
 2004-07-03  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/gem_commands.rb (Gem::InstallCommand::initialize):

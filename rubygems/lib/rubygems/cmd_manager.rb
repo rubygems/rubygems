@@ -53,8 +53,8 @@ module Gem
     def run(args)
       backtrace = false
       if args.first == '--backtrace'
-	backtrace = true
-	args.shift
+        backtrace = true
+        args.shift
       end
       process_args(args)
     rescue StandardError => ex
@@ -65,11 +65,11 @@ module Gem
 
     def process_args(args)
       args = args.to_str.split(/\s/) if args.respond_to?(:to_str)
-      if args.size==0
-	say Gem::HELP
-	terminate_interaction(1)
-      elsif args[0]=~/--/
-	self['help'].invoke(*args)
+      if args.size == 0
+        say Gem::HELP
+        terminate_interaction(1)
+      elsif args[0] =~ /--/
+        self['help'].invoke(*args)
       else
         cmd_name = args.shift.downcase
         cmd = find_command(cmd_name)

@@ -1,0 +1,43 @@
+<html>
+<head>
+<title>RubyGems</title>
+</head>
+<link rel="stylesheet" type="text/css" href="doc.css">
+<body>
+<h1> <nowiki>RubyGems</nowiki> User Documentation </h1>
+<h2> Installing the <nowiki>RubyGems</nowiki> package </h2>
+
+<p>Installation is fairly simple.
+<ul><li> <a class="extlink" href="http://rubyforge.org/project/showfiles.php?group_id=126">Download</a> <nowiki>RubyGems</nowiki>
+</li><li> Unpack the distribution (zip or tar.gz)
+</li><li> cd rubygems-version.number
+</li><li> ruby install.rb (NOTE:  You'll need to have write access to your Ruby site_library directory).</li></ul><p>At this time, the contents of the "bin" directory are not installed.  You'll have to manually copy these files to somewhere in your path.</p>
+<p>If you have a non-standard Ruby installation and would like to install <nowiki>RubyGems</nowiki> to an alternate location, you can recursively copy the contents of "lib" to the desired location and add this location to ruby's LOAD_PATH.</p>
+<h2> Installing and Uninstalling Gems </h2>
+
+<h3> Installing </h3>
+
+<p>The easiest way to install a Gem is to actually run the gem itself.  Each Ruby Gem is a valid Ruby script which, when executed, will extract and install itself.  The command is, simply:</p>
+<pre> ruby myproject-0.0.1.gem [--help | --dir=<dirname> | --force]</pre>
+<p>By default, <nowiki>RubyGems</nowiki> maintains installed content in a central directory located off of the root of your Ruby installation.  The <b>--dirname</b> command-line option allows you to change this default installation location, which would be useful, for example, if you were on a computer for which you lacked write access to the standard Ruby distribution.</p>
+<p>The <b>--force</b> option disables dependency checking.  By default, <nowiki>RubyGems</nowiki> will fail to install a Gem if the required dependencies are not already present in your Gem directory.</p>
+<p>Alternatively, you can use the <b>gem</b> command with these same plus the <b>--install</b> option:</p>
+<pre> gem --install myproject-0.0.1.gem [--dir=<dirname> | --force]</pre>
+<h3> Uninstalling </h3>
+<p>To uninstall a gem, you can simply run the following command:</p>
+<pre> gem --uninstall myproject [--version=<versionnumber>]</pre>
+<p>If run without the version number, and only one match for the gem name is found, that gem will be uninstalled.  If multiple matches are found, the uninstaller will display a list of installed versions of the specified Gem and ask you to select the one to uninstall.  When the <b>--version</b> option is used, only the specified version will be removed, or an error will be displayed if it is not found.
+<h2> Creating Gems </h2>
+	
+See DevDoc
+<h2> Remote Installation </h2>
+
+<nowiki>RubyGems</nowiki> supports installation of packages via a network.  The <nowiki>RubyGems</nowiki> distribution comes with a default set of package "sources", which are installed as a Ruby Gem during the <b>install.rb</b> process outlined above.  <nowiki>RubyGems</nowiki> uses HTTP for both discovery and download of gem files.</p>
+<p>Remote installation of a gem can be performed as follows:</p>
+<pre> gem --remote-install <gemname> [--version=<gemversion>]</pre>
+<p>This command will download the requested gem and all of its dependencies (recursively) and install them.  </p>
+<p>Under normal operating conditions, you will not need to worry about the gem "sources", since it's managed internally to the <nowiki>RubyGems</nowiki> distribution and upgradable as a gem itself.  However, if you <b>do</b> need to override or append to your sources list, that can be accomplished as in the following:</p>
+<pre>  FIXME: This isn't possible yet.
+<h2> Navigating the Gem Database </h2>
+</body>
+</html>

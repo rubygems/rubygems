@@ -1,0 +1,51 @@
+<html>
+<head>
+<title>RubyGems</title>
+</head>
+<link rel="stylesheet" type="text/css" href="doc.css">
+<body>
+<h1> <nowiki>RubyGems</nowiki> Developer Documentation Area </h1>
+<h2> Creating the Gem Specification </h2>
+<p>The GemSpecification is a Ruby script that, when run, creates a Gem::Specification object.  In a normal Ruby library development you would have your Ruby files laid out something like this:</p>
+<pre> <project dir>/
+   <i>install.rb or setup.rb</i>
+   lib/
+     mylib.rb
+     mylib/
+       file1.rb
+       file2.rb ...etc
+   test/
+     test_mylib.rb ...etc
+   
+</pre>
+<p>Although not a requirement, it is recommended to place your Gem Specification object definition in a .gemspec file at the root of your project directory:</p>
+<pre> <project dir>/
+   mylib.gemspec</pre>
+<p>To create a GemSpecification file, it easiest to start with the example here and then modify it for you own needs (per the GemSpecification format detail).  </p>
+<p>The following .gemspec file is from the jabber4r project</p>
+<pre> require 'rubygems'</pre>
+<p>Currently it is necessary to require the 'rubygems' file.  It may be under a new version of Ruby that the rubygems file will be required by default, thus obviating the need for this require.</p>
+<pre> spec = Gem::Specification.new do |s|
+   s.add_dependency('rubyjdwp', '= 0.0.4')
+   s.name = 'jabber4r'
+   s.version = "0.5.0"
+   s.platform = Gem::Platform::RUBY
+   s.summary = "Jabber4r is a pure-Ruby Jabber client library"
+   s.requirements << 'Jabber server'
+   s.files = Dir.glob("lib/**/*").delete_if {|item| item.include?("CVS")}
+   s.require_path = 'lib'
+   s.autorequire = 'jabber4r/jabber4r'
+   s.author = "Richard Kilmer"
+   s.email = "rich@infoether.com"
+   s.rubyforge_project = "jabber4r"
+   s.homepage = "<a class="external" href="http://jabber4r.rubyforge.org"">http://jabber4r.rubyforge.org"</a>
+ end</pre>
+<p>The next bit of code allows the .gemspec file to be executed as Ruby code, and load the previously defined spec.  This code is not strictly needed, but is a simple thing to include to enable the .gemspec to generate the .gem file directly.  The alternative is to use the <b>gem -b <foo.gemspec></b> command to build the gem.</p>
+<pre> if $0==__FILE__
+   Gem::Builder.new(spec).build
+ end</pre>
+
+<h2> Creating the Gem </h2>
+<h2> Distributing the Gem </h2>
+</body>
+</html>

@@ -161,6 +161,15 @@ module Gem
 	ENV['GEMCACHE'] || File.join(Gem.user_home, ".gem/source_cache")
     end
 
+    def update
+      @dirty = true
+    end
+
+    def flush
+      write_cache if @dirty
+      @dirty = false
+    end
+
     private 
 
     # Find a writable cache file.
@@ -177,8 +186,10 @@ module Gem
     # Read the most current cache data.
     def read_cache
       if ! File.exist?(user_cache_file) && ! File.exist?(system_cache_file)
+	@dirty = true
 	return {}
       end
+      @dirty = false
       if ! File.exist?(user_cache_file)
 	fn = system_cache_file
       elsif ! File.exist?(system_cache_file)
@@ -192,6 +203,8 @@ module Gem
     end
   end
 
+  # CachedFetcher is a decorator that adds local file caching to
+  # RemoteSourceFetcher objects.
   class CachedFetcher
     def initialize(source_uri, proxy)
       @source_uri = source_uri
@@ -216,12 +229,13 @@ module Gem
 	  'size' => @fetcher.size,
 	  'cache' => result,
 	}
+	manager.update
 	result
       end
     end
 
     def flush
-      manager.write_cache
+      manager.flush
     end
 
     private
@@ -230,9 +244,15 @@ module Gem
       self.class.manager
     end
 
+    # The cache is shared between all caching fetchers, so the cache
+    # is put in the class object.
     class << self
       def manager
 	@manager ||= LocalSourceInfoCache.new
+      end
+
+      def flush
+	manager.flush
       end
     end
     
@@ -259,7 +279,7 @@ module Gem
         else
           http_proxy.to_str
         end
-      @fetcher_class = RemoteSourceFetcher
+      @fetcher_class = CachedFetcher
     end
 
     # This method will install package_name onto the local system.  
@@ -318,39 +338,12 @@ module Gem
     # information from those sources, where the key is the source and
     # the value that interesting information.
     def source_info(install_dir)
-      source_caches_file = File.join(install_dir, "source_caches")
-      if File.exist?(source_caches_file)
-	file_data = File.read(source_caches_file)
-        caches = YAML.load(file_data) || {}
-      else
-        caches = {}
-      end
-      updated = false
+      result = {}
       sources.each do |source|
 	rsf = @fetcher_class.new(source, @http_proxy)
-	if caches.has_key?(source)
-	  if caches[source]["size"] != rsf.size
-	    caches[source]["size"] = rsf.size
-	    caches[source]["cache"] = rsf.source_info
-	    updated = true
-	  end
-	else
-	  caches[source] = {
-	    "size" => rsf.size,
-	    "cache" => rsf.source_info
-	  }
-	  updated = true
-	end
+	result[source] = rsf.source_info
       end
-      if updated && File.writable?(install_dir)
-        File.open(source_caches_file, "wb") do |file|
-          file.print caches.to_yaml
-        end
-      end
-      result = {}
-      caches.each do |source, data|
-        result[source] = data["cache"]
-      end
+      @fetcher_class.flush
       result
     end
     
@@ -417,7 +410,6 @@ module Gem
               @http_proxy
             end
           )
-
           installed_gems << remote_installer.install(
 	    dependency.name,
 	    dependency.version_requirements,
@@ -438,6 +430,7 @@ module Gem
     end
 
     def write_gem_to_file(body, destination_file)
+      FileUtils.mkdir_p(File.dirname(destination_file)) unless File.exist?(destination_file)
       File.open(destination_file, 'wb') do |out|
         out.write(body)
       end
@@ -446,7 +439,6 @@ module Gem
     def new_installer(gem)
       return Installer.new(gem)
     end
-
   end
 
 end

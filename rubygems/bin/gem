@@ -7,8 +7,9 @@ ARGV.options do |opts|
   opts.banner = <<BANNER
 
 'gem' is the user interface to RubyGems, the Ruby package manager.
+ See http://rubygems.rubyforge.org for user and developer documentation.
   
-    Usage: gem <action> [modifier ...]"
+    Usage: gem <action> [modifier ...]
 BANNER
   opts.separator("")
   opts.separator("Actions:")
@@ -40,7 +41,7 @@ BANNER
   opts.on('--version GEMVERSION', "Version of gem to perform operation on") {|options[:gem_version]|}
   opts.separator("")
   opts.separator("Miscellaneous:")
-  opts.on("--help", "show this message") {puts opts; exit}
+  opts.on('-h', '--help', "show this message") {puts opts; exit}
   opts.parse!
 end
 

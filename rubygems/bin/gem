@@ -4,7 +4,6 @@ require 'optparse'
 require 'ostruct'
 require 'rubygems'
 require 'yaml'
-require 'pp'
 
 Gem.manage_gems
 
@@ -85,23 +84,6 @@ end  # class RubyGemsInfo
 # -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 #
 
-
-def _info(message)
-  STDOUT.puts message
-end
-
-
-def die(message)
-  STDERR.puts message
-  exit!
-end
-
-
-#
-# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-#
-
-
 #
 # This class defines the options structure used to capture the command-line options and
 # drive the operational aspect.
@@ -177,6 +159,9 @@ end  # class RubyGemsOptions
 # what to do.
 #
 class RubyGemsApp
+
+  include Gem::UserInteraction
+
   #
   # Determine the selected operation and the other options, and ask RubyGemsFacade to do
   # the work for us.
@@ -205,7 +190,7 @@ class RubyGemsApp
     when :verify
       facade.verify(arg)
     else
-      die "Invalid operation: #{options.operation}"
+      alert_error "Invalid operation: #{options.operation}"
     end
   end
 
@@ -260,10 +245,12 @@ class RubyGemsApp
     if File.exist?(config_file)
       return YAML.load(File.read(config_file))
     else
-      die "Config file #{config_file} not found" if specified
+      alert_error "Config file #{config_file} not found" if specified
+      terminate_interaction! if specified
     end
   rescue YAML::Error # XXX: Is this the correct error?
-    die "Config file #{config_file} is not valid YAML"
+    alert_error "Config file #{config_file} is not valid YAML"
+    terminate_interaction!
   end
   
   #
@@ -383,43 +370,43 @@ INFO
     begin
       parser.parse!(args)
     rescue => err
-      puts err.message
-      exit!
+      alert_error(err.message)
+      terminate_interaction!
     end
     options = o
     _show_help(parser, 1) if options.operation.nil?
   
-#     require 'pp'
-#     pp options
-#     puts
-#     exit
+     #require 'pp'
+     #pp options
+     #puts
+     #exit
     options
   end  # _parse
 
   def _show_help(parser, status)
-    puts parser
-    exit(status)
+    say parser
+    terminate_interaction(status)
   end
 
   def _show_simple_help
-    puts RubyGemsInfo::HELP
-    exit(0)
+    say RubyGemsInfo::HELP
+    terminate_interaction(0)
   end
 
   def _show_examples
-    puts RubyGemsInfo::EXAMPLES
-    exit(0)
+    say RubyGemsInfo::EXAMPLES
+    terminate_interaction(0)
   end
 
   def _show_rubygems_info
-    puts "RubyGems:"
-    puts " - VERSION:                #{Gem::RubyGemsVersion}"
-    puts " - INSTALLATION DIRECTORY: #{Gem.dir}"
-    puts " - GEM PATH:"
-    puts Gem.path.map { |p| "     - #{p}" }
-    puts " - REMOTE SOURCES:"
-    puts Gem::RemoteInstaller.new.get_cache_sources.map { |s| "     - #{s}" }
-    exit
+    say "RubyGems:"
+    say " - VERSION:                #{Gem::RubyGemsVersion}"
+    say " - INSTALLATION DIRECTORY: #{Gem.dir}"
+    say " - GEM PATH:"
+    say Gem.path.map { |p| "     - #{p}" }
+    say " - REMOTE SOURCES:"
+    say Gem::RemoteInstaller.new.get_cache_sources.map { |s| "     - #{s}" }
+    terminate_interaction
   end
 
 end  # class RubyGemsApp
@@ -435,6 +422,8 @@ end  # class RubyGemsApp
 # This class performs the basic operations that the user can select on the command line.
 #
 class RubyGemsFacade
+
+  include Gem::UserInteraction
 
   # Signals that local installation will not proceed, not that it has been tried and
   # failed.  TODO: better name.
@@ -481,25 +470,25 @@ class RubyGemsFacade
   def install(gem)
     if @options.local?
       begin
-        _info "Attempting local installation of '#{gem}'"
+        say "Attempting local installation of '#{gem}'"
         installed_gems = _install_local(gem)
-        puts "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}"
+        say "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}"
       rescue LocalInstallationError => e
-        _info " -> Local installation can't proceed: #{e.message}"
+        say " -> Local installation can't proceed: #{e.message}"
       rescue => e
-        $stderr.puts "Error installing gem #{gem}: #{e.message}"
+        alert_error "Error installing gem #{gem}: #{e.message}"
         return false # If a local installation actually fails, we don't try remote.
       end
     end
 
     if @options.remote? and installed_gems.nil?
       begin
-        _info "Attempting remote installation of '#{gem}'"
+        say "Attempting remote installation of '#{gem}'"
         installed_gems = _install_remote(gem)
       rescue RemoteError => e
-        _info " -> Remote installation can't proceed: #{e.message}"
+        say " -> Remote installation can't proceed: #{e.message}"
       rescue => e
-        $stderr.puts "Error installing gem #{gem}: #{e.message + e.backtrace.join("\n")}"
+        alert_error "Error installing gem #{gem}: #{e.message + e.backtrace.join("\n")}"
         return false
       end
     end
@@ -527,11 +516,12 @@ class RubyGemsFacade
   # XXX: We should probably change this so that if no version is specified,
   #    all versions of the named gem are uninstalled.
   def uninstall(gem)
-    _info "Attempting to uninstall gem '#{gem}'"
+    say "Attempting to uninstall gem '#{gem}'"
     begin
       Gem::Uninstaller.new(gem, @options.gem_version).uninstall
     rescue => e
-      die e.message
+      alert_error e.message
+      terminate_interaction!
     end
   end
 
@@ -574,14 +564,14 @@ class RubyGemsFacade
       gem_specs = Gem::Cache.from_installed_gems.search(gem, @options.gem_version)
       if gem_specs.size > 0
         require 'yaml'
-        gem_specs.each {|spec| puts spec.to_yaml; puts "\n"}
+        gem_specs.each {|spec| say spec.to_yaml; say "\n"}
       else
-        $stderr.puts "Unkown gem #{gem}"
+        alert_error "Unkown gem #{gem}"
       end
     end
 
     if @options.remote?
-      _info "(Remote 'info' operation is not yet implemented.)"
+      say "(Remote 'info' operation is not yet implemented.)"
       # NOTE: when we do implement remote info, make sure we don't duplicate huge swabs of
       # local data.  If it's the same, just say it's the same.
     end
@@ -592,19 +582,18 @@ class RubyGemsFacade
   # Build a gem from the given gemspec.  This can only be done locally :)
   #
   def build(gemspec)
-    _info "Attempting to build gem spec '#{gemspec}'"
+    say "Attempting to build gem spec '#{gemspec}'"
     load gemspec
     Gem::Specification.list.each do |spec|
       Gem::Builder.new(spec).build
     end
   rescue Gem::Exception => err
-    puts "Operation failed: #{err}"
-    puts err.backtrace if $VERBOSE
+    msg = "Operation failed: #{err}"
+    msg += "\n#{err.backtrace}" if $VERBOSE
+    alert_error msg
   rescue => err
-    puts "Unexpected error: #{err}"
-    puts "Details:"
-    puts err.backtrace
-    exit!
+    alert_error "Unexpected error: #{err}\nDetails:\n#{err.backtrace}"
+    terminate_interaction!
   end
 
 
@@ -612,19 +601,19 @@ class RubyGemsFacade
   # Scour the repository for alien (unmanaged) files.
   #
   def alien
-    _info "Performing the 'alien' operation"  # TODO: better (or no) message.
+    say "Performing the 'alien' operation"  # TODO: better (or no) message.
     Gem::Validator.new.alien.each do |key, val|
       if(val.size > 0) then 
-        puts "#{key} has #{val.size} problems"
+        say "#{key} has #{val.size} problems"
         val.each do |error_entry|
-          puts "\t#{error_entry.path}:"
-          puts "\t#{error_entry.problem}"
-          puts
+          say "\t#{error_entry.path}:"
+          say "\t#{error_entry.problem}"
+          say
         end
         else  
-          puts "#{key} is error-free"
+          say "#{key} is error-free"
         end
-        puts
+        say
       end
   end
 
@@ -633,11 +622,11 @@ class RubyGemsFacade
   # Verify the given gem.
   #
   def verify(gem)
-    _info "Verifying gem: '#{gem}'"
+    say "Verifying gem: '#{gem}'"
     begin
       Gem::Validator.new.verify_gem_file(gem)
     rescue => e
-      $stderr.puts "#{gem} is invalid"
+      alert_error "#{gem} is invalid"
     end
   end
 
@@ -675,7 +664,7 @@ class RubyGemsFacade
       installed_gems = Gem::RemoteInstaller.new(@options.http_proxy).install(name, @options.gem_version, @options.force,
                                          @options.install_dir, @options.install_stub)
     rescue Exception => e
-        $stderr.puts e.to_s
+        alert_error e.to_s
         exit 1
     end
     installed_gems
@@ -684,7 +673,7 @@ class RubyGemsFacade
   def _run_tests(name, version)
     gem_specs = Gem::Cache.from_installed_gems.search(name, version.version)
     unless gem_specs[0].test_suite_file
-      _info "There are no unit tests to run for #{name}-#{version}"
+      say "There are no unit tests to run for #{name}-#{version}"
       return
     end
     require_gem name, "= #{version.version}"
@@ -696,8 +685,7 @@ class RubyGemsFacade
     require 'test/unit/ui/console/testrunner'
     result = Test::Unit::UI::Console::TestRunner.run(suite, Test::Unit::UI::SILENT)
     unless(result.passed?)
-      print result.to_s + "...keep Gem? [Y/n] "
-      answer = gets
+      answer = ask(result.to_s + "...keep Gem? [Y/n] ")
       if(answer !~ /^y/i) then
         Gem::Uninstaller.new(name, version.version).uninstall
       end
@@ -710,8 +698,8 @@ class RubyGemsFacade
   # TODO: ignore remote gems that are available locally?  Or just list them?  Or what? 
   def _list_gems(pattern)
     if @options.local?
-      puts
-      puts "*** LOCAL GEMS ***"
+      say
+      say "*** LOCAL GEMS ***"
       _display_gems(Gem::cache.search(pattern))
       #gemlist = []
       #Gem::Cache.from_installed_gems.each do |name, spec|
@@ -721,13 +709,13 @@ class RubyGemsFacade
     end
 
     if @options.remote?
-      puts
-      puts "*** REMOTE GEMS ***"
+      say
+      say "*** REMOTE GEMS ***"
       installer = 
       begin
         _display_gems(Gem::RemoteInstaller.new(@options.http_proxy).search(pattern))
       rescue Gem::RemoteSourceException => e
-        $stderr.puts e.to_s
+        alert_error e.to_s
         exit 1
       end
     end
@@ -737,7 +725,7 @@ class RubyGemsFacade
   # to the newest version.
   def _upgrade_all
     @options.domain = :remote # Get gems remotely
-    puts "Upgrading installed gems..."
+    say "Upgrading installed gems..."
     hig = highest_installed_gems = {}
     Gem::Cache.from_installed_gems.each do |name, spec|
       if hig[spec.name].nil? or hig[spec.name].version < spec.version
@@ -760,10 +748,10 @@ class RubyGemsFacade
       end
     end
     gems_to_update.uniq.sort.each do |name|
-      puts "Attempting remote upgrade of #{name}"
+      say "Attempting remote upgrade of #{name}"
       _install_remote(name)
     end
-    puts "All gems up to date"
+    say "All gems up to date"
   end
 
   # +gems+ is actually an Array: [[name, gemspec], [name, gemspec], ...]
@@ -776,7 +764,7 @@ class RubyGemsFacade
     gem_list_with_version.sort do |first, second|
      first[0].downcase <=> second[0].downcase
     end.each do |gem_name, list_of_matching| 
-     puts
+     say
      list_of_matching.sort! do |a,b|
        a.version <=> b.version
      end.reverse!
@@ -794,10 +782,8 @@ class RubyGemsFacade
         false
       end
     }
-    print gem_name, " ("
-    print(list_of_matching.map{|gem| gem.version.to_s}.join(", "))
-    puts ")"
-    puts list_of_matching[0].summary.wrap(68).indent(4)
+    say " (#{list_of_matching.map{|gem| gem.version.to_s}.join(", ")})"
+    say list_of_matching[0].summary.wrap(68).indent(4)
   end
 
 end  # class RubyGemsFacade

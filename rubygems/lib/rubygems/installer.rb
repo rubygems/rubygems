@@ -6,6 +6,8 @@ module Gem
   #
   class Installer
   
+    include UserInteraction
+  
     ##
     # Constructs a Installer instance
     #
@@ -167,9 +169,11 @@ TEXT
           target_file = File.join(sitelibdir, "#{spec.autorequire}.rb")
           if FileTest.exist?(target_file)
             unless library_stub?(target_file)
-              STDERR.puts "(WARN) Library file '#{target_file}'"
-              STDERR.puts "       already exists; not overwriting.  If you want to force a"
-              STDERR.puts "       library stub, delete the file and reinstall."
+              alert_warning(
+                ["       Library file '#{target_file}'",
+                 "       already exists; not overwriting.  If you want to force a",
+                 "       library stub, delete the file and reinstall."].join("\n")
+               )
             end
           else
             # Create #{autorequire}.rb in #{target_dir}.
@@ -182,8 +186,10 @@ TEXT
           end
         else
           rver = Config::CONFIG['ruby_version']
-          STDERR.puts "(WARN) Can't install library stub for gem '#{spec.name}'"
-          STDERR.puts "       (Don't have write permissions on 'site_ruby/#{rver}' directory.)"
+          alert_warning(
+            ["       Can't install library stub for gem '#{spec.name}'",
+             "       (Don't have write permissions on 'site_ruby/#{rver}' directory.)"].join("\n")
+           )
         end
       end
     end
@@ -240,7 +246,7 @@ TEXT
           results << `#{make_program}`
           results << "#{make_program} install"
           results << `#{make_program} install`
-          puts results.join("\n")
+          say results.join("\n")
         else
           raise "ERROR: Failed to build gem native extension.\nGem files will remain installed in #{directory} for inspection.\n  See #{File.join(Dir.pwd, 'gem_make.out')}"
         end
@@ -281,6 +287,8 @@ TEXT
   #
   class Uninstaller
   
+    include UserInteraction
+  
     ##
     # Constructs an Uninstaller instance
     # 
@@ -306,19 +314,16 @@ TEXT
       if list.size == 0 
         raise "Unknown RubyGem: #{@gem} (#{@version})"
       elsif list.size > 1
-        puts "Select RubyGem to uninstall:"
-        list.each_with_index do |gem, index|
-          puts " #{index+1}. #{gem.full_name}"
-        end
-        puts " #{list.size+1}. All versions"
-        print "> "
-        response = STDIN.gets.strip.to_i - 1
-        if response == list.size
+        say 
+        gem_list = list.collect {|gem| gem.full_name}
+        gem_list << "All versions"
+        gem_name, index = choose_from_list("Select RubyGem to uninstall:", gem_list)
+        if index == list.size
           remove_all(list) 
-        elsif response >= 0 && response < list.size
-          remove(list[response], list)
+        elsif index >= 0 && index < list.size
+          remove(list[index], list)
         else
-          puts "Error: must enter a number [1-#{list.size+1}]"
+          say "Error: must enter a number [1-#{list.size+1}]"
         end
       else
         remove(list[0], list)
@@ -352,18 +357,17 @@ TEXT
       FileUtils.rm_rf File.join(spec.installation_path, 'cache', "#{spec.full_name}.gem")
       DocManager.new(spec).uninstall_doc
       remove_stub_files(spec, list - [spec])
-      puts "Successfully uninstalled #{spec.name} version #{spec.version}"
+      say "Successfully uninstalled #{spec.name} version #{spec.version}"
       list.delete(spec)
     end
 
     def has_dependents?(spec)
       spec.dependent_gems.each do |gem,dep,satlist|
-        puts "WARNING: #{gem.name}-#{gem.version} depends on [#{dep.name} (#{dep.version_requirement})], which is satisifed by this gem.  This dependency is satisfied by:"
+        msg = ["#{gem.name}-#{gem.version} depends on [#{dep.name} (#{dep.version_requirement})], which is satisifed by this gem.  This dependency is satisfied by:"]
         satlist.each do |sat|
-          puts "\t#{sat.name}-#{sat.version}"
+          msg << "\t#{sat.name}-#{sat.version}"
         end
-        print "Uninstall anyway? [Y/n]"
-        answer = STDIN.gets
+        answer = alert(:warning, msg.join("\n"), "Uninstall anyway? [Y/n]")
         if(answer !~ /^y/i) then
           return true
         end

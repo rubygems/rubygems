@@ -5,7 +5,9 @@ module Gem
   # to produce a .gem file.
   #
   class Builder
-  require 'stringio'
+  
+    include UserInteraction
+    require 'stringio'
 
     ##
     # Builder::FileContents is the file contents
@@ -94,7 +96,7 @@ __END__
       file_contents.add_ruby_header
       file_contents.puts(@spec.to_yaml)
       file_contents.write_files_to(@spec.files)
-      puts success
+      say success
       md5 = file_contents.md5
       File.open(file_name, "w") do |file|
         file.write(file_contents.string.gsub(/MD5SUM =.*$/, "MD5SUM = \"#{md5.to_s}\""))

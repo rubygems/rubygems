@@ -2,6 +2,8 @@ module Gem
   
   class DocManager
   
+    include UserInteraction
+  
     #
     # spec::      The Gem::Specification object representing the gem.
     # rdoc_args:: Optional arguments for RDoc (template etc.) as a String.
@@ -37,8 +39,8 @@ module Gem
       rescue LoadError => e
         raise "ERROR: RDoc documentation generator not installed!\n       To install RDoc:  gem --remote-install=rdoc"
       end
-      puts "Installing RDoc documentation for #{@spec.full_name}..."
-      puts "WARNING: Generating RDoc on .gem that may not have RDoc." unless @spec.has_rdoc?
+      say "Installing RDoc documentation for #{@spec.full_name}..."
+      say "WARNING: Generating RDoc on .gem that may not have RDoc." unless @spec.has_rdoc?
       rdoc_dir = File.join(@doc_dir, "rdoc")
       begin
         drive = nil
@@ -58,11 +60,11 @@ module Gem
           r = RDoc::RDoc.new
           r.document(['--op', rdoc_dir, '--template', 'kilmer'] + @rdoc_args.flatten + source_dirs)
         rescue RDoc::RDocError => e
-          $stderr.puts e.message
+          alert_error e.message
         end
         Dir.chdir(current_dir) if target_directory
       rescue RDoc::RDocError => e
-        $stderr.puts e.message
+        alert_error e.message
       end
     end
     

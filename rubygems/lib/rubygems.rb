@@ -74,6 +74,7 @@ module Gem
   class << self
   
     def manage_gems
+      require 'rubygems/user_interaction'
       require 'rubygems/builder'
       require 'rubygems/format'
       require 'rubygems/remote_installer'

@@ -4,6 +4,7 @@ module Gem
   class GemNotFoundException < Gem::Exception; end
 
   class RemoteInstaller
+    include UserInteraction
     ##
     # <tt>http_proxy</tt>::
     #   * [String]: explicit specification of proxy; overrides any environment variable
@@ -133,8 +134,7 @@ module Gem
     def install_dependencies(dependencies)
       installed_gems = []
       dependencies.each do |dependency|
-        print "Install required dependency #{dependency.name}? [Yn] "
-        answer = STDIN.gets
+        answer = ask("Install required dependency #{dependency.name}? [Yn] ")
         if(answer =~ /^y/i || answer =~ /^[^a-zA-Z0-9]$/) then
           remote_installer = RemoteInstaller.new
           installed_gems << remote_installer.install(dependency.name, dependency.version_requirement)

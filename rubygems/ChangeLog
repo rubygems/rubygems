@@ -1,3 +1,7 @@
+2004-07-19  Assaph Mehr     <assaph@avaya.com>
+	* lib/rubygems/command.rb, packages/sources/lib/sources.rb: Added
+	command-line-configurable sources.
+
 2004-07-18  Chad Fowler	    <chad@chadfowler.com>
 	* lib/rubygems/validator.rb: Fixed a bug that would cause "managed"
 	files to appear to be unmanaged due to differences in how the paths

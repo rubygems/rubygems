@@ -90,13 +90,13 @@ module Gem
     end
     
     def usage
-      "gem install gemname"
+      "#{program_name} GEMNAME"
     end
 
     def arguments
       parser.separator("")
       parser.separator("  Arguments:")
-      parser.separator("    gemname   name of gem to install")
+      parser.separator("    GEMNAME   name of gem to install")
     end
 
     def execute
@@ -183,13 +183,13 @@ module Gem
     end
     
     def usage
-      "gem uninstall gemname"
+      "gem #{program_name} GEMNAME"
     end
 
     def arguments
       parser.separator("")
       parser.separator("  Arguments:")
-      parser.separator("    gemname   name of gem to uninstall")
+      parser.separator("    GEMNAME   name of gem to uninstall")
     end
 
     def execute
@@ -259,13 +259,13 @@ module Gem
     end
 
     def usage
-      "gem build gemspec_file"
+      "gem #{program_name} GEMSPEC_FILE"
     end
 
     def arguments
       parser.separator("")
       parser.separator("  Arguments:")
-      parser.separator("    gemspec_file      name of gemspec file used to build the gem")
+      parser.separator("    GEMSPEC_FILE      name of gemspec file used to build the gem")
     end
 
     def execute
@@ -478,7 +478,7 @@ module Gem
     end
 
     def usage
-      "gem environment [args]"
+      "gem #{program_name} [args]"
     end
 
     def arguments
@@ -526,16 +526,26 @@ module Gem
   end
 
   ####################################################################
-  class InfoCommand < Command
+  class SpecificationCommand < Command
     include LocalRemoteOptions
     include CommandAids
     
     def initialize
-      super('info', 'Display gem information', {:domain=>:local, :version=>"> 0.0.0"})
+      super('specification', 'Display gem specification (in yaml)', {:domain=>:local, :version=>"> 0.0.0"})
       add_option('-v', '--version VERSION', 'Specify version of gem to examine') do |value, options|
 	options[:version] = value
       end
       add_local_remote_options
+    end
+
+    def usage
+      "gem #{program_name} GEMFILE"
+    end
+
+    def arguments
+      parser.separator("")
+      parser.separator("  Arguments:")
+      parser.separator("    GEMFILE       Name of a .gem file to examine")
     end
 
     def execute
@@ -576,7 +586,7 @@ module Gem
     end
 
     def usage
-      "gem help [arg]"
+      "#{program_name} [arg]"
     end
 
     def arguments
@@ -610,7 +620,7 @@ module Gem
 	  alert_error "Unknown command #{options[:help]}.  Try gem help commands"
 	end
       elsif arg
-	possibilities = command_manager.find_command_possibilities(arg)
+	possibilities = command_manager.find_command_possibilities(arg.downcase)
 	if possibilities.size == 1
 	  command = command_manager[possibilities.first]
 	  command.invoke("--help")

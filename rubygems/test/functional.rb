@@ -115,6 +115,9 @@ class FunctionalTest < Test::Unit::TestCase
     assert_match %{gem install}, @out
   end
 
+  # :section: Help Methods
+
+  # Run a gem command for the functional test.
   def gem(options="")
     shell = Session::Shell.new
     options = options + " --config-file missing_file" if options !~ /--config-file/

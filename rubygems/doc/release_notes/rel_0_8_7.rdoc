@@ -1,10 +1,10 @@
 = Announce: RubyGems Release 0.8.7
 
-Time passes quickly, and so does software developement.  Release 0.8.7
+Time passes quickly, and so does software development.  Release 0.8.7
 of RubyGems is availble for public release.  Although another point
 release, you will find a number of very nice new features.
 
-First the numbers, 220 different gems available, almost 22,000
+First the numbers, 220 different gems available, over 25,000
 downloads of RubyGems, and nearly 190,000 gems downloads.  Thanks to
 everyone for their support.
 
@@ -40,7 +40,7 @@ Both gem install and gem uninstall support some new command line
 options that can reduce the amount of yes/no queries given the user.
 For install we have:
 
-* --ignored-dependencies -- Only install requests gems, no
+* --ignore-dependencies -- Only install requests gems, no
   dependendecies are automatically installed.
 * --include-dependencies -- Automatically install dependencies,
   without confirmation.
@@ -51,8 +51,11 @@ For gem uninstall, the new options are:
 * --ignore-dependencies -- Uninstall, even if dependencies are broken.
 * --executables -- Remove executables without confirmation
 
+Under general cleanup, gems will not, by default, run RDoc on packages
+that do not have the RDoc flag set.
+
 And finally there is a new library file 'gemconfigure' to aid in
-writing version sensitive applications (without undo dependencies on
+writing version sensitive applications (without undue dependencies on
 RubyGems); and 'gemwhich', a short script to locate libraries in the
 file system.  You can read more about them here:
 

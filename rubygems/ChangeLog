@@ -1,4 +1,8 @@
-2004-06-07  Chad Fowler  <chad@chadfowler.com>
+2004-06-08  Rich Kilmer  <rich@infoether.com>
+        * Fixed the drive problem on win32 (hopefully) so multiple drives
+          should now work.  Its still a hack until rdoc is fixed.
+
+2004-06-08  Chad Fowler  <chad@chadfowler.com>
 	* Fixed bug caused by method change on Version::Requirement
 
 2004-06-08  Rich Kilmer <rich@infoether.com>

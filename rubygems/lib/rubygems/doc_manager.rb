@@ -43,14 +43,26 @@ module Gem
       puts "WARNING: Generating RDoc on .gem that may not have RDoc." unless @spec.has_rdoc?
       rdoc_dir = File.join(@doc_dir, "rdoc")
       begin
+        drive = nil
         source_dirs = @spec.require_paths.clone.concat(@spec.extra_rdoc_files).collect do |req|         
           path = File.join(@spec.full_gem_path, req)
-          path = path[2..-1] if path =~ /^[a-zA-Z]\:/
+          if path =~ /^[a-zA-Z]\:/
+            drive = path[0, 2]
+            path = path[2..-1] 
+          end
           path
         end
-        @rdoc_args = rdoc_args_from_spec(@rdoc_args)
-        r = RDoc::RDoc.new
-        r.document(['--op', rdoc_dir, '--template', 'kilmer'] + @rdoc_args.flatten + source_dirs)
+        current_dir = Dir.pwd
+        target_directory = (drive && Dir.pwd[0,2]!=drive) ? drive : nil
+        Dir.chdir(target_directory) if target_directory
+        begin
+          @rdoc_args = rdoc_args_from_spec(@rdoc_args)
+          r = RDoc::RDoc.new
+          r.document(['--op', rdoc_dir, '--template', 'kilmer'] + @rdoc_args.flatten + source_dirs)
+        rescue RDoc::RDocError => e
+          $stderr.puts e.message
+        end
+        Dir.chdir(current_dir) if target_directory
       rescue RDoc::RDocError => e
         $stderr.puts e.message
       end

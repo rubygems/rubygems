@@ -42,7 +42,7 @@ module Gem
     #
     # return:: [Gem::Specification] The specification for the newly installed Gem.
     #
-    def install(force=false, install_dir=Gem.dir)
+    def install(force=false, install_dir=Gem.dir, ignore_this_parameter=false)
       require 'fileutils'
       format = Gem::Format.from_file_by_path(@gem)
       unless force

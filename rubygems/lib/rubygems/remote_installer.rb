@@ -139,16 +139,12 @@ module Gem
 
     # The most recent cache data.
     def cache_data
-      fn = if File.stat(system_cache_file).mtime >= File.stat(user_cache_file).mtime
-	     system_cache_file
-	   else
-	     user_cache_file
-	   end
-      open(fn) { |f| YAML.load(f) }
+      @cache_data ||= read_cache
     end
 
     # Write data to the proper cache.
-    def write_cache(data)
+    def write_cache
+      data = cache_data
       open(writable_file, "w") do |f|
 	f.puts data.to_yaml
       end
@@ -169,12 +165,30 @@ module Gem
 
     # Find a writable cache file.
     def writable_file
-      if File.writable? system_cache_file
-	system_cache_file
-      else
-	FileUtils.mkdir_p File.dirname(user_cache_file)
-	user_cache_file
+      result = if File.writable? system_cache_file
+		 system_cache_file
+	       else
+		 user_cache_file
+	       end
+      FileUtils.mkdir_p(File.dirname(result)) unless File.exist?(result)
+      result
+    end
+
+    # Read the most current cache data.
+    def read_cache
+      if ! File.exist?(user_cache_file) && ! File.exist?(system_cache_file)
+	return {}
       end
+      if ! File.exist?(user_cache_file)
+	fn = system_cache_file
+      elsif ! File.exist?(system_cache_file)
+	fn = user_cache_file
+      elsif File.stat(system_cache_file).mtime >= File.stat(user_cache_file).mtime
+	fn = system_cache_file
+      else
+	fn = user_cache_file
+      end
+      open(fn) { |f| YAML.load(f) }
     end
   end
 
@@ -182,7 +196,6 @@ module Gem
     def initialize(source_uri, proxy)
       @source_uri = source_uri
       @fetcher = RemoteSourceFetcher.new(source_uri, proxy)
-      read_local_cache
     end
 
     def size
@@ -194,20 +207,35 @@ module Gem
     end
 
     def source_info
-      cache = @local_cache[@source_uri]
-      if cache['size'] == @fetcher.size
+      cache = manager.cache_data[@source_uri]
+      if cache && cache['size'] == @fetcher.size
 	cache['cache']
       else
-	@fetcher.source_info
+	result = @fetcher.source_info
+	manager.cache_data[@source_uri] = {
+	  'size' => @fetcher.size,
+	  'cache' => result,
+	}
+	result
       end
+    end
+
+    def flush
+      manager.write_cache
     end
 
     private
 
-    def read_local_cache
-      fn = File.join(Gem.dir, "source_cache")
-      @local_cache = open(fn) { |f| YAML.load(f.read) }
+    def manager
+      self.class.manager
     end
+
+    class << self
+      def manager
+	@manager ||= LocalSourceInfoCache.new
+      end
+    end
+    
   end
 
   class RemoteInstaller

@@ -13,6 +13,7 @@ ARGV.options do |opts|
   opts.on('--list', "List installed Gems") {|options[:list]|}
   opts.on('--force', "Force Gem to intall, bypassing dependency checks") {|options[:force]|}
   opts.on('--remote-install=GEMNAME', "Auto-download and install a Gem and its dependencies") {|options[:remote_install]|}
+  opts.on('--http-proxy=HTTPPROXYHOST', "(unimplemented) HTTP Proxy to use for remote operations") {|options[:remote_install]|}
   opts.on('--version=GEMVERSION', "Version of Gem to perform operation on") {|options[:gem_version]|}
   opts.on('--verify=GEMFILE', "Verify gem file against its internal checksum") {|options[:verify_gem]|}
   opts.parse!

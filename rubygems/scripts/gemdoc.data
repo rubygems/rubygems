@@ -292,9 +292,93 @@ gem file and write to standard output in YAML format.
 
 === Examples ===
 
-Here is the specification from rake 0.4.0.
+Here is the specification from rake 0.4.1.
 
 <pre>
+$ gem spec rake -v 0.4.1
+--- !ruby/object:Gem::Specification 
+rubygems_version: "0.6"
+name: rake
+version: !ruby/object:Gem::Version 
+  version: 0.4.1
+date: 2004-07-02 01:08:54.678603 -04:00
+platform: 
+summary: Ruby based make-like utility.
+require_paths: 
+  - lib
+files: 
+  - install.rb
+  - CHANGES
+  - Rakefile
+  - README
+  - TODO
+  - MIT-LICENSE
+  - bin/rake
+  - lib/rake.rb
+  - lib/rake/clean.rb
+  - lib/rake/tasklib.rb
+  - lib/rake/packagetask.rb
+  - lib/rake/rdoctask.rb
+  - lib/rake/runtest.rb
+  - lib/rake/testtask.rb
+  - lib/rake/gempackagetask.rb
+  - lib/rake/contrib/ftptools.rb
+  - lib/rake/contrib/sys.rb
+  - lib/rake/contrib/compositepublisher.rb
+  - lib/rake/contrib/publisher.rb
+  - lib/rake/contrib/rubyforgepublisher.rb
+  - lib/rake/contrib/sshpublisher.rb
+  - test/filecreation.rb
+  - test/testclean.rb
+  - test/testfilelist.rb
+  - test/testtasks.rb
+  - test/testftp.rb
+  - test/testfileutils.rb
+  - test/testpackagetask.rb
+  - test/functional.rb
+  - test/contrib/testsys.rb
+  - doc/example
+  - doc/glossary.rdoc
+  - doc/proto_rake.rdoc
+  - doc/rational.rdoc
+  - doc/rakefile.rdoc
+  - doc/example/Rakefile1
+  - doc/example/Rakefile2
+  - doc/example/a.c
+  - doc/example/b.c
+  - doc/example/main.c
+autorequire: rake
+author: Jim Weirich
+required_ruby_version: !ruby/object:Gem::Version::Requirement 
+  requirements: 
+    - 
+      - ">"
+      - !ruby/object:Gem::Version 
+        version: 0.0.0
+email: jim@weirichhouse.org
+homepage: http://http://onestepback.org
+rubyforge_project: rake
+has_rdoc: true
+default_executable: rake
+bindir: bin
+executables: 
+  - rake
+rdoc_options: 
+  - "--title"
+  - "Rake -- Ruby Make"
+  - "--main"
+  - README
+  - "--line-numbers"
+extra_rdoc_files: 
+  - README
+  - MIT-LICENSE
+  - TODO
+  - CHANGES
+  - doc/glossary.rdoc
+  - doc/proto_rake.rdoc
+  - doc/rational.rdoc
+  - doc/rakefile.rdoc
+description: Rake is a Make-like program implemented in Ruby. Tasks and dependencies are specified in standard Ruby syntax.
 </pre>
 
 == [#uninstall]gem uninstall -- Uninstalling a gem ==

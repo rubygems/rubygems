@@ -65,4 +65,34 @@ to build the gem.
 
 == Creating the Gem ==
 
+Now that you've got a Gem specification built, you're almost done.  Gem::Builder.new(spec).build actually creates the gem file for you.  So, al lyou have to do is:
+
+  $ ruby jabber4r.gemspec
+     Successfully built RubyGem
+     Name: jabber4r
+     Version: 0.0.4
+     File: jabber4r-0.0.4.gem
+
+  $ ls *gem
+  jabber4r-0.0.4.gem 
+
+You'll notice if you open this gem file in an editor, that it too is a ruby source file.   It contains all of the files listed in the gem specification, compressed and encoded as a YAML document.  This means gem files are only slightly larger than equivalent tar/gzipped files.
+
+You can now install the gem on a system with either of the following two commands:
+
+  $ ruby jabber4r-0.0.4.gem
+Successfully installed jabber4r version 0.0.4
+
+...or...
+  
+  $ gem -i jabber4-0.0.4.gem
+Successfully installed RedCloth version 0.0.4
+
+
 == Distributing the Gem ==
+
+Gems can be distributed like any file.  However, there is a mechanism builtin into the Gem command that enables automatic download and installation of gems and their dependencies.  To take advantage of this distribution mechanism, you have to upload your gem files to a host that is listed in the Gem sources package.  
+
+By default, the primary source is http://gems.rubyforge.org.  For now (the Alpha release), if you would like to include a gem in the primary distribution site, please email Rich Kilmer (rich<at>infoether.com) or Chad Fowler (chad<at>chadfowler.com).  
+
+We plan shortly after the first alpha release to integrate the primary gem source with RubyForge's file release tool, so for RubyForge users, gem distribution will be as simple as releasing your file on RubyForge.

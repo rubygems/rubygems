@@ -1,5 +1,7 @@
 # The following is borrowed from setup.rb
 
+class File; end
+
 def File.binread(fname)
   open(fname, 'rb') {|f|
     return f.read

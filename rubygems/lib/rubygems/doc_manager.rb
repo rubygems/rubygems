@@ -9,7 +9,7 @@ module Gem
     def initialize(spec, rdoc_args="")
       @spec = spec
       @doc_dir = File.join(spec.installation_path, "doc", spec.full_name)
-      @rdoc_args = rdoc_args.split
+      @rdoc_args = rdoc_args.nil? ? [] : rdoc_args.split
     end
     
     def rdoc_installed?

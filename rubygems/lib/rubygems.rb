@@ -48,11 +48,11 @@ end
 # Main module to hold all RubyGem classes/modules.
 #
 module Gem
+  require 'rubygems/rubygems_version.rb'
 
   class Exception < RuntimeError
   end
 
-  RubyGemsVersion = "0.8.3"
   RubyGemsPackageVersion = RubyGemsVersion 
 
   DIRECTORIES = ['cache', 'doc', 'gems', 'specifications']

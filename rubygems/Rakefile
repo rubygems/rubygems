@@ -90,6 +90,10 @@ task :prerelease do
     fail "Usage: rake release REL='x.y.z'"
   end
 
+  data = `cvs -q update`
+  unless data =~ /^$/
+    fail "CVS update is not clean ... do you have unchecked-in files?"
+  end
   # Are all sources checked in?
   # TBD
 end

@@ -50,6 +50,7 @@ module Gem
     #
     def initialize
       @date = Time.now
+      @has_rdoc,@email,@homepage,@rubyforge_project,@description,@author = nil
       @loaded = false
       @platform = nil
       @@list << self

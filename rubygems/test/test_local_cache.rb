@@ -16,13 +16,9 @@ class TestLocalCache < Test::Unit::TestCase
 
   def teardown
     FileUtils.chmod(0644, GEMCACHE) if File.exist? GEMCACHE
+    FileUtils.chmod(0644, USRCACHE) if File.exist? USRCACHE
     ENV['GEMCACHE'] = nil
     Gem.clear_paths
-  end
-
-  def test_create
-    lc = Gem::LocalSourceInfoCache.new
-    assert_not_nil lc
   end
 
   def test_file_names
@@ -36,6 +32,21 @@ class TestLocalCache < Test::Unit::TestCase
     assert_equal USRCACHE, lc.user_cache_file
   end
 
+  def test_use_system_by_default
+    lc = Gem::LocalSourceInfoCache.new
+    prep_cache_files(lc)
+    assert_equal "sys", lc.cache_data[0]
+  end
+
+  def test_use_user_cache_when_sys_no_writable
+    lc = Gem::LocalSourceInfoCache.new
+    prep_cache_files(lc)
+    FileUtils.chmod 0544, lc.system_cache_file
+
+    lc = Gem::LocalSourceInfoCache.new
+    assert_equal "usr", lc.cache_data[0]
+  end
+
   def test_write_system_cache
     lc = Gem::LocalSourceInfoCache.new
     prep_cache_files(lc)
@@ -47,9 +58,32 @@ class TestLocalCache < Test::Unit::TestCase
     assert_equal ['usr'], read_cache(lc.user_cache_file)
   end
 
+  def test_flush
+    lc = Gem::LocalSourceInfoCache.new
+    prep_cache_files(lc)
+
+    lc.cache_data[0] = 'new'
+    lc.update
+    lc.flush
+
+    assert_equal ['new'], read_cache(lc.system_cache_file)
+  end
+
   def test_write_user_cache
     lc = Gem::LocalSourceInfoCache.new
     prep_cache_files(lc)
+    FileUtils.chmod 0544, lc.system_cache_file
+    lc.cache_data[0] = 'new'
+    lc.write_cache
+
+    assert_equal ['sys'], read_cache(lc.system_cache_file)
+    assert_equal ['new'], read_cache(lc.user_cache_file)
+  end
+
+  def test_write_user_cache_from_scratch
+    lc = Gem::LocalSourceInfoCache.new
+    prep_cache_files(lc)
+    FileUtils.rm_rf lc.user_cache_file
     FileUtils.chmod 0544, lc.system_cache_file
 
     lc.cache_data[0] = 'new'
@@ -59,7 +93,7 @@ class TestLocalCache < Test::Unit::TestCase
     assert_equal ['new'], read_cache(lc.user_cache_file)
   end
 
-  def test_write_user_cache_from_scratch
+  def test_write_user_directory_and_cache_from_scratch
     lc = Gem::LocalSourceInfoCache.new
     prep_cache_files(lc)
     FileUtils.rm_rf File.dirname(lc.user_cache_file)
@@ -75,7 +109,6 @@ class TestLocalCache < Test::Unit::TestCase
   def test_read_system_cache
     lc = Gem::LocalSourceInfoCache.new
     prep_cache_files(lc)
-    age_file(lc.system_cache_file, lc.user_cache_file)
 
     assert_equal ['sys'], lc.cache_data
   end
@@ -83,9 +116,19 @@ class TestLocalCache < Test::Unit::TestCase
   def test_read_user_cache
     lc = Gem::LocalSourceInfoCache.new
     prep_cache_files(lc)
-    age_file(lc.user_cache_file, lc.system_cache_file)
+    FileUtils.chmod 0544, lc.system_cache_file
 
     assert_equal ['usr'], lc.cache_data
+  end
+
+  def test_no_writable_cache
+    lc = Gem::LocalSourceInfoCache.new
+    prep_cache_files(lc)
+    FileUtils.chmod 0544, lc.system_cache_file
+    FileUtils.chmod 0544, lc.user_cache_file
+    assert_raise(RuntimeError) {
+      lc.cache_data
+    }
   end
 
   private

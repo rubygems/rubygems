@@ -46,4 +46,5 @@ class FunctionalTest < Test::Unit::TestCase
     assert_match(/^Error fetching remote gem cache/, err)
   end
 
+
 end

@@ -551,7 +551,7 @@ class RubyGemsFacade
     installer = _get_remote_installer
     begin
       installed_gems = installer.install(name, @options.gem_version, @options.force, @options.directory)
-    rescue Gem::RemoteSourceException => e
+    rescue Exception => e
         $stderr.puts e.to_s
         exit 1
     end

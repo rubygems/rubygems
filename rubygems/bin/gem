@@ -497,6 +497,14 @@ class RubyGemsFacade
     Gem::Specification.list.each do |spec|
       Gem::Builder.new(spec).build
     end
+  rescue Gem::Exception => err
+    puts "Operation failed: #{err}"
+    puts err.backtrace if $VERBOSE
+  rescue => err
+    puts "Unexpected error: #{err}"
+    puts "Details:"
+    puts err.backtrace
+    exit!
   end
 
 

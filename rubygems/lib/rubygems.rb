@@ -161,6 +161,29 @@ module Gem
       set_paths(paths.join(File::PATH_SEPARATOR)) if paths
     end
     
+    # Return a list of all possible load paths for all versions for
+    # all gems in the Gem installation.
+    def all_load_paths
+      result = []
+      Gem.path.each do |p|
+        gpath = File.join(p, 'gems/*')
+        Dir[gpath].each do |gp|
+          base = File.basename(gp)
+          specfn = File.join(p, "specifications", base + ".gemspec")
+          if File.exist?(specfn)
+            spec = eval(File.read(specfn))
+            spec.require_paths.each do |rp|
+              result << File.join(gp, rp)
+            end
+          else
+            filename = File.join(gp, 'lib')
+            result << filename if File.exist?(filename)
+          end
+        end
+      end
+      result
+    end
+
     private
     
     # Set the Gem home directory (as reported by +dir+).
@@ -207,6 +230,7 @@ module Gem
         $stderr.puts "warning: GEM_PATH path #{fn} does not exist" unless File.exist?(fn)
       end
     end
+
   end
 end
 

@@ -1,3 +1,9 @@
+2004-12-03  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/remote_installer.rb (Gem::LocalSourceInfoCache):
+	Added a local cache manager object to implement the read/write
+	policies on the system and user cache files.
+
 2004-12-02  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/package.rb (TarInput::zipped_stream): To workaround

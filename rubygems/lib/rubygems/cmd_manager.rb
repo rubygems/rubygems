@@ -111,7 +111,7 @@ module Gem
     #  - if it's specified multiple times, the first one wins 
     #  - there is a default config file location HOME/.gemrc
     def load_config_file_options(args)
-      config_file = File.join(ENV['HOME'], ".gemrc")
+      config_file = Gem.config_file
       if args.index("--config-file")
         config_file = args[args.index("--config-file")+1]
       end

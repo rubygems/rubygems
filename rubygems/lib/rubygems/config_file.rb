@@ -19,7 +19,7 @@ module Gem
     end
 
     def config_file_name
-      @config_file_name || default_config_file_name
+      @config_file_name || Gem.config_file
     end
 
     def [](key)
@@ -50,10 +50,6 @@ module Gem
 	  end
 	end
       end
-    end
-
-    def default_config_file_name
-      File.join(ENV['HOME'], '.gemrc')
     end
   end
 

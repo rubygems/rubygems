@@ -98,6 +98,12 @@ module Gem
       @gem_path
     end
     
+    ##
+    # Activate a gem (i.e. add it to the Ruby load path).  The gem
+    # must satisfy all the specified version constraints.  If
+    # +autorequire+ is true, then automatically require the specified
+    # autorequire file in the gem spec.
+    #
     def activate(gem, autorequire, *version_requirements)
       unless version_requirements.size > 0
         version_requirements = ["> 0.0.0"]
@@ -106,9 +112,10 @@ module Gem
         gem = Gem::Dependency.new(gem, version_requirements)
       end
       
-      matches = Gem.cache.search("^#{gem.name}$", gem.version_requirements)
+      gem_name_pattern = /^#{gem.name}$/
+      matches = Gem.cache.search(gem_name_pattern, gem.version_requirements)
       if matches.size==0
-        matches = Gem.cache.search(gem.name)
+        matches = Gem.cache.search(gem_name_pattern)
         if matches.size==0
           error = Gem::LoadError.new("\nCould not find RubyGem #{gem.name} (#{gem.version_requirements})\n")
           error.name = gem.name
@@ -159,6 +166,7 @@ module Gem
     def clear_paths
       @gem_home = nil
       @gem_path = nil
+      @@cache = nil  
     end
     
     ##
@@ -194,6 +202,18 @@ module Gem
       result
     end
 
+    def required_location(gemname, libfile, *version_constraints)
+      version_constraints = [">0"] if version_constraints.empty?
+      matches = Gem.cache.search(gemname, version_constraints)
+      return nil if matches.empty?
+      spec = matches.last
+      spec.require_paths.each do |path|
+	result = File.join(spec.full_gem_path, path, libfile)
+	return result if File.exists?(result)
+      end
+    end
+
+
     private
     
     # Return all the partial paths in the given +gemdir+.
@@ -206,7 +226,7 @@ module Gem
       latest = {}
       all_partials(gemdir).each do |gp|
 	base = File.basename(gp)
-        matches = /(.*)-([0-9]+\.[0-9]+\.[0-9]+)/.match(base)
+        matches = /(.*)-((\d+\.)*\d+)/.match(base)
 	name, version = [matches[1], matches[2]]
 	ver = Gem::Version.new(version)
 	if latest[name].nil? || ver > latest[name][0]
@@ -214,7 +234,7 @@ module Gem
 	end
       end
       latest.collect { |k,v| v[1] }
-    end      
+    end
 
     # Expand each partial gem path with each of the required paths
     # specified in the Gem spec.  Each expanded path is yielded.

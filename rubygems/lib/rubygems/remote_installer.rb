@@ -93,11 +93,18 @@ module Gem
     # Read the data from the (source based) URI.
     def read_data(uri)
       require 'rubygems/open-uri'
-      open(uri,
-	"User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}",
-	:proxy => @http_proxy
-	) do |input|
-        input.read
+      begin
+	open(uri,
+	  "User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}",
+	  :proxy => @http_proxy
+	  ) do |input|
+	  input.read
+	end
+      rescue
+	old_uri = uri
+	uri = uri.downcase
+	retry if old_uri != uri
+	raise
       end
     end
 

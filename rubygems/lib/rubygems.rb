@@ -90,6 +90,10 @@ module Gem
       require 'fileutils'
       FileUtils.mkdir_p(File.join(dir, 'cache'))
     end
+    unless File.exist?(File.join(dir, 'gems'))
+      require 'fileutils'
+      FileUtils.mkdir_p(File.join(dir, 'gems'))
+    end
     dir
   end
 end

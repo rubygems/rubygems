@@ -178,7 +178,7 @@ module Gem
     # return:: [String] the full gem path
     #
     def full_gem_path
-      File.join(installation_path, full_name)
+      File.join(installation_path, "gems", full_name)
     end
     
     ##

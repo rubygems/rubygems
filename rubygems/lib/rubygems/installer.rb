@@ -39,7 +39,7 @@ module Gem
          end
        end
        #build spec dir
-       directory = File.join(to_dir, format.spec.full_name)
+       directory = File.join(to_dir, "gems", format.spec.full_name)
        FileUtils.mkdir_p directory
        extract_files(directory, format)
        generate_bin_scripts(directory, format.spec)
@@ -182,6 +182,7 @@ SCRIPT
     def remove(spec)
       FileUtils.rm_rf spec.full_gem_path
       FileUtils.rm_rf File.join(spec.installation_path, 'specifications', "#{spec.full_name}.gemspec")
+      puts File.join(spec.installation_path, 'specifications', "#{spec.full_name}.gemspec")
       FileUtils.rm_rf File.join(spec.installation_path, 'cache', "#{spec.full_name}.gem")
       DocManager.new(spec).uninstall_doc
       puts "Successfully uninstalled #{spec.name} version #{spec.version}"

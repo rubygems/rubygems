@@ -1,6 +1,14 @@
 module Gem
 
   ##
+  # Used to raise parsing and loading errors
+  #
+  class FormatException < Gem::Exception
+    attr_accessor :file_path
+    #I go back and forth on whether or not to create custom exception classes
+  end
+
+  ##
   # The format class knows the guts of the RubyGem .gem file format
   # and provides the capability to read gem files
   #
@@ -24,10 +32,8 @@ module Gem
     # file_path:: [String] Path to the gem file
     #
     def self.from_file_by_path(file_path)
-      if(!File.exist?(file_path)) then
-        exception = FormatException.new("Cannot load gem\nFile not found")
-        exception.file_path = file_path
-        raise exception
+      unless File.exist?(file_path)
+        raise Gem::Exception, "Cannot load gem file [#{file_path}]"
       end
       require 'fileutils'
       File.open(file_path, 'r') do |file|
@@ -69,7 +75,7 @@ module Gem
         end
       }
      if(end_seen == false) then
-       raise FormatException.new("Failed to find end of ruby script while reading gem")
+       raise Gem::Exception.new("Failed to find end of ruby script while reading gem")
      end
     end
      
@@ -89,9 +95,9 @@ module Gem
         end
         YAML.load(yaml)
       rescue YAML::Error => e
-        raise FormatException.new("Failed to parse gem specification out of gem file")
+        raise Gem::Exception.new("Failed to parse gem specification out of gem file")
       rescue ArgumentError => e
-        raise FormatException.new("Failed to parse gem specification out of gem file")
+        raise Gem::Exception.new("Failed to parse gem specification out of gem file")
       end
     end
     
@@ -128,7 +134,7 @@ module Gem
           header_yaml << line
         end
         header = YAML.load(header_yaml)
-        raise FormatException.new(errstr) unless header
+        raise Gem::Exception.new(errstr) unless header
         header.each do |entry|
           file_data = ''
           self.read_until_dashes(gem_file) do |line|
@@ -137,7 +143,7 @@ module Gem
           yield [entry, Zlib::Inflate.inflate(file_data.strip.unpack("m")[0])]
         end
       rescue Exception,Zlib::DataError => e
-        raise FormatException.new(errstr)
+        raise Gem::Exception.new(errstr)
       end
     end
   end

@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+
+require 'webrick'
+require 'getopts'
+require 'rubygems'
+require 'yaml'
+
+getopts "", 'p:8808', "d:#{Gem.dir}"
+
+
+class GemYamlServlet < WEBrick::HTTPServlet::AbstractServlet
+  def initialize(config)
+    @config = config
+  end
+
+  def do_POST(req,res)
+    do_GET(req,res)
+  end
+
+  def do_GET(req, res)
+    res['content-type'] = 'text/yaml'
+    gems = Gem::Cache.from_installed_gems(File.join($OPT_d, "specifications"))
+    res.body << gems.to_yaml
+  end
+
+  
+end
+
+if __FILE__ == $0
+  s = WEBrick::HTTPServer.new(
+    :Port         => $OPT_p.to_i,
+    :StartThreads => 1,
+    :Logger       => WEBrick::Log::new($stderr, WEBrick::Log::DEBUG)
+  )
+  s.mount("/yaml", GemYamlServlet)
+  s.mount("/", WEBrick::HTTPServlet::FileHandler, File.join($OPT_d, "/specifications/"), true)
+  s.mount("/gems", WEBrick::HTTPServlet::FileHandler, File.join($OPT_d, "/cache/"), true)
+  trap("INT"){ s.shutdown }
+  s.start
+end
+

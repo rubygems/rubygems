@@ -1,0 +1,71 @@
+#!/usr/bin/env ruby
+
+require 'getoptlong'
+require 'rubygems'
+
+opts = GetoptLong.new([ '--build', '-b', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--install', '-i', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--uninstall', '-u', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--info', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--list', GetoptLong::NO_ARGUMENT ],
+                      [ '--remote-install', GetoptLong::REQUIRED_ARGUMENT ])
+
+
+opts.each do |opt, arg|
+	case opt
+  when '--build'
+    @spec_file = arg
+  when '--install'
+    @install_file = arg
+  when '--uninstall'
+    @gem = arg
+  when '--info'
+    @info = arg
+  when '--list'
+    @list = true
+  when '--remote-install'
+    @remote_install = arg
+	end
+end
+
+if @spec_file
+  load @spec_file
+  Gem::Specification.list.each do |spec|
+    Gem::Builder.new(spec).build
+  end
+end
+
+if @install_file
+  unless File.exist?(@install_file)
+    if File.exist?(@install_file+".gem")
+      @install_file = @install_file+".gem"
+    else
+      puts "Unknown gem file #{@install_file}"
+    end
+  end
+  Gem::Installer.new(@install_file).install
+end
+
+if @gem
+  Gem::Uninstaller.new(@gem).uninstall
+end
+
+if @info
+  gem_spec = Gem::Cache.from_installed_gems.search_by_name(@info)
+  if gem_spec
+    require 'yaml'
+    puts gem_spec.to_yaml
+  else
+    puts "Unkown gem #{@info}"
+  end
+end
+
+if @list
+  Gem::Cache.from_installed_gems.each do |gem_name, gem_spec|
+    puts gem_name
+  end
+end
+
+if @remote_install
+  Gem::RemoteInstaller.new(@remote_install).install
+end

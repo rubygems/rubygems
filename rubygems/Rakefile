@@ -20,7 +20,8 @@ CLOBBER.include(
   'data__',
   'html',
   'pkgs/sources/sources*.gem',
-  '.config'
+  '.config',
+  '**/debug.log'
   )
 
 task :default => [:test]

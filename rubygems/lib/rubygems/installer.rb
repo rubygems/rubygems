@@ -121,10 +121,14 @@ SCRIPT
           mf = mf.gsub(/^RUBYARCHDIR\s*=\s*\$.*/, "RUBYARCHDIR = #{dest_path}")
           mf = mf.gsub(/^RUBYLIBDIR\s*=\s*\$.*/, "RUBYLIBDIR = #{dest_path}")
           File.open('Makefile', 'wb') {|f| f.print mf}
-          results << 'make'
-          results << `make`
-          results << 'make install'
-          results << `make install`
+          make_program = ENV['make']
+          unless make_program
+            make_program = (/mswin/ =~ RUBY_PLATFORM) ? 'nmake' : 'make'
+          end
+          results << "#{make_program}"
+          results << `#{make_program}`
+          results << "#{make_program} install"
+          results << `#{make_program} install`
           puts results.join("\n")
         else
           puts "ERROR: Failed to build gem native extension.\n  See #{File.join(Dir.pwd, 'gem_make.out')}"

@@ -480,9 +480,11 @@ module Gem
     # way to do things (e.g.  if a package fails to download, we
     # shouldn't install anything).
     def install_dependencies(dependencies, force, install_dir)
+      return if @options[:ignore_dependencies]
       installed_gems = []
       dependencies.each do |dependency|
-        if ask_yes_no("Install required dependency #{dependency.name}?", true)
+        if @options[:include_dependencies] ||
+	    ask_yes_no("Install required dependency #{dependency.name}?", true)
           remote_installer =  RemoteInstaller.new(@options)
           installed_gems << remote_installer.install(
 	    dependency.name,
@@ -511,7 +513,7 @@ module Gem
     end
     
     def new_installer(gem)
-      return Installer.new(gem)
+      return Installer.new(gem, @options)
     end
   end
 

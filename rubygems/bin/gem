@@ -49,14 +49,14 @@ if install_file
     if File.exist?(install_file+".gem")
       install_file = install_file+".gem"
     else
-      puts "Unknown gem file #{install_file}"
+      $stderr.puts "Unknown gem file #{install_file}"
     end
   end
   installer = Gem::Installer.new(install_file)
   begin
     installed_gems << installer.install(force, directory)
   rescue => e
-    puts "Error installing #{install_file}: #{e.message}"
+    $stderr.puts "Error installing #{install_file}: #{e.message}"
   end
 end
 
@@ -74,7 +74,7 @@ if info
     require 'yaml'
     gem_specs.each {|spec| puts spec.to_yaml; puts "\n"}
   else
-    puts "Unkown gem #{info}"
+    $stderr.puts "Unkown gem #{info}"
   end
 end
 
@@ -86,10 +86,9 @@ end
 
 if verify_gem
   begin
-    Gem::Validator.new.verify_gem(File.read(verify_gem)) 
-    puts "#{verify_gem} is valid"
+    Gem::Validator.new.verify_gem(verify_gem)
   rescue => e
-    puts "#{verify_gem} is invalid"
+    $stderr.puts "#{verify_gem} is invalid"
   end
 end
 

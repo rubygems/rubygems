@@ -8,7 +8,8 @@ module Gem
     # Given a gem file's contents, validates against is own MD5 checksum
     # 
     # gem_data:: [String] Contents of the gem file
-    def verify_gem(gem_data)
+    def verify_gem(gem_path)
+      gem_data = File.read(gem_data)
       if(gem_data.size == 0) then
         raise "Empty Gem file"
       end
@@ -81,7 +82,7 @@ module Gem
         # Gem file reader/writer class probably.
         begin
           require 'rubygems/format.rb'
-          verify_gem(File.read(gem_path)) 
+          verify_gem(gem_path)
           File.open(gem_path) do |file|
             format = Gem::Format.from_file(gem_path)
 

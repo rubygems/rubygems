@@ -1,3 +1,12 @@
+class String
+  ##
+  # To simplify conversion code.
+  #
+  def to_requirement
+    Gem::Version::Requirement.new(self)
+  end
+end
+
 module Gem
   
   ##
@@ -86,6 +95,7 @@ module Gem
 
       return r <=> v
     end
+
     
     ##
     # Requirement version includes a prefaced comparator in addition
@@ -108,6 +118,13 @@ module Gem
         
       OP_RE = Regexp.new(OPS.keys.join("|"))
       REQ_RE = /\s*(#{OP_RE})\s*/
+
+      ##
+      # Used to simplify conversion code, especially from strings
+      #
+      def to_requirement
+        self
+      end
       
       ##
       # Overrides to check for comparator

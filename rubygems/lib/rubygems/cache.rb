@@ -48,7 +48,7 @@ module Gem
     def each(&block)
       @gems.each(&block)
     end
-    
+
     ##
     # Search for a gem by name and optional version
     #
@@ -58,9 +58,7 @@ module Gem
     # return:: [Array] list of Gem::Specification objects in sorted (version) order.  empty if not found
     #
     def search(gem_name, version_requirement=Version::Requirement.new(">= 0"))
-      unless version_requirement.respond_to? :version
-        version_requirement = Version::Requirement.new(version_requirement)
-      end
+      version_requirement = version_requirement.to_requirement
       result = []
       @gems.each do |full_spec_name, spec|
         next unless spec.name == gem_name

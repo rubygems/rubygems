@@ -9,7 +9,7 @@ module Gem
     ##
     # Constructs a cache instance with the provided specifications
     #
-    # specifications:: [Array] array of Gem::Specification objects
+    # specifications:: [Hash] hash of [Gem name, Gem::Specification] pairs
     #
     def initialize(specifications)
       @gems = specifications
@@ -43,7 +43,7 @@ module Gem
     ##
     # Iterate over the specifications in the cache
     #
-    # &block:: [yields Gem::Specification]
+    # &block:: [yields gem_name, Gem::Specification]
     #
     def each(&block)
       @gems.each(&block)

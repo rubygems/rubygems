@@ -317,10 +317,11 @@ module Gem
     # * <tt>:no_proxy</tt>: ignore environment variables and _don't_
     #   use a proxy
     #
-    def initialize(http_proxy=nil)
+    def initialize(options={})
       # Ensure http_proxy env vars are used if no proxy explicitly supplied.
+      @options = options
       @http_proxy =
-        case http_proxy
+        case @options[:http_proxy]
         when :no_proxy
           false
         when nil
@@ -457,14 +458,7 @@ module Gem
       installed_gems = []
       dependencies.each do |dependency|
         if ask_yes_no("Install required dependency #{dependency.name}?", true)
-          remote_installer =  RemoteInstaller.new(
-            if @http_proxy == false
-              :no_proxy
-            elsif @http_proxy == true
-            else
-              @http_proxy
-            end
-          )
+          remote_installer =  RemoteInstaller.new(@options)
           installed_gems << remote_installer.install(
 	    dependency.name,
 	    dependency.version_requirements,

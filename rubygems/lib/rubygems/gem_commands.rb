@@ -160,7 +160,7 @@ module Gem
         
         if remote? && installed_gems.nil?
           say "Attempting remote installation of '#{gem_name}'"
-          installer = Gem::RemoteInstaller.new(options[:http_proxy])
+          installer = Gem::RemoteInstaller.new(options)
           installed_gems = installer.install(gem_name, options[:version], options[:force], options[:install_dir])
           say "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}" if installed_gems
         end
@@ -373,7 +373,7 @@ module Gem
         say
         say "*** REMOTE GEMS ***"
         begin
-          output_query_results(Gem::RemoteInstaller.new(options[:http_proxy]).search(options[:name]))
+          output_query_results(Gem::RemoteInstaller.new(options).search(options[:name]))
         rescue Gem::RemoteSourceException => e
           alert_error e.to_s
         end
@@ -521,7 +521,7 @@ module Gem
           hig[spec.name] = spec
         end
       end
-      remote_gemspecs = Gem::RemoteInstaller.new(options[:http_proxy]).search(//)
+      remote_gemspecs = Gem::RemoteInstaller.new(options).search(//)
       # For some reason, this is an array of arrays.  The actual list of specifications is
       # the first and only element.  If there were more remote sources, perhaps there would be
       # more.

@@ -193,8 +193,9 @@ module Gem
     end
 
     def escape(input)
-      return unless input.respond_to?(:gsub)
-      input.gsub(/'/, "\\'")
+input
+      #return unless input.respond_to?(:gsub)
+      #input.gsub(/'/, "\\'")
     end 
 
     def to_ruby

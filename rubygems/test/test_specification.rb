@@ -39,7 +39,7 @@ class TestSpecification < Test::Unit::TestCase
     @gem_spec.files = %w(a b c d)
     @gem_spec.extra_rdoc_files = %w(x y z)
     @gem_spec.normalize
-    assert @gem_spec.files.include? 'x'
+    assert @gem_spec.files.include?('x')
   end
 
   def test_duplicate_files_removed

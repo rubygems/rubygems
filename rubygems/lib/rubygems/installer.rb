@@ -605,7 +605,8 @@ TEXT
 
     def ok_to_remove?(spec)
       return true if @force_ignore
-      deplist = Gem::DependencyList.from_source_index(Gem.source_index)
+      srcindex= Gem::SourceIndex.from_installed_gems
+      deplist = Gem::DependencyList.from_source_index(srcindex)
       deplist.ok_to_remove?(spec.full_name) ||
 	ask_if_ok(spec)
     end

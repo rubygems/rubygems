@@ -1,32 +1,26 @@
 #!/usr/bin/env ruby
 
-require 'getoptlong'
-require 'rubygems'
+require 'optparse'
 
-opts = GetoptLong.new([ '--build', '-b', GetoptLong::REQUIRED_ARGUMENT ],
-                      [ '--install', '-i', GetoptLong::REQUIRED_ARGUMENT ],
-                      [ '--uninstall', '-u', GetoptLong::REQUIRED_ARGUMENT ],
-                      [ '--info', GetoptLong::REQUIRED_ARGUMENT ],
-                      [ '--list', GetoptLong::NO_ARGUMENT ],
-                      [ '--remote-install', GetoptLong::REQUIRED_ARGUMENT ])
-
-
-opts.each do |opt, arg|
-	case opt
-  when '--build'
-    @spec_file = arg
-  when '--install'
-    @install_file = arg
-  when '--uninstall'
-    @gem = arg
-  when '--info'
-    @info = arg
-  when '--list'
-    @list = true
-  when '--remote-install'
-    @remote_install = arg
-	end
+options = {}
+ARGV.options do |opts|
+  opts.on_tail("--help", "show this message") {puts opts}
+  opts.on('-bGEMSPEC','--build=GEMSPEC', "Build a gem file from spec") { |options[:gemspec]| }
+  opts.on('-iGEMFILE', '--install=GEMFILE', "Install a gem from local gem file")    {|options[:install]|}
+  opts.on('-uGEMNAME', '--uninstall=GEMNAME', "Uninstall a previously installed gem") {|options[:uninstall]|}
+  opts.on('--info=GEMNAME', "Display details about an installed Gem") {|options[:info]|}
+  opts.on('--list', "List installed Gems") {|options[:list]|}
+  opts.on('--remote-install=GEMNAME', "Auto-download and install a Gem and its dependencies") {|options[:remote_install]|}
+  opts.parse!
 end
+
+require 'rubygems'
+@spec_file = options[:build]
+@install_file = options[:install]
+@gem = options[:uninstall]
+@info = options[:info]
+@list = options[:list]
+@remote_install = options[:remote_install]
 
 if @spec_file
   load @spec_file

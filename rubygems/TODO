@@ -1,13 +1,6 @@
-Alpha release 1:
----------------
-* raa-install conversion (or some other way to get a decent amount of gems up)
-
-Straddling the line
--------------------
+* Better error handling (what if a dependency fails to install?  or the target gem fails....remove the dependencies which were just installed?)
 * Binary package support 
-
-After alpha:
-------------
-* RPM, Mac OS dmg/pkg, Debian pkg conversion
+* RPM, Mac OS dmg/pkg, Debian pkg, MSI, etc. conversion (at least one or two)
 * Deal with applications (installing executable scripts..."running" a gem)
 * require_gem 'ruby', '= 1.8.1'
+* ri data generation

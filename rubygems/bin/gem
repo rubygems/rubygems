@@ -58,7 +58,7 @@ if install_file
   begin
     installed_gems << installer.install(force, directory)
   rescue => e
-    $stderr.puts "Error installing #{install_file}: #{e.message}"
+    $stderr.puts "Error installing gem #{install_file}: #{e.message}"
   end
 end
 
@@ -71,7 +71,12 @@ if gem_to_search_for
 end
 
 if remote_install
-  installed_gems << Gem::RemoteInstaller.new.install(remote_install, options[:gem_version] || "> 0.0.0", force, directory)
+  begin
+    installed_gems << Gem::RemoteInstaller.new.install(remote_install, options[:gem_version] || "> 0.0.0", force, directory)
+  rescue => e
+    $stderr.puts "Error installing gem #{remote_install}: #{e.message}"
+    exit(2)
+  end
 end
 
 if gem_to_uninstall

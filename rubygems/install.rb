@@ -46,7 +46,14 @@ def install_rb(srcdir = nil)
   ["specifications", "cache", "gems"].each do |subdir|
     File::makedirs(File.join(gem_dir, subdir))
   end
-
+  
+  # move old gems if they are present into gems subdir (TEMPORARY)
+  
+  Dir.glob(File.join(gem_dir, "*")) do |file|
+    next unless file =~ /.*-[0-9]+\..*/
+    File::move(file, File.join(gem_dir, "gems"))
+  end
+  
   ## Install the 'bin' files.
 
   bindir = CONFIG['bindir']
@@ -66,6 +73,8 @@ def install_rb(srcdir = nil)
       end
     end
   end
+  
+  ## Move old gems if installed
 
   ## Install the 'sources' package bundled with RubyGems.
 

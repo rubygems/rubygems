@@ -103,7 +103,7 @@ module Gem
               end
             end
           end
-        rescue => e
+        rescue VerificationError => e
           errors[gem_name] << ErrorData.new(gem_path, e.message)
         end
         # Clean out directories that weren't explicitly included in the gemspec

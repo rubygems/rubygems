@@ -19,12 +19,12 @@ module Gem
     ##
     # Factory method to construct a cache instance for a provided path
     # 
-    # source_dirs:: [default=$GEM_PATH] The path to search for specifications
+    # source_dirs:: [default=Gem.path] The path to search for specifications
     # return:: Cache instance
     #
     def self.from_installed_gems(*source_dirs)
       gems = {}
-      source_dirs = $GEM_PATH.collect {|dir| File.join(dir, "specifications")} if source_dirs.size==0
+      source_dirs = Gem.path.collect {|dir| File.join(dir, "specifications")} if source_dirs.size==0
       source_dirs.each do |source_dir|
         Dir[File.join(source_dir, "*gemspec")].each do |file_name|
           begin

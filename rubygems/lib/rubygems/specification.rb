@@ -50,6 +50,7 @@ module Gem
     #
     def initialize
       @date = Time.now
+      @loaded = false
       @@list << self
       yield self if block_given?
     end
@@ -139,7 +140,7 @@ module Gem
     # return:: [String] The full name name-version
     #
     def full_name
-      "#{@name}-#{@platform ? @platform+'-' : ''}#{@version}"
+      "#{@name}-#{defined?(@platform) ? @platform+'-' : ''}#{@version}"
     end
     
     ##

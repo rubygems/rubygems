@@ -37,9 +37,11 @@ module Gem
     # return::
     #   SourceIndex instance
     #
-    def self.from_installed_gems(spec_dirs=nil)
+    def self.from_installed_gems(*spec_dirs)
       gems = {}
-      spec_dirs ||= Gem.path.collect {|dir| File.join(dir, "specifications")}
+      if spec_dirs.empty?
+	spec_dirs = Gem.path.collect {|dir| File.join(dir, "specifications")}
+      end
       Dir.glob("{#{spec_dirs.join(',')}}/*.gemspec").each do |file_name|
         gemspec = load_specification(file_name)
         gems[gemspec.full_name] = gemspec if gemspec

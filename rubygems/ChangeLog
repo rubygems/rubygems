@@ -1,3 +1,11 @@
+2005-03-25  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/gem_commands.rb
+	(Gem::UpdateCommand::do_rubygems_update): Update --system now runs
+	the ruby command directly rather than trying to load teh
+	update-rubygems command.  There were too many things to go wrong
+	with the old way.
+
 2005-03-24  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/remote_installer.rb

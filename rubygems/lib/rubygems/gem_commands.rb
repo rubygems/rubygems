@@ -694,8 +694,9 @@ module Gem
         install_command.execute
       end
       if gems_to_update.include?("rubygems-update")
-	say "Updating version of RubyGems"
-	do_rubygems_update
+	latest_ruby_gem = remote_gemspecs.select { |s| s.name == 'rubygems-update' }.sort_by { |s| s.version }.last
+	say "Updating version of RubyGems to #{latest_ruby_gem.version}"
+	do_rubygems_update(latest_ruby_gem.version.to_s)
       end
       if(options[:system]) then
         say "RubyGems system software updated"
@@ -704,13 +705,12 @@ module Gem
       end
     end
 
-    def do_rubygems_update
-      # Need to clear out the argument list because the
-      # update_rubygems script expects to handle command line
-      # argument.
-      ARGV.clear		
-      require_gem 'rubygems-update'
-      load 'update_rubygems'  
+    def do_rubygems_update(version_string)
+      update_dir = File.join(Gem.dir, "gems", "rubygems-update-#{version_string}")
+      Dir.chdir(update_dir) do
+	puts "Installing RubyGems #{version_string}"
+	system "ruby setup.rb"
+      end
     end
 
     def which_to_update(highest_installed_gems, remote_gemspecs)

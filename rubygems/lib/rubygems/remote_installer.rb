@@ -127,6 +127,13 @@ module Gem
       result
     end
 
+    class << self
+      # Sent by the client when it is done with all the sources,
+      # allowing any cleanup activity to take place.
+      def finish
+	# Nothing to do
+      end
+    end
   end
 
   # LocalSourceInfoCache implements the cache management policy on
@@ -273,6 +280,13 @@ module Gem
       def manager
 	@manager ||= LocalSourceInfoCache.new
       end
+
+
+      # Sent by the client when it is done with all the sources,
+      # allowing any cleanup activity to take place.
+      def finish
+	manager.flush
+      end
     end
     
   end
@@ -362,7 +376,7 @@ module Gem
 	rsf = @fetcher_class.new(source, @http_proxy)
 	result[source] = rsf.source_info
       end
-      @fetcher_class.flush
+      @fetcher_class.finish
       result
     end
     

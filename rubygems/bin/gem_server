@@ -15,6 +15,7 @@
 #   subdirectories.
 if __FILE__ == $0
   require 'webrick'
+  require 'yaml'
   require 'rubygems'
   require 'getopts'; getopts "", 'p:8808', "d:#{Gem.dir}"
   s = WEBrick::HTTPServer.new(:Port         => $OPT_p.to_i)

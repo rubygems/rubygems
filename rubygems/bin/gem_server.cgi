@@ -8,6 +8,7 @@
 # information for each installed gem
 
 require 'rubygems'
+require 'yaml'
 # OPTION: Change for alternate gem location
 gem_path = Gem.dir
 

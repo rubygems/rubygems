@@ -1,5 +1,12 @@
 2004-06-25  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/gem_commands.rb (Gem::HelpCommand): Renamed the
+	base command to HelpCommand and made it handle a lot of the help
+	options.  Still need work on individual command helps.
+
+	* test/functional.rb (FunctionalTest::test_env_version): Added a
+	bunch of new functional tests for the environment command.
+
 	* lib/rubygems/gem_commands.rb (Gem::InstallCommand::execute):
 	Made multiple gem names an error for now.  Should look at later.
 

@@ -4,7 +4,6 @@ require 'test/unit'
 require 'fileutils'
 
 require 'rubygems/remote_installer'
-require 'flexmock'
 require 'test/yaml_data'
 
 class TestCachedFetcher < Test::Unit::TestCase

@@ -92,7 +92,7 @@ class TestSimpleSpecification < Test::Unit::TestCase
   def test_attribute_names
     expected_value = %w{
       rubygems_version specification_version name version date summary
-      require_paths author email homepage rubyforge_project description
+      require_paths authors email homepage rubyforge_project description
       autorequire default_executable bindir has_rdoc required_ruby_version
       platform files test_files rdoc_options extra_rdoc_files
       executables extensions requirements dependencies

@@ -121,7 +121,11 @@ module Gem
     def execute
       ENV['GEM_PATH'] = options[:install_dir]
       # TODO: If a dependency isn't met, first check to see if it's in 
-      # the dependency list
+      # the install list
+      if(options[:args].empty?)
+        fail Gem::CommandLineError,
+          "Please specify a gem name on the command line (e.g. gem build GEMNAME)"
+      end
       options[:args].each do |gem_name|
         if local?
           begin

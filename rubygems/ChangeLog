@@ -1,6 +1,7 @@
-2004-11-11  Chad Fowler <chad@chadfowler.com>
-	* lib/rubygems/validator.rb: Dir.chdir to gem.full_gem_path before
-	running unit tests.
+2004-11-24  Chad Fowler <chad@chadfowler.com>
+	* lib/rubygems/specification.rb: Allow multiple authors per gem.
+	* lib/rubygems/gem_commands.rb: command line error message if you
+	run 'gem install' with no args.
 
 2004-11-07  Chad Fowler <chad@chadfowler.com>
 	* lib/rubygems.rb,lib/rubygems/installer.rb,lib/rubygems/cache.rb

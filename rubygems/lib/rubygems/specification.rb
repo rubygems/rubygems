@@ -175,6 +175,10 @@ module Gem
       define_method("#{singular}=") { |val|
         send("#{plural}=", [val])
       }
+      define_method("#{singular}") { 
+        val = send("#{plural}")
+        val.nil? ? nil : val.first
+      }
     end
 
     def warn_deprecated(old, new)
@@ -196,12 +200,13 @@ module Gem
 
     # ------------------------- OPTIONAL gemspec attributes.
     
-    attributes :author, :email, :homepage, :rubyforge_project, :description
+    attributes :email, :homepage, :rubyforge_project, :description
     attributes :autorequire, :default_executable
     attribute :bindir,                'bin'
     attribute :has_rdoc,               false
     attribute :required_ruby_version,  Gem::Version::Requirement.default
     attribute :platform,               Gem::Platform::RUBY
+    attribute :authors,                  []
     attribute :files,                  []
     attribute :test_files,             []
     attribute :rdoc_options,           []
@@ -216,6 +221,7 @@ module Gem
     # ------------------------- ALIASED gemspec attributes.
     
     attribute_alias_singular :executable,   :executables
+    attribute_alias_singular :author,   :authors
     attribute_alias_singular :require_path, :require_paths
     attribute_alias_singular :test_file,    :test_files
 

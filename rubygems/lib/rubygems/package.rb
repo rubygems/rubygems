@@ -7,6 +7,8 @@ require 'yaml'
 require 'yaml/syck'
 require 'fileutils'
 
+require 'rubygems/specification'
+
 module Gem
 
 # Wrapper for FileUtils meant to provide logging and additional operations if
@@ -473,14 +475,16 @@ class TarInput
         @tarreader.each do |entry|
             case entry.full_name 
             when "metadata"
-                @metadata = YAML.load(entry.read) rescue nil
+                # (GS) Changed to line below: @metadata = YAML.load(entry.read) rescue nil
+                @metadata = load_gemspec(entry.read)
                 has_meta = true
                 break
             when "metadata.gz"
                 begin
                     gzis = Zlib::GzipReader.new entry
                     # YAML wants an instance of IO 
-                @metadata = YAML.load(gzis) rescue nil
+                    # (GS) Changed to line below: @metadata = YAML.load(gzis) rescue nil
+                    @metadata = load_gemspec(gzis)
                     has_meta = true
                 ensure
                     gzis.close
@@ -490,6 +494,13 @@ class TarInput
         @tarreader.rewind
         @fileops = FileOperations.new
         raise RuntimeError, "No metadata found!" unless has_meta
+    end
+
+    # Attempt to YAML-load a gemspec from the given _io_ parameter.  Return nil if it fails.
+    def load_gemspec(io)
+      Gem::Specification.from_yaml(io)
+    rescue Gem::Exception
+      nil
     end
 
     def self.open(filename, &block)

@@ -1,4 +1,17 @@
-2004-08-11  Gavin Sinclair  <gsinclair@soyabean.com.au>
+2004-08-17  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* lib/rubygems/specification.rb:
+	  - #test_suite_file and #test_files now work on older gems.
+	  - Added Specification.from_yaml for loading YAML gemspecs
+	  - #to_ruby doesn't emit 'specification_version'
+
+	* lib/rubygems/gem_commands.rb: Updated test-on-install code to use
+	  Specification#test_files instead of #unit_test_suite.
+
+	* lib/rubygems/old_format.rb: Use Specification.from_yaml
+	* lib/rubygems/package.rb:    Ditto
+
+2004-08-17  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* lib/rubygems/command.rb: --debug option to turn on $DEBUG
 	* lib/rubygems/config_file.rb: ditto

@@ -167,15 +167,17 @@ module Gem
       end
       
       if options[:test]
-        installed_gems.each do |gem|
-          gem_spec = Gem::Cache.from_installed_gems.search(gem.name, gem.version.version).first
-          unless gem_spec.test_suite_file
-            say "There are no unit tests to run for #{gem.name}-#{gem.version}"
+        installed_gems.each do |spec|
+          gem_spec = Gem::Cache.from_installed_gems.search(spec.name, spec.version.version).first
+            # XXX: why do we need this gem_spec when we've already got 'spec'?
+          test_files = gem_spec.test_files
+          if test_files.empty?
+            say "There are no unit tests to run for #{spec.name}-#{spec.version}"
             next
           end
-          require_gem gem.name, "= #{gem.version.version}"
-          require gem_spec.test_suite_file
-          suite = Test::Unit::TestSuite.new("#{gem.name}-#{gem.version}")
+          require_gem spec.name, "= #{spec.version.version}"
+          test_files.each do |f| require f end
+          suite = Test::Unit::TestSuite.new("#{spec.name}-#{spec.version}")
           ObjectSpace.each_object(Class) do |klass|
             suite << klass.suite if (klass < Test::Unit::TestCase)
           end
@@ -184,7 +186,7 @@ module Gem
           unless result.passed?
             answer = ask(result.to_s + "...keep Gem? [Y/n] ")
             unless answer =~ /^y/i then
-              Gem::Uninstaller.new(gem.name, gem.version.version).uninstall
+              Gem::Uninstaller.new(spec.name, spec.version.version).uninstall
             end
           end
         end
@@ -308,7 +310,7 @@ module Gem
         require 'yaml'
         result = []
         open(filename) do |f|
-          while spec = YAML.load(f)
+          while spec = Gem::Specification.from_yaml(f)
             result << spec
           end
         end

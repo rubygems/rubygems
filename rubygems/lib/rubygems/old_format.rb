@@ -93,7 +93,7 @@ module Gem
         read_until_dashes(file) do |line|
           yaml << line
         end
-        YAML.load(yaml)
+        Specification.from_yaml(yaml)
       rescue YAML::Error => e
         raise Gem::Exception.new("Failed to parse gem specification out of gem file")
       rescue ArgumentError => e

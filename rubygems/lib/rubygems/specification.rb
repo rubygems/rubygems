@@ -223,7 +223,7 @@ module Gem
     
     def test_suite_file
       warn_deprecated(:test_suite_file, :test_files)
-      @test_files.first
+      test_files.first
     end
 
     def test_suite_file=(val)
@@ -293,6 +293,16 @@ module Gem
       nil
     end
 
+    overwrite_accessor :test_files do
+      # Handle the possibility that we have @test_suite_file but not @test_files.  This will
+      # happen when an old gem is loaded via YAML.
+      if @test_suite_file
+        @test_files = [@test_suite_file].flatten
+        @test_suite_file = nil
+      end
+      @test_files
+    end
+
     # ------------------------- Predicates.
     
     def loaded?; @loaded ? true : false ; end
@@ -300,7 +310,7 @@ module Gem
     def has_unit_tests?; not test_files.empty?; end
     alias has_test_suite? has_unit_tests?               # (deprecated)
     
-    # ------------------------- Constructor.
+    # ------------------------- Constructors.
     
     ##
     # Specification constructor.  Assigns the default values to the attributes, adds this
@@ -320,6 +330,24 @@ module Gem
       @@list << self
       yield self if block_given?
     end
+
+    ##
+    # Special loader for YAML files.  When a Specification object is loaded from a YAML file,
+    # it bypasses the normal Ruby object initialization routine (#initialize).  This method
+    # makes up for that and deals with gems of different ages.
+    #
+    # 'input' can be anything that YAML.load() accepts: String or IO. 
+    #
+    def Specification.from_yaml(input)
+      spec = YAML.load(input)
+      unless Specification === spec
+        raise Gem::Exception, "YAML data doesn't evaluate to gem specification"
+      end
+      unless spec.instance_variable_get :@specification_version
+        spec.instance_variable_set :@specification_version, NONEXISTENT_SPECIFICATION_VERSION
+      end
+      spec
+    end 
     
     # ------------------------- Instance methods.
     
@@ -422,7 +450,8 @@ module Gem
       mark_version
       result = "Gem::Specification.new do |s|\n"
       @@attributes.each do |name, default|
-        next if name == :dependencies
+        # TODO better implementation of next line (read_only_attribute? ... something like that)
+        next if name == :dependencies or name == :specification_version
         current_value = self.send(name)
         result << "  s.#{name} = #{ruby_code(current_value)}\n" unless current_value == default
       end
@@ -524,6 +553,7 @@ module Gem
       when Array            then obj.inspect
       when Gem::Version     then obj.to_s.inspect
       when Date, Time       then '%q{' + obj.strftime('%Y-%m-%d') + '}'
+      when Numeric          then obj.inspect
       when true, false, nil then obj.inspect
       when Gem::Version::Requirement  then "Gem::Version::Requirement.new(#{obj.to_s.inspect})"
       else raise Exception, "ruby_code case not handled: #{obj.class}"

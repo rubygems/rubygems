@@ -35,7 +35,7 @@ module Gem
       register_command ListCommand.new
       register_command UpdateCommand.new
       register_command EnvironmentCommand.new
-      register_command InfoCommand.new
+      register_command SpecificationCommand.new
     end
     
     def register_command(command)
@@ -71,7 +71,7 @@ module Gem
       elsif args[0]=~/--/
 	self['help'].invoke(*args)
       else
-        cmd_name = args.shift
+        cmd_name = args.shift.downcase
         cmd = find_command(cmd_name)
         #load_config_file_options(args)
         cmd.invoke(*args)

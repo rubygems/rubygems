@@ -53,6 +53,16 @@ module Gem
     attr_accessor :version
 
     NUM_RE = /\s*(\d+(\.\d+)*)*\s*/
+
+    ##
+    # Checks if version string is valid format
+    #
+    # str:: [String] the version string
+    # return:: [Boolean] true if the string format is correct, otherwise false
+    #
+    def self.correct?(str)
+      /^#{NUM_RE}$/.match(str)
+    end
     
     ##
     # Constructs a version from the supplied string
@@ -61,7 +71,7 @@ module Gem
     #
     def initialize(version)
       raise ArgumentError, 
-        "Malformed version number string #{version}" unless correct?(version)
+        "Malformed version number string #{version}" unless Version.correct?(version)
       @version = version
     end
     
@@ -72,16 +82,6 @@ module Gem
     #
     def to_s
       @version
-    end
-    
-    ##
-    # Checks if version string is valid format
-    #
-    # str:: [String] the version string
-    # return:: [Boolean] true if the string format is correct, otherwise false
-    #
-    def correct?(str)
-      /^#{NUM_RE}$/.match(str)
     end
     
     ##

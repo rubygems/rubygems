@@ -12,6 +12,8 @@ module Gem
         @hash = open(config_file_name) {|f| YAML.load(f) }
       rescue ArgumentError
         warn "Failed to load #{config_file_name}"
+      rescue Errno::ENOENT
+        warn "Config file #{config_file_name} does not exist"
       end
       @hash ||= {}
     end

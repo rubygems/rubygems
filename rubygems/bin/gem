@@ -16,6 +16,7 @@ ARGV.options do |opts|
   opts.on('--http-proxy=HTTPPROXYHOST', "(unimplemented) HTTP Proxy to use for remote operations") {|options[:remote_install]|}
   opts.on('--version=GEMVERSION', "Version of Gem to perform operation on") {|options[:gem_version]|}
   opts.on('--verify=GEMFILE', "Verify gem file against its internal checksum") {|options[:verify_gem]|}
+  opts.on('--alien', "Report 'unmanaged' or rogue files in the gem repository") {options[:alien] = true}
   opts.parse!
 end
 
@@ -29,6 +30,7 @@ require 'rubygems'
 @remote_install = options[:remote_install]
 @directory = options[:directory] || Gem.dir
 @verify_gem = options[:verify_gem]
+@alien = options[:alien]
 
 if @spec_file
   load @spec_file
@@ -77,11 +79,102 @@ if @remote_install
   Gem::RemoteInstaller.new(@remote_install, options[:gem_version] || "> 0.0.0").install
 end
 
-if @verify_gem
+class InvalidGemException < Exception; end
+
+def verify(gem_data)
+  if(gem_data.size == 0) then
+    raise "Empty Gem file"
+  end
+
   require 'md5'
-  if(MD5.md5(File.read(@verify_gem).gsub(/MD5SUM = "([a-z0-9]+)"/, "MD5SUM = \"" + ("F" * 32) + "\"")) == $1.to_s) then
+  unless (MD5.md5(gem_data.gsub(/MD5SUM = "([a-z0-9]+)"/, "MD5SUM = \"" + ("F" * 32) + "\"")) == $1.to_s) 
+    raise "Invalid checksum for Gem file"
+  end
+end
+
+if @verify_gem
+  begin
+    verify(File.read(@verify_gem)) 
     puts "#{@verify_gem} is valid"
-  else
+  rescue InvalidGemException => e
     puts "#{@verify_gem} is invalid"
+  end
+end
+
+def find_files_for_gem(gem_directory)
+  installed_files = []
+  Find.find(gem_directory) {|file_name|
+    file_name.slice!((gem_directory.size)..(file_name.size-1)).sub(/^\//, "")
+    Find.prune if (file_name =~ /CVS/ || File.directory?(file_name) || file_name == "")
+    installed_files << file_name
+  }
+  installed_files
+end
+
+# This is really ugly for now.  Sorry. :)  Will clean up later.  
+# Work in progress
+# * Checksum gem itself
+# * Foreach file in each gem, check consistency of installed versions
+# * check for files that aren't part of the gem but are in the gems directory
+# * 1 cache - 1 spec - 1 directory.  check for inconsistencies
+if @alien
+  puts "Checking gem database for inconsistencies"
+  require 'find'
+  require 'md5'
+  ErrorData = Struct.new(:path, :problem)
+  errors = {}
+  Gem::Cache.from_installed_gems.each do |gem_name, gem_spec|
+    errors[gem_name] ||= []
+    gem_path = File.join(Gem.dir, "cache", gem_spec.full_name) + ".gem"
+    spec_path = File.join(Gem.dir, "specifications", gem_spec.full_name) + ".gemspec"
+    gem_directory = File.join(Gem.dir, gem_spec.full_name)
+
+    installed_files = find_files_for_gem(gem_directory)
+
+    if(!File.exist?(spec_path)) then
+      errors[gem_name] << ErrorData.new(spec_path, "Spec file doesn't exist for installed gem")
+    end
+
+    #begin
+      #verify(File.read(gem_path)) 
+    #rescue => e
+      #errors[gem_name] << ErrorData.new(gem_path, e.message)
+    #end
+
+    # Need to factor read_files_from_gem out into some kind of
+    # Gem file reader/writer class probably.
+    begin
+      verify(File.read(gem_path)) 
+      File.open(gem_path) do |file|
+        installer = Gem::Installer.new(gem_name)
+        installer.skip_ruby(file)
+        installer.read_spec(file)
+        installer.read_files_from_gem(file) do |entry, data|
+          # Found this file.  Delete it from list
+	  installed_files.delete entry['path']
+          unless MD5.md5(File.read(File.join(gem_directory, entry['path']))).to_s == MD5.md5(data).to_s
+	    errors[gem_name] << ErrorData.new(entry['path'], "installed file doesn't match original from gem")
+          end
+        end
+      end
+    rescue => e
+      errors[gem_name] << ErrorData.new(gem_path, e.message)
+    end
+
+    if(installed_files.size > 0) then
+      errors[gem_name] << ErrorData.new(gem_path, "Unmanaged files in gem: #{installed_files.inspect}")
+    end
+
+  end
+  errors.each do |key, val|
+    if(val.size > 0) then 
+      puts "#{key} has #{val.size} problems"
+    end
+    val.each do |error_entry|
+      puts "\t#{error_entry.path}:"
+      puts "\t#{error_entry.problem}"
+      puts
+    end
+    puts
   end
 end

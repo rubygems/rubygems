@@ -56,7 +56,6 @@ module Gem
       end
     end
     
-    private
     
     ##
     # Skips the Ruby self-install header.  After calling this method, the
@@ -68,7 +67,7 @@ module Gem
       while(file.gets.chomp != "__END__") do
       end
     end
-    
+     
     ##
     # Reads the specification YAML from the supplied IO and constructs
     # a Gem::Specification from it.  After calling this method, the
@@ -109,7 +108,33 @@ module Gem
         yield line
       end
     end
-    
+
+
+    ##
+    # Reads the embedded file data from a gem file, yielding an entry
+    # containing metadata about the file and the file contents themselves
+    # for each file that's archived in the gem.
+    # NOTE: Many of these methods should be extracted into some kind of
+    # Gem file read/writer
+    #
+    # gem_file:: [IO] The IO to process
+    #
+    def read_files_from_gem(gem_file)
+      require 'zlib'
+      require 'yaml'
+        header_yaml = ''
+        read_until_dashes(gem_file) do |line|
+          header_yaml << line
+        end
+        header = YAML.load(header_yaml)
+        header.each do |entry|
+          file_data = ''
+          read_until_dashes(gem_file) do |line|
+            file_data << line
+          end
+          yield [entry, Zlib::Inflate.inflate(file_data.strip.unpack("m")[0])]
+        end
+    end
     ##
     # Reads the YAML file index and then extracts each file
     # into the supplied directory, building directories for the
@@ -119,27 +144,16 @@ module Gem
     # file:: [IO] The IO that contains the file data
     #
     def extract_files(directory, file)
-      require 'zlib'
       require 'fileutils'
-      require 'yaml'
       wd = Dir.getwd
       Dir.chdir directory
       begin
-        header_yaml = ''
-        read_until_dashes(file) do |line|
-          header_yaml << line
-        end
-        header = YAML.load(header_yaml)
-        header.each do |entry|
+        read_files_from_gem(file) do |entry, file_data|
           path = entry['path']
           mode = entry['mode']
           FileUtils.mkdir_p File.dirname(path)
-          file_data = ''
-          read_until_dashes(file) do |line|
-            file_data << line
-          end
           File.open(path, "wb") do |out|
-            out.write Zlib::Inflate.inflate(file_data.strip.unpack("m")[0])
+            out.write file_data
           end
         end
       ensure
@@ -147,6 +161,7 @@ module Gem
       end
     end
   end
+
   
   ##
   # The Uninstaller class uninstalls a Gem
@@ -193,7 +208,6 @@ module Gem
       end
     end
     
-    private
     
     def remove(spec)
       FileUtils.rm_rf spec.full_gem_path

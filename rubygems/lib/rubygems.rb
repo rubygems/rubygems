@@ -69,7 +69,7 @@ module Gem
     ##
     # Returns an Cache of specifications that are in the Gem.path
     #
-    # return:: [Gem::Cache] cache of Gem::Specifications
+    # return:: [Gem::SourceIndex] Index of installed Gem::Specifications
     #
     def source_index
       @@source_index ||= SourceIndex.from_installed_gems

@@ -559,6 +559,11 @@ module Gem
     # ------------------------- Dependency methods.
     
     ##
+    # Return a list of all gems that have a dependency on this
+    # gemspec.  The list is structured with entries that conform to:
+    #
+    #   [depending_gem, dependency, [list_of_gems_that_satisfy_dependency]]
+    #
     # return:: [Array] [[dependent_gem, dependency, [list_of_satisfiers]]]
     #
     def dependent_gems

@@ -52,7 +52,8 @@ def install_rb(srcdir = nil)
   
   begin
     Dir.glob(File.join(gem_dir, "*")) do |file|
-      next unless file =~ /.*-[0-9]+\..*/
+      basename = File.basename(file)
+      next unless basename =~ /.*-[0-9]+\..*/
       FileUtils.mv(file, File.join(gem_dir, "gems"))
     end
   rescue

@@ -53,6 +53,7 @@ def install_rb(srcdir = nil)
   is_windows_platform = CONFIG["arch"] =~ /dos|win32/i
   Find.find('bin') do |f|
     next if f =~ /\bCVS\b/
+    next if f =~ /~$/
     next if FileTest.directory?(f)
     next if f =~ /\.rb$/
     next if File.basename(f) =~ /^\./

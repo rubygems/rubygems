@@ -1,6 +1,6 @@
 module Gem
   
-  ##
+  ####################################################################
   # The Dependency class holds a Gem name and Version::Requirement
   #
   class Dependency
@@ -50,16 +50,154 @@ module Gem
     end
   end
   
-  ##
+  ##################################################################
+  # Requirement version includes a prefaced comparator in addition
+  # to a version number.
+  #
+  # A Requirement object can actually contain multiple, er,
+  # requirements, as in (> 1.2, < 2.0).
+  #
+  class Requirement
+    include Comparable
+    
+    OPS = {
+      "="  =>  lambda { |v, r| v == r },
+      "!=" =>  lambda { |v, r| v != r },
+      ">"  =>  lambda { |v, r| v > r },
+      "<"  =>  lambda { |v, r| v < r },
+      ">=" =>  lambda { |v, r| v >= r },
+      "<=" =>  lambda { |v, r| v <= r },
+      "~>" =>  lambda { |v, r| v >= r && v < r.bump }
+    }
+    
+    OP_RE = Regexp.new(OPS.keys.collect{|k| Regexp.quote(k)}.join("|"))
+    REQ_RE = /\s*(#{OP_RE})\s*/
+    
+    ##
+    # Factory method to create a Version::Requirement object.  Input may be a
+    # Version, a String, or nil.  Intended to simplify client code.
+    #
+    # If the input is "weird", the default version requirement is returned.
+    #
+    def self.create(input)
+      if input.kind_of?(Requirement)
+	return input
+      elsif input.kind_of?(Array)
+	return self.new(input)
+      elsif input.respond_to? :to_str
+	return self.new([input.to_str])
+      else
+	return self.default
+      end
+    end
+    
+    ##
+    # A default "version requirement" can surely _only_ be '> 0'.
+    #
+    def self.default
+      self.new(['> 0.0.0'])
+    end
+    
+    ##
+    # Constructs a version requirement instance
+    #
+    # str:: [String Array] the version requirement string (e.g. ["> 1.23"])
+    #
+    def initialize(reqs)
+      @requirements = reqs.collect do |rq|
+	op, version_string = parse(rq)
+	[op, Version.new(version_string)]
+      end
+      @version = nil   # Avoid warnings.
+    end
+    
+    ##
+    # Overrides to check for comparator
+    #
+    # str:: [String] the version requirement string
+    # return:: [Boolean] true if the string format is correct, otherwise false
+    #
+    # NOTE: Commented out because I don't think it is used.
+    #       def correct?(str)
+    #         /^#{REQ_RE}#{NUM_RE}$/.match(str)
+    #       end
+    
+    def to_s
+      as_list.join(", ")
+    end
+    
+    def as_list
+      normalize
+      @requirements.collect { |req|
+	"#{req[0]} #{req[1]}"
+      }
+    end
+    
+    def normalize
+      return if @version.nil?
+      @requirements = [parse(@version)]
+      @nums = nil
+      @version = nil
+      @op = nil
+    end
+    
+    ##
+    # Is the requirement satifised by +version+.
+    #
+    # version:: [Gem::Version] the version to compare against
+    # return:: [Boolean] true if this requirement is satisfied by
+    #          the version, otherwise false 
+    #
+    def satisfied_by?(version)
+      normalize
+      @requirements.all? { |op, rv| satisfy?(op, version, rv) }
+    end
+    
+    private
+    
+    ##
+    # Is "version op required_version" satisfied?
+    #
+    def satisfy?(op, version, required_version)
+      OPS[op].call(version, required_version)
+    end
+    
+    ##
+    # Parse the version requirement string. Return the operator and
+    # version strings.
+    #
+    def parse(str)
+      if md = /^\s*(#{OP_RE})\s*([0-9.]+)\s*$/.match(str)
+	[md[1], md[2]]
+      elsif md = /^\s*([0-9.]+)\s*$/.match(str)
+	["=", md[1]]
+      elsif md = /^\s*(#{OP_RE})\s*$/.match(str)
+	[md[1], "0"]
+      else
+	fail ArgumentError, "Illformed requirement [#{str}]"
+      end
+    end
+    
+    def <=>(other)
+      to_s <=> other.to_s
+    end
+    
+  end
+  
+  ####################################################################
   # The Version class processes string versions into comparable values
   #
   class Version
     include Comparable
 
+    # Nested requirement constant kept for compatibility with old gem
+    # specs.
+    Requirement = ::Gem::Requirement
+    
     attr_accessor :version
-
+    
     NUM_RE = /\s*(\d+(\.\d+)*)*\s*/
-
+    
     ##
     # Checks if version string is valid format
     #
@@ -147,137 +285,5 @@ module Gem
       self.class.new(ints.join("."))
     end
     
-    ##
-    # Requirement version includes a prefaced comparator in addition
-    # to a version number.
-    #
-    # A Requirement object can actually contain multiple, er, requirements, as
-    # in (> 1.2, < 2.0).
-    #
-    class Requirement
-      include Comparable
-
-      OPS = {
-        "="  =>  lambda { |v, r| v == r },
-        "!=" =>  lambda { |v, r| v != r },
-        ">"  =>  lambda { |v, r| v > r },
-        "<"  =>  lambda { |v, r| v < r },
-        ">=" =>  lambda { |v, r| v >= r },
-        "<=" =>  lambda { |v, r| v <= r },
-        "~>" =>  lambda { |v, r| v >= r && v < r.bump }
-      }
-        
-      OP_RE = Regexp.new(OPS.keys.collect{|k| Regexp.quote(k)}.join("|"))
-      REQ_RE = /\s*(#{OP_RE})\s*/
-
-      ##
-      # Factory method to create a Version::Requirement object.  Input may be a
-      # Version, a String, or nil.  Intended to simplify client code.
-      #
-      # If the input is "weird", the default version requirement is returned.
-      #
-      def self.create(input)
-        if input.kind_of?(Requirement)
-          return input
-	elsif input.kind_of?(Array)
-	  return self.new(input)
-        elsif input.respond_to? :to_str
-          return self.new([input.to_str])
-        else
-          return self.default
-        end
-      end
-
-      ##
-      # A default "version requirement" can surely _only_ be '> 0'.
-      #
-      def self.default
-        self.new(['> 0.0.0'])
-      end
-
-      ##
-      # Constructs a version requirement instance
-      #
-      # str:: [String Array] the version requirement string (e.g. ["> 1.23"])
-      #
-      def initialize(reqs)
-        @requirements = reqs.collect do |rq|
-          op, version_string = parse(rq)
-          [op, Version.new(version_string)]
-        end
-        @version = nil   # Avoid warnings.
-      end
-      
-      ##
-      # Overrides to check for comparator
-      #
-      # str:: [String] the version requirement string
-      # return:: [Boolean] true if the string format is correct, otherwise false
-      #
-      def correct?(str)
-        /^#{REQ_RE}#{NUM_RE}$/.match(str)
-      end
-      
-      def to_s
-        as_list.join(", ")
-      end
-
-      def as_list
-        normalize
-        @requirements.collect { |req|
-                "#{req[0]} #{req[1]}"
-        }
-      end
-      
-      def normalize
-        return if @version.nil?
-        @requirements = [parse(@version)]
-        @nums = nil
-        @version = nil
-        @op = nil
-      end
-      
-      ##
-      # Is the requirement satifised by +version+.
-      #
-      # version:: [Gem::Version] the version to compare against
-      # return:: [Boolean] true if this requirement is satisfied by
-      #          the version, otherwise false 
-      #
-      def satisfied_by?(version)
-        normalize
-        @requirements.all? { |op, rv| satisfy?(op, version, rv) }
-      end
-  
-      private
-       
-      ##
-      # Is "version op required_version" satisfied?
-      #
-      def satisfy?(op, version, required_version)
-        OPS[op].call(version, required_version)
-      end
-
-      ##
-      # Parse the version requirement string. Return the operator and
-      # version strings.
-      #
-      def parse(str)
-        if md = /^\s*(#{OP_RE})\s*([0-9.]+)\s*$/.match(str)
-          [md[1], md[2]]
-        elsif md = /^\s*([0-9.]+)\s*$/.match(str)
-          ["=", md[1]]
-        elsif md = /^\s*(#{OP_RE})\s*$/.match(str)
-          [md[1], "0"]
-        else
-          fail ArgumentError, "Illformed requirement [#{str}]"
-        end
-      end
-
-      def <=>(other)
-        to_s <=> other.to_s
-      end
-
-    end
   end
 end

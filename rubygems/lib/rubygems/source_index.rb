@@ -1,4 +1,7 @@
 require 'rubygems/user_interaction'
+
+require 'forwardable'
+
 module Gem
 
   # The SourceIndex object indexes all the gems available from a
@@ -12,6 +15,9 @@ module Gem
   #        old YAMLized source index objects to load properly.
   #
   class SourceIndex
+    extend Forwardable
+    include Enumerable
+
     class << self
       include Gem::UserInteraction
     end
@@ -40,7 +46,7 @@ module Gem
     def self.from_installed_gems(*spec_dirs)
       gems = {}
       if spec_dirs.empty?
-	spec_dirs = Gem.path.collect {|dir| File.join(dir, "specifications")}
+        spec_dirs = Gem.path.collect { |dir| File.join(dir, "specifications") }
       end
       Dir.glob("{#{spec_dirs.join(',')}}/*.gemspec").each do |file_name|
         gemspec = load_specification(file_name)
@@ -48,7 +54,7 @@ module Gem
       end
       self.new(gems)
     end
-    
+
     # Load a specification from a file (eval'd Ruby code)
     # 
     # file_name:: [String] The .gemspec file
@@ -80,6 +86,8 @@ module Gem
     def each(&block)
       @gems.each(&block)
     end
+
+    def_delegators :@gems, :size, :length
 
     # Search for a gem by name and optional version
     #

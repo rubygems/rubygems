@@ -21,7 +21,7 @@ module Gem
   # Potentially raised when a specification is validated.
   class InvalidSpecificationException < Gem::Exception; end
   class EndOfYAMLException < Gem::Exception; end
-  
+
   ##
   # == Gem::Specification
   #
@@ -124,12 +124,7 @@ module Gem
     def self.attribute(name, default=nil)
       @@attributes << [name, default]
       @@default_value[name] = default
-      attr_writer(name)
-      class_eval %{
-        def #{name}
-          @#{name} ||= copy_of(@@default_value[:#{name}])
-        end
-      }
+      attr_accessor(name)
     end
 
     # Same as attribute above, but also records this attribute as mandatory.
@@ -582,16 +577,11 @@ module Gem
     end
 
     # Duplicate an object unless it's an immediate value.
-    def self.copy_of(obj)
+    def copy_of(obj)
       case obj
       when Numeric, Symbol, true, false, nil then obj
       else obj.dup
       end
-    end
-
-    # Duplicate an object unless it's an immediate value.
-    def copy_of(obj)
-      self.class.copy_of(obj)
     end
 
     # Return a string containing a Ruby code representation of the given object.
@@ -609,5 +599,6 @@ module Gem
     end
 
   end  # class Specification
+
 end  # module Gem
 

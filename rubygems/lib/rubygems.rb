@@ -1,3 +1,6 @@
+require 'rubygems/timer'
+require 'rbconfig'
+
 module Gem
   class LoadError < ::LoadError
     attr_accessor :name, :version_requirement
@@ -14,22 +17,11 @@ module Kernel
   # a required Gem is not found, a Gem::LoadError is raised. More information on 
   # version requirements can be found in the Gem::Version documentation.
   #
-  # As a shortcut, the +gem+ parameter can be a _path_, for example:
+  # You can define the environment variable GEM_SKIP as a way to not
+  # load specified gems.  you might do this to test out changes that haven't 
+  # been intsalled yet.  Example:
   #
-  #   require_gem 'rake/packagetask'
-  #
-  # This is strictly short for
-  #
-  #   require_gem 'rake'
-  #   require 'rake/packagetask' 
-  #
-  #  You can define the environment variable GEM_SKIP as a way to not
-  #  load specified gems.  you might do this to test out changes that haven't 
-  #  been intsalled yet.  Example:
-  #
-  #  GEM_SKIP=libA:libB ruby-I../libA -I../libB ./mycode.rb
-  #
-  # <i>This is an experimental feature added after versoin 0.7, on 2004-07-13. </i>
+  #   GEM_SKIP=libA:libB ruby-I../libA -I../libB ./mycode.rb
   #
   # gem:: [String or Gem::Dependency] The gem name or dependency instance.
   # version_requirement:: [default="> 0.0.0"] The version requirement.
@@ -200,9 +192,9 @@ module Gem
     def all_load_paths
       result = []
       Gem.path.each do |gemdir|
-	each_load_path(all_partials(gemdir)) do |load_path|
-	  result << load_path
-	end
+        each_load_path(all_partials(gemdir)) do |load_path|
+          result << load_path
+        end
       end
       result
     end
@@ -212,9 +204,9 @@ module Gem
     def latest_load_paths
       result = []
       Gem.path.each do |gemdir|
-	each_load_path(latest_partials(gemdir)) do |load_path|
-	  result << load_path
-	end
+        each_load_path(latest_partials(gemdir)) do |load_path|
+          result << load_path
+        end
       end
       result
     end
@@ -225,8 +217,8 @@ module Gem
       return nil if matches.empty?
       spec = matches.last
       spec.require_paths.each do |path|
-	result = File.join(spec.full_gem_path, path, libfile)
-	return result if File.exists?(result)
+        result = File.join(spec.full_gem_path, path, libfile)
+        return result if File.exists?(result)
       end
     end
 
@@ -242,13 +234,13 @@ module Gem
     def latest_partials(gemdir)
       latest = {}
       all_partials(gemdir).each do |gp|
-	base = File.basename(gp)
+        base = File.basename(gp)
         matches = /(.*)-((\d+\.)*\d+)/.match(base)
-	name, version = [matches[1], matches[2]]
-	ver = Gem::Version.new(version)
-	if latest[name].nil? || ver > latest[name][0]
-	  latest[name] = [ver, gp]
-	end
+        name, version = [matches[1], matches[2]]
+        ver = Gem::Version.new(version)
+        if latest[name].nil? || ver > latest[name][0]
+          latest[name] = [ver, gp]
+        end
       end
       latest.collect { |k,v| v[1] }
     end
@@ -257,17 +249,17 @@ module Gem
     # specified in the Gem spec.  Each expanded path is yielded.
     def each_load_path(partials) 
       partials.each do |gp|
-	base = File.basename(gp)
-	specfn = File.join(dir, "specifications", base + ".gemspec")
-	if File.exist?(specfn)
-	  spec = eval(File.read(specfn))
-	  spec.require_paths.each do |rp|
-	    yield(File.join(gp, rp))
-	  end
-	else
-	  filename = File.join(gp, 'lib')
-	  yield(filename) if File.exist?(filename)
-	end
+        base = File.basename(gp)
+        specfn = File.join(dir, "specifications", base + ".gemspec")
+        if File.exist?(specfn)
+          spec = eval(File.read(specfn))
+          spec.require_paths.each do |rp|
+            yield(File.join(gp, rp))
+          end
+        else
+          filename = File.join(gp, 'lib')
+          yield(filename) if File.exist?(filename)
+        end
       end
     end
 
@@ -299,19 +291,19 @@ module Gem
     #
     def find_home
       ['HOME', 'USERPROFILE'].each do |homekey|
-	return ENV[homekey] if ENV[homekey]
+        return ENV[homekey] if ENV[homekey]
       end
       if ENV['HOMEDRIVE'] && ENV['HOMEPATH']
-	return "#{ENV['HOMEDRIVE']}:#{ENV['HOMEPATH']}"
+        return "#{ENV['HOMEDRIVE']}:#{ENV['HOMEPATH']}"
       end
       begin
-	File.expand_path("~")
+        File.expand_path("~")
       rescue Exception => ex
-	if File::ALT_SEPARATOR
-	  "C:/"
-	else
-	  "/"
-	end
+        if File::ALT_SEPARATOR
+          "C:/"
+        else
+          "/"
+        end
       end
     end
     
@@ -320,12 +312,20 @@ module Gem
     # Default home directory path to be used if an alternate value is
     # not specified in the environment.
     def default_dir
-      #rbconfig = Dir.glob("{#{($LOAD_PATH).join(',')}}/rbconfig.rb").first
-      #if rbconfig
-      #  module_eval File.read(rbconfig) unless const_defined?("Config")
-      #else
-        require 'rbconfig'
-      #end
+      ## rbconfig = Dir.glob("{#{($LOAD_PATH).join(',')}}/rbconfig.rb").first
+      ## if rbconfig
+      ##   module_eval File.read(rbconfig) unless const_defined?("Config")
+      ## else
+      ##   require 'rbconfig'
+      ## end
+      #
+      # Note on above code: we have an issue if a Config class is already defined and we load
+      # 'rbconfig'.  The above code is supposed to work around that but it's been commented
+      # out.  In any case, I moved "require 'rbconfig'" to the top of this file, because there
+      # was a circular dependency between this method and our custom require.  In any case,
+      # rbconfig is a fundamental RubyGems dependency, so it might as well be up the top.
+      #   -- Gavin Sinclair, 2004-12-12
+      #
       File.join(Config::CONFIG['libdir'], 'ruby', 'gems', Config::CONFIG['ruby_version'])
     end
 
@@ -339,7 +339,7 @@ module Gem
         fn = File.join(gemdir, filename)
         if ! File.exists?(fn) && File.writable?(fn)
           require 'fileutils'
-	  FileUtils.mkdir_p(fn)
+          FileUtils.mkdir_p(fn)
         end
       end
     end
@@ -350,4 +350,6 @@ end
 require 'rubygems/source_index'
 require 'rubygems/specification'
 require 'rubygems/version'
-require 'rubygems/loadpath_manager'
+#require 'rubygems/loadpath_manager'    # custom_require replaces this
+require 'rubygems/custom_require'
+

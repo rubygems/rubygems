@@ -1,3 +1,22 @@
+2004-12-12  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* lib/rubygems/custom_require.rb: new file to replace
+	loadpath_manager.rb and speed up the custom require functionality.
+
+	* lib/rubygems/timer.rb: new file; simple benchmarking tool that's
+	useful at the moment but needn't stay in RubyGems permanently.
+
+	* lib/rubygems/source_index.rb: include Enumerable and implement #size
+	and #length.
+
+	* lib/rubygems/specification.rb: removed lazy initialisation of
+	attributes to reduce #copy_of invocations; folded
+	Specification.copy_of into Specification#copy_of.
+
+	* lib/rubygems.rb: require 'rubygems/custom_require' instead of
+	'rubygems/loadpath_manager'; removed out of date documentation; added
+	"require 'rubygems/timer'" to temporarily assist with benchmarks.
+
 2004-12-07  Jim Weirich  <jim@weirichhouse.org>
 
 	* Released 0.8.3

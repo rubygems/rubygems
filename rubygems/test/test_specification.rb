@@ -2,12 +2,8 @@ require 'test/unit'
 require 'rubygems'
 Gem::manage_gems
 
-# Load a file relative to the 'test/data' directory.  Return its contents as a String.
-def load_data(relpath)
-  this_dir = File.dirname(__FILE__)       # The 'test' directory.
-  path = File.join(this_dir, 'data', relpath)
-  return File.read(path)
-end
+LEGACY_GEM_SPEC_FILE = 'test/data/legacy/keyedlist-0.4.0.ruby'
+LEGACY_GEM_YAML_FILE = 'test/data/legacy/keyedlist-0.4.0.yaml'
 
 class TestDefaultSpecification < Test::Unit::TestCase
   def test_defaults
@@ -242,7 +238,7 @@ end  # class TestComplexSpecification
 
 class TestLegacyRubySpecification < Test::Unit::TestCase
   def setup
-    @ruby_spec = load_data('legacy/keyedlist-0.4.0.ruby')
+    @ruby_spec = File.read(LEGACY_GEM_SPEC_FILE)
   end
 
   def test_eval
@@ -266,7 +262,7 @@ end  # class TestLegacyRubySpecification
 
 class TestLegacyYamlSpecification < Test::Unit::TestCase
   def setup
-    @yaml_spec = load_data('legacy/keyedlist-0.4.0.yaml')
+    @yaml_spec = File.read(LEGACY_GEM_YAML_FILE)
   end
 
   def test_load
@@ -280,3 +276,11 @@ class TestLegacyYamlSpecification < Test::Unit::TestCase
   end
 
 end  # class TestLegacyYamlSpecification
+
+class TestSpecificationClassMethods < Test::Unit::TestCase
+  def test_load
+    gs = Gem::Specification.load("test/data/one/one.gemspec")
+    assert_equal "one", gs.name
+    assert_equal "one-0.0.1", gs.full_name
+  end
+end

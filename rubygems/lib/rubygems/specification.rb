@@ -131,7 +131,7 @@ module Gem
     # return:: [String] The full name name-version
     #
     def full_name
-      "#{@name}-#{@version}"
+      "#{@name}-#{@platform ? @platform+'-' : ''}#{@version}"
     end
     
     ##

@@ -9,20 +9,20 @@ module Gem
     attr_reader :command
     attr_accessor :summary, :defaults, :program_name
     
-    def initialize(command, summary=nil, common_options=[])
-      @common_options = common_options
+    def initialize(command, summary=nil, defaults={})
       @command = command
       @summary = summary
       @program_name = "gem #{command}"
+      @defaults = defaults
       @option_list = []
-      @defaults = {}
       @parser = nil
     end
     
     def invoke(*args)
       options = handle_options(args)
-      unless @when_invoked.call(options)
-	@parser.program_name=@program_name
+      need_help = ! (@when_invoked ? @when_invoked.call(options) : execute(options) )
+      if need_help
+	@parser.program_name = @program_name
 	say @parser
       end
     end
@@ -45,7 +45,7 @@ module Gem
       configure_options(@option_list, option_names, options)
       @parser.separator("")
       @parser.separator("  Common Options:")
-      configure_options(@common_options, option_names, options)
+      configure_options(Command.common_options, option_names, options)
       begin
 	@parser.parse!(args)
       rescue OptionParser::ParseError => err
@@ -66,5 +66,25 @@ module Gem
       end
     end
 
+    class << self
+      def common_options
+	@common_options ||= []
+      end
+    
+      def add_common_option(*args, &handler)
+	Gem::Command.common_options << [args, handler]
+      end
+    end
+
+    add_common_option('--config-file FILE', "Use this config file instead of default") do |value, options|
+      options[:config_file] = value
+    end
+    add_common_option('-p', '--[no-]http-proxy [URL]', 'Use HTTP proxy for remote operations') do |value, options|
+      options[:http_proxy] = (value == false) ? :no_proxy : value
+    end
+    add_common_option('-h', '--help', 'Get help on this command') do |value, options|
+      options[:help] = true
+    end
+      
   end # class
 end # module

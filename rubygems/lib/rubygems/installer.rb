@@ -47,7 +47,7 @@ module Gem
        FileUtils.mkdir_p directory
        extract_files(directory, format)
        generate_bin_scripts(format.spec)
-       generate_library_stubs(format.spec)
+       generate_library_stubs(format.spec) if install_stub
        build_extensions(directory, format.spec)
        
        # Build spec/cache/doc dir.
@@ -133,19 +133,30 @@ TEXT
     # gems and non-gems can interact.
     #
     # XXX: What if the user doesn't have permission to write to the site_ruby directory? 
+    #      Answer for now: emit warning.  This is bad practice (we're in library code here,
+    #      and should not write directly to stderr.  It's something to reconsider in the
+    #      future. 
     #
     def generate_library_stubs(spec)
       if spec.autorequire
         require 'rbconfig'
         sitelibdir = Config::CONFIG['sitelibdir']
         if FileTest.writable?(sitelibdir)
-          target_file = File.join(Config::CONFIG['sitelibdir'], "#{spec.autorequire}.rb")
-          # Create #{autorequire}.rb in #{target_dir}.
-          File.open(target_file, "w", 0644) do |file|
-            file.write(library_stub_text(spec.name))
+          target_file = File.join(sitelibdir, "#{spec.autorequire}.rb")
+          if FileTest.exist?(target_file) 
+            STDERR.puts "(WARN) Library file '#{target_file}'"
+            STDERR.puts "       already exists; not overwriting.  If you want to force a"
+            STDERR.puts "       library stub, delete the file and reinstall."
+          else
+            # Create #{autorequire}.rb in #{target_dir}.
+            File.open(target_file, "w", 0644) do |file|
+              file.write(library_stub_text(spec.name))
+            end
           end
         else
-          STDERR.puts "Can't install library stub for gem '#{spec.name}'"
+          rver = Config::CONFIG['ruby_version']
+          STDERR.puts "(WARN) Can't install library stub for gem '#{spec.name}'"
+          STDERR.puts "       (Don't have write permissions on 'site_ruby/#{rver}' directory.)"
         end
       end
     end

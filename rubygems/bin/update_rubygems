@@ -14,5 +14,5 @@ else
   update_dir =~ /([0-9.]*)$/
   RGVERSION = $1
   puts "Installing RubyGems #{RGVERSION}"
-  system "ruby install.rb"
+  system "ruby setup.rb #{ARGV.join(' ')}"
 end

@@ -1,6 +1,3 @@
-$:.unshift '../lib'
-require 'rubygems'
-
 module Gem
   def self.sources_spec
     spec = Gem::Specification.new do |s|

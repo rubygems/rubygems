@@ -105,7 +105,12 @@ module Gem
     def user_home
       @user_home ||= find_home
     end
-    
+
+    # Return the path to standard location of the users .gemrc file.
+    def config_file
+      File.join(Gem.user_home, '.gemrc')
+    end
+
     ##
     # Activate a gem (i.e. add it to the Ruby load path).  The gem
     # must satisfy all the specified version constraints.  If

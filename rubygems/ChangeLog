@@ -1,5 +1,6 @@
 2004-12-18  Chad Fowler <chad@chadfowler.com>
 	* lib/rubygems/version.rb: Erik Veenstra's sort patch.
+	* lib/rubygems.rb: Ryan Davis's installation bug fix.
 
 2004-12-14  Gavin Sinclair  <gsinclair@soyabean.com.au>
 

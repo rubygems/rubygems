@@ -337,7 +337,7 @@ module Gem
     def ensure_gem_subdirectories(gemdir)
       DIRECTORIES.each do |filename|
         fn = File.join(gemdir, filename)
-        if ! File.exists?(fn) && File.writable?(fn)
+        if ! (File.exists?(fn) && File.writable?(fn))
           require 'fileutils'
           FileUtils.mkdir_p(fn)
         end

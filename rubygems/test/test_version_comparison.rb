@@ -112,10 +112,10 @@ class TestExtendedVersionComparisons < Test::Unit::TestCase
   end
 
   def test_boxed
-    assert_inadequate("1.3", ">* 1.4")
-    assert_adequate(  "1.4", ">* 1.4")
-    assert_adequate(  "1.5", ">* 1.4")
-    assert_inadequate("2.0", ">* 1.4")
+    assert_inadequate("1.3", "~> 1.4")
+    assert_adequate(  "1.4", "~> 1.4")
+    assert_adequate(  "1.5", "~> 1.4")
+    assert_inadequate("2.0", "~> 1.4")
   end
 
 end

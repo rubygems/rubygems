@@ -1,3 +1,11 @@
+2004-09-12  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* scripts/specdoc.rb: Check that all attributes are documented; and
+	  improved formatting.
+	* scripts/specdoc.yaml: test_suite_file -> test_files; finished
+	  documentation.
+	* scripts/specdoc.data: misc changes.
+
 2004-09-11  Chad Fowler <chad@chadfowler.com>
 
   * test/test_parse_commands.rb: Fix failing unit tests due to Rich's fix from

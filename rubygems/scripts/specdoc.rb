@@ -1,5 +1,6 @@
 require 'yaml'
 require 'ostruct'
+require 'rubygems'
 
 SEPSTRING = ' .. '
 
@@ -38,6 +39,10 @@ def _themed_toc_less_vspace
   end
 end
 
+def timestamp
+  puts ":<i>Last generated: #{Time.now.strftime '%Y-%m-%d %H:%M:%S %Z (%A)'}</i>"
+end
+
   # Prints a thematic table of contents, drawing from the structure in the YAML file.
 def themed_toc
   _themed_toc_less_vspace
@@ -73,7 +78,7 @@ def _metadata(attribute)
     case attribute.mandatory
     when nil, false then 'Optional'
     when '?' then 'Required???'
-    else 'Required'
+    else "'''Required'''"
     end
   default_str =
     case attribute.default
@@ -101,6 +106,7 @@ def attribute_survey
   heading    = proc { |str| "\n\n== [\##{str}] #{str} ==" }
   subheading = proc { |str| "\n=== #{str} ===\n\n" }
   pre        = proc { |str| "<pre>\n#{str}\n</pre>\n" }
+  para       = proc { |str| str.gsub(/\n/, "\n\n") }
   toclink    = "\n''#{_link('toc', '^ Table of Contents')}''"
   ATTRIBUTES.sort_by { |a| a['name'] }.each do |a|
     a = OpenStruct.new(a)
@@ -109,12 +115,31 @@ def attribute_survey
     puts subheading['Description']
     puts _resolve_links(a.description)
     puts subheading['Usage']
-    puts pre[a.usage.gsub(/^/, '  ')]
+    puts pre[a.usage.strip.gsub(/^/, '  ')]
     if a.notes
       puts subheading['Notes']
-      puts _resolve_links(a.notes)
+      puts _resolve_links(para[a.notes.strip])
     end
     puts toclink
+  end
+end
+
+  # Checks to see that all the attributes are documented.  Warn on STDERR of any
+  # discrepencies.
+def _check_attribute_completeness
+  documented_attributes = ATTRIBUTES.map { |a| a['name'].to_s }
+    # ^ The attributes documented in specdoc.yaml.
+  coded_attributes      = Gem::Specification.attribute_names.map { |a| a.to_s }
+    # ^ The attributes defined in specification.rb.
+  missing = coded_attributes - documented_attributes
+  unless missing.empty?
+    STDERR.puts "Defined attributes that are not documented:"
+    STDERR.puts '  ' + missing.join(', ')
+  end
+  missing = documented_attributes - coded_attributes
+  unless missing.empty?
+    STDERR.puts "Documented attributes that are not defined:"
+    STDERR.puts '  ' + missing.join(', ')
   end
 end
 
@@ -123,6 +148,8 @@ end
 data = YAML.load(File.read('specdoc.yaml'))
 SECTIONS = data['SECTIONS']
 ATTRIBUTES = data['ATTRIBUTES'].reject { |a| a['name'] == '...' }
+
+_check_attribute_completeness
 
 IO.foreach('specdoc.data') do |line|
   case line

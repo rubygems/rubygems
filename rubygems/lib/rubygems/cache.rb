@@ -73,10 +73,13 @@ module Gem
     ##
     # Search for a gem by name and optional version
     #
-    # gem_name:: [String] the name of the gem
-    # version_requirement:: [String | default=Version::Requirement.new(">= 0")] version to find
-    #
-    # return:: [Array] list of Gem::Specification objects in sorted (version) order.  empty if not found
+    # gem_name::
+    #   [String] the name of the gem
+    # version_requirement::
+    #   [String | default=Version::Requirement.new(">= 0")] version to find
+    # return::
+    #   [Array] list of Gem::Specification objects in sorted
+    #   (version) order.  empty if not found
     #
     def search(gem_name, version_requirement=Version::Requirement.new(">= 0"))
       #FIXME - remove duplication between this and RemoteInstaller.search
@@ -101,7 +104,7 @@ module Gem
       files = Dir.glob("{#{spec_dirs.join(',')}}/*.gemspec")
       current_loaded_files = @gems.values.collect {|spec| spec.loaded_from}
       (current_loaded_files - files).each do |spec_file|
-        gemspec = load_specification(spec_file)
+        gemspec = Gem::Cache.load_specification(spec_file)
         @gems[gemspec.full_name] = gemspec if gemspec
       end
       self

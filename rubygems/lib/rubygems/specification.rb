@@ -90,6 +90,7 @@ module Gem
       @dependencies ||= []
     end
 
+    undef :require_paths
     ##
     # return:: [Array] list of require paths as strings
     #
@@ -165,6 +166,7 @@ module Gem
       @test_suite_file != nil
     end
     
+    undef :version=
     ##
     # Sets the version of the Specification
     #
@@ -177,11 +179,14 @@ module Gem
       @version = version
     end
 
+    undef :summary=
     ##
-    # Sets the summary of the Specification, but normalizes the formatting into one line.
+    # Sets the summary of the Specification, but normalizes the
+    # formatting into one line.
     #
-    # Such formatting is useful internally, but is a pain for people writing the text.
-    # Normalizing the text this way allows people to be neat in their specifications.
+    # Such formatting is useful internally, but is a pain for people
+    # writing the text.  Normalizing the text this way allows people
+    # to be neat in their specifications.
     #
     # summary:: [String] The summary text
     #
@@ -189,6 +194,7 @@ module Gem
       @summary = summary.strip.gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').gsub(/\n[ \t]*/, " ")
     end
     
+    undef description=
     ##
     # As per #summary=, except operating on the description.
     #
@@ -210,12 +216,14 @@ module Gem
     ##
     # Helper method if their is only one executable to install
     #
-    # file_path:: [String] The path to the executable script (relative to the gem)
+    # file_path:: [String] The path to the executable script (relative
+    #             to the gem)
     #
     def executable=(file_path)
       @executables = [file_path]
     end
 
+    undef :platform=
     def platform=(platform=Gem::Platform::RUBY)
       @platform = platform
     end

@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'rake/clean'
 require 'rake/testtask'
+require 'rake/packagetask'
 
 CLOBBER.include( "testdata/one/one-0.0.1.gem", "test/temp" )
 
@@ -33,3 +34,22 @@ task :gemtest do
   ruby %{-Ilib -rscripts/runtest -e 'run_tests("test/test_gempaths.rb", true)'}
 end
 
+Rake::PackageTask.new("package") do |p|
+  p.name = 'rubygems'
+  p.version = '0.3.0'
+  p.need_tar = true
+  p.need_zip = true
+  p.package_files.include(
+    "Rakefile", "ChangeLog", "Releases", "TODO", "README", 
+    "install.rb",
+    "bin/gem*", "bin/*.rb",
+    "doc/*.css", "doc/*.rb",
+    "examples/**/*",
+    "gemspecs/**/*",
+    "lib/**/*.rb",
+    "packages/**/*",
+    "redist/*.gem",
+    "scripts/*.rb",
+    "test/**/*"
+    )
+end

@@ -1,3 +1,9 @@
+2005-03-08  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/installer.rb (Gem::Uninstaller::ok_to_remove):
+	Fixed source index to be loaded from the installed gems when doing
+	an "OK TO REMOVE" dependency check.
+
 2005-03-06  Rich Kilmer <rich@infoether.com>
 	* lib/rubygems/deployment.rb: beginning of a deployment capability
 

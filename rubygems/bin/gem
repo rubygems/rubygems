@@ -1,202 +1,589 @@
 #!/usr/bin/env ruby
 
-require 'optparse'
+# gem, modified (heavily) by Gavin Sinclair to improve the command-line interface, and make the
+# operations "smart" with respect to local and remote domains.
 
-options = {}
-ARGV.options do |opts|
-  opts.banner = <<BANNER
+require 'optparse'
+require 'ostruct'
+require 'rubygems'
+
+
+#
+# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+#
+
+
+def _info(message)
+  STDOUT.puts message
+end
+
+
+def _die(message)
+  STDERR.puts message
+  exit!
+end
+
+
+#
+# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+#
+
+
+#
+# This class defines the options structure used to capture the command-line options and
+# drive the operational aspect.
+#
+class RubyGemsOptions
+  
+  # --- Operations ---
+  
+  # The operation the user has asked us to perform.
+  attr_accessor :operation
+  VALID_OPERATIONS = [:install, :uninstall, :list, :search, :info, :build, :alien, :verify]
+
+  # Most operations require an argument (e.g. gemfile, pattern).
+  attr_accessor :argument
+
+  # --- Modifiers ---
+
+  attr_accessor :directory, :force, :gen_rdoc, :run_tests, :http_proxy, :gem_version
+
+  # Specifies whether we are working in the :local or :remote domain (or +nil+ for
+  # both/neither).
+  attr_accessor :domain
+  VALID_DOMAINS = [nil, :local, :remote]
+
+  # --- Methods ---
+
+  # Tells us whether this object is sensibly constructed.  Checks for valid operation and
+  # domain values.
+  def valid?
+    VALID_OPERATIONS.include? operation and
+      VALID_DOMAINS.include? domain
+  end
+
+  # Are local operations permitted?
+  def local?
+    domain == nil or domain == :local
+  end
+
+  # Are remote operations permitted?
+  def remote?
+    domain == nil or domain == :remote
+  end
+
+end  # class RubyGemsOptions
+
+
+#
+# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+#
+
+
+#
+# This class handles the mechanics of interpreting command-line arguments and deciding
+# what to do.
+#
+class RubyGemsApp
+  #
+  # Determine the selected operation and the other options, and ask RubyGemsFacade to do
+  # the work for us.
+  #
+  def run(args)
+    options = _parse(args)
+    facade = RubyGemsFacade.new(options)
+    arg = options.argument
+    case options.operation
+    when :install
+      facade.install(arg)
+    when :uninstall
+      facade.uninstall(arg)
+    when :list
+      facade.list(arg)
+    when :search
+      facade.search(arg)
+    when :info
+      facade.info(arg)
+    when :build
+      facade.build(arg)
+    when :alien
+      facade.alien(arg)
+    when :verify
+      facade.verify(arg)
+    else
+      _die "Invalid operation: #{options.operation}"
+    end
+  end
+
+  private
+
+  #
+  # Parse the arguments given and return a RubyGemsOptions object.
+  #
+  def _parse(args)
+    options = RubyGemsOptions.new
+    o = options
+    parser = OptionParser.new do |op|
+      op.banner = <<BANNER
 
 'gem' is the user interface to RubyGems, the Ruby package manager.
  See http://rubygems.rubyforge.org for user and developer documentation.
-  
+    
     Usage: gem <action> [modifier ...]
 BANNER
-  opts.separator("")
-  opts.separator("Actions:")
-  opts.separator("")
-  opts.separator("  Install:")
-  opts.on('-i', '--install GEMFILE', "Install a gem from local gem file")    {|options[:install]|}
-  opts.on('-u', '--uninstall GEMNAME', "Uninstall a previously installed gem") {|options[:uninstall]|}
-  opts.on('-r', '--remote-install GEMNAME', "Auto-download and install a gem and its dependencies") {|options[:remote_install]|}
-  opts.separator("")
-  opts.separator("  Build:")
-  opts.on('-b', '--build GEMSPEC', "Build a gem file from spec") { |options[:gemspec]| }
-  opts.separator("")
-  opts.separator("  Query:")
-  opts.on('-l', '--list', "List installed gems") {|options[:list]|}
-  opts.on('-s', '--search SEARCHPATTERN', "Search for gems in the remote repository") {|options[:search]|}
-  opts.on('--info GEMNAME', "Display details about an installed gem") {|options[:info]|}
-  opts.on('--remote-list', "List all gems in the remote repository") {|options[:remote_list]|}
-  opts.separator("")
-  opts.separator("  Miscellaneous:")
-  opts.on('--alien', "Report 'unmanaged' or rogue files in the gem repository") {options[:alien] = true}
-  opts.on('--verify GEMFILE', "Verify gem file against its internal checksum") {|options[:verify_gem]|}
-  opts.separator("")
-  opts.separator("Modifiers:")
-  opts.on('--dir DIRNAME', "Installation directory for the gem") {|options[:directory]|}
-  opts.on('--force', "Force gem to intall, bypassing dependency checks") {|options[:force]|}
-  opts.on('--gen-rdoc', "Generate RDoc documentation for the gem") {|options[:gen_rdoc]|}
-  opts.on('--run-tests', "Run unit tests prior to installation") {|options[:run_tests]|}
-  opts.on('--http-proxy HTTPPROXYHOST', "(unimplemented) HTTP Proxy to use for remote operations") {|options[:http_proxy]|}
-  opts.on('--version GEMVERSION', "Version of gem to perform operation on") {|options[:gem_version]|}
-  opts.separator("")
-  opts.separator("Miscellaneous:")
-  opts.on('-h', '--help', "show this message") {puts opts; exit}
-  opts.parse!
-end
+  
+      op.separator("")
+      op.separator("Operations:")
+  
+      op.separator("")
+      op.separator("  Install/Uninstall:")
+  
+      op.on('-i', '--install GEM', "Install a gem from a local file or remote server") { |gem|
+        o.operation = :install
+        o.argument  = gem
+      }
+      op.on('-u', '--uninstall GEM', "Uninstall a previously installed gem") { |gem|
+        o.operation = :uninstall
+        o.argument  = gem
+      }
+  
+      op.separator("")
+      op.separator("  List/Search/Info:")
+  
+      op.on('-l', '--list [STR]', "List all local and/or remote gems (beginning with STR)") { |str|
+        o.operation = :list
+        o.argument  = str
+      }
+      op.on('-s', '--search STR', "List local and/or remote gems containing STR") { |str|
+        o.operation = :search
+        o.argument  = str || ""   
+      }
+      op.on('-o', '--info GEM', "Display information about local/remote gem named GEM") { |gem|
+        o.operation = :info
+        o.argument  = gem
+      }
+  
+      op.separator("")
+      op.separator("  Build:")
+  
+      op.on('-b', '--build GEMSPEC', "Build a gem file from its spec") { |spec|
+        o.operation = :build
+        o.argument  = spec
+      }
+  
+      op.separator("")
+      op.separator("  Miscellaneous:")
+      op.on('--alien', "Report 'unmanaged' or rogue files in the gem repository") {
+        o.operation = :alien
+      }
+      op.on('--verify GEM', "Verify gem file against its internal checksum") { |gem|
+        o.operation = :verify
+        o.argument  = gem
+      }
+  
+      op.separator("")
+      op.separator("Modifiers:")
+  
+      op.on(      '--install-dir DIR', "Specify RubyGems installation directory") {|o.directory|}
+      op.on(      '--force',           "Force gem to intall, bypassing dependency checks") {|o.force|}
+      op.on(      '--gen-rdoc',        "Generate RDoc documentation for the gem on install") {|o.gen_rdoc|}
+      op.on(      '--run-tests',       "Run unit tests prior to installation") {|o.run_tests|}
+      op.on(      '--http-proxy HOST', "(unimplemented) HTTP Proxy to use for remote operations") {|o.http_proxy|}
+      op.on(      '--version VERSION', "Specify version of gem to perform operation on") {|o.gem_version|}
+      op.on('-L', '--local',           "Restrict operations to the LOCAL domain") { o.domain = :local }
+      op.on('-R', '--remote',          "Restrict operations to the REMOTE domain") { o.domain = :remote }
+  
+      op.separator("")
+      op.separator("Miscellaneous:")
+  
+      op.on('-h', '--help', "Display this message and exit") {
+        _show_help(op, 0)
+      }
+      op.on('--rubygems-info', "Display RubyGems information and exit") {
+        _show_rubygems_info()
+      }
+  
+      op.separator("")
+      message = <<-INFO
+In the above information, "GEM" typically refers to the name of a gem;
+all of the following are valid (perhaps in different circumstances):
 
-require 'rubygems'
+      ruby-dbi
+      ruby-dbi-0.20.1
+      ruby-dbi-0.20.1.gem
 
-def get_remote_installer(options)
-  Gem::RemoteInstaller.new(options[:http_proxy])
-end
+Set $GEMPATH to delimited list of directories (delimiter is platform-specific 
+as in LOAD_PATH)) where you have gems installed.  The first entry will 
+be used as the default installation directory.
+INFO
+      message.each do |line|
+        op.separator(line.chomp)
+      end
+    end  # OptionParser.new
+  
+    begin
+    parser.parse!(args)
+    rescue => err
+      puts err.message
+      exit!
+    end
+    options = o
+    _show_help(parser, 1) if options.operation.nil?
+  
+    require 'pp'
+    pp options
+    puts
+    #exit
+    options
+  end  # _parse
 
-def run_tests(name, version)
-  gem_specs = Gem::Cache.from_installed_gems.search(name, version.version)
-  return if !gem_specs[0].test_suite_file
-  require_gem name, "= #{version.version}"
-  require gem_specs[0].test_suite_file
-  suite = Test::Unit::TestSuite.new("#{name}-#{version}")
-  ObjectSpace.each_object(Class) do |klass|
-    suite << klass.suite if (Test::Unit::TestCase > klass)
+  def _show_help(parser, status)
+    puts parser
+    exit(status)
   end
-  require 'test/unit/ui/console/testrunner'
-  result = Test::Unit::UI::Console::TestRunner.run(suite, Test::Unit::UI::SILENT)
-  unless(result.passed?)
-    print result.to_s + "...keep Gem? [Y/n] "
-    answer = gets
-    if(answer !~ /^y/i) then
-      Gem::Uninstaller.new(name, version.version).uninstall
+
+  def _show_rubygems_info
+    puts "RubyGems:"
+    puts " - VERSION:                #{Gem::RubyGemsVersion}"
+    puts " - INSTALLATION DIRECTORY: #{Gem.dir}"
+    puts " - GEM PATH:"
+    puts $GEM_PATH.map { |p| "     - #{p}" }
+    puts " - REMOTE SOURCES:"
+    puts Gem::RemoteInstaller.new.get_cache_sources.map { |s| "     - #{s}" }
+    exit
+  end
+
+end  # class RubyGemsApp
+
+
+
+#
+# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+#
+
+
+#
+# This class performs the basic operations that the user can select on the command line.
+#
+class RubyGemsFacade
+
+  # Signals that local installation will not proceed, not that it has been tried and
+  # failed.  TODO: better name.
+  class LocalInstallationError < StandardError; end
+
+  # Signals that a remote operation cannot be conducted, probably due to not being
+  # connected (or just not finding host).
+  #
+  # TODO: create a method that tests connection to the preferred gems server.  All code
+  # dealing with remote operations will want this.  Failure in that method should raise
+  # this error.
+  class RemoteError < StandardError; end
+  
+
+  def initialize(options)
+    @options = options
+    @options.gem_version ||= "> 0.0.0"
+  end
+
+
+  #
+  # Decide whether to perform a local or remote install.  Then generate RDocs if desired.
+  #
+  # This can only be local (argument is a path, even though it doesn't end in '.gem').
+  #   gem --install /tmp/ruby-doom-0.0.7
+  #
+  # This can only be local (argument is not necessarily a path, but it ends in '.gem').
+  #   gem --install ruby-doom-0.0.7.gem
+  #
+  # This could be local (gem file in current directory) or remote.  Installation is attempted in
+  # that order.
+  #   gem --install ruby-doom-0.0.7
+  #   
+  # This could be local (gem file in current directory with highest available version number) or
+  # remote.  Installation is attempted in that order.
+  #   gem --install ruby-doom
+  #
+  # Basically, our approach in this method is to attempt a local installation.  If that
+  # fails, then we attempt a remote installation.  Of course, we respect --local and
+  # --remote.
+  #
+  # Returns true or false to indicate success.  TODO: is this necessary?
+  #
+  def install(gem)
+    if @options.local?
+      begin
+        _info "Attempting local installation of '#{gem}'"
+        installed_gems = _install_local(gem)
+      rescue LocalInstallationError => e
+        _info " -> Local installation can't proceed: #{e.message}"
+      rescue => e
+        $stderr.puts "Error installing gem #{gem}: #{e.message}"
+        return false # If a local installation actually fails, we don't try remote.
+      end
+    end
+
+    if @options.remote?
+      begin
+        _info "Attempting remote installation of '#{gem}'"
+        installed_gems = _install_remote(gem)
+      rescue RemoteError => e
+        _info " -> Remote installation can't proceed: #{e.message}"
+      rescue => e
+        $stderr.puts "Error installing gem #{gem}: #{e.message}"
+        return false
+      end
+    end
+
+    if @options.gen_rdoc
+      installed_gems.each do |gem|
+        Gem::DocManager.new(gem).generate_rdoc
+      end
+      # TODO: catch exceptions and inform user that doc generation was not successful.
+    end
+
+    # TODO: test-running logic.  This is currently embedded in the sub-methods.  Can we
+    # factor it out?
+    return true 
+  end
+
+
+  #
+  # Uninstall the named gem.  
+  # If no version is specified, the latest version will be uninstalled.
+  # XXX: We should probably change this so that if no version is specified,
+  #    all versions of the named gem are uninstalled.
+  def uninstall(gem)
+    _info "Attempting to uninstall gem '#{gem}'"
+    Gem::Uninstaller.new(gem, @options.gem_version).uninstall
+  end
+
+
+  #
+  # This lists local _and_ remote gems beginning with 'F' (case-insensitive optional argument).
+  #   gem --list F
+  #
+  def list(str)
+    _list_gems(/^#{str}/i)
+  end
+
+
+  #
+  # List local and remote gems containing the given string.
+  #
+  def search(str)
+    _list_gems(/#{str}/i)
+  end
+
+
+  # 
+  # The output depends on whether the named package is installed locally.
+  #
+  # If it is, then the normal report happens, and the remote server is queried and a brief report
+  # provided to say whether there are any updates.
+  #
+  # If it is not, then a full remote report is provided.
+  #
+  def info(gem)
+    if @options.local?
+      gem_specs = Gem::Cache.from_installed_gems.search(gem, @options.gem_version)
+      if gem_specs.size > 0
+        require 'yaml'
+        gem_specs.each {|spec| puts spec.to_yaml; puts "\n"}
+      else
+        $stderr.puts "Unkown gem #{gem}"
+      end
+    end
+
+    if @options.remote?
+      _info "(Remote 'info' operation is not yet implemented.)"
+      # NOTE: when we do implement remote info, make sure we don't duplicate huge swabs of
+      # local data.  If it's the same, just say it's the same.
     end
   end
-end
 
-def display_indented_text(text, indent=4)
-  line = " " * (indent-1)
-  text.split.each do |word|
-    if line.size + word.size + 1 > 78
-      puts line
-      line = " " * (indent-1)
-    end
-    line << " " << word
-  end
-  puts line if line.size > indent.size
-end
 
-def display_gems(gems)
-  gems.sort {|a,b| 
-    a[0].downcase <=> b[0].downcase
-  }.each do |gem|
-    puts gem[0]
-    display_indented_text(gem[1].summary)
-    puts 
-  end
-end
-
-spec_file = options[:build]
-install_file = options[:install]
-gem_to_uninstall = options[:uninstall]
-gem_to_search_for = options[:search]
-info = options[:info]
-list = options[:list]
-force = options[:force]
-gen_rdoc = options[:gen_rdoc]
-remote_install = options[:remote_install]
-directory = options[:directory] || Gem.dir
-verify_gem = options[:verify_gem]
-alien = options[:alien]
-
-installed_gems = []
-
-if spec_file
-  load spec_file
-  Gem::Specification.list.each do |spec|
-    Gem::Builder.new(spec).build
-  end
-end
-
-if install_file
-  unless File.exist?(install_file)
-    if File.exist?(install_file+".gem")
-      install_file = install_file+".gem"
-    else
-      $stderr.puts "Unknown gem file #{install_file}"
+  #
+  # Build a gem from the given gemspec.  This can only be done locally :)
+  #
+  def build(gemspec)
+    _info "Attempting to build gem spec '#{gemspec}'"
+    load gemspec
+    Gem::Specification.list.each do |spec|
+      Gem::Builder.new(spec).build
     end
   end
-  installer = Gem::Installer.new(install_file)
-  begin
-    installed_gems << installer.install(force, directory)
-    if options[:run_tests]
-      run_tests(installed_gems[0].name, installed_gems[0].version)
-    end
-  rescue => e
-    $stderr.puts "Error installing gem #{install_file}: #{e.message}"
+
+
+  #
+  # Scour the repository for alien (unmanaged) files.
+  #
+  def alien
+    _info "Performing the 'alien' operation"  # TODO: better (or no) message.
+    Gem::Validator.new.alien
   end
-end
 
-if options[:remote_list]
-  installer = get_remote_installer(options)
-  display_gems(installer.search(//))
-end
 
-if gem_to_search_for
-  installer = get_remote_installer(options)
-  gems = installer.search(gem_to_search_for)
-  display_gems(gems)
-end
+  #
+  # Verify the given gem.
+  #
+  def verify(gem)
+    _info "Verifying gem: '#{gem}'"
+    begin
+      Gem::Validator.new.verify_gem(gem)
+    rescue => e
+      $stderr.puts "#{gem} is invalid"
+    end
+  end
 
-if remote_install
-  begin
-    installer = get_remote_installer(options)
-    installed_gems << installer.install(remote_install, options[:gem_version] || "> 0.0.0", force, directory)
-    if options[:run_tests]
+  private
+
+  #
+  # Attempt a local installation.  Returns the list of installed gems.
+  # Raises an error if installation not possible or if installation
+  # fails.
+  #
+  def _install_local(path)
+    installed_gems = []
+    unless File.exist?(path)
+      if File.exist?(path + ".gem")
+        path << ".gem"
+      else
+        # Raising this is intended to communicate that this gem cannot
+        # be locally installed.
+        raise LocalInstallationError, "Unknown gem file '#{path}'"
+      end
+    end
+    installer = Gem::Installer.new(path)
+    installed_gems << installer.install(@options.force, @options.directory)
+    if @options.run_tests
+      _run_tests(installed_gems[0].name, installed_gems[0].version)
+    end
+    installed_gems
+  end
+
+  #
+  # Attempts a remote installation.  Returns list of installed gems.  Errors are passed
+  # upstream, but there is no specific error to indicate that we are not connected to the
+  # internet, unfortunately.
+  #
+  # TODO: make use of RemoteError, if possible. 
+  #
+  def _install_remote(name)
+    installer = _get_remote_installer
+    installed_gems = installer.install(name, @options.gem_version, @options.force, @options.directory)
+    if @options.run_tests
       cache_dir = File.join(Gem::dir, "cache")
       destination_file = File.join(cache_dir, installed_gems[0].full_name + ".gem")
-      run_tests(installed_gems[0].name, installed_gems[0].version)
+      _run_tests(installed_gems[0].name, installed_gems[0].version)
     end
-  rescue => e
-    $stderr.puts "Error installing gem #{remote_install}: #{e.message}"
-    exit(2)
+    installed_gems
+  end
+
+  def _run_tests(name, version)
+    gem_specs = Gem::Cache.from_installed_gems.search(name, version.version)
+    return unless gem_specs[0].test_suite_file
+    require_gem name, "= #{version.version}"
+    require gem_specs[0].test_suite_file
+    suite = Test::Unit::TestSuite.new("#{name}-#{version}")
+    ObjectSpace.each_object(Class) do |klass|
+      suite << klass.suite if (Test::Unit::TestCase > klass)
+    end
+    require 'test/unit/ui/console/testrunner'
+    result = Test::Unit::UI::Console::TestRunner.run(suite, Test::Unit::UI::SILENT)
+    unless(result.passed?)
+      print result.to_s + "...keep Gem? [Y/n] "
+      answer = gets
+      if(answer !~ /^y/i) then
+        Gem::Uninstaller.new(name, version.version).uninstall
+      end
+    end
+  end
+
+  def _get_remote_installer
+    Gem::RemoteInstaller.new(@options.http_proxy)
+  end
+
+  # List all gems, local and/or remote, that match the given pattern.  This provides the
+  # common factor between 'list' and 'search'.
+  #
+  # TODO: ignore remote gems that are available locally?  Or just list them?  Or what? 
+  def _list_gems(pattern)
+    if @options.local?
+      puts
+      puts "*** LOCAL GEMS ***"
+      gemlist = []
+      Gem::Cache.from_installed_gems.each do |name, spec|
+        gemlist << [name, spec]
+      end  # TODO: Gem::Cache.installed_gems should do this for us.
+      _display_gems(gemlist.select { |name, spec| name =~ pattern })
+    end
+
+    if @options.remote?
+      puts
+      puts "*** REMOTE GEMS ***"
+      installer = _get_remote_installer
+      _display_gems(installer.search(pattern))
+    end
+  end
+
+  # +gems+ is actually an Array: [name, gemspec, name, gemspec, ...]
+  def _display_gems(gems)
+    gems.sort {|a,b| 
+      a[0].downcase <=> b[0].downcase
+    }.each do |gem|
+      puts
+      _display_gem(gem)
+    end
+  end
+
+  # +gem+ is actually an Array: [name, gemspec]
+  def _display_gem(gem)
+    name, spec = gem
+    puts name
+    puts spec.summary.wrap(68).indent(4)
+  end
+
+end  # class RubyGemsFacade
+
+
+#
+# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+#
+
+
+#
+# These implementations are not idiot-proof or intended for general use.  They are to support
+# the pretty-printing of lists of gems.
+#
+class String # :nodoc:
+  # Wrap string to +n+ characters, inserting newlines and ensuring words are not broken.
+  # Stolen from 'ri'. 
+  def wrap(n)
+    result = []
+    pattern = Regexp.new("^(.{0,#{n}})[ \n]")
+    work = self.dup
+    while work.length > n
+      if work =~ pattern
+        result << $1
+        work.slice!(0, $&.length)
+      else
+        result << work.slice!(0, n)
+      end
+    end
+    result << work if work.length.nonzero?
+    result.join("\n")
+  end
+
+  # Indent string by +n+ spaces.
+  def indent(n)
+    gsub(/^/, " " * n)
   end
 end
 
-if gem_to_uninstall
-  Gem::Uninstaller.new(gem_to_uninstall, options[:gem_version] || "> 0.0.0").uninstall
-end
+#
+# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+#
 
-if info
-  gem_specs = Gem::Cache.from_installed_gems.search(info, options[:gem_version] || "> 0.0.0")
-  if gem_specs.size > 0
-    require 'yaml'
-    gem_specs.each {|spec| puts spec.to_yaml; puts "\n"}
-  else
-    $stderr.puts "Unkown gem #{info}"
-  end
-end
+# (main)
 
-if list
-  gemlist = []
-  Gem::Cache.from_installed_gems.each {|name, spec|
-    gemlist << [name, spec]
-  }
-  display_gems(gemlist)
-end
-
-if verify_gem
-  begin
-    Gem::Validator.new.verify_gem(verify_gem)
-  rescue => e
-    $stderr.puts "#{verify_gem} is invalid"
-  end
-end
-
-if gen_rdoc
-  installed_gems.each do |gem|
-    Gem::DocManager.new(gem).generate_rdoc
-  end
-end
-
-if alien
-  Gem::Validator.new.alien
-end
-
+RubyGemsApp.new.run(ARGV)

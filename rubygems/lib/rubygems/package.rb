@@ -10,6 +10,7 @@ require 'zlib'
 require 'digest/md5'
 require 'fileutils'
 require 'find'
+require 'stringio'
 
 require 'rubygems/specification'
 

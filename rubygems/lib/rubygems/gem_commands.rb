@@ -126,21 +126,23 @@ module Gem
       if local?
         begin
           say "Attempting local installation of '#{gem_name}'"
-          filename = gem_name
-          filename += ".gem" unless File.exist?(filename)
-          unless File.exist?(filename)
+          filepattern = gem_name + "*.gem"
+          entries = Dir[filepattern] 
+          unless entries.size > 0
             if options[:domain] == :both
-              say "Local gem file not found: #{filename}"
+              say "Local gem file not found: #{filepattern}"
             else
-              alert_error "Local gem file not found: #{filename}"
+              alert_error "Local gem file not found: #{filepattern}"
             end
           else
-            result = Gem::Installer.new(filename).install(options[:force], options[:install_dir], options[:stub])
+            result = Gem::Installer.new(entries.last).install(options[:force], options[:install_dir], options[:stub])
             installed_gems = [result].flatten
             say "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}" if installed_gems
           end
         rescue LocalInstallationError => e
           say " -> Local installation can't proceed: #{e.message}"
+        rescue Gem::LoadError => e
+          say " -> Local installation can't proceed due to LoadError: #{e.message}"
         rescue => e
           alert_error "Error installing gem #{gem_name}[.gem]: #{e.message}"
           return

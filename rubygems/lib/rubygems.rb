@@ -1,3 +1,9 @@
+module Gem
+  class LoadError < ::LoadError
+    attr_accessor :name, :version_requirement
+  end
+end
+
 module Kernel
 
   ##
@@ -5,7 +11,7 @@ module Kernel
   # Gems are loaded (by specified version or highest version).  If the version
   # information is omitted, the highest version Gem of the supplied name is 
   # loaded.  If a Gem is not found that meets the version requirement and/or 
-  # a required Gem is not found, a LoadError is raised. More information on 
+  # a required Gem is not found, a Gem::LoadError is raised. More information on 
   # version requirements can be found in the Gem::Version documentation.
   #
   # As a shortcut, the +gem+ parameter can be a _path_, for example:
@@ -22,7 +28,7 @@ module Kernel
   # gem:: [String or Gem::Dependency] The gem name or dependency instance.
   # version_requirement:: [default="> 0.0.0"] The version requirement.
   # return:: [Boolean] true if the Gem is loaded, otherwise false.
-  # raises:: [LoadError] if Gem cannot be found or version requirement not met.
+  # raises:: [Gem::LoadError] if Gem cannot be found or version requirement not met.
   #
   def require_gem(gem, *version_requirements)
     if gem.respond_to?(:index)
@@ -47,9 +53,15 @@ module Kernel
     if matches.size==0
       matches = Gem.cache.search(gem.name)
       if matches.size==0
-        raise LoadError.new("\nCould not find RubyGem #{gem.name} (#{gem.version_requirements})\n")
+        error = Gem::LoadError.new("\nCould not find RubyGem #{gem.name} (#{gem.version_requirements})\n")
+        error.name = gem.name
+        error.version_requirement = gem.version_requirements
+        raise error
       else
-        raise LoadError.new("\nRubyGem version error: #{gem.name}(#{matches.first.version} not #{gem.version_requirements})\n")
+        error = Gem::LoadError.new("\nRubyGem version error: #{gem.name}(#{matches.first.version} not #{gem.version_requirements})\n")
+        error.name = gem.name
+        error.version_requirement = gem.version_requirements
+        raise error
       end
     else
       # Get highest matching version

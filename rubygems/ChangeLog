@@ -1,3 +1,11 @@
+2004-08-21  Chad Fowler  <chad@chadfowler.com>
+	* lib/rubygems/gem_commands.rb: Proper checking for gems in local 
+	directory on local install.  rescue Gem::LoadError to avoid ugly
+	backtrace.
+	* lib/rubygems/installer.rb: created Gem::LoadError to hold extra
+	metadata.  Setting up for proper dependency installation on local
+	installs.
+	
 2004-08-20  Chad Fowler  <chad@chadfowler.com>
 	
 	* lib/rubygems/specification.rb: Fixed small bug in the previous spec

@@ -1,9 +1,14 @@
+2004-07-13  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* lib/rubygems/gem_commands.rb (InstallCommand#execute): removed clear
+	  bug (name -> gem.name).
+
 2004-07-14  Rich Kilmer     <rich@infoether.com>
-        * added old_format.rb which is used in the (hack) in format.rb 
-          to detect the older version of a gem, and if present, switches 
-          to that class instead.
-        * fixed the ARGV passing in bin/gem to ingore args past -- which
-          are used for passing params to source gems (extconf.rb)
+	* added old_format.rb which is used in the (hack) in format.rb 
+	  to detect the older version of a gem, and if present, switches 
+	  to that class instead.
+	* fixed the ARGV passing in bin/gem to ingore args past -- which
+	  are used for passing params to source gems (extconf.rb)
 
 2004-07-13  Chad Fowler	    <chad@chadfowler.com>
 	* lib/rubygems/installer.rb, lib/rubygems/package.rb, 
@@ -356,22 +361,22 @@
 	period of time.
 
 2004-06-18  Rich Kilmer <rich@infoether.com>
-        * broke test_cmd_manager.rb into test_parse_commands and 
-        test_process_commands to test the parsing of command line options
-        and the funtionality, respectively. 
+	* broke test_cmd_manager.rb into test_parse_commands and 
+	test_process_commands to test the parsing of command line options
+	and the funtionality, respectively. 
 
 2004-06-18  Rich Kilmer <rich@infoether.com>
-        * added new unit test file: test/test_cmd_manager.rb to test the 
-        command manager classes.  this is just the first few tests which
-        will be expanded to a full test suite.
+	* added new unit test file: test/test_cmd_manager.rb to test the 
+	command manager classes.  this is just the first few tests which
+	will be expanded to a full test suite.
 
 2004-06-17  Chad FOwler <chad@chadfowler.com>
 
 	* lib/rubygems/installer.rb: Fixed bug in windows batch file generation
 	which was causing file not found errors.
-        * lib/rubygems/installer.rb: Uninstall now removes scripts and batch 
-        * lib/rubygems/specification.rb: Fixed install bug.  Thanks to Mark 
-        Sparshatt for the fix (via the rubyforge bug tracker). 
+	* lib/rubygems/installer.rb: Uninstall now removes scripts and batch 
+	* lib/rubygems/specification.rb: Fixed install bug.  Thanks to Mark 
+	Sparshatt for the fix (via the rubyforge bug tracker). 
 
 2004-06-17  Jim Weirich  <jim@weirichhouse.org>
 
@@ -382,28 +387,28 @@
 	the windows drive/rdoc bug as a side effect.
 
 2004-06-17  Rich Kilmer <rich@infoether.com>
-        * Added ability to capture the UserInteraction with:
-          c = Gem::UserInteraction.capture
-          and then you can override specific methods like 'say':
-          c.on_say {|statement| puts "you said: #{statement}"}
+	* Added ability to capture the UserInteraction with:
+	c = Gem::UserInteraction.capture
+	and then you can override specific methods like 'say':
+	c.on_say {|statement| puts "you said: #{statement}"}
 
 2004-06-15  Rich Kilmer <rich@infoether.com>
-        * Added refactored command handling in rubygems/cmd_manager.rb and a 
-          (temporary) bin/gem2 command file to test things out.  Once we feel
-          comfortable, we can replace gem with gem2.
+	* Added refactored command handling in rubygems/cmd_manager.rb and a 
+	(temporary) bin/gem2 command file to test things out.  Once we feel
+	comfortable, we can replace gem with gem2.
 
 2004-06-10  Rich Kilmer <rich@infoether.com>
-        * Isolated all user interaction to pass through module methods on a new
-          Gem::UserInteraction module.  Those methods will be the method of abstracting
-          the interaction of RubyGems for use in a GUI-based solution.
+	* Isolated all user interaction to pass through module methods on a new
+	Gem::UserInteraction module.  Those methods will be the method of abstracting
+	the interaction of RubyGems for use in a GUI-based solution.
 
 2004-06-10  Rich Kilmer <rich@infoether.com>
-        * require 'rubygems' now minimally requires only the files needed
-          for runtime access to gems...not management of gems.  To manage
-          gems you now additionally need to execute Gem::manage_gems prior
-          to using the builder/installer/etc.  This makes gemspecs not 
-          backward compatible unless they add that line to the gemspec 
-          after the require 'rubygems' line.
+	* require 'rubygems' now minimally requires only the files needed
+	for runtime access to gems...not management of gems.  To manage
+	gems you now additionally need to execute Gem::manage_gems prior
+	to using the builder/installer/etc.  This makes gemspecs not 
+	backward compatible unless they add that line to the gemspec 
+	after the require 'rubygems' line.
 
 2004-06-10  Gavin Sinclair <gsinclair@soyabean.com.au>
 	* bin/gem: --upgrade-all was broken, probably as a result of the

@@ -168,22 +168,22 @@ module Gem
       
       if options[:test]
         installed_gems.each do |gem|
-          gem_specs = Gem::Cache.from_installed_gems.search(gem.name, gem.version.version)
-          unless gem_specs[0].test_suite_file
+          gem_spec = Gem::Cache.from_installed_gems.search(gem.name, gem.version.version).first
+          unless gem_spec.test_suite_file
             say "There are no unit tests to run for #{gem.name}-#{gem.version}"
             next
           end
-          require_gem name, "= #{gem.version.version}"
-          require gem_specs[0].test_suite_file
+          require_gem gem.name, "= #{gem.version.version}"
+          require gem_spec.test_suite_file
           suite = Test::Unit::TestSuite.new("#{gem.name}-#{gem.version}")
           ObjectSpace.each_object(Class) do |klass|
-            suite << klass.suite if (Test::Unit::TestCase > klass)
+            suite << klass.suite if (klass < Test::Unit::TestCase)
           end
           require 'test/unit/ui/console/testrunner'
           result = Test::Unit::UI::Console::TestRunner.run(suite, Test::Unit::UI::SILENT)
-          unless(result.passed?)
+          unless result.passed?
             answer = ask(result.to_s + "...keep Gem? [Y/n] ")
-            if(answer !~ /^y/i) then
+            unless answer =~ /^y/i then
               Gem::Uninstaller.new(gem.name, gem.version.version).uninstall
             end
           end

@@ -85,7 +85,14 @@ module Gem
       caches = {}
       sources.each do |source|
         begin
-          yaml_spec = fetch(source + "/yaml")
+          begin
+            require 'zlib'
+            yaml_spec = fetch(source + "/yaml.Z")
+            yaml_spec = Zlib::Inflate.inflate(yaml_spec)
+          rescue
+            yaml_spec = nil
+          end
+          yaml_spec = fetch(source + "/yaml") unless yaml_spec
           spec = YAML.load(yaml_spec)
           raise "Didn't get a valid YAML document" if not spec
           caches[source] = spec

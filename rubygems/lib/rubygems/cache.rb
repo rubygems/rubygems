@@ -69,6 +69,19 @@ module Gem
       result = result.sort
       result
     end
+
+    ##
+    # Refresh the cache.  
+    #
+    # return:: Returns a pointer to itself.
+    #
+    def refresh!
+      newcache = self.class.from_installed_gems 
+      newcache.each do |full_spec_name, spec|
+        @gems[full_spec_name] ||= spec
+      end
+      self
+    end
     
   end
   

@@ -1,6 +1,8 @@
+#!/usr/bin/env ruby
+
 require 'test/unit'
 require 'rubygems'
-Gem::manage_gems
+Gem.manage_gems
 require 'yaml'
 require 'fileutils'
 require 'test/insure_session'
@@ -56,7 +58,7 @@ class FunctionalTest < Test::Unit::TestCase
 
   def test_bogus_source_hoses_up_remote_install_but_gem_command_gives_decent_error_message
     @ruby_options << " -rtest/bogussources"
-    gem "install -n asdf --remote"
+    gem "install asdf --remote"
     assert_match(/^ *Error fetching remote gem cache/m, @err)
     assert_status 1
   end

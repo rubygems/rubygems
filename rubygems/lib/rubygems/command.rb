@@ -48,6 +48,7 @@ module Gem
       configure_options(Command.common_options, option_names, options)
       begin
 	@parser.parse!(args)
+	options[:args] = args
       rescue OptionParser::ParseError => err
 	alert_error(err.message)
 	terminate_interaction!

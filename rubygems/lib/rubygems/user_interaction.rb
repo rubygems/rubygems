@@ -106,20 +106,20 @@ module Gem
     
     # Display an informational alert.
     def alert(statement, question=nil)
-      @outs.puts "INFO:\n#{statement}"
+      @outs.puts "INFO:  #{statement}"
       return ask(question) if question 
     end
     
     # Display a warning in a location expected to get error messages.
     def alert_warning(statement, question=nil)
-      @errs.puts "WARNING:\n#{statement}"
+      @errs.puts "WARNING:  #{statement}"
       ask(question) if question 
     end
     
     # Display an error message in a location expected to get error
     # messages.
     def alert_error(statement, question=nil)
-      @errs.puts "ERROR:\n#{statement}"
+      @errs.puts "ERROR:  #{statement}"
       ask(question) if question
     end
 

@@ -4,6 +4,8 @@ require 'stringio'
 require 'rubygems/user_interaction'
 
 class MockGemUi < Gem::StreamUI
+  class TermError < RuntimeError; end
+
   def initialize(input="")
     super(StringIO.new(input), StringIO.new, StringIO.new)
     @terminated = false
@@ -31,11 +33,13 @@ class MockGemUi < Gem::StreamUI
   end
 
   def terminate_interaction!(status=1)
-    @terminated = true
-    @banged = true
+    @terminated = true 
+   @banged = true
+    fail TermError
   end
 
   def terminate_interaction(status=0)
     @terminated = true
+    fail TermError
   end
 end

@@ -52,6 +52,7 @@ END:specs
 #   subdirectories.
 if __FILE__ == $0
   require 'rubygems'
+  Gem.manage_gems
   require 'webrick'
   require 'yaml'
   require 'optparse'

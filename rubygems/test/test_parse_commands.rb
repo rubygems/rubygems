@@ -13,7 +13,9 @@ class TestParseCommands < Test::Unit::TestCase
 
   def test_parsing_bad_options
     use_ui(MockGemUi.new) do
-      @cmd_manager.process_args("--bad-arg")
+      assert_raise(MockGemUi::TermError) {
+	@cmd_manager.process_args("--bad-arg")
+      }
       assert_match /invalid option: --bad-arg/, ui.error
     end
   end
@@ -29,40 +31,40 @@ class TestParseCommands < Test::Unit::TestCase
       
       #check defaults
       @cmd_manager.process_args("install")
-      assert_equal check_options[:stub], true
-      assert_equal check_options[:test], false
-      assert_equal check_options[:generate_rdoc], false
-      assert_equal check_options[:force], false
-      assert_equal check_options[:domain], :both
-      assert_equal check_options[:version], "> 0"
-      assert_equal check_options[:install_dir], Gem.dir
+      assert_equal true, check_options[:stub]
+      assert_equal false, check_options[:test]
+      assert_equal false, check_options[:generate_rdoc]
+      assert_equal false, check_options[:force]
+      assert_equal :both, check_options[:domain]
+      assert_equal "> 0", check_options[:version]
+      assert_equal Gem.dir, check_options[:install_dir]
       
       #check settings
       check_options = nil
-      @cmd_manager.process_args("install --force --test --no-install-stub --local --gen-rdoc --name foobar --install-dir . --version 3.0")
-      assert_equal check_options[:stub], false
-      assert_equal check_options[:test], true
-      assert_equal check_options[:generate_rdoc], true
-      assert_equal check_options[:force], true
-      assert_equal check_options[:domain], :local
-      assert_equal check_options[:version], '3.0'
-      assert_equal check_options[:name], 'foobar'
-      assert_equal check_options[:install_dir], '.'
+      @cmd_manager.process_args(
+	"install --force --test --no-install-stub --local --gen-rdoc --install-dir . --version 3.0")
+      assert_equal false, check_options[:stub]
+      assert_equal true, check_options[:test]
+      assert_equal true, check_options[:generate_rdoc]
+      assert_equal true, check_options[:force]
+      assert_equal :local, check_options[:domain]
+      assert_equal '3.0', check_options[:version]
+      assert_equal '.', check_options[:install_dir]
       
       #check remote domain
       check_options = nil
       @cmd_manager.process_args("install --remote")
-      assert_equal check_options[:domain], :remote
+      assert_equal :remote, check_options[:domain]
       
       #check both domain
       check_options = nil
       @cmd_manager.process_args("install --both")
-      assert_equal check_options[:domain], :both
+      assert_equal :both, check_options[:domain]
       
       #check both domain
       check_options = nil
       @cmd_manager.process_args("install --both")
-      assert_equal check_options[:domain], :both
+      assert_equal :both, check_options[:domain]
     end
   end
   
@@ -76,13 +78,13 @@ class TestParseCommands < Test::Unit::TestCase
     
     #check defaults
     @cmd_manager.process_args("uninstall")
-    assert_equal check_options[:version], "> 0"
+    assert_equal "> 0", check_options[:version]
 
     #check settings
     check_options = nil
     @cmd_manager.process_args("uninstall --name foobar --version 3.0")
-    assert_equal check_options[:name], "foobar"
-    assert_equal check_options[:version], "3.0"
+    assert_equal "foobar", check_options[:name]
+    assert_equal "3.0", check_options[:version]
   end
 
   def test_parsing_check_options
@@ -95,14 +97,14 @@ class TestParseCommands < Test::Unit::TestCase
     
     #check defaults
     @cmd_manager.process_args("check")
-    assert_equal check_options[:verify], false
-    assert_equal check_options[:alien], false
+    assert_equal false, check_options[:verify]
+    assert_equal false, check_options[:alien]
 
     #check settings
     check_options = nil
     @cmd_manager.process_args("check --verify foobar --alien")
-    assert_equal check_options[:verify], "foobar"
-    assert_equal check_options[:alien], true
+    assert_equal "foobar", check_options[:verify]
+    assert_equal true, check_options[:alien]
   end
     
   def test_parsing_build_options
@@ -120,7 +122,7 @@ class TestParseCommands < Test::Unit::TestCase
     #check settings
     check_options = nil
     @cmd_manager.process_args("build --name foobar.rb")
-    assert_equal check_options[:name], 'foobar.rb'
+    assert_equal 'foobar.rb', check_options[:name]
   end
   
   def test_parsing_query_options
@@ -133,26 +135,26 @@ class TestParseCommands < Test::Unit::TestCase
     
     #check defaults
     @cmd_manager.process_args("query")
-    assert_equal check_options[:name], /.*/
-    assert_equal check_options[:domain], :local
-    assert_equal check_options[:details], false
+    assert_equal /.*/, check_options[:name]
+    assert_equal :local, check_options[:domain]
+    assert_equal false, check_options[:details]
     
     #check settings
     check_options = nil
     @cmd_manager.process_args("query --name foobar --local --details")
-    assert_equal check_options[:name], /foobar/
-    assert_equal check_options[:domain], :local
-    assert_equal check_options[:details], true
+    assert_equal /foobar/, check_options[:name]
+    assert_equal :local, check_options[:domain]
+    assert_equal true, check_options[:details]
 
     #remote domain
     check_options = nil
     @cmd_manager.process_args("query --remote")
-    assert_equal check_options[:domain], :remote
+    assert_equal :remote, check_options[:domain]
 
     #both (local/remote) domains
     check_options = nil
     @cmd_manager.process_args("query --both")
-    assert_equal check_options[:domain], :both
+    assert_equal :both, check_options[:domain]
   end  
   
   def test_parsing_update_options
@@ -165,17 +167,17 @@ class TestParseCommands < Test::Unit::TestCase
     
     #check defaults
     @cmd_manager.process_args("update")
-    assert_equal check_options[:stub], true
-    assert_equal check_options[:generate_rdoc], false
+    assert_equal true, check_options[:stub]
+    assert_equal false, check_options[:generate_rdoc]
     
     #check settings
     check_options = nil
     @cmd_manager.process_args("update --force --test --no-install-stub --gen-rdoc --install-dir .")
-    assert_equal check_options[:stub], false
-    assert_equal check_options[:test], true
-    assert_equal check_options[:generate_rdoc], true
-    assert_equal check_options[:force], true
-    assert_equal check_options[:install_dir], '.'
+    assert_equal false, check_options[:stub]
+    assert_equal true, check_options[:test]
+    assert_equal true, check_options[:generate_rdoc]
+    assert_equal true, check_options[:force]
+    assert_equal '.', check_options[:install_dir]
   end 
   
 end

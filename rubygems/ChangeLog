@@ -1,3 +1,64 @@
+2004-06-25  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/gem_commands.rb (Gem::InstallCommand::execute):
+	Made multiple gem names an error for now.  Should look at later.
+
+	* lib/rubygems/cmd_manager.rb (Gem::ListCommand): Added list as an
+	alias to query.
+	(Gem::UpdateCommand::initialize): Corrected spelling of install
+	(intall) in several places.
+
+	* bin/gem_server: Added Gem.manage_gems to the gem_server to fix
+	missing requirements.
+
+	* lib/rubygems/cmd_manager.rb (Gem::InstallCommand::initialize):
+	Added missing --both option to install.
+
+	* test/test_command.rb
+	(TestCommand::test_invode_with_bad_options): Catch the termination
+	request.
+
+	* test/mockgemui.rb (MockGemUi::terminate_interaction): Make the
+	mock UI throw an exception when a termination is requested.  This
+	makes sure that we don't miss accidental terminations.
+
+	* lib/rubygems/cmd_manager.rb (Gem::CommandManager::find_command):
+	Added find_command to handle best matching command names.
+
+	* test/functional.rb (FunctionalTest::test_build): Updated
+	functional tests to use the new command structure.
+
+	* lib/rubygems/version.rb (Gem::Version::Requirement): Changed the
+	pessimistic version comparison operator to "~>".  I like to think
+	of it as "approximately greater than".  (It was ">*").
+
+	* bin/gem: Moved gem2 into the standard gem script location.  It
+	is now stable enough to use as the standard command.
+
+	* lib/rubygems/cmd_manager.rb (Gem::CommandManager::run): Added
+	run method to trap errors while running commands.  Makes for
+	prettier output.
+	(Gem::CommandManager): Move *all* commands to their own classes.
+	Simplified CommandManager.  Lowered the coupling between
+	CommandManager and the Commands (the commands don't even need to
+	know about the manager anymore).  CommandManager maybe created
+	with "new" for testing (the script will continue to use
+	"instance").
+	(Gem::RubyGemsInfoCommand): New command.
+	(Gem::VersionCommand): New command.
+
+2004-06-24  Jim Weirich  <jim@weirichhouse.org>
+	
+	* lib/rubygems/user_interaction.rb (Gem::UserInteraction):
+	Significantly rewrote the whole user interaction scheme.  We are
+	now using an UI object that responds to the standard list of UI
+	commands (e.g. say, alert, ask).  The UserInteraction module
+	defines all the interaction methods to be forwarded to the default
+	UI objects.  The "ui" method returns that default object (and you
+	can use self.ui=(new_ui) to change it).  Also the use_ui(new_ui) {
+	} command is convienent for switching the UI object for a short
+	period of time.
+
 2004-06-18  Rich Kilmer <rich@infoether.com>
         * broke test_cmd_manager.rb into test_parse_commands and 
         test_process_commands to test the parsing of command line options

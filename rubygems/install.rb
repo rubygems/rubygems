@@ -39,6 +39,13 @@ def install_rb(srcdir = nil)
   ["specifications", "cache"].each do |subdir|
     File::makedirs(File.join(gem_dir, subdir))
   end
+
+  Dir.chdir("packages/sources")
+    load("sources.gemspec")
+    spec = Gem.sources_spec
+    Gem::Builder.new(spec).build
+    Gem::Installer.new(spec.name + "-" + spec.version.to_s + ".gem").install(true, Gem.dir)
+  Dir.chdir("../..")
 end
 
 install_rb

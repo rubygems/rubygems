@@ -39,8 +39,8 @@ module Gem
     ##
     # Return a list of the sources that we can download gems from
     def get_cache_sources
-      # TODO
-      return ["http://www.chadfowler.com:8808"]
+      require_gem("sources")
+      Gem.sources
     end
 
     ##

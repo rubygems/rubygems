@@ -615,13 +615,17 @@ class RubyGemsFacade
     end
   end
 
-  # +gems+ is actually an Array: [name, gemspec, name, gemspec, ...]
+  # +gems+ is actually an Array: [[name, gemspec], [name, gemspec], ...]
   def _display_gems(gems)
+    already_seen = []
     gems.sort {|a,b| 
       a[0].downcase <=> b[0].downcase
     }.each do |gem|
-      puts
-      _display_gem(gem)
+      unless(already_seen.include?(gem[0])) 
+        puts
+        _display_gem(gem)
+        already_seen << gem[0]
+      end
     end
   end
 

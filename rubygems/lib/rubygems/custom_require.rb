@@ -16,14 +16,14 @@ module Kernel
   #
   def require(path)
     require__ path
-  rescue LoadError
+  rescue LoadError => load_error
     begin
       @gempath_searcher ||= Gem::GemPathSearcher.new
       if spec = @gempath_searcher.find(path)
         Gem.activate(spec.name, true, "= #{spec.version}")
         require__ path
       else
-        raise LoadError, "No such file to load -- #{path}"
+	raise load_error
       end
     end
   end

@@ -458,7 +458,7 @@ module Gem; class CommandManager
         options[:name] = Regexp.compile(value)
       end
       cmd.add_option('-d', '--details', 'Display detailed information of gem(s)') do |value, options|
-        options[:info] = true
+        options[:details] = true
       end
       cmd.add_option('-l', '--local', 'Restrict operations to the LOCAL domain (default)') do |value, options|
         options[:domain] = :local
@@ -523,7 +523,7 @@ module Gem; class CommandManager
     def add_update_command
       cmd = @cmd_manager.add_command('update')
       cmd.summary = 'Upgrade all currently installed gems in the local repository'
-      cmd.defaults = {:stub=>:true, :generate_rdoc=>false}
+      cmd.defaults = {:stub=>true, :generate_rdoc=>false}
       cmd.add_option('-d', '--gen-rdoc', 'Generate RDoc documentation for the gem on install') do |value, options|
         options[:generate_rdoc] = value
       end
@@ -536,8 +536,11 @@ module Gem; class CommandManager
       cmd.add_option('-t', '--test', 'Run unit tests prior to installation') do |value, options|
         options[:test] = true
       end
-      cmd.add_option('-s', '--[no-]install-stub', 'Install a library stub in site_ruby/1.x') do |value, options|
-        options[:stub] = value
+      cmd.add_option('-s', '--install-stub', 'Install a library stub in site_ruby/1.x') do |value, options|
+        options[:stub] = true
+      end
+      cmd.add_option(nil, '--no-install-stub', 'Do not install a library stub in site_ruby/1.x') do |value, options|
+        options[:stub] = false
       end
       cmd.when_invoked &method(:process_update_command)
     end

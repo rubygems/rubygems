@@ -512,7 +512,7 @@ class TC_TarReader < Test::Unit::TestCase
 #            FileUtils.rm_rf "data__"
         end
 
-        def xtest_each_works
+        def test_each_works
             TarInput.open(@file) do |is|
                 i = 0
                 is.each_with_index do |entry, i|
@@ -558,7 +558,7 @@ class TC_TarReader < Test::Unit::TestCase
         require 'zlib'
         
         def setup
-            FileUtils.mkdir_p "data__"
+            FileUtils.mkdir_p "data__", :verbose=>false
             @file = "data__/bla2.tar"
         end
 

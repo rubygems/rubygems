@@ -1,23 +1,38 @@
 require 'test/unit'
-#$:.unshift '../lib'
+$:.unshift '../lib'
 require 'rubygems'
 Gem::manage_gems
 
-class TestCmdManager < Test::Unit::TestCase
+class TestParseCommands < Test::Unit::TestCase
 
   def setup
     @ui = Gem::UserInteraction.capture
     @cmd_manager = Gem::CommandManager.instance
   end
 
+  def reset_ui
+    @error = ""
+    @warning = ""
+    @output = ""
+    
+    @ui.on_alert_warning do |message, question|
+      @warning << message.to_s
+    end
+    
+    @ui.on_alert_error do |message, question|
+      @error << message.to_s
+    end
+    
+    @ui.on_say do |statement|
+      @output << statement.to_s
+    end
+  end
+
   def test_parsing_bad_options
     #check bad argument
-    error = nil
-    @ui.on_alert_error do |message, question|
-      error = message
-    end
+    reset_ui
     @cmd_manager.process_args("--bad-arg")
-    assert_match /invalid option: --bad-arg/, error
+    assert_match /invalid option: --bad-arg/, @error
   end
 
   def test_parsing_install_options
@@ -177,4 +192,5 @@ class TestCmdManager < Test::Unit::TestCase
     assert_equal check_options[:force], true
     assert_equal check_options[:install_dir], '.'
   end 
+  
 end

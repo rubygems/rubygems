@@ -126,8 +126,13 @@ module Gem
       if local?
         begin
           say "Attempting local installation of '#{gem_name}'"
-          filepattern = gem_name + "*.gem"
-          entries = Dir[filepattern] 
+	  entries = []
+	  if(File.exist?(gem_name))
+            entries << gem_name
+	  else
+            filepattern = gem_name + "*.gem"
+            entries = Dir[filepattern] 
+          end
           unless entries.size > 0
             if options[:domain] == :both
               say "Local gem file not found: #{filepattern}"

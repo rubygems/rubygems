@@ -159,7 +159,11 @@ module Gem
     # Returns::
     #   an array of Gem::Specification objects, one for each gem installed. 
     #
-    def install(gem_name, version_requirement = "> 0.0.0", force=false, install_dir=Gem.dir, install_stub=true)
+    def install(gem_name,
+	version_requirement = "> 0.0.0",
+	force=false,
+	install_dir=Gem.dir,
+	install_stub=true)
       unless version_requirement.respond_to?(:satisfied_by?)
         version_requirement = Version::Requirement.new(version_requirement)
       end
@@ -242,11 +246,14 @@ module Gem
     end
 
     def find_gem_to_install(gem_name, version_requirement, caches)
+      puts "DBG: find_gem_to_installer #{gem_name}"
       max_version = Version.new("0.0.0")
       specs_n_sources = []
       caches.each do |source, cache|
+	puts "DBG: PROCESSING SOURCE #{source}"
         cache.each do |name, spec|
-          if (/#{gem_name}/i === name && version_requirement.satisfied_by?(spec.version)) then
+	  puts "DBG: CHECKING #{name}"
+          if (/#{gem_name}/i === name && version_requirement.satisfied_by?(spec.version))
             specs_n_sources << [spec, source]
           end
         end
@@ -289,7 +296,7 @@ module Gem
     def install_dependencies(dependencies, force, install_dir)
       installed_gems = []
       dependencies.each do |dependency|
-        if ask_yes_no("Install required dependency #{dependency.name}?", true) then
+        if ask_yes_no("Install required dependency #{dependency.name}?", true)
           remote_installer =  RemoteInstaller.new(
             if @http_proxy == false
               :no_proxy

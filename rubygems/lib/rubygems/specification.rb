@@ -213,7 +213,7 @@ module Gem
       result << "s.name = '#{escape(name)}'\n"
       result << "s.version = '#{escape(version)}'\n"
       result << "s.platform = '#{escape(platform)}'\n" if @platform
-      result << "s.has_rdoc = #{has_rdoc?}" if has_rdoc?
+      result << "s.has_rdoc = #{has_rdoc?}\n" if has_rdoc?
       result << "s.summary = '#{escape(summary)}'\n"
       if requirements.size>0
         result << "s.requirements.concat [" + (requirements.collect {|req| '"'+escape(req)+'"'}).join(', ') + "]\n"

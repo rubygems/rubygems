@@ -24,16 +24,16 @@ module Gem
     #
     def self.from_file(file_path)
       require 'fileutils'
-      gem = self.new(file_path)
+      format = self.new(file_path)
       File.open(file_path, 'r') do |file|
         skip_ruby(file)
-        gem.spec = read_spec(file)
-        gem.file_entries = []
+        format.spec = read_spec(file)
+        format.file_entries = []
         read_files_from_gem(file) do |entry, file_data|
-          gem.file_entries << [entry, file_data]
+          format.file_entries << [entry, file_data]
         end
       end
-      return gem
+      return format
     end
     
     private 

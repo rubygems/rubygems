@@ -28,6 +28,8 @@ module Gem
     # force:: [default = false] if false will fail if a required Gem is not installed
     # to_dir:: [default = Gem.dir] directory that Gem is to be installed in
     #
+    # return:: [Gem::Specification] The specification for the newly installed Gem.
+    #
     def install(force=false, to_dir=Gem.dir)
       require 'fileutils'
       format = Gem::Format.from_file(@gem)
@@ -41,18 +43,25 @@ module Gem
        FileUtils.mkdir_p directory
        extract_files(directory, format)
        
-       #build spec/cache dir
+       #build spec/cache/doc dir
        unless File.exist? File.join(to_dir, "specifications")
          FileUtils.mkdir_p File.join(to_dir, "specifications")
        end
        unless File.exist? File.join(to_dir, "cache")
          FileUtils.mkdir_p File.join(to_dir, "cache")
        end
+       unless File.exist? File.join(to_dir, "doc")
+         FileUtils.mkdir_p File.join(to_dir, "doc")
+       end
+       
        write_spec(format.spec, File.join(to_dir, "specifications"))
+       
        FileUtils.cp(@gem, File.join(to_dir, "cache"))
+       
        puts "Successfully installed #{format.spec.name} version #{format.spec.version}"
+       format.spec.loaded_from = File.join(to_dir, 'specifications', format.spec.full_name+".gemspec")
+       return format.spec
     end
-    
     
     ##
     # Writes the .gemspec specification (in Ruby) to the supplied spec_path.
@@ -79,7 +88,7 @@ module Gem
       wd = Dir.getwd
       Dir.chdir directory
       begin
-        format.file_entries do |entry, file_data|
+        format.file_entries.each do |entry, file_data|
           path = entry['path']
           mode = entry['mode']
           FileUtils.mkdir_p File.dirname(path)
@@ -144,6 +153,7 @@ module Gem
       FileUtils.rm_rf spec.full_gem_path
       FileUtils.rm_rf File.join(spec.installation_path, 'specifications', "#{spec.full_name}.gemspec")
       FileUtils.rm_rf File.join(spec.installation_path, 'cache', "#{spec.full_name}.gem")
+      DocManager.uninstall_doc(spec)
       puts "Successfully uninstalled #{spec.name} version #{spec.version}"
     end
   end

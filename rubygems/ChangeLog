@@ -1,5 +1,10 @@
 2005-03-13  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
+	* lib/rubygems/installer.rb: Removed all code relating to library
+	stubs as we haven't generated them for ages.
+
+2005-03-13  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
 	* lib/rubygems/installer.rb (Gem::Installer#shebang): Refactored and
 	stripped result to avoid ^M issues.
 

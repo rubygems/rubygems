@@ -39,11 +39,10 @@ module Gem
     # force:: [default = false] if false will fail if a required Gem is not installed,
     #         or if the Ruby version is too low for the gem
     # install_dir:: [default = Gem.dir] directory that Gem is to be installed in
-    # install_stub:: [default = false] causes the installation of a library stub in the +site_ruby+ directory
     #
     # return:: [Gem::Specification] The specification for the newly installed Gem.
     #
-    def install(force=false, install_dir=Gem.dir, install_stub=false)
+    def install(force=false, install_dir=Gem.dir)
       require 'fileutils'
       format = Gem::Format.from_file_by_path(@gem)
       unless force
@@ -71,7 +70,6 @@ module Gem
 
       extract_files(directory, format)
       generate_bin_scripts(format.spec, install_dir)
-      #generate_library_stubs(format.spec) if install_stub
       build_extensions(directory, format.spec)
       
       # Build spec/cache/doc dir.
@@ -199,20 +197,6 @@ TEXT
       text
     end
 
-    ##
-    # Creates a file in the site_ruby directory that acts as a stub
-    # for the gem.  Thus, if 'package' is installed as a gem, the user
-    # can just type <tt>require 'package'</tt> and the gem (latest
-    # version) will be loaded.  This is like a backwards compatibility
-    # so that gems and non-gems can interact.
-    #
-    # Which files are stubified?  Those included in the gem's
-    # 'autorequire' and 'library_stubs' attributes.
-    #
-    def generate_library_stubs(spec)
-      LibraryStubs.new(spec).generate
-    end
-
     def build_extensions(directory, spec)
       return unless spec.extensions.size > 0
       say "Building native extensions.  This could take a while..."
@@ -269,204 +253,6 @@ TEXT
   end  # class Installer
 
 
-  #
-  # This class represents a single library stub, which is
-  # characterised by a
-  #
-  class LibraryStub
-    SITELIBDIR = Pathname.new(Config::CONFIG['sitelibdir'])
-
-    #
-    # The 'autorequire' attribute in a gemspec is a special case: it
-    # represents a require target, not a relative path.  We therefore
-    # offer this method of creating a library stub for the autorequire
-    # file.
-    #
-    # If the given spec doesn't have an 'autorequire' value, we return
-    # +nil+.
-    #
-    def self.from_autorequire(gemspec, require_paths)
-      require_target = gemspec.autorequire
-      return nil if require_target.nil?
-      gem_relpath = find_gem_relpath(require_paths, require_target, gemspec)
-      LibraryStub.new(gemspec.name, require_paths, gem_relpath, true)
-    end
-
-    #
-    # require_paths::
-    #   ([Pathname]) The require paths in the gemspec.
-    # gem_relpath::
-    #   (String) The path to the library file, relative to the root of the gem.
-    # autorequire::
-    #   (Boolean) Whether this stub represents the gem's autorequire file.
-    #
-    def initialize(gem_name, require_paths, gem_relpath, autorequire=false)
-      @gem_name       = gem_name
-      @lib_relpath    = find_lib_relpath(require_paths, gem_relpath)
-      @require_target = @lib_relpath.to_s.sub(/\.rb\Z/, '')
-      @stub_path      = SITELIBDIR.join(@lib_relpath)
-      @autorequire    = autorequire
-    end
-
-    #
-    # The powerhouse of the class.  No exceptions should result from
-    # calling this.
-    #
-    def generate
-      if @stub_path.exist?
-        # The stub path is inhabited by a file.  If it's a gem stub,
-        # we'll overwrite it (just to be sure).  If it's a genuine
-        # library, we'll leave it alone and issue a warning.
-        unless library_stub?(@stub_path)
-          alert_warning(
-            ["Library file '#{target_path}'",
-             "already exists; not overwriting.  If you want to force a",
-             "library stub, delete the file and reinstall."].join("\n")
-          )
-          return
-        end
-      end
-
-      unless @stub_path.dirname.exist?
-        @stub_path.dirname.mkpath
-      end
-      @stub_path.open('w', 0644) do |io|
-        io.write(library_stub_content())
-      end
-    end
-
-    # Two LibraryStub objects are equal if they have the same gem name
-    # and relative (gem) path.
-    def ==(other)
-      LibraryStub === other and @gem_name == other.gem_name and
-        @gem_relpath == other.gem_relpath
-    end
-
-   private
-
-    #
-    # require_paths::
-    #   ([Pathname]) The require paths in the gemspec.
-    # require_target::
-    #   (String) The subject of an intended 'require' statement.
-    # gemspec::
-    #   (Gem::Specification) 
-    #
-    # The aim of this method is to resolve the require_target into a
-    # path relative to the root of the gem.  We try each require path
-    # in turn, and see if the require target exists under that
-    # directory.
-    #
-    # If no match is found, we return +nil+. 
-    #
-    def self.find_gem_relpath(require_paths, require_target, gemspec)
-      require_target << '.rb' unless require_target =~ /\.rb\Z/
-      gem_files = gemspec.files.map { |path| Pathname.new(path).cleanpath }
-      require_paths.each do |require_path|
-        possible_lib_path = require_path.join(require_target)
-        if gem_files.include?(possible_lib_path)
-          return possible_lib_path.to_s
-        end
-      end
-      nil  # If we get this far, there was no match.
-    end
-
-    #
-    # require_paths::
-    #   ([Pathname]) The require paths in the gemspec.
-    # gem_relpath::
-    #   (String) The path to the library file, relative to the root of the gem.
-    #
-    # Returns: the path (Pathname) to the same file, relative to the
-    # gem's library path (typically 'lib').  Thus
-    # 'lib/rake/rdoctask.rb' becomes 'rake/rdoctask.rb'.  The gemspec
-    # may contain several library paths, though that would be unusual,
-    # so we must deal with that possibility here.
-    #
-    # If there is no such relative path, we return +nil+. 
-    #
-    def find_lib_relpath(require_paths, gem_relpath)
-      require_paths.each do |require_path|
-        begin
-          return Pathname.new(gem_relpath).relative_path_from(require_path)
-        rescue ArgumentError
-          next
-        end
-        nil  # If we get this far, there was no match.
-      end
-    end
-
-    # Returns a string suitable for placing in a stub file.
-    def library_stub_content
-      content = %{
-        #
-        # This file was generated by RubyGems.
-        #
-        # The library '#{@gem_name}' is installed as part of a gem, and
-        # this file is here so you can 'require' it easily (i.e.
-        # without having to know it's a gem).
-        #
-        # gem: #{@gem_name}
-        # stub: #{@lib_relpath} 
-        #
- 
-        require 'rubygems'
-        $".delete('#{@lib_relpath}') # " emacs wart
-        require_gem '#{@gem_name}'
-      }.gsub(/^[ \t]+/, '')
-      unless @autorequire
-        content << %{require '#{@require_target}'\n}
-      end
-      content << %{
-        # (end of stub)
-      }.gsub(/^[ \t]+/, '')
-    end
-
-    # Returns true iff the contents of the given _path_ (a Pathname)
-    # appear to be a RubyGems library stub.
-    def library_stub?(path)
-      lines = path.readlines
-      lines.grep(/^# This file was generated by RubyGems/) and
-        lines.grep(/is installed as part of a gem, and/)
-    end
-
-  end  # class LibraryStub
-  
-  
-  #
-  # This class contains the logic to generate all library stubs,
-  # including the autorequire, for a single gemspec.
-  #
-  #   LibraryStubs.new(gemspec).generate 
-  #
-  class LibraryStubs
-    SITELIBDIR = Pathname.new(Config::CONFIG['sitelibdir'])
-
-    def initialize(spec)
-      @spec = spec
-    end
-
-    def generate
-      require_paths = @spec.require_paths.map { |p| Pathname.new(p) }
-      stubs = @spec.library_stubs.map {
-        |stub| LibraryStub.new(@spec.name, require_paths, stub)
-      }
-      stubs << LibraryStub.from_autorequire(@spec, require_paths)
-      stubs = stubs.compact.uniq
-      unless stubs.empty?
-        if FileTest.writable?(SITELIBDIR)
-          stubs.each do |stub| stub.generate end
-        else
-          alert_warning(
-            ["Can't install library stub for gem '#{spec.name}'",
-             "(Don't have write permissions on '#{sitelibdir}' directory.)"].join("\n")
-           )
-        end
-      end
-    end
-  end  # class LibraryStubs
-
-  
   ##
   # The Uninstaller class uninstalls a Gem
   #
@@ -491,8 +277,8 @@ TEXT
     # Performs the uninstall of the Gem.  This removes the spec, the
     # Gem directory, and the cached .gem file,
     #
-    # Application and library stubs are removed according to what is
-    # still installed.
+    # Application stubs are (or should be) removed according to what
+    # is still installed.
     #
     # XXX: Application stubs refer to specific gem versions, which
     # means things may get inconsistent after an uninstall
@@ -630,8 +416,7 @@ TEXT
     private
 
     ##
-    # Remove application and library stub files.  These are detected
-    # by the line
+    # Remove application stub files.  These are detected by the line
     #   # This file was generated by RubyGems.
     #
     # spec:: the spec of the gem that is being uninstalled
@@ -644,7 +429,6 @@ TEXT
     #
     def remove_stub_files(spec, other_specs)
       remove_app_stubs(spec, other_specs)
-      remove_lib_stub(spec, other_specs)
     end
 
     def remove_app_stubs(spec, other_specs)
@@ -668,23 +452,6 @@ TEXT
       # well at the moment.
     end
 
-    def remove_lib_stub(spec, other_specs)
-      # Library stubs are a bit easier than application stubs.  They
-      # do not refer to a specific version; they just load the latest
-      # version of the library available as a gem.  The only corner
-      # case is that different versions of the same gem may have
-      # different autorequire settings, which means they will have
-      # different library stubs.
-      #
-      # I suppose our policy should be: when you uninstall a library,
-      # make sure all the remaining versions of that gem are still
-      # supported by stubs.  Of course, the user may have expressed a
-      # preference in the past not to have library stubs installed.
-      #
-      # Mixing the segregated world of gem installations with the
-      # global namespace of the site_ruby directory certainly brings
-      # some tough issues.
-    end
   end  # class Uninstaller
 
 end  # module Gem

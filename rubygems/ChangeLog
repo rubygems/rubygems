@@ -1,5 +1,6 @@
 2004-08-11  Chad Fowler <chad@chadfowler.com>
        * lib/rubygems/gem_commands.rb: query is now case insensitive (as it used to be)
+       * lib/rubygems/installer.rb: gem_make.out wasn't being written when an extension failed to compile.
 
 2004-08-11  Rich Kilmer <rich@infoether.com>
 

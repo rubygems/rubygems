@@ -1,7 +1,6 @@
-2005-03-13  Gavin Sinclair  <gsinclair@soyabean.com.au>
+2005-03-15  Chad Fowler  <chad@chadfowler.com>
 
-	* lib/rubygems/installer.rb: Removed all code relating to library
-	stubs as we haven't generated them for ages.
+	* bin/gem_server: (htonl) rdoc opens in existing browser window.
 
 2005-03-13  Gavin Sinclair  <gsinclair@soyabean.com.au>
 

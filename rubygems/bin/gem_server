@@ -42,7 +42,7 @@ IF:first_name_entry
 ENDIF:first_name_entry
 <b>%name% %version%</b>
 IF:rdoc_installed
-  <a href="%doc_path%" target="_blank">[rdoc]</a>
+  <a href="%doc_path%">[rdoc]</a>
 ENDIF:rdoc_installed
 IFNOT:rdoc_installed
   <span title="rdoc not installed">[rdoc]</span>

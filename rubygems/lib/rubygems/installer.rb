@@ -158,8 +158,9 @@ module Gem
     # 
     # gem:: [String] The Gem name to uninstall
     #
-    def initialize(gem)
+    def initialize(gem, version="> 0")
       @gem = gem
+      @version = version
     end
     
     ##
@@ -169,7 +170,7 @@ module Gem
     def uninstall
       require 'fileutils'
       cache = Cache.from_installed_gems
-      list = cache.search(@gem)
+      list = cache.search(@gem, @version)
       if list.size == 0 
         puts "Unknown RubyGem: #{@gem}"
       elsif list.size>1

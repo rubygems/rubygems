@@ -69,6 +69,9 @@ module Gem
     #
     #
     def search(gem_name, version_requirement=Version::Requirement.new(">= 0"))
+      unless version_requirement.respond_to? :version
+        version_requirement = Version::Requirement.new(version_requirement)
+      end
       result = []
       @gems.each do |full_spec_name, spec|
         next unless spec.name == gem_name

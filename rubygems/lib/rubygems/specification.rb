@@ -5,11 +5,16 @@ module Gem
   # Platform::RUBY is the default platform (pure Ruby Gem).
   #
   module Platform
-    RUBY = nil
+    RUBY = 'ruby'
     WIN32 = 'mswin32'
     LINUX_586 = 'i586-linux'
     DARWIN = 'powerpc-darwin'
   end
+  
+  ##
+  # Potentially raised when a specification is validated 
+  #
+  class InvalidSpecificationException<Exception; end
   
   ##
   # The Specification class contains the metadata for a Gem.  A
@@ -18,6 +23,7 @@ module Gem
   #
   class Specification
     @@list = []
+    @@required_attributes = []
     
     ##
     # A list of Specifcation instances that have been defined in this
@@ -26,12 +32,19 @@ module Gem
     def self.list
       @@list
     end
+
+    ##
+    # define accessors for required attributes
+    #
+    def self.required_attribute(*symbols)
+      @@required_attributes.concat symbols
+      attr_accessor(*symbols)
+    end
     
     ##
-    # This attributes are required
+    # These attributes are required
     #
-    attr_accessor :rubygems_version, :name, :platform, :date, :summary, :require_paths
-    attr_reader :version
+    required_attribute :rubygems_version, :name, :platform, :date, :summary, :require_paths, :version
     
     ##
     # These attributes are optional
@@ -297,6 +310,23 @@ module Gem
       result << "s.description = <<-EOS\n#{description}\nEOS\n" if description
       result << "end\n"
       result
+    end
+    
+    ##
+    # Checks that the specification contains all required fields, and does a 
+    # very basic sanity check.  
+    # Raises InvalidSpecificationException if the spec does not 
+    # pass the checks..
+    #
+    def validate
+      @@required_attributes.each do |symbol|
+        if(self.send(symbol) == nil) then 
+          raise InvalidSpecificationException.new("Missing value for attribute #{symbol.to_s}")
+        end
+      end 
+      if(@require_paths.size < 1) then
+        raise InvalidSpecificationException.new("Gem spec needs to have at least one require_path")
+      end
     end
   end
 end

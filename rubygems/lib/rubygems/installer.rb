@@ -55,8 +55,9 @@ module Gem
        end
        
        write_spec(format.spec, File.join(to_dir, "specifications"))
-       
-       FileUtils.cp(@gem, File.join(to_dir, "cache"))
+       unless(File.exist?(File.join(File.join(to_dir, "cache"),@gem.split(/\//).pop))) 
+         FileUtils.cp(@gem, File.join(to_dir, "cache"))
+       end
        
        puts "Successfully installed #{format.spec.name} version #{format.spec.version}"
        format.spec.loaded_from = File.join(to_dir, 'specifications', format.spec.full_name+".gemspec")

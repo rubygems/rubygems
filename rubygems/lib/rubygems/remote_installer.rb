@@ -1,31 +1,18 @@
 module Gem
 
   class RemoteInstaller
+
+    ##
+    # This method will install package_name onto the local system.  
     # package_name:: [String] Name of the Gem to install
     # version_requirement:: [default = "> 0.0.0"] Gem version requirement to install
-    #
-    def initialize(package_name, version_requirement = "> 0.0.0")
+    def install(package_name, version_requirement = "> 0.0.0")
       unless version_requirement.respond_to?(:version)
         version_requirement = Version::Requirement.new(version_requirement)
       end
-      @package_name = package_name
-      @version_requirement = version_requirement
-    end
-
-    ##
-    # This method will install @package_name onto the local system.  It does this by:
-    # 1. Connect to all the sources and download the yaml caches (TODO: this will eventually be a separate operation
-    # 2. Find the latest version of @package_name that satisfies the specified version requirements
-    # 3. Find all the dependencies for the desired gem
-    # 4. Construct a new RemoteInstaller for all the dependencies that are not installed and install the dependencies
-    # 5. Download the necessary file from the source to the gem cache dir
-    # 6. Construct an Installer and install the gem
-    # TODO: We should be able to download through a proxy
-    # TODO: Should we be able to follow redirection?
-    def install
       sources = get_cache_sources()
       caches = get_caches(sources)
-      spec, source = find_latest_valid_package_in_caches(caches)
+      spec, source = find_latest_valid_package_in_caches(package_name,version_requirement,caches)
       dependencies = find_dependencies_not_installed(spec.dependencies)
       install_dependencies(dependencies)
       cache_dir = File.join(Gem::dir, "cache")
@@ -34,6 +21,25 @@ module Gem
       installer = new_installer(destination_file)
       installer.install()
     end
+
+    ##
+    # Search Gem repository for a gem by specifying all of part of
+    # the Gem's name   
+    def search(pattern_to_match)
+      items = []
+      pattern_to_match = /#{ pattern_to_match }/i if String === pattern_to_match
+      sources = get_cache_sources()
+      caches = get_caches(sources)
+      caches.sort.each { |key,value|
+        value.each do |entry|
+        if entry[0] =~ pattern_to_match
+            items.push entry
+        end
+        end
+      }
+      items
+    end
+
 
     ##
     # Return a list of the sources that we can download gems from
@@ -56,20 +62,20 @@ module Gem
       return caches
     end
 
-    def find_latest_valid_package_in_caches(caches)
+    def find_latest_valid_package_in_caches(package_name,version_requirement,caches)
       max_version = Version.new("0.0.0")
       package = []
       caches.each do |source, cache|
         cache.each do |name, spec|
-          if (/#{@package_name}/ === name && 
+          if (/#{package_name}/ === name && 
                 spec.version > max_version &&
-                @version_requirement.satisfied_by?(spec.version)) then
+                version_requirement.satisfied_by?(spec.version)) then
             package = [spec, source]
             max_version = spec.version
           end
         end
       end
-      raise "Could not find #{@package_name} #{@version_requirement.version}" unless max_version > Version.new("0.0.0")
+      raise "Could not find #{package_name} #{version_requirement.version}" unless max_version > Version.new("0.0.0")
       package
     end
 
@@ -88,10 +94,8 @@ module Gem
     # TODO: For now, we recursively install, but this is not the right way to do things (e.g. if a package fails to download, we shouldn't install anything).
     def install_dependencies(dependencies)
       dependencies.each do |dependency|
-        remote_installer = RemoteInstaller.new(
-            dependency.name,
-            dependency.version_requirement)
-        remote_installer.install
+        remote_installer = RemoteInstaller.new
+        remote_installer.install(dependency.name, dependency.version_requirement)
       end
     end
 
@@ -127,6 +131,7 @@ module Gem
       when Net::HTTPSuccess     then response
       when Net::HTTPRedirection then fetch(response['location'], limit - 1)
       else
+        $stderr.puts "Error downloading #{uri_str}"
         response.error!
       end
     end

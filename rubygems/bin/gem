@@ -101,6 +101,22 @@ if @verify_gem
   end
 end
 
+def display_alien_report(errors)
+  errors.each do |key, val|
+    if(val.size > 0) then 
+      puts "#{key} has #{val.size} problems"
+    else 
+      puts "#{key} is error-free"
+    end
+    val.each do |error_entry|
+      puts "\t#{error_entry.path}:"
+      puts "\t#{error_entry.problem}"
+      puts
+    end
+    puts
+  end
+end
+
 def find_files_for_gem(gem_directory)
   installed_files = []
   Find.find(gem_directory) {|file_name|
@@ -166,15 +182,5 @@ if @alien
     end
 
   end
-  errors.each do |key, val|
-    if(val.size > 0) then 
-      puts "#{key} has #{val.size} problems"
-    end
-    val.each do |error_entry|
-      puts "\t#{error_entry.path}:"
-      puts "\t#{error_entry.problem}"
-      puts
-    end
-    puts
-  end
+  display_alien_report(errors)
 end

@@ -535,7 +535,7 @@ module Gem
     #
     def dependent_gems
       out = []
-      Gem.cache.each do |name,gem|
+      Gem.source_index.each do |name,gem|
         gem.dependencies.each do |dep|
           if self.satisfies_requirement?(dep) then
             sats = []
@@ -556,7 +556,7 @@ module Gem
     private
 
     def find_all_satisfiers(dep)
-      Gem.cache.each do |name,gem|
+      Gem.source_index.each do |name,gem|
         if(gem.satisfies_requirement?(dep)) then
           yield gem
         end

@@ -496,8 +496,11 @@ TEXT
     def remove_executables(gemspec)
       return if gemspec.nil?
       if(gemspec.executables.size > 0) then
-        raise Gem::FilePermissionError.new(Config::CONFIG['bindir']) unless File.writable?(Config::CONFIG['bindir'])
-        list = Gem.cache.search(gemspec.name).delete_if {|spec| spec.version == gemspec.version}
+        raise Gem::FilePermissionError.new(Config::CONFIG['bindir']) unless
+	  File.writable?(Config::CONFIG['bindir'])
+        list = Gem.source_index.search(gemspec.name).delete_if { |spec|
+	  spec.version == gemspec.version
+	}
         executables = gemspec.executables.clone
         list.each do |spec|
           spec.executables.each do |exe_name|

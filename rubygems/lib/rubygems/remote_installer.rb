@@ -67,7 +67,7 @@ module Gem
       package = []
       caches.each do |source, cache|
         cache.each do |name, spec|
-          if (/#{package_name}/ === name && 
+          if (/#{package_name}/i === name && 
                 spec.version > max_version &&
                 version_requirement.satisfied_by?(spec.version)) then
             package = [spec, source]

@@ -1,3 +1,10 @@
+2004-11-27  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/remote_installer.rb
+	(Gem::RemoteSourceFetcher::get_size): Switched from open-uri with
+	early abort to an HTTP.head call to get the size of the yaml file
+	on the server.
+
 2004-11-26  Jim Weirich  <jim@weirichhouse.org>
 
 	* test/test_specification.rb

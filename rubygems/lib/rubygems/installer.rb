@@ -28,11 +28,11 @@ module Gem
     #
     # force:: [default = false] if false will fail if a required Gem is not installed
     # install_dir:: [default = Gem.dir] directory that Gem is to be installed in
-    # install_stub:: [default = true] causes the installation of a library stub in the +site_ruby+ directory
+    # install_stub:: [default = false] causes the installation of a library stub in the +site_ruby+ directory
     #
     # return:: [Gem::Specification] The specification for the newly installed Gem.
     #
-    def install(force=false, install_dir=Gem.dir, install_stub=true)
+    def install(force=false, install_dir=Gem.dir, install_stub=false)
       require 'fileutils'
       format = Gem::Format.from_file_by_path(@gem)
       unless force

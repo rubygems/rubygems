@@ -97,7 +97,6 @@ module Gem
     # return:: Returns a pointer to itself.
     #
     def refresh!
-      t = Time.now
       spec_dirs = Gem.path.collect {|dir| File.join(dir, "specifications")}
       files = Dir.glob("{#{spec_dirs.join(',')}}/*.gemspec")
       current_loaded_files = @gems.values.collect {|spec| spec.loaded_from}
@@ -105,7 +104,6 @@ module Gem
         gemspec = load_specification(spec_file)
         @gems[gemspec.full_name] = gemspec if gemspec
       end
-      puts "Refreshed in...#{Time.now - t}"
       self
     end
     

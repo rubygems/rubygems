@@ -1,3 +1,8 @@
+2005-01-14  Chad Fowler  <chad@chadfowler.com>
+	* lib/rubygems/installer.rb: attempt at fixing Ryan Davis's reported Shebang bug.
+	STILL NOT WORKING, because it doesn't work with ^M characters.
+	* lib/rubygems/config_file.rb: small but ugly error fixed if no config file exists.
+
 2005-01-01  Chad Fowler  <chad@chadfowler.com>
 	* Released 0.8.4
 

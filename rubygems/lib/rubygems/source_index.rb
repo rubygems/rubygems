@@ -28,10 +28,26 @@ module Gem
     # specifications::
     #   [Hash] hash of [Gem name, Gem::Specification] pairs
     #
-    def initialize(specifications)
+    def initialize(specifications={})
       @gems = specifications
     end
     
+    # Reconstruct this source index from the list of source
+    # directories.  If the list is empty, then use the directories in
+    # Gem.path.
+    #
+    def from_installed_gems(*spec_dirs)
+      @gems.clear
+      if spec_dirs.empty?
+        spec_dirs = Gem.path.collect { |dir| File.join(dir, "specifications") }
+      end
+      Dir.glob("{#{spec_dirs.join(',')}}/*.gemspec").each do |file_name|
+        gemspec = self.class.load_specification(file_name)
+        @gems[gemspec.full_name] = gemspec if gemspec
+      end
+      self
+    end
+
     # Factory method to construct a source index instance for a given
     # path.
     # 
@@ -44,15 +60,7 @@ module Gem
     #   SourceIndex instance
     #
     def self.from_installed_gems(*spec_dirs)
-      gems = {}
-      if spec_dirs.empty?
-        spec_dirs = Gem.path.collect { |dir| File.join(dir, "specifications") }
-      end
-      Dir.glob("{#{spec_dirs.join(',')}}/*.gemspec").each do |file_name|
-        gemspec = load_specification(file_name)
-        gems[gemspec.full_name] = gemspec if gemspec
-      end
-      self.new(gems)
+      self.new.from_installed_gems(*spec_dirs)
     end
 
     # Load a specification from a file (eval'd Ruby code)
@@ -124,15 +132,7 @@ module Gem
     # return:: Returns a pointer to itself.
     #
     def refresh!
-      spec_dirs = Gem.path.collect {|dir| File.join(dir, "specifications")}
-      files = Dir.glob("{#{spec_dirs.join(',')}}/*.gemspec")
-      current_loaded_files = @gems.values.collect {|spec| spec.loaded_from}
-      (files - current_loaded_files).each do |spec_file|
-        gemspec = Gem::SourceIndex.load_specification(spec_file)
-
-        @gems[gemspec.full_name] = gemspec if gemspec
-      end
-      self
+      from_installed_gems
     end
     
   end

@@ -37,6 +37,7 @@ module Gem
       register_command UninstallCommand.new
       register_command CheckCommand.new
       register_command BuildCommand.new
+      register_command DependencyCommand.new
       register_command QueryCommand.new
       register_command ListCommand.new
       register_command SearchCommand.new

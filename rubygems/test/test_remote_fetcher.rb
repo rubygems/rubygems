@@ -37,7 +37,9 @@ class TestRemoteFetcher < Test::Unit::TestCase
   
   def test_explicit_proxy
     use_ui(MockGemUi.new) do
-      fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", "http://localhost:12345")
+      fetcher = Gem::RemoteSourceFetcher.new(
+	"http://localhost:12344",
+	"http://localhost:12345")
       assert_equal PROXY_DATA.size, fetcher.size
       assert_equal PROXY_DATA, fetcher.fetch_path("/yaml")
       source_index = fetcher.source_index
@@ -114,48 +116,48 @@ class TestRemoteFetcher < Test::Unit::TestCase
       @proxy_server  ||= start_server(12345, PROXY_DATA)
       @enable_yaml = true
       @enable_zip = false
-      sleep 1
     end
     
     private
     
     def start_server(port, data)
       Thread.new do
-	begin
-	  null_logger = Log.new('/dev/null')
-	  s = HTTPServer.new(
-	    :Port            => port,
-	    :DocumentRoot    => ".",
-	    :Logger          => null_logger,
-	    :AccessLog       => null_logger
-	    )
-	  s.mount_proc("/kill") { |req, res| s.shutdown }
-	  s.mount_proc("/yaml") { |req, res|
-	    if @enable_yaml
-	      res.body = data
-	      res['Content-Type'] = 'text/plain'
-	      res['content-length'] = data.size
-	    else
-	      res.code = "404"
-	      res.body = "<h1>NOT FOUND</h1>"
-	      res['Content-Type'] = 'text/html'
-	    end
-	  }
-	  s.mount_proc("/yaml.Z") { |req, res|
-	    if @enable_zip
-	      res.body = Zlib::Deflate.deflate(data)
-	      res['Content-Type'] = 'text/plain'
-	    else
-	      res.code = "404"
-	      res.body = "<h1>NOT FOUND</h1>"
-	      res['Content-Type'] = 'text/html'
-	    end
-	  }
-	  s.start
-	rescue Exception => ex
-	  puts "ERROR during server thread: #{ex.message}"
-	end
+        begin
+          null_logger = Log.new('/dev/null')
+          s = HTTPServer.new(
+            :Port            => port,
+            :DocumentRoot    => ".",
+            :Logger          => null_logger,
+            :AccessLog       => null_logger
+            )
+          s.mount_proc("/kill") { |req, res| s.shutdown }
+          s.mount_proc("/yaml") { |req, res|
+            if @enable_yaml
+              res.body = data
+              res['Content-Type'] = 'text/plain'
+              res['content-length'] = data.size
+            else
+              res.code = "404"
+              res.body = "<h1>NOT FOUND</h1>"
+              res['Content-Type'] = 'text/html'
+            end
+          }
+          s.mount_proc("/yaml.Z") { |req, res|
+            if @enable_zip
+              res.body = Zlib::Deflate.deflate(data)
+              res['Content-Type'] = 'text/plain'
+            else
+              res.code = "404"
+              res.body = "<h1>NOT FOUND</h1>"
+              res['Content-Type'] = 'text/html'
+            end
+          }
+          s.start
+        rescue Exception => ex
+          puts "ERROR during server thread: #{ex.message}"
+        end
       end
+      sleep 1
     end
   end
   

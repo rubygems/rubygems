@@ -122,6 +122,9 @@ module Gem
     # +autorequire+ is true, then automatically require the specified
     # autorequire file in the gem spec.
     #
+    # Returns true if the gem is loaded by this call, false if it is
+    # already loaded, or an exception otherwise.
+    #
     def activate(gem, autorequire, *version_requirements)
       unless version_requirements.size > 0
         version_requirements = ["> 0.0.0"]
@@ -130,53 +133,57 @@ module Gem
         gem = Gem::Dependency.new(gem, version_requirements)
       end
       
-      gem_name_pattern = /^#{gem.name}$/
-      matches = Gem.source_index.search(gem_name_pattern, gem.version_requirements)
-      if matches.size==0
-        matches = Gem.source_index.search(gem_name_pattern)
-        if matches.size==0
-          error = Gem::LoadError.new("\nCould not find RubyGem #{gem.name} (#{gem.version_requirements})\n")
-          error.name = gem.name
-          error.version_requirement = gem.version_requirements
-          raise error
-        else
-          error = Gem::LoadError.new("\nRubyGem version error: #{gem.name}(#{matches.first.version} not #{gem.version_requirements})\n")
-          error.name = gem.name
-          error.version_requirement = gem.version_requirements
-          raise error
-        end
-      else
-        # Get highest matching version
-        spec = matches.last
-        if spec.loaded?
-          result = spec.autorequire ? require(spec.autorequire) : false
-          return result || false 
-        end
-        
-        spec.loaded = true
-        
-        # Load dependent gems first
-        spec.dependencies.each do |dep_gem|
-          activate(dep_gem, autorequire)
-        end
-        
-        # add bin dir to require_path
-        if(spec.bindir) then
-          spec.require_paths << spec.bindir
-        end
+      matches = Gem.source_index.find_name(gem.name, gem.version_requirements)
+      report_activate_error(gem) if matches.empty?
 
-        # Now add the require_paths to the LOAD_PATH
-        spec.require_paths.each do |path|
-          $:.unshift File.join(spec.full_gem_path, path)
-        end
-        
-        require spec.autorequire if autorequire && spec.autorequire
-        return true
+      # Get highest matching version
+      spec = matches.last
+      if spec.loaded?
+	return false unless autorequire
+	result = spec.autorequire ? require(spec.autorequire) : false
+	return result || false 
       end
-    
+      
+      spec.loaded = true
+      
+      # Load dependent gems first
+      spec.dependencies.each do |dep_gem|
+	activate(dep_gem, autorequire)
+      end
+      
+      # add bin dir to require_path
+      if(spec.bindir) then
+	spec.require_paths << spec.bindir
+      end
+      
+      # Now add the require_paths to the LOAD_PATH
+      spec.require_paths.each do |path|
+	$:.unshift File.join(spec.full_gem_path, path)
+      end
+      
+      require spec.autorequire if autorequire && spec.autorequire
+      return true
     end
     
-    ##
+    # Report a load error during activation.  The message of load
+    # error depends on whether it was a version mismatch or if there
+    # are not gems of any version by the requested name.
+    def report_activate_error(gem)
+      matches = Gem.source_index.find_name(gem.name)
+      if matches.size==0
+	error = Gem::LoadError.new(
+	  "Could not find RubyGem #{gem.name} (#{gem.version_requirements})\n")
+      else
+	error = Gem::LoadError.new(
+	  "RubyGem version error: " +
+	  "#{gem.name}(#{matches.first.version} not #{gem.version_requirements})\n")
+      end
+      error.name = gem.name
+      error.version_requirement = gem.version_requirements
+      raise error
+    end
+    private :report_activate_error
+
     # Reset the +dir+ and +path+ values.  The next time +dir+ or +path+
     # is requested, the values will be calculated from scratch.  This is
     # mainly used by the unit tests to provide test isolation.

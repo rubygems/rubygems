@@ -1,3 +1,8 @@
+2004-06-08  Rich Kilmer <rich@infoether.com>
+        * fixed bug in doc_manager.rb whereby the extra_rdoc_files should
+          be appended to the list of directories prior to prepending the
+          full path.
+
 2004-06-08  Gavin Sinclair <gsinclair@soyabean.com.au>
 	* bin/gem_server: List installed gems in [name,version] order.
 

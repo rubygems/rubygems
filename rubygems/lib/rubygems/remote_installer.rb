@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'socket'
 
 module Gem
@@ -120,6 +121,39 @@ module Gem
 	result << line if state == :copy
       end
       result
+    end
+
+  end
+
+  class CachedFetcher
+    def initialize(source_uri, proxy)
+      @source_uri = source_uri
+      @fetcher = RemoteSourceFetcher.new(source_uri, proxy)
+      read_local_cache
+    end
+
+    def size
+      @fetcher.size
+    end
+
+    def fetch_path(path="")
+      @fetcher.fetch_path(path)
+    end
+
+    def source_info
+      cache = @local_cache[@source_uri]
+      if cache['size'] == @fetcher.size
+	cache['cache']
+      else
+	@fetcher.source_info
+      end
+    end
+
+    private
+
+    def read_local_cache
+      source_cache_fn = File.join(Gem.dir, "source_cache")
+      @local_cache = open(source_cache_fn) { |f| YAML.load(f.read) }
     end
 
   end
@@ -259,7 +293,8 @@ module Gem
         end
       end
       if specs_n_sources.size == 0
-        raise GemNotFoundException.new("Could not find #{gem_name} (#{version_requirement}) in the repository")
+        raise GemNotFoundException.new(
+	  "Could not find #{gem_name} (#{version_requirement}) in the repository")
       end
       # bad code: specs_n_sources.sort! { |a, b| a[0].version <=> b[0].version }.reverse! 
       specs_n_sources = specs_n_sources.sort_by { |x| x[0].version }.reverse
@@ -306,7 +341,11 @@ module Gem
             end
           )
 
-          installed_gems << remote_installer.install(dependency.name, dependency.version_requirements, force, install_dir)
+          installed_gems << remote_installer.install(
+	    dependency.name,
+	    dependency.version_requirements,
+	    force,
+	    install_dir)
         else
           raise DependencyError.new("Required dependency #{dependency.name} not installed")
         end

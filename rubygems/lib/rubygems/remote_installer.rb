@@ -58,7 +58,7 @@ module Gem
     # the Gem's name   
     def search(pattern_to_match)
       results = []
-      caches = get_caches(get_cache_sources)
+      caches = get_caches(get_cache_sources, Gem.dir)
       caches.each do |cache|
         results << cache[1].search(pattern_to_match)
       end

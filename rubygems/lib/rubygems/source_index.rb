@@ -61,6 +61,7 @@ module Gem
     # return:: Specification instance or nil if an error occurs
     #
     def self.load_specification(file_name)
+puts "DBG: file_name is #{file_name}"
       begin
         spec_code = File.read(file_name)
         gemspec = eval(spec_code)

@@ -139,6 +139,7 @@ module Gem
         #end
       end
       Dir.chdir(start_dir)
+      result
     end
 
     def remove_leading_dot_dir(path)

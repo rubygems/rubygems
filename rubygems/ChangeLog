@@ -1,3 +1,7 @@
+2005-01-20  Chad Fowler  <chad@chadfowler.com>
+	* lib/rubygems/validator.rb: Applied Austin Ziegler/Kasper Schiess's
+	patch to fix unit test running bug.
+
 2005-01-14  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems/installer.rb: attempt at fixing Ryan Davis's reported Shebang bug.
 	STILL NOT WORKING, because it doesn't work with ^M characters.

@@ -26,22 +26,16 @@ CLOBBER.include(
 
 task :default => [:test]
 
-desc "Run unit tests"
-task :test do
-  test_name = ENV['TEST'] || 'test/test*.rb'
-  ruby %{-Ilib -rscripts/runtest -e 'run_tests("#{test_name}", true)'}
+Rake::TestTask.new(:test) do |t|
+  t.test_files = FileList['test/test*.rb']
 end
 
-desc "Run Functional Tests"
-task :functional do
-  test_name = ENV['TEST'] || 'test/functional.rb'
-  ruby %{-Ilib -rscripts/runtest -e 'run_tests("#{test_name}", true)'}
+Rake::TestTask.new(:functional) do |t|
+  t.test_files = FileList['test/functional*.rb']
 end
 
-desc "Run All Tests"
-task :alltests do
-  test_name = ENV['TEST'] || 'test/{test,functional}*.rb'
-  ruby %{-Ilib -rscripts/runtest -e 'run_tests("#{test_name}", true)'}
+Rake::TestTask.new(:alltests) do |t|
+  t.test_files = FileList['test/{test,functional}*.rb']
 end
 
 desc "Run the tests for a build"

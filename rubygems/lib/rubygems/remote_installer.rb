@@ -462,7 +462,10 @@ module Gem
       to_install = []
       dependencies.each do |dependency|
         begin
-          require_gem(dependency.name, *dependency.requirement_list)
+          require_gem_with_options(
+	    dependency.name,
+	    dependency.requirement_list,
+	    :auto_require=>false)
         rescue LoadError => e
           to_install.push dependency
         end

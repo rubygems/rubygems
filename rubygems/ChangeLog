@@ -1,3 +1,20 @@
+2004-06-26  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/installer.rb (Gem::Uninstaller::uninstall): Fixed
+	null pointer bug where a list was destroyed in a method.
+
+	* lib/rubygems/gem_commands.rb (Gem::BuildCommand::load_gemspecs):
+	yaml gemspec files are now accepted by the build command.
+
+	* lib/rubygems/command.rb (Gem::Command::parser): Created an
+	on-demand option parser for all commands.
+	(Gem::Command::handle_options): Command line option hash is now
+	and instance variable with a reader.
+
+	* Rakefile: Linked package version to the value in the rubygems.rb
+	file.  The gem env command now shows both gem version (e.g. 0.6)
+	and the package version (e.g. 0.6.1).
+
 2004-06-25  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/gem_commands.rb (Gem::InfoCommand): Dropped the

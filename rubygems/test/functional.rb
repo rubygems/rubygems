@@ -35,7 +35,7 @@ class FunctionalTest < Test::Unit::TestCase
   def test_environment
     gem 'environment'
     
-    assert_match /VERSION:\s+\d+\.\d+$/, @out
+    assert_match /VERSION:\s+\d+\.\d+( |$)/, @out
     assert_match /INSTALLATION DIRECTORY:/, @out
     assert_match /GEM PATH:/, @out
     assert_match /REMOTE SOURCES:/, @out
@@ -68,9 +68,23 @@ class FunctionalTest < Test::Unit::TestCase
 
   def test_build
     FileUtils.rm_f ONEGEM
-    # TODO: Remove -n
     Dir.chdir(ONEDIR) do
       gem "build one.gemspec"
+    end
+    assert File.exist?(ONEGEM), "Gem file (#{ONEGEM}) should exist"
+    assert_match /Successfully built RubyGem/, @out
+    assert_match /Name: one$/, @out
+    assert_match /Version: 0.0.1$/, @out
+    assert_match /File: #{ONENAME}/, @out
+    spec = read_gem_file(ONEGEM)
+    assert_equal "one", spec.name
+    assert_equal "Test GEM One", spec.summary
+  end
+
+  def test_build_from_yaml
+    FileUtils.rm_f ONEGEM
+    Dir.chdir(ONEDIR) do
+      gem "build one.yaml"
     end
     assert File.exist?(ONEGEM), "Gem file (#{ONEGEM}) should exist"
     assert_match /Successfully built RubyGem/, @out

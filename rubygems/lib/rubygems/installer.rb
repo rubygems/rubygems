@@ -319,7 +319,7 @@ TEXT
         gem_list << "All versions"
         gem_name, index = choose_from_list("Select RubyGem to uninstall:", gem_list)
         if index == list.size
-          remove_all(list) 
+          remove_all(list.dup) 
 	  remove_executables(list.last)
         elsif index >= 0 && index < list.size
           remove(list[index], list)
@@ -338,23 +338,24 @@ TEXT
     #
     # gemspec::[Specification] the gem whose executables need to be removed.
     def remove_executables(gemspec)
+      return if gemspec.nil?
       if(gemspec.executables.size > 0) then
-      answer = alert_warning("About to remove executables and scripts for: #{gemspec.executables.join(", ")}", "Proceed? [Y/n]")
-      if(answer =~/^n/i) then
-        say "Executables and scripts will remain installed."
-	return
-      else
-        require 'rbconfig'
-        bindir = Config::CONFIG['bindir']
-        gemspec.executables.each do |exe_name|
-	  say "Removing #{exe_name}"
-	  File.unlink(File.join(bindir, exe_name))      
-	  File.unlink(File.join(bindir, exe_name + ".cmd"))
+	answer = alert_warning("About to remove executables and scripts for: #{gemspec.executables.join(", ")}", "Proceed? [Y/n]")
+	if(answer =~/^n/i) then
+	  say "Executables and scripts will remain installed."
+	  return
+	else
+	  require 'rbconfig'
+	  bindir = Config::CONFIG['bindir']
+	  gemspec.executables.each do |exe_name|
+	    say "Removing #{exe_name}"
+	    File.unlink(File.join(bindir, exe_name)) rescue nil
+	    File.unlink(File.join(bindir, exe_name + ".cmd")) rescue nil
+	  end
 	end
       end
-      end
     end
-
+    
     #
     # list:: the list of all gems to remove
     #

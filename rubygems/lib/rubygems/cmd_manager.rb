@@ -55,7 +55,7 @@ module Gem
     rescue Gem::Exception => ex
       alert_error "While executing gem ... (#{ex.class})\n    #{ex.to_s}"
       terminate_interaction(1)
-    rescue RuntimeError => ex
+    rescue StandardError => ex
       alert_error "While executing gem ... (#{ex.class})\n    #{ex.to_s}"
       terminate_interaction(1)
     end

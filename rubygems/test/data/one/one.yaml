@@ -1,0 +1,27 @@
+--- !ruby/object:Gem::Specification 
+rubygems_version: "0.6"
+name: one
+version: !ruby/object:Gem::Version 
+  version: 0.0.1
+date: 2004-06-25 23:26:03.422816 -04:00
+platform: ruby
+summary: Test GEM One
+require_paths: 
+  - lib
+files: 
+  - lib/one.rb
+  - README.one
+autorequire: one
+author: Jim Weirich
+required_ruby_version: !ruby/object:Gem::Version::Requirement 
+  requirements: 
+    - 
+      - ">"
+      - !ruby/object:Gem::Version 
+        version: 0.0.0
+email: jim@weirichhouse.org
+homepage: http://onestepback.org
+has_rdoc: true
+requirements: 
+  - none
+description: Test GEM for customer tests

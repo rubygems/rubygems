@@ -6,7 +6,7 @@ module Gem
     
     Option = Struct.new(:short, :long, :description, :handler)
     
-    attr_reader :command
+    attr_reader :command, :options
     attr_accessor :summary, :defaults, :program_name
     
     def initialize(command, summary=nil, defaults={})
@@ -14,23 +14,24 @@ module Gem
       @summary = summary
       @program_name = "gem #{command}"
       @defaults = defaults
+      @options = defaults.dup
       @option_list = []
       @parser = nil
     end
     
     def show_help
-      @parser.program_name = @program_name
-      say @parser
+      parser.program_name = @program_name
+      say parser
     end
 
     def invoke(*args)
-      options = handle_options(args)
+      handle_options(args)
       if options[:help]
 	show_help
       elsif @when_invoked
 	@when_invoked.call(options)
       else
-	execute(options)
+	execute
       end
     end
     
@@ -45,30 +46,38 @@ module Gem
     private
 
     def handle_options(args)
-      options = @defaults.clone
-      require 'optparse'
-      @parser = OptionParser.new
-      option_names = {}
-      configure_options(@option_list, option_names, options)
-      @parser.separator("")
-      @parser.separator("  Common Options:")
-      configure_options(Command.common_options, option_names, options)
       begin
-	@parser.parse!(args)
-	options[:args] = args
+	@options = @defaults.clone
+	parser.parse!(args)
+	@options[:args] = args
       rescue OptionParser::ParseError => err
 	alert_error(err.message)
 	terminate_interaction!
       end
-      options
     end
     
-    def configure_options(option_list, option_names, options)
+    # Create on demand parser.
+    def parser
+      create_option_parser if @parser.nil?
+      @parser
+    end
+
+    def create_option_parser
+      require 'optparse'
+      @parser = OptionParser.new
+      option_names = {}
+      configure_options(@option_list, option_names)
+      @parser.separator("")
+      @parser.separator("  Common Options:")
+      configure_options(Command.common_options, option_names)
+    end
+
+    def configure_options(option_list, option_names)
       option_list.each do |args, handler|
 	dashes = args.select { |arg| arg =~ /^-/ }
 	next if dashes.any? { |arg| option_names[arg] }
 	@parser.on(*args) do |value|
-	  handler.call(value, options)
+	  handler.call(value, @options)
 	end
 	dashes.each do |arg| option_names[arg] = true end
       end

@@ -5,7 +5,7 @@ module Gem
   class CommandLineError < Gem::Exception; end
 
   module CommandAids
-    def get_one_gem_name(options)
+    def get_one_gem_name
       args = options[:args]
       if args.nil? || args.size == 0
 	fail Gem::CommandLineError,
@@ -37,12 +37,12 @@ module Gem
       end
     end
 
-    def local?(opts)
-      opts[:domain] == :local || opts[:domain] == :both
+    def local?
+      options[:domain] == :local || options[:domain] == :both
     end
 
-    def remote?(opts)
-      opts[:domain] == :remote || opts[:domain] == :both
+    def remote?
+      options[:domain] == :remote || options[:domain] == :both
     end
   end
 
@@ -66,7 +66,7 @@ module Gem
       end
     end
 
-    def execute(options)
+    def execute
       arg = options[:args][0]
       if options[:help_commands] || begins?("commands", arg)
 	out = "GEM commands are:\n"
@@ -140,9 +140,9 @@ module Gem
       end
     end
     
-    def execute(options)
-      gem_name = get_one_gem_name(options)
-      if local?(options)
+    def execute
+      gem_name = get_one_gem_name
+      if local?
 	begin
 	  say "Attempting local installation of '#{options[:name]}'"
 	  filename = gem_name
@@ -166,7 +166,7 @@ module Gem
 	end
       end
       
-      if remote?(options) && installed_gems.nil?
+      if remote? && installed_gems.nil?
 	begin
 	  say "Attempting remote installation of '#{gem_name}'"
 	  installer = Gem::RemoteInstaller.new(options[:http_proxy])
@@ -232,8 +232,8 @@ module Gem
       end
     end
     
-    def execute(options)
-      gem_name = get_one_gem_name(options)
+    def execute
+      gem_name = get_one_gem_name
       say "Attempting to uninstall gem '#{gem_name}'"
       begin
 	Gem::Uninstaller.new(gem_name, options[:version]).uninstall
@@ -257,7 +257,7 @@ module Gem
       end
     end
     
-    def execute(options)
+    def execute
       if options[:alien]
 	say "Performing the 'alien' operation"
 	Gem::Validator.new.alien.each do |key, val|
@@ -303,13 +303,13 @@ module Gem
       super('build', 'Build a gem from a gemspec')
     end
     
-    def execute(options)
-      gemspec = get_one_gem_name(options)
+    def execute
+      gemspec = get_one_gem_name
       if File.exist?(gemspec)
 	say "Attempting to build gem spec '#{gemspec}'"
 	begin
-	  load gemspec
-	  Gem::Specification.list.each do |spec|
+	  specs = load_gemspecs(gemspec)
+	  specs.each do |spec|
 	    Gem::Builder.new(spec).build
 	  end
 	  return
@@ -320,6 +320,29 @@ module Gem
 	alert_error "Gemspec file not found: #{gemspec}"
       end
     end
+
+    def load_gemspecs(filename)
+      if yaml?(filename)
+	require 'yaml'
+	result = []
+	open(filename) do |f|
+	  while spec = YAML.load(f)
+	    result << spec
+	  end
+	end
+      else
+	load filename
+	result = Gem::Specification.list
+      end
+      result
+    end
+
+    def yaml?(filename)
+      line = open(filename) { |f| line = f.gets }
+      result = line =~ %r{^--- *!ruby/object:Gem::Specification}
+      result
+    end
+
   end
 
   ####################################################################
@@ -340,13 +363,13 @@ module Gem
       add_local_remote_options
     end
     
-    def execute(options)
-      if local?(options)
+    def execute
+      if local?
 	say
 	say "*** LOCAL GEMS ***"
 	output_query_results(Gem::cache.search(options[:name]))
       end
-      if remote?(options)
+      if remote?
 	say
 	say "*** REMOTE GEMS ***"
 	begin
@@ -442,7 +465,7 @@ module Gem
       end
     end
     
-    def execute(options)
+    def execute
       say "Upgrading installed gems..."
       hig = highest_installed_gems = {}
       Gem::Cache.from_installed_gems.each do |name, spec|
@@ -482,10 +505,12 @@ module Gem
       super('environment', 'RubyGems Environmental Information')
     end
 
-    def execute(options)
+    def execute
       out = ''
       arg = options[:args][0]
-      if begins?("version", arg)
+      if begins?("packageversion", arg)
+	out = Gem::RubyGemsPackageVersion.to_s
+      elsif begins?("version", arg)
 	out = Gem::RubyGemsVersion.to_s
       elsif begins?("gemdir", arg)
 	out = Gem.dir
@@ -499,7 +524,7 @@ module Gem
 	fail Gem::CommandLineError, "Unknown enviroment option [#{arg}]"
       else
 	out = "Rubygems Environment:\n"
-	out << "  - VERSION: #{Gem::RubyGemsVersion}\n"
+	out << "  - VERSION: #{Gem::RubyGemsVersion} (#{Gem::RubyGemsPackageVersion})\n"
 	out << "  - INSTALLATION DIRECTORY: #{Gem.dir}\n"
 	out << "  - GEM PATH:\n"
 	Gem.path.collect { |p| out << "     - #{p}\n" }
@@ -526,19 +551,19 @@ module Gem
       add_local_remote_options
     end
 
-    def execute(options)
-      if local?(options)
-	gem = get_one_gem_name(options)
+    def execute
+      if local?
+	gem = get_one_gem_name
 	gem_specs = Gem::Cache.from_installed_gems.search(gem, options[:version])
 	if gem_specs.size > 0
 	  require 'yaml'
 	  gem_specs.each {|spec| say spec.to_yaml; say "\n"}
 	else
-	  alert_error "Unkown gem #{gem}"
+	  alert_error "Unknown gem #{gem}"
 	end
       end
       
-      if remote?(options)
+      if remote?
 	say "(Remote 'info' operation is not yet implemented.)"
 	# NOTE: when we do implement remote info, make sure we don't duplicate huge swabs of
 	# local data.  If it's the same, just say it's the same.

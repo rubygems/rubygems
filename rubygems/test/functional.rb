@@ -25,7 +25,7 @@ class FunctionalTest < Test::Unit::TestCase
   end
 
   def test_info
-    gem '--rubygems-info'
+    gem 'rubygems-info'
     
     assert_match /VERSION:\s+\d+\.\d+$/, @out
     assert_match /INSTALLATION DIRECTORY:/, @out
@@ -40,8 +40,9 @@ class FunctionalTest < Test::Unit::TestCase
 
   def test_build
     FileUtils.rm_f ONEGEM
+    # TODO: Remove -n
     Dir.chdir(ONEDIR) do
-      gem "-b one.gemspec"
+      gem "build -n one.gemspec"
     end
     assert File.exist?(ONEGEM), "Gem file (#{ONEGEM}) should exist"
     assert_match /Successfully built RubyGem/, @out
@@ -55,8 +56,8 @@ class FunctionalTest < Test::Unit::TestCase
 
   def test_bogus_source_hoses_up_remote_install_but_gem_command_gives_decent_error_message
     @ruby_options << " -rtest/bogussources"
-    gem "--remote --install=asdf"
-    assert_match(/^Error fetching remote gem cache/, @err)
+    gem "install -n asdf --remote"
+    assert_match(/^ *Error fetching remote gem cache/m, @err)
     assert_status 1
   end
 

@@ -64,6 +64,20 @@ module Gem
       end
       result
     end
+    
+    ##
+    #
+    #
+    def search(gem_name, version_requirement=Version::Requirement.new(">= 0"))
+      result = []
+      @gems.each do |full_spec_name, spec|
+        next unless spec.name == gem_name
+        result << spec if version_requirement.satisfied_by?(spec.version)
+      end
+      result = result.sort
+      result
+    end
+    
   end
   
 end

@@ -165,6 +165,15 @@ module Gem
     end
     
     ##
+    # Compare specs (name then version)
+    #
+    def <=>(other)
+      result = @name<=>other.name
+      result = @version<=>other.version if result==0
+      result
+    end
+    
+    ##
     # Order the YAML properties
     #
     # return:: [Array] list of string attributes for YAML

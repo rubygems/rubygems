@@ -169,12 +169,24 @@ module Gem
     def uninstall
       require 'fileutils'
       cache = Cache.from_installed_gems
-      list = cache.search_by_name(@gem)
+      list = cache.search(@gem)
       if list.size == 0 
         puts "Unknown RubyGem: #{@gem}"
       elsif list.size>1
-        raise "process uninstall list"
-        #choose from list
+        puts "Select RubyGem to uninstall:"
+        list.each_with_index do |gem, index|
+          puts " #{index+1}. #{gem.full_name}"
+        end
+        puts " #{list.size+1}. All versions"
+        print "> "
+        response = gets.strip.to_i - 1
+        if response == list.size
+          list.each {|gem| remove(gem)}
+        elsif response < list.size
+          remove(list[response])
+        else
+          puts "Error: must enter a number [1-#{list.size+1}]"
+        end
       else
         remove(list[0])
       end

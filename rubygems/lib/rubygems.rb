@@ -18,34 +18,35 @@ module Kernel
       gem = Gem::Dependency.new(gem, version_requirement)
     end
     
-    error_message = "\nCould not find RubyGem #{gem.name}\n"
-    Gem::Cache.from_installed_gems.each do |full_spec_name, spec|
-      next unless spec.name == gem.name
-      if gem.version_requirement.satisfied_by?(spec.version)
-      
-        return false if spec.loaded?
-        
-        spec.loaded = true
-        
-        # Load dependent gems first
-        spec.dependencies.each do |dep_gem|
-          require_gem(dep_gem)
-        end
-        
-        # Now add the require_paths to the LOAD_PATH
-        spec.require_paths.each do |path|
-          $:.unshift File.join(spec.full_gem_path, path)
-        end
-        
-        require spec.autorequire if spec.autorequire
-        
-        return true
+    matches = Gem.cache.search(gem.name, gem.version_requirement)
+    if matches.size==0
+      matches = Gem.cache.search(gem.name)
+      if matches.size==0
+        raise LoadError.new("\nCould not find RubyGem #{gem.name}\n")
       else
-        error_message = "\nRubyGem version error: #{gem.name}(#{spec.version} not #{gem.version_requirement.version})\n"
+        raise LoadError.new("\nRubyGem version error: #{gem.name}(#{matches.first.version} not #{gem.version_requirement.version})\n")
       end
+    else
+      # Get highest matching version
+      spec = matches.last
+      return false if spec.loaded?
+      
+      spec.loaded = true
+      
+      # Load dependent gems first
+      spec.dependencies.each do |dep_gem|
+        require_gem(dep_gem)
+      end
+      
+      # Now add the require_paths to the LOAD_PATH
+      spec.require_paths.each do |path|
+        $:.unshift File.join(spec.full_gem_path, path)
+      end
+      
+      require spec.autorequire if spec.autorequire
+      
+      return true
     end
-
-    raise LoadError.new(error_message)
   end
 end
 

@@ -58,7 +58,7 @@ class RemoteInstallerTest < Test::Unit::TestCase
     end
   end
 
-  CACHE_SOURCE = "http://localhost:8808"
+  CACHE_SOURCE = "http://www.chadfowler.com:8808"
 
   def test_get_cache_sources
     @remote_installer = RemoteInstaller.new('foo')

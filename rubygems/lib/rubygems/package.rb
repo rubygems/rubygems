@@ -519,18 +519,37 @@ class TarInput
     end
 
     def each(&block)
-        @tarreader.each do |entry|
-            next unless entry.full_name == "data.tar.gz"
-            begin
-                is = Zlib::GzipReader.new entry
-                TarReader.new(is) do |inner|
-                    inner.each(&block)
-                end
-            ensure
-                is.finish
-            end
+      @tarreader.each do |entry|
+        next unless entry.full_name == "data.tar.gz"
+	is = zipped_stream(entry)
+        begin
+          TarReader.new(is) do |inner|
+            inner.each(&block)
+          end
+        ensure
+          is.close if is
         end
-        @tarreader.rewind
+      end
+      @tarreader.rewind
+    end
+
+    # Return an IO stream for the zipped entry.
+    #
+    # If zlib is earlier than 1.2.1, then read the entry into memory
+    # and create a string IO object from it.  This avoids a "buffer
+    # error" problem on windows when using an earlier version of zlib.
+    # This problem has not been observed in versions of zlib 1.2.1 or
+    # later.
+    def zipped_stream(entry)
+      if Zlib::ZLIB_VERSION < '1.2.1'
+	zis = Zlib::GzipReader.new entry
+	dis = zis.read
+	is = StringIO.new(dis)
+      else
+	is = Zlib::GzipReader.new entry
+      end
+    ensure
+      zis.finish if zis
     end
 
     def extract_entry(destdir, entry, expected_md5sum = nil)

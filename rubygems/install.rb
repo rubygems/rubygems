@@ -28,6 +28,7 @@ def install_rb(srcdir = nil)
     next if (f = f[libdir.length+1..-1]) == nil
     next if (/CVS$/ =~ File.dirname(f))
     next if File.basename(f) =~ /^\./
+    next if f =~ /~$/
     paths.push f
     dirs |= [File.dirname(f)]
   end

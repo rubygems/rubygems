@@ -129,10 +129,13 @@ module Gem
 
     # Same as :attribute, but ensures that values assigned to the
     # attribute are array values by applying :to_a to the value.
-    def self.array_attribute(name, default=nil)
-      attribute(name, default)
-      remove_method "#{name}="
+    def self.array_attribute(name)
+      @@attributes << [name, []]
+      @@default_value[name] = []
       module_eval %{
+        def #{name}
+	  @#{name} ||= []
+	end
         def #{name}=(value)
 	  @#{name} = value.to_a
 	end
@@ -219,15 +222,15 @@ module Gem
     attribute :has_rdoc,               false
     attribute :required_ruby_version,  Gem::Version::Requirement.default
     attribute :platform,               Gem::Platform::RUBY
-    array_attribute :authors,          []
-    array_attribute :files,            []
-    array_attribute :test_files,       []
-    array_attribute :rdoc_options,     []
-    array_attribute :extra_rdoc_files, []
-    array_attribute :executables,      []
-    array_attribute :extensions,       []
-    array_attribute :requirements,     []
-    array_attribute :dependencies,     []
+    array_attribute :authors
+    array_attribute :files
+    array_attribute :test_files
+    array_attribute :rdoc_options
+    array_attribute :extra_rdoc_files
+    array_attribute :executables
+    array_attribute :extensions
+    array_attribute :requirements
+    array_attribute :dependencies
 
     read_only :dependencies
 

@@ -76,15 +76,14 @@ module Gem
     end
     
     ##
-    # Writes the .gemspec specification (in YAML) to the supplied spec_path.
+    # Writes the .gemspec specification (in Ruby) to the supplied spec_path.
     #
     # spec:: [Gem::Specification] The Gem specification to output
     # spec_path:: [String] The location (path) to write the gemspec to
     #
     def write_spec(spec, spec_path)
-      require 'yaml'
       File.open(File.join(spec_path, spec.full_name+".gemspec"), "w") do |file|
-        file.puts spec.to_yaml
+        file.puts spec.to_ruby
       end
     end
     

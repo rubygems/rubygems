@@ -28,8 +28,8 @@ class TestRemoteFetcher < Test::Unit::TestCase
       fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", nil)
       assert_equal YAML_DATA, fetcher.fetch_path("/yaml")
       assert_equal YAML_DATA.size, fetcher.size
-      source_info = fetcher.source_info
-      gems = source_info.search('rake', "= 0.4.11")
+      source_index = fetcher.source_index
+      gems = source_index.search('rake', "= 0.4.11")
       assert_equal 1, gems.size
       assert_equal "rake", gems.first.name
     end
@@ -40,8 +40,8 @@ class TestRemoteFetcher < Test::Unit::TestCase
       fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", "http://localhost:12345")
       assert_equal PROXY_DATA.size, fetcher.size
       assert_equal PROXY_DATA, fetcher.fetch_path("/yaml")
-      source_info = fetcher.source_info
-      gems = source_info.search('rake', "= 0.4.2")
+      source_index = fetcher.source_index
+      gems = source_index.search('rake', "= 0.4.2")
       assert_equal 1, gems.size
       assert_equal "rake", gems.first.name
     end

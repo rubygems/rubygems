@@ -23,7 +23,7 @@ class TestCachedFetcher < Test::Unit::TestCase
     def fetch_path(path=nil)
     end
     
-    def source_info()
+    def source_index()
       @count += 1
     end
   end
@@ -44,13 +44,13 @@ class TestCachedFetcher < Test::Unit::TestCase
   end
 
   def test_cache_miss
-    @cf.source_info
+    @cf.source_index
     assert_equal 1, @mf.count
   end
 
   def test_cache_hit
     @mf.size = YAML_DATA.size
-    @cf.source_info
+    @cf.source_index
     assert_equal 0, @mf.count
   end
 

@@ -7,7 +7,7 @@ module Gem
   class GemNotFoundException < Gem::Exception; end
   class RemoteInstallationCancelled < Gem::Exception; end
 
-  # RemoteSourceFetcher handles the details of fetching gemms and gem
+  # RemoteSourceFetcher handles the details of fetching gems and gem
   # information from a remote source.  
   class RemoteSourceFetcher
     include UserInteraction
@@ -40,7 +40,7 @@ module Gem
     # Notice that the gem specs returned by this method are adequate
     # for searches and queries, but may have some information elided
     # (hence "abbreviated").
-    def source_info
+    def source_index
       say "Updating Gem source index for: #{@uri}"
       begin
         require 'zlib'
@@ -245,12 +245,12 @@ module Gem
     # Notice that the gem specs returned by this method are adequate
     # for searches and queries, but may have some information elided
     # (hence "abbreviated").
-    def source_info
+    def source_index
       cache = manager.cache_data[@source_uri]
       if cache && cache['size'] == @fetcher.size
 	cache['cache']
       else
-	result = @fetcher.source_info
+	result = @fetcher.source_index
 	manager.cache_data[@source_uri] = {
 	  'size' => @fetcher.size,
 	  'cache' => result,
@@ -335,7 +335,7 @@ module Gem
         version_requirement = Version::Requirement.new(version_requirement)
       end
       installed_gems = []
-      caches = source_info(install_dir)
+      caches = source_index(install_dir)
       spec, source = find_gem_to_install(gem_name, version_requirement, caches)
       dependencies = find_dependencies_not_installed(spec.dependencies)
       installed_gems << install_dependencies(dependencies, force, install_dir)
@@ -351,7 +351,7 @@ module Gem
     # the Gem's name   
     def search(pattern_to_match)
       results = []
-      caches = source_info(Gem.dir)
+      caches = source_index(Gem.dir)
       caches.each do |cache|
         results << cache[1].search(pattern_to_match)
       end
@@ -371,7 +371,7 @@ module Gem
     # information from those sources, where the key is the source and
     # the value is a Gem::Cache object containing a map of long gem
     # names (name & version) to gem specification.
-    def source_info(install_dir)
+    def source_index(install_dir)
       result = {}
       sources.each do |source|
 	result[source] = fetch_source(source)
@@ -383,7 +383,7 @@ module Gem
     # Return the source info for the given source.  The 
     def fetch_source(source)
       rsf = @fetcher_class.new(source, @http_proxy)
-      rsf.source_info
+      rsf.source_index
     end
 
     def find_gem_to_install(gem_name, version_requirement, caches)

@@ -14,7 +14,7 @@ class MockFetcher
     1000
   end
   
-  def source_info
+  def source_index
     if @uri =~ /non.existent.url/
       fail Gem::RemoteSourceException,
 	"Error fetching remote gem cache: Mock Socket Exception"
@@ -56,8 +56,8 @@ class TestRemoteInstaller < Test::Unit::TestCase
     assert_equal PROPER_SOURCES, @installer.sources
   end
 
-  def test_source_info
-    source_hash = @installer.source_info(Gem.dir)
+  def test_source_index
+    source_hash = @installer.source_index(Gem.dir)
     assert source_hash.has_key?("http://gems.rubyforge.org")
     assert_equal 1, source_hash.size
     gem_hash = source_hash['http://gems.rubyforge.org']
@@ -69,7 +69,7 @@ class TestRemoteInstaller < Test::Unit::TestCase
   def test_missing_source_exception
     @installer.instance_variable_set("@sources", ["http://non.existent.url"])
     assert_raise(Gem::RemoteSourceException) {
-      info = @installer.source_info(Gem.dir)
+      info = @installer.source_index(Gem.dir)
     }
   end
 end
@@ -86,7 +86,7 @@ class RemoteInstallerTest < Test::Unit::TestCase
     attr_accessor :caches
     attr_accessor :responses
 
-    def source_info(install_dir)
+    def source_index(install_dir)
       @caches
     end
 
@@ -119,9 +119,9 @@ class RemoteInstallerTest < Test::Unit::TestCase
     assert_equal CACHE_SOURCES, @remote_installer.sources
   end
 
-  def test_source_info
-    source_info_hash = @remote_installer.source_info("test/data/gemhome")
-    assert_equal 1, source_info_hash.keys.size
+  def test_source_index
+    source_index_hash = @remote_installer.source_index("test/data/gemhome")
+    assert_equal 1, source_index_hash.keys.size
   end
 
   def test_find_latest_valid_package_in_caches(cache)

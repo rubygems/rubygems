@@ -1,3 +1,7 @@
+2004-08-22  Rich Kilmer <rich@infoether.com>
+        * lib/rubygems/install.rb: fixed stub generation...i added the version 
+          stuff that only app stubs should have...sorry!
+
 2004-08-17  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* lib/rubygems/gem_commands.rb: --rdoc is default on 'update' command,

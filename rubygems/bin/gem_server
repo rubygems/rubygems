@@ -17,14 +17,25 @@ if __FILE__ == $0
   require 'webrick'
   require 'yaml'
   require 'rubygems'
-  require 'getopts'; getopts "", 'p:8808', "d:#{Gem.dir}"
-  s = WEBrick::HTTPServer.new(:Port         => $OPT_p.to_i)
+  require 'optparse'
+  options = {}
+  ARGV.options do |opts|
+    opts.on_tail("--help", 
+      "show this message") {puts opts; exit}
+    opts.on('-pPORT','--port=PORT', 
+      "Specify the port to listen on") { |options[:port]| }
+    opts.on('-dGEMDIR','--dir=GEMDIR', 
+      "Specify the directory from which to serve Gems") { |options[:gemdir]| }
+    opts.parse!
+  end
+
+  s = WEBrick::HTTPServer.new(:Port         => options[:port] || 8808)
   s.mount_proc("/yaml") {|req, res|
     res['content-type'] = 'text/plain'
-    res.body << Gem::Cache.from_installed_gems(File.join($OPT_d, "specifications")).to_yaml
+    res.body << Gem::Cache.from_installed_gems(File.join(options[:gemdir] || Gem.dir, "specifications")).to_yaml
   }
   {"/" => "/specifications/", "/gems" => "/cache/"}.each do |mount_point, mount_dir|
-    s.mount(mount_point, WEBrick::HTTPServlet::FileHandler, File.join($OPT_d, mount_dir), true)
+    s.mount(mount_point, WEBrick::HTTPServlet::FileHandler, File.join(options[:gemdir] || Gem.dir, mount_dir), true)
   end
   trap("INT"){ s.shutdown }
   s.start

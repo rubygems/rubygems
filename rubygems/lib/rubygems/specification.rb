@@ -525,6 +525,7 @@ module Gem
       when Gem::Version     then obj.to_s.inspect
       when Date, Time       then '%q{' + obj.strftime('%Y-%m-%d') + '}'
       when true, false, nil then obj.inspect
+      when Gem::Version::Requirement  then "Gem::Version::Requirement.new(#{obj.to_s.inspect})"
       else raise Exception, "ruby_code case not handled: #{obj.class}"
       end
     end

@@ -185,7 +185,7 @@ module Gem
       # A default "version requirement" can surely _only_ be '> 0'.
       #
       def self.default
-        self.new(['> 0'])
+        self.new(['> 0.0.0'])
       end
 
       ##

@@ -53,7 +53,7 @@ module Gem
           @rdoc_args = rdoc_args_from_spec(@rdoc_args)
 	  @rdoc_args.concat(DocManager.configured_args)
           r = RDoc::RDoc.new
-          r.document(['--op', rdoc_dir, '--template', 'kilmer'] + @rdoc_args.flatten + source_dirs)
+          r.document(['--op', rdoc_dir, '--template', 'kilmer', '--ri-site'] + @rdoc_args.flatten + source_dirs)
         ensure
           Dir.chdir(current_dir)
         end

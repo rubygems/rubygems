@@ -293,11 +293,11 @@ module Gem
       gemspec = get_one_gem_name
       if File.exist?(gemspec)
         say "Attempting to build gem spec '#{gemspec}'"
-	specs = load_gemspecs(gemspec)
-	specs.each do |spec|
-	  Gem::Builder.new(spec).build
-	end
-	return
+        specs = load_gemspecs(gemspec)
+        specs.each do |spec|
+          Gem::Builder.new(spec).build
+        end
+        return
       else
         alert_error "Gemspec file not found: #{gemspec}"
       end
@@ -561,23 +561,25 @@ module Gem
     end
 
     def arguments
-      "GEMNAME		The gem to generate RDoc for (unless --all)"
+      "GEMNAME          The gem to generate RDoc for (unless --all)"
     end
 
     def execute
-      if(options[:all])
-        Gem::Cache.from_installed_gems.each do |gem|
-          say "Doing gem #{gem[1].name}"
-          Gem::DocManager.new(gem[1]).generate_rdoc
+      if options[:all]
+        Gem::Cache.from_installed_gems.each do |name, spec|
+          say "Doing gem #{spec.name}"
+          Gem::DocManager.new(spec).generate_rdoc
         end
       else
         gem_name = get_one_gem_name
-	gem = Gem::Cache.from_installed_gems.search(gem_name, options[:version])
-	if(gem == nil || gem.size < 1)
-		#version = options[:version] || "> 0.0.0"
-		fail "Failed to find gem #{gem_name} to generate RDoc for #{options[:version]}"
-	end
-        Gem::DocManager.new(gem[0]).generate_rdoc
+        specs = Gem::Cache.from_installed_gems.search(gem_name, options[:version])
+        if specs.empty?
+          #version = options[:version] || "> 0.0.0"
+          fail "Failed to find gem #{gem_name} to generate RDoc for #{options[:version]}"
+        end
+        specs.each do |spec|
+          Gem::DocManager.new(spec).generate_rdoc
+        end
       end
       true
     end
@@ -650,10 +652,13 @@ module Gem
       super('specification', 'Display gem specification (in yaml)', {:domain=>:local, :version=>"> 0.0.0"})
       add_version_option('examine')
       add_local_remote_options
+      add_option('--all', 'Output specifications for all versions of the gem') do
+        options[:all] = true
+      end
     end
 
     def defaults_str
-      "--local --version '> 0.0.0'"
+      "--local --version '(latest)'"
     end
 
     def usage
@@ -668,9 +673,15 @@ module Gem
       if local?
         gem = get_one_gem_name
         gem_specs = Gem::Cache.from_installed_gems.search(gem, options[:version])
-        if gem_specs.size > 0
+        unless gem_specs.empty?
           require 'yaml'
-          gem_specs.each {|spec| say spec.to_yaml; say "\n"}
+          output = lambda { |spec| say spec.to_yaml; say "\n" }
+          if options[:all]
+            gem_specs.each(&output)
+          else
+            spec = gem_specs.sort_by { |spec| spec.version }.last
+            output[spec]
+          end
         else
           alert_error "Unknown gem #{gem}"
         end

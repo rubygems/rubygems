@@ -1,14 +1,25 @@
+2004-08-11  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* lib/rubygems/gem_commands.rb:
+	  - 'gem spec X' displays spec for _latest_ version of X.  Added
+	    '--all' option if you want to see all versions.
+	  - RDocCommand code cleanup and slight change: document _all_
+	    versions of the gem by default, not just the first.
+
+	* lib/rubygems/doc_manager.rb: removed 'kilmer' default template
+	  option and obsolete error message.
+
 2004-08-12  Chad Fowler <chad@chadfowler.com>
        * Added "gem rdoc" command for generating docs for already-installed
        gems
 
 2004-08-11  Rich Kilmer <rich@infoether.com>
        * bin/generate_yaml_index: updated to work with new gem format (and use the Gem::Format
-         class to read).  Will deploy after testing on RubyForge.
+	 class to read).  Will deploy after testing on RubyForge.
        * lib/rubygems/gem_commands.rb: generate rdoc by default on installs (I think this is
-         just good practice.
+	 just good practice.
        * lib/rubygems/remote_install.rb: raise an exception if dependent gems cannot be found 
-         on remote_install
+	 on remote_install
 
 2004-08-11  Chad Fowler <chad@chadfowler.com>
        * lib/rubygems/gem_commands.rb: query is now case insensitive (as it used to be)
@@ -16,16 +27,16 @@
 
 2004-08-11  Rich Kilmer <rich@infoether.com>
 
-        * removed String.to_requirement...we should not modify 
-          base classes in Ruby! modified to get rid of said to_requirement 
-          with Gem::Version::Requirement.create(obj)
+	* removed String.to_requirement...we should not modify 
+	  base classes in Ruby! modified to get rid of said to_requirement 
+	  with Gem::Version::Requirement.create(obj)
 
-        * specification.rb - fixed constructor bug of version requirement...
-          it now defaults to Requirement.default
+	* specification.rb - fixed constructor bug of version requirement...
+	  it now defaults to Requirement.default
 
 2004-08-11  Chad Fowler <chad@chadfowler.com>
 
-        * One more specification.rb bug fixed.
+	* One more specification.rb bug fixed.
 
 2004-08-11  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
@@ -101,7 +112,7 @@
 	  - Used overwrite_accessor to provide special behaviour for the
 	    setting of some attributes.
 
-	  - The 'date' attribute is now a Date object.  We don't need high
+	  - The 'date' attribute is now a Date object.	We don't need high
 	    resolution, and Time objects, being system-dependent, are not nice
 	    to deal with.
 
@@ -116,8 +127,8 @@
 
 	* test/test_specification.rb: several new tests: _singular_attributes,
 	  _deprecated_attributes, _defaults, _to_{yaml,ruby}_and_back,
-          _directly_setting_dependencies_doesnt_work, and more.  Plus a new
-          class to give Specification a more thorough workout (TestSpecificationComplex).
+	  _directly_setting_dependencies_doesnt_work, and more.  Plus a new
+	  class to give Specification a more thorough workout (TestSpecificationComplex).
 
 	* scripts/runtest.rb: require 'pp' so it's always available in unit
 	  tests.

@@ -39,8 +39,7 @@ module Gem
       begin
         require 'rdoc/rdoc'
       rescue LoadError => e
-        raise DocumentError,
-	  "ERROR: RDoc documentation generator not installed!\n       To install RDoc:  gem --remote-install=rdoc"
+        raise DocumentError, "ERROR: RDoc documentation generator not installed!"
       end
       say "Installing RDoc documentation for #{@spec.full_name}..."
       say "WARNING: Generating RDoc on .gem that may not have RDoc." unless @spec.has_rdoc?
@@ -51,14 +50,14 @@ module Gem
         Dir.chdir(@spec.full_gem_path)
         begin
           @rdoc_args = rdoc_args_from_spec(@rdoc_args)
-	  @rdoc_args.concat(DocManager.configured_args)
+          @rdoc_args.concat(DocManager.configured_args)
           r = RDoc::RDoc.new
-          r.document(['--op', rdoc_dir, '--template', 'kilmer'] + @rdoc_args.flatten + source_dirs)
+          r.document(['--op', rdoc_dir] + @rdoc_args.flatten + source_dirs)
         ensure
           Dir.chdir(current_dir)
         end
       rescue RDoc::RDocError => e
-	raise DocumentError, e.message
+        raise DocumentError, e.message
       end
     end
     
@@ -69,16 +68,16 @@ module Gem
 
     class << self
       def configured_args
-	@configured_args ||= []
+        @configured_args ||= []
       end
 
       def configured_args=(args)
-	case args
-	when Array
-	  @configured_args = args
-	when String
-	  @configured_args = args.split
-	end
+        case args
+        when Array
+          @configured_args = args
+        when String
+          @configured_args = args.split
+        end
       end
     end
     

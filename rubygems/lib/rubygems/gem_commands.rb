@@ -502,7 +502,7 @@ module Gem
     def initialize
       super(
         'update',
-        'Upgrade all currently installed gems in the local repository',
+        'Upgrade currently installed gems in the local repository',
         {
           :generate_rdoc => true, 
           :force => false, 
@@ -516,6 +516,11 @@ module Gem
       "--rdoc --no-force --no-test\n" +
       "--install-dir #{Gem.dir}"
     end
+
+    def arguments
+      "GEMNAME(s)   name of gem(s) to update"
+    end
+
 
     def execute
       say "Upgrading installed gems..."

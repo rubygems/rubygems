@@ -89,10 +89,15 @@ module Gem
 
     def_delegators :@gems, :size, :length
 
+    def find_name(gem_name, version_requirement=Version::Requirement.new(">= 0"))
+      search(/^#{gem_name}$/, version_requirement)
+    end
+
     # Search for a gem by name and optional version
     #
     # gem_name::
-    #   [String] the (short) name of the gem
+    #   [String] a partial for the (short) name of the gem, or
+    #   [Regex] a pattern to match against the short name
     # version_requirement::
     #   [String | default=Version::Requirement.new(">= 0")] version to
     #   find
@@ -100,13 +105,13 @@ module Gem
     #   [Array] list of Gem::Specification objects in sorted (version)
     #   order.  Empty if not found.
     #
-    def search(gem_name, version_requirement=Version::Requirement.new(">= 0"))
+    def search(gem_pattern, version_requirement=Version::Requirement.new(">= 0"))
       #FIXME - remove duplication between this and RemoteInstaller.search
-      gem_name = /#{ gem_name }/i if String === gem_name
+      gem_pattern = /#{ gem_pattern }/i if String === gem_pattern
       version_requirement = Gem::Version::Requirement.create(version_requirement)
       result = []
       @gems.each do |full_spec_name, spec|
-        next unless spec.name =~ gem_name
+        next unless spec.name =~ gem_pattern
         result << spec if version_requirement.satisfied_by?(spec.version)
       end
       result = result.sort

@@ -620,7 +620,7 @@ TEXT
 	  "[#{dep.name} (#{dep.version_requirements})]")
       end
       msg << 'If you remove this gems, one or more dependencies will not be met.'
-      msg << 'Uninstall anyway?'
+      msg << 'Continue with Uninstall?'
       return ask_yes_no(msg.join("\n"), true)
     end
 

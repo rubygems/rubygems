@@ -31,7 +31,6 @@ class TestParseCommands < Test::Unit::TestCase
       
       #check defaults
       @cmd_manager.process_args("install")
-      assert_equal true, check_options[:stub]
       assert_equal false, check_options[:test]
       assert_equal true, check_options[:generate_rdoc]
       assert_equal false, check_options[:force]
@@ -42,8 +41,7 @@ class TestParseCommands < Test::Unit::TestCase
       #check settings
       check_options = nil
       @cmd_manager.process_args(
-	"install --force --test --no-install-stub --local --rdoc --install-dir . --version 3.0")
-      assert_equal false, check_options[:stub]
+	"install --force --test --local --rdoc --install-dir . --version 3.0")
       assert_equal true, check_options[:test]
       assert_equal true, check_options[:generate_rdoc]
       assert_equal true, check_options[:force]
@@ -167,13 +165,11 @@ class TestParseCommands < Test::Unit::TestCase
     
     #check defaults
     @cmd_manager.process_args("update")
-    assert_equal true, check_options[:stub]
     assert_equal true, check_options[:generate_rdoc]
     
     #check settings
     check_options = nil
-    @cmd_manager.process_args("update --force --test --no-install-stub --rdoc --install-dir .")
-    assert_equal false, check_options[:stub]
+    @cmd_manager.process_args("update --force --test --rdoc --install-dir .")
     assert_equal true, check_options[:test]
     assert_equal true, check_options[:generate_rdoc]
     assert_equal true, check_options[:force]

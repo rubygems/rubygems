@@ -1,3 +1,8 @@
+2004-09-11  Chad Fowler <chad@chadfowler.com>
+
+  * test/test_parse_commands.rb: Fix failing unit tests due to Rich's fix from
+   this morning/last night :)
+
 2004-09-11  Rich Kilmer <rich@infoether.com>
 
   * lib/rubygems/gem_commands.rb - got rid of stub options

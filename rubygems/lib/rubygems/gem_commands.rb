@@ -317,8 +317,12 @@ module Gem
         require 'yaml'
         result = []
         open(filename) do |f|
-          while spec = Gem::Specification.from_yaml(f)
-            result << spec
+          begin
+            while spec = Gem::Specification.from_yaml(f)
+              result << spec
+            end
+          rescue EndOfYAMLException => e
+            # OK
           end
         end
       else

@@ -193,7 +193,7 @@ SCRIPT
         end
         puts " #{list.size+1}. All versions"
         print "> "
-        response = gets.strip.to_i - 1
+        response = STDIN.gets.strip.to_i - 1
         if response == list.size
           list.each {|gem| remove(gem)}
         elsif response >= 0 && response < list.size
@@ -210,7 +210,6 @@ SCRIPT
     def remove(spec)
       FileUtils.rm_rf spec.full_gem_path
       FileUtils.rm_rf File.join(spec.installation_path, 'specifications', "#{spec.full_name}.gemspec")
-      puts File.join(spec.installation_path, 'specifications', "#{spec.full_name}.gemspec")
       FileUtils.rm_rf File.join(spec.installation_path, 'cache', "#{spec.full_name}.gem")
       DocManager.new(spec).uninstall_doc
       puts "Successfully uninstalled #{spec.name} version #{spec.version}"

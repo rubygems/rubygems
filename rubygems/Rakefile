@@ -11,7 +11,7 @@ PKG_VERSION = `ruby -Ilib bin/gem environment packageversion`.chomp
 
 CLEAN.include("COMMENTS")
 CLOBBER.include(
-  "test/data/one/one-0.0.1.gem",
+  "test/data/one/one-*0.0.1.gem",
   "test/temp",
   'test/data/gemhome',
   'scripts/*.wiki'
@@ -36,7 +36,6 @@ task :alltests do
   test_name = ENV['TEST'] || 'test/{test,functional}*.rb'
   ruby %{-Ilib -rscripts/runtest -e 'run_tests("#{test_name}", true)'}
 end
-
 
 # Shortcuts for test targets
 task :ft => [:functional]

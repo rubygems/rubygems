@@ -26,7 +26,6 @@ SECTIONS:
   - name: "Documentation"
     attributes:
       - rdoc_options                    
-      - docs                            
       - has_rdoc                        
       - extra_rdoc_files
   
@@ -154,17 +153,6 @@ ATTRIBUTES:
       The ''description'' should be more detailed than the ''summary''.  You
       might consider copying all or part of your project's README into this
       field.
-
-  - name: docs
-    klass: 
-    mandatory: 
-    default: 
-    description:
-      ???
-    usage: |
-        ...
-    notes:
-      "''Does this attribute actually exist?''"
 
   - name: email
     klass: String

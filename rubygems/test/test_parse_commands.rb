@@ -33,7 +33,7 @@ class TestParseCommands < Test::Unit::TestCase
       @cmd_manager.process_args("install")
       assert_equal true, check_options[:stub]
       assert_equal false, check_options[:test]
-      assert_equal false, check_options[:generate_rdoc]
+      assert_equal true, check_options[:generate_rdoc]
       assert_equal false, check_options[:force]
       assert_equal :both, check_options[:domain]
       assert_equal "> 0", check_options[:version]
@@ -142,7 +142,7 @@ class TestParseCommands < Test::Unit::TestCase
     #check settings
     check_options = nil
     @cmd_manager.process_args("query --name foobar --local --details")
-    assert_equal /foobar/, check_options[:name]
+    assert_equal /foobar/i, check_options[:name]
     assert_equal :local, check_options[:domain]
     assert_equal true, check_options[:details]
 

@@ -13,6 +13,7 @@ spec = Gem::Specification.new do |s|
   s.files.concat Dir.glob("*rb")
   s.files.concat Dir.glob("*cgi")
   s.files << "README"
+  s.require_path =  "."
 end
 
 if $0==__FILE__

@@ -6,11 +6,11 @@ module Gem
   class RemoteInstaller
     ##
     # http_proxy:: [String] URL of http proxy.  Will override any environment 
-    #   variable setting
+    #   variable setting if supplied.
     def initialize(http_proxy=nil)
-      require 'open-uri'
-
-      @http_proxy=http_proxy
+	  
+	  # ensure http_proxy env vars are used if no proxy explicitly supplied
+      @http_proxy=http_proxy || true
     end
 
     ##
@@ -70,13 +70,10 @@ module Gem
       caches = {}
       sources.each do |source|
         begin
-          open(source + "/yaml", :proxy => @http_proxy) do |yaml_source|
-  
-            spec = YAML.load(yaml_source.read)
-  
-            raise "Didn't get a valid YAML document" if not spec
-            caches[source] = spec
-          end
+          yaml_spec = fetch(source + "/yaml")
+          spec = YAML.load(yaml_spec)
+          raise "Didn't get a valid YAML document" if not spec
+          caches[source] = spec
         rescue SocketError => e
           raise RemoteSourceException.new("Error fetching remote gem cache: #{e.to_s}")
         end
@@ -131,39 +128,7 @@ module Gem
       # TODO
       uri = source + "/gems/#{spec.full_name}.gem"
       response = fetch(uri)
-      write_gem_to_file(response.body, destination_file)
-    end
-    ##
-    # Returns HTTP proxy info if specified
-    # (code adapted/borrowed from raa-install)
-    def get_proxy
-      name = 'http_proxy'
-      if proxy_uri = @http_proxy || ENV[name] || ENV[name.upcase]
-        proxy_uri = URI.parse(proxy_uri)
-        name = 'no_proxy'
-        if no_proxy = ENV[name] || ENV[name.upcase]
-          no_proxy.scan(/([^:,]*)(?::(\d+))?/) {|host, port|
-            if /(\A|\.)#{Regexp.quote host}\z/i =~ proxy_uri.host && (!port || 80 == port.to_i)
-              proxy_uri = nil
-              break
-            end                
-          }
-        end
-        proxy_uri
-      else
-        nil
-      end
-    end
-
-    ##
-    # Returns the class to use for downloading files via http.  This method exists sole so that it can be overridden in the derived class in a unit test to return a mock http class.  Note that we could override the fetch method in the derived class instead, but then we wouldn't be able to test it.
-    def http_class
-      require 'net/http'
-      if proxy_uri = get_proxy
-        Net::HTTP.Proxy(proxy_uri.host, proxy_uri.port)
-      else
-        Net::HTTP
-      end
+      write_gem_to_file(response, destination_file)
     end
 
     def write_gem_to_file(body, destination_file)
@@ -172,20 +137,11 @@ module Gem
       end
     end
 
-    def fetch( uri_str, limit = 10 )
-      require 'uri'
-      require 'net/http'
-
-      # You should choose better exception. 
-      raise ArgumentError, 'http redirect too deep' if limit == 0
-
-      response = http_class().get_response(URI.parse(uri_str))
-      case response
-      when Net::HTTPSuccess     then response
-      when Net::HTTPRedirection then fetch(response['location'], limit - 1)
-      else
-        $stderr.puts "Error downloading #{uri_str}"
-        response.error!
+    def fetch( uri_str )
+      require 'open-uri'
+	  open(	uri_str,
+         	:proxy => @http_proxy) do |input|
+	 	 input.read
       end
     end
 

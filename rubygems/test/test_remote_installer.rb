@@ -4,28 +4,6 @@ require 'net/http'
 require 'yaml'
 
 class RemoteInstallerTest < Test::Unit::TestCase
-  class MockHTTPSuccess < Net::HTTPSuccess
-    attr_reader :body
-
-    def initialize(body)
-      @body = body
-    end
-  end
-
-  class MockNetHTTP
-    def self.get_response(uri)
-      response = responses[uri.to_s]
-      if not response then
-        raise "No response for #{uri.inspect} (we have #{responses.inspect})"
-      end
-      return response
-    end
-
-    class << self
-      attr_accessor :responses
-    end
-  end
-
   class MockInstaller
     def initialize(gem)
       # TODO
@@ -42,13 +20,15 @@ class RemoteInstallerTest < Test::Unit::TestCase
     attr_accessor :expected_destination_files
     attr_accessor :expected_bodies
     attr_accessor :caches
-
-    def http_class
-      return MockNetHTTP
-    end
+    attr_accessor :responses
 
     def get_caches(sources)
       @caches
+    end
+
+    def fetch(uri)
+      @reponses ||= {}
+      @responses[uri]
     end
 
     def write_gem_to_file(body, destination_file)
@@ -63,11 +43,11 @@ class RemoteInstallerTest < Test::Unit::TestCase
     end
   end
 
-  CACHE_SOURCE = "http://gems.rubyforge.org"
+  CACHE_SOURCES = ["http://gems.rubyforge.org", "http://gems.chadfowler.com"]
 
   def test_get_cache_sources
     @remote_installer = RemoteInstaller.new
-    assert_equal [CACHE_SOURCE], @remote_installer.get_cache_sources
+    assert_equal CACHE_SOURCES, @remote_installer.get_cache_sources
     # TODO
   end
 
@@ -98,19 +78,17 @@ class RemoteInstallerTest < Test::Unit::TestCase
 
   def test_install
     @remote_installer = RemoteInstallerTest::RemoteInstaller.new
-    MockNetHTTP.responses = {
-      CACHE_SOURCE + "/yaml" => http_success(SAMPLE_CACHE_YAML),
-      "#{CACHE_SOURCE}/gems/foo-ruby-1.2.3.gem" => http_success(FOO_GEM)
+    @remote_installer.responses = {
+      CACHE_SOURCES[0] + "/yaml" => SAMPLE_CACHE_YAML,
+      "#{CACHE_SOURCES[0]}/gems/foo-ruby-1.2.3.gem" => FOO_GEM
     }
-    @remote_installer.caches = { CACHE_SOURCE  => SAMPLE_CACHE }
+    @remote_installer.caches = { CACHE_SOURCES[0]  => SAMPLE_CACHE }
     @remote_installer.expected_destination_files = [File.join(CACHE_DIR, 'foo-ruby-1.2.3.gem')]
     @remote_installer.expected_bodies = [FOO_GEM]
+
     result = @remote_installer.install('foo')
     assert_equal nil, result
   end
 
-  def http_success(body)
-    return MockHTTPSuccess.new(body)
-  end
 end
 

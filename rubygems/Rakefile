@@ -104,8 +104,8 @@ installation of RubyGems before this update can be applied.
   s.email = "rubygems-developers@rubyforge.org"
   s.homepage = "http://rubygems.rubyforge.org"
   s.rubyforge_project = "rubygems"
-  s.bindir = "bin"                               # Use these for applications.
-  s.executables = ["update_rubygems"]
+  s.bindir = ""                               # Use these for applications.
+  s.executables = ["bin/update_rubygems"]
 end
 
 Rake::GemPackageTask.new(spec) do |p| end

@@ -1,7 +1,16 @@
 2004-07-01  Jim Weirich  <jim@weirichhouse.org>
 
+	* test/test_specification.rb
+	(TestSpecification::test_rdoc_files_included): Test for rdoc files
+	included in file list.  Test for redundent file removal.
+
+	* lib/rubygems/specification.rb (Gem::Specification::validate):
+	Added gem version to validation requirement.  Added normalize to
+	remove redundent files in lists.
+
 	* lib/rubygems/gem_commands.rb (Gem::InfoCommand::usage): Added
 	usage and arguments methods for InfoCommand.
+	(Gem::SpecificationCommand::usage): Fixed several usage comments.
 
 2004-06-30  Jim Weirich  <jim@weirichhouse.org>
 

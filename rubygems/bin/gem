@@ -71,7 +71,7 @@ if gem_to_search_for
 end
 
 if remote_install
-  installed_gems << Gem::RemoteInstaller.new.install(remote_install, options[:gem_version] || "> 0.0.0")
+  installed_gems << Gem::RemoteInstaller.new.install(remote_install, options[:gem_version] || "> 0.0.0", force, directory)
 end
 
 if gem_to_uninstall

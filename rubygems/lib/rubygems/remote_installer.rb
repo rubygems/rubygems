@@ -6,7 +6,7 @@ module Gem
     # This method will install package_name onto the local system.  
     # package_name:: [String] Name of the Gem to install
     # version_requirement:: [default = "> 0.0.0"] Gem version requirement to install
-    def install(package_name, version_requirement = "> 0.0.0")
+    def install(package_name, version_requirement = "> 0.0.0", force=false, directory=Gem.dir)
       unless version_requirement.respond_to?(:version)
         version_requirement = Version::Requirement.new(version_requirement)
       end
@@ -19,7 +19,7 @@ module Gem
       destination_file = File.join(cache_dir, spec.full_name + ".gem")
       download_gem(destination_file, source, spec)
       installer = new_installer(destination_file)
-      installer.install()
+      installer.install(force,directory)
     end
 
     ##

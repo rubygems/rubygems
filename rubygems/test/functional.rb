@@ -35,7 +35,7 @@ class FunctionalTest < Test::Unit::TestCase
   def test_environment
     gem 'environment'
     
-    assert_match /VERSION:\s+\d+\.\d+( |$)/, @out
+    assert_match /VERSION:\s+(\d+\.)*\d+/, @out
     assert_match /INSTALLATION DIRECTORY:/, @out
     assert_match /GEM PATH:/, @out
     assert_match /REMOTE SOURCES:/, @out

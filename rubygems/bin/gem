@@ -79,8 +79,6 @@ if @remote_install
   Gem::RemoteInstaller.new(@remote_install, options[:gem_version] || "> 0.0.0").install
 end
 
-class InvalidGemException < Exception; end
-
 def verify(gem_data)
   if(gem_data.size == 0) then
     raise "Empty Gem file"
@@ -96,7 +94,7 @@ if @verify_gem
   begin
     verify(File.read(@verify_gem)) 
     puts "#{@verify_gem} is valid"
-  rescue InvalidGemException => e
+  rescue => e
     puts "#{@verify_gem} is invalid"
   end
 end
@@ -150,12 +148,6 @@ if @alien
     if(!File.exist?(spec_path)) then
       errors[gem_name] << ErrorData.new(spec_path, "Spec file doesn't exist for installed gem")
     end
-
-    #begin
-      #verify(File.read(gem_path)) 
-    #rescue => e
-      #errors[gem_name] << ErrorData.new(gem_path, e.message)
-    #end
 
     # Need to factor read_files_from_gem out into some kind of
     # Gem file reader/writer class probably.

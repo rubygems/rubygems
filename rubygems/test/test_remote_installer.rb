@@ -43,7 +43,7 @@ class RemoteInstallerTest < Test::Unit::TestCase
     end
   end
 
-  CACHE_SOURCES = ["http://gems.rubyforge.org", "http://gems.chadfowler.com"]
+  CACHE_SOURCES = ["http://gems.rubyforge.org"]
 
   def test_get_cache_sources
     @remote_installer = RemoteInstaller.new

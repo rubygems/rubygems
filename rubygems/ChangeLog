@@ -1,3 +1,9 @@
+2004-06-17  Rich Kilmer <rich@infoether.com>
+        * Added ability to capture the UserInteraction with:
+          c = Gem::UserInteraction.capture
+          and then you can override specific methods like 'say':
+          c.on_say {|statement| puts "you said: #{statement}"}
+
 2004-06-15  Rich Kilmer <rich@infoether.com>
         * Added refactored command handling in rubygems/cmd_manager.rb and a 
           (temporary) bin/gem2 command file to test things out.  Once we feel

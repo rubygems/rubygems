@@ -1,3 +1,4 @@
+gem: --commands
 gempath:
   - /usr/local/rubygems
   - /another/spot/for/rubygems

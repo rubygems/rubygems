@@ -56,6 +56,7 @@ if __FILE__ == $0
   require 'yaml'
   require 'optparse'
   require 'rdoc/template'
+  Socket.do_not_reverse_lookup=true
   options = {}
   ARGV.options do |opts|
     opts.on_tail("--help", 
@@ -73,7 +74,7 @@ if __FILE__ == $0
     res.body << Gem::Cache.from_installed_gems(File.join(options[:gemdir] || Gem.dir, "specifications")).to_yaml
   }
 
-  s.mount_proc("/doc") { |req, res|
+  s.mount_proc("/") { |req, res|
     specs = []
     Gem::Cache.from_installed_gems(File.join(options[:gemdir] || Gem.dir, "specifications")).each do |path, spec|
       specs << {

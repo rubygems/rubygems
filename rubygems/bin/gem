@@ -404,7 +404,7 @@ class RubyGemsFacade
       end
     end
 
-    if @options.remote?
+    if @options.remote? and installed_gems.nil?
       begin
         _info "Attempting remote installation of '#{gem}'"
         installed_gems = _install_remote(gem)

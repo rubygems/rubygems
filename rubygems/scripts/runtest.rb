@@ -15,3 +15,20 @@ def run_tests(pattern='test/test*.rb', log_enabled=false)
     end
   }
 end
+
+# You can run the unit tests by running this file directly, providing a pattern.  For example,
+#
+#   ruby scripts/runtests.rb spec
+#
+# will load just the "test/test_specification.rb" unit test (unless others match as well).
+
+if $0 == __FILE__
+  $:.unshift 'lib'   # Must run this from the root directory.
+  pattern = ARGV.shift
+  if pattern
+    pattern = "test/*#{pattern}*.rb"
+    run_tests(pattern, true)
+  else
+    run_tests
+  end
+end

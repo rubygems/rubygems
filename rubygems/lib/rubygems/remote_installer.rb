@@ -31,7 +31,8 @@ module Gem
     #
     # Returns: an array of Gem::Specification objects, one for each gem installed. 
     #
-    def install(package_name, version_requirement = "> 0.0.0", force=false, directory=Gem.dir)
+    def install(package_name, version_requirement = "> 0.0.0", force=false, install_dir=Gem.dir,
+               install_stub=true)
       unless version_requirement.respond_to?(:version)
         version_requirement = Version::Requirement.new(version_requirement)
       end
@@ -45,7 +46,7 @@ module Gem
       destination_file = File.join(cache_dir, spec.full_name + ".gem")
       download_gem(destination_file, source, spec)
       installer = new_installer(destination_file)
-      installed_gems.unshift installer.install(force,directory)
+      installed_gems.unshift installer.install(force, install_dir, install_stub)
       installed_gems.flatten
     end
 

@@ -3,7 +3,8 @@
 	* lib/rubygems/installer.rb: Fixed bug in windows batch file generation
 	which was causing file not found errors.
         * lib/rubygems/installer.rb: Uninstall now removes scripts and batch 
-        files that were install for application gems.
+        * lib/rubygems/specification.rb: Fixed install bug.  Thanks to Mark 
+        Sparshatt for the fix (via the rubyforge bug tracker). 
 
 2004-06-17  Jim Weirich  <jim@weirichhouse.org>
 

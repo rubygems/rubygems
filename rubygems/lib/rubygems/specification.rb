@@ -418,7 +418,7 @@ module Gem
     #
     def validate
       @@required_attributes.each do |symbol|
-        if(self.send(symbol) == nil) then 
+        unless(self.send(symbol)) 
           raise InvalidSpecificationException.new("Missing value for attribute #{symbol.to_s}")
         end
       end 

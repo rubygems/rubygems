@@ -782,7 +782,7 @@ class RubyGemsFacade
         false
       end
     }
-    say " (#{list_of_matching.map{|gem| gem.version.to_s}.join(", ")})"
+    say "#{gem_name} (#{list_of_matching.map{|gem| gem.version.to_s}.join(", ")})"
     say list_of_matching[0].summary.wrap(68).indent(4)
   end
 

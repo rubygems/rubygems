@@ -23,7 +23,7 @@ name, followed by any options and arguments.  For example:
   gem install rake --remote
 
 runs the install command.  The argument <tt>rake</tt> is the name of
-the gem to install, and the option <tt>--remote</tt> tell gem to look
+the gem to install, and the option <tt>--remote</tt> tells gem to look
 for rake on a remote download site.  Options always start with a dash
 (-) for short options or a double dash (--) for long options.
 Arguments never have a dash.
@@ -168,15 +168,6 @@ available on the gem command.
 
 !usage help
 
-== [#info]gem info -- Extract the Gem::Specification from a gem file ==
-
-The info command will extract the Gem::Specification from a gem file
-and write to standard output in YAML format.
-
-=== Usage ===
-
-!usage info
-
 == [#install]gem install -- Installing a gem ==
 
 <tt>gem install</tt> will install the named gem. It will
@@ -288,6 +279,22 @@ madeleine (0.6.1, 0.6)
 
 midilib (0.8.0)
     MIDI file and event manipulation library
+</pre>
+
+== [#specification]gem specification -- Extract the Gem::Specification from a gem file ==
+
+The specification command will extract the Gem::Specification from a
+gem file and write to standard output in YAML format.
+
+=== Usage ===
+
+!usage specification
+
+=== Examples ===
+
+Here is the specification from rake 0.4.0.
+
+<pre>
 </pre>
 
 == [#uninstall]gem uninstall -- Uninstalling a gem ==

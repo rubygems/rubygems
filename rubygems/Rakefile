@@ -9,7 +9,7 @@ PKG_NAME = 'rubygems'
 PKG_VERSION = `ruby -Ilib bin/gem environment packageversion`.chomp
 
 CLEAN.include("COMMENTS")
-CLOBBER.include( "test/data/one/one-0.0.1.gem", "test/temp" )
+CLOBBER.include( "test/data/one/one-0.0.1.gem", "test/temp", 'scripts/*.wiki' )
 
 task :default => [:test]
 
@@ -37,6 +37,25 @@ task :at => [:alltests]
 task :gemtest do
   ruby %{-Ilib -rscripts/runtest -e 'run_tests("test/test_gempaths.rb", true)'}
 end
+
+# Wiki Doc Targets
+
+task :wiki => ['scripts/gemdoc.wiki', 'scripts/specdoc.wiki']
+
+file 'scripts/gemdoc.wiki' => ['scripts/gemdoc.rb', 'scripts/gemdoc.data'] do
+  chdir('scripts') do
+    ruby %{-I../lib gemdoc.rb <gemdoc.data >gemdoc.wiki}
+  end
+end
+
+file 'scripts/specdoc.wiki' =>
+  ['scripts/specdoc.rb', 'scripts/specdoc.data', 'scripts/specdoc.yaml'] do
+  chdir('scripts') do
+    ruby %{-I../lib specdoc.rb >specdoc.wiki}
+  end
+end
+
+# Package tasks
 
 Rake::PackageTask.new("package") do |p|
   p.name = PKG_NAME

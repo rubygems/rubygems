@@ -1,1 +1,3 @@
 gemhome
+*.gem
+lib

@@ -274,8 +274,7 @@ TEXT
     def extract_files(directory, format)
       require 'fileutils'
       wd = Dir.getwd
-      Dir.chdir directory
-      begin
+      Dir.chdir directory do
         format.file_entries.each do |entry, file_data|
           path = entry['path']
           FileUtils.mkdir_p File.dirname(path)
@@ -283,8 +282,6 @@ TEXT
             out.write file_data
           end
         end
-      ensure
-        Dir.chdir wd
       end
     end
   end

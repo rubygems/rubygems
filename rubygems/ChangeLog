@@ -1,5 +1,8 @@
 2004-07-25  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems.rb (Gem::Exception::all_load_paths): Added
+	all_load_paths utility function.
+
 	* bin/update_rubygems: Added a command to update the gem
 	installation based on a update gem.
 

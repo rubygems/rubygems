@@ -31,6 +31,9 @@ class MockFetcher
 
   def fetch_path(path)
   end
+
+  def self.flush
+  end
 end
 
 class TestRemoteInstaller < Test::Unit::TestCase

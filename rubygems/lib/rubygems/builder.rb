@@ -81,6 +81,7 @@ __END__
     # Builds the gem from the specification
     #
     def build
+      @spec.validate
       require 'yaml'
       require 'md5'
       require 'stringio' 

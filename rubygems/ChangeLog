@@ -1,5 +1,8 @@
 2004-08-28  Rich Kilmer <rich@infoether.com>
 
+        * /lib/rubygems/installer.rb - commented out stub addition and removal
+2004-08-28  Rich Kilmer <rich@infoether.com>
+
         * /lib/rubygems.rb, /lib/rubygems/loadpath_manager.rb -
          this adds all the loadpath_manager stuff with the 'ultimate require hack' to
          rubygems.rb.  Also, require_gem methods body has been extracted into a method

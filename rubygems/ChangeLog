@@ -1,3 +1,12 @@
+2004-08-20  Chad Fowler  <chad@chadfowler.com>
+	
+	* lib/rubygems/specification.rb: Fixed small bug in the previous spec
+	change commit.
+
+	* lib/rubygems/installer.rb: Fixed (in not a great way) a bug that would
+	cause a zero-length spec file to be written to the gem specifications
+	directory.
+
 2004-08-19  Chad Fowler  <chad@chadfowler.com>
 
 	* lib/rubygems/specification.rb: #files auto-includes any #extensions,

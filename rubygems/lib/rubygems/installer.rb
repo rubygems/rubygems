@@ -104,8 +104,9 @@ module Gem
     # spec_path:: [String] The location (path) to write the gemspec to
     #
     def write_spec(spec, spec_path)
+      rubycode = spec.to_ruby
       File.open(File.join(spec_path, spec.full_name+".gemspec"), "w") do |file|
-        file.puts spec.to_ruby
+        file.puts rubycode
       end
     end
 
@@ -249,6 +250,7 @@ TEXT
     
     def build_extensions(directory, spec)
       return unless spec.extensions.size > 0
+      say "Building native extensions.  This could take a while..."
       start_dir = Dir.pwd
       dest_path = File.join(directory, spec.require_paths[0])
       spec.extensions.each do |extension|

@@ -5,8 +5,8 @@ of RubyGems is availble for public release.  Although another point
 release, you will find a number of very nice new features.
 
 First the numbers, 220 different gems available, almost 22,000
-downloads of RubyGems, nearly 190,000 gems downloads.  Thanks to
-everyone.
+downloads of RubyGems, and nearly 190,000 gems downloads.  Thanks to
+everyone for their support.
 
 == What's New
 

@@ -1,3 +1,11 @@
+2004-12-02  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/package.rb (TarInput::zipped_stream): To workaround
+	a problem with earlier than 1.2.1, we read the zipped data into a
+	string, and then return an IO object on that string.
+	(TarInput::each): Refactored getting a stream to the zipped data
+	into <tt>zipped_stream</tt>.
+
 2004-12-01  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/remote_installer.rb

@@ -48,7 +48,8 @@ END:specs
 #
 # Usage: gem_server [-p portnum] [-d gem_path]
 # port_num:: The TCP port the HTTP server will bind to
-# gem_path:: Root gem directory containing both "cache" and "specifications"
+# gem_path::
+#   Root gem directory containing both "cache" and "specifications"
 #   subdirectories.
 if __FILE__ == $0
   require 'rubygems'
@@ -71,8 +72,10 @@ if __FILE__ == $0
 
   s = WEBrick::HTTPServer.new(:Port => options[:port] || 8808)
   s.mount_proc("/yaml") { |req, res|
+    fn = File.join(options[:gemdir] || Gem.dir, "specifications")
     res['content-type'] = 'text/plain'
-    res.body << Gem::Cache.from_installed_gems(File.join(options[:gemdir] || Gem.dir, "specifications")).to_yaml
+    res['date'] = File.stat(fn).mtime
+    res.body << Gem::Cache.from_installed_gems(fn).to_yaml
   }
 
   s.mount_proc("/") { |req, res|
@@ -93,8 +96,15 @@ if __FILE__ == $0
     res['content-type'] = 'text/html'
     template.write_html_on(res.body, {"specs" => specs})      
   }
-  {"/gems" => "/cache/", "/doc_root" => "/doc/"}.each do |mount_point, mount_dir|
-    s.mount(mount_point, WEBrick::HTTPServlet::FileHandler, File.join(options[:gemdir] || Gem.dir, mount_dir), true)
+  {
+    "/gems" => "/cache/",
+    "/doc_root" => "/doc/"
+  }.each do |mount_point, mount_dir|
+    s.mount(
+      mount_point,
+      WEBrick::HTTPServlet::FileHandler,
+      File.join(options[:gemdir] || Gem.dir, mount_dir),
+      true)
   end
   trap("INT") { s.shutdown; exit! }
   s.start

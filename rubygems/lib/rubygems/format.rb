@@ -127,12 +127,14 @@ module Gem
     def self.read_files_from_gem(gem_file)
       require 'zlib'
       require 'yaml'
+      errstr = "Error reading files from gem"
       header_yaml = ''
       begin
         self.read_until_dashes(gem_file) do |line|
           header_yaml << line
         end
         header = YAML.load(header_yaml)
+        raise FormatException.new(errstr) unless header
         header.each do |entry|
           file_data = ''
           self.read_until_dashes(gem_file) do |line|
@@ -140,8 +142,8 @@ module Gem
           end
           yield [entry, Zlib::Inflate.inflate(file_data.strip.unpack("m")[0])]
         end
-      rescue Exception => e
-        raise FormatException.new("Error reading files from gem")
+      rescue Exception,Zlib::DataError => e
+        raise FormatException.new(errstr)
       end
     end
   end

@@ -105,17 +105,21 @@ module Gem
       @parser = OptionParser.new
       option_names = {}
       @parser.separator("")
-      @parser.separator("  Options:")
-      configure_options(@option_list, option_names)
-      @parser.separator("")
+      if @option_list.size > 0
+	@parser.separator("  Options:")
+	configure_options(@option_list, option_names)
+	@parser.separator("")
+      end
       @parser.separator("  Common Options:")
       configure_options(Command.common_options, option_names)
       @parser.separator("")
-      @parser.separator("  Arguments:")
-      arguments.split(/\n/).each do |arg_desc|
-        @parser.separator("    #{arg_desc}")
+      if arguments != ""
+	@parser.separator("  Arguments:")
+	arguments.split(/\n/).each do |arg_desc|
+	  @parser.separator("    #{arg_desc}")
+	end
+	@parser.separator("")
       end
-      @parser.separator("")
       @parser.separator("  Summary:")
       @parser.separator("    #@summary")
     end

@@ -1,3 +1,9 @@
+2004-07-05  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/command.rb (Gem::Command::create_option_parser):
+	Make the argument and option sections optional.  They are only
+	printed if there are options or arguments defined.
+
 2004-07-05  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* lib/rubygems/gem_commands.rb:

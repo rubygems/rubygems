@@ -112,8 +112,8 @@ SCRIPT
       dest_path = File.join(directory, spec.require_paths[0])
       spec.extensions.each do |extension|
         Dir.chdir File.join(directory, File.dirname(extension))
-        results = ["ruby #{File.basename(extension)}"]
-        results << `ruby #{File.basename(extension)}`
+        results = ["ruby #{File.basename(extension)} #{ARGV.join(" ")}"]
+        results << `ruby #{File.basename(extension)} #{ARGV.join(" ")}`
         if File.exist?('Makefile')
           mf = File.read('Makefile')
           mf = mf.gsub(/^RUBYARCHDIR\s*=\s*\$.*/, "RUBYARCHDIR = #{dest_path}")

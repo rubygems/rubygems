@@ -46,7 +46,6 @@ class RemoteInstallerTest < Test::Unit::TestCase
   CACHE_SOURCES = ["http://gems.rubyforge.org", "http://gems.chadfowler.com"]
 
   def test_get_cache_sources
-    ENV['GEM_DIR'] = 'gemdir'
     @remote_installer = RemoteInstaller.new
     assert_equal CACHE_SOURCES, @remote_installer.get_cache_sources
     # TODO

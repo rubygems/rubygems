@@ -81,6 +81,7 @@ module Gem
       require 'rubygems/installer'
       require 'rubygems/validator'
       require 'rubygems/doc_manager'
+      require 'rubygems/cmd_manager'
     end
   
     ##

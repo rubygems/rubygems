@@ -1,3 +1,8 @@
+2004-06-15  Rich Kilmer <rich@infoether.com>
+        * Added refactored command handling in rubygems/cmd_manager.rb and a 
+          (temporary) bin/gem2 command file to test things out.  Once we feel
+          comfortable, we can replace gem with gem2.
+
 2004-06-10  Rich Kilmer <rich@infoether.com>
         * Isolated all user interaction to pass through module methods on a new
           Gem::UserInteraction module.  Those methods will be the method of abstracting

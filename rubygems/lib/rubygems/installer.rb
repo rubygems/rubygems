@@ -1,6 +1,4 @@
 require 'pathname'
-require 'logger'
-$log = Logger.new(STDERR)
 
 require 'rbconfig'
 

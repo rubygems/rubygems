@@ -10,6 +10,12 @@ module Gem
   module LoadPathManager
     @paths = nil
     module Gem
+      class Version
+        class Requirement
+          def initialize(string)
+          end
+        end
+      end
       class Specification
         def initialize(&block)
           @require_paths = ['lib']

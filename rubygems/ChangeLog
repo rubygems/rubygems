@@ -1,3 +1,7 @@
+2004-09-09  Chad Fowler <chad@chadfowler.com>
+  * lib/rubygems/loadpath_manager.rb: Small bug when gem specs have ruby 
+  version requirements.
+
 2004-09-08  Chad Fowler <chad@chadfowler.com>
   * install.rb: added stub removal to the install process
 

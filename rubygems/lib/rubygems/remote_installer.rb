@@ -6,7 +6,9 @@ module Gem
     ##
     # http_proxy:: [String] URL of http proxy.  Will override any environment 
     #   variable setting
-    def initialize(http_proxy=nil)
+    def initialize(http_proxy=true)
+      require 'open-uri'
+
       @http_proxy=http_proxy
     end
 
@@ -15,6 +17,7 @@ module Gem
     # package_name:: [String] Name of the Gem to install
     # version_requirement:: [default = "> 0.0.0"] Gem version requirement to install
     def install(package_name, version_requirement = "> 0.0.0", force=false, directory=Gem.dir)
+
       unless version_requirement.respond_to?(:version)
         version_requirement = Version::Requirement.new(version_requirement)
       end
@@ -60,12 +63,17 @@ module Gem
     # Given a list of sources, return a hash of all the caches from those sources, where the key is the source and the value is the cache.
     def get_caches(sources)
       require 'yaml'
+
       caches = {}
       sources.each do |source|
-        response = fetch(source + "/yaml")
-        spec = YAML.load(response.body)
-        raise "Didn't get a valid YAML document" if not spec
-        caches[source] = spec
+    open(source + "/yaml",
+         :proxy => @http_proxy) do |yaml_source|
+
+      spec = YAML.load(yaml_source.read)
+
+      raise "Didn't get a valid YAML document" if not spec
+      caches[source] = spec
+    end
       end
       return caches
     end

@@ -234,43 +234,56 @@ Install required dependency log4r? [Yn]   y
 Successfully installed copland, version 0.3.0
 </pre>
 
-== [#query][#list]gem query -- Getting a list of gems ==
+== [#list]gem list -- List gems staring with a string ==
 
-<tt>gem query</tt> (and its alias <tt>gem list</tt>) will list all gems
-in the local domain, the remote domain, or both.
+<tt>gem list</tt> will list all gems starting with the given string.
 
-=== Usage ==
+=== Usage ===
+
+!usage list
+
+=== Examples ===
+
+List all the gems starting with "cop".
+
+<pre>
+$ gem list cop
+
+*** LOCAL GEMS ***
+
+copland (0.3.0)
+    Copland is an Inversion of Control (IoC) container for Ruby.
+</pre>
+
+== [#query]gem query -- Query for a list of gems ==
+
+<tt>gem query</tt> will list all gems matching a particular criteria.
+The domain may be local, remote or both.
+
+=== Usage ===
 
 !usage query
 
 === Examples ===
 
-To list all local gems:
+To list all local gems with a digit in the gem name:
 
 <pre>
-$ gem query --local                          # shortcut: gem q -L
+$ gem query -n '[0-9]' --local
 
 *** LOCAL GEMS ***
-
-activerecord (0.8.2, 0.8.1)
-    Implements the ActiveRecord pattern for ORM.
-
-copland (0.3.0)
-    Copland is an Inversion of Control (IoC) container for Ruby.
 
 jabber4r (0.7.0)
     Jabber4r is a pure-Ruby Jabber client library
 
 log4r (1.0.5)
     Log4r is a comprehensive and flexible logging library for Ruby.
-
-[... remaining output elided ...]
 </pre>
 
 To list all remote gems that begin with the letter 'm':
 
 <pre>
-$ gm list -R -n ^m
+$ gem query -R -n ^m
 
 *** REMOTE GEMS ***
 
@@ -279,6 +292,27 @@ madeleine (0.6.1, 0.6)
 
 midilib (0.8.0)
     MIDI file and event manipulation library
+</pre>
+
+== [#search]gem search -- Search the gem list for a string ==
+
+<tt>gem search</tt> will seach the list of gems for a name containing the given string.
+
+=== Usage ===
+
+!usage search
+
+=== Examples ===
+
+Search for a gem containing "land" in its name.
+
+<pre>
+$ gem search land
+
+*** LOCAL GEMS ***
+
+copland (0.3.0)
+    Copland is an Inversion of Control (IoC) container for Ruby.
 </pre>
 
 == [#specification]gem specification -- Extract the Gem::Specification from a gem file ==
@@ -356,7 +390,7 @@ required_ruby_version: !ruby/object:Gem::Version::Requirement
       - !ruby/object:Gem::Version 
         version: 0.0.0
 email: jim@weirichhouse.org
-homepage: http://http://onestepback.org
+homepage: http://onestepback.org
 rubyforge_project: rake
 has_rdoc: true
 default_executable: rake

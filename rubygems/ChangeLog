@@ -3,6 +3,15 @@
 	* lib/rubygems/remote_installer.rb (Gem::LocalSourceInfoCache):
 	Added a local cache manager object to implement the read/write
 	policies on the system and user cache files.
+	(Gem::LocalSourceInfoCache::update): Added update and flush to the
+	caching fetcher so that it knows when it needs to update the local
+	cache files.
+	(Gem::RemoteInstaller::initialize): Switched to using a cached
+	fetcher in the remote installer.  All the caching logic was
+	removed from the installer.  User writable cache files are now
+	supported.
+	(Gem::RemoteInstaller::write_gem_to_file): write_gem_to_file now
+	will create the path if needed.
 
 2004-12-02  Jim Weirich  <jim@weirichhouse.org>
 

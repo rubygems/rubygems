@@ -16,7 +16,7 @@ This reference covers 'gem' version
 !version
 .
 
-=== Basic 'gem' Usage ===
+=== Basic 'gem' Usage, and Getting Help ===
 
 <tt>gem</tt> is based on ''commands'', like <tt>build</tt>, <tt>install</tt>,
 and <tt>search</tt>.  See the [[#toc]] for a full list.
@@ -29,17 +29,18 @@ then <tt>install</tt> is the command, <tt>rake</tt> is the argument, and
 <tt>--remote</tt> is an option.  (By the way, this command installs rake
 remotely.)
 
-<tt>gem</tt> provides most of the help you need inline.  To see a list of
-commands, run <tt>gem help commands</tt>.  To get help on the ''install''
-command, run <tt>gem help install</tt>.  To see some examples of common usage,
-run <tt>gem help examples</tt>.  And for a reminder of all this, just run
-<tt>gem help</tt>.
+<tt>gem</tt> provides most of the help you need inline.
+* '''To see a list of commands''', run <tt>gem help commands</tt>.
+* '''To get help on the ''install'' command''', run <tt>gem help install</tt>.
+* '''To see some examples of common usage''', run <tt>gem help examples</tt>.
+* '''For a reminder of all this''', just run <tt>gem help</tt>.
 
 The help on each command is also included in this document.
 
 === [#toc]Gem Commands (Table of Contents) ===
 
-The following is taken from the output of <tt>gem help commands</tt>.
+The following is taken from the output of <tt>gem help commands</tt>.  The
+links on the left take you to the relevant section of this document.
 
 !toc
 
@@ -341,8 +342,6 @@ rublog (0.8.0)
     RubLog is a simple web log, based around the idea of displaying a
     set of regular files in a log-format.
 </pre>
-
-Test: See <a href="#list">list</a>.
 
 
 == [#specification]gem specification -- Extract the Gem::Specification from a gem file ==

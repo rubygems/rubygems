@@ -6,6 +6,8 @@ require 'rubygems/user_interaction'
 
 include Gem::DefaultUserInteraction
 
+$gm = Gem::CommandManager.instance
+
 class CaptureSay
   attr_reader :string
   def initialize
@@ -22,32 +24,32 @@ def pre(cmd, opts)
   puts "</pre>"
 end
 
-
-gm = Gem::CommandManager.instance
-hcmd = gm['help']
+def table_of_contents
+  cs = CaptureSay.new
+  use_ui(cs) do
+    $gm['help'].invoke 'commands'
+  end
+    # We're only interested in the lines that actually describe a command.
+  out = cs.string.grep(/^\s+(\w+)\s+(.*)$/).join("\n")
+    # Add a link to the relevant section in the margin.
+  out.gsub(/^\s+(\w+)/) {
+    cmd_name = $1
+    "  [http://rubygems.rubyforge.org/wiki/wiki.pl?GemReference##{cmd_name} -]  #{cmd_name}"
+  }
+end
 
 while line = gets
   if line =~ /^!/
     cmd, arg = line.split
     if cmd == "!usage"
       begin
-	cmdobj = gm[arg]
+	cmdobj = $gm[arg]
 	pre(cmdobj, "--help")
       rescue NoMethodError
 	puts "Usage of command #{arg} failed"
       end
     elsif cmd == "!toc"
-      cs = CaptureSay.new
-      use_ui(cs) do
-	gm['help'].invoke 'commands'
-      end
-      out = cs.string.gsub(/^    (\S+)(.*)$/) {
-	'    ' + $1 + $2 +
-	  ' [http://rubygems.rubyforge.org/wiki/wiki.pl?GemReference#' +
-	  $1 + " goto]"
-      }
-      out.gsub!(/^/, " ")
-      puts out
+      puts table_of_contents()
     elsif cmd == "!version"
       puts Gem::RubyGemsPackageVersion
     end

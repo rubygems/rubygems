@@ -22,7 +22,7 @@ module Kernel
     if matches.size==0
       matches = Gem.cache.search(gem.name)
       if matches.size==0
-        raise LoadError.new("\nCould not find RubyGem #{gem.name}\n")
+        raise LoadError.new("\nCould not find RubyGem #{gem.name} (#{gem.version_requirement})\n")
       else
         raise LoadError.new("\nRubyGem version error: #{gem.name}(#{matches.first.version} not #{gem.version_requirement.version})\n")
       end

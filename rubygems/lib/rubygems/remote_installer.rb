@@ -209,6 +209,8 @@ module Gem
 	fail "Unable to locate a writable cache file."
     end
 
+    # Determine if +fn+ is a candidate for a cache file.  Return fn if
+    # it is.  Return nil if it is not.
     def try_file(fn)
       return fn if File.writable?(fn)
       return nil if File.exist?(fn)
@@ -361,7 +363,7 @@ module Gem
       installed_gems.flatten
     end
 
-    # Search Gem repository for a gem by specifying all of part of
+    # Search Gem repository for a gem by specifying all or part of
     # the Gem's name   
     def search(pattern_to_match)
       results = []
@@ -398,12 +400,14 @@ module Gem
       rsf.source_index
     end
 
+    # Find a gem to be installed by interacting with the user.
     def find_gem_to_install(gem_name, version_requirement, caches)
       max_version = Version.new("0.0.0")
       specs_n_sources = []
       caches.each do |source, cache|
         cache.each do |name, spec|
-          if (/#{gem_name}/i === name && version_requirement.satisfied_by?(spec.version))
+          if (/#{gem_name}/i === name &&
+	      version_requirement.satisfied_by?(spec.version))
             specs_n_sources << [spec, source]
           end
         end
@@ -412,18 +416,23 @@ module Gem
         raise GemNotFoundException.new(
 	  "Could not find #{gem_name} (#{version_requirement}) in the repository")
       end
-      # bad code: specs_n_sources.sort! { |a, b| a[0].version <=> b[0].version }.reverse! 
       specs_n_sources = specs_n_sources.sort_by { |x| x[0].version }.reverse
-      if specs_n_sources.reject { |item| item[0].platform.nil? || item[0].platform==Platform::RUBY }.size == 0
+      if specs_n_sources.reject { |item|
+	  item[0].platform.nil? || item[0].platform==Platform::RUBY
+	}.size == 0
         # only non-binary gems...return latest
         return specs_n_sources.first
       end
-      list = specs_n_sources.collect {|item| "#{item[0].name} #{item[0].version} (#{item[0].platform.to_s})" }
+      list = specs_n_sources.collect {|item|
+	"#{item[0].name} #{item[0].version} (#{item[0].platform.to_s})"
+      }
       list << "Cancel installation"
-      string, index = choose_from_list("Select which gem to install for your platform (#{RUBY_PLATFORM})", list)
-      raise RemoteInstallationCancelled.new("Installation of #{gem_name} cancelled.") if index == (list.size - 1)
+      string, index = choose_from_list(
+	"Select which gem to install for your platform (#{RUBY_PLATFORM})",
+	list)
+      raise RemoteInstallationCancelled.new("Installation of #{gem_name} cancelled.") if
+	index == (list.size - 1)
       specs_n_sources[index]
-      #raise GemNotFoundException.new("Could not find #{gem_name} (#{version_requirement}) in the repository") unless max_version > Version.new("0.0.0")
     end
 
     def find_dependencies_not_installed(dependencies)

@@ -6,7 +6,7 @@ module Gem
 
     def run(args)
       do_configuration(args)
-      Gem::CommandManager.instance.run(@cfg.args)
+      Gem::CommandManager.instance.run(@cfg)
     end
 
     private

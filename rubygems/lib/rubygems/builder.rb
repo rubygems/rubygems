@@ -81,6 +81,7 @@ __END__
     # Builds the gem from the specification
     #
     def build
+      @spec.mark_version
       @spec.validate
       require 'yaml'
       require 'md5'

@@ -146,7 +146,7 @@ end
 
 task :tag => [:prerelease] do
   reltag = "REL_#{ENV['REL'].gsub(/\./, '_')}"
-  reltag << "_#{ENV['REUSE']}" if ENV['REUSE']
+  reltag << ENV['REUSE'] if ENV['REUSE']
   announce "Tagging CVS with [#{reltag}]"
   sh %{cvs tag #{reltag}}
 end
@@ -201,6 +201,7 @@ end
 PKG_FILES = FileList[
   "Rakefile", "ChangeLog", "Releases", "TODO", "README", 
   "setup.rb",
+  "post-install.rb",
   "bin/*",
   "doc/*.css", "doc/*.rb",
   "examples/**/*",

@@ -1,5 +1,3 @@
-Clean up gem_server (especially the HTML stuff).  Use rdoc/template.
-
 Bring gem_server.cgi back in sync with gem_server.  
 
 Abstract the logic from gem_server*, so we don't have to worry about keeping them in sync

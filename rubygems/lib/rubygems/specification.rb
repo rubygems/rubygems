@@ -36,9 +36,9 @@ module Gem
     ##
     # These attributes are optional
     #
-    attr_accessor :autorequire, :author, :email, :homepage, :description, :files, :docs, :test_suite_file, :executables, :default_executable, :bindir
+    attr_accessor :autorequire, :author, :email, :homepage, :description, :files, :docs, :test_suite_file, :default_executable, :bindir
     attr_accessor :rubyforge_project
-    attr_writer :has_rdoc
+    attr_writer :has_rdoc, :executables
     
     ##
     # Runtime attributes (not persisted)

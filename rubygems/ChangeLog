@@ -1,3 +1,20 @@
+2005-03-04  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/installer.rb (Gem::Uninstaller::ok_to_remove):
+	Reworked logic in uninstall to be intelligent about dependencies.
+	We only complain about dependencies if removing a gem will cause a
+	dependency error.  The uninstaller now checks for :ignore, :all
+	and :executables options.
+
+	* lib/rubygems/cmd_manager.rb (Gem::CommandManager::initialize):
+	Registered Cleanup command.
+
+	* lib/rubygems/gem_commands.rb (Gem::CleanupCommand): Added
+	Cleanup command to gem.
+	(Gem::UninstallCommand::initialize): Added --all, --ignore and
+	--executables options to uninstall.  This helps to avoid excessive
+	YESes all the time.
+
 2005-02-28  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/remote_installer.rb

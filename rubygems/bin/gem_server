@@ -29,12 +29,38 @@ if __FILE__ == $0
     opts.parse!
   end
 
-  s = WEBrick::HTTPServer.new(:Port         => options[:port] || 8808)
-  s.mount_proc("/yaml") {|req, res|
+  s = WEBrick::HTTPServer.new(:Port => options[:port] || 8808)
+  s.mount_proc("/yaml") do |req, res|
     res['content-type'] = 'text/plain'
     res.body << Gem::Cache.from_installed_gems(File.join(options[:gemdir] || Gem.dir, "specifications")).to_yaml
-  }
-  {"/" => "/specifications/", "/gems" => "/cache/"}.each do |mount_point, mount_dir|
+  end
+  s.mount_proc("/doc") do |req, res|
+    table = "<tr><td align='center'><h3>Gem Name</h3></td><td align='center'><h3>Description</h3></td><td align='center'><h3>Documentation</h3></td></tr>"
+    Gem::Cache.from_installed_gems(File.join(options[:gemdir] || Gem.dir, "specifications")).each do |path, spec|
+      table += "<tr><td>#{spec.full_name}</td><td>"
+      table += spec.summary
+      table +="</td><td>"
+      if Gem::DocManager.new(spec).rdoc_installed?
+        table += "<a href='#{'/doc_root/'+spec.full_name+'/rdoc/index.html'}'>RDoc Index</a>"
+      else
+        table +="None installed"
+      end
+      table += "</td>"
+    end
+    res['content-type'] = 'text/html'
+    res.body = <<-WEBPAGE
+      <HTML>
+      <BODY>
+      <CENTER>
+      <h1>RubyGems Documentation Index</h1>
+      <br>
+      <table border=2>
+      #{table}
+      </table>
+      </html>
+    WEBPAGE
+  end
+  {"/" => "/specifications/", "/gems" => "/cache/", "/doc_root" => "/doc/"}.each do |mount_point, mount_dir|
     s.mount(mount_point, WEBrick::HTTPServlet::FileHandler, File.join(options[:gemdir] || Gem.dir, mount_dir), true)
   end
   trap("INT"){ s.shutdown }

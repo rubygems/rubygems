@@ -5,15 +5,21 @@ module Gem
     def initialize(spec)
       @spec = spec
       @doc_dir = File.join(spec.installation_path, "doc", spec.full_name)
-      require 'fileutils'
-      FileUtils.mkdir_p @doc_dir
+    end
+    
+    def rdoc_installed?
+      return File.exist?(File.join(@doc_dir, "rdoc"))
     end
     
     def install_doc(rdoc = true)
       self.generate_rdoc if rdoc
+      require 'fileutils'
+      FileUtils.mkdir_p @doc_dir unless File.exist?(@doc_dir)
     end
     
     def generate_rdoc
+      require 'fileutils'
+      FileUtils.mkdir_p @doc_dir unless File.exist?(@doc_dir)
       begin
         require 'rdoc/rdoc'
       rescue LoadError => e

@@ -145,6 +145,25 @@
 	* test/data/legacy/keyedlist-0.4.0.ruby: added.
 	* test/data/legacy/keyedlist-0.4.0.yaml: added.
 
+2004-08-06  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* lib/rubygems/specification.rb:
+	  - Added convenience class methods: attribute_names,
+	    attribute_defaults, default_value, required_attributes, and
+	    required_attribute?.
+
+	  - IMPORTANT: attribute readers now use lazy initialization, just
+	    like some of them did before the 2004-08-01 change.  This was done
+	    to fix the breakage when loading older gemspecs.
+
+	  - Good documentation for the "attribute" method.
+
+	  - Renamed _copy -> _copy_of.
+
+	* test/test_specification.rb: test attribute_names instead of
+	  attributes.  Other "class convenience" methods remain to be tested
+	  at this stage.
+
 2004-08-01  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* lib/rubygems/specification.rb:

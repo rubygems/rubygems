@@ -81,7 +81,7 @@ module Gem
         errors[gem_name] ||= []
         gem_path = File.join(Gem.dir, "cache", gem_spec.full_name) + ".gem"
         spec_path = File.join(Gem.dir, "specifications", gem_spec.full_name) + ".gemspec"
-        gem_directory = File.join(Gem.dir, gem_spec.full_name)
+        gem_directory = File.join(Gem.dir, "gems", gem_spec.full_name)
     
         installed_files = find_files_for_gem(gem_directory)
         puts gem_directory

@@ -154,15 +154,16 @@ module Gem
       end
     end
 
-    add_common_option('--config-file FILE', "Use this config file instead of default") do |value, options|
-      options[:config_file] = value
-    end
     add_common_option('-p', '--[no-]http-proxy [URL]', 'Use HTTP proxy for remote operations') do |value, options|
       options[:http_proxy] = (value == false) ? :no_proxy : value
     end
     add_common_option('-h', '--help', 'Get help on this command') do |value, options|
       options[:help] = true
     end
-      
+    # Backtrace and config-file are added so they show up in the help
+    # commands.  Both options are actually handled before the other
+    # options get parsed.
+    add_common_option('--config-file FILE', "Use this config file instead of default") do end
+    add_common_option('--backtrace', 'Show stack backtrace on errors') do end
   end # class
 end # module

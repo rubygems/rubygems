@@ -52,6 +52,36 @@ class TestDependencyList < Test::Unit::TestCase
     assert_nil @deplist.find_name("c-1.2")
   end
 
+  def test_ok_to_remove
+    @deplist.add(create_spec("a", "1.1"))
+    assert @deplist.ok_to_remove?("a-1.1")
+  end
+
+  def test_not_ok_to_remove
+    @deplist.add(create_spec("a", "1.1"))
+    @deplist.add(bspec)
+    assert ! @deplist.ok_to_remove?("a-1.1")
+  end
+
+  def test_ok_to_remove_with_extras
+    @deplist.add(create_spec("a", "1.1"))
+    @deplist.add(create_spec("a", "1.2"))
+    @deplist.add(bspec)
+    assert @deplist.ok_to_remove?("a-1.1")
+    assert @deplist.ok_to_remove?("a-1.2")
+    assert @deplist.ok_to_remove?("b-1.2")
+  end
+
+  def test_not_ok_to_remove_after_sibling_removed
+    @deplist.add(create_spec("a", "1.1"))
+    @deplist.add(create_spec("a", "1.2"))
+    @deplist.add(bspec)
+    assert @deplist.ok_to_remove?("a-1.1")
+    assert @deplist.ok_to_remove?("a-1.2")
+    @deplist.remove_by_name("a-1.1")
+    assert ! @deplist.ok_to_remove?("a-1.2")
+  end
+
   def test_sorting
     @deplist.add(create_spec("a", "1.1"))
     @deplist.add(bspec)
@@ -60,7 +90,7 @@ class TestDependencyList < Test::Unit::TestCase
     assert_equal "b-1.2", order.first.full_name
   end
 
-  def xtest_sorting_four_with_out_ambiguities
+  def test_sorting_four_with_out_ambiguities
     @deplist.add(Gem::Specification.new do |s|
 	s.name = "a"
 	s.version = '1.1'
@@ -102,6 +132,19 @@ class TestDependencyList < Test::Unit::TestCase
       end)
     order = @deplist.dependency_order
   end
+
+  def test_from_source_index
+    hash = {
+      'a-1.1' => create_spec("a", "1.1"),
+      'b-1.2' => bspec,
+    }
+    si = Gem::SourceIndex.new(hash)
+    deps = Gem::DependencyList.from_source_index(si)
+    assert_equal ['b-1.2', 'a-1.1'],
+      deps.dependency_order.collect { |s| s.full_name }
+  end
+
+  # ------------------------------------------------------------------
 
   def bspec
     Gem::Specification.new do |s|

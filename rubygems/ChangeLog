@@ -1,5 +1,7 @@
 2005-02-26  Jim Weirich  <jim@weirichhouse.org>
 
+	* Released 0.8.5
+
 	* lib/rubygems/doc_manager.rb (Gem::DocManager::generate_rdoc):
 	Removed warning about generating rdocs on gems w/o an rdoc flag.
 
@@ -35,9 +37,11 @@
 	patch to fix unit test running bug.
 
 2005-01-14  Chad Fowler  <chad@chadfowler.com>
-	* lib/rubygems/installer.rb: attempt at fixing Ryan Davis's reported Shebang bug.
-	STILL NOT WORKING, because it doesn't work with ^M characters.
-	* lib/rubygems/config_file.rb: small but ugly error fixed if no config file exists.
+	* lib/rubygems/installer.rb: attempt at fixing Ryan Davis's
+	reported Shebang bug.  STILL NOT WORKING, because it doesn't work
+	with ^M characters.
+	* lib/rubygems/config_file.rb: small but ugly error fixed if no
+	config file exists.
 	* lib/rubygems/remote_installer.rb: Fixed bug http://rubyforge.org/tracker/index.php?func=detail&aid=1331&group_id=126&atid=575.
 
 2005-01-01  Chad Fowler  <chad@chadfowler.com>

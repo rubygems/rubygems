@@ -145,12 +145,7 @@ class FunctionalTest < Test::Unit::TestCase
   end
 
   def read_gem_file(filename)
-    open(filename) { |f|
-      while line = f.gets
-	break if line == "__END__\n"
-      end
-      YAML.load(f)
-    }
+    Gem::Format.from_file_by_path(filename).spec
   end
 
 end

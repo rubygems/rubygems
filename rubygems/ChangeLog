@@ -1,3 +1,10 @@
+2004-07-13  Chad Fowler	    <chad@chadfowler.com>
+	* lib/rubygems/installer.rb, lib/rubygems/package.rb, 
+	lib/rubygems/format.rb, test/test_package.rb: Added Mauricio 
+	Fernandez's patch to replace old gem format with tar.gz format.
+	Fixed some failing unit tests that resulted.  Still a couple left.
+	* lib/rubygems.rb: Fixed a bug introduced by the previous patch.
+
 2004-07-13  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* lib/rubygems.rb: (#require_gem) added the ability to do

@@ -25,13 +25,15 @@ module Kernel
   # raises:: [LoadError] if Gem cannot be found or version requirement not met.
   #
   def require_gem(gem, *version_requirements)
-    if gem.index('/')
-      # We have been given a gem name like 'rake/packagetask', which is a shortcut.
-      gemname = gem.sub(%r[/.*$], '')
-      library = gem
-      require_gem gemname
-      require library
-      return
+    if(gem.respond_to?(:index))
+      if gem.index('/')
+        # We have been given a gem name like 'rake/packagetask', which is a shortcut.
+        gemname = gem.sub(%r[/.*$], '')
+        library = gem
+        require_gem gemname
+        require library
+        return
+      end
     end
 
     unless version_requirements.size > 0

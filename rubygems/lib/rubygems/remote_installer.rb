@@ -169,7 +169,7 @@ module Gem
     # Write data to the proper cache.
     def write_cache
       data = cache_data
-      open(writable_file, "w") do |f|
+      open(writable_file, "wb") do |f|
 	f.puts Marshal.dump(data)
       end
     end
@@ -207,7 +207,7 @@ module Gem
     def read_cache
       @cache_file = select_cache_file
       begin
-	open(@cache_file) { |f| load_local_cache(f) } || {}
+	open(@cache_file, "rb") { |f| load_local_cache(f) } || {}
       rescue StandardError => ex
 	{}
       end

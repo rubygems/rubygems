@@ -87,7 +87,7 @@ class RemoteInstallerTest < Test::Unit::TestCase
     @remote_installer.expected_bodies = [FOO_GEM]
 
     result = @remote_installer.install('foo')
-    assert_equal nil, result
+    assert_equal [nil], result
   end
 
 end

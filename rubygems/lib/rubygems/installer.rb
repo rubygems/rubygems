@@ -22,7 +22,7 @@ module Gem
     #
     #  $GEM_PATH/
     #      specifications/<gem-version>.gemspec #=> the extracted YAML gemspec
-    #      <gem-version>/... #=> the extracted Gem files
+    #      gems/<gem-version>/... #=> the extracted Gem files
     #      cache/<gem-version>.gem #=> a cached copy of the installed Gem
     # 
     # force:: [default = false] if false will fail if a required Gem is not installed
@@ -35,6 +35,7 @@ module Gem
       format = Gem::Format.from_file_by_path(@gem)
       unless force
          format.spec.dependencies.each do |dep_gem|
+           # XXX: Does this take account of *versions*?
            require_gem(dep_gem)
          end
        end

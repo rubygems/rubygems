@@ -565,7 +565,10 @@ class RubyGemsFacade
 
   def _run_tests(name, version)
     gem_specs = Gem::Cache.from_installed_gems.search(name, version.version)
-    return unless gem_specs[0].test_suite_file
+    unless gem_specs[0].test_suite_file
+      _info "There are no unit tests to run for #{name}-#{version}"
+      return
+    end
     require_gem name, "= #{version.version}"
     require gem_specs[0].test_suite_file
     suite = Test::Unit::TestSuite.new("#{name}-#{version}")

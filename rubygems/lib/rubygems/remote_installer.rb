@@ -17,21 +17,25 @@ module Gem
     # This method will install package_name onto the local system.  
     # package_name:: [String] Name of the Gem to install
     # version_requirement:: [default = "> 0.0.0"] Gem version requirement to install
+    #
+    # Returns: an array of Gem::Specification objects, one for each gem installed. 
+    #
     def install(package_name, version_requirement = "> 0.0.0", force=false, directory=Gem.dir)
-
       unless version_requirement.respond_to?(:version)
         version_requirement = Version::Requirement.new(version_requirement)
       end
+      installed_gems = []
       sources = get_cache_sources()
       caches = get_caches(sources)
       spec, source = find_latest_valid_package_in_caches(package_name,version_requirement,caches)
       dependencies = find_dependencies_not_installed(spec.dependencies)
-      install_dependencies(dependencies)
+      installed_gems << install_dependencies(dependencies)
       cache_dir = File.join(Gem::dir, "cache")
       destination_file = File.join(cache_dir, spec.full_name + ".gem")
       download_gem(destination_file, source, spec)
       installer = new_installer(destination_file)
-      installer.install(force,directory)
+      installed_gems.unshift installer.install(force,directory)
+      installed_gems.flatten
     end
 
     ##
@@ -110,18 +114,25 @@ module Gem
       to_install
     end
 
-    # TODO: For now, we recursively install, but this is not the right way to do things (e.g. if a package fails to download, we shouldn't install anything).
+    # 
+    # Install all the given dependencies.  Returns an array of Gem::Specification objects, one
+    # for each dependency installed.
+    # 
+    # TODO: For now, we recursively install, but this is not the right way to do things (e.g.
+    # if a package fails to download, we shouldn't install anything).
     def install_dependencies(dependencies)
+      installed_gems = []
       dependencies.each do |dependency|
         print "Install required dependency #{dependency.name}? [Yn] "
         answer = STDIN.gets
         if(answer =~ /^y/i || answer =~ /^[^a-zA-Z0-9]$/) then
           remote_installer = RemoteInstaller.new
-          remote_installer.install(dependency.name, dependency.version_requirement)
+          installed_gems << remote_installer.install(dependency.name, dependency.version_requirement)
         else
           raise DependencyError.new("Required dependency #{dependency.name} not installed")
         end
       end
+      installed_gems
     end
 
     def download_gem(destination_file, source, spec)

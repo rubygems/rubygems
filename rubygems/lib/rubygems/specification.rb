@@ -65,6 +65,8 @@ module Gem
       @date = Time.now
       @bindir, @default_executable,@test_suite_file,@has_rdoc,@email,@homepage,@rubyforge_project,@description,@author = nil
       @loaded = false
+      @has_rdoc = false
+      @test_suite_file = nil
       @platform = nil
       @@list << self
       yield self if block_given?

@@ -35,7 +35,7 @@ rescue LoadError => e
     install_session
     puts
     puts "Retry running the functional tests."
-    _exit(0)
+    exit(0)
   else
     puts "Test cancelled...quitting"
     exit(1)

@@ -105,6 +105,11 @@ module Gem
       set_paths(ENV['GEM_PATH']) unless @gem_path
       @gem_path
     end
+
+    # The home directory for the user.
+    def user_home
+      @user_home ||= find_home
+    end
     
     ##
     # Activate a gem (i.e. add it to the Ruby load path).  The gem
@@ -181,6 +186,7 @@ module Gem
     # Used mainly by the unit tests to provide environment isolation.
     #
     def use_paths(home, paths=[])
+      clear_paths
       set_home(home) if home
       set_paths(paths.join(File::PATH_SEPARATOR)) if paths
     end
@@ -278,6 +284,24 @@ module Gem
       end      
       @gem_path.uniq!
       @gem_path.each do |gp| ensure_gem_subdirectories(gp) end
+    end
+    
+    # Some comments from the ruby-talk list regarding finding the home
+    # directory:
+    #
+    #   I have HOME, USERPROFILE and HOMEDRIVE + HOMEPATH. Ruby seems
+    #   to be depending on HOME in those code samples. I propose that
+    #   it should fallback to USERPROFILE and HOMEDRIVE + HOMEPATH (at
+    #   least on Win32).
+    #
+    def find_home
+      ['HOME', 'USERPROFILE'].each do |homekey|
+	return ENV[homekey] if ENV[homekey]
+      end
+      if ENV['HOMEDRIVE'] && ENV['HOMEPATH']
+	return "#{ENV['HOMEDRIVE']}:#{ENV['HOMEPATH']}"
+      end
+      File.expand_path("~")
     end
     
     public

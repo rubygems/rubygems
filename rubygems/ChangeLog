@@ -1,3 +1,21 @@
+2004-12-01  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/remote_installer.rb
+	(Gem::RemoteSourceFetcher::convert_spec): We now proprocess the
+	yaml string data to reduce it in size.  This was done to
+	workaround a problem with large YAML files (although it is just a
+	temporary fix because our yaml data keeps growing and growing).
+
+	* Rakefile: Added more targets to the clobber target.
+
+	* test/test_remote_fetcher.rb
+	(TestRemoteFetcher::test_explicit_proxy): Added tests for proxy
+	support.
+
+	* lib/rubygems/remote_installer.rb
+	(Gem::RemoteSourceFetcher::connect_to): Refactored to add proxy
+	support.
+
 2004-11-28  Chad Fowler <chad@chadfowler.com>
 	* lib/rubygems/loadpath_manager.rb: Added Mauricio's patch to work
 	around string contains null byte issue.

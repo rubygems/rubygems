@@ -82,7 +82,7 @@ class TestSimpleSpecification < Test::Unit::TestCase
       rubygems_version specification_version name version date summary
       require_paths author email homepage rubyforge_project description
       autorequire default_executable bindir has_rdoc required_ruby_version
-      platform files test_files library_stubs rdoc_options extra_rdoc_files
+      platform files test_files rdoc_options extra_rdoc_files
       executables extensions requirements dependencies
     }.sort
     actual_value = Gem::Specification.attribute_names.map { |a| a.to_s }.sort

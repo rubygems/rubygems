@@ -55,8 +55,7 @@ module Gem
       -1 => ['(RubyGems versions up to and including 0.7 did not have versioned specifications)'],
       1  => [
         'Deprecated "test_suite_file" in favor of the new, but equivalent, "test_files"',
-        '"test_file=x" is a shortcut for "test_files=[x]"',
-        'Introduced "library_stubs" attribute, to allow the creation of several library stubs'
+        '"test_file=x" is a shortcut for "test_files=[x]"'
       ]
     }
 
@@ -204,7 +203,6 @@ module Gem
     attribute :platform,               Gem::Platform::RUBY
     attribute :files,                  []
     attribute :test_files,             []
-    attribute :library_stubs,          []
     attribute :rdoc_options,           []
     attribute :extra_rdoc_files,       []
     attribute :executables,            []
@@ -307,7 +305,7 @@ module Gem
 
     overwrite_accessor :files do
       (@files || []) | (@test_files || []) | (add_bindir(@executables) || []) |
-        (@extra_rdoc_files || []) | (@library_stubs || []) | (@extensions || [])
+        (@extra_rdoc_files || []) | (@extensions || [])
     end
 
     overwrite_accessor :test_files do

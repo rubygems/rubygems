@@ -1,3 +1,7 @@
+2004-09-12  Chad Fowler  <chad@chadfowler.com>
+	* lib/rubygems/specification.rb, test/test_specification.rb: Removed
+        library_stubs attribute.
+
 2004-09-12  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* scripts/specdoc.rb: Check that all attributes are documented; and

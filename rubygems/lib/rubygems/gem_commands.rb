@@ -123,7 +123,7 @@ module Gem
         begin
           say "Attempting local installation of '#{gem_name}'"
 	  entries = []
-	  if(File.exist?(gem_name))
+	  if(File.exist?(gem_name) && !File.directory?(gem_name))
             entries << gem_name
 	  else
             filepattern = gem_name + "*.gem"

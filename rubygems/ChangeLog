@@ -1,3 +1,8 @@
+2004-09-20  Chad Fowler  <chad@chadfowler.com>
+	* lib/rubygems/gem_commands.rb:  If file match during local install is
+	a directory, don't try to treat it erroneously as a gem (bug reported
+	by Rich).
+
 2004-09-14  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems.rb: Fixed bug in require_gem (thanks Jamis Buck!)
 	that would require a gem based on an inexact search of its name

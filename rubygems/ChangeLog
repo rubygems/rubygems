@@ -1,3 +1,7 @@
+2005-02-10  Chad Fowler  <chad@chadfowler.com>
+	* bin/gem_server: Added Martin Ankerl's wonderful new gem_server
+	template
+
 2005-01-27  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems/gem_commands.rb: Fixed
 	`gem update` so it accepts a list of gems to update and _only_

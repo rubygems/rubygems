@@ -14,6 +14,7 @@ ARGV.options do |opts|
   opts.on('--force', "Force Gem to intall, bypassing dependency checks") {|options[:force]|}
   opts.on('--remote-install=GEMNAME', "Auto-download and install a Gem and its dependencies") {|options[:remote_install]|}
   opts.on('--version=GEMVERSION', "Version of Gem to perform operation on") {|options[:gem_version]|}
+  opts.on('--verify=GEMFILE', "Verify gem file against its internal checksum") {|options[:verify_gem]|}
   opts.parse!
 end
 
@@ -26,6 +27,7 @@ require 'rubygems'
 @force = options[:force]
 @remote_install = options[:remote_install]
 @directory = options[:directory] || Gem.dir
+@verify_gem = options[:verify_gem]
 
 if @spec_file
   load @spec_file
@@ -68,4 +70,13 @@ end
 
 if @remote_install
   Gem::RemoteInstaller.new(@remote_install, options[:gem_version] || "> 0.0.0").install
+end
+
+if @verify_gem
+  require 'md5'
+  if(MD5.md5(File.read(@verify_gem).gsub(/MD5SUM = "([a-z0-9]+)"/, "MD5SUM = \"" + ("F" * 32) + "\"")) == $1.to_s) then
+    puts "#{@verify_gem} is valid"
+  else
+    puts "#{@verify_gem} is invalid"
+  end
 end

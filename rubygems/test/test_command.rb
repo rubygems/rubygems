@@ -105,4 +105,26 @@ class TestCommand < Test::Unit::TestCase
   def test_common_option_in_class
     assert Array === Gem::Command.common_options
   end
+
+  def test_option_recognition
+    @cmd.add_option('-h', '--help [COMMAND]', 'Get help on COMMAND') do |value, options|
+      options[:help] = true
+    end
+    @cmd.add_option('-f', '--file FILE', 'File option') do |value, options|
+      options[:help] = true
+    end
+    assert @cmd.handles?(['-x'])
+    assert @cmd.handles?(['-h'])
+    assert @cmd.handles?(['-h', 'command'])
+    assert @cmd.handles?(['--help', 'command'])
+    assert @cmd.handles?(['-f', 'filename'])
+    assert @cmd.handles?(['--file=filename'])
+    assert ! @cmd.handles?(['-z'])
+    assert ! @cmd.handles?(['-f'])
+    assert ! @cmd.handles?(['--toothpaste'])
+
+    args = ['-h', 'command']
+    @cmd.handles?(args)
+    assert_equal ['-h', 'command'], args
+  end
 end

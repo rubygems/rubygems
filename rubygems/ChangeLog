@@ -1,5 +1,27 @@
 2004-12-06  Jim Weirich  <jim@weirichhouse.org>
 
+	* test/test_specification.rb
+	(TestLegacyYamlSpecification::test_load): Fixed test to avoid the
+	__FILE__ stuff.  Running tests from rakefile guarantees that the
+	file paths start from the right location.
+
+	* pkgs/sources/sources.gemspec: Made Gem.sources_spec idempotent.
+
+	* lib/rubygems/specification.rb (Gem::Specification::initialize):
+	Added @@gather to Gem::Specification to facilitate proper loads.
+	(Gem::Specification::Specification): Added Specification.load.
+
+	* lib/rubygems/source_index.rb (Gem::SourceIndex): Fixed comments
+	'long name' => 'full name'.
+
+	* lib/rubygems/gem_commands.rb (Gem::BuildCommand::load_gemspecs):
+	Changed to use Gem.Specification.load.
+
+	* Rakefile: Added sources-*.gem to clobber list.
+	(egrep): Upgraded the DBG finder to include breakpoint.
+
+	* post-install.rb (install_sources): Using block version of chdir.
+
 	* lib/rubygems/remote_installer.rb
 	(Gem::LocalSourceInfoCache::read_cache): Fixed initialization of
 	cache.

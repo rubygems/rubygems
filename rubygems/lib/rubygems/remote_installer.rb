@@ -202,7 +202,7 @@ module Gem
     end
 
     def write_gem_to_file(body, destination_file)
-      File.open(destination_file, 'w') do |out|
+      File.open(destination_file, 'wb') do |out|
         out.write(body)
       end
     end

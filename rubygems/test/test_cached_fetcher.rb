@@ -23,7 +23,7 @@ class TestCachedFetcher < Test::Unit::TestCase
     def fetch_path(path=nil)
     end
     
-    def source_index()
+    def source_index
       @count += 1
     end
   end

@@ -33,13 +33,14 @@ module Gem
       read_data(@uri + path)
     end
 
-    # Get the source info stored on the source.  Source info is a
-    # directory of the gems available on a source formatted as a hash
-    # map of gem long names to (abbreviated) gem specs.
+    # Get the source index from the gem source.  The source index is a
+    # directory of the gems available on the source, formatted as a
+    # Gem::Cache object.  The cache object allows easy searching for
+    # gems by name and version requirement.
     #
-    # Notice that the gem specs returned by this method are adequate
-    # for searches and queries, but may have some information elided
-    # (hence "abbreviated").
+    # Notice that the gem specs in the cache are adequate for searches
+    # and queries, but may have some information elided (hence
+    # "abbreviated").
     def source_index
       say "Updating Gem source index for: #{@uri}"
       begin
@@ -238,13 +239,14 @@ module Gem
       @fetcher.fetch_path(path)
     end
 
-    # Get the source info stored on the source.  Source info is a
-    # directory of the gems available on a source formatted as a hash
-    # map of gem long names to (abbreviated) gem specs.
+    # Get the source index from the gem source.  The source index is a
+    # directory of the gems available on the source, formatted as a
+    # Gem::Cache object.  The cache object allows easy searching for
+    # gems by name and version requirement.
     #
-    # Notice that the gem specs returned by this method are adequate
-    # for searches and queries, but may have some information elided
-    # (hence "abbreviated").
+    # Notice that the gem specs in the cache are adequate for searches
+    # and queries, but may have some information elided (hence
+    # "abbreviated").
     def source_index
       cache = manager.cache_data[@source_uri]
       if cache && cache['size'] == @fetcher.size
@@ -335,7 +337,7 @@ module Gem
         version_requirement = Version::Requirement.new(version_requirement)
       end
       installed_gems = []
-      caches = source_index(install_dir)
+      caches = source_index_hash
       spec, source = find_gem_to_install(gem_name, version_requirement, caches)
       dependencies = find_dependencies_not_installed(spec.dependencies)
       installed_gems << install_dependencies(dependencies, force, install_dir)
@@ -351,7 +353,7 @@ module Gem
     # the Gem's name   
     def search(pattern_to_match)
       results = []
-      caches = source_index(Gem.dir)
+      caches = source_index_hash
       caches.each do |cache|
         results << cache[1].search(pattern_to_match)
       end
@@ -367,11 +369,9 @@ module Gem
       @sources
     end
     
-    # Given a list of sources, return a hash of interesting
-    # information from those sources, where the key is the source and
-    # the value is a Gem::Cache object containing a map of long gem
-    # names (name & version) to gem specification.
-    def source_index(install_dir)
+    # Return a hash mapping the available source names to the source
+    # index of that source.
+    def source_index_hash
       result = {}
       sources.each do |source|
 	result[source] = fetch_source(source)

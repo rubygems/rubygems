@@ -95,7 +95,7 @@ module Gem
     # return:: [List<String>] List of directory paths.
     #
     def path
-      set_paths(ENV['RUBY_GEMS']) unless @gem_path
+      set_paths(ENV['GEM_PATH']) unless @gem_path
       @gem_path
     end
     
@@ -161,7 +161,7 @@ module Gem
     def check_gem_subdirectories(gemdir)
       DIRECTORIES.each do |filename|
 	fn = File.join(gemdir, filename)
-	$stderr.puts "WARNING: RUBY_GEMS path #{path} does not exist" unless File.exist?(fn)
+	$stderr.puts "WARNING: GEM_PATH path #{path} does not exist" unless File.exist?(fn)
       end
     end
   end

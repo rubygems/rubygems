@@ -7,7 +7,7 @@ class TestGemPaths < Test::Unit::TestCase
   def setup
     Gem.clear_paths
     ENV['GEM_HOME'] = nil
-    ENV['RUBY_GEMS'] = nil
+    ENV['GEM_PATH'] = nil
   end
 
   def teardown
@@ -47,25 +47,25 @@ class TestGemPaths < Test::Unit::TestCase
 
   def test_additional_paths
     create_additional_gem_dirs
-    ENV['RUBY_GEMS'] = ADDITIONAL.join(File::PATH_SEPARATOR)
+    ENV['GEM_PATH'] = ADDITIONAL.join(File::PATH_SEPARATOR)
     assert_equal ADDITIONAL, Gem.path[0,2]
     assert_equal 3, Gem.path.size
     assert_match DEFAULT_DIR_RE, Gem.path.last
   end
 
   def test_incomplete_gemdir_message
-    ENV['RUBY_GEMS'] = 'test/temp/x'
+    ENV['GEM_PATH'] = 'test/temp/x'
     err = StringIO.new
     redirect_stderr(err) do
       assert_equal 2, Gem.path.size
     end
-    assert_match %r{warning: *ruby_gems path }i, err.string
+    assert_match %r{warning: *gem_path path }i, err.string
   end
 
   def test_dir_path_overlap
     create_additional_gem_dirs
     ENV['GEM_HOME'] = 'test/temp/gemdir'
-    ENV['RUBY_GEMS'] = ADDITIONAL.join(File::PATH_SEPARATOR)
+    ENV['GEM_PATH'] = ADDITIONAL.join(File::PATH_SEPARATOR)
     assert_equal 'test/temp/gemdir', Gem.dir
     assert_equal ADDITIONAL + [Gem.dir], Gem.path
   end
@@ -74,7 +74,7 @@ class TestGemPaths < Test::Unit::TestCase
     create_additional_gem_dirs
     dirs = ['test/temp/gemdir'] + ADDITIONAL + ['test/temp/a']
     ENV['GEM_HOME'] = 'test/temp/gemdir'
-    ENV['RUBY_GEMS'] = dirs.join(File::PATH_SEPARATOR)
+    ENV['GEM_PATH'] = dirs.join(File::PATH_SEPARATOR)
     assert_equal 'test/temp/gemdir', Gem.dir
     assert_equal [Gem.dir] + ADDITIONAL, Gem.path
   end

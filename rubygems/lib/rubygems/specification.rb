@@ -379,5 +379,36 @@ module Gem
         raise InvalidSpecificationException.new("Gem spec needs to have at least one require_path")
       end
     end
+
+    ##
+    #
+    private
+    def find_all_satisfiers(dep)
+      Gem.cache.each do |name,gem|
+        if(gem.satisfies_requirement?(dep)) then
+          yield gem
+        end
+      end
+    end
+
+    ##
+    # return:: [Array] [[dependent_gem, dependency, [list_of_satisfiers]]]
+    public
+    def dependent_gems
+      out = []
+      Gem.cache.each do |name,gem|
+        gem.dependencies.each do |dep|
+          if(self.satisfies_requirement?(dep)) then
+            sats = []
+            find_all_satisfiers(dep) do |sat|
+              sats << sat
+            end
+            out << [gem, dep, sats]
+          end
+        end
+      end
+      out
+    end
+
   end
 end

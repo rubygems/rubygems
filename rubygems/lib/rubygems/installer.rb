@@ -211,14 +211,30 @@ SCRIPT
       end
     end
     
-    
     def remove(spec)
+      if(has_dependents?(spec)) then
+        raise "Uninstallation aborted due to dependent gem(s)"
+      end
       FileUtils.rm_rf spec.full_gem_path
       FileUtils.rm_rf File.join(spec.installation_path, 'specifications', "#{spec.full_name}.gemspec")
       FileUtils.rm_rf File.join(spec.installation_path, 'cache', "#{spec.full_name}.gem")
       DocManager.new(spec).uninstall_doc
       puts "Successfully uninstalled #{spec.name} version #{spec.version}"
     end
+
+    def has_dependents?(spec)
+      spec.dependent_gems.each do |gem,dep,satlist|
+        puts "WARNING: #{gem.name}-#{gem.version} depends on [#{dep.name} (#{dep.version_requirement})], which is satisifed by this gem.  This dependency is satisfied by:"
+        satlist.each do |sat|
+          puts "\t#{sat.name}-#{sat.version}"
+        end
+        print "Uninstall anyway? [Y/n]"
+        answer = STDIN.gets
+        if(answer !~ /^y/i) then
+          return true
+        end
+      end
+      false
+    end
   end
-  
 end

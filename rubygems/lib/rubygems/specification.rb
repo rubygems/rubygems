@@ -268,7 +268,7 @@ module Gem
     overwrite_accessor :date do
       # Legacy gems might have a Time object directly loaded from the YAML.  We fix it here.
       unless @date.is_a? Date
-        date = @date
+        self.date = @date
       end
       @date
     end
@@ -293,9 +293,9 @@ module Gem
       nil
     end
 
-    
     overwrite_accessor :files do
-      (@files || []) | (@test_files || [])| (@executables || [])| (@extra_rdoc_files || [])| (@library_stubs || [])| (@extensions || [])
+      (@files || []) | (@test_files || []) | (@executables || []) |
+        (@extra_rdoc_files || []) | (@library_stubs || []) | (@extensions || [])
     end
 
     overwrite_accessor :test_files do
@@ -460,7 +460,7 @@ module Gem
         current_value = self.send(name)
         result << "  s.#{name} = #{ruby_code(current_value)}\n" unless current_value == default
       end
-      @dependencies.each do |dep|
+      dependencies.each do |dep|
         version_reqs_param = dep.requirements_list.inspect
         result << "  s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})\n"
       end

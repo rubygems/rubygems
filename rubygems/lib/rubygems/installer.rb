@@ -226,7 +226,6 @@ TEXT
       begin
         format.file_entries.each do |entry, file_data|
           path = entry['path']
-          mode = entry['mode']
           FileUtils.mkdir_p File.dirname(path)
           File.open(path, "wb") do |out|
             out.write file_data

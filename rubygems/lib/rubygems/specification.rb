@@ -206,7 +206,7 @@ module Gem
     attribute :has_rdoc,               false
     attribute :required_ruby_version,  Gem::Version::Requirement.default
     attribute :platform,               Gem::Platform::RUBY
-    attribute :authors,                  []
+    attribute :authors,                []
     attribute :files,                  []
     attribute :test_files,             []
     attribute :rdoc_options,           []

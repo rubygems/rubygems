@@ -149,6 +149,9 @@ TEXT
             STDERR.puts "       library stub, delete the file and reinstall."
           else
             # Create #{autorequire}.rb in #{target_dir}.
+          unless File.exist? File.dirname(target_file)
+            FileUtils.mkdir_p File.dirname(target_file)
+          end
             File.open(target_file, "w", 0644) do |file|
               file.write(library_stub_text(spec.name, File.basename(target_file)))
             end

@@ -26,6 +26,7 @@ module Gem
       @version_requirements = Version::Requirement.new(version_requirements)
     end
 
+    undef version_requirements
     def version_requirements
       normalize if @version_requirement
       @version_requirements

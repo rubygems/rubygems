@@ -18,8 +18,7 @@ module Gem
         require 'rdoc/rdoc'
       rescue LoadError => e
         puts "ERROR: RDoc documentation generator not installed!"
-        puts "       To download perform: "
-        puts "         gem --remote-install=rdoc"
+        puts "       To install RDoc:  gem --remote-install=rdoc"
         return
       end
       puts "Installing RDoc documentation for #{@spec.full_name}..."

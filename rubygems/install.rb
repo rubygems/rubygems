@@ -59,7 +59,7 @@ def install_rb(srcdir = nil)
     File::install(source, target, 0755, true)
     if is_windows_platform
       File.open(target+".cmd", "w") do |file|
-        file.puts "@ruby #{target} %1 %2 %3 %4 %5 %6 %7 %8 &9"
+        file.puts "@ruby #{target} %1 %2 %3 %4 %5 %6 %7 %8 %9"
       end
     end
   end

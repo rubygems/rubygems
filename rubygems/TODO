@@ -2,7 +2,6 @@ Alpha release 1:
 ---------------
 * Bring gem_server.cgi back in sync with gem_server.  
 * Abstract the logic from gem_server*, so we don't have to worry about keeping them in sync
-* Some kind of search functionality for searching the gem repository
 * raa-install conversion (or some other way to get a decent amount of gems up)
 
 Straddling the line

@@ -1,3 +1,8 @@
+2004-12-14  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* test/test_loadmanager.rb: invalidated it as a unit test; it's
+	incompatible with custom_require.rb.
+
 2004-12-12  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* lib/rubygems/custom_require.rb: simple bug fix.

@@ -23,14 +23,22 @@ module Kernel
   #   require_gem 'rake'
   #   require 'rake/packagetask' 
   #
+  #  You can define the environment variable GEM_SKIP as a way to not
+  #  load specified gems.  you might do this to test out changes that haven't 
+  #  been intsalled yet.  Example:
+  #
+  #  GEM_SKIP=libA:libB ruby-I../libA -I../libB ./mycode.rb
+  #
   # <i>This is an experimental feature added after versoin 0.7, on 2004-07-13. </i>
   #
   # gem:: [String or Gem::Dependency] The gem name or dependency instance.
   # version_requirement:: [default="> 0.0.0"] The version requirement.
   # return:: [Boolean] true if the Gem is loaded, otherwise false.
-  # raises:: [Gem::LoadError] if Gem cannot be found or version requirement not met.
+  # raises:: [Gem::LoadError] if Gem cannot be found, is listed in GEM_SKIP, or version requirement not met.
   #
   def require_gem(gem, *version_requirements)
+    skip_list = (ENV['GEM_SKIP'] || "").split(/:/)
+    raise Gem::LoadError, "skipping #{gem}" if skip_list.include? gem
     Gem.activate(gem, true, *version_requirements)
   end
 end

@@ -1,3 +1,8 @@
+2004-11-25  Ryan Davis <ryand@zenspider.com>
+        * lib/rubygems.rb: Added GEM_SKIP functionality, which will tell 
+	loadpath_manager not to load specific libs from gems.  For testing/
+	development purposes.  Created by Ryan Davis.
+
 2004-11-24  Chad Fowler <chad@chadfowler.com>
 	* lib/rubygems/specification.rb: Allow multiple authors per gem.
 	* lib/rubygems/gem_commands.rb: command line error message if you

@@ -156,6 +156,33 @@ activerecord-0.8.1 has 2 problems
 !toc-link
 
 
+== [#cleanup] gem cleanup [gemname] -- Cleanup the outdated versions ==
+
+(new in version 0.8.7)
+
+This command will remove (uninstall) all the versions of a gem, except
+for the latest one.  If no gemname is given in the command line, cleanup will be run agains all installed gems.
+
+=== Usage ===
+
+!usage cleanup
+
+=== Examples ===
+
+<pre>
+$ gem cleanup
+Rubygems Environment:
+  - VERSION: 0.6 (0.6.1)
+  - INSTALLATION DIRECTORY: /usr/local/lib/ruby/gems/1.8
+  - GEM PATH:
+     - /usr/local/lib/ruby/gems/1.8
+  - REMOTE SOURCES:
+     - http://gems.rubyforge.org
+</pre>
+
+!toc-link
+
+
 == [#environment] gem environment -- Display information about the gem environment ==
 
 Gems uses several paths and directories to perform its work.  This

@@ -74,7 +74,7 @@ module Gem
   # return:: [String] The directory path
   #
   def self.dir
-    return $GEM_PATH.first if $GEM_PATH
+    return $GEM_PATH.first if defined?($GEM_PATH)
     require 'rbconfig'
     dir = File.join(Config::CONFIG['libdir'], 'ruby', 'gems', Config::CONFIG['ruby_version'])
     unless File.exist?(File.join(dir, 'specifications'))

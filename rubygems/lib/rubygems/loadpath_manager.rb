@@ -1,11 +1,7 @@
 module Kernel
-
   alias require__ require
   def require(file)
-    unless Gem::LoadPathManager.search_loadpath(file).empty?
-      return require__(file)
-    end
-    Gem::LoadPathManager.search_gempath(file)
+    file = Gem::LoadPathManager.search_loadpath(file) || Gem::LoadPathManager.search_gempath(file)
     require__(file)
   end
 end
@@ -39,25 +35,29 @@ module Gem
         end
       end
     end
-
-    BASE_PATH = '/usr/local/lib/ruby/gems/1.8'
-    PATHS = []
-    SPECS = Dir.glob("#{BASE_PATH}/specifications/*.gemspec").collect { |specfile| eval(File.read(specfile)) }.sort!
-    SPECS.each do |spec|
-      spec.require_paths.each {|path| PATHS << "#{BASE_PATH}/gems/#{spec.full_name}/#{path}"}
+    
+    def self.build_paths
+      @paths = []
+      ::Gem.path.each do |gempath|
+        @specs = Dir.glob("#{gempath}/specifications/*.gemspec").collect { |specfile| eval(File.read(specfile)) }.sort!
+        @specs.each do |spec|
+          spec.require_paths.each {|path| @paths << "#{gempath}/gems/#{spec.full_name}/#{path}"}
+        end
+      end
     end
     
     def self.search_loadpath(file)
-      Dir.glob("{#{($LOAD_PATH).join(',')}}/#{file}{.rb,.so}")
+      return file if Dir.glob("{#{($LOAD_PATH).join(',')}}/#{file}{,.rb,.so}").delete_if {|f| File.directory?(f)}.size > 0
     end
     
     def self.search_gempath(file)
-      fullname = Dir.glob("{#{(PATHS).join(',')}}/#{file}{.rb,.so}").first
-      return false unless fullname
-      SPECS.each do |spec|
+      build_paths unless @paths
+      fullname = Dir.glob("{#{(@paths).join(',')}}/#{file}{,.rb,.so}").delete_if {|f| File.directory?(f)}.first
+      return file unless fullname
+      @specs.each do |spec|
         if fullname.include?("/#{spec.full_name}/")
           require_gem(spec.name, spec.version.to_s) 
-          return true
+          return file
         end
       end
     end

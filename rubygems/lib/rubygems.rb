@@ -29,9 +29,13 @@ module Kernel
   # raises:: [Gem::LoadError] if Gem cannot be found, is listed in GEM_SKIP, or version requirement not met.
   #
   def require_gem(gem, *version_requirements)
+    require_gem_with_options(gem, version_requirements, :auto_require=>true)
+  end
+  
+  def require_gem_with_options(gem, version_requirements, options={})
     skip_list = (ENV['GEM_SKIP'] || "").split(/:/)
     raise Gem::LoadError, "skipping #{gem}" if skip_list.include? gem
-    Gem.activate(gem, true, *version_requirements)
+    Gem.activate(gem, options[:auto_require], *version_requirements)
   end
 end
 

@@ -84,6 +84,8 @@ module Gem
       require 'rubygems/validator'
       require 'rubygems/doc_manager'
       require 'rubygems/cmd_manager'
+      require 'rubygems/gem_runner'
+      require 'rubygems/config_file'
     end
   
     ##
@@ -133,8 +135,8 @@ module Gem
     # Used mainly by the unit tests to provide environment isolation.
     #
     def use_paths(home, paths=[])
-      set_home(home)
-      set_paths(paths.join(File::PATH_SEPARATOR))
+      set_home(home) if home
+      set_paths(paths.join(File::PATH_SEPARATOR)) if paths
     end
     
     private

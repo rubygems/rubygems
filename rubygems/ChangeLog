@@ -1,3 +1,7 @@
+2004-10-29  Chad Fowler <chad@chadfowler.com>
+	* packages/,pkgs,install.rb: renamed "packages" to "pkgs" to avoid
+	conflict with setup.rb.
+ 	
 2004-10-25  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/installer.rb

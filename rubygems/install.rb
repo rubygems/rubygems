@@ -136,7 +136,7 @@ def install_rb(srcdir = nil)
 
   ## Install the 'sources' package bundled with RubyGems.
 
-  Dir.chdir("packages/sources")
+  Dir.chdir("pkgs/sources")
     load("sources.gemspec")
     spec = Gem.sources_spec
     Gem::manage_gems

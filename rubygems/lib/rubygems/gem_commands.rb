@@ -65,8 +65,12 @@ module Gem
       add_option('-t', '--[no-]test', 'Run unit tests prior to installation') do |value, options|
         options[:test] = value
       end
+      add_option('--ignore-dependencies',
+	'Do not install required dependencies') do |value, options|
+	options[:ignore_dependencies] = value
+      end
     end
-
+    
     def install_update_defaults_str
       '--rdoc --no-force --no-test'
     end

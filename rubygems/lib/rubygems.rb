@@ -52,7 +52,7 @@ module Gem
   class Exception < RuntimeError
   end
 
-  RubyGemsVersion = "0.8.2"
+  RubyGemsVersion = "0.8.3"
   RubyGemsPackageVersion = RubyGemsVersion 
 
   DIRECTORIES = ['cache', 'doc', 'gems', 'specifications']

@@ -1,5 +1,9 @@
 2004-12-06  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/remote_installer.rb
+	(Gem::LocalSourceInfoCache::read_cache): Fixed initialization of
+	cache.
+
 	* lib/rubygems.rb: Updated version to 1.8.2.
 
 2004-12-04  Jim Weirich  <jim@weirichhouse.org>

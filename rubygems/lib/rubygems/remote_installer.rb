@@ -199,7 +199,7 @@ module Gem
     # Read the most current cache data.
     def read_cache
       @cache_file = select_cache_file
-      open(@cache_file) { |f| YAML.load(f) } || []
+      open(@cache_file) { |f| YAML.load(f) } || {}
     end
 
     # Select a writable cache file

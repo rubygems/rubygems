@@ -53,6 +53,7 @@ module Gem
     attr_accessor :test_suite_file, :default_executable, :bindir, :platform, :rdoc_options
     attr_accessor :rubyforge_project
     attr_writer :has_rdoc, :executables, :extensions
+    attr_reader :required_ruby_version
     
     ##
     # Runtime attributes (not persisted)
@@ -69,6 +70,7 @@ module Gem
       @loaded = false
       @has_rdoc = false
       @test_suite_file = nil
+      @required_ruby_version = Gem::Version::Requirement.new("> 0.0.0")
       self.platform = nil
       @@list << self
       yield self if block_given?
@@ -153,6 +155,14 @@ module Gem
     #
     def extensions
       @extensions ||= []
+    end
+
+    ##
+    # Specify which version(s) of Ruby is required to satisfy this gem.
+    # version::String Version requirement with same format used for gem 
+    #                  dependencies
+    def required_ruby_version=(version)
+      @required_ruby_version = Gem::Version::Requirement.new(version)
     end
     
     ##
@@ -333,6 +343,7 @@ module Gem
       result = ['@rubygems_version', '@name', '@version', '@date', '@platform', '@summary', '@require_paths', '@files']
       result << '@autorequire' if @autorequire
       result << '@author' if @author
+      result << '@required_ruby_version' if @required_ruby_version
       result << '@email' if @email
       result << '@homepage' if @homepage
       result << '@rubyforge_project' if @rubyforge_project
@@ -388,6 +399,7 @@ module Gem
       # optional 
       result << "  s.autorequire = %q{#{autorequire}}\n" if autorequire
       result << "  s.author = %q{#{author}}\n" if author
+      result << "  s.required_ruby_version = %q{#{required_ruby_version}}\n" if required_ruby_version
       result << "  s.email = %q{#{email}}\n" if email
       result << "  s.homepage = %q{#{homepage}}\n" if homepage
       result << "  s.default_executable = %q{#{default_executable}}\n" if default_executable

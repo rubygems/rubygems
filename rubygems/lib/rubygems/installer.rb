@@ -36,6 +36,7 @@ module Gem
       require 'fileutils'
       format = Gem::Format.from_file_by_path(@gem)
       unless force
+         raise "#{format.spec.name} requires Ruby version #{format.spec.required_ruby_version}" unless format.spec.required_ruby_version.satisfied_by?(Gem::Version.new(RUBY_VERSION))
          format.spec.dependencies.each do |dep_gem|
            # XXX: Does this take account of *versions*?
            require_gem(dep_gem)

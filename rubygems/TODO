@@ -3,7 +3,6 @@
 * optional dependencies: "semitar can use REXML, but it works better if you have the ruby raptor library installed",  or not so optional as in: "you need Ruby/RSS > = 1.0 OR rss > 0.91 for this library to work"
 * ri data generation
 * support for installing binary (pre-compiled), platform-dependent gems.  This already works as long as you pick the right gem manually, but I'd like the remote installer to intelligently select the right one and for the installer to throw an error (or a warning) if you attempt o install (e.g.) a Windows gem on a linux system.
-* Allowing a gem to specify a required ruby version
 * Integration with platform-native packaging systems
 
 DONE:
@@ -12,3 +11,4 @@ DONE:
   activerecord (0.7.5, 0.7.6, 0.7.7, 0.7.8)
     Implements the ActiveRecord pattern for ORM.
 - Add arbitrary RDoc-able files via gemspec (not just Ruby source files)
+- Allowing a gem to specify a required ruby version

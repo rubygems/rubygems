@@ -1,6 +1,7 @@
 2004-06-07  Chad Fowler  <chad@chadfowler.com>
     * lib/rubygems/remote_installer.rb, lib/rubygems/version.rb: Fixed old dependency on #version method for Gem::Version::Requirement
     * bin/gem: new --upgrade-dist option allows one to upgrade every installed gem
+    * lib/rubygems/specification.rb,lib/rubygems/installer.rb: new #required_ruby_version attribute added to gem specification for specifying a dependency on which version of ruby the gem needs.  Format it accepts is the same as the Gem::Version::Requirement format.
 
 2004-06-06  Chad Fowler  <chad@chadfowler.com>
     * bin/gem: install_stub is once again the default due to requests.

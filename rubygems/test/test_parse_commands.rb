@@ -1,86 +1,71 @@
 require 'test/unit'
 $:.unshift '../lib'
 require 'rubygems'
+require 'test/mockgemui'
 Gem::manage_gems
 
 class TestParseCommands < Test::Unit::TestCase
+  include Gem::DefaultUserInteraction
 
   def setup
-    @ui = Gem::UserInteraction.capture
     @cmd_manager = Gem::CommandManager.instance
   end
 
-  def reset_ui
-    @error = ""
-    @warning = ""
-    @output = ""
-    
-    @ui.on_alert_warning do |message, question|
-      @warning << message.to_s
-    end
-    
-    @ui.on_alert_error do |message, question|
-      @error << message.to_s
-    end
-    
-    @ui.on_say do |statement|
-      @output << statement.to_s
-    end
-  end
-
   def test_parsing_bad_options
-    #check bad argument
-    reset_ui
-    @cmd_manager.process_args("--bad-arg")
-    assert_match /invalid option: --bad-arg/, @error
+    use_ui(MockGemUi.new) do
+      @cmd_manager.process_args("--bad-arg")
+      assert_match /invalid option: --bad-arg/, ui.error
+    end
   end
 
   def test_parsing_install_options
     #capture all install options
-    check_options = nil
-    @cmd_manager['install'].when_invoked do |options|
-      check_options = options
-      true
+    use_ui(MockGemUi.new) do
+      check_options = nil
+      @cmd_manager['install'].when_invoked do |options|
+	check_options = options
+	true
+      end
+      
+      #check defaults
+      @cmd_manager.process_args("install")
+      assert_equal check_options[:stub], true
+      assert_equal check_options[:test], false
+      assert_equal check_options[:generate_rdoc], false
+      assert_equal check_options[:force], false
+      assert_equal check_options[:domain], :both
+      assert_equal check_options[:version], "> 0"
+      assert_equal check_options[:install_dir], Gem.dir
+      
+      #check settings
+      check_options = nil
+      @cmd_manager.process_args("install --force --test --no-install-stub --local --gen-rdoc --name foobar --install-dir . --version 3.0")
+      assert_equal check_options[:stub], false
+      assert_equal check_options[:test], true
+      assert_equal check_options[:generate_rdoc], true
+      assert_equal check_options[:force], true
+      assert_equal check_options[:domain], :local
+      assert_equal check_options[:version], '3.0'
+      assert_equal check_options[:name], 'foobar'
+      assert_equal check_options[:install_dir], '.'
+      
+      #check remote domain
+      check_options = nil
+      @cmd_manager.process_args("install --remote")
+      assert_equal check_options[:domain], :remote
+      
+      #check both domain
+      check_options = nil
+      @cmd_manager.process_args("install --both")
+      assert_equal check_options[:domain], :both
+      
+      #check both domain
+      check_options = nil
+      @cmd_manager.process_args("install --both")
+      assert_equal check_options[:domain], :both
     end
- 
-    #check defaults
-    @cmd_manager.process_args("install")
-    assert_equal check_options[:stub], true
-    assert_equal check_options[:test], false
-    assert_equal check_options[:generate_rdoc], false
-    assert_equal check_options[:force], false
-    assert_equal check_options[:domain], :both
-    assert_equal check_options[:version], "> 0"
-    assert_equal check_options[:install_dir], Gem.dir
-    
-    #check settings
-    check_options = nil
-    @cmd_manager.process_args("install --force --test --no-install-stub --local --gen-rdoc --name foobar --install-dir . --version 3.0")
-    assert_equal check_options[:stub], false
-    assert_equal check_options[:test], true
-    assert_equal check_options[:generate_rdoc], true
-    assert_equal check_options[:force], true
-    assert_equal check_options[:domain], :local
-    assert_equal check_options[:version], '3.0'
-    assert_equal check_options[:name], 'foobar'
-    assert_equal check_options[:install_dir], '.'
-
-    #check remote domain
-    check_options = nil
-    @cmd_manager.process_args("install --remote")
-    assert_equal check_options[:domain], :remote
-
-    #check both domain
-    check_options = nil
-    @cmd_manager.process_args("install --both")
-    assert_equal check_options[:domain], :both
-    
-    #check both domain
-    check_options = nil
-    @cmd_manager.process_args("install --both")
-    assert_equal check_options[:domain], :both
   end
-
+  
   def test_parsing_uninstall_options
     #capture all uninstall options
     check_options = nil

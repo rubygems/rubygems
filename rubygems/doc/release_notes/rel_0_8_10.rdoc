@@ -1,11 +1,19 @@
 = Announce: RubyGems Release 0.8.10
 
-Version 0.8.10 is bug fix release.  In multi-user environments, it is
-common to supply mulitple versions of gems (for example Rails),
-allowing individual users to select the version of the gem they
-desire.  This allows a user to be insulated from updates to that gem.
-RubyGems 0.8.10 fixes a problem where gems could occasionally become
-confused about the current versions of libraries selected by the user.
+Version 0.8.10 is bug fix release.  We address two bugs in this
+release, one obscure and the other only slightly annoying.
+
+In multi-user environments, it is common to supply mulitple versions
+of gems (for example Rails), allowing individual users to select the
+version of the gem they desire.  This allows a user to be insulated
+from updates to that gem.  RubyGems 0.8.10 fixes a problem where gems
+could occasionally become confused about the current versions of
+libraries selected by the user.
+
+The other annoying bug is that if there are any existing
+rubygems-update gems installed, then the "gem update --system" command
+will download a new udpate, but install the latest update prior to the
+download.  
 
 == What is RubyGems?
 
@@ -35,6 +43,9 @@ If you have a recent version of RubyGems (0.8.5 or later), then all
 you need to do is:
 
   $ gem update --system   (you might need to be admin/root)
+
+(Note: You may have to run the command twice if you have any previosly
+installed rubygems-update gems).
 
 If you have an older version of RubyGems installed, then you can still
 do it in two steps:

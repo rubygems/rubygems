@@ -1,3 +1,24 @@
+2004-07-01  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/gem_commands.rb (Gem::InfoCommand::usage): Added
+	usage and arguments methods for InfoCommand.
+
+2004-06-30  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/gem_commands.rb (Gem::InstallCommand::usage):
+	Upcased the comment on the usage statement (and corresponding
+	option).  This makes the variable part of the command
+	(e.g. GEMNAME) stand out from the static parts.
+
+	* lib/rubygems/cmd_manager.rb (Gem::CommandManager::process_args):
+	Downcased commands before searching (allows upper case or mixed
+	case for commands on command line).
+
+	* install.rb (install_rb): Fixed bug where the installer falsely
+	triggered the old repository upgrade when the directory part of
+	the file contained the matching "-digits." pattern.  Now the
+	pattern must be in the file's base name.
+
 2004-06-26  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* scripts/specdoc.rb: added (to generate gem specificiation document)

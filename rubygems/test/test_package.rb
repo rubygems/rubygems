@@ -491,9 +491,12 @@ class TC_TarReader < Test::Unit::TestCase
                 f.write tar_file_header("data.tar.gz", "", 0644, str.string.size)
                 f.write str.string
                 f.write "\0" * ((512 - (str.string.size % 512)) % 512 )
-                meta = "abcde".to_yaml
+                @spec = Gem::Specification.new do |spec|
+                  spec.author = "Mauricio :)"
+                end
+                meta = @spec.to_yaml
                 f.write tar_file_header("metadata", "", 0644, meta.size)
-                f.write meta + "\0" * (512 - meta.size) 
+                f.write meta + "\0" * (1024 - meta.size) 
                 f.write "\0" * 1024
             end
             @file = "data__/bla.tar"
@@ -518,13 +521,13 @@ class TC_TarReader < Test::Unit::TestCase
                     assert_equal(@entry_sizes[i], entry.size)
                 end
                 assert_equal(2, i)
-                assert_equal("abcde", is.metadata)
+                assert_equal(@spec, is.metadata)
             end
         end
 
         def test_extract_entry_works
             TarInput.open(@file) do |is|
-                assert_equal("abcde", is.metadata)
+                assert_equal(@spec,is.metadata)
                 i = 0
                 is.each_with_index do |entry, i|
                     is.extract_entry "data__", entry

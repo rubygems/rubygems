@@ -1,3 +1,8 @@
+2004-09-06  Chad Fowler <chad@chadfowler.com>
+  * test/test_package.rb: Fixed failing unit test as per Mauricio's email to 
+   the rubygems list.
+  * Fixed minor issues with Windows cmd file generation.
+
 2004-09-06  Rich Kilmer <rich@infoether.com>
   * lib/rubygems/remote_installer.rb - enabled caching of source caches
      based on the size of the yaml.Z/yaml file.

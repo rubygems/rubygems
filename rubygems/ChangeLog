@@ -1,7 +1,43 @@
+2004-11-26  Jim Weirich  <jim@tardis>
+
+	* test/test_remote_installer.rb (MockFetcher): Added MockFetcher
+	to make testing the remote installer easier. Currently there are
+	two remote installer test classes.  Eventually TestRemoteInstaller
+	will succeed RemoteInstallerTest, which is very incomplete.
+
+	* test/test_package.rb (TC_TarReader::TC_TarInput): Made the unit
+	test ignore the setgid bit.  The setgid bit doesn't work on my
+	laptop for some reason.  This may be a problem with my laptop
+	rather than with this code.  Should investigate further.
+
+	* lib/rubygems/remote_installer.rb (Gem::RemoteSourceFetcher):
+	Added a Fetcher object to the remote installer to handle all the
+	details of getting the remote information.  This allows testing
+	the logic of the remote installer without actually doing remote
+	calls.
+	(Gem::RemoteInstaller::sources): Renamed get_caches to
+	source_info.  The problem is that cache is too generic and there
+	are actually several things that we will cache in the system.
+
+	* lib/rubygems/cache.rb (Gem::Cache::self): Changed interface to
+	from_installed_gems slightly.
+	(Gem::Cache::self): Reordered rescue clauses so that the syntax
+	exception might actually be handled.
+
+	* lib/rubygems.rb (Gem::Exception::ensure_gem_subdirectories):
+	Dumped the check_gem_subdirectories method to use the almost
+	identical ensure_gem_subdirectories method.
+	(Gem::Exception::ensure_gem_subdirectories): Only attempt to
+	create the gem subdirectories if we can actually write them.
+
+	* bin/gem_server: Added date of last file modification to header
+	of /yaml.  This is in preparation for using a head command with
+	date/time stamping in fetching the source cache.
+
 2004-11-25  Ryan Davis <ryand@zenspider.com>
-        * lib/rubygems.rb: Added GEM_SKIP functionality, which will tell 
-	loadpath_manager not to load specific libs from gems.  For testing/
-	development purposes.  Created by Ryan Davis.
+        * lib/rubygems.rb: Added GEM_SKIP functionality, which will tell
+	loadpath_manager not to load specific libs from gems.  For
+	testing/ development purposes.  Created by Ryan Davis.
 
 2004-11-24  Chad Fowler <chad@chadfowler.com>
 	* lib/rubygems/specification.rb: Allow multiple authors per gem.

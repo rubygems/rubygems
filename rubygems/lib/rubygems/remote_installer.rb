@@ -65,7 +65,6 @@ module Gem
       results
     end
 
-
     ##
     # Return a list of the sources that we can download gems from
     def get_cache_sources
@@ -84,19 +83,23 @@ module Gem
       end
       updated = false
       sources.each do |source|
-        if caches.has_key?(source)
-          size = fetch_source_size(source)
-          if caches[source]["size"] != size
-            caches[source]["size"] = size
-            caches[source]["cache"] = fetch_source(source)
+        begin
+          if caches.has_key?(source)
+            size = fetch_source_size(source)
+            if caches[source]["size"] != size
+              caches[source]["size"] = size
+              caches[source]["cache"] = fetch_source(source)
+              updated = true
+            end
+          else
+            caches[source] = {"size" => fetch_source_size(source), "cache" => fetch_source(source)}
             updated = true
           end
-        else
-          updated = true
-          caches[source] = {"size" => fetch_source_size(source), "cache" => fetch_source(source)}
+        rescue SocketError => e
+          raise RemoteSourceException.new("Error fetching remote gem cache: #{e.to_s}")
         end
       end
-      if updated
+      if updated && File.writable?(install_dir)
         File.open(source_caches_file, "wb") do |file|
           file.print caches.to_yaml
         end
@@ -106,21 +109,6 @@ module Gem
         result[source] = data["cache"]
       end
       result
-    end
-
-    def get_caches_old(sources)
-      require 'yaml'
-
-      caches = {}
-      sources.each do |source|
-        begin
-          spec = fetch_source(source)
-          caches[source] = spec
-        rescue SocketError => e
-          raise RemoteSourceException.new("Error fetching remote gem cache: #{e.to_s}")
-        end
-      end
-      return caches
     end
     
     def fetch_source_size(source)
@@ -135,20 +123,18 @@ module Gem
     end
     
     def fetch_source(source)
-        begin
-          require 'zlib'
-          yaml_spec = fetch(source + "/yaml.Z")
-          yaml_spec = Zlib::Inflate.inflate(yaml_spec)
-        rescue
-          yaml_spec = nil
-        end
-        yaml_spec = fetch(source + "/yaml") unless yaml_spec
-        spec = YAML.load(yaml_spec)
-        raise "Didn't get a valid YAML document" if not spec
-        spec
-    end
-    
-    def get_cache(source)
+      say "Updating Gem source index for: #{source}"
+      begin
+        require 'zlib'
+        yaml_spec = fetch(source + "/yaml.Z")
+        yaml_spec = Zlib::Inflate.inflate(yaml_spec)
+      rescue
+        yaml_spec = nil
+      end
+      yaml_spec = fetch(source + "/yaml") unless yaml_spec
+      spec = YAML.load(yaml_spec)
+      raise "Didn't get a valid YAML document" if not spec
+      spec
     end
 
     def find_gem_to_install(gem_name, version_requirement, caches)

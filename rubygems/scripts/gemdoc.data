@@ -279,7 +279,12 @@ log4r (1.0.5)
 To list all remote gems that begin with the letter 'M':
 
 <pre>
-[... broken example ...]
+$ gm list -L -n ^m
+
+*** LOCAL GEMS ***
+
+madeleine (0.6.1, 0.6)
+    Madeleine is a Ruby implementation of Object Prevalence
 </pre>
 
 == [#uninstall]gem uninstall -- Uninstalling a gem ==

@@ -1,3 +1,12 @@
+2004-07-25  Jim Weirich  <jim@weirichhouse.org>
+
+	* bin/update_rubygems: Added a command to update the gem
+	installation based on a update gem.
+
+	* Rakefile: Pulled package file list out into a constant so it can
+	be reused between the package command and the gem package command.
+	Added a gem package target to support rubygems updates.
+
 2004-07-22  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* lib/rubygems/version.rb:

@@ -4,6 +4,9 @@
           base classes in Ruby! modified to get rid of said to_requirement 
           with Gem::Version::Requirement.create(obj)
 
+        * specification.rb - fixed constructor bug of version requirement...
+          it now defaults to Requirement.default
+
 2004-08-11  Chad Fowler <chad@chadfowler.com>
 
         * One more specification.rb bug fixed.

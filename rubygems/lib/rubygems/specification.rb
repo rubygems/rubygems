@@ -9,6 +9,7 @@ module Gem
     WIN32 = 'mswin32'
     LINUX_586 = 'i586-linux'
     DARWIN = 'powerpc-darwin'
+    CURRENT = 'current'
   end
   
   ##
@@ -50,10 +51,10 @@ module Gem
     # These attributes are optional
     #
     attr_accessor :autorequire, :author, :email, :homepage, :description, :files, :docs
-    attr_accessor :test_suite_file, :default_executable, :bindir, :platform, :rdoc_options
+    attr_accessor :test_suite_file, :default_executable, :bindir, :rdoc_options
     attr_accessor :rubyforge_project
     attr_writer :has_rdoc, :executables, :extensions
-    attr_reader :required_ruby_version
+    attr_reader :required_ruby_version, :platform
     
     ##
     # Runtime attributes (not persisted)
@@ -259,12 +260,14 @@ module Gem
       @executables = [file_path]
     end
 
-    undef :platform=
     ##
     # Specify the platform that the gem targets.  Defaults to a pure-Ruby gem.
     #
-    def platform=(platform=Gem::Platform::RUBY)
-      @platform = platform
+    # Checks the provided platform for Platform::CURRENT and changes
+    # it to be binary specific to the current platform (i383-mswin32, etc)
+    #
+    def platform=(platform)
+      @platform = (platform == Platform::CURRENT ? RUBY_PLATFORM : platform)
     end
     
     ##

@@ -2,6 +2,7 @@ module Gem
   class DependencyError < Gem::Exception; end
   class RemoteSourceException < Gem::Exception; end
   class GemNotFoundException < Gem::Exception; end
+  class RemoteInstallationCancelled < Gem::Exception; end
 
   class RemoteInstaller
     include UserInteraction
@@ -27,19 +28,19 @@ module Gem
 
     ##
     # This method will install package_name onto the local system.  
-    # package_name:: [String] Name of the Gem to install
+    # gem_name:: [String] Name of the Gem to install
     # version_requirement:: [default = "> 0.0.0"] Gem version requirement to install
     #
     # Returns: an array of Gem::Specification objects, one for each gem installed. 
     #
-    def install(package_name, version_requirement = "> 0.0.0", force=false, install_dir=Gem.dir, install_stub=true)
+    def install(gem_name, version_requirement = "> 0.0.0", force=false, install_dir=Gem.dir, install_stub=true)
       unless version_requirement.respond_to?(:satisfied_by?)
         version_requirement = Version::Requirement.new(version_requirement)
       end
       installed_gems = []
       sources = get_cache_sources()
       caches = get_caches(sources)
-      spec, source = find_latest_valid_package_in_caches(package_name,version_requirement,caches)
+      spec, source = find_gem_to_install(gem_name, version_requirement, caches)
       dependencies = find_dependencies_not_installed(spec.dependencies)
       installed_gems << install_dependencies(dependencies)
       cache_dir = File.join(Gem::dir, "cache")
@@ -96,21 +97,27 @@ module Gem
       return caches
     end
 
-    def find_latest_valid_package_in_caches(package_name,version_requirement,caches)
+    def find_gem_to_install(gem_name, version_requirement, caches)
       max_version = Version.new("0.0.0")
-      package = []
+      specs_n_sources = []
       caches.each do |source, cache|
         cache.each do |name, spec|
-          if (/#{package_name}/i === name && 
-                spec.version > max_version &&
-                version_requirement.satisfied_by?(spec.version)) then
-            package = [spec, source]
-            max_version = spec.version
+          if (/#{gem_name}/i === name && version_requirement.satisfied_by?(spec.version)) then
+            specs_n_sources << [spec, source]
           end
         end
       end
-      raise GemNotFoundException.new("Could not find #{package_name} (#{version_requirement}) in the repository") unless max_version > Version.new("0.0.0")
-      package
+      specs_n_sources.sort! { |a, b| a[0].version <=> b[0].version }.reverse! 
+      if specs_n_sources.reject { |item| item[0].platform.nil? || item[0].platform==Platform::RUBY }.size == 0
+        # only non-binary gems...return latest
+        return specs_n_sources.first
+      end
+      list = specs_n_sources.collect {|item| "#{item[0].name} #{item[0].version} (#{item[0].platform.to_s})" }
+      list << "Cancel installation"
+      string, index = choose_from_list("Select which gem to install for your platform (#{RUBY_PLATFORM})", list)
+      raise RemoteInstallationCancelled.new("Installation of #{gem_name} cancelled.") if index == (list.size - 1)
+      specs_n_sources[index]
+      #raise GemNotFoundException.new("Could not find #{gem_name} (#{version_requirement}) in the repository") unless max_version > Version.new("0.0.0")
     end
 
     def find_dependencies_not_installed(dependencies)

@@ -4,6 +4,15 @@
 	latest_load_paths and refactored all_load_paths to use common
 	code.
 
+2004-07-25  Rich Kilmer  <rich@infoether.com>
+        * fixed bug in using --source in command.rb (removed short -s version)
+
+        * changed spec to use the RUBY_PLATFORM for Platform::CURRENT
+
+        * added ability to choose from list of available gems on remote install
+          if (1) some of the gems are binary and (2) there are move than one.
+          If the gems are all source gems, the latest is selected.
+
 2004-07-25  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems.rb (Gem::Exception::all_load_paths): Added

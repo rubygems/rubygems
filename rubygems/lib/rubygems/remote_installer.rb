@@ -34,7 +34,7 @@ module Gem
     # Return a list of the sources that we can download gems from
     def get_cache_sources
       # TODO
-      return ["http://localhost:8808"]
+      return ["http://www.chadfowler.com:8808", "http://localhost:8080"]
     end
 
     ##
@@ -44,8 +44,6 @@ module Gem
       caches = {}
       sources.each do |source|
         response = fetch(source + "/yaml")
-        puts "Fetched #{source}/yaml and got:"
-        puts response.body
         spec = YAML.load(response.body)
         raise "Didn't get a valid YAML document" if not spec
         caches[source] = spec

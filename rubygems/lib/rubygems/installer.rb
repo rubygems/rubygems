@@ -165,7 +165,7 @@ module Gem
       elsif list.size>1
         #choose from list
       else
-        spec = YAML.load(File.read(list[0]))
+        spec = eval(File.read(list[0]))
         FileUtils.rm_rf list
         FileUtils.rm_rf File.join(Gem.dir, spec.full_name)
         FileUtils.rm_rf File.join(Gem.dir, "cache", "#{spec.full_name}.gem")

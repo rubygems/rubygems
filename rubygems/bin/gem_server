@@ -76,14 +76,18 @@ if __FILE__ == $0
 
   s.mount_proc("/") { |req, res|
     specs = []
-    Gem::Cache.from_installed_gems(File.join(options[:gemdir] || Gem.dir, "specifications")).each do |path, spec|
+    specifications_dir = File.join(options[:gemdir] || Gem.dir, "specifications")
+    Gem::Cache.from_installed_gems(specifications_dir).each do |path, spec|
       specs << {
-        "full_name" => spec.full_name,
-        "summary" => spec.summary,
+        "name"           => spec.name,
+        "version"        => spec.version,
+        "full_name"      => spec.full_name,
+        "summary"        => spec.summary,
         "rdoc_installed" => Gem::DocManager.new(spec).rdoc_installed?,
-        "doc_path" => ('/doc_root/' + spec.full_name + '/rdoc/index.html')
+        "doc_path"       => ('/doc_root/' + spec.full_name + '/rdoc/index.html')
       }
     end
+    specs = specs.sort_by { |spec| [spec["name"].downcase, spec["version"]] }
     template = TemplatePage.new(DOC_TEMPLATE)
     res['content-type'] = 'text/html'
     template.write_html_on(res.body, {"specs" => specs})      

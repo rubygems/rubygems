@@ -9,7 +9,9 @@ ARGV.options do |opts|
   opts.on('-iGEMFILE', '--install=GEMFILE', "Install a gem from local gem file")    {|options[:install]|}
   opts.on('-uGEMNAME', '--uninstall=GEMNAME', "Uninstall a previously installed gem") {|options[:uninstall]|}
   opts.on('--info=GEMNAME', "Display details about an installed Gem") {|options[:info]|}
+  opts.on('--dir=DIRNAME', "Installation directory for the Gem") {|options[:directory]|}
   opts.on('--list', "List installed Gems") {|options[:list]|}
+  opts.on('--force', "Force Gem to intall, bypassing dependency checks") {|options[:force]|}
   opts.on('--remote-install=GEMNAME', "Auto-download and install a Gem and its dependencies") {|options[:remote_install]|}
   opts.parse!
 end
@@ -21,6 +23,7 @@ require 'rubygems'
 @info = options[:info]
 @list = options[:list]
 @remote_install = options[:remote_install]
+@directory = options[:directory] || Gem.dir
 
 if @spec_file
   load @spec_file
@@ -37,7 +40,8 @@ if @install_file
       puts "Unknown gem file #{@install_file}"
     end
   end
-  Gem::Installer.new(@install_file).install
+  installer = Gem::Installer.new(@install_file)
+  installer.install(@force, @directory)
 end
 
 if @gem

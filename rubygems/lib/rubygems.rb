@@ -29,7 +29,7 @@ module Kernel
         
         spec.loaded = true
         spec.require_paths.each do |path|
-          $:.unshift File.join(Gem.dir, spec.full_name, path)
+          $:.unshift File.join(spec.full_gem_path, path)
         end
         
         # Load dependent gems first
@@ -53,6 +53,7 @@ end
 # Main module to hold all RubyGem classes/modules.
 #
 module Gem
+
   RubyGemsVersion = "1.0"
   
   @@cache = nil
@@ -72,6 +73,7 @@ module Gem
   # return:: [String] The directory path
   #
   def self.dir
+    return $GEM_PATH.first if $GEM_PATH
     require 'rbconfig'
     dir = File.join(Config::CONFIG['libdir'], 'ruby', 'gems', Config::CONFIG['ruby_version'])
     unless File.exist?(File.join(dir, 'specifications'))
@@ -84,6 +86,15 @@ module Gem
     end
     dir
   end
+end
+
+$GEM_PATH=[Gem.dir]
+if ENV['RUBY_GEMS']
+  env_paths = ENV['RUBY_GEMS'].split(File::PATH_SEPARATOR)
+  env_paths.each do |path|
+    puts "WARNING: RUBY_GEMS path #{path} does not exist" unless File.exist?(path)
+  end
+  $GEM_PATH = env_paths.concat $GEM_PATH
 end
 
 require 'rubygems/cache'

@@ -44,7 +44,7 @@ module Gem
     ##
     # Runtime attributes (not persisted)
     #
-    attr_writer :loaded
+    attr_writer :loaded, :loaded_from
     
     ##
     # Constructs instance of a Specification
@@ -132,6 +132,10 @@ module Gem
     #
     def full_name
       "#{@name}-#{@version}"
+    end
+    
+    def full_gem_path
+      (File.dirname(@loaded_from).split("/")[0..-2] << full_name).join("/")
     end
     
     ##

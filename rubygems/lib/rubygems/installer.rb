@@ -26,8 +26,9 @@ module Gem
     #      cache/<gem-version>.gem #=> a cached copy of the installed Gem
     # 
     # force:: [default = false] if false will fail if a required Gem is not installed
+    # to_dir:: [default = Gem.dir] directory that Gem is to be installed in
     #
-    def install(force=false)
+    def install(force=false, to_dir=Gem.dir)
       require 'fileutils'
       File.open(@gem, 'r') do |file|
         skip_ruby(file)
@@ -37,11 +38,11 @@ module Gem
             require_gem(dep_gem)
           end
         end
-        directory = File.join(Gem.dir, spec.full_name)
+        directory = File.join(to_dir, spec.full_name)
         FileUtils.mkdir_p directory
         extract_files(directory, file)
-        write_spec(spec, File.join(Gem.dir, "specifications"))
-        FileUtils.cp(@gem, File.join(Gem.dir, "cache"))
+        write_spec(spec, File.join(to_dir, "specifications"))
+        FileUtils.cp(@gem, File.join(to_dir, "cache"))
         puts "Successfully installed #{spec.name} version #{spec.version}"
       end
     end
@@ -159,10 +160,15 @@ module Gem
     def uninstall
       require 'yaml'
       require 'fileutils'
-      list = Dir.glob(File.join(Gem.dir, "specifications", "#{@gem}-*.gemspec"))
-      if list.size==0
+      gem_specs = {}
+      count = 0
+      $GEM_PATH.each do |path|
+        gem_specs[path] = Dir.glob(File.join(path, "specifications", "#{@gem}-*.gemspec"))
+        count += gem_specs[path].size
+      end
+      if count==0
         puts "Unknown RubyGem: #{@gem}"
-      elsif list.size>1
+      elsif count>1
         #choose from list
       else
         spec = eval(File.read(list[0]))

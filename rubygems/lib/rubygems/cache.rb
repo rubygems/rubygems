@@ -19,19 +19,23 @@ module Gem
     ##
     # Factory method to construct a cache instance for a provided path
     # 
-    # source_dir:: [default=Gem.dir+'specifications'] The path to search for specifications
+    # source_dirs:: [default=$GEM_PATH] The path to search for specifications
     # return:: Cache instance
     #
-    def self.from_installed_gems(source_dir = File.join(Gem.dir, "specifications"))
+    def self.from_installed_gems(*source_dirs)
       gems = {}
-      Dir[File.join(source_dir, "*")].each do |file_name|
-        begin
-          gem = eval(File.read(file_name))
-        rescue
-          raise "Could not read .gemspec from cache: #{source_dir}"
+      source_dirs = $GEM_PATH.collect {|dir| File.join(dir, "specifications")} if source_dirs.size==0
+      source_dirs.each do |source_dir|
+        Dir[File.join(source_dir, "*")].each do |file_name|
+          begin
+            gem = eval(File.read(file_name))
+            gem.loaded_from = file_name
+          rescue
+            raise "Invalid .gemspec format in: #{source_dir}"
+          end
+          key = File.basename(file_name).gsub(/\.gemspec/, "")
+          gems[key] = gem
         end
-        key = File.basename(file_name).gsub(/\.gemspec/, "")
-        gems[key] = gem
       end
       self.new(gems)
     end

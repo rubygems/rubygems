@@ -120,63 +120,66 @@ module Gem
 
     def execute
       ENV['GEM_PATH'] = options[:install_dir]
-      gem_name = get_one_gem_name
-      if local?
-        begin
-          say "Attempting local installation of '#{gem_name}'"
-	  entries = []
-	  if(File.exist?(gem_name) && !File.directory?(gem_name))
-            entries << gem_name
-	  else
-            filepattern = gem_name + "*.gem"
-            entries = Dir[filepattern] 
-          end
-          unless entries.size > 0
-            if options[:domain] == :both
-              say "Local gem file not found: #{filepattern}"
-            else
-              alert_error "Local gem file not found: #{filepattern}"
+      # TODO: If a dependency isn't met, first check to see if it's in 
+      # the dependency list
+      options[:args].each do |gem_name|
+        if local?
+          begin
+            say "Attempting local installation of '#{gem_name}'"
+	    entries = []
+	    if(File.exist?(gem_name) && !File.directory?(gem_name))
+              entries << gem_name
+	    else
+              filepattern = gem_name + "*.gem"
+              entries = Dir[filepattern] 
             end
-          else
-            result = Gem::Installer.new(entries.last).install(options[:force], options[:install_dir])
-            installed_gems = [result].flatten
-            say "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}" if installed_gems
+            unless entries.size > 0
+              if options[:domain] == :both
+                say "Local gem file not found: #{filepattern}"
+              else
+                alert_error "Local gem file not found: #{filepattern}"
+              end
+            else
+              result = Gem::Installer.new(entries.last).install(options[:force], options[:install_dir])
+              installed_gems = [result].flatten
+              say "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}" if installed_gems
+            end
+          rescue LocalInstallationError => e
+            say " -> Local installation can't proceed: #{e.message}"
+          rescue Gem::LoadError => e
+            say " -> Local installation can't proceed due to LoadError: #{e.message}"
+          rescue => e
+            alert_error "Error installing gem #{gem_name}[.gem]: #{e.message}"
+            return
           end
-        rescue LocalInstallationError => e
-          say " -> Local installation can't proceed: #{e.message}"
-        rescue Gem::LoadError => e
-          say " -> Local installation can't proceed due to LoadError: #{e.message}"
-        rescue => e
-          alert_error "Error installing gem #{gem_name}[.gem]: #{e.message}"
-          return
         end
-      end
-      
-      if remote? && installed_gems.nil?
-        say "Attempting remote installation of '#{gem_name}'"
-        installer = Gem::RemoteInstaller.new(options[:http_proxy])
-        installed_gems = installer.install(gem_name, options[:version], options[:force], options[:install_dir])
-        say "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}" if installed_gems
-      end
-      
-      unless installed_gems
-        alert_error "Could not install a local or remote copy of the gem: #{gem_name}"
-        terminate_interaction(1)
-      end
-      
-      if options[:generate_rdoc]
-        installed_gems.each do |gem|
-          Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
+        
+        if remote? && installed_gems.nil?
+          say "Attempting remote installation of '#{gem_name}'"
+          installer = Gem::RemoteInstaller.new(options[:http_proxy])
+          installed_gems = installer.install(gem_name, options[:version], options[:force], options[:install_dir])
+          say "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}" if installed_gems
         end
-        # TODO: catch exceptions and inform user that doc generation was not successful.
-      end
-      if options[:test]
-        installed_gems.each do |spec|
-          gem_spec = Gem::Cache.from_installed_gems.search(spec.name, spec.version.version).first
-          result = Gem::Validator.new.unit_test(gem_spec)
-          unless result.passed?
-            unless ask_yes_no("...keep Gem?", true) then
-              Gem::Uninstaller.new(spec.name, spec.version.version).uninstall
+        
+        unless installed_gems
+          alert_error "Could not install a local or remote copy of the gem: #{gem_name}"
+          terminate_interaction(1)
+        end
+        
+        if options[:generate_rdoc]
+          installed_gems.each do |gem|
+            Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
+          end
+          # TODO: catch exceptions and inform user that doc generation was not successful.
+        end
+        if options[:test]
+          installed_gems.each do |spec|
+            gem_spec = Gem::Cache.from_installed_gems.search(spec.name, spec.version.version).first
+            result = Gem::Validator.new.unit_test(gem_spec)
+            unless result.passed?
+              unless ask_yes_no("...keep Gem?", true) then
+                Gem::Uninstaller.new(spec.name, spec.version.version).uninstall
+              end
             end
           end
         end

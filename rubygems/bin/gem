@@ -6,6 +6,78 @@ require 'rubygems'
 require 'yaml'
 require 'pp'
 
+class RubyGemsInfo
+
+  HELP = %{
+    RubyGems is a sophisticated package manager for Ruby.  This is a
+    basic help message containing pointers to more information.
+
+    For examples of usage, try 'gem --help-examples'.
+
+    For a summary of all command-line options, try 'gem --help-options'.
+
+    For detailed online information, go to http://rubygems.rubyforge.org.
+    The following documents, among others, can be found in the
+    "Documentation" section:
+      * Quick Introduction
+      * Users' Guide
+      * 'gem' Command Line Reference
+        -> This includes information about environment variables,
+           configuration files, and more.
+  }.gsub(/^    /, "")
+
+  EXAMPLES = %{
+    Some examples of 'gem' usage.
+
+    * Install 'rake', either from local directory or remote server:
+    
+        gem -i rake
+
+    * Install 'rake', only from remote server:
+
+        gem -Ri rake
+
+    * Install 'rake' from remote server, and run unit tests,
+      generate RDocs, and install library stub:
+
+        gem -Ri rake --run-tests --gen-rdoc --install-stub
+
+    * Install 'rake', but only version 0.3.1, even if dependencies
+      are not met, and into a specific directory:
+
+        gem -i rake --version 0.3.1 --force --install-dir $HOME/.gems
+
+    * List local and remote gems beginning with 'D':
+
+        gem -l D
+
+    * List all local, and all remote, gems:
+
+        gem -Ll
+        gem -Rl
+
+    * Search for local and remote gems including the string 'log':
+
+        gem -s log
+
+    * See information about all versions of 'rake' installed:
+
+        gem -o rake
+    
+    * Uninstall 'rake':
+
+        gem -u rake
+
+    * See information about RubyGems:
+    
+        gem --rubygems-info
+
+    * See summary of all options:
+    
+        gem --help-options
+  }.gsub(/^    /, "")
+
+end  # class RubyGemsInfo
 
 #
 # -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
@@ -273,8 +345,14 @@ BANNER
       op.separator("")
       op.separator("Miscellaneous:")
   
-      op.on('-h', '--help', "Display this message and exit") {
+      op.on('-h', '--help', "Show simple help") {
+        _show_simple_help
+      }
+      op.on('--help-options', "Show detailed option summary") {
         _show_help(op, 0)
+      }
+      op.on('--help-examples', "Show examples of usage") {
+        _show_examples
       }
       op.on('--rubygems-info', "Display RubyGems information and exit") {
         _show_rubygems_info()
@@ -282,23 +360,12 @@ BANNER
   
       op.separator("")
       message = <<-INFO
-
-'gem' is the user interface to RubyGems, the Ruby package manager.
-
-See http://rubygems.rubyforge.org for:
-   * gem command-line reference
-   * quick introduction to RubyGems
-   * user and developer documentation
-
 In the above information, "GEM" typically refers to the name of a gem;
 all of the following are valid (perhaps in different circumstances):
 
       ruby-dbi
       ruby-dbi-0.20.1
       ruby-dbi-0.20.1.gem
-
-See the online 'gem reference' for more information on environment
-variables, configuration files, and more.
 INFO
       message.each do |line|
         op.separator(line.chomp)
@@ -324,6 +391,16 @@ INFO
   def _show_help(parser, status)
     puts parser
     exit(status)
+  end
+
+  def _show_simple_help
+    puts RubyGemsInfo::HELP
+    exit(0)
+  end
+
+  def _show_examples
+    puts RubyGemsInfo::EXAMPLES
+    exit(0)
   end
 
   def _show_rubygems_info

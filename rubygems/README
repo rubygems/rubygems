@@ -23,6 +23,17 @@ Additional directories:
 ./example/...  example library w/gemspec for generating and installing gems
 ./gemspecs/... example gemspecs
 
+Credits:
+
+RubyGems was originally developed at RubyConf 2003 by:
+RichKilmer -- rich(at)infoether.com
+ChadFowler -- chad(at)chadfowler.com
+DavidBlack -- dblack(at)wobblini.net
+PaulBrannan -- paul(at)atdesk.com
+JimWeirch -- jim(at)weirichhouse.org
+
+Gavin Sinclair (gsinclair(at)soyabean.com.au) provided some fixes for the installer.
+
 Please provide us feedback at http://rubyforge.org/projects/rubygems
 
 Thanks!

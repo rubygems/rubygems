@@ -39,7 +39,6 @@ module Gem
     attr_accessor :autorequire, :author, :email, :homepage, :description, :files, :docs
     attr_accessor :rubyforge_project
     attr_writer :has_rdoc
-    attr_reader :dependencies, :requirements
     
     ##
     # Runtime attributes (not persisted)
@@ -62,7 +61,6 @@ module Gem
       @rubygems_version = RubyGemsVersion
     end
     
-    undef dependencies		# removes warning with ruby -w
     ##
     # Returns dependency array
     #
@@ -72,7 +70,6 @@ module Gem
       @dependencies ||= []
     end
     
-    undef requirements		# removes warning with ruby -w
     ##
     # Returns the requirements arrays.  Requirements are text requirements
     # that are output to the screen if a Gem could not be loaded for some

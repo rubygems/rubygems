@@ -89,6 +89,16 @@ module Gem
       end
     end
     
+    def usage
+      "install gemname"
+    end
+
+    def arguments
+      parser.separator("")
+      parser.separator("  Arguments:")
+      parser.separator("    gemname   name of gem to install")
+    end
+
     def execute
       gem_name = get_one_gem_name
       if local?
@@ -181,6 +191,16 @@ module Gem
       end
     end
     
+    def usage
+      "uninstall gemname"
+    end
+
+    def arguments
+      parser.separator("")
+      parser.separator("  Arguments:")
+      parser.separator("    gemname   name of gem to uninstall")
+    end
+
     def execute
       gem_name = get_one_gem_name
       say "Attempting to uninstall gem '#{gem_name}'"
@@ -251,7 +271,17 @@ module Gem
     def initialize
       super('build', 'Build a gem from a gemspec')
     end
-    
+
+    def usage
+      "build gemspec_file"
+    end
+
+    def arguments
+      parser.separator("")
+      parser.separator("  Arguments:")
+      parser.separator("    gemspec_file      name of gemspec file used to build the gem")
+    end
+
     def execute
       gemspec = get_one_gem_name
       if File.exist?(gemspec)
@@ -438,11 +468,18 @@ module Gem
 	end
       end
       options[:domain] = :remote # install from remote source
+      install_command = command_manager['install']
       gems_to_update.uniq.sort.each do |name|
 	say "Attempting remote upgrade of #{name}"
-	process_install_command(options)
+	options[:args] = [name]
+	install_command.merge_options(options)
+	install_command.execute
       end
       say "All gems up to date"
+    end
+
+    def command_manager
+      Gem::CommandManager.instance
     end
   end
 
@@ -452,6 +489,21 @@ module Gem
 
     def initialize
       super('environment', 'RubyGems Environmental Information')
+    end
+
+    def usage
+      "environment [args]"
+    end
+
+    def arguments
+      parser.separator("")
+      parser.separator("  Arguments:")
+      parser.separator("    packageversion  display the package version")
+      parser.separator("    gemdir          display the path where gems are installed")
+      parser.separator("    gempath         display path used to search for gems")
+      parser.separator("    version         display the gem format version")
+      parser.separator("    remotesources   display the remote gem servers")
+      parser.separator("    <omitted>       display everything")
     end
 
     def execute
@@ -532,12 +584,20 @@ module Gem
       add_option('--commands', 'List available commands') do |value, options|
 	options[:help_commands] = true
       end
-      add_option('--options', 'List available options on base gem command') do |value, options|
-	options[:help_options] = true
-      end
       add_option('--examples', 'Show examples of using the gem command') do |value, options|
 	options[:help_examples] = true
       end
+    end
+
+    def usage
+      "help [arg]"
+    end
+
+    def arguments
+      parser.separator("")
+      parser.separator("  Arguments:")
+      parser.separator("    commands      Provide a list of gem commands")
+      parser.separator("    examples      Provide a list of gem command examples")
     end
 
     def execute
@@ -651,11 +711,8 @@ module Gem
 
     * See information about RubyGems:
     
-        gem rubygems-info
+        gem environment
 
-    * See summary of all options:
-    
-        gem --help-options
     }.gsub(/^    /, "")
     
 end

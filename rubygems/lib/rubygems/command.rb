@@ -20,8 +20,15 @@ module Gem
     end
     
     def show_help
-      parser.program_name = @program_name
+      parser.program_name = usage
       say parser
+    end
+
+    def usage
+      "#{program_name}"
+    end
+
+    def arguments
     end
 
     def invoke(*args)
@@ -43,6 +50,11 @@ module Gem
       @option_list << [args, handler]
     end
     
+    def merge_options(new_options)
+      @options = @defaults.clone
+      new_options.each do |k,v| @options[k] = v end
+    end
+
     private
 
     def handle_options(args)
@@ -70,6 +82,7 @@ module Gem
       @parser.separator("")
       @parser.separator("  Common Options:")
       configure_options(Command.common_options, option_names)
+      arguments
     end
 
     def configure_options(option_list, option_names)

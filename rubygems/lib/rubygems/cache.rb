@@ -1,7 +1,6 @@
 require 'rubygems/user_interaction'
 module Gem
 
-  ##
   # The cache class is used to hold all the specifications in a
   # provided location (Gem.path) for iteration/searching.
   #
@@ -10,7 +9,6 @@ module Gem
       include Gem::UserInteraction
     end
     
-    ##
     # Constructs a cache instance with the provided specifications
     #
     # specifications:: [Hash] hash of [Gem name, Gem::Specification] pairs
@@ -19,15 +17,14 @@ module Gem
       @gems = specifications
     end
     
-    ##
     # Factory method to construct a cache instance for a provided path
     # 
     # source_dirs:: [default=Gem.path] The path to search for specifications
     # return:: Cache instance
     #
-    def self.from_installed_gems(*source_dirs)
+    def self.from_installed_gems(source_dir=nil)
       gems = {}
-      source_dirs = Gem.path.collect {|dir| File.join(dir, "specifications")} if source_dirs.empty?
+      source_dirs ||= Gem.path.collect {|dir| File.join(dir, "specifications")}
       Dir.glob("{#{source_dirs.join(',')}}/*.gemspec").each do |file_name|
         gemspec = load_specification(file_name)
         gems[gemspec.full_name] = gemspec if gemspec
@@ -35,7 +32,6 @@ module Gem
       self.new(gems)
     end
     
-    ##
     # Load a specification from a file (eval'd Ruby code)
     # 
     # file_name:: [String] The .gemspec file
@@ -50,17 +46,16 @@ module Gem
           return gemspec
         end
         alert_warning "File '#{file_name}' does not evaluate to a gem specification"
-      rescue Exception => e
-        alert_warning(e.inspect.to_s + "\n" + spec_code)
-        alert_warning "Invalid .gemspec format in '#{file_name}'"
       rescue SyntaxError => e
         alert_warning e
         alert_warning spec_code
+      rescue Exception => e
+        alert_warning(e.inspect.to_s + "\n" + spec_code)
+        alert_warning "Invalid .gemspec format in '#{file_name}'"
       end
       return nil
     end
     
-    ##
     # Iterate over the specifications in the cache
     #
     # &block:: [yields gem_name, Gem::Specification]
@@ -69,7 +64,6 @@ module Gem
       @gems.each(&block)
     end
 
-    ##
     # Search for a gem by name and optional version
     #
     # gem_name::
@@ -93,7 +87,6 @@ module Gem
       result
     end
 
-    ##
     # Refresh the cache.  
     #
     # return:: Returns a pointer to itself.

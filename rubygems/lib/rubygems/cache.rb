@@ -50,22 +50,6 @@ module Gem
     end
     
     ##
-    # Searches for all specifications that match the provided name
-    #
-    # gem_name:: [String] The name of the gem (name includes string)
-    # return:: [Array] specification list
-    #
-    def search_by_name(gem_name)
-      result = []
-      @gems.each do |key, value|
-         if(key =~ /#{gem_name}/) then
-           result << value
-         end
-      end
-      result
-    end
-    
-    ##
     #
     #
     def search(gem_name, version_requirement=Version::Requirement.new(">= 0"))

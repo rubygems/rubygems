@@ -125,6 +125,7 @@ module Gem
       # str:: [String] the version requirement string (e.g. "> 1.23")
       #
       def initialize(str)
+        str = "= #{str}" unless str =~ OP_RE
         super
         @op, @nums = parse
       end

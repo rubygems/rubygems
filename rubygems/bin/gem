@@ -51,10 +51,10 @@ if @gem
 end
 
 if @info
-  gem_spec = Gem::Cache.from_installed_gems.search_by_name(@info)
-  if gem_spec
+  gem_specs = Gem::Cache.from_installed_gems.search(@info)
+  if gem_specs.size > 0
     require 'yaml'
-    puts gem_spec.to_yaml
+    gem_specs.each {|spec| puts spec.to_yaml}
   else
     puts "Unkown gem #{@info}"
   end

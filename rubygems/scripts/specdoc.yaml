@@ -42,7 +42,148 @@ SECTIONS:
 
 ATTRIBUTES:
 
+  - name: author
+    mandatory: 
+    default: 
+    description:
+      The author of the package contained in the gem.
+    usage:
+        spec.author = "John Jones"
+    notes:
+
+  - name: autorequire
+    mandatory: 
+    default: nil
+    description:
+      The file that will be loaded when <tt>require_gem<tt> is called.  It is
+      a shortcut so the user doesn't have to do what seems to be a redundant
+      <tt>require</tt>.
+    usage:
+        spec.name = 'rake'
+        spec.files = ['lib/rake.rb", "lib/rake/**/*.rb", ...]
+        spec.autorequire = 'rake'
+    notes:
+      In the above example, when the user's code calls <tt>require_gem
+      'rake'</tt>, an implicit <tt>require 'rake'</tt> is called afterwards.
+
+      Specifying <tt>autorequire</tt> is optional.  If there is no single
+      default file that should be loaded, then it doesn't make sense to
+      specify it.
+
+  - name: bindir
+    mandatory: 
+    default: bin
+    description:
+      The directory containing the executable files, if any.
+    usage:
+        spec.bindir = 'bin'
+    notes:
+      An "executable file" is a file that is intended to be run from the
+      command line.  It is an application, rather than a library file.  If
+      your package contains such files, they will typically be placed in a
+      <tt>bin</tt> directory, hence the name ''bindir''.
+
+  - name: default_executable
+    mandatory: 
+    default: ...
+    description:
+      Of all the application files in the package, the ''default executable''
+      is the one that can be run directly through the gem.
+    usage:
+        spec.executables = ['bin/foo', 'bin/bar']
+        spec.default_executable = 'bin/bar'
+    notes:
+      If you only specify one application file in ''executables'', that file
+      becomes the default executable.  Therefore, you only need to specify
+      this value if you have more than one application file.
+
+      The notion of running applications directly through a gem is not well
+      supported at the moment.  The idea is that you can download a gem, say
+      <tt>monopoly.gem</tt> (the board game), and run <tt>gem
+      monopoly.gem</tt>, which would run the <tt>monopoly</tt> application.
+      This is not an in-demand feature.
+
+  - name: description
+    mandatory: '?'
+    default: 
+    description:
+      This describes the gem in detail.  See also ''summary''.
+    usage:
+        spec.description = <<-EOF
+          Rake is a Make-like program implemented in Ruby. Tasks and
+          dependencies are specified in standard Ruby syntax.
+        EOF
+    notes:
+      When the gem is built, the description is re-formatted into a single
+      line with sensible whitespace.  This means you can use here-docs with
+      formatting, as demonstrated above, without worrying about the
+      formatting.
+
+      ''Something about description vs summary...''
+
+  - name: docs
+    mandatory: 
+    default: 
+    description:
+      ???
+    usage:
+        ...
+    notes:
+      ...
+
+  - name: email
+    mandatory: 
+    default: 
+    description:
+      The author's email address.
+    usage:
+        spec.email = 'john.jones@somewhere.com'
+    notes:
+
+  - name: executables
+    mandatory: 
+    default: 
+    description:
+      "''executables'' is a list of files in the package that are
+      applications."
+    usage:
+        spec.executables << 'rake'
+    notes:
+      For example, the <tt>rake</tt> gem has <tt>rake</tt> as an executable.
+      You don't specify the full path (as in <tt>bin/rake</tt>); all
+      application-style files are expected to be found in L(bindir).
+
+  - name: extensions
+    mandatory: 
+    default: 
+    description:
+      The paths to <tt>extconf.rb</tt>-style files used to compile
+      extensions.
+    usage:
+        spec.extensions << 'ext/rmagic/extconf.rb'
+    notes:
+      These files will be run when the gem is installed, causing the C (or
+      whatever) code to be compiled on the user's machine.
+
+      ''Any other comments?''
+
+  - name: extra_rdoc_files
+    mandatory: 
+    default: 
+    description:
+      A list of non-code files that will be used by RDoc to generate the
+      documentation.
+    usage:
+        spec.extra_rdoc_files = ['README', 'doc/user-guide.txt']
+    notes:
+      When the user elects to generate the RDoc documentation for a gem
+      (typically at install time), all the library files are sent to RDoc for
+      processing.  This option allows you to have some non-code files included
+      for a more complete set of documentation.
+
   - name: files
+    mandatory: 
+    default: 
     description:
       This is the list of files (to be) contained in the gem.  It is an array.
     usage:
@@ -56,10 +197,112 @@ ATTRIBUTES:
       You don't need to use Rake, obviously, but specifying the files is much
       easier with it than without it.
 
-  - name: require_paths
+  - name: has_rdoc
+    mandatory: 
+    default: false
     description:
-      Generic description.
-    usage:
       ...
+    usage:
+        ...
+    notes:
+      ...
+
+  - name: homepage
+    mandatory: 
+    default: 
+    description:
+      ...
+    usage:
+        ...
+    notes:
+      ...
+
+  - name: name
+    mandatory: 
+    default: 
+    description:
+      ...
+    usage:
+        ...
+    notes:
+      ...
+
+  - name: platform
+    mandatory: 
+    default: 
+    description:
+      ...
+    usage:
+        ...
+    notes:
+      ...
+
+  - name: rdoc_options
+    mandatory: 
+    default: 
+    description:
+      ...
+    usage:
+        ...
+    notes:
+      ...
+
+  - name: require_paths
+    mandatory: 
+    default: 
+    description:
+      ...
+    usage:
+        ...
+    notes:
+      ...
+
+  - name: required_ruby_version
+    mandatory: 
+    default: 
+    description:
+      ...
+    usage:
+        ...
+    notes:
+      ...
+
+  - name: rubyforge_project
+    mandatory: 
+    default: 
+    description:
+      ...
+    usage:
+        ...
+    notes:
+      ...
+
+  - name: summary
+    mandatory: 
+    default: 
+    description:
+      ...
+    usage:
+        ...
+    notes:
+      ...
+
+  - name: test_suite_file
+    mandatory: 
+    default: 
+    description:
+      ...
+    usage:
+        ...
+    notes:
+      ...
+
+  - name: version
+    mandatory: 
+    default: 
+    description:
+      ...
+    usage:
+        ...
     notes:
       ...

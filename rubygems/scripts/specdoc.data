@@ -10,7 +10,7 @@ process of creating a gem, see CreateAGemInTenMinutes.
 A gemspec consists of several ''attributes''.  Some of these are required;
 most of them are optional.
 
-== Contents ==
+== [#toc] Contents ==
 
 This document contains an overview of each attribute, containing a usage example
 and some notes.  They are listed in alphabetical order.  The tables of contents

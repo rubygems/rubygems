@@ -1,5 +1,8 @@
 2005-03-25  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/rubygems_version.rb (Gem): Created release for
+	0.8.10.
+
 	* lib/rubygems/gem_commands.rb
 	(Gem::UpdateCommand::do_rubygems_update): Update --system now runs
 	the ruby command directly rather than trying to load teh

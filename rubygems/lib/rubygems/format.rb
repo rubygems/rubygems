@@ -16,6 +16,7 @@ module Gem
   #
   class Format
     attr_accessor :spec, :file_entries, :gem_path
+    extend Gem::UserInteraction
   
     ##
     # Constructs an instance of a Format object, representing the gem's
@@ -40,8 +41,15 @@ module Gem
         raise exception
       end
       require 'fileutils'
-      f = File.open(file_path, 'rb')
-      from_io(f, file_path)
+      # check for old version gem
+      if File.read(file_path, 20).include?("MD5SUM =")
+        #alert_warning "Gem #{file_path} is in old format."
+        require 'rubygems/old_format'
+        return OldFormat.from_file_by_path(file_path)
+      else
+        f = File.open(file_path, 'rb')
+        return from_io(f, file_path)
+      end
     end
 
     ##

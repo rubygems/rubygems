@@ -177,7 +177,6 @@ module Gem
       @@cache = nil  
     end
     
-    ##
     # Use the +home+ and (optional) +paths+ values for +dir+ and +path+.
     # Used mainly by the unit tests to provide environment isolation.
     #
@@ -188,6 +187,7 @@ module Gem
     
     # Return a list of all possible load paths for all versions for
     # all gems in the Gem installation.
+    #
     def all_load_paths
       result = []
       Gem.path.each do |gemdir|
@@ -277,12 +277,13 @@ module Gem
         @gem_path = [Gem.dir]
       end      
       @gem_path.uniq!
-      @gem_path.each do |gp| check_gem_subdirectories(gp) end
+      @gem_path.each do |gp| ensure_gem_subdirectories(gp) end
     end
     
+    public
+
     # Default home directory path to be used if an alternate value is
     # not specified in the environment.
-    public
     def default_dir
       #rbconfig = Dir.glob("{#{($LOAD_PATH).join(',')}}/rbconfig.rb").first
       #if rbconfig
@@ -292,25 +293,17 @@ module Gem
       #end
       File.join(Config::CONFIG['libdir'], 'ruby', 'gems', Config::CONFIG['ruby_version'])
     end
+
     private 
-    # Ensure the named Gem directory contains all the proper subdirectories.
+
+    # Quietly ensure the named Gem directory contains all the proper
+    # subdirectories.  If we can't create a directory due to a
+    # permission problem, then we will silently continue.
     def ensure_gem_subdirectories(gemdir)
       DIRECTORIES.each do |filename|
         fn = File.join(gemdir, filename)
-        unless File.exists?(fn)
+        if ! File.exists?(fn) && File.writable?(fn)
           require 'fileutils'
-          FileUtils.mkdir_p(fn)
-        end
-      end
-    end
-    
-    # Check that the given Gem directory contains all proper
-    # subdirectories.  Print a warning to $stderr if not.
-    def check_gem_subdirectories(gemdir)
-      DIRECTORIES.each do |filename|
-        fn = File.join(gemdir, filename)
-	unless File.exist?(fn)
-          $stderr.puts "warning: GEM_PATH path #{fn} does not exist" 
 	  FileUtils.mkdir_p(fn)
         end
       end

@@ -1,3 +1,11 @@
+2004-08-28  Rich Kilmer <rich@infoether.com>
+
+        * /lib/rubygems.rb, /lib/rubygems/loadpath_manager.rb -
+         this adds all the loadpath_manager stuff with the 'ultimate require hack' to
+         rubygems.rb.  Also, require_gem methods body has been extracted into a method
+         Gem.activate that differs in the calling signature in that the second param is
+         a boolean that determines whether to autorequire or not.
+
 2004-08-27  Rich Kilmer <rich@infoether.com>
 
         * lib/rubygems/user_interaction - added ask_yes_no as a method

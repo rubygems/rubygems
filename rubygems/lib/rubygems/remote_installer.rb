@@ -6,72 +6,120 @@ module Gem
   class GemNotFoundException < Gem::Exception; end
   class RemoteInstallationCancelled < Gem::Exception; end
 
+  # RemoteSourceFetcher handles the details of fetching gemms and gem
+  # information from a remote source.  
   class RemoteSourceFetcher
     include UserInteraction
 
-    def initialize(source_uri)
+    # Initialize a remote fetcher using the source URI (and possible
+    # proxy information).
+    def initialize(source_uri, proxy)
       @uri = source_uri
+      @http_proxy = proxy
+      if @http_proxy == true
+	@http_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+      end
     end
 
+    # Return the (uncompressed) size of the source info.
     def size
-      @size ||= get_size
+      @size ||= get_size("/yaml")
     end
 
+    # Fetch the data from the source at the given path.
+    def fetch_path(path="")
+      read_data(@uri + path)
+    end
+
+    # Get the source info stored on the source.  Source info is a hash
+    # map of gem long names to gem specs.  Notice that the gem specs
+    # returned by this method are adequate for searches and queries,
+    # but may have some information elided.
     def source_info
       say "Updating Gem source index for: #{@uri}"
       begin
         require 'zlib'
-        yaml_spec = read(@uri + "/yaml.Z")
+        yaml_spec = fetch_path("/yaml.Z")
         yaml_spec = Zlib::Inflate.inflate(yaml_spec)
       rescue
         yaml_spec = nil
       end
       begin
-	yaml_spec = read(@uri + "/yaml") unless yaml_spec
-	spec = YAML.load(yaml_spec)
-	raise "Didn't get a valid YAML document" if not spec
-	spec
+	yaml_spec = fetch_path("/yaml") unless yaml_spec
+	convert_spec(yaml_spec)
       rescue SocketError => e
 	raise RemoteSourceException.new("Error fetching remote gem cache: #{e.to_s}")
       end
     end
 
-    def fetch
-      read(@uri)
-    end
-
     private
 
-    def fetch_size(uri)
+    # Connect to the source host/port, using a proxy if needed.
+    def connect_to(host, port)
+      if @http_proxy
+	proxy_uri = URI.parse(@http_proxy)
+	Net::HTTP::Proxy(proxy_uri.host, proxy_uri.port).new(host, port)
+      else
+	Net::HTTP.new(host, port)
+      end
+    end
+    
+    # Get the size of the (non-compressed) data from the source at the
+    # given path.
+    def get_size(path)
+      read_size(@uri + path)
+    end
+
+    # Read the size of the (source based) URI using an HTTP HEAD
+    # command.
+    def read_size(uri)
       require 'net/http'
       require 'uri'
       u = URI.parse(uri)
-      http = Net::HTTP.new(u.host, u.port)
+      http = connect_to(u.host, u.port)
       path = (u.path == "") ? "/" : u.path
       resp = http.head(path)
+      fail RemoteSourceException, "HTTP Response #{resp.code}" if resp.code !~ /^2/
       resp['content-length'].to_i
     end
-    
-    def get_size
-      require 'yaml'
-      begin
-        yaml_spec_size = fetch_size(@uri + "/yaml.Z")
-      rescue
-        yaml_spec_size = nil
-      end
-      yaml_spec_size = fetch_size(@uri + "/yaml") unless yaml_spec_size
-      yaml_spec_size
-    end
 
-    def read(uri)
+    # Read the data from the (source based) URI.
+    def read_data(uri)
       require 'rubygems/open-uri'
       open(uri,
-	"User-Agent" =>
-	"RubyGems/#{Gem::RubyGemsVersion}",
+	"User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}",
 	:proxy => @http_proxy
 	) do |input|
         input.read
       end
+    end
+
+    # Convert the yamlized string spec into a real spec (actually,
+    # these are hashes of specs.).
+    def convert_spec(yaml_spec)
+      YAML.load(reduce_spec(yaml_spec)) or
+	raise "Didn't get a valid YAML document"
+    end
+
+    # This reduces the source spec in size so that YAML bugs with
+    # large data sets will be dodged.  Obviously this is a workaround,
+    # but it allows Gems to continue to work until the YAML bug is
+    # fixed.  
+    def reduce_spec(yaml_spec)
+      result = ""
+      state = :copy
+      yaml_spec.each do |line|
+	if state == :copy && line =~ /^\s+files:\s*$/
+	  state = :skip
+	  result << line.sub(/$/, " []")
+	elsif state == :skip
+	  if line !~ /^\s+-/
+	    state = :copy
+	  end
+	end
+	result << line if state == :copy
+      end
+      result
     end
 
   end
@@ -79,10 +127,12 @@ module Gem
   class RemoteInstaller
     include UserInteraction
 
-    # <tt>http_proxy</tt>:: * [String]: explicit specification of
-    # proxy; overrides any environment variable setting * nil: respect
-    # environment variables * <tt>:no_proxy</tt>: ignore environment
-    # variables and _don't_ use a proxy
+    # <tt>http_proxy</tt>::
+    # * [String]: explicit specification of proxy; overrides any
+    #   environment variable setting
+    # * nil: respect environment variables
+    # * <tt>:no_proxy</tt>: ignore environment variables and _don't_
+    #   use a proxy
     #
     def initialize(http_proxy=nil)
       # Ensure http_proxy env vars are used if no proxy explicitly supplied.
@@ -153,15 +203,13 @@ module Gem
       source_caches_file = File.join(install_dir, "source_caches")
       if File.exist?(source_caches_file)
 	file_data = File.read(source_caches_file)
-	# TODO: YAMLing large files can be lengthy.  Can the source
-	# cache contain an abreviated gem spec? 
         caches = YAML.load(file_data) || {}
       else
         caches = {}
       end
       updated = false
       sources.each do |source|
-	rsf = @fetcher_class.new(source)
+	rsf = @fetcher_class.new(source, @http_proxy)
 	if caches.has_key?(source)
 	  if caches[source]["size"] != rsf.size
 	    caches[source]["size"] = rsf.size
@@ -189,7 +237,7 @@ module Gem
     end
     
     def fetch_source(source)
-      rsf = @fetcher_class.new(source)
+      rsf = @fetcher_class.new(source, @http_proxy)
       rsf.source_info
     end
 
@@ -260,8 +308,9 @@ module Gem
     end
 
     def download_gem(destination_file, source, spec)
-      uri = source + "/gems/#{spec.full_name}.gem"
-      response = fetch(uri)
+      rsf = @fetcher_class.new(source, @http_proxy)
+      path = "/gems/#{spec.full_name}.gem"
+      response = rsf.fetch_path(path)
       write_gem_to_file(response, destination_file)
     end
 
@@ -273,13 +322,6 @@ module Gem
     
     def new_installer(gem)
       return Installer.new(gem)
-    end
-
-    private
-
-    def fetch(uri)
-      rsf = @fetcher_class.new(uri)
-      rsf.fetch(uri)
     end
 
   end

@@ -252,6 +252,12 @@ end
 
 Rake::GemPackageTask.new(Spec) do |p| end
 
+desc "Build the Gem spec file for the rubygems-update package"
+task :gemspec => "pkg/rubygems-update.gemspec"
+file "pkg/rubygems-update.gemspec" => ["pkg", "Rakefile"] do |t|
+  open(t.name, "w") do |f| f.puts Spec.to_yaml end
+end
+
 # Install RubyGems
 
 desc "Install RubyGems"

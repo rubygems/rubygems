@@ -1,3 +1,4 @@
+require 'rubygems/user_interaction'
 module Gem
 
   ##
@@ -5,6 +6,9 @@ module Gem
   # provided location (Gem.path) for iteration/searching.
   #
   class Cache
+    class << self
+      include Gem::UserInteraction
+    end
     
     ##
     # Constructs a cache instance with the provided specifications
@@ -31,15 +35,17 @@ module Gem
             spec_code = File.read(file_name)
             gemspec = eval spec_code
             unless gemspec.is_a? Gem::Specification
-              raise Exception, "File '#{file_name}' does not evaluate to a gem specification"
+              alert_warning "File '#{file_name}' does not evaluate to a gem specification"
+              next
             end
             gemspec.loaded_from = file_name
           rescue Exception => e
-            STDERR.puts(e.inspect.to_s + "\n" + spec_code)
-            raise "Invalid .gemspec format in '#{file_name}'"
+            alert_warning(e.inspect.to_s + "\n" + spec_code)
+            alert_warning "Invalid .gemspec format in '#{file_name}'"
+            next
           rescue SyntaxError => e
-            STDERR.puts e
-            STDERR.puts spec_code
+            alert_warning e
+            alert_warning spec_code
             next
           end
           key = File.basename(file_name).gsub(/\.gemspec/, "")

@@ -8,7 +8,7 @@ class TestParseCommands < Test::Unit::TestCase
   include Gem::DefaultUserInteraction
 
   def setup
-    @cmd_manager = Gem::CommandManager.instance
+    @cmd_manager = Gem::CommandManager.new
   end
 
   def test_parsing_bad_options

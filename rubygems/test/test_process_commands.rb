@@ -9,7 +9,7 @@ class TestProcessCommands < Test::Unit::TestCase
   include Gem::DefaultUserInteraction
 
   def setup
-    @cmd_manager = Gem::CommandManager.instance
+    @cmd_manager = Gem::CommandManager.new
   end
 
   def test_install_command
@@ -22,9 +22,7 @@ class TestProcessCommands < Test::Unit::TestCase
   def test_query_command
     use_ui(MockGemUi.new) do
       @cmd_manager.process_args "query"
-      puts ui.output
+      assert_match /LOCAL GEMS/, ui.output
     end
   end
-  
-  
 end

@@ -9,7 +9,7 @@ class TestCheckCommand < Test::Unit::TestCase
   include Gem::DefaultUserInteraction
 
   def setup
-    @cm = Gem::CommandManager.instance
+    @cm = Gem::CommandManager.new
     @cmd = @cm['check']
   end
 

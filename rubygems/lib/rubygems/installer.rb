@@ -63,7 +63,6 @@ module Gem
       directory = File.join(install_dir, "gems", format.spec.full_name)
       FileUtils.mkdir_p directory
 
-      # Extract files, generate stubs, and build extensions.
       extract_files(directory, format)
       generate_bin_scripts(format.spec)
       generate_library_stubs(format.spec) if install_stub

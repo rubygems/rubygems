@@ -1,5 +1,10 @@
 2005-03-11  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/remote_installer.rb
+	(Gem::RemoteInstaller::find_dependencies_not_installed): Found
+	another location that was using require_gem with auto_require.
+	Fixed to use :auto_require=>false.
+
 	* lib/rubygems/gem_commands.rb
 	(Gem::InstallUpdateOptions::add_install_update_options): Added
 	--ignore-dependencies option.  Still needs to be wired to logic.

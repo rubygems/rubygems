@@ -115,6 +115,8 @@ module Gem
     ##
     # Runs unit tests for a given gem specification
     def unit_test(gem_spec)
+     start_dir = Dir.pwd
+     Dir.chdir(gem_spec.full_gem_path)
       $: << File.join(Gem.dir, "gems", gem_spec.full_name)
         # XXX: why do we need this gem_spec when we've already got 'spec'?
       test_files = gem_spec.test_files
@@ -136,6 +138,7 @@ module Gem
           #Gem::Uninstaller.new(gem_spec.name, gem_spec.version.version).uninstall
         #end
       end
+      Dir.chdir(start_dir)
     end
 
     def remove_leading_dot_dir(path)

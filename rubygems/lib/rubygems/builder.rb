@@ -22,6 +22,7 @@ module Gem
             opts.on_tail("--help", "show this message") {puts opts; exit}
             opts.on('--dir=DIRNAME', "Installation directory for the Gem") {|options[:directory]|}
             opts.on('--force', "Force Gem to intall, bypassing dependency checks") {|options[:force]|}
+            opts.on('--gen-rdoc', "Generate RDoc documentation for the Gem") {|options[:gen_rdoc]|}
             opts.parse!
           end
 
@@ -29,7 +30,10 @@ module Gem
           @directory = options[:directory] || Gem.dir  
           @force = options[:force]
   
-          Gem::Installer.new(__FILE__).install(@force, @directory)      
+          gem = Gem::Installer.new(__FILE__).install(@force, @directory)      
+          if options[:gen_rdoc]
+            Gem::DocManager.new(gem).generate_rdoc
+          end
 end
 
 __END__

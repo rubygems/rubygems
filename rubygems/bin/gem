@@ -95,7 +95,7 @@ end
 
 if @gen_rdoc
   @installed_gems.each do |gem|
-    Gem::DocManager.install_doc(gem, true)
+    Gem::DocManager.new(gem).generate_rdoc
   end
 end
 

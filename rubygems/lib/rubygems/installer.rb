@@ -153,7 +153,7 @@ module Gem
       FileUtils.rm_rf spec.full_gem_path
       FileUtils.rm_rf File.join(spec.installation_path, 'specifications', "#{spec.full_name}.gemspec")
       FileUtils.rm_rf File.join(spec.installation_path, 'cache', "#{spec.full_name}.gem")
-      DocManager.uninstall_doc(spec)
+      DocManager.new(spec).uninstall_doc
       puts "Successfully uninstalled #{spec.name} version #{spec.version}"
     end
   end

@@ -99,32 +99,6 @@ if @gen_rdoc
   end
 end
 
-def display_alien_report(errors)
-  errors.each do |key, val|
-    if(val.size > 0) then 
-      puts "#{key} has #{val.size} problems"
-    else 
-      puts "#{key} is error-free"
-    end
-    val.each do |error_entry|
-      puts "\t#{error_entry.path}:"
-      puts "\t#{error_entry.problem}"
-      puts
-    end
-    puts
-  end
-end
-
-def find_files_for_gem(gem_directory)
-  installed_files = []
-  Find.find(gem_directory) {|file_name|
-    file_name.slice!((gem_directory.size)..(file_name.size-1)).sub(/^\//, "")
-    Find.prune if (file_name =~ /CVS/ || File.directory?(file_name) || file_name == "")
-    installed_files << file_name
-  }
-  installed_files
-end
-
 if @alien
   Gem::Validator.new.alien
 end

@@ -156,7 +156,7 @@ module Gem
     # The most recent cache data.
     def cache_data
       @dirty = false
-      @cache_data ||= read_cache
+      @cache_data ||= read_cache 
     end
 
     # Write data to the proper cache.

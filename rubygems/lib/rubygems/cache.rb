@@ -50,7 +50,12 @@ module Gem
     end
     
     ##
+    # Search for a gem by name and optional version
     #
+    # gem_name:: [String] the name of the gem
+    # version_requirement:: [String | default=Version::Requirement.new(">= 0")] version to find
+    #
+    # return:: [Array] list of Gem::Specification objects in sorted (version) order.  empty if not found
     #
     def search(gem_name, version_requirement=Version::Requirement.new(">= 0"))
       unless version_requirement.respond_to? :version

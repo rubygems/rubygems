@@ -1,41 +1,30 @@
 #!/usr/bin/env ruby
 
-require 'webrick'
-require 'getopts'
-require 'rubygems'
-require 'yaml'
-
-getopts "", 'p:8808', "d:#{Gem.dir}"
-
-
-class GemYamlServlet < WEBrick::HTTPServlet::AbstractServlet
-  def initialize(config)
-    @config = config
-  end
-
-  def do_POST(req,res)
-    do_GET(req,res)
-  end
-
-  def do_GET(req, res)
-    res['content-type'] = 'text/yaml'
-    gems = Gem::Cache.from_installed_gems(File.join($OPT_d, "specifications"))
-    res.body << gems.to_yaml
-  end
-
-  
-end
-
+##
+# gem_server and gem_server.cgi are equivalent programs that allow  
+# users to serve gems for consumption by `gem --remote-install`.
+# 
+# gem_server starts an HTTP server on the given port, and serves the folowing:
+# * "/" - Browsing of gem spec files for installed gems
+# * "/yaml" - Full yaml dump of metadata for installed gems
+# * "/gems" - Direct access to download the installable gems
+#
+# Usage: gem_server [-p portnum] [-d gem_path]
+# port_num:: The TCP port the HTTP server will bind to
+# gem_path:: Root gem directory containing both "cache" and "specifications"
+#   subdirectories.
 if __FILE__ == $0
-  s = WEBrick::HTTPServer.new(
-    :Port         => $OPT_p.to_i,
-    :StartThreads => 1,
-    :Logger       => WEBrick::Log::new($stderr, WEBrick::Log::DEBUG)
-  )
-  s.mount("/yaml", GemYamlServlet)
-  s.mount("/", WEBrick::HTTPServlet::FileHandler, File.join($OPT_d, "/specifications/"), true)
-  s.mount("/gems", WEBrick::HTTPServlet::FileHandler, File.join($OPT_d, "/cache/"), true)
+  require 'webrick'
+  require 'rubygems'
+  require 'getopts'; getopts "", 'p:8808', "d:#{Gem.dir}"
+  s = WEBrick::HTTPServer.new(:Port         => $OPT_p.to_i)
+  s.mount_proc("/yaml") {|req, res|
+    res['content-type'] = 'text/plain'
+    res.body << Gem::Cache.from_installed_gems(File.join($OPT_d, "specifications")).to_yaml
+  }
+  {"/" => "/specifications/", "/gems" => "/cache/"}.each do |mount_point, mount_dir|
+    s.mount(mount_point, WEBrick::HTTPServlet::FileHandler, File.join($OPT_d, mount_dir), true)
+  end
   trap("INT"){ s.shutdown }
   s.start
 end
-

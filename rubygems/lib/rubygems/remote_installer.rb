@@ -186,7 +186,15 @@ module Gem
       installed_gems = []
       dependencies.each do |dependency|
         if ask_yes_no("Install required dependency #{dependency.name}?", true) then
-          remote_installer = RemoteInstaller.new
+          remote_installer =  RemoteInstaller.new(
+            if @http_proxy == false
+              :no_proxy
+            elsif @http_proxy == true
+            else
+              @http_proxy
+            end
+          )
+
           installed_gems << remote_installer.install(dependency.name, dependency.version_requirements)
         else
           raise DependencyError.new("Required dependency #{dependency.name} not installed")

@@ -37,7 +37,6 @@ def install_rb(srcdir = nil)
   end
   gem_dir = File.join(Config::CONFIG['libdir'], 'ruby', 'gems', Config::CONFIG['ruby_version'])
   ["specifications", "cache"].each do |subdir|
-puts "Making #{File.join(gem_dir,subdir)}"
     File::makedirs(File.join(gem_dir, subdir))
   end
 end

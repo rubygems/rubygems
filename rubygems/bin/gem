@@ -716,6 +716,9 @@ class RubyGemsFacade
     end
    gem_list_with_version.each do |gem_name, list_of_matching| 
      puts
+     list_of_matching.sort! do |a,b|
+       a.version <=> b.version
+     end
      _display_gem(gem_name, list_of_matching)
    end
   end

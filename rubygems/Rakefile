@@ -4,6 +4,7 @@ require 'rubygems'
 require 'rake/clean'
 require 'rake/testtask'
 require 'rake/packagetask'
+require 'rake/gempackagetask'
 
 PKG_NAME = 'rubygems'
 PKG_VERSION = `ruby -Ilib bin/gem environment packageversion`.chomp
@@ -66,25 +67,49 @@ end
 
 # Package tasks
 
+PKG_FILES = FileList[
+  "Rakefile", "ChangeLog", "Releases", "TODO", "README", 
+  "install.rb",
+  "bin/*",
+  "doc/*.css", "doc/*.rb",
+  "examples/**/*",
+  "gemspecs/**/*",
+  "lib/**/*.rb",
+  "packages/**/*",
+  "redist/*.gem",
+  "scripts/*.rb",
+  "test/**/*"
+]
+
 Rake::PackageTask.new("package") do |p|
   p.name = PKG_NAME
   p.version = PKG_VERSION
   p.need_tar = true
   p.need_zip = true
-  p.package_files.include(
-    "Rakefile", "ChangeLog", "Releases", "TODO", "README", 
-    "install.rb",
-    "bin/gem*", "bin/*.rb",
-    "doc/*.css", "doc/*.rb",
-    "examples/**/*",
-    "gemspecs/**/*",
-    "lib/**/*.rb",
-    "packages/**/*",
-    "redist/*.gem",
-    "scripts/*.rb",
-    "test/**/*"
-    )
+  p.package_files = PKG_FILES
 end
+
+
+spec = Gem::Specification.new do |s|
+  s.name = PKG_NAME + "-update"  
+  s.version = PKG_VERSION
+  s.summary = "RubyGems Update GEM"
+  s.description = <<-EOF
+RubyGems is a package management framework for Ruby.  This Gem
+is a update for the base RubyGems software.  You must have a base
+installation of RubyGems before this update can be applied.
+    EOF
+  s.files = PKG_FILES.to_a
+  s.require_path = 'lib'
+  s.author = "RubyGems Team"
+  s.email = "rubygems-developers@rubyforge.org"
+  s.homepage = "http://rubygems.rubyforge.org"
+  s.rubyforge_project = "rubygems"
+  s.bindir = "bin"                               # Use these for applications.
+  s.executables = ["update_rubygems"]
+end
+
+Rake::GemPackageTask.new(spec) do |p| end
 
 # Install RubyGems
 
@@ -96,7 +121,7 @@ end
 # Run 'gem' (using local bin and lib directories).
 
 desc "Run local 'gem'"
-task :gem do
+task :rungem do
   ARGV.shift
   exec "ruby -Ilib bin/gem #{ARGV.join(' ')}"
 end

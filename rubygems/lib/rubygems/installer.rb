@@ -20,7 +20,7 @@ module Gem
     #
     # gem:: [String] The file name of the gem
     #
-    def initialize(gem, options)
+    def initialize(gem, options={})
       @gem = gem
       @options = options
     end

@@ -1,3 +1,11 @@
+2004-06-17  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/doc_manager.rb (Gem::DocManager::generate_rdoc):
+	Changed rdoc generation to do a chdir into the base source
+	directory and then to use a relative path for all the source
+	files.  This makes the generated RDOC html look better and may fix
+	the windows drive/rdoc bug as a side effect.
+
 2004-06-17  Rich Kilmer <rich@infoether.com>
         * Added ability to capture the UserInteraction with:
           c = Gem::UserInteraction.capture

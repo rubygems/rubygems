@@ -51,16 +51,11 @@ module Gem
       @commands.keys.collect {|key| key.to_s}.sort
     end
     
-    def run(args)
-      backtrace = false
-      if args.first == '--backtrace'
-        backtrace = true
-        args.shift
-      end
-      process_args(args)
+    def run(cfg)
+      process_args(cfg.args)
     rescue StandardError => ex
       alert_error "While executing gem ... (#{ex.class})\n    #{ex.to_s}"
-      puts ex.backtrace if backtrace
+      puts ex.backtrace if cfg.backtrace
       terminate_interaction(1)
     end
 

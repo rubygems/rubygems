@@ -1,7 +1,36 @@
+2005-03-16  Jim Weirich  <jim@weirichhouse.org>
+
+	* test/gemenvironment.rb (TestEnvironment::create): Added require
+	on gem/builder.
+
+	* lib/rubygems/source_index.rb (Gem::SourceIndex::initialize):
+	Allowing default argument to new to be an empty hash.
+	(Gem::SourceIndex::from_installed_gems): Refactored into a class
+	method that invokes a instance method.
+	(Gem::SourceIndex::refresh): Refresh now does a complete reload
+	from disk.  This should be more accurate that the earlier version.
+
+	* lib/rubygems/installer.rb (Gem::Uninstaller::uninstall): removed
+	unneeded refresh!.
+
+	* lib/rubygems.rb (Gem::Exception::source_index): Removed
+	automatic refresh from Gem.source_index ... it wasn't reliable
+	when removing installed gems.
+	(Gem::Exception::activate): Added detection of previously loaded
+	gems.
+
 2005-03-15  Chad Fowler  <chad@chadfowler.com>
 
 	* bin/gem_server: (htonl) rdoc opens in existing browser window.
 
+2005-03-14  Jim Weirich  <jim@weirichhouse.org>
+
+	* Released 0.8.8
+	
+2005-03-14  Jim Weirich  <jim@weirichhouse.org>
+
+	* Released 0.8.7
+	
 2005-03-13  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* lib/rubygems/installer.rb (Gem::Installer#shebang): Refactored and

@@ -50,7 +50,7 @@ directories are located along side the ../ruby/1.8 and ../ruby/site_ruby directo
 you require a particular gem (see usage below), the RubyGems infrastructure modifies the
 $LOAD_PATH to include that gems' unique directory.  For example, if you require the jabber4r
 gem (v 0.7.0) the $LOAD_PATH would then look like this:</p>
-<pre> /usr/local/lib/ruby/gems/1.8/jabber4r-0.7.0/lib
+<pre> <b>/usr/local/lib/ruby/gems/1.8/jabber4r-0.7.0/lib</b>
  /usr/local/lib/ruby/site_ruby/1.8
  /usr/local/lib/ruby/site_ruby/1.8/powerpc-darwin
  /usr/local/lib/ruby/site_ruby
@@ -92,6 +92,16 @@ will fail to install a Gem if the required dependencies are not already present 
 directory.</p>
 <p>Alternatively, you can use the <b>gem</b> command with these same plus the <b>--install</b> option:</p>
 <pre> % gem --install myproject-0.0.1.gem [--dir=<dirname> | --force]</pre>
+<p>To use gems from multiple directories, RubyGems uses a global variable <b>$GEM_PATH</b> and an (optional)
+environment variable <b>RUBY_GEMS</b>.  The RUBY_GEMS environment variable (if set) should be a delimited
+list of directories which are the root of a gem directories structure.  These paths will be prepended to the
+$GEM_PATH Ruby variable which holds an Array of string paths.  $GEM_PATH by default has the global
+path for gems which as noted above sits along side Ruby's libraries.  Following the above example paths
+from OS X it could be:</p>
+<pre> /usr/local/lib/ruby/gems/1.8</pre>
+<p>When you <b>require "rubygems"</b> the infrastructure checks for the RUBY_GEMS environment variable and 
+builds the $GEM_PATH accordingly.  This is useful if you want to have a set of gems installed in your
+personal directory (not globally) and use them ahead of the global gem directory.</p>
 <h3> Uninstalling a Gem </h3>
 <p>To uninstall a gem, you can simply run the following command:</p>
 <pre> % gem --uninstall myproject [--version=<versionnumber>]</pre>

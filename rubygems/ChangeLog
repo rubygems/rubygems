@@ -1,19 +1,27 @@
+2004-06-10  Gavin Sinclair <gsinclair@soyabean.com.au>
+	* bin/gem: --upgrade-all was broken, probably as a result of the
+	  search changes listed below.
+
 2004-06-09  Chad Fowler  <chad@chadfowler.com>
-	* lib/rubygems/remote_install.rb: delegate search functionality to Cache class, bringing remote and local search and list together into one piece of code.
-        * bin/gem, lib/rubygems/validator.rb: move all STDIO work to bin/gem.  Validator.alien now returns a hash of ErrorData objects.
-        * bin/gem, lib/rubygems/installer.rb: move most of the STDIO stuff to bin/gem, communicating via exceptions in this case.
+	* lib/rubygems/remote_install.rb: delegate search functionality to
+	  Cache class, bringing remote and local search and list together into
+	  one piece of code.
+	* bin/gem, lib/rubygems/validator.rb: move all STDIO work to bin/gem.
+	  Validator.alien now returns a hash of ErrorData objects.
+	* bin/gem, lib/rubygems/installer.rb: move most of the STDIO stuff to
+	  bin/gem, communicating via exceptions in this case.
 
 2004-06-08  Rich Kilmer  <rich@infoether.com>
-        * Fixed the drive problem on win32 (hopefully) so multiple drives
-          should now work.  Its still a hack until rdoc is fixed.
+	* Fixed the drive problem on win32 (hopefully) so multiple drives
+	  should now work.  Its still a hack until rdoc is fixed.
 
 2004-06-08  Chad Fowler  <chad@chadfowler.com>
 	* Fixed bug caused by method change on Version::Requirement
 
 2004-06-08  Rich Kilmer <rich@infoether.com>
-        * fixed bug in doc_manager.rb whereby the extra_rdoc_files should
-          be appended to the list of directories prior to prepending the
-          full path.
+	* fixed bug in doc_manager.rb whereby the extra_rdoc_files should
+	  be appended to the list of directories prior to prepending the
+	  full path.
 
 2004-06-08  Gavin Sinclair <gsinclair@soyabean.com.au>
 	* bin/gem_server: List installed gems in [name,version] order.

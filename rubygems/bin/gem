@@ -735,21 +735,24 @@ class RubyGemsFacade
   # to the newest version.
   def _upgrade_all
     @options.domain = :remote # Get gems remotely
-    puts "Upgrading previously installed gems..."
+    puts "Upgrading installed gems..."
     hig = highest_installed_gems = {}
     Gem::Cache.from_installed_gems.each do |name, spec|
       if hig[spec.name].nil? or hig[spec.name].version < spec.version
         hig[spec.name] = spec
       end
     end
-    remote_gems = Gem::RemoteInstaller.new(@options.http_proxy).search(//)
+    remote_gemspecs = Gem::RemoteInstaller.new(@options.http_proxy).search(//)
+    # For some reason, this is an array of arrays.  The actual list of specifications is
+    # the first and only element.  If there were more remote sources, perhaps there would be
+    # more.
+    remote_gemspecs = remote_gemspecs.flatten
     gems_to_update = []
     highest_installed_gems.each do |l_name, l_spec|
       hrg = highest_remote_gem =
-              remote_gems.select  { |_, spec| spec.name == l_name }.
-                          map     { |_, spec| spec }.
-                          sort_by { |spec| spec.version }.
-                          last
+              remote_gemspecs.select  { |spec| spec.name == l_name }.
+                              sort_by { |spec| spec.version }.
+                              last
       if hrg and l_spec.version < hrg.version
         gems_to_update << l_name
       end

@@ -105,12 +105,37 @@ module Gem
       response = fetch(uri)
       write_gem_to_file(response.body, destination_file)
     end
+    ##
+    # Returns HTTP proxy info if specified
+    # (code adapted/borrowed from raa-install)
+    def get_proxy
+      name = 'http_proxy'
+      if proxy_uri = ENV[name] || ENV[name.upcase]
+        proxy_uri = URI.parse(proxy_uri)
+        name = 'no_proxy'
+        if no_proxy = ENV[name] || ENV[name.upcase]
+          no_proxy.scan(/([^:,]*)(?::(\d+))?/) {|host, port|
+            if /(\A|\.)#{Regexp.quote host}\z/i =~ proxy_uri.host && (!port || 80 == port.to_i)
+              proxy_uri = nil
+              break
+            end                
+          }
+        end
+        proxy_uri
+      else
+        nil
+      end
+    end
 
     ##
     # Returns the class to use for downloading files via http.  This method exists sole so that it can be overridden in the derived class in a unit test to return a mock http class.  Note that we could override the fetch method in the derived class instead, but then we wouldn't be able to test it.
     def http_class
       require 'net/http'
-      return Net::HTTP
+      if proxy_uri = get_proxy
+        Net::HTTP.Proxy(proxy_uri.host, proxy_uri.port)
+      else
+        Net::HTTP
+      end
     end
 
     def write_gem_to_file(body, destination_file)

@@ -1,3 +1,6 @@
+2005-01-01  Chad Fowler  <chad@chadfowler.com>
+	* Released 0.8.4
+
 2004-12-31  Jim Weirich  <jim@weirichhouse.org>
 
 	* Rakefile: Switch to standard Rake test tasks.

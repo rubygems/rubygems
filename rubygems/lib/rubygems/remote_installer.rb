@@ -334,7 +334,7 @@ module Gem
         when nil
           true
         else
-          http_proxy.to_str
+          @options[:http_proxy].to_str
         end
       @fetcher_class = CachedFetcher
     end

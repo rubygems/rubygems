@@ -3,6 +3,8 @@
 	`gem update` so it accepts a list of gems to update and _only_
 	updates those.
 	* lib/rubygems/installer.rb: Fixed a bug in the new shebang code.
+	* lib/rubygems/remote_installer.rb: Attempt to fix Curt Hibbs'  
+	reported Proxy bug without actually having a proxy to test with.
 
 2005-01-22  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems/custom_require.rb: Lyle Johnson's fix for Bug #1379

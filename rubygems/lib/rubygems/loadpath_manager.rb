@@ -63,12 +63,14 @@ module Gem
 
     # Prep the list of potential paths for require file resolution.
     def self.build_paths
+      @specs ||= []
       @paths = []
       ::Gem.path.each do |gempath|
-        @specs = Dir.glob("#{gempath}/specifications/*.gemspec").collect { |specfile|
+        newspecs = Dir.glob("#{gempath}/specifications/*.gemspec").collect { |specfile|
 	  eval(File.read(specfile))
 	}.sort
-        @specs.each do |spec|
+        @specs.concat(newspecs)
+        newspecs.each do |spec|
           spec.require_paths.each {|path| @paths << "#{gempath}/gems/#{spec.full_name}/#{path}"}
         end
       end

@@ -2,6 +2,8 @@
 	* lib/rubygems/specification.rb: Allow multiple authors per gem.
 	* lib/rubygems/gem_commands.rb: command line error message if you
 	run 'gem install' with no args.
+	* lib/rubygems/loadpath_manager.rb: Fixed @specs bug as reported by
+	Lothar Schulz on ruby-talk.
 
 2004-11-07  Chad Fowler <chad@chadfowler.com>
 	* lib/rubygems.rb,lib/rubygems/installer.rb,lib/rubygems/cache.rb

@@ -101,7 +101,7 @@ module Gem
     # Returns library directories glob for a gemspec.  For example,
     #   '/usr/local/lib/ruby/gems/1.8/gems/foobar-1.0/{lib,ext}'
     def lib_dirs(spec)
-      "#{spec.full_gem_path}/#{spec.require_paths.join(',')}"
+      "#{spec.full_gem_path}/{#{spec.require_paths.join(',')}}"
     end
 
   end  # class Gem::GemPathLoader

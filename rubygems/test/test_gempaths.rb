@@ -2,6 +2,7 @@
 
 require 'test/unit'
 require 'fileutils'
+require 'rubygems'
 
 class TestGemPaths < Test::Unit::TestCase
   def setup
@@ -82,6 +83,12 @@ class TestGemPaths < Test::Unit::TestCase
     Gem.use_paths("test/temp/gemdir", ADDITIONAL)
     assert_equal "test/temp/gemdir", Gem.dir
     assert_equal ADDITIONAL+[Gem.dir], Gem.path
+  end
+
+  def test_user_home
+    if ENV['HOME']
+      assert_equal ENV['HOME'], Gem.user_home
+    end
   end
 
   private

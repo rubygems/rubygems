@@ -23,82 +23,82 @@ end
 
 require 'rubygems'
 
-@spec_file = options[:build]
-@install_file = options[:install]
-@gem = options[:uninstall]
-@info = options[:info]
-@list = options[:list]
-@force = options[:force]
-@gen_rdoc = options[:gen_rdoc]
-@remote_install = options[:remote_install]
-@directory = options[:directory] || Gem.dir
-@verify_gem = options[:verify_gem]
-@alien = options[:alien]
+spec_file = options[:build]
+install_file = options[:install]
+gem_to_uninstall = options[:uninstall]
+info = options[:info]
+list = options[:list]
+force = options[:force]
+gen_rdoc = options[:gen_rdoc]
+remote_install = options[:remote_install]
+directory = options[:directory] || Gem.dir
+verify_gem = options[:verify_gem]
+alien = options[:alien]
 
-@installed_gems = []
+installed_gems = []
 
-if @spec_file
-  load @spec_file
+if spec_file
+  load spec_file
   Gem::Specification.list.each do |spec|
     Gem::Builder.new(spec).build
   end
 end
 
-if @install_file
-  unless File.exist?(@install_file)
-    if File.exist?(@install_file+".gem")
-      @install_file = @install_file+".gem"
+if install_file
+  unless File.exist?(install_file)
+    if File.exist?(install_file+".gem")
+      install_file = install_file+".gem"
     else
-      puts "Unknown gem file #{@install_file}"
+      puts "Unknown gem file #{install_file}"
     end
   end
-  installer = Gem::Installer.new(@install_file)
+  installer = Gem::Installer.new(install_file)
   begin
-    @installed_gems << installer.install(@force, @directory)
+    installed_gems << installer.install(force, directory)
   rescue => e
-    puts "Error installing #{@install_file}: #{e.message}"
+    puts "Error installing #{install_file}: #{e.message}"
   end
 end
 
-if @gem
-  Gem::Uninstaller.new(@gem, options[:gem_version] || "> 0.0.0").uninstall
+if gem_to_uninstall
+  Gem::Uninstaller.new(gem_to_uninstall, options[:gem_version] || "> 0.0.0").uninstall
 end
 
-if @info
-  gem_specs = Gem::Cache.from_installed_gems.search(@info, options[:gem_version] || "> 0.0.0")
+if info
+  gem_specs = Gem::Cache.from_installed_gems.search(info, options[:gem_version] || "> 0.0.0")
   if gem_specs.size > 0
     require 'yaml'
     gem_specs.each {|spec| puts spec.to_yaml; puts "\n"}
   else
-    puts "Unkown gem #{@info}"
+    puts "Unkown gem #{info}"
   end
 end
 
-if @list
+if list
   Gem::Cache.from_installed_gems.each do |gem_name, gem_spec|
     puts gem_name
   end
 end
 
-if @remote_install
-  Gem::RemoteInstaller.new(@remote_install, options[:gem_version] || "> 0.0.0").install
+if remote_install
+  Gem::RemoteInstaller.new(remote_install, options[:gem_version] || "> 0.0.0").install
 end
 
-if @verify_gem
+if verify_gem
   begin
-    Gem::Validator.new.verify_gem(File.read(@verify_gem)) 
-    puts "#{@verify_gem} is valid"
+    Gem::Validator.new.verify_gem(File.read(verify_gem)) 
+    puts "#{verify_gem} is valid"
   rescue => e
-    puts "#{@verify_gem} is invalid"
+    puts "#{verify_gem} is invalid"
   end
 end
 
-if @gen_rdoc
-  @installed_gems.each do |gem|
+if gen_rdoc
+  installed_gems.each do |gem|
     Gem::DocManager.new(gem).generate_rdoc
   end
 end
 
-if @alien
+if alien
   Gem::Validator.new.alien
 end

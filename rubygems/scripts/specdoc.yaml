@@ -1,0 +1,65 @@
+SECTIONS:
+  - name: "Basics"
+    attributes:
+      - name
+      - version
+      - summary
+      - description                     
+      - platform                        
+      - required_ruby_version           
+     
+  
+  - name: "Files, Libraries, and Executables"
+    attributes:
+      - files                           
+      - require_paths
+      - autorequire                     
+      - bindir                          
+      - executables                     
+      - default_executable              
+  
+  - name: "C compilation"
+    attributes:
+      - extensions                      
+  
+  - name: "Documentation"
+    attributes:
+      - rdoc_options                    
+      - docs                            
+      - has_rdoc                        
+      - extra_rdoc_files
+  
+  - name: "Testing"
+    attributes:
+      - test_suite_file                 
+  
+  - name: "About"
+    attributes:
+      - author                          
+      - email                           
+      - homepage                        
+      - rubyforge_project               
+
+ATTRIBUTES:
+
+  - name: files
+    description:
+      This is the list of files (to be) contained in the gem.  It is an array.
+    usage:
+        require 'rake'
+        spec.files = FileList['lib/**/*.rb', 'bin/*', '[A-Z]*', 'test/**/*'].to_a
+        # or without Rake...
+        spec.files = Dir['lib/**/*.rb'] + Dir['bin/*']
+        spec.files << Dir['[A-Z]*'] + Dir['test/**/*']
+        spec.files.reject! { |fn| fn.include? "CVS" }
+    notes:
+      You don't need to use Rake, obviously, but specifying the files is much
+      easier with it than without it.
+
+  - name: require_paths
+    description:
+      Generic description.
+    usage:
+      ...
+    notes:
+      ...

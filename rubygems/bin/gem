@@ -3,4 +3,4 @@
 require 'rubygems'
 Gem.manage_gems
 
-Gem::CommandManager.instance.run ARGV
+Gem::GemRunner.new.run(ARGV)

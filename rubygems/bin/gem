@@ -15,7 +15,7 @@ ARGV.options do |opts|
   opts.on('--search=SEARCHPATTERN', "Search for Gems in the remote repository") {|options[:search]|}
   opts.on('--force', "Force Gem to intall, bypassing dependency checks") {|options[:force]|}
   opts.on('--remote-install=GEMNAME', "Auto-download and install a Gem and its dependencies") {|options[:remote_install]|}
-  opts.on('--http-proxy=HTTPPROXYHOST', "(unimplemented) HTTP Proxy to use for remote operations") {|options[:remote_install]|}
+  opts.on('--http-proxy=HTTPPROXYHOST', "(unimplemented) HTTP Proxy to use for remote operations") {|options[:http_proxy]|}
   opts.on('--version=GEMVERSION', "Version of Gem to perform operation on") {|options[:gem_version]|}
   opts.on('--verify=GEMFILE', "Verify Gem file against its internal checksum") {|options[:verify_gem]|}
   opts.on('--alien', "Report 'unmanaged' or rogue files in the Gem repository") {options[:alien] = true}
@@ -72,7 +72,7 @@ end
 
 if remote_install
   begin
-    installed_gems << Gem::RemoteInstaller.new.install(remote_install, options[:gem_version] || "> 0.0.0", force, directory)
+    installed_gems << Gem::RemoteInstaller.new(options[:http_proxy]).install(remote_install, options[:gem_version] || "> 0.0.0", force, directory)
   rescue => e
     $stderr.puts "Error installing gem #{remote_install}: #{e.message}"
     exit(2)

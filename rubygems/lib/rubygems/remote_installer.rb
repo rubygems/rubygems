@@ -2,6 +2,14 @@ module Gem
 
   class RemoteInstaller
 
+
+    ##
+    # http_proxy:: [String] URL of http proxy.  Will override any environment 
+    #   variable setting
+    def initialize(http_proxy=nil)
+      @http_proxy=http_proxy
+    end
+
     ##
     # This method will install package_name onto the local system.  
     # package_name:: [String] Name of the Gem to install
@@ -110,7 +118,7 @@ module Gem
     # (code adapted/borrowed from raa-install)
     def get_proxy
       name = 'http_proxy'
-      if proxy_uri = ENV[name] || ENV[name.upcase]
+      if proxy_uri = @http_proxy || ENV[name] || ENV[name.upcase]
         proxy_uri = URI.parse(proxy_uri)
         name = 'no_proxy'
         if no_proxy = ENV[name] || ENV[name.upcase]

@@ -500,7 +500,7 @@ TEXT
           end
         end
         return if executables.size == 0
-        answer = ask_yes_no("Remove executables and scripts for\n'#{gemspec.executables.join(", ")}' in addtion to the gem?", true)
+        answer = ask_yes_no("Remove executables and scripts for\n'#{gemspec.executables.join(", ")}' in addition to the gem?", true)
         unless answer
           say "Executables and scripts will remain installed."
           return

@@ -1,3 +1,9 @@
+2004-10-25  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/installer.rb
+	(Gem::Uninstaller::remove_executables): Corrected spelling of
+	"addtion".
+
 2004-10-24  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/version.rb (Gem::Version::Requirement::self): Now

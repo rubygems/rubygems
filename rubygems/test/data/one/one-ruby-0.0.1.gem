@@ -1,4 +1,4 @@
-        MD5SUM = "0458932c7071f8a357d3f562e2902de2"
+        MD5SUM = "8491842ef4f58a86adb8af85c5320926"
         if $0 == __FILE__
           require 'optparse'
         
@@ -27,7 +27,7 @@ rubygems_version: "1.0"
 name: one
 version: !ruby/object:Gem::Version 
   version: 0.0.1
-date: 2004-04-07 06:49:47.148687 -04:00
+date: 2004-04-07 07:28:41.370483 -04:00
 platform: ruby
 summary: Test GEM One
 require_paths: 

@@ -60,10 +60,12 @@ module Gem
     # return:: [Array] list of Gem::Specification objects in sorted (version) order.  empty if not found
     #
     def search(gem_name, version_requirement=Version::Requirement.new(">= 0"))
+      #FIXME - remove duplication between this and RemoteInstaller.search
+      gem_name = /#{ gem_name }/i if String === gem_name
       version_requirement = version_requirement.to_requirement
       result = []
       @gems.each do |full_spec_name, spec|
-        next unless spec.name == gem_name
+        next unless spec.name =~ gem_name
         result << spec if version_requirement.satisfied_by?(spec.version)
       end
       result = result.sort

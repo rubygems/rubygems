@@ -598,7 +598,7 @@ class RubyGemsFacade
       gemlist = []
       Gem::Cache.from_installed_gems.each do |name, spec|
         gemlist << [name, spec]
-      end  # TODO: Gem::Cache.installed_gems should do this for us.
+      end  # FIXME: Gem::Cache.search already does this.
       _display_gems(gemlist.select { |name, spec| name =~ pattern })
     end
 

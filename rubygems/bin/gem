@@ -109,6 +109,7 @@ class RubyGemsOptions
   def initialize
     @install_dir = Gem.dir  # TODO: should this be done here?
     @domain    = :both
+	@install_stub = true
   end
 
   # --- Operations ---

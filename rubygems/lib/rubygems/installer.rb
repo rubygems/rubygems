@@ -26,7 +26,8 @@ module Gem
     #      gems/<gem-version>/... #=> the extracted Gem files
     #      cache/<gem-version>.gem #=> a cached copy of the installed Gem
     #
-    # force:: [default = false] if false will fail if a required Gem is not installed
+    # force:: [default = false] if false will fail if a required Gem is not installed,
+    #         or if the Ruby version is too low for the gem
     # install_dir:: [default = Gem.dir] directory that Gem is to be installed in
     # install_stub:: [default = false] causes the installation of a library stub in the +site_ruby+ directory
     #
@@ -36,12 +37,19 @@ module Gem
       require 'fileutils'
       format = Gem::Format.from_file_by_path(@gem)
       unless force
-         raise "#{format.spec.name} requires Ruby version #{format.spec.required_ruby_version}" unless format.spec.required_ruby_version.satisfied_by?(Gem::Version.new(RUBY_VERSION))
-         format.spec.dependencies.each do |dep_gem|
-           # XXX: Does this take account of *versions*?
-           require_gem(dep_gem)
-         end
-       end
+        spec = format.spec
+        # Check the Ruby version.
+        if (rrv = spec.required_ruby_version)
+          unless rrv.satisfied_by?(Gem::Version.new(RUBY_VERSION))
+            raise "#{spec.name} requires Ruby version #{rrv}"
+          end
+        end
+        # Check the dependent gems.
+        spec.dependencies.each do |dep_gem|
+          # XXX: Does this take account of *versions*?
+          require_gem(dep_gem)
+        end
+      end
 
        # Build spec dir.
        directory = File.join(install_dir, "gems", format.spec.full_name)

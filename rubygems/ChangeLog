@@ -1,10 +1,19 @@
+2004-06-08  Gavin Sinclair <gsinclair@soyabean.com.au>
+	* bin/gem: renamed --upgrade-dist to --upgrade--all and fixed bug.
+	* lib/rubygems/installer.rb: fixed bug with Ruby version assertion.
+
 2004-06-07  Chad Fowler  <chad@chadfowler.com>
-    * lib/rubygems/remote_installer.rb, lib/rubygems/version.rb: Fixed old dependency on #version method for Gem::Version::Requirement
-    * bin/gem: new --upgrade-dist option allows one to upgrade every installed gem
-    * lib/rubygems/specification.rb,lib/rubygems/installer.rb: new #required_ruby_version attribute added to gem specification for specifying a dependency on which version of ruby the gem needs.  Format it accepts is the same as the Gem::Version::Requirement format.
+	* lib/rubygems/remote_installer.rb, lib/rubygems/version.rb: Fixed old
+	  dependency on #version method for Gem::Version::Requirement
+	* bin/gem: new --upgrade-dist option allows one to upgrade every
+	  installed gem
+	* lib/rubygems/specification.rb,lib/rubygems/installer.rb: new
+	  #required_ruby_version attribute added to gem specification for specifying a
+	  dependency on which version of ruby the gem needs.	Format it accepts is
+	  the same as the Gem::Version::Requirement format.
 
 2004-06-06  Chad Fowler  <chad@chadfowler.com>
-    * bin/gem: install_stub is once again the default due to requests.
+	* bin/gem: install_stub is once again the default due to requests.
 
 2004-06-04  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems/specification.rb, lib/rubygems/doc_manager.rb:  
@@ -51,8 +60,8 @@
 
 2004-05-30 14:33 gsinclair
 
-        * bin/gem: Split --help into --help (basic), --help-options (what
-          --help used to be), and --help-examples.
+	* bin/gem: Split --help into --help (basic), --help-options (what
+	  --help used to be), and --help-examples.
 
 2004-04-30 15:57  chadfowler
 

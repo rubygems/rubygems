@@ -477,9 +477,12 @@ TEXT
     # 
     # gem:: [String] The Gem name to uninstall
     #
-    def initialize(gem, version="> 0")
+    def initialize(gem, options)
       @gem = gem
-      @version = version
+      @version = options[:version] || "> 0"
+      @force_executables = options[:executables]
+      @force_all = options[:all]
+      @force_ignore = options[:ignore]
     end
     
     ##
@@ -495,15 +498,18 @@ TEXT
     #
     def uninstall
       require 'fileutils'
-      list = Gem::SourceIndex.from_installed_gems.search(@gem, @version)
+      Gem.source_index.refresh!
+      list = Gem.source_index.search(@gem, @version)
       if list.size == 0 
         raise "Unknown RubyGem: #{@gem} (#{@version})"
-      elsif list.size > 1
+      elsif list.size > 1 && @force_all
+	remove_all(list.dup) 
+	remove_executables(list.last)
+      elsif list.size > 1 
         say 
-        gem_list = list.collect {|gem| gem.full_name}
-        gem_list << "All versions"
+        gem_names = list.collect {|gem| gem.full_name} + ["All versions"]
         gem_name, index =
-	  choose_from_list("Select RubyGem to uninstall:", gem_list)
+	  choose_from_list("Select RubyGem to uninstall:", gem_names)
         if index == list.size
           remove_all(list.dup) 
           remove_executables(list.last)
@@ -514,8 +520,8 @@ TEXT
           say "Error: must enter a number [1-#{list.size+1}]"
         end
       else
+        remove(list[0], list.dup)
         remove_executables(list.last)
-        remove(list[0], list)
       end
     end
     
@@ -527,7 +533,7 @@ TEXT
     #
     def remove_executables(gemspec)
       return if gemspec.nil?
-      if(gemspec.executables.size > 0) then
+      if(gemspec.executables.size > 0)
         raise Gem::FilePermissionError.new(Config::CONFIG['bindir']) unless
 	  File.writable?(Config::CONFIG['bindir'])
         list = Gem.source_index.search(gemspec.name).delete_if { |spec|
@@ -540,7 +546,7 @@ TEXT
           end
         end
         return if executables.size == 0
-        answer = ask_yes_no(
+        answer = @force_executables || ask_yes_no(
 	  "Remove executables and scripts for\n" +
 	  "'#{gemspec.executables.join(", ")}' in addition to the gem?",
 	  true)
@@ -598,10 +604,10 @@ TEXT
     end
 
     def ok_to_remove?(spec)
+      return true if @force_ignore
       deplist = Gem::DependencyList.from_source_index(Gem.source_index)
-      ok = deplist.ok_to_remove?(spec.full_name)
-      ok = ask_if_ok(spec) if ! ok
-      ok
+      deplist.ok_to_remove?(spec.full_name) ||
+	ask_if_ok(spec)
     end
 
     def ask_if_ok(spec)

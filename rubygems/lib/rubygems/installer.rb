@@ -368,7 +368,7 @@ TEXT
           end
         end
         return if executables.size == 0
-        answer = alert_warning("About to remove executables and scripts for: #{gemspec.executables.join(", ")}", "Proceed? [Y/n]")
+        answer = alert_warning("About to remove executables and scripts for: #{gemspec.executables.join(", ")}", "Proceed? [Yn]")
         if(answer =~/^n/i) then
           say "Executables and scripts will remain installed."
           return
@@ -420,8 +420,8 @@ TEXT
         satlist.each do |sat|
           msg << "\t#{sat.name}-#{sat.version}"
         end
-        answer = alert_warning(msg.join("\n"), "Uninstall anyway? [Y/n]")
-        if(answer !~ /^y/i) then
+        answer = alert_warning(msg.join("\n"), "Uninstall anyway? [Yn]")
+        if(answer =~ /^n/i) then
           return true
         end
       end

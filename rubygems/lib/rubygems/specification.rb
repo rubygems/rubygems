@@ -300,7 +300,7 @@ module Gem
         @test_files = [@test_suite_file].flatten
         @test_suite_file = nil
       end
-      @test_files
+      @test_files ||= []
     end
 
     # ------------------------- Predicates.

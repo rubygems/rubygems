@@ -1,3 +1,13 @@
+2004-08-18  Chad Fowler  <chad@chadfowler.com>
+
+	* lib/rubygems/specification.rb: One more bug with #test_files.
+	Default value of [] wasn't set, resulting in an attempt to call
+	#empty? on nil.
+
+	* lib/rubygems/remote_installer.rb, lib/rubygems/installer.rb: Fixed
+	minor bugs in default selections for questions asked during 
+	installation and uninstallation
+ 
 2004-08-17  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* lib/rubygems/specification.rb:

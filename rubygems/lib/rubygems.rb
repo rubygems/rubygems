@@ -164,11 +164,11 @@ module Gem
     # Ensure the named Gem directory contains all the proper subdirectories.
     def ensure_gem_subdirectories(gemdir)
       DIRECTORIES.each do |filename|
-	fn = File.join(gemdir, filename)
-	unless File.exists?(fn)
-	  require 'fileutils'
-	  FileUtils.mkdir_p(fn)
-	end
+        fn = File.join(gemdir, filename)
+        unless File.exists?(fn)
+          require 'fileutils'
+          FileUtils.mkdir_p(fn)
+        end
       end
     end
     
@@ -176,8 +176,8 @@ module Gem
     # subdirectories.  Print a warning to $stderr if not.
     def check_gem_subdirectories(gemdir)
       DIRECTORIES.each do |filename|
-	fn = File.join(gemdir, filename)
-	$stderr.puts "WARNING: GEM_PATH path #{path} does not exist" unless File.exist?(fn)
+        fn = File.join(gemdir, filename)
+        alert_warning("GEM_PATH path #{path} does not exist") unless File.exist?(fn)
       end
     end
   end

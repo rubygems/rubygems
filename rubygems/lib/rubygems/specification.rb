@@ -174,6 +174,27 @@ module Gem
       end
       @version = version
     end
+
+    ##
+    # Sets the summary of the Specification, but normalizes the formatting into one line.
+    #
+    # Such formatting is useful internally, but is a pain for people writing the text.
+    # Normalizing the text this way allows people to be neat in their specifications.
+    #
+    # summary:: [String] The summary text
+    #
+    def summary=(summary)
+      @summary = summary.strip.gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').gsub(/\n[ \t]*/, " ")
+    end
+    
+    ##
+    # As per #summary=, except operating on the description.
+    #
+    # summary:: [String] The summary text
+    #
+    def description=(description)
+      @description = description.strip.gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').gsub(/\n[ \t]*/, " ")
+    end
     
     ##
     # Helper method if the require path is singular

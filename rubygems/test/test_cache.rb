@@ -31,7 +31,11 @@ class TestCache < Test::Unit::TestCase
 
   def test_search_with_full_gem_name_in_mixed_case_returns_gem
     gems = Gem::Cache.new(@sample_cache).search("FOo")
-    assert_equal(gems.size, 1, "This is failing because we have duplication between remote_installer and cache.rb.  We should factor remote_installer's search logic out into cache.rb's search and delegate from remote_installer to cache.rb")
+    assert_equal(gems.size, 1,
+      %{This is failing because we have duplication between remote_installer and } + 
+      %{source_index.rb.  We should factor remote_installer's search logic out } +
+      %{into source_index.rb's search and delegate from remote_installer to } +
+      %{source_index.rb})
   end
 
   def setup

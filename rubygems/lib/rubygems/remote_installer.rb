@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'socket'
+require 'fileutils'
 
 module Gem
   class DependencyError < Gem::Exception; end
@@ -142,15 +143,19 @@ module Gem
   # two possible cache locations: (1) the system wide cache, and (2)
   # the user specific cache.
   #
-  # * Data is always read from the newest cache file.
-  # * Data is written to
-  #   * the system cache if it is writable
-  #   * the user specific cache, if the system cache is not writable.
+  # * The system cache is prefered if it is writable (or can be
+  #   created).
+  # * The user cache is used if the system cache is not writable (or
+  #   can not be created).
+  #
+  # Once a cache is selected, it will be used for all operations.  It
+  # will not switch between cache files dynamically.
   #
   class LocalSourceInfoCache
 
     # The most recent cache data.
     def cache_data
+      @dirty = false
       @cache_data ||= read_cache
     end
 
@@ -188,34 +193,41 @@ module Gem
 
     # Find a writable cache file.
     def writable_file
-      result = if File.writable? system_cache_file
-		 system_cache_file
-	       else
-		 user_cache_file
-	       end
-      FileUtils.mkdir_p(File.dirname(result)) unless File.exist?(result)
-      result
+      @cache_file
     end
 
     # Read the most current cache data.
     def read_cache
-      if ! File.exist?(user_cache_file) && ! File.exist?(system_cache_file)
-	@dirty = true
-	return {}
+      @cache_file = select_cache_file
+      open(@cache_file) { |f| YAML.load(f) } || []
+    end
+
+    # Select a writable cache file
+    def select_cache_file
+      try_file(system_cache_file) or
+	try_file(user_cache_file) or
+	fail "Unable to locate a writable cache file."
+    end
+
+    def try_file(fn)
+      return fn if File.writable?(fn)
+      return nil if File.exist?(fn)
+      dir = File.dirname(fn)
+      if ! File.exist? dir
+	begin
+	  FileUtils.mkdir_p(dir)
+	rescue RuntimeError
+	  return nil
+	end
       end
-      @dirty = false
-      if ! File.exist?(user_cache_file)
-	fn = system_cache_file
-      elsif ! File.exist?(system_cache_file)
-	fn = user_cache_file
-      elsif File.stat(system_cache_file).mtime >= File.stat(user_cache_file).mtime
-	fn = system_cache_file
-      else
-	fn = user_cache_file
+      if File.writable?(dir)
+	FileUtils.touch fn
+	return fn
       end
-      open(fn) { |f| YAML.load(f) }
+      nil
     end
   end
+
 
   # CachedFetcher is a decorator that adds local file caching to
   # RemoteSourceFetcher objects.

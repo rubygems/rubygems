@@ -1,3 +1,6 @@
+2004-06-07  Chad Fowler  <chad@chadfowler.com>
+	* Fixed bug caused by method change on Version::Requirement
+
 2004-06-08  Rich Kilmer <rich@infoether.com>
         * fixed bug in doc_manager.rb whereby the extra_rdoc_files should
           be appended to the list of directories prior to prepending the

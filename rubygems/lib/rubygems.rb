@@ -17,7 +17,7 @@ module Kernel
     unless version_requirements.size > 0
       version_requirements = ["> 0.0.0"]
     end
-    unless gem.respond_to?(:name) && gem.respond_to?(:version_requirement)
+    unless gem.respond_to?(:name) && gem.respond_to?(:version_requirements)
       gem = Gem::Dependency.new(gem, version_requirements)
     end
     
@@ -25,9 +25,9 @@ module Kernel
     if matches.size==0
       matches = Gem.cache.search(gem.name)
       if matches.size==0
-        raise LoadError.new("\nCould not find RubyGem #{gem.name} (#{gem.version_requirement})\n")
+        raise LoadError.new("\nCould not find RubyGem #{gem.name} (#{gem.version_requirements})\n")
       else
-        raise LoadError.new("\nRubyGem version error: #{gem.name}(#{matches.first.version} not #{gem.version_requirement.version})\n")
+        raise LoadError.new("\nRubyGem version error: #{gem.name}(#{matches.first.version} not #{gem.version_requirements})\n")
       end
     else
       # Get highest matching version

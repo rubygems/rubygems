@@ -275,7 +275,7 @@ module Gem
     # requirement:: [default="> 0.0.0"] The version requirement.
     #
     def add_dependency(gem, requirement="> 0.0.0")
-      unless gem.respond_to?(:name) && gem.respond_to?(:version_requirement)
+      unless gem.respond_to?(:name) && gem.respond_to?(:version_requirements)
         gem = Dependency.new(gem, requirement)
       end
       dependencies << gem
@@ -375,7 +375,7 @@ module Gem
         result << "  s.requirements.concat [" + (requirements.collect {|req| '%q{'+req+'}'}).join(', ') + "]\n"
       end
       dependencies.each do |dep|
-        result << "  s.add_dependency(%q{" + dep.name + "}, %q{" + dep.version_requirement.to_s + "})\n"
+        result << "  s.add_dependency(%q{" + dep.name + "}, %q{" + dep.version_requirements.to_s + "})\n"
       end
       result << "  s.files = [" + (files.collect {|f| '"' + f + '"'}).join(', ') + "]\n"
       if require_paths

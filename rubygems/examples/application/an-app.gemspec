@@ -8,6 +8,7 @@ spec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.summary = "This gem demonstrates executable scripts"
   s.requirements << 'a computer processor'
+  s.add_dependency("session", "> 0.0.0")
   s.files = Dir.glob("lib/**/*").delete_if {|item| item.include?("CVS")}
   s.files.concat Dir.glob("bin/**/*").delete_if {|item| item.include?("CVS")}
   s.require_path = 'lib'

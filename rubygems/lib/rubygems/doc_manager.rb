@@ -32,7 +32,7 @@ module Gem
       rdoc_dir = File.join(@doc_dir, "rdoc")
       begin
         source_dirs = @spec.require_paths.collect do |req|         
-          path = File.join(@spec.installation_path, @spec.full_name, req)
+          path = File.join(@spec.full_gem_path, req)
           path = path[2..-1] if path =~ /^[a-zA-Z]\:/
           path
         end

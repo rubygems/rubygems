@@ -30,7 +30,9 @@ module Gem
           begin
             gem = eval(File.read(file_name))
             gem.loaded_from = file_name
-          rescue
+          rescue Exception => e
+puts e.inspect
+puts File.read(file_name)
             raise "Invalid .gemspec format in: #{source_dir}"
           end
           key = File.basename(file_name).gsub(/\.gemspec/, "")

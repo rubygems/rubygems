@@ -36,7 +36,7 @@ module Gem
     ##
     # These attributes are optional
     #
-    attr_accessor :autorequire, :author, :email, :homepage, :description, :files, :docs
+    attr_accessor :autorequire, :author, :email, :homepage, :description, :files, :docs, :test_suite_file
     attr_accessor :rubyforge_project
     attr_writer :has_rdoc
     
@@ -50,7 +50,7 @@ module Gem
     #
     def initialize
       @date = Time.now
-      @has_rdoc,@email,@homepage,@rubyforge_project,@description,@author = nil
+      @test_suite_file,@has_rdoc,@email,@homepage,@rubyforge_project,@description,@author = nil
       @loaded = false
       @platform = nil
       @@list << self
@@ -100,6 +100,15 @@ module Gem
     #
     def has_rdoc?
       @has_rdoc
+    end
+    
+    ##
+    # Returns if the Gem has a test suite configured
+    #
+    # return:: [Boolean] true if Gem has a test suite
+    #
+    def has_test_suite?
+      @test_suite_file != nil
     end
     
     ##
@@ -198,6 +207,7 @@ module Gem
       result << '@homepage' if @homepage
       result << '@rubyforge_project' if @rubyforge_project
       result << '@has_rdoc' if @has_rdoc
+      result << '@test_suite_file' if @test_suite_file
       result << '@requirements' if requirements.size > 0
       result << '@dependencies' if dependencies.size > 0
       result << '@description' if @description
@@ -211,6 +221,7 @@ module Gem
       result << "s.version = %q{#{version}}\n"
       result << "s.platform = %q{#{platform}}\n" if @platform
       result << "s.has_rdoc = #{has_rdoc?}\n" if has_rdoc?
+      result << "s.test_suite_file = %q{#{test_suite_file}}\n" if has_test_suite?
       result << "s.summary = %q{#{summary}}\n"
       if requirements.size>0
         result << "s.requirements.concat [" + (requirements.collect {|req| '%q{'+req+'}'}).join(', ') + "]\n"

@@ -78,7 +78,6 @@ module Gem
     #
     def source_index
       @@source_index ||= SourceIndex.from_installed_gems
-      @@source_index.refresh!
     end
 
     # Provide an alias for the old name.
@@ -126,25 +125,38 @@ module Gem
     # already loaded, or an exception otherwise.
     #
     def activate(gem, autorequire, *version_requirements)
+      @loaded_specs ||= Hash.new
       unless version_requirements.size > 0
         version_requirements = ["> 0.0.0"]
       end
       unless gem.respond_to?(:name) && gem.respond_to?(:version_requirements)
         gem = Gem::Dependency.new(gem, version_requirements)
       end
-      
+
       matches = Gem.source_index.find_name(gem.name, gem.version_requirements)
       report_activate_error(gem) if matches.empty?
 
-      # Get highest matching version
+      if @loaded_specs[gem.name]
+	# This gem is already loaded.  If the currently loaded gem is
+	# not in the list of candidate gems, then we have a version
+	# conflict.
+	existing_spec = @loaded_specs[gem.name]
+	if ! matches.any? { |spec| spec.version == existing_spec.version }
+	  fail Gem::Exception, "can't activate #{gem}, already activated #{existing_spec.full_name}]"
+	end
+	return false
+      end
+
+      # new load
       spec = matches.last
       if spec.loaded?
 	return false unless autorequire
 	result = spec.autorequire ? require(spec.autorequire) : false
 	return result || false 
       end
-      
+
       spec.loaded = true
+      @loaded_specs[spec.name] = spec
       
       # Load dependent gems first
       spec.dependencies.each do |dep_gem|

@@ -6,7 +6,7 @@ module Gem
     ##
     # http_proxy:: [String] URL of http proxy.  Will override any environment 
     #   variable setting
-    def initialize(http_proxy=true)
+    def initialize(http_proxy=nil)
       require 'open-uri'
 
       @http_proxy=http_proxy

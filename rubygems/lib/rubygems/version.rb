@@ -5,6 +5,10 @@ module Gem
   #
   class Dependency
     attr_accessor :name, :version_requirements
+
+    def <=>(other)
+      [@name] <=> [other.name]
+    end
     
     ##
     # Constructs the dependency

@@ -233,7 +233,6 @@ class TestLegacyRubySpecification < Test::Unit::TestCase
     gemspec1 = eval(@ruby_spec)
     ruby_code = gemspec1.to_ruby
     gemspec2 = eval(ruby_code)
-    require_gem 'dev-utils/debug'
     assert_equal gemspec1, gemspec2
   end
 end  # class TestLegacyRubySpecification

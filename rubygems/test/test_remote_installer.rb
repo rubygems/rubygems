@@ -143,7 +143,7 @@ class RemoteInstallerTest < Test::Unit::TestCase
   FOO_GEM = '' # TODO
   CACHE_DIR = File.join(Gem.dir, 'cache')
 
-  # Disable this test for now.  We will come back to revisit this.
+  # TODO: Disable this test for now.  We will come back to revisit this.
   def disable_test_install
     Gem.use_paths("test/data/gemhome")
     result = @remote_installer.install('foo')

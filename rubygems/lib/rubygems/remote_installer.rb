@@ -219,7 +219,7 @@ module Gem
       require 'rubygems/open-uri'
       size = nil
       begin
-        open(uri_str, :proxy => @http_proxy, :content_length_proc => lambda {|t| size = t; raise "break"}) {|i| }
+        open(uri_str, "User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}",:proxy => @http_proxy, :content_length_proc => lambda {|t| size = t; raise "break"}) {|i| }
       rescue
       end
       return size
@@ -227,7 +227,7 @@ module Gem
     
     def fetch( uri_str )
       require 'rubygems/open-uri'
-      open(uri_str, :proxy => @http_proxy) do |input|
+      open(uri_str, "User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}", :proxy => @http_proxy) do |input|
         input.read
       end
     end

@@ -1,5 +1,7 @@
 2004-10-29  Chad Fowler <chad@chadfowler.com>
 	* packages/,pkgs,install.rb: renamed "packages" to "pkgs" to avoid
+	* remote_installer.rb: Added user-agent reporting for remote
+	operations
 	* setup.rb,install.rb,bin/update_rubygems: removed install.rb and 
 	added setup.rb and post-install.rb.  Changed update_rubygems so that
 	params passed to it can be passed on to setup.rb

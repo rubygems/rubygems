@@ -9,5 +9,4 @@ Straddling the line
 After alpha:
 ------------
 * RPM, Mac OS dmg/pkg, Debian pkg conversion
-* HTTP Proxy connections 
 * Deal with applications (installing executable scripts..."running" a gem)

@@ -1,4 +1,11 @@
+2004-08-11  Rich Kilmer <rich@infoether.com>
+
+        * removed String.to_requirement...we should not modify 
+          base classes in Ruby! modified to get rid of said to_requirement 
+          with Gem::Version::Requirement.create(obj)
+
 2004-08-11  Chad Fowler <chad@chadfowler.com>
+
         * One more specification.rb bug fixed.
 
 2004-08-11  Gavin Sinclair  <gsinclair@soyabean.com.au>

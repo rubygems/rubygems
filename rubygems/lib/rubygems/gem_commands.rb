@@ -66,8 +66,12 @@ module Gem
         options[:test] = value
       end
       add_option('--ignore-dependencies',
-	'Do not install required dependencies') do |value, options|
+	'Do not install any required dependent gems') do |value, options|
 	options[:ignore_dependencies] = value
+      end
+      add_option('--include-dependencies',
+	'Unconditionally install the required dependent gems') do |value, options|
+	options[:include_dependencies] = value
       end
     end
     
@@ -148,9 +152,12 @@ module Gem
                 alert_error "Local gem file not found: #{filepattern}"
               end
             else
-              result = Gem::Installer.new(entries.last).install(options[:force], options[:install_dir])
+              result = Gem::Installer.new(entries.last, options).install(
+		options[:force],
+		options[:install_dir])
               installed_gems = [result].flatten
-              say "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}" if installed_gems
+              say "Successfully installed #{installed_gems[0].name}, " +
+		"version #{installed_gems[0].version}" if installed_gems
             end
           rescue LocalInstallationError => e
             say " -> Local installation can't proceed: #{e.message}"
@@ -169,8 +176,17 @@ module Gem
         if remote? && installed_gems.nil?
           say "Attempting remote installation of '#{gem_name}'"
           installer = Gem::RemoteInstaller.new(options)
-          installed_gems = installer.install(gem_name, options[:version], options[:force], options[:install_dir])
-          say "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}" if installed_gems
+          installed_gems = installer.install(
+	    gem_name,
+	    options[:version],
+	    options[:force],
+	    options[:install_dir])
+	  if installed_gems
+	    installed_gems.compact!
+	    installed_gems.each do |spec|
+	      say "Successfully installed #{spec.full_name}"
+	    end
+	  end
         end
         
         unless installed_gems
@@ -212,7 +228,7 @@ module Gem
 	) do |value, options|
         options[:all] = value
       end
-      add_option('-i', '--[no-]ignore-dependency',
+      add_option('-i', '--[no-]ignore-dependencies',
 	'Ignore dependency requirements while uninstalling'
 	) do |value, options|
         options[:ignore] = value
@@ -259,6 +275,9 @@ module Gem
 	) do |value, options|
         options[:reverse_dependencies] = value
       end
+      add_option('-p', '--pipe', "Pipe Format (name --version ver)") do |value, options|
+	options[:pipe_format] = value
+      end
     end
 
     def defaults_str
@@ -293,24 +312,34 @@ module Gem
 	  reverse[spec.full_name] = find_reverse_dependencies(spec, srcindex)
 	end
       end
-      response = ''
-      specs.values.sort.each do |spec|
-	response << "Gem #{spec.full_name}\n"
-	unless spec.dependencies.empty?
-	  response << "  Requires\n"
-	  spec.dependencies.each do |dep|
-	    response << "    #{dep}\n"
+      if options[:pipe_format]
+	specs.values.sort.each do |spec|
+	  unless spec.dependencies.empty?
+	    spec.dependencies.each do |dep|
+	      puts %{#{dep.name} --version '#{dep.version_requirements}'}
+	    end
 	  end
-	end
-	unless reverse[spec.full_name].empty?
-	  response << "  Used by\n"
-	  reverse[spec.full_name].each do |sp, dep|
-	    response << "    #{sp} (#{dep})\n"
+	end	
+      else
+	response = ''
+	specs.values.sort.each do |spec|
+	  response << "Gem #{spec.full_name}\n"
+	  unless spec.dependencies.empty?
+	    response << "  Requires\n"
+	    spec.dependencies.each do |dep|
+	      response << "    #{dep}\n"
+	    end
 	  end
+	  unless reverse[spec.full_name].empty?
+	    response << "  Used by\n"
+	    reverse[spec.full_name].each do |sp, dep|
+	      response << "    #{sp} (#{dep})\n"
+	    end
+	  end
+	  response << "\n"
 	end
-	response << "\n"
+	say response
       end
-      say response
     end
 
     # Retuns list of [specification, dep] that are satisfied by spec.

@@ -154,6 +154,31 @@ class TestDependencies < Test::Unit::TestCase
     assert_equal Gem::Version::Requirement.new([">= 1.0"]), dep.version_requirements
   end
 
+  def test_create_from_string
+    req = Gem::Version::Requirement.create(">1")
+    assert ! req.satisfied_by?(Gem::Version.new("1.0"))
+    assert req.satisfied_by?(Gem::Version.new("1.1"))
+  end
+
+  def test_create_from_string_equal
+    req = Gem::Version::Requirement.create("1.3")
+    assert ! req.satisfied_by?(Gem::Version.new("1.0"))
+    assert req.satisfied_by?(Gem::Version.new("1.3"))
+  end
+
+  def test_create_from_requirement
+    req = Gem::Version::Requirement.create(Gem::Version::Requirement.new("1.3"))
+    assert ! req.satisfied_by?(Gem::Version.new("1.0"))
+    assert req.satisfied_by?(Gem::Version.new("1.3"))
+  end
+
+  def test_create_from_list
+    req = Gem::Version::Requirement.create([">1", "<2"])
+    assert ! req.satisfied_by?(Gem::Version.new("1.0"))
+    assert ! req.satisfied_by?(Gem::Version.new("2.0"))
+    assert req.satisfied_by?(Gem::Version.new("1.3"))
+  end
+
   # We may get some old gems that have requirements in old formats.
   # We need to be able to handle those old requirements by normalizing
   # them to the latest format.

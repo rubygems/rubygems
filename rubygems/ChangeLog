@@ -1,5 +1,18 @@
 2005-03-11  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/version.rb (Gem::Requirement): Unnested Requirement
+	from the Version class.  There was no benefit to having it nested.
+	Gem::Version::Requirement is set to point to the new class so to
+	be compatible with old gems.
+
+	* lib/rubygems/installer.rb (Gem::Uninstaller::ask_if_ok): Changed
+	uninstaller confirm message to read 'Continue with uninstall'.
+	Its clearer that way.
+
+	* lib/rubygems.rb (Gem::Exception::required_location): Switch to
+	use SourceIndex#find_name rather than search.  Made sure a nil
+	value is returned with a path is not found.
+
 	* lib/rubygems/source_index.rb (Gem::SourceIndex::search): Changed
 	parameter name to gem_pattern to emphasize using Regex in search.
 	(Gem::SourceIndex::find_name): Added find_name to handle the

@@ -96,6 +96,8 @@ module Gem
           yaml << line
         end
         YAML.load(yaml)
+      rescue YAML::Error => e
+        raise FormatException.new("Failed to parse gem specification out of gem file")
       rescue ArgumentError => e
         raise FormatException.new("Failed to parse gem specification out of gem file")
       end

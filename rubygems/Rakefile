@@ -20,17 +20,20 @@ task :default => [:test]
 
 desc "Run unit tests"
 task :test do
-  ruby %{-Ilib -rscripts/runtest -e 'run_tests("test/test*.rb", true)'}
+  test_name = ENV['TEST'] || 'test/test*.rb'
+  ruby %{-Ilib -rscripts/runtest -e 'run_tests("#{test_name}", true)'}
 end
 
 desc "Run Functional Tests"
 task :functional do
-  ruby %{-Ilib -rscripts/runtest -e 'run_tests("test/functional.rb", true)'}
+  test_name = ENV['TEST'] || 'test/functional.rb'
+  ruby %{-Ilib -rscripts/runtest -e 'run_tests("#{test_name}", true)'}
 end
 
 desc "Run All Tests"
 task :alltests do
-  ruby %{-Ilib -rscripts/runtest -e 'run_tests("test/{test,functional}*.rb", true)'}
+  test_name = ENV['TEST'] || 'test/{test,functional}*.rb'
+  ruby %{-Ilib -rscripts/runtest -e 'run_tests("#{test_name}", true)'}
 end
 
 

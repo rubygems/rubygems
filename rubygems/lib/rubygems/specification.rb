@@ -64,10 +64,16 @@ module Gem
 
     # List of Specification instances.
     @@list = []
+
+    # Optional block used to gather newly defined instances.
+    @@gather = nil
+
     # List of attribute names: [:name, :version, ...]
     @@required_attributes = []
+
     # List of _all_ attributes and default values: [[:name, nil], [:bindir, 'bin'], ...]
     @@attributes = []
+
     # Map of attribute names to default values.
     @@default_value = {}
 
@@ -92,7 +98,7 @@ module Gem
     def self.required_attribute?(name)
       @@required_attributes.include? name.to_sym
     end
-    
+
     # ------------------------- Infrastructure class methods.
 
     # A list of Specification instances that have been defined in this Ruby instance.
@@ -352,6 +358,7 @@ module Gem
       @loaded = false
       @@list << self
       yield self if block_given?
+      @@gather.call(self) if @@gather
     end
 
     ##
@@ -375,6 +382,17 @@ module Gem
       spec
     end 
     
+    def Specification.load(filename)
+      gemspec = nil
+      fail "NESTED Specification.load calls not allowed!" if @@gather
+      @@gather = proc { |gs| gemspec = gs }
+      data = File.read(filename)
+      eval(data)
+      gemspec
+    ensure
+      @@gather = nil
+    end
+
     # ------------------------- Instance methods.
     
     ##

@@ -158,25 +158,26 @@ module Gem
     # directory, and the cached .gem file.
     #
     def uninstall
-      require 'yaml'
       require 'fileutils'
-      gem_specs = {}
-      count = 0
-      $GEM_PATH.each do |path|
-        gem_specs[path] = Dir.glob(File.join(path, "specifications", "#{@gem}-*.gemspec"))
-        count += gem_specs[path].size
-      end
-      if count==0
+      cache = Cache.from_installed_gems
+      list = cache.search_by_name(@gem)
+      if list.size == 0 
         puts "Unknown RubyGem: #{@gem}"
-      elsif count>1
+      elsif list.size>1
+        raise "process uninstall list"
         #choose from list
       else
-        spec = eval(File.read(list[0]))
-        FileUtils.rm_rf list
-        FileUtils.rm_rf File.join(Gem.dir, spec.full_name)
-        FileUtils.rm_rf File.join(Gem.dir, "cache", "#{spec.full_name}.gem")
-        puts "Successfully uninstalled #{spec.name} version #{spec.version}"
+        remove(list[0])
       end
+    end
+    
+    private
+    
+    def remove(spec)
+      FileUtils.rm_rf spec.full_gem_path
+      FileUtils.rm_rf File.join(spec.installation_path, 'specifications', "#{spec.full_name}.gemspec")
+      FileUtils.rm_rf File.join(spec.installation_path, 'cache', "#{spec.full_name}.gem")
+      puts "Successfully uninstalled #{spec.name} version #{spec.version}"
     end
   end
   

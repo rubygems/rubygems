@@ -55,18 +55,21 @@ module Gem
     def ruby_header(file)
       file.puts <<-EOS
 if $0 == __FILE__
-  require 'getoptlong'
-  require 'rubygems'
-  
-  opts = GetoptLong.new([ '--force', '-f', GetoptLong::NO_ARGUMENT ])
-  @force = false
-  opts.each do |opt, arg|
-    case opt
-    when '--force'
-      @force = true
-    end
+  require 'optparse'
+
+  options = {}
+  ARGV.options do |opts|
+    opts.on_tail("--help", "show this message") {puts opts; exit}
+    opts.on('--dir=DIRNAME', "Installation directory for the Gem") {|options[:directory]|}
+    opts.on('--force', "Force Gem to intall, bypassing dependency checks") {|options[:force]|}
+    opts.parse!
   end
-  Gem::Installer.new(__FILE__).install(@force)      
+
+  require 'rubygems'
+  @directory = options[:directory] || Gem.dir  
+  @force = options[:force]
+  
+  Gem::Installer.new(__FILE__).install(@force, @directory)      
 end
 __END__
 EOS

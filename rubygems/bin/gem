@@ -4,7 +4,7 @@ require 'optparse'
 
 options = {}
 ARGV.options do |opts|
-  opts.on_tail("--help", "show this message") {puts opts}
+  opts.on_tail("--help", "show this message") {puts opts; exit}
   opts.on('-bGEMSPEC','--build=GEMSPEC', "Build a gem file from spec") { |options[:gemspec]| }
   opts.on('-iGEMFILE', '--install=GEMFILE', "Install a gem from local gem file")    {|options[:install]|}
   opts.on('-uGEMNAME', '--uninstall=GEMNAME', "Uninstall a previously installed gem") {|options[:uninstall]|}
@@ -22,6 +22,7 @@ require 'rubygems'
 @gem = options[:uninstall]
 @info = options[:info]
 @list = options[:list]
+@force = options[:force]
 @remote_install = options[:remote_install]
 @directory = options[:directory] || Gem.dir
 

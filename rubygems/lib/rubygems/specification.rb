@@ -135,7 +135,11 @@ module Gem
     end
     
     def full_gem_path
-      (File.dirname(@loaded_from).split("/")[0..-2] << full_name).join("/")
+      File.join(installation_path, full_name)
+    end
+    
+    def installation_path
+      (File.dirname(@loaded_from).split(File::SEPARATOR)[0..-2]).join(File::SEPARATOR)
     end
     
     ##

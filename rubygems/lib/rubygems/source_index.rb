@@ -30,8 +30,9 @@ module Gem
     # path.
     # 
     # source_dirs::
-    #   [default=Gem.path] List of gem directories to search for
-    #   specifications
+    #   List of gem directories to search for specifications.  The
+    #   default is the "specification" directories under each
+    #   directory in Gem.path.
     #
     # return::
     #   SourceIndex instance

@@ -1,4 +1,18 @@
 module Kernel
+
+  ##
+  # Adds a Ruby Gem to the $LOAD_PATH.  Before a Gem is loaded, its required
+  # Gems are loaded (by specified version or highest version).  If the version
+  # information is omitted, the highest version Gem of the supplied name is 
+  # loaded.  If a Gem is not found that meets the version requirement and/or 
+  # a required Gem is not found, a LoadError is raised. More information on 
+  # version requirements can be found in the Gem::Version documentation.
+  #
+  # gem:: [String or Gem::Dependency] The gem name or dependency instance.
+  # version_requirement:: [default="> 0.0.0"] The version requirement.
+  # return:: [Boolean] true if the Gem is loaded, otherwise false.
+  # raises:: [LoadError] if Gem cannot be found or version requirement not met.
+  #
   def require_gem(gem, version_requirement="> 0.0.0")
     unless gem.respond_to?(:name) && gem.respond_to?(:version_requirement)
       gem = Gem::Dependency.new(gem, version_requirement)
@@ -35,11 +49,19 @@ module Kernel
   end
 end
 
+##
+# Main module to hold all RubyGem classes/modules.
+#
 module Gem
   RubyGemsVersion = "1.0"
   
   @@specification_list = []
   
+  ##
+  # Returns an Array of specifications that are in the $GEM_PATH
+  #
+  # return:: [Array] array of Gem::Specifications
+  #
   def self.specifications
     return @@specification_list if @@specification_list.size > 0
     require 'yaml'
@@ -49,6 +71,11 @@ module Gem
     @@specification_list
   end
   
+  ##
+  # Return the directory that Gems are installed in
+  #
+  # return:: [String] The directory path
+  #
   def self.dir
     require 'rbconfig'
     dir = File.join(Config::CONFIG['libdir'], 'ruby', 'gems', Config::CONFIG['ruby_version'])

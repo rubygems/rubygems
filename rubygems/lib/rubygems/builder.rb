@@ -1,10 +1,23 @@
 module Gem
 
+  ##
+  # The Builder class processes RubyGem specification files
+  # to produce a .gem file.
+  #
   class Builder
+  
+    ##
+    # Constructs a builder instance for the provided specification
+    #
+    # spec:: [Gem::Specification] The specification instance
+    #
     def initialize(spec)
       @spec = spec
     end
     
+    ##
+    # Builds the gem from the specification
+    #
     def build
       require 'yaml'
       File.open(@spec.full_name+".gem", "w") do |file|
@@ -15,6 +28,12 @@ module Gem
       end
     end
     
+    ##
+    # Reads the files listed in the specification and encodes
+    # them into the provided file (IO)
+    #
+    # file:: [IO] the file to write the encoded data into
+    #
     def write_files_to(file)
       require 'zlib'
       file_header = []

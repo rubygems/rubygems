@@ -232,7 +232,8 @@ module Gem
  
     # ------------------------- RUNTIME attributes (not persisted).
     
-    attr_writer :loaded, :loaded_from
+    attr_writer :loaded
+    attr_accessor :loaded_from
 
     # ------------------------- Special accessor behaviours (overwriting default).
     

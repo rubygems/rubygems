@@ -19,7 +19,6 @@ module Gem
       @gems = specifications
     end
     
-    
     ##
     # Factory method to construct a cache instance for a provided path
     # 
@@ -29,32 +28,39 @@ module Gem
     def self.from_installed_gems(*source_dirs)
       gems = {}
       source_dirs = Gem.path.collect {|dir| File.join(dir, "specifications")} if source_dirs.empty?
-      source_dirs.each do |source_dir|
-        Dir[File.join(source_dir, "*gemspec")].each do |file_name|
-          begin
-            spec_code = File.read(file_name)
-            gemspec = eval spec_code
-            unless gemspec.is_a? Gem::Specification
-              alert_warning "File '#{file_name}' does not evaluate to a gem specification"
-              next
-            end
-            gemspec.loaded_from = file_name
-          rescue Exception => e
-            alert_warning(e.inspect.to_s + "\n" + spec_code)
-            alert_warning "Invalid .gemspec format in '#{file_name}'"
-            next
-          rescue SyntaxError => e
-            alert_warning e
-            alert_warning spec_code
-            next
-          end
-          key = File.basename(file_name).gsub(/\.gemspec/, "")
-          gems[key] = gemspec
-        end
+      
+      Dir.glob("{#{source_dirs.join(',')}}/*.gemspec").each do |file_name|
+        gemspec = load_specification(file_name)
+        gems[gemspec.full_name] = gemspec if gemspec
       end
       self.new(gems)
     end
-
+    
+    ##
+    # Load a specification from a file (eval'd Ruby code)
+    # 
+    # file_name:: [String] The .gemspec file
+    # return:: Specification instance or nil if an error occurs
+    #
+    def self.load_specification(file_name)
+      begin
+        spec_code = File.read(file_name)
+        gemspec = eval(spec_code)
+        if gemspec.is_a?(Gem::Specification)
+          gemspec.loaded_from = file_name
+          return gemspec
+        end
+        alert_warning "File '#{file_name}' does not evaluate to a gem specification"
+      rescue Exception => e
+        alert_warning(e.inspect.to_s + "\n" + spec_code)
+        alert_warning "Invalid .gemspec format in '#{file_name}'"
+      rescue SyntaxError => e
+        alert_warning e
+        alert_warning spec_code
+      end
+      return nil
+    end
+    
     ##
     # Iterate over the specifications in the cache
     #
@@ -91,10 +97,15 @@ module Gem
     # return:: Returns a pointer to itself.
     #
     def refresh!
-      newcache = self.class.from_installed_gems 
-      newcache.each do |full_spec_name, spec|
-        @gems[full_spec_name] ||= spec
+      t = Time.now
+      spec_dirs = Gem.path.collect {|dir| File.join(dir, "specifications")}
+      files = Dir.glob("{#{spec_dirs.join(',')}}/*.gemspec")
+      current_loaded_files = @gems.values.collect {|spec| spec.loaded_from}
+      (current_loaded_files - files).each do |spec_file|
+        gemspec = load_specification(spec_file)
+        @gems[gemspec.full_name] = gemspec if gemspec
       end
+      puts "Refreshed in...#{Time.now - t}"
       self
     end
     

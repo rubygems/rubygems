@@ -60,13 +60,13 @@ module Gem
     end
     
     def self.search_loadpath(file)
-      result = Dir.glob("{#{($LOAD_PATH).join(',')}}/#{file}{,.rb,.so}").delete_if {|f| File.directory?(f)}.size > 0
+      result = Dir.glob("{#{($LOAD_PATH).join(',')}}/#{file}{,.rb,.so,.bundle,.dll,.sl}").delete_if {|f| File.directory?(f)}.size > 0
       result
     end
     
     def self.search_gempath(file)
       build_paths unless @paths
-      fullname = Dir.glob("{#{(@paths).join(',')}}/#{file}{,.rb,.so}").delete_if {|f| File.directory?(f)}.first
+      fullname = Dir.glob("{#{(@paths).join(',')}}/#{file}{,.rb,.so,.bundle,.dll,.sl}").delete_if {|f| File.directory?(f)}.first
       return false unless fullname
       @specs.each do |spec|
         if fullname.include?("/#{spec.full_name}/")

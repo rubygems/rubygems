@@ -166,27 +166,65 @@ module Gem
     # all gems in the Gem installation.
     def all_load_paths
       result = []
-      Gem.path.each do |p|
-        gpath = File.join(p, 'gems/*')
-        Dir[gpath].each do |gp|
-          base = File.basename(gp)
-          specfn = File.join(p, "specifications", base + ".gemspec")
-          if File.exist?(specfn)
-            spec = eval(File.read(specfn))
-            spec.require_paths.each do |rp|
-              result << File.join(gp, rp)
-            end
-          else
-            filename = File.join(gp, 'lib')
-            result << filename if File.exist?(filename)
-          end
-        end
+      Gem.path.each do |gemdir|
+	each_load_path(all_partials(gemdir)) do |load_path|
+	  result << load_path
+	end
+      end
+      result
+    end
+
+    # Return a list of all possible load paths for the latest version
+    # for all gems in the Gem installation.
+    def latest_load_paths
+      result = []
+      Gem.path.each do |gemdir|
+	each_load_path(latest_partials(gemdir)) do |load_path|
+	  result << load_path
+	end
       end
       result
     end
 
     private
     
+    # Return all the partial paths in the given +gemdir+.
+    def all_partials(gemdir)
+      Dir[File.join(gemdir, 'gems/*')]
+    end
+
+    # Return only the latest partial paths in the given +gemdir+.
+    def latest_partials(gemdir)
+      latest = {}
+      all_partials(gemdir).each do |gp|
+	base = File.basename(gp)
+	name, version = base.split('-')
+	ver = Gem::Version.new(version)
+	if latest[name].nil? || ver > latest[name][0]
+	  latest[name] = [ver, gp]
+	end
+      end
+      latest.collect { |k,v| v[1] }
+    end      
+
+    # Expand each partial gem path with each of the required paths
+    # specified in the Gem spec.  Each expanded path is yielded.
+    def each_load_path(partials) 
+      partials.each do |gp|
+	base = File.basename(gp)
+	specfn = File.join(dir, "specifications", base + ".gemspec")
+	if File.exist?(specfn)
+	  spec = eval(File.read(specfn))
+	  spec.require_paths.each do |rp|
+	    yield(File.join(gp, rp))
+	  end
+	else
+	  filename = File.join(gp, 'lib')
+	  yield(filename) if File.exist?(filename)
+	end
+      end
+    end
+
     # Set the Gem home directory (as reported by +dir+).
     def set_home(home)
       @gem_home = home

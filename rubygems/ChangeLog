@@ -1,3 +1,9 @@
+2004-07-26  Jim Weirich  <jim@tardis>
+
+	* lib/rubygems.rb (Gem::Exception::latest_load_paths): Added
+	latest_load_paths and refactored all_load_paths to use common
+	code.
+
 2004-07-25  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems.rb (Gem::Exception::all_load_paths): Added

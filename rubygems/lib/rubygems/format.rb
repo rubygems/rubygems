@@ -1,6 +1,14 @@
 module Gem
 
   ##
+  # Used to raise parsing and loading errors
+  #
+  class FormatException < Exception
+    attr_accessor :file_path
+    #I go back and forth on whether or not to create custom exception classes
+  end
+
+  ##
   # The format class knows the guts of the RubyGem .gem file format
   # and provides the capability to read gem files
   #
@@ -8,7 +16,8 @@ module Gem
     attr_accessor :spec, :file_entries, :gem_path
   
     ##
-    # Constructs a Installer instance
+    # Constructs an instance of a Format object, representing the gem's
+    # data structure.
     #
     # gem:: [String] The file name of the gem
     #
@@ -17,23 +26,38 @@ module Gem
     end
     
     ##
-    # Reads a gem file and returns a Format object, representing the data
-    # from the gem file
+    # Reads the named gem file and returns a Format object, representing 
+    # the data from the gem file
     #
     # file_path:: [String] Path to the gem file
     #
-    def self.from_file(file_path)
-      require 'fileutils'
-      format = self.new(file_path)
-      File.open(file_path, 'r') do |file|
-        skip_ruby(file)
-        format.spec = read_spec(file)
-        format.file_entries = []
-        read_files_from_gem(file) do |entry, file_data|
-          format.file_entries << [entry, file_data]
-        end
+    def self.from_file_by_path(file_path)
+      if(!File.exist?(file_path)) then
+        exception = FormatException.new("Cannot load gem\nFile not found")
+        exception.file_path = file_path
+        raise exception
       end
-      return format
+      require 'fileutils'
+      File.open(file_path, 'r') do |file|
+        from_io(file, file_path)
+      end
+    end
+
+    ##
+    # Reads a gem from an io stream and returns a Format object, representing
+    # the data from the gem file
+    #
+    # io:: [IO] Stream from which to read the gem
+    #
+    def self.from_io(io, gem_path="(io)")
+      format = self.new(gem_path)
+      skip_ruby(io)
+      format.spec = read_spec(io)
+      format.file_entries = []
+      read_files_from_gem(io) do |entry, file_data|
+        format.file_entries << [entry, file_data]
+      end
+      format
     end
     
     private 
@@ -44,8 +68,17 @@ module Gem
     # file:: [IO] The IO to process (skip the Ruby code)
     #
     def self.skip_ruby(file)
-      while(file.gets.chomp != "__END__") do
-      end
+      end_seen = false
+      loop {
+        line = file.gets
+        if(line == nil || line.chomp == "__END__") then
+          end_seen = true
+          break
+        end
+      }
+     if(end_seen == false) then
+       raise FormatException.new("Failed to find end of ruby script while reading gem")
+     end
     end
      
     ##
@@ -58,10 +91,14 @@ module Gem
     def self.read_spec(file)
       require 'yaml'
       yaml = ''
-      read_until_dashes(file) do |line|
-        yaml << line
+      begin
+        read_until_dashes(file) do |line|
+          yaml << line
+        end
+        YAML.load(yaml)
+      rescue ArgumentError => e
+        raise FormatException.new("Failed to parse gem specification out of gem file")
       end
-      YAML.load(yaml)
     end
     
     ##
@@ -91,16 +128,20 @@ module Gem
       require 'zlib'
       require 'yaml'
       header_yaml = ''
-      self.read_until_dashes(gem_file) do |line|
-        header_yaml << line
-      end
-      header = YAML.load(header_yaml)
-      header.each do |entry|
-        file_data = ''
+      begin
         self.read_until_dashes(gem_file) do |line|
-          file_data << line
+          header_yaml << line
         end
-        yield [entry, Zlib::Inflate.inflate(file_data.strip.unpack("m")[0])]
+        header = YAML.load(header_yaml)
+        header.each do |entry|
+          file_data = ''
+          self.read_until_dashes(gem_file) do |line|
+            file_data << line
+          end
+          yield [entry, Zlib::Inflate.inflate(file_data.strip.unpack("m")[0])]
+        end
+      rescue Exception => e
+        raise FormatException.new("Error reading files from gem")
       end
     end
   end

@@ -32,7 +32,7 @@ module Gem
     #
     def install(force=false, to_dir=Gem.dir)
       require 'fileutils'
-      format = Gem::Format.from_file(@gem)
+      format = Gem::Format.from_file_by_path(@gem)
       unless force
          format.spec.dependencies.each do |dep_gem|
            require_gem(dep_gem)

@@ -90,13 +90,11 @@ module Gem
           errors[gem_name] << ErrorData.new(spec_path, "Spec file doesn't exist for installed gem")
         end
     
-        # Need to factor read_files_from_gem out into some kind of
-        # Gem file reader/writer class probably.
         begin
           require 'rubygems/format.rb'
           verify_gem_file(gem_path)
           File.open(gem_path) do |file|
-            format = Gem::Format.from_file(gem_path)
+            format = Gem::Format.from_file_by_path(gem_path)
             format.file_entries.each do |entry, data|
               # Found this file.  Delete it from list
 	      installed_files.delete entry['path']

@@ -1,6 +1,6 @@
 require 'pathname'
-
 require 'rbconfig'
+require 'rubygems/format'
 
 module Gem
 

@@ -6,7 +6,9 @@
 <body>
 <h1> <nowiki>RubyGems</nowiki> Developer Documentation Area </h1>
 <h2> Creating the Gem Specification </h2>
-<p>The GemSpecification is a Ruby script that, when run, creates a Gem::Specification object.  In a normal Ruby library development you would have your Ruby files laid out something like this:</p>
+<p>The GemSpecification is a Ruby script that, when run, creates a 
+Gem::Specification object.  In a normal Ruby library development 
+you would have your Ruby files laid out something like this:</p>
 <pre> <project dir>/
    <i>install.rb or setup.rb</i>
    lib/
@@ -18,13 +20,19 @@
      test_mylib.rb ...etc
    
 </pre>
-<p>Although not a requirement, it is recommended to place your Gem Specification object definition in a .gemspec file at the root of your project directory:</p>
+<p>Although not a requirement, it is recommended to place your Gem 
+Specification object definition in a .gemspec file at the root 
+of your project directory:</p>
 <pre> <project dir>/
    mylib.gemspec</pre>
-<p>To create a GemSpecification file, it easiest to start with the example here and then modify it for you own needs (per the GemSpecification format detail).  </p>
+<p>To create a GemSpecification file, it easiest to start with the 
+example here and then modify it for you own needs (per the 
+GemSpecification format detail).  </p>
 <p>The following .gemspec file is from the jabber4r project</p>
 <pre> require 'rubygems'</pre>
-<p>Currently it is necessary to require the 'rubygems' file.  It may be under a new version of Ruby that the rubygems file will be required by default, thus obviating the need for this require.</p>
+<p>Currently it is necessary to require the 'rubygems' file.  
+It may be under a new version of Ruby that the rubygems file 
+will be required by default, thus obviating the need for this require.</p>
 <pre> spec = Gem::Specification.new do |s|
    s.add_dependency('rubyjdwp', '= 0.0.4')
    s.name = 'jabber4r'
@@ -40,12 +48,40 @@
    s.rubyforge_project = "jabber4r"
    s.homepage = "<a class="external" href="http://jabber4r.rubyforge.org"">http://jabber4r.rubyforge.org"</a>
  end</pre>
-<p>The next bit of code allows the .gemspec file to be executed as Ruby code, and load the previously defined spec.  This code is not strictly needed, but is a simple thing to include to enable the .gemspec to generate the .gem file directly.  The alternative is to use the <b>gem -b <foo.gemspec></b> command to build the gem.</p>
+<p>The next bit of code allows the .gemspec file to be executed 
+as Ruby code, and load the previously defined spec.  This code 
+is not strictly needed, but is a simple thing to include to 
+enable the .gemspec to generate the .gem file directly.  The 
+alternative is to use the <b>gem -b <foo.gemspec></b> command 
+to build the gem.</p>
 <pre> if $0==__FILE__
    Gem::Builder.new(spec).build
  end</pre>
 
 <h2> Creating the Gem </h2>
+<p>Now that you've got a Gem specification built, you're almost done.  Gem::Builder.new(spec).build actually creates the gem file for you.  So, al lyou have to do is:</p>
+<pre> $ ruby jabber4r.gemspec
+    Successfully built RubyGem
+    Name: jabber4r
+    Version: 0.0.4
+    File: jabber4r-0.0.4.gem</pre>
+<pre> $ ls *gem
+ jabber4r-0.0.4.gem </pre>
+<p>You'll notice if you open this gem file in an editor, that it too is a ruby source file.   It contains all of the files listed in the gem specification, compressed and encoded as a YAML document.  This means gem files are only slightly larger than equivalent tar/gzipped files.</p>
+<p>You can now install the gem on a system with either of the following two commands:</p>
+<pre> $ ruby jabber4r-0.0.4.gem
+</pre>
+<p>Successfully installed jabber4r version 0.0.4</p>
+<p>...or...
+</p>
+<pre> 
+ $ gem -i jabber4-0.0.4.gem
+</pre>
+<p>Successfully installed RedCloth version 0.0.4</p>
+
 <h2> Distributing the Gem </h2>
+<p>Gems can be distributed like any file.  However, there is a mechanism builtin into the Gem command that enables automatic download and installation of gems and their dependencies.  To take advantage of this distribution mechanism, you have to upload your gem files to a host that is listed in the Gem sources package.  </p>
+<p>By default, the primary source is <a class="external" href="http://gems.rubyforge.org.">http://gems.rubyforge.org.</a>  For now (the Alpha release), if you would like to include a gem in the primary distribution site, please email Rich Kilmer (rich<at>infoether.com) or Chad Fowler (chad<at>chadfowler.com).  </p>
+<p>We plan shortly after the first alpha release to integrate the primary gem source with RubyForge's file release tool, so for RubyForge users, gem distribution will be as simple as releasing your file on RubyForge.
 </body>
 </html>

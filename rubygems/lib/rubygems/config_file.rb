@@ -8,11 +8,12 @@ module Gem
 
     def initialize(arg_list)
       handle_arguments(arg_list)
-      if File.exist?(config_file_name)
-	@hash = open(config_file_name) { |f| YAML.load(f) }
-      else
-	@hash = {}
+      begin
+        @hash = open(config_file_name) {|f| YAML.load(f) }
+      rescue ArgumentError
+        warn "Failed to load #{config_file_name}"
       end
+      @hash ||= {}
     end
 
     def config_file_name

@@ -1,5 +1,14 @@
+Alpha release 1:
+---------------
 Bring gem_server.cgi back in sync with gem_server.  
 
 Abstract the logic from gem_server*, so we don't have to worry about keeping them in sync
 
+Some kind of search functionality for searching the gem repository
 
+
+After alpha:
+------------
+RPM, Mac OS dmg/pkg, Debian pkg conversion
+
+raa-install conversion

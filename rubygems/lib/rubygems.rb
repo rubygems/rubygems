@@ -344,7 +344,7 @@ module Gem
   end
 end
 
-require 'rubygems/cache'
+require 'rubygems/source_index'
 require 'rubygems/specification'
 require 'rubygems/version'
 require 'rubygems/loadpath_manager'

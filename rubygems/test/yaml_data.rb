@@ -1,6 +1,6 @@
 require 'yaml'
 require 'rubygems'
-require 'rubygems/cache'
+require 'rubygems/source_index'
 
 YAML_DATA = <<EOS
 --- !ruby/object:Gem::Cache

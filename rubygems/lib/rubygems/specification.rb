@@ -437,6 +437,7 @@ module Gem
     def normalize
       if @extra_rdoc_files
 	@extra_rdoc_files.uniq!
+	@files ||= []
 	@files.concat(@extra_rdoc_files) if @files
       end
       @files.uniq! if @files

@@ -106,7 +106,7 @@ module Gem
         gem = Gem::Dependency.new(gem, version_requirements)
       end
       
-      matches = Gem.cache.search(gem.name, gem.version_requirements)
+      matches = Gem.cache.search("^#{gem.name}$", gem.version_requirements)
       if matches.size==0
         matches = Gem.cache.search(gem.name)
         if matches.size==0

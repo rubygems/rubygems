@@ -1,5 +1,11 @@
 2004-12-29  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/gem_commands.rb (Gem::InstallCommand::execute):
+	Changed the RemoteInstaller to take an options hash rather than
+	individual options.  This will leave the interface more resilient
+	to changes as more options are added
+	(e.g. --install_dependencies).
+
 	* lib/rubygems/specification.rb (Gem::Specification): Marked array
 	attributes explicitly.  This allows for explicit conversion to
 	arrays when assigned.

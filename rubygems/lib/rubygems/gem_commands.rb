@@ -203,11 +203,26 @@ module Gem
 
     def initialize
       super('uninstall', 'Uninstall a gem from the local repository', {:version=>"> 0"})
+      add_option('-a', '--[no-]all',
+	'Uninstall all matching versions'
+	) do |value, options|
+        options[:all] = value
+      end
+      add_option('-i', '--[no-]ignore-dependency',
+	'Ignore dependency requirements while uninstalling'
+	) do |value, options|
+        options[:ignore] = value
+      end
+      add_option('-x', '--[no-]executables',
+	'Uninstall applicable executables without confirmation'
+	) do |value, options|
+        options[:executables] = value
+      end
       add_version_option('uninstall')
     end
 
     def defaults_str
-      "--version '> 0'"
+      "--version '> 0' --no-force"
     end
     
     def usage
@@ -221,7 +236,7 @@ module Gem
     def execute
       gem_name = get_one_gem_name
       say "Attempting to uninstall gem '#{gem_name}'"
-      Gem::Uninstaller.new(gem_name, options[:version]).uninstall
+      Gem::Uninstaller.new(gem_name, options).uninstall
     end
   end      
 
@@ -506,7 +521,7 @@ module Gem
         {
           :generate_rdoc => true, 
           :force => false, 
-          :test => false, 
+          :test => false,
           :install_dir => Gem.dir
         })
       add_install_update_options
@@ -569,6 +584,99 @@ module Gem
       else
         say "Gems: [#{gems_to_update.uniq.sort.collect{|g| g.to_s}.join(', ')}] updated"
       end
+    end
+
+    def do_rubygems_update
+      # Need to clear out the argument list because the
+      # update_rubygems script expects to handle command line
+      # argument.
+      ARGV.clear		
+      require_gem 'rubygems-update'
+      load 'update_rubygems'  
+    end
+
+    def which_to_update(highest_installed_gems, remote_gemspecs)
+      result = []
+      highest_installed_gems.each do |l_name, l_spec|
+        highest_remote_gem =
+          remote_gemspecs.select  { |spec| spec.name == l_name }.
+                          sort_by { |spec| spec.version }.
+                          last
+        if highest_remote_gem and l_spec.version < highest_remote_gem.version
+          result << l_name
+        end
+      end
+      result
+    end
+
+    def command_manager
+      Gem::CommandManager.instance
+    end
+  end
+
+  ####################################################################
+  class CleanupCommand < Command
+    def initialize
+      super(
+        'cleanup',
+        'Cleanup old versions of installed gems in the local repository',
+        {
+          :force => false, 
+          :test => false, 
+          :install_dir => Gem.dir
+        })
+      add_option('-d', '--dryrun', "") do |value, options|
+        options[:dryrun] = true
+      end
+    end
+    
+    def defaults_str
+      "--no-dryrun"
+    end
+
+    def arguments
+      "GEMNAME(s)   name of gem(s) to cleanup"
+    end
+
+    def execute
+      say "Cleaning up installed gems..."
+      srcindex = Gem::SourceIndex.from_installed_gems
+      primary_gems = {}
+      srcindex.each do |name, spec|
+        if primary_gems[spec.name].nil? or primary_gems[spec.name].version < spec.version
+          primary_gems[spec.name] = spec
+        end
+      end
+      if ! options[:args].empty?
+	gems_to_cleanup = options[:args]
+      else
+	gems_to_cleanup = []
+	srcindex.each do |name, spec|
+	  if primary_gems[spec.name].version != spec.version
+	    gems_to_cleanup << spec
+	  end
+	end
+      end
+      uninstall_command = command_manager['uninstall']
+      deplist = DependencyList.new
+      gems_to_cleanup.uniq.each do |spec| deplist.add(spec) end
+      deplist.dependency_order.each do |spec|
+	if options[:dryrun]
+	  say "Dry Run Mode: Would uninstall #{spec.full_name}"
+	else
+	  say "Attempting uninstall on #{spec.full_name}"
+	  options[:args] = [spec.name]
+	  options[:version] = "= #{spec.version}"
+	  options[:executables] = true
+	  uninstall_command.merge_options(options)
+	  begin
+	    uninstall_command.execute
+	  rescue Gem::DependencyRemovalException => ex
+	    say "Unable to uninstall #{spec.full_name} ... continuing with remaining gems"
+	  end
+	end
+      end
+      say "Gem repository has been cleaned"
     end
 
     def do_rubygems_update

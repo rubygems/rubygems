@@ -33,7 +33,7 @@ module Gem
     # Returns: an array of Gem::Specification objects, one for each gem installed. 
     #
     def install(package_name, version_requirement = "> 0.0.0", force=false, install_dir=Gem.dir, install_stub=true)
-      unless version_requirement.respond_to?(:version)
+      unless version_requirement.respond_to?(:satisfied_by?)
         version_requirement = Version::Requirement.new(version_requirement)
       end
       installed_gems = []
@@ -137,7 +137,7 @@ module Gem
         answer = ask("Install required dependency #{dependency.name}? [Yn] ")
         if(answer =~ /^y/i || answer =~ /^[^a-zA-Z0-9]$/) then
           remote_installer = RemoteInstaller.new
-          installed_gems << remote_installer.install(dependency.name, dependency.version_requirement)
+          installed_gems << remote_installer.install(dependency.name, dependency.version_requirements)
         else
           raise DependencyError.new("Required dependency #{dependency.name} not installed")
         end

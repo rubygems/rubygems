@@ -53,6 +53,9 @@ module Gem
           @rdoc_args.concat(DocManager.configured_args)
           r = RDoc::RDoc.new
           r.document(['--op', rdoc_dir] + @rdoc_args.flatten + source_dirs)
+	 #TODO: Why is this throwing an error?
+          #ri = RDoc::RDoc.new
+          #ri.document(['-R'] + source_dirs)
         ensure
           Dir.chdir(current_dir)
         end

@@ -4,6 +4,9 @@
 	Default value of [] wasn't set, resulting in an attempt to call
 	#empty? on nil.
 
+	* lib/rubygems/gem_commands.rb: Unit tests appear to be working now.
+	Still more testing to do.
+
 	* lib/rubygems/remote_installer.rb, lib/rubygems/installer.rb: Fixed
 	minor bugs in default selections for questions asked during 
 	installation and uninstallation

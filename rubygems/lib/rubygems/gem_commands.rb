@@ -169,6 +169,7 @@ module Gem
       if options[:test]
         installed_gems.each do |spec|
           gem_spec = Gem::Cache.from_installed_gems.search(spec.name, spec.version.version).first
+          $: << File.join(Gem.dir, "gems", gem_spec.full_name)
             # XXX: why do we need this gem_spec when we've already got 'spec'?
           test_files = gem_spec.test_files
           if test_files.empty?
@@ -185,7 +186,7 @@ module Gem
           result = Test::Unit::UI::Console::TestRunner.run(suite, Test::Unit::UI::SILENT)
           unless result.passed?
             answer = ask(result.to_s + "...keep Gem? [Y/n] ")
-            unless answer =~ /^y/i then
+            unless (answer =~ /^y/i || answer =~ /^[^a-zA-Z0-9]*$/) then
               Gem::Uninstaller.new(spec.name, spec.version.version).uninstall
             end
           end

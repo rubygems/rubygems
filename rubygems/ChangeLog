@@ -1,3 +1,12 @@
+2004-12-31  Jim Weirich  <jim@weirichhouse.org>
+
+	* Rakefile: Switch to standard Rake test tasks.
+
+	* lib/rubygems/remote_installer.rb
+	(Gem::RemoteSourceFetcher::read_data): Added a retry to try a
+	lower case gem name if the open failed.  This fixes a problem
+	where case differences are preventing some gems from installing.
+
 2004-12-29  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/gem_commands.rb (Gem::InstallCommand::execute):

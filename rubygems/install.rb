@@ -70,6 +70,7 @@ def install_rb(srcdir = nil)
   ## Install the 'bin' files.
 
   bindir = CONFIG['bindir']
+  ruby_install_name = CONFIG['ruby_install_name']
   is_windows_platform = CONFIG["arch"] =~ /dos|win32/i
   Find.find('bin') do |f|
     next if f =~ /\bCVS\b/
@@ -79,7 +80,12 @@ def install_rb(srcdir = nil)
     next if File.basename(f) =~ /^\./
     source = f
     target = File.join(bindir, File.basename(f))
-    File::install(source, target, 0755, true)
+    #File::install(source, target, 0755, true)
+    File.open(target, "w") do |script|
+      sourcelines = File.read(source)
+      sourcelines.gsub!(/\#!\/usr\/bin\/env ruby/, "\#!#{bindir}/#{ruby_install_name}")
+      script.write sourcelines 
+    end
     if is_windows_platform
       File.open(target+".cmd", "w") do |file|
         file.puts "@ruby #{target} %1 %2 %3 %4 %5 %6 %7 %8 %9"

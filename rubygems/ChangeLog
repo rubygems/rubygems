@@ -1,3 +1,7 @@
+2004-07-19  Chad Fowler     <chad@chadfowler.com>
+        * install.rb: Shebang line should point to the ruby version used during
+	installation.
+
 2004-07-19  Assaph Mehr     <assaph@avaya.com>
 	* lib/rubygems/command.rb, packages/sources/lib/sources.rb: Added
 	command-line-configurable sources.

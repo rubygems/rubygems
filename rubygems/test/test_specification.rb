@@ -71,6 +71,18 @@ class TestSimpleSpecification < Test::Unit::TestCase
     assert_equal ['bin/app'], @spec.executables
   end
 
+  def test_add_bindir_to_list_of_files
+    @spec.bindir = 'apps'
+    @spec.executable = 'app'
+    assert_equal ['apps/app'], @spec.files
+  end
+
+  def test_no_bindir_in_list_of_files
+    @spec.bindir = nil
+    @spec.executable = 'bin/app'
+    assert_equal ['bin/app'], @spec.files
+  end
+
   def test_deprecated_attributes
     @spec.test_suite_file = 'test/suite.rb'
     assert_equal ['test/suite.rb'], @spec.test_files

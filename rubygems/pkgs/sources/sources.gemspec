@@ -1,6 +1,6 @@
 module Gem
   def self.sources_spec
-    spec = Gem::Specification.new do |s|
+    @sources_spec ||= Gem::Specification.new do |s|
       s.name = 'sources'
       s.version = "0.0.1"
       s.platform = Gem::Platform::RUBY

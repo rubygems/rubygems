@@ -1,5 +1,11 @@
 #!/usr/bin/env ruby
+$:.unshift '~/rubygems'
+
 require 'optparse'
+require 'rubygems'
+require 'zlib'
+
+Gem.manage_gems
 
 options = {}
 ARGV.options do |opts|
@@ -19,17 +25,34 @@ else
   end
 end
 
-File.open(File.join(directory, "yaml"), "w") do |file|
-  i = nil
-  file.puts "--- !ruby/object:Gem::Cache"
-  file.puts "gems:" 
+class Indexer
 
-  Dir.glob(File.join(directory, "gems", "*.gem")).each do |filename|
-    data = File.read(filename)
-    i = data.index(/\!ruby\/object\:Gem\:\:Specification/)
-    data = data[i...data.index(/---/, i+3)]
-    gem = File.basename(filename)[0..-5]
-    file.puts "  #{gem}: #{data.gsub(/\n/, "\n    ")}"
+  def initialize(directory)
+    @directory = directory
+  end
+
+  def gem_file_list
+    Dir.glob(File.join(@directory, "gems", "*.gem"))
+  end
+
+  def build_index
+    File.open(File.join(@directory, "yaml"), "w") do |file|
+      file.puts "--- !ruby/object:Gem::Cache"
+      file.puts "gems:"
+      gem_file_list.each do |gemfile|
+        spec = Gem::Format.from_file_by_path(gemfile).spec
+        file.puts "  #{spec.full_name}: #{spec.to_yaml.gsub(/\n/, "\n    ")[4..-1]}"
+      end
+    end
+    build_compressed_index
+  end
+  
+  def build_compressed_index
+    File.open(File.join(@directory, "yaml.Z"), "w") do |file|
+      file.write(Zlib::Deflate.deflate(File.read(File.join(@directory, "yaml"))))
+    end
   end
 end
 
+
+Indexer.new(directory).build_index

@@ -64,7 +64,7 @@ end
 #
 module Gem
 
-  class Exception < ::Exception; end
+  class Exception < RuntimeError; end
 
   RubyGemsVersion = "0.6"
   RubyGemsPackageVersion = RubyGemsVersion + ".1"

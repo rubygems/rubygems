@@ -53,9 +53,8 @@ class TestCommand < Test::Unit::TestCase
   def test_invode_with_bad_options
     use_ui(MockGemUi.new) do
       @cmd.when_invoked do true end
-      assert_raise(MockGemUi::TermError) { @cmd.invoke('-zzz') }
-      assert_match /invalid option:/, ui.error
-      assert ui.terminated?, "Should have terminated app"
+      ex = assert_raise(OptionParser::InvalidOption) { @cmd.invoke('-zzz') }
+      assert_match /invalid option:/, ex.message
     end
   end
 

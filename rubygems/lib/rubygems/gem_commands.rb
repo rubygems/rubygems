@@ -90,7 +90,7 @@ module Gem
     end
     
     def usage
-      "install gemname"
+      "gem install gemname"
     end
 
     def arguments
@@ -126,19 +126,10 @@ module Gem
       end
       
       if remote? && installed_gems.nil?
-	begin
-	  say "Attempting remote installation of '#{gem_name}'"
-	  installer = Gem::RemoteInstaller.new(options[:http_proxy])
-	  installed_gems = installer.install(gem_name, options[:version], options[:force], options[:install_dir], options[:stub])
-	  say "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}" if installed_gems
-	rescue RemoteError => e
-	  say " -> Remote installation can't proceed: #{e.message}"
-	rescue GemNotFoundException => e
-	  say "Remote gem file not found: #{gem_name}"
-	rescue => e
-	  alert_error "Error remotely installing gem #{gem_name}: #{e.message + e.backtrace.join("\n")}"
-	  return
-	end
+	say "Attempting remote installation of '#{gem_name}'"
+	installer = Gem::RemoteInstaller.new(options[:http_proxy])
+	installed_gems = installer.install(gem_name, options[:version], options[:force], options[:install_dir], options[:stub])
+	say "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}" if installed_gems
       end
       
       unless installed_gems
@@ -192,7 +183,7 @@ module Gem
     end
     
     def usage
-      "uninstall gemname"
+      "gem uninstall gemname"
     end
 
     def arguments
@@ -204,12 +195,7 @@ module Gem
     def execute
       gem_name = get_one_gem_name
       say "Attempting to uninstall gem '#{gem_name}'"
-      begin
-	Gem::Uninstaller.new(gem_name, options[:version]).uninstall
-      rescue => e
-	alert_error e.message
-      end
-      true
+      Gem::Uninstaller.new(gem_name, options[:version]).uninstall
     end
   end      
 
@@ -273,7 +259,7 @@ module Gem
     end
 
     def usage
-      "build gemspec_file"
+      "gem build gemspec_file"
     end
 
     def arguments
@@ -492,7 +478,7 @@ module Gem
     end
 
     def usage
-      "environment [args]"
+      "gem environment [args]"
     end
 
     def arguments
@@ -590,7 +576,7 @@ module Gem
     end
 
     def usage
-      "help [arg]"
+      "gem help [arg]"
     end
 
     def arguments

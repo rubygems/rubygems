@@ -1,4 +1,6 @@
 module Gem
+
+  class DocumentError < Gem::Exception; end
   
   class DocManager
   
@@ -37,7 +39,8 @@ module Gem
       begin
         require 'rdoc/rdoc'
       rescue LoadError => e
-        raise "ERROR: RDoc documentation generator not installed!\n       To install RDoc:  gem --remote-install=rdoc"
+        raise DocumentError,
+	  "ERROR: RDoc documentation generator not installed!\n       To install RDoc:  gem --remote-install=rdoc"
       end
       say "Installing RDoc documentation for #{@spec.full_name}..."
       say "WARNING: Generating RDoc on .gem that may not have RDoc." unless @spec.has_rdoc?
@@ -51,13 +54,11 @@ module Gem
           @rdoc_args = rdoc_args_from_spec(@rdoc_args)
           r = RDoc::RDoc.new
           r.document(['--op', rdoc_dir, '--template', 'kilmer'] + @rdoc_args.flatten + source_dirs)
-        rescue RDoc::RDocError => e
-          alert_error e.message
         ensure
           Dir.chdir(current_dir)
         end
       rescue RDoc::RDocError => e
-        alert_error e.message
+	raise DocumentError, e.message
       end
     end
     

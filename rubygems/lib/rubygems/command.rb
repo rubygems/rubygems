@@ -58,14 +58,9 @@ module Gem
     private
 
     def handle_options(args)
-      begin
-	@options = @defaults.clone
-	parser.parse!(args)
-	@options[:args] = args
-      rescue OptionParser::ParseError => err
-	alert_error(err.message)
-	terminate_interaction!
-      end
+      @options = @defaults.clone
+      parser.parse!(args)
+      @options[:args] = args
     end
     
     # Create on demand parser.

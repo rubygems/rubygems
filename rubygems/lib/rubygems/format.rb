@@ -3,7 +3,7 @@ module Gem
   ##
   # Used to raise parsing and loading errors
   #
-  class FormatException < Exception
+  class FormatException < Gem::Exception
     attr_accessor :file_path
     #I go back and forth on whether or not to create custom exception classes
   end

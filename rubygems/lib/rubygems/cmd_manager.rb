@@ -7,7 +7,7 @@ module Gem
 
   # Signals that local installation will not proceed, not that it has been tried and
   # failed.  TODO: better name.
-  class LocalInstallationError < StandardError; end
+  class LocalInstallationError < Gem::Exception; end
 
   # Signals that a remote operation cannot be conducted, probably due to not being
   # connected (or just not finding host).
@@ -15,7 +15,7 @@ module Gem
   # TODO: create a method that tests connection to the preferred gems server.  All code
   # dealing with remote operations will want this.  Failure in that method should raise
   # this error.
-  class RemoteError < StandardError; end
+  class RemoteError < Gem::Exception; end
 
   class CommandManager
     include UserInteraction
@@ -57,10 +57,6 @@ module Gem
 	args.shift
       end
       process_args(args)
-    rescue Gem::Exception => ex
-      alert_error "While executing gem ... (#{ex.class})\n    #{ex.to_s}"
-      puts ex.backtrace if backtrace
-      terminate_interaction(1)
     rescue StandardError => ex
       alert_error "While executing gem ... (#{ex.class})\n    #{ex.to_s}"
       puts ex.backtrace if backtrace

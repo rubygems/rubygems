@@ -392,7 +392,7 @@ TEXT
         satlist.each do |sat|
           msg << "\t#{sat.name}-#{sat.version}"
         end
-        answer = alert(:warning, msg.join("\n"), "Uninstall anyway? [Y/n]")
+        answer = alert_warning(msg.join("\n"), "Uninstall anyway? [Y/n]")
         if(answer !~ /^y/i) then
           return true
         end

@@ -1,3 +1,46 @@
+2004-06-27  Jim Weirich  <jim@weirichhouse.org>
+
+	* scripts/gemdoc.data Removed extraneous <em> marker. 
+
+	* lib/rubygems/specification.rb
+	(Gem::Specification::satisfies_requirement): HA!  Caught another
+	version_requirement vs version_requirements error.  (I really
+	regret the decision to change that name.)
+
+	* lib/rubygems/installer.rb (Gem::Uninstaller::has_dependents):
+	Changed call to alert to alert_warning.
+
+	* lib/rubygems/gem_commands.rb (Gem::UninstallCommand::execute):
+	Again, remove local error handling to allow the error to perculate
+	up the chain to the top level.
+
+	* lib/rubygems/doc_manager.rb (Gem::DocManager::generate_rdoc):
+	Removed one level of exception handling.  Only catching RDocErrors
+	at the outermost level.  And instead of reporting the error and
+	swallowing it, I convert it to a Gem::DocumentError (with the same
+	error message).  This is for better error handling.
+
+	* lib/rubygems/command.rb (Gem::Command::handle_options): Removed
+	exception handling from handle_options.  This allows errors to be
+	handled at the top level.  Makes for a more consistent error
+	interface.
+
+	* lib/rubygems/doc_manager.rb (Gem::DocumentError): Added
+	DocumentError to wrap RDocErrors (which derive from Exception
+	... yuck).
+
+	* lib/rubygems/cmd_manager.rb (Gem::RemoteError): RemoteError and
+	LocalInstallationError are now Gem::Exceptions (rather than
+	StandardErrors).  
+
+	* lib/rubygems.rb (Gem::Exception): Changed base of Gem::Exception
+	to RuntimeError (was ::Exception).  Apps using gem as a library
+	would have to catch Gem::Exceptions explicitly (yuck), or catch
+	Exceptions generically.  Catching Exceptions will catch
+	EVERYTHING, including things like SystemExit.  By makeing
+	Gem::Exception a RuntimeError, apps can catch RuntimeError or even
+	StandardError.
+
 2004-06-26  Jim Weirich  <jim@weirichhouse.org>
 
 	* test/functional.rb (FunctionalTest::test_all_command_helps):

@@ -362,7 +362,7 @@ All gems up to date
 
 ----
 
-<em><b>Note to updaters:</b> <em>This page is generated via the gemdoc.rb script available in the RubyGems CVS package.  The gemdoc script weaves together the text and output from the gem program into a single document.  Direct edits to this page are likely to get lost when the page is regenerated.  Notify someone on the developer list if you have changes for this page.</em>
+<b>Note to updaters:</b> <em>This page is generated via the gemdoc.rb script available in the RubyGems CVS package.  The gemdoc script weaves together the text and output from the gem program into a single document.  Direct edits to this page are likely to get lost when the page is regenerated.  Notify someone on the developer list if you have changes for this page.</em>
 
 Contributors: GavinSinclair, JimWeirich
 

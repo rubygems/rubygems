@@ -321,7 +321,7 @@ module Gem
     #
     def satisfies_requirement?(dependency)
       return @name==dependency.name && 
-        dependency.version_requirement.satisfied_by?(@version)
+        dependency.version_requirements.satisfied_by?(@version)
     end
     
     ##

@@ -170,7 +170,7 @@ module Gem
     def write_cache
       data = cache_data
       open(writable_file, "w") do |f|
-	f.puts data.to_yaml
+	f.puts Marshal.dump(data)
       end
     end
 
@@ -206,7 +206,17 @@ module Gem
     # Read the most current cache data.
     def read_cache
       @cache_file = select_cache_file
-      open(@cache_file) { |f| YAML.load(f) } || {}
+      begin
+	open(@cache_file) { |f| load_local_cache(f) } || {}
+      rescue StandardError => ex
+	{}
+      end
+    end
+
+    def load_local_cache(f)
+      Marshal.load(f)
+    rescue StandardError => ex
+      {}
     end
 
     # Select a writable cache file

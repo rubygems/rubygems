@@ -293,15 +293,11 @@ module Gem
       gemspec = get_one_gem_name
       if File.exist?(gemspec)
         say "Attempting to build gem spec '#{gemspec}'"
-        begin
-          specs = load_gemspecs(gemspec)
-          specs.each do |spec|
-            Gem::Builder.new(spec).build
-          end
-          return
-        rescue => err
-          alert_error "Unexpected error building gemspec #{gemspec}: #{err}\nDetails:\n#{err.backtrace}"
-        end
+	specs = load_gemspecs(gemspec)
+	specs.each do |spec|
+	  Gem::Builder.new(spec).build
+	end
+	return
       else
         alert_error "Gemspec file not found: #{gemspec}"
       end

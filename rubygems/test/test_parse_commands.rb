@@ -168,7 +168,7 @@ class TestParseCommands < Test::Unit::TestCase
     #check defaults
     @cmd_manager.process_args("update")
     assert_equal true, check_options[:stub]
-    assert_equal false, check_options[:generate_rdoc]
+    assert_equal true, check_options[:generate_rdoc]
     
     #check settings
     check_options = nil

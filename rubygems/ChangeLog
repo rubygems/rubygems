@@ -1,5 +1,15 @@
+2004-08-24  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
+	* lib/rubygems/installer.rb: Library stubs are now installed as per
+	  'library_stubs' gemspec attribute.  A stub is (still) also installed
+	  for the 'autorequire' attribute.  All library stub handling
+	  refactored into two new classes: LibraryStubs and LibraryStub.
+
+	* test/test_parse_commands.rb: as per 2004-08-17 below, the 'update'
+	  command takes --rdoc as its default now.
+
 2004-08-22  Rich Kilmer <rich@infoether.com>
-        * lib/rubygems/install.rb: fixed stub generation...i added the version 
+        * lib/rubygems/installer.rb: fixed stub generation...i added the version 
           stuff that only app stubs should have...sorry!
 
 2004-08-17  Gavin Sinclair  <gsinclair@soyabean.com.au>

@@ -14,9 +14,15 @@ class FunctionalTest < Test::Unit::TestCase
     @ruby_options = "-I#{lib_path} -I."
   end
 
-  def test_gem_help
-    gem '--help-options'
+  def test_gem_help_options
+    gem 'help options'
     assert_match(/Usage:/, @out)
+    assert_status
+  end
+
+  def test_gem_help_commands
+    gem 'help commands'
+    assert_match(/gem install/, @out)
     assert_status
   end
 
@@ -26,14 +32,34 @@ class FunctionalTest < Test::Unit::TestCase
     assert_status 1
   end
 
-  def test_info
-    gem 'rubygems-info'
+  def test_environment
+    gem 'environment'
     
     assert_match /VERSION:\s+\d+\.\d+$/, @out
     assert_match /INSTALLATION DIRECTORY:/, @out
     assert_match /GEM PATH:/, @out
     assert_match /REMOTE SOURCES:/, @out
     assert_status
+  end
+
+  def test_env_version
+    gem 'environment version'
+    assert_match /\d+\.\d+$/, @out
+  end
+
+  def test_env_gemdir
+    gem 'environment gemdir'
+    assert_equal Gem.dir, @out.chomp
+  end
+
+  def test_env_gempath
+    gem 'environment gempath'
+    assert_equal Gem.path, @out.chomp.split("\n")
+  end
+
+  def test_env_remotesources
+    gem 'environment remotesources'
+    assert_equal Gem::RemoteInstaller.new.get_cache_sources, @out.chomp.split("\n")
   end
 
   ONEDIR = "test/data/one"
@@ -44,7 +70,7 @@ class FunctionalTest < Test::Unit::TestCase
     FileUtils.rm_f ONEGEM
     # TODO: Remove -n
     Dir.chdir(ONEDIR) do
-      gem "build -n one.gemspec"
+      gem "build one.gemspec"
     end
     assert File.exist?(ONEGEM), "Gem file (#{ONEGEM}) should exist"
     assert_match /Successfully built RubyGem/, @out

@@ -2,30 +2,62 @@
 
 module Gem
 
+  class CommandLineError < Gem::Exception; end
+
+  module CommandAids
+    def get_one_gem_name(options)
+      args = options[:args]
+      if args.nil? || args.size == 0
+	fail Gem::CommandLineError,
+	  "Please specify a gem name on the command line (e.g. gem build GEMNAME)"
+      end
+      if args.size > 1
+	fail Gem::CommandLineError,
+	  "Too many gem names (#{args.join(', ')}), please specify only one"
+      end
+      args.first
+    end
+
+    def begins?(long, short)
+      return false if short.nil?
+      long[0, short.length] == short
+    end
+  end
+
   ####################################################################
-  class BaseCommand < Command
+  class HelpCommand < Command
+    include CommandAids
+
     def initialize
-      super('base')
+      super('help', "Provide help on the gem command")
       add_option('-h', '--help [COMMAND]', 'Get help on COMMAND') do |value, options|
 	options[:help] = value.nil? ? true : value
       end
-      add_option('--help-commands', 'List available commands') do |value, options|
+      add_option('--commands', 'List available commands') do |value, options|
 	options[:help_commands] = true
       end
-      add_option('--help-options', 'List available options on base gem command') do |value, options|
+      add_option('--options', 'List available options on base gem command') do |value, options|
 	options[:help_options] = true
       end
-      add_option('--help-examples', 'Show examples of using the gem command') do |value, options|
+      add_option('--examples', 'Show examples of using the gem command') do |value, options|
 	options[:help_examples] = true
-      end
-      add_option('--rubygems-info', 'List RubyGems information') do |value, options|
-	options[:rubygems_info] = true
       end
     end
 
     def execute(options)
-      if options[:help]==true
-	say Gem::CommandManager::HELP
+      arg = options[:args][0]
+      if options[:help_commands] || begins?("commands", arg)
+	out = "GEM commands are:\n"
+	indent = command_manager.command_names.collect {|n| n.size}.max+4
+	command_manager.command_names.each do |cmd_name|
+	  out << "  gem #{cmd_name}#{" "*(indent - cmd_name.size)}#{command_manager[cmd_name].summary}\n"
+	end
+	say out
+	return true
+      elsif options[:help_options] || begins?("options", arg)
+	return false
+      elsif options[:help_examples] || begins?("examples", arg)
+	say Gem::EXAMPLES
 	return true
       elsif options[:help]
 	command = command_manager[options[:help]]
@@ -37,17 +69,8 @@ module Gem
 	  alert_error "Unknown command #{options[:help]}.  Try gem --help-commands"
 	  return true
 	end
-      elsif options[:help_commands]
-	say "GEM commands are:"
-	indent = command_manager.command_names.collect {|n| n.size}.max+4
-	command_manager.command_names.each do |cmd_name|
-	  say "  #{cmd_name}#{" "*(indent - cmd_name.size)}#{command_manager[cmd_name].summary}"
-	end
-	return true
-      elsif options[:help_options]
-	return false
-      elsif options[:help_examples]
-	say EXAMPLES
+      else
+	say Gem::HELP
 	return true
       end
     end
@@ -55,11 +78,12 @@ module Gem
     def command_manager
       Gem::CommandManager.instance
     end
-    
   end
 
   ####################################################################
   class InstallCommand < Command
+    include CommandAids
+
     def initialize
       super(
 	'install',
@@ -108,19 +132,11 @@ module Gem
     
     def execute(options)
       return false if options[:help]
-      args = options[:args]
-      if args.nil? || args.size == 0
-	alert_error "Please specify a gem name on the command line (e.g. gem install GEMNAME)"
-	return true
-      end
-      if args.size > 1
-	alert_error "Too many gem names (#{args.join(', ')}), please specify only one"
-	return true
-      end
+      gem_name = get_one_gem_name(options)
       if options[:domain] == :both || options[:domain] == :local
 	begin
 	  say "Attempting local installation of '#{options[:name]}'"
-	  filename = args.first
+	  filename = gem_name
 	  filename += ".gem" unless File.exist?(filename)
 	  unless File.exist?(filename)
 	    if options[:domain] == :both
@@ -137,29 +153,29 @@ module Gem
 	rescue LocalInstallationError => e
 	  say " -> Local installation can't proceed: #{e.message}"
 	rescue => e
-	  alert_error "Error installing gem #{args.first}[.gem]: #{e.message}"
+	  alert_error "Error installing gem #{gem_name}[.gem]: #{e.message}"
 	  return true # If a local installation actually fails, we don't try remote.
 	end
       end
       
       if options[:domain] == :remote || options[:domain]==:both && installed_gems.nil?
 	begin
-	  say "Attempting remote installation of '#{args.first}'"
+	  say "Attempting remote installation of '#{gem_name}'"
 	  installer = Gem::RemoteInstaller.new(options[:http_proxy])
-	  installed_gems = installer.install(args.first, options[:version], options[:force], options[:install_dir], options[:stub])
+	  installed_gems = installer.install(gem_name, options[:version], options[:force], options[:install_dir], options[:stub])
 	  say "Successfully installed #{installed_gems[0].name}, version #{installed_gems[0].version}" if installed_gems
 	rescue RemoteError => e
 	  say " -> Remote installation can't proceed: #{e.message}"
 	rescue GemNotFoundException => e
-	  say "Remote gem file not found: #{args.first}"
+	  say "Remote gem file not found: #{gem_name}"
 	rescue => e
-	  alert_error "Error remotely installing gem #{args.first}: #{e.message + e.backtrace.join("\n")}"
+	  alert_error "Error remotely installing gem #{gem_name}: #{e.message + e.backtrace.join("\n")}"
 	  return true
 	end
       end
       
       unless installed_gems
-	alert_error "Could not install a local or remote copy of the gem: #{args.first}"
+	alert_error "Could not install a local or remote copy of the gem: #{gem_name}"
 	return true
       end
       
@@ -200,11 +216,10 @@ module Gem
   
   ####################################################################
   class UninstallCommand < Command
+    include CommandAids
+
     def initialize
       super('uninstall', 'Uninstall a gem from the local repository', {:version=>"> 0"})
-      add_option('-n', '--name NAME', 'Name of gem to uninstall') do |value, options|
-	options[:name] = value
-      end
       add_option('-v', '--version VERSION', 'Specify version of gem to install') do |value, options|
 	options[:version] = value
       end
@@ -212,9 +227,10 @@ module Gem
     
     def execute(options)
       return false if options[:help]
-      say "Attempting to uninstall gem '#{options[:name]}'"
+      gem_name = get_one_gem_name(options)
+      say "Attempting to uninstall gem '#{gem_name}'"
       begin
-	Gem::Uninstaller.new(options[:name], options[:version]).uninstall
+	Gem::Uninstaller.new(gem_name, options[:version]).uninstall
       rescue => e
 	alert_error e.message
       end
@@ -277,16 +293,15 @@ module Gem
 
   ####################################################################
   class BuildCommand < Command
+    include CommandAids
+
     def initialize
       super('build', 'Build a gem from a gemspec')
-      add_option('-n', '--name GEMSPEC', 'Build a gem file from its spec') do |value, options|
-	options[:name] = value
-      end
     end
     
     def execute(options)
       return false if options[:help]
-      gemspec = options[:name]
+      gemspec = get_one_gem_name(options)
       if File.exist?(gemspec)
 	say "Attempting to build gem spec '#{gemspec}'"
 	begin
@@ -469,20 +484,38 @@ module Gem
   end
 
   ####################################################################
-  class RubyGemsInfoCommand < Command
+  class EnvironmentCommand < Command
+    include CommandAids
+
     def initialize
-      super('rubygems-info', 'RubyGems Environmental Information')
+      super('environment', 'RubyGems Environmental Information')
     end
 
     def execute(options)
-      out = "Rubygems:\n"
-      out << "  - VERSION: #{Gem::RubyGemsVersion}\n"
-      out << "  - INSTALLATION DIRECTORY: #{Gem.dir}\n"
-      out << "  - GEM PATH:\n"
-      Gem.path.collect { |p| out << "     - #{p}\n" }
-      out << "  - REMOTE SOURCES:\n"
-      Gem::RemoteInstaller.new.get_cache_sources.collect do |s|
-	out << "     - #{s}\n"
+      out = ''
+      arg = options[:args][0]
+      if begins?("version", arg)
+	out = Gem::RubyGemsVersion.to_s
+      elsif begins?("gemdir", arg)
+	out = Gem.dir
+      elsif begins?("gempath", arg)
+	Gem.path.collect { |p| out << "#{p}\n" }
+      elsif begins?("remotesources", arg)
+	Gem::RemoteInstaller.new.get_cache_sources.collect do |s|
+	  out << "#{s}\n"
+	end
+      elsif arg
+	fail Gem::CommandLineError, "Unknown enviroment option [#{arg}]"
+      else
+	out = "Rubygems Environment:\n"
+	out << "  - VERSION: #{Gem::RubyGemsVersion}\n"
+	out << "  - INSTALLATION DIRECTORY: #{Gem.dir}\n"
+	out << "  - GEM PATH:\n"
+	Gem.path.collect { |p| out << "     - #{p}\n" }
+	out << "  - REMOTE SOURCES:\n"
+	Gem::RemoteInstaller.new.get_cache_sources.collect do |s|
+	  out << "     - #{s}\n"
+	end
       end
       say out
       true
@@ -506,9 +539,8 @@ end # module
 ## Documentation Constants
 
 module Gem
-  class CommandManager
 
-    HELP = %{
+  HELP = %{
     RubyGems is a sophisticated package manager for Ruby.  This is a
     basic help message containing pointers to more information.
     
@@ -519,8 +551,11 @@ module Gem
         (specify --help-commands for a list of commands)
       where command-options-and-arguments depend on the specific command
         (specify --help followed by a command name for command-specific help)
-      Specify --help-examples for a list of examples
-      Specify --help to receive this message
+
+   Use:
+      gem help examples           for a list of examples
+      gem help commands           for a list of commands
+      gem help                    for this message
 
     For detailed online information, go to http://rubygems.rubyforge.org.
     The following documents, among others, can be found in the
@@ -532,26 +567,26 @@ module Gem
            configuration files, and more.
     }.gsub(/^    /, "")
 
-    EXAMPLES = %{
+  EXAMPLES = %{
     Some examples of 'gem' usage.
 
     * Install 'rake', either from local directory or remote server:
     
-        gem install --name rake
+        gem install rake
 
     * Install 'rake', only from remote server:
 
-        gem install --name rake --remote
+        gem install rake --remote
 
     * Install 'rake' from remote server, and run unit tests,
-      generate RDocs, and install library stub:
+      generate RDocs, and not install a library stub:
 
-        gem install --remote --name rake --test --gen-rdoc --install-stub
+        gem install --remote rake --test --gen-rdoc --no-install-stub
 
     * Install 'rake', but only version 0.3.1, even if dependencies
       are not met, and into a specific directory:
 
-        gem install --name rake --version 0.3.1 --force --install-dir $HOME/.gems
+        gem install rake --version 0.3.1 --force --install-dir $HOME/.gems
 
     * Query local and remote gems beginning with 'D':
 
@@ -561,6 +596,9 @@ module Gem
 
         gem query --local
         gem query --remote
+     or
+        gem list --local
+        gem list --remote
 
     * Search for local and remote gems including the string 'log':
 
@@ -572,16 +610,15 @@ module Gem
     
     * Uninstall 'rake':
 
-        gem uninstall --name rake
+        gem uninstall rake
 
     * See information about RubyGems:
     
-        gem --rubygems-info
+        gem rubygems-info
 
     * See summary of all options:
     
         gem --help-options
     }.gsub(/^    /, "")
     
-  end
 end

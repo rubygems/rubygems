@@ -82,8 +82,8 @@ class TestParseCommands < Test::Unit::TestCase
 
     #check settings
     check_options = nil
-    @cmd_manager.process_args("uninstall --name foobar --version 3.0")
-    assert_equal "foobar", check_options[:name]
+    @cmd_manager.process_args("uninstall foobar --version 3.0")
+    assert_equal "foobar", check_options[:args].first
     assert_equal "3.0", check_options[:version]
   end
 
@@ -121,8 +121,8 @@ class TestParseCommands < Test::Unit::TestCase
     
     #check settings
     check_options = nil
-    @cmd_manager.process_args("build --name foobar.rb")
-    assert_equal 'foobar.rb', check_options[:name]
+    @cmd_manager.process_args("build foobar.rb")
+    assert_equal 'foobar.rb', check_options[:args].first
   end
   
   def test_parsing_query_options

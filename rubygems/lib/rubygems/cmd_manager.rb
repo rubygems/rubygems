@@ -26,8 +26,7 @@ module Gem
 
     def initialize
       @commands = {}
-      @base_command = BaseCommand.new
-      @base_command.program_name = "gem [command]"
+      register_command HelpCommand.new
       register_command InstallCommand.new
       register_command UninstallCommand.new
       register_command CheckCommand.new
@@ -35,7 +34,7 @@ module Gem
       register_command QueryCommand.new
       register_command ListCommand.new
       register_command UpdateCommand.new
-      register_command RubyGemsInfoCommand.new
+      register_command EnvironmentCommand.new
       register_command VersionCommand.new
     end
     
@@ -64,10 +63,10 @@ module Gem
     def process_args(args)
       args = args.to_str.split(/\s/) if args.respond_to?(:to_str)
       if args.size==0
-        @base_command.invoke(*args)
+	self['help'].invoke(*args)
 	terminate_interaction(1)
       elsif args[0]=~/--/
-        @base_command.invoke(*args)
+	self['help'].invoke(*args)
       else
         cmd_name = args.shift
         cmd = find_command(cmd_name)

@@ -36,9 +36,9 @@ module Gem
     ##
     # These attributes are optional
     #
-    attr_accessor :autorequire, :author, :email, :homepage, :description, :files
+    attr_accessor :autorequire, :author, :email, :homepage, :description, :files, :docs
     attr_accessor :rubyforge_project
-    
+    attr_writer :has_rdoc
     attr_reader :dependencies, :requirements
     
     ##
@@ -89,6 +89,15 @@ module Gem
     #
     def loaded?
       @loaded
+    end
+    
+    ##
+    # Returns if the Gem source is rdoc documented
+    #
+    # return:: [Boolean] true if Gem has rdoc documentation
+    #
+    def has_rdoc?
+      @has_rdoc
     end
     
     ##
@@ -186,6 +195,7 @@ module Gem
       result << '@email' if @email
       result << '@homepage' if @homepage
       result << '@rubyforge_project' if @rubyforge_project
+      result << '@has_rdoc' if @has_rdoc
       result << '@requirements' if requirements.size > 0
       result << '@dependencies' if dependencies.size > 0
       result << '@description' if @description
@@ -193,7 +203,7 @@ module Gem
     end
 
     def escape(input)
-input
+      input
       #return unless input.respond_to?(:gsub)
       #input.gsub(/'/, "\\'")
     end 
@@ -204,6 +214,7 @@ input
       result << "s.name = '#{escape(name)}'\n"
       result << "s.version = '#{escape(version)}'\n"
       result << "s.platform = '#{escape(platform)}'\n" if @platform
+      result << "s.has_rdoc = #{has_rdoc?}" if has_rdoc?
       result << "s.summary = '#{escape(summary)}'\n"
       if requirements.size>0
         result << "s.requirements.concat [" + (requirements.collect {|req| '"'+escape(req)+'"'}).join(', ') + "]\n"

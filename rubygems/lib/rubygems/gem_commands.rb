@@ -564,7 +564,11 @@ module Gem
 	say "Updating version of RubyGems"
 	do_rubygems_update
       end
-      say "All gems up to date"
+      if(options[:system]) then
+        say "RubyGems system software updated"
+      else
+        say "Gems: [#{gems_to_update.uniq.sort.collect{|g| g.to_s}.join(', ')}] updated"
+      end
     end
 
     def do_rubygems_update

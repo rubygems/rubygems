@@ -2,8 +2,9 @@
 	* lib/rubygems/config_file.rb: don't warn about not being able to
 	find config file.
 	* lib/rubygems/doc_manager.rb: (for DHH) don't install rdoc docs for
-	gems that have explicitly set has_rdoc to false (not setting it
-	at all doesn't raise an error)
+	* lib/rubygems/gem_commands.rb: Print which gems are updated on 'gem
+	update'.  If --system is used, report that the rubygems system
+	software has been updated.
 
 2005-02-27  Jim Weirich  <jim@weirichhouse.org>
 

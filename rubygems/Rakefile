@@ -14,7 +14,9 @@ CLOBBER.include(
   "test/data/one/one-*0.0.1.gem",
   "test/temp",
   'test/data/gemhome',
-  'scripts/*.wiki'
+  'scripts/*.wiki',
+  'data__',
+  'html'
   )
 
 task :default => [:test]
@@ -35,6 +37,24 @@ desc "Run All Tests"
 task :alltests do
   test_name = ENV['TEST'] || 'test/{test,functional}*.rb'
   ruby %{-Ilib -rscripts/runtest -e 'run_tests("#{test_name}", true)'}
+end
+
+desc "Run the tests for a build"
+task :build_tests do
+  html_dir = ENV['TESTRESULTS'] || 'html/tests'
+  ruby %{-Ilib scripts/buildtests.rb #{html_dir}}
+  open("#{html_dir}/summary.html") do |inf|
+    open("#{html_dir}/summary.new", "w") do |outf|
+      inf.each do |line|
+	if line =~ /td align/
+	  line = "    <td align=\"left\">#{Time.now}</td><td align=\"right\">"
+	end
+	outf.puts line
+      end
+    end
+  end
+  mv "#{html_dir}/summary.html", "#{html_dir}/summary.old"
+  mv "#{html_dir}/summary.new", "#{html_dir}/summary.html"      
 end
 
 # Shortcuts for test targets

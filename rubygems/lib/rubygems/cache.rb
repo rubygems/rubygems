@@ -1,8 +1,8 @@
 module Gem
 
   ##
-  # The cache class is used to hold all the specifications
-  # in a provided location ($GEM_PATH) for iteration/searching.
+  # The cache class is used to hold all the specifications in a
+  # provided location (Gem.path) for iteration/searching.
   #
   class Cache
     

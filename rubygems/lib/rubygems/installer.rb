@@ -1,8 +1,8 @@
 module Gem
 
   ##
-  # The installer class processes RubyGem .gem files and installs
-  # the files contained in the .gem into the $GEM_PATH.
+  # The installer class processes RubyGem .gem files and installs the
+  # files contained in the .gem into the Gem.path.
   #
   class Installer
   
@@ -16,11 +16,12 @@ module Gem
     end
     
     ##
-    # Installs the gem in the $GEM_PATH.  This will fail (unless force=true)
-    # if a Gem has a requirement on another Gem that is not installed.  The
-    # installation will install in the following structure:
+    # Installs the gem in the Gem.path.  This will fail (unless
+    # force=true) if a Gem has a requirement on another Gem that is
+    # not installed.  The installation will install in the following
+    # structure:
     #
-    #  $GEM_PATH/
+    #  Gem.path/
     #      specifications/<gem-version>.gemspec #=> the extracted YAML gemspec
     #      gems/<gem-version>/... #=> the extracted Gem files
     #      cache/<gem-version>.gem #=> a cached copy of the installed Gem

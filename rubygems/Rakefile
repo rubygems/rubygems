@@ -4,25 +4,32 @@ require 'rubygems'
 require 'rake/clean'
 require 'rake/testtask'
 
-CLOBBER.include( "testdata/one/one-0.0.1.gem" )
+CLOBBER.include( "testdata/one/one-0.0.1.gem", "test/temp" )
 
 task :default => [:test]
 
-Rake::TestTask.new do |t|
-  t.verbose = true
+desc "Run unit tests"
+task :test do
+  ruby %{-Ilib -rscripts/runtest -e 'run_tests("test/test*.rb", true)'}
 end
 
-Rake::TestTask.new(:functional) do |t|
-  t.verbose = true
-  t.pattern = 'test/functional.rb'
+desc "Run Functional Tests"
+task :functional do
+  ruby %{-Ilib -rscripts/runtest -e 'run_tests("test/functional.rb", true)'}
 end
 
-Rake::TestTask.new(:alltests) do |t|
-  t.verbose = true
-  t.pattern = 'test/{test,functional}*.rb'
+desc "Run All Tests"
+task :alltests do
+  ruby %{-Ilib -rscripts/runtest -e 'run_tests("test/{test,functional}*.rb", true)'}
 end
 
-desc "Shortcuts for running tests"
+
+# Shortcuts for test targets
 task :ft => [:functional]
 task :ut => [:test]
 task :at => [:alltests]
+
+task :gemtest do
+  ruby %{-Ilib -rscripts/runtest -e 'run_tests("test/test_gempaths.rb", true)'}
+end
+

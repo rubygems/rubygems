@@ -18,22 +18,22 @@ class TestFormat < Test::Unit::TestCase
   end
 
   def test_garbled_gem_throws_format_exception
-    assert_raise(Gem::FormatException) {
+    assert_raises(Gem::FormatException) {
       # subtly bogus input
       Gem::Format.from_io(StringIO.new(@simple_gem.upcase))
     }
-    assert_raise(Gem::FormatException) {
+    assert_raises(Gem::FormatException) {
       # Totally bogus input
       Gem::Format.from_io(StringIO.new(@simple_gem.reverse))
     }
-    assert_raise(Gem::FormatException) {
+    assert_raises(Gem::FormatException) {
       # This was intentionally screws up YAML parsing.
       Gem::Format.from_io(StringIO.new(@simple_gem.gsub(/:/, "boom")))
     }
   end
 
   def test_passing_nonexistent_files_throws_sensible_exception
-    assert_raise(Gem::FormatException) {
+    assert_raises(Gem::FormatException) {
       Gem::Format.from_file_by_path("/this/path/almost/definitely/will/not/exist")
     }
   end

@@ -55,56 +55,114 @@ module Kernel
   end
 end
 
+
 ##
 # Main module to hold all RubyGem classes/modules.
 #
 module Gem
 
   RubyGemsVersion = "1.0"
+  DIRECTORIES = ['cache', 'doc', 'gems', 'specifications']
+  
   @@cache = nil  
   
-  ##
-  # Returns an Cache of specifications that are in the $GEM_PATH
-  #
-  # return:: [Gem::Cache] cache of Gem::Specifications
-  #
-  def self.cache
-    @@cache ||= Cache.from_installed_gems
-    @@cache.refresh!
-  end
-  
-  ##
-  # Return the directory that Gems are installed in
-  #
-  # return:: [String] The directory path
-  #
-  def self.dir
-    return $GEM_PATH.first if defined?($GEM_PATH)
-    require 'rbconfig'
-    dir = File.join(Config::CONFIG['libdir'], 'ruby', 'gems', Config::CONFIG['ruby_version'])
-    unless File.exist?(File.join(dir, 'specifications'))
-      require 'fileutils'
-      FileUtils.mkdir_p(File.join(dir, 'specifications'))
+  class << self
+    ##
+    # Returns an Cache of specifications that are in the Gem.path
+    #
+    # return:: [Gem::Cache] cache of Gem::Specifications
+    #
+    def cache
+      @@cache ||= Cache.from_installed_gems
+      @@cache.refresh!
     end
-    unless File.exist?(File.join(dir, 'cache'))
-      require 'fileutils'
-      FileUtils.mkdir_p(File.join(dir, 'cache'))
+    
+    ##
+    # The directory path where Gems are to be installed.
+    #
+    # return:: [String] The directory path
+    #
+    def dir
+      set_home(ENV['GEM_HOME'] || default_dir) unless @gem_home
+      @gem_home
     end
-    unless File.exist?(File.join(dir, 'gems'))
-      require 'fileutils'
-      FileUtils.mkdir_p(File.join(dir, 'gems'))
+    
+    ##
+    # List of directory paths to search for Gems.
+    #
+    # return:: [List<String>] List of directory paths.
+    #
+    def path
+      set_paths(ENV['RUBY_GEMS']) unless @gem_path
+      @gem_path
     end
-    dir
+    
+    ##
+    # Reset the +dir+ and +path+ values.  The next time +dir+ or +path+
+    # is requested, the values will be calculated from scratch.  This is
+    # mainly used by the unit tests to provide test isolation.
+    #
+    def clear_paths
+      @gem_home = nil
+      @gem_path = nil
+    end
+    
+    ##
+    # Use the +home+ and (optional) +paths+ values for +dir+ and +path+.
+    # Used mainly by the unit tests to provide environment isolation.
+    #
+    def use_paths(home, paths=[])
+      set_home(home)
+      set_paths(paths.join(File::PATH_SEPARATOR))
+    end
+    
+    private
+    
+    # Set the Gem home directory (as reported by +dir+).
+    def set_home(home)
+      @gem_home = home
+      ensure_gem_subdirectories(@gem_home)
+    end
+    
+    # Set the Gem search path (as reported by +path+).
+    def set_paths(gpaths)
+      if gpaths
+	@gem_path = gpaths.split(File::PATH_SEPARATOR)
+	@gem_path << Gem.dir
+      else
+	@gem_path = [Gem.dir]
+      end      
+      @gem_path.uniq!
+      @gem_path.each do |gp| check_gem_subdirectories(gp) end
+    end
+    
+    # Default home directory path to be used if an alternate value is
+    # not specified in the environment.
+    def default_dir
+      require 'rbconfig'
+      File.join(Config::CONFIG['libdir'], 'ruby', 'gems', Config::CONFIG['ruby_version'])
+    end
+    
+    # Ensure the named Gem directory contains all the proper subdirectories.
+    def ensure_gem_subdirectories(gemdir)
+      DIRECTORIES.each do |filename|
+	fn = File.join(gemdir, filename)
+	unless File.exists?(fn)
+	  require 'fileutils'
+	  FileUtils.mkdir_p(fn)
+	end
+      end
+    end
+    
+    # Check that the given Gem directory contains all proper
+    # subdirectories.  Print a warning to $stderr if not.
+    def check_gem_subdirectories(gemdir)
+      DIRECTORIES.each do |filename|
+	fn = File.join(gemdir, filename)
+	$stderr.puts "WARNING: RUBY_GEMS path #{path} does not exist" unless File.exist?(fn)
+      end
+    end
   end
-end
-
-$GEM_PATH=[Gem.dir]
-if ENV['RUBY_GEMS']
-  env_paths = ENV['RUBY_GEMS'].split(File::PATH_SEPARATOR)
-  env_paths.each do |path|
-    puts "WARNING: RUBY_GEMS path #{path} does not exist" unless File.exist?(path)
-  end
-  $GEM_PATH = env_paths.concat $GEM_PATH
 end
 
 require 'rubygems/cache'

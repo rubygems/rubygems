@@ -27,7 +27,7 @@ module Gem
         end
         def full_name
           @full_name ||=
-            if @platform == "ruby"
+            if @platform.nil? || @platform == "ruby" || @platform == ""
               "#{@name}-#{@version}"
             else
               "#{@name}-#{@version}-#{@platform}"

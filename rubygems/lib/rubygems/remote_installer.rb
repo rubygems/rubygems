@@ -109,6 +109,9 @@ module Gem
           end
         end
       end
+      if specs_n_sources.size == 0
+        raise GemNotFoundException.new("Could not find #{gem_name} (#{version_requirement}) in the repository")
+      end
       # bad code: specs_n_sources.sort! { |a, b| a[0].version <=> b[0].version }.reverse! 
       specs_n_sources = specs_n_sources.sort_by { |x| x[0].version }.reverse
       if specs_n_sources.reject { |item| item[0].platform.nil? || item[0].platform==Platform::RUBY }.size == 0

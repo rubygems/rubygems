@@ -3,6 +3,8 @@
          class to read).  Will deploy after testing on RubyForge.
        * lib/rubygems/gem_commands.rb: generate rdoc by default on installs (I think this is
          just good practice.
+       * lib/rubygems/remote_install.rb: raise an exception if dependent gems cannot be found 
+         on remote_install
 
 2004-08-11  Chad Fowler <chad@chadfowler.com>
        * lib/rubygems/gem_commands.rb: query is now case insensitive (as it used to be)

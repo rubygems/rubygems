@@ -159,7 +159,7 @@ module Gem
       if first_line =~ /^#!/ then
         first_line.sub(/\A\#!\s*\S*ruby\S*/, "#!" + File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])) #Thanks RPA
       else
-        File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])
+        "\#!#{File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])}"
       end
     end
 

@@ -109,7 +109,8 @@ module Gem
           end
         end
       end
-      specs_n_sources.sort! { |a, b| a[0].version <=> b[0].version }.reverse! 
+      # bad code: specs_n_sources.sort! { |a, b| a[0].version <=> b[0].version }.reverse! 
+      specs_n_sources = specs_n_sources.sort_by { |x| x[0].version }.reverse
       if specs_n_sources.reject { |item| item[0].platform.nil? || item[0].platform==Platform::RUBY }.size == 0
         # only non-binary gems...return latest
         return specs_n_sources.first

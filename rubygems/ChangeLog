@@ -1,3 +1,10 @@
+2004-07-14  Rich Kilmer     <rich@infoether.com>
+        * added old_format.rb which is used in the (hack) in format.rb 
+          to detect the older version of a gem, and if present, switches 
+          to that class instead.
+        * fixed the ARGV passing in bin/gem to ingore args past -- which
+          are used for passing params to source gems (extconf.rb)
+
 2004-07-13  Chad Fowler	    <chad@chadfowler.com>
 	* lib/rubygems/installer.rb, lib/rubygems/package.rb, 
 	lib/rubygems/format.rb, test/test_package.rb: Added Mauricio 

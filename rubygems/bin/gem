@@ -3,4 +3,9 @@
 require 'rubygems'
 Gem.manage_gems
 
-Gem::GemRunner.new.run(ARGV)
+# We need to preserve the original ARGV to use for passing gem options
+# to source gems.  If there is a -- in the line, strip all options after
+# it...its for the source building process.
+args = !ARGV.include?("--") ? ARGV.clone : ARGV[0...ARGV.index("--")]
+
+Gem::GemRunner.new.run(args)

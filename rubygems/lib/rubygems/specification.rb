@@ -119,7 +119,7 @@ module Gem
       attr_writer(name)
       class_eval %{
         def #{name}
-          @#{name} ||= _copy_of(@@default_value[:#{name}])
+          @#{name} ||= copy_of(@@default_value[:#{name}])
         end
       }
     end
@@ -313,7 +313,7 @@ module Gem
       # _copy_ of the default so each specification instance has its own empty
       # arrays, etc.
       @@attributes.each do |name, default|
-        self.send "#{name}=", _copy_of(default)
+        self.send "#{name}=", copy_of(default)
       end
       @loaded = false
       @@list << self
@@ -423,7 +423,7 @@ module Gem
       @@attributes.each do |name, default|
         next if name == :dependencies
         current_value = self.send(name)
-        result << "  s.#{name} = #{_ruby_code(current_value)}\n" unless current_value == default
+        result << "  s.#{name} = #{ruby_code(current_value)}\n" unless current_value == default
       end
       @dependencies.each do |dep|
         version_reqs_param = dep.requirements_list.inspect
@@ -483,7 +483,7 @@ module Gem
         gem.dependencies.each do |dep|
           if self.satisfies_requirement?(dep) then
             sats = []
-            _find_all_satisfiers(dep) do |sat|
+            find_all_satisfiers(dep) do |sat|
               sats << sat
             end
             out << [gem, dep, sats]
@@ -495,7 +495,7 @@ module Gem
 
     private
 
-    def _find_all_satisfiers(dep)
+    def find_all_satisfiers(dep)
       Gem.cache.each do |name,gem|
         if(gem.satisfies_requirement?(dep)) then
           yield gem
@@ -504,7 +504,7 @@ module Gem
     end
 
     # Duplicate an object unless it's an immediate value.
-    def self._copy_of(obj)
+    def self.copy_of(obj)
       case obj
       when Numeric, Symbol, true, false, nil then obj
       else obj.dup
@@ -512,19 +512,19 @@ module Gem
     end
 
     # Duplicate an object unless it's an immediate value.
-    def _copy_of(obj)
-      self.class._copy_of(obj)
+    def copy_of(obj)
+      self.class.copy_of(obj)
     end
 
     # Return a string containing a Ruby code representation of the given object.
-    def _ruby_code(obj)
+    def ruby_code(obj)
       case obj
       when String           then '%q{' + obj + '}'
       when Array            then obj.inspect
       when Gem::Version     then obj.to_s.inspect
       when Date, Time       then '%q{' + obj.strftime('%Y-%m-%d') + '}'
       when true, false, nil then obj.inspect
-      else raise Exception, "_ruby_code case not handled: #{obj.class}"
+      else raise Exception, "ruby_code case not handled: #{obj.class}"
       end
     end
 

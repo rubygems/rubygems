@@ -177,7 +177,7 @@ module Gem
     def check_gem_subdirectories(gemdir)
       DIRECTORIES.each do |filename|
         fn = File.join(gemdir, filename)
-        alert_warning("GEM_PATH path #{path} does not exist") unless File.exist?(fn)
+        puts "WARNING: GEM_PATH path #{path} does not exist" unless File.exist?(fn)
       end
     end
   end

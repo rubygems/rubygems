@@ -3,6 +3,9 @@
 	* lib/rubygems/specification.rb: Fixed small bug in the previous spec
 	change commit.
 
+	* lib/rubygems/cache.rb: Prevent catastrophic failure if a gemspec is 
+	corrupted.
+
 	* lib/rubygems/installer.rb: Fixed (in not a great way) a bug that would
 	cause a zero-length spec file to be written to the gem specifications
 	directory.

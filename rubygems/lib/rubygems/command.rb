@@ -28,7 +28,10 @@ module Gem
       "#{program_name}"
     end
 
+    # Override this method to provide details of the arguments a command takes.  It should
+    # return a left-justified string, one argument per line.
     def arguments
+      ""
     end
 
     def invoke(*args)
@@ -48,6 +51,10 @@ module Gem
     
     def add_option(*args, &handler)
       @option_list << [args, handler]
+    end
+
+    def remove_option(name)
+      @option_list.reject! { |args, handler| args.any? { |x| x =~ /^#{name}/ } }
     end
     
     def merge_options(new_options)
@@ -97,11 +104,20 @@ module Gem
       require 'optparse'
       @parser = OptionParser.new
       option_names = {}
+      @parser.separator("")
+      @parser.separator("  Options:")
       configure_options(@option_list, option_names)
       @parser.separator("")
       @parser.separator("  Common Options:")
       configure_options(Command.common_options, option_names)
-      arguments
+      @parser.separator("")
+      @parser.separator("  Arguments:")
+      arguments.split(/\n/).each do |arg_desc|
+        @parser.separator("    #{arg_desc}")
+      end
+      @parser.separator("")
+      @parser.separator("  Summary:")
+      @parser.separator("    #@summary")
     end
 
     def configure_options(option_list, option_names)

@@ -86,9 +86,17 @@ Rake::PackageTask.new("package") do |p|
     )
 end
 
-# Install task
+# Install RubyGems
 
 desc "Install RubyGems"
 task :install do
   ruby 'install.rb'
+end
+
+# Run 'gem' (using local bin and lib directories).
+
+desc "Run local 'gem'"
+task :gem do
+  ARGV.shift
+  exec "ruby -Ilib bin/gem #{ARGV.join(' ')}"
 end

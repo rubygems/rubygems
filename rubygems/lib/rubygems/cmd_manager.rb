@@ -33,6 +33,7 @@ module Gem
       register_command BuildCommand.new
       register_command QueryCommand.new
       register_command ListCommand.new
+      register_command SearchCommand.new
       register_command UpdateCommand.new
       register_command EnvironmentCommand.new
       register_command SpecificationCommand.new

@@ -1,5 +1,22 @@
 2004-07-04  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
+	* lib/rubygems/gem_commands.rb:
+	  - added 'list' and 'search' commands ('list' is no longer an alias
+	    for 'query').
+	  - modified return value from all 'arguments' methods (see command.rb)
+
+	* lib/rubygems/cmd_manager.rb: added 'search' command.
+
+	* lib/rubygems/command.rb:
+	    (Command#create_option_parser): enhanced the option parser for 'help'
+	                                    display
+	    (Command#remove_option): added (to support 'list' and 'search')
+
+	* Rakefile: added 'gem' target.  Runs "local" (not installed) command
+	  and libraries.
+
+2004-07-04  Gavin Sinclair  <gsinclair@soyabean.com.au>
+
 	* Rakefile: added 'install' target.
 
 	* lib/rubygems/cmd_manager.rb: code formatting.

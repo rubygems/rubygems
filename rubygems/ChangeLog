@@ -1,5 +1,16 @@
 2005-03-11  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/source_index.rb (Gem::SourceIndex::search): Changed
+	parameter name to gem_pattern to emphasize using Regex in search.
+	(Gem::SourceIndex::find_name): Added find_name to handle the
+	common case of searching for an exact match on the short name.
+
+	* lib/rubygems.rb (Gem::Exception::activate): Make sure that
+	activate more closely adheres to honoring the auto_require=>false
+	request.
+	(Gem::Exception::report_activate_error): Out of line error
+	reporting for activate.
+
 	* lib/rubygems/remote_installer.rb
 	(Gem::RemoteInstaller::find_dependencies_not_installed): Found
 	another location that was using require_gem with auto_require.

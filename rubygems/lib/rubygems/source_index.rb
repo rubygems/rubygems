@@ -89,11 +89,12 @@ module Gem
 
     def_delegators :@gems, :size, :length
 
+    # Find a gem by an exact match on the short name.
     def find_name(gem_name, version_requirement=Version::Requirement.new(">= 0"))
       search(/^#{gem_name}$/, version_requirement)
     end
 
-    # Search for a gem by name and optional version
+    # Search for a gem by short name pattern and optional version
     #
     # gem_name::
     #   [String] a partial for the (short) name of the gem, or

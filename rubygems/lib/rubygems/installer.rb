@@ -332,10 +332,10 @@ TEXT
         gem_name, index = choose_from_list("Select RubyGem to uninstall:", gem_list)
         if index == list.size
           remove_all(list.dup) 
-	  remove_executables(list.last)
+          remove_executables(list.last)
         elsif index >= 0 && index < list.size
           remove(list[index], list)
-	  remove_executables(list[index])
+          remove_executables(list[index])
         else
           say "Error: must enter a number [1-#{list.size+1}]"
         end
@@ -352,19 +352,27 @@ TEXT
     def remove_executables(gemspec)
       return if gemspec.nil?
       if(gemspec.executables.size > 0) then
-	answer = alert_warning("About to remove executables and scripts for: #{gemspec.executables.join(", ")}", "Proceed? [Y/n]")
-	if(answer =~/^n/i) then
-	  say "Executables and scripts will remain installed."
-	  return
-	else
-	  require 'rbconfig'
-	  bindir = Config::CONFIG['bindir']
-	  gemspec.executables.each do |exe_name|
-	    say "Removing #{exe_name}"
-	    File.unlink(File.join(bindir, exe_name)) rescue nil
-	    File.unlink(File.join(bindir, exe_name + ".cmd")) rescue nil
-	  end
-	end
+        list = Gem.cache.search(gemspec.name).delete_if {|spec| spec.version == gemspec.version}
+        executables = gemspec.executables.clone
+        list.each do |spec|
+          spec.executables.each do |exe_name|
+            executables.delete(exe_name)
+          end
+        end
+        return if executables.size == 0
+        answer = alert_warning("About to remove executables and scripts for: #{gemspec.executables.join(", ")}", "Proceed? [Y/n]")
+        if(answer =~/^n/i) then
+          say "Executables and scripts will remain installed."
+          return
+        else
+          require 'rbconfig'
+          bindir = Config::CONFIG['bindir']
+          gemspec.executables.each do |exe_name|
+            say "Removing #{exe_name}"
+            File.unlink(File.join(bindir, exe_name)) rescue nil
+            File.unlink(File.join(bindir, exe_name + ".cmd")) rescue nil
+          end
+        end
       end
     end
     

@@ -5,8 +5,13 @@
          an initial parameter conforming to _VERSION_ to be passed
          to select a prior version of the library (this initial 
          parameter, if present, is shifted off of ARGV).
+
        * lib/rubygems/version.rb correct? is now a class method on
          Version enabling Gem::Version.correct?(...)
+       
+       * lib/rubygems/install.rb make it so uninstalling a gem will
+         not remove executables if another version of that gem is 
+         installed and needs those executables
 
 2004-07-26  Jim Weirich  <jim@tardis>
 

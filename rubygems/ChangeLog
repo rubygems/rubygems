@@ -1,3 +1,9 @@
+2005-03-24  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/remote_installer.rb
+	(Gem::RemoteInstaller::find_dependencies_not_installed): Fixed to
+	reload source index before attempting to detect dependencies.
+
 2005-03-23  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/remote_installer.rb

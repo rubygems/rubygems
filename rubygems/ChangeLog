@@ -1,10 +1,35 @@
+2004-05-31  Jim Weirich  <jweirich@one.net>
+
+	* lib/rubygems/version.rb (Gem::Dependency): Dependency attribute
+	renamed to version_requirements (made plural).
+	(Gem::Version::bump): Added bump to implement pessimistic
+	operator.
+	(Gem::Version::Requirement): Added pessimistic operator to list of
+	operators. Operators now implemented using lambda.
+
+	* lib/rubygems.rb (Kernel::require_gem): require_gem now takes an
+	array of requirement strings.
+
+	* lib/rubygems/version.rb (Gem::Version::Requirement::initialize):
+	Simplified initialization by making parse a bit smarter.
+	(Gem::Version::Requirement::satisfied_by): Simplified by using
+	all?
+	(Gem::Version::Requirement::satisfy): Added explicit one
+	requirement satisfy test.
+	(Gem::Version::Requirement::parse): parse now returns a two
+	element string array (operator and version string).  We don't
+	bother converting to an integer array during parsing.
+
 2004-05-31 18:38 chadfowler
 
-	* gemspec now supports #rdoc_options, to which you can append strings that will be passed to rdoc as additional options.
+	* gemspec now supports #rdoc_options, to which you can append
+	strings that will be passed to rdoc as additional options.
 
 2004-05-08 21:57  chadfowler
 
-	* Using Gem::RubyGemsVersion to match the release number.  If we need to use this as an internal version format specifier in the future, we can use the Gem::Version semantics.
+	* Using Gem::RubyGemsVersion to match the release number.  If we
+	need to use this as an internal version format specifier in the
+	future, we can use the Gem::Version semantics.
 
 2004-05-30 14:33 gsinclair
 

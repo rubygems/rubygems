@@ -14,9 +14,11 @@ CLOBBER.include(
   "test/data/one/one-*0.0.1.gem",
   "test/temp",
   'test/data/gemhome',
+  'test/data/*.gem',
   'scripts/*.wiki',
   'data__',
-  'html'
+  'html',
+  'pkgs/sources/sources*.gem'
   )
 
 task :default => [:test]

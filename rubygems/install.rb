@@ -26,6 +26,7 @@ def install_rb(srcdir = nil)
     next unless FileTest.file?(f)
     next if (f = f[libdir.length+1..-1]) == nil
     next if (/CVS$/ =~ File.dirname(f))
+    next if File.basename(f) =~ /^\./
     paths.push f
     dirs |= [File.dirname(f)]
   end
@@ -54,6 +55,7 @@ def install_rb(srcdir = nil)
     next if f =~ /\bCVS\b/
     next if FileTest.directory?(f)
     next if f =~ /\.rb$/
+    next if File.basename(f) =~ /^\./
     source = f
     target = File.join(bindir, File.basename(f))
     File::install(source, target, 0755, true)

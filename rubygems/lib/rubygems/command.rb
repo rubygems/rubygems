@@ -78,6 +78,10 @@ module Gem
 
     private
 
+    def command_manager
+      Gem::CommandManager.instance
+    end
+
     def handle_options(args)
       args = add_extra_args(args)
       @options = @defaults.clone

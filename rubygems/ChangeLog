@@ -1,3 +1,9 @@
+2005-02-27  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/config_file.rb
+	(Gem::ConfigFile::default_config_file_name): Fixed bug in finding
+	home directory for the .gemrc file.
+
 2005-02-27  Chad Fowler  <chad@chadfowler.com>
 
 	* Released 0.8.6

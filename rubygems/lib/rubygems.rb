@@ -254,7 +254,12 @@ module Gem
     # Default home directory path to be used if an alternate value is
     # not specified in the environment.
     def default_dir
-      require 'rbconfig'
+      rbconfig = Dir.glob("{#{($LOAD_PATH).join(',')}}/rbconfig.rb").first
+      if rbconfig
+        module_eval File.read(rbconfig)
+      else
+        require 'rbconfig'
+      end
       File.join(Config::CONFIG['libdir'], 'ruby', 'gems', Config::CONFIG['ruby_version'])
     end
     

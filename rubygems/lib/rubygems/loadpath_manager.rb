@@ -30,7 +30,7 @@ module Gem
             if @platform == "ruby"
               "#{@name}-#{@version}"
             else
-              "#{@name}-#{@version}-#{platform}"
+              "#{@name}-#{@version}-#{@platform}"
             end
         end
         def method_missing(method, *args)

@@ -35,7 +35,7 @@ def table_of_contents
   out.gsub(/^\s+(\w+)/) {
     cmd_name = $1
     "  [http://rubygems.rubyforge.org/wiki/wiki.pl?GemReference##{cmd_name} -]  #{cmd_name}"
-  }
+  }.gsub(/RubyGems/, '<nowiki>RubyGems</nowiki>')
 end
 
 while line = gets

@@ -80,8 +80,7 @@ def install_rb(srcdir = nil)
     next if File.basename(f) =~ /^\./
     source = f
     target = File.join(bindir, File.basename(f))
-    #File::install(source, target, 0755, true)
-    File.open(target, "w") do |script|
+    File.open(target, "w", 0755) do |script|
       sourcelines = File.read(source)
       sourcelines.gsub!(/\#!\/usr\/bin\/env ruby/, "\#!#{bindir}/#{ruby_install_name}")
       script.write sourcelines 

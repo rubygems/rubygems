@@ -96,7 +96,7 @@ module Gem
         'Install a gem into the local repository',
         {
           :domain => :both, 
-          :generate_rdoc => false, 
+          :generate_rdoc => true, 
           :force => false, 
           :test => false, 
           :stub => true, 

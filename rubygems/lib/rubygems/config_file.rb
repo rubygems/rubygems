@@ -13,7 +13,9 @@ module Gem
       rescue ArgumentError
         warn "Failed to load #{config_file_name}"
       rescue Errno::ENOENT
-        warn "Config file #{config_file_name} does not exist"
+	# I really don't like this warning, since most people don't use
+	# the config file
+        #warn "Config file #{config_file_name} does not exist"
       end
       @hash ||= {}
     end

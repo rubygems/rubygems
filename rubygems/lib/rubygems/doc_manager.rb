@@ -35,6 +35,7 @@ module Gem
     end
     
     def generate_rdoc
+      return if @spec.has_rdoc == false
       require 'fileutils'
       Gem::FilePermissionError.new(@doc_dir) if File.exist?(@doc_dir) && !File.writable?(@doc_dir)
       FileUtils.mkdir_p @doc_dir unless File.exist?(@doc_dir)

@@ -199,7 +199,7 @@ module Gem
     attributes :autorequire, :default_executable
     attribute :bindir,                'bin'
     attribute :has_rdoc,               false
-    attribute :required_ruby_version, Gem::Version::Requirement.new("> 0.0.0")
+    attribute :required_ruby_version,  Gem::Version::Requirement.default
     attribute :platform,               Gem::Platform::RUBY
     attribute :files,                  []
     attribute :test_files,             []

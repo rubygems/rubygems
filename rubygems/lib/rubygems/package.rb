@@ -537,9 +537,9 @@ class TarInput
         if entry.is_directory?
             dest = File.join(destdir, entry.full_name)
             if file_class.dir? dest
-                @fileops.chmod entry.mode, dest
+                @fileops.chmod entry.mode, dest, :verbose=>false
             else
-                @fileops.mkdir_p(dest, :mode => entry.mode)
+                @fileops.mkdir_p(dest, :mode => entry.mode, :verbose=>false)
             end
             fsync_dir dest 
             fsync_dir File.join(dest, "..")
@@ -548,9 +548,9 @@ class TarInput
         # it's a file
         md5 = Digest::MD5.new if expected_md5sum
         destdir = File.join(destdir, File.dirname(entry.full_name))
-        @fileops.mkdir_p(destdir, :mode => 0755)
+        @fileops.mkdir_p(destdir, :mode => 0755, :verbose=>false)
         destfile = File.join(destdir, File.basename(entry.full_name))
-        @fileops.chmod 0600, destfile rescue nil  # Errno::ENOENT
+        @fileops.chmod(0600, destfile, :verbose=>false) rescue nil  # Errno::ENOENT
         file_class.open(destfile, "wb", entry.mode) do |os|
             loop do 
                 data = entry.read(4096)
@@ -560,7 +560,7 @@ class TarInput
             end
             os.fsync
         end
-        @fileops.chmod(entry.mode, destfile)
+        @fileops.chmod(entry.mode, destfile, :verbose=>false)
         fsync_dir File.dirname(destfile)
         fsync_dir File.join(File.dirname(destfile), "..")
         if expected_md5sum && expected_md5sum != md5.hexdigest

@@ -1,6 +1,7 @@
 require 'pathname'
 require 'rbconfig'
 require 'rubygems/format'
+require 'rubygems/dependency_list'
 
 module Gem
 
@@ -106,7 +107,8 @@ module Gem
     end
     
     ##
-    # Writes the .gemspec specification (in Ruby) to the supplied spec_path.
+    # Writes the .gemspec specification (in Ruby) to the supplied
+    # spec_path.
     #
     # spec:: [Gem::Specification] The Gem specification to output
     # spec_path:: [String] The location (path) to write the gemspec to
@@ -153,7 +155,12 @@ module Gem
 
     def shebang(spec, install_dir, file_name)
       first_line = ""
-      File.open(File.join(install_dir, "gems", spec.full_name, spec.bindir,file_name), "rb") do |file|
+      File.open(
+	File.join(install_dir,
+	  "gems",
+	  spec.full_name,
+	  spec.bindir,
+	  file_name), "rb") do |file|
         first_line = file.readlines("\n").first 
       end
       if first_line =~ /^#!/ then
@@ -191,13 +198,14 @@ TEXT
     end
 
     ##
-    # Creates a file in the site_ruby directory that acts as a stub for the gem.  Thus, if
-    # 'package' is installed as a gem, the user can just type <tt>require 'package'</tt> and
-    # the gem (latest version) will be loaded.  This is like a backwards compatibility so that
-    # gems and non-gems can interact.
+    # Creates a file in the site_ruby directory that acts as a stub
+    # for the gem.  Thus, if 'package' is installed as a gem, the user
+    # can just type <tt>require 'package'</tt> and the gem (latest
+    # version) will be loaded.  This is like a backwards compatibility
+    # so that gems and non-gems can interact.
     #
-    # Which files are stubified?  Those included in the gem's 'autorequire' and 'library_stubs'
-    # attributes.
+    # Which files are stubified?  Those included in the gem's
+    # 'autorequire' and 'library_stubs' attributes.
     #
     def generate_library_stubs(spec)
       LibraryStubs.new(spec).generate
@@ -260,17 +268,20 @@ TEXT
 
 
   #
-  # This class represents a single library stub, which is characterised by a 
+  # This class represents a single library stub, which is
+  # characterised by a
   #
   class LibraryStub
     SITELIBDIR = Pathname.new(Config::CONFIG['sitelibdir'])
 
     #
-    # The 'autorequire' attribute in a gemspec is a special case: it represents a require
-    # target, not a relative path.  We therefore offer this method of creating a library stub
-    # for the autorequire file.
+    # The 'autorequire' attribute in a gemspec is a special case: it
+    # represents a require target, not a relative path.  We therefore
+    # offer this method of creating a library stub for the autorequire
+    # file.
     #
-    # If the given spec doesn't have an 'autorequire' value, we return +nil+.
+    # If the given spec doesn't have an 'autorequire' value, we return
+    # +nil+.
     #
     def self.from_autorequire(gemspec, require_paths)
       require_target = gemspec.autorequire
@@ -296,12 +307,14 @@ TEXT
     end
 
     #
-    # The powerhouse of the class.  No exceptions should result from calling this.
+    # The powerhouse of the class.  No exceptions should result from
+    # calling this.
     #
     def generate
       if @stub_path.exist?
-        # The stub path is inhabited by a file.  If it's a gem stub, we'll overwrite it (just
-        # to be sure).  If it's a genuine library, we'll leave it alone and issue a warning.
+        # The stub path is inhabited by a file.  If it's a gem stub,
+        # we'll overwrite it (just to be sure).  If it's a genuine
+        # library, we'll leave it alone and issue a warning.
         unless library_stub?(@stub_path)
           alert_warning(
             ["Library file '#{target_path}'",
@@ -320,7 +333,8 @@ TEXT
       end
     end
 
-    # Two LibraryStub objects are equal if they have the same gem name and relative (gem) path.
+    # Two LibraryStub objects are equal if they have the same gem name
+    # and relative (gem) path.
     def ==(other)
       LibraryStub === other and @gem_name == other.gem_name and
         @gem_relpath == other.gem_relpath
@@ -336,9 +350,10 @@ TEXT
     # gemspec::
     #   (Gem::Specification) 
     #
-    # The aim of this method is to resolve the require_target into a path relative to the root
-    # of the gem.  We try each require path in turn, and see if the require target exists under
-    # that directory.
+    # The aim of this method is to resolve the require_target into a
+    # path relative to the root of the gem.  We try each require path
+    # in turn, and see if the require target exists under that
+    # directory.
     #
     # If no match is found, we return +nil+. 
     #
@@ -360,10 +375,11 @@ TEXT
     # gem_relpath::
     #   (String) The path to the library file, relative to the root of the gem.
     #
-    # Returns: the path (Pathname) to the same file, relative to the gem's library path
-    # (typically 'lib').  Thus 'lib/rake/rdoctask.rb' becomes 'rake/rdoctask.rb'.  The gemspec
-    # may contain several library paths, though that would be unusual, so we must deal with
-    # that possibility here.
+    # Returns: the path (Pathname) to the same file, relative to the
+    # gem's library path (typically 'lib').  Thus
+    # 'lib/rake/rdoctask.rb' becomes 'rake/rdoctask.rb'.  The gemspec
+    # may contain several library paths, though that would be unusual,
+    # so we must deal with that possibility here.
     #
     # If there is no such relative path, we return +nil+. 
     #
@@ -393,7 +409,7 @@ TEXT
         #
  
         require 'rubygems'
-        $".delete('#{@lib_relpath}')
+        $".delete('#{@lib_relpath}') # " emacs wart
         require_gem '#{@gem_name}'
       }.gsub(/^[ \t]+/, '')
       unless @autorequire
@@ -404,8 +420,8 @@ TEXT
       }.gsub(/^[ \t]+/, '')
     end
 
-    # Returns true iff the contents of the given _path_ (a Pathname) appear to be a RubyGems
-    # library stub.
+    # Returns true iff the contents of the given _path_ (a Pathname)
+    # appear to be a RubyGems library stub.
     def library_stub?(path)
       lines = path.readlines
       lines.grep(/^# This file was generated by RubyGems/) and
@@ -416,8 +432,8 @@ TEXT
   
   
   #
-  # This class contains the logic to generate all library stubs, including the autorequire, for
-  # a single gemspec.
+  # This class contains the logic to generate all library stubs,
+  # including the autorequire, for a single gemspec.
   #
   #   LibraryStubs.new(gemspec).generate 
   #
@@ -467,13 +483,15 @@ TEXT
     end
     
     ##
-    # Performs the uninstall of the Gem.  This removes the spec, the Gem directory, and the
-    # cached .gem file,
+    # Performs the uninstall of the Gem.  This removes the spec, the
+    # Gem directory, and the cached .gem file,
     #
-    # Application and library stubs are removed according to what is still installed.
+    # Application and library stubs are removed according to what is
+    # still installed.
     #
-    # XXX: Application stubs refer to specific gem versions, which means things may get
-    # inconsistent after an uninstall (i.e. referring to a version that no longer exists).
+    # XXX: Application stubs refer to specific gem versions, which
+    # means things may get inconsistent after an uninstall
+    # (i.e. referring to a version that no longer exists).
     #
     def uninstall
       require 'fileutils'
@@ -484,7 +502,8 @@ TEXT
         say 
         gem_list = list.collect {|gem| gem.full_name}
         gem_list << "All versions"
-        gem_name, index = choose_from_list("Select RubyGem to uninstall:", gem_list)
+        gem_name, index =
+	  choose_from_list("Select RubyGem to uninstall:", gem_list)
         if index == list.size
           remove_all(list.dup) 
           remove_executables(list.last)
@@ -500,10 +519,12 @@ TEXT
       end
     end
     
-    #
-    # Remove executables and batch files (windows only) for the gem as it is being installed
+    ##
+    # Remove executables and batch files (windows only) for the gem as
+    # it is being installed
     #
     # gemspec::[Specification] the gem whose executables need to be removed.
+    #
     def remove_executables(gemspec)
       return if gemspec.nil?
       if(gemspec.executables.size > 0) then
@@ -519,7 +540,10 @@ TEXT
           end
         end
         return if executables.size == 0
-        answer = ask_yes_no("Remove executables and scripts for\n'#{gemspec.executables.join(", ")}' in addition to the gem?", true)
+        answer = ask_yes_no(
+	  "Remove executables and scripts for\n" +
+	  "'#{gemspec.executables.join(", ")}' in addition to the gem?",
+	  true)
         unless answer
           say "Executables and scripts will remain installed."
           return
@@ -537,8 +561,8 @@ TEXT
     #
     # list:: the list of all gems to remove
     #
-    # Warning: this method modifies the +list+ parameter.  Once it has uninstalled a gem, it is
-    # removed from that list.
+    # Warning: this method modifies the +list+ parameter.  Once it has
+    # uninstalled a gem, it is removed from that list.
     #
     def remove_all(list)
       list.dup.each { |gem| remove(gem, list) }
@@ -548,47 +572,65 @@ TEXT
     # spec:: the spec of the gem to be uninstalled
     # list:: the list of all such gems
     #
-    # Warning: this method modifies the +list+ parameter.  Once it has uninstalled a gem, it is
-    # removed from that list.
+    # Warning: this method modifies the +list+ parameter.  Once it has
+    # uninstalled a gem, it is removed from that list.
     #
     def remove(spec, list)
-      if(has_dependents?(spec)) then
-        raise DependencyRemovalException.new("Uninstallation aborted due to dependent gem(s)")
+      if( ! ok_to_remove?(spec)) then
+        raise DependencyRemovalException.new(
+	  "Uninstallation aborted due to dependent gem(s)")
       end
-      raise Gem::FilePermissionError.new(spec.installation_path) unless File.writable?(spec.installation_path)
+      raise Gem::FilePermissionError.new(spec.installation_path) unless
+	File.writable?(spec.installation_path)
       FileUtils.rm_rf spec.full_gem_path
-      FileUtils.rm_rf File.join(spec.installation_path, 'specifications', "#{spec.full_name}.gemspec")
-      FileUtils.rm_rf File.join(spec.installation_path, 'cache', "#{spec.full_name}.gem")
+      FileUtils.rm_rf File.join(
+	spec.installation_path,
+	'specifications',
+	"#{spec.full_name}.gemspec")
+      FileUtils.rm_rf File.join(
+	spec.installation_path,
+	'cache',
+	"#{spec.full_name}.gem")
       DocManager.new(spec).uninstall_doc
       #remove_stub_files(spec, list - [spec])
       say "Successfully uninstalled #{spec.name} version #{spec.version}"
       list.delete(spec)
     end
 
-    def has_dependents?(spec)
-      return false if spec.dependent_gems.size < 1
+    def ok_to_remove?(spec)
+      deplist = Gem::DependencyList.from_source_index(Gem.source_index)
+      ok = deplist.ok_to_remove?(spec.full_name)
+      ok = ask_if_ok(spec) if ! ok
+      ok
+    end
+
+    def ask_if_ok(spec)
       msg = ['You have requested to uninstall the gem:']
       msg << "\t#{spec.name}-#{spec.version}"
       spec.dependent_gems.each do |gem,dep,satlist|
-        msg << "#{gem.name}-#{gem.version} depends on [#{dep.name} (#{dep.version_requirements})]"
+        msg <<
+	  ("#{gem.name}-#{gem.version} depends on " +
+	  "[#{dep.name} (#{dep.version_requirements})]")
       end
       msg << 'If you remove this gems, one or more dependencies will not be met.'
       msg << 'Uninstall anyway?'
-      return !ask_yes_no(msg.join("\n"), false)
+      return ask_yes_no(msg.join("\n"), true)
     end
 
     private
 
     ##
-    # Remove application and library stub files.  These are detected by the line
-    #   # This file was generated by RubyGems. 
+    # Remove application and library stub files.  These are detected
+    # by the line
+    #   # This file was generated by RubyGems.
     #
     # spec:: the spec of the gem that is being uninstalled
-    # other_specs:: any other installed specs for this gem (i.e. different versions)
+    # other_specs:: any other installed specs for this gem
+    #               (i.e. different versions)
     #
-    # Both parameters are necessary to ensure that the correct files are uninstalled.  It is
-    # assumed that +other_specs+ contains only *installed* gems, except the one that's about to
-    # be uninstalled.
+    # Both parameters are necessary to ensure that the correct files
+    # are uninstalled.  It is assumed that +other_specs+ contains only
+    # *installed* gems, except the one that's about to be uninstalled.
     #
     def remove_stub_files(spec, other_specs)
       remove_app_stubs(spec, other_specs)
@@ -596,34 +638,42 @@ TEXT
     end
 
     def remove_app_stubs(spec, other_specs)
-      # App stubs are tricky, because each version of an app gem could install different
-      # applications.  We need to make sure that what we delete isn't needed by any remaining
-      # versions of the gem.
+      # App stubs are tricky, because each version of an app gem could
+      # install different applications.  We need to make sure that
+      # what we delete isn't needed by any remaining versions of the
+      # gem.
       #
-      # There's extra trickiness, too, because app stubs 'require_gem' a specific version of
-      # the gem.  If we uninstall the latest gem, we should ensure that there is a sensible app
-      # stub(s) installed after the removal of the current one.
+      # There's extra trickiness, too, because app stubs 'require_gem'
+      # a specific version of the gem.  If we uninstall the latest
+      # gem, we should ensure that there is a sensible app stub(s)
+      # installed after the removal of the current one.
       #
       # Perhaps the best way to approach this is:
-      #  * remove all application stubs for this gemspec
-      #  * regenerate the app stubs for the latest remaining version
-      #    (you always want to have the latest version of an app, don't you?)
+      # * remove all application stubs for this gemspec
+      # * regenerate the app stubs for the latest remaining version
+      #    (you always want to have the latest version of an app,
+      #    don't you?)
       #
-      # The Installer class doesn't really support this approach very well at the moment.
+      # The Installer class doesn't really support this approach very
+      # well at the moment.
     end
 
     def remove_lib_stub(spec, other_specs)
-      # Library stubs are a bit easier than application stubs.  They do not refer to a specific
-      # version; they just load the latest version of the library available as a gem.  The only
-      # corner case is that different versions of the same gem may have different autorequire
-      # settings, which means they will have different library stubs.
+      # Library stubs are a bit easier than application stubs.  They
+      # do not refer to a specific version; they just load the latest
+      # version of the library available as a gem.  The only corner
+      # case is that different versions of the same gem may have
+      # different autorequire settings, which means they will have
+      # different library stubs.
       #
-      # I suppose our policy should be: when you uninstall a library, make sure all the
-      # remaining versions of that gem are still supported by stubs.  Of course, the user may
-      # have expressed a preference in the past not to have library stubs installed.
+      # I suppose our policy should be: when you uninstall a library,
+      # make sure all the remaining versions of that gem are still
+      # supported by stubs.  Of course, the user may have expressed a
+      # preference in the past not to have library stubs installed.
       #
-      # Mixing the segregated world of gem installations with the global namespace of the
-      # site_ruby directory certainly brings some tough issues.
+      # Mixing the segregated world of gem installations with the
+      # global namespace of the site_ruby directory certainly brings
+      # some tough issues.
     end
   end  # class Uninstaller
 

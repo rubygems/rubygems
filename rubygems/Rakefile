@@ -141,7 +141,7 @@ end
 
 task :tag => [:prerelease] do
   reltag = "REL_#{ENV['REL'].gsub(/\./, '_')}"
-  reltag << ENV['REUSE'] if ENV['REUSE']
+  reltag << ENV['REUSE'].gsub(/\./, '_') if ENV['REUSE']
   announce "Tagging CVS with [#{reltag}]"
   sh %{cvs tag #{reltag}}
 end

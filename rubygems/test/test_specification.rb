@@ -134,6 +134,11 @@ class TestSimpleSpecification < Test::Unit::TestCase
     end
   end
 
+  def test_array_attributes
+    @spec.files = (1..10)
+    assert_equal Array, @spec.files.class
+  end
+
   def test_equality
     same_spec = @spec.dup
     assert_equal @spec, same_spec

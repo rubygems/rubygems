@@ -1,0 +1,359 @@
+== Introduction ==
+
+gem is the command-line interface to RubyGems. With it, you can
+install gems locally or remotely, see what you have installed, search
+for gems, and more.
+
+It works on the following basis: you specify an operation and
+optionally some modifiers. Finally, you can have a configuration file
+to specify commonly-used command-line arguments and other settings.
+
+See the [[Quick_Introduction|QuickIntroduction]] for a task-driven
+hands-on overview of gem's main features.
+
+This reference covers 'gem' version 
+!version
+.
+
+== Gem Commands ==
+
+Gem commands consist of the base command 'gem', and a gem command
+name, followed by any options and arguments.  For example:
+
+  gem install rake --remote
+
+runs the install command.  The argument <tt>rake</tt> is the name of
+the gem to install, and the option <tt>--remote</tt> tell gem to look
+for rake on a remote download site.  Options always start with a dash
+(-) for short options or a double dash (--) for long options.
+Arguments never have a dask.
+
+Gem commands and options may be abbreviated to the 
+
+!toc
+
+== [#build]gem build -- Build a gem file from a specification ==
+
+The build command is used by developers to package their Ruby software
+into a single gem file that can be distributed.  The build command
+requires a gemspec file to describe the metadata in the packge.  You
+can see a good example of using build in CreateAGemInTenMinutes.
+
+A yaml file containing the Gem::Specification object built by a
+gemspec (instead of a gemspec file) may also be also be used with the
+build command.
+
+=== Usage ===
+
+!usage build
+
+=== Examples ===
+
+This example builds a the rake package from a gemspec file.
+
+<pre>
+$ gem build rake.gemspec 
+Attempting to build gem spec 'rake.gemspec'
+  Successfully built RubyGem
+  Name: rake
+  Version: 0.4.0
+  File: rake-0.4.0.gem
+</pre>
+
+Of course, rake isn't normally built from a gemspec.  It uses a
+special gem building task to build the gem directly from the rakefile.
+See CreateAGemUsingRake for more details.
+
+<pre>
+$ rake gem
+(in /home/jim/working/rubyforge/rake)
+  Successfully built RubyGem
+  Name: rake
+  Version: 0.4.0
+  File: rake-0.4.0.gem
+</pre>
+
+== [#check]gem check -- Check installed gems for problems ==
+
+The check command is used to verify that a gem in is good working order.
+
+=== Usage ===
+
+!usage check
+
+The verify option checks a gem file for corruption.  If the file is
+not exactly like it was built, verify will complain.  (Note: This is a
+simple integrity check.  It is not checking for PGP like signatures).
+
+The alien option checks an installed gem to see if any of the files
+have been tampered with.
+
+=== Examples ===
+
+The following check is run against a valid rake gem file.
+
+<pre>
+$ gem check -v pkg/rake-0.4.0.gem 
+Verifying gem: 'pkg/rake-0.4.0.gem'
+</pre>
+
+The following check shows that the rake gem file is invalid.
+
+<pre>
+$ gem check -v pkg/rake-0.4.0.gem
+Verifying gem: 'pkg/rake-0.4.0.gem'
+ERROR:  pkg/rake-0.4.0.gem is invalid.
+</pre>
+
+In this installation of ActiveRecord, the postgreSQL driver has been
+locally patched after the gem was installed.  This is how the alien
+option reports it.
+
+<pre>
+$ gem check --alien
+Performing the 'alien' operation
+madeleine-0.6 is error-free
+
+madeleine-0.6.1 is error-free
+
+rake-0.4.0 is error-free
+
+rake-0.3.2 is error-free
+
+copland-0.3.0 is error-free
+
+sources-0.0.1 has 2 problems
+
+iterator-0.5 is error-free
+
+activerecord-0.8.1 has 2 problems
+	lib/active_record/connection_adapters/postgresql_adapter.rb:
+	installed file doesn't match original from gem
+
+	/usr/local/lib/ruby/gems/1.8/cache/activerecord-0.8.1.gem:
+	Unmanaged files in gem: ["lib/active_record/connection_adapters/postgresql_adapter.rb~"]
+
+
+[... remaining output elided ...]
+</pre>
+
+== [#environment] gem environment -- Display information about the gem environment ==
+
+Gems uses several paths and directories to perform its work.  This
+command will display the information the gem command has found.
+
+=== Usage ===
+
+!usage environment
+
+=== Examples ===
+
+<pre>
+$ gem environment
+Rubygems Environment:
+  - VERSION: 0.6 (0.6.1)
+  - INSTALLATION DIRECTORY: /usr/local/lib/ruby/gems/1.8
+  - GEM PATH:
+     - /usr/local/lib/ruby/gems/1.8
+  - REMOTE SOURCES:
+     - http://gems.rubyforge.org
+</pre>
+
+== [#help] gem help -- Provide help about gem commands ==
+
+The help command provides information about the syntax and options
+available on the gem command.
+
+=== Usage ===
+
+!usage help
+
+== [#info]gem info -- Extract the Gem::Specification from a gem file ==
+
+The info command will extract the Gem::Specification from a gem file
+and write to standard output in YAML format.
+
+=== Usage ===
+
+!usage info
+
+== [#install]gem install -- Installing a gem ==
+
+<tt>gem install</tt> will install the named gem. It will
+attempt a local installation (i.e. a .gem file in the current
+directory), and if that fails, it will attempt to download and install
+the most recent version of the gem you want.
+
+If a gem is being installed remotely, and it depends on other gems
+that are not installed, then gem will download and install those,
+after you have confirmed the operation.
+
+=== Usage ===
+
+!usage install
+
+You can limit the domain of operations to <tt>--local</tt> or
+<tt>--remote</tt>, and you can limit the installation to a certain
+version requirement using <tt>--version</tt>.
+
+<tt>--gen-rdoc</tt> and <tt>--run-test</tt> control additional actions
+that can take place at install time.  <tt>--gen-rdoc</tt> generate any
+RDoc documents for the gem (assuming the gem is setup for RDoc).
+<tt>--run-tests</tt> will cause the gem's unit tests to be run (again,
+assuming unit tests have been defined).
+
+<tt>--install-stub</tt> causes the installation of a library stub,
+which enables the use of this gem without knowing it's a gem.  See
+<tt>--[no-]install-stub</tt> in the ''Modifiers'' section for more
+details.
+
+=== Examples ===
+
+These examples show how GEMNAME can be specified:
+
+This will install local 'copland.gem' or remote 'copland-0.3.0' (for
+instance), but not a local file 'copland-0.3.0' gem.
+
+  gem install copland               
+
+This will install local 'copland-0.2.0' or remote 'copland-0.2.0'.
+
+  gem install copland-0.2.0
+
+This will only succeed if the local file exists. This will not resolve to a remote gem.
+
+  gem install copland-0.2.0.gem
+
+<pre>
+  gem install --remote copland         # shortcut: gem ins -R copland
+  gem install copland --version '> 0.2'
+  gem install copland --gen-rdoc --run-tests
+  gem install copland --install-stub
+</pre>
+
+Here is an example session where a dependency is automatically
+downloaded and resolved.
+
+<pre>
+$ gem install copland
+Attempting local installation of ''
+Local gem file not found: copland.gem
+Attempting remote installation of 'copland'
+Install required dependency log4r? [Yn]   y
+Successfully installed copland, version 0.3.0
+</pre>
+
+== [#query][#list]gem query -- Getting a list of gems ==
+
+<tt>gem query</tt> (and its alias <tt>gem list</tt>) will list all gems
+in the local domain, the remote domain, or both.
+
+=== Usage ==
+
+!usage query
+
+=== Examples ===
+
+To list all local gems:
+
+<pre>
+$ gem query --local                          # shortcut: gem q -L
+
+*** LOCAL GEMS ***
+
+activerecord (0.8.2, 0.8.1)
+    Implements the ActiveRecord pattern for ORM.
+
+copland (0.3.0)
+    Copland is an Inversion of Control (IoC) container for Ruby.
+
+jabber4r (0.7.0)
+    Jabber4r is a pure-Ruby Jabber client library
+
+log4r (1.0.5)
+    Log4r is a comprehensive and flexible logging library for Ruby.
+
+[... remaining output elided ...]
+</pre>
+
+To list all remote gems that begin with the letter 'M':
+
+<pre>
+[... broken example ...]
+</pre>
+
+== [#uninstall]gem uninstall -- Uninstalling a gem ==
+
+The uninstall will uninstall the named gem.  If multiple versions of a
+gem are installed, you will be prompted to select a single one, or all
+of them.
+
+=== Usage ===
+
+!usage uninstall
+
+=== Examples ===
+
+The following uninstalls the only copy of copland.
+
+<pre>
+$ gem uninstall copland
+Attempting to uninstall gem 'copland'
+Successfully uninstalled copland version 0.3.0
+</pre>
+
+The following uninstalls all the installed versions of the rake gem.
+Since rake is an application, it has a ApplicationStub installed.  The
+uninstall removes the stub as well.
+
+<pre>
+$ sudo gem uninstall rake
+Attempting to uninstall gem 'rake'
+
+Select RubyGem to uninstall:
+ 1. rake-0.3.2
+ 2. rake-0.4.0
+ 3. All versions
+> 3
+Successfully uninstalled rake version 0.3.2
+Successfully uninstalled rake version 0.4.0
+WARNING:  About to remove executables and scripts for: rake
+Proceed? [Y/n]  y
+Removing rake
+</pre>
+
+== [#update]gem update -- Update your installed gems ==
+
+The update command will check all of your installed gems and update
+each one to a newer version if one is available.
+
+=== Usage ===
+
+!usage update
+
+=== Examples ===
+
+<pre>
+$ gm update
+Upgrading installed gems...
+Attempting remote upgrade of activerecord
+ERROR:  While executing gem ... (NoMethodError)
+    undefined method `process_install_command' for #<Gem::UpdateCommand:0x401f19ac>
+</pre>
+
+Ok, this command needs some attention :-)
+
+== See Also ==
+
+* ConfigurationFile
+* EnvironmentVariables
+* CommandOptions
+* GemExamples
+
+----
+
+Contributors: GavinSinclair, JimWeirich
+
+----
+
+CategoryUserDocumentation

@@ -75,7 +75,7 @@ if remote_install
 end
 
 if gem_to_uninstall
-  Gem::Uninstaller.new.uninstall(gem_to_uninstall, options[:gem_version] || "> 0.0.0")
+  Gem::Uninstaller.new(gem_to_uninstall, options[:gem_version] || "> 0.0.0").uninstall
 end
 
 if info

@@ -15,6 +15,7 @@ module Gem
       @cfg = Gem::ConfigFile.new(args)
       Gem.use_paths(@cfg[:gemhome], @cfg[:gempath])
       Command.extra_args = @cfg[:gem]
+      DocManager.configured_args = @cfg[:rdoc]
     end
 
   end

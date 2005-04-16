@@ -2,10 +2,19 @@
 
 (See Releases for release-specific information)
 
-== For user documentation (and installation instructions) see
+== Installation
 
-* {Quick Introduction}[http://rubygems.rubyforge.org/wiki/wiki.pl?Quick_Introduction]
-* {User Guide}[http://rubygems.rubyforge.org/wiki/wiki.pl?UserGuide]
+Get it from RubyForge (http://rubygems.rubyforge.org) and run (as root, if appropriate and necessary)
+
+  ruby setup.rb
+
+For more details and other options, see:
+
+* {User Guide/Installation}[http://docs.rubygems.org/read/chapter/3]
+
+== For User Documentation, see
+
+* {RubyGems User Guide}[http://docs.rubygems.org/read/book/1]
 
 == For developer docs see
 

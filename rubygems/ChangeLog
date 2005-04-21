@@ -1,3 +1,7 @@
+2005-04-21  Chad Fowler <chad@chadfowler.com>
+	* lib/rubygems/installer.rb: Added non-require_gem dependency check
+	for installation.
+
 2005-04-03  Chad Fowler <chad@chadfowler.com>
 
 	* pre-install.rb: Added version check to RubyGems installation.

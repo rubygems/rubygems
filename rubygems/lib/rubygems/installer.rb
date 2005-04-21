@@ -54,15 +54,11 @@ module Gem
           end
         end
         # Check the dependent gems.
-	# NOTE: THe dependent gem check is disabled.  WE SHOULD NOT
-	# REQUIRE GEMS DURING INSTALLTION.  If we need to check
-	# dependencies, we need a different way. 
-# 	unless @options[:ignore_dependencies]
-# 	  spec.dependencies.each do |dep_gem|
-# 	    # TODO: Does this take account of *versions*?
-# 	    require_gem_with_options(dep_gem, [], :auto_require=>false)
-# 	  end
-# 	end
+ 	unless @options[:ignore_dependencies]
+ 	  spec.dependencies.each do |dep_gem|
+ 	    raise "#{spec.name} requires #{dep_gem.name} #{dep_gem.version_requirements} " unless Gem.source_index.find_name(dep_gem.name, dep_gem.version_requirements).size > 0
+ 	  end
+ 	end
       end
       
       raise Gem::FilePermissionError.new(install_dir) unless File.writable?(install_dir)

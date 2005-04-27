@@ -69,7 +69,7 @@ module Gem
 	'Do not install any required dependent gems') do |value, options|
 	options[:ignore_dependencies] = value
       end
-      add_option('--include-dependencies',
+      add_option('-y', '--include-dependencies',
 	'Unconditionally install the required dependent gems') do |value, options|
 	options[:include_dependencies] = value
       end

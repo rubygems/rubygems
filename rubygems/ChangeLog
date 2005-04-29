@@ -1,3 +1,7 @@
+2005-04-29  Chad Fowler <chad@chadfowler.com>
+	* lib/rubygems/specifiation.rb: Marcel Molina's patch to discover
+	which attributes in the spec are Array attributes.
+
 2005-04-27  Chad Fowler <chad@chadfowler.com>
 	* lib/rubygems/gem_commands.rb: -y is now a synonym for 
 	--include-dependencies

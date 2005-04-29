@@ -74,6 +74,9 @@ module Gem
     # List of _all_ attributes and default values: [[:name, nil], [:bindir, 'bin'], ...]
     @@attributes = []
 
+    # List of array attributes
+    @@array_attributes = []
+
     # Map of attribute names to default values.
     @@default_value = {}
 
@@ -97,6 +100,10 @@ module Gem
 
     def self.required_attribute?(name)
       @@required_attributes.include? name.to_sym
+    end
+
+    def self.array_attributes
+      @@array_attributes.dup
     end
 
     # ------------------------- Infrastructure class methods.
@@ -130,6 +137,7 @@ module Gem
     # Same as :attribute, but ensures that values assigned to the
     # attribute are array values by applying :to_a to the value.
     def self.array_attribute(name)
+      @@array_attributes << name
       @@attributes << [name, []]
       @@default_value[name] = []
       module_eval %{

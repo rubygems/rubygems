@@ -332,7 +332,7 @@ module Gem
       end
       begin
         File.expand_path("~")
-      rescue Exception => ex
+      rescue StandardError => ex
         if File::ALT_SEPARATOR
           "C:/"
         else

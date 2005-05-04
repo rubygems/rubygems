@@ -1,3 +1,9 @@
+2005-05-04  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems.rb (Gem::Exception::find_home): Changed rescue
+	clause from Exception to StandardError.  Exception doesn't seem to
+	catch everything ... I'm not sure I understand why.
+
 2005-04-29  Chad Fowler <chad@chadfowler.com>
 	* lib/rubygems/specifiation.rb: Marcel Molina's patch to discover
 	which attributes in the spec are Array attributes.

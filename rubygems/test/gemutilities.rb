@@ -66,7 +66,7 @@ class RubyGemTestCase < Test::Unit::TestCase
       s.has_rdoc = true
       s.summary = "this is a summary"
       s.description = "This is a test description"
-      yield(s)
+      yield(s) if block_given?
     end
 
     write_file(File.join("specifications", spec.full_name + ".gemspec")) do |io|

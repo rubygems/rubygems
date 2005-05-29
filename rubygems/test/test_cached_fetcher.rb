@@ -7,9 +7,7 @@ require 'rubygems/remote_installer'
 require 'test/yaml_data'
 require 'test/gemutilities'
 
-class TestCachedFetcher < Test::Unit::TestCase
-  SOURCE_URI = "http://localhost:12344"
-  GEMHOME = "test/temp/writable_cache"
+class TestCachedFetcher < RubyGemTestCase
 
   class MockFetcher
     attr_reader :count
@@ -29,10 +27,10 @@ class TestCachedFetcher < Test::Unit::TestCase
   end
 
   def setup
-    make_cache_area(GEMHOME, "http://localhost:12344")
-    Gem.clear_paths
-    Gem.use_paths(GEMHOME)
-    @cf = Gem::CachedFetcher.new(SOURCE_URI, nil)
+    super
+    @source_uri = "http://localhost:12344"
+    make_cache_area(@gemhome, @source_uri)
+    @cf = Gem::CachedFetcher.new(@source_uri, nil)
     @mf = MockFetcher.new
     @cf.instance_variable_set("@fetcher", @mf)
   end

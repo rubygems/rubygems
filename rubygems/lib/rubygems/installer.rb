@@ -136,7 +136,11 @@ module Gem
 
     def generate_bin(spec, install_dir=Gem.dir)
       return unless spec.executables && ! spec.executables.empty?
-
+      
+      # If the user has asked for the gem to be installed in
+      # a directory that is the system gem directory, then
+      # use the system bin directory, else create (or use) a
+      # new bin dir under the install_dir.
       bindir = if install_dir == Gem.default_dir then
         Config::CONFIG['bindir'] 
       else

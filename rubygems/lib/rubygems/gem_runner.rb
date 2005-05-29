@@ -6,7 +6,11 @@ module Gem
 
     def run(args)
       do_configuration(args)
-      Gem::CommandManager.instance.run(@cfg)
+      cmd = Gem::CommandManager.instance
+      cmd.command_names.each do |c|
+          Command.add_specific_extra_args c, Array(@cfg[c])
+      end
+      cmd.run(@cfg)
     end
 
     private

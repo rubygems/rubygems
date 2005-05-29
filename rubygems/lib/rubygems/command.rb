@@ -76,7 +76,7 @@ module Gem
       end
     end
 
-    private
+    private 
 
     def command_manager
       Gem::CommandManager.instance
@@ -91,7 +91,8 @@ module Gem
     
     def add_extra_args(args)
       result = []
-      extra = Command.extra_args.dup
+      s_extra = Command.specific_extra_args(@command)
+      extra = Command.extra_args + s_extra
       while ! extra.empty?
         ex = []
         ex << extra.shift
@@ -172,6 +173,29 @@ module Gem
           @extra_args = value.split
         end
       end
+
+      def specific_extra_args(cmd)
+          @specific_extra_args ||= Hash.new do |h,k|
+              h[k] = Array.new
+          end
+
+          r = @specific_extra_args[cmd]
+          return r
+      end
+
+      def add_specific_extra_args(cmd,args)
+          # Access @specific_extra_args so that the hash is
+          # created for sure.
+          #
+          specific_extra_args(cmd)
+
+          if args.kind_of? String
+              args = args.split(/\s+/)
+          end
+
+          @specific_extra_args[cmd] = args
+      end
+
     end
 
     add_common_option('--source URL', 'Use URL as the remote source for gems') do |value, options|

@@ -1,3 +1,5 @@
+$TESTING = false unless defined? $TESTING
+
 require 'pathname'
 require 'rbconfig'
 require 'rubygems/format'
@@ -12,7 +14,7 @@ module Gem
   # files contained in the .gem into the Gem.path.
   #
   class Installer
-  
+
     include UserInteraction
   
     ##
@@ -64,20 +66,20 @@ module Gem
       raise Gem::FilePermissionError.new(install_dir) unless File.writable?(install_dir)
 
       # Build spec dir.
-      directory = File.join(install_dir, "gems", format.spec.full_name)
-      FileUtils.mkdir_p directory
+      @directory = File.join(install_dir, "gems", format.spec.full_name)
+      FileUtils.mkdir_p @directory
 
-      extract_files(directory, format)
-      generate_bin_scripts(format.spec, install_dir)
-      build_extensions(directory, format.spec)
+      extract_files(@directory, format)
+      generate_bin(format.spec, install_dir)
+      build_extensions(@directory, format.spec)
       
       # Build spec/cache/doc dir.
       build_support_directories(install_dir)
       
       # Write the spec and cache files.
       write_spec(format.spec, File.join(install_dir, "specifications"))
-      unless(File.exist?(File.join(File.join(install_dir, "cache"), @gem.split(/\//).pop))) 
-        FileUtils.cp(@gem, File.join(install_dir, "cache"))
+      unless File.exist? File.join(install_dir, "cache", @gem.split(/\//).pop)
+        FileUtils.cp @gem, File.join(install_dir, "cache")
       end
 
       format.spec.loaded_from = File.join(install_dir, 'specifications', format.spec.full_name+".gemspec")
@@ -132,25 +134,61 @@ module Gem
       end
     end
 
+    def generate_bin(spec, install_dir=Gem.dir)
+      return unless spec.executables && ! spec.executables.empty?
+
+      bindir = if install_dir == Gem.default_dir then
+        Config::CONFIG['bindir'] 
+      else
+        File.join install_dir, "bin"
+      end
+
+      Dir.mkdir bindir unless File.exist? bindir
+      raise Gem::FilePermissionError.new(bindir) unless File.writable?(bindir)
+
+      spec.executables.each do |filename|
+        if @options[:wrappers] then
+          generate_bin_script spec, filename, bindir, install_dir
+        else
+          generate_bin_symlink spec, filename, bindir, install_dir
+        end
+      end
+    end
+
     ##
     # Creates the scripts to run the applications in the gem.
     #
-    def generate_bin_scripts(spec, install_dir=Gem.dir)
-      if spec.executables && ! spec.executables.empty?
-        bindir = if(install_dir == Gem.default_dir)
-	  Config::CONFIG['bindir'] 
-	else
-	  File.join(install_dir, "bin")
-	end
-        Dir.mkdir(bindir) unless File.exist?(bindir)
-        raise Gem::FilePermissionError.new(bindir) unless File.writable?(bindir)
-        spec.executables.each do |filename|
-          File.open(File.join(bindir, File.basename(filename)), "w", 0755) do |file|
-            file.print(app_script_text(spec, install_dir, filename))
-          end
-          generate_windows_script(bindir, filename)
-        end
+    def generate_bin_script(spec, filename, bindir, install_dir)
+      File.open(File.join(bindir, File.basename(filename)), "w", 0755) do |file|
+        file.print app_script_text(spec, install_dir, filename)
       end
+      generate_windows_script bindir, filename
+    end
+
+    ##
+    # Creates the symlinks to run the applications in the gem.  Moves
+    # the symlink if the gem being installed has a newer version.
+    #
+    def generate_bin_symlink(spec, filename, bindir, install_dir)
+      if Config::CONFIG["arch"] =~ /dos|win32/i then
+        warn "Unable to use symlinks on win32, installing wrapper" unless $TESTING # HACK
+        generate_bin_script spec, filename, bindir, install_dir
+        return
+      end
+
+      src = File.join @directory, 'bin', filename
+      dst = File.join bindir, File.basename(filename)
+
+      if File.exist? dst then
+        if File.symlink? dst then
+          link = File.readlink(dst).split File::SEPARATOR
+          cur_version = Gem::Version.create(link[-3].sub(/^.*-/, ''))
+          return if spec.version < cur_version
+        end
+        File.unlink dst
+      end
+
+      File.symlink src, dst
     end
 
     def shebang(spec, install_dir, bin_file_name)

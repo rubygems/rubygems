@@ -51,6 +51,9 @@ module Gem
     end
   end
 
+  ##
+  # OptionParser options specific to the gem install command.
+
   module InstallUpdateOptions
     def add_install_update_options
       add_option('-i', '--install-dir DIR', '') do |value, options|
@@ -65,6 +68,10 @@ module Gem
       add_option('-t', '--[no-]test', 'Run unit tests prior to installation') do |value, options|
         options[:test] = value
       end
+      add_option('-w', '--[no-]wrappers', 'Use bin wrappers for executables',
+                 'Not available on dosish platforms') do |value, options|
+        options[:wrappers] = value
+      end
       add_option('--ignore-dependencies',
 	'Do not install any required dependent gems') do |value, options|
 	options[:ignore_dependencies] = value
@@ -75,8 +82,11 @@ module Gem
       end
     end
     
+    ##
+    # Default options for the gem install command.
+
     def install_update_defaults_str
-      '--rdoc --no-force --no-test'
+      '--rdoc --no-force --no-test --wrappers'
     end
   end
 
@@ -88,7 +98,9 @@ module Gem
     end
   end
 
-  ####################################################################
+  ##
+  # Gem install command.
+
   class InstallCommand < Command
     include CommandAids
     include VersionOption
@@ -104,14 +116,14 @@ module Gem
           :generate_rdoc => true, 
           :force => false, 
           :test => false, 
+          :wrappers => true,
           :version => "> 0",
-          :install_dir => Gem.dir
+          :install_dir => Gem.dir,
         })
       add_version_option('install')
       add_local_remote_options
       add_install_update_options
     end
-    
     
     def usage
       "#{program_name} GEMNAME"

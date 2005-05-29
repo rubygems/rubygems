@@ -177,7 +177,12 @@ module Gem
 	$:.unshift File.join(spec.full_gem_path, path)
       end
       
-      require spec.autorequire if autorequire && spec.autorequire
+      if autorequire && spec.autorequire then
+        Array(spec.autorequire).each do |a_lib|
+          require a_lib
+        end
+      end
+
       return true
     end
     

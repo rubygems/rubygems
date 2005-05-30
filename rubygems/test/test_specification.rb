@@ -160,6 +160,11 @@ end  # class TestSimpleSpecification
 
 class TestSpecification < RubyGemTestCase
 
+  def setup
+    super
+    @spec = quick_gem "TestSpecification"
+  end
+
   def test_autorequire_array
     name = "AutorequireArray"
     files = %w(a.rb b.rb)
@@ -208,6 +213,50 @@ class TestSpecification < RubyGemTestCase
     assert_equal(Array(file), (new_loaded - old_loaded))
     assert(defined? $LOADED_C)
   end
+
+  def test_date_equals_date
+    @spec.date = Date.new(2003, 9, 17)
+    assert_equal Time.local(2003, 9, 17, 0,0,0), @spec.date
+  end
+
+  def test_date_equals_string
+    @spec.date = '2003-09-17'
+    assert_equal Time.local(2003, 9, 17, 0,0,0), @spec.date
+  end
+
+  def test_date_equals_time
+    @spec.date = Time.local(2003, 9, 17, 0,0,0)
+    assert_equal Time.local(2003, 9, 17, 0,0,0), @spec.date
+  end
+
+  def test_date_equals_time_local
+    # HACK PDT
+    @spec.date = Time.local(2003, 9, 17, 19,50,0)
+    assert_equal Time.local(2003, 9, 17, 0,0,0), @spec.date
+  end
+
+  def test_date_equals_time_utc
+    # HACK PDT
+    @spec.date = Time.local(2003, 9, 17, 19,50,0)
+    assert_equal Time.local(2003, 9, 17, 0,0,0), @spec.date
+  end
+
+  def test_to_ruby
+    ruby = "Gem::Specification.new do |s|
+  s.name = %q{TestSpecification}
+  s.version = \"0.0.2\"
+  s.date = %q{2005-05-29}
+  s.summary = %q{this is a summary}
+  s.email = %q{example@example.com}
+  s.homepage = %q{http://example.com}
+  s.description = %q{This is a test description}
+  s.has_rdoc = true
+  s.authors = [\"A User\"]
+end
+"
+    assert_equal ruby, @spec.to_ruby
+  end
+
 end
 
 class TestComplexSpecification < Test::Unit::TestCase
@@ -243,7 +292,7 @@ class TestComplexSpecification < Test::Unit::TestCase
     assert_equal 'rfoo',                  @spec.name
     assert_equal '0.1',                   @spec.version.to_s
     assert_equal Gem::Platform::RUBY,     @spec.platform
-    assert_equal Date.today,              @spec.date
+    assert_equal Time.today,              @spec.date
     assert_equal summary_value,           @spec.summary
     assert_equal summary_value,           @spec.description
     assert_equal "The RubyGems Team",     @spec.author
@@ -280,30 +329,19 @@ class TestComplexSpecification < Test::Unit::TestCase
     assert_equal @spec, same_spec
   end
 
-  # Test different mechanisms for setting the gem's date: String, Time, and
-  # Date.  It should always come out as a Date.
-  def test_date_settings
-    @spec.date = '2003-09-17'
-    assert_equal Date.new(2003, 9, 17), @spec.date
-    @spec.date = Time.local(2003, 9, 17)
-    assert_equal Date.new(2003, 9, 17), @spec.date
-    @spec.date = Date.new(2003, 9, 17)
-    assert_equal Date.new(2003, 9, 17), @spec.date
-  end
 end  # class TestComplexSpecification
-
 
 class TestLegacyRubySpecification < Test::Unit::TestCase
   def setup
     @ruby_spec = File.read(LEGACY_GEM_SPEC_FILE)
   end
 
-  def test_eval
+  def test_load_legacy
     s = gemspec = eval(@ruby_spec)
     assert_equal 'keyedlist', s.name
     assert_equal '0.4.0', s.version.to_s
     assert_equal true, s.has_rdoc?
-    assert_equal Date.today, s.date
+    assert_equal Time.today, s.date
     assert s.required_ruby_version.satisfied_by?(Gem::Version.new('0.0.1'))
     assert_equal false, s.has_unit_tests?
   end
@@ -315,7 +353,6 @@ class TestLegacyRubySpecification < Test::Unit::TestCase
     assert_equal gemspec1, gemspec2
   end
 end  # class TestLegacyRubySpecification
-
 
 class TestLegacyYamlSpecification < Test::Unit::TestCase
   def setup

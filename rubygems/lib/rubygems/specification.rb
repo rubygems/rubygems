@@ -1,6 +1,12 @@
-require 'date'
+require 'time'
 require 'rubygems'
 require 'rubygems/version'
+
+class Time
+  def self.today
+    Time.parse Time.now.strftime("%Y-%m-%d")
+  end
+end
 
 module Gem
   
@@ -284,23 +290,22 @@ module Gem
     end
 
     overwrite_accessor :date= do |date|
-      # We want to end up with a Date object.  If _date_ responds to :to_str, or :day,
-      # :month, and :year, it is duly converted.  Otherwise, today's date is used. 
-      if date.respond_to? :to_str
-        date = Date.parse(date.to_str)
-      elsif [:year, :month, :day].all? { |m| date.respond_to? m }
-        date = Date.new(date.year, date.month, date.day)
+      # We want to end up with a Time object with one-day resolution.  This is
+      # the cleanest, most-readable, faster-than-using-Date way to do it.
+      case date
+      when String then
+        @date = Time.parse date
+      when Time then
+        @date = Time.parse date.strftime("%Y-%m-%d")
+      when Date then
+        @date = Time.parse date.to_s
       else
-        date = nil
+        @date = Time.today
       end
-      @date = date || Date.today
     end
 
     overwrite_accessor :date do
-      # Legacy gems might have a Time object directly loaded from the YAML.  We fix it here.
-      unless @date.is_a? Date
-        self.date = @date
-      end
+      self.date = nil if @date.nil?  # HACK Sets the default value for date
       @date
     end
 
@@ -360,15 +365,16 @@ module Gem
     # ------------------------- Constructors.
     
     ##
-    # Specification constructor.  Assigns the default values to the attributes, adds this
-    # spec to the list of loaded specs (see Specification.list), and yields itself for
-    # further initialization.
+    # Specification constructor.  Assigns the default values to the
+    # attributes, adds this spec to the list of loaded specs (see
+    # Specification.list), and yields itself for further initialization.
     #
     def initialize
-      # Each attribute has a default value (possibly nil).  Here, we initialize all
-      # attributes to their default value.  This is done through the accessor
-      # methods, so special behaviours will be honored.  Furthermore, we take a
-      # _copy_ of the default so each specification instance has its own empty
+      # Each attribute has a default value (possibly nil).  Here, we
+      # initialize all attributes to their default value.  This is done
+      # through the accessor methods, so special behaviours will be honored.
+      # Furthermore, we take a _copy_ of the default so each specification
+      # instance has its own empty
       # arrays, etc.
       @@attributes.each do |name, default|
         self.send "#{name}=", copy_of(default)
@@ -438,8 +444,9 @@ module Gem
     end
     
     ##
-    # Returns the full name (name-version) of this Gem.  Platform information is included
-    # (name-version-platform) if it is specified (and not the default Ruby platform).
+    # Returns the full name (name-version) of this Gem.  Platform information
+    # is included (name-version-platform) if it is specified (and not the
+    # default Ruby platform).
     #
     def full_name
       if platform == Gem::Platform::RUBY
@@ -498,16 +505,17 @@ module Gem
     
     # ------------------------- Export methods (YAML and Ruby code).
     
-    # Returns an array of attribute names to be used when generating a YAML representation
-    # of this object.  If an attribute still has its default value, it is omitted.
+    # Returns an array of attribute names to be used when generating a YAML
+    # representation of this object.  If an attribute still has its default
+    # value, it is omitted.
     def to_yaml_properties
       mark_version
       @@attributes.map { |name, default| "@#{name}" }
     end
 
-    # Returns a Ruby code representation of this specification, such that it can be
-    # eval'ed and reconstruct the same specification later.  Attributes that still have
-    # their default values are omitted.
+    # Returns a Ruby code representation of this specification, such that it
+    # can be eval'ed and reconstruct the same specification later.  Attributes
+    # that still have their default values are omitted.
     def to_ruby
       mark_version
       result = "Gem::Specification.new do |s|\n"

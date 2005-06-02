@@ -18,14 +18,14 @@ end
 
   # Returns a link to the given anchor on the page.
 def _link(attribute, text=nil)
-  link = "http://rubygems.rubyforge.org/wiki/wiki.pl?GemspecReference##{attribute}"
-  "[#{link} #{text || attribute}]"
+  link = "##{attribute}"
+  %{<a href="#{link}">#{text || attribute}</a>}
 end
 
 def _themed_toc_more_vspace
   SECTIONS.each do |s|
-    puts "\n'''#{s['name']}'''"
-    puts s['attributes'].map { |a|
+    puts "\n* *#{s['name']}*"
+    puts s['attributes'].collect { |a|
       ": #{_link(a, '#')} #{a}"
     }
   end
@@ -33,14 +33,13 @@ end
 
 def _themed_toc_less_vspace
   SECTIONS.each do |s|
-    puts "\n''#{s['name']}''"
-    print ": "
-    puts s['attributes'].map { |a| _link(a) }.join(SEPSTRING)
+    puts "\n* *#{s['name']}:* "
+    puts s['attributes'].collect { |a| _link(a) }.join(SEPSTRING)
   end
 end
 
 def timestamp
-  puts ":<i>Last generated: #{Time.now.strftime '%Y-%m-%d %H:%M:%S %Z (%A)'}</i>"
+  puts "p(((. <em>Last generated: #{Time.now.strftime '%Y-%m-%d %H:%M:%S %Z (%A)'}</em>"
 end
 
   # Prints a thematic table of contents, drawing from the structure in the YAML file.
@@ -51,24 +50,24 @@ end
   # Prints an alphabetical table of contents in a fairly compact yet readable way, with all
   # Wiki formatting included.
 def alpha_toc
-  attributes = SECTIONS.map { |s| s['attributes'] }.flatten
+  attributes = SECTIONS.collect { |s| s['attributes'] }.flatten
     # -> ['author', 'autorequire', ...]
   attr_map = attributes.partition_by { |a| a[0,1] }
     # -> { 'a' => ['author', ...], 'b' => ... }
-  attributes = attr_map.map { |letter, attrs|
+  attributes = attr_map.collect { |letter, attrs|
     [letter.upcase, attrs.sort]
   }.sort_by { |l, _| l }
     # -> [ ['A', ['author', ...], ...]
-  attributes = attributes.map { |letter, attrs|
-    "'''#{letter}'''&nbsp;" << attrs.map { |a| _link(a) }.join(SEPSTRING)
+  attributes = attributes.collect { |letter, attrs|
+    "* *#{letter}* " << attrs.collect { |a| _link(a) }.join(SEPSTRING)
   } # -> [ 'A author | autorequire', 'B bindir', ...]
-  puts attributes.join(' ')
+  puts attributes.join("\n")
 end
 
   # Print the "important" table of contents, which consists of the attributes given as
   # arguments.
 def important_toc(*attributes)
-  puts attributes.map { |a| _link(a) }.join(SEPSTRING)
+  puts attributes.collect { |a| _link(a) }.join(SEPSTRING)
 end
 
   # Returns text like "Optional; default = 'bin'", with Wiki formatting.
@@ -76,9 +75,10 @@ def _metadata(attribute)
   type = attribute.klass || "Unknown"
   required = 
     case attribute.mandatory
-    when nil, false then 'Optional'
-    when '?' then 'Required???'
-    else "'''Required'''"
+    when nil, false
+      '<em>Optional</em>'
+    else
+      '<em>Required</em>'
     end
   default_str =
     case attribute.default
@@ -88,8 +88,8 @@ def _metadata(attribute)
     else attribute.default.inspect
     end
   default_str = ";   default = #{default_str}" unless default_str.empty?
-  result = sprintf "''Type: %s;   %s%s''", type, required, default_str
-  result.gsub(/ /, '&nbsp;')
+  result = sprintf "<em>Type: %s;   %s%s</em>", type, required, default_str
+#  result.gsub(/ /, '&nbsp;')
 end
 
   # Turns 'L(section)' into a link to that section.
@@ -103,13 +103,14 @@ end
   # * the description, usage, and notes for that attribute
   # * a link to the table of contents
 def attribute_survey
-  heading    = proc { |str| "\n\n== [\##{str}] #{str} ==" }
-  subheading = proc { |str| "\n=== #{str} ===\n\n" }
+  heading    = proc { |str| %{\n\nh3. <a name="#{str}">#{str}</a>\n\n} }
+  subheading = proc { |str| "\n\nh4. #{str}\n\n" }
   pre        = proc { |str| "<pre>\n#{str}\n</pre>\n" }
   para       = proc { |str| str.gsub(/\n/, "\n\n") }
-  toclink    = "\n''#{_link('toc', '^ Table of Contents')}''"
+  toclink    = "\n<em>Goto #{_link('toc', 'Table of Contents')}</em>"
   ATTRIBUTES.sort_by { |a| a['name'] }.each do |a|
     a = OpenStruct.new(a)
+    puts "\n----\n"
     puts heading[a.name]
     puts _metadata(a)
     puts subheading['Description']
@@ -127,9 +128,9 @@ end
   # Checks to see that all the attributes are documented.  Warn on STDERR of any
   # discrepencies.
 def _check_attribute_completeness
-  documented_attributes = ATTRIBUTES.map { |a| a['name'].to_s }
+  documented_attributes = ATTRIBUTES.collect { |a| a['name'].to_s }
     # ^ The attributes documented in specdoc.yaml.
-  coded_attributes      = Gem::Specification.attribute_names.map { |a| a.to_s }
+  coded_attributes      = Gem::Specification.attribute_names.collect { |a| a.to_s }
     # ^ The attributes defined in specification.rb.
   missing = coded_attributes - documented_attributes
   unless missing.empty?

@@ -1,3 +1,20 @@
+2005-06-01  Jim Weirich  <jim@weirichhouse.org>
+
+	* scripts/specdoc.rb (_resolve_links): Updated to generate hieraki
+	format so it can be included in the docs.rubygems.org site.
+
+	* test/test_specification.rb (TestSpecification::test_to_ruby):
+	Fixed test on date that hard-coded a specific date.
+
+2005-05-29  Jim Weirich  <jim@weirichhouse.org>
+
+	* Changes from the Seattle Code fest: (1) Package list command
+	(e.g. gem inspect GEM).  (2) .gemrc settings now allow cvsrc like
+	options to set defaults per subcommand.  (3) The autorequire spec
+	attribute will now accept a list.  (4) Binwrappers vs symlinks
+	(more info to follow).  (5) Substituted Time for Date in specs,
+	increasing performance dramatically in an important area.
+
 2005-05-04  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems.rb (Gem::Exception::find_home): Changed rescue

@@ -8,44 +8,44 @@ Gem::manage_gems
 class TestFileList < RubyGemTestCase
 
     def import_spec(name)
-        file = File.join(@gem_install_path, "specifications", name)
-        eval File.read(file)
+      file = File.join(@gem_install_path, "specifications", name)
+      eval File.read(file)
     end
 
     def setup
-        @spec = Gem::Specification.new do |s|
-            s.files = ['lib/code.rb','lib/apple.rb','lib/brown.rb']
-            s.name = "a"
-            s.version = "0.0.1"
-            s.summary = "summary"
-            s.description = "desc"
-            s.require_path = 'lib'
-        end
-
-        @cm = Gem::CommandManager.new
-        @inspect = @cm['inspect']
-
-        current_path = Dir.getwd
-        @gem_install_path =  File.join(current_path, "test/mock/gems/")
-        @gem_root_dir = File.join(@gem_install_path, "gems", @spec.name + "-" + @spec.version.to_s)
-
-        @gemspec_filename = @spec.name + '-' + @spec.version.to_s + '.gemspec'
-        @spec_destination_path = File.join(@gem_install_path, "specifications", @gemspec_filename)
-
-        begin
-            File.open(@spec_destination_path, 'w') do |fp| 
-                fp.write @spec.to_ruby
-            end
-        rescue Exception => e 
-
-        end
-
+      @spec = Gem::Specification.new do |s|
+	s.files = ['lib/code.rb','lib/apple.rb','lib/brown.rb']
+	s.name = "a"
+	s.version = "0.0.1"
+	s.summary = "summary"
+	s.description = "desc"
+	s.require_path = 'lib'
+      end
+      
+      @cm = Gem::CommandManager.new
+      @inspect = @cm['inspect']
+      
+      current_path = Dir.getwd
+      @gem_install_path =  File.join(current_path, "test/mock/gems/")
+      @gem_root_dir = File.join(@gem_install_path, "gems", @spec.name + "-" + @spec.version.to_s)
+      
+      @gemspec_filename = @spec.name + '-' + @spec.version.to_s + '.gemspec'
+      @spec_destination_path = File.join(@gem_install_path, "specifications", @gemspec_filename)
+      
+      begin
+	File.open(@spec_destination_path, 'w') do |fp| 
+	  fp.write @spec.to_ruby
+	end
+      rescue Exception => e 
+	# ignore errors in setup
+      end
+      
     end
-
+    
     def teardown
-        #    FileUtils.rm_rf @dir unless $DEBUG
+      FileUtils.rm_rf @spec_destination_path unless $DEBUG
     end
-
+    
     def test_inspect_list
         args = ["-s", @gem_install_path, "a"]
         Gem::Command.instance_eval "public :handle_options"

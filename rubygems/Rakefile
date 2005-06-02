@@ -30,7 +30,7 @@ CLOBBER.include(
   "test/temp",
   'test/data/gemhome',
   'test/data/*.gem',
-  'scripts/*.wiki',
+  'scripts/*.hieraki',
   'data__',
   'html',
   'pkgs/sources/sources*.gem',
@@ -190,19 +190,19 @@ end
 
 # Wiki Doc Targets
 
-desc "Build the Wiki documentation"
-task :wiki => ['scripts/gemdoc.wiki', 'scripts/specdoc.wiki']
+desc "Build the Hieraki documentation"
+task :hieraki => ['scripts/gemdoc.hieraki', 'scripts/specdoc.hieraki']
 
-file 'scripts/gemdoc.wiki' => ['scripts/gemdoc.rb', 'scripts/gemdoc.data'] do
+file 'scripts/gemdoc.hieraki' => ['scripts/gemdoc.rb', 'scripts/gemdoc.data'] do
   chdir('scripts') do
-    ruby %{-I../lib gemdoc.rb <gemdoc.data >gemdoc.wiki}
+    ruby %{-I../lib gemdoc.rb <gemdoc.data >gemdoc.hieraki}
   end
 end
 
-file 'scripts/specdoc.wiki' =>
+file 'scripts/specdoc.hieraki' =>
   ['scripts/specdoc.rb', 'scripts/specdoc.data', 'scripts/specdoc.yaml'] do
   chdir('scripts') do
-    ruby %{-I../lib specdoc.rb >specdoc.wiki}
+    ruby %{-I../lib specdoc.rb >specdoc.hieraki}
   end
 end
 

@@ -242,10 +242,11 @@ class TestSpecification < RubyGemTestCase
   end
 
   def test_to_ruby
+    today = Time.now.strftime("%Y-%m-%d")
     ruby = "Gem::Specification.new do |s|
   s.name = %q{TestSpecification}
   s.version = \"0.0.2\"
-  s.date = %q{2005-05-29}
+  s.date = %q{#{today}}
   s.summary = %q{this is a summary}
   s.email = %q{example@example.com}
   s.homepage = %q{http://example.com}

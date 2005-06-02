@@ -35,14 +35,14 @@ SECTIONS:
   
   - name: "About"
     attributes:
-      - author                          
+      - authors                          
       - email                           
       - homepage                        
       - rubyforge_project               
 
 ATTRIBUTES:
 
-  - name: author
+  - name: authors
     klass: String
     mandatory: false
     default: 
@@ -82,7 +82,7 @@ ATTRIBUTES:
     notes:
       An "application file" is a file that is intended to be run from the
       command line.  If your package contains such files, they will typically
-      be placed in a <tt>bin</tt> directory, hence the name ''bindir''.
+      be placed in a <tt>bin</tt> directory, hence the name *bindir*.
 
   - name: date
     klass: Time
@@ -100,13 +100,13 @@ ATTRIBUTES:
     mandatory: false
     default: ...
     description:
-      Of all the application files in the package, the ''default executable''
+      Of all the application files in the package, the *default executable*
       is the one that can be run directly through the gem.
     usage: |
         spec.executables = ['bin/foo', 'bin/bar']
         spec.default_executable = 'bin/bar'
     notes:
-      "If you only specify one application file in ''executables'', that file
+      "If you only specify one application file in *executables*, that file
       becomes the default executable.  Therefore, you only need to specify
       this value if you have more than one application file.
 
@@ -116,7 +116,7 @@ ATTRIBUTES:
       monopoly.gem</tt>, which would run the <tt>monopoly</tt> application.
       This is not an in-demand feature.
 
-      ''XXX: Is the full path necessary?''"
+      <em>XXX: Is the full path necessary?</em>"
 
   - name: dependencies
     klass: Array
@@ -150,7 +150,7 @@ ATTRIBUTES:
       formatting, as demonstrated above, without worrying about the
       formatting.
 
-      The ''description'' should be more detailed than the ''summary''.  You
+      The _description_ should be more detailed than the _summary_.  You
       might consider copying all or part of your project's README into this
       field.
 
@@ -191,14 +191,14 @@ ATTRIBUTES:
       "These files will be run when the gem is installed, causing the C (or
       whatever) code to be compiled on the user's machine.
 
-      ''XXX: Any other comments?''"
+      <em>XXX: Any other comments?</em>"
 
   - name: extra_rdoc_files
     klass: Array
     mandatory: false
     default: 
     description:
-      A list of ''extra'' files that will be used by RDoc to generate the
+      A list of _extra_ files that will be used by RDoc to generate the
       documentation.
     usage: |
         spec.extra_rdoc_files = ['README', 'doc/user-guide.txt']
@@ -274,7 +274,7 @@ ATTRIBUTES:
       a Ruby "extension".  The should leave the default value in place unless
       their code will only compile on a certain type of system.  Some gems 
       consist of pre-compiled code ("binary gems").  It's especially important 
-      that they set the ''platform'' attribute appropriately.  A shortcut is
+      that they set the _platform_ attribute appropriately.  A shortcut is
       to set the platform to Gem::Platform::CURRENT, which will cause the 
       gem builder to set the platform to the appropriate value for the system
       on which the build is being performed.
@@ -341,6 +341,24 @@ ATTRIBUTES:
         spec.required_ruby_version = '>= 1.8.1'
     notes:
       See the RubyGems wiki for documentation on specifying versions.
+
+  - name: rubygems_version
+    klass: String
+    mandatory: false
+    default: '<em>current version of RubyGems</em>'
+    description:
+      The version of RubyGems used to create this gem.
+    usage: |
+        No usage ... it is set automatically when the gem is created.
+
+  - name: specification_version
+    klass: Integer
+    mandatory: false
+    default: '<em>Revision level of the RubyGems specification this gem conforms to.</em>'
+    description:
+      The revision level of the GemSpec specification that this gem conforms to.
+    usage: |
+        No usage ... it is set automatically when the gem is created.
 
   - name: requirements
     klass: Array

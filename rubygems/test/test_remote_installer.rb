@@ -17,14 +17,24 @@ class MockFetcher
   def source_index
     if @uri =~ /non.existent.url/
       fail Gem::RemoteSourceException,
-	"Error fetching remote gem cache: Mock Socket Exception"
+        "Error fetching remote gem cache: Mock Socket Exception"
     end
     result = {
       'foo-1.2.3' => Gem::Specification.new do |s|
-	s.name = 'foo'
-	s.version = "1.2.3"
-	s.summary = "This is a cool package"
-      end
+        s.name = 'foo'
+        s.version = "1.2.3"
+        s.summary = "This is a cool package"
+      end,
+      'foo-tools-2.0.0' => Gem::Specification.new do |s|
+        s.name = 'foo-tools'
+        s.version = "2.0.0"
+        s.summary = "This is an even cooler package"
+      end,
+      'foo-2-2.0.0' => Gem::Specification.new do |s|
+        s.name = 'foo-2'
+        s.version = "2.0.0"
+        s.summary = "This is the coolest package evar!~!"
+      end,
     }
     result
   end
@@ -72,6 +82,15 @@ class TestRemoteInstaller < Test::Unit::TestCase
       info = @installer.source_index_hash
     }
   end
+
+  def test_find_gem_to_install
+    version = Gem::Version::Requirement.new "> 0.0.0"
+    gems = @installer.find_gem_to_install("foo", version,
+                                          @installer.source_index_hash)
+
+    assert_equal "foo-1.2.3", gems.first.full_name
+  end
+
 end
 
 # This test suite has a number of TODOs in the test cases.  The

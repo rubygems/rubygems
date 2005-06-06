@@ -425,36 +425,44 @@ module Gem
 
     # Find a gem to be installed by interacting with the user.
     def find_gem_to_install(gem_name, version_requirement, caches)
-      max_version = Version.new("0.0.0")
       specs_n_sources = []
+
       caches.each do |source, cache|
         cache.each do |name, spec|
-          if (/^#{gem_name}-/i === name &&
-	      version_requirement.satisfied_by?(spec.version))
+          if /^#{gem_name}$/i === spec.name &&
+             version_requirement.satisfied_by?(spec.version) then
             specs_n_sources << [spec, source]
           end
         end
       end
-      if specs_n_sources.size == 0
-        raise GemNotFoundException.new(
-	  "Could not find #{gem_name} (#{version_requirement}) in the repository")
+
+      if specs_n_sources.empty? then
+        raise GemNotFoundException.new("Could not find #{gem_name} (#{version_requirement}) in the repository")
       end
-      specs_n_sources = specs_n_sources.sort_by { |x| x[0].version }.reverse
-      if specs_n_sources.reject { |item|
-	  item[0].platform.nil? || item[0].platform==Platform::RUBY
-	}.size == 0
-        # only non-binary gems...return latest
-        return specs_n_sources.first
-      end
-      list = specs_n_sources.collect {|item|
+
+      specs_n_sources = specs_n_sources.sort_by { |gs,| gs.version }.reverse
+
+      non_binary_gems = specs_n_sources.reject { |item|
+        item[0].platform.nil? || item[0].platform==Platform::RUBY
+      }
+
+      # only non-binary gems...return latest
+      return specs_n_sources.first if non_binary_gems.empty?
+
+      list = specs_n_sources.collect { |item|
 	"#{item[0].name} #{item[0].version} (#{item[0].platform.to_s})"
       }
+
       list << "Cancel installation"
+
       string, index = choose_from_list(
 	"Select which gem to install for your platform (#{RUBY_PLATFORM})",
 	list)
-      raise RemoteInstallationCancelled.new("Installation of #{gem_name} cancelled.") if
-	index == (list.size - 1)
+
+      if index == (list.size - 1) then
+        raise RemoteInstallationCancelled, "Installation of #{gem_name} cancelled."
+      end
+
       specs_n_sources[index]
     end
 

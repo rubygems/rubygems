@@ -449,7 +449,7 @@ module Gem
     # default Ruby platform).
     #
     def full_name
-      if platform == Gem::Platform::RUBY
+      if platform == Gem::Platform::RUBY || platform.nil?
         "#{@name}-#{@version}"
       else
         "#{@name}-#{@version}-#{platform}"

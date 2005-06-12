@@ -1,3 +1,10 @@
+2005-06-12  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/installer.rb
+	(Gem::Installer::installation_satisfies_dependency): Refactored
+	dependency check into ensure_dependency! and
+	installation_satisfies_dependency?.
+
 2005-06-12  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems.rb,lib/rubygems/installer.rb: Applied Mark Hubbart's
 	* lib/rubygems/remote_installer.rb: Applied David Glasser's install-

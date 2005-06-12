@@ -111,7 +111,6 @@ module Gem
     # dependency :: Gem::Dependency
     def installation_satisfies_dependency?(dependency)
       current_index = SourceIndex.from_installed_gems
-
       current_index.find_name(dependency.name, dependency.version_requirements).size > 0
     end
 

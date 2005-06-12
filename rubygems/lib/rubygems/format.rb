@@ -26,7 +26,7 @@ module Gem
     #
     # file_path:: [String] Path to the gem file
     #
-    def self.from_file_by_path(file_path)
+    def self.from_file_by_path(file_path, security_policy = nil)
       unless File.exist?(file_path)
         raise Gem::Exception, "Cannot load gem at [#{file_path}]"
       end
@@ -38,7 +38,7 @@ module Gem
         return OldFormat.from_file_by_path(file_path)
       else
         f = File.open(file_path, 'rb')
-        return from_io(f, file_path)
+        return from_io(f, file_path, security_policy)
       end
     end
 
@@ -48,9 +48,9 @@ module Gem
     #
     # io:: [IO] Stream from which to read the gem
     #
-    def self.from_io(io, gem_path="(io)")
+    def self.from_io(io, gem_path="(io)", security_policy = nil)
       format = self.new(gem_path)
-      Package.open_from_io(io) do |pkg|
+      Package.open_from_io(io, 'r', security_policy) do |pkg|
         format.spec = pkg.metadata
         format.file_entries = []
         pkg.each do |entry|

@@ -236,6 +236,10 @@ module Gem
     attribute :has_rdoc,               false
     attribute :required_ruby_version,  Gem::Version::Requirement.default
     attribute :platform,               Gem::Platform::RUBY
+
+    attribute :signing_key,            nil
+    attribute :cert_chain,             nil
+
     array_attribute :authors
     array_attribute :files
     array_attribute :test_files

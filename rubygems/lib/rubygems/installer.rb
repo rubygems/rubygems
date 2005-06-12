@@ -46,7 +46,15 @@ module Gem
     #
     def install(force=false, install_dir=Gem.dir, ignore_this_parameter=false)
       require 'fileutils'
-      format = Gem::Format.from_file_by_path(@gem)
+
+      # if we're forcing the install, then disable security, _unless_ 
+      # the security policy says that we only install singed gems
+      # (this includes Gem::Security::HighSecurity)
+      security_policy = @options[:security_policy]
+      security_policy = nil if force && security_policy && 
+                            security_policy.only_signed != true
+
+      format = Gem::Format.from_file_by_path(@gem, security_policy)
       unless force
         spec = format.spec
         # Check the Ruby version.
@@ -90,7 +98,7 @@ module Gem
     # Unpacks the gem into the given directory.
     #
     def unpack(directory)
-      format = Gem::Format.from_file_by_path(@gem)
+      format = Gem::Format.from_file_by_path(@gem, @options[:security_policy])
       extract_files(directory, format)
     end
 

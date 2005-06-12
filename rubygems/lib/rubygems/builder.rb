@@ -1,5 +1,7 @@
 require "rubygems/package"
+require "rubygems/security"
 require "yaml"
+require 'openssl'
 
 module Gem
 
@@ -26,9 +28,20 @@ module Gem
       @spec.mark_version
       @spec.validate
       
+      # if the signing key was specified, then load the file, and swap
+      # to the public key (TODO: we should probably just omit the
+      # signing key in favor of the signing certificate, but that's for
+      # the future, also the signature algorihtm should be configurable)
+      signer = nil
+      if @spec.signing_key
+        signer = Gem::Security::Signer.new(@spec.signing_key, @spec.cert_chain)
+        @spec.signing_key = nil
+        @spec.cert_chain = signer.cert_chain.map { |cert| cert.to_s }
+      end
+
       file_name = @spec.full_name+".gem"
 
-      Package.open(file_name, "w") do |pkg|
+      Package.open(file_name, "w", signer) do |pkg|
           pkg.metadata = @spec.to_yaml
           @spec.files.each do |file|
               next if File.directory? file

@@ -47,6 +47,7 @@ module Gem
       register_command EnvironmentCommand.new
       register_command SpecificationCommand.new
       register_command UnpackCommand.new
+      register_command CertCommand.new
       register_command InspectCommand.new
     end
     

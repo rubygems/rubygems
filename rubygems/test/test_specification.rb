@@ -106,7 +106,7 @@ class TestSimpleSpecification < Test::Unit::TestCase
       require_paths authors email homepage rubyforge_project description
       autorequire default_executable bindir has_rdoc required_ruby_version
       platform files test_files rdoc_options extra_rdoc_files
-      executables extensions requirements dependencies
+      executables extensions requirements dependencies signing_key cert_chain
     }.sort
     actual_value = Gem::Specification.attribute_names.map { |a| a.to_s }.sort
     assert_equal expected_value, actual_value

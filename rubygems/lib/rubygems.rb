@@ -394,6 +394,7 @@ end
 
 require 'rubygems/source_index'
 require 'rubygems/specification'
+require 'rubygems/security'
 require 'rubygems/version'
 #require 'rubygems/loadpath_manager'    # custom_require replaces this
 require 'rubygems/custom_require'

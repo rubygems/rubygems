@@ -11,8 +11,10 @@ require 'digest/md5'
 require 'fileutils'
 require 'find'
 require 'stringio'
+require 'openssl'
 
 require 'rubygems/specification'
+require 'rubygems/security'
 
 module Gem
 
@@ -470,10 +472,13 @@ class TarInput
     attr_reader :metadata
     class << self; private :new end
 
-    def initialize(io)
+    def initialize(io, security_policy = nil)
         @io = io
-        @tarreader = TarReader.new @io
+        @tarreader = TarReader.new(@io)
         has_meta = false
+        data_sig, meta_sig, data_dgst, meta_dgst = nil, nil, nil, nil
+        dgst_algo = security_policy ? Gem::Security::OPT[:dgst_algo] : nil
+
         @tarreader.each do |entry|
             case entry.full_name 
             when "metadata"
@@ -483,7 +488,16 @@ class TarInput
                 break
             when "metadata.gz"
                 begin
-                    gzis = Zlib::GzipReader.new entry
+                    # if we have a security_policy, then pre-read the
+                    # metadata file and calculate it's digest
+                    sio = nil
+                    if security_policy 
+                      sio = StringIO.new(entry.read)
+                      meta_dgst = dgst_algo.digest(sio.string)
+                      sio.rewind
+                    end
+
+                    gzis = Zlib::GzipReader.new(sio || entry)
                     # YAML wants an instance of IO 
                     # (GS) Changed to line below: @metadata = YAML.load(gzis) rescue nil
                     @metadata = load_gemspec(gzis)
@@ -491,8 +505,55 @@ class TarInput
                 ensure
                     gzis.close
                 end
+            when 'metadata.gz.sig'
+              meta_sig = entry.read
+            when 'data.tar.gz.sig'
+              data_sig = entry.read
+            when 'data.tar.gz'
+              if security_policy
+                data_dgst = dgst_algo.digest(entry.read)
+              end
             end
         end
+
+        if security_policy 
+          # map trust policy from string to actual class (or a
+          # serialized YAML file, if that exists)
+          if (security_policy.is_a?(String))
+            if Gem::Security.constants.index(security_policy)
+              # load one of the pre-defined security policies
+              security_policy = Gem::Security.const_get(security_policy)
+            elsif File.exists?(security_policy)
+              # FIXME: this doesn't work yet
+              security_policy = YAML::load(File.read(security_policy))
+            else
+              raise Gem::Exception, "Unknown trust policy '#{security_policy}'"
+            end
+          end
+          
+          if data_sig && data_dgst && meta_sig && meta_dgst
+            # the user has a trust policy, and we have a signed gem
+            # file, so use the trust policy to verify the gem signature
+            
+            begin
+              security_policy.verify_gem(data_sig, data_dgst, @metadata.cert_chain)
+            rescue Exception => e
+              raise "Couldn't verify data signature: #{e}"
+            end
+
+            begin
+              security_policy.verify_gem(meta_sig, meta_dgst, @metadata.cert_chain)
+            rescue Exception => e
+              raise "Couldn't verify metadata signature: #{e}"
+            end
+          elsif security_policy.only_signed
+            raise Gem::Exception, "Unsigned gem"
+          else
+            # FIXME: should display warning here (trust policy, but
+            # either unsigned or badly signed gem file)
+          end
+        end
+
         @tarreader.rewind
         @fileops = FileOperations.new
         raise RuntimeError, "No metadata found!" unless has_meta
@@ -505,14 +566,14 @@ class TarInput
       nil
     end
 
-    def self.open(filename, &block)
-        open_from_io(File.open(filename, "rb"), &block)
+    def self.open(filename, security_policy = nil, &block)
+        open_from_io(File.open(filename, "rb"), security_policy, &block)
     end
 
-    def self.open_from_io(io, &block)
+    def self.open_from_io(io, security_policy = nil,  &block)
         raise "Want a block" unless block_given?
         begin
-            is = new(io)
+            is = new(io, security_policy)
             yield is
         ensure
             is.close if is
@@ -617,21 +678,25 @@ class TarOutput
         @external
     end
 
-    def self.open(filename, &block)
+    def self.open(filename, signer = nil, &block)
         io = File.open(filename, "wb")
-        open_from_io(io, &block)
+        open_from_io(io, signer, &block)
         nil
     end
 
-    def self.open_from_io(io, &block)
+    def self.open_from_io(io, signer = nil, &block)
         outputter = new(io)
         metadata = nil
         set_meta = lambda{|x| metadata = x}
         raise "Want a block" unless block_given?
         begin
+            data_sig, meta_sig = nil, nil
+
             outputter.external_handle.add_file("data.tar.gz", 0644) do |inner|
                 begin
-                    os = Zlib::GzipWriter.new inner
+                    sio = signer ? StringIO.new : nil
+                    os = Zlib::GzipWriter.new(sio || inner)
+
                     TarWriter.new(os) do |inner_tar_stream| 
                         klass = class <<inner_tar_stream; self end
                         klass.send(:define_method, :metadata=, &set_meta) 
@@ -641,17 +706,56 @@ class TarOutput
                     os.flush
                     os.finish
                     #os.close
+
+                    # if we have a signing key, then sign the data
+                    # digest and return the signature
+                    data_sig = nil
+                    if signer 
+                      dgst_algo = Gem::Security::OPT[:dgst_algo]
+                      dig = dgst_algo.digest(sio.string)
+                      data_sig = signer.sign(dig)
+                      inner.write(sio.string)
+                    end
                 end
             end
+            
+            # if we have a data signature, then write it to the gem too
+            if data_sig
+              sig_file = 'data.tar.gz.sig'
+              outputter.external_handle.add_file(sig_file, 0644) do |os|
+                os.write(data_sig)
+              end
+            end
+            
             outputter.external_handle.add_file("metadata.gz", 0644) do |os|
                 begin
-                    gzos = Zlib::GzipWriter.new os
+                    sio = signer ? StringIO.new : nil
+                    gzos = Zlib::GzipWriter.new(sio || os)
                     gzos.write metadata
                 ensure
                     gzos.flush
                     gzos.finish
+
+                    # if we have a signing key, then sign the metadata
+                    # digest and return the signature
+                    if signer
+                      dgst_algo = Gem::Security::OPT[:dgst_algo]
+                      dig = dgst_algo.digest(sio.string)
+                      meta_sig = signer.sign(dig)
+                      os.write(sio.string)
+                    end
                 end
             end
+
+            # if we have a metadata signature, then write to the gem as
+            # well
+            if meta_sig
+              sig_file = 'metadata.gz.sig'
+              outputter.external_handle.add_file(sig_file, 0644) do |os|
+                os.write(meta_sig)
+              end
+            end
+            
         ensure
             outputter.close
         end
@@ -668,34 +772,36 @@ end # module Package
 
 module Package    
     #FIXME: refactor the following 2 methods
-    def self.open(dest, mode = "r", &block)
+    def self.open(dest, mode = "r", signer = nil, &block)
         raise "Block needed" unless block_given?
 
         case mode
         when "r"
-            TarInput.open(dest, &block)
+            security_policy = signer
+            TarInput.open(dest, security_policy, &block)
         when "w"
-            TarOutput.open(dest, &block)
+            TarOutput.open(dest, signer, &block)
         else
             raise "Unknown Package open mode"
         end
     end
 
-    def self.open_from_io(io, mode = "r", &block)
+    def self.open_from_io(io, mode = "r", signer = nil, &block)
         raise "Block needed" unless block_given?
 
         case mode
         when "r"
-            TarInput.open_from_io(io, &block)
+            security_policy = signer
+            TarInput.open_from_io(io, security_policy, &block)
         when "w"
-            TarOutput.open_from_io(io, &block)
+            TarOutput.open_from_io(io, signer, &block)
         else
             raise "Unknown Package open mode"
         end
     end
 
-    def self.pack(src, destname)
-        TarOutput.open(destname) do |outp|
+    def self.pack(src, destname, signer = nil)
+        TarOutput.open(destname, signer) do |outp|
             dir_class.chdir(src) do 
                 outp.metadata = (file_class.read("RPA/metadata") rescue nil)
                 find_class.find('.') do |entry|

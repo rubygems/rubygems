@@ -17,6 +17,8 @@ spec = Gem::Specification.new do |s|
   #s.extra_rdoc_files = ["README", "Changes.rdoc"]
   #s.default_executable = "myapp"
   s.bindir = "bin"
+  s.signing_key = '/Users/chadfowler/cvs/rubygems/gem-private_key.pem'
+  s.cert_chain  = ['/Users/chadfowler/cvs/rubygems/gem-public_cert.pem']
 end
 
 if $0==__FILE__

@@ -63,10 +63,9 @@ module Gem
             raise "#{spec.name} requires Ruby version #{rrv}"
           end
         end
-        # Check the dependent gems.
  	unless @options[:ignore_dependencies]
  	  spec.dependencies.each do |dep_gem|
- 	    raise "#{spec.name} requires #{dep_gem.name} #{dep_gem.version_requirements} " unless Gem.source_index.from_installed_gems.find_name(dep_gem.name, dep_gem.version_requirements).size > 0
+	    ensure_dependency!(spec, dep_gem)
  	  end
  	end
       end
@@ -94,7 +93,29 @@ module Gem
       return format.spec
     end
 
-    # 
+    ##
+    # Ensure that the dependency is satisfied by the current
+    # installation of gem.  If it is not, then fail (i.e. throw and
+    # exception).
+    #
+    # spec       :: Gem::Specification
+    # dependency :: Gem::Dependency
+    def ensure_dependency!(spec, dependency)
+      raise "#{spec.name} requires #{dependency.name} #{dependency.version_requirements} " unless
+	installation_satisfies_dependency?(dependency)
+    end
+
+    ##
+    # True if the current installed gems satisfy the given dependency.
+    #
+    # dependency :: Gem::Dependency
+    def installation_satisfies_dependency?(dependency)
+      current_index = SourceIndex.from_installed_gems
+
+      current_index.find_name(dependency.name, dependency.version_requirements).size > 0
+    end
+
+    ##
     # Unpacks the gem into the given directory.
     #
     def unpack(directory)
@@ -102,6 +123,7 @@ module Gem
       extract_files(directory, format)
     end
 
+    ##
     # Given a root gem directory, build supporting directories for gem
     # if they do not already exist
     def build_support_directories(install_dir)

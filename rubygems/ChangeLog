@@ -1,6 +1,7 @@
 2005-06-12  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems.rb,lib/rubygems/installer.rb: Applied Mark Hubbart's
-	patch to support MacOS framework.
+	* lib/rubygems/remote_installer.rb: Applied David Glasser's install-
+	from-local-mirror patch (allows gem install -s file:///path/to/mirror)
 
 2005-06-06  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems/specification.rb: Fixed Erik hatcher's reported bug

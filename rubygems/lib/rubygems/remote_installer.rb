@@ -63,7 +63,7 @@ module Gem
 
     # Normalize the URI by adding "http://" if it is missing.
     def normalize_uri(uri)
-      (uri =~ /^(https?|ftp):/) ? uri : "http://#{uri}"
+      (uri =~ /^(https?|ftp|file):/) ? uri : "http://#{uri}"
     end
 
     # Connect to the source host/port, using a proxy if needed.
@@ -85,6 +85,8 @@ module Gem
     # Read the size of the (source based) URI using an HTTP HEAD
     # command.
     def read_size(uri)
+      return File.size(get_file_uri_path(uri)) if is_file_uri(uri)
+      
       require 'net/http'
       require 'uri'
       u = URI.parse(uri)
@@ -97,22 +99,42 @@ module Gem
 
     # Read the data from the (source based) URI.
     def read_data(uri)
-      require 'rubygems/open-uri'
       begin
-	open(uri,
-	  "User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}",
-	  :proxy => @http_proxy
-	  ) do |input|
-	  input.read
-	end
+    	open_uri_or_path(uri) do |input|
+    	  input.read
+    	end
       rescue
-	old_uri = uri
-	uri = uri.downcase
-	retry if old_uri != uri
-	raise
+    	old_uri = uri
+    	uri = uri.downcase
+    	retry if old_uri != uri
+    	raise
       end
     end
-
+    
+    # Read the data from the (source based) URI, but if it is a
+    # file:// URI, read from the filesystem instead.
+    def open_uri_or_path(uri, &block)
+      require 'rubygems/open-uri'
+      if is_file_uri(uri)
+        open(get_file_uri_path(uri), &block)
+      else
+        open(uri,
+             "User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}",
+             :proxy => @http_proxy,
+             &block)
+      end
+    end
+    
+    # Checks if the provided string is a file:// URI.
+    def is_file_uri(uri)
+      uri =~ %r{\Afile://}
+    end
+    
+    # Given a file:// URI, returns its local path.
+    def get_file_uri_path(uri)
+      uri.sub(%r{\Afile://}, '')
+    end
+    
     # Convert the yamlized string spec into a real spec (actually,
     # these are hashes of specs.).
     def convert_spec(yaml_spec)

@@ -367,7 +367,11 @@ module Gem
       # fundamental RubyGems dependency, so it might as well be up the
       # top.  -- Gavin Sinclair, 2004-12-12
       #
-      File.join(Config::CONFIG['libdir'], 'ruby', 'gems', Config::CONFIG['ruby_version'])
+      if defined? RUBY_FRAMEWORK_VERSION
+        return File.join(File.dirname(Config::CONFIG["sitedir"]), "Gems")
+      else
+        File.join(Config::CONFIG['libdir'], 'ruby', 'gems', Config::CONFIG['ruby_version'])
+      end
     end
 
     private 

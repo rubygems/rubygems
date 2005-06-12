@@ -134,6 +134,22 @@ module Gem
       end
     end
 
+    ##
+    # Determines the directory for binaries
+    #
+    def bindir(install_dir=Gem.dir)
+      if(install_dir == Gem.default_dir)
+        # mac framework support
+        if defined? RUBY_FRAMEWORK_VERSION
+          File.join(File.dirname(Config::CONFIG["sitedir"]), File.basename(Config::CONFIG["bindir"]))
+        else # generic install
+          Config::CONFIG['bindir']
+        end
+      else
+        File.join(install_dir, "bin")
+      end
+    end
+
     def generate_bin(spec, install_dir=Gem.dir)
       return unless spec.executables && ! spec.executables.empty?
       
@@ -141,11 +157,7 @@ module Gem
       # a directory that is the system gem directory, then
       # use the system bin directory, else create (or use) a
       # new bin dir under the install_dir.
-      bindir = if install_dir == Gem.default_dir then
-        Config::CONFIG['bindir'] 
-      else
-        File.join install_dir, "bin"
-      end
+      bindir = bindir(install_dir)
 
       Dir.mkdir bindir unless File.exist? bindir
       raise Gem::FilePermissionError.new(bindir) unless File.writable?(bindir)

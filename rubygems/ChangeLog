@@ -3,6 +3,8 @@
 	* lib/rubygems/remote_installer.rb: Applied David Glasser's install-
 	* Applied Paul Duncan's incredibly complete gem signing patch.
 	Thanks, Paul!
+	* lib/rubygems/installer.rb: Fixed bug in installer that caused
+	dependency installation not to work.
 
 2005-06-06  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems/specification.rb: Fixed Erik hatcher's reported bug

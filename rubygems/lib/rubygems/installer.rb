@@ -66,7 +66,7 @@ module Gem
         # Check the dependent gems.
  	unless @options[:ignore_dependencies]
  	  spec.dependencies.each do |dep_gem|
- 	    raise "#{spec.name} requires #{dep_gem.name} #{dep_gem.version_requirements} " unless Gem.source_index.find_name(dep_gem.name, dep_gem.version_requirements).size > 0
+ 	    raise "#{spec.name} requires #{dep_gem.name} #{dep_gem.version_requirements} " unless Gem.source_index.from_installed_gems.find_name(dep_gem.name, dep_gem.version_requirements).size > 0
  	  end
  	end
       end

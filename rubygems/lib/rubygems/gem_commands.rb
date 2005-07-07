@@ -722,7 +722,7 @@ module Gem
     def initialize
       super(
         'update',
-        'Upgrade currently installed gems in the local repository',
+        'Upgrade the named gem (or all installed gems) in the local repository',
         {
           :generate_rdoc => true, 
           :force => false, 

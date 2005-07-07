@@ -35,7 +35,7 @@ def table_of_contents
   out.gsub(/^\s+(\w+)/) {
     cmd_name = $1
     "  [http://rubygems.rubyforge.org/wiki/wiki.pl?GemReference##{cmd_name} -]  #{cmd_name}"
-  }.gsub(/RubyGems/, '<nowiki>RubyGems</nowiki>')
+  }
 end
 
 while line = gets
@@ -52,7 +52,7 @@ while line = gets
     when "!toc"
       puts table_of_contents()
     when "!toc-link"
-      puts "''[http://rubygems.rubyforge.org/wiki/wiki.pl?GemReference#toc ^ Table of Contents]''"
+      puts "\"Table of Contents\":http://docs.rubygems.org/read/chapter/10#toc"
     when "!version"
       puts Gem::RubyGemsPackageVersion
     end

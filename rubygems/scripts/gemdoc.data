@@ -1,51 +1,4 @@
-
-== Introduction ==
-
-gem is the command-line interface to RubyGems. With it, you can
-install gems locally or remotely, see what you have installed, search
-for gems, and more.
-
-It works on the following basis: you specify an operation and
-optionally some modifiers. Finally, you can have a configuration file
-to specify commonly-used command-line arguments and other settings.
-
-See the [[Quick_Introduction|QuickIntroduction]] for a task-driven
-hands-on overview of gem's main features.
-
-This reference covers 'gem' version 
-!version
-.
-
-=== Basic 'gem' Usage, and Getting Help ===
-
-<tt>gem</tt> is based on ''commands'', like <tt>build</tt>, <tt>install</tt>,
-and <tt>search</tt>.  See the Table of Contents for a full list.
-
-Each command takes ''arguments'' and/or ''options''.  For example, if you run
-
-  gem install rake --remote
-
-then <tt>install</tt> is the command, <tt>rake</tt> is the argument, and
-<tt>--remote</tt> is an option.  (By the way, this command installs rake
-remotely.)
-
-<tt>gem</tt> provides most of the help you need inline.
-* '''To see a list of commands''', run <tt>gem help commands</tt>.
-* '''To get help on the ''install'' command''', run <tt>gem help install</tt>.
-* '''To see some examples of common usage''', run <tt>gem help examples</tt>.
-* '''For a reminder of all this''', just run <tt>gem help</tt>.
-
-The help on each command is also included in this document.
-
-=== [#toc]Gem Commands (Table of Contents) ===
-
-The following is taken from the output of <tt>gem help commands</tt>.  The
-links on the left take you to the relevant section of this document.
-
-!toc
-
-
-== [#build]gem build -- Build a gem file from a specification ==
+== gem build -- Build a gem file from a specification
 
 The build command is used by developers to package their Ruby software
 into a single gem file that can be distributed.  The build command
@@ -56,11 +9,11 @@ A yaml file containing the Gem::Specification object built by a
 gemspec (instead of a gemspec file) may also be also be used with the
 build command.
 
-=== Usage ===
+h3. Usage
 
 !usage build
 
-=== Examples ===
+h3. Examples
 
 This example builds a the rake package from a gemspec file.
 
@@ -86,25 +39,23 @@ $ rake gem
   File: rake-0.4.0.gem
 </pre>
 
-!toc-link
 
-
-== [#check]gem check -- Check installed gems for problems ==
+== gem check -- Check installed gems for problems
 
 The check command is used to verify that a gem in is good working order.
 
-=== Usage ===
+h3. Usage
 
 !usage check
 
-The ''verify'' option checks a gem file for corruption.  If the file is
+The <em>verify</em> option checks a gem file for corruption.  If the file is
 not exactly like it was built, verify will complain.  (Note: This is a
 simple integrity check.  It is not checking for PGP like signatures).
 
-The ''alien'' option checks an installed gem to see if any of the files
+The <em>alien</em> option checks an installed gem to see if any of the files
 have been tampered with.
 
-=== Examples ===
+h3. Examples
 
 The following check is run against a valid rake gem file.
 
@@ -153,21 +104,18 @@ activerecord-0.8.1 has 2 problems
 [... remaining output elided ...]
 </pre>
 
-!toc-link
-
-
-== [#cleanup] gem cleanup [gemname] -- Cleanup the outdated versions ==
+== gem cleanup [gemname] -- Cleanup the outdated versions
 
 (new in version 0.8.7)
 
 This command will remove (uninstall) all the versions of a gem, except
 for the latest one.  If no gemname is given in the command line, cleanup will be run agains all installed gems.
 
-=== Usage ===
+h3. Usage
 
 !usage cleanup
 
-=== Examples ===
+h3. Examples
 
 <pre>
 $ gem cleanup
@@ -180,19 +128,16 @@ Rubygems Environment:
      - http://gems.rubyforge.org
 </pre>
 
-!toc-link
-
-
-== [#environment] gem environment -- Display information about the gem environment ==
+== gem environment -- Display information about the gem environment
 
 Gems uses several paths and directories to perform its work.  This
 command will display the information the gem command has found.
 
-=== Usage ===
+h3. Usage
 
 !usage environment
 
-=== Examples ===
+h3. Examples
 
 <pre>
 $ gem environment
@@ -205,22 +150,16 @@ Rubygems Environment:
      - http://gems.rubyforge.org
 </pre>
 
-!toc-link
-
-
-== [#help] gem help -- Provide help about gem commands ==
+== gem help -- Provide help about gem commands
 
 The help command provides information about the syntax and options
 available on the gem command.
 
-=== Usage ===
+h3. Usage
 
 !usage help
 
-!toc-link
-
-
-== [#install]gem install -- Installing a gem ==
+== gem install -- Installing a gem
 
 <tt>gem install</tt> will install the named gem. It will
 attempt a local installation (i.e. a .gem file in the current
@@ -231,11 +170,11 @@ If a gem is being installed remotely, and it depends on other gems
 that are not installed, then gem will download and install those,
 after you have confirmed the operation.
 
-=== Usage ===
+h3. Usage
 
 !usage install
 
-=== Examples ===
+h3. Examples
 
 These examples show how GEMNAME can be specified:
 
@@ -271,19 +210,16 @@ Install required dependency log4r? [Yn]   y
 Successfully installed copland, version 0.3.0
 </pre>
 
-!toc-link
+== gem list -- List gems starting with a string
 
-
-== [#list]gem list -- List gems starting with a string ==
-
-<tt>gem list</tt> will list all gems whose name ''starts with'' the given
+<tt>gem list</tt> will list all gems whose name <em>starts with</em> the given
 string.  If no string is provided, all gems are listed.
 
-=== Usage ===
+h3. Usage
 
 !usage list
 
-=== Examples ===
+h3. Examples
 
 List all remote gems starting with "a".
 
@@ -313,19 +249,16 @@ $ gem list --both
   ...
 </pre>
 
-!toc-link
-
-
-== [#query]gem query -- Query for a list of gems ==
+== gem query -- Query for a list of gems
 
 <tt>gem query</tt> will list all gems matching a particular criteria.
 The domain may be local, remote or both.
 
-=== Usage ===
+h3. Usage
 
 !usage query
 
-=== Examples ===
+h3. Examples
 
 To list all local gems with a digit in the gem name:
 
@@ -355,19 +288,16 @@ midilib (0.8.0)
     MIDI file and event manipulation library
 </pre>
 
-!toc-link
+== gem search -- List gems containing a string
 
-
-== [#search]gem search -- List gems containing a string ==
-
-<tt>gem search</tt> will list all gems whose name ''contains'' the given
+<tt>gem search</tt> will list all gems whose name <em>contains</em> the given
 (case-insensitive) string.  If no string is provided, all gems will be listed.
 
-=== Usage ===
+h3. Usage
 
 !usage search
 
-=== Examples ===
+h3. Examples
 
 List all remote gems containing "log" in their name.
 
@@ -384,19 +314,16 @@ rublog (0.8.0)
     set of regular files in a log-format.
 </pre>
 
-!toc-link
-
-
-== [#specification]gem specification -- Extract the Gem::Specification from a gem file ==
+== gem specification -- Extract the Gem::Specification from a gem file
 
 The specification command will extract the Gem::Specification from a
 gem file and write to standard output in YAML format.
 
-=== Usage ===
+h3. Usage
 
 !usage specification
 
-=== Examples ===
+h3. Examples
 
 Here is the specification from rake 0.4.1.
 
@@ -425,20 +352,17 @@ files:
   ......
 </pre>
 
-!toc-link
-
-
-== [#uninstall]gem uninstall -- Uninstalling a gem ==
+== gem uninstall -- Uninstalling a gem
 
 The uninstall will uninstall the named gem.  If multiple versions of a
 gem are installed, you will be prompted to select a single one, or all
 of them.
 
-=== Usage ===
+h3. Usage
 
 !usage uninstall
 
-=== Examples ===
+h3. Examples
 
 The following uninstalls the only copy of copland.
 
@@ -468,10 +392,7 @@ Proceed? [Y/n]  y
 Removing rake
 </pre>
 
-!toc-link
-
-
-== [#unpack]gem unpack -- Unpack an installed gem to the current directory ==
+== gem unpack -- Unpack an installed gem to the current directory
 
 ''(Not in version 0.7.)''
 
@@ -482,11 +403,11 @@ with the gem repository.
 You can only unpack gems that you have installed, and you must specify the gem
 name exactly.
 
-=== Usage ===
+h3. Usage
 
 !usage unpack
 
-=== Examples ===
+h3. Examples
 
 <pre>
 $ gem unpack rake
@@ -499,19 +420,17 @@ $ gem unpack wazoo
 ERROR:  Gem 'wazoo' not installed.
 </pre>
 
-!toc-link
+== gem update -- Update your installed gems
 
+The update command will check the named gem (or all of your installed
+gems if no name is given) and update each one to a newer version if
+one is available.
 
-== [#update]gem update -- Update your installed gems ==
-
-The update command will check all of your installed gems and update
-each one to a newer version if one is available.
-
-=== Usage ===
+h3. Usage
 
 !usage update
 
-=== Examples ===
+h3. Examples
 
 <pre>
 $ gem update
@@ -524,23 +443,3 @@ Attempting remote installation of 'csbattery'
 Successfully installed csbattery, version 0.2.2
 All gems up to date
 </pre>
-
-!toc-link
-
-
-== See Also ==
-
-* ConfigurationFile
-* EnvironmentVariables
-* CommandOptions
-* GemExamples
-
-----
-
-<b>Note to updaters:</b> <em>This page is generated via the gemdoc.rb script available in the RubyGems CVS package.  The gemdoc script weaves together the text and output from the gem program into a single document.  Direct edits to this page are likely to get lost when the page is regenerated.  Notify someone on the developer list if you have changes for this page.</em>
-
-Contributors: GavinSinclair, JimWeirich
-
-----
-
-CategoryUserDocumentation  CategoryReferenceDocumentation

@@ -1,3 +1,7 @@
+2005-07-08  Jim Weirich  <jim@weirichhouse.org>
+
+	* Preparing for release 0.8.11.
+
 2005-06-12  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/installer.rb

@@ -71,9 +71,9 @@ task :build_tests do
 end
 
 # Shortcuts for test targets
-task :ft => [:functional]
-task :ut => [:test]
-task :at => [:alltests]
+task :tf => [:functional]
+task :tu => [:test]
+task :ta => [:alltests]
 
 task :gemtest do
   ruby %{-Ilib -rscripts/runtest -e 'run_tests("test/test_gempaths.rb", true)'}

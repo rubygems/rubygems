@@ -51,7 +51,8 @@ def install_windows_batch_files
     target = File.join(bindir, File.basename(f))
     if is_windows_platform
       File.open(target+".cmd", "w") do |file|
-        file.puts %{@"#{Gem.ruby}" "#{target}" %1 %2 %3 %4 %5 %6 %7 %8 %9}
+	ruby_cmd = Gem.ruby rescue 'ruby'
+        file.puts %{@"#{ruby_cmd}" "#{target}" %1 %2 %3 %4 %5 %6 %7 %8 %9}
       end
     end
   end

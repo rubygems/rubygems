@@ -33,7 +33,7 @@ module Gem
       # signing key in favor of the signing certificate, but that's for
       # the future, also the signature algorihtm should be configurable)
       signer = nil
-      if @spec.signing_key
+      if @spec.respond_to?(:signing_key) && @spec.signing_key
         signer = Gem::Security::Signer.new(@spec.signing_key, @spec.cert_chain)
         @spec.signing_key = nil
         @spec.cert_chain = signer.cert_chain.map { |cert| cert.to_s }

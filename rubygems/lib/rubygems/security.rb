@@ -1,6 +1,27 @@
 #!/usr/bin/env ruby
 
-require 'openssl'
+require 'rubygems/gem_openssl'
+
+module Gem
+  module SSL
+
+    # We make our own versions of the constants here.  This allows us
+    # to reference the constants, even though some systems might not
+    # have SSL installed in the Ruby core package.
+    #
+    # These constants are only used during load time.  At runtime, any
+    # method that makes a direct reference to SSL software must be
+    # protected with a Gem.ensure_ssl_available call.
+    #
+    if Gem.ssl_available?
+      PKEY_RSA = OpenSSL::PKey::RSA
+      DIGEST_SHA1 = OpenSSL::Digest::SHA1
+    else
+      PKEY_RSA = :rsa
+      DIGEST_SHA1 = :sha1
+    end
+  end
+end
 
 module  OpenSSL
   module X509
@@ -39,12 +60,12 @@ module Gem
     #
     OPT = {
       # private key options
-      :key_algo   => OpenSSL::PKey::RSA,
+      :key_algo   => Gem::SSL::PKEY_RSA,
       :key_size   => 2048,
 
       # public cert options
       :cert_age   => 365 * 24 * 3600, # 1 year
-      :dgst_algo  => OpenSSL::Digest::SHA1,
+      :dgst_algo  => Gem::SSL::DIGEST_SHA1,
 
       # x509 certificate extensions
       :cert_exts  => {
@@ -123,6 +144,7 @@ module Gem
       # chain matched this security policy at the specified time.
       #
       def verify_gem(signature, data, chain, time = Time.now)
+	Gem.ensure_ssl_available
         cert_class = OpenSSL::X509::Certificate
         exc = Gem::Security::Exception
         chain ||= []
@@ -317,6 +339,7 @@ module Gem
     # Build a certificate from the given DN and private key.
     # 
     def self.build_cert(name, key, opt = {})
+      Gem.ensure_ssl_available
       opt = OPT.merge(opt)
 
       # create new cert
@@ -346,6 +369,7 @@ module Gem
     # Build a self-signed certificate for the given email address.
     #
     def self.build_self_signed_cert(email_addr, opt = {})
+      Gem.ensure_ssl_available
       opt = OPT.merge(opt)
       path = { :key => nil, :cert => nil }
 
@@ -413,6 +437,7 @@ module Gem
       attr_accessor :key, :cert_chain
 
       def initialize(key, cert_chain)
+	Gem.ensure_ssl_available
         @algo = Gem::Security::OPT[:dgst_algo]
         @key, @cert_chain = key, cert_chain
         

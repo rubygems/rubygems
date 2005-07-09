@@ -491,6 +491,7 @@ class TarInput
                     # metadata file and calculate it's digest
                     sio = nil
                     if security_policy 
+                      Gem.ensure_ssl_available
                       sio = StringIO.new(entry.read)
                       meta_dgst = dgst_algo.digest(sio.string)
                       sio.rewind
@@ -505,17 +506,21 @@ class TarInput
                     gzis.close
                 end
             when 'metadata.gz.sig'
+              Gem.ensure_ssl_available
               meta_sig = entry.read
             when 'data.tar.gz.sig'
+              Gem.ensure_ssl_available
               data_sig = entry.read
             when 'data.tar.gz'
               if security_policy
+                Gem.ensure_ssl_available
                 data_dgst = dgst_algo.digest(entry.read)
               end
             end
         end
 
         if security_policy 
+          Gem.ensure_ssl_available
           # map trust policy from string to actual class (or a
           # serialized YAML file, if that exists)
           if (security_policy.is_a?(String))
@@ -582,7 +587,7 @@ class TarInput
     def each(&block)
       @tarreader.each do |entry|
         next unless entry.full_name == "data.tar.gz"
-	is = zipped_stream(entry)
+        is = zipped_stream(entry)
         begin
           TarReader.new(is) do |inner|
             inner.each(&block)
@@ -603,11 +608,11 @@ class TarInput
     # later.
     def zipped_stream(entry)
       if Zlib::ZLIB_VERSION < '1.2.1'
-	zis = Zlib::GzipReader.new entry
-	dis = zis.read
-	is = StringIO.new(dis)
+        zis = Zlib::GzipReader.new entry
+        dis = zis.read
+        is = StringIO.new(dis)
       else
-	is = Zlib::GzipReader.new entry
+        is = Zlib::GzipReader.new entry
       end
     ensure
       zis.finish if zis

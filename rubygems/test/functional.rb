@@ -13,28 +13,29 @@ class FunctionalTest < Test::Unit::TestCase
     @gem_path = File.expand_path("bin/gem")
     lib_path = File.expand_path("lib")
     @ruby_options = "-I#{lib_path} -I."
+    @verbose = false
   end
 
   def test_gem_help_options
-    gem 'help options'
+    gem_nossl 'help options'
     assert_match(/Usage:/, @out)
     assert_status
   end
 
   def test_gem_help_commands
-    gem 'help commands'
+    gem_nossl 'help commands'
     assert_match(/gem install/, @out)
     assert_status
   end
 
   def test_gem_no_args_shows_help
-    gem
+    gem_nossl
     assert_match(/Usage:/, @out)
     assert_status 1
   end
 
   def test_environment
-    gem 'environment'
+    gem_nossl 'environment'
     
     assert_match /VERSION:\s+(\d+\.)*\d+/, @out
     assert_match /INSTALLATION DIRECTORY:/, @out
@@ -44,22 +45,22 @@ class FunctionalTest < Test::Unit::TestCase
   end
 
   def test_env_version
-    gem 'environment version'
+    gem_nossl 'environment version'
     assert_match /\d+\.\d+$/, @out
   end
 
   def test_env_gemdir
-    gem 'environment gemdir'
+    gem_nossl 'environment gemdir'
     assert_equal Gem.dir, @out.chomp
   end
 
   def test_env_gempath
-    gem 'environment gempath'
+    gem_nossl 'environment gempath'
     assert_equal Gem.path, @out.chomp.split("\n")
   end
 
   def test_env_remotesources
-    gem 'environment remotesources'
+    gem_nossl 'environment remotesources'
     assert_equal Gem::RemoteInstaller.new.sources, @out.chomp.split("\n")
   end
 
@@ -89,7 +90,7 @@ class FunctionalTest < Test::Unit::TestCase
 
   def test_bogus_source_hoses_up_remote_install_but_gem_command_gives_decent_error_message
     @ruby_options << " -rtest/bogussources"
-    gem "install asdf --remote"
+    gem_nossl "install asdf --remote"
     assert_match(/error/im, @err)
     assert_status 1
   end
@@ -97,32 +98,66 @@ class FunctionalTest < Test::Unit::TestCase
   def test_all_command_helps
     mgr = Gem::CommandManager.new
     mgr.command_names.each do |cmdname|
-      gem "help #{cmdname}"
+      gem_nossl "help #{cmdname}"
       assert_match /Usage: gem #{cmdname}/, @out, "should see help for #{cmdname}"
     end
   end
 
   def test_gemrc_paths
-    gem "env --config-file test/testgem.rc"
+    gem_nossl "env --config-file test/testgem.rc"
     assert_match %{/usr/local/rubygems}, @out
     assert_match %{/another/spot/for/rubygems}, @out
     assert_match %{test/data/gemhome}, @out
   end
 
   def test_gemrc_args
-    gem "help --config-file test/testgem.rc"
+    gem_nossl "help --config-file test/testgem.rc"
     assert_match %{gem build}, @out
     assert_match %{gem install}, @out
   end
 
+  SIGN_FILES = %w(gem-private_key.pem gem-public_cert.pem)
+
+  def test_cert_build
+    SIGN_FILES.each do |fn| FileUtils.rm_f fn end
+    gem_withssl "cert --build x@y.z"
+    SIGN_FILES.each do |fn| 
+      assert File.exist?(fn),
+	"Signing key/cert file '#{fn}' should exist"
+    end
+  ensure
+    SIGN_FILES.each do |fn| FileUtils.rm_f fn end
+  end
+
+  def test_nossl_cert
+    gem_nossl "cert --build x@y.z"
+    assert @status != 0
+    assert_match /not installed/, @err, 
+      "Should have a not installed error for openssl"
+  end
+
   # :section: Help Methods
+
+  # Run a gem command without the SSL library.
+  def gem_nossl(options="")
+    old_options = @ruby_options
+    @ruby_options << " -Itest/fake_certlib"
+    gem(options)
+  ensure
+    @ruby_options = old_options
+  end
+
+  # Run a gem command with the SSL library.
+  def gem_withssl(options="")
+    gem(options)
+  end
 
   # Run a gem command for the functional test.
   def gem(options="")
     shell = Session::Shell.new
     options = options + " --config-file missing_file" if options !~ /--config-file/
     command = "#{Gem.ruby} #{@ruby_options} #{@gem_path} #{options}"
-    puts "COMMAND: [#{command}]" if @verbose
+    puts "\n\nCOMMAND: [#{command}]" if @verbose
     @out, @err = shell.execute command
     @status = shell.exit_status
     puts "STATUS:  [#{@status}]" if @verbose

@@ -11,7 +11,6 @@ require 'digest/md5'
 require 'fileutils'
 require 'find'
 require 'stringio'
-require 'openssl'
 
 require 'rubygems/specification'
 require 'rubygems/security'

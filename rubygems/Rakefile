@@ -35,7 +35,8 @@ CLOBBER.include(
   'html',
   'pkgs/sources/sources*.gem',
   '.config',
-  '**/debug.log'
+  '**/debug.log',
+  'logs'
   )
 
 task :default => [:test]
@@ -189,6 +190,13 @@ task :publish_rdoc => ["html/index.html"] do
 end
 
 # Wiki Doc Targets
+
+desc "Upload the Hieraki Data"
+task :upload => [:upload_gemdoc]
+
+task :upload_gemdoc => ['scripts/gemdoc.hieraki'] do
+  ruby %{scripts/upload_gemdoc.rb}
+end
 
 desc "Build the Hieraki documentation"
 task :hieraki => ['scripts/gemdoc.hieraki', 'scripts/specdoc.hieraki']

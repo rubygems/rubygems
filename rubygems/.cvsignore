@@ -7,3 +7,5 @@ pkgs
 html
 rg_*.yaml
 debug.log
+logs
+.hieraki_author.rb

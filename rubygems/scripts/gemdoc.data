@@ -40,6 +40,40 @@ $ rake gem
 </pre>
 
 
+== gem cert -- Support signing and managing signed gems
+
+The cert command manages the certificates needed to sign gems.
+
+h3. Usage
+
+!usage cert
+
+See the "chapter on signing
+gems":http://docs.rubygems.org/read/chapter/21 in the :Ruby Users
+Guide":http://docs.rubygems.org/read/book/1 for details.
+
+h3. Examples
+
+Build a private key and certificate for gemmaster@example.com.
+Substitute your own email address for your own certificates.
+
+<pre>$ gem cert --build gemmaster@example.com</pre>
+
+Add a certificate to the list of trusted certificates.  The trusted
+certificate list will be consulted when installing signed gems.
+
+<pre>$ gem cert --add gem-public_cert.pem</pre>
+
+Sign a certificate with the specified key and certificate (note that
+this modifies client_cert.pem!)
+
+<pre>
+$ gem cert \
+     -K /mnt/floppy/issuer-priv_key.pem \
+     -C issuer-pub_cert.pem \
+     --sign client_cert.pem
+</pre>
+
 == gem check -- Check installed gems for problems
 
 The check command is used to verify that a gem in is good working order.
@@ -127,6 +161,60 @@ Rubygems Environment:
   - REMOTE SOURCES:
      - http://gems.rubyforge.org
 </pre>
+
+== gem dependency -- List the dependencies of a gem
+
+h3. Usage
+
+The @dependency@ command displays the declared dependencies of any install gem package.
+
+!usage dependency
+
+h3. Examples
+
+Here is the dependencies of the Rails gem.
+
+<pre>
+$ gem dependency rails -v 0.10.1
+Gem rails-0.10.1
+  Requires
+    rake (>= 0.4.15)
+    activesupport (= 1.0.1)
+    activerecord (= 1.8.0)
+    actionpack (= 1.5.1)
+    actionmailer (= 0.7.1)
+    actionwebservice (= 0.6.0)
+
+</pre>
+
+Adding a @--reverse-dependencies@ option adds the following bit of information:
+
+<pre>
+$ gem dependency rails -v 0.10.1 --reverse-dependencies
+Gem rails-0.10.1
+  Requires
+    rake (>= 0.4.15)
+    activesupport (= 1.0.1)
+    activerecord (= 1.8.0)
+    actionpack (= 1.5.1)
+    actionmailer (= 0.7.1)
+    actionwebservice (= 0.6.0)
+  Used by
+    storycards-0.0.2 (rails (>= 0.7.0))
+</pre>
+
+Finally, the @--pipe@ option for the dependency command puts out the dependencies in a format that could be piped to another command.
+
+<pre>
+$ gem dependency rails -v 0.10.1 --pipe
+rake --version '>= 0.4.15'
+activesupport --version '= 1.0.1'
+activerecord --version '= 1.8.0'
+actionpack --version '= 1.5.1'
+actionmailer --version '= 0.7.1'
+actionwebservice --version '= 0.6.0'
+</pre>
+
 
 == gem environment -- Display information about the gem environment
 

@@ -256,6 +256,16 @@ installation of RubyGems before this update can be applied.
   s.rubyforge_project = "rubygems"
   s.bindir = "bin"                               # Use these for applications.
   s.executables = ["update_rubygems"]
+  certdir = ENV['CERT_DIR']
+  if certdir
+    s.signing_key = File.join(certdir, 'gem-private_key.pem')
+    s.cert_chain  = [File.join(certdir, 'gem-public_cert.pem')]
+  end
+end
+
+# Add console output about signing the Gem
+file "pkg/#{Spec.full_name}.gem" do
+  puts "Signed with certificates in '#{ENV['CERT_DIR']}'" if ENV['CERT_DIR']
 end
 
 Rake::GemPackageTask.new(Spec) do |p| end

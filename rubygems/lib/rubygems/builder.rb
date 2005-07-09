@@ -1,7 +1,7 @@
 require "rubygems/package"
 require "rubygems/security"
 require "yaml"
-require 'openssl'
+require 'rubygems/gem_openssl'
 
 module Gem
 

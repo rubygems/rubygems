@@ -40,6 +40,8 @@ $ rake gem
 </pre>
 
 
+<hr/>
+
 == gem cert -- Support signing and managing signed gems
 
 The cert command manages the certificates needed to sign gems.
@@ -73,6 +75,8 @@ $ gem cert \
      -C issuer-pub_cert.pem \
      --sign client_cert.pem
 </pre>
+
+<hr/>
 
 == gem check -- Check installed gems for problems
 
@@ -138,6 +142,8 @@ activerecord-0.8.1 has 2 problems
 [... remaining output elided ...]
 </pre>
 
+<hr/>
+
 == gem cleanup [gemname] -- Cleanup the outdated versions
 
 (new in version 0.8.7)
@@ -162,11 +168,46 @@ Rubygems Environment:
      - http://gems.rubyforge.org
 </pre>
 
-== gem dependency -- List the dependencies of a gem
+<hr/>
+
+== gem contents [installed_gemname] -- List the file contents of the installed gem.
+
+(new in version 0.8.11)
+
+The @contents@ command will list the full path names of all the files
+contained in the gem.
 
 h3. Usage
 
+!usage contents
+
+h3. Examples
+
+The following command displays the files included in the Rake gem.
+
+<pre>
+$ gem contents rake
+traken$ gem inspect rake
+/usr/local/lib/ruby/gems/1.8/gems/rake-0.5.4.3/install.rb
+/usr/local/lib/ruby/gems/1.8/gems/rake-0.5.4.3/CHANGES
+/usr/local/lib/ruby/gems/1.8/gems/rake-0.5.4.3/Rakefile
+/usr/local/lib/ruby/gems/1.8/gems/rake-0.5.4.3/README
+/usr/local/lib/ruby/gems/1.8/gems/rake-0.5.4.3/TODO
+[... truncated ...]
+</pre>
+
+h3. Limitations
+
+Currently there is no way to specify the version of the gem you wish
+to view.
+
+<hr/>
+
+== gem dependency -- List the dependencies of a gem
+
 The @dependency@ command displays the declared dependencies of any install gem package.
+
+h3. Usage
 
 !usage dependency
 
@@ -215,6 +256,7 @@ actionmailer --version '= 0.7.1'
 actionwebservice --version '= 0.6.0'
 </pre>
 
+<hr/>
 
 == gem environment -- Display information about the gem environment
 
@@ -238,14 +280,18 @@ Rubygems Environment:
      - http://gems.rubyforge.org
 </pre>
 
+<hr/>
+
 == gem help -- Provide help about gem commands
 
-The help command provides information about the syntax and options
+<tt>gem help</tt> provides information about the syntax and options
 available on the gem command.
 
 h3. Usage
 
 !usage help
+
+<hr/>
 
 == gem install -- Installing a gem
 
@@ -298,6 +344,8 @@ Install required dependency log4r? [Yn]   y
 Successfully installed copland, version 0.3.0
 </pre>
 
+<hr/>
+
 == gem list -- List gems starting with a string
 
 <tt>gem list</tt> will list all gems whose name <em>starts with</em> the given
@@ -336,6 +384,8 @@ $ gem list --both
 
   ...
 </pre>
+
+<hr/>
 
 == gem query -- Query for a list of gems
 
@@ -376,6 +426,29 @@ midilib (0.8.0)
     MIDI file and event manipulation library
 </pre>
 
+<hr/>
+
+== gem rdoc -- Generate the RDoc files for an installed gem
+
+<tt>gem rdoc</tt> will generate the RDoc files for an installed gem.
+The files are put in the standard gem RDoc location so that
+@gem_server@ can find them.
+
+h3. Usage
+
+!usage rdoc
+
+h3. Examples
+
+The following command generates the RDoc files for the rake-0.5.4 gem.  
+
+<pre>
+traken$ sudo gem rdoc rake --version 0.5.4
+Installing RDoc documentation for rake-0.5.4...
+</pre>
+
+<hr/>
+
 == gem search -- List gems containing a string
 
 <tt>gem search</tt> will list all gems whose name <em>contains</em> the given
@@ -401,6 +474,8 @@ rublog (0.8.0)
     RubLog is a simple web log, based around the idea of displaying a
     set of regular files in a log-format.
 </pre>
+
+<hr/>
 
 == gem specification -- Extract the Gem::Specification from a gem file
 
@@ -439,6 +514,8 @@ files:
   - lib/rake/clean.rb
   ......
 </pre>
+
+<hr/>
 
 == gem uninstall -- Uninstalling a gem
 
@@ -480,9 +557,11 @@ Proceed? [Y/n]  y
 Removing rake
 </pre>
 
+<hr/>
+
 == gem unpack -- Unpack an installed gem to the current directory
 
-''(Not in version 0.7.)''
+<em>(Not in version 0.7.)</em>
 
 The unpack command creates a private copy of the named gem's contents into a
 new directory.  This enables you to examine the contents without interfering
@@ -508,6 +587,8 @@ $ gem unpack wazoo
 ERROR:  Gem 'wazoo' not installed.
 </pre>
 
+<hr/>
+
 == gem update -- Update your installed gems
 
 The update command will check the named gem (or all of your installed
@@ -531,3 +612,6 @@ Attempting remote installation of 'csbattery'
 Successfully installed csbattery, version 0.2.2
 All gems up to date
 </pre>
+
+<hr/>
+

@@ -23,7 +23,7 @@ class TestFileList < RubyGemTestCase
       end
       
       @cm = Gem::CommandManager.new
-      @inspect = @cm['inspect']
+      @contents = @cm['contents']
       
       current_path = Dir.getwd
       @gem_install_path =  File.join(current_path, "test/mock/gems/")
@@ -49,9 +49,9 @@ class TestFileList < RubyGemTestCase
     def test_inspect_list
         args = ["-s", @gem_install_path, "a"]
         Gem::Command.instance_eval "public :handle_options"
-        @inspect.handle_options(args)
+        @contents.handle_options(args)
         sio = StringIO.new
-        @inspect.execute(sio)
+        @contents.execute(sio)
         files = sio.string.split("\n")
         code = File.join(@gem_root_dir,"lib/code.rb")
         assert_match(code, files[0])
@@ -60,9 +60,9 @@ class TestFileList < RubyGemTestCase
     def test_inspect_list_unknown
         args = ["-s", @gem_install_path, "not_there"]
         Gem::Command.instance_eval "public :handle_options"
-        @inspect.handle_options(args)
+        @contents.handle_options(args)
         sio = StringIO.new
-        @inspect.execute(sio)
+        @contents.execute(sio)
         assert_match(/Unable to find/, sio.string)
     end
 

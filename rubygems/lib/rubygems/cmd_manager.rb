@@ -48,7 +48,7 @@ module Gem
       register_command SpecificationCommand.new
       register_command UnpackCommand.new
       register_command CertCommand.new
-      register_command InspectCommand.new
+      register_command ContentsCommand.new
     end
     
     def register_command(command)

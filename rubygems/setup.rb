@@ -1142,8 +1142,8 @@ class Installer
           w.print first.sub(/\A\#!\s*\S+/, '#! ' + config('rubypath'))
           w.write r.read
         }
-        move_file tmpfile, File.basename(path)
       }
+      move_file tmpfile, File.basename(path)
     ensure
       File.unlink tmpfile if File.exist?(tmpfile)
     end

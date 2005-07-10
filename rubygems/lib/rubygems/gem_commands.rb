@@ -490,7 +490,7 @@ module Gem
       if options[:verify]
         gem_name = options[:verify]
         unless gem_name
-          alert_error "Must specifiy a .gem file with --verify NAME"
+          alert_error "Must specify a .gem file with --verify NAME"
           return
         end
         unless File.exist?(gem_name)
@@ -574,7 +574,7 @@ module Gem
         summary,
         {:name=>/.*/, :domain=>:local, :details=>false}
         )
-      add_option('-n', '--name-matches REGEXP', 'Name of gem(s) to query on maches the provided REGEXP') do |value, options|
+      add_option('-n', '--name-matches REGEXP', 'Name of gem(s) to query on matches the provided REGEXP') do |value, options|
         options[:name] = /#{value}/i
       end
       add_option('-d', '--[no-]details', 'Display detailed information of gem(s)') do |value, options|

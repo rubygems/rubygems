@@ -6,7 +6,8 @@ Ruby Brigade's RubyGems codefest.
 
 * Improved performance
 * Ability to sign gems (see http://docs.rubygems.org/read/chapter/21)
-* Better integration with Mac OS X.
+* New Command: gem contents -- List the contents of an installed gem
+* New Command: gem rdoc -- Generate rdoc files from an installed gem
 
 == What is RubyGems?
 
@@ -72,6 +73,15 @@ approach to getting software ... doing it manually:
 * Added David Glasser's install-from-mirror patch.
 * Additional internal structural cleanup and test reorganization.
 
+== What's Next
+
+We will probably see one more release in the 0.8.x series (hopefully
+soon) where the source index download function will be revised to
+perform better with a large number gems.
+
+After that, the 0.9.x series will start unifying the local and remote
+installers to get more consistent behavior.
+
 == Thanks
 
 Major contributors to this release include:
@@ -83,6 +93,9 @@ Major contributors to this release include:
 * Thanks to Paul Duncan for the gem signing patch.
 
 * Thanks to Mark Hubbart for the Mac OS X framework patch.
+
+* Thanks to Doug Kearns for catching some embarassing typos in several
+  error messages.
 
 Keep those gems coming!
 

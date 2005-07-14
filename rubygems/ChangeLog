@@ -68,7 +68,7 @@
 
 	* lib/rubygems/gem_commands.rb
 	(Gem::UpdateCommand::do_rubygems_update): Update --system now runs
-	the ruby command directly rather than trying to load teh
+	the ruby command directly rather than trying to load the
 	update-rubygems command.  There were too many things to go wrong
 	with the old way.
 

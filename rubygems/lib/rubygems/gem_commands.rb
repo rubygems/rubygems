@@ -1179,7 +1179,7 @@ module Gem
   class ContentsCommand < Command
     include CommandAids
     def initialize
-      super('contents','Disply the contents of the installed gems', {:list => true, :specdirs => [] })
+      super('contents','Display the contents of the installed gems', {:list => true, :specdirs => [] })
       add_option("-l","--list",'List the files inside a Gem') do |v,o|
 	o[:list] = true
       end

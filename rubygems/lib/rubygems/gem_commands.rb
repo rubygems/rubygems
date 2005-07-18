@@ -282,7 +282,7 @@ module Gem
     def initialize
       super(
         'cert',
-        'Adjust RubyGems certificate settings.',
+        'Adjust RubyGems certificate settings',
         {
         })
 

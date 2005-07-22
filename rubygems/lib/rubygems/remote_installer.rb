@@ -70,7 +70,7 @@ module Gem
     def connect_to(host, port)
       if @http_proxy
 	proxy_uri = URI.parse(@http_proxy)
-	Net::HTTP::Proxy(proxy_uri.host, proxy_uri.port).new(host, port)
+	Net::HTTP::Proxy(proxy_uri.host, proxy_uri.port, proxy_uri.user, proxy_uri.password).new(host, port)
       else
 	Net::HTTP.new(host, port)
       end

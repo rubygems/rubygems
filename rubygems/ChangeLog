@@ -1,3 +1,8 @@
+2005-07-08  Chad Fowler  <chad@chadfowler.com>
+
+	* lib/rubygems/remote_installer.rb: Applied Daniel Roux's patch
+        to make RubyGems work with authenticating proxies.
+
 2005-07-08  Jim Weirich  <jim@weirichhouse.org>
 
 	* Preparing for release 0.8.11.

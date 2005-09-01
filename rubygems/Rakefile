@@ -280,7 +280,9 @@ end
 
 desc "Install RubyGems"
 task :install do
-  ruby 'install.rb'
+  ruby 'setup.rb config'
+  ruby 'setup.rb setup'
+  ruby 'setup.rb install'
 end
 
 # Run 'gem' (using local bin and lib directories).

@@ -1,3 +1,7 @@
+2005-08-31  Jim Weirich  <jim@weirichhouse.org>
+
+	* Rakefile (install): Changed the rake install task to use setup.rb.
+
 2005-07-08  Chad Fowler  <chad@chadfowler.com>
 
 	* lib/rubygems/remote_installer.rb: Applied Daniel Roux's patch

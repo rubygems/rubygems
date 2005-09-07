@@ -26,6 +26,12 @@ end
 
 begin
   require 'openssl'
+
+  # Reference a constant defined in the .rb portion of ssl (just to
+  # make sure that part is loaded too).
+
+  OpenSSL::Digest::SHA1
+
   Gem.ssl_available = true
 rescue LoadError
   Gem.ssl_available = false

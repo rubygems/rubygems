@@ -1,3 +1,9 @@
+2005-09-07  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/gem_openssl.rb (Gem::ensure_ssl_available): Added a
+	test in gem_openssl to make sure the ruby portion of ssl is also
+	loaded.
+
 2005-08-31  Jim Weirich  <jim@weirichhouse.org>
 
 	* Rakefile (install): Changed the rake install task to use setup.rb.

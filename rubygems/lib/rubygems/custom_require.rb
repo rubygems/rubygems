@@ -23,7 +23,7 @@ module Kernel
     begin
       @gempath_searcher ||= Gem::GemPathSearcher.new
       if spec = @gempath_searcher.find(path)
-        Gem.activate(spec.name, true, "= #{spec.version}")
+        Gem.activate(spec.name, false, "= #{spec.version}")
         require__ path
       else
 	raise load_error

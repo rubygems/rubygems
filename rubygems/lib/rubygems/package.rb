@@ -506,10 +506,8 @@ class TarInput
                     gzis.close
                 end
             when 'metadata.gz.sig'
-              Gem.ensure_ssl_available
               meta_sig = entry.read
             when 'data.tar.gz.sig'
-              Gem.ensure_ssl_available
               data_sig = entry.read
             when 'data.tar.gz'
               if security_policy

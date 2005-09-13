@@ -1,3 +1,13 @@
+2005-09-13  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/package.rb (TarInput::initialize): Removed
+	requirement for SSL when signatures are found in a gem.  Only
+	require SSL if the security policy requires checking the
+	signatures.
+
+	* lib/rubygems/custom_require.rb (Kernel::require): Disabled
+	autorequire during custom require.
+
 2005-09-07  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/gem_openssl.rb (Gem::ensure_ssl_available): Added a

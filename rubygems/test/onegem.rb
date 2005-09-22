@@ -8,6 +8,12 @@ module OneGem
     FileUtils.rm_f ONEGEM
   end
 
+  def make(controller)
+    unless File.exist?(ONEGEM)
+      build(controller)
+    end
+  end
+
   def build(controller)
     Dir.chdir(ONEDIR) do
       controller.gem "build one.gemspec"

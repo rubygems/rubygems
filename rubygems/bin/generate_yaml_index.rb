@@ -9,70 +9,219 @@ $:.unshift '~/rubygems' if File.exist? "~/rubygems"
 require 'optparse'
 require 'rubygems'
 require 'zlib'
+require 'digest/sha1'
 
 Gem.manage_gems
 
-class Indexer
+# ====================================================================
+# Compressor provides a +compress+ method for compressing files on
+# disk.
+module Compressor
+  # Compress the given file.
+  def compress(filename, ext="gz")
+    File.open(filename + ".#{ext}", "w") do |file|
+      file.write(Zlib::Deflate.deflate(File.read(filename)))
+    end
+  end
+end
 
-  def initialize(options)
+# ====================================================================
+# Announcer provides a way of announcing activities to the user.
+module Announcer
+
+  # Announce +msg+ to the user.
+  def announce(msg)
+    puts msg if @options[:verbose]
+  end
+end
+
+# ====================================================================
+class AbstractIndexBuilder
+  include Compressor
+  include Announcer
+
+  def build
+    if ! @enabled
+      yield
+    else
+      unless File.exist?(@directory)
+	FileUtils.mkdir_p(@directory)
+      end
+      fail "not a directory: #{@directory}" unless File.directory?(@directory)
+      File.open(File.join(@directory, @filename), "w") do |file|
+	@file = file
+	start_index
+	yield
+	end_index
+      end
+    end
+  ensure
+    @file = nil
+  end
+
+  def start_index
+  end
+
+  def end_index
+  end
+end
+
+class MasterIndexBuilder < AbstractIndexBuilder
+  def initialize(filename, options)
+    @filename = filename
     @options = options
     @directory = options[:directory]
+    @enabled = true
   end
 
-  def gem_file_list
-    Dir.glob(File.join(@directory, "gems", "*.gem"))
+  def start_index
+    super
+    @file.puts "--- !ruby/object:Gem::Cache"
+    @file.puts "gems:"
   end
 
+  def end_index
+    super
+    compress(File.join(@directory, @filename), "Z")
+  end
+
+  def add(spec)
+    @file.puts "  #{spec.full_name}: #{nest(spec.to_yaml)}"
+  end
+
+  def nest(yaml_string)
+    yaml_string[4..-1].gsub(/\n/, "\n    ")
+  end
+end
+
+class QuickIndexBuilder < AbstractIndexBuilder
+  def initialize(filename, options)
+    @filename = filename
+    @options = options
+    @directory = options[:quick_directory]
+    @enabled = options[:quick]
+  end
+
+  def end_index
+    super
+    compress(File.join(@directory, @filename))
+  end
+
+  def add(spec)
+    return unless @enabled
+    sig = Digest::SHA1.new(spec.to_yaml)
+    @file.puts "#{spec.full_name} #{sig}"
+    fn = File.join(@directory, "#{spec.full_name}.gemspec")
+    File.open(fn, "w") do |gsfile|
+      gsfile.write(spec.to_yaml)
+    end
+    compress(fn)
+  end
+end
+
+# ====================================================================
+# Top level class for building the repository index.  Initialize with
+# an options hash and call +build_index+.
+class Indexer
+  include Compressor
+  include Announcer
+
+  # Create an indexer with the options specified by the options hash.
+  def initialize(options)
+    @options = options.dup
+    @directory = @options[:directory]
+    @options[:quick_directory] = File.join(@directory, "quick")
+    @master_index = MasterIndexBuilder.new("yaml", @options)
+    @quick_index = QuickIndexBuilder.new("index", @options)
+  end
+
+  # Build the index.
   def build_index
-    build_uncompressed_index
-    build_compressed_index
-  end
-  
-  def build_uncompressed_index
-    puts "Building yaml file" if @options[:verbose]
-    File.open(File.join(@directory, "yaml"), "w") do |file|
-      file.puts "--- !ruby/object:Gem::Cache"
-      file.puts "gems:"
-      gem_file_list.each do |gemfile|
-        spec = Gem::Format.from_file_by_path(gemfile).spec
-	puts "   ... adding #{spec.full_name}" if @options[:verbose]
-        file.puts "  #{spec.full_name}: #{spec.to_yaml.gsub(/\n/, "\n    ")[4..-1]}"
+    announce "Building Server Index"
+    FileUtils.rm_r(@options[:quick_directory]) rescue nil
+    @master_index.build do
+      @quick_index.build do 
+	gem_file_list.each do |gemfile|
+	  spec = Gem::Format.from_file_by_path(gemfile).spec
+	  abbreviate(spec)	  
+	  announce "   ... adding #{spec.full_name}"
+	  @master_index.add(spec)
+	  @quick_index.add(spec)
+	end
       end
     end
   end
 
-  def build_compressed_index
-    puts "Building yaml.Z file" if @options[:verbose]
-    File.open(File.join(@directory, "yaml.Z"), "w") do |file|
-      file.write(Zlib::Deflate.deflate(File.read(File.join(@directory, "yaml"))))
+  # List of gem file names to index.
+  def gem_file_list
+    Dir.glob(File.join(@directory, "gems", "*.gem"))
+  end
+
+  # Abbreviate the spec for downloading.  Abbreviated specs are only
+  # used for searching, downloading and related activities and do not
+  # need deployment specific information (e.g. list of files).  So we
+  # abbreviate the spec, making it much smaller for quicker downloads.
+  def abbreviate(spec)
+    spec.files = []
+    spec.test_files = []
+    spec.rdoc_options = []
+    spec.extra_rdoc_files = []
+    spec.cert_chain = []
+    spec
+  end
+end
+
+
+def handle_options(args)
+  # default options
+  options = {
+    :directory => '.',
+    :verbose => false,
+    :quick => true,
+  }
+  
+  args.options do |opts|
+    opts.on_tail("--help", "show this message") do
+      puts opts
+      exit
     end
+    opts.on(
+      '-d', '--dir=DIRNAME', '--directory=DIRNAME',
+      "base directory containing gems subdirectory",
+      String) do |value|
+      options[:directory] = value
+    end
+    opts.on('--[no-]quick', "include quick index") do |value|
+      options[:quick] = value
+    end
+    opts.on('-v', '--verbose', "show verbose output") do |value|
+      options[:verbose] = value
+    end
+    opts.on('-V', '--version',
+      "show version") do |value|
+      puts Gem::RubyGemsVersion
+      exit
+    end
+    opts.parse!
   end
+  
+  if options[:directory].nil?
+    puts "Error, must specify directory name. Use --help"
+    exit
+  elsif ! File.exist?(options[:directory]) ||
+      ! File.directory?(options[:directory])
+    puts "Error, unknown directory name #{directory}."
+    exit
+  end
+  options
 end
 
-
-options = {
-  :directory => '.',
-  :verbose => false,
-}
-
-ARGV.options do |opts|
-  opts.on_tail("--help", "show this message") {puts opts; exit}
-  opts.on('-d', '--dir=DIRNAME', "base directory containing gems subdirectory", String) do |value|
-    options[:directory] = value
-  end
-  opts.on('-v', '--verbose', "show verbose output") do |value|
-    options[:verbose] = value
-  end
-  opts.parse!
+# Main program.
+def main_index(args)
+  options = handle_options(args)
+  Indexer.new(options).build_index
 end
 
-if options[:directory].nil?
-  puts "Error, must specify directory name. Use --help"
-  exit
-elsif ! File.exist?(options[:directory]) ||
-    ! File.directory?(options[:directory])
-  puts "Error, unknown directory name #{directory}."
-  exit
+if __FILE__ == $0 then
+  main_index(ARGV)
 end
-
-Indexer.new(options).build_index

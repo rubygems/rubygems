@@ -350,8 +350,9 @@ module Gem
     end
 
     overwrite_accessor :test_files do
-      # Handle the possibility that we have @test_suite_file but not @test_files.  This will
-      # happen when an old gem is loaded via YAML.
+      # Handle the possibility that we have @test_suite_file but not
+      # @test_files.  This will happen when an old gem is loaded via
+      # YAML.
       if @test_suite_file
         @test_files = [@test_suite_file].flatten
         @test_suite_file = nil
@@ -390,9 +391,10 @@ module Gem
     end
 
     ##
-    # Special loader for YAML files.  When a Specification object is loaded from a YAML file,
-    # it bypasses the normal Ruby object initialization routine (#initialize).  This method
-    # makes up for that and deals with gems of different ages.
+    # Special loader for YAML files.  When a Specification object is
+    # loaded from a YAML file, it bypasses the normal Ruby object
+    # initialization routine (#initialize).  This method makes up for
+    # that and deals with gems of different ages.
     #
     # 'input' can be anything that YAML.load() accepts: String or IO. 
     #
@@ -436,7 +438,7 @@ module Gem
     #   spec.add_dependency('jabber4r', '> 0.1', '<= 0.5')
     #
     # gem:: [String or Gem::Dependency] The Gem name/dependency.
-    # requirements:: [default="> 0.0.0"] The version requirements.
+    # requirements:: [default="> 0.0.0"] The version requirements.   
     #
     def add_dependency(gem, *requirements)
       requirements = ['> 0.0.0'] if requirements.empty?

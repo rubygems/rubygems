@@ -250,7 +250,7 @@ installation of RubyGems before this update can be applied.
 }
   s.files = PKG_FILES.to_a
   s.require_path = 'lib'
-  s.author = "RubyGems Team"
+  s.authors = ['Jim Weirich', 'Chad Fowler']
   s.email = "rubygems-developers@rubyforge.org"
   s.homepage = "http://rubygems.rubyforge.org"
   s.rubyforge_project = "rubygems"

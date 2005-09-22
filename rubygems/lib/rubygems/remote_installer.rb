@@ -341,7 +341,6 @@ module Gem
 	@manager ||= LocalSourceInfoCache.new
       end
 
-
       # Sent by the client when it is done with all the sources,
       # allowing any cleanup activity to take place.
       def finish

@@ -9,7 +9,7 @@ $:.unshift '~/rubygems' if File.exist? "~/rubygems"
 require 'optparse'
 require 'rubygems'
 require 'zlib'
-require 'digest/sha1'
+require 'digest/sha2'
 
 Gem.manage_gems
 
@@ -109,7 +109,7 @@ class QuickIndexBuilder < AbstractIndexBuilder
 
   def add(spec)
     return unless @enabled
-    sig = Digest::SHA1.new(spec.to_yaml)
+    sig = Digest::SHA256.new(spec.to_yaml)
     @file.puts "#{spec.full_name} #{sig}"
     fn = File.join(@directory, "#{spec.full_name}.gemspec")
     File.open(fn, "w") do |gsfile|

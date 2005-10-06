@@ -1,7 +1,7 @@
 require 'rubygems/source_index'
 
 module Kernel
-  alias require__ require
+  alias gem_original_require require
 
   #
   # We replace Ruby's require with our own, which is capable of
@@ -18,13 +18,13 @@ module Kernel
   # that file has already been loaded is preserved.
   #
   def require(path)
-    require__ path
+    gem_original_require path
   rescue LoadError => load_error
     begin
       @gempath_searcher ||= Gem::GemPathSearcher.new
       if spec = @gempath_searcher.find(path)
         Gem.activate(spec.name, false, "= #{spec.version}")
-        require__ path
+        gem_original_require path
       else
 	raise load_error
       end

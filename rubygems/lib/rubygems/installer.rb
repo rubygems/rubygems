@@ -284,29 +284,32 @@ TEXT
       say "Building native extensions.  This could take a while..."
       start_dir = Dir.pwd
       dest_path = File.join(directory, spec.require_paths[0])
+
       spec.extensions.each do |extension|
-        Dir.chdir File.join(directory, File.dirname(extension))
-        results = ["#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}"]
-        results << `#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}`
-        if File.exist?('Makefile')
-          mf = File.read('Makefile')
-          mf = mf.gsub(/^RUBYARCHDIR\s*=\s*\$.*/, "RUBYARCHDIR = #{dest_path}")
-          mf = mf.gsub(/^RUBYLIBDIR\s*=\s*\$.*/, "RUBYLIBDIR = #{dest_path}")
-          File.open('Makefile', 'wb') {|f| f.print mf}
-          make_program = ENV['make']
-          unless make_program
-            make_program = (/mswin/ =~ RUBY_PLATFORM) ? 'nmake' : 'make'
-          end
-          results << "#{make_program}"
-          results << `#{make_program}`
-          results << "#{make_program} install"
-          results << `#{make_program} install`
-          say results.join("\n")
+        if extension.match(/extconf/)
+          builder = ExtExtConfBuilder
+		elsif extension.match(/rakefile/i)
+          builder = ExtRakeBuilder
         else
-          File.open(File.join(Dir.pwd, 'gem_make.out'), 'wb') {|f| f.puts results.join("\n")}
-          raise "ERROR: Failed to build gem native extension.\nGem files will remain installed in #{directory} for inspection.\n  #{results.join('\n')}\n\nResults logged to #{File.join(Dir.pwd, 'gem_make.out')}"
+          builder = nil
+          results = ["No builder for extension '#{extension}'"]
         end
+
+        begin
+          err = false
+          Dir.chdir File.join(directory, File.dirname(extension))
+		  p builder
+          results = builder.build(extension, directory, dest_path)
+        rescue
+          err = true
+        end
+
+        say results.join("\n")
         File.open('gem_make.out', 'wb') {|f| f.puts results.join("\n")}
+
+        if err
+          raise "ERROR: Failed to build gem native extension.\nGem files will remain installed in #{directory} for inspection.\n  #{results.join('\n')}\n\nResults logged to #{File.join(Dir.pwd, 'gem_make.out')}"
+		end
       end
       Dir.chdir start_dir
     end
@@ -535,4 +538,44 @@ TEXT
 
   end  # class Uninstaller
 
+  class ExtExtConfBuilder
+    def ExtExtConfBuilder.build(extension, directory, dest_path)
+      results = ["#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}"]
+      results << `#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}`
+
+      raise unless File.exist?('Makefile')
+      mf = File.read('Makefile')
+      mf = mf.gsub(/^RUBYARCHDIR\s*=\s*\$.*/, "RUBYARCHDIR = #{dest_path}")
+      mf = mf.gsub(/^RUBYLIBDIR\s*=\s*\$.*/, "RUBYLIBDIR = #{dest_path}")
+      File.open('Makefile', 'wb') {|f| f.print mf}
+
+      make_program = ENV['make']
+      unless make_program
+        make_program = (/mswin/ =~ RUBY_PLATFORM) ? 'nmake' : 'make'
+      end
+
+      ['', 'install', 'clean'].each do |target|
+        results << "#{make_program} #{target}".strip
+        results << `#{make_program} #{target}`
+      end
+
+	  results
+    end
+  end
+
+  class ExtRakeBuilder
+    def ExtRakeBuilder.build(ext, directory, dest_path)
+      make_program = ENV['rake'] || 'rake'
+      make_program += " RUBYARCHDIR=#{dest_path} RUBYLIBDIR=#{dest_path}"
+
+      results = []
+
+      ['', 'install', 'clean'].each do |target|
+        results << "#{make_program} #{target}".strip
+        results << `#{make_program} #{target}`
+      end
+
+	  results
+    end
+  end
 end  # module Gem

@@ -1098,12 +1098,13 @@ module Gem
     # XXX: It just uses Gem.dir for now.  What's an easy way to get the list of source directories? 
     #
     def get_path(gemname, version_req)
+      return gemname if gemname =~ /\.gem$/i
       specs = SourceIndex.from_installed_gems.search(gemname, version_req)
       selected = specs.sort_by { |s| s.full_name }.last
       return nil if selected.nil?
       # We expect to find (basename).gem in the 'cache' directory.  Furthermore, the name match
       # must be exact.
-      if gemname == selected.name
+      if gemname =~ /^#{selected.name}$/i
         filename = selected.full_name + '.gem'
         return File.join(Gem.dir, 'cache', filename)
       else

@@ -1,3 +1,7 @@
+2005-11-01  Chad Fowler  <chad@chadfowler.com>
+       * lib/rubygems/gem_commands.rb: Allow gem unpack to accept a gem file
+       path instead of gem name: gem unpack mygem-1.0.0.gem.
+
 2005-10-31  Chad Fowler  <chad@chadfowler.com>
        * lib/rubygems/installer.rb: Tilman Sauerbeck's patch to support
         extensions built with Rake!

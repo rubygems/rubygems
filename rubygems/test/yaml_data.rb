@@ -1,6 +1,7 @@
 require 'yaml'
 require 'rubygems'
 require 'rubygems/source_index'
+require 'rubygems/remote_installer'
 
 YAML_DATA = <<EOS
 --- !ruby/object:Gem::Cache
@@ -50,10 +51,7 @@ PROXY_DATA = YAML_DATA.gsub(/0.4.11/, '0.4.2')
 def cache_hash(*uris)
   result = Hash.new
   uris.each do |uri|
-    result[uri] = {
-      'size' => YAML_DATA.size,
-      'cache' => YAML.load(YAML_DATA)
-    }
+    result[uri] = Gem::SourceInfoCacheEntry.new(YAML.load(YAML_DATA), YAML_DATA.size)
   end
   result
 end

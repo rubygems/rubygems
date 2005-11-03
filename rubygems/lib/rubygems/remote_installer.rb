@@ -8,6 +8,7 @@ module Gem
   class GemNotFoundException < Gem::Exception; end
   class RemoteInstallationCancelled < Gem::Exception; end
 
+  # ==================================================================
   # RemoteSourceFetcher handles the details of fetching gems and gem
   # information from a remote source.  
   class RemoteSourceFetcher
@@ -172,10 +173,28 @@ module Gem
     end
   end
 
-  # LocalSourceInfoCache implements the cache management policy on
-  # where the source info is stored on local file system.  There are
-  # two possible cache locations: (1) the system wide cache, and (2)
-  # the user specific cache.
+  # ==================================================================
+  # Entrys held by a SourceInfoCache.
+  class SourceInfoCacheEntry
+    # The source index for this cache entry.
+    attr_reader :source_index
+
+    # The size of the of the source entry.  Used to determine if the
+    # source index has changed.
+    attr_reader :size
+
+    # Create a cache entry.
+    def initialize(si, size)
+      @source_index = si
+      @size = size
+    end
+  end
+
+  # ==================================================================
+  # SourceInfoCache implements the cache management policy on where
+  # the source info is stored on local file system.  There are two
+  # possible cache locations: (1) the system wide cache, and (2) the
+  # user specific cache.
   #
   # * The system cache is prefered if it is writable (or can be
   #   created).
@@ -185,7 +204,7 @@ module Gem
   # Once a cache is selected, it will be used for all operations.  It
   # will not switch between cache files dynamically.
   #
-  class LocalSourceInfoCache
+  class SourceInfoCache
 
     # The most recent cache data.
     def cache_data
@@ -274,7 +293,6 @@ module Gem
     end
   end
 
-
   # CachedFetcher is a decorator that adds local file caching to
   # RemoteSourceFetcher objects.
   class CachedFetcher
@@ -307,14 +325,11 @@ module Gem
     # "abbreviated").
     def source_index
       cache = manager.cache_data[@source_uri]
-      if cache && cache['size'] == @fetcher.size
-	cache['cache']
+      if cache && cache.size == @fetcher.size
+	cache.source_index
       else
 	result = @fetcher.source_index
-	manager.cache_data[@source_uri] = {
-	  'size' => @fetcher.size,
-	  'cache' => result,
-	}
+	manager.cache_data[@source_uri] = SourceInfoCacheEntry.new(result, @fetcher.size)
 	manager.update
 	result
       end
@@ -338,7 +353,7 @@ module Gem
 
       # The Cache manager for all instances of this class.
       def manager
-	@manager ||= LocalSourceInfoCache.new
+	@manager ||= SourceInfoCache.new
       end
 
       # Sent by the client when it is done with all the sources,

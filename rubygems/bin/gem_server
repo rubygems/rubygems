@@ -122,7 +122,7 @@ h2,h3,h4 { margin-top: 1em; }
 a { background: #eef; color: #039; text-decoration: none; }
 a:hover { background: #039; color: #eef; }
 
-/* Override the base stylesheet's Anchor inside a table cell */
+/* Override the base stylesheets Anchor inside a table cell */
 td > a {
   background: transparent;
   color: #039;
@@ -355,7 +355,7 @@ if __FILE__ == $0
     fn = File.join(options[:gemdir] || Gem.dir, "specifications")
     res['content-type'] = 'text/plain'
     res['date'] = File.stat(fn).mtime
-    res.body << Gem::SourceIndex.from_installed_gems(fn).to_yaml
+    res.body << Gem::SourceIndex.from_gems_in(fn).to_yaml
   }
 
   s.mount_proc("/rdoc-style.css") { |req, res|
@@ -369,7 +369,7 @@ if __FILE__ == $0
     specs = []
     specifications_dir = File.join(options[:gemdir] || Gem.dir, "specifications")
     total_file_count = 0
-    Gem::SourceIndex.from_installed_gems(specifications_dir).each do |path, spec|
+    Gem::SourceIndex.from_gems_in(specifications_dir).each do |path, spec|
       total_file_count += spec.files.size
       deps = spec.dependencies.collect { |dep|
         {

@@ -1,6 +1,7 @@
 require 'rubygems/user_interaction'
 
 require 'forwardable'
+require 'digest/sha2'
 
 module Gem
 
@@ -18,10 +19,73 @@ module Gem
     extend Forwardable
     include Enumerable
 
+    # Class Methods. -------------------------------------------------
     class << self
       include Gem::UserInteraction
-    end
     
+      # Factory method to construct a source index instance for a given
+      # path.
+      # 
+      # return::
+      #   SourceIndex instance
+      #
+      def from_installed_gems
+	from_gems_in(*installed_spec_directories)
+      end
+      
+      # Factory method to construct a source index instance for a given
+      # path.
+      # 
+      # return::
+      #   SourceIndex instance
+      #
+      def installed_spec_directories
+	Gem.path.collect { |dir| File.join(dir, "specifications") }
+      end
+
+      # Factory method to construct a source index instance for a given
+      # path.
+      # 
+      # spec_dirs::
+      #   List of directories to search for specifications.  Each
+      #   directory should have a "specifications" subdirectory
+      #   containing the gem specifications.
+      #
+      # return::
+      #   SourceIndex instance
+      #
+      def from_gems_in(*spec_dirs)
+	self.new.load_gems_in(*spec_dirs)
+      end
+      
+      # Load a specification from a file (eval'd Ruby code)
+      # 
+      # file_name:: [String] The .gemspec file
+      # return:: Specification instance or nil if an error occurs
+      #
+      def load_specification(file_name)
+	begin
+	  spec_code = File.read(file_name)
+	  gemspec = eval(spec_code)
+	  if gemspec.is_a?(Gem::Specification)
+	    gemspec.loaded_from = file_name
+	    return gemspec
+	  end
+	  alert_warning "File '#{file_name}' does not evaluate to a gem specification"
+	rescue SyntaxError => e
+	  alert_warning e
+	  alert_warning spec_code
+	rescue Exception => e
+	  alert_warning(e.inspect.to_s + "\n" + spec_code)
+	  alert_warning "Invalid .gemspec format in '#{file_name}'"
+	end
+	return nil
+      end
+      
+    end
+
+    # Instance Methods -----------------------------------------------
+
     # Constructs a source index instance from the provided
     # specifications
     #
@@ -32,15 +96,10 @@ module Gem
       @gems = specifications
     end
     
-    # Reconstruct this source index from the list of source
-    # directories.  If the list is empty, then use the directories in
-    # Gem.path.
-    #
-    def from_installed_gems(*spec_dirs)
+    # Reconstruct the source index from the list of source
+    # directories.
+    def load_gems_in(*spec_dirs)
       @gems.clear
-      if spec_dirs.empty?
-        spec_dirs = Gem.path.collect { |dir| File.join(dir, "specifications") }
-      end
       Dir.glob("{#{spec_dirs.join(',')}}/*.gemspec").each do |file_name|
         gemspec = self.class.load_specification(file_name)
         @gems[gemspec.full_name] = gemspec if gemspec
@@ -48,51 +107,28 @@ module Gem
       self
     end
 
-    # Factory method to construct a source index instance for a given
-    # path.
-    # 
-    # source_dirs::
-    #   List of gem directories to search for specifications.  The
-    #   default is the "specification" directories under each
-    #   directory in Gem.path.
-    #
-    # return::
-    #   SourceIndex instance
-    #
-    def self.from_installed_gems(*spec_dirs)
-      self.new.from_installed_gems(*spec_dirs)
-    end
-
-    # Load a specification from a file (eval'd Ruby code)
-    # 
-    # file_name:: [String] The .gemspec file
-    # return:: Specification instance or nil if an error occurs
-    #
-    def self.load_specification(file_name)
-      begin
-        spec_code = File.read(file_name)
-        gemspec = eval(spec_code)
-        if gemspec.is_a?(Gem::Specification)
-          gemspec.loaded_from = file_name
-          return gemspec
-        end
-        alert_warning "File '#{file_name}' does not evaluate to a gem specification"
-      rescue SyntaxError => e
-        alert_warning e
-        alert_warning spec_code
-      rescue Exception => e
-        alert_warning(e.inspect.to_s + "\n" + spec_code)
-        alert_warning "Invalid .gemspec format in '#{file_name}'"
-      end
-      return nil
-    end
-    
     # Iterate over the specifications in the source index.
     #
     # &block:: [yields gem.long_name, Gem::Specification]
     #
     def each(&block)
       @gems.each(&block)
+    end
+
+    # The gem specification given a full gem spec name.
+    def specification(full_name)
+      @gems[full_name]
+    end
+
+    # The signature for the source index.  Changes in the signature
+    # indicate a change in the index.
+    def index_signature
+      Digest::SHA256.new(@gems.keys.sort.join(',')).to_s
+    end
+
+    # The signature for the given gem specification.
+    def gem_signature(gem_full_name)
+      Digest::SHA256.new(@gems[gem_full_name].to_yaml).to_s
     end
 
     def_delegators :@gems, :size, :length
@@ -132,7 +168,7 @@ module Gem
     # return:: Returns a pointer to itself.
     #
     def refresh!
-      from_installed_gems
+      load_gems_in(self.class.installed_spec_directories)
     end
     
   end

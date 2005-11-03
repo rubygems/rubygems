@@ -48,6 +48,9 @@ module Gem
   class Exception < RuntimeError
   end
 
+  class OperationNotSupportedError < Gem::Exception
+  end
+
   RubyGemsPackageVersion = RubyGemsVersion 
 
   DIRECTORIES = ['cache', 'doc', 'gems', 'specifications']

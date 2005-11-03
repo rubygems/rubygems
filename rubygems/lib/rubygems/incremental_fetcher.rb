@@ -1,8 +1,5 @@
 module Gem
 
-  class OperationNotSupportedError < Gem::Exception
-  end
-
   class IncrementalFetcher
     def initialize(source_uri, fetcher, cache_manager)
       @source_uri = source_uri
@@ -15,7 +12,9 @@ module Gem
     end
 
     def source_index
-      fail OperationNotSupportedError, "No quick index found"
+      quick_index = @fetcher.fetch_path("quick/index.gz")
+    rescue ::Exception => ex
+      fail OperationNotSupportedError.new("No quick index found")
     end
   end
 end

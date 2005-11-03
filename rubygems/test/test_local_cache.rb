@@ -8,7 +8,7 @@ class TestLocalCache < RubyGemTestCase
 
   def setup
     super
-    @lc = Gem::LocalSourceInfoCache.new
+    @lc = Gem::SourceInfoCache.new
     prep_cache_files(@lc)
   end
 
@@ -28,7 +28,7 @@ class TestLocalCache < RubyGemTestCase
   def test_use_user_cache_when_sys_no_writable
     FileUtils.chmod 0544, @lc.system_cache_file
 
-    @lc = Gem::LocalSourceInfoCache.new
+    @lc = Gem::SourceInfoCache.new
     assert_equal "usr", @lc.cache_data['key']
   end
 

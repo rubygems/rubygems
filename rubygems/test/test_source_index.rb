@@ -18,6 +18,7 @@ class TestSourceIndex < Test::Unit::TestCase
   end
 
   def test_create_from_directory
+    # TODO
   end
 
   def test_search_for_missing_gem_returns_nothing
@@ -53,6 +54,26 @@ class TestSourceIndex < Test::Unit::TestCase
       %{source_index.rb.  We should factor remote_installer's search logic out } +
       %{into source_index.rb's search and delegate from remote_installer to } +
       %{source_index.rb})
+  end
+
+  def test_specification_returns_a_spec
+    spec = @source_index.specification("foo-1.2.3")
+    assert_equal "foo", spec.name
+    assert_equal "foo-1.2.3", spec.full_name
+  end
+
+  def test_specification_with_incorrent_name_returns_nil
+    assert_nil @source_index.specification("foo-1.2.4")
+  end
+
+  def test_index_signature_is_reasonable
+    sig = @source_index.index_signature
+    assert_match /^[a-f0-9]{64}$/, sig
+  end
+
+  def test_gem_signature_returns_a_reasonable_signature
+    sig = @source_index.gem_signature('foo-1.2.3')
+    assert_match /^[a-f0-9]{64}$/, sig
   end
 
 end

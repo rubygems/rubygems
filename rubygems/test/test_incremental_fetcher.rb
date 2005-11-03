@@ -24,7 +24,12 @@ class TestIncrementalFetcher < RubyGemTestCase
     def fetch_path(path=nil)
       case path
       when 'quick/index.gz'
-	@quick_enabled ? "x" : nil
+	unless @quick_enabled
+	  fail Exception, "Quick index not found [#{path}]"
+	end
+	"x"
+      else
+	fail "File not found [#{path}]"
       end
     end
     
@@ -50,9 +55,7 @@ class TestIncrementalFetcher < RubyGemTestCase
       si = Gem::SourceIndex.new( {
 	  'a-1.0' => @x.quick_gem('a', '1.0')
 	} )
-      UniversalLookup.new(
-	{ 'size' => si.to_yaml.size, 'cache' => si }
-	) 
+      UniversalLookup.new( SourceInfoCacheEntry.new(si, si.to_yaml.size) )
     end
   end
 
@@ -61,17 +64,18 @@ class TestIncrementalFetcher < RubyGemTestCase
     @source_uri = "http://localhost:12344"
     make_cache_area(@gemhome, @source_uri)
     @mf = MockFetcher.new
-    @cm = MockCacheManager.new(self)
+    @cm = Gem::SourceInfoCache.new
     @inc = Gem::IncrementalFetcher.new(@source_uri, @mf, @cm)
   end
 
   def test_cache_is_properly_setup
-    assert_equal 966, @cm.cache_data[@source_uri]['size']
-    srcindex = @cm.cache_data[@source_uri]['cache']
+    assert @cm.cache_data[@source_uri].size > 800,
+      "Cache size should be over 800 (at least)"
+    srcindex = @cm.cache_data[@source_uri].source_index
     assert_equal Gem::SourceIndex, srcindex.class
     assert_equal 1, srcindex.size
-    spec = srcindex.find_name('a')
-    assert_equal "a", spec.first.name
+    specs = srcindex.find_name('rake')
+    assert_equal "rake", specs.first.name
   end
 
   def test_no_quick_index_on_source
@@ -82,7 +86,7 @@ class TestIncrementalFetcher < RubyGemTestCase
   end
 
   def test_matching_hashes
-    # TODO
+    @inc.source_index
   end
 
   def make_cache_area(path, *uris)

@@ -1,3 +1,10 @@
+2005-11-01  Jim Weirich  <jim@tardis>
+
+	* lib/rubygems/gem_commands.rb (Gem::UpdateCommand::initialize):
+	Upgrade => Update change.
+	(Gem::UpdateCommand::execute): Upgrade => Update change.
+	(Gem::UpdateCommand::execute): Upgrade => Update change.
+
 2005-11-01  Chad Fowler  <chad@chadfowler.com>
        * lib/rubygems/gem_commands.rb: Allow gem unpack to accept a gem file
        path instead of gem name: gem unpack mygem-1.0.0.gem.

@@ -386,8 +386,9 @@ TEXT
           remove_all(list.dup) 
           remove_executables(list.last)
         elsif index >= 0 && index < list.size
-          remove(list[index], list)
-          remove_executables(list[index])
+	  to_remove = list[index]
+          remove(to_remove, list)
+          remove_executables(to_remove)
         else
           say "Error: must enter a number [1-#{list.size+1}]"
         end

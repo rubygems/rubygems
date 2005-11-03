@@ -1,5 +1,9 @@
-2005-11-01  Jim Weirich  <jim@tardis>
+2005-11-03  Chad Fowler  <chad@chadfowler.com>
+       * lib/rubygems/installer.rb: Fixed bug that would cause the executables
+       from the wrong gem to be uninstalled if the names matched the same
+       regex.  Thanks Eric Hodel.
 
+2005-11-01  Jim Weirich  <jim@tardis>
 	* lib/rubygems/gem_commands.rb (Gem::UpdateCommand::initialize):
 	Upgrade => Update change.
 	(Gem::UpdateCommand::execute): Upgrade => Update change.

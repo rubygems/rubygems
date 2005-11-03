@@ -722,7 +722,7 @@ module Gem
     def initialize
       super(
         'update',
-        'Upgrade the named gem (or all installed gems) in the local repository',
+        'Update the named gem (or all installed gems) in the local repository',
         {
           :generate_rdoc => true, 
           :force => false, 
@@ -748,13 +748,13 @@ module Gem
 
     def execute
       if options[:system]
-	say "Upgrading RubyGems..."
+	say "Updating RubyGems..."
 	if ! options[:args].empty?
 	  fail "No gem names are allowed with the --system option"
 	end
 	options[:args] = ["rubygems-update"]
       else
-	say "Upgrading installed gems..."
+	say "Updating installed gems..."
       end
       hig = highest_installed_gems = {}
       Gem::SourceIndex.from_installed_gems.each do |name, spec|
@@ -1037,8 +1037,9 @@ module Gem
       
       if remote?
         say "(Remote 'info' operation is not yet implemented.)"
-        # NOTE: when we do implement remote info, make sure we don't duplicate huge swabs of
-        # local data.  If it's the same, just say it's the same.
+        # NOTE: when we do implement remote info, make sure we don't
+        # duplicate huge swabs of local data.  If it's the same, just
+        # say it's the same.
       end
     end
   end
@@ -1069,8 +1070,9 @@ module Gem
       "GEMNAME       Name of the gem to unpack"
     end
 
-    # TODO: allow, e.g., 'gem unpack rake-0.3.1'.  Find a general solution for this, so that it
-    # works for uninstall as well.  (And check other commands at the same time.)
+    # TODO: allow, e.g., 'gem unpack rake-0.3.1'.  Find a general
+    # solution for this, so that it works for uninstall as well.  (And
+    # check other commands at the same time.)
     def execute
       gemname = get_one_gem_name
       path = get_path(gemname, options[:version])
@@ -1085,25 +1087,28 @@ module Gem
       end
     end
 
-    # Return the full path to the cached gem file matching the given name and version
-    # requirement.  Returns 'nil' if no match.  Example:
+    # Return the full path to the cached gem file matching the given
+    # name and version requirement.  Returns 'nil' if no match.
+    # Example:
     #
     #  get_path('rake', '> 0.4')   # -> '/usr/lib/ruby/gems/1.8/cache/rake-0.4.2.gem'
     #  get_path('rake', '< 0.1')   # -> nil
     #  get_path('rak')             # -> nil (exact name required)
     #
-    # XXX: This should be refactored so that it's a general service.  I don't think any of our
-    # existing classes are the right place though.  Just maybe 'Cache'?
+    # TODO: This should be refactored so that it's a general service.
+    # I don't think any of our existing classes are the right place
+    # though.  Just maybe 'Cache'?
     #
-    # XXX: It just uses Gem.dir for now.  What's an easy way to get the list of source directories? 
+    # TODO: It just uses Gem.dir for now.  What's an easy way to get
+    # the list of source directories?
     #
     def get_path(gemname, version_req)
       return gemname if gemname =~ /\.gem$/i
       specs = SourceIndex.from_installed_gems.search(gemname, version_req)
       selected = specs.sort_by { |s| s.full_name }.last
       return nil if selected.nil?
-      # We expect to find (basename).gem in the 'cache' directory.  Furthermore, the name match
-      # must be exact.
+      # We expect to find (basename).gem in the 'cache' directory.
+      # Furthermore, the name match must be exact (ignoring case).
       if gemname =~ /^#{selected.name}$/i
         filename = selected.full_name + '.gem'
         return File.join(Gem.dir, 'cache', filename)
@@ -1215,7 +1220,7 @@ module Gem
 	  system = false
 	end
 	
-	si = Gem::SourceIndex.from_installed_gems(*s)
+	si = Gem::SourceIndex.from_gems_in(*s)
 	
 	gem_spec = si.search(gem, version).first
 	unless gem_spec

@@ -2,6 +2,7 @@ require 'rubygems'
 require 'rubygems/command'
 require 'rubygems/user_interaction'
 require 'rubygems/gem_commands'
+require 'timeout'
 
 module Gem
 
@@ -65,7 +66,7 @@ module Gem
     
     def run(cfg)
       process_args(cfg.args)
-    rescue StandardError => ex
+    rescue StandardError, Timeout::Error => ex
       alert_error "While executing gem ... (#{ex.class})\n    #{ex.to_s}"
       puts ex.backtrace if cfg.backtrace
       terminate_interaction(1)

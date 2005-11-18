@@ -2,6 +2,7 @@
 
 require 'test/unit'
 require 'fileutils'
+require 'flexmock'
 
 require 'rubygems/incremental_fetcher'
 require 'rubygems/remote_installer'
@@ -9,87 +10,115 @@ require 'test/yaml_data'
 require 'test/gemutilities'
 
 class TestIncrementalFetcher < RubyGemTestCase
-
-  class MockFetcher
-    attr_reader :count
-    attr_accessor :size
-    attr_accessor :quick_enabled
-
-    def initialize
-      @count = 0
-      @size = 5
-      @quick_enabled = true
-    end
-
-    def fetch_path(path=nil)
-      case path
-      when 'quick/index.gz'
-	unless @quick_enabled
-	  fail Exception, "Quick index not found [#{path}]"
-	end
-	"x"
-      else
-	fail "File not found [#{path}]"
-      end
-    end
-    
-    def source_index
-      @count += 1
-    end
-  end
-
-  class UniversalLookup
-    def initialize(data)
-      @data = data
-    end
-    def [](index)
-      @data
-    end
-  end
-
-  class MockCacheManager
-    def initialize(x)
-      @x = x
-    end
-    def cache_data
-      si = Gem::SourceIndex.new( {
-	  'a-1.0' => @x.quick_gem('a', '1.0')
-	} )
-      UniversalLookup.new( SourceInfoCacheEntry.new(si, si.to_yaml.size) )
-    end
-  end
+  TEST_URI = "http://onestepback.org/betagems"
 
   def setup
     super
-    @source_uri = "http://localhost:12344"
-    make_cache_area(@gemhome, @source_uri)
-    @mf = MockFetcher.new
-    @cm = Gem::SourceInfoCache.new
-    @inc = Gem::IncrementalFetcher.new(@source_uri, @mf, @cm)
+    @fetcher = FlexMock.new("RemoteFetcher")
+    @manager = FlexMock.new("SourceInfoCache")
+    @inc = Gem::IncrementalFetcher.new(TEST_URI, @fetcher, @manager)
+    @existing_index = Gem::SourceIndex.new
+    @existing_index.add_spec(quick_gem("a", "1.0"))
+    @existing_index.add_spec(quick_gem("b", "2.0"))
+    @sice = Gem::SourceInfoCacheEntry.new(@existing_index, 100)
+
+    @url_hash = { TEST_URI => @sice}
+    @manager.should_receive(:cache_data).and_return(@url_hash)
   end
 
-  def test_cache_is_properly_setup
-    assert @cm.cache_data[@source_uri].size > 800,
-      "Cache size should be over 800 (at least)"
-    srcindex = @cm.cache_data[@source_uri].source_index
-    assert_equal Gem::SourceIndex, srcindex.class
-    assert_equal 1, srcindex.size
-    specs = srcindex.find_name('rake')
-    assert_equal "rake", specs.first.name
+  def verify
+    [ @fetcher, @manager ].each do |it| it.mock_verify end
   end
 
-  def test_no_quick_index_on_source
-    @mf.quick_enabled = false
-    assert_raise(Gem::OperationNotSupportedError) {
-      @inc.source_index
-    }
+  def zipped(string)
+    require 'zlib'
+    Zlib::Deflate.deflate(string)
   end
 
-  def test_matching_hashes
-    @inc.source_index
+  def new_source_index
+    result = Gem::SourceIndex.new
+    result.add_spec(quick_gem("a", "1.0"))
+    result.add_spec(quick_gem("b", "2.0"))
+    result.add_spec(quick_gem("b", "2.1"))
+    result
   end
 
-  def make_cache_area(path, *uris)
-    Utilities.make_cache_area(path, *uris)
+  def test_creation
+    assert_not_nil @inc
+    verify
   end
+
+  def test_remote_size_matches_cached_data_returns_cache
+    @fetcher.should_receive(:size).with_no_args.and_return(100).once
+    @manager.should_receive(:update).never
+
+    si = @inc.source_index
+    assert_equal 1, si.find_name("a").size
+    assert_equal 1, si.find_name("b").size
+
+    verify
+  end
+
+  def test_remote_size_differs_and_remote_has_additional_specs
+    @fetcher.should_receive(:size).with_no_args.and_return(200).once
+    @fetcher.should_receive(:fetch_path).with("/quick/index.rz").once.
+      and_return(zipped("a-1.0\nb-2.0\na-1.1\n"))
+    @fetcher.should_receive(:fetch_path).with("/quick/a-1.1.gemspec.rz").once.
+      and_return(zipped(quick_gem("a", "1.1").to_yaml))
+    @manager.should_receive(:update).at_least.once.ordered
+    @manager.should_receive(:flush).at_least.once.ordered
+
+    si = @inc.source_index
+    assert_equal 2, si.find_name("a").size
+    assert_equal 1, si.find_name("b").size
+
+    verify
+  end
+
+  def test_remote_size_differs_and_remote_has_fewer_specs
+    @fetcher.should_receive(:size).with_no_args.and_return(200).once
+    @fetcher.should_receive(:fetch_path).with("/quick/index.rz").once.
+      and_return(zipped("a-1.0\n"))
+    @manager.should_receive(:update).at_least.once.ordered
+    @manager.should_receive(:flush).at_least.once.ordered
+
+    si = @inc.source_index
+    assert_equal 1, si.find_name("a").size
+    assert_equal 0, si.find_name("b").size
+
+    verify
+  end
+
+  def test_remote_size_differs_and_no_quick_index_is_available
+    @fetcher.should_receive(:size).with_no_args.and_return(200).once
+    @fetcher.should_receive(:fetch_path).with("/quick/index.rz").once.
+      and_return { fail RuntimeError, "No quick/index.rz file available" }
+    new_si = new_source_index
+    @fetcher.should_receive(:source_index).with_no_args.and_return(new_si)
+
+    si = @inc.source_index
+    assert_equal new_si.object_id, si.object_id
+    assert_equal 1, si.find_name("a").size
+    assert_equal 2, si.find_name("b").size
+
+    verify
+  end
+
+  def test_no_source_index_found_for_uri
+    @fetcher.should_receive(:size).with_no_args.and_return(200).once
+    @fetcher.should_receive(:fetch_path).with("/quick/index.rz").once.
+      and_return(zipped("a-1.0\n"))
+    @fetcher.should_receive(:fetch_path).with("/quick/a-1.0.gemspec.rz").once.
+      and_return(zipped(quick_gem("a", "1.0").to_yaml))
+    @manager.should_receive(:update).at_least.once.ordered
+    @manager.should_receive(:flush).at_least.once.ordered
+    @url_hash.delete(TEST_URI)
+
+    si = @inc.source_index
+    assert_equal 1, si.find_name("a").size
+    assert_equal 1, si.search(/./).size
+
+    verify    
+  end
+
 end

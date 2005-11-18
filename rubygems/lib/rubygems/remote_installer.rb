@@ -87,7 +87,6 @@ module Gem
     # command.
     def read_size(uri)
       return File.size(get_file_uri_path(uri)) if is_file_uri(uri)
-      
       require 'net/http'
       require 'uri'
       u = URI.parse(uri)
@@ -185,6 +184,11 @@ module Gem
 
     # Create a cache entry.
     def initialize(si, size)
+      replace_source_index(si, size)
+    end
+
+    # Replace the source index and the index size with given values.
+    def replace_source_index(si, size)
       @source_index = si
       @size = size
     end
@@ -203,6 +207,9 @@ module Gem
   #
   # Once a cache is selected, it will be used for all operations.  It
   # will not switch between cache files dynamically.
+  #
+  # Cache data is a simple hash indexed by the source URI.  Retrieving
+  # and entry from the cache data will return a SourceInfoCacheEntry.
   #
   class SourceInfoCache
 
@@ -300,8 +307,10 @@ module Gem
     # Create a cached fetcher (based on a RemoteSourceFetcher) for the
     # source at +source_uri+ (through the proxy +proxy+).
     def initialize(source_uri, proxy)
+      require 'rubygems/incremental_fetcher'
       @source_uri = source_uri
-      @fetcher = RemoteSourceFetcher.new(source_uri, proxy)
+      rsf = RemoteSourceFetcher.new(source_uri, proxy)
+      @fetcher = IncrementalFetcher.new(source_uri, rsf, manager)
     end
 
     # The uncompressed +size+ of the source's directory (e.g. source
@@ -436,7 +445,7 @@ module Gem
     # Return a list of the sources that we can download gems from
     def sources
       unless @sources
-	require_gem("sources")
+	require 'sources'
 	@sources = Gem.sources
       end
       @sources

@@ -121,4 +121,11 @@ class TestIncrementalFetcher < RubyGemTestCase
     verify    
   end
 
+  def test_basic_fetching
+    @fetcher.should_receive(:fetch_path).with("xyz").once.
+      and_return("abc")
+
+    assert_equal "abc", @inc.fetch_path("xyz")
+  end
+
 end

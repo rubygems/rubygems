@@ -37,7 +37,7 @@ module Gem
       # path.
       # 
       # return::
-      #   SourceIndex instance
+      #   Array of file paths
       #
       def installed_spec_directories
 	Gem.path.collect { |dir| File.join(dir, "specifications") }
@@ -102,14 +102,24 @@ module Gem
       @gems.clear
       Dir.glob("{#{spec_dirs.join(',')}}/*.gemspec").each do |file_name|
         gemspec = self.class.load_specification(file_name)
-        @gems[gemspec.full_name] = gemspec if gemspec
+	add_spec(gemspec) if gemspec
       end
       self
     end
 
+    # Add a gem specification to the source index.
+    def add_spec(gem_spec)
+      @gems[gem_spec.full_name] = gem_spec
+    end
+
+    # Remove a gem specification named +full_name+.
+    def remove_spec(full_name)
+      @gems.delete(full_name)
+    end
+
     # Iterate over the specifications in the source index.
     #
-    # &block:: [yields gem.long_name, Gem::Specification]
+    # &block:: [yields gem.full_name, Gem::Specification]
     #
     def each(&block)
       @gems.each(&block)

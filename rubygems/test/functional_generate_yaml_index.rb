@@ -11,7 +11,7 @@ class TestGenerateYamlIndex < Test::Unit::TestCase
   SERVER_DIR = 'test/temp/server'
 
   def setup
-    @gyi_path = File.expand_path("bin/generate_yaml_index.rb")
+    @gyi_path = File.expand_path("bin/index_gem_repository.rb")
     @gem_path = File.expand_path("bin/gem")
     lib_path = File.expand_path("lib")
     @ruby_options = "-I#{lib_path} -I."
@@ -52,9 +52,9 @@ class TestGenerateYamlIndex < Test::Unit::TestCase
     assert File.exist?(srvfile("yaml.Z"))
     assert File.exist?(srvfile("quick"))
     assert File.exist?(srvfile("quick/index"))
-    assert File.exist?(srvfile("quick/index.gz"))
-    assert File.exist?(srvfile("quick/one-0.0.1.gemspec"))
-    assert File.exist?(srvfile("quick/one-0.0.1.gemspec.gz"))
+    assert File.exist?(srvfile("quick/index.rz"))
+    assert File.exist?(srvfile("quick/one-0.0.1.gemspec.rz"))
+    assert ! File.exist?(srvfile("quick/one-0.0.1.gemspec"))
   end
 
   def initialize_server_directory

@@ -4,6 +4,7 @@ module Gem
 
   class CommandLineError < Gem::Exception; end
 
+  ####################################################################
   module CommandAids
     def get_one_gem_name
       args = options[:args]
@@ -29,6 +30,7 @@ module Gem
     end
   end
 
+  ####################################################################
   module LocalRemoteOptions
     def add_local_remote_options
       add_option('-l', '--local', 'Restrict operations to the LOCAL domain (default)') do |value, options|
@@ -51,9 +53,9 @@ module Gem
     end
   end
 
-  ##
+  ####################################################################
   # OptionParser options specific to the gem install command.
-
+  #
   module InstallUpdateOptions
     def add_install_update_options
       add_option('-i', '--install-dir DIR', '') do |value, options|
@@ -93,6 +95,7 @@ module Gem
     end
   end
 
+  ####################################################################
   module VersionOption
     def add_version_option(taskname)
       add_option('-v', '--version VERSION', "Specify version of gem to #{taskname}") do |value, options|
@@ -101,9 +104,9 @@ module Gem
     end
   end
 
-  ##
+  ####################################################################
   # Gem install command.
-
+  #
   class InstallCommand < Command
     include CommandAids
     include VersionOption
@@ -181,7 +184,7 @@ module Gem
             say " -> Local installation can't proceed due to LoadError: #{e.message}"
           rescue => e
 	    # TODO: Fix this handle to allow the error to propagate to
-	    # the top level handler.  Example the other errors as
+	    # the top level handler.  Examine the other errors as
 	    # well.  This implementation here looks suspicious to me --
 	    # JimWeirich (4/Jan/05) 
             alert_error "Error installing gem #{gem_name}[.gem]: #{e.message}"
@@ -314,7 +317,9 @@ module Gem
         end
       end
 
-      add_option('-b', '--build EMAIL_ADDR', 'Build private key and self-signed certificate for EMAIL_ADDR.') do |value, options|
+      add_option('-b', '--build EMAIL_ADDR',
+	'Build private key and self-signed certificate for EMAIL_ADDR.'
+	) do |value, options|
         vals = Gem::Security::build_self_signed_cert(value)
         File::chmod(0600, vals[:key_path])
         puts "Public Cert: #{vals[:cert_path]}",
@@ -322,18 +327,24 @@ module Gem
              "Don't forget to move the key file to somewhere private..."
       end
 
-      add_option('-C', '--certificate CERT', 'Certificate for --sign command.') do |value, options|
+      add_option('-C', '--certificate CERT',
+	'Certificate for --sign command.'
+	) do |value, options|
         cert = OpenSSL::X509::Certificate.new(File.read(value))
         Gem::Security::OPT[:issuer_cert] = cert
       end
 
-      add_option('-K', '--private-key KEY', 'Private key for --sign command.') do |value, options|
+      add_option('-K', '--private-key KEY',
+	'Private key for --sign command.'
+	) do |value, options|
         key = OpenSSL::PKey::RSA.new(File.read(value))
         Gem::Security::OPT[:issuer_key] = key
       end
 
 
-      add_option('-s', '--sign NEWCERT', 'Sign a certificate with my key and certificate.') do |value, options|
+      add_option('-s', '--sign NEWCERT', 
+	'Sign a certificate with my key and certificate.'
+	) do |value, options|
         cert = OpenSSL::X509::Certificate.new(File.read(value))
         my_cert = Gem::Security::OPT[:issuer_cert]
         my_key = Gem::Security::OPT[:issuer_key]
@@ -1183,6 +1194,7 @@ module Gem
     end
   end
 
+  ####################################################################
   class ContentsCommand < Command
     include CommandAids
     def initialize
@@ -1250,8 +1262,9 @@ module Gem
   
 end # module
 
-## Documentation Constants
-
+######################################################################
+# Documentation Constants
+#
 module Gem
 
   HELP = %{

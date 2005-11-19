@@ -8,14 +8,16 @@ module Gem
   class GemNotFoundException < Gem::Exception; end
   class RemoteInstallationCancelled < Gem::Exception; end
 
-  # ==================================================================
+  ####################################################################
   # RemoteSourceFetcher handles the details of fetching gems and gem
   # information from a remote source.  
   class RemoteSourceFetcher
     include UserInteraction
 
     # Initialize a remote fetcher using the source URI (and possible
-    # proxy information).
+    # proxy information).  +proxy+ is the URL of the proxy server.  If
+    # +proxy+ is equal to +true+, then the proxy URL is taken from the
+    # environment variables +http_proxy+ or +HTTP_PROXY+.
     def initialize(source_uri, proxy)
       @uri = normalize_uri(source_uri)
       @http_proxy = proxy
@@ -139,7 +141,7 @@ module Gem
     # these are hashes of specs.).
     def convert_spec(yaml_spec)
       YAML.load(reduce_spec(yaml_spec)) or
-	raise "Didn't get a valid YAML document"
+	fail "Didn't get a valid YAML document"
     end
 
     # This reduces the source spec in size so that YAML bugs with
@@ -172,7 +174,7 @@ module Gem
     end
   end
 
-  # ==================================================================
+  ####################################################################
   # Entrys held by a SourceInfoCache.
   class SourceInfoCacheEntry
     # The source index for this cache entry.
@@ -194,7 +196,7 @@ module Gem
     end
   end
 
-  # ==================================================================
+  ####################################################################
   # SourceInfoCache implements the cache management policy on where
   # the source info is stored on local file system.  There are two
   # possible cache locations: (1) the system wide cache, and (2) the
@@ -300,6 +302,7 @@ module Gem
     end
   end
 
+  ####################################################################
   # CachedFetcher is a decorator that adds local file caching to
   # RemoteSourceFetcher objects.
   class CachedFetcher

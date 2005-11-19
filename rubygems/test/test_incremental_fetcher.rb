@@ -10,6 +10,8 @@ require 'test/yaml_data'
 require 'test/gemutilities'
 
 class TestIncrementalFetcher < RubyGemTestCase
+  include Gem::DefaultUserInteraction
+
   TEST_URI = "http://onestepback.org/betagems"
 
   def setup
@@ -24,6 +26,13 @@ class TestIncrementalFetcher < RubyGemTestCase
 
     @url_hash = { TEST_URI => @sice}
     @manager.should_receive(:cache_data).and_return(@url_hash)
+
+    @old_ui = ui
+    self.ui = Gem::SilentUI.new
+  end
+
+  def teardown
+    self.ui = @old_ui
   end
 
   def verify
@@ -53,9 +62,10 @@ class TestIncrementalFetcher < RubyGemTestCase
     @manager.should_receive(:update).never
 
     si = @inc.source_index
-    assert_equal 1, si.find_name("a").size
-    assert_equal 1, si.find_name("b").size
 
+    assert si.specification("a-1.0")
+    assert si.specification("b-2.0")
+    assert_equal 2, si.search(/./).size
     verify
   end
 
@@ -69,9 +79,11 @@ class TestIncrementalFetcher < RubyGemTestCase
     @manager.should_receive(:flush).at_least.once.ordered
 
     si = @inc.source_index
-    assert_equal 2, si.find_name("a").size
-    assert_equal 1, si.find_name("b").size
 
+    assert si.specification("a-1.0")
+    assert si.specification("a-1.1")
+    assert si.specification("b-2.0")
+    assert_equal 3, si.search(/./).size
     verify
   end
 
@@ -83,9 +95,9 @@ class TestIncrementalFetcher < RubyGemTestCase
     @manager.should_receive(:flush).at_least.once.ordered
 
     si = @inc.source_index
-    assert_equal 1, si.find_name("a").size
-    assert_equal 0, si.find_name("b").size
 
+    assert si.specification("a-1.0")
+    assert_equal 1, si.search(/./).size
     verify
   end
 
@@ -97,10 +109,12 @@ class TestIncrementalFetcher < RubyGemTestCase
     @fetcher.should_receive(:source_index).with_no_args.and_return(new_si)
 
     si = @inc.source_index
-    assert_equal new_si.object_id, si.object_id
-    assert_equal 1, si.find_name("a").size
-    assert_equal 2, si.find_name("b").size
 
+    assert_equal new_si.object_id, si.object_id
+    assert si.specification("a-1.0")
+    assert si.specification("b-2.0")
+    assert si.specification("b-2.1")
+    assert_equal 3, si.search(/./).size
     verify
   end
 
@@ -115,10 +129,34 @@ class TestIncrementalFetcher < RubyGemTestCase
     @url_hash.delete(TEST_URI)
 
     si = @inc.source_index
-    assert_equal 1, si.find_name("a").size
-    assert_equal 1, si.search(/./).size
 
+    assert si.specification('a-1.0')
+    assert_equal 1, si.search(/./).size
     verify    
+  end
+
+  def test_fetch_where_some_gemspecs_cant_be_retrieved
+    @fetcher.should_receive(:size).with_no_args.and_return(200).once
+    @fetcher.should_receive(:fetch_path).with("/quick/index.rz").once.
+      and_return(zipped("a-1.0\nb-2.0\na-1.1\na-1.2\na-1.3\n"))
+    @fetcher.should_receive(:fetch_path).with("/quick/a-1.1.gemspec.rz").once.
+      and_return(zipped(quick_gem("a", "1.1").to_yaml))
+    @fetcher.should_receive(:fetch_path).with("/quick/a-1.2.gemspec.rz").once.
+      and_return { fail "No gem found for a-1.2" }
+    @fetcher.should_receive(:fetch_path).with("/quick/a-1.3.gemspec.rz").once.
+      and_return(zipped(quick_gem("a", "1.3").to_yaml))
+    @manager.should_receive(:update).at_least.once.ordered
+    @manager.should_receive(:flush).at_least.once.ordered
+
+    si = @inc.source_index
+
+    assert si.specification("a-1.0")
+    assert si.specification("a-1.1")
+    assert si.specification("a-1.3")
+    assert si.specification("b-2.0")
+    assert_nil si.specification("a-1.2")
+    assert_equal 4, si.search(/./).size
+    verify
   end
 
   def test_basic_fetching

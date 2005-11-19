@@ -33,11 +33,11 @@ module Gem
 	from_gems_in(*installed_spec_directories)
       end
       
-      # Factory method to construct a source index instance for a given
-      # path.
+      # Return a list of directories in the current gem path that
+      # contain specifications.
       # 
       # return::
-      #   Array of file paths
+      #   List of directory paths (all ending in "../specifications").
       #
       def installed_spec_directories
 	Gem.path.collect { |dir| File.join(dir, "specifications") }

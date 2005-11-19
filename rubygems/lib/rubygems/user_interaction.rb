@@ -1,6 +1,6 @@
 module Gem
 
-  ##
+  ####################################################################
   # Module that defines the default UserInteraction.  Any class
   # including this module will have access to the +ui+ method that
   # returns the default UI.
@@ -40,7 +40,7 @@ module Gem
     end
   end
 
-  ##
+  ####################################################################
   # Make the default UI accessable without the "ui." prefix.  Classes
   # including this module may use the interaction methods on the
   # default UI directly.  Classes may also reference the +ui+ and
@@ -69,7 +69,7 @@ module Gem
     end    
   end
 
-  ##
+  ####################################################################
   # StreamUI implements a simple stream based user interface.
   class StreamUI
     def initialize(in_stream, out_stream, err_stream=STDERR)
@@ -161,15 +161,49 @@ module Gem
     def terminate_interaction(status=0)
       exit(status)
     end
+
+    # Return a progress reporter object
+    def progress_reporter(*args)
+      ProgressReporter.new(*args)
+    end
+
+    class ProgressReporter
+      include DefaultUserInteraction
+
+      attr_reader :count
+
+      def initialize(size, initial_message)
+	@total = size
+	@count = 0
+	ui.say initial_message
+      end
+
+      def updated(message)
+	@count += 1
+	ui.say "#{@count}/#{@total}: #{message}"
+      end
+
+      def done
+	ui.say "complete"
+      end
+    end
   end
 
 
-  ##
+  ####################################################################
   # Subclass of StreamUI that instantiates the user interaction using
   # standard in, out and error.
   class ConsoleUI < StreamUI
     def initialize
       super(STDIN, STDOUT, STDERR)
+    end
+  end
+
+  ####################################################################
+  # SilentUI is a UI choice that is absolutely silent.
+  class SilentUI
+    def method_missing(sym, *args, &block)
+      self
     end
   end
 end

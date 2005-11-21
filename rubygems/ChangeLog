@@ -1,4 +1,8 @@
 2005-11-08  Chad Fowler  <chad@chadfowler.com>
+       * lib/rubygems.rb: Ara Howard's fix to allow 0.0.0 to be a valid gem
+       version.
+
+2005-11-08  Chad Fowler  <chad@chadfowler.com>
        * lib/rubygems/gem_commands.rb: Fixed bug in gem unpack.  It was
        sorting incorrectly, resulting in the wrong version being unpacked in
        some edge cases. Thanks to Jakob Skjerning for the detailed bug report.

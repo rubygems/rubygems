@@ -23,7 +23,7 @@ module Kernel
   #   GEM_SKIP=libA:libB ruby-I../libA -I../libB ./mycode.rb
   #
   # gem:: [String or Gem::Dependency] The gem name or dependency instance.
-  # version_requirement:: [default="> 0.0.0"] The version requirement.
+  # version_requirement:: [default=">= 0.0.0"] The version requirement.
   # return:: [Boolean] true if the Gem is loaded, otherwise false.
   # raises:: [Gem::LoadError] if Gem cannot be found, is listed in GEM_SKIP, or version requirement not met.
   #
@@ -134,7 +134,7 @@ module Gem
     def activate(gem, autorequire, *version_requirements)
       @loaded_specs ||= Hash.new
       unless version_requirements.size > 0
-        version_requirements = ["> 0.0.0"]
+        version_requirements = [">= 0.0.0"]
       end
       unless gem.respond_to?(:name) && gem.respond_to?(:version_requirements)
         gem = Gem::Dependency.new(gem, version_requirements)

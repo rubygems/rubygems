@@ -191,7 +191,7 @@ module Gem
 
     # Replace the source index and the index size with given values.
     def replace_source_index(si, size)
-      @source_index = si
+      @source_index = si || SourceIndex.new({})
       @size = size
     end
   end

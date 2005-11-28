@@ -1,3 +1,10 @@
+2005-11-28  Jim Weirich  <jim@tardis>
+
+	* lib/rubygems/remote_installer.rb
+	(Gem::SourceInfoCacheEntry::replace_source_index): Fixed the
+	SourceIndexCacheEntry so that it will manufacture an empty source
+	index if given a nil value for the +si+ value.
+
 2005-11-08  Chad Fowler  <chad@chadfowler.com>
        * lib/rubygems.rb: Ara Howard's fix to allow 0.0.0 to be a valid gem
        version.

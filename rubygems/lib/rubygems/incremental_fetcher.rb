@@ -44,8 +44,7 @@ module Gem
 	result = SourceInfoCacheEntry.new(result['source_index'], result['size'])
 	@manager.cache_data[@source_uri] = result	
       else
-	puts "DBG: #{result.class}"
-	fail "Ooops"
+	fail "Unexpected type (#{result.class}) for SourceInfoCache entry"
       end
       result	
     end

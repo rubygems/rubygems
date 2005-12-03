@@ -2,26 +2,35 @@
 
 module Gem
 
+  ####################################################################
+  # Run an instance of the gem program.
+  #
   class GemRunner
 
+    def initialize(options={})
+      @cmd_manager_class = options[:command_manager] || Gem::CommandManager
+      @config_file_class = options[:config_file] || Gem::ConfigFile
+      @doc_manager_class = options[:doc_manager] || Gem::DocManager
+    end
+
+    # Run the gem command with the following arguments.
     def run(args)
       do_configuration(args)
-      cmd = Gem::CommandManager.instance
+      cmd = @cmd_manager_class.instance
       cmd.command_names.each do |c|
-          Command.add_specific_extra_args c, Array(@cfg[c])
+	Command.add_specific_extra_args c, Array(Gem.configuration[c])
       end
-      cmd.run(@cfg)
+      cmd.run(Gem.configuration.args)
     end
 
     private
 
     def do_configuration(args)
-      @cfg = Gem::ConfigFile.new(args)
-      Gem.use_paths(@cfg[:gemhome], @cfg[:gempath])
-      Command.extra_args = @cfg[:gem]
-      DocManager.configured_args = @cfg[:rdoc]
+      Gem.configuration = @config_file_class.new(args)
+      Gem.use_paths(Gem.configuration[:gemhome], Gem.configuration[:gempath])
+      Command.extra_args = Gem.configuration[:gem]
+      @doc_manager_class.configured_args = Gem.configuration[:rdoc]
     end
 
-  end
-
-end
+  end # class
+end # module

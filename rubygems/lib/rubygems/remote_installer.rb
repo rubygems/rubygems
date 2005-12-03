@@ -140,7 +140,6 @@ module Gem
     # Convert the yamlized string spec into a real spec (actually,
     # these are hashes of specs.).
     def convert_spec(yaml_spec)
-      open("yaml.dbg", "w") { |f| f.write yaml_spec }
       YAML.load(reduce_spec(yaml_spec)) or
 	fail "Didn't get a valid YAML document"
     end

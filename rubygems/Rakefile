@@ -326,3 +326,5 @@ task :rubyfiles do
   puts Dir['**/*.rb'].reject { |fn| fn =~ /^pkg/ }
   puts Dir['bin/*'].reject { |fn| fn =~ /CVS|(~$)|(\.rb$)/ }
 end
+
+task :rf => :rubyfiles

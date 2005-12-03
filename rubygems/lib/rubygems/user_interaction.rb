@@ -164,15 +164,36 @@ module Gem
 
     # Return a progress reporter object
     def progress_reporter(*args)
-      ProgressReporter.new(*args)
+      case Gem.configuration.verbose
+      when nil, false
+	SilentProgressReporter.new(@outs, *args)
+      when true
+	SimpleProgressReporter.new(@outs, *args)
+      else
+	VerboseProgressReporter.new(@outs, *args)
+      end
     end
 
-    class ProgressReporter
+    class SilentReporter
+      attr_reader :count
+
+      def initialize(out_stream, size, initial_message)
+      end
+
+      def updated(message)
+      end
+
+      def done
+      end
+    end
+
+    class SimpleProgressReporter
       include DefaultUserInteraction
 
       attr_reader :count
 
-      def initialize(size, initial_message)
+      def initialize(out_stream, size, initial_message)
+	@out = out_stream
 	@total = size
 	@count = 0
 	ui.say initial_message
@@ -180,11 +201,34 @@ module Gem
 
       def updated(message)
 	@count += 1
-	ui.say "#{@count}/#{@total}: #{message}"
+	@out.print "."
+	@out.flush
       end
 
       def done
-	ui.say "complete"
+	@out.puts "\ncomplete"
+      end
+    end
+
+    class VerboseProgressReporter
+      include DefaultUserInteraction
+
+      attr_reader :count
+
+      def initialize(out_stream, size, initial_message)
+	@out = out_stream
+	@total = size
+	@count = 0
+	@out.puts initial_message
+      end
+
+      def updated(message)
+	@count += 1
+	@out.puts "#{@count}/#{@total}: #{message}"
+      end
+
+      def done
+	@out.puts "complete"
       end
     end
   end

@@ -5,7 +5,13 @@ module Gem
   class CommandLineError < Gem::Exception; end
 
   ####################################################################
+  # The following mixin methods aid in the retrieving of information
+  # from the command line.
+  #
   module CommandAids
+
+    # Get the single gem name from the command line.  Fail if there is
+    # no gem name or if there is more than one gem name given.
     def get_one_gem_name
       args = options[:args]
       if args.nil? or args.empty?
@@ -19,11 +25,15 @@ module Gem
       args.first
     end
 
+    # Get a single optional argument from the command line.  If more
+    # than one argument is given, return only the first. Return nil if
+    # none are given.
     def get_one_optional_argument
       args = options[:args] || []
       args.first
     end
 
+    # True if +long+ begins with the characters from +short+.
     def begins?(long, short)
       return false if short.nil?
       long[0, short.length] == short
@@ -31,74 +41,116 @@ module Gem
   end
 
   ####################################################################
+  # Mixin methods for handling the local/remote command line options.
+  #
   module LocalRemoteOptions
+
+    # Add the local/remote options to the command line parser.
     def add_local_remote_options
-      add_option('-l', '--local', 'Restrict operations to the LOCAL domain (default)') do |value, options|
+      add_option('-l', '--local',
+	'Restrict operations to the LOCAL domain (default)') do
+	|value, options|
         options[:domain] = :local
       end
-      add_option('-r', '--remote', 'Restrict operations to the REMOTE domain') do |value, options|
+
+      add_option('-r', '--remote',
+	'Restrict operations to the REMOTE domain') do
+	|value, options|
         options[:domain] = :remote
       end
-      add_option('-b', '--both', 'Allow LOCAL and REMOTE operations') do |value, options|
+
+      add_option('-b', '--both',
+	'Allow LOCAL and REMOTE operations') do
+	|value, options|
         options[:domain] = :both
       end
     end
 
+    # Is local fetching enabled?
     def local?
       options[:domain] == :local || options[:domain] == :both
     end
 
+    # Is remote fetching enabled?
     def remote?
       options[:domain] == :remote || options[:domain] == :both
     end
   end
 
   ####################################################################
-  # OptionParser options specific to the gem install command.
+  # Mixin methods and OptionParser options specific to the gem install
+  # command.
   #
   module InstallUpdateOptions
+
+    # Add the install/update options to the option parser.
     def add_install_update_options
-      add_option('-i', '--install-dir DIR', '') do |value, options|
+      add_option('-i', '--install-dir DIR',
+	'Gem repository directory to get installed gems.') do 
+	|value, options|
         options[:install_dir] = value
       end
-      add_option('-d', '--[no-]rdoc', 'Generate RDoc documentation for the gem on install') do |value, options|
+
+      add_option('-d', '--[no-]rdoc', 
+	'Generate RDoc documentation for the gem on install') do
+	|value, options|
         options[:generate_rdoc] = value
       end
-      add_option('-f', '--[no-]force', 'Force gem to install, bypassing dependency checks') do |value, options|
+
+      add_option('-f', '--[no-]force', 
+	'Force gem to install, bypassing dependency checks') do 
+	|value, options|
         options[:force] = value
       end
-      add_option('-t', '--[no-]test', 'Run unit tests prior to installation') do |value, options|
+
+      add_option('-t', '--[no-]test', 
+	'Run unit tests prior to installation') do 
+	|value, options|
         options[:test] = value
       end
-      add_option('-w', '--[no-]wrappers', 'Use bin wrappers for executables',
-                 'Not available on dosish platforms') do |value, options|
+
+      add_option('-w', '--[no-]wrappers', 
+	'Use bin wrappers for executables',
+	'Not available on dosish platforms') do 
+	|value, options|
         options[:wrappers] = value
       end
-      add_option('-P', '--trust-policy POLICY', 'Specify gem trust policy.') do |value, options|
+
+      add_option('-P', '--trust-policy POLICY', 
+	'Specify gem trust policy.') do 
+	|value, options|
         options[:security_policy] = value
       end
+
       add_option('--ignore-dependencies',
-	'Do not install any required dependent gems') do |value, options|
+	'Do not install any required dependent gems') do 
+	|value, options|
 	options[:ignore_dependencies] = value
       end
+
       add_option('-y', '--include-dependencies',
-	'Unconditionally install the required dependent gems') do |value, options|
+	'Unconditionally install the required dependent gems') do 
+	|value, options|
 	options[:include_dependencies] = value
       end
     end
     
-    ##
     # Default options for the gem install command.
-
     def install_update_defaults_str
       '--rdoc --no-force --no-test --wrappers'
     end
   end
 
   ####################################################################
+  # Mixin methods for the version command.
+  #
   module VersionOption
+
+    # Add the options to the option parser.
     def add_version_option(taskname)
-      add_option('-v', '--version VERSION', "Specify version of gem to #{taskname}") do |value, options|
+      add_option('-v', '--version VERSION', 
+	"Specify version of gem to #{taskname}") do 
+	|value, options|
         options[:version] = value
       end
     end
@@ -156,7 +208,6 @@ module Gem
       options[:args].each do |gem_name|
         if local?
           begin
-            say "Attempting local installation of '#{gem_name}'"
 	    entries = []
 	    if(File.exist?(gem_name) && !File.directory?(gem_name))
               entries << gem_name
@@ -165,9 +216,7 @@ module Gem
               entries = Dir[filepattern] 
             end
             unless entries.size > 0
-              if options[:domain] == :both
-                say "Local gem file not found: #{filepattern}"
-              else
+              if options[:domain] == :local
                 alert_error "Local gem file not found: #{filepattern}"
               end
             else
@@ -193,7 +242,6 @@ module Gem
         end
         
         if remote? && installed_gems.nil?
-          say "Attempting remote installation of '#{gem_name}'"
           installer = Gem::RemoteInstaller.new(options)
           installed_gems = installer.install(
 	    gem_name,
@@ -274,7 +322,6 @@ module Gem
 
     def execute
       gem_name = get_one_gem_name
-      say "Attempting to uninstall gem '#{gem_name}'"
       Gem::Uninstaller.new(gem_name, options).uninstall
     end
   end      
@@ -538,7 +585,6 @@ module Gem
     def execute
       gemspec = get_one_gem_name
       if File.exist?(gemspec)
-        say "Attempting to build gem spec '#{gemspec}'"
         specs = load_gemspecs(gemspec)
         specs.each do |spec|
           Gem::Builder.new(spec).build

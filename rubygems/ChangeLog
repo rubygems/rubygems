@@ -1,3 +1,21 @@
+2005-12-03  Jim Weirich  <jim@tardis>
+
+	* lib/rubygems/rubygems_version.rb (Gem): Bumped version to
+	0.8.11.6'
+
+	* lib/rubygems/user_interaction.rb
+	(Gem::StreamUI::SimpleProgressReporter::done): Added several new
+	progress reporters.
+
+	* lib/rubygems/command.rb
+	(Gem::Command::specific_extra_args_hash): Added --verbose
+	processing.
+	
+	* lib/rubygems/config_file.rb (Gem::ConfigFile::handle_arguments):
+	Added --traceback as alias for --backtrace (I always get them
+	confused).
+	(Gem::ConfigFile::initialize): Added a verbose option.
+
 2005-11-28  Jim Weirich  <jim@tardis>
 
 	* lib/rubygems/remote_installer.rb

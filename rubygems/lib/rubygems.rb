@@ -117,12 +117,22 @@ module Gem
       File.join(Gem.user_home, '.gemrc')
     end
 
+    # The standard configuration object for gems.
+    def configuration
+      @configuration ||= {}
+    end
+
+    # Use the given configuration object (which implements the
+    # ConfigFile protocol) as the standard configuration object.
+    def configuration=(config)
+      @configuration = config
+    end
+
     # Return the Ruby command to use to execute the Ruby interpreter.
     def ruby
       "ruby"
     end
 
-    ##
     # Activate a gem (i.e. add it to the Ruby load path).  The gem
     # must satisfy all the specified version constraints.  If
     # +autorequire+ is true, then automatically require the specified

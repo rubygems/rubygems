@@ -73,7 +73,7 @@ module Gem
       raise Gem::FilePermissionError.new(install_dir) unless File.writable?(install_dir)
 
       # Build spec dir.
-      @directory = File.join(install_dir, "gems", format.spec.full_name)
+      @directory = File.join(install_dir, "gems", format.spec.full_name).untaint
       FileUtils.mkdir_p @directory
 
       extract_files(@directory, format)
@@ -146,7 +146,8 @@ module Gem
     #
     def write_spec(spec, spec_path)
       rubycode = spec.to_ruby
-      File.open(File.join(spec_path, spec.full_name+".gemspec"), "w") do |file|
+      file_name = File.join(spec_path, spec.full_name+".gemspec").untaint
+      File.open(file_name, "w") do |file|
         file.puts rubycode
       end
     end
@@ -327,7 +328,7 @@ TEXT
       wd = Dir.getwd
       Dir.chdir directory do
         format.file_entries.each do |entry, file_data|
-          path = entry['path']
+          path = entry['path'].untaint
           FileUtils.mkdir_p File.dirname(path)
           File.open(path, "wb") do |out|
             out.write file_data

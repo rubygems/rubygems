@@ -1,5 +1,7 @@
 # Create a test environment for gems.
 
+$SAFE = 1
+
 require 'rubygems'
 require 'rubygems/installer'
 require 'rubygems/builder'

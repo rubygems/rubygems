@@ -65,7 +65,7 @@ module Gem
       #
       def load_specification(file_name)
 	begin
-	  spec_code = File.read(file_name)
+	  spec_code = File.read(file_name).untaint
 	  gemspec = eval(spec_code)
 	  if gemspec.is_a?(Gem::Specification)
 	    gemspec.loaded_from = file_name
@@ -101,7 +101,7 @@ module Gem
     def load_gems_in(*spec_dirs)
       @gems.clear
       Dir.glob("{#{spec_dirs.join(',')}}/*.gemspec").each do |file_name|
-        gemspec = self.class.load_specification(file_name)
+        gemspec = self.class.load_specification(file_name.untaint)
 	add_spec(gemspec) if gemspec
       end
       self

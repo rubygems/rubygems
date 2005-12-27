@@ -1,4 +1,5 @@
 require 'time'
+require 'date'
 require 'rubygems'
 require 'rubygems/version'
 
@@ -239,6 +240,7 @@ module Gem
 
     attribute :signing_key,            nil
     attribute :cert_chain,             nil
+    attribute :post_install_message,   nil
 
     array_attribute :authors
     array_attribute :files

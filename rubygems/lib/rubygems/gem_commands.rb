@@ -185,7 +185,8 @@ module Gem
     end
     
     def usage
-      "#{program_name} GEMNAME"
+      "#{program_name} GEMNAME [options]
+   or: #{program_name} GEMNAME [options] -- --build-flags"
     end
 
     def arguments
@@ -468,13 +469,7 @@ module Gem
       else
 	response = ''
 	specs.values.sort.each do |spec|
-	  response << "Gem #{spec.full_name}\n"
-	  unless spec.dependencies.empty?
-	    response << "  Requires\n"
-	    spec.dependencies.each do |dep|
-	      response << "    #{dep}\n"
-	    end
-	  end
+          response << print_dependencies(spec)
 	  unless reverse[spec.full_name].empty?
 	    response << "  Used by\n"
 	    reverse[spec.full_name].each do |sp, dep|
@@ -485,6 +480,18 @@ module Gem
 	end
 	say response
       end
+    end
+
+    def print_dependencies(spec, level = 0)
+      response = ''
+      response << '  ' * level + "Gem #{spec.full_name}\n"
+      unless spec.dependencies.empty?
+#        response << '  ' * level + "  Requires\n"
+        spec.dependencies.each do |dep|
+          response << '  ' * level + "  #{dep}\n"
+        end
+      end
+      response
     end
 
     # Retuns list of [specification, dep] that are satisfied by spec.

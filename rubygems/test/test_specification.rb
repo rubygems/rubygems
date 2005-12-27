@@ -107,6 +107,7 @@ class TestSimpleSpecification < Test::Unit::TestCase
       autorequire default_executable bindir has_rdoc required_ruby_version
       platform files test_files rdoc_options extra_rdoc_files
       executables extensions requirements dependencies signing_key cert_chain
+      post_install_message
     }.sort
     actual_value = Gem::Specification.attribute_names.map { |a| a.to_s }.sort
     assert_equal expected_value, actual_value

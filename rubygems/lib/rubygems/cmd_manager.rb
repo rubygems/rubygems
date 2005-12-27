@@ -84,6 +84,9 @@ module Gem
       alert_error "While executing gem ... (#{ex.class})\n    #{ex.to_s}"
       puts ex.backtrace if Gem.configuration.backtrace
       terminate_interaction(1)
+    rescue Interrupt
+      alert_error "Interrupted"
+      terminate_interaction(1)
     end
 
     def process_args(args)

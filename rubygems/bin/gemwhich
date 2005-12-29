@@ -5,10 +5,23 @@ require 'optparse'
 
 EXT = %w( .rb .rbw .so .dll )
 
+$search_gems_first = false
+$show_all = false
+
 options = OptionParser.new
 options.banner = "gemwhich -- Find the location of a library module."
 options.separator("")
 options.separator("Usage: gemwhich [options] libname...")
+options.on('-a', '--all',
+  "Show all matching files"
+  ) do |value|
+    $show_all = true  
+end
+options.on('-g', '--gems-first',
+  "Search GEM libraries before non-GEMs"
+  ) do |value|
+    $search_gems_first = true  
+end
 options.on_tail('-v', '--verbose',
   "Enable verbose output"
   ) do |value|
@@ -29,33 +42,42 @@ rescue OptionParser::InvalidOption => ex
   exit
 end
 
-def find_path(package_name, dirs)
+def find_paths(package_name, dirs)
+  result = []
   dirs.each do |dir|
     EXT.each do |ext|
       full_path = File.join(dir, "#{package_name}#{ext}")
       if File.exist?(full_path)
-	return full_path
+	result << full_path
+	return result unless $show_all
       end
     end
   end
-  nil
+  result
 end
+
+def gem_paths(spec)
+  spec.require_paths.collect { |d|
+    File.join(spec.full_gem_path,d)
+  }
+end 
 
 searcher = Gem::GemPathSearcher.new
 ARGV.each do |arg|
   dirs = $LOAD_PATH
   spec = searcher.find(arg)
   if spec
-    dirs =
-      spec.require_paths.collect { |d|
-      File.join(spec.full_gem_path,d)
-    } + $LOAD_PATH
+    if $search_gems_first
+      dirs = gem_paths(spec) + $LOAD_PATH
+    else
+      dirs = $LOAD_PATH + gem_paths(spec)
+    end
     puts "(checking gem #{spec.full_name} for #{arg})" if $verbose
   end
-  path = find_path(arg, dirs)
-  if path
-    puts path
-  else
+  paths = find_paths(arg, dirs)
+  if paths.empty?
     puts "Can't find #{arg}"
+  else
+    puts paths
   end
 end

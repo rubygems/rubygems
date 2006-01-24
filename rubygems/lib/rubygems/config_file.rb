@@ -46,6 +46,8 @@ module Gem
         warn "Failed to load #{config_file_name}"
       rescue Errno::ENOENT
         # Ignore missing config file error.
+      rescue Errno::EACCES                 
+        warn "Failed to load #{config_file_name} due to permissions problem."
       end
       @hash ||= {}
     end

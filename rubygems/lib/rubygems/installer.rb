@@ -89,7 +89,7 @@ module Gem
         FileUtils.cp @gem, File.join(install_dir, "cache")
       end
 
-      puts spec.post_install_message unless spec.post_install_message.nil?
+      puts format.spec.post_install_message unless format.spec.post_install_message.nil?
 
       format.spec.loaded_from = File.join(install_dir, 'specifications', format.spec.full_name+".gemspec")
       return format.spec

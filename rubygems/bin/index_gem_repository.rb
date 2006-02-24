@@ -13,9 +13,10 @@ require 'digest/sha2'
 
 Gem.manage_gems
 
-# ====================================================================
-# Compressor provides a +compress+ method for compressing files on
+######################################################################
+# Mixin that provides a +compress+ method for compressing files on
 # disk.
+#
 module Compressor
   # Compress the given file.
   def compress(filename, ext="rz")
@@ -28,23 +29,35 @@ module Compressor
   def zip(string)
     Zlib::Deflate.deflate(string)
   end
+
+  # Return an uncompressed version of a compressed string.
+  def unzip(string)
+    Zlib::Inflate.inflate(string)
+  end
 end
 
-# ====================================================================
+######################################################################
 # Announcer provides a way of announcing activities to the user.
+#
 module Announcer
-
   # Announce +msg+ to the user.
   def announce(msg)
     puts msg if @options[:verbose]
   end
 end
 
-# ====================================================================
+######################################################################
+# Abstract base class for building gem indicies.  Uses the template
+# pattern with subclass specialization in the +begin_index+,
+# +end_index+ and +cleanup+ methods.
+#
 class AbstractIndexBuilder
   include Compressor
   include Announcer
 
+  # Build a Gem index.  Yields to block to handle the details of the
+  # actual building.  Calls +begin_index+, # +end_index+ and +cleanup+
+  # at appropriate times to customize basic operations.
   def build
     if ! @enabled
       yield
@@ -65,16 +78,24 @@ class AbstractIndexBuilder
     @file = nil
   end
 
+  # Called immediately before the yield in build.  The index file is
+  # open and availabe as @file.
   def start_index
   end
 
+  # Called immediately after the yield in build.  The index file is
+  # still open and available as @file.
   def end_index
   end
 
+  # Called from within builder after the index file has been closed.
   def cleanup
   end
 end
 
+######################################################################
+# Construct the master Gem index file.
+#
 class MasterIndexBuilder < AbstractIndexBuilder
   def initialize(filename, options)
     @filename = filename
@@ -89,9 +110,11 @@ class MasterIndexBuilder < AbstractIndexBuilder
     @file.puts "gems:"
   end
 
-  def end_index
+  def cleanup
     super
-    compress(File.join(@directory, @filename), "Z")
+    index_file_name = File.join(@directory, @filename)
+    compress(index_file_name, "Z")
+    paranoid(index_file_name, "#{index_file_name}.Z")
   end
 
   def add(spec)
@@ -101,8 +124,22 @@ class MasterIndexBuilder < AbstractIndexBuilder
   def nest(yaml_string)
     yaml_string[4..-1].gsub(/\n/, "\n    ")
   end
+
+  private
+
+  def paranoid(fn, compressed_fn)
+    data = File.read(fn)
+    compressed_data = File.read(compressed_fn)
+    if data != unzip(compressed_data)
+      fail "Compressed file #{compressed_fn} does not match uncompressed file #{fn}"
+    end
+  end
 end
 
+######################################################################
+# Construct a quick index file and all of the individual specs to
+# support incremental loading.
+#
 class QuickIndexBuilder < AbstractIndexBuilder
   def initialize(filename, options)
     @filename = filename
@@ -125,9 +162,10 @@ class QuickIndexBuilder < AbstractIndexBuilder
   end
 end
 
-# ====================================================================
+######################################################################
 # Top level class for building the repository index.  Initialize with
 # an options hash and call +build_index+.
+#
 class Indexer
   include Compressor
   include Announcer
@@ -177,6 +215,9 @@ class Indexer
   end
 end
 
+######################################################################
+# Top Level Functions 
+######################################################################
 
 def handle_options(args)
   # default options

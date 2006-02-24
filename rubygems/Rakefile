@@ -11,6 +11,9 @@ def announce(msg='')
   STDERR.puts msg
 end
 
+# Disable certs for now.
+ENV['CERT_DIR'] = nil
+
 PKG_NAME = 'rubygems'
 def package_version
   `ruby -Ilib bin/gem environment packageversion`.chomp

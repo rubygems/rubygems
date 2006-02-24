@@ -1,3 +1,9 @@
+2006-02-23  Jim Weirich  <jim@weirichhouse.org>
+
+	* bin/index_gem_repository.rb (MasterIndexBuilder::cleanup): Fixed
+	bug where we were trying to read the index file (to compress it)
+	before it was closed, often leading to a truncated index file.
+
 Tue Jan 24 16:26:13 2006  Chad Fowler <chad@chadfowler.com>
 	* lib/rubygems/config_file.rb
 	Luca Pireddu reported a fatal error when permissions on

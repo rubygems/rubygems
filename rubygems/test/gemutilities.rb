@@ -8,7 +8,7 @@ require 'test/yaml_data'
 module Utilities
   def make_cache_area(path, *uris)
     fn = File.join(path, 'source_cache')
-    open(fn, 'w') do |f| f.write Marshal.dump(cache_hash(*uris)) end
+    open(fn, 'wb') do |f| f.write Marshal.dump(cache_hash(*uris)) end
   end
 
   extend self
@@ -39,7 +39,7 @@ class RubyGemTestCase < Test::Unit::TestCase
       [lc.user_cache_file, 'usr'],
     ].each do |fn, data|
       FileUtils.mkdir_p File.dirname(fn)
-      open(fn, "w") { |f| f.puts(Marshal.dump({'key' => data})) }
+      open(fn, "wb") { |f| f.write(Marshal.dump({'key' => data})) }
     end
   end
 
@@ -79,5 +79,14 @@ class RubyGemTestCase < Test::Unit::TestCase
 
   def test_stupid
     # shuts up test/unit
+  end
+  
+  @@win_platform = nil
+  def win_platform?
+    if @@win_platform.nil?
+      patterns = [/mswin/i, /mingw/i, /bccwin/i, /wince/i]
+      @@win_platform = patterns.find{|r| RUBY_PLATFORM =~ r} ? true : false
+    end
+    @@win_platform
   end
 end

@@ -301,7 +301,6 @@ TEXT
         begin
           err = false
           Dir.chdir File.join(directory, File.dirname(extension))
-		  p builder
           results = builder.build(extension, directory, dest_path)
         rescue
           err = true

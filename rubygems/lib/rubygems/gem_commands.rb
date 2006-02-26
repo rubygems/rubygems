@@ -660,11 +660,7 @@ module Gem
       if remote?
         say
         say "*** REMOTE GEMS ***"
-        begin
           output_query_results(Gem::RemoteInstaller.new(options).search(options[:name]))
-        rescue Gem::RemoteSourceException => e
-          alert_error e.to_s
-        end
       end
     end
 

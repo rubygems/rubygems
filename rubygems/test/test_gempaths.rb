@@ -109,6 +109,8 @@ class TestGemPaths < RubyGemTestCase
   end
 
   def test_ensure_gem_directories_write_protected
+    return if win_platform? #This test works only for FS that support write protection
+    
     gemdir = File.join(@tempdir, "egd")
     FileUtils.rm_r gemdir rescue nil
     FileUtils.mkdir_p gemdir
@@ -122,6 +124,8 @@ class TestGemPaths < RubyGemTestCase
   end
 
   def test_ensure_gem_directories_with_parents_write_protected
+    return if win_platform? #This test works only for FS that support write protection
+
     parent = File.join(@tempdir, "egd")
     gemdir = "#{parent}/a/b/c"
     
@@ -130,7 +134,7 @@ class TestGemPaths < RubyGemTestCase
     FileUtils.chmod 0400, parent
     Gem.use_paths(gemdir)
     Gem.send(:ensure_gem_subdirectories, gemdir)
-    assert ! File.exist?("#{gemdir}/cache")
+    assert !File.exist?("#{gemdir}/cache")
   ensure
     FileUtils.chmod(0600, parent) rescue nil
     FileUtils.rm_r parent rescue nil

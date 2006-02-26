@@ -49,10 +49,41 @@ class TestRemoteFetcher < Test::Unit::TestCase
     end
   end
   
+  def test_explicit_proxy_with_user_auth
+    use_ui(MockGemUi.new) do
+      fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", "http://foo:bar@localhost:12345")
+      proxy = fetcher.instance_variable_get("@proxy_uri")
+      assert_equal 'foo', proxy.user
+      assert_equal 'bar', proxy.password
+      assert_equal PROXY_DATA, fetcher.fetch_path("/yaml")
+    end
+  end
+
+  def test_explicit_proxy_with_user_auth_in_env
+    use_ui(MockGemUi.new) do
+      ENV['HTTP_PROXY'] = 'http://localhost:12345'
+      ENV['HTTP_PROXY_USER'] = 'foo'
+      ENV['HTTP_PROXY_PASS'] = 'bar'
+      fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", nil)
+      proxy = fetcher.instance_variable_get("@proxy_uri")
+      assert_equal 'foo', proxy.user
+      assert_equal 'bar', proxy.password
+      assert_equal PROXY_DATA, fetcher.fetch_path("/yaml")
+    end
+  end
+
+  def test_implicit_no_proxy
+    use_ui(MockGemUi.new) do
+      ENV['HTTP_PROXY'] = 'http://fakeurl:12345'
+      fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", :no_proxy)
+      assert_equal YAML_DATA, fetcher.fetch_path("/yaml")
+    end
+  end
+  
   def test_implicit_proxy
     use_ui(MockGemUi.new) do
       ENV['http_proxy'] = 'http://localhost:12345'
-      fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", true)
+      fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", nil)
       assert_equal PROXY_DATA, fetcher.fetch_path("/yaml")
     end
   end
@@ -60,14 +91,14 @@ class TestRemoteFetcher < Test::Unit::TestCase
   def test_implicit_upper_case_proxy
     use_ui(MockGemUi.new) do
       ENV['HTTP_PROXY'] = 'http://localhost:12345'
-      fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", true)
+      fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", nil)
       assert_equal PROXY_DATA, fetcher.fetch_path("/yaml")
     end
   end
   
   def test_implicit_proxy_no_env
     use_ui(MockGemUi.new) do
-      fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", true)
+      fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", nil)
       assert_equal YAML_DATA, fetcher.fetch_path("/yaml")
     end
   end
@@ -107,6 +138,11 @@ class TestRemoteFetcher < Test::Unit::TestCase
     assert got_exception, "Expected exception conforming to #{exception_class}" 
   end
 
+  class NilLog < Log
+    def log(level, data) #Do nothing
+    end
+  end
+  
   class << self
     attr_reader :normal_server, :proxy_server
     attr_accessor :enable_zip, :enable_yaml
@@ -123,7 +159,7 @@ class TestRemoteFetcher < Test::Unit::TestCase
     def start_server(port, data)
       Thread.new do
         begin
-          null_logger = Log.new('/dev/null')
+          null_logger = NilLog.new
           s = HTTPServer.new(
             :Port            => port,
             :DocumentRoot    => ".",

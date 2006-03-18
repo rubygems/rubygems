@@ -2,6 +2,7 @@ require 'rubygems/user_interaction'
 
 require 'forwardable'
 require 'digest/sha2'
+require 'time'
 
 module Gem
 

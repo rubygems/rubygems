@@ -1136,7 +1136,6 @@ module Gem
     def execute
       gemname = get_one_gem_name
       path = get_path(gemname, options[:version])
-      raise path
       if path
         require 'fileutils'
         target_dir = File.basename(path).sub(/\.gem$/, '')

@@ -51,9 +51,8 @@ module Gem
       # the security policy says that we only install singed gems
       # (this includes Gem::Security::HighSecurity)
       security_policy = @options[:security_policy]
-      security_policy = nil if force && security_policy && 
-                            security_policy.only_signed != true
-
+      security_policy = nil if force && security_policy && security_policy.only_signed != true
+      
       format = Gem::Format.from_file_by_path(@gem, security_policy)
       unless force
         spec = format.spec
@@ -289,9 +288,12 @@ TEXT
       dest_path = File.join(directory, spec.require_paths[0])
 
       spec.extensions.each do |extension|
-        if extension.match(/extconf/)
+        case extension
+        when /extconf/ then
           builder = ExtExtConfBuilder
-		elsif extension.match(/rakefile/i)
+        when /configure/ then
+          builder = ExtConfigureBuilder
+        when /rakefile/i then
           builder = ExtRakeBuilder
         else
           builder = nil
@@ -424,7 +426,7 @@ TEXT
         answer = @force_executables || ask_yes_no(
 	  "Remove executables and scripts for\n" +
 	  "'#{gemspec.executables.join(", ")}' in addition to the gem?",
-	  true)
+	  true) # " # appease ruby-mode - don't ask
         unless answer
           say "Executables and scripts will remain installed."
           return
@@ -541,11 +543,30 @@ TEXT
 
   end  # class Uninstaller
 
+  class ExtConfigureBuilder
+    def self.build(extension, directory, dest_path)
+      results = []
+      unless File.exist?('Makefile') then
+        cmd = "sh ./configure --prefix=#{dest_path}"
+        results << cmd
+        results << `#{cmd}`
+      end
+
+      results.push *ExtExtConfBuilder.make(dest_path)
+      results
+    end
+  end
+
   class ExtExtConfBuilder
-    def ExtExtConfBuilder.build(extension, directory, dest_path)
+    def self.build(extension, directory, dest_path)
       results = ["#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}"]
       results << `#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}`
+      result.push *make(dest_path)
+      results
+    end
 
+    def self.make(dest_path)
+      results = []
       raise unless File.exist?('Makefile')
       mf = File.read('Makefile')
       mf = mf.gsub(/^RUBYARCHDIR\s*=\s*\$.*/, "RUBYARCHDIR = #{dest_path}")
@@ -562,8 +583,9 @@ TEXT
         results << `#{make_program} #{target}`
       end
 
-	  results
+      results
     end
+
   end
 
   class ExtRakeBuilder
@@ -578,7 +600,7 @@ TEXT
         results << `#{make_program} #{target}`
       end
 
-	  results
+      results
     end
   end
 end  # module Gem

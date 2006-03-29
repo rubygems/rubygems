@@ -119,6 +119,14 @@ class FunctionalTest < Test::Unit::TestCase
   SIGN_FILES = %w(gem-private_key.pem gem-public_cert.pem)
 
   def test_cert_build
+    begin
+      require 'openssl'
+    rescue LoadError => ex
+      puts "WARNING: openssl is not availble, " +
+	"unable to test the cert functions"
+      return
+    end
+
     SIGN_FILES.each do |fn| FileUtils.rm_f fn end
     gem_withssl "cert --build x@y.z"
     SIGN_FILES.each do |fn| 

@@ -553,7 +553,7 @@ TEXT
         results << `#{cmd}`
       end
 
-      results.push *ExtExtConfBuilder.make(dest_path)
+      results.push(*ExtExtConfBuilder.make(dest_path))
       results
     end
   end
@@ -562,7 +562,7 @@ TEXT
     def self.build(extension, directory, dest_path)
       results = ["#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}"]
       results << `#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}`
-      result.push *make(dest_path)
+      result.push(*make(dest_path))
       results
     end
 

@@ -45,20 +45,12 @@ module Gem
 
     def install_rdoc
       say "Installing RDoc documentation for #{@spec.full_name}..."
-      begin
-        run_rdoc '--op', File.join(@doc_dir, 'rdoc')
-      rescue RDoc::RDocError => e
-        raise DocumentError, e.message
-      end
+      run_rdoc '--op', File.join(@doc_dir, 'rdoc')
     end
 
     def install_ri
       say "Installing ri documentation for #{@spec.full_name}..."
-      begin
-        run_rdoc '--ri', '--op', File.join(@doc_dir, 'ri')
-      rescue RDoc::RDocError => e
-        raise DocumentError, e.message
-      end
+      run_rdoc '--ri', '--op', File.join(@doc_dir, 'ri')
     end
 
     def run_rdoc(*args)
@@ -72,14 +64,20 @@ module Gem
       r = RDoc::RDoc.new
 
       old_pwd = Dir.pwd
-      Dir.chdir @spec.full_gem_path
+      Dir.chdir(@spec.full_gem_path)
       begin
         r.document args
       rescue Errno::EACCES => e
         dirname = File.dirname e.message.split("-")[1].strip
         raise Gem::FilePermissionError.new(dirname)
+      rescue RuntimeError => ex
+        STDERR.puts "While generating documentation for #{@spec.full_name}"
+        STDERR.puts "... MESSAGE:   #{ex}"
+        STDERR.puts "... RDOC args: #{args.join(' ')}"
+        puts ex.backtrace if Gem.configuration.backtrace
+        STDERR.puts "(continuing with the rest of the installation)"
       ensure
-        Dir.chdir old_pwd
+        Dir.chdir(old_pwd)
       end
     end
 

@@ -1,3 +1,18 @@
+2006-04-01  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/doc_manager.rb (Gem::DocManager::run_rdoc): Changed
+	exception handler to print error message if document generation
+	fails, but then to continue with the rest of the installation.
+	Permission errors still terminate the install because if one
+	install fails because of permission problems, chances are that all
+	will fail.
+	(Gem::DocManager::install_ri): Removed wrapping of exceptions with
+	DocumentError.  Most exceptions now don't propagate out of
+	run_rdoc.
+	(Gem::DocManager::install_rdoc): Removed wrapping of exceptions
+	with DocumentError.  Most exceptions now don't propagate out of
+	run_rdoc.
+
 2006-02-23  Jim Weirich  <jim@weirichhouse.org>
 
 	* bin/index_gem_repository.rb (MasterIndexBuilder::cleanup): Fixed

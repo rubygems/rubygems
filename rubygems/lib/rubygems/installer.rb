@@ -287,6 +287,7 @@ TEXT
       start_dir = Dir.pwd
       dest_path = File.join(directory, spec.require_paths[0])
 
+      results = []
       spec.extensions.each do |extension|
         case extension
         when /extconf/ then

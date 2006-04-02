@@ -32,7 +32,7 @@ CLOBBER.include(
   "test/data/one/one-*0.0.1.gem",
   "test/temp",
   'test/data/gemhome',
-  'test/data/*.gem',
+  'test/data/[a-z]*.gem',
   'scripts/*.hieraki',
   'data__',
   'html',

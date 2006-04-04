@@ -1,3 +1,10 @@
+2006-04-04  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/specification.rb
+	(Gem::Specification::Specification): Modified to add dashes to
+	gemspecs generated under Ruby 1.8.3.  This makes it easier to run
+	RubyGems on a 1.8.2 system.
+
 2006-04-01  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/doc_manager.rb (Gem::DocManager::run_rdoc): Changed

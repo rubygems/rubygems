@@ -400,6 +400,7 @@ module Gem
     # 'input' can be anything that YAML.load() accepts: String or IO. 
     #
     def Specification.from_yaml(input)
+      input = normalize_yaml_input(input)
       spec = YAML.load(input)
       if(spec.class == FalseClass) then
         raise Gem::EndOfYAMLException
@@ -412,7 +413,7 @@ module Gem
       end
       spec
     end 
-    
+
     def Specification.load(filename)
       gemspec = nil
       fail "NESTED Specification.load calls not allowed!" if @@gather
@@ -424,6 +425,13 @@ module Gem
       @@gather = nil
     end
 
+    # Make sure the yaml specification is properly formatted with dashes.
+    def Specification.normalize_yaml_input(input)
+      result = input.respond_to?(:read) ? input.read : input
+      result = "--- \n" + result unless result =~ /^A--- $/
+      result
+    end
+    
     # ------------------------- Instance methods.
     
     ##

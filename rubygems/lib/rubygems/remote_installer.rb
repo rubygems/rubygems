@@ -62,7 +62,7 @@ module Gem
     # and queries, but may have some information elided (hence
     # "abbreviated").
     def source_index
-      say "Updating Gem source index for: #{@uri}"
+      say "Bulk updating Gem source index for: #{@uri}"
       begin
         require 'zlib'
         yaml_spec = fetch_path("/yaml.Z")

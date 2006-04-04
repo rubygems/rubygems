@@ -1,5 +1,16 @@
 2006-04-04  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/rubygems_version.rb (Gem): Bumped to version
+	0.8.11.10.
+
+	* lib/rubygems/incremental_fetcher.rb
+	(Gem::IncrementalFetcher::update_cache): Now falls back to bulk
+	updates if the number of gems if over 50.
+
+	* lib/rubygems/remote_installer.rb
+	(Gem::RemoteSourceFetcher::source_index): Added "bulk" to the
+	update message to differentiate it from the incremental message.
+
 	* lib/rubygems/specification.rb
 	(Gem::Specification::Specification): Modified to add dashes to
 	gemspecs generated under Ruby 1.8.3.  This makes it easier to run

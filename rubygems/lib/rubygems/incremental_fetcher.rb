@@ -54,16 +54,26 @@ module Gem
       @remote_size ||= @fetcher.size
     end
 
-    # Update the cache entry
+    INCREMENTAL_THRESHHOLD = 50
+
+    # Update the cache entry.  Use the incremental method unless 
     def update_cache(entry)
-      index_list = get_quick_index
-      remove_extra(entry.source_index, index_list)
-      missing_list = find_missing(entry.source_index, index_list)
-      update_with_missing(entry.source_index, missing_list)
-      @manager.flush
-    rescue OperationNotSupportedError => ex
-      si = @fetcher.source_index
-      entry.replace_source_index(si, remote_size)
+      use_incremental = false
+      begin
+        index_list = get_quick_index
+        remove_extra(entry.source_index, index_list)
+        missing_list = find_missing(entry.source_index, index_list)
+        use_incremental = missing_list.size <= INCREMENTAL_THRESHHOLD
+      rescue OperationNotSupportedError => ex
+        use_incremental = false
+      end
+      if use_incremental
+        update_with_missing(entry.source_index, missing_list)
+        @manager.flush
+      else
+        si = @fetcher.source_index
+        entry.replace_source_index(si, remote_size)
+      end
     end
 
     # Remove extra entries from the cached source index.

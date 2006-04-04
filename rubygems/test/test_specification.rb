@@ -1,4 +1,5 @@
 require 'test/unit'
+require 'stringio'
 require 'test/gemutilities'
 require 'rubygems'
 Gem::manage_gems
@@ -378,5 +379,27 @@ class TestSpecificationClassMethods < Test::Unit::TestCase
     gs = Gem::Specification.load("test/data/one/one.gemspec")
     assert_equal "one", gs.name
     assert_equal "one-0.0.1", gs.full_name
+  end
+
+  def test_normalize_input_with_183_yaml
+    input = "!ruby/object:Gem::Specification "
+    assert_equal "--- #{input}", Gem::Specification.normalize_yaml_input(input)
+  end
+
+  def test_normalize_input_with_non_183_yaml
+    input = "--- !ruby/object:Gem::Specification "
+    assert_equal input, Gem::Specification.normalize_yaml_input(input)
+  end
+
+  def test_normalize_input_with_183_io
+    input = "!ruby/object:Gem::Specification "
+    assert_equal "--- #{input}",
+      Gem::Specification.normalize_yaml_input(StringIO.new(input))
+  end
+
+  def test_normalize_input_with_non_183_io
+    input = "--- !ruby/object:Gem::Specification "
+    assert_equal input,
+      Gem::Specification.normalize_yaml_input(StringIO.new(input))
   end
 end

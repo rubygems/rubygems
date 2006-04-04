@@ -148,7 +148,7 @@ class FunctionalTest < Test::Unit::TestCase
 
   # Run a gem command without the SSL library.
   def gem_nossl(options="")
-    old_options = @ruby_options
+    old_options = @ruby_options.dup
     @ruby_options << " -Itest/fake_certlib"
     gem(options)
   ensure

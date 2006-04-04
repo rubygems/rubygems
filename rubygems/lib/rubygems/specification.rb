@@ -10,7 +10,6 @@ end
 
 module Gem
   
-  ##
   # == Gem::Platform
   #
   # Available list of platforms for targeting Gem installations.
@@ -28,7 +27,6 @@ module Gem
   class InvalidSpecificationException < Gem::Exception; end
   class EndOfYAMLException < Gem::Exception; end
 
-  ##
   # == Gem::Specification
   #
   # The Specification class contains the metadata for a Gem.  Typically defined in a
@@ -119,11 +117,10 @@ module Gem
       @@list
     end
 
-    ##
-    # Used to specify the name and default value of a specification attribute.  The side
-    # effects are:
-    # * the name and default value are added to the @@attributes list and
-    #   @@default_value map
+    # Used to specify the name and default value of a specification
+    # attribute.  The side effects are:
+    # * the name and default value are added to the @@attributes list
+    #   and @@default_value map
     # * a standard _writer_ method (<tt>attribute=</tt>) is created
     # * a non-standard _reader method (<tt>attribute</tt>) is created
     #
@@ -132,7 +129,8 @@ module Gem
     #     @attribute ||= (copy of default value)
     #   end
     #
-    # This allows lazy initialization of attributes to their default values.
+    # This allows lazy initialization of attributes to their default
+    # values. 
     #
     def self.attribute(name, default=nil)
       @@attributes << [name, default]
@@ -185,11 +183,11 @@ module Gem
       define_method(name, &block)
     end
 
-    ##
-    # Defines a _singular_ version of an existing _plural_ attribute (i.e. one whose value
-    # is expected to be an array).  This means just creating a helper method that takes a
-    # single value and appends it to the array.  These are created for convenience, so
-    # that in a spec, one can write
+    # Defines a _singular_ version of an existing _plural_ attribute
+    # (i.e. one whose value is expected to be an array).  This means
+    # just creating a helper method that takes a single value and
+    # appends it to the array.  These are created for convenience, so
+    # that in a spec, one can write 
     #
     #   s.require_path = 'mylib'
     #
@@ -212,11 +210,11 @@ module Gem
     end
 
     def warn_deprecated(old, new)
-      # How (if at all) to implement this?  We only want to warn when a gem is being
-      # built, I should think.
+      # How (if at all) to implement this?  We only want to warn when
+      # a gem is being built, I should think.
     end
     
-    # ------------------------- REQUIRED gemspec attributes.
+    # REQUIRED gemspec attributes ------------------------------------
     
     required_attribute :rubygems_version, RubyGemsVersion
     required_attribute :specification_version, CURRENT_SPECIFICATION_VERSION
@@ -228,7 +226,7 @@ module Gem
     
     read_only :specification_version
 
-    # ------------------------- OPTIONAL gemspec attributes.
+    # OPTIONAL gemspec attributes ------------------------------------
     
     attributes :email, :homepage, :rubyforge_project, :description
     attributes :autorequire, :default_executable
@@ -253,14 +251,14 @@ module Gem
 
     read_only :dependencies
 
-    # ------------------------- ALIASED gemspec attributes.
+    # ALIASED gemspec attributes -------------------------------------
     
     attribute_alias_singular :executable,   :executables
     attribute_alias_singular :author,   :authors
     attribute_alias_singular :require_path, :require_paths
     attribute_alias_singular :test_file,    :test_files
 
-    # ------------------------- DEPRECATED gemspec attributes.
+    # DEPRECATED gemspec attributes ----------------------------------
     
     def test_suite_file
       warn_deprecated(:test_suite_file, :test_files)
@@ -272,31 +270,32 @@ module Gem
       @test_files << val
     end
  
-    # ------------------------- RUNTIME attributes (not persisted).
+    # RUNTIME attributes (not persisted) -----------------------------
     
     attr_writer :loaded
     attr_accessor :loaded_from
 
-    # ------------------------- Special accessor behaviours (overwriting default).
+    # Special accessor behaviours (overwriting default) --------------
     
     overwrite_accessor :version= do |version|
       @version = Version.create(version)
     end
 
     overwrite_accessor :platform= do |platform|
-      # Checks the provided platform for the special value Platform::CURRENT and
-      # changes it to be binary specific to the current platform (i386-mswin32, etc).
+      # Checks the provided platform for the special value
+      # Platform::CURRENT and changes it to be binary specific to the
+      # current platform (i386-mswin32, etc). 
       @platform = (platform == Platform::CURRENT ? RUBY_PLATFORM : platform)
     end
 
     overwrite_accessor :required_ruby_version= do |value|
       @required_ruby_version = Version::Requirement.create(value)
-      #STDERR.puts @name, @required_ruby_version
     end
 
     overwrite_accessor :date= do |date|
-      # We want to end up with a Time object with one-day resolution.  This is
-      # the cleanest, most-readable, faster-than-using-Date way to do it.
+      # We want to end up with a Time object with one-day resolution.
+      # This is the cleanest, most-readable, faster-than-using-Date
+      # way to do it. 
       case date
       when String then
         @date = Time.parse date
@@ -316,20 +315,24 @@ module Gem
 
     overwrite_accessor :summary= do |str|
       if str
-        @summary = str.strip.gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').gsub(/\n[ \t]*/, " ")
+        @summary = str.strip.
+          gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').
+          gsub(/\n[ \t]*/, " ")
       end
     end
 
     overwrite_accessor :description= do |str|
       if str
-        @description = str.strip.gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').gsub(/\n[ \t]*/, " ")
+        @description = str.strip.
+          gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').
+          gsub(/\n[ \t]*/, " ")
       end
     end
 
     overwrite_accessor :default_executable do
       return @default_executable if @default_executable
-      # Special case: if there is only one executable specified, then that's obviously the
-      # default one.
+      # Special case: if there is only one executable specified, then
+      # that's obviously the default one.
       return @executables.first if @executables.size == 1
       nil
     end
@@ -361,27 +364,25 @@ module Gem
       @test_files ||= []
     end
 
-    # ------------------------- Predicates.
+    # Predicates -----------------------------------------------------
     
     def loaded?; @loaded ? true : false ; end
     def has_rdoc?; has_rdoc ? true : false ; end
     def has_unit_tests?; not test_files.empty?; end
     alias has_test_suite? has_unit_tests?               # (deprecated)
     
-    # ------------------------- Constructors.
+    # Constructors ---------------------------------------------------
     
-    ##
     # Specification constructor.  Assigns the default values to the
     # attributes, adds this spec to the list of loaded specs (see
     # Specification.list), and yields itself for further initialization.
     #
     def initialize
       # Each attribute has a default value (possibly nil).  Here, we
-      # initialize all attributes to their default value.  This is done
-      # through the accessor methods, so special behaviours will be honored.
-      # Furthermore, we take a _copy_ of the default so each specification
-      # instance has its own empty
-      # arrays, etc.
+      # initialize all attributes to their default value.  This is
+      # done through the accessor methods, so special behaviours will
+      # be honored.  Furthermore, we take a _copy_ of the default so
+      # each specification instance has its own empty arrays, etc.
       @@attributes.each do |name, default|
         self.send "#{name}=", copy_of(default)
       end
@@ -391,7 +392,6 @@ module Gem
       @@gather.call(self) if @@gather
     end
 
-    ##
     # Special loader for YAML files.  When a Specification object is
     # loaded from a YAML file, it bypasses the normal Ruby object
     # initialization routine (#initialize).  This method makes up for
@@ -409,7 +409,8 @@ module Gem
         raise Gem::Exception, "YAML data doesn't evaluate to gem specification"
       end
       unless spec.instance_variable_get :@specification_version
-        spec.instance_variable_set :@specification_version, NONEXISTENT_SPECIFICATION_VERSION
+        spec.instance_variable_set :@specification_version, 
+          NONEXISTENT_SPECIFICATION_VERSION
       end
       spec
     end 
@@ -428,20 +429,18 @@ module Gem
     # Make sure the yaml specification is properly formatted with dashes.
     def Specification.normalize_yaml_input(input)
       result = input.respond_to?(:read) ? input.read : input
-      result = "--- \n" + result unless result =~ /^A--- $/
+      result = "--- " + result unless result =~ /^--- /
       result
     end
     
-    # ------------------------- Instance methods.
+    # Instance methods -----------------------------------------------
     
-    ##
     # Sets the rubygems_version to Gem::RubyGemsVersion.
     #
     def mark_version
       @rubygems_version = RubyGemsVersion
     end
 
-    ##
     # Adds a dependency to this Gem.  For example,
     #
     #   spec.add_dependency('jabber4r', '> 0.1', '<= 0.5')
@@ -458,7 +457,6 @@ module Gem
       dependencies << gem
     end
     
-    ##
     # Returns the full name (name-version) of this Gem.  Platform information
     # is included (name-version-platform) if it is specified (and not the
     # default Ruby platform).
@@ -471,7 +469,6 @@ module Gem
       end 
     end
     
-    ##
     # The full path to the gem (install path + full name).
     #
     # return:: [String] the full gem path
@@ -480,16 +477,15 @@ module Gem
       File.join(installation_path, "gems", full_name)
     end
     
-    ##
     # The root directory that the gem was installed into.
     #
     # return:: [String] the installation path
     #
     def installation_path
-      (File.dirname(@loaded_from).split(File::SEPARATOR)[0..-2]).join(File::SEPARATOR)
+      (File.dirname(@loaded_from).split(File::SEPARATOR)[0..-2]).
+        join(File::SEPARATOR)
     end
     
-    ##
     # Checks if this Specification meets the requirement of the supplied
     # dependency.
     # 
@@ -501,11 +497,9 @@ module Gem
         dependency.version_requirements.satisfied_by?(@version)
     end
     
-    # ------------------------- Comparison methods.
+    # Comparison methods ---------------------------------------------
     
-    ##
     # Compare specs (name then version).
-    #
     def <=>(other)
       [@name, @version] <=> [other.name, other.version]
     end
@@ -518,19 +512,20 @@ module Gem
       true
     end
     
-    # ------------------------- Export methods (YAML and Ruby code).
+    # Export methods (YAML and Ruby code) ----------------------------
     
-    # Returns an array of attribute names to be used when generating a YAML
-    # representation of this object.  If an attribute still has its default
-    # value, it is omitted.
+    # Returns an array of attribute names to be used when generating a
+    # YAML representation of this object.  If an attribute still has
+    # its default value, it is omitted.
     def to_yaml_properties
       mark_version
       @@attributes.map { |name, default| "@#{name}" }
     end
 
-    # Returns a Ruby code representation of this specification, such that it
-    # can be eval'ed and reconstruct the same specification later.  Attributes
-    # that still have their default values are omitted.
+    # Returns a Ruby code representation of this specification, such
+    # that it can be eval'ed and reconstruct the same specification
+    # later.  Attributes that still have their default values are
+    # omitted.
     def to_ruby
       mark_version
       result = "Gem::Specification.new do |s|\n"
@@ -547,9 +542,8 @@ module Gem
       result << "end\n"
     end
 
-    # ------------------------- Validation and normalization methods.
+    # Validation and normalization methods ---------------------------
     
-    ##
     # Checks that the specification contains all required fields, and
     # does a very basic sanity check.
     #
@@ -572,12 +566,13 @@ module Gem
       end
     end
 
-    ##
     # Normalize the list of files so that:
     # * All file lists have redundancies removed.
-    # * Files referenced in the extra_rdoc_files are included in the package file list.
+    # * Files referenced in the extra_rdoc_files are included in the
+    #   package file list. 
     #
-    # Also, the summary and description are converted to a normal format.
+    # Also, the summary and description are converted to a normal
+    # format. 
     def normalize
       if @extra_rdoc_files
         @extra_rdoc_files.uniq!
@@ -587,9 +582,8 @@ module Gem
       @files.uniq! if @files
     end
 
-    # ------------------------- Dependency methods.
+    # Dependency methods ---------------------------------------------
     
-    ##
     # Return a list of all gems that have a dependency on this
     # gemspec.  The list is structured with entries that conform to:
     #
@@ -635,7 +629,8 @@ module Gem
       end
     end
 
-    # Return a string containing a Ruby code representation of the given object.
+    # Return a string containing a Ruby code representation of the
+    # given object.
     def ruby_code(obj)
       case obj
       when String           then '%q{' + obj + '}'
@@ -649,7 +644,7 @@ module Gem
       end
     end
 
-  end  # class Specification
+  end
 
-end  # module Gem
+end
 

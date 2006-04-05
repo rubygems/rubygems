@@ -1,8 +1,15 @@
 2006-04-05  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/doc_manager.rb (Gem::DocManager::generate_ri):
+	Break out from generate_rdoc to support installing all RI docs
+	first.
+
 	* lib/rubygems/gem_commands.rb
 	(Gem::InstallUpdateOptions::add_install_update_options): Expanded
 	repository directory to absolute path.
+	(Gem::InstallCommand::execute): Make sure that *all* of the RI
+	documents are generated before generating any RDocs (due to a bug
+	in the RDoc library).
 
 	* lib/rubygems/installer.rb (Gem::ExtExtConfBuilder::self): Fixed
 	typo in ExtExtConfBuilder that prevented C based gems to install.

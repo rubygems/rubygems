@@ -1,7 +1,14 @@
 2006-04-05  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/gem_commands.rb
+	(Gem::InstallUpdateOptions::add_install_update_options): Expanded
+	repository directory to absolute path.
+
 	* lib/rubygems/installer.rb (Gem::ExtExtConfBuilder::self): Fixed
 	typo in ExtExtConfBuilder that prevented C based gems to install.
+	(Gem::ExtExtConfBuilder::self): Installed patch to prevent the
+	overriding of target_prefix in native extensions (thanks to Aaron
+	Patterson for the patch).
 
 2006-04-04  Jim Weirich  <jim@weirichhouse.org>
 

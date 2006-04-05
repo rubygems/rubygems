@@ -88,7 +88,7 @@ module Gem
       add_option('-i', '--install-dir DIR',
 	'Gem repository directory to get installed gems.') do 
 	|value, options|
-        options[:install_dir] = value
+        options[:install_dir] = File.expand_path(value)
       end
 
       add_option('-d', '--[no-]rdoc', 

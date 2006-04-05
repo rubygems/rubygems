@@ -570,8 +570,8 @@ TEXT
       results = []
       raise unless File.exist?('Makefile')
       mf = File.read('Makefile')
-      mf = mf.gsub(/^RUBYARCHDIR\s*=\s*\$.*/, "RUBYARCHDIR = #{dest_path}")
-      mf = mf.gsub(/^RUBYLIBDIR\s*=\s*\$.*/, "RUBYLIBDIR = #{dest_path}")
+      mf = mf.gsub(/^RUBYARCHDIR\s*=\s*\$[^$]*/, "RUBYARCHDIR = #{dest_path}")
+      mf = mf.gsub(/^RUBYLIBDIR\s*=\s*\$[^$]*/, "RUBYLIBDIR = #{dest_path}")
       File.open('Makefile', 'wb') {|f| f.print mf}
 
       make_program = ENV['make']

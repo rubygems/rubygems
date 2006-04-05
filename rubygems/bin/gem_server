@@ -316,8 +316,6 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 RDOCCSS
 
 
-
-##
 # gem_server and gem_server.cgi are equivalent programs that allow  
 # users to serve gems for consumption by `gem --remote-install`.
 # 

@@ -6,6 +6,7 @@ module Gem
   
     include UserInteraction
   
+    # Create a document manager for the given gem spec.
     #
     # spec::      The Gem::Specification object representing the gem.
     # rdoc_args:: Optional arguments for RDoc (template etc.) as a String.
@@ -17,29 +18,46 @@ module Gem
       @rdoc_args = rdoc_args.nil? ? [] : rdoc_args.split
     end
     
+    # Is the RDoc documentation installed?
     def rdoc_installed?
       return File.exist?(File.join(@doc_dir, "rdoc"))
     end
     
-    def generate_rdoc
+    # Generate the RI documents for this gem spec.
+    def generate_ri
       require 'fileutils'
 
       if @spec.has_rdoc then
         load_rdoc
         install_ri # RDoc bug, ri goes first
+      end
+
+      FileUtils.mkdir_p @doc_dir unless File.exist?(@doc_dir)
+    end
+
+    # Generate the RDoc documents for this gem spec.
+    def generate_rdoc
+      require 'fileutils'
+
+      if @spec.has_rdoc then
+        load_rdoc
         install_rdoc
       end
 
       FileUtils.mkdir_p @doc_dir unless File.exist?(@doc_dir)
     end
 
+    # Load the RDoc documentation generator library.
     def load_rdoc
-      Gem::FilePermissionError.new(@doc_dir) if File.exist?(@doc_dir) && !File.writable?(@doc_dir)
+      if File.exist?(@doc_dir) && !File.writable?(@doc_dir)
+        Gem::FilePermissionError.new(@doc_dir)
+      end
       FileUtils.mkdir_p @doc_dir unless File.exist?(@doc_dir)
       begin
         require 'rdoc/rdoc'
       rescue LoadError => e
-        raise DocumentError, "ERROR: RDoc documentation generator not installed!"
+        raise DocumentError, 
+          "ERROR: RDoc documentation generator not installed!"
       end
     end
 

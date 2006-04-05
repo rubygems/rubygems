@@ -305,7 +305,7 @@ TEXT
           err = false
           Dir.chdir File.join(directory, File.dirname(extension))
           results = builder.build(extension, directory, dest_path)
-        rescue
+        rescue => ex
           err = true
         end
 
@@ -562,7 +562,7 @@ TEXT
     def self.build(extension, directory, dest_path)
       results = ["#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}"]
       results << `#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}`
-      result.push(*make(dest_path))
+      results.push(*make(dest_path))
       results
     end
 

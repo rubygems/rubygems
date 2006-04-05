@@ -1,3 +1,8 @@
+2006-04-05  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/installer.rb (Gem::ExtExtConfBuilder::self): Fixed
+	typo in ExtExtConfBuilder that prevented C based gems to install.
+
 2006-04-04  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/rubygems_version.rb (Gem): Bumped to version

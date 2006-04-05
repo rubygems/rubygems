@@ -1,5 +1,9 @@
 2006-04-05  Jim Weirich  <jim@weirichhouse.org>
 
+	* test/test_parse_commands.rb
+	(TestParseCommands::test_parsing_update_options): Fixed unit tests
+	to assert that the install dir is expanded.
+
 	* lib/rubygems/doc_manager.rb (Gem::DocManager::generate_ri):
 	Break out from generate_rdoc to support installing all RI docs
 	first.

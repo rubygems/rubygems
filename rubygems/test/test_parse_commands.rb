@@ -49,7 +49,7 @@ class TestParseCommands < Test::Unit::TestCase
       assert_equal :local, check_options[:domain]
       assert_equal false, check_options[:wrappers]
       assert_equal '3.0', check_options[:version]
-      assert_equal '.', check_options[:install_dir]
+      assert_equal Dir.pwd, check_options[:install_dir]
       
       #check remote domain
       check_options = nil
@@ -175,7 +175,7 @@ class TestParseCommands < Test::Unit::TestCase
     assert_equal true, check_options[:test]
     assert_equal true, check_options[:generate_rdoc]
     assert_equal true, check_options[:force]
-    assert_equal '.', check_options[:install_dir]
+    assert_equal Dir.pwd, check_options[:install_dir]
   end 
   
 end

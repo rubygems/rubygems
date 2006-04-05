@@ -200,8 +200,6 @@ module Gem
 
     def execute
       ENV['GEM_PATH'] = options[:install_dir]
-      # TODO: If a dependency isn't met, first check to see if it's in 
-      # the install list
       if(options[:args].empty?)
         fail Gem::CommandLineError,
           "Please specify a gem name on the command line (e.g. gem build GEMNAME)"
@@ -258,15 +256,21 @@ module Gem
         end
         
         unless installed_gems
-          alert_error "Could not install a local or remote copy of the gem: #{gem_name}"
+          alert_error "Could not install a local " +
+            "or remote copy of the gem: #{gem_name}"
           terminate_interaction(1)
         end
         
         if options[:generate_rdoc]
+          # NOTE: *All* of the RI documents must be generated first.
+          # For some reason, RI docs cannot be generated after any
+          # RDoc documents are generated.
+          installed_gems.each do |gem|
+            Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
+          end
           installed_gems.each do |gem|
             Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
           end
-          # TODO: catch exceptions and inform user that doc generation was not successful.
         end
         if options[:test]
           installed_gems.each do |spec|

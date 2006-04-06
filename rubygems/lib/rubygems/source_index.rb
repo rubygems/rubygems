@@ -12,9 +12,9 @@ module Gem
   # specification.
   #
   # NOTE:: The class used to be named Cache, but that became
-  #        confusing when cached source fetchers where introduced.
-  #        The constant Gem::Cache is an alias for this class to allow
-  #        old YAMLized source index objects to load properly.
+  #        confusing when cached source fetchers where introduced. The
+  #        constant Gem::Cache is an alias for this class to allow old
+  #        YAMLized source index objects to load properly.
   #
   class SourceIndex
     extend Forwardable
@@ -26,12 +26,22 @@ module Gem
     
       # Factory method to construct a source index instance for a given
       # path.
+      #
+      # deprecated::
+      #   If supplied, from_installed_gems will act just like
+      #   +from_gems_in+.  This argument is deprecated and is provided
+      #   just for backwards compatibility, and should not generally
+      #   be used.
       # 
       # return::
       #   SourceIndex instance
       #
-      def from_installed_gems
-	from_gems_in(*installed_spec_directories)
+      def from_installed_gems(*deprecated)
+        if deprecated.empty?
+          from_gems_in(*installed_spec_directories)
+        else
+          from_gems_in(*deprecated)
+        end
       end
       
       # Return a list of directories in the current gem path that
@@ -44,8 +54,8 @@ module Gem
 	Gem.path.collect { |dir| File.join(dir, "specifications") }
       end
 
-      # Factory method to construct a source index instance for a given
-      # path.
+      # Factory method to construct a source index instance for a
+      #   given path.
       # 
       # spec_dirs::
       #   List of directories to search for specifications.  Each

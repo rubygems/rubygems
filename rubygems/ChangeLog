@@ -1,3 +1,8 @@
+2006-04-07  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/gem_commands.rb (Gem::RDocCommand::execute): Added
+	RI option to the rdoc subcommand.
+
 2006-04-05  Jim Weirich  <jim@weirichhouse.org>
 
 	* test/test_parse_commands.rb

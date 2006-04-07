@@ -24,6 +24,10 @@ module Gem
     end
     
     # Generate the RI documents for this gem spec.
+    #
+    # Note that if both RI and RDoc documents are generated from the
+    # same process, the RI docs should be done first (a likely bug in
+    # RDoc will cause RI docs generation to fail if run after RDoc).
     def generate_ri
       require 'fileutils'
 
@@ -36,6 +40,10 @@ module Gem
     end
 
     # Generate the RDoc documents for this gem spec.
+    #
+    # Note that if both RI and RDoc documents are generated from the
+    # same process, the RI docs should be done first (a likely bug in
+    # RDoc will cause RI docs generation to fail if run after RDoc).
     def generate_rdoc
       require 'fileutils'
 

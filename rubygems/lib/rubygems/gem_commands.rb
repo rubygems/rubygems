@@ -97,6 +97,12 @@ module Gem
         options[:generate_rdoc] = value
       end
 
+      add_option('--[no-]ri', 
+	'Generate RI documentation for the gem on install') do
+	|value, options|
+        options[:generate_ri] = value
+      end
+
       add_option('-f', '--[no-]force', 
 	'Force gem to install, bypassing dependency checks') do 
 	|value, options|
@@ -171,7 +177,8 @@ module Gem
         'Install a gem into the local repository',
         {
           :domain => :both, 
-          :generate_rdoc => true, 
+          :generate_rdoc => true,
+          :generate_ri   => true,
           :force => false, 
           :test => false, 
           :wrappers => true,
@@ -194,7 +201,7 @@ module Gem
     end
 
     def defaults_str
-      "--both --version '> 0' --rdoc --no-force --no-test\n" +
+      "--both --version '> 0' --rdoc --ri --no-force --no-test\n" +
       "--install-dir #{Gem.dir}"
     end
 
@@ -261,17 +268,22 @@ module Gem
           terminate_interaction(1)
         end
         
-        if options[:generate_rdoc]
-          # NOTE: *All* of the RI documents must be generated first.
-          # For some reason, RI docs cannot be generated after any
-          # RDoc documents are generated.
+        # NOTE: *All* of the RI documents must be generated first.
+        # For some reason, RI docs cannot be generated after any RDoc
+        # documents are generated.
+
+        if options[:generate_ri]
           installed_gems.each do |gem|
             Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
           end
+        end
+
+        if options[:generate_rdoc]
           installed_gems.each do |gem|
             Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
           end
         end
+
         if options[:test]
           installed_gems.each do |spec|
             gem_spec = Gem::SourceIndex.from_installed_gems.search(spec.name, spec.version.version).first
@@ -789,6 +801,7 @@ module Gem
         'Update the named gem (or all installed gems) in the local repository',
         {
           :generate_rdoc => true, 
+          :generate_ri => true, 
           :force => false, 
           :test => false,
           :install_dir => Gem.dir
@@ -801,7 +814,7 @@ module Gem
     end
     
     def defaults_str
-      "--rdoc --no-force --no-test\n" +
+      "--rdoc --ri --no-force --no-test\n" +
       "--install-dir #{Gem.dir}"
     end
 
@@ -845,7 +858,11 @@ module Gem
         install_command.execute
       end
       if gems_to_update.include?("rubygems-update")
-	latest_ruby_gem = remote_gemspecs.select { |s| s.name == 'rubygems-update' }.sort_by { |s| s.version }.last
+	latest_ruby_gem = remote_gemspecs.select { |s|
+          s.name == 'rubygems-update' 
+        }.sort_by { |s|
+          s.version
+        }.last
 	say "Updating version of RubyGems to #{latest_ruby_gem.version}"
 	do_rubygems_update(latest_ruby_gem.version.to_s)
       end
@@ -957,15 +974,33 @@ module Gem
     include CommandAids
 
     def initialize
-      super('rdoc', 'Generates RDoc for pre-installed gems', {:version=>"> 0.0.0"})
-      add_option('--all', 'Generate RDoc documentation for all installed gems') do |value, options|
+      super('rdoc',
+        'Generates RDoc for pre-installed gems',
+        {
+          :version => "> 0.0.0",
+          :include_rdoc => true,
+          :include_ri => true,
+        })
+      add_option('--all',
+        'Generate RDoc/RI documentation for all installed gems'
+        ) do |value, options|
         options[:all] = value
+      end
+      add_option('--[no-]rdoc', 
+	'Include RDoc generated documents') do
+	|value, options|
+        options[:include_rdoc] = value
+      end
+      add_option('--[no-]ri', 
+	'Include RI generated documents'
+        ) do |value, options|
+        options[:include_ri] = value
       end
       add_version_option('rdoc')
     end
 
     def defaults_str
-      "--version '> 0.0.0'"
+      "--version '> 0.0.0' --rdoc --ri"
     end
 
     def usage
@@ -978,21 +1013,26 @@ module Gem
 
     def execute
       if options[:all]
-        Gem::SourceIndex.from_installed_gems.each do |name, spec|
-          say "Doing gem #{spec.name}"
-          Gem::DocManager.new(spec).generate_rdoc
-        end
+        specs = Gem::SourceIndex.from_installed_gems.collect { |name, spec| spec }
       else
         gem_name = get_one_gem_name
         specs = Gem::SourceIndex.from_installed_gems.search(gem_name, options[:version])
-        if specs.empty?
-          #version = options[:version] || "> 0.0.0"
-          fail "Failed to find gem #{gem_name} to generate RDoc for #{options[:version]}"
+      end
+
+      if specs.empty?
+        fail "Failed to find gem #{gem_name} to generate RDoc for #{options[:version]}"
+      end
+      if options[:include_ri]
+        specs.each do |spec|
+          Gem::DocManager.new(spec).generate_ri
         end
+      end
+      if options[:include_rdoc]
         specs.each do |spec|
           Gem::DocManager.new(spec).generate_rdoc
         end
       end
+
       true
     end
   end
@@ -1357,7 +1397,7 @@ module Gem
     * Install 'rake' from remote server, and run unit tests,
       and generate RDocs:
 
-        gem install --remote rake --test --rdoc
+        gem install --remote rake --test --rdoc --ri
 
     * Install 'rake', but only version 0.3.1, even if dependencies
       are not met, and into a specific directory:

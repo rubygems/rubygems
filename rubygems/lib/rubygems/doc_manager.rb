@@ -100,7 +100,7 @@ module Gem
         STDERR.puts "While generating documentation for #{@spec.full_name}"
         STDERR.puts "... MESSAGE:   #{ex}"
         STDERR.puts "... RDOC args: #{args.join(' ')}"
-        puts ex.backtrace if Gem.configuration.backtrace
+        STDERR.puts ex.backtrace if Gem.configuration.backtrace
         STDERR.puts "(continuing with the rest of the installation)"
       ensure
         Dir.chdir(old_pwd)

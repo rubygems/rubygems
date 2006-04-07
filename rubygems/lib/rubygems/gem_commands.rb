@@ -1013,10 +1013,13 @@ module Gem
 
     def execute
       if options[:all]
-        specs = Gem::SourceIndex.from_installed_gems.collect { |name, spec| spec }
+        specs = Gem::SourceIndex.from_installed_gems.collect { |name, spec|
+          spec
+        }
       else
         gem_name = get_one_gem_name
-        specs = Gem::SourceIndex.from_installed_gems.search(gem_name, options[:version])
+        specs = Gem::SourceIndex.from_installed_gems.search(
+          gem_name, options[:version])
       end
 
       if specs.empty?

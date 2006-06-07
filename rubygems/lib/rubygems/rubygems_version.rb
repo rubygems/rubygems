@@ -8,5 +8,5 @@
 #++
 
 module Gem
-  RubyGemsVersion = '0.8.11.15'
+  RubyGemsVersion = '0.8.11.99'
 end

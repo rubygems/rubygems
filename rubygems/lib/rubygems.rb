@@ -1,3 +1,12 @@
+#!/usr/bin/env ruby
+# -*- ruby -*-
+
+#--
+# Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
+# All rights reserved.
+# See LICENSE.txt for permissions.
+#++
+
 require 'rbconfig'
 
 module Gem
@@ -143,6 +152,15 @@ module Gem
     # ConfigFile protocol) as the standard configuration object.
     def configuration=(config)
       @configuration = config
+    end
+
+    # Return the path the the data directory specified by the gem
+    # name.  If the package is not available as a gem, return nil.
+    def datadir(gem_name)
+      return nil if @loaded_specs.nil?
+      spec = @loaded_specs[gem_name]
+      return nil if spec.nil?
+      File.join(spec.full_gem_path, 'data')
     end
 
     # Return the Ruby command to use to execute the Ruby interpreter.
@@ -421,6 +439,25 @@ module Gem
 
   end
 end
+
+
+# Modify the non-gem version of datadir to handle gem package names.
+
+require 'rbconfig/datadir'
+module Config
+  class << self
+    alias gem_original_datadir datadir
+
+    # Return the path to the data directory associated with the named
+    # package.  If the package is loaded as a gem, return the gem
+    # specific data directory.  Otherwise return a path to the share
+    # area as define by "#{Config::CONFIG['datadir']}/#{package_name}".
+    def datadir(package_name)
+      Gem.datadir(package_name) || Config.gem_original_datadir(package_name)
+    end
+  end
+end
+
 
 require 'rubygems/source_index'
 require 'rubygems/specification'

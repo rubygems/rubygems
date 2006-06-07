@@ -1,3 +1,9 @@
+#--
+# Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
+# All rights reserved.
+# See LICENSE.txt for permissions.
+#++
+
 
 # Some system might not have OpenSSL installed, therefore the core
 # library file openssl might not be available.  We localize testing

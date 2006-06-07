@@ -1,3 +1,9 @@
+#--
+# Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
+# All rights reserved.
+# See LICENSE.txt for permissions.
+#++
+
     SIMPLE_GEM = <<-GEMDATA
         MD5SUM = "e3701f9db765a2358aef94c40ded71c8"
         if $0 == __FILE__

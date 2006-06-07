@@ -1,5 +1,11 @@
 # Rakefile for RubyGems      -*- ruby -*-
 
+#--
+# Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
+# All rights reserved.
+# See LICENSE.txt for permissions.
+#++
+
 require 'rubygems'
 require 'rake/clean'
 require 'rake/testtask'
@@ -43,16 +49,17 @@ CLOBBER.include(
   )
 
 task :default => [:test]
+task :test => [:test_units]
 
-Rake::TestTask.new(:test) do |t|
+Rake::TestTask.new(:test_units) do |t|
   t.test_files = FileList['test/test*.rb']
 end
 
-Rake::TestTask.new(:functional) do |t|
+Rake::TestTask.new(:test_functional) do |t|
   t.test_files = FileList['test/functional*.rb']
 end
 
-Rake::TestTask.new(:alltests) do |t|
+Rake::TestTask.new(:test_all) do |t|
   t.test_files = FileList['test/{test,functional}*.rb']
 end
 
@@ -75,9 +82,9 @@ task :build_tests do
 end
 
 # Shortcuts for test targets
-task :tf => [:functional]
-task :tu => [:test]
-task :ta => [:alltests]
+task :tf => [:test_functional]
+task :tu => [:test_units]
+task :ta => [:test_all]
 
 task :gemtest do
   ruby %{-Ilib -rscripts/runtest -e 'run_tests("test/test_gempaths.rb", true)'}
@@ -152,7 +159,7 @@ task :update_version => [:prerelease] do
     if ENV['RELTEST']
       announce "Release Task Testing, skipping commiting of new version"
     else
-      sh %{cvs commit -m "Updated to version #{PKG_VERSION}" lib/rubygems/rubygems_version.rb}
+      sh %{cvs commit -m "Updated to version #{PKG_VERSION}" lib/rubygems/rubygems_version.rb} # "
     end
   end
 end
@@ -169,6 +176,26 @@ task :tag => [:prerelease] do
 end
 
 # --------------------------------------------------------------------
+
+begin
+  require 'rcov/rcovtask'
+  HAVE_RCOV = true
+rescue LoadError
+  HAVE_RCOV = false
+end
+
+if HAVE_RCOV
+  Rcov::RcovTask.new do |t|
+    t.libs << "test"
+    t.rcov_opts = ['-xRakefile', '-xrakefile', '-xpublish.rf', '--text-report']
+    t.test_files = FileList[
+      'test/test*.rb'
+    ]
+    t.verbose = true
+  end
+end
+
+# --------------------------------------------------------------------
 # Create a task to build the RDOC documentation tree.
 
 desc "Create the RDOC html files"
@@ -176,12 +203,10 @@ rd = Rake::RDocTask.new("rdoc") { |rdoc|
   rdoc.rdoc_dir = 'html'
   rdoc.title    = "RubyGems"
   rdoc.options << '--line-numbers' << '--inline-source' << '--main' << 'README'
-  rdoc.rdoc_files.include('README', 'TODO', 'Releases')
+  rdoc.rdoc_files.include('README', 'TODO', 'Releases', 'LICENSE.txt', 'GPL.txt')
   rdoc.rdoc_files.include('lib/**/*.rb')
 #  rdoc.rdoc_files.include('test/**/*.rb')
 }
-
-file "html/index.html" => [:rdoc]
 
 desc "Publish the RDOCs on RubyForge"
 task :publish_rdoc => ["html/index.html"] do

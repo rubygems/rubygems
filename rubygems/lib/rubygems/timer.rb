@@ -2,6 +2,12 @@
 # This file defines a $log variable for logging, and a time() method for recording timing
 # information.
 #
+#--
+# Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
+# All rights reserved.
+# See LICENSE.txt for permissions.
+#++
+
 
 $log = Object.new
 def $log.debug(str)

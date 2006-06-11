@@ -5,7 +5,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-
 require 'test/unit'
 require 'rbconfig'
 require 'rubygems'
@@ -18,7 +17,7 @@ class TestDataDir < Test::Unit::TestCase
 
   def test_gem_dir_with_good_package
     gem 'sources'
-    assert_match %r{gems/1.8/gems/sources-0.0.1/data}, Gem.datadir('sources')
+    assert_match %r{gems/1.8/gems/sources-0.0.1/data/sources$}, Gem.datadir('sources')
   end
 
   def test_gem_dir_with_bad_package

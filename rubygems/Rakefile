@@ -18,7 +18,7 @@ def announce(msg='')
 end
 
 # Disable certs for now.
-ENV['CERT_DIR'] = nil
+ENV['CERT_DIR'] = ''
 
 PKG_NAME = 'rubygems'
 def package_version

@@ -390,7 +390,11 @@ module Gem
       # be honored.  Furthermore, we take a _copy_ of the default so
       # each specification instance has its own empty arrays, etc.
       @@attributes.each do |name, default|
-        self.send "#{name}=", copy_of(default)
+        if RUBY_VERSION >= "1.9" then
+          self.funcall "#{name}=", copy_of(default)
+        else
+          self.send "#{name}=", copy_of(default)
+        end
       end
       @loaded = false
       @@list << self

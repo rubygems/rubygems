@@ -15,14 +15,14 @@ For more details and other options, see:
 == For User Documentation, see
 
 * {RubyGems User Guide}[http://docs.rubygems.org/read/book/1]
+* {Frequently Asked Questions}[http://docs.rubygems.org/read/book/3]
 
 == For developer docs see
 
-* {Create a Gem in Ten Minutes}[http://rubygems.rubyforge.org/wiki/wiki.pl?CreateAGemInTenMinutes]
-* {Developers Guide}[http://rubygems.rubyforge.org/wiki/wiki.pl?DeveloperGuide]
-* {GEM Specification}[http://rubygems.rubyforge.org/wiki/wiki.pl?GemSpecification]
+* {Creating Gems}[http://docs.rubygems.org/read/chapter/5]
+* {GEM Specification}[http://docs.rubygems.org/read/chapter/20]
 
-== The home page of the RubyGems wiki
+== The home page of the RubyGems Documentation
 
 * {RubyGems Home}[http://rubygems.rubyforge.org]
 
@@ -55,6 +55,8 @@ RubyGems was originally developed at RubyConf 2003 by:
 * Dave Glasser -- glasser(at)mit.edu
 * Paul Duncan -- pabs(at)pablotron.org
 * Ville Aine -- vaine(at)cs.helsinki.fi
+* Ryan Davis -- 
+* Eric Hodel -- drbrain(at)segment7.net
 
 
 (If your name is missing, PLEASE let us know!)

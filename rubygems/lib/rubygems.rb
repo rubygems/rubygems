@@ -160,7 +160,7 @@ module Gem
       return nil if @loaded_specs.nil?
       spec = @loaded_specs[gem_name]
       return nil if spec.nil?
-      File.join(spec.full_gem_path, 'data')
+      File.join(spec.full_gem_path, 'data', gem_name)
     end
 
     # Return the Ruby command to use to execute the Ruby interpreter.

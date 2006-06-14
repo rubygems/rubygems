@@ -1,3 +1,14 @@
+2006-06-11  Jim Weirich  <jim@weirichhouse.org>
+
+	* bin/gemri: Added gemri to bin directory.
+
+	* lib/rubygems/custom_require.rb (Gem::GemPathSearcher::find):
+	Added .rbw to suffix pattern in custom_require.
+
+2006-06-07  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems.rb: Added copyright notices to all Ruby files.
+
 2006-04-07  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/gem_commands.rb (Gem::RDocCommand::execute): Added

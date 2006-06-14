@@ -91,7 +91,7 @@ module Gem
 
     private
 
-    SUFFIX_PATTERN = "{,.rb,.so,.bundle,.dll,.sl}"
+    SUFFIX_PATTERN = "{,.rb,.rbw,.so,.bundle,.dll,.sl}"
 
     #
     # Attempts to find a matching path using the require_paths of the

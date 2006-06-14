@@ -99,7 +99,6 @@ module Gem
       require 'rubygems/cmd_manager'
       require 'rubygems/gem_runner'
       require 'rubygems/config_file'
-      require 'rubygems/deployment'
     end
   
     # Returns an Cache of specifications that are in the Gem.path

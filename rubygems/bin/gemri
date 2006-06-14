@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+# -*- ruby -*-
+#--
+# Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
+# All rights reserved.
+# See LICENSE.txt for permissions.
+#++
+
+# Gem version of the 'ri' command.  Adds the gem-generated ri
+# documents to the search path of ri.
+
+require 'rdoc/ri/ri_driver'
+
+begin
+  require 'rubygems'
+  Dir["#{Gem.path}/doc/*/ri"].each do |path|
+    RI::Paths::PATH << path
+  end
+rescue LoadError
+end 
+
+ARGV.unshift('-T') if ENV['TERM'] =~ /dumb|emacs/
+ri = RiDriver.new
+ri.process_args

@@ -1,5 +1,13 @@
 2006-06-13  Jim Weirich  <jim@weirichhouse.org>
 
+	* Rakefile: ENV['CERT_DIR'] is now '' rather than nil.
+
+	* lib/rubygems/specification.rb (Gem::Specification::initialize):
+	Eric added some 1.9 compatibility code (funcall vs send).
+
+	* lib/rubygems/package.rb (TarOutput::self): Eric added some 1.9
+	compatibility code (funcall vs send).
+
 	* experimental/deployment.rb (Gem::Deployment): Moved the
 	deployment code out of the live code base into the experimental
 	directory.  The code wasn't used and the tests were not all

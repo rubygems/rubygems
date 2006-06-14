@@ -1,3 +1,10 @@
+2006-06-13  Jim Weirich  <jim@weirichhouse.org>
+
+	* experimental/deployment.rb (Gem::Deployment): Moved the
+	deployment code out of the live code base into the experimental
+	directory.  The code wasn't used and the tests were not all
+	passing.
+
 2006-06-11  Jim Weirich  <jim@weirichhouse.org>
 
 	* bin/gemri: Added gemri to bin directory.

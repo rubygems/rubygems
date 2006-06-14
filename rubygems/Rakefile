@@ -17,8 +17,14 @@ def announce(msg='')
   STDERR.puts msg
 end
 
-# Disable certs for now.
-ENV['CERT_DIR'] = ''
+# Disable certs for now. (Note: 1.9 at the moment does not allow nil
+# as an environment variable value. I suspect a bug, but we will use
+# '' in 1.9 for now).
+if RUBY_VERSION >= "1.9" then
+  ENV['CERT_DIR'] = ''
+else
+  ENV['CERT_DIR'] = nil
+end
 
 PKG_NAME = 'rubygems'
 def package_version

@@ -1,3 +1,8 @@
+2006-06-14  Jim Weirich  <jim@weirichhouse.org>
+
+	* Rakefile (announce): Added 1.9 hack for ENV['CERT_DIR'].  Remove
+	this in the future if 1.9 behavior changes.
+
 2006-06-13  Jim Weirich  <jim@weirichhouse.org>
 
 	* Rakefile: ENV['CERT_DIR'] is now '' rather than nil.

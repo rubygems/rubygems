@@ -858,7 +858,7 @@ module Gem
       options[:domain] = :remote # install from remote source
       install_command = command_manager['install']
       gems_to_update.uniq.sort.each do |name|
-        say "Attempting remote upgrade of #{name}"
+        say "Attempting remote update of #{name}"
         options[:args] = [name]
         install_command.merge_options(options)
         install_command.execute

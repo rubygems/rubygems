@@ -12,7 +12,7 @@ Major Enhancments include:
   that are out of date.  If more than 50 entries are out of date, we
   revert back to a bulk download.
 * Several patches related to allowing RubyGems to work with
-  authenticating proxies (from Daniel Roux and Anatol Pomozov).  Just
+  authenticating proxies (from Danie Roux and Anatol Pomozov).  Just
   put the user and password in the proxy URL (e.g. -p
   http://user:password@proxy.address.com:8080) or use the
   HTTP_PROXY_USER and HTTP_PROXY_PASS environment variables.
@@ -28,7 +28,7 @@ Minor enhancements include:
 * Better detection of missing SSL functionality.
 * SSL is not required if the security policy does not require
   signature checking.
-* Rake built extensions are now supported (Tilman Saurbeck).
+* Rake built extensions are now supported (Tilman Sauerbeck).
 * Several autorequire bug fixes.
 * --traceback is now an alias for --backtrace (I can never remember
   which one it is).
@@ -101,8 +101,8 @@ logic and make the whole thing more consistent.
 
 Major contributors to this release include:
 
-* Daniel Roux, Anatol Pomozov, Eric Hodel, Luca Pireddu, and Tilman
-  Saurbeck.
+* Danie Roux, Anatol Pomozov, Eric Hodel, Luca Pireddu, and Tilman
+  Sauerbeck.
 
 Keep those gems coming!
 

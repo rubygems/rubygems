@@ -97,7 +97,7 @@ desc "Make a new release"
 task :release => [
   :prerelease,
   :clobber,
-  :alltests,
+  :test_all,
   :update_version,
   :package,
   :tag] do

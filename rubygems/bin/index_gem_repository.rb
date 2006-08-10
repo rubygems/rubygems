@@ -16,6 +16,11 @@ require 'optparse'
 require 'rubygems'
 require 'zlib'
 require 'digest/sha2'
+begin
+  require 'builder/xchar'
+rescue LoadError
+  fail "index_gem_repository requires that the XML Builder library be installed"
+end
 
 Gem.manage_gems
 
@@ -193,7 +198,8 @@ class Indexer
       @quick_index.build do 
 	gem_file_list.each do |gemfile|
 	  spec = Gem::Format.from_file_by_path(gemfile).spec
-	  abbreviate(spec)	  
+	  abbreviate(spec)
+          sanitize(spec)
 	  announce "   ... adding #{spec.full_name}"
 	  @master_index.add(spec)
 	  @quick_index.add(spec)
@@ -218,6 +224,22 @@ class Indexer
     spec.extra_rdoc_files = []
     spec.cert_chain = []
     spec
+  end
+
+  # Sanitize the descriptive fields in the spec.  Sometimes non-ASCII
+  # characters will garble the site index.  Non-ASCII characters will
+  # be replaced by their XML entity equivalent.
+  def sanitize(spec)
+    spec.summary = sanitize_string(spec.summary)
+    spec.description = sanitize_string(spec.description)
+    spec.post_install_message = sanitize_string(spec.post_install_message)
+    spec.authors = spec.authors.collect { |a| sanitize_string(a) }
+    spec
+  end
+
+  # Sanitize a single string.
+  def sanitize_string(string)
+    string ? string.to_xs : string
   end
 end
 

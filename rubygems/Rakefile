@@ -37,6 +37,8 @@ CLEAN.include("COMMENTS")
 CLOBBER.include(
   "test/data/one/one-*0.0.1.gem",
   "test/temp",
+  'test/mock/gem/doc',
+  'test/mock/gem/cache',
   'test/data/gemhome',
   'test/data/[a-z]*.gem',
   'scripts/*.hieraki',

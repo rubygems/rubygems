@@ -292,9 +292,12 @@ TEXT
       say "Building native extensions.  This could take a while..."
       start_dir = Dir.pwd
       dest_path = File.join(directory, spec.require_paths[0])
+      ran_rake = false # only run rake once
 
-      results = []
       spec.extensions.each do |extension|
+        break if ran_rake
+        results = []
+
         case extension
         when /extconf/ then
           builder = ExtExtConfBuilder
@@ -302,6 +305,7 @@ TEXT
           builder = ExtConfigureBuilder
         when /rakefile/i then
           builder = ExtRakeBuilder
+          ran_rake = true
         else
           builder = nil
           results = ["No builder for extension '#{extension}'"]
@@ -310,7 +314,7 @@ TEXT
         begin
           err = false
           Dir.chdir File.join(directory, File.dirname(extension))
-          results = builder.build(extension, directory, dest_path)
+          results = builder.build(extension, directory, dest_path, results)
         rescue => ex
           err = true
         end
@@ -551,29 +555,27 @@ TEXT
   end  # class Uninstaller
 
   class ExtConfigureBuilder
-    def self.build(extension, directory, dest_path)
-      results = []
+    def self.build(extension, directory, dest_path, results)
       unless File.exist?('Makefile') then
         cmd = "sh ./configure --prefix=#{dest_path}"
         results << cmd
         results << `#{cmd}`
       end
 
-      results.push(*ExtExtConfBuilder.make(dest_path))
+      ExtExtConfBuilder.make(dest_path, results)
       results
     end
   end
 
   class ExtExtConfBuilder
-    def self.build(extension, directory, dest_path)
-      results = ["#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}"]
+    def self.build(extension, directory, dest_path, results)
+      results << "#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}"
       results << `#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}`
-      results.push(*make(dest_path))
+      make(dest_path, results)
       results
     end
 
-    def self.make(dest_path)
-      results = []
+    def self.make(dest_path, results)
       raise unless File.exist?('Makefile')
       mf = File.read('Makefile')
       mf = mf.gsub(/^RUBYARCHDIR\s*=\s*\$[^$]*/, "RUBYARCHDIR = #{dest_path}")
@@ -585,27 +587,25 @@ TEXT
         make_program = (/mswin/ =~ RUBY_PLATFORM) ? 'nmake' : 'make'
       end
 
-      ['', 'install', 'clean'].each do |target|
+      ['', 'install'].each do |target|
         results << "#{make_program} #{target}".strip
         results << `#{make_program} #{target}`
-      end
 
-      results
+        raise unless $?.exitstatus.zero?
+      end
     end
 
   end
 
   class ExtRakeBuilder
-    def ExtRakeBuilder.build(ext, directory, dest_path)
+    def ExtRakeBuilder.build(ext, directory, dest_path, results)
       make_program = ENV['rake'] || 'rake'
       make_program += " RUBYARCHDIR=#{dest_path} RUBYLIBDIR=#{dest_path}"
 
-      results = []
+      results << "#{make_program} extension".strip
+      results << `#{make_program} extension`
 
-      ['', 'install', 'clean'].each do |target|
-        results << "#{make_program} #{target}".strip
-        results << `#{make_program} #{target}`
-      end
+      raise unless $?.exitstatus.zero?
 
       results
     end

@@ -1,3 +1,9 @@
+2006-08-12  Jim Weirich  <jim@weirichhouse.org>
+
+	* bin/index_gem_repository.rb (Indexer::sanitize): Added a
+	sanitize step to the gem index generation in the hope of avoiding
+	problems with non-ASCII names in the yaml data.
+
 2006-06-14  Jim Weirich  <jim@weirichhouse.org>
 
 	* Rakefile (announce): Added 1.9 hack for ENV['CERT_DIR'].  Remove

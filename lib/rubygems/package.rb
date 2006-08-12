@@ -603,9 +603,11 @@ class TarInput
     # and create a string IO object from it.  This avoids a "buffer
     # error" problem on windows when using an earlier version of zlib.
     # This problem has not been observed in versions of zlib 1.2.1 or
-    # later.
+    # later.  (Update: Kornelius Kalnbach has reported seeing it in
+    # zlib 1.2.1, so the condition now provides the workaround for
+    # 1.2.1 as well)
     def zipped_stream(entry)
-      if Zlib::ZLIB_VERSION < '1.2.1'
+      if Zlib::ZLIB_VERSION <= '1.2.1'
         zis = Zlib::GzipReader.new entry
         dis = zis.read
         is = StringIO.new(dis)

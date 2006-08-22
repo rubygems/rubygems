@@ -1,3 +1,11 @@
+2006-08-22  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/remote_installer.rb (Gem::RemoteInstaller::download_gem):
+	Changed proxy arg to fetcher_class.new to use the
+	@options[:http_proxy] rather than the @proxy_uri attribute.  The
+	@proxy_uri value was never set.  Tried the proxy option using
+	--http-proxy, the ENV var http_proxy and with no proxy.
+
 2006-08-12  Jim Weirich  <jim@weirichhouse.org>
 
 	* bin/index_gem_repository.rb (Indexer::sanitize): Added a

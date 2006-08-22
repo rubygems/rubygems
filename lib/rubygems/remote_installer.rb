@@ -561,7 +561,7 @@ module Gem
     end
 
     def download_gem(destination_file, source, spec)
-      rsf = @fetcher_class.new(source, @proxy_uri)
+      rsf = @fetcher_class.new(source, @options[:http_proxy])
       path = "/gems/#{spec.full_name}.gem"
       response = rsf.fetch_path(path)
       write_gem_to_file(response, destination_file)

@@ -63,6 +63,10 @@ class TestRemoteInstaller < Test::Unit::TestCase
     @installer.instance_variable_set("@fetcher_class", MockFetcher)
   end
 
+  def teardown
+    FileUtils.rm "dest_file" rescue nil
+  end
+
   def test_installer_has_proxy_uri
     proxy = "http://user:pass@proxy.url"
     @installer.instance_variable_set("@options", {:http_proxy => proxy})

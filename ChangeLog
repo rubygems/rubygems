@@ -1,5 +1,7 @@
 2006-09-18  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/rubygems_version.rb (Gem): Bumped to 0.9.0.2.
+
 	* lib/rubygems/version.rb (Gem::Dependency::hash): Added hash code
 	calculation.
 	(Gem::Version::hash): Added hash code calculation.

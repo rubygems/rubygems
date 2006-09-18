@@ -505,6 +505,8 @@ module Gem
       end
 
       specs_n_sources = specs_n_sources.sort_by { |gs,| gs.version }.reverse
+      top_3_versions = specs_n_sources.map{|gs| gs.first.version}.uniq[0..3]
+      specs_n_sources.reject!{|gs| !top_3_versions.include?(gs.first.version)}
 
       non_binary_gems = specs_n_sources.reject { |item|
         item[0].platform.nil? || item[0].platform==Platform::RUBY

@@ -73,6 +73,9 @@ end
 #
 module Gem
   require 'rubygems/rubygems_version.rb'
+  require 'thread'
+
+  MUTEX = Mutex.new
 
   class Exception < RuntimeError
   end
@@ -160,6 +163,13 @@ module Gem
       spec = @loaded_specs[gem_name]
       return nil if spec.nil?
       File.join(spec.full_gem_path, 'data', gem_name)
+    end
+
+    # Return the searcher object to search for matching gems.  
+    def searcher
+      MUTEX.synchronize do
+        @searcher ||= Gem::GemPathSearcher.new
+      end
     end
 
     # Return the Ruby command to use to execute the Ruby interpreter.

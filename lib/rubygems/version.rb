@@ -54,6 +54,12 @@ module Gem
       self.name = other.name and
         self.version_requirements == other.version_requirements
     end
+
+    def hash
+      fail
+      name.hash + version_requirements.hash
+    end
+    
   end
   
   ####################################################################
@@ -148,6 +154,10 @@ module Gem
       end until (r != v || rnums.empty?)
 
       return r <=> v
+    end
+
+    def hash
+      to_ints.inject { |hash_code, n| hash_code + n }
     end
 
     # Return a new version object where the next to the last revision
@@ -300,7 +310,11 @@ module Gem
     def <=>(other)
       to_s <=> other.to_s
     end
-    
+
+    def hash
+      to_s.hash
+    end
+    public :hash
   end
   
 end

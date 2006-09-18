@@ -14,6 +14,7 @@ require 'test/onegem'
 class MockFetcher
   def initialize(uri, proxy)
     @uri = uri
+    @proxy = proxy
   end
 
   def size
@@ -62,8 +63,21 @@ class TestRemoteInstaller < Test::Unit::TestCase
     @installer.instance_variable_set("@fetcher_class", MockFetcher)
   end
 
-  def test_create
-    assert_not_nil(@installer)
+  def test_installer_has_proxy_uri
+    proxy = "http://user:pass@proxy.url"
+    @installer.instance_variable_set("@options", {:http_proxy => proxy})
+    MockFetcher.class_eval("def fetch_path(path); raise 'failed' unless @proxy == '#{proxy}'; end")
+    
+    spec = Gem::Specification.new do |s|
+      s.version = "1.0.0"
+      s.name = "boo"
+      s.platform = Gem::Platform::RUBY
+      s.date = Time.now
+      s.summary = "Hello"
+      s.require_paths = ["."]
+    end
+    
+    @installer.download_gem("dest_file", "source", spec)
   end
   
   # Make sure that the installer knows the proper list of places to go

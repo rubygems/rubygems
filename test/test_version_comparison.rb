@@ -102,8 +102,36 @@ class TestVersion < Test::Unit::TestCase
     assert_equal "6", v.bump.to_s
   end
 end
-    
 
+class TestVersionEquality < Test::Unit::TestCase
+  def test_same_versions_are_equal
+    v = Gem::Version.new("1.2")
+    u = Gem::Version.new("1.2")
+    assert v == u
+    assert u == v
+  end
+
+  def test_same_versions_have_same_hash
+    v = Gem::Version.new("1.2")
+    u = Gem::Version.new("1.2")
+    assert_equal v.hash, u.hash
+  end
+
+  def test_different_versions_are_not_equal
+    v = Gem::Version.new("1.2")
+    u = Gem::Version.new("1.3")
+    assert v != u
+    assert u != v
+  end
+  
+  def test_difference3_versions_have_different_hash
+    v = Gem::Version.new("1.2")
+    u = Gem::Version.new("1.3")
+    assert_not_equal v.hash, u.hash
+  end
+
+end
+    
 class TestExtendedVersionComparisons < Test::Unit::TestCase
   include VersionAsserts
 
@@ -206,5 +234,33 @@ class TestDependencies < Test::Unit::TestCase
     dep = YAML.load(yamldep)
     dep.normalize
     assert_equal ">= 1.0.4", dep.to_s
+  end
+end
+
+class TestRequirementEquality < Test::Unit::TestCase
+  def test_same_requirements_are_equal
+    r = Gem::Requirement.new("= 1.2")
+    p = Gem::Requirement.new("= 1.2")
+    assert r == p
+    assert p == r
+  end
+
+  def test_same_requirements_have_same_hash_code
+    r = Gem::Requirement.new("= 1.2")
+    p = Gem::Requirement.new("= 1.2")
+    assert_equal r.hash, p.hash
+  end
+
+  def test_different_requirements_are_not_equal
+    r = Gem::Requirement.new("= 1.2")
+    p = Gem::Requirement.new("< 1.2")
+    assert r != p
+    assert p != r
+  end
+
+  def test_different_requirements_have_different_hash_codes
+    r = Gem::Requirement.new("= 1.2")
+    p = Gem::Requirement.new("< 1.2")
+    assert_not_equal r.hash, p.hash
   end
 end

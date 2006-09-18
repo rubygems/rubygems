@@ -1,3 +1,30 @@
+2006-09-18  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/version.rb (Gem::Dependency::hash): Added hash code
+	calculation.
+	(Gem::Version::hash): Added hash code calculation.
+	(Gem::Requirement::hash): Added hash code calculation.
+
+	* test/test_specification.rb (TestSpecificationEquality): Added
+	tests for specification equality and hashing.
+
+	* test/test_remote_installer.rb
+	(TestRemoteInstaller::test_installer_has_proxy_uri): Added tests
+	for proper proxy initialization in RemoteFetcher.
+
+	* test/test_version_comparison.rb (TestVersionEquality): Added
+	tests for version equality and hashing.
+	(TestRequirementEquality): Added tests for requirement equality.
+
+	* lib/rubygems/specification.rb (Gem::Specification::hash): Added
+	a hash method and improved equality testing.
+
+2006-09-15  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems.rb (Gem::OperationNotSupportedError::searcher):
+	Moved searcher initialization into Gem module and added Mutex
+	protection.
+
 2006-08-22  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/remote_installer.rb (Gem::RemoteInstaller::download_gem):

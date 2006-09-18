@@ -268,6 +268,48 @@ end
 
 end
 
+class TestSpecificationEquality < Test::Unit::TestCase
+
+  def test_equals_is_true_on_same_specification
+    s = Gem::Specification.new
+    assert s == s
+  end
+
+  def test_specs_with_same_attributes_are_equal
+    s = Gem::Specification.new do |spec| spec.name = "ONE" end
+    t = Gem::Specification.new do |spec| spec.name = "ONE" end
+    assert (s == t)
+    assert (t == s)
+  end
+
+  def test_specs_with_same_attributes_have_same_hash_code
+    s = Gem::Specification.new do |spec| spec.name = "ONE" end
+    t = Gem::Specification.new do |spec| spec.name = "ONE" end
+    assert_equal s.hash, t.hash
+  end
+
+  def test_specs_with_different_attributes_are_not_equal
+    s = Gem::Specification.new do |spec| spec.name = "ONE" end
+    t = Gem::Specification.new do |spec| spec.name = "TWO" end
+    assert ! (s == t)
+    assert ! (t == s)
+  end
+
+  def test_specs_with_different_attributes_have_different_hash_codes
+    s = Gem::Specification.new do |spec| spec.name = "ONE" end
+    t = Gem::Specification.new do |spec| spec.name = "TWO" end
+    assert s.hash != t.hash
+  end
+
+  def test_equals_is_false_on_non_spec_objects
+    s = Gem::Specification.new
+    t = Object.new
+    assert ! (s == t)
+    assert ! (t == s)
+  end
+
+end
+
 class TestComplexSpecification < Test::Unit::TestCase
 
   def setup

@@ -27,8 +27,7 @@ module Kernel
     gem_original_require path
   rescue LoadError => load_error
     begin
-      @gempath_searcher ||= Gem::GemPathSearcher.new
-      if spec = @gempath_searcher.find(path)
+      if spec = Gem.searcher.find(path)
         Gem.activate(spec.name, false, "= #{spec.version}")
         gem_original_require path
       else

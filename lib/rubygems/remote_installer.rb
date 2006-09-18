@@ -13,6 +13,7 @@ module Gem
   class RemoteSourceException < Gem::Exception; end
   class GemNotFoundException < Gem::Exception; end
   class RemoteInstallationCancelled < Gem::Exception; end
+  class RemoteInstallationSkipped < Gem::Exception; end
 
   ####################################################################
   # RemoteSourceFetcher handles the details of fetching gems and gem
@@ -434,14 +435,18 @@ module Gem
       end
       installed_gems = []
       caches = source_index_hash
-      spec, source = find_gem_to_install(gem_name, version_requirement, caches)
-      dependencies = find_dependencies_not_installed(spec.dependencies)
-      installed_gems << install_dependencies(dependencies, force, install_dir)
-      cache_dir = File.join(install_dir, "cache")
-      destination_file = File.join(cache_dir, spec.full_name + ".gem")
-      download_gem(destination_file, source, spec)
-      installer = new_installer(destination_file)
-      installed_gems.unshift installer.install(force, install_dir, install_stub)
+      begin
+        spec, source = find_gem_to_install(gem_name, version_requirement, caches)
+        dependencies = find_dependencies_not_installed(spec.dependencies)
+        installed_gems << install_dependencies(dependencies, force, install_dir)
+        cache_dir = File.join(install_dir, "cache")
+        destination_file = File.join(cache_dir, spec.full_name + ".gem")
+        download_gem(destination_file, source, spec)
+        installer = new_installer(destination_file)
+        installed_gems.unshift installer.install(force, install_dir, install_stub)
+      rescue RemoteInstallationSkipped => e
+        puts e.message
+      end
       installed_gems.flatten
     end
 
@@ -512,6 +517,7 @@ module Gem
 	"#{item[0].name} #{item[0].version} (#{item[0].platform.to_s})"
       }
 
+      list << "Skip this gem"
       list << "Cancel installation"
 
       string, index = choose_from_list(
@@ -520,6 +526,10 @@ module Gem
 
       if index == (list.size - 1) then
         raise RemoteInstallationCancelled, "Installation of #{gem_name} cancelled."
+      end
+
+      if index == (list.size - 2) then
+        raise RemoteInstallationSkipped, "Installation of #{gem_name} skipped."
       end
 
       specs_n_sources[index]

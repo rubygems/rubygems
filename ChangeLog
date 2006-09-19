@@ -1,5 +1,8 @@
 2006-09-19  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/rubygems_version.rb (Gem): Bumped to version
+	0.9.0.3.
+
 	* test/test_version_comparison.rb (TestRequirementEquality): Added
 	more tests for Dependency equality testing and one additions check
 	for requirement vs non-requirement equality.

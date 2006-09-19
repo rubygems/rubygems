@@ -1,3 +1,12 @@
+2006-09-19  Jim Weirich  <jim@weirichhouse.org>
+
+	* test/test_version_comparison.rb (TestRequirementEquality): Added
+	more tests for Dependency equality testing and one additions check
+	for requirement vs non-requirement equality.
+
+	* lib/rubygems/version.rb (Gem::Dependency::==) Fixed '=' bug in
+	'==' code.
+
 2006-09-18 Chad Fowler <chad@chadfowler.com>
       
         * lib/rubygems/remote_installer.rb

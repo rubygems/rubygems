@@ -237,6 +237,54 @@ class TestDependencies < Test::Unit::TestCase
   end
 end
 
+class TestDependencyEquality < Test::Unit::TestCase
+  def test_same_dependencies_are_equal
+    d = Gem::Dependency.new("sample", "= 1.2.3")
+    e = Gem::Dependency.new("sample", "= 1.2.3")
+    assert d == e
+    assert e == d
+  end
+
+  def test_same_dependencies_have_save_hash_codes
+    d = Gem::Dependency.new("sample", "= 1.2.3")
+    e = Gem::Dependency.new("sample", "= 1.2.3")
+    assert_equal d.hash, e.hash
+  end
+
+  def test_different_with_different_versions_are_not_equal
+    d = Gem::Dependency.new("sample", "= 1.2.3")
+    e = Gem::Dependency.new("sample", "= 1.2.4")
+    assert d != e
+    assert e != d
+  end
+
+  def test_dependencies_with_different_names_are_not_equal
+    d = Gem::Dependency.new("sample", "= 1.2.3")
+    e = Gem::Dependency.new("example", "= 1.2.3")
+    assert d != e
+    assert e != d
+  end
+
+  def test_dependencies_with_different_versions_have_different_hash_codes
+    d = Gem::Dependency.new("sample", "= 1.2.3")
+    e = Gem::Dependency.new("sample", "= 1.2.4")
+    assert_not_equal d.hash, e.hash
+  end
+
+  def test_dependencies_with_different_names_have_different_hash_codes
+    d = Gem::Dependency.new("sample", "= 1.2.3")
+    e = Gem::Dependency.new("example", "= 1.2.3")
+    assert_not_equal d.hash, e.hash
+  end
+
+  def test_dependencies_can_be_compared_to_non_dependencies
+    d = Gem::Dependency.new("sample", "= 1.2.3")
+    obj = Object.new
+    assert d != obj
+    assert obj != d
+  end
+end
+
 class TestRequirementEquality < Test::Unit::TestCase
   def test_same_requirements_are_equal
     r = Gem::Requirement.new("= 1.2")
@@ -262,5 +310,12 @@ class TestRequirementEquality < Test::Unit::TestCase
     r = Gem::Requirement.new("= 1.2")
     p = Gem::Requirement.new("< 1.2")
     assert_not_equal r.hash, p.hash
+  end
+
+  def test_requirements_can_be_compared_to_non_requirements
+    r = Gem::Requirement.new("= 1.2")
+    obj = Object.new
+    assert r != obj
+    assert obj != r
   end
 end

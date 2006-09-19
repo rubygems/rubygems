@@ -51,12 +51,12 @@ module Gem
     end
 
     def ==(other)
-      self.name = other.name and
+      other.kind_of?(self.class) &&
+        self.name == other.name &&
         self.version_requirements == other.version_requirements
     end
 
     def hash
-      fail
       name.hash + version_requirements.hash
     end
     

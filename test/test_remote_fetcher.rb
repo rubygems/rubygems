@@ -26,8 +26,11 @@ class TestRemoteFetcher < Test::Unit::TestCase
     self.class.enable_zip = false
     ENV['http_proxy'] = nil
     ENV['HTTP_PROXY'] = nil
+    ENV['http_proxy_user'] = nil
+    ENV['HTTP_PROXY_USER'] = nil
+    ENV['http_proxy_pass'] = nil
+    ENV['HTTP_PROXY_PASS'] = nil
   end
-
 
   def test_no_proxy
     use_ui(MockGemUi.new) do
@@ -63,6 +66,22 @@ class TestRemoteFetcher < Test::Unit::TestCase
       assert_equal 'bar', proxy.password
       assert_equal PROXY_DATA, fetcher.fetch_path("/yaml")
     end
+
+    use_ui(MockGemUi.new) do
+      fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", "http://domain%5Cuser:bar@localhost:12345")
+      proxy = fetcher.instance_variable_get("@proxy_uri")
+      assert_equal 'domain\user', URI.unescape(proxy.user)
+      assert_equal 'bar', proxy.password
+      assert_equal PROXY_DATA, fetcher.fetch_path("/yaml")
+  end
+
+    use_ui(MockGemUi.new) do
+      fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", "http://user:my%20pass@localhost:12345")
+      proxy = fetcher.instance_variable_get("@proxy_uri")
+      assert_equal 'user', proxy.user
+      assert_equal 'my pass', URI.unescape(proxy.password)
+      assert_equal PROXY_DATA, fetcher.fetch_path("/yaml")
+    end
   end
 
   def test_explicit_proxy_with_user_auth_in_env
@@ -76,6 +95,17 @@ class TestRemoteFetcher < Test::Unit::TestCase
       assert_equal 'bar', proxy.password
       assert_equal PROXY_DATA, fetcher.fetch_path("/yaml")
     end
+
+    use_ui(MockGemUi.new) do
+      ENV['http_proxy'] = 'http://localhost:12345'
+      ENV['http_proxy_user'] = 'foo\user'
+      ENV['http_proxy_pass'] = 'my bar'
+      fetcher = Gem::RemoteSourceFetcher.new("http://localhost:12344", nil)
+      proxy = fetcher.instance_variable_get("@proxy_uri")
+      assert_equal 'foo\user', URI.unescape(proxy.user)
+      assert_equal 'my bar', URI.unescape(proxy.password)
+      assert_equal PROXY_DATA, fetcher.fetch_path("/yaml")
+  end
   end
 
   def test_implicit_no_proxy

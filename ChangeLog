@@ -1,5 +1,16 @@
 2006-09-22  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/remote_installer.rb
+	(Gem::RemoteSourceFetcher::initialize): Proxy patch fixup to
+	escape user/password from Anatol Pomozov.
+	(Gem::RemoteSourceFetcher::connect_to): Proxy patch fixup to
+	escape user/password from Anatol Pomozov.
+
+	* test/test_remote_fetcher.rb (TestRemoteFetcher::setup): Proxy
+	patch fixup to escape user/password from Anatol Pomozov.
+	(TestRemoteFetcher::test_no_proxy): Proxy patch fixup to escape
+	user/password from Anatol Pomozov.
+
 	* test/io_capture.rb (Gem::IoCapture): Created new IoCapture
 	module to handle capturing output of code under test.
 

@@ -40,8 +40,8 @@ module Gem
         uri = env_proxy ? URI.parse(env_proxy) : nil
         if uri and uri.user.nil? and uri.password.nil?
           #Probably we have http_proxy_* variables?
-          uri.user = ENV['http_proxy_user'] || ENV['HTTP_PROXY_USER']
-          uri.password = ENV['http_proxy_pass'] || ENV['HTTP_PROXY_PASS']
+          uri.user = escape(ENV['http_proxy_user'] || ENV['HTTP_PROXY_USER'])
+          uri.password = escape(ENV['http_proxy_pass'] || ENV['HTTP_PROXY_PASS'])
         end
         uri
       else
@@ -86,6 +86,15 @@ module Gem
     end
 
     private
+    def escape(str)
+      return unless str
+      URI.escape(str)
+    end
+
+    def unescape(str)
+      return unless str
+      URI.unescape(str)
+    end
 
     # Normalize the URI by adding "http://" if it is missing.
     def normalize_uri(uri)
@@ -95,7 +104,7 @@ module Gem
     # Connect to the source host/port, using a proxy if needed.
     def connect_to(host, port)
       if @proxy_uri
-        Net::HTTP::Proxy(@proxy_uri.host, @proxy_uri.port, @proxy_uri.user, @proxy_uri.password).new(host, port)
+        Net::HTTP::Proxy(@proxy_uri.host, @proxy_uri.port, unescape(@proxy_uri.user), unescape(@proxy_uri.password)).new(host, port)
       else
 	Net::HTTP.new(host, port)
       end
@@ -145,7 +154,7 @@ module Gem
         connection_options = {"User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}"}
         if @proxy_uri
           http_proxy_url = "#{@proxy_uri.scheme}://#{@proxy_uri.host}:#{@proxy_uri.port}"  
-          connection_options[:proxy_http_basic_authentication] = [http_proxy_url, @proxy_uri.user||'', @proxy_uri.password||'']
+          connection_options[:proxy_http_basic_authentication] = [http_proxy_url, unescape(@proxy_uri.user)||'', unescape(@proxy_uri.password)||'']
         end
         
         open(uri, connection_options, &block)

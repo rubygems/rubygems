@@ -4,12 +4,13 @@
 # See LICENSE.txt for permissions.
 #++
 
-$TESTING = true
 require 'fileutils'
 require 'tmpdir'
 require 'test/unit'
 require 'rubygems'
 require 'test/gemutilities'
+require 'test/io_capture'
+
 Gem::manage_gems
 
 class Gem::Installer
@@ -17,6 +18,7 @@ class Gem::Installer
 end
   
 class TestInstaller < RubyGemTestCase
+  include Gem::IoCapture
 
   def setup
     super
@@ -212,10 +214,17 @@ class TestInstaller < RubyGemTestCase
     util_make_exec
     @installer.directory = util_gem_dir
 
-    @installer.generate_bin @spec, @gemhome
+    serr = capture_stderr { 
+      @installer.generate_bin @spec, @gemhome
+    }
     assert_equal true, File.directory?(util_inst_bindir)
     installed_exec = File.join(util_inst_bindir, "my_exec")
     assert_equal true, File.exist?(installed_exec)
+
+    assert_match /unable/i, serr
+    assert_match /win32/i, serr
+    assert_match /symlinks/i, serr
+    assert_match /wrapper/i, serr
     
     expected_mode = win_platform? ? 0100644 : 0100755
     assert_equal expected_mode, File.stat(installed_exec).mode
@@ -227,14 +236,12 @@ class TestInstaller < RubyGemTestCase
   end
 
   def test_install_with_message
-    oldstdout = $stdout.dup
-    $stdout = StringIO.new
     @gem = File.join 'test', 'data', "PostMessage-0.0.1.gem"
-    @installer = Gem::Installer.new @gem, {}
-    @installer.install
-    assert_equal "I am a shiny gem!\n", $stdout.string
-  ensure
-    $stdout = oldstdout
+    sout = capture_stdout {
+      @installer = Gem::Installer.new @gem, {}
+      @installer.install
+    }
+    assert_equal "I am a shiny gem!\n", sout
   end
 
 end

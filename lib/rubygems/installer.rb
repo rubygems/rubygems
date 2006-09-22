@@ -4,8 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-$TESTING = false unless defined? $TESTING
-
 require 'pathname'
 require 'rbconfig'
 require 'rubygems/format'
@@ -224,7 +222,7 @@ module Gem
     #
     def generate_bin_symlink(spec, filename, bindir, install_dir)
       if Config::CONFIG["arch"] =~ /dos|win32/i then
-        warn "Unable to use symlinks on win32, installing wrapper" unless $TESTING # HACK
+        warn "Unable to use symlinks on win32, installing wrapper"
         generate_bin_script spec, filename, bindir, install_dir
         return
       end
@@ -260,9 +258,7 @@ module Gem
       end
     end
 
-    ##
-    # Returns the text for an application file.
-    #
+    # Return the text for an application file.
     def app_script_text(spec, install_dir, filename)
       text = <<-TEXT
 #{shebang(spec, install_dir, filename)}

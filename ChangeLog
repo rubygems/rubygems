@@ -1,3 +1,14 @@
+2006-09-22  Jim Weirich  <jim@weirichhouse.org>
+
+	* test/io_capture.rb (Gem::IoCapture): Created new IoCapture
+	module to handle capturing output of code under test.
+
+	* test/test_installer.rb
+	(TestInstaller::test_generate_bin_symlinks_win32): Removed ugly
+	$TESTING hack and substituted new io capture module.
+	(TestInstaller::test_install_with_message): Removed one-off stdout
+	capture and replaced with new IO Capture module.
+
 2006-09-19  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/rubygems_version.rb (Gem): Bumped to version
@@ -19,7 +30,7 @@
 2006-09-18  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/remote_installer.rb
-	(Gem::RemoteInstaller::install): Added Hugh Hasse's patch for
+	(Gem::RemoteInstaller::install): Added Hugh Sasse's patch for
 	skipping gems on install.
 
 	* lib/rubygems/rubygems_version.rb (Gem): Bumped to 0.9.0.2.

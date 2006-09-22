@@ -1,8 +1,11 @@
 #!/usr/bin/env ruby
 
+require 'stringio'
+
 module Gem
   module IoCapture
     
+    # Return output to $stdout during block execution as a string.
     def capture_stdout
       old_stdout = $stdout
       sio = StringIO.new
@@ -14,8 +17,8 @@ module Gem
     end
     private :capture_stdout
     
+    # Return output to $stderr during block execution as a string.
     def capture_stderr
-      require 'stringio'
       old_stderr = $stderr
       sio = StringIO.new
       $stderr = sio

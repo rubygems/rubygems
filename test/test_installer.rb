@@ -207,6 +207,21 @@ class TestInstaller < RubyGemTestCase
                  "Ensure symlink moved to latest version")
   end
 
+  def test_generated_bin_uses_default_shebang
+    return if win_platform? #Windows FS do not support symlinks
+
+    @installer.options[:wrappers] = true
+    util_make_exec
+    @installer.directory = util_gem_dir
+
+    @installer.generate_bin @spec, @gemhome 
+
+    default_shebang = File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])
+    shebang_line = open("#{@gemhome}/bin/my_exec") { |f| f.readlines.first }
+    assert_match /^#!/, shebang_line
+    assert_match /#{default_shebang}/, shebang_line
+  end
+
   def test_generate_bin_symlinks_win32
     old_arch = Config::CONFIG["arch"]
     Config::CONFIG["arch"] = "win32"

@@ -1,3 +1,10 @@
+2006-09-24  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems.rb
+	(Gem::OperationNotSupportedError::configuration): Added
+	method_missing to configuration hash to allow nicer reference
+	syntax.
+
 2006-09-22  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/remote_installer.rb

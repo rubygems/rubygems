@@ -525,7 +525,7 @@ class TarInput
             if Gem::Security.constants.index(security_policy)
               # load one of the pre-defined security policies
               security_policy = Gem::Security.const_get(security_policy)
-            elsif File.exists?(security_policy)
+            elsif File.exist?(security_policy)
               # FIXME: this doesn't work yet
               security_policy = YAML::load(File.read(security_policy))
             else

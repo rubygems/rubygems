@@ -1,3 +1,19 @@
+2006-09-25  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/rubygems_version.rb (Gem): Bumped to version
+	0.9.0.6.
+
+	* lib/rubygems/security.rb (Gem::Security::Exception): Added
+	permissions for cert files and directories.
+	(Gem::Security::Policy::verify_gem): File.exists? => File.exist?
+	(Gem::Security::self.verify_trust_dir): Beefed up code to create
+	trust directory structure.
+	(Gem::Security::self): Apply permissions when creating trust
+	files.
+
+	* lib/rubygems/package.rb (TarInput::initialize): File.exists? =>
+	File.exist?
+
 2006-09-24  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems.rb

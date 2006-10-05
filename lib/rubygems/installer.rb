@@ -243,6 +243,14 @@ module Gem
     end
 
     def shebang(spec, install_dir, bin_file_name)
+      if @options[:env_shebang]
+        shebang_env
+      else
+        shebang_default(spec, install_dir, bin_file_name)
+      end
+    end
+
+    def shebang_default(spec, install_dir, bin_file_name)
       path = File.join(install_dir, "gems", spec.full_name, spec.bindir, bin_file_name)
       File.open(path, "rb") do |file|
         first_line = file.readlines("\n").first 
@@ -256,6 +264,10 @@ module Gem
         end
         return shebang.strip  # Avoid nasty ^M issues.
       end
+    end
+
+    def shebang_env
+      return "#!/usr/bin/env ruby"
     end
 
     # Return the text for an application file.

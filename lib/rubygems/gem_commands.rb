@@ -109,6 +109,12 @@ module Gem
         options[:generate_ri] = value
       end
 
+      add_option('-E', '--env-shebang',
+        "Rewrite the shebang line on installed scripts to use /usr/bin/env") do
+        |value, options|
+        options[:env_shebang] = value
+      end
+
       add_option('-f', '--[no-]force', 
 	'Force gem to install, bypassing dependency checks') do 
 	|value, options|

@@ -218,8 +218,8 @@ class TestInstaller < RubyGemTestCase
 
     default_shebang = File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])
     shebang_line = open("#{@gemhome}/bin/my_exec") { |f| f.readlines.first }
-    assert_match /^#!/, shebang_line
-    assert_match /#{default_shebang}/, shebang_line
+    assert_match(/\A#!/, shebang_line)
+    assert_match(/#{default_shebang}/, shebang_line)
   end
 
   def test_generate_bin_symlinks_win32
@@ -236,10 +236,10 @@ class TestInstaller < RubyGemTestCase
     installed_exec = File.join(util_inst_bindir, "my_exec")
     assert_equal true, File.exist?(installed_exec)
 
-    assert_match /unable/i, serr
-    assert_match /win32/i, serr
-    assert_match /symlinks/i, serr
-    assert_match /wrapper/i, serr
+    assert_match(/unable/i, serr)
+    assert_match(/win32/i, serr)
+    assert_match(/symlinks/i, serr)
+    assert_match(/wrapper/i, serr)
     
     expected_mode = win_platform? ? 0100644 : 0100755
     assert_equal expected_mode, File.stat(installed_exec).mode

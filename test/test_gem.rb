@@ -5,7 +5,7 @@ class TestGem < Test::Unit::TestCase
 
   def test_self_configuration
     expected = {}
-    Gem.send :remove_instance_variable, :@configuration rescue nil
+    Gem.send :instance_variable_set, :@configuration, nil
 
     assert_equal expected, Gem.configuration
 

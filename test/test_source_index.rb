@@ -74,12 +74,12 @@ class TestSourceIndex < Test::Unit::TestCase
 
   def test_index_signature_is_reasonable
     sig = @source_index.index_signature
-    assert_match /^[a-f0-9]{64}$/, sig
+    assert_match(/^[a-f0-9]{64}$/, sig)
   end
 
   def test_gem_signature_returns_a_reasonable_signature
     sig = @source_index.gem_signature('foo-1.2.3')
-    assert_match /^[a-f0-9]{64}$/, sig
+    assert_match(/^[a-f0-9]{64}$/, sig)
   end
 
 end

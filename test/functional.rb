@@ -43,16 +43,16 @@ class FunctionalTest < Test::Unit::TestCase
   def test_environment
     gem_nossl 'environment'
     
-    assert_match /VERSION:\s+(\d+\.)*\d+/, @out
-    assert_match /INSTALLATION DIRECTORY:/, @out
-    assert_match /GEM PATH:/, @out
-    assert_match /REMOTE SOURCES:/, @out
+    assert_match(/VERSION:\s+(\d+\.)*\d+/, @out)
+    assert_match(/INSTALLATION DIRECTORY:/, @out)
+    assert_match(/GEM PATH:/, @out)
+    assert_match(/REMOTE SOURCES:/, @out)
     assert_status
   end
 
   def test_env_version
     gem_nossl 'environment version'
-    assert_match /\d+\.\d+$/, @out
+    assert_match(/\d+\.\d+$/, @out)
   end
 
   def test_env_gemdir
@@ -73,10 +73,10 @@ class FunctionalTest < Test::Unit::TestCase
   def test_build
     OneGem.rebuild(self)
     assert File.exist?(OneGem::ONEGEM), "Gem file (#{OneGem::ONEGEM}) should exist"
-    assert_match /Successfully built RubyGem/, @out
-    assert_match /Name: one$/, @out
-    assert_match /Version: 0.0.1$/, @out
-    assert_match /File: #{OneGem::ONENAME}/, @out
+    assert_match(/Successfully built RubyGem/, @out)
+    assert_match(/Name: one$/, @out)
+    assert_match(/Version: 0.0.1$/, @out)
+    assert_match(/File: #{OneGem::ONENAME}/, @out)
     spec = read_gem_file(OneGem::ONEGEM)
     assert_equal "one", spec.name
     assert_equal "Test GEM One", spec.summary
@@ -85,10 +85,10 @@ class FunctionalTest < Test::Unit::TestCase
   def test_build_from_yaml
     OneGem.rebuild(self)
     assert File.exist?(OneGem::ONEGEM), "Gem file (#{OneGem::ONEGEM}) should exist"
-    assert_match /Successfully built RubyGem/, @out
-    assert_match /Name: one$/, @out
-    assert_match /Version: 0.0.1$/, @out
-    assert_match /File: #{OneGem::ONENAME}/, @out
+    assert_match(/Successfully built RubyGem/, @out)
+    assert_match(/Name: one$/, @out)
+    assert_match(/Version: 0.0.1$/, @out)
+    assert_match(/File: #{OneGem::ONENAME}/, @out)
     spec = read_gem_file(OneGem::ONEGEM)
     assert_equal "one", spec.name
     assert_equal "Test GEM One", spec.summary
@@ -105,7 +105,8 @@ class FunctionalTest < Test::Unit::TestCase
     mgr = Gem::CommandManager.new
     mgr.command_names.each do |cmdname|
       gem_nossl "help #{cmdname}"
-      assert_match /Usage: gem #{cmdname}/, @out, "should see help for #{cmdname}"
+      assert_match(/Usage: gem #{cmdname}/, @out,
+                   "should see help for #{cmdname}")
     end
   end
 
@@ -145,9 +146,9 @@ class FunctionalTest < Test::Unit::TestCase
 
   def test_nossl_cert
     gem_nossl "cert --build x@y.z"
-    assert @status != 0
-    assert_match /not installed/, @err, 
-      "Should have a not installed error for openssl"
+    assert_not_equal 0, @status
+    assert_match(/not installed/, @err, 
+                 "Should have a not installed error for openssl")
   end
 
   # :section: Help Methods

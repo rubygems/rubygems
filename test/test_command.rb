@@ -5,11 +5,13 @@
 # See LICENSE.txt for permissions.
 #++
 
-
 require 'test/unit'
+require 'test/mockgemui'
+
 require 'rubygems/command'
 require 'rubygems/cmd_manager'
 require 'rubygems/user_interaction'
+
 class Noop
   def method_missing(sym, *args, &block)
   end
@@ -19,6 +21,7 @@ class TestCommand < Test::Unit::TestCase
   include Gem::DefaultUserInteraction
 
   def setup 
+    @xopt = nil
     Gem::Command.common_options.clear
     Gem::Command.common_options <<  [ ['-x', '--exe', 'Execute'], lambda do @xopt = true end]
     @cmd = Gem::Command.new("doit", "summary")
@@ -60,7 +63,7 @@ class TestCommand < Test::Unit::TestCase
     use_ui(MockGemUi.new) do
       @cmd.when_invoked do true end
       ex = assert_raise(OptionParser::InvalidOption) { @cmd.invoke('-zzz') }
-      assert_match /invalid option:/, ex.message
+      assert_match(/invalid option:/, ex.message)
     end
   end
 
@@ -84,16 +87,16 @@ class TestCommand < Test::Unit::TestCase
 	options[:help] = true
       end
       @cmd.invoke('--help')
-      assert_match /Usage/, ui.output
-      assert_match /gem doit/, ui.output
-      assert_match /\[options\]/, ui.output
-      assert_match /-h/, ui.output
-      assert_match /--help \[COMMAND\]/, ui.output
-      assert_match /Get help on COMMAND/, ui.output
-      assert_match /-x/, ui.output
-      assert_match /--exe/, ui.output
-      assert_match /Execute/, ui.output
-      assert_match /Common Options:/, ui.output
+      assert_match(/Usage/, ui.output)
+      assert_match(/gem doit/, ui.output)
+      assert_match(/\[options\]/, ui.output)
+      assert_match(/-h/, ui.output)
+      assert_match(/--help \[COMMAND\]/, ui.output)
+      assert_match(/Get help on COMMAND/, ui.output)
+      assert_match(/-x/, ui.output)
+      assert_match(/--exe/, ui.output)
+      assert_match(/Execute/, ui.output)
+      assert_match(/Common Options:/, ui.output)
     end
   end
 

@@ -70,7 +70,7 @@ class TestRemoteInstaller < Test::Unit::TestCase
   def test_installer_has_proxy_uri
     proxy = "http://user:pass@proxy.url"
     @installer.instance_variable_set("@options", {:http_proxy => proxy})
-    MockFetcher.class_eval("def fetch_path(path); raise 'failed' unless @proxy == '#{proxy}'; end")
+    MockFetcher.class_eval("alias old_fetch_path fetch_path; def fetch_path(path); raise 'failed' unless @proxy == '#{proxy}'; end")
     
     spec = Gem::Specification.new do |s|
       s.version = "1.0.0"

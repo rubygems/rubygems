@@ -33,7 +33,7 @@ class TestProcessCommands < Test::Unit::TestCase
   def test_query_command
     use_ui(MockGemUi.new) do
       @cmd_manager.process_args "query"
-      assert_match /LOCAL GEMS/, ui.output
+      assert_match(/LOCAL GEMS/, ui.output)
     end
   end
 

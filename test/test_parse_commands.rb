@@ -22,7 +22,7 @@ class TestParseCommands < Test::Unit::TestCase
       assert_raises(MockGemUi::TermError) {
 	@cmd_manager.process_args("--bad-arg")
       }
-      assert_match /invalid option: --bad-arg/i, ui.error
+      assert_match(/invalid option: --bad-arg/i, ui.error)
     end
   end
 
@@ -141,14 +141,14 @@ class TestParseCommands < Test::Unit::TestCase
     
     #check defaults
     @cmd_manager.process_args("query")
-    assert_equal /.*/, check_options[:name]
+    assert_equal(/.*/, check_options[:name])
     assert_equal :local, check_options[:domain]
     assert_equal false, check_options[:details]
     
     #check settings
     check_options = nil
     @cmd_manager.process_args("query --name foobar --local --details")
-    assert_equal /foobar/i, check_options[:name]
+    assert_equal(/foobar/i, check_options[:name])
     assert_equal :local, check_options[:domain]
     assert_equal true, check_options[:details]
 

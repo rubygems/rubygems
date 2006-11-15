@@ -5,8 +5,8 @@
 # See LICENSE.txt for permissions.
 #++
 
-
 require 'yaml'
+require 'rubygems'
 
 module Gem
 
@@ -44,6 +44,7 @@ module Gem
     #   for the same reason as --backtrace.
     #
     def initialize(arg_list)
+      @config_file_name = nil
       @verbose = true
       handle_arguments(arg_list)
       begin

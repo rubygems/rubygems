@@ -55,14 +55,17 @@ task :test => [:test_units]
 
 Rake::TestTask.new(:test_units) do |t|
   t.test_files = FileList['test/test*.rb']
+  t.warning = true
 end
 
 Rake::TestTask.new(:test_functional) do |t|
   t.test_files = FileList['test/functional*.rb']
+  t.warning = true
 end
 
 Rake::TestTask.new(:test_all) do |t|
   t.test_files = FileList['test/{test,functional}*.rb']
+  t.warning = true
 end
 
 desc "Run the tests for a build"

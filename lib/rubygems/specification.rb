@@ -320,19 +320,19 @@ module Gem
     end
 
     overwrite_accessor :summary= do |str|
-      if str
-        @summary = str.strip.
-          gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').
-          gsub(/\n[ \t]*/, " ")
-      end
+      @summary = if str then
+                   str.strip.
+                   gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').
+                   gsub(/\n[ \t]*/, " ")
+                 end
     end
 
     overwrite_accessor :description= do |str|
-      if str
-        @description = str.strip.
-          gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').
-          gsub(/\n[ \t]*/, " ")
-      end
+      @description = if str then
+                       str.strip.
+                       gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').
+                       gsub(/\n[ \t]*/, " ")
+                     end
     end
 
     overwrite_accessor :default_executable do

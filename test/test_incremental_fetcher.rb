@@ -5,9 +5,10 @@
 # See LICENSE.txt for permissions.
 #++
 
-
 require 'test/unit'
 require 'fileutils'
+
+require 'rubygems'
 require 'flexmock'
 
 require 'rubygems/incremental_fetcher'

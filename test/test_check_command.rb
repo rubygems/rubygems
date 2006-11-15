@@ -22,13 +22,13 @@ class TestCheckCommand < Test::Unit::TestCase
   def test_create
     assert_equal "check", @cmd.command
     assert_equal "gem check", @cmd.program_name
-    assert_match /Check/, @cmd.summary
+    assert_match(/Check/, @cmd.summary)
   end
 
   def test_invoke_help
     use_ui(MockGemUi.new) do 
       assert ! @cmd.invoke('--help')
-      assert_match /Usage:/, ui.output
+      assert_match(/Usage:/, ui.output)
     end
   end
 end

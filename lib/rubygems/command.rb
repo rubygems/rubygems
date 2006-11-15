@@ -27,6 +27,7 @@ module Gem
       @options = defaults.dup
       @option_list = []
       @parser = nil
+      @when_invoked = nil
     end
     
     # Override to provide command handling.

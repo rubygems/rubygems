@@ -7,7 +7,7 @@ require 'rubygems/user_interaction'
 class TestStreamUI < Test::Unit::TestCase
 
   def setup
-    Gem.send :remove_instance_variable, :@configuration rescue nil
+    Gem.send :instance_variable_set, :@configuration, nil
     @cfg = Gem.configuration
 
     @in = StringIO.new

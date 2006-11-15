@@ -29,6 +29,9 @@ module Gem
 
     # The default UI is a class variable of the singleton class for
     # this module.
+
+    @ui = nil
+
     class << self
       def ui
         @ui ||= Gem::ConsoleUI.new

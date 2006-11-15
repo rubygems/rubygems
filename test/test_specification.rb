@@ -278,8 +278,8 @@ class TestSpecificationEquality < Test::Unit::TestCase
   def test_specs_with_same_attributes_are_equal
     s = Gem::Specification.new do |spec| spec.name = "ONE" end
     t = Gem::Specification.new do |spec| spec.name = "ONE" end
-    assert (s == t)
-    assert (t == s)
+    assert_equal s, t
+    assert_equal t, s
   end
 
   def test_specs_with_same_attributes_have_same_hash_code

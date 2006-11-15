@@ -47,8 +47,8 @@ class TestRequireGem < Test::Unit::TestCase
     ex = assert_raises(Gem::Exception) { 
       require_gem 'a', '= 0.0.2'
     }
-    assert_match /activate a \(= 0\.0\.2\)/, ex.message
-    assert_match /activated a-0\.0\.1/, ex.message
+    assert_match(/activate a \(= 0\.0\.2\)/, ex.message)
+    assert_match(/activated a-0\.0\.1/, ex.message)
     assert $:.any? { |p| %r{a-0.0.1/lib} =~ p }
     assert $:.any? { |p| %r{a-0.0.1/bin} =~ p }
     assert ! $:.any? { |p| %r{a-0.0.2/lib} =~ p }

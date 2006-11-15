@@ -90,6 +90,7 @@ module Gem
   @@source_index = nil  
 
   @configuration = nil
+  @loaded_specs = nil
   
   class << self
   

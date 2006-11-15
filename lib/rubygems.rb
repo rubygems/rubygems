@@ -150,6 +150,9 @@ module Gem
       return @configuration if @configuration
 
       @configuration = {}
+      class << @configuration
+        undef_method :verbose # HACK RakeFileUtils pollution
+      end
       def @configuration.method_missing(sym, *args, &block)
         if args.empty?
           self[sym]

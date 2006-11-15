@@ -1,3 +1,18 @@
+2006-11-15  Eric Hodel  <drbrain@segment7.net>
+
+	* test/, lib/: Made files -w clean.
+
+	* test/: Made tests run independently.
+
+	* Rakefile: Tests now run with warnings on.
+
+2006-11-14  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/user_interaction.rb (Gem::StreamUI#progress_reporter):
+	Fix for Gem.configuration.verbose = nil, false
+
+	* lib/rubygems.rb (Gem::configuration): Fix RakeFileUtils pollution.
+
 2006-10-05  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/installer.rb (Gem::Installer::shebang): Updated to

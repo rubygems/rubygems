@@ -4,9 +4,12 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems'
 require 'socket'
 require 'fileutils'
+require 'yaml'
+
+require 'rubygems'
+require 'rubygems/installer'
 
 module Gem
   class DependencyError < Gem::Exception; end

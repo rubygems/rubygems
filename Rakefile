@@ -35,6 +35,7 @@ end
 
 CLEAN.include("COMMENTS")
 CLOBBER.include(
+  'InstalledFiles',
   "test/data/one/one-*0.0.1.gem",
   "test/temp",
   'test/mock/gem/doc',
@@ -48,7 +49,7 @@ CLOBBER.include(
   '.config',
   '**/debug.log',
   'logs'
-  )
+)
 
 task :default => [:test]
 task :test => [:test_units]

@@ -428,6 +428,7 @@ module Gem
       # Ensure http_proxy env vars are used if no proxy explicitly supplied.
       @options = options
       @fetcher_class = CachedFetcher
+      @sources = nil
     end
 
     # This method will install package_name onto the local system.  
@@ -475,9 +476,9 @@ module Gem
 
     # Return a list of the sources that we can download gems from
     def sources
-      unless @sources
-	require 'sources'
-	@sources = Gem.sources
+      unless @sources then
+        require 'sources'
+        @sources = Gem.sources
       end
       @sources
     end

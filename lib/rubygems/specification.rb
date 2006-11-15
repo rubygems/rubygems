@@ -363,7 +363,7 @@ module Gem
       # Handle the possibility that we have @test_suite_file but not
       # @test_files.  This will happen when an old gem is loaded via
       # YAML.
-      if @test_suite_file
+      if defined? @test_suite_file then
         @test_files = [@test_suite_file].flatten
         @test_suite_file = nil
       end

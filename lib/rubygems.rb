@@ -88,6 +88,8 @@ module Gem
   DIRECTORIES = ['cache', 'doc', 'gems', 'specifications']
   
   @@source_index = nil  
+
+  @configuration = nil
   
   class << self
   

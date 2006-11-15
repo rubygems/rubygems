@@ -148,6 +148,7 @@ module Gem
     # The standard configuration object for gems.
     def configuration
       return @configuration if @configuration
+
       @configuration = {}
       def @configuration.method_missing(sym, *args, &block)
         if args.empty?
@@ -156,6 +157,8 @@ module Gem
           super
         end
       end
+
+      @configuration
     end
 
     # Use the given configuration object (which implements the

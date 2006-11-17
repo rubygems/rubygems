@@ -24,7 +24,7 @@ class TestRemoteFetcher < RubyGemTestCase
 
   def setup
     super
-    self.class.start_servers @tempdir
+    self.class.start_servers
     self.class.enable_yaml = true
     self.class.enable_zip = false
     ENV['http_proxy'] = nil
@@ -186,22 +186,22 @@ class TestRemoteFetcher < RubyGemTestCase
     attr_reader :normal_server, :proxy_server
     attr_accessor :enable_zip, :enable_yaml
     
-    def start_servers(document_root)
-      @normal_server ||= start_server(12344, YAML_DATA, document_root)
-      @proxy_server  ||= start_server(12345, PROXY_DATA, document_root)
+    def start_servers
+      @normal_server ||= start_server(12344, YAML_DATA)
+      @proxy_server  ||= start_server(12345, PROXY_DATA)
       @enable_yaml = true
       @enable_zip = false
     end
     
     private
     
-    def start_server(port, data, document_root)
+    def start_server(port, data)
       Thread.new do
         begin
           null_logger = NilLog.new
           s = HTTPServer.new(
             :Port            => port,
-            :DocumentRoot    => document_root,
+            :DocumentRoot    => nil,
             :Logger          => null_logger,
             :AccessLog       => null_logger
             )

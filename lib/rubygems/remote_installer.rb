@@ -81,11 +81,9 @@ module Gem
 
     # Return a list of the sources that we can download gems from
     def sources
-      unless @sources then
-        require 'sources'
-        @sources = Gem.sources
-      end
-      @sources
+      return @sources if @sources
+      require 'sources'
+      @sources = Gem.sources
     end
     
     # Return a hash mapping the available source names to the source

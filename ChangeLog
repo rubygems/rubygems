@@ -1,5 +1,9 @@
 2006-11-17  Eric Hodel  <drbrain@segment7.net>
 
+	* lib/rubygems/remote_installer.rb (Gem::RemoteFetcher,
+	Gem::CacheFetcher):  Break out of remote_installer.rb into separate
+	files.
+
 	* lib/rubygems/remote_installer.rb (Gem::SourceInfoCache,
 	Gem::SourceInfoCacheEntry):  Allow requiring just the source cache
 	without the remote fetcher.

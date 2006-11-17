@@ -1,5 +1,8 @@
 2006-11-17  Eric Hodel  <drbrain@segment7.net>
 
+	* test/test_remote_fetcher.rb:  Don't allow files in Dir.pwd to make
+	tests fail.  Spotted by Chad Fowler.
+
 	* lib/rubygems/remote_installer.rb (Gem::RemoteFetcher,
 	Gem::CacheFetcher):  Break out of remote_installer.rb into separate
 	files.

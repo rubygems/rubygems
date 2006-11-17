@@ -11,17 +11,20 @@ require 'zlib'
 require 'webrick'
 require 'rubygems'
 
+require 'test/gemutilities'
 require 'test/mockgemui'
 require 'test/yaml_data'
 
 Gem.manage_gems
 include WEBrick
 
-class TestRemoteFetcher < Test::Unit::TestCase
+class TestRemoteFetcher < RubyGemTestCase
+
   include Gem::DefaultUserInteraction
 
   def setup
-    self.class.start_servers
+    super
+    self.class.start_servers @tempdir
     self.class.enable_yaml = true
     self.class.enable_zip = false
     ENV['http_proxy'] = nil
@@ -183,22 +186,22 @@ class TestRemoteFetcher < Test::Unit::TestCase
     attr_reader :normal_server, :proxy_server
     attr_accessor :enable_zip, :enable_yaml
     
-    def start_servers
-      @normal_server ||= start_server(12344, YAML_DATA)
-      @proxy_server  ||= start_server(12345, PROXY_DATA)
+    def start_servers(document_root)
+      @normal_server ||= start_server(12344, YAML_DATA, document_root)
+      @proxy_server  ||= start_server(12345, PROXY_DATA, document_root)
       @enable_yaml = true
       @enable_zip = false
     end
     
     private
     
-    def start_server(port, data)
+    def start_server(port, data, document_root)
       Thread.new do
         begin
           null_logger = NilLog.new
           s = HTTPServer.new(
             :Port            => port,
-            :DocumentRoot    => ".",
+            :DocumentRoot    => document_root,
             :Logger          => null_logger,
             :AccessLog       => null_logger
             )

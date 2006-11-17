@@ -1,3 +1,14 @@
+2006-11-16  Eric Hodel  <drbrain@segment7.net>
+
+	* test/test_local_cache.rb: Moved to better name
+
+	* test/test_gem_source_info_cache.rb: Renamed test methods to match
+	implementations.  Sorted test names.
+
+	* lib/rubygems/remote_installer (Gem::SourceInfoCache): cache_data no
+	longer resets dirty flag.  Sped up source cache loading.  Exposed
+	cache file name in use.
+	
 2006-11-15  Eric Hodel  <drbrain@segment7.net>
 
 	* test/, lib/: Made files -w clean.

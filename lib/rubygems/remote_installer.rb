@@ -252,34 +252,36 @@ module Gem
   #
   class SourceInfoCache
 
+    def initialize # :nodoc:
+      @cache_data = nil
+      @cache_file = nil
+      @dirty = false
+      @system_cache_file = nil
+      @user_cache_file = nil
+    end
+
     # The most recent cache data.
     def cache_data
+      return @cache_data if @cache_data
       @dirty = false
-      @cache_data ||= read_cache 
+      cache_file # HACK writable check
+      @cache_data = begin
+                      open cache_file, "rb" do |f|
+                        # Marshal loads 30-40% faster from a String, and 2MB
+                        # on 20061116 is small
+                        Marshal.load f.read || {}
+                      end
+                    rescue
+                      {}
+                    end
     end
 
-    # Write data to the proper cache.
-    def write_cache
-      data = cache_data
-      open(writable_file, "wb") do |f|
-        f.write Marshal.dump(data)
-      end
-    end
-
-    # The name of the system cache file.
-    def system_cache_file
-      @sysetm_cache ||= File.join(Gem.dir, "source_cache")
-    end
-
-    # The name of the user cache file.
-    def user_cache_file
-      @user_cache ||=
-	ENV['GEMCACHE'] || File.join(Gem.user_home, ".gem/source_cache")
-    end
-
-    # Mark the cache as updated (i.e. dirty).
-    def update
-      @dirty = true
+    # The name of the cache file to be read
+    def cache_file
+      return @cache_file if @cache_file
+      @cache_file = (try_file(system_cache_file) or
+                     try_file(user_cache_file) or
+                     raise "unable to locate a writable cache file")
     end
 
     # Write the cache to a local file (if it is dirty).
@@ -288,33 +290,30 @@ module Gem
       @dirty = false
     end
 
-    private 
-
-    # Find a writable cache file.
-    def writable_file
-      @cache_file
+    # The name of the system cache file.
+    def system_cache_file
+      @system_cache_file ||= File.join(Gem.dir, "source_cache")
     end
 
-    # Read the most current cache data.
-    def read_cache
-      @cache_file = select_cache_file
-      begin
-	open(@cache_file, "rb") { |f| load_local_cache(f) } || {}
-      rescue StandardError => ex
-	{}
+    # Mark the cache as updated (i.e. dirty).
+    def update
+      @dirty = true
+    end
+
+    # The name of the user cache file.
+    def user_cache_file
+      @user_cache_file ||=
+        ENV['GEMCACHE'] || File.join(Gem.user_home, ".gem", "source_cache")
+    end
+
+    # Write data to the proper cache.
+    def write_cache
+      open cache_file, "wb" do |f|
+        f.write Marshal.dump(cache_data)
       end
     end
 
-    def load_local_cache(f)
-      Marshal.load(f)
-    end
-
-    # Select a writable cache file
-    def select_cache_file
-      try_file(system_cache_file) or
-	try_file(user_cache_file) or
-	fail "Unable to locate a writable cache file."
-    end
+    private 
 
     # Determine if +fn+ is a candidate for a cache file.  Return fn if
     # it is.  Return nil if it is not.

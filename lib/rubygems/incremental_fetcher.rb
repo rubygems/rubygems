@@ -25,10 +25,10 @@ module Gem
     # Return the source index for the gem source.
     def source_index
       entry = get_entry
-      if entry.nil?
-	entry =
-	  @manager.cache_data[@source_uri] =
-	  SourceInfoCacheEntry.new(SourceIndex.new,0)
+      if entry.nil? then
+        entry = @manager.cache_data[@source_uri] =
+          SourceInfoCacheEntry.new(SourceIndex.new,0)
+        @manager.update
       end
       update_cache(entry) if entry.size != remote_size
       entry.source_index
@@ -48,11 +48,11 @@ module Gem
 	# do nothing ... everything is fine
       when Hash
 	result = SourceInfoCacheEntry.new(result['source_index'], result['size'])
-	@manager.cache_data[@source_uri] = result	
+	@manager.cache_data[@source_uri] = result
       else
 	fail "Unexpected type (#{result.class}) for SourceInfoCache entry"
       end
-      result	
+      result
     end
 
     # Return the size of the remote source index.  Cache the value for later use.

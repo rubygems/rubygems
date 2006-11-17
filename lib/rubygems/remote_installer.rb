@@ -21,9 +21,9 @@ module Gem
   class RemoteInstallationSkipped < Gem::Exception; end
 
   ####################################################################
-  # RemoteSourceFetcher handles the details of fetching gems and gem
+  # RemoteFetcher handles the details of fetching gems and gem
   # information from a remote source.  
-  class RemoteSourceFetcher
+  class RemoteFetcher
     include UserInteraction
 
     # Initialize a remote fetcher using the source URI (and possible
@@ -215,15 +215,15 @@ module Gem
 
   ####################################################################
   # CachedFetcher is a decorator that adds local file caching to
-  # RemoteSourceFetcher objects.
+  # RemoteFetcher objects.
   class CachedFetcher
 
-    # Create a cached fetcher (based on a RemoteSourceFetcher) for the
+    # Create a cached fetcher (based on a RemoteFetcher) for the
     # source at +source_uri+ (through the proxy +proxy+).
     def initialize(source_uri, proxy)
       require 'rubygems/incremental_fetcher'
       @source_uri = source_uri
-      rsf = RemoteSourceFetcher.new(source_uri, proxy)
+      rsf = RemoteFetcher.new(source_uri, proxy)
       @fetcher = IncrementalFetcher.new(source_uri, rsf, manager)
     end
 

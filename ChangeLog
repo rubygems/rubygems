@@ -1,3 +1,9 @@
+2006-11-17  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/remote_installer.rb (Gem::SourceInfoCache,
+	Gem::SourceInfoCacheEntry):  Allow requiring just the source cache
+	without the remote fetcher.
+
 2006-11-16  Eric Hodel  <drbrain@segment7.net>
 
 	* test/test_local_cache.rb: Moved to better name

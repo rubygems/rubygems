@@ -6,7 +6,7 @@
 #++
 
 require 'test/gemutilities'
-require 'rubygems/remote_installer'
+require 'rubygems/source_info_cache'
 require 'test/unit'
 
 class TestGemSourceInfoCache < RubyGemTestCase

@@ -1,3 +1,8 @@
+2006-11-18  Chad Fowler  <chad@chadfowler.com>
+
+        * lib/rubygems/installer.rb: Applied Kevin Clark's patch to make
+        RubyGems recognize mkrf files.
+
 2006-11-17  Eric Hodel  <drbrain@segment7.net>
 
 	* test/test_remote_fetcher.rb:  Don't allow files in Dir.pwd to make

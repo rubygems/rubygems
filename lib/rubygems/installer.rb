@@ -311,7 +311,7 @@ TEXT
           builder = ExtExtConfBuilder
         when /configure/ then
           builder = ExtConfigureBuilder
-        when /rakefile/i then
+        when /rakefile/i, /mkrf_conf/i then
           builder = ExtRakeBuilder
           ran_rake = true
         else

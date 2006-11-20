@@ -1,3 +1,10 @@
+2006-11-20  Rich Kilmer <rich@infoether.com>
+	* lib/rubygems/cmd_manager.rb: Added PristineCommand
+
+	* lib/rubygems/gem_commands.rb: Added PristineCommand to restore
+	gems to pristine condition in the event of files begin deleted
+	based on the cached .gem file
+
 2006-11-19  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/*_fetcher.rb: Removed code specific to remote source

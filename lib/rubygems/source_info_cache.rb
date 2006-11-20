@@ -1,27 +1,59 @@
 require 'rubygems'
+require 'rubygems/remote_fetcher'
 require 'rubygems/source_info_cache_entry'
 
-####################################################################
-# SourceInfoCache implements the cache management policy on where the source
-# info is stored on local file system.  There are two possible cache
-# locations: (1) the system wide cache, and (2) the user specific cache.
+require 'sources'
+
+##
+# SourceInfoCache stores a copy of the gem index for each gem source.
 #
-# * The system cache is prefered if it is writable (or can be created).
-# * The user cache is used if the system cache is not writable (or can not be
-#   created).
+# There are two possible cache locations, the system cache and the user cache:
+# * The system cache is prefered if it is writable or can be created.
+# * The user cache is used otherwise
 #
-# Once a cache is selected, it will be used for all operations.  It will not
-# switch between cache files dynamically.
+# Once a cache is selected, it will be used for all operations.
+# SourceInfoCache will not switch between cache files dynamically.
 #
-# Cache data is a simple hash indexed by the source URI.  Retrieving and entry
-# from the cache data will return a SourceInfoCacheEntry.
+# Cache data is a Hash mapping a source URI to a SourceInfoCacheEntry.
+#
+#--
+# To keep things straight, this is how the cache objects all fit together:
+#
+#   Gem::SourceInfoCache
+#     @cache_data = {
+#       source_uri => Gem::SourceInfoCacheEntry
+#         @size => source index size
+#         @source_index => Gem::SourceIndex
+#       ...
+#     }
 #
 class Gem::SourceInfoCache
+
+  include Gem::UserInteraction
+
+  @cache = nil
+
+  def self.cache
+    return @cache if @cache
+    @cache = new
+    @cache.refresh
+    @cache
+  end
+
+  def self.cache_data
+    cache.cache_data
+  end
+
+  # Search all source indexes for +pattern+.
+  def self.search(pattern)
+    cache.search(pattern)
+  end
 
   def initialize # :nodoc:
     @cache_data = nil
     @cache_file = nil
     @dirty = false
+
     @system_cache_file = nil
     @user_cache_file = nil
   end
@@ -56,6 +88,28 @@ class Gem::SourceInfoCache
     @dirty = false
   end
 
+  # Refreshes each source in the cache from its repository.
+  def refresh
+    Gem.sources.each do |source_uri|
+      cache_entry = cache_data[source_uri]
+      if cache_entry.nil? then
+        cache_entry = Gem::SourceInfoCacheEntry.new nil, 0
+        cache_data[source_uri] = cache_entry
+      end
+
+      cache_entry.refresh source_uri
+    end
+    update
+    flush
+  end
+
+  # Searches all source indexes for +pattern+.
+  def search(pattern)
+    cache_data.map do |source, sic_entry|
+      sic_entry.source_index.search pattern
+    end.flatten
+  end
+
   # The name of the system cache file.
   def system_cache_file
     @system_cache_file ||= File.join(Gem.dir, "source_cache")
@@ -79,7 +133,7 @@ class Gem::SourceInfoCache
     end
   end
 
-  private 
+  private
 
   # Determine if +fn+ is a candidate for a cache file.  Return fn if
   # it is.  Return nil if it is not.
@@ -100,5 +154,6 @@ class Gem::SourceInfoCache
     end
     nil
   end
+
 end
 

@@ -5,11 +5,14 @@
 # See LICENSE.txt for permissions.
 #++
 
-
 require 'fileutils'
 require 'test/unit/testcase'
 require 'tmpdir'
+require 'uri'
+
 require 'test/yaml_data'
+require 'test/mockgemui'
+require 'rubygems/open-uri'
 
 module Utilities
   def make_cache_area(path, *uris)
@@ -17,10 +20,43 @@ module Utilities
     open(fn, 'wb') do |f| f.write Marshal.dump(cache_hash(*uris)) end
   end
 
-  extend self
+  module_function :make_cache_area
+end
+
+class FakeFetcher
+
+  attr_reader :data
+  attr_accessor :uri
+
+  def initialize
+    @data = {}
+    @uri = nil
+  end
+
+  def fetch_path(path)
+    path = path.to_s
+    raise ArgumentError, 'need full URI' unless path =~ %r'^http://'
+    data = @data[path]
+    raise OpenURI::HTTPError.new("no data for #{path}", nil) if data.nil?
+    data.respond_to?(:call) ? data.call : data
+  end
+
+  def fetch_size(path)
+    path = path.to_s
+    raise ArgumentError, 'need full URI' unless path =~ %r'^http://'
+    data = @data[path]
+    raise OpenURI::HTTPError.new("no data for #{path}", nil) if data.nil?
+    data.respond_to?(:call) ? data.call : data.length
+  end
+
 end
 
 class RubyGemTestCase < Test::Unit::TestCase
+
+  include Gem::DefaultUserInteraction
+
+  undef_method :default_test
+
   def setup
     super
     @tempdir = File.join Dir.tmpdir, "test_rubygems_#{$$}"
@@ -35,6 +71,10 @@ class RubyGemTestCase < Test::Unit::TestCase
   end
 
   def teardown
+    if defined? Gem::RemoteFetcher then
+      Gem::RemoteFetcher.instance_variable_set :@fetcher, nil
+    end
+
     FileUtils.rm_r @tempdir
     ENV['GEMCACHE'] = nil
     Gem.clear_paths
@@ -83,10 +123,34 @@ class RubyGemTestCase < Test::Unit::TestCase
     return spec
   end
 
-  def test_stupid
-    # shuts up test/unit
+  def util_setup_fake_fetcher
+    @uri = URI.parse 'http://gems.example.com'
+    @fetcher = FakeFetcher.new
+    @fetcher.uri = @uri
+
+    @gem1 = quick_gem 'gem_one' do |gem|
+      gem.files = %w[Rakefile lib/gem_one.rb]
+    end
+
+    @gem2 = quick_gem 'gem_two' do |gem|
+      gem.files = %w[Rakefile lib/gem_two.rb]
+    end
+
+    @gem3 = quick_gem 'gem_three' do |gem| # missing gem
+      gem.files = %w[Rakefile lib/gem_three.rb]
+    end
+
+    @gem_names = [@gem1.full_name, @gem2.full_name].sort.join("\n")
+    @source_index = Gem::SourceIndex.new @gem1.full_name => @gem1,
+                                         @gem2.full_name => @gem2
+
+    Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
   end
-  
+
+  def util_zip(data)
+    Zlib::Deflate.deflate data
+  end
+
   @@win_platform = nil
   def win_platform?
     if @@win_platform.nil?
@@ -95,4 +159,6 @@ class RubyGemTestCase < Test::Unit::TestCase
     end
     @@win_platform
   end
+
 end
+

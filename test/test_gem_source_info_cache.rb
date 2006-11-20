@@ -5,135 +5,188 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'test/gemutilities'
-require 'rubygems/source_info_cache'
 require 'test/unit'
+require 'test/gemutilities'
+
+require 'rubygems/source_info_cache'
+
+class Gem::SourceIndex
+  public :gems
+end
 
 class TestGemSourceInfoCache < RubyGemTestCase
 
   def setup
+    @original_sources = Gem.sources
+
     super
-    @lc = Gem::SourceInfoCache.new
-    prep_cache_files(@lc)
+
+    util_setup_fake_fetcher
+
+    @sic = Gem::SourceInfoCache.new
+    @sic.instance_variable_set :@fetcher, @fetcher
+
+    prep_cache_files @sic
+  end
+
+  def teardown
+    super
+    Gem.sources.replace @original_sources
+  end
+
+  def test_self_cache
+    source_index = Gem::SourceIndex.new 'key' => 'sys'
+    @fetcher.data['http://gems.example.com/yaml'] = source_index.to_yaml
+
+    Gem.sources.replace %w[http://gems.example.com]
+
+    use_ui MockGemUi.new do
+      assert_not_nil Gem::SourceInfoCache.cache
+      assert_kind_of Gem::SourceInfoCache, Gem::SourceInfoCache.cache
+      assert_equal Gem::SourceInfoCache.cache.object_id,
+                   Gem::SourceInfoCache.cache.object_id
+    end
+  end
+
+  def test_self_cache_data
+    source = 'http://gems.example.com'
+    source_index = Gem::SourceIndex.new 'key' => 'sys'
+    @fetcher.data["#{source}/yaml"] = source_index.to_yaml
+
+    Gem::SourceInfoCache.instance_variable_set :@cache, nil
+    sice = Gem::SourceInfoCacheEntry.new source_index, 0
+
+    use_ui MockGemUi.new do
+      assert_equal source_index.gems,
+                   Gem::SourceInfoCache.cache_data[source].source_index.gems
+    end
   end
 
   def test_cache_data
-    assert_equal [['key','sys']], @lc.cache_data.to_a.sort
+    assert_equal [['key','sys']], @sic.cache_data.to_a.sort
   end
 
   def test_cache_data_dirty
-    def @lc.dirty() @dirty; end
-    assert_equal false, @lc.dirty, 'clean on init'
-    @lc.cache_data
-    assert_equal false, @lc.dirty, 'clean on fetch'
-    @lc.update
-    @lc.cache_data
-    assert_equal true, @lc.dirty, 'still dirty'
+    def @sic.dirty() @dirty; end
+    assert_equal false, @sic.dirty, 'clean on init'
+    @sic.cache_data
+    assert_equal false, @sic.dirty, 'clean on fetch'
+    @sic.update
+    @sic.cache_data
+    assert_equal true, @sic.dirty, 'still dirty'
   end
 
   def test_cache_data_none_readable
-    FileUtils.chmod 0222, @lc.system_cache_file
-    FileUtils.chmod 0222, @lc.user_cache_file
-    assert_equal({}, @lc.cache_data)
+    FileUtils.chmod 0222, @sic.system_cache_file
+    FileUtils.chmod 0222, @sic.user_cache_file
+    assert_equal({}, @sic.cache_data)
   end
 
   def test_cache_data_none_writable
-    FileUtils.chmod 0444, @lc.system_cache_file
-    FileUtils.chmod 0444, @lc.user_cache_file
+    FileUtils.chmod 0444, @sic.system_cache_file
+    FileUtils.chmod 0444, @sic.user_cache_file
     e = assert_raise RuntimeError do
-      @lc.cache_data
+      @sic.cache_data
     end
     assert_equal 'unable to locate a writable cache file', e.message
   end
 
   def test_cache_data_user_fallback
-    FileUtils.chmod 0444, @lc.system_cache_file
-    assert_equal [['key','usr']], @lc.cache_data.to_a.sort
+    FileUtils.chmod 0444, @sic.system_cache_file
+    assert_equal [['key','usr']], @sic.cache_data.to_a.sort
   end
 
   def test_cache_file
-    assert_equal @gemcache, @lc.cache_file
+    assert_equal @gemcache, @sic.cache_file
   end
 
   def test_cache_file_user_fallback
-    FileUtils.chmod 0444, @lc.system_cache_file
-    assert_equal @usrcache, @lc.cache_file
+    FileUtils.chmod 0444, @sic.system_cache_file
+    assert_equal @usrcache, @sic.cache_file
   end
 
   def test_cache_file_none_writable
-    FileUtils.chmod 0444, @lc.system_cache_file
-    FileUtils.chmod 0444, @lc.user_cache_file
+    FileUtils.chmod 0444, @sic.system_cache_file
+    FileUtils.chmod 0444, @sic.user_cache_file
     e = assert_raise RuntimeError do
-      @lc.cache_file
+      @sic.cache_file
     end
     assert_equal 'unable to locate a writable cache file', e.message
   end
 
   def test_flush
-    @lc.cache_data['key'] = 'new'
-    @lc.update
-    @lc.flush
+    @sic.cache_data['key'] = 'new'
+    @sic.update
+    @sic.flush
 
-    assert_equal [['key','new']], read_cache(@lc.system_cache_file).to_a.sort
+    assert_equal [['key','new']], read_cache(@sic.system_cache_file).to_a.sort
   end
 
   def test_read_system_cache
-    assert_equal [['key','sys']], @lc.cache_data.to_a.sort
+    assert_equal [['key','sys']], @sic.cache_data.to_a.sort
   end
 
   def test_read_user_cache
-    FileUtils.chmod 0444, @lc.system_cache_file
+    FileUtils.chmod 0444, @sic.system_cache_file
 
-    assert_equal [['key','usr']], @lc.cache_data.to_a.sort
+    assert_equal [['key','usr']], @sic.cache_data.to_a.sort
+  end
+
+  def test_search
+    si = Gem::SourceIndex.new @gem1.full_name => @gem1
+    cache_data = { 'source_uri' => Gem::SourceInfoCacheEntry.new(si, nil) }
+    @sic.instance_variable_set :@cache_data, cache_data
+
+    assert_equal [@gem1], @sic.search(//)
   end
 
   def test_system_cache_file
-    assert_equal File.join(Gem.dir, "source_cache"), @lc.system_cache_file
+    assert_equal File.join(Gem.dir, "source_cache"), @sic.system_cache_file
   end
 
   def test_user_cache_file
-    assert_equal @usrcache, @lc.user_cache_file
+    assert_equal @usrcache, @sic.user_cache_file
   end
 
   def test_write_cache
-    @lc.cache_data['key'] = 'new'
-    @lc.write_cache
+    @sic.cache_data['key'] = 'new'
+    @sic.write_cache
 
     assert_equal [['key', 'new']],
-                 read_cache(@lc.system_cache_file).to_a.sort
+                 read_cache(@sic.system_cache_file).to_a.sort
     assert_equal [['key', 'usr']],
-                 read_cache(@lc.user_cache_file).to_a.sort
+                 read_cache(@sic.user_cache_file).to_a.sort
   end
 
   def test_write_cache_user
-    FileUtils.chmod 0444, @lc.system_cache_file
-    @lc.cache_data['key'] = 'new'
-    @lc.write_cache
+    FileUtils.chmod 0444, @sic.system_cache_file
+    @sic.cache_data['key'] = 'new'
+    @sic.write_cache
 
-    assert_equal [['key', 'sys']], read_cache(@lc.system_cache_file).to_a.sort
-    assert_equal [['key', 'new']], read_cache(@lc.user_cache_file).to_a.sort
+    assert_equal [['key', 'sys']], read_cache(@sic.system_cache_file).to_a.sort
+    assert_equal [['key', 'new']], read_cache(@sic.user_cache_file).to_a.sort
   end
 
   def test_write_cache_user_from_scratch
-    FileUtils.rm_rf @lc.user_cache_file
-    FileUtils.chmod 0444, @lc.system_cache_file
+    FileUtils.rm_rf @sic.user_cache_file
+    FileUtils.chmod 0444, @sic.system_cache_file
 
-    @lc.cache_data['key'] = 'new'
-    @lc.write_cache
+    @sic.cache_data['key'] = 'new'
+    @sic.write_cache
 
-    assert_equal [['key', 'sys']], read_cache(@lc.system_cache_file).to_a.sort
-    assert_equal [['key', 'new']], read_cache(@lc.user_cache_file).to_a.sort
+    assert_equal [['key', 'sys']], read_cache(@sic.system_cache_file).to_a.sort
+    assert_equal [['key', 'new']], read_cache(@sic.user_cache_file).to_a.sort
   end
 
   def test_write_cache_user_no_directory
-    FileUtils.rm_rf File.dirname(@lc.user_cache_file)
-    FileUtils.chmod 0444, @lc.system_cache_file
+    FileUtils.rm_rf File.dirname(@sic.user_cache_file)
+    FileUtils.chmod 0444, @sic.system_cache_file
 
-    @lc.cache_data['key'] = 'new'
-    @lc.write_cache
+    @sic.cache_data['key'] = 'new'
+    @sic.write_cache
 
-    assert_equal [['key','sys']], read_cache(@lc.system_cache_file).to_a.sort
-    assert_equal [['key','new']], read_cache(@lc.user_cache_file).to_a.sort
+    assert_equal [['key','sys']], read_cache(@sic.system_cache_file).to_a.sort
+    assert_equal [['key','new']], read_cache(@sic.user_cache_file).to_a.sort
   end
 
 end

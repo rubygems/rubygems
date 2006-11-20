@@ -5,11 +5,8 @@
 #++
 
 require 'test/unit'
-require 'rubygems'
-Gem::manage_gems
-require 'net/http'
-require 'yaml'
-require 'test/onegem'
+require 'test/gemutilities'
+require 'rubygems/remote_installer'
 
 class MockFetcher
   def initialize(uri, proxy)
@@ -53,12 +50,23 @@ class MockFetcher
   end
 end
 
-class TestRemoteInstaller < Test::Unit::TestCase
-
-  PROPER_SOURCES = %w( http://gems.rubyforge.org )
+class TestRemoteInstaller < RubyGemTestCase
 
   def setup
+    super
+
     Gem.clear_paths
+
+    util_setup_fake_fetcher
+
+    @cache = Gem::SourceInfoCache.new
+    Gem::SourceInfoCache.instance_variable_set :@cache, @cache
+
+    si = Gem::SourceIndex.new @gem1.full_name => @gem1
+    sice = Gem::SourceInfoCacheEntry.new si, -1
+    cache_data = { 'http://gems.example.com' => sice }
+    @cache.instance_variable_set :@cache_data, cache_data
+
     @installer = Gem::RemoteInstaller.new
     @installer.instance_variable_set("@fetcher_class", MockFetcher)
   end
@@ -69,51 +77,18 @@ class TestRemoteInstaller < Test::Unit::TestCase
 
   def test_find_gem_to_install
     version = Gem::Version::Requirement.new "> 0.0.0"
-    gems = @installer.find_gem_to_install("foo", version,
-                                          @installer.source_index_hash)
+    gems = @installer.find_gem_to_install(@gem1.name, version)
 
-    assert_equal "foo-1.2.3", gems.first.full_name
-  end
-
-  def test_installer_has_proxy_uri
-    proxy = "http://user:pass@proxy.url"
-    @installer.instance_variable_set("@options", {:http_proxy => proxy})
-    MockFetcher.class_eval("alias old_fetch_path fetch_path; def fetch_path(path); raise 'failed' unless @proxy == '#{proxy}'; end")
-    
-    spec = Gem::Specification.new do |s|
-      s.version = "1.0.0"
-      s.name = "boo"
-      s.platform = Gem::Platform::RUBY
-      s.date = Time.now
-      s.summary = "Hello"
-      s.require_paths = ["."]
-    end
-    
-    @installer.download_gem("dest_file", "source", spec)
-  end
-  
-  def test_missing_source_exception
-    @installer.instance_variable_set("@sources", ["http://non.existent.url"])
-    assert_raise(Gem::RemoteSourceException) {
-      info = @installer.source_index_hash
-    }
+    assert_equal @gem1.full_name, gems.first.full_name
   end
 
   def test_source_index_hash
     source_hash = @installer.source_index_hash
 
-    assert source_hash.has_key?("http://gems.rubyforge.org")
     assert_equal 1, source_hash.size
-
-    gem_hash = source_hash['http://gems.rubyforge.org']
-    spec = gem_hash['foo-1.2.3']
-
-    assert_equal 'foo', spec.name
-    assert_equal '1.2.3', spec.version.to_s
-  end
-
-  def test_sources
-    assert_equal PROPER_SOURCES, @installer.sources
+    assert source_hash.has_key?('http://gems.example.com')
+    assert_equal [@gem1],
+                 source_hash['http://gems.example.com'].search(@gem1.name)
   end
 
 end

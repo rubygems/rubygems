@@ -248,6 +248,7 @@ module Gem
       'Use HTTP proxy for remote operations') do 
       |value, options|
       options[:http_proxy] = (value == false) ? :no_proxy : value
+      Gem.configuration[:http_proxy] = options[:http_proxy]
     end
 
     add_common_option('-h', '--help', 

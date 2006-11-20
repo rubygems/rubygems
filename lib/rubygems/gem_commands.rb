@@ -688,7 +688,7 @@ module Gem
       if remote?
         say
         say "*** REMOTE GEMS ***"
-          output_query_results(Gem::RemoteInstaller.new(options).search(options[:name]))
+        output_query_results(Gem::SourceInfoCache.search(options[:name]))
       end
     end
 
@@ -834,7 +834,6 @@ module Gem
       "GEMNAME(s)   name of gem(s) to update"
     end
 
-
     def execute
       if options[:system]
 	say "Updating RubyGems..."
@@ -851,11 +850,7 @@ module Gem
           hig[spec.name] = spec
         end
       end
-      remote_gemspecs = Gem::RemoteInstaller.new(options).search(//)
-      # For some reason, this is an array of arrays.  The actual list
-      # of specifications is the first and only element.  If there
-      # were more remote sources, perhaps there would be more.
-      remote_gemspecs = remote_gemspecs.flatten
+      remote_gemspecs = Gem::SourceInfoCache.search(//)
       gems_to_update =  if(options[:args].empty?) then
                           which_to_update(highest_installed_gems, remote_gemspecs)
                         else
@@ -1088,9 +1083,8 @@ module Gem
       elsif begins?("gempath", arg)
         Gem.path.collect { |p| out << "#{p}\n" }
       elsif begins?("remotesources", arg)
-        Gem::RemoteInstaller.new.sources.collect do |s|
-          out << "#{s}\n"
-        end
+        require 'sources'
+        out << Gem.sources.join("\n") << "\n"
       elsif arg
         fail Gem::CommandLineError, "Unknown enviroment option [#{arg}]"
       else
@@ -1100,7 +1094,8 @@ module Gem
         out << "  - GEM PATH:\n"
         Gem.path.collect { |p| out << "     - #{p}\n" }
         out << "  - REMOTE SOURCES:\n"
-        Gem::RemoteInstaller.new.sources.collect do |s|
+        require 'sources'
+        Gem.sources.collect do |s|
           out << "     - #{s}\n"
         end
       end

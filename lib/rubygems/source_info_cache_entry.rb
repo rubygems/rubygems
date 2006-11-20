@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rubygems/source_index'
+require 'rubygems/remote_fetcher'
 
 ##
 # Entrys held by a SourceInfoCache.
@@ -15,13 +16,15 @@ class Gem::SourceInfoCacheEntry
 
   # Create a cache entry.
   def initialize(si, size)
-    replace_source_index(si, size)
-  end
-
-  # Replace the source index and the index size with given values.
-  def replace_source_index(si, size)
     @source_index = si || Gem::SourceIndex.new({})
     @size = size
+  end
+
+  def refresh(source_uri)
+    remote_size = Gem::RemoteFetcher.fetcher.fetch_size source_uri + '/yaml'
+    return if @size == remote_size
+    @source_index.update source_uri 
+    @size = remote_size
   end
 
 end

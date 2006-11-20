@@ -1,3 +1,17 @@
+2006-11-19  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/*_fetcher.rb: Removed code specific to remote source
+	index updating.
+
+	* lib/rubygems/remote_installer.rb (Gem::RemoteInstaller#search):
+	Moved to Gem::SourceInfoCache#search
+
+	* lib/rubygems/source_info_cache.rb: Taught to update itself
+
+	* lib/rubygems/source_info_cache_entry.rb: Taught to update itself
+
+	* lib/rubygems/source_index.rb: Taught to update itself from a uri.
+
 2006-11-18  Chad Fowler  <chad@chadfowler.com>
 
         * lib/rubygems/installer.rb: Applied Kevin Clark's patch to make

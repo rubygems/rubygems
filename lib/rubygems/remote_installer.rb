@@ -8,8 +8,10 @@ require 'fileutils'
 require 'yaml'
 
 require 'rubygems'
-require 'rubygems/cached_fetcher'
 require 'rubygems/installer'
+require 'rubygems/source_info_cache'
+
+require 'sources'
 
 module Gem
   class DependencyError < Gem::Exception; end
@@ -18,6 +20,7 @@ module Gem
   class RemoteInstallationSkipped < Gem::Exception; end
 
   class RemoteInstaller
+
     include UserInteraction
 
     # <tt>options[:http_proxy]</tt>::
@@ -28,12 +31,8 @@ module Gem
     #   use a proxy
     #
     def initialize(options={})
-      require 'uri'
-
-      # Ensure http_proxy env vars are used if no proxy explicitly supplied.
       @options = options
-      @fetcher_class = CachedFetcher
-      @sources = nil
+      @source_index_hash = nil
     end
 
     # This method will install package_name onto the local system.  
@@ -47,14 +46,14 @@ module Gem
     # Returns::
     #   an array of Gem::Specification objects, one for each gem installed. 
     #
-    def install(gem_name, version_requirement = "> 0.0.0", force=false, install_dir=Gem.dir, install_stub=true)
+    def install(gem_name, version_requirement = "> 0.0.0", force=false,
+                install_dir=Gem.dir, install_stub=true)
       unless version_requirement.respond_to?(:satisfied_by?)
         version_requirement = Version::Requirement.new(version_requirement)
       end
       installed_gems = []
-      caches = source_index_hash
       begin
-        spec, source = find_gem_to_install(gem_name, version_requirement, caches)
+        spec, source = find_gem_to_install(gem_name, version_requirement)
         dependencies = find_dependencies_not_installed(spec.dependencies)
         installed_gems << install_dependencies(dependencies, force, install_dir)
         cache_dir = File.join(install_dir, "cache")
@@ -68,52 +67,24 @@ module Gem
       installed_gems.flatten
     end
 
-    # Search Gem repository for a gem by specifying all or part of
-    # the Gem's name   
-    def search(pattern_to_match)
-      results = []
-      caches = source_index_hash
-      caches.each do |cache|
-        results << cache[1].search(pattern_to_match)
-      end
-      results
-    end
-
-    # Return a list of the sources that we can download gems from
-    def sources
-      return @sources if @sources
-      require 'sources'
-      @sources = Gem.sources
-    end
-    
     # Return a hash mapping the available source names to the source
     # index of that source.
     def source_index_hash
-      result = {}
-      sources.each do |source|
-	result[source] = fetch_source(source)
+      return @source_index_hash if @source_index_hash
+      @source_index_hash = {}
+      Gem::SourceInfoCache.cache_data.each do |source_uri, sic_entry|
+        @source_index_hash[source_uri] = sic_entry.source_index
       end
-      @fetcher_class.finish
-      result
+      @source_index_hash
     end
     
-    # Return the source info for the given source.  The 
-    def fetch_source(source)
-      rsf = @fetcher_class.new(source, @options[:http_proxy])
-      rsf.source_index
-    end
-
     # Find a gem to be installed by interacting with the user.
-    def find_gem_to_install(gem_name, version_requirement, caches)
+    def find_gem_to_install(gem_name, version_requirement)
       specs_n_sources = []
 
-      caches.each do |source, cache|
-        cache.each do |name, spec|
-          if /^#{gem_name}$/i === spec.name &&
-             version_requirement.satisfied_by?(spec.version) then
-            specs_n_sources << [spec, source]
-          end
-        end
+      source_index_hash.each do |source_uri, source_index|
+        specs = source_index.search gem_name, version_requirement
+        specs.each { |spec| specs_n_sources << [spec, source_uri] }
       end
 
       if specs_n_sources.empty? then
@@ -131,16 +102,16 @@ module Gem
       # only non-binary gems...return latest
       return specs_n_sources.first if non_binary_gems.empty?
 
-      list = specs_n_sources.collect { |item|
-	"#{item[0].name} #{item[0].version} (#{item[0].platform.to_s})"
+      list = specs_n_sources.collect { |spec, source_uri|
+        "#{spec.name} #{spec.version} (#{spec.platform})"
       }
 
       list << "Skip this gem"
       list << "Cancel installation"
 
       string, index = choose_from_list(
-	"Select which gem to install for your platform (#{RUBY_PLATFORM})",
-	list)
+        "Select which gem to install for your platform (#{RUBY_PLATFORM})",
+        list)
 
       if index == (list.size - 1) then
         raise RemoteInstallationCancelled, "Installation of #{gem_name} cancelled."
@@ -189,10 +160,9 @@ module Gem
     end
 
     def download_gem(destination_file, source, spec)
-      rsf = @fetcher_class.new(source, @options[:http_proxy])
-      path = "/gems/#{spec.full_name}.gem"
-      response = rsf.fetch_path(path)
-      write_gem_to_file(response, destination_file)
+      uri = source + "/gems/#{spec.full_name}.gem"
+      response = Gem::RemoteFetcher.fetcher.fetch_path uri
+      write_gem_to_file response, destination_file
     end
 
     def write_gem_to_file(body, destination_file)

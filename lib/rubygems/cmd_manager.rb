@@ -60,6 +60,7 @@ module Gem
       register_command SearchCommand.new
       register_command UpdateCommand.new
       register_command CleanupCommand.new
+      register_command PristineCommand.new
       register_command RDocCommand.new
       register_command EnvironmentCommand.new
       register_command SpecificationCommand.new

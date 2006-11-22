@@ -130,6 +130,23 @@ module Gem
       self
     end
 
+    # Returns a Hash of name => Specification of the latest versions of each
+    # gem in this index.
+    def latest_specs
+      thin = {}
+
+      each do |full_name, spec|
+        name = spec.name
+        if thin.has_key? name then
+          thin[name] = spec if spec.version > thin[name].version
+        else
+          thin[name] = spec
+        end
+      end
+
+      thin
+    end
+
     # Add a gem specification to the source index.
     def add_spec(gem_spec)
       @gems[gem_spec.full_name] = gem_spec

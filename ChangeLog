@@ -1,4 +1,11 @@
-2006-11-20  Rich Kilmer <rich@infoether.com>
+2006-11-21  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_index (Gem::SourceIndex#latest_specs):  Grab
+	the latest versions of everything in the index.  Written by Ryan
+	Davis.
+
+2006-11-20  Rich Kilmer  <rich@infoether.com>
+
 	* lib/rubygems/cmd_manager.rb: Added PristineCommand
 
 	* lib/rubygems/gem_commands.rb: Added PristineCommand to restore

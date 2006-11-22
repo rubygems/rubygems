@@ -102,6 +102,18 @@ class TestSourceIndex < RubyGemTestCase
     assert_equal [], missing
   end
 
+  def test_latest_specs
+    spec = quick_gem @gem1.name, '0.0.1'
+    @source_index.add_spec spec
+
+    expected = {
+      @gem1.name => @gem1,
+      @gem2.name => @gem2,
+    }
+
+    assert_equal expected, @source_index.latest_specs
+  end
+
   def test_reduce_specs
     specs = YAML.load @source_index.reduce_specs([@gem1].to_yaml)
     assert_equal [], specs.first.files

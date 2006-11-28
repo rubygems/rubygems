@@ -1,6 +1,12 @@
+2006-11-27  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb
+	(Gem::Specification#default_executable):  Fixed bug where @executables
+	could be nil when loaded from index.
+
 2006-11-21  Eric Hodel  <drbrain@segment7.net>
 
-	* lib/rubygems/source_index (Gem::SourceIndex#latest_specs):  Grab
+	* lib/rubygems/source_index.rb (Gem::SourceIndex#latest_specs):  Grab
 	the latest versions of everything in the index.  Written by Ryan
 	Davis.
 

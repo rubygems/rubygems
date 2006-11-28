@@ -249,6 +249,12 @@ class TestSpecification < RubyGemTestCase
     assert_equal Time.local(2003, 9, 17, 0,0,0), @spec.date
   end
 
+  def test_default_executable
+    @spec.default_executable = nil
+    @spec.instance_variable_set :@executables, nil
+    assert_equal nil, @spec.default_executable
+  end
+
   def test_to_ruby
     today = Time.now.strftime("%Y-%m-%d")
     ruby = "Gem::Specification.new do |s|

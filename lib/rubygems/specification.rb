@@ -339,7 +339,7 @@ module Gem
       return @default_executable if @default_executable
       # Special case: if there is only one executable specified, then
       # that's obviously the default one.
-      return @executables.first if @executables.size == 1
+      return @executables.first if @executables and @executables.size == 1
       nil
     end
 

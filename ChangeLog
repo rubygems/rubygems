@@ -1,3 +1,7 @@
+2006-11-30  Chad Fowler <chad@chadfowler.com>
+
+       * lib/rubygems/open-uri.rb: Removed the duplicated library.
+
 2006-11-30  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb: Return extension-building results in

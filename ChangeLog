@@ -1,3 +1,27 @@
+2006-11-29  Eric Hodel  <drbrain@segment7.net>
+
+	* post-install.rb: Now requires rbconfig.
+
+	* lib/rubygems/specification.rb, lib/rubygems/version.rb: Fixed many
+	ivar warnings due to YAML specs.
+
+	* lib/rubygems/validator.rb, lib/rubygems/validator.rb
+	(Gem::Validator#unit_test Gem::RemoteInstaller::): Ensure the
+	current directory is restored.
+
+	* lib/rubygems/remote_fetcher.rb, lib/rubygems/remote_installer.rb,
+	lib/rubygems/installer.rb: Raise more-friendly and less-deadly errors.
+
+	* lib/rubygems/remote_installer.rb (Gem::RemoteInstaller#install):
+	Create version requirement correctly.
+
+	* lib/rubygems/remote_installer.rb
+	(Gem::RemoteInstaller#find_gem_to_install): Allow RemoteInstaller to
+	work with SilentUI.
+
+	* lib/rubygems/remote_fetcher.rb (RemoteFetcher#open_uri_or_path):
+	Don't double-require open-uri.
+
 2006-11-27  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb

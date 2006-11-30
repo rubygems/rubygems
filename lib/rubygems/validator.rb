@@ -144,8 +144,9 @@ module Gem
           #Gem::Uninstaller.new(gem_spec.name, gem_spec.version.version).uninstall
         #end
       end
-      Dir.chdir(start_dir)
       result
+    ensure
+      Dir.chdir(start_dir)
     end
 
     def remove_leading_dot_dir(path)

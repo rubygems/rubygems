@@ -49,7 +49,7 @@ module Gem
     def install(gem_name, version_requirement = "> 0.0.0", force=false,
                 install_dir=Gem.dir, install_stub=true)
       unless version_requirement.respond_to?(:satisfied_by?)
-        version_requirement = Version::Requirement.new(version_requirement)
+        version_requirement = Version::Requirement.new [version_requirement]
       end
       installed_gems = []
       begin
@@ -113,7 +113,7 @@ module Gem
         "Select which gem to install for your platform (#{RUBY_PLATFORM})",
         list)
 
-      if index == (list.size - 1) then
+      if index.nil? or index == (list.size - 1) then
         raise RemoteInstallationCancelled, "Installation of #{gem_name} cancelled."
       end
 

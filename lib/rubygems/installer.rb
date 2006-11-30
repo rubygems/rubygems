@@ -9,6 +9,8 @@ require 'rbconfig'
 require 'rubygems/format'
 require 'rubygems/dependency_list'
 
+class Gem::InstallError < Gem::Exception; end
+
 module Gem
 
   class DependencyRemovalException < Gem::Exception; end
@@ -63,7 +65,7 @@ module Gem
         # Check the Ruby version.
         if (rrv = spec.required_ruby_version)
           unless rrv.satisfied_by?(Gem::Version.new(RUBY_VERSION))
-            raise "#{spec.name} requires Ruby version #{rrv}"
+            raise Gem::InstallError, "#{spec.name} requires Ruby version #{rrv}"
           end
         end
  	unless @options[:ignore_dependencies]
@@ -96,6 +98,8 @@ module Gem
 
       format.spec.loaded_from = File.join(install_dir, 'specifications', format.spec.full_name+".gemspec")
       return format.spec
+    rescue Zlib::GzipFile::Error
+      raise InstallError, "gzip error installing #{@gem}"
     end
 
     ##
@@ -106,7 +110,7 @@ module Gem
     # spec       :: Gem::Specification
     # dependency :: Gem::Dependency
     def ensure_dependency!(spec, dependency)
-      raise "#{spec.name} requires #{dependency.name} #{dependency.version_requirements} " unless
+      raise Gem::InstallError, "#{spec.name} requires #{dependency.name} #{dependency.version_requirements} " unless
 	installation_satisfies_dependency?(dependency)
     end
 
@@ -325,16 +329,17 @@ TEXT
           results = builder.build(extension, directory, dest_path, results)
         rescue => ex
           err = true
+        ensure
+          Dir.chdir start_dir
         end
 
         say results.join("\n")
         File.open('gem_make.out', 'wb') {|f| f.puts results.join("\n")}
 
         if err
-          raise "ERROR: Failed to build gem native extension.\nGem files will remain installed in #{directory} for inspection.\n  #{results.join('\n')}\n\nResults logged to #{File.join(Dir.pwd, 'gem_make.out')}"
+          raise Gem::InstallError, "ERROR: Failed to build gem native extension.\nGem files will remain installed in #{directory} for inspection.\n  #{results.join('\n')}\n\nResults logged to #{File.join(Dir.pwd, 'gem_make.out')}"
 		end
       end
-      Dir.chdir start_dir
     end
     
     ##
@@ -396,7 +401,7 @@ TEXT
       require 'fileutils'
       list = Gem.source_index.search(@gem, @version)
       if list.empty?
-        raise "Unknown RubyGem: #{@gem} (#{@version})"
+        raise Gem::InstallError, "Unknown gem #{@gem}-#{@version}"
       elsif list.size > 1 && @force_all
 	remove_all(list.dup) 
 	remove_executables(list.last)
@@ -404,7 +409,7 @@ TEXT
         say 
         gem_names = list.collect {|gem| gem.full_name} + ["All versions"]
         gem_name, index =
-	  choose_from_list("Select RubyGem to uninstall:", gem_names)
+	  choose_from_list("Select gem to uninstall:", gem_names)
         if index == list.size
           remove_all(list.dup) 
           remove_executables(list.last)
@@ -584,7 +589,7 @@ TEXT
     end
 
     def self.make(dest_path, results)
-      raise unless File.exist?('Makefile')
+      raise Gem::InstallError unless File.exist?('Makefile')
       mf = File.read('Makefile')
       mf = mf.gsub(/^RUBYARCHDIR\s*=\s*\$[^$]*/, "RUBYARCHDIR = #{dest_path}")
       mf = mf.gsub(/^RUBYLIBDIR\s*=\s*\$[^$]*/, "RUBYLIBDIR = #{dest_path}")
@@ -599,7 +604,7 @@ TEXT
         results << "#{make_program} #{target}".strip
         results << `#{make_program} #{target}`
 
-        raise unless $?.exitstatus.zero?
+        raise Gem::InstallError unless $?.exitstatus.zero?
       end
     end
 
@@ -613,7 +618,7 @@ TEXT
       results << "#{make_program} extension".strip
       results << `#{make_program} extension`
 
-      raise unless $?.exitstatus.zero?
+      raise Gem::InstallError unless $?.exitstatus.zero?
 
       results
     end

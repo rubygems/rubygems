@@ -17,6 +17,8 @@ class Gem::RemoteSourceException < Gem::Exception; end
 
 class Gem::RemoteFetcher
 
+  class FetchError < Gem::Exception; end
+
   @fetcher = nil
 
   # Cached RemoteFetcher instance.
@@ -44,16 +46,16 @@ class Gem::RemoteFetcher
 
   # Downloads +uri+.
   def fetch_path(uri)
-    begin
-      open_uri_or_path(uri) do |input|
-        input.read
-      end
-    rescue
-      old_uri = uri
-      uri = uri.downcase
-      retry if old_uri != uri
-      raise
+    open_uri_or_path(uri) do |input|
+      input.read
     end
+  rescue Timeout::Error
+    raise FetchError, "timed out fetching #{uri}"
+  rescue
+    old_uri = uri
+    uri = uri.downcase
+    retry if old_uri != uri
+    raise
   end
 
   # Returns the size of +uri+ in bytes.
@@ -109,7 +111,7 @@ class Gem::RemoteFetcher
   # Read the data from the (source based) URI, but if it is a file:// URI,
   # read from the filesystem instead.
   def open_uri_or_path(uri, &block)
-    require 'rubygems/open-uri'
+    require 'rubygems/open-uri' unless defined? OpenURI
     if is_file_uri(uri)
       open(get_file_uri_path(uri), &block)
     else

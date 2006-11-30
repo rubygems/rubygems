@@ -10,7 +10,9 @@ module Gem
   # The Dependency class holds a Gem name and Version::Requirement
   #
   class Dependency
-    attr_accessor :name, :version_requirements
+    attr_accessor :name
+
+    attr_writer :version_requirements
 
     def <=>(other)
       [@name] <=> [other.name]
@@ -28,9 +30,8 @@ module Gem
       @version_requirement = nil   # Avoid warnings.
     end
 
-    undef version_requirements
     def version_requirements
-      normalize if @version_requirement
+      normalize if defined? @version_requirement and @version_requirement
       @version_requirements
     end
 
@@ -263,7 +264,7 @@ module Gem
     end
     
     def normalize
-      return if @version.nil?
+      return if not defined? @version or @version.nil?
       @requirements = [parse(@version)]
       @nums = nil
       @version = nil

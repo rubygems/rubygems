@@ -111,7 +111,7 @@ class Gem::RemoteFetcher
   # Read the data from the (source based) URI, but if it is a file:// URI,
   # read from the filesystem instead.
   def open_uri_or_path(uri, &block)
-    require 'rubygems/open-uri' unless defined? OpenURI
+    require 'open-uri'
     if is_file_uri(uri)
       open(get_file_uri_path(uri), &block)
     else

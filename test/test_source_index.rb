@@ -44,7 +44,7 @@ class TestSourceIndex < RubyGemTestCase
     util_setup_bulk_fetch true
     use_ui MockGemUi.new do
       fetched_index = @source_index.fetch_bulk_index @uri
-      assert_equal [@gem1.full_name, @gem2.full_name].sort,
+      assert_equal [@gem1.full_name, @gem4.full_name, @gem2.full_name].sort,
                    fetched_index.gems.map { |n,s| n }.sort
     end
   end
@@ -67,7 +67,7 @@ class TestSourceIndex < RubyGemTestCase
     util_setup_bulk_fetch false
     use_ui MockGemUi.new do
       fetched_index = @source_index.fetch_bulk_index @uri
-      assert_equal [@gem1.full_name, @gem2.full_name].sort,
+      assert_equal [@gem1.full_name, @gem4.full_name, @gem2.full_name].sort,
                    fetched_index.gems.map { |n,s| n }.sort
     end
   end
@@ -77,7 +77,7 @@ class TestSourceIndex < RubyGemTestCase
     @fetcher.data['http://gems.example.com/quick/index.rz'] = quick_index
 
     quick_index = @source_index.fetch_quick_index @uri
-    assert_equal [@gem1.full_name, @gem2.full_name].sort,
+    assert_equal [@gem1.full_name, @gem4.full_name, @gem2.full_name].sort,
                  quick_index.sort
   end
 
@@ -109,6 +109,7 @@ class TestSourceIndex < RubyGemTestCase
     expected = {
       @gem1.name => @gem1,
       @gem2.name => @gem2,
+      @gem4.name => @gem4
     }
 
     assert_equal expected, @source_index.latest_specs
@@ -131,17 +132,11 @@ class TestSourceIndex < RubyGemTestCase
   end
 
   def test_search
-    assert_equal [@gem1], @source_index.search("gem_one")
+    assert_equal [@gem1, @gem4], @source_index.search("gem_one")
     assert_equal [@gem1], @source_index.search("gem_one", "= 0.0.2")
 
     assert_equal [], @source_index.search("bogusstring")
     assert_equal [], @source_index.search("gem_one", "= 3.2.1")
-
-    assert_equal([@gem1], @source_index.search("GEm_one"),
-      %{This is failing because we have duplication between remote_installer and } + 
-      %{source_index.rb.  We should factor remote_installer's search logic out } +
-      %{into source_index.rb's search and delegate from remote_installer to } +
-      %{source_index.rb})
   end
 
   def test_search_empty_cache

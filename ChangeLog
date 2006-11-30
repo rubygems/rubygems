@@ -1,3 +1,12 @@
+2006-11-30  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/installer.rb: Return extension-building results in
+	Exception on build failure.
+
+	* lib/rubygems/remote_installer.rb: Ensure gems with similar names
+	cannot be matched for install.  (Broken when searching was removed
+	from RemoteInstaller.)
+
 2006-11-29  Eric Hodel  <drbrain@segment7.net>
 
 	* post-install.rb: Now requires rbconfig.

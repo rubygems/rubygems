@@ -78,20 +78,30 @@ module Gem
       @source_index_hash
     end
     
-    # Find a gem to be installed by interacting with the user.
-    def find_gem_to_install(gem_name, version_requirement)
+    # Finds the Gem::Specification objects and the corresponding source URI
+    # for gems matching +gem_name+ and +version_requirement+
+    def specs_n_sources_matching(gem_name, version_requirement)
       specs_n_sources = []
 
       source_index_hash.each do |source_uri, source_index|
-        specs = source_index.search gem_name, version_requirement
+        specs = source_index.search(/^#{Regexp.escape gem_name}$/i,
+                                    version_requirement)
         specs.each { |spec| specs_n_sources << [spec, source_uri] }
       end
 
       if specs_n_sources.empty? then
-        raise GemNotFoundException.new("Could not find #{gem_name} (#{version_requirement}) in the repository")
+        raise GemNotFoundException, "Could not find #{gem_name} (#{version_requirement}) in any repository"
       end
 
       specs_n_sources = specs_n_sources.sort_by { |gs,| gs.version }.reverse
+
+      specs_n_sources
+    end
+
+    # Find a gem to be installed by interacting with the user.
+    def find_gem_to_install(gem_name, version_requirement)
+      specs_n_sources = specs_n_sources_matching gem_name, version_requirement
+
       top_3_versions = specs_n_sources.map{|gs| gs.first.version}.uniq[0..3]
       specs_n_sources.reject!{|gs| !top_3_versions.include?(gs.first.version)}
 

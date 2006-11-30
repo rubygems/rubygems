@@ -573,6 +573,8 @@ TEXT
         cmd = "sh ./configure --prefix=#{dest_path}"
         results << cmd
         results << `#{cmd}`
+
+        raise Gem::InstallError, "configure failed:\n\n#{results}" unless $?.exitstatus.zero?
       end
 
       ExtExtConfBuilder.make(dest_path, results)
@@ -604,7 +606,7 @@ TEXT
         results << "#{make_program} #{target}".strip
         results << `#{make_program} #{target}`
 
-        raise Gem::InstallError unless $?.exitstatus.zero?
+        raise Gem::InstallError, "Extension building failed:\n\n#{results}" unless $?.exitstatus.zero?
       end
     end
 
@@ -618,7 +620,7 @@ TEXT
       results << "#{make_program} extension".strip
       results << `#{make_program} extension`
 
-      raise Gem::InstallError unless $?.exitstatus.zero?
+      raise Gem::InstallError, "Extension building failed:\n\n#{results}" unless $?.exitstatus.zero?
 
       results
     end

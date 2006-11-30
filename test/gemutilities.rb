@@ -140,9 +140,17 @@ class RubyGemTestCase < Test::Unit::TestCase
       gem.files = %w[Rakefile lib/gem_three.rb]
     end
 
-    @gem_names = [@gem1.full_name, @gem2.full_name].sort.join("\n")
+    # this gem has a higher version and longer name than the gem we want
+    @gem4 = quick_gem 'gem_one_evil', '666' do |gem|
+      gem.files = %w[Rakefile lib/gem_one.rb]
+    end
+
+    gem_names = [@gem1.full_name, @gem2.full_name, @gem4.full_name]
+    @gem_names = gem_names.sort.join("\n")
+
     @source_index = Gem::SourceIndex.new @gem1.full_name => @gem1,
-                                         @gem2.full_name => @gem2
+                                         @gem2.full_name => @gem2,
+                                         @gem4.full_name => @gem4
 
     Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
   end

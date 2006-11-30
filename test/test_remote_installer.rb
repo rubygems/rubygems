@@ -62,7 +62,8 @@ class TestRemoteInstaller < RubyGemTestCase
     @cache = Gem::SourceInfoCache.new
     Gem::SourceInfoCache.instance_variable_set :@cache, @cache
 
-    si = Gem::SourceIndex.new @gem1.full_name => @gem1
+    si = Gem::SourceIndex.new @gem1.full_name => @gem1,
+                              @gem4.full_name => @gem4
     sice = Gem::SourceInfoCacheEntry.new si, -1
     cache_data = { 'http://gems.example.com' => sice }
     @cache.instance_variable_set :@cache_data, cache_data
@@ -87,8 +88,18 @@ class TestRemoteInstaller < RubyGemTestCase
 
     assert_equal 1, source_hash.size
     assert source_hash.has_key?('http://gems.example.com')
-    assert_equal [@gem1],
+    assert_equal [@gem1, @gem4],
                  source_hash['http://gems.example.com'].search(@gem1.name)
+  end
+
+  def test_specs_n_sources_matching
+    version = Gem::Version::Requirement.new "> 0.0.0"
+    specs_n_sources = @installer.specs_n_sources_matching @gem1.name, version
+
+    gems = specs_n_sources.map { |g,| g.full_name }
+
+    assert_equal [@gem1.full_name], gems,
+                 "Gems with longer names and higher versions must not match"
   end
 
 end

@@ -9,10 +9,10 @@ require 'fileutils'
 require 'test/unit/testcase'
 require 'tmpdir'
 require 'uri'
+require 'open-uri'
 
 require 'test/yaml_data'
 require 'test/mockgemui'
-require 'rubygems/open-uri'
 
 module Utilities
   def make_cache_area(path, *uris)

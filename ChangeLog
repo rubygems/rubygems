@@ -4,6 +4,9 @@
 
 2006-11-30  Eric Hodel  <drbrain@segment7.net>
 
+	* lib/rubygems/specification (Gem::Specification#eql?): Allow gemspecs
+	to be used intelligently with Array#- and Array#uniq.
+
 	* lib/rubygems/installer.rb: Return extension-building results in
 	Exception on build failure.
 

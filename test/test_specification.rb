@@ -274,7 +274,16 @@ end
 
 end
 
-class TestSpecificationEquality < Test::Unit::TestCase
+class TestSpecificationEquality < RubyGemTestCase
+
+  def test_eql_eh
+    g1 = quick_gem 'gem'
+    g2 = quick_gem 'gem'
+
+    assert_equal g1, g2
+    assert_equal g1.hash, g2.hash
+    assert_equal true, g1.eql?(g2)
+  end
 
   def test_equals_is_true_on_same_specification
     s = Gem::Specification.new

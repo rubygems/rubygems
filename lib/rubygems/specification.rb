@@ -531,9 +531,11 @@ module Gem
     end
 
     # Tests specs for equality (across all attributes).
-    def ==(other)
+    def ==(other) # :nodoc:
       other.kind_of?(self.class) && same_attributes?(other)
     end
+
+    alias eql? == # :nodoc:
 
     def same_attributes?(other)
       @@attributes.each do |name, default|
@@ -543,7 +545,7 @@ module Gem
     end
     private :same_attributes?
 
-    def hash
+    def hash # :nodoc:
       @@attributes.inject(0) { |hash_code, (name, default_value)|
         n = self.send(name).hash
         hash_code + n

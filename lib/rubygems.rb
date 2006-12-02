@@ -336,6 +336,13 @@ module Gem
       nil
     end
 
+    def suffixes
+      ['', '.rb', '.rbw', '.so', '.bundle', '.dll', '.sl', '.jar']
+    end
+
+    def suffix_pattern
+      @suffix_pattern ||= "{#{suffixes.join(',')}}"
+    end
 
     private
     

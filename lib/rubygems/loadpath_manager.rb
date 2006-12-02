@@ -102,10 +102,10 @@ module Gem
 
     private
 
-    SUFFIX_PATTERN = "{,.rb,.so,.bundle,.dll,.sl,.jar}"
-
     def self.glob_over(list, file)
-      files = Dir.glob("{#{(list).join(',')}}/#{file}#{SUFFIX_PATTERN}").map{|x| Marshal.load(Marshal.dump(x))}
+      files = Dir.glob("{#{(list).join(',')}}/#{file}#{Gem.suffix_pattern}").map{ |x|
+        Marshal.load(Marshal.dump(x))
+      }
       files.delete_if { |f| File.directory?(f) }
     end
     

@@ -1,5 +1,10 @@
 2006-12-02  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems.rb (Gem::OperationNotSupportedError::suffixes,
+	Gem::OperationNotSupportedError::suffix_pattern): Removed
+	duplicate copies of the SUFFIX_PATTERN by providing a global
+	method Gem.suffixes and Gem.suffix_pattern.
+
 	* lib/rubygems/remote_fetcher.rb (Gem::open_uri_or_path): Reworked
 	the connection options for the open-uri call.  Since we are not
 	using the rubygems supplied open_uri, we can use some new options

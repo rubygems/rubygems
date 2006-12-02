@@ -1,3 +1,29 @@
+2006-12-02  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/remote_fetcher.rb (Gem::open_uri_or_path): Reworked
+	the connection options for the open-uri call.  Since we are not
+	using the rubygems supplied open_uri, we can use some new options
+	available that make proxy handling much easier.
+	(Gem::file_uri): Renamed is_file_uri to file_uri?.
+
+	* lib/rubygems/loadpath_manager.rb (Gem::LoadPathManager::self):
+	Added .jar to list of suffixes.
+
+	* test/functional.rb (FunctionalTest::test_env_remotesources):
+	Changed test to uses Gem.sources (the sources method on
+	remote_fetcher was removed).
+
+	* test/test_remote_fetcher.rb (TestRemoteFetcher): Renamed some of
+	the test constants and instance variables so that they were more
+	consistent and explained the tests a wee bit better.
+	(TestRemoteFetcher::test_no_proxy): Added assert_data_from_server
+	and assert_data_from_proxy to make it clear what the test was
+	doing and give better error messages on errors.
+	(TestRemoteFetcher::assert_data_from_server): Added
+	assert_data_from_server.
+	(TestRemoteFetcher::assert_data_from_proxy): Added
+	assert_data_from_proxy.
+
 2006-11-30  Chad Fowler <chad@chadfowler.com>
 
        * lib/rubygems/open-uri.rb: Removed the duplicated library.

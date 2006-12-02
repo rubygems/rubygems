@@ -60,7 +60,7 @@ class Gem::RemoteFetcher
 
   # Returns the size of +uri+ in bytes.
   def fetch_size(uri)
-    return File.size(get_file_uri_path(uri)) if is_file_uri(uri)
+    return File.size(get_file_uri_path(uri)) if file_uri?(uri)
     require 'net/http'
     require 'uri'
     u = URI.parse(uri)
@@ -87,7 +87,7 @@ class Gem::RemoteFetcher
     env_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
     uri = env_proxy ? URI.parse(env_proxy) : nil
     if uri and uri.user.nil? and uri.password.nil? then
-      #Probably we have http_proxy_* variables?
+      # Probably we have http_proxy_* variables?
       uri.user = escape(ENV['http_proxy_user'] || ENV['HTTP_PROXY_USER'])
       uri.password = escape(ENV['http_proxy_pass'] || ENV['HTTP_PROXY_PASS'])
     end
@@ -112,21 +112,19 @@ class Gem::RemoteFetcher
   # read from the filesystem instead.
   def open_uri_or_path(uri, &block)
     require 'open-uri'
-    if is_file_uri(uri)
+    if file_uri?(uri)
       open(get_file_uri_path(uri), &block)
     else
-      connection_options = {"User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}"}
-      if @proxy_uri
-        http_proxy_url = "#{@proxy_uri.scheme}://#{@proxy_uri.host}:#{@proxy_uri.port}"  
-        connection_options[:proxy_http_basic_authentication] = [http_proxy_url, unescape(@proxy_uri.user)||'', unescape(@proxy_uri.password)||'']
-      end
-
+      connection_options = {
+        "User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}",
+        :proxy => @proxy_uri,
+      }
       open(uri, connection_options, &block)
     end
   end
 
   # Checks if the provided string is a file:// URI.
-  def is_file_uri(uri)
+  def file_uri?(uri)
     uri =~ %r{\Afile://}
   end
 

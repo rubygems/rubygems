@@ -137,9 +137,9 @@ module Gem
     def find_dependencies_not_installed(dependencies)
       to_install = []
       dependencies.each do |dependency|
-	srcindex = Gem::SourceIndex.from_installed_gems
-	matches = srcindex.find_name(dependency.name, dependency.requirement_list)
-	to_install.push dependency if matches.empty?
+        srcindex = Gem::SourceIndex.from_installed_gems
+        matches = srcindex.find_name(dependency.name, dependency.requirement_list)
+        to_install.push dependency if matches.empty?
       end
       to_install
     end

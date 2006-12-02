@@ -67,7 +67,7 @@ class FunctionalTest < Test::Unit::TestCase
 
   def test_env_remotesources
     gem_nossl 'environment remotesources'
-    assert_equal Gem::RemoteInstaller.new.sources, @out.chomp.split("\n")
+    assert_equal Gem.sources, @out.chomp.split("\n")
   end
 
   def test_build
@@ -94,7 +94,9 @@ class FunctionalTest < Test::Unit::TestCase
     assert_equal "Test GEM One", spec.summary
   end
 
-  def test_bogus_source_hoses_up_remote_install_but_gem_command_gives_decent_error_message
+  # This test is disabled because of the insanely long time it takes
+  # to time out.
+  def xtest_bogus_source_hoses_up_remote_install_but_gem_command_gives_decent_error_message
     @ruby_options << " -rtest/bogussources"
     gem_nossl "install asdf --remote"
     assert_match(/error/im, @err)

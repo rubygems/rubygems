@@ -1,3 +1,11 @@
+2006-12-03  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/remote_installer.rb (Gem::RemoteInstaller#install):
+	Add :cache_dir option to override the default.
+
+	* lib/rubygems/remote_installer.rb (Gem::RemoteInstaller#download_gem): 
+	Check cache to see if the gem has been cached before downloading.
+
 2006-12-02  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems.rb (Gem::OperationNotSupportedError::suffixes,

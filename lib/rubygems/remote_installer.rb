@@ -30,6 +30,7 @@ module Gem
     # * <tt>:no_proxy</tt>: ignore environment variables and _don't_
     #   use a proxy
     #
+    # * <tt>:cache_dir</tt>: override where downloaded gems are cached.
     def initialize(options={})
       @options = options
       @source_index_hash = nil
@@ -55,10 +56,14 @@ module Gem
       begin
         spec, source = find_gem_to_install(gem_name, version_requirement)
         dependencies = find_dependencies_not_installed(spec.dependencies)
+
         installed_gems << install_dependencies(dependencies, force, install_dir)
-        cache_dir = File.join(install_dir, "cache")
+
+        cache_dir = @options[:cache_dir] || File.join(install_dir, "cache")
         destination_file = File.join(cache_dir, spec.full_name + ".gem")
+
         download_gem(destination_file, source, spec)
+
         installer = new_installer(destination_file)
         installed_gems.unshift installer.install(force, install_dir, install_stub)
       rescue RemoteInstallationSkipped => e
@@ -170,6 +175,7 @@ module Gem
     end
 
     def download_gem(destination_file, source, spec)
+      return if File.exist? destination_file
       uri = source + "/gems/#{spec.full_name}.gem"
       response = Gem::RemoteFetcher.fetcher.fetch_path uri
       write_gem_to_file response, destination_file

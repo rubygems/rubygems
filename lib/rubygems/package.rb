@@ -503,7 +503,7 @@ class TarInput
                     @metadata = load_gemspec(gzis)
                     has_meta = true
                 ensure
-                    gzis.close
+                    gzis.close unless gzis.nil?
                 end
             when 'metadata.gz.sig'
               meta_sig = entry.read

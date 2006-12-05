@@ -79,6 +79,9 @@ class TestGemSourceInfoCache < RubyGemTestCase
   def test_cache_data_none_readable
     FileUtils.chmod 0222, @sic.system_cache_file
     FileUtils.chmod 0222, @sic.user_cache_file
+    return if (File.stat(@sic.system_cache_file).mode & 0222) != 0222
+    return if (File.stat(@sic.user_cache_file).mode & 0222) != 0222
+    # HACK for systems that don't support chmod
     assert_equal({}, @sic.cache_data)
   end
 

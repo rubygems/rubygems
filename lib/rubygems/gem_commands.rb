@@ -445,7 +445,7 @@ module Gem
       super('dependency',
 	'Show the dependencies of an installed gem',
 	{:version=>"> 0"})
-      add_version_option('uninstall')
+      add_version_option('dependency')
       add_option('-r', '--[no-]reverse-dependencies',
 	'Include reverse dependencies in the output'
 	) do |value, options|

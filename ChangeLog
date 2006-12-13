@@ -1,5 +1,9 @@
 2006-12-13  Eric Hodel  <drbrain@segment7.net>
 
+	* pre-install.rb.rb, post-install.rb: Don't call manage gems because
+	we don't have sources installed yet.  Bump version requirement to
+	1.8.2 since rubygems/open-uri.rb was removed.  Should fix bug #6206.
+
 	* lib/rubygems/installer.rb (Gem::Installer#build_extensions): Capture
 	stderr into results when building extensions.
 

@@ -69,7 +69,8 @@ end
 def install_sources
   $: << "lib"
   require 'rubygems'
-  Gem::manage_gems
+  require 'rubygems/builder'
+  require 'rubygems/installer'
   Dir.chdir("pkgs/sources") do
     load "sources.gemspec"
     spec = Gem.sources_spec

@@ -68,6 +68,8 @@ class Gem::RemoteFetcher
     resp = http.head(u.request_uri)
     raise Gem::RemoteSourceException, "HTTP Response #{resp.code}" if resp.code !~ /^2/
     resp['content-length'].to_i
+  rescue SocketError, SystemCallError, Timeout::Error => e
+    raise FetchError, "#{e.message}(#{e.class})"
   end
 
   private

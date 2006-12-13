@@ -1423,7 +1423,7 @@ module Gem
 	end.flatten
 	
 	if s.empty?
-          s = File.join Gem.dir, 'specifications'
+          s = Gem::SourceIndex.installed_spec_directories
 	  path_kind = "default gem paths"
 	  system = true
 	else
@@ -1433,20 +1433,14 @@ module Gem
 
 	si = Gem::SourceIndex.from_gems_in(*s)
 
-	gem_spec = si.search(gem, version).first
+        gem_spec = si.search(gem, version).last
 	unless gem_spec
 	  io.puts "Unable to find gem '#{gem}' in #{path_kind}"
 	  if options[:verbose]
 	    io.puts "\nDirectories searched:"
-	    if system
-	      Gem.path.each do |p|
-		io.puts p
-	      end
-	    else
-	      s.each do |p|
-		io.puts p
-	      end
-	    end
+            s.each do |p|
+              io.puts p
+            end
 	  end
 	  return
 	end

@@ -1391,25 +1391,28 @@ module Gem
   ####################################################################
   class ContentsCommand < Command
     include CommandAids
+    include VersionOption
     def initialize
-      super('contents','Display the contents of the installed gems', {:list => true, :specdirs => [] })
+      super(
+        'contents',
+        'Display the contents of the installed gems',
+        { :list => true, :specdirs => [] })
+
+      add_version_option('contents')
+
       add_option("-l","--list",'List the files inside a Gem') do |v,o|
 	o[:list] = true
-      end
-      
-      add_option("-V","--version","Specify version for gem to view") do |v,o|
-	o[:version] = v
       end
       
       add_option('-s','--spec-dir a,b,c', Array, "Search for gems under specific paths") do |v,o|
 	o[:specdirs] = v
       end
       
-      add_option('-v','--verbose','Be verbose when showing status') do |v,o|
+      add_option('-V','--verbose','Be verbose when showing status') do |v,o|
 	o[:verbose] = v
       end
     end
-    
+
     def execute(io=STDOUT)
       if options[:list]
 	version = options[:version] || "> 0.0.0"
@@ -1420,15 +1423,16 @@ module Gem
 	end.flatten
 	
 	if s.empty?
+          s = File.join Gem.dir, 'specifications'
 	  path_kind = "default gem paths"
 	  system = true
 	else
 	  path_kind = "specified path"
 	  system = false
 	end
-	
+
 	si = Gem::SourceIndex.from_gems_in(*s)
-	
+
 	gem_spec = si.search(gem, version).first
 	unless gem_spec
 	  io.puts "Unable to find gem '#{gem}' in #{path_kind}"

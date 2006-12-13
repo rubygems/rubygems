@@ -1,5 +1,9 @@
 2006-12-13  Eric Hodel  <drbrain@segment7.net>
 
+	* lib/rubygems/gem_commands.rb (Gem::ContentsCommand): Allow version
+	to be passed to gem contents.  Not backwards compatible, -v now -V and
+	vice versa.  Fixes bug 2723.
+
 	* lib/rubygems/gem_commands.rb (Gem::InstallCommand#execute): Allow
 	install errors to result in non-zero exit code.  Fixes bug #2773.
 

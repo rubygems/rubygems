@@ -249,6 +249,8 @@ module Gem
             say " -> Local installation can't proceed: #{e.message}"
           rescue Gem::LoadError => e
             say " -> Local installation can't proceed due to LoadError: #{e.message}"
+          rescue Gem::InstallError => e
+            raise "Error instaling #{gem_name}:\n\t#{e.message}"
           rescue => e
 	    # TODO: Fix this handle to allow the error to propagate to
 	    # the top level handler.  Examine the other errors as

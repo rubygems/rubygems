@@ -334,11 +334,13 @@ TEXT
         end
 
         say results.join("\n")
-        File.open('gem_make.out', 'wb') {|f| f.puts results.join("\n")}
+        File.open(File.join(directory, 'gem_make.out'), 'wb') do |f|
+          f.puts results.join("\n")
+        end
 
         if err
           raise Gem::InstallError, "ERROR: Failed to build gem native extension.\nGem files will remain installed in #{directory} for inspection.\n  #{results.join('\n')}\n\nResults logged to #{File.join(Dir.pwd, 'gem_make.out')}"
-		end
+        end
       end
     end
     

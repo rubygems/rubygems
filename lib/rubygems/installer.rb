@@ -328,18 +328,22 @@ TEXT
           Dir.chdir File.join(directory, File.dirname(extension))
           results = builder.build(extension, directory, dest_path, results)
         rescue => ex
-          err = true
+          results = results.join "\n"
+
+          File.open('gem_make.out', 'wb') { |f| f.puts results }
+
+          message = <<-EOF
+ERROR: Failed to build gem native extension.
+
+#{results}
+
+Gem files will remain installed in #{directory} for inspection.
+Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
+          EOF
+
+          raise Gem::InstallError, message
         ensure
           Dir.chdir start_dir
-        end
-
-        say results.join("\n")
-        File.open(File.join(directory, 'gem_make.out'), 'wb') do |f|
-          f.puts results.join("\n")
-        end
-
-        if err
-          raise Gem::InstallError, "ERROR: Failed to build gem native extension.\nGem files will remain installed in #{directory} for inspection.\n  #{results.join('\n')}\n\nResults logged to #{File.join(Dir.pwd, 'gem_make.out')}"
         end
       end
     end
@@ -366,7 +370,6 @@ TEXT
       end
     end
   end  # class Installer
-
 
   ##
   # The Uninstaller class uninstalls a Gem
@@ -569,12 +572,20 @@ TEXT
 
   end  # class Uninstaller
 
-  class ExtConfigureBuilder
+  class ExtBuilder
+
+    def self.redirector
+      RUBY_PLATFORM =~ /mswin/ ? '1<&2' : '2>&1'
+    end
+
+  end
+
+  class ExtConfigureBuilder < ExtBuilder
     def self.build(extension, directory, dest_path, results)
       unless File.exist?('Makefile') then
         cmd = "sh ./configure --prefix=#{dest_path}"
         results << cmd
-        results << `#{cmd}`
+        results << `#{cmd} #{redirector}`
 
         raise Gem::InstallError, "configure failed:\n\n#{results}" unless $?.exitstatus.zero?
       end
@@ -584,10 +595,10 @@ TEXT
     end
   end
 
-  class ExtExtConfBuilder
+  class ExtExtConfBuilder < ExtBuilder
     def self.build(extension, directory, dest_path, results)
       results << "#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}"
-      results << `#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}`
+      results << `#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")} #{redirector}`
       make(dest_path, results)
       results
     end
@@ -606,7 +617,7 @@ TEXT
 
       ['', 'install'].each do |target|
         results << "#{make_program} #{target}".strip
-        results << `#{make_program} #{target}`
+        results << `#{make_program} #{target} #{redirector}`
 
         raise Gem::InstallError, "Extension building failed:\n\n#{results}" unless $?.exitstatus.zero?
       end
@@ -614,17 +625,19 @@ TEXT
 
   end
 
-  class ExtRakeBuilder
+  class ExtRakeBuilder < ExtBuilder
     def ExtRakeBuilder.build(ext, directory, dest_path, results)
       make_program = ENV['rake'] || 'rake'
       make_program += " RUBYARCHDIR=#{dest_path} RUBYLIBDIR=#{dest_path}"
 
       results << "#{make_program} extension".strip
-      results << `#{make_program} extension`
+      results << `#{make_program} extension #{redirector}`
 
       raise Gem::InstallError, "Extension building failed:\n\n#{results}" unless $?.exitstatus.zero?
 
       results
     end
   end
+
 end  # module Gem
+

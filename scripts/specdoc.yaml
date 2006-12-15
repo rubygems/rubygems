@@ -267,7 +267,7 @@ ATTRIBUTES:
     description:
       The target platform for the gem.
     usage: |
-        spec.platform = Gem::Platform::Win32
+        spec.platform = Gem::Platform::WIN32
     notes:
       Most gems contain pure Ruby code; they should simply leave the default
       value in place.  Some gems contain C (or other) code to be compiled into

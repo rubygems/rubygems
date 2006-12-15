@@ -130,6 +130,19 @@ module Gem
       @gem_home
     end
     
+    # The directory path where executables are to be installed.
+    #
+    def bindir(install_dir=Gem.dir)
+      return File.join install_dir, 'bin' unless install_dir == Gem.default_dir
+
+      if defined? RUBY_FRAMEWORK_VERSION then # mac framework support
+        File.join(File.dirname(Config::CONFIG["sitedir"]),
+                  File.basename(Config::CONFIG["bindir"]))
+      else # generic install
+        Config::CONFIG['bindir']
+      end
+    end
+
     # List of directory paths to search for Gems.
     #
     # return:: [List<String>] List of directory paths.

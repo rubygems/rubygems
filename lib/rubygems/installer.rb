@@ -173,22 +173,6 @@ module Gem
       end
     end
 
-    ##
-    # Determines the directory for binaries
-    #
-    def bindir(install_dir=Gem.dir)
-      if(install_dir == Gem.default_dir)
-        # mac framework support
-        if defined? RUBY_FRAMEWORK_VERSION
-          File.join(File.dirname(Config::CONFIG["sitedir"]), File.basename(Config::CONFIG["bindir"]))
-        else # generic install
-          Config::CONFIG['bindir']
-        end
-      else
-        File.join(install_dir, "bin")
-      end
-    end
-
     def generate_bin(spec, install_dir=Gem.dir)
       return unless spec.executables && ! spec.executables.empty?
       
@@ -196,7 +180,7 @@ module Gem
       # a directory that is the system gem directory, then
       # use the system bin directory, else create (or use) a
       # new bin dir under the install_dir.
-      bindir = bindir(install_dir)
+      bindir = Gem.bindir(install_dir)
 
       Dir.mkdir bindir unless File.exist? bindir
       raise Gem::FilePermissionError.new(bindir) unless File.writable?(bindir)
@@ -440,8 +424,8 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
     def remove_executables(gemspec)
       return if gemspec.nil?
       if(gemspec.executables.size > 0)
-        raise Gem::FilePermissionError.new(Config::CONFIG['bindir']) unless
-	  File.writable?(Config::CONFIG['bindir'])
+        raise Gem::FilePermissionError.new(Gem.bindir) unless
+          File.writable?(Gem.bindir)
         list = Gem.source_index.search(gemspec.name).delete_if { |spec|
 	  spec.version == gemspec.version
 	}
@@ -460,11 +444,10 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
           say "Executables and scripts will remain installed."
           return
         else
-          bindir = Config::CONFIG['bindir']
           gemspec.executables.each do |exe_name|
             say "Removing #{exe_name}"
-            File.unlink(File.join(bindir, exe_name)) rescue nil
-            File.unlink(File.join(bindir, exe_name + ".cmd")) rescue nil
+            File.unlink File.join(Gem.bindir, exe_name) rescue nil
+            File.unlink File.join(Gem.bindir, exe_name + ".cmd") rescue nil
           end
         end
       end

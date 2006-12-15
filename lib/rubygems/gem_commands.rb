@@ -31,6 +31,16 @@ module Gem
       args.first
     end
 
+    # Get all gem names from the command line.
+    def get_all_gem_names
+      args = options[:args]
+      if args.nil? or args.empty?
+        raise Gem::CommandLineError,
+              "Please specify at least one gem name (e.g. gem build GEMNAME)"
+      end
+      gem_names = args.select { |arg| arg !~ /^-/ }
+    end
+
     # Get a single optional argument from the command line.  If more
     # than one argument is given, return only the first. Return nil if
     # none are given.
@@ -320,22 +330,27 @@ module Gem
     include CommandAids
 
     def initialize
-      super('uninstall', 'Uninstall a gem from the local repository', {:version=>"> 0"})
+      super('uninstall', 'Uninstall gems from the local repository',
+            { :version => "> 0" })
+
       add_option('-a', '--[no-]all',
-	'Uninstall all matching versions'
-	) do |value, options|
+        'Uninstall all matching versions'
+        ) do |value, options|
         options[:all] = value
       end
-      add_option('-i', '--[no-]ignore-dependencies',
-	'Ignore dependency requirements while uninstalling'
-	) do |value, options|
+
+        add_option('-i', '--[no-]ignore-dependencies',
+        'Ignore dependency requirements while uninstalling'
+        ) do |value, options|
         options[:ignore] = value
       end
-      add_option('-x', '--[no-]executables',
-	'Uninstall applicable executables without confirmation'
-	) do |value, options|
+
+        add_option('-x', '--[no-]executables',
+        'Uninstall applicable executables without confirmation'
+        ) do |value, options|
         options[:executables] = value
       end
+
       add_version_option('uninstall')
     end
 
@@ -344,7 +359,7 @@ module Gem
     end
     
     def usage
-      "#{program_name} GEMNAME"
+      "#{program_name} GEMNAME [GEMNAME ...]"
     end
 
     def arguments
@@ -352,10 +367,11 @@ module Gem
     end
 
     def execute
-      gem_name = get_one_gem_name
-      Gem::Uninstaller.new(gem_name, options).uninstall
+      get_all_gem_names.each do |gem_name|
+        Gem::Uninstaller.new(gem_name, options).uninstall
+      end
     end
-  end      
+  end
 
   class CertCommand < Command
     include CommandAids

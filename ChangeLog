@@ -3,6 +3,9 @@
 	* lib/rubygems.rb (Gem::loaded_specs): Expose list of currently loaded
 	gems.
 
+	* lib/rubygems/gem_commands (Gem::UninstallCommand): Allow multiple
+	gems to be uninstalled at once.
+
 2006-12-14  Eric Hodel  <drbrain@segment7.net>
 
 	* post-install.rb: Don't attempt to read unreadable files.  Fixes

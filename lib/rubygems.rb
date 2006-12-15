@@ -90,9 +90,11 @@ module Gem
   @@source_index = nil  
 
   @configuration = nil
-  @loaded_specs = nil
+  @loaded_specs = {}
   
   class << self
+
+    attr_reader :loaded_specs
   
     def manage_gems
       require 'rubygems/user_interaction'
@@ -177,7 +179,6 @@ module Gem
     # Return the path the the data directory specified by the gem
     # name.  If the package is not available as a gem, return nil.
     def datadir(gem_name)
-      return nil if @loaded_specs.nil?
       spec = @loaded_specs[gem_name]
       return nil if spec.nil?
       File.join(spec.full_gem_path, 'data', gem_name)
@@ -204,7 +205,6 @@ module Gem
     # already loaded, or an exception otherwise.
     #
     def activate(gem, autorequire, *version_requirements)
-      @loaded_specs ||= Hash.new
       unless version_requirements.size > 0
         version_requirements = [">= 0.0.0"]
       end

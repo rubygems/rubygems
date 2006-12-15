@@ -110,12 +110,12 @@ module Gem
       top_3_versions = specs_n_sources.map{|gs| gs.first.version}.uniq[0..3]
       specs_n_sources.reject!{|gs| !top_3_versions.include?(gs.first.version)}
 
-      non_binary_gems = specs_n_sources.reject { |item|
+      binary_gems = specs_n_sources.reject { |item|
         item[0].platform.nil? || item[0].platform==Platform::RUBY
       }
 
       # only non-binary gems...return latest
-      return specs_n_sources.first if non_binary_gems.empty?
+      return specs_n_sources.first if binary_gems.empty?
 
       list = specs_n_sources.collect { |spec, source_uri|
         "#{spec.name} #{spec.version} (#{spec.platform})"

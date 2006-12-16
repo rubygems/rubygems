@@ -388,7 +388,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
     #
     def uninstall
       require 'fileutils'
-      list = Gem.source_index.search(@gem, @version)
+      list = Gem.source_index.search(/^#{@gem}$/, @version)
       if list.empty?
         raise Gem::InstallError, "Unknown gem #{@gem}-#{@version}"
       elsif list.size > 1 && @force_all

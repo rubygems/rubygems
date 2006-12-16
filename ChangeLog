@@ -7,6 +7,9 @@
    
    * test/gemenvironment.rb: Clean out gemhome every time to avoid dirty directory failing tests.
    
+   * lib/rubygems/installer.rb: Change uninstall to require a full gem name (not a partial match).  Fixes
+   bug #6007 and related unreported issues.
+   
 2006-12-15  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb (Gem::Uninstaller): Correctly uninstall

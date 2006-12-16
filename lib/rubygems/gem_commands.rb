@@ -972,20 +972,20 @@ module Gem
       deplist = DependencyList.new
       gems_to_cleanup.uniq.each do |spec| deplist.add(spec) end
       deplist.dependency_order.each do |spec|
-	if options[:dryrun]
-	  say "Dry Run Mode: Would uninstall #{spec.full_name}"
-	else
-	  say "Attempting uninstall on #{spec.full_name}"
-	  options[:args] = [spec.name]
-	  options[:version] = "= #{spec.version}"
-	  options[:executables] = true
-	  uninstall_command.merge_options(options)
-	  begin
-	    uninstall_command.execute
-	  rescue Gem::DependencyRemovalException => ex
-	    say "Unable to uninstall #{spec.full_name} ... continuing with remaining gems"
-	  end
-	end
+      	if options[:dryrun]
+      	  say "Dry Run Mode: Would uninstall #{spec.full_name}"
+      	else
+      	  say "Attempting uninstall on #{spec.full_name}"
+      	  options[:args] = [spec.name]
+      	  options[:version] = "= #{spec.version}"
+      	  options[:executables] = true
+      	  uninstall_command.merge_options(options)
+      	  begin
+      	    uninstall_command.execute
+      	  rescue Gem::DependencyRemovalException => ex
+      	    say "Unable to uninstall #{spec.full_name} ... continuing with remaining gems"
+      	  end
+      	end
       end
       say "Clean Up Complete"
     end

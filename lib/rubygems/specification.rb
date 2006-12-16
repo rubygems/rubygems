@@ -427,7 +427,7 @@ module Gem
     def Specification.from_yaml(input)
       input = normalize_yaml_input(input)
       spec = YAML.load(input)
-      if(spec.class == FalseClass) then
+      if(spec && spec.class == FalseClass) then
         raise Gem::EndOfYAMLException
       end
       unless Specification === spec

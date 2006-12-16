@@ -236,23 +236,21 @@ module Gem
       options[:args].each do |gem_name|
         if local?
           begin
-	    entries = []
-	    if(File.exist?(gem_name) && !File.directory?(gem_name))
-              entries << gem_name
-	    else
-              filepattern = gem_name + "*.gem"
-              entries = Dir[filepattern] 
-            end
-            unless entries.size > 0
-              if options[:domain] == :local
-                alert_error "Local gem file not found: #{filepattern}"
+            entries = []
+              if(File.exist?(gem_name) && !File.directory?(gem_name))
+                entries << gem_name
+              else
+                filepattern = gem_name + "*.gem"
+                entries = Dir[filepattern] 
               end
-            else
-              result = Gem::Installer.new(entries.last, options).install(
-		options[:force],
-		options[:install_dir])
-              installed_gems = [result].flatten
-              say "Successfully installed #{installed_gems[0].name}, " +
+              unless entries.size > 0
+                if options[:domain] == :local
+                  alert_error "Local gem file not found: #{filepattern}"
+                end
+              else
+                result = Gem::Installer.new(entries.last, options).install(options[:force],	options[:install_dir])
+                installed_gems = [result].flatten
+                say "Successfully installed #{installed_gems[0].name}, " +
 		"version #{installed_gems[0].version}" if installed_gems
             end
           rescue LocalInstallationError => e

@@ -23,30 +23,30 @@ module TestEnvironment
     Dir.chdir("test/data") do
       mkdir "lib" unless File.exists? "lib"
       open("lib/code.rb", "w") do |f| f.puts "CODE = 1" end unless
-	File.exists? "lib/code.rb"
+        File.exists? "lib/code.rb"
       spec = Gem::Specification.new do |s|
-	s.files = ['lib/code.rb']
-	s.name = "a"
-	s.version = "0.0.1"
-	s.summary = "summary"
-	s.description = "desc"
-	s.require_path = 'lib'
+        s.files = ['lib/code.rb']
+        s.name = "a"
+        s.version = "0.0.1"
+        s.summary = "summary"
+        s.description = "desc"
+        s.require_path = 'lib'
       end
       use_ui(MockGemUi.new) do
-	Gem::Builder.new(spec).build
-	spec.version = "0.0.2"
-	Gem::Builder.new(spec).build
-	spec.name = 'b'
-	Gem::Builder.new(spec).build
-	spec.name = 'c'
-	spec.version = '1.2'
-	Gem::Builder.new(spec).build
-  FileUtils.rm_r "gemhome"
-	FileUtils.mkdir("gemhome")
-	Gem::Installer.new("a-0.0.1.gem").install(false, "gemhome", false)
-	Gem::Installer.new("a-0.0.2.gem").install(false, "gemhome", false)
-	Gem::Installer.new("b-0.0.2.gem").install(false, "gemhome", false)
-	Gem::Installer.new("c-1.2.gem").install(false, "gemhome", false)
+        Gem::Builder.new(spec).build
+        spec.version = "0.0.2"
+        Gem::Builder.new(spec).build
+        spec.name = 'b'
+        Gem::Builder.new(spec).build
+        spec.name = 'c'
+        spec.version = '1.2'
+        Gem::Builder.new(spec).build
+        FileUtils.rm_r "gemhome"
+        FileUtils.mkdir("gemhome")
+        Gem::Installer.new("a-0.0.1.gem").install(false, "gemhome", false)
+        Gem::Installer.new("a-0.0.2.gem").install(false, "gemhome", false)
+        Gem::Installer.new("b-0.0.2.gem").install(false, "gemhome", false)
+        Gem::Installer.new("c-1.2.gem").install(false, "gemhome", false)
       end
     end
   end

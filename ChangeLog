@@ -1,5 +1,9 @@
 2006-12-18  Eric Hodel  <drbrain@segment7.net>
 
+	* setup.rb: Ignore errors for .config and InstalledFiles when
+	the source path is read-only/NFS.  Fixes bugs #1395 and #1374.  Patch
+	by Ryan Davis.
+
 	* bin/gem_server: Pull code out into lib/rubygems/server.rb for
 	reusability.  Closes Feature Request #2220 by Chris Morris.
 

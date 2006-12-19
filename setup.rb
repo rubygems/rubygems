@@ -244,6 +244,8 @@ class ConfigTable_class
         f.printf "%s=%s\n", i.name, i.value if i.value
       end
     }
+  rescue Exception => e
+    $stderr.puts "Exception thrown while trying to open #{savefile} in #{Dir.pwd}: #{e}... continuing"
   end
 
   def [](key)
@@ -515,13 +517,18 @@ module FileOperations
       }
       File.chmod mode, realdest
 
-      File.open("#{objdir_root()}/InstalledFiles", 'a') {|f|
-        if prefix
-          f.puts realdest.sub(prefix, '')
-        else
-          f.puts realdest
-        end
-      }
+      path = "#{objdir_root()}/InstalledFiles"
+      begin
+        File.open(path, 'a') {|f|
+          if prefix
+            f.puts realdest.sub(prefix, '')
+          else
+            f.puts realdest
+          end
+        }
+      rescue Exception => e
+        $stderr.puts "Exception thrown while trying to open #{path} in #{Dir.pwd}: #{e}... continuing"
+      end
     end
   end
 

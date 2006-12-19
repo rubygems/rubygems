@@ -5,6 +5,7 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'rubygems/gem_commands'
 
 module Gem
 

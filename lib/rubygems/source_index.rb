@@ -220,6 +220,23 @@ module Gem
       load_gems_in(self.class.installed_spec_directories)
     end
 
+    # Returns an Array of Gem::Specifications that are not up to date.
+    #
+    def outdated
+      remotes = Gem::SourceInfoCache.search(//)
+      outdateds = []
+
+      latest_specs.each do |_, local|
+        name = local.name
+        remote = remotes.select  { |spec| spec.name == name }.
+                         sort_by { |spec| spec.version }.
+                         last
+        outdateds << name if remote and local.version < remote.version
+      end
+
+      outdateds
+    end
+
     def update(source_uri)
       use_incremental = false
 

@@ -78,6 +78,7 @@ class RubyGemTestCase < Test::Unit::TestCase
     FileUtils.rm_r @tempdir
     ENV['GEMCACHE'] = nil
     Gem.clear_paths
+    Gem::SourceInfoCache.instance_variable_set :@cache, nil
   end
 
   def prep_cache_files(lc)
@@ -153,6 +154,21 @@ class RubyGemTestCase < Test::Unit::TestCase
                                          @gem4.full_name => @gem4
 
     Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
+  end
+
+  def util_setup_source_info_cache(*specs)
+    specs = Hash[*specs.map { |spec| [spec.full_name, spec] }.flatten]
+
+    si = Gem::SourceIndex.new specs
+
+    sice = Gem::SourceInfoCacheEntry.new si, 0
+
+    sic = Gem::SourceInfoCache.new
+    sic.cache_data['uri'] = sice
+
+    Gem::SourceInfoCache.instance_variable_set :@cache, sic
+
+    si
   end
 
   def util_zip(data)

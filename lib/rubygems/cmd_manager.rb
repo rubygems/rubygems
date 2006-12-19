@@ -59,6 +59,7 @@ module Gem
       register_command HelpCommand.new
       register_command InstallCommand.new
       register_command ListCommand.new
+      register_command OutdatedCommand.new
       register_command PristineCommand.new
       register_command QueryCommand.new
       register_command RDocCommand.new

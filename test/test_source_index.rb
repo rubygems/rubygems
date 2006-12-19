@@ -115,6 +115,20 @@ class TestSourceIndex < RubyGemTestCase
     assert_equal expected, @source_index.latest_specs
   end
 
+  def test_outdated
+    sic = Gem::SourceInfoCache.new
+    Gem::SourceInfoCache.instance_variable_set :@cache, sic
+
+    assert_equal [], @source_index.outdated
+
+    updated = quick_gem @gem1.name, '999'
+    util_setup_source_info_cache updated
+
+    assert_equal [updated.name], @source_index.outdated
+  ensure
+    Gem::SourceInfoCache.instance_variable_set :@cache, nil
+  end
+
   def test_reduce_specs
     specs = YAML.load @source_index.reduce_specs([@gem1].to_yaml)
     assert_equal [], specs.first.files

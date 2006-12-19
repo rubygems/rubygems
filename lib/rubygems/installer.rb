@@ -557,8 +557,48 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
 
   class ExtBuilder
 
+    def self.class_name
+      name =~ /Ext(.*)Builder/
+      $1.downcase
+    end
+
+    def self.make(dest_path, results)
+      unless File.exist? 'Makefile' then
+        raise Gem::InstallError, "Makefile not found:\n\n#{results.join "\n"}" 
+      end
+
+      mf = File.read('Makefile')
+      mf = mf.gsub(/^RUBYARCHDIR\s*=\s*\$[^$]*/, "RUBYARCHDIR = #{dest_path}")
+      mf = mf.gsub(/^RUBYLIBDIR\s*=\s*\$[^$]*/, "RUBYLIBDIR = #{dest_path}")
+
+      File.open('Makefile', 'wb') {|f| f.print mf}
+
+      make_program = ENV['make']
+      unless make_program then
+        make_program = (/mswin/ =~ RUBY_PLATFORM) ? 'nmake' : 'make'
+      end
+
+      ['', ' install'].each do |target|
+        cmd = "#{make_program}#{target}"
+        results << cmd
+        results << `#{cmd} #{redirector}`
+
+        raise Gem::InstallError, "make#{target} failed:\n\n#{results}" unless
+          $?.exitstatus.zero?
+      end
+    end
+
     def self.redirector
       RUBY_PLATFORM =~ /mswin/ ? '1<&2' : '2>&1'
+    end
+
+    def self.run(command, results)
+      results << command
+      results << `#{command} #{redirector}`
+
+      unless $?.exitstatus.zero? then
+        raise Gem::InstallError, "#{class_name} failed:\n\n#{results.join "\n"}"
+      end
     end
 
   end
@@ -567,56 +607,35 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
     def self.build(extension, directory, dest_path, results)
       unless File.exist?('Makefile') then
         cmd = "sh ./configure --prefix=#{dest_path}"
-        results << cmd
-        results << `#{cmd} #{redirector}`
 
-        raise Gem::InstallError, "configure failed:\n\n#{results}" unless $?.exitstatus.zero?
+        run cmd, results
       end
 
-      ExtExtConfBuilder.make(dest_path, results)
+      make dest_path, results
+
       results
     end
   end
 
   class ExtExtConfBuilder < ExtBuilder
     def self.build(extension, directory, dest_path, results)
-      results << "#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")}"
-      results << `#{Gem.ruby} #{File.basename(extension)} #{ARGV.join(" ")} #{redirector}`
-      make(dest_path, results)
+      cmd = "#{Gem.ruby} #{File.basename extension}"
+      cmd << " #{ARGV.join " "}" unless ARGV.empty?
+
+      run cmd, results
+
+      make dest_path, results
+
       results
     end
-
-    def self.make(dest_path, results)
-      raise Gem::InstallError unless File.exist?('Makefile')
-      mf = File.read('Makefile')
-      mf = mf.gsub(/^RUBYARCHDIR\s*=\s*\$[^$]*/, "RUBYARCHDIR = #{dest_path}")
-      mf = mf.gsub(/^RUBYLIBDIR\s*=\s*\$[^$]*/, "RUBYLIBDIR = #{dest_path}")
-      File.open('Makefile', 'wb') {|f| f.print mf}
-
-      make_program = ENV['make']
-      unless make_program
-        make_program = (/mswin/ =~ RUBY_PLATFORM) ? 'nmake' : 'make'
-      end
-
-      ['', 'install'].each do |target|
-        results << "#{make_program} #{target}".strip
-        results << `#{make_program} #{target} #{redirector}`
-
-        raise Gem::InstallError, "Extension building failed:\n\n#{results}" unless $?.exitstatus.zero?
-      end
-    end
-
   end
 
   class ExtRakeBuilder < ExtBuilder
     def ExtRakeBuilder.build(ext, directory, dest_path, results)
-      make_program = ENV['rake'] || 'rake'
-      make_program += " RUBYARCHDIR=#{dest_path} RUBYLIBDIR=#{dest_path}"
+      cmd = ENV['rake'] || 'rake'
+      cmd << " RUBYARCHDIR=#{dest_path} RUBYLIBDIR=#{dest_path} extension"
 
-      results << "#{make_program} extension".strip
-      results << `#{make_program} extension #{redirector}`
-
-      raise Gem::InstallError, "Extension building failed:\n\n#{results}" unless $?.exitstatus.zero?
+      run cmd, results
 
       results
     end

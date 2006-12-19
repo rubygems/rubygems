@@ -164,7 +164,7 @@ class RubyGemTestCase < Test::Unit::TestCase
     sice = Gem::SourceInfoCacheEntry.new si, 0
 
     sic = Gem::SourceInfoCache.new
-    sic.cache_data['uri'] = sice
+    sic.cache_data['http://gems.example.com'] = sice
 
     Gem::SourceInfoCache.instance_variable_set :@cache, sic
 

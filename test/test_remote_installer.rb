@@ -59,14 +59,7 @@ class TestRemoteInstaller < RubyGemTestCase
 
     util_setup_fake_fetcher
 
-    @cache = Gem::SourceInfoCache.new
-    Gem::SourceInfoCache.instance_variable_set :@cache, @cache
-
-    si = Gem::SourceIndex.new @gem1.full_name => @gem1,
-                              @gem4.full_name => @gem4
-    sice = Gem::SourceInfoCacheEntry.new si, -1
-    cache_data = { 'http://gems.example.com' => sice }
-    @cache.instance_variable_set :@cache_data, cache_data
+    util_setup_source_info_cache @gem1, @gem4
 
     @installer = Gem::RemoteInstaller.new
     @installer.instance_variable_set("@fetcher_class", MockFetcher)
@@ -77,6 +70,11 @@ class TestRemoteInstaller < RubyGemTestCase
   end
 
   def test_find_gem_to_install
+    future_gem = quick_gem @gem1.name, '9.9.9' do |spec|
+      spec.required_ruby_version = '> 999.999.999' # HACK
+    end
+
+    util_setup_source_info_cache @gem1, future_gem
     version = Gem::Version::Requirement.new "> 0.0.0"
     gems = @installer.find_gem_to_install(@gem1.name, version)
 

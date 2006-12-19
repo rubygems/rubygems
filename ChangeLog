@@ -7,6 +7,9 @@
 	that can't be installed.
 	* lib/rubygems.rb, pre-install.rb: Fix installation errors on 1.9.
 	Fixes bug #4536 by Ryan Davis.
+	* lib/rubygems/source_index.rb, lib/rubygems/gem_commands.rb,
+	lib/rubygems-custom_require.rb: Use File.join with glob strings.
+	Fixes bug #1096 submitted by Chad Fowler.
 
 2006-12-18  Eric Hodel  <drbrain@segment7.net>
 

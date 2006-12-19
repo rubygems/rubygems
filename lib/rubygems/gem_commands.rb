@@ -1068,7 +1068,8 @@ module Gem
         require 'fileutils'
         wd = Dir.getwd
         Dir.chdir target_directory do
-          deployed_files = Dir.glob("**/*") + Dir.glob("**/.*")
+          deployed_files = Dir.glob(File.join("**", "*")) +
+                           Dir.glob(File.join("**", ".*"))
           to_redeploy = (pristine_files - deployed_files).collect {|path| path.untaint}
           if to_redeploy.length > 0
             gems_were_pristine = false

@@ -446,22 +446,6 @@ module Gem
     # Default home directory path to be used if an alternate value is
     # not specified in the environment.
     def default_dir
-      ## rbconfig = Dir.glob("{#{($LOAD_PATH).join(',')}}/rbconfig.rb").first
-      ## if rbconfig
-      ##   module_eval File.read(rbconfig) unless const_defined?("Config")
-      ## else
-      ##   require 'rbconfig'
-      ## end
-      #
-      # Note on above code: we have an issue if a Config class is
-      # already defined and we load 'rbconfig'.  The above code is
-      # supposed to work around that but it's been commented out.  In
-      # any case, I moved "require 'rbconfig'" to the top of this
-      # file, because there was a circular dependency between this
-      # method and our custom require.  In any case, rbconfig is a
-      # fundamental RubyGems dependency, so it might as well be up the
-      # top.  -- Gavin Sinclair, 2004-12-12
-      #
       if defined? RUBY_FRAMEWORK_VERSION
         return File.join(File.dirname(Config::CONFIG["sitedir"]), "Gems")
       else

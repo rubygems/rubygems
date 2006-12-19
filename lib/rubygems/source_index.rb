@@ -123,9 +123,10 @@ module Gem
     # directories.
     def load_gems_in(*spec_dirs)
       @gems.clear
-      Dir.glob("{#{spec_dirs.join(',')}}/*.gemspec").each do |file_name|
+      specs = Dir.glob File.join("{#{spec_dirs.join(',')}}", "*.gemspec")
+      specs.each do |file_name|
         gemspec = self.class.load_specification(file_name.untaint)
-	add_spec(gemspec) if gemspec
+        add_spec(gemspec) if gemspec
       end
       self
     end

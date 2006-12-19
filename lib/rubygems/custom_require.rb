@@ -100,7 +100,7 @@ module Gem
     # speed.
     #
     def matching_file(spec, path)  # :doc:
-      glob = "#{@lib_dirs[spec.object_id]}/#{path}#{SUFFIX_PATTERN}"
+      glob = File.join @lib_dirs[spec.object_id], "#{path}#{SUFFIX_PATTERN}"
       return true unless Dir[glob].select { |f| File.file?(f.untaint) }.empty?
     end
 

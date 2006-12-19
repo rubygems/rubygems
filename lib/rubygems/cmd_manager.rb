@@ -49,24 +49,24 @@ module Gem
     # Register all the subcommands supported by the gem command.
     def initialize
       @commands = {}
+      register_command BuildCommand.new
+      register_command CertCommand.new
+      register_command CheckCommand.new
+      register_command CleanupCommand.new
+      register_command ContentsCommand.new
+      register_command DependencyCommand.new
+      register_command EnvironmentCommand.new
       register_command HelpCommand.new
       register_command InstallCommand.new
-      register_command UninstallCommand.new
-      register_command CheckCommand.new
-      register_command BuildCommand.new
-      register_command DependencyCommand.new
-      register_command QueryCommand.new
       register_command ListCommand.new
-      register_command SearchCommand.new
-      register_command UpdateCommand.new
-      register_command CleanupCommand.new
       register_command PristineCommand.new
+      register_command QueryCommand.new
       register_command RDocCommand.new
-      register_command EnvironmentCommand.new
+      register_command SearchCommand.new
       register_command SpecificationCommand.new
+      register_command UninstallCommand.new
       register_command UnpackCommand.new
-      register_command CertCommand.new
-      register_command ContentsCommand.new
+      register_command UpdateCommand.new
     end
     
     # Register the command object.

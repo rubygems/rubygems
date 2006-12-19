@@ -6,6 +6,7 @@
 	(Gem::RemoteInstaller#specs_n_sources_matching): Don't display gems
 	that can't be installed.
 	* lib/rubygems.rb, pre-install.rb: Fix installation errors on 1.9.
+	Fixes bug #4536 by Ryan Davis.
 
 2006-12-18  Eric Hodel  <drbrain@segment7.net>
 

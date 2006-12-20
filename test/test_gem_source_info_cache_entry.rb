@@ -21,6 +21,12 @@ class TestGemSourceInfoCacheEntry < RubyGemTestCase
     end
   end
 
+  def test_refresh_bad_uri
+    assert_raise ArgumentError do
+      @sic_e.refresh 'gems.example.com'
+    end
+  end
+
   def test_refresh_update
     si = Gem::SourceIndex.new @gem1.full_name => @gem1,
                               @gem2.full_name => @gem2

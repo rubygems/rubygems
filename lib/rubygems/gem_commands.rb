@@ -5,7 +5,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-
 module Gem
 
   class CommandLineError < Gem::Exception; end
@@ -335,6 +334,74 @@ module Gem
         local = locals.search(/^#{name}$/).last
         remote = Gem::SourceInfoCache.search(/^#{name}$/).last
         say "#{local.name} (#{local.version} < #{remote.version})"
+      end
+    end
+
+  end
+
+  ####################################################################
+  class SourcesCommand < Command
+
+    def initialize
+      super 'sources', 'Manage the sources Rubygems will search forgems'
+
+      add_option '-a', '--add SOURCE_URI', 'Add source' do |value, options|
+        options[:add] = value
+      end
+
+      add_option '-l', '--list', 'List sources' do |value, options|
+        options[:list] = value
+      end
+
+      add_option '-r', '--remove SOURCE_URI', 'Remove source' do |value, options|
+        options[:remove] = value
+      end
+    end
+
+    def defaults_str
+      '--list'
+    end
+
+    def execute
+      if options[:add] then
+        source_uri = options[:add]
+
+        sice = Gem::SourceInfoCacheEntry.new nil, nil
+        begin
+          sice.refresh source_uri
+        rescue ArgumentError
+          say "#{source_uri} is not a URI"
+        rescue Gem::RemoteFetcher::FetchError => e
+          say "Error fetching #{source_uri}:\n\t#{e.message}"
+        else
+          Gem::SourceInfoCache.cache_data[source_uri] = sice
+          Gem::SourceInfoCache.cache.update
+          Gem::SourceInfoCache.cache.flush
+
+          say "#{source_uri} added to sources"
+        end
+      end
+
+      if options[:remove] then
+        source_uri = options[:remove]
+
+        unless Gem::SourceInfoCache.cache_data.include? source_uri then
+          say "source #{source_uri} not present in cache"
+        else
+          Gem::SourceInfoCache.cache_data.delete source_uri
+          Gem::SourceInfoCache.cache.update
+          Gem::SourceInfoCache.cache.flush
+          say "#{source_uri} removed from sources"
+        end
+      end
+
+      if options[:list] or not (options[:add] or options[:remove]) then
+        say "*** CURRENT SOURCES ***"
+        say
+
+        Gem::SourceInfoCache.cache_data.keys.each do |source_uri|
+          say source_uri
+        end
       end
     end
 

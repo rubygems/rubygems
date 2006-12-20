@@ -64,6 +64,7 @@ module Gem
       register_command QueryCommand.new
       register_command RDocCommand.new
       register_command SearchCommand.new
+      register_command SourcesCommand.new
       register_command SpecificationCommand.new
       register_command UninstallCommand.new
       register_command UnpackCommand.new

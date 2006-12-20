@@ -77,6 +77,29 @@ class TestRemoteFetcher < RubyGemTestCase
     assert_equal proxy_uri, fetcher.instance_variable_get(:@proxy_uri).to_s
   end
 
+  def test_fetch_size_bad_uri
+    fetcher = Gem::RemoteFetcher.new nil
+
+    e = assert_raise ArgumentError do
+      fetcher.fetch_size 'gems.example.com/yaml'
+    end
+
+    assert_equal 'uri is not an HTTP URI', e.message
+  end
+
+  def test_fetch_size_socket_error
+    fetcher = Gem::RemoteFetcher.new nil
+    def fetcher.connect_to(host, port)
+      raise SocketError
+    end
+
+    e = assert_raise Gem::RemoteFetcher::FetchError do
+      fetcher.fetch_size 'http://gems.example.com/yaml'
+    end
+
+    assert_equal 'SocketError(SocketError)', e.message
+  end
+
   def test_no_proxy
     use_ui(MockGemUi.new) do
       fetcher = Gem::RemoteFetcher.new nil

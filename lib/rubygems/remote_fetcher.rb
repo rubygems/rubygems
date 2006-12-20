@@ -64,6 +64,7 @@ class Gem::RemoteFetcher
     require 'net/http'
     require 'uri'
     u = URI.parse(uri)
+    raise ArgumentError, 'uri is not an HTTP URI' unless URI::HTTP === u
     http = connect_to(u.host, u.port)
     resp = http.head(u.request_uri)
     raise Gem::RemoteSourceException, "HTTP Response #{resp.code}" if resp.code !~ /^2/

@@ -1,3 +1,10 @@
+2006-12-20  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/remote_fetcher.rb (Gem::RemoteFetcher#fetch_size): Give
+	a sensible error on bad URIs.
+	* lib/rubygems/gem_commands.rb (Gem::SourceCommand): Allow management
+	of sources in source_cache.  Fixes bug #1128.
+
 2006-12-19  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb (Gem::ExtBuilder): Refactored for

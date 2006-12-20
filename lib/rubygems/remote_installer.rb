@@ -163,17 +163,17 @@ module Gem
     def install_dependencies(dependencies, force, install_dir)
       return if @options[:ignore_dependencies]
       installed_gems = []
-      dependencies.each do |dependency|
+      dependencies.each do |dep|
         if @options[:include_dependencies] ||
-	    ask_yes_no("Install required dependency #{dependency.name}?", true)
-          remote_installer =  RemoteInstaller.new(@options)
-          installed_gems << remote_installer.install(
-	    dependency.name,
-	    dependency.version_requirements,
-	    force,
-	    install_dir)
+           ask_yes_no("Install required dependency #{dep.name}?", true)
+          remote_installer = RemoteInstaller.new @options
+          installed_gems << remote_installer.install(dep.name,
+                                                     dep.version_requirements,
+                                                     force, install_dir)
+        elsif force then
+          # ignore
         else
-          raise DependencyError.new("Required dependency #{dependency.name} not installed")
+          raise DependencyError, "Required dependency #{dep.name} not installed"
         end
       end
       installed_gems

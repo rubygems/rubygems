@@ -10,6 +10,9 @@
 	* lib/rubygems/source_index.rb, lib/rubygems/gem_commands.rb,
 	lib/rubygems-custom_require.rb: Use File.join with glob strings.
 	Fixes bug #1096 submitted by Chad Fowler.
+	* lib/rubygems/remote_installer.rb
+	(Gem::RemoteInstaller#install_dependencies): Make --force actually
+	force.  Fixes bug #7365 by Robert James.
 
 2006-12-18  Eric Hodel  <drbrain@segment7.net>
 

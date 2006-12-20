@@ -46,33 +46,6 @@ class TestGemExtExtConfBuilder < RubyGemTestCase
     end
   end
 
-  def test_class_build_extconf_bad
-    File.open File.join(@ext, 'extconf.rb'), 'w' do |extconf|
-      extconf.puts "require 'mkmf'"
-      extconf.puts "have_library 'nonexistent'"
-      extconf.puts "create_makefile 'foo'"
-    end
-
-    File.open File.join(@ext, 'foo.c'), 'w' do |foo|
-      foo.puts "void Init_foo() { nonexistent(); }"
-    end
-
-    output = []
-
-    Dir.chdir @ext do
-      Gem::ExtExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
-    end
-
-    expected = [
-      "ruby extconf.rb",
-      "checking for main() in -lnonexistent... no
-creating Makefile\n",
-      "make"
-    ]
-
-    assert_equal expected, output[0, 3]
-  end
-
   def test_class_build_extconf_fail
     File.open File.join(@ext, 'extconf.rb'), 'w' do |extconf|
       extconf.puts "require 'mkmf'"

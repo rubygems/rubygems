@@ -18,7 +18,7 @@ class TestGemExtConfigureBuilder < RubyGemTestCase
   end
 
   def test_self_build
-    return if RUBY_VERSION =~ /mswin/ # HACK
+    return if RUBY_PLATFORM =~ /mswin/ # HACK
 
     File.open File.join(@ext, './configure'), 'w' do |configure|
       configure.puts "#!/bin/sh\necho \"#{@makefile_body}\" > Makefile"
@@ -39,7 +39,7 @@ class TestGemExtConfigureBuilder < RubyGemTestCase
   end
 
   def test_self_build_fail
-    return if RUBY_VERSION =~ /mswin/ # HACK
+    return if RUBY_PLATFORM =~ /mswin/ # HACK
     output = []
 
     error = assert_raise Gem::InstallError do

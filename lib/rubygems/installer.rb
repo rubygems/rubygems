@@ -589,7 +589,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
     end
 
     def self.redirector
-      RUBY_PLATFORM =~ /mswin/ ? '1<&2' : '2>&1'
+      '2>&1'
     end
 
     def self.run(command, results)

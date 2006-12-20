@@ -34,7 +34,16 @@ class TestGemExtExtConfBuilder < RubyGemTestCase
       "make: Nothing to be done for `install'.\n"
     ]
 
-    assert_equal expected, output
+    assert_equal "ruby extconf.rb", output[0]
+    assert_equal "creating Makefile\n", output[1]
+    case RUBY_PLATFORM
+    when /mswin/ then
+      assert_equal "nmake", output[2]
+      assert_equal "nmake install", output[4]
+    else
+      assert_equal "make", output[2]
+      assert_equal "make install", output[4]
+    end
   end
 
   def test_class_build_extconf_bad
@@ -79,42 +88,12 @@ creating Makefile\n",
       end
     end
 
-    extconf_output = <<-EOF
-checking for main() in -lnonexistent... no
-need libnonexistent
-*** extconf.rb failed ***
-Could not create Makefile due to some reason, probably lack of
-necessary libraries and/or headers.  Check the mkmf.log file for more
-details.  You may need configuration options.
-
-Provided configuration options:
-\t--with-opt-dir
-\t--without-opt-dir
-\t--with-opt-include
-\t--without-opt-include=${opt-dir}/include
-\t--with-opt-lib
-\t--without-opt-lib=${opt-dir}/lib
-\t--with-make-prog
-\t--without-make-prog
-\t--srcdir=.
-\t--curdir
-\t--ruby=/usr/local/bin/ruby
-\t--with-nonexistentlib
-\t--without-nonexistentlib
-    EOF
-
-    expected = <<-EOF
-extconf failed:
+    assert_match(/\Aextconf failed:
 
 ruby extconf.rb
-#{extconf_output.strip}
-    EOF
+checking for main\(\) in .*?nonexistent/, error.message)
 
-    assert_equal expected, error.message
-
-    expected = ["ruby extconf.rb", extconf_output]
-
-    assert_equal expected, output
+    assert_equal 'ruby extconf.rb', output[0]
   end
 
   def test_class_make
@@ -131,14 +110,14 @@ ruby extconf.rb
       Gem::ExtExtConfBuilder.make @ext, output
     end
 
-    expected = [
-      "make",
-      "make: Nothing to be done for `all'.\n",
-      "make install",
-      "make: Nothing to be done for `install'.\n",
-    ]
-
-    assert_equal expected, output
+    case RUBY_PLATFORM
+    when /mswin/ then
+      assert_equal 'nmake', output[0]
+      assert_equal 'nmake install', output[2]
+    else
+      assert_equal 'make', output[0]
+      assert_equal 'make install', output[2]
+    end
 
     edited_makefile = <<-EOF
 RUBYARCHDIR = #{@ext}$(target_prefix)

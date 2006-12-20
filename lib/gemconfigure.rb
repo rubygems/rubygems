@@ -17,8 +17,8 @@ module Gem
   def self.configure(gem_pairs, options={})
     gem_pairs.each do |name, version|
       require 'rubygems' 
-      puts "Requiring gem #{name} (version #{version})" if options[:verbose]
-      require_gem name, version
+      puts "Activating gem #{name} (version #{version})" if options[:verbose]
+      gem name, version
     end
   end
 end

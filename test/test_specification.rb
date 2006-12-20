@@ -192,7 +192,10 @@ class TestSpecification < RubyGemTestCase
     end
 
     old_loaded = $".dup
+    old_verbose = $VERBOSE
+    $VERBOSE = nil
     require_gem name
+    $VERBOSE = old_verbose
     new_loaded = $".dup
 
     assert_equal(files, (new_loaded - old_loaded))
@@ -215,7 +218,10 @@ class TestSpecification < RubyGemTestCase
     end
 
     old_loaded = $".dup
+    old_verbose = $VERBOSE
+    $VERBOSE = nil
     require_gem name
+    $VERBOSE = old_verbose
     new_loaded = $".dup
 
     assert_equal(Array(file), (new_loaded - old_loaded))

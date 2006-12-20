@@ -56,6 +56,7 @@ module Kernel
   # DEPRECATED!  Use +gem+ instead.
   #
   def require_gem(gem_name, *version_requirements)
+    warn 'require_gem is obsolete.  Use gem instead.'
     active_gem_with_options(gem_name,
       version_requirements, :auto_require=>true)
   end

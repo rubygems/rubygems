@@ -130,7 +130,7 @@ module Gem
         say "There are no unit tests to run for #{gem_spec.name}-#{gem_spec.version}"
         return
       end
-      require_gem gem_spec.name, "= #{gem_spec.version.version}"
+      gem gem_spec.name, "= #{gem_spec.version.version}"
       test_files.each do |f| require f end
       require 'test/unit/ui/console/testrunner'
       suite = Test::Unit::TestSuite.new("#{gem_spec.name}-#{gem_spec.version}")

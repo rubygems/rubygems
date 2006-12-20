@@ -277,7 +277,7 @@ if ARGV.size > 0 && ARGV[0][0]==95 && ARGV[0][-1]==95
     ARGV.shift
   end
 end
-require_gem '#{spec.name}', version
+gem '#{spec.name}', version
 load '#{filename}'  
 TEXT
       text
@@ -538,7 +538,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
       # what we delete isn't needed by any remaining versions of the
       # gem.
       #
-      # There's extra trickiness, too, because app stubs 'require_gem'
+      # There's extra trickiness, too, because app stubs 'gem'
       # a specific version of the gem.  If we uninstall the latest
       # gem, we should ensure that there is a sensible app stub(s)
       # installed after the removal of the current one.

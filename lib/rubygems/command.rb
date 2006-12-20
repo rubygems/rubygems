@@ -239,7 +239,7 @@ module Gem
     add_common_option('--source URL', 
       'Use URL as the remote source for gems') do
       |value, options|
-      require_gem("sources")
+      gem("sources")
       Gem.sources.clear
       Gem.sources << value
     end

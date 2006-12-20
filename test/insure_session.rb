@@ -27,11 +27,11 @@ def install_session
     puts 
     exit
   end
-  require_gem 'session'
+  gem 'session'
 end
 
 begin
-  require_gem 'session'
+  gem 'session'
 rescue LoadError => e
   puts
   puts "Required Gem 'Session' missing."

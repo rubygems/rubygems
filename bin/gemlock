@@ -11,7 +11,7 @@
 #
 # Usage:   gemlock  gem_name-version...
 #
-# gemlock will generate a list of require_gem statements that will
+# gemlock will generate a list of +gem+ statements that will
 # lock down the versions for the gem given in the command line.  It
 # will specify exact versions in the requirements list to ensure that
 # the gems loaded will always be consistent.  A full recursive search

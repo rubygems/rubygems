@@ -5,7 +5,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-
 require 'test/unit'
 require 'fileutils'
 require 'test/insure_session'
@@ -42,6 +41,8 @@ class TestGenerateYamlIndex < Test::Unit::TestCase
 
     generate_yaml_index("--directory #{SERVER_DIR} --no-quick")
 
+    assert_equal '', @out
+    assert_equal '', @err
     assert_equal 0, @status, "no status error"
     assert File.exist?(srvfile("yaml"))
     assert File.exist?(srvfile("yaml.Z"))
@@ -53,6 +54,8 @@ class TestGenerateYamlIndex < Test::Unit::TestCase
 
     generate_yaml_index("--directory #{SERVER_DIR}")
 
+    assert_equal '', @out
+    assert_equal '', @err
     assert_equal 0, @status, "no status error"
     assert File.exist?(srvfile("yaml"))
     assert File.exist?(srvfile("yaml.Z"))

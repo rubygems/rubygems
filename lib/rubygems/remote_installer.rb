@@ -94,7 +94,8 @@ module Gem
         # TODO move to SourceIndex#search?
         ruby_version = Gem::Version.new RUBY_VERSION
         specs = specs.select do |spec|
-          spec.required_ruby_version.satisfied_by? ruby_version
+          spec.required_ruby_version.nil? or
+            spec.required_ruby_version.satisfied_by? ruby_version
         end
         specs.each { |spec| specs_n_sources << [spec, source_uri] }
       end

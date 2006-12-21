@@ -51,19 +51,25 @@ CLOBBER.include(
   'logs'
 )
 
+desc "Run all tests"
 task :default => [:test]
-task :test => [:test_units]
 
+desc "Run all tests"
+task :test => [:test_all]
+
+desc "Run just the unit tests"
 Rake::TestTask.new(:test_units) do |t|
   t.test_files = FileList['test/test*.rb']
   t.warning = true
 end
 
+desc "Run just the functional tests"
 Rake::TestTask.new(:test_functional) do |t|
   t.test_files = FileList['test/functional*.rb']
   t.warning = true
 end
 
+desc "Run the unit and functional tests"
 Rake::TestTask.new(:test_all) do |t|
   t.test_files = FileList['test/{test,functional}*.rb']
   t.warning = true

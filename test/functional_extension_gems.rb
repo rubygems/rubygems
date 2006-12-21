@@ -6,6 +6,7 @@ require 'test/brokenbuildgem'
 # ====================================================================
 class TestExtensionGems < Test::Unit::TestCase
   def setup
+    @orig_gem_home = ENV['GEM_HOME']
     ENV['GEM_HOME'] = File.expand_path("test/data/gemhome")
     @gem_path = File.expand_path("bin/gem")
     lib_path = File.expand_path("lib")
@@ -18,12 +19,16 @@ class TestExtensionGems < Test::Unit::TestCase
       Gem::Installer.new(gem_file).install(true, ENV['GEM_HOME'], false)
     end
   end
+
+  def teardown
+    ENV['GEM_HOME'] = @orig_gem_home
+    Gem.clear_paths
+  end
   
   def test_gem_with_broken_extension_does_not_install
     BrokenBuildGem.install(self)
     assert_no_match(/Successfully installed/, @out)
   end
-
   
   # Run a gem command for the functional test.
   def gem(options="")

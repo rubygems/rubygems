@@ -141,9 +141,9 @@ task :prerelease do
     announce "Release Task Testing, skipping checked-in file test"
   else
     announce "Checking for unchecked-in files..."
-    data = `cvs -q update`
+    data = `svn st`
     unless data =~ /^$/
-      fail "CVS update is not clean ... do you have unchecked-in files?"
+      abort "svn status is not clean ... do you have unchecked-in files?"
     end
     announce "No outstanding checkins found ... OK"
   end

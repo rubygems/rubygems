@@ -21,6 +21,7 @@ class TestExtensionGems < Test::Unit::TestCase
   end
 
   def teardown
+    FileUtils.rm_rf 'test/data/broken_build/broken-build-0.0.1.gem'
     ENV['GEM_HOME'] = @orig_gem_home
     Gem.clear_paths
   end

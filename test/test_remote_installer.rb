@@ -55,8 +55,6 @@ class TestRemoteInstaller < RubyGemTestCase
   def setup
     super
 
-    Gem.clear_paths
-
     util_setup_fake_fetcher
 
     util_setup_source_info_cache @gem1, @gem4

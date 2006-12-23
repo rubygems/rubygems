@@ -63,8 +63,8 @@ module Gem
     # Add the local/remote options to the command line parser.
     def add_local_remote_options
       add_option('-l', '--local',
-	'Restrict operations to the LOCAL domain (default)') do
-	|value, options|
+                 'Restrict operations to the LOCAL domain'
+                 ) do |value, options|
         options[:domain] = :local
       end
 
@@ -101,32 +101,32 @@ module Gem
     # Add the install/update options to the option parser.
     def add_install_update_options
       add_option('-i', '--install-dir DIR',
-	'Gem repository directory to get installed gems.') do 
-	|value, options|
+                 'Gem repository directory to get installed',
+                 'gems.') do |value, options|
         options[:install_dir] = File.expand_path(value)
       end
 
       add_option('-d', '--[no-]rdoc', 
-	'Generate RDoc documentation for the gem on install') do
-	|value, options|
+                 'Generate RDoc documentation for the gem on',
+                 'install') do |value, options|
         options[:generate_rdoc] = value
       end
 
       add_option('--[no-]ri', 
-	'Generate RI documentation for the gem on install') do
-	|value, options|
+                 'Generate RI documentation for the gem on',
+                 'install') do |value, options|
         options[:generate_ri] = value
       end
 
       add_option('-E', '--env-shebang',
-        "Rewrite the shebang line on installed scripts to use /usr/bin/env") do
-        |value, options|
+                 "Rewrite the shebang line on installed",
+                 "scripts to use /usr/bin/env") do |value, options|
         options[:env_shebang] = value
       end
 
       add_option('-f', '--[no-]force', 
-	'Force gem to install, bypassing dependency checks') do 
-	|value, options|
+                 'Force gem to install, bypassing dependency',
+                 'checks') do |value, options|
         options[:force] = value
       end
 
@@ -156,8 +156,8 @@ module Gem
       end
 
       add_option('-y', '--include-dependencies',
-	'Unconditionally install the required dependent gems') do 
-	|value, options|
+                 'Unconditionally install the required',
+                 'dependent gems') do |value, options|
 	options[:include_dependencies] = value
       end
     end
@@ -174,13 +174,14 @@ module Gem
   module VersionOption
 
     # Add the options to the option parser.
-    def add_version_option(taskname)
+    def add_version_option(taskname, *wrap)
       add_option('-v', '--version VERSION', 
-	"Specify version of gem to #{taskname}") do 
-	|value, options|
+                 "Specify version of gem to #{taskname}", *wrap) do 
+                   |value, options|
         options[:version] = value
       end
     end
+
   end
 
   ####################################################################
@@ -343,7 +344,7 @@ module Gem
   class SourcesCommand < Command
 
     def initialize
-      super 'sources', 'Manage the sources Rubygems will search forgems'
+      super 'sources', 'Manage the sources RubyGems will search forgems'
 
       add_option '-a', '--add SOURCE_URI', 'Add source' do |value, options|
         options[:add] = value
@@ -423,14 +424,14 @@ module Gem
       end
 
         add_option('-i', '--[no-]ignore-dependencies',
-        'Ignore dependency requirements while uninstalling'
-        ) do |value, options|
+                   'Ignore dependency requirements while',
+                   'uninstalling') do |value, options|
         options[:ignore] = value
       end
 
         add_option('-x', '--[no-]executables',
-        'Uninstall applicable executables without confirmation'
-        ) do |value, options|
+                   'Uninstall applicable executables without',
+                   'confirmation') do |value, options|
         options[:executables] = value
       end
 
@@ -481,7 +482,9 @@ module Gem
         end
       end
 
-      add_option('-r', '--remove STRING', 'Remove trusted certificates containing STRING.') do |value, options|
+      add_option('-r', '--remove STRING',
+                 'Remove trusted certificates containing',
+                 'STRING.') do |value, options|
         trust_dir = Gem::Security::OPT[:trust_dir]
         glob_str = File::join(trust_dir, '*.pem')
 
@@ -495,8 +498,8 @@ module Gem
       end
 
       add_option('-b', '--build EMAIL_ADDR',
-	'Build private key and self-signed certificate for EMAIL_ADDR.'
-	) do |value, options|
+                 'Build private key and self-signed',
+                 'certificate for EMAIL_ADDR.') do |value, options|
         vals = Gem::Security::build_self_signed_cert(value)
         File::chmod(0600, vals[:key_path])
         puts "Public Cert: #{vals[:cert_path]}",
@@ -505,23 +508,21 @@ module Gem
       end
 
       add_option('-C', '--certificate CERT',
-	'Certificate for --sign command.'
-	) do |value, options|
+                 'Certificate for --sign command.') do |value, options|
         cert = OpenSSL::X509::Certificate.new(File.read(value))
         Gem::Security::OPT[:issuer_cert] = cert
       end
 
       add_option('-K', '--private-key KEY',
-	'Private key for --sign command.'
-	) do |value, options|
+                 'Private key for --sign command.') do |value, options|
         key = OpenSSL::PKey::RSA.new(File.read(value))
         Gem::Security::OPT[:issuer_key] = key
       end
 
 
       add_option('-s', '--sign NEWCERT', 
-	'Sign a certificate with my key and certificate.'
-	) do |value, options|
+                 'Sign a certificate with my key and',
+                 'certificate.') do |value, options|
         cert = OpenSSL::X509::Certificate.new(File.read(value))
         my_cert = Gem::Security::OPT[:issuer_cert]
         my_key = Gem::Security::OPT[:issuer_key]
@@ -644,17 +645,26 @@ module Gem
     include CommandAids
 
     def initialize
-      super('check', 'Check installed gems',  {:verify => false, :alien => false})
-      add_option('-v', '--verify FILE', 'Verify gem file against its internal checksum') do |value, options|
+      super('check', 'Check installed gems',
+            {:verify => false, :alien => false})
+
+      add_option('-v', '--verify FILE',
+                 'Verify gem file against its internal',
+                 'checksum') do |value, options|
         options[:verify] = value
       end
-      add_option('-a', '--alien', "Report 'unmanaged' or rogue files in the gem repository") do |value, options|
+
+      add_option('-a', '--alien', "Report 'unmanaged' or rogue files in the",
+                 "gem repository") do |value, options|
         options[:alien] = true
       end
+
       add_option('-t', '--test', "Run unit tests for gem") do |value, options|
         options[:test] = true
       end
-      add_option('-V', '--version', "Specify version for which to run unit tests") do |value, options|
+
+      add_option('-V', '--version',
+                 "Specify version for which to run unit tests") do |value, options|
         options[:version] = value
       end
     end
@@ -1009,7 +1019,7 @@ module Gem
     def initialize
       super(
         'cleanup',
-        'Cleanup old versions of installed gems in the local repository',
+        'Clean up old versions of installed gems in the local repository',
         {
           :force => false, 
           :test => false, 
@@ -1086,11 +1096,11 @@ module Gem
           :version => "> 0.0.0"
         })
       add_option('--all',
-        'Restore all installed gems to pristine condition'
+        'Restore all installed gems to pristine', 'condition'
         ) do |value, options|
         options[:all] = value
       end
-      add_version_option('restore to pristine condition')
+      add_version_option('restore to', 'pristine condition')
     end
 
     def defaults_str
@@ -1181,8 +1191,8 @@ module Gem
           :include_ri => true,
         })
       add_option('--all',
-        'Generate RDoc/RI documentation for all installed gems'
-        ) do |value, options|
+                 'Generate RDoc/RI documentation for all',
+                 'installed gems') do |value, options|
         options[:all] = value
       end
       add_option('--[no-]rdoc', 
@@ -1244,7 +1254,7 @@ module Gem
     include CommandAids
 
     def initialize
-      super('environment', 'Display RubyGems environmental information')
+      super('environment', 'Display information about the RubyGems environment')
     end
 
     def usage
@@ -1280,7 +1290,7 @@ module Gem
       elsif arg
         fail Gem::CommandLineError, "Unknown enviroment option [#{arg}]"
       else
-        out = "Rubygems Environment:\n"
+        out = "RubyGems Environment:\n"
         out << "  - VERSION: #{Gem::RubyGemsVersion} (#{Gem::RubyGemsPackageVersion})\n"
         out << "  - INSTALLATION DIRECTORY: #{Gem.dir}\n"
         out << "  - GEM PATH:\n"
@@ -1303,10 +1313,12 @@ module Gem
     include CommandAids
     
     def initialize
-      super('specification', 'Display gem specification (in yaml)', {:domain=>:local, :version=>"> 0.0.0"})
+      super('specification', 'Display gem specification (in yaml)',
+            {:domain=>:local, :version=>"> 0.0.0"})
       add_version_option('examine')
       add_local_remote_options
-      add_option('--all', 'Output specifications for all versions of the gem') do
+      add_option('--all', 'Output specifications for all versions of',
+                 'the gem') do |value, options|
         options[:all] = true
       end
     end
@@ -1448,18 +1460,33 @@ module Gem
     def execute
       arg = options[:args][0]
       if begins?("commands", arg)
-        require 'stringio'
-        out = StringIO.new
-        out.puts "\nGEM commands are:\n\n"
-        desc_indent = command_manager.command_names.collect {|n| n.size}.max + 4
-        format = "    %-#{desc_indent}s %s\n"
+        out = []
+        out << "GEM commands are:"
+        out << nil
+
+        margin_width = 4
+        desc_width = command_manager.command_names.collect {|n| n.size}.max + 4
+        summary_width = 80 - margin_width - desc_width
+        wrap_indent = ' ' * (margin_width + desc_width)
+        format = "#{' ' * margin_width}%-#{desc_width}s%s"
+
         command_manager.command_names.each do |cmd_name|
-          out.printf format, "#{cmd_name}", command_manager[cmd_name].summary
+          summary = command_manager[cmd_name].summary
+          summary = wrap(summary, summary_width).split "\n"
+          out << sprintf(format, cmd_name, summary.shift)
+          until summary.empty? do
+            out << "#{wrap_indent}#{summary.shift}"
+          end
         end
-        out.puts "\nFor help on a particular command, use 'gem help COMMAND'."
-        out.puts "\nCommands may be abbreviated, so long as they are unambiguous."
-        out.puts "e.g. 'gem i rake' is short for 'gem install rake'."
-        say out.string
+
+        out << nil
+        out << "For help on a particular command, use 'gem help COMMAND'."
+        out << nil
+        out << "Commands may be abbreviated, so long as they are unambiguous."
+        out << "e.g. 'gem i rake' is short for 'gem install rake'."
+
+        say out.join("\n")
+
       elsif begins?("options", arg)
         say Gem::HELP
       elsif begins?("examples", arg)

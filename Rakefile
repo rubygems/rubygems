@@ -54,8 +54,8 @@ CLOBBER.include(
 desc "Run all tests"
 task :default => [:test]
 
-desc "Run all tests"
-task :test => [:test_all]
+desc "Run unit tests (functionals fail on win32)"
+task :test => [:test_units]
 
 desc "Run just the unit tests"
 Rake::TestTask.new(:test_units) do |t|

@@ -171,7 +171,7 @@ task :update_version => [:prerelease] do
     if ENV['RELTEST']
       announce "Release Task Testing, skipping commiting of new version"
     else
-      sh %{cvs commit -m "Updated to version #{PKG_VERSION}" lib/rubygems/rubygems_version.rb} # "
+      sh %{svn commit -m "Updated to version #{PKG_VERSION}" lib/rubygems/rubygems_version.rb} # "
     end
   end
 end
@@ -179,11 +179,11 @@ end
 task :tag => [:prerelease] do
   reltag = "REL_#{PKG_VERSION.gsub(/\./, '_')}"
   reltag << ENV['REUSE'].gsub(/\./, '_') if ENV['REUSE']
-  announce "Tagging CVS with [#{reltag}]"
+  announce "Tagging SVN with [#{reltag}]"
   if ENV['RELTEST']
-    announce "Release Task Testing, skipping CVS tagging"
+    announce "Release Task Testing, skipping SVN tagging"
   else
-    sh %{cvs tag #{reltag}}
+    sh %{svn copy . ../tags/#{reltag}}
   end
 end
 

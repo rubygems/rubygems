@@ -183,7 +183,7 @@ task :tag => [:prerelease] do
   if ENV['RELTEST']
     announce "Release Task Testing, skipping SVN tagging"
   else
-    sh %{cd ..; svn copy trunk tags/#{reltag}}
+    sh %{cd ..; svn copy trunk tags/#{reltag}; svn ci -m "Tag #{reltag}" tags/#{reltag}}
   end
 end
 

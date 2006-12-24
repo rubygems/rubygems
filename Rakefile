@@ -178,7 +178,7 @@ end
 
 task :tag => [:prerelease] do
   reltag = "REL_#{PKG_VERSION.gsub(/\./, '_')}"
-  reltag << ENV['REUSE'].gsub(/\./, '_') if ENV['REUSE']
+  reltag = "REL_#{ENV['REUSE'].gsub(/\./, '_')}" if ENV['REUSE']
   announce "Tagging SVN with [#{reltag}]"
   if ENV['RELTEST']
     announce "Release Task Testing, skipping SVN tagging"

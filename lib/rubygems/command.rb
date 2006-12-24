@@ -37,7 +37,7 @@ module Gem
 
     # Override to display the usage for an individual gem command.
     def usage
-      "#{program_name}"
+      program_name
     end
 
     # Override to provide details of the arguments a command takes.
@@ -166,7 +166,9 @@ module Gem
         @parser.separator("")
       end
       @parser.separator("  Summary:")
-      @parser.separator("    #@summary")
+      wrap(@summary, 80 - 4).each do |line|
+        @parser.separator("    #{line.strip}")
+      end
       unless defaults_str.empty?
         @parser.separator("")
         @parser.separator("  Defaults:")
@@ -185,6 +187,11 @@ module Gem
         end
         dashes.each do |arg| option_names[arg] = true end
       end
+    end
+
+    # Wraps +text+ to +width+
+    def wrap(text, width)
+      text.gsub(/(.{1,#{width}})( +|$\n?)|(.{1,#{width}})/, "\\1\\3\n")
     end
 
     ##################################################################

@@ -63,15 +63,8 @@ class Gem::SourceInfoCache
     return @cache_data if @cache_data
     @dirty = false
     cache_file # HACK writable check
-    @cache_data = begin
-                    open cache_file, "rb" do |f|
-                      # Marshal loads 30-40% faster from a String, and 2MB
-                      # on 20061116 is small
-                      Marshal.load f.read || {}
-                    end
-                  rescue
-                    {}
-                  end
+    # Marshal loads 30-40% faster from a String, and 2MB on 20061116 is small
+    @cache_data = Marshal.load(File.read(cache_file)) rescue {}
   end
 
   # The name of the cache file to be read

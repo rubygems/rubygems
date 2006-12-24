@@ -54,8 +54,8 @@ CLOBBER.include(
 desc "Run all tests"
 task :default => [:test]
 
-desc "Run all tests"
-task :test => [:test_all]
+desc "Run unit tests (functionals fail on win32)"
+task :test => [:test_units]
 
 desc "Run just the unit tests"
 Rake::TestTask.new(:test_units) do |t|
@@ -171,19 +171,19 @@ task :update_version => [:prerelease] do
     if ENV['RELTEST']
       announce "Release Task Testing, skipping commiting of new version"
     else
-      sh %{cvs commit -m "Updated to version #{PKG_VERSION}" lib/rubygems/rubygems_version.rb} # "
+      sh %{svn commit -m "Updated to version #{PKG_VERSION}" lib/rubygems/rubygems_version.rb} # "
     end
   end
 end
 
 task :tag => [:prerelease] do
   reltag = "REL_#{PKG_VERSION.gsub(/\./, '_')}"
-  reltag << ENV['REUSE'].gsub(/\./, '_') if ENV['REUSE']
-  announce "Tagging CVS with [#{reltag}]"
+  reltag = "REL_#{ENV['REUSE'].gsub(/\./, '_')}" if ENV['REUSE']
+  announce "Tagging SVN with [#{reltag}]"
   if ENV['RELTEST']
-    announce "Release Task Testing, skipping CVS tagging"
+    announce "Release Task Testing, skipping SVN tagging"
   else
-    sh %{cvs tag #{reltag}}
+    sh %{cd ..; svn copy trunk tags/#{reltag}}
   end
 end
 

@@ -41,28 +41,20 @@ class TestGemExtRakeBuilder < RubyGemTestCase
     end
 
     output = []
-    realdir = nil # HACK /tmp vs. /private/tmp
 
     error = assert_raise Gem::InstallError do
       Dir.chdir @ext do
-        realdir = Dir.pwd
         Gem::ExtRakeBuilder.build nil, nil, @dest_path, output
       end
     end
 
-    expected = <<-EOF
+    expected = <<-EOF.strip
 rake failed:
 
 rake RUBYARCHDIR=#{@dest_path} RUBYLIBDIR=#{@dest_path} extension
-fail
-(in #{realdir})
-rake aborted!
-fail
-#{realdir}/rakefile:1:in `abort'
-(See full trace by running task with --trace)
     EOF
 
-    assert_equal expected, error.message
+    assert_equal expected, error.message.split("\n")[0..2].join("\n")
   end
 
 end

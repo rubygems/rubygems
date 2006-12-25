@@ -172,6 +172,44 @@ class TestRemoteFetcher < RubyGemTestCase
     end
   end
 
+  def test_fetch_path_io_error
+    fetcher = Gem::RemoteFetcher.new nil
+
+    def fetcher.open_uri_or_path(uri) raise EOFError; end
+
+    e = assert_raise Gem::RemoteFetcher::FetchError do
+      fetcher.fetch_path 'uri'
+    end
+
+    assert_equal 'EOFError reading uri', e.message
+  end
+
+  def test_fetch_path_socket_error
+    fetcher = Gem::RemoteFetcher.new nil
+
+    def fetcher.open_uri_or_path(uri) raise SocketError; end
+
+    e = assert_raise Gem::RemoteFetcher::FetchError do
+      fetcher.fetch_path 'uri'
+    end
+
+    assert_equal 'SocketError reading uri', e.message
+  end
+
+  def test_fetch_path_system_call_error
+    fetcher = Gem::RemoteFetcher.new nil
+
+    def fetcher.open_uri_or_path(uri);
+      raise Errno::ECONNREFUSED, 'connect(2)'
+    end
+
+    e = assert_raise Gem::RemoteFetcher::FetchError do
+      fetcher.fetch_path 'uri'
+    end
+
+    assert_equal 'Errno::ECONNREFUSED reading uri', e.message
+  end
+
   def test_implicit_no_proxy
     use_ui(MockGemUi.new) do
       ENV['http_proxy'] = 'http://fakeurl:12345'

@@ -51,6 +51,8 @@ class Gem::RemoteFetcher
     end
   rescue Timeout::Error
     raise FetchError, "timed out fetching #{uri}"
+  rescue IOError, SocketError, SystemCallError => e
+    raise FetchError, "#{e.class} reading #{uri}"
   rescue
     old_uri = uri
     uri = uri.downcase

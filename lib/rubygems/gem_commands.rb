@@ -457,6 +457,7 @@ module Gem
     end
   end
 
+  ####################################################################
   class CertCommand < Command
     include CommandAids
     
@@ -1086,6 +1087,7 @@ module Gem
     end
   end
   
+  ####################################################################
   class PristineCommand < Command
     include VersionOption
     include CommandAids
@@ -1131,19 +1133,23 @@ module Gem
       if specs.empty?
         fail "Failed to find gem #{gem_name} #{options[:version]} to restore to pristine condition"
       end
-      install_dir = Gem.dir # SHOULD WE ALLOW THIS TO WORK WITH NON-STANDARD DIRECTORIES?
+      install_dir = Gem.dir # TODO use installer option
       raise Gem::FilePermissionError.new(install_dir) unless File.writable?(install_dir)
+
       gems_were_pristine = true
+
       specs.each do |spec|
+        installer = Gem::Installer.new nil, :wrappers => true # HACK ugly TODO use installer option
+
         gem_file = File.join(install_dir, "cache", "#{spec.full_name}.gem")
-        security_policy = nil # WHAT SHOULD WE DO WITH THE SECURITY POLICY?
+        security_policy = nil # TODO use installer option
         format = Gem::Format.from_file_by_path(gem_file, security_policy)
         target_directory = File.join(install_dir, "gems", format.spec.full_name).untaint
         pristine_files = format.file_entries.collect {|data| data[0]["path"]}
         file_map = {}
         format.file_entries.each {|entry, file_data| file_map[entry["path"]] = file_data}
         require 'fileutils'
-        wd = Dir.getwd
+
         Dir.chdir target_directory do
           deployed_files = Dir.glob(File.join("**", "*")) +
                            Dir.glob(File.join("**", ".*"))
@@ -1160,6 +1166,8 @@ module Gem
             end
           end
         end
+
+        installer.generate_bin spec, install_dir
       end
       if gems_were_pristine
         if all_gems

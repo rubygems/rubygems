@@ -271,14 +271,12 @@ module Gem
 
 require 'rubygems'
 version = "> 0"
-if ARGV.size > 0 && ARGV[0][0]==95 && ARGV[0][-1]==95
-  if Gem::Version.correct?(ARGV[0][1..-2])
-    version = ARGV[0][1..-2] 
-    ARGV.shift
-  end
+if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1 then
+  version = $1
+  ARGV.shift
 end
 gem '#{spec.name}', version
-load '#{filename}'  
+load '#{filename}'
 TEXT
       text
     end

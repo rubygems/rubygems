@@ -1,3 +1,10 @@
+2006-12-25  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/installer.rb (Gem::Installer#app_script_text):
+	Simpler, more readable bin script.
+	* lib/rubygems/gem_commands.rb (Gem::PristineCommand#execute):
+	Regenerate bin scripts.  This will clean up require_gem in scripts.
+
 2006-12-24  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/remote_fetcher.rb (Gem::RemoteFetcher#fetch_path):

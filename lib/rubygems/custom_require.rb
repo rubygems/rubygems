@@ -90,17 +90,13 @@ module Gem
 
     private
 
-    SUFFIX_PATTERN = "{,.rb,.rbw,.so,.bundle,.dll,.sl}"
-
-    #
     # Attempts to find a matching path using the require_paths of the
     # given _spec_.
     #
     # Some of the intermediate results are cached in @lib_dirs for
     # speed.
-    #
     def matching_file(spec, path)  # :doc:
-      glob = File.join @lib_dirs[spec.object_id], "#{path}#{SUFFIX_PATTERN}"
+      glob = File.join @lib_dirs[spec.object_id], "#{path}#{Gem.suffix_pattern}"
       return true unless Dir[glob].select { |f| File.file?(f.untaint) }.empty?
     end
 

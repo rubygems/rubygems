@@ -72,9 +72,9 @@ class TestGenerateYamlIndex < Test::Unit::TestCase
     FileUtils.rm_r srvfile("yaml.Z") rescue nil
     unless File.exist?(srvfile("gems"))
       FileUtils.mkdir_p(srvfile("gems"))
-      OneGem.make(self)
-      FileUtils.cp OneGem::ONEGEM, srvfile("gems")
     end
+    OneGem.make(self)
+    FileUtils.cp OneGem::ONEGEM, srvfile("gems")
   end
 
   # Run the generate_yaml_index command for the functional test.

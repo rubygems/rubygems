@@ -56,10 +56,20 @@ module Kernel
   # DEPRECATED!  Use +gem+ instead.
   #
   def require_gem(gem_name, *version_requirements)
-    warn 'require_gem is obsolete.  Use gem instead.'
+    file, lineno = location_of_caller
+    warn "#{file}:#{lineno}:Warning: require_gem is obsolete.  Use gem instead."
     active_gem_with_options(gem_name,
       version_requirements, :auto_require=>true)
   end
+
+  # Return the file name (string) and line number (integer) of the caller of
+  # the caller of this method.
+  def location_of_caller
+    file, lineno = caller[1].split(':')
+    lineno = lineno.to_i
+    [file, lineno]
+  end
+  private :location_of_caller
 
   def active_gem_with_options(gem_name, version_requirements, options={})
     skip_list = (ENV['GEM_SKIP'] || "").split(/:/)

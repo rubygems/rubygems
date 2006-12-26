@@ -68,11 +68,11 @@ module Gem
             raise Gem::InstallError, "#{spec.name} requires Ruby version #{rrv}"
           end
         end
- 	unless @options[:ignore_dependencies]
- 	  spec.dependencies.each do |dep_gem|
-	    ensure_dependency!(spec, dep_gem)
- 	  end
- 	end
+        unless @options[:ignore_dependencies]
+          spec.dependencies.each do |dep_gem|
+            ensure_dependency!(spec, dep_gem)
+          end
+        end
       end
       
       raise Gem::FilePermissionError.new(install_dir) unless File.writable?(install_dir)
@@ -111,7 +111,7 @@ module Gem
     # dependency :: Gem::Dependency
     def ensure_dependency!(spec, dependency)
       raise Gem::InstallError, "#{spec.name} requires #{dependency.name} #{dependency.version_requirements} " unless
-	installation_satisfies_dependency?(dependency)
+        installation_satisfies_dependency?(dependency)
     end
 
     ##
@@ -390,18 +390,18 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
       if list.empty?
         raise Gem::InstallError, "Unknown gem #{@gem}-#{@version}"
       elsif list.size > 1 && @force_all
-	remove_all(list.dup) 
-	remove_executables(list.last)
+        remove_all(list.dup) 
+        remove_executables(list.last)
       elsif list.size > 1 
         say 
         gem_names = list.collect {|gem| gem.full_name} + ["All versions"]
         gem_name, index =
-	  choose_from_list("Select gem to uninstall:", gem_names)
+          choose_from_list("Select gem to uninstall:", gem_names)
         if index == list.size
           remove_all(list.dup) 
           remove_executables(list.last)
         elsif index >= 0 && index < list.size
-	  to_remove = list[index]
+          to_remove = list[index]
           remove(to_remove, list)
           remove_executables(to_remove)
         else
@@ -425,8 +425,8 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
         raise Gem::FilePermissionError.new(Gem.bindir) unless
           File.writable?(Gem.bindir)
         list = Gem.source_index.search(gemspec.name).delete_if { |spec|
-	  spec.version == gemspec.version
-	}
+          spec.version == gemspec.version
+        }
         executables = gemspec.executables.clone
         list.each do |spec|
           spec.executables.each do |exe_name|
@@ -435,9 +435,9 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
         end
         return if executables.size == 0
         answer = @force_executables || ask_yes_no(
-	  "Remove executables and scripts for\n" +
-	  "'#{gemspec.executables.join(", ")}' in addition to the gem?",
-	  true) # " # appease ruby-mode - don't ask
+          "Remove executables and scripts for\n" +
+          "'#{gemspec.executables.join(", ")}' in addition to the gem?",
+          true) # " # appease ruby-mode - don't ask
         unless answer
           say "Executables and scripts will remain installed."
           return
@@ -471,19 +471,19 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
     def remove(spec, list)
       if( ! ok_to_remove?(spec)) then
         raise DependencyRemovalException.new(
-	  "Uninstallation aborted due to dependent gem(s)")
+          "Uninstallation aborted due to dependent gem(s)")
       end
       raise Gem::FilePermissionError.new(spec.installation_path) unless
-	File.writable?(spec.installation_path)
+        File.writable?(spec.installation_path)
       FileUtils.rm_rf spec.full_gem_path
       FileUtils.rm_rf File.join(
-	spec.installation_path,
-	'specifications',
-	"#{spec.full_name}.gemspec")
+        spec.installation_path,
+        'specifications',
+        "#{spec.full_name}.gemspec")
       FileUtils.rm_rf File.join(
-	spec.installation_path,
-	'cache',
-	"#{spec.full_name}.gem")
+        spec.installation_path,
+        'cache',
+        "#{spec.full_name}.gem")
       DocManager.new(spec).uninstall_doc
       #remove_stub_files(spec, list - [spec])
       say "Successfully uninstalled #{spec.name} version #{spec.version}"
@@ -495,7 +495,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
       srcindex= Gem::SourceIndex.from_installed_gems
       deplist = Gem::DependencyList.from_source_index(srcindex)
       deplist.ok_to_remove?(spec.full_name) ||
-	ask_if_ok(spec)
+        ask_if_ok(spec)
     end
 
     def ask_if_ok(spec)
@@ -504,8 +504,8 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
       msg << "\t#{spec.full_name}"
       spec.dependent_gems.each do |gem,dep,satlist|
         msg <<
-	  ("#{gem.name}-#{gem.version} depends on " +
-	  "[#{dep.name} (#{dep.version_requirements})]")
+          ("#{gem.name}-#{gem.version} depends on " +
+          "[#{dep.name} (#{dep.version_requirements})]")
       end
       msg << 'If you remove this gems, one or more dependencies will not be met.'
       msg << 'Continue with Uninstall?'
@@ -640,4 +640,3 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
   end
 
 end  # module Gem
-

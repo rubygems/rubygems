@@ -1,3 +1,14 @@
+2006-12-25  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/installer.rb (Gem::Uninstaller::uninstall): Removed
+	stray tab characters.
+
+	* lib/rubygems.rb (Kernel::require_gem): Added file and line
+	number information to require_gem worning (makes it easier to
+	track down those offending lines of code).
+	(Kernel::location_of_caller): Added helper function to determine
+	file and line number of caller.
+
 2006-12-25  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb (Gem::Installer#app_script_text):

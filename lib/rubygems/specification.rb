@@ -152,11 +152,11 @@ module Gem
       @@default_value[name] = []
       module_eval %{
         def #{name}
-	  @#{name} ||= []
-	end
+          @#{name} ||= []
+        end
         def #{name}=(value)
-	  @#{name} = value.to_a
-	end
+          @#{name} = value.to_a
+        end
       }
     end
 

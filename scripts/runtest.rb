@@ -17,7 +17,7 @@ def run_tests(pattern='test/test*.rb', log_enabled=false)
     rescue Exception => ex
       puts "Error in #{fn}: #{ex.message}"
       puts ex.backtrace
-	assert false
+      assert false
     end
   }
 end

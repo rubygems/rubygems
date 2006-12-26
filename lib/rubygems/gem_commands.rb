@@ -69,14 +69,14 @@ module Gem
       end
 
       add_option('-r', '--remote',
-	'Restrict operations to the REMOTE domain') do
-	|value, options|
+        'Restrict operations to the REMOTE domain') do
+        |value, options|
         options[:domain] = :remote
       end
 
       add_option('-b', '--both',
-	'Allow LOCAL and REMOTE operations') do
-	|value, options|
+        'Allow LOCAL and REMOTE operations') do
+        |value, options|
         options[:domain] = :both
       end
     end
@@ -131,34 +131,34 @@ module Gem
       end
 
       add_option('-t', '--[no-]test', 
-	'Run unit tests prior to installation') do 
-	|value, options|
+        'Run unit tests prior to installation') do 
+        |value, options|
         options[:test] = value
       end
 
       add_option('-w', '--[no-]wrappers', 
-	'Use bin wrappers for executables',
-	'Not available on dosish platforms') do 
-	|value, options|
+        'Use bin wrappers for executables',
+        'Not available on dosish platforms') do 
+        |value, options|
         options[:wrappers] = value
       end
 
       add_option('-P', '--trust-policy POLICY', 
-	'Specify gem trust policy.') do 
-	|value, options|
+        'Specify gem trust policy.') do 
+        |value, options|
         options[:security_policy] = value
       end
 
       add_option('--ignore-dependencies',
-	'Do not install any required dependent gems') do 
-	|value, options|
-	options[:ignore_dependencies] = value
+        'Do not install any required dependent gems') do 
+        |value, options|
+        options[:ignore_dependencies] = value
       end
 
       add_option('-y', '--include-dependencies',
                  'Unconditionally install the required',
                  'dependent gems') do |value, options|
-	options[:include_dependencies] = value
+        options[:include_dependencies] = value
       end
     end
     
@@ -206,7 +206,7 @@ module Gem
           :wrappers => true,
           :version => "> 0",
           :install_dir => Gem.dir,
-	  :security_policy => nil,
+          :security_policy => nil,
         })
       add_version_option('install')
       add_local_remote_options
@@ -248,10 +248,10 @@ module Gem
                   alert_error "Local gem file not found: #{filepattern}"
                 end
               else
-                result = Gem::Installer.new(entries.last, options).install(options[:force],	options[:install_dir])
+                result = Gem::Installer.new(entries.last, options).install(options[:force],     options[:install_dir])
                 installed_gems = [result].flatten
                 say "Successfully installed #{installed_gems[0].name}, " +
-		"version #{installed_gems[0].version}" if installed_gems
+                "version #{installed_gems[0].version}" if installed_gems
             end
           rescue LocalInstallationError => e
             say " -> Local installation can't proceed: #{e.message}"
@@ -260,10 +260,10 @@ module Gem
           rescue Gem::InstallError => e
             raise "Error instaling #{gem_name}:\n\t#{e.message}"
           rescue => e
-	    # TODO: Fix this handle to allow the error to propagate to
-	    # the top level handler.  Examine the other errors as
-	    # well.  This implementation here looks suspicious to me --
-	    # JimWeirich (4/Jan/05) 
+            # TODO: Fix this handle to allow the error to propagate to
+            # the top level handler.  Examine the other errors as
+            # well.  This implementation here looks suspicious to me --
+            # JimWeirich (4/Jan/05) 
             alert_error "Error installing gem #{gem_name}[.gem]: #{e.message}"
             return
           end
@@ -272,16 +272,16 @@ module Gem
         if remote? && installed_gems.nil?
           installer = Gem::RemoteInstaller.new(options)
           installed_gems = installer.install(
-	    gem_name,
-	    options[:version],
-	    options[:force],
-	    options[:install_dir])
-	  if installed_gems
-	    installed_gems.compact!
-	    installed_gems.each do |spec|
-	      say "Successfully installed #{spec.full_name}"
-	    end
-	  end
+            gem_name,
+            options[:version],
+            options[:force],
+            options[:install_dir])
+          if installed_gems
+            installed_gems.compact!
+            installed_gems.each do |spec|
+              say "Successfully installed #{spec.full_name}"
+            end
+          end
         end
         
         unless installed_gems
@@ -544,16 +544,16 @@ module Gem
 
     def initialize
       super('dependency',
-	'Show the dependencies of an installed gem',
-	{:version=>"> 0"})
+        'Show the dependencies of an installed gem',
+        {:version=>"> 0"})
       add_version_option('dependency')
       add_option('-r', '--[no-]reverse-dependencies',
-	'Include reverse dependencies in the output'
-	) do |value, options|
+        'Include reverse dependencies in the output'
+        ) do |value, options|
         options[:reverse_dependencies] = value
       end
       add_option('-p', '--pipe', "Pipe Format (name --version ver)") do |value, options|
-	options[:pipe_format] = value
+        options[:pipe_format] = value
       end
     end
 
@@ -574,42 +574,42 @@ module Gem
       srcindex = SourceIndex.from_installed_gems
       options[:args] << '.' if options[:args].empty?
       options[:args].each do |name|
-	speclist = srcindex.search(name, options[:version])
-	if speclist.empty?
-	  say "No match found for #{name} (#{options[:version]})"
-	else
-	  speclist.each do |spec|
-	    specs[spec.full_name] = spec
-	  end
-	end
+        speclist = srcindex.search(name, options[:version])
+        if speclist.empty?
+          say "No match found for #{name} (#{options[:version]})"
+        else
+          speclist.each do |spec|
+            specs[spec.full_name] = spec
+          end
+        end
       end
       reverse = Hash.new { |h, k| h[k] = [] }
       if options[:reverse_dependencies]
-	specs.values.each do |spec|
-	  reverse[spec.full_name] = find_reverse_dependencies(spec, srcindex)
-	end
+        specs.values.each do |spec|
+          reverse[spec.full_name] = find_reverse_dependencies(spec, srcindex)
+        end
       end
       if options[:pipe_format]
-	specs.values.sort.each do |spec|
-	  unless spec.dependencies.empty?
-	    spec.dependencies.each do |dep|
-	      puts "#{dep.name} --version '#{dep.version_requirements}'"
-	    end
-	  end
-	end	
+        specs.values.sort.each do |spec|
+          unless spec.dependencies.empty?
+            spec.dependencies.each do |dep|
+              puts "#{dep.name} --version '#{dep.version_requirements}'"
+            end
+          end
+        end     
       else
-	response = ''
-	specs.values.sort.each do |spec|
+        response = ''
+        specs.values.sort.each do |spec|
           response << print_dependencies(spec)
-	  unless reverse[spec.full_name].empty?
-	    response << "  Used by\n"
-	    reverse[spec.full_name].each do |sp, dep|
-	      response << "    #{sp} (#{dep})\n"
-	    end
-	  end
-	  response << "\n"
-	end
-	say response
+          unless reverse[spec.full_name].empty?
+            response << "  Used by\n"
+            reverse[spec.full_name].each do |sp, dep|
+              response << "    #{sp} (#{dep})\n"
+            end
+          end
+          response << "\n"
+        end
+        say response
       end
     end
 
@@ -629,12 +629,12 @@ module Gem
     def find_reverse_dependencies(spec, srcindex)
       result = []
       srcindex.each do |name, sp|
-	sp.dependencies.each do |dep|
-	  if spec.name == dep.name &&
-	      dep.version_requirements.satisfied_by?(spec.version)
-	    result << [sp.full_name, dep]
-	  end
-	end
+        sp.dependencies.each do |dep|
+          if spec.name == dep.name &&
+              dep.version_requirements.satisfied_by?(spec.version)
+            result << [sp.full_name, dep]
+          end
+        end
       end
       result
     end
@@ -932,7 +932,7 @@ module Gem
         })
       add_install_update_options
       add_option('--system',
-	'Update the RubyGems system software') do |value, options|
+        'Update the RubyGems system software') do |value, options|
         options[:system] = value
       end
     end
@@ -948,13 +948,13 @@ module Gem
 
     def execute
       if options[:system]
-	say "Updating RubyGems..."
-	if ! options[:args].empty?
-	  fail "No gem names are allowed with the --system option"
-	end
-	options[:args] = ["rubygems-update"]
+        say "Updating RubyGems..."
+        if ! options[:args].empty?
+          fail "No gem names are allowed with the --system option"
+        end
+        options[:args] = ["rubygems-update"]
       else
-	say "Updating installed gems..."
+        say "Updating installed gems..."
       end
       hig = highest_installed_gems = {}
       Gem::SourceIndex.from_installed_gems.each do |name, spec|
@@ -977,13 +977,13 @@ module Gem
         install_command.execute
       end
       if gems_to_update.include?("rubygems-update")
-	latest_ruby_gem = remote_gemspecs.select { |s|
+        latest_ruby_gem = remote_gemspecs.select { |s|
           s.name == 'rubygems-update' 
         }.sort_by { |s|
           s.version
         }.last
-	say "Updating version of RubyGems to #{latest_ruby_gem.version}"
-	do_rubygems_update(latest_ruby_gem.version.to_s)
+        say "Updating version of RubyGems to #{latest_ruby_gem.version}"
+        do_rubygems_update(latest_ruby_gem.version.to_s)
       end
       if(options[:system]) then
         say "RubyGems system software updated"
@@ -995,8 +995,8 @@ module Gem
     def do_rubygems_update(version_string)
       update_dir = File.join(Gem.dir, "gems", "rubygems-update-#{version_string}")
       Dir.chdir(update_dir) do
-	puts "Installing RubyGems #{version_string}"
-	system "#{Gem.ruby} setup.rb"
+        puts "Installing RubyGems #{version_string}"
+        system "#{Gem.ruby} setup.rb"
       end
     end
 
@@ -1052,36 +1052,36 @@ module Gem
       if ! options[:args].empty?
         options[:args].each do |gem_name|
           specs = Gem.cache.search(/^#{gem_name}$/i)
-	  specs.each do |spec|
-	    gems_to_cleanup << spec
-	  end
+          specs.each do |spec|
+            gems_to_cleanup << spec
+          end
         end
       else
-	srcindex.each do |name, spec|
-	    gems_to_cleanup << spec
-	end
+        srcindex.each do |name, spec|
+            gems_to_cleanup << spec
+        end
       end
       gems_to_cleanup = gems_to_cleanup.select { |spec|
-	primary_gems[spec.name].version != spec.version
+        primary_gems[spec.name].version != spec.version
       }
       uninstall_command = command_manager['uninstall']
       deplist = DependencyList.new
       gems_to_cleanup.uniq.each do |spec| deplist.add(spec) end
       deplist.dependency_order.each do |spec|
-      	if options[:dryrun]
-      	  say "Dry Run Mode: Would uninstall #{spec.full_name}"
-      	else
-      	  say "Attempting uninstall on #{spec.full_name}"
-      	  options[:args] = [spec.name]
-      	  options[:version] = "= #{spec.version}"
-      	  options[:executables] = true
-      	  uninstall_command.merge_options(options)
-      	  begin
-      	    uninstall_command.execute
-      	  rescue Gem::DependencyRemovalException => ex
-      	    say "Unable to uninstall #{spec.full_name} ... continuing with remaining gems"
-      	  end
-      	end
+        if options[:dryrun]
+          say "Dry Run Mode: Would uninstall #{spec.full_name}"
+        else
+          say "Attempting uninstall on #{spec.full_name}"
+          options[:args] = [spec.name]
+          options[:version] = "= #{spec.version}"
+          options[:executables] = true
+          uninstall_command.merge_options(options)
+          begin
+            uninstall_command.execute
+          rescue Gem::DependencyRemovalException => ex
+            say "Unable to uninstall #{spec.full_name} ... continuing with remaining gems"
+          end
+        end
       end
       say "Clean Up Complete"
     end
@@ -1204,12 +1204,12 @@ module Gem
         options[:all] = value
       end
       add_option('--[no-]rdoc', 
-	'Include RDoc generated documents') do
-	|value, options|
+        'Include RDoc generated documents') do
+        |value, options|
         options[:include_rdoc] = value
       end
       add_option('--[no-]ri', 
-	'Include RI generated documents'
+        'Include RI generated documents'
         ) do |value, options|
         options[:include_ri] = value
       end
@@ -1536,53 +1536,53 @@ module Gem
       add_version_option('contents')
 
       add_option("-l","--list",'List the files inside a Gem') do |v,o|
-	o[:list] = true
+        o[:list] = true
       end
       
       add_option('-s','--spec-dir a,b,c', Array, "Search for gems under specific paths") do |v,o|
-	o[:specdirs] = v
+        o[:specdirs] = v
       end
       
       add_option('-V','--verbose','Be verbose when showing status') do |v,o|
-	o[:verbose] = v
+        o[:verbose] = v
       end
     end
 
     def execute(io=STDOUT)
       if options[:list]
-	version = options[:version] || "> 0.0.0"
-	gem = get_one_gem_name
-	
-	s = options[:specdirs].map do |i|
-	  [i, File.join(i,"specifications")]
-	end.flatten
-	
-	if s.empty?
+        version = options[:version] || "> 0.0.0"
+        gem = get_one_gem_name
+        
+        s = options[:specdirs].map do |i|
+          [i, File.join(i,"specifications")]
+        end.flatten
+        
+        if s.empty?
           s = Gem::SourceIndex.installed_spec_directories
-	  path_kind = "default gem paths"
-	  system = true
-	else
-	  path_kind = "specified path"
-	  system = false
-	end
+          path_kind = "default gem paths"
+          system = true
+        else
+          path_kind = "specified path"
+          system = false
+        end
 
-	si = Gem::SourceIndex.from_gems_in(*s)
+        si = Gem::SourceIndex.from_gems_in(*s)
 
         gem_spec = si.search(gem, version).last
-	unless gem_spec
-	  io.puts "Unable to find gem '#{gem}' in #{path_kind}"
-	  if options[:verbose]
-	    io.puts "\nDirectories searched:"
+        unless gem_spec
+          io.puts "Unable to find gem '#{gem}' in #{path_kind}"
+          if options[:verbose]
+            io.puts "\nDirectories searched:"
             s.each do |p|
               io.puts p
             end
-	  end
-	  return
-	end
-	# show the list of files.
-	gem_spec.files.each do |f|
-	  io.puts File.join(gem_spec.full_gem_path, f)
-	end
+          end
+          return
+        end
+        # show the list of files.
+        gem_spec.files.each do |f|
+          io.puts File.join(gem_spec.full_gem_path, f)
+        end
       end
     end
   end

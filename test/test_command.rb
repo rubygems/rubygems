@@ -84,7 +84,7 @@ class TestCommand < Test::Unit::TestCase
   def test_invoke_with_help
     use_ui(MockGemUi.new) do
       @cmd.add_option('-h', '--help [COMMAND]', 'Get help on COMMAND') do |value, options|
-	options[:help] = true
+        options[:help] = true
       end
       @cmd.invoke('--help')
       assert_match(/Usage/, ui.output)

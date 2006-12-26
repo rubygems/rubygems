@@ -211,13 +211,13 @@ module Gem
     #
     def self.create(input)
       if input.kind_of?(Requirement)
-	return input
+        return input
       elsif input.kind_of?(Array)
-	return self.new(input)
+        return self.new(input)
       elsif input.respond_to? :to_str
-	return self.new([input.to_str])
+        return self.new([input.to_str])
       else
-	return self.default
+        return self.default
       end
     end
     
@@ -235,8 +235,8 @@ module Gem
     #
     def initialize(reqs)
       @requirements = reqs.collect do |rq|
-	op, version_string = parse(rq)
-	[op, Version.new(version_string)]
+        op, version_string = parse(rq)
+        [op, Version.new(version_string)]
       end
       @version = nil   # Avoid warnings.
     end
@@ -259,7 +259,7 @@ module Gem
     def as_list
       normalize
       @requirements.collect { |req|
-	"#{req[0]} #{req[1]}"
+        "#{req[0]} #{req[1]}"
       }
     end
     
@@ -298,13 +298,13 @@ module Gem
     #
     def parse(str)
       if md = /^\s*(#{OP_RE})\s*([0-9.]+)\s*$/.match(str)
-	[md[1], md[2]]
+        [md[1], md[2]]
       elsif md = /^\s*([0-9.]+)\s*$/.match(str)
-	["=", md[1]]
+        ["=", md[1]]
       elsif md = /^\s*(#{OP_RE})\s*$/.match(str)
-	[md[1], "0"]
+        [md[1], "0"]
       else
-	fail ArgumentError, "Illformed requirement [#{str}]"
+        fail ArgumentError, "Illformed requirement [#{str}]"
       end
     end
     

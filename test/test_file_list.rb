@@ -20,12 +20,12 @@ class TestFileList < RubyGemTestCase
 
     def setup
       @spec = Gem::Specification.new do |s|
-	s.files = ['lib/code.rb','lib/apple.rb','lib/brown.rb']
-	s.name = "a"
-	s.version = "0.0.1"
-	s.summary = "summary"
-	s.description = "desc"
-	s.require_path = 'lib'
+        s.files = ['lib/code.rb','lib/apple.rb','lib/brown.rb']
+        s.name = "a"
+        s.version = "0.0.1"
+        s.summary = "summary"
+        s.description = "desc"
+        s.require_path = 'lib'
       end
       
       @cm = Gem::CommandManager.new
@@ -39,11 +39,11 @@ class TestFileList < RubyGemTestCase
       @spec_destination_path = File.join(@gem_install_path, "specifications", @gemspec_filename)
       
       begin
-	File.open(@spec_destination_path, 'w') do |fp| 
-	  fp.write @spec.to_ruby
-	end
+        File.open(@spec_destination_path, 'w') do |fp| 
+          fp.write @spec.to_ruby
+        end
       rescue Exception => e 
-	# ignore errors in setup
+        # ignore errors in setup
       end
       
     end
@@ -99,4 +99,3 @@ class TestFileList < RubyGemTestCase
     end
 
 end
-

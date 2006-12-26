@@ -324,7 +324,7 @@ FILE_PAGE = <<HTML
             <td>Path:</td>
             <td>%full_path%
 IF:cvsurl
-				&nbsp;(<a href="%cvsurl%">CVS</a>)
+                                &nbsp;(<a href="%cvsurl%">CVS</a>)
 ENDIF:cvsurl
             </td>
           </tr>
@@ -567,4 +567,3 @@ end
 
 end
 end
-

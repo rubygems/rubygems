@@ -63,7 +63,7 @@ module Gem
       #   List of directory paths (all ending in "../specifications").
       #
       def installed_spec_directories
-	Gem.path.collect { |dir| File.join(dir, "specifications") }
+        Gem.path.collect { |dir| File.join(dir, "specifications") }
       end
 
       # Factory method to construct a source index instance for a
@@ -78,7 +78,7 @@ module Gem
       #   SourceIndex instance
       #
       def from_gems_in(*spec_dirs)
-	self.new.load_gems_in(*spec_dirs)
+        self.new.load_gems_in(*spec_dirs)
       end
       
       # Load a specification from a file (eval'd Ruby code)
@@ -87,22 +87,22 @@ module Gem
       # return:: Specification instance or nil if an error occurs
       #
       def load_specification(file_name)
-	begin
-	  spec_code = File.read(file_name).untaint
-	  gemspec = eval(spec_code)
-	  if gemspec.is_a?(Gem::Specification)
-	    gemspec.loaded_from = file_name
-	    return gemspec
-	  end
-	  alert_warning "File '#{file_name}' does not evaluate to a gem specification"
-	rescue SyntaxError => e
-	  alert_warning e
-	  alert_warning spec_code
-	rescue Exception => e
-	  alert_warning(e.inspect.to_s + "\n" + spec_code)
-	  alert_warning "Invalid .gemspec format in '#{file_name}'"
-	end
-	return nil
+        begin
+          spec_code = File.read(file_name).untaint
+          gemspec = eval(spec_code)
+          if gemspec.is_a?(Gem::Specification)
+            gemspec.loaded_from = file_name
+            return gemspec
+          end
+          alert_warning "File '#{file_name}' does not evaluate to a gem specification"
+        rescue SyntaxError => e
+          alert_warning e
+          alert_warning spec_code
+        rescue Exception => e
+          alert_warning(e.inspect.to_s + "\n" + spec_code)
+          alert_warning "Invalid .gemspec format in '#{file_name}'"
+        end
+        return nil
       end
       
     end

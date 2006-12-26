@@ -20,7 +20,7 @@ class TestParseCommands < Test::Unit::TestCase
   def test_parsing_bad_options
     use_ui(MockGemUi.new) do
       assert_raises(MockGemUi::TermError) {
-	@cmd_manager.process_args("--bad-arg")
+        @cmd_manager.process_args("--bad-arg")
       }
       assert_match(/invalid option: --bad-arg/i, ui.error)
     end
@@ -31,8 +31,8 @@ class TestParseCommands < Test::Unit::TestCase
     use_ui(MockGemUi.new) do
       check_options = nil
       @cmd_manager['install'].when_invoked do |options|
-	check_options = options
-	true
+        check_options = options
+        true
       end
       
       #check defaults
@@ -48,7 +48,7 @@ class TestParseCommands < Test::Unit::TestCase
       #check settings
       check_options = nil
       @cmd_manager.process_args(
-	"install --force --test --local --rdoc --install-dir . --version 3.0 --no-wrapper")
+        "install --force --test --local --rdoc --install-dir . --version 3.0 --no-wrapper")
       assert_equal true, check_options[:test]
       assert_equal true, check_options[:generate_rdoc]
       assert_equal true, check_options[:force]

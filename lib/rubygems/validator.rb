@@ -23,8 +23,8 @@ module Gem
       require 'md5'
      unless(gem_data =~ /MD5SUM/m)
        return # Don't worry about it...this sucks.  Need to fix MD5 stuff for
-		# new format
-		# FIXME
+                # new format
+                # FIXME
       end
       unless (MD5.md5(gem_data.gsub(/MD5SUM = "([a-z0-9]+)"/, "MD5SUM = \"" + ("F" * 32) + "\"")) == $1.to_s) 
         raise VerificationError.new("Invalid checksum for Gem file")
@@ -95,10 +95,10 @@ module Gem
             format = Gem::Format.from_file_by_path(gem_path)
             format.file_entries.each do |entry, data|
               # Found this file.  Delete it from list
-	      installed_files.delete remove_leading_dot_dir(entry['path'])
+              installed_files.delete remove_leading_dot_dir(entry['path'])
               File.open(File.join(gem_directory, entry['path']), 'rb') do |f|
                 unless MD5.md5(f.read).to_s == MD5.md5(data).to_s
-	          errors[gem_name] << ErrorData.new(entry['path'], "installed file doesn't match original from gem")
+                  errors[gem_name] << ErrorData.new(entry['path'], "installed file doesn't match original from gem")
                 end
               end
             end
@@ -108,7 +108,7 @@ module Gem
         end
         # Clean out directories that weren't explicitly included in the gemspec
         # FIXME: This still allows arbitrary incorrect directories.
-        installed_files.delete_if {|potential_directory|	
+        installed_files.delete_if {|potential_directory|        
           File.directory?(File.join(gem_directory, potential_directory))
         }
         if(installed_files.size > 0) then

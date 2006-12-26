@@ -132,7 +132,7 @@ class FunctionalTest < Test::Unit::TestCase
       require 'openssl'
     rescue LoadError => ex
       puts "WARNING: openssl is not availble, " +
-	"unable to test the cert functions"
+        "unable to test the cert functions"
       return
     end
 
@@ -140,7 +140,7 @@ class FunctionalTest < Test::Unit::TestCase
     gem_withssl "cert --build x@y.z"
     SIGN_FILES.each do |fn| 
       assert File.exist?(fn),
-	"Signing key/cert file '#{fn}' should exist"
+        "Signing key/cert file '#{fn}' should exist"
     end
   ensure
     SIGN_FILES.each do |fn| FileUtils.rm_f fn end

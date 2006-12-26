@@ -240,22 +240,22 @@ module Gem
       report_activate_error(gem) if matches.empty?
 
       if @loaded_specs[gem.name]
-	# This gem is already loaded.  If the currently loaded gem is
-	# not in the list of candidate gems, then we have a version
-	# conflict.
-	existing_spec = @loaded_specs[gem.name]
-	if ! matches.any? { |spec| spec.version == existing_spec.version }
-	  fail Gem::Exception, "can't activate #{gem}, already activated #{existing_spec.full_name}]"
-	end
-	return false
+        # This gem is already loaded.  If the currently loaded gem is
+        # not in the list of candidate gems, then we have a version
+        # conflict.
+        existing_spec = @loaded_specs[gem.name]
+        if ! matches.any? { |spec| spec.version == existing_spec.version }
+          fail Gem::Exception, "can't activate #{gem}, already activated #{existing_spec.full_name}]"
+        end
+        return false
       end
 
       # new load
       spec = matches.last
       if spec.loaded?
-	return false unless autorequire
-	result = spec.autorequire ? require(spec.autorequire) : false
-	return result || false 
+        return false unless autorequire
+        result = spec.autorequire ? require(spec.autorequire) : false
+        return result || false 
       end
 
       spec.loaded = true
@@ -263,17 +263,17 @@ module Gem
       
       # Load dependent gems first
       spec.dependencies.each do |dep_gem|
-	activate(dep_gem, autorequire)
+        activate(dep_gem, autorequire)
       end
       
       # add bin dir to require_path
       if(spec.bindir) then
-	spec.require_paths << spec.bindir
+        spec.require_paths << spec.bindir
       end
       
       # Now add the require_paths to the LOAD_PATH
       spec.require_paths.each do |path|
-	$:.unshift File.join(spec.full_gem_path, path)
+        $:.unshift File.join(spec.full_gem_path, path)
       end
       
       if autorequire && spec.autorequire then
@@ -291,12 +291,12 @@ module Gem
     def report_activate_error(gem)
       matches = Gem.source_index.find_name(gem.name)
       if matches.size==0
-	error = Gem::LoadError.new(
-	  "Could not find RubyGem #{gem.name} (#{gem.version_requirements})\n")
+        error = Gem::LoadError.new(
+          "Could not find RubyGem #{gem.name} (#{gem.version_requirements})\n")
       else
-	error = Gem::LoadError.new(
-	  "RubyGem version error: " +
-	  "#{gem.name}(#{matches.first.version} not #{gem.version_requirements})\n")
+        error = Gem::LoadError.new(
+          "RubyGem version error: " +
+          "#{gem.name}(#{matches.first.version} not #{gem.version_requirements})\n")
       end
       error.name = gem.name
       error.version_requirement = gem.version_requirements

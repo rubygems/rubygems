@@ -158,7 +158,7 @@ module Gem
       # chain matched this security policy at the specified time.
       #
       def verify_gem(signature, data, chain, time = Time.now)
-	Gem.ensure_ssl_available
+        Gem.ensure_ssl_available
         cert_class = OpenSSL::X509::Certificate
         exc = Gem::Security::Exception
         chain ||= []
@@ -486,7 +486,7 @@ module Gem
       attr_accessor :key, :cert_chain
 
       def initialize(key, cert_chain)
-	Gem.ensure_ssl_available
+        Gem.ensure_ssl_available
         @algo = Gem::Security::OPT[:dgst_algo]
         @key, @cert_chain = key, cert_chain
         

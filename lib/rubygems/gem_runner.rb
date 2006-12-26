@@ -25,7 +25,7 @@ module Gem
       do_configuration(args)
       cmd = @cmd_manager_class.instance
       cmd.command_names.each do |c|
-	Command.add_specific_extra_args c, Array(Gem.configuration[c])
+        Command.add_specific_extra_args c, Array(Gem.configuration[c])
       end
       cmd.run(Gem.configuration.args)
     end

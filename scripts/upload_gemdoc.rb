@@ -26,12 +26,12 @@ def read_document
     name = nil
     f.each do |line|
       if line =~ /^==/
-	line =~ /gem\s+(\S+)/ or fail "Illformatted Document Line [#{line.chomp}]"
-	name = $1
-	DOC[name] = ''
+        line =~ /gem\s+(\S+)/ or fail "Illformatted Document Line [#{line.chomp}]"
+        name = $1
+        DOC[name] = ''
       else
-	next if name.nil?
-	DOC[name] << line
+        next if name.nil?
+        DOC[name] << line
       end
     end
   end
@@ -103,13 +103,13 @@ def update_command_docs(cmdref_page)
     if title =~ /gem\s([a-z]+)/
       name = $1
       if DOC[name]
-	body_field = edit_form.fields.find { |f| f.name == 'page[body]'}
-	body_field.value = DOC[name]
-	puts "*** Updating gem #{name} page"
-	$agent.submit(edit_form)
-	UPDATED[name] = true
+        body_field = edit_form.fields.find { |f| f.name == 'page[body]'}
+        body_field.value = DOC[name]
+        puts "*** Updating gem #{name} page"
+        $agent.submit(edit_form)
+        UPDATED[name] = true
       else
-	MISSING << name
+        MISSING << name
       end
     end
   end

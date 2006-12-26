@@ -222,21 +222,21 @@ module Gem
       # arguments come from the gem configuration file read at program
       # startup.
       def specific_extra_args(cmd)
-	specific_extra_args_hash[cmd]
+        specific_extra_args_hash[cmd]
       end
       
       # Add a list of extra arguments for the given command.  +args+
       # may be an array or a string to be split on white space.
       def add_specific_extra_args(cmd,args)
-	args = args.split(/\s+/) if args.kind_of? String
-	specific_extra_args_hash[cmd] = args
+        args = args.split(/\s+/) if args.kind_of? String
+        specific_extra_args_hash[cmd] = args
       end
 
       # Accessor for the specific extra args hash (self initializing).
       def specific_extra_args_hash
-	@specific_extra_args_hash ||= Hash.new do |h,k|
-	  h[k] = Array.new
-	end
+        @specific_extra_args_hash ||= Hash.new do |h,k|
+          h[k] = Array.new
+        end
       end
     end
 

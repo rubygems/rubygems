@@ -1,5 +1,7 @@
 2006-12-25  Jim Weirich  <jim@weirichhouse.org>
 
+	* Removed tab characters from numerous source files.
+	
 	* lib/rubygems/installer.rb (Gem::Uninstaller::uninstall): Removed
 	stray tab characters.
 

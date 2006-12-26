@@ -24,7 +24,7 @@ module Gem
     # Ensure that SSL is available.  Throw an exception if it is not.
     def ensure_ssl_available
       unless ssl_available?
-	fail Gem::Exception, "SSL is not installed on this system"
+        fail Gem::Exception, "SSL is not installed on this system"
       end
     end
   end

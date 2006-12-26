@@ -98,23 +98,23 @@ class TestDependencyList < Test::Unit::TestCase
 
   def test_sorting_four_with_out_ambiguities
     @deplist.add(Gem::Specification.new do |s|
-	s.name = "a"
-	s.version = '1.1'
+        s.name = "a"
+        s.version = '1.1'
       end)
     @deplist.add(Gem::Specification.new do |s|
-	s.name = "b"
-	s.version = '1.1'
-	s.add_dependency("a", ">= 1.1")
+        s.name = "b"
+        s.version = '1.1'
+        s.add_dependency("a", ">= 1.1")
       end)
     @deplist.add(Gem::Specification.new do |s|
-	s.name = "c"
-	s.version = '1.1'
-	s.add_dependency("b", ">= 1.1")
+        s.name = "c"
+        s.version = '1.1'
+        s.add_dependency("b", ">= 1.1")
       end)
     @deplist.add(Gem::Specification.new do |s|
-	s.name = "d"
-	s.version = '1.1'
-	s.add_dependency("c", ">= 1.1")
+        s.name = "d"
+        s.version = '1.1'
+        s.add_dependency("c", ">= 1.1")
       end)
     order = @deplist.dependency_order
     assert_equal ['d', 'c', 'b', 'a'], order.collect { |s| s.name }
@@ -122,19 +122,19 @@ class TestDependencyList < Test::Unit::TestCase
 
   def test_sorting_with_circular_dependency
     @deplist.add(Gem::Specification.new do |s|
-	s.name = "a"
-	s.version = '1.1'
-	s.add_dependency("c", ">= 1.1")
+        s.name = "a"
+        s.version = '1.1'
+        s.add_dependency("c", ">= 1.1")
       end)
     @deplist.add(Gem::Specification.new do |s|
-	s.name = "b"
-	s.version = '1.1'
-	s.add_dependency("a", ">= 1.1")
+        s.name = "b"
+        s.version = '1.1'
+        s.add_dependency("a", ">= 1.1")
       end)
     @deplist.add(Gem::Specification.new do |s|
-	s.name = "c"
-	s.version = '1.1'
-	s.add_dependency("b", ">= 1.1")
+        s.name = "c"
+        s.version = '1.1'
+        s.add_dependency("b", ">= 1.1")
       end)
     order = @deplist.dependency_order
   end

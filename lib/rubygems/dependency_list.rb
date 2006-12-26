@@ -11,7 +11,7 @@ module Gem
     def self.from_source_index(src_index)
       deps = DependencyList.new
       src_index.each do |full_name, spec|
-	deps.add(spec)
+        deps.add(spec)
       end
       deps
     end
@@ -23,9 +23,9 @@ module Gem
     # Are all the dependencies in the list satisfied?
     def ok?
       @specs.all? { |spec|
-	spec.dependencies.all? { |dep|
-	  @specs.find { |s| s.satisfies_requirement?(dep) }
-	}
+        spec.dependencies.all? { |dep|
+          @specs.find { |s| s.satisfies_requirement?(dep) }
+        }
       }
     end
 
@@ -49,19 +49,19 @@ module Gem
     def ok_to_remove?(full_name)
       gem_to_remove = find_name(full_name)
       siblings = @specs.find_all { |s|
-	s.name == gem_to_remove.name &&
-	  s.full_name != gem_to_remove.full_name	
+        s.name == gem_to_remove.name &&
+          s.full_name != gem_to_remove.full_name        
       }
       deps = []
       @specs.each do |spec|
-	spec.dependencies.each do |dep|
-	  deps << dep if gem_to_remove.satisfies_requirement?(dep)
-	end
+        spec.dependencies.each do |dep|
+          deps << dep if gem_to_remove.satisfies_requirement?(dep)
+        end
       end
       deps.all? { |dep|
-	siblings.any? { |s| 
-	  s.satisfies_requirement?(dep)
-	}
+        siblings.any? { |s| 
+          s.satisfies_requirement?(dep)
+        }
       }
     end
 
@@ -83,23 +83,23 @@ module Gem
       disabled = {}
       predecessors = build_predecessors
       while disabled.size < @specs.size
-	candidate = @specs.find { |spec|
-	  ! disabled[spec.full_name] &&
-	    active_count(predecessors[spec.full_name], disabled) == 0
-	}
-	if candidate
-	  disabled[candidate.full_name] = true
-	  result << candidate
-	elsif candidate = @specs.find { |spec| ! disabled[spec.full_name] }
-	  # This case handles circular dependencies.  Just choose a
-	  # candidate and move on.
-	  disabled[candidate.full_name] = true
-	  result << candidate
-	else
-	  # We should never get here, but just in case we will terminate 
-	  # the loop.
-	  break
-	end
+        candidate = @specs.find { |spec|
+          ! disabled[spec.full_name] &&
+            active_count(predecessors[spec.full_name], disabled) == 0
+        }
+        if candidate
+          disabled[candidate.full_name] = true
+          result << candidate
+        elsif candidate = @specs.find { |spec| ! disabled[spec.full_name] }
+          # This case handles circular dependencies.  Just choose a
+          # candidate and move on.
+          disabled[candidate.full_name] = true
+          result << candidate
+        else
+          # We should never get here, but just in case we will terminate 
+          # the loop.
+          break
+        end
       end
       result
     end
@@ -111,7 +111,7 @@ module Gem
     def active_count(specs, ignored)
       result = 0
       specs.each do |spec|
-	result += 1 unless ignored[spec.full_name]
+        result += 1 unless ignored[spec.full_name]
       end
       result
     end
@@ -121,14 +121,14 @@ module Gem
     def build_predecessors
       result = Hash.new { |h,k| h[k] = [] }
       @specs.each do |spec|
-	@specs.each do |other|
-	  next if spec.full_name == other.full_name
-	  other.dependencies.each do |dep|
-	    if spec.satisfies_requirement?(dep)
-	      result[spec.full_name] << other
-	    end
-	  end
-	end
+        @specs.each do |other|
+          next if spec.full_name == other.full_name
+          other.dependencies.each do |dep|
+            if spec.satisfies_requirement?(dep)
+              result[spec.full_name] << other
+            end
+          end
+        end
       end
       result
     end

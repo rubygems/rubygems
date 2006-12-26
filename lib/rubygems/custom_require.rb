@@ -31,7 +31,7 @@ module Kernel
         Gem.activate(spec.name, false, "= #{spec.version}")
         gem_original_require path
       else
-	raise load_error
+        raise load_error
       end
     end
   end
@@ -108,7 +108,7 @@ module Gem
     # order and in reverse version order.
     def init_gemspecs
       Gem.source_index.map { |_, spec| spec }.sort { |a,b|
-	(a.name <=> b.name).nonzero? || (b.version <=> a.version)
+        (a.name <=> b.name).nonzero? || (b.version <=> a.version)
       }
     end
 

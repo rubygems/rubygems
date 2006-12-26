@@ -550,7 +550,7 @@ class TC_TarReader < Test::Unit::TestCase
                         #FIXME: win32? !!
                     end
                     unless ::Config::CONFIG["arch"] =~ /msdos|win32/i
-		      assert_equal(@entry_modes[i],
+                      assert_equal(@entry_modes[i],
                         File.stat(name).mode & (~SETGID_BIT))
                     end
                 end

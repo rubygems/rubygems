@@ -50,10 +50,10 @@ while line = gets
     case cmd
     when "!usage"
       begin
-	cmdobj = $gm[arg]
-	pre(cmdobj, "--help")
+        cmdobj = $gm[arg]
+        pre(cmdobj, "--help")
       rescue NoMethodError
-	puts "Usage of command #{arg} failed"
+        puts "Usage of command #{arg} failed"
       end
     when "!toc"
       puts table_of_contents()

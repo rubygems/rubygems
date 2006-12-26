@@ -74,14 +74,14 @@ class AbstractIndexBuilder
       yield
     else
       unless File.exist?(@directory)
-	FileUtils.mkdir_p(@directory)
+        FileUtils.mkdir_p(@directory)
       end
       fail "not a directory: #{@directory}" unless File.directory?(@directory)
       File.open(File.join(@directory, @filename), "w") do |file|
-	@file = file
-	start_index
-	yield
-	end_index
+        @file = file
+        start_index
+        yield
+        end_index
       end
       cleanup
     end
@@ -196,14 +196,14 @@ class Indexer
     FileUtils.rm_r(@options[:quick_directory]) rescue nil
     @master_index.build do
       @quick_index.build do 
-	gem_file_list.each do |gemfile|
-	  spec = Gem::Format.from_file_by_path(gemfile).spec
-	  abbreviate(spec)
+        gem_file_list.each do |gemfile|
+          spec = Gem::Format.from_file_by_path(gemfile).spec
+          abbreviate(spec)
           sanitize(spec)
-	  announce "   ... adding #{spec.full_name}"
-	  @master_index.add(spec)
-	  @quick_index.add(spec)
-	end
+          announce "   ... adding #{spec.full_name}"
+          @master_index.add(spec)
+          @quick_index.add(spec)
+        end
       end
     end
   end

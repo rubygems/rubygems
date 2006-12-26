@@ -75,15 +75,15 @@ class Versions < Test::Unit::TestCase
 
     def test_illformed_version
       [ "blah", "1.3.a", "1.3.5." ].each do |wn|
-	assert_raises(ArgumentError) { Gem::Version.new(wn) }
+        assert_raises(ArgumentError) { Gem::Version.new(wn) }
       end
     end
 
     def test_illformed_requirements
       [ ">>> 1.3.5", "> blah" ].each do |rq|
-	assert_raises(ArgumentError, "req [#{rq}] should fail") {
-	  Gem::Version::Requirement.new(rq)
-	}
+        assert_raises(ArgumentError, "req [#{rq}] should fail") {
+          Gem::Version::Requirement.new(rq)
+        }
       end
     end
 end

@@ -76,23 +76,23 @@ module Gem
       need_cfg_name = false
       @args = []
       arg_list.each do |arg|
-	if need_cfg_name
-	  @config_file_name = arg
-	  need_cfg_name = false
-	else
-	  case arg
-	  when /^--(traceback|backtrace)$/
-	    @backtrace = true
+        if need_cfg_name
+          @config_file_name = arg
+          need_cfg_name = false
+        else
+          case arg
+          when /^--(traceback|backtrace)$/
+            @backtrace = true
           when /^--debug$/
             $DEBUG = true
-	  when /^--config-file$/
-	    need_cfg_name = true
-	  when /^--config-file=(.+)$/
-	    @config_file_name = $1
-	  else
-	    @args << arg
-	  end
-	end
+          when /^--config-file$/
+            need_cfg_name = true
+          when /^--config-file=(.+)$/
+            @config_file_name = $1
+          else
+            @args << arg
+          end
+        end
       end
     end
   end

@@ -42,11 +42,12 @@ end
 
 module Gem::Package
 
-  class NonSeekableIO < StandardError; end
-  class ArgumentError < ::ArgumentError; end
-  class ClosedIO < StandardError; end
-  class BadCheckSum < StandardError; end
-  class TooLongFileName < StandardError; end
+  class Error < StandardError; end
+  class NonSeekableIO < Error; end
+  class ClosedIO < Error; end
+  class BadCheckSum < Error; end
+  class TooLongFileName < Error; end
+  class FormatError < Error; end
 
   module FSyncDir
     private
@@ -108,7 +109,7 @@ module Gem::Package
 
     def initialize(vals)
       unless vals[:name] && vals[:size] && vals[:prefix] && vals[:mode]
-        raise Gem::Package::ArgumentError
+        raise ArgumentError, ":name, :size, :prefix and :mode required"
       end
       vals[:uid] ||= 0
       vals[:gid] ||= 0
@@ -564,7 +565,7 @@ module Gem::Package
 
       @tarreader.rewind
       @fileops = Gem::FileOperations.new
-      raise RuntimeError, "No metadata found!" unless has_meta
+      raise FormatError, "No metadata found!" unless has_meta
     end
 
     # Attempt to YAML-load a gemspec from the given _io_ parameter.  Return

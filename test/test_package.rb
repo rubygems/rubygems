@@ -4,11 +4,11 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems'
-Gem.manage_gems
-require 'rubygems/package'
 require 'test/unit'
 require 'stringio'
+
+require 'rubygems'
+require 'rubygems/package'
 
 class File
 
@@ -125,11 +125,12 @@ end
 class TestTarHeader < TarTestCase
 
   def test_arguments_are_checked
-    e = Gem::Package::ArgumentError
-    assert_raises(e){Gem::Package::TarHeader.new :name=>"", :size=>"", :mode=>"" }
-    assert_raises(e){Gem::Package::TarHeader.new :name=>"", :size=>"", :prefix=>"" }
-    assert_raises(e){Gem::Package::TarHeader.new :name=>"", :prefix=>"", :mode=>"" }
-    assert_raises(e){Gem::Package::TarHeader.new :prefix=>"", :size=>"", :mode=>"" }
+    e = ArgumentError
+    gpth = Gem::Package::TarHeader
+    assert_raises(e) { gpth.new :name=>"", :size=>"", :mode=>"" }
+    assert_raises(e) { gpth.new :name=>"", :size=>"", :prefix=>"" }
+    assert_raises(e) { gpth.new :name=>"", :prefix=>"", :mode=>"" }
+    assert_raises(e) { gpth.new :prefix=>"", :size=>"", :mode=>"" }
   end
 
   def test_basic_headers

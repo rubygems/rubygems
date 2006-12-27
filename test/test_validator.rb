@@ -7,6 +7,7 @@
 require 'test/unit'
 require 'rubygems'
 Gem::manage_gems
+require "test/simple_gem"
 
 class TestValidator < Test::Unit::TestCase
   def test_missing_gem_throws_error
@@ -53,7 +54,6 @@ class TestValidator < Test::Unit::TestCase
   end
 
   def setup
-    require File.dirname(__FILE__) + "/simple_gem.rb"
     @simple_gem = SIMPLE_GEM
   end
 end

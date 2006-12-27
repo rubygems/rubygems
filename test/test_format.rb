@@ -9,11 +9,11 @@ require 'stringio'
 
 require 'rubygems'
 require 'rubygems/format'
+require "test/simple_gem"
 
 class TestFormat < Test::Unit::TestCase
 
   def setup
-    require File.dirname(__FILE__) + "/simple_gem.rb"
     @simple_gem = SIMPLE_GEM
   end
 

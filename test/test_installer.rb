@@ -250,6 +250,20 @@ class TestInstaller < RubyGemTestCase
     Config::CONFIG["arch"] = old_arch
   end
 
+  def test_install_bad_gem
+    # broken-1.0.0.gem is the first 1k of a-0.0.1.gem
+    gem = File.join 'test', 'data', 'broken-1.0.0.gem'
+    cache_gem = File.join @gemhome, 'cache', 'broken-1.0.0.gem'
+    FileUtils.cp gem, cache_gem
+    
+    installer = Gem::Installer.new cache_gem
+    e = assert_raise Gem::InstallError do
+      installer.install
+    end
+
+    assert_equal "invalid gem format for #{cache_gem}", e.message
+  end
+
   def test_install_with_message
     @gem = File.join 'test', 'data', "PostMessage-0.0.1.gem"
     sout = capture_stdout {

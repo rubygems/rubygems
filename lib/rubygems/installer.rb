@@ -22,7 +22,7 @@ module Gem
   class Installer
 
     include UserInteraction
-  
+
     ##
     # Constructs an Installer instance
     #
@@ -59,7 +59,11 @@ module Gem
       security_policy = @options[:security_policy]
       security_policy = nil if force && security_policy && security_policy.only_signed != true
       
-      format = Gem::Format.from_file_by_path(@gem, security_policy)
+      begin
+        format = Gem::Format.from_file_by_path @gem, security_policy
+      rescue Gem::Package::FormatError
+        raise Gem::InstallError, "invalid gem format for #{@gem}"
+      end
       unless force
         spec = format.spec
         # Check the Ruby version.

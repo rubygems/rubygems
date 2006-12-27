@@ -2,6 +2,8 @@
 
 	* lib/rubygems/package.rb (Gem::Package::TarInput#initialize): Bad
 	packages now raise FormatError instead of a generic RuntimeError.
+	* lib/rubygems/installer.rb (Gem::Installer#install): Raise an
+	InstallError when we have a bad gem file.
 
 2006-12-25  Jim Weirich  <jim@weirichhouse.org>
 

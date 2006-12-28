@@ -45,6 +45,48 @@ class TestInstaller < RubyGemTestCase
     end
   end
 
+  def test_build_extensions_none
+    ui = MockGemUi.new
+    use_ui ui do @installer.build_extensions util_gem_dir, @spec end
+
+    assert_equal '', ui.output
+    assert_equal '', ui.error
+  end
+
+  def test_build_extensions_extconf_bad
+    @spec.extensions << 'extconf.rb'
+
+    ui = MockGemUi.new
+    e = assert_raise Gem::Installer::ExtensionBuildError do
+      use_ui ui do
+        @installer.build_extensions util_gem_dir, @spec
+      end
+    end
+
+    assert_match(/\AERROR: Failed to build gem native extension.$/, e.message)
+
+    assert_equal "Building native extensions.  This could take a while...\n",
+                 ui.output
+    assert_equal '', ui.error
+  end
+
+  def test_build_extensions_unsupported
+    @spec.extensions << nil
+
+    ui = MockGemUi.new
+    e = assert_raise Gem::Installer::ExtensionBuildError do
+      use_ui ui do
+        @installer.build_extensions util_gem_dir, @spec
+      end
+    end
+
+    assert_match(/^No builder for extension ''$/, e.message)
+
+    assert_equal "Building native extensions.  This could take a while...\n",
+                 ui.output
+    assert_equal '', ui.error
+  end
+
   def test_generate_bin_scripts
     @installer.options[:wrappers] = true
     util_make_exec

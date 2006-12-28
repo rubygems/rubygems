@@ -21,6 +21,11 @@ module Gem
   #
   class Installer
 
+    ##
+    # Raised when there is an error while building extensions.
+    #
+    class ExtensionBuildError < Gem::InstallError; end
+
     include UserInteraction
 
     ##
@@ -310,7 +315,6 @@ TEXT
         end
 
         begin
-          err = false
           Dir.chdir File.join(directory, File.dirname(extension))
           results = builder.build(extension, directory, dest_path, results)
         rescue => ex
@@ -327,7 +331,7 @@ Gem files will remain installed in #{directory} for inspection.
 Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
           EOF
 
-          raise Gem::InstallError, message
+          raise ExtensionBuildError, message
         ensure
           Dir.chdir start_dir
         end

@@ -6,6 +6,15 @@
 
 require 'rbconfig'
 
+def run_rdoc(*args)
+  args << '--quiet'
+  args << '--main' << 'README'
+  args << '.' << 'README' << 'LICENSE.txt' << 'GPL.txt'
+
+  r = RDoc::RDoc.new
+  r.document args
+end
+
 def remove_stubs
   is_apparent_stub = lambda { |path|
     break unless File.readable? path
@@ -80,7 +89,33 @@ def install_sources
   end
 end
 
+def remove_old_rdoc
+  require 'rubygems'
+  require 'fileutils'
+
+  puts "Removing old RubyGems RDoc and ri..."
+  Dir[File.join(Gem.dir, 'doc', 'rubygems-*')].each do |dir|
+    FileUtils.rm_rf dir
+  end
+end
+
+def install_rdoc
+  require 'rdoc/rdoc'
+  require 'rubygems'
+
+  rubygems_name = "rubygems-#{Gem::RubyGemsVersion}"
+
+  doc_dir = File.join Gem.dir, 'doc', rubygems_name
+
+  puts "Installing #{rubygems_name} ri..."
+  run_rdoc '--ri', '--op', File.join(doc_dir, 'ri')
+  puts "Installing #{rubygems_name} rdoc..."
+  run_rdoc '--op', File.join(doc_dir, 'rdoc')
+end
+
 install_windows_batch_files
 remove_stubs
 install_sources
+remove_old_rdoc
+install_rdoc
 

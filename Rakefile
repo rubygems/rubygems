@@ -268,7 +268,8 @@ PKG_FILES = FileList[
   "pkgs/**/*",
   "redist/*.gem",
   "scripts/*.rb",
-  "test/**/*"
+  "test/**/*",
+  ".document"
 ]
 PKG_FILES.exclude(%r(^test/temp(/|$)))
 

@@ -486,7 +486,7 @@ end
 # Modify the non-gem version of datadir to handle gem package names.
 
 require 'rbconfig/datadir'
-module Config
+module Config # :nodoc:
   class << self
     alias gem_original_datadir datadir
 
@@ -499,7 +499,6 @@ module Config
     end
   end
 end
-
 
 require 'rubygems/source_index'
 require 'rubygems/specification'

@@ -6,7 +6,7 @@
 
 require 'rubygems/source_index'
 
-module Kernel
+module Kernel # :nodoc:
   alias gem_original_require require
 
   #
@@ -36,7 +36,6 @@ module Kernel
     end
   end
 end  # module Kernel
-
 
 module Gem
 
@@ -117,3 +116,4 @@ module Gem
   end  # class Gem::GemPathLoader
 
 end  # module Gem
+

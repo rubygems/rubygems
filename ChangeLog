@@ -1,3 +1,8 @@
+2006-12-30  Eric Hodel  <drbrain@segment7.net>
+
+	* post-install.rb, lib/rubygems/server.rb: RubyGems now installs RDoc
+	and ri for itself.
+
 2006-12-28  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb (Gem::Installer#build_extensions):

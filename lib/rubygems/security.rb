@@ -29,8 +29,8 @@ module Gem
   end
 end
 
-module  OpenSSL
-  module X509
+module OpenSSL # :nodoc:
+  module X509 # :nodoc:
     class Certificate
       #
       # Check the validity of this certificate.  

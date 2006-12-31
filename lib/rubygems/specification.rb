@@ -8,7 +8,7 @@ require 'time'
 require 'rubygems'
 require 'rubygems/version'
 
-class Time
+class Time # :nodoc:
   def self.today
     Time.parse Time.now.strftime("%Y-%m-%d")
   end

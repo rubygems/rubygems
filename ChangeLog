@@ -1,5 +1,8 @@
 2007-01-06  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/rubygems_version.rb (Gem): Bumped to version
+	0.9.0.9.
+
 	* lib/rubygems/specification.rb
 	(Gem::Specification::test_suite_file): Rewrote default_executable
 	to be a bit more explicit.

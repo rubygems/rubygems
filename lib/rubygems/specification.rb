@@ -337,13 +337,14 @@ module Gem
     end
 
     overwrite_accessor :default_executable do
-      return @default_executable if defined? @default_executable and
-                                    @default_executable
-
-      # Special case: if there is only one executable specified, then
-      # that's obviously the default one.
-      return @executables.first if @executables and @executables.size == 1
-      nil
+      if defined? @default_executable and @default_executable
+        result = @default_executable 
+      elsif @executables and @executables.size == 1
+        result = @executables.first
+      else
+        result = nil
+      end
+      result
     end
 
     def add_bindir(executables)
@@ -359,15 +360,13 @@ module Gem
     end
 
     overwrite_accessor :files do
-      files = (defined? @files and @files) ? @files : []
-      test_files = (defined? @test_files and @test_files) ? @test_files : []
-      executable_files = add_bindir(@executables) || []
-      rdoc_files = (defined? @extra_rdoc_files and @extra_rdoc_files) ?
-                   @extra_rdoc_files : []
-      extension_files = (defined? @extensions and @extensions) ?
-                        @extensions : []
-
-      files | test_files | executable_files | rdoc_files | extension_files
+      result = []
+      result |= as_array(@files) if defined?(@files)
+      result |= as_array(@test_files) if defined?(@test_files)
+      result |= as_array(add_bindir(@executables) || [])
+      result |= as_array(@extra_rdoc_files) if defined?(@extra_rdoc_files)
+      result |= as_array(@extensions) if defined?(@extensions)
+      result
     end
 
     overwrite_accessor :test_files do
@@ -667,6 +666,12 @@ module Gem
       when Numeric, Symbol, true, false, nil then obj
       else obj.dup
       end
+    end
+
+    def as_array(items)
+      items.to_ary
+    rescue NoMethodError => ex
+      [items]
     end
 
     # Return a string containing a Ruby code representation of the

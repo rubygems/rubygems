@@ -260,6 +260,37 @@ class TestSpecification < RubyGemTestCase
     @spec.instance_variable_set :@executables, nil
     assert_equal nil, @spec.default_executable
   end
+  
+  def test_files_combines_several_accessor_values
+    @spec.files = %w(files bin/common)
+    @spec.test_files = %w(test_files bin/common)
+    @spec.executables = %w(executables common)
+    @spec.extra_rdoc_files = %w(extra_rdoc_files bin/common)
+    @spec.extensions = %w(extensions bin/common)
+    
+    assert_equal(
+      %w(files test_files bin/executables extra_rdoc_files extensions bin/common).sort,
+      @spec.files.sort)
+  end
+
+  def test_non_array_stuff_doesnt_goof_up_files
+    @spec.files = "F"
+    @spec.test_files = "TF"
+    @spec.executables = "X"
+    @spec.extra_rdoc_files = "ERF"
+    @spec.extensions = "E"
+    
+    assert_equal %w(TF F bin/X ERF E).sort, @spec.files.sort
+  end
+  
+  def test_pathologically_bad_non_array_stuff_doesnt_goof_up_files
+    @spec.instance_variable_set "@files", "F"
+    @spec.instance_variable_set "@test_files", "TF"
+    @spec.instance_variable_set "@extra_rdoc_files", "ERF"
+    @spec.instance_variable_set "@extensions", "E"
+    
+    assert_equal %w(F TF ERF E).sort, @spec.files.sort
+  end
 
   def test_to_ruby
     today = Time.now.strftime("%Y-%m-%d")
@@ -328,7 +359,60 @@ class TestSpecificationEquality < RubyGemTestCase
     assert ! (s == t)
     assert ! (t == s)
   end
-
+  
+  def test_proper_behavior_with_nil_default_executable
+    a, b, c = (0..2).collect {
+      Gem::Specification.new do |s|
+        s.name = "abc"
+        s.version = "1.2.3"
+        s.default_executable = nil
+        s.executables = []
+      end
+    }
+    c.default_executable = "xx"
+    assert a == b
+    assert a != c
+    assert c != a
+  end
+  
+  def test_proper_behavior_with_bad_non_array_value_for_extensions
+    a, b, c = (0..2).collect {
+      Gem::Specification.new do |s|
+        s.name = "abc"
+        s.version = "1.2.3"
+        s.extensions = "bad value"
+      end
+    }
+    c.extensions = []
+    assert a == b
+    assert a != c
+    assert c != a
+  end
+  
+  # The cgikit specification was reported to be causing trouble in at least 
+  # one version of RubyGems, so we test explicitly for it.  
+  def test_cgikit_specification
+    cgikit = Gem::Specification.new do |s|
+      s.name = %q{cgikit}
+      s.version = "1.1.0"
+      s.date = %q{2004-03-13}
+      s.summary = %q{CGIKit is a componented-oriented web application } +
+      %q{framework like Apple Computers WebObjects.  } +
+      %{This framework services Model-View-Controller architecture } +
+      %q{programming by components based on a HTML file, a definition } +
+      %q{file and a Ruby source.  }
+      s.email = %q{info@spice-of-life.net}
+      s.homepage = %q{http://www.spice-of-life.net/download/cgikit/}
+      s.autorequire = %q{cgikit}
+      s.bindir = nil
+      s.has_rdoc = nil
+      s.required_ruby_version = nil
+      s.platform = nil
+      s.files = ["lib/cgikit", "lib/cgikit.rb", "lib/cgikit/components", "..."]
+    end
+    
+    assert cgikit == cgikit
+  end
 end
 
 class TestComplexSpecification < Test::Unit::TestCase

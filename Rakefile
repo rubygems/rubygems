@@ -48,8 +48,10 @@ CLOBBER.include(
   'pkgs/sources/sources*.gem',
   '.config',
   '**/debug.log',
-  'logs'
-)
+  'logs',
+  '*.out'
+  )
+CLOBBER.exclude('test/data/broken-1.0.0.gem')
 
 desc "Run all tests"
 task :default => [:test]

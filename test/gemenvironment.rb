@@ -41,7 +41,7 @@ module TestEnvironment
         spec.name = 'c'
         spec.version = '1.2'
         Gem::Builder.new(spec).build
-        FileUtils.rm_r "gemhome"
+        FileUtils.rm_rf "gemhome"
         FileUtils.mkdir("gemhome")
         Gem::Installer.new("a-0.0.1.gem").install(false, "gemhome", false)
         Gem::Installer.new("a-0.0.2.gem").install(false, "gemhome", false)

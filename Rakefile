@@ -259,7 +259,7 @@ end
 # Package tasks
 
 PKG_FILES = FileList[
-  "Rakefile", "ChangeLog", "Releases", "TODO", "README", 
+  "Rakefile", "ChangeLog", "Releases", "TODO", "README", "LICENSE.txt",
   "setup.rb",
   "post-install.rb",
   "bin/*",

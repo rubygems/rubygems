@@ -1,6 +1,6 @@
 RubyGems is copyrighted free software by Chad Fowler, Rich Kilmer, Jim
 Weirich and others.  You can redistribute it and/or modify it under
-either the terms of the GPL (see COPYING.txt file), or the conditions
+either the terms of the GPL (see the GPL.txt file), or the conditions
 below:
 
   1. You may make and give away verbatim copies of the source form of the

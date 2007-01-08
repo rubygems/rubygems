@@ -6,8 +6,8 @@
 
 require 'rubygems/source_index'
 
-module Kernel # :nodoc:
-  alias gem_original_require require
+module Kernel
+  alias gem_original_require require # :nodoc:
 
   #
   # We replace Ruby's require with our own, which is capable of
@@ -23,7 +23,7 @@ module Kernel # :nodoc:
   # The normal <tt>require</tt> functionality of returning false if
   # that file has already been loaded is preserved.
   #
-  def require(path)
+  def require(path) # :nodoc:
     gem_original_require path
   rescue LoadError => load_error
     begin

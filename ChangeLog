@@ -2,6 +2,8 @@
 
 	* lib/rubygems/gem_commands.rb (Gem::PristineCommand#execute): Better
 	messaging.
+	* lib/rubygems.rb, lib/rubygems/custom_require.rb: Correctly include
+	documentation for methods added to Kernel.
 
 2007-01-07  Eric Hodel  <drbrain@segment7.net>
 

@@ -49,7 +49,7 @@ module Kernel
   def gem(gem_name, *version_requirements)
     active_gem_with_options(gem_name, version_requirements)
   end
-  
+
   # Same as the +gem+ command, but will also require a file if the gem
   # provides an auto-required file name.
   #
@@ -58,8 +58,7 @@ module Kernel
   def require_gem(gem_name, *version_requirements)
     file, lineno = location_of_caller
     warn "#{file}:#{lineno}:Warning: require_gem is obsolete.  Use gem instead."
-    active_gem_with_options(gem_name,
-      version_requirements, :auto_require=>true)
+    active_gem_with_options(gem_name, version_requirements, :auto_require=>true)
   end
 
   # Return the file name (string) and line number (integer) of the caller of
@@ -78,7 +77,6 @@ module Kernel
   end
   private :active_gem_with_options
 end
-
 
 # Main module to hold all RubyGem classes/modules.
 #

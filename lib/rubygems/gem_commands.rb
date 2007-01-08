@@ -1169,15 +1169,18 @@ module Gem
 
         installer.generate_bin spec, install_dir
       end
+
+      say "Rebuilt all bin stubs"
+
       if gems_were_pristine
         if all_gems
-          say "All gems are already in pristine condition" 
+          say "All installed gem files are already in pristine condition"
         else
           say "#{specs[0].full_name} is already in pristine condition"
         end
       else
         if all_gems
-          say "All gems restored to pristine condition"
+          say "All installed gem files restored to pristine condition"
         else
           say "#{specs[0].full_name} restored to pristine condition"
         end

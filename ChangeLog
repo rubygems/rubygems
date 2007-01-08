@@ -1,3 +1,8 @@
+2007-01-08  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/gem_commands.rb (Gem::PristineCommand#execute): Better
+	messaging.
+
 2007-01-07  Eric Hodel  <drbrain@segment7.net>
 
 	* Rakefile: Include GPL.txt.  Fixes bug #7572 by David Lee.

@@ -1,3 +1,7 @@
+2007-01-07  Eric Hodel  <drbrain@segment7.net>
+
+	* Rakefile: Include GPL.txt.  Fixes bug #7572 by David Lee.
+
 2007-01-06  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/rubygems_version.rb (Gem): Bumped to version

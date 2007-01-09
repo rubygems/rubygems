@@ -290,6 +290,13 @@ class TestSpecification < RubyGemTestCase
     @spec.instance_variable_set "@extensions", "E"
     
     assert_equal %w(F TF ERF E).sort, @spec.files.sort
+    assert_kind_of Integer, @spec.hash
+  end
+  
+  def test_pathologically_bad_exectuables_doesnt_goof_up_hash
+    t = Time.now
+    @spec.instance_variable_set("@executables", t)
+    assert_kind_of Integer, @spec.hash
   end
 
   def test_to_ruby

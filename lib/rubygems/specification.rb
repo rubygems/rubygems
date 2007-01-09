@@ -337,18 +337,22 @@ module Gem
     end
 
     overwrite_accessor :default_executable do
-      if defined? @default_executable and @default_executable
-        result = @default_executable 
-      elsif @executables and @executables.size == 1
-        result = @executables.first
-      else
-        result = nil
+      begin
+        if defined? @default_executable and @default_executable
+          result = @default_executable 
+        elsif @executables and @executables.size == 1
+          result = @executables.first
+        else
+          result = nil
+        end
+        result
+      rescue
+        nil
       end
-      result
     end
 
     def add_bindir(executables)
-      if not defined? @executables or @executables.nil? then
+      if not defined? @executables || @executables.nil?
         return nil
       end
 
@@ -357,6 +361,8 @@ module Gem
       else
         @executables
       end
+    rescue
+      return nil
     end
 
     overwrite_accessor :files do

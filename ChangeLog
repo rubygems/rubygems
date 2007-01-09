@@ -1,3 +1,17 @@
+2007-01-08  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/specification.rb
+	(Gem::Specification::test_suite_file): Added rescue clause for
+	default_executable.
+	(Gem::Specification::add_bindir): Added rescue clause for
+	add_bindir.
+
+	* test/test_specification.rb
+	(TestSpecification::test_pathologically_bad_non_array_stuff_doesnt_goof_up_files):
+	Added a sanity check on hash for some pathologically bad case.
+	(TestSpecification::test_pathologically_bad_exectuables_doesnt_goof_up_hash):
+	Added sanity check for pathologically bad executables field.
+
 2007-01-08  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/gem_commands.rb (Gem::PristineCommand#execute): Better

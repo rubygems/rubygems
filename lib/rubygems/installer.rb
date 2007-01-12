@@ -348,14 +348,20 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
     #
     def extract_files(directory, format)
       require 'fileutils'
-      wd = Dir.getwd
-      Dir.chdir directory do
-        format.file_entries.each do |entry, file_data|
-          path = entry['path'].untaint
-          FileUtils.mkdir_p File.dirname(path)
-          File.open(path, "wb") do |out|
-            out.write file_data
-          end
+      format.file_entries.each do |entry, file_data|
+        path = entry['path'].untaint
+        if path =~ /\A\// then # for extra sanity
+          raise Gem::InstallError,
+                "attempt to install file into #{entry['path'].inspect}"
+        end
+        path = File.expand_path File.join(directory, path)
+        if path !~ /\A#{Regexp.escape directory}/ then
+          raise Gem::InstallError,
+                "attempt to install file into #{entry['path'].inspect}"
+        end
+        FileUtils.mkdir_p File.dirname(path)
+        File.open(path, "wb") do |out|
+          out.write file_data
         end
       end
     end

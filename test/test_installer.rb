@@ -87,6 +87,47 @@ class TestInstaller < RubyGemTestCase
     assert_equal '', ui.error
   end
 
+  def test_extract_files
+    format = Object.new
+    def format.file_entries
+      [[{'size' => 7, 'mode' => 0400, 'path' => 'thefile'}, 'thefile']]
+    end
+
+    @installer.extract_files @tempdir, format
+
+    assert_equal 'thefile', File.read(File.join(@tempdir, 'thefile'))
+  end
+
+  def test_extract_files_relative
+    format = Object.new
+    def format.file_entries
+      [[{'size' => 10, 'mode' => 0644, 'path' => '../thefile'}, '../thefile']]
+    end
+
+    e = assert_raise Gem::InstallError do
+      @installer.extract_files @tempdir, format
+    end
+
+    assert_equal 'attempt to install file into "../thefile"', e.message
+    assert_equal false, File.file?(File.join(@tempdir, '../thefile')),
+                 "You may need to remove this file if you broke the test once"
+  end
+
+  def test_extract_files_absolute
+    format = Object.new
+    def format.file_entries
+      [[{'size' => 8, 'mode' => 0644, 'path' => '/thefile'}, '/thefile']]
+    end
+
+    e = assert_raise Gem::InstallError do
+      @installer.extract_files @tempdir, format
+    end
+
+    assert_equal 'attempt to install file into "/thefile"', e.message
+    assert_equal false, File.file?(File.join('/thefile')),
+                 "You may need to remove this file if you broke the test once"
+  end
+
   def test_generate_bin_scripts
     @installer.options[:wrappers] = true
     util_make_exec

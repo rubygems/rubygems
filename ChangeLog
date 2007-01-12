@@ -1,3 +1,9 @@
+2007-01-12  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/installer.rb (Gem::Installer#extract_files): Don't
+	allow gems to place files outside the installation directory.  Fixes
+	bug 7751 by Gavin Sinclair.
+
 2007-01-08  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/specification.rb

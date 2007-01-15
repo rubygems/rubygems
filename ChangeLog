@@ -1,3 +1,9 @@
+2007-01-15  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/installer.rb (Gem::Installer#extract_files): Only allow
+	installation to absolute directories.  (Call File::expand_path first).
+	More informative message for attempting to install with bad path.
+
 2007-01-14  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/source_info_cache.rb: require 'fileutils', as its

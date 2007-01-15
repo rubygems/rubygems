@@ -4,6 +4,7 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'fileutils'
 require 'pathname'
 require 'rbconfig'
 require 'rubygems/format'
@@ -37,7 +38,7 @@ module Gem
       @gem = gem
       @options = options
     end
-    
+
     ##
     # Installs the gem in the Gem.path.  This will fail (unless
     # force=true) if a Gem has a requirement on another Gem that is
@@ -49,21 +50,20 @@ module Gem
     #      gems/<gem-version>/... #=> the extracted Gem files
     #      cache/<gem-version>.gem #=> a cached copy of the installed Gem
     #
-    # force:: [default = false] if false will fail if a required Gem is not installed,
-    #         or if the Ruby version is too low for the gem
+    # force:: [default = false] if false will fail if a required Gem is not
+    #         installed, or if the Ruby version is too low for the gem
     # install_dir:: [default = Gem.dir] directory that Gem is to be installed in
     #
-    # return:: [Gem::Specification] The specification for the newly installed Gem.
+    # return:: [Gem::Specification] The specification for the newly installed
+    #          Gem.
     #
     def install(force=false, install_dir=Gem.dir, ignore_this_parameter=false)
-      require 'fileutils'
-
-      # if we're forcing the install, then disable security, _unless_ 
+      # if we're forcing the install, then disable security, _unless_
       # the security policy says that we only install singed gems
       # (this includes Gem::Security::HighSecurity)
       security_policy = @options[:security_policy]
       security_policy = nil if force && security_policy && security_policy.only_signed != true
-      
+
       begin
         format = Gem::Format.from_file_by_path @gem, security_policy
       rescue Gem::Package::FormatError
@@ -83,7 +83,7 @@ module Gem
           end
         end
       end
-      
+
       raise Gem::FilePermissionError.new(install_dir) unless File.writable?(install_dir)
 
       # Build spec dir.
@@ -93,10 +93,10 @@ module Gem
       extract_files(@directory, format)
       generate_bin(format.spec, install_dir)
       build_extensions(@directory, format.spec)
-      
+
       # Build spec/cache/doc dir.
       build_support_directories(install_dir)
-      
+
       # Write the spec and cache files.
       write_spec(format.spec, File.join(install_dir, "specifications"))
       unless File.exist? File.join(install_dir, "cache", @gem.split(/\//).pop)
@@ -154,7 +154,7 @@ module Gem
          FileUtils.mkdir_p File.join(install_dir, "doc")
        end
     end
-    
+
     ##
     # Writes the .gemspec specification (in Ruby) to the supplied
     # spec_path.
@@ -337,7 +337,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
         end
       end
     end
-    
+
     ##
     # Reads the YAML file index and then extracts each file
     # into the supplied directory, building directories for the
@@ -347,7 +347,10 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
     # file:: [IO] The IO that contains the file data
     #
     def extract_files(directory, format)
-      require 'fileutils'
+      unless File.expand_path(directory) == directory then
+        raise ArgumentError, "install directory %p not absolute" % directory
+      end
+
       format.file_entries.each do |entry, file_data|
         path = entry['path'].untaint
         if path =~ /\A\// then # for extra sanity
@@ -356,8 +359,9 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
         end
         path = File.expand_path File.join(directory, path)
         if path !~ /\A#{Regexp.escape directory}/ then
-          raise Gem::InstallError,
-                "attempt to install file into #{entry['path'].inspect}"
+          msg = "attempt to install file into %p under %p" %
+                  [entry['path'], directory]
+          raise Gem::InstallError, msg
         end
         FileUtils.mkdir_p File.dirname(path)
         File.open(path, "wb") do |out|
@@ -371,12 +375,12 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
   # The Uninstaller class uninstalls a Gem
   #
   class Uninstaller
-  
+
     include UserInteraction
-  
+
     ##
     # Constructs an Uninstaller instance
-    # 
+    #
     # gem:: [String] The Gem name to uninstall
     #
     def initialize(gem, options)
@@ -386,7 +390,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
       @force_all = options[:all]
       @force_ignore = options[:ignore]
     end
-    
+
     ##
     # Performs the uninstall of the Gem.  This removes the spec, the
     # Gem directory, and the cached .gem file,
@@ -399,7 +403,6 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
     # (i.e. referring to a version that no longer exists).
     #
     def uninstall
-      require 'fileutils'
       list = Gem.source_index.search(/^#{@gem}$/, @version)
       if list.empty?
         raise Gem::InstallError, "Unknown gem #{@gem}-#{@version}"

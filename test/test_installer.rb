@@ -98,6 +98,14 @@ class TestInstaller < RubyGemTestCase
     assert_equal 'thefile', File.read(File.join(@tempdir, 'thefile'))
   end
 
+  def test_extract_files_bad_dest
+    e = assert_raise ArgumentError do
+      @installer.extract_files 'somedir', nil
+    end
+
+    assert_equal 'install directory "somedir" not absolute', e.message
+  end
+
   def test_extract_files_relative
     format = Object.new
     def format.file_entries
@@ -108,7 +116,8 @@ class TestInstaller < RubyGemTestCase
       @installer.extract_files @tempdir, format
     end
 
-    assert_equal 'attempt to install file into "../thefile"', e.message
+    assert_equal "attempt to install file into \"../thefile\" under #{@tempdir.inspect}",
+                 e.message
     assert_equal false, File.file?(File.join(@tempdir, '../thefile')),
                  "You may need to remove this file if you broke the test once"
   end

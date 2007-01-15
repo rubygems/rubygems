@@ -5,21 +5,21 @@
 # See LICENSE.txt for permissions.
 #++
 
-
 require 'test/unit'
 require 'test/gemenvironment'
 
 class TestRequireGem < Test::Unit::TestCase
+
   def setup
+    @old_path = $:.dup
     TestEnvironment.create
     Gem.use_paths("test/data/gemhome")
     Gem.source_index.refresh!
-    @old_path = $:.dup
     Gem.instance_eval { @loaded_specs.clear if @loaded_specs }
   end
 
   def teardown
-    $:.replace(@old_path)
+    $:.replace @old_path
   end
 
   def test_require

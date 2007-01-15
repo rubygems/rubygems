@@ -1,3 +1,8 @@
+2007-01-14  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_info_cache.rb: require 'fileutils', as its
+	needed.
+
 2007-01-12  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb (Gem::Installer#extract_files): Don't

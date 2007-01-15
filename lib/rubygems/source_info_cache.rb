@@ -1,3 +1,4 @@
+require 'fileutils'
 require 'rubygems'
 require 'rubygems/remote_fetcher'
 require 'rubygems/source_info_cache_entry'

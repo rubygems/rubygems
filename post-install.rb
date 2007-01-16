@@ -113,9 +113,9 @@ def install_rdoc
   run_rdoc '--op', File.join(doc_dir, 'rdoc')
 end
 
-install_windows_batch_files
-remove_stubs
 install_sources
 remove_old_rdoc
 install_rdoc
+install_windows_batch_files
+remove_stubs
 

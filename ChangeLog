@@ -3,6 +3,7 @@
 	* lib/rubygems/installer.rb (Gem::Installer#extract_files): Only allow
 	installation to absolute directories.  (Call File::expand_path first).
 	More informative message for attempting to install with bad path.
+	* post-install.rb: Install sources first, since its rather important.
 
 2007-01-14  Eric Hodel  <drbrain@segment7.net>
 

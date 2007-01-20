@@ -1,3 +1,8 @@
+2007-01-20  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_info_cache.rb (Gem::SourceInfoCache#cache_data):
+	Read the source_cache in binary mode for mswin.
+
 2007-01-16  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/rubygems_version.rb (Gem): Released 0.9.1.

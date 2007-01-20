@@ -65,7 +65,8 @@ class Gem::SourceInfoCache
     @dirty = false
     cache_file # HACK writable check
     # Marshal loads 30-40% faster from a String, and 2MB on 20061116 is small
-    @cache_data = Marshal.load(File.read(cache_file)) rescue {}
+    data = File.open cache_file, 'rb' do |fp| fp.read end
+    @cache_data = Marshal.load data rescue {}
   end
 
   # The name of the cache file to be read

@@ -1409,7 +1409,7 @@ module Gem
         require 'fileutils'
         target_dir = File.basename(path).sub(/\.gem$/, '')
         FileUtils.mkdir_p target_dir
-        Installer.new(path).unpack(target_dir)
+        Installer.new(path).unpack(File.expand_path(target_dir))
         say "Unpacked gem: '#{target_dir}'"
       else
         alert_error "Gem '#{gemname}' not installed."

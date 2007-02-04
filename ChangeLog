@@ -1,3 +1,8 @@
+2007-02-04  Chad Fowler <chad@chadfowler.com>
+
+        * Fixed failing tests (changed from assert_equal to assert_match to 
+          deal with ARGV inconsistencies in test vs. production).
+
 2007-02-03  Jim Weirich  <jim@weirichhouse.org>
 
 	* Bumped version to 0.9.1.1.

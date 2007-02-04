@@ -163,7 +163,8 @@ class TestGemSourceInfoCache < RubyGemTestCase
 
   def test_write_cache_user
     FileUtils.chmod 0444, @sic.system_cache_file
-    @sic.cache_data['key'] = 'new'
+    @sic.set_cache_data({'key' => 'new'})
+    @sic.update
     @sic.write_cache
 
     assert_equal [['key', 'sys']], read_cache(@sic.system_cache_file).to_a.sort
@@ -173,8 +174,8 @@ class TestGemSourceInfoCache < RubyGemTestCase
   def test_write_cache_user_from_scratch
     FileUtils.rm_rf @sic.user_cache_file
     FileUtils.chmod 0444, @sic.system_cache_file
-
-    @sic.cache_data['key'] = 'new'
+    @sic.set_cache_data({'key' => 'new'})
+    @sic.update
     @sic.write_cache
 
     assert_equal [['key', 'sys']], read_cache(@sic.system_cache_file).to_a.sort
@@ -184,8 +185,8 @@ class TestGemSourceInfoCache < RubyGemTestCase
   def test_write_cache_user_no_directory
     FileUtils.rm_rf File.dirname(@sic.user_cache_file)
     FileUtils.chmod 0444, @sic.system_cache_file
-
-    @sic.cache_data['key'] = 'new'
+    @sic.set_cache_data({'key' => 'new'})
+    @sic.update
     @sic.write_cache
 
     assert_equal [['key','sys']], read_cache(@sic.system_cache_file).to_a.sort

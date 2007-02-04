@@ -1,3 +1,26 @@
+2007-02-03  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/source_info_cache.rb (Gem::cache_data): Added
+	rescue block to capture bad file loads.  The original rescue was
+	only around the marshal load (bug was probably introduced when the
+	file data was preloaded into a string).
+	(Gem::set_cache_data): Added set_cache_data to be used during
+	testing to avoid reload the cache file over and over.
+
+	* lib/rubygems/gem_commands.rb: Added require for command class so
+	that this file can be loaded independently.
+
+	* lib/rubygems/source_index.rb (Gem::SourceIndex::outdated): Minor
+	cleanup.
+
+	* test/gemutilities.rb
+	(RubyGemTestCase::util_setup_source_info_cache): Minor cleanup
+
+	* test/test_gem_source_info_cache.rb
+	(TestGemSourceInfoCache::test_write_cache_user): Switched to using
+	set_cache_data here and several other places to avoid rereading
+	the cache data over and over again.
+
 2007-02-02  Chad Fowler  <chad@chadfowler.com>
 
 	* lib/rubygems/gem_commands.rb:

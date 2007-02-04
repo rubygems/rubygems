@@ -5,6 +5,9 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'rubygems'
+require 'rubygems/command'
+
 module Gem
 
   class CommandLineError < Gem::Exception; end

@@ -158,16 +158,12 @@ class RubyGemTestCase < Test::Unit::TestCase
 
   def util_setup_source_info_cache(*specs)
     specs = Hash[*specs.map { |spec| [spec.full_name, spec] }.flatten]
-
     si = Gem::SourceIndex.new specs
 
     sice = Gem::SourceInfoCacheEntry.new si, 0
-
     sic = Gem::SourceInfoCache.new
-    sic.cache_data['http://gems.example.com'] = sice
-
+    sic.set_cache_data( { 'http://gems.example.com' => sice } )
     Gem::SourceInfoCache.instance_variable_set :@cache, sic
-
     si
   end
 

@@ -226,7 +226,6 @@ module Gem
     def outdated
       remotes = Gem::SourceInfoCache.search(//)
       outdateds = []
-
       latest_specs.each do |_, local|
         name = local.name
         remote = remotes.select  { |spec| spec.name == name }.
@@ -234,7 +233,6 @@ module Gem
                          last
         outdateds << name if remote and local.version < remote.version
       end
-
       outdateds
     end
 

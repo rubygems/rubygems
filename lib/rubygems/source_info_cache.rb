@@ -5,7 +5,6 @@ require 'rubygems/source_info_cache_entry'
 
 require 'sources'
 
-##
 # SourceInfoCache stores a copy of the gem index for each gem source.
 #
 # There are two possible cache locations, the system cache and the user cache:
@@ -65,16 +64,22 @@ class Gem::SourceInfoCache
     @dirty = false
     cache_file # HACK writable check
     # Marshal loads 30-40% faster from a String, and 2MB on 20061116 is small
-    data = File.open cache_file, 'rb' do |fp| fp.read end
-    @cache_data = Marshal.load data rescue {}
+    begin
+      data = File.open cache_file, 'rb' do |fp|
+        fp.read
+      end
+      @cache_data = Marshal.load data 
+    rescue
+      {}
+    end
   end
 
   # The name of the cache file to be read
   def cache_file
     return @cache_file if @cache_file
     @cache_file = (try_file(system_cache_file) or
-                   try_file(user_cache_file) or
-                   raise "unable to locate a writable cache file")
+      try_file(user_cache_file) or
+      raise "unable to locate a writable cache file")
   end
 
   # Write the cache to a local file (if it is dirty).
@@ -126,6 +131,15 @@ class Gem::SourceInfoCache
     open cache_file, "wb" do |f|
       f.write Marshal.dump(cache_data)
     end
+  end
+
+  # Set the source info cache data directly.  This is mainly used for unit
+  # testing when we don't want to read a file system for to grab the cached
+  # source index information.  The +hash+ should map a source URL into a 
+  # SourceIndexCacheEntry.
+  def set_cache_data(hash)
+    @cache_data = hash
+    @dirty = false
   end
 
   private

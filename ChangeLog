@@ -7,6 +7,10 @@
 
 	* Bumped version to 0.9.1.1.
 
+	* lib/rubygems/gem_open_uri.rb: Added the patched open-uri back
+	into the gems software.  Evidently, the 1.8 version of open-uri
+	does not handle authenticating proxies with username and password.
+
 	* lib/rubygems/source_info_cache.rb (Gem::cache_data): Added
 	rescue block to capture bad file loads.  The original rescue was
 	only around the marshal load (bug was probably introduced when the

@@ -9,7 +9,7 @@ require 'fileutils'
 require 'test/unit/testcase'
 require 'tmpdir'
 require 'uri'
-require 'open-uri'
+require 'rubygems/gem_open_uri'
 
 require 'test/yaml_data'
 require 'test/mockgemui'

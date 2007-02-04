@@ -116,14 +116,19 @@ class Gem::RemoteFetcher
   # Read the data from the (source based) URI, but if it is a file:// URI,
   # read from the filesystem instead.
   def open_uri_or_path(uri, &block)
-    require 'open-uri'
+    require 'rubygems/gem_open_uri'
     if file_uri?(uri)
       open(get_file_uri_path(uri), &block)
     else
       connection_options = {
-        "User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}",
-        :proxy => @proxy_uri,
+        "User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}"
       }
+
+      if @proxy_uri
+        http_proxy_url = "#{@proxy_uri.scheme}://#{@proxy_uri.host}:#{@proxy_uri.port}"  
+        connection_options[:proxy_http_basic_authentication] = [http_proxy_url, unescape(@proxy_uri.user)||'', unescape(@proxy_uri.password)||'']
+      end
+
       open(uri, connection_options, &block)
     end
   end

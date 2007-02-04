@@ -1,5 +1,7 @@
 2007-02-03  Jim Weirich  <jim@weirichhouse.org>
 
+	* Bumped version to 0.9.1.1.
+
 	* lib/rubygems/source_info_cache.rb (Gem::cache_data): Added
 	rescue block to capture bad file loads.  The original rescue was
 	only around the marshal load (bug was probably introduced when the

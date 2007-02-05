@@ -1,3 +1,8 @@
+2007-02-05  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/rubygems_version.rb (Gem): Bumped to version 0.9.2
+	and made a release.
+
 2007-02-04  Chad Fowler <chad@chadfowler.com>
 
         * Fixed failing tests (changed from assert_equal to assert_match to 

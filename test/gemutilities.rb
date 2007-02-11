@@ -75,7 +75,7 @@ class RubyGemTestCase < Test::Unit::TestCase
       Gem::RemoteFetcher.instance_variable_set :@fetcher, nil
     end
 
-    FileUtils.rm_r @tempdir
+    FileUtils.rm_rf @tempdir
     ENV['GEMCACHE'] = nil
     Gem.clear_paths
     Gem::SourceInfoCache.instance_variable_set :@cache, nil

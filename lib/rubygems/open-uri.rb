@@ -4,7 +4,7 @@ require 'time'
 
 module Kernel
   private
-  alias open_uri_original_open open # :nodoc:
+  alias rubygems_open_uri_original_open open # :nodoc:
 
   # makes possible to open various resources including URIs.
   # If the first argument respond to `open' method,
@@ -29,7 +29,7 @@ module Kernel
           (uri = URI.parse(name)).respond_to?(:open)
       uri.open(*rest, &block)
     else
-      open_uri_original_open(name, *rest, &block)
+      rubygems_open_uri_original_open(name, *rest, &block)
     end
   end
   module_function :open

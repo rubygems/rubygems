@@ -264,18 +264,16 @@ module Gem
         activate(dep_gem, autorequire)
       end
 
-      # add bin dir to require_path
-      if(spec.bindir) then
-        spec.require_paths << spec.bindir
-      end
+      # bin directory must come before library directories
+      spec.require_paths.unshift spec.bindir if spec.bindir
 
-      # Now add the require_paths to the LOAD_PATH
       require_paths = spec.require_paths.map do |path|
         File.join spec.full_gem_path, path
       end
 
       sitelibdir = Config::CONFIG['sitelibdir']
 
+      # gem directories must come after -I and ENV['RUBYLIB']
       $:.insert($:.index(sitelibdir), *require_paths)
 
       # Now autorequire

@@ -2,6 +2,9 @@
 
 	* lib/rubygems/open-uri.rb: Fix all the infinite loop errors.
 
+	* lib/rubygems.rb: Add dirs from activate after -I and ENV['RUBYLIB']
+	dirs.  Otherwise gems won't allow -I to work when #gem is called.
+
 2007-02-11  Chad Fowler <chad@chadfowler.com>
 
 	* test/gemutilities.rb: Fix to make Windows tests pass. (Anatol Pomozov)

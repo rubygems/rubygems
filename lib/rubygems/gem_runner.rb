@@ -15,7 +15,7 @@ module Gem
   class GemRunner
 
     def initialize(options={})
-      @cmd_manager_class = options[:command_manager] || Gem::CommandManager
+      @command_manager_class = options[:command_manager] || Gem::CommandManager
       @config_file_class = options[:config_file] || Gem::ConfigFile
       @doc_manager_class = options[:doc_manager] || Gem::DocManager
     end
@@ -23,7 +23,7 @@ module Gem
     # Run the gem command with the following arguments.
     def run(args)
       do_configuration(args)
-      cmd = @cmd_manager_class.instance
+      cmd = @command_manager_class.instance
       cmd.command_names.each do |c|
         Command.add_specific_extra_args c, Array(Gem.configuration[c])
       end

@@ -113,7 +113,7 @@ module Gem
       require 'rubygems/installer'
       require 'rubygems/validator'
       require 'rubygems/doc_manager'
-      require 'rubygems/cmd_manager'
+      require 'rubygems/command_manager'
       require 'rubygems/gem_runner'
       require 'rubygems/config_file'
     end

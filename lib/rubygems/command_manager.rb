@@ -43,7 +43,7 @@ module Gem
 
     # Return the authoratative instance of the command manager.
     def self.instance
-      @cmd_manager ||= CommandManager.new
+      @command_manager ||= CommandManager.new
     end
 
     # Register all the subcommands supported by the gem command.

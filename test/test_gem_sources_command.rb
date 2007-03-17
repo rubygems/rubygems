@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'test/gemutilities'
-require 'rubygems/cmd_manager'
+require 'rubygems/command_manager'
 
 class TestGemSourcesCommand < RubyGemTestCase
 

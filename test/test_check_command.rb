@@ -7,7 +7,7 @@
 
 
 require 'test/unit'
-require 'rubygems/cmd_manager'
+require 'rubygems/command_manager'
 require 'rubygems/user_interaction'
 require 'test/mockgemui'
 

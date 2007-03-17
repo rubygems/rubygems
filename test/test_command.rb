@@ -9,7 +9,7 @@ require 'test/unit'
 require 'test/mockgemui'
 
 require 'rubygems/command'
-require 'rubygems/cmd_manager'
+require 'rubygems/command_manager'
 require 'rubygems/user_interaction'
 
 class Noop

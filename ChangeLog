@@ -1,3 +1,7 @@
+2007-03-17  Chad Fowler <chad@chadfowler.com>
+
+  * Various ruby 1.8.6 fixes for failing tests.
+  
 2007-03-02  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb: Add bin directory before library directory,

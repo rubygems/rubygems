@@ -6,6 +6,8 @@
   
   * Renamed cmd_manager to command_manager to keep names consistent
   
+  * lib/installer.rb: Rework path checking to use Pathname (ara howard bug #8811)
+  
 2007-03-02  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb: Add bin directory before library directory,

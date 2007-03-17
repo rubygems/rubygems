@@ -103,7 +103,7 @@ class TestInstaller < RubyGemTestCase
       @installer.extract_files 'somedir', nil
     end
 
-    assert_equal 'install directory "somedir" not absolute', e.message
+    assert_equal 'format required to extract from', e.message
   end
 
   def test_extract_files_relative

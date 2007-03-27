@@ -40,40 +40,40 @@ module Gem
   # sub-commands supported by the gem command.
   class CommandManager
     include UserInteraction
-
+    include Commands
+    
     # Return the authoratative instance of the command manager.
     def self.instance
       @command_manager ||= CommandManager.new
     end
-
+    
     # Register all the subcommands supported by the gem command.
     def initialize
       @commands = {}
-      register_command BuildCommand.new
-      register_command CertCommand.new
-      register_command CheckCommand.new
-      register_command CleanupCommand.new
-      register_command ContentsCommand.new
-      register_command DependencyCommand.new
-      register_command EnvironmentCommand.new
-      register_command HelpCommand.new
-      register_command InstallCommand.new
-      register_command ListCommand.new
-      register_command OutdatedCommand.new
-      register_command PristineCommand.new
-      register_command QueryCommand.new
-      register_command RDocCommand.new
-      register_command SearchCommand.new
-      register_command SourcesCommand.new
-      register_command SpecificationCommand.new
-      register_command UninstallCommand.new
-      register_command UnpackCommand.new
-      register_command UpdateCommand.new
+      register_command :build
+      register_command :cert
+      register_command :check
+      register_command :contents
+      register_command :dependency
+      register_command :environment
+      register_command :help
+      register_command :install
+      register_command :outdated
+      register_command :pristine
+      register_command :query
+      register_command :list
+      register_command :rdoc
+      register_command :search
+      register_command :sources
+      register_command :specification
+      register_command :uninstall
+      register_command :unpack
+      register_command :update
     end
     
     # Register the command object.
     def register_command(command_obj)
-      @commands[command_obj.command.intern] = command_obj
+      @commands[command_obj] = load_and_instantiate(command_obj)
     end
     
     # Return the registered command from the command name.
@@ -135,6 +135,17 @@ module Gem
     def find_command_possibilities(cmd_name)
       len = cmd_name.length
       self.command_names.select { |n| cmd_name == n[0,len] }
+    end
+    
+    private
+    def load_and_instantiate(command_name)
+      command_name = command_name.to_s
+      begin
+        Gem::Commands.const_get("#{command_name.capitalize}Command").new
+      rescue
+        require "rubygems/commands/#{command_name}_command"
+        retry
+      end
     end
   end
 end 

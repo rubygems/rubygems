@@ -5,6 +5,7 @@ require 'rubygems/gem_commands'
 class TestGemOutdatedCommand < RubyGemTestCase
 
   def setup
+    Gem::CommandManager.instance    
     super
   end
 
@@ -22,7 +23,7 @@ class TestGemOutdatedCommand < RubyGemTestCase
                                  remote_20.full_name + ".gemspec"
     FileUtils.rm remote_spec_file
 
-    oc = Gem::OutdatedCommand.new
+    oc = Gem::Commands::OutdatedCommand.new
 
     util_setup_source_info_cache remote_10, remote_20
 

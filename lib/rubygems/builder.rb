@@ -33,7 +33,23 @@ module Gem
     def build
       @spec.mark_version
       @spec.validate
-      
+      @signer = sign
+      write_package
+      say success
+      @spec.file_name
+    end
+    
+    def success
+      <<-EOM
+  Successfully built RubyGem
+  Name: #{@spec.name}
+  Version: #{@spec.version}
+  File: #{@spec.full_name+'.gem'}
+EOM
+    end
+    
+    private
+    def sign
       # if the signing key was specified, then load the file, and swap
       # to the public key (TODO: we should probably just omit the
       # signing key in favor of the signing certificate, but that's for
@@ -44,30 +60,20 @@ module Gem
         @spec.signing_key = nil
         @spec.cert_chain = signer.cert_chain.map { |cert| cert.to_s }
       end
-
-      file_name = @spec.full_name+".gem"
-
-      Package.open(file_name, "w", signer) do |pkg|
-          pkg.metadata = @spec.to_yaml
-          @spec.files.each do |file|
-              next if File.directory? file
-              pkg.add_file_simple(file, File.stat(file_name).mode & 0777,
-                                  File.size(file)) do |os|
-                                      os.write File.open(file, "rb"){|f|f.read}
-                                  end
-          end
-      end
-      say success
-      file_name
+      signer
     end
     
-    def success
-      <<-EOM
-  Successfully built RubyGem
-  Name: #{@spec.name}
-  Version: #{@spec.version}
-  File: #{@spec.full_name+'.gem'}
-EOM
+    def write_package
+      Package.open(@spec.file_name, "w", @signer) do |pkg|
+        pkg.metadata = @spec.to_yaml
+        @spec.files.each do |file|
+          next if File.directory? file
+          pkg.add_file_simple(file, File.stat(@spec.file_name).mode & 0777,
+                              File.size(file)) do |os|
+              os.write File.open(file, "rb"){|f|f.read}
+          end
+        end
+      end
     end
   end
 end

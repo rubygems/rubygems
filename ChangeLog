@@ -1,3 +1,8 @@
+2007-03-26  Chad Fowler <chad@chadfowler.com>
+
+  * Extracted the big ball of mud that was gem_commands.rb into    
+    separate files.
+
 2007-03-17  Chad Fowler <chad@chadfowler.com>
 
   * Various ruby 1.8.6 fixes for failing tests.

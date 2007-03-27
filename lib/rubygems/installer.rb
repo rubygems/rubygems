@@ -84,7 +84,7 @@ module Gem
         end
       end
 
-      raise Gem::FilePermissionError.new(install_dir) unless File.writable?(install_dir)
+      raise Gem::FilePermissionError.new(Pathname.new(install_dir).expand_path) unless File.writable?(install_dir)
 
       # Build spec dir.
       @directory = File.join(install_dir, "gems", format.spec.full_name).untaint

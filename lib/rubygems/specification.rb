@@ -508,6 +508,11 @@ module Gem
       File.join(installation_path, "gems", full_name)
     end
     
+    # The default (generated) file name of the gem.
+    def file_name
+      full_name + ".gem"
+    end
+    
     # The root directory that the gem was installed into.
     #
     # return:: [String] the installation path

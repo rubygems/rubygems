@@ -4,9 +4,14 @@ require 'rubygems/command_manager'
 
 class TestGemSourcesCommand < RubyGemTestCase
 
+  def setup
+    super
+    Gem::CommandManager.instance # preload command objects
+  end
+
   def test_execute
     util_setup_source_info_cache
-    cmd = Gem::SourcesCommand.new
+    cmd = Gem::Commands::SourcesCommand.new
     cmd.send :handle_options, []
 
     ui = MockGemUi.new
@@ -31,7 +36,7 @@ http://gems.example.com
 
     @fetcher.data['http://beta-gems.example.com/yaml'] = @si.to_yaml
 
-    cmd = Gem::SourcesCommand.new
+    cmd = Gem::Commands::SourcesCommand.new
     cmd.send :handle_options, %w[--add http://beta-gems.example.com]
 
     util_setup_source_info_cache
@@ -66,7 +71,7 @@ http://beta-gems.example.com added to sources
 
     Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
 
-    cmd = Gem::SourcesCommand.new
+    cmd = Gem::Commands::SourcesCommand.new
     cmd.send :handle_options, %w[--add http://beta-gems.example.com]
 
     util_setup_source_info_cache
@@ -86,7 +91,7 @@ Error fetching http://beta-gems.example.com:
   end
 
   def test_execute_add_bad_uri
-    cmd = Gem::SourcesCommand.new
+    cmd = Gem::Commands::SourcesCommand.new
     cmd.send :handle_options, %w[--add beta-gems.example.com]
 
     util_setup_source_info_cache
@@ -105,7 +110,7 @@ beta-gems.example.com is not a URI
   end
 
   def test_execute_remove
-    cmd = Gem::SourcesCommand.new
+    cmd = Gem::Commands::SourcesCommand.new
     cmd.send :handle_options, %w[--remove http://gems.example.com]
 
     util_setup_source_info_cache

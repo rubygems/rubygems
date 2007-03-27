@@ -34,7 +34,7 @@ module Gem
     #
     def self.from_file_by_path(file_path, security_policy = nil)
       unless File.exist?(file_path)
-        raise Gem::Exception, "Cannot load gem at [#{file_path}]"
+        raise Gem::Exception, "Cannot load gem at [#{file_path}] in #{Dir.pwd}"
       end
       require 'fileutils'
       # check for old version gem

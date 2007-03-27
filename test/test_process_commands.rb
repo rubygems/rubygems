@@ -39,7 +39,7 @@ class TestProcessCommands < Test::Unit::TestCase
 
   def test_run_interrupt
     use_ui(MockGemUi.new) do
-      @command_manager.register_command InterruptCommand.new
+      @command_manager.register_command :interrupt
       assert_raises MockGemUi::TermError do
         @command_manager.run 'interrupt'
       end

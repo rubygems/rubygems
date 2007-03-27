@@ -99,7 +99,7 @@ module Gem
     
       def initialize(dir = DEPLOYMENTS_DIR, db = DEPLOYMENTS_DB)
         require 'yaml'
-        require 'digest/sha1'
+        require 'rubygems/digest/sha1'
         @db_file = File.expand_path(File.join(dir, db))
         if File.exist?(@db_file)
           @deployments = YAML.load(File.binread(@db_file))
@@ -242,7 +242,7 @@ module Gem
       end
       
       def prepare
-        @checksum ||= Digest::SHA1.new(File.binread(@source_path)).hexdigest
+        @checksum ||= Gem::SHA1.new(File.binread(@source_path)).hexdigest
       end
       
       def deploy
@@ -260,7 +260,7 @@ module Gem
         return false if File.size(@source_path) != File.size(@destination_path)
         new_checksum = nil
         begin
-          new_checksum = Digest::SHA1.new(File.binread(@destination_path)).hexdigest
+          new_checksum = Gem::SHA1.new(File.binread(@destination_path)).hexdigest
         rescue
           puts $!
           puts $!.backtrace.join("\n")

@@ -20,13 +20,13 @@ module Gem
       if(gem_data.size == 0) then
         raise VerificationError.new("Empty Gem file")
       end
-      require 'md5'
-     unless(gem_data =~ /MD5SUM/m)
-       return # Don't worry about it...this sucks.  Need to fix MD5 stuff for
-                # new format
-                # FIXME
+      require 'rubygems/digest/md5'
+      unless(gem_data =~ /MD5SUM/m)
+        return # Don't worry about it...this sucks.  Need to fix MD5 stuff for
+               # new format
+               # FIXME
       end
-      unless (MD5.md5(gem_data.gsub(/MD5SUM = "([a-z0-9]+)"/, "MD5SUM = \"" + ("F" * 32) + "\"")) == $1.to_s) 
+      unless (Gem::MD5.hexdigest(gem_data.gsub(/MD5SUM = "([a-z0-9]+)"/, "MD5SUM = \"" + ("F" * 32) + "\"")) == $1.to_s) 
         raise VerificationError.new("Invalid checksum for Gem file")
       end
     end
@@ -75,7 +75,7 @@ module Gem
     def alien
       require 'rubygems/installer'
       require 'find'
-      require 'md5'
+      require 'rubygems/digest/md5'
       errors = {}
       Gem::SourceIndex.from_installed_gems.each do |gem_name, gem_spec|
         errors[gem_name] ||= []
@@ -97,7 +97,7 @@ module Gem
               # Found this file.  Delete it from list
               installed_files.delete remove_leading_dot_dir(entry['path'])
               File.open(File.join(gem_directory, entry['path']), 'rb') do |f|
-                unless MD5.md5(f.read).to_s == MD5.md5(data).to_s
+                unless Gem::MD5.hexdigest(f.read).to_s == Gem::MD5.hexdigest(data).to_s
                   errors[gem_name] << ErrorData.new(entry['path'], "installed file doesn't match original from gem")
                 end
               end

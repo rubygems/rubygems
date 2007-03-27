@@ -1,3 +1,16 @@
+2007-03-26  Jim Weirich  <jim@weirichhouse.org>
+
+	*  (Index): new digest technique.
+
+	* lib/rubygems/validator.rb (Gem::Validator::verify_gem): Removed
+	really old MD5 and replaced with gem based digests.  
+	
+	* experimental/deployment.rb (Gem::Deployment::Manager::initialize):
+	New digest technique.
+
+	* experimental/test_deployment.rb (TestDeployment::test_deployed_file):
+          New digest technique.
+
 2007-03-26  Chad Fowler <chad@chadfowler.com>
 
   * Extracted the big ball of mud that was gem_commands.rb into    

@@ -78,7 +78,7 @@ class TestDeployment < Test::Unit::TestCase
     assert_equal dest_file, df.destination_path
     assert_nil df.checksum
     df.prepare
-    assert_equal Digest::SHA1.new("Data").hexdigest, df.checksum
+    assert_equal Gem::SHA1.new("Data").hexdigest, df.checksum
     df.deploy
     assert File.exist?(dest_file)
     assert df.deployed?

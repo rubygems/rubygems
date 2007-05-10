@@ -1,5 +1,8 @@
 2007-05-10  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/rubygems_version.rb (Gem): Bumped to version 0.9.3
+	in preparation for release.
+
 	* lib/rubygems/package.rb (Gem::TarInput::zipped_stream):
 	Zipped_stream now always uses the in memory string IO buffer.
 	There were just too many problems with ZLib (on windows)

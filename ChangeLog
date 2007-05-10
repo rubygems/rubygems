@@ -1,3 +1,10 @@
+2007-05-10  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/package.rb (Gem::TarInput::zipped_stream):
+	Zipped_stream now always uses the in memory string IO buffer.
+	There were just too many problems with ZLib (on windows)
+	otherwise.
+
 2007-03-26  Jim Weirich  <jim@weirichhouse.org>
 
 	*  (Index): new digest technique.

@@ -3,7 +3,7 @@ require 'rubygems'
 require 'rubygems/remote_fetcher'
 require 'rubygems/source_info_cache_entry'
 
-#require 'sources'
+require 'sources'
 
 # SourceInfoCache stores a copy of the gem index for each gem source.
 #

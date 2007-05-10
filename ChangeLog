@@ -1,5 +1,11 @@
 2007-05-10  Jim Weirich  <jim@weirichhouse.org>
 
+	* lib/rubygems/remote_installer.rb: Uncommented the require
+	'sources' line.
+
+	* lib/rubygems/source_info_cache.rb: Uncommented the require
+	'sources' line.
+
 	* lib/rubygems/rubygems_version.rb (Gem): Bumped to version 0.9.3
 	in preparation for release.
 

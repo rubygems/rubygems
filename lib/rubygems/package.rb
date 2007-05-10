@@ -607,21 +607,20 @@ module Gem::Package
 
     # Return an IO stream for the zipped entry.
     #
-    # If zlib is earlier than 1.2.1, then read the entry into memory
-    # and create a string IO object from it.  This avoids a "buffer
-    # error" problem on windows when using an earlier version of zlib.
-    # This problem has not been observed in versions of zlib 1.2.1 or
-    # later.  (Update: Kornelius Kalnbach has reported seeing it in
-    # zlib 1.2.1, so the condition now provides the workaround for
-    # 1.2.1 as well)
+    # NOTE:  Originally this method used two approaches, Return a GZipReader
+    # directly, or read the GZipReader into a string and return a StringIO on
+    # the string.  The string IO approach was used for versions of ZLib before
+    # 1.2.1 to avoid buffer errors on windows machines.  Then we found that
+    # errors happened with 1.2.1 as well, so we changed the condition.  Then
+    # we discovered errors occurred with versions as late as 1.2.3.  At this
+    # point (after some benchmarking to show we weren't seriously crippling
+    # the unpacking speed) we threw our hands in the air and declared that
+    # this method would use the String IO approach on all platforms at all
+    # times.  And that's the way it is.
     def zipped_stream(entry)
-      if Zlib::ZLIB_VERSION <= '1.2.1'
-        zis = Zlib::GzipReader.new entry
-        dis = zis.read
-        is = StringIO.new(dis)
-      else
-        is = Zlib::GzipReader.new entry
-      end
+      zis = Zlib::GzipReader.new entry
+      dis = zis.read
+      is = StringIO.new(dis)
     ensure
       zis.finish if zis
     end

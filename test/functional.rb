@@ -113,7 +113,6 @@ class FunctionalTest < Test::Unit::TestCase
   end
 
   def test_gemrc_paths
-    raise "FOO"
     gem_nossl "env --config-file test/testgem.rc"
     assert_match %{/usr/local/rubygems}, @out
     assert_match %{/another/spot/for/rubygems}, @out

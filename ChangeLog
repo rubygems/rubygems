@@ -1,3 +1,7 @@
+2007-05-14  Chad Fowler  <chad@chadfowler.com>
+ 	* lib/rubygems/command_manager.rb: Re-added registration for 
+        gem cleanup command which I accidentally removed during refactoring.
+
 2007-05-10  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/remote_installer.rb: Uncommented the require

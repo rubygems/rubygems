@@ -68,6 +68,7 @@ module Gem
       register_command :specification
       register_command :uninstall
       register_command :unpack
+      register_command :cleanup
       register_command :update
     end
     

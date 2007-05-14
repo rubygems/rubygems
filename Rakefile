@@ -203,7 +203,7 @@ if HAVE_RCOV
     t.libs << "test"
     t.rcov_opts = ['-xRakefile', '-xrakefile', '-xpublish.rf', '--text-report']
     t.test_files = FileList[
-      'test/test*.rb'
+      'test/{functional,test}*.rb'
     ]
     t.verbose = true
   end

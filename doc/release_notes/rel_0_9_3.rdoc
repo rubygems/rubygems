@@ -1,6 +1,6 @@
 = Announce: RubyGems Release 0.9.3
 
-Release 0.9.3 is a maintenance release of RubyGems that fix a problem
+Release 0.9.3 is a maintenance release of RubyGems that fixes a problem
 with ZLib on Windows playforms.
 
 If you are experiencing "Buffer Error" problems with RubyGems, we

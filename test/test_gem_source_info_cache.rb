@@ -86,7 +86,7 @@ class TestGemSourceInfoCache < RubyGemTestCase
       open(fn, "wb") { |f| f.write Marshal.dump(data) }
     end
 
-    @sic.send :remove_instance_variable, :@cache_data
+    @sic.instance_eval { @cache_data = nil }
 
     fetched = use_ui MockGemUi.new do @sic.cache_data end
 
@@ -125,7 +125,7 @@ class TestGemSourceInfoCache < RubyGemTestCase
       open(fn, "wb") { |f| f.write Marshal.dump(data) }
     end
 
-    @sic.send :remove_instance_variable, :@cache_data
+    @sic.instance_eval { @cache_data = nil }
 
     expected = {
         'http://www.example.com' =>

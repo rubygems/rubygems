@@ -17,6 +17,10 @@ module Gem
         add_option '-r', '--remove SOURCE_URI', 'Remove source' do |value, options|
           options[:remove] = value
         end
+
+        add_option '-c', '--clear-all', 'Remove all sources' do |value, options|
+          options[:clear_all] = value
+        end
       end
 
       def defaults_str
@@ -24,6 +28,13 @@ module Gem
       end
 
       def execute
+        options[:list] = ! (options[:add] || options[:remove] || options[:clear_all]) 
+
+        if options[:clear_all] then
+          remove_cache_file("user", Gem::SourceInfoCache.user_cache_file)
+          remove_cache_file("system", Gem::SourceInfoCache.system_cache_file)
+        end
+
         if options[:add] then
           source_uri = options[:add]
 
@@ -56,7 +67,7 @@ module Gem
           end
         end
 
-        if options[:list] or not (options[:add] or options[:remove]) then
+        if options[:list] then
           say "*** CURRENT SOURCES ***"
           say
 
@@ -66,8 +77,18 @@ module Gem
         end
       end
 
-    end
+      def remove_cache_file(desc, fn)
+        FileUtils.rm_rf fn rescue nil
+        if ! File.exist?(fn)
+          say "*** Removed #{desc} source cache ***"
+        elsif ! File.writable?(fn)
+          say "*** Unable to remove #{desc} source cache (write protected) ***"
+        else
+          say "*** Unable to remove #{desc} source cache ***"
+        end
+      end
+      private :remove_cache_file
 
-    
-  end
-end
+    end # class SourcesCommand
+  end # module Commands
+end # module Gem

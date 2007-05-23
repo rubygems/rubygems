@@ -1,3 +1,14 @@
+2007-05-23  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/commands/sources_command.rb
+	(Gem::Commands::SourcesCommand::initialize): Added a --clear-all
+	option to the sources subcommand.  Clear-all will remove the cache
+	files.
+
+	* lib/rubygems/source_info_cache.rb (Gem): Moved system_cache_file
+	and user_cache_file to class methods so that we can get the file
+	names without creating a SourceInfoCache instance.
+
 2007-05-23  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/source_info_cache.rb: Teach SIC to repair itself

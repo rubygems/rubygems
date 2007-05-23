@@ -32,6 +32,8 @@ class Gem::SourceInfoCache
   include Gem::UserInteraction
 
   @cache = nil
+  @system_cache_file = nil
+  @user_cache_file = nil
 
   def self.cache
     return @cache if @cache
@@ -53,9 +55,6 @@ class Gem::SourceInfoCache
     @cache_data = nil
     @cache_file = nil
     @dirty = false
-
-    @system_cache_file = nil
-    @user_cache_file = nil
   end
 
   # The most recent cache data.
@@ -122,18 +121,28 @@ class Gem::SourceInfoCache
     end.flatten
   end
 
-  # The name of the system cache file.
-  def system_cache_file
-    @system_cache_file ||= File.join(Gem.dir, "source_cache")
-  end
-
   # Mark the cache as updated (i.e. dirty).
   def update
     @dirty = true
   end
 
+  # The name of the system cache file.
+  def system_cache_file
+    self.class.system_cache_file
+  end
+
+  # The name of the system cache file. (class method)
+  def self.system_cache_file
+    @system_cache_file ||= File.join(Gem.dir, "source_cache")
+  end
+
   # The name of the user cache file.
   def user_cache_file
+    self.class.user_cache_file
+  end
+
+  # The name of the user cache file. (class method)
+  def self.user_cache_file
     @user_cache_file ||=
       ENV['GEMCACHE'] || File.join(Gem.user_home, ".gem", "source_cache")
   end

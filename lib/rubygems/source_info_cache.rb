@@ -65,10 +65,22 @@ class Gem::SourceInfoCache
     cache_file # HACK writable check
     # Marshal loads 30-40% faster from a String, and 2MB on 20061116 is small
     begin
-      data = File.open cache_file, 'rb' do |fp|
-        fp.read
+      data = File.open cache_file, 'rb' do |fp| fp.read end
+      @cache_data = Marshal.load data
+      @cache_data.each do |url, sice|
+        next unless Hash === sice
+        @dirty = true
+        if sice.key? 'cache' and sice.key? 'size' and
+           Gem::SourceIndex === sice['cache'] and Numeric === sice['size'] then
+          new_sice = Gem::SourceInfoCacheEntry.new sice['cache'], sice['size']
+          @cache_data[url] = new_sice
+        else # irreperable, force refetch.
+          sice = Gem::SourceInfoCacheEntry.new Gem::SourceIndex.new, 0
+          sice.refresh url # HACK may be unnecessary, see ::cache and #refresh
+          @cache_data[url] = sice
+        end
       end
-      @cache_data = Marshal.load data 
+      @cache_data
     rescue
       {}
     end

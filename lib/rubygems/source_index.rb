@@ -258,6 +258,10 @@ module Gem
       self
     end
     
+    def ==(other) # :nodoc:
+      self.class === other and @gems == other.gems 
+    end
+
     protected
 
     attr_reader :gems

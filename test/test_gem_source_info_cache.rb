@@ -76,6 +76,25 @@ class TestGemSourceInfoCache < RubyGemTestCase
     assert_equal true, @sic.dirty, 'still dirty'
   end
 
+  def test_cache_data_irreparable
+    @fetcher.data['http://gems.example.com/yaml'] = @source_index.to_yaml
+
+    data = { 'http://gems.example.com' => { 'totally' => 'borked' } }
+
+    [@sic.system_cache_file, @sic.user_cache_file].each do |fn|
+      FileUtils.mkdir_p File.dirname(fn)
+      open(fn, "wb") { |f| f.write Marshal.dump(data) }
+    end
+
+    @sic.send :remove_instance_variable, :@cache_data
+
+    fetched = use_ui MockGemUi.new do @sic.cache_data end
+
+    fetched_si = fetched['http://gems.example.com'].source_index
+
+    assert_equal @source_index.index_signature, fetched_si.index_signature
+  end
+
   def test_cache_data_none_readable
     FileUtils.chmod 0222, @sic.system_cache_file
     FileUtils.chmod 0222, @sic.user_cache_file
@@ -92,6 +111,27 @@ class TestGemSourceInfoCache < RubyGemTestCase
       @sic.cache_data
     end
     assert_equal 'unable to locate a writable cache file', e.message
+  end
+
+  def test_cache_data_repair
+    data = {
+        'http://www.example.com' => {
+          'cache' => Gem::SourceIndex.new,
+          'size' => 0,
+      }
+    }
+    [@sic.system_cache_file, @sic.user_cache_file].each do |fn|
+      FileUtils.mkdir_p File.dirname(fn)
+      open(fn, "wb") { |f| f.write Marshal.dump(data) }
+    end
+
+    @sic.send :remove_instance_variable, :@cache_data
+
+    expected = {
+        'http://www.example.com' =>
+          Gem::SourceInfoCacheEntry.new(Gem::SourceIndex.new, 0)
+    }
+    assert_equal expected, @sic.cache_data
   end
 
   def test_cache_data_user_fallback

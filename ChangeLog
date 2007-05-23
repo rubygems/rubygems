@@ -1,5 +1,10 @@
+2007-05-23  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_info_cache.rb: Teach SIC to repair itself
+	when it encounters a bad cache file.
+
 2007-05-14  Chad Fowler  <chad@chadfowler.com>
- 	* lib/rubygems/command_manager.rb: Re-added registration for 
+ 	* lib/rubygems/command_manager.rb: Re-added registration for
         gem cleanup command which I accidentally removed during refactoring.
 
 2007-05-10  Jim Weirich  <jim@weirichhouse.org>

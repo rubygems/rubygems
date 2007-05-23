@@ -27,5 +27,11 @@ class Gem::SourceInfoCacheEntry
     @size = remote_size
   end
 
+  def ==(other) # :nodoc:
+    self.class === other and
+    @size == other.size and
+    @source_index == other.source_index
+  end
+
 end
 

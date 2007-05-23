@@ -182,10 +182,11 @@ task :tag => [:prerelease] do
   reltag = "REL_#{PKG_VERSION.gsub(/\./, '_')}"
   reltag = "REL_#{ENV['REUSE'].gsub(/\./, '_')}" if ENV['REUSE']
   announce "Tagging SVN with [#{reltag}]"
+  software_dir = File.basename(Dir.pwd)
   if ENV['RELTEST']
-    announce "Release Task Testing, skipping SVN tagging"
+    announce "Release Task Testing, skipping SVN tagging (in dir #{software_dir})"
   else
-    sh %{cd ..; svn copy trunk tags/#{reltag}; svn ci -m "Tag #{reltag}" tags/#{reltag}}
+    sh %{cd ..; svn copy #{software_dir} tags/#{reltag}; svn ci -m "Tag #{reltag}" tags/#{reltag}}
   end
 end
 

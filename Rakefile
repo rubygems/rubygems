@@ -186,7 +186,7 @@ task :tag => [:prerelease] do
   if ENV['RELTEST']
     announce "Release Task Testing, skipping SVN tagging (in dir #{software_dir})"
   else
-    sh %{svn copy trunk tags/#{reltag}; svn ci -m "Tag #{reltag}" tags/#{reltag}}
+    sh %{svn copy svn+ssh://rubyforge.org/var/svn/rubygems/trunk svn+ssh://rubyforge.org/var/svn/rubygems/tags/#{reltag}}
   end
 end
 

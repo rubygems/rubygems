@@ -1,0 +1,67 @@
+= Announce: RubyGems Release 0.9.4
+
+Release 0.9.4 is a maintenance release of RubyGems that fixes a number of small bugs.
+
+If you are experiencing problems with the source index (e.g. strange
+"No Method" errors), or problems with zlib (e.g. "Buffer Error"
+messsage), we recommend upgrading to RubyGems 0.9.4.
+
+Bug Fixes Include:
+
+* Several people have been experiencing problems with no method errors
+  on the source index cache.  The source index cache is now a bit more
+  self healing.  Furthermore, if the source index cache is
+  irreparable, then it is automatically dropped and reloaded.
+
+* The source cache files may now be dropped with the "gem sources
+  --clear-all" command.  (This command may require root is the system
+  source cache is in a root protected area).
+
+* Several sub-commands were accidently dropped from the "gem" command.
+  These commands have been restored.
+
+== What is RubyGems?
+
+RubyGems is a package management system for Ruby applications and
+libraries.  RubyGems one command download makes installing Ruby
+software fun and enjoyable again. (Ok, not really.)
+
+Many gems are available for download from the RubyForge site.  Browse
+the list of gems with a "gem list --remote" command and download what
+you need with a simple "gem install <name-of-gem>".  RubyGems takes
+care of the details of installing, not only the gem you requested, but
+also any gems needed by the software you selected.
+
+== How can I get RubyGems?
+
+If you have a recent version of RubyGems (0.8.5 or later), then all
+you need to do is:
+
+  $ gem update --system   (you might need to be admin/root)
+
+(Note: You may have to run the command twice if you have any previosly
+installed rubygems-update gems).
+
+If you have an older version of RubyGems installed, then you can still
+do it in two steps:
+
+  $ gem install rubygems-update  (again, might need to be admin/root)
+  $ update_rubygems              (... here too)
+
+If you don't have any gems install, there is still the pre-gem
+approach to getting software ... doing it manually:
+
+1. DOWNLOAD FROM: http://rubyforge.org/frs/?group_id=126
+2. UNPACK INTO A DIRECTORY AND CD THERE
+3. INSTALL WITH:  ruby setup.rb all  (you may need admin/root privilege)
+
+== What's Next
+
+The next big thing on the plate is to integrate the local/remote gem
+logic and make the whole thing more consistent. 
+
+== Thanks
+
+Keep those gems coming!
+
+-- Jim & Chad (for the RubyGems team)

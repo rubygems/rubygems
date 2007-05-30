@@ -271,7 +271,7 @@ module Gem
     # Convert the yamlized string spec into a real spec (actually, these are
     # hashes of specs.).
     def convert_specs(yaml_spec)
-      YAML.load(reduce_specs(yaml_spec)) or
+      YAML.load(yaml_spec) or
       raise "Didn't get a valid YAML document"
     end
 
@@ -311,26 +311,6 @@ module Gem
       spec_names.find_all { |full_name|
         specification(full_name).nil?
       }
-    end
-
-    # This reduces the source spec in size so that YAML bugs with large data
-    # sets will be dodged.  Obviously this is a workaround, but it allows Gems
-    # to continue to work until the YAML bug is fixed.  
-    def reduce_specs(yaml_spec)
-      result = ""
-      state = :copy
-      yaml_spec.each do |line|
-        if state == :copy && line =~ /^\s+files:\s*$/
-          state = :skip
-          result << line.sub(/$/, " []")
-        elsif state == :skip
-          if line !~ /^\s+-/
-            state = :copy
-          end
-        end
-        result << line if state == :copy
-      end
-      result
     end
 
     def remove_extra(spec_names)

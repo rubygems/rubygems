@@ -12,7 +12,7 @@ Gem.manage_gems
 
 class Gem::SourceIndex
   public :convert_specs, :fetcher, :fetch_bulk_index, :fetch_quick_index,
-         :find_missing, :gems, :reduce_specs, :remove_extra,
+         :find_missing, :gems, :remove_extra,
          :update_with_missing, :unzip
 end
 
@@ -26,9 +26,6 @@ class TestSourceIndex < RubyGemTestCase
 
   def test_convert_specs
     specs = @source_index.convert_specs([@gem1].to_yaml)
-
-    @gem1.files = []
-
     assert_equal [@gem1], specs
   end
 
@@ -127,11 +124,6 @@ class TestSourceIndex < RubyGemTestCase
     assert_equal [updated.name], @source_index.outdated
   ensure
     Gem::SourceInfoCache.instance_variable_set :@cache, nil
-  end
-
-  def test_reduce_specs
-    specs = YAML.load @source_index.reduce_specs([@gem1].to_yaml)
-    assert_equal [], specs.first.files
   end
 
   def test_remove_extra

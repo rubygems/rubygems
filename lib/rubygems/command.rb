@@ -269,6 +269,12 @@ module Gem
       |value, options|
       Gem.configuration.verbose = value
     end
+    
+    add_common_option('-B', '--bulk-threshhold COUNT', 
+      'Threshhold for switching to bulk synchronization (default 50)') do
+      |value, options|
+      Gem.configuration.bulk_threshhold = value.to_i
+    end
 
     # Backtrace and config-file are added so they show up in the help
     # commands.  Both options are actually handled before the other

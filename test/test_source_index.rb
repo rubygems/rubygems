@@ -186,6 +186,7 @@ class TestSourceIndex < RubyGemTestCase
   end
 
   def test_update_incremental
+    Gem.configuration = Gem::ConfigFile.new([])
     quick_index = util_zip @gem_names
     @fetcher.data['http://gems.example.com/quick/index.rz'] = quick_index
 

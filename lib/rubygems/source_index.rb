@@ -30,8 +30,6 @@ module Gem
 
     include Gem::UserInteraction
 
-    INCREMENTAL_THRESHHOLD = 50
-
     # Class Methods. -------------------------------------------------
     class << self
       include Gem::UserInteraction
@@ -243,7 +241,7 @@ module Gem
         gem_names = fetch_quick_index source_uri
         remove_extra gem_names
         missing_gems = find_missing gem_names
-        use_incremental = missing_gems.size <= INCREMENTAL_THRESHHOLD
+        use_incremental = missing_gems.size <= Gem.configuration.bulk_threshhold
       rescue Gem::OperationNotSupportedError => ex
         use_incremental = false
       end

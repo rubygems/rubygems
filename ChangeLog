@@ -1,3 +1,20 @@
+2007-05-30  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/source_index.rb (Gem::SourceIndex::update):
+	Modified to get the bulk_threshhold from the configuration.
+	(Gem::SourceIndex::convert_specs): Ryan removed the "reduce_specs"
+	method because it is not needed any more and is creating memory
+	overhead.
+
+	* lib/rubygems/config_file.rb (Gem::ConfigFile): Added
+	bulk_threshhold field to ConfigFile.
+	(Gem::ConfigFile::initialize): Initialize bulk threshhold to 500.
+
+	* lib/rubygems/command.rb
+	(Gem::Command::specific_extra_args_hash): Added
+	-B (--bulk-threshhold) option to allow user specified bulk
+	download threshhold.
+
 2007-05-23  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/commands/sources_command.rb

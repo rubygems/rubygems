@@ -26,7 +26,11 @@ module Gem
     # * true -- Normal output
     # * :loud -- Extra output
     attr_accessor :verbose
-
+    
+    # Bulk threshhold value.  If the number of missing gems are above
+    # this threshhold value, then a bulk download technique is used.
+    attr_accessor :bulk_threshhold
+    
     # Create the config file object.  +args+ is the list of arguments
     # from the command line.
     #
@@ -57,6 +61,7 @@ module Gem
         warn "Failed to load #{config_file_name} due to permissions problem."
       end
       @hash ||= {}
+      @bulk_threshhold = @hash[:bulk_threshhold] || 500
     end
 
     # The name of the configuration file.

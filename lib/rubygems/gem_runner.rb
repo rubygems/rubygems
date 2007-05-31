@@ -22,12 +22,19 @@ module Gem
 
     # Run the gem command with the following arguments.
     def run(args)
+      start_time = Time.now
       do_configuration(args)
       cmd = @command_manager_class.instance
       cmd.command_names.each do |c|
         Command.add_specific_extra_args c, Array(Gem.configuration[c])
       end
       cmd.run(Gem.configuration.args)
+      end_time = Time.now
+      if Gem.configuration.benchmark 
+        printf "\nExecution time: %0.2f seconds.\n", end_time-start_time
+        puts "Press Enter to finish"
+        STDIN.gets
+      end
     end
 
     private

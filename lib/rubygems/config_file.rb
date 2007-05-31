@@ -31,6 +31,9 @@ module Gem
     # this threshhold value, then a bulk download technique is used.
     attr_accessor :bulk_threshhold
     
+    # True if we are benchmarking this run.
+    attr_accessor :benchmark
+    
     # Create the config file object.  +args+ is the list of arguments
     # from the command line.
     #
@@ -50,6 +53,7 @@ module Gem
     def initialize(arg_list)
       @config_file_name = nil
       @verbose = true
+      @benchmark = false
       handle_arguments(arg_list)
       begin
         @hash = open(config_file_name) {|f| YAML.load(f) }
@@ -94,6 +98,8 @@ module Gem
             need_cfg_name = true
           when /^--config-file=(.+)$/
             @config_file_name = $1
+          when /^--bench(mark)?$/
+            @benchmark = true
           else
             @args << arg
           end

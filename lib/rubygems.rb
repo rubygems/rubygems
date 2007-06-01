@@ -44,7 +44,7 @@ module Kernel
   # return:: [Boolean] true if the Gem is loaded, otherwise false.
   #
   # raises:: [Gem::LoadError] if Gem cannot be found, is listed in
-  #          GEM_SKIP, or version requirement not met. 
+  #          GEM_SKIP, or version requirement not met.
   #
   def gem(gem_name, *version_requirements)
     active_gem_with_options(gem_name, version_requirements)
@@ -92,19 +92,19 @@ module Gem
   class OperationNotSupportedError < Gem::Exception
   end
 
-  RubyGemsPackageVersion = RubyGemsVersion 
+  RubyGemsPackageVersion = RubyGemsVersion
 
   DIRECTORIES = ['cache', 'doc', 'gems', 'specifications']
-  
-  @@source_index = nil  
+
+  @@source_index = nil
 
   @configuration = nil
   @loaded_specs = {}
-  
+
   class << self
 
     attr_reader :loaded_specs
-  
+
     def manage_gems
       require 'rubygems/user_interaction'
       require 'rubygems/builder'
@@ -117,7 +117,7 @@ module Gem
       require 'rubygems/gem_runner'
       require 'rubygems/config_file'
     end
-  
+
     # Returns an Cache of specifications that are in the Gem.path
     #
     # return:: [Gem::SourceIndex] Index of installed Gem::Specifications
@@ -128,7 +128,7 @@ module Gem
 
     # Provide an alias for the old name.
     alias cache source_index
-    
+
     # The directory path where Gems are to be installed.
     #
     # return:: [String] The directory path
@@ -138,7 +138,7 @@ module Gem
       set_home(ENV['GEM_HOME'] || default_dir) unless @gem_home
       @gem_home
     end
-    
+
     # The directory path where executables are to be installed.
     #
     def bindir(install_dir=Gem.dir)
@@ -206,7 +206,7 @@ module Gem
       File.join(spec.full_gem_path, 'data', gem_name)
     end
 
-    # Return the searcher object to search for matching gems.  
+    # Return the searcher object to search for matching gems.
     def searcher
       MUTEX.synchronize do
         @searcher ||= Gem::GemPathSearcher.new
@@ -312,9 +312,9 @@ module Gem
     def clear_paths
       @gem_home = nil
       @gem_path = nil
-      @@source_index = nil  
+      @@source_index = nil
     end
-    
+
     # Use the +home+ and (optional) +paths+ values for +dir+ and +path+.
     # Used mainly by the unit tests to provide environment isolation.
     #
@@ -323,7 +323,7 @@ module Gem
       set_home(home) if home
       set_paths(paths.join(File::PATH_SEPARATOR)) if paths
     end
-    
+
     # Return a list of all possible load paths for all versions for
     # all gems in the Gem installation.
     #
@@ -370,7 +370,7 @@ module Gem
     end
 
     private
-    
+
     # Return all the partial paths in the given +gemdir+.
     def all_partials(gemdir)
       Dir[File.join(gemdir, 'gems/*')]
@@ -381,11 +381,12 @@ module Gem
       latest = {}
       all_partials(gemdir).each do |gp|
         base = File.basename(gp)
-        base =~ /^(.*)-(\d+(\.\d+)*)$/
-        name, version = $1, $2
-        ver = Gem::Version.new(version)
-        if latest[name].nil? || ver > latest[name][0]
-          latest[name] = [ver, gp]
+        if base =~ /(.*)-((\d+\.)*\d+)/ then
+          name, version = $1, $2
+          ver = Gem::Version.new(version)
+          if latest[name].nil? || ver > latest[name][0]
+            latest[name] = [ver, gp]
+          end
         end
       end
       latest.collect { |k,v| v[1] }
@@ -393,7 +394,7 @@ module Gem
 
     # Expand each partial gem path with each of the required paths
     # specified in the Gem spec.  Each expanded path is yielded.
-    def each_load_path(partials) 
+    def each_load_path(partials)
       partials.each do |gp|
         base = File.basename(gp)
         specfn = File.join(dir, "specifications", base + ".gemspec")
@@ -414,7 +415,7 @@ module Gem
       @gem_home = home
       ensure_gem_subdirectories(@gem_home)
     end
-    
+
     # Set the Gem search path (as reported by +path+).
     def set_paths(gpaths)
       if gpaths
@@ -422,11 +423,11 @@ module Gem
         @gem_path << Gem.dir
       else
         @gem_path = [Gem.dir]
-      end      
+      end
       @gem_path.uniq!
       @gem_path.each do |gp| ensure_gem_subdirectories(gp) end
     end
-    
+
     # Some comments from the ruby-talk list regarding finding the home
     # directory:
     #
@@ -452,7 +453,7 @@ module Gem
         end
       end
     end
-    
+
     public
 
     # Default home directory path to be used if an alternate value is
@@ -465,7 +466,7 @@ module Gem
       end
     end
 
-    private 
+    private
 
     # Quietly ensure the named Gem directory contains all the proper
     # subdirectories.  If we can't create a directory due to a

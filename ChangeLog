@@ -1,3 +1,10 @@
+2007-06-01  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems.rb
+	(Gem::OperationNotSupportedError::latest_partials): Changed from
+	match data style to $1 style regexp (on the recommendation of
+	better performance).
+
 2007-05-30  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/source_index.rb (Gem::SourceIndex::update):

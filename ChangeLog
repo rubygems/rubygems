@@ -1,3 +1,10 @@
+2007-06-02  Jim Weirich  <jim@weirichhouse.org>
+
+	* lib/rubygems/source_info_cache.rb (Gem::try_file): Fix for issue
+	where a non-existing source cache file causes the gem command to
+	not find a gem.  This fixes it by marshalling out an empty
+	hash.  (Thanks to Nick Sieger for this fix).
+
 2007-06-01  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems.rb

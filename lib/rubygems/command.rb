@@ -271,7 +271,7 @@ module Gem
     end
     
     add_common_option('-B', '--bulk-threshhold COUNT', 
-      'Threshhold for switching to bulk synchronization (default 50)') do
+      'Threshhold for switching to bulk synchronization (default 500)') do
       |value, options|
       Gem.configuration.bulk_threshhold = value.to_i
     end

@@ -179,7 +179,7 @@ class Gem::SourceInfoCache
       end
     end
     if File.writable?(dir)
-      FileUtils.touch fn
+      File.open(fn, "wb") { |f| f << Marshal.dump({}) }
       return fn
     end
     nil

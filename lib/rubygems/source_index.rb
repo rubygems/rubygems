@@ -247,10 +247,10 @@ module Gem
       end
 
       if use_incremental then
-        update_with_missing source_uri, missing_gems
+        update_with_missing(source_uri, missing_gems)
       else
-        new_index = fetch_bulk_index source_uri
-        @gems.replace new_index.gems
+        new_index = fetch_bulk_index(source_uri)
+        @gems.replace(new_index.gems)
       end
 
       self

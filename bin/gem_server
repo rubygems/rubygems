@@ -1,4 +1,4 @@
-#! /usr/local/bin/ruby186
+#!/usr/bin/env ruby
 
 require 'rubygems/server'
 

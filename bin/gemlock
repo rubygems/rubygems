@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#! /usr/local/bin/ruby186
 # -*- ruby -*-
 #--
 # Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.

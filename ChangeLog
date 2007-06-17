@@ -1,3 +1,8 @@
+2007-06-16  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/gem_path_searcher.rb (Gem::GemPathSearcher): Moved out
+	of lib/rubygems/custom_require.rb and added tests.
+
 2007-06-02  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/source_info_cache.rb (Gem::try_file): Fix for issue

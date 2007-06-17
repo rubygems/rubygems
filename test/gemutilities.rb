@@ -14,6 +14,12 @@ require 'rubygems/gem_open_uri'
 require 'test/yaml_data'
 require 'test/mockgemui'
 
+module Gem
+  def self.source_index=(si)
+    @@source_index = si
+  end
+end
+
 module Utilities
   def make_cache_area(path, *uris)
     fn = File.join(path, 'source_cache')
@@ -101,6 +107,7 @@ class RubyGemTestCase < Test::Unit::TestCase
     File.open(path, "w") { |io|
       yield(io)
     }
+    path
   end
 
   def quick_gem(gemname, version='0.0.2')
@@ -117,9 +124,12 @@ class RubyGemTestCase < Test::Unit::TestCase
       yield(s) if block_given?
     end
 
-    write_file(File.join("specifications", spec.full_name + ".gemspec")) do |io|
+    path = File.join "specifications", "#{spec.full_name}.gemspec"
+    written_path = write_file path do |io|
       io.write(spec.to_ruby)
     end
+
+    spec.loaded_from = written_path
 
     return spec
   end

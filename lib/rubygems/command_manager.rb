@@ -53,22 +53,22 @@ module Gem
       register_command :build
       register_command :cert
       register_command :check
+      register_command :cleanup
       register_command :contents
       register_command :dependency
       register_command :environment
       register_command :help
       register_command :install
+      register_command :list
       register_command :outdated
       register_command :pristine
       register_command :query
-      register_command :list
       register_command :rdoc
       register_command :search
       register_command :sources
       register_command :specification
       register_command :uninstall
       register_command :unpack
-      register_command :cleanup
       register_command :update
       register_command :which
     end

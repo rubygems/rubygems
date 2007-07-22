@@ -1,3 +1,5 @@
+require 'rubygems/commands/query_command'
+
 module Gem
   module Commands
     class ListCommand < QueryCommand

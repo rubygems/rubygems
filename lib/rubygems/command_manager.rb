@@ -70,6 +70,7 @@ module Gem
       register_command :unpack
       register_command :cleanup
       register_command :update
+      register_command :which
     end
     
     # Register the command object.

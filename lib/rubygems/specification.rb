@@ -367,12 +367,16 @@ module Gem
 
     overwrite_accessor :files do
       result = []
-      result |= as_array(@files) if defined?(@files)
-      result |= as_array(@test_files) if defined?(@test_files)
-      result |= as_array(add_bindir(@executables) || [])
-      result |= as_array(@extra_rdoc_files) if defined?(@extra_rdoc_files)
-      result |= as_array(@extensions) if defined?(@extensions)
-      result
+      result.push(*@files) if defined?(@files)
+      result.push(*@test_files) if defined?(@test_files)
+      result.push(*(add_bindir(@executables)))
+      result.push(*@extra_rdoc_files) if defined?(@extra_rdoc_files)
+      result.push(*@extensions) if defined?(@extensions)
+      result.uniq.compact
+    end
+
+    def lib_files
+      @files
     end
 
     overwrite_accessor :test_files do

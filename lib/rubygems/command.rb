@@ -15,10 +15,26 @@ module Gem
     
     Option = Struct.new(:short, :long, :description, :handler)
     
-    attr_reader :command, :options
-    attr_accessor :summary, :defaults, :program_name
+    # The name of the command.
+    attr_reader :command
+
+    # The options for the command.
+    attr_reader :options
+
+    # The default options for the command.
+    attr_accessor :defaults
+
+    # The name of the command for command-line invocation.
+    attr_accessor :program_name
+
+    # A short description of the command.
+    attr_accessor :summary
     
-    # Initialize a generic gem command.
+    # Initializes a generic gem command named +command+.  +summary+ is a short
+    # description displayed in `gem help commands`.  +defaults+ are the
+    # default options.
+    #
+    # Use add_option to add command-line switches.
     def initialize(command, summary=nil, defaults={})
       @command = command
       @summary = summary
@@ -53,7 +69,7 @@ module Gem
       ""
     end
 
-    # Display the help message for this command.
+    # Display the help message for the command.
     def show_help
       parser.program_name = usage
       say parser
@@ -81,12 +97,17 @@ module Gem
       @when_invoked = block
     end
     
-    # Add a option (and a handler) to this command.
-    def add_option(*args, &handler)
-      @option_list << [args, handler]
+    # Add a command-line option and handler to the command.
+    #
+    # See OptionParser#make_switch for an explanation of +opts+.
+    #
+    # +handler+ will be called with two values, the value of the argument and
+    # the options hash.
+    def add_option(*opts, &handler) # :yields: value, options
+      @option_list << [opts, handler]
     end
 
-    # Remove a previously defined command option.
+    # Remove previously defined command-line argument +name+.
     def remove_option(name)
       @option_list.reject! { |args, handler| args.any? { |x| x =~ /^#{name}/ } }
     end

@@ -1,3 +1,11 @@
+2007-07-22  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb (Gem::Specification#files): Make it
+	faster
+	* lib/rubygems/command.rb: Better documentation
+	* lib/rubygems/commands/which_command.rb, bin/gemwhich: Move `gemwhich`
+	under `gem`.
+
 2007-07-22  Chad Fowler  <chad@chadfowler.com>
 
         * lib/rubygems/gem_commands.rb: Added another example to the gem example output

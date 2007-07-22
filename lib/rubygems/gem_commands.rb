@@ -267,6 +267,10 @@ module Gem
     * See information about RubyGems:
     
         gem environment
+ 
+    * Update all gems on your system:
+    
+        gem update        
 
     }.gsub(/^    /, "")
     

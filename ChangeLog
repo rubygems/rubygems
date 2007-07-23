@@ -2,7 +2,9 @@
 
 	* lib/rubygems/specification.rb (Gem::Specification#files): Make it
 	faster
-	* lib/rubygems/command.rb: Better documentation
+	* lib/rubygems/command.rb: Better documentation.  -v flag now lets you
+	get to "really verbose" mode which makes the verbose progress meter
+	work.
 	* lib/rubygems/commands/which_command.rb, bin/gemwhich: Move `gemwhich`
 	under `gem`.
 	* lib/rubygems/commands/mirror_command.rb, bin/gem_mirror: Move
@@ -23,7 +25,11 @@
 	backtrace when --debug is set too.
 	* lib/rubygems/command_manager.rb (Gem::CommandManager#load_and_instantiate):
 	Don't infinitely loop in retry.
-	* bin/gemri: Everybody should have ri integration now.
+	* bin/gemri: Removed.  Everybody should have ri integration now.
+	* lib/rubygems/config_file.rb: Allow settings to be examined.  Pull
+	verbose from .gemrc.
+	* lib/rubygems/commands/environment_command.rb: Add ruby executable
+	and configuration settings to `gem env`.
 
 2007-07-22  Chad Fowler  <chad@chadfowler.com>
 

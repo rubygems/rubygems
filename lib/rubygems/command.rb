@@ -285,10 +285,14 @@ module Gem
       options[:help] = true
     end
 
-    add_common_option('-v', '--verbose', 
-      'Set the verbose level of output') do
-      |value, options|
-      Gem.configuration.verbose = value
+    add_common_option('-v', '--[no-]verbose', 
+                      'Set the verbose level of output') do |value, options|
+      # Set us to "really verbose" so the progess meter works
+      if Gem.configuration.verbose and value then
+        Gem.configuration.verbose = 1
+      else
+        Gem.configuration.verbose = value
+      end
     end
     
     add_common_option('-B', '--bulk-threshhold COUNT', 

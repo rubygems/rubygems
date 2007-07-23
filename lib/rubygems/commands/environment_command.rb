@@ -41,15 +41,31 @@ module Gem
           fail Gem::CommandLineError, "Unknown enviroment option [#{arg}]"
         else
           out = "RubyGems Environment:\n"
+
           out << "  - VERSION: #{Gem::RubyGemsVersion} (#{Gem::RubyGemsPackageVersion})\n"
+
           out << "  - INSTALLATION DIRECTORY: #{Gem.dir}\n"
+
+          ruby_exe_name = Config::CONFIG['ruby_install_name']
+          ruby_exe_name << ".#{Config::CONFIG['EXEEXT']}" unless
+            Config::CONFIG['EXEEXT'].empty?
+          ruby_exe = File.join Config::CONFIG['bindir'], ruby_exe_name
+          out << "  - RUBY EXECUTABLE: #{ruby_exe}\n"
+
           out << "  - GEM PATH:\n"
           Gem.path.collect { |p| out << "     - #{p}\n" }
+
+          out << "  - GEM CONFIGURATION:\n"
+          Gem.configuration.each do |name, value|
+            out << "     - #{name.inspect} => #{value.inspect}\n"
+          end
+
           out << "  - REMOTE SOURCES:\n"
           require 'sources'
           Gem.sources.collect do |s|
             out << "     - #{s}\n"
           end
+
         end
         say out
         true

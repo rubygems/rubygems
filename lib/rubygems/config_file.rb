@@ -66,11 +66,20 @@ module Gem
       end
       @hash ||= {}
       @bulk_threshhold = @hash[:bulk_threshhold] || 500
+      @verbose = @hash[:verbose] if @hash.key? :verbose
     end
 
     # The name of the configuration file.
     def config_file_name
       @config_file_name || Gem.config_file
+    end
+
+    # Delegates to @hash
+    def each(&block)
+      yield 'verbose', @verbose
+      yield 'benchmark', @benchmark
+      yield 'config_file_name', @config_file_name if @config_file_name
+      @hash.each(&block)
     end
 
     # Return the configuration information for +key+.

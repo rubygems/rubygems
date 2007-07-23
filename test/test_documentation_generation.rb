@@ -25,11 +25,10 @@ class TestDocumentationGeneration < Test::Unit::TestCase
     @manager = Gem::DocManager.new(@spec)
   end
   
-  
   def test_unwritable_destination_path_throws_file_permission_error
     flexmock(File).should_receive(:writable?).and_return(false)    
-    assert_raises(Gem::FilePermissionError) do
-      Gem::DocManager.new(@spec)
+    assert_raise Gem::FilePermissionError do
+      Gem::DocManager.new(@spec).uninstall_doc
     end
   end
   

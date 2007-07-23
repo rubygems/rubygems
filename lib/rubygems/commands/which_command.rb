@@ -5,7 +5,7 @@ class Gem::Commands::WhichCommand < Gem::Command
   EXT = %w[.rb .rbw .so .dll] # HACK
 
   def initialize
-    super 'which', 'find the location of a library',
+    super 'which', 'Find the location of a library',
           :search_gems_first => false, :show_all => false
 
     add_option '-a', '--all', 'show all matching files' do |show_all, options|
@@ -63,6 +63,10 @@ class Gem::Commands::WhichCommand < Gem::Command
 
   def gem_paths(spec)
     spec.require_paths.collect { |d| File.join spec.full_gem_path, d }
+  end
+
+  def usage # :nodoc:
+    "#{program_name} FILE [...]"
   end
 
 end

@@ -1,15 +1,16 @@
-require 'open-uri'
-require 'yaml'
-require 'zlib'
 require 'rubygems/command'
 
 class Gem::Commands::MirrorCommand < Gem::Command
 
   def initialize
-    super 'mirror', 'mirror a gem repository'
+    super 'mirror', 'Mirror a gem repository'
   end
 
   def execute
+    require 'open-uri'
+    require 'yaml'
+    require 'zlib'
+
     config_file = File.join Gem.user_home, '.gemmirrorrc'
 
     raise "Config file #{config_file} not found" unless File.exist? config_file

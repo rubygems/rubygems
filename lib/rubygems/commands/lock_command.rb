@@ -31,7 +31,7 @@ require 'rubygems/command'
 class Gem::Commands::LockCommand < Gem::Command
 
   def initialize
-    super 'lock', 'generate a lockdown list of gems',
+    super 'lock', 'Generate a lockdown list of gems',
           :strict => false
 
     add_option '-s', '--[no-]strict',

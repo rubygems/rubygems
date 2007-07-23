@@ -81,7 +81,8 @@ def install_sources
   require 'rubygems'
   require 'rubygems/builder'
   require 'rubygems/installer'
-  Dir.chdir("pkgs/sources") do
+  pkgs_sources_dir = File.join(File.expand_path(File.dirname(__FILE__)), 'pkgs', 'sources')
+  Dir.chdir(pkgs_sources_dir) do
     load "sources.gemspec"
     spec = Gem.sources_spec
     gem_file = Gem::Builder.new(spec).build

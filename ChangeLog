@@ -15,6 +15,8 @@
 	* lib/rubygems/user_interaction.rb
 	(Gem::UserInteraction#choose_from_list): Check result for EOF.  Fixes
 	bug #8018.  Patch by Jos Backus.
+	* post-install.rb: Install using absolute path.  Fixes bug #10675.
+	Patch by Jeremy Burks.
 
 2007-07-22  Eric Hodel  <drbrain@segment7.net>
 

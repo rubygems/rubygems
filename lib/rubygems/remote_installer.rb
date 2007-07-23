@@ -11,8 +11,6 @@ require 'rubygems'
 require 'rubygems/installer'
 require 'rubygems/source_info_cache'
 
-require 'sources'
-
 module Gem
   class DependencyError < Gem::Exception; end
   class GemNotFoundException < Gem::Exception; end

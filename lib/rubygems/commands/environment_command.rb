@@ -42,7 +42,11 @@ module Gem
         else
           out = "RubyGems Environment:\n"
 
-          out << "  - VERSION: #{Gem::RubyGemsVersion} (#{Gem::RubyGemsPackageVersion})\n"
+          out << "  - RUBYGEMS VERSION: #{Gem::RubyGemsVersion} (#{Gem::RubyGemsPackageVersion})\n"
+
+          out << "  - RUBY VERSION: #{RUBY_VERSION} (#{RUBY_RELEASE_DATE}"
+          out << " patchlevel #{RUBY_PATCHLEVEL}" if defined? RUBY_PATCHLEVEL
+          out << ") [#{RUBY_PLATFORM}]\n"
 
           out << "  - INSTALLATION DIRECTORY: #{Gem.dir}\n"
 
@@ -52,7 +56,7 @@ module Gem
           ruby_exe = File.join Config::CONFIG['bindir'], ruby_exe_name
           out << "  - RUBY EXECUTABLE: #{ruby_exe}\n"
 
-          out << "  - GEM PATH:\n"
+          out << "  - GEM PATHS:\n"
           Gem.path.collect { |p| out << "     - #{p}\n" }
 
           out << "  - GEM CONFIGURATION:\n"
@@ -60,16 +64,15 @@ module Gem
             out << "     - #{name.inspect} => #{value.inspect}\n"
           end
 
-          out << "  - REMOTE SOURCES:\n"
           require 'sources'
+          out << "  - REMOTE SOURCES:\n"
           Gem.sources.collect do |s|
             out << "     - #{s}\n"
           end
-
         end
         say out
         true
       end
-    end    
+    end
   end
 end

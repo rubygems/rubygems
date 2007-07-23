@@ -3,8 +3,6 @@ require 'rubygems'
 require 'rubygems/remote_fetcher'
 require 'rubygems/source_info_cache_entry'
 
-require 'sources'
-
 # SourceInfoCache stores a copy of the gem index for each gem source.
 #
 # There are two possible cache locations, the system cache and the user cache:
@@ -101,6 +99,8 @@ class Gem::SourceInfoCache
 
   # Refreshes each source in the cache from its repository.
   def refresh
+    require 'sources'
+
     Gem.sources.each do |source_uri|
       cache_entry = cache_data[source_uri]
       if cache_entry.nil? then

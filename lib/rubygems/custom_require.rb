@@ -27,13 +27,11 @@ module Kernel
   def require(path) # :nodoc:
     gem_original_require path
   rescue LoadError => load_error
-    begin
-      if spec = Gem.searcher.find(path)
-        Gem.activate(spec.name, false, "= #{spec.version}")
-        gem_original_require path
-      else
-        raise load_error
-      end
+    if spec = Gem.searcher.find(path)
+      Gem.activate(spec.name, false, "= #{spec.version}")
+      gem_original_require path
+    else
+      raise load_error
     end
   end
 end  # module Kernel

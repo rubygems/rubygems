@@ -2,8 +2,9 @@ require 'rubygems/command'
 
 class Gem::Commands::DependencyCommand < Gem::Command
 
-  include Gem::VersionOption
   include Gem::CommandAids
+  include Gem::LocalRemoteOptions
+  include Gem::VersionOption
 
   def initialize
     super 'dependency',
@@ -12,7 +13,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
 
     add_version_option('dependency')
 
-    add_option('-r', '--[no-]reverse-dependencies',
+    add_option('-R', '--[no-]reverse-dependencies',
                'Include reverse dependencies in the output') do
       |value, options|
       options[:reverse_dependencies] = value
@@ -22,10 +23,12 @@ class Gem::Commands::DependencyCommand < Gem::Command
                "Pipe Format (name --version ver)") do |value, options|
       options[:pipe_format] = value
     end
+
+    add_local_remote_options
   end
 
   def defaults_str
-    "--version '> 0' --no-reverse"
+    "--local --version '> 0' --no-reverse"
   end
 
   def usage
@@ -37,34 +40,39 @@ class Gem::Commands::DependencyCommand < Gem::Command
   end
 
   def execute
+    options[:args] << '.' if options[:args].empty?
     specs = {}
 
-    srcindex = Gem::SourceIndex.from_installed_gems
+    source_indexes = []
 
-    options[:args] << '.' if options[:args].empty?
+    if local? then
+      source_indexes << Gem::SourceIndex.from_installed_gems
+    end
 
-    options[:args].each do |name|
-      speclist = srcindex.search name, options[:version]
-
-      if speclist.empty?
-        say "No match found for #{name} (#{options[:version]})"
-      else
-        speclist.each do |spec|
-          specs[spec.full_name] = spec
-        end
+    if remote? then
+      Gem::SourceInfoCache.cache_data.map do |_, sice|
+        source_indexes << sice.source_index
       end
     end
+
+    options[:args].each do |name|
+      source_indexes.each do |source_index|
+        specs = specs.merge find_gems(name, source_index)
+      end
+    end
+
+    terminate_interaction if specs.empty?
 
     reverse = Hash.new { |h, k| h[k] = [] }
 
     if options[:reverse_dependencies] then
-      specs.values.each do |spec|
-        reverse[spec.full_name] = find_reverse_dependencies spec, srcindex
+      specs.values.each do |source_index, spec|
+        reverse[spec.full_name] = find_reverse_dependencies spec, source_index
       end
     end
 
     if options[:pipe_format] then
-      specs.values.sort.each do |spec|
+      specs.values.sort_by { |_, spec| spec }.each do |_, spec|
         unless spec.dependencies.empty?
           spec.dependencies.each do |dep|
             say "#{dep.name} --version '#{dep.version_requirements}'"
@@ -74,7 +82,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
     else
       response = ''
 
-      specs.values.sort.each do |spec|
+      specs.values.sort_by { |_, spec| spec }.each do |_, spec|
         response << print_dependencies(spec)
         unless reverse[spec.full_name].empty? then
           response << "  Used by\n"
@@ -116,5 +124,20 @@ class Gem::Commands::DependencyCommand < Gem::Command
     result
   end
 
+  def find_gems(name, source_index)
+    specs = {}
+
+    spec_list = source_index.search name, options[:version]
+
+    if spec_list.empty? then
+      say "No match found for #{name} (#{options[:version]})"
+    else
+      spec_list.each do |spec|
+        specs[spec.full_name] = [source_index, spec]
+      end
+    end
+
+    specs
+  end
 end
 

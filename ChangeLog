@@ -4,6 +4,11 @@
 	useless --list option.  Feature request #9498 by Martin DeMello.
 	* lib/rubygems/specification.rb (Gem::Specification#lib_files):
 	Restrict to only files in Gem::Specification#require_paths.
+	* lib/rubygems/commands/dependency_command.rb: Display dependencies for
+	remote gems.  Feature request #12133 by Eric Hodel.  -r for reverse
+	dependencies is now -R.
+	* lib/rubygems/commands/specification_command.rb: Display
+	specifications for remote gems.  Feature request #12133 by Eric Hodel.
 
 2007-07-22  Eric Hodel  <drbrain@segment7.net>
 

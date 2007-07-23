@@ -33,6 +33,9 @@
 	* lib/rubygems/indexer/indexer.rb (Gem::Indexer::Indexer#build_index):
 	Now uses UserInteraction.
 	* various: Use UserInteraction for output.
+	* lib/gemconfigure.rb: Removed. Same as multiple gem commands.
+	* lib/rubygems/commands/contents_command.rb: Removed extra --verbose
+	option.
 
 2007-07-22  Chad Fowler  <chad@chadfowler.com>
 

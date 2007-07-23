@@ -14,13 +14,9 @@ module Gem
         add_option("-l","--list",'List the files inside a Gem') do |v,o|
           o[:list] = true
         end
-      
+
         add_option('-s','--spec-dir a,b,c', Array, "Search for gems under specific paths") do |v,o|
           o[:specdirs] = v
-        end
-      
-        add_option('-V','--verbose','Be verbose when showing status') do |v,o|
-          o[:verbose] = v
         end
       end
 
@@ -47,7 +43,7 @@ module Gem
           gem_spec = si.search(gem, version).last
           unless gem_spec
             say "Unable to find gem '#{gem}' in #{path_kind}"
-            if options[:verbose]
+            if Gem.configuration.verbose then
               say "\nDirectories searched:"
               s.each do |p|
                 say p

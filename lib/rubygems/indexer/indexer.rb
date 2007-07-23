@@ -4,7 +4,7 @@ require 'rubygems/indexer'
 # an options hash and call +build_index+.
 class Gem::Indexer::Indexer
   include Gem::Indexer::Compressor
-  include Gem::Indexer::Announcer
+  include Gem::UserInteraction
 
   # Create an indexer with the options specified by the options hash.
   def initialize(options)
@@ -17,16 +17,17 @@ class Gem::Indexer::Indexer
 
   # Build the index.
   def build_index
-    announce "Building Server Index"
-
     FileUtils.rm_r(@options[:quick_directory]) rescue nil
 
     @master_index.build do
       @quick_index.build do
+        progress = ui.progress_reporter gem_file_list.size,
+                                       "Generating index for #{gem_file_list.size} files in #{@options[:directory]}"
+
         gem_file_list.each do |gemfile|
-          announce "Handling #{gemfile}"
+          #say "Handling #{gemfile}"
           if File.size(gemfile.to_s) == 0 then
-            announce "Skipping zero-length gem: #{gemfile}"
+            alert_warning "Skipping zero-length gem: #{gemfile}"
             next
           end
 
@@ -34,21 +35,24 @@ class Gem::Indexer::Indexer
             spec = Gem::Format.from_file_by_path(gemfile).spec
 
             unless gemfile =~ /\/#{spec.full_name}.*\.gem\z/i then
-              announce "Skipping misnamed gem: #{gemfile} => #{spec.full_name}"
+              alert_warning "Skipping misnamed gem: #{gemfile} => #{spec.full_name}"
               next
             end
 
-            abbreviate(spec)
-            sanitize(spec)
-            announce "   ... adding #{spec.full_name}"
-            @master_index.add(spec)
-            @quick_index.add(spec)
+            abbreviate spec
+            sanitize spec
+
+            @master_index.add spec
+            @quick_index.add spec
+
+            progress.updated spec.full_name
+
           rescue Exception => e
-            announce "Unable to process #{gemfile}"
-            announce e.message
-            announce "\t#{e.backtrace.join "\n\t"}"
+            alert_error "Unable to process #{gemfile}\n#{e.message}\n\t#{e.backtrace.join "\n\t"}"
           end
         end
+
+        say # newline
       end
     end
   end

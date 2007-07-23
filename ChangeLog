@@ -30,6 +30,8 @@
 	verbose from .gemrc.
 	* lib/rubygems/commands/environment_command.rb: Add ruby executable
 	and configuration settings to `gem env`.
+	* lib/rubygems/indexer/indexer.rb (Gem::Indexer::Indexer#build_index):
+	Now uses UserInteraction.
 
 2007-07-22  Chad Fowler  <chad@chadfowler.com>
 

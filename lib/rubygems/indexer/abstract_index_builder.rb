@@ -6,7 +6,6 @@ require 'rubygems/indexer'
 class Gem::Indexer::AbstractIndexBuilder
 
   include Gem::Indexer::Compressor
-  include Gem::Indexer::Announcer
 
   # Build a Gem index.  Yields to block to handle the details of the
   # actual building.  Calls +begin_index+, +end_index+ and +cleanup+ at

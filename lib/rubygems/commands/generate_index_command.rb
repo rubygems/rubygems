@@ -18,11 +18,10 @@ class Gem::Commands::GenerateIndexCommand < Gem::Command
   end
 
   def execute
-    if options[:directory].nil? then
-      puts "Error, must specify directory name. Use --help"
-    elsif not File.exist?(options[:directory]) or
-          not File.directory?(options[:directory]) then
-      puts "Error, unknown directory name #{directory}."
+    if not File.exist?(options[:directory]) or
+       not File.directory?(options[:directory]) then
+      alert_error "unknown directory name #{directory}."
+      terminate_interaction 1
     else
       require 'rubygems/indexer'
 

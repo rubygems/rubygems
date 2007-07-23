@@ -23,6 +23,7 @@
 	backtrace when --debug is set too.
 	* lib/rubygems/command_manager.rb (Gem::CommandManager#load_and_instantiate):
 	Don't infinitely loop in retry.
+	* bin/gemri: Everybody should have ri integration now.
 
 2007-07-22  Chad Fowler  <chad@chadfowler.com>
 

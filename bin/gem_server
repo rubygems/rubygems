@@ -1,6 +1,0 @@
-#!/usr/bin/env ruby
-
-require 'rubygems/server'
-
-Gem::Server.run ARGV
-

@@ -67,6 +67,7 @@ module Gem
       register_command :query
       register_command :rdoc
       register_command :search
+      register_command :server
       register_command :sources
       register_command :specification
       register_command :uninstall

@@ -9,6 +9,12 @@
 	`gem_mirror` under `gem`.
 	* lib/rubygems/commands/lock_command.rb, bin/gemlock: Move `gemlock`
 	under `gem`.
+	* lib/rubygems/commands/server_command.rb, bin/gem_server: Move
+	`gem_server` under `gem`.
+	* lib/rubygems/doc_manager.rb (Gem::DocManager#initialize): Only raise
+	when operating on the filesystem.
+	* lib/rubygems/server.rb: Remove option processing, now in
+	Gem::Commands::ServerCommand.
 
 2007-07-22  Chad Fowler  <chad@chadfowler.com>
 

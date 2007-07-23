@@ -20,7 +20,6 @@ module Gem
     def initialize(spec, rdoc_args="")
       @spec = spec
       @doc_dir = File.join(spec.installation_path, "doc", spec.full_name)
-      raise Gem::FilePermissionError.new(spec.installation_path) unless File.writable?(spec.installation_path)
       @rdoc_args = rdoc_args.nil? ? [] : rdoc_args.split
     end
     
@@ -63,10 +62,12 @@ module Gem
 
     # Load the RDoc documentation generator library.
     def load_rdoc
-      if File.exist?(@doc_dir) && !File.writable?(@doc_dir)
-        Gem::FilePermissionError.new(@doc_dir)
+      if File.exist?(@doc_dir) && !File.writable?(@doc_dir) then
+        raise Gem::FilePermissionError.new(@doc_dir)
       end
+
       FileUtils.mkdir_p @doc_dir unless File.exist?(@doc_dir)
+
       begin
         require 'rdoc/rdoc'
       rescue LoadError => e
@@ -114,6 +115,9 @@ module Gem
     end
 
     def uninstall_doc
+      raise Gem::FilePermissionError.new(@spec.installation_path) unless
+        File.writable? @spec.installation_path
+
       doc_dir = File.join(@spec.installation_path, "doc", @spec.full_name)
       FileUtils.rm_rf doc_dir
       ri_dir = File.join(@spec.installation_path, "ri", @spec.full_name)

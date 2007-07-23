@@ -2,7 +2,6 @@ require 'rubygems'
 Gem.manage_gems
 require 'webrick'
 require 'yaml'
-require 'optparse'
 require 'rdoc/template'
 
 # Gem::Server and allows users to serve gems for consumption by
@@ -337,40 +336,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 .ruby-value   { color: #7fffd4; background: transparent; }
   RDOCCSS
 
-  def self.process_args(args)
-    options = {}
-    options[:port] = 8808
-    options[:gemdir] = Gem.dir
-    options[:daemon] = false
-
-    opts = OptionParser.new do |opts|
-      opts.on_tail("--help", "show this message") do
-        puts opts
-        exit
-      end
-
-      opts.on('-p', '--port=PORT', "Specify the port to listen on") do |port|
-        options[:port] = port
-      end
-
-      opts.on('-d', '--dir=GEMDIR', 
-              "Specify the directory from which to serve Gems") do |gemdir|
-        options[:gemdir] = gemdir
-      end
-
-      opts.on(      '--daemon', "Run as a daemon") do |daemon|
-        options[:daemon] = daemon
-      end
-
-    end
-
-    opts.parse! args
-
-    options
-  end
-
-  def self.run(args = ARGV)
-    options = process_args args
+  def self.run(options)
     new(options[:gemdir], options[:port], options[:daemon]).run
   end
 

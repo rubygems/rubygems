@@ -17,6 +17,23 @@ class TestStreamUI < Test::Unit::TestCase
     @sui = Gem::StreamUI.new @in, @out, @err
   end
 
+  def test_choose_from_list
+    @in.puts "1"
+    @in.rewind
+
+    result = @sui.choose_from_list 'which one?', %w[foo bar]
+
+    assert_equal ['foo', 0], result
+    assert_equal "which one?\n 1. foo\n 2. bar\n> ", @out.string
+  end
+
+  def test_choose_from_list_EOF
+    result = @sui.choose_from_list 'which one?', %w[foo bar]
+
+    assert_equal [nil, nil], result
+    assert_equal "which one?\n 1. foo\n 2. bar\n> ", @out.string
+  end
+
   def test_proress_reporter_silent_nil
     @cfg[:verbose] = nil
     reporter = @sui.progress_reporter 10, 'hi'

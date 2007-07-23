@@ -100,7 +100,12 @@ module Gem
       end
       @outs.print "> "
       @outs.flush
-      result = @ins.gets.strip.to_i - 1
+
+      result = @ins.gets
+
+      return nil, nil unless result
+
+      result = result.strip.to_i - 1
       return list[result], result
     end
 

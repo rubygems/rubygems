@@ -60,6 +60,7 @@ module Gem
       register_command :help
       register_command :install
       register_command :list
+      register_command :lock
       register_command :mirror
       register_command :outdated
       register_command :pristine

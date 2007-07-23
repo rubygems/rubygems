@@ -7,6 +7,8 @@
 	under `gem`.
 	* lib/rubygems/commands/mirror_command.rb, bin/gem_mirror: Move
 	`gem_mirror` under `gem`.
+	* lib/rubygems/commands/lock_command.rb, bin/gemlock: Move `gemlock`
+	under `gem`.
 
 2007-07-22  Chad Fowler  <chad@chadfowler.com>
 

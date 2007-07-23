@@ -17,7 +17,6 @@ class Gem::Installer
 end
   
 class TestInstaller < RubyGemTestCase
-  include Gem::IoCapture
 
   def setup
     super

@@ -108,14 +108,38 @@ class TestSimpleSpecification < Test::Unit::TestCase
   end
 
   def test_attribute_names
-    expected_value = %w{
-      rubygems_version specification_version name version date summary
-      require_paths authors email homepage rubyforge_project description
-      autorequire default_executable bindir has_rdoc required_ruby_version
-      platform files test_files rdoc_options extra_rdoc_files
-      executables extensions requirements dependencies signing_key cert_chain
+    expected_value = %w[
+      authors
+      autorequire
+      bindir
+      cert_chain
+      date
+      default_executable
+      dependencies
+      description
+      email
+      executables
+      extensions
+      extra_rdoc_files
+      files
+      has_rdoc
+      homepage
+      name
+      platform
       post_install_message
-    }.sort
+      rdoc_options
+      require_paths
+      required_ruby_version
+      required_rubygems_version
+      requirements
+      rubyforge_project
+      rubygems_version
+      signing_key
+      specification_version
+      summary
+      test_files
+      version
+    ]
     actual_value = Gem::Specification.attribute_names.map { |a| a.to_s }.sort
     assert_equal expected_value, actual_value
   end
@@ -135,6 +159,7 @@ class TestSimpleSpecification < Test::Unit::TestCase
     assert_equal false, @spec.has_rdoc
     assert_equal false, @spec.has_rdoc?
     assert_equal '> 0.0.0', @spec.required_ruby_version.to_s
+    assert_equal '> 0.0.0', @spec.required_rubygems_version.to_s
   end
 
   def test_directly_setting_dependencies_doesnt_work

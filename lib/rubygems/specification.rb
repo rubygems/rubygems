@@ -236,10 +236,12 @@ module Gem
     
     attributes :email, :homepage, :rubyforge_project, :description
     attributes :autorequire, :default_executable
-    attribute :bindir,                'bin'
-    attribute :has_rdoc,               false
-    attribute :required_ruby_version,  Gem::Version::Requirement.default
-    attribute :platform,               Gem::Platform::RUBY
+
+    attribute :bindir,                     'bin'
+    attribute :has_rdoc,                   false
+    attribute :required_ruby_version,      Gem::Requirement.default
+    attribute :required_rubygems_version,  Gem::Requirement.default
+    attribute :platform,                   Gem::Platform::RUBY
 
     attribute :signing_key,            nil
     attribute :cert_chain,             nil
@@ -297,6 +299,10 @@ module Gem
 
     overwrite_accessor :required_ruby_version= do |value|
       @required_ruby_version = Version::Requirement.create(value)
+    end
+
+    overwrite_accessor :required_rubygems_version= do |value|
+      @required_rubygems_version = Version::Requirement.create(value)
     end
 
     overwrite_accessor :date= do |date|

@@ -69,14 +69,23 @@ module Gem
       rescue Gem::Package::FormatError
         raise Gem::InstallError, "invalid gem format for #{@gem}"
       end
+
       unless force
         spec = format.spec
-        # Check the Ruby version.
-        if (rrv = spec.required_ruby_version)
-          unless rrv.satisfied_by?(Gem::Version.new(RUBY_VERSION))
+
+        if rrv = spec.required_ruby_version then
+          unless rrv.satisfied_by? Gem::Version.new(RUBY_VERSION) then
             raise Gem::InstallError, "#{spec.name} requires Ruby version #{rrv}"
           end
         end
+
+        if rrgv = spec.required_rubygems_version then
+          unless rrgv.satisfied_by? Gem::Version.new(Gem::RubyGemsVersion) then
+            raise Gem::InstallError,
+                  "#{spec.name} requires RubyGems version #{rrgv}"
+          end
+        end
+
         unless @options[:ignore_dependencies]
           spec.dependencies.each do |dep_gem|
             ensure_dependency!(spec, dep_gem)

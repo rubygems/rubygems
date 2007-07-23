@@ -352,6 +352,15 @@ class TestInstaller < RubyGemTestCase
     assert_equal "invalid gem format for #{cache_gem}", e.message
   end
 
+  def test_install_force
+    @gem = File.join 'test', 'data', 'old_ruby_required-0.0.1.gem'
+
+    use_ui @ui do
+      @installer = Gem::Installer.new @gem, {}
+      @installer.install true
+    end
+  end
+
   def test_install_with_message
     @gem = File.join 'test', 'data', "PostMessage-0.0.1.gem"
 
@@ -361,6 +370,32 @@ class TestInstaller < RubyGemTestCase
     end
 
     assert_equal "I am a shiny gem!\n", @ui.output
+  end
+
+  def test_install_wrong_ruby_version
+    @gem = File.join 'test', 'data', 'old_ruby_required-0.0.1.gem'
+
+    use_ui @ui do
+      @installer = Gem::Installer.new @gem, {}
+      e = assert_raise Gem::InstallError do
+        @installer.install
+      end
+      assert_equal 'old_ruby_required requires Ruby version = 1.4.6',
+                   e.message
+    end
+  end
+
+  def test_install_wrong_rubygems_version
+    @gem = File.join 'test', 'data', 'old_rubygems_required-0.0.1.gem'
+
+    use_ui @ui do
+      @installer = Gem::Installer.new @gem, {}
+      e = assert_raise Gem::InstallError do
+        @installer.install
+      end
+      assert_equal 'old_rubygems_required requires RubyGems version = 0.1.0',
+                   e.message
+    end
   end
 
 end

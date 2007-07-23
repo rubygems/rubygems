@@ -273,6 +273,12 @@ class TestSpecification < RubyGemTestCase
       @spec.files.sort)
   end
 
+  def test_lib_files
+    @spec.files = %w[lib/foo.rb Rakefile]
+
+    assert_equal %w[lib/foo.rb], @spec.lib_files
+  end
+
   def test_non_array_stuff_doesnt_goof_up_files
     @spec.files = "F"
     @spec.test_files = "TF"

@@ -71,8 +71,10 @@ class TestFileList < RubyGemTestCase
     args = ["-s", @gem_install_path, "not_there"]
     Gem::Command.instance_eval "public :handle_options"
     @contents.handle_options(args)
-    use_ui @ui do
-      @contents.execute
+    assert_raise MockGemUi::TermError do
+      use_ui @ui do
+        @contents.execute
+      end
     end
     assert_match(/Unable to find/, @ui.output)
   end

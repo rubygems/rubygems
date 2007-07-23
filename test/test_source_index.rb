@@ -186,6 +186,7 @@ class TestSourceIndex < RubyGemTestCase
   end
 
   def test_update_incremental
+    old_gem_conf = Gem.configuration
     Gem.configuration = Gem::ConfigFile.new([])
     quick_index = util_zip @gem_names
     @fetcher.data['http://gems.example.com/quick/index.rz'] = quick_index
@@ -198,6 +199,8 @@ class TestSourceIndex < RubyGemTestCase
 
       assert_equal @gem_names.split, @source_index.gems.keys.sort
     end
+  ensure
+    Gem.configuration = old_gem_conf
   end
 
   def test_update_with_missing

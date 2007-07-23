@@ -1,62 +1,62 @@
-module Gem
-  module Commands
-    class ContentsCommand < Command
-      include CommandAids
-      include VersionOption
-      def initialize
-        super(
-          'contents',
-          'Display the contents of the installed gems',
-          { :list => true, :specdirs => [] })
+require 'rubygems/command'
 
-        add_version_option('contents')
+class Gem::Commands::ContentsCommand < Gem::Command
 
-        add_option("-l","--list",'List the files inside a Gem') do |v,o|
-          o[:list] = true
-        end
+  include Gem::CommandAids
+  include Gem::VersionOption
 
-        add_option('-s','--spec-dir a,b,c', Array, "Search for gems under specific paths") do |v,o|
-          o[:specdirs] = v
-        end
-      end
+  def initialize
+    super 'contents', 'Display the contents of the installed gems',
+          :specdirs => [], :lib_only => false
 
-      def execute
-        if options[:list]
-          version = options[:version] || "> 0.0.0"
-          gem = get_one_gem_name
-        
-          s = options[:specdirs].map do |i|
-            [i, File.join(i,"specifications")]
-          end.flatten
-        
-          if s.empty?
-            s = Gem::SourceIndex.installed_spec_directories
-            path_kind = "default gem paths"
-            system = true
-          else
-            path_kind = "specified path"
-            system = false
-          end
+    add_version_option 'contents'
 
-          si = Gem::SourceIndex.from_gems_in(*s)
+    add_option('-s', '--spec-dir a,b,c', Array,
+               "Search for gems under specific paths") do |spec_dirs, options|
+      options[:specdirs] = spec_dirs
+    end
 
-          gem_spec = si.search(gem, version).last
-          unless gem_spec
-            say "Unable to find gem '#{gem}' in #{path_kind}"
-            if Gem.configuration.verbose then
-              say "\nDirectories searched:"
-              s.each do |p|
-                say p
-              end
-            end
-            return
-          end
-          # show the list of files.
-          gem_spec.files.each do |f|
-            say File.join(gem_spec.full_gem_path, f)
-          end
-        end
-      end
+    add_option('-l', '--[no-]lib-only',
+               "Only return files in the Gem's lib_dirs") do |lib_only, options|
+      options[:lib_only] = lib_only
     end
   end
+
+  def execute
+    version = options[:version] || "> 0.0.0"
+    gem = get_one_gem_name
+
+    s = options[:specdirs].map do |i|
+      [i, File.join(i, "specifications")]
+    end.flatten
+
+    path_kind = if s.empty? then
+                  s = Gem::SourceIndex.installed_spec_directories
+                  "default gem paths"
+                else
+                  "specified path"
+                end
+
+    si = Gem::SourceIndex.from_gems_in(*s)
+
+    gem_spec = si.search(gem, version).last
+
+    unless gem_spec then
+      say "Unable to find gem '#{gem}' in #{path_kind}"
+
+      if Gem.configuration.verbose then
+        say "\nDirectories searched:"
+        s.each { |dir| say dir }
+      end
+
+      terminate_interaction
+    end
+
+    files = options[:lib_only] ? gem_spec.lib_files : gem_spec.files
+    files.each do |f|
+      say File.join(gem_spec.full_gem_path, f)
+    end
+  end
+
 end
+

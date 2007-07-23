@@ -375,8 +375,13 @@ module Gem
       result.uniq.compact
     end
 
+    # Files in the Gem under one of the require_paths
     def lib_files
-      @files
+      @files.select do |file|
+        require_paths.any? do |path|
+          file.index(path) == 0
+        end
+      end
     end
 
     overwrite_accessor :test_files do

@@ -3,6 +3,8 @@ module Gem
   
     class SourcesCommand < Command
 
+      include Gem::LocalRemoteOptions
+
       def initialize
         super 'sources', 'Manage the sources RubyGems will search forgems'
 
@@ -21,6 +23,8 @@ module Gem
         add_option '-c', '--clear-all', 'Remove all sources' do |value, options|
           options[:clear_all] = value
         end
+
+        add_local_remote_options
       end
 
       def defaults_str

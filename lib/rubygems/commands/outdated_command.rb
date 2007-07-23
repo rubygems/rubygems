@@ -3,8 +3,12 @@ module Gem
 
     class OutdatedCommand < Command
 
+      include Gem::LocalRemoteOptions
+
       def initialize
         super 'outdated', 'Display all gems that need updates'
+
+        add_local_remote_options
       end
 
       def execute

@@ -2,6 +2,7 @@ module Gem
   module Commands
     class UpdateCommand < Command
       include InstallUpdateOptions
+      include LocalRemoteOptions
 
       def initialize
         super(
@@ -14,11 +15,15 @@ module Gem
             :test => false,
             :install_dir => Gem.dir
           })
+
         add_install_update_options
+
         add_option('--system',
           'Update the RubyGems system software') do |value, options|
           options[:system] = value
         end
+
+        add_local_remote_options
       end
     
       def defaults_str

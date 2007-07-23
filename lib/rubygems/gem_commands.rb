@@ -61,28 +61,45 @@ module Gem
 
   ####################################################################
   # Mixin methods for handling the local/remote command line options.
-  #
   module LocalRemoteOptions
 
-    # Add the local/remote options to the command line parser.
+    # Add local/remote options to the command line parser.
     def add_local_remote_options
-      add_option('-l', '--local',
-                 'Restrict operations to the LOCAL domain'
-                 ) do |value, options|
+      add_option(:"Local/Remote", '-l', '--local',
+                 'Restrict operations to the LOCAL domain') do |value, options|
         options[:domain] = :local
       end
 
-      add_option('-r', '--remote',
-        'Restrict operations to the REMOTE domain') do
-        |value, options|
+      add_option(:"Local/Remote", '-r', '--remote',
+        'Restrict operations to the REMOTE domain') do |value, options|
         options[:domain] = :remote
       end
 
-      add_option('-b', '--both',
-        'Allow LOCAL and REMOTE operations') do
-        |value, options|
+      add_option(:"Local/Remote", '-b', '--both',
+                 'Allow LOCAL and REMOTE operations') do |value, options|
         options[:domain] = :both
       end
+
+      add_option(:"Local/Remote", '-B', '--bulk-threshhold COUNT',
+                 "Threshhold for switching to bulk",
+                 "synchronization (default #{Gem.configuration.bulk_threshhold})") do
+        |value, options|
+        Gem.configuration.bulk_threshhold = value.to_i
+      end
+
+      add_option(:"Local/Remote", '--source URL',
+                 'Use URL as the remote source for gems') do |value, options|
+        gem("sources")
+        Gem.sources.clear
+        Gem.sources << value
+      end
+
+      add_option(:"Local/Remote", '-p', '--[no-]http-proxy [URL]',
+                 'Use HTTP proxy for remote operations') do |value, options|
+        options[:http_proxy] = (value == false) ? :no_proxy : value
+        Gem.configuration[:http_proxy] = options[:http_proxy]
+      end
+
     end
 
     # Is local fetching enabled?
@@ -104,62 +121,62 @@ module Gem
 
     # Add the install/update options to the option parser.
     def add_install_update_options
-      add_option('-i', '--install-dir DIR',
+      add_option(:"Install/Update", '-i', '--install-dir DIR',
                  'Gem repository directory to get installed',
                  'gems.') do |value, options|
         options[:install_dir] = File.expand_path(value)
       end
 
-      add_option('-d', '--[no-]rdoc', 
+      add_option(:"Install/Update", '-d', '--[no-]rdoc',
                  'Generate RDoc documentation for the gem on',
                  'install') do |value, options|
         options[:generate_rdoc] = value
       end
 
-      add_option('--[no-]ri', 
+      add_option(:"Install/Update", '--[no-]ri',
                  'Generate RI documentation for the gem on',
                  'install') do |value, options|
         options[:generate_ri] = value
       end
 
-      add_option('-E', '--env-shebang',
+      add_option(:"Install/Update", '-E', '--env-shebang',
                  "Rewrite the shebang line on installed",
                  "scripts to use /usr/bin/env") do |value, options|
         options[:env_shebang] = value
       end
 
-      add_option('-f', '--[no-]force', 
+      add_option(:"Install/Update", '-f', '--[no-]force',
                  'Force gem to install, bypassing dependency',
                  'checks') do |value, options|
         options[:force] = value
       end
 
-      add_option('-t', '--[no-]test', 
+      add_option(:"Install/Update", '-t', '--[no-]test',
         'Run unit tests prior to installation') do 
         |value, options|
         options[:test] = value
       end
 
-      add_option('-w', '--[no-]wrappers', 
+      add_option(:"Install/Update", '-w', '--[no-]wrappers',
         'Use bin wrappers for executables',
         'Not available on dosish platforms') do 
         |value, options|
         options[:wrappers] = value
       end
 
-      add_option('-P', '--trust-policy POLICY', 
+      add_option(:"Install/Update", '-P', '--trust-policy POLICY',
         'Specify gem trust policy.') do 
         |value, options|
         options[:security_policy] = value
       end
 
-      add_option('--ignore-dependencies',
+      add_option(:"Install/Update", '--ignore-dependencies',
         'Do not install any required dependent gems') do 
         |value, options|
         options[:ignore_dependencies] = value
       end
 
-      add_option('-y', '--include-dependencies',
+      add_option(:"Install/Update", '-y', '--include-dependencies',
                  'Unconditionally install the required',
                  'dependent gems') do |value, options|
         options[:include_dependencies] = value
@@ -187,6 +204,7 @@ module Gem
     end
 
   end
+
   def self.load_commands(*command_names)
     command_names.each{|name| 
       require "rubygems/commands/#{name}_command"

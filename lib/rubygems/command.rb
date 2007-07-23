@@ -41,7 +41,7 @@ module Gem
       @program_name = "gem #{command}"
       @defaults = defaults
       @options = defaults.dup
-      @option_list = []
+      @option_groups = Hash.new { |h,k| h[k] = [] }
       @parser = nil
       @when_invoked = nil
     end
@@ -104,12 +104,16 @@ module Gem
     # +handler+ will be called with two values, the value of the argument and
     # the options hash.
     def add_option(*opts, &handler) # :yields: value, options
-      @option_list << [opts, handler]
+      group_name = Symbol === opts.first ? opts.shift : :options
+
+      @option_groups[group_name] << [opts, handler]
     end
 
     # Remove previously defined command-line argument +name+.
     def remove_option(name)
-      @option_list.reject! { |args, handler| args.any? { |x| x =~ /^#{name}/ } }
+      @option_groups.each do |_, option_list|
+        option_list.reject! { |args, _| args.any? { |x| x =~ /^#{name}/ } }
+      end
     end
     
     # Merge a set of command options with the set of default options
@@ -170,14 +174,18 @@ module Gem
       require 'optparse'
       @parser = OptionParser.new
       option_names = {}
+
       @parser.separator("")
-      unless @option_list.empty?
-        @parser.separator("  Options:")
-        configure_options(@option_list, option_names)
-        @parser.separator("")
+      regular_options = @option_groups.delete :options
+
+      configure_options "", regular_options, option_names
+
+      @option_groups.sort_by { |n,_| n.to_s }.each do |group_name, option_list|
+        configure_options group_name, option_list, option_names
       end
-      @parser.separator("  Common Options:")
-      configure_options(Command.common_options, option_names)
+
+      configure_options "Common", Command.common_options, option_names
+
       @parser.separator("")
       unless arguments.empty?
         @parser.separator("  Arguments:")
@@ -186,10 +194,12 @@ module Gem
         end
         @parser.separator("")
       end
+
       @parser.separator("  Summary:")
       wrap(@summary, 80 - 4).each do |line|
         @parser.separator("    #{line.strip}")
       end
+
       unless defaults_str.empty?
         @parser.separator("")
         @parser.separator("  Defaults:")
@@ -199,7 +209,12 @@ module Gem
       end
     end
 
-    def configure_options(option_list, option_names)
+    def configure_options(header, option_list, option_names)
+      return if option_list.nil? or option_list.empty?
+
+      header = header.to_s.empty? ? '' : "#{header} "
+      @parser.separator "  #{header}Options:"
+
       option_list.each do |args, handler|
         dashes = args.select { |arg| arg =~ /^-/ }
         next if dashes.any? { |arg| option_names[arg] }
@@ -208,6 +223,8 @@ module Gem
         end
         dashes.each do |arg| option_names[arg] = true end
       end
+
+      @parser.separator ''
     end
 
     # Wraps +text+ to +width+
@@ -263,21 +280,6 @@ module Gem
 
     # ----------------------------------------------------------------
     # Add the options common to all commands.
-    
-    add_common_option('--source URL', 
-      'Use URL as the remote source for gems') do
-      |value, options|
-      gem("sources")
-      Gem.sources.clear
-      Gem.sources << value
-    end
-
-    add_common_option('-p', '--[no-]http-proxy [URL]',
-      'Use HTTP proxy for remote operations') do 
-      |value, options|
-      options[:http_proxy] = (value == false) ? :no_proxy : value
-      Gem.configuration[:http_proxy] = options[:http_proxy]
-    end
 
     add_common_option('-h', '--help', 
       'Get help on this command') do
@@ -293,12 +295,6 @@ module Gem
       else
         Gem.configuration.verbose = value
       end
-    end
-    
-    add_common_option('-B', '--bulk-threshhold COUNT', 
-      'Threshhold for switching to bulk synchronization (default 500)') do
-      |value, options|
-      Gem.configuration.bulk_threshhold = value.to_i
     end
 
     # Backtrace and config-file are added so they show up in the help

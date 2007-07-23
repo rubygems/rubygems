@@ -4,7 +4,7 @@
 	faster
 	* lib/rubygems/command.rb: Better documentation.  -v flag now lets you
 	get to "really verbose" mode which makes the verbose progress meter
-	work.
+	work.  Add command groups to separate types of commands easily.
 	* lib/rubygems/commands/which_command.rb, bin/gemwhich: Move `gemwhich`
 	under `gem`.
 	* lib/rubygems/commands/mirror_command.rb, bin/gem_mirror: Move
@@ -36,6 +36,8 @@
 	* lib/gemconfigure.rb: Removed. Same as multiple gem commands.
 	* lib/rubygems/commands/contents_command.rb: Removed extra --verbose
 	option.
+	* lib/rubygems/gem_commands.rb (Gem::LocalRemoteOptions): Moved -B,
+	--source, -p from Gem::Commands::common_options.
 
 2007-07-22  Chad Fowler  <chad@chadfowler.com>
 

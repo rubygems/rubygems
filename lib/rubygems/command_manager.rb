@@ -57,6 +57,7 @@ module Gem
       register_command :contents
       register_command :dependency
       register_command :environment
+      register_command :generate_index
       register_command :help
       register_command :install
       register_command :list
@@ -96,7 +97,7 @@ module Gem
       process_args(args)
     rescue StandardError, Timeout::Error => ex
       alert_error "While executing gem ... (#{ex.class})\n    #{ex.to_s}"
-      puts ex.backtrace if Gem.configuration.backtrace
+      puts ex.backtrace if Gem.configuration.backtrace or $DEBUG
       terminate_interaction(1)
     rescue Interrupt
       alert_error "Interrupted"
@@ -145,11 +146,19 @@ module Gem
     private
     def load_and_instantiate(command_name)
       command_name = command_name.to_s
+      retried = false
+
       begin
-        Gem::Commands.const_get("#{command_name.capitalize}Command").new
+        const_name = command_name.capitalize.gsub(/_(.)/) { $1.upcase }
+        Gem::Commands.const_get("#{const_name}Command").new
       rescue
-        require "rubygems/commands/#{command_name}_command"
-        retry
+        if retried then
+          raise
+        else
+          retried = true
+          require "rubygems/commands/#{command_name}_command"
+          retry
+        end
       end
     end
   end

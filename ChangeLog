@@ -15,6 +15,14 @@
 	when operating on the filesystem.
 	* lib/rubygems/server.rb: Remove option processing, now in
 	Gem::Commands::ServerCommand.
+	* lib/rubygems/commands/generate_index.rb, bin/index_gem_repository.rb:
+	Move `index_gem_repository.rb` to `gem generate_index`.
+	* lib/rubygems/indexer (Gem::Indexer): Extract from
+	index_gem_repository.rb and merge RubyForge changes.
+	* lib/rubygems/command_manager.rb (Gem::CommandManager#run): Print
+	backtrace when --debug is set too.
+	* lib/rubygems/command_manager.rb (Gem::CommandManager#load_and_instantiate):
+	Don't infinitely loop in retry.
 
 2007-07-22  Chad Fowler  <chad@chadfowler.com>
 

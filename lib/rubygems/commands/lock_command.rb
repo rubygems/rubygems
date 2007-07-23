@@ -40,9 +40,9 @@ class Gem::Commands::LockCommand < Gem::Command
     end
   end
 
-  def complain(message, options)
+  def complain(message)
     if options.strict then
-      fail message
+      raise message
     else
       puts "# #{message}"
     end
@@ -68,8 +68,7 @@ class Gem::Commands::LockCommand < Gem::Command
         candidates = Gem.source_index.search dep.name, dep.requirement_list
 
         if candidates.empty? then
-          complain("Unable to satisfy '#{dep}' from currently installed gems.",
-                   options)
+          complain "Unable to satisfy '#{dep}' from currently installed gems."
         else
           pending << candidates.last.full_name
         end

@@ -5,6 +5,7 @@
 #++
 
 require 'rubygems/user_interaction'
+require 'rubygems/command_manager'
 
 module Gem
 

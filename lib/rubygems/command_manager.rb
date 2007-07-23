@@ -97,7 +97,8 @@ module Gem
       process_args(args)
     rescue StandardError, Timeout::Error => ex
       alert_error "While executing gem ... (#{ex.class})\n    #{ex.to_s}"
-      puts ex.backtrace if Gem.configuration.backtrace or $DEBUG
+      ui.errs.puts "\t#{ex.backtrace.join "\n\t"}" if
+        Gem.configuration.backtrace
       terminate_interaction(1)
     rescue Interrupt
       alert_error "Interrupted"

@@ -24,7 +24,7 @@ module Gem
         end
       end
 
-      def execute(io=STDOUT)
+      def execute
         if options[:list]
           version = options[:version] || "> 0.0.0"
           gem = get_one_gem_name
@@ -46,18 +46,18 @@ module Gem
 
           gem_spec = si.search(gem, version).last
           unless gem_spec
-            io.puts "Unable to find gem '#{gem}' in #{path_kind}"
+            say "Unable to find gem '#{gem}' in #{path_kind}"
             if options[:verbose]
-              io.puts "\nDirectories searched:"
+              say "\nDirectories searched:"
               s.each do |p|
-                io.puts p
+                say p
               end
             end
             return
           end
           # show the list of files.
           gem_spec.files.each do |f|
-            io.puts File.join(gem_spec.full_gem_path, f)
+            say File.join(gem_spec.full_gem_path, f)
           end
         end
       end

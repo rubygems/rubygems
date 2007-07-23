@@ -55,7 +55,7 @@ module Gem
           specs.values.sort.each do |spec|
             unless spec.dependencies.empty?
               spec.dependencies.each do |dep|
-                puts "#{dep.name} --version '#{dep.version_requirements}'"
+                say "#{dep.name} --version '#{dep.version_requirements}'"
               end
             end
           end     

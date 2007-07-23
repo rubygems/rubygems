@@ -44,12 +44,12 @@ class Gem::Commands::LockCommand < Gem::Command
     if options.strict then
       raise message
     else
-      puts "# #{message}"
+      say "# #{message}"
     end
   end
 
   def execute
-    puts 'require "rubygems"'
+    say 'require "rubygems"'
 
     locked = {}
 
@@ -60,7 +60,7 @@ class Gem::Commands::LockCommand < Gem::Command
 
       spec = Gem::SourceIndex.load_specification spec_path(full_name)
 
-      puts "gem '#{spec.name}', '= #{spec.version}'" unless locked[spec.name]
+      say "gem '#{spec.name}', '= #{spec.version}'" unless locked[spec.name]
       locked[spec.name] = true
 
       spec.dependencies.each do |dep|

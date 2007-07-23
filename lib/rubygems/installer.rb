@@ -103,7 +103,7 @@ module Gem
         FileUtils.cp @gem, File.join(install_dir, "cache")
       end
 
-      puts format.spec.post_install_message unless format.spec.post_install_message.nil?
+      say format.spec.post_install_message unless format.spec.post_install_message.nil?
 
       format.spec.loaded_from = File.join(install_dir, 'specifications', format.spec.full_name+".gemspec")
       return format.spec
@@ -219,7 +219,7 @@ module Gem
     #
     def generate_bin_symlink(spec, filename, bindir, install_dir)
       if Config::CONFIG["arch"] =~ /dos|win32/i then
-        warn "Unable to use symlinks on win32, installing wrapper"
+        alert_warning "Unable to use symlinks on win32, installing wrapper"
         generate_bin_script spec, filename, bindir, install_dir
         return
       end

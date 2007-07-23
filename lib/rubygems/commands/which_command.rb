@@ -32,15 +32,16 @@ class Gem::Commands::WhichCommand < Gem::Command
           dirs = $LOAD_PATH + gem_paths(spec)
         end
 
-        puts "(checking gem #{spec.full_name} for #{arg})" if options[:verbose]
+        say "(checking gem #{spec.full_name} for #{arg})" if
+          Gem.configuration.verbose
       end
 
       paths = find_paths arg, dirs
 
       if paths.empty? then
-        puts "Can't find #{arg}"
+        say "Can't find #{arg}"
       else
-        puts paths
+        say paths
       end
     end
   end

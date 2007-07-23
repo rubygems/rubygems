@@ -15,8 +15,6 @@ module Gem
   # The config file object acts much like a hash.
   #
   class ConfigFile
-    # True if the backtrace option has been specified.
-    attr_reader :backtrace
     
     # List of arguments supplied to the config file object.
     attr_reader :args
@@ -52,9 +50,14 @@ module Gem
     #
     def initialize(arg_list)
       @config_file_name = nil
-      @verbose = true
+
+      @backtrace = false
       @benchmark = false
+      @bulk_threshhold = 500
+      @verbose = true
+
       handle_arguments(arg_list)
+
       begin
         @hash = open(config_file_name) {|f| YAML.load(f) }
       rescue ArgumentError
@@ -64,9 +67,19 @@ module Gem
       rescue Errno::EACCES                 
         warn "Failed to load #{config_file_name} due to permissions problem."
       end
+
       @hash ||= {}
-      @bulk_threshhold = @hash[:bulk_threshhold] || 500
+
+      # HACK these override command-line args, which is bad
+      @backtrace = @hash[:backtrace] if @hash.key? :backtrace
+      @benchmark = @hash[:benchmark] if @hash.key? :benchmark
+      @bulk_threshhold = @hash[:bulk_threshhold] if @hash.key? :bulk_threshhold
       @verbose = @hash[:verbose] if @hash.key? :verbose
+    end
+
+    # True if the backtrace option has been specified, or debug is on.
+    def backtrace
+      @backtrace or $DEBUG
     end
 
     # The name of the configuration file.

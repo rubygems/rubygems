@@ -27,11 +27,12 @@
 	Don't infinitely loop in retry.
 	* bin/gemri: Removed.  Everybody should have ri integration now.
 	* lib/rubygems/config_file.rb: Allow settings to be examined.  Pull
-	verbose from .gemrc.
+	settings from .gemrc.
 	* lib/rubygems/commands/environment_command.rb: Add ruby executable
 	and configuration settings to `gem env`.
 	* lib/rubygems/indexer/indexer.rb (Gem::Indexer::Indexer#build_index):
 	Now uses UserInteraction.
+	* various: Use UserInteraction for output.
 
 2007-07-22  Chad Fowler  <chad@chadfowler.com>
 

@@ -81,6 +81,9 @@ module Gem
   ####################################################################
   # StreamUI implements a simple stream based user interface.
   class StreamUI
+
+    attr_reader :ins, :outs, :errs
+
     def initialize(in_stream, out_stream, err_stream=STDERR)
       @ins = in_stream
       @outs = out_stream

@@ -39,7 +39,7 @@ class Gem::Commands::MirrorCommand < Gem::Command
 
       sourceindex_text = ''
 
-      puts "fetching: #{get_from}/yaml.Z"
+      say "fetching: #{get_from}/yaml.Z"
       open "#{get_from}/yaml.Z", "r" do |y|
         sourceindex_text = Zlib::Inflate.inflate y.read
         open File.join(save_to, "yaml"), "wb" do |out|
@@ -49,12 +49,13 @@ class Gem::Commands::MirrorCommand < Gem::Command
 
       sourceindex = YAML.load sourceindex_text
 
+      progress = ui.progress_reporter sourceindex.size,
+                                     "Fetching #{sourceindex.size} gems"
       sourceindex.each do |fullname, gem|
         gem_file = "#{fullname}.gem"
         gem_dest = File.join gems_dir, gem_file
-        unless File.exists? gem_dest then
-          puts "fetching: #{gem_file}"
 
+        unless File.exists? gem_dest then
           begin
             open "#{get_from}/gems/#{gem_file}", "r" do |g|
               contents = g.read
@@ -66,10 +67,14 @@ class Gem::Commands::MirrorCommand < Gem::Command
             old_gf = gem_file
             gem_file = gem_file.downcase
             retry if old_gf != gem_file
-            puts $!
+            alert_error $!
           end
         end
+
+        progress.updated gem_file
       end
+
+      say # newline
     end
   end
 

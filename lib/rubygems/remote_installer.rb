@@ -67,7 +67,7 @@ module Gem
         installer = new_installer(destination_file)
         installed_gems.unshift installer.install(force, install_dir, install_stub)
       rescue RemoteInstallationSkipped => e
-        puts e.message
+        alert_error e.message
       end
       installed_gems.flatten
     end

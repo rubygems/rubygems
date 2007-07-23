@@ -14,7 +14,7 @@ module Gem
         add_option('-a', '--add CERT', 'Add a trusted certificate.') do |value, options|
           cert = OpenSSL::X509::Certificate.new(File.read(value))
           Gem::Security.add_trusted_cert(cert)
-          puts "Added #{cert.subject.to_s}"
+          say "Added #{cert.subject.to_s}"
         end
 
         add_option('-l', '--list', 'List trusted certificates.') do |value, options|
@@ -22,7 +22,7 @@ module Gem
           Dir::glob(glob_str) do |path|
             cert = OpenSSL::X509::Certificate.new(File.read(path))
             # this could proably be formatted more gracefully
-            puts cert.subject.to_s
+            say cert.subject.to_s
           end
         end
 
@@ -35,7 +35,7 @@ module Gem
           Dir::glob(glob_str) do |path|
             cert = OpenSSL::X509::Certificate.new(File.read(path))
             if cert.subject.to_s.downcase.index(value)
-              puts "Removing '#{cert.subject.to_s}'"
+              say "Removing '#{cert.subject.to_s}'"
               File.unlink(path)
             end
           end
@@ -46,9 +46,9 @@ module Gem
                    'certificate for EMAIL_ADDR.') do |value, options|
           vals = Gem::Security::build_self_signed_cert(value)
           File::chmod(0600, vals[:key_path])
-          puts "Public Cert: #{vals[:cert_path]}",
-               "Private Key: #{vals[:key_path]}",
-               "Don't forget to move the key file to somewhere private..."
+          say "Public Cert: #{vals[:cert_path]}",
+              "Private Key: #{vals[:key_path]}",
+              "Don't forget to move the key file to somewhere private..."
         end
 
         add_option('-C', '--certificate CERT',

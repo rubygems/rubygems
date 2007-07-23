@@ -9,7 +9,6 @@ require 'tmpdir'
 require 'test/unit'
 require 'rubygems'
 require 'test/gemutilities'
-require 'test/io_capture'
 
 Gem::manage_gems
 
@@ -24,6 +23,8 @@ class TestInstaller < RubyGemTestCase
     super
     @spec = quick_gem("a")
     @installer = Gem::Installer.new :fake, {}
+
+    @ui = MockGemUi.new
   end
 
   def util_gem_dir(version = '0.0.2')
@@ -46,19 +47,17 @@ class TestInstaller < RubyGemTestCase
   end
 
   def test_build_extensions_none
-    ui = MockGemUi.new
-    use_ui ui do @installer.build_extensions util_gem_dir, @spec end
+    use_ui @ui do @installer.build_extensions util_gem_dir, @spec end
 
-    assert_equal '', ui.output
-    assert_equal '', ui.error
+    assert_equal '', @ui.output
+    assert_equal '', @ui.error
   end
 
   def test_build_extensions_extconf_bad
     @spec.extensions << 'extconf.rb'
 
-    ui = MockGemUi.new
     e = assert_raise Gem::Installer::ExtensionBuildError do
-      use_ui ui do
+      use_ui @ui do
         @installer.build_extensions util_gem_dir, @spec
       end
     end
@@ -66,16 +65,15 @@ class TestInstaller < RubyGemTestCase
     assert_match(/\AERROR: Failed to build gem native extension.$/, e.message)
 
     assert_equal "Building native extensions.  This could take a while...\n",
-                 ui.output
-    assert_equal '', ui.error
+                 @ui.output
+    assert_equal '', @ui.error
   end
 
   def test_build_extensions_unsupported
     @spec.extensions << nil
 
-    ui = MockGemUi.new
     e = assert_raise Gem::Installer::ExtensionBuildError do
-      use_ui ui do
+      use_ui @ui do
         @installer.build_extensions util_gem_dir, @spec
       end
     end
@@ -83,8 +81,8 @@ class TestInstaller < RubyGemTestCase
     assert_match(/^No builder for extension ''$/, e.message)
 
     assert_equal "Building native extensions.  This could take a while...\n",
-                 ui.output
-    assert_equal '', ui.error
+                 @ui.output
+    assert_equal '', @ui.error
   end
 
   def test_extract_files
@@ -321,17 +319,16 @@ class TestInstaller < RubyGemTestCase
     util_make_exec
     @installer.directory = util_gem_dir
 
-    serr = capture_stderr { 
+    use_ui @ui do
       @installer.generate_bin @spec, @gemhome
-    }
+    end
+
     assert_equal true, File.directory?(util_inst_bindir)
     installed_exec = File.join(util_inst_bindir, "my_exec")
     assert_equal true, File.exist?(installed_exec)
 
-    assert_match(/unable/i, serr)
-    assert_match(/win32/i, serr)
-    assert_match(/symlinks/i, serr)
-    assert_match(/wrapper/i, serr)
+    assert_match(/Unable to use symlinks on win32, installing wrapper/i,
+                 @ui.error)
     
     expected_mode = win_platform? ? 0100644 : 0100755
     assert_equal expected_mode, File.stat(installed_exec).mode
@@ -358,11 +355,13 @@ class TestInstaller < RubyGemTestCase
 
   def test_install_with_message
     @gem = File.join 'test', 'data', "PostMessage-0.0.1.gem"
-    sout = capture_stdout {
+
+    use_ui @ui do
       @installer = Gem::Installer.new @gem, {}
       @installer.install
-    }
-    assert_equal "I am a shiny gem!\n", sout
+    end
+
+    assert_equal "I am a shiny gem!\n", @ui.output
   end
 
 end

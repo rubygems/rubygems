@@ -1,7 +1,7 @@
 2007-07-23  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/commands/contents_command.rb: Add --lib-only option, remove
-	useless --list option.
+	useless --list option.  Feature request #9498 by Martin DeMello.
 	* lib/rubygems/specification.rb (Gem::Specification#lib_files):
 	Restrict to only files in Gem::Specification#require_paths.
 

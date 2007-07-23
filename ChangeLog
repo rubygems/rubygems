@@ -5,6 +5,8 @@
 	* lib/rubygems/command.rb: Better documentation
 	* lib/rubygems/commands/which_command.rb, bin/gemwhich: Move `gemwhich`
 	under `gem`.
+	* lib/rubygems/commands/mirror_command.rb, bin/gem_mirror: Move
+	`gem_mirror` under `gem`.
 
 2007-07-22  Chad Fowler  <chad@chadfowler.com>
 

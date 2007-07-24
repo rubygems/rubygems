@@ -74,7 +74,7 @@ class Gem::Commands::MirrorCommand < Gem::Command
         progress.updated gem_file
       end
 
-      say # newline
+      progress.done
     end
   end
 

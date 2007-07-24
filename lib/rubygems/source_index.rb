@@ -241,8 +241,14 @@ module Gem
         gem_names = fetch_quick_index source_uri
         remove_extra gem_names
         missing_gems = find_missing gem_names
+
+        say "missing #{missing_gems.size} gems" if
+          missing_gems.size > 0 and Gem.configuration.really_verbose
+
         use_incremental = missing_gems.size <= Gem.configuration.bulk_threshhold
       rescue Gem::OperationNotSupportedError => ex
+        alert_error "Falling back to bulk fetch: #{ex.message}" if
+          Gem.configuration.really_verbose
         use_incremental = false
       end
 
@@ -283,7 +289,9 @@ module Gem
       begin
         yaml_spec = fetcher.fetch_path source_uri + '/yaml.Z'
         yaml_spec = unzip yaml_spec
-      rescue
+      rescue => e
+        alert_error "Unable to fetch yaml.Z: #{e.message}" if
+          Gem.configuration.really_verbose
         begin
           yaml_spec = fetcher.fetch_path source_uri + '/yaml'
         rescue => e
@@ -336,7 +344,8 @@ module Gem
           add_spec gemspec
           progress.updated spec_name
         rescue RuntimeError => ex
-          ui.say "Failed to download spec for #{spec_name} from #{source_uri}"
+          ui.say "Failed to download spec #{spec_name} from #{source_uri}:\n" \
+                 "\t#{ex.message}"
         end
       end
       progress.done

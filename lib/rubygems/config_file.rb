@@ -89,10 +89,28 @@ module Gem
 
     # Delegates to @hash
     def each(&block)
-      yield 'verbose', @verbose
-      yield 'benchmark', @benchmark
+      hash = @hash.dup
+      hash.delete :verbose
+      hash.delete :benchmark
+      hash.delete :backtrace
+      hash.delete :bulk_threshhold
+
+      yield :verbose, @verbose
+      yield :benchmark, @benchmark
+      yield :backtrace, @backtrace
+      yield :bulk_threshhold, @bulk_threshhold
+
       yield 'config_file_name', @config_file_name if @config_file_name
-      @hash.each(&block)
+
+      hash.each(&block)
+    end
+
+    # Really verbose mode gives you extra output.
+    def really_verbose
+      case verbose
+      when true, false, nil then false
+      else true
+      end
     end
 
     # Return the configuration information for +key+.

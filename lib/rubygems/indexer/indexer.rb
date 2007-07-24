@@ -52,7 +52,7 @@ class Gem::Indexer::Indexer
           end
         end
 
-        say # newline
+        progress.done
       end
     end
   end

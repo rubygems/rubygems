@@ -69,13 +69,6 @@ module Gem
   class Version
     include Comparable
 
-    # :stopdoc:
-    # The originating definition of Requirement is left nested in
-    # Version for compatibility.  The full definition is given in
-    # Gem::Requirement.
-    class Requirement; end
-    # :startdoc:
-    
     attr_accessor :version
     
     NUM_RE = /\s*(\d+(\.\d+)*)*\s*/
@@ -172,14 +165,6 @@ module Gem
     end
     
   end
-
-  # Class Requirement's original definition is nested in Version.
-  # Although an probably inappropriate place, current gems specs
-  # reference the nested class name explicitly.  To remain compatible
-  # with old software loading gemspecs, we leave the original
-  # definition in Version, but define an alias Gem::Requirement for
-  # use everywhere else.
-  Requirement = ::Gem::Version::Requirement
 
   ##################################################################
   # Requirement version includes a prefaced comparator in addition
@@ -318,5 +303,16 @@ module Gem
     end
     public :hash
   end
-  
+
+  #:stopdoc:
+  # Class Requirement's original definition is nested in Version.
+  # Although an inappropriate place, current gems specs reference the nested
+  # class name explicitly.  To remain compatible with old software loading
+  # gemspecs, we leave a copy of original definition in Version, but define an
+  # alias Gem::Requirement for use everywhere else.
+  class Version
+    Requirement = ::Gem::Requirement
+  end
+  # :startdoc:
+
 end

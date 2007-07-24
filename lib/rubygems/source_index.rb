@@ -183,7 +183,7 @@ module Gem
     def_delegators :@gems, :size, :length
 
     # Find a gem by an exact match on the short name.
-    def find_name(gem_name, version_requirement=Version::Requirement.new(">= 0"))
+    def find_name(gem_name, version_requirement=Gem::Requirement.new(">= 0"))
       search(/^#{gem_name}$/, version_requirement)
     end
 
@@ -193,15 +193,15 @@ module Gem
     #   [String] a partial for the (short) name of the gem, or
     #   [Regex] a pattern to match against the short name
     # version_requirement::
-    #   [String | default=Version::Requirement.new(">= 0")] version to
+    #   [String | default=Gem::Requirement.new(">= 0")] version to
     #   find
     # return::
     #   [Array] list of Gem::Specification objects in sorted (version)
     #   order.  Empty if not found.
     #
-    def search(gem_pattern, version_requirement=Version::Requirement.new(">= 0"))
+    def search(gem_pattern, version_requirement=Gem::Requirement.new(">= 0"))
       gem_pattern = /#{ gem_pattern }/i if String === gem_pattern
-      version_requirement = Gem::Version::Requirement.create(version_requirement)
+      version_requirement = Gem::Requirement.create(version_requirement)
       result = []
       @gems.each do |full_spec_name, spec|
         next unless spec.name =~ gem_pattern

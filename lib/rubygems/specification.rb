@@ -298,11 +298,11 @@ module Gem
     end
 
     overwrite_accessor :required_ruby_version= do |value|
-      @required_ruby_version = Version::Requirement.create(value)
+      @required_ruby_version = Gem::Requirement.create(value)
     end
 
     overwrite_accessor :required_rubygems_version= do |value|
-      @required_rubygems_version = Version::Requirement.create(value)
+      @required_rubygems_version = Gem::Requirement.create(value)
     end
 
     overwrite_accessor :date= do |date|
@@ -704,13 +704,13 @@ module Gem
     # given object.
     def ruby_code(obj)
       case obj
-      when String           then '%q{' + obj + '}'
-      when Array            then obj.inspect
-      when Gem::Version     then obj.to_s.inspect
-      when Date, Time       then '%q{' + obj.strftime('%Y-%m-%d') + '}'
-      when Numeric          then obj.inspect
-      when true, false, nil then obj.inspect
-      when Gem::Version::Requirement  then "Gem::Version::Requirement.new(#{obj.to_s.inspect})"
+      when String            then '%q{' + obj + '}'
+      when Array             then obj.inspect
+      when Gem::Version      then obj.to_s.inspect
+      when Date, Time        then '%q{' + obj.strftime('%Y-%m-%d') + '}'
+      when Numeric           then obj.inspect
+      when true, false, nil  then obj.inspect
+      when Gem::Requirement  then "Gem::Requirement.new(#{obj.to_s.inspect})"
       else raise Exception, "ruby_code case not handled: #{obj.class}"
       end
     end

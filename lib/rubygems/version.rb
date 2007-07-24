@@ -7,7 +7,7 @@
 module Gem
   
   ####################################################################
-  # The Dependency class holds a Gem name and Version::Requirement
+  # The Dependency class holds a Gem name and a Gem::Requirement
   #
   class Dependency
     attr_accessor :name
@@ -26,7 +26,7 @@ module Gem
     #
     def initialize(name, version_requirements)
       @name = name
-      @version_requirements = Version::Requirement.new(version_requirements)
+      @version_requirements = Gem::Requirement.new(version_requirements)
       @version_requirement = nil   # Avoid warnings.
     end
 
@@ -43,7 +43,7 @@ module Gem
 
     def normalize
       ver = @version_requirement.instance_eval { @version }
-      @version_requirements = Version::Requirement.new([ver])
+      @version_requirements = Gem::Requirement.new([ver])
       @version_requirement = nil
     end
 
@@ -69,11 +69,12 @@ module Gem
   class Version
     include Comparable
 
+    # :stopdoc:
     # The originating definition of Requirement is left nested in
     # Version for compatibility.  The full definition is given in
     # Gem::Requirement.
-    class Requirement
-    end
+    class Requirement; end
+    # :startdoc:
     
     attr_accessor :version
     
@@ -204,7 +205,7 @@ module Gem
     REQ_RE = /\s*(#{OP_RE})\s*/
     
     ##
-    # Factory method to create a Version::Requirement object.  Input may be a
+    # Factory method to create a Gem::Requirement object.  Input may be a
     # Version, a String, or nil.  Intended to simplify client code.
     #
     # If the input is "weird", the default version requirement is returned.

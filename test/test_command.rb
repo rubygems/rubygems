@@ -17,6 +17,10 @@ class Noop
   end
 end
 
+class Gem::Command
+  public :parser
+end
+
 class TestCommand < Test::Unit::TestCase
   include Gem::DefaultUserInteraction
 
@@ -68,16 +72,13 @@ class TestCommand < Test::Unit::TestCase
   end
 
   def test_overlapping_common_and_local_options
-    use_ui(MockGemUi.new) do
-      @cmd.add_option('-x', '--zip', 'BAD!') do end
-      @cmd.add_option('-z', '--exe', 'BAD!') do end
-      @cmd.add_option('-x', '--exe', 'BAD!') do end
-      @cmd.when_invoked do |opts| false end
-      @cmd.invoke('-x')
-      md = ui.output =~ /Common.*-exe/m
-      assert ! @xopt, "Should not do xopt"
-      assert_nil md, "Should not have common options"
-    end
+    @cmd.add_option('-x', '--zip', 'BAD!') do end
+    @cmd.add_option('-z', '--exe', 'BAD!') do end
+    @cmd.add_option('-x', '--exe', 'BAD!') do end
+
+    assert_match %r|-x, --zip|, @cmd.parser.to_s
+    assert_match %r|-z, --exe|, @cmd.parser.to_s
+    assert_no_match %r|-x, --exe|, @cmd.parser.to_s
   end
 
   # Returning false from the command handler invokes the usage output.

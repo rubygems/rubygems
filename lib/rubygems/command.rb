@@ -46,7 +46,7 @@ module Gem
       @parser = nil
       @when_invoked = nil
     end
-    
+
     # Override to provide command handling.
     def execute
       fail "Generic command has no actions"
@@ -174,18 +174,17 @@ module Gem
     def create_option_parser
       require 'optparse'
       @parser = OptionParser.new
-      option_names = {}
 
       @parser.separator("")
       regular_options = @option_groups.delete :options
 
-      configure_options "", regular_options, option_names
+      configure_options "", regular_options
 
       @option_groups.sort_by { |n,_| n.to_s }.each do |group_name, option_list|
-        configure_options group_name, option_list, option_names
+        configure_options group_name, option_list
       end
 
-      configure_options "Common", Command.common_options, option_names
+      configure_options "Common", Command.common_options
 
       @parser.separator("")
       unless arguments.empty?
@@ -210,7 +209,7 @@ module Gem
       end
     end
 
-    def configure_options(header, option_list, option_names)
+    def configure_options(header, option_list)
       return if option_list.nil? or option_list.empty?
 
       header = header.to_s.empty? ? '' : "#{header} "
@@ -218,11 +217,9 @@ module Gem
 
       option_list.each do |args, handler|
         dashes = args.select { |arg| arg =~ /^-/ }
-        next if dashes.any? { |arg| option_names[arg] }
         @parser.on(*args) do |value|
           handler.call(value, @options)
         end
-        dashes.each do |arg| option_names[arg] = true end
       end
 
       @parser.separator ''

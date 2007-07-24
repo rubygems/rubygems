@@ -19,6 +19,8 @@
 	Patch by Jeremy Burks.
 	* lib/rubygems/commands/environment_command.rb: Add RUBY VERSION to
 	environment output.
+	* lib/rubygems/command.rb: Don't worry about duplicated command-line
+	options, OptionParser takes care of them for us.
 
 2007-07-22  Eric Hodel  <drbrain@segment7.net>
 

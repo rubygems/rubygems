@@ -9,7 +9,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
   def initialize
     super 'dependency',
           'Show the dependencies of an installed gem',
-          :version=>"> 0"
+          :version=>"> 0", :domain => :local
 
     add_version_option('dependency')
 
@@ -56,12 +56,18 @@ class Gem::Commands::DependencyCommand < Gem::Command
     end
 
     options[:args].each do |name|
+      new_specs = nil
       source_indexes.each do |source_index|
-        specs = specs.merge find_gems(name, source_index)
+        new_specs =  find_gems(name, source_index)
       end
+
+      say "No match found for #{name} (#{options[:version]})" if
+        new_specs.empty?
+
+      specs = specs.merge new_specs
     end
 
-    terminate_interaction if specs.empty?
+    terminate_interaction 1 if specs.empty?
 
     reverse = Hash.new { |h, k| h[k] = [] }
 
@@ -109,11 +115,13 @@ class Gem::Commands::DependencyCommand < Gem::Command
   end
 
   # Retuns list of [specification, dep] that are satisfied by spec.
-  def find_reverse_dependencies(spec, srcindex)
+  def find_reverse_dependencies(spec, source_index)
     result = []
 
-    srcindex.each do |name, sp|
+    source_index.each do |name, sp|
       sp.dependencies.each do |dep|
+        dep = Gem::Dependency.new(*dep) unless Gem::Dependency === dep
+
         if spec.name == dep.name and
            dep.version_requirements.satisfied_by?(spec.version) then
           result << [sp.full_name, dep]
@@ -129,12 +137,8 @@ class Gem::Commands::DependencyCommand < Gem::Command
 
     spec_list = source_index.search name, options[:version]
 
-    if spec_list.empty? then
-      say "No match found for #{name} (#{options[:version]})"
-    else
-      spec_list.each do |spec|
-        specs[spec.full_name] = [source_index, spec]
-      end
+    spec_list.each do |spec|
+      specs[spec.full_name] = [source_index, spec]
     end
 
     specs

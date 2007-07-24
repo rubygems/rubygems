@@ -50,6 +50,8 @@ class TestInstaller < RubyGemTestCase
 
     assert_equal '', @ui.output
     assert_equal '', @ui.error
+
+    assert !File.exist?('gem_make.out')
   end
 
   def test_build_extensions_extconf_bad
@@ -66,6 +68,10 @@ class TestInstaller < RubyGemTestCase
     assert_equal "Building native extensions.  This could take a while...\n",
                  @ui.output
     assert_equal '', @ui.error
+
+    assert_equal "\n", File.read('gem_make.out')
+  ensure
+    FileUtils.rm_f 'gem_make.out'
   end
 
   def test_build_extensions_unsupported
@@ -82,6 +88,10 @@ class TestInstaller < RubyGemTestCase
     assert_equal "Building native extensions.  This could take a while...\n",
                  @ui.output
     assert_equal '', @ui.error
+
+    assert_equal "No builder for extension ''\n", File.read('gem_make.out')
+  ensure
+    FileUtils.rm_f 'gem_make.out'
   end
 
   def test_extract_files

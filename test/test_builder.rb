@@ -5,25 +5,34 @@
 #++
 
 require 'test/unit'
-require 'rubygems'
-Gem::manage_gems
-require 'test/mockgemui'
+require 'test/gemutilities'
+require 'rubygems/builder'
 
-class TestBuilder < Test::Unit::TestCase
+class TestBuilder < RubyGemTestCase
   def setup
+    super
+
     @ui = MockGemUi.new
-    Gem::DefaultUserInteraction.ui = @ui
   end
-  
+
   def test_valid_specification_builds_successfully
-    spec = Gem::Specification.load(File.join(File.dirname(__FILE__), '/data/post_install.gemspec'))
-    builder = Gem::Builder.new(spec)
-    assert_nothing_raised {
-      builder.build
-    }
+    spec_path = File.join File.dirname(__FILE__), 'data', 'post_install.gemspec'
+
+    spec = Gem::Specification.load spec_path
+
+    builder = Gem::Builder.new spec
+
+    assert_nothing_raised do
+      use_ui @ui do
+        Dir.chdir @tempdir do
+          builder.build
+        end
+      end
+    end
+
     assert_match(/Successfully built RubyGem\n  Name: PostMessage/, @ui.output)
   end
-  
+
   def test_invalid_spec_does_not_build
     spec = Gem::Specification.new 
     builder = Gem::Builder.new(spec)

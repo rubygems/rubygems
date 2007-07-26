@@ -8,6 +8,8 @@
 	* lib/rubygems/user_interaction.rb: If stdin is not a tty, it is
 	unlikely that gem is going to get a response when asking a question.
 	Patch #10660 by Paul Brannan.
+	* lib/rubygems/validator.rb: Output test failures when using install
+	-t.  Patch #10659 by Paul Brannan.
 
 2007-07-23  Eric Hodel  <drbrain@segment7.net>
 

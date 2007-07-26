@@ -117,6 +117,32 @@ module Gem
       end
       errors
     end
+
+    class TestRunner
+      def initialize(suite, ui)
+        @suite = suite
+        @ui = ui
+      end
+
+      def self.run(suite, ui)
+        require 'test/unit/ui/testrunnermediator'
+        return new(suite, ui).start
+      end
+
+      def start
+        @mediator = Test::Unit::UI::TestRunnerMediator.new(@suite)
+        @mediator.add_listener(Test::Unit::TestResult::FAULT, &method(:add_fault))
+        return @mediator.run_suite
+      end
+
+      def add_fault(fault)
+        if Gem.configuration.verbose then
+          @ui.say fault.long_display
+        end
+      end
+    end
+
+    autoload :TestRunner, 'test/unit/ui/testrunnerutilities'
    
     ##
     # Runs unit tests for a given gem specification
@@ -132,12 +158,11 @@ module Gem
       end
       gem gem_spec.name, "= #{gem_spec.version.version}"
       test_files.each do |f| require f end
-      require 'test/unit/ui/console/testrunner'
       suite = Test::Unit::TestSuite.new("#{gem_spec.name}-#{gem_spec.version}")
       ObjectSpace.each_object(Class) do |klass|
         suite << klass.suite if (klass < Test::Unit::TestCase)
       end
-      result = Test::Unit::UI::Console::TestRunner.run(suite, Test::Unit::UI::SILENT)
+      result = TestRunner.run(suite, ui())
       unless result.passed?
         alert_error(result.to_s)
         #unless ask_yes_no(result.to_s + "...keep Gem?", true) then

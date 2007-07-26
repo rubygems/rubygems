@@ -125,7 +125,7 @@ module Gem
               result = Gem::Validator.new.unit_test(gem_spec)
               unless result.passed?
                 unless ask_yes_no("...keep Gem?", true) then
-                  Gem::Uninstaller.new(spec.name, spec.version.version).uninstall
+                  Gem::Uninstaller.new(spec.name, :version => spec.version.version).uninstall
                 end
               end
             end

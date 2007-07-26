@@ -1,8 +1,10 @@
 2007-07-26  Eric Hodel  <drbrain@segment7.net>
 
 	* test/test_gem_ext_configure_builder.rb: Linux has different behavior
-	for `sh ./configure` when configure is missing.  Fix adpated from
+	for `sh ./configure` when configure is missing.  Fix adapted from
 	Patch #10019 by Donavan Pantke.
+	* lib/rubygems/commands/pristine_command.rb: Compare fully-qualified
+	paths.  Fixes bug #7976 by Lyle Johnson.
 
 2007-07-25  Eric Hodel  <drbrain@segment7.net>
 

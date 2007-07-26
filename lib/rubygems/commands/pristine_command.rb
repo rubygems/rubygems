@@ -65,6 +65,10 @@ module Gem
           Dir.chdir target_directory do
             deployed_files = Dir.glob(File.join("**", "*")) +
                              Dir.glob(File.join("**", ".*"))
+
+            pristine_files = pristine_files.map { |f| File.expand_path f }
+            deployed_files = deployed_files.map { |f| File.expand_path f }
+
             to_redeploy = (pristine_files - deployed_files).collect {|path| path.untaint}
             if to_redeploy.length > 0
               gems_were_pristine = false

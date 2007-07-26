@@ -77,7 +77,7 @@ def install_windows_batch_files
 end
 
 def install_sources
-  $: << "lib"
+  $:.unshift "lib"
   require 'rubygems'
   require 'rubygems/builder'
   require 'rubygems/installer'

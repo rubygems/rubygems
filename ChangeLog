@@ -7,6 +7,9 @@
 	paths.  Fixes bug #7976 by Lyle Johnson.
 	* lib/rubygems/config_file.rb: Add ConfigFile#[]=, so --proxy
 	command-line option works.  Fixes #8152 by Justin Sabelkko.
+	* lib/rubygems/post-install.rb: Make sure we use the
+	latest-and-greatest RubyGems when running post-install.rb.  Fixes Bug
+	#8411 by Duy Nguyen.
 
 2007-07-25  Eric Hodel  <drbrain@segment7.net>
 

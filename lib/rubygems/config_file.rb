@@ -118,6 +118,11 @@ module Gem
       @hash[key.to_s]
     end
 
+    # Set configuration option +key+ to +value+.
+    def []=(key, value)
+      @hash[key] = value
+    end
+
     private
 
     # Handle the command arguments.

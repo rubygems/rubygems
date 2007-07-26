@@ -5,6 +5,8 @@
 	Patch #10019 by Donavan Pantke.
 	* lib/rubygems/commands/pristine_command.rb: Compare fully-qualified
 	paths.  Fixes bug #7976 by Lyle Johnson.
+	* lib/rubygems/config_file.rb: Add ConfigFile#[]=, so --proxy
+	command-line option works.  Fixes #8152 by Justin Sabelkko.
 
 2007-07-25  Eric Hodel  <drbrain@segment7.net>
 

@@ -15,6 +15,8 @@
 	Tyler Rick.
 	* lib/rubygems/remote_fetcher.rb: Support HTTP basic authentication.
 	Patch #8121 by Max Dunn.
+	* lib/rubygems/commands/install_command.rb: Don't raise an error when
+	a gem has no tests.  Patch #11824 by Katsuyuki MIYAMUKO.
 
 2007-07-23  Eric Hodel  <drbrain@segment7.net>
 

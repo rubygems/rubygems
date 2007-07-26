@@ -1,3 +1,11 @@
+2007-07-25  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/indexer.rb: Create the index in /tmp, then move it into
+	place when we're done.  This will prevent spurious bulk index updates
+	from occurring while the quick index is missing.  Remove the option to
+	not build the quick index.
+	* lib/rubygems/commands/generate_index_command.rb: --no-quick is gone.
+
 2007-07-23  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/commands/contents_command.rb: Add --lib-only option, remove

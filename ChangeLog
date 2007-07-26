@@ -10,6 +10,9 @@
 	Patch #10660 by Paul Brannan.
 	* lib/rubygems/validator.rb: Output test failures when using install
 	-t.  Patch #10659 by Paul Brannan.
+	* lib/rubygems/custom_require.rb (Kernel#require): Only rescue a
+	LoadError that matches the file we are requiring.  Patch #10723 by
+	Tyler Rick.
 
 2007-07-23  Eric Hodel  <drbrain@segment7.net>
 

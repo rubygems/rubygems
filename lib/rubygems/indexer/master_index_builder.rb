@@ -3,24 +3,23 @@ require 'rubygems/indexer'
 # Construct the master Gem index file.
 class Gem::Indexer::MasterIndexBuilder < Gem::Indexer::AbstractIndexBuilder
 
-  def initialize(filename, options)
-    @filename = filename
-    @options = options
-    @directory = options[:directory]
-    @enabled = true
-  end
-
   def start_index
     super
-    @file.puts "--- !ruby/object:Gem::Cache"
+    @file.puts "--- !ruby/object:Gem::SourceIndex"
     @file.puts "gems:"
   end
 
   def cleanup
     super
+
     index_file_name = File.join @directory, @filename
+
     compress index_file_name, "Z"
-    paranoid index_file_name, "#{index_file_name}.Z"
+    compressed_file_name = "#{index_file_name}.Z"
+
+    paranoid index_file_name, compressed_file_name
+
+    @files << compressed_file_name
   end
 
   def add(spec)

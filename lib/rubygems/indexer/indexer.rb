@@ -1,3 +1,5 @@
+require 'tmpdir'
+
 require 'rubygems/indexer'
 
 # Top level class for building the repository index.  Initialize with
@@ -6,26 +8,23 @@ class Gem::Indexer::Indexer
   include Gem::Indexer::Compressor
   include Gem::UserInteraction
 
-  # Create an indexer with the options specified by the options hash.
-  def initialize(options)
-    @options = options.dup
-    @directory = @options[:directory]
-    @options[:quick_directory] = File.join @directory, "quick"
-    @master_index = Gem::Indexer::MasterIndexBuilder.new "yaml", @options
-    @quick_index = Gem::Indexer::QuickIndexBuilder.new "index", @options
+  # Create an indexer that will index the gems in +directory+.
+  def initialize(directory)
+    @dest_directory = directory
+    @directory = File.join Dir.tmpdir, "gem_generate_index_#{$$}"
+
+    @master_index = Gem::Indexer::MasterIndexBuilder.new "yaml", @directory
+    @quick_index = Gem::Indexer::QuickIndexBuilder.new "index", @directory
   end
 
   # Build the index.
   def build_index
-    FileUtils.rm_r(@options[:quick_directory]) rescue nil
-
     @master_index.build do
       @quick_index.build do
         progress = ui.progress_reporter gem_file_list.size,
-                                       "Generating index for #{gem_file_list.size} files in #{@options[:directory]}"
+                                        "Generating index for #{gem_file_list.size} gems in #{@dest_directory}"
 
         gem_file_list.each do |gemfile|
-          #say "Handling #{gemfile}"
           if File.size(gemfile.to_s) == 0 then
             alert_warning "Skipping zero-length gem: #{gemfile}"
             next
@@ -57,9 +56,35 @@ class Gem::Indexer::Indexer
     end
   end
 
+  def install_index
+    verbose = Gem.configuration.really_verbose
+
+    say "Moving index into production dir #{@dest_directory}" if verbose
+
+    files = @master_index.files + @quick_index.files
+
+    files.each do |file|
+      relative_name = file[/\A#{@directory}.(.*)/, 1]
+      dest_name = File.join @dest_directory, relative_name
+
+      FileUtils.rm_rf dest_name, :verbose => verbose
+      FileUtils.mv file, @dest_directory, :verbose => verbose
+    end
+  end
+
+  def generate_index
+    FileUtils.rm_rf @directory
+    FileUtils.mkdir_p @directory, :mode => 0700
+
+    build_index
+    install_index
+  ensure
+    FileUtils.rm_rf @directory
+  end
+
   # List of gem file names to index.
   def gem_file_list
-    Dir.glob(File.join(@directory, "gems", "*.gem"))
+    Dir.glob(File.join(@dest_directory, "gems", "*.gem"))
   end
 
   # Abbreviate the spec for downloading.  Abbreviated specs are only

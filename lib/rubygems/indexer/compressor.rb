@@ -6,8 +6,9 @@ module Gem::Indexer::Compressor
 
   # Compress the given file.
   def compress(filename, ext="rz")
+    zipped = zip File.read(filename)
     File.open filename + ".#{ext}", "wb" do |file|
-      file.write zip(File.read(filename))
+      file.write zipped
     end
   end
 

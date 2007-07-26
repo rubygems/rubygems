@@ -5,15 +5,11 @@ class Gem::Commands::GenerateIndexCommand < Gem::Command
   def initialize
     super 'generate_yaml_index',
           'Generates the index files for a gem server directory',
-          :directory => '.', :quick => true
+          :directory => '.'
 
     add_option '-d', '--directory=DIRNAME',
                'repository base dir containing gems subdir' do |dir, options|
       options[:directory] = File.expand_path dir
-    end
-
-    add_option '--[no-]quick', 'generate quick index' do |quick, options|
-      options[:quick] = quick
     end
   end
 
@@ -25,7 +21,8 @@ class Gem::Commands::GenerateIndexCommand < Gem::Command
     else
       require 'rubygems/indexer'
 
-      Gem::Indexer::Indexer.new(options).build_index
+      indexer = Gem::Indexer::Indexer.new options[:directory]
+      indexer.generate_index
     end
   end
 

@@ -4,24 +4,27 @@ require 'rubygems/indexer'
 # incremental loading.
 class Gem::Indexer::QuickIndexBuilder < Gem::Indexer::AbstractIndexBuilder
 
-  def initialize(filename, options)
-    @filename = filename
-    @options = options
-    @directory = options[:quick_directory]
-    @enabled = options[:quick]
+  def initialize(filename, directory)
+    directory = File.join directory, 'quick'
+    super filename, directory
   end
 
   def cleanup
-    compress File.join(@directory, @filename)
+    super
+
+    quick_index_file = File.join(@directory, @filename)
+    compress quick_index_file
+
+    # the complete quick index is in a directory, so move it as a whole
+    @files.delete quick_index_file
+    @files << @directory
   end
 
   def add(spec)
-    return unless @enabled
     @file.puts spec.full_name
     fn = File.join @directory, "#{spec.full_name}.gemspec.rz"
-    File.open fn, "wb"  do |gsfile|
-      gsfile.write zip(spec.to_yaml)
-    end
+    zipped = zip spec.to_yaml
+    File.open fn, "wb" do |gsfile| gsfile.write zipped end
   end
 
 end

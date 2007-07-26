@@ -7,25 +7,39 @@ class Gem::Indexer::AbstractIndexBuilder
 
   include Gem::Indexer::Compressor
 
+  # Directory to put index files in
+  attr_reader :directory
+
+  # File name of the generated index
+  attr_reader :filename
+
+  # List of written files/directories to move into production
+  attr_reader :files
+
+  def initialize(filename, directory)
+    @filename = filename
+    @directory = directory
+    @files = []
+  end
+
   # Build a Gem index.  Yields to block to handle the details of the
   # actual building.  Calls +begin_index+, +end_index+ and +cleanup+ at
   # appropriate times to customize basic operations.
   def build
-    unless @enabled then
+    FileUtils.mkdir_p @directory unless File.exist? @directory
+    raise "not a directory: #{@directory}" unless File.directory? @directory
+
+    file_path = File.join @directory, @filename
+
+    @files << file_path
+
+    File.open file_path, "wb" do |file|
+      @file = file
+      start_index
       yield
-    else
-      FileUtils.mkdir_p @directory unless File.exist? @directory
-
-      fail "not a directory: #{@directory}" unless File.directory? @directory
-
-      File.open File.join(@directory, @filename), "wb" do |file|
-        @file = file
-        start_index
-        yield
-        end_index
-      end
-      cleanup
+      end_index
     end
+    cleanup
   ensure
     @file = nil
   end

@@ -10,6 +10,8 @@
 	* lib/rubygems/post-install.rb: Make sure we use the
 	latest-and-greatest RubyGems when running post-install.rb.  Fixes Bug
 	#8411 by Duy Nguyen.
+	* lib/rubygems/remote_fetcher.rb: An empty HTTP_PROXY means no proxy.
+	Fixes Bug #9042 by Michael Brodhead.
 
 2007-07-25  Eric Hodel  <drbrain@segment7.net>
 

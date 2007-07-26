@@ -210,6 +210,22 @@ class TestRemoteFetcher < RubyGemTestCase
     assert_equal 'Errno::ECONNREFUSED reading uri', e.message
   end
 
+  def test_get_proxy_from_env_empty
+    orig_env_HTTP_PROXY = ENV['HTTP_PROXY']
+    orig_env_http_proxy = ENV['http_proxy']
+
+    ENV['HTTP_PROXY'] = ''
+    ENV['http_proxy'] = nil
+
+    fetcher = Gem::RemoteFetcher.new nil
+
+    assert_equal nil, fetcher.send(:get_proxy_from_env)
+
+  ensure
+    ENV['HTTP_PROXY'] = orig_env_HTTP_PROXY
+    ENV['http_proxy'] = orig_env_http_proxy
+  end
+
   def test_implicit_no_proxy
     use_ui(MockGemUi.new) do
       ENV['http_proxy'] = 'http://fakeurl:12345'

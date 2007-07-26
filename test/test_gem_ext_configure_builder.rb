@@ -48,20 +48,17 @@ class TestGemExtConfigureBuilder < RubyGemTestCase
       end
     end
 
-    expected = "configure failed:
+    expected = %r|configure failed:
 
-sh ./configure --prefix=#{@dest_path}
-./configure: ./configure: No such file or directory
-"
+sh \./configure --prefix=#{@dest_path}
+.*?: \./configure: No such file or directory
+|
 
-    assert_equal expected, error.message
+    assert_match expected, error.message
 
-    expected = [
-      "sh ./configure --prefix=#{@dest_path}",
-      "./configure: ./configure: No such file or directory\n"
-    ]
-
-    assert_equal expected, output
+    assert_equal "sh ./configure --prefix=#{@dest_path}", output.shift
+    assert_match %r|\./configure: No such file or directory\n|, output.shift
+    assert_equal true, output.empty?
   end
 
   def test_self_build_has_makefile

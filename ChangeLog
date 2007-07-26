@@ -1,3 +1,9 @@
+2007-07-26  Eric Hodel  <drbrain@segment7.net>
+
+	* test/test_gem_ext_configure_builder.rb: Linux has different behavior
+	for `sh ./configure` when configure is missing.  Fix adpated from
+	Patch #10019 by Donavan Pantke.
+
 2007-07-25  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/indexer.rb: Create the index in /tmp, then move it into

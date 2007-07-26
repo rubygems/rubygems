@@ -13,6 +13,8 @@
 	* lib/rubygems/custom_require.rb (Kernel#require): Only rescue a
 	LoadError that matches the file we are requiring.  Patch #10723 by
 	Tyler Rick.
+	* lib/rubygems/remote_fetcher.rb: Support HTTP basic authentication.
+	Patch #8121 by Max Dunn.
 
 2007-07-23  Eric Hodel  <drbrain@segment7.net>
 

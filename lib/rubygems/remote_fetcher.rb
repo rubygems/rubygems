@@ -68,7 +68,9 @@ class Gem::RemoteFetcher
     u = URI.parse(uri)
     raise ArgumentError, 'uri is not an HTTP URI' unless URI::HTTP === u
     http = connect_to(u.host, u.port)
-    resp = http.head(u.request_uri)
+    request = Net::HTTP::Head.new(u.request_uri)
+    request.basic_auth(unescape(u.user), unescape(u.password)) unless u.user.nil? || u.user.empty?
+    resp = http.request(request)
     raise Gem::RemoteSourceException, "HTTP Response #{resp.code}" if resp.code !~ /^2/
     resp['content-length'].to_i
   rescue SocketError, SystemCallError, Timeout::Error => e
@@ -127,6 +129,12 @@ class Gem::RemoteFetcher
       if @proxy_uri
         http_proxy_url = "#{@proxy_uri.scheme}://#{@proxy_uri.host}:#{@proxy_uri.port}"  
         connection_options[:proxy_http_basic_authentication] = [http_proxy_url, unescape(@proxy_uri.user)||'', unescape(@proxy_uri.password)||'']
+      end
+
+      uri = URI.parse uri
+      unless uri.nil? || uri.user.nil? || uri.user.empty? then
+        connection_options[:http_basic_authentication] =
+          [unescape(uri.user), unescape(uri.password)]
       end
 
       open(uri, connection_options, &block)

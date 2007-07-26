@@ -1,10 +1,19 @@
 require 'test/unit'
 require 'stringio'
+require 'timeout'
 
 require 'rubygems'
 require 'rubygems/user_interaction'
 
 class TestStreamUI < Test::Unit::TestCase
+
+  module IsTty
+    def tty?
+      return true
+    end
+
+    alias_method :isatty, :tty?
+  end
 
   def setup
     Gem.send :instance_variable_set, :@configuration, nil
@@ -14,7 +23,18 @@ class TestStreamUI < Test::Unit::TestCase
     @out = StringIO.new
     @err = StringIO.new
 
+    @in.extend IsTty
+
     @sui = Gem::StreamUI.new @in, @out, @err
+  end
+
+  def test_ask
+    timeout(1) do
+      expected_answer = "Arthur, King of the Britons"
+      @in.string = "#{expected_answer}\n"
+      actual_answer = @sui.ask("What is your name?")
+      assert_equal expected_answer, actual_answer
+    end
   end
 
   def test_choose_from_list
@@ -60,6 +80,46 @@ class TestStreamUI < Test::Unit::TestCase
     assert_kind_of Gem::StreamUI::VerboseProgressReporter, reporter
     assert_equal "hi\n", @out.string
   end
-  
+
+end
+
+class TestStreamUINoTty < Test::Unit::TestCase
+
+  def setup
+    Gem.send :instance_variable_set, :@configuration, nil
+    @cfg = Gem.configuration
+
+    @in = StringIO.new
+    @out = StringIO.new
+    @err = StringIO.new
+
+    @sui = Gem::StreamUI.new @in, @out, @err
+  end
+
+  def test_ask
+    timeout(1) do
+      answer = @sui.ask("what is your favorite color?")
+      assert_equal nil, answer
+    end
+  end
+
+  def test_ask_yes_no_with_default
+    timeout(1) do
+      answer = @sui.ask_yes_no("do coconuts migrate?", false)
+      assert_equal false, answer
+
+      answer = @sui.ask_yes_no("do coconuts migrate?", true)
+      assert_equal true, answer
+    end
+  end
+
+  def test_ask_yes_no_without_default
+    timeout(1) do
+      assert_raises(Gem::OperationNotSupportedError) do
+        @sui.ask_yes_no("do coconuts migrate?")
+      end
+    end
+  end
+
 end
 

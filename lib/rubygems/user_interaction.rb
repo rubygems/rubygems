@@ -109,8 +109,19 @@ module Gem
       return list[result], result
     end
 
-    # Ask a question.  Returns a true for yes, false for no.
+    # Ask a question.  Returns a true for yes, false for no.  If not
+    # connected to a tty, raises an exception if default is nil,
+    # otherwise returns default.
     def ask_yes_no(question, default=nil)
+      if not @ins.tty? then
+        if default.nil? then
+          raise(
+              Gem::OperationNotSupportedError,
+              "Not connected to a tty and no default specified")
+        else
+          return default
+        end
+      end
       qstr = case default
       when nil
         'yn'
@@ -127,15 +138,19 @@ module Gem
           true
         when /^[Nn].*/
           false
-        else
+        when /^$/
           default
+        else
+          nil
         end
       end
       return result
     end
     
-    # Ask a question.  Returns an answer.  
+    # Ask a question.  Returns an answer if connected to a tty, nil
+    # otherwise.
     def ask(question)
+      return nil if not @ins.tty?
       @outs.print(question + "  ")
       @outs.flush
       result = @ins.gets

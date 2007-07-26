@@ -15,7 +15,7 @@ class TestArgPreprocessor < Test::Unit::TestCase
 
   def test_create
     @cfg = Gem::ConfigFile.new([])
-    assert ! @cfg.backtrace
+    assert ! @cfg.benchmark
     assert_equal File.join(Gem.user_home, '.gemrc'), @cfg.config_file_name
   end
 

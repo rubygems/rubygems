@@ -5,6 +5,9 @@
 	from occurring while the quick index is missing.  Remove the option to
 	not build the quick index.
 	* lib/rubygems/commands/generate_index_command.rb: --no-quick is gone.
+	* lib/rubygems/user_interaction.rb: If stdin is not a tty, it is
+	unlikely that gem is going to get a response when asking a question.
+	Patch #10660 by Paul Brannan.
 
 2007-07-23  Eric Hodel  <drbrain@segment7.net>
 

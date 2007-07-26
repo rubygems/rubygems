@@ -6,7 +6,7 @@ module Gem
       include Gem::LocalRemoteOptions
 
       def initialize
-        super 'sources', 'Manage the sources RubyGems will search forgems'
+        super 'sources', 'Manage the sources RubyGems will search for gems'
 
         add_option '-a', '--add SOURCE_URI', 'Add source' do |value, options|
           options[:add] = value

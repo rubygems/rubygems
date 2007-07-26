@@ -70,17 +70,15 @@ module Gem
     include Comparable
 
     attr_accessor :version
-    
-    NUM_RE = /\s*(\d+(\.\d+)*)*\s*/
-    
+
     ##
     # Checks if version string is valid format
     #
     # str:: [String] the version string
     # return:: [Boolean] true if the string format is correct, otherwise false
     #
-    def self.correct?(str)
-      /^#{NUM_RE}$/.match(str)
+    def self.correct?(version)
+      /\A\s*(\d+(\.\d+)*)*\s*\z/ =~ version
     end
 
     ##
@@ -107,9 +105,9 @@ module Gem
     # version:: [String] The version string.  Format is digit.digit...
     #
     def initialize(version)
-      raise ArgumentError, 
+      raise ArgumentError,
         "Malformed version number string #{version}" unless Version.correct?(version)
-      @version = version
+      @version = version.strip
     end
     
     ##
@@ -226,18 +224,7 @@ module Gem
       end
       @version = nil   # Avoid warnings.
     end
-    
-    ##
-    # Overrides to check for comparator
-    #
-    # str:: [String] the version requirement string
-    # return:: [Boolean] true if the string format is correct, otherwise false
-    #
-    # NOTE: Commented out because I don't think it is used.
-    #       def correct?(str)
-    #         /^#{REQ_RE}#{NUM_RE}$/.match(str)
-    #       end
-    
+
     def to_s
       as_list.join(", ")
     end

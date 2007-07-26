@@ -12,6 +12,8 @@
 	#8411 by Duy Nguyen.
 	* lib/rubygems/remote_fetcher.rb: An empty HTTP_PROXY means no proxy.
 	Fixes Bug #9042 by Michael Brodhead.
+	* lib/rubygems/version.rb: Disallow newlines in version string.  Strip
+	spaces from version string.  Fixes Bug #9499 by Bryce Kerley.
 
 2007-07-25  Eric Hodel  <drbrain@segment7.net>
 

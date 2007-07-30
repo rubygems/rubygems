@@ -215,6 +215,10 @@ module Gem
 
     ##
     # Creates the scripts to run the applications in the gem.
+    #--
+    # The Windows script is generated in addition to the regular one due to a
+    # bug or misfeature in the Windows shell's pipe.  See
+    # http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/193379
     #
     def generate_bin_script(spec, filename, bindir, install_dir)
       File.open(File.join(bindir, File.basename(filename)), "w", 0755) do |file|

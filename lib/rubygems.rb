@@ -86,12 +86,6 @@ module Gem
 
   MUTEX = Mutex.new
 
-  class Exception < RuntimeError
-  end
-
-  class OperationNotSupportedError < Gem::Exception
-  end
-
   RubyGemsPackageVersion = RubyGemsVersion
 
   DIRECTORIES = ['cache', 'doc', 'gems', 'specifications']

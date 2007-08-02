@@ -11,14 +11,6 @@ require 'zlib'
 module Gem
 
   ##
-  # Used to raise parsing and loading errors
-  #
-  class FormatException < Gem::Exception
-    attr_accessor :file_path
-    #I go back and forth on whether or not to create custom exception classes
-  end
-
-  ##
   # The format class knows the guts of the RubyGem .gem file format
   # and provides the capability to read gem files
   #

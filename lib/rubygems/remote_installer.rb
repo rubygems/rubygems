@@ -11,10 +11,6 @@ require 'rubygems/installer'
 require 'rubygems/source_info_cache'
 
 module Gem
-  class DependencyError < Gem::Exception; end
-  class GemNotFoundException < Gem::Exception; end
-  class RemoteInstallationCancelled < Gem::Exception; end
-  class RemoteInstallationSkipped < Gem::Exception; end
 
   class RemoteInstaller
 

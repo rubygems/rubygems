@@ -10,7 +10,6 @@ require 'rubygems/command'
 
 module Gem
 
-  class CommandLineError < Gem::Exception; end
   module Commands; end # This is where Commands will be placed in the namespace
 
   ####################################################################

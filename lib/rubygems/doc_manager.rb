@@ -8,8 +8,6 @@ require 'fileutils'
 
 module Gem
 
-  class DocumentError < Gem::Exception; end
-  
   class DocManager
   
     include UserInteraction

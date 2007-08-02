@@ -5,11 +5,6 @@ require 'rubygems'
 require 'rubygems/gem_open_uri'
 
 ##
-# Represents an error communicating via HTTP.
-
-class Gem::RemoteSourceException < Gem::Exception; end
-
-##
 # RemoteFetcher handles the details of fetching gems and gem information from
 # a remote source.
 

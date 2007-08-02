@@ -11,11 +11,7 @@ require 'rbconfig'
 require 'rubygems/format'
 require 'rubygems/dependency_list'
 
-class Gem::InstallError < Gem::Exception; end
-
 module Gem
-
-  class DependencyRemovalException < Gem::Exception; end
 
   ##
   # The installer class processes RubyGem .gem files and installs the

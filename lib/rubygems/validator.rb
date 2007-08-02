@@ -12,8 +12,6 @@ require 'rubygems/installer'
 
 module Gem
 
-  class VerificationError < Gem::Exception; end
-
   ##
   # Validator performs various gem file and gem database validation
   class Validator

@@ -5,6 +5,8 @@
 #++
 
 require 'forwardable'
+
+require 'rubygems'
 require 'rubygems/user_interaction'
 require 'rubygems/specification'
 

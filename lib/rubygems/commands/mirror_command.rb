@@ -1,4 +1,8 @@
+require 'yaml'
+require 'zlib'
+
 require 'rubygems/command'
+require 'rubygems/open-uri'
 
 class Gem::Commands::MirrorCommand < Gem::Command
 
@@ -7,9 +11,6 @@ class Gem::Commands::MirrorCommand < Gem::Command
   end
 
   def execute
-    require 'open-uri'
-    require 'yaml'
-    require 'zlib'
 
     config_file = File.join Gem.user_home, '.gemmirrorrc'
 

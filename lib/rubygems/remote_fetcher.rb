@@ -1,10 +1,8 @@
 require 'net/http'
 require 'uri'
-require 'yaml'
-require 'zlib'
 
 require 'rubygems'
-require 'rubygems/user_interaction'
+require 'rubygems/gem_open_uri'
 
 ##
 # Represents an error communicating via HTTP.
@@ -63,8 +61,6 @@ class Gem::RemoteFetcher
   # Returns the size of +uri+ in bytes.
   def fetch_size(uri)
     return File.size(get_file_uri_path(uri)) if file_uri?(uri)
-    require 'net/http'
-    require 'uri'
     u = URI.parse(uri)
     raise ArgumentError, 'uri is not an HTTP URI' unless URI::HTTP === u
     http = connect_to(u.host, u.port)
@@ -123,7 +119,6 @@ class Gem::RemoteFetcher
   # Read the data from the (source based) URI, but if it is a file:// URI,
   # read from the filesystem instead.
   def open_uri_or_path(uri, &block)
-    require 'rubygems/gem_open_uri'
     if file_uri?(uri)
       open(get_file_uri_path(uri), &block)
     else

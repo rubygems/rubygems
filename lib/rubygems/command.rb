@@ -4,8 +4,10 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/user_interaction'
+require 'optparse'
+
 require 'rubygems/command_manager'
+require 'rubygems/user_interaction'
 
 module Gem
 
@@ -134,7 +136,7 @@ module Gem
       end
     end
 
-    private 
+    private
 
     # Return the command manager instance.
     def command_manager
@@ -172,7 +174,6 @@ module Gem
     end
 
     def create_option_parser
-      require 'optparse'
       @parser = OptionParser.new
 
       @parser.separator("")

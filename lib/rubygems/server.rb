@@ -1,8 +1,8 @@
-require 'rubygems'
-Gem.manage_gems
 require 'webrick'
-require 'yaml'
 require 'rdoc/template'
+require 'yaml'
+
+require 'rubygems'
 
 # Gem::Server and allows users to serve gems for consumption by
 # `gem --remote-install`.
@@ -341,7 +341,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def initialize(gemdir, port, daemon)
-    Socket.do_not_reverse_lookup=true
+    Socket.do_not_reverse_lookup = true
 
     @gemdir = gemdir
     @port = port

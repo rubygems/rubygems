@@ -4,6 +4,12 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'find'
+
+require 'rubygems/digest/md5'
+require 'rubygems/format.rb'
+require 'rubygems/installer'
+
 module Gem
 
   class VerificationError < Gem::Exception; end
@@ -20,7 +26,6 @@ module Gem
       if(gem_data.size == 0) then
         raise VerificationError.new("Empty Gem file")
       end
-      require 'rubygems/digest/md5'
       unless(gem_data =~ /MD5SUM/m)
         return # Don't worry about it...this sucks.  Need to fix MD5 stuff for
                # new format
@@ -73,9 +78,6 @@ module Gem
     # 
     # returns a hash of ErrorData objects, keyed on the problem gem's name.
     def alien
-      require 'rubygems/installer'
-      require 'find'
-      require 'rubygems/digest/md5'
       errors = {}
       Gem::SourceIndex.from_installed_gems.each do |gem_name, gem_spec|
         errors[gem_name] ||= []
@@ -89,15 +91,18 @@ module Gem
         end
     
         begin
-          require 'rubygems/format.rb'
           verify_gem_file(gem_path)
           File.open(gem_path) do |file|
             format = Gem::Format.from_file_by_path(gem_path)
             format.file_entries.each do |entry, data|
               # Found this file.  Delete it from list
               installed_files.delete remove_leading_dot_dir(entry['path'])
+
+              next unless data # HACK `gem check -a mkrf`
+
               File.open(File.join(gem_directory, entry['path']), 'rb') do |f|
-                unless Gem::MD5.hexdigest(f.read).to_s == Gem::MD5.hexdigest(data).to_s
+                unless Gem::MD5.hexdigest(f.read).to_s ==
+                       Gem::MD5.hexdigest(data).to_s then
                   errors[gem_name] << ErrorData.new(entry['path'], "installed file doesn't match original from gem")
                 end
               end

@@ -1,3 +1,6 @@
+require 'rubygems/source_index'
+require 'rubygems/dependency_list'
+
 module Gem
   module Commands
     class CleanupCommand < Command

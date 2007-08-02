@@ -10,6 +10,7 @@ require 'test/unit/testcase'
 require 'tmpdir'
 require 'uri'
 require 'rubygems/gem_open_uri'
+require 'rubygems/source_info_cache'
 
 require 'test/yaml_data'
 require 'test/mockgemui'
@@ -114,6 +115,8 @@ class RubyGemTestCase < Test::Unit::TestCase
   end
 
   def quick_gem(gemname, version='0.0.2')
+    require 'rubygems/specification'
+
     spec = Gem::Specification.new do |s|
       s.platform = Gem::Platform::RUBY
       s.name = gemname
@@ -138,6 +141,10 @@ class RubyGemTestCase < Test::Unit::TestCase
   end
 
   def util_setup_fake_fetcher
+    require 'zlib'
+    require 'socket'
+    require 'rubygems/remote_fetcher'
+
     @uri = URI.parse 'http://gems.example.com'
     @fetcher = FakeFetcher.new
     @fetcher.uri = @uri
@@ -170,6 +177,8 @@ class RubyGemTestCase < Test::Unit::TestCase
   end
 
   def util_setup_source_info_cache(*specs)
+    require 'rubygems/source_info_cache_entry'
+
     specs = Hash[*specs.map { |spec| [spec.full_name, spec] }.flatten]
     si = Gem::SourceIndex.new specs
 

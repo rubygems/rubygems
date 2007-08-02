@@ -8,7 +8,6 @@ require 'test/unit'
 $:.unshift '../lib'
 require 'rubygems'
 require 'test/mockgemui'
-Gem::manage_gems
 
 class TestParseCommands < Test::Unit::TestCase
   include Gem::DefaultUserInteraction

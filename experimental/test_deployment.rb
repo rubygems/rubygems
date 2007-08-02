@@ -8,7 +8,6 @@ $:.unshift '../lib'
 require 'test/unit'
 require 'rubygems'
 require 'rubygems/deployment'
-Gem::manage_gems
 
 class TestDeployment < Test::Unit::TestCase
   

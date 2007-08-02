@@ -1,7 +1,8 @@
 require 'fileutils'
+
 require 'rubygems'
-require 'rubygems/remote_fetcher'
 require 'rubygems/source_info_cache_entry'
+require 'rubygems/user_interaction'
 
 # SourceInfoCache stores a copy of the gem index for each gem source.
 #
@@ -60,10 +61,12 @@ class Gem::SourceInfoCache
     return @cache_data if @cache_data
     @dirty = false
     cache_file # HACK writable check
-    # Marshal loads 30-40% faster from a String, and 2MB on 20061116 is small
+
     begin
+      # Marshal loads 30-40% faster from a String, and 2MB on 20061116 is small
       data = File.open cache_file, 'rb' do |fp| fp.read end
       @cache_data = Marshal.load data
+
       @cache_data.each do |url, sice|
         next unless Hash === sice
         @dirty = true
@@ -171,7 +174,7 @@ class Gem::SourceInfoCache
     return fn if File.writable?(fn)
     return nil if File.exist?(fn)
     dir = File.dirname(fn)
-    if ! File.exist? dir
+    unless File.exist? dir then
       begin
         FileUtils.mkdir_p(dir)
       rescue RuntimeError

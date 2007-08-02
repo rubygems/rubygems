@@ -1,5 +1,6 @@
 require 'test/unit'
 require 'test/gemutilities'
+require 'rubygems/source_info_cache_entry'
 
 class TestGemSourceInfoCacheEntry < RubyGemTestCase
 

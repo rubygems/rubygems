@@ -6,6 +6,7 @@
 
 require 'test/unit'
 require 'stringio'
+require 'fileutils'
 
 require 'rubygems'
 require 'rubygems/package'

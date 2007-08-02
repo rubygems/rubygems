@@ -1,4 +1,5 @@
 require 'rubygems/command'
+require 'rubygems/gem_path_searcher'
 
 class Gem::Commands::WhichCommand < Gem::Command
 

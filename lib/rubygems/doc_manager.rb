@@ -4,6 +4,8 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'fileutils'
+
 module Gem
 
   class DocumentError < Gem::Exception; end
@@ -34,8 +36,6 @@ module Gem
     # same process, the RI docs should be done first (a likely bug in
     # RDoc will cause RI docs generation to fail if run after RDoc).
     def generate_ri
-      require 'fileutils'
-
       if @spec.has_rdoc then
         load_rdoc
         install_ri # RDoc bug, ri goes first
@@ -50,8 +50,6 @@ module Gem
     # same process, the RI docs should be done first (a likely bug in
     # RDoc will cause RI docs generation to fail if run after RDoc).
     def generate_rdoc
-      require 'fileutils'
-
       if @spec.has_rdoc then
         load_rdoc
         install_rdoc

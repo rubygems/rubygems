@@ -6,10 +6,10 @@
 
 require 'test/unit'
 require 'rubygems'
-Gem::manage_gems
 require 'flexmock'
 require 'flexmock/test_unit'
 require 'test/simple_gem'
+require 'rubygems/doc_manager'
 
 class TestDocumentationGeneration < Test::Unit::TestCase
   def setup

@@ -4,8 +4,7 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/source_index'
-require 'rubygems/gem_path_searcher'
+require 'rubygems'
 
 module Kernel
   alias gem_original_require require # :nodoc:

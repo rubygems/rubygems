@@ -10,8 +10,6 @@ require 'test/unit'
 require 'rubygems'
 require 'test/gemutilities'
 
-Gem::manage_gems
-
 class Gem::Installer
   attr_accessor :options, :directory
 end

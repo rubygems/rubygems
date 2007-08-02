@@ -4,7 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-
 # Some system might not have OpenSSL installed, therefore the core
 # library file openssl might not be available.  We localize testing
 # for the presence of OpenSSL in this file.
@@ -39,8 +38,6 @@ begin
   dummy = OpenSSL::Digest::SHA1
 
   Gem.ssl_available = true
-rescue LoadError
-  Gem.ssl_available = false
-rescue
+rescue LoadError, StandardError
   Gem.ssl_available = false
 end

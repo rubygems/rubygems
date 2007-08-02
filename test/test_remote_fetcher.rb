@@ -15,7 +15,6 @@ require 'test/gemutilities'
 require 'test/mockgemui'
 require 'test/yaml_data'
 
-Gem.manage_gems
 include WEBrick
 
 # = Testing Proxy Settings

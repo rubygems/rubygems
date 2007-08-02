@@ -7,7 +7,6 @@
 
 
 require 'rubygems'
-Gem.manage_gems
 require 'rubygems/user_interaction'
 
 include Gem::DefaultUserInteraction

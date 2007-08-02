@@ -1,3 +1,6 @@
+require 'fileutils'
+require 'rubygems/installer'
+
 module Gem
   module Commands
     class UnpackCommand < Command
@@ -32,7 +35,6 @@ module Gem
         gemname = get_one_gem_name
         path = get_path(gemname, options[:version])
         if path
-          require 'fileutils'
           target_dir = File.basename(path).sub(/\.gem$/, '')
           FileUtils.mkdir_p target_dir
           Installer.new(path).unpack(File.expand_path(target_dir))

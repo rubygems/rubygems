@@ -1,25 +1,21 @@
-#
+#++
 # Copyright (C) 2004 Mauricio Julio Fernández Pradier
 # See LICENSE.txt for additional licensing information.
-#
+#--
 
-require 'yaml'
-require 'yaml/syck'
-require 'fileutils'
-require 'zlib'
-require 'digest/md5'
 require 'fileutils'
 require 'find'
 require 'stringio'
+require 'yaml'
+require 'zlib'
 
-require 'rubygems/specification'
+require 'rubygems/digest/md5'
 require 'rubygems/security'
+require 'rubygems/specification'
 
 # Wrapper for FileUtils meant to provide logging and additional operations if
 # needed.
 class Gem::FileOperations
-
-  extend FileUtils
 
   def initialize(logger = nil)
     @logger = logger
@@ -851,7 +847,7 @@ module Gem::Package
       Dir
     end
 
-    def find_class
+    def find_class # HACK kill me
       Find
     end
   end

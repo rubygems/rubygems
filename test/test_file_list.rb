@@ -11,8 +11,6 @@ require 'rubygems'
 require 'test/gemutilities'
 require 'test/mockgemui'
 
-Gem::manage_gems
-
 class TestFileList < RubyGemTestCase
 
   def import_spec(name)

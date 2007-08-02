@@ -16,7 +16,7 @@ spec = Gem::Specification.new do |s|
 end
 
 if $0==__FILE__
-  Gem::manage_gems
+  require 'rubygems/builder'
   Gem::Builder.new(spec).build
 end
 

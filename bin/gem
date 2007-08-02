@@ -5,9 +5,8 @@
 # See LICENSE.txt for permissions.
 #++
 
-
 require 'rubygems'
-Gem.manage_gems
+require 'rubygems/gem_runner'
 
 required_version = Gem::Version::Requirement.new(">= 1.8.0")
 unless  required_version.satisfied_by?(Gem::Version.new(RUBY_VERSION))

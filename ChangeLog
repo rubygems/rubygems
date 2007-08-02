@@ -1,3 +1,10 @@
+2007-08-01  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/*, test/*: Pushed down dependencies as far as reasonable.
+	Removed Gem::manage_gems.  Now only 14 files are loaded with "require
+	'rubygems'".  Added tests for `gem build` and `gem cert`.
+	* lib/rubygems/extensions.rb: Added common place for all extensions.
+
 2007-07-26  Eric Hodel  <drbrain@segment7.net>
 
 	* test/test_gem_ext_configure_builder.rb: Linux has different behavior

@@ -4,10 +4,9 @@
 # See LICENSE.txt for permissions.
 #++
 
+require "yaml"
 require "rubygems/package"
 require "rubygems/security"
-require "yaml"
-require 'rubygems/gem_openssl'
 
 module Gem
 
@@ -26,9 +25,10 @@ module Gem
     def initialize(spec)
       @spec = spec
     end
-    
+
     ##
-    # Builds the gem from the specification.  Returns the name of the file written.
+    # Builds the gem from the specification.  Returns the name of the file
+    # written.
     #
     def build
       @spec.mark_version
@@ -47,13 +47,14 @@ module Gem
   File: #{@spec.full_name+'.gem'}
 EOM
     end
-    
+
     private
+
     def sign
       # if the signing key was specified, then load the file, and swap
       # to the public key (TODO: we should probably just omit the
       # signing key in favor of the signing certificate, but that's for
-      # the future, also the signature algorihtm should be configurable)
+      # the future, also the signature algorithm should be configurable)
       signer = nil
       if @spec.respond_to?(:signing_key) && @spec.signing_key
         signer = Gem::Security::Signer.new(@spec.signing_key, @spec.cert_chain)
@@ -62,7 +63,7 @@ EOM
       end
       signer
     end
-    
+
     def write_package
       Package.open(@spec.file_name, "w", @signer) do |pkg|
         pkg.metadata = @spec.to_yaml
@@ -77,3 +78,4 @@ EOM
     end
   end
 end
+

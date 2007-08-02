@@ -11,8 +11,6 @@ require 'rubygems'
 require 'test/mockgemui'
 require 'test/gemenvironment'
 
-Gem.manage_gems
-
 class TestGemLoadPaths < Test::Unit::TestCase
   include Gem::DefaultUserInteraction
 

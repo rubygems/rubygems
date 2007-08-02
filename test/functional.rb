@@ -8,11 +8,11 @@
 
 require 'test/unit'
 require 'rubygems'
-Gem.manage_gems
-require 'yaml'
-require 'fileutils'
 require 'test/insure_session'
 require 'test/onegem'
+require 'sources'
+require 'rubygems/format'
+require 'rubygems/command_manager'
 
 class FunctionalTest < Test::Unit::TestCase
   def setup
@@ -45,7 +45,7 @@ class FunctionalTest < Test::Unit::TestCase
     
     assert_match(/VERSION:\s+(\d+\.)*\d+/, @out)
     assert_match(/INSTALLATION DIRECTORY:/, @out)
-    assert_match(/GEM PATH:/, @out)
+    assert_match(/GEM PATHS:/, @out)
     assert_match(/REMOTE SOURCES:/, @out)
     assert_status
   end

@@ -1,3 +1,5 @@
+require 'rubygems/validator'
+
 module Gem
   module Commands
     class CheckCommand < Command

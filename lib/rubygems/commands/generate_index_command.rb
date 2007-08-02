@@ -1,9 +1,10 @@
 require 'rubygems/command'
+require 'rubygems/indexer'
 
 class Gem::Commands::GenerateIndexCommand < Gem::Command
 
   def initialize
-    super 'generate_yaml_index',
+    super 'generate_index',
           'Generates the index files for a gem server directory',
           :directory => '.'
 
@@ -19,8 +20,6 @@ class Gem::Commands::GenerateIndexCommand < Gem::Command
       alert_error "unknown directory name #{directory}."
       terminate_interaction 1
     else
-      require 'rubygems/indexer'
-
       indexer = Gem::Indexer::Indexer.new options[:directory]
       indexer.generate_index
     end

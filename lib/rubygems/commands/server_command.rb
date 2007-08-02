@@ -1,4 +1,5 @@
 require 'rubygems/command'
+require 'rubygems/server'
 
 class Gem::Commands::ServerCommand < Gem::Command
 
@@ -22,8 +23,6 @@ class Gem::Commands::ServerCommand < Gem::Command
   end
 
   def execute
-    require 'rubygems/server'
-
     Gem::Server.run options
   end
 

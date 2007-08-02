@@ -1,4 +1,5 @@
 require 'rubygems/command'
+require 'yaml'
 
 class Gem::Commands::SpecificationCommand < Gem::Command
 
@@ -54,7 +55,6 @@ class Gem::Commands::SpecificationCommand < Gem::Command
       terminate_interaction 1
     end
 
-    require 'yaml'
     output = lambda { |spec| say spec.to_yaml; say "\n" }
 
     if options[:all] then

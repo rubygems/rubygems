@@ -4,6 +4,10 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'fileutils'
+require 'yaml'
+require 'zlib'
+
 module Gem
 
   ##
@@ -41,7 +45,6 @@ module Gem
       unless File.exist?(file_path)
         raise Gem::Exception, "Cannot load gem file [#{file_path}]"
       end
-      require 'fileutils'
       File.open(file_path, 'r') do |file|
         from_io(file, file_path)
       end
@@ -93,7 +96,6 @@ module Gem
     # file:: [IO] The IO to process
     #
     def self.read_spec(file)
-      require 'yaml'
       yaml = ''
       begin
         read_until_dashes(file) do |line|
@@ -131,8 +133,6 @@ module Gem
     # gem_file:: [IO] The IO to process
     #
     def self.read_files_from_gem(gem_file)
-      require 'zlib'
-      require 'yaml'
       errstr = "Error reading files from gem"
       header_yaml = ''
       begin

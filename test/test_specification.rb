@@ -8,7 +8,6 @@ require 'test/unit'
 require 'stringio'
 require 'test/gemutilities'
 require 'rubygems'
-Gem::manage_gems
 
 LEGACY_GEM_SPEC_FILE = 'test/data/legacy/keyedlist-0.4.0.ruby'
 LEGACY_GEM_YAML_FILE = 'test/data/legacy/keyedlist-0.4.0.yaml'

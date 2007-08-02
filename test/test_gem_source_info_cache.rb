@@ -9,6 +9,7 @@ require 'test/unit'
 require 'test/gemutilities'
 
 require 'rubygems/source_info_cache'
+require 'sources'
 
 class Gem::SourceIndex
   public :gems

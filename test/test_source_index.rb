@@ -8,8 +8,6 @@ require 'test/unit'
 require 'test/gemutilities'
 require 'rubygems/source_index'
 
-Gem.manage_gems
-
 class Gem::SourceIndex
   public :convert_specs, :fetcher, :fetch_bulk_index, :fetch_quick_index,
          :find_missing, :gems, :remove_extra,

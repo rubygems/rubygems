@@ -36,19 +36,6 @@ class TestGenerateYamlIndex < Test::Unit::TestCase
     assert ! File.exist?(srvfile("quick"))
   end
 
-  def test_generate_old_style_index
-    initialize_server_directory
-
-    generate_yaml_index("--directory #{SERVER_DIR} --no-quick")
-
-    assert_equal '', @out
-    assert_equal '', @err
-    assert_equal 0, @status, "no status error"
-    assert File.exist?(srvfile("yaml"))
-    assert File.exist?(srvfile("yaml.Z"))
-    assert ! File.exist?(srvfile("quick"))
-  end
-
   def test_generate_quick_index
     initialize_server_directory
 
@@ -80,7 +67,7 @@ class TestGenerateYamlIndex < Test::Unit::TestCase
   # Run the generate_yaml_index command for the functional test.
   def generate_yaml_index(options="")
     shell = Session::Shell.new
-    command = "#{Gem.ruby} #{@ruby_options} #{@gyi_path} #{options}"
+    command = "#{Gem.ruby} #{@ruby_options} #{@gem_path} generate_index --no-verbose #{options}"
     puts "\n\nCOMMAND: [#{command}]" if @verbose
     @out, @err = shell.execute command
     @status = shell.exit_status

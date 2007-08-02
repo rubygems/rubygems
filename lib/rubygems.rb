@@ -8,6 +8,8 @@
 #++
 
 require 'rbconfig'
+require 'rubygems/rubygems_version.rb'
+require 'thread'
 
 module Gem
   class LoadError < ::LoadError
@@ -81,8 +83,6 @@ end
 # Main module to hold all RubyGem classes/modules.
 #
 module Gem
-  require 'rubygems/rubygems_version.rb'
-  require 'thread'
 
   MUTEX = Mutex.new
 
@@ -104,19 +104,6 @@ module Gem
   class << self
 
     attr_reader :loaded_specs
-
-    def manage_gems
-      require 'rubygems/user_interaction'
-      require 'rubygems/builder'
-      require 'rubygems/format'
-      require 'rubygems/remote_installer'
-      require 'rubygems/installer'
-      require 'rubygems/validator'
-      require 'rubygems/doc_manager'
-      require 'rubygems/command_manager'
-      require 'rubygems/gem_runner'
-      require 'rubygems/config_file'
-    end
 
     # Returns an Cache of specifications that are in the Gem.path
     #
@@ -472,10 +459,11 @@ module Gem
     # subdirectories.  If we can't create a directory due to a
     # permission problem, then we will silently continue.
     def ensure_gem_subdirectories(gemdir)
+      require 'fileutils'
+
       DIRECTORIES.each do |filename|
         fn = File.join(gemdir, filename)
         unless File.exist?(fn)
-          require 'fileutils'
           FileUtils.mkdir_p(fn) rescue nil
         end
       end
@@ -502,9 +490,9 @@ module Config # :nodoc:
   end
 end
 
-require 'rubygems/source_index'
-require 'rubygems/specification'
-require 'rubygems/security'
+require 'rubygems/exceptions'
 require 'rubygems/version'
 require 'rubygems/custom_require'
+require 'rubygems/gem_path_searcher' # Needed for Kernel#gem
+require 'rubygems/source_index' # Needed for Kernel#gem
 

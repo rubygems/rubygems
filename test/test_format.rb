@@ -9,6 +9,7 @@ require 'stringio'
 
 require 'rubygems'
 require 'rubygems/format'
+require 'rubygems/package'
 require "test/simple_gem"
 
 class TestFormat < Test::Unit::TestCase

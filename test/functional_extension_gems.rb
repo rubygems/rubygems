@@ -2,6 +2,8 @@ require 'test/unit'
 require 'fileutils'
 require 'test/insure_session'
 require 'test/brokenbuildgem'
+require 'rubygems/installer'
+require 'rubygems/builder'
 
 # ====================================================================
 class TestExtensionGems < Test::Unit::TestCase

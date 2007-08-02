@@ -1,13 +1,8 @@
 require 'test/unit'
 require 'test/gemutilities'
-require 'rubygems/gem_commands'
+require 'rubygems/commands/outdated_command'
 
 class TestGemOutdatedCommand < RubyGemTestCase
-
-  def setup
-    Gem::CommandManager.instance    
-    super
-  end
 
   def test_execute
     local_01 = quick_gem 'foo', '0.1'

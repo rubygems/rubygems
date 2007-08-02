@@ -5,7 +5,6 @@
 #++
 
 require 'fileutils'
-require 'yaml'
 
 require 'rubygems'
 require 'rubygems/installer'

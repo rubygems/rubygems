@@ -1,6 +1,8 @@
+require 'fileutils'
 require 'tmpdir'
 
 require 'rubygems/indexer'
+require 'rubygems/format'
 
 # Top level class for building the repository index.  Initialize with
 # an options hash and call +build_index+.

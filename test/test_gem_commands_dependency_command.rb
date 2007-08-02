@@ -7,8 +7,6 @@ class TestGemCommandsDependencyCommand < RubyGemTestCase
   def setup
     super
 
-    Gem::CommandManager.instance # preload command objects
-
     @ui = MockGemUi.new
     @cmd = Gem::Commands::DependencyCommand.new
     @cmd.options[:domain] = :local

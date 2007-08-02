@@ -4,12 +4,9 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/user_interaction'
-require 'rubygems/remote_fetcher'
-require 'rubygems/digest/sha2'
-
 require 'forwardable'
-require 'time'
+require 'rubygems/user_interaction'
+require 'rubygems/specification'
 
 module Gem
 
@@ -177,6 +174,8 @@ module Gem
 
     # The signature for the given gem specification.
     def gem_signature(gem_full_name)
+      require 'rubygems/digest/sha2'
+
       Gem::SHA256.new.hexdigest(@gems[gem_full_name].to_yaml).to_s
     end
 
@@ -280,6 +279,8 @@ module Gem
     end
 
     def fetcher
+      require 'rubygems/remote_fetcher'
+
       Gem::RemoteFetcher.fetcher
     end
 

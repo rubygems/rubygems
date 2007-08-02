@@ -7,9 +7,9 @@
 require 'fileutils'
 require 'pathname'
 require 'rbconfig'
+
 require 'rubygems/format'
 require 'rubygems/dependency_list'
-require 'rubygems/command_manager'
 
 class Gem::InstallError < Gem::Exception; end
 

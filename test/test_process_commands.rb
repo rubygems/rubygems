@@ -7,7 +7,6 @@
 require 'test/unit'
 $:.unshift '../lib'
 require 'rubygems'
-Gem::manage_gems
 
 require 'test/mockgemui'
 

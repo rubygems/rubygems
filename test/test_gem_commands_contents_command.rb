@@ -1,13 +1,11 @@
 require 'test/unit'
 require 'test/gemutilities'
-require 'rubygems/command_manager'
+require 'rubygems/commands/contents_command'
 
 class TestGemCommandsContentsCommand < RubyGemTestCase
 
   def setup
     super
-
-    Gem::CommandManager.instance # preload command objects
 
     @ui = MockGemUi.new
     @cmd = Gem::Commands::ContentsCommand.new

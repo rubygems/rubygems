@@ -1,3 +1,8 @@
+require 'rubygems/command'
+require 'rubygems/gem_commands'
+require 'rubygems/source_index'
+require 'rubygems/source_info_cache'
+
 module Gem
   module Commands
 

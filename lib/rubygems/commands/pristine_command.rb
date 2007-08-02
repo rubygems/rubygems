@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module Gem
   module Commands
     class PristineCommand < Command
@@ -60,7 +62,6 @@ module Gem
           pristine_files = format.file_entries.collect {|data| data[0]["path"]}
           file_map = {}
           format.file_entries.each {|entry, file_data| file_map[entry["path"]] = file_data}
-          require 'fileutils'
 
           Dir.chdir target_directory do
             deployed_files = Dir.glob(File.join("**", "*")) +

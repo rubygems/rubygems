@@ -1,3 +1,6 @@
+require 'rubygems/installer'
+require 'rubygems/remote_installer'
+
 module Gem
   module Commands
     class InstallCommand < Command

@@ -4,36 +4,12 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems'
 require 'rubygems/command'
 require 'rubygems/user_interaction'
 require 'rubygems/gem_commands'
 require 'timeout'
 
 module Gem
-
-  ###################################################################
-  # Signals that local installation will not proceed, not that it has
-  # been tried and failed.  TODO: better name.
-  class LocalInstallationError < Gem::Exception; end
-  
-  ####################################################################
-  # Signals that a file permission error is preventing the user from
-  # installing in the requested directories.
-  class FilePermissionError < Gem::Exception
-    def initialize(path)
-      super("You don't have write permissions into the #{path} directory.")
-    end
-  end
-
-  ####################################################################
-  # Signals that a remote operation cannot be conducted, probably due
-  # to not being connected (or just not finding host).
-  #
-  # TODO: create a method that tests connection to the preferred gems
-  # server.  All code dealing with remote operations will want this.
-  # Failure in that method should raise this error.
-  class RemoteError < Gem::Exception; end
 
   ####################################################################
   # The command manager registers and installs all the individual

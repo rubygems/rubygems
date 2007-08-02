@@ -28,10 +28,6 @@ module Gem
     DARWIN = 'powerpc-darwin'
     CURRENT = 'current'
   end
-  
-  # Potentially raised when a specification is validated.
-  class InvalidSpecificationException < Gem::Exception; end
-  class EndOfYAMLException < Gem::Exception; end
 
   # == Gem::Specification
   #
@@ -450,6 +446,7 @@ module Gem
       if(spec && spec.class == FalseClass) then
         raise Gem::EndOfYAMLException
       end
+
       unless Specification === spec
         raise Gem::Exception, "YAML data doesn't evaluate to gem specification"
       end

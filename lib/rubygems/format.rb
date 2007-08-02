@@ -4,6 +4,8 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'fileutils'
+
 require 'rubygems/package'
 
 module Gem
@@ -36,7 +38,6 @@ module Gem
       unless File.exist?(file_path)
         raise Gem::Exception, "Cannot load gem at [#{file_path}] in #{Dir.pwd}"
       end
-      require 'fileutils'
       # check for old version gem
       if File.read(file_path, 20).include?("MD5SUM =")
         #alert_warning "Gem #{file_path} is in old format."

@@ -1,3 +1,11 @@
+2007-08-02  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/gem_commands.rb: Removed and broken up into individual
+	files.
+	* lib/rubygems/command_manager.rb: Lazily loads gem commands.  Now to
+	use CommandManager just "require 'rubygems/command_manager'" and
+	everything will be there.
+
 2007-08-01  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/*, test/*: Pushed down dependencies as far as reasonable.

@@ -1,3 +1,6 @@
+require 'rubygems/command'
+require 'rubygems/command_aids'
+
 module Gem
   module Commands
     class EnvironmentCommand < Command

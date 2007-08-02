@@ -1,7 +1,10 @@
+require 'rubygems/command'
+require 'rubygems/local_remote_options'
+
 module Gem
   module Commands
     class QueryCommand < Command
-      include LocalRemoteOptions
+      include Gem::LocalRemoteOptions
       
       def initialize(name='query', summary='Query gem information in local or remote repositories')
         super(name,

@@ -1,3 +1,5 @@
+require 'rubygems/command'
+require 'rubygems/command_aids'
 require 'rubygems/validator'
 
 module Gem

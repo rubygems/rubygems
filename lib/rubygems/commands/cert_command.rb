@@ -1,5 +1,5 @@
 require 'rubygems/command'
-require 'rubygems/gem_commands'
+require 'rubygems/command_aids'
 require 'rubygems/security'
 
 class Gem::Commands::CertCommand < Gem::Command

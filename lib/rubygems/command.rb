@@ -6,12 +6,10 @@
 
 require 'optparse'
 
-require 'rubygems/command_manager'
 require 'rubygems/user_interaction'
 
 module Gem
 
-  ####################################################################
   # Base class for all Gem commands.
   class Command
     include UserInteraction
@@ -137,11 +135,6 @@ module Gem
     end
 
     private
-
-    # Return the command manager instance.
-    def command_manager
-      Gem::CommandManager.instance
-    end
 
     # Handle the given list of arguments by parsing them and recording
     # the results.
@@ -312,4 +305,85 @@ module Gem
       'Turn on Ruby debugging') do
     end
   end # class
-end # module
+
+  # This is where Commands will be placed in the namespace
+  module Commands; end
+
+  # :stopdoc:
+  HELP = %{
+    RubyGems is a sophisticated package manager for Ruby.  This is a
+    basic help message containing pointers to more information.
+
+      Usage:
+        gem -h/--help
+        gem -v/--version
+        gem command [arguments...] [options...]
+
+      Examples:
+        gem install rake
+        gem list --local
+        gem build package.gemspec
+        gem help install
+
+      Further help:
+        gem help commands            list all 'gem' commands
+        gem help examples            show some examples of usage
+        gem help <COMMAND>           show help on COMMAND
+                                       (e.g. 'gem help install')
+      Further information:
+        http://rubygems.rubyforge.org
+  }.gsub(/^    /, "")
+
+  EXAMPLES = %{
+    Some examples of 'gem' usage.
+
+    * Install 'rake', either from local directory or remote server:
+
+        gem install rake
+
+    * Install 'rake', only from remote server:
+
+        gem install rake --remote
+
+    * Install 'rake' from remote server, and run unit tests,
+      and generate RDocs:
+
+        gem install --remote rake --test --rdoc --ri
+
+    * Install 'rake', but only version 0.3.1, even if dependencies
+      are not met, and into a specific directory:
+
+        gem install rake --version 0.3.1 --force --install-dir $HOME/.gems
+
+    * List local gems whose name begins with 'D':
+
+        gem list D
+
+    * List local and remote gems whose name contains 'log':
+
+        gem search log --both
+
+    * List only remote gems whose name contains 'log':
+
+        gem search log --remote
+
+    * Uninstall 'rake':
+
+        gem uninstall rake
+
+    * Create a gem:
+
+        See http://rubygems.rubyforge.org/wiki/wiki.pl?CreateAGemInTenMinutes
+
+    * See information about RubyGems:
+
+        gem environment
+
+    * Update all gems on your system:
+
+        gem update
+
+  }.gsub(/^    /, "")
+  # :startdoc:
+
+end

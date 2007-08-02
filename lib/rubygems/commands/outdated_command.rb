@@ -1,5 +1,5 @@
 require 'rubygems/command'
-require 'rubygems/gem_commands'
+require 'rubygems/local_remote_options'
 require 'rubygems/source_index'
 require 'rubygems/source_info_cache'
 

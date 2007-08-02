@@ -1,3 +1,8 @@
+require 'rubygems/command'
+require 'rubygems/install_update_options'
+require 'rubygems/local_remote_options'
+require 'rubygems/source_info_cache'
+
 module Gem
   module Commands
     class UpdateCommand < Command
@@ -58,7 +63,7 @@ module Gem
                             options[:args]
                           end
         options[:domain] = :remote # install from remote source
-        install_command = command_manager['install']
+        install_command = Gem::CommandManager.instance['install']
         gems_to_update.uniq.sort.each do |name|
           say "Attempting remote update of #{name}"
           options[:args] = [name]

@@ -1,4 +1,7 @@
 require 'rubygems/command'
+require 'rubygems/command_aids'
+require 'rubygems/local_remote_options'
+require 'rubygems/version_option'
 
 class Gem::Commands::DependencyCommand < Gem::Command
 

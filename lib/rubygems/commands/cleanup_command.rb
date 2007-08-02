@@ -1,3 +1,4 @@
+require 'rubygems/command'
 require 'rubygems/source_index'
 require 'rubygems/dependency_list'
 
@@ -51,7 +52,7 @@ module Gem
         gems_to_cleanup = gems_to_cleanup.select { |spec|
           primary_gems[spec.name].version != spec.version
         }
-        uninstall_command = command_manager['uninstall']
+        uninstall_command = Gem::CommandManager.instance['uninstall']
         deplist = DependencyList.new
         gems_to_cleanup.uniq.each do |spec| deplist.add(spec) end
         deplist.dependency_order.each do |spec|

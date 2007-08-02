@@ -1,3 +1,6 @@
+require 'rubygems/command'
+require 'rubygems/command_aids'
+
 module Gem
   module Commands
     class HelpCommand < Command
@@ -21,14 +24,18 @@ module Gem
       end
 
       def execute
+        command_manager = Gem::CommandManager.instance
         arg = options[:args][0]
+
         if begins?("commands", arg)
           out = []
           out << "GEM commands are:"
           out << nil
 
           margin_width = 4
-          desc_width = command_manager.command_names.collect {|n| n.size}.max + 4
+
+          desc_width = command_manager.command_names.map { |n| n.size }.max + 4
+
           summary_width = 80 - margin_width - desc_width
           wrap_indent = ' ' * (margin_width + desc_width)
           format = "#{' ' * margin_width}%-#{desc_width}s%s"

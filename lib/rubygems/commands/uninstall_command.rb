@@ -1,3 +1,7 @@
+require 'rubygems/command'
+require 'rubygems/command_aids'
+require 'rubygems/version_option'
+
 module Gem
   module Commands
     class UninstallCommand < Command

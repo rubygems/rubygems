@@ -4,10 +4,9 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'timeout'
 require 'rubygems/command'
 require 'rubygems/user_interaction'
-require 'rubygems/gem_commands'
-require 'timeout'
 
 module Gem
 
@@ -16,7 +15,6 @@ module Gem
   # sub-commands supported by the gem command.
   class CommandManager
     include UserInteraction
-    include Commands
     
     # Return the authoratative instance of the command manager.
     def self.instance
@@ -55,12 +53,14 @@ module Gem
     
     # Register the command object.
     def register_command(command_obj)
-      @commands[command_obj] = load_and_instantiate(command_obj)
+      @commands[command_obj] = false
     end
     
     # Return the registered command from the command name.
     def [](command_name)
-      @commands[command_name.intern]
+      command_name = command_name.intern
+      return nil if @commands[command_name].nil?
+      @commands[command_name] ||= load_and_instantiate(command_name)
     end
     
     # Return a list of all command names (as strings).
@@ -112,6 +112,7 @@ module Gem
       if possibilities.size < 1
         raise "Unknown command #{cmd_name}"
       end
+
       self[possibilities.first]
     end
 

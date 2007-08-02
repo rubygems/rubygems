@@ -1,22 +1,22 @@
 require 'test/unit'
 require 'test/gemutilities'
-require 'rubygems/command_manager'
+require 'rubygems/commands/sources_command'
 
-class TestGemSourcesCommand < RubyGemTestCase
+class TestGemCommandsSourcesCommand < RubyGemTestCase
 
   def setup
     super
-    Gem::CommandManager.instance # preload command objects
+
+    @cmd = Gem::Commands::SourcesCommand.new
   end
 
   def test_execute
     util_setup_source_info_cache
-    cmd = Gem::Commands::SourcesCommand.new
-    cmd.send :handle_options, []
+    @cmd.send :handle_options, []
 
     ui = MockGemUi.new
     use_ui ui do
-      cmd.execute
+      @cmd.execute
     end
 
     expected = <<-EOF
@@ -36,14 +36,13 @@ http://gems.example.com
 
     @fetcher.data['http://beta-gems.example.com/yaml'] = @si.to_yaml
 
-    cmd = Gem::Commands::SourcesCommand.new
-    cmd.send :handle_options, %w[--add http://beta-gems.example.com]
+    @cmd.send :handle_options, %w[--add http://beta-gems.example.com]
 
     util_setup_source_info_cache
 
     ui = MockGemUi.new
     use_ui ui do
-      cmd.execute
+      @cmd.execute
     end
 
     expected = <<-EOF
@@ -71,14 +70,13 @@ http://beta-gems.example.com added to sources
 
     Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
 
-    cmd = Gem::Commands::SourcesCommand.new
-    cmd.send :handle_options, %w[--add http://beta-gems.example.com]
+    @cmd.send :handle_options, %w[--add http://beta-gems.example.com]
 
     util_setup_source_info_cache
 
     ui = MockGemUi.new
     use_ui ui do
-      cmd.execute
+      @cmd.execute
     end
 
     expected = <<-EOF
@@ -91,14 +89,13 @@ Error fetching http://beta-gems.example.com:
   end
 
   def test_execute_add_bad_uri
-    cmd = Gem::Commands::SourcesCommand.new
-    cmd.send :handle_options, %w[--add beta-gems.example.com]
+    @cmd.send :handle_options, %w[--add beta-gems.example.com]
 
     util_setup_source_info_cache
 
     ui = MockGemUi.new
     use_ui ui do
-      cmd.execute
+      @cmd.execute
     end
 
     expected = <<-EOF
@@ -110,14 +107,13 @@ beta-gems.example.com is not a URI
   end
 
   def test_execute_remove
-    cmd = Gem::Commands::SourcesCommand.new
-    cmd.send :handle_options, %w[--remove http://gems.example.com]
+    @cmd.send :handle_options, %w[--remove http://gems.example.com]
 
     util_setup_source_info_cache
 
     ui = MockGemUi.new
     use_ui ui do
-      cmd.execute
+      @cmd.execute
     end
 
     expected = <<-EOF

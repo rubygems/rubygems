@@ -63,7 +63,12 @@ class Gem::RemoteFetcher
     request.basic_auth(unescape(u.user), unescape(u.password)) unless u.user.nil? || u.user.empty?
     resp = http.request(request)
     raise Gem::RemoteSourceException, "HTTP Response #{resp.code}" if resp.code !~ /^2/
-    resp['content-length'].to_i
+    if resp['content-length']
+      return resp['content-length'].to_i
+    else
+      resp = http.get(u.request_uri)
+      return resp.body.size
+    end
   rescue SocketError, SystemCallError, Timeout::Error => e
     raise FetchError, "#{e.message}(#{e.class})"
   end

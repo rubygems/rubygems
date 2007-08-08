@@ -6,6 +6,9 @@
 	Fixes bug #9681.  Patch by Michael DeCandia.
 	* lib/rubygems/commands/contents_command.rb: Match only exact gem
 	names.  Fixes bug #9681.  Patch by Michael DeCandia
+	* lib/rubygems/remote_fetcher.rb: Perform a GET request if the HEAD
+	request doesn't have Content-Length.  Fixes bug #9771.  Patch by Ben
+	Bleything.
 
 2007-08-02  Eric Hodel  <drbrain@segment7.net>
 

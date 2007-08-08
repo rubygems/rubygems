@@ -2,6 +2,7 @@ require 'rubygems/command'
 require 'rubygems/command_aids'
 require 'rubygems/local_remote_options'
 require 'rubygems/version_option'
+require 'rubygems/source_info_cache'
 
 class Gem::Commands::DependencyCommand < Gem::Command
 

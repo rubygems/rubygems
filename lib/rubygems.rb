@@ -489,4 +489,5 @@ require 'rubygems/version'
 require 'rubygems/custom_require'
 require 'rubygems/gem_path_searcher' # Needed for Kernel#gem
 require 'rubygems/source_index' # Needed for Kernel#gem
+require 'rubygems/builder' # Needed for rake's package task.
 

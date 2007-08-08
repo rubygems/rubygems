@@ -4,10 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require "yaml"
-require "rubygems/package"
-require "rubygems/security"
-
 module Gem
 
   ##
@@ -23,6 +19,10 @@ module Gem
     # spec:: [Gem::Specification] The specification instance
     #
     def initialize(spec)
+      require "yaml"
+      require "rubygems/package"
+      require "rubygems/security"
+
       @spec = spec
     end
 

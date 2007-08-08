@@ -1,8 +1,6 @@
-require 'yaml'
-
-require 'rubygems/builder'
 require 'rubygems/command'
 require 'rubygems/command_aids'
+require 'rubygems/builder'
 
 class Gem::Commands::BuildCommand < Gem::Command
 

@@ -1,6 +1,8 @@
 require 'rubygems/command'
 require 'rubygems/local_remote_options'
+require 'rubygems/remote_fetcher'
 require 'rubygems/source_info_cache'
+require 'rubygems/source_info_cache_entry'
 
 module Gem
   module Commands

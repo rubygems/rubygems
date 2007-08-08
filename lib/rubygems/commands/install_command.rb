@@ -1,9 +1,11 @@
 require 'rubygems/command'
 require 'rubygems/command_aids'
+require 'rubygems/doc_manager'
 require 'rubygems/install_update_options'
 require 'rubygems/installer'
 require 'rubygems/local_remote_options'
 require 'rubygems/remote_installer'
+require 'rubygems/validator'
 require 'rubygems/version_option'
 
 module Gem

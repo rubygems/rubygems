@@ -9,6 +9,8 @@
 	* lib/rubygems/remote_fetcher.rb: Perform a GET request if the HEAD
 	request doesn't have Content-Length.  Fixes bug #9771.  Patch by Ben
 	Bleything.
+	* lib/rubygems.rb: Clear Gem::searcher when we Gem::clear_paths.
+	Fixes bug #12886.  Submitted by Peter Williams.
 
 2007-08-02  Eric Hodel  <drbrain@segment7.net>
 

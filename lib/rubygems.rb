@@ -294,6 +294,9 @@ module Gem
       @gem_home = nil
       @gem_path = nil
       @@source_index = nil
+      MUTEX.synchronize do
+        @searcher = nil
+      end
     end
 
     # Use the +home+ and (optional) +paths+ values for +dir+ and +path+.

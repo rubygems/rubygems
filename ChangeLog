@@ -1,3 +1,12 @@
+2007-08-08  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/specification_command.rb: Match only exact gem
+	names.  Fixes bug #9681.  Patch by Michael DeCandia.
+	* lib/rubygems/commands/unpack_command.rb: Match only exact gem names.
+	Fixes bug #9681.  Patch by Michael DeCandia.
+	* lib/rubygems/commands/contents_command.rb: Match only exact gem
+	names.  Fixes bug #9681.  Patch by Michael DeCandia
+
 2007-08-02  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/gem_commands.rb: Removed and broken up into individual

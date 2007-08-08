@@ -43,7 +43,7 @@ class Gem::Commands::SpecificationCommand < Gem::Command
 
     if local? then
       source_index = Gem::SourceIndex.from_installed_gems
-      specs.push(*source_index.search(gem, options[:version]))
+      specs.push(*source_index.search(/\A#{gem}\z/, options[:version]))
     end
 
     if remote? then

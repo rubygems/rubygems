@@ -40,6 +40,25 @@ class TestGemCommandsContentsCommand < RubyGemTestCase
     assert_equal "", @ui.error
   end
 
+  def test_execute_exact_match
+    @cmd.options[:args] = %w[foo]
+    quick_gem 'foo' do |gem|
+      gem.files = %w[lib/foo.rb Rakefile]
+    end
+
+    quick_gem 'foo_bar' do |gem|
+      gem.files = %w[lib/foo_bar.rb Rakefile]
+    end
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_match %r|lib/foo\.rb|, @ui.output
+    assert_match %r|Rakefile|, @ui.output
+    assert_equal "", @ui.error
+  end
+
   def test_execute_lib_only
     @cmd.options[:args] = %w[foo]
     @cmd.options[:lib_only] = true

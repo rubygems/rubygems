@@ -52,6 +52,20 @@ class TestGemCommandsSpecificationCommand < RubyGemTestCase
     assert_equal "ERROR:  Unknown gem 'foo'\n", @ui.error
   end
 
+  def test_execute_exact_match
+    foo = quick_gem 'foo'
+    foo_bar = quick_gem 'foo_bar'
+
+    @cmd.options[:args] = %w[foo]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal "#{foo.to_yaml}\n", @ui.output
+    assert_equal '', @ui.error
+  end
+
   def test_execute_remote
     foo = quick_gem 'foo'
 

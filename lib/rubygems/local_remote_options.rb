@@ -35,9 +35,7 @@ module Gem::LocalRemoteOptions
 
     add_option(:"Local/Remote", '--source URL',
                'Use URL as the remote source for gems') do |value, options|
-      gem("sources")
-      Gem.sources.clear
-      Gem.sources << value
+      Gem.sources.replace [value]
     end
 
     add_option(:"Local/Remote", '-p', '--[no-]http-proxy [URL]',
@@ -45,7 +43,6 @@ module Gem::LocalRemoteOptions
       options[:http_proxy] = (value == false) ? :no_proxy : value
       Gem.configuration[:http_proxy] = options[:http_proxy]
     end
-
   end
 
   # Is local fetching enabled?

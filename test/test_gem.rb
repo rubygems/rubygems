@@ -19,16 +19,10 @@ class TestGem < RubyGemTestCase
   end
 
   def test_self_configuration
-    expected = {}
-    Gem.send :instance_variable_set, :@configuration, nil
+    expected = Gem::ConfigFile.new []
+    Gem.configuration = nil
 
     assert_equal expected, Gem.configuration
-
-    Gem.configuration[:verbose] = true
-    expected[:verbose] = true
-
-    assert_equal expected, Gem.configuration
-    assert_equal true, Gem.configuration.verbose, 'method_missing on Hash'
   end
 
   def test_self_dir

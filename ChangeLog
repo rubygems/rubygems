@@ -1,3 +1,16 @@
+2007-08-09  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_info_cache.rb: Make Gem::SourceInfoCache#search
+	only search gems in Gem.sources.
+	* lib/rubygems.rb: Make Gem::configuration a real Gem::ConfigFile
+	object.
+	* lib/rubygems/commands/query_command.rb: Fix `gem query --details`.
+	Add `gem query --no-versions`.
+	* lib/rubygems/local_remote_options.rb: Make `gem mumble --source URL`
+	only use that source.
+	* lib/rubygems/config_file.rb: Fix Gem::ConfigFile#[]= to match
+	Gem::ConfigFile#[].
+
 2007-08-08  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/specification_command.rb: Match only exact gem

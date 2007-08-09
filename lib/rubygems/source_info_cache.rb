@@ -117,9 +117,10 @@ class Gem::SourceInfoCache
 
   # Searches all source indexes for +pattern+.
   def search(pattern)
-    cache_data.map do |source, sic_entry|
+    cache_data.map do |source_uri, sic_entry|
+      next unless Gem.sources.include? source_uri
       sic_entry.source_index.search pattern
-    end.flatten
+    end.flatten.compact
   end
 
   # Mark the cache as updated (i.e. dirty).

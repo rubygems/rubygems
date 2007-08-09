@@ -121,8 +121,6 @@ class TestSourceIndex < RubyGemTestCase
     util_setup_source_info_cache updated
 
     assert_equal [updated.name], @source_index.outdated
-  ensure
-    Gem::SourceInfoCache.instance_variable_set :@cache, nil
   end
 
   def test_remove_extra

@@ -78,7 +78,9 @@ class RubyGemTestCase < Test::Unit::TestCase
     ENV['GEMCACHE'] = @usrcache
     Gem.use_paths(@gemhome)
 
-    Gem.configuration[:verbose] = true
+    Gem.configuration.verbose = true
+
+    Gem.sources.replace %w[http://gems.example.com]
   end
 
   def teardown

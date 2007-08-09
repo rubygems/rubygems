@@ -27,7 +27,7 @@ class TestGemCommandsEnvironmentCommand < RubyGemTestCase
     assert_match %r|GEM PATHS:|, @ui.output
     assert_match %r|- #{@gemhome}|, @ui.output
     assert_match %r|GEM CONFIGURATION:|, @ui.output
-    assert_match %r|:verbose => true|, @ui.output
+    assert_match %r|:verbose => |, @ui.output
     assert_match %r|REMOTE SOURCES:|, @ui.output
     assert_equal '', @ui.error
 

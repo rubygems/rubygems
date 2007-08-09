@@ -120,8 +120,21 @@ module Gem
 
     # Set configuration option +key+ to +value+.
     def []=(key, value)
-      @hash[key] = value
+      @hash[key.to_s] = value
     end
+
+    def ==(other)
+      self.class === other and
+        @backtrace == other.backtrace and
+        @benchmark == other.benchmark and
+        @bulk_threshhold == other.bulk_threshhold and
+        @verbose == other.verbose and
+        @hash == other.hash
+    end
+
+    protected
+
+    attr_reader :hash
 
     private
 

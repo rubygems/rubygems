@@ -177,21 +177,8 @@ module Gem
     # The standard configuration object for gems.
     def configuration
       return @configuration if @configuration
-
-      @configuration = {}
-      class << @configuration
-        undef_method :verbose # HACK RakeFileUtils pollution
-      end if @configuration.respond_to? :verbose
-
-      def @configuration.method_missing(sym, *args, &block)
-        if args.empty?
-          self[sym]
-        else
-          super
-        end
-      end
-
-      @configuration
+      require 'rubygems/config_file'
+      @configuration = Gem::ConfigFile.new []
     end
 
     # Use the given configuration object (which implements the

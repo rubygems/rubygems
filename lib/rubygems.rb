@@ -353,6 +353,12 @@ module Gem
       @suffix_pattern ||= "{#{suffixes.join(',')}}"
     end
 
+    # manage_gems is useless and deprecated.  Don't call it anymore.  This
+    # will warn in two releases.
+    def manage_gems
+      # do nothing
+    end
+
     private
 
     # Return all the partial paths in the given +gemdir+.

@@ -67,6 +67,7 @@ class RubyGemTestCase < Test::Unit::TestCase
   def setup
     super
 
+    @ui = MockGemUi.new
     @tempdir = File.join Dir.tmpdir, "test_rubygems_#{$$}"
     @gemhome = File.join @tempdir, "gemhome"
     @gemcache = File.join(@gemhome, "source_cache")

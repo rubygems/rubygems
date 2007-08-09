@@ -11,7 +11,6 @@ class TestGemCommandsCertCommand < RubyGemTestCase
     @orig_security_trust_dir = Gem::Security::OPT[:trust_dir]
     Gem::Security::OPT[:trust_dir] = @tempdir
 
-    @ui = MockGemUi.new
     @cmd = Gem::Commands::CertCommand.new
 
     FileUtils.cp File.join('test', 'data', 'gem-private_key.pem'), @tempdir

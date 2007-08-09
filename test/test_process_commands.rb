@@ -5,10 +5,9 @@
 #++
 
 require 'test/unit'
-$:.unshift '../lib'
-require 'rubygems'
-
-require 'test/mockgemui'
+require 'test/gemutilities'
+require 'rubygems/command'
+require 'rubygems/command_manager'
 
 class InterruptCommand < Gem::Command
 
@@ -22,22 +21,24 @@ class InterruptCommand < Gem::Command
 
 end
 
-class TestProcessCommands < Test::Unit::TestCase
+class TestProcessCommands < RubyGemTestCase
   include Gem::DefaultUserInteraction
 
   def setup
+    super
+
     @command_manager = Gem::CommandManager.new
   end
 
   def test_query_command
-    use_ui(MockGemUi.new) do
+    use_ui @ui do
       @command_manager.process_args "query"
       assert_match(/LOCAL GEMS/, ui.output)
     end
   end
 
   def test_run_interrupt
-    use_ui(MockGemUi.new) do
+    use_ui @ui do
       @command_manager.register_command :interrupt
       assert_raises MockGemUi::TermError do
         @command_manager.run 'interrupt'

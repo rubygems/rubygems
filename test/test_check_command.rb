@@ -7,16 +7,15 @@
 
 
 require 'test/unit'
-require 'rubygems/command_manager'
-require 'rubygems/user_interaction'
-require 'test/mockgemui'
+require 'test/gemutilities'
+require 'rubygems/commands/check_command'
 
-class TestCheckCommand < Test::Unit::TestCase
-  include Gem::DefaultUserInteraction
+class TestCheckCommand < RubyGemTestCase
 
   def setup
-    @cm = Gem::CommandManager.new
-    @cmd = @cm['check']
+    super
+
+    @cmd = Gem::Commands::CheckCommand.new
   end
 
   def test_create
@@ -26,7 +25,7 @@ class TestCheckCommand < Test::Unit::TestCase
   end
 
   def test_invoke_help
-    use_ui(MockGemUi.new) do 
+    use_ui @ui do 
       assert ! @cmd.invoke('--help')
       assert_match(/Usage:/, ui.output)
     end

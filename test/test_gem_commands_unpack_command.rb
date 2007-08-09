@@ -7,7 +7,6 @@ class TestGemCommandsUnpackCommand < RubyGemTestCase
   def setup
     super
 
-    @ui = MockGemUi.new
     @cmd = Gem::Commands::UnpackCommand.new
   end
 

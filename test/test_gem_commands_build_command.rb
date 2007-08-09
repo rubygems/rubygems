@@ -7,7 +7,6 @@ class TestGemCommandsBuildCommand < RubyGemTestCase
   def setup
     super
 
-    @ui = MockGemUi.new
     @cmd = Gem::Commands::BuildCommand.new
   end
 

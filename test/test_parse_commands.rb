@@ -5,19 +5,20 @@
 #++
 
 require 'test/unit'
-$:.unshift '../lib'
-require 'rubygems'
-require 'test/mockgemui'
+require 'test/gemutilities'
+require 'rubygems/command_manager'
 
-class TestParseCommands < Test::Unit::TestCase
+class TestParseCommands < RubyGemTestCase
   include Gem::DefaultUserInteraction
 
   def setup
+    super
+
     @command_manager = Gem::CommandManager.new
   end
 
   def test_parsing_bad_options
-    use_ui(MockGemUi.new) do
+    use_ui @ui do
       assert_raises(MockGemUi::TermError) {
         @command_manager.process_args("--bad-arg")
       }
@@ -27,7 +28,7 @@ class TestParseCommands < Test::Unit::TestCase
 
   def test_parsing_install_options
     #capture all install options
-    use_ui(MockGemUi.new) do
+    use_ui @ui do
       check_options = nil
       @command_manager['install'].when_invoked do |options|
         check_options = options

@@ -8,7 +8,6 @@ class TestGemCommandsSpecificationCommand < RubyGemTestCase
     super
 
     @cmd = Gem::Commands::SpecificationCommand.new
-    @ui = MockGemUi.new
   end
 
   def test_execute

@@ -14,8 +14,7 @@ class TestGemCommandsSourcesCommand < RubyGemTestCase
     util_setup_source_info_cache
     @cmd.send :handle_options, []
 
-    ui = MockGemUi.new
-    use_ui ui do
+    use_ui @ui do
       @cmd.execute
     end
 
@@ -25,8 +24,8 @@ class TestGemCommandsSourcesCommand < RubyGemTestCase
 http://gems.example.com
     EOF
 
-    assert_equal expected, ui.output
-    assert_equal '', ui.error
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
   end
 
   def test_execute_add
@@ -40,8 +39,7 @@ http://gems.example.com
 
     util_setup_source_info_cache
 
-    ui = MockGemUi.new
-    use_ui ui do
+    use_ui @ui do
       @cmd.execute
     end
 
@@ -50,8 +48,8 @@ Bulk updating Gem source index for: http://beta-gems.example.com
 http://beta-gems.example.com added to sources
     EOF
 
-    assert_equal expected, ui.output
-    assert_equal '', ui.error
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
 
     Gem::SourceInfoCache.cache.flush
     assert_equal %w[http://beta-gems.example.com http://gems.example.com],
@@ -74,8 +72,7 @@ http://beta-gems.example.com added to sources
 
     util_setup_source_info_cache
 
-    ui = MockGemUi.new
-    use_ui ui do
+    use_ui @ui do
       @cmd.execute
     end
 
@@ -84,8 +81,8 @@ Error fetching http://beta-gems.example.com:
 \tit died
     EOF
 
-    assert_equal expected, ui.output
-    assert_equal '', ui.error
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
   end
 
   def test_execute_add_bad_uri
@@ -93,8 +90,7 @@ Error fetching http://beta-gems.example.com:
 
     util_setup_source_info_cache
 
-    ui = MockGemUi.new
-    use_ui ui do
+    use_ui @ui do
       @cmd.execute
     end
 
@@ -102,8 +98,8 @@ Error fetching http://beta-gems.example.com:
 beta-gems.example.com is not a URI
     EOF
 
-    assert_equal expected, ui.output
-    assert_equal '', ui.error
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
   end
 
   def test_execute_remove
@@ -111,8 +107,7 @@ beta-gems.example.com is not a URI
 
     util_setup_source_info_cache
 
-    ui = MockGemUi.new
-    use_ui ui do
+    use_ui @ui do
       @cmd.execute
     end
 
@@ -120,8 +115,8 @@ beta-gems.example.com is not a URI
 http://gems.example.com removed from sources
     EOF
 
-    assert_equal expected, ui.output
-    assert_equal '', ui.error
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
 
     Gem::SourceInfoCache.cache.flush
     assert_equal [], Gem::SourceInfoCache.cache_data.keys

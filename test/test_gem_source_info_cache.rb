@@ -41,7 +41,7 @@ class TestGemSourceInfoCache < RubyGemTestCase
 
     Gem.sources.replace %w[http://gems.example.com]
 
-    use_ui MockGemUi.new do
+    use_ui @ui do
       assert_not_nil Gem::SourceInfoCache.cache
       assert_kind_of Gem::SourceInfoCache, Gem::SourceInfoCache.cache
       assert_equal Gem::SourceInfoCache.cache.object_id,
@@ -57,7 +57,7 @@ class TestGemSourceInfoCache < RubyGemTestCase
     Gem::SourceInfoCache.instance_variable_set :@cache, nil
     sice = Gem::SourceInfoCacheEntry.new source_index, 0
 
-    use_ui MockGemUi.new do
+    use_ui @ui do
       assert_equal source_index.gems,
                    Gem::SourceInfoCache.cache_data[source].source_index.gems
     end
@@ -89,7 +89,7 @@ class TestGemSourceInfoCache < RubyGemTestCase
 
     @sic.instance_eval { @cache_data = nil }
 
-    fetched = use_ui MockGemUi.new do @sic.cache_data end
+    fetched = use_ui @ui do @sic.cache_data end
 
     fetched_si = fetched['http://gems.example.com'].source_index
 

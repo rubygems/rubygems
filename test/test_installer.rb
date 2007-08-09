@@ -13,15 +13,14 @@ require 'test/gemutilities'
 class Gem::Installer
   attr_accessor :options, :directory
 end
-  
+
 class TestInstaller < RubyGemTestCase
 
   def setup
     super
+
     @spec = quick_gem("a")
     @installer = Gem::Installer.new :fake, {}
-
-    @ui = MockGemUi.new
   end
 
   def util_gem_dir(version = '0.0.2')

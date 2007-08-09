@@ -9,11 +9,6 @@ require 'test/gemutilities'
 require 'rubygems/builder'
 
 class TestBuilder < RubyGemTestCase
-  def setup
-    super
-
-    @ui = MockGemUi.new
-  end
 
   def test_valid_specification_builds_successfully
     spec_path = File.join File.dirname(__FILE__), 'data', 'post_install.gemspec'

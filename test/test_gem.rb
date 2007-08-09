@@ -1,21 +1,21 @@
 require 'test/unit'
+require 'test/gemutilities'
 require 'rubygems'
-require 'sources'
 
-class TestGem < Test::Unit::TestCase
+class TestGem < RubyGemTestCase
 
   def test_self_clear_paths
     Gem.dir
     Gem.path
-    Gem.searcher
-    Gem.source_index
+    searcher = Gem.searcher
+    source_index = Gem.source_index
 
     Gem.clear_paths
 
     assert_equal nil, Gem.instance_variable_get(:@gem_home)
     assert_equal nil, Gem.instance_variable_get(:@gem_path)
-    assert_equal nil, Gem.instance_variable_get(:@searcher)
-    assert_equal nil, Gem.class_eval('@@source_index')
+    assert_not_equal searcher, Gem.searcher
+    assert_not_equal source_index, Gem.source_index
   end
 
   def test_self_configuration
@@ -32,13 +32,22 @@ class TestGem < Test::Unit::TestCase
   end
 
   def test_self_dir
-    assert_equal File.join(Config::CONFIG['libdir'], 'ruby', 'gems',
-                           Config::CONFIG['ruby_version']),
-                 Gem.dir
+    assert_equal @gemhome, Gem.dir
   end
 
   def test_self_loaded_specs
-    assert_equal true, Gem.loaded_specs.keys.include?('sources')
+    foo = quick_gem 'foo'
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        Gem::Builder.new(foo).build
+      end
+    end
+
+    Gem::Installer.new(File.join(@tempdir, "#{foo.full_name}.gem")).install
+
+    Gem.activate 'foo', false
+
+    assert_equal true, Gem.loaded_specs.keys.include?('foo')
   end
 
   def test_self_path

@@ -5,7 +5,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-
 $SAFE = 1
 
 require 'rubygems'

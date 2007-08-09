@@ -7,6 +7,7 @@
 require 'test/unit'
 require 'test/gemutilities'
 require 'rubygems/source_index'
+require 'rubygems/config_file'
 
 class Gem::SourceIndex
   public :convert_specs, :fetcher, :fetch_bulk_index, :fetch_quick_index,

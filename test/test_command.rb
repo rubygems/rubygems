@@ -6,30 +6,22 @@
 #++
 
 require 'test/unit'
-require 'test/mockgemui'
-
+require 'test/gemutilities'
 require 'rubygems/command'
-require 'rubygems/command_manager'
-require 'rubygems/user_interaction'
-
-class Noop
-  def method_missing(sym, *args, &block)
-  end
-end
 
 class Gem::Command
   public :parser
 end
 
-class TestCommand < Test::Unit::TestCase
-  include Gem::DefaultUserInteraction
+class TestCommand < RubyGemTestCase
 
-  def setup 
+  def setup
+    super
+
     @xopt = nil
     Gem::Command.common_options.clear
     Gem::Command.common_options <<  [ ['-x', '--exe', 'Execute'], lambda do @xopt = true end]
     @cmd = Gem::Command.new("doit", "summary")
-    self.ui = Noop.new
   end
 
   def test_basic_accessors
@@ -41,7 +33,11 @@ class TestCommand < Test::Unit::TestCase
   def test_invoke
     done = false
     @cmd.when_invoked { done = true }
-    @cmd.invoke
+
+    use_ui @ui do
+      @cmd.invoke
+    end
+
     assert done
   end
 
@@ -54,19 +50,28 @@ class TestCommand < Test::Unit::TestCase
       done = true
       true
     end
-    @cmd.invoke('-h')
+
+    use_ui @ui do
+      @cmd.invoke '-h'
+    end
   end
 
   def test_invoke_with_common_options
     @cmd.when_invoked do true end
-    @cmd.invoke("-x")
+
+    use_ui @ui do
+      @cmd.invoke "-x"
+    end
+
     assert @xopt, "Should have done xopt"
   end
-  
+
   def test_invode_with_bad_options
-    use_ui(MockGemUi.new) do
+    use_ui @ui do
       @cmd.when_invoked do true end
-      ex = assert_raise(OptionParser::InvalidOption) { @cmd.invoke('-zzz') }
+      ex = assert_raise(OptionParser::InvalidOption) do
+        @cmd.invoke('-zzz')
+      end
       assert_match(/invalid option:/, ex.message)
     end
   end
@@ -83,22 +88,23 @@ class TestCommand < Test::Unit::TestCase
 
   # Returning false from the command handler invokes the usage output.
   def test_invoke_with_help
-    use_ui(MockGemUi.new) do
+    use_ui @ui do
       @cmd.add_option('-h', '--help [COMMAND]', 'Get help on COMMAND') do |value, options|
         options[:help] = true
       end
       @cmd.invoke('--help')
-      assert_match(/Usage/, ui.output)
-      assert_match(/gem doit/, ui.output)
-      assert_match(/\[options\]/, ui.output)
-      assert_match(/-h/, ui.output)
-      assert_match(/--help \[COMMAND\]/, ui.output)
-      assert_match(/Get help on COMMAND/, ui.output)
-      assert_match(/-x/, ui.output)
-      assert_match(/--exe/, ui.output)
-      assert_match(/Execute/, ui.output)
-      assert_match(/Common Options:/, ui.output)
     end
+
+    assert_match(/Usage/, @ui.output)
+    assert_match(/gem doit/, @ui.output)
+    assert_match(/\[options\]/, @ui.output)
+    assert_match(/-h/, @ui.output)
+    assert_match(/--help \[COMMAND\]/, @ui.output)
+    assert_match(/Get help on COMMAND/, @ui.output)
+    assert_match(/-x/, @ui.output)
+    assert_match(/--exe/, @ui.output)
+    assert_match(/Execute/, @ui.output)
+    assert_match(/Common Options:/, @ui.output)
   end
 
   def test_defaults
@@ -109,7 +115,10 @@ class TestCommand < Test::Unit::TestCase
     @cmd.when_invoked do |options|
       assert options[:help], "Help options should default true"
     end
-    @cmd.invoke 
+
+    use_ui @ui do
+      @cmd.invoke
+    end
   end
 
   def test_common_option_in_class

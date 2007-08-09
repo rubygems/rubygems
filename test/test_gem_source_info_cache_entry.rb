@@ -33,7 +33,7 @@ class TestGemSourceInfoCacheEntry < RubyGemTestCase
                               @gem2.full_name => @gem2
     @fetcher.data['http://gems.example.com/yaml'] = si.to_yaml
 
-    use_ui MockGemUi.new do
+    use_ui @ui do
       @sic_e.refresh 'http://gems.example.com'
     end
 

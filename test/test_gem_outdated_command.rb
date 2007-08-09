@@ -22,11 +22,10 @@ class TestGemOutdatedCommand < RubyGemTestCase
 
     util_setup_source_info_cache remote_10, remote_20
 
-    ui = MockGemUi.new 
-    use_ui ui do oc.execute end
+    use_ui @ui do oc.execute end
 
-    assert_equal "foo (0.2 < 2.0)\n", ui.output
-    assert_equal "", ui.error
+    assert_equal "foo (0.2 < 2.0)\n", @ui.output
+    assert_equal "", @ui.error
   end
 
 end

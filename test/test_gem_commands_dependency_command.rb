@@ -7,7 +7,6 @@ class TestGemCommandsDependencyCommand < RubyGemTestCase
   def setup
     super
 
-    @ui = MockGemUi.new
     @cmd = Gem::Commands::DependencyCommand.new
     @cmd.options[:domain] = :local
   end

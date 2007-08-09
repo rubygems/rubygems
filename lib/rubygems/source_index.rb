@@ -171,6 +171,8 @@ module Gem
     # The signature for the source index.  Changes in the signature
     # indicate a change in the index.
     def index_signature
+      require 'rubygems/digest/sha2'
+
       Gem::SHA256.new.hexdigest(@gems.keys.sort.join(',')).to_s
     end
 

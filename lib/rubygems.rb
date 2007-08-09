@@ -94,10 +94,31 @@ module Gem
 
   @configuration = nil
   @loaded_specs = {}
+  @sources = []
 
   class << self
 
     attr_reader :loaded_specs
+
+    # Returns an Array of sources to fetch remote gems from.  If the sources
+    # list is empty, attempts to load the "sources" gem, then uses
+    # default_sources if it is not installed.
+    def sources
+      if @sources.empty? then
+        begin
+          gem 'sources', '> 0.0.1'
+          require 'sources'
+        rescue LoadError
+          @sources = default_sources
+        end
+      end
+      @sources
+    end
+
+    # An Array of the default sources that come with RubyGems.
+    def default_sources
+      %w[http://gems.rubyforge.org]
+    end
 
     # Returns an Cache of specifications that are in the Gem.path
     #

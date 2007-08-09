@@ -1,6 +1,3 @@
 module Gem
-  @sources = ["http://gems.rubyforge.org"]
-  def self.sources
-    @sources
-  end
+  @sources = %w[http://gems.rubyforge.org]
 end

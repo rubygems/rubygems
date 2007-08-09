@@ -114,7 +114,7 @@ def install_rdoc
   run_rdoc '--op', File.join(doc_dir, 'rdoc')
 end
 
-install_sources
+#install_sources # No more! Try the new RubyGems, now with Gem.default_sources!
 remove_old_rdoc
 install_rdoc
 install_windows_batch_files

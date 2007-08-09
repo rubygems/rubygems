@@ -39,36 +39,6 @@ class FunctionalTest < Test::Unit::TestCase
     assert_status 1
   end
 
-  def test_environment
-    gem_nossl 'environment'
-    
-    assert_match(/VERSION:\s+(\d+\.)*\d+/, @out)
-    assert_match(/INSTALLATION DIRECTORY:/, @out)
-    assert_match(/GEM PATHS:/, @out)
-    assert_match(/REMOTE SOURCES:/, @out)
-    assert_status
-  end
-
-  def test_env_version
-    gem_nossl 'environment version'
-    assert_match(/\d+\.\d+$/, @out)
-  end
-
-  def test_env_gemdir
-    gem_nossl 'environment gemdir'
-    assert_equal Gem.dir, @out.chomp
-  end
-
-  def test_env_gempath
-    gem_nossl 'environment gempath'
-    assert_equal Gem.path, @out.chomp.split("\n")
-  end
-
-  def test_env_remotesources
-    gem_nossl 'environment remotesources'
-    assert_equal Gem.sources, @out.chomp.split("\n")
-  end
-
   def test_build
     OneGem.rebuild(self)
     assert File.exist?(OneGem::ONEGEM), "Gem file (#{OneGem::ONEGEM}) should exist"

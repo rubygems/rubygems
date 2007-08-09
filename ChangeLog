@@ -11,6 +11,10 @@
 	Bleything.
 	* lib/rubygems.rb: Clear Gem::searcher when we Gem::clear_paths.
 	Fixes bug #12886.  Submitted by Peter Williams.
+	* lib/rubygems.rb: Add #default_sources and rework #sources to use it.
+	* post-install.rb: No longer runs install_sources.
+	* pkgs/sources: Updated to something what a 0.0.2 would look like, if
+	we ever make one.
 
 2007-08-02  Eric Hodel  <drbrain@segment7.net>
 

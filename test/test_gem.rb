@@ -25,6 +25,10 @@ class TestGem < RubyGemTestCase
     assert_equal expected, Gem.configuration
   end
 
+  def test_self_default_sources
+    assert_equal %w[http://gems.rubyforge.org], Gem.default_sources
+  end
+
   def test_self_dir
     assert_equal @gemhome, Gem.dir
   end
@@ -54,6 +58,10 @@ class TestGem < RubyGemTestCase
 
   def test_self_source_index
     assert_kind_of Gem::SourceIndex, Gem.source_index
+  end
+
+  def test_self_sources
+    assert_equal %w[http://gems.example.com], Gem.sources
   end
 
 end

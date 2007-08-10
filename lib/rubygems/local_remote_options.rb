@@ -35,7 +35,12 @@ module Gem::LocalRemoteOptions
 
     add_option(:"Local/Remote", '--source URL',
                'Use URL as the remote source for gems') do |value, options|
-      Gem.sources.replace [value]
+      if options[:added_source] then
+        Gem.sources << value
+      else
+        options[:added_source] = true
+        Gem.sources.replace [value]
+      end
     end
 
     add_option(:"Local/Remote", '-p', '--[no-]http-proxy [URL]',

@@ -58,6 +58,20 @@ class TestGemLocalRemoteOptions < RubyGemTestCase
     assert_equal true, @added_options.empty?, 'new option not tested'
   end
 
+  def test_add_local_remote_options_source_twice
+    add_local_remote_options
+
+    s1 = 'http://more-gems.example.com'
+    s2 = 'http://even-more-gems.example.com'
+
+    option_callback = @added_options.find { |o| o[1] == '--source URL' }.last
+
+    option_callback.call s1, @options
+    option_callback.call s2, @options
+
+    assert_equal [s1, s2], Gem.sources
+  end
+
   def test_local_eh
     assert_equal false, local?
 

@@ -11,7 +11,7 @@ class Gem::DependencyError < Gem::Exception; end
 
 class Gem::DependencyRemovalException < Gem::Exception; end
 
-class DocumentError < Gem::Exception; end
+class Gem::DocumentError < Gem::Exception; end
   
 ##
 # Potentially raised when a specification is validated.

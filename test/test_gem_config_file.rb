@@ -25,16 +25,40 @@ class TestGemConfigFile < RubyGemTestCase
 
     assert_equal false, @cfg.backtrace
     assert_equal false, @cfg.benchmark
+    assert_equal 500, @cfg.bulk_threshhold
+    assert_equal true, @cfg.verbose
+    assert_equal %w[http://gems.example.com], Gem.sources
 
     File.open @temp_conf, 'w' do |fp|
       fp.puts ":backtrace: true"
       fp.puts ":benchmark: true"
+      fp.puts ":bulk_threshhold: 10"
+      fp.puts ":verbose: false"
+      fp.puts ":sources:"
+      fp.puts "  - http://more-gems.example.com"
+      fp.puts "install: --wrappers"
     end
 
     util_config_file
 
     assert_equal true, @cfg.backtrace
     assert_equal true, @cfg.benchmark
+    assert_equal 10, @cfg.bulk_threshhold
+    assert_equal false, @cfg.verbose
+    assert_equal %w[http://more-gems.example.com], Gem.sources
+    assert_equal '--wrappers', @cfg[:install]
+  end
+
+  def test_initialize_handle_arguments_config_file
+    util_config_file %w[--config-file test/testgem.rc]
+
+    assert_equal 'test/testgem.rc', @cfg.config_file_name
+  end
+
+  def test_initialize_handle_arguments_config_file_equals
+    util_config_file %w[--config-file=test/testgem.rc]
+
+    assert_equal 'test/testgem.rc', @cfg.config_file_name
   end
 
   def test_handle_arguments
@@ -56,29 +80,13 @@ class TestGemConfigFile < RubyGemTestCase
   end
 
   def test_handle_arguments_benchmark
-    assert_equal true, @cfg.backtrace
+    assert_equal false, @cfg.benchmark
 
     args = %w[--benchmark]
 
     @cfg.send :handle_arguments, args
 
-    assert_equal false, @cfg.backtrace
-  end
-
-  def test_handle_arguments_config_file
-    args = %w[--config-file test/testgem.rc]
-
-    @cfg.send :handle_arguments, args
-
-    assert_equal 'test/testgem.rc', @cfg.config_file_name
-  end
-
-  def test_handle_arguments_config_file_equals
-    args = %w[--config-file=test/testgem.rc]
-
-    @cfg.send :handle_arguments, args
-
-    assert_equal 'test/testgem.rc', @cfg.config_file_name
+    assert_equal true, @cfg.benchmark
   end
 
   def test_handle_arguments_debug
@@ -94,12 +102,12 @@ class TestGemConfigFile < RubyGemTestCase
     $DEBUG = old_dollar_DEBUG
   end
 
-  def test_handle_arguments_benchmark
-    assert_equal false, @cfg.benchmark
+  def test_handle_arguments_override
+    File.open @temp_conf, 'w' do |fp|
+      fp.puts ":benchmark: false"
+    end
 
-    args = %w[--benchmark]
-
-    @cfg.send :handle_arguments, args
+    util_config_file %W[--benchmark --config-file=#{@temp_conf}]
 
     assert_equal true, @cfg.benchmark
   end
@@ -126,8 +134,62 @@ class TestGemConfigFile < RubyGemTestCase
     assert_equal true, @cfg.really_verbose
   end
 
-  def util_config_file
-    @cfg = Gem::ConfigFile.new @cfg_args
+  def test_write
+    @cfg.backtrace = true
+    @cfg.benchmark = true
+    @cfg.bulk_threshhold = 10
+    @cfg.verbose = false
+    Gem.sources.replace %w[http://more-gems.example.com] 
+    @cfg[:install] = '--wrappers'
+
+    @cfg.write
+
+    util_config_file
+
+    assert_equal 500, @cfg.bulk_threshhold
+    assert_equal true, @cfg.verbose
+
+    assert_equal false, @cfg.backtrace
+    assert_equal false, @cfg.benchmark
+    assert_equal %w[http://more-gems.example.com], Gem.sources
+    assert_equal '--wrappers', @cfg[:install]
+  end
+
+  def test_write_from_hash
+    File.open @temp_conf, 'w' do |fp|
+      fp.puts ":backtrace: true"
+      fp.puts ":benchmark: true"
+      fp.puts ":bulk_threshhold: 10"
+      fp.puts ":verbose: false"
+      fp.puts ":sources:"
+      fp.puts "  - http://more-gems.example.com"
+      fp.puts "install: --wrappers"
+    end
+
+    util_config_file
+
+    @cfg.backtrace = :junk
+    @cfg.benchmark = :junk
+    @cfg.bulk_threshhold = 20
+    @cfg.verbose = :junk
+    Gem.sources.replace %w[http://even-more-gems.example.com] 
+    @cfg[:install] = '--wrappers --no-rdoc'
+
+    @cfg.write
+
+    util_config_file
+
+    assert_equal 10, @cfg.bulk_threshhold
+    assert_equal true, @cfg.verbose
+
+    assert_equal true, @cfg.backtrace
+    assert_equal true, @cfg.benchmark
+    assert_equal %w[http://even-more-gems.example.com], Gem.sources
+    assert_equal '--wrappers --no-rdoc', @cfg[:install]
+  end
+
+  def util_config_file(args = @cfg_args)
+    @cfg = Gem::ConfigFile.new args
   end
 
 end

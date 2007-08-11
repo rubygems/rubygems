@@ -1,3 +1,12 @@
+2007-08-11  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/config_file.rb: Command-line args override ~/.gemrc
+	now.  Gem.sources is pulled from ~/.gemrc now.  Gem::ConfigFile can
+	write itself out now.
+	* lib/rubygems/commands/sources_command.rb: Now writes out
+	Gem.configuration on changes.  No longer checks source cache on
+	--list.
+
 2007-08-09  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/source_info_cache.rb: Make Gem::SourceInfoCache#search

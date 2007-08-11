@@ -12,21 +12,29 @@ require 'rubygems'
 
 class Gem::ConfigFile
 
+  DEFAULT_BACKTRACE = false
+  DEFAULT_BENCHMARK = false
+  DEFAULT_BULK_THRESHOLD = 500
+  DEFAULT_VERBOSITY = true
+
   # List of arguments supplied to the config file object.
   attr_reader :args
+
+  # True if we print backtraces on errors.
+  attr_writer :backtrace
+
+  # True if we are benchmarking this run.
+  attr_accessor :benchmark
+
+  # Bulk threshhold value.  If the number of missing gems are above
+  # this threshhold value, then a bulk download technique is used.
+  attr_accessor :bulk_threshhold
 
   # Verbose level of output:
   # * false -- No output
   # * true -- Normal output
   # * :loud -- Extra output
   attr_accessor :verbose
-
-  # Bulk threshhold value.  If the number of missing gems are above
-  # this threshhold value, then a bulk download technique is used.
-  attr_accessor :bulk_threshhold
-
-  # True if we are benchmarking this run.
-  attr_accessor :benchmark
 
   # Create the config file object.  +args+ is the list of arguments
   # from the command line.
@@ -46,13 +54,27 @@ class Gem::ConfigFile
   #
   def initialize(arg_list)
     @config_file_name = nil
+    need_config_file_name = false
 
-    @backtrace = false
-    @benchmark = false
-    @bulk_threshhold = 500
-    @verbose = true
+    arg_list = arg_list.map do |arg|
+      if need_config_file_name then
+        @config_file_name = arg
+        nil
+      elsif arg =~ /^--config-file=(.*)/ then
+        @config_file_name = $1
+        nil
+      elsif arg =~ /^--config-file$/ then
+        nil
+        need_config_file_name = true
+      else
+        arg
+      end
+    end.compact
 
-    handle_arguments(arg_list)
+    @backtrace = DEFAULT_BACKTRACE
+    @benchmark = DEFAULT_BENCHMARK
+    @bulk_threshhold = DEFAULT_BULK_THRESHOLD
+    @verbose = DEFAULT_VERBOSITY
 
     begin
       @hash = open(config_file_name) {|f| YAML.load(f) }
@@ -70,7 +92,10 @@ class Gem::ConfigFile
     @backtrace = @hash[:backtrace] if @hash.key? :backtrace
     @benchmark = @hash[:benchmark] if @hash.key? :benchmark
     @bulk_threshhold = @hash[:bulk_threshhold] if @hash.key? :bulk_threshhold
+    Gem.sources.replace @hash[:sources] if @hash.key? :sources
     @verbose = @hash[:verbose] if @hash.key? :verbose
+
+    handle_arguments arg_list
   end
 
   # True if the backtrace option has been specified, or debug is on.
@@ -109,6 +134,32 @@ class Gem::ConfigFile
     end
   end
 
+  # to_yaml only overwrites things you can't override on the command line.
+  def to_yaml # :nodoc:
+    yaml_hash = {
+      :backtrace => @hash[:backtrace] || DEFAULT_BACKTRACE,
+      :benchmark => @hash[:benchmark] || DEFAULT_BENCHMARK,
+      :bulk_threshhold => @hash[:bulk_threshhold] || DEFAULT_BULK_THRESHOLD,
+      :sources => Gem.sources,
+      :verbose => @hash[:verbose] || DEFAULT_VERBOSITY,
+    }
+
+    @hash.each do |key, value|
+      key = key.to_s
+      next if key =~ /backtrace|benchmark|bulk_threshhold|verbose|sources|debug/
+      yaml_hash[key.to_s] = value
+    end
+
+    yaml_hash.to_yaml
+  end
+
+  # Writes out this config file, replacing its source.
+  def write
+    File.open config_file_name, 'w' do |fp|
+      fp.write self.to_yaml
+    end
+  end
+
   # Return the configuration information for +key+.
   def [](key)
     @hash[key.to_s]
@@ -136,28 +187,18 @@ class Gem::ConfigFile
 
   # Handle the command arguments.
   def handle_arguments(arg_list)
-    need_cfg_name = false
     @args = []
 
     arg_list.each do |arg|
-      if need_cfg_name
-        @config_file_name = arg
-        need_cfg_name = false
+      case arg
+      when /^--(backtrace|traceback)$/ then
+        @backtrace = true
+      when /^--bench(mark)?$/ then
+        @benchmark = true
+      when /^--debug$/ then
+        $DEBUG = true
       else
-        case arg
-        when /^--(traceback|backtrace)$/ then
-          @backtrace = true
-        when /^--debug$/ then
-          $DEBUG = true
-        when /^--config-file$/ then
-          need_cfg_name = true
-        when /^--config-file=(.+)$/ then
-          @config_file_name = $1
-        when /^--bench(mark)?$/ then
-          @benchmark = true
-        else
-          @args << arg
-        end
+        @args << arg
       end
     end
   end

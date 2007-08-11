@@ -67,7 +67,7 @@ module Gem
       begin
         require 'rdoc/rdoc'
       rescue LoadError => e
-        raise DocumentError, 
+        raise Gem::DocumentError,
           "ERROR: RDoc documentation generator not installed!"
       end
     end

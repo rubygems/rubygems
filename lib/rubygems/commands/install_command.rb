@@ -11,10 +11,10 @@ require 'rubygems/version_option'
 module Gem
   module Commands
     class InstallCommand < Command
-      include CommandAids
-      include VersionOption
-      include LocalRemoteOptions
-      include InstallUpdateOptions
+      include Gem::CommandAids
+      include Gem::VersionOption
+      include Gem::LocalRemoteOptions
+      include Gem::InstallUpdateOptions
 
       def initialize
         super(

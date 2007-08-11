@@ -26,8 +26,15 @@ module Gem
       start_time = Time.now
       do_configuration(args)
       cmd = @command_manager_class.instance
-      cmd.command_names.each do |c|
-        Command.add_specific_extra_args c, Array(Gem.configuration[c])
+      cmd.command_names.each do |command_name|
+        config_args = Gem.configuration[command_name]
+        config_args = case config_args
+                      when String
+                        config_args.split ' '
+                      else
+                        Array(config_args)
+                      end
+        Command.add_specific_extra_args command_name, config_args
       end
       cmd.run(Gem.configuration.args)
       end_time = Time.now

@@ -6,8 +6,8 @@ require 'rubygems/source_info_cache'
 module Gem
   module Commands
     class UpdateCommand < Command
-      include InstallUpdateOptions
-      include LocalRemoteOptions
+      include Gem::InstallUpdateOptions
+      include Gem::LocalRemoteOptions
 
       def initialize
         super(

@@ -9,7 +9,7 @@ require 'rubygems'
 ##
 # Mixin methods and OptionParser options specific to the gem install
 # command.
-module InstallUpdateOptions
+module Gem::InstallUpdateOptions
 
   # Add the install/update options to the option parser.
   def add_install_update_options

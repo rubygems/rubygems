@@ -35,13 +35,7 @@ class TestGem < RubyGemTestCase
 
   def test_self_loaded_specs
     foo = quick_gem 'foo'
-    use_ui @ui do
-      Dir.chdir @tempdir do
-        Gem::Builder.new(foo).build
-      end
-    end
-
-    Gem::Installer.new(File.join(@tempdir, "#{foo.full_name}.gem")).install
+    install_gem foo
 
     Gem.activate 'foo', false
 

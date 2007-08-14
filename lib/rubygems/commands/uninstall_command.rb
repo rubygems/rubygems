@@ -11,7 +11,7 @@ module Gem
 
       def initialize
         super('uninstall', 'Uninstall gems from the local repository',
-              { :version => "> 0" })
+              { :version => ">= 0" })
 
         add_option('-a', '--[no-]all',
           'Uninstall all matching versions'

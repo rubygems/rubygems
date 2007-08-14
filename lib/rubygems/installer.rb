@@ -403,7 +403,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
     #
     def initialize(gem, options)
       @gem = gem
-      @version = options[:version] || "> 0"
+      @version = options[:version] || ">= 0"
       @force_executables = options[:executables]
       @force_all = options[:all]
       @force_ignore = options[:ignore]
@@ -422,7 +422,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
     #
     def uninstall
       list = Gem.source_index.search(/^#{@gem}$/, @version)
-      if list.empty?
+      if list.empty? then
         raise Gem::InstallError, "Unknown gem #{@gem}-#{@version}"
       elsif list.size > 1 && @force_all
         remove_all(list.dup) 

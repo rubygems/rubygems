@@ -94,6 +94,16 @@ class RubyGemTestCase < Test::Unit::TestCase
     Gem::SourceInfoCache.instance_variable_set :@cache, nil
   end
 
+  def install_gem gem
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        Gem::Builder.new(gem).build
+      end
+    end
+
+    Gem::Installer.new(File.join(@tempdir, "#{gem.full_name}.gem")).install
+  end
+
   def prep_cache_files(lc)
     [ [lc.system_cache_file, 'sys'],
       [lc.user_cache_file, 'usr'],

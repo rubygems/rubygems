@@ -1,3 +1,8 @@
+2007-08-13  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/uninstall_command.rb: Gems with version of 0
+	can now be uninstalled.
+
 2007-08-11  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/config_file.rb: Command-line args override ~/.gemrc

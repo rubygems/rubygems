@@ -6,22 +6,33 @@
 #++
 
 require 'test/unit'
+require 'test/gemutilities'
 require 'rbconfig'
 require 'rubygems'
 
-class TestDataDir < Test::Unit::TestCase
+class TestDataDir < RubyGemTestCase
+
   def test_original_dir
     datadir = Config::CONFIG['datadir']
     assert_equal "#{datadir}/xyz", Config.gem_original_datadir('xyz')
   end
 
   def test_gem_dir_with_good_package
-    gem 'sources'
-    assert_match %r{gems/1.8/gems/sources-0.0.1/data/sources$}, Gem.datadir('sources')
+    Dir.chdir @tempdir do
+      FileUtils.mkdir_p 'data'
+      File.open File.join('data', 'foo.txt'), 'w' do |fp|
+        fp.puts 'blah'
+      end
+
+      foo = quick_gem 'foo' do |s| s.files = %w[data/foo.txt] end
+      install_gem foo
+    end
+
+    gem 'foo'
+    assert_match %r{gems/foo-0.0.2/data/foo$}, Gem.datadir('foo')
   end
 
   def test_gem_dir_with_bad_package
-    gem 'sources'
     assert_nil Gem.datadir('xyzzy')
   end
 

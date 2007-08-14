@@ -69,6 +69,7 @@ foo (0.0.2)
     expected = <<-EOF
 
 *** REMOTE GEMS ***
+
 bar
 foo
     EOF

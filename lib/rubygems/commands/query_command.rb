@@ -41,12 +41,14 @@ class Gem::Commands::QueryCommand < Gem::Command
     if local? then
       say
       say "*** LOCAL GEMS ***"
+      say
       output_query_results Gem.cache.search(name)
     end
 
     if remote? then
       say
       say "*** REMOTE GEMS ***"
+      say
       output_query_results Gem::SourceInfoCache.search(name)
     end
   end
@@ -54,6 +56,7 @@ class Gem::Commands::QueryCommand < Gem::Command
   private
 
   def output_query_results(gemspecs)
+    output = []
     gem_list_with_version = {}
 
     gemspecs.flatten.each do |gemspec|
@@ -66,7 +69,6 @@ class Gem::Commands::QueryCommand < Gem::Command
     end
 
     gem_list_with_version.each do |gem_name, list_of_matching|
-      say if options[:versions]
       list_of_matching = list_of_matching.sort_by { |x| x.version }.reverse
       seen_versions = []
 
@@ -84,9 +86,12 @@ class Gem::Commands::QueryCommand < Gem::Command
         entry << " (#{list_of_matching.map{|gem| gem.version.to_s}.join(", ")})"
       end
 
-      say entry
-      say format_text(list_of_matching[0].summary, 68, 4) if options[:details]
+      entry << "\n" << format_text(list_of_matching[0].summary, 68, 4) if
+        options[:details]
+      output << entry
     end
+
+    say output.join(options[:details] ? "\n\n" : "\n")
   end
 
   ##

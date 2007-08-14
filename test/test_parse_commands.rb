@@ -84,7 +84,7 @@ class TestParseCommands < RubyGemTestCase
     
     #check defaults
     @command_manager.process_args("uninstall")
-    assert_equal "> 0", check_options[:version]
+    assert_equal ">= 0", check_options[:version]
 
     #check settings
     check_options = nil

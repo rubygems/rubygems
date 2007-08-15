@@ -64,8 +64,8 @@ class Gem::ConfigFile
         @config_file_name = $1
         nil
       elsif arg =~ /^--config-file$/ then
-        nil
         need_config_file_name = true
+        nil
       else
         arg
       end

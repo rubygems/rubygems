@@ -50,15 +50,15 @@ class TestGemConfigFile < RubyGemTestCase
   end
 
   def test_initialize_handle_arguments_config_file
-    util_config_file %w[--config-file test/testgem.rc]
+    util_config_file %W[--config-file #{@temp_conf}]
 
-    assert_equal 'test/testgem.rc', @cfg.config_file_name
+    assert_equal @temp_conf, @cfg.config_file_name
   end
 
   def test_initialize_handle_arguments_config_file_equals
-    util_config_file %w[--config-file=test/testgem.rc]
+    util_config_file %W[--config-file=#{@temp_conf}]
 
-    assert_equal 'test/testgem.rc', @cfg.config_file_name
+    assert_equal @temp_conf, @cfg.config_file_name
   end
 
   def test_handle_arguments

@@ -103,7 +103,7 @@ end
 # This test suite has a number of TODOs in the test cases.  The
 # TestRemoteInstaller test suite is a reworking of this class from
 # scratch.
-class RemoteInstallerTest #< Test::Unit::TestCase # HACK disabled
+class RemoteInstallerTest #< RubyGemTestCase # HACK disabled
   class RInst < Gem::RemoteInstaller
     include Test::Unit::Assertions
 
@@ -153,7 +153,6 @@ class RemoteInstallerTest #< Test::Unit::TestCase # HACK disabled
   CACHE_DIR = File.join(Gem.dir, 'cache')
 
   def test_install
-    Gem.use_paths("test/data/gemhome")
     result = @remote_installer.install('foo')
     assert_equal [nil], result
   end

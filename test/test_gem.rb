@@ -1,6 +1,7 @@
 require 'test/unit'
 require 'test/gemutilities'
 require 'rubygems'
+require 'rubygems/gem_openssl'
 
 class TestGem < RubyGemTestCase
 
@@ -12,7 +13,7 @@ class TestGem < RubyGemTestCase
   end
 
   def test_self_all_load_paths
-    util_fake_gems
+    util_make_gems
 
     expected = [
       File.join(@tempdir, *%w[gemhome gems a-0.0.1 lib]),
@@ -117,8 +118,21 @@ class TestGem < RubyGemTestCase
     end
   end
 
+  def test_ensure_ssl_available
+    orig_Gem_ssl_available = Gem.ssl_available?
+
+    Gem.ssl_available = true
+    assert_nothing_raised do Gem.ensure_ssl_available end
+
+    Gem.ssl_available = false
+    e = assert_raise Gem::Exception do Gem.ensure_ssl_available end
+    assert_equal 'SSL is not installed on this system', e.message
+  ensure
+    Gem.ssl_available = orig_Gem_ssl_available
+  end
+
   def test_self_latest_load_paths
-    util_fake_gems
+    util_make_gems
 
     expected = [
       File.join(@tempdir, *%w[gemhome gems a-0.0.2 lib]),
@@ -177,7 +191,7 @@ class TestGem < RubyGemTestCase
   end
 
   def test_self_required_location
-    util_fake_gems
+    util_make_gems
 
     assert_equal File.join(@tempdir, *%w[gemhome gems c-1.2 lib code.rb]),
                  Gem.required_location("c", "code.rb")
@@ -197,6 +211,18 @@ class TestGem < RubyGemTestCase
 
   def test_self_sources
     assert_equal %w[http://gems.example.com], Gem.sources
+  end
+
+  def test_ssl_available_eh
+    orig_Gem_ssl_available = Gem.ssl_available?
+
+    Gem.ssl_available = true
+    assert_equal true, Gem.ssl_available?
+
+    Gem.ssl_available = false
+    assert_equal false, Gem.ssl_available?
+  ensure
+    Gem.ssl_available = orig_Gem_ssl_available
   end
 
   def test_self_use_paths

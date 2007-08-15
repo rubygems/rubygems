@@ -46,6 +46,7 @@ class TestGemCommandsBuildCommand < RubyGemTestCase
 
   def util_test_build_gem(gem, gemspec_file)
     @cmd.options[:args] = [gemspec_file]
+
     use_ui @ui do
       Dir.chdir @tempdir do
         @cmd.execute
@@ -60,7 +61,13 @@ class TestGemCommandsBuildCommand < RubyGemTestCase
     assert_equal [], output
     assert_equal '', @ui.error
 
-    assert File.exist?(File.join(@tempdir, "#{gem.full_name}.gem"))
+    gem_file = File.join @tempdir, "#{gem.full_name}.gem"
+    assert File.exist?(gem_file)
+
+    spec = Gem::Format.from_file_by_path(gem_file).spec
+
+    assert_equal "some_gem", spec.name
+    assert_equal "this is a summary", spec.summary
   end
 
 end

@@ -11,11 +11,7 @@ class TestGemCommandsUnpackCommand < RubyGemTestCase
   end
 
   def test_execute
-    gem = File.join 'test', 'data', 'a-0.0.1.gem'
-    cache_gem = File.join @gemhome, 'cache', 'a-0.0.1.gem'
-    FileUtils.cp gem, cache_gem
-    installer = Gem::Installer.new cache_gem
-    installer.install
+    util_make_gems
 
     @cmd.options[:args] = %w[a]
 
@@ -25,7 +21,7 @@ class TestGemCommandsUnpackCommand < RubyGemTestCase
       end
     end
 
-    assert File.exist?(File.join(@tempdir, 'a-0.0.1'))
+    assert File.exist?(File.join(@tempdir, 'a-0.0.2'))
   end
 
   def test_execute_exact_match

@@ -158,28 +158,34 @@ class RubyGemTestCase < Test::Unit::TestCase
     return spec
   end
 
-  def util_fake_gems
-    a0_0_1 = quick_gem 'a', '0.0.1' do |s|
-      s.files = %w[code.rb]
-      s.require_paths = %w[lib]
+  def util_build_gem(spec)
+    dir = File.join(@gemhome, 'gems', spec.full_name)
+    FileUtils.mkdir_p dir
+    Dir.chdir dir do
+      use_ui MockGemUi.new do
+        Gem::Builder.new(spec).build
+      end
+      FileUtils.mv "#{spec.full_name}.gem", File.join(@gemhome, 'cache')
     end
-    a0_0_2 = quick_gem 'a', '0.0.2' do |s|
-      s.files = %w[code.rb]
-      s.require_paths = %w[lib]
-    end
-    b0_0_2 = quick_gem 'b', '0.0.2' do |s|
-      s.files = %w[code.rb]
-      s.require_paths = %w[lib]
-    end
-    c1_2 = quick_gem 'c', '1.2' do |s|
-      s.files = %w[code.rb]
+  end
+
+  def util_make_gems
+    spec = proc do |s|
+      s.files = %w[lib/code.rb]
       s.require_paths = %w[lib]
     end
 
-    write_file 'gems/a-0.0.1/lib/code.rb' do end
-    write_file 'gems/a-0.0.2/lib/code.rb' do end
-    write_file 'gems/b-0.0.2/lib/code.rb' do end
-    write_file 'gems/c-1.2/lib/code.rb' do end
+    @a0_0_1 = quick_gem('a', '0.0.1', &spec)
+    @a0_0_2 = quick_gem('a', '0.0.2', &spec)
+    @b0_0_2 = quick_gem('b', '0.0.2', &spec)
+    @c1_2   = quick_gem('c', '1.2',   &spec)
+
+    write_file File.join(*%w[gems a-0.0.1 lib code.rb]) do end
+    write_file File.join(*%w[gems a-0.0.2 lib code.rb]) do end
+    write_file File.join(*%w[gems b-0.0.2 lib code.rb]) do end
+    write_file File.join(*%w[gems c-1.2 lib code.rb]) do end
+
+    [@a0_0_1, @a0_0_2, @b0_0_2, @c1_2].each { |spec| util_build_gem spec }
 
     Gem.source_index = nil
   end

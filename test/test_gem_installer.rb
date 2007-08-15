@@ -358,12 +358,13 @@ class TestGemInstaller < RubyGemTestCase
   end
 
   def test_install_force
-    @gem = File.join 'test', 'data', 'old_ruby_required-0.0.1.gem'
-
     use_ui @ui do
-      @installer = Gem::Installer.new @gem, {}
+      @installer = Gem::Installer.new old_ruby_required, {}
       @installer.install true
     end
+
+    gem_dir = File.join(@gemhome, 'gems', 'old_ruby_required-0.0.1')
+    assert File.exist?(gem_dir)
   end
 
   def test_install_with_message
@@ -378,10 +379,8 @@ class TestGemInstaller < RubyGemTestCase
   end
 
   def test_install_wrong_ruby_version
-    @gem = File.join 'test', 'data', 'old_ruby_required-0.0.1.gem'
-
     use_ui @ui do
-      @installer = Gem::Installer.new @gem, {}
+      @installer = Gem::Installer.new old_ruby_required, {}
       e = assert_raise Gem::InstallError do
         @installer.install
       end
@@ -391,16 +390,32 @@ class TestGemInstaller < RubyGemTestCase
   end
 
   def test_install_wrong_rubygems_version
-    @gem = File.join 'test', 'data', 'old_rubygems_required-0.0.1.gem'
+    spec = quick_gem 'old_rubygems_required', '0.0.1' do |s|
+      s.required_rubygems_version = '< 0.0.0'
+    end
+
+    util_build_gem spec
+
+    gem = File.join @gemhome, 'cache', "#{spec.full_name}.gem"
 
     use_ui @ui do
-      @installer = Gem::Installer.new @gem, {}
+      @installer = Gem::Installer.new gem, {}
       e = assert_raise Gem::InstallError do
         @installer.install
       end
-      assert_equal 'old_rubygems_required requires RubyGems version = 0.1.0',
+      assert_equal 'old_rubygems_required requires RubyGems version < 0.0.0',
                    e.message
     end
+  end
+
+  def old_ruby_required
+    spec = quick_gem 'old_ruby_required', '0.0.1' do |s|
+      s.required_ruby_version = '= 1.4.6'
+    end
+
+    util_build_gem spec
+
+    File.join @gemhome, 'cache', "#{spec.full_name}.gem"
   end
 
 end

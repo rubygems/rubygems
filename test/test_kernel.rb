@@ -15,7 +15,7 @@ class TestKernel < RubyGemTestCase
 
     @old_path = $:.dup
 
-    util_fake_gems
+    util_make_gems
   end
 
   def teardown

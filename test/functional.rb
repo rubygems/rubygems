@@ -9,7 +9,6 @@
 require 'test/unit'
 require 'rubygems'
 require 'test/insure_session'
-require 'test/onegem'
 require 'rubygems/format'
 require 'rubygems/command_manager'
 

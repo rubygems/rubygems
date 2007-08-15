@@ -10,6 +10,16 @@ class Gem::Indexer::Indexer
   include Gem::Indexer::Compressor
   include Gem::UserInteraction
 
+  ##
+  # Index install location
+
+  attr_reader :dest_directory
+
+  ##
+  # Index build directory
+
+  attr_reader :directory
+
   # Create an indexer that will index the gems in +directory+.
   def initialize(directory)
     @dest_directory = directory

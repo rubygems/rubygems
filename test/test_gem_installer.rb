@@ -4,17 +4,15 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'fileutils'
-require 'tmpdir'
 require 'test/unit'
-require 'rubygems'
 require 'test/gemutilities'
+require 'rubygems/installer'
 
 class Gem::Installer
   attr_accessor :options, :directory
 end
 
-class TestInstaller < RubyGemTestCase
+class TestGemInstaller < RubyGemTestCase
 
   def setup
     super

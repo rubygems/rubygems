@@ -5,17 +5,11 @@
 # See LICENSE.txt for permissions.
 #++
 
-
 require 'test/unit'
-require 'zlib'
+require 'test/gemutilities'
 require 'webrick'
 require 'rubygems/remote_fetcher'
-
-require 'test/gemutilities'
-require 'test/mockgemui'
 require 'test/yaml_data'
-
-include WEBrick
 
 # = Testing Proxy Settings
 #
@@ -31,12 +25,12 @@ include WEBrick
 # software doesn't really care, as long as we hit the proxy URL when a
 # proxy is configured.
 #
-class TestRemoteFetcher < RubyGemTestCase
+class TestGemRemoteFetcher < RubyGemTestCase
 
   include Gem::DefaultUserInteraction
 
   SERVER_DATA = YAML_DATA
-  
+
   PROXY_PORT = 12344
   SERVER_PORT = 12345
 
@@ -106,7 +100,7 @@ class TestRemoteFetcher < RubyGemTestCase
       assert_equal SERVER_DATA.size, fetcher.fetch_size(@server_uri)
     end
   end
-  
+
   def test_explicit_proxy
     use_ui @ui do
       fetcher = Gem::RemoteFetcher.new @proxy_uri
@@ -114,7 +108,7 @@ class TestRemoteFetcher < RubyGemTestCase
       assert_data_from_proxy fetcher.fetch_path(@server_uri)
     end
   end
-  
+
   def test_explicit_proxy_with_user_auth
     use_ui @ui do
       uri = URI.parse @proxy_uri
@@ -290,40 +284,40 @@ class TestRemoteFetcher < RubyGemTestCase
     rescue exception_class => ex
       got_exception = true
     end
-    assert got_exception, "Expected exception conforming to #{exception_class}" 
+    assert got_exception, "Expected exception conforming to #{exception_class}"
   end
 
   def assert_data_from_server(data)
     assert_block("Data is not from server") { data =~ /0\.4\.11/ }
   end
-    
+
   def assert_data_from_proxy(data)
     assert_block("Data is not from proxy") { data =~ /0\.4\.2/ }
   end
-    
-  class NilLog < Log
+
+  class NilLog < WEBrick::Log
     def log(level, data) #Do nothing
     end
   end
-  
+
   class << self
     attr_reader :normal_server, :proxy_server
     attr_accessor :enable_zip, :enable_yaml
-    
+
     def start_servers
       @normal_server ||= start_server(SERVER_PORT, SERVER_DATA)
       @proxy_server  ||= start_server(PROXY_PORT, PROXY_DATA)
       @enable_yaml = true
       @enable_zip = false
     end
-    
+
     private
-    
+
     def start_server(port, data)
       Thread.new do
         begin
           null_logger = NilLog.new
-          s = HTTPServer.new(
+          s = WEBrick::HTTPServer.new(
             :Port            => port,
             :DocumentRoot    => nil,
             :Logger          => null_logger,
@@ -359,5 +353,6 @@ class TestRemoteFetcher < RubyGemTestCase
       sleep 0.2                 # Give the servers time to startup
     end
   end
-  
+
 end
+

@@ -50,7 +50,7 @@ class MockFetcher
   end
 end
 
-class TestRemoteInstaller < RubyGemTestCase
+class TestGemRemoteInstaller < RubyGemTestCase
 
   def setup
     super

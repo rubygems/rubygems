@@ -77,6 +77,7 @@ class RubyGemTestCase < Test::Unit::TestCase
 
     ENV['GEMCACHE'] = @usrcache
     Gem.use_paths(@gemhome)
+    Gem.loaded_specs.clear
 
     Gem.configuration.verbose = true
 
@@ -89,7 +90,11 @@ class RubyGemTestCase < Test::Unit::TestCase
     end
 
     FileUtils.rm_rf @tempdir
+
     ENV['GEMCACHE'] = nil
+    ENV['GEM_HOME'] = nil
+    ENV['GEM_PATH'] = nil
+
     Gem.clear_paths
     Gem::SourceInfoCache.instance_variable_set :@cache, nil
   end
@@ -153,6 +158,32 @@ class RubyGemTestCase < Test::Unit::TestCase
     return spec
   end
 
+  def util_fake_gems
+    a0_0_1 = quick_gem 'a', '0.0.1' do |s|
+      s.files = %w[code.rb]
+      s.require_paths = %w[lib]
+    end
+    a0_0_2 = quick_gem 'a', '0.0.2' do |s|
+      s.files = %w[code.rb]
+      s.require_paths = %w[lib]
+    end
+    b0_0_2 = quick_gem 'b', '0.0.2' do |s|
+      s.files = %w[code.rb]
+      s.require_paths = %w[lib]
+    end
+    c1_2 = quick_gem 'c', '1.2' do |s|
+      s.files = %w[code.rb]
+      s.require_paths = %w[lib]
+    end
+
+    write_file 'gems/a-0.0.1/lib/code.rb' do end
+    write_file 'gems/a-0.0.2/lib/code.rb' do end
+    write_file 'gems/b-0.0.2/lib/code.rb' do end
+    write_file 'gems/c-1.2/lib/code.rb' do end
+
+    Gem.source_index = nil
+  end
+
   def util_setup_fake_fetcher
     require 'zlib'
     require 'socket'
@@ -207,12 +238,16 @@ class RubyGemTestCase < Test::Unit::TestCase
   end
 
   @@win_platform = nil
-  def win_platform?
+  def self.win_platform?
     if @@win_platform.nil?
       patterns = [/mswin/i, /mingw/i, /bccwin/i, /wince/i]
       @@win_platform = patterns.find{|r| RUBY_PLATFORM =~ r} ? true : false
     end
     @@win_platform
+  end
+
+  def win_platform?
+    self.class.win_platform?
   end
 
 end

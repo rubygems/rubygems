@@ -6,52 +6,59 @@
 #++
 
 require 'test/unit'
-require 'test/gemenvironment'
+require 'test/gemutilities'
 
-class TestRequireGem < Test::Unit::TestCase
+class TestKernel < RubyGemTestCase
 
   def setup
+    super
+
     @old_path = $:.dup
-    TestEnvironment.create
-    Gem.use_paths("test/data/gemhome")
-    Gem.source_index.refresh!
-    Gem.instance_eval { @loaded_specs.clear if @loaded_specs }
+
+    util_fake_gems
   end
 
   def teardown
+    super
+
     $:.replace @old_path
   end
 
-  def test_require
+  def test_gem
     assert gem('a', '= 0.0.1'), "Should load"
     assert $:.any? { |p| %r{a-0.0.1/lib} =~ p }
     assert $:.any? { |p| %r{a-0.0.1/bin} =~ p }
   end
 
-  def test_redundent_requires
+  def test_gem_redundent
     assert gem('a', '= 0.0.1'), "Should load"
     assert ! gem('a', '= 0.0.1'), "Should not load"
     assert_equal 1, $:.select { |p| %r{a-0.0.1/lib} =~ p }.size
     assert_equal 1, $:.select { |p| %r{a-0.0.1/bin} =~ p }.size
   end
 
-  def test_overlapping_requires
+  def test_gem_overlapping
     assert gem('a', '= 0.0.1'), "Should load"
     assert ! gem('a', '>= 0.0.1'), "Should not load"
     assert_equal 1, $:.select { |p| %r{a-0.0.1/lib} =~ p }.size
     assert_equal 1, $:.select { |p| %r{a-0.0.1/bin} =~ p }.size
   end
 
-  def test_conflicting_requires
+  def test_gem_conflicting
     assert gem('a', '= 0.0.1'), "Should load"
-    ex = assert_raises(Gem::Exception) { 
+
+    ex = assert_raise Gem::Exception do
       gem 'a', '= 0.0.2'
-    }
+    end
+
     assert_match(/activate a \(= 0\.0\.2\)/, ex.message)
     assert_match(/activated a-0\.0\.1/, ex.message)
+
     assert $:.any? { |p| %r{a-0.0.1/lib} =~ p }
     assert $:.any? { |p| %r{a-0.0.1/bin} =~ p }
     assert ! $:.any? { |p| %r{a-0.0.2/lib} =~ p }
     assert ! $:.any? { |p| %r{a-0.0.2/bin} =~ p }
   end
+
 end
+

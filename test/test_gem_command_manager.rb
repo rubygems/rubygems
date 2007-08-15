@@ -8,8 +8,19 @@ require 'test/unit'
 require 'test/gemutilities'
 require 'rubygems/command_manager'
 
-class TestParseCommands < RubyGemTestCase
-  include Gem::DefaultUserInteraction
+class InterruptCommand < Gem::Command
+
+  def initialize
+    super('interrupt', 'Raises an Interrupt Exception', {})
+  end
+
+  def execute
+    raise Interrupt, "Interrupt exception"
+  end
+
+end
+
+class TestCommandManager < RubyGemTestCase
 
   def setup
     super
@@ -17,16 +28,28 @@ class TestParseCommands < RubyGemTestCase
     @command_manager = Gem::CommandManager.new
   end
 
-  def test_parsing_bad_options
+  def test_run_interrupt
+    use_ui @ui do
+      @command_manager.register_command :interrupt
+      assert_raises MockGemUi::TermError do
+        @command_manager.run 'interrupt'
+      end
+      assert_equal '', ui.output
+      assert_equal "ERROR:  Interrupted\n", ui.error
+    end
+  end
+
+  def test_process_args_bad_arg
     use_ui @ui do
       assert_raises(MockGemUi::TermError) {
         @command_manager.process_args("--bad-arg")
       }
-      assert_match(/invalid option: --bad-arg/i, ui.error)
     end
+
+    assert_match(/invalid option: --bad-arg/i, @ui.error)
   end
 
-  def test_parsing_install_options
+  def test_process_args_install
     #capture all install options
     use_ui @ui do
       check_options = nil
@@ -34,7 +57,7 @@ class TestParseCommands < RubyGemTestCase
         check_options = options
         true
       end
-      
+
       #check defaults
       @command_manager.process_args("install")
       assert_equal false, check_options[:test]
@@ -44,7 +67,7 @@ class TestParseCommands < RubyGemTestCase
       assert_equal true, check_options[:wrappers]
       assert_equal "> 0", check_options[:version]
       assert_equal Gem.dir, check_options[:install_dir]
-      
+
       #check settings
       check_options = nil
       @command_manager.process_args(
@@ -56,32 +79,32 @@ class TestParseCommands < RubyGemTestCase
       assert_equal false, check_options[:wrappers]
       assert_equal '3.0', check_options[:version]
       assert_equal Dir.pwd, check_options[:install_dir]
-      
+
       #check remote domain
       check_options = nil
       @command_manager.process_args("install --remote")
       assert_equal :remote, check_options[:domain]
-      
+
       #check both domain
       check_options = nil
       @command_manager.process_args("install --both")
       assert_equal :both, check_options[:domain]
-      
+
       #check both domain
       check_options = nil
       @command_manager.process_args("install --both")
       assert_equal :both, check_options[:domain]
     end
   end
-  
-  def test_parsing_uninstall_options
+
+  def test_process_args_uninstall
     #capture all uninstall options
     check_options = nil
     @command_manager['uninstall'].when_invoked do |options|
       check_options = options
       true
     end
-    
+
     #check defaults
     @command_manager.process_args("uninstall")
     assert_equal ">= 0", check_options[:version]
@@ -93,14 +116,14 @@ class TestParseCommands < RubyGemTestCase
     assert_equal "3.0", check_options[:version]
   end
 
-  def test_parsing_check_options
+  def test_process_args_check
     #capture all check options
     check_options = nil
     @command_manager['check'].when_invoked do |options|
       check_options = options
       true
     end
-    
+
     #check defaults
     @command_manager.process_args("check")
     assert_equal false, check_options[:verify]
@@ -112,39 +135,39 @@ class TestParseCommands < RubyGemTestCase
     assert_equal "foobar", check_options[:verify]
     assert_equal true, check_options[:alien]
   end
-    
-  def test_parsing_build_options
+
+  def test_process_args_build
     #capture all build options
     check_options = nil
     @command_manager['build'].when_invoked do |options|
       check_options = options
       true
     end
-    
+
     #check defaults
     @command_manager.process_args("build")
     #NOTE: Currently no defaults
-    
+
     #check settings
     check_options = nil
     @command_manager.process_args("build foobar.rb")
     assert_equal 'foobar.rb', check_options[:args].first
   end
-  
-  def test_parsing_query_options
+
+  def test_process_args_query
     #capture all query options
     check_options = nil
     @command_manager['query'].when_invoked do |options|
       check_options = options
       true
     end
-    
+
     #check defaults
     @command_manager.process_args("query")
     assert_equal(/.*/, check_options[:name])
     assert_equal :local, check_options[:domain]
     assert_equal false, check_options[:details]
-    
+
     #check settings
     check_options = nil
     @command_manager.process_args("query --name foobar --local --details")
@@ -161,20 +184,20 @@ class TestParseCommands < RubyGemTestCase
     check_options = nil
     @command_manager.process_args("query --both")
     assert_equal :both, check_options[:domain]
-  end  
-  
-  def test_parsing_update_options
+  end
+
+  def test_process_args_update
     #capture all update options
     check_options = nil
     @command_manager['update'].when_invoked do |options|
       check_options = options
       true
     end
-    
+
     #check defaults
     @command_manager.process_args("update")
     assert_equal true, check_options[:generate_rdoc]
-    
+
     #check settings
     check_options = nil
     @command_manager.process_args("update --force --test --rdoc --install-dir .")
@@ -182,6 +205,7 @@ class TestParseCommands < RubyGemTestCase
     assert_equal true, check_options[:generate_rdoc]
     assert_equal true, check_options[:force]
     assert_equal Dir.pwd, check_options[:install_dir]
-  end 
-  
+  end
+
 end
+

@@ -215,6 +215,8 @@ class TestSpecification < RubyGemTestCase
       io.puts "$LOADED_B = true"
     end
 
+    Gem.source_index = nil
+
     old_loaded = $".dup
     old_verbose = $VERBOSE
     $VERBOSE = nil

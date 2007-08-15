@@ -15,7 +15,7 @@ class Gem::SourceIndex
          :update_with_missing, :unzip
 end
 
-class TestSourceIndex < RubyGemTestCase
+class TestGemSourceIndex < RubyGemTestCase
 
   def setup
     super

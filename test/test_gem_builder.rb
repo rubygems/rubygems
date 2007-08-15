@@ -10,20 +10,8 @@ require 'rubygems/builder'
 
 class TestGemBuilder < RubyGemTestCase
 
-  def test_build_invalid_spec
-    spec = Gem::Specification.new
-    builder = Gem::Builder.new(spec)
-    assert_raises Gem::InvalidSpecificationException do
-      builder.build
-    end
-  end
-
-  def test_build_valid_spec
-    spec_path = File.join File.dirname(__FILE__), 'data', 'post_install.gemspec'
-
-    spec = Gem::Specification.load spec_path
-
-    builder = Gem::Builder.new spec
+  def test_build
+    builder = Gem::Builder.new quick_gem('a')
 
     use_ui @ui do
       Dir.chdir @tempdir do
@@ -31,7 +19,17 @@ class TestGemBuilder < RubyGemTestCase
       end
     end
 
-    assert_match(/Successfully built RubyGem\n  Name: PostMessage/, @ui.output)
+    assert_match %r|Successfully built RubyGem\n  Name: a|, @ui.output
+  end
+
+  def test_build_invalid_spec
+    builder = Gem::Builder.new Gem::Specification.new
+
+    e = assert_raises Gem::InvalidSpecificationException do
+      builder.build
+    end
+
+    assert_equal 'Missing value for attribute name', e.message
   end
 
 end

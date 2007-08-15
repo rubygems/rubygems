@@ -368,14 +368,19 @@ class TestGemInstaller < RubyGemTestCase
   end
 
   def test_install_with_message
-    @gem = File.join 'test', 'data', "PostMessage-0.0.1.gem"
+    spec = quick_gem 'a' do |s|
+      s.post_install_message = 'I am a shiny gem!'
+    end
 
     use_ui @ui do
-      @installer = Gem::Installer.new @gem, {}
+      Dir.chdir @tempdir do Gem::Builder.new(spec).build end
+      gem = File.join @tempdir, "#{spec.full_name}.gem"
+      @installer = Gem::Installer.new gem, {}
+
       @installer.install
     end
 
-    assert_equal "I am a shiny gem!\n", @ui.output
+    assert_match %r|I am a shiny gem!|, @ui.output
   end
 
   def test_install_wrong_ruby_version

@@ -21,15 +21,6 @@ module Gem
   end
 end
 
-module Utilities
-  def make_cache_area(path, *uris)
-    fn = File.join(path, 'source_cache')
-    open(fn, 'wb') do |f| f.write Marshal.dump(cache_hash(*uris)) end
-  end
-
-  module_function :make_cache_area
-end
-
 class FakeFetcher
 
   attr_reader :data
@@ -161,6 +152,7 @@ class RubyGemTestCase < Test::Unit::TestCase
   def util_build_gem(spec)
     dir = File.join(@gemhome, 'gems', spec.full_name)
     FileUtils.mkdir_p dir
+
     Dir.chdir dir do
       use_ui MockGemUi.new do
         Gem::Builder.new(spec).build

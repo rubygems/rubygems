@@ -9,7 +9,6 @@ require 'test/unit'
 require 'test/gemutilities'
 require 'webrick'
 require 'rubygems/remote_fetcher'
-require 'test/yaml_data'
 
 # = Testing Proxy Settings
 #

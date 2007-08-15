@@ -12,7 +12,6 @@ require 'uri'
 require 'rubygems/gem_open_uri'
 require 'rubygems/source_info_cache'
 
-require 'test/yaml_data'
 require 'test/mockgemui'
 
 module Gem

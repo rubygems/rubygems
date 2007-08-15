@@ -90,6 +90,8 @@ class RubyGemTestCase < Test::Unit::TestCase
   end
 
   def install_gem gem
+    require 'rubygems/installer'
+
     use_ui @ui do
       Dir.chdir @tempdir do
         Gem::Builder.new(gem).build

@@ -146,6 +146,7 @@ class TestGem < RubyGemTestCase
   def test_self_loaded_specs
     foo = quick_gem 'foo'
     install_gem foo
+    Gem.source_index = nil
 
     Gem.activate 'foo', false
 
@@ -240,6 +241,63 @@ class TestGem < RubyGemTestCase
     else
       assert true, 'count this test'
     end
+  end
+
+  def test_require_gem_autorequire
+    name = "AutorequireArray"
+    files = %w(a.rb b.rb)
+    gem = quick_gem(name) do |s|
+      s.files = files.map { |f| File.join("lib", f) }
+      s.autorequire = files
+    end
+
+    fullname = gem.full_name
+
+    write_file "gems/#{fullname}/lib/a.rb" do |io|
+      io.puts "$LOADED_A = true"
+    end
+
+    write_file "gems/#{fullname}/lib/b.rb" do |io|
+      io.puts "$LOADED_B = true"
+    end
+
+    Gem.source_index = nil
+
+    old_loaded = $".dup
+    old_verbose = $VERBOSE
+    $VERBOSE = nil
+    require_gem name
+    $VERBOSE = old_verbose
+    new_loaded = $".dup
+
+    assert_equal files, (new_loaded - old_loaded)
+    assert defined?($LOADED_A)
+    assert defined?($LOADED_B)
+  end
+
+  def test_require_gem_autorequire_string
+    name = "AutorequireString"
+    file = "c.rb"
+    gem = quick_gem(name) do |s|
+      s.files = File.join("lib", file)
+      s.autorequire = file
+    end
+
+    fullname = gem.full_name
+
+    write_file("gems/#{fullname}/lib/c.rb") do |io|
+      io.puts "$LOADED_C = true"
+    end
+
+    old_loaded = $".dup
+    old_verbose = $VERBOSE
+    $VERBOSE = nil
+    require_gem name
+    $VERBOSE = old_verbose
+    new_loaded = $".dup
+
+    assert_equal(Array(file), (new_loaded - old_loaded))
+    assert(defined? $LOADED_C)
   end
 
   def util_ensure_gem_dirs

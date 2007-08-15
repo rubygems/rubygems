@@ -615,16 +615,16 @@ module Gem
       normalize
       if rubygems_version != RubyGemsVersion
         raise InvalidSpecificationException.new(%[
-          Expected RubyGems Version #{RubyGemsVersion}, was #{rubygems_version}
+          expected RubyGems version #{RubyGemsVersion}, was #{rubygems_version}
         ].strip)
       end
       @@required_attributes.each do |symbol|
         unless self.send(symbol)
-          raise InvalidSpecificationException.new("Missing value for attribute #{symbol}")
+          raise InvalidSpecificationException.new("missing value for attribute #{symbol}")
         end
       end 
       if require_paths.empty?
-        raise InvalidSpecificationException.new("Gem spec needs to have at least one require_path")
+        raise InvalidSpecificationException.new("specification must have at least one require_path")
       end
     end
 

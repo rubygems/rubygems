@@ -22,14 +22,12 @@ class TestGemBuilder < RubyGemTestCase
     assert_match %r|Successfully built RubyGem\n  Name: a|, @ui.output
   end
 
-  def test_build_invalid_spec
+  def test_build_validates
     builder = Gem::Builder.new Gem::Specification.new
 
-    e = assert_raises Gem::InvalidSpecificationException do
+    assert_raises Gem::InvalidSpecificationException do
       builder.build
     end
-
-    assert_equal 'Missing value for attribute name', e.message
   end
 
 end

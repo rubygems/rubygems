@@ -664,9 +664,15 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
   end
 
   class ExtRakeBuilder < ExtBuilder
-    def ExtRakeBuilder.build(ext, directory, dest_path, results)
+    def ExtRakeBuilder.build(extension, directory, dest_path, results)
+      if File.basename(extension) =~ /mkrf_conf/i then
+        cmd = "#{Gem.ruby} #{File.basename extension}"
+        cmd << " #{ARGV.join " "}" unless ARGV.empty?
+        run cmd, results
+      end
+      
       cmd = ENV['rake'] || 'rake'
-      cmd << " RUBYARCHDIR=#{dest_path} RUBYLIBDIR=#{dest_path} extension"
+      cmd << " RUBYARCHDIR=#{dest_path} RUBYLIBDIR=#{dest_path}"
 
       run cmd, results
 

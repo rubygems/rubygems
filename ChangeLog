@@ -1,3 +1,8 @@
+2007-08-15  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/installer.rb: Support buliding mkrf extensions.  Fixes
+	bug #11313.  Patch by Jeremy Hinegardner.
+
 2007-08-13  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/uninstall_command.rb: Gems with version of 0

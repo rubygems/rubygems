@@ -3,4 +3,3 @@
 * optional dependencies: "semitar can use REXML, but it works better if you have the ruby raptor library installed",  or not so optional as in: "you need Ruby/RSS > = 1.0 OR rss > 0.91 for this library to work"
 * Integration with platform-native packaging systems
 * MD5 summing stuff doesn't work right on the new format (0.8.0+)
-* Rethink testing strategy.  May need to write a document describing how to avoid doing things in unit tests that won't work outside of `pwd`

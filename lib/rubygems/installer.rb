@@ -33,6 +33,7 @@ class Gem::Installer
   def initialize(gem, options={})
     @gem = gem
     @options = options
+    @security_policy = @options.delete :security_policy
   end
 
   ##
@@ -57,11 +58,10 @@ class Gem::Installer
     # if we're forcing the install, then disable security, _unless_
     # the security policy says that we only install singed gems
     # (this includes Gem::Security::HighSecurity)
-    security_policy = @options[:security_policy]
-    security_policy = nil if force && security_policy && security_policy.only_signed != true
+    @security_policy = nil if force and @security_policy and not @security_policy.only_signed
 
     begin
-      format = Gem::Format.from_file_by_path @gem, security_policy
+      format = Gem::Format.from_file_by_path @gem, @security_policy
     rescue Gem::Package::FormatError
       raise Gem::InstallError, "invalid gem format for #{@gem}"
     end
@@ -84,7 +84,7 @@ class Gem::Installer
 
       unless @options[:ignore_dependencies] then
         spec.dependencies.each do |dep_gem|
-          ensure_dependency!(spec, dep_gem)
+          ensure_dependency(spec, dep_gem)
         end
       end
     end
@@ -120,15 +120,17 @@ class Gem::Installer
   end
 
   ##
-  # Ensure that the dependency is satisfied by the current
-  # installation of gem.  If it is not, then fail (i.e. throw and
-  # exception).
+  # Ensure that the dependency is satisfied by the current installation of
+  # gem.  If it is not an exception is raised.
   #
   # spec       :: Gem::Specification
   # dependency :: Gem::Dependency
-  def ensure_dependency!(spec, dependency)
-    raise Gem::InstallError, "#{spec.name} requires #{dependency.name} #{dependency.version_requirements} " unless
-      installation_satisfies_dependency?(dependency)
+  def ensure_dependency(spec, dependency)
+    unless installation_satisfies_dependency? dependency then
+      raise Gem::InstallError, "#{spec.name} requires #{dependency}"
+    end
+
+    true
   end
 
   ##
@@ -144,7 +146,7 @@ class Gem::Installer
   # Unpacks the gem into the given directory.
   #
   def unpack(directory)
-    format = Gem::Format.from_file_by_path(@gem, @options[:security_policy])
+    format = Gem::Format.from_file_by_path @gem, @security_policy
     extract_files(directory, format)
   end
 
@@ -241,7 +243,7 @@ class Gem::Installer
   end
 
   def shebang(spec, install_dir, bin_file_name)
-    if @options[:env_shebang]
+    if @options[:env_shebang] then
       shebang_env
     else
       shebang_default(spec, install_dir, bin_file_name)
@@ -250,16 +252,19 @@ class Gem::Installer
 
   def shebang_default(spec, install_dir, bin_file_name)
     path = File.join(install_dir, "gems", spec.full_name, spec.bindir, bin_file_name)
+
+    ruby = File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])
+
     File.open(path, "rb") do |file|
-      first_line = file.readlines("\n").first 
-      path_to_ruby = File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])
-      if first_line =~ /^#!/
+      first_line = file.readlines("\n").first
+      if first_line =~ /^#!/ then
         # Preserve extra words on shebang line, like "-w".  Thanks RPA.
-        shebang = first_line.sub(/\A\#!\s*\S*ruby\S*/, "#!" + path_to_ruby)
+        shebang = first_line.sub(/\A\#!\s*\S*ruby\S*/, "#!#{ruby}")
       else
         # Create a plain shebang line.
-        shebang = "#!" + path_to_ruby
+        shebang = "#!#{ruby}"
       end
+
       return shebang.strip  # Avoid nasty ^M issues.
     end
   end
@@ -377,7 +382,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
 
   def expand_and_validate(directory)
     directory = Pathname.new(directory).expand_path
-    unless directory.absolute? then
+    unless directory.absolute? then # HACK is this possible after #expand_path?
       raise ArgumentError, "install directory %p not absolute" % directory
     end
     directory.to_str

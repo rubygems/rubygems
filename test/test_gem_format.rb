@@ -4,10 +4,10 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'test/gemutilities'
 require 'test/unit'
+require 'test/gemutilities'
+require 'test/simple_gem'
 require 'rubygems/format'
-require "test/simple_gem"
 
 class TestGemFormat < RubyGemTestCase
 

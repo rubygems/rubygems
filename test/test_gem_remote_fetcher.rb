@@ -72,7 +72,7 @@ gems:
     dependencies: []
   EOY
 
-  PROXY_DATA = SERVER_DATA.gsub /0.4.11/, '0.4.2'
+  PROXY_DATA = SERVER_DATA.gsub(/0.4.11/, '0.4.2')
 
   PROXY_PORT = 12344
   SERVER_PORT = 12345

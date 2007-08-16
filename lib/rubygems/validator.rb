@@ -7,7 +7,7 @@
 require 'find'
 
 require 'rubygems/digest/md5'
-require 'rubygems/format.rb'
+require 'rubygems/format'
 require 'rubygems/installer'
 
 module Gem
@@ -21,16 +21,19 @@ module Gem
     # Given a gem file's contents, validates against its own MD5 checksum
     # gem_data:: [String] Contents of the gem file
     def verify_gem(gem_data)
-      if(gem_data.size == 0) then
-        raise VerificationError.new("Empty Gem file")
-      end
-      unless(gem_data =~ /MD5SUM/m)
+      raise VerificationError, 'empty gem file' if gem_data.size == 0
+
+      unless gem_data =~ /MD5SUM/ then
         return # Don't worry about it...this sucks.  Need to fix MD5 stuff for
                # new format
                # FIXME
       end
-      unless (Gem::MD5.hexdigest(gem_data.gsub(/MD5SUM = "([a-z0-9]+)"/, "MD5SUM = \"" + ("F" * 32) + "\"")) == $1.to_s) 
-        raise VerificationError.new("Invalid checksum for Gem file")
+
+      sum_data = gem_data.gsub(/MD5SUM = "([a-z0-9]+)"/,
+                               "MD5SUM = \"#{"F" * 32}\"")
+
+      unless Gem::MD5.hexdigest(sum_data) == $1.to_s then
+        raise VerificationError, 'invalid checksum for gem file'
       end
     end
 
@@ -39,14 +42,12 @@ module Gem
     # 
     # gem_path:: [String] Path to gem file
     def verify_gem_file(gem_path)
-      begin
-        File.open(gem_path, 'rb') do |file|
-          gem_data = file.read
-          verify_gem(gem_data)
-        end
-      rescue Errno::ENOENT
-        raise Gem::VerificationError.new("Missing gem file #{gem_path}")
+      File.open gem_path, 'rb' do |file|
+        gem_data = file.read
+        verify_gem gem_data
       end
+    rescue Errno::ENOENT
+      raise Gem::VerificationError.new("missing gem file #{gem_path}")
     end
 
     private

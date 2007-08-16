@@ -46,6 +46,30 @@ class TestGem < RubyGemTestCase
     assert_equal expected, Gem.configuration
   end
 
+  def test_self_datadir
+    foo = nil
+
+    Dir.chdir @tempdir do
+      FileUtils.mkdir_p 'data'
+      File.open File.join('data', 'foo.txt'), 'w' do |fp|
+        fp.puts 'blah'
+      end
+
+      foo = quick_gem 'foo' do |s| s.files = %w[data/foo.txt] end
+      install_gem foo
+    end
+
+    gem 'foo'
+
+    expected = File.join @gemhome, 'gems', foo.full_name, 'data', 'foo'
+
+    assert_equal expected, Gem.datadir('foo')
+  end
+
+  def test_self_datadir_nonexistent_package
+    assert_nil Gem.datadir('xyzzy')
+  end
+
   def test_self_default_dir
     assert_match @default_dir_re, Gem.default_dir
   end

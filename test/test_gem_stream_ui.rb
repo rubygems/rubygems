@@ -1,21 +1,23 @@
 require 'test/unit'
-require 'stringio'
-require 'timeout'
-
-require 'rubygems'
+require 'test/gemutilities'
 require 'rubygems/user_interaction'
 
-class TestStreamUI < Test::Unit::TestCase
+class TestGemStreamUI < RubyGemTestCase
 
   module IsTty
+    attr_accessor :tty
+
     def tty?
-      return true
+      @tty = true unless defined? @tty
+      return @tty
     end
 
     alias_method :isatty, :tty?
   end
 
   def setup
+    super
+
     @cfg = Gem.configuration
 
     @in = StringIO.new
@@ -33,6 +35,37 @@ class TestStreamUI < Test::Unit::TestCase
       @in.string = "#{expected_answer}\n"
       actual_answer = @sui.ask("What is your name?")
       assert_equal expected_answer, actual_answer
+    end
+  end
+
+  def test_ask_no_tty
+    @in.tty = false
+
+    timeout(0.1) do
+      answer = @sui.ask("what is your favorite color?")
+      assert_equal nil, answer
+    end
+  end
+
+  def test_ask_yes_no_no_tty_with_default
+    @in.tty = false
+
+    timeout(0.1) do
+      answer = @sui.ask_yes_no("do coconuts migrate?", false)
+      assert_equal false, answer
+
+      answer = @sui.ask_yes_no("do coconuts migrate?", true)
+      assert_equal true, answer
+    end
+  end
+
+  def test_ask_yes_no_no_tty_without_default
+    @in.tty = false
+
+    timeout(0.1) do
+      assert_raises(Gem::OperationNotSupportedError) do
+        @sui.ask_yes_no("do coconuts migrate?")
+      end
     end
   end
 
@@ -78,46 +111,6 @@ class TestStreamUI < Test::Unit::TestCase
     reporter = @sui.progress_reporter 10, 'hi'
     assert_kind_of Gem::StreamUI::VerboseProgressReporter, reporter
     assert_equal "hi\n", @out.string
-  end
-
-end
-
-class TestStreamUINoTty < Test::Unit::TestCase
-
-  def setup
-    Gem.send :instance_variable_set, :@configuration, nil
-    @cfg = Gem.configuration
-
-    @in = StringIO.new
-    @out = StringIO.new
-    @err = StringIO.new
-
-    @sui = Gem::StreamUI.new @in, @out, @err
-  end
-
-  def test_ask
-    timeout(1) do
-      answer = @sui.ask("what is your favorite color?")
-      assert_equal nil, answer
-    end
-  end
-
-  def test_ask_yes_no_with_default
-    timeout(1) do
-      answer = @sui.ask_yes_no("do coconuts migrate?", false)
-      assert_equal false, answer
-
-      answer = @sui.ask_yes_no("do coconuts migrate?", true)
-      assert_equal true, answer
-    end
-  end
-
-  def test_ask_yes_no_without_default
-    timeout(1) do
-      assert_raises(Gem::OperationNotSupportedError) do
-        @sui.ask_yes_no("do coconuts migrate?")
-      end
-    end
   end
 
 end

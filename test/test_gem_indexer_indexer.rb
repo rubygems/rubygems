@@ -6,7 +6,7 @@
 
 require 'test/unit'
 require 'test/gemutilities'
-require 'lib/rubygems/indexer/indexer'
+require 'rubygems/indexer/indexer'
 
 class TestGemIndexerIndexer < RubyGemTestCase
 

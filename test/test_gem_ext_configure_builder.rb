@@ -1,7 +1,6 @@
 require 'test/unit'
 require 'test/gemutilities'
-
-require 'rubygems/installer'
+require 'rubygems/ext'
 
 class TestGemExtConfigureBuilder < RubyGemTestCase
 
@@ -27,7 +26,7 @@ class TestGemExtConfigureBuilder < RubyGemTestCase
     output = []
 
     Dir.chdir @ext do
-      Gem::ExtConfigureBuilder.build nil, nil, @dest_path, output
+      Gem::Ext::ConfigureBuilder.build nil, nil, @dest_path, output
     end
 
     expected = [
@@ -44,7 +43,7 @@ class TestGemExtConfigureBuilder < RubyGemTestCase
 
     error = assert_raise Gem::InstallError do
       Dir.chdir @ext do
-        Gem::ExtConfigureBuilder.build nil, nil, @dest_path, output
+        Gem::Ext::ConfigureBuilder.build nil, nil, @dest_path, output
       end
     end
 
@@ -68,7 +67,7 @@ sh \./configure --prefix=#{@dest_path}
 
     output = []
     Dir.chdir @ext do
-      Gem::ExtConfigureBuilder.build nil, nil, @dest_path, output
+      Gem::Ext::ConfigureBuilder.build nil, nil, @dest_path, output
     end
 
     case RUBY_PLATFORM

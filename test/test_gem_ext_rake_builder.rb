@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'test/gemutilities'
-require 'rubygems/installer'
+require 'rubygems/ext'
 
 class TestGemExtRakeBuilder < RubyGemTestCase
 
@@ -20,7 +20,7 @@ class TestGemExtRakeBuilder < RubyGemTestCase
         File.open("Rakefile","w") do |f|
           f.puts "task :default"
         end
-        EO_MKRF
+      EO_MKRF
     end
 
     output = []
@@ -28,7 +28,7 @@ class TestGemExtRakeBuilder < RubyGemTestCase
 
     Dir.chdir @ext do
       realdir = Dir.pwd
-      Gem::ExtRakeBuilder.build 'mkrf_conf.rb', nil, @dest_path, output
+      Gem::Ext::RakeBuilder.build 'mkrf_conf.rb', nil, @dest_path, output
     end
 
     expected = [
@@ -54,7 +54,7 @@ class TestGemExtRakeBuilder < RubyGemTestCase
 
     error = assert_raise Gem::InstallError do
       Dir.chdir @ext do
-        Gem::ExtRakeBuilder.build "mkrf_conf.rb", nil, @dest_path, output
+        Gem::Ext::RakeBuilder.build "mkrf_conf.rb", nil, @dest_path, output
       end
     end
 

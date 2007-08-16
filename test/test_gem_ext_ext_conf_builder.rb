@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'test/gemutilities'
-require 'rubygems/installer'
+require 'rubygems/ext'
 
 class TestGemExtExtConfBuilder < RubyGemTestCase
 
@@ -22,7 +22,7 @@ class TestGemExtExtConfBuilder < RubyGemTestCase
     output = []
 
     Dir.chdir @ext do
-      Gem::ExtExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
+      Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
     end
 
     expected = [
@@ -57,7 +57,7 @@ class TestGemExtExtConfBuilder < RubyGemTestCase
 
     error = assert_raise Gem::InstallError do
       Dir.chdir @ext do
-        Gem::ExtExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
+        Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
       end
     end
 
@@ -80,7 +80,7 @@ checking for main\(\) in .*?nonexistent/m, error.message)
     end
 
     Dir.chdir @ext do
-      Gem::ExtExtConfBuilder.make @ext, output
+      Gem::Ext::ExtConfBuilder.make @ext, output
     end
 
     case RUBY_PLATFORM
@@ -105,7 +105,7 @@ install:
   def test_class_make_no_Makefile
     error = assert_raise Gem::InstallError do
       Dir.chdir @ext do
-        Gem::ExtExtConfBuilder.make @ext, ['output']
+        Gem::Ext::ExtConfBuilder.make @ext, ['output']
       end
     end
 

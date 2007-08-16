@@ -279,12 +279,15 @@ class Gem::Installer
 # this file is here to facilitate running it.
 #
 
+ENV['GEM_HOME'] ||= '#{install_dir}'
 require 'rubygems'
-version = "> 0"
+
+version = ">= 0"
 if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1 then
-version = $1
-ARGV.shift
+  version = $1
+  ARGV.shift
 end
+
 gem '#{spec.name}', version
 load '#{filename}'
 TEXT

@@ -4,6 +4,8 @@
 	bug #11313.  Patch by Jeremy Hinegardner.
 	* lib/rubygems/installer.rb: Ensure bin files are executable.  Fixes
 	bug #8985 submitted by Ara Howard.
+	* lib/rubygems/installer.rb: Insert installing gem home dir into bin
+	wrapper.  Patch #8818 by Ara Howard.
 
 2007-08-13  Eric Hodel  <drbrain@segment7.net>
 

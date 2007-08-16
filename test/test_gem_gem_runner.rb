@@ -12,8 +12,8 @@ class TestGemGemRunner < RubyGemTestCase
     other_gem_path = File.join @tempdir, 'other_gem_path'
     other_gem_home = File.join @tempdir, 'other_gem_home'
 
-    Gem.send :ensure_gem_subdirectories, other_gem_path
-    Gem.send :ensure_gem_subdirectories, other_gem_home
+    Gem.ensure_gem_subdirectories other_gem_path
+    Gem.ensure_gem_subdirectories other_gem_home
 
     File.open temp_conf, 'w' do |fp|
       fp.puts "gem: --commands"

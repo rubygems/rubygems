@@ -17,12 +17,13 @@ class TestGemInstaller < RubyGemTestCase
   def setup
     super
 
-    @spec = quick_gem("a")
-    @installer = Gem::Installer.new :fake, {}
+    @spec = quick_gem "a"
+    @gem = File.join @tempdir, "#{@spec.full_name}.gem"
+    @installer = Gem::Installer.new @gem
   end
 
   def util_gem_dir(version = '0.0.2')
-    File.join "gems", "a-#{version}" # HACK
+    File.join @gemhome, "gems", "a-#{version}" # HACK
   end
 
   def util_gem_bindir(version = '0.0.2')
@@ -35,7 +36,9 @@ class TestGemInstaller < RubyGemTestCase
 
   def util_make_exec(version = '0.0.2')
     @spec.executables = ["my_exec"]
-    write_file(File.join(util_gem_bindir(version), "my_exec")) do |f|
+
+    FileUtils.mkdir_p util_gem_bindir(version)
+    File.open File.join(util_gem_bindir(version), "my_exec"), 'w' do |f|
       f.puts "#!/bin/ruby"
     end
   end
@@ -142,6 +145,7 @@ class TestGemInstaller < RubyGemTestCase
   def test_generate_bin_scripts
     @installer.options[:wrappers] = true
     util_make_exec
+    @installer.directory = util_gem_dir
 
     @installer.generate_bin @spec, @gemhome
     assert_equal true, File.directory?(util_inst_bindir)
@@ -216,11 +220,11 @@ class TestGemInstaller < RubyGemTestCase
     
     @installer.options[:wrappers] = false
     util_make_exec
-    @installer.directory = File.join @gemhome, util_gem_dir
+    @installer.directory = util_gem_dir
 
     @installer.generate_bin @spec, @gemhome
     installed_exec = File.join(util_inst_bindir, "my_exec")
-    assert_equal(File.join(@gemhome, util_gem_dir, "bin", "my_exec"),
+    assert_equal(File.join(util_gem_dir, "bin", "my_exec"),
                  File.readlink(installed_exec))
 
     @spec = Gem::Specification.new do |s|
@@ -233,10 +237,10 @@ class TestGemInstaller < RubyGemTestCase
     end
 
     util_make_exec '0.0.3'
-    @installer.directory = File.join @gemhome, util_gem_dir('0.0.3')
+    @installer.directory = File.join util_gem_dir('0.0.3')
     @installer.generate_bin @spec, @gemhome
     installed_exec = File.join(util_inst_bindir, "my_exec")
-    assert_equal(File.join(@gemhome, util_gem_dir('0.0.3'), "bin", "my_exec"),
+    assert_equal(File.join(util_gem_bindir('0.0.3'), "my_exec"),
                  File.readlink(installed_exec),
                  "Ensure symlink moved to latest version")
   end
@@ -246,11 +250,11 @@ class TestGemInstaller < RubyGemTestCase
 
     @installer.options[:wrappers] = false
     util_make_exec
-    @installer.directory = File.join @gemhome, util_gem_dir
+    @installer.directory = util_gem_dir
 
     @installer.generate_bin @spec, @gemhome
     installed_exec = File.join(util_inst_bindir, "my_exec")
-    assert_equal(File.join(@gemhome, util_gem_dir, "bin", "my_exec"),
+    assert_equal(File.join(util_gem_dir, "bin", "my_exec"),
                  File.readlink(installed_exec))
 
     @spec = Gem::Specification.new do |s|
@@ -263,10 +267,10 @@ class TestGemInstaller < RubyGemTestCase
     end
 
     util_make_exec '0.0.1'
-    @installer.directory = File.join @gemhome, util_gem_dir('0.0.1')
+    @installer.directory = util_gem_dir('0.0.1')
     @installer.generate_bin @spec, @gemhome
     installed_exec = File.join(util_inst_bindir, "my_exec")
-    assert_equal(File.join(@gemhome, util_gem_dir('0.0.2'), "bin", "my_exec"),
+    assert_equal(File.join(util_gem_dir('0.0.2'), "bin", "my_exec"),
                  File.readlink(installed_exec),
                  "Ensure symlink not moved")
   end
@@ -343,39 +347,87 @@ class TestGemInstaller < RubyGemTestCase
     Config::CONFIG["arch"] = old_arch
   end
 
-  def test_install_bad_gem
-    # broken-1.0.0.gem is the first 1k of a-0.0.1.gem
-    gem = File.join 'test', 'data', 'broken-1.0.0.gem'
-    cache_gem = File.join @gemhome, 'cache', 'broken-1.0.0.gem'
-    FileUtils.cp gem, cache_gem
-    
-    installer = Gem::Installer.new cache_gem
-    e = assert_raise Gem::InstallError do
-      installer.install
+  def test_install
+    gem = nil
+    @spec.files = %w[lib/code.rb]
+    @spec.executables = 'executable'
+
+    Dir.chdir @tempdir do
+      Dir.mkdir 'bin'
+      Dir.mkdir 'lib'
+      File.open File.join('bin', 'executable'), 'w' do |f| f.puts '1' end
+      File.open File.join('lib', 'code.rb'), 'w' do |f| f.puts '1' end
+
+      use_ui @ui do
+        Gem::Builder.new(@spec).build
+        gem = File.join @tempdir, "#{@spec.full_name}.gem"
+      end
     end
 
-    assert_equal "invalid gem format for #{cache_gem}", e.message
+    assert_equal @spec, @installer.install
+
+    gemdir = File.join @gemhome, 'gems', @spec.full_name
+    assert File.exist?(gemdir)
+
+    exe = File.join(gemdir, 'bin', 'executable')
+    assert File.exist?(exe)
+    exe_mode = File.stat(exe).mode & 0111
+    assert_equal 0111, exe_mode, "0%o" % exe_mode
+    assert File.exist?(File.join(gemdir, 'lib', 'code.rb'))
+
+    assert File.exist?(File.join(@gemhome, 'specifications',
+                                 "#{@spec.full_name}.gemspec"))
+  end
+
+  def test_install_bad_gem
+    gem = nil
+    use_ui @ui do
+      Dir.chdir @tempdir do Gem::Builder.new(@spec).build end
+      gem = File.join @tempdir, "#{@spec.full_name}.gem"
+    end
+
+    gem_data = File.open gem, 'rb' do |fp| fp.read 1024 end
+    File.open gem, 'wb' do |fp| fp.write gem_data end
+
+    e = assert_raise Gem::InstallError do
+      @installer.install
+    end
+
+    assert_equal "invalid gem format for #{gem}", e.message
   end
 
   def test_install_force
     use_ui @ui do
-      @installer = Gem::Installer.new old_ruby_required, {}
-      @installer.install true
+      installer = Gem::Installer.new old_ruby_required
+      installer.install true
     end
 
     gem_dir = File.join(@gemhome, 'gems', 'old_ruby_required-0.0.1')
     assert File.exist?(gem_dir)
   end
 
-  def test_install_with_message
-    spec = quick_gem 'a' do |s|
-      s.post_install_message = 'I am a shiny gem!'
-    end
+  def test_install_missing_dirs
+    FileUtils.rm_f File.join(Gem.dir, 'cache')
+    FileUtils.rm_f File.join(Gem.dir, 'docs')
+    FileUtils.rm_f File.join(Gem.dir, 'specifications')
 
     use_ui @ui do
-      Dir.chdir @tempdir do Gem::Builder.new(spec).build end
-      gem = File.join @tempdir, "#{spec.full_name}.gem"
-      @installer = Gem::Installer.new gem, {}
+      Dir.chdir @tempdir do Gem::Builder.new(@spec).build end
+      gem = File.join @tempdir, "#{@spec.full_name}.gem"
+
+      @installer.install
+    end
+
+    File.directory? File.join(Gem.dir, 'cache')
+    File.directory? File.join(Gem.dir, 'docs')
+    File.directory? File.join(Gem.dir, 'specifications')
+  end
+
+  def test_install_with_message
+    @spec.post_install_message = 'I am a shiny gem!'
+
+    use_ui @ui do
+      Dir.chdir @tempdir do Gem::Builder.new(@spec).build end
 
       @installer.install
     end
@@ -385,9 +437,9 @@ class TestGemInstaller < RubyGemTestCase
 
   def test_install_wrong_ruby_version
     use_ui @ui do
-      @installer = Gem::Installer.new old_ruby_required, {}
+      installer = Gem::Installer.new old_ruby_required
       e = assert_raise Gem::InstallError do
-        @installer.install
+        installer.install
       end
       assert_equal 'old_ruby_required requires Ruby version = 1.4.6',
                    e.message
@@ -404,7 +456,7 @@ class TestGemInstaller < RubyGemTestCase
     gem = File.join @gemhome, 'cache', "#{spec.full_name}.gem"
 
     use_ui @ui do
-      @installer = Gem::Installer.new gem, {}
+      @installer = Gem::Installer.new gem
       e = assert_raise Gem::InstallError do
         @installer.install
       end

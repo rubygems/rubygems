@@ -88,7 +88,7 @@ module Gem
 
   RubyGemsPackageVersion = RubyGemsVersion
 
-  DIRECTORIES = ['cache', 'doc', 'gems', 'specifications']
+  DIRECTORIES = %w[cache doc gems specifications]
 
   @@source_index = nil
 
@@ -99,6 +99,18 @@ module Gem
   class << self
 
     attr_reader :loaded_specs
+
+    # Quietly ensure the named Gem directory contains all the proper
+    # subdirectories.  If we can't create a directory due to a permission
+    # problem, then we will silently continue.
+    def ensure_gem_subdirectories(gemdir)
+      require 'fileutils'
+
+      Gem::DIRECTORIES.each do |filename|
+        fn = File.join gemdir, filename
+        FileUtils.mkdir_p fn rescue nil unless File.exist? fn
+      end
+    end
 
     # Returns an Array of sources to fetch remote gems from.  If the sources
     # list is empty, attempts to load the "sources" gem, then uses
@@ -464,23 +476,8 @@ module Gem
       end
     end
 
-    private
-
-    # Quietly ensure the named Gem directory contains all the proper
-    # subdirectories.  If we can't create a directory due to a
-    # permission problem, then we will silently continue.
-    def ensure_gem_subdirectories(gemdir)
-      require 'fileutils'
-
-      DIRECTORIES.each do |filename|
-        fn = File.join(gemdir, filename)
-        unless File.exist?(fn)
-          FileUtils.mkdir_p(fn) rescue nil
-        end
-      end
-    end
-
   end
+
 end
 
 

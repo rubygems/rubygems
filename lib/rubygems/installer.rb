@@ -101,7 +101,7 @@ class Gem::Installer
     build_extensions(@directory, format.spec)
 
     # Build spec/cache/doc dir.
-    build_support_directories(install_dir)
+    Gem.ensure_gem_subdirectories install_dir
 
     # Write the spec and cache files.
     write_spec(format.spec, File.join(install_dir, "specifications"))
@@ -149,25 +149,6 @@ class Gem::Installer
   end
 
   ##
-  # Given a root gem directory, build supporting directories for gem
-  # if they do not already exist
-  #--
-  # HACK Gem.ensure_gem_directories
-  def build_support_directories(install_dir)
-    unless File.exist? File.join(install_dir, "specifications") then
-      FileUtils.mkdir_p File.join(install_dir, "specifications")
-    end
-
-    unless File.exist? File.join(install_dir, "cache") then
-      FileUtils.mkdir_p File.join(install_dir, "cache")
-    end
-
-    unless File.exist? File.join(install_dir, "doc") then
-      FileUtils.mkdir_p File.join(install_dir, "doc")
-    end
-  end
-
-  ##
   # Writes the .gemspec specification (in Ruby) to the supplied
   # spec_path.
   #
@@ -207,6 +188,10 @@ class Gem::Installer
     raise Gem::FilePermissionError.new(bindir) unless File.writable?(bindir)
 
     spec.executables.each do |filename|
+      bin_path = File.join @directory, 'bin', filename
+      mode = File.stat(bin_path).mode | 0111
+      File.chmod mode, bin_path
+
       if @options[:wrappers] then
         generate_bin_script spec, filename, bindir, install_dir
       else

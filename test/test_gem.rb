@@ -91,7 +91,7 @@ class TestGem < RubyGemTestCase
     FileUtils.rm_r @gemhome
     Gem.use_paths @gemhome
 
-    Gem.send :ensure_gem_subdirectories, @gemhome
+    Gem.ensure_gem_subdirectories @gemhome
 
     assert File.directory?(File.join(@gemhome, "cache"))
   end
@@ -103,7 +103,7 @@ class TestGem < RubyGemTestCase
            "manually remove #{File.join @tempdir, 'a'}, tests are broken"
     Gem.use_paths gemdir
 
-    Gem.send :ensure_gem_subdirectories, gemdir
+    Gem.ensure_gem_subdirectories gemdir
 
     assert File.directory?("#{gemdir}/cache")
   end
@@ -117,7 +117,7 @@ class TestGem < RubyGemTestCase
       FileUtils.chmod 0400, gemdir
       Gem.use_paths gemdir
 
-      Gem.send :ensure_gem_subdirectories, gemdir
+      Gem.ensure_gem_subdirectories gemdir
 
       assert !File.exist?("#{gemdir}/cache")
     ensure
@@ -134,7 +134,7 @@ class TestGem < RubyGemTestCase
       FileUtils.chmod 0400, parent
       Gem.use_paths(gemdir)
 
-      Gem.send(:ensure_gem_subdirectories, gemdir)
+      Gem.ensure_gem_subdirectories gemdir
 
       assert !File.exist?("#{gemdir}/cache")
     ensure
@@ -325,9 +325,9 @@ class TestGem < RubyGemTestCase
   end
 
   def util_ensure_gem_dirs
-    Gem.send :ensure_gem_subdirectories, @gemhome
+    Gem.ensure_gem_subdirectories @gemhome
     @additional.each do |dir|
-      Gem.send :ensure_gem_subdirectories, @gemhome
+      Gem.ensure_gem_subdirectories @gemhome
     end
   end
 

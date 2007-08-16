@@ -71,7 +71,9 @@ module Gem
                     alert_error "Local gem file not found: #{filepattern}"
                   end
                 else
-                  result = Gem::Installer.new(entries.last, options).install(options[:force],     options[:install_dir])
+                  installer = Gem::Installer.new entries.last, options
+                  result = installer.install options[:force], options[:install_dir]
+
                   installed_gems = [result].flatten
                   say "Successfully installed #{installed_gems[0].name}, " +
                   "version #{installed_gems[0].version}" if installed_gems

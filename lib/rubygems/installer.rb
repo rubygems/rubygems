@@ -9,7 +9,6 @@ require 'pathname'
 require 'rbconfig'
 
 require 'rubygems/format'
-require 'rubygems/dependency_list'
 require 'rubygems/ext'
 
 ##
@@ -32,89 +31,84 @@ class Gem::Installer
   #
   def initialize(gem, options={})
     @gem = gem
-    @options = options
-    @security_policy = @options.delete :security_policy
+
+    @env_shebang = options.delete :env_shebang
+    @ignore_dependencies = options.delete :ignore_dependencies
+    @security_policy = options.delete :security_policy
+    @wrappers = options.delete :wrappers
   end
 
   ##
-  # Installs the gem in the Gem.path.  This will fail (unless
-  # force=true) if a Gem has a requirement on another Gem that is
-  # not installed.  The installation will install in the following
-  # structure:
+  # Installs the gem into +install_dir+ and returns a Gem::Specification for
+  # the installed gem.  +force+ overrides all version checks and security
+  # policy checks, except for a signed-gems-only policy.
   #
-  #  Gem.path/
-  #      specifications/<gem-version>.gemspec #=> the extracted YAML gemspec
-  #      gems/<gem-version>/... #=> the extracted Gem files
-  #      cache/<gem-version>.gem #=> a cached copy of the installed Gem
+  # The installation will install in the following structure:
   #
-  # force:: [default = false] if false will fail if a required Gem is not
-  #         installed, or if the Ruby version is too low for the gem
-  # install_dir:: [default = Gem.dir] directory that Gem is to be installed in
-  #
-  # return:: [Gem::Specification] The specification for the newly installed
-  #          Gem.
-  #
-  def install(force=false, install_dir=Gem.dir, ignore_this_parameter=false)
-    # if we're forcing the install, then disable security, _unless_
-    # the security policy says that we only install singed gems
-    # (this includes Gem::Security::HighSecurity)
-    @security_policy = nil if force and @security_policy and not @security_policy.only_signed
+  #   install_dir/
+  #     cache/<gem-version>.gem #=> a cached copy of the installed gem
+  #     gems/<gem-version>/... #=> extracted files
+  #     specifications/<gem-version>.gemspec #=> the Gem::Specification
+  def install(force = false, install_dir = Gem.dir)
+    @install_dir = Pathname.new(install_dir).expand_path
+    # If we're forcing the install then disable security unless the security
+    # policy says that we only install singed gems.
+    @security_policy = nil if force and @security_policy and
+                              not @security_policy.only_signed
 
     begin
-      format = Gem::Format.from_file_by_path @gem, @security_policy
+      @format = Gem::Format.from_file_by_path @gem, @security_policy
     rescue Gem::Package::FormatError
       raise Gem::InstallError, "invalid gem format for #{@gem}"
     end
 
-    unless force
-      spec = format.spec
+    @spec = @format.spec
 
-      if rrv = spec.required_ruby_version then
+    unless force then
+      if rrv = @spec.required_ruby_version then
         unless rrv.satisfied_by? Gem::Version.new(RUBY_VERSION) then
-          raise Gem::InstallError, "#{spec.name} requires Ruby version #{rrv}"
+          raise Gem::InstallError, "#{@spec.name} requires Ruby version #{rrv}"
         end
       end
 
-      if rrgv = spec.required_rubygems_version then
+      if rrgv = @spec.required_rubygems_version then
         unless rrgv.satisfied_by? Gem::Version.new(Gem::RubyGemsVersion) then
           raise Gem::InstallError,
-                "#{spec.name} requires RubyGems version #{rrgv}"
+                "#{@spec.name} requires RubyGems version #{rrgv}"
         end
       end
 
-      unless @options[:ignore_dependencies] then
-        spec.dependencies.each do |dep_gem|
-          ensure_dependency(spec, dep_gem)
+      unless @ignore_dependencies then
+        @spec.dependencies.each do |dep_gem|
+          ensure_dependency @spec, dep_gem
         end
       end
     end
 
-    raise Gem::FilePermissionError, Pathname.new(install_dir).expand_path unless
-      File.writable?(install_dir)
+    raise Gem::FilePermissionError, @install_dir unless
+      File.writable? @install_dir
 
-    # Build spec dir.
-    @directory = File.join(install_dir, "gems", format.spec.full_name).untaint
-    FileUtils.mkdir_p @directory
+    Gem.ensure_gem_subdirectories @install_dir
 
-    extract_files(@directory, format)
-    generate_bin(format.spec, install_dir)
-    build_extensions(@directory, format.spec)
+    @gem_dir = File.join(@install_dir, "gems", @spec.full_name).untaint
+    FileUtils.mkdir_p @gem_dir
 
-    # Build spec/cache/doc dir.
-    Gem.ensure_gem_subdirectories install_dir
+    extract_files
+    generate_bin
+    build_extensions
+    write_spec
 
-    # Write the spec and cache files.
-    write_spec(format.spec, File.join(install_dir, "specifications"))
-    unless File.exist? File.join(install_dir, "cache", @gem.split(/\//).pop) then
-      FileUtils.cp @gem, File.join(install_dir, "cache")
+    cached_gem = File.join install_dir, "cache", @gem.split(/\//).pop
+    unless File.exist? cached_gem then
+      FileUtils.cp @gem, File.join(@install_dir, "cache")
     end
 
-    say format.spec.post_install_message unless
-      format.spec.post_install_message.nil?
+    say @spec.post_install_message unless @spec.post_install_message.nil?
 
-    format.spec.loaded_from = File.join(install_dir, 'specifications', format.spec.full_name+".gemspec")
+    @spec.loaded_from = File.join(@install_dir, 'specifications',
+                                  "#{@spec.full_name}.gemspec")
 
-    return format.spec
+    return @spec
   rescue Zlib::GzipFile::Error
     raise Gem::InstallError, "gzip error installing #{@gem}"
   end
@@ -146,8 +140,9 @@ class Gem::Installer
   # Unpacks the gem into the given directory.
   #
   def unpack(directory)
-    format = Gem::Format.from_file_by_path @gem, @security_policy
-    extract_files(directory, format)
+    @gem_dir = directory
+    @format = Gem::Format.from_file_by_path @gem, @security_policy
+    extract_files
   end
 
   ##
@@ -157,9 +152,13 @@ class Gem::Installer
   # spec:: [Gem::Specification] The Gem specification to output
   # spec_path:: [String] The location (path) to write the gemspec to
   #
-  def write_spec(spec, spec_path)
-    rubycode = spec.to_ruby
-    file_name = File.join(spec_path, spec.full_name+".gemspec").untaint
+  def write_spec
+    rubycode = @spec.to_ruby
+
+    file_name = File.join @install_dir, 'specifications',
+                          "#{@spec.full_name}.gemspec"
+    file_name.untaint
+
     File.open(file_name, "w") do |file|
       file.puts rubycode
     end
@@ -177,27 +176,26 @@ class Gem::Installer
     end
   end
 
-  def generate_bin(spec, install_dir=Gem.dir)
-    return unless spec.executables && ! spec.executables.empty?
+  def generate_bin
+    return if @spec.executables.nil? or @spec.executables.empty?
 
-    # If the user has asked for the gem to be installed in
-    # a directory that is the system gem directory, then
-    # use the system bin directory, else create (or use) a
-    # new bin dir under the install_dir.
-    bindir = Gem.bindir(install_dir)
+    # If the user has asked for the gem to be installed in a directory that is
+    # the system gem directory, then use the system bin directory, else create
+    # (or use) a new bin dir under the install_dir.
+    bindir = Gem.bindir @install_dir
 
     Dir.mkdir bindir unless File.exist? bindir
-    raise Gem::FilePermissionError.new(bindir) unless File.writable?(bindir)
+    raise Gem::FilePermissionError.new(bindir) unless File.writable? bindir
 
-    spec.executables.each do |filename|
-      bin_path = File.join @directory, 'bin', filename
+    @spec.executables.each do |filename|
+      bin_path = File.join @gem_dir, 'bin', filename
       mode = File.stat(bin_path).mode | 0111
       File.chmod mode, bin_path
 
-      if @options[:wrappers] then
-        generate_bin_script spec, filename, bindir, install_dir
+      if @wrappers then
+        generate_bin_script filename, bindir
       else
-        generate_bin_symlink spec, filename, bindir, install_dir
+        generate_bin_symlink filename, bindir
       end
     end
   end
@@ -209,9 +207,9 @@ class Gem::Installer
   # bug or misfeature in the Windows shell's pipe.  See
   # http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/193379
   #
-  def generate_bin_script(spec, filename, bindir, install_dir)
+  def generate_bin_script(filename, bindir)
     File.open(File.join(bindir, File.basename(filename)), "w", 0755) do |file|
-      file.print app_script_text(spec, install_dir, filename)
+      file.print app_script_text(filename)
     end
     generate_windows_script bindir, filename
   end
@@ -220,14 +218,14 @@ class Gem::Installer
   # Creates the symlinks to run the applications in the gem.  Moves
   # the symlink if the gem being installed has a newer version.
   #
-  def generate_bin_symlink(spec, filename, bindir, install_dir)
+  def generate_bin_symlink(filename, bindir)
     if Config::CONFIG["arch"] =~ /dos|win32/i then
       alert_warning "Unable to use symlinks on win32, installing wrapper"
-      generate_bin_script spec, filename, bindir, install_dir
+      generate_bin_script filename, bindir
       return
     end
 
-    src = File.join @directory, 'bin', filename
+    src = File.join @gem_dir, 'bin', filename
     dst = File.join bindir, File.basename(filename)
 
     if File.exist? dst then
@@ -243,7 +241,7 @@ class Gem::Installer
   end
 
   def shebang(spec, install_dir, bin_file_name)
-    if @options[:env_shebang] then
+    if @env_shebang then
       shebang_env
     else
       shebang_default(spec, install_dir, bin_file_name)
@@ -274,9 +272,9 @@ class Gem::Installer
   end
 
   # Return the text for an application file.
-  def app_script_text(spec, install_dir, filename)
-    text = <<-TEXT
-#{shebang(spec, install_dir, filename)}
+  def app_script_text(filename)
+    <<-TEXT
+#{shebang @spec, @install_dir, filename}
 #
 # This file was generated by RubyGems.
 #
@@ -284,7 +282,7 @@ class Gem::Installer
 # this file is here to facilitate running it.
 #
 
-ENV['GEM_HOME'] ||= '#{install_dir}'
+ENV['GEM_HOME'] ||= '#{@install_dir}'
 require 'rubygems'
 
 version = ">= 0"
@@ -293,39 +291,38 @@ if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1 then
   ARGV.shift
 end
 
-gem '#{spec.name}', version
+gem '#{@spec.name}', version
 load '#{filename}'
 TEXT
-    text
   end
 
-  def build_extensions(directory, spec)
-    return unless spec.extensions.size > 0
+  def build_extensions
+    return if @spec.extensions.empty?
     say "Building native extensions.  This could take a while..."
     start_dir = Dir.pwd
-    dest_path = File.join(directory, spec.require_paths[0])
+    dest_path = File.join @gem_dir, @spec.require_paths.first
     ran_rake = false # only run rake once
 
-    spec.extensions.each do |extension|
+    @spec.extensions.each do |extension|
       break if ran_rake
       results = []
 
-      case extension
-      when /extconf/ then
-        builder = Gem::Ext::ExtConfBuilder
-      when /configure/ then
-        builder = Gem::Ext::ConfigureBuilder
-      when /rakefile/i, /mkrf_conf/i then
-        builder = Gem::Ext::RakeBuilder
-        ran_rake = true
-      else
-        builder = nil
-        results = ["No builder for extension '#{extension}'"]
-      end
+      builder = case extension
+                when /extconf/ then
+                  Gem::Ext::ExtConfBuilder
+                when /configure/ then
+                  Gem::Ext::ConfigureBuilder
+                when /rakefile/i, /mkrf_conf/i then
+                  ran_rake = true
+                  Gem::Ext::RakeBuilder
+                else
+                  results = ["No builder for extension '#{extension}'"]
+                  nil
+                end
 
       begin
-        Dir.chdir File.join(directory, File.dirname(extension))
-        results = builder.build(extension, directory, dest_path, results)
+        Dir.chdir File.join(@gem_dir, File.dirname(extension))
+        results = builder.build(extension, @gem_dir, dest_path, results)
       rescue => ex
         results = results.join "\n"
 
@@ -336,7 +333,7 @@ ERROR: Failed to build gem native extension.
 
 #{results}
 
-Gem files will remain installed in #{directory} for inspection.
+Gem files will remain installed in #{@gem_dir} for inspection.
 Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
         EOF
 
@@ -355,23 +352,29 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
   # directory:: [String] The root directory to extract files into
   # file:: [IO] The IO that contains the file data
   #
-  def extract_files(directory, format)
-    directory = expand_and_validate(directory)
-    raise ArgumentError, "format required to extract from" if format.nil?
+  def extract_files
+    expand_and_validate_gem_dir
 
-    format.file_entries.each do |entry, file_data|
+    raise ArgumentError, "format required to extract from" if @format.nil?
+
+    @format.file_entries.each do |entry, file_data|
       path = entry['path'].untaint
+
       if path =~ /\A\// then # for extra sanity
         raise Gem::InstallError,
               "attempt to install file into #{entry['path'].inspect}"
       end
-      path = File.expand_path File.join(directory, path)
-      if path !~ /\A#{Regexp.escape directory}/ then
+
+      path = File.expand_path File.join(@gem_dir, path)
+
+      if path !~ /\A#{Regexp.escape @gem_dir}/ then
         msg = "attempt to install file into %p under %p" %
-                [entry['path'], directory]
+                [entry['path'], @gem_dir]
         raise Gem::InstallError, msg
       end
+
       FileUtils.mkdir_p File.dirname(path)
+
       File.open(path, "wb") do |out|
         out.write file_data
       end
@@ -380,12 +383,14 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
 
   private
 
-  def expand_and_validate(directory)
-    directory = Pathname.new(directory).expand_path
-    unless directory.absolute? then # HACK is this possible after #expand_path?
-      raise ArgumentError, "install directory %p not absolute" % directory
+  def expand_and_validate_gem_dir
+    @gem_dir = Pathname.new(@gem_dir).expand_path
+
+    unless @gem_dir.absolute? then # HACK is this possible after #expand_path?
+      raise ArgumentError, "install directory %p not absolute" % @gem_dir
     end
-    directory.to_str
+
+    @gem_dir = @gem_dir.to_str
   end
 
 end

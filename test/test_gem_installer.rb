@@ -9,7 +9,14 @@ require 'test/gemutilities'
 require 'rubygems/installer'
 
 class Gem::Installer
-  attr_accessor :options, :directory
+  attr_accessor :format
+  attr_accessor :gem_dir
+  attr_accessor :env_shebang
+  attr_accessor :ignore_dependencies
+  attr_accessor :install_dir
+  attr_accessor :security_policy
+  attr_accessor :spec
+  attr_accessor :wrappers
 end
 
 class TestGemInstaller < RubyGemTestCase
@@ -21,10 +28,12 @@ class TestGemInstaller < RubyGemTestCase
     @gem = File.join @tempdir, "#{@spec.full_name}.gem"
 
     @installer = Gem::Installer.new @gem
+    @installer.gem_dir = util_gem_dir
+    @installer.install_dir = @gemhome
+    @installer.spec = @spec
 
     @ruby = File.join(Config::CONFIG['bindir'],
                       Config::CONFIG['ruby_install_name'])
-
   end
 
   def util_gem_dir(version = '0.0.2')
@@ -74,12 +83,14 @@ gem 'a', version
 load 'my_exec'
     EOF
 
-    wrapper = @installer.app_script_text @spec, @gemhome, 'my_exec'
+    wrapper = @installer.app_script_text 'my_exec'
     assert_equal expected, wrapper
   end
 
   def test_build_extensions_none
-    use_ui @ui do @installer.build_extensions util_gem_dir, @spec end
+    use_ui @ui do
+      @installer.build_extensions
+    end
 
     assert_equal '', @ui.output
     assert_equal '', @ui.error
@@ -92,7 +103,7 @@ load 'my_exec'
 
     e = assert_raise Gem::Installer::ExtensionBuildError do
       use_ui @ui do
-        @installer.build_extensions util_gem_dir, @spec
+        @installer.build_extensions
       end
     end
 
@@ -112,7 +123,7 @@ load 'my_exec'
 
     e = assert_raise Gem::Installer::ExtensionBuildError do
       use_ui @ui do
-        @installer.build_extensions util_gem_dir, @spec
+        @installer.build_extensions
       end
     end
 
@@ -139,9 +150,9 @@ load 'my_exec'
     assert_equal 'a requires b (> 0.0.2)', e.message
   end
 
-  def test_expand_and_validate
-    assert_equal '/nonexistent',
-                 @installer.send(:expand_and_validate, '/nonexistent')
+  def test_expand_and_validate_gem_dir
+    @installer.gem_dir = '/nonexistent'
+    assert_equal '/nonexistent', @installer.send(:expand_and_validate_gem_dir)
   end
 
   def test_extract_files
@@ -150,14 +161,18 @@ load 'my_exec'
       [[{'size' => 7, 'mode' => 0400, 'path' => 'thefile'}, 'thefile']]
     end
 
-    @installer.extract_files @tempdir, format
+    @installer.format = format
 
-    assert_equal 'thefile', File.read(File.join(@tempdir, 'thefile'))
+    @installer.extract_files
+
+    assert_equal 'thefile', File.read(File.join(util_gem_dir, 'thefile'))
   end
 
   def test_extract_files_bad_dest
+    @installer.gem_dir = 'somedir'
+    @installer.format = nil
     e = assert_raise ArgumentError do
-      @installer.extract_files 'somedir', nil
+      @installer.extract_files
     end
 
     assert_equal 'format required to extract from', e.message
@@ -169,11 +184,13 @@ load 'my_exec'
       [[{'size' => 10, 'mode' => 0644, 'path' => '../thefile'}, '../thefile']]
     end
 
+    @installer.format = format
+
     e = assert_raise Gem::InstallError do
-      @installer.extract_files @tempdir, format
+      @installer.extract_files
     end
 
-    assert_equal "attempt to install file into \"../thefile\" under #{@tempdir.inspect}",
+    assert_equal "attempt to install file into \"../thefile\" under #{util_gem_dir.inspect}",
                  e.message
     assert_equal false, File.file?(File.join(@tempdir, '../thefile')),
                  "You may need to remove this file if you broke the test once"
@@ -185,8 +202,10 @@ load 'my_exec'
       [[{'size' => 8, 'mode' => 0644, 'path' => '/thefile'}, '/thefile']]
     end
 
+    @installer.format = format
+
     e = assert_raise Gem::InstallError do
-      @installer.extract_files @tempdir, format
+      @installer.extract_files
     end
 
     assert_equal 'attempt to install file into "/thefile"', e.message
@@ -195,11 +214,11 @@ load 'my_exec'
   end
 
   def test_generate_bin_scripts
-    @installer.options[:wrappers] = true
+    @installer.wrappers = true
     util_make_exec
-    @installer.directory = util_gem_dir
+    @installer.gem_dir = util_gem_dir
 
-    @installer.generate_bin @spec, @gemhome
+    @installer.generate_bin
     assert_equal true, File.directory?(util_inst_bindir)
     installed_exec = File.join(util_inst_bindir, "my_exec")
     assert_equal true, File.exist?(installed_exec)
@@ -211,7 +230,7 @@ load 'my_exec'
   end
 
   def test_generate_bin_scripts_install_dir
-    @installer.options[:wrappers] = true
+    @installer.wrappers = true
     @spec.executables = ["my_exec"]
 
     gem_dir = File.join "#{@gemhome}2", 'gems', @spec.full_name
@@ -221,9 +240,10 @@ load 'my_exec'
       f.puts "#!/bin/ruby"
     end
 
-    @installer.directory = gem_dir
+    @installer.install_dir = "#{@gemhome}2"
+    @installer.gem_dir = gem_dir
 
-    @installer.generate_bin @spec, "#{@gemhome}2"
+    @installer.generate_bin
 
     installed_exec = File.join("#{@gemhome}2", 'bin', 'my_exec')
     assert_equal true, File.exist?(installed_exec)
@@ -235,20 +255,20 @@ load 'my_exec'
   end
 
   def test_generate_bin_scripts_no_execs
-    @installer.options[:wrappers] = true
-    @installer.generate_bin @spec, @gemhome
+    @installer.wrappers = true
+    @installer.generate_bin
     assert_equal false, File.exist?(util_inst_bindir)
   end
 
   def test_generate_bin_scripts_no_perms
-    @installer.options[:wrappers] = true
+    @installer.wrappers = true
     util_make_exec
 
     Dir.mkdir util_inst_bindir
     File.chmod 0000, util_inst_bindir
 
     assert_raises Gem::FilePermissionError do
-      @installer.generate_bin @spec, @gemhome
+      @installer.generate_bin
     end
 
   ensure
@@ -258,11 +278,11 @@ load 'my_exec'
   def test_generate_bin_symlinks
     return if win_platform? #Windows FS do not support symlinks
     
-    @installer.options[:wrappers] = false
+    @installer.wrappers = false
     util_make_exec
-    @installer.directory = util_gem_dir
+    @installer.gem_dir = util_gem_dir
 
-    @installer.generate_bin @spec, @gemhome
+    @installer.generate_bin
     assert_equal true, File.directory?(util_inst_bindir)
     installed_exec = File.join(util_inst_bindir, "my_exec")
     assert_equal true, File.symlink?(installed_exec)
@@ -271,21 +291,21 @@ load 'my_exec'
   end
 
   def test_generate_bin_symlinks_no_execs
-    @installer.options[:wrappers] = false
-    @installer.generate_bin @spec, @gemhome
+    @installer.wrappers = false
+    @installer.generate_bin
     assert_equal false, File.exist?(util_inst_bindir)
   end
 
   def test_generate_bin_symlinks_no_perms
-    @installer.options[:wrappers] = false
+    @installer.wrappers = false
     util_make_exec
-    @installer.directory = util_gem_dir
+    @installer.gem_dir = util_gem_dir
 
     Dir.mkdir util_inst_bindir
     File.chmod 0000, util_inst_bindir
 
     assert_raises Gem::FilePermissionError do
-      @installer.generate_bin @spec, @gemhome
+      @installer.generate_bin
     end
 
   ensure
@@ -295,11 +315,11 @@ load 'my_exec'
   def test_generate_bin_symlinks_update_newer
     return if win_platform? #Windows FS do not support symlinks
     
-    @installer.options[:wrappers] = false
+    @installer.wrappers = false
     util_make_exec
-    @installer.directory = util_gem_dir
+    @installer.gem_dir = util_gem_dir
 
-    @installer.generate_bin @spec, @gemhome
+    @installer.generate_bin
     installed_exec = File.join(util_inst_bindir, "my_exec")
     assert_equal(File.join(util_gem_dir, "bin", "my_exec"),
                  File.readlink(installed_exec))
@@ -314,8 +334,8 @@ load 'my_exec'
     end
 
     util_make_exec '0.0.3'
-    @installer.directory = File.join util_gem_dir('0.0.3')
-    @installer.generate_bin @spec, @gemhome
+    @installer.gem_dir = File.join util_gem_dir('0.0.3')
+    @installer.generate_bin
     installed_exec = File.join(util_inst_bindir, "my_exec")
     assert_equal(File.join(util_gem_bindir('0.0.3'), "my_exec"),
                  File.readlink(installed_exec),
@@ -325,16 +345,16 @@ load 'my_exec'
   def test_generate_bin_symlinks_update_older
     return if win_platform? #Windows FS do not support symlinks
 
-    @installer.options[:wrappers] = false
+    @installer.wrappers = false
     util_make_exec
-    @installer.directory = util_gem_dir
+    @installer.gem_dir = util_gem_dir
 
-    @installer.generate_bin @spec, @gemhome
+    @installer.generate_bin
     installed_exec = File.join(util_inst_bindir, "my_exec")
     assert_equal(File.join(util_gem_dir, "bin", "my_exec"),
                  File.readlink(installed_exec))
 
-    @spec = Gem::Specification.new do |s|
+    spec = Gem::Specification.new do |s|
       s.files = ['lib/code.rb']
       s.name = "a"
       s.version = "0.0.1"
@@ -344,8 +364,11 @@ load 'my_exec'
     end
 
     util_make_exec '0.0.1'
-    @installer.directory = util_gem_dir('0.0.1')
-    @installer.generate_bin @spec, @gemhome
+    @installer.gem_dir = util_gem_dir('0.0.1')
+    @installer.spec = spec
+
+    @installer.generate_bin
+
     installed_exec = File.join(util_inst_bindir, "my_exec")
     assert_equal(File.join(util_gem_dir('0.0.2'), "bin", "my_exec"),
                  File.readlink(installed_exec),
@@ -355,11 +378,11 @@ load 'my_exec'
   def test_generate_bin_symlinks_update_remove_wrapper
     return if win_platform? #Windows FS do not support symlinks
 
-    @installer.options[:wrappers] = true
+    @installer.wrappers = true
     util_make_exec
-    @installer.directory = util_gem_dir
+    @installer.gem_dir = util_gem_dir
 
-    @installer.generate_bin @spec, @gemhome
+    @installer.generate_bin
     installed_exec = File.join(util_inst_bindir, "my_exec")
     assert_equal true, File.exists?(installed_exec)
 
@@ -372,40 +395,25 @@ load 'my_exec'
       s.require_path = 'lib'
     end
 
-    @installer.options[:wrappers] = false
+    @installer.wrappers = false
     util_make_exec '0.0.3'
-    @installer.directory = util_gem_dir '0.0.3'
-    @installer.generate_bin @spec, @gemhome
+    @installer.gem_dir = util_gem_dir '0.0.3'
+    @installer.generate_bin
     installed_exec = File.join(util_inst_bindir, "my_exec")
     assert_equal(File.join(util_gem_dir('0.0.3'), "bin", "my_exec"),
                  File.readlink(installed_exec),
                  "Ensure symlink moved to latest version")
   end
 
-  def test_generated_bin_uses_default_shebang
-    return if win_platform? #Windows FS do not support symlinks
-
-    @installer.options[:wrappers] = true
-    util_make_exec
-    @installer.directory = util_gem_dir
-
-    @installer.generate_bin @spec, @gemhome 
-
-    default_shebang = File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])
-    shebang_line = open("#{@gemhome}/bin/my_exec") { |f| f.readlines.first }
-    assert_match(/\A#!/, shebang_line)
-    assert_match(/#{default_shebang}/, shebang_line)
-  end
-
   def test_generate_bin_symlinks_win32
     old_arch = Config::CONFIG["arch"]
     Config::CONFIG["arch"] = "win32"
-    @installer.options[:wrappers] = false
+    @installer.wrappers = false
     util_make_exec
-    @installer.directory = util_gem_dir
+    @installer.gem_dir = util_gem_dir
 
     use_ui @ui do
-      @installer.generate_bin @spec, @gemhome
+      @installer.generate_bin
     end
 
     assert_equal true, File.directory?(util_inst_bindir)
@@ -424,10 +432,26 @@ load 'my_exec'
     Config::CONFIG["arch"] = old_arch
   end
 
+  def test_generate_bin_uses_default_shebang
+    return if win_platform? #Windows FS do not support symlinks
+
+    @installer.wrappers = true
+    util_make_exec
+
+    @installer.generate_bin
+
+    default_shebang = File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])
+    shebang_line = open("#{@gemhome}/bin/my_exec") { |f| f.readlines.first }
+    assert_match(/\A#!/, shebang_line)
+    assert_match(/#{default_shebang}/, shebang_line)
+  end
+
   def test_install
     util_setup_gem
 
-    assert_equal @spec, @installer.install
+    use_ui @ui do
+      assert_equal @spec, @installer.install
+    end
 
     gemdir = File.join @gemhome, 'gems', @spec.full_name
     assert File.exist?(gemdir)
@@ -436,7 +460,10 @@ load 'my_exec'
     assert File.exist?(exe)
     exe_mode = File.stat(exe).mode & 0111
     assert_equal 0111, exe_mode, "0%o" % exe_mode
+
     assert File.exist?(File.join(gemdir, 'lib', 'code.rb'))
+
+    assert File.exist?(File.join(gemdir, 'ext', 'a', 'Rakefile'))
 
     spec_file = File.join(@gemhome, 'specifications',
                           "#{@spec.full_name}.gemspec")
@@ -457,7 +484,9 @@ load 'my_exec'
     File.open gem, 'wb' do |fp| fp.write gem_data end
 
     e = assert_raise Gem::InstallError do
-      @installer.install
+      use_ui @ui do
+        @installer.install
+      end
     end
 
     assert_equal "invalid gem format for #{gem}", e.message
@@ -467,8 +496,10 @@ load 'my_exec'
     @spec.add_dependency 'b', '> 5'
     util_setup_gem
 
-    assert_raise Gem::InstallError do
-      @installer.install
+    use_ui @ui do
+      assert_raise Gem::InstallError do
+        @installer.install
+      end
     end
   end
 
@@ -485,9 +516,11 @@ load 'my_exec'
   def test_install_ignore_dependencies
     @spec.add_dependency 'b', '> 5'
     util_setup_gem
-    @installer.options[:ignore_dependencies] = true
+    @installer.ignore_dependencies = true
 
-    assert_equal @spec, @installer.install
+    use_ui @ui do
+      assert_equal @spec, @installer.install
+    end
 
     gemdir = File.join @gemhome, 'gems', @spec.full_name
     assert File.exist?(gemdir)
@@ -598,7 +631,7 @@ load 'my_exec'
 
   def test_shebang_env_shebang
     util_make_exec '0.0.2', ''
-    @installer.options[:env_shebang] = true
+    @installer.env_shebang = true
 
     shebang = @installer.shebang @spec, @gemhome, 'my_exec'
     assert_equal "#!/usr/bin/env ruby", shebang
@@ -643,7 +676,10 @@ load 'my_exec'
     FileUtils.rm spec_file
     assert !File.exist?(spec_file)
 
-    @installer.write_spec @spec, spec_dir
+    @installer.spec = @spec
+    @installer.install_dir = @gemhome
+
+    @installer.write_spec
 
     assert File.exist?(spec_file)
     assert_equal @spec, eval(File.read(spec_file))
@@ -660,14 +696,21 @@ load 'my_exec'
   end
 
   def util_setup_gem
-    @spec.files = %w[lib/code.rb]
-    @spec.executables = 'executable'
+    @spec.files = File.join('lib', 'code.rb')
+    @spec.executables << 'executable'
+    @spec.extensions << File.join('ext', 'a', 'mkrf_conf.rb')
 
     Dir.chdir @tempdir do
-      Dir.mkdir 'bin'
-      Dir.mkdir 'lib'
+      FileUtils.mkdir_p 'bin'
+      FileUtils.mkdir_p 'lib'
+      FileUtils.mkdir_p File.join('ext', 'a')
       File.open File.join('bin', 'executable'), 'w' do |f| f.puts '1' end
       File.open File.join('lib', 'code.rb'), 'w' do |f| f.puts '1' end
+      File.open File.join('ext', 'a', 'mkrf_conf.rb'), 'w' do |f|
+        f << <<-EOF
+          File.open 'Rakefile', 'w' do |rf| rf.puts "task :default" end
+        EOF
+      end
 
       use_ui @ui do
         Gem::Builder.new(@spec).build

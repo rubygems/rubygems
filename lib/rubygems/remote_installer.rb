@@ -41,7 +41,7 @@ module Gem
     #   an array of Gem::Specification objects, one for each gem installed. 
     #
     def install(gem_name, version_requirement = "> 0.0.0", force=false,
-                install_dir=Gem.dir, install_stub=true)
+                install_dir=Gem.dir)
       unless version_requirement.respond_to?(:satisfied_by?)
         version_requirement = Gem::Requirement.new [version_requirement]
       end
@@ -58,7 +58,7 @@ module Gem
         download_gem(destination_file, source, spec)
 
         installer = new_installer(destination_file)
-        installed_gems.unshift installer.install(force, install_dir, install_stub)
+        installed_gems.unshift installer.install(force, install_dir)
       rescue RemoteInstallationSkipped => e
         alert_error e.message
       end

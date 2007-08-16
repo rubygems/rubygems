@@ -5,6 +5,8 @@
 # See LICENSE.txt for permissions.
 #++
 
+$SAFE = 1
+
 require 'fileutils'
 require 'test/unit/testcase'
 require 'tmpdir'
@@ -105,13 +107,13 @@ class RubyGemTestCase < Test::Unit::TestCase
     [ [lc.system_cache_file, 'sys'],
       [lc.user_cache_file, 'usr'],
     ].each do |fn, data|
-      FileUtils.mkdir_p File.dirname(fn)
-      open(fn, "wb") { |f| f.write(Marshal.dump({'key' => data})) }
+      FileUtils.mkdir_p File.dirname(fn).untaint
+      open(fn.dup.untaint, "wb") { |f| f.write(Marshal.dump({'key' => data})) }
     end
   end
 
   def read_cache(fn)
-    open(fn) { |f| Marshal.load(f) }
+    open(fn.dup.untaint) { |f| Marshal.load f.read }
   end
 
   def write_file(path)

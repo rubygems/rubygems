@@ -11,7 +11,7 @@ class Gem::GemPathSearcher
   public :lib_dirs_for
 end
 
-class TestGemPathSearcher < RubyGemTestCase
+class TestGemGemPathSearcher < RubyGemTestCase
 
   def setup
     super

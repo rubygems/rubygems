@@ -10,7 +10,7 @@ require 'test/unit'
 require 'test/gemutilities'
 require 'rubygems/dependency_list'
 
-class TestDependencyList < RubyGemTestCase
+class TestGemDependencyList < RubyGemTestCase
 
   def setup
     super

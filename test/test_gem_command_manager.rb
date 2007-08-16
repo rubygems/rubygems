@@ -20,7 +20,7 @@ class InterruptCommand < Gem::Command
 
 end
 
-class TestCommandManager < RubyGemTestCase
+class TestGemCommandManager < RubyGemTestCase
 
   def setup
     super

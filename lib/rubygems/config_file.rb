@@ -77,7 +77,8 @@ class Gem::ConfigFile
     @verbose = DEFAULT_VERBOSITY
 
     begin
-      @hash = open(config_file_name) {|f| YAML.load(f) }
+      # HACK $SAFE ok?
+      @hash = open(config_file_name.untaint) {|f| YAML.load(f) }
     rescue ArgumentError
       warn "Failed to load #{config_file_name}"
     rescue Errno::ENOENT

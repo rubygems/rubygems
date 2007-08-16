@@ -39,18 +39,18 @@ class Gem::Installer
   end
 
   ##
-  # Installs the gem into +install_dir+ and returns a Gem::Specification for
+  # Installs the gem into +gem_home+ and returns a Gem::Specification for
   # the installed gem.  +force+ overrides all version checks and security
   # policy checks, except for a signed-gems-only policy.
   #
   # The installation will install in the following structure:
   #
-  #   install_dir/
+  #   gem_home/
   #     cache/<gem-version>.gem #=> a cached copy of the installed gem
   #     gems/<gem-version>/... #=> extracted files
   #     specifications/<gem-version>.gemspec #=> the Gem::Specification
-  def install(force = false, install_dir = Gem.dir)
-    @install_dir = Pathname.new(install_dir).expand_path
+  def install(force = false, gem_home = Gem.dir)
+    @gem_home = Pathname.new(gem_home).expand_path
     # If we're forcing the install then disable security unless the security
     # policy says that we only install singed gems.
     @security_policy = nil if force and @security_policy and
@@ -85,12 +85,12 @@ class Gem::Installer
       end
     end
 
-    raise Gem::FilePermissionError, @install_dir unless
-      File.writable? @install_dir
+    raise Gem::FilePermissionError, @gem_home unless
+      File.writable? @gem_home
 
-    Gem.ensure_gem_subdirectories @install_dir
+    Gem.ensure_gem_subdirectories @gem_home
 
-    @gem_dir = File.join(@install_dir, "gems", @spec.full_name).untaint
+    @gem_dir = File.join(@gem_home, "gems", @spec.full_name).untaint
     FileUtils.mkdir_p @gem_dir
 
     extract_files
@@ -98,14 +98,14 @@ class Gem::Installer
     build_extensions
     write_spec
 
-    cached_gem = File.join install_dir, "cache", @gem.split(/\//).pop
+    cached_gem = File.join @gem_home, "cache", @gem.split(/\//).pop
     unless File.exist? cached_gem then
-      FileUtils.cp @gem, File.join(@install_dir, "cache")
+      FileUtils.cp @gem, File.join(@gem_home, "cache")
     end
 
     say @spec.post_install_message unless @spec.post_install_message.nil?
 
-    @spec.loaded_from = File.join(@install_dir, 'specifications',
+    @spec.loaded_from = File.join(@gem_home, 'specifications',
                                   "#{@spec.full_name}.gemspec")
 
     return @spec
@@ -155,7 +155,7 @@ class Gem::Installer
   def write_spec
     rubycode = @spec.to_ruby
 
-    file_name = File.join @install_dir, 'specifications',
+    file_name = File.join @gem_home, 'specifications',
                           "#{@spec.full_name}.gemspec"
     file_name.untaint
 
@@ -181,8 +181,8 @@ class Gem::Installer
 
     # If the user has asked for the gem to be installed in a directory that is
     # the system gem directory, then use the system bin directory, else create
-    # (or use) a new bin dir under the install_dir.
-    bindir = Gem.bindir @install_dir
+    # (or use) a new bin dir under the gem_home.
+    bindir = Gem.bindir @gem_home
 
     Dir.mkdir bindir unless File.exist? bindir
     raise Gem::FilePermissionError.new(bindir) unless File.writable? bindir
@@ -232,7 +232,7 @@ class Gem::Installer
       if File.symlink? dst then
         link = File.readlink(dst).split File::SEPARATOR
         cur_version = Gem::Version.create(link[-3].sub(/^.*-/, ''))
-        return if spec.version < cur_version
+        return if @spec.version < cur_version
       end
       File.unlink dst
     end
@@ -240,49 +240,45 @@ class Gem::Installer
     File.symlink src, dst
   end
 
-  def shebang(spec, install_dir, bin_file_name)
+  ##
+  # Generates a #! line for +bin_file_name+'s wrapper copying arguments if
+  # necessary.
+  def shebang(bin_file_name)
     if @env_shebang then
-      shebang_env
+      "#!/usr/bin/env ruby"
     else
-      shebang_default(spec, install_dir, bin_file_name)
-    end
-  end
+      path = File.join @gem_dir, @spec.bindir, bin_file_name
 
-  def shebang_default(spec, install_dir, bin_file_name)
-    path = File.join(install_dir, "gems", spec.full_name, spec.bindir, bin_file_name)
+      ruby = File.join(Config::CONFIG['bindir'],
+                       Config::CONFIG['ruby_install_name'])
 
-    ruby = File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])
+      File.open(path, "rb") do |file|
+        first_line = file.readlines("\n").first
+        if first_line =~ /^#!/ then
+          # Preserve extra words on shebang line, like "-w".  Thanks RPA.
+          shebang = first_line.sub(/\A\#!\s*\S*ruby\S*/, "#!#{ruby}")
+        else
+          # Create a plain shebang line.
+          shebang = "#!#{ruby}"
+        end
 
-    File.open(path, "rb") do |file|
-      first_line = file.readlines("\n").first
-      if first_line =~ /^#!/ then
-        # Preserve extra words on shebang line, like "-w".  Thanks RPA.
-        shebang = first_line.sub(/\A\#!\s*\S*ruby\S*/, "#!#{ruby}")
-      else
-        # Create a plain shebang line.
-        shebang = "#!#{ruby}"
+        shebang.strip # Avoid nasty ^M issues.
       end
-
-      return shebang.strip  # Avoid nasty ^M issues.
     end
-  end
-
-  def shebang_env
-    return "#!/usr/bin/env ruby"
   end
 
   # Return the text for an application file.
-  def app_script_text(filename)
+  def app_script_text(bin_file_name)
     <<-TEXT
-#{shebang @spec, @install_dir, filename}
+#{shebang bin_file_name}
 #
 # This file was generated by RubyGems.
 #
-# The application '#{spec.name}' is installed as part of a gem, and
+# The application '#{@spec.name}' is installed as part of a gem, and
 # this file is here to facilitate running it.
 #
 
-ENV['GEM_HOME'] ||= '#{@install_dir}'
+ENV['GEM_HOME'] ||= '#{@gem_home}'
 require 'rubygems'
 
 version = ">= 0"
@@ -292,7 +288,7 @@ if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1 then
 end
 
 gem '#{@spec.name}', version
-load '#{filename}'
+load '#{bin_file_name}'
 TEXT
   end
 
@@ -345,13 +341,9 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
   end
 
   ##
-  # Reads the YAML file index and then extracts each file
-  # into the supplied directory, building directories for the
-  # extracted files as needed.
+  # Reads the file index and extracts each file into the gem directory.
   #
-  # directory:: [String] The root directory to extract files into
-  # file:: [IO] The IO that contains the file data
-  #
+  # Ensures that files can't be installed outside the gem directory.
   def extract_files
     expand_and_validate_gem_dir
 

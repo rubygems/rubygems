@@ -9,14 +9,14 @@ require 'test/gemutilities'
 require 'rubygems/installer'
 
 class Gem::Installer
-  attr_accessor :format
-  attr_accessor :gem_dir
-  attr_accessor :env_shebang
-  attr_accessor :ignore_dependencies
-  attr_accessor :install_dir
-  attr_accessor :security_policy
-  attr_accessor :spec
-  attr_accessor :wrappers
+  attr_writer :format
+  attr_writer :gem_dir
+  attr_writer :gem_home
+  attr_writer :env_shebang
+  attr_writer :ignore_dependencies
+  attr_writer :security_policy
+  attr_writer :spec
+  attr_writer :wrappers
 end
 
 class TestGemInstaller < RubyGemTestCase
@@ -29,7 +29,7 @@ class TestGemInstaller < RubyGemTestCase
 
     @installer = Gem::Installer.new @gem
     @installer.gem_dir = util_gem_dir
-    @installer.install_dir = @gemhome
+    @installer.gem_home = @gemhome
     @installer.spec = @spec
 
     @ruby = File.join(Config::CONFIG['bindir'],
@@ -240,7 +240,7 @@ load 'my_exec'
       f.puts "#!/bin/ruby"
     end
 
-    @installer.install_dir = "#{@gemhome}2"
+    @installer.gem_home = "#{@gemhome}2"
     @installer.gem_dir = gem_dir
 
     @installer.generate_bin
@@ -622,40 +622,34 @@ load 'my_exec'
     assert ! @installer.installation_satisfies_dependency?(dep)
   end
 
-  def test_shebang
-    util_make_exec '0.0.2', ''
+  def test_shebang_arguments
+    util_make_exec '0.0.2', "#!/usr/bin/ruby"
 
-    shebang = @installer.shebang @spec, @gemhome, 'my_exec'
-    assert_equal "#!#{@ruby}", shebang
-  end
-
-  def test_shebang_env_shebang
-    util_make_exec '0.0.2', ''
-    @installer.env_shebang = true
-
-    shebang = @installer.shebang @spec, @gemhome, 'my_exec'
-    assert_equal "#!/usr/bin/env ruby", shebang
-  end
-
-  def test_shebang_default
-    util_make_exec '0.0.2', ''
-
-    shebang = @installer.shebang_default @spec, @gemhome, 'my_exec'
+    shebang = @installer.shebang 'my_exec'
 
     assert_equal "#!#{@ruby}", shebang
   end
 
-  def test_shebang_default_flags
+  def test_shebang_arguments
     util_make_exec '0.0.2', "#!/usr/bin/ruby -ws"
 
-    shebang = @installer.shebang_default @spec, @gemhome, 'my_exec'
+    shebang = @installer.shebang 'my_exec'
 
     assert_equal "#!#{@ruby} -ws", shebang
   end
 
-  def test_shebang_env
-    shebang = @installer.shebang_env
+  def test_shebang_empty
+    util_make_exec '0.0.2', ''
 
+    shebang = @installer.shebang 'my_exec'
+    assert_equal "#!#{@ruby}", shebang
+  end
+
+  def test_shebang_env
+    util_make_exec '0.0.2', ''
+    @installer.env_shebang = true
+
+    shebang = @installer.shebang 'my_exec'
     assert_equal "#!/usr/bin/env ruby", shebang
   end
 
@@ -677,7 +671,7 @@ load 'my_exec'
     assert !File.exist?(spec_file)
 
     @installer.spec = @spec
-    @installer.install_dir = @gemhome
+    @installer.gem_home = @gemhome
 
     @installer.write_spec
 

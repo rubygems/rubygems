@@ -5,7 +5,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-
 require 'test/unit'
 require 'rubygems'
 require 'test/insure_session'
@@ -22,7 +21,7 @@ class FunctionalTest < Test::Unit::TestCase
 
   def test_gem_help_options
     gem_nossl 'help options'
-    assert_match(/Usage:/, @out)
+    assert_match(/Usage:/, @out, @err)
     assert_status
   end
 

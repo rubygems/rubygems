@@ -78,7 +78,7 @@ class Gem::ConfigFile
 
     begin
       # HACK $SAFE ok?
-      @hash = open(config_file_name.untaint) {|f| YAML.load(f) }
+      @hash = open(config_file_name.dup.untaint) {|f| YAML.load(f) }
     rescue ArgumentError
       warn "Failed to load #{config_file_name}"
     rescue Errno::ENOENT

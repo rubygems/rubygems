@@ -41,10 +41,12 @@ class Gem::DependencyList
   def dependency_order
     result = []
     disabled = {}
-    predecessors = build_predecessors
+    predecessors = spec_predecessors
 
-    while disabled.size < @specs.size
-      candidate = @specs.find { |spec|
+    specs = predecessors.to_a.flatten.uniq.sort.reverse
+
+    while disabled.size < specs.size
+      candidate = specs.find { |spec|
         ! disabled[spec.full_name] &&
           active_count(predecessors[spec.full_name], disabled) == 0
       }
@@ -52,7 +54,7 @@ class Gem::DependencyList
       if candidate then
         disabled[candidate.full_name] = true
         result << candidate
-      elsif candidate = @specs.find { |spec| ! disabled[spec.full_name] }
+      elsif candidate = specs.find { |spec| ! disabled[spec.full_name] } then
         # This case handles circular dependencies.  Just choose a candidate
         # and move on.
         disabled[candidate.full_name] = true
@@ -63,6 +65,7 @@ class Gem::DependencyList
         break
       end
     end
+
     result
   end
 
@@ -110,6 +113,31 @@ class Gem::DependencyList
     @specs.delete_if { |spec| spec.full_name == full_name }
   end
 
+  # Return a hash of predecessors.  <tt>result[spec]</tt> is an
+  # Array of gemspecs that have a dependency satisfied by the named
+  # spec.
+  def spec_predecessors
+    result = Hash.new { |h,k| h[k] = [] }
+
+    specs = @specs.sort.reverse
+
+    specs.each do |spec|
+      next if result.keys.find { |s| s.name == spec.name }
+
+      specs.each do |other|
+        next if spec == other
+
+        other.dependencies.each do |dep|
+          if spec.satisfies_requirement? dep then
+            result[spec] << other
+          end
+        end
+      end
+    end
+
+    result
+  end
+
   private
 
   # Count the number of gemspecs in the list +specs+ that are not in
@@ -119,26 +147,6 @@ class Gem::DependencyList
     specs.each do |spec|
       result += 1 unless ignored[spec.full_name]
     end
-    result
-  end
-
-  # Return a hash of predecessors.  E.g. results[spec.full_name] is a list of
-  # gemspecs that have a dependency satisfied by spec.
-  def build_predecessors
-    result = Hash.new { |h,k| h[k] = [] }
-
-    @specs.each do |spec|
-      @specs.each do |other|
-        next if spec.full_name == other.full_name
-
-        other.dependencies.each do |dep|
-          if spec.satisfies_requirement? dep then
-            result[spec.full_name] << other
-          end
-        end
-      end
-    end
-
     result
   end
 

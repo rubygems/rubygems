@@ -1,3 +1,10 @@
+2007-08-17  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/dependency_list.rb: For diamond dependencies with
+	different versions on the bottom of the diamond, trim all but the
+	latest dependency.  This will prevent gems like hoe from being
+	installed multiple times.
+
 2007-08-15  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb: Support building mkrf extensions.  Fixes

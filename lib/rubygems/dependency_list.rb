@@ -20,9 +20,9 @@ class Gem::DependencyList
     @specs = []
   end
 
-  # Add a gemspec to the dependency list.
-  def add(gemspec)
-    @specs << gemspec
+  # Adds +gemspecs+ to the dependency list.
+  def add(*gemspecs)
+    @specs.push(*gemspecs)
   end
 
   # Return a list of the specifications in the dependency list,
@@ -42,17 +42,19 @@ class Gem::DependencyList
     result = []
     disabled = {}
     predecessors = build_predecessors
+
     while disabled.size < @specs.size
       candidate = @specs.find { |spec|
         ! disabled[spec.full_name] &&
           active_count(predecessors[spec.full_name], disabled) == 0
       }
-      if candidate
+
+      if candidate then
         disabled[candidate.full_name] = true
         result << candidate
       elsif candidate = @specs.find { |spec| ! disabled[spec.full_name] }
-        # This case handles circular dependencies.  Just choose a
-        # candidate and move on.
+        # This case handles circular dependencies.  Just choose a candidate
+        # and move on.
         disabled[candidate.full_name] = true
         result << candidate
       else
@@ -110,8 +112,8 @@ class Gem::DependencyList
 
   private
 
-  # Count the number of gemspecs in the list +specs+ that are still
-  # active (e.g. not listed in the ignore hash).
+  # Count the number of gemspecs in the list +specs+ that are not in
+  # +ignored+.
   def active_count(specs, ignored)
     result = 0
     specs.each do |spec|
@@ -120,20 +122,23 @@ class Gem::DependencyList
     result
   end
 
-  # Return a hash of predecessors.  E.g. results[spec.full_name] is a
-  # list of gemspecs that have a dependency satisfied by spec.
+  # Return a hash of predecessors.  E.g. results[spec.full_name] is a list of
+  # gemspecs that have a dependency satisfied by spec.
   def build_predecessors
     result = Hash.new { |h,k| h[k] = [] }
+
     @specs.each do |spec|
       @specs.each do |other|
         next if spec.full_name == other.full_name
+
         other.dependencies.each do |dep|
-          if spec.satisfies_requirement?(dep)
+          if spec.satisfies_requirement? dep then
             result[spec.full_name] << other
           end
         end
       end
     end
+
     result
   end
 

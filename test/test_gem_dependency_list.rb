@@ -42,6 +42,14 @@ class TestGemDependencyList < RubyGemTestCase
     assert_equal %w[b-1.2 a-1.1], deps.dependency_order.map { |s| s.full_name }
   end
 
+  def test_add
+    assert_equal [], @deplist.dependency_order
+
+    @deplist.add @a1_1
+
+    assert_equal [@a1_1], @deplist.dependency_order
+  end
+
   def test_dependency_order
     @deplist.add @a1_1
     @deplist.add @b1_1
@@ -64,8 +72,10 @@ class TestGemDependencyList < RubyGemTestCase
   def test_find_name
     @deplist.add @a1_1
     @deplist.add @b1_2
+
     assert_equal "a-1.1", @deplist.find_name("a-1.1").full_name
     assert_equal "b-1.2", @deplist.find_name("b-1.2").full_name
+
     assert_nil @deplist.find_name("c-1.2")
   end
 

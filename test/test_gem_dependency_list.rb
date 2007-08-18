@@ -62,7 +62,7 @@ class TestGemDependencyList < RubyGemTestCase
 
     order = @deplist.dependency_order
 
-    assert_equal %w[d c b a], order.map { |s| s.name }
+    assert_equal %w[d-1 c-1 b-1 a-1], order.map { |s| s.full_name }
   end
 
   def test_dependency_order_circle
@@ -70,7 +70,7 @@ class TestGemDependencyList < RubyGemTestCase
 
     order = @deplist.dependency_order
 
-    assert_equal %w[c b a], order.map { |s| s.name }
+    assert_equal %w[c-1 b-1 a-1], order.map { |s| s.full_name }
   end
 
   def test_dependency_order_diamond
@@ -78,6 +78,26 @@ class TestGemDependencyList < RubyGemTestCase
 
     order = @deplist.dependency_order
     assert_equal %w[d-1 c-2 b-1 a-2], order.map { |s| s.full_name }
+  end
+
+  def test_spec_predecessors_diamond_trailing
+    util_diamond
+    e1 = quick_gem 'e', '1'
+    @deplist.add e1
+    @a1.add_dependency 'e', '>= 1'
+
+    order = @deplist.dependency_order
+
+    assert_equal %w[e-1 d-1 c-2 b-1 a-2], order.map { |s| s.full_name },
+                 'deps of trimmed specs not included'
+  end
+
+  def test_dependency_order_no_dependendencies
+    @deplist.add @a1, @c2
+
+    order = @deplist.dependency_order
+
+    assert_equal %w[c-2 a-1], order.map { |s| s.full_name }
   end
 
   def test_find_name
@@ -206,28 +226,13 @@ class TestGemDependencyList < RubyGemTestCase
     predecessors = @deplist.spec_predecessors
 
     expected = {
+      @a1 => [@b1],
       @a2 => [@c2, @b1],
       @b1 => [@d1],
       @c2 => [@d1],
     }
 
     assert_equal expected, predecessors
-  end
-
-  def test_spec_predecessors_diamond_trailing
-    util_diamond
-    e1 = quick_gem 'e', '1'
-    @a1.add_dependency 'e', '>= 1'
-
-    predecessors = @deplist.spec_predecessors
-
-    expected = {
-      @a2 => [@c2, @b1],
-      @b1 => [@d1],
-      @c2 => [@d1],
-    }
-
-    assert_equal expected, predecessors, 'deps of trimmed specs not included'
   end
 
   # a1 -> c1 -> b1 -> a1

@@ -43,7 +43,7 @@ class Gem::DependencyList
     disabled = {}
     predecessors = spec_predecessors
 
-    specs = predecessors.to_a.flatten.uniq.sort.reverse
+    specs = @specs.sort.reverse
 
     while disabled.size < specs.size
       candidate = specs.find { |spec|
@@ -53,6 +53,8 @@ class Gem::DependencyList
 
       if candidate then
         disabled[candidate.full_name] = true
+        next if result.find { |s| s.name == candidate.name }
+
         result << candidate
       elsif candidate = specs.find { |spec| ! disabled[spec.full_name] } then
         # This case handles circular dependencies.  Just choose a candidate
@@ -122,8 +124,6 @@ class Gem::DependencyList
     specs = @specs.sort.reverse
 
     specs.each do |spec|
-      next if result.keys.find { |s| s.name == spec.name }
-
       specs.each do |other|
         next if spec == other
 

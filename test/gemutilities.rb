@@ -157,9 +157,16 @@ class RubyGemTestCase < Test::Unit::TestCase
     FileUtils.mkdir_p dir
 
     Dir.chdir dir do
+      spec.files.each do |file|
+        next if File.exist? file
+        FileUtils.mkdir_p File.dirname(file)
+        File.open file, 'w' do |fp| fp.puts "# #{file}" end
+      end
+
       use_ui MockGemUi.new do
         Gem::Builder.new(spec).build
       end
+
       FileUtils.mv "#{spec.full_name}.gem", File.join(@gemhome, 'cache')
     end
   end

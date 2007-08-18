@@ -622,7 +622,7 @@ load 'my_exec'
     assert ! @installer.installation_satisfies_dependency?(dep)
   end
 
-  def test_shebang_arguments
+  def test_shebang
     util_make_exec '0.0.2', "#!/usr/bin/ruby"
 
     shebang = @installer.shebang 'my_exec'

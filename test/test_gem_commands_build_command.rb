@@ -1,6 +1,7 @@
 require 'test/unit'
 require 'test/gemutilities'
 require 'rubygems/commands/build_command'
+require 'rubygems/format'
 
 class TestGemCommandsBuildCommand < RubyGemTestCase
 

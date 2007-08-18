@@ -1,3 +1,13 @@
+2007-08-18  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_info_cache.rb: Search by Gem::Dependenency.
+	* lib/rubygems/source_index: Search by Gem::Dependenency.
+	* lib/rubygems/version.rb: Version can be String or Integer.
+	Gem::Requirement::default is now >= 0.  Gem::Requirement can be built
+	from a Gem::Dependency.
+	* lib/rubygems/dependency_list.rb: Uses TSort now.  Add
+	Gem::DependencyList#fill_dependencies.
+
 2007-08-17  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/dependency_list.rb: For diamond dependencies with

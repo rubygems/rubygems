@@ -78,7 +78,12 @@ module Gem
     # return:: [Boolean] true if the string format is correct, otherwise false
     #
     def self.correct?(version)
-      /\A\s*(\d+(\.\d+)*)*\s*\z/ =~ version
+      case version
+      when Integer, /\A\s*(\d+(\.\d+)*)*\s*\z/ then
+        true
+      else
+        false
+      end
     end
 
     ##
@@ -107,7 +112,7 @@ module Gem
     def initialize(version)
       raise ArgumentError,
         "Malformed version number string #{version}" unless Version.correct?(version)
-      @version = version.strip
+      @version = version.to_s.strip
     end
     
     ##
@@ -184,8 +189,7 @@ module Gem
       "~>" =>  lambda { |v, r| v >= r && v < r.bump }
     }
     
-    OP_RE = Regexp.new(OPS.keys.collect{|k| Regexp.quote(k)}.join("|"))
-    REQ_RE = /\s*(#{OP_RE})\s*/
+    OP_RE = /#{OPS.keys.map{ |k| Regexp.quote k }.join '|'}/o
     
     ##
     # Factory method to create a Gem::Requirement object.  Input may be a
@@ -206,26 +210,32 @@ module Gem
     end
     
     ##
-    # A default "version requirement" can surely _only_ be '> 0'.
+    # A default "version requirement" can surely _only_ be '>= 0'.
+    #--
+    # This comment once said:
     #
+    # "A default "version requirement" can surely _only_ be '> 0'."
     def self.default
-      self.new(['> 0.0.0'])
+      self.new(['>= 0'])
     end
     
     ##
-    # Constructs a version requirement instance
-    #
-    # str:: [String Array] the version requirement string (e.g. ["> 1.23"])
-    #
-    def initialize(reqs)
-      @requirements = reqs.collect do |rq|
-        op, version_string = parse(rq)
-        [op, Version.new(version_string)]
-      end
+    # Constructs a Requirement from +requirements+ which can be a String, a
+    # Gem::Version, or an Array of those.  See parse for details on the
+    # formatting of requirement strings.
+    def initialize(requirements)
+      @requirements = case requirements
+                      when Array then
+                        requirements.map do |requirement|
+                          parse(requirement)
+                        end
+                      else
+                        [parse(requirements)]
+                      end
       @version = nil   # Avoid warnings.
     end
 
-    def to_s
+    def to_s # :nodoc:
       as_list.join(", ")
     end
     
@@ -256,8 +266,6 @@ module Gem
       @requirements.all? { |op, rv| satisfy?(op, version, rv) }
     end
     
-    private
-    
     ##
     # Is "version op required_version" satisfied?
     #
@@ -266,18 +274,23 @@ module Gem
     end
     
     ##
-    # Parse the version requirement string. Return the operator and
-    # version strings.
+    # Parse the version requirement obj returning the operator and version.
     #
-    def parse(str)
-      if md = /^\s*(#{OP_RE})\s*([0-9.]+)\s*$/.match(str)
-        [md[1], md[2]]
-      elsif md = /^\s*([0-9.]+)\s*$/.match(str)
-        ["=", md[1]]
-      elsif md = /^\s*(#{OP_RE})\s*$/.match(str)
-        [md[1], "0"]
+    # The requirement can be a String or a Gem::Version.  A String can be an
+    # operator (<, <=, =, =>, >, !=, ~>), a version number, or both, operator
+    # first.
+    def parse(obj)
+      case obj
+      when /^\s*(#{OP_RE})\s*([0-9.]+)\s*$/o then
+        [$1, Gem::Version.new($2)]
+      when /^\s*([0-9.]+)\s*$/ then
+        ['=', Gem::Version.new($1)]
+      when /^\s*(#{OP_RE})\s*$/o then
+        [$1, Gem::Version.new('0')]
+      when Gem::Version then
+        ['=', obj]
       else
-        fail ArgumentError, "Illformed requirement [#{str}]"
+        fail ArgumentError, "Illformed requirement [#{obj.inspect}]"
       end
     end
     
@@ -288,7 +301,7 @@ module Gem
     def hash
       to_s.hash
     end
-    public :hash
+
   end
 
   #:stopdoc:

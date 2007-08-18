@@ -74,7 +74,7 @@ class Gem::Commands::InstallCommand < Gem::Command
             say "Successfully installed #{installed_gems[0].full_name}" if
               installed_gems
           end
-        rescue LocalInstallationError => e
+        rescue Gem::LocalInstallationError => e
           say " -> Local installation can't proceed: #{e.message}"
         rescue Gem::LoadError => e
           say " -> Local installation can't proceed due to LoadError: #{e.message}"

@@ -177,8 +177,8 @@ end
     assert_equal 'bin', spec.bindir
     assert_equal false, spec.has_rdoc
     assert_equal false, spec.has_rdoc?
-    assert_equal '> 0.0.0', spec.required_ruby_version.to_s
-    assert_equal '> 0.0.0', spec.required_rubygems_version.to_s
+    assert_equal '>= 0', spec.required_ruby_version.to_s
+    assert_equal '>= 0', spec.required_rubygems_version.to_s
   end
 
   def test_author

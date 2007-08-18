@@ -24,6 +24,8 @@ class TestGemVersion < RubyGemTestCase
     assert_version Gem::Version.create(" 1.0 ")
     assert_version Gem::Version.create("1.0\n")
     assert_version Gem::Version.create("\n1.0\n")
+
+    assert_equal Gem::Version.create('1'), Gem::Version.create(1)
   end
 
   def test_class_create_malformed

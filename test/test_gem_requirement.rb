@@ -17,6 +17,17 @@ class TestGemRequirement < RubyGemTestCase
     @r1_3 = Gem::Requirement.new '= 1.3'
   end
 
+  def test_initialize
+    r = Gem::Requirement.new '2'
+    assert_equal '= 2', r.to_s, 'String'
+
+    r = Gem::Requirement.new %w[2]
+    assert_equal '= 2', r.to_s, 'Array of Strings'
+
+    r = Gem::Requirement.new Gem::Version.new('2')
+    assert_equal '= 2', r.to_s, 'Gem::Version'
+  end
+
   def test_equals2
     assert_equal @r1_2, @r1_2.dup
     assert_equal @r1_2.dup, @r1_2
@@ -51,6 +62,35 @@ class TestGemRequirement < RubyGemTestCase
     dep = YAML.load(yamldep)
     dep.normalize
     assert_equal ">= 1.0.4", dep.to_s
+  end
+
+  def test_parse
+    assert_equal ['=', Gem::Version.new(1)], @r1_2.parse('  1')
+
+    assert_equal ['=', Gem::Version.new(1)], @r1_2.parse('= 1')
+    assert_equal ['>', Gem::Version.new(1)], @r1_2.parse('> 1')
+
+    assert_equal ['=', Gem::Version.new(0)], @r1_2.parse('=')
+    assert_equal ['>', Gem::Version.new(0)], @r1_2.parse('>')
+
+    assert_equal ['=', Gem::Version.new(1)], @r1_2.parse("=\n1")
+    assert_equal ['=', Gem::Version.new(0)], @r1_2.parse("=\njunk")
+
+    assert_equal ['=', Gem::Version.new(2)], @r1_2.parse(Gem::Version.new('2'))
+  end
+
+  def test_parse_illformed
+    e = assert_raise ArgumentError do
+      @r1_2.parse(nil)
+    end
+
+    assert_equal 'Illformed requirement [nil]', e.message
+
+    e = assert_raise ArgumentError do
+      @r1_2.parse('')
+    end
+
+    assert_equal 'Illformed requirement [""]', e.message
   end
 
   def test_satisfied_by_eh_bang_equal

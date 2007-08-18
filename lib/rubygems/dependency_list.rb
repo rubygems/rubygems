@@ -4,7 +4,11 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'tsort'
+
 class Gem::DependencyList
+
+  include TSort
 
   def self.from_source_index(src_index)
     deps = new
@@ -39,40 +43,44 @@ class Gem::DependencyList
   # until the circular dependency is broken, after which gems will be
   # returned in dependency order again.
   def dependency_order
+    sorted = strongly_connected_components.flatten
+
     result = []
-    disabled = {}
-    predecessors = spec_predecessors
+    seen = {}
 
-    specs = @specs.sort.reverse
-
-    while disabled.size < specs.size
-      candidate = specs.find { |spec|
-        ! disabled[spec.full_name] &&
-          active_count(predecessors[spec.full_name], disabled) == 0
-      }
-
-      if candidate then
-        disabled[candidate.full_name] = true
-        next if result.find { |s| s.name == candidate.name }
-
-        result << candidate
-      elsif candidate = specs.find { |spec| ! disabled[spec.full_name] } then
-        # This case handles circular dependencies.  Just choose a candidate
-        # and move on.
-        disabled[candidate.full_name] = true
-        result << candidate
+    sorted.each do |spec|
+      if index = seen[spec.name] then
+        if result[index].version < spec.version then
+          result[index] = spec
+        end
       else
-        # We should never get here, but just in case we will terminate
-        # the loop.
-        break
+        seen[spec.name] = result.length
+        result << spec
       end
     end
 
-    result
+    result.reverse
   end
 
   def find_name(full_name)
     @specs.find { |spec| spec.full_name == full_name }
+  end
+
+  def fill_dependencies
+    to_do = @specs.dup
+    seen = {}
+
+    until to_do.empty? do
+      spec = to_do.shift
+      next if spec.nil? or seen[spec]
+      seen[spec] = true
+
+      spec.dependencies.each do |dep|
+        specs = Gem::SourceInfoCache.search(dep)
+        add(*specs)
+        to_do.push(*specs)
+      end
+    end
   end
 
   # Are all the dependencies in the list satisfied?
@@ -136,6 +144,26 @@ class Gem::DependencyList
     end
 
     result
+  end
+
+  def tsort_each_node(&block)
+    @specs.each(&block)
+  end
+
+  def tsort_each_child(node, &block)
+    specs = @specs.sort.reverse
+
+    node.dependencies.each do |dep|
+      specs.each do |spec|
+        if spec.satisfies_requirement? dep then
+          begin
+            yield spec
+          rescue TSort::Cyclic
+          end
+          break
+        end
+      end
+    end
   end
 
   private

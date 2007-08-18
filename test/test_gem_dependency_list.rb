@@ -70,7 +70,7 @@ class TestGemDependencyList < RubyGemTestCase
 
     order = @deplist.dependency_order
 
-    assert_equal %w[c-1 b-1 a-1], order.map { |s| s.full_name }
+    assert_equal %w[b-1 c-1 a-1], order.map { |s| s.full_name }
   end
 
   def test_dependency_order_diamond
@@ -80,7 +80,7 @@ class TestGemDependencyList < RubyGemTestCase
     assert_equal %w[d-1 c-2 b-1 a-2], order.map { |s| s.full_name }
   end
 
-  def test_spec_predecessors_diamond_trailing
+  def test_dependency_order_diamond
     util_diamond
     e1 = quick_gem 'e', '1'
     @deplist.add e1
@@ -88,7 +88,7 @@ class TestGemDependencyList < RubyGemTestCase
 
     order = @deplist.dependency_order
 
-    assert_equal %w[e-1 d-1 c-2 b-1 a-2], order.map { |s| s.full_name },
+    assert_equal %w[d-1 c-2 b-1 a-2 e-1], order.map { |s| s.full_name },
                  'deps of trimmed specs not included'
   end
 
@@ -98,6 +98,17 @@ class TestGemDependencyList < RubyGemTestCase
     order = @deplist.dependency_order
 
     assert_equal %w[c-2 a-1], order.map { |s| s.full_name }
+  end
+
+  def test_fill_dependencies
+    util_setup_source_info_cache @a1, @a2, @a3, @b1, @b2, @c1, @c2, @d1
+
+    @deplist.add @d1
+
+    @deplist.fill_dependencies
+
+    assert_equal %w[b-2 a-3 d-1 c-2],
+                 @deplist.dependency_order.map { |s| s.full_name }
   end
 
   def test_find_name
@@ -181,58 +192,28 @@ class TestGemDependencyList < RubyGemTestCase
     assert ! @deplist.ok?
   end
 
-  def test_spec_predecessors
-    expected = {}
-    assert_equal expected, @deplist.spec_predecessors
-
-    @deplist.add @a1
-
-    assert_equal expected, @deplist.spec_predecessors
-
-    @deplist.add @b1
-
-    expected = { @a1 => [@b1] }
-
-    assert_equal expected, @deplist.spec_predecessors
-  end
-
-  # HACK bug in Gem::Specification#hash
-  def disabled_test_spec_predecessors_loop
-    @a1.add_dependency @a1
-    @deplist.add @a1
-
-    expected = { @a1 => [@a1] }
-
-    assert_equal expected, @deplist.spec_predecessors
-  end
-
-  def test_spec_predecessors_circle
-    util_circle
-
-    predecessors = @deplist.spec_predecessors
-
-    expected = {
-      @a1 => [@b1],
-      @b1 => [@c1],
-      @c1 => [@a1],
-    }
-
-    assert_equal expected, predecessors
-  end
-
-  def test_spec_predecessors_diamond
+  def test_tsort_each_node
     util_diamond
 
-    predecessors = @deplist.spec_predecessors
+    order = %w[a-1 a-2 b-1 c-2 d-1]
 
-    expected = {
-      @a1 => [@b1],
-      @a2 => [@c2, @b1],
-      @b1 => [@d1],
-      @c2 => [@d1],
-    }
+    @deplist.tsort_each_node do |node|
+      assert_equal order.shift, node.full_name
+    end
 
-    assert_equal expected, predecessors
+    assert order.empty?
+  end
+
+  def test_tsort_each_child
+    util_diamond
+
+    order = %w[a-2]
+
+    @deplist.tsort_each_child(@b1) do |node|
+      assert_equal order.shift, node.full_name
+    end
+
+    assert order.empty?
   end
 
   # a1 -> c1 -> b1 -> a1

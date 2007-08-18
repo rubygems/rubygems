@@ -52,6 +52,14 @@ class TestGemDependency < RubyGemTestCase
     assert_equal Gem::Requirement.new([">= 1.0"]), dep.version_requirements
   end
 
+  def test_initialize_version
+    dep = Gem::Dependency.new 'pkg', Gem::Version.new('2')
+
+    assert_equal 'pkg', dep.name
+
+    assert_equal Gem::Requirement.new('= 2'), dep.version_requirements
+  end
+
   def test_equals2
     assert_equal @pkg1_0, @pkg1_0.dup
     assert_equal @pkg1_0.dup, @pkg1_0

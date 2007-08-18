@@ -196,22 +196,31 @@ module Gem
     #   [String] a partial for the (short) name of the gem, or
     #   [Regex] a pattern to match against the short name
     # version_requirement::
-    #   [String | default=Gem::Requirement.new(">= 0")] version to
+    #   [String | default=Gem::Requirement.default] version to
     #   find
     # return::
     #   [Array] list of Gem::Specification objects in sorted (version)
     #   order.  Empty if not found.
     #
-    def search(gem_pattern, version_requirement=Gem::Requirement.new(">= 0"))
-      gem_pattern = /#{ gem_pattern }/i if String === gem_pattern
-      version_requirement = Gem::Requirement.create(version_requirement)
-      result = []
-      @gems.each do |full_spec_name, spec|
-        next unless spec.name =~ gem_pattern
-        result << spec if version_requirement.satisfied_by?(spec.version)
+    def search(gem_pattern, version_requirement=Gem::Requirement.default)
+      case gem_pattern
+      when Regexp then
+        # ok
+      when Gem::Dependency then
+        version_requirement = gem_pattern.version_requirements
+        gem_pattern = /^#{gem_pattern.name}$/
+      else
+        gem_pattern = /#{gem_pattern}/i
       end
-      result = result.sort
-      result
+
+      unless Gem::Requirement === version_requirement then
+        version_requirement = Gem::Requirement.create version_requirement
+      end
+
+      @gems.values.select do |spec|
+        spec.name =~ gem_pattern and
+          version_requirement.satisfied_by? spec.version
+      end.sort
     end
 
     # Refresh the source index from the local file system.

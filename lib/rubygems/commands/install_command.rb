@@ -25,7 +25,7 @@ class Gem::Commands::InstallCommand < Gem::Command
       :force => false,
       :test => false,
       :wrappers => true,
-      :version => ">= 0",
+      :version => Gem::Requirement.default,
       :install_dir => Gem.dir,
       :security_policy => nil,
     })

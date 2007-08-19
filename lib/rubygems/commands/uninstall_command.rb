@@ -10,8 +10,8 @@ module Gem
       include CommandAids
 
       def initialize
-        super('uninstall', 'Uninstall gems from the local repository',
-              { :version => ">= 0" })
+        super 'uninstall', 'Uninstall gems from the local repository',
+              :version => Gem::Requirement.default
 
         add_option('-a', '--[no-]all',
           'Uninstall all matching versions'

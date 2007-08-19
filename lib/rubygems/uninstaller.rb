@@ -24,7 +24,7 @@ class Gem::Uninstaller
   #
   def initialize(gem, options)
     @gem = gem
-    @version = options[:version] || ">= 0"
+    @version = options[:version] || Gem::Requirement.default
     @force_executables = options[:executables]
     @force_all = options[:all]
     @force_ignore = options[:ignore]

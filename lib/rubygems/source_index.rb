@@ -186,7 +186,7 @@ module Gem
     def_delegators :@gems, :size, :length
 
     # Find a gem by an exact match on the short name.
-    def find_name(gem_name, version_requirement=Gem::Requirement.new(">= 0"))
+    def find_name(gem_name, version_requirement = Gem::Requirement.default)
       search(/^#{gem_name}$/, version_requirement)
     end
 

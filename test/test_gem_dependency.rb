@@ -9,7 +9,7 @@ require 'test/gemutilities'
 require 'rubygems/version'
 
 class TestGemDependency < RubyGemTestCase
-  
+
   def setup
     super
 

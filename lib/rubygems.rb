@@ -1,6 +1,4 @@
-#!/usr/bin/env ruby
 # -*- ruby -*-
-
 #--
 # Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
 # All rights reserved.
@@ -8,7 +6,7 @@
 #++
 
 require 'rbconfig'
-require 'rubygems/rubygems_version.rb'
+require 'rubygems/rubygems_version'
 require 'thread'
 
 module Gem
@@ -228,9 +226,10 @@ module Gem
     # already loaded, or an exception otherwise.
     #
     def activate(gem, autorequire, *version_requirements)
-      unless version_requirements.size > 0
-        version_requirements = [">= 0.0.0"]
+      if version_requirements.empty? then
+        version_requirements = Gem::Requirement.default
       end
+
       unless gem.respond_to?(:name) && gem.respond_to?(:version_requirements)
         gem = Gem::Dependency.new(gem, version_requirements)
       end
@@ -500,6 +499,8 @@ end
 
 require 'rubygems/exceptions'
 require 'rubygems/version'
+require 'rubygems/requirement'
+require 'rubygems/dependency'
 require 'rubygems/custom_require'
 require 'rubygems/gem_path_searcher' # Needed for Kernel#gem
 require 'rubygems/source_index' # Needed for Kernel#gem

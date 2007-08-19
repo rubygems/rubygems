@@ -7,6 +7,7 @@
 	from a Gem::Dependency.
 	* lib/rubygems/dependency_list.rb: Uses TSort now.  Add
 	Gem::DependencyList#fill_dependencies.
+	* lib/rubygems/server.rb: Support quick index.
 
 2007-08-17  Eric Hodel  <drbrain@segment7.net>
 

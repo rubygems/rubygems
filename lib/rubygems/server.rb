@@ -1,12 +1,14 @@
 require 'webrick'
 require 'rdoc/template'
 require 'yaml'
+require 'zlib'
 
 require 'rubygems'
 
+##
 # Gem::Server and allows users to serve gems for consumption by
 # `gem --remote-install`.
-# 
+#
 # gem_server starts an HTTP server on the given port and serves the folowing:
 # * "/" - Browsing of gem spec files for installed gems
 # * "/yaml" - Full yaml dump of metadata for installed gems
@@ -14,7 +16,7 @@ require 'rubygems'
 #
 # == Usage
 #
-#   gem_server [-p portnum] [-d gem_path]
+#   gem server [-p portnum] [-d gem_path]
 #
 # port_num:: The TCP port the HTTP server will bind to
 # gem_path::
@@ -346,32 +348,65 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     @gemdir = gemdir
     @port = port
     @daemon = daemon
+    logger = WEBrick::Log.new nil, WEBrick::BasicLog::FATAL
+    @server = WEBrick::HTTPServer.new :DoNotListen => true, :Logger => logger
+
+    @spec_dir = File.join @gemdir, "specifications"
+    @source_index = Gem::SourceIndex.from_gems_in @spec_dir
+  end
+
+  def quick(req, res)
+    res['content-type'] = 'text/plain'
+    res['date'] = File.stat(@spec_dir).mtime
+
+    case req.request_uri.request_uri
+    when '/quick/index' then
+      res.body << @source_index.map { |name,_| name }.join("\n")
+    when '/quick/index.rz' then
+      index = @source_index.map { |name,_| name }.join("\n")
+      res.body << Zlib::Deflate.deflate(index)
+    when %r|^/quick/(.*)-([0-9.]+)\.gemspec\.rz$| then
+      specs = @source_index.search $1, $2
+      if specs.empty? then
+        res.status = 404
+      elsif specs.length > 1 then
+        res.status = 500
+      else
+        res.body << Zlib::Deflate.deflate(specs.first.to_yaml)
+      end
+    else
+      res.status = 404
+    end
   end
 
   def run
+    @server.listen nil, @port
+
     WEBrick::Daemon.start if @daemon
 
-    spec_dir = File.join @gemdir, "specifications"
-
-    s = WEBrick::HTTPServer.new :Port => @port
-
-    s.mount_proc("/yaml") do |req, res|
+    @server.mount_proc("/yaml") do |req, res|
       res['content-type'] = 'text/plain'
-      res['date'] = File.stat(spec_dir).mtime
-      res.body << Gem::SourceIndex.from_gems_in(spec_dir).to_yaml
+      res['date'] = File.stat(@spec_dir).mtime
+      if req.request_method == 'HEAD' then
+        res['content-length'] = @source_index.to_yaml.length
+      else
+        res.body << @source_index.to_yaml
+      end
     end
 
-    s.mount_proc("/rdoc-style.css") do |req, res|
+    @server.mount_proc("/quick/", &method(:quick))
+
+    @server.mount_proc("/rdoc-style.css") do |req, res|
       res['content-type'] = 'text/css'
-      res['date'] = File.stat(spec_dir).mtime
+      res['date'] = File.stat(@spec_dir).mtime
       res.body << RDOC_CSS
     end
 
-    s.mount_proc("/") do |req, res|
+    @server.mount_proc("/") do |req, res|
       specs = []
       total_file_count = 0
 
-      Gem::SourceIndex.from_gems_in(spec_dir).each do |path, spec|
+      @source_index.each do |path, spec|
         total_file_count += spec.files.size
         deps = spec.dependencies.collect { |dep|
           { "name"    => dep.name, 
@@ -438,14 +473,14 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     paths = { "/gems" => "/cache/", "/doc_root" => "/doc/" }
     paths.each do |mount_point, mount_dir|
-      s.mount(mount_point, WEBrick::HTTPServlet::FileHandler,
+      @server.mount(mount_point, WEBrick::HTTPServlet::FileHandler,
               File.join(@gemdir, mount_dir), true)
     end
 
-    trap("INT") { s.shutdown; exit! }
-    trap("TERM") { s.shutdown; exit! }
+    trap("INT") { @server.shutdown; exit! }
+    trap("TERM") { @server.shutdown; exit! }
 
-    s.start
+    @server.start
   end
 
 end

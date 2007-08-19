@@ -75,13 +75,6 @@ class TestGemDependencyList < RubyGemTestCase
 
   def test_dependency_order_diamond
     util_diamond
-
-    order = @deplist.dependency_order
-    assert_equal %w[d-1 c-2 b-1 a-2], order.map { |s| s.full_name }
-  end
-
-  def test_dependency_order_diamond
-    util_diamond
     e1 = quick_gem 'e', '1'
     @deplist.add e1
     @a1.add_dependency 'e', '>= 1'

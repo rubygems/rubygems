@@ -25,7 +25,7 @@ class Gem::Commands::ContentsCommand < Gem::Command
   end
 
   def execute
-    version = options[:version] || "> 0.0.0"
+    version = options[:version] || Gem::Requirement.default
     gem = get_one_gem_name
 
     s = options[:specdirs].map do |i|

@@ -11,12 +11,12 @@ class Gem::Commands::UnpackCommand < Gem::Command
 
   def initialize
     super 'unpack', 'Unpack an installed gem to the current directory',
-          :version => '> 0'
+          :version => Gem::Requirement.default
     add_version_option 'unpack'
   end
 
   def defaults_str
-    "--version '> 0'"
+    "--version '#{Gem::Requirement.default}'"
   end
 
   def usage

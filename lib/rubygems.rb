@@ -38,7 +38,7 @@ module Kernel
   # gem:: [String or Gem::Dependency] The gem name or dependency
   #       instance.
   #
-  # version_requirement:: [default=">= 0.0.0"] The version
+  # version_requirement:: [default=">= 0"] The version
   #                       requirement.
   #
   # return:: [Boolean] true if the Gem is loaded, otherwise false.

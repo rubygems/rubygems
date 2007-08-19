@@ -489,14 +489,19 @@ module Gem
     #   spec.add_dependency('jabber4r', '> 0.1', '<= 0.5')
     #
     # gem:: [String or Gem::Dependency] The Gem name/dependency.
-    # requirements:: [default="> 0.0.0"] The version requirements.   
+    # requirements:: [default=">= 0"] The version requirements.
     #
     def add_dependency(gem, *requirements)
-      requirements = ['> 0.0.0'] if requirements.empty?
-      requirements.flatten!
+      requirements = if requirements.empty? then
+                       Gem::Requirement.default
+                     else
+                       requirements.flatten
+                     end
+
       unless gem.respond_to?(:name) && gem.respond_to?(:version_requirements)
         gem = Dependency.new(gem, requirements)
       end
+
       dependencies << gem
     end
     

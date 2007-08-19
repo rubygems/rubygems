@@ -13,7 +13,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
   def initialize
     super 'dependency',
           'Show the dependencies of an installed gem',
-          :version=>"> 0", :domain => :local
+          :version => Gem::Requirement.default, :domain => :local
 
     add_version_option('dependency')
 
@@ -32,7 +32,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
   end
 
   def defaults_str
-    "--local --version '> 0' --no-reverse"
+    "--local --version '#{Gem::Requirement.default}' --no-reverse"
   end
 
   def usage

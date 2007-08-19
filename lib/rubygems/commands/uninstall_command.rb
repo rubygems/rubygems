@@ -35,9 +35,9 @@ module Gem
       end
 
       def defaults_str
-        "--version '> 0' --no-force"
+        "--version '#{Gem::Requirement.default}' --no-force"
       end
-    
+
       def usage
         "#{program_name} GEMNAME [GEMNAME ...]"
       end

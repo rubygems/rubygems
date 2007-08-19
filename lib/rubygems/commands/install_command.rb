@@ -35,17 +35,17 @@ class Gem::Commands::InstallCommand < Gem::Command
   end
 
   def usage
-        "#{program_name} GEMNAME [options]
-     or: #{program_name} GEMNAME [options] -- --build-flags"
+    "#{program_name} GEMNAME [options]
+ or: #{program_name} GEMNAME [options] -- --build-flags"
   end
 
   def arguments
-        "GEMNAME   name of gem to install"
+    "GEMNAME   name of gem to install"
   end
 
   def defaults_str
-        "--both --version '> 0' --rdoc --ri --no-force --no-test\n" +
-        "--install-dir #{Gem.dir}"
+    "--both --version '#{Gem::Requirement.default}' --rdoc --ri --no-force\n" \
+    "--no-test --install-dir #{Gem.dir}"
   end
 
   def execute

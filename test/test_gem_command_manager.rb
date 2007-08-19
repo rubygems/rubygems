@@ -65,7 +65,7 @@ class TestGemCommandManager < RubyGemTestCase
       assert_equal false, check_options[:force]
       assert_equal :both, check_options[:domain]
       assert_equal true, check_options[:wrappers]
-      assert_equal ">= 0", check_options[:version]
+      assert_equal Gem::Requirement.default, check_options[:version]
       assert_equal Gem.dir, check_options[:install_dir]
 
       #check settings
@@ -107,7 +107,7 @@ class TestGemCommandManager < RubyGemTestCase
 
     #check defaults
     @command_manager.process_args("uninstall")
-    assert_equal ">= 0", check_options[:version]
+    assert_equal Gem::Requirement.default, check_options[:version]
 
     #check settings
     check_options = nil

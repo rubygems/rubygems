@@ -13,7 +13,7 @@ module Gem
         super('rdoc',
           'Generates RDoc for pre-installed gems',
           {
-            :version => "> 0.0.0",
+            :version => Gem::Requirement.default,
             :include_rdoc => true,
             :include_ri => true,
           })
@@ -36,7 +36,7 @@ module Gem
       end
 
       def defaults_str
-        "--version '> 0.0.0' --rdoc --ri"
+        "--version '#{Gem::Requirement.default}' --rdoc --ri"
       end
 
       def usage

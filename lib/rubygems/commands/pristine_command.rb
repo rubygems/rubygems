@@ -14,7 +14,7 @@ module Gem
         super('pristine',
           'Restores gem directories to pristine condition from files located in the gem cache',
           {
-            :version => "> 0.0.0"
+            :version => Gem::Requirement.default
           })
         add_option('--all',
           'Restore all installed gems to pristine', 'condition'

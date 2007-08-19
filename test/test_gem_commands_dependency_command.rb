@@ -35,7 +35,7 @@ class TestGemCommandsDependencyCommand < RubyGemTestCase
       end
     end
 
-    assert_equal "No match found for foo (> 0)\n", @ui.output
+    assert_equal "No match found for foo (>= 0)\n", @ui.output
     assert_equal '', @ui.error
   end
 
@@ -75,7 +75,7 @@ class TestGemCommandsDependencyCommand < RubyGemTestCase
 Gem foo-0.0.2
   bar (> 1.0.0)
   Used by
-    baz-0.0.2 (foo (> 0.0.0))
+    baz-0.0.2 (foo (>= 0))
 
     EOF
 

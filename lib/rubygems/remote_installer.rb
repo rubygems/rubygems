@@ -29,19 +29,19 @@ module Gem
       @source_index_hash = nil
     end
 
-    # This method will install package_name onto the local system.  
+    # This method will install package_name onto the local system.
     #
     # gem_name::
     #   [String] Name of the Gem to install
     #
     # version_requirement::
-    #   [default = "> 0.0.0"] Gem version requirement to install
+    #   [default = ">= 0"] Gem version requirement to install
     #
     # Returns::
-    #   an array of Gem::Specification objects, one for each gem installed. 
+    #   an array of Gem::Specification objects, one for each gem installed.
     #
-    def install(gem_name, version_requirement = "> 0.0.0", force=false,
-                install_dir=Gem.dir)
+    def install(gem_name, version_requirement = Gem::Requirement.default,
+                force = false, install_dir = Gem.dir)
       unless version_requirement.respond_to?(:satisfied_by?)
         version_requirement = Gem::Requirement.new [version_requirement]
       end

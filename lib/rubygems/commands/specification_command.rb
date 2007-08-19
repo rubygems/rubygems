@@ -13,7 +13,7 @@ class Gem::Commands::SpecificationCommand < Gem::Command
 
   def initialize
     super 'specification', 'Display gem specification (in yaml)',
-          :domain => :local, :version => "> 0.0.0"
+          :domain => :local, :version => Gem::Requirement.default
 
     add_version_option('examine')
 
@@ -26,7 +26,7 @@ class Gem::Commands::SpecificationCommand < Gem::Command
   end
 
   def defaults_str
-    "--local --version '(latest)'"
+    "--local --version '#{Gem::Requirement.default}'"
   end
 
   def usage

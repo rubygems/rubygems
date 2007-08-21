@@ -60,7 +60,10 @@ class RubyGemTestCase < Test::Unit::TestCase
     super
 
     @ui = MockGemUi.new
-    @tempdir = File.join Dir.tmpdir, "test_rubygems_#{$$}"
+    tmpdir = nil
+    Dir.chdir Dir.tmpdir do tmpdir = Dir.pwd end # HACK OSX /private/tmp
+    @tempdir = File.join tmpdir, "test_rubygems_#{$$}"
+    @tempdir.untaint
     @gemhome = File.join @tempdir, "gemhome"
     @gemcache = File.join(@gemhome, "source_cache")
     @usrcache = File.join(@gemhome, ".gem", "user_cache")
@@ -75,15 +78,13 @@ class RubyGemTestCase < Test::Unit::TestCase
 
     Gem.sources.replace %w[http://gems.example.com]
 
-    @orig_target_cpu = Config::CONFIG['target_cpu']
-    @orig_target_os = Config::CONFIG['target_os']
+    @orig_arch = Config::CONFIG['arch']
 
-    util_set_target 'i686', 'darwin8.10.1'
+    util_set_arch 'i686-darwin8.10.1'
   end
 
   def teardown
-    Config::CONFIG['target_cpu'] = @orig_target_cpu
-    Config::CONFIG['target_os'] = @orig_target_os
+    Config::CONFIG['arch'] = @orig_arch
 
     if defined? Gem::RemoteFetcher then
       Gem::RemoteFetcher.instance_variable_set :@fetcher, nil
@@ -203,11 +204,10 @@ class RubyGemTestCase < Test::Unit::TestCase
   ##
   # Set the platform to +cpu+ and +os+
 
-  def util_set_target(cpu, os)
-    Config::CONFIG['target_cpu'] = cpu
-    Config::CONFIG['target_os'] = os
+  def util_set_arch(arch)
+    Config::CONFIG['arch'] = arch
 
-    Gem::Platform.local.replace Gem::Platform.normalize(cpu, os)
+    Gem::Platform.local.replace Gem::Platform.normalize(arch)
   end
 
   def util_setup_fake_fetcher

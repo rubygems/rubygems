@@ -10,35 +10,58 @@ class Gem::DependencyInstaller
   def initialize(gem_name)
     @gem_name = gem_name
     @installed_gems = []
+    @specs_and_sources = []
 
-    @specs_and_sources = Gem::SourceInfoCache.search_with_source @gem_name
-    @specs = @specs_and_sources.map { |spec,_| spec }
+    @specs_and_sources.push(*find_gems_with_sources(gem_name))
 
     gather_dependencies
+  end
+
+  def find_gems_with_sources(dep)
+    gem_name = String === dep ? dep : dep.name
+
+    gems_and_sources = []
+
+    Dir[File.join(Dir.pwd, "#{gem_name}-[0-9]*.gem")].each do |gem_file|
+      spec = Gem::Format.from_file_by_path(gem_file).spec
+      gems_and_sources << [spec, gem_file] if spec.name == gem_name
+    end
+
+    gems_and_sources.push(*Gem::SourceInfoCache.search_with_source(gem_name))
   end
 
   def download(spec, source_uri)
     gem_file_name = "#{spec.full_name}.gem"
     local_gem_path = File.join Gem.dir, 'cache', gem_file_name
+    source_uri = URI.parse source_uri
 
-    unless File.exist? local_gem_path then
-      remote_gem_path = "#{source_uri}/gems/#{gem_file_name}"
+    case source_uri.scheme
+    when 'http' then
+      unless File.exist? local_gem_path then
+        remote_gem_path = source_uri + "/gems/#{gem_file_name}"
 
-      gem = Gem::RemoteFetcher.fetcher.fetch_path remote_gem_path
+        gem = Gem::RemoteFetcher.fetcher.fetch_path remote_gem_path
 
-      File.open local_gem_path, 'wb' do |fp|
-        fp.write gem
+        File.open local_gem_path, 'wb' do |fp|
+          fp.write gem
+        end
       end
+    when nil, 'file' then # TODO test for local overriding cache
+      FileUtils.cp source_uri.to_s, local_gem_path
+    else
+      raise Gem::InstallError, "unsupported URI scheme #{source_uri.scheme}"
     end
 
     local_gem_path
   end
 
   def gather_dependencies
-    dependency_list = Gem::DependencyList.new
-    dependency_list.add(*@specs)
+    specs = @specs_and_sources.map { |spec,_| spec }
 
-    to_do = @specs.dup
+    dependency_list = Gem::DependencyList.new
+    dependency_list.add(*specs)
+
+    to_do = specs.dup
     seen = {}
 
     until to_do.empty? do
@@ -47,7 +70,7 @@ class Gem::DependencyInstaller
       seen[spec] = true
 
       spec.dependencies.each do |dep|
-        results = Gem::SourceInfoCache.search_with_source dep
+        results = find_gems_with_sources dep
 
         results.each do |dep_spec, source_uri|
           next unless Gem.platforms.include? dep_spec.platform
@@ -59,12 +82,12 @@ class Gem::DependencyInstaller
       end
     end
 
-    @gems_to_install = dependency_list.dependency_order
+    @gems_to_install = dependency_list.dependency_order.reverse
   end
 
   def install
     @gems_to_install.each do |spec|
-      source_uri = @specs_and_sources.assoc spec
+      _, source_uri = @specs_and_sources.assoc spec
       local_gem_path = download spec, source_uri
 
       Gem::Installer.new(local_gem_path).install

@@ -5,8 +5,7 @@ require 'rubygems'
 module Gem::Platform
 
   def self.local
-    @local ||= normalize(Config::CONFIG['target_cpu'],
-                         Config::CONFIG['target_os'])
+    @local ||= normalize Config::CONFIG['arch']
   end
 
   def self.match(platform)
@@ -45,7 +44,10 @@ module Gem::Platform
     end
   end
 
-  def self.normalize(cpu, os)
+  def self.normalize(arch)
+    cpu, os = arch.split '-', 2
+    cpu, os = nil, cpu if os.nil? # legacy jruby
+
     cpu = case cpu
           when /i\d86/ then 'x86'
           else cpu
@@ -84,17 +86,17 @@ module Gem::Platform
   ##
   # A One Click Installer-compatible gem
 
-  MSWIN32 = normalize 'x86', 'mswin32'
+  MSWIN32 = normalize 'x86-mswin32'
 
   ##
   # An x86 Linux-compatible gem
 
-  X86_LINUX = normalize 'x86', 'linux'
+  X86_LINUX = normalize 'x86-linux'
 
   ##
   # A PowerPC Darwin-compatible gem
 
-  PPC_DARWIN = normalize 'powerpc', 'darwin'
+  PPC_DARWIN = normalize 'powerpc-darwin'
 
   # :stopdoc:
   # Here lie legacy constants.  These are deprecated.

@@ -1,3 +1,10 @@
+2007-08-21  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/dependency_installer.rb: Add installation from local
+	gems.  Install gems in the correct order.
+	* test/gemutilities.rb: Work around OS X /private/tmp.
+	* lib/rubygems/platform.rb: Switch to using arch instead of target_*.
+
 2007-08-20  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/dependency_installer.rb: Add working but unfinished

@@ -66,23 +66,6 @@ class Gem::DependencyList
     @specs.find { |spec| spec.full_name == full_name }
   end
 
-  def fill_dependencies
-    to_do = @specs.dup
-    seen = {}
-
-    until to_do.empty? do
-      spec = to_do.shift
-      next if spec.nil? or seen[spec]
-      seen[spec] = true
-
-      spec.dependencies.each do |dep|
-        specs = Gem::SourceInfoCache.search(dep)
-        add(*specs)
-        to_do.push(*specs)
-      end
-    end
-  end
-
   # Are all the dependencies in the list satisfied?
   def ok?
     @specs.all? do |spec|

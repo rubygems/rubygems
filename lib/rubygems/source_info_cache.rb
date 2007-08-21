@@ -50,6 +50,11 @@ class Gem::SourceInfoCache
     cache.search(pattern)
   end
 
+  # Search all source indexes for +pattern+.
+  def self.search_with_source(pattern)
+    cache.search_with_source(pattern)
+  end
+
   def initialize # :nodoc:
     @cache_data = nil
     @cache_file = nil
@@ -121,6 +126,23 @@ class Gem::SourceInfoCache
       next unless Gem.sources.include? source_uri
       sic_entry.source_index.search pattern
     end.flatten.compact
+  end
+
+  # Searches all source indexes for +pattern+.  Returns an Array of pairs
+  # containing the Gem::Specification found and the source_uri it was found
+  # at.
+  def search_with_source(pattern)
+    results = []
+
+    cache_data.map do |source_uri, sic_entry|
+      next unless Gem.sources.include? source_uri
+
+      sic_entry.source_index.search(pattern).each do |spec|
+        results << [spec, source_uri]
+      end
+    end
+
+    results
   end
 
   # Mark the cache as updated (i.e. dirty).

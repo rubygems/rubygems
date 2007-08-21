@@ -217,6 +217,17 @@ class TestGemSourceInfoCache < RubyGemTestCase
     assert_equal [], @sic.search(/nonexistent/)
   end
 
+  def test_search_with_source
+    si = Gem::SourceIndex.new @gem1.full_name => @gem1
+    cache_data = {
+      'http://gems.example.com' => Gem::SourceInfoCacheEntry.new(si, nil)
+    }
+    @sic.instance_variable_set :@cache_data, cache_data
+
+    assert_equal [[@gem1, 'http://gems.example.com']],
+                 @sic.search_with_source(//)
+  end
+
   def test_system_cache_file
     assert_equal File.join(Gem.dir, "source_cache"), @sic.system_cache_file
   end

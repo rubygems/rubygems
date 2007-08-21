@@ -7,6 +7,7 @@
 require 'time'
 require 'rubygems'
 require 'rubygems/version'
+require 'rubygems/platform'
 
 class Time # :nodoc:
   def self.today
@@ -15,19 +16,6 @@ class Time # :nodoc:
 end
 
 module Gem
-  
-  # == Gem::Platform
-  #
-  # Available list of platforms for targeting Gem installations.
-  # Platform::RUBY is the default platform (pure Ruby Gem).
-  #
-  module Platform
-    RUBY = 'ruby'
-    WIN32 = 'mswin32'
-    LINUX_586 = 'i586-linux'
-    DARWIN = 'powerpc-darwin'
-    CURRENT = 'current'
-  end
 
   # == Gem::Specification
   #
@@ -287,10 +275,30 @@ module Gem
     end
 
     overwrite_accessor :platform= do |platform|
-      # Checks the provided platform for the special value
-      # Platform::CURRENT and changes it to be binary specific to the
-      # current platform (i386-mswin32, etc). 
-      @platform = (platform == Platform::CURRENT ? RUBY_PLATFORM : platform)
+      case platform
+      when Platform::CURRENT then
+        @platform = Gem::Platform.local
+      when Array then
+        unless platform.length == 3 then
+          raise Gem::Exception,
+            "invalid platform #{platform.inspect}, see Gem::Platform"
+        end
+        @platform = platform
+
+      # legacy constants
+      when nil, Platform::RUBY then
+        @platform = Gem::Platform::RUBY
+      when Platform::WIN32 then
+        @platform = Gem::Platform::MSWIN32
+      when Platform::LINUX_586 then
+        @platform = Gem::Platform::X86_LINUX
+      when Platform::DARWIN then
+        @platform = Gem::Platform::PPC_DARWIN
+
+      else
+        raise Gem::Exception,
+          "invalid platform #{platform.inspect}, see Gem::Platform"
+      end
     end
 
     overwrite_accessor :required_ruby_version= do |value|
@@ -510,11 +518,13 @@ module Gem
     # default Ruby platform).
     #
     def full_name
-      if platform == Gem::Platform::RUBY || platform.nil?
+      if platform == Gem::Platform::RUBY or platform.nil? then
         "#{@name}-#{@version}"
-      else
+      elsif String === platform then
         "#{@name}-#{@version}-#{platform}"
-      end 
+      else
+        "#{@name}-#{@version}-#{platform.join '-'}"
+      end
     end
     
     # The full path to the gem (install path + full name).

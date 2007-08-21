@@ -92,6 +92,7 @@ module Gem
 
   @configuration = nil
   @loaded_specs = {}
+  @platforms = nil
   @sources = []
 
   class << self
@@ -110,6 +111,10 @@ module Gem
       end
     end
 
+    def platforms
+      @platfoms ||= [Gem::Platform::RUBY, Gem::Platform.local]
+    end
+
     # Returns an Array of sources to fetch remote gems from.  If the sources
     # list is empty, attempts to load the "sources" gem, then uses
     # default_sources if it is not installed.
@@ -122,6 +127,7 @@ module Gem
           @sources = default_sources
         end
       end
+
       @sources
     end
 
@@ -479,7 +485,6 @@ module Gem
 
 end
 
-
 # Modify the non-gem version of datadir to handle gem package names.
 
 require 'rbconfig/datadir'
@@ -504,5 +509,7 @@ require 'rubygems/dependency'
 require 'rubygems/custom_require'
 require 'rubygems/gem_path_searcher' # Needed for Kernel#gem
 require 'rubygems/source_index' # Needed for Kernel#gem
+require 'rubygems/platform'
+
 require 'rubygems/builder' # Needed for rake's package task.
 

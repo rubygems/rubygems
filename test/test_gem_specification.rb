@@ -381,6 +381,16 @@ end
     assert_kind_of Integer, @a0_0_1.hash
   end
 
+  def test_full_name
+    assert_equal 'a-0.0.1', @a0_0_1.full_name
+
+    @a0_0_1.platform = 'current'
+    assert_equal 'a-0.0.1-x86-darwin-8', @a0_0_1.full_name
+
+    @a0_0_1.instance_variable_set :@platform, 'mswin32'
+    assert_equal 'a-0.0.1-mswin32', @a0_0_1.full_name, 'legacy'
+  end
+
   def test_has_rdoc_eh
     assert_equal true, @a0_0_1.has_rdoc?
   end
@@ -403,6 +413,44 @@ end
 
   def test_platform
     assert_equal Gem::Platform::RUBY, @a0_0_1.platform
+  end
+
+  def test_platform_equals
+    @a0_0_1.platform = Gem::Platform::RUBY
+    assert_equal Gem::Platform::RUBY, @a0_0_1.platform
+
+    @a0_0_1.platform = Gem::Platform::CURRENT
+    assert_equal ['x86', 'darwin', '8'], @a0_0_1.platform
+
+    @a0_0_1.platform = nil
+    assert_equal Gem::Platform::RUBY, @a0_0_1.platform
+  end
+
+  def test_platform_equals_bad
+    assert_raise Gem::Exception do @a0_0_1.platform = Object.new end
+
+    assert_raise Gem::Exception do @a0_0_1.platform = [] end
+    assert_raise Gem::Exception do @a0_0_1.platform = [1] end
+    assert_raise Gem::Exception do @a0_0_1.platform = [1, 2] end
+    assert_raise Gem::Exception do @a0_0_1.platform = [1, 2, 3, 4] end
+
+    e = assert_raise Gem::Exception do
+      @a0_0_1.platform = "my-custom-platform"
+    end
+
+    assert_equal 'invalid platform "my-custom-platform", see Gem::Platform',
+                 e.message
+  end
+
+  def test_platform_equals_legacy
+    @a0_0_1.platform = Gem::Platform::WIN32
+    assert_equal ['x86', 'mswin32', nil], @a0_0_1.platform
+
+    @a0_0_1.platform = Gem::Platform::LINUX_586
+    assert_equal ['x86', 'linux', nil], @a0_0_1.platform
+
+    @a0_0_1.platform = Gem::Platform::DARWIN
+    assert_equal ['powerpc', 'darwin', nil], @a0_0_1.platform
   end
 
   def test_require_paths

@@ -66,7 +66,8 @@ class TestGemDependencyList < RubyGemTestCase
   end
 
   def test_dependency_order_circle
-    util_circle
+    @a1.add_dependency 'c', '>= 1'
+    @deplist.add @a1, @b1, @c1
 
     order = @deplist.dependency_order
 
@@ -91,17 +92,6 @@ class TestGemDependencyList < RubyGemTestCase
     order = @deplist.dependency_order
 
     assert_equal %w[c-2 a-1], order.map { |s| s.full_name }
-  end
-
-  def test_fill_dependencies
-    util_setup_source_info_cache @a1, @a2, @a3, @b1, @b2, @c1, @c2, @d1
-
-    @deplist.add @d1
-
-    @deplist.fill_dependencies
-
-    assert_equal %w[b-2 a-3 d-1 c-2],
-                 @deplist.dependency_order.map { |s| s.full_name }
   end
 
   def test_find_name
@@ -207,12 +197,6 @@ class TestGemDependencyList < RubyGemTestCase
     end
 
     assert order.empty?
-  end
-
-  # a1 -> c1 -> b1 -> a1
-  def util_circle
-    @a1.add_dependency 'c', '>= 1'
-    @deplist.add @a1, @b1, @c1
   end
 
   # d1 -> b1 -> a1

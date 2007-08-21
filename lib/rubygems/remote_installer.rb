@@ -75,7 +75,7 @@ module Gem
       end
       @source_index_hash
     end
-    
+
     # Finds the Gem::Specification objects and the corresponding source URI
     # for gems matching +gem_name+ and +version_requirement+
     def specs_n_sources_matching(gem_name, version_requirement)
@@ -150,7 +150,7 @@ module Gem
 
     # Install all the given dependencies.  Returns an array of
     # Gem::Specification objects, one for each dependency installed.
-    # 
+    #
     # TODO: For now, we recursively install, but this is not the right
     # way to do things (e.g.  if a package fails to download, we
     # shouldn't install anything).
@@ -186,7 +186,7 @@ module Gem
         out.write(body)
       end
     end
-    
+
     def new_installer(gem)
       return Installer.new(gem, @options)
     end

@@ -215,6 +215,10 @@ class TestGem < RubyGemTestCase
     assert_equal @additional + [Gem.dir], Gem.path
   end
 
+  def test_self_platforms
+    assert_equal [Gem::Platform::RUBY, Gem::Platform.local], Gem.platforms
+  end
+
   def test_self_required_location
     util_make_gems
 

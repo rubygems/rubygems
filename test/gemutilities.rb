@@ -74,9 +74,17 @@ class RubyGemTestCase < Test::Unit::TestCase
     Gem.configuration.verbose = true
 
     Gem.sources.replace %w[http://gems.example.com]
+
+    @orig_target_cpu = Config::CONFIG['target_cpu']
+    @orig_target_os = Config::CONFIG['target_os']
+
+    util_set_target 'i686', 'darwin8.10.1'
   end
 
   def teardown
+    Config::CONFIG['target_cpu'] = @orig_target_cpu
+    Config::CONFIG['target_os'] = @orig_target_os
+
     if defined? Gem::RemoteFetcher then
       Gem::RemoteFetcher.instance_variable_set :@fetcher, nil
     end
@@ -190,6 +198,16 @@ class RubyGemTestCase < Test::Unit::TestCase
     [@a0_0_1, @a0_0_2, @b0_0_2, @c1_2].each { |spec| util_build_gem spec }
 
     Gem.source_index = nil
+  end
+
+  ##
+  # Set the platform to +cpu+ and +os+
+
+  def util_set_target(cpu, os)
+    Config::CONFIG['target_cpu'] = cpu
+    Config::CONFIG['target_os'] = os
+
+    Gem::Platform.local.replace Gem::Platform.normalize(cpu, os)
   end
 
   def util_setup_fake_fetcher

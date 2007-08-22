@@ -140,6 +140,20 @@ class TestGemSourceIndex < RubyGemTestCase
 
     assert_equal [], @source_index.search("bogusstring")
     assert_equal [], @source_index.search("gem_one", "= 3.2.1")
+
+    @a1 = quick_gem 'a', '1'
+    @a2 = quick_gem 'a', '2'
+
+    source_index = Gem::SourceIndex.new @a1.full_name => @a1,
+                                        @a2.full_name => @a2
+
+    assert_equal [@a1], source_index.search(@a1.name, '= 1')
+
+    r1 = Gem::Requirement.create '= 1'
+    assert_equal [@a1], source_index.search(@a1.name, r1)
+
+    dep = Gem::Dependency.new @a1.name, r1
+    assert_equal [@a1], source_index.search(dep)
   end
 
   def test_search_empty_cache

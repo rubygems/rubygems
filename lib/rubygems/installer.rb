@@ -15,6 +15,10 @@ require 'rubygems/ext'
 # The installer class processes RubyGem .gem files and installs the
 # files contained in the .gem into the Gem.path.
 #
+# Gem::Installer does the work of putting files in all the right places on the
+# filesystem including unpacking the gem into its gem dir, installing the
+# gemspec in the specifications dir, storing the cached gem in the cache dir,
+# and installing either wrappers or symlinks for executables.
 class Gem::Installer
 
   ##
@@ -25,10 +29,13 @@ class Gem::Installer
   include Gem::UserInteraction
 
   ##
-  # Constructs an Installer instance
+  # Constructs an Installer instance that will install the gem located at
+  # +gem+.  +options+ is a Hash with the following keys:
   #
-  # gem:: [String] The file name of the gem
-  #
+  # :env_shebang:: Use /usr/bin/env in bin wrappers.
+  # :ignore_dependencies:: Don't raise if a dependency is missing.
+  # :security_policy:: Use the specified security policy.  See Gem::Security
+  # :wrappers:: Install wrappers if true, symlinks if false.
   def initialize(gem, options={})
     @gem = gem
 
@@ -98,6 +105,7 @@ class Gem::Installer
     build_extensions
     write_spec
 
+    # HACK remove?  Isn't this done in multiple places?
     cached_gem = File.join @gem_home, "cache", @gem.split(/\//).pop
     unless File.exist? cached_gem then
       FileUtils.cp @gem, File.join(@gem_home, "cache")
@@ -253,7 +261,7 @@ class Gem::Installer
                        Config::CONFIG['ruby_install_name'])
 
       File.open(path, "rb") do |file|
-        first_line = file.readlines("\n").first
+        first_line = file.readlines("\n").first # HACK use each_line
         if first_line =~ /^#!/ then
           # Preserve extra words on shebang line, like "-w".  Thanks RPA.
           shebang = first_line.sub(/\A\#!\s*\S*ruby\S*/, "#!#{ruby}")

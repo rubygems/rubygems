@@ -2,6 +2,7 @@ require 'test/unit'
 require 'test/gemutilities'
 require 'rubygems'
 require 'rubygems/gem_openssl'
+require 'pathname'
 
 class TestGem < RubyGemTestCase
 
@@ -23,6 +24,18 @@ class TestGem < RubyGemTestCase
     ]
 
     assert_equal expected, Gem.all_load_paths.sort
+  end
+
+  def test_self_bindir
+    assert_equal File.join(@gemhome, 'bin'), Gem.bindir
+    assert_equal File.join(@gemhome, 'bin'), Gem.bindir(Gem.dir)
+    assert_equal File.join(@gemhome, 'bin'), Gem.bindir(Pathname.new(Gem.dir))
+  end
+
+  def test_self_bindir_default_dir
+    default = Gem.default_dir
+    assert_equal Config::CONFIG['bindir'], Gem.bindir(default)
+    assert_equal Config::CONFIG['bindir'], Gem.bindir(Pathname.new(default))
   end
 
   def test_self_clear_paths

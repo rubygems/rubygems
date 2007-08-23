@@ -262,10 +262,13 @@ module Gem
       @test_files = [] unless defined? @test_files
       @test_files << val
     end
- 
-    # RUNTIME attributes (not persisted) -----------------------------
-    
+
+    # true when this gemspec has been loaded from a specifications directory.
+    # This attribute is not persisted.
+
     attr_writer :loaded
+
+    # Path this gemspec was loaded from.  This attribute is not persisted.
     attr_accessor :loaded_from
 
     # Special accessor behaviours (overwriting default) --------------

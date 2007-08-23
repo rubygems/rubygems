@@ -47,8 +47,9 @@ class Gem::Installer
 
   ##
   # Installs the gem into +gem_home+ and returns a Gem::Specification for
-  # the installed gem.  +force+ overrides all version checks and security
-  # policy checks, except for a signed-gems-only policy.
+  # the installed gem and returns the loaded gemspec.  +force+ overrides all
+  # version checks and security policy checks, except for a signed-gems-only
+  # policy.
   #
   # The installation will install in the following structure:
   #
@@ -92,8 +93,8 @@ class Gem::Installer
       end
     end
 
-    raise Gem::FilePermissionError, @gem_home unless
-      File.writable? @gem_home
+    FileUtils.mkdir_p @gem_home unless File.directory? @gem_home
+    raise Gem::FilePermissionError, @gem_home unless File.writable? @gem_home
 
     Gem.ensure_gem_subdirectories @gem_home
 

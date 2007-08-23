@@ -1,3 +1,13 @@
+2007-08-22  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/dependency_installer.rb: Don't reinstall dependencies
+	existing in the install dir.  Don't install dependencies for older
+	versions of the gem we're installing.  #installed_gems now contains
+	loaded gemspecs.  Always prefer local gems.
+	* lib/rubygems/commands/install_command.rb: Switch to
+	Gem::DependencyInstaller.  Warn when -y is given, it will be removed.
+	* lib/rubygems.rb: Gem.bindir handles Pathname correctly.
+
 2007-08-21  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/dependency_installer.rb: Add installation from local

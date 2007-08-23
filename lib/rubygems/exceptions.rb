@@ -40,13 +40,6 @@ class Gem::InstallError < Gem::Exception; end
 # Potentially raised when a specification is validated.
 class Gem::InvalidSpecificationException < Gem::Exception; end
 
-##
-# Signals that local installation will not proceed, not that it has been
-# tried and failed.
-#--
-# TODO: better name.
-class Gem::LocalInstallationError < Gem::Exception; end
-
 class Gem::OperationNotSupportedError < Gem::Exception; end
 
 ##

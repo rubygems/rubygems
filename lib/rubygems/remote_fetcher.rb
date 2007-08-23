@@ -46,11 +46,6 @@ class Gem::RemoteFetcher
     raise FetchError, "timed out fetching #{uri}"
   rescue IOError, SocketError, SystemCallError => e
     raise FetchError, "#{e.class} reading #{uri}"
-  rescue
-    old_uri = uri
-    uri = uri.downcase
-    retry if old_uri != uri
-    raise
   end
 
   # Returns the size of +uri+ in bytes.
@@ -131,7 +126,7 @@ class Gem::RemoteFetcher
         connection_options[:proxy_http_basic_authentication] = [http_proxy_url, unescape(@proxy_uri.user)||'', unescape(@proxy_uri.password)||'']
       end
 
-      uri = URI.parse uri
+      uri = URI.parse uri unless URI::Generic === uri
       unless uri.nil? || uri.user.nil? || uri.user.empty? then
         connection_options[:http_basic_authentication] =
           [unescape(uri.user), unescape(uri.password)]

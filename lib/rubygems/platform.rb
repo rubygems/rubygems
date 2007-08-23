@@ -54,18 +54,21 @@ module Gem::Platform
           end
 
     os = case os
-         when /cygwin/ then               [ 'cygwin',  nil ]
-         when /darwin(\d+)?/ then         [ 'darwin',  $1  ]
-         when /freebsd(\d+)/ then         [ 'freebsd', $1  ]
-         when /^java$/ then               [ 'java',    nil ]
-         when /^java([\d.]*)/ then        [ 'java',    $1  ]
-         when /linux/ then                [ 'linux',   $1  ]
-         when /mingw32/ then              [ 'mingw32', nil ]
-         when /mswin32/ then              [ 'mswin32', nil ]
-         when /openbsd(\d+\.\d+)/ then    [ 'openbsd', $1  ]
-         when /solaris(\d+\.\d+)/ then    [ 'solaris', $1  ]
-         when /^(\w+_platform)(\d+)/ then [ $1,        $2  ] # for testing
-         else                             [ 'unknown', nil ]
+         when /aix(\d+)/ then             [ 'aix',       $1  ]
+         when /cygwin/ then               [ 'cygwin',    nil ]
+         when /darwin(\d+)?/ then         [ 'darwin',    $1  ]
+         when /freebsd(\d+)/ then         [ 'freebsd',   $1  ]
+         when /hpux(\d+)/ then            [ 'hpux',      $1  ]
+         when /^java$/ then               [ 'java',      nil ]
+         when /^java([\d.]*)/ then        [ 'java',      $1  ]
+         when /linux/ then                [ 'linux',     $1  ]
+         when /mingw32/ then              [ 'mingw32',   nil ]
+         when /mswin32/ then              [ 'mswin32',   nil ]
+         when /netbsdelf/ then            [ 'netbsdelf', nil ]
+         when /openbsd(\d+\.\d+)/ then    [ 'openbsd',   $1  ]
+         when /solaris(\d+\.\d+)/ then    [ 'solaris',   $1  ]
+         when /^(\w+_platform)(\d+)/ then [ $1,          $2  ] # for testing
+         else                             [ 'unknown',   nil ]
          end
 
     [cpu, os].flatten

@@ -1,3 +1,8 @@
+2007-08-23  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/platform.rb: Add HPUX, AIX and NetBSD.  Thanks to
+	Daniel Berger, Yutaka KANEMOTO and Andre Nathan respectively.
+
 2007-08-22  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/dependency_installer.rb: Don't reinstall dependencies

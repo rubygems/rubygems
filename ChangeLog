@@ -3,10 +3,13 @@
 	* lib/rubygems/dependency_installer.rb: Don't reinstall dependencies
 	existing in the install dir.  Don't install dependencies for older
 	versions of the gem we're installing.  #installed_gems now contains
-	loaded gemspecs.  Always prefer local gems.
+	loaded gemspecs.  Always prefer local gems.  Handle globs correctly.
+	All deps are now installed into the install_dir.
 	* lib/rubygems/commands/install_command.rb: Switch to
 	Gem::DependencyInstaller.  Warn when -y is given, it will be removed.
-	* lib/rubygems.rb: Gem.bindir handles Pathname correctly.
+	Try our best to install everything the user asked.
+	* lib/rubygems.rb: Gem.bindir now handles Pathname correctly.
+	* lib/rubygems/remote_fetcher.rb: Don't downcase anymore.
 
 2007-08-21  Eric Hodel  <drbrain@segment7.net>
 

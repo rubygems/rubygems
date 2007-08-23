@@ -31,12 +31,12 @@ class Gem::Commands::InstallCommand < Gem::Command
   end
 
   def usage
-    "#{program_name} GEMNAME [options]
- or: #{program_name} GEMNAME [options] -- --build-flags"
+    "#{program_name} GEMNAME [...] [options]
+ or: #{program_name} GEMNAME [...] [options] -- --build-flags"
   end
 
   def arguments
-    "GEMNAME   name of gem to install"
+    "GEMNAME [...]   names of gems to install"
   end
 
   def defaults_str

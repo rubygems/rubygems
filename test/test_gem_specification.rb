@@ -551,7 +551,8 @@ end
       @a0_0_1.validate
     end
 
-    assert_equal 'expected RubyGems version 0.9.4.3, was 3', e.message
+    assert_equal "expected RubyGems version #{Gem::RubyGemsVersion}, was 3",
+                 e.message
   end
 
   def test_version

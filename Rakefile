@@ -192,14 +192,9 @@ end
 
 # --------------------------------------------------------------------
 
-begin
+begin # rcov
   require 'rcov/rcovtask'
-  HAVE_RCOV = true
-rescue LoadError
-  HAVE_RCOV = false
-end
 
-if HAVE_RCOV
   Rcov::RcovTask.new do |t|
     t.libs << "test"
     t.rcov_opts = ['-xRakefile', '-xrakefile', '-xpublish.rf', '--text-report']
@@ -208,6 +203,7 @@ if HAVE_RCOV
     ]
     t.verbose = true
   end
+rescue LoadError
 end
 
 # --------------------------------------------------------------------

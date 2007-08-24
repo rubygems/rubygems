@@ -110,7 +110,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
   def test_install_local
     FileUtils.mv @a1_gem, @tempdir
     inst = nil
-    
+
     Dir.chdir @tempdir do
       inst = Gem::DependencyInstaller.new 'a-1.gem'
       inst.install
@@ -341,6 +341,22 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
     assert_equal File.join(@gemhome, 'cache', "#{@a1.full_name}.gem"),
                  inst.download(@a1, local_path)
+  end
+
+  def test_download_gem_local_read_only
+    FileUtils.mv @a1_gem, @tempdir
+    local_path = File.join @tempdir, "#{@a1.full_name}.gem"
+    inst = nil
+    File.chmod 0555, File.join(@gemhome, 'cache')
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new 'a'
+    end
+
+    assert_equal File.join(@tempdir, "#{@a1.full_name}.gem"),
+                 inst.download(@a1, local_path)
+  ensure
+    File.chmod 0755, File.join(@gemhome, 'cache')
   end
 
   def test_download_gem_unsupported

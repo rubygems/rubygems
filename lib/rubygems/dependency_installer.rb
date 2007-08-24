@@ -119,7 +119,11 @@ class Gem::DependencyInstaller
         end
       end
     when nil, 'file' then # TODO test for local overriding cache
-      FileUtils.cp source_uri.to_s, local_gem_path
+      begin
+        FileUtils.cp source_uri.to_s, local_gem_path
+      rescue Errno::EACCES
+        local_gem_path = source_uri.to_s
+      end
     else
       raise Gem::InstallError, "unsupported URI scheme #{source_uri.scheme}"
     end

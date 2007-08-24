@@ -5,6 +5,8 @@
 	* lib/rubygems/installer.rb: Move all option setting to #initialize to
 	make `gem pristine` work again.
 	* lib/rubygems/commands/environment_command.rb: Include platforms.
+	* lib/rubygems/dependency_installer.rb: Support local non-root
+	installation.
 
 2007-08-22  Eric Hodel  <drbrain@segment7.net>
 

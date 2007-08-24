@@ -234,10 +234,11 @@
 
 2007-07-22  Chad Fowler  <chad@chadfowler.com>
 
-        * lib/rubygems/gem_commands.rb: Added another example to the gem example output
-        (Gile Bowkett)
-        * test/test_documentation_generation.rb, lib/rubygems/doc_manager.rb: Added a test for
-        documentation generation and fixed a bug when doc location is not writable.
+	* lib/rubygems/gem_commands.rb: Added another example to the gem
+	example output (Gile Bowkett)
+	* test/test_documentation_generation.rb, lib/rubygems/doc_manager.rb:
+	Added a test for documentation generation and fixed a bug when doc
+	location is not writable.
 
 2007-06-16  Eric Hodel  <drbrain@segment7.net>
 

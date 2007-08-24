@@ -24,6 +24,8 @@ class TestGemCommandsEnvironmentCommand < RubyGemTestCase
     assert_match %r|RUBY VERSION: \d\.\d\.\d \(.*\) \[.*\]|, @ui.output
     assert_match %r|INSTALLATION DIRECTORY: #{@gemhome}|, @ui.output
     assert_match %r|RUBY EXECUTABLE:.*ruby|, @ui.output
+    assert_match %r|RUBYGEMS PLATFORMS:|, @ui.output
+    assert_match %r|- #{Gem::Platform.local.inspect}|, @ui.output
     assert_match %r|GEM PATHS:|, @ui.output
     assert_match %r|- #{@gemhome}|, @ui.output
     assert_match %r|GEM CONFIGURATION:|, @ui.output

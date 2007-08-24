@@ -57,6 +57,11 @@ class Gem::Commands::EnvironmentCommand < Gem::Command
       ruby_exe = File.join Config::CONFIG['bindir'], ruby_exe_name
       out << "  - RUBY EXECUTABLE: #{ruby_exe}\n"
 
+      out << "  - RUBYGEMS PLATFORMS:\n"
+      Gem.platforms.each do |platform|
+        out << "    - #{platform.inspect}\n"
+      end
+
       out << "  - GEM PATHS:\n"
       Gem.path.each do |p|
         out << "     - #{p}\n"

@@ -178,11 +178,13 @@ class Gem::DependencyInstaller
 
       inst = Gem::Installer.new local_gem_path,
                                 :env_shebang => @env_shebang,
+                                :force => @force,
                                 :ignore_dependencies => @ignore_dependencies,
+                                :install_dir => @install_dir,
                                 :security_policy => @security_policy,
                                 :wrappers => @wrappers
 
-      spec = inst.install @force, @install_dir
+      spec = inst.install
 
       @installed_gems << spec
     end

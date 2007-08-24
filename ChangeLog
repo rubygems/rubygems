@@ -2,6 +2,8 @@
 
 	* lib/rubygems/platform.rb: Add HPUX, AIX and NetBSD.  Thanks to
 	Daniel Berger, Yutaka KANEMOTO and Andre Nathan respectively.
+	* lib/rubygems/installer.rb: Move all option setting to #initialize to
+	make `gem pristine` work again.
 
 2007-08-22  Eric Hodel  <drbrain@segment7.net>
 

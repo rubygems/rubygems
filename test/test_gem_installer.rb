@@ -27,6 +27,10 @@ class TestGemInstaller < RubyGemTestCase
     @spec = quick_gem "a"
     @gem = File.join @tempdir, "#{@spec.full_name}.gem"
 
+    util_build_gem @spec
+    FileUtils.mv File.join(@gemhome, 'cache', "#{@spec.full_name}.gem"),
+                 @tempdir
+
     @installer = Gem::Installer.new @gem
     @installer.gem_dir = util_gem_dir
     @installer.gem_home = @gemhome
@@ -113,9 +117,13 @@ load 'my_exec'
                  @ui.output
     assert_equal '', @ui.error
 
-    assert_equal "\n", File.read('gem_make.out')
-  ensure
-    FileUtils.rm_f 'gem_make.out'
+    gem_make_out = File.join @gemhome, 'gems', @spec.full_name, 'gem_make.out'
+    expected = <<-EOF
+ruby extconf.rb
+ruby: No such file or directory -- extconf.rb (LoadError)
+    EOF
+
+    assert_equal expected, File.read(gem_make_out)
   end
 
   def test_build_extensions_unsupported
@@ -485,6 +493,7 @@ load 'my_exec'
 
     e = assert_raise Gem::InstallError do
       use_ui @ui do
+        @installer = Gem::Installer.new gem
         @installer.install
       end
     end
@@ -505,8 +514,8 @@ load 'my_exec'
 
   def test_install_force
     use_ui @ui do
-      installer = Gem::Installer.new old_ruby_required
-      installer.install true
+      installer = Gem::Installer.new old_ruby_required, :force => true
+      installer.install
     end
 
     gem_dir = File.join(@gemhome, 'gems', 'old_ruby_required-0.0.1')
@@ -707,10 +716,12 @@ load 'my_exec'
       end
 
       use_ui @ui do
+        FileUtils.rm @gem
         Gem::Builder.new(@spec).build
-        @gem = File.join @tempdir, "#{@spec.full_name}.gem"
       end
     end
+
+    @installer = Gem::Installer.new @gem
   end
 
 end

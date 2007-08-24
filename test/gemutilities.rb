@@ -109,7 +109,8 @@ class RubyGemTestCase < Test::Unit::TestCase
       end
     end
 
-    Gem::Installer.new(File.join(@tempdir, "#{gem.full_name}.gem")).install
+    gem = File.join(@tempdir, "#{gem.full_name}.gem").untaint
+    Gem::Installer.new(gem).install
   end
 
   def prep_cache_files(lc)

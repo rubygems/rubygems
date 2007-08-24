@@ -33,36 +33,24 @@ class Gem::Installer
   # +gem+.  +options+ is a Hash with the following keys:
   #
   # :env_shebang:: Use /usr/bin/env in bin wrappers.
+  # :force:: Overrides all version checks and security policy checks, except
+  #          for a signed-gems-only policy.
   # :ignore_dependencies:: Don't raise if a dependency is missing.
+  # :install_dir:: The directory to install the gem into.
   # :security_policy:: Use the specified security policy.  See Gem::Security
   # :wrappers:: Install wrappers if true, symlinks if false.
   def initialize(gem, options={})
     @gem = gem
 
-    @env_shebang = options.delete :env_shebang
-    @ignore_dependencies = options.delete :ignore_dependencies
-    @security_policy = options.delete :security_policy
-    @wrappers = options.delete :wrappers
-  end
+    options = { :force => false, :install_dir => Gem.dir }.merge options
 
-  ##
-  # Installs the gem into +gem_home+ and returns a Gem::Specification for
-  # the installed gem and returns the loaded gemspec.  +force+ overrides all
-  # version checks and security policy checks, except for a signed-gems-only
-  # policy.
-  #
-  # The installation will install in the following structure:
-  #
-  #   gem_home/
-  #     cache/<gem-version>.gem #=> a cached copy of the installed gem
-  #     gems/<gem-version>/... #=> extracted files
-  #     specifications/<gem-version>.gemspec #=> the Gem::Specification
-  def install(force = false, gem_home = Gem.dir)
+    @env_shebang = options[:env_shebang]
+    @force = options[:force]
+    gem_home = options[:install_dir]
     @gem_home = Pathname.new(gem_home).expand_path
-    # If we're forcing the install then disable security unless the security
-    # policy says that we only install singed gems.
-    @security_policy = nil if force and @security_policy and
-                              not @security_policy.only_signed
+    @ignore_dependencies = options[:ignore_dependencies]
+    @security_policy = options[:security_policy]
+    @wrappers = options[:wrappers]
 
     begin
       @format = Gem::Format.from_file_by_path @gem, @security_policy
@@ -72,7 +60,26 @@ class Gem::Installer
 
     @spec = @format.spec
 
-    unless force then
+    @gem_dir = File.join(@gem_home, "gems", @spec.full_name).untaint
+  end
+
+  ##
+  # Installs the gem and returns a loaded Gem::Specification for the installed
+  # gem.
+  #
+  # The gem will be installed with the following structure:
+  #
+  #   @gem_home/
+  #     cache/<gem-version>.gem #=> a cached copy of the installed gem
+  #     gems/<gem-version>/... #=> extracted files
+  #     specifications/<gem-version>.gemspec #=> the Gem::Specification
+  def install
+    # If we're forcing the install then disable security unless the security
+    # policy says that we only install singed gems.
+    @security_policy = nil if @force and @security_policy and
+                              not @security_policy.only_signed
+
+    unless @force then
       if rrv = @spec.required_ruby_version then
         unless rrv.satisfied_by? Gem::Version.new(RUBY_VERSION) then
           raise Gem::InstallError, "#{@spec.name} requires Ruby version #{rrv}"
@@ -98,7 +105,6 @@ class Gem::Installer
 
     Gem.ensure_gem_subdirectories @gem_home
 
-    @gem_dir = File.join(@gem_home, "gems", @spec.full_name).untaint
     FileUtils.mkdir_p @gem_dir
 
     extract_files
@@ -197,6 +203,7 @@ class Gem::Installer
     raise Gem::FilePermissionError.new(bindir) unless File.writable? bindir
 
     @spec.executables.each do |filename|
+      filename.untaint
       bin_path = File.join @gem_dir, 'bin', filename
       mode = File.stat(bin_path).mode | 0111
       File.chmod mode, bin_path

@@ -387,6 +387,9 @@ end
     @a0_0_1.platform = 'current'
     assert_equal 'a-0.0.1-x86-darwin-8', @a0_0_1.full_name
 
+    @a0_0_1.platform = ['universal', 'darwin', nil]
+    assert_equal 'a-0.0.1-universal-darwin', @a0_0_1.full_name
+
     @a0_0_1.instance_variable_set :@platform, 'mswin32'
     assert_equal 'a-0.0.1-mswin32', @a0_0_1.full_name, 'legacy'
   end

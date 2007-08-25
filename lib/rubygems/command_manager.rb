@@ -129,7 +129,7 @@ module Gem
       begin
         const_name = command_name.capitalize.gsub(/_(.)/) { $1.upcase }
         Gem::Commands.const_get("#{const_name}Command").new
-      rescue
+      rescue NameError
         if retried then
           raise
         else

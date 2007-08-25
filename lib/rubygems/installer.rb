@@ -398,7 +398,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
       raise ArgumentError, "install directory %p not absolute" % @gem_dir
     end
 
-    @gem_dir = @gem_dir.to_str
+    @gem_dir = @gem_dir.to_s
   end
 
 end

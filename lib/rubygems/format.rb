@@ -61,8 +61,8 @@ module Gem
         format.spec = pkg.metadata
         format.file_entries = []
         pkg.each do |entry|
-          format.file_entries << [{"size", entry.size, "mode", entry.mode,
-              "path", entry.full_name}, entry.read]
+          format.file_entries << [{"size" => entry.size, "mode" => entry.mode,
+              "path" => entry.full_name}, entry.read]
         end
       end
       format

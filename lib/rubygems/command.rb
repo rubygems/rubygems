@@ -190,7 +190,7 @@ module Gem
       end
 
       @parser.separator("  Summary:")
-      wrap(@summary, 80 - 4).each do |line|
+      wrap(@summary, 80 - 4).split("\n").each do |line|
         @parser.separator("    #{line.strip}")
       end
 

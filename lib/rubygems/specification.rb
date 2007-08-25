@@ -526,7 +526,7 @@ module Gem
       elsif String === platform then
         "#{@name}-#{@version}-#{platform}"
       else
-        "#{@name}-#{@version}-#{platform.join '-'}"
+        "#{@name}-#{@version}-#{platform.compact.join '-'}"
       end
     end
     

@@ -1,5 +1,14 @@
 2007-08-24  Eric Hodel  <drbrain@segment7.net>
 
+	* lib/rubygems/specification.rb: Fix #full_name for versionless
+	platforms.
+	* lib/rubygems/command_manager.rb: We're only looking for NameError.
+	* lib/rubygems/command.rb: 1.9 fix.
+	* lib/rubygems/format.rb: ditto.
+	* lib/rubygems/installer.rb: ditto.
+
+2007-08-24  Eric Hodel  <drbrain@segment7.net>
+
 	* lib/rubygems/rubygems_version.rb: 0.9.4.4
 
 2007-08-23  Eric Hodel  <drbrain@segment7.net>

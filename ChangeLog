@@ -21,6 +21,10 @@
 	Patch #13589 by Stephen Bannasch.
 	* lib/rubygems/indexer.rb: Fail on missing builder gem only when
 	trying to use the indexer.  Fixes bug #13939 by Bryan Stearns.
+	* lib/rubygems/indexer/indexer.rb: Move Indexer up one level in
+	nesting.
+	* lib/rubygems/indexer/compressor.rb: Only used in
+	Gem::Indexer::AbstractIndexBuilder subclasses, merged there.
 
 2007-08-24  Eric Hodel  <drbrain@segment7.net>
 

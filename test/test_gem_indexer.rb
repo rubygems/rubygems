@@ -6,9 +6,9 @@
 
 require 'test/unit'
 require 'test/gemutilities'
-require 'rubygems/indexer/indexer'
+require 'rubygems/indexer'
 
-class TestGemIndexerIndexer < RubyGemTestCase
+class TestGemIndexer< RubyGemTestCase
 
   def setup
     super
@@ -20,7 +20,7 @@ class TestGemIndexerIndexer < RubyGemTestCase
     cache_gems = File.join @gemhome, 'cache', '*.gem'
     FileUtils.mv Dir[cache_gems], gems
 
-    @indexer = Gem::Indexer::Indexer.new @tempdir
+    @indexer = Gem::Indexer.new @tempdir
   end
 
   def test_initialize

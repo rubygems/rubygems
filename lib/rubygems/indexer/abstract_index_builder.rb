@@ -1,11 +1,11 @@
+require 'zlib'
+
 require 'rubygems/indexer'
 
 # Abstract base class for building gem indicies.  Uses the template pattern
 # with subclass specialization in the +begin_index+, +end_index+ and +cleanup+
 # methods.
 class Gem::Indexer::AbstractIndexBuilder
-
-  include Gem::Indexer::Compressor
 
   # Directory to put index files in
   attr_reader :directory
@@ -44,6 +44,14 @@ class Gem::Indexer::AbstractIndexBuilder
     @file = nil
   end
 
+  # Compress the given file.
+  def compress(filename, ext="rz")
+    zipped = zip File.read(filename)
+    File.open filename + ".#{ext}", "wb" do |file|
+      file.write zipped
+    end
+  end
+
   # Called immediately before the yield in build.  The index file is open and
   # available as @file.
   def start_index
@@ -56,6 +64,16 @@ class Gem::Indexer::AbstractIndexBuilder
 
   # Called from within builder after the index file has been closed.
   def cleanup
+  end
+
+  # Return an uncompressed version of a compressed string.
+  def unzip(string)
+    Zlib::Inflate.inflate(string)
+  end
+
+  # Return a compressed version of the given string.
+  def zip(string)
+    Zlib::Deflate.deflate(string)
   end
 
 end

@@ -6,7 +6,8 @@ require 'rubygems/source_info_cache_entry'
 class Gem::Commands::SourcesCommand < Gem::Command
 
   def initialize
-    super 'sources', 'Manage the sources RubyGems will search for gems'
+    super 'sources',
+          'Manage the sources and cache file RubyGems uses to search for gems'
 
     add_option '-a', '--add SOURCE_URI', 'Add source' do |value, options|
       options[:add] = value
@@ -20,7 +21,8 @@ class Gem::Commands::SourcesCommand < Gem::Command
       options[:remove] = value
     end
 
-    add_option '-c', '--clear-all', 'Remove all sources' do |value, options|
+    add_option '-c', '--clear-all',
+               'Remove all sources (clear the cache)' do |value, options|
       options[:clear_all] = value
     end
   end

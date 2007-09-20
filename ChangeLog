@@ -15,6 +15,10 @@
 	submitted by Daniel Berger.
 	* test/test_gem_specification.rb: Sequel to above.  Patch
 	#13535 submitted by Daniel Berger.
+	* lib/rubygems/source_index.rb: Make the updating cache message more
+	clear.  Patch #12778 submitted by Bil Kleb.
+	* lib/rubygems/server.rb: Allow gem's rdoc-style.css to be used.
+	Patch #13589 by Stephen Bannasch.
 
 2007-08-24  Eric Hodel  <drbrain@segment7.net>
 

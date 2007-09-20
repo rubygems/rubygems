@@ -349,7 +349,7 @@ module Gem
     # Update the cached source index with the missing names.
     def update_with_missing(source_uri, missing_names)
       progress = ui.progress_reporter(missing_names.size,
-        "Need to update #{missing_names.size} gems from #{source_uri}")
+        "Updating metadata for #{missing_names.size} gems from #{source_uri}")
       missing_names.each do |spec_name|
         begin
           spec_uri = source_uri + "/quick/#{spec_name}.gemspec.rz"

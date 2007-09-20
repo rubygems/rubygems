@@ -24,6 +24,8 @@ require 'rubygems'
 #   subdirectories.
 class Gem::Server
 
+  include Gem::UserInteraction
+
   DOC_TEMPLATE = <<-WEBPAGE
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html 
@@ -34,7 +36,7 @@ class Gem::Server
 <head>
   <title>RubyGems Documentation Index</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-  <link rel="stylesheet" href="rdoc-style.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="gem-server-rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body>
   <div id="fileHeader">
@@ -382,6 +384,8 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   def run
     @server.listen nil, @port
 
+    say "Starting gem server on http://localhost:#{@port}/"
+
     WEBrick::Daemon.start if @daemon
 
     @server.mount_proc("/yaml") do |req, res|
@@ -396,7 +400,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     @server.mount_proc("/quick/", &method(:quick))
 
-    @server.mount_proc("/rdoc-style.css") do |req, res|
+    @server.mount_proc("/gem-server-rdoc-style.css") do |req, res|
       res['content-type'] = 'text/css'
       res['date'] = File.stat(@spec_dir).mtime
       res.body << RDOC_CSS

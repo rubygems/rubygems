@@ -78,7 +78,11 @@ class TestGemPlatform < RubyGemTestCase
   end
 
   def test_to_s
-    assert_equal 'x86-darwin-8', Gem::Platform.local.to_s
+    if win_platform? then
+      assert_equal 'x86-mswin32', Gem::Platform.local.to_s
+    else
+      assert_equal 'x86-darwin-8', Gem::Platform.local.to_s
+    end
   end
 
   def test_equals2
@@ -94,7 +98,7 @@ class TestGemPlatform < RubyGemTestCase
     my = Gem::Platform.new %w[cpu my_platform 1]
     other = Gem::Platform.new %w[cpu other_platform 1]
 
-    assert  (my === my)
+    assert(my === my)
     assert !(other === my)
     assert !(my === other)
   end
@@ -105,32 +109,34 @@ class TestGemPlatform < RubyGemTestCase
     x86_darwin8 = Gem::Platform.new 'i686-darwin8.0'
 
     util_set_arch 'powerpc-darwin8'
-    assert  (ppc_darwin8 === Gem::Platform.local), 'powerpc =~ universal'
-    assert  (uni_darwin8 === Gem::Platform.local), 'powerpc =~ universal'
+    assert((ppc_darwin8 === Gem::Platform.local), 'powerpc =~ universal')
+    assert((uni_darwin8 === Gem::Platform.local), 'powerpc =~ universal')
     assert !(x86_darwin8 === Gem::Platform.local), 'powerpc =~ universal'
 
     util_set_arch 'i686-darwin8'
     assert !(ppc_darwin8 === Gem::Platform.local), 'powerpc =~ universal'
-    assert  (uni_darwin8 === Gem::Platform.local), 'x86 =~ universal'
-    assert  (x86_darwin8 === Gem::Platform.local), 'powerpc =~ universal'
+    assert((uni_darwin8 === Gem::Platform.local), 'x86 =~ universal')
+    assert((x86_darwin8 === Gem::Platform.local), 'powerpc =~ universal')
 
     util_set_arch 'universal-darwin8'
-    assert  (ppc_darwin8 === Gem::Platform.local), 'universal =~ ppc'
-    assert  (uni_darwin8 === Gem::Platform.local), 'universal =~ universal'
-    assert  (x86_darwin8 === Gem::Platform.local), 'universal =~ x86'
+    assert((ppc_darwin8 === Gem::Platform.local), 'universal =~ ppc')
+    assert((uni_darwin8 === Gem::Platform.local), 'universal =~ universal')
+    assert((x86_darwin8 === Gem::Platform.local), 'universal =~ x86')
   end
 
   def test_equals3_version
+    util_set_arch 'i686-darwin8'
+
     x86_darwin = Gem::Platform.new ['x86', 'darwin', nil]
     x86_darwin7 = Gem::Platform.new ['x86', 'darwin', '7']
     x86_darwin8 = Gem::Platform.new ['x86', 'darwin', '8']
     x86_darwin9 = Gem::Platform.new ['x86', 'darwin', '9']
 
-    assert_match x86_darwin,  Gem::Platform.local
-    assert_match x86_darwin8, Gem::Platform.local
+    assert((x86_darwin  === Gem::Platform.local), 'x86_darwin === x86_darwin8')
+    assert((x86_darwin8 === Gem::Platform.local), 'x86_darwin8 === x86_darwin8')
 
-    deny_match   x86_darwin7, Gem::Platform.local
-    deny_match   x86_darwin9, Gem::Platform.local
+    assert !(x86_darwin7 === Gem::Platform.local), 'x86_darwin7 === x86_darwin8'
+    assert !(x86_darwin9 === Gem::Platform.local), 'x86_darwin9 === x86_darwin8'
   end
 
   def test_equals_tilde

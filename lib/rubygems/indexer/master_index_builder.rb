@@ -33,8 +33,9 @@ class Gem::Indexer::MasterIndexBuilder < Gem::Indexer::AbstractIndexBuilder
   private
 
   def paranoid(fn, compressed_fn)
-    data = File.read fn
-    compressed_data = File.read compressed_fn
+    data = File.open(fn, 'b') do |fp| fp.read end
+    compressed_data = File.open(compressed_fn, 'b') do |fp| fp.read end
+
     if data != unzip(compressed_data) then
       fail "Compressed file #{compressed_fn} does not match uncompressed file #{fn}"
     end

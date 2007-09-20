@@ -290,7 +290,7 @@ ruby: No such file or directory -- extconf.rb (LoadError)
 
   def test_generate_bin_symlinks
     return if win_platform? #Windows FS do not support symlinks
-    
+
     @installer.wrappers = false
     util_make_exec
     @installer.gem_dir = util_gem_dir
@@ -327,7 +327,7 @@ ruby: No such file or directory -- extconf.rb (LoadError)
 
   def test_generate_bin_symlinks_update_newer
     return if win_platform? #Windows FS do not support symlinks
-    
+
     @installer.wrappers = false
     util_make_exec
     @installer.gem_dir = util_gem_dir
@@ -472,7 +472,7 @@ ruby: No such file or directory -- extconf.rb (LoadError)
     exe = File.join(gemdir, 'bin', 'executable')
     assert File.exist?(exe)
     exe_mode = File.stat(exe).mode & 0111
-    assert_equal 0111, exe_mode, "0%o" % exe_mode
+    assert_equal 0111, exe_mode, "0%o" % exe_mode unless win_platform?
 
     assert File.exist?(File.join(gemdir, 'lib', 'code.rb'))
 
@@ -542,7 +542,7 @@ ruby: No such file or directory -- extconf.rb (LoadError)
     exe = File.join(gemdir, 'bin', 'executable')
     assert File.exist?(exe)
     exe_mode = File.stat(exe).mode & 0111
-    assert_equal 0111, exe_mode, "0%o" % exe_mode
+    assert_equal 0111, exe_mode, "0%o" % exe_mode unless win_platform?
     assert File.exist?(File.join(gemdir, 'lib', 'code.rb'))
 
     assert File.exist?(File.join(@gemhome, 'specifications',
@@ -730,4 +730,5 @@ ruby: No such file or directory -- extconf.rb (LoadError)
   end
 
 end
+
 

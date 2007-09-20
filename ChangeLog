@@ -27,6 +27,7 @@
 	Gem::Indexer::AbstractIndexBuilder subclasses, merged there.
 	* lib/rubygems/command_aids.rb: Merged Gem::CommandAids into
 	Gem::Command since that's the only place it gets used.
+	* misc other files: mswin fixes.  Paired with Daniel Berger.
 
 2007-08-24  Eric Hodel  <drbrain@segment7.net>
 

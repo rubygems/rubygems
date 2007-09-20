@@ -385,8 +385,8 @@ end
     assert_equal 'a-0.0.1', @a0_0_1.full_name
 
     @a0_0_1.platform = 'current'
-    if win_platform?
-      assert_equal 'a-0.0.1-x86-mswin32-', @a0_0_1.full_name
+    if win_platform? then
+      assert_equal 'a-0.0.1-x86-mswin32', @a0_0_1.full_name
     else
       assert_equal 'a-0.0.1-x86-darwin-8', @a0_0_1.full_name
     end

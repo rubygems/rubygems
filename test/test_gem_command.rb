@@ -22,7 +22,9 @@ class TestGemCommand < RubyGemTestCase
 
     Gem::Command.common_options.clear
     Gem::Command.common_options <<  [
-      ['-x', '--exe', 'Execute'], lambda do @xopt = true end
+      ['-x', '--exe', 'Execute'], lambda do |*a|
+        @xopt = true
+      end
     ]
 
     @cmd_name = 'doit'
@@ -37,7 +39,7 @@ class TestGemCommand < RubyGemTestCase
 
     assert_equal added_args, Gem::Command.specific_extra_args(@cmd_name)
 
-    h = @cmd.send :add_extra_args, []
+    h = @cmd.add_extra_args []
 
     assert_equal added_args, h
   end
@@ -49,7 +51,7 @@ class TestGemCommand < RubyGemTestCase
 
     assert_equal added_args, Gem::Command.specific_extra_args(@cmd_name)
 
-    h = @cmd.send :add_extra_args, []
+    h = @cmd.add_extra_args []
 
     assert_equal [], h
   end

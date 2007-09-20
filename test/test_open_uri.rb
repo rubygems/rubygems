@@ -1,6 +1,5 @@
 require 'test/unit'
-require 'rubygems/open-uri'
-#require 'open-uri'
+require 'rubygems/gem_open_uri'
 
 class TestOpenURI < Test::Unit::TestCase
 

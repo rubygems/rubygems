@@ -16,6 +16,14 @@ require 'rubygems/source_info_cache'
 
 require 'test/mockgemui'
 
+if RUBY_VERSION < "1.9" then
+  class Object
+    def send!(*args, &block)
+      send(*args, &block)
+    end
+  end
+end
+
 module Gem
   def self.source_index=(si)
     @@source_index = si

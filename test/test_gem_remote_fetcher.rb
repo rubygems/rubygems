@@ -74,20 +74,22 @@ gems:
 
   PROXY_DATA = SERVER_DATA.gsub(/0.4.11/, '0.4.2')
 
-  PROXY_PORT = 12344
-  SERVER_PORT = 12345
+  # don't let 1.8 and 1.9 autotest collide
+  RUBY_VERSION =~ /(\d+)\.(\d+)\.(\d+)/
+  PROXY_PORT = 12345 + $1.to_i * 100 + $2.to_i * 10 + $3.to_i
+  SERVER_PORT = 23456 + $1.to_i * 100 + $2.to_i * 10 + $3.to_i
 
   def setup
     super
     self.class.start_servers
     self.class.enable_yaml = true
     self.class.enable_zip = false
-    ENV['http_proxy'] = nil
-    ENV['HTTP_PROXY'] = nil
-    ENV['http_proxy_user'] = nil
-    ENV['HTTP_PROXY_USER'] = nil
-    ENV['http_proxy_pass'] = nil
-    ENV['HTTP_PROXY_PASS'] = nil
+    ENV.delete 'http_proxy'
+    ENV.delete 'HTTP_PROXY'
+    ENV.delete 'http_proxy_user'
+    ENV.delete 'HTTP_PROXY_USER'
+    ENV.delete 'http_proxy_pass'
+    ENV.delete 'HTTP_PROXY_PASS'
 
     base_server_uri = "http://localhost:#{SERVER_PORT}"
     @proxy_uri = "http://localhost:#{PROXY_PORT}"
@@ -251,15 +253,17 @@ gems:
     orig_env_http_proxy = ENV['http_proxy']
 
     ENV['HTTP_PROXY'] = ''
-    ENV['http_proxy'] = nil
+    ENV.delete 'http_proxy'
 
     fetcher = Gem::RemoteFetcher.new nil
 
-    assert_equal nil, fetcher.send(:get_proxy_from_env)
+    assert_equal nil, fetcher.send!(:get_proxy_from_env)
 
   ensure
-    ENV['HTTP_PROXY'] = orig_env_HTTP_PROXY
-    ENV['http_proxy'] = orig_env_http_proxy
+    orig_env_HTTP_PROXY.nil? ? ENV.delete('HTTP_PROXY') :
+                               ENV['HTTP_PROXY'] = orig_env_HTTP_PROXY
+    orig_env_http_proxy.nil? ? ENV.delete('http_proxy') :
+                               ENV['http_proxy'] = orig_env_http_proxy
   end
 
   def test_implicit_no_proxy
@@ -305,6 +309,7 @@ gems:
 
   def test_no_zip
     use_ui @ui do
+      self.class.enable_zip = false
       fetcher = Gem::RemoteFetcher.new nil
       assert_error { fetcher.fetch_path(@server_z_uri) }
     end
@@ -373,7 +378,7 @@ gems:
               res['Content-Type'] = 'text/plain'
               res['content-length'] = data.size
             else
-              res.code = "404"
+              res.status = "404"
               res.body = "<h1>NOT FOUND</h1>"
               res['Content-Type'] = 'text/html'
             end
@@ -383,7 +388,7 @@ gems:
               res.body = Zlib::Deflate.deflate(data)
               res['Content-Type'] = 'text/plain'
             else
-              res.code = "404"
+              res.status = "404"
               res.body = "<h1>NOT FOUND</h1>"
               res['Content-Type'] = 'text/html'
             end

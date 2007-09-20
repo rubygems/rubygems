@@ -484,14 +484,13 @@ module Gem::Package
       @tarreader.each do |entry|
         case entry.full_name
         when "metadata"
-          # (GS) Changed to line below: @metadata = YAML.load(entry.read) rescue nil
           @metadata = load_gemspec(entry.read)
           has_meta = true
           break
         when "metadata.gz"
           begin
-            # if we have a security_policy, then pre-read the
-            # metadata file and calculate it's digest
+            # if we have a security_policy, then pre-read the metadata file
+            # and calculate it's digest
             sio = nil
             if security_policy
               Gem.ensure_ssl_available
@@ -502,7 +501,6 @@ module Gem::Package
 
             gzis = Zlib::GzipReader.new(sio || entry)
             # YAML wants an instance of IO
-            # (GS) Changed to line below: @metadata = YAML.load(gzis) rescue nil
             @metadata = load_gemspec(gzis)
             has_meta = true
           ensure
@@ -708,7 +706,7 @@ module Gem::Package
             TarWriter.new(os) do |inner_tar_stream|
               klass = class << inner_tar_stream; self end
               if RUBY_VERSION >= "1.9" then
-                klass.funcall(:define_method, :metadata=, &set_meta)
+                klass.send!(:define_method, :metadata=, &set_meta)
               else
                 klass.send(:define_method, :metadata=, &set_meta)
               end

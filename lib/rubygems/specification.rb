@@ -19,8 +19,8 @@ module Gem
 
   # == Gem::Specification
   #
-  # The Specification class contains the metadata for a Gem.  Typically defined in a
-  # .gemspec file or a Rakefile, and looks like this:
+  # The Specification class contains the metadata for a Gem.  Typically
+  # defined in a .gemspec file or a Rakefile, and looks like this:
   #
   #   spec = Gem::Specification.new do |s|
   #     s.name = 'rfoo'
@@ -29,23 +29,24 @@ module Gem
   #     ...
   #   end
   #
-  # There are many <em>gemspec attributes</em>, and the best place to learn about them in
-  # the "Gemspec Reference" linked from the RubyGems wiki.
+  # There are many <em>gemspec attributes</em>, and the best place to learn
+  # about them in the "Gemspec Reference" linked from the RubyGems wiki.
   #
   class Specification
 
     # ------------------------- Specification version contstants.
 
-    # The the version number of a specification that does not specify one (i.e. RubyGems 0.7
-    # or earlier).
+    # The the version number of a specification that does not specify one
+    # (i.e. RubyGems 0.7 or earlier).
     NONEXISTENT_SPECIFICATION_VERSION = -1
 
-    # The specification version applied to any new Specification instances created.  This
-    # should be bumped whenever something in the spec format changes.
+    # The specification version applied to any new Specification instances
+    # created.  This should be bumped whenever something in the spec format
+    # changes.
     CURRENT_SPECIFICATION_VERSION = 1
 
-    # An informal list of changes to the specification.  The highest-valued key should be
-    # equal to the CURRENT_SPECIFICATION_VERSION.
+    # An informal list of changes to the specification.  The highest-valued
+    # key should be equal to the CURRENT_SPECIFICATION_VERSION.
     SPECIFICATION_VERSION_HISTORY = {
       -1 => ['(RubyGems versions up to and including 0.7 did not have versioned specifications)'],
       1  => [
@@ -134,14 +135,16 @@ module Gem
       @@array_attributes << name
       @@attributes << [name, []]
       @@default_value[name] = []
-      module_eval %{
+      code = %{
         def #{name}
           @#{name} ||= []
         end
         def #{name}=(value)
-          @#{name} = value.to_a
+          @#{name} = Array(value)
         end
       }
+
+      module_eval code, __FILE__, __LINE__ - 9
     end
 
     # Same as attribute above, but also records this attribute as mandatory.
@@ -348,9 +351,9 @@ module Gem
     overwrite_accessor :default_executable do
       begin
         if defined? @default_executable and @default_executable
-          result = @default_executable 
+          result = @default_executable
         elsif @executables and @executables.size == 1
-          result = @executables.first
+          result = Array(@executables).first
         else
           result = nil
         end
@@ -366,7 +369,7 @@ module Gem
       end
 
       if defined? @bindir and @bindir then
-        @executables.map {|e| File.join(@bindir, e) }
+        Array(@executables).map {|e| File.join(@bindir, e) }
       else
         @executables
       end
@@ -429,7 +432,7 @@ module Gem
       # each specification instance has its own empty arrays, etc.
       @@attributes.each do |name, default|
         if RUBY_VERSION >= "1.9" then
-          self.funcall "#{name}=", copy_of(default)
+          self.send! "#{name}=", copy_of(default)
         else
           self.send "#{name}=", copy_of(default)
         end
@@ -447,25 +450,29 @@ module Gem
     #
     # 'input' can be anything that YAML.load() accepts: String or IO. 
     #
-    def Specification.from_yaml(input)
-      input = normalize_yaml_input(input)
-      spec = YAML.load(input)
-      if(spec && spec.class == FalseClass) then
+    def self.from_yaml(input)
+      input = normalize_yaml_input input
+      spec = YAML.load input
+
+      if spec && spec.class == FalseClass then
         raise Gem::EndOfYAMLException
       end
 
-      unless Specification === spec
+      unless Gem::Specification === spec then
         raise Gem::Exception, "YAML data doesn't evaluate to gem specification"
       end
-      unless spec.instance_variables.include? '@specification_version' and
+
+      unless (spec.instance_variables.include? '@specification_version' or
+              spec.instance_variables.include? :@specification_version) and
              spec.instance_variable_get :@specification_version
         spec.instance_variable_set :@specification_version, 
-          NONEXISTENT_SPECIFICATION_VERSION
+                                   NONEXISTENT_SPECIFICATION_VERSION
       end
+
       spec
     end 
 
-    def Specification.load(filename)
+    def self.load(filename)
       gemspec = nil
       fail "NESTED Specification.load calls not allowed!" if @@gather
       @@gather = proc { |gs| gemspec = gs }
@@ -477,7 +484,7 @@ module Gem
     end
 
     # Make sure the yaml specification is properly formatted with dashes.
-    def Specification.normalize_yaml_input(input)
+    def self.normalize_yaml_input(input)
       result = input.respond_to?(:read) ? input.read : input
       result = "--- " + result unless result =~ /^--- /
       result

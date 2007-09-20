@@ -62,35 +62,34 @@ class TarTestCase < Test::Unit::TestCase
   end
 
   def header(type, fname, dname, length, mode, checksum = nil)
-#           struct tarfile_entry_posix {
-#             char name[100];   # ASCII + (Z unless filled)
-#             char mode[8];     # 0 padded, octal null
-#             char uid[8];      # ditto
-#             char gid[8];      # ditto
-#             char size[12];    # 0 padded, octal, null
-#             char mtime[12];   # 0 padded, octal, null
-#             char checksum[8]; # 0 padded, octal, null and space
-#             char typeflag[1]; # file: "0"  dir: "5" 
-#             char linkname[100]; # ASCII + (Z unless filled)
-#             char magic[6];      # "ustar\0"
-#             char version[2];    # "00"
-#             char uname[32];     # ASCIIZ
-#             char gname[32];     # ASCIIZ
-#             char devmajor[8];   # 0 padded, octal, null
-#             char devminor[8];   # o padded, octal, null
-#             char prefix[155];   # ASCII + (Z unless filled)
-#           };
-
     checksum ||= " " * 8
-    arr = [ASCIIZ(fname, 100), Z(to_oct(mode, 7)), Z(to_oct(0, 7)), 
-      Z(to_oct(0,7)), Z(to_oct(length, 11)), Z(to_oct(0,11)),
-      checksum, type, "\0" * 100, "ustar\0", "00", ASCIIZ("wheel", 32),
-      ASCIIZ("wheel", 32), Z(to_oct(0,7)), Z(to_oct(0,7)),
-      ASCIIZ(dname, 155) ]
-    arr = arr.join("").split(//).map{|x| x[0]}
-    h = arr.pack("C100C8C8C8C12C12" + # name, mode, uid, gid, size, mtime 
-                 "C8CC100C6C2" + # checksum, typeflag, linkname, magic, version
-                 "C32C32C8C8C155") # uname, gname, devmajor, devminor, prefix
+
+    arr = [                  # struct tarfile_entry_posix
+      ASCIIZ(fname, 100),    # char name[100];     ASCII + (Z unless filled)
+      Z(to_oct(mode, 7)),    # char mode[8];       0 padded, octal null
+      Z(to_oct(0, 7)),       # char uid[8];        ditto
+      Z(to_oct(0, 7)),       # char gid[8];        ditto
+      Z(to_oct(length, 11)), # char size[12];      0 padded, octal, null
+      Z(to_oct(0, 11)),      # char mtime[12];     0 padded, octal, null
+      checksum,              # char checksum[8];   0 padded, octal, null, space
+      type,                  # char typeflag[1];   file: "0"  dir: "5"
+      "\0" * 100,            # char linkname[100]; ASCII + (Z unless filled)
+      "ustar\0",             # char magic[6];      "ustar\0"
+      "00",                  # char version[2];    "00"
+      ASCIIZ("wheel", 32),   # char uname[32];     ASCIIZ
+      ASCIIZ("wheel", 32),   # char gname[32];     ASCIIZ
+      Z(to_oct(0, 7)),       # char devmajor[8];   0 padded, octal, null
+      Z(to_oct(0, 7)),       # char devminor[8];   0 padded, octal, null
+      ASCIIZ(dname, 155)     # char prefix[155];   ASCII + (Z unless filled)
+    ]
+
+    format = "C100C8C8C8C12C12C8CC100C6C2C32C32C8C8C155"
+    h = if RUBY_VERSION >= "1.9" then
+          arr.join
+        else
+          arr = arr.join("").split(//).map{|x| x[0]}
+          arr.pack format
+        end
     ret = h + "\0" * (512 - h.size)
     assert_equal(512, ret.size)
     ret
@@ -219,24 +218,32 @@ class TestTarInput < TarTestCase
 
   def test_each_works
     Gem::Package::TarInput.open(@file) do |is|
-      i = 0
+      count = 0
+
       is.each_with_index do |entry, i|
+        count = i
+
         assert_kind_of(Gem::Package::TarReader::Entry, entry)
         assert_equal(@entry_names[i], entry.name)
         assert_equal(@entry_sizes[i], entry.size)
       end
-      assert_equal(2, i)
-      assert_equal(@spec, is.metadata)
+
+      assert_equal 2, count
+
+      assert_equal @spec, is.metadata
     end
   end
 
   def test_extract_entry_works
     Gem::Package::TarInput.open(@file) do |is|
-      assert_equal(@spec,is.metadata)
-      i = 0
+      assert_equal @spec, is.metadata
+      count = 0
+
       is.each_with_index do |entry, i|
+        count = i
         is.extract_entry "data__", entry
         name = File.join("data__", entry.name)
+
         if entry.is_directory?
           assert File.dir?(name)
         else
@@ -244,13 +251,16 @@ class TestTarInput < TarTestCase
           assert_equal(@entry_sizes[i], File.stat(name).size)
           #FIXME: win32? !!
         end
+
         unless ::Config::CONFIG["arch"] =~ /msdos|win32/i
           assert_equal(@entry_modes[i],
                        File.stat(name).mode & (~SETGID_BIT))
         end
       end
-      assert_equal(2, i)
+
+      assert_equal 2, count
     end
+
     @entry_files.each_with_index do |x, i|
       assert(File.file?(x))
       assert_equal(@entry_contents[i], File.read_b(x))

@@ -18,7 +18,7 @@ class TestGemCommandsQueryCommand < RubyGemTestCase
   def test_execute
     util_setup_source_info_cache @foo_gem
 
-    @cmd.send :handle_options, %w[-r]
+    @cmd.handle_options %w[-r]
 
     use_ui @ui do
       @cmd.execute
@@ -38,7 +38,7 @@ foo (0.0.2)
   def test_execute_details
     util_setup_source_info_cache @foo_gem
 
-    @cmd.send :handle_options, %w[-r -d]
+    @cmd.handle_options %w[-r -d]
 
     use_ui @ui do
       @cmd.execute
@@ -60,7 +60,7 @@ foo (0.0.2)
   def test_execute_no_versions
     util_setup_source_info_cache @foo_gem, @bar_gem
 
-    @cmd.send :handle_options, %w[-r --no-versions]
+    @cmd.handle_options %w[-r --no-versions]
 
     use_ui @ui do
       @cmd.execute

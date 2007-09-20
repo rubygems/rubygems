@@ -127,6 +127,24 @@ class Gem::ConfigFile
     hash.each(&block)
   end
 
+  # Handle the command arguments.
+  def handle_arguments(arg_list)
+    @args = []
+
+    arg_list.each do |arg|
+      case arg
+      when /^--(backtrace|traceback)$/ then
+        @backtrace = true
+      when /^--bench(mark)?$/ then
+        @benchmark = true
+      when /^--debug$/ then
+        $DEBUG = true
+      else
+        @args << arg
+      end
+    end
+  end
+
   # Really verbose mode gives you extra output.
   def really_verbose
     case verbose
@@ -183,26 +201,6 @@ class Gem::ConfigFile
   protected
 
   attr_reader :hash
-
-  private
-
-  # Handle the command arguments.
-  def handle_arguments(arg_list)
-    @args = []
-
-    arg_list.each do |arg|
-      case arg
-      when /^--(backtrace|traceback)$/ then
-        @backtrace = true
-      when /^--bench(mark)?$/ then
-        @benchmark = true
-      when /^--debug$/ then
-        $DEBUG = true
-      else
-        @args << arg
-      end
-    end
-  end
 
 end
 

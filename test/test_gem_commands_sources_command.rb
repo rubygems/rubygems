@@ -12,7 +12,7 @@ class TestGemCommandsSourcesCommand < RubyGemTestCase
 
   def test_execute
     util_setup_source_info_cache
-    @cmd.send :handle_options, []
+    @cmd.handle_options []
 
     use_ui @ui do
       @cmd.execute
@@ -35,7 +35,7 @@ http://gems.example.com
 
     @fetcher.data['http://beta-gems.example.com/yaml'] = @si.to_yaml
 
-    @cmd.send :handle_options, %w[--add http://beta-gems.example.com]
+    @cmd.handle_options %w[--add http://beta-gems.example.com]
 
     util_setup_source_info_cache
 
@@ -53,7 +53,7 @@ http://beta-gems.example.com added to sources
 
     Gem::SourceInfoCache.cache.flush
     assert_equal %w[http://beta-gems.example.com http://gems.example.com],
-                 Gem::SourceInfoCache.cache_data.keys
+                 Gem::SourceInfoCache.cache_data.keys.sort
   end
 
   def test_execute_add_nonexistent_source
@@ -68,7 +68,7 @@ http://beta-gems.example.com added to sources
 
     Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
 
-    @cmd.send :handle_options, %w[--add http://beta-gems.example.com]
+    @cmd.handle_options %w[--add http://beta-gems.example.com]
 
     util_setup_source_info_cache
 
@@ -86,7 +86,7 @@ Error fetching http://beta-gems.example.com:
   end
 
   def test_execute_add_bad_uri
-    @cmd.send :handle_options, %w[--add beta-gems.example.com]
+    @cmd.handle_options %w[--add beta-gems.example.com]
 
     util_setup_source_info_cache
 
@@ -103,7 +103,7 @@ beta-gems.example.com is not a URI
   end
 
   def test_execute_remove
-    @cmd.send :handle_options, %w[--remove http://gems.example.com]
+    @cmd.handle_options %w[--remove http://gems.example.com]
 
     util_setup_source_info_cache
 

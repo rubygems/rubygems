@@ -95,6 +95,27 @@ module Gem
   @platforms = nil
   @sources = []
 
+  # Reset the +dir+ and +path+ values.  The next time +dir+ or +path+
+  # is requested, the values will be calculated from scratch.  This is
+  # mainly used by the unit tests to provide test isolation.
+  #
+  def self.clear_paths
+    @gem_home = nil
+    @gem_path = nil
+    @@source_index = nil
+    MUTEX.synchronize do
+      @searcher = nil
+    end
+  end
+
+  # Returns an Cache of specifications that are in the Gem.path
+  #
+  # return:: [Gem::SourceIndex] Index of installed Gem::Specifications
+  #
+  def self.source_index
+    @@source_index ||= SourceIndex.from_installed_gems
+  end
+
   class << self
 
     attr_reader :loaded_specs
@@ -134,14 +155,6 @@ module Gem
     # An Array of the default sources that come with RubyGems.
     def default_sources
       %w[http://gems.rubyforge.org]
-    end
-
-    # Returns an Cache of specifications that are in the Gem.path
-    #
-    # return:: [Gem::SourceIndex] Index of installed Gem::Specifications
-    #
-    def source_index
-      @@source_index ||= SourceIndex.from_installed_gems
     end
 
     # Provide an alias for the old name.
@@ -311,19 +324,6 @@ module Gem
       raise error
     end
     private :report_activate_error
-
-    # Reset the +dir+ and +path+ values.  The next time +dir+ or +path+
-    # is requested, the values will be calculated from scratch.  This is
-    # mainly used by the unit tests to provide test isolation.
-    #
-    def clear_paths
-      @gem_home = nil
-      @gem_path = nil
-      @@source_index = nil
-      MUTEX.synchronize do
-        @searcher = nil
-      end
-    end
 
     # Use the +home+ and (optional) +paths+ values for +dir+ and +path+.
     # Used mainly by the unit tests to provide environment isolation.

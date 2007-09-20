@@ -64,7 +64,7 @@ class TestGemConfigFile < RubyGemTestCase
   def test_handle_arguments
     args = %w[--backtrace --bunch --of --args here]
 
-    @cfg.send :handle_arguments, args
+    @cfg.handle_arguments args
 
     assert_equal %w[--bunch --of --args here], @cfg.args
   end
@@ -74,7 +74,7 @@ class TestGemConfigFile < RubyGemTestCase
 
     args = %w[--backtrace]
 
-    @cfg.send :handle_arguments, args
+    @cfg.handle_arguments args
 
     assert_equal true, @cfg.backtrace
   end
@@ -84,7 +84,7 @@ class TestGemConfigFile < RubyGemTestCase
 
     args = %w[--benchmark]
 
-    @cfg.send :handle_arguments, args
+    @cfg.handle_arguments args
 
     assert_equal true, @cfg.benchmark
   end
@@ -95,7 +95,7 @@ class TestGemConfigFile < RubyGemTestCase
 
     args = %w[--debug]
 
-    @cfg.send :handle_arguments, args
+    @cfg.handle_arguments args
 
     assert_equal true, $DEBUG
   ensure
@@ -117,7 +117,7 @@ class TestGemConfigFile < RubyGemTestCase
 
     args = %w[--traceback]
 
-    @cfg.send :handle_arguments, args
+    @cfg.handle_arguments args
 
     assert_equal true, @cfg.backtrace
   end

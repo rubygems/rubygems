@@ -165,7 +165,8 @@ ruby: No such file or directory -- extconf.rb (LoadError)
     else
       expected = '/nonexistent'
     end
-    assert_equal expected, @installer.send(:expand_and_validate_gem_dir)
+
+    assert_equal expected, @installer.send!(:expand_and_validate_gem_dir)
   end
 
   def test_extract_files
@@ -397,7 +398,7 @@ ruby: No such file or directory -- extconf.rb (LoadError)
 
     @installer.generate_bin
     installed_exec = File.join(util_inst_bindir, "my_exec")
-    assert_equal true, File.exists?(installed_exec)
+    assert_equal true, File.exist?(installed_exec)
 
     @spec = Gem::Specification.new do |s|
       s.files = ['lib/code.rb']

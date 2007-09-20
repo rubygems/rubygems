@@ -311,6 +311,12 @@ class TestGem < RubyGemTestCase
     $VERBOSE = old_verbose
     new_loaded = $".dup
 
+    if RUBY_VERSION > "1.9" then
+      files = files.map do |file|
+        File.join @gemhome, 'gems', gem.full_name, 'lib', file
+      end
+    end
+
     assert_equal files, (new_loaded - old_loaded)
     assert defined?($LOADED_A)
     assert defined?($LOADED_B)
@@ -336,6 +342,10 @@ class TestGem < RubyGemTestCase
     require_gem name
     $VERBOSE = old_verbose
     new_loaded = $".dup
+
+    if RUBY_VERSION > "1.9" then
+      file = File.join @gemhome, 'gems', gem.full_name, 'lib', file
+    end
 
     assert_equal(Array(file), (new_loaded - old_loaded))
     assert(defined? $LOADED_C)

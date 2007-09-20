@@ -1,3 +1,9 @@
+2007-09-20  Eric Hodel  <drbrain@segment7.net>
+
+	* misc files: Tests pass on 1.9.
+	* test/gemutilities.rb: Added Object#send! stub for 1.8.
+	* test/test_open_uri.rb: Require gem_open_uri.rb to avoid warnings.
+
 2007-09-19  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/platform.rb: Make Gem::Platform a class.

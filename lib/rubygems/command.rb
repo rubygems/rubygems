@@ -177,8 +177,6 @@ module Gem
       end
     end
 
-    private
-
     # Handle the given list of arguments by parsing them and recording
     # the results.
     def handle_options(args)
@@ -202,7 +200,9 @@ module Gem
       result.concat(args)
       result
     end
-    
+
+    private
+
     # Create on demand parser.
     def parser
       create_option_parser if @parser.nil?

@@ -1,13 +1,12 @@
 require 'rubygems/command'
-require 'rubygems/command_aids'
 require 'rubygems/version_option'
 require 'rubygems/uninstaller'
 
 module Gem
   module Commands
     class UninstallCommand < Command
+
       include VersionOption
-      include CommandAids
 
       def initialize
         super 'uninstall', 'Uninstall gems from the local repository',

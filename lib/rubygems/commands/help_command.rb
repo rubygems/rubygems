@@ -1,10 +1,8 @@
 require 'rubygems/command'
-require 'rubygems/command_aids'
 
 module Gem
   module Commands
     class HelpCommand < Command
-      include CommandAids
 
       def initialize
         super('help', "Provide help on the 'gem' command")

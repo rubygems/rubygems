@@ -1,5 +1,4 @@
 require 'rubygems/command'
-require 'rubygems/command_aids'
 require 'rubygems/doc_manager'
 require 'rubygems/install_update_options'
 require 'rubygems/dependency_installer'
@@ -9,7 +8,6 @@ require 'rubygems/version_option'
 
 class Gem::Commands::InstallCommand < Gem::Command
 
-  include Gem::CommandAids
   include Gem::VersionOption
   include Gem::LocalRemoteOptions
   include Gem::InstallUpdateOptions

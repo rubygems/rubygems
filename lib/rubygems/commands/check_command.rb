@@ -1,10 +1,7 @@
 require 'rubygems/command'
-require 'rubygems/command_aids'
 require 'rubygems/validator'
 
 class Gem::Commands::CheckCommand < Gem::Command
-
-  include Gem::CommandAids
 
   def initialize
     super 'check', 'Check installed gems',

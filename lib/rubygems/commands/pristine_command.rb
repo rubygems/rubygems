@@ -1,6 +1,5 @@
 require 'fileutils'
 require 'rubygems/command'
-require 'rubygems/command_aids'
 require 'rubygems/format'
 require 'rubygems/installer'
 require 'rubygems/version_option'
@@ -8,7 +7,6 @@ require 'rubygems/version_option'
 class Gem::Commands::PristineCommand < Gem::Command
 
   include Gem::VersionOption
-  include Gem::CommandAids
 
   def initialize
     super 'pristine',

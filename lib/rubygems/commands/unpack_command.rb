@@ -1,12 +1,10 @@
 require 'fileutils'
 require 'rubygems/command'
-require 'rubygems/command_aids'
 require 'rubygems/installer'
 require 'rubygems/version_option'
 
 class Gem::Commands::UnpackCommand < Gem::Command
 
-  include Gem::CommandAids
   include Gem::VersionOption
 
   def initialize

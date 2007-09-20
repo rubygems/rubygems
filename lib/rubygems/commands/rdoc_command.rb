@@ -1,5 +1,4 @@
 require 'rubygems/command'
-require 'rubygems/command_aids'
 require 'rubygems/version_option'
 require 'rubygems/doc_manager'
 
@@ -7,7 +6,6 @@ module Gem
   module Commands
     class RdocCommand < Command
       include VersionOption
-      include CommandAids
 
       def initialize
         super('rdoc',

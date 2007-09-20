@@ -1,10 +1,7 @@
 require 'rubygems/command'
-require 'rubygems/command_aids'
 require 'rubygems/security'
 
 class Gem::Commands::CertCommand < Gem::Command
-
-  include Gem::CommandAids
 
   def initialize
     super 'cert', 'Adjust RubyGems certificate settings'

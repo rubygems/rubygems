@@ -1,9 +1,6 @@
 require 'rubygems/command'
-require 'rubygems/command_aids'
 
 class Gem::Commands::EnvironmentCommand < Gem::Command
-
-  include Gem::CommandAids
 
   def initialize
     super 'environment', 'Display information about the RubyGems environment'

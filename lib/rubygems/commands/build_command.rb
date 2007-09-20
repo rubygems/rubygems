@@ -1,10 +1,7 @@
 require 'rubygems/command'
-require 'rubygems/command_aids'
 require 'rubygems/builder'
 
 class Gem::Commands::BuildCommand < Gem::Command
-
-  include Gem::CommandAids
 
   def initialize
     super('build', 'Build a gem from a gemspec')

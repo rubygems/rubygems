@@ -3,8 +3,6 @@ require 'rubygems'
 begin
   require 'builder/xchar'
 rescue LoadError
-  fail "Gem::Indexer requires that the XML Builder library be installed:\n" \
-       "\tgem install builder"
 end
 
 module Gem::Indexer

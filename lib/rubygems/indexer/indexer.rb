@@ -22,6 +22,10 @@ class Gem::Indexer::Indexer
 
   # Create an indexer that will index the gems in +directory+.
   def initialize(directory)
+    unless String.respond_to? :to_xs then
+      fail "Gem::Indexer requires that the XML Builder library be installed:" \
+           "\n\tgem install builder"
+    end
     @dest_directory = directory
     @directory = File.join Dir.tmpdir, "gem_generate_index_#{$$}"
 

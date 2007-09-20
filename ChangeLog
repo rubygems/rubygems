@@ -19,6 +19,8 @@
 	clear.  Patch #12778 submitted by Bil Kleb.
 	* lib/rubygems/server.rb: Allow gem's rdoc-style.css to be used.
 	Patch #13589 by Stephen Bannasch.
+	* lib/rubygems/indexer.rb: Fail on missing builder gem only when
+	trying to use the indexer.  Fixes bug #13939 by Bryan Stearns.
 
 2007-08-24  Eric Hodel  <drbrain@segment7.net>
 

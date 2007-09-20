@@ -1,3 +1,10 @@
+2007-09-19  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/platform.rb: Make Gem::Platform a class.
+	* lib/rubygems/specification.rb: Gem::Specification#validate returns
+	true, non-Gem::Platform platforms are no longer allowed.
+	* test/gemutilities.rb: 1.9 compatiblity fixes.
+
 2007-08-24  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb: Fix #full_name for versionless

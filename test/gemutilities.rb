@@ -5,7 +5,7 @@
 # See LICENSE.txt for permissions.
 #++
 
-$SAFE = 1
+at_exit { $SAFE = 1 }
 
 require 'fileutils'
 require 'test/unit/testcase'
@@ -92,9 +92,9 @@ class RubyGemTestCase < Test::Unit::TestCase
 
     FileUtils.rm_rf @tempdir
 
-    ENV['GEMCACHE'] = nil
-    ENV['GEM_HOME'] = nil
-    ENV['GEM_PATH'] = nil
+    ENV.delete 'GEMCACHE'
+    ENV.delete 'GEM_HOME'
+    ENV.delete 'GEM_PATH'
 
     Gem.clear_paths
     Gem::SourceInfoCache.instance_variable_set :@cache, nil
@@ -207,8 +207,12 @@ class RubyGemTestCase < Test::Unit::TestCase
 
   def util_set_arch(arch)
     Config::CONFIG['arch'] = arch
+    platform = Gem::Platform.new arch
 
-    Gem::Platform.local.replace Gem::Platform.normalize(arch)
+    Gem.instance_variable_set :@platforms, nil
+    Gem::Platform.instance_variable_set :@local, nil
+
+    platform
   end
 
   def util_setup_fake_fetcher

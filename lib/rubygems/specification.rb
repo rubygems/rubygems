@@ -281,11 +281,8 @@ module Gem
       case platform
       when Platform::CURRENT then
         @platform = Gem::Platform.local
-      when Array then
-        unless platform.length == 3 then
-          raise Gem::Exception,
-            "invalid platform #{platform.inspect}, see Gem::Platform"
-        end
+
+      when Gem::Platform then
         @platform = platform
 
       # legacy constants
@@ -299,8 +296,7 @@ module Gem
         @platform = Gem::Platform::PPC_DARWIN
 
       else
-        raise Gem::Exception,
-          "invalid platform #{platform.inspect}, see Gem::Platform"
+        @platform = platform
       end
     end
 
@@ -523,13 +519,11 @@ module Gem
     def full_name
       if platform == Gem::Platform::RUBY or platform.nil? then
         "#{@name}-#{@version}"
-      elsif String === platform then
-        "#{@name}-#{@version}-#{platform}"
       else
-        "#{@name}-#{@version}-#{platform.compact.join '-'}"
+        "#{@name}-#{@version}-#{platform}"
       end
     end
-    
+
     # The full path to the gem (install path + full name).
     #
     # return:: [String] the full gem path
@@ -631,19 +625,32 @@ module Gem
     # the checks..
     def validate
       normalize
-      if rubygems_version != RubyGemsVersion
-        raise InvalidSpecificationException.new(%[
-          expected RubyGems version #{RubyGemsVersion}, was #{rubygems_version}
-        ].strip)
+
+      if rubygems_version != RubyGemsVersion then
+        raise Gem::InvalidSpecificationException,
+              "expected RubyGems version #{RubyGemsVersion}, was #{rubygems_version}"
       end
+
       @@required_attributes.each do |symbol|
-        unless self.send(symbol)
-          raise InvalidSpecificationException.new("missing value for attribute #{symbol}")
+        unless self.send symbol then
+          raise Gem::InvalidSpecificationException,
+                "missing value for attribute #{symbol}"
         end
       end 
-      if require_paths.empty?
-        raise InvalidSpecificationException.new("specification must have at least one require_path")
+
+      if require_paths.empty? then
+        raise Gem::InvalidSpecificationException,
+              "specification must have at least one require_path"
       end
+
+      case platform
+      when Gem::Platform, Platform::RUBY then # ok
+      else
+        raise Gem::InvalidSpecificationException,
+              "invalid platform #{platform.inspect}, see Gem::Platform"
+      end
+
+      true
     end
 
     # Normalize the list of files so that:
@@ -725,6 +732,7 @@ module Gem
       when Date, Time        then '%q{' + obj.strftime('%Y-%m-%d') + '}'
       when Numeric           then obj.inspect
       when true, false, nil  then obj.inspect
+      when Gem::Platform     then "Gem::Platform.new(#{obj.to_a.inspect})"
       when Gem::Requirement  then "Gem::Requirement.new(#{obj.to_s.inspect})"
       else raise Exception, "ruby_code case not handled: #{obj.class}"
       end

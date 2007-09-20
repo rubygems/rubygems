@@ -22,18 +22,20 @@ class TestGemDependencyInstaller < RubyGemTestCase
     @d2, @d2_gem = util_gem 'd', '2'
 
     @x1_m, @x1_m_gem = util_gem 'x', '1' do |s|
-      s.platform = %w[cpu my_platform 1]
+      s.platform = Gem::Platform.new %w[cpu my_platform 1]
     end
 
     @x1_o, @x1_o_gem = util_gem 'x', '1' do |s|
-      s.platform = %w[cpu other_platform 1]
+      s.platform = Gem::Platform.new %w[cpu other_platform 1]
     end
+
     @w1, @w1_gem = util_gem 'w', '1' do |s| s.add_dependency 'x' end
 
     @y1, @y1_gem = util_gem 'y', '1'
     @y1_1_p, @y1_1_p_gem = util_gem 'y', '1.1' do |s|
-      s.platform = %w[cpu my_platform 1]
+      s.platform = Gem::Platform.new %w[cpu my_platform 1]
     end
+
     @z1, @z1_gem = util_gem 'z', '1'   do |s| s.add_dependency 'y' end
 
     si = util_setup_source_info_cache @a1, @b1, @d1, @d2, @x1_m, @x1_o, @w1,

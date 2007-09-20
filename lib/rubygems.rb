@@ -112,7 +112,7 @@ module Gem
     end
 
     def platforms
-      @platfoms ||= [Gem::Platform::RUBY, Gem::Platform.local]
+      @platforms ||= [Gem::Platform::RUBY, Gem::Platform.local]
     end
 
     # Returns an Array of sources to fetch remote gems from.  If the sources

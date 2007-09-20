@@ -153,7 +153,7 @@ class Gem::DependencyInstaller
           results = find_gems_with_sources(dep).reverse # local gems first
 
           results.each do |dep_spec, source_uri|
-            next unless Gem.platforms.include? dep_spec.platform
+            next unless Gem::Platform.match dep_spec.platform
             next if seen[dep_spec]
             @specs_and_sources << [dep_spec, source_uri]
             dependency_list.add dep_spec

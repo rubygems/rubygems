@@ -8,7 +8,7 @@ class TestGemPlatform < RubyGemTestCase
   def test_self_local
     util_set_arch 'i686-darwin8.10.1'
 
-    assert_equal %w[x86 darwin 8], Gem::Platform.local
+    assert_equal Gem::Platform.new(%w[x86 darwin 8]), Gem::Platform.local
   end
 
   def test_self_match
@@ -17,67 +17,7 @@ class TestGemPlatform < RubyGemTestCase
     assert Gem::Platform.match(Gem::Platform::RUBY), 'ruby'
   end
 
-  def test_self_match_legacy
-    util_set_arch 'i386-mswin32'
-
-    assert Gem::Platform.match('mswin32'),      'mswin32'
-    assert Gem::Platform.match('i386-mswin32'), 'i386-mswin32'
-
-    # oddballs
-    assert Gem::Platform.match('i386-mswin32-mq5.3'), 'i386-mswin32-mq5.3'
-    assert Gem::Platform.match('i386-mswin32-mq6'),   'i386-mswin32-mq6'
-    assert !Gem::Platform.match('win32-1.8.2-VC7'),    'win32-1.8.2-VC7'
-    assert !Gem::Platform.match('win32-1.8.4-VC6'),    'win32-1.8.4-VC6'
-    assert !Gem::Platform.match('win32-source'),       'win32-source'
-    assert !Gem::Platform.match('windows'),            'windows'
-
-    util_set_arch 'i686-linux'
-    assert Gem::Platform.match('i486-linux'), 'i486-linux'
-    assert Gem::Platform.match('i586-linux'), 'i586-linux'
-    assert Gem::Platform.match('i686-linux'), 'i686-linux'
-
-    util_set_arch 'i686-darwin8'
-    assert Gem::Platform.match('i686-darwin8.4.1'), 'i686-darwin8.4.1'
-    assert Gem::Platform.match('i686-darwin8.8.2'), 'i686-darwin8.8.2'
-
-    util_set_arch 'java'
-    assert Gem::Platform.match('java'), 'java'
-    assert Gem::Platform.match('jruby'), 'jruby'
-
-    util_set_arch 'powerpc-darwin'
-    assert Gem::Platform.match('powerpc-darwin'), 'powerpc-darwin'
-
-    util_set_arch 'powerpc-darwin7'
-    assert Gem::Platform.match('powerpc-darwin7.9.0'), 'powerpc-darwin7.9.0'
-
-    util_set_arch 'powerpc-darwin8'
-    assert Gem::Platform.match('powerpc-darwin8.10.0'), 'powerpc-darwin8.10.0'
-
-    util_set_arch 'sparc-solaris2.8'
-    assert Gem::Platform.match('sparc-solaris2.8-mq5.3'), 'sparc-solaris2.8-mq5.3'
-  end
-
-  def test_self_match_universal
-    util_set_arch 'powerpc-darwin8'
-    assert Gem::Platform.match('universal-darwin8.0'), 'powerpc universal'
-
-    util_set_arch 'i686-darwin8'
-    assert Gem::Platform.match('universal-darwin8.0'), 'x86 universal'
-
-    util_set_arch 'universal-darwin8'
-    assert Gem::Platform.match('powerpc-darwin8.0'), 'universal ppc'
-    assert Gem::Platform.match('universal-darwin8.0'), 'universal universal'
-    assert Gem::Platform.match('i686-darwin8.0'), 'universal x86'
-  end
-
-  def test_self_match_version
-    assert Gem::Platform.match(['x86', 'darwin', nil]), 'versionless == any'
-    assert !Gem::Platform.match(['x86', 'darwin', '7']), 'mismatch'
-    assert Gem::Platform.match(['x86', 'darwin', '8']), 'match'
-    assert !Gem::Platform.match(['x86', 'darwin', '9']), 'mismatch'
-  end
-
-  def test_self_normalize
+  def test_initialize
     test_cases = {
       'amd64-freebsd6'         => ['amd64',     'freebsd',   '6'],
       'hppa2.0w-hpux11.31'     => ['hppa2.0w',  'hpux',      '11'],
@@ -120,16 +60,129 @@ class TestGemPlatform < RubyGemTestCase
     }
 
     test_cases.each do |arch, expected|
-      assert_equal expected, Gem::Platform.normalize(arch), arch.inspect
+      platform = Gem::Platform.new arch
+      assert_equal expected, platform.to_a, arch.inspect
     end
   end
 
-  def test_self_normalize_test
-    assert_equal %w[cpu my_platform 1],
-                 Gem::Platform.normalize('cpu-my_platform1')
+  def test_initialize_test
+    platform = Gem::Platform.new 'cpu-my_platform1'
+    assert_equal 'cpu', platform.cpu
+    assert_equal 'my_platform', platform.os
+    assert_equal '1', platform.version
 
-    assert_equal %w[cpu other_platform 1],
-                 Gem::Platform.normalize('cpu-other_platform1')
+    platform = Gem::Platform.new 'cpu-other_platform1'
+    assert_equal 'cpu', platform.cpu
+    assert_equal 'other_platform', platform.os
+    assert_equal '1', platform.version
+  end
+
+  def test_to_s
+    assert_equal 'x86-darwin-8', Gem::Platform.local.to_s
+  end
+
+  def test_equals2
+    my = Gem::Platform.new %w[cpu my_platform 1]
+    other = Gem::Platform.new %w[cpu other_platform 1]
+
+    assert_equal my, my
+    assert_not_equal my, other
+    assert_not_equal other, my
+  end
+
+  def test_equals3
+    my = Gem::Platform.new %w[cpu my_platform 1]
+    other = Gem::Platform.new %w[cpu other_platform 1]
+
+    assert  (my === my)
+    assert !(other === my)
+    assert !(my === other)
+  end
+
+  def test_equals3_cpu
+    ppc_darwin8 = Gem::Platform.new 'powerpc-darwin8.0'
+    uni_darwin8 = Gem::Platform.new 'universal-darwin8.0'
+    x86_darwin8 = Gem::Platform.new 'i686-darwin8.0'
+
+    util_set_arch 'powerpc-darwin8'
+    assert  (ppc_darwin8 === Gem::Platform.local), 'powerpc =~ universal'
+    assert  (uni_darwin8 === Gem::Platform.local), 'powerpc =~ universal'
+    assert !(x86_darwin8 === Gem::Platform.local), 'powerpc =~ universal'
+
+    util_set_arch 'i686-darwin8'
+    assert !(ppc_darwin8 === Gem::Platform.local), 'powerpc =~ universal'
+    assert  (uni_darwin8 === Gem::Platform.local), 'x86 =~ universal'
+    assert  (x86_darwin8 === Gem::Platform.local), 'powerpc =~ universal'
+
+    util_set_arch 'universal-darwin8'
+    assert  (ppc_darwin8 === Gem::Platform.local), 'universal =~ ppc'
+    assert  (uni_darwin8 === Gem::Platform.local), 'universal =~ universal'
+    assert  (x86_darwin8 === Gem::Platform.local), 'universal =~ x86'
+  end
+
+  def test_equals3_version
+    x86_darwin = Gem::Platform.new ['x86', 'darwin', nil]
+    x86_darwin7 = Gem::Platform.new ['x86', 'darwin', '7']
+    x86_darwin8 = Gem::Platform.new ['x86', 'darwin', '8']
+    x86_darwin9 = Gem::Platform.new ['x86', 'darwin', '9']
+
+    assert_match x86_darwin,  Gem::Platform.local
+    assert_match x86_darwin8, Gem::Platform.local
+
+    deny_match   x86_darwin7, Gem::Platform.local
+    deny_match   x86_darwin9, Gem::Platform.local
+  end
+
+  def test_equals_tilde
+    util_set_arch 'i386-mswin32'
+
+    assert_match 'mswin32',      Gem::Platform.local
+    assert_match 'i386-mswin32', Gem::Platform.local
+
+    # oddballs
+    assert_match 'i386-mswin32-mq5.3', Gem::Platform.local
+    assert_match 'i386-mswin32-mq6',   Gem::Platform.local
+    deny_match   'win32-1.8.2-VC7',    Gem::Platform.local
+    deny_match   'win32-1.8.4-VC6',    Gem::Platform.local
+    deny_match   'win32-source',       Gem::Platform.local
+    deny_match   'windows',            Gem::Platform.local
+
+    util_set_arch 'i686-linux'
+    assert_match 'i486-linux', Gem::Platform.local
+    assert_match 'i586-linux', Gem::Platform.local
+    assert_match 'i686-linux', Gem::Platform.local
+
+    util_set_arch 'i686-darwin8'
+    assert_match 'i686-darwin8.4.1', Gem::Platform.local
+    assert_match 'i686-darwin8.8.2', Gem::Platform.local
+
+    util_set_arch 'java'
+    assert_match 'java',  Gem::Platform.local
+    assert_match 'jruby', Gem::Platform.local
+
+    util_set_arch 'powerpc-darwin'
+    assert_match 'powerpc-darwin', Gem::Platform.local
+
+    util_set_arch 'powerpc-darwin7'
+    assert_match 'powerpc-darwin7.9.0', Gem::Platform.local
+
+    util_set_arch 'powerpc-darwin8'
+    assert_match 'powerpc-darwin8.10.0', Gem::Platform.local
+
+    util_set_arch 'sparc-solaris2.8'
+    assert_match 'sparc-solaris2.8-mq5.3', Gem::Platform.local
+  end
+
+  def assert_match(pattern, platform, message = '')
+    full_message = build_message message, "<?> expected to be =~\n<?>.",
+                                 platform, pattern
+    assert_block(full_message) { platform =~ pattern }
+  end
+
+  def deny_match(pattern, platform, message = '')
+    full_message = build_message message, "<?> expected to be !~\n<?>.",
+                                 platform, pattern
+    assert_block(full_message) { platform !~ pattern }
   end
 
 end

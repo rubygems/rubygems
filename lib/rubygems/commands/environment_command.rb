@@ -59,7 +59,7 @@ class Gem::Commands::EnvironmentCommand < Gem::Command
 
       out << "  - RUBYGEMS PLATFORMS:\n"
       Gem.platforms.each do |platform|
-        out << "    - #{platform.inspect}\n"
+        out << "    - #{platform}\n"
       end
 
       out << "  - GEM PATHS:\n"

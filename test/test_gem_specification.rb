@@ -387,7 +387,7 @@ end
     @a0_0_1.platform = 'current'
     assert_equal 'a-0.0.1-x86-darwin-8', @a0_0_1.full_name
 
-    @a0_0_1.platform = ['universal', 'darwin', nil]
+    @a0_0_1.platform = Gem::Platform.new ['universal', 'darwin', nil]
     assert_equal 'a-0.0.1-universal-darwin', @a0_0_1.full_name
 
     @a0_0_1.instance_variable_set :@platform, 'mswin32'
@@ -419,41 +419,28 @@ end
   end
 
   def test_platform_equals
+    @a0_0_1.platform = nil
+    assert_equal Gem::Platform::RUBY, @a0_0_1.platform
+
     @a0_0_1.platform = Gem::Platform::RUBY
     assert_equal Gem::Platform::RUBY, @a0_0_1.platform
 
     @a0_0_1.platform = Gem::Platform::CURRENT
-    assert_equal ['x86', 'darwin', '8'], @a0_0_1.platform
+    assert_equal Gem::Platform.new(%w[x86 darwin 8]), @a0_0_1.platform
 
     @a0_0_1.platform = nil
     assert_equal Gem::Platform::RUBY, @a0_0_1.platform
   end
 
-  def test_platform_equals_bad
-    assert_raise Gem::Exception do @a0_0_1.platform = Object.new end
-
-    assert_raise Gem::Exception do @a0_0_1.platform = [] end
-    assert_raise Gem::Exception do @a0_0_1.platform = [1] end
-    assert_raise Gem::Exception do @a0_0_1.platform = [1, 2] end
-    assert_raise Gem::Exception do @a0_0_1.platform = [1, 2, 3, 4] end
-
-    e = assert_raise Gem::Exception do
-      @a0_0_1.platform = "my-custom-platform"
-    end
-
-    assert_equal 'invalid platform "my-custom-platform", see Gem::Platform',
-                 e.message
-  end
-
   def test_platform_equals_legacy
     @a0_0_1.platform = Gem::Platform::WIN32
-    assert_equal ['x86', 'mswin32', nil], @a0_0_1.platform
+    assert_equal Gem::Platform::MSWIN32, @a0_0_1.platform
 
     @a0_0_1.platform = Gem::Platform::LINUX_586
-    assert_equal ['x86', 'linux', nil], @a0_0_1.platform
+    assert_equal Gem::Platform::X86_LINUX, @a0_0_1.platform
 
     @a0_0_1.platform = Gem::Platform::DARWIN
-    assert_equal ['powerpc', 'darwin', nil], @a0_0_1.platform
+    assert_equal Gem::Platform::PPC_DARWIN, @a0_0_1.platform
   end
 
   def test_require_paths
@@ -528,7 +515,7 @@ end
   end
 
   def test_validate
-    assert_equal nil, @a0_0_1.validate
+    assert @a0_0_1.validate
   end
 
   def test_validate_empty
@@ -546,6 +533,30 @@ end
     end
 
     assert_equal 'specification must have at least one require_path', e.message
+  end
+
+  def test_validate_platform_bad
+    @a0_0_1.platform = Object.new
+    assert_raise Gem::InvalidSpecificationException do @a0_0_1.validate end
+
+    @a0_0_1.platform = "my-custom-platform"
+    e = assert_raise Gem::InvalidSpecificationException do
+      @a0_0_1.validate
+    end
+
+    assert_equal 'invalid platform "my-custom-platform", see Gem::Platform',
+                 e.message
+  end
+
+  def test_validate_platform_legacy
+    @a0_0_1.platform = Gem::Platform::WIN32
+    assert @a0_0_1.validate
+
+    @a0_0_1.platform = Gem::Platform::LINUX_586
+    assert @a0_0_1.validate
+
+    @a0_0_1.platform = Gem::Platform::DARWIN
+    assert @a0_0_1.validate
   end
 
   def test_validate_rubygems_version

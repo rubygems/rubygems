@@ -4,6 +4,17 @@
 	* lib/rubygems/specification.rb: Gem::Specification#validate returns
 	true, non-Gem::Platform platforms are no longer allowed.
 	* test/gemutilities.rb: 1.9 compatiblity fixes.
+	* lib/rubygems/dependency_installer.rb: Work around a bug in URI.parse
+	which misinterprets "C:/".  Patch #13537 submitted by Daniel Berger.
+	* lib/rubygems/format.rb: Ensure file handles are closed.  Patch
+	#13533 submitted by Daniel Berger.
+	* test/test_gem_installer.rb: Win32 path fix.  Patch #13528 submitted
+	by Daniel Berger.
+	* test/gemutilities.rb: Make the platform be a win32 platform on
+	win32.  Fixes confusion in generate_bin_symlink tests.  Patch #13529
+	submitted by Daniel Berger.
+	* test/test_gem_specification.rb: Sequel to above.  Patch
+	#13535 submitted by Daniel Berger.
 
 2007-08-24  Eric Hodel  <drbrain@segment7.net>
 

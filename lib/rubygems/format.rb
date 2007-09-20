@@ -35,18 +35,27 @@ module Gem
     # file_path:: [String] Path to the gem file
     #
     def self.from_file_by_path(file_path, security_policy = nil)
+      format = nil
+
       unless File.exist?(file_path)
         raise Gem::Exception, "Cannot load gem at [#{file_path}] in #{Dir.pwd}"
       end
+
       # check for old version gem
       if File.read(file_path, 20).include?("MD5SUM =")
         #alert_warning "Gem #{file_path} is in old format."
         require 'rubygems/old_format'
-        return OldFormat.from_file_by_path(file_path)
+        format = OldFormat.from_file_by_path(file_path)
       else
-        f = File.open(file_path, 'rb')
-        return from_io(f, file_path, security_policy)
+        begin
+          f = File.open(file_path, 'rb')
+          format = from_io(f, file_path, security_policy)
+        ensure
+          f.close unless f.closed?
+        end
       end
+
+      return format
     end
 
     ##

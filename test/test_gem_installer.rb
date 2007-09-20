@@ -160,7 +160,12 @@ ruby: No such file or directory -- extconf.rb (LoadError)
 
   def test_expand_and_validate_gem_dir
     @installer.gem_dir = '/nonexistent'
-    assert_equal '/nonexistent', @installer.send(:expand_and_validate_gem_dir)
+    if win_platform?
+      expected = File.join Config::CONFIG['bindir'][0..2], 'nonexistent'
+    else
+      expected = '/nonexistent'
+    end
+    assert_equal expected, @installer.send(:expand_and_validate_gem_dir)
   end
 
   def test_extract_files

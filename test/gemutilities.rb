@@ -80,7 +80,11 @@ class RubyGemTestCase < Test::Unit::TestCase
 
     @orig_arch = Config::CONFIG['arch']
 
-    util_set_arch 'i686-darwin8.10.1'
+    if win_platform?
+      util_set_arch 'i386-mswin32'
+    else
+      util_set_arch 'i686-darwin8.10.1'
+    end
   end
 
   def teardown

@@ -105,9 +105,16 @@ class Gem::DependencyInstaller
   def download(spec, source_uri)
     gem_file_name = "#{spec.full_name}.gem"
     local_gem_path = File.join Gem.dir, 'cache', gem_file_name
-    source_uri = URI.parse source_uri
 
-    case source_uri.scheme
+    source_uri = URI.parse source_uri
+    scheme = source_uri.scheme
+
+    # URI.parse gets confused by MS Windows paths with forward slashes.
+    if scheme =~ /^[A-Za-z]$/
+      scheme = nil
+    end
+
+    case scheme
     when 'http' then
       unless File.exist? local_gem_path then
         remote_gem_path = source_uri + "/gems/#{gem_file_name}"

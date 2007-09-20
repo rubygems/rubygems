@@ -385,7 +385,11 @@ end
     assert_equal 'a-0.0.1', @a0_0_1.full_name
 
     @a0_0_1.platform = 'current'
-    assert_equal 'a-0.0.1-x86-darwin-8', @a0_0_1.full_name
+    if win_platform?
+      assert_equal 'a-0.0.1-x86-mswin32-', @a0_0_1.full_name
+    else
+      assert_equal 'a-0.0.1-x86-darwin-8', @a0_0_1.full_name
+    end
 
     @a0_0_1.platform = Gem::Platform.new ['universal', 'darwin', nil]
     assert_equal 'a-0.0.1-universal-darwin', @a0_0_1.full_name
@@ -426,7 +430,11 @@ end
     assert_equal Gem::Platform::RUBY, @a0_0_1.platform
 
     @a0_0_1.platform = Gem::Platform::CURRENT
-    assert_equal Gem::Platform.new(%w[x86 darwin 8]), @a0_0_1.platform
+    if win_platform? then
+      assert_equal Gem::Platform.new(['x86', 'mswin32', nil]), @a0_0_1.platform
+    else
+      assert_equal Gem::Platform.new(%w[x86 darwin 8]), @a0_0_1.platform
+    end
 
     @a0_0_1.platform = nil
     assert_equal Gem::Platform::RUBY, @a0_0_1.platform

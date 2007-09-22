@@ -115,7 +115,7 @@ class RubyGemTestCase < Test::Unit::TestCase
   def install_gem gem
     require 'rubygems/installer'
 
-    use_ui @ui do
+    use_ui MockGemUi.new do
       Dir.chdir @tempdir do
         Gem::Builder.new(gem).build
       end

@@ -35,20 +35,21 @@ class Gem::Commands::PristineCommand < Gem::Command
   end
 
   def execute
-    say "Restoring gem(s) to pristine condition..."
-    if options[:all]
-      all_gems = true
-      specs = Gem::SourceIndex.from_installed_gems.collect do |name, spec|
-        spec
-      end
-    else
-      all_gems = false
-      gem_name = get_one_gem_name
-      specs = Gem::SourceIndex.from_installed_gems.search(gem_name, options[:version])
-    end
+    gem_name = nil
 
-    if specs.empty?
-      fail "Failed to find gem #{gem_name} #{options[:version]} to restore to pristine condition"
+    specs = if options[:all] then
+              Gem::SourceIndex.from_installed_gems.map do |name, spec|
+                spec
+              end
+            else
+              gem_name = get_one_gem_name
+              Gem::SourceIndex.from_installed_gems.search(gem_name,
+                                                          options[:version])
+            end
+
+    if specs.empty? then
+      raise Gem::Exception,
+            "Failed to find gem #{gem_name} #{options[:version]}"
     end
 
     install_dir = Gem.dir # TODO use installer option
@@ -56,38 +57,48 @@ class Gem::Commands::PristineCommand < Gem::Command
     raise Gem::FilePermissionError.new(install_dir) unless
       File.writable?(install_dir)
 
-    gems_were_pristine = true
+    say "Restoring gem(s) to pristine condition..."
 
     specs.each do |spec|
-      # HACK ugly TODO use installer option
       gem = Dir[File.join(Gem.dir, 'cache', "#{spec.full_name}.gem")].first
 
       if gem.nil? then
-        alert_error "Cached gem for #{spec.full_name} not found"
+        alert_error "Cached gem for #{spec.full_name} not found, use `gem install` to restore"
         next
       end
 
+      # TODO use installer options
       installer = Gem::Installer.new gem, :wrappers => true
 
-      gem_file = File.join(install_dir, "cache", "#{spec.full_name}.gem")
+      gem_file = File.join install_dir, "cache", "#{spec.full_name}.gem"
+
       security_policy = nil # TODO use installer option
-      format = Gem::Format.from_file_by_path(gem_file, security_policy)
-      target_directory = File.join(install_dir, "gems", format.spec.full_name).untaint
-      pristine_files = format.file_entries.collect {|data| data[0]["path"]}
+
+      format = Gem::Format.from_file_by_path gem_file, security_policy
+
+      target_directory = File.join(install_dir, "gems", format.spec.full_name)
+      target_directory.untaint
+
+      pristine_files = format.file_entries.collect { |data| data[0]["path"] }
       file_map = {}
-      format.file_entries.each {|entry, file_data| file_map[entry["path"]] = file_data}
+
+      format.file_entries.each do |entry, file_data|
+        file_map[entry["path"]] = file_data
+      end
 
       Dir.chdir target_directory do
         deployed_files = Dir.glob(File.join("**", "*")) +
-          Dir.glob(File.join("**", ".*"))
+                         Dir.glob(File.join("**", ".*"))
 
         pristine_files = pristine_files.map { |f| File.expand_path f }
         deployed_files = deployed_files.map { |f| File.expand_path f }
 
-        to_redeploy = (pristine_files - deployed_files).collect {|path| path.untaint}
-        if to_redeploy.length > 0
-          gems_were_pristine = false
+        to_redeploy = (pristine_files - deployed_files)
+        to_redeploy = to_redeploy.map { |path| path.untaint}
+
+        if to_redeploy.length > 0 then
           say "Restoring #{to_redeploy.length} file#{to_redeploy.length == 1 ? "" : "s"} to #{spec.full_name}..."
+
           to_redeploy.each do |path|
             say "  #{path}"
             FileUtils.mkdir_p File.dirname(path)
@@ -95,26 +106,12 @@ class Gem::Commands::PristineCommand < Gem::Command
               out.write file_map[path]
             end
           end
+        else
+          say "#{spec.full_name} is in pristine condition"
         end
       end
 
       installer.generate_bin
-    end
-
-    say "Rebuilt all bin stubs"
-
-    if gems_were_pristine
-      if all_gems
-        say "All installed gem files are already in pristine condition"
-      else
-        say "#{specs[0].full_name} is already in pristine condition"
-      end
-    else
-      if all_gems
-        say "All installed gem files restored to pristine condition"
-      else
-        say "#{specs[0].full_name} restored to pristine condition"
-      end
     end
   end
 

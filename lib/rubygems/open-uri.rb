@@ -2,6 +2,7 @@ require 'uri'
 require 'stringio'
 require 'time'
 
+# :stopdoc:
 module Kernel
   private
   alias rubygems_open_uri_original_open open # :nodoc:
@@ -769,3 +770,4 @@ module URI
     include OpenURI::OpenRead
   end
 end
+# :startdoc:

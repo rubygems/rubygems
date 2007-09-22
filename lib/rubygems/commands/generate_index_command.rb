@@ -20,7 +20,7 @@ class Gem::Commands::GenerateIndexCommand < Gem::Command
       alert_error "unknown directory name #{directory}."
       terminate_interaction 1
     else
-      indexer = Gem::Indexer::Indexer.new options[:directory]
+      indexer = Gem::Indexer.new options[:directory]
       indexer.generate_index
     end
   end

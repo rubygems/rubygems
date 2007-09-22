@@ -2,7 +2,19 @@ require 'yaml'
 require 'zlib'
 
 require 'rubygems/command'
-require 'rubygems/open-uri'
+require 'rubygems/gem_open_uri'
+
+##
+# Mirrors a gem repository.
+#
+# The config file goes in ~/.gemmirrorrc and is a YAML document that looks
+# like this:
+#
+#   ---
+#   - from: http://gems.example.com # source repository URI
+#     to: /path/to/mirror           # destination directory
+#
+# Multiple sources and destinations may be specified.
 
 class Gem::Commands::MirrorCommand < Gem::Command
 
@@ -11,7 +23,6 @@ class Gem::Commands::MirrorCommand < Gem::Command
   end
 
   def execute
-
     config_file = File.join Gem.user_home, '.gemmirrorrc'
 
     raise "Config file #{config_file} not found" unless File.exist? config_file
@@ -41,7 +52,16 @@ class Gem::Commands::MirrorCommand < Gem::Command
       sourceindex_text = ''
 
       say "fetching: #{get_from}/yaml.Z"
-      open "#{get_from}/yaml.Z", "r" do |y|
+
+      get_from = URI.parse get_from
+
+      if get_from.scheme.nil? then
+        get_from = get_from.to_s
+      elsif get_from.scheme == 'file' then
+        get_from = get_from.to_s[5..-1]
+      end
+
+      open File.join(get_from, 'yaml.Z'), "r" do |y|
         sourceindex_text = Zlib::Inflate.inflate y.read
         open File.join(save_to, "yaml"), "wb" do |out|
           out.write sourceindex_text
@@ -51,12 +71,12 @@ class Gem::Commands::MirrorCommand < Gem::Command
       sourceindex = YAML.load sourceindex_text
 
       progress = ui.progress_reporter sourceindex.size,
-                                     "Fetching #{sourceindex.size} gems"
+                                      "Fetching #{sourceindex.size} gems"
       sourceindex.each do |fullname, gem|
         gem_file = "#{fullname}.gem"
         gem_dest = File.join gems_dir, gem_file
 
-        unless File.exists? gem_dest then
+        unless File.exist? gem_dest then
           begin
             open "#{get_from}/gems/#{gem_file}", "r" do |g|
               contents = g.read

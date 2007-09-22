@@ -1,3 +1,10 @@
+2007-09-22  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/open-uri.rb: Don't document our OpenURI.
+	* lib/rubygems/commands/generate_index_command.rb: Fix Indexer class
+	change.
+	* lib/rubygems/commands/mirror_command.rb: Fix for 1.9.
+
 2007-09-20  Eric Hodel  <drbrain@segment7.net>
 
 	* misc files: Tests pass on 1.9.

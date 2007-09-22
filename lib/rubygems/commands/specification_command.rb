@@ -23,16 +23,16 @@ class Gem::Commands::SpecificationCommand < Gem::Command
     add_local_remote_options
   end
 
-  def defaults_str
+  def arguments # :nodoc:
+    "GEMFILE       name of gem to show the gemspec for"
+  end
+
+  def defaults_str # :nodoc:
     "--local --version '#{Gem::Requirement.default}'"
   end
 
-  def usage
-    "#{program_name} GEMFILE"
-  end
-
-  def arguments
-    "GEMFILE       Name of a .gem file to examine"
+  def usage # :nodoc:
+    "#{program_name} [GEMFILE]"
   end
 
   def execute

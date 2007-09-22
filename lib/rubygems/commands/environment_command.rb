@@ -6,11 +6,7 @@ class Gem::Commands::EnvironmentCommand < Gem::Command
     super 'environment', 'Display information about the RubyGems environment'
   end
 
-  def usage
-    "#{program_name} [args]"
-  end
-
-  def arguments
+  def arguments # :nodoc:
     args = <<-EOF
           packageversion  display the package version
           gemdir          display the path where gems are installed
@@ -20,6 +16,10 @@ class Gem::Commands::EnvironmentCommand < Gem::Command
           <omitted>       display everything
     EOF
     return args.gsub(/^\s+/, '')
+  end
+
+  def usage # :nodoc:
+    "#{program_name} [arg]"
   end
 
   def execute

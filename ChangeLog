@@ -6,6 +6,7 @@
 	* lib/rubygems/commands/mirror_command.rb: Fix for 1.9.
 	* lib/rubygems/commands/pristine_command.rb: Have `gem pristine`
 	give a better report of what it accomplished.
+	* lib/rubygems/command.rb: Add optional description field.
 
 2007-09-20  Eric Hodel  <drbrain@segment7.net>
 

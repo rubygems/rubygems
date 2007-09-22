@@ -29,16 +29,16 @@ class Gem::Commands::DependencyCommand < Gem::Command
     add_local_remote_options
   end
 
-  def defaults_str
-    "--local --version '#{Gem::Requirement.default}' --no-reverse"
+  def arguments # :nodoc:
+    "GEMNAME       name of gem to show dependencies for"
   end
 
-  def usage
+  def defaults_str # :nodoc:
+    "--local --version '#{Gem::Requirement.default}' --no-reverse-dependencies"
+  end
+
+  def usage # :nodoc:
     "#{program_name} GEMNAME"
-  end
-
-  def arguments
-    "GEMNAME   name of gems to show"
   end
 
   def execute

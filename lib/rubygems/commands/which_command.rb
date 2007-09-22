@@ -9,14 +9,26 @@ class Gem::Commands::WhichCommand < Gem::Command
     super 'which', 'Find the location of a library',
           :search_gems_first => false, :show_all => false
 
-    add_option '-a', '--all', 'show all matching files' do |show_all, options|
+    add_option '-a', '--[no-]all', 'show all matching files' do |show_all, options|
       options[:show_all] = show_all
     end
 
-    add_option '-g', '--gems-first',
+    add_option '-g', '--[no-]gems-first',
                'search gems before non-gems' do |gems_first, options|
       options[:search_gems_first] = gems_first
     end
+  end
+
+  def arguments # :nodoc:
+    "FILE          name of file to find"
+  end
+
+  def defaults_str # :nodoc:
+    "--no-gems-first --no-all"
+  end
+
+  def usage # :nodoc:
+    "#{program_name} FILE [FILE ...]"
   end
 
   def execute

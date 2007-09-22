@@ -13,16 +13,16 @@ class Gem::Commands::UnpackCommand < Gem::Command
     add_version_option 'unpack'
   end
 
-  def defaults_str
+  def arguments # :nodoc:
+    "GEMNAME       name of gem to unpack"
+  end
+
+  def defaults_str # :nodoc:
     "--version '#{Gem::Requirement.default}'"
   end
 
-  def usage
+  def usage # :nodoc:
     "#{program_name} GEMNAME"
-  end
-
-  def arguments
-    "GEMNAME       Name of the gem to unpack"
   end
 
   #--

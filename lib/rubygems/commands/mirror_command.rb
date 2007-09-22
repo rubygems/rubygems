@@ -4,22 +4,24 @@ require 'zlib'
 require 'rubygems/command'
 require 'rubygems/gem_open_uri'
 
-##
-# Mirrors a gem repository.
-#
-# The config file goes in ~/.gemmirrorrc and is a YAML document that looks
-# like this:
-#
-#   ---
-#   - from: http://gems.example.com # source repository URI
-#     to: /path/to/mirror           # destination directory
-#
-# Multiple sources and destinations may be specified.
-
 class Gem::Commands::MirrorCommand < Gem::Command
 
   def initialize
     super 'mirror', 'Mirror a gem repository'
+  end
+
+  def description # :nodoc:
+    <<-EOF
+The mirror command uses the ~/.gemmirrorrc config file to mirror remote gem
+repositories to a local path. The config file is a YAML document that looks
+like this:
+
+  ---
+  - from: http://gems.example.com # source repository URI
+    to: /path/to/mirror           # destination directory
+
+Multiple sources and destinations may be specified.
+    EOF
   end
 
   def execute

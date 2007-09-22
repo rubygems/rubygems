@@ -33,16 +33,16 @@ module Gem
         add_version_option('uninstall')
       end
 
-      def defaults_str
+      def arguments # :nodoc:
+        "GEMNAME       name of gem to uninstall"
+      end
+
+      def defaults_str # :nodoc:
         "--version '#{Gem::Requirement.default}' --no-force"
       end
 
-      def usage
+      def usage # :nodoc:
         "#{program_name} GEMNAME [GEMNAME ...]"
-      end
-
-      def arguments
-        "GEMNAME   name of gem to uninstall"
       end
 
       def execute

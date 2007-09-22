@@ -22,6 +22,18 @@ class Gem::Commands::ContentsCommand < Gem::Command
     end
   end
 
+  def arguments # :nodoc:
+    "GEMNAME       name of gem to list contents for"
+  end
+
+  def defaults_str # :nodoc:
+    "--no-lib-only"
+  end
+
+  def usage # :nodoc:
+    "#{program_name} GEMNAME"
+  end
+
   def execute
     version = options[:version] || Gem::Requirement.default
     gem = get_one_gem_name

@@ -10,12 +10,15 @@ require 'rubygems/user_interaction'
 
 module Gem
 
-  # Base class for all Gem commands.
+  # Base class for all Gem commands.  When creating a new gem command, define
+  # #arguments, #defaults_str, #description and #usage (as appropriate).
   class Command
+
     include UserInteraction
-    
+
+    # A command-line option.
     Option = Struct.new(:short, :long, :description, :handler)
-    
+
     # The name of the command.
     attr_reader :command
 
@@ -30,10 +33,11 @@ module Gem
 
     # A short description of the command.
     attr_accessor :summary
-    
+
     # Initializes a generic gem command named +command+.  +summary+ is a short
     # description displayed in `gem help commands`.  +defaults+ are the
-    # default options.
+    # default options.  Defaults should be mirrored in #defaults_str, unless
+    # there are none.
     #
     # Use add_option to add command-line switches.
     def initialize(command, summary=nil, defaults={})
@@ -95,11 +99,6 @@ module Gem
       args.first
     end
 
-    # Override to display the usage for an individual gem command.
-    def usage
-      program_name
-    end
-
     # Override to provide details of the arguments a command takes.
     # It should return a left-justified string, one argument per line.
     def arguments
@@ -111,6 +110,16 @@ module Gem
     # values).
     def defaults_str
       ""
+    end
+
+    # Override to display a longer description of what this command does.
+    def description
+      nil
+    end
+
+    # Override to display the usage for an individual gem command.
+    def usage
+      program_name
     end
 
     # Display the help message for the command.
@@ -235,6 +244,18 @@ module Gem
       @parser.separator("  Summary:")
       wrap(@summary, 80 - 4).split("\n").each do |line|
         @parser.separator("    #{line.strip}")
+      end
+
+      if description then
+        formatted = description.split("\n\n").map do |chunk|
+          wrap(chunk, 80 - 4)
+        end.join("\n")
+
+        @parser.separator ""
+        @parser.separator "  Description:"
+        formatted.split("\n").each do |line|
+          @parser.separator "    #{line.rstrip}"
+        end
       end
 
       unless defaults_str.empty?

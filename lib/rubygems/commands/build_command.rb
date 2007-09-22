@@ -7,12 +7,12 @@ class Gem::Commands::BuildCommand < Gem::Command
     super('build', 'Build a gem from a gemspec')
   end
 
-  def usage
-    "#{program_name} GEMSPEC_FILE"
+  def arguments # :nodoc:
+    "GEMSPEC_FILE  gemspec file name to build a gem for"
   end
 
-  def arguments
-    "GEMSPEC_FILE      name of gemspec file used to build the gem"
+  def usage # :nodoc:
+    "#{program_name} GEMSPEC_FILE"
   end
 
   def execute

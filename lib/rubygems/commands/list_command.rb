@@ -13,16 +13,16 @@ module Gem
         remove_option('--name-matches')
       end
 
-      def defaults_str
+      def arguments # :nodoc:
+        "STRING        start of gem name to look for"
+      end
+
+      def defaults_str # :nodoc:
         "--local --no-details"
       end
 
-      def usage
+      def usage # :nodoc:
         "#{program_name} [STRING]"
-      end
-
-      def arguments
-        "STRING   start of gem name to look for"
       end
 
       def execute

@@ -28,18 +28,17 @@ class Gem::Commands::InstallCommand < Gem::Command
     add_install_update_options
   end
 
-  def usage
-    "#{program_name} GEMNAME [...] [options]
- or: #{program_name} GEMNAME [...] [options] -- --build-flags"
+  def arguments # :nodoc:
+    "GEMNAME       name of gem to install"
   end
 
-  def arguments
-    "GEMNAME [...]   names of gems to install"
-  end
-
-  def defaults_str
+  def defaults_str # :nodoc:
     "--both --version '#{Gem::Requirement.default}' --rdoc --ri --no-force\n" \
     "--no-test --install-dir #{Gem.dir}"
+  end
+
+  def usage # :nodoc:
+    "#{program_name} GEMNAME [GEMNAME ...] [options] -- --build-flags"
   end
 
   def execute

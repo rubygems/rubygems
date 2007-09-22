@@ -31,7 +31,7 @@ class Gem::Commands::QueryCommand < Gem::Command
     add_local_remote_options
   end
 
-  def defaults_str
+  def defaults_str # :nodoc:
     "--local --name-matches '.*' --no-details --versions"
   end
 

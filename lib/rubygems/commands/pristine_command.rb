@@ -10,7 +10,7 @@ class Gem::Commands::PristineCommand < Gem::Command
 
   def initialize
     super 'pristine',
-          'Restores gem directories to pristine condition from files located in the gem cache',
+          'Restores installed gems to pristine condition from files located in the gem cache',
           :version => Gem::Requirement.default
 
     add_option('--all',
@@ -22,16 +22,30 @@ class Gem::Commands::PristineCommand < Gem::Command
     add_version_option('restore to', 'pristine condition')
   end
 
-  def defaults_str
+  def arguments # :nodoc:
+    "GEMNAME       gem to restore to pristine condition (unless --all)"
+  end
+
+  def defaults_str # :nodoc:
     "--all"
   end
 
-  def usage
-    "#{program_name} [args]"
+  def description # :nodoc:
+    <<-EOF
+The pristine command compares the installed gems with the contents of the
+cached gem and restores any files that don't match the cached gem's copy.
+
+If you have made modifications to your installed gems, the pristine command
+will revert them.  After all the gem's files have been checked all bin stubs
+for the gem are regenerated.
+
+If the cached gem cannot be found, you will need to use `gem install` to
+revert the gem.
+    EOF
   end
 
-  def arguments
-    "GEMNAME          The gem to restore to pristine condition (unless --all)"
+  def usage # :nodoc:
+    "#{program_name} [args]"
   end
 
   def execute

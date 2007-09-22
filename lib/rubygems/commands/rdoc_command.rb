@@ -33,16 +33,16 @@ module Gem
         add_version_option('rdoc')
       end
 
-      def defaults_str
+      def arguments # :nodoc:
+        "GEMNAME       gem to generate documentation for (unless --all)"
+      end
+
+      def defaults_str # :nodoc:
         "--version '#{Gem::Requirement.default}' --rdoc --ri"
       end
 
-      def usage
+      def usage # :nodoc:
         "#{program_name} [args]"
-      end
-
-      def arguments
-        "GEMNAME          The gem to generate RDoc for (unless --all)"
       end
 
       def execute

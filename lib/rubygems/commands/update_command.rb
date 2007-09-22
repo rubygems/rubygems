@@ -12,7 +12,7 @@ module Gem
       def initialize
         super(
           'update',
-          'Update the named gem (or all installed gems) in the local repository',
+          'Update the named gems (or all installed gems) in the local repository',
           {
             :generate_rdoc => true, 
             :generate_ri => true, 
@@ -30,47 +30,61 @@ module Gem
 
         add_local_remote_options
       end
-    
-      def defaults_str
+
+      def arguments # :nodoc:
+        "GEMNAME       name of gem to update"
+      end
+
+      def defaults_str # :nodoc:
         "--rdoc --ri --no-force --no-test\n" +
         "--install-dir #{Gem.dir}"
       end
 
-      def arguments
-        "GEMNAME(s)   name of gem(s) to update"
+      def usage # :nodoc:
+        "#{programe_name} GEMNAME [GEMNAME ...]"
       end
 
       def execute
-        if options[:system]
+        if options[:system] then
           say "Updating RubyGems..."
-          if ! options[:args].empty?
+
+          unless options[:args].empty? then
             fail "No gem names are allowed with the --system option"
           end
+
           options[:args] = ["rubygems-update"]
         else
           say "Updating installed gems..."
         end
+
         hig = highest_installed_gems = {}
+
         Gem::SourceIndex.from_installed_gems.each do |name, spec|
           if hig[spec.name].nil? or hig[spec.name].version < spec.version
             hig[spec.name] = spec
           end
         end
+
         remote_gemspecs = Gem::SourceInfoCache.search(//)
-        gems_to_update =  if(options[:args].empty?) then
-                            which_to_update(highest_installed_gems, remote_gemspecs)
-                          else
-                            options[:args]
-                          end
+
+        gems_to_update = if options[:args].empty? then
+                           which_to_update(highest_installed_gems, remote_gemspecs)
+                         else
+                           options[:args]
+                         end
+
         options[:domain] = :remote # install from remote source
+
         install_command = Gem::CommandManager.instance['install']
+
         gems_to_update.uniq.sort.each do |name|
           say "Attempting remote update of #{name}"
           options[:args] = [name]
           install_command.merge_options(options)
           install_command.execute
         end
-        if gems_to_update.include?("rubygems-update")
+
+        if gems_to_update.include?("rubygems-update") then
           latest_ruby_gem = remote_gemspecs.select { |s|
             s.name == 'rubygems-update' 
           }.sort_by { |s|
@@ -79,7 +93,8 @@ module Gem
           say "Updating version of RubyGems to #{latest_ruby_gem.version}"
           do_rubygems_update(latest_ruby_gem.version.to_s)
         end
-        if(options[:system]) then
+
+        if options[:system] then
           say "RubyGems system software updated"
         else
           say "Gems: [#{gems_to_update.uniq.sort.collect{|g| g.to_s}.join(', ')}] updated"

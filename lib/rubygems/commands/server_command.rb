@@ -17,17 +17,31 @@ class Gem::Commands::ServerCommand < Gem::Command
       options[:gemdir] = gemdir
     end
 
-    add_option '--daemon', 'run as a daemon' do |daemon, options|
+    add_option '--[no]-daemon', 'run as a daemon' do |daemon, options|
       options[:daemon] = daemon
     end
   end
 
-  def execute
-    Gem::Server.run options
+  def defaults_str # :nodoc:
+    "--port 8808 --dir #{Gem.dir} --no-daemon"
   end
 
-  def usage
-    "#{program_name} [options]"
+  def description # :nodoc:
+    <<-EOF
+The server command starts up a web server that hosts the RDoc for your
+installed gems and can operate as a server for installation of gems on other
+machines.
+
+The cache files for installed gems must exist to use the server as a source
+for gem installation.
+
+To install gems from a running server, use `gem install GEMNAME --source
+http://gem_server_host:8808`
+    EOF
+  end
+
+  def execute
+    Gem::Server.run options
   end
 
 end

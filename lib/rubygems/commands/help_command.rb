@@ -8,17 +8,17 @@ module Gem
         super('help', "Provide help on the 'gem' command")
       end
 
-      def usage
-        "#{program_name} ARGUMENT"
-      end
-
-      def arguments
+      def arguments # :nodoc:
         args = <<-EOF
           commands      List all 'gem' commands
           examples      Show examples of 'gem' usage
           <command>     Show specific help for <command>
         EOF
         return args.gsub(/^\s+/, '')
+      end
+
+      def usage # :nodoc:
+        "#{program_name} ARGUMENT"
       end
 
       def execute

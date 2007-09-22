@@ -14,6 +14,10 @@ class Gem::Commands::GenerateIndexCommand < Gem::Command
     end
   end
 
+  def defaults_str # :nodoc:
+    "--directory ."
+  end
+
   def execute
     if not File.exist?(options[:directory]) or
        not File.directory?(options[:directory]) then

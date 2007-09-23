@@ -89,6 +89,7 @@ module Gem
   DIRECTORIES = %w[cache doc gems specifications]
 
   @@source_index = nil
+  @@win_platform = nil
 
   @configuration = nil
   @loaded_specs = {}
@@ -114,6 +115,22 @@ module Gem
   #
   def self.source_index
     @@source_index ||= SourceIndex.from_installed_gems
+  end
+
+  ##
+  # An Array of Regexps that match windows ruby platforms.
+
+  WIN_PATTERNS = [/mswin/i, /mingw/i, /bccwin/i, /wince/i]
+
+  ##
+  # Is this a windows platform?
+
+  def self.win_platform?
+    if @@win_platform.nil? then
+      @@win_platform = !!WIN_PATTERNS.find { |r| RUBY_PLATFORM =~ r }
+    end
+
+    @@win_platform
   end
 
   class << self
@@ -311,7 +328,8 @@ module Gem
     # are not gems of any version by the requested name.
     def report_activate_error(gem)
       matches = Gem.source_index.find_name(gem.name)
-      if matches.size==0
+
+      if matches.empty? then
         error = Gem::LoadError.new(
           "Could not find RubyGem #{gem.name} (#{gem.version_requirements})\n")
       else
@@ -319,6 +337,7 @@ module Gem
           "RubyGem version error: " +
           "#{gem.name}(#{matches.first.version} not #{gem.version_requirements})\n")
       end
+
       error.name = gem.name
       error.version_requirement = gem.version_requirements
       raise error

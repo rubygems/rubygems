@@ -280,17 +280,12 @@ class RubyGemTestCase < Test::Unit::TestCase
     Zlib::Deflate.deflate data
   end
 
-  @@win_platform = nil
   def self.win_platform?
-    if @@win_platform.nil?
-      patterns = [/mswin/i, /mingw/i, /bccwin/i, /wince/i]
-      @@win_platform = patterns.find{|r| RUBY_PLATFORM =~ r} ? true : false
-    end
-    @@win_platform
+    Gem.win_platform?
   end
 
   def win_platform?
-    self.class.win_platform?
+    Gem.win_platform?
   end
 
 end

@@ -7,6 +7,8 @@
 	* lib/rubygems/commands/pristine_command.rb: Have `gem pristine`
 	give a better report of what it accomplished.
 	* lib/rubygems/command.rb: Add optional description field.
+	* lib/rubygems/installer.rb: Hack around broken Pathname#absolute? on
+	windows.  Patch #14139 by Jim Hughes.
 
 2007-09-20  Eric Hodel  <drbrain@segment7.net>
 

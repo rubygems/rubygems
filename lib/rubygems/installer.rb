@@ -183,7 +183,7 @@ class Gem::Installer
   # Creates windows .cmd files for easy running of commands
   #
   def generate_windows_script(bindir, filename)
-    if Config::CONFIG["arch"] =~ /dos|win32/i
+    if Gem.win_platform? then
       script_name = filename + ".cmd"
       File.open(File.join(bindir, File.basename(script_name)), "w") do |file|
         file.puts "@#{Gem.ruby} \"#{File.join(bindir,filename)}\" %*"
@@ -391,10 +391,15 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
 
   private
 
+  # HACK Pathname is broken on windows.
+  def absolute_path? pathname
+    pathname.absolute? or (Gem.win_platform? and pathname.to_s =~ /\A[a-z]:/i)
+  end
+
   def expand_and_validate_gem_dir
     @gem_dir = Pathname.new(@gem_dir).expand_path
 
-    unless @gem_dir.absolute? then # HACK is this possible after #expand_path?
+    unless absolute_path?(@gem_dir) then # HACK is this possible after #expand_path?
       raise ArgumentError, "install directory %p not absolute" % @gem_dir
     end
 

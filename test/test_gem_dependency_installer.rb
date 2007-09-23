@@ -246,6 +246,32 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
   end
 
+  def test_install_domain_remote_platform_newer
+    a2_o, a2_o_gem = util_gem 'a', '2' do |s|
+      s.platform = Gem::Platform.new %w[cpu other_platform 1]
+    end
+
+    si = util_setup_source_info_cache @a1, a2_o
+
+    @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
+
+    a1_data = nil
+    a2_o_data = nil
+
+    File.open @a1_gem, 'rb' do |fp| a1_data = fp.read end
+    File.open a2_o_gem, 'rb' do |fp| a2_o_data = fp.read end
+
+    @fetcher.data["http://gems.example.com/gems/#{@a1.full_name}.gem"] =
+      a1_data
+    @fetcher.data["http://gems.example.com/gems/#{a2_o.full_name}.gem"] =
+      a2_o_data
+
+    inst = Gem::DependencyInstaller.new 'a', nil, :domain => :remote
+    inst.install
+
+    assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
   def test_install_reinstall
     Gem::Installer.new(@a1_gem).install
     FileUtils.mv @a1_gem, @tempdir

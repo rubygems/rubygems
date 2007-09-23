@@ -2,8 +2,11 @@ require 'rubygems'
 require 'rubygems/dependency_list'
 require 'rubygems/installer'
 require 'rubygems/source_info_cache'
+require 'rubygems/user_interaction'
 
 class Gem::DependencyInstaller
+
+  include Gem::UserInteraction
 
   attr_reader :gems_to_install
   attr_reader :installed_gems
@@ -61,7 +64,11 @@ class Gem::DependencyInstaller
     if spec_and_source.nil? then
       version ||= Gem::Requirement.default
       @dep = Gem::Dependency.new gem_name, version
-      spec_and_source = find_gems_with_sources(@dep).last
+      spec_and_sources = find_gems_with_sources(@dep).reverse
+
+      spec_and_source = spec_and_sources.find do |spec, source|
+        Gem::Platform.match spec.platform
+      end
     end
 
     if spec_and_source.nil? then
@@ -117,7 +124,10 @@ class Gem::DependencyInstaller
     case scheme
     when 'http' then
       unless File.exist? local_gem_path then
-        remote_gem_path = source_uri + "/gems/#{gem_file_name}"
+        say "Downloading gem #{gem_file_name}" if
+          Gem.configuration.really_verbose
+
+        remote_gem_path = source_uri + "gems/#{gem_file_name}"
 
         gem = Gem::RemoteFetcher.fetcher.fetch_path remote_gem_path
 
@@ -131,6 +141,9 @@ class Gem::DependencyInstaller
       rescue Errno::EACCES
         local_gem_path = source_uri.to_s
       end
+
+      say "Using local gem #{local_gem_path}" if
+        Gem.configuration.really_verbose
     else
       raise Gem::InstallError, "unsupported URI scheme #{source_uri.scheme}"
     end

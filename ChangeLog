@@ -6,6 +6,8 @@
 	'threshold'.
 	* lib/rubygems/installer.rb: Revert feature request #8818, it
 	interferes with `ruby -S` and multiple versions of ruby (1.8 and 1.9).
+	* lib/rubygems/dependency_installer.rb: Fix a bug where the wrong
+	platform gem would be installed.
 
 2007-09-22  Eric Hodel  <drbrain@segment7.net>
 

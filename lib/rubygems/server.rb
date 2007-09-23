@@ -74,13 +74,13 @@ IFNOT:rdoc_installed
   <span title="rdoc not installed">[rdoc]</span>
 ENDIF:rdoc_installed
 IF:homepage
-<a href="%homepage%" target="_blank" title="%homepage%">[www]</a>
+<a href="%homepage%" title="%homepage%">[www]</a>
 ENDIF:homepage
 IFNOT:homepage
 <span title="no homepage available">[www]</span>
 ENDIF:homepage
 IF:has_deps
- - depends on 
+ - depends on
 START:dependencies
 IFNOT:is_last
 <a href="#%name%" title="%version%">%name%</a>,

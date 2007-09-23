@@ -294,10 +294,10 @@ class Gem::Installer
 # this file is here to facilitate running it.
 #
 
-ENV['GEM_HOME'] ||= '#{@gem_home}'
 require 'rubygems'
 
 version = "#{Gem::Requirement.default}"
+
 if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1 then
   version = $1
   ARGV.shift

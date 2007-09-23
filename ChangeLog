@@ -4,6 +4,8 @@
 	to the current directory.  Feature request #10752 by Bret Pettichord.
 	* lib/rubygems/commands/local_remote_options.rb, etc.: Fix spelling of
 	'threshold'.
+	* lib/rubygems/installer.rb: Revert feature request #8818, it
+	interferes with `ruby -S` and multiple versions of ruby (1.8 and 1.9).
 
 2007-09-22  Eric Hodel  <drbrain@segment7.net>
 

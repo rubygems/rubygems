@@ -25,14 +25,14 @@ class TestGemConfigFile < RubyGemTestCase
 
     assert_equal false, @cfg.backtrace
     assert_equal false, @cfg.benchmark
-    assert_equal 500, @cfg.bulk_threshhold
+    assert_equal 500, @cfg.bulk_threshold
     assert_equal true, @cfg.verbose
     assert_equal %w[http://gems.example.com], Gem.sources
 
     File.open @temp_conf, 'w' do |fp|
       fp.puts ":backtrace: true"
       fp.puts ":benchmark: true"
-      fp.puts ":bulk_threshhold: 10"
+      fp.puts ":bulk_threshold: 10"
       fp.puts ":verbose: false"
       fp.puts ":sources:"
       fp.puts "  - http://more-gems.example.com"
@@ -43,7 +43,7 @@ class TestGemConfigFile < RubyGemTestCase
 
     assert_equal true, @cfg.backtrace
     assert_equal true, @cfg.benchmark
-    assert_equal 10, @cfg.bulk_threshhold
+    assert_equal 10, @cfg.bulk_threshold
     assert_equal false, @cfg.verbose
     assert_equal %w[http://more-gems.example.com], Gem.sources
     assert_equal '--wrappers', @cfg[:install]
@@ -137,16 +137,16 @@ class TestGemConfigFile < RubyGemTestCase
   def test_write
     @cfg.backtrace = true
     @cfg.benchmark = true
-    @cfg.bulk_threshhold = 10
+    @cfg.bulk_threshold = 10
     @cfg.verbose = false
-    Gem.sources.replace %w[http://more-gems.example.com] 
+    Gem.sources.replace %w[http://more-gems.example.com]
     @cfg[:install] = '--wrappers'
 
     @cfg.write
 
     util_config_file
 
-    assert_equal 500, @cfg.bulk_threshhold
+    assert_equal 500, @cfg.bulk_threshold
     assert_equal true, @cfg.verbose
 
     assert_equal false, @cfg.backtrace
@@ -159,7 +159,7 @@ class TestGemConfigFile < RubyGemTestCase
     File.open @temp_conf, 'w' do |fp|
       fp.puts ":backtrace: true"
       fp.puts ":benchmark: true"
-      fp.puts ":bulk_threshhold: 10"
+      fp.puts ":bulk_threshold: 10"
       fp.puts ":verbose: false"
       fp.puts ":sources:"
       fp.puts "  - http://more-gems.example.com"
@@ -170,16 +170,16 @@ class TestGemConfigFile < RubyGemTestCase
 
     @cfg.backtrace = :junk
     @cfg.benchmark = :junk
-    @cfg.bulk_threshhold = 20
+    @cfg.bulk_threshold = 20
     @cfg.verbose = :junk
-    Gem.sources.replace %w[http://even-more-gems.example.com] 
+    Gem.sources.replace %w[http://even-more-gems.example.com]
     @cfg[:install] = '--wrappers --no-rdoc'
 
     @cfg.write
 
     util_config_file
 
-    assert_equal 10, @cfg.bulk_threshhold
+    assert_equal 10, @cfg.bulk_threshold
     assert_equal true, @cfg.verbose
 
     assert_equal true, @cfg.backtrace

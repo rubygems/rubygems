@@ -26,13 +26,32 @@ module Gem::LocalRemoteOptions
       options[:domain] = :both
     end
 
-    add_option(:"Local/Remote", '-B', '--bulk-threshhold COUNT',
-               "Threshhold for switching to bulk",
-               "synchronization (default #{Gem.configuration.bulk_threshhold})") do
-      |value, options|
-      Gem.configuration.bulk_threshhold = value.to_i
-    end
+    add_bulk_threshold_option
+    add_source_option
+    add_proxy_option
+  end
 
+  # Add the --bulk-threshold option
+  def add_bulk_threshold_option
+    add_option(:"Local/Remote", '-B', '--bulk-threshold COUNT',
+               "Threshold for switching to bulk",
+               "synchronization (default #{Gem.configuration.bulk_threshold})") do
+      |value, options|
+      Gem.configuration.bulk_threshold = value.to_i
+    end
+  end
+
+  # Add the --http-proxy option
+  def add_proxy_option
+    add_option(:"Local/Remote", '-p', '--[no-]http-proxy [URL]',
+               'Use HTTP proxy for remote operations') do |value, options|
+      options[:http_proxy] = (value == false) ? :no_proxy : value
+      Gem.configuration[:http_proxy] = options[:http_proxy]
+    end
+  end
+
+  # Add the --source option
+  def add_source_option
     add_option(:"Local/Remote", '--source URL',
                'Use URL as the remote source for gems') do |value, options|
       if options[:added_source] then
@@ -41,12 +60,6 @@ module Gem::LocalRemoteOptions
         options[:added_source] = true
         Gem.sources.replace [value]
       end
-    end
-
-    add_option(:"Local/Remote", '-p', '--[no-]http-proxy [URL]',
-               'Use HTTP proxy for remote operations') do |value, options|
-      options[:http_proxy] = (value == false) ? :no_proxy : value
-      Gem.configuration[:http_proxy] = options[:http_proxy]
     end
   end
 

@@ -156,10 +156,7 @@ module Gem
     end
 
     # Iterate over the specifications in the source index.
-    #
-    # &block:: [yields gem.full_name, Gem::Specification]
-    #
-    def each(&block)
+    def each(&block) # :yields: gem.full_name, gem
       @gems.each(&block)
     end
 
@@ -257,7 +254,7 @@ module Gem
         say "missing #{missing_gems.size} gems" if
           missing_gems.size > 0 and Gem.configuration.really_verbose
 
-        use_incremental = missing_gems.size <= Gem.configuration.bulk_threshhold
+        use_incremental = missing_gems.size <= Gem.configuration.bulk_threshold
       rescue Gem::OperationNotSupportedError => ex
         alert_error "Falling back to bulk fetch: #{ex.message}" if
           Gem.configuration.really_verbose

@@ -36,7 +36,7 @@ class TestGemLocalRemoteOptions < RubyGemTestCase
     end
 
     assert_option @added_options.shift, '-B', 10 do |options|
-      assert_equal 10, Gem.configuration.bulk_threshhold
+      assert_equal 10, Gem.configuration.bulk_threshold
     end
 
     url = 'http://more-gems.example.com'

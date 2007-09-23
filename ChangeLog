@@ -1,3 +1,10 @@
+2007-09-23  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/fetch_command.rb: `gem fetch` downloads a gem
+	to the current directory.  Feature request #10752 by Bret Pettichord.
+	* lib/rubygems/commands/local_remote_options.rb, etc.: Fix spelling of
+	'threshold'.
+
 2007-09-22  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/open-uri.rb: Don't document our OpenURI.

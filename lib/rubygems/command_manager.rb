@@ -31,6 +31,7 @@ module Gem
       register_command :contents
       register_command :dependency
       register_command :environment
+      register_command :fetch
       register_command :generate_index
       register_command :help
       register_command :install

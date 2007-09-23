@@ -26,9 +26,9 @@ class Gem::ConfigFile
   # True if we are benchmarking this run.
   attr_accessor :benchmark
 
-  # Bulk threshhold value.  If the number of missing gems are above
-  # this threshhold value, then a bulk download technique is used.
-  attr_accessor :bulk_threshhold
+  # Bulk threshold value.  If the number of missing gems are above
+  # this threshold value, then a bulk download technique is used.
+  attr_accessor :bulk_threshold
 
   # Verbose level of output:
   # * false -- No output
@@ -73,7 +73,7 @@ class Gem::ConfigFile
 
     @backtrace = DEFAULT_BACKTRACE
     @benchmark = DEFAULT_BENCHMARK
-    @bulk_threshhold = DEFAULT_BULK_THRESHOLD
+    @bulk_threshold = DEFAULT_BULK_THRESHOLD
     @verbose = DEFAULT_VERBOSITY
 
     begin
@@ -92,7 +92,7 @@ class Gem::ConfigFile
     # HACK these override command-line args, which is bad
     @backtrace = @hash[:backtrace] if @hash.key? :backtrace
     @benchmark = @hash[:benchmark] if @hash.key? :benchmark
-    @bulk_threshhold = @hash[:bulk_threshhold] if @hash.key? :bulk_threshhold
+    @bulk_threshold = @hash[:bulk_threshold] if @hash.key? :bulk_threshold
     Gem.sources.replace @hash[:sources] if @hash.key? :sources
     @verbose = @hash[:verbose] if @hash.key? :verbose
 
@@ -115,12 +115,12 @@ class Gem::ConfigFile
     hash.delete :verbose
     hash.delete :benchmark
     hash.delete :backtrace
-    hash.delete :bulk_threshhold
+    hash.delete :bulk_threshold
 
     yield :verbose, @verbose
     yield :benchmark, @benchmark
     yield :backtrace, @backtrace
-    yield :bulk_threshhold, @bulk_threshhold
+    yield :bulk_threshold, @bulk_threshold
 
     yield 'config_file_name', @config_file_name if @config_file_name
 
@@ -158,14 +158,14 @@ class Gem::ConfigFile
     yaml_hash = {
       :backtrace => @hash[:backtrace] || DEFAULT_BACKTRACE,
       :benchmark => @hash[:benchmark] || DEFAULT_BENCHMARK,
-      :bulk_threshhold => @hash[:bulk_threshhold] || DEFAULT_BULK_THRESHOLD,
+      :bulk_threshold => @hash[:bulk_threshold] || DEFAULT_BULK_THRESHOLD,
       :sources => Gem.sources,
       :verbose => @hash[:verbose] || DEFAULT_VERBOSITY,
     }
 
     @hash.each do |key, value|
       key = key.to_s
-      next if key =~ /backtrace|benchmark|bulk_threshhold|verbose|sources|debug/
+      next if key =~ /backtrace|benchmark|bulk_threshold|verbose|sources|debug/
       yaml_hash[key.to_s] = value
     end
 
@@ -193,7 +193,7 @@ class Gem::ConfigFile
     self.class === other and
     @backtrace == other.backtrace and
     @benchmark == other.benchmark and
-    @bulk_threshhold == other.bulk_threshhold and
+    @bulk_threshold == other.bulk_threshold and
     @verbose == other.verbose and
     @hash == other.hash
   end

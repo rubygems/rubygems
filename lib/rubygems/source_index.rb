@@ -361,16 +361,22 @@ module Gem
         marshal_uri = source_uri + "/quick/#{spec_name}.gemspec.marshal.rz"
         zipped = fetcher.fetch_path marshal_uri
         return Marshal.load(unzip(zipped))
-      rescue RuntimeError => ex
+      rescue => ex
         @fetch_error = ex
+        if Gem.configuration.really_verbose then
+          say "unable to fetch marshal gemspec: #{ex.class} - #{ex}"
+        end
       end
 
       begin
         yaml_uri = source_uri + "/quick/#{spec_name}.gemspec.rz"
         zipped = fetcher.fetch_path yaml_uri
         return YAML.load(unzip(zipped))
-      rescue RuntimeError => ex
+      rescue => ex
         @fetch_error = ex
+        if Gem.configuration.really_verbose then
+          say "unable to fetch YAML gemspec: #{ex.class} - #{ex}"
+        end
       end
       nil 
     end

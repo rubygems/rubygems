@@ -16,9 +16,6 @@ module Gem
 
     include UserInteraction
 
-    # A command-line option.
-    Option = Struct.new(:short, :long, :description, :handler)
-
     # The name of the command.
     attr_reader :command
 

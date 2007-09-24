@@ -115,6 +115,15 @@ gems:
     assert_equal proxy_uri, fetcher.instance_variable_get(:@proxy_uri).to_s
   end
 
+  def test_self_fetcher_with_proxy_URI
+    proxy_uri = URI.parse 'http://proxy.example.com'
+    Gem.configuration[:http_proxy] = proxy_uri
+    fetcher = Gem::RemoteFetcher.fetcher
+    assert_not_nil fetcher
+    assert_kind_of Gem::RemoteFetcher, fetcher
+    assert_equal proxy_uri, fetcher.instance_variable_get(:@proxy_uri)
+  end
+
   def test_fetch_size_bad_uri
     fetcher = Gem::RemoteFetcher.new nil
 

@@ -30,7 +30,7 @@ module Gem
           options[:executables] = value
         end
 
-        add_version_option('uninstall')
+        add_version_option
       end
 
       def arguments # :nodoc:

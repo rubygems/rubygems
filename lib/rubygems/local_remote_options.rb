@@ -6,8 +6,23 @@
 
 require 'rubygems'
 
-# Mixin methods for handling the local/remote command line options.
+# Mixin methods for local and remote Gem::Command options.
 module Gem::LocalRemoteOptions
+
+  # Allows OptionParser to handle HTTP URIs.
+  def accept_uri_http
+    OptionParser.accept URI::HTTP do |value|
+      begin
+        value = URI.parse value
+      rescue URI::InvalidURIError
+        raise OptionParser::InvalidArgument, value
+      end
+
+      raise OptionParser::InvalidArgument, value unless value.scheme == 'http'
+
+      value
+    end
+  end
 
   # Add local/remote options to the command line parser.
   def add_local_remote_options
@@ -43,7 +58,9 @@ module Gem::LocalRemoteOptions
 
   # Add the --http-proxy option
   def add_proxy_option
-    add_option(:"Local/Remote", '-p', '--[no-]http-proxy [URL]',
+    accept_uri_http
+
+    add_option(:"Local/Remote", '-p', '--[no-]http-proxy [URL]', URI::HTTP,
                'Use HTTP proxy for remote operations') do |value, options|
       options[:http_proxy] = (value == false) ? :no_proxy : value
       Gem.configuration[:http_proxy] = options[:http_proxy]
@@ -52,7 +69,9 @@ module Gem::LocalRemoteOptions
 
   # Add the --source option
   def add_source_option
-    add_option(:"Local/Remote", '--source URL',
+    accept_uri_http
+
+    add_option(:"Local/Remote", '--source URL', URI::HTTP,
                'Use URL as the remote source for gems') do |value, options|
       if options[:added_source] then
         Gem.sources << value

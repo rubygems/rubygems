@@ -15,7 +15,7 @@ class Gem::Commands::FetchCommand < Gem::Command
     add_proxy_option
     add_source_option
 
-    add_version_option 'fetch'
+    add_version_option
   end
 
   def arguments # :nodoc:
@@ -31,11 +31,7 @@ class Gem::Commands::FetchCommand < Gem::Command
   end
 
   def execute
-    version = if options[:version] then
-                Gem::Requirement.new options[:version]
-              else
-                Gem::Requirement.default
-              end
+    version = options[:version] || Gem::Requirement.default
 
     gem_names = get_all_gem_names
 

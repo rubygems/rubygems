@@ -77,7 +77,7 @@ class TestGemCommandManager < RubyGemTestCase
       assert_equal true, check_options[:force]
       assert_equal :local, check_options[:domain]
       assert_equal false, check_options[:wrappers]
-      assert_equal '3.0', check_options[:version]
+      assert_equal Gem::Requirement.new('3.0'), check_options[:version]
       assert_equal Dir.pwd, check_options[:install_dir]
 
       #check remote domain
@@ -113,7 +113,7 @@ class TestGemCommandManager < RubyGemTestCase
     check_options = nil
     @command_manager.process_args("uninstall foobar --version 3.0")
     assert_equal "foobar", check_options[:args].first
-    assert_equal "3.0", check_options[:version]
+    assert_equal Gem::Requirement.new('3.0'), check_options[:version]
   end
 
   def test_process_args_check

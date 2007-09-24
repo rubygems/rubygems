@@ -518,23 +518,24 @@ module Gem::Package
         end
       end
 
-      if security_policy
+      if security_policy then
         Gem.ensure_ssl_available
-        # map trust policy from string to actual class (or a
-        # serialized YAML file, if that exists)
-        if (security_policy.is_a?(String))
-          if Gem::Security.constants.index(security_policy)
+
+        # map trust policy from string to actual class (or a serialized YAML
+        # file, if that exists)
+        if String === security_policy then
+          if Gem::Security::Policy.key? security_policy then
             # load one of the pre-defined security policies
-            security_policy = Gem::Security.const_get(security_policy)
-          elsif File.exist?(security_policy)
+            security_policy = Gem::Security::Policy[security_policy]
+          elsif File.exist? security_policy then
             # FIXME: this doesn't work yet
-            security_policy = YAML::load(File.read(security_policy))
+            security_policy = YAML.load File.read(security_policy)
           else
             raise Gem::Exception, "Unknown trust policy '#{security_policy}'"
           end
         end
 
-        if data_sig && data_dgst && meta_sig && meta_dgst
+        if data_sig && data_dgst && meta_sig && meta_dgst then
           # the user has a trust policy, and we have a signed gem
           # file, so use the trust policy to verify the gem signature
 

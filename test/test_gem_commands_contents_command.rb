@@ -85,7 +85,7 @@ class TestGemCommandsContentsCommand < RubyGemTestCase
 
     assert_equal true, @cmd.options[:lib_only]
     assert_equal %w[foo], @cmd.options[:specdirs]
-    assert_equal '0.0.2', @cmd.options[:version]
+    assert_equal Gem::Requirement.new('0.0.2'), @cmd.options[:version]
   end
 
 end

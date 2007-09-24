@@ -10,7 +10,7 @@ class Gem::Commands::UnpackCommand < Gem::Command
   def initialize
     super 'unpack', 'Unpack an installed gem to the current directory',
           :version => Gem::Requirement.default
-    add_version_option 'unpack'
+    add_version_option
   end
 
   def arguments # :nodoc:

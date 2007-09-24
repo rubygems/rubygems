@@ -33,7 +33,8 @@ class Gem::RemoteFetcher
       case proxy
       when :no_proxy then nil
       when nil then get_proxy_from_env
-      else URI.parse(proxy.to_str)
+      when URI::HTTP then proxy
+      else URI.parse(proxy)
       end
   end
 

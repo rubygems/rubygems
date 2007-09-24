@@ -5,17 +5,23 @@
 #++
 
 require 'rubygems'
+require 'rubygems/security'
 
 ##
-# Mixin methods and OptionParser options specific to the gem install
-# command.
+# Mixin methods for install and update options for Gem::Commands
 module Gem::InstallUpdateOptions
 
   # Add the install/update options to the option parser.
   def add_install_update_options
+    OptionParser.accept Gem::Security::Policy do |value|
+      value = Gem::Security::Policies[value]
+      raise OptionParser::InvalidArgument, value if value.nil?
+      value
+    end
+
     add_option(:"Install/Update", '-i', '--install-dir DIR',
                'Gem repository directory to get installed',
-               'gems.') do |value, options|
+               'gems') do |value, options|
       options[:install_dir] = File.expand_path(value)
     end
 
@@ -44,27 +50,24 @@ module Gem::InstallUpdateOptions
     end
 
     add_option(:"Install/Update", '-t', '--[no-]test',
-      'Run unit tests prior to installation') do 
-      |value, options|
+               'Run unit tests prior to installation') do |value, options|
       options[:test] = value
     end
 
     add_option(:"Install/Update", '-w', '--[no-]wrappers',
-      'Use bin wrappers for executables',
-      'Not available on dosish platforms') do 
-      |value, options|
+               'Use bin wrappers for executables',
+               'Not available on dosish platforms') do |value, options|
       options[:wrappers] = value
     end
 
     add_option(:"Install/Update", '-P', '--trust-policy POLICY',
-      'Specify gem trust policy.') do 
-      |value, options|
+               Gem::Security::Policy,
+               'Specify gem trust policy') do |value, options|
       options[:security_policy] = value
     end
 
     add_option(:"Install/Update", '--ignore-dependencies',
-      'Do not install any required dependent gems') do 
-      |value, options|
+               'Do not install any required dependent gems') do |value, options|
       options[:ignore_dependencies] = value
     end
 
@@ -74,7 +77,7 @@ module Gem::InstallUpdateOptions
       options[:include_dependencies] = value
     end
   end
-  
+
   # Default options for the gem install command.
   def install_update_defaults_str
     '--rdoc --no-force --no-test --wrappers'

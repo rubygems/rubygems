@@ -8,6 +8,9 @@
 	interferes with `ruby -S` and multiple versions of ruby (1.8 and 1.9).
 	* lib/rubygems/dependency_installer.rb: Fix a bug where the wrong
 	platform gem would be installed.
+	* lib/rubygems/version_option.rb: Add --platform.
+	* lib/rubygems/install_update_options.rb: Verify --security-policy.
+	* lib/rubygems/local_remote_options.rb: Verify --source, --http-proxy.
 
 2007-09-22  Eric Hodel  <drbrain@segment7.net>
 

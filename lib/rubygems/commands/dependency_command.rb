@@ -13,7 +13,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
           'Show the dependencies of an installed gem',
           :version => Gem::Requirement.default, :domain => :local
 
-    add_version_option('dependency')
+    add_version_option
 
     add_option('-R', '--[no-]reverse-dependencies',
                'Include reverse dependencies in the output') do

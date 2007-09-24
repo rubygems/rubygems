@@ -9,7 +9,7 @@ class Gem::Commands::ContentsCommand < Gem::Command
     super 'contents', 'Display the contents of the installed gems',
           :specdirs => [], :lib_only => false
 
-    add_version_option 'contents'
+    add_version_option
 
     add_option('-s', '--spec-dir a,b,c', Array,
                "Search for gems under specific paths") do |spec_dirs, options|

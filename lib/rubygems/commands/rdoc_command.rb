@@ -30,7 +30,7 @@ module Gem
           ) do |value, options|
           options[:include_ri] = value
         end
-        add_version_option('rdoc')
+        add_version_option
       end
 
       def arguments # :nodoc:

@@ -51,9 +51,9 @@ Multiple sources and destinations may be specified.
         Dir.mkdir gems_dir
       end
 
-      sourceindex_text = ''
+      sourceindex_data = ''
 
-      say "fetching: #{get_from}/yaml.Z"
+      say "fetching: #{get_from}/Marshal.Z"
 
       get_from = URI.parse get_from
 
@@ -63,14 +63,14 @@ Multiple sources and destinations may be specified.
         get_from = get_from.to_s[5..-1]
       end
 
-      open File.join(get_from, 'yaml.Z'), "r" do |y|
-        sourceindex_text = Zlib::Inflate.inflate y.read
-        open File.join(save_to, "yaml"), "wb" do |out|
-          out.write sourceindex_text
+      open File.join(get_from, 'Marshal.Z'), "r" do |y|
+        sourceindex_data = Zlib::Inflate.inflate y.read
+        open File.join(save_to, "Marshal"), "wb" do |out|
+          out.write sourceindex_data
         end
       end
 
-      sourceindex = YAML.load sourceindex_text
+      sourceindex = Marshal.load(sourceindex_data)
 
       progress = ui.progress_reporter sourceindex.size,
                                       "Fetching #{sourceindex.size} gems"

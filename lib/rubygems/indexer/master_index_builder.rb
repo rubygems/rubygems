@@ -5,8 +5,12 @@ class Gem::Indexer::MasterIndexBuilder < Gem::Indexer::AbstractIndexBuilder
 
   def start_index
     super
-    @file.puts "--- !ruby/object:Gem::SourceIndex"
-    @file.puts "gems:"
+    @index = Gem::SourceIndex.new
+  end
+
+  def end_index
+    super
+    @file.puts @index.to_yaml
   end
 
   def cleanup
@@ -23,11 +27,7 @@ class Gem::Indexer::MasterIndexBuilder < Gem::Indexer::AbstractIndexBuilder
   end
 
   def add(spec)
-    @file.puts "  #{spec.full_name}: #{nest(spec.to_yaml)}"
-  end
-
-  def nest(yaml_string)
-    yaml_string[4..-1].gsub(/\n/, "\n    ")
+    @index.add_spec(spec)
   end
 
   private

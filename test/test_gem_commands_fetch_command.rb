@@ -14,7 +14,7 @@ class TestGemCommandsFetchCommand < RubyGemTestCase
     util_setup_fake_fetcher
 
     util_build_gem @gem1
-    @fetcher.data['http://gems.example.com/yaml'] = @source_index.to_yaml
+    @fetcher.data['http://gems.example.com/Marshal'] = @source_index.dump
     @fetcher.data["http://gems.example.com/gems/#{@gem1.full_name}.gem"] =
       File.read(File.join(@gemhome, 'cache', "#{@gem1.full_name}.gem"))
 

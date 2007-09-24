@@ -275,18 +275,15 @@ module Gem
       self.class === other and @gems == other.gems 
     end
 
+    def dump
+      Marshal.dump(self)
+    end
+
     protected
 
     attr_reader :gems
 
     private
-
-    # Convert the yamlized string spec into a real spec (actually, these are
-    # hashes of specs.).
-    def convert_specs(yaml_spec)
-      YAML.load(yaml_spec) or
-      raise "Didn't get a valid YAML document"
-    end
 
     def fetcher
       require 'rubygems/remote_fetcher'
@@ -294,24 +291,38 @@ module Gem
       Gem::RemoteFetcher.fetcher
     end
 
+    def fetch_index_from(source_uri)
+      @fetch_error = nil
+      %w(Marshal.Z Marshal yaml.Z yaml).each do |name|
+        spec_data = nil
+        begin
+          spec_data = fetcher.fetch_path("#{source_uri}/#{name}")
+          spec_data = unzip(spec_data) if name =~ /\.Z$/
+          if name =~ /Marshal/ then
+            return Marshal.load(spec_data)
+          else
+            return YAML.load(spec_data)
+          end
+        rescue => e
+          if Gem.configuration.really_verbose then
+            alert_error "Unable to fetch #{name}: #{e.message}"
+          end
+          @fetch_error = e
+        end
+      end
+      nil
+    end
+
     def fetch_bulk_index(source_uri)
       say "Bulk updating Gem source index for: #{source_uri}"
 
-      begin
-        yaml_spec = fetcher.fetch_path source_uri + '/yaml.Z'
-        yaml_spec = unzip yaml_spec
-      rescue => e
-        alert_error "Unable to fetch yaml.Z: #{e.message}" if
-          Gem.configuration.really_verbose
-        begin
-          yaml_spec = fetcher.fetch_path source_uri + '/yaml'
-        rescue => e
-          raise Gem::RemoteSourceException,
-                "Error fetching remote gem cache: #{e}"
-        end
+      index = fetch_index_from(source_uri)
+      if index.nil? then
+        raise Gem::RemoteSourceException,
+              "Error fetching remote gem cache: #{@fetch_error}"
       end
-
-      convert_specs yaml_spec
+      @fetch_error = nil
+      index
     end
 
     # Get the quick index needed for incremental updates.
@@ -343,21 +354,41 @@ module Gem
       Zlib::Inflate.inflate(string)
     end
 
+    # Tries to fetch Marshal representation first, then YAML
+    def fetch_single_spec(source_uri, spec_name)
+      @fetch_error = nil
+      begin
+        marshal_uri = source_uri + "/quick/#{spec_name}.gemspec.marshal.rz"
+        zipped = fetcher.fetch_path marshal_uri
+        return Marshal.load(unzip(zipped))
+      rescue RuntimeError => ex
+        @fetch_error = ex
+      end
+
+      begin
+        yaml_uri = source_uri + "/quick/#{spec_name}.gemspec.rz"
+        zipped = fetcher.fetch_path yaml_uri
+        return YAML.load(unzip(zipped))
+      rescue RuntimeError => ex
+        @fetch_error = ex
+      end
+      nil 
+    end
+
     # Update the cached source index with the missing names.
     def update_with_missing(source_uri, missing_names)
       progress = ui.progress_reporter(missing_names.size,
         "Updating metadata for #{missing_names.size} gems from #{source_uri}")
       missing_names.each do |spec_name|
-        begin
-          spec_uri = source_uri + "/quick/#{spec_name}.gemspec.rz"
-          zipped_yaml = fetcher.fetch_path spec_uri
-          gemspec = YAML.load unzip(zipped_yaml)
+        gemspec = fetch_single_spec(source_uri, spec_name)
+        if gemspec.nil? then
+          ui.say "Failed to download spec #{spec_name} from #{source_uri}:\n" \
+                 "\t#{@fetch_error.message}"
+        else
           add_spec gemspec
           progress.updated spec_name
-        rescue RuntimeError => ex
-          ui.say "Failed to download spec #{spec_name} from #{source_uri}:\n" \
-                 "\t#{ex.message}"
         end
+        @fetch_error = nil
       end
       progress.done
       progress.count

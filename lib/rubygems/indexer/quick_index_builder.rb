@@ -22,8 +22,19 @@ class Gem::Indexer::QuickIndexBuilder < Gem::Indexer::AbstractIndexBuilder
 
   def add(spec)
     @file.puts spec.full_name
+    add_yaml(spec)
+    add_marshal(spec)
+  end
+
+  def add_yaml(spec)
     fn = File.join @directory, "#{spec.full_name}.gemspec.rz"
     zipped = zip spec.to_yaml
+    File.open fn, "wb" do |gsfile| gsfile.write zipped end
+  end
+
+  def add_marshal(spec)
+    fn = File.join @directory, "#{spec.full_name}.gemspec.marshal.rz"
+    zipped = zip Marshal.dump(spec)
     File.open fn, "wb" do |gsfile| gsfile.write zipped end
   end
 

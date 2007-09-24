@@ -82,7 +82,7 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
 
   def test_execute_nonexistent
     util_setup_fake_fetcher
-    @fetcher.data['http://gems.example.com/yaml'] = @source_index.to_yaml
+    @fetcher.data['http://gems.example.com/Marshal'] = @source_index.dump
 
     @cmd.options[:args] = %w[nonexistent]
 
@@ -100,7 +100,7 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     util_setup_fake_fetcher
 
     util_build_gem @gem1
-    @fetcher.data['http://gems.example.com/yaml'] = @source_index.to_yaml
+    @fetcher.data['http://gems.example.com/Marshal'] = @source_index.dump
     @fetcher.data['http://gems.example.com/gems/gem_one-0.0.2.gem'] =
       File.read(File.join(@gemhome, 'cache', "#{@gem1.full_name}.gem"))
 

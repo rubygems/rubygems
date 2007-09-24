@@ -36,6 +36,7 @@ class Gem::Indexer
     @directory = File.join Dir.tmpdir, "gem_generate_index_#{$$}"
 
     @master_index = Gem::Indexer::MasterIndexBuilder.new "yaml", @directory
+    @marshal_index = Gem::Indexer::MarshalIndexBuilder.new "Marshal", @directory
     @quick_index = Gem::Indexer::QuickIndexBuilder.new "index", @directory
   end
 
@@ -43,37 +44,40 @@ class Gem::Indexer
   def build_index
     @master_index.build do
       @quick_index.build do
-        progress = ui.progress_reporter gem_file_list.size,
-                                        "Generating index for #{gem_file_list.size} gems in #{@dest_directory}"
+        @marshal_index.build do
+          progress = ui.progress_reporter gem_file_list.size,
+                                          "Generating index for #{gem_file_list.size} gems in #{@dest_directory}"
 
-        gem_file_list.each do |gemfile|
-          if File.size(gemfile.to_s) == 0 then
-            alert_warning "Skipping zero-length gem: #{gemfile}"
-            next
-          end
-
-          begin
-            spec = Gem::Format.from_file_by_path(gemfile).spec
-
-            unless gemfile =~ /\/#{spec.full_name}.*\.gem\z/i then
-              alert_warning "Skipping misnamed gem: #{gemfile} => #{spec.full_name}"
+          gem_file_list.each do |gemfile|
+            if File.size(gemfile.to_s) == 0 then
+              alert_warning "Skipping zero-length gem: #{gemfile}"
               next
             end
 
-            abbreviate spec
-            sanitize spec
+            begin
+              spec = Gem::Format.from_file_by_path(gemfile).spec
 
-            @master_index.add spec
-            @quick_index.add spec
+              unless gemfile =~ /\/#{spec.full_name}.*\.gem\z/i then
+                alert_warning "Skipping misnamed gem: #{gemfile} => #{spec.full_name}"
+                next
+              end
 
-            progress.updated spec.full_name
+              abbreviate spec
+              sanitize spec
 
-          rescue Exception => e
-            alert_error "Unable to process #{gemfile}\n#{e.message}\n\t#{e.backtrace.join "\n\t"}"
+              @master_index.add spec
+              @quick_index.add spec
+              @marshal_index.add spec
+
+              progress.updated spec.full_name
+
+            rescue Exception => e
+              alert_error "Unable to process #{gemfile}\n#{e.message}\n\t#{e.backtrace.join "\n\t"}"
+            end
           end
-        end
 
-        progress.done
+          progress.done
+        end
       end
     end
   end
@@ -83,7 +87,7 @@ class Gem::Indexer
 
     say "Moving index into production dir #{@dest_directory}" if verbose
 
-    files = @master_index.files + @quick_index.files
+    files = @master_index.files + @quick_index.files + @marshal_index.files
 
     files.each do |file|
       relative_name = file[/\A#{@directory}.(.*)/, 1]
@@ -146,4 +150,5 @@ end
 require 'rubygems/indexer/abstract_index_builder'
 require 'rubygems/indexer/master_index_builder'
 require 'rubygems/indexer/quick_index_builder'
+require 'rubygems/indexer/marshal_index_builder'
 

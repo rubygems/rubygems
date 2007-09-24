@@ -33,7 +33,7 @@ http://gems.example.com
 
     @si = Gem::SourceIndex.new @gem1.full_name => @gem1.name
 
-    @fetcher.data['http://beta-gems.example.com/yaml'] = @si.to_yaml
+    @fetcher.data['http://beta-gems.example.com/Marshal'] = @si.dump
 
     @cmd.handle_options %w[--add http://beta-gems.example.com]
 
@@ -61,7 +61,7 @@ http://beta-gems.example.com added to sources
 
     @si = Gem::SourceIndex.new @gem1.full_name => @gem1.name
 
-    @fetcher.data['http://beta-gems.example.com/yaml'] = proc do
+    @fetcher.data['http://beta-gems.example.com/Marshal'] = proc do
       raise Gem::RemoteFetcher::FetchError, 'it died'
     end
 

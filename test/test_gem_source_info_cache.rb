@@ -35,7 +35,7 @@ class TestGemSourceInfoCache < RubyGemTestCase
 
   def test_self_cache
     source_index = Gem::SourceIndex.new 'key' => 'sys'
-    @fetcher.data['http://gems.example.com/yaml'] = source_index.to_yaml
+    @fetcher.data['http://gems.example.com/Marshal'] = source_index.dump
 
     Gem.sources.replace %w[http://gems.example.com]
 
@@ -50,7 +50,7 @@ class TestGemSourceInfoCache < RubyGemTestCase
   def test_self_cache_data
     source = 'http://gems.example.com'
     source_index = Gem::SourceIndex.new 'key' => 'sys'
-    @fetcher.data["#{source}/yaml"] = source_index.to_yaml
+    @fetcher.data["#{source}/Marshal"] = source_index.dump
 
     Gem::SourceInfoCache.instance_variable_set :@cache, nil
     sice = Gem::SourceInfoCacheEntry.new source_index, 0
@@ -76,7 +76,7 @@ class TestGemSourceInfoCache < RubyGemTestCase
   end
 
   def test_cache_data_irreparable
-    @fetcher.data['http://gems.example.com/yaml'] = @source_index.to_yaml
+    @fetcher.data['http://gems.example.com/Marshal'] = @source_index.dump
 
     data = { 'http://gems.example.com' => { 'totally' => 'borked' } }
 

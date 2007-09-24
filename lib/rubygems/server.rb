@@ -11,7 +11,8 @@ require 'rubygems'
 #
 # gem_server starts an HTTP server on the given port and serves the folowing:
 # * "/" - Browsing of gem spec files for installed gems
-# * "/yaml" - Full yaml dump of metadata for installed gems
+# * "/Marshal" - Full SourceIndex dump of metadata for installed gems
+# * "/yaml" - YAML dump of metadata for installed gems - deprecated
 # * "/gems" - Direct access to download the installable gems
 #
 # == Usage
@@ -367,13 +368,15 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     when '/quick/index.rz' then
       index = @source_index.map { |name,_| name }.join("\n")
       res.body << Zlib::Deflate.deflate(index)
-    when %r|^/quick/(.*)-([0-9.]+)\.gemspec\.rz$| then
+    when %r|^/quick/(.*)-([0-9.]+)\.gemspec(\.marshal)?\.rz$| then
       specs = @source_index.search $1, $2
       if specs.empty? then
         res.status = 404
       elsif specs.length > 1 then
         res.status = 500
-      else
+      elsif $3 # marshal quickindex instead of YAML
+        res.body << Zlib::Deflate.deflate(Marshal.dump(specs.first))
+      else # deprecated YAML format
         res.body << Zlib::Deflate.deflate(specs.first.to_yaml)
       end
     else
@@ -395,6 +398,16 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
         res['content-length'] = @source_index.to_yaml.length
       else
         res.body << @source_index.to_yaml
+      end
+    end
+
+    @server.mount_proc("/Marshal") do |req, res|
+      res['content-type'] = 'text/plain'
+      res['date'] = File.stat(@spec_dir).mtime
+      if req.request_method == 'HEAD' then
+        res['content-length'] = Marshal.dump(@source_index).length
+      else
+        res.body << Marshal.dump(@source_index)
       end
     end
 

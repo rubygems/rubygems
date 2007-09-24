@@ -21,8 +21,13 @@ class Gem::SourceInfoCacheEntry
   end
 
   def refresh(source_uri)
-    remote_size = Gem::RemoteFetcher.fetcher.fetch_size source_uri + '/yaml'
-    return if @size == remote_size # HACK bad check, local cache not YAML
+    begin
+      remote_size = Gem::RemoteFetcher.fetcher.fetch_size source_uri + '/Marshal'
+    rescue Gem::RemoteSourceException
+      remote_size = Gem::RemoteFetcher.fetcher.fetch_size source_uri + '/yaml'
+    end
+
+    return if @size == remote_size # TODO Use index_signature instead of size?
     @source_index.update source_uri
     @size = remote_size
   end

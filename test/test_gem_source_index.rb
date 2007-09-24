@@ -10,7 +10,7 @@ require 'rubygems/source_index'
 require 'rubygems/config_file'
 
 class Gem::SourceIndex
-  public :convert_specs, :fetcher, :fetch_bulk_index, :fetch_quick_index,
+  public :fetcher, :fetch_bulk_index, :fetch_quick_index,
          :find_missing, :gems, :remove_extra,
          :update_with_missing, :unzip
 end
@@ -21,11 +21,6 @@ class TestGemSourceIndex < RubyGemTestCase
     super
 
     util_setup_fake_fetcher
-  end
-
-  def test_convert_specs
-    specs = @source_index.convert_specs([@gem1].to_yaml)
-    assert_equal [@gem1], specs
   end
 
   def test_create_from_directory
@@ -46,6 +41,8 @@ class TestGemSourceIndex < RubyGemTestCase
   end
 
   def test_fetch_bulk_index_error
+    @fetcher.data["http://gems.example.com/Marshal.Z"] = proc { raise SocketError }
+    @fetcher.data["http://gems.example.com/Marshal"] = proc { raise SocketError }
     @fetcher.data["http://gems.example.com/yaml.Z"] = proc { raise SocketError }
     @fetcher.data["http://gems.example.com/yaml"] = proc { raise SocketError }
 
@@ -202,8 +199,8 @@ class TestGemSourceIndex < RubyGemTestCase
     quick_index = util_zip @gem_names
     @fetcher.data['http://gems.example.com/quick/index.rz'] = quick_index
 
-    spec_uri = "http://gems.example.com/quick/#{@gem3.full_name}.gemspec.rz"
-    @fetcher.data[spec_uri] = util_zip @gem3.to_yaml
+    spec_uri = "http://gems.example.com/quick/#{@gem3.full_name}.gemspec.marshal.rz"
+    @fetcher.data[spec_uri] = util_zip Marshal.dump(@gem3)
 
     use_ui MockGemUi.new do
       @source_index.update @uri
@@ -215,8 +212,8 @@ class TestGemSourceIndex < RubyGemTestCase
   end
 
   def test_update_with_missing
-    spec_uri = "http://gems.example.com/quick/#{@gem3.full_name}.gemspec.rz"
-    @fetcher.data[spec_uri] = util_zip @gem3.to_yaml
+    spec_uri = "http://gems.example.com/quick/#{@gem3.full_name}.gemspec.marshal.rz"
+    @fetcher.data[spec_uri] = util_zip Marshal.dump(@gem3)
 
     use_ui MockGemUi.new do
       @source_index.update_with_missing @uri, [@gem3.full_name]
@@ -226,12 +223,12 @@ class TestGemSourceIndex < RubyGemTestCase
   end
 
   def util_setup_bulk_fetch(compressed)
-    source_index = @source_index.to_yaml
+    source_index = @source_index.dump
 
     if compressed then
-      @fetcher.data['http://gems.example.com/yaml.Z'] = util_zip source_index
+      @fetcher.data['http://gems.example.com/Marshal.Z'] = util_zip source_index
     else
-      @fetcher.data['http://gems.example.com/yaml'] = source_index
+      @fetcher.data['http://gems.example.com/Marshal'] = source_index
     end
   end
 

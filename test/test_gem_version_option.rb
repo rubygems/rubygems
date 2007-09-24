@@ -22,7 +22,7 @@ class TestGemVersionOption < RubyGemTestCase
   def test_add_version_option
     @cmd.add_version_option 'dummy'
 
-    assert @cmd.handles? %w[-v]
+    assert @cmd.handles?(%w[--version >1])
   end
 
   def test_version_option

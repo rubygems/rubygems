@@ -16,6 +16,7 @@ class Gem::Commands::FetchCommand < Gem::Command
     add_source_option
 
     add_version_option
+    add_platform_option
   end
 
   def arguments # :nodoc:
@@ -37,7 +38,7 @@ class Gem::Commands::FetchCommand < Gem::Command
 
     gem_names.each do |gem_name|
       dep = Gem::Dependency.new gem_name, version
-      specs_and_sources = Gem::SourceInfoCache.search_with_source(dep)
+      specs_and_sources = Gem::SourceInfoCache.search_with_source dep, true
 
       specs_and_sources.sort_by { |spec,| spec.version }
 

@@ -563,17 +563,20 @@ module Gem
       return @name == dependency.name && 
         dependency.version_requirements.satisfied_by?(@version)
     end
-    
+
     # Comparison methods ---------------------------------------------
-    
-    # Compare specs (name then version).
-    def <=>(other)
-      [@name, @version] <=> [other.name, other.version]
+
+    def <=>(other) # :nodoc:
+      platform_num    = platform == Gem::Platform::RUBY ? -1 : 1
+      other_platform_num = other.platform == Gem::Platform::RUBY ? -1 : 1
+
+      [@name, @version, platform_num] <=>
+        [other.name, other.version, other_platform_num]
     end
 
     # Tests specs for equality (across all attributes).
     def ==(other) # :nodoc:
-      other.kind_of?(self.class) && same_attributes?(other)
+      self.class === other && same_attributes?(other)
     end
 
     alias eql? == # :nodoc:

@@ -14,6 +14,7 @@ class TestGemPlatform < RubyGemTestCase
   def test_self_match
     assert Gem::Platform.match(nil), 'nil == ruby'
     assert Gem::Platform.match(Gem::Platform.local), 'exact match'
+    assert Gem::Platform.match(Gem::Platform.local.to_s), '=~ match'
     assert Gem::Platform.match(Gem::Platform::RUBY), 'ruby'
   end
 

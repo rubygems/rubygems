@@ -12,13 +12,23 @@ module Gem::VersionOption
   # Add the --platform option to the option parser.
   def add_platform_option(task = command, *wrap)
     OptionParser.accept Gem::Platform do |value|
-      Gem::Platform.new value
+      if value == Gem::Platform::RUBY then
+        value
+      else
+        Gem::Platform.new value
+      end
     end
 
     add_option('--platform PLATFORM', Gem::Platform,
                "Specify the platform of gem to #{task}", *wrap) do
                  |value, options|
-      options[:platform] = value
+      unless options[:added_platform] then
+        Gem.platforms.clear
+        Gem.platforms << Gem::Platform::RUBY
+        options[:added_platform] = true
+      end
+
+      Gem.platforms << value unless Gem.platforms.include? value
     end
   end
 

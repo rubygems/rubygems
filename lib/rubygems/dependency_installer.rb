@@ -54,7 +54,7 @@ class Gem::DependencyInstaller
         next unless gem_file =~ /gem$/
         begin
           spec = Gem::Format.from_file_by_path(gem_file).spec
-          spec_and_source = [spec, gem_file] 
+          spec_and_source = [spec, gem_file]
           break
         rescue SystemCallError, Gem::Package::FormatError
         end
@@ -89,15 +89,15 @@ class Gem::DependencyInstaller
   def find_gems_with_sources(dep)
     gems_and_sources = []
 
-    if @domain == :both or @domain == :local then # HACK local?
+    if @domain == :both or @domain == :local then
       Dir[File.join(Dir.pwd, "#{dep.name}-[0-9]*.gem")].each do |gem_file|
         spec = Gem::Format.from_file_by_path(gem_file).spec
         gems_and_sources << [spec, gem_file] if spec.name == dep.name
       end
     end
 
-    if @domain == :both or @domain == :remote then # HACK remote?
-      gems_and_sources.push(*Gem::SourceInfoCache.search_with_source(dep))
+    if @domain == :both or @domain == :remote then
+      gems_and_sources.push(*Gem::SourceInfoCache.search_with_source(dep, true))
     end
 
     gems_and_sources.sort_by do |gem, source|
@@ -117,9 +117,7 @@ class Gem::DependencyInstaller
     scheme = source_uri.scheme
 
     # URI.parse gets confused by MS Windows paths with forward slashes.
-    if scheme =~ /^[A-Za-z]$/
-      scheme = nil
-    end
+    scheme = nil if scheme =~ /^[a-z]$/i
 
     case scheme
     when 'http' then
@@ -173,7 +171,6 @@ class Gem::DependencyInstaller
           results = find_gems_with_sources(dep).reverse # local gems first
 
           results.each do |dep_spec, source_uri|
-            next unless Gem::Platform.match dep_spec.platform
             next if seen[dep_spec]
             @specs_and_sources << [dep_spec, source_uri]
             dependency_list.add dep_spec
@@ -196,6 +193,8 @@ class Gem::DependencyInstaller
       last = spec == @gems_to_install.last
       # HACK is this test for full_name acceptable?
       next if source_index.any? { |n,_| n == spec.full_name } and not last
+
+      say "Installing gem #{spec.full_name}" if Gem.configuration.really_verbose
 
       _, source_uri = @specs_and_sources.assoc spec
       local_gem_path = download spec, source_uri

@@ -1,3 +1,12 @@
+2007-09-26  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/version_option.rb: Always include RUBY platform,
+	allow RUBY platform as an option.
+	* lib/rubygems/specification.rb: Gems with non-ruby platform sort
+	last (first in preference for installation).
+	* lib/rubygems/platform.rb: Allow matching of legacy platforms.
+	* lib/rubygems/source_index.rb: Add only_platform option to #search.
+
 2007-09-23  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/fetch_command.rb: `gem fetch` downloads a gem

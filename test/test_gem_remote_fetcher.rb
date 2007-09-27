@@ -228,7 +228,7 @@ gems:
       fetcher.fetch_path 'uri'
     end
 
-    assert_equal 'EOFError reading uri', e.message
+    assert_equal 'EOFError: EOFError reading uri', e.message
   end
 
   def test_fetch_path_socket_error
@@ -240,7 +240,7 @@ gems:
       fetcher.fetch_path 'uri'
     end
 
-    assert_equal 'SocketError reading uri', e.message
+    assert_equal 'SocketError: SocketError reading uri', e.message
   end
 
   def test_fetch_path_system_call_error
@@ -254,7 +254,8 @@ gems:
       fetcher.fetch_path 'uri'
     end
 
-    assert_equal 'Errno::ECONNREFUSED reading uri', e.message
+    assert_equal 'Errno::ECONNREFUSED: Connection refused - connect(2) reading uri',
+                 e.message
   end
 
   def test_get_proxy_from_env_empty

@@ -158,6 +158,27 @@ class TestGemSourceIndex < RubyGemTestCase
     assert_equal [], empty_source_index.search("foo")
   end
 
+  def test_search_platform
+    util_set_arch 'x86-my_platform1'
+
+    a1 = quick_gem 'a', '1'
+    a1_mine = quick_gem 'a', '1' do |s|
+      s.platform = Gem::Platform.new 'x86-my_platform1'
+    end
+    a1_other = quick_gem 'a', '1' do |s|
+      s.platform = Gem::Platform.new 'x86-other_platform1'
+    end
+
+    si = Gem::SourceIndex.new(a1.full_name => a1, a1_mine.full_name => a1_mine,
+                              a1_other.full_name => a1_other)
+
+    dep = Gem::Dependency.new 'a', Gem::Requirement.new('1')
+
+    gems = si.search dep, true
+
+    assert_equal [a1, a1_mine], gems.sort
+  end
+
   def test_signature
     sig = @source_index.gem_signature('foo-1.2.3')
     assert_equal 64, sig.length

@@ -23,9 +23,10 @@ class Gem::Commands::InstallCommand < Gem::Command
 
     super 'install', 'Install a gem into the local repository', defaults
 
-    add_version_option
-    add_local_remote_options
     add_install_update_options
+    add_local_remote_options
+    add_platform_option
+    add_version_option
   end
 
   def arguments # :nodoc:

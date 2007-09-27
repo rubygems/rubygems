@@ -2,28 +2,26 @@ require 'rubygems/command'
 require 'rubygems/local_remote_options'
 require 'rubygems/source_info_cache'
 
-module Gem
-  module Commands
+class Gem::Commands::OutdatedCommand < Gem::Command
 
-    class OutdatedCommand < Command
+  include Gem::LocalRemoteOptions
 
-      include Gem::LocalRemoteOptions
+  def initialize
+    super 'outdated', 'Display all gems that need updates'
 
-      def initialize
-        super 'outdated', 'Display all gems that need updates'
+    add_local_remote_options
+  end
 
-        add_local_remote_options
-      end
+  def execute
+    locals = Gem::SourceIndex.from_installed_gems
 
-      def execute
-        locals = Gem::SourceIndex.from_installed_gems
-        locals.outdated.each do |name|
-          local = locals.search(/^#{name}$/).last
-          remote = Gem::SourceInfoCache.search(/^#{name}$/).last
-          say "#{local.name} (#{local.version} < #{remote.version})"
-        end
-      end
-
+    locals.outdated.sort.each do |name|
+      local = locals.search(/^#{name}$/).last
+      remotes = Gem::SourceInfoCache.search_with_source(/^#{name}$/, true)
+      remote = remotes.last.first
+      say "#{local.name} (#{local.version} < #{remote.version})"
     end
   end
+
 end
+

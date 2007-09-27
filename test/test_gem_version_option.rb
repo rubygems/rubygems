@@ -27,11 +27,40 @@ class TestGemVersionOption < RubyGemTestCase
   def test_platform_option
     @cmd.add_platform_option
 
-    @cmd.handle_options %w[--platform x86-darwin]
+    @cmd.handle_options %w[--platform x86-freebsd6 --platform x86-freebsd7]
 
-    expected = { :platform => Gem::Platform.new('x86-darwin'), :args => [] }
+    expected = [
+      Gem::Platform::RUBY,
+      Gem::Platform.new('x86-freebsd6'),
+      Gem::Platform.new('x86-freebsd7'),
+    ]
 
-    assert_equal expected, @cmd.options
+    assert_equal expected, Gem.platforms
+  end
+
+  def test_platform_option_ruby
+    @cmd.add_platform_option
+
+    @cmd.handle_options %w[--platform ruby]
+
+    expected = [
+      Gem::Platform::RUBY
+    ]
+
+    assert_equal expected, Gem.platforms
+  end
+
+  def test_platform_option_twice
+    @cmd.add_platform_option
+
+    @cmd.handle_options %w[--platform x86-freebsd6 --platform x86-freebsd6]
+
+    expected = [
+      Gem::Platform::RUBY,
+      Gem::Platform.new('x86-freebsd6'),
+    ]
+
+    assert_equal expected, Gem.platforms
   end
 
   def test_version_option

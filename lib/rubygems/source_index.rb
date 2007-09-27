@@ -199,14 +199,21 @@ module Gem
     #   [Array] list of Gem::Specification objects in sorted (version)
     #   order.  Empty if not found.
     #
-    def search(gem_pattern, version_requirement=Gem::Requirement.default)
+    def search(gem_pattern, platform_only_or_version_req = false)
+      version_requirement = nil
+      only_platform = false
+
       case gem_pattern
       when Regexp then
-        # ok
+        version_requirement = platform_only_or_version_req ||
+                                Gem::Requirement.default
       when Gem::Dependency then
+        only_platform = platform_only_or_version_req
         version_requirement = gem_pattern.version_requirements
         gem_pattern = /^#{gem_pattern.name}$/
       else
+        version_requirement = platform_only_or_version_req ||
+                                Gem::Requirement.default
         gem_pattern = /#{gem_pattern}/i
       end
 
@@ -214,10 +221,18 @@ module Gem
         version_requirement = Gem::Requirement.create version_requirement
       end
 
-      @gems.values.select do |spec|
+      specs = @gems.values.select do |spec|
         spec.name =~ gem_pattern and
           version_requirement.satisfied_by? spec.version
-      end.sort
+      end
+
+      if only_platform then
+        specs = specs.select do |spec|
+          Gem::Platform.match spec.platform
+        end
+      end
+
+      specs.sort
     end
 
     # Refresh the source index from the local file system.
@@ -378,7 +393,7 @@ module Gem
           say "unable to fetch YAML gemspec: #{ex.class} - #{ex}"
         end
       end
-      nil 
+      nil
     end
 
     # Update the cached source index with the missing names.

@@ -50,9 +50,10 @@ class Gem::SourceInfoCache
     cache.search(pattern)
   end
 
-  # Search all source indexes for +pattern+.
-  def self.search_with_source(pattern)
-    cache.search_with_source(pattern)
+  # Search all source indexes for +pattern+.  Only returns gems matching
+  # Gem.platforms when +only_platform+ is true.  See #search_with_source.
+  def self.search_with_source(pattern, only_platform = false)
+    cache.search_with_source(pattern, only_platform)
   end
 
   def initialize # :nodoc:
@@ -128,16 +129,17 @@ class Gem::SourceInfoCache
     end.flatten.compact
   end
 
-  # Searches all source indexes for +pattern+.  Returns an Array of pairs
-  # containing the Gem::Specification found and the source_uri it was found
-  # at.
-  def search_with_source(pattern)
+  # Searches all source indexes for +pattern+.  If +only_platform+ is true,
+  # only gems matching Gem.platforms will be selected.  Returns an Array of
+  # pairs containing the Gem::Specification found and the source_uri it was
+  # found at.
+  def search_with_source(pattern, only_platform = false)
     results = []
 
     cache_data.map do |source_uri, sic_entry|
       next unless Gem.sources.include? source_uri
 
-      sic_entry.source_index.search(pattern).each do |spec|
+      sic_entry.source_index.search(pattern, only_platform).each do |spec|
         results << [spec, source_uri]
       end
     end
@@ -179,12 +181,12 @@ class Gem::SourceInfoCache
   end
 
   # Set the source info cache data directly.  This is mainly used for unit
-  # testing when we don't want to read a file system for to grab the cached
-  # source index information.  The +hash+ should map a source URL into a 
-  # SourceIndexCacheEntry.
+  # testing when we don't want to read a file system to grab the cached source
+  # index information.  The +hash+ should map a source URL into a
+  # SourceInfoCacheEntry.
   def set_cache_data(hash)
     @cache_data = hash
-    @dirty = false
+    update
   end
 
   private

@@ -91,7 +91,7 @@ module Gem
     
         begin
           verify_gem_file(gem_path)
-          File.open(gem_path) do |file|
+          File.open(gem_path, 'rb') do |file|
             format = Gem::Format.from_file_by_path(gem_path)
             format.file_entries.each do |entry, data|
               # Found this file.  Delete it from list

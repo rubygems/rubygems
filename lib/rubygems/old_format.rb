@@ -37,7 +37,7 @@ module Gem
       unless File.exist?(file_path)
         raise Gem::Exception, "Cannot load gem file [#{file_path}]"
       end
-      File.open(file_path, 'r') do |file|
+      File.open(file_path, 'rb') do |file|
         from_io(file, file_path)
       end
     end

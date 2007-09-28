@@ -63,7 +63,7 @@ Multiple sources and destinations may be specified.
         get_from = get_from.to_s[5..-1]
       end
 
-      open File.join(get_from, 'Marshal.Z'), "r" do |y|
+      open File.join(get_from, 'Marshal.Z'), "rb" do |y|
         sourceindex_data = Zlib::Inflate.inflate y.read
         open File.join(save_to, "Marshal"), "wb" do |out|
           out.write sourceindex_data
@@ -80,7 +80,7 @@ Multiple sources and destinations may be specified.
 
         unless File.exist? gem_dest then
           begin
-            open "#{get_from}/gems/#{gem_file}", "r" do |g|
+            open "#{get_from}/gems/#{gem_file}", "rb" do |g|
               contents = g.read
               open gem_dest, "wb" do |out|
                 out.write contents

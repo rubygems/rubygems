@@ -475,18 +475,18 @@ end
       s.platform = Gem::Platform.new 'x86-my_platform1'
     end
 
-    assert_equal -1, (s1 <=> s2)
-    assert_equal  0, (s1 <=> s1)
-    assert_equal  1, (s2 <=> s1)
+    assert_equal( -1, (s1 <=> s2))
+    assert_equal(  0, (s1 <=> s1))
+    assert_equal(  1, (s2 <=> s1))
   end
 
   def test_spaceship_version
     s1 = quick_gem 'a', '1'
     s2 = quick_gem 'a', '2'
 
-    assert_equal -1, (s1 <=> s2)
-    assert_equal  0, (s1 <=> s1)
-    assert_equal  1, (s2 <=> s1)
+    assert_equal( -1, (s1 <=> s2))
+    assert_equal(  0, (s1 <=> s1))
+    assert_equal(  1, (s2 <=> s1))
   end
 
   def test_summary

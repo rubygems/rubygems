@@ -254,7 +254,7 @@ gems:
       fetcher.fetch_path 'uri'
     end
 
-    assert_equal 'Errno::ECONNREFUSED: Connection refused - connect(2) reading uri',
+    assert_match %r|\AErrno::ECONNREFUSED: .* - connect\(2\) reading uri\z|,
                  e.message
   end
 

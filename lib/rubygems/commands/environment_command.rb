@@ -48,11 +48,9 @@ class Gem::Commands::EnvironmentCommand < Gem::Command
 
       out << "  - INSTALLATION DIRECTORY: #{Gem.dir}\n"
 
-      ruby_exe_name = Config::CONFIG['ruby_install_name']
-      ruby_exe_name << ".#{Config::CONFIG['EXEEXT']}" unless
-      Config::CONFIG['EXEEXT'].empty?
-      ruby_exe = File.join Config::CONFIG['bindir'], ruby_exe_name
-      out << "  - RUBY EXECUTABLE: #{ruby_exe}\n"
+      out << "  - RUBYGEMS PREFIX: #{Gem.prefix}\n" unless Gem.prefix.nil?
+
+      out << "  - RUBY EXECUTABLE: #{Gem.ruby}\n"
 
       out << "  - RUBYGEMS PLATFORMS:\n"
       Gem.platforms.each do |platform|

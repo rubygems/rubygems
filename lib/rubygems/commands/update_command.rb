@@ -86,26 +86,34 @@ module Gem
 
         if gems_to_update.include?("rubygems-update") then
           latest_ruby_gem = remote_gemspecs.select { |s|
-            s.name == 'rubygems-update' 
+            s.name == 'rubygems-update'
           }.sort_by { |s|
             s.version
           }.last
-          say "Updating version of RubyGems to #{latest_ruby_gem.version}"
-          do_rubygems_update(latest_ruby_gem.version.to_s)
-        end
 
-        if options[:system] then
-          say "RubyGems system software updated"
+          say "Updating version of RubyGems to #{latest_ruby_gem.version}"
+          installed = do_rubygems_update(latest_ruby_gem.version.to_s)
+
+          say "RubyGems system software updated" if installed
         else
           say "Gems: [#{gems_to_update.uniq.sort.collect{|g| g.to_s}.join(', ')}] updated"
         end
       end
 
       def do_rubygems_update(version_string)
-        update_dir = File.join(Gem.dir, "gems", "rubygems-update-#{version_string}")
-        Dir.chdir(update_dir) do
+        args = []
+        args.push '--prefix', Gem.prefix unless Gem.prefix.nil?
+        args << '--no-rdoc' unless options[:rdoc]
+        args << '--no-ri' unless options[:ri]
+
+        update_dir = File.join(Gem.dir, 'gems',
+                               "rubygems-update-#{version_string}")
+
+        success = false
+
+        Dir.chdir update_dir do
           say "Installing RubyGems #{version_string}"
-          system "#{Gem.ruby} setup.rb"
+          system "#{Gem.ruby} setup.rb #{args.join ' '}"
         end
       end
 

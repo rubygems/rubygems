@@ -119,8 +119,8 @@ load 'my_exec'
 
     gem_make_out = File.join @gemhome, 'gems', @spec.full_name, 'gem_make.out'
     expected = <<-EOF
-ruby extconf.rb
-ruby: No such file or directory -- extconf.rb (LoadError)
+#{Gem.ruby} extconf.rb
+#{Gem.ruby}: No such file or directory -- extconf.rb (LoadError)
     EOF
 
     assert_equal expected, File.read(gem_make_out)

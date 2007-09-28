@@ -1,3 +1,12 @@
+2007-09-28  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/rubygems.rb: Gem.ruby now returns the full path.  Added
+	Gem.prefix to make self updating work right.
+	* setup.rb, pre-install.rb, post-install.rb: Replace with a small,
+	simple setup script that works.
+	* lib/rubygems/commands/update_command.rb: Pass rdoc, ri and prefix
+	flags down to setup.rb when self updating.
+
 2007-09-26  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/version_option.rb: Always include RUBY platform,

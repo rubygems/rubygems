@@ -34,7 +34,7 @@ class TestGemExtExtConfBuilder < RubyGemTestCase
       "make: Nothing to be done for `install'.\n"
     ]
 
-    assert_match(/^ruby extconf.rb/, output[0])
+    assert_match(/^#{Gem.ruby} extconf.rb/, output[0])
     assert_equal "creating Makefile\n", output[1]
     case RUBY_PLATFORM
     when /mswin/ then
@@ -63,10 +63,10 @@ class TestGemExtExtConfBuilder < RubyGemTestCase
 
     assert_match(/\Aextconf failed:
 
-ruby extconf.rb.*
+#{Gem.ruby} extconf.rb.*
 checking for main\(\) in .*?nonexistent/m, error.message)
 
-    assert_match(/^ruby extconf.rb/, output[0])
+    assert_match(/^#{Gem.ruby} extconf.rb/, output[0])
   end
 
   def test_class_make

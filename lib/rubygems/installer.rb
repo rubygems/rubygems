@@ -265,17 +265,14 @@ class Gem::Installer
     else
       path = File.join @gem_dir, @spec.bindir, bin_file_name
 
-      ruby = File.join(Config::CONFIG['bindir'],
-                       Config::CONFIG['ruby_install_name'])
-
       File.open(path, "rb") do |file|
         first_line = file.readlines("\n").first # HACK use each_line
         if first_line =~ /^#!/ then
           # Preserve extra words on shebang line, like "-w".  Thanks RPA.
-          shebang = first_line.sub(/\A\#!\s*\S*ruby\S*/, "#!#{ruby}")
+          shebang = first_line.sub(/\A\#!\s*\S*ruby\S*/, "#!#{Gem.ruby}")
         else
           # Create a plain shebang line.
-          shebang = "#!#{ruby}"
+          shebang = "#!#{Gem.ruby}"
         end
 
         shebang.strip # Avoid nasty ^M issues.

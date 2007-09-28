@@ -232,6 +232,11 @@ class TestGem < RubyGemTestCase
     assert_equal [Gem::Platform::RUBY, Gem::Platform.local], Gem.platforms
   end
 
+  def test_self_prefix
+    file_name = File.expand_path __FILE__
+    assert_equal File.dirname(File.dirname(file_name)), Gem.prefix
+  end
+
   def test_self_required_location
     util_make_gems
 

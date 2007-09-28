@@ -94,6 +94,7 @@ module Gem
   @configuration = nil
   @loaded_specs = {}
   @platforms = nil
+  @ruby = nil
   @sources = []
 
   # Reset the +dir+ and +path+ values.  The next time +dir+ or +path+
@@ -106,6 +107,18 @@ module Gem
     @@source_index = nil
     MUTEX.synchronize do
       @searcher = nil
+    end
+  end
+
+  ##
+  # The directory prefix this RubyGems was installed at.
+
+  def self.prefix
+    prefix = File.dirname File.expand_path(__FILE__)
+    if prefix == Config::CONFIG['sitelibdir'] then
+      nil
+    else
+      File.dirname prefix
     end
   end
 
@@ -251,7 +264,13 @@ module Gem
 
     # Return the Ruby command to use to execute the Ruby interpreter.
     def ruby
-      "ruby"
+      if @ruby.nil? then
+        @ruby = File.join(Config::CONFIG['bindir'],
+                         Config::CONFIG['ruby_install_name'])
+        @ruby << Config::CONFIG['EXEEXT']
+      end
+
+      @ruby
     end
 
     # Activate a gem (i.e. add it to the Ruby load path).  The gem

@@ -32,7 +32,7 @@ class TestGemExtRakeBuilder < RubyGemTestCase
     end
 
     expected = [
-      "ruby mkrf_conf.rb",
+      "#{Gem.ruby} mkrf_conf.rb",
       "",
       "rake RUBYARCHDIR=#{@dest_path} RUBYLIBDIR=#{@dest_path}",
       "(in #{realdir})\n"
@@ -61,7 +61,7 @@ class TestGemExtRakeBuilder < RubyGemTestCase
     expected = <<-EOF.strip
 rake failed:
 
-ruby mkrf_conf.rb
+#{Gem.ruby} mkrf_conf.rb
 
 rake RUBYARCHDIR=#{@dest_path} RUBYLIBDIR=#{@dest_path}
     EOF

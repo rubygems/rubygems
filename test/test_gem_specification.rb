@@ -464,9 +464,9 @@ end
     s1 = quick_gem 'a', '1'
     s2 = quick_gem 'b', '1'
 
-    assert_equal -1, (s1 <=> s2)
-    assert_equal  0, (s1 <=> s1)
-    assert_equal  1, (s2 <=> s1)
+    assert_equal(-1, (s1 <=> s2))
+    assert_equal( 0, (s1 <=> s1))
+    assert_equal( 1, (s2 <=> s1))
   end
 
   def test_spaceship_platform

@@ -144,7 +144,7 @@ gems:
       fetcher.fetch_size 'http://gems.example.com/yaml'
     end
 
-    assert_equal 'SocketError(SocketError)', e.message
+    assert_equal 'SocketError (SocketError)', e.message
   end
 
   def test_no_proxy

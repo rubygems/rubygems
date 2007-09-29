@@ -23,7 +23,7 @@ class TestGemSourceInfoCacheEntry < RubyGemTestCase
   end
 
   def test_refresh_bad_uri
-    assert_raise ArgumentError do
+    assert_raise URI::BadURIError do
       @sic_e.refresh 'gems.example.com'
     end
   end

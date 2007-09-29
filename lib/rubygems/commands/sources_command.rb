@@ -54,7 +54,7 @@ class Gem::Commands::SourcesCommand < Gem::Command
         Gem.configuration.write
 
         say "#{source_uri} added to sources"
-      rescue ArgumentError
+      rescue URI::Error, ArgumentError
         say "#{source_uri} is not a URI"
       rescue Gem::RemoteFetcher::FetchError => e
         say "Error fetching #{source_uri}:\n\t#{e.message}"

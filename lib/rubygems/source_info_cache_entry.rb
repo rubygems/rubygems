@@ -22,9 +22,11 @@ class Gem::SourceInfoCacheEntry
 
   def refresh(source_uri)
     begin
-      remote_size = Gem::RemoteFetcher.fetcher.fetch_size source_uri + '/Marshal'
+      marshal_uri = URI.join source_uri.to_s, 'Marshal'
+      remote_size = Gem::RemoteFetcher.fetcher.fetch_size marshal_uri
     rescue Gem::RemoteSourceException
-      remote_size = Gem::RemoteFetcher.fetcher.fetch_size source_uri + '/yaml'
+      yaml_uri = URI.join source_uri.to_s, 'yaml'
+      remote_size = Gem::RemoteFetcher.fetcher.fetch_size yaml_uri
     end
 
     return if @size == remote_size # TODO Use index_signature instead of size?

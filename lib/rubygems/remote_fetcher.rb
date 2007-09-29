@@ -51,22 +51,35 @@ class Gem::RemoteFetcher
 
   # Returns the size of +uri+ in bytes.
   def fetch_size(uri)
-    return File.size(get_file_uri_path(uri)) if file_uri?(uri)
-    u = URI.parse(uri)
-    raise ArgumentError, 'uri is not an HTTP URI' unless URI::HTTP === u
-    http = connect_to(u.host, u.port)
-    request = Net::HTTP::Head.new(u.request_uri)
-    request.basic_auth(unescape(u.user), unescape(u.password)) unless u.user.nil? || u.user.empty?
-    resp = http.request(request)
-    raise Gem::RemoteSourceException, "HTTP Response #{resp.code}" if resp.code !~ /^2/
-    if resp['content-length']
+    return File.size(get_file_uri_path(uri)) if file_uri? uri
+
+    uri = URI.parse uri unless URI::Generic === uri
+
+    raise ArgumentError, 'uri is not an HTTP URI' unless URI::HTTP === uri
+
+    http = connect_to uri.host, uri.port
+
+    request = Net::HTTP::Head.new uri.request_uri
+
+    request.basic_auth unescape(uri.user), unescape(uri.password) unless
+      uri.user.nil? or uri.user.empty?
+
+    resp = http.request request
+
+    if resp.code !~ /^2/ then
+      raise Gem::RemoteSourceException,
+            "HTTP Response #{resp.code} fetching #{uri}"
+    end
+
+    if resp['content-length'] then
       return resp['content-length'].to_i
     else
-      resp = http.get(u.request_uri)
+      resp = http.get uri.request_uri
       return resp.body.size
     end
+
   rescue SocketError, SystemCallError, Timeout::Error => e
-    raise FetchError, "#{e.message}(#{e.class})"
+    raise FetchError, "#{e.message} (#{e.class})"
   end
 
   private

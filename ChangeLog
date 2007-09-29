@@ -1,3 +1,8 @@
+2007-09-29  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_info_cache_entry.rb: Correctly handle URIs.
+	* lib/rubygems/remote_fetcher.rb: ditto.
+
 2007-09-28  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/rubygems.rb: Gem.ruby now returns the full path.  Added

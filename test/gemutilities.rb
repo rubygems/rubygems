@@ -34,14 +34,17 @@ class FakeFetcher
 
   attr_reader :data
   attr_accessor :uri
+  attr_accessor :paths
 
   def initialize
     @data = {}
+    @paths = []
     @uri = nil
   end
 
   def fetch_path(path)
     path = path.to_s
+    @paths << path
     raise ArgumentError, 'need full URI' unless path =~ %r'^http://'
     data = @data[path]
     raise OpenURI::HTTPError.new("no data for #{path}", nil) if data.nil?
@@ -50,6 +53,7 @@ class FakeFetcher
 
   def fetch_size(path)
     path = path.to_s
+    @paths << path
     raise ArgumentError, 'need full URI' unless path =~ %r'^http://'
     data = @data[path]
     raise OpenURI::HTTPError.new("no data for #{path}", nil) if data.nil?
@@ -253,6 +257,9 @@ class RubyGemTestCase < Test::Unit::TestCase
     @gem4 = quick_gem 'gem_one_evil', '666' do |gem|
       gem.files = %w[Rakefile lib/gem_one.rb]
     end
+
+    @all_gems = [@gem1, @gem2, @gem3, @gem4].sort
+    @all_gem_names = @all_gems.map { |gem| gem.full_name }
 
     gem_names = [@gem1.full_name, @gem2.full_name, @gem4.full_name]
     @gem_names = gem_names.sort.join("\n")

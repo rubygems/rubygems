@@ -13,7 +13,7 @@ module Gem
   else
     require 'rubygems/digest/digest_adapter'
     MD5 = DigestAdapter.new(Digest::MD5)
-    def MD5.md5(string)
+    def Gem::MD5.md5(string)
       self.hexdigest(string)
     end
   end

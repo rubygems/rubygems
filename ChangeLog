@@ -2,6 +2,10 @@
 
 	* lib/rubygems/source_info_cache_entry.rb: Correctly handle URIs.
 	* lib/rubygems/remote_fetcher.rb: ditto.
+	* lib/rubygems/remote_options.rb: Add --update-sources option.
+	* lib/rubygems/config_file.rb: Add update_sources setting to control
+	automatic refreshing of sources.  Patch #14246 by Alan Francis.  Fix
+	bug where things would be overwritten in ~/.gemrc when they shouldn't.
 
 2007-09-28  Eric Hodel  <drbrain@segment7.net>
 

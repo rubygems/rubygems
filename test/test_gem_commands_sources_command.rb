@@ -122,5 +122,26 @@ http://gems.example.com removed from sources
     assert_equal [], Gem::SourceInfoCache.cache_data.keys
   end
 
+  def test_execute_update
+    @cmd.handle_options %w[--update]
+
+    util_setup_source_info_cache
+    util_setup_fake_fetcher
+    @si = Gem::SourceIndex.new @gem1.full_name => @gem1.name
+    @fetcher.data['http://gems.example.com/Marshal'] = @si.dump
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = <<-EOF
+Bulk updating Gem source index for: http://gems.example.com
+source cache successfully updated
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+  end
+
 end
 

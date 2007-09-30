@@ -24,6 +24,7 @@ class TestGemConfigFile < RubyGemTestCase
     assert_equal @temp_conf, @cfg.config_file_name
 
     assert_equal false, @cfg.backtrace
+    assert_equal true, @cfg.update_sources
     assert_equal false, @cfg.benchmark
     assert_equal 500, @cfg.bulk_threshold
     assert_equal true, @cfg.verbose
@@ -31,6 +32,7 @@ class TestGemConfigFile < RubyGemTestCase
 
     File.open @temp_conf, 'w' do |fp|
       fp.puts ":backtrace: true"
+      fp.puts ":update_sources: false"
       fp.puts ":benchmark: true"
       fp.puts ":bulk_threshold: 10"
       fp.puts ":verbose: false"
@@ -45,6 +47,7 @@ class TestGemConfigFile < RubyGemTestCase
     assert_equal true, @cfg.benchmark
     assert_equal 10, @cfg.bulk_threshold
     assert_equal false, @cfg.verbose
+    assert_equal false, @cfg.update_sources
     assert_equal %w[http://more-gems.example.com], Gem.sources
     assert_equal '--wrappers', @cfg[:install]
   end
@@ -137,6 +140,7 @@ class TestGemConfigFile < RubyGemTestCase
   def test_write
     @cfg.backtrace = true
     @cfg.benchmark = true
+    @cfg.update_sources = false
     @cfg.bulk_threshold = 10
     @cfg.verbose = false
     Gem.sources.replace %w[http://more-gems.example.com]
@@ -146,13 +150,17 @@ class TestGemConfigFile < RubyGemTestCase
 
     util_config_file
 
-    assert_equal 500, @cfg.bulk_threshold
-    assert_equal true, @cfg.verbose
+    # These should not be written out to the config file.
+    assert_equal false, @cfg.backtrace,     'backtrace'
+    assert_equal false, @cfg.benchmark,     'benchmark'
+    assert_equal 500, @cfg.bulk_threshold,  'bulk_threshold'
+    assert_equal true, @cfg.update_sources, 'update_sources'
+    assert_equal true, @cfg.verbose,        'verbose'
 
-    assert_equal false, @cfg.backtrace
-    assert_equal false, @cfg.benchmark
+    assert_equal '--wrappers', @cfg[:install], 'install'
+
+    # this should be written out to the config file.
     assert_equal %w[http://more-gems.example.com], Gem.sources
-    assert_equal '--wrappers', @cfg[:install]
   end
 
   def test_write_from_hash
@@ -160,6 +168,7 @@ class TestGemConfigFile < RubyGemTestCase
       fp.puts ":backtrace: true"
       fp.puts ":benchmark: true"
       fp.puts ":bulk_threshold: 10"
+      fp.puts ":update_sources: false"
       fp.puts ":verbose: false"
       fp.puts ":sources:"
       fp.puts "  - http://more-gems.example.com"
@@ -170,6 +179,7 @@ class TestGemConfigFile < RubyGemTestCase
 
     @cfg.backtrace = :junk
     @cfg.benchmark = :junk
+    @cfg.update_sources = :junk
     @cfg.bulk_threshold = 20
     @cfg.verbose = :junk
     Gem.sources.replace %w[http://even-more-gems.example.com]
@@ -179,13 +189,16 @@ class TestGemConfigFile < RubyGemTestCase
 
     util_config_file
 
-    assert_equal 10, @cfg.bulk_threshold
-    assert_equal true, @cfg.verbose
+    # These should not be written out to the config file
+    assert_equal true,  @cfg.backtrace,      'backtrace'
+    assert_equal true,  @cfg.benchmark,      'benchmark'
+    assert_equal 10,    @cfg.bulk_threshold, 'bulk_threshold'
+    assert_equal false, @cfg.update_sources, 'update_sources'
+    assert_equal false, @cfg.verbose,        'verbose'
 
-    assert_equal true, @cfg.backtrace
-    assert_equal true, @cfg.benchmark
+    assert_equal '--wrappers --no-rdoc', @cfg[:install], 'install'
+
     assert_equal %w[http://even-more-gems.example.com], Gem.sources
-    assert_equal '--wrappers --no-rdoc', @cfg[:install]
   end
 
   def util_config_file(args = @cfg_args)

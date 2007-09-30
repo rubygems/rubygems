@@ -33,7 +33,8 @@ class TestGemSourceInfoCache < RubyGemTestCase
     Gem.sources.replace @original_sources
   end
 
-  def test_self_cache
+  def test_self_cache_refreshes
+    Gem.configuration.update_sources = true #true by default
     source_index = Gem::SourceIndex.new 'key' => 'sys'
     @fetcher.data['http://gems.example.com/Marshal'] = source_index.dump
 
@@ -44,6 +45,23 @@ class TestGemSourceInfoCache < RubyGemTestCase
       assert_kind_of Gem::SourceInfoCache, Gem::SourceInfoCache.cache
       assert_equal Gem::SourceInfoCache.cache.object_id,
                    Gem::SourceInfoCache.cache.object_id
+      assert_match %r|Bulk updating|, @ui.output
+    end
+  end
+
+  def test_self_cache_skips_refresh_based_on_configuration
+    Gem.configuration.update_sources = false
+    source_index = Gem::SourceIndex.new 'key' => 'sys'
+    @fetcher.data['http://gems.example.com/Marshal'] = source_index.dump
+
+    Gem.sources.replace %w[http://gems.example.com]
+
+    use_ui @ui do
+      assert_not_nil Gem::SourceInfoCache.cache
+      assert_kind_of Gem::SourceInfoCache, Gem::SourceInfoCache.cache
+      assert_equal Gem::SourceInfoCache.cache.object_id,
+                   Gem::SourceInfoCache.cache.object_id
+      assert_no_match %r|Bulk updating|, @ui.output
     end
   end
 

@@ -16,6 +16,7 @@ class Gem::ConfigFile
   DEFAULT_BENCHMARK = false
   DEFAULT_BULK_THRESHOLD = 500
   DEFAULT_VERBOSITY = true
+  DEFAULT_UPDATE_SOURCES = true
 
   # List of arguments supplied to the config file object.
   attr_reader :args
@@ -35,6 +36,9 @@ class Gem::ConfigFile
   # * true -- Normal output
   # * :loud -- Extra output
   attr_accessor :verbose
+
+  # True if we want to update the SourceInfoCache every time, false otherwise
+  attr_accessor :update_sources
 
   # Create the config file object.  +args+ is the list of arguments
   # from the command line.
@@ -75,6 +79,7 @@ class Gem::ConfigFile
     @benchmark = DEFAULT_BENCHMARK
     @bulk_threshold = DEFAULT_BULK_THRESHOLD
     @verbose = DEFAULT_VERBOSITY
+    @update_sources = DEFAULT_UPDATE_SOURCES
 
     begin
       # HACK $SAFE ok?
@@ -95,6 +100,7 @@ class Gem::ConfigFile
     @bulk_threshold = @hash[:bulk_threshold] if @hash.key? :bulk_threshold
     Gem.sources.replace @hash[:sources] if @hash.key? :sources
     @verbose = @hash[:verbose] if @hash.key? :verbose
+    @update_sources = @hash[:update_sources] if @hash.key? :update_sources
 
     handle_arguments arg_list
   end
@@ -112,11 +118,13 @@ class Gem::ConfigFile
   # Delegates to @hash
   def each(&block)
     hash = @hash.dup
+    hash.delete :update_sources
     hash.delete :verbose
     hash.delete :benchmark
     hash.delete :backtrace
     hash.delete :bulk_threshold
 
+    yield :update_sources, @update_sources
     yield :verbose, @verbose
     yield :benchmark, @benchmark
     yield :backtrace, @backtrace
@@ -155,17 +163,26 @@ class Gem::ConfigFile
 
   # to_yaml only overwrites things you can't override on the command line.
   def to_yaml # :nodoc:
-    yaml_hash = {
-      :backtrace => @hash[:backtrace] || DEFAULT_BACKTRACE,
-      :benchmark => @hash[:benchmark] || DEFAULT_BENCHMARK,
-      :bulk_threshold => @hash[:bulk_threshold] || DEFAULT_BULK_THRESHOLD,
-      :sources => Gem.sources,
-      :verbose => @hash[:verbose] || DEFAULT_VERBOSITY,
-    }
+    yaml_hash = {}
+    yaml_hash[:backtrace] = @hash.key?(:backtrace) ? @hash[:backtrace] :
+      DEFAULT_BACKTRACE
+    yaml_hash[:benchmark] = @hash.key?(:benchmark) ? @hash[:benchmark] :
+      DEFAULT_BENCHMARK
+    yaml_hash[:bulk_threshold] = @hash.key?(:bulk_threshold) ?
+      @hash[:bulk_threshold] : DEFAULT_BULK_THRESHOLD
+    yaml_hash[:sources] = Gem.sources
+    yaml_hash[:update_sources] = @hash.key?(:update_sources) ?
+      @hash[:update_sources] : DEFAULT_UPDATE_SOURCES
+    yaml_hash[:verbose] = @hash.key?(:verbose) ? @hash[:verbose] :
+      DEFAULT_VERBOSITY
+
+    keys = yaml_hash.keys.map { |key| key.to_s }
+    keys << 'debug'
+    re = Regexp.union(*keys)
 
     @hash.each do |key, value|
       key = key.to_s
-      next if key =~ /backtrace|benchmark|bulk_threshold|verbose|sources|debug/
+      next if key =~ re
       yaml_hash[key.to_s] = value
     end
 
@@ -195,6 +212,7 @@ class Gem::ConfigFile
     @benchmark == other.benchmark and
     @bulk_threshold == other.bulk_threshold and
     @verbose == other.verbose and
+    @update_sources == other.update_sources and
     @hash == other.hash
   end
 

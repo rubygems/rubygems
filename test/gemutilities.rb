@@ -83,6 +83,7 @@ class RubyGemTestCase < Test::Unit::TestCase
     Gem.loaded_specs.clear
 
     Gem.configuration.verbose = true
+    Gem.configuration.update_sources = true
 
     Gem.sources.replace %w[http://gems.example.com]
 

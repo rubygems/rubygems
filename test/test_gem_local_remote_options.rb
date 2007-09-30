@@ -15,7 +15,7 @@ class TestGemLocalRemoteOptions < RubyGemTestCase
   def test_add_local_remote_options
     @cmd.add_local_remote_options
 
-    args = %w[-l -r -b -B 10 --source http://gems.example.com -p]
+    args = %w[-l -r -b -B 10 --source http://gems.example.com -p --update-sources]
     assert @cmd.handles?(args)
   end
 
@@ -52,6 +52,17 @@ class TestGemLocalRemoteOptions < RubyGemTestCase
     @cmd.handle_options %W[--source #{s1} --source #{s2}]
 
     assert_equal [s1, s2], Gem.sources
+  end
+
+  def test_update_sources_option
+    @cmd.add_update_sources_option
+    
+    Gem.configuration[:update_sources] = false
+
+    @cmd.handle_options %W[--update-sources]
+
+    assert_equal true, Gem.configuration[:update_sources]
+    assert_equal true, Gem.configuration.update_sources
   end
 
   def test_source_option_bad

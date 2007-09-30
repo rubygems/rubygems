@@ -44,6 +44,7 @@ module Gem::LocalRemoteOptions
     add_bulk_threshold_option
     add_source_option
     add_proxy_option
+    add_update_sources_option
   end
 
   # Add the --bulk-threshold option
@@ -79,6 +80,15 @@ module Gem::LocalRemoteOptions
         options[:added_source] = true
         Gem.sources.replace [value]
       end
+    end
+  end
+
+  # Add the --source option
+  def add_update_sources_option
+
+    add_option(:"Local/Remote", '-u', '--update-sources',
+               'Update local source cache') do |value, options|
+      Gem.configuration[:update_sources] = true
     end
   end
 

@@ -21,6 +21,10 @@ class Gem::Commands::SourcesCommand < Gem::Command
       options[:remove] = value
     end
 
+    add_option '-u', '--update', 'Update source cache' do |value, options|
+      options[:update] = value
+    end
+
     add_option '-c', '--clear-all',
                'Remove all sources (clear the cache)' do |value, options|
       options[:clear_all] = value
@@ -32,7 +36,7 @@ class Gem::Commands::SourcesCommand < Gem::Command
   end
 
   def execute
-    options[:list] = !(options[:add] || options[:remove] || options[:clear_all])
+    options[:list] = !(options[:add] || options[:remove] || options[:clear_all] || options[:update])
 
     if options[:clear_all] then
       remove_cache_file("user", Gem::SourceInfoCache.user_cache_file)
@@ -59,6 +63,13 @@ class Gem::Commands::SourcesCommand < Gem::Command
       rescue Gem::RemoteFetcher::FetchError => e
         say "Error fetching #{source_uri}:\n\t#{e.message}"
       end
+    end
+
+    if options[:update] then
+      Gem::SourceInfoCache.cache.refresh
+      Gem::SourceInfoCache.cache.flush
+
+      say "source cache successfully updated"
     end
 
     if options[:remove] then

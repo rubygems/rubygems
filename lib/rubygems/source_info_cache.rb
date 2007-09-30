@@ -37,7 +37,7 @@ class Gem::SourceInfoCache
   def self.cache
     return @cache if @cache
     @cache = new
-    @cache.refresh
+    @cache.refresh if Gem.configuration.update_sources
     @cache
   end
 

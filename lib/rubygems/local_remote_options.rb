@@ -88,7 +88,7 @@ module Gem::LocalRemoteOptions
 
     add_option(:"Local/Remote", '-u', '--update-sources',
                'Update local source cache') do |value, options|
-      Gem.configuration[:update_sources] = true
+      Gem.configuration.update_sources = true
     end
   end
 

@@ -1,3 +1,8 @@
+2007-09-30  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb: Gem::Specification is now
+	forward-compatible while loading.
+
 2007-09-29  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/source_info_cache_entry.rb: Correctly handle URIs.

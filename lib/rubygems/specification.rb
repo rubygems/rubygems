@@ -43,7 +43,7 @@ module Gem
     # The specification version applied to any new Specification instances
     # created.  This should be bumped whenever something in the spec format
     # changes.
-    CURRENT_SPECIFICATION_VERSION = 1
+    CURRENT_SPECIFICATION_VERSION = 2
 
     # An informal list of changes to the specification.  The highest-valued
     # key should be equal to the CURRENT_SPECIFICATION_VERSION.
@@ -52,7 +52,11 @@ module Gem
       1  => [
         'Deprecated "test_suite_file" in favor of the new, but equivalent, "test_files"',
         '"test_file=x" is a shortcut for "test_files=[x]"'
-      ]
+      ],
+      2  => [
+        'Added "required_rubygems_version"',
+        'Now forward-compatible with future versions',
+      ],
     }
 
     # ------------------------- Class variables.
@@ -216,8 +220,6 @@ module Gem
     required_attribute :date
     required_attribute :summary
     required_attribute :require_paths, ['lib']
-    
-    read_only :specification_version
 
     # OPTIONAL gemspec attributes ------------------------------------
     
@@ -437,9 +439,12 @@ module Gem
           self.send "#{name}=", copy_of(default)
         end
       end
+
       @loaded = false
       @@list << self
+
       yield self if block_given?
+
       @@gather.call(self) if @@gather
     end
 
@@ -496,6 +501,16 @@ module Gem
     #
     def mark_version
       @rubygems_version = RubyGemsVersion
+    end
+
+    # Ignore unknown attributes if the 
+    def method_missing(sym, *a, &b) # :nodoc:
+      if @specification_version > CURRENT_SPECIFICATION_VERSION and
+         sym.to_s =~ /=$/ then
+        warn "ignoring #{sym} loading #{full_name}" if $DEBUG
+      else
+        super
+      end
     end
 
     # Adds a dependency to this Gem.  For example,
@@ -606,24 +621,41 @@ module Gem
       @@attributes.map { |name, default| "@#{name}" }
     end
 
-    # Returns a Ruby code representation of this specification, such
-    # that it can be eval'ed and reconstruct the same specification
-    # later.  Attributes that still have their default values are
-    # omitted.
+    # Returns a Ruby code representation of this specification, such that it
+    # can be eval'ed and reconstruct the same specification later.  Attributes
+    # that still have their default values are omitted.
     def to_ruby
       mark_version
-      result = "Gem::Specification.new do |s|\n"
-      @@attributes.each do |name, default|
-        # TODO better implementation of next line (read_only_attribute? ... something like that)
-        next if name == :dependencies or name == :specification_version
+      result = []
+      result << "Gem::Specification.new do |s|"
+
+      result << "  s.name = #{ruby_code name}"
+      result << "  s.version = #{ruby_code version}"
+      result << ""
+      result << "  s.specification_version = #{specification_version} if s.respond_to? :specification_version="
+      result << ""
+
+      handled = [:name, :version, :specification_version, :dependencies]
+      attributes = @@attributes.sort_by { |name,| name.to_s }
+
+      attributes.each do |name, default|
+        next if handled.include? name
         current_value = self.send(name)
-        result << "  s.#{name} = #{ruby_code(current_value)}\n" unless current_value == default
+        result << "  s.#{name} = #{ruby_code current_value}" unless
+          current_value == default
       end
+
+      result << "" unless dependencies.empty?
+
       dependencies.each do |dep|
         version_reqs_param = dep.requirements_list.inspect
-        result << "  s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})\n"
+        result << "  s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
       end
-      result << "end\n"
+
+      result << "end"
+      result << ""
+
+      result.join "\n" 
     end
 
     # Validation and normalization methods ---------------------------

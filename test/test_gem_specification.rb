@@ -181,6 +181,21 @@ end
     assert_equal '>= 0', spec.required_rubygems_version.to_s
   end
 
+  def test_initialize_future
+    version = Gem::Specification::CURRENT_SPECIFICATION_VERSION + 1
+    spec = Gem::Specification.new do |s|
+      s.name = "blah"
+      s.version = "1.3.5"
+
+      s.specification_version = version
+
+      s.new_unknown_attribute = "a value"
+    end
+
+    assert_equal "blah", spec.name
+    assert_equal "1.3.5", spec.version.to_s
+  end
+
   def test_author
     assert_equal 'A User', @a0_0_1.author
   end
@@ -510,14 +525,17 @@ end
     expected = "Gem::Specification.new do |s|
   s.name = %q{a}
   s.version = \"0.0.2\"
-  s.date = %q{#{Time.now.strftime "%Y-%m-%d"}}
-  s.summary = %q{this is a summary}
-  s.email = %q{example@example.com}
-  s.homepage = %q{http://example.com}
-  s.description = %q{This is a test description}
-  s.has_rdoc = true
+
+  s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION} if s.respond_to? :specification_version=
+
   s.authors = [\"A User\"]
+  s.date = %q{#{Time.now.strftime "%Y-%m-%d"}}
+  s.description = %q{This is a test description}
+  s.email = %q{example@example.com}
   s.files = [\"lib/code.rb\"]
+  s.has_rdoc = true
+  s.homepage = %q{http://example.com}
+  s.summary = %q{this is a summary}
 end
 "
 

@@ -259,7 +259,6 @@ PKG_FILES = FileList[
   "Rakefile", "ChangeLog", "Releases", "TODO", "README", "LICENSE.txt",
   "GPL.txt",
   "setup.rb",
-  "post-install.rb",
   "bin/*",
   "doc/*.css", "doc/*.rb",
   "examples/**/*",

@@ -1,3 +1,7 @@
+2007-10-01  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/platform.rb: Handle mswin32 on VC6.
+
 2007-09-30  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb: Gem::Specification is now

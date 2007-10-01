@@ -46,7 +46,14 @@ class Gem::Platform
                       when /^java([\d.]*)/ then        [ 'java',      $1  ]
                       when /linux/ then                [ 'linux',     $1  ]
                       when /mingw32/ then              [ 'mingw32',   nil ]
-                      when /mswin32/ then              [ 'mswin32',   nil ]
+                      when /mswin32(\_(\d+))?/ then
+                        if $2 then
+                          [ 'mswin32', $2   ]
+                        elsif Config::CONFIG['RUBY_SO_NAME'] =~ /^msvcrt-ruby/ then
+                          [ 'mswin32', '60' ]
+                        else
+                          [ 'mswin32', nil  ]
+                        end
                       when /netbsdelf/ then            [ 'netbsdelf', nil ]
                       when /openbsd(\d+\.\d+)/ then    [ 'openbsd',   $1  ]
                       when /solaris(\d+\.\d+)/ then    [ 'solaris',   $1  ]
@@ -98,7 +105,7 @@ class Gem::Platform
               when /^i686-darwin(\d)/ then     ['x86',       'darwin',  $1]
               when /^i\d86-linux/ then         ['x86',       'linux',   nil]
               when 'java', 'jruby' then        [nil,         'java',    nil]
-              when /mswin32/ then              ['x86',       'mswin32', nil]
+              when /mswin32(\_(\d+))?/ then    ['x86',       'mswin32', $2]
               when 'powerpc-darwin' then       ['powerpc',   'darwin',  nil]
               when /powerpc-darwin(\d)/ then   ['powerpc',   'darwin',  $1]
               when /sparc-solaris2.8/ then     ['sparc',     'solaris', '2.8']

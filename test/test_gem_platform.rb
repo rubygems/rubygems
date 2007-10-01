@@ -51,6 +51,7 @@ class TestGemPlatform < RubyGemTestCase
       'i386-linux-gnu'         => ['x86',       'linux',     nil],
       'i386-mingw32'           => ['x86',       'mingw32',   nil],
       'i386-mswin32'           => ['x86',       'mswin32',   nil],
+      'i386-mswin32_80'        => ['x86',       'mswin32',   '80'],
       'i386-netbsdelf'         => ['x86',       'netbsdelf', nil],
       'i386-openbsd4.0'        => ['x86',       'openbsd',   '4.0'],
       'i386-solaris2.10'       => ['x86',       'solaris',   '2.10'],
@@ -64,6 +65,21 @@ class TestGemPlatform < RubyGemTestCase
       platform = Gem::Platform.new arch
       assert_equal expected, platform.to_a, arch.inspect
     end
+  end
+
+  def test_initialize_mswin32_vc6
+    orig_RUBY_SO_NAME = Config::CONFIG['RUBY_SO_NAME']
+    Config::CONFIG['RUBY_SO_NAME'] = 'msvcrt-ruby18'
+
+    util_set_arch 'i386-mswin32'
+
+    expected = %w[x86 mswin32 60]
+
+    platform = Gem::Platform.new('i386-mswin32')
+
+    assert_equal expected, platform.to_a, 'i386-mswin32 VC6'
+  ensure
+    Config::CONFIG['RUBY_SO_NAME'] = orig_RUBY_SO_NAME
   end
 
   def test_initialize_test

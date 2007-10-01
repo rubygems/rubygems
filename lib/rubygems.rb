@@ -266,7 +266,7 @@ module Gem
     def ruby
       if @ruby.nil? then
         @ruby = File.join(Config::CONFIG['bindir'],
-                         Config::CONFIG['ruby_install_name'])
+                          Config::CONFIG['ruby_install_name'])
         @ruby << Config::CONFIG['EXEEXT']
       end
 

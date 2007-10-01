@@ -53,7 +53,7 @@ class TestGemVersionOption < RubyGemTestCase
   def test_platform_option_twice
     @cmd.add_platform_option
 
-    @cmd.handle_options %w[--platform x86-freebsd6 --platform x86-freebsd6]
+    @cmd.handle_options %w[--platform x86-freebsd6 --platform x86-freebsd-6]
 
     expected = [
       Gem::Platform::RUBY,

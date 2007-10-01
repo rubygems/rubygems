@@ -28,13 +28,27 @@ class Gem::Platform
     when Array then
       @cpu, @os, @version = arch
     when String then
-      cpu, os = arch.split '-', 2
-      cpu, os = nil, cpu if os.nil? # legacy jruby
+      arch = arch.split '-'
+
+      if arch.length > 2 and arch.last !~ /\d/ then # reassemble x86-linux-gnu
+        extra = arch.pop
+        arch.last << "-#{extra}"
+      end
+
+      cpu = arch.shift
 
       @cpu = case cpu
              when /i\d86/ then 'x86'
              else cpu
              end
+
+      if arch.length == 2 and arch.last =~ /^\d+$/ then # for command-line
+        @os, @version = arch
+        return
+      end
+
+      os, = arch
+      @cpu, os = nil, cpu if os.nil? # legacy jruby
 
       @os, @version = case os
                       when /aix(\d+)/ then             [ 'aix',       $1  ]
@@ -46,13 +60,14 @@ class Gem::Platform
                       when /^java([\d.]*)/ then        [ 'java',      $1  ]
                       when /linux/ then                [ 'linux',     $1  ]
                       when /mingw32/ then              [ 'mingw32',   nil ]
-                      when /mswin32(\_(\d+))?/ then
-                        if $2 then
-                          [ 'mswin32', $2   ]
+                      when /(mswin\d+)(\_(\d+))?/ then
+                        os = $1
+                        if $3 then
+                          [ os, $3   ]
                         elsif Config::CONFIG['RUBY_SO_NAME'] =~ /^msvcrt-ruby/ then
-                          [ 'mswin32', '60' ]
+                          [ os, '60' ]
                         else
-                          [ 'mswin32', nil  ]
+                          [ os, nil  ]
                         end
                       when /netbsdelf/ then            [ 'netbsdelf', nil ]
                       when /openbsd(\d+\.\d+)/ then    [ 'openbsd',   $1  ]

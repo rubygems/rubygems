@@ -85,12 +85,12 @@ module Gem
     def process_args(args)
       args = args.to_str.split(/\s+/) if args.respond_to?(:to_str)
       if args.size == 0
-        say Gem::HELP
+        say Gem::Command::HELP
         terminate_interaction(1)
       end 
       case args[0]
       when '-h', '--help'
-        say Gem::HELP
+        say Gem::Command::HELP
         terminate_interaction(0)
       when '-v', '--version'
         say Gem::RubyGemsPackageVersion

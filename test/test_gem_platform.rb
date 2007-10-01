@@ -67,15 +67,27 @@ class TestGemPlatform < RubyGemTestCase
     end
   end
 
+  def test_initialize_command_line
+    expected = ['x86', 'mswin32', nil]
+
+    platform = Gem::Platform.new 'i386-mswin32'
+
+    assert_equal expected, platform.to_a, 'i386-mswin32'
+
+    expected = ['x86', 'mswin32', '80']
+
+    platform = Gem::Platform.new 'i386-mswin32-80'
+
+    assert_equal expected, platform.to_a, 'i386-mswin32-80'
+  end
+
   def test_initialize_mswin32_vc6
     orig_RUBY_SO_NAME = Config::CONFIG['RUBY_SO_NAME']
     Config::CONFIG['RUBY_SO_NAME'] = 'msvcrt-ruby18'
 
-    util_set_arch 'i386-mswin32'
-
     expected = %w[x86 mswin32 60]
 
-    platform = Gem::Platform.new('i386-mswin32')
+    platform = Gem::Platform.new 'i386-mswin32'
 
     assert_equal expected, platform.to_a, 'i386-mswin32 VC6'
   ensure

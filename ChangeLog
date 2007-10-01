@@ -1,6 +1,8 @@
 2007-10-01  Eric Hodel  <drbrain@segment7.net>
 
-	* lib/rubygems/platform.rb: Handle mswin32 on VC6.
+	* lib/rubygems/platform.rb: Handle mswin32 on VC6.  Partial patch and
+	assistance by Luis Lavena.  Handle cpu-os-version style platforms for
+	command-line arguments.
 
 2007-09-30  Eric Hodel  <drbrain@segment7.net>
 

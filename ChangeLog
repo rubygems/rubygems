@@ -1,3 +1,8 @@
+2007-10-02  Wilson Bilkovich  <wilson@supremetyrant.com>
+	* lib/rubygems/specification.rb: Custom Marshal format to reduce index size
+	* lib/rubygems/requirement.rb: Ditto
+	* lib/rubygems/version.rb: Ditto
+
 2007-10-01  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/platform.rb: Handle mswin32 on VC6.  Partial patch and
@@ -36,6 +41,18 @@
 	last (first in preference for installation).
 	* lib/rubygems/platform.rb: Allow matching of legacy platforms.
 	* lib/rubygems/source_index.rb: Add only_platform option to #search.
+
+2007-09-24  Wilson Bilkovich  <wilson@supremetyrant.com>
+	* lib/rubygems/indexer.rb: Generate a Marshal index in parallel to YAML
+	* lib/rubygems/source_index.rb: Fetch a Marshal index if it exists, to
+	avoid the memory cost of parsing a huge YAML file
+	* lib/rubygems/commands/mirror_command.rb: Check for Marshal first
+	* lib/rubygems/indexer/abstract_index_builder.rb: Index refactoring
+	* lib/rubygems/indexer/marshal_index_builder.rb: Build Marshal index
+	* lib/rubygems/indexer/master_index_builder.rb: Simplify YAML generation
+	* lib/rubygems/indexer/quick_index_builder.rb: Build Marshal quickindex
+	* lib/rubygems/server.rb: Serve up Marshal index as well as YAML
+	* lib/rubygems/source_info_cache_entry.rb: Expect a Marshal index
 
 2007-09-23  Eric Hodel  <drbrain@segment7.net>
 

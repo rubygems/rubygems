@@ -318,7 +318,8 @@ class TestGemSourceIndex < RubyGemTestCase
     quick_index = util_zip @all_gem_names.join("\n")
     @fetcher.data["#{@gem_repo}/quick/index.rz"] = quick_index
 
-    marshal_uri = "#{@gem_repo}/quick/#{@gem3.full_name}.gemspec.marshal.#{@marshal_version}.rz"
+    marshal_uri = File.join @gem_repo, "quick", "Marshal.#{@marshal_version}",
+                            "#{@gem3.full_name}.gemspec.rz"
     @fetcher.data[marshal_uri] = util_zip Marshal.dump(@gem3)
 
     use_ui @ui do
@@ -343,6 +344,9 @@ class TestGemSourceIndex < RubyGemTestCase
     quick_index = util_zip @all_gem_names.join("\n")
     @fetcher.data["#{@gem_repo}/quick/index.rz"] = quick_index
 
+    marshal_uri = File.join @gem_repo, "quick", "Marshal.#{@marshal_version}",
+                            "#{@gem3.full_name}.gemspec.rz"
+
     yaml_uri = "#{@gem_repo}/quick/#{@gem3.full_name}.gemspec.rz"
     @fetcher.data[yaml_uri] = util_zip @gem3.to_yaml
 
@@ -354,8 +358,7 @@ class TestGemSourceIndex < RubyGemTestCase
 
     paths = @fetcher.paths
     assert_equal "#{@gem_repo}/quick/index.rz", paths.shift
-    assert_equal "#{@gem_repo}/quick/#{@gem3.full_name}.gemspec.marshal.#{@marshal_version}.rz",
-                 paths.shift
+    assert_equal marshal_uri, paths.shift
     assert_equal yaml_uri, paths.shift
 
     assert paths.empty?, paths.join(', ')
@@ -370,8 +373,8 @@ class TestGemSourceIndex < RubyGemTestCase
     quick_index = util_zip @all_gem_names.join("\n")
     @fetcher.data["#{@gem_repo}/quick/index.rz"] = quick_index
 
-    marshal_uri = "#{@gem_repo}/quick/#{@gem3.full_name}.gemspec.marshal.#{@marshal_version}.rz"
-
+    marshal_uri = File.join @gem_repo, "quick", "Marshal.#{@marshal_version}",
+                            "#{@gem3.full_name}.gemspec.rz"
     marshal_data = Marshal.dump(@gem3)
     marshal_data[0] = (Marshal::MAJOR_VERSION - 1).chr
     @fetcher.data[marshal_uri] = util_zip marshal_data
@@ -396,16 +399,17 @@ class TestGemSourceIndex < RubyGemTestCase
   end
 
   def test_update_with_missing
-    spec_uri = "#{@gem_repo}/quick/#{@gem3.full_name}.gemspec.marshal.#{@marshal_version}.rz"
+    marshal_uri = File.join @gem_repo, "quick", "Marshal.#{@marshal_version}",
+                            "#{@gem3.full_name}.gemspec.rz"
     dumped = Marshal.dump(@gem3)
-    @fetcher.data[spec_uri] = util_zip(dumped)
+    @fetcher.data[marshal_uri] = util_zip(dumped)
 
     use_ui @ui do
       @source_index.update_with_missing @uri, [@gem3.full_name]
     end
 
     spec = @source_index.specification(@gem3.full_name)
-    # We don't care about the equality of undumped attributes 
+    # We don't care about the equality of undumped attributes
     @gem3.files = spec.files
     @gem3.loaded_from = spec.loaded_from
 

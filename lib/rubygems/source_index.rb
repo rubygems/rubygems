@@ -386,7 +386,7 @@ module Gem
     def fetch_single_spec(source_uri, spec_name)
       @fetch_error = nil
       begin
-        marshal_uri = source_uri + "/quick/#{spec_name}.gemspec.marshal.#{Gem.marshal_version}.rz"
+        marshal_uri = source_uri + "/quick/Marshal.#{Gem.marshal_version}/#{spec_name}.gemspec.rz"
         zipped = fetcher.fetch_path marshal_uri
         return Marshal.load(unzip(zipped))
       rescue => ex

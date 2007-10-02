@@ -74,7 +74,7 @@ class Gem::Indexer
               progress.updated spec.full_name
 
             rescue Exception => e
-              alert_error "Unable to process #{gemfile}\n#{e.message}\n\t#{e.backtrace.join "\n\t"}"
+              alert_error "Unable to process #{gemfile}\n#{e.message} (#{e.class})\n\t#{e.backtrace.join "\n\t"}"
             end
           end
 

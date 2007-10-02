@@ -6,6 +6,7 @@ class Gem::Indexer::QuickIndexBuilder < Gem::Indexer::AbstractIndexBuilder
 
   def initialize(filename, directory)
     directory = File.join directory, 'quick'
+
     super filename, directory
   end
 
@@ -33,7 +34,12 @@ class Gem::Indexer::QuickIndexBuilder < Gem::Indexer::AbstractIndexBuilder
   end
 
   def add_marshal(spec)
-    fn = File.join @directory, "#{spec.full_name}.gemspec.marshal.#{Gem.marshal_version}.rz"
+    # HACK why does this not work in #initialize?
+    FileUtils.mkdir_p File.join(@directory, "Marshal.#{Gem.marshal_version}")
+
+    fn = File.join @directory, "Marshal.#{Gem.marshal_version}",
+                   "#{spec.full_name}.gemspec.rz"
+
     zipped = zip Marshal.dump(spec)
     File.open fn, "wb" do |gsfile| gsfile.write zipped end
   end

@@ -39,18 +39,21 @@ class TestGemIndexer < RubyGemTestCase
     assert File.exist?(File.join(@tempdir, "Marshal.#{@marshal_version}"))
     assert File.exist?(File.join(@tempdir, "Marshal.#{@marshal_version}.Z"))
 
-    quickdir = File.join(@tempdir, 'quick')
+    quickdir = File.join @tempdir, 'quick'
+    marshal_quickdir = File.join quickdir, "Marshal.#{@marshal_version}"
+
     assert File.directory?(quickdir)
+    assert File.directory?(marshal_quickdir)
     assert File.exist?(File.join(quickdir, "index"))
     assert File.exist?(File.join(quickdir, "index.rz"))
     assert File.exist?(File.join(quickdir, "#{@a0_0_1.full_name}.gemspec.rz"))
-    assert File.exist?(File.join(quickdir, "#{@a0_0_1.full_name}.gemspec.marshal.#{@marshal_version}.rz"))
+    assert File.exist?(File.join(marshal_quickdir, "#{@a0_0_1.full_name}.gemspec.rz"))
     assert File.exist?(File.join(quickdir, "#{@a0_0_2.full_name}.gemspec.rz"))
-    assert File.exist?(File.join(quickdir, "#{@a0_0_2.full_name}.gemspec.marshal.#{@marshal_version}.rz"))
+    assert File.exist?(File.join(marshal_quickdir, "#{@a0_0_2.full_name}.gemspec.rz"))
     assert File.exist?(File.join(quickdir, "#{@b0_0_2.full_name}.gemspec.rz"))
     assert File.exist?(File.join(quickdir, "#{@c1_2.full_name}.gemspec.rz"))
     assert !File.exist?(File.join(quickdir, "#{@c1_2.full_name}.gemspec"))
-    assert !File.exist?(File.join(quickdir, "#{@c1_2.full_name}.gemspec.marshal.#{@marshal_version}"))
+    assert !File.exist?(File.join(marshal_quickdir, "#{@c1_2.full_name}.gemspec"))
   end
 
   def test_generate_index_ui

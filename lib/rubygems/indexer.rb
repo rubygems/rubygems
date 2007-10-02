@@ -73,6 +73,9 @@ class Gem::Indexer
 
               progress.updated spec.full_name
 
+            rescue SignalException => e
+              alert_error "Recieved signal, exiting"
+              raise
             rescue Exception => e
               alert_error "Unable to process #{gemfile}\n#{e.message} (#{e.class})\n\t#{e.backtrace.join "\n\t"}"
             end
@@ -106,6 +109,7 @@ class Gem::Indexer
 
     build_index
     install_index
+  rescue SignalException
   ensure
     FileUtils.rm_rf @directory
   end

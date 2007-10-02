@@ -110,6 +110,11 @@ module Gem
     end
   end
 
+  # The version of the Marshal format for your Ruby.
+  def self.marshal_version
+    "#{Marshal::MAJOR_VERSION}.#{Marshal::MINOR_VERSION}"
+  end
+
   ##
   # The directory prefix this RubyGems was installed at.
 

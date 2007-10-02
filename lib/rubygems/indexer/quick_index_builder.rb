@@ -33,7 +33,7 @@ class Gem::Indexer::QuickIndexBuilder < Gem::Indexer::AbstractIndexBuilder
   end
 
   def add_marshal(spec)
-    fn = File.join @directory, "#{spec.full_name}.gemspec.marshal.rz"
+    fn = File.join @directory, "#{spec.full_name}.gemspec.marshal.#{Gem.marshal_version}.rz"
     zipped = zip Marshal.dump(spec)
     File.open fn, "wb" do |gsfile| gsfile.write zipped end
   end

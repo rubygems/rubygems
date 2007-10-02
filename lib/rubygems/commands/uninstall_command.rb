@@ -31,6 +31,7 @@ module Gem
         end
 
         add_version_option
+        add_platform_option
       end
 
       def arguments # :nodoc:

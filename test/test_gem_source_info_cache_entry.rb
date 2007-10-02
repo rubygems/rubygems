@@ -14,11 +14,12 @@ class TestGemSourceInfoCacheEntry < RubyGemTestCase
   end
 
   def test_refresh
-    @fetcher.data['http://gems.example.com/Marshal.Z'] = proc { raise Exception }
-    @fetcher.data['http://gems.example.com/Marshal'] = @si.dump
+    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}.Z"] =
+      proc { raise Exception }
+    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] = @si.dump
 
     assert_nothing_raised do
-      @sic_e.refresh 'http://gems.example.com'
+      @sic_e.refresh @gem_repo
     end
   end
 
@@ -31,10 +32,10 @@ class TestGemSourceInfoCacheEntry < RubyGemTestCase
   def test_refresh_update
     si = Gem::SourceIndex.new @gem1.full_name => @gem1,
                               @gem2.full_name => @gem2
-    @fetcher.data['http://gems.example.com/Marshal'] = si.dump
+    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] = si.dump
 
     use_ui @ui do
-      @sic_e.refresh 'http://gems.example.com'
+      @sic_e.refresh @gem_repo
     end
 
     new_gem = @sic_e.source_index.specification(@gem2.full_name)

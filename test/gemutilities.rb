@@ -89,7 +89,8 @@ class RubyGemTestCase < Test::Unit::TestCase
     Gem.configuration.verbose = true
     Gem.configuration.update_sources = true
 
-    Gem.sources.replace %w[http://gems.example.com]
+    @gem_repo = "http://gems.example.com"
+    Gem.sources.replace [@gem_repo]
 
     @orig_arch = Config::CONFIG['arch']
 
@@ -98,6 +99,8 @@ class RubyGemTestCase < Test::Unit::TestCase
     else
       util_set_arch 'i686-darwin8.10.1'
     end
+
+    @marshal_version = "#{Marshal::MAJOR_VERSION}.#{Marshal::MINOR_VERSION}"
   end
 
   def teardown
@@ -237,7 +240,7 @@ class RubyGemTestCase < Test::Unit::TestCase
     require 'socket'
     require 'rubygems/remote_fetcher'
 
-    @uri = URI.parse 'http://gems.example.com'
+    @uri = URI.parse @gem_repo
     @fetcher = FakeFetcher.new
     @fetcher.uri = @uri
 
@@ -279,7 +282,7 @@ class RubyGemTestCase < Test::Unit::TestCase
 
     sice = Gem::SourceInfoCacheEntry.new si, 0
     sic = Gem::SourceInfoCache.new
-    sic.set_cache_data( { 'http://gems.example.com' => sice } )
+    sic.set_cache_data( { @gem_repo => sice } )
     Gem::SourceInfoCache.instance_variable_set :@cache, sic
     si
   end

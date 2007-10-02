@@ -22,7 +22,7 @@ class Gem::SourceInfoCacheEntry
 
   def refresh(source_uri)
     begin
-      marshal_uri = URI.join source_uri.to_s, 'Marshal'
+      marshal_uri = URI.join source_uri.to_s, "Marshal.#{Gem.marshal_version}"
       remote_size = Gem::RemoteFetcher.fetcher.fetch_size marshal_uri
     rescue Gem::RemoteSourceException
       yaml_uri = URI.join source_uri.to_s, 'yaml'

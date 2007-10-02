@@ -308,7 +308,15 @@ module Gem
 
     def fetch_index_from(source_uri)
       @fetch_error = nil
-      %w(Marshal.Z Marshal yaml.Z yaml).each do |name|
+
+      indexes = %W[
+        Marshal.#{Gem.marshal_version}.Z
+        Marshal.#{Gem.marshal_version}
+        yaml.Z
+        yaml
+      ]
+
+      indexes.each do |name|
         spec_data = nil
         begin
           spec_data = fetcher.fetch_path("#{source_uri}/#{name}")
@@ -373,13 +381,13 @@ module Gem
     def fetch_single_spec(source_uri, spec_name)
       @fetch_error = nil
       begin
-        marshal_uri = source_uri + "/quick/#{spec_name}.gemspec.marshal.rz"
+        marshal_uri = source_uri + "/quick/#{spec_name}.gemspec.marshal.#{Gem.marshal_version}.rz"
         zipped = fetcher.fetch_path marshal_uri
         return Marshal.load(unzip(zipped))
       rescue => ex
         @fetch_error = ex
         if Gem.configuration.really_verbose then
-          say "unable to fetch marshal gemspec: #{ex.class} - #{ex}"
+          say "unable to fetch marshal gemspec #{marshal_uri}: #{ex.class} - #{ex}"
         end
       end
 
@@ -390,7 +398,7 @@ module Gem
       rescue => ex
         @fetch_error = ex
         if Gem.configuration.really_verbose then
-          say "unable to fetch YAML gemspec: #{ex.class} - #{ex}"
+          say "unable to fetch YAML gemspec #{yaml_uri}: #{ex.class} - #{ex}"
         end
       end
       nil

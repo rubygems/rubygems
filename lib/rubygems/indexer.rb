@@ -35,8 +35,10 @@ class Gem::Indexer
     @dest_directory = directory
     @directory = File.join Dir.tmpdir, "gem_generate_index_#{$$}"
 
+    marshal_name = "Marshal.#{Gem.marshal_version}"
+
     @master_index = Gem::Indexer::MasterIndexBuilder.new "yaml", @directory
-    @marshal_index = Gem::Indexer::MarshalIndexBuilder.new "Marshal", @directory
+    @marshal_index = Gem::Indexer::MarshalIndexBuilder.new marshal_name, @directory
     @quick_index = Gem::Indexer::QuickIndexBuilder.new "index", @directory
   end
 

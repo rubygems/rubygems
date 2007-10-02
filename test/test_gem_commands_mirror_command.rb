@@ -46,7 +46,7 @@ class TestGemCommandsMirrorCommand < RubyGemTestCase
     assert File.exist?(File.join(mirror, 'gems', "#{@a0_0_2.full_name}.gem"))
     assert File.exist?(File.join(mirror, 'gems', "#{@b0_0_2.full_name}.gem"))
     assert File.exist?(File.join(mirror, 'gems', "#{@c1_2.full_name}.gem"))
-    assert File.exist?(File.join(mirror, 'Marshal'))
+    assert File.exist?(File.join(mirror, "Marshal.#{@marshal_version}"))
   ensure
     orig_HOME.nil? ? ENV.delete('HOME') : ENV['HOME'] = orig_HOME
     Gem.instance_variable_set :@user_home, nil

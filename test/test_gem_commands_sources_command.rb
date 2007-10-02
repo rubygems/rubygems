@@ -21,7 +21,7 @@ class TestGemCommandsSourcesCommand < RubyGemTestCase
     expected = <<-EOF
 *** CURRENT SOURCES ***
 
-http://gems.example.com
+#{@gem_repo}
     EOF
 
     assert_equal expected, @ui.output
@@ -33,7 +33,8 @@ http://gems.example.com
 
     @si = Gem::SourceIndex.new @gem1.full_name => @gem1.name
 
-    @fetcher.data['http://beta-gems.example.com/Marshal'] = @si.dump
+    @fetcher.data["http://beta-gems.example.com/Marshal.#{@marshal_version}"] =
+      @si.dump
 
     @cmd.handle_options %w[--add http://beta-gems.example.com]
 
@@ -52,7 +53,7 @@ http://beta-gems.example.com added to sources
     assert_equal '', @ui.error
 
     Gem::SourceInfoCache.cache.flush
-    assert_equal %w[http://beta-gems.example.com http://gems.example.com],
+    assert_equal %W[http://beta-gems.example.com #{@gem_repo}],
                  Gem::SourceInfoCache.cache_data.keys.sort
   end
 
@@ -61,9 +62,10 @@ http://beta-gems.example.com added to sources
 
     @si = Gem::SourceIndex.new @gem1.full_name => @gem1.name
 
-    @fetcher.data['http://beta-gems.example.com/Marshal'] = proc do
-      raise Gem::RemoteFetcher::FetchError, 'it died'
-    end
+    @fetcher.data["http://beta-gems.example.com/Marshal.#{@marshal_version}"] =
+      proc do
+        raise Gem::RemoteFetcher::FetchError, 'it died'
+      end
 
 
     Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
@@ -103,7 +105,7 @@ beta-gems.example.com is not a URI
   end
 
   def test_execute_remove
-    @cmd.handle_options %w[--remove http://gems.example.com]
+    @cmd.handle_options %W[--remove #{@gem_repo}]
 
     util_setup_source_info_cache
 
@@ -111,9 +113,7 @@ beta-gems.example.com is not a URI
       @cmd.execute
     end
 
-    expected = <<-EOF
-http://gems.example.com removed from sources
-    EOF
+    expected = "#{@gem_repo} removed from sources\n"
 
     assert_equal expected, @ui.output
     assert_equal '', @ui.error
@@ -128,14 +128,14 @@ http://gems.example.com removed from sources
     util_setup_source_info_cache
     util_setup_fake_fetcher
     @si = Gem::SourceIndex.new @gem1.full_name => @gem1.name
-    @fetcher.data['http://gems.example.com/Marshal'] = @si.dump
+    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] = @si.dump
 
     use_ui @ui do
       @cmd.execute
     end
 
     expected = <<-EOF
-Bulk updating Gem source index for: http://gems.example.com
+Bulk updating Gem source index for: #{@gem_repo}
 source cache successfully updated
     EOF
 

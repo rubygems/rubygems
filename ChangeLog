@@ -1,5 +1,16 @@
+2007-10-02  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_index.rb: Make #outdated search only for gems
+	matching the current platform.
+	* lib/rubygems/commands/dependency_command.rb: Add --platform.
+	* lib/rubygems/commands/outdated_command.rb: Ditto.
+	* lib/rubygems/commands/specification_command.rb: Ditto.
+	* lib/rubygems/commands/update_command.rb: Ditto.
+
 2007-10-02  Wilson Bilkovich  <wilson@supremetyrant.com>
-	* lib/rubygems/specification.rb: Custom Marshal format to reduce index size
+
+	* lib/rubygems/specification.rb: Custom Marshal format to reduce index
+	size.
 	* lib/rubygems/requirement.rb: Ditto
 	* lib/rubygems/version.rb: Ditto
 

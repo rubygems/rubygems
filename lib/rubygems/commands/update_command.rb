@@ -2,12 +2,15 @@ require 'rubygems/command'
 require 'rubygems/install_update_options'
 require 'rubygems/local_remote_options'
 require 'rubygems/source_info_cache'
+require 'rubygems/version_option'
 
 module Gem
   module Commands
     class UpdateCommand < Command
+
       include Gem::InstallUpdateOptions
       include Gem::LocalRemoteOptions
+      include Gem::VersionOption
 
       def initialize
         super(
@@ -29,6 +32,8 @@ module Gem
         end
 
         add_local_remote_options
+
+        add_platform_option
       end
 
       def arguments # :nodoc:

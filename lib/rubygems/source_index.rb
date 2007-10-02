@@ -210,7 +210,7 @@ module Gem
       when Gem::Dependency then
         only_platform = platform_only_or_version_req
         version_requirement = gem_pattern.version_requirements
-        gem_pattern = /^#{gem_pattern.name}$/
+        gem_pattern = gem_pattern.name.empty? ? // : /^#{gem_pattern.name}$/
       else
         version_requirement = platform_only_or_version_req ||
                                 Gem::Requirement.default
@@ -246,8 +246,12 @@ module Gem
     # Returns an Array of Gem::Specifications that are not up to date.
     #
     def outdated
-      remotes = Gem::SourceInfoCache.search(//)
+      dep = Gem::Dependency.new '', Gem::Requirement.default
+
+      remotes = Gem::SourceInfoCache.search dep, true
+
       outdateds = []
+
       latest_specs.each do |_, local|
         name = local.name
         remote = remotes.select  { |spec| spec.name == name }.
@@ -255,6 +259,7 @@ module Gem
                          last
         outdateds << name if remote and local.version < remote.version
       end
+
       outdateds
     end
 

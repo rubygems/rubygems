@@ -13,7 +13,9 @@ class Gem::Platform
   attr_accessor :version
 
   def self.local
-    @local ||= new Config::CONFIG['arch']
+    arch = Config::CONFIG['arch']
+    arch = "#{arch}_60" if Config::CONFIG['RUBY_SO_NAME'] =~ /^msvcrt-ruby/
+    @local ||= new(arch)
   end
 
   def self.match(platform)
@@ -64,8 +66,6 @@ class Gem::Platform
                         os = $1
                         if $3 then
                           [ os, $3   ]
-                        elsif Config::CONFIG['RUBY_SO_NAME'] =~ /^msvcrt-ruby/ then
-                          [ os, '60' ]
                         else
                           [ os, nil  ]
                         end

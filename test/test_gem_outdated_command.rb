@@ -4,6 +4,16 @@ require 'rubygems/commands/outdated_command'
 
 class TestGemOutdatedCommand < RubyGemTestCase
 
+  def setup
+    super
+
+    @cmd = Gem::Commands::OutdatedCommand.new
+  end
+
+  def test_initialize
+    assert @cmd.handles?(%W[--platform #{Gem::Platform.local}])
+  end
+
   def test_execute
     local_01 = quick_gem 'foo', '0.1'
     local_02 = quick_gem 'foo', '0.2'
@@ -18,11 +28,9 @@ class TestGemOutdatedCommand < RubyGemTestCase
                                  remote_20.full_name + ".gemspec"
     FileUtils.rm remote_spec_file
 
-    oc = Gem::Commands::OutdatedCommand.new
-
     util_setup_source_info_cache remote_10, remote_20
 
-    use_ui @ui do oc.execute end
+    use_ui @ui do @cmd.execute end
 
     assert_equal "foo (0.2 < 2.0)\n", @ui.output
     assert_equal "", @ui.error

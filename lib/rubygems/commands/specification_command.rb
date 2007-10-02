@@ -14,6 +14,7 @@ class Gem::Commands::SpecificationCommand < Gem::Command
           :domain => :local, :version => Gem::Requirement.default
 
     add_version_option('examine')
+    add_platform_option
 
     add_option('--all', 'Output specifications for all versions of',
                'the gem') do |value, options|

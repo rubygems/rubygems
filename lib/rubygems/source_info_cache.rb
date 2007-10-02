@@ -46,8 +46,8 @@ class Gem::SourceInfoCache
   end
 
   # Search all source indexes for +pattern+.
-  def self.search(pattern)
-    cache.search(pattern)
+  def self.search(pattern, platform_only = false)
+    cache.search pattern, platform_only
   end
 
   # Search all source indexes for +pattern+.  Only returns gems matching
@@ -122,10 +122,10 @@ class Gem::SourceInfoCache
   end
 
   # Searches all source indexes for +pattern+.
-  def search(pattern)
+  def search(pattern, platform_only = false)
     cache_data.map do |source_uri, sic_entry|
       next unless Gem.sources.include? source_uri
-      sic_entry.source_index.search pattern
+      sic_entry.source_index.search pattern, platform_only
     end.flatten.compact
   end
 

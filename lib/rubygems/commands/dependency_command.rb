@@ -14,6 +14,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
           :version => Gem::Requirement.default, :domain => :local
 
     add_version_option
+    add_platform_option
 
     add_option('-R', '--[no-]reverse-dependencies',
                'Include reverse dependencies in the output') do

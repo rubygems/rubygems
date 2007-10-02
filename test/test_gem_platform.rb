@@ -85,7 +85,7 @@ class TestGemPlatform < RubyGemTestCase
     orig_RUBY_SO_NAME = Config::CONFIG['RUBY_SO_NAME']
     Config::CONFIG['RUBY_SO_NAME'] = 'msvcrt-ruby18'
 
-    expected = %w[x86 mswin32 60]
+    expected = ['x86', 'mswin32', nil]
 
     platform = Gem::Platform.new 'i386-mswin32'
 
@@ -108,7 +108,7 @@ class TestGemPlatform < RubyGemTestCase
 
   def test_to_s
     if win_platform? then
-      assert_equal 'x86-mswin32', Gem::Platform.local.to_s
+      assert_equal 'x86-mswin32-60', Gem::Platform.local.to_s
     else
       assert_equal 'x86-darwin-8', Gem::Platform.local.to_s
     end

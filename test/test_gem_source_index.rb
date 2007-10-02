@@ -196,10 +196,18 @@ class TestGemSourceIndex < RubyGemTestCase
 
     assert_equal [], @source_index.outdated
 
-    updated = quick_gem @gem1.name, '999'
+    updated = quick_gem @gem1.name, (@gem1.version.bump)
     util_setup_source_info_cache updated
 
     assert_equal [updated.name], @source_index.outdated
+
+    updated_platform = quick_gem @gem1.name, (updated.version.bump) do |s|
+      s.platform = Gem::Platform.new 'x86-other_platform1'
+    end
+
+    util_setup_source_info_cache updated, updated_platform
+
+    assert_equal [updated_platform.name], @source_index.outdated
   end
 
   def test_remove_extra

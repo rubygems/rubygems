@@ -389,13 +389,19 @@ class TestGemSourceIndex < RubyGemTestCase
 
   def test_update_with_missing
     spec_uri = "#{@gem_repo}/quick/#{@gem3.full_name}.gemspec.marshal.#{@marshal_version}.rz"
-    @fetcher.data[spec_uri] = util_zip Marshal.dump(@gem3)
+    dumped = Marshal.dump(@gem3)
+    @fetcher.data[spec_uri] = util_zip(dumped)
 
     use_ui @ui do
       @source_index.update_with_missing @uri, [@gem3.full_name]
     end
 
-    assert_equal @gem3, @source_index.specification(@gem3.full_name)
+    spec = @source_index.specification(@gem3.full_name)
+    # We don't care about the equality of undumped attributes 
+    @gem3.files = spec.files
+    @gem3.loaded_from = spec.loaded_from
+
+    assert_equal @gem3, spec
   end
 
   def util_setup_bulk_fetch(compressed)

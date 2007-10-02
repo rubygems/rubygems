@@ -206,6 +206,42 @@ module Gem
       }
     end
 
+    # Dump only crucial instance variables
+    def marshal_dump
+      [@rubygems_version, @specification_version, @name, @version, @date, 
+        @summary, @required_ruby_version, @required_rubygems_version, 
+        @platform, @dependencies, @rubyforge_project, @email, @authors, @description, @homepage, @has_rdoc]
+    end
+
+    # Load custom marshal format, re-initializing defaults as needed
+    def marshal_load(array)
+      spec_version = array[1]
+      current_version = CURRENT_SPECIFICATION_VERSION
+      unless spec_version == current_version
+        raise TypeError, "Outdated Gem::Specification marshal format: #{spec_version} 
+          instead of #{current_version}"
+      end
+      assign_defaults # Set defaults for anything we didn't dump
+
+      @rubygems_version = array[0]
+      @specification_version = array[1]
+      @name = array[2]
+      @version = array[3]
+      @date = array[4]
+      @summary = array[5]
+      @required_ruby_version = array[6]
+      @required_rubygems_version = array[7]
+      @platform = array[8]
+      @dependencies = array[9]
+      @rubyforge_project = array[10]
+      @email = array[11]
+      @authors = array[12]
+      @description = array[13]
+      @homepage = array[14]
+      @has_rdoc = array[15]
+      @loaded = false
+    end
+    
     def warn_deprecated(old, new)
       # How (if at all) to implement this?  We only want to warn when
       # a gem is being built, I should think.
@@ -233,7 +269,7 @@ module Gem
     attribute :platform,                   Gem::Platform::RUBY
 
     attribute :signing_key,            nil
-    attribute :cert_chain,             nil
+    attribute :cert_chain,             []
     attribute :post_install_message,   nil
 
     array_attribute :authors
@@ -427,11 +463,21 @@ module Gem
     # Specification.list), and yields itself for further initialization.
     #
     def initialize
-      # Each attribute has a default value (possibly nil).  Here, we
-      # initialize all attributes to their default value.  This is
-      # done through the accessor methods, so special behaviours will
-      # be honored.  Furthermore, we take a _copy_ of the default so
-      # each specification instance has its own empty arrays, etc.
+      assign_defaults
+      @loaded = false
+      @@list << self
+
+      yield self if block_given?
+
+      @@gather.call(self) if @@gather
+    end
+
+    # Each attribute has a default value (possibly nil).  Here, we
+    # initialize all attributes to their default value.  This is
+    # done through the accessor methods, so special behaviours will
+    # be honored.  Furthermore, we take a _copy_ of the default so
+    # each specification instance has its own empty arrays, etc.
+    def assign_defaults
       @@attributes.each do |name, default|
         if RUBY_VERSION >= "1.9" then
           self.send! "#{name}=", copy_of(default)
@@ -439,13 +485,6 @@ module Gem
           self.send "#{name}=", copy_of(default)
         end
       end
-
-      @loaded = false
-      @@list << self
-
-      yield self if block_given?
-
-      @@gather.call(self) if @@gather
     end
 
     # Special loader for YAML files.  When a Specification object is

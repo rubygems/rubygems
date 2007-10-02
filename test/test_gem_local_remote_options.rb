@@ -62,6 +62,10 @@ class TestGemLocalRemoteOptions < RubyGemTestCase
     @cmd.handle_options %W[--update-sources]
 
     assert_equal true, Gem.configuration.update_sources
+
+    @cmd.handle_options %W[--no-update-sources]
+
+    assert_equal false, Gem.configuration.update_sources
   end
 
   def test_source_option_bad

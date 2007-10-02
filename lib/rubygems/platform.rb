@@ -149,17 +149,23 @@ class Gem::Platform
   CURRENT = 'current'
 
   ##
-  # A One Click Installer-compatible gem
+  # A One Click Installer-compatible gem, built with VC6 for 32 bit Windows.
+  #
+  # CURRENT is preferred over this constant, avoid its use at all costs.
 
-  MSWIN32 = new ['x86', 'mswin32', nil]
+  MSWIN32 = new ['x86', 'mswin32', '60']
 
   ##
   # An x86 Linux-compatible gem
+  #
+  # CURRENT is preferred over this constant, avoid its use at all costs.
 
   X86_LINUX = new ['x86', 'linux', nil]
 
   ##
   # A PowerPC Darwin-compatible gem
+  #
+  # CURRENT is preferred over this constant, avoid its use at all costs.
 
   PPC_DARWIN = new ['ppc', 'darwin', nil]
 

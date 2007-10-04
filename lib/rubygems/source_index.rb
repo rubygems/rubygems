@@ -355,7 +355,7 @@ module Gem
 
     # Get the quick index needed for incremental updates.
     def fetch_quick_index(source_uri)
-      zipped_index = fetcher.fetch_path source_uri + '/quick/index.rz'
+      zipped_index = fetcher.fetch_path source_uri + 'quick/index.rz'
       unzip(zipped_index).split("\n")
     rescue ::Exception => ex
       raise Gem::OperationNotSupportedError,
@@ -386,7 +386,7 @@ module Gem
     def fetch_single_spec(source_uri, spec_name)
       @fetch_error = nil
       begin
-        marshal_uri = source_uri + "/quick/Marshal.#{Gem.marshal_version}/#{spec_name}.gemspec.rz"
+        marshal_uri = source_uri + "quick/Marshal.#{Gem.marshal_version}/#{spec_name}.gemspec.rz"
         zipped = fetcher.fetch_path marshal_uri
         return Marshal.load(unzip(zipped))
       rescue => ex
@@ -397,7 +397,7 @@ module Gem
       end
 
       begin
-        yaml_uri = source_uri + "/quick/#{spec_name}.gemspec.rz"
+        yaml_uri = source_uri + "quick/#{spec_name}.gemspec.rz"
         zipped = fetcher.fetch_path yaml_uri
         return YAML.load(unzip(zipped))
       rescue => ex

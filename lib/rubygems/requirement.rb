@@ -28,6 +28,8 @@ class Gem::Requirement
 
   OP_RE = /#{OPS.keys.map{ |k| Regexp.quote k }.join '|'}/o
 
+  MARSHAL_FIELDS = { 1 => 2, 2 => 2 }
+
   ##
   # Factory method to create a Gem::Requirement object.  Input may be a
   # Version, a String, or nil.  Intended to simplify client code.
@@ -82,9 +84,13 @@ class Gem::Requirement
 
   # Load custom marshal format
   def marshal_load(array)
+    unless array.is_a?(Array) then
+      raise TypeError, "Outdated Gem::Requirement marshal format"
+    end
     spec_version = array[0]
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    unless spec_version == current_version
+    field_count = MARSHAL_FIELDS[current_version]
+    if field_count.nil? or array.size < field_count then
       raise TypeError, "Outdated Gem::Requirement marshal format: #{spec_version} 
           instead of #{current_version}"
     end

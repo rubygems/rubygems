@@ -9,6 +9,7 @@ require 'rubygems'
 ##
 # The Version class processes string versions into comparable values
 class Gem::Version
+  MARSHAL_FIELDS = { 1 => 1, 2 => 1 }
 
   include Comparable
 
@@ -59,20 +60,25 @@ class Gem::Version
 
   # Dump only the raw version string, not the complete object
   def marshal_dump
-    [Gem::Specification::CURRENT_SPECIFICATION_VERSION, @version]
+    [@version]
   end
 
   # Load custom marshal format
   def marshal_load(array)
-    spec_version = array[0]
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    unless spec_version == current_version
-      raise TypeError, "Outdated Gem::Version marshal format: #{spec_version} 
-          instead of #{current_version}"
+    unless array.is_a?(Array) then
+      raise TypeError, "Outdated Gem::Version marshal format"
     end
-    @version = array[1]
+
+    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
+    field_count = MARSHAL_FIELDS[current_version]
+    if field_count.nil? or array.size < field_count then
+      raise TypeError, "Outdated Gem::Version marshal format:
+\texpected #{field_count} fields, got: #{array}"
+    end
+
+    @version = array[0]
   end
-  
+
   ##
   # Returns the text representation of the version
   #

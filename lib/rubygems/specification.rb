@@ -58,8 +58,6 @@ module Gem
         'Now forward-compatible with future versions',
       ],
     }
-    
-    MARSHAL_FIELDS = { 1 => 16, 2 => 16 }
 
     # ------------------------- Class variables.
 
@@ -217,15 +215,10 @@ module Gem
 
     # Load custom marshal format, re-initializing defaults as needed
     def marshal_load(array)
-      unless array.is_a?(Array) then
-        raise TypeError, "Outdated Gem::Specification marshal format"
-      end
-
       spec_version = array[1]
       current_version = CURRENT_SPECIFICATION_VERSION
-      field_count = MARSHAL_FIELDS[current_version]
-      if field_count.nil? or array.size < field_count then
-        abort "Outdated Gem::Specification marshal format: #{spec_version} \
+      unless spec_version == current_version
+        raise TypeError, "Outdated Gem::Specification marshal format: #{spec_version} 
           instead of #{current_version}"
       end
       assign_defaults # Set defaults for anything we didn't dump

@@ -7,7 +7,6 @@
 
 $:.unshift 'lib'
 require 'rubygems'
-require 'rubygems/source_info_cache'
 
 require 'fileutils'
 require 'rbconfig'
@@ -101,20 +100,6 @@ Dir.chdir 'bin' do
   end
 end
 
-# remove source_cache
-source_cache_path = File.join Gem.dir, 'source_cache'
-if File.writable? source_cache_path then
-  puts "Removing system-wide source cache"
-  rm source_cache_path
-end
-
-user_cache_path = Gem::SourceInfoCache.user_cache_file
-if File.writable? user_cache_path then
-  puts "Removing user source cache"
-  rm user_cache_path
-end
-
-#
 # install RDoc
 
 gem_doc_dir = File.join Gem.dir, 'doc'

@@ -74,37 +74,22 @@ class Gem::SourceInfoCache
       @cache_data = Marshal.load data
 
       @cache_data.each do |url, sice|
-        next unless sice.is_a?(Hash)
+        next unless Hash === sice
         @dirty = true
-        cache = sice['cache']
-        size  = sice['size']
-        if cache.is_a?(Gem::SourceIndex) and size.is_a?(Numeric) then
-          new_sice = Gem::SourceInfoCacheEntry.new cache, size
+        if sice.key? 'cache' and sice.key? 'size' and
+           Gem::SourceIndex === sice['cache'] and Numeric === sice['size'] then
+          new_sice = Gem::SourceInfoCacheEntry.new sice['cache'], sice['size']
           @cache_data[url] = new_sice
         else # irreperable, force refetch.
-          reset_cache_for(url)
+          sice = Gem::SourceInfoCacheEntry.new Gem::SourceIndex.new, 0
+          sice.refresh url # HACK may be unnecessary, see ::cache and #refresh
+          @cache_data[url] = sice
         end
       end
       @cache_data
-    rescue => ex
-      if Gem.configuration.really_verbose
-        say "Exception during cache_data handling: #{ex.class} - #{ex}"
-        say "Cache file was: #{cache_file}"
-        say ex.backtrace.join("\n")
-      end
-      reset_cache_data
+    rescue
+      {}
     end
-  end
-
-  def reset_cache_for(url)
-    sice = Gem::SourceInfoCacheEntry.new Gem::SourceIndex.new, 0
-    sice.refresh url # HACK may be unnecessary, see ::cache and #refresh
-    @cache_data[url] = sice
-    @cache_data
-  end
-
-  def reset_cache_data
-    @cache_data = {}
   end
 
   # The name of the cache file to be read

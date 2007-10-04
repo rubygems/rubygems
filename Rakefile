@@ -214,8 +214,9 @@ rd = Rake::RDocTask.new("rdoc") { |rdoc|
   rdoc.rdoc_dir = 'html'
   rdoc.title    = "RubyGems"
   rdoc.options << '--line-numbers' << '--inline-source' << '--main' << 'README'
-  rdoc.rdoc_files.include('README', 'TODO', 'Releases', 'LICENSE.txt', 'GPL.txt')
+  rdoc.rdoc_files.include('README', 'TODO', 'LICENSE.txt', 'GPL.txt')
   rdoc.rdoc_files.include('lib/**/*.rb')
+  rdoc.rdoc_files.include('doc/**/*.rdoc')
 #  rdoc.rdoc_files.include('test/**/*.rb')
 }
 
@@ -256,7 +257,7 @@ end
 # Package tasks
 
 PKG_FILES = FileList[
-  "Rakefile", "ChangeLog", "Releases", "TODO", "README", "LICENSE.txt",
+  "Rakefile", "ChangeLog", "TODO", "README", "LICENSE.txt",
   "GPL.txt",
   "setup.rb",
   "bin/*",

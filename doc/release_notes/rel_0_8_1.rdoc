@@ -1,0 +1,4 @@
+== Release 0.8.1: Sep 14, 2004
+
+* Quick release to capture some bug fixes.
+

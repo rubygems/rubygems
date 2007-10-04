@@ -1,0 +1,21 @@
+== Release 0.3.0: April 30, 2004
+
+* Cleanup of command-line arguments and handling.  Most commands accept a
+  --local or --remote modifier.
+* Creation of Application Gems (packages that include executable programs).
+  See http://rubygems.rubyforge.org/wiki/wiki.pl?DeveloperGuide for information
+  on how to use it.
+* Basic functionality for installing binary gems from source (:extensions
+  property of gem specification holds an array of paths to extconf.rb files to
+  be used for compilation)
+* Install library "stub" allowing a normal 'require' to work (which then does
+  the rubygems require and 'require_gem'
+* --run-tests runs the test suite specified by the "test_suite_file" property
+  of a gem specification
+* HTTP Proxy support works.  Rewrite of HTTP code.
+* Unit and functional tests added (see Rakefile).
+* Prompt before remote-installing dependencies during gem installation.
+* Config file for storing preferences for 'gem' command usage.
+* Generally improved error messages (still more work to do)
+* Rearranged gem directory structure for cleanliness.
+  

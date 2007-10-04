@@ -59,6 +59,8 @@ module Gem
       ],
     }
 
+    MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16 }
+
     # ------------------------- Class variables.
 
     # List of Specification instances.
@@ -206,40 +208,68 @@ module Gem
       }
     end
 
-    # Dump only crucial instance variables
-    def marshal_dump
-      [@rubygems_version, @specification_version, @name, @version, @date, 
-        @summary, @required_ruby_version, @required_rubygems_version, 
-        @platform, @dependencies, @rubyforge_project, @email, @authors, @description, @homepage, @has_rdoc]
+    # Dump only crucial instance variables.
+    #
+    # MAINTAIN ORDER!
+    def _dump(limit) # :nodoc:
+      Marshal.dump [
+        @rubygems_version,
+        @specification_version,
+        @name,
+        @version,
+        (@date.respond_to?(:ctime) ? @date.ctime : @date.to_s),
+        @summary,
+        @required_ruby_version,
+        @required_rubygems_version,
+        @platform,
+        @dependencies,
+        @rubyforge_project,
+        @email,
+        @authors,
+        @description,
+        @homepage,
+        @has_rdoc
+      ]
     end
 
     # Load custom marshal format, re-initializing defaults as needed
-    def marshal_load(array)
-      spec_version = array[1]
-      current_version = CURRENT_SPECIFICATION_VERSION
-      unless spec_version == current_version
-        raise TypeError, "Outdated Gem::Specification marshal format: #{spec_version} 
-          instead of #{current_version}"
-      end
-      assign_defaults # Set defaults for anything we didn't dump
+    def self._load(str)
+      array = Marshal.load str
 
-      @rubygems_version = array[0]
-      @specification_version = array[1]
-      @name = array[2]
-      @version = array[3]
-      @date = array[4]
-      @summary = array[5]
-      @required_ruby_version = array[6]
-      @required_rubygems_version = array[7]
-      @platform = array[8]
-      @dependencies = array[9]
-      @rubyforge_project = array[10]
-      @email = array[11]
-      @authors = array[12]
-      @description = array[13]
-      @homepage = array[14]
-      @has_rdoc = array[15]
-      @loaded = false
+      spec = Gem::Specification.new do |s|
+        s.specification_version = array[1]
+        current_version = CURRENT_SPECIFICATION_VERSION
+
+        field_count = MARSHAL_FIELDS[s.specification_version]
+
+        if field_count.nil? or array.size < field_count then
+          raise TypeError, "invalid Gem::Specification format #{array.inspect}"
+        end
+
+        s.assign_defaults # Set defaults for anything we didn't dump
+
+        s.rubygems_version = array[0]
+        # spec version
+        s.name = array[2]
+        s.version = array[3]
+        s.date = array[4]
+        s.summary = array[5]
+        s.required_ruby_version = array[6]
+        s.required_rubygems_version = array[7]
+        s.platform = array[8]
+        s.instance_variable_set :@dependencies, array[9]
+        s.rubyforge_project = array[10]
+        s.email = array[11]
+        s.authors = array[12]
+        s.description = array[13]
+        s.homepage = array[14]
+        s.has_rdoc = array[15]
+        s.loaded = false
+      end
+
+      #puts "0x%08x (%9d) spec %s" % [$io.pos, $io.pos, full_name]
+
+      spec
     end
     
     def warn_deprecated(old, new)

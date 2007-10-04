@@ -77,17 +77,11 @@ class Gem::Requirement
 
   # Marshal raw requirements, rather than the full object
   def marshal_dump
-    [Gem::Specification::CURRENT_SPECIFICATION_VERSION, @requirements]
+    [@requirements]
   end
 
   # Load custom marshal format
   def marshal_load(array)
-    spec_version = array[0]
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    unless spec_version == current_version
-      raise TypeError, "Outdated Gem::Requirement marshal format: #{spec_version} 
-          instead of #{current_version}"
-    end
     @requirements = array[1]
     @version = nil
   end

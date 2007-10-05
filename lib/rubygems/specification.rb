@@ -34,6 +34,9 @@ module Gem
   #
   class Specification
 
+    # Allows deinstallation of gems with legacy platforms.
+    attr_accessor :original_platform # :nodoc:
+
     # ------------------------- Specification version contstants.
 
     # The the version number of a specification that does not specify one
@@ -349,6 +352,8 @@ module Gem
     end
 
     overwrite_accessor :platform= do |platform|
+      @original_platform = platform
+
       case platform
       when Platform::CURRENT then
         @platform = Gem::Platform.local
@@ -620,7 +625,10 @@ module Gem
     # return:: [String] the full gem path
     #
     def full_gem_path
-      File.join(installation_path, "gems", full_name)
+      path = File.join installation_path, 'gems', full_name
+      return path if File.directory? path
+      File.join installation_path, 'gems',
+                "#{name}-#{version}-#{@original_platform}"
     end
     
     # The default (generated) file name of the gem.

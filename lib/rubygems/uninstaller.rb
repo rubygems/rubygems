@@ -36,6 +36,7 @@ class Gem::Uninstaller
   #
   def uninstall
     list = Gem.source_index.search(/^#{@gem}$/, @version)
+
     if list.empty? then
       raise Gem::InstallError, "Unknown gem #{@gem}-#{@version}"
     elsif list.size > 1 && @force_all
@@ -127,15 +128,31 @@ class Gem::Uninstaller
       File.writable?(spec.installation_path)
 
     FileUtils.rm_rf spec.full_gem_path
-    FileUtils.rm_rf File.join(spec.installation_path, 'specifications',
-                              "#{spec.full_name}.gemspec")
 
-    FileUtils.rm_rf File.join(spec.installation_path, 'cache',
-                              "#{spec.full_name}.gem")
+    original_platform_name = [
+      spec.name, spec.version, spec.original_platform].join '-'
+
+    spec_dir = File.join spec.installation_path, 'specifications'
+    gemspec = File.join spec_dir, "#{spec.full_name}.gemspec"
+
+    unless File.exist? gemspec then
+      gemspec = File.join spec_dir, "#{original_platform_name}.gemspec"
+    end
+
+    FileUtils.rm_rf gemspec
+
+    cache_dir = File.join spec.installation_path, 'cache'
+    gem = File.join cache_dir, "#{spec.full_name}.gem"
+
+    unless File.exist? gemspec then
+      gem = File.join cache_dir, "#{original_platform_name}.gem"
+    end
+
+    FileUtils.rm_rf gem
 
     Gem::DocManager.new(spec).uninstall_doc
 
-    say "Successfully uninstalled #{spec.name} version #{spec.version}"
+    say "Successfully uninstalled #{spec.full_name}"
 
     list.delete spec
   end

@@ -73,13 +73,21 @@ module Gem
     end
 
     def install_rdoc
+      rdoc_dir = File.join @doc_dir, 'rdoc'
+
+      FileUtils.rm_rf rdoc_dir
+
       say "Installing RDoc documentation for #{@spec.full_name}..."
-      run_rdoc '--op', File.join(@doc_dir, 'rdoc')
+      run_rdoc '--op', rdoc_dir
     end
 
     def install_ri
+      ri_dir = File.join @doc_dir, 'ri'
+
+      FileUtils.rm_rf ri_dir
+
       say "Installing ri documentation for #{@spec.full_name}..."
-      run_rdoc '--ri', '--op', File.join(@doc_dir, 'ri')
+      run_rdoc '--ri', '--op', ri_dir
     end
 
     def run_rdoc(*args)
@@ -115,9 +123,22 @@ module Gem
       raise Gem::FilePermissionError.new(@spec.installation_path) unless
         File.writable? @spec.installation_path
 
-      doc_dir = File.join(@spec.installation_path, "doc", @spec.full_name)
+      original_name = [
+        @spec.name, @spec.version, @spec.original_platform].join '-'
+
+      doc_dir = File.join @spec.installation_path, 'doc', @spec.full_name
+      unless File.directory? doc_dir then
+        doc_dir = File.join @spec.installation_path, 'doc', original_name
+      end
+
       FileUtils.rm_rf doc_dir
-      ri_dir = File.join(@spec.installation_path, "ri", @spec.full_name)
+
+      ri_dir = File.join @spec.installation_path, 'ri', @spec.full_name
+
+      unless File.directory? ri_dir then
+        ri_dir = File.join @spec.installation_path, 'ri', original_name
+      end
+
       FileUtils.rm_rf ri_dir
     end
 

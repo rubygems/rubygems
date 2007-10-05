@@ -1,3 +1,10 @@
+2007-10-04  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/uninstaller.rb: Also check and uninstall old platform
+	name to ensure legacy platform gems are uninstalled.
+	* lib/rubygems/doc_manager.rb: Remove existing rdoc and ri directory
+	so regenerating docs succeeds even if previously interrupted.
+
 2007-10-02  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/source_index.rb: Make #outdated search only for gems

@@ -340,7 +340,7 @@ module Gem
       options[:help] = true
     end
 
-    add_common_option('-v', '--[no-]verbose', 
+    add_common_option('-v', '--[no-]verbose',
                       'Set the verbose level of output') do |value, options|
       # Set us to "really verbose" so the progess meter works
       if Gem.configuration.verbose and value then
@@ -348,6 +348,10 @@ module Gem
       else
         Gem.configuration.verbose = value
       end
+    end
+
+    add_common_option('-q', '--quiet', 'Silence commands') do |value, options|
+      Gem.configuration.verbose = false
     end
 
     # Backtrace and config-file are added so they show up in the help

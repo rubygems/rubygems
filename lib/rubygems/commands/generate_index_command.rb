@@ -18,6 +18,30 @@ class Gem::Commands::GenerateIndexCommand < Gem::Command
     "--directory ."
   end
 
+  def description # :nodoc:
+    <<-EOF
+The generate_index command creates a set of indexes for serving gems
+statically.  The command expects a 'gems' directory under the path given to
+the --directory option.  When done, it will generate a set of files like this:
+
+  gems/                                        # .gem files you want to index
+  quick/index
+  quick/index.rz                               # quick index manifest
+  quick/<gemname>.gemspec.rz                   # legacy YAML quick index file
+  quick/Marshal.<version>/<gemname>.gemspec.rz # Marshal quick index file
+  Marshal.<version>
+  Marshal.<version>.Z # Marshal full index
+  yaml
+  yaml.Z # legacy YAML full index
+
+The .Z and .rz extension files are compressed with the inflate algorithm.  The
+Marshal version number comes from ruby's Marshal::MAJOR_VERSION and
+Marshal::MINOR_VERSION constants.  It is used to ensure compatibility.  The
+yaml indexes exist for legacy RubyGems clients and fallback in case of Marshal
+version changes.
+    EOF
+  end
+
   def execute
     if not File.exist?(options[:directory]) or
        not File.directory?(options[:directory]) then

@@ -1,3 +1,10 @@
+2007-10-05  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/user_interaction.rb: Allow customization of completion
+	message for progress reporters.
+	* lib/rubygems/command.rb: Add --quiet option.
+	* lib/rubygems/commands/generate_index_command.rb: Add description.
+
 2007-10-04  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/uninstaller.rb: Also check and uninstall old platform

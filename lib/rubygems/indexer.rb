@@ -48,7 +48,8 @@ class Gem::Indexer
       @quick_index.build do
         @marshal_index.build do
           progress = ui.progress_reporter gem_file_list.size,
-                                          "Generating index for #{gem_file_list.size} gems in #{@dest_directory}"
+                                          "Generating index for #{gem_file_list.size} gems in #{@dest_directory}",
+                                          "Loaded all gems"
 
           gem_file_list.each do |gemfile|
             if File.size(gemfile.to_s) == 0 then
@@ -82,6 +83,8 @@ class Gem::Indexer
           end
 
           progress.done
+
+          say "Generating master indexes (this may take a while)"
         end
       end
     end

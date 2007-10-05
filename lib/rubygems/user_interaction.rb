@@ -209,7 +209,7 @@ module Gem
     class SilentProgressReporter
       attr_reader :count
 
-      def initialize(out_stream, size, initial_message)
+      def initialize(out_stream, size, initial_message, terminal_message = nil)
       end
 
       def updated(message)
@@ -224,10 +224,13 @@ module Gem
 
       attr_reader :count
 
-      def initialize(out_stream, size, initial_message)
+      def initialize(out_stream, size, initial_message,
+                     terminal_message = "complete")
         @out = out_stream
         @total = size
         @count = 0
+        @terminal_message = terminal_message
+
         @out.puts initial_message
       end
 
@@ -238,7 +241,7 @@ module Gem
       end
 
       def done
-        @out.puts "\ncomplete"
+        @out.puts "\n#{@terminal_message}"
       end
     end
 
@@ -247,10 +250,13 @@ module Gem
 
       attr_reader :count
 
-      def initialize(out_stream, size, initial_message)
+      def initialize(out_stream, size, initial_message,
+                     terminal_message = 'complete')
         @out = out_stream
         @total = size
         @count = 0
+        @terminal_message = terminal_message
+
         @out.puts initial_message
       end
 
@@ -260,7 +266,7 @@ module Gem
       end
 
       def done
-        @out.puts "complete"
+        @out.puts @terminal_message
       end
     end
   end

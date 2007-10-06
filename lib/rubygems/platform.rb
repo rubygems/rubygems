@@ -62,13 +62,7 @@ class Gem::Platform
                       when /^java([\d.]*)/ then        [ 'java',      $1  ]
                       when /linux/ then                [ 'linux',     $1  ]
                       when /mingw32/ then              [ 'mingw32',   nil ]
-                      when /(mswin\d+)(\_(\d+))?/ then
-                        os = $1
-                        if $3 then
-                          [ os, $3   ]
-                        else
-                          [ os, nil  ]
-                        end
+                      when /(mswin\d+)(\_(\d+))?/ then [ $1,          $3  ]
                       when /netbsdelf/ then            [ 'netbsdelf', nil ]
                       when /openbsd(\d+\.\d+)/ then    [ 'openbsd',   $1  ]
                       when /solaris(\d+\.\d+)/ then    [ 'solaris',   $1  ]

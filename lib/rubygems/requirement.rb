@@ -82,7 +82,7 @@ class Gem::Requirement
 
   # Load custom marshal format
   def marshal_load(array)
-    @requirements = array[1]
+    @requirements = array[0]
     @version = nil
   end
 

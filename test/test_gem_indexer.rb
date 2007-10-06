@@ -64,7 +64,8 @@ class TestGemIndexer < RubyGemTestCase
     expected = <<-EOF
 Generating index for 4 gems in #{@tempdir}
 ....
-complete
+Loaded all gems
+Generating master indexes (this may take a while)
     EOF
 
     assert_equal expected, @ui.output
@@ -75,11 +76,19 @@ complete
     use_ui @ui do
       @indexer.generate_index
     end
+
     yaml_path = File.join(@tempdir, 'yaml')
     dump_path = File.join(@tempdir, "Marshal.#{@marshal_version}")
 
     yaml_index = YAML.load_file(yaml_path)
-    dump_index = Marshal.load(File.read(dump_path))
+    dump_str = nil
+    File.open dump_path, 'rb' do |fp| dump_str = fp.read end
+    dump_index = Marshal.load dump_str
+
+    dump_index.each do |_,gem|
+      gem.send! :remove_instance_variable, :@loaded
+      gem.send! :remove_instance_variable, :@original_platform
+    end
 
     assert_equal yaml_index, dump_index,
                  "expected YAML and Marshal to produce identical results"

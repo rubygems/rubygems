@@ -118,7 +118,7 @@ end
     assert_equal 'keyedlist', s.name
     assert_equal '0.4.0', s.version.to_s
     assert_equal true, s.has_rdoc?
-    assert_equal Time.today, s.date
+    assert_equal Gem::Specification::TODAY, s.date
     assert s.required_ruby_version.satisfied_by?(Gem::Version.new('0.0.1'))
     assert_equal false, s.has_unit_tests?
   end
@@ -219,7 +219,7 @@ end
   end
 
   def test_date
-    assert_equal Time.today, @a0_0_1.date
+    assert_equal Gem::Specification::TODAY, @a0_0_1.date
   end
 
   def test_date_equals_date

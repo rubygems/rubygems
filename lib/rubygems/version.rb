@@ -12,7 +12,9 @@ class Gem::Version
 
   include Comparable
 
-  attr_accessor :version
+  attr_reader :ints
+
+  attr_reader :version
 
   ##
   # Checks if version string is valid format
@@ -54,7 +56,11 @@ class Gem::Version
     raise ArgumentError, "Malformed version number string #{version}" unless
       self.class.correct?(version)
 
-    @version = version.to_s.strip
+    self.version = version
+  end
+
+  def inspect # :nodoc:
+    "#<#{self.class} #{@version.inspect}>"
   end
 
   # Dump only the raw version string, not the complete object
@@ -64,7 +70,18 @@ class Gem::Version
 
   # Load custom marshal format
   def marshal_load(array)
-    @version = array[0]
+    self.version = array[0]
+  end
+
+  # Strip ignored trailing zeros.
+  def normalize
+    @ints = @version.to_s.scan(/\d+/).map { |s| s.to_i }
+
+    return if @ints.length == 1
+
+    @ints.pop while @ints.last == 0
+
+    @ints = [0] if @ints.empty?
   end
   
   ##
@@ -82,38 +99,34 @@ class Gem::Version
   # return:: [Array] list of integers
   #
   def to_ints
-    @version.scan(/\d+/).map {|s| s.to_i}
+    normalize unless @ints
+    @ints
+  end
+
+  def version=(version)
+    @version = version.to_s.strip
+    normalize
   end
 
   ##
   # Compares two versions
   #
-  # other:: [Version or .to_ints] other version to compare to
+  # other:: [Version or .ints] other version to compare to
   # return:: [Fixnum] -1, 0, 1
   #
   def <=>(other)
     return 1 unless other
-    rnums, vnums = to_ints, other.to_ints
-    [rnums.size, vnums.size].max.times {|i|
-      rnums[i] ||= 0
-      vnums[i] ||= 0
-    }
-
-    begin
-      r,v = rnums.shift, vnums.shift
-    end until (r != v || rnums.empty?)
-
-    return r <=> v
+    @ints <=> other.ints
   end
 
   def hash
-    to_ints.inject { |hash_code, n| hash_code + n }
+    @ints.inject { |hash_code, n| hash_code + n }
   end
 
   # Return a new version object where the next to the last revision
   # number is one greater. (e.g.  5.3.1 => 5.4)
   def bump
-    ints = to_ints
+    ints = @ints.dup
     ints.pop if ints.size > 1
     ints[-1] += 1
     self.class.new(ints.join("."))

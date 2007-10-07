@@ -64,19 +64,19 @@ class Gem::Commands::QueryCommand < Gem::Command
       gem_list_with_version[gemspec.name] << gemspec
     end
 
-    gem_list_with_version = gem_list_with_version.sort do |first, second|
-      first[0].downcase <=> second[0].downcase
+    gem_list_with_version = gem_list_with_version.sort_by do |name, spec|
+      name.downcase
     end
 
     gem_list_with_version.each do |gem_name, list_of_matching|
-      list_of_matching = list_of_matching.sort_by { |x| x.version }.reverse
-      seen_versions = []
+      list_of_matching = list_of_matching.sort_by { |x| x.version.to_ints }.reverse
+      seen_versions = {}
 
       list_of_matching.delete_if do |item|
-        if seen_versions.member?(item.version) then
+        if seen_versions[item.version] then
           true
         else
-          seen_versions << item.version
+          seen_versions[item.version] = true
           false
         end
       end

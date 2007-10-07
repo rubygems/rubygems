@@ -89,6 +89,12 @@ class TestGemVersion < RubyGemTestCase
     end
   end
 
+  def test_normalize
+    assert_equal [1],    Gem::Version.new("1").to_ints
+    assert_equal [1],    Gem::Version.new("1.0").to_ints
+    assert_equal [1, 1], Gem::Version.new("1.1").to_ints
+  end
+
   def test_ok
     assert_adequate( "0.2.33",      "= 0.2.33")
     assert_adequate( "0.2.34",      "> 0.2.33")

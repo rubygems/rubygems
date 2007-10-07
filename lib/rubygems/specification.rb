@@ -9,12 +9,6 @@ require 'rubygems'
 require 'rubygems/version'
 require 'rubygems/platform'
 
-class Time # :nodoc:
-  def self.today
-    Time.parse Time.now.strftime("%Y-%m-%d")
-  end
-end
-
 module Gem
 
   # == Gem::Specification
@@ -62,7 +56,11 @@ module Gem
       ],
     }
 
+    # :stopdoc:
     MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16 }
+
+    TODAY = Time.parse Time.now.strftime("%Y-%m-%d")
+    # :startdoc:
 
     # ------------------------- Class variables.
 
@@ -77,6 +75,9 @@ module Gem
 
     # List of _all_ attributes and default values: [[:name, nil], [:bindir, 'bin'], ...]
     @@attributes = []
+
+    @@nil_attributes = []
+    @@non_nil_attributes = [:@original_platform]
 
     # List of array attributes
     @@array_attributes = []
@@ -133,6 +134,13 @@ module Gem
     # values. 
     #
     def self.attribute(name, default=nil)
+      ivar_name = "@#{name}".intern
+      if default.nil? then
+        @@nil_attributes << ivar_name
+      else
+        @@non_nil_attributes << [ivar_name, default]
+      end
+
       @@attributes << [name, default]
       @@default_value[name] = default
       attr_accessor(name)
@@ -141,6 +149,8 @@ module Gem
     # Same as :attribute, but ensures that values assigned to the
     # attribute are array values by applying :to_a to the value.
     def self.array_attribute(name)
+      @@non_nil_attributes << ["@#{name}".intern, []]
+
       @@array_attributes << name
       @@attributes << [name, []]
       @@default_value[name] = []
@@ -220,7 +230,7 @@ module Gem
         @specification_version,
         @name,
         @version,
-        (@date.respond_to?(:ctime) ? @date.ctime : @date.to_s),
+        (Time === @date ? @date : Time.parse(@date.to_s)),
         @summary,
         @required_ruby_version,
         @required_rubygems_version,
@@ -239,42 +249,39 @@ module Gem
     def self._load(str)
       array = Marshal.load str
 
-      spec = Gem::Specification.new do |s|
-        s.specification_version = array[1]
-        current_version = CURRENT_SPECIFICATION_VERSION
+      spec = Gem::Specification.new
+      spec.instance_variable_set :@specification_version, array[1]
 
-        field_count = MARSHAL_FIELDS[s.specification_version]
+      current_version = CURRENT_SPECIFICATION_VERSION
 
-        if field_count.nil? or array.size < field_count then
-          raise TypeError, "invalid Gem::Specification format #{array.inspect}"
-        end
+      field_count = MARSHAL_FIELDS[spec.specification_version]
 
-        s.assign_defaults # Set defaults for anything we didn't dump
-
-        s.rubygems_version = array[0]
-        # spec version
-        s.name = array[2]
-        s.version = array[3]
-        s.date = array[4]
-        s.summary = array[5]
-        s.required_ruby_version = array[6]
-        s.required_rubygems_version = array[7]
-        s.platform = array[8]
-        s.instance_variable_set :@dependencies, array[9]
-        s.rubyforge_project = array[10]
-        s.email = array[11]
-        s.authors = array[12]
-        s.description = array[13]
-        s.homepage = array[14]
-        s.has_rdoc = array[15]
-        s.loaded = false
+      if field_count.nil? or array.size < field_count then
+        raise TypeError, "invalid Gem::Specification format #{array.inspect}"
       end
 
-      #puts "0x%08x (%9d) spec %s" % [$io.pos, $io.pos, full_name]
+      spec.instance_variable_set :@rubygems_version,          array[0]
+      # spec version
+      spec.instance_variable_set :@name,                      array[2]
+      spec.instance_variable_set :@version,                   array[3]
+      spec.instance_variable_set :@date,                      array[4]
+      spec.instance_variable_set :@summary,                   array[5]
+      spec.instance_variable_set :@required_ruby_version,     array[6]
+      spec.instance_variable_set :@required_rubygems_version, array[7]
+      spec.instance_variable_set :@platform,                  array[8]
+      spec.instance_variable_set :@original_platform,         array[8]
+      spec.instance_variable_set :@dependencies,              array[9]
+      spec.instance_variable_set :@rubyforge_project,         array[10]
+      spec.instance_variable_set :@email,                     array[11]
+      spec.instance_variable_set :@authors,                   array[12]
+      spec.instance_variable_set :@description,               array[13]
+      spec.instance_variable_set :@homepage,                  array[14]
+      spec.instance_variable_set :@has_rdoc,                  array[15]
+      spec.instance_variable_set :@loaded,                    false
 
       spec
     end
-    
+
     def warn_deprecated(old, new)
       # How (if at all) to implement this?  We only want to warn when
       # a gem is being built, I should think.
@@ -396,7 +403,7 @@ module Gem
       when Date then
         @date = Time.parse date.to_s
       else
-        @date = Time.today
+        @date = TODAY
       end
     end
 
@@ -513,12 +520,17 @@ module Gem
     # be honored.  Furthermore, we take a _copy_ of the default so
     # each specification instance has its own empty arrays, etc.
     def assign_defaults
-      @@attributes.each do |name, default|
-        if RUBY_VERSION >= "1.9" then
-          self.send! "#{name}=", copy_of(default)
-        else
-          self.send "#{name}=", copy_of(default)
-        end
+      @@nil_attributes.each do |name|
+        instance_variable_set name, nil
+      end
+
+      @@non_nil_attributes.each do |name, default|
+        value = case default
+                when Time, Numeric, Symbol, true, false, nil then default
+                else default.dup
+                end
+
+        instance_variable_set name, value
       end
     end
 
@@ -658,12 +670,12 @@ module Gem
 
     # Comparison methods ---------------------------------------------
 
-    def <=>(other) # :nodoc:
-      platform_num    = platform == Gem::Platform::RUBY ? -1 : 1
-      other_platform_num = other.platform == Gem::Platform::RUBY ? -1 : 1
+    def sort_obj
+      [@name, @version.to_ints, @platform == Gem::Platform::RUBY ? -1 : 1]
+    end
 
-      [@name, @version, platform_num] <=>
-        [other.name, other.version, other_platform_num]
+    def <=>(other) # :nodoc:
+      sort_obj <=> other.sort_obj
     end
 
     # Tests specs for equality (across all attributes).
@@ -825,20 +837,6 @@ module Gem
           yield gem
         end
       end
-    end
-
-    # Duplicate an object unless it's an immediate value.
-    def copy_of(obj)
-      case obj
-      when Numeric, Symbol, true, false, nil then obj
-      else obj.dup
-      end
-    end
-
-    def as_array(items)
-      items.to_ary
-    rescue NoMethodError => ex
-      [items]
     end
 
     # Return a string containing a Ruby code representation of the

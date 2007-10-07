@@ -86,7 +86,7 @@ module Gem
       def load_specification(file_name)
         begin
           spec_code = File.read(file_name).untaint
-          gemspec = eval(spec_code)
+          gemspec = eval spec_code, binding, file_name
           if gemspec.is_a?(Gem::Specification)
             gemspec.loaded_from = file_name
             return gemspec
@@ -232,7 +232,7 @@ module Gem
         end
       end
 
-      specs.sort
+      specs.sort_by { |s| s.sort_obj }
     end
 
     # Refresh the source index from the local file system.
@@ -255,7 +255,7 @@ module Gem
       latest_specs.each do |_, local|
         name = local.name
         remote = remotes.select  { |spec| spec.name == name }.
-                         sort_by { |spec| spec.version }.
+                         sort_by { |spec| spec.version.to_ints }.
                          last
         outdateds << name if remote and local.version < remote.version
       end

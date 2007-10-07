@@ -1,3 +1,10 @@
+2007-10-07  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb: Sped up ::_load.
+	* lib/rubygems/source_index.rb: Sped up #search.
+	* lib/rubygems/version.rb: Replace #to_ints with #ints, and cache
+	result.
+
 2007-10-05  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/user_interaction.rb: Allow customization of completion

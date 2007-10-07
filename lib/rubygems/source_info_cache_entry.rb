@@ -29,9 +29,11 @@ class Gem::SourceInfoCacheEntry
       remote_size = Gem::RemoteFetcher.fetcher.fetch_size yaml_uri
     end
 
-    return if @size == remote_size # TODO Use index_signature instead of size?
-    @source_index.update source_uri
+    return false if @size == remote_size # TODO Use index_signature instead of size?
+    updated = @source_index.update source_uri
     @size = remote_size
+
+    updated
   end
 
   def ==(other) # :nodoc:

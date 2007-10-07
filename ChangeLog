@@ -4,6 +4,7 @@
 	* lib/rubygems/source_index.rb: Sped up #search.
 	* lib/rubygems/version.rb: Replace #to_ints with #ints, and cache
 	result.
+	* lib/rubygems/source_info_cache.rb: Only flush cache when it changes.
 
 2007-10-05  Eric Hodel  <drbrain@segment7.net>
 

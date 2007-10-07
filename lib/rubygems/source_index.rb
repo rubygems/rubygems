@@ -271,6 +271,8 @@ module Gem
         remove_extra gem_names
         missing_gems = find_missing gem_names
 
+        return false if missing_gems.size.zero?
+
         say "missing #{missing_gems.size} gems" if
           missing_gems.size > 0 and Gem.configuration.really_verbose
 
@@ -288,9 +290,9 @@ module Gem
         @gems.replace(new_index.gems)
       end
 
-      self
+      true
     end
-    
+
     def ==(other) # :nodoc:
       self.class === other and @gems == other.gems 
     end

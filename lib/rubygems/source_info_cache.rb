@@ -65,7 +65,6 @@ class Gem::SourceInfoCache
   # The most recent cache data.
   def cache_data
     return @cache_data if @cache_data
-    @dirty = false
     cache_file # HACK writable check
 
     begin
@@ -75,7 +74,7 @@ class Gem::SourceInfoCache
 
       @cache_data.each do |url, sice|
         next unless sice.is_a?(Hash)
-        @dirty = true
+        update
         cache = sice['cache']
         size  = sice['size']
         if cache.is_a?(Gem::SourceIndex) and size.is_a?(Numeric) then
@@ -130,9 +129,9 @@ class Gem::SourceInfoCache
         cache_data[source_uri] = cache_entry
       end
 
-      cache_entry.refresh source_uri
+      update if cache_entry.refresh source_uri
     end
-    update
+
     flush
   end
 

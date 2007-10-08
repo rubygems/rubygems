@@ -4,6 +4,8 @@
 	format is smaller than yaml format quick index.
 	* lib/rubygems/installer.rb: Make #shebang correctly rewrite env
 	shebangs.
+	* lib/rubygems/specification.rb: Mark Time.today for removal, too much
+	depends upon it now.
 
 2007-10-07  Eric Hodel  <drbrain@segment7.net>
 

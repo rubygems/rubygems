@@ -9,6 +9,13 @@ require 'rubygems'
 require 'rubygems/version'
 require 'rubygems/platform'
 
+# :stopdoc:
+# Time::today has been deprecated in 0.9.5 and will be removed.
+def Time.today
+  Time.parse Time.now.strftime("%Y-%m-%d")
+end
+# :startdoc:
+
 module Gem
 
   # == Gem::Specification

@@ -2,6 +2,8 @@
 
 	* lib/rubygems/config_file.rb: Boost bulk_threshold to 1000, Marshal
 	format is smaller than yaml format quick index.
+	* lib/rubygems/installer.rb: Make #shebang correctly rewrite env
+	shebangs.
 
 2007-10-07  Eric Hodel  <drbrain@segment7.net>
 

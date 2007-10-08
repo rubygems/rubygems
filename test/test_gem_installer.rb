@@ -658,11 +658,75 @@ load 'my_exec'
   end
 
   def test_shebang_env
+    util_make_exec '0.0.2', "#!/usr/bin/env ruby"
+
+    shebang = @installer.shebang 'my_exec'
+
+    assert_equal "#!#{Gem.ruby}", shebang
+  end
+
+  def test_shebang_env_arguments
+    util_make_exec '0.0.2', "#!/usr/bin/env ruby -ws"
+
+    shebang = @installer.shebang 'my_exec'
+
+    assert_equal "#!#{Gem.ruby} -ws", shebang
+  end
+
+  def test_shebang_env_shebang
     util_make_exec '0.0.2', ''
     @installer.env_shebang = true
 
     shebang = @installer.shebang 'my_exec'
     assert_equal "#!/usr/bin/env ruby", shebang
+  end
+
+  def test_shebang_nested
+    util_make_exec '0.0.2', "#!/opt/local/ruby/bin/ruby"
+
+    shebang = @installer.shebang 'my_exec'
+
+    assert_equal "#!#{Gem.ruby}", shebang
+  end
+
+  def test_shebang_nested_arguments
+    util_make_exec '0.0.2', "#!/opt/local/ruby/bin/ruby -ws"
+
+    shebang = @installer.shebang 'my_exec'
+
+    assert_equal "#!#{Gem.ruby} -ws", shebang
+  end
+
+  def test_shebang_version
+    util_make_exec '0.0.2', "#!/usr/bin/ruby18"
+
+    shebang = @installer.shebang 'my_exec'
+
+    assert_equal "#!#{Gem.ruby}", shebang
+  end
+
+  def test_shebang_version_arguments
+    util_make_exec '0.0.2', "#!/usr/bin/ruby18 -ws"
+
+    shebang = @installer.shebang 'my_exec'
+
+    assert_equal "#!#{Gem.ruby} -ws", shebang
+  end
+
+  def test_shebang_version_env
+    util_make_exec '0.0.2', "#!/usr/bin/env ruby18"
+
+    shebang = @installer.shebang 'my_exec'
+
+    assert_equal "#!#{Gem.ruby}", shebang
+  end
+
+  def test_shebang_version_env_arguments
+    util_make_exec '0.0.2', "#!/usr/bin/env ruby18 -ws"
+
+    shebang = @installer.shebang 'my_exec'
+
+    assert_equal "#!#{Gem.ruby} -ws", shebang
   end
 
   def test_unpack

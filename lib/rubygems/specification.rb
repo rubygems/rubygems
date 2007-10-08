@@ -12,7 +12,8 @@ require 'rubygems/platform'
 # :stopdoc:
 # Time::today has been deprecated in 0.9.5 and will be removed.
 def Time.today
-  Time.parse Time.now.strftime("%Y-%m-%d")
+  t = Time.now
+  t - (t.to_i % 86400)
 end
 # :startdoc:
 
@@ -66,7 +67,8 @@ module Gem
     # :stopdoc:
     MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16 }
 
-    TODAY = Time.parse Time.now.strftime("%Y-%m-%d")
+    today = Time.now
+    TODAY = t - (t.to_i % 86400)
     # :startdoc:
 
     # ------------------------- Class variables.

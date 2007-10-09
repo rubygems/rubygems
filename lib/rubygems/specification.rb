@@ -13,7 +13,7 @@ require 'rubygems/platform'
 # Time::today has been deprecated in 0.9.5 and will be removed.
 def Time.today
   t = Time.now
-  t - (t.to_i % 86400)
+  t - (t.to_i % 86400) - t.gmt_offset - 86400
 end
 # :startdoc:
 
@@ -68,7 +68,7 @@ module Gem
     MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16 }
 
     now = Time.now
-    TODAY = now - (now.to_i % 86400)
+    TODAY = Time.at((now - (now.to_i % 86400) - now.gmt_offset - 86400).to_i)
     # :startdoc:
 
     # ------------------------- Class variables.

@@ -26,7 +26,7 @@ class TestGemConfigFile < RubyGemTestCase
     assert_equal false, @cfg.backtrace
     assert_equal true, @cfg.update_sources
     assert_equal false, @cfg.benchmark
-    assert_equal 500, @cfg.bulk_threshold
+    assert_equal Gem::ConfigFile::DEFAULT_BULK_THRESHOLD, @cfg.bulk_threshold
     assert_equal true, @cfg.verbose
     assert_equal %w[http://gems.example.com], Gem.sources
 
@@ -153,7 +153,8 @@ class TestGemConfigFile < RubyGemTestCase
     # These should not be written out to the config file.
     assert_equal false, @cfg.backtrace,     'backtrace'
     assert_equal false, @cfg.benchmark,     'benchmark'
-    assert_equal 500, @cfg.bulk_threshold,  'bulk_threshold'
+    assert_equal Gem::ConfigFile::DEFAULT_BULK_THRESHOLD, @cfg.bulk_threshold,
+                 'bulk_threshold'
     assert_equal true, @cfg.update_sources, 'update_sources'
     assert_equal true, @cfg.verbose,        'verbose'
 

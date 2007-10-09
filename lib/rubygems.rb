@@ -550,10 +550,8 @@ require 'rubygems/exceptions'
 require 'rubygems/version'
 require 'rubygems/requirement'
 require 'rubygems/dependency'
-require 'rubygems/custom_require'
-require 'rubygems/gem_path_searcher' # Needed for Kernel#gem
-require 'rubygems/source_index' # Needed for Kernel#gem
+require 'rubygems/gem_path_searcher'    # Needed for Kernel#gem
+require 'rubygems/source_index'         # Needed for Kernel#gem
 require 'rubygems/platform'
-
-require 'rubygems/builder' # Needed for rake's package task.
-
+require 'rubygems/builder'              # HACK: Needed for rake's package task.
+require 'rubygems/custom_require'

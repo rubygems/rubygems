@@ -131,18 +131,24 @@ module Gem
     # Returns a Hash of name => Specification of the latest versions of each
     # gem in this index.
     def latest_specs
-      thin = {}
+      result, latest = Hash.new { |h,k| h[k] = [] }, {}
 
-      each do |full_name, spec|
+      self.each do |_, spec| # SourceIndex is not a hash, so we're stuck with each
         name = spec.name
-        if thin.has_key? name then
-          thin[name] = spec if spec.version > thin[name].version
-        else
-          thin[name] = spec
+        curr_ver = spec.version
+        prev_ver = latest[name]
+
+        next unless prev_ver.nil? or curr_ver >= prev_ver
+
+        if prev_ver.nil? or curr_ver > prev_ver then
+          result[name].clear
+          latest[name] = curr_ver
         end
+
+        result[name] << spec
       end
 
-      thin
+      result.values.flatten
     end
 
     # Add a gem specification to the source index.
@@ -252,7 +258,7 @@ module Gem
 
       outdateds = []
 
-      latest_specs.each do |_, local|
+      latest_specs.each do |local|
         name = local.name
         remote = remotes.select  { |spec| spec.name == name }.
                          sort_by { |spec| spec.version.to_ints }.

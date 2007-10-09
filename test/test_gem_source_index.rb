@@ -181,13 +181,13 @@ class TestGemSourceIndex < RubyGemTestCase
     spec = quick_gem @gem1.name, '0.0.1'
     @source_index.add_spec spec
 
-    expected = {
-      @gem1.name => @gem1,
-      @gem2.name => @gem2,
-      @gem4.name => @gem4
-    }
+    expected = [
+      @gem1.full_name,
+      @gem2.full_name,
+      @gem4.full_name,
+    ].sort
 
-    assert_equal expected, @source_index.latest_specs
+    assert_equal expected, @source_index.latest_specs.map { |s| s.full_name }.sort
   end
 
   def test_outdated

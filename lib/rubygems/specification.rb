@@ -386,7 +386,6 @@ module Gem
         @platform = Gem::Platform::X86_LINUX
       when Platform::DARWIN then
         @platform = Gem::Platform::PPC_DARWIN
-
       else
         @platform = platform
       end

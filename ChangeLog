@@ -1,3 +1,12 @@
+2007-10-08  Ryan Davis  <ryan@wrath.local>
+
+	* lib/rubygems.rb: Fixed require order so custom_require is
+	last. Added HACK tag to remind Jim to release rake.
+	* test/test_gem_source_index.rb: Fixed latest_specs' tests so
+	failures were much more readable.
+	* lib/rubygems/source_index.rb: Fixed latest_specs to deal with
+	platforms appropriately. Returns array again.
+
 2007-10-08  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/config_file.rb: Boost bulk_threshold to 1000, Marshal

@@ -67,8 +67,8 @@ module Gem
     # :stopdoc:
     MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16 }
 
-    today = Time.now
-    TODAY = t - (t.to_i % 86400)
+    now = Time.now
+    TODAY = now - (now.to_i % 86400)
     # :startdoc:
 
     # ------------------------- Class variables.

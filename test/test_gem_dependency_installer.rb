@@ -371,6 +371,24 @@ class TestGemDependencyInstaller < RubyGemTestCase
                  inst.download(@a1, local_path)
   end
 
+  def test_download_gem_install_dir
+    a1_data = nil
+    File.open @a1_gem, 'rb' do |fp|
+      a1_data = fp.read
+    end
+
+    @fetcher.data['http://gems.example.com/gems/a-1.gem'] = a1_data
+
+    install_dir = File.join @tempdir, 'more_gems'
+
+    inst = Gem::DependencyInstaller.new 'a', nil, :install_dir => install_dir
+
+    a1_cache_gem = File.join install_dir, 'cache', "#{@a1.full_name}.gem"
+    assert_equal a1_cache_gem, inst.download(@a1, 'http://gems.example.com')
+
+    assert File.exist?(a1_cache_gem)
+  end
+
   unless win_platform? then # File.chmod doesn't work
     def test_download_gem_local_read_only
       FileUtils.mv @a1_gem, @tempdir

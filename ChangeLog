@@ -1,3 +1,8 @@
+2007-10-09  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/dependency_installer.rb: Use install_dir so custom gem
+	repos can be used.
+
 2007-10-08  Ryan Davis  <ryan@wrath.local>
 
 	* lib/rubygems.rb: Fixed require order so custom_require is

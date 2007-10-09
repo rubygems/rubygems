@@ -145,6 +145,10 @@ class TestGemVersion < RubyGemTestCase
     assert_inadequate("2.0", req)
   end
 
+  def test_spaceship
+    assert_equal 1, Gem::Version.new('1.8.2') <=> Gem::Version.new('0.0.0')
+  end
+
   def test_boxed
     assert_inadequate("1.3", "~> 1.4")
     assert_adequate(  "1.4", "~> 1.4")

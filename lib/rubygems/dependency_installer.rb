@@ -111,7 +111,9 @@ class Gem::DependencyInstaller
   # always replaced.
   def download(spec, source_uri)
     gem_file_name = "#{spec.full_name}.gem"
-    local_gem_path = File.join Gem.dir, 'cache', gem_file_name
+    local_gem_path = File.join @install_dir, 'cache', gem_file_name
+
+    Gem.ensure_gem_subdirectories @install_dir
 
     source_uri = URI.parse source_uri
     scheme = source_uri.scheme

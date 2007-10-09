@@ -83,7 +83,7 @@ class Gem::Version
 
     @ints = [0] if @ints.empty?
   end
-  
+
   ##
   # Returns the text representation of the version
   #
@@ -116,11 +116,11 @@ class Gem::Version
   #
   def <=>(other)
     return 1 unless other
-    @ints <=> other.ints
+    @ints <=> other.to_ints
   end
 
   def hash
-    @ints.inject { |hash_code, n| hash_code + n }
+    to_ints.inject { |hash_code, n| hash_code + n }
   end
 
   # Return a new version object where the next to the last revision

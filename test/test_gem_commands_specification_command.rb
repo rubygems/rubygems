@@ -19,7 +19,8 @@ class TestGemCommandsSpecificationCommand < RubyGemTestCase
       @cmd.execute
     end
 
-    assert_equal "#{foo.to_yaml}\n", @ui.output
+    assert_match %r|Gem::Specification|, @ui.output
+    assert_match %r|name: foo|, @ui.output
     assert_equal '', @ui.error
   end
 
@@ -34,7 +35,10 @@ class TestGemCommandsSpecificationCommand < RubyGemTestCase
       @cmd.execute
     end
 
-    assert_equal "#{foo1.to_yaml}\n#{foo2.to_yaml}\n", @ui.output
+    assert_match %r|Gem::Specification|, @ui.output
+    assert_match %r|name: foo|, @ui.output
+    assert_match %r|version: 0.0.1|, @ui.output
+    assert_match %r|version: 0.0.2|, @ui.output
     assert_equal '', @ui.error
   end
 
@@ -61,7 +65,8 @@ class TestGemCommandsSpecificationCommand < RubyGemTestCase
       @cmd.execute
     end
 
-    assert_equal "#{foo.to_yaml}\n", @ui.output
+    assert_match %r|Gem::Specification|, @ui.output
+    assert_match %r|name: foo|, @ui.output
     assert_equal '', @ui.error
   end
 

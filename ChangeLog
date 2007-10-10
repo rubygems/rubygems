@@ -2,6 +2,8 @@
 
 	* lib/rubygems/dependency_installer.rb: Use install_dir so custom gem
 	repos can be used.
+	* lib/rubygems/specification.rb: Always set required attributes, even
+	if they match the default.  
 
 2007-10-08  Ryan Davis  <ryan@wrath.local>
 

@@ -520,6 +520,8 @@ end
   end
 
   def test_to_ruby
+    @a0_0_2.required_rubygems_version = Gem::Requirement.new '> 0'
+
     ruby_code = @a0_0_2.to_ruby
 
     expected = "Gem::Specification.new do |s|
@@ -528,13 +530,16 @@ end
 
   s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION} if s.respond_to? :specification_version=
 
+  s.required_rubygems_version = Gem::Requirement.new(\"> 0\") if s.respond_to? :required_rubygems_version=
   s.authors = [\"A User\"]
-  s.date = %q{#{Time.now.strftime "%Y-%m-%d"}}
+  s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
   s.description = %q{This is a test description}
   s.email = %q{example@example.com}
   s.files = [\"lib/code.rb\"]
   s.has_rdoc = true
   s.homepage = %q{http://example.com}
+  s.require_paths = [\"lib\"]
+  s.rubygems_version = %q{#{Gem::RubyGemsVersion}}
   s.summary = %q{this is a summary}
 end
 "

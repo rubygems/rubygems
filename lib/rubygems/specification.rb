@@ -14,7 +14,7 @@ require 'rubygems/platform'
 def Time.today
   t = Time.now
   t - (t.to_i % 86400) - t.gmt_offset - 86400
-end
+end unless defined? Time.today
 # :startdoc:
 
 module Gem
@@ -67,8 +67,8 @@ module Gem
     # :stopdoc:
     MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16 }
 
-    now = Time.now
-    TODAY = Time.at((now - (now.to_i % 86400) - now.gmt_offset - 86400).to_i)
+    now = Time.at(Time.now.to_i)
+    TODAY = Time.at(now - (now.to_i % 86400) - now.gmt_offset) - 86400
     # :startdoc:
 
     # ------------------------- Class variables.
@@ -302,7 +302,7 @@ module Gem
     required_attribute :specification_version, CURRENT_SPECIFICATION_VERSION
     required_attribute :name
     required_attribute :version
-    required_attribute :date
+    required_attribute :date, TODAY
     required_attribute :summary
     required_attribute :require_paths, ['lib']
 
@@ -731,15 +731,24 @@ module Gem
       result << ""
       result << "  s.specification_version = #{specification_version} if s.respond_to? :specification_version="
       result << ""
+      result << "  s.required_rubygems_version = #{ruby_code required_rubygems_version} if s.respond_to? :required_rubygems_version="
 
-      handled = [:name, :version, :specification_version, :dependencies]
+      handled = [
+        :dependencies,
+        :name,
+        :required_rubygems_version,
+        :specification_version,
+        :version,
+      ]
+
       attributes = @@attributes.sort_by { |name,| name.to_s }
 
       attributes.each do |name, default|
         next if handled.include? name
         current_value = self.send(name)
-        result << "  s.#{name} = #{ruby_code current_value}" unless
-          current_value == default
+        if current_value != default or self.class.required_attribute? name then
+          result << "  s.#{name} = #{ruby_code current_value}"
+        end
       end
 
       result << "" unless dependencies.empty?
@@ -752,11 +761,11 @@ module Gem
       result << "end"
       result << ""
 
-      result.join "\n" 
+      result.join "\n"
     end
 
     # Validation and normalization methods ---------------------------
-    
+
     # Checks that the specification contains all required fields, and
     # does a very basic sanity check.
     #
@@ -854,7 +863,8 @@ module Gem
       when String            then '%q{' + obj + '}'
       when Array             then obj.inspect
       when Gem::Version      then obj.to_s.inspect
-      when Date, Time        then '%q{' + obj.strftime('%Y-%m-%d') + '}'
+      when Date              then '%q{' + obj.strftime('%Y-%m-%d') + '}'
+      when Time              then '%q{' + obj.utc.strftime('%Y-%m-%d') + '}'
       when Numeric           then obj.inspect
       when true, false, nil  then obj.inspect
       when Gem::Platform     then "Gem::Platform.new(#{obj.to_a.inspect})"

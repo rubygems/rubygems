@@ -49,7 +49,10 @@ class TestGemServer < RubyGemTestCase
 
     assert @res['date']
     assert_equal 'text/plain', @res['content-type']
-    assert_equal @a1.to_yaml, Zlib::Inflate.inflate(@res.body)
+    yaml = Zlib::Inflate.inflate(@res.body)
+    assert_match %r|Gem::Specification|, yaml
+    assert_match %r|name: a|, yaml
+    assert_match %r|version: "1"|, yaml
   end
 
   def test_quick_z_9_gemspec_rz

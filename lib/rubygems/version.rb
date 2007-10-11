@@ -103,9 +103,17 @@ class Gem::Version
     @ints
   end
 
+  def to_yaml_properties
+    ['@version']
+  end
+
   def version=(version)
     @version = version.to_s.strip
     normalize
+  end
+
+  def yaml_initialize(tag, values)
+    self.version = values['version']
   end
 
   ##
@@ -116,7 +124,7 @@ class Gem::Version
   #
   def <=>(other)
     return 1 unless other
-    @ints <=> other.to_ints
+    @ints <=> other.ints
   end
 
   def hash

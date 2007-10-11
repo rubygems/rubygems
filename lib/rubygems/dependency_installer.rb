@@ -115,7 +115,7 @@ class Gem::DependencyInstaller
 
     Gem.ensure_gem_subdirectories @install_dir
 
-    source_uri = URI.parse source_uri
+    source_uri = URI.parse source_uri unless URI::Generic === source_uri
     scheme = source_uri.scheme
 
     # URI.parse gets confused by MS Windows paths with forward slashes.

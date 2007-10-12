@@ -13,7 +13,7 @@ require 'rubygems/platform'
 # Time::today has been deprecated in 0.9.5 and will be removed.
 def Time.today
   t = Time.now
-  t - (t.to_i % 86400) - t.gmt_offset - 86400
+  t - ((t.to_i + t.gmt_offset) % 86400)
 end unless defined? Time.today
 # :startdoc:
 
@@ -68,7 +68,7 @@ module Gem
     MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16 }
 
     now = Time.at(Time.now.to_i)
-    TODAY = Time.at(now - (now.to_i % 86400) - now.gmt_offset) - 86400
+    TODAY = now - ((now.to_i + now.gmt_offset) % 86400)
     # :startdoc:
 
     # ------------------------- Class variables.
@@ -402,7 +402,7 @@ module Gem
     overwrite_accessor :date= do |date|
       # We want to end up with a Time object with one-day resolution.
       # This is the cleanest, most-readable, faster-than-using-Date
-      # way to do it. 
+      # way to do it.
       case date
       when String then
         @date = Time.parse date
@@ -864,7 +864,7 @@ module Gem
       when Array             then obj.inspect
       when Gem::Version      then obj.to_s.inspect
       when Date              then '%q{' + obj.strftime('%Y-%m-%d') + '}'
-      when Time              then '%q{' + obj.utc.strftime('%Y-%m-%d') + '}'
+      when Time              then '%q{' + obj.strftime('%Y-%m-%d') + '}'
       when Numeric           then obj.inspect
       when true, false, nil  then obj.inspect
       when Gem::Platform     then "Gem::Platform.new(#{obj.to_a.inspect})"

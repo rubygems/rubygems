@@ -46,7 +46,7 @@ module Gem
       end
 
       def usage # :nodoc:
-        "#{programe_name} GEMNAME [GEMNAME ...]"
+        "#{program_name} GEMNAME [GEMNAME ...]"
       end
 
       def execute

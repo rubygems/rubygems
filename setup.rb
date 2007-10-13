@@ -100,6 +100,16 @@ Dir.chdir 'bin' do
   end
 end
 
+# Remove source caches
+
+require 'rubygems/source_info_cache'
+
+user_cache_file = Gem::SourceInfoCache.user_cache_file
+system_cache_file = Gem::SourceInfoCache.system_cache_file
+
+rm user_cache_file if File.writable? user_cache_file
+rm system_cache_file if File.writable? system_cache_file
+
 # install RDoc
 
 gem_doc_dir = File.join Gem.dir, 'doc'

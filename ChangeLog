@@ -1,3 +1,9 @@
+2007-10-12  Eric Hodel  <drbrain@segment7.net>
+
+	* setup.rb: Remove source caches on install.
+	* doc/release_notes/rel_0_9_5.rdoc: Draft added.
+	* lib/rubygems/rubygems_version.rb: 0.9.4.5 beta.
+
 2007-10-10  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/dependency_installer.rb: Fix small bug found by Alan C.

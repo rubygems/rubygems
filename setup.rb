@@ -116,7 +116,7 @@ gem_doc_dir = File.join Gem.dir, 'doc'
 
 if File.writable? gem_doc_dir then
   puts "Removing old RubyGems RDoc and ri..."
-  Dir[File.join(Gem.dir, 'doc', 'rubygems-*')].each do |dir|
+  Dir[File.join(Gem.dir, 'doc', 'rubygems-[0-9]*')].each do |dir|
     rm_rf dir
   end
 

@@ -60,7 +60,7 @@ Special thanks to:
 * Tom Copeland
 * Wilson Bilkovich
 
-The full set of changes is included in the ChangeLog file.
+The full set of changes including contributors is included in the ChangeLog.
 
 == What is RubyGems?
 

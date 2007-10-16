@@ -100,6 +100,36 @@ Dir.chdir 'bin' do
   end
 end
 
+# Replace old bin files with ones that abort.
+
+old_bin_files = {
+  'gem_mirror' => 'gem mirror',
+  'gem_server' => 'gem server',
+  'gemlock' => 'gem lock',
+  'gemri' => 'ri',
+  'gemwhich' => 'gem which',
+  'index_gem_repository.rb' => 'gem generate_index',
+}
+
+old_bin_files.each do |old_bin_file, new_name|
+  old_bin_path = File.join bin_dir, old_bin_file
+  next unless File.exist? old_bin_path
+
+  File.open old_bin_path, 'w' do |fp|
+    fp.write <<-EOF
+#!#{Gem.ruby}
+
+abort "`#{old_bin_file}` has been deprecated.  Use `#{new_name}` instead."
+    EOF
+  end
+
+  next unless Gem.win_platform?
+
+  File.open "#{old_bin_path}.cmd", 'w' do |fp|
+    fp.puts %{@"#{ruby_cmd}" "#{old_bin_file}"}
+  end
+end
+
 # Remove source caches
 
 require 'rubygems/source_info_cache'

@@ -1,3 +1,8 @@
+2007-10-16  Eric Hodel  <drbrain@segment7.net>
+
+	* setup.rb: Installs bin stubs that warn when you try to use the old
+	commands.
+
 2007-10-12  Eric Hodel  <drbrain@segment7.net>
 
 	* setup.rb: Remove source caches on install.

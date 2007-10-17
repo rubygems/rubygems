@@ -115,18 +115,20 @@ old_bin_files.each do |old_bin_file, new_name|
   old_bin_path = File.join bin_dir, old_bin_file
   next unless File.exist? old_bin_path
 
+  deprecation_message = "`#{old_bin_file}` has been deprecated.  Use `#{new_name}` instead."
+
   File.open old_bin_path, 'w' do |fp|
     fp.write <<-EOF
 #!#{Gem.ruby}
 
-abort "`#{old_bin_file}` has been deprecated.  Use `#{new_name}` instead."
+abort "#{deprecation_message}"
     EOF
   end
 
   next unless Gem.win_platform?
 
   File.open "#{old_bin_path}.cmd", 'w' do |fp|
-    fp.puts %{@"#{ruby_cmd}" "#{old_bin_file}"}
+    fp.puts %{@ECHO.#{deprecation_message}}
   end
 end
 

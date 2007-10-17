@@ -1,12 +1,12 @@
 2007-10-16	Daniel Berger	<djberg96@gmail.com>
 
-	* lib/rubygems/indexer/abstract_index_builder.rb: The compress method now
-	does a binary read to make MS Windows happy.
+	* lib/rubygems/indexer/abstract_index_builder.rb: The compress method
+	now does a binary read to make MS Windows happy.
 
 2007-10-16  Eric Hodel  <drbrain@segment7.net>
 
 	* setup.rb: Installs bin stubs that warn when you try to use the old
-	commands.
+	commands.  Simple mswin deprecation stubs by Luis Lavena.
 
 2007-10-12  Eric Hodel  <drbrain@segment7.net>
 

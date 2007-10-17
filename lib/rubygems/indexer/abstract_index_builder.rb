@@ -46,7 +46,7 @@ class Gem::Indexer::AbstractIndexBuilder
 
   # Compress the given file.
   def compress(filename, ext="rz")
-    zipped = zip File.read(filename)
+    zipped = zip(File.open(filename, 'rb'){ |fp| fp.read })
     File.open "#{filename}.#{ext}", "wb" do |file|
       file.write zipped
     end

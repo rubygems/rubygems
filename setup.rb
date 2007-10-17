@@ -5,6 +5,16 @@
 # See LICENSE.txt for permissions.
 #++
 
+# Make sure rubygems isn't already loaded.
+if ENV['RUBYOPT'] =~ /rubygems/ then
+  ENV.delete 'RUBYOPT'
+
+  ruby = File.join Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name']
+  ruby << Config::CONFIG['EXEEXT']
+
+  exec(ruby, 'setup.rb', *ARGV)
+end
+
 $:.unshift 'lib'
 require 'rubygems'
 

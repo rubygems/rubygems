@@ -118,7 +118,14 @@ module Gem
 
         Dir.chdir update_dir do
           say "Installing RubyGems #{version_string}"
-          system "#{Gem.ruby} setup.rb #{args.join ' '}"
+          setup_cmd = "#{Gem.ruby} setup.rb #{args.join ' '}"
+
+          # Make sure old rubygems isn't loaded
+          if Gem.win_platform? then
+            system "set RUBYOPT= & #{setup_cmd}"
+          else
+            system "RUBYOPT=\"\" #{setup_cmd}"
+          end
         end
       end
 

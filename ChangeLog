@@ -1,4 +1,11 @@
-2007-10-16	Daniel Berger	<djberg96@gmail.com>
+2007-10-17  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/update_command.rb: Unset RUBYOPT when running
+	setup.rb
+	* setup.rb: Re-exec without RUBYOPT if it is set.  Fixes bug #14683
+	submitted by Lyle Johnson.
+
+2007-10-16  Daniel Berger  <djberg96@gmail.com>
 
 	* lib/rubygems/indexer/abstract_index_builder.rb: The compress method
 	now does a binary read to make MS Windows happy.

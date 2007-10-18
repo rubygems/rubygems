@@ -74,7 +74,7 @@ class Gem::Commands::InstallCommand < Gem::Command
 
         installed_gems.push(*inst.installed_gems)
       rescue Gem::InstallError => e
-        alert_error "Error instaling #{gem_name}:\n\t#{e.message}"
+        alert_error "Error installing #{gem_name}:\n\t#{e.message}"
       rescue Gem::GemNotFoundException => e
         alert_error e.message
 #      rescue => e

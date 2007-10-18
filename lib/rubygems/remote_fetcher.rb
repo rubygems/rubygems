@@ -132,7 +132,7 @@ class Gem::RemoteFetcher
       open(get_file_uri_path(uri), &block)
     else
       connection_options = {
-        "User-Agent" => "RubyGems/#{Gem::RubyGemsVersion}"
+        "User-Agent" => "RubyGems/#{Gem::RubyGemsVersion} #{Gem::Platform.local}"
       }
 
       if @proxy_uri

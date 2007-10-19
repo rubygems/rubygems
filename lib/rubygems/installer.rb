@@ -184,9 +184,9 @@ class Gem::Installer
   #
   def generate_windows_script(bindir, filename)
     if Gem.win_platform? then
-      script_name = filename + ".cmd"
+      script_name = filename + ".bat"
       File.open(File.join(bindir, File.basename(script_name)), "w") do |file|
-        file.puts "@#{Gem.ruby} \"#{File.join(bindir,filename)}\" %*"
+        file.puts windows_stub_script(bindir, filename)
       end
     end
   end
@@ -302,6 +302,18 @@ end
 
 gem '#{@spec.name}', version
 load '#{bin_file_name}'
+TEXT
+  end
+
+  # return the stub script text used to launch the true ruby script
+  def windows_stub_script(bindir, bin_file_name)
+    <<-TEXT
+@ECHO OFF
+IF NOT "%~f0" == "~f0" GOTO :WinNT
+@"#{Gem.ruby}" "#{File.join(bindir, bin_file_name)}" %1 %2 %3 %4 %5 %6 %7 %8 %9
+GOTO :EOF
+:WinNT
+"%~dp0ruby.exe" "%~dpn0" %*
 TEXT
   end
 

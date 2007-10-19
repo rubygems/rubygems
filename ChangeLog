@@ -1,3 +1,10 @@
+2007-10-18	Daniel Berger	<djberg96@gmail.com>
+
+	* lib/rubygems/platform.rb: Modified the Platform.local method for MS
+	Windows for versions built with VC++ 6. Patch #14727 (Luis Lavena).
+	* test/test_gem_specification.rb: Added version independent tests for
+	MS Windows. Patch #14727 (Luis Lavena).
+
 2007-10-18  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/remote_fetcher.rb: Add platform to User-Agent.

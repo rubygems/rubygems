@@ -399,18 +399,30 @@ end
   def test_full_name
     assert_equal 'a-0.0.1', @a0_0_1.full_name
 
-    @a0_0_1.platform = 'current'
-    if win_platform? then
-      assert_equal 'a-0.0.1-x86-mswin32', @a0_0_1.full_name
-    else
-      assert_equal 'a-0.0.1-x86-darwin-8', @a0_0_1.full_name
-    end
-
     @a0_0_1.platform = Gem::Platform.new ['universal', 'darwin', nil]
     assert_equal 'a-0.0.1-universal-darwin', @a0_0_1.full_name
 
     @a0_0_1.instance_variable_set :@platform, 'mswin32'
     assert_equal 'a-0.0.1-mswin32', @a0_0_1.full_name, 'legacy'
+
+    return if win_platform?
+    
+    @a0_0_1.platform = 'current'
+    assert_equal 'a-0.0.1-x86-darwin-8', @a0_0_1.full_name
+  end
+  
+  def test_full_name_windows
+    test_cases = {
+      'i386-mswin32'      => 'a-0.0.1-x86-mswin32-60',
+      'i386-mswin32_80'   => 'a-0.0.1-x86-mswin32-80',
+      'i386-mingw32'      => 'a-0.0.1-x86-mingw32'
+    }
+    
+    test_cases.each do |arch, expected|
+      util_set_arch arch
+      @a0_0_1.platform = 'current'
+      assert_equal expected, @a0_0_1.full_name
+    end
   end
 
   def test_has_rdoc_eh
@@ -444,9 +456,18 @@ end
     @a0_0_1.platform = Gem::Platform::RUBY
     assert_equal Gem::Platform::RUBY, @a0_0_1.platform
 
-    @a0_0_1.platform = Gem::Platform::CURRENT
     if win_platform? then
-      assert_equal Gem::Platform.new(['x86', 'mswin32', nil]), @a0_0_1.platform
+      test_cases = {
+        'i386-mswin32'      => ['x86', 'mswin32', '60'],
+        'i386-mswin32_80'   => ['x86', 'mswin32', '80'],
+        'i386-mingw32'      => ['x86', 'mingw32', nil]
+      }
+      
+      test_cases.each do |arch, expected|
+        util_set_arch arch
+        @a0_0_1.platform = Gem::Platform::CURRENT
+        assert_equal Gem::Platform.new(expected), @a0_0_1.platform
+      end
     else
       assert_equal Gem::Platform.new(%w[x86 darwin 8]), @a0_0_1.platform
     end
@@ -634,4 +655,6 @@ end
   end
 
 end
+
+
 

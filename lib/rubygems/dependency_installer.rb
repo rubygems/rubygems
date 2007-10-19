@@ -166,14 +166,14 @@ class Gem::DependencyInstaller
 
       until to_do.empty? do
         spec = to_do.shift
-        next if spec.nil? or seen[spec]
-        seen[spec] = true
+        next if spec.nil? or seen[spec.name]
+        seen[spec.name] = true
 
         spec.dependencies.each do |dep|
           results = find_gems_with_sources(dep).reverse # local gems first
 
           results.each do |dep_spec, source_uri|
-            next if seen[dep_spec]
+            next if seen[dep_spec.name]
             @specs_and_sources << [dep_spec, source_uri]
             dependency_list.add dep_spec
             to_do.push dep_spec

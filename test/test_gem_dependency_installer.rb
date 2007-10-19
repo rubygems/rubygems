@@ -467,6 +467,22 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal %w[y-1 z-1], inst.gems_to_install.map { |s| s.full_name }
   end
 
+  def test_gather_dependencies_dropped
+    b2, = util_gem 'b', '2'
+    c1, = util_gem 'c', '1' do |s| s.add_dependency 'b' end
+
+    si = util_setup_source_info_cache @a1, @b1, b2, c1
+
+    @fetcher = FakeFetcher.new
+    Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
+    @fetcher.uri = URI.parse 'http://gems.example.com'
+    @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
+
+    inst = Gem::DependencyInstaller.new 'c'
+
+    assert_equal %w[b-2 c-1], inst.gems_to_install.map { |s| s.full_name }
+  end
+
   def util_gem(name, version, &block)
     spec = quick_gem(name, version, &block)
 

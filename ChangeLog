@@ -2,7 +2,9 @@
 
 	* lib/rubygems/remote_fetcher.rb: Add platform to User-Agent.
 	* lib/rubygems/commands/install_command.rb: Fix typo.  Debian bug
-	443135 submitted by Reuben Thomas.
+	#443135 submitted by Reuben Thomas.
+	* lib/rubygems/dependency_installer.rb: Don't install dropped
+	dependencies.  Fixes bug #14724 submitted by Luis Lavena.
 
 2007-10-17  Eric Hodel  <drbrain@segment7.net>
 

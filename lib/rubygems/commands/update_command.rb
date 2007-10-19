@@ -80,11 +80,13 @@ module Gem
 
         options[:domain] = :remote # install from remote source
 
+        # HACK use the real API
         install_command = Gem::CommandManager.instance['install']
 
         gems_to_update.uniq.sort.each do |name|
           say "Attempting remote update of #{name}"
           options[:args] = [name]
+          options[:ignore_dependencies] = true # HACK skip seen gems instead
           install_command.merge_options(options)
           install_command.execute
         end

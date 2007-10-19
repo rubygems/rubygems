@@ -1,10 +1,15 @@
-2007-10-19	Daniel Berger	<djberg96@gmail.com>
+2007-10-19  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/update_command.rb: Don't install with
+	dependencies when updating.  This is a hack.
+
+2007-10-19  Daniel Berger  <djberg96@gmail.com>
 
 	* setup.rb: gem.cmd stub is now gem.cmd, and the stub generation was
 	changed - now better for NT. Patch #14725 (Luis Lavena).
 	* lib/rubygems/installer.rb: Same as for setup.rb.
 
-2007-10-18	Daniel Berger	<djberg96@gmail.com>
+2007-10-18  Daniel Berger  <djberg96@gmail.com>
 
 	* lib/rubygems/platform.rb: Modified the Platform.local method for MS
 	Windows for versions built with VC++ 6. Patch #14727 (Luis Lavena).

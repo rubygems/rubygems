@@ -14,7 +14,7 @@ class Gem::Platform
 
   def self.local
     arch = Config::CONFIG['arch']
-    arch = "#{arch}_60" if Config::CONFIG['RUBY_SO_NAME'] =~ /^msvcrt-ruby/
+    arch = "#{arch}_60" if arch =~ /mswin32$/
     @local ||= new(arch)
   end
 

@@ -97,13 +97,20 @@ Dir.chdir 'bin' do
     next unless Gem.win_platform?
 
     begin
-      bin_cmd_file = File.join Dir.tmpdir, "#{bin_file}.cmd"
+      bin_cmd_file = File.join Dir.tmpdir, "#{bin_file}.bat"
 
       File.open bin_cmd_file, 'w' do |file|
-        file.puts %{@"#{Gem.ruby}" "#{bin_file}" %1 %2 %3 %4 %5 %6 %7 %8 %9}
+        file.puts <<-TEXT
+@ECHO OFF
+IF NOT "%~f0" == "~f0" GOTO :WinNT
+@"#{Gem.ruby}" "#{bin_file}" %1 %2 %3 %4 %5 %6 %7 %8 %9
+GOTO :EOF
+:WinNT
+"%~d0%~p0ruby.exe" "%~d0%~p0%~n0" %*
+TEXT
       end
 
-      install bin_cmd_file, "#{dest_file}.cmd", :mode => 0755
+      install bin_cmd_file, "#{dest_file}.bat", :mode => 0755
     ensure
       rm bin_cmd_file
     end
@@ -137,7 +144,7 @@ abort "#{deprecation_message}"
 
   next unless Gem.win_platform?
 
-  File.open "#{old_bin_path}.cmd", 'w' do |fp|
+  File.open "#{old_bin_path}.bat", 'w' do |fp|
     fp.puts %{@ECHO.#{deprecation_message}}
   end
 end

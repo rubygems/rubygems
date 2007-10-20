@@ -85,19 +85,22 @@ class Gem::SourceInfoCache
         end
       end
       @cache_data
-    rescue => ex
-      if Gem.configuration.really_verbose
+    rescue => e
+      if Gem.configuration.really_verbose then
         say "Exception during cache_data handling: #{ex.class} - #{ex}"
         say "Cache file was: #{cache_file}"
-        say ex.backtrace.join("\n")
+        say "\t#{e.backtrace.join "\n\t"}"
       end
       reset_cache_data
     end
   end
 
   def reset_cache_for(url)
+    say "Reseting cache for #{url}" if Gem.configuration.really_verbose
+
     sice = Gem::SourceInfoCacheEntry.new Gem::SourceIndex.new, 0
     sice.refresh url # HACK may be unnecessary, see ::cache and #refresh
+
     @cache_data[url] = sice
     @cache_data
   end

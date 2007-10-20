@@ -110,8 +110,8 @@ module Gem
       def do_rubygems_update(version_string)
         args = []
         args.push '--prefix', Gem.prefix unless Gem.prefix.nil?
-        args << '--no-rdoc' unless options[:rdoc]
-        args << '--no-ri' unless options[:ri]
+        args << '--no-rdoc' unless options[:generate_rdoc]
+        args << '--no-ri' unless options[:generate_ri]
 
         update_dir = File.join(Gem.dir, 'gems',
                                "rubygems-update-#{version_string}")

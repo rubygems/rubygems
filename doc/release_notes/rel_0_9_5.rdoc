@@ -11,10 +11,13 @@ Major New Features Include:
 * Bulk update threshold can be specified (-B, --bulk-threshold)
 * New `gem fetch` command
 * `gem` now has "really verbose" output when you specify -v
+* Improved stubs and `gem.bat` on mswin, including better compatiblity
+  with the One-Click Installer.
 
 Other Changes Include:
 
 * Time::today is deprecated and will be removed at a future date
+* Gem::manage_gems is deprecated and will be removed at a future date
 * `gem install --include-dependencies` (-y) is now deprecated since it is the
   default, use --ignore-dependencies to turn off automatic dependency
   installation
@@ -47,11 +50,7 @@ Other Changes Include:
 * Gem indexer no longer removes quick index during index creation
 * Kernel#require only rescues a LoadError for the file being required now
 * `gem dependencies` can now display some information for remote gems
-
-Notes:
-
-* Old gem scripts (gem_mirror, gem_server, gemlock, gemri, gemwhich,
-  index_gem_repository.rb) are not cleaned up
+* Updating RubyGems now works with RUBYOPT=-rubygems
 
 Special thanks to:
 

@@ -95,7 +95,7 @@ class Gem::Uninstaller
         gemspec.executables.each do |exe_name|
           say "Removing #{exe_name}"
           File.unlink File.join(Gem.bindir, exe_name) rescue nil
-          File.unlink File.join(Gem.bindir, exe_name + ".cmd") rescue nil
+          File.unlink File.join(Gem.bindir, exe_name + ".bat") rescue nil
         end
       end
     end

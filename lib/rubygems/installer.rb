@@ -180,7 +180,7 @@ class Gem::Installer
   end
 
   ##
-  # Creates windows .cmd files for easy running of commands
+  # Creates windows .bat files for easy running of commands
   #
   def generate_windows_script(bindir, filename)
     if Gem.win_platform? then

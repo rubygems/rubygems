@@ -1,3 +1,8 @@
+2007-10-20	Daniel Berger	<djberg96@gmail.com>
+
+	* lib/rubygems/uninstaller.rb: Changed '.cmd' to '.bat' in the
+	remove_executables method for MS Windows. Patch from Luis Lavena.
+
 2007-10-18  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/rubygems_version.rb: 0.9.4.6 beta.

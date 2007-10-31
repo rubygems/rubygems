@@ -452,6 +452,22 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal %w[a-1 b-1], inst.gems_to_install.map { |s| s.full_name }
   end
 
+  def test_gather_dependencies_dropped
+    b2, = util_gem 'b', '2'
+    c1, = util_gem 'c', '1' do |s| s.add_dependency 'b' end
+
+    si = util_setup_source_info_cache @a1, @b1, b2, c1
+
+    @fetcher = FakeFetcher.new
+    Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
+    @fetcher.uri = URI.parse 'http://gems.example.com'
+    @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
+
+    inst = Gem::DependencyInstaller.new 'c'
+
+    assert_equal %w[b-2 c-1], inst.gems_to_install.map { |s| s.full_name }
+  end
+
   def test_gather_dependencies_platform_alternate
     util_set_arch 'cpu-my_platform1'
 
@@ -467,20 +483,19 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal %w[y-1 z-1], inst.gems_to_install.map { |s| s.full_name }
   end
 
-  def test_gather_dependencies_dropped
-    b2, = util_gem 'b', '2'
-    c1, = util_gem 'c', '1' do |s| s.add_dependency 'b' end
+  def test_gather_dependencies_old_required
+    e1, = util_gem 'e', '1' do |s| s.add_dependency 'd', '= 1' end
 
-    si = util_setup_source_info_cache @a1, @b1, b2, c1
+    si = util_setup_source_info_cache @d1, @d2, e1
 
     @fetcher = FakeFetcher.new
     Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
     @fetcher.uri = URI.parse 'http://gems.example.com'
     @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
 
-    inst = Gem::DependencyInstaller.new 'c'
+    inst = Gem::DependencyInstaller.new 'e'
 
-    assert_equal %w[b-2 c-1], inst.gems_to_install.map { |s| s.full_name }
+    assert_equal %w[d-1 e-1], inst.gems_to_install.map { |s| s.full_name }
   end
 
   def util_gem(name, version, &block)

@@ -402,11 +402,11 @@ end
     @a0_0_1.platform = Gem::Platform.new ['universal', 'darwin', nil]
     assert_equal 'a-0.0.1-universal-darwin', @a0_0_1.full_name
 
-    @a0_0_1.instance_variable_set :@platform, 'mswin32'
+    @a0_0_1.instance_variable_set :@new_platform, 'mswin32'
     assert_equal 'a-0.0.1-mswin32', @a0_0_1.full_name, 'legacy'
 
     return if win_platform?
-    
+
     @a0_0_1.platform = 'current'
     assert_equal 'a-0.0.1-x86-darwin-8', @a0_0_1.full_name
   end
@@ -567,7 +567,40 @@ end
   end
 
   def test_to_ruby_fancy
+    @a0_0_1.platform = Gem::Platform::PPC_DARWIN
     ruby_code = @a0_0_1.to_ruby
+
+    expected = "Gem::Specification.new do |s|
+  s.name = %q{a}
+  s.version = \"0.0.1\"
+
+  s.specification_version = 2 if s.respond_to? :specification_version=
+
+  s.required_rubygems_version = Gem::Requirement.new(\">= 0\") if s.respond_to? :required_rubygems_version=
+  s.authors = [\"A User\"]
+  s.date = %q{2007-10-30}
+  s.default_executable = %q{exec}
+  s.description = %q{This is a test description}
+  s.email = %q{example@example.com}
+  s.executables = [\"exec\"]
+  s.extensions = [\"ext/a/extconf.rb\"]
+  s.files = [\"lib/code.rb\", \"test/suite.rb\", \"bin/exec\", \"ext/a/extconf.rb\"]
+  s.has_rdoc = %q{true}
+  s.homepage = %q{http://example.com}
+  s.platform = Gem::Platform.new([\"ppc\", \"darwin\", nil])
+  s.require_paths = [\"lib\"]
+  s.requirements = [\"A working computer\"]
+  s.rubygems_version = %q{0.9.4.6}
+  s.summary = %q{this is a summary}
+  s.test_files = [\"test/suite.rb\"]
+
+  s.add_dependency(%q<rake>, [\"> 0.4\"])
+  s.add_dependency(%q<jabber4r>, [\"> 0.0.0\"])
+  s.add_dependency(%q<pqa>, [\"> 0.4\", \"<= 0.6\"])
+end
+"
+
+    assert_equal expected, ruby_code
 
     same_spec = eval ruby_code
 
@@ -585,6 +618,17 @@ end
   def test_to_yaml
     yaml_str = @a0_0_1.to_yaml
     same_spec = YAML.load(yaml_str)
+
+    assert_equal @a0_0_1, same_spec
+  end
+
+  def test_to_yaml_fancy
+    @a0_0_1.platform = Gem::Platform::PPC_DARWIN
+    yaml_str = @a0_0_1.to_yaml
+
+    same_spec = YAML.load(yaml_str)
+
+    assert_equal Gem::Platform::PPC_DARWIN, same_spec.platform
 
     assert_equal @a0_0_1, same_spec
   end

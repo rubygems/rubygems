@@ -25,6 +25,15 @@ class Gem::Platform
     end
   end
 
+  def self.new(arch) # :nodoc:
+    case arch
+    when Gem::Platform::RUBY, nil then
+      Gem::Platform::RUBY
+    else
+      super
+    end
+  end
+
   def initialize(arch)
     case arch
     when Array then

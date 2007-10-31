@@ -243,7 +243,7 @@ module Gem
         @summary,
         @required_ruby_version,
         @required_rubygems_version,
-        @platform,
+        @new_platform,
         @dependencies,
         @rubyforge_project,
         @email,
@@ -277,8 +277,9 @@ module Gem
       spec.instance_variable_set :@summary,                   array[5]
       spec.instance_variable_set :@required_ruby_version,     array[6]
       spec.instance_variable_set :@required_rubygems_version, array[7]
-      spec.instance_variable_set :@platform,                  array[8]
+      spec.instance_variable_set :@new_platform,              array[8]
       spec.instance_variable_set :@original_platform,         array[8]
+      spec.instance_variable_set :@platform,                  array[8].to_s
       spec.instance_variable_set :@dependencies,              array[9]
       spec.instance_variable_set :@rubyforge_project,         array[10]
       spec.instance_variable_set :@email,                     array[11]
@@ -367,28 +368,36 @@ module Gem
       @version = Version.create(version)
     end
 
+    overwrite_accessor :platform do
+      @new_platform
+    end
+
     overwrite_accessor :platform= do |platform|
       @original_platform = platform
 
       case platform
-      when Platform::CURRENT then
-        @platform = Gem::Platform.local
+      when Gem::Platform::CURRENT then
+        @new_platform = Gem::Platform.local
 
       when Gem::Platform then
-        @platform = platform
+        @new_platform = platform
 
       # legacy constants
-      when nil, Platform::RUBY then
-        @platform = Gem::Platform::RUBY
-      when Platform::WIN32 then
-        @platform = Gem::Platform::MSWIN32
-      when Platform::LINUX_586 then
-        @platform = Gem::Platform::X86_LINUX
-      when Platform::DARWIN then
-        @platform = Gem::Platform::PPC_DARWIN
+      when nil, Gem::Platform::RUBY then
+        @new_platform = Gem::Platform::RUBY
+      when Gem::Platform::WIN32 then
+        @new_platform = Gem::Platform::MSWIN32
+      when Gem::Platform::LINUX_586 then
+        @new_platform = Gem::Platform::X86_LINUX
+      when Gem::Platform::DARWIN then
+        @new_platform = Gem::Platform::PPC_DARWIN
       else
-        @platform = platform
+        @new_platform = platform
       end
+
+      @platform = @new_platform.to_s
+
+      @new_platform
     end
 
     overwrite_accessor :required_ruby_version= do |value|
@@ -513,6 +522,7 @@ module Gem
     # Specification.list), and yields itself for further initialization.
     #
     def initialize
+      @new_platform = nil
       assign_defaults
       @loaded = false
       @@list << self
@@ -540,6 +550,9 @@ module Gem
 
         instance_variable_set name, value
       end
+
+      # HACK
+      instance_variable_set :@new_platform, Gem::Platform::RUBY
     end
 
     # Special loader for YAML files.  When a Specification object is
@@ -679,7 +692,7 @@ module Gem
     # Comparison methods ---------------------------------------------
 
     def sort_obj
-      [@name, @version.to_ints, @platform == Gem::Platform::RUBY ? -1 : 1]
+      [@name, @version.to_ints, @new_platform == Gem::Platform::RUBY ? -1 : 1]
     end
 
     def <=>(other) # :nodoc:
@@ -716,6 +729,14 @@ module Gem
     def to_yaml_properties
       mark_version
       @@attributes.map { |name, default| "@#{name}" }
+    end
+
+    def yaml_initialize(tag, vals)
+      vals.each do |ivar, val|
+        instance_variable_set "@#{ivar}", val
+      end
+
+      self.platform = Gem::Platform.new @platform
     end
 
     # Returns a Ruby code representation of this specification, such that it

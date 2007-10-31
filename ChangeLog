@@ -1,3 +1,9 @@
+2007-10-30  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb: Don't re-use @platform to maintain
+	backwards compatibility.
+	* lib/rubygems/platform.rb: Handle nil and 'ruby' platforms in ::new.
+
 2007-10-20	Daniel Berger	<djberg96@gmail.com>
 
 	* lib/rubygems/uninstaller.rb: Changed '.cmd' to '.bat' in the

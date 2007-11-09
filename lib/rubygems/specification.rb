@@ -328,6 +328,10 @@ module Gem
     array_attribute :rdoc_options
     array_attribute :extra_rdoc_files
     array_attribute :executables
+
+    # Array of extensions to build.  See Gem::Installer#build_extensions for
+    # valid values.
+
     array_attribute :extensions
     array_attribute :requirements
     array_attribute :dependencies

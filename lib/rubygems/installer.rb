@@ -317,6 +317,8 @@ GOTO :EOF
 TEXT
   end
 
+  # Builds extensions.  Valid types of extensions are extconf.rb files,
+  # configure scripts and rakefiles or mkrf_conf files.
   def build_extensions
     return if @spec.extensions.empty?
     say "Building native extensions.  This could take a while..."

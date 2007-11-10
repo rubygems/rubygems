@@ -321,9 +321,7 @@ end
 
 desc "Install RubyGems"
 task :install do
-  ruby 'setup.rb config'
-  ruby 'setup.rb setup'
-  ruby 'setup.rb install'
+  ruby 'setup.rb'
 end
 
 # Run 'gem' (using local bin and lib directories).

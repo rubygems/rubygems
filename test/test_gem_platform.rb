@@ -100,6 +100,15 @@ class TestGemPlatform < RubyGemTestCase
     Config::CONFIG['RUBY_SO_NAME'] = orig_RUBY_SO_NAME
   end
 
+  def test_initialize_platform
+    platform = Gem::Platform.new 'cpu-my_platform1'
+    expected = Gem::Platform.new platform
+
+    assert_equal 'cpu', platform.cpu
+    assert_equal 'my_platform', platform.os
+    assert_equal '1', platform.version
+  end
+
   def test_initialize_test
     platform = Gem::Platform.new 'cpu-my_platform1'
     assert_equal 'cpu', platform.cpu

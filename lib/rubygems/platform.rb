@@ -79,6 +79,10 @@ class Gem::Platform
                       when /^(\w+_platform)(\d+)/ then [ $1,          $2  ]
                       else                             [ 'unknown',   nil ]
                       end
+    when Gem::Platform then
+      @cpu = arch.cpu
+      @os = arch.os
+      @version = arch.version
     else
       raise ArgumentError, "invalid argument #{arch.inspect}"
     end

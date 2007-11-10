@@ -2,6 +2,8 @@
 
 	* lib/rubygems/specification.rb: Set #original_platform only once.
 	* lib/rubygems/indexer.rb: Handle legacy platforms.
+	* lib/rubygems/platform.rb: Gem::Platform is a valid argument.  Bug
+	#15511 submitted by Daniel Berger.
 
 2007-10-30  Eric Hodel  <drbrain@segment7.net>
 

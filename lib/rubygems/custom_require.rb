@@ -26,7 +26,7 @@ module Kernel
   def require(path) # :nodoc:
     gem_original_require path
   rescue LoadError => load_error
-    if load_error.message == "no such file to load -- #{path}" and
+    if load_error.message =~ /\A[Nn]o such file to load -- #{Regexp.escape path}\z/ and
        spec = Gem.searcher.find(path) then
       Gem.activate(spec.name, false, "= #{spec.version}")
       gem_original_require path

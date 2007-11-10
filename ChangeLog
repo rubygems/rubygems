@@ -4,6 +4,8 @@
 	* lib/rubygems/indexer.rb: Handle legacy platforms.
 	* lib/rubygems/platform.rb: Gem::Platform is a valid argument.  Bug
 	#15511 submitted by Daniel Berger.
+	* lib/rubygems/custom_require.rb: Fix compatibility with 1.8.2.  Bug
+	#14933 submitted by Aaron Patterson.
 
 2007-10-30  Eric Hodel  <drbrain@segment7.net>
 

@@ -1,3 +1,8 @@
+2007-11-09  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb: Set #original_platform only once.
+	* lib/rubygems/indexer.rb: Handle legacy platforms.
+
 2007-10-30  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb: Don't re-use @platform to maintain

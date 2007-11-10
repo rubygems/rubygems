@@ -377,7 +377,7 @@ module Gem
     end
 
     overwrite_accessor :platform= do |platform|
-      @original_platform = platform
+      @original_platform = platform if @original_platform.nil?
 
       case platform
       when Gem::Platform::CURRENT then
@@ -740,6 +740,7 @@ module Gem
         instance_variable_set "@#{ivar}", val
       end
 
+      @original_platform = @platform # for backwards compatibility
       self.platform = Gem::Platform.new @platform
     end
 

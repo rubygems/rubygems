@@ -578,7 +578,7 @@ end
 
   s.required_rubygems_version = Gem::Requirement.new(\">= 0\") if s.respond_to? :required_rubygems_version=
   s.authors = [\"A User\"]
-  s.date = %q{2007-10-30}
+  s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
   s.default_executable = %q{exec}
   s.description = %q{This is a test description}
   s.email = %q{example@example.com}
@@ -631,6 +631,17 @@ end
     assert_equal Gem::Platform::PPC_DARWIN, same_spec.platform
 
     assert_equal @a0_0_1, same_spec
+  end
+
+  def test_to_yaml_legacy_platform
+    @a0_0_1.platform = 'powerpc-darwin7.9.0'
+
+    yaml_str = @a0_0_1.to_yaml
+
+    same_spec = YAML.load(yaml_str)
+
+    assert_equal Gem::Platform.new('powerpc-darwin7'), same_spec.platform
+    assert_equal 'powerpc-darwin7.9.0', same_spec.original_platform
   end
 
   def test_validate

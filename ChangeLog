@@ -6,6 +6,10 @@
 	#15511 submitted by Daniel Berger.
 	* lib/rubygems/custom_require.rb: Fix compatibility with 1.8.2.  Bug
 	#14933 submitted by Aaron Patterson.
+	* lib/rubygems/command.rb: Now '-V' enables verbose.  Bug #14951
+	submitted by Sasa Ebach.
+	* lib/rubygems/commands/check_command.rb: Change use of '-v', '-V' to
+	match above.
 
 2007-10-30  Eric Hodel  <drbrain@segment7.net>
 

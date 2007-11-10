@@ -1,13 +1,16 @@
 require 'rubygems/command'
+require 'rubygems/version_option'
 require 'rubygems/validator'
 
 class Gem::Commands::CheckCommand < Gem::Command
+
+  include Gem::VersionOption
 
   def initialize
     super 'check', 'Check installed gems',
           :verify => false, :alien => false
 
-    add_option('-v', '--verify FILE',
+    add_option(      '--verify FILE',
                'Verify gem file against its internal',
                'checksum') do |value, options|
       options[:verify] = value
@@ -22,10 +25,7 @@ class Gem::Commands::CheckCommand < Gem::Command
       options[:test] = true
     end
 
-    add_option('-V', '--version',
-               "Specify version for which to run unit tests") do |value, options|
-      options[:version] = value
-    end
+    add_version_option 'run tests for'
   end
 
   def execute

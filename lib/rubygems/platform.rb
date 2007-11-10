@@ -67,7 +67,7 @@ class Gem::Platform
                       when /darwin(\d+)?/ then         [ 'darwin',    $1  ]
                       when /freebsd(\d+)/ then         [ 'freebsd',   $1  ]
                       when /hpux(\d+)/ then            [ 'hpux',      $1  ]
-                      when /^java$/ then               [ 'java',      nil ]
+                      when /^java$/, /^jruby$/ then    [ 'java',      nil ]
                       when /^java([\d.]*)/ then        [ 'java',      $1  ]
                       when /linux/ then                [ 'linux',     $1  ]
                       when /mingw32/ then              [ 'mingw32',   nil ]

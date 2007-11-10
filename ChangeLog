@@ -10,6 +10,9 @@
 	submitted by Sasa Ebach.
 	* lib/rubygems/commands/check_command.rb: Change use of '-v', '-V' to
 	match above.
+	* lib/rubygems/package.rb: #send! is gone again.
+	* lib/rubygems.rb: Don't add custom_require for 1.9.
+	* test/*: Make compatible with 1.9 import.
 
 2007-10-30  Eric Hodel  <drbrain@segment7.net>
 

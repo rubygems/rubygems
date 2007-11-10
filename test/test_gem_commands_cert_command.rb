@@ -1,5 +1,5 @@
 require 'test/unit'
-require 'test/gemutilities'
+require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 
 require 'rubygems/commands/cert_command'
 
@@ -13,8 +13,10 @@ class TestGemCommandsCertCommand < RubyGemTestCase
 
     @cmd = Gem::Commands::CertCommand.new
 
-    FileUtils.cp File.join('test', 'data', 'gem-private_key.pem'), @tempdir
-    FileUtils.cp File.join('test', 'data', 'gem-public_cert.pem'), @tempdir
+    root = File.expand_path(File.dirname(__FILE__))
+
+    FileUtils.cp File.join(root, 'data', 'gem-private_key.pem'), @tempdir
+    FileUtils.cp File.join(root, 'data', 'gem-public_cert.pem'), @tempdir
 
     @cert_file_name = File.join @tempdir, 'gem-public_cert.pem'
     @pkey_file_name = File.join @tempdir, 'gem-private_key.pem'

@@ -6,7 +6,7 @@
 #++
 
 require 'test/unit'
-require 'test/gemutilities'
+require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'rubygems/source_info_cache'
 
 class Gem::SourceIndex

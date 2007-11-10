@@ -6,7 +6,7 @@
 #++
 
 require 'test/unit'
-require 'test/gemutilities'
+require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'webrick'
 require 'zlib'
 require 'rubygems/remote_fetcher'
@@ -267,7 +267,7 @@ gems:
 
     fetcher = Gem::RemoteFetcher.new nil
 
-    assert_equal nil, fetcher.send!(:get_proxy_from_env)
+    assert_equal nil, fetcher.send(:get_proxy_from_env)
 
   ensure
     orig_env_HTTP_PROXY.nil? ? ENV.delete('HTTP_PROXY') :

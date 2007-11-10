@@ -706,11 +706,7 @@ module Gem::Package
 
             TarWriter.new(os) do |inner_tar_stream|
               klass = class << inner_tar_stream; self end
-              if RUBY_VERSION >= "1.9" then
-                klass.send!(:define_method, :metadata=, &set_meta)
-              else
-                klass.send(:define_method, :metadata=, &set_meta)
-              end
+              klass.send(:define_method, :metadata=, &set_meta)
               block.call inner_tar_stream
             end
           ensure

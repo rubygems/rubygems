@@ -1,5 +1,6 @@
 require 'test/unit'
-require 'test/gemutilities'
+require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
+require 'rubygems/indexer'
 require 'rubygems/commands/generate_index_command'
 
 class TestGemCommandsGenerateIndexCommand < RubyGemTestCase
@@ -27,5 +28,5 @@ class TestGemCommandsGenerateIndexCommand < RubyGemTestCase
     assert File.exist?(quick_index_rz), quick_index_rz
   end
 
-end
+end if ''.respond_to? :to_xs
 

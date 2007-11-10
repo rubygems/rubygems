@@ -1,4 +1,4 @@
-require 'test/gemutilities'
+require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'test/unit'
 require 'rubygems/platform'
 require 'rbconfig'

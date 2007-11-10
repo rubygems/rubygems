@@ -14,15 +14,7 @@ require 'uri'
 require 'rubygems/gem_open_uri'
 require 'rubygems/source_info_cache'
 
-require 'test/mockgemui'
-
-if RUBY_VERSION < "1.9" then
-  class Object
-    def send!(*args, &block)
-      send(*args, &block)
-    end
-  end
-end
+require File.join(File.expand_path(File.dirname(__FILE__)), 'mockgemui')
 
 module Gem
   def self.source_index=(si)

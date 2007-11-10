@@ -7,7 +7,7 @@
 
 
 require 'test/unit'
-require 'test/gemutilities'
+require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'rubygems/dependency_list'
 
 class TestGemDependencyList < RubyGemTestCase
@@ -43,10 +43,10 @@ class TestGemDependencyList < RubyGemTestCase
   end
 
   def test_active_count
-    assert_equal 0, @deplist.send!(:active_count, [], {})
-    assert_equal 1, @deplist.send!(:active_count, [@a1], {})
-    assert_equal 0, @deplist.send!(:active_count, [@a1],
-                                   { @a1.full_name => true })
+    assert_equal 0, @deplist.send(:active_count, [], {})
+    assert_equal 1, @deplist.send(:active_count, [@a1], {})
+    assert_equal 0, @deplist.send(:active_count, [@a1],
+                                  { @a1.full_name => true })
   end
 
   def test_add

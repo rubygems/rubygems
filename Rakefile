@@ -367,3 +367,10 @@ task :rubyfiles do
 end
 
 task :rf => :rubyfiles
+
+task :update_19 do
+  options = "-avP --exclude '*svn*' --exclude '*swp'"
+  sh "rsync #{options} lib/ ../../ruby/trunk/lib"
+  sh "rsync #{options} test/ ../../ruby/trunk/test/rubygems"
+end
+

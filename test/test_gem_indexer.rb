@@ -5,8 +5,13 @@
 #++
 
 require 'test/unit'
-require 'test/gemutilities'
+require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
+
 require 'rubygems/indexer'
+
+unless ''.respond_to? :to_xs then
+  warn "Gem::Indexer tests are being skipped.  Install builder gem."
+end
 
 class TestGemIndexer < RubyGemTestCase
 
@@ -86,13 +91,13 @@ Generating master indexes (this may take a while)
     dump_index = Marshal.load dump_str
 
     dump_index.each do |_,gem|
-      gem.send! :remove_instance_variable, :@loaded
-      gem.send! :remove_instance_variable, :@original_platform
+      gem.send :remove_instance_variable, :@loaded
+      gem.send :remove_instance_variable, :@original_platform
     end
 
     assert_equal yaml_index, dump_index,
                  "expected YAML and Marshal to produce identical results"
   end
 
-end
+end if ''.respond_to? :to_xs
 

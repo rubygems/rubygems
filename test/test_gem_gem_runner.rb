@@ -1,5 +1,5 @@
 require 'test/unit'
-require 'test/gemutilities'
+require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'rubygems/gem_runner'
 
 class TestGemGemRunner < RubyGemTestCase
@@ -24,7 +24,7 @@ class TestGemGemRunner < RubyGemTestCase
     end
 
     gr = Gem::GemRunner.new
-    gr.send! :do_configuration, %W[--config-file #{temp_conf}]
+    gr.send :do_configuration, %W[--config-file #{temp_conf}]
 
     assert_equal [other_gem_path, other_gem_home], Gem.path
     assert_equal %w[--commands], Gem::Command.extra_args

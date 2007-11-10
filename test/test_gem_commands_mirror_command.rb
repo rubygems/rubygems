@@ -1,5 +1,5 @@
 require 'test/unit'
-require 'test/gemutilities'
+require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'rubygems/indexer'
 require 'rubygems/commands/mirror_command'
 
@@ -52,4 +52,5 @@ class TestGemCommandsMirrorCommand < RubyGemTestCase
     Gem.instance_variable_set :@user_home, nil
   end
 
-end
+end if ''.respond_to? :to_xs
+

@@ -372,23 +372,31 @@ task :rf => :rubyfiles
 #
 #   ruby/trunk # ruby subversion HEAD checkout
 #   rubygems/trunk # RubyGems subversion HEAD checkout
+#
+# If you don't have this directory structure, set RUBY_PATH.
 
 desc "Updates Ruby HEAD with the currently checked-out copy of RubyGems."
 task :update_ruby do
+  ruby_dir = ENV['RUBY_PATH'] || '../../ruby/trunk'
+
   options = "-avP --exclude '*svn*' --exclude '*swp'"
-  sh "rsync #{options} bin/gem ../../ruby/trunk/bin/gem"
-  sh "rsync #{options} lib/ ../../ruby/trunk/lib"
-  sh "rsync #{options} test/ ../../ruby/trunk/test/rubygems"
+
+  sh "rsync #{options} bin/gem #{ruby_dir}/bin/gem"
+  sh "rsync #{options} lib/ #{ruby_dir}/lib"
+  sh "rsync #{options} test/ #{ruby_dir}/test/rubygems"
 end
 
 desc "Diffs Ruby HEAD with the currently checked-out copy of RubyGems."
 task :diff_ruby do
+  ruby_dir = ENV['RUBY_PATH'] || '../../ruby/trunk'
+
   options = "-urpN --exclude '*svn*' --exclude '*swp'"
-  sh "diff #{options} bin/gem ../../ruby/trunk/bin/gem; true"
-  sh "diff #{options} lib/ubygems.rb ../../ruby/trunk/lib/ubygems.rb; true"
-  sh "diff #{options} lib/rubygems.rb ../../ruby/trunk/lib/rubygems.rb; true"
-  sh "diff #{options} lib/rubygems ../../ruby/trunk/lib/rubygems; true"
-  sh "diff #{options} lib/rbconfig ../../ruby/trunk/lib/rbconfig; true"
-  sh "diff #{options} test ../../ruby/trunk/test/rubygems; true"
+
+  sh "diff #{options} bin/gem #{ruby_dir}/bin/gem; true"
+  sh "diff #{options} lib/ubygems.rb #{ruby_dir}/lib/ubygems.rb; true"
+  sh "diff #{options} lib/rubygems.rb #{ruby_dir}/lib/rubygems.rb; true"
+  sh "diff #{options} lib/rubygems #{ruby_dir}/lib/rubygems; true"
+  sh "diff #{options} lib/rbconfig #{ruby_dir}/lib/rbconfig; true"
+  sh "diff #{options} test #{ruby_dir}/test/rubygems; true"
 end
 

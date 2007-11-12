@@ -243,7 +243,7 @@ module Gem
         @summary,
         @required_ruby_version,
         @required_rubygems_version,
-        @new_platform,
+        @original_platform,
         @dependencies,
         @rubyforge_project,
         @email,
@@ -377,7 +377,10 @@ module Gem
     end
 
     overwrite_accessor :platform= do |platform|
-      @original_platform = platform if @original_platform.nil?
+      if @original_platform.nil? or
+         @original_platform == Gem::Platform::RUBY then
+        @original_platform = platform
+      end
 
       case platform
       when Gem::Platform::CURRENT then
@@ -754,6 +757,9 @@ module Gem
 
       result << "  s.name = #{ruby_code name}"
       result << "  s.version = #{ruby_code version}"
+      unless platform.nil? or platform == Gem::Platform::RUBY then
+        result << "  s.platform = #{ruby_code original_platform}"
+      end
       result << ""
       result << "  s.specification_version = #{specification_version} if s.respond_to? :specification_version="
       result << ""
@@ -762,6 +768,7 @@ module Gem
       handled = [
         :dependencies,
         :name,
+        :platform,
         :required_rubygems_version,
         :specification_version,
         :version,

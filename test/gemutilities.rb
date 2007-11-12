@@ -39,7 +39,7 @@ class FakeFetcher
     @paths << path
     raise ArgumentError, 'need full URI' unless path =~ %r'^http://'
     data = @data[path]
-    raise OpenURI::HTTPError.new("no data for #{path}", nil) if data.nil?
+    raise Gem::RemoteFetcher::FetchError, "no data for #{path}" if data.nil?
     data.respond_to?(:call) ? data.call : data
   end
 
@@ -48,7 +48,7 @@ class FakeFetcher
     @paths << path
     raise ArgumentError, 'need full URI' unless path =~ %r'^http://'
     data = @data[path]
-    raise OpenURI::HTTPError.new("no data for #{path}", nil) if data.nil?
+    raise Gem::RemoteFetcher::FetchError, "no data for #{path}" if data.nil?
     data.respond_to?(:call) ? data.call : data.length
   end
 

@@ -196,6 +196,17 @@ end
     assert_equal "1.3.5", spec.version.to_s
   end
 
+  def test__dump
+    @a0_0_2.platform = Gem::Platform.local
+    @a0_0_2.instance_variable_set :@original_platform, 'old_platform'
+
+    data = Marshal.dump @a0_0_2
+
+    same_spec = Marshal.load data
+
+    assert_equal 'old_platform', same_spec.original_platform
+  end
+
   def test_author
     assert_equal 'A User', @a0_0_1.author
   end
@@ -573,6 +584,7 @@ end
     expected = "Gem::Specification.new do |s|
   s.name = %q{a}
   s.version = \"0.0.1\"
+  s.platform = Gem::Platform.new([\"ppc\", \"darwin\", nil])
 
   s.specification_version = 2 if s.respond_to? :specification_version=
 
@@ -587,7 +599,6 @@ end
   s.files = [\"lib/code.rb\", \"test/suite.rb\", \"bin/exec\", \"ext/a/extconf.rb\"]
   s.has_rdoc = %q{true}
   s.homepage = %q{http://example.com}
-  s.platform = Gem::Platform.new([\"ppc\", \"darwin\", nil])
   s.require_paths = [\"lib\"]
   s.requirements = [\"A working computer\"]
   s.rubygems_version = %q{0.9.4.6}
@@ -613,6 +624,17 @@ end
     gemspec2 = eval ruby_code
 
     assert_equal gemspec1, gemspec2
+  end
+
+  def test_to_ruby_platform
+    @a0_0_2.platform = Gem::Platform.local
+    @a0_0_2.instance_variable_set :@original_platform, 'old_platform'
+
+    ruby_code = @a0_0_2.to_ruby
+
+    same_spec = eval ruby_code
+
+    assert_equal 'old_platform', same_spec.original_platform
   end
 
   def test_to_yaml

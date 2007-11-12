@@ -1,6 +1,10 @@
 2007-11-11  Eric Hodel  <drbrain@segment7.net>
 
 	* Rakefile: Tasks for maintaining ruby trunk export of RubyGems.
+	* lib/rubygems/specification.rb: Preserve original platform across
+	serialization.
+	* lib/rubygems/dependency_installer.rb: Retry with original platform
+	name on fetch error.
 
 2007-11-09  Eric Hodel  <drbrain@segment7.net>
 

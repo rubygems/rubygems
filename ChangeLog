@@ -1,3 +1,7 @@
+2007-11-11  Eric Hodel  <drbrain@segment7.net>
+
+	* Rakefile: Tasks for maintaining ruby trunk export of RubyGems.
+
 2007-11-09  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb: Set #original_platform only once.

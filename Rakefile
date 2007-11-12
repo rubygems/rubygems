@@ -368,9 +368,27 @@ end
 
 task :rf => :rubyfiles
 
-task :update_19 do
+# These tasks expect to have the following directory structure:
+#
+#   ruby/trunk # ruby subversion HEAD checkout
+#   rubygems/trunk # RubyGems subversion HEAD checkout
+
+desc "Updates Ruby HEAD with the currently checked-out copy of RubyGems."
+task :update_ruby do
   options = "-avP --exclude '*svn*' --exclude '*swp'"
+  sh "rsync #{options} bin/gem ../../ruby/trunk/bin/gem"
   sh "rsync #{options} lib/ ../../ruby/trunk/lib"
   sh "rsync #{options} test/ ../../ruby/trunk/test/rubygems"
+end
+
+desc "Diffs Ruby HEAD with the currently checked-out copy of RubyGems."
+task :diff_ruby do
+  options = "-urpN --exclude '*svn*' --exclude '*swp'"
+  sh "diff #{options} bin/gem ../../ruby/trunk/bin/gem; true"
+  sh "diff #{options} lib/ubygems.rb ../../ruby/trunk/lib/ubygems.rb; true"
+  sh "diff #{options} lib/rubygems.rb ../../ruby/trunk/lib/rubygems.rb; true"
+  sh "diff #{options} lib/rubygems ../../ruby/trunk/lib/rubygems; true"
+  sh "diff #{options} lib/rbconfig ../../ruby/trunk/lib/rbconfig; true"
+  sh "diff #{options} test ../../ruby/trunk/test/rubygems; true"
 end
 

@@ -10,7 +10,7 @@ class TestGem < RubyGemTestCase
     super
 
     @additional = %w[a b].map { |d| File.join @tempdir, d }
-    @default_dir_re = %r|/ruby/gems/[0-9.]+|
+    @default_dir_re = %r|/[Rr]uby/[Gg]ems/[0-9.]+|
   end
 
   def test_self_all_load_paths
@@ -34,8 +34,9 @@ class TestGem < RubyGemTestCase
 
   def test_self_bindir_default_dir
     default = Gem.default_dir
-    assert_equal Config::CONFIG['bindir'], Gem.bindir(default)
-    assert_equal Config::CONFIG['bindir'], Gem.bindir(Pathname.new(default))
+    bindir = (defined? RUBY_FRAMEWORK_VERSION) ? '/usr/bin' : Config::CONFIG['bindir']    
+    assert_equal bindir, Gem.bindir(default)
+    assert_equal bindir, Gem.bindir(Pathname.new(default))
   end
 
   def test_self_clear_paths
@@ -196,12 +197,14 @@ class TestGem < RubyGemTestCase
 
   def test_self_path_ENV_PATH
     Gem.clear_paths
+    path_count = Gem.path.size
+    Gem.clear_paths
     util_ensure_gem_dirs
 
     ENV['GEM_PATH'] = @additional.join(File::PATH_SEPARATOR)
 
     assert_equal @additional, Gem.path[0,2]
-    assert_equal 3, Gem.path.size
+    assert_equal path_count + @additional.size, Gem.path.size
     assert_match Gem.dir, Gem.path.last
   end
 
@@ -214,7 +217,9 @@ class TestGem < RubyGemTestCase
     ENV['GEM_PATH'] = dirs.join File::PATH_SEPARATOR
 
     assert_equal @gemhome, Gem.dir
-    assert_equal @additional + [Gem.dir], Gem.path
+    paths = [Gem.dir]
+    paths << APPLE_GEM_HOME if defined? APPLE_GEM_HOME
+    assert_equal @additional + paths, Gem.path
   end
 
   def test_self_path_overlap
@@ -225,7 +230,9 @@ class TestGem < RubyGemTestCase
     ENV['GEM_PATH'] = @additional.join(File::PATH_SEPARATOR)
 
     assert_equal @gemhome, Gem.dir
-    assert_equal @additional + [Gem.dir], Gem.path
+    paths = [Gem.dir]
+    paths.insert(0, APPLE_GEM_HOME) if defined? APPLE_GEM_HOME
+    assert_equal @additional + paths, Gem.path
   end
 
   def test_self_platforms

@@ -138,7 +138,14 @@ module Gem
   ##
   # An Array of Regexps that match windows ruby platforms.
 
-  WIN_PATTERNS = [/mswin/i, /mingw/i, /bccwin/i, /wince/i]
+  WIN_PATTERNS = [
+    /bccwin/i,
+    /cygwin/i,
+    /djgpp/i,
+    /mingw/i,
+    /mswin/i,
+    /wince/i,
+  ]
 
   ##
   # Is this a windows platform?

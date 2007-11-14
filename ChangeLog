@@ -1,5 +1,6 @@
 2007-11-13  Eric Hodel  <drbrain@segment7.net>
 
+	* lib/rubygems/rubygems_version.rb: 0.9.4.7 beta.
 	* lib/rubygems.rb: Patch for RUBY_FRAMEWORK for OS X 10.5.  Patch
 	submitted by Laurent Sansonetti.
 	* lib/rubygems.rb: cygwin, djgpp, mingw are Windows platforms.  Fixes

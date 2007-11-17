@@ -526,8 +526,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
     util_build_gem spec
 
-    cache_file = File.join @tempdir, 'gems', "#{spec.full_name}.gem"
-    FileUtils.mv File.join(@gemhome, 'cache', "#{spec.full_name}.gem"),
+    cache_file = File.join @tempdir, 'gems', "#{spec.original_name}.gem"
+    FileUtils.mv File.join(@gemhome, 'cache', "#{spec.original_name}.gem"),
                  cache_file
     FileUtils.rm File.join(@gemhome, 'specifications',
                            "#{spec.full_name}.gemspec")

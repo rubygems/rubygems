@@ -1,3 +1,13 @@
+2007-11-16  Eric Hodel  <drbrain@segment7.net>
+
+	* test/gemutilities: Add a legacy platform gem to the default test
+	gems list.
+	* lib/rubygems/specification.rb: Add Gem::Specification#original_name
+	for legacy purposes
+	* lib/rubygems/indexer.rb: Use #original_name to make the indexer
+	backwards compatible.
+	* lib/rubygems/master_index_builder.rb: Reduce memory consumption.
+
 2007-11-13  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/rubygems_version.rb: 0.9.4.7 beta.

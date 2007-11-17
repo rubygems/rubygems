@@ -456,6 +456,14 @@ end
     assert_equal 'a', @a0_0_1.name
   end
 
+  def test_original_name
+    assert_equal 'a-0.0.1', @a0_0_1.full_name
+
+    @a0_0_1.platform = 'i386-linux'
+    @a0_0_1.instance_variable_set :@original_platform, 'i386-linux'
+    assert_equal 'a-0.0.1-i386-linux', @a0_0_1.original_name
+  end
+
   def test_platform
     assert_equal Gem::Platform::RUBY, @a0_0_1.platform
   end
@@ -601,7 +609,7 @@ end
   s.homepage = %q{http://example.com}
   s.require_paths = [\"lib\"]
   s.requirements = [\"A working computer\"]
-  s.rubygems_version = %q{0.9.4.6}
+  s.rubygems_version = %q{#{Gem::RubyGemsVersion}}
   s.summary = %q{this is a summary}
   s.test_files = [\"test/suite.rb\"]
 
@@ -657,6 +665,7 @@ end
 
   def test_to_yaml_legacy_platform
     @a0_0_1.platform = 'powerpc-darwin7.9.0'
+    @a0_0_1.instance_variable_set :@original_platform, 'powerpc-darwin7.9.0'
 
     yaml_str = @a0_0_1.to_yaml
 

@@ -17,10 +17,11 @@ class TestGem < RubyGemTestCase
     util_make_gems
 
     expected = [
-      File.join(@tempdir, *%w[gemhome gems a-0.0.1 lib]),
-      File.join(@tempdir, *%w[gemhome gems a-0.0.2 lib]),
-      File.join(@tempdir, *%w[gemhome gems b-0.0.2 lib]),
-      File.join(@tempdir, *%w[gemhome gems c-1.2 lib]),
+      File.join(@gemhome, *%W[gems #{@a0_0_1.full_name} lib]),
+      File.join(@gemhome, *%W[gems #{@a0_0_2.full_name} lib]),
+      File.join(@gemhome, *%W[gems #{@b0_0_2.full_name} lib]),
+      File.join(@gemhome, *%W[gems #{@c1_2.full_name} lib]),
+      File.join(@gemhome, *%W[gems #{@pl1.full_name} lib]),
     ]
 
     assert_equal expected, Gem.all_load_paths.sort
@@ -173,9 +174,10 @@ class TestGem < RubyGemTestCase
     util_make_gems
 
     expected = [
-      File.join(@tempdir, *%w[gemhome gems a-0.0.2 lib]),
-      File.join(@tempdir, *%w[gemhome gems b-0.0.2 lib]),
-      File.join(@tempdir, *%w[gemhome gems c-1.2 lib]),
+      File.join(@gemhome, *%W[gems #{@a0_0_2.full_name} lib]),
+      File.join(@gemhome, *%W[gems #{@b0_0_2.full_name} lib]),
+      File.join(@gemhome, *%W[gems #{@c1_2.full_name} lib]),
+      File.join(@gemhome, *%W[gems #{@pl1.full_name} lib]),
     ]
 
     assert_equal expected, Gem.latest_load_paths.sort

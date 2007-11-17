@@ -132,7 +132,6 @@ class Gem::DependencyInstaller
 
           gem = Gem::RemoteFetcher.fetcher.fetch_path remote_gem_path
         rescue Gem::RemoteFetcher::FetchError
-          p spec.original_platform => spec.platform
           raise if spec.original_platform == spec.platform
 
           alternate_name = "#{spec.name}-#{spec.version}-#{spec.original_platform}.gem"

@@ -1,3 +1,7 @@
+2007-11-19  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/rubygems_version.rb: 0.9.5.
+
 2007-11-16  Eric Hodel  <drbrain@segment7.net>
 
 	* test/gemutilities: Add a legacy platform gem to the default test

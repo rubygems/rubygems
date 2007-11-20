@@ -8,7 +8,7 @@
 at_exit { $SAFE = 1 }
 
 require 'fileutils'
-require 'test/unit/testcase'
+require 'test/unit'
 require 'tmpdir'
 require 'uri'
 require 'rubygems/gem_open_uri'
@@ -58,7 +58,7 @@ class RubyGemTestCase < Test::Unit::TestCase
 
   include Gem::DefaultUserInteraction
 
-  undef_method :default_test
+  undef_method :default_test if respond_to? :default_test
 
   def setup
     super

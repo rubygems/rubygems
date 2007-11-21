@@ -63,6 +63,7 @@ class TestGemPlatform < RubyGemTestCase
       'i386-openbsd4.0'        => ['x86',       'openbsd',   '4.0'],
       'i386-solaris2.10'       => ['x86',       'solaris',   '2.10'],
       'i386-solaris2.8'        => ['x86',       'solaris',   '2.8'],
+      'mswin32'                => ['x86',       'mswin32',   nil],
       'x86_64-linux'           => ['x86_64',    'linux',     nil],
       'x86_64-openbsd3.9'      => ['x86_64',    'openbsd',   '3.9'],
       'x86_64-openbsd4.0'      => ['x86_64',    'openbsd',   '4.0'],

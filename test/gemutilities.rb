@@ -58,7 +58,8 @@ class RubyGemTestCase < Test::Unit::TestCase
 
   include Gem::DefaultUserInteraction
 
-  undef_method :default_test if respond_to? :default_test
+  undef_method :default_test if instance_methods.include? 'default_test' or
+                                instance_methods.include? :default_test
 
   def setup
     super

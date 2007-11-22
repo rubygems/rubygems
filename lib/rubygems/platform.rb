@@ -27,6 +27,8 @@ class Gem::Platform
 
   def self.new(arch) # :nodoc:
     case arch
+    when Gem::Platform::CURRENT then
+      Gem::Platform.local
     when Gem::Platform::RUBY, nil, '' then
       Gem::Platform::RUBY
     else

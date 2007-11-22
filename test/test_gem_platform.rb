@@ -19,6 +19,7 @@ class TestGemPlatform < RubyGemTestCase
   end
 
   def test_self_new
+    assert_equal Gem::Platform.local, Gem::Platform.new(Gem::Platform::CURRENT)
     assert_equal Gem::Platform::RUBY, Gem::Platform.new(Gem::Platform::RUBY)
     assert_equal Gem::Platform::RUBY, Gem::Platform.new(nil)
     assert_equal Gem::Platform::RUBY, Gem::Platform.new('')

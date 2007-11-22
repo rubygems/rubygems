@@ -1,3 +1,9 @@
+2007-11-21  Daniel Berger <djberg96@gmail.com>
+
+   * lib/rubygems/platform.rb: Gem::Platform.new now returns
+   Gem::Platform.local if the arch matches Gem::Platform::CURRENT. 
+   Bugs #15815 and #15782 submitted by Daniel Berger.
+
 2007-11-20  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/platform.rb: Handle bare 'mswin32' platform's CPU.

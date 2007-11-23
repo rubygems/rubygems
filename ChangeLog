@@ -1,3 +1,18 @@
+2007-11-23  Rich Kilmer <rich@infoether.com>
+
+  * lib/rubygems.rb: Centralize all CONFIG options into Hash
+  Gem::ConfigMap with keys as symbols, change all references
+  to CONFIG to ConfigMap
+  * lib/rubygems/require_paths_builder.rb: Added to support 
+  building .require_paths file
+  * lib/rubygems/installer.rb: Add building of .require_paths if
+  needed
+  * lib/rubygems/platform.rb: Use new ConfigMap hash for arch
+  * lib/rubygems
+  * util/gem_prelude.rb: new gem prelude for Ruby 1.9
+  * test/test_gem_installer.rb: change to use ConfigMap hash
+  * test/gemutilities.rb: change to use ConfigMap hash
+  
 2007-11-21  Daniel Berger <djberg96@gmail.com>
 
    * lib/rubygems/platform.rb: Gem::Platform.new now returns

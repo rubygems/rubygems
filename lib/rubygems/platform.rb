@@ -13,7 +13,7 @@ class Gem::Platform
   attr_accessor :version
 
   def self.local
-    arch = Config::CONFIG['arch']
+    arch = Gem::ConfigMap[:arch]
     arch = "#{arch}_60" if arch =~ /mswin32$/
     @local ||= new(arch)
   end

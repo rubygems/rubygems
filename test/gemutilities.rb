@@ -85,7 +85,7 @@ class RubyGemTestCase < Test::Unit::TestCase
     @gem_repo = "http://gems.example.com"
     Gem.sources.replace [@gem_repo]
 
-    @orig_arch = Config::CONFIG['arch']
+    @orig_arch = Gem::ConfigMap[:arch]
 
     if win_platform?
       util_set_arch 'i386-mswin32'
@@ -97,7 +97,7 @@ class RubyGemTestCase < Test::Unit::TestCase
   end
 
   def teardown
-    Config::CONFIG['arch'] = @orig_arch
+    Gem::ConfigMap[:arch] = @orig_arch
 
     if defined? Gem::RemoteFetcher then
       Gem::RemoteFetcher.instance_variable_set :@fetcher, nil
@@ -229,7 +229,7 @@ class RubyGemTestCase < Test::Unit::TestCase
   # Set the platform to +cpu+ and +os+
 
   def util_set_arch(arch)
-    Config::CONFIG['arch'] = arch
+    Gem::ConfigMap[:arch] = arch
     platform = Gem::Platform.new arch
 
     Gem.instance_variable_set :@platforms, nil

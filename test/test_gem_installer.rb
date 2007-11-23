@@ -417,8 +417,8 @@ load 'my_exec'
   end
 
   def test_generate_bin_symlinks_win32
-    old_arch = Config::CONFIG["arch"]
-    Config::CONFIG["arch"] = "win32"
+    old_arch = Gem::ConfigMap[:arch]
+    Gem::ConfigMap[:arch] = "win32"
     @installer.wrappers = false
     util_make_exec
     @installer.gem_dir = util_gem_dir

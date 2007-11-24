@@ -240,8 +240,8 @@ class Gem::Installer
   # the symlink if the gem being installed has a newer version.
   #
   def generate_bin_symlink(filename, bindir)
-    if Gem::ConfigMap[:arch] =~ /dos|win32/i then
-      alert_warning "Unable to use symlinks on win32, installing wrapper"
+    if Gem.win_platform? then
+      alert_warning "Unable to use symlinks on Windows, installing wrapper"
       generate_bin_script filename, bindir
       return
     end

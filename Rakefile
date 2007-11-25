@@ -384,13 +384,14 @@ task :update_ruby do
   sh "rsync #{options} bin/gem #{ruby_dir}/bin/gem"
   sh "rsync #{options} lib/ #{ruby_dir}/lib"
   sh "rsync #{options} test/ #{ruby_dir}/test/rubygems"
+  sh "rsync #{options} util/gem_prelude.rb #{ruby_dir}/gem_prelude.rb"
 end
 
 desc "Diffs Ruby HEAD with the currently checked-out copy of RubyGems."
 task :diff_ruby do
   ruby_dir = ENV['RUBY_PATH'] || '../../ruby/trunk'
 
-  options = "-urpN --exclude '*svn*' --exclude '*swp'"
+  options = "-urpN --exclude '*svn*' --exclude '*swp' --exclude '*rbc'"
 
   sh "diff #{options} bin/gem #{ruby_dir}/bin/gem; true"
   sh "diff #{options} lib/ubygems.rb #{ruby_dir}/lib/ubygems.rb; true"
@@ -398,5 +399,6 @@ task :diff_ruby do
   sh "diff #{options} lib/rubygems #{ruby_dir}/lib/rubygems; true"
   sh "diff #{options} lib/rbconfig #{ruby_dir}/lib/rbconfig; true"
   sh "diff #{options} test #{ruby_dir}/test/rubygems; true"
+  sh "diff #{options} util/gem_prelude.rb #{ruby_dir}/gem_prelude.rb; true"
 end
 

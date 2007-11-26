@@ -55,6 +55,11 @@ class TestGemVersion < RubyGemTestCase
     assert_inadequate( "1.0.0.1",     "= 1.0")
   end
 
+  def test_bump_trailing_zeros
+    v = Gem::Version.new("5.0.0")
+    assert_equal "5.1", v.bump.to_s
+  end
+
   def test_bump
     v = Gem::Version.new("5.2.4")
     assert_equal "5.3", v.bump.to_s

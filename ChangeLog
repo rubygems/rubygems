@@ -1,3 +1,8 @@
+2007-11-26  Rich Kilmer <rich@infoether.com>
+
+  * lib/rubygems/version.rb: Fix bug 15948 with version bump
+  * test/test_gem_version.rb: Test for bug 15948 with version bump
+
 2007-11-23  Rich Kilmer <rich@infoether.com>
 
   * lib/rubygems.rb: Centralize all CONFIG options into Hash

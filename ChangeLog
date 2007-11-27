@@ -2,6 +2,8 @@
 
   * lib/rubygems/version.rb: Fix bug 15948 with version bump
   * test/test_gem_version.rb: Test for bug 15948 with version bump
+  * util/gem_prelude.rb: wrap init code with exception handler
+  and skip badly formed directory names
 
 2007-11-23  Rich Kilmer <rich@infoether.com>
 

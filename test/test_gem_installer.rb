@@ -9,8 +9,9 @@ require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'rubygems/installer'
 
 class Gem::Installer
+  attr_accessor :gem_dir
+
   attr_writer :format
-  attr_writer :gem_dir
   attr_writer :gem_home
   attr_writer :env_shebang
   attr_writer :ignore_dependencies
@@ -454,6 +455,19 @@ load 'my_exec'
     assert_match(/#{default_shebang}/, shebang_line)
   end
 
+  def test_initialize
+    spec = quick_gem 'a' do |s| s.platform = Gem::Platform.new 'mswin32' end
+    gem = File.join @tempdir, "#{spec.full_name}.gem"
+
+    util_build_gem spec
+    FileUtils.mv File.join(@gemhome, 'cache', "#{spec.full_name}.gem"),
+                 @tempdir
+
+    installer = Gem::Installer.new gem
+
+    assert_equal File.join(@gemhome, 'gems', spec.full_name), installer.gem_dir
+  end
+
   def test_install
     util_setup_gem
 
@@ -789,5 +803,4 @@ load 'my_exec'
   end
 
 end
-
 

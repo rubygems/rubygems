@@ -801,13 +801,14 @@ module Gem
         :version,
       ]
 
-      attributes = @@attributes.sort_by { |name,| name.to_s }
+      attributes = @@attributes.sort_by { |attr_name,| attr_name.to_s }
 
-      attributes.each do |name, default|
-        next if handled.include? name
-        current_value = self.send(name)
-        if current_value != default or self.class.required_attribute? name then
-          result << "  s.#{name} = #{ruby_code current_value}"
+      attributes.each do |attr_name, default|
+        next if handled.include? attr_name
+        current_value = self.send(attr_name)
+        if current_value != default or
+           self.class.required_attribute? attr_name then
+          result << "  s.#{attr_name} = #{ruby_code current_value}"
         end
       end
 

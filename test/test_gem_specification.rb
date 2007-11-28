@@ -407,6 +407,16 @@ end
     assert_kind_of Integer, @a0_0_1.hash
   end
 
+  def test_full_gem_path
+    assert_equal File.join(@gemhome, 'gems', @a0_0_1.full_name),
+                 @a0_0_1.full_gem_path
+
+    @a0_0_1.original_platform = 'mswin32'
+
+    assert_equal File.join(@gemhome, 'gems', @a0_0_1.original_name),
+                 @a0_0_1.full_gem_path
+  end
+
   def test_full_name
     assert_equal 'a-0.0.1', @a0_0_1.full_name
 

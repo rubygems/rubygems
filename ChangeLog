@@ -1,3 +1,10 @@
+2007-11-27  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_index.rb: Remove dependency on forwadable.
+	Patch by Koichi Sasada.
+	* lib/rubygems/specification.rb: Reduce dependency on time.rb.  Patch
+	by Koichi Sasada.
+
 2007-11-26  Rich Kilmer <rich@infoether.com>
 
   * lib/rubygems/version.rb: Fix bug 15948 with version bump

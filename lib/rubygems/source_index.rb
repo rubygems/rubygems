@@ -4,8 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'forwardable'
-
 require 'rubygems'
 require 'rubygems/user_interaction'
 require 'rubygems/specification'
@@ -23,7 +21,6 @@ module Gem
   #        YAMLized source index objects to load properly.
   #
   class SourceIndex
-    extend Forwardable
 
     include Enumerable
 
@@ -186,7 +183,10 @@ module Gem
       Gem::SHA256.new.hexdigest(@gems[gem_full_name].to_yaml).to_s
     end
 
-    def_delegators :@gems, :size, :length
+    def size
+      @gems.size
+    end
+    alias length size
 
     # Find a gem by an exact match on the short name.
     def find_name(gem_name, version_requirement = Gem::Requirement.default)

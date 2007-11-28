@@ -4,17 +4,18 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'time'
 require 'rubygems'
 require 'rubygems/version'
 require 'rubygems/platform'
 
 # :stopdoc:
 # Time::today has been deprecated in 0.9.5 and will be removed.
-def Time.today
-  t = Time.now
-  t - ((t.to_i + t.gmt_offset) % 86400)
-end unless defined? Time.today
+if RUBY_VERSION < '1.9' then
+  def Time.today
+    t = Time.now
+    t - ((t.to_i + t.gmt_offset) % 86400)
+  end unless defined? Time.today
+end
 # :startdoc:
 
 module Gem
@@ -239,7 +240,7 @@ module Gem
         @specification_version,
         @name,
         @version,
-        (Time === @date ? @date : Time.parse(@date.to_s)),
+        (Time === @date ? @date : (require 'time'; Time.parse(@date.to_s))),
         @summary,
         @required_ruby_version,
         @required_rubygems_version,
@@ -422,11 +423,16 @@ module Gem
       # way to do it.
       case date
       when String then
-        @date = Time.parse date
+        @date = if /\A(\d{4})-(\d{2})-(\d{2})\Z/ =~ date then
+                  Time.local($1.to_i, $2.to_i, $3.to_i)
+                else
+                  require 'time'
+                  Time.parse date
+                end
       when Time then
-        @date = Time.parse date.strftime("%Y-%m-%d")
+        @date = Time.local(date.year, date.month, date.day)
       when Date then
-        @date = Time.parse date.to_s
+        @date = Time.local(date.year, date.month, date.day)
       else
         @date = TODAY
       end

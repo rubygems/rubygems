@@ -16,7 +16,7 @@ class Gem::RemoteFetcher
 
   # Cached RemoteFetcher instance.
   def self.fetcher
-    @fetcher ||= new Gem.configuration[:http_proxy]
+    @fetcher ||= self.new Gem.configuration[:http_proxy]
   end
 
   # Initialize a remote fetcher using the source URI and possible proxy

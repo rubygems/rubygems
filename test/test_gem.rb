@@ -2,6 +2,7 @@ require 'test/unit'
 require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'rubygems'
 require 'rubygems/gem_openssl'
+require 'rubygems/installer'
 require 'pathname'
 
 class TestGem < RubyGemTestCase

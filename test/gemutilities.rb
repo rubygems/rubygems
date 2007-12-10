@@ -166,6 +166,7 @@ class RubyGemTestCase < Test::Unit::TestCase
       s.has_rdoc = true
       s.summary = "this is a summary"
       s.description = "This is a test description"
+
       yield(s) if block_given?
     end
 

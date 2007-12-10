@@ -142,7 +142,8 @@ module Gem::Package
     end
 
     def calculate_checksum(hdr)
-      hdr.unpack("C*").inject{|a,b| a+b}
+      hdr.split('').map { |c| c[0] }.inject { |a, b| a + b } # HACK rubinius
+      #hdr.unpack("C*").inject{|a,b| a+b}
     end
 
     def header(chksum)
@@ -379,7 +380,7 @@ module Gem::Package
       end
 
       alias_method :is_directory, :is_directory?
-      alias_method :is_file, :is_file
+      alias_method :is_file, :is_file?
 
       def bytes_read
         @read

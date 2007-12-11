@@ -2,6 +2,8 @@
 
 	* lib/rubygems/validator.rb:  Correct test run failures when no tests
 	are provided.  Patch #15701 by Jérémy Zurcher.
+	* lib/rubygems/commands/mirror_command.rb:  Don't File.join a
+	URI::HTTP.  Patch #16116 by Morgan Nelson.
 
 2007-12-10  Eric Hodel  <drbrain@segment7.net>
 

@@ -1,3 +1,8 @@
+2007-12-11  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/validator.rb:  Correct test run failures when no tests
+	are provided.  Patch #15701 by Jérémy Zurcher.
+
 2007-12-10  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/dependency_installer.rb:  Revert to nil for the default

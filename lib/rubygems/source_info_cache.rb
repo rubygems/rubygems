@@ -217,7 +217,7 @@ class Gem::SourceInfoCache
     unless File.exist? dir then
       begin
         FileUtils.mkdir_p(dir)
-      rescue RuntimeError
+      rescue RuntimeError, SystemCallError
         return nil
       end
     end

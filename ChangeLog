@@ -1,3 +1,8 @@
+2007-12-10  Eric Hodel  <drbrain<segment7.net>
+
+	* lib/rubygems/dependency_installer.rb:  Revert to nil for the default
+	security policy to avoid requiring OpenSSL.
+
 2007-11-27  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/source_index.rb: Remove dependency on forwadable.
@@ -7,31 +12,31 @@
 
 2007-11-26  Rich Kilmer <rich@infoether.com>
 
-  * lib/rubygems/version.rb: Fix bug 15948 with version bump
-  * test/test_gem_version.rb: Test for bug 15948 with version bump
-  * util/gem_prelude.rb: wrap init code with exception handler
-  and skip badly formed directory names
+	* lib/rubygems/version.rb: Fix bug 15948 with version bump
+	* test/test_gem_version.rb: Test for bug 15948 with version bump
+	* util/gem_prelude.rb: wrap init code with exception handler
+	and skip badly formed directory names
 
 2007-11-23  Rich Kilmer <rich@infoether.com>
 
-  * lib/rubygems.rb: Centralize all CONFIG options into Hash
-  Gem::ConfigMap with keys as symbols, change all references
-  to CONFIG to ConfigMap
-  * lib/rubygems/require_paths_builder.rb: Added to support 
-  building .require_paths file
-  * lib/rubygems/installer.rb: Add building of .require_paths if
-  needed
-  * lib/rubygems/platform.rb: Use new ConfigMap hash for arch
-  * lib/rubygems
-  * util/gem_prelude.rb: new gem prelude for Ruby 1.9
-  * test/test_gem_installer.rb: change to use ConfigMap hash
-  * test/gemutilities.rb: change to use ConfigMap hash
-  
+	* lib/rubygems.rb: Centralize all CONFIG options into Hash
+	Gem::ConfigMap with keys as symbols, change all references
+	to CONFIG to ConfigMap
+	* lib/rubygems/require_paths_builder.rb: Added to support 
+	building .require_paths file
+	* lib/rubygems/installer.rb: Add building of .require_paths if
+	needed
+	* lib/rubygems/platform.rb: Use new ConfigMap hash for arch
+	* lib/rubygems
+	* util/gem_prelude.rb: new gem prelude for Ruby 1.9
+	* test/test_gem_installer.rb: change to use ConfigMap hash
+	* test/gemutilities.rb: change to use ConfigMap hash
+
 2007-11-21  Daniel Berger <djberg96@gmail.com>
 
-   * lib/rubygems/platform.rb: Gem::Platform.new now returns
-   Gem::Platform.local if the arch matches Gem::Platform::CURRENT. 
-   Bugs #15815 and #15782 submitted by Daniel Berger.
+	* lib/rubygems/platform.rb: Gem::Platform.new now returns
+	Gem::Platform.local if the arch matches Gem::Platform::CURRENT.
+	Bugs #15815 and #15782 submitted by Daniel Berger.
 
 2007-11-20  Eric Hodel  <drbrain@segment7.net>
 

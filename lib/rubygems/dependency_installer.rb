@@ -16,7 +16,7 @@ class Gem::DependencyInstaller
     :domain => :both, # HACK dup
     :force => false,
     :ignore_dependencies => false,
-    :security_policy => Gem::Security::NoSecurity, # HACK AlmostNo? Low?
+    :security_policy => nil, # HACK NoSecurity requires OpenSSL.  AlmostNo? Low?
     :wrappers => true
   }
 

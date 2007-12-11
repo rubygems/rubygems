@@ -4,6 +4,8 @@
 	are provided.  Patch #15701 by Jérémy Zurcher.
 	* lib/rubygems/commands/mirror_command.rb:  Don't File.join a
 	URI::HTTP.  Patch #16116 by Morgan Nelson.
+	* lib/rubygems/commands/unpack_command.rb:  Add --target option to
+	`gem unpack`.  Patch #16154 by Kevin Barnes.
 
 2007-12-10  Eric Hodel  <drbrain@segment7.net>
 

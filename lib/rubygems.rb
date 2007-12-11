@@ -6,6 +6,7 @@
 #++
 
 require 'rubygems/rubygems_version'
+require 'rubygems/defaults'
 require 'thread'
 
 module Gem
@@ -207,10 +208,6 @@ module Gem
       @sources
     end
 
-    # An Array of the default sources that come with RubyGems.
-    def default_sources
-      %w[http://gems.rubyforge.org]
-    end
 
     # Provide an alias for the old name.
     alias cache source_index

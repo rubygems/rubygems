@@ -1,7 +1,9 @@
-2007-12-10  Eric Hodel  <drbrain<segment7.net>
+2007-12-10  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/dependency_installer.rb:  Revert to nil for the default
 	security policy to avoid requiring OpenSSL.
+	* lib/rubygems/defaults.rb: Consolidate defaults for easier editing.
+	Patch #15150 by Donavan Pantke.
 
 2007-11-27  Eric Hodel  <drbrain@segment7.net>
 

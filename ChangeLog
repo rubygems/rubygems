@@ -4,6 +4,8 @@
 	Chad Woolley.
 	* lib/rubygems/server.rb:  Fix Marshal quick index.  Bug by Chad
 	Woolley.
+	* lib/rubygems/installer.rb: Respect Gem::Specification#bindir.  Bug
+	#16202 by Suraj Kurapati.
 
 2007-12-12  Eric Hodel  <drbrain@segment7.net>
 

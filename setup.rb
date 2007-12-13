@@ -18,6 +18,22 @@ end
 $:.unshift 'lib'
 require 'rubygems'
 
+unless ARGV.include? '--help' then
+  puts "ruby setup.rb [options]:"
+  puts
+  puts "  --prefix=DIR         Prefix path for installing RubyGems"
+  puts "                       Will not affect gem repository"
+  puts
+  puts "  --format-executable  Make the gem command's prefix and suffix match ruby's"
+  puts "                       If ruby is installed as ruby19, gem will be gem19"
+  puts
+  puts "  --no-rdoc            Don't build RDoc for RubyGems"
+  puts
+  puts "  --no-ri              Don't build ri for RubyGems"
+
+  exit
+end
+
 require 'fileutils'
 require 'rbconfig'
 require 'rdoc/rdoc'
@@ -77,7 +93,7 @@ Dir.chdir 'bin' do
   bin_files = Dir['*']
 
   bin_files.each do |bin_file|
-    bin_file_formatted = if ARGV.grep(/^--format-executable/).empty? then
+    bin_file_formatted = if ARGV.include? '--format-executable' then
                            bin_file
                          else
                            Gem.default_exec_format % bin_file

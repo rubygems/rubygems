@@ -5,7 +5,8 @@
 	#14688 by Jeremy Kemper.  Also, installing in really-verbose mode
 	prints out written files.
 	* setup.rb:  Add --format-executable option to install gem with ruby's
-	program-suffix and prefix.
+	program-suffix and prefix.  Add --help.  Fixes bug #16056 by Chad
+	Woolley.
 	* lib/rubygems/uninstaller.rb:  Fallback to original_platform_name
 	correctly.  Patch #15960 by Nicola Piccinini's friend.
 

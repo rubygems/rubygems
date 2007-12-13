@@ -21,6 +21,12 @@ module Gem
     default_dir
   end
 
+  # Deduce Ruby's --program-prefix and --program-suffix from its install name.
+  def self.default_exec_format
+    baseruby = Config::CONFIG['BASERUBY'] || 'ruby'
+    Config::CONFIG['RUBY_INSTALL_NAME'].sub(baseruby, '%s') rescue '%s'
+  end
+
   # The default directory for binaries
   def self.default_bindir
     Config::CONFIG['bindir']

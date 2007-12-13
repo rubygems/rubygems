@@ -90,6 +90,42 @@ class TestGem < RubyGemTestCase
     assert_match @default_dir_re, Gem.default_dir
   end
 
+  def test_self_default_exec_format
+    orig_BASERUBY = Config::CONFIG['BASERUBY']
+    orig_RUBY_INSTALL_NAME = Config::CONFIG['RUBY_INSTALL_NAME']
+    Config::CONFIG['BASERUBY'] = 'ruby'
+    Config::CONFIG['RUBY_INSTALL_NAME'] = 'ruby'
+
+    assert_equal '%s', Gem.default_exec_format
+  ensure
+    Config::CONFIG['BASERUBY'] = orig_BASERUBY
+    Config::CONFIG['RUBY_INSTALL_NAME'] = orig_RUBY_INSTALL_NAME
+  end
+
+  def test_self_default_exec_format
+    orig_BASERUBY = Config::CONFIG['BASERUBY']
+    orig_RUBY_INSTALL_NAME = Config::CONFIG['RUBY_INSTALL_NAME']
+    Config::CONFIG['BASERUBY'] = 'ruby'
+    Config::CONFIG['RUBY_INSTALL_NAME'] = 'ruby18'
+
+    assert_equal '%s18', Gem.default_exec_format
+  ensure
+    Config::CONFIG['BASERUBY'] = orig_BASERUBY
+    Config::CONFIG['RUBY_INSTALL_NAME'] = orig_RUBY_INSTALL_NAME
+  end
+
+  def test_self_default_exec_format
+    orig_BASERUBY = Config::CONFIG['BASERUBY']
+    orig_RUBY_INSTALL_NAME = Config::CONFIG['RUBY_INSTALL_NAME']
+    Config::CONFIG['BASERUBY'] = 'ruby'
+    Config::CONFIG['RUBY_INSTALL_NAME'] = 'jruby'
+
+    assert_equal 'j%s', Gem.default_exec_format
+  ensure
+    Config::CONFIG['BASERUBY'] = orig_BASERUBY
+    Config::CONFIG['RUBY_INSTALL_NAME'] = orig_RUBY_INSTALL_NAME
+  end
+
   def test_self_default_sources
     assert_equal %w[http://gems.rubyforge.org], Gem.default_sources
   end

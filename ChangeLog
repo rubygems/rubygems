@@ -6,6 +6,12 @@
 	URI::HTTP.  Patch #16116 by Morgan Nelson.
 	* lib/rubygems/commands/unpack_command.rb:  Add --target option to
 	`gem unpack`.  Patch #16154 by Kevin Barnes.
+	* lib/rubygems/installer.rb:  Add --format-executable option to
+	install executables with ruby's program-suffix and prefix.  Patch
+	#14688 by Jeremy Kemper.  Also, installing in really-verbose mode
+	prints out written files.
+	* setup.rb:  Add --format-executable option to install gem with ruby's
+	program-suffix and prefix.
 
 2007-12-10  Eric Hodel  <drbrain@segment7.net>
 

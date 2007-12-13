@@ -1,3 +1,10 @@
+2007-12-13  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/server_command.rb:  Fix --no-daemon.  Bug by
+	Chad Woolley.
+	* lib/rubygems/server.rb:  Fix Marshal quick index.  Bug by Chad
+	Woolley.
+
 2007-12-12  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb:  Add --format-executable option to

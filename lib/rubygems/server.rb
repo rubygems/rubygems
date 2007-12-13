@@ -368,13 +368,13 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     when '/quick/index.rz' then
       index = @source_index.map { |name,_| name }.join("\n")
       res.body << Zlib::Deflate.deflate(index)
-    when %r|^/quick/(.*)-([0-9.]+)\.gemspec(\.marshal)?\.rz$| then
-      specs = @source_index.search $1, $2
+    when %r|^/quick/(Marshal.#{Regexp.escape Gem.marshal_version}/)?(.*)-([0-9.]+)(-.*?)?\.gemspec\.rz$| then
+      specs = @source_index.search $2, $3
       if specs.empty? then
         res.status = 404
       elsif specs.length > 1 then
         res.status = 500
-      elsif $3 # marshal quickindex instead of YAML
+      elsif $1 # marshal quickindex instead of YAML
         res.body << Zlib::Deflate.deflate(Marshal.dump(specs.first))
       else # deprecated YAML format
         res.body << Zlib::Deflate.deflate(specs.first.to_yaml)

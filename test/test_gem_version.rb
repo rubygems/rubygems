@@ -70,6 +70,16 @@ class TestGemVersion < RubyGemTestCase
     assert_equal "6", v.bump.to_s
   end
 
+  def test_eql_eh
+    v = Gem::Version.new("1.2")
+
+    assert_equal true, v.eql?(@v1_2)
+    assert_equal true, @v1_2.eql?(v)
+
+    assert_equal false, @v1_2.eql?(@v1_3)
+    assert_equal false, @v1_3.eql?(@v1_2)
+  end
+
   def test_equals2
     v = Gem::Version.new("1.2")
 

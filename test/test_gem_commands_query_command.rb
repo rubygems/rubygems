@@ -10,13 +10,17 @@ class TestGemCommandsQueryCommand < RubyGemTestCase
     @foo_gem = quick_gem 'foo' do |spec|
       spec.summary = 'This is a lot of text.  ' * 5
     end
+    @foo_gem_p = quick_gem 'foo' do |spec|
+      spec.summary = 'This is a lot of text.  ' * 5
+      spec.platform = Gem::Platform::CURRENT
+    end
     @bar_gem = quick_gem 'bar'
 
     @cmd = Gem::Commands::QueryCommand.new
   end
 
   def test_execute
-    util_setup_source_info_cache @foo_gem
+    util_setup_source_info_cache @foo_gem, @foo_gem_p
 
     @cmd.handle_options %w[-r]
 

@@ -127,7 +127,9 @@ class Gem::Version
     @ints <=> other.ints
   end
 
-  def hash
+  alias eql? == # :nodoc:
+
+  def hash # :nodoc:
     to_ints.inject { |hash_code, n| hash_code + n }
   end
 

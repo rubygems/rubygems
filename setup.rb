@@ -18,7 +18,7 @@ end
 $:.unshift 'lib'
 require 'rubygems'
 
-unless ARGV.include? '--help' then
+if ARGV.include? '--help' then
   puts "ruby setup.rb [options]:"
   puts
   puts "  --prefix=DIR         Prefix path for installing RubyGems"

@@ -6,6 +6,8 @@
 	Woolley.
 	* lib/rubygems/installer.rb: Respect Gem::Specification#bindir.  Bug
 	#16202 by Suraj Kurapati.
+	* lib/rubygems/commands/update_command.rb: Fix `gem update mysql`.
+	Bug #16244 by Stephen Bannasch.
 
 2007-12-12  Eric Hodel  <drbrain@segment7.net>
 

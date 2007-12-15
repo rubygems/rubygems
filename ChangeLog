@@ -3,7 +3,7 @@
 	* lib/rubygems/commands/query_command.rb:  Don't display duplicate
 	version numbers.  Bug #15828 by Tim Fletcher.
 	* setup.rb:  Fix my stupidity with --help.  Patch #16308 by Stephen
-	Bannasch.
+	Bannasch.  Fix --prefix= argument.  Bug #16002 by Piglop.
 
 2007-12-13  Eric Hodel  <drbrain@segment7.net>
 

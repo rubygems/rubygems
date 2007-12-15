@@ -60,13 +60,15 @@ if ARGV.grep(/^--prefix/).empty? then
 else
   prefix = nil
 
-  ARGV.grep(/^--prefix=(.*)/)
-  if $1.nil? or $1.empty? then
+  prefix_arg = ARGV.grep(/^--prefix=/).first
+  if prefix_arg =~ /^--prefix=(.*)/ then
+    prefix = $1
+  else
     path_index = ARGV.index '--prefix'
     prefix = ARGV[path_index + 1]
-  else
-    prefix = $1
   end
+
+  prefix = File.expand_path prefix
 
   raise "invalid --prefix #{prefix.inspect}" if prefix.nil?
 

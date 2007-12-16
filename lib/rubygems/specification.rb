@@ -757,7 +757,10 @@ module Gem
         out.map taguri, to_yaml_style do |map|
           map.add 'name', @name
           map.add 'version', @version
-          platform = if String === @original_platform then
+          platform = case @original_platform
+                     when nil, '' then
+                       'ruby'
+                     when String then
                        @original_platform
                      else
                        @original_platform.to_s

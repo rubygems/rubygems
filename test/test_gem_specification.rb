@@ -673,7 +673,13 @@ end
     assert_equal @a0_0_1, same_spec
   end
 
-  def test_to_yaml_legacy_platform
+  def test_to_yaml_platform_empty_string
+    @a0_0_1.instance_variable_set :@original_platform, ''
+
+    assert_match %r|^platform: ruby$|, @a0_0_1.to_yaml
+  end
+
+  def test_to_yaml_platform_legacy
     @a0_0_1.platform = 'powerpc-darwin7.9.0'
     @a0_0_1.instance_variable_set :@original_platform, 'powerpc-darwin7.9.0'
 
@@ -683,6 +689,12 @@ end
 
     assert_equal Gem::Platform.new('powerpc-darwin7'), same_spec.platform
     assert_equal 'powerpc-darwin7.9.0', same_spec.original_platform
+  end
+
+  def test_to_yaml_platform_nil
+    @a0_0_1.instance_variable_set :@original_platform, nil
+
+    assert_match %r|^platform: ruby$|, @a0_0_1.to_yaml
   end
 
   def test_validate

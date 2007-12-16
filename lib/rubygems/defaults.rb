@@ -9,10 +9,9 @@ module Gem
   # not specified in the environment.
   def self.default_dir
     if defined? RUBY_FRAMEWORK_VERSION then
-      File.join File.dirname(Config::CONFIG['sitedir']), 'Gems'
+      File.join File.dirname(ConfigMap['sitedir']), 'Gems'
     else
-      File.join(Config::CONFIG['libdir'], 'ruby', 'gems',
-                Config::CONFIG['ruby_version'])
+      File.join ConfigMap['libdir'], 'ruby', 'gems', ConfigMap['ruby_version']
     end
   end
 
@@ -23,7 +22,7 @@ module Gem
 
   # Deduce Ruby's --program-prefix and --program-suffix from its install name.
   def self.default_exec_format
-    baseruby = Config::CONFIG['BASERUBY'] || 'ruby'
+    baseruby = ConfigMap['BASERUBY'] || 'ruby'
     Config::CONFIG['RUBY_INSTALL_NAME'].sub(baseruby, '%s') rescue '%s'
   end
 

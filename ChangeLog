@@ -1,3 +1,9 @@
+2007-12-16  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/remote_fetcher.rb:  Be more verbose in error messages
+	from OpenURI.
+	* lib/rubygems/server.rb:  Be more verbose in error/missing responses.
+
 2007-12-15  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb:  Output extension build results when

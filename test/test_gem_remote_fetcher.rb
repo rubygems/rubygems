@@ -232,6 +232,22 @@ gems:
     assert_equal 'EOFError: EOFError reading uri', e.message
   end
 
+  def test_fetch_path_open_uri_http_error
+    fetcher = Gem::RemoteFetcher.new nil
+
+    def fetcher.open_uri_or_path(uri)
+      io = StringIO.new 'went boom'
+      err = OpenURI::HTTPError.new 'error', io
+      raise err
+    end
+
+    e = assert_raise Gem::RemoteFetcher::FetchError do
+      fetcher.fetch_path 'uri'
+    end
+
+    assert_equal "OpenURI::HTTPError: error reading uri\n\twent boom", e.message
+  end
+
   def test_fetch_path_socket_error
     fetcher = Gem::RemoteFetcher.new nil
 

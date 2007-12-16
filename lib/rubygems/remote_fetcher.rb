@@ -45,8 +45,12 @@ class Gem::RemoteFetcher
     end
   rescue Timeout::Error
     raise FetchError, "timed out fetching #{uri}"
-  rescue OpenURI::HTTPError, IOError, SocketError, SystemCallError => e
+  rescue IOError, SocketError, SystemCallError => e
     raise FetchError, "#{e.class}: #{e} reading #{uri}"
+  rescue OpenURI::HTTPError => e
+    body = e.io.readlines.join "\n\t"
+    message = "#{e.class}: #{e} reading #{uri}\n\t#{body}"
+    raise FetchError, message
   end
 
   # Returns the size of +uri+ in bytes.

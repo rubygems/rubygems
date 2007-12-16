@@ -63,7 +63,7 @@ class TestGemServer < RubyGemTestCase
 
     assert_match %r| \d\d:\d\d:\d\d |, @res['date']
     assert_equal 'text/plain', @res['content-type']
-    assert_equal '', @res.body
+    assert_equal 'No gems found matching z 9', @res.body
     assert_equal 404, @res.status
   end
 

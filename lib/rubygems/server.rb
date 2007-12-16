@@ -372,15 +372,18 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       specs = @source_index.search $2, $3
       if specs.empty? then
         res.status = 404
+        res.body = "No gems found matching #{$2} #{$3}"
       elsif specs.length > 1 then
         res.status = 500
-      elsif $1 # marshal quickindex instead of YAML
+        res.body = "Multiple gems found matching #{$2} #{$3}"
+      elsif $1 then # marshal quickindex instead of YAML
         res.body << Zlib::Deflate.deflate(Marshal.dump(specs.first))
       else # deprecated YAML format
         res.body << Zlib::Deflate.deflate(specs.first.to_yaml)
       end
     else
       res.status = 404
+      res.body = "#{req.request_uri} not found"
     end
   end
 

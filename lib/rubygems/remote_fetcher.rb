@@ -79,7 +79,7 @@ class Gem::RemoteFetcher
     end
 
   rescue SocketError, SystemCallError, Timeout::Error => e
-    raise FetchError, "#{e.message} (#{e.class})"
+    raise FetchError, "#{e.message} (#{e.class})\n\tgetting size of #{uri}"
   end
 
   private

@@ -140,11 +140,12 @@ gems:
       raise SocketError
     end
 
+    uri = 'http://gems.example.com/yaml'
     e = assert_raise Gem::RemoteFetcher::FetchError do
-      fetcher.fetch_size 'http://gems.example.com/yaml'
+      fetcher.fetch_size uri
     end
 
-    assert_equal 'SocketError (SocketError)', e.message
+    assert_equal "SocketError (SocketError)\n\tgetting size of #{uri}", e.message
   end
 
   def test_no_proxy

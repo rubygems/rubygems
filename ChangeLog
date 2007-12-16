@@ -9,6 +9,8 @@
 	set.  Fixes bug #15974 by Joshua Sierles.
 	* lib/rubygems/update_command.rb:  Tweak formatting of updated
 	message.  Bug #15625 by Bil Kleb.
+	* lib/rubygems/remote_fetcher.rb:  Add URI to exception message for
+	Gem::RemoteFetcher#fetch_size.  Bug #14801 by Bil Kleb.
 
 2007-12-14  Eric Hodel  <drbrain@segment7.net>
 

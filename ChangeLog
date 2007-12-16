@@ -1,14 +1,19 @@
+2007-12-15  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/installer.rb:  Output extension build results when
+	really verbose.  From bug #15853 John Croisant.
+	* lib/rubygems/specification.rb:  Fix backwards compatibility with
+	0.9.4, don't allow the platform to be nil or an empty string.  Bug
+	#16177 by Dan Manges.
+	* setup.rb:  Re-exec setup.rb if rubygems is loaded and RUBYOPT is
+	set.  Fixes bug #15974 by Joshua Sierles.
+
 2007-12-14  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/query_command.rb:  Don't display duplicate
 	version numbers.  Bug #15828 by Tim Fletcher.
 	* setup.rb:  Fix my stupidity with --help.  Patch #16308 by Stephen
 	Bannasch.  Fix --prefix= argument.  Bug #16002 by Piglop.
-	* lib/rubygems/installer.rb:  Output extension build results when
-	really verbose.  From bug #15853 John Croisant.
-	* lib/rubygems/specification.rb:  Fix backwards compatibility with
-	0.9.4, don't allow the platform to be nil or an empty string.  Bug
-	#16177 by Dan Manges.
 
 2007-12-13  Eric Hodel  <drbrain@segment7.net>
 

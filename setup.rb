@@ -6,7 +6,7 @@
 #++
 
 # Make sure rubygems isn't already loaded.
-if ENV['RUBYOPT'] =~ /rubygems/ then
+if ENV['RUBYOPT'] and defined? Gem then
   ENV.delete 'RUBYOPT'
 
   ruby = File.join Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name']

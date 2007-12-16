@@ -5,8 +5,8 @@ module Gem
     %w[http://gems.rubyforge.org]
   end
 
-  # Default home directory path to be used if an alternate value is
-  # not specified in the environment.
+  # Default home directory path to be used if an alternate value is not
+  # specified in the environment.
   def self.default_dir
     if defined? RUBY_FRAMEWORK_VERSION then
       File.join File.dirname(ConfigMap['sitedir']), 'Gems'

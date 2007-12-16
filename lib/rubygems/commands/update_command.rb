@@ -98,10 +98,11 @@ class Gem::Commands::UpdateCommand < Gem::Command
       say "RubyGems system software updated" if installed
     else
       updated = gems_to_update.uniq.sort.collect { |g| g.to_s }
+
       if updated.empty? then
         say "Nothing to update"
       else
-        say "Gems: [#{updated.join ', '}] updated"
+        say "Gems updated: #{updated.join ', '}"
       end
     end
   end

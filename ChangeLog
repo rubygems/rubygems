@@ -4,6 +4,8 @@
 	version numbers.  Bug #15828 by Tim Fletcher.
 	* setup.rb:  Fix my stupidity with --help.  Patch #16308 by Stephen
 	Bannasch.  Fix --prefix= argument.  Bug #16002 by Piglop.
+	* lib/rubygems/installer.rb:  Output extension build results when
+	really verbose.  From bug #15853 John Croisant.
 
 2007-12-13  Eric Hodel  <drbrain@segment7.net>
 

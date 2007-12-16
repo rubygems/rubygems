@@ -377,6 +377,9 @@ TEXT
       begin
         Dir.chdir File.join(@gem_dir, File.dirname(extension))
         results = builder.build(extension, @gem_dir, dest_path, results)
+
+        say results.join("\n") if Gem.configuration.really_verbose
+
       rescue => ex
         results = results.join "\n"
 

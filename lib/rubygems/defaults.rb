@@ -9,7 +9,8 @@ module Gem
   # specified in the environment.
   def self.default_dir
     if defined? RUBY_FRAMEWORK_VERSION then
-      File.join File.dirname(ConfigMap[:sitedir]), 'Gems'
+      File.join File.dirname(ConfigMap[:sitedir]), 'Gems',
+                ConfigMap[:ruby_version]
     else
       File.join ConfigMap[:libdir], 'ruby', 'gems', ConfigMap[:ruby_version]
     end

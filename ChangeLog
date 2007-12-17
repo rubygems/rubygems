@@ -1,3 +1,8 @@
+2007-12-17  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/installer.rb:  Copy files into bindir if they don't
+	have a shebang.  Bug reported by Luis Lavena.
+
 2007-12-16  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/remote_fetcher.rb:  Be more verbose in error messages

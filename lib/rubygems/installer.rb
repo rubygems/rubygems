@@ -133,7 +133,7 @@ class Gem::Installer
     generate_bin
     build_extensions
     write_spec
-    
+
     write_require_paths_file_if_needed
 
     # HACK remove?  Isn't this done in multiple places?
@@ -252,6 +252,7 @@ class Gem::Installer
   #
   def generate_bin_script(filename, bindir)
     bin_script_path = File.join bindir, formatted_program_filename(filename)
+
     File.open bin_script_path, 'w', 0755 do |file|
       file.print app_script_text(filename)
     end

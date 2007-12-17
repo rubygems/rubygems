@@ -91,39 +91,39 @@ class TestGem < RubyGemTestCase
   end
 
   def test_self_default_exec_format
-    orig_BASERUBY = Config::CONFIG['BASERUBY']
-    orig_RUBY_INSTALL_NAME = Config::CONFIG['RUBY_INSTALL_NAME']
-    Config::CONFIG['BASERUBY'] = 'ruby'
-    Config::CONFIG['RUBY_INSTALL_NAME'] = 'ruby'
+    orig_BASERUBY = Gem::ConfigMap[:BASERUBY]
+    orig_RUBY_INSTALL_NAME = Gem::ConfigMap[:RUBY_INSTALL_NAME]
+    Gem::ConfigMap[:BASERUBY] = 'ruby'
+    Gem::ConfigMap[:RUBY_INSTALL_NAME] = 'ruby'
 
     assert_equal '%s', Gem.default_exec_format
   ensure
-    Config::CONFIG['BASERUBY'] = orig_BASERUBY
-    Config::CONFIG['RUBY_INSTALL_NAME'] = orig_RUBY_INSTALL_NAME
+    Gem::ConfigMap[:BASERUBY] = orig_BASERUBY
+    Gem::ConfigMap[:RUBY_INSTALL_NAME] = orig_RUBY_INSTALL_NAME
   end
 
-  def test_self_default_exec_format
-    orig_BASERUBY = Config::CONFIG['BASERUBY']
-    orig_RUBY_INSTALL_NAME = Config::CONFIG['RUBY_INSTALL_NAME']
-    Config::CONFIG['BASERUBY'] = 'ruby'
-    Config::CONFIG['RUBY_INSTALL_NAME'] = 'ruby18'
+  def test_self_default_exec_format_18
+    orig_BASERUBY = Gem::ConfigMap[:BASERUBY]
+    orig_RUBY_INSTALL_NAME = Gem::ConfigMap[:RUBY_INSTALL_NAME]
+    Gem::ConfigMap[:BASERUBY] = 'ruby'
+    Gem::ConfigMap[:RUBY_INSTALL_NAME] = 'ruby18'
 
     assert_equal '%s18', Gem.default_exec_format
   ensure
-    Config::CONFIG['BASERUBY'] = orig_BASERUBY
-    Config::CONFIG['RUBY_INSTALL_NAME'] = orig_RUBY_INSTALL_NAME
+    Gem::ConfigMap[:BASERUBY] = orig_BASERUBY
+    Gem::ConfigMap[:RUBY_INSTALL_NAME] = orig_RUBY_INSTALL_NAME
   end
 
-  def test_self_default_exec_format
-    orig_BASERUBY = Config::CONFIG['BASERUBY']
-    orig_RUBY_INSTALL_NAME = Config::CONFIG['RUBY_INSTALL_NAME']
-    Config::CONFIG['BASERUBY'] = 'ruby'
-    Config::CONFIG['RUBY_INSTALL_NAME'] = 'jruby'
+  def test_self_default_exec_format_jruby
+    orig_BASERUBY = Gem::ConfigMap[:BASERUBY]
+    orig_RUBY_INSTALL_NAME = Gem::ConfigMap[:RUBY_INSTALL_NAME]
+    Gem::ConfigMap[:BASERUBY] = 'ruby'
+    Gem::ConfigMap[:RUBY_INSTALL_NAME] = 'jruby'
 
     assert_equal 'j%s', Gem.default_exec_format
   ensure
-    Config::CONFIG['BASERUBY'] = orig_BASERUBY
-    Config::CONFIG['RUBY_INSTALL_NAME'] = orig_RUBY_INSTALL_NAME
+    Gem::ConfigMap[:BASERUBY] = orig_BASERUBY
+    Gem::ConfigMap[:RUBY_INSTALL_NAME] = orig_RUBY_INSTALL_NAME
   end
 
   def test_self_default_sources

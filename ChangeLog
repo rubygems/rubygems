@@ -2,6 +2,8 @@
 
 	* lib/rubygems/installer.rb:  Copy files into bindir if they don't
 	have a shebang.  Bug reported by Luis Lavena.
+	* lib/rubygems/server.rb:  Handle platforms in Gem::Server#quick.  Bug
+	reported by Chad Woolley.
 
 2007-12-16  Eric Hodel  <drbrain@segment7.net>
 

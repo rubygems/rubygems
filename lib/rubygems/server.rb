@@ -368,14 +368,25 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     when '/quick/index.rz' then
       index = @source_index.map { |name,_| name }.join("\n")
       res.body << Zlib::Deflate.deflate(index)
-    when %r|^/quick/(Marshal.#{Regexp.escape Gem.marshal_version}/)?(.*)-([0-9.]+)(-.*?)?\.gemspec\.rz$| then
+    when %r|^/quick/(Marshal.#{Regexp.escape Gem.marshal_version}/)?(.*?)-([0-9.]+)(-.*?)?\.gemspec\.rz$| then
       specs = @source_index.search $2, $3
+
+      selector = [$2, $3, $4].map { |s| s.inspect }.join ' '
+
+      platform = if $4 then
+                   Gem::Platform.new $4.sub(/^-/, '')
+                 else
+                   Gem::Platform::RUBY
+                 end
+
+      specs = specs.select { |s| s.platform == platform }
+
       if specs.empty? then
         res.status = 404
-        res.body = "No gems found matching #{$2} #{$3}"
+        res.body = "No gems found matching #{selector}"
       elsif specs.length > 1 then
         res.status = 500
-        res.body = "Multiple gems found matching #{$2} #{$3}"
+        res.body = "Multiple gems found matching #{selector}"
       elsif $1 then # marshal quickindex instead of YAML
         res.body << Zlib::Deflate.deflate(Marshal.dump(specs.first))
       else # deprecated YAML format

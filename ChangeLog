@@ -6,6 +6,8 @@
 	Exactly match gem names.  Bugs reported by Chad Woolley.
 	* lib/rubygems/platform.rb:  Remove platform constants in favor of
 	Gem::Platform::CURRENT.  Bug reported by Luis Lavena.
+	* lib/rubygems/dependency_installer.rb:  Work around Dir::glob not
+	understanding File::ALT_SEPARATOR.  Bug submitted by Luis Lavena.
 
 2007-12-16  Eric Hodel  <drbrain@segment7.net>
 

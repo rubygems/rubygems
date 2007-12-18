@@ -51,7 +51,14 @@ class Gem::DependencyInstaller
 
     spec_and_source = nil
 
-    local_gems = Dir["#{gem_name}*"].sort.reverse
+    glob = if File::ALT_SEPARATOR then
+             gem_name.gsub File::ALT_SEPARATOR, File::SEPARATOR
+           else
+             gem_name
+           end
+
+    local_gems = Dir["#{glob}*"].sort.reverse
+
     unless local_gems.empty? then
       local_gems.each do |gem_file|
         next unless gem_file =~ /gem$/

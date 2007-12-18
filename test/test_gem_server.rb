@@ -26,7 +26,7 @@ class TestGemServer < RubyGemTestCase
 
     @server.quick @req, @res
 
-    assert_equal 200, @res.status
+    assert_equal 200, @res.status, @res.body
     assert_match %r| \d\d:\d\d:\d\d |, @res['date']
     assert_equal 'text/plain', @res['content-type']
     assert_equal "a-1", @res.body
@@ -38,7 +38,7 @@ class TestGemServer < RubyGemTestCase
 
     @server.quick @req, @res
 
-    assert_equal 200, @res.status
+    assert_equal 200, @res.status, @res.body
     assert_match %r| \d\d:\d\d:\d\d |, @res['date']
     assert_equal 'text/plain', @res['content-type']
     assert_equal "a-1", Zlib::Inflate.inflate(@res.body)
@@ -50,7 +50,7 @@ class TestGemServer < RubyGemTestCase
 
     @server.quick @req, @res
 
-    assert_equal 200, @res.status
+    assert_equal 200, @res.status, @res.body
     assert @res['date']
     assert_equal 'text/plain', @res['content-type']
     yaml = Zlib::Inflate.inflate(@res.body)
@@ -69,12 +69,31 @@ class TestGemServer < RubyGemTestCase
 
     @server.quick @req, @res
 
-    assert_equal 200, @res.status
+    assert_equal 200, @res.status, @res.body
     assert @res['date']
     assert_equal 'text/plain', @res['content-type']
     yaml = Zlib::Inflate.inflate(@res.body)
     assert_match %r|Gem::Specification|, yaml
     assert_match %r|name: a|, yaml
+    assert_match %r|version: "1"|, yaml
+  end
+
+  def test_quick_common_substrings
+    ab1 = quick_gem 'ab', '1'
+    si = Gem::SourceIndex.new @a1.full_name => @a1, ab1.full_name => ab1
+    @server.source_index = si
+
+    data = StringIO.new "GET /quick/a-1.gemspec.rz HTTP/1.0\r\n\r\n"
+    @req.parse data
+
+    @server.quick @req, @res
+
+    assert_equal 200, @res.status, @res.body
+    assert @res['date']
+    assert_equal 'text/plain', @res['content-type']
+    yaml = Zlib::Inflate.inflate @res.body
+    assert_match %r|Gem::Specification|, yaml
+    assert_match %r|name: a$|, yaml
     assert_match %r|version: "1"|, yaml
   end
 
@@ -84,7 +103,7 @@ class TestGemServer < RubyGemTestCase
 
     @server.quick @req, @res
 
-    assert_equal 404, @res.status
+    assert_equal 404, @res.status, @res.body
     assert_match %r| \d\d:\d\d:\d\d |, @res['date']
     assert_equal 'text/plain', @res['content-type']
     assert_equal 'No gems found matching "z" "9" nil', @res.body

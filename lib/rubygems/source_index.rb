@@ -193,33 +193,30 @@ module Gem
       search(/^#{gem_name}$/, version_requirement)
     end
 
-    # Search for a gem by short name pattern and optional version
+    # Search for a gem by Gem::Dependency +gem_pattern+.  If +only_platform+
+    # is true, only gems matching Gem::Platform.local will be returned.  An
+    # Array of matching Gem::Specification objects is returned.
     #
-    # gem_name::
-    #   [String] a partial for the (short) name of the gem, or
-    #   [Regex] a pattern to match against the short name
-    # version_requirement::
-    #   [String | default=Gem::Requirement.default] version to
-    #   find
-    # return::
-    #   [Array] list of Gem::Specification objects in sorted (version)
-    #   order.  Empty if not found.
-    #
-    def search(gem_pattern, platform_only_or_version_req = false)
+    # For backwards compatibility, a String or Regexp pattern may be passed as
+    # +gem_pattern+, and a Gem::Requirement for +platform_only+.  This
+    # behavior is deprecated and will be removed.
+    def search(gem_pattern, platform_only = false)
       version_requirement = nil
       only_platform = false
 
-      case gem_pattern
+      case gem_pattern # TODO warn after 2008/03, remove three months after
       when Regexp then
-        version_requirement = platform_only_or_version_req ||
-                                Gem::Requirement.default
+        version_requirement = platform_only || Gem::Requirement.default
       when Gem::Dependency then
-        only_platform = platform_only_or_version_req
+        only_platform = platform_only
         version_requirement = gem_pattern.version_requirements
-        gem_pattern = gem_pattern.name.empty? ? // : /^#{gem_pattern.name}$/
+        gem_pattern = if gem_pattern.name.empty? then
+                        //
+                      else
+                        /^#{Regexp.escape gem_pattern.name}$/
+                      end
       else
-        version_requirement = platform_only_or_version_req ||
-                                Gem::Requirement.default
+        version_requirement = platform_only || Gem::Requirement.default
         gem_pattern = /#{gem_pattern}/i
       end
 

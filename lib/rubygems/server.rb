@@ -369,7 +369,8 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       index = @source_index.map { |name,_| name }.join("\n")
       res.body << Zlib::Deflate.deflate(index)
     when %r|^/quick/(Marshal.#{Regexp.escape Gem.marshal_version}/)?(.*?)-([0-9.]+)(-.*?)?\.gemspec\.rz$| then
-      specs = @source_index.search $2, $3
+      dep = Gem::Dependency.new $2, $3
+      specs = @source_index.search dep
 
       selector = [$2, $3, $4].map { |s| s.inspect }.join ' '
 

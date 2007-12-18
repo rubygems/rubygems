@@ -4,6 +4,8 @@
 	have a shebang.  Bug reported by Luis Lavena.
 	* lib/rubygems/server.rb:  Handle platforms in Gem::Server#quick.  Bug
 	reported by Chad Woolley.
+	* lib/rubygems/platform.rb:  Remove platform constants in favor of
+	Gem::Platform::CURRENT.  Bug reported by Luis Lavena.
 
 2007-12-16  Eric Hodel  <drbrain@segment7.net>
 

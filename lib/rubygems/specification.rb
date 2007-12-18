@@ -394,12 +394,12 @@ module Gem
       # legacy constants
       when nil, Gem::Platform::RUBY then
         @new_platform = Gem::Platform::RUBY
-      when Gem::Platform::WIN32 then
-        @new_platform = Gem::Platform::MSWIN32
-      when Gem::Platform::LINUX_586 then
-        @new_platform = Gem::Platform::X86_LINUX
-      when Gem::Platform::DARWIN then
-        @new_platform = Gem::Platform::PPC_DARWIN
+      when 'mswin32' then # was Gem::Platform::WIN32
+        @new_platform = Gem::Platform.new('x86-mswin32-60')
+      when 'i586-linux' then # was Gem::Platform::LINUX_586
+        @new_platform = Gem::Platform.new('x86-linux')
+      when 'powerpc-darwin' then # was Gem::Platform::DARWIN
+        @new_platform = Gem::Platform.new('ppc-darwin')
       else
         @new_platform = platform
       end

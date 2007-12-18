@@ -500,14 +500,14 @@ end
   end
 
   def test_platform_equals_legacy
-    @a0_0_1.platform = Gem::Platform::WIN32
-    assert_equal Gem::Platform::MSWIN32, @a0_0_1.platform
+    @a0_0_1.platform = 'mswin32'
+    assert_equal Gem::Platform.new('x86-mswin32-60'), @a0_0_1.platform
 
-    @a0_0_1.platform = Gem::Platform::LINUX_586
-    assert_equal Gem::Platform::X86_LINUX, @a0_0_1.platform
+    @a0_0_1.platform = 'i586-linux'
+    assert_equal Gem::Platform.new('x86-linux'), @a0_0_1.platform
 
-    @a0_0_1.platform = Gem::Platform::DARWIN
-    assert_equal Gem::Platform::PPC_DARWIN, @a0_0_1.platform
+    @a0_0_1.platform = 'powerpc-darwin'
+    assert_equal Gem::Platform.new('ppc-darwin'), @a0_0_1.platform
   end
 
   def test_require_paths
@@ -596,13 +596,16 @@ end
   end
 
   def test_to_ruby_fancy
-    @a0_0_1.platform = Gem::Platform::PPC_DARWIN
+    @a0_0_1.platform = Gem::Platform.local
     ruby_code = @a0_0_1.to_ruby
+
+    local = Gem::Platform.local
+    expected_platform = "[#{local.cpu.inspect}, #{local.os.inspect}, #{local.version.inspect}]"
 
     expected = "Gem::Specification.new do |s|
   s.name = %q{a}
   s.version = \"0.0.1\"
-  s.platform = Gem::Platform.new([\"ppc\", \"darwin\", nil])
+  s.platform = Gem::Platform.new(#{expected_platform})
 
   s.specification_version = 2 if s.respond_to? :specification_version=
 
@@ -663,12 +666,12 @@ end
   end
 
   def test_to_yaml_fancy
-    @a0_0_1.platform = Gem::Platform::PPC_DARWIN
+    @a0_0_1.platform = Gem::Platform.local
     yaml_str = @a0_0_1.to_yaml
 
     same_spec = YAML.load(yaml_str)
 
-    assert_equal Gem::Platform::PPC_DARWIN, same_spec.platform
+    assert_equal Gem::Platform.local, same_spec.platform
 
     assert_equal @a0_0_1, same_spec
   end
@@ -732,13 +735,13 @@ end
   end
 
   def test_validate_platform_legacy
-    @a0_0_1.platform = Gem::Platform::WIN32
+    @a0_0_1.platform = 'mswin32'
     assert @a0_0_1.validate
 
-    @a0_0_1.platform = Gem::Platform::LINUX_586
+    @a0_0_1.platform = 'i586-linux'
     assert @a0_0_1.validate
 
-    @a0_0_1.platform = Gem::Platform::DARWIN
+    @a0_0_1.platform = 'powerpc-darwin'
     assert @a0_0_1.validate
   end
 

@@ -60,7 +60,13 @@ Multiple sources and destinations may be specified.
       if get_from.scheme.nil? then
         get_from = get_from.to_s
       elsif get_from.scheme == 'file' then
-        get_from = get_from.to_s[5..-1]
+        # check if specified URI contains a drive letter (file:/D:/Temp)
+        get_from = get_from.to_s
+        if get_from.match(/[a-z]:/i)
+          get_from = get_from[6..-1]
+        else
+          get_from = get_from[5..-1]
+        end
       end
 
       open File.join(get_from.to_s, "Marshal.#{Gem.marshal_version}.Z"), "rb" do |y|

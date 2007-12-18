@@ -34,7 +34,12 @@ class TestGemCommandsMirrorCommand < RubyGemTestCase
 
     File.open File.join(Gem.user_home, '.gemmirrorrc'), 'w' do |fp|
       fp.puts "---"
-      fp.puts "- from: file://#{@tempdir}"
+      # tempdir could be a drive+path (under windows)
+      if @tempdir.match(/[a-z]:/i)
+        fp.puts "- from: file:///#{@tempdir}"
+      else
+        fp.puts "- from: file://#{@tempdir}"
+      end
       fp.puts "  to: #{mirror}"
     end
 

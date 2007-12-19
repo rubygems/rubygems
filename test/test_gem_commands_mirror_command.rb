@@ -47,9 +47,9 @@ class TestGemCommandsMirrorCommand < RubyGemTestCase
       @cmd.execute
     end
 
-    assert File.exist?(File.join(mirror, 'gems', "#{@a0_0_1.full_name}.gem"))
-    assert File.exist?(File.join(mirror, 'gems', "#{@a0_0_2.full_name}.gem"))
-    assert File.exist?(File.join(mirror, 'gems', "#{@b0_0_2.full_name}.gem"))
+    assert File.exist?(File.join(mirror, 'gems', "#{@a1.full_name}.gem"))
+    assert File.exist?(File.join(mirror, 'gems', "#{@a2.full_name}.gem"))
+    assert File.exist?(File.join(mirror, 'gems', "#{@b2.full_name}.gem"))
     assert File.exist?(File.join(mirror, 'gems', "#{@c1_2.full_name}.gem"))
     assert File.exist?(File.join(mirror, "Marshal.#{@marshal_version}"))
   ensure

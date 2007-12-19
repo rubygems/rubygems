@@ -18,9 +18,9 @@ class TestGem < RubyGemTestCase
     util_make_gems
 
     expected = [
-      File.join(@gemhome, *%W[gems #{@a0_0_1.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@a0_0_2.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@b0_0_2.full_name} lib]),
+      File.join(@gemhome, *%W[gems #{@a1.full_name} lib]),
+      File.join(@gemhome, *%W[gems #{@a2.full_name} lib]),
+      File.join(@gemhome, *%W[gems #{@b2.full_name} lib]),
       File.join(@gemhome, *%W[gems #{@c1_2.full_name} lib]),
       File.join(@gemhome, *%W[gems #{@pl1.full_name} lib]),
     ]
@@ -211,8 +211,8 @@ class TestGem < RubyGemTestCase
     util_make_gems
 
     expected = [
-      File.join(@gemhome, *%W[gems #{@a0_0_2.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@b0_0_2.full_name} lib]),
+      File.join(@gemhome, *%W[gems #{@a2.full_name} lib]),
+      File.join(@gemhome, *%W[gems #{@b2.full_name} lib]),
       File.join(@gemhome, *%W[gems #{@c1_2.full_name} lib]),
       File.join(@gemhome, *%W[gems #{@pl1.full_name} lib]),
     ]
@@ -288,10 +288,10 @@ class TestGem < RubyGemTestCase
 
     assert_equal File.join(@tempdir, *%w[gemhome gems c-1.2 lib code.rb]),
                  Gem.required_location("c", "code.rb")
-    assert_equal File.join(@tempdir, *%w[gemhome gems a-0.0.1 lib code.rb]),
-                 Gem.required_location("a", "code.rb", "<0.0.2")
-    assert_equal File.join(@tempdir, *%w[gemhome gems a-0.0.2 lib code.rb]),
-                 Gem.required_location("a", "code.rb", "=0.0.2")
+    assert_equal File.join(@tempdir, *%w[gemhome gems a-1 lib code.rb]),
+                 Gem.required_location("a", "code.rb", "< 2")
+    assert_equal File.join(@tempdir, *%w[gemhome gems a-2 lib code.rb]),
+                 Gem.required_location("a", "code.rb", "= 2")
   end
 
   def test_self_searcher

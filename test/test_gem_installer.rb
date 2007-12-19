@@ -39,11 +39,11 @@ class TestGemInstaller < RubyGemTestCase
     @installer.spec = @spec
   end
 
-  def util_gem_dir(version = '0.0.2')
+  def util_gem_dir(version = '2')
     File.join @gemhome, "gems", "a-#{version}" # HACK
   end
 
-  def util_gem_bindir(version = '0.0.2')
+  def util_gem_bindir(version = '2')
     File.join util_gem_dir(version), "bin"
   end
 
@@ -51,7 +51,7 @@ class TestGemInstaller < RubyGemTestCase
     File.join @gemhome, "bin"
   end
 
-  def util_make_exec(version = '0.0.2', shebang = "#!/usr/bin/ruby")
+  def util_make_exec(version = '2', shebang = "#!/usr/bin/ruby")
     @spec.executables = ["my_exec"]
 
     FileUtils.mkdir_p util_gem_bindir(version)
@@ -63,7 +63,7 @@ class TestGemInstaller < RubyGemTestCase
   end
 
   def test_app_script_text
-    util_make_exec '0.0.2', ''
+    util_make_exec '2', ''
 
     expected = <<-EOF
 #!#{Gem.ruby}
@@ -147,15 +147,15 @@ load 'my_exec'
   end
 
   def test_ensure_dependency
-    dep = Gem::Dependency.new 'a', '>= 0.0.2'
+    dep = Gem::Dependency.new 'a', '>= 2'
     assert @installer.ensure_dependency(@spec, dep)
 
-    dep = Gem::Dependency.new 'b', '> 0.0.2'
+    dep = Gem::Dependency.new 'b', '> 2'
     e = assert_raise Gem::InstallError do
       @installer.ensure_dependency @spec, dep
     end
 
-    assert_equal 'a requires b (> 0.0.2)', e.message
+    assert_equal 'a requires b (> 2)', e.message
   end
 
   def test_expand_and_validate_gem_dir
@@ -418,17 +418,17 @@ load 'my_exec'
     @spec = Gem::Specification.new do |s|
       s.files = ['lib/code.rb']
       s.name = "a"
-      s.version = "0.0.3"
+      s.version = "3"
       s.summary = "summary"
       s.description = "desc"
       s.require_path = 'lib'
     end
 
-    util_make_exec '0.0.3'
-    @installer.gem_dir = File.join util_gem_dir('0.0.3')
+    util_make_exec '3'
+    @installer.gem_dir = File.join util_gem_dir('3')
     @installer.generate_bin
     installed_exec = File.join(util_inst_bindir, "my_exec")
-    assert_equal(File.join(util_gem_bindir('0.0.3'), "my_exec"),
+    assert_equal(File.join(util_gem_bindir('3'), "my_exec"),
                  File.readlink(installed_exec),
                  "Ensure symlink moved to latest version")
   end
@@ -448,20 +448,20 @@ load 'my_exec'
     spec = Gem::Specification.new do |s|
       s.files = ['lib/code.rb']
       s.name = "a"
-      s.version = "0.0.1"
+      s.version = "1"
       s.summary = "summary"
       s.description = "desc"
       s.require_path = 'lib'
     end
 
-    util_make_exec '0.0.1'
-    @installer.gem_dir = util_gem_dir('0.0.1')
+    util_make_exec '1'
+    @installer.gem_dir = util_gem_dir('1')
     @installer.spec = spec
 
     @installer.generate_bin
 
     installed_exec = File.join(util_inst_bindir, "my_exec")
-    assert_equal(File.join(util_gem_dir('0.0.2'), "bin", "my_exec"),
+    assert_equal(File.join(util_gem_dir('2'), "bin", "my_exec"),
                  File.readlink(installed_exec),
                  "Ensure symlink not moved")
   end
@@ -480,18 +480,18 @@ load 'my_exec'
     @spec = Gem::Specification.new do |s|
       s.files = ['lib/code.rb']
       s.name = "a"
-      s.version = "0.0.3"
+      s.version = "3"
       s.summary = "summary"
       s.description = "desc"
       s.require_path = 'lib'
     end
 
     @installer.wrappers = false
-    util_make_exec '0.0.3'
-    @installer.gem_dir = util_gem_dir '0.0.3'
+    util_make_exec '3'
+    @installer.gem_dir = util_gem_dir '3'
     @installer.generate_bin
     installed_exec = File.join(util_inst_bindir, "my_exec")
-    assert_equal(File.join(util_gem_dir('0.0.3'), "bin", "my_exec"),
+    assert_equal(File.join(util_gem_dir('3'), "bin", "my_exec"),
                  File.readlink(installed_exec),
                  "Ensure symlink moved to latest version")
   end
@@ -611,7 +611,7 @@ load 'my_exec'
       installer.install
     end
 
-    gem_dir = File.join(@gemhome, 'gems', 'old_ruby_required-0.0.1')
+    gem_dir = File.join(@gemhome, 'gems', 'old_ruby_required-1')
     assert File.exist?(gem_dir)
   end
 
@@ -698,8 +698,8 @@ load 'my_exec'
   end
 
   def test_install_wrong_rubygems_version
-    spec = quick_gem 'old_rubygems_required', '0.0.1' do |s|
-      s.required_rubygems_version = '< 0.0.0'
+    spec = quick_gem 'old_rubygems_required', '1' do |s|
+      s.required_rubygems_version = '< 0'
     end
 
     util_build_gem spec
@@ -711,21 +711,21 @@ load 'my_exec'
       e = assert_raise Gem::InstallError do
         @installer.install
       end
-      assert_equal 'old_rubygems_required requires RubyGems version < 0.0.0',
+      assert_equal 'old_rubygems_required requires RubyGems version < 0',
                    e.message
     end
   end
 
   def test_installation_satisfies_dependency_eh
-    dep = Gem::Dependency.new 'a', '>= 0.0.2'
+    dep = Gem::Dependency.new 'a', '>= 2'
     assert @installer.installation_satisfies_dependency?(dep)
 
-    dep = Gem::Dependency.new 'a', '> 0.0.2'
+    dep = Gem::Dependency.new 'a', '> 2'
     assert ! @installer.installation_satisfies_dependency?(dep)
   end
 
   def test_shebang
-    util_make_exec '0.0.2', "#!/usr/bin/ruby"
+    util_make_exec '2', "#!/usr/bin/ruby"
 
     shebang = @installer.shebang 'my_exec'
 
@@ -733,7 +733,7 @@ load 'my_exec'
   end
 
   def test_shebang_arguments
-    util_make_exec '0.0.2', "#!/usr/bin/ruby -ws"
+    util_make_exec '2', "#!/usr/bin/ruby -ws"
 
     shebang = @installer.shebang 'my_exec'
 
@@ -741,14 +741,14 @@ load 'my_exec'
   end
 
   def test_shebang_empty
-    util_make_exec '0.0.2', ''
+    util_make_exec '2', ''
 
     shebang = @installer.shebang 'my_exec'
     assert_equal "#!#{Gem.ruby}", shebang
   end
 
   def test_shebang_env
-    util_make_exec '0.0.2', "#!/usr/bin/env ruby"
+    util_make_exec '2', "#!/usr/bin/env ruby"
 
     shebang = @installer.shebang 'my_exec'
 
@@ -756,7 +756,7 @@ load 'my_exec'
   end
 
   def test_shebang_env_arguments
-    util_make_exec '0.0.2', "#!/usr/bin/env ruby -ws"
+    util_make_exec '2', "#!/usr/bin/env ruby -ws"
 
     shebang = @installer.shebang 'my_exec'
 
@@ -764,7 +764,7 @@ load 'my_exec'
   end
 
   def test_shebang_env_shebang
-    util_make_exec '0.0.2', ''
+    util_make_exec '2', ''
     @installer.env_shebang = true
 
     shebang = @installer.shebang 'my_exec'
@@ -772,7 +772,7 @@ load 'my_exec'
   end
 
   def test_shebang_nested
-    util_make_exec '0.0.2', "#!/opt/local/ruby/bin/ruby"
+    util_make_exec '2', "#!/opt/local/ruby/bin/ruby"
 
     shebang = @installer.shebang 'my_exec'
 
@@ -780,7 +780,7 @@ load 'my_exec'
   end
 
   def test_shebang_nested_arguments
-    util_make_exec '0.0.2', "#!/opt/local/ruby/bin/ruby -ws"
+    util_make_exec '2', "#!/opt/local/ruby/bin/ruby -ws"
 
     shebang = @installer.shebang 'my_exec'
 
@@ -788,7 +788,7 @@ load 'my_exec'
   end
 
   def test_shebang_version
-    util_make_exec '0.0.2', "#!/usr/bin/ruby18"
+    util_make_exec '2', "#!/usr/bin/ruby18"
 
     shebang = @installer.shebang 'my_exec'
 
@@ -796,7 +796,7 @@ load 'my_exec'
   end
 
   def test_shebang_version_arguments
-    util_make_exec '0.0.2', "#!/usr/bin/ruby18 -ws"
+    util_make_exec '2', "#!/usr/bin/ruby18 -ws"
 
     shebang = @installer.shebang 'my_exec'
 
@@ -804,7 +804,7 @@ load 'my_exec'
   end
 
   def test_shebang_version_env
-    util_make_exec '0.0.2', "#!/usr/bin/env ruby18"
+    util_make_exec '2', "#!/usr/bin/env ruby18"
 
     shebang = @installer.shebang 'my_exec'
 
@@ -812,7 +812,7 @@ load 'my_exec'
   end
 
   def test_shebang_version_env_arguments
-    util_make_exec '0.0.2', "#!/usr/bin/env ruby18 -ws"
+    util_make_exec '2', "#!/usr/bin/env ruby18 -ws"
 
     shebang = @installer.shebang 'my_exec'
 
@@ -846,7 +846,7 @@ load 'my_exec'
   end
 
   def old_ruby_required
-    spec = quick_gem 'old_ruby_required', '0.0.1' do |s|
+    spec = quick_gem 'old_ruby_required', '1' do |s|
       s.required_ruby_version = '= 1.4.6'
     end
 

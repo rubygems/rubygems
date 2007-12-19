@@ -32,7 +32,7 @@ class TestGemCommandsQueryCommand < RubyGemTestCase
 
 *** REMOTE GEMS ***
 
-foo (0.0.2)
+foo (2)
     EOF
 
     assert_equal expected, @ui.output
@@ -52,7 +52,7 @@ foo (0.0.2)
 
 *** REMOTE GEMS ***
 
-foo (0.0.2)
+foo (2)
     This is a lot of text.  This is a lot of text.  This is a lot of
     text.  This is a lot of text.  This is a lot of text.
     EOF

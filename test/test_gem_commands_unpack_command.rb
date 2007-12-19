@@ -23,7 +23,7 @@ class TestGemCommandsUnpackCommand < RubyGemTestCase
         end
       end
 
-    assert File.exist?(File.join(@tempdir, 'a-0.0.2'))
+    assert File.exist?(File.join(@tempdir, 'a-2'))
   end
 
   def test_execute_with_target_option
@@ -39,7 +39,7 @@ class TestGemCommandsUnpackCommand < RubyGemTestCase
       end
     end
 
-    assert File.exist?(File.join(@tempdir, target, 'a-0.0.2'))
+    assert File.exist?(File.join(@tempdir, target, 'a-2'))
   end
 
   def test_execute_exact_match

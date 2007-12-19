@@ -4,6 +4,7 @@
 	executables with #!.
 	* lib/rubygems/specification.rb:  Warn about a lot of things that
 	could be wrong with gemspecs on build, including missing #!.
+	* lib/rubygems/remote_installer.rb:  Deleted.
 
 2007-12-18  Luis Lavena  <luislavena@gmail.com>
 

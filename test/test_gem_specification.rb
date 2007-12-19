@@ -53,6 +53,7 @@ end
       s.has_rdoc = 'true'
       s.test_file = 'test/suite.rb'
       s.requirements << 'A working computer'
+      s.rubyforge_project = 'example'
 
       s.add_dependency 'rake', '> 0.4'
       s.add_dependency 'jabber4r', '> 0.0.0'
@@ -64,6 +65,11 @@ end
 
     @a0_0_2 = quick_gem 'a', '0.0.2' do |s|
       s.files = %w[lib/code.rb]
+    end
+
+    FileUtils.mkdir_p File.join(@tempdir, 'bin')
+    File.open File.join(@tempdir, 'bin', 'exec'), 'w' do |fp|
+      fp.puts "#!#{Gem.ruby}"
     end
   end
 
@@ -557,12 +563,6 @@ end
     assert_equal ['test/suite.rb'], @a0_0_1.test_files
   end
 
-  def test_test_suite_file
-    @a0_0_2.test_suite_file = 'test/suite.rb'
-    assert_equal ['test/suite.rb'], @a0_0_2.test_files
-    # XXX: what about the warning?
-  end
-
   def test_to_ruby
     @a0_0_2.required_rubygems_version = Gem::Requirement.new '> 0'
 
@@ -622,6 +622,7 @@ end
   s.homepage = %q{http://example.com}
   s.require_paths = [\"lib\"]
   s.requirements = [\"A working computer\"]
+  s.rubyforge_project = %q{example}
   s.rubygems_version = %q{#{Gem::RubyGemsVersion}}
   s.summary = %q{this is a summary}
   s.test_files = [\"test/suite.rb\"]
@@ -701,7 +702,54 @@ end
   end
 
   def test_validate
-    assert @a0_0_1.validate
+    Dir.chdir @tempdir do
+      assert @a0_0_1.validate
+    end
+  end
+
+  def test_validate_authors
+    Dir.chdir @tempdir do
+      @a0_0_1.authors = []
+
+      use_ui @ui do
+        @a0_0_1.validate
+      end
+
+      assert_equal "WARNING:  no author specified\n", @ui.error, 'error'
+
+      @a0_0_1.authors = [Object.new]
+
+      e = assert_raise Gem::InvalidSpecificationException do
+        @a0_0_1.validate
+      end
+
+      assert_equal 'authors must be Array of Strings', e.message
+    end
+  end
+
+  def test_validate_autorequire
+    Dir.chdir @tempdir do
+      @a0_0_1.autorequire = 'code'
+
+      use_ui @ui do
+        @a0_0_1.validate
+      end
+
+      assert_equal "WARNING:  deprecated autorequire specified\n",
+                   @ui.error, 'error'
+    end
+  end
+
+  def test_validate_email
+    Dir.chdir @tempdir do
+      @a0_0_1.email = ''
+
+      use_ui @ui do
+        @a0_0_1.validate
+      end
+
+      assert_equal "WARNING:  no email specified\n", @ui.error, 'error'
+    end
   end
 
   def test_validate_empty
@@ -712,6 +760,20 @@ end
     assert_equal 'missing value for attribute name', e.message
   end
 
+  def test_validate_executables
+    FileUtils.mkdir_p File.join(@tempdir, 'bin')
+    File.open File.join(@tempdir, 'bin', 'exec'), 'w' do end
+
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        assert @a0_0_1.validate
+      end
+    end
+
+    assert_equal '', @ui.output, 'output'
+    assert_equal "WARNING:  bin/exec is missing #! line\n", @ui.error, 'error'
+  end
+
   def test_validate_empty_require_paths
     @a0_0_1.require_paths = []
     e = assert_raise Gem::InvalidSpecificationException do
@@ -719,6 +781,31 @@ end
     end
 
     assert_equal 'specification must have at least one require_path', e.message
+  end
+
+  def test_validate_homepage
+    Dir.chdir @tempdir do
+      @a0_0_1.homepage = ''
+
+      use_ui @ui do
+        @a0_0_1.validate
+      end
+
+      assert_equal "WARNING:  no homepage specified\n", @ui.error, 'error'
+    end
+  end
+
+  def test_validate_has_rdoc
+    Dir.chdir @tempdir do
+      @a0_0_1.has_rdoc = false
+
+      use_ui @ui do
+        @a0_0_1.validate
+      end
+
+      assert_equal "WARNING:  RDoc will not be generated (has_rdoc == false)\n",
+                   @ui.error, 'error'
+    end
   end
 
   def test_validate_platform_bad
@@ -735,14 +822,29 @@ end
   end
 
   def test_validate_platform_legacy
-    @a0_0_1.platform = 'mswin32'
-    assert @a0_0_1.validate
+    Dir.chdir @tempdir do
+      @a0_0_1.platform = 'mswin32'
+      assert @a0_0_1.validate
 
-    @a0_0_1.platform = 'i586-linux'
-    assert @a0_0_1.validate
+      @a0_0_1.platform = 'i586-linux'
+      assert @a0_0_1.validate
 
-    @a0_0_1.platform = 'powerpc-darwin'
-    assert @a0_0_1.validate
+      @a0_0_1.platform = 'powerpc-darwin'
+      assert @a0_0_1.validate
+    end
+  end
+
+  def test_validate_rubyforge_project
+    Dir.chdir @tempdir do
+      @a0_0_1.rubyforge_project = ''
+
+      use_ui @ui do
+        @a0_0_1.validate
+      end
+
+      assert_equal "WARNING:  no rubyforge_project specified\n",
+                   @ui.error, 'error'
+    end
   end
 
   def test_validate_rubygems_version
@@ -753,6 +855,18 @@ end
 
     assert_equal "expected RubyGems version #{Gem::RubyGemsVersion}, was 3",
                  e.message
+  end
+
+  def test_validate_summary
+    Dir.chdir @tempdir do
+      @a0_0_1.summary = ''
+
+      use_ui @ui do
+        @a0_0_1.validate
+      end
+
+      assert_equal "WARNING:  no summary specified\n", @ui.error, 'error'
+    end
   end
 
   def test_version

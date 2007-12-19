@@ -255,7 +255,8 @@ class Gem::Installer
 
     exec_path = File.join @gem_dir, @spec.bindir, filename
 
-    if File.read(exec_path, 2) == '#!' then
+    # HACK some gems don't have #! in their executables, restore 2008/06
+    #if File.read(exec_path, 2) == '#!' then
       File.open bin_script_path, 'w', 0755 do |file|
         file.print app_script_text(filename)
       end
@@ -263,11 +264,11 @@ class Gem::Installer
       say bin_script_path if Gem.configuration.really_verbose
 
       generate_windows_script bindir, filename
-    else
-      FileUtils.rm_f bin_script_path
-      FileUtils.cp exec_path, bin_script_path,
-                   :verbose => Gem.configuration.really_verbose
-    end
+    #else
+    #  FileUtils.rm_f bin_script_path
+    #  FileUtils.cp exec_path, bin_script_path,
+    #               :verbose => Gem.configuration.really_verbose
+    #end
   end
 
   ##

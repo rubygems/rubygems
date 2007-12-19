@@ -1,7 +1,14 @@
-2007-12-18  Luis Lavena <luislavena@gmail.com>
+2007-12-19  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/installer.rb:  Revert change that only wrapped
+	executables with #!.
+	* lib/rubygems/specification.rb:  Warn about a lot of things that
+	could be wrong with gemspecs on build, including missing #!.
+
+2007-12-18  Luis Lavena  <luislavena@gmail.com>
 
 	* lib/rubygems/commands/mirror_command.rb: Work around URI::parse
-	  processing file:// scheme and drive paths on Windows.
+	processing file:// scheme and drive paths on Windows.
 	* test/test_gem_commands_mirror_command.rb: ditto.
 
 2007-12-17  Eric Hodel  <drbrain@segment7.net>

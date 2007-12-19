@@ -8,31 +8,31 @@ class TestGemCommandsBuildCommand < RubyGemTestCase
   def setup
     super
 
+    @gem = quick_gem 'some_gem' do |s|
+      s.rubyforge_project = 'example'
+    end
+
     @cmd = Gem::Commands::BuildCommand.new
   end
 
   def test_execute
-    gem = quick_gem 'some_gem'
-
-    gemspec_file = File.join(@tempdir, "#{gem.full_name}.gemspec")
+    gemspec_file = File.join(@tempdir, "#{@gem.full_name}.gemspec")
 
     File.open gemspec_file, 'w' do |gs|
-      gs.write gem.to_ruby
+      gs.write @gem.to_ruby
     end
 
-    util_test_build_gem gem, gemspec_file
+    util_test_build_gem @gem, gemspec_file
   end
 
   def test_execute_yaml
-    gem = quick_gem 'some_gem'
-
-    gemspec_file = File.join(@tempdir, "#{gem.full_name}.gemspec")
+    gemspec_file = File.join(@tempdir, "#{@gem.full_name}.gemspec")
 
     File.open gemspec_file, 'w' do |gs|
-      gs.write gem.to_yaml
+      gs.write @gem.to_yaml
     end
 
-    util_test_build_gem gem, gemspec_file
+    util_test_build_gem @gem, gemspec_file
   end
 
   def test_execute_bad_gem

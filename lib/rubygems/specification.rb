@@ -294,11 +294,6 @@ module Gem
       spec
     end
 
-    def warn_deprecated(old, new)
-      # How (if at all) to implement this?  We only want to warn when
-      # a gem is being built, I should think.
-    end
-    
     # REQUIRED gemspec attributes ------------------------------------
     
     required_attribute :rubygems_version, RubyGemsVersion
@@ -350,12 +345,12 @@ module Gem
     # DEPRECATED gemspec attributes ----------------------------------
     
     def test_suite_file
-      warn_deprecated(:test_suite_file, :test_files)
+      warn 'test_suite_file deprecated, use test_files'
       test_files.first
     end
 
     def test_suite_file=(val)
-      warn_deprecated(:test_suite_file, :test_files)
+      warn 'test_suite_file deprecated, use test_files'
       @test_files = [] unless defined? @test_files
       @test_files << val
     end
@@ -842,6 +837,8 @@ module Gem
     # Raises InvalidSpecificationException if the spec does not pass
     # the checks..
     def validate
+      extend Gem::UserInteraction
+
       normalize
 
       if rubygems_version != RubyGemsVersion then
@@ -866,6 +863,31 @@ module Gem
       else
         raise Gem::InvalidSpecificationException,
               "invalid platform #{platform.inspect}, see Gem::Platform"
+      end
+
+      unless Array === authors and
+             authors.all? { |author| String === author } then
+        raise Gem::InvalidSpecificationException,
+              'authors must be Array of Strings'
+      end
+
+      # Warnings
+
+      %w[author email homepage rubyforge_project summary].each do |attribute|
+        value = self.send attribute
+        alert_warning "no #{attribute} specified" if value.nil? or value.empty?
+      end
+
+      alert_warning "RDoc will not be generated (has_rdoc == false)" unless
+        has_rdoc
+
+      alert_warning "deprecated autorequire specified" if autorequire
+
+      executables.each do |executable|
+        executable_path = File.join bindir, executable
+        shebang = File.read(executable_path, 2) == '#!'
+
+        alert_warning "#{executable_path} is missing #! line" unless shebang
       end
 
       true

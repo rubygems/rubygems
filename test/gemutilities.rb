@@ -89,6 +89,9 @@ class RubyGemTestCase < Test::Unit::TestCase
     @gem_repo = "http://gems.example.com"
     Gem.sources.replace [@gem_repo]
 
+    @orig_BASERUBY = Gem::ConfigMap[:BASERUBY]
+    Gem::ConfigMap[:BASERUBY] = Gem::ConfigMap[:RUBY_INSTALL_NAME]
+
     @orig_arch = Gem::ConfigMap[:arch]
 
     if win_platform?
@@ -101,6 +104,7 @@ class RubyGemTestCase < Test::Unit::TestCase
   end
 
   def teardown
+    Gem::ConfigMap[:BASERUBY] = @orig_BASERUBY
     Gem::ConfigMap[:arch] = @orig_arch
 
     if defined? Gem::RemoteFetcher then

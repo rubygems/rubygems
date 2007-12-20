@@ -142,8 +142,8 @@ module Gem::Package
     end
 
     def calculate_checksum(hdr)
-      hdr.split('').map { |c| c[0] }.inject { |a, b| a + b } # HACK rubinius
-      #hdr.unpack("C*").inject{|a,b| a+b}
+      #hdr.split('').map { |c| c[0] }.inject { |a, b| a + b } # HACK rubinius
+      hdr.unpack("C*").inject{|a,b| a+b}
     end
 
     def header(chksum)

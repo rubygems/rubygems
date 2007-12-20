@@ -3,7 +3,9 @@
 	* lib/rubygems/installer.rb:  Revert change that only wrapped
 	executables with #!.
 	* lib/rubygems/specification.rb:  Warn about a lot of things that
-	could be wrong with gemspecs on build, including missing #!.
+	could be wrong with gemspecs on build, including missing #!.  Use
+	'x86-mswin32' for legacy 'mswin32' platform, fix CURRENT platform.
+	Paired with Luis Lavena.
 	* lib/rubygems/remote_installer.rb:  Deleted.
 
 2007-12-18  Luis Lavena  <luislavena@gmail.com>

@@ -505,9 +505,15 @@ end
     end
   end
 
+  def test_platform_equals
+    @a1.platform = Gem::Platform::CURRENT
+    assert_equal Gem::Platform.local, @a1.platform
+    assert_equal Gem::Platform.local.to_s, @a1.original_platform
+  end
+
   def test_platform_equals_legacy
     @a1.platform = 'mswin32'
-    assert_equal Gem::Platform.new('x86-mswin32-60'), @a1.platform
+    assert_equal Gem::Platform.new('x86-mswin32'), @a1.platform
 
     @a1.platform = 'i586-linux'
     assert_equal Gem::Platform.new('x86-linux'), @a1.platform
@@ -806,19 +812,6 @@ end
       assert_equal "WARNING:  RDoc will not be generated (has_rdoc == false)\n",
                    @ui.error, 'error'
     end
-  end
-
-  def test_validate_platform_bad
-    @a1.platform = Object.new
-    assert_raise Gem::InvalidSpecificationException do @a1.validate end
-
-    @a1.platform = "my-custom-platform"
-    e = assert_raise Gem::InvalidSpecificationException do
-      @a1.validate
-    end
-
-    assert_equal 'invalid platform "my-custom-platform", see Gem::Platform',
-                 e.message
   end
 
   def test_validate_platform_legacy

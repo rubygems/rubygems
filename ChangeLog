@@ -7,6 +7,7 @@
 	'x86-mswin32' for legacy 'mswin32' platform, fix CURRENT platform.
 	Paired with Luis Lavena.
 	* lib/rubygems/remote_installer.rb:  Deleted.
+	* lib/rubygems.rb:  Removed Kernel#require_gem.
 
 2007-12-18  Luis Lavena  <luislavena@gmail.com>
 

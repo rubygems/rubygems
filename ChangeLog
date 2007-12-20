@@ -8,6 +8,7 @@
 	Paired with Luis Lavena.
 	* lib/rubygems/remote_installer.rb:  Deleted.
 	* lib/rubygems.rb:  Removed Kernel#require_gem.
+	* doc/release_notes/rel_1_0_0.rdoc:  RubyGems 1.0 release notes.
 
 2007-12-18  Luis Lavena  <luislavena@gmail.com>
 

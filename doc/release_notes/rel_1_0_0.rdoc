@@ -1,0 +1,67 @@
+= Announce: RubyGems Release 1.0.0
+
+Release 1.0.0 fixes several bugs.
+
+Major New Features Include:
+
+* RubyGems warns about various problems with gemspecs during gem building
+* More-consistent versioning for the RubyGems software
+
+Other Changes Include:
+
+* Fixed various bugs and problems with installing gems on Windows
+* Fixed using `gem server` for installing gems
+* Various operations are even more verbose with --verbose
+* Built gems are now backwards compatible with 0.9.4
+* Improved detection of RUBYOPT loading rubygems
+* `ruby setup.rb` now has a --help option
+* Gem::Specification#bindir is now respected on installation
+* Executable stubs can now be installed to match ruby's name, so if ruby is
+  installed as 'ruby18', foo_exec will be installed as 'foo_exec18'
+* `gem unpack` can now unpack into a specific directory with --target
+* OpenSSL is no longer required by default
+
+Deprecations and Deletions:
+
+* Kernel#require_gem has been removed
+* Executables without a shebang will not be wrapped in a future version, this
+  may cause such executables to fail to operate on installation
+* Gem::Platform constants other than RUBY and CURRENT have been removed
+* Gem::RemoteInstaller was removed
+* Gem::Specification#test_suite_file and #test_suite_file= are deprecated in
+  favor of #test_file and #test_file=
+* Gem::Specification#autorequire= has been deprecated
+* Time::today will be removed in a future version
+
+== How can I get RubyGems?
+
+NOTE:  If you have installed RubyGems using a package you may want to install a
+new RubyGems through the same packaging system.
+
+If you have a recent version of RubyGems (0.8.5 or later), then all
+you need to do is:
+
+  $ gem update --system   (you might need to be admin/root)
+
+(Note: You may have to run the command twice if you have any previosly
+installed rubygems-update gems).
+
+If you have an older version of RubyGems installed, then you can still
+do it in two steps:
+
+  $ gem install rubygems-update  (again, might need to be admin/root)
+  $ update_rubygems              (... here too)
+
+If you don't have any gems install, there is still the pre-gem
+approach to getting software ... doing it manually:
+
+1. DOWNLOAD FROM: http://rubyforge.org/frs/?group_id=126
+2. UNPACK INTO A DIRECTORY AND CD THERE
+3. INSTALL WITH:  ruby setup.rb  (you may need admin/root privilege)
+
+== Thanks
+
+Keep those gems coming!
+
+-- Jim & Chad & Eric (for the RubyGems team)
+

@@ -296,7 +296,7 @@ module Gem
 
     # REQUIRED gemspec attributes ------------------------------------
     
-    required_attribute :rubygems_version, RubyGemsVersion
+    required_attribute :rubygems_version, Gem::RubyGemsVersion
     required_attribute :specification_version, CURRENT_SPECIFICATION_VERSION
     required_attribute :name
     required_attribute :version

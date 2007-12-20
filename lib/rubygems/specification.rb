@@ -350,7 +350,7 @@ module Gem
     end
 
     def test_suite_file=(val)
-      warn 'test_suite_file deprecated, use test_files'
+      warn 'test_suite_file= deprecated, use test_files='
       @test_files = [] unless defined? @test_files
       @test_files << val
     end

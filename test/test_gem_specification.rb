@@ -505,7 +505,7 @@ end
     end
   end
 
-  def test_platform_equals
+  def test_platform_equals_current
     @a1.platform = Gem::Platform::CURRENT
     assert_equal Gem::Platform.local, @a1.platform
     assert_equal Gem::Platform.local.to_s, @a1.original_platform

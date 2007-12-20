@@ -379,7 +379,7 @@ desc "Updates Ruby HEAD with the currently checked-out copy of RubyGems."
 task :update_ruby do
   ruby_dir = ENV['RUBY_PATH'] || '../../ruby/trunk'
 
-  options = "-avP --exclude '*svn*' --exclude '*swp'"
+  options = "-avP --exclude '*svn*' --exclude '*swp' --exclude '*rbc'"
 
   sh "rsync #{options} bin/gem #{ruby_dir}/bin/gem"
   sh "rsync #{options} lib/ #{ruby_dir}/lib"

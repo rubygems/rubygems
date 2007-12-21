@@ -5,6 +5,8 @@
 	Christian Ramilo, John Barnette.
 	* lib/rubygems/commands/build_command.rb:  Relax yaml? test to work
 	with Ruby 1.8.3.
+	* lib/rubygems/rubygems_version.rb:  1.0.1.
+	* doc/release_notes/rel_1_0_1.rdoc:  RubyGems 1.0.1 release notes.
 
 2007-12-19  Eric Hodel  <drbrain@segment7.net>
 

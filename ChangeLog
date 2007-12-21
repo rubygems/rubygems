@@ -1,3 +1,11 @@
+2007-12-20  Eric Hodel  <drbrain@segment7.net>
+
+	* Rakefile:  Require Ruby > 1.8.2.  Enable CERT_DIR.
+	* lib/rubygems.rb:  Work with RbConfig and Config.  Bug #16457 by
+	Christian Ramilo, John Barnette.
+	* lib/rubygems/commands/build_command.rb:  Relax yaml? test to work
+	with Ruby 1.8.3.
+
 2007-12-19  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb:  Revert change that only wrapped

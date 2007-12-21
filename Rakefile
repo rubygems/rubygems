@@ -18,7 +18,7 @@ def announce(msg='')
 end
 
 # Disable certs for now. 
-ENV.delete('CERT_DIR')
+ENV['CERT_DIR'] ||= File.expand_path(File.join('~', '.gem'))
 
 PKG_NAME = 'rubygems'
 def package_version
@@ -284,6 +284,7 @@ end
 Spec = Gem::Specification.new do |s|
   s.name = PKG_NAME + "-update"  
   s.version = PKG_VERSION
+  s.required_ruby_version = Gem::Requirement.new '> 1.8.2'
   s.summary = "RubyGems Update GEM"
   s.description = %{RubyGems is a package management framework for Ruby.  This Gem
 is a update for the base RubyGems software.  You must have a base
@@ -291,7 +292,7 @@ installation of RubyGems before this update can be applied.
 }
   s.files = PKG_FILES.to_a
   s.require_path = 'lib'
-  s.authors = ['Jim Weirich', 'Chad Fowler']
+  s.authors = ['Jim Weirich', 'Chad Fowler', 'Eric Hodel']
   s.email = "rubygems-developers@rubyforge.org"
   s.homepage = "http://rubygems.rubyforge.org"
   s.rubyforge_project = "rubygems"

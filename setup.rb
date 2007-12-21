@@ -43,7 +43,7 @@ include FileUtils::Verbose
 
 # check ruby version
 
-required_version = Gem::Version::Requirement.create(">= 1.8.2")
+required_version = Gem::Version::Requirement.create("> 1.8.2")
 
 unless required_version.satisfied_by? Gem::Version.new(RUBY_VERSION) then
   abort "Expected Ruby version #{required_version}, was #{RUBY_VERSION}"

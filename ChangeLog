@@ -8,6 +8,8 @@
 	* lib/rubygems/uninstaller.rb:  Only allow uninstallation of gems from
 	specified directory.  Properly clean up executables on uninstall.
 	Patch #15151 by Donavan Pantke.
+	* lib/rubygems/install_update_options.rb:  Add --no-env-shebang
+	option.  Patch #16508 by Donavan Pantke.
 
 2007-12-21  Eric Hodel  <drbrain@segment7.net>
 

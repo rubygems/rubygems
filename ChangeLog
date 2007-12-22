@@ -1,3 +1,7 @@
+2007-12-21  Eric Hodel  <drbrain@segment7.net>
+
+	* util/gem_prelude.rb:  Place bin before lib so bin stubs work.
+
 2007-12-20  Eric Hodel  <drbrain@segment7.net>
 
 	* Rakefile:  Require Ruby > 1.8.2.  Enable CERT_DIR.

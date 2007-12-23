@@ -1,5 +1,9 @@
 module Gem
 
+  class << self
+    remove_method :default_dir if instance_methods.include? :default_dir
+  end
+
   # An Array of the default sources that come with RubyGems.
   def self.default_sources
     %w[http://gems.rubyforge.org]

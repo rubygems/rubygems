@@ -10,6 +10,8 @@
 	Patch #15151 by Donavan Pantke.
 	* lib/rubygems/install_update_options.rb:  Add --no-env-shebang
 	option.  Patch #16508 by Donavan Pantke.
+	* util/gem_prelude.rb:  Use require to load rubygems.rb to make
+	$LOADED_FEATURES correct on RubyGems update.
 
 2007-12-21  Eric Hodel  <drbrain@segment7.net>
 

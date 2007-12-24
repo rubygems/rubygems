@@ -1,3 +1,8 @@
+2007-12-23  Eric Hodel  <drbrain@segment7.net>
+
+	* util/gem_prelude.rb:  Remove methods from Gem, not QuickLoader, to
+	fix warnings.
+
 2007-12-22  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/environment_command.rb:  Put GEM PATHS in the

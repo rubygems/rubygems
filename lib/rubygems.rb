@@ -17,8 +17,6 @@ end
 
 module Kernel
 
-  remove_method :gem if instance_methods.include? :gem
-
   # Adds a Ruby Gem to the $LOAD_PATH.  Before a Gem is loaded, its
   # required Gems are loaded.  If the version information is omitted,
   # the highest version Gem of the supplied name is loaded.  If a Gem
@@ -167,11 +165,6 @@ module Gem
   end
 
   class << self
-
-    # Remove gem_prelude.rb methods
-    [:ensure_gem_subdirectories, :dir, :path, :set_home, :set_paths].each do |m|
-      remove_method m if instance_methods.include? m
-    end
 
     attr_reader :loaded_specs
 

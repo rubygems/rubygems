@@ -295,8 +295,7 @@ module Gem
     # paths then it inserts the path before those paths so you can override
     # the gem_prelude.rb default $LOAD_PATH paths.
     def load_path_insert_index
-      sitelibdir = ConfigMap[:sitelibdir]
-      index = $LOAD_PATH.index sitelibdir
+      index = $LOAD_PATH.index ConfigMap[:sitelibdir]
       $LOAD_PATH.each_with_index do |path, i|
         if path.respond_to? :gem_prelude_index
           index = i

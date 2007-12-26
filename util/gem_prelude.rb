@@ -166,11 +166,14 @@ module Gem
           require_paths << File.join(path, "lib") if File.exist?(File.join(path, "lib"))
         end
       end
-
-      # gem directories must come after -I and ENV['RUBYLIB']
+      
+      # "tag" the first require_path inserted into the $LOAD_PATH to enable
+      # indexing correctly with rubygems proper when it inserts an explicitly
+      # gem version
       unless require_paths.empty?
         require_paths.first.define_singleton_method(:gem_prelude_index) {}
       end
+      # gem directories must come after -I and ENV['RUBYLIB']
       $:[$:.index(ConfigMap[:sitelibdir]),0] = require_paths
     end
 

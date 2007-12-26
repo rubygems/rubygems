@@ -290,6 +290,22 @@ module Gem
       @ruby
     end
 
+    # Return the index to insert activated gem paths into the $LOAD_PATH
+    # Defaults to the site lib directory unless gem_prelude.rb has loaded
+    # paths then it inserts the path before those paths so you can override
+    # the gem_prelude.rb default $LOAD_PATH paths.
+    def load_path_insert_index
+      sitelibdir = ConfigMap[:sitelibdir]
+      index = $LOAD_PATH.index sitelibdir
+      $LOAD_PATH.each_with_index do |path, i|
+        if path.respond_to? :gem_prelude_index
+          index = i
+          break
+        end
+      end
+      index
+    end
+    
     # Activate a gem (i.e. add it to the Ruby load path).  The gem
     # must satisfy all the specified version constraints.  If
     # +autorequire+ is true, then automatically require the specified
@@ -347,7 +363,15 @@ module Gem
       sitelibdir = ConfigMap[:sitelibdir]
 
       # gem directories must come after -I and ENV['RUBYLIB']
-      $:.insert($:.index(sitelibdir), *require_paths)
+      insert_index = load_path_insert_index
+
+      if insert_index then
+        # gem directories must come after -I and ENV['RUBYLIB']
+        $LOAD_PATH.insert(insert_index, *require_paths)
+      else
+        # we are probably testing in core, -I and RUBYLIB don't apply
+        $LOAD_PATH.unshift(*require_paths)
+      end
 
       # Now autorequire
       if autorequire && spec.autorequire then # DEPRECATED

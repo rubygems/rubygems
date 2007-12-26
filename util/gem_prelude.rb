@@ -168,6 +168,9 @@ module Gem
       end
 
       # gem directories must come after -I and ENV['RUBYLIB']
+      unless require_paths.empty?
+        require_paths.first.define_singleton_method(:gem_prelude_index) {}
+      end
       $:[$:.index(ConfigMap[:sitelibdir]),0] = require_paths
     end
 

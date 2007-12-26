@@ -171,7 +171,7 @@ module Gem
       # indexing correctly with rubygems proper when it inserts an explicitly
       # gem version
       unless require_paths.empty?
-        require_paths.first.define_singleton_method(:gem_prelude_index) {}
+        require_paths.first.instance_variable_set(:@gem_prelude_index, true)
       end
       # gem directories must come after -I and ENV['RUBYLIB']
       $:[$:.index(ConfigMap[:sitelibdir]),0] = require_paths

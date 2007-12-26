@@ -297,7 +297,7 @@ module Gem
     def load_path_insert_index
       index = $LOAD_PATH.index ConfigMap[:sitelibdir]
       $LOAD_PATH.each_with_index do |path, i|
-        if path.respond_to? :gem_prelude_index
+        if path.instance_variable_get(:@gem_prelude_index)
           index = i
           break
         end

@@ -1,4 +1,3 @@
-require 'test/unit'
 require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'rubygems'
 require 'rubygems/gem_openssl'
@@ -74,6 +73,8 @@ class TestGem < RubyGemTestCase
       foo = quick_gem 'foo' do |s| s.files = %w[data/foo.txt] end
       install_gem foo
     end
+
+    Gem.source_index = nil
 
     gem 'foo'
 

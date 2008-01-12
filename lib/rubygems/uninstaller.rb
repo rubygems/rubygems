@@ -77,7 +77,7 @@ class Gem::Uninstaller
     if gemspec.executables.size > 0 then
       bindir = Gem.bindir @gem_home
 
-      raise Gem::FilePermissionError.new bindir unless File.writable? bindir
+      raise Gem::FilePermissionError, bindir unless File.writable? bindir
 
       list = Gem.source_index.search(gemspec.name).delete_if { |spec|
         spec.version == gemspec.version

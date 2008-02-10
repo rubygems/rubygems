@@ -1,3 +1,10 @@
+2008-01-09  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/update_command.rb: Use portable and safe ENV
+	operation.  Patch by usa in ruby SVN revision 14739.
+	* lib/rubygems/open-uri.rb: Fix tests.  Patch by NARUSE Yui.
+	[ruby-dev:33336]
+
 2007-12-23  Eric Hodel  <drbrain@segment7.net>
 
 	* util/gem_prelude.rb:  Remove methods from Gem, not QuickLoader, to

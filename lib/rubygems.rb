@@ -296,15 +296,18 @@ module Gem
     # the gem_prelude.rb default $LOAD_PATH paths.
     def load_path_insert_index
       index = $LOAD_PATH.index ConfigMap[:sitelibdir]
+
       $LOAD_PATH.each_with_index do |path, i|
-        if path.instance_variable_get(:@gem_prelude_index)
+        if path.instance_variables.include?(:@gem_prelude_index) or
+           path.instance_variables.include?('@gem_prelude_index') then
           index = i
           break
         end
       end
+
       index
     end
-    
+
     # Activate a gem (i.e. add it to the Ruby load path).  The gem
     # must satisfy all the specified version constraints.  If
     # +autorequire+ is true, then automatically require the specified

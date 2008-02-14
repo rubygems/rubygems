@@ -44,9 +44,14 @@ class Gem::Commands::FetchCommand < Gem::Command
 
       spec, source_uri = specs_and_sources.last
 
+      if spec.nil? then
+        alert_error "Could not find #{gem_name} in any repository"
+        next
+      end
+
       gem_file = "#{spec.full_name}.gem"
 
-      gem_path = File.join source_uri, 'gems', gem_file
+      gem_path = File.join source_uri.to_s, 'gems', gem_file
 
       gem = Gem::RemoteFetcher.fetcher.fetch_path gem_path
 

@@ -1,3 +1,9 @@
+2008-02-14  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/fetch_command.rb: Fix a bug when fetching
+	from non-default sources.  Report non-existent gems instead of
+	crashing.
+
 2008-01-09  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/update_command.rb: Use portable and safe ENV

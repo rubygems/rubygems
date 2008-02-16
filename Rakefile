@@ -18,7 +18,11 @@ def announce(msg='')
 end
 
 # Disable certs for now. 
-ENV['CERT_DIR'] ||= File.expand_path(File.join('~', '.gem'))
+if RUBY_PLATFORM.match('mswin')
+   ENV['CERT_DIR'] ||= (File.join(ENV['USERPROFILE'], '.gem'))
+else
+   ENV['CERT_DIR'] ||= File.expand_path(File.join('~', '.gem'))
+end
 
 PKG_NAME = 'rubygems'
 def package_version

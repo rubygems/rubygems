@@ -1,3 +1,8 @@
+2008-12-19  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/remote_fetcher.rb: Add persistent connection support.
+	Patch #18180 by Aaron Patterson.
+
 2008-02-14  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/fetch_command.rb: Fix a bug when fetching

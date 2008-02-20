@@ -324,6 +324,51 @@ gems:
     end
   end
 
+  def test_open_uri_or_path
+    fetcher = Gem::RemoteFetcher.new nil
+
+    conn = Object.new
+    def conn.started?() true end
+    def conn.request(req)
+      unless defined? @requested then
+        @requested = true
+        res = Net::HTTPRedirection.new nil, 301, nil
+        res.add_field 'Location', 'http://gems.example.com/real_path'
+        res
+      else
+        res = Net::HTTPOK.new nil, 200, nil
+        def res.body() 'real_path' end
+        res
+      end
+    end
+
+    fetcher.instance_variable_set :@connection, conn
+
+    fetcher.send :open_uri_or_path, 'http://gems.example.com/redirect' do |io|
+      assert_equal 'real_path', io.read
+    end
+  end
+
+  def test_open_uri_or_path_limited_redirects
+    fetcher = Gem::RemoteFetcher.new nil
+
+    conn = Object.new
+    def conn.started?() true end
+    def conn.request(req)
+      res = Net::HTTPRedirection.new nil, 301, nil
+      res.add_field 'Location', 'http://gems.example.com/redirect'
+      res
+    end
+
+    fetcher.instance_variable_set :@connection, conn
+
+    e = assert_raise Gem::RemoteFetcher::FetchError do
+      fetcher.send :open_uri_or_path, 'http://gems.example.com/redirect'
+    end
+
+    assert_equal 'too many redirects', e.message
+  end
+
   def test_zip
     use_ui @ui do
       self.class.enable_zip = true

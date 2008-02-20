@@ -2,7 +2,6 @@ require 'net/http'
 require 'uri'
 
 require 'rubygems'
-require 'rubygems/gem_open_uri'
 
 ##
 # RemoteFetcher handles the details of fetching gems and gem information from
@@ -29,6 +28,9 @@ class Gem::RemoteFetcher
   #        HTTP_PROXY_PASS)
   # * <tt>:no_proxy</tt>: ignore environment variables and _don't_ use a proxy
   def initialize(proxy)
+    Socket.do_not_reverse_lookup = true
+
+    @connection = nil
     @proxy_uri =
       case proxy
       when :no_proxy then nil
@@ -83,7 +85,8 @@ class Gem::RemoteFetcher
     end
 
   rescue SocketError, SystemCallError, Timeout::Error => e
-    raise FetchError, "#{e.message} (#{e.class})\n\tgetting size of #{uri}"
+    raise Gem::RemoteFetcher::FetchError,
+          "#{e.message} (#{e.class})\n\tgetting size of #{uri}"
   end
 
   private
@@ -131,26 +134,48 @@ class Gem::RemoteFetcher
 
   # Read the data from the (source based) URI, but if it is a file:// URI,
   # read from the filesystem instead.
-  def open_uri_or_path(uri, &block)
+  def open_uri_or_path(uri, depth = 0, &block)
     if file_uri?(uri)
       open(get_file_uri_path(uri), &block)
     else
-      connection_options = {
-        "User-Agent" => "RubyGems/#{Gem::RubyGemsVersion} #{Gem::Platform.local}"
-      }
-
-      if @proxy_uri
-        http_proxy_url = "#{@proxy_uri.scheme}://#{@proxy_uri.host}:#{@proxy_uri.port}"  
-        connection_options[:proxy_http_basic_authentication] = [http_proxy_url, unescape(@proxy_uri.user)||'', unescape(@proxy_uri.password)||'']
-      end
-
       uri = URI.parse uri unless URI::Generic === uri
-      unless uri.nil? || uri.user.nil? || uri.user.empty? then
-        connection_options[:http_basic_authentication] =
-          [unescape(uri.user), unescape(uri.password)]
+      net_http_args = [uri.host, uri.port]
+      if @proxy_uri
+        net_http_args += [  @proxy_uri.host,
+                            @proxy_uri.port,
+                            @proxy_uri.user,
+                            @proxy_uri.password
+        ]
       end
 
-      open(uri, connection_options, &block)
+      @connection ||= Net::HTTP.new(*net_http_args)
+
+      if uri.scheme == 'https' && ! @connection.started?
+        http_obj.use_ssl = true
+        http_obj.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      end
+
+      @connection.start unless @connection.started?
+
+      request = Net::HTTP::Get.new(uri.request_uri)
+      unless uri.nil? || uri.user.nil? || uri.user.empty? then
+        request.basic_auth(uri.user, uri.password)
+      end
+
+      request.add_field('User-Agent', "RubyGems/#{Gem::RubyGemsVersion} #{Gem::Platform.local}")
+      request.add_field('Connection', 'keep-alive')
+      request.add_field('Keep-Alive', '300')
+      response = @connection.request(request)
+      case response
+      when Net::HTTPOK then
+        block.call(StringIO.new(response.body)) if block
+      when Net::HTTPRedirection then
+        raise Gem::RemoteFetcher::FetchError, "too many redirects" if depth > 10
+        open_uri_or_path(response['Location'], depth + 1, &block)
+      else
+        raise Gem::RemoteFetcher::FetchError,
+              "bad response #{response.status}"
+      end
     end
   end
 

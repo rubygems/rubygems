@@ -303,7 +303,7 @@ class Gem::Installer
   # necessary.
   def shebang(bin_file_name)
     if @env_shebang then
-      "#!/usr/bin/env ruby"
+      "#!/usr/bin/env " + Gem::ConfigMap[:ruby_install_name]
     else
       path = File.join @gem_dir, @spec.bindir, bin_file_name
 

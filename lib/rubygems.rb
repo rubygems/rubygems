@@ -219,12 +219,7 @@ module Gem
     def bindir(install_dir=Gem.dir)
       return File.join(install_dir, 'bin') unless
         install_dir.to_s == Gem.default_dir
-
-      if defined? RUBY_FRAMEWORK_VERSION then # mac framework support
-        '/usr/bin'
-      else # generic install
-        ConfigMap[:bindir]
-      end
+      Gem.default_bindir
     end
 
     # List of directory paths to search for Gems.
@@ -234,7 +229,7 @@ module Gem
     def path
       @gem_path ||= nil
       unless @gem_path
-        paths = [ENV['GEM_PATH']]
+        paths = [ENV['GEM_PATH']] || [default_path]
         paths << APPLE_GEM_HOME if defined? APPLE_GEM_HOME
         set_paths(paths.compact.join(File::PATH_SEPARATOR))
       end

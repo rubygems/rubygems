@@ -2,6 +2,12 @@
 
 	* lib/rubygems/remote_fetcher.rb: Add persistent connection support.
 	Patch #18180 by Aaron Patterson.
+	* lib/rubygems/installer.rb: Fix #shebang to use the ruby install
+	name.  Patch #16878 by Donavan Pantke.
+	* lib/rubygems/defaults.rb, lib/rubygems.rb: Enable defaults for
+	Gem.path and Gem.binder.  Patch #17886 by Donavan Pantke.
+	* test/test_gem_ext_configure_builder.rb: Make test_self_build_fail
+	more platform independent.  Patch #17599 by Martin Krauskopf.
 
 2008-02-14  Eric Hodel  <drbrain@segment7.net>
 

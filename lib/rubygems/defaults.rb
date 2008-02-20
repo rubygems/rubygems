@@ -29,7 +29,11 @@ module Gem
 
   # The default directory for binaries
   def self.default_bindir
-    Config::CONFIG['bindir']
+    if defined? RUBY_FRAMEWORK_VERSION then # mac framework support
+      '/usr/bin'
+    else # generic install
+      ConfigMap[:bindir]
+    end	      
   end
 
   # The default system-wide source info cache directory.

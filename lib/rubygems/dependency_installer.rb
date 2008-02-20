@@ -46,6 +46,7 @@ class Gem::DependencyInstaller
     @install_dir = options[:install_dir] || Gem.dir
     @security_policy = options[:security_policy]
     @wrappers = options[:wrappers]
+    @bin_dir = options[:bin_dir]
 
     @installed_gems = []
 
@@ -231,7 +232,8 @@ class Gem::DependencyInstaller
                                 :ignore_dependencies => @ignore_dependencies,
                                 :install_dir => @install_dir,
                                 :security_policy => @security_policy,
-                                :wrappers => @wrappers
+                                :wrappers => @wrappers,
+                                :bin_dir => @bin_dir
 
       spec = inst.install
 

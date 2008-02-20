@@ -62,6 +62,7 @@ class Gem::Commands::InstallCommand < Gem::Command
       :install_dir => options[:install_dir],
       :security_policy => options[:security_policy],
       :wrappers => options[:wrappers],
+      :bin_dir => options[:bin_dir]
     }
 
     get_all_gem_names.each do |gem_name|

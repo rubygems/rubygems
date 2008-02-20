@@ -1,3 +1,9 @@
+2008-12-20  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/install_update_options.rb: Add --bindir option to
+	specify destination to install executables into.  Patch #17937 by
+	Donavan Pantke.
+
 2008-12-19  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/remote_fetcher.rb: Add persistent connection support.

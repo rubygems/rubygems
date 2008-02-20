@@ -35,6 +35,11 @@ module Gem
           options[:install_dir] = File.expand_path(value)
         end
 
+        add_option('-n', '--bindir DIR',
+                   'Directory to remove binaries from') do |value, options|
+          options[:bin_dir] = File.expand_path(value)
+        end
+
         add_version_option
         add_platform_option
       end

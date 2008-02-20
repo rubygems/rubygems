@@ -30,6 +30,7 @@ class Gem::Uninstaller
     @force_executables = options[:executables]
     @force_all = options[:all]
     @force_ignore = options[:ignore]
+    @bin_dir = options[:bin_dir] 
   end
 
   ##
@@ -75,7 +76,7 @@ class Gem::Uninstaller
     return if gemspec.nil?
 
     if gemspec.executables.size > 0 then
-      bindir = Gem.bindir @gem_home
+      bindir = @bin_dir ? @bin_dir : (Gem.bindir @gem_home)
 
       raise Gem::FilePermissionError, bindir unless File.writable? bindir
 

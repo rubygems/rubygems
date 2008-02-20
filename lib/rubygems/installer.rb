@@ -63,7 +63,8 @@ class Gem::Installer
       :force => false,
       :install_dir => Gem.dir,
       :exec_format => false,
-      :env_shebang => false
+      :env_shebang => false,
+      :bin_dir => nil
     }.merge options
 
     @env_shebang = options[:env_shebang]
@@ -74,6 +75,7 @@ class Gem::Installer
     @format_executable = options[:format_executable]
     @security_policy = options[:security_policy]
     @wrappers = options[:wrappers]
+    @bin_dir = options[:bin_dir]
 
     begin
       @format = Gem::Format.from_file_by_path @gem, @security_policy
@@ -225,7 +227,7 @@ class Gem::Installer
     # If the user has asked for the gem to be installed in a directory that is
     # the system gem directory, then use the system bin directory, else create
     # (or use) a new bin dir under the gem_home.
-    bindir = Gem.bindir @gem_home
+    bindir = @bin_dir ? @bin_dir : (Gem.bindir @gem_home)
 
     Dir.mkdir bindir unless File.exist? bindir
     raise Gem::FilePermissionError.new(bindir) unless File.writable? bindir

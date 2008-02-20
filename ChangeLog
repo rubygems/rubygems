@@ -3,6 +3,10 @@
 	* lib/rubygems/install_update_options.rb: Add --bindir option to
 	specify destination to install executables into.  Patch #17937 by
 	Donavan Pantke.
+	* lib/rubygems/specification.rb: Fix Time.today == Time.today.  Bug
+	#17413 by Andrei Bocan.
+	* setup.rb: Properly check for deletablitily of user and system
+	caches.  Bug #17869 by Alexey Verkhovsky.
 
 2008-12-19  Eric Hodel  <drbrain@segment7.net>
 

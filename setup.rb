@@ -180,8 +180,8 @@ require 'rubygems/source_info_cache'
 user_cache_file = Gem::SourceInfoCache.user_cache_file
 system_cache_file = Gem::SourceInfoCache.system_cache_file
 
-rm user_cache_file if File.writable? user_cache_file
-rm system_cache_file if File.writable? system_cache_file
+rm_f user_cache_file if File.writable? File.dirname(user_cache_file)
+rm_f system_cache_file if File.writable? File.dirname(system_cache_file)
 
 # install RDoc
 

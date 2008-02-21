@@ -6,7 +6,8 @@
 	* lib/rubygems/specification.rb: Fix Time.today == Time.today.  Bug
 	#17413 by Andrei Bocan.
 	* setup.rb: Properly check for deletablitily of user and system
-	caches.  Bug #17869 by Alexey Verkhovsky.
+	caches.  Bug #17869 by Alexey Verkhovsky.  Fix --no-format-executable.
+	Fixes bug #16879 by Charles Nutter.
 
 2008-12-19  Eric Hodel  <drbrain@segment7.net>
 

@@ -30,7 +30,7 @@ class Gem::RemoteFetcher
   def initialize(proxy)
     Socket.do_not_reverse_lookup = true
 
-    @connection = nil
+    @connections = {}
     @proxy_uri =
       case proxy
       when :no_proxy then nil
@@ -49,9 +49,8 @@ class Gem::RemoteFetcher
     raise FetchError, "timed out fetching #{uri}"
   rescue IOError, SocketError, SystemCallError => e
     raise FetchError, "#{e.class}: #{e} reading #{uri}"
-  rescue OpenURI::HTTPError => e
-    body = e.io.readlines.join "\n\t"
-    message = "#{e.class}: #{e} reading #{uri}\n\t#{body}"
+  rescue => e
+    message = "#{e.class}: #{e} reading #{uri}"
     raise FetchError, message
   end
 
@@ -140,7 +139,8 @@ class Gem::RemoteFetcher
     else
       uri = URI.parse uri unless URI::Generic === uri
       net_http_args = [uri.host, uri.port]
-      if @proxy_uri
+
+      if @proxy_uri then
         net_http_args += [  @proxy_uri.host,
                             @proxy_uri.port,
                             @proxy_uri.user,
@@ -148,14 +148,16 @@ class Gem::RemoteFetcher
         ]
       end
 
-      @connection ||= Net::HTTP.new(*net_http_args)
+      connection_id = net_http_args.join ':'
+      @connections[connection_id] ||= Net::HTTP.new(*net_http_args)
+      connection = @connections[connection_id]
 
-      if uri.scheme == 'https' && ! @connection.started?
+      if uri.scheme == 'https' && ! connection.started?
         http_obj.use_ssl = true
         http_obj.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
 
-      @connection.start unless @connection.started?
+      connection.start unless connection.started?
 
       request = Net::HTTP::Get.new(uri.request_uri)
       unless uri.nil? || uri.user.nil? || uri.user.empty? then
@@ -165,7 +167,21 @@ class Gem::RemoteFetcher
       request.add_field('User-Agent', "RubyGems/#{Gem::RubyGemsVersion} #{Gem::Platform.local}")
       request.add_field('Connection', 'keep-alive')
       request.add_field('Keep-Alive', '300')
-      response = @connection.request(request)
+
+      # HACK work around EOFError bug in Net::HTTP
+      retried = false
+      begin
+        response = connection.request(request)
+      rescue EOFError
+        raise Gem::RemoteFetcher::FetchError, 'too many connection resets' if
+          retried
+
+        connection.finish
+        connection.start
+        retried = true
+        retry
+      end
+
       case response
       when Net::HTTPOK then
         block.call(StringIO.new(response.body)) if block

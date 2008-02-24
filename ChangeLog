@@ -1,3 +1,8 @@
+2008-12-23  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/remote_fetcher.rb:  Change hosts correctly when
+	redirecting.  Handle EOFError from Net::HTTP.
+
 2008-12-20  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/install_update_options.rb: Add --bindir option to

@@ -12,7 +12,7 @@ require 'rubygems/user_interaction'
 
 ##
 # An Uninstaller.
-#
+
 class Gem::Uninstaller
 
   include Gem::UserInteraction
@@ -21,8 +21,8 @@ class Gem::Uninstaller
   # Constructs an Uninstaller instance
   #
   # gem:: [String] The Gem name to uninstall
-  #
-  def initialize(gem, options)
+
+  def initialize(gem, options = {})
     @gem = gem
     @version = options[:version] || Gem::Requirement.default
     gem_home = options[:install_dir] || Gem.dir
@@ -36,7 +36,7 @@ class Gem::Uninstaller
   ##
   # Performs the uninstall of the Gem.  This removes the spec, the
   # Gem directory, and the cached .gem file,
-  #
+
   def uninstall
     list = Gem.source_index.search(/^#{@gem}$/, @version)
 
@@ -67,18 +67,14 @@ class Gem::Uninstaller
   end
   
   ##
-  # Remove executables and batch files (windows only) for the gem as
-  # it is being installed
-  #
-  # gemspec::[Specification] the gem whose executables need to be removed.
-  #
+  # Removes installed executables and batch files (windows only) for
+  # +gemspec+.
+
   def remove_executables(gemspec)
     return if gemspec.nil?
 
     if gemspec.executables.size > 0 then
       bindir = @bin_dir ? @bin_dir : (Gem.bindir @gem_home)
-
-      raise Gem::FilePermissionError, bindir unless File.writable? bindir
 
       list = Gem.source_index.search(gemspec.name).delete_if { |spec|
         spec.version == gemspec.version
@@ -94,14 +90,19 @@ class Gem::Uninstaller
 
       return if executables.size == 0
 
-      answer = @force_executables || ask_yes_no(
-        "Remove executables:\n" \
-        "\t#{gemspec.executables.join(", ")}\n\nin addition to the gem?",
-        true) # " # appease ruby-mode - don't ask
+      answer = if @force_executables.nil? then
+                 ask_yes_no("Remove executables:\n" \
+                            "\t#{gemspec.executables.join(", ")}\n\nin addition to the gem?",
+                            true) # " # appease ruby-mode - don't ask
+               else
+                 @force_executables
+               end
 
       unless answer then
         say "Executables and scripts will remain installed."
       else
+        raise Gem::FilePermissionError, bindir unless File.writable? bindir
+
         gemspec.executables.each do |exe_name|
           say "Removing #{exe_name}"
           FileUtils.rm_f File.join(bindir, exe_name)
@@ -111,23 +112,22 @@ class Gem::Uninstaller
     end
   end
   
+  ##
+  # Removes all gems in +list+.
   #
-  # list:: the list of all gems to remove
-  #
-  # Warning: this method modifies the +list+ parameter.  Once it has
-  # uninstalled a gem, it is removed from that list.
-  #
+  # NOTE: removes uninstalled gems from +list+.
+
   def remove_all(list)
-    list.dup.each { |gem| remove(gem, list) }
+    list.dup.each { |spec| remove spec, list }
   end
 
-  #
+  ##
   # spec:: the spec of the gem to be uninstalled
   # list:: the list of all such gems
   #
   # Warning: this method modifies the +list+ parameter.  Once it has
   # uninstalled a gem, it is removed from that list.
-  #
+
   def remove(spec, list)
     unless dependencies_ok? spec then
       raise Gem::DependencyRemovalException,

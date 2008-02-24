@@ -10,6 +10,8 @@
 	* lib/rubygems/uninstall_command.rb:  Print message when gem is not in
 	GEM_HOME.
 	* lib/rubygems/commands/cleanup_command.rb:  Clean up all old gems.
+	* lib/rubygems/commands/unpack_command.rb:  Scan every gem path when
+	unpacking.  Fixes bug #17602 by Ryan Davis.
 
 2008-12-20  Eric Hodel  <drbrain@segment7.net>
 

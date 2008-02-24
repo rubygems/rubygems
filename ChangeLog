@@ -2,6 +2,8 @@
 
 	* lib/rubygems/remote_fetcher.rb:  Change hosts correctly when
 	redirecting.  Handle EOFError from Net::HTTP.
+	* lib/rubygems/commands/specification_command.rb:  Pull specifications
+	from gem files.
 
 2008-12-20  Eric Hodel  <drbrain@segment7.net>
 

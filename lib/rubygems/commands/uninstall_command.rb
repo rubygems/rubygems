@@ -59,7 +59,13 @@ module Gem
 
       def execute
         get_all_gem_names.each do |gem_name|
-          Gem::Uninstaller.new(gem_name, options).uninstall
+          begin
+            Gem::Uninstaller.new(gem_name, options).uninstall
+          rescue Gem::GemNotInHomeException => e
+            spec = e.spec
+            alert("In order to remove #{spec.name}, please execute:\n" \
+                  "\tgem uninstall #{spec.name} --install-dir=#{spec.installation_path}")
+          end
         end
       end
     end

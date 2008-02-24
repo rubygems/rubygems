@@ -56,35 +56,36 @@ class Gem::Commands::CleanupCommand < Gem::Command
       primary_gems[spec.name].version != spec.version
     }
 
-    p gems_to_cleanup.uniq.map { |spec| spec.full_name }
-
     uninstall_command = Gem::CommandManager.instance['uninstall']
     deplist = Gem::DependencyList.new
     gems_to_cleanup.uniq.each do |spec| deplist.add spec end
 
-    p deplist.dependency_order.map { |s| s.full_name }
+    deps = deplist.strongly_connected_components.flatten.reverse
 
-    deplist.dependency_order.each do |spec|
+    deps.each do |spec|
       if options[:dryrun] then
         say "Dry Run Mode: Would uninstall #{spec.full_name}"
       else
-        say "Attempting uninstall on #{spec.full_name}"
+        say "Attempting to uninstall #{spec.full_name}"
 
         options[:args] = [spec.name]
         options[:version] = "= #{spec.version}"
         options[:executables] = false
 
-        uninstall_command.merge_options(options)
+        uninstaller = Gem::Uninstaller.new spec.name, options
 
         begin
-          uninstall_command.execute
-        rescue Gem::DependencyRemovalException => ex
-          say "Unable to uninstall #{spec.full_name} ... continuing with remaining gems"
+          uninstaller.uninstall
+        rescue Gem::DependencyRemovalException,
+               Gem::GemNotInHomeException => e
+          say "Unable to uninstall #{spec.full_name}:"
+          say "\t#{e.class}: #{e.message}"
         end
       end
     end
 
     say "Clean Up Complete"
   end
+
 end
 

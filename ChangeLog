@@ -5,7 +5,11 @@
 	* lib/rubygems/commands/specification_command.rb:  Pull specifications
 	from gem files.
 	* lib/rubygems/uninstaller.rb:  When :executable is set, don't ask the
-	user.
+	user.  Fixes bug #16812 by Matt Mower.  Raise exception instead of
+	printing message when gem is not in GEM_HOME.
+	* lib/rubygems/uninstall_command.rb:  Print message when gem is not in
+	GEM_HOME.
+	* lib/rubygems/commands/cleanup_command.rb:  Clean up all old gems.
 
 2008-12-20  Eric Hodel  <drbrain@segment7.net>
 

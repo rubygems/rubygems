@@ -135,10 +135,11 @@ class Gem::Uninstaller
     end
 
     unless path_ok? spec then
-      alert("In order to remove #{spec.name}, please execute:\n" \
-            "\tgem uninstall #{spec.name} --install-dir=#{spec.installation_path}")
-      raise Gem::GemNotInHomeException,
+      e = Gem::GemNotInHomeException.new \
             "Gem is not installed in directory #{@gem_home}"
+      e.spec = spec
+
+      raise e
     end
 
     raise Gem::FilePermissionError, spec.installation_path unless
@@ -183,8 +184,8 @@ class Gem::Uninstaller
   def dependencies_ok?(spec)
     return true if @force_ignore
 
-    srcindex = Gem::SourceIndex.from_installed_gems
-    deplist = Gem::DependencyList.from_source_index srcindex
+    source_index = Gem::SourceIndex.from_installed_gems
+    deplist = Gem::DependencyList.from_source_index source_index
     deplist.ok_to_remove?(spec.full_name) || ask_if_ok(spec)
   end
 

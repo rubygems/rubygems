@@ -13,7 +13,10 @@ class Gem::DependencyRemovalException < Gem::Exception; end
 
 ##
 # Raised when attempting to uninstall a gem that isn't in GEM_HOME.
-class Gem::GemNotInHomeException < Gem::Exception; end
+
+class Gem::GemNotInHomeException < Gem::Exception
+  attr_accessor :spec
+end
 
 class Gem::DocumentError < Gem::Exception; end
 

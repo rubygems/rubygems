@@ -2,6 +2,8 @@
 
 	* lib/rubygems.rb:  Expand sitelibdir when checking prefix.  Fixes bug
 	#17983 by Hemant Kumar.
+	* setup.rb:  Print release notes on installation.  Tell people where
+	`gem` was installed.
 
 2008-02-23  Eric Hodel  <drbrain@segment7.net>
 

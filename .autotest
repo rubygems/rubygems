@@ -1,5 +1,5 @@
 Autotest.add_hook :initialize do |at|
-  at.order = :natural
+  at.order = :natural # I am a bad person - Eric Hodel
 
   at.add_exception %r%/\.svn/%
   at.add_exception %r%\.rbc$%
@@ -7,8 +7,12 @@ Autotest.add_hook :initialize do |at|
   at.find_directories.clear
   at.find_directories.push 'lib', 'test'
 
-  at.add_mapping %r%^test/test_gem_(.*).rb$% do |_, m|
-    Dir["lib/rubygems/#{m[1]}.rb"]
+  at.add_mapping %r%^lib/rubygems.rb$% do |_, m|
+    "test/test_gem.rb"
+  end
+
+  at.add_mapping %r%^lib/rubygems/(.*).rb$% do |_, m|
+    "test/test_gem_#{m[1].gsub '/', '_'}.rb"
   end
 end
 

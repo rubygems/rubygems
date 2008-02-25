@@ -10,6 +10,8 @@ Get it from RubyForge (http://rubygems.rubyforge.org) and run (as root, if appro
 
 For more details and other options, see:
 
+  ruby setup.rb --help
+
 * {User Guide/Installation}[http://docs.rubygems.org/read/chapter/3]
 
 == For User Documentation, see

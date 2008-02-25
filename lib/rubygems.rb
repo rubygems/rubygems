@@ -126,7 +126,8 @@ module Gem
 
   def self.prefix
     prefix = File.dirname File.expand_path(__FILE__)
-    if prefix == ConfigMap[:sitelibdir] then
+
+    if prefix == File.expand_path(ConfigMap[:sitelibdir]) then
       nil
     else
       File.dirname prefix

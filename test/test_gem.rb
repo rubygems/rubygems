@@ -284,6 +284,18 @@ class TestGem < RubyGemTestCase
     assert_equal File.dirname(File.dirname(file_name)), Gem.prefix
   end
 
+  def test_self_prefix_odd
+    orig_sitelibdir = Gem::ConfigMap[:sitelibdir]
+
+    file_name = File.expand_path __FILE__
+    prefix = File.join File.dirname(File.dirname(file_name)), 'lib'
+    Gem::ConfigMap[:sitelibdir] = prefix.sub(/[\w]\//, '\&/')
+
+    assert_nil Gem.prefix
+  ensure
+    Gem::ConfigMap[:sitelibdir] = orig_sitelibdir
+  end
+
   def test_self_required_location
     util_make_gems
 

@@ -18,14 +18,23 @@ end
 $:.unshift 'lib'
 require 'rubygems'
 
-if ARGV.include? '--help' then
+if ARGV.include? '--help' or ARGV.include? '-h' then
   puts "ruby setup.rb [options]:"
+  puts
+  puts "RubyGems will install the gem command with a name matching ruby's"
+  puts "prefix and suffix.  If ruby was installed as `ruby18`, gem will be"
+  puts "installed as `gem18`."
+  puts
+  puts "By default, this RubyGems will install gem as:"
+  puts
+  puts "  #{Gem.default_exec_format % 'gem'}"
+  puts
+  puts "Options:"
   puts
   puts "  --prefix=DIR           Prefix path for installing RubyGems"
   puts "                         Will not affect gem repository location"
   puts
-  puts "  --no-format-executable Make the gem command's prefix and suffix match ruby's"
-  puts "                         If ruby is installed as ruby19, gem will be gem19"
+  puts "  --no-format-executable Force installation as `gem`"
   puts
   puts "  --no-rdoc              Don't build RDoc for RubyGems"
   puts
@@ -91,8 +100,12 @@ Dir.chdir 'lib' do
   end
 end
 
+bin_file_names = []
+
 Dir.chdir 'bin' do
   bin_files = Dir['*']
+
+  bin_files.delete 'update_rubygems'
 
   bin_files.each do |bin_file|
     bin_file_formatted = if ARGV.include? '--no-format-executable' then
@@ -114,6 +127,7 @@ Dir.chdir 'bin' do
       end
 
       install bin_tmp_file, dest_file, :mode => 0755
+      bin_file_names << dest_file
     ensure
       rm bin_tmp_file
     end
@@ -188,7 +202,7 @@ rm_f system_cache_file if File.writable? File.dirname(system_cache_file)
 gem_doc_dir = File.join Gem.dir, 'doc'
 
 if File.writable? gem_doc_dir then
-  puts "Removing old RubyGems RDoc and ri..."
+  puts "Removing old RubyGems RDoc and ri"
   Dir[File.join(Gem.dir, 'doc', 'rubygems-[0-9]*')].each do |dir|
     rm_rf dir
   end
@@ -208,13 +222,13 @@ if File.writable? gem_doc_dir then
 
   unless ARGV.include? '--no-ri' then
     ri_dir = File.join doc_dir, 'ri'
-    puts "Installing #{rubygems_name} ri into #{ri_dir}..."
+    puts "Installing #{rubygems_name} ri into #{ri_dir}"
     run_rdoc '--ri', '--op', ri_dir
   end
 
   unless ARGV.include? '--no-rdoc' then
     rdoc_dir = File.join(doc_dir, 'rdoc')
-    puts "Installing #{rubygems_name} rdoc into #{rdoc_dir}..."
+    puts "Installing #{rubygems_name} rdoc into #{rdoc_dir}"
     run_rdoc '--op', rdoc_dir
   end
 else
@@ -230,10 +244,8 @@ def stub?(path)
   File.readlines(path).size < 20
 end
 
-puts <<-EOF.gsub(/^ */, '')
-  As of RubyGems 0.8.0, library stubs are no longer needed.
-  Searching $LOAD_PATH for stubs to optionally delete (may take a while)...
-  EOF
+puts "As of RubyGems 0.8.0, library stubs are no longer needed."
+puts "Searching $LOAD_PATH for stubs to optionally delete (may take a while)"
 
 gemfiles = Dir[File.join("{#{($LOAD_PATH).join(',')}}", '**', '*.rb')]
 gemfiles = gemfiles.map { |file| File.expand_path file }.uniq
@@ -267,4 +279,25 @@ if seen_stub then
 else
   puts "No library stubs found."
 end
+
+puts
+puts "-" * 78
+puts
+
+release_notes = File.join 'doc', 'release_notes',
+                          "rel_#{Gem::RubyGemsVersion.gsub '.', '_'}.rdoc"
+
+if File.exist? release_notes then
+  puts File.read(release_notes)
+else
+  puts "Oh-no! Unable to find release notes in:\n\t#{release_notes}"
+end
+
+puts
+puts "-" * 78
+puts
+
+puts "RubyGems installed the following executables:"
+puts bin_file_names.map { |name| "\t#{name}\n" }
+puts
 

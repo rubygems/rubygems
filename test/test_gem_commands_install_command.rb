@@ -2,6 +2,14 @@ require 'test/unit'
 require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'rubygems/commands/install_command'
 
+class Gem::Commands::InstallCommand
+  attr_reader :exit_code
+
+  def exit(code = 0)
+    @exit_code = code
+  end
+end
+
 class TestGemCommandsInstallCommand < RubyGemTestCase
 
   def setup
@@ -28,6 +36,8 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     assert_equal "INFO:  use --ignore-dependencies to install only the gems you list",
                  output.shift
     assert output.empty?, output.inspect
+
+    assert_equal nil, @cmd.exit_code
   end
 
   def test_execute_local
@@ -55,6 +65,8 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     assert_equal "Successfully installed #{@gem1.full_name}", out.shift
     assert_equal "1 gem installed", out.shift
     assert out.empty?, out.inspect
+
+    assert_equal 0, @cmd.exit_code
   end
 
   def test_execute_local_missing
@@ -70,6 +82,8 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     # HACK no repository was checked
     assert_equal "ERROR:  could not find gem_one locally or in a repository\n",
                  @ui.error
+
+    assert_equal 2, @cmd.exit_code
   end
 
   def test_execute_no_gem
@@ -78,6 +92,8 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     assert_raise Gem::CommandLineError do
       @cmd.execute
     end
+
+    assert_equal nil, @cmd.exit_code
   end
 
   def test_execute_nonexistent
@@ -93,6 +109,8 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
 
     assert_equal "ERROR:  could not find nonexistent locally or in a repository\n",
                  @ui.error
+
+    assert_equal 2, @cmd.exit_code
   end
 
   def test_execute_remote
@@ -121,6 +139,8 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     assert_equal "Installing RDoc documentation for #{@gem1.full_name}...",
                  out.shift
     assert out.empty?, out.inspect
+
+    assert_equal 0, @cmd.exit_code
   end
 
   def test_execute_two
@@ -154,6 +174,8 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     assert_equal "Successfully installed #{@gem2.full_name}", out.shift
     assert_equal "2 gems installed", out.shift
     assert out.empty?, out.inspect
+
+    assert_equal 0, @cmd.exit_code
   end
 
 end

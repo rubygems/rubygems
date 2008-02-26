@@ -4,6 +4,11 @@
 	#17983 by Hemant Kumar.
 	* setup.rb:  Print release notes on installation.  Tell people where
 	`gem` was installed.
+	* bin/update_rubygems:  Added --help output to explain how to install
+	earlier versions of RubyGems.  Added --version option workaround.
+	Fixes bug #16842 by Chad Woolley.
+	* lib/rubygems/install_command.rb:  Give proper exit code on failure.
+	Fixes bug #17438 by Josh Nichols.
 
 2008-02-23  Eric Hodel  <drbrain@segment7.net>
 

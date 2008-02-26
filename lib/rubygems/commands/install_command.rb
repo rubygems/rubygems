@@ -65,6 +65,8 @@ class Gem::Commands::InstallCommand < Gem::Command
       :bin_dir => options[:bin_dir]
     }
 
+    exit_code = 0
+
     get_all_gem_names.each do |gem_name|
       begin
         inst = Gem::DependencyInstaller.new gem_name, options[:version],
@@ -78,8 +80,10 @@ class Gem::Commands::InstallCommand < Gem::Command
         installed_gems.push(*inst.installed_gems)
       rescue Gem::InstallError => e
         alert_error "Error installing #{gem_name}:\n\t#{e.message}"
+        exit_code |= 1
       rescue Gem::GemNotFoundException => e
         alert_error e.message
+        exit_code |= 2
 #      rescue => e
 #        # TODO: Fix this handle to allow the error to propagate to
 #        # the top level handler.  Examine the other errors as
@@ -122,6 +126,8 @@ class Gem::Commands::InstallCommand < Gem::Command
         end
       end
     end
+
+    exit exit_code
   end
 
 end

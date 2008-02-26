@@ -1,3 +1,9 @@
+2008-02-26  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/update_command.rb:  Only update gems that need
+	updates.  Fixes bug #14780 by Mathieu Lajugie.  Don't force
+	remote-only updates.
+
 2008-02-25  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb:  Expand sitelibdir when checking prefix.  Fixes bug

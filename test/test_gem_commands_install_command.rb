@@ -2,14 +2,6 @@ require 'test/unit'
 require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'rubygems/commands/install_command'
 
-class Gem::Commands::InstallCommand
-  attr_reader :exit_code
-
-  def exit(code = 0)
-    @exit_code = code
-  end
-end
-
 class TestGemCommandsInstallCommand < RubyGemTestCase
 
   def setup

@@ -1,8 +1,10 @@
 require 'rubygems/command'
+require 'rubygems/command_manager'
 require 'rubygems/install_update_options'
 require 'rubygems/local_remote_options'
 require 'rubygems/source_info_cache'
 require 'rubygems/version_option'
+require 'rubygems/commands/install_command'
 
 class Gem::Commands::UpdateCommand < Gem::Command
 
@@ -45,7 +47,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
   def execute
     if options[:system] then
-      say "Updating RubyGems..."
+      say "Updating RubyGems"
 
       unless options[:args].empty? then
         fail "No gem names are allowed with the --system option"
@@ -53,10 +55,10 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
       options[:args] = ["rubygems-update"]
     else
-      say "Updating installed gems..."
+      say "Updating installed gems"
     end
 
-    hig = highest_installed_gems = {}
+    hig = {}
 
     Gem::SourceIndex.from_installed_gems.each do |name, spec|
       if hig[spec.name].nil? or hig[spec.name].version < spec.version then
@@ -64,15 +66,15 @@ class Gem::Commands::UpdateCommand < Gem::Command
       end
     end
 
-    remote_gemspecs = Gem::SourceInfoCache.search(//)
+    pattern = if options[:args].empty? then
+             //
+              else
+                Regexp.union(*options[:args])
+              end
 
-    gems_to_update = if options[:args].empty? then
-                       which_to_update(highest_installed_gems, remote_gemspecs)
-                     else
-                       options[:args]
-                     end
+    remote_gemspecs = Gem::SourceInfoCache.search pattern
 
-    options[:domain] = :remote # install from remote source
+    gems_to_update = which_to_update hig, remote_gemspecs
 
     # HACK use the real API
     install_command = Gem::CommandManager.instance['install']

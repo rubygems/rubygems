@@ -231,8 +231,12 @@ module Gem
       @gem_path ||= nil
       unless @gem_path
         paths = [ENV['GEM_PATH']] || [default_path]
-        paths << APPLE_GEM_HOME if defined? APPLE_GEM_HOME
-        set_paths(paths.compact.join(File::PATH_SEPARATOR))
+
+        if defined?(APPLE_GEM_HOME) and not ENV['GEM_PATH'] then
+          paths << APPLE_GEM_HOME
+        end
+
+        set_paths paths.compact.join(File::PATH_SEPARATOR)
       end
       @gem_path
     end

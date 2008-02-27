@@ -3,6 +3,9 @@
 	* lib/rubygems/commands/update_command.rb:  Only update gems that need
 	updates.  Fixes bug #14780 by Mathieu Lajugie.  Don't force
 	remote-only updates.
+	* lib/rubygems/commands/environment_command.rb:  Display path as a
+	usable path.
+	* lib/rubygems.rb:  Don't add APPLE_GEM_HOME with ENV['GEM_HOME'].
 
 2008-02-25  Eric Hodel  <drbrain@segment7.net>
 

@@ -47,23 +47,6 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
     assert out.empty?, out.inspect
   end
 
-  def test_execute_up_to_date
-    Gem::Installer.new(@a2_path).install
-
-    @cmd.options[:args] = []
-
-    use_ui @ui do
-      @cmd.execute
-    end
-
-    out = @ui.output.split "\n"
-    assert_equal "Updating installed gems", out.shift
-    assert_match %r|Bulk updating|, out.shift
-    assert_equal "Nothing to update", out.shift
-
-    assert out.empty?, out.inspect
-  end
-
   def test_execute_named
     Gem::Installer.new(@a1_path).install
 
@@ -92,6 +75,23 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
     Gem::Installer.new(@a2_path).install
 
     @cmd.options[:args] = [@a2.name]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    out = @ui.output.split "\n"
+    assert_equal "Updating installed gems", out.shift
+    assert_match %r|Bulk updating|, out.shift
+    assert_equal "Nothing to update", out.shift
+
+    assert out.empty?, out.inspect
+  end
+
+  def test_execute_up_to_date
+    Gem::Installer.new(@a2_path).install
+
+    @cmd.options[:args] = []
 
     use_ui @ui do
       @cmd.execute

@@ -76,15 +76,18 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     gems_to_update = which_to_update hig, remote_gemspecs
 
-    # HACK use the real API
-    install_command = Gem::CommandManager.instance['install']
+    updated = []
 
+    # HACK use the real API
     gems_to_update.uniq.sort.each do |name|
-      say "Attempting remote update of #{name}"
-      options[:args] = [name]
-      options[:ignore_dependencies] = true # HACK skip seen gems instead
-      install_command.merge_options(options)
-      install_command.execute
+      next if updated.any? { |spec| spec.name == name }
+      say "Updating #{name}"
+      installer = Gem::DependencyInstaller.new name, options
+      installer.install
+      installer.installed_gems.each do |spec|
+        updated << spec
+        say "Successfully installed #{spec.full_name}"
+      end
     end
 
     if gems_to_update.include? "rubygems-update" then
@@ -99,12 +102,10 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
       say "RubyGems system software updated" if installed
     else
-      updated = gems_to_update.uniq.sort.collect { |g| g.to_s }
-
       if updated.empty? then
         say "Nothing to update"
       else
-        say "Gems updated: #{updated.join ', '}"
+        say "Gems updated: #{updated.map { |spec| spec.name }.join ', '}"
       end
     end
   end

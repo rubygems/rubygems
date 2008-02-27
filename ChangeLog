@@ -1,3 +1,8 @@
+2008-02-27  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/dependency_installer.rb:  Automatically fall back to
+	local-only install on network error.  Fixes bug #15759 by Chauk-Mean P.
+
 2008-02-26  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/update_command.rb:  Only update gems that need

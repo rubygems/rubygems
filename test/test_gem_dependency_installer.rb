@@ -114,7 +114,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     inst = nil
 
     Dir.chdir @tempdir do
-      inst = Gem::DependencyInstaller.new 'a-1.gem', :domain => :local
+      inst = Gem::DependencyInstaller.new 'a-1.gem', nil, :domain => :local
       inst.install
     end
 
@@ -128,7 +128,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     inst = nil
 
     Dir.chdir @tempdir do
-      inst = Gem::DependencyInstaller.new 'b-1.gem', :domain => :local
+      inst = Gem::DependencyInstaller.new 'b-1.gem', nil, :domain => :local
       inst.install
     end
 
@@ -144,7 +144,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     Dir.chdir @tempdir do
       Gem::Installer.new('a-1.gem').install
 
-      inst = Gem::DependencyInstaller.new 'b-1.gem', :domain => :local
+      inst = Gem::DependencyInstaller.new 'b-1.gem', nil, :domain => :local
       inst.install
     end
 
@@ -155,7 +155,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     inst = nil
 
     Dir.chdir @tempdir do
-      inst = Gem::DependencyInstaller.new 'gems/a-1.gem', :domain => :local
+      inst = Gem::DependencyInstaller.new 'gems/a-1.gem', nil, :domain => :local
       inst.install
     end
 
@@ -245,6 +245,26 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
     assert_equal a1_expected, a1.loaded_from
     assert_equal b1_expected, b1.loaded_from
+  end
+
+  def test_install_domain_both_no_network
+    Gem::SourceInfoCache.instance_variable_set :@cache, nil
+
+    @fetcher.data["http://gems.example.com/gems/Marshal.#{@marshal_version}"] =
+      proc do
+        raise Gem::RemoteFetcher::FetchError
+      end
+
+    FileUtils.mv @a1_gem, @tempdir
+    FileUtils.mv @b1_gem, @tempdir
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new 'b', nil, :domain => :both
+      inst.install
+    end
+
+    assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
   end
 
   def test_install_domain_local

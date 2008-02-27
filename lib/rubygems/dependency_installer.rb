@@ -108,7 +108,15 @@ class Gem::DependencyInstaller
     end
 
     if @domain == :both or @domain == :remote then
-      gems_and_sources.push(*Gem::SourceInfoCache.search_with_source(dep, true))
+      begin
+        gems_and_sources.push(*Gem::SourceInfoCache.search_with_source(dep, true))
+      rescue Gem::RemoteFetcher::FetchError => e
+        if Gem.configuration.really_verbose then
+          say "Error fetching remote data:\t\t#{e.message}"
+          say "Falling back to local-only install"
+        end
+        @domain = :local
+      end
     end
 
     gems_and_sources.sort_by do |gem, source|

@@ -192,42 +192,38 @@ class TestGemSourceInfoCache < RubyGemTestCase
   end
 
   def test_search
-    si = Gem::SourceIndex.new @gem1.full_name => @gem1
-    cache_data = {
-      @gem_repo => Gem::SourceInfoCacheEntry.new(si, nil)
-    }
+    si = Gem::SourceIndex.new
+    si.add_spec @a1
+    cache_data = { @gem_repo => Gem::SourceInfoCacheEntry.new(si, nil) }
     @sic.instance_variable_set :@cache_data, cache_data
 
-    assert_equal [@gem1], @sic.search(//)
+    assert_equal [@a1], @sic.search(//)
   end
 
   def test_search_dependency
-    si = Gem::SourceIndex.new @gem1.full_name => @gem1
-    cache_data = {
-      @gem_repo => Gem::SourceInfoCacheEntry.new(si, nil)
-    }
+    si = Gem::SourceIndex.new
+    si.add_spec @a1
+    cache_data = { @gem_repo => Gem::SourceInfoCacheEntry.new(si, nil) }
     @sic.instance_variable_set :@cache_data, cache_data
 
-    dep = Gem::Dependency.new @gem1.name, @gem1.version
+    dep = Gem::Dependency.new @a1.name, @a1.version
 
-    assert_equal [@gem1], @sic.search(dep)
+    assert_equal [@a1], @sic.search(dep)
   end
 
   def test_search_no_matches
-    si = Gem::SourceIndex.new @gem1.full_name => @gem1
-    cache_data = {
-      @gem_repo => Gem::SourceInfoCacheEntry.new(si, nil)
-    }
+    si = Gem::SourceIndex.new
+    si.add_spec @a1
+    cache_data = { @gem_repo => Gem::SourceInfoCacheEntry.new(si, nil) }
     @sic.instance_variable_set :@cache_data, cache_data
 
     assert_equal [], @sic.search(/nonexistent/)
   end
 
   def test_search_no_matches_in_source
-    si = Gem::SourceIndex.new @gem1.full_name => @gem1
-    cache_data = {
-      @gem_repo => Gem::SourceInfoCacheEntry.new(si, nil)
-    }
+    si = Gem::SourceIndex.new
+    si.add_spec @a1
+    cache_data = { @gem_repo => Gem::SourceInfoCacheEntry.new(si, nil) }
     @sic.instance_variable_set :@cache_data, cache_data
     Gem.sources.replace %w[more-gems.example.com]
 
@@ -235,13 +231,12 @@ class TestGemSourceInfoCache < RubyGemTestCase
   end
 
   def test_search_with_source
-    si = Gem::SourceIndex.new @gem1.full_name => @gem1
-    cache_data = {
-      @gem_repo => Gem::SourceInfoCacheEntry.new(si, nil)
-    }
+    si = Gem::SourceIndex.new
+    si.add_spec @a1
+    cache_data = { @gem_repo => Gem::SourceInfoCacheEntry.new(si, nil) }
     @sic.instance_variable_set :@cache_data, cache_data
 
-    assert_equal [[@gem1, @gem_repo]],
+    assert_equal [[@a1, @gem_repo]],
                  @sic.search_with_source(//)
   end
 

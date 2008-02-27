@@ -211,6 +211,7 @@ class RubyGemTestCase < Test::Unit::TestCase
 
     @a1 = quick_gem('a', '1', &init)
     @a2 = quick_gem('a', '2', &init)
+    @a_evil9 = quick_gem('a_evil', '9', &init)
     @b2 = quick_gem('b', '2', &init)
     @c1_2   = quick_gem('c', '1.2',   &init)
     @pl1     = quick_gem 'pl', '1' do |s| # l for legacy
@@ -226,7 +227,7 @@ class RubyGemTestCase < Test::Unit::TestCase
     write_file File.join(*%W[gems #{@c1_2.original_name} lib code.rb]) do end
     write_file File.join(*%W[gems #{@pl1.original_name} lib code.rb]) do end
 
-    [@a1, @a2, @b2, @c1_2, @pl1].each { |spec| util_build_gem spec }
+    [@a1, @a2, @a_evil9, @b2, @c1_2, @pl1].each { |spec| util_build_gem spec }
 
     FileUtils.rm_r File.join(@gemhome, 'gems', @pl1.original_name)
 
@@ -255,32 +256,19 @@ class RubyGemTestCase < Test::Unit::TestCase
     @fetcher = FakeFetcher.new
     @fetcher.uri = @uri
 
-    @gem1 = quick_gem 'gem_one' do |gem|
-      gem.files = %w[Rakefile lib/gem_one.rb]
-    end
+    util_make_gems
 
-    @gem2 = quick_gem 'gem_two' do |gem|
-      gem.files = %w[Rakefile lib/gem_two.rb]
-    end
-
-    @gem3 = quick_gem 'gem_three' do |gem| # missing gem
-      gem.files = %w[Rakefile lib/gem_three.rb]
-    end
-
-    # this gem has a higher version and longer name than the gem we want
-    @gem4 = quick_gem 'gem_one_evil', '666' do |gem|
-      gem.files = %w[Rakefile lib/gem_one.rb]
-    end
-
-    @all_gems = [@gem1, @gem2, @gem3, @gem4].sort
+    @all_gems = [@a1, @a2, @a_evil9, @b2, @c1_2].sort
     @all_gem_names = @all_gems.map { |gem| gem.full_name }
 
-    gem_names = [@gem1.full_name, @gem2.full_name, @gem4.full_name]
+    gem_names = [@a1.full_name, @a2.full_name, @b2.full_name]
     @gem_names = gem_names.sort.join("\n")
 
-    @source_index = Gem::SourceIndex.new @gem1.full_name => @gem1,
-                                         @gem2.full_name => @gem2,
-                                         @gem4.full_name => @gem4
+    @source_index = Gem::SourceIndex.new
+    @source_index.add_spec @a1
+    @source_index.add_spec @a2
+    @source_index.add_spec @a_evil9
+    @source_index.add_spec @c1_2
 
     Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
   end

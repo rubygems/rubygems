@@ -9,7 +9,8 @@ class TestGemSourceInfoCacheEntry < RubyGemTestCase
 
     util_setup_fake_fetcher
 
-    @si = Gem::SourceIndex.new @gem1.full_name => @gem1.name
+    @si = Gem::SourceIndex.new
+    @si.add_spec @a1
     @sic_e = Gem::SourceInfoCacheEntry.new @si, @si.dump.size
   end
 
@@ -30,16 +31,17 @@ class TestGemSourceInfoCacheEntry < RubyGemTestCase
   end
 
   def test_refresh_update
-    si = Gem::SourceIndex.new @gem1.full_name => @gem1,
-                              @gem2.full_name => @gem2
+    si = Gem::SourceIndex.new
+    si.add_spec @a1
+    si.add_spec @b2
     @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] = si.dump
 
     use_ui @ui do
       @sic_e.refresh @gem_repo
     end
 
-    new_gem = @sic_e.source_index.specification(@gem2.full_name)
-    assert_equal @gem2.full_name, new_gem.full_name
+    new_gem = @sic_e.source_index.specification(@b2.full_name)
+    assert_equal @b2.full_name, new_gem.full_name
   end
 
 end

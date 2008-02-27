@@ -31,10 +31,11 @@ class TestGemCommandsSourcesCommand < RubyGemTestCase
   def test_execute_add
     util_setup_fake_fetcher
 
-    @si = Gem::SourceIndex.new @gem1.full_name => @gem1.name
+    si = Gem::SourceIndex.new
+    si.add_spec @a1
 
     @fetcher.data["http://beta-gems.example.com/Marshal.#{@marshal_version}"] =
-      @si.dump
+      si.dump
 
     @cmd.handle_options %w[--add http://beta-gems.example.com]
 
@@ -60,13 +61,10 @@ http://beta-gems.example.com added to sources
   def test_execute_add_nonexistent_source
     util_setup_fake_fetcher
 
-    @si = Gem::SourceIndex.new @gem1.full_name => @gem1.name
-
     @fetcher.data["http://beta-gems.example.com/Marshal.#{@marshal_version}"] =
       proc do
         raise Gem::RemoteFetcher::FetchError, 'it died'
       end
-
 
     Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
 
@@ -127,8 +125,9 @@ beta-gems.example.com is not a URI
 
     util_setup_source_info_cache
     util_setup_fake_fetcher
-    @si = Gem::SourceIndex.new @gem1.full_name => @gem1.name
-    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] = @si.dump
+    si = Gem::SourceIndex.new
+    si.add_spec @a1
+    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] = si.dump
 
     use_ui @ui do
       @cmd.execute

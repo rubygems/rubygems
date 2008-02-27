@@ -11,31 +11,20 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
 
     util_setup_fake_fetcher
 
-    @gem1_3 = quick_gem 'gem_one', '3' do |gem|
-      gem.files = %w[Rakefile lib/gem_one.rb]
-    end
-
-    util_build_gem @gem1
-    util_build_gem @gem1_3
-
-    @source_index.add_spec @gem1_3
-
-    @gem1_path = File.join @gemhome, 'cache', "#{@gem1.full_name}.gem"
-    @gem1_3_path = File.join @gemhome, 'cache', "#{@gem1_3.full_name}.gem"
+    @a1_path = File.join @gemhome, 'cache', "#{@a1.full_name}.gem"
+    @a2_path = File.join @gemhome, 'cache', "#{@a2.full_name}.gem"
 
     @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] =
       @source_index.dump
-    @fetcher.data["#{@gem_repo}/gems/#{@gem1.full_name}.gem"] =
-      File.read(@gem1_path)
-    @fetcher.data["#{@gem_repo}/gems/#{@gem1_3.full_name}.gem"] =
-      File.read(@gem1_3_path)
+    @fetcher.data["#{@gem_repo}/gems/#{@a1.full_name}.gem"] = File.read @a1_path
+    @fetcher.data["#{@gem_repo}/gems/#{@a2.full_name}.gem"] = File.read @a2_path
 
     FileUtils.rm_r File.join(@gemhome, 'gems')
     FileUtils.rm_r File.join(@gemhome, 'specifications')
   end
 
   def test_execute
-    Gem::Installer.new(@gem1_path).install
+    Gem::Installer.new(@a1_path).install
 
     @cmd.options[:args] = []
 
@@ -46,20 +35,20 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
     out = @ui.output.split "\n"
     assert_equal "Updating installed gems", out.shift
     assert_match %r|Bulk updating|, out.shift
-    assert_equal "Attempting remote update of gem_one", out.shift
-    assert_equal "Successfully installed #{@gem1_3.full_name}", out.shift
+    assert_equal "Attempting remote update of #{@a2.name}", out.shift
+    assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "1 gem installed", out.shift
-    assert_equal "Installing ri documentation for #{@gem1_3.full_name}...",
+    assert_equal "Installing ri documentation for #{@a2.full_name}...",
                  out.shift
-    assert_equal "Installing RDoc documentation for #{@gem1_3.full_name}...",
+    assert_equal "Installing RDoc documentation for #{@a2.full_name}...",
                  out.shift
-    assert_equal "Gems updated: gem_one", out.shift
+    assert_equal "Gems updated: #{@a2.name}", out.shift
 
     assert out.empty?, out.inspect
   end
 
   def test_execute_up_to_date
-    Gem::Installer.new(@gem1_3_path).install
+    Gem::Installer.new(@a2_path).install
 
     @cmd.options[:args] = []
 
@@ -76,9 +65,9 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
   end
 
   def test_execute_named
-    Gem::Installer.new(@gem1_path).install
+    Gem::Installer.new(@a1_path).install
 
-    @cmd.options[:args] = [@gem1.name]
+    @cmd.options[:args] = [@a1.name]
 
     use_ui @ui do
       @cmd.execute
@@ -87,22 +76,22 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
     out = @ui.output.split "\n"
     assert_equal "Updating installed gems", out.shift
     assert_match %r|Bulk updating|, out.shift
-    assert_equal "Attempting remote update of gem_one", out.shift
-    assert_equal "Successfully installed #{@gem1_3.full_name}", out.shift
+    assert_equal "Attempting remote update of #{@a2.name}", out.shift
+    assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "1 gem installed", out.shift
-    assert_equal "Installing ri documentation for #{@gem1_3.full_name}...",
+    assert_equal "Installing ri documentation for #{@a2.full_name}...",
                  out.shift
-    assert_equal "Installing RDoc documentation for #{@gem1_3.full_name}...",
+    assert_equal "Installing RDoc documentation for #{@a2.full_name}...",
                  out.shift
-    assert_equal "Gems updated: gem_one", out.shift
+    assert_equal "Gems updated: #{@a2.name}", out.shift
 
     assert out.empty?, out.inspect
   end
 
   def test_execute_named_up_to_date
-    Gem::Installer.new(@gem1_3_path).install
+    Gem::Installer.new(@a2_path).install
 
-    @cmd.options[:args] = [@gem1.name]
+    @cmd.options[:args] = [@a2.name]
 
     use_ui @ui do
       @cmd.execute

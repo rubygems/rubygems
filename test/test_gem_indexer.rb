@@ -74,8 +74,8 @@ class TestGemIndexer < RubyGemTestCase
     end
 
     expected = <<-EOF
-Generating index for 5 gems in #{@tempdir}
-.....
+Generating index for 6 gems in #{@tempdir}
+......
 Loaded all gems
 Generating master indexes (this may take a while)
     EOF

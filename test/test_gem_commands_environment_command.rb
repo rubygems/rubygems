@@ -73,6 +73,21 @@ class TestGemCommandsEnvironmentCommand < RubyGemTestCase
     assert_equal '', @ui.error
   end
 
+  def test_execute_gempath
+    Gem.clear_paths
+    path = [@gemhome, "#{@gemhome}2"].join ':'
+    ENV['GEM_PATH'] = path
+
+    @cmd.send :handle_options, %w[gempath]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal "#{Gem.path.join ':'}\n", @ui.output
+    assert_equal '', @ui.error
+  end
+
   def test_execute_remotesources
     orig_sources = Gem.sources.dup
     Gem.sources.replace %w[http://gems.example.com]

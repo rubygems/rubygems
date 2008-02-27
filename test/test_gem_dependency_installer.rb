@@ -114,18 +114,48 @@ class TestGemDependencyInstaller < RubyGemTestCase
     inst = nil
 
     Dir.chdir @tempdir do
-      inst = Gem::DependencyInstaller.new 'a-1.gem'
+      inst = Gem::DependencyInstaller.new 'a-1.gem', :domain => :local
       inst.install
     end
 
     assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
   end
 
+  def test_install_local_dependency
+    FileUtils.mv @a1_gem, @tempdir
+    FileUtils.mv @b1_gem, @tempdir
+
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new 'b-1.gem', :domain => :local
+      inst.install
+    end
+
+    assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
+  def test_install_local_dependency_installed
+    FileUtils.mv @a1_gem, @tempdir
+    FileUtils.mv @b1_gem, @tempdir
+
+    inst = nil
+
+    Dir.chdir @tempdir do
+      Gem::Installer.new('a-1.gem').install
+
+      inst = Gem::DependencyInstaller.new 'b-1.gem', :domain => :local
+      inst.install
+    end
+
+    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
   def test_install_local_subdir
     inst = nil
-    
+
     Dir.chdir @tempdir do
-      inst = Gem::DependencyInstaller.new 'gems/a-1.gem'
+      inst = Gem::DependencyInstaller.new 'gems/a-1.gem', :domain => :local
       inst.install
     end
 

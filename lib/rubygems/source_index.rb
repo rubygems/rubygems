@@ -60,26 +60,16 @@ module Gem
         Gem.path.collect { |dir| File.join(dir, "specifications") }        
       end
 
-      # Factory method to construct a source index instance for a
-      #   given path.
-      # 
-      # spec_dirs::
-      #   List of directories to search for specifications.  Each
-      #   directory should have a "specifications" subdirectory
-      #   containing the gem specifications.
-      #
-      # return::
-      #   SourceIndex instance
-      #
+      ##
+      # Creates a new SourceIndex from the ruby format gem specifications in
+      # +spec_dirs+.
       def from_gems_in(*spec_dirs)
         self.new.load_gems_in(*spec_dirs)
       end
       
-      # Load a specification from a file (eval'd Ruby code)
-      # 
-      # file_name:: [String] The .gemspec file
-      # return:: Specification instance or nil if an error occurs
-      #
+      ##
+      # Loads a ruby-format specification from +file_name+ and returns the
+      # loaded spec.
       def load_specification(file_name)
         begin
           spec_code = File.read(file_name).untaint
@@ -101,8 +91,6 @@ module Gem
       
     end
 
-    # Instance Methods -----------------------------------------------
-
     # Constructs a source index instance from the provided
     # specifications
     #
@@ -113,16 +101,20 @@ module Gem
       @gems = specifications
     end
     
-    # Reconstruct the source index from the list of source
-    # directories.
+    ##
+    # Reconstruct the source index from the specifications in +spec_dirs+.
     def load_gems_in(*spec_dirs)
       @gems.clear
-      specs = Dir.glob File.join("{#{spec_dirs.join(',')}}", "*.gemspec")
 
-      specs.each do |file_name|
-        gemspec = self.class.load_specification(file_name.untaint)
-        add_spec(gemspec) if gemspec
+      spec_dirs.reverse_each do |spec_dir|
+        spec_files = Dir.glob File.join(spec_dir, '*.gemspec')
+
+        spec_files.each do |spec_file|
+          gemspec = self.class.load_specification spec_file.untaint
+          add_spec gemspec if gemspec
+        end
       end
+
       self
     end
 

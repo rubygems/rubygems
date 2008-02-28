@@ -194,6 +194,31 @@ class TestGemSourceIndex < RubyGemTestCase
     assert_equal expected, @source_index.latest_specs.map { |s| s.full_name }.sort
   end
 
+  def test_load_gems_in
+    spec_dir1 = File.join @gemhome, 'specifications'
+    spec_dir2 = File.join @tempdir, 'gemhome2', 'specifications'
+
+    FileUtils.rm_r spec_dir1
+
+    FileUtils.mkdir_p spec_dir1
+    FileUtils.mkdir_p spec_dir2
+
+    a1 = quick_gem 'a', '1' do |spec| spec.author = 'author 1' end
+    a2 = quick_gem 'a', '1' do |spec| spec.author = 'author 2' end
+
+    File.open File.join(spec_dir1, "#{a1.full_name}.gemspec"), 'w' do |fp|
+      fp.write a1.to_ruby
+    end
+
+    File.open File.join(spec_dir2, "#{a2.full_name}.gemspec"), 'w' do |fp|
+      fp.write a2.to_ruby
+    end
+
+    @source_index.load_gems_in spec_dir1, spec_dir2
+
+    assert_equal a1.author, @source_index.specification(a1.full_name).author
+  end
+
   def test_outdated
     sic = Gem::SourceInfoCache.new
     Gem::SourceInfoCache.instance_variable_set :@cache, sic

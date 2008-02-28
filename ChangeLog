@@ -2,6 +2,8 @@
 
 	* lib/rubygems/dependency_installer.rb:  Automatically fall back to
 	local-only install on network error.  Fixes bug #15759 by Chauk-Mean P.
+	* lib/rubygems/source_index.rb:  Process spec dirs so that earlier
+	dirs override later dirs.  Fixes bug #14816 by Kurt Stephens.
 
 2008-02-26  Eric Hodel  <drbrain@segment7.net>
 

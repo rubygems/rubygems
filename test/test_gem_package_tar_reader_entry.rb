@@ -6,7 +6,7 @@
 
 require File.join(File.expand_path(File.dirname(__FILE__)),
                   'gem_package_tar_test_case')
-require 'rubygems/package/tar_reader/entry'
+require 'rubygems/package'
 
 class TestGemPackageTarReaderEntry < TarTestCase
 
@@ -110,16 +110,6 @@ class TestGemPackageTarReaderEntry < TarTestCase
     assert_equal 0, @entry.pos
 
     assert_equal char, @entry.getc
-  end
-
-  def util_entry(tar)
-    io = StringIO.new tar
-    header = Gem::Package::TarHeader.new_from_stream io
-    entry = Gem::Package::TarReader::Entry.new header, io
-  end
-
-  def util_dir_entry
-    util_entry tar_dir_header("foo", "bar", 0)
   end
 
 end

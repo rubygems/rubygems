@@ -33,11 +33,7 @@ class Gem::Package::TarReader
   def close
   end
 
-  def each(&block)
-    each_entry(&block)
-  end
-
-  def each_entry
+  def each
     loop do
       return if @io.eof?
 
@@ -71,7 +67,11 @@ class Gem::Package::TarReader
     end
   end
 
-  # do not call this during a #each or #each_entry iteration
+  alias each_entry each
+
+  ##
+  # NOTE: Do not call #rewind during #each
+
   def rewind
     if @init_pos == 0 then
       raise Gem::Package::NonSeekableIO unless @io.respond_to? :rewind
@@ -83,6 +83,4 @@ class Gem::Package::TarReader
   end
 
 end
-
-require 'rubygems/package/tar_reader/entry'
 

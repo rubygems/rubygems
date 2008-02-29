@@ -2,7 +2,7 @@
 
 	* lib/rubygems/package.rb:  Broke up Tar bits into separate files.
 	* lib/rubygems/package/tar_reader/entry.rb:  Don't copy TarHeader data
-	into entry, go through #header instead.  Better tests for
+	into Entry, go through #header instead.  Better tests for
 	TarReader::Entry.
 
 2008-02-27  Eric Hodel  <drbrain@segment7.net>

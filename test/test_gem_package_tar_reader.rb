@@ -6,7 +6,7 @@
 
 require File.join(File.expand_path(File.dirname(__FILE__)),
                   'gem_package_tar_test_case')
-require 'rubygems/package/tar_reader'
+require 'rubygems/package'
 
 class TestGemPackageTarReader < TarTestCase
 

@@ -10,179 +10,141 @@ require 'rubygems/package/tar_writer'
 
 class TestTarWriter < TarTestCase
 
-  class DummyIO
-    attr_reader :data
-    def initialize
-      @data = ""
-    end
-    def write(dat)
-      data << dat
-      dat.size
-    end
-    def reset
-      @data = ""
-    end
-  end
-
   def setup
-    @data = "a" * 10
-    @dummyos = DummyIO.new
-    @os = Gem::Package::TarWriter.new(@dummyos)
+    super
+
+    @data = 'abcde12345'
+    @io = StringIO.new
+    @tar_writer = Gem::Package::TarWriter.new @io
   end
 
   def teardown
-    @os.close
+    @tar_writer.close unless @tar_writer.closed?
+
+    super
   end
 
   def test_add_file
-    dummyos = StringIO.new
+    @tar_writer.add_file 'x', 0644 do |f| f.write 'a' * 10 end
 
-    class << dummyos
-      def method_missing(meth, *a)
-        self.string.send(meth, *a)
-      end
-    end
-
-    content1 = ('a'..'z').to_a.join("")  # 26
-    content2 = ('aa'..'zz').to_a.join("") # 1352
-
-    Gem::Package::TarWriter.new(dummyos) do |os|
-      os.add_file("lib/foo/bar", 0644) {|f| f.write "a" * 10 }
-      os.add_file("lib/bar/baz", 0644) {|f| f.write content1 }
-      os.add_file("lib/bar/baz", 0644) {|f| f.write content2 }
-      os.add_file("lib/bar/baz", 0644) {|f| }
-    end
-
-    assert_headers_equal(tar_file_header("lib/foo/bar", "", 0644, 10),
-                         dummyos[0,512])
-    assert_equal("a" * 10 + "\0" * 502, dummyos[512,512])
-
-    offset = 512 * 2
-
-    [content1, content2, ""].each do |data|
-      assert_headers_equal(tar_file_header("lib/bar/baz", "", 0644,
-                                           data.size),
-                                           dummyos[offset,512])
-      offset += 512
-
-      until !data || data == ""
-        chunk = data[0,512]
-        data[0,512] = ""
-        assert_equal(chunk + "\0" * (512-chunk.size), 
-                     dummyos[offset,512])
-                     offset += 512
-      end
-    end
-
-    assert_equal("\0" * 1024, dummyos[offset,1024])
+    assert_headers_equal(tar_file_header('x', '', 0644, 10),
+                         @io.string[0, 512])
+    assert_equal "aaaaaaaaaa#{"\0" * 502}", @io.string[512, 512]
+    assert_equal 1024, @io.pos
   end
 
   def test_add_file_simple
-    @dummyos.reset
+    @tar_writer.add_file_simple 'x', 0644, 10 do |io| io.write "a" * 10 end
 
-    Gem::Package::TarWriter.new(@dummyos) do |os|
-      os.add_file_simple("lib/foo/bar", 0644, 10) {|f| f.write "a" * 10 }
-      os.add_file_simple("lib/bar/baz", 0644, 100) {|f| f.write "fillme"}
-    end
+    assert_headers_equal(tar_file_header('x', '', 0644, 10),
+                         @io.string[0, 512])
 
-    assert_headers_equal(tar_file_header("lib/foo/bar", "", 0644, 10),
-                         @dummyos.data[0,512])
-
-    assert_equal("a" * 10 + "\0" * 502, @dummyos.data[512,512])
-
-    assert_headers_equal(tar_file_header("lib/bar/baz", "", 0644, 100), 
-                         @dummyos.data[512*2,512])
-
-    assert_equal("fillme" + "\0" * 506, @dummyos.data[512*3,512])
-    assert_equal("\0" * 512, @dummyos.data[512*4, 512])
-    assert_equal("\0" * 512, @dummyos.data[512*5, 512])
+    assert_equal "aaaaaaaaaa#{"\0" * 502}", @io.string[512, 512]
+    assert_equal 1024, @io.pos
   end
 
-  def test_add_file_tests_seekability
-    assert_raise(Gem::Package::NonSeekableIO) do 
-      @os.add_file("libdfdsfd", 0644) {|f| }
-    end
+  def test_add_file_simple_padding
+    @tar_writer.add_file_simple 'x', 0, 100
+
+    assert_headers_equal tar_file_header('x', '', 0, 100), 
+                         @io.string[0, 512]
+
+    assert_equal "\0" * 512, @io.string[512, 512]
   end
 
-  def test_file_name_is_split_correctly
-    # test insane file lengths, and
-    #  a{100}/b{155}, etc
-    @dummyos.reset
+  def test_add_file_simple_data
+    @tar_writer.add_file_simple("lib/foo/bar", 0, 10) { |f| f.write @data }
+    @tar_writer.flush
 
-    names = ["a" * 155 + '/' + "b" * 100, "a" * 151 + "/" + ("qwer/" * 19) + "bla" ]
+    assert_equal @data + ("\0" * (512-@data.size)),
+                 @io.string[512, 512]
+  end
 
-    o_names = ["b" * 100, "qwer/" * 19 + "bla"]
-    o_prefixes = ["a" * 155, "a" * 151]
-
-    names.each {|name| @os.add_file_simple(name, 0644, 10) { } }
-    o_names.each_with_index do |nam, i|
-      assert_headers_equal(tar_file_header(nam, o_prefixes[i], 0644, 10),
-                           @dummyos.data[2*i*512,512])
-    end
-
-    assert_raise(Gem::Package::TooLongFileName) do
-      @os.add_file_simple(File.join("a" * 152, "b" * 10, "a" * 92), 0644,10) {}
-    end
-
-    assert_raise(Gem::Package::TooLongFileName) do
-      @os.add_file_simple(File.join("a" * 162, "b" * 10), 0644,10) {}
-    end
-
-    assert_raise(Gem::Package::TooLongFileName) do
-      @os.add_file_simple(File.join("a" * 10, "b" * 110), 0644,10) {}
+  def test_add_file_simple_size
+    assert_raise Gem::Package::TarWriter::FileOverflow do 
+      @tar_writer.add_file_simple("lib/foo/bar", 0, 10) do |io|
+        io.write "1" * 11
+      end
     end
   end
 
-  def test_file_size_is_checked
-    @dummyos.reset
-
-    assert_raise(Gem::Package::TarWriter::FileOverflow) do 
-      @os.add_file_simple("lib/foo/bar", 0644, 10) {|f| f.write "1" * 100}
-    end
-
-    assert_nothing_raised do
-      @os.add_file_simple("lib/foo/bar", 0644, 10) {|f| }
+  def test_add_file_unseekable
+    assert_raise Gem::Package::NonSeekableIO do 
+      Gem::Package::TarWriter.new(Object.new).add_file 'x', 0
     end
   end
 
-  def test_write_data
-    @dummyos.reset
-    @os.add_file_simple("lib/foo/bar", 0644, 10) { |f| f.write @data }
-    @os.flush
-    assert_equal(@data + ("\0" * (512-@data.size)),
-                 @dummyos.data[512,512])
+  def test_close
+    @tar_writer.close
+
+    assert_equal "\0" * 1024, @io.string
+
+    e = assert_raise IOError do
+      @tar_writer.close
+    end
+    assert_equal 'closed Gem::Package::TarWriter', e.message
+
+    e = assert_raise IOError do
+      @tar_writer.flush
+    end
+    assert_equal 'closed Gem::Package::TarWriter', e.message
+
+    e = assert_raise IOError do
+      @tar_writer.add_file 'x', 0
+    end
+    assert_equal 'closed Gem::Package::TarWriter', e.message
+
+    e = assert_raise IOError do
+      @tar_writer.add_file_simple 'x', 0, 0
+    end
+    assert_equal 'closed Gem::Package::TarWriter', e.message
+
+    e = assert_raise IOError do
+      @tar_writer.mkdir 'x', 0
+    end
+    assert_equal 'closed Gem::Package::TarWriter', e.message
   end
 
-  def test_write_header
-    @dummyos.reset
+  def test_mkdir
+    @tar_writer.mkdir 'foo', 0644
 
-    @os.add_file_simple("lib/foo/bar", 0644, 0) { |f|  }
-    @os.flush
-
-    assert_headers_equal(tar_file_header("lib/foo/bar", "", 0644, 0),
-                         @dummyos.data[0,512])
-
-    @dummyos.reset
-
-    @os.mkdir("lib/foo", 0644)
-    assert_headers_equal(tar_dir_header("lib/foo", "", 0644),
-                         @dummyos.data[0,512])
-
-    @os.mkdir("lib/bar", 0644)
-    assert_headers_equal(tar_dir_header("lib/bar", "", 0644),
-                         @dummyos.data[512*1,512])
+    assert_headers_equal tar_dir_header('foo', '', 0644),
+                         @io.string[0, 512]
+    assert_equal 512, @io.pos
   end
 
-  def test_write_operations_fail_after_closed
-    @dummyos.reset
+  def test_split_name
+    assert_equal ['b' * 100, 'a' * 155],
+                 @tar_writer.split_name("#{'a' * 155}/#{'b' * 100}")
 
-    @os.add_file_simple("sadd", 0644, 20) { |f| }
+    assert_equal ["#{'qwer/' * 19}bla", 'a' * 151],
+                 @tar_writer.split_name("#{'a' * 151}/#{'qwer/' * 19}bla")
+  end
 
-    @os.close
+  def test_split_name_too_long_name
+    name = File.join 'a', 'b' * 100
+    assert_equal ['b' * 100, 'a'], @tar_writer.split_name(name)
 
-    assert_raise(Gem::Package::ClosedIO) { @os.flush }
-    assert_raise(Gem::Package::ClosedIO) { @os.add_file("dfdsf", 0644){} }
-    assert_raise(Gem::Package::ClosedIO) { @os.mkdir "sdfdsf", 0644 }
+    assert_raise Gem::Package::TooLongFileName do
+      name = File.join 'a', 'b' * 101
+      @tar_writer.split_name name
+    end
+  end
+
+  def test_split_name_too_long_prefix
+    name = File.join 'a' * 155, 'b'
+    assert_equal ['b', 'a' * 155], @tar_writer.split_name(name)
+
+    assert_raise Gem::Package::TooLongFileName do
+      name = File.join 'a' * 156, 'b'
+      @tar_writer.split_name name
+    end
+  end
+
+  def test_split_name_too_long_total
+    assert_raise Gem::Package::TooLongFileName do
+      @tar_writer.split_name 'a' * 257
+    end
   end
 
 end

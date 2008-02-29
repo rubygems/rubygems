@@ -15,7 +15,7 @@ class TestGemPackageTarInput < TarTestCase
   SETGID_BIT = 02000
 
   def setup
-    FileUtils.mkdir_p "data__"
+    super
 
     inner_tar = tar_file_header("bla", "", 0612, 10)
     inner_tar += "0123456789" + "\0" * 502
@@ -34,33 +34,37 @@ class TestGemPackageTarInput < TarTestCase
 
     str.rewind
 
-    File.open("data__/bla.tar", "wb") do |f|
+    @file = File.join @tempdir, 'bla.tar'
+
+    File.open @file, 'wb' do |f|
       f.write tar_file_header("data.tar.gz", "", 0644, str.string.size)
       f.write str.string
       f.write "\0" * ((512 - (str.string.size % 512)) % 512 )
+
       @spec = Gem::Specification.new do |spec|
         spec.author = "Mauricio :)"
       end
+
       meta = @spec.to_yaml
+
       f.write tar_file_header("metadata", "", 0644, meta.size)
       f.write meta + "\0" * (1024 - meta.size) 
       f.write "\0" * 1024
     end
 
-    @file = "data__/bla.tar"
     @entry_names = %w{bla foo __dir__}
     @entry_sizes = [10, 5, 0]
     #FIXME: are these modes system dependent?
     @entry_modes = [0100612, 0100636, 040600]
-    @entry_files = %w{data__/bla data__/foo}
+    @entry_files = %W[#{@tempdir}/bla #{@tempdir}/foo]
     @entry_contents = %w[0123456789 01234]
   end
 
   def test_each_works
-    Gem::Package::TarInput.open(@file) do |is|
+    Gem::Package::TarInput.open(@file) do |tar_input|
       count = 0
 
-      is.each_with_index do |entry, i|
+      tar_input.each_with_index do |entry, i|
         count = i
 
         assert_kind_of Gem::Package::TarReader::Entry, entry
@@ -70,40 +74,40 @@ class TestGemPackageTarInput < TarTestCase
 
       assert_equal 2, count
 
-      assert_equal @spec, is.metadata
+      assert_equal @spec, tar_input.metadata
     end
   end
 
   def test_extract_entry_works
-    Gem::Package::TarInput.open(@file) do |is|
-      assert_equal is.metadata, @spec
+    Gem::Package::TarInput.open @file do |tar_input|
+      assert_equal @spec, tar_input.metadata
 
       count = 0
 
-      is.each_with_index do |entry, i|
+      tar_input.each_with_index do |entry, i|
         count = i
-        is.extract_entry "data__", entry
-        name = File.join "data__", entry.header.name
+        tar_input.extract_entry @tempdir, entry
+        name = File.join @tempdir, entry.header.name
 
         if entry.is_directory?
           assert File.dir?(name)
         else
           assert File.file?(name)
-          assert_equal File.stat(name).size, @entry_sizes[i]
+          assert_equal @entry_sizes[i], File.stat(name).size
           #FIXME: win32? !!
         end
 
         unless Gem.win_platform? then
-          assert_equal File.stat(name).mode & (~SETGID_BIT), @entry_modes[i]
+          assert_equal @entry_modes[i], File.stat(name).mode & (~SETGID_BIT)
         end
       end
 
-      assert_equal count, count
+      assert_equal 2, count
     end
 
     @entry_files.each_with_index do |x, i|
       assert File.file?(x)
-      assert_equal File.read_b(x), @entry_contents[i]
+      assert_equal @entry_contents[i], File.read_b(x)
     end
   end
 

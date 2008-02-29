@@ -21,8 +21,7 @@ class Gem::Package::TarWriter
 
     def write(data)
       if data.size + @written > @limit
-        raise FileOverflow,
-                "You tried to feed more data than fits in the file."
+        raise FileOverflow, "You tried to feed more data than fits in the file."
       end
       @io.write data
       @written += data.size
@@ -63,73 +62,94 @@ class Gem::Package::TarWriter
   end
 
   def add_file(name, mode)
-    raise ArgumentError, 'block not supplied' unless block_given?
-    raise Gem::Package::ClosedIO if @closed
+    check_closed
+
     raise Gem::Package::NonSeekableIO unless @io.respond_to? :pos=
-    name, prefix = split_name(name)
+
+    name, prefix = split_name name
+
     init_pos = @io.pos
     @io.write "\0" * 512 # placeholder for the header
-    yield RestrictedStream.new(@io)
-    #FIXME: what if an exception is raised in the block?
-    #FIXME: what if an exception is raised in the block?
+
+    yield RestrictedStream.new(@io) if block_given?
+
     size = @io.pos - init_pos - 512
+
     remainder = (512 - (size % 512)) % 512
-    @io.write("\0" * remainder)
+    @io.write "\0" * remainder
+
     final_pos = @io.pos
     @io.pos = init_pos
 
-    header = Gem::Package::TarHeader.new(:name => name, :mode => mode,
-                                         :size => size, :prefix => prefix).to_s
+    header = Gem::Package::TarHeader.new :name => name, :mode => mode,
+                                         :size => size, :prefix => prefix
 
     @io.write header
     @io.pos = final_pos
+
+    self
   end
 
   def add_file_simple(name, mode, size)
-    raise ArgumentError, 'block not supplied' unless block_given?
-    raise Gem::Package::ClosedIO if @closed
+    check_closed
 
-    name, prefix = split_name(name)
+    name, prefix = split_name name
+
     header = Gem::Package::TarHeader.new(:name => name, :mode => mode,
                                          :size => size, :prefix => prefix).to_s
 
     @io.write header
-    os = BoundedStream.new(@io, size)
+    os = BoundedStream.new @io, size
 
-    yield os
+    yield os if block_given?
 
-    #FIXME: what if an exception is raised in the block?
     min_padding = size - os.written
     @io.write("\0" * min_padding)
+
     remainder = (512 - (size % 512)) % 512
     @io.write("\0" * remainder)
+
+    self
+  end
+
+  def check_closed
+    raise IOError, "closed #{self.class}" if closed?
   end
 
   def close
-    #raise ClosedIO if @closed
-    return if @closed
+    check_closed
+
     @io.write "\0" * 1024
+    flush
+
     @closed = true
   end
 
+  def closed?
+    @closed
+  end
+
   def flush
-    raise Gem::Package::ClosedIO if @closed
+    check_closed
+
     @io.flush if @io.respond_to? :flush
   end
 
   def mkdir(name, mode)
-    raise Gem::Package::ClosedIO if @closed
+    check_closed
+
     name, prefix = split_name(name)
-    header = Gem::Package::TarHeader.new(:name => name, :mode => mode,
+
+    header = Gem::Package::TarHeader.new :name => name, :mode => mode,
                                          :typeflag => "5", :size => 0,
-                                         :prefix => prefix).to_s
+                                         :prefix => prefix
+
     @io.write header
-    nil
+
+    self
   end
 
-  private
-
-  def split_name name
+  def split_name(name) # :nodoc:
     raise Gem::Package::TooLongFileName if name.size > 256
 
     if name.size <= 100 then

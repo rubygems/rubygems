@@ -11,12 +11,9 @@ require 'rubygems/package/tar_output'
 class TestGemPackageTarOutput < TarTestCase
 
   def setup
-    FileUtils.mkdir_p "data__", :verbose=>false
-    @file = "data__/bla2.tar"
-  end
+    super
 
-  def teardown
-    FileUtils.rm_rf "data__"
+    @file = File.join @tempdir, 'bla2.tar'
   end
 
   def test_file_looks_good

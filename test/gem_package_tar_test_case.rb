@@ -1,9 +1,5 @@
-require 'test/unit'
-#require 'stringio'
-#require 'fileutils'
-#
-#require 'rubygems'
-#require 'rubygems/package'
+require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
+require 'rubygems/package'
 
 class File
 
@@ -19,10 +15,7 @@ class File
 
 end
 
-class TarTestCase < Test::Unit::TestCase
-
-  undef_method :default_test if instance_methods.include? 'default_test' or
-                                instance_methods.include? :default_test
+class TarTestCase < RubyGemTestCase
 
   def ASCIIZ(str, length)
     str + "\0" * (length - str.length)
@@ -119,6 +112,16 @@ class TarTestCase < Test::Unit::TestCase
 
   def to_oct(n, pad_size)
     "%0#{pad_size}o" % n
+  end
+
+  def util_entry(tar)
+    io = StringIO.new tar
+    header = Gem::Package::TarHeader.new_from_stream io
+    entry = Gem::Package::TarReader::Entry.new header, io
+  end
+
+  def util_dir_entry
+    util_entry tar_dir_header("foo", "bar", 0)
   end
 
 end

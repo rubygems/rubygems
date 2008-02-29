@@ -111,5 +111,6 @@ require 'rubygems/package/tar_header'
 require 'rubygems/package/tar_input'
 require 'rubygems/package/tar_output'
 require 'rubygems/package/tar_reader'
+require 'rubygems/package/tar_reader/entry'
 require 'rubygems/package/tar_writer'
 

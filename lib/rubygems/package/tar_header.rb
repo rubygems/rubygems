@@ -8,12 +8,25 @@ require 'rubygems/package'
 class Gem::Package::TarHeader
 
   FIELDS = [
-    :name, :mode, :uid, :gid, :size, :mtime, :checksum, :typeflag,
-    :linkname, :magic, :version, :uname, :gname, :devmajor,
-    :devminor, :prefix
+    :checksum,
+    :devmajor,
+    :devminor,
+    :gid,
+    :gname,
+    :linkname,
+    :magic,
+    :mode,
+    :mtime,
+    :name,
+    :prefix,
+    :size,
+    :typeflag,
+    :uid,
+    :uname,
+    :version,
   ]
 
-  FIELDS.each { |x| attr_reader x }
+  attr_reader(*FIELDS)
 
   def self.new_from_stream(stream)
     data = stream.read(512)
@@ -46,11 +59,11 @@ class Gem::Package::TarHeader
 
     empty = (data == "\0" * 512)
 
-    new(:name=>name, :mode=>mode, :uid=>uid, :gid=>gid, :size=>size,
-        :mtime=>mtime, :checksum=>checksum, :typeflag=>typeflag,
-        :magic=>magic, :version=>version, :uname=>uname, :gname=>gname,
-        :devmajor=>devmajor, :devminor=>devminor, :prefix=>prefix,
-        :empty => empty)
+    new :name => name, :mode => mode, :uid => uid, :gid => gid, :size => size,
+        :mtime => mtime, :checksum => checksum, :typeflag => typeflag,
+        :magic => magic, :version => version, :uname => uname, :gname => gname,
+        :devmajor => devmajor, :devminor => devminor, :prefix => prefix,
+        :empty => empty
   end
 
   def initialize(vals)

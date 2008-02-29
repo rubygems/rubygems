@@ -31,9 +31,9 @@ class TestGemPackageTarOutput < TarTestCase
       is.each do |entry|
         case i
         when 0
-          assert_equal("data.tar.gz", entry.name)
+          assert_equal("data.tar.gz", entry.header.name)
         when 1
-          assert_equal("metadata.gz", entry.name)
+          assert_equal("metadata.gz", entry.header.name)
           gzis = Zlib::GzipReader.new entry
           assert_equal("bla".to_yaml, gzis.read)
           gzis.close

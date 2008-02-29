@@ -10,9 +10,8 @@ require 'rubygems/package/tar_input'
 
 class TestGemPackageTarInput < TarTestCase
 
-  # Sometimes the setgid bit doesn't take.  Don't know if this
-  # is a problem on all systems, or just some.  But for now, we
-  # will ignore it in the tests.
+  # Sometimes the setgid bit doesn't take.  Don't know if this is a problem on
+  # all systems, or just some.  But for now, we will ignore it in the tests.
   SETGID_BIT = 02000
 
   def setup
@@ -64,9 +63,9 @@ class TestGemPackageTarInput < TarTestCase
       is.each_with_index do |entry, i|
         count = i
 
-        assert_kind_of(Gem::Package::TarReader::Entry, entry)
-        assert_equal(@entry_names[i], entry.name)
-        assert_equal(@entry_sizes[i], entry.size)
+        assert_kind_of Gem::Package::TarReader::Entry, entry
+        assert_equal @entry_names[i], entry.header.name
+        assert_equal @entry_sizes[i], entry.header.size
       end
 
       assert_equal 2, count
@@ -77,37 +76,36 @@ class TestGemPackageTarInput < TarTestCase
 
   def test_extract_entry_works
     Gem::Package::TarInput.open(@file) do |is|
-      assert_equal @spec, is.metadata
+      assert_equal is.metadata, @spec
+
       count = 0
 
       is.each_with_index do |entry, i|
         count = i
         is.extract_entry "data__", entry
-        name = File.join("data__", entry.name)
+        name = File.join "data__", entry.header.name
 
         if entry.is_directory?
           assert File.dir?(name)
         else
-          assert File.file?(name) 
-          assert_equal(@entry_sizes[i], File.stat(name).size)
+          assert File.file?(name)
+          assert_equal File.stat(name).size, @entry_sizes[i]
           #FIXME: win32? !!
         end
 
-        unless ::Config::CONFIG["arch"] =~ /msdos|win32/i
-          assert_equal(@entry_modes[i],
-                       File.stat(name).mode & (~SETGID_BIT))
+        unless Gem.win_platform? then
+          assert_equal File.stat(name).mode & (~SETGID_BIT), @entry_modes[i]
         end
       end
 
-      assert_equal 2, count
+      assert_equal count, count
     end
 
     @entry_files.each_with_index do |x, i|
-      assert(File.file?(x))
-      assert_equal(@entry_contents[i], File.read_b(x))
+      assert File.file?(x)
+      assert_equal File.read_b(x), @entry_contents[i]
     end
   end
 
 end
-
 

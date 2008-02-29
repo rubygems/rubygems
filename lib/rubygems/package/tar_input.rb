@@ -41,9 +41,8 @@ class Gem::Package::TarInput
     @tarreader.each do |entry|
       case entry.full_name
       when "metadata"
-        @metadata = load_gemspec(entry.read)
+        @metadata = load_gemspec entry.read
         has_meta = true
-        break
       when "metadata.gz"
         begin
           # if we have a security_policy, then pre-read the metadata file
@@ -148,9 +147,9 @@ class Gem::Package::TarInput
       dest = File.join(destdir, entry.full_name)
 
       if File.dir? dest then
-        @fileops.chmod entry.mode, dest, :verbose=>false
+        @fileops.chmod entry.header.mode, dest, :verbose=>false
       else
-        @fileops.mkdir_p dest, :mode => entry.mode, :verbose => false
+        @fileops.mkdir_p dest, :mode => entry.header.mode, :verbose => false
       end
 
       fsync_dir dest
@@ -166,17 +165,19 @@ class Gem::Package::TarInput
     destfile = File.join destdir, File.basename(entry.full_name)
     @fileops.chmod 0600, destfile, :verbose => false rescue nil # Errno::ENOENT
 
-    open destfile, "wb", entry.mode  do |os|
+    open destfile, "wb", entry.header.mode do |os|
       loop do
         data = entry.read 4096
         break unless data
+        # HACK shouldn't we check the MD5 before writing to disk?
         md5 << data if expected_md5sum
         os.write(data)
       end
+
       os.fsync
     end
 
-    @fileops.chmod entry.mode, destfile, :verbose => false
+    @fileops.chmod entry.header.mode, destfile, :verbose => false
     fsync_dir File.dirname(destfile)
     fsync_dir File.join(File.dirname(destfile), "..")
 

@@ -1,3 +1,7 @@
+2008-02-28  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/package.rb:  Broke up Tar bits into separate files.
+
 2008-02-27  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/dependency_installer.rb:  Automatically fall back to

@@ -1,3 +1,8 @@
+2008-02-29  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/package/tar_reader/entry.rb:  Removed is_directory and
+	is_file? in favor of file? and directory?.
+
 2008-02-28  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/package.rb:  Broke up Tar bits into separate files.

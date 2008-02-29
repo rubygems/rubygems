@@ -72,14 +72,14 @@ class TestGemPackageTarReaderEntry < TarTestCase
     assert_equal ?a, @entry.getc
   end
 
-  def test_is_directory_eh
-    assert_equal false, @entry.is_directory?
-    assert_equal true, util_dir_entry.is_directory?
+  def test_directory_eh
+    assert_equal false, @entry.directory?
+    assert_equal true, util_dir_entry.directory?
   end
 
-  def test_is_file_eh
-    assert_equal true, @entry.is_file?
-    assert_equal false, util_dir_entry.is_file?
+  def test_file_eh
+    assert_equal true, @entry.file?
+    assert_equal false, util_dir_entry.file?
   end
 
   def test_pos

@@ -143,7 +143,7 @@ class Gem::Package::TarInput
   end
 
   def extract_entry(destdir, entry, expected_md5sum = nil)
-    if entry.is_directory?
+    if entry.directory? then
       dest = File.join(destdir, entry.full_name)
 
       if File.dir? dest then

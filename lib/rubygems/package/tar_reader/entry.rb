@@ -58,17 +58,13 @@ class Gem::Package::TarReader::Entry
     ret
   end
 
-  def is_directory?
+  def directory?
     @header.typeflag == "5"
   end
 
-  alias is_directory is_directory?
-
-  def is_file?
+  def file?
     @header.typeflag == "0"
   end
-
-  alias is_file is_file?
 
   def pos
     check_closed

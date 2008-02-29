@@ -37,7 +37,7 @@ class Gem::Package::TarReader
     loop do
       return if @io.eof?
 
-      header = Gem::Package::TarHeader.new_from_stream @io
+      header = Gem::Package::TarHeader.from @io
       return if header.empty?
 
       entry = Gem::Package::TarReader::Entry.new header, @io

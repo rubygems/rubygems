@@ -5,6 +5,28 @@
 
 require 'rubygems/package'
 
+##
+#--
+# struct tarfile_entry_posix {
+#   char name[100];     # ASCII + (Z unless filled)
+#   char mode[8];       # 0 padded, octal, null
+#   char uid[8];        # ditto
+#   char gid[8];        # ditto
+#   char size[12];      # 0 padded, octal, null
+#   char mtime[12];     # 0 padded, octal, null
+#   char checksum[8];   # 0 padded, octal, null, space
+#   char typeflag[1];   # file: "0"  dir: "5"
+#   char linkname[100]; # ASCII + (Z unless filled)
+#   char magic[6];      # "ustar\0"
+#   char version[2];    # "00"
+#   char uname[32];     # ASCIIZ
+#   char gname[32];     # ASCIIZ
+#   char devmajor[8];   # 0 padded, octal, null
+#   char devminor[8];   # o padded, octal, null
+#   char prefix[155];   # ASCII + (Z unless filled)
+# };
+#++
+
 class Gem::Package::TarHeader
 
   FIELDS = [
@@ -26,43 +48,65 @@ class Gem::Package::TarHeader
     :version,
   ]
 
+  PACK_FORMAT = 'a100' + # name
+                'a8'   + # mode
+                'a8'   + # uid
+                'a8'   + # gid
+                'a12'  + # size
+                'a12'  + # mtime
+                'a7a'  + # chksum
+                'a'    + # typeflag
+                'a100' + # linkname
+                'a6'   + # magic
+                'a2'   + # version
+                'a32'  + # uname
+                'a32'  + # gname
+                'a8'   + # devmajor
+                'a8'   + # devminor
+                'a155'   # prefix
+
+  UNPACK_FORMAT = 'A100' + # name
+                  'A8'   + # mode
+                  'A8'   + # uid
+                  'A8'   + # gid
+                  'A12'  + # size
+                  'A12'  + # mtime
+                  'A8'   + # checksum
+                  'A'    + # typeflag
+                  'A100' + # linkname
+                  'A6'   + # magic
+                  'A2'   + # version
+                  'A32'  + # uname
+                  'A32'  + # gname
+                  'A8'   + # devmajor
+                  'A8'   + # devminor
+                  'A155'   # prefix
+
   attr_reader(*FIELDS)
 
-  def self.new_from_stream(stream)
-    data = stream.read(512)
-    fields = data.unpack("A100" +   # record name
-                         "A8A8A8" + # mode, uid, gid
-                         "A12A12" + # size, mtime
-                         "A8A" +    # checksum, typeflag
-                         "A100" +   # linkname
-                         "A6A2" +   # magic, version
-                         "A32" +    # uname
-                         "A32" +    # gname
-                         "A8A8" +   # devmajor, devminor
-                         "A155")    # prefix
-    name = fields.shift
-    mode = fields.shift.oct
-    uid = fields.shift.oct
-    gid = fields.shift.oct
-    size = fields.shift.oct
-    mtime = fields.shift.oct
-    checksum = fields.shift.oct
-    typeflag = fields.shift
-    linkname = fields.shift
-    magic = fields.shift
-    version = fields.shift.oct
-    uname = fields.shift
-    gname = fields.shift
-    devmajor = fields.shift.oct
-    devminor = fields.shift.oct
-    prefix = fields.shift
+  def self.from(stream)
+    header = stream.read 512
+    empty = (header == "\0" * 512)
 
-    empty = (data == "\0" * 512)
+    fields = header.unpack UNPACK_FORMAT
 
-    new :name => name, :mode => mode, :uid => uid, :gid => gid, :size => size,
-        :mtime => mtime, :checksum => checksum, :typeflag => typeflag,
-        :magic => magic, :version => version, :uname => uname, :gname => gname,
-        :devmajor => devmajor, :devminor => devminor, :prefix => prefix,
+    new :name     => fields.shift,
+        :mode     => fields.shift.oct,
+        :uid      => fields.shift.oct,
+        :gid      => fields.shift.oct,
+        :size     => fields.shift.oct,
+        :mtime    => fields.shift.oct,
+        :checksum => fields.shift.oct,
+        :typeflag => fields.shift,
+        :linkname => fields.shift,
+        :magic    => fields.shift,
+        :version  => fields.shift.oct,
+        :uname    => fields.shift,
+        :gname    => fields.shift,
+        :devmajor => fields.shift.oct,
+        :devminor => fields.shift.oct,
+        :prefix   => fields.shift,
+
         :empty => empty
   end
 
@@ -92,52 +136,66 @@ class Gem::Package::TarHeader
     @empty
   end
 
+  def ==(other)
+    self.class === other and
+    @name     == other.name     and
+    @mode     == other.mode     and
+    @uid      == other.uid      and
+    @gid      == other.gid      and
+    @size     == other.size     and
+    @mtime    == other.mtime    and
+    @checksum == other.checksum and
+    @typeflag == other.typeflag and
+    @linkname == other.linkname and
+    @magic    == other.magic    and
+    @version  == other.version  and
+    @uname    == other.uname    and
+    @gname    == other.gname    and
+    @devmajor == other.devmajor and
+    @devminor == other.devminor and
+    @prefix   == other.prefix
+  end
+
   def to_s
     update_checksum
-    header checksum
+    header
   end
 
   def update_checksum
-    h = header(" " * 8)
-    @checksum = oct(calculate_checksum(h), 6)
+    header = header " " * 8
+    @checksum = oct calculate_checksum(header), 6
   end
 
   private
 
-  def calculate_checksum(hdr)
-    hdr.unpack("C*").inject{|a,b| a+b}
+  def calculate_checksum(header)
+    header.unpack("C*").inject { |a, b| a + b }
   end
 
-  ##
-  #--
-  # struct tarfile_entry_posix {
-  #   char name[100];   # ASCII + (Z unless filled)
-  #   char mode[8];     # 0 padded, octal, null
-  #   char uid[8];      # ditto
-  #   char gid[8];      # ditto
-  #   char size[12];    # 0 padded, octal, null
-  #   char mtime[12];   # 0 padded, octal, null
-  #   char checksum[8]; # 0 padded, octal, null, space
-  #   char typeflag[1]; # file: "0"  dir: "5"
-  #   char linkname[100]; # ASCII + (Z unless filled)
-  #   char magic[6];      # "ustar\0"
-  #   char version[2];    # "00"
-  #   char uname[32];     # ASCIIZ
-  #   char gname[32];     # ASCIIZ
-  #   char devmajor[8];   # 0 padded, octal, null
-  #   char devminor[8];   # o padded, octal, null
-  #   char prefix[155];   # ASCII + (Z unless filled)
-  # };
-  #++
+  def header(checksum = @checksum)
+    header = [
+      name,
+      oct(mode, 7),
+      oct(uid, 7),
+      oct(gid, 7),
+      oct(size, 11),
+      oct(mtime, 11),
+      checksum,
+      " ",
+      typeflag,
+      linkname,
+      magic,
+      oct(version, 2),
+      uname,
+      gname,
+      oct(devmajor, 7),
+      oct(devminor, 7),
+      prefix
+    ]
 
-  def header(chksum)
-    arr = [name, oct(mode, 7), oct(uid, 7), oct(gid, 7), oct(size, 11),
-      oct(mtime, 11), chksum, " ", typeflag, linkname, magic, version,
-      uname, gname, oct(devmajor, 7), oct(devminor, 7), prefix]
-    str = arr.pack("a100a8a8a8a12a12" + # name, mode, uid, gid, size, mtime
-                   "a7aaa100a6a2" + # chksum, typeflag, linkname, magic, version
-                   "a32a32a8a8a155") # uname, gname, devmajor, devminor, prefix
-    str + "\0" * ((512 - str.size) % 512)
+    header = header.pack PACK_FORMAT
+                  
+    header << ("\0" * ((512 - header.size) % 512))
   end
 
   def oct(num, len)

@@ -33,10 +33,28 @@ class TarTestCase < RubyGemTestCase
     s + "\0"
   end
 
-  def assert_headers_equal(h1, h2)
-    fields = %w[name 100 mode 8 uid 8 gid 8 size 12 mtime 12 checksum 8
-                    typeflag 1 linkname 100 magic 6 version 2 uname 32 
-                    gname 32 devmajor 8 devminor 8 prefix 155]
+  def assert_headers_equal(expected, actual)
+    expected = expected.to_s unless String === expected
+    actual = actual.to_s unless String === actual
+
+    fields = %w[
+      name 100
+      mode 8
+      uid 8
+      gid 8
+      size 12
+      mtime 12
+      checksum 8
+      typeflag 1
+      linkname 100
+      magic 6
+      version 2
+      uname 32 
+      gname 32
+      devmajor 8
+      devminor 8
+      prefix 155
+    ]
 
     offset = 0
 
@@ -44,19 +62,19 @@ class TarTestCase < RubyGemTestCase
       name = fields.shift
       length = fields.shift.to_i
 
-      if name == "checksum"
+      if name == "checksum" then
         chksum_off = offset
         offset += length
         next
       end
 
-      assert_equal h1[offset, length], h2[offset, length], 
+      assert_equal expected[offset, length], actual[offset, length], 
                    "Field #{name} of the tar header differs."
 
       offset += length
     end
 
-    assert_equal h1[chksum_off, 8], h2[chksum_off, 8]
+    assert_equal expected[chksum_off, 8], actual[chksum_off, 8]
   end
 
   def calc_checksum(header)
@@ -116,7 +134,7 @@ class TarTestCase < RubyGemTestCase
 
   def util_entry(tar)
     io = StringIO.new tar
-    header = Gem::Package::TarHeader.new_from_stream io
+    header = Gem::Package::TarHeader.from io
     entry = Gem::Package::TarReader::Entry.new header, io
   end
 

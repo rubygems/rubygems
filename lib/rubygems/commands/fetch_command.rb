@@ -49,17 +49,10 @@ class Gem::Commands::FetchCommand < Gem::Command
         next
       end
 
-      gem_file = "#{spec.full_name}.gem"
+      path = Gem::RemoteFetcher.fetcher.download spec, source_uri
+      FileUtils.mv path, "#{spec.full_name}.gem"
 
-      gem_path = File.join source_uri.to_s, 'gems', gem_file
-
-      gem = Gem::RemoteFetcher.fetcher.fetch_path gem_path
-
-      File.open gem_file, 'wb' do |fp|
-        fp.write gem
-      end
-
-      say "Downloaded #{gem_file}"
+      say "Downloaded #{spec.full_name}"
     end
   end
 

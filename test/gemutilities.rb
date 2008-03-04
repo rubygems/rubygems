@@ -55,6 +55,20 @@ class FakeFetcher
     data.respond_to?(:call) ? data.call : data.length
   end
 
+  def download spec, source_uri, install_dir = Gem.dir
+    name = "#{spec.full_name}.gem"
+    path = File.join(install_dir, 'cache', name)
+
+    if source_uri =~ /^http/ then
+      File.open(path, "wb") do |f|
+        f.write fetch_path(File.join(source_uri, "gems", name))
+      end
+    else
+      FileUtils.cp source_uri, path
+    end
+
+    path
+  end
 end
 
 class RubyGemTestCase < Test::Unit::TestCase
@@ -201,6 +215,23 @@ class RubyGemTestCase < Test::Unit::TestCase
       FileUtils.mv "#{spec.full_name}.gem",
                    File.join(@gemhome, 'cache', "#{spec.original_name}.gem")
     end
+  end
+
+  def util_gem(name, version, &block)
+    spec = quick_gem(name, version, &block)
+
+    util_build_gem spec
+
+    cache_file = File.join @tempdir, 'gems', "#{spec.original_name}.gem"
+    FileUtils.mv File.join(@gemhome, 'cache', "#{spec.original_name}.gem"),
+                 cache_file
+    FileUtils.rm File.join(@gemhome, 'specifications',
+                           "#{spec.full_name}.gemspec")
+
+    spec.loaded_from = nil
+    spec.loaded = false
+
+    [spec, cache_file]
   end
 
   def util_make_gems

@@ -82,8 +82,8 @@ class Gem::Commands::UpdateCommand < Gem::Command
     gems_to_update.uniq.sort.each do |name|
       next if updated.any? { |spec| spec.name == name }
       say "Updating #{name}"
-      installer = Gem::DependencyInstaller.new name, options
-      installer.install
+      installer = Gem::DependencyInstaller.new options
+      installer.install name
       installer.installed_gems.each do |spec|
         updated << spec
         say "Successfully installed #{spec.full_name}"

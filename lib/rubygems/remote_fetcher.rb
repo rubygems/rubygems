@@ -40,6 +40,65 @@ class Gem::RemoteFetcher
       end
   end
 
+  ##
+  # Moves the gem +spec+ from +source_uri+ to the cache dir unless it is
+  # already there.  If the source_uri is local the gem cache dir copy is
+  # always replaced.
+  def download(spec, source_uri, install_dir = Gem.dir)
+    gem_file_name = "#{spec.full_name}.gem"
+    local_gem_path = File.join install_dir, 'cache', gem_file_name
+
+    Gem.ensure_gem_subdirectories install_dir
+
+    source_uri = URI.parse source_uri unless URI::Generic === source_uri
+    scheme = source_uri.scheme
+
+    # URI.parse gets confused by MS Windows paths with forward slashes.
+    scheme = nil if scheme =~ /^[a-z]$/i
+
+    case scheme
+    when 'http' then
+      unless File.exist? local_gem_path then
+        begin
+          say "Downloading gem #{gem_file_name}" if
+            Gem.configuration.really_verbose
+
+          remote_gem_path = source_uri + "gems/#{gem_file_name}"
+
+          gem = Gem::RemoteFetcher.fetcher.fetch_path remote_gem_path
+        rescue Gem::RemoteFetcher::FetchError
+          raise if spec.original_platform == spec.platform
+
+          alternate_name = "#{spec.original_name}.gem"
+
+          say "Failed, downloading gem #{alternate_name}" if
+            Gem.configuration.really_verbose
+
+          remote_gem_path = source_uri + "gems/#{alternate_name}"
+
+          gem = Gem::RemoteFetcher.fetcher.fetch_path remote_gem_path
+        end
+
+        File.open local_gem_path, 'wb' do |fp|
+          fp.write gem
+        end
+      end
+    when nil, 'file' then # TODO test for local overriding cache
+      begin
+        FileUtils.cp source_uri.to_s, local_gem_path
+      rescue Errno::EACCES
+        local_gem_path = source_uri.to_s
+      end
+
+      say "Using local gem #{local_gem_path}" if
+        Gem.configuration.really_verbose
+    else
+      raise Gem::InstallError, "unsupported URI scheme #{source_uri.scheme}"
+    end
+
+    local_gem_path
+  end
+
   # Downloads +uri+.
   def fetch_path(uri)
     open_uri_or_path(uri) do |input|

@@ -69,9 +69,8 @@ class Gem::Commands::InstallCommand < Gem::Command
 
     get_all_gem_names.each do |gem_name|
       begin
-        inst = Gem::DependencyInstaller.new gem_name, options[:version],
-                                            install_options
-        inst.install
+        inst = Gem::DependencyInstaller.new install_options
+        inst.install gem_name, options[:version]
 
         inst.installed_gems.each do |spec|
           say "Successfully installed #{spec.full_name}"

@@ -97,6 +97,13 @@ gems:
     @server_uri = base_server_uri + "/yaml"
     @server_z_uri = base_server_uri + "/yaml.Z"
 
+    # REFACTOR: copied from test_gem_dependency_installer.rb
+    @gems_dir = File.join @tempdir, 'gems'
+    @cache_dir = File.join @gemhome, 'cache'
+    FileUtils.mkdir @gems_dir
+
+    @a1, @a1_gem = util_gem 'a', '1' do |s| s.executables << 'a_bin' end
+
     Gem::RemoteFetcher.instance_variable_set :@fetcher, nil
   end
 
@@ -154,6 +161,139 @@ gems:
       assert_data_from_server fetcher.fetch_path(@server_uri)
       assert_equal SERVER_DATA.size, fetcher.fetch_size(@server_uri)
     end
+  end
+
+  def util_fuck_with_fetcher data, blow = false
+    fetcher = Gem::RemoteFetcher.fetcher
+    fetcher.instance_variable_set :@test_data, data
+
+    unless blow then
+      def fetcher.fetch_path arg
+        @test_arg = arg
+        @test_data
+      end
+    else
+      def fetcher.fetch_path arg
+        # OMG I'm such an ass
+        def self.fetch_path arg
+          @test_arg = arg
+          @test_data
+        end
+
+        raise Gem::RemoteFetcher::FetchError, "haha!"
+      end
+    end
+
+    fetcher
+  end
+
+  def test_download
+    a1_data = nil
+    File.open @a1_gem, 'rb' do |fp|
+      a1_data = fp.read
+    end
+
+    fetcher = util_fuck_with_fetcher a1_data
+
+    a1_cache_gem = File.join(@gemhome, 'cache', "#{@a1.full_name}.gem")
+    assert_equal a1_cache_gem, fetcher.download(@a1, 'http://gems.example.com')
+    assert_equal("http://gems.example.com/gems/a-1.gem",
+                 fetcher.instance_variable_get(:@test_arg).to_s)
+    assert File.exist?(a1_cache_gem)
+  end
+
+  def test_download_cached
+    FileUtils.mv @a1_gem, @cache_dir
+
+    inst = Gem::RemoteFetcher.fetcher
+
+    assert_equal File.join(@gemhome, 'cache', "#{@a1.full_name}.gem"),
+                 inst.download(@a1, 'http://gems.example.com')
+  end
+
+  def test_download_local
+    FileUtils.mv @a1_gem, @tempdir
+    local_path = File.join @tempdir, "#{@a1.full_name}.gem"
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::RemoteFetcher.fetcher
+    end
+
+    assert_equal File.join(@gemhome, 'cache', "#{@a1.full_name}.gem"),
+                 inst.download(@a1, local_path)
+  end
+
+  def test_download_install_dir
+    a1_data = nil
+    File.open @a1_gem, 'rb' do |fp|
+      a1_data = fp.read
+    end
+
+    fetcher = util_fuck_with_fetcher a1_data
+
+    install_dir = File.join @tempdir, 'more_gems'
+
+    a1_cache_gem = File.join install_dir, 'cache', "#{@a1.full_name}.gem"
+    actual = fetcher.download(@a1, 'http://gems.example.com', install_dir)
+
+    assert_equal a1_cache_gem, actual
+    assert_equal("http://gems.example.com/gems/a-1.gem",
+                 fetcher.instance_variable_get(:@test_arg).to_s)
+
+    assert File.exist?(a1_cache_gem)
+  end
+
+  unless win_platform? then # File.chmod doesn't work
+    def test_download_local_read_only
+      FileUtils.mv @a1_gem, @tempdir
+      local_path = File.join @tempdir, "#{@a1.full_name}.gem"
+      inst = nil
+      File.chmod 0555, File.join(@gemhome, 'cache')
+
+      Dir.chdir @tempdir do
+        inst = Gem::RemoteFetcher.fetcher
+      end
+
+      assert_equal File.join(@tempdir, "#{@a1.full_name}.gem"),
+        inst.download(@a1, local_path)
+    ensure
+      File.chmod 0755, File.join(@gemhome, 'cache')
+    end
+  end
+
+  def test_download_platform_legacy
+    original_platform = 'old-platform'
+
+    e1, e1_gem = util_gem 'e', '1' do |s|
+      s.platform = Gem::Platform::CURRENT
+      s.instance_variable_set :@original_platform, original_platform
+    end
+
+    e1_data = nil
+    File.open e1_gem, 'rb' do |fp|
+      e1_data = fp.read
+    end
+
+    fetcher = util_fuck_with_fetcher e1_data, :blow_chunks
+
+    e1_cache_gem = File.join(@gemhome, 'cache', "#{e1.full_name}.gem")
+
+    assert_equal e1_cache_gem, fetcher.download(e1, 'http://gems.example.com')
+
+    assert_equal("http://gems.example.com/gems/#{e1.original_name}.gem",
+                 fetcher.instance_variable_get(:@test_arg).to_s)
+    assert File.exist?(e1_cache_gem)
+  end
+
+  def test_download_unsupported
+    inst = Gem::RemoteFetcher.fetcher
+
+    e = assert_raise Gem::InstallError do
+      inst.download @a1, 'ftp://gems.rubyforge.org'
+    end
+
+    assert_equal 'unsupported URI scheme ftp', e.message
   end
 
   def test_explicit_proxy

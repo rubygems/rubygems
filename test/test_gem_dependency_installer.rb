@@ -295,6 +295,41 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
   end
 
+  def test_install_remote
+    a1_data = nil
+    File.open @a1_gem, 'rb' do |fp|
+      a1_data = fp.read
+    end
+
+    @fetcher.data['http://gems.example.com/gems/a-1.gem'] = a1_data
+
+    inst = Gem::DependencyInstaller.new
+
+    Dir.chdir @tempdir do
+      inst.install 'a'
+    end
+
+    assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
+  def test_install_remote_dep
+    a1_data = nil
+    File.open @a1_gem, 'rb' do |fp|
+      a1_data = fp.read
+    end
+
+    @fetcher.data['http://gems.example.com/gems/a-1.gem'] = a1_data
+
+    inst = Gem::DependencyInstaller.new
+
+    Dir.chdir @tempdir do
+      dep = Gem::Dependency.new @a1.name, @a1.version
+      inst.install dep
+    end
+
+    assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
   def test_install_domain_remote_platform_newer
     a2_o, a2_o_gem = util_gem 'a', '2' do |s|
       s.platform = Gem::Platform.new %w[cpu other_platform 1]
@@ -427,7 +462,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
   def test_gather_dependencies
     inst = Gem::DependencyInstaller.new
-    inst.gather_specs_to_download 'b'
+    inst.find_spec_by_name_and_version 'b'
+    inst.gather_dependencies
 
     assert_equal %w[a-1 b-1], inst.gems_to_install.map { |s| s.full_name }
   end
@@ -444,7 +480,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
     @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
 
     inst = Gem::DependencyInstaller.new
-    inst.gather_specs_to_download 'c'
+    inst.find_spec_by_name_and_version 'c'
+    inst.gather_dependencies
 
     assert_equal %w[b-2 c-1], inst.gems_to_install.map { |s| s.full_name }
   end
@@ -453,7 +490,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
     util_set_arch 'cpu-my_platform1'
 
     inst = Gem::DependencyInstaller.new
-    inst.gather_specs_to_download 'w'
+    inst.find_spec_by_name_and_version 'w'
+    inst.gather_dependencies
 
     assert_equal %w[x-1-cpu-my_platform-1 w-1],
                  inst.gems_to_install.map { |s| s.full_name }
@@ -461,7 +499,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
   def test_gather_dependencies_platform_bump
     inst = Gem::DependencyInstaller.new
-    inst.gather_specs_to_download 'z'
+    inst.find_spec_by_name_and_version 'z'
+    inst.gather_dependencies
 
     assert_equal %w[y-1 z-1], inst.gems_to_install.map { |s| s.full_name }
   end
@@ -477,7 +516,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
     @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
 
     inst = Gem::DependencyInstaller.new
-    inst.gather_specs_to_download 'e'
+    inst.find_spec_by_name_and_version 'e'
+    inst.gather_dependencies
 
     assert_equal %w[d-1 e-1], inst.gems_to_install.map { |s| s.full_name }
   end

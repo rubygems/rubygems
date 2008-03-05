@@ -1,3 +1,12 @@
+2008-03-04  Ryan Davis  <ryan@wrath.local>
+
+	* lib/rubygems/remote_fetcher.rb: Moved #download from
+	DependencyInstaller.
+	* lib/rubygems/commands/fetch_command.rb: Updated to use #download.
+	* lib/rubygems/dependency_installer.rb: install now takes name or dep.
+	Renamed gather_specs_to_download to find_spec_by_name_and_version.
+	Modifed #initialize to not take gem name or version.
+
 2008-03-04  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/package*:  Removed #open_from_io and friends, switched
@@ -6,15 +15,7 @@
 	instance methods.
 	* lib/rubygems/remote_fetcher.rb:  Print out number of requests made
 	before connection reset.
-
-2008-03-04  Ryan Davis  <ryan@wrath.local>
-
-	* lib/rubygems/dependency_installer.rb: Modifed #initialize to not
-	take gem name or version.
-	* lib/rubygems/remote_fetcher.rb: Moved #download from
-	DependencyInstaller.
-	* lib/rubygems/commands/fetch_command.rb: Updated to use #download.
-
+	
 2008-02-29  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/package/tar_reader/entry.rb:  Removed is_directory and

@@ -78,7 +78,7 @@ class Gem::DependencyInstaller
     end
 
     gems_and_sources.sort_by do |gem, source|
-      [gem, source !~ /^http:\/\// ? 1 : 0] # local gems win
+      [gem, source =~ /^http:\/\// ? 0 : 1] # local gems win
     end
   end
 
@@ -116,7 +116,7 @@ class Gem::DependencyInstaller
     @gems_to_install = dependency_list.dependency_order.reverse
   end
 
-  def gather_specs_to_download gem_name, version = Gem::Requirement.default
+  def find_spec_by_name_and_version gem_name, version = Gem::Requirement.default
     spec_and_source = nil
 
     glob = if File::ALT_SEPARATOR then
@@ -140,8 +140,8 @@ class Gem::DependencyInstaller
     end
 
     if spec_and_source.nil? then
-      @dep = Gem::Dependency.new gem_name, version
-      spec_and_sources = find_gems_with_sources(@dep).reverse
+      dep = Gem::Dependency.new gem_name, version
+      spec_and_sources = find_gems_with_sources(dep).reverse
 
       spec_and_source = spec_and_sources.find { |spec, source|
         Gem::Platform.match spec.platform
@@ -154,23 +154,28 @@ class Gem::DependencyInstaller
     end
 
     @specs_and_sources = [spec_and_source]
-
-    gather_dependencies
   end
 
   ##
   # Installs the gem and all its dependencies.
-  def install gem_name, version = Gem::Requirement.default
+  def install dep_or_name, version = Gem::Requirement.default
+    if String === dep_or_name then
+      find_spec_by_name_and_version dep_or_name, version
+    else
+      @specs_and_sources = [find_gems_with_sources(dep_or_name).last]
+    end
+
+    gather_dependencies
+
     spec_dir = File.join @install_dir, 'specifications'
     source_index = Gem::SourceIndex.from_gems_in spec_dir
-
-    gather_specs_to_download gem_name, version
 
     @gems_to_install.each do |spec|
       last = spec == @gems_to_install.last
       # HACK is this test for full_name acceptable?
       next if source_index.any? { |n,_| n == spec.full_name } and not last
 
+      # TODO: make this sorta_verbose so other users can benefit from it
       say "Installing gem #{spec.full_name}" if Gem.configuration.really_verbose
 
       _, source_uri = @specs_and_sources.assoc spec

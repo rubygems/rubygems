@@ -16,35 +16,87 @@ class TestGemPackageTarOutput < TarTestCase
     @file = File.join @tempdir, 'bla2.tar'
   end
 
-  def test_file_looks_good
-    Gem::Package::TarOutput.open @file do |os|
-      os.metadata = "bla".to_yaml
-    end
-
-    f = File.open @file, "rb"
-
-    Gem::Package::TarReader.new f do |is|
-      i = 0
-      is.each do |entry|
-        case i
-        when 0
-          assert_equal("data.tar.gz", entry.header.name)
-        when 1
-          assert_equal("metadata.gz", entry.header.name)
-          gzis = Zlib::GzipReader.new entry
-          assert_equal("bla".to_yaml, gzis.read)
-          gzis.close
+  def test_self_open
+    open @file, 'wb' do |tar_io|
+      Gem::Package::TarOutput.open tar_io do |tar_writer|
+        tar_writer.add_file_simple 'README', 0, 17 do |io|
+          io.write "This is a README\n"
         end
-        i += 1
-      end
 
-      assert_equal 2, i
+        tar_writer.metadata = "This is some metadata\n"
+      end
     end
 
+    files = util_extract
+
+    name, data = files.shift
+    assert_equal 'data.tar.gz', name
+
+    gz = Zlib::GzipReader.new StringIO.new(data)
+
+    Gem::Package::TarReader.new gz do |tar_reader|
+      tar_reader.each do |entry|
+        assert_equal 'README', entry.full_name
+        assert_equal "This is a README\n", entry.read
+      end
+    end
+
+    gz.close
+
+    name, data = files.shift
+    assert_equal 'metadata.gz', name
+
+    gz = Zlib::GzipReader.new StringIO.new(data)
+    assert_equal "This is some metadata\n", gz.read
+
+    assert files.empty?
   ensure
-    f.close
+    gz.close if gz
+  end
+
+  def test_self_open_signed
+    signer = Gem::Security::Signer.new @private_key, [@public_cert]
+
+    open @file, 'wb' do |tar_io|
+      Gem::Package::TarOutput.open tar_io, signer do |tar_writer|
+        tar_writer.add_file_simple 'README', 0, 17 do |io|
+          io.write "This is a README\n"
+        end
+
+        tar_writer.metadata = "This is some metadata\n"
+      end
+    end
+
+    files = util_extract
+
+    name, data = files.shift
+    assert_equal 'data.tar.gz', name
+
+    name, data = files.shift
+    assert_equal 'metadata.gz', name
+
+    name, data = files.shift
+    assert_equal 'data.tar.gz.sig', name
+
+    name, data = files.shift
+    assert_equal 'metadata.gz.sig', name
+
+    assert files.empty?
+  end
+
+  def util_extract
+    files = []
+
+    open @file, 'rb' do |io|
+      Gem::Package::TarReader.new io do |tar_reader|
+        tar_reader.each do |entry|
+          files << [entry.full_name, entry.read]
+        end
+      end
+    end
+
+    files
   end
 
 end
-
 

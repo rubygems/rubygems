@@ -14,7 +14,7 @@ class TestGemPackageTarReader < TarTestCase
     tar = tar_dir_header "foo", "bar", 0
     tar << tar_file_header("bar", "baz", 0, 0)
 
-    io = StringIO.new tar
+    io = TempIO.new tar
 
     entries = 0
 
@@ -36,7 +36,7 @@ class TestGemPackageTarReader < TarTestCase
             "\0" * (512 - content.size)
     str << "\0" * 1024
 
-    Gem::Package::TarReader.new(StringIO.new(str)) do |tar_reader|
+    Gem::Package::TarReader.new(TempIO.new(str)) do |tar_reader|
       3.times do
         tar_reader.rewind
         i = 0

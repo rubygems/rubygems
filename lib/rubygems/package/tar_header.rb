@@ -90,24 +90,61 @@ class Gem::Package::TarHeader
 
     fields = header.unpack UNPACK_FORMAT
 
-    new :name     => fields.shift,
-        :mode     => fields.shift.oct,
-        :uid      => fields.shift.oct,
-        :gid      => fields.shift.oct,
-        :size     => fields.shift.oct,
-        :mtime    => fields.shift.oct,
-        :checksum => fields.shift.oct,
-        :typeflag => fields.shift,
-        :linkname => fields.shift,
-        :magic    => fields.shift,
-        :version  => fields.shift.oct,
-        :uname    => fields.shift,
-        :gname    => fields.shift,
-        :devmajor => fields.shift.oct,
-        :devminor => fields.shift.oct,
-        :prefix   => fields.shift,
+    name     = fields.shift
+    mode     = fields.shift.oct
+    uid      = fields.shift.oct
+    gid      = fields.shift.oct
+    size     = fields.shift.oct
+    mtime    = fields.shift.oct
+    checksum = fields.shift.oct
+    typeflag = fields.shift
+    linkname = fields.shift
+    magic    = fields.shift
+    version  = fields.shift.oct
+    uname    = fields.shift
+    gname    = fields.shift
+    devmajor = fields.shift.oct
+    devminor = fields.shift.oct
+    prefix   = fields.shift
 
-        :empty => empty
+    new :name     => name,
+        :mode     => mode,
+        :uid      => uid,
+        :gid      => gid,
+        :size     => size,
+        :mtime    => mtime,
+        :checksum => checksum,
+        :typeflag => typeflag,
+        :linkname => linkname,
+        :magic    => magic,
+        :version  => version,
+        :uname    => uname,
+        :gname    => gname,
+        :devmajor => devmajor,
+        :devminor => devminor,
+        :prefix   => prefix,
+
+        :empty    => empty
+
+    # HACK unfactor for Rubinius
+    #new :name     => fields.shift,
+    #    :mode     => fields.shift.oct,
+    #    :uid      => fields.shift.oct,
+    #    :gid      => fields.shift.oct,
+    #    :size     => fields.shift.oct,
+    #    :mtime    => fields.shift.oct,
+    #    :checksum => fields.shift.oct,
+    #    :typeflag => fields.shift,
+    #    :linkname => fields.shift,
+    #    :magic    => fields.shift,
+    #    :version  => fields.shift.oct,
+    #    :uname    => fields.shift,
+    #    :gname    => fields.shift,
+    #    :devmajor => fields.shift.oct,
+    #    :devminor => fields.shift.oct,
+    #    :prefix   => fields.shift,
+
+    #    :empty => empty
   end
 
   def initialize(vals)
@@ -127,7 +164,9 @@ class Gem::Package::TarHeader
     vals[:devmajor] ||= 0
     vals[:devminor] ||= 0
 
-    FIELDS.each { |x| instance_variable_set "@#{x.to_s}", vals[x] }
+    FIELDS.each do |name|
+      instance_variable_set "@#{name}", vals[name]
+    end
 
     @empty = vals[:empty]
   end
@@ -138,22 +177,22 @@ class Gem::Package::TarHeader
 
   def ==(other)
     self.class === other and
-    @name     == other.name     and
-    @mode     == other.mode     and
-    @uid      == other.uid      and
-    @gid      == other.gid      and
-    @size     == other.size     and
-    @mtime    == other.mtime    and
     @checksum == other.checksum and
-    @typeflag == other.typeflag and
-    @linkname == other.linkname and
-    @magic    == other.magic    and
-    @version  == other.version  and
-    @uname    == other.uname    and
-    @gname    == other.gname    and
     @devmajor == other.devmajor and
     @devminor == other.devminor and
-    @prefix   == other.prefix
+    @gid      == other.gid      and
+    @gname    == other.gname    and
+    @linkname == other.linkname and
+    @magic    == other.magic    and
+    @mode     == other.mode     and
+    @mtime    == other.mtime    and
+    @name     == other.name     and
+    @prefix   == other.prefix   and
+    @size     == other.size     and
+    @typeflag == other.typeflag and
+    @uid      == other.uid      and
+    @uname    == other.uname    and
+    @version  == other.version
   end
 
   def to_s

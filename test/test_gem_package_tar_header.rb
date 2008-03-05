@@ -33,7 +33,7 @@ class TestGemPackageTarHeader < TarTestCase
   end
 
   def test_self_from
-    io = StringIO.new @tar_header.to_s
+    io = TempIO.new @tar_header.to_s
 
     new_header = Gem::Package::TarHeader.from io
 
@@ -52,6 +52,7 @@ class TestGemPackageTarHeader < TarTestCase
     assert_equal 12345,   @tar_header.mtime,    'mtime'
     assert_equal 'x',     @tar_header.name,     'name'
     assert_equal 'y',     @tar_header.prefix,   'prefix'
+    assert_equal 100,     @tar_header.size,     'size'
     assert_equal '0',     @tar_header.typeflag, 'typeflag'
     assert_equal 1000,    @tar_header.uid,      'uid'
     assert_equal 'user',  @tar_header.uname,    'uname'

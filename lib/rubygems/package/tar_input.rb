@@ -14,20 +14,12 @@ class Gem::Package::TarInput
 
   private_class_method :new
 
-  def self.open(filename, security_policy = nil, &block)
-    io = File.open filename, "rb"
-    open_from_io(io, security_policy, &block)
-  end
+  def self.open(io, security_policy = nil,  &block)
+    is = new io, security_policy
 
-  def self.open_from_io(io, security_policy = nil,  &block)
-    raise ArgumentError, 'block not supplied' unless block_given?
-
-    begin
-      is = new io, security_policy
-      yield is
-    ensure
-      is.close if is
-    end
+    yield is
+  ensure
+    is.close if is
   end
 
   def initialize(io, security_policy = nil)

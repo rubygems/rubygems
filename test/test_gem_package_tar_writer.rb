@@ -14,7 +14,7 @@ class TestTarWriter < TarTestCase
     super
 
     @data = 'abcde12345'
-    @io = StringIO.new
+    @io = TempIO.new
     @tar_writer = Gem::Package::TarWriter.new @io
   end
 

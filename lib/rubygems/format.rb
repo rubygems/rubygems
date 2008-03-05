@@ -43,15 +43,12 @@ module Gem
 
       # check for old version gem
       if File.read(file_path, 20).include?("MD5SUM =")
-        #alert_warning "Gem #{file_path} is in old format."
         require 'rubygems/old_format'
+
         format = OldFormat.from_file_by_path(file_path)
       else
-        begin
-          f = File.open(file_path, 'rb')
-          format = from_io(f, file_path, security_policy)
-        ensure
-          f.close unless f.closed?
+        open file_path, 'rb' do |io|
+          format = from_io io, file_path, security_policy
         end
       end
 
@@ -65,10 +62,12 @@ module Gem
     # io:: [IO] Stream from which to read the gem
     #
     def self.from_io(io, gem_path="(io)", security_policy = nil)
-      format = self.new(gem_path)
-      Package.open_from_io(io, 'r', security_policy) do |pkg|
+      format = new gem_path
+
+      Package.open io, 'r', security_policy do |pkg|
         format.spec = pkg.metadata
         format.file_entries = []
+
         pkg.each do |entry|
           size = entry.header.size
           mode = entry.header.mode
@@ -80,6 +79,7 @@ module Gem
           ]
         end
       end
+
       format
     end
 

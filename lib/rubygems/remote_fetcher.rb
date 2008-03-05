@@ -9,6 +9,8 @@ require 'rubygems'
 
 class Gem::RemoteFetcher
 
+  include Gem::UserInteraction
+
   class FetchError < Gem::Exception; end
 
   @fetcher = nil
@@ -31,6 +33,7 @@ class Gem::RemoteFetcher
     Socket.do_not_reverse_lookup = true
 
     @connections = {}
+    @requests = Hash.new 0
     @proxy_uri =
       case proxy
       when :no_proxy then nil
@@ -230,10 +233,17 @@ class Gem::RemoteFetcher
       # HACK work around EOFError bug in Net::HTTP
       retried = false
       begin
+        @requests[connection_id] += 1
         response = connection.request(request)
       rescue EOFError
+        requests = @requests[connection_id]
+        say "connection reset after #{requests} requests, retrying" if
+          Gem.configuration.really_verbose
+
         raise Gem::RemoteFetcher::FetchError, 'too many connection resets' if
           retried
+
+        @requests[connection_id] = 0
 
         connection.finish
         connection.start

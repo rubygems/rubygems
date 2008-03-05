@@ -10,8 +10,10 @@ at_exit { $SAFE = 1 }
 require 'fileutils'
 require 'test/unit'
 require 'tmpdir'
+require 'tempfile'
 require 'uri'
 require 'rubygems/source_info_cache'
+require 'rubygems/package'
 
 require File.join(File.expand_path(File.dirname(__FILE__)), 'mockgemui')
 
@@ -114,6 +116,11 @@ class RubyGemTestCase < Test::Unit::TestCase
     end
 
     @marshal_version = "#{Marshal::MAJOR_VERSION}.#{Marshal::MINOR_VERSION}"
+
+    @private_key = File.expand_path File.join(File.dirname(__FILE__),
+                                              'private_key.pem')
+    @public_cert = File.expand_path File.join(File.dirname(__FILE__),
+                                              'public_cert.pem')
   end
 
   def teardown
@@ -327,6 +334,32 @@ class RubyGemTestCase < Test::Unit::TestCase
 
   def win_platform?
     Gem.win_platform?
+  end
+
+end
+
+class TempIO
+
+  @@count = 0
+
+  def initialize(string = '')
+    @tempfile = Tempfile.new "TempIO-#{@@count ++ 1}"
+    @tempfile.write string
+    @tempfile.rewind
+  end
+
+  def method_missing(meth, *args, &block)
+    @tempfile.send(meth, *args, &block)
+  end
+
+  def respond_to?(meth)
+    @tempfile.respond_to? meth
+  end
+
+  def string
+    @tempfile.flush
+
+    open @tempfile.path, 'rb' do |io| io.read end
   end
 
 end

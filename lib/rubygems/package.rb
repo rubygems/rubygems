@@ -45,36 +45,15 @@ module Gem::Package
   class TooLongFileName < Error; end
   class FormatError < Error; end
 
-  #--
-  #FIXME: refactor the following 2 methods
-  #++
+  def self.open(io, mode = "r", signer = nil, &block)
+    tar_type = case mode
+               when 'r' then TarInput
+               when 'w' then TarOutput
+               else
+                 raise "Unknown Package open mode"
+               end
 
-  def self.open(dest, mode = "r", signer = nil, &block)
-    raise "Block needed" unless block_given?
-
-    case mode
-    when "r"
-      security_policy = signer
-      TarInput.open(dest, security_policy, &block)
-    when "w"
-      TarOutput.open(dest, signer, &block)
-    else
-      raise "Unknown Package open mode"
-    end
-  end
-
-  def self.open_from_io(io, mode = "r", signer = nil, &block)
-    raise "Block needed" unless block_given?
-
-    case mode
-    when "r"
-      security_policy = signer
-      TarInput.open_from_io(io, security_policy, &block)
-    when "w"
-      TarOutput.open_from_io(io, signer, &block)
-    else
-      raise "Unknown Package open mode"
-    end
+    tar_type.open(io, signer, &block)
   end
 
   def self.pack(src, destname, signer = nil)

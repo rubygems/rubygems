@@ -133,7 +133,7 @@ class TarTestCase < RubyGemTestCase
   end
 
   def util_entry(tar)
-    io = StringIO.new tar
+    io = TempIO.new tar
     header = Gem::Package::TarHeader.from io
     entry = Gem::Package::TarReader::Entry.new header, io
   end

@@ -23,7 +23,7 @@ class TestGemPackageTarInput < TarTestCase
     inner_tar += "01234" + "\0" * 507
     inner_tar += tar_dir_header("__dir__", "", 0600)
     inner_tar += "\0" * 1024
-    str = StringIO.new ""
+    str = TempIO.new
 
     begin
       os = Zlib::GzipWriter.new str
@@ -61,48 +61,52 @@ class TestGemPackageTarInput < TarTestCase
   end
 
   def test_each_works
-    Gem::Package::TarInput.open(@file) do |tar_input|
-      count = 0
+    open @file, 'rb' do |io|
+      Gem::Package::TarInput.open io do |tar_input|
+        count = 0
 
-      tar_input.each_with_index do |entry, i|
-        count = i
+        tar_input.each_with_index do |entry, i|
+          count = i
 
-        assert_kind_of Gem::Package::TarReader::Entry, entry
-        assert_equal @entry_names[i], entry.header.name
-        assert_equal @entry_sizes[i], entry.header.size
+          assert_kind_of Gem::Package::TarReader::Entry, entry
+          assert_equal @entry_names[i], entry.header.name
+          assert_equal @entry_sizes[i], entry.header.size
+        end
+
+        assert_equal 2, count
+
+        assert_equal @spec, tar_input.metadata
       end
-
-      assert_equal 2, count
-
-      assert_equal @spec, tar_input.metadata
     end
   end
 
   def test_extract_entry_works
-    Gem::Package::TarInput.open @file do |tar_input|
-      assert_equal @spec, tar_input.metadata
+    open @file, 'rb' do |io|
+      Gem::Package::TarInput.open io do |tar_input|
+        assert_equal @spec, tar_input.metadata
 
-      count = 0
+        count = 0
 
-      tar_input.each_with_index do |entry, i|
-        count = i
-        tar_input.extract_entry @tempdir, entry
-        name = File.join @tempdir, entry.header.name
+        tar_input.each_with_index do |entry, i|
+          count = i
+          tar_input.extract_entry @tempdir, entry
+          name = File.join @tempdir, entry.header.name
 
-        if entry.directory?
-          assert File.dir?(name)
-        else
-          assert File.file?(name)
-          assert_equal @entry_sizes[i], File.stat(name).size
-          #FIXME: win32? !!
+          if entry.directory?
+            assert File.dir?(name)
+          else
+            assert File.file?(name)
+            assert_equal @entry_sizes[i], File.stat(name).size
+            #FIXME: win32? !!
+          end
+
+          unless Gem.win_platform? then
+            assert_equal @entry_modes[i], File.stat(name).mode & (~SETGID_BIT)
+          end
         end
 
-        unless Gem.win_platform? then
-          assert_equal @entry_modes[i], File.stat(name).mode & (~SETGID_BIT)
-        end
+        assert_equal 2, count
       end
-
-      assert_equal 2, count
     end
 
     @entry_files.each_with_index do |x, i|

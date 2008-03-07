@@ -54,34 +54,36 @@ class TestGemPackageTarOutput < TarTestCase
     gz.close if gz
   end
 
-  def test_self_open_signed
-    signer = Gem::Security::Signer.new @private_key, [@public_cert]
+  if defined? OpenSSL then
+    def test_self_open_signed
+      signer = Gem::Security::Signer.new @private_key, [@public_cert]
 
-    open @file, 'wb' do |tar_io|
-      Gem::Package::TarOutput.open tar_io, signer do |tar_writer|
-        tar_writer.add_file_simple 'README', 0, 17 do |io|
-          io.write "This is a README\n"
+      open @file, 'wb' do |tar_io|
+        Gem::Package::TarOutput.open tar_io, signer do |tar_writer|
+          tar_writer.add_file_simple 'README', 0, 17 do |io|
+            io.write "This is a README\n"
+          end
+
+          tar_writer.metadata = "This is some metadata\n"
         end
-
-        tar_writer.metadata = "This is some metadata\n"
       end
+
+      files = util_extract
+
+      name, data = files.shift
+      assert_equal 'data.tar.gz', name
+
+      name, data = files.shift
+      assert_equal 'metadata.gz', name
+
+      name, data = files.shift
+      assert_equal 'data.tar.gz.sig', name
+
+      name, data = files.shift
+      assert_equal 'metadata.gz.sig', name
+
+      assert files.empty?
     end
-
-    files = util_extract
-
-    name, data = files.shift
-    assert_equal 'data.tar.gz', name
-
-    name, data = files.shift
-    assert_equal 'metadata.gz', name
-
-    name, data = files.shift
-    assert_equal 'data.tar.gz.sig', name
-
-    name, data = files.shift
-    assert_equal 'metadata.gz.sig', name
-
-    assert files.empty?
   end
 
   def util_extract

@@ -49,6 +49,9 @@ class Gem::Package::TarOutput
     @tar_writer = Gem::Package::TarWriter.new @io
 
     @metadata = nil
+
+    @data_signature = nil
+    @meta_signature = nil
   end
 
   ##

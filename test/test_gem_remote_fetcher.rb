@@ -175,6 +175,7 @@ gems:
     else
       def fetcher.fetch_path arg
         # OMG I'm such an ass
+        class << self; remove_method :fetch_path; end
         def self.fetch_path arg
           @test_arg = arg
           @test_data

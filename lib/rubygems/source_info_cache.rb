@@ -87,7 +87,7 @@ class Gem::SourceInfoCache
       @cache_data
     rescue => e
       if Gem.configuration.really_verbose then
-        say "Exception during cache_data handling: #{ex.class} - #{ex}"
+        say "Exception during cache_data handling: #{e.class} - #{e}"
         say "Cache file was: #{cache_file}"
         say "\t#{e.backtrace.join "\n\t"}"
       end

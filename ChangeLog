@@ -1,3 +1,14 @@
+2008-03-09  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/defaults.rb:  Add special case for RUBY_ENGINE constant
+	when setting default gem dir.
+	* Rakefile:  Add update_rubinius and diff_rubinius.
+
+2008-03-08  Lincoln Stoll  <lstoll@lstoll.net>
+
+	* lib/rubygems/server.rb:  Drop use of RDoc's TemplatePage in favor of
+	ERB.
+
 2008-03-04  Ryan Davis  <ryan@wrath.local>
 
 	* lib/rubygems/remote_fetcher.rb: Moved #download from
@@ -15,7 +26,7 @@
 	instance methods.
 	* lib/rubygems/remote_fetcher.rb:  Print out number of requests made
 	before connection reset.
-	
+
 2008-02-29  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/package/tar_reader/entry.rb:  Removed is_directory and

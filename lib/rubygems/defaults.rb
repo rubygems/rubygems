@@ -11,6 +11,9 @@ module Gem
     if defined? RUBY_FRAMEWORK_VERSION then
       File.join File.dirname(ConfigMap[:sitedir]), 'Gems',
                 ConfigMap[:ruby_version]
+    elsif defined? RUBY_ENGINE then
+      File.join ConfigMap[:libdir], RUBY_ENGINE, 'gems',
+                ConfigMap[:ruby_version]
     else
       File.join ConfigMap[:libdir], 'ruby', 'gems', ConfigMap[:ruby_version]
     end
@@ -33,7 +36,7 @@ module Gem
       '/usr/bin'
     else # generic install
       ConfigMap[:bindir]
-    end	      
+    end
   end
 
   # The default system-wide source info cache directory.

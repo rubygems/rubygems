@@ -1,6 +1,8 @@
 require 'rubygems/indexer'
 
+##
 # Construct the master Gem index file.
+
 class Gem::Indexer::MasterIndexBuilder < Gem::Indexer::AbstractIndexBuilder
 
   def start_index
@@ -10,6 +12,7 @@ class Gem::Indexer::MasterIndexBuilder < Gem::Indexer::AbstractIndexBuilder
 
   def end_index
     super
+
     @file.puts "--- !ruby/object:#{@index.class}"
     @file.puts "gems:"
 
@@ -28,11 +31,9 @@ class Gem::Indexer::MasterIndexBuilder < Gem::Indexer::AbstractIndexBuilder
     index_file_name = File.join @directory, @filename
 
     compress index_file_name, "Z"
-    compressed_file_name = "#{index_file_name}.Z"
+    paranoid index_file_name, "#{index_file_name}.Z"
 
-    paranoid index_file_name, compressed_file_name
-
-    @files << compressed_file_name
+    @files << "#{@filename}.Z"
   end
 
   def add(spec)

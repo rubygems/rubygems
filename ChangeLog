@@ -1,3 +1,7 @@
+2008-03-12  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/indexer.rb:  Add latest_index.
+
 2008-03-09  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/defaults.rb:  Add special case for RUBY_ENGINE constant

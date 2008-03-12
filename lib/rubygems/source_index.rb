@@ -118,6 +118,7 @@ module Gem
       self
     end
 
+    ##
     # Returns a Hash of name => Specification of the latest versions of each
     # gem in this index.
     def latest_specs

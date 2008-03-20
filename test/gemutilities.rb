@@ -164,14 +164,14 @@ class RubyGemTestCase < Test::Unit::TestCase
   end
 
   def read_cache(fn)
-    open(fn.dup.untaint) { |f| Marshal.load f.read }
+    open(fn.dup.untaint, 'rb') { |f| Marshal.load f.read }
   end
 
   def write_file(path)
     path = File.join(@gemhome, path)
     dir = File.dirname path
     FileUtils.mkdir_p dir
-    File.open(path, "w") { |io|
+    File.open(path, "wb") { |io|
       yield(io)
     }
     path
@@ -344,6 +344,7 @@ class TempIO
 
   def initialize(string = '')
     @tempfile = Tempfile.new "TempIO-#{@@count ++ 1}"
+    @tempfile.binmode
     @tempfile.write string
     @tempfile.rewind
   end
@@ -374,4 +375,5 @@ class Gem::Commands::InstallCommand < Gem::Command
     @exit_code = code
   end
 end
+
 

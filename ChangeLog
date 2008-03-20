@@ -1,3 +1,9 @@
+2008-03-20  Luis Lavena  <luislavena@gmail.com>
+
+	* test/gemutilities.rb:  Change all the file processing mechanism to
+	enable binary mode by default (required for Windows file operations
+	dealing with non-printable characters).
+
 2008-03-19  Luis Lavena  <luislavena@gmail.com>
 
 	* lib/rubygems/package/tar_output.rb: Adapted code to use #wrap instead 

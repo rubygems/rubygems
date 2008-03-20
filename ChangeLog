@@ -1,3 +1,9 @@
+2008-03-19  Luis Lavena  <luislavena@gmail.com>
+
+	* lib/rubygems/package/tar_output.rb: Adapted code to use #wrap instead 
+	of #new when dealing with Zlib::GzipWriter (fixes SEGV and warnings due
+	GzipWriter object not being closed explicitly).
+
 2008-03-12  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/indexer.rb:  Add latest_index.

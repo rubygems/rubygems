@@ -62,9 +62,8 @@ class Gem::Package::TarOutput
 
   def add_gem_contents
     @tar_writer.add_file "data.tar.gz", 0644 do |inner|
-      begin
-        sio = @signer ? StringIO.new : nil
-        os = Zlib::GzipWriter.new(sio || inner)
+      sio = @signer ? StringIO.new : nil
+      Zlib::GzipWriter.wrap(sio || inner) do |os|
 
         Gem::Package::TarWriter.new os do |data_tar_writer|
           def data_tar_writer.metadata() @metadata end
@@ -74,18 +73,14 @@ class Gem::Package::TarOutput
 
           @metadata = data_tar_writer.metadata
         end
-      ensure
-        os.flush
-        os.finish
-        #os.close
+      end
 
-        # if we have a signing key, then sign the data
-        # digest and return the signature
-        if @signer then
-          digest = Gem::Security::OPT[:dgst_algo].digest sio.string
-          @data_signature = @signer.sign digest
-          inner.write sio.string
-        end
+      # if we have a signing key, then sign the data
+      # digest and return the signature
+      if @signer then
+        digest = Gem::Security::OPT[:dgst_algo].digest sio.string
+        @data_signature = @signer.sign digest
+        inner.write sio.string
       end
     end
 

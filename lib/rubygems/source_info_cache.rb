@@ -4,6 +4,7 @@ require 'rubygems'
 require 'rubygems/source_info_cache_entry'
 require 'rubygems/user_interaction'
 
+##
 # SourceInfoCache stores a copy of the gem index for each gem source.
 #
 # There are two possible cache locations, the system cache and the user cache:
@@ -25,7 +26,7 @@ require 'rubygems/user_interaction'
 #         @source_index => Gem::SourceIndex
 #       ...
 #     }
-#
+
 class Gem::SourceInfoCache
 
   include Gem::UserInteraction
@@ -46,6 +47,22 @@ class Gem::SourceInfoCache
   end
 
   ##
+  # The name of the system cache file.
+
+  def self.latest_system_cache_file
+    File.join File.dirname(system_cache_file),
+              "latest_#{File.basename system_cache_file}"
+  end
+
+  ##
+  # The name of the latest user cache file.
+
+  def self.latest_user_cache_file
+    File.join File.dirname(user_cache_file),
+              "latest_#{File.basename user_cache_file}"
+  end
+
+  ##
   # Search all source indexes.  See Gem::SourceInfoCache#search.
 
   def self.search(*args)
@@ -60,6 +77,21 @@ class Gem::SourceInfoCache
     cache.search_with_source(*args)
   end
 
+  ##
+  # The name of the system cache file. (class method)
+
+  def self.system_cache_file
+    @system_cache_file ||= Gem.default_system_source_cache_dir
+  end
+
+  ##
+  # The name of the user cache file.
+
+  def self.user_cache_file
+    @user_cache_file ||=
+      ENV['GEMCACHE'] || Gem.default_user_source_cache_dir
+  end
+
   def initialize # :nodoc:
     @cache_data = nil
     @cache_file = nil
@@ -67,7 +99,9 @@ class Gem::SourceInfoCache
     @only_latest = true
   end
 
+  ##
   # The most recent cache data.
+
   def cache_data
     return @cache_data if @cache_data
     cache_file # HACK writable check
@@ -75,6 +109,68 @@ class Gem::SourceInfoCache
     @only_latest = true
 
     @cache_data = read_cache_data latest_cache_file
+  end
+
+  ##
+  # The name of the cache file.
+
+  def cache_file
+    return @cache_file if @cache_file
+    @cache_file = (try_file(system_cache_file) or
+      try_file(user_cache_file) or
+      raise "unable to locate a writable cache file")
+  end
+
+  ##
+  # Write the cache to a local file (if it is dirty).
+
+  def flush
+    write_cache if @dirty
+    @dirty = false
+  end
+
+  def latest_cache_data
+    latest_cache_data = {}
+
+    cache_data.each do |repo, sice|
+      latest = sice.source_index.latest_specs
+
+      new_si = Gem::SourceIndex.new
+      new_si.add_specs(*latest)
+
+      latest_sice = Gem::SourceInfoCacheEntry.new new_si, sice.size
+      latest_cache_data[repo] = latest_sice
+    end
+
+    latest_cache_data
+  end
+
+  ##
+  # The name of the latest cache file.
+
+  def latest_cache_file
+    File.join File.dirname(cache_file), "latest_#{File.basename cache_file}"
+  end
+
+  ##
+  # The name of the latest system cache file.
+
+  def latest_system_cache_file
+    self.class.latest_system_cache_file
+  end
+
+  ##
+  # The name of the latest user cache file.
+
+  def latest_user_cache_file
+    self.class.latest_user_cache_file
+  end
+
+  def read_all_cache_data
+    if @only_latest then
+      @only_latest = false
+      @cache_data = read_cache_data cache_file
+    end
   end
 
   def read_cache_data(file)
@@ -108,27 +204,21 @@ class Gem::SourceInfoCache
     {}
   end
 
-  def read_all_cache_data
-    if @only_latest then
-      @only_latest = false
-      @cache_data = read_cache_data cache_file
-    end
-  end
+  ##
+  # Refreshes each source in the cache from its repository.
 
-  def latest_cache_data
-    latest_cache_data = {}
+  def refresh
+    Gem.sources.each do |source_uri|
+      cache_entry = cache_data[source_uri]
+      if cache_entry.nil? then
+        cache_entry = Gem::SourceInfoCacheEntry.new nil, 0
+        cache_data[source_uri] = cache_entry
+      end
 
-    cache_data.each do |repo, sice|
-      latest = sice.source_index.latest_specs
-
-      new_si = Gem::SourceIndex.new
-      new_si.add_specs(*latest)
-
-      latest_sice = Gem::SourceInfoCacheEntry.new new_si, sice.size
-      latest_cache_data[repo] = latest_sice
+      update if cache_entry.refresh source_uri
     end
 
-    latest_cache_data
+    flush
   end
 
   def reset_cache_for(url, cache_data)
@@ -143,39 +233,6 @@ class Gem::SourceInfoCache
 
   def reset_cache_data
     @cache_data = nil
-  end
-
-  # The name of the cache file to be read
-  def cache_file
-    return @cache_file if @cache_file
-    @cache_file = (try_file(system_cache_file) or
-      try_file(user_cache_file) or
-      raise "unable to locate a writable cache file")
-  end
-
-  def latest_cache_file
-    File.join File.dirname(cache_file), "latest_#{File.basename cache_file}"
-  end
-
-  # Write the cache to a local file (if it is dirty).
-  def flush
-    write_cache if @dirty
-    @dirty = false
-  end
-
-  # Refreshes each source in the cache from its repository.
-  def refresh
-    Gem.sources.each do |source_uri|
-      cache_entry = cache_data[source_uri]
-      if cache_entry.nil? then
-        cache_entry = Gem::SourceInfoCacheEntry.new nil, 0
-        cache_data[source_uri] = cache_entry
-      end
-
-      update if cache_entry.refresh source_uri
-    end
-
-    flush
   end
 
   ##
@@ -212,16 +269,15 @@ class Gem::SourceInfoCache
     results
   end
 
-  # Mark the cache as updated (i.e. dirty).
-  def update
-    @dirty = true
-  end
-
   ##
-  # The name of the latest system cache file.
+  # Set the source info cache data directly.  This is mainly used for unit
+  # testing when we don't want to read a file system to grab the cached source
+  # index information.  The +hash+ should map a source URL into a
+  # SourceInfoCacheEntry.
 
-  def latest_system_cache_file
-    self.class.latest_system_cache_file
+  def set_cache_data(hash)
+    @cache_data = hash
+    update
   end
 
   ##
@@ -232,25 +288,36 @@ class Gem::SourceInfoCache
   end
 
   ##
-  # The name of the system cache file.
+  # Determine if +path+ is a candidate for a cache file.  Returns +path+ if
+  # it is, nil if not.
 
-  def self.latest_system_cache_file
-    File.join File.dirname(system_cache_file),
-              "latest_#{File.basename system_cache_file}"
+  def try_file(path)
+    return path if File.writable? path
+    return nil if File.exist? path
+
+    dir = File.dirname path
+
+    unless File.exist? dir then
+      begin
+        FileUtils.mkdir_p dir
+      rescue RuntimeError, SystemCallError
+        return nil
+      end
+    end
+
+    if File.writable? dir then
+      open path, "wb" do |io| io.write Marshal.dump({}) end
+      return path
+    end
+
+    nil
   end
 
   ##
-  # The name of the system cache file. (class method)
+  # Mark the cache as updated (i.e. dirty).
 
-  def self.system_cache_file
-    @system_cache_file ||= Gem.default_system_source_cache_dir
-  end
-
-  ##
-  # The name of the latest user cache file.
-
-  def latest_user_cache_file
-    self.class.latest_user_cache_file
+  def update
+    @dirty = true
   end
 
   ##
@@ -261,22 +328,8 @@ class Gem::SourceInfoCache
   end
 
   ##
-  # The name of the latest user cache file.
-
-  def self.latest_user_cache_file
-    File.join File.dirname(user_cache_file),
-              "latest_#{File.basename user_cache_file}"
-  end
-
-  ##
-  # The name of the user cache file.
-
-  def self.user_cache_file
-    @user_cache_file ||=
-      ENV['GEMCACHE'] || Gem.default_user_source_cache_dir
-  end
-
   # Write data to the proper cache.
+
   def write_cache
     open cache_file, 'wb' do |io|
       io.write Marshal.dump(cache_data)
@@ -285,37 +338,6 @@ class Gem::SourceInfoCache
     open latest_cache_file, 'wb' do |io|
       io.write Marshal.dump(latest_cache_data)
     end
-  end
-
-  # Set the source info cache data directly.  This is mainly used for unit
-  # testing when we don't want to read a file system to grab the cached source
-  # index information.  The +hash+ should map a source URL into a
-  # SourceInfoCacheEntry.
-  def set_cache_data(hash)
-    @cache_data = hash
-    update
-  end
-
-  private
-
-  # Determine if +fn+ is a candidate for a cache file.  Return fn if
-  # it is.  Return nil if it is not.
-  def try_file(fn)
-    return fn if File.writable?(fn)
-    return nil if File.exist?(fn)
-    dir = File.dirname(fn)
-    unless File.exist? dir then
-      begin
-        FileUtils.mkdir_p(dir)
-      rescue RuntimeError, SystemCallError
-        return nil
-      end
-    end
-    if File.writable?(dir)
-      File.open(fn, "wb") { |f| f << Marshal.dump({}) }
-      return fn
-    end
-    nil
   end
 
 end

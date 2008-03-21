@@ -206,7 +206,7 @@ class Gem::Package::TarInput
       dis = zis.read
       is = StringIO.new(dis)
     else
-      # This is Jamis Buck's ZLib workaround for some unknown issue
+      # This is Jamis Buck's Zlib workaround for some unknown issue
       entry.read(10) # skip the gzip header
       zis = Zlib::Inflate.new(-Zlib::MAX_WBITS)
       is = StringIO.new(zis.inflate(entry.read))

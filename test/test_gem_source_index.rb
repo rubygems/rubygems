@@ -185,13 +185,47 @@ class TestGemSourceIndex < RubyGemTestCase
   end
 
   def test_latest_specs
+    p1_ruby = quick_gem 'p', '1'
+    p1_platform = quick_gem 'p', '1' do |spec|
+      spec.platform = Gem::Platform::CURRENT
+    end
+
+    a1_platform = quick_gem @a1.name, (@a1.version) do |s|
+      s.platform = Gem::Platform.new 'x86-my_platform1'
+    end
+
+    a2_platform = quick_gem @a2.name, (@a2.version) do |s|
+      s.platform = Gem::Platform.new 'x86-my_platform1'
+    end
+
+    a2_platform_other = quick_gem @a2.name, (@a2.version) do |s|
+      s.platform = Gem::Platform.new 'x86-other_platform1'
+    end
+
+    a3_platform_other = quick_gem @a2.name, (@a2.version.bump) do |s|
+      s.platform = Gem::Platform.new 'x86-other_platform1'
+    end
+
+    @source_index.add_spec p1_ruby
+    @source_index.add_spec p1_platform
+    @source_index.add_spec a1_platform
+    @source_index.add_spec a2_platform
+    @source_index.add_spec a2_platform_other
+    @source_index.add_spec a3_platform_other
+
     expected = [
       @a2.full_name,
+      a2_platform.full_name,
+      a3_platform_other.full_name,
       @c1_2.full_name,
       @a_evil9.full_name,
+      p1_ruby.full_name,
+      p1_platform.full_name,
     ].sort
 
-    assert_equal expected, @source_index.latest_specs.map { |s| s.full_name }.sort
+    latest_specs = @source_index.latest_specs.map { |s| s.full_name }.sort
+
+    assert_equal expected, latest_specs
   end
 
   def test_load_gems_in
@@ -220,8 +254,7 @@ class TestGemSourceIndex < RubyGemTestCase
   end
 
   def test_outdated
-    sic = Gem::SourceInfoCache.new
-    Gem::SourceInfoCache.instance_variable_set :@cache, sic
+    util_setup_source_info_cache
 
     assert_equal [], @source_index.outdated
 
@@ -464,3 +497,4 @@ class TestGemSourceIndex < RubyGemTestCase
   end
 
 end
+

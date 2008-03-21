@@ -49,7 +49,7 @@ class Gem::Commands::QueryCommand < Gem::Command
       say
       say "*** REMOTE GEMS ***"
       say
-      output_query_results Gem::SourceInfoCache.search(name)
+      output_query_results Gem::SourceInfoCache.search(name, false, true)
     end
   end
 

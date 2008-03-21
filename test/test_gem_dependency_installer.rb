@@ -451,7 +451,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
     assert_equal 2, gems.length
     remote = gems.first
-    assert_equal @a1, remote.first, 'remote spec'
+    assert_equal 'a-1', remote.first.full_name, 'remote spec'
     assert_equal 'http://gems.example.com', remote.last, 'remote path'
 
     local = gems.last

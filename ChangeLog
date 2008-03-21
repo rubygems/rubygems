@@ -1,3 +1,11 @@
+2008-03-20  Eric Hodel  <drbrain@segment7.net>
+
+	* test/test_gem_source_info_cache.rb:  Test with real objects now.
+	* lib/rubygems/source_index.rb:  #latest_specs now has latest specs
+	for all platforms.
+	* lib/rubygems/source_info_cache.rb:  Add latest cache data, only load
+	full cache data when needed.
+
 2008-03-20  Luis Lavena  <luislavena@gmail.com>
 
 	* test/gemutilities.rb:  Change all the file processing mechanism to

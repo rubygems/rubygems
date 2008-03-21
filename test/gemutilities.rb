@@ -91,6 +91,7 @@ class RubyGemTestCase < Test::Unit::TestCase
     @gemhome = File.join @tempdir, "gemhome"
     @gemcache = File.join(@gemhome, "source_cache")
     @usrcache = File.join(@gemhome, ".gem", "user_cache")
+    @latest_usrcache = File.join(@gemhome, ".gem", "latest_user_cache")
 
     FileUtils.mkdir_p @gemhome
 
@@ -155,25 +156,48 @@ class RubyGemTestCase < Test::Unit::TestCase
   end
 
   def prep_cache_files(lc)
-    [ [lc.system_cache_file, 'sys'],
-      [lc.user_cache_file, 'usr'],
-    ].each do |fn, data|
-      FileUtils.mkdir_p File.dirname(fn).untaint
-      open(fn.dup.untaint, "wb") { |f| f.write(Marshal.dump({'key' => data})) }
+    @usr_si ||= Gem::SourceIndex.new
+    @usr_sice ||= Gem::SourceInfoCacheEntry.new @usr_si, 0
+
+    @sys_si ||= Gem::SourceIndex.new
+    @sys_sice ||= Gem::SourceInfoCacheEntry.new @sys_si, 0
+
+    latest_si = Gem::SourceIndex.new
+    latest_si.add_specs(*@sys_si.latest_specs)
+    latest_sys_sice = Gem::SourceInfoCacheEntry.new latest_si, 0
+
+    latest_si = Gem::SourceIndex.new
+    latest_si.add_specs(*@usr_si.latest_specs)
+    latest_usr_sice = Gem::SourceInfoCacheEntry.new latest_si, 0
+
+    [ [lc.system_cache_file, @sys_sice],
+      [lc.latest_system_cache_file, latest_sys_sice],
+      [lc.user_cache_file, @usr_sice],
+      [lc.latest_user_cache_file, latest_usr_sice],
+    ].each do |filename, data|
+      FileUtils.mkdir_p File.dirname(filename).untaint
+
+      open filename.dup.untaint, 'wb' do |f|
+        f.write Marshal.dump({ @gem_repo => data })
+      end
     end
   end
 
-  def read_cache(fn)
-    open(fn.dup.untaint, 'rb') { |f| Marshal.load f.read }
+  def read_cache(path)
+    open path.dup.untaint, 'rb' do |io|
+      Marshal.load io.read
+    end
   end
 
   def write_file(path)
     path = File.join(@gemhome, path)
     dir = File.dirname path
     FileUtils.mkdir_p dir
-    File.open(path, "wb") { |io|
-      yield(io)
-    }
+
+    open path, 'wb' do |io|
+      yield io
+    end
+
     path
   end
 
@@ -319,7 +343,12 @@ class RubyGemTestCase < Test::Unit::TestCase
 
     sice = Gem::SourceInfoCacheEntry.new si, 0
     sic = Gem::SourceInfoCache.new
+
     sic.set_cache_data( { @gem_repo => sice } )
+    sic.update
+    sic.write_cache
+    sic.reset_cache_data
+
     Gem::SourceInfoCache.instance_variable_set :@cache, sic
     si
   end

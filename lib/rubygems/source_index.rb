@@ -127,18 +127,27 @@ class Gem::SourceIndex
   # gem in this index.
 
   def latest_specs
-    result, latest = Hash.new { |h,k| h[k] = [] }, {}
+    result = Hash.new { |h,k| h[k] = [] }
+    latest = {}
 
-    self.each do |_, spec| # SourceIndex is not a hash, so we're stuck with each
+    sort.each do |_, spec|
       name = spec.name
       curr_ver = spec.version
-      prev_ver = latest[name]
+      prev_ver = latest.key?(name) ? latest[name].version : nil
 
-      next unless prev_ver.nil? or curr_ver >= prev_ver
+      next unless prev_ver.nil? or curr_ver >= prev_ver or
+                  latest[name].platform != Gem::Platform::RUBY
 
-      if prev_ver.nil? or curr_ver > prev_ver then
+      if prev_ver.nil? or
+         (curr_ver > prev_ver and spec.platform == Gem::Platform::RUBY) then
         result[name].clear
-        latest[name] = curr_ver
+        latest[name] = spec
+      end
+
+      if spec.platform != Gem::Platform::RUBY then
+        result[name].delete_if do |result_spec|
+          result_spec.platform == spec.platform
+        end
       end
 
       result[name] << spec
@@ -152,6 +161,15 @@ class Gem::SourceIndex
 
   def add_spec(gem_spec)
     @gems[gem_spec.full_name] = gem_spec
+  end
+
+  ##
+  # Add gem specifications to the source index.
+
+  def add_specs(*gem_specs)
+    gem_specs.each do |spec|
+      add_spec spec
+    end
   end
 
   ##
@@ -274,9 +292,10 @@ class Gem::SourceIndex
 
     latest_specs.each do |local|
       name = local.name
-      remote = remotes.select  { |spec| spec.name == name }.
+      remote = remotes.select { |spec| spec.name == name }.
         sort_by { |spec| spec.version.to_ints }.
         last
+
       outdateds << name if remote and local.version < remote.version
     end
 

@@ -7,20 +7,15 @@ class TestGemCommandsQueryCommand < RubyGemTestCase
   def setup
     super
 
-    @foo_gem = quick_gem 'foo' do |spec|
-      spec.summary = 'This is a lot of text.  ' * 5
-    end
-    @foo_gem_p = quick_gem 'foo' do |spec|
-      spec.summary = 'This is a lot of text.  ' * 5
-      spec.platform = Gem::Platform::CURRENT
-    end
-    @bar_gem = quick_gem 'bar'
+    util_make_gems
+
+    @a2.summary = 'This is a lot of text. ' * 4
 
     @cmd = Gem::Commands::QueryCommand.new
   end
 
   def test_execute
-    util_setup_source_info_cache @foo_gem, @foo_gem_p
+    util_setup_source_info_cache @a1, @a2, @pl1
 
     @cmd.handle_options %w[-r]
 
@@ -32,7 +27,8 @@ class TestGemCommandsQueryCommand < RubyGemTestCase
 
 *** REMOTE GEMS ***
 
-foo (2)
+a (2, 1)
+pl (1)
     EOF
 
     assert_equal expected, @ui.output
@@ -40,7 +36,7 @@ foo (2)
   end
 
   def test_execute_details
-    util_setup_source_info_cache @foo_gem
+    util_setup_source_info_cache @a1, @a2, @pl1
 
     @cmd.handle_options %w[-r -d]
 
@@ -52,9 +48,12 @@ foo (2)
 
 *** REMOTE GEMS ***
 
-foo (2)
-    This is a lot of text.  This is a lot of text.  This is a lot of
-    text.  This is a lot of text.  This is a lot of text.
+a (2, 1)
+    This is a lot of text. This is a lot of text. This is a lot of text.
+    This is a lot of text.
+
+pl (1)
+    this is a summary
     EOF
 
     assert_equal expected, @ui.output
@@ -62,7 +61,7 @@ foo (2)
   end
 
   def test_execute_no_versions
-    util_setup_source_info_cache @foo_gem, @bar_gem
+    util_setup_source_info_cache @a1, @a2, @pl1
 
     @cmd.handle_options %w[-r --no-versions]
 
@@ -74,8 +73,8 @@ foo (2)
 
 *** REMOTE GEMS ***
 
-bar
-foo
+a
+pl
     EOF
 
     assert_equal expected, @ui.output

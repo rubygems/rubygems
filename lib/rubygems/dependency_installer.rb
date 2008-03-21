@@ -67,7 +67,17 @@ class Gem::DependencyInstaller
 
     if @domain == :both or @domain == :remote then
       begin
-        gems_and_sources.push(*Gem::SourceInfoCache.search_with_source(dep, true))
+        requirements = dep.version_requirements.requirements.map do |req, ver|
+          req
+        end
+
+        all = requirements.length > 1 ||
+                requirements.first != ">=" || requirements.first != ">"
+
+        found = Gem::SourceInfoCache.search_with_source dep, true, all
+
+        gems_and_sources.push(*found)
+
       rescue Gem::RemoteFetcher::FetchError => e
         if Gem.configuration.really_verbose then
           say "Error fetching remote data:\t\t#{e.message}"

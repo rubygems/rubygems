@@ -1,3 +1,11 @@
+2008-03-23  Luis Lavena  <luislavena@gmail.com>
+
+	* setup.rb: generated Windows stubs will honors prefix using Gem.ruby
+	instead of hardcoded 'ruby.exe'
+	* lib/rubygems/installer.rb: generated Windows stubs scripts will now
+	work from differnt directories than Gem::bindir. Fixes bug #16259 by
+	Claus Folke Brobak
+
 2008-03-20  Eric Hodel  <drbrain@segment7.net>
 
 	* test/test_gem_source_info_cache.rb:  Test with real objects now.

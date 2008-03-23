@@ -141,10 +141,10 @@ Dir.chdir 'bin' do
         file.puts <<-TEXT
 @ECHO OFF
 IF NOT "%~f0" == "~f0" GOTO :WinNT
-@"#{Gem.ruby}" "#{bin_file}" %1 %2 %3 %4 %5 %6 %7 %8 %9
+@"#{File.basename(Gem.ruby)}" "#{dest_file}" %1 %2 %3 %4 %5 %6 %7 %8 %9
 GOTO :EOF
 :WinNT
-"%~d0%~p0ruby.exe" "%~d0%~p0%~n0" %*
+@"#{File.basename(Gem.ruby)}" "%~dpn0" %*
 TEXT
       end
 

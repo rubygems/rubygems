@@ -228,7 +228,7 @@ class TestGem < RubyGemTestCase
     install_gem foo
     Gem.source_index = nil
 
-    Gem.activate 'foo', false
+    Gem.activate 'foo'
 
     assert_equal true, Gem.loaded_specs.keys.include?('foo')
   end

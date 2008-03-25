@@ -4,6 +4,8 @@
 	default to updating from latest index.  Reduces common-case update
 	to under 3,000 gems at present.
 	* lib/rubygems/remote_fetcher:  Fix error reporting from net/http.
+	* lib/rubygems.rb:  Sort methods, remove last vestiges of autorequire,
+	RDoc cleanup.
 
 2008-03-23  Luis Lavena  <luislavena@gmail.com>
 

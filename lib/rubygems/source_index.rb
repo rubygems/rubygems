@@ -302,17 +302,24 @@ class Gem::SourceIndex
     outdateds
   end
 
-  def update(source_uri)
+  ##
+  # Updates this SourceIndex from +source_uri+.  If +all+ is false, only the
+  # latest gems are fetched.
+
+  def update(source_uri, all)
+    source_uri = URI.parse source_uri unless URI::Generic === source_uri
+    source_uri.path += '/' unless source_uri.path =~ /\/$/
+
     use_incremental = false
 
     begin
-      gem_names = fetch_quick_index source_uri
+      gem_names = fetch_quick_index source_uri, all
       remove_extra gem_names
       missing_gems = find_missing gem_names
 
       return false if missing_gems.size.zero?
 
-      say "missing #{missing_gems.size} gems" if
+      say "Missing metadata for #{missing_gems.size} gems" if
       missing_gems.size > 0 and Gem.configuration.really_verbose
 
       use_incremental = missing_gems.size <= Gem.configuration.bulk_threshold
@@ -364,9 +371,11 @@ class Gem::SourceIndex
 
     indexes.each do |name|
       spec_data = nil
+      index = source_uri + name
       begin
-        spec_data = fetcher.fetch_path("#{source_uri}/#{name}")
+        spec_data = fetcher.fetch_path index
         spec_data = unzip(spec_data) if name =~ /\.Z$/
+
         if name =~ /Marshal/ then
           return Marshal.load(spec_data)
         else
@@ -376,9 +385,11 @@ class Gem::SourceIndex
         if Gem.configuration.really_verbose then
           alert_error "Unable to fetch #{name}: #{e.message}"
         end
+
         @fetch_error = e
       end
     end
+
     nil
   end
 
@@ -397,12 +408,22 @@ class Gem::SourceIndex
   ##
   # Get the quick index needed for incremental updates.
 
-  def fetch_quick_index(source_uri)
-    zipped_index = fetcher.fetch_path source_uri + '/quick/index.rz'
+  def fetch_quick_index(source_uri, all)
+    index = all ? 'index' : 'latest_index'
+
+    zipped_index = fetcher.fetch_path source_uri + "quick/#{index}.rz"
+
     unzip(zipped_index).split("\n")
-  rescue ::Exception => ex
-    raise Gem::OperationNotSupportedError,
-            "No quick index found: " + ex.message
+  rescue ::Exception => e
+    unless all then
+      say "Latest index not found, using quick index" if
+        Gem.configuration.really_verbose
+
+      fetch_quick_index source_uri, true
+    else
+      raise Gem::OperationNotSupportedError,
+            "No quick index found: #{e.message}"
+    end
   end
 
   ##
@@ -434,19 +455,21 @@ class Gem::SourceIndex
 
   def fetch_single_spec(source_uri, spec_name)
     @fetch_error = nil
+
     begin
-      marshal_uri = source_uri + "/quick/Marshal.#{Gem.marshal_version}/#{spec_name}.gemspec.rz"
+      marshal_uri = source_uri + "quick/Marshal.#{Gem.marshal_version}/#{spec_name}.gemspec.rz"
       zipped = fetcher.fetch_path marshal_uri
       return Marshal.load(unzip(zipped))
     rescue => ex
       @fetch_error = ex
+
       if Gem.configuration.really_verbose then
         say "unable to fetch marshal gemspec #{marshal_uri}: #{ex.class} - #{ex}"
       end
     end
 
     begin
-      yaml_uri = source_uri + "/quick/#{spec_name}.gemspec.rz"
+      yaml_uri = source_uri + "quick/#{spec_name}.gemspec.rz"
       zipped = fetcher.fetch_path yaml_uri
       return YAML.load(unzip(zipped))
     rescue => ex
@@ -455,6 +478,7 @@ class Gem::SourceIndex
         say "unable to fetch YAML gemspec #{yaml_uri}: #{ex.class} - #{ex}"
       end
     end
+
     nil
   end
 

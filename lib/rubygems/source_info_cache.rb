@@ -38,7 +38,7 @@ class Gem::SourceInfoCache
   def self.cache
     return @cache if @cache
     @cache = new
-    @cache.refresh if Gem.configuration.update_sources
+    @cache.refresh false if Gem.configuration.update_sources
     @cache
   end
 
@@ -109,6 +109,8 @@ class Gem::SourceInfoCache
     @only_latest = true
 
     @cache_data = read_cache_data latest_cache_file
+
+    @cache_data
   end
 
   ##
@@ -205,9 +207,10 @@ class Gem::SourceInfoCache
   end
 
   ##
-  # Refreshes each source in the cache from its repository.
+  # Refreshes each source in the cache from its repository.  If +all+ is
+  # false, only latest gems are updated.
 
-  def refresh
+  def refresh(all)
     Gem.sources.each do |source_uri|
       cache_entry = cache_data[source_uri]
       if cache_entry.nil? then
@@ -215,7 +218,7 @@ class Gem::SourceInfoCache
         cache_data[source_uri] = cache_entry
       end
 
-      update if cache_entry.refresh source_uri
+      update if cache_entry.refresh source_uri, all
     end
 
     flush
@@ -225,7 +228,7 @@ class Gem::SourceInfoCache
     say "Reseting cache for #{url}" if Gem.configuration.really_verbose
 
     sice = Gem::SourceInfoCacheEntry.new Gem::SourceIndex.new, 0
-    sice.refresh url # HACK may be unnecessary, see ::cache and #refresh
+    sice.refresh url, false # HACK may be unnecessary, see ::cache and #refresh
 
     cache_data[url] = sice
     cache_data

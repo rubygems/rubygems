@@ -46,7 +46,7 @@ class TestGemCommandsSourcesCommand < RubyGemTestCase
     end
 
     expected = <<-EOF
-Bulk updating Gem source index for: http://beta-gems.example.com
+Bulk updating Gem source index for: http://beta-gems.example.com/
 http://beta-gems.example.com added to sources
     EOF
 
@@ -102,6 +102,41 @@ beta-gems.example.com is not a URI
     assert_equal '', @ui.error
   end
 
+  def test_execute_clear_all
+    @cmd.handle_options %w[--clear-all]
+
+    util_setup_source_info_cache
+
+    cache = Gem::SourceInfoCache.cache
+    cache.update
+    cache.write_cache
+
+    assert File.exist?(cache.system_cache_file),
+           'system cache file'
+    assert File.exist?(cache.latest_system_cache_file),
+           'latest system cache file'
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = <<-EOF
+*** Removed user source cache ***
+*** Removed latest user source cache ***
+*** Removed system source cache ***
+*** Removed latest system source cache ***
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+
+    assert !File.exist?(cache.system_cache_file),
+           'system cache file'
+    assert !File.exist?(cache.latest_system_cache_file),
+           'latest system cache file'
+
+  end
+
   def test_execute_remove
     @cmd.handle_options %W[--remove #{@gem_repo}]
 
@@ -134,7 +169,7 @@ beta-gems.example.com is not a URI
     end
 
     expected = <<-EOF
-Bulk updating Gem source index for: #{@gem_repo}
+Bulk updating Gem source index for: #{@gem_repo}/
 source cache successfully updated
     EOF
 

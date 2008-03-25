@@ -1,3 +1,10 @@
+2008-03-25  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_index.rb:  Add updating from latest index,
+	default to updating from latest index.  Reduces common-case update
+	to under 3,000 gems at present.
+	* lib/rubygems/remote_fetcher:  Fix error reporting from net/http.
+
 2008-03-23  Luis Lavena  <luislavena@gmail.com>
 
 	* setup.rb: generated Windows stubs will honors prefix using Gem.ruby

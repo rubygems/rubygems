@@ -259,7 +259,7 @@ class Gem::RemoteFetcher
         open_uri_or_path(response['Location'], depth + 1, &block)
       else
         raise Gem::RemoteFetcher::FetchError,
-              "bad response #{response.status}"
+              "bad response #{response.message} #{response.code}"
       end
     end
   end

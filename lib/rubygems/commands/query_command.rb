@@ -28,6 +28,11 @@ class Gem::Commands::QueryCommand < Gem::Command
       options[:details] = false unless value
     end
 
+    add_option('-a', '--all',
+               'Display all gem versions') do |value, options|
+      options[:all] = value
+    end
+
     add_local_remote_options
   end
 
@@ -42,13 +47,21 @@ class Gem::Commands::QueryCommand < Gem::Command
       say
       say "*** LOCAL GEMS ***"
       say
-      output_query_results Gem.cache.search(name)
+
+      output_query_results Gem.source_index.search(name)
     end
 
     if remote? then
       say
       say "*** REMOTE GEMS ***"
       say
+
+      begin
+        Gem::SourceInfoCache.cache.refresh options[:all]
+      rescue Gem::RemoteFetcher::FetchError
+        # no network
+      end
+
       output_query_results Gem::SourceInfoCache.search(name, false, true)
     end
   end
@@ -98,7 +111,7 @@ class Gem::Commands::QueryCommand < Gem::Command
 
   ##
   # Used for wrapping and indenting text
-  #
+
   def format_text(text, wrap, indent=0)
     result = []
     work = text.dup

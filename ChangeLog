@@ -1,3 +1,8 @@
+2008-03-26  Luis Lavena  <luislavena@gmail.com>
+
+	* lib/rubygems.rb: Handle backslashes that came from GEM_HOME and 
+	GEM_PATH on Windows.
+
 2008-03-25  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/source_index.rb:  Add updating from latest index,

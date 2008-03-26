@@ -523,6 +523,7 @@ module Gem
   # Set the Gem home directory (as reported by Gem.dir).
 
   def self.set_home(home)
+    home = home.gsub(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
     @gem_home = home
     ensure_gem_subdirectories(@gem_home)
   end
@@ -535,6 +536,13 @@ module Gem
   def self.set_paths(gpaths)
     if gpaths
       @gem_path = gpaths.split(File::PATH_SEPARATOR)
+      
+      if File::ALT_SEPARATOR then
+        @gem_path.map! do |path|
+          path.gsub File::ALT_SEPARATOR, File::SEPARATOR
+        end
+      end
+      
       @gem_path << Gem.dir
     else
       @gem_path = [Gem.dir]

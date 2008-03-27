@@ -8,7 +8,8 @@
 	* test/test_gem_commands_install_command.rb: Switch to read_binary.
 	* test/test_gem_commands_update_command.rb: Ditto.
 	* test/test_gem_commands_server_command.rb: Consider full path when
-	evaluating location.
+	evaluating location (instead of hardcoded or missing drive leter).
+	* test/test_gem_installer.rb: Ditto.
 
 2008-03-26  Luis Lavena  <luislavena@gmail.com>
 

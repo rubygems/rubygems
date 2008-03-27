@@ -10,6 +10,8 @@
 	* test/test_gem_commands_server_command.rb: Consider full path when
 	evaluating location (instead of hardcoded or missing drive leter).
 	* test/test_gem_installer.rb: Ditto.
+	* test/test_gem_dependency_installer.rb: exclude no-wrapper tests for
+	Windows.
 
 2008-03-26  Luis Lavena  <luislavena@gmail.com>
 

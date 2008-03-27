@@ -81,6 +81,11 @@ class Gem::Commands::SourcesCommand < Gem::Command
       unless Gem.sources.include? source_uri then
         say "source #{source_uri} not present in cache"
       else
+        begin # HACK figure out how to get the cache w/o update
+          Gem::SourceInfoCache.cache
+        rescue Gem::RemoteFetcher::FetchError
+        end
+
         Gem::SourceInfoCache.cache_data.delete source_uri
         Gem::SourceInfoCache.cache.update
         Gem::SourceInfoCache.cache.flush

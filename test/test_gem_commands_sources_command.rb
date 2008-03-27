@@ -155,6 +155,27 @@ beta-gems.example.com is not a URI
     assert_equal [], Gem::SourceInfoCache.cache_data.keys
   end
 
+  def test_execute_remove_no_network
+    @cmd.handle_options %W[--remove #{@gem_repo}]
+
+    util_setup_fake_fetcher
+    @fetcher.data["#{@gem_repo}/Marshal.#{Gem.marshal_version}"] = proc do
+      raise Gem::RemoteFetcher::FetchError
+    end
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = "#{@gem_repo} removed from sources\n"
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+
+    Gem::SourceInfoCache.cache.flush
+    assert_equal [], Gem::SourceInfoCache.cache_data.keys
+  end
+
   def test_execute_update
     @cmd.handle_options %w[--update]
 

@@ -1,6 +1,11 @@
+2008-03-27  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/sources_command.rb:  Allow sources to be
+	removed without network.  Fixes bug #18644 by Mikel Lindsaar.
+
 2008-03-27  Luis Lavena  <luislavena@gmail.com>
 
-	* lib/rubygems/commands/environment_command.rb: Use platform specific 
+	* lib/rubygems/commands/environment_command.rb: Use platform specific
 	PATH_SEPARATOR instead of hardcoded ':'
 	* test/test_gem_commands_unpack_command.rb: Ditto.
 	* test/test_gem_commands_environment_command.rb: Ditto.
@@ -15,7 +20,7 @@
 
 2008-03-26  Luis Lavena  <luislavena@gmail.com>
 
-	* lib/rubygems.rb: Handle backslashes that came from GEM_HOME and 
+	* lib/rubygems.rb: Handle backslashes that came from GEM_HOME and
 	GEM_PATH on Windows.
 
 2008-03-25  Eric Hodel  <drbrain@segment7.net>

@@ -393,6 +393,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     end
   end
 
+  # Wrappers don't work on mswin
   unless win_platform? then
     def test_install_no_wrappers
       @fetcher.data['http://gems.example.com/gems/a-1.gem'] = read_binary(@a1_gem)

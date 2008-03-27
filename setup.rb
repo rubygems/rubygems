@@ -301,3 +301,7 @@ puts "RubyGems installed the following executables:"
 puts bin_file_names.map { |name| "\t#{name}\n" }
 puts
 
+puts "If `gem` was installed by a previous RubyGems installation, you may need"
+puts "to remove it by hand."
+puts
+

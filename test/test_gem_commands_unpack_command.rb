@@ -33,7 +33,7 @@ class TestGemCommandsUnpackCommand < RubyGemTestCase
 
     gemhome2 = File.join @tempdir, 'gemhome2'
 
-    Gem.send :set_paths, "#{gemhome2}:#{@gemhome}"
+    Gem.send :set_paths, [gemhome2, @gemhome].join(File::PATH_SEPARATOR)
     Gem.send :set_home, gemhome2
 
     @cmd.options[:args] = %w[a]
@@ -54,7 +54,7 @@ class TestGemCommandsUnpackCommand < RubyGemTestCase
 
     gemhome2 = File.join @tempdir, 'gemhome2'
 
-    Gem.send :set_paths, "#{gemhome2}:#{@gemhome}"
+    Gem.send :set_paths, [gemhome2, @gemhome].join(File::PATH_SEPARATOR)
     Gem.send :set_home, gemhome2
 
     @cmd.options[:args] = %w[z]

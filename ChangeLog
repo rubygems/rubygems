@@ -1,3 +1,15 @@
+2008-03-27  Luis Lavena  <luislavena@gmail.com>
+
+	* lib/rubygems/commands/environment_command.rb: Use platform specific 
+	PATH_SEPARATOR instead of hardcoded ':'
+	* test/test_gem_commands_unpack_command.rb: Ditto.
+	* test/test_gem_commands_environment_command.rb: Ditto.
+	* test/gemutilities.rb: Fix binary file reads being truncated on Windows.
+	* test/test_gem_commands_install_command.rb: Switch to read_binary.
+	* test/test_gem_commands_update_command.rb: Ditto.
+	* test/test_gem_commands_server_command.rb: Consider full path when
+	evaluating location.
+
 2008-03-26  Luis Lavena  <luislavena@gmail.com>
 
 	* lib/rubygems.rb: Handle backslashes that came from GEM_HOME and 

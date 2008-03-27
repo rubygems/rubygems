@@ -33,7 +33,7 @@ class Gem::Commands::EnvironmentCommand < Gem::Command
     when /^gemdir/, /^gemhome/, /^home/, /^GEM_HOME/ then
       out << Gem.dir
     when /^gempath/, /^path/, /^GEM_PATH/ then
-      out << Gem.path.join(':')
+      out << Gem.path.join(File::PATH_SEPARATOR)
     when /^remotesources/ then
       out << Gem.sources.join("\n")
     when nil then

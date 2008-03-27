@@ -201,6 +201,10 @@ class RubyGemTestCase < Test::Unit::TestCase
     path
   end
 
+  def read_binary(path)
+    File.open(path, 'rb') { |f| f.read }
+  end
+
   def quick_gem(gemname, version='2')
     require 'rubygems/specification'
 

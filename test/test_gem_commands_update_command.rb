@@ -16,8 +16,8 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
 
     @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] =
       @source_index.dump
-    @fetcher.data["#{@gem_repo}/gems/#{@a1.full_name}.gem"] = File.read @a1_path
-    @fetcher.data["#{@gem_repo}/gems/#{@a2.full_name}.gem"] = File.read @a2_path
+    @fetcher.data["#{@gem_repo}/gems/#{@a1.full_name}.gem"] = read_binary @a1_path
+    @fetcher.data["#{@gem_repo}/gems/#{@a2.full_name}.gem"] = read_binary @a2_path
   end
 
   def test_execute
@@ -75,12 +75,12 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
 
     @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] =
       @source_index.dump
-    @fetcher.data["#{@gem_repo}/gems/#{@a1.full_name}.gem"] = File.read @a1_path
-    @fetcher.data["#{@gem_repo}/gems/#{@a2.full_name}.gem"] = File.read @a2_path
-    @fetcher.data["#{@gem_repo}/gems/#{@b2.full_name}.gem"] = File.read @b2_path
+    @fetcher.data["#{@gem_repo}/gems/#{@a1.full_name}.gem"] = read_binary @a1_path
+    @fetcher.data["#{@gem_repo}/gems/#{@a2.full_name}.gem"] = read_binary @a2_path
+    @fetcher.data["#{@gem_repo}/gems/#{@b2.full_name}.gem"] = read_binary @b2_path
     @fetcher.data["#{@gem_repo}/gems/#{@c1_2.full_name}.gem"] =
-      File.read @c1_2_path
-    @fetcher.data["#{@gem_repo}/gems/#{@c2.full_name}.gem"] = File.read @c2_path
+      read_binary @c1_2_path
+    @fetcher.data["#{@gem_repo}/gems/#{@c2.full_name}.gem"] = read_binary @c2_path
 
     util_remove_gems
 

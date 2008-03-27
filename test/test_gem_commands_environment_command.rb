@@ -64,7 +64,7 @@ class TestGemCommandsEnvironmentCommand < RubyGemTestCase
 
   def test_execute_gempath_multiple
     Gem.clear_paths
-    path = [@gemhome, "#{@gemhome}2"].join ':'
+    path = [@gemhome, "#{@gemhome}2"].join File::PATH_SEPARATOR
     ENV['GEM_PATH'] = path
 
     @cmd.send :handle_options, %w[gempath]
@@ -73,7 +73,7 @@ class TestGemCommandsEnvironmentCommand < RubyGemTestCase
       @cmd.execute
     end
 
-    assert_equal "#{Gem.path.join ':'}\n", @ui.output
+    assert_equal "#{Gem.path.join File::PATH_SEPARATOR}\n", @ui.output
     assert_equal '', @ui.error
   end
 

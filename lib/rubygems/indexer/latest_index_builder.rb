@@ -14,9 +14,9 @@ class Gem::Indexer::LatestIndexBuilder < Gem::Indexer::AbstractIndexBuilder
   def end_index
     super
 
-    latest = @index.latest_specs.sort.map { |spec| spec.full_name }.join "\n"
+    latest = @index.latest_specs.sort.map { |spec| spec.original_name }
 
-    @file.write latest
+    @file.write latest.join "\n"
   end
 
   def cleanup

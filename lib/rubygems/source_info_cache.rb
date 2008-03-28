@@ -122,6 +122,13 @@ class Gem::SourceInfoCache
       try_file(user_cache_file) or
       raise "unable to locate a writable cache file")
   end
+  
+  ##
+  # Force cache file to be reset, useful for integration testing of rubygems
+  
+  def reset_cache_file
+    @cache_file = nil
+  end
 
   ##
   # Write the cache to a local file (if it is dirty).

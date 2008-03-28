@@ -1,3 +1,7 @@
+2008-03-28  Chad Woolley  <thewoolleyman@gmail.com>
+
+	* lib/rubygems/source_info_cache.rb: Add reset_cache_file.
+
 2008-03-27  Chad Woolley  <thewoolleyman@gmail.com>
 
 	* lib/rubygems/user_interaction.rb: Raise Gem::SystemExitException

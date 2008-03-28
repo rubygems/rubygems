@@ -159,6 +159,7 @@ beta-gems.example.com is not a URI
     @cmd.handle_options %W[--remove #{@gem_repo}]
 
     util_setup_fake_fetcher
+
     @fetcher.data["#{@gem_repo}/Marshal.#{Gem.marshal_version}"] = proc do
       raise Gem::RemoteFetcher::FetchError
     end

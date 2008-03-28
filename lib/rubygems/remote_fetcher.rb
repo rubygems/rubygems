@@ -230,6 +230,7 @@ class Gem::RemoteFetcher
       ua << " Ruby/#{RUBY_VERSION} (#{RUBY_RELEASE_DATE}"
       ua << " patchlevel #{RUBY_PATCHLEVEL}" if defined? RUBY_PATCHLEVEL
       ua << ")"
+
       request.add_field 'User-Agent', ua
       request.add_field 'Connection', 'keep-alive'
       request.add_field 'Keep-Alive', '30'

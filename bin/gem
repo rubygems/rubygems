@@ -7,6 +7,7 @@
 
 require 'rubygems'
 require 'rubygems/gem_runner'
+require 'rubygems/exceptions'
 
 required_version = Gem::Requirement.new ">= 1.8.3"
 
@@ -19,5 +20,9 @@ end
 # it...its for the source building process.
 args = !ARGV.include?("--") ? ARGV.clone : ARGV[0...ARGV.index("--")]
 
-Gem::GemRunner.new.run args
+begin
+  Gem::GemRunner.new.run args
+rescue Gem::SystemExitException => e
+  exit e.exit_code
+end
 

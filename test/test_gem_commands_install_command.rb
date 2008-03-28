@@ -45,7 +45,10 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
       orig_dir = Dir.pwd
       begin
         Dir.chdir @tempdir
-        @cmd.execute
+        e = assert_raises Gem::SystemExitException do
+          @cmd.execute
+        end
+        assert_equal 0, e.exit_code
       ensure
         Dir.chdir orig_dir
       end
@@ -55,8 +58,6 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "1 gem installed", out.shift
     assert out.empty?, out.inspect
-
-    assert_equal 0, @cmd.exit_code
   end
 
   def test_execute_local_missing
@@ -66,14 +67,15 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     @cmd.options[:args] = %w[no_such_gem]
 
     use_ui @ui do
-      @cmd.execute
+      e = assert_raises Gem::SystemExitException do
+        @cmd.execute
+      end
+      assert_equal 2, e.exit_code
     end
 
     # HACK no repository was checked
     assert_equal "ERROR:  could not find no_such_gem locally or in a repository\n",
                  @ui.error
-
-    assert_equal 2, @cmd.exit_code
   end
 
   def test_execute_no_gem
@@ -94,13 +96,14 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     @cmd.options[:args] = %w[nonexistent]
 
     use_ui @ui do
-      @cmd.execute
+      e = assert_raises Gem::SystemExitException do
+        @cmd.execute
+      end
+      assert_equal 2, e.exit_code
     end
 
     assert_equal "ERROR:  could not find nonexistent locally or in a repository\n",
                  @ui.error
-
-    assert_equal 2, @cmd.exit_code
   end
 
   def test_execute_remote
@@ -116,7 +119,10 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     @cmd.options[:args] = [@a2.name]
 
     use_ui @ui do
-      @cmd.execute
+      e = assert_raises Gem::SystemExitException do
+        @cmd.execute
+      end
+      assert_equal 0, e.exit_code
     end
 
     out = @ui.output.split "\n"
@@ -128,8 +134,6 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     assert_equal "Installing RDoc documentation for #{@a2.full_name}...",
                  out.shift
     assert out.empty?, out.inspect
-
-    assert_equal 0, @cmd.exit_code
   end
 
   def test_execute_two
@@ -148,7 +152,10 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
       orig_dir = Dir.pwd
       begin
         Dir.chdir @tempdir
-        @cmd.execute
+        e = assert_raises Gem::SystemExitException do
+          @cmd.execute
+        end
+        assert_equal 0, e.exit_code
       ensure
         Dir.chdir orig_dir
       end
@@ -159,8 +166,6 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     assert_equal "Successfully installed #{@b2.full_name}", out.shift
     assert_equal "2 gems installed", out.shift
     assert out.empty?, out.inspect
-
-    assert_equal 0, @cmd.exit_code
   end
 
 end

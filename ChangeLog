@@ -1,3 +1,15 @@
+2008-03-27  Chad Woolley  <thewoolleyman@gmail.com>
+
+	* lib/rubygems/user_interaction.rb: Raise Gem::SystemExitException
+	instead of exiting, kill unused terminate_interaction!.
+	* lib/rubygems/exceptions.rb: Add Gem::SystemExitException.
+	* lib/rubygems/commands/install_command.rb: Raise
+	Gem::SystemExitException instead of exiting.
+	* bin/gem: Rescue Gem::SystemExitException and exit with
+	specified exit_code.
+	* test/test_gem_commands_install_command.rb: Assert on
+	Gem::SystemExitException and exit_code in tests.
+
 2008-03-27  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/sources_command.rb:  Allow sources to be

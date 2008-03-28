@@ -126,7 +126,10 @@ class Gem::Commands::InstallCommand < Gem::Command
       end
     end
 
-    exit exit_code
+    e = Gem::SystemExitException.new "Exiting RubyGems with exit_code = #{exit_code}"
+    e.exit_code = exit_code
+
+    raise e
   end
 
 end

@@ -1,15 +1,25 @@
 require 'rubygems/command'
 require 'rubygems/local_remote_options'
 require 'rubygems/source_info_cache'
+require 'rubygems/version_option'
 
 class Gem::Commands::QueryCommand < Gem::Command
 
   include Gem::LocalRemoteOptions
+  include Gem::VersionOption
 
   def initialize(name = 'query',
                  summary = 'Query gem information in local or remote repositories')
     super name, summary,
-         :name => /.*/, :domain => :local, :details => false, :versions => true
+         :name => //, :domain => :local, :details => false, :versions => true,
+         :installed => false, :version => Gem::Requirement.default
+
+    add_option('-i', '--[no-]installed',
+               'Check for installed gem') do |value, options|
+      options[:installed] = value
+    end
+
+    add_version_option
 
     add_option('-n', '--name-matches REGEXP',
                'Name of gem(s) to query on matches the',
@@ -37,11 +47,27 @@ class Gem::Commands::QueryCommand < Gem::Command
   end
 
   def defaults_str # :nodoc:
-    "--local --name-matches '.*' --no-details --versions"
+    "--local --name-matches // --no-details --versions --no-installed"
   end
 
   def execute
+    exit_code = 0
+
     name = options[:name]
+
+    if options[:installed] then
+      if name.source.empty? then
+        alert_error "You must specify a gem name"
+        exit_code |= 4
+      elsif installed? name.source, options[:version] then
+        say "true"
+      else
+        say "false"
+        exit_code |= 1
+      end
+
+      raise Gem::SystemExitException, exit_code
+    end
 
     if local? then
       say
@@ -67,6 +93,14 @@ class Gem::Commands::QueryCommand < Gem::Command
   end
 
   private
+
+  ##
+  # Check if gem +name+ version +version+ is installed.
+
+  def installed?(name, version = Gem::Requirement.default)
+    dep = Gem::Dependency.new name, version
+    !Gem.source_index.search(dep).empty?
+  end
 
   def output_query_results(gemspecs)
     output = []

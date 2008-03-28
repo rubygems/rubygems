@@ -28,8 +28,6 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     assert_equal "INFO:  use --ignore-dependencies to install only the gems you list",
                  output.shift
     assert output.empty?, output.inspect
-
-    assert_equal nil, @cmd.exit_code
   end
 
   def test_execute_local
@@ -84,8 +82,6 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     assert_raise Gem::CommandLineError do
       @cmd.execute
     end
-
-    assert_equal nil, @cmd.exit_code
   end
 
   def test_execute_nonexistent

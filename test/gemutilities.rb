@@ -398,15 +398,3 @@ class TempIO
 
 end
 
-class Gem::Command; end
-module Gem::Commands; end
-
-class Gem::Commands::InstallCommand < Gem::Command
-  attr_reader :exit_code
-
-  def exit(code = 0)
-    @exit_code = code
-  end
-end
-
-

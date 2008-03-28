@@ -1,3 +1,12 @@
+2008-03-28  Ryan Woodrum  <rwoodrum@avvo.com>
+
+	* lib/rubygems/commands/query_command.rb: Add --installed
+	subcommand to check if a gem and/or version is installed.
+	* test/test_gem_commands_query_command.rb: Add relevant tests.
+	* test/gemutilities.rb: Override exit() for query tests.
+	* test/mockgemui.rb: Add =() to manipulate output values (clear).
+
+
 2008-03-28  Chad Woolley  <thewoolleyman@gmail.com>
 
 	* lib/rubygems/source_info_cache.rb: Add reset_cache_file.

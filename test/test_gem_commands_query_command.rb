@@ -109,6 +109,81 @@ pl (1)
     assert_equal '', @ui.error
   end
 
+  def test_execute_installed
+    @cmd.handle_options %w[-n c --installed]
+
+    e = assert_raise Gem::SystemExitException do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    assert_equal 0, e.exit_code
+
+    assert_equal "true\n", @ui.output
+    assert_equal '', @ui.error
+  end
+
+  def test_execute_installed_no_name
+    @cmd.handle_options %w[--installed]
+
+    e = assert_raise Gem::SystemExitException do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    assert_equal '', @ui.output
+    assert_equal "ERROR:  You must specify a gem name\n", @ui.error
+
+    assert_equal 4, e.exit_code
+  end
+
+  def test_execute_installed_not_installed
+    @cmd.handle_options %w[-n not_installed --installed]
+
+    e = assert_raise Gem::SystemExitException do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    assert_equal "false\n", @ui.output
+    assert_equal '', @ui.error
+
+    assert_equal 1, e.exit_code
+  end
+
+  def test_execute_installed_version
+    @cmd.handle_options %w[-n c --installed --version 1.2]
+
+    e = assert_raise Gem::SystemExitException do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    assert_equal "true\n", @ui.output
+    assert_equal '', @ui.error
+
+    assert_equal 0, e.exit_code
+  end
+
+  def test_execute_installed_version_not_installed
+    @cmd.handle_options %w[-n c --installed --version 2]
+
+    e = assert_raise Gem::SystemExitException do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    assert_equal "false\n", @ui.output
+    assert_equal '', @ui.error
+
+    assert_equal 1, e.exit_code
+  end
+
   def test_execute_no_versions
     @cmd.handle_options %w[-r --no-versions]
 

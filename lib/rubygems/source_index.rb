@@ -430,15 +430,22 @@ class Gem::SourceIndex
   # Make a list of full names for all the missing gemspecs.
 
   def find_missing(spec_names)
+    unless defined? @originals then
+      @originals = {}
+      each do |full_name, spec|
+        @originals[spec.original_name] = spec
+      end
+    end
+
     spec_names.find_all { |full_name|
-      specification(full_name).nil?
+      @originals[full_name].nil?
     }
   end
 
   def remove_extra(spec_names)
     dictionary = spec_names.inject({}) { |h, k| h[k] = true; h }
     each do |name, spec|
-      remove_spec name unless dictionary.include? name
+      remove_spec name unless dictionary.include? spec.original_name
     end
   end
 

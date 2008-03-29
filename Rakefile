@@ -286,9 +286,9 @@ Rake::PackageTask.new("package") do |p|
 end
 
 Spec = Gem::Specification.new do |s|
-  s.name = PKG_NAME + "-update"  
+  s.name = PKG_NAME + "-update"
   s.version = PKG_VERSION
-  s.required_ruby_version = Gem::Requirement.new '> 1.8.2'
+  s.required_ruby_version = Gem::Requirement.new '> 1.8.3'
   s.summary = "RubyGems Update GEM"
   s.description = %{RubyGems is a package management framework for Ruby.  This Gem
 is a update for the base RubyGems software.  You must have a base

@@ -7,7 +7,10 @@ New features:
 * RubyGems now uses persistent connections on index updates.  Index updates are
   much faster now.
 * RubyGems only updates from a latest index by default, cutting candidate gems
-  for updates to roughly 1/4 (at present).
+  for updates to roughly 1/4 (at present).  Index updates are even faster
+  still.
+  * `gem list -r` may only show the latest version of a gem, add --all to see
+    all gems.
 * `gem spec` now extracts specifications from .gem files.
 * `gem query --installed` to aid automation of checking for gems.
 
@@ -40,8 +43,8 @@ For a full list of changes to RubyGems, see the ChangeLog file.
 
 == How can I get RubyGems?
 
-NOTE:  If you have installed RubyGems using a package you may want to install a
-new RubyGems through the same packaging system.
+NOTE:  If you have installed RubyGems using a package system you may want to
+install a new RubyGems through the same packaging system.
 
 If you have a recent version of RubyGems (0.8.5 or later), then all
 you need to do is:

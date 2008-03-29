@@ -26,6 +26,7 @@ class TestGemCommandsQueryCommand < RubyGemTestCase
     cache.update
     cache.write_cache
     cache.reset_cache_data
+    Gem::SourceInfoCache.reset
 
     a2_name = @a2.full_name
     @fetcher.data["#{@gem_repo}/quick/latest_index.rz"] = util_zip a2_name
@@ -44,6 +45,7 @@ class TestGemCommandsQueryCommand < RubyGemTestCase
 *** REMOTE GEMS ***
 
 a (2)
+pl (1)
     EOF
 
     assert_equal expected, @ui.output
@@ -55,6 +57,7 @@ a (2)
     cache.update
     cache.write_cache
     cache.reset_cache_data
+    Gem::SourceInfoCache.reset
 
     a1_name = @a1.full_name
     a2_name = @a2.full_name

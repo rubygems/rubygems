@@ -398,10 +398,12 @@ class TestGemSourceIndex < RubyGemTestCase
   def test_remove_extra
     @source_index.add_spec @a1
     @source_index.add_spec @a2
+    @source_index.add_spec @pl1
 
-    @source_index.remove_extra [@a1.full_name]
+    @source_index.remove_extra [@a1.full_name, @pl1.full_name]
 
-    assert_equal [@a1.full_name], @source_index.gems.map { |n,s| n }
+    assert_equal [@a1.full_name],
+                 @source_index.gems.map { |n,s| n }.sort
   end
 
   def test_remove_extra_no_changes

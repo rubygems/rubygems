@@ -4,6 +4,10 @@
 	* lib/rubygems.rb:  Added Gem.ruby_version, Gem.read_binary,
 	Gem.binary_mode.
 	* lib/, test/:  Read files in binary mode for windows and ruby 1.9.
+	* lib/rubygems/commands/update_command.rb:  Only update once.
+	* lib/rubygems/commands/sources_command.rb:  Ditto.
+	* lib/rubygems/source_index.rb:  Fix #remove_extra, #find_missing so
+	legacy platform gems don't get updated repeatedly.
 	* doc/release_notes/rel_1_1_0.rdoc:  RubyGems 1.1.0 release notes.
 	* lib/rubygems/rubygems_version.rb:  1.1.0.
 

@@ -31,14 +31,14 @@ class Gem::SourceInfoCache
 
   include Gem::UserInteraction
 
-  @cache = nil
-  @system_cache_file = nil
-  @user_cache_file = nil
+  ##
+  # The singleton Gem::SourceInfoCache.  If +all+ is true, a full refresh will
+  # be performed if the singleton instance is being initialized.
 
-  def self.cache
+  def self.cache(all = false)
     return @cache if @cache
     @cache = new
-    @cache.refresh false if Gem.configuration.update_sources
+    @cache.refresh all if Gem.configuration.update_sources
     @cache
   end
 
@@ -60,6 +60,15 @@ class Gem::SourceInfoCache
   def self.latest_user_cache_file
     File.join File.dirname(user_cache_file),
               "latest_#{File.basename user_cache_file}"
+  end
+
+  ##
+  # Reset all singletons, discarding any changes.
+
+  def self.reset
+    @cache = nil
+    @system_cache_file = nil
+    @user_cache_file = nil
   end
 
   ##
@@ -121,13 +130,6 @@ class Gem::SourceInfoCache
     @cache_file = (try_file(system_cache_file) or
       try_file(user_cache_file) or
       raise "unable to locate a writable cache file")
-  end
-  
-  ##
-  # Force cache file to be reset, useful for integration testing of rubygems
-  
-  def reset_cache_file
-    @cache_file = nil
   end
 
   ##
@@ -246,6 +248,13 @@ class Gem::SourceInfoCache
   end
 
   ##
+  # Force cache file to be reset, useful for integration testing of rubygems
+
+  def reset_cache_file
+    @cache_file = nil
+  end
+
+  ##
   # Searches all source indexes.  See Gem::SourceIndex#search for details on
   # +pattern+ and +platform_only+.  If +all+ is set to true, the full index
   # will be loaded before searching.
@@ -349,6 +358,8 @@ class Gem::SourceInfoCache
       io.write Marshal.dump(latest_cache_data)
     end
   end
+
+  reset
 
 end
 

@@ -83,7 +83,7 @@ class Gem::Commands::QueryCommand < Gem::Command
       say
 
       begin
-        Gem::SourceInfoCache.cache.refresh options[:all]
+        Gem::SourceInfoCache.cache options[:all]
       rescue Gem::RemoteFetcher::FetchError
         # no network
       end

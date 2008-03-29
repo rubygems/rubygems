@@ -200,8 +200,12 @@ rm_f system_cache_file if File.writable? File.dirname(system_cache_file)
 # install RDoc
 
 gem_doc_dir = File.join Gem.dir, 'doc'
+rubygems_name = "rubygems-#{Gem::RubyGemsVersion}"
+rubygems_doc_dir = File.join gem_doc_dir, rubygems_name
 
-if File.writable? gem_doc_dir then
+if File.writable? gem_doc_dir and
+   (not File.exist? rubygems_doc_dir or
+    File.writable? rubygems_doc_dir) then
   puts "Removing old RubyGems RDoc and ri"
   Dir[File.join(Gem.dir, 'doc', 'rubygems-[0-9]*')].each do |dir|
     rm_rf dir
@@ -216,18 +220,14 @@ if File.writable? gem_doc_dir then
     r.document args
   end
 
-  rubygems_name = "rubygems-#{Gem::RubyGemsVersion}"
-
-  doc_dir = File.join Gem.dir, 'doc', rubygems_name
-
   unless ARGV.include? '--no-ri' then
-    ri_dir = File.join doc_dir, 'ri'
+    ri_dir = File.join rubygems_doc_dir, 'ri'
     puts "Installing #{rubygems_name} ri into #{ri_dir}"
     run_rdoc '--ri', '--op', ri_dir
   end
 
   unless ARGV.include? '--no-rdoc' then
-    rdoc_dir = File.join(doc_dir, 'rdoc')
+    rdoc_dir = File.join rubygems_doc_dir, 'rdoc'
     puts "Installing #{rubygems_name} rdoc into #{rdoc_dir}"
     run_rdoc '--op', rdoc_dir
   end
@@ -284,7 +284,7 @@ puts
 puts "-" * 78
 puts
 
-release_notes = File.join 'doc', 'release_notes',
+release_notes = File.join File.dirname(__FILE__), 'doc', 'release_notes',
                           "rel_#{Gem::RubyGemsVersion.gsub '.', '_'}.rdoc"
 
 if File.exist? release_notes then

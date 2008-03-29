@@ -1,3 +1,13 @@
+2008-03-29  Eric Hodel  <drbrain@segment7.net>
+
+	* gemspecs/:  Removed.
+	* examples/:  Removed.
+	* doc/design/:  Removed.
+	* doc/rdoc_templates/:  Removed.
+	* Rakefile:  Package doc/release_notes/.
+	* setup.rb:  Use full path to release_notes, ensure RDoc can be
+	both removed and installed.
+
 2008-03-28  Eric Hodel  <drbrain@segment7.net>
 
 	* bin/gem, Rakefile:  RubyGems now requires Ruby > 1.8.3.

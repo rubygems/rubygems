@@ -214,14 +214,13 @@ end
 # Create a task to build the RDOC documentation tree.
 
 desc "Create the RDOC html files"
-rd = Rake::RDocTask.new("rdoc") { |rdoc|
+Rake::RDocTask.new("rdoc") { |rdoc|
   rdoc.rdoc_dir = 'html'
   rdoc.title    = "RubyGems"
   rdoc.options << '--line-numbers' << '--inline-source' << '--main' << 'README'
   rdoc.rdoc_files.include('README', 'TODO', 'LICENSE.txt', 'GPL.txt')
   rdoc.rdoc_files.include('lib/**/*.rb')
   rdoc.rdoc_files.include('doc/**/*.rdoc')
-#  rdoc.rdoc_files.include('test/**/*.rb')
 }
 
 desc "Publish the RDOCs on RubyForge"
@@ -261,19 +260,20 @@ end
 # Package tasks
 
 PKG_FILES = FileList[
-  "Rakefile", "ChangeLog", "TODO", "README", "LICENSE.txt",
+  ".document",
+  "ChangeLog",
   "GPL.txt",
-  "setup.rb",
+  "LICENSE.txt",
+  "README",
+  "Rakefile",
+  "TODO",
   "bin/*",
-  "doc/*.css", "doc/*.rb",
-  "examples/**/*",
-  "gemspecs/**/*",
+  "doc/release_notes/*",
   "lib/**/*.rb",
   "pkgs/**/*",
-  "redist/*.gem",
   "scripts/*.rb",
-  "test/**/*",
-  ".document"
+  "setup.rb",
+  "test/**/*"
 ]
 PKG_FILES.exclude(%r(^test/temp(/|$)))
 

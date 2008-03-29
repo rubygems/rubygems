@@ -1,0 +1,3 @@
+#!/usr/bin/ruby -w
+require 'somefunctionality'
+go

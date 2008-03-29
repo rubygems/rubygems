@@ -1,0 +1,23 @@
+== Release 0.8.0: Sep 12, 2004
+
+* Remove need for library stubs.  Set the RUBYOPT environment variable to
+  include "rrubygems", and a normal require will find gem files.  Continue to
+  use 'require_gem gem_name, version' to specify gem versions.
+* Deprecated "test_suite_file" gemspec attribute in favor of "test_files" array.
+* Generates rdoc by default on installs.
+* Adopted tar/gzip file format, thanks to Mauricio Fernandez.
+* "gem rdoc" allows generation of rdoc after gem installation (will add a "gem
+  test" 
+* Application stubs can now accept an optional parameter of _VERSION_ that will
+  run an arbitrary version of the application requested.
+* Various bug fixes
+* Various platform-independency improvements
+* "gem spec --all" displays spec info for all installed version of a given gem.
+* Dynamic caching of sources
+* Support for user-definable sources on the command line (thanks Assaph Mehr)
+* More intelligent support for platform-dependent gems.  Use Platform::CURRENT
+  when building a gem to set its platform to the one you're building on.
+  Installation displays a choice of platform-dependent gems, allowing the user
+  to pick.
+* Added "gem unpack" for "unpacking" a gem to the current directory
+

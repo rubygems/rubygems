@@ -1,0 +1,4 @@
+== Release 0.2.0: March 14, 2004
+
+* Initial public release
+

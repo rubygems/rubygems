@@ -1,0 +1,135 @@
+= Announce: RubyGems Release 0.8.7
+
+Time passes quickly, and so does software development.  Release 0.8.7
+of RubyGems is availble for public release.  Although another point
+release, you will find a number of very nice new features.
+
+First the numbers, 220 different gems available, over 25,000
+downloads of RubyGems, and nearly 190,000 gems downloads.  Thanks to
+everyone for their support.
+
+== What's New
+
+Even though it has only been a few weeks since that last release,
+there are quite a number of new features in 0.8.7.  A complete list of
+new features will be given below, but here is a summary of the hot
+items.
+
+* The bug that prevented some users from installing rails has been
+  squashed.  A big thanks to Bill Guindon (aGorilla) for helping track
+  that one down.
+
+There are several new commands available on the gem command:
+
+* gem cleanup GEMNAME -- Cleanup (uninstall) all the old versions of
+  gem.  If the gem name is omitted, the entire repository is cleaned.
+
+* gem dependency GEMNAME -- Show the dependencies for the named gems.
+  This is really helpful when trying to figure out what gem needs what
+  other gem.
+
+There changes to the existing commands as well.
+
+* gem uninstall is much smarter about removing gems from the
+  repository.  Lists of gems are now uninstalled in proper dependency
+  order (ie. if A depends on B, A is uninstalled first).  Also,
+  warnings about broken dependencies occur only when removing the
+  *last* gem that supports a dependency is removed.
+
+Both gem install and gem uninstall support some new command line
+options that can reduce the amount of yes/no queries given the user.
+For install we have:
+
+* --ignore-dependencies -- Only install requests gems, no
+  dependendecies are automatically installed.
+* --include-dependencies -- Automatically install dependencies,
+  without confirmation.
+
+For gem uninstall, the new options are:
+
+* --all -- Uninstall all matching gems without confirmation.
+* --ignore-dependencies -- Uninstall, even if dependencies are broken.
+* --executables -- Remove executables without confirmation
+
+Under general cleanup, gems will not, by default, run RDoc on packages
+that do not have the RDoc flag set.
+
+And finally there is a new library file 'gemconfigure' to aid in
+writing version sensitive applications (without undue dependencies on
+RubyGems); and 'gemwhich', a short script to locate libraries in the
+file system.  You can read more about them here:
+
+* gemconfigure: http://docs.rubygems.org/read/chapter/4#page73
+* gemwhich: http://docs.rubygems.org/read/chapter/17
+
+== What is RubyGems?
+
+RubyGems is a package management system for Ruby applications and
+libraries.  RubyGems one command download makes installing Ruby software
+fun and enjoyable again. (Ok, not really.)
+
+Many gems are available for download from the RubyForge site.  Browse
+the list of gems with a "gem list --remote" command and download what
+you need with a simple "gem install <name-of-gem>".  RubyGems takes care
+of the details of installing, not only the gem you requested, but also
+any gems needed by the software you selected.
+
+== How can I get all this great stuff?
+
+Well, here's how ...
+
+To download and install:
+
+1. DOWNLOAD FROM: http://rubyforge.org/frs/?group_id=126
+2. UNPACK INTO A DIRECTORY AND CD THERE
+3. INSTALL WITH:  ruby setup.rb all  (you may need admin/root privilege)
+
+... or, if you have RubyGems version 0.8.5 or later ....
+
+  $ gem update --system   (again, might need to be admin/root)
+
+... If you don't have a recent RubyGems, you can still do the two-step ....
+
+  $ gem install rubygems-update  (again, might need to be admin/root)
+  $ update_rubygems              (... here too)
+
+== Detailed Change List
+
+This list touches on most of the user visible changes in the RubyGems
+change log.  See the change log file for even more details.
+
+* Fixed bug in cache manager that caused the cache to be reread every
+  time on Windows.
+
+* Removed annoying message about not finding .gemrc.
+
+* Uninstall command will now accept the following options:
+  * --all (uninstall all matches without query),
+  * --ignore-dependencies (ignore dependency constraints while
+    uninstalling),
+  * --executables (remove the executables without querying).
+
+* New command: "gem cleanup" will remove all old versions of the list
+  gems (or the entire repository).
+
+* Uninstalling now will only query if removing a gem actually will
+  cause a dependency to be unfulfilled.
+
+* A new library file "gemconfigure.rb" makes is easy to take advantage
+  of dynamic versioning without becoming tied to using RubyGems.
+
+* Source URIs given to the --source option will now assume an
+  "http://" prefix if one is not given.
+
+* New Command: "gem dependency" will show the dependency requirements
+  of any installed gem.  Reverse dependencies are also supported.
+
+== Thanks
+
+Thanks to David Heinemeier Hansson for a number of suggestions that
+made it into this release.  Also thanks go to Bill Guindon (aGorilla)
+and Jim Freeze for feedback and testing of intermediate versions.
+
+Keep those gems coming!
+
+-- Jim & Chad (for the RubyGems team)

@@ -16,7 +16,7 @@ class Gem::Indexer::LatestIndexBuilder < Gem::Indexer::AbstractIndexBuilder
 
     latest = @index.latest_specs.sort.map { |spec| spec.original_name }
 
-    @file.write latest.join "\n"
+    @file.write latest.join("\n")
   end
 
   def cleanup

@@ -47,7 +47,7 @@ module Gem
 
         format = OldFormat.from_file_by_path(file_path)
       else
-        open file_path, 'rb' do |io|
+        open file_path, Gem.binary_mode do |io|
           format = from_io io, file_path, security_policy
         end
       end

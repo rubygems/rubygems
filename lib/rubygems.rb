@@ -204,6 +204,13 @@ module Gem
   private_class_method :all_partials
 
   ##
+  # The mode needed to read a file as straight binary.
+
+  def self.binary_mode
+    @binary_mode ||= RUBY_VERSION > '1.9' ? 'rb:ascii-8bit' : 'rb'
+  end
+
+  ##
   # The path where gem executables are to be installed.
 
   def self.bindir(install_dir=Gem.dir)
@@ -464,6 +471,13 @@ module Gem
   end
 
   ##
+  # Safely read a file in binary mode on all platforms.
+
+  def self.read_binary(path)
+    File.open path, binary_mode do |f| f.read end
+  end
+
+  ##
   # Report a load error during activation.  The message of load error
   # depends on whether it was a version mismatch or if there are not gems of
   # any version by the requested name.
@@ -510,6 +524,16 @@ module Gem
     end
 
     @ruby
+  end
+
+  ##
+  # A Gem::Version for the currently running ruby.
+
+  def self.ruby_version
+    return @ruby_version if defined? @ruby_version
+    version = RUBY_VERSION.dup
+    version << ".#{RUBY_PATCHLEVEL}" if defined? RUBY_PATCHLEVEL
+    @ruby_version = Gem::Version.new version
   end
 
   ##

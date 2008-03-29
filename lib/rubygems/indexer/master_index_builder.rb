@@ -42,12 +42,12 @@ class Gem::Indexer::MasterIndexBuilder < Gem::Indexer::AbstractIndexBuilder
 
   private
 
-  def paranoid(fn, compressed_fn)
-    data = File.open(fn, 'rb') do |fp| fp.read end
-    compressed_data = File.open(compressed_fn, 'rb') do |fp| fp.read end
+  def paranoid(path, compressed_path)
+    data = Gem.read_binary path
+    compressed_data = Gem.read_binary compressed_path
 
     if data != unzip(compressed_data) then
-      fail "Compressed file #{compressed_fn} does not match uncompressed file #{fn}"
+      raise "Compressed file #{compressed_path} does not match uncompressed file #{path}"
     end
   end
 

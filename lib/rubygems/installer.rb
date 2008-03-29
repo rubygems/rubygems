@@ -106,7 +106,7 @@ class Gem::Installer
 
     unless @force then
       if rrv = @spec.required_ruby_version then
-        unless rrv.satisfied_by? Gem::Version.new(RUBY_VERSION) then
+        unless rrv.satisfied_by? Gem.ruby_version then
           raise Gem::InstallError, "#{@spec.name} requires Ruby version #{rrv}"
         end
       end

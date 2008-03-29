@@ -189,6 +189,10 @@ class RubyGemTestCase < Test::Unit::TestCase
     end
   end
 
+  def read_binary(path)
+    Gem.read_binary path
+  end
+
   def write_file(path)
     path = File.join(@gemhome, path)
     dir = File.dirname path
@@ -199,10 +203,6 @@ class RubyGemTestCase < Test::Unit::TestCase
     end
 
     path
-  end
-
-  def read_binary(path)
-    File.open(path, 'rb') { |f| f.read }
   end
 
   def quick_gem(gemname, version='2')
@@ -393,7 +393,7 @@ class TempIO
   def string
     @tempfile.flush
 
-    open @tempfile.path, 'rb' do |io| io.read end
+    Gem.read_binary @tempfile.path
   end
 
 end

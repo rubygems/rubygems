@@ -329,6 +329,13 @@ class TestGem < RubyGemTestCase
                  Gem.required_location("a", "code.rb", "= 2")
   end
 
+  def test_self_ruby_version
+    version = RUBY_VERSION.dup
+    version << ".#{RUBY_PATCHLEVEL}" if defined? RUBY_PATCHLEVEL
+
+    assert_equal Gem::Version.new(version), Gem.ruby_version
+  end
+
   def test_self_searcher
     assert_kind_of Gem::GemPathSearcher, Gem.searcher
   end

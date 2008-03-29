@@ -12,6 +12,7 @@ class TestGemCommandsSpecificationCommand < RubyGemTestCase
 
   def test_execute
     foo = quick_gem 'foo'
+    Gem.source_index.add_spec foo
 
     @cmd.options[:args] = %w[foo]
 

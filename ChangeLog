@@ -1,3 +1,10 @@
+2008-03-28  Eric Hodel  <drbrain@segment7.net>
+
+	* bin/gem, Rakefile:  RubyGems now requires Ruby > 1.8.3.
+	* lib/rubygems.rb:  Added Gem.ruby_version, Gem.read_binary,
+	Gem.binary_mode.
+	* lib/, test/:  Read files in binary mode for windows and ruby 1.9.
+
 2008-03-28  Ryan Woodrum  <rwoodrum@avvo.com>
 
 	* lib/rubygems/commands/query_command.rb: Add --installed
@@ -5,7 +12,6 @@
 	* test/test_gem_commands_query_command.rb: Add relevant tests.
 	* test/gemutilities.rb: Override exit() for query tests.
 	* test/mockgemui.rb: Add =() to manipulate output values (clear).
-
 
 2008-03-28  Chad Woolley  <thewoolleyman@gmail.com>
 
@@ -34,7 +40,8 @@
 	PATH_SEPARATOR instead of hardcoded ':'
 	* test/test_gem_commands_unpack_command.rb: Ditto.
 	* test/test_gem_commands_environment_command.rb: Ditto.
-	* test/gemutilities.rb: Fix binary file reads being truncated on Windows.
+	* test/gemutilities.rb: Fix binary file reads being truncated on
+	Windows.
 	* test/test_gem_commands_install_command.rb: Switch to read_binary.
 	* test/test_gem_commands_update_command.rb: Ditto.
 	* test/test_gem_commands_server_command.rb: Consider full path when
@@ -81,7 +88,7 @@
 
 2008-03-19  Luis Lavena  <luislavena@gmail.com>
 
-	* lib/rubygems/package/tar_output.rb: Adapted code to use #wrap instead 
+	* lib/rubygems/package/tar_output.rb: Adapted code to use #wrap instead
 	of #new when dealing with Zlib::GzipWriter (fixes SEGV and warnings due
 	GzipWriter object not being closed explicitly).
 
@@ -192,7 +199,7 @@
 	* lib/rubygems/installer.rb: Fix #shebang to use the ruby install
 	name.  Patch #16878 by Donavan Pantke.
 	* lib/rubygems/defaults.rb, lib/rubygems.rb: Enable defaults for
-	Gem.path and Gem.binder.  Patch #17886 by Donavan Pantke.
+	Gem.path and Gem.bindir.  Patch #17886 by Donavan Pantke.
 	* test/test_gem_ext_configure_builder.rb: Make test_self_build_fail
 	more platform independent.  Patch #17599 by Martin Krauskopf.
 

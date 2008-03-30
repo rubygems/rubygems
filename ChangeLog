@@ -1,6 +1,8 @@
 2008-03-30  Luis Lavena  <luislavena@gmail.com>
 
 	* test/test_gem.rb: Leave APPLE_GEM_HOME tests only to *nixes.
+	* lib/rubygems/remote_fetcher.rb: Errno::ECONNABORTED raised on Windows
+	on closed Keep-Alive connections.
 
 2008-03-29  Eric Hodel  <drbrain@segment7.net>
 

@@ -237,23 +237,25 @@ class TestGem < RubyGemTestCase
     assert_equal [Gem.dir], Gem.path
   end
 
-  def test_self_path_APPLE_GEM_HOME
-    Gem.clear_paths
-    Gem.const_set :APPLE_GEM_HOME, '/tmp/apple_gem_home'
-
-    assert Gem.path.include?('/tmp/apple_gem_home')
-  ensure
-    Gem.send :remove_const, :APPLE_GEM_HOME
-  end
-
-  def test_self_path_APPLE_GEM_HOME_GEM_PATH
-    Gem.clear_paths
-    ENV['GEM_PATH'] = @gemhome
-    Gem.const_set :APPLE_GEM_HOME, '/tmp/apple_gem_home'
-
-    assert !Gem.path.include?('/tmp/apple_gem_home')
-  ensure
-    Gem.send :remove_const, :APPLE_GEM_HOME
+  unless win_platform?
+    def test_self_path_APPLE_GEM_HOME
+      Gem.clear_paths
+      Gem.const_set :APPLE_GEM_HOME, '/tmp/apple_gem_home'
+  
+      assert Gem.path.include?('/tmp/apple_gem_home')
+    ensure
+      Gem.send :remove_const, :APPLE_GEM_HOME
+    end
+  
+    def test_self_path_APPLE_GEM_HOME_GEM_PATH
+      Gem.clear_paths
+      ENV['GEM_PATH'] = @gemhome
+      Gem.const_set :APPLE_GEM_HOME, '/tmp/apple_gem_home'
+  
+      assert !Gem.path.include?('/tmp/apple_gem_home')
+    ensure
+      Gem.send :remove_const, :APPLE_GEM_HOME
+    end
   end
 
   def test_self_path_ENV_PATH

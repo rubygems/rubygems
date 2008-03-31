@@ -1,3 +1,9 @@
+2008-03-31  Luis Lavena  <luislavena@gmail.com>
+
+	* test/: Allow tests to use a random (but controlled) port number 
+	instead of a hardcoded one. This helps CI tools when running 
+	parallels builds.
+
 2008-03-30  Luis Lavena  <luislavena@gmail.com>
 
 	* test/test_gem.rb: Leave APPLE_GEM_HOME tests only to *nixes.

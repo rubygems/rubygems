@@ -369,6 +369,17 @@ class RubyGemTestCase < Test::Unit::TestCase
     Gem.win_platform?
   end
 
+  # NOTE Allow tests to use a random (but controlled) port number instead of
+  # a hardcoded one. This helps CI tools when running parallels builds on
+  # the same builder slave.
+  def self.process_based_port
+    @@process_based_port ||= 8000 + $$ % 1000
+  end
+
+  def process_based_port
+    self.class.process_based_port
+  end
+
 end
 
 class TempIO

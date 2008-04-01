@@ -1,7 +1,14 @@
+2008-04-01  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems.rb:  Fix prefix to point to directory above RubyGems,
+	so RubyGems will be installed into lib/.
+	* setup.rb:  Work around apple's libdir-installed RubyGems, by
+	installing into sitelibdir.
+
 2008-03-31  Luis Lavena  <luislavena@gmail.com>
 
-	* test/: Allow tests to use a random (but controlled) port number 
-	instead of a hardcoded one. This helps CI tools when running 
+	* test/: Allow tests to use a random (but controlled) port number
+	instead of a hardcoded one. This helps CI tools when running
 	parallels builds.
 
 2008-03-30  Luis Lavena  <luislavena@gmail.com>

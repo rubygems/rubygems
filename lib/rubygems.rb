@@ -215,7 +215,7 @@ module Gem
 
   def self.bindir(install_dir=Gem.dir)
     return File.join(install_dir, 'bin') unless
-    install_dir.to_s == Gem.default_dir
+      install_dir.to_s == Gem.default_dir
     Gem.default_bindir
   end
 
@@ -461,9 +461,10 @@ module Gem
   # The directory prefix this RubyGems was installed at.
 
   def self.prefix
-    prefix = File.dirname File.expand_path(__FILE__)
+    prefix = File.dirname File.dirname(File.expand_path(__FILE__))
 
-    if prefix == File.expand_path(ConfigMap[:sitelibdir]) then
+    if prefix == File.expand_path(ConfigMap[:sitelibdir]) or
+       prefix == File.expand_path(ConfigMap[:libdir]) then
       nil
     else
       File.dirname prefix

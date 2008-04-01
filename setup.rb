@@ -9,8 +9,11 @@
 if ENV['RUBYOPT'] and defined? Gem then
   ENV.delete 'RUBYOPT'
 
-  ruby = File.join Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name']
-  ruby << Config::CONFIG['EXEEXT']
+  require 'rbconfig'
+  config = defined?(RbConfig) ? RbConfig : Config
+
+  ruby = File.join config::CONFIG['bindir'], config::CONFIG['ruby_install_name']
+  ruby << config::CONFIG['EXEEXT']
 
   exec(ruby, 'setup.rb', *ARGV)
 end
@@ -52,10 +55,10 @@ include FileUtils::Verbose
 
 # check ruby version
 
-required_version = Gem::Version::Requirement.create("> 1.8.2")
+required_version = Gem::Version::Requirement.create("> 1.8.3")
 
-unless required_version.satisfied_by? Gem::Version.new(RUBY_VERSION) then
-  abort "Expected Ruby version #{required_version}, was #{RUBY_VERSION}"
+unless required_version.satisfied_by? Gem.ruby_version then
+  abort "Expected Ruby version #{required_version}, was #{Gem.ruby_version}"
 end
 
 # install stuff
@@ -64,8 +67,8 @@ lib_dir = nil
 bin_dir = nil
 
 if ARGV.grep(/^--prefix/).empty? then
-  lib_dir = Config::CONFIG['sitelibdir']
-  bin_dir = Config::CONFIG['bindir']
+  lib_dir = Gem::ConfigMap[:sitelibdir]
+  bin_dir = Gem::ConfigMap[:bindir]
 else
   prefix = nil
 
@@ -81,11 +84,22 @@ else
 
   raise "invalid --prefix #{prefix.inspect}" if prefix.nil?
 
-  lib_dir = File.join prefix, 'lib'
-  bin_dir = File.join prefix, 'bin'
+  # Apple installed RubyGems into libdir, and RubyGems <= 1.1.0 gets confused
+  # about installation location, so switch back to sitelibdir.
+  if defined?(APPLE_GEM_HOME) and
+      # just in case Apple and RubyGems don't get this patched up proper.
+     (prefix == Gem::ConfigMap[:libdir] or
+      # this one is important
+      prefix == File.join(Gem::ConfigMap[:libdir], 'ruby')) then
+    lib_dir = Gem::ConfigMap[:sitelibdir]
+    bin_dir = Gem::ConfigMap[:bindir]
+  else
+    lib_dir = File.join prefix, 'lib'
+    bin_dir = File.join prefix, 'bin'
 
-  mkdir_p lib_dir
-  mkdir_p bin_dir
+    mkdir_p lib_dir
+    mkdir_p bin_dir
+  end
 end
 
 Dir.chdir 'lib' do

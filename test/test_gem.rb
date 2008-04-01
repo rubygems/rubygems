@@ -305,14 +305,32 @@ class TestGem < RubyGemTestCase
 
   def test_self_prefix
     file_name = File.expand_path __FILE__
-    assert_equal File.dirname(File.dirname(file_name)), Gem.prefix
+    assert_equal File.dirname(File.dirname(File.dirname(file_name))), Gem.prefix
+  end
+
+  def test_self_prefix_libdir
+    orig_libdir = Gem::ConfigMap[:libdir]
+
+    file_name = File.expand_path __FILE__
+    parent = File.basename File.dirname(File.dirname(file_name))
+    prefix = File.join File.dirname(File.dirname(File.dirname(file_name))),
+                       parent
+
+    Gem::ConfigMap[:libdir] = prefix
+
+    assert_nil Gem.prefix
+  ensure
+    Gem::ConfigMap[:libdir] = orig_libdir
   end
 
   def test_self_prefix_odd
     orig_sitelibdir = Gem::ConfigMap[:sitelibdir]
 
     file_name = File.expand_path __FILE__
-    prefix = File.join File.dirname(File.dirname(file_name)), 'lib'
+    parent = File.basename File.dirname(File.dirname(file_name))
+    prefix = File.join File.dirname(File.dirname(File.dirname(file_name))),
+                       parent
+
     Gem::ConfigMap[:sitelibdir] = prefix.sub(/[\w]\//, '\&/')
 
     assert_nil Gem.prefix

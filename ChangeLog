@@ -4,6 +4,8 @@
 	so RubyGems will be installed into lib/.
 	* setup.rb:  Work around apple's libdir-installed RubyGems, by
 	installing into sitelibdir.
+	* Rakefile:  Add svnversion to RubyGems version number for `rake
+	install`.
 
 2008-03-31  Luis Lavena  <luislavena@gmail.com>
 

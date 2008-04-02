@@ -334,12 +334,15 @@ task :install do
   ruby 'setup.rb'
 
   svnversion = `svnversion`.split(':').last.sub(/[^\d]/, '').strip
-  current_version = Gem::RubyGemsVersion.split '.', 4
-  rubygems_version = (current_version[0, 3] << svnversion).join '.'
-  rubygems_version_file = File.join Gem::ConfigMap[:sitelibdir], 'rubygems',
-                                    'rubygems_version.rb'
 
-  generate_rubygems_version rubygems_version_file, rubygems_version
+  unless svnversion.empty? then
+    current_version = Gem::RubyGemsVersion.split '.', 4
+    rubygems_version = (current_version[0, 3] << svnversion).join '.'
+    rubygems_version_file = File.join Gem::ConfigMap[:sitelibdir], 'rubygems',
+                                      'rubygems_version.rb'
+
+    generate_rubygems_version rubygems_version_file, rubygems_version
+  end
 end
 
 desc "Run local 'gem' e.g. rake rungem -- install -i ~/tmp/gems"

@@ -22,8 +22,8 @@ require 'rubygems/user_interaction'
 #   Gem::SourceInfoCache
 #     @cache_data = {
 #       source_uri => Gem::SourceInfoCacheEntry
-#         @size => source index size
-#         @source_index => Gem::SourceIndex
+#         @size = source index size
+#         @source_index = Gem::SourceIndex
 #       ...
 #     }
 
@@ -177,12 +177,24 @@ class Gem::SourceInfoCache
     self.class.latest_user_cache_file
   end
 
+  ##
+  # Merges the complete cache file into this Gem::SourceInfoCache.
+
   def read_all_cache_data
     if @only_latest then
       @only_latest = false
-      @cache_data = read_cache_data cache_file
+      all_data = read_cache_data cache_file
+
+      cache_data.update all_data do |source_uri, latest_sice, all_sice|
+        all_sice.source_index.gems.update latest_sice.source_index.gems
+
+        Gem::SourceInfoCacheEntry.new all_sice.source_index, latest_sice.size
+      end
     end
   end
+
+  ##
+  # Reads cached data from +file+.
 
   def read_cache_data(file)
     # Marshal loads 30-40% faster from a String, and 2MB on 20061116 is small
@@ -205,6 +217,8 @@ class Gem::SourceInfoCache
     end
 
     cache_data
+  rescue Errno::ENOENT
+    {}
   rescue => e
     if Gem.configuration.really_verbose then
       say "Exception during cache_data handling: #{e.class} - #{e}"
@@ -245,6 +259,7 @@ class Gem::SourceInfoCache
 
   def reset_cache_data
     @cache_data = nil
+    @only_latest = true
   end
 
   ##
@@ -324,10 +339,7 @@ class Gem::SourceInfoCache
       end
     end
 
-    if File.writable? dir then
-      open path, "wb" do |io| io.write Marshal.dump({}) end
-      return path
-    end
+    return path if File.writable? dir
 
     nil
   end
@@ -347,11 +359,13 @@ class Gem::SourceInfoCache
   end
 
   ##
-  # Write data to the proper cache.
+  # Write data to the proper cache files.
 
   def write_cache
-    open cache_file, 'wb' do |io|
-      io.write Marshal.dump(cache_data)
+    if not File.exist?(cache_file) or not @only_latest then
+      open cache_file, 'wb' do |io|
+        io.write Marshal.dump(cache_data)
+      end
     end
 
     open latest_cache_file, 'wb' do |io|

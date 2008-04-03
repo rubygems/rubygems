@@ -189,7 +189,12 @@ class Gem::DependencyInstaller
       say "Installing gem #{spec.full_name}" if Gem.configuration.really_verbose
 
       _, source_uri = @specs_and_sources.assoc spec
-      local_gem_path = Gem::RemoteFetcher.fetcher.download spec, source_uri
+      begin
+        local_gem_path = Gem::RemoteFetcher.fetcher.download spec, source_uri
+      rescue Gem::RemoteFetcher::FetchError
+        next if @force
+        raise
+      end
 
       inst = Gem::Installer.new local_gem_path,
                                 :env_shebang => @env_shebang,

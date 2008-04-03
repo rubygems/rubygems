@@ -25,6 +25,8 @@ class Gem::SourceIndex
 
   include Gem::UserInteraction
 
+  attr_reader :gems # :nodoc:
+
   class << self
     include Gem::UserInteraction
 
@@ -346,10 +348,6 @@ class Gem::SourceIndex
   def dump
     Marshal.dump(self)
   end
-
-  protected
-
-  attr_reader :gems
 
   private
 

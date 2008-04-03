@@ -44,8 +44,10 @@ class TestGemCommandsQueryCommand < RubyGemTestCase
 
 *** REMOTE GEMS ***
 
+Updating metadata for 1 gems from http://gems.example.com/
+.
+complete
 a (2)
-pl (1)
     EOF
 
     assert_equal expected, @ui.output
@@ -79,10 +81,11 @@ pl (1)
 
 *** REMOTE GEMS ***
 
-Updating metadata for 1 gems from http://gems.example.com/
-.
+Updating metadata for 2 gems from http://gems.example.com/
+..
 complete
 a (2, 1)
+pl (1)
     EOF
 
     assert_equal expected, @ui.output
@@ -100,7 +103,7 @@ a (2, 1)
 
 *** REMOTE GEMS ***
 
-a (2, 1)
+a (2)
     This is a lot of text. This is a lot of text. This is a lot of text.
     This is a lot of text.
 

@@ -1,3 +1,13 @@
+2008-04-03  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_info_cache.rb:  Merge full cache file into
+	latest data.  Don't write cache files when checking for them.  Only
+	update full cache file when we've read it.
+	* lib/rubygems/dependency_installer.rb:  Fix --force to work without
+	network for dependent gems.
+	* lib/rubygems/commands/query_command.rb:  Obey --all flag for gem
+	query.
+
 2008-04-01  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb:  Fix prefix to point to directory above RubyGems,

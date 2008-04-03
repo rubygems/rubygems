@@ -2,9 +2,10 @@
 
 	* lib/rubygems/source_info_cache.rb:  Merge full cache file into
 	latest data.  Don't write cache files when checking for them.  Only
-	update full cache file when we've read it.
+	update full cache file when we've read it.  Refresh all data when
+	loading all data.
 	* lib/rubygems/dependency_installer.rb:  Fix --force to work without
-	network for dependent gems.
+	network for dependent gems.  Fix all-fetching test.
 	* lib/rubygems/commands/query_command.rb:  Obey --all flag for gem
 	query.
 

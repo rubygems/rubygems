@@ -72,7 +72,7 @@ class Gem::DependencyInstaller
         end
 
         all = requirements.length > 1 ||
-                requirements.first != ">=" || requirements.first != ">"
+                (requirements.first != ">=" and requirements.first != ">")
 
         found = Gem::SourceInfoCache.search_with_source dep, true, all
 

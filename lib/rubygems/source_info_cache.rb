@@ -190,6 +190,11 @@ class Gem::SourceInfoCache
 
         Gem::SourceInfoCacheEntry.new all_sice.source_index, latest_sice.size
       end
+
+      begin
+        refresh true
+      rescue Gem::RemoteFetcher::FetchError
+      end
     end
   end
 

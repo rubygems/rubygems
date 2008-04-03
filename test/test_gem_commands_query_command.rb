@@ -85,7 +85,6 @@ Updating metadata for 2 gems from http://gems.example.com/
 ..
 complete
 a (2, 1)
-pl (1)
     EOF
 
     assert_equal expected, @ui.output

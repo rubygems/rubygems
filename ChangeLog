@@ -8,6 +8,11 @@
 	network for dependent gems.  Fix all-fetching test.
 	* lib/rubygems/commands/query_command.rb:  Obey --all flag for gem
 	query.
+	* lib/rubygems/commands/environment_command.rb:  Don't display
+	RubyGemsPackageVersion.
+	* lib/rubygems/indexer.rb:  Fix typo.  Patch by Tom Copeland.
+	* lib/rubygems/command_manager.rb:  Display RubyGemsVersion with
+	--version.
 
 2008-04-01  Eric Hodel  <drbrain@segment7.net>
 

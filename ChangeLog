@@ -3,6 +3,8 @@
 	* lib/rubygems/source_index.rb:  Make Gem::SourceIndex#refresh!
 	more-correct.  Reported by Paul Haddad.
 	* lib/rubygems.rb:  Add Gem::refresh.  Bug #19176 by Hongli Lai.
+	* lib/rubygems/dependency_installer.rb:  Put downloaded gems into
+	install_dir's cache.  Patch #19182 by Richard Brown.
 
 2008-04-03  Eric Hodel  <drbrain@segment7.net>
 

@@ -190,7 +190,8 @@ class Gem::DependencyInstaller
 
       _, source_uri = @specs_and_sources.assoc spec
       begin
-        local_gem_path = Gem::RemoteFetcher.fetcher.download spec, source_uri
+        local_gem_path = Gem::RemoteFetcher.fetcher.download spec, source_uri,
+                                                             @install_dir
       rescue Gem::RemoteFetcher::FetchError
         next if @force
         raise

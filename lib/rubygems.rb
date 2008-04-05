@@ -472,6 +472,17 @@ module Gem
   end
 
   ##
+  # Refresh source_index from disk and clear searcher.
+
+  def self.refresh
+    source_index.refresh!
+
+    MUTEX.synchronize do
+      @searcher = nil
+    end
+  end
+
+  ##
   # Safely read a file in binary mode on all platforms.
 
   def self.read_binary(path)

@@ -52,14 +52,10 @@ class Gem::SourceIndex
     end
 
     ##
-    # Return a list of directories in the current gem path that
-    # contain specifications.
-    # 
-    # return::
-    #   List of directory paths (all ending in "../specifications").
+    # Returns a list of directories from Gem.path that contain specifications.
 
     def installed_spec_directories
-      Gem.path.collect { |dir| File.join(dir, "specifications") }        
+      Gem.path.collect { |dir| File.join(dir, "specifications") }
     end
 
     ##
@@ -274,12 +270,11 @@ class Gem::SourceIndex
   end
 
   ##
-  # Refresh the source index from the local file system.
-  #
-  # return:: Returns a pointer to itself.
+  # Replaces the gems in the source index from specifications in the
+  # installed_spec_directories,
 
   def refresh!
-    load_gems_in(self.class.installed_spec_directories)
+    load_gems_in(*self.class.installed_spec_directories)
   end
 
   ##

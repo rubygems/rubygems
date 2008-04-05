@@ -1,3 +1,9 @@
+2008-04-04  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_index.rb:  Make Gem::SourceIndex#refresh!
+	more-correct.  Reported by Paul Haddad.
+	* lib/rubygems.rb:  Add Gem::refresh.  Bug #19176 by Hongli Lai.
+
 2008-04-03  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/source_info_cache.rb:  Merge full cache file into

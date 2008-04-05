@@ -338,6 +338,23 @@ class TestGem < RubyGemTestCase
     Gem::ConfigMap[:sitelibdir] = orig_sitelibdir
   end
 
+  def test_self_refresh
+    util_make_gems
+
+    a1_spec = File.join @gemhome, "specifications", "#{@a1.full_name}.gemspec" 
+
+    FileUtils.mv a1_spec, @tempdir
+
+    assert !Gem.source_index.gems.include?(@a1.full_name)
+
+    FileUtils.mv File.join(@tempdir, "#{@a1.full_name}.gemspec"), a1_spec
+
+    Gem.refresh
+
+    assert Gem.source_index.gems.include?(@a1.full_name)
+    assert_equal nil, Gem.instance_variable_get(:@searcher)
+  end
+
   def test_self_required_location
     util_make_gems
 

@@ -97,7 +97,7 @@ module Gem
 
   @configuration = nil
   @loaded_specs = {}
-  @platforms = nil
+  @platforms = []
   @ruby = nil
   @sources = []
 
@@ -451,10 +451,21 @@ module Gem
   end
 
   ##
-  # Array of platforms this RubyGems supports.
+  # Set array of platforms this RubyGems supports (primarily for testing).
 
+  def self.platforms=(platforms)
+    @platforms = platforms
+  end
+
+  ##
+  # Array of platforms this RubyGems supports.
+  
   def self.platforms
-    @platforms ||= [Gem::Platform::RUBY, Gem::Platform.local]
+    @platforms ||= []
+    if @platforms.empty?
+      @platforms = [Gem::Platform::RUBY, Gem::Platform.local]
+    end
+    @platforms
   end
 
   ##

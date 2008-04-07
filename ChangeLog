@@ -1,3 +1,12 @@
+2008-04-06  Chad Woolley  <thewoolleyman@gmail.com>
+
+	* lib/rubygems.rb:  Add setter Gems.platforms=, to allow platforms
+	to be set/reset when invoking or testing RubyGems programatically.
+	Also force Gems.platforms to automatically reset to default of 
+	[Gem::Platform::RUBY, Gem::Platform.local] if cleared.
+	* lib/rubygems/version_option.rb:  Change add_platform_option
+	to initialize Gem.platforms to contain only Gem::Platform::RUBY
+
 2008-04-04  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/source_index.rb:  Make Gem::SourceIndex#refresh!

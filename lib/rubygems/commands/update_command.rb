@@ -117,6 +117,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
     args.push '--prefix', Gem.prefix unless Gem.prefix.nil?
     args << '--no-rdoc' unless options[:generate_rdoc]
     args << '--no-ri' unless options[:generate_ri]
+    args << '--no-format-executable' if options[:no_format_executable]
 
     update_dir = File.join Gem.dir, 'gems', "rubygems-update-#{version}"
 

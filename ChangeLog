@@ -1,3 +1,8 @@
+2008-04-10  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems.rb:  Fix Gem.prefix so it reports nil when rubygems.rb
+	is in sitelibdir, libdir, or doesn't have 'lib' as a parent directory.
+
 2008-04-07  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/server.rb:  Fix fragment URIs.  Patch by James Tucker.

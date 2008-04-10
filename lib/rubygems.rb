@@ -472,10 +472,11 @@ module Gem
   # The directory prefix this RubyGems was installed at.
 
   def self.prefix
-    prefix = File.dirname File.dirname(File.expand_path(__FILE__))
+    prefix = File.dirname File.expand_path(__FILE__)
 
-    if prefix == File.expand_path(ConfigMap[:sitelibdir]) or
-       prefix == File.expand_path(ConfigMap[:libdir]) then
+    if File.dirname(prefix) == File.expand_path(ConfigMap[:sitelibdir]) or
+       File.dirname(prefix) == File.expand_path(ConfigMap[:libdir]) or
+       'lib' != File.basename(prefix) then
       nil
     else
       File.dirname prefix

@@ -305,16 +305,18 @@ class TestGem < RubyGemTestCase
 
   def test_self_prefix
     file_name = File.expand_path __FILE__
-    assert_equal File.dirname(File.dirname(File.dirname(file_name))), Gem.prefix
+
+    prefix = File.dirname File.dirname(file_name)
+    prefix = File.dirname prefix if File.basename(prefix) == 'test'
+
+    assert_equal prefix, Gem.prefix
   end
 
   def test_self_prefix_libdir
     orig_libdir = Gem::ConfigMap[:libdir]
 
     file_name = File.expand_path __FILE__
-    parent = File.basename File.dirname(File.dirname(file_name))
-    prefix = File.join File.dirname(File.dirname(File.dirname(file_name))),
-                       parent
+    prefix = File.dirname File.dirname(file_name)
 
     Gem::ConfigMap[:libdir] = prefix
 
@@ -323,15 +325,13 @@ class TestGem < RubyGemTestCase
     Gem::ConfigMap[:libdir] = orig_libdir
   end
 
-  def test_self_prefix_odd
+  def test_self_prefix_sitelibdir
     orig_sitelibdir = Gem::ConfigMap[:sitelibdir]
 
     file_name = File.expand_path __FILE__
-    parent = File.basename File.dirname(File.dirname(file_name))
-    prefix = File.join File.dirname(File.dirname(File.dirname(file_name))),
-                       parent
+    prefix = File.dirname File.dirname(file_name)
 
-    Gem::ConfigMap[:sitelibdir] = prefix.sub(/[\w]\//, '\&/')
+    Gem::ConfigMap[:sitelibdir] = prefix
 
     assert_nil Gem.prefix
   ensure

@@ -2,6 +2,8 @@
 
 	* lib/rubygems.rb:  Fix Gem.prefix so it reports nil when rubygems.rb
 	is in sitelibdir, libdir, or doesn't have 'lib' as a parent directory.
+	* doc/release_notes/rel_1_1_1.rdoc:  RubyGems 1.1.1 release notes.
+	* lib/rubygems/rubygems_version.rb:  1.1.1.
 
 2008-04-07  Eric Hodel  <drbrain@segment7.net>
 

@@ -10,10 +10,10 @@ at_exit { $SAFE = 1 }
 require 'fileutils'
 require 'test/unit'
 require 'tmpdir'
-require 'tempfile'
 require 'uri'
 require 'rubygems/source_info_cache'
 require 'rubygems/package'
+require 'rubygems/test_utilities'
 
 require File.join(File.expand_path(File.dirname(__FILE__)), 'mockgemui')
 
@@ -24,54 +24,6 @@ module Gem
 
   def self.win_platform=(val)
     @@win_platform = val
-  end
-end
-
-class FakeFetcher
-
-  attr_reader :data
-  attr_accessor :uri
-  attr_accessor :paths
-
-  def initialize
-    @data = {}
-    @paths = []
-    @uri = nil
-  end
-
-  def fetch_path(path)
-    path = path.to_s
-    @paths << path
-    raise ArgumentError, 'need full URI' unless path =~ %r'^http://'
-    data = @data[path]
-    raise Gem::RemoteFetcher::FetchError, "no data for #{path}" if data.nil?
-    data.respond_to?(:call) ? data.call : data
-  end
-
-  def fetch_size(path)
-    path = path.to_s
-    @paths << path
-    raise ArgumentError, 'need full URI' unless path =~ %r'^http://'
-    data = @data[path]
-    raise Gem::RemoteFetcher::FetchError, "no data for #{path}" if data.nil?
-    data.respond_to?(:call) ? data.call : data.length
-  end
-
-  def download spec, source_uri, install_dir = Gem.dir
-    name = "#{spec.full_name}.gem"
-    path = File.join(install_dir, 'cache', name)
-
-    Gem.ensure_gem_subdirectories install_dir
-
-    if source_uri =~ /^http/ then
-      File.open(path, "wb") do |f|
-        f.write fetch_path(File.join(source_uri, "gems", name))
-      end
-    else
-      FileUtils.cp source_uri, path
-    end
-
-    path
   end
 end
 
@@ -322,7 +274,6 @@ class RubyGemTestCase < Test::Unit::TestCase
 
     @uri = URI.parse @gem_repo
     @fetcher = FakeFetcher.new
-    @fetcher.uri = @uri
 
     util_make_gems
 
@@ -384,30 +335,5 @@ class RubyGemTestCase < Test::Unit::TestCase
 
 end
 
-class TempIO
-
-  @@count = 0
-
-  def initialize(string = '')
-    @tempfile = Tempfile.new "TempIO-#{@@count ++ 1}"
-    @tempfile.binmode
-    @tempfile.write string
-    @tempfile.rewind
-  end
-
-  def method_missing(meth, *args, &block)
-    @tempfile.send(meth, *args, &block)
-  end
-
-  def respond_to?(meth)
-    @tempfile.respond_to? meth
-  end
-
-  def string
-    @tempfile.flush
-
-    Gem.read_binary @tempfile.path
-  end
-
-end
+FakeFetcher = Gem::FakeFetcher
 

@@ -1,3 +1,8 @@
+2008-04-14  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/test_utilities.rb:  Expose some internal testing
+	utilities that are of general use.
+
 2008-04-10  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb:  Fix Gem.prefix so it reports nil when rubygems.rb

@@ -121,8 +121,8 @@ class Gem::SourceIndex
   end
 
   ##
-  # Returns a Hash of name => Specification of the latest versions of each
-  # gem in this index.
+  # Returns an Array specifications for the latest versions of each gem in
+  # this index.
 
   def latest_specs
     result = Hash.new { |h,k| h[k] = [] }
@@ -387,7 +387,8 @@ class Gem::SourceIndex
   end
 
   def fetch_bulk_index(source_uri)
-    say "Bulk updating Gem source index for: #{source_uri}"
+    say "Bulk updating Gem source index for: #{source_uri}" if
+      Gem.configuration.verbose
 
     index = fetch_index_from(source_uri)
     if index.nil? then

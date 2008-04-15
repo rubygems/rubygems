@@ -1,3 +1,8 @@
+2008-04-15  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_index.rb:  Only print out "Bulk updating" when
+	verbose, fix #latest_specs documentation.
+
 2008-04-14  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/test_utilities.rb:  Expose some internal testing

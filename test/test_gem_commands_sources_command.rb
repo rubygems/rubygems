@@ -66,7 +66,7 @@ http://beta-gems.example.com added to sources
         raise Gem::RemoteFetcher::FetchError, 'it died'
       end
 
-    Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
+    Gem::RemoteFetcher.fetcher = @fetcher
 
     @cmd.handle_options %w[--add http://beta-gems.example.com]
 

@@ -42,7 +42,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
                                       @y1, @y1_1_p, @z1
 
     @fetcher = FakeFetcher.new
-    Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
+    Gem::RemoteFetcher.fetcher = @fetcher
     @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
 
     FileUtils.rm_rf File.join(@gemhome, 'gems')
@@ -478,7 +478,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     si = util_setup_source_info_cache @a1, @b1, b2, c1
 
     @fetcher = FakeFetcher.new
-    Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
+    Gem::RemoteFetcher.fetcher = @fetcher
     @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
 
     inst = Gem::DependencyInstaller.new
@@ -513,7 +513,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     si = util_setup_source_info_cache @d1, @d2, e1
 
     @fetcher = FakeFetcher.new
-    Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
+    Gem::RemoteFetcher.fetcher = @fetcher
     @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
 
     inst = Gem::DependencyInstaller.new

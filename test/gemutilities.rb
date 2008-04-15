@@ -83,7 +83,7 @@ class RubyGemTestCase < Test::Unit::TestCase
     Gem::ConfigMap[:arch] = @orig_arch
 
     if defined? Gem::RemoteFetcher then
-      Gem::RemoteFetcher.instance_variable_set :@fetcher, nil
+      Gem::RemoteFetcher.fetcher = nil
     end
 
     FileUtils.rm_rf @tempdir
@@ -289,7 +289,7 @@ class RubyGemTestCase < Test::Unit::TestCase
     @source_index.add_spec @a_evil9
     @source_index.add_spec @c1_2
 
-    Gem::RemoteFetcher.instance_variable_set :@fetcher, @fetcher
+    Gem::RemoteFetcher.fetcher = @fetcher
   end
 
   def util_setup_source_info_cache(*specs)

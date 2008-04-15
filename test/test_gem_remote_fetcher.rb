@@ -105,7 +105,7 @@ gems:
 
     @a1, @a1_gem = util_gem 'a', '1' do |s| s.executables << 'a_bin' end
 
-    Gem::RemoteFetcher.instance_variable_set :@fetcher, nil
+    Gem::RemoteFetcher.fetcher = nil
   end
 
   def test_self_fetcher

@@ -673,30 +673,30 @@ module Gem
       end
     end
 
+    ##
     # The full path to the gem (install path + full name).
-    #
-    # return:: [String] the full gem path
-    #
+
     def full_gem_path
       path = File.join installation_path, 'gems', full_name
       return path if File.directory? path
       File.join installation_path, 'gems', original_name
     end
-    
+
+    ##
     # The default (generated) file name of the gem.
+
     def file_name
       full_name + ".gem"
     end
-    
-    # The root directory that the gem was installed into.
-    #
-    # return:: [String] the installation path
-    #
+
+    ##
+    # The directory that this gem was installed into.
+
     def installation_path
       (File.dirname(@loaded_from).split(File::SEPARATOR)[0..-2]).
         join(File::SEPARATOR)
     end
-    
+
     # Checks if this Specification meets the requirement of the supplied
     # dependency.
     # 

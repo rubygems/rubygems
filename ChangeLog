@@ -2,6 +2,8 @@
 
 	* lib/rubygems/source_index.rb:  Only print out "Bulk updating" when
 	verbose, fix #latest_specs documentation.
+	* lib/rubygems/dependency_installer.rb:  Add :cache_dir option for
+	Tinderbox.
 
 2008-04-14  Eric Hodel  <drbrain@segment7.net>
 

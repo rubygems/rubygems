@@ -17,12 +17,9 @@ require 'rubygems'
 #
 # == Usage
 #
-#   gem server [-p portnum] [-d gem_path]
-#
-# port_num:: The TCP port the HTTP server will bind to
-# gem_path::
-#   Root gem directory containing both "cache" and "specifications"
-#   subdirectories.
+#   gem_server = Gem::Server.new Gem.dir, 8089, false
+#   gem_server.run
+
 class Gem::Server
 
   include Gem::UserInteraction
@@ -325,16 +322,16 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     new(options[:gemdir], options[:port], options[:daemon]).run
   end
 
-  def initialize(gemdir, port, daemon)
+  def initialize(gem_dir, port, daemon)
     Socket.do_not_reverse_lookup = true
 
-    @gemdir = gemdir
+    @gem_dir = gem_dir
     @port = port
     @daemon = daemon
     logger = WEBrick::Log.new nil, WEBrick::BasicLog::FATAL
     @server = WEBrick::HTTPServer.new :DoNotListen => true, :Logger => logger
 
-    @spec_dir = File.join @gemdir, "specifications"
+    @spec_dir = File.join @gem_dir, "specifications"
     @source_index = Gem::SourceIndex.from_gems_in @spec_dir
   end
 
@@ -418,10 +415,12 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       specs = []
       total_file_count = 0
 
+      @source_index.refresh!
+
       @source_index.each do |path, spec|
         total_file_count += spec.files.size
         deps = spec.dependencies.collect { |dep|
-          { "name"    => dep.name, 
+          { "name"    => dep.name,
             "version" => dep.version_requirements.to_s, }
         }
         deps = deps.sort_by { |dep| [dep["name"].downcase, dep["version"]] }
@@ -467,7 +466,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       specs = specs.sort_by { |spec| [spec["name"].downcase, spec["version"]] }
       specs.last["is_last"] = true
 
-      # tag all specs with first_name_entry 
+      # tag all specs with first_name_entry
       last_spec = nil
       specs.each do |spec|
         is_first = last_spec.nil? || (last_spec["name"].downcase != spec["name"].downcase)
@@ -487,7 +486,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     paths = { "/gems" => "/cache/", "/doc_root" => "/doc/" }
     paths.each do |mount_point, mount_dir|
       @server.mount(mount_point, WEBrick::HTTPServlet::FileHandler,
-              File.join(@gemdir, mount_dir), true)
+              File.join(@gem_dir, mount_dir), true)
     end
 
     trap("INT") { @server.shutdown; exit! }

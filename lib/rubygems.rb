@@ -687,7 +687,10 @@ end
 
 # Modify the non-gem version of datadir to handle gem package names.
 
-require 'rbconfig/datadir'
+begin
+  require 'rbconfig/datadir'
+rescue LoadError
+end
 
 module Config # :nodoc:
   class << self

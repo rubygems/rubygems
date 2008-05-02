@@ -67,6 +67,7 @@ module Gem
     :RUBY_SO_NAME => RbConfig::CONFIG["RUBY_SO_NAME"],
     :arch => RbConfig::CONFIG["arch"],
     :bindir => RbConfig::CONFIG["bindir"],
+    :datadir => RbConfig::CONFIG["datadir"],
     :libdir => RbConfig::CONFIG["libdir"],
     :ruby_install_name => RbConfig::CONFIG["ruby_install_name"],
     :ruby_version => RbConfig::CONFIG["ruby_version"],
@@ -685,25 +686,19 @@ module Gem
 
 end
 
-# Modify the non-gem version of datadir to handle gem package names.
-
-begin
-  require 'rbconfig/datadir'
-rescue LoadError
-end
-
-module Config # :nodoc:
+module Config
+  # :stopdoc:
   class << self
-    alias gem_original_datadir datadir
-
     # Return the path to the data directory associated with the named
     # package.  If the package is loaded as a gem, return the gem
     # specific data directory.  Otherwise return a path to the share
     # area as define by "#{ConfigMap[:datadir]}/#{package_name}".
     def datadir(package_name)
-      Gem.datadir(package_name) || Config.gem_original_datadir(package_name)
+      Gem.datadir(package_name) ||
+        File.join(Gem::ConfigMap[:datadir], package_name)
     end
   end
+  # :startdoc:
 end
 
 require 'rubygems/exceptions'

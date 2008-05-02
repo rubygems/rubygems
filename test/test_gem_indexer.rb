@@ -39,8 +39,8 @@ class TestGemIndexer < RubyGemTestCase
       @indexer.generate_index
     end
 
-    assert File.exist?(File.join(@tempdir, 'yaml'))
-    assert File.exist?(File.join(@tempdir, 'yaml.Z'))
+    assert File.exist?(File.join(@tempdir, 'yaml')), 'yaml'
+    assert File.exist?(File.join(@tempdir, 'yaml.Z')), 'yaml.Z'
     assert File.exist?(File.join(@tempdir, "Marshal.#{@marshal_version}"))
     assert File.exist?(File.join(@tempdir, "Marshal.#{@marshal_version}.Z"))
 
@@ -79,10 +79,19 @@ class TestGemIndexer < RubyGemTestCase
     end
 
     expected = <<-EOF
-Generating index for 6 gems in #{@tempdir}
+Loading 6 gems from #{@tempdir}
 ......
 Loaded all gems
-Generating master indexes (this may take a while)
+Generating quick index gemspecs for 6 gems
+......
+Complete
+Generating quick index
+Generating latest index
+Generating Marshal master index
+Generating YAML master index for 6 gems (this may take a while)
+......
+Complete
+Compressing indicies
     EOF
 
     assert_equal expected, @ui.output
@@ -94,13 +103,11 @@ Generating master indexes (this may take a while)
       @indexer.generate_index
     end
 
-    yaml_path = File.join(@tempdir, 'yaml')
-    dump_path = File.join(@tempdir, "Marshal.#{@marshal_version}")
+    yaml_path = File.join @tempdir, 'yaml'
+    dump_path = File.join @tempdir, "Marshal.#{@marshal_version}"
 
-    yaml_index = YAML.load_file(yaml_path)
-    dump_str = nil
-    File.open dump_path, 'rb' do |fp| dump_str = fp.read end
-    dump_index = Marshal.load dump_str
+    yaml_index = YAML.load_file yaml_path
+    dump_index = Marshal.load Gem.read_binary(dump_path)
 
     dump_index.each do |_,gem|
       gem.send :remove_instance_variable, :@loaded

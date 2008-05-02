@@ -1,3 +1,9 @@
+2008-05-02  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/indexer.rb:  Refactored into simpler more imperative
+	code.
+	* lib/rubygems.rb:  Leave rbconfig/datadir.rb for non-RubyGems use.
+
 2008-04-16  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/server.rb:  Refresh the source index per request so new

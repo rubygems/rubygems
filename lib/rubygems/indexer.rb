@@ -40,104 +40,35 @@ class Gem::Indexer
 
     marshal_name = "Marshal.#{Gem.marshal_version}"
 
-    @master_index = Gem::Indexer::MasterIndexBuilder.new "yaml", @directory
-    @marshal_index = Gem::Indexer::MarshalIndexBuilder.new marshal_name, @directory
-    @quick_index = Gem::Indexer::QuickIndexBuilder.new 'index', @directory
+    @master_index = File.join @directory, 'yaml'
+    @marshal_index = File.join @directory, marshal_name
 
-    quick_dir = File.join @directory, 'quick'
-    @latest_index = Gem::Indexer::LatestIndexBuilder.new 'latest_index', quick_dir
+    @quick_dir = File.join @directory, 'quick'
+
+    @quick_marshal_dir = File.join @quick_dir, marshal_name
+
+    @quick_index = File.join @quick_dir, 'index'
+    @latest_index = File.join @quick_dir, 'latest_index'
+
+    files = [
+      @master_index,
+      "#{@master_index}.Z",
+      @marshal_index,
+      "#{@marshal_index}.Z",
+      @quick_dir
+    ]
+
+    @files = files.map do |path|
+      path.sub @directory, ''
+    end
   end
 
   ##
-  # Build the index.
+  # Abbreviate the spec for downloading.  Abbreviated specs are only used for
+  # searching, downloading and related activities and do not need deployment
+  # specific information (e.g. list of files).  So we abbreviate the spec,
+  # making it much smaller for quicker downloads.
 
-  def build_index
-    @master_index.build do
-      @quick_index.build do
-        @marshal_index.build do
-          @latest_index.build do
-            progress = ui.progress_reporter gem_file_list.size,
-                                          "Generating index for #{gem_file_list.size} gems in #{@dest_directory}",
-                                          "Loaded all gems"
-
-                                          gem_file_list.each do |gemfile|
-              if File.size(gemfile.to_s) == 0 then
-                alert_warning "Skipping zero-length gem: #{gemfile}"
-                next
-              end
-
-              begin
-                spec = Gem::Format.from_file_by_path(gemfile).spec
-
-                unless gemfile =~ /\/#{Regexp.escape spec.original_name}.*\.gem\z/i then
-                  alert_warning "Skipping misnamed gem: #{gemfile} => #{spec.full_name} (#{spec.original_name})"
-                  next
-                end
-
-                abbreviate spec
-                sanitize spec
-
-                @master_index.add spec
-                @quick_index.add spec
-                @marshal_index.add spec
-                @latest_index.add spec
-
-                progress.updated spec.original_name
-
-              rescue SignalException => e
-                alert_error "Received signal, exiting"
-                raise
-              rescue Exception => e
-                alert_error "Unable to process #{gemfile}\n#{e.message} (#{e.class})\n\t#{e.backtrace.join "\n\t"}"
-              end
-                                          end
-
-            progress.done
-
-            say "Generating master indexes (this may take a while)"
-          end
-        end
-      end
-    end
-  end
-
-  def install_index
-    verbose = Gem.configuration.really_verbose
-
-    say "Moving index into production dir #{@dest_directory}" if verbose
-
-    files = @master_index.files + @quick_index.files + @marshal_index.files +
-            @latest_index.files
-
-    files.each do |file|
-      src_name = File.join @directory, file
-      dst_name = File.join @dest_directory, file
-
-      FileUtils.rm_rf dst_name, :verbose => verbose
-      FileUtils.mv src_name, @dest_directory, :verbose => verbose
-    end
-  end
-
-  def generate_index
-    FileUtils.rm_rf @directory
-    FileUtils.mkdir_p @directory, :mode => 0700
-
-    build_index
-    install_index
-  rescue SignalException
-  ensure
-    FileUtils.rm_rf @directory
-  end
-
-  # List of gem file names to index.
-  def gem_file_list
-    Dir.glob(File.join(@dest_directory, "gems", "*.gem"))
-  end
-
-  # Abbreviate the spec for downloading.  Abbreviated specs are only
-  # used for searching, downloading and related activities and do not
-  # need deployment specific information (e.g. list of files).  So we
-  # abbreviate the spec, making it much smaller for quicker downloads.
   def abbreviate(spec)
     spec.files = []
     spec.test_files = []
@@ -147,9 +78,215 @@ class Gem::Indexer
     spec
   end
 
+  ##
+  # Build various indicies
+
+  def build_indicies(index)
+    progress = ui.progress_reporter index.size,
+                                    "Generating quick index gemspecs for #{index.size} gems",
+                                    "Complete"
+
+    index.each do |original_name, spec|
+      spec_file_name = "#{original_name}.gemspec.rz"
+      yaml_name = File.join @quick_dir, spec_file_name
+      marshal_name = File.join @quick_marshal_dir, spec_file_name
+
+      yaml_zipped = deflate spec.to_yaml
+      open yaml_name, 'wb' do |io| io.write yaml_zipped end
+
+      marshal_zipped = deflate Marshal.dump(spec)
+      open marshal_name, 'wb' do |io| io.write marshal_zipped end
+
+      progress.updated original_name
+    end
+
+    progress.done
+
+    say "Generating quick index"
+
+    quick_index = File.join @quick_dir, 'index'
+    open quick_index, 'wb' do |io|
+      io.puts index.map { |_, spec| spec }
+    end
+
+    say "Generating latest index"
+
+    latest_index = File.join @quick_dir, 'latest_index'
+    open latest_index, 'wb' do |io|
+      io.puts index.latest_specs.sort.map { |_, spec| spec }
+    end
+
+    say "Generating Marshal master index"
+
+    open @marshal_index, 'wb' do |io|
+      io.write index.dump
+    end
+
+    progress = ui.progress_reporter index.size,
+                                    "Generating YAML master index for #{index.size} gems (this may take a while)",
+                                    "Complete"
+
+
+    open @master_index, 'wb' do |io|
+      io.puts "--- !ruby/object:#{index.class}"
+      io.puts "gems:"
+
+      gems = index.sort_by { |name, gemspec| gemspec.sort_obj }
+      gems.each do |original_name, gemspec|
+        yaml = gemspec.to_yaml.gsub(/^/, '    ')
+        yaml = yaml.sub(/\A    ---/, '') # there's a needed extra ' ' here
+        io.print "  #{original_name}:"
+        io.puts yaml
+
+        progress.updated original_name
+      end
+    end
+
+    progress.done
+
+    say "Compressing indicies"
+
+    compress quick_index, 'rz'
+    paranoid quick_index, 'rz'
+
+    compress latest_index, 'rz'
+    paranoid latest_index, 'rz'
+
+    compress @marshal_index, 'Z'
+    paranoid @marshal_index, 'Z'
+
+    compress @master_index, 'Z'
+    paranoid @master_index, 'Z'
+  end
+
+  ##
+  # Collect specifications from .gem files from the gem directory.
+
+  def collect_specs
+    index = Gem::SourceIndex.new
+
+    progress = ui.progress_reporter gem_file_list.size,
+                                    "Loading #{gem_file_list.size} gems from #{@dest_directory}",
+                                    "Loaded all gems"
+
+    gem_file_list.each do |gemfile|
+      if File.size(gemfile.to_s) == 0 then
+        alert_warning "Skipping zero-length gem: #{gemfile}"
+        next
+      end
+
+      begin
+        spec = Gem::Format.from_file_by_path(gemfile).spec
+
+        unless gemfile =~ /\/#{Regexp.escape spec.original_name}.*\.gem\z/i then
+          alert_warning "Skipping misnamed gem: #{gemfile} => #{spec.full_name} (#{spec.original_name})"
+          next
+        end
+
+        abbreviate spec
+        sanitize spec
+
+        index.gems[spec.original_name] = spec
+
+        progress.updated spec.original_name
+
+      rescue SignalException => e
+        alert_error "Received signal, exiting"
+        raise
+      rescue Exception => e
+        alert_error "Unable to process #{gemfile}\n#{e.message} (#{e.class})\n\t#{e.backtrace.join "\n\t"}"
+      end
+    end
+
+    progress.done
+
+    index
+  end
+
+  ##
+  # Compress +filename+ with +extension+.
+
+  def compress(filename, extension)
+    data = Gem.read_binary filename
+
+    zipped = deflate data
+
+    open "#{filename}.#{extension}", 'wb' do |io|
+      io.write zipped
+    end
+  end
+
+  ##
+  # Zlib::Deflate.deflate wrapper
+
+  def deflate(string)
+    Zlib::Deflate.deflate string
+  end
+
+  ##
+  # List of gem file names to index.
+
+  def gem_file_list
+    Dir.glob(File.join(@dest_directory, "gems", "*.gem"))
+  end
+
+  ##
+  # Builds and installs indexicies.
+
+  def generate_index
+    FileUtils.rm_rf @directory
+    FileUtils.mkdir_p @directory, :mode => 0700
+    FileUtils.mkdir_p @quick_marshal_dir
+
+    index = collect_specs
+    build_indicies index
+    install_indicies
+  rescue SignalException
+  ensure
+    FileUtils.rm_rf @directory
+  end
+
+  ##
+  # Zlib::Inflate.inflate wrapper
+
+  def inflate(string)
+    Zlib::Inflate.inflate string
+  end
+
+  ##
+  # Install generated indicies into the destination directory.
+
+  def install_indicies
+    verbose = Gem.configuration.really_verbose
+
+    say "Moving index into production dir #{@dest_directory}" if verbose
+
+    @files.each do |file|
+      src_name = File.join @directory, file
+      dst_name = File.join @dest_directory, file
+
+      FileUtils.rm_rf dst_name, :verbose => verbose
+      FileUtils.mv src_name, @dest_directory, :verbose => verbose
+    end
+  end
+
+  ##
+  # Ensure +path+ and path with +extension+ are identical.
+
+  def paranoid(path, extension)
+    data = Gem.read_binary path
+    compressed_data = Gem.read_binary "#{path}.#{extension}"
+
+    unless data == inflate(compressed_data) then
+      raise "Compressed file #{compressed_path} does not match uncompressed file #{path}"
+    end
+  end
+
+  ##
   # Sanitize the descriptive fields in the spec.  Sometimes non-ASCII
   # characters will garble the site index.  Non-ASCII characters will
   # be replaced by their XML entity equivalent.
+
   def sanitize(spec)
     spec.summary = sanitize_string(spec.summary)
     spec.description = sanitize_string(spec.description)
@@ -158,7 +295,9 @@ class Gem::Indexer
     spec
   end
 
+  ##
   # Sanitize a single string.
+
   def sanitize_string(string)
     # HACK the #to_s is in here because RSpec has an Array of Arrays of
     # Strings for authors.  Need a way to disallow bad values on gempsec
@@ -167,10 +306,4 @@ class Gem::Indexer
   end
 
 end
-
-require 'rubygems/indexer/abstract_index_builder'
-require 'rubygems/indexer/master_index_builder'
-require 'rubygems/indexer/quick_index_builder'
-require 'rubygems/indexer/marshal_index_builder'
-require 'rubygems/indexer/latest_index_builder'
 

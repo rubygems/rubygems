@@ -62,7 +62,8 @@ class Gem::Commands::InstallCommand < Gem::Command
       :install_dir => options[:install_dir],
       :security_policy => options[:security_policy],
       :wrappers => options[:wrappers],
-      :bin_dir => options[:bin_dir]
+      :bin_dir => options[:bin_dir],
+      :development => options[:development],
     }
 
     exit_code = 0

@@ -421,6 +421,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
         total_file_count += spec.files.size
         deps = spec.dependencies.collect { |dep|
           { "name"    => dep.name,
+            "type"    => dep.type,
             "version" => dep.version_requirements.to_s, }
         }
         deps = deps.sort_by { |dep| [dep["name"].downcase, dep["version"]] }

@@ -15,8 +15,12 @@ class TestGemDependencyInstaller < RubyGemTestCase
       fp.puts "#!/usr/bin/ruby"
     end
     @a1, @a1_gem = util_gem 'a', '1' do |s| s.executables << 'a_bin' end
+    @aa1, @aa1_gem = util_gem 'aa', '1' 
 
-    @b1, @b1_gem = util_gem 'b', '1' do |s| s.add_dependency 'a' end
+    @b1, @b1_gem = util_gem 'b', '1' do |s|
+      s.add_dependency 'a'
+      s.add_development_dependency 'aa'
+    end
 
     @d1, @d1_gem = util_gem 'd', '1'
     @d2, @d2_gem = util_gem 'd', '2'
@@ -90,6 +94,20 @@ class TestGemDependencyInstaller < RubyGemTestCase
     end
 
     assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
+  def test_install_with_development_dependency
+    FileUtils.mv @a1_gem, @tempdir
+    FileUtils.mv @aa1_gem, @tempdir
+    FileUtils.mv @b1_gem, @tempdir
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new(:development => true)
+      inst.install 'b'
+    end
+
+    assert_equal %w[a-1 aa-1 b-1], inst.installed_gems.map { |s| s.full_name }
   end
 
   def test_install_dependency_existing

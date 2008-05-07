@@ -335,6 +335,14 @@ module Gem
 
     read_only :dependencies
 
+    def runtime_dependencies
+      dependencies.select { |d| d.type == :runtime }
+    end
+
+    def development_dependencies
+      dependencies.select { |d| d.type == :development }
+    end
+
     # ALIASED gemspec attributes -------------------------------------
     
     attribute_alias_singular :executable,   :executables
@@ -629,27 +637,31 @@ module Gem
       end
     end
 
-    # Adds a dependency to this Gem.  For example,
+    # Adds a development dependency to this Gem.  For example,
     #
-    #   spec.add_dependency('jabber4r', '> 0.1', '<= 0.5')
+    #   spec.add_development_dependency('jabber4r', '> 0.1', '<= 0.5')
+    #
+    # Development dependencies aren't installed by default, and
+    # aren't activated when a gem is required.
     #
     # gem:: [String or Gem::Dependency] The Gem name/dependency.
     # requirements:: [default=">= 0"] The version requirements.
-    #
-    def add_dependency(gem, *requirements)
-      requirements = if requirements.empty? then
-                       Gem::Requirement.default
-                     else
-                       requirements.flatten
-                     end
-
-      unless gem.respond_to?(:name) && gem.respond_to?(:version_requirements)
-        gem = Dependency.new(gem, requirements)
-      end
-
-      dependencies << gem
+    def add_development_dependency(gem, *requirements)
+      add_dependency_with_type(gem, :development, *requirements)
     end
-    
+
+    # Adds a runtime dependency to this Gem.  For example,
+    #
+    #   spec.add_runtime_dependency('jabber4r', '> 0.1', '<= 0.5')
+    #
+    # gem:: [String or Gem::Dependency] The Gem name/dependency.
+    # requirements:: [default=">= 0"] The version requirements.
+    def add_runtime_dependency(gem, *requirements)
+      add_dependency_with_type(gem, :runtime, *requirements)
+    end
+
+    alias add_dependency add_runtime_dependency
+
     # Returns the full name (name-version) of this Gem.  Platform information
     # is included (name-version-platform) if it is specified (and not the
     # default Ruby platform).
@@ -820,7 +832,7 @@ module Gem
 
       dependencies.each do |dep|
         version_reqs_param = dep.requirements_list.inspect
-        result << "  s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
+        result << "  s.add_#{dep.type}_dependency(%q<#{dep.name}>, #{version_reqs_param})"
       end
 
       result << "end"
@@ -939,6 +951,22 @@ module Gem
     end
 
     private
+
+    def add_dependency_with_type(dependency, type, *requirements)
+      requirements = if requirements.empty? then
+                       Gem::Requirement.default
+                     else
+                       requirements.flatten
+                     end
+
+      unless dependency.respond_to?(:name) &&
+        dependency.respond_to?(:version_requirements)
+
+        dependency = Dependency.new(dependency, requirements, type)
+      end
+
+      dependencies << dependency
+    end
 
     def find_all_satisfiers(dep)
       Gem.source_index.each do |name,gem|

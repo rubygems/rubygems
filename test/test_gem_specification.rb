@@ -213,6 +213,15 @@ end
     assert_equal 'old_platform', same_spec.original_platform
   end
 
+  def test_add_dependency_with_explicit_type
+    gem = quick_gem "awesome", "1.0" do |awesome|
+      awesome.add_development_dependency "monkey"
+    end
+
+    monkey = gem.dependencies.detect { |d| d.name == "monkey" }
+    assert_equal(:development, monkey.type)
+  end
+
   def test_author
     assert_equal 'A User', @a1.author
   end
@@ -280,6 +289,20 @@ end
     pqa = Gem::Dependency.new 'pqa', ['> 0.4', '<= 0.6']
 
     assert_equal [rake, jabber, pqa], @a1.dependencies
+  end
+
+  def test_dependencies_scoped_by_type
+    gem = quick_gem "awesome", "1.0" do |awesome|
+      awesome.add_runtime_dependency "bonobo", []
+      awesome.add_development_dependency "monkey", []
+    end
+
+    bonobo = Gem::Dependency.new("bonobo", [])
+    monkey = Gem::Dependency.new("monkey", [], :development)
+
+    assert_equal([bonobo, monkey], gem.dependencies)
+    assert_equal([bonobo], gem.runtime_dependencies)
+    assert_equal([monkey], gem.development_dependencies)
   end
 
   def test_description
@@ -633,9 +656,9 @@ end
   s.summary = %q{this is a summary}
   s.test_files = [\"test/suite.rb\"]
 
-  s.add_dependency(%q<rake>, [\"> 0.4\"])
-  s.add_dependency(%q<jabber4r>, [\"> 0.0.0\"])
-  s.add_dependency(%q<pqa>, [\"> 0.4\", \"<= 0.6\"])
+  s.add_runtime_dependency(%q<rake>, [\"> 0.4\"])
+  s.add_runtime_dependency(%q<jabber4r>, [\"> 0.0.0\"])
+  s.add_runtime_dependency(%q<pqa>, [\"> 0.4\", \"<= 0.6\"])
 end
 "
 

@@ -44,6 +44,7 @@ class Gem::DependencyInstaller
     options = DEFAULT_OPTIONS.merge options
 
     @bin_dir = options[:bin_dir]
+    @development = options[:development]
     @domain = options[:domain]
     @env_shebang = options[:env_shebang]
     @force = options[:force]
@@ -120,7 +121,10 @@ class Gem::DependencyInstaller
         next if spec.nil? or seen[spec.name]
         seen[spec.name] = true
 
-        spec.dependencies.each do |dep|
+        deps = spec.runtime_dependencies
+        deps |= spec.development_dependencies if @development
+
+        deps.each do |dep|
           results = find_gems_with_sources(dep).reverse # local gems first
 
           results.each do |dep_spec, source_uri|
@@ -222,7 +226,8 @@ class Gem::DependencyInstaller
                                 :install_dir => @install_dir,
                                 :security_policy => @security_policy,
                                 :wrappers => @wrappers,
-                                :bin_dir => @bin_dir
+                                :bin_dir => @bin_dir,
+                                :development => @development
 
       spec = inst.install
 

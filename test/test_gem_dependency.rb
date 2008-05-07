@@ -60,6 +60,21 @@ class TestGemDependency < RubyGemTestCase
     assert_equal Gem::Requirement.new('= 2'), dep.version_requirements
   end
 
+  def test_initialize_with_type
+    dep = Gem::Dependency.new("pkg", [], :development)
+    assert_equal(:development, dep.type)
+  end
+
+  def test_type_is_runtime_by_default
+    assert_equal(:runtime, Gem::Dependency.new("pkg", []).type)
+  end
+
+  def test_type_is_restricted
+    assert_raise(ArgumentError) do
+      Gem::Dependency.new("pkg", [:sometimes])
+    end
+  end
+
   def test_equals2
     assert_equal @pkg1_0, @pkg1_0.dup
     assert_equal @pkg1_0.dup, @pkg1_0
@@ -74,6 +89,13 @@ class TestGemDependency < RubyGemTestCase
     assert_not_equal Object.new, @pkg1_0
   end
 
+  def test_equals2_type
+    runtime = Gem::Dependency.new("pkg", [])
+    development = Gem::Dependency.new("pkg", [], :development)
+
+    assert_not_equal(runtime, development)
+  end
+
   def test_hash
     assert_equal @pkg1_0.hash, @pkg1_0.dup.hash
     assert_equal @pkg1_0.dup.hash, @pkg1_0.hash
@@ -85,5 +107,11 @@ class TestGemDependency < RubyGemTestCase
     assert_not_equal @oth1_0.hash, @pkg1_0.hash, "names different"
   end
 
+  def test_hash_type
+    runtime = Gem::Dependency.new("pkg", [])
+    development = Gem::Dependency.new("pkg", [], :development)
+
+    assert_not_equal(runtime.hash, development.hash)
+  end
 end
 

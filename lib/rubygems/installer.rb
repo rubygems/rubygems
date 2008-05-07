@@ -76,6 +76,7 @@ class Gem::Installer
     @security_policy = options[:security_policy]
     @wrappers = options[:wrappers]
     @bin_dir = options[:bin_dir]
+    @development = options[:development]
 
     begin
       @format = Gem::Format.from_file_by_path @gem, @security_policy
@@ -119,7 +120,10 @@ class Gem::Installer
       end
 
       unless @ignore_dependencies then
-        @spec.dependencies.each do |dep_gem|
+        deps = @spec.runtime_dependencies
+        deps |= @spec.development_dependencies if @development
+
+        deps.each do |dep_gem|
           ensure_dependency @spec, dep_gem
         end
       end

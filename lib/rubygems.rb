@@ -152,7 +152,7 @@ module Gem
     @loaded_specs[spec.name] = spec
 
     # Load dependent gems first
-    spec.dependencies.each do |dep_gem|
+    spec.runtime_dependencies.each do |dep_gem|
       activate dep_gem
     end
 

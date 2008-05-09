@@ -50,12 +50,20 @@ class Gem::Indexer
     @quick_index = File.join @quick_dir, 'index'
     @latest_index = File.join @quick_dir, 'latest_index'
 
+    @specs_index = File.join @directory, "specs.#{Gem.marshal_version}"
+    @latest_specs_index = File.join @directory,
+                                    "latest_specs.#{Gem.marshal_version}"
+
     files = [
+      @specs_index,
+      "#{@specs_index}.gz",
+      @latest_specs_index,
+      "#{@latest_specs_index}.gz",
+      @quick_dir,
       @master_index,
       "#{@master_index}.Z",
       @marshal_index,
       "#{@marshal_index}.Z",
-      @quick_dir
     ]
 
     @files = files.map do |path|
@@ -102,6 +110,28 @@ class Gem::Indexer
 
     progress.done
 
+    say "Generating specs index"
+
+    open @specs_index, 'wb' do |io|
+      specs = index.sort.map do |_, spec|
+        platform = spec.original_platform
+        platform = Gem::Platform::RUBY if platform.nil?
+        [spec.name, spec.version, platform]
+      end
+
+      Marshal.dump specs, io
+    end
+
+    say "Generating latest specs index"
+
+    open @latest_specs_index, 'wb' do |io|
+      specs = index.latest_specs.sort.map do |spec|
+        [spec.name, spec.version, spec.original_platform]
+      end
+
+      Marshal.dump specs, io
+    end
+
     say "Generating quick index"
 
     quick_index = File.join @quick_dir, 'index'
@@ -126,7 +156,6 @@ class Gem::Indexer
                                     "Generating YAML master index for #{index.size} gems (this may take a while)",
                                     "Complete"
 
-
     open @master_index, 'wb' do |io|
       io.puts "--- !ruby/object:#{index.class}"
       io.puts "gems:"
@@ -145,6 +174,7 @@ class Gem::Indexer
     progress.done
 
     say "Compressing indicies"
+    # use gzip for future files.
 
     compress quick_index, 'rz'
     paranoid quick_index, 'rz'
@@ -157,6 +187,9 @@ class Gem::Indexer
 
     compress @master_index, 'Z'
     paranoid @master_index, 'Z'
+
+    gzip @specs_index
+    gzip @latest_specs_index
   end
 
   ##
@@ -244,6 +277,15 @@ class Gem::Indexer
   rescue SignalException
   ensure
     FileUtils.rm_rf @directory
+  end
+
+  ##
+  # Zlib::GzipWriter wrapper
+
+  def gzip(filename)
+    Zlib::GzipWriter.open "#{filename}.gz" do |io|
+      io.write Gem.read_binary(filename)
+    end
   end
 
   ##

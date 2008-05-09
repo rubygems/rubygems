@@ -223,6 +223,16 @@ class RubyGemTestCase < Test::Unit::TestCase
     [spec, cache_file]
   end
 
+  def util_gzip(data)
+    out = StringIO.new
+
+    Zlib::GzipWriter.wrap out do |io|
+      io.write data
+    end
+
+    out.string
+  end
+
   def util_make_gems
     init = proc do |s|
       s.files = %w[lib/code.rb]

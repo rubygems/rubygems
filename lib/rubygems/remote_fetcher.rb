@@ -15,7 +15,9 @@ class Gem::RemoteFetcher
 
   @fetcher = nil
 
+  ##
   # Cached RemoteFetcher instance.
+
   def self.fetcher
     @fetcher ||= self.new Gem.configuration[:http_proxy]
   end

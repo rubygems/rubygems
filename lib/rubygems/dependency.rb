@@ -8,6 +8,7 @@ require 'rubygems'
 
 ##
 # The Dependency class holds a Gem name and a Gem::Requirement
+
 class Gem::Dependency
   TYPES = [
     :runtime,
@@ -25,11 +26,8 @@ class Gem::Dependency
   end
 
   ##
-  # Constructs the dependency
-  #
-  # name:: [String] name of the Gem
-  # version_requirements:: [String Array] version requirement (e.g. ["> 1.2"])
-  #
+  # Constructs a dependency with +name+ and +requirements+.
+
   def initialize(name, version_requirements, type=:runtime)
     @name = name
 
@@ -61,7 +59,7 @@ class Gem::Dependency
   end
 
   def to_s # :nodoc:
-    "#{name} (#{version_requirements}#{", #{type}" if type != :runtime})"
+    "#{name} (#{version_requirements}#{", #{type}" if type != :runtime})" #" vim
   end
 
   def ==(other) # :nodoc:
@@ -69,6 +67,29 @@ class Gem::Dependency
       self.name == other.name &&
       self.type == other.type &&
       self.version_requirements == other.version_requirements
+  end
+
+  ##
+  # Uses this dependency as a pattern to compare to the dependency +other+.
+  # This dependency will match if the name matches the other's name, and other
+  # has only an equal version requirement that satisfies this dependency.
+
+  def =~(other)
+    return false unless self.class === other
+
+    pattern = @name
+    pattern = /\A#{@name}\Z/ unless Regexp === pattern
+
+    return false unless pattern =~ other.name
+
+    reqs = other.version_requirements.requirements
+
+    return false unless reqs.length == 1
+    return false unless reqs.first.first == '='
+
+    version = reqs.first.last
+
+    version_requirements.satisfied_by? version
   end
 
   def hash

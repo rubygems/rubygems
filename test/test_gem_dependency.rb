@@ -96,6 +96,29 @@ class TestGemDependency < RubyGemTestCase
     assert_not_equal(runtime, development)
   end
 
+  def test_equals_tilde
+    def dep(name, version)
+      Gem::Dependency.new name, version
+    end
+
+    a0   = dep 'a', '0'
+    a1   = dep 'a', '1'
+    b0   = dep 'b', '0'
+
+    pa0  = dep 'a', '>= 0'
+    pa0r = dep(/a/, '>= 0')
+    pab0r = dep(/a|b/, '>= 0')
+
+    assert((a0    =~ a0), 'match self')
+    assert((pa0   =~ a0), 'match version exact')
+    assert((pa0   =~ a1), 'match version')
+    assert((pa0r  =~ a0), 'match regex simple')
+    assert((pab0r =~ a0), 'match regex complex')
+
+    assert(!(pa0r =~ b0),         'fail match regex')
+    assert(!(pa0r =~ Object.new), 'fail match Object')
+  end
+
   def test_hash
     assert_equal @pkg1_0.hash, @pkg1_0.dup.hash
     assert_equal @pkg1_0.dup.hash, @pkg1_0.hash

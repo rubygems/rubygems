@@ -39,10 +39,10 @@ class TestGemIndexer < RubyGemTestCase
       @indexer.generate_index
     end
 
-    assert File.exist?(File.join(@tempdir, 'yaml')), 'yaml'
-    assert File.exist?(File.join(@tempdir, 'yaml.Z')), 'yaml.Z'
-    assert File.exist?(File.join(@tempdir, "Marshal.#{@marshal_version}"))
-    assert File.exist?(File.join(@tempdir, "Marshal.#{@marshal_version}.Z"))
+    assert_indexed @tempdir, 'yaml'
+    assert_indexed @tempdir, 'yaml.Z'
+    assert_indexed @tempdir, "Marshal.#{@marshal_version}"
+    assert_indexed @tempdir, "Marshal.#{@marshal_version}.Z"
 
     quickdir = File.join @tempdir, 'quick'
     marshal_quickdir = File.join quickdir, "Marshal.#{@marshal_version}"
@@ -64,13 +64,19 @@ class TestGemIndexer < RubyGemTestCase
     assert_indexed quickdir, "#{@c1_2.full_name}.gemspec.rz"
 
     assert_indexed quickdir, "#{@pl1.original_name}.gemspec.rz"
-    deny_indexed quickdir, "#{@pl1.full_name}.gemspec.rz"
+    refute_indexed quickdir, "#{@pl1.full_name}.gemspec.rz"
 
     assert_indexed marshal_quickdir, "#{@a1.full_name}.gemspec.rz"
     assert_indexed marshal_quickdir, "#{@a2.full_name}.gemspec.rz"
 
-    deny_indexed quickdir, "#{@c1_2.full_name}.gemspec"
-    deny_indexed marshal_quickdir, "#{@c1_2.full_name}.gemspec"
+    refute_indexed quickdir, "#{@c1_2.full_name}.gemspec"
+    refute_indexed marshal_quickdir, "#{@c1_2.full_name}.gemspec"
+
+    assert_indexed @tempdir, "specs.#{@marshal_version}"
+    assert_indexed @tempdir, "specs.#{@marshal_version}.gz"
+
+    assert_indexed @tempdir, "latest_specs.#{@marshal_version}"
+    assert_indexed @tempdir, "latest_specs.#{@marshal_version}.gz"
   end
 
   def test_generate_index_ui
@@ -85,6 +91,8 @@ Loaded all gems
 Generating quick index gemspecs for 6 gems
 ......
 Complete
+Generating specs index
+Generating latest specs index
 Generating quick index
 Generating latest index
 Generating Marshal master index
@@ -98,7 +106,7 @@ Compressing indicies
     assert_equal '', @ui.error
   end
 
-  def test_generate_index_contents
+  def test_generate_index_master
     use_ui @ui do
       @indexer.generate_index
     end
@@ -117,12 +125,55 @@ Compressing indicies
                  "expected YAML and Marshal to produce identical results"
   end
 
+  def test_generate_index_specs
+    use_ui @ui do
+      @indexer.generate_index
+    end
+
+    specs_path = File.join @tempdir, "specs.#{@marshal_version}"
+
+    specs_dump = Gem.read_binary specs_path
+    specs = Marshal.load specs_dump
+
+    expected = [
+      ['a',      Gem::Version.new(1),     'ruby'],
+      ['a',      Gem::Version.new(2),     'ruby'],
+      ['a_evil', Gem::Version.new(9),     'ruby'],
+      ['b',      Gem::Version.new(2),     'ruby'],
+      ['c',      Gem::Version.new('1.2'), 'ruby'],
+      ['pl',     Gem::Version.new(1),     'i386-linux'],
+    ]
+
+    assert_equal expected, specs
+  end
+
+  def test_generate_index_latest_specs
+    use_ui @ui do
+      @indexer.generate_index
+    end
+
+    latest_specs_path = File.join @tempdir, "latest_specs.#{@marshal_version}"
+
+    latest_specs_dump = Gem.read_binary latest_specs_path
+    latest_specs = Marshal.load latest_specs_dump
+
+    expected = [
+      ['a',      Gem::Version.new(2),     'ruby'],
+      ['a_evil', Gem::Version.new(9),     'ruby'],
+      ['b',      Gem::Version.new(2),     'ruby'],
+      ['c',      Gem::Version.new('1.2'), 'ruby'],
+      ['pl',     Gem::Version.new(1),     'i386-linux'],
+    ]
+
+    assert_equal expected, latest_specs
+  end
+
   def assert_indexed(dir, name)
     file = File.join dir, name
     assert File.exist?(file), "#{file} does not exist"
   end
 
-  def deny_indexed(dir, name)
+  def refute_indexed(dir, name)
     file = File.join dir, name
     assert !File.exist?(file), "#{file} exists"
   end

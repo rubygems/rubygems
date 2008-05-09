@@ -1,3 +1,11 @@
+2008-05-09  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/indexer.rb:  Add Marshal format index of spec names,
+	versions and platforms.  WIP.
+	* lib/rubygems/spec_fetcher.rb:  WIP for replacement of
+	Gem::SourceInfoCache and SourceInfoCacheEntry.
+	* lib/rubygems/dependency.rb:  Add #=~.
+
 2008-05-02  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/indexer.rb:  Refactored into simpler more imperative

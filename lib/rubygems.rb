@@ -684,6 +684,10 @@ module Gem
 
   end
 
+  MARSHAL_SPEC_DIR = "quick/Marshal.#{Gem.marshal_version}/"
+
+  YAML_SPEC_DIR = 'quick/'
+
 end
 
 module Config

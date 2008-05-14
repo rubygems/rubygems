@@ -7,9 +7,10 @@
 	* lib/rubygems/dependency.rb:  Add #=~.
 
 2008-05-07 John Barnette <jbarnette@gmail.com>
-  * lib/rubygems/specification.rb, et. al: Let gems have development
-  dependencies, which aren't installed (except when --development is
-  supplied) or activated.
+
+	* lib/rubygems/specification.rb, et. al: Let gems have development
+	dependencies, which aren't installed (except when --development is
+	supplied) or activated.
 
 2008-05-02  Eric Hodel  <drbrain@segment7.net>
 

@@ -46,8 +46,13 @@ class RubyGemTestCase < Test::Unit::TestCase
     @gemcache = File.join(@gemhome, "source_cache")
     @usrcache = File.join(@gemhome, ".gem", "user_cache")
     @latest_usrcache = File.join(@gemhome, ".gem", "latest_user_cache")
+    @userhome = File.join @tempdir, 'userhome'
+
+    ENV['HOME'] = @userhome
+    Gem.instance_variable_set :@user_home, nil
 
     FileUtils.mkdir_p @gemhome
+    FileUtils.mkdir_p @userhome
 
     ENV['GEMCACHE'] = @usrcache
     Gem.use_paths(@gemhome)

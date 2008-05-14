@@ -1,3 +1,9 @@
+2008-05-13  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/spec_fetcher.rb:  Add caching of specs, latest_specs
+	files.
+	* test/gemutilities.rb:  Ensure Gem.user_home doesn't point to ~.
+
 2008-05-09  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/indexer.rb:  Add Marshal format index of spec names,

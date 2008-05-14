@@ -131,6 +131,12 @@ class TestGemSpecFetcher < RubyGemTestCase
     ]
 
     assert_equal expected, specs[@uri].sort
+
+    cache_dir = File.join Gem.user_home, '.gem', 'specs', 'gems.example.com:80'
+    assert File.exist?(cache_dir)
+
+    cache_file = File.join cache_dir, "specs.#{Gem.marshal_version}"
+    assert File.exist?(cache_file)
   end
 
   def test_list_cache
@@ -141,6 +147,26 @@ class TestGemSpecFetcher < RubyGemTestCase
     @fetcher.data["#{@gem_repo}/latest_specs.#{Gem.marshal_version}.gz"] = nil
 
     specs = @sf.list
+  end
+
+  def test_list_disk_cache
+    @fetcher.data["#{@gem_repo}/latest_specs.#{Gem.marshal_version}.gz"] = nil
+    @fetcher.data["#{@gem_repo}/latest_specs.#{Gem.marshal_version}"] =
+      ' ' * Marshal.dump(@latest_specs).length
+
+    cache_dir = File.join Gem.user_home, '.gem', 'specs', 'gems.example.com:80'
+
+    FileUtils.mkdir_p cache_dir
+
+    cache_file = File.join cache_dir, "latest_specs.#{Gem.marshal_version}"
+
+    open cache_file, 'wb' do |io|
+      Marshal.dump @latest_specs, io
+    end
+
+    specs = @sf.list
+
+    assert !specs[@uri].empty?
   end
 
   def test_list_latest
@@ -156,6 +182,12 @@ class TestGemSpecFetcher < RubyGemTestCase
     ]
 
     assert_equal expected, specs[@uri].sort
+
+    cache_dir = File.join Gem.user_home, '.gem', 'specs', 'gems.example.com:80'
+    assert File.exist?(cache_dir)
+
+    cache_file = File.join cache_dir, "latest_specs.#{Gem.marshal_version}"
+    assert File.exist?(cache_file)
   end
 
 end

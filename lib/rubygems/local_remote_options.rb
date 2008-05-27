@@ -4,6 +4,7 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'uri'
 require 'rubygems'
 
 # Mixin methods for local and remote Gem::Command options.

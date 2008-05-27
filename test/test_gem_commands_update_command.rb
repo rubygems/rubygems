@@ -14,10 +14,12 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
     @a1_path = File.join @gemhome, 'cache', "#{@a1.full_name}.gem"
     @a2_path = File.join @gemhome, 'cache', "#{@a2.full_name}.gem"
 
-    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] =
-      @source_index.dump
-    @fetcher.data["#{@gem_repo}/gems/#{@a1.full_name}.gem"] = read_binary @a1_path
-    @fetcher.data["#{@gem_repo}/gems/#{@a2.full_name}.gem"] = read_binary @a2_path
+    util_setup_spec_fetcher @a1, @a2
+
+    @fetcher.data["#{@gem_repo}/gems/#{@a1.full_name}.gem"] =
+      read_binary @a1_path
+    @fetcher.data["#{@gem_repo}/gems/#{@a2.full_name}.gem"] =
+      read_binary @a2_path
   end
 
   def test_execute
@@ -33,7 +35,6 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
 
     out = @ui.output.split "\n"
     assert_equal "Updating installed gems", out.shift
-    assert_match %r|Bulk updating|, out.shift
     assert_equal "Updating #{@a2.name}", out.shift
     assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "Gems updated: #{@a2.name}", out.shift
@@ -73,8 +74,6 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
     util_build_gem @a2
     util_build_gem @c2
 
-    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] =
-      @source_index.dump
     @fetcher.data["#{@gem_repo}/gems/#{@a1.full_name}.gem"] = read_binary @a1_path
     @fetcher.data["#{@gem_repo}/gems/#{@a2.full_name}.gem"] = read_binary @a2_path
     @fetcher.data["#{@gem_repo}/gems/#{@b2.full_name}.gem"] = read_binary @b2_path
@@ -82,6 +81,7 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
       read_binary @c1_2_path
     @fetcher.data["#{@gem_repo}/gems/#{@c2.full_name}.gem"] = read_binary @c2_path
 
+    util_setup_spec_fetcher @a1, @a2, @b2, @c1_2, @c2
     util_remove_gems
 
     Gem::Installer.new(@c1_2_path).install
@@ -95,9 +95,7 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
 
     out = @ui.output.split "\n"
     assert_equal "Updating installed gems", out.shift
-    assert_match %r|Bulk updating|, out.shift
     assert_equal "Updating #{@a2.name}", out.shift
-    assert_match %r|Bulk updating|, out.shift
     assert_equal "Successfully installed #{@c2.full_name}", out.shift
     assert_equal "Successfully installed #{@b2.full_name}", out.shift
     assert_equal "Successfully installed #{@a2.full_name}", out.shift
@@ -120,7 +118,6 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
 
     out = @ui.output.split "\n"
     assert_equal "Updating installed gems", out.shift
-    assert_match %r|Bulk updating|, out.shift
     assert_equal "Updating #{@a2.name}", out.shift
     assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "Gems updated: #{@a2.name}", out.shift
@@ -141,7 +138,6 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
 
     out = @ui.output.split "\n"
     assert_equal "Updating installed gems", out.shift
-    assert_match %r|Bulk updating|, out.shift
     assert_equal "Nothing to update", out.shift
 
     assert out.empty?, out.inspect
@@ -160,7 +156,6 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
 
     out = @ui.output.split "\n"
     assert_equal "Updating installed gems", out.shift
-    assert_match %r|Bulk updating|, out.shift
     assert_equal "Nothing to update", out.shift
 
     assert out.empty?, out.inspect

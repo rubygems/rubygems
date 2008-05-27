@@ -1,6 +1,6 @@
 require 'rubygems/command'
 require 'rubygems/local_remote_options'
-require 'rubygems/source_info_cache'
+require 'rubygems/spec_fetcher'
 require 'rubygems/version_option'
 
 class Gem::Commands::QueryCommand < Gem::Command
@@ -84,13 +84,10 @@ class Gem::Commands::QueryCommand < Gem::Command
 
       all = options[:all]
 
-      begin
-        Gem::SourceInfoCache.cache all
-      rescue Gem::RemoteFetcher::FetchError
-        # no network
-      end
+      dep = Gem::Dependency.new name, Gem::Requirement.default
+      specs = Gem::SpecFetcher.fetcher.fetch(dep, all, false)
 
-      output_query_results Gem::SourceInfoCache.search(name, false, all)
+      output_query_results specs.map { |spec,| spec }
     end
   end
 

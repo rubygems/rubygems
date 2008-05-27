@@ -37,12 +37,17 @@ class TestGemSpecFetcher < RubyGemTestCase
       util_zip(Marshal.dump(@a2))
 
     dep = Gem::Dependency.new 'a', 1
-    specs = @sf.fetch dep, true
+    specs_and_sources = @sf.fetch dep, true
 
-    assert_equal [@uri], specs.map { |uri,| uri }
+    spec_names = specs_and_sources.map do |spec, source_uri|
+      [spec.full_name, source_uri]
+    end
 
-    spec_names = specs.assoc(@uri).last.map { |spec| spec.full_name }
-    assert_equal [@a1.full_name, @a2.full_name], spec_names
+    expected = [[@a1.full_name, @gem_repo], [@a2.full_name, @gem_repo]]
+
+    assert_equal expected, spec_names
+
+    assert_same specs_and_sources.first.last, specs_and_sources.last.last
   end
 
   def test_fetch_latest
@@ -52,12 +57,13 @@ class TestGemSpecFetcher < RubyGemTestCase
       util_zip(Marshal.dump(@a2))
 
     dep = Gem::Dependency.new 'a', 1
-    specs = @sf.fetch dep
+    specs_and_sources = @sf.fetch dep
 
-    assert_equal [@uri], specs.map { |uri,| uri }
+    spec_names = specs_and_sources.map do |spec, source_uri|
+      [spec.full_name, source_uri]
+    end
 
-    spec_names = specs.assoc(@uri).last.map { |spec| spec.full_name }
-    assert_equal [@a2.full_name], spec_names
+    assert_equal [[@a2.full_name, @gem_repo]], spec_names
   end
 
   def test_fetch_platform
@@ -67,12 +73,13 @@ class TestGemSpecFetcher < RubyGemTestCase
       util_zip(Marshal.dump(@pl1))
 
     dep = Gem::Dependency.new 'pl', 1
-    specs = @sf.fetch dep
+    specs_and_sources = @sf.fetch dep
 
-    assert_equal [@uri], specs.map { |uri,| uri }
+    spec_names = specs_and_sources.map do |spec, source_uri|
+      [spec.full_name, source_uri]
+    end
 
-    spec_names = specs.assoc(@uri).last.map { |spec| spec.full_name }
-    assert_equal [@pl1.full_name], spec_names
+    assert_equal [[@pl1.full_name, @gem_repo]], spec_names
   end
 
   def test_find_matching_all
@@ -107,6 +114,30 @@ class TestGemSpecFetcher < RubyGemTestCase
 
     dep = Gem::Dependency.new 'pl', 1
     specs = @sf.find_matching dep
+
+    assert_equal [@uri], specs.keys
+
+    expected = [
+      ['pl', Gem::Version.new(1), 'i386-linux'],
+    ]
+
+    assert_equal expected, specs[@uri]
+
+    util_set_arch 'i386-freebsd6'
+
+    dep = Gem::Dependency.new 'pl', 1
+    specs = @sf.find_matching dep
+
+    assert_equal [@uri], specs.keys
+
+    assert_equal [], specs[@uri]
+  end
+
+  def test_find_all_platforms
+    util_set_arch 'i386-freebsd6'
+
+    dep = Gem::Dependency.new 'pl', 1
+    specs = @sf.find_matching dep, false, false
 
     assert_equal [@uri], specs.keys
 

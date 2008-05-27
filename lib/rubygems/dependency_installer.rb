@@ -2,6 +2,7 @@ require 'rubygems'
 require 'rubygems/dependency_list'
 require 'rubygems/installer'
 require 'rubygems/source_info_cache'
+require 'rubygems/spec_fetcher'
 require 'rubygems/user_interaction'
 
 ##
@@ -84,8 +85,7 @@ class Gem::DependencyInstaller
         all = requirements.length > 1 ||
                 (requirements.first != ">=" and requirements.first != ">")
 
-        found = Gem::SourceInfoCache.search_with_source dep, true, all
-
+        found = Gem::SpecFetcher.fetcher.fetch dep, all
         gems_and_sources.push(*found)
 
       rescue Gem::RemoteFetcher::FetchError => e

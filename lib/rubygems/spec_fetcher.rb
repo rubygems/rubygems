@@ -3,6 +3,22 @@ require 'zlib'
 
 class Gem::SpecFetcher
 
+  attr_reader :dir
+
+  attr_reader :latest_specs
+
+  attr_reader :specs
+
+  @fetcher = nil
+
+  def self.fetcher
+    @fetcher ||= new
+  end
+
+  def self.fetcher=(fetcher) # :nodoc:
+    @fetcher = fetcher
+  end
+
   def initialize
     @dir = File.join Gem.user_home, '.gem', 'specs'
 
@@ -14,36 +30,49 @@ class Gem::SpecFetcher
 
   ##
   # Fetch specs matching +dependency+.  If +all+ is true, all matching
-  # versions are returned.
+  # versions are returned.  If +matching_platform+ is false, all platforms are
+  # returned.
 
-  def fetch(dependency, all = false)
-    found = find_matching dependency, all
+  def fetch(dependency, all = false, matching_platform = true)
+    found = find_matching dependency, all, matching_platform
 
-    found.map do |source_uri, specs|
-      specs = specs.map do |spec|
-        spec = spec - [nil, 'ruby']
-        uri = source_uri + "#{Gem::MARSHAL_SPEC_DIR}#{spec.join('-')}.gemspec.rz"
+    specs_and_sources = []
 
-        spec = @fetcher.fetch_path uri
-        spec = inflate spec
-        Marshal.load spec
+    found.each do |source_uri, specs|
+      uri_str = source_uri.to_s
+
+      specs.each do |spec|
+        spec = fetch_spec spec, source_uri
+        specs_and_sources << [spec, uri_str]
       end
-
-      [source_uri, specs]
     end
+
+    specs_and_sources
+  end
+
+  def fetch_spec(spec, source_uri)
+    spec = spec - [nil, 'ruby']
+    uri = source_uri + "#{Gem::MARSHAL_SPEC_DIR}#{spec.join('-')}.gemspec.rz"
+
+    spec = @fetcher.fetch_path uri
+    spec = inflate spec
+
+    # TODO: Investigate setting Gem::Specification#loaded_from to a URI
+    Marshal.load spec
   end
 
   ##
   # Find spec names that match +dependency+.  If +all+ is true, all matching
-  # versions are returned.
+  # versions are returned.  If +matching_platform+ is false, gems for all
+  # platforms are returned.
 
-  def find_matching(dependency, all = false)
+  def find_matching(dependency, all = false, matching_platform = true)
     found = {}
 
     list(all).each do |source_uri, specs|
       found[source_uri] = specs.select do |spec_name, version, spec_platform|
         dependency =~ Gem::Dependency.new(spec_name, version) and
-          Gem::Platform.match(spec_platform)
+          (not matching_platform or Gem::Platform.match(spec_platform))
       end
     end
 
@@ -125,7 +154,7 @@ class Gem::SpecFetcher
       rescue
       end
     end
-    
+
     specs
   end
 

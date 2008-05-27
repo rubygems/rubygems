@@ -53,15 +53,25 @@ class Gem::Commands::DependencyCommand < Gem::Command
     end
 
     if remote? then
-      Gem::SourceInfoCache.cache_data.map do |_, sice|
-        source_indexes << sice.source_index
+      fetcher = Gem::SpecFetcher.fetcher
+      dep = Gem::Dependency.new(//, Gem::Requirement.default)
+
+      fetcher.find_matching(dep).each do |source_uri, spec_tuples|
+        source_index = Gem::SourceIndex.new
+
+        spec_tuples.each do |spec_tuple|
+          spec = fetcher.fetch_spec spec_tuple, source_uri
+          source_index.add_spec spec
+        end
+
+        source_indexes << source_index
       end
     end
 
     options[:args].each do |name|
       new_specs = nil
       source_indexes.each do |source_index|
-        new_specs =  find_gems(name, source_index)
+        new_specs = find_gems(name, source_index)
       end
 
       say "No match found for #{name} (#{options[:version]})" if
@@ -146,5 +156,6 @@ class Gem::Commands::DependencyCommand < Gem::Command
 
     specs
   end
+
 end
 

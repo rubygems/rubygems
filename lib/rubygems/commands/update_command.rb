@@ -2,7 +2,7 @@ require 'rubygems/command'
 require 'rubygems/command_manager'
 require 'rubygems/install_update_options'
 require 'rubygems/local_remote_options'
-require 'rubygems/source_info_cache'
+require 'rubygems/spec_fetcher'
 require 'rubygems/version_option'
 require 'rubygems/commands/install_command'
 
@@ -15,9 +15,9 @@ class Gem::Commands::UpdateCommand < Gem::Command
   def initialize
     super 'update',
           'Update the named gems (or all installed gems) in the local repository',
-      :generate_rdoc => true, 
-      :generate_ri => true, 
-      :force => false, 
+      :generate_rdoc => true,
+      :generate_ri => true,
+      :force => false,
       :test => false,
       :install_dir => Gem.dir
 
@@ -72,7 +72,9 @@ class Gem::Commands::UpdateCommand < Gem::Command
                 Regexp.union(*options[:args])
               end
 
-    remote_gemspecs = Gem::SourceInfoCache.search pattern
+    dep = Gem::Dependency.new pattern, Gem::Requirement.default
+
+    remote_gemspecs = Gem::SpecFetcher.fetcher.fetch dep
 
     gems_to_update = which_to_update hig, remote_gemspecs
 
@@ -139,16 +141,16 @@ class Gem::Commands::UpdateCommand < Gem::Command
     result = []
 
     highest_installed_gems.each do |l_name, l_spec|
-      matching_gems = remote_gemspecs.select do |spec|
+      matching_gems = remote_gemspecs.select do |spec,|
         spec.name == l_name and Gem.platforms.any? do |platform|
           platform == spec.platform
         end
       end
 
-      highest_remote_gem = matching_gems.sort_by { |spec| spec.version }.last
+      highest_remote_gem = matching_gems.sort_by { |spec,| spec.version }.last
 
       if highest_remote_gem and
-         l_spec.version < highest_remote_gem.version then
+         l_spec.version < highest_remote_gem.first.version then
         result << l_name
       end
     end

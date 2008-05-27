@@ -105,10 +105,10 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
   def test_execute_remote
     @cmd.options[:generate_rdoc] = true
     @cmd.options[:generate_ri] = true
-    util_setup_fake_fetcher
 
-    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] =
-      @source_index.dump
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher @a2
+
     @fetcher.data["#{@gem_repo}/gems/#{@a2.full_name}.gem"] =
       read_binary(File.join(@gemhome, 'cache', "#{@a2.full_name}.gem"))
 
@@ -122,7 +122,6 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     end
 
     out = @ui.output.split "\n"
-    assert_match %r|Bulk updating|, out.shift
     assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "1 gem installed", out.shift
     assert_equal "Installing ri documentation for #{@a2.full_name}...",

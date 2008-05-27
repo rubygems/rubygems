@@ -11,7 +11,6 @@ require 'fileutils'
 require 'test/unit'
 require 'tmpdir'
 require 'uri'
-require 'rubygems/source_info_cache'
 require 'rubygems/package'
 require 'rubygems/test_utilities'
 
@@ -62,7 +61,10 @@ class RubyGemTestCase < Test::Unit::TestCase
     Gem.configuration.update_sources = true
 
     @gem_repo = "http://gems.example.com"
+    @uri = URI.parse @gem_repo
     Gem.sources.replace [@gem_repo]
+
+    Gem::SpecFetcher.fetcher = nil
 
     @orig_BASERUBY = Gem::ConfigMap[:BASERUBY]
     Gem::ConfigMap[:BASERUBY] = Gem::ConfigMap[:RUBY_INSTALL_NAME]
@@ -98,7 +100,6 @@ class RubyGemTestCase < Test::Unit::TestCase
     ENV.delete 'GEM_PATH'
 
     Gem.clear_paths
-    Gem::SourceInfoCache.instance_variable_set :@cache, nil
   end
 
   def install_gem gem
@@ -270,7 +271,7 @@ class RubyGemTestCase < Test::Unit::TestCase
   end
 
   ##
-  # Set the platform to +cpu+ and +os+
+  # Set the platform to +arch+
 
   def util_set_arch(arch)
     Gem::ConfigMap[:arch] = arch
@@ -287,8 +288,7 @@ class RubyGemTestCase < Test::Unit::TestCase
     require 'socket'
     require 'rubygems/remote_fetcher'
 
-    @uri = URI.parse @gem_repo
-    @fetcher = FakeFetcher.new
+    @fetcher = Gem::FakeFetcher.new
 
     util_make_gems
 
@@ -307,21 +307,31 @@ class RubyGemTestCase < Test::Unit::TestCase
     Gem::RemoteFetcher.fetcher = @fetcher
   end
 
-  def util_setup_source_info_cache(*specs)
-    require 'rubygems/source_info_cache_entry'
-
+  def util_setup_spec_fetcher(*specs)
     specs = Hash[*specs.map { |spec| [spec.full_name, spec] }.flatten]
     si = Gem::SourceIndex.new specs
 
-    sice = Gem::SourceInfoCacheEntry.new si, 0
-    sic = Gem::SourceInfoCache.new
+    spec_fetcher = Gem::SpecFetcher.fetcher
 
-    sic.set_cache_data( { @gem_repo => sice } )
-    sic.update
-    sic.write_cache
-    sic.reset_cache_data
+    spec_fetcher.specs[@uri] = []
+    si.gems.sort_by { |_, spec| spec }.each do |_, spec|
+      spec_tuple = [spec.name, spec.version, spec.original_platform]
+      spec_fetcher.specs[@uri] << spec_tuple
+    end
 
-    Gem::SourceInfoCache.instance_variable_set :@cache, sic
+    spec_fetcher.latest_specs[@uri] = []
+    si.latest_specs.sort.each do |spec|
+      spec_tuple = [spec.name, spec.version, spec.original_platform]
+      spec_fetcher.latest_specs[@uri] << spec_tuple
+    end
+
+    si.gems.sort_by { |_,spec| spec }.each do |_, spec|
+      path = "#{@gem_repo}/quick/Marshal.#{Gem.marshal_version}/#{spec.original_name}.gemspec.rz"
+      data = Marshal.dump spec
+      data_deflate = Zlib::Deflate.deflate data
+      @fetcher.data[path] = data_deflate
+    end
+
     si
   end
 
@@ -349,6 +359,4 @@ class RubyGemTestCase < Test::Unit::TestCase
   end
 
 end
-
-FakeFetcher = Gem::FakeFetcher
 

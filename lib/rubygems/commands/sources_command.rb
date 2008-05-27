@@ -1,7 +1,7 @@
+require 'fileutils'
 require 'rubygems/command'
 require 'rubygems/remote_fetcher'
-require 'rubygems/source_info_cache'
-require 'rubygems/source_info_cache_entry'
+require 'rubygems/spec_fetcher'
 
 class Gem::Commands::SourcesCommand < Gem::Command
 
@@ -21,10 +21,6 @@ class Gem::Commands::SourcesCommand < Gem::Command
       options[:remove] = value
     end
 
-    add_option '-u', '--update', 'Update source cache' do |value, options|
-      options[:update] = value
-    end
-
     add_option '-c', '--clear-all',
                'Remove all sources (clear the cache)' do |value, options|
       options[:clear_all] = value
@@ -36,27 +32,26 @@ class Gem::Commands::SourcesCommand < Gem::Command
   end
 
   def execute
-    options[:list] = !(options[:add] || options[:remove] || options[:clear_all] || options[:update])
+    options[:list] = !(options[:add] || options[:remove] || options[:clear_all])
 
     if options[:clear_all] then
-      sic = Gem::SourceInfoCache
-      remove_cache_file 'user',          sic.user_cache_file
-      remove_cache_file 'latest user',   sic.latest_user_cache_file
-      remove_cache_file 'system',        sic.system_cache_file
-      remove_cache_file 'latest system', sic.latest_system_cache_file
+      path = Gem::SpecFetcher.fetcher.dir
+      FileUtils.rm_rf path
+
+      if not File.exist?(path) then
+        say "*** Removed source cache ***"
+      elsif not File.writable?(path) then
+        say "*** Unable to remove source cache (write protected) ***"
+      else
+        say "*** Unable to remove source cache ***"
+      end
     end
 
     if options[:add] then
       source_uri = options[:add]
 
-      sice = Gem::SourceInfoCacheEntry.new nil, nil
       begin
-        sice.refresh source_uri, true
-
-        Gem::SourceInfoCache.cache_data[source_uri] = sice
-        Gem::SourceInfoCache.cache.update
-        Gem::SourceInfoCache.cache.flush
-
+        Gem::SpecFetcher.fetcher.load_specs URI.parse(source_uri), 'specs'
         Gem.sources << source_uri
         Gem.configuration.write
 
@@ -68,27 +63,12 @@ class Gem::Commands::SourcesCommand < Gem::Command
       end
     end
 
-    if options[:update] then
-      Gem::SourceInfoCache.cache true
-      Gem::SourceInfoCache.cache.flush
-
-      say "source cache successfully updated"
-    end
-
     if options[:remove] then
       source_uri = options[:remove]
 
       unless Gem.sources.include? source_uri then
         say "source #{source_uri} not present in cache"
       else
-        begin # HACK figure out how to get the cache w/o update
-          Gem::SourceInfoCache.cache
-        rescue Gem::RemoteFetcher::FetchError
-        end
-
-        Gem::SourceInfoCache.cache_data.delete source_uri
-        Gem::SourceInfoCache.cache.update
-        Gem::SourceInfoCache.cache.flush
         Gem.sources.delete source_uri
         Gem.configuration.write
 
@@ -103,20 +83,6 @@ class Gem::Commands::SourcesCommand < Gem::Command
       Gem.sources.each do |source|
         say source
       end
-    end
-  end
-
-  private
-
-  def remove_cache_file(desc, path)
-    FileUtils.rm_rf path
-
-    if not File.exist?(path) then
-      say "*** Removed #{desc} source cache ***"
-    elsif not File.writable?(path) then
-      say "*** Unable to remove #{desc} source cache (write protected) ***"
-    else
-      say "*** Unable to remove #{desc} source cache ***"
     end
   end
 

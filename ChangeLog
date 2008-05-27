@@ -1,3 +1,15 @@
+2008-05-27  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/spec_fetcher.rb:  Switch #fetch to be compatible with
+	Gem::SourceInfoCache#search_with_source.
+	* lib/rubygems/dependency_installer.rb:  Switch to SpecFetcher.
+	* lib/rubygems/source_index.rb:  Switch #outdated to use SpecFetcher.
+	* lib/rubygems/commands/dependency_command.rb:  Switch to SpecFetcher.
+	* lib/rubygems/commands/outdated_command.rb:  Switch to SpecFetcher.
+	* lib/rubygems/commands/query_command.rb:  Switch to SpecFetcher.
+	* lib/rubygems/commands/sources_command.rb:  Switch to SpecFetcher.
+	* lib/rubygems/commands/update_command.rb:  Switch to SpecFetcher.
+
 2008-05-13  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/spec_fetcher.rb:  Add caching of specs, latest_specs

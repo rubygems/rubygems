@@ -42,12 +42,13 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
     @z1, @z1_gem = util_gem 'z', '1'   do |s| s.add_dependency 'y' end
 
-    si = util_setup_source_info_cache @a1, @b1, @d1, @d2, @x1_m, @x1_o, @w1,
-                                      @y1, @y1_1_p, @z1
-
-    @fetcher = FakeFetcher.new
+    @fetcher = Gem::FakeFetcher.new
     Gem::RemoteFetcher.fetcher = @fetcher
-    @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
+
+    si = util_setup_spec_fetcher @a1, @b1, @d1, @d2, @x1_m, @x1_o, @w1, @y1,
+                                 @y1_1_p, @z1
+
+    #@fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
 
     FileUtils.rm_rf File.join(@gemhome, 'gems')
   end
@@ -210,7 +211,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
   def test_install_force
     FileUtils.mv @b1_gem, @tempdir
-    si = util_setup_source_info_cache @b1
+    si = util_setup_spec_fetcher @b1
     @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
     inst = nil
 
@@ -370,7 +371,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
       s.platform = Gem::Platform.new %w[cpu other_platform 1]
     end
 
-    si = util_setup_source_info_cache @a1, a2_o
+    si = util_setup_spec_fetcher @a1, a2_o
 
     @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
 
@@ -509,11 +510,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     b2, = util_gem 'b', '2'
     c1, = util_gem 'c', '1' do |s| s.add_dependency 'b' end
 
-    si = util_setup_source_info_cache @a1, @b1, b2, c1
-
-    @fetcher = FakeFetcher.new
-    Gem::RemoteFetcher.fetcher = @fetcher
-    @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
+    si = util_setup_spec_fetcher @a1, @b1, b2, c1
 
     inst = Gem::DependencyInstaller.new
     inst.find_spec_by_name_and_version 'c'
@@ -544,11 +541,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
   def test_gather_dependencies_old_required
     e1, = util_gem 'e', '1' do |s| s.add_dependency 'd', '= 1' end
 
-    si = util_setup_source_info_cache @d1, @d2, e1
-
-    @fetcher = FakeFetcher.new
-    Gem::RemoteFetcher.fetcher = @fetcher
-    @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
+    si = util_setup_spec_fetcher @d1, @d2, e1
 
     inst = Gem::DependencyInstaller.new
     inst.find_spec_by_name_and_version 'e'

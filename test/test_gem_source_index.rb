@@ -377,12 +377,12 @@ class TestGemSourceIndex < RubyGemTestCase
   end
 
   def test_outdated
-    util_setup_source_info_cache
+    util_setup_spec_fetcher
 
     assert_equal [], @source_index.outdated
 
     updated = quick_gem @a2.name, (@a2.version.bump)
-    util_setup_source_info_cache updated
+    util_setup_spec_fetcher updated
 
     assert_equal [updated.name], @source_index.outdated
 
@@ -390,7 +390,7 @@ class TestGemSourceIndex < RubyGemTestCase
       s.platform = Gem::Platform.new 'x86-other_platform1'
     end
 
-    util_setup_source_info_cache updated, updated_platform
+    util_setup_spec_fetcher updated, updated_platform
 
     assert_equal [updated_platform.name], @source_index.outdated
   end

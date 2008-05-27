@@ -28,7 +28,10 @@ class TestGemOutdatedCommand < RubyGemTestCase
                                  remote_20.full_name + ".gemspec"
     FileUtils.rm remote_spec_file
 
-    util_setup_source_info_cache remote_10, remote_20
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
+
+    util_setup_spec_fetcher remote_10, remote_20
 
     use_ui @ui do @cmd.execute end
 

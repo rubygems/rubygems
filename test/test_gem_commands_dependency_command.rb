@@ -88,7 +88,10 @@ Gem foo-2
       gem.add_dependency 'bar', '> 1'
     end
 
-    util_setup_source_info_cache foo
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
+
+    util_setup_spec_fetcher foo
 
     FileUtils.rm File.join(@gemhome, 'specifications',
                            "#{foo.full_name}.gemspec")

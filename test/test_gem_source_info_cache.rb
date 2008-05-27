@@ -36,6 +36,7 @@ class TestGemSourceInfoCache < RubyGemTestCase
   def teardown
     super
     Gem.sources.replace @original_sources
+    Gem::SourceInfoCache.instance_variable_set :@cache, nil
   end
 
   def test_self_cache_refreshes
@@ -52,8 +53,9 @@ class TestGemSourceInfoCache < RubyGemTestCase
       assert_kind_of Gem::SourceInfoCache, Gem::SourceInfoCache.cache
       assert_equal Gem::SourceInfoCache.cache.object_id,
                    Gem::SourceInfoCache.cache.object_id
-      assert_match %r|Bulk updating|, @ui.output
     end
+
+    assert_match %r|Bulk updating|, @ui.output
   end
 
   def test_self_cache_skips_refresh_based_on_configuration

@@ -7,6 +7,7 @@
 require 'rubygems'
 require 'rubygems/user_interaction'
 require 'rubygems/specification'
+require 'rubygems/spec_fetcher'
 
 ##
 # The SourceIndex object indexes all the gems available from a
@@ -281,9 +282,10 @@ class Gem::SourceIndex
   # Returns an Array of Gem::Specifications that are not up to date.
 
   def outdated
-    dep = Gem::Dependency.new '', Gem::Requirement.default
+    dep = Gem::Dependency.new(//, Gem::Requirement.default)
 
-    remotes = Gem::SourceInfoCache.search dep, true
+    remotes = Gem::SpecFetcher.fetcher.fetch dep, true
+    remotes = remotes.map { |spec,| spec }
 
     outdateds = []
 

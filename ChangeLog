@@ -1,3 +1,8 @@
+2008-05-28  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/remote_fetcher.rb:  Add #uri to
+	Gem::RemoteFetcher::FetchError.
+
 2008-05-27  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/spec_fetcher.rb:  Switch #fetch, #find_matching to be

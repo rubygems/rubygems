@@ -65,10 +65,10 @@ http://beta-gems.example.com added to sources
   def test_execute_add_nonexistent_source
     util_setup_fake_fetcher
 
-    @fetcher.data["http://beta-gems.example.com/specs.#{@marshal_version}.gz"] =
-      proc do
-        raise Gem::RemoteFetcher::FetchError, 'it died'
-      end
+    uri = "http://beta-gems.example.com/specs.#{@marshal_version}.gz"
+    @fetcher.data[uri] = proc do
+      raise Gem::RemoteFetcher::FetchError.new('it died', uri)
+    end
 
     Gem::RemoteFetcher.fetcher = @fetcher
 
@@ -82,7 +82,7 @@ http://beta-gems.example.com added to sources
 
     expected = <<-EOF
 Error fetching http://beta-gems.example.com:
-\tit died
+\tit died (#{uri})
     EOF
 
     assert_equal expected, @ui.output

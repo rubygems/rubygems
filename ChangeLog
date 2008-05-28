@@ -2,6 +2,7 @@
 
 	* lib/rubygems/remote_fetcher.rb:  Add #uri to
 	Gem::RemoteFetcher::FetchError.
+	* lib/rubygems/user_interaction.rb:  Improve RDoc slightly.
 
 2008-05-27  Eric Hodel  <drbrain@segment7.net>
 

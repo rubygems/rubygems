@@ -141,6 +141,8 @@ class Gem::RemoteFetcher
             "HTTP Response #{resp.code} fetching #{uri}"
     end
 
+    say "fetched size of #{uri}" if $DEBUG
+
     if resp['content-length'] then
       return resp['content-length'].to_i
     else
@@ -245,6 +247,7 @@ class Gem::RemoteFetcher
       begin
         @requests[connection_id] += 1
         response = connection.request(request)
+        say "fetched #{uri}" if $DEBUG
       rescue EOFError, Errno::ECONNABORTED
         requests = @requests[connection_id]
         say "connection reset after #{requests} requests, retrying" if

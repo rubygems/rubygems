@@ -117,12 +117,11 @@ class Gem::Version
   end
 
   ##
-  # Compares two versions
-  #
-  # other:: [Version or .ints] other version to compare to
-  # return:: [Fixnum] -1, 0, 1
-  #
+  # Compares this version with +other+ returning -1, 0, or 1 if the other
+  # version is larger, the same, or smaller than this one.
+
   def <=>(other)
+    return nil unless self.class === other
     return 1 unless other
     @ints <=> other.ints
   end

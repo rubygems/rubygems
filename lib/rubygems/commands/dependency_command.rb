@@ -46,27 +46,28 @@ class Gem::Commands::DependencyCommand < Gem::Command
     options[:args] << '.' if options[:args].empty?
     specs = {}
 
-    source_indexes = []
+    source_indexes = Hash.new do |h, source_uri|
+      h[source_uri] = Gem::SourceIndex.new
+    end
 
     if local? then
-      source_indexes << Gem::SourceIndex.from_installed_gems
+      source_indexes[:local] = Gem::SourceIndex.from_installed_gems
     end
 
     if remote? then
       fetcher = Gem::SpecFetcher.fetcher
       dep = Gem::Dependency.new(//, Gem::Requirement.default)
 
-      fetcher.find_matching(dep).each do |source_uri, spec_tuples|
-        source_index = Gem::SourceIndex.new
+      fetcher.find_matching(dep).each do |spec_tuple, source_uri|
+        source_index = source_indexes[source_uri]
 
-        spec_tuples.each do |spec_tuple|
-          spec = fetcher.fetch_spec spec_tuple, source_uri
-          source_index.add_spec spec
-        end
+        spec = fetcher.fetch_spec spec_tuple, URI.parse(source_uri)
 
-        source_indexes << source_index
+        source_index.add_spec spec
       end
     end
+
+    source_indexes = source_indexes.values
 
     options[:args].each do |name|
       new_specs = nil

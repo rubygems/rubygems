@@ -1,13 +1,27 @@
-require 'rubygems'
 require 'zlib'
+
+require 'rubygems'
+require 'rubygems/remote_fetcher'
+
+##
+# SpecFetcher handles metadata updates from remote gem repositories.
 
 class Gem::SpecFetcher
 
-  attr_reader :dir
+  ##
+  # The SpecFetcher cache dir.
 
-  attr_reader :latest_specs
+  attr_reader :dir # :nodoc:
 
-  attr_reader :specs
+  ##
+  # Cache of latest specs
+
+  attr_reader :latest_specs # :nodoc:
+
+  ##
+  # Cache of all spces
+
+  attr_reader :specs # :nodoc:
 
   @fetcher = nil
 
@@ -28,34 +42,47 @@ class Gem::SpecFetcher
     @fetcher = Gem::RemoteFetcher.fetcher
   end
 
+  def cache_dir(uri)
+    File.join @dir, "#{uri.host}:#{uri.port}", File.dirname(uri.path)
+  end
+
   ##
   # Fetch specs matching +dependency+.  If +all+ is true, all matching
   # versions are returned.  If +matching_platform+ is false, all platforms are
   # returned.
 
   def fetch(dependency, all = false, matching_platform = true)
-    found = find_matching dependency, all, matching_platform
+    specs_and_sources = find_matching dependency, all, matching_platform
 
-    specs_and_sources = []
-
-    found.each do |source_uri, specs|
-      uri_str = source_uri.to_s
-
-      specs.each do |spec|
-        spec = fetch_spec spec, source_uri
-        specs_and_sources << [spec, uri_str]
-      end
+    specs_and_sources.map do |spec_tuple, source_uri|
+      [fetch_spec(spec_tuple, URI.parse(source_uri)), source_uri]
     end
-
-    specs_and_sources
   end
 
   def fetch_spec(spec, source_uri)
-    spec = spec - [nil, 'ruby']
-    uri = source_uri + "#{Gem::MARSHAL_SPEC_DIR}#{spec.join('-')}.gemspec.rz"
+    spec = spec - [nil, 'ruby', '']
+    spec_file_name = "#{spec.join '-'}.gemspec"
 
-    spec = @fetcher.fetch_path uri
-    spec = inflate spec
+    uri = source_uri + "#{Gem::MARSHAL_SPEC_DIR}#{spec_file_name}"
+
+    cache_dir = cache_dir uri
+
+    local_spec = File.join cache_dir, spec_file_name
+
+    if File.exist? local_spec then
+      spec = Gem.read_binary local_spec
+    else
+      uri.path << '.rz'
+
+      spec = @fetcher.fetch_path uri
+      spec = inflate spec
+
+      FileUtils.mkdir_p cache_dir
+
+      open local_spec, 'wb' do |io|
+        io.write spec
+      end
+    end
 
     # TODO: Investigate setting Gem::Specification#loaded_from to a URI
     Marshal.load spec
@@ -76,7 +103,14 @@ class Gem::SpecFetcher
       end
     end
 
-    found
+    specs_and_sources = []
+
+    found.each do |source_uri, specs|
+      uri_str = source_uri.to_s
+      specs_and_sources.push(*specs.map { |spec| [spec, uri_str] })
+    end
+
+    specs_and_sources
   end
 
   ##
@@ -120,8 +154,7 @@ class Gem::SpecFetcher
 
     spec_path = source_uri + file_name
 
-    cache_dir = File.join @dir, "#{spec_path.host}:#{spec_path.port}",
-                          File.dirname(spec_path.path)
+    cache_dir = cache_dir spec_path
 
     local_file = File.join(cache_dir, file_name).chomp '.gz'
 

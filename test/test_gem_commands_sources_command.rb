@@ -8,6 +8,8 @@ class TestGemCommandsSourcesCommand < RubyGemTestCase
     super
 
     @cmd = Gem::Commands::SourcesCommand.new
+
+    @new_repo = "http://beta-gems.example.com"
   end
 
   def test_execute
@@ -43,10 +45,10 @@ class TestGemCommandsSourcesCommand < RubyGemTestCase
       Marshal.dump specs, io
     end
 
-    @fetcher.data["http://beta-gems.example.com/specs.#{@marshal_version}.gz"] =
+    @fetcher.data["#{@new_repo}/specs.#{@marshal_version}.gz"] =
       specs_dump_gz.string
 
-    @cmd.handle_options %w[--add http://beta-gems.example.com]
+    @cmd.handle_options %W[--add #{@new_repo}]
 
     util_setup_spec_fetcher
 
@@ -54,8 +56,10 @@ class TestGemCommandsSourcesCommand < RubyGemTestCase
       @cmd.execute
     end
 
+    assert_equal [@gem_repo, @new_repo], Gem.sources
+
     expected = <<-EOF
-http://beta-gems.example.com added to sources
+#{@new_repo} added to sources
     EOF
 
     assert_equal expected, @ui.output
@@ -98,6 +102,8 @@ Error fetching http://beta-gems.example.com:
       @cmd.execute
     end
 
+    assert_equal [@gem_repo], Gem.sources
+
     expected = <<-EOF
 beta-gems.example.com is not a URI
     EOF
@@ -106,8 +112,47 @@ beta-gems.example.com is not a URI
     assert_equal '', @ui.error
   end
 
+  def test_execute_add_legacy
+    util_setup_fake_fetcher
+    util_setup_source_info_cache
+
+    si = Gem::SourceIndex.new
+    si.add_spec @a1
+
+    @fetcher.data["#{@new_repo}/yaml"] = ''
+
+    @cmd.handle_options %W[--add #{@new_repo}]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal [@gem_repo], Gem.sources
+
+    expected = <<-EOF
+WARNING:  RubyGems 1.2+ index not found for:
+\t#{@new_repo}
+
+Will cause RubyGems to revert to legacy indexes, degrading performance.
+    EOF
+
+    assert_equal "#{@new_repo} added to sources\n", @ui.output
+    assert_equal expected, @ui.error
+  end
+
   def test_execute_clear_all
     @cmd.handle_options %w[--clear-all]
+
+    util_setup_source_info_cache
+
+    cache = Gem::SourceInfoCache.cache
+    cache.update
+    cache.write_cache
+
+    assert File.exist?(cache.system_cache_file),
+           'system cache file'
+    assert File.exist?(cache.latest_system_cache_file),
+           'latest system cache file'
 
     util_setup_spec_fetcher
 
@@ -121,11 +166,20 @@ beta-gems.example.com is not a URI
     end
 
     expected = <<-EOF
-*** Removed source cache ***
+*** Removed specs cache ***
+*** Removed user source cache ***
+*** Removed latest user source cache ***
+*** Removed system source cache ***
+*** Removed latest system source cache ***
     EOF
 
     assert_equal expected, @ui.output
     assert_equal '', @ui.error
+
+    assert !File.exist?(cache.system_cache_file),
+           'system cache file'
+    assert !File.exist?(cache.latest_system_cache_file),
+           'latest system cache file'
 
     assert !File.exist?(fetcher.dir), 'cache dir removed'
   end
@@ -164,5 +218,58 @@ beta-gems.example.com is not a URI
     assert_equal '', @ui.error
   end
 
+  def test_execute_update
+    @cmd.handle_options %w[--update]
+
+    util_setup_fake_fetcher
+    source_index = util_setup_spec_fetcher @a1
+
+    specs = source_index.map do |name, spec|
+      [spec.name, spec.version, spec.original_platform]
+    end
+
+    @fetcher.data["#{@gem_repo}/specs.#{Gem.marshal_version}.gz"] =
+      util_gzip Marshal.dump(specs)
+
+    latest_specs = source_index.latest_specs.map do |spec|
+      [spec.name, spec.version, spec.original_platform]
+    end
+
+    @fetcher.data["#{@gem_repo}/latest_specs.#{Gem.marshal_version}.gz"] =
+      util_gzip Marshal.dump(latest_specs)
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal "source cache successfully updated\n", @ui.output
+    assert_equal '', @ui.error
+  end
+ 
+  def test_execute_update_legacy
+    @cmd.handle_options %w[--update]
+
+    util_setup_fake_fetcher
+    util_setup_source_info_cache
+    Gem::SourceInfoCache.reset
+
+    si = Gem::SourceIndex.new
+    si.add_spec @a1
+    @fetcher.data["#{@gem_repo}/yaml"] = YAML.dump si
+    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] = si.dump
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = <<-EOF
+Bulk updating Gem source index for: #{@gem_repo}/
+source cache successfully updated
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+  end
+ 
 end
 

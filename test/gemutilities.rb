@@ -307,6 +307,24 @@ class RubyGemTestCase < Test::Unit::TestCase
     Gem::RemoteFetcher.fetcher = @fetcher
   end
 
+  def util_setup_source_info_cache(*specs)
+    require 'rubygems/source_info_cache'
+    require 'rubygems/source_info_cache_entry'
+
+    specs = Hash[*specs.map { |spec| [spec.full_name, spec] }.flatten]
+    si = Gem::SourceIndex.new specs
+
+    sice = Gem::SourceInfoCacheEntry.new si, 0
+    sic = Gem::SourceInfoCache.new
+
+    sic.set_cache_data( { @gem_repo => sice } )
+    sic.update
+    sic.write_cache
+    sic.reset_cache_data
+
+    Gem::SourceInfoCache.instance_variable_set :@cache, sic
+  end
+
   def util_setup_spec_fetcher(*specs)
     specs = Hash[*specs.map { |spec| [spec.full_name, spec] }.flatten]
     si = Gem::SourceIndex.new specs

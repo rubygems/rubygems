@@ -283,8 +283,6 @@ class TestGemDependencyInstaller < RubyGemTestCase
   end
 
   def test_install_domain_both_no_network
-    Gem::SourceInfoCache.instance_variable_set :@cache, nil
-
     @fetcher.data["http://gems.example.com/gems/Marshal.#{@marshal_version}"] =
       proc do
         raise Gem::RemoteFetcher::FetchError

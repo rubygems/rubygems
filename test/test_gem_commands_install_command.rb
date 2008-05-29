@@ -86,8 +86,7 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
 
   def test_execute_nonexistent
     util_setup_fake_fetcher
-    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] =
-      @source_index.dump
+    util_setup_spec_fetcher
 
     @cmd.options[:args] = %w[nonexistent]
 

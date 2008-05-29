@@ -3,6 +3,10 @@
 	* lib/rubygems/remote_fetcher.rb:  Add #uri to
 	Gem::RemoteFetcher::FetchError.
 	* lib/rubygems/user_interaction.rb:  Improve RDoc slightly.
+	* lib/rubygems/spec_fetcher.rb:  Introduce backwards compatibility for
+	legacy (pre 1.2) repositories
+	* lib/rubygems/commands/sources_command.rb:  Backwards compatibility
+	and restoration of --update.
 
 2008-05-27  Eric Hodel  <drbrain@segment7.net>
 

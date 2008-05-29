@@ -2,11 +2,14 @@ require 'zlib'
 
 require 'rubygems'
 require 'rubygems/remote_fetcher'
+require 'rubygems/user_interaction'
 
 ##
 # SpecFetcher handles metadata updates from remote gem repositories.
 
 class Gem::SpecFetcher
+
+  include Gem::UserInteraction
 
   ##
   # The SpecFetcher cache dir.
@@ -56,6 +59,22 @@ class Gem::SpecFetcher
 
     specs_and_sources.map do |spec_tuple, source_uri|
       [fetch_spec(spec_tuple, URI.parse(source_uri)), source_uri]
+    end
+
+  rescue Gem::RemoteFetcher::FetchError => e
+    if e.uri =~ /specs\.#{Regexp.escape Gem.marshal_version}\.gz$/ then
+      alert_warning <<-EOF
+RubyGems 1.2+ index not found for:
+\t#{legacy_repos.join "\n\t"}
+
+RubyGems will revert to legacy indexes, degrading performance.
+      EOF
+
+      require 'rubygems/source_info_cache'
+
+      Gem::SourceInfoCache.search_with_source dependency, matching_platform, all
+    else
+      raise
     end
   end
 
@@ -118,6 +137,24 @@ class Gem::SpecFetcher
 
   def inflate(data)
     Zlib::Inflate.inflate data
+  end
+
+  ##
+  # Returns Array of gem repositories that were generated with RubyGems less
+  # than 1.2. 
+
+  def legacy_repos
+    Gem.sources.reject do |source_uri|
+      source_uri = URI.parse source_uri
+      spec_path = source_uri + "specs.#{Gem.marshal_version}.gz"
+
+      begin
+        @fetcher.fetch_size spec_path
+      rescue Gem::RemoteFetcher::FetchError
+        @fetcher.fetch_size(source_uri + 'yaml') # re-raise if non-repo
+        false
+      end
+    end
   end
 
   ##

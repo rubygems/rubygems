@@ -336,7 +336,7 @@ module Gem
     read_only :dependencies
 
     def runtime_dependencies
-      dependencies.select { |d| d.type == :runtime }
+      dependencies.select { |d| d.type == :runtime || d.type == nil }
     end
 
     def development_dependencies
@@ -828,15 +828,16 @@ module Gem
         end
       end
 
-      result << "" unless dependencies.empty?
+      result << nil unless dependencies.empty?
 
       dependencies.each do |dep|
         version_reqs_param = dep.requirements_list.inspect
+        dep.instance_variable_set :@type, :runtime if dep.type.nil? # HACK
         result << "  s.add_#{dep.type}_dependency(%q<#{dep.name}>, #{version_reqs_param})"
       end
 
       result << "end"
-      result << ""
+      result << nil
 
       result.join "\n"
     end

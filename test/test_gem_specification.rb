@@ -554,6 +554,17 @@ end
     assert_equal ['A working computer'], @a1.requirements
   end
 
+  def test_runtime_dependencies_legacy
+    # legacy gems don't have a type
+    @a1.runtime_dependencies.each do |dep|
+      dep.instance_variable_set :@type, nil
+    end
+
+    expected = %w[rake jabber4r pqa]
+
+    assert_equal expected, @a1.runtime_dependencies.map { |d| d.name }
+  end
+
   def test_spaceship_name
     s1 = quick_gem 'a', '1'
     s2 = quick_gem 'b', '1'
@@ -593,6 +604,8 @@ end
   end
 
   def test_to_ruby
+    @a2.add_runtime_dependency 'b', '1'
+    @a2.dependencies.first.instance_variable_set :@type, nil
     @a2.required_rubygems_version = Gem::Requirement.new '> 0'
 
     ruby_code = @a2.to_ruby
@@ -614,6 +627,8 @@ end
   s.require_paths = [\"lib\"]
   s.rubygems_version = %q{#{Gem::RubyGemsVersion}}
   s.summary = %q{this is a summary}
+
+  s.add_runtime_dependency(%q<b>, [\"= 1\"])
 end
 "
 

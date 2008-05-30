@@ -1,3 +1,8 @@
+2008-05-30  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/local_remote_options.rb:  --sources option should not
+	add URIs to Gem.sources.
+
 2008-05-28  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/remote_fetcher.rb:  Add #uri to

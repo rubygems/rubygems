@@ -14,12 +14,12 @@ module Gem::LocalRemoteOptions
   def accept_uri_http
     OptionParser.accept URI::HTTP do |value|
       begin
-        value = URI.parse value
+        uri = URI.parse value
       rescue URI::InvalidURIError
         raise OptionParser::InvalidArgument, value
       end
 
-      raise OptionParser::InvalidArgument, value unless value.scheme == 'http'
+      raise OptionParser::InvalidArgument, value unless uri.scheme == 'http'
 
       value
     end

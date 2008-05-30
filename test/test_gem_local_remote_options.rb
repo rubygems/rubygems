@@ -51,7 +51,7 @@ class TestGemLocalRemoteOptions < RubyGemTestCase
 
     @cmd.handle_options %W[--source #{s1} --source #{s2}]
 
-    assert_equal [s1, s2], Gem.sources
+    assert_equal [s1.to_s, s2.to_s], Gem.sources
   end
 
   def test_update_sources_option

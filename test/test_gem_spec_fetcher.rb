@@ -82,7 +82,7 @@ class TestGemSpecFetcher < RubyGemTestCase
 WARNING:  RubyGems 1.2+ index not found for:
 \thttp://gems.example.com
 
-RubyGems will revert to legacy indexes, degrading performance.
+RubyGems will revert to legacy indexes degrading performance.
     EOF
 
     assert_equal expected, @ui.error

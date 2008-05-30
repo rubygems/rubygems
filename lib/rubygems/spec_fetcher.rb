@@ -62,19 +62,11 @@ class Gem::SpecFetcher
     end
 
   rescue Gem::RemoteFetcher::FetchError => e
-    if e.uri =~ /specs\.#{Regexp.escape Gem.marshal_version}\.gz$/ then
-      alert_warning <<-EOF
-RubyGems 1.2+ index not found for:
-\t#{legacy_repos.join "\n\t"}
-
-RubyGems will revert to legacy indexes, degrading performance.
-      EOF
-
+    raise unless warn_legacy e do
       require 'rubygems/source_info_cache'
 
-      Gem::SourceInfoCache.search_with_source dependency, matching_platform, all
-    else
-      raise
+      return Gem::SourceInfoCache.search_with_source(dependency,
+                                                     matching_platform, all)
     end
   end
 
@@ -141,7 +133,7 @@ RubyGems will revert to legacy indexes, degrading performance.
 
   ##
   # Returns Array of gem repositories that were generated with RubyGems less
-  # than 1.2. 
+  # than 1.2.
 
   def legacy_repos
     Gem.sources.reject do |source_uri|
@@ -235,6 +227,28 @@ RubyGems will revert to legacy indexes, degrading performance.
     data = StringIO.new data
 
     Zlib::GzipReader.new(data).read
+  end
+
+  ##
+  # Warn about legacy repositories if +exception+ indicates only legacy
+  # repositories are available, and yield to the block.  Returns false if the
+  # exception indicates some other FetchError.
+
+  def warn_legacy(exception)
+    if exception.uri =~ /specs\.#{Regexp.escape Gem.marshal_version}\.gz$/ then
+      alert_warning <<-EOF
+RubyGems 1.2+ index not found for:
+\t#{legacy_repos.join "\n\t"}
+
+RubyGems will revert to legacy indexes degrading performance.
+      EOF
+
+      yield
+
+      return true
+    end
+
+    false
   end
 
 end

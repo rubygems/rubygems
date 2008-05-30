@@ -95,6 +95,7 @@ pl (1)
     assert_equal 0, e.exit_code
 
     assert_equal "true\n", @ui.output
+
     assert_equal '', @ui.error
   end
 
@@ -156,6 +157,42 @@ pl (1)
     assert_equal '', @ui.error
 
     assert_equal 1, e.exit_code
+  end
+
+  def test_execute_legacy
+    Gem::SpecFetcher.fetcher = nil
+    @si = util_setup_source_info_cache @a1, @a2, @pl1
+
+    @fetcher.data["#{@gem_repo}/yaml"] = YAML.dump @si
+    @fetcher.data["#{@gem_repo}/Marshal.#{Gem.marshal_version}"] =
+      @si.dump
+
+    @fetcher.data["#{@gem_repo}/latest_specs.#{Gem.marshal_version}.gz"] = nil
+
+    @cmd.handle_options %w[-r]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = <<-EOF
+
+*** REMOTE GEMS ***
+
+a (2)
+pl (1)
+    EOF
+
+    assert_equal expected, @ui.output
+
+    expected = <<-EOF
+WARNING:  RubyGems 1.2+ index not found for:
+\thttp://gems.example.com
+
+RubyGems will revert to legacy indexes degrading performance.
+    EOF
+
+    assert_equal expected, @ui.error
   end
 
   def test_execute_no_versions

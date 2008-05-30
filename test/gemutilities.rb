@@ -323,6 +323,8 @@ class RubyGemTestCase < Test::Unit::TestCase
     sic.reset_cache_data
 
     Gem::SourceInfoCache.instance_variable_set :@cache, sic
+
+    si
   end
 
   def util_setup_spec_fetcher(*specs)

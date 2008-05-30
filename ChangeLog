@@ -2,6 +2,10 @@
 
 	* lib/rubygems/local_remote_options.rb:  --sources option should not
 	add URIs to Gem.sources.
+	* lib/rubygems/spec_fetcher.rb:  Add #warn_legacy to help handling
+	legacy sources.
+	* luby/rubygems/commands/query_command.rb:  Add backwards
+	compatibility with legacy sources.
 
 2008-05-28  Eric Hodel  <drbrain@segment7.net>
 

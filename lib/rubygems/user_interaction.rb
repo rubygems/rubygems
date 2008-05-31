@@ -98,7 +98,7 @@ module Gem
         def #{methname}(*args)
           ui.#{methname}(*args)
         end
-      }
+      }, __FILE__, __LINE__
     end
   end
 

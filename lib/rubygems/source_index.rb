@@ -242,7 +242,9 @@ class Gem::SourceIndex
     when Gem::Dependency then
       only_platform = platform_only
       version_requirement = gem_pattern.version_requirements
-      gem_pattern = if gem_pattern.name.empty? then
+      gem_pattern = if Regexp === gem_pattern.name then
+                      gem_pattern.name
+                    elsif gem_pattern.name.empty? then
                       //
                     else
                       /^#{Regexp.escape gem_pattern.name}$/

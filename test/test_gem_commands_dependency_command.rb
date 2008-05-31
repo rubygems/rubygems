@@ -16,6 +16,8 @@ class TestGemCommandsDependencyCommand < RubyGemTestCase
       gem.add_dependency 'bar', '> 1'
     end
 
+    Gem.source_index = nil
+
     @cmd.options[:args] = %w[foo]
 
     use_ui @ui do
@@ -35,7 +37,7 @@ class TestGemCommandsDependencyCommand < RubyGemTestCase
       end
     end
 
-    assert_equal "No match found for foo (>= 0)\n", @ui.output
+    assert_equal "No gems found matching foo (>= 0)\n", @ui.output
     assert_equal '', @ui.error
   end
 
@@ -64,6 +66,8 @@ class TestGemCommandsDependencyCommand < RubyGemTestCase
       gem.add_dependency 'foo'
     end
 
+    Gem.source_index = nil
+
     @cmd.options[:args] = %w[foo]
     @cmd.options[:reverse_dependencies] = true
 
@@ -80,6 +84,49 @@ Gem foo-2
     EOF
 
     assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+  end
+
+  def test_execute_reverse_remote
+    @cmd.options[:args] = %w[foo]
+    @cmd.options[:reverse_dependencies] = true
+    @cmd.options[:domain] = :remote
+
+    assert_raise MockGemUi::TermError do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    expected = <<-EOF
+ERROR:  Only reverse dependencies for local gems are supported.
+    EOF
+
+    assert_equal '', @ui.output
+    assert_equal expected, @ui.error
+  end
+
+  def test_execute_remote
+    foo = quick_gem 'foo' do |gem|
+      gem.add_dependency 'bar', '> 1'
+    end
+
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
+
+    util_setup_spec_fetcher foo
+
+    FileUtils.rm File.join(@gemhome, 'specifications',
+                           "#{foo.full_name}.gemspec")
+
+    @cmd.options[:args] = %w[foo]
+    @cmd.options[:domain] = :remote
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal "Gem foo-2\n  bar (> 1)\n\n", @ui.output
     assert_equal '', @ui.error
   end
 

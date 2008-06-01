@@ -1,4 +1,10 @@
-2008-06-01 John Barnette <jbarnette@rubyforge.org>
+2008-06-01  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/indexer.rb:  Ensure identical names, versions and
+	platforms are identical for a smaller index.
+	* lib/rubygems/spec_fetcher.rb:  Only write to cache when we own it.
+
+2008-06-01  John Barnette <jbarnette@rubyforge.org>
 
 	* lib/rubygems.rb: Add Gem.available?(gem, *specs) for easy availability
 	checks at runtime.

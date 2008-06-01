@@ -38,12 +38,16 @@ class Gem::SpecFetcher
 
   def initialize
     @dir = File.join Gem.user_home, '.gem', 'specs'
+    @update_cache = File.stat(Gem.user_home).uid == Process.uid
 
     @specs = {}
     @latest_specs = {}
 
     @fetcher = Gem::RemoteFetcher.fetcher
   end
+
+  ##
+  # Retuns the local directory to write +uri+ to.
 
   def cache_dir(uri)
     File.join @dir, "#{uri.host}:#{uri.port}", File.dirname(uri.path)
@@ -88,10 +92,12 @@ class Gem::SpecFetcher
       spec = @fetcher.fetch_path uri
       spec = inflate spec
 
-      FileUtils.mkdir_p cache_dir
+      if @update_cache then
+        FileUtils.mkdir_p cache_dir
 
-      open local_spec, 'wb' do |io|
-        io.write spec
+        open local_spec, 'wb' do |io|
+          io.write spec
+        end
       end
     end
 
@@ -206,7 +212,7 @@ class Gem::SpecFetcher
 
     specs = Marshal.load spec_dump
 
-    if loaded then
+    if loaded and @update_cache then
       begin
         FileUtils.mkdir_p cache_dir
 

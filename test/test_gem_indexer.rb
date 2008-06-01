@@ -145,6 +145,15 @@ Compressing indicies
     ]
 
     assert_equal expected, specs
+
+    assert_same specs[0].first, specs[1].first,
+                'identical names not identical'
+
+    assert_same specs[0][1],    specs[-1][1],
+                'identical versions not identical'
+
+    assert_same specs[0].last, specs[1].last,
+                'identical platforms not identical'
   end
 
   def test_generate_index_latest_specs
@@ -166,6 +175,12 @@ Compressing indicies
     ]
 
     assert_equal expected, latest_specs
+
+    assert_same latest_specs[0][1],   latest_specs[2][1],
+                'identical versions not identical'
+
+    assert_same latest_specs[0].last, latest_specs[1].last,
+                'identical platforms not identical'
   end
 
   def assert_indexed(dir, name)

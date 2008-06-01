@@ -119,6 +119,8 @@ class Gem::Indexer
         [spec.name, spec.version, platform]
       end
 
+      specs = compact_specs specs
+
       Marshal.dump specs, io
     end
 
@@ -128,6 +130,8 @@ class Gem::Indexer
       specs = index.latest_specs.sort.map do |spec|
         [spec.name, spec.version, spec.original_platform]
       end
+
+      specs = compact_specs specs
 
       Marshal.dump specs, io
     end
@@ -234,6 +238,24 @@ class Gem::Indexer
     progress.done
 
     index
+  end
+
+  ##
+  # Compacts Marshal output for the specs index data source by using identical
+  # objects as much as possible.
+
+  def compact_specs(specs)
+    names = {}
+    versions = {}
+    platforms = {}
+
+    specs.map do |(name, version, platform)|
+      names[name] = name unless names.include? name
+      versions[version] = version unless versions.include? version
+      platforms[platform] = platform unless platforms.include? platform
+
+      [names[name], versions[version], platforms[platform]]
+    end
   end
 
   ##

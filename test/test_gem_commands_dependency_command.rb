@@ -132,30 +132,6 @@ ERROR:  Only reverse dependencies for local gems are supported.
     assert_equal '', @ui.error
   end
 
-  def test_execute_remote
-    foo = quick_gem 'foo' do |gem|
-      gem.add_dependency 'bar', '> 1'
-    end
-
-    @fetcher = Gem::FakeFetcher.new
-    Gem::RemoteFetcher.fetcher = @fetcher
-
-    util_setup_spec_fetcher foo
-
-    FileUtils.rm File.join(@gemhome, 'specifications',
-                           "#{foo.full_name}.gemspec")
-
-    @cmd.options[:args] = %w[foo]
-    @cmd.options[:domain] = :remote
-
-    use_ui @ui do
-      @cmd.execute
-    end
-
-    assert_equal "Gem foo-2\n  bar (> 1)\n\n", @ui.output
-    assert_equal '', @ui.error
-  end
-
   def test_execute_remote_legacy
     foo = quick_gem 'foo' do |gem|
       gem.add_dependency 'bar', '> 1'

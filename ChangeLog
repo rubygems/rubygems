@@ -2,7 +2,9 @@
 
 	* lib/rubygems/commands/dependency_command.rb:  Delay fetching specs
 	until needed.  Reverse dependencies can no longer be calculated for
-	remote sources.
+	remote sources.  Add backwards compatibility.
+	* lib/rubygems/commands/fetch_command.rb:  Add backwards
+	compatibility.
 
 2008-05-30  Eric Hodel  <drbrain@segment7.net>
 

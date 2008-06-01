@@ -67,10 +67,22 @@ class Gem::Commands::DependencyCommand < Gem::Command
     if remote? and not options[:reverse_dependencies] then
       fetcher = Gem::SpecFetcher.fetcher
 
-      fetcher.find_matching(dependency).each do |spec_tuple, source_uri|
-        spec = fetcher.fetch_spec spec_tuple, URI.parse(source_uri)
+      begin
+        fetcher.find_matching(dependency).each do |spec_tuple, source_uri|
+          spec = fetcher.fetch_spec spec_tuple, URI.parse(source_uri)
 
-        source_indexes[source_uri].add_spec spec
+          source_indexes[source_uri].add_spec spec
+        end
+      rescue Gem::RemoteFetcher::FetchError => e
+        raise unless fetcher.warn_legacy e do
+          require 'rubygems/source_info_cache'
+
+          specs = Gem::SourceInfoCache.search_with_source dependency, false
+
+          specs.each do |spec, source_uri|
+            source_indexes[source_uri].add_spec spec
+          end
+        end
       end
     end
 

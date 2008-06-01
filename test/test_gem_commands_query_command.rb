@@ -161,11 +161,11 @@ pl (1)
 
   def test_execute_legacy
     Gem::SpecFetcher.fetcher = nil
-    @si = util_setup_source_info_cache @a1, @a2, @pl1
+    si = util_setup_source_info_cache @a1, @a2, @pl1
 
-    @fetcher.data["#{@gem_repo}/yaml"] = YAML.dump @si
+    @fetcher.data["#{@gem_repo}/yaml"] = YAML.dump si
     @fetcher.data["#{@gem_repo}/Marshal.#{Gem.marshal_version}"] =
-      @si.dump
+      si.dump
 
     @fetcher.data["#{@gem_repo}/latest_specs.#{Gem.marshal_version}.gz"] = nil
 

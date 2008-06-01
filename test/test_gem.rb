@@ -27,6 +27,14 @@ class TestGem < RubyGemTestCase
 
     assert_equal expected, Gem.all_load_paths.sort
   end
+  
+  def test_self_available?
+    util_make_gems
+    assert(Gem.available?("a"))
+    assert(Gem.available?("a", "1"))
+    assert(Gem.available?("a", ">1"))
+    assert(!Gem.available?("monkeys"))
+  end
 
   def test_self_bindir
     assert_equal File.join(@gemhome, 'bin'), Gem.bindir

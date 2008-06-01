@@ -1,3 +1,8 @@
+2008-06-01 John Barnette <jbarnette@rubyforge.org>
+
+	* lib/rubygems.rb: Add Gem.available?(gem, *specs) for easy availability
+	checks at runtime.
+
 2008-05-31  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/dependency_command.rb:  Delay fetching specs

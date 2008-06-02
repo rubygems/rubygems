@@ -1,8 +1,17 @@
+2008-06-02  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb:  Remove double slash in
+	#installation_path.  Fixes bug #19896 by Heiko Seebach.
+
 2008-06-01  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/indexer.rb:  Ensure identical names, versions and
 	platforms are identical for a smaller index.
 	* lib/rubygems/spec_fetcher.rb:  Only write to cache when we own it.
+	* lib/rubygems.rb:  Honor default_path if GEM_PATH environment
+	variable is not set.  Patch #19502 by Donavan Pantke.
+	* lib/rubygems/installer.rb:  Set file mode indicated by tar file.
+	Patch #19737 by Jason Roelofs.
 
 2008-06-01  John Barnette <jbarnette@rubyforge.org>
 

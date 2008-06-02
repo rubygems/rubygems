@@ -449,6 +449,8 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
         out.write file_data
       end
 
+      FileUtils.chmod entry['mode'], path
+
       say path if Gem.configuration.really_verbose
     end
   end

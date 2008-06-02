@@ -446,6 +446,15 @@ end
                  @a1.full_gem_path
   end
 
+  def test_full_gem_path_double_slash
+    gemhome = @gemhome.sub(/\w\//, '\&/')
+    @a1.loaded_from = File.join gemhome, 'specifications',
+                                "#{@a1.full_name}.gemspec"
+
+    assert_equal File.join(@gemhome, 'gems', @a1.full_name),
+                 @a1.full_gem_path
+  end
+
   def test_full_name
     assert_equal 'a-1', @a1.full_name
 

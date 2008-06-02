@@ -452,7 +452,11 @@ module Gem
     @gem_path ||= nil
 
     unless @gem_path then
-      paths = [ENV['GEM_PATH']] || [default_path]
+      paths = if ENV['GEM_PATH'] then
+                [ENV['GEM_PATH']]
+              else
+                [default_path]
+              end
 
       if defined?(APPLE_GEM_HOME) and not ENV['GEM_PATH'] then
         paths << APPLE_GEM_HOME
@@ -473,7 +477,7 @@ module Gem
 
   ##
   # Array of platforms this RubyGems supports.
-  
+
   def self.platforms
     @platforms ||= []
     if @platforms.empty?
@@ -600,13 +604,13 @@ module Gem
   def self.set_paths(gpaths)
     if gpaths
       @gem_path = gpaths.split(File::PATH_SEPARATOR)
-      
+
       if File::ALT_SEPARATOR then
         @gem_path.map! do |path|
           path.gsub File::ALT_SEPARATOR, File::SEPARATOR
         end
       end
-      
+
       @gem_path << Gem.dir
     else
       @gem_path = [Gem.dir]

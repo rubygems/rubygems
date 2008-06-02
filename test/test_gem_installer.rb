@@ -128,7 +128,9 @@ load 'my_exec'
 
     @installer.extract_files
 
-    assert_equal 'thefile', File.read(File.join(util_gem_dir, 'thefile'))
+    thefile_path = File.join(util_gem_dir, 'thefile')
+    assert_equal 'thefile', File.read(thefile_path)
+    assert_equal 0400, File.stat(thefile_path).mode & 0777
   end
 
   def test_extract_files_bad_dest

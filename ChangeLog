@@ -4,6 +4,9 @@
 	#installation_path.  Fixes bug #19896 by Heiko Seebach.
 	* lib/rubygems/remote_fetcher.rb:  Require StringIO.  Fixes bug #19866
 	by Caleb Land.
+	* lib/rubygems.rb:  Require rubygems/defaults/#{RBX_ENGINE}.rb and
+	rubygem/defaults/operating_system.rb if they exist.  (OS require comes
+	first and may be overridden by operating system.)
 
 2008-06-01  Eric Hodel  <drbrain@segment7.net>
 

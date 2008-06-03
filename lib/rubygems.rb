@@ -735,3 +735,15 @@ if RUBY_VERSION < '1.9' then
   require 'rubygems/custom_require'
 end
 
+begin
+  require 'rubygems/defaults/operating_system'
+rescue LoadError
+end
+
+if defined?(RUBY_ENGINE) then
+  begin
+    require "rubygems/defaults/#{RUBY_ENGINE}"
+  rescue LoadError
+  end
+end
+

@@ -1,4 +1,5 @@
 require 'net/http'
+require 'stringio'
 require 'uri'
 
 require 'rubygems'

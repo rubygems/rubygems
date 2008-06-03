@@ -2,6 +2,8 @@
 
 	* lib/rubygems/specification.rb:  Remove double slash in
 	#installation_path.  Fixes bug #19896 by Heiko Seebach.
+	* lib/rubygems/remote_fetcher.rb:  Require StringIO.  Fixes bug #19866
+	by Caleb Land.
 
 2008-06-01  Eric Hodel  <drbrain@segment7.net>
 

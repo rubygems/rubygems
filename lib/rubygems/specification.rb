@@ -707,7 +707,7 @@ module Gem
     def installation_path
       path = File.dirname(@loaded_from).split(File::SEPARATOR)[0..-2]
       path = path.join File::SEPARATOR
-      path.gsub /(\w\/)\//, '\1'
+      path.gsub(/(\w\/)\//, '\1')
     end
 
     # Checks if this Specification meets the requirement of the supplied

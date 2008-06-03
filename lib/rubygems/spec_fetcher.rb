@@ -90,7 +90,7 @@ class Gem::SpecFetcher
       uri.path << '.rz'
 
       spec = @fetcher.fetch_path uri
-      spec = inflate spec
+      spec = Gem.inflate spec
 
       if @update_cache then
         FileUtils.mkdir_p cache_dir
@@ -128,13 +128,6 @@ class Gem::SpecFetcher
     end
 
     specs_and_sources
-  end
-
-  ##
-  # Inflate wrapper that inflates +data+.
-
-  def inflate(data)
-    Zlib::Inflate.inflate data
   end
 
   ##
@@ -207,7 +200,7 @@ class Gem::SpecFetcher
       loaded = true
 
       spec_dump_gz = @fetcher.fetch_path spec_path
-      spec_dump = unzip spec_dump_gz
+      spec_dump = Gem.gunzip spec_dump_gz
     end
 
     specs = Marshal.load spec_dump
@@ -224,15 +217,6 @@ class Gem::SpecFetcher
     end
 
     specs
-  end
-
-  ##
-  # GzipWriter wrapper that unzips +data+.
-
-  def unzip(data)
-    data = StringIO.new data
-
-    Zlib::GzipReader.new(data).read
   end
 
   ##

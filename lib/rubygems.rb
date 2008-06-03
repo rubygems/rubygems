@@ -282,6 +282,13 @@ module Gem
   end
 
   ##
+  # A Zlib::Deflate.deflate wrapper
+
+  def self.deflate(data)
+    Zlib::Deflate.deflate data
+  end
+
+  ##
   # The path where gems are to be installed.
 
   def self.dir
@@ -358,6 +365,33 @@ module Gem
   end
 
   private_class_method :find_home
+
+  ##
+  # Zlib::GzipReader wrapper that unzips +data+.
+
+  def self.gunzip(data)
+    data = StringIO.new data
+
+    Zlib::GzipReader.new(data).read
+  end
+
+  ##
+  # Zlib::GzipWriter wrapper that zips +data+.
+
+  def self.gzip(data)
+    zipped = StringIO.new
+
+    Zlib::GzipWriter.wrap zipped do |io| io.write data end
+
+    zipped.string
+  end
+
+  ##
+  # A Zlib::Inflate#inflate wrapper
+
+  def self.inflate(data)
+    Zlib::Inflate.inflate data
+  end
 
   ##
   # Return a list of all possible load paths for the latest version for all

@@ -452,7 +452,7 @@ class Gem::SourceIndex
 
   def unzip(string)
     require 'zlib'
-    Zlib::Inflate.inflate(string)
+    Gem.inflate string
   end
 
   ##

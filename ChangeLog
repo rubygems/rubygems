@@ -1,3 +1,8 @@
+2008-06-03  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems.rb:  Add ::gzip, ::gunzip, ::deflate and ::inflate.
+	* lib/rubygems/server.rb:  Add specs and latest_specs indicies.
+
 2008-06-02  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb:  Remove double slash in

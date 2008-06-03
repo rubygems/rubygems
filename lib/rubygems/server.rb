@@ -11,9 +11,15 @@ require 'rubygems'
 #
 # gem_server starts an HTTP server on the given port and serves the folowing:
 # * "/" - Browsing of gem spec files for installed gems
-# * "/Marshal" - Full SourceIndex dump of metadata for installed gems
-# * "/yaml" - YAML dump of metadata for installed gems - deprecated
+# * "/specs.#{Gem.marshal_version}.gz" - specs name/version/platform index
+# * "/latest_specs.#{Gem.marshal_version}.gz" - latest specs
+#   name/version/platform index
+# * "/quick/" - Individual gemspecs
 # * "/gems" - Direct access to download the installable gems
+# * legacy indexes:
+#   * "/Marshal.#{Gem.marshal_version}" - Full SourceIndex dump of metadata
+#     for installed gems
+#   * "/yaml" - YAML dump of metadata for installed gems - deprecated
 #
 # == Usage
 #

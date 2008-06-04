@@ -39,5 +39,20 @@ class TestGemUninstaller < GemInstallerTestCase
     assert_equal false, File.exist?(File.join(@gemhome, 'bin', 'executable'))
   end
 
+  def test_path_ok_eh
+    uninstaller = Gem::Uninstaller.new nil
+
+    assert_equal true, uninstaller.path_ok?(@spec)
+  end
+
+  def test_path_ok_eh_legacy
+    uninstaller = Gem::Uninstaller.new nil
+
+    @spec.loaded_from.gsub! @spec.full_name, '\&-legacy'
+    @spec.platform = 'legacy'
+
+    assert_equal true, uninstaller.path_ok?(@spec)
+  end
+
 end
 

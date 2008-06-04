@@ -2,6 +2,10 @@
 
 	* lib/rubygems.rb:  Add ::gzip, ::gunzip, ::deflate and ::inflate.
 	* lib/rubygems/server.rb:  Add specs and latest_specs indicies.
+	* setup.rb:  Don't require rdoc until needed.  Patch #20414 by Brian
+	Candler.
+	* lib/uninstaller.rb:  Correctly uninstall gems installed with a
+	legacy platform.  Patch #19877 by Luis Lavena.
 
 2008-06-02  Eric Hodel  <drbrain@segment7.net>
 

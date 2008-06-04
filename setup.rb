@@ -48,7 +48,6 @@ end
 
 require 'fileutils'
 require 'rbconfig'
-require 'rdoc/rdoc'
 require 'tmpdir'
 
 include FileUtils::Verbose
@@ -226,6 +225,7 @@ if File.writable? gem_doc_dir and
   end
 
   def run_rdoc(*args)
+    require 'rdoc/rdoc'
     args << '--quiet'
     args << '--main' << 'README'
     args << '.' << 'README' << 'LICENSE.txt' << 'GPL.txt'

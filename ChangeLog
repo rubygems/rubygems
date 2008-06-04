@@ -1,3 +1,8 @@
+2008-06-04  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/source_index.rb:  Only fetch specs we need in
+	#outdated.
+
 2008-06-03  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb:  Add ::gzip, ::gunzip, ::deflate and ::inflate.

@@ -284,15 +284,15 @@ class Gem::SourceIndex
   # Returns an Array of Gem::Specifications that are not up to date.
 
   def outdated
-    dep = Gem::Dependency.new(//, Gem::Requirement.default)
-
-    remotes = Gem::SpecFetcher.fetcher.fetch dep, true
-    remotes = remotes.map { |spec,| spec }
-
     outdateds = []
 
     latest_specs.each do |local|
       name = local.name
+
+      dependency = Gem::Dependency.new name, ">= #{local.version}"
+      remotes = Gem::SpecFetcher.fetcher.fetch dependency
+      remotes = remotes.map { |spec,| spec }
+
       remote = remotes.select { |spec| spec.name == name }.
         sort_by { |spec| spec.version.to_ints }.
         last

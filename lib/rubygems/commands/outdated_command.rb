@@ -21,7 +21,7 @@ class Gem::Commands::OutdatedCommand < Gem::Command
     locals.outdated.sort.each do |name|
       local = locals.search(/^#{name}$/).last
 
-      dep = Gem::Dependency.new name, Gem::Requirement.default
+      dep = Gem::Dependency.new local.name, ">= #{local.version}"
       remotes = Gem::SpecFetcher.fetcher.fetch dep
       remote = remotes.last.first
 

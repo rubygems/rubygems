@@ -66,17 +66,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
       end
     end
 
-    pattern = if options[:args].empty? then
-                //
-              else
-                Regexp.union(*options[:args])
-              end
-
-    dep = Gem::Dependency.new pattern, Gem::Requirement.default
-
-    remote_gemspecs = Gem::SpecFetcher.fetcher.fetch dep
-
-    gems_to_update = which_to_update hig, remote_gemspecs
+    gems_to_update = which_to_update hig, options[:args]
 
     updated = []
 
@@ -137,10 +127,18 @@ class Gem::Commands::UpdateCommand < Gem::Command
     end
   end
 
-  def which_to_update(highest_installed_gems, remote_gemspecs)
+  def which_to_update(highest_installed_gems, gem_names)
     result = []
 
     highest_installed_gems.each do |l_name, l_spec|
+      next if not gem_names.empty? and
+              gem_names.all? { |name| /#{name}/ !~ l_spec.name }
+
+      dep = Gem::Dependency.new l_spec.name, ">= #{l_spec.version}"
+
+      # TODO use #find_matching when SourceInfoCache is gone
+      remote_gemspecs = Gem::SpecFetcher.fetcher.fetch dep, false, false
+
       matching_gems = remote_gemspecs.select do |spec,|
         spec.name == l_name and Gem.platforms.any? do |platform|
           platform == spec.platform

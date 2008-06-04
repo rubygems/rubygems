@@ -6,6 +6,8 @@
 	Candler.
 	* lib/uninstaller.rb:  Correctly uninstall gems installed with a
 	legacy platform.  Patch #19877 by Luis Lavena.
+	* lib/rubygems/commands/update_command.rb:  Only fetch remote specs
+	when we know what we're looking for.
 
 2008-06-02  Eric Hodel  <drbrain@segment7.net>
 

@@ -225,7 +225,13 @@ if File.writable? gem_doc_dir and
   end
 
   def run_rdoc(*args)
+    begin
+      gem 'rdoc'
+    rescue Gem::LoadError
+    end
+
     require 'rdoc/rdoc'
+
     args << '--quiet'
     args << '--main' << 'README'
     args << '.' << 'README' << 'LICENSE.txt' << 'GPL.txt'

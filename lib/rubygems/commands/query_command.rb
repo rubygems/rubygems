@@ -77,7 +77,7 @@ class Gem::Commands::QueryCommand < Gem::Command
       specs = Gem.source_index.search name
 
       spec_tuples = specs.map do |spec|
-        [spec.name, spec.version, spec.original_name, spec]
+        [[spec.name, spec.version, spec.original_name, spec]]
       end
 
       output_query_results spec_tuples

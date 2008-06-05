@@ -108,7 +108,7 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     util_setup_fake_fetcher
     util_setup_spec_fetcher @a2
 
-    @fetcher.data["#{@gem_repo}/gems/#{@a2.full_name}.gem"] =
+    @fetcher.data["#{@gem_repo}gems/#{@a2.full_name}.gem"] =
       read_binary(File.join(@gemhome, 'cache', "#{@a2.full_name}.gem"))
 
     @cmd.options[:args] = [@a2.name]

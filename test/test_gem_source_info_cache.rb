@@ -44,7 +44,7 @@ class TestGemSourceInfoCache < RubyGemTestCase
     si = Gem::SourceIndex.new
     si.add_spec @a1
 
-    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] = si.dump
+    @fetcher.data["#{@gem_repo}Marshal.#{@marshal_version}"] = si.dump
 
     Gem.sources.replace %W[#{@gem_repo}]
 
@@ -63,7 +63,7 @@ class TestGemSourceInfoCache < RubyGemTestCase
     si = Gem::SourceIndex.new
     si.add_spec @a1
 
-    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] = si.dump
+    @fetcher.data["#{@gem_repo}Marshal.#{@marshal_version}"] = si.dump
 
     Gem.sources.replace %w[#{@gem_repo}]
 
@@ -80,7 +80,7 @@ class TestGemSourceInfoCache < RubyGemTestCase
     si = Gem::SourceIndex.new
     si.add_spec @a1
 
-    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] = si.dump
+    @fetcher.data["#{@gem_repo}Marshal.#{@marshal_version}"] = si.dump
 
     Gem::SourceInfoCache.instance_variable_set :@cache, nil
     sice = Gem::SourceInfoCacheEntry.new si, 0
@@ -108,7 +108,7 @@ class TestGemSourceInfoCache < RubyGemTestCase
   end
 
   def test_cache_data_irreparable
-    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] = @source_index.dump
+    @fetcher.data["#{@gem_repo}Marshal.#{@marshal_version}"] = @source_index.dump
 
     data = { @gem_repo => { 'totally' => 'borked' } }
 

@@ -473,7 +473,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     inst = Gem::DependencyInstaller.new
     dep = Gem::Dependency.new 'b', '>= 0'
 
-    assert_equal [[@b1, 'http://gems.example.com']],
+    assert_equal [[@b1, @gem_repo]],
                  inst.find_gems_with_sources(dep)
   end
 
@@ -490,7 +490,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal 2, gems.length
     remote = gems.first
     assert_equal 'a-1', remote.first.full_name, 'remote spec'
-    assert_equal 'http://gems.example.com', remote.last, 'remote path'
+    assert_equal @gem_repo, remote.last, 'remote path'
 
     local = gems.last
     assert_equal 'a-1', local.first.full_name, 'local spec'

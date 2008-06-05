@@ -1,3 +1,8 @@
+2008-06-05  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/local_remote_options.rb:  Ensure remote repository URLs
+	reference directories.  Fixes bug #20134 by Neil Wilson.
+
 2008-06-04  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/source_index.rb:  Only fetch specs we need in

@@ -204,7 +204,7 @@ Will cause RubyGems to revert to legacy indexes, degrading performance.
 
     util_setup_fake_fetcher
 
-    @fetcher.data["#{@gem_repo}/Marshal.#{Gem.marshal_version}"] = proc do
+    @fetcher.data["#{@gem_repo}Marshal.#{Gem.marshal_version}"] = proc do
       raise Gem::RemoteFetcher::FetchError
     end
 
@@ -228,14 +228,14 @@ Will cause RubyGems to revert to legacy indexes, degrading performance.
       [spec.name, spec.version, spec.original_platform]
     end
 
-    @fetcher.data["#{@gem_repo}/specs.#{Gem.marshal_version}.gz"] =
+    @fetcher.data["#{@gem_repo}specs.#{Gem.marshal_version}.gz"] =
       util_gzip Marshal.dump(specs)
 
     latest_specs = source_index.latest_specs.map do |spec|
       [spec.name, spec.version, spec.original_platform]
     end
 
-    @fetcher.data["#{@gem_repo}/latest_specs.#{Gem.marshal_version}.gz"] =
+    @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] =
       util_gzip Marshal.dump(latest_specs)
 
     use_ui @ui do
@@ -255,15 +255,15 @@ Will cause RubyGems to revert to legacy indexes, degrading performance.
 
     si = Gem::SourceIndex.new
     si.add_spec @a1
-    @fetcher.data["#{@gem_repo}/yaml"] = YAML.dump si
-    @fetcher.data["#{@gem_repo}/Marshal.#{@marshal_version}"] = si.dump
+    @fetcher.data["#{@gem_repo}yaml"] = YAML.dump si
+    @fetcher.data["#{@gem_repo}Marshal.#{@marshal_version}"] = si.dump
 
     use_ui @ui do
       @cmd.execute
     end
 
     expected = <<-EOF
-Bulk updating Gem source index for: #{@gem_repo}/
+Bulk updating Gem source index for: #{@gem_repo}
 source cache successfully updated
     EOF
 

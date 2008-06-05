@@ -14,7 +14,7 @@ class TestGemCommandsQueryCommand < RubyGemTestCase
 
     @si = util_setup_spec_fetcher @a1, @a2, @pl1
 
-    @fetcher.data["#{@gem_repo}/Marshal.#{Gem.marshal_version}"] = proc do
+    @fetcher.data["#{@gem_repo}Marshal.#{Gem.marshal_version}"] = proc do
       raise Gem::RemoteFetcher::FetchError
     end
   end
@@ -163,11 +163,11 @@ pl (1)
     Gem::SpecFetcher.fetcher = nil
     si = util_setup_source_info_cache @a1, @a2, @pl1
 
-    @fetcher.data["#{@gem_repo}/yaml"] = YAML.dump si
-    @fetcher.data["#{@gem_repo}/Marshal.#{Gem.marshal_version}"] =
+    @fetcher.data["#{@gem_repo}yaml"] = YAML.dump si
+    @fetcher.data["#{@gem_repo}Marshal.#{Gem.marshal_version}"] =
       si.dump
 
-    @fetcher.data["#{@gem_repo}/latest_specs.#{Gem.marshal_version}.gz"] = nil
+    @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] = nil
 
     @cmd.handle_options %w[-r]
 
@@ -187,7 +187,7 @@ pl (1)
 
     expected = <<-EOF
 WARNING:  RubyGems 1.2+ index not found for:
-\thttp://gems.example.com
+\t#{@gem_repo}
 
 RubyGems will revert to legacy indexes degrading performance.
     EOF

@@ -143,11 +143,11 @@ ERROR:  Only reverse dependencies for local gems are supported.
     Gem::SpecFetcher.fetcher = nil
     si = util_setup_source_info_cache foo
 
-    @fetcher.data["#{@gem_repo}/yaml"] = YAML.dump si
-    @fetcher.data["#{@gem_repo}/Marshal.#{Gem.marshal_version}"] =
+    @fetcher.data["#{@gem_repo}yaml"] = YAML.dump si
+    @fetcher.data["#{@gem_repo}Marshal.#{Gem.marshal_version}"] =
       si.dump
 
-    @fetcher.data["#{@gem_repo}/latest_specs.#{Gem.marshal_version}.gz"] = nil
+    @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] = nil
 
     FileUtils.rm File.join(@gemhome, 'specifications',
                            "#{foo.full_name}.gemspec")
@@ -163,7 +163,7 @@ ERROR:  Only reverse dependencies for local gems are supported.
 
     expected = <<-EOF
 WARNING:  RubyGems 1.2+ index not found for:
-\thttp://gems.example.com
+\t#{@gem_repo}
 
 RubyGems will revert to legacy indexes degrading performance.
     EOF

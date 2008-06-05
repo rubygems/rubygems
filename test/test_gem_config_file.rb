@@ -28,7 +28,7 @@ class TestGemConfigFile < RubyGemTestCase
     assert_equal false, @cfg.benchmark
     assert_equal Gem::ConfigFile::DEFAULT_BULK_THRESHOLD, @cfg.bulk_threshold
     assert_equal true, @cfg.verbose
-    assert_equal %w[http://gems.example.com], Gem.sources
+    assert_equal [@gem_repo], Gem.sources
 
     File.open @temp_conf, 'w' do |fp|
       fp.puts ":backtrace: true"

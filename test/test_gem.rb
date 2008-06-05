@@ -137,7 +137,7 @@ class TestGem < RubyGemTestCase
   end
 
   def test_self_default_sources
-    assert_equal %w[http://gems.rubyforge.org], Gem.default_sources
+    assert_equal %w[http://gems.rubyforge.org/], Gem.default_sources
   end
 
   def test_self_dir
@@ -400,7 +400,7 @@ class TestGem < RubyGemTestCase
   end
 
   def test_self_sources
-    assert_equal %w[http://gems.example.com], Gem.sources
+    assert_equal %w[http://gems.example.com/], Gem.sources
   end
 
   def test_ssl_available_eh

@@ -60,7 +60,7 @@ class RubyGemTestCase < Test::Unit::TestCase
     Gem.configuration.verbose = true
     Gem.configuration.update_sources = true
 
-    @gem_repo = "http://gems.example.com"
+    @gem_repo = "http://gems.example.com/"
     @uri = URI.parse @gem_repo
     Gem.sources.replace [@gem_repo]
 
@@ -348,7 +348,7 @@ class RubyGemTestCase < Test::Unit::TestCase
     end
 
     si.gems.sort_by { |_,spec| spec }.each do |_, spec|
-      path = "#{@gem_repo}/quick/Marshal.#{Gem.marshal_version}/#{spec.original_name}.gemspec.rz"
+      path = "#{@gem_repo}quick/Marshal.#{Gem.marshal_version}/#{spec.original_name}.gemspec.rz"
       data = Marshal.dump spec
       data_deflate = Zlib::Deflate.deflate data
       @fetcher.data[path] = data_deflate

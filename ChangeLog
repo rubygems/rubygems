@@ -3,7 +3,8 @@
 	* lib/rubygems/local_remote_options.rb:  Ensure remote repository URLs
 	reference directories.  Fixes bug #20134 by Neil Wilson.
 	* lib/rubygems/source_index.rb:  Gracefully handle ^C or explicit exit
-	while loading .gemspec files from disk.
+	while loading .gemspec files from disk.  Fixes bug #20523 by Joel
+	VanderWerf.
 
 2008-06-04  Eric Hodel  <drbrain@segment7.net>
 

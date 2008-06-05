@@ -80,6 +80,8 @@ class Gem::SourceIndex
           return gemspec
         end
         alert_warning "File '#{file_name}' does not evaluate to a gem specification"
+      rescue SignalException, SystemExit
+        raise
       rescue SyntaxError => e
         alert_warning e
         alert_warning spec_code

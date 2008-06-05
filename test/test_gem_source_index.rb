@@ -23,6 +23,285 @@ class TestGemSourceIndex < RubyGemTestCase
     util_setup_fake_fetcher
   end
 
+  def test_self_load_specification
+    spec_dir = File.join @gemhome, 'specifications'
+
+    FileUtils.rm_r spec_dir
+
+    FileUtils.mkdir_p spec_dir
+
+    a1 = quick_gem 'a', '1' do |spec| spec.author = 'author 1' end
+
+    spec_file = File.join spec_dir, "#{a1.full_name}.gemspec"
+
+    File.open spec_file, 'w' do |fp|
+      fp.write a1.to_ruby
+    end
+
+    spec = Gem::SourceIndex.load_specification spec_file
+
+    assert_equal a1.author, spec.author
+  end
+
+  def test_self_load_specification_exception
+    spec_dir = File.join @gemhome, 'specifications'
+
+    FileUtils.mkdir_p spec_dir
+
+    spec_file = File.join spec_dir, 'a-1.gemspec'
+
+    File.open spec_file, 'w' do |fp|
+      fp.write 'raise Exception, "epic fail"'
+    end
+
+    use_ui @ui do
+      assert_equal nil, Gem::SourceIndex.load_specification(spec_file)
+    end
+
+    assert_equal '', @ui.output
+
+    expected = <<-EOF
+WARNING:  #<Exception: epic fail>
+raise Exception, "epic fail"
+WARNING:  Invalid .gemspec format in '#{spec_file}'
+    EOF
+
+    assert_equal expected, @ui.error
+  end
+
+  def test_self_load_specification_interrupt
+    spec_dir = File.join @gemhome, 'specifications'
+
+    FileUtils.mkdir_p spec_dir
+
+    spec_file = File.join spec_dir, 'a-1.gemspec'
+
+    File.open spec_file, 'w' do |fp|
+      fp.write 'raise Interrupt, "^C"'
+    end
+
+    use_ui @ui do
+      assert_raise Interrupt do
+        Gem::SourceIndex.load_specification(spec_file)
+      end
+    end
+
+    assert_equal '', @ui.output
+    assert_equal '', @ui.error
+  end
+
+  def test_self_load_specification_syntax_error
+    spec_dir = File.join @gemhome, 'specifications'
+
+    FileUtils.mkdir_p spec_dir
+
+    spec_file = File.join spec_dir, 'a-1.gemspec'
+
+    File.open spec_file, 'w' do |fp|
+      fp.write '1 +'
+    end
+
+    use_ui @ui do
+      assert_equal nil, Gem::SourceIndex.load_specification(spec_file)
+    end
+
+    assert_equal '', @ui.output
+
+    expected = <<-EOF
+WARNING:  compile error
+#{spec_file}:1: syntax error, unexpected $end
+WARNING:  1 +
+    EOF
+
+    assert_equal expected, @ui.error
+  end
+
+  def test_self_load_specification_system_exit
+    spec_dir = File.join @gemhome, 'specifications'
+
+    FileUtils.mkdir_p spec_dir
+
+    spec_file = File.join spec_dir, 'a-1.gemspec'
+
+    File.open spec_file, 'w' do |fp|
+      fp.write 'raise SystemExit, "bye-bye"'
+    end
+
+    use_ui @ui do
+      assert_raise SystemExit do
+        Gem::SourceIndex.load_specification(spec_file)
+      end
+    end
+
+    assert_equal '', @ui.output
+    assert_equal '', @ui.error
+  end
+
+  def test_fetcher
+    assert_equal @fetcher, @source_index.fetcher
+  end
+
+  def test_fetch_bulk_index_compressed
+    util_setup_bulk_fetch true
+
+    use_ui @ui do
+      fetched_index = @source_index.fetch_bulk_index @uri
+      assert_equal [@a1.full_name, @a2.full_name, @a_evil9.full_name,
+                    @c1_2.full_name].sort,
+                   fetched_index.gems.map { |n,s| n }.sort
+    end
+
+    paths = @fetcher.paths
+
+    assert_equal "#{@gem_repo}Marshal.#{@marshal_version}.Z", paths.shift
+
+    assert paths.empty?, paths.join(', ')
+  end
+
+  def test_fetch_bulk_index_error
+    @fetcher.data["#{@gem_repo}Marshal.#{@marshal_version}.Z"] = proc { raise SocketError }
+    @fetcher.data["#{@gem_repo}Marshal.#{@marshal_version}"] = proc { raise SocketError }
+    @fetcher.data["#{@gem_repo}yaml.Z"] = proc { raise SocketError }
+    @fetcher.data["#{@gem_repo}yaml"] = proc { raise SocketError }
+
+    e = assert_raise Gem::RemoteSourceException do
+      use_ui @ui do
+        @source_index.fetch_bulk_index @uri
+      end
+    end
+
+    paths = @fetcher.paths
+
+    assert_equal "#{@gem_repo}Marshal.#{@marshal_version}.Z", paths.shift
+    assert_equal "#{@gem_repo}Marshal.#{@marshal_version}", paths.shift
+    assert_equal "#{@gem_repo}yaml.Z", paths.shift
+    assert_equal "#{@gem_repo}yaml", paths.shift
+
+    assert paths.empty?, paths.join(', ')
+
+    assert_equal 'Error fetching remote gem cache: SocketError',
+                 e.message
+  end
+
+  def test_fetch_bulk_index_fallback
+    @fetcher.data["#{@gem_repo}Marshal.#{@marshal_version}.Z"] =
+      proc { raise SocketError }
+    @fetcher.data["#{@gem_repo}Marshal.#{@marshal_version}"] =
+      proc { raise SocketError }
+    @fetcher.data["#{@gem_repo}yaml.Z"] = proc { raise SocketError }
+    @fetcher.data["#{@gem_repo}yaml"] = @source_index.to_yaml
+
+    use_ui @ui do
+      fetched_index = @source_index.fetch_bulk_index @uri
+      assert_equal [@a1.full_name, @a2.full_name, @a_evil9.full_name,
+                    @c1_2.full_name].sort,
+                   fetched_index.gems.map { |n,s| n }.sort
+    end
+
+    paths = @fetcher.paths
+
+    assert_equal "#{@gem_repo}Marshal.#{@marshal_version}.Z", paths.shift
+    assert_equal "#{@gem_repo}Marshal.#{@marshal_version}", paths.shift
+    assert_equal "#{@gem_repo}yaml.Z", paths.shift
+    assert_equal "#{@gem_repo}yaml", paths.shift
+
+    assert paths.empty?, paths.join(', ')
+  end
+
+  def test_fetch_bulk_index_marshal_mismatch
+    marshal = @source_index.dump
+    marshal[0] = (Marshal::MAJOR_VERSION - 1).chr
+
+    @fetcher.data["#{@gem_repo}Marshal.#{@marshal_version}"] = marshal
+    @fetcher.data["#{@gem_repo}yaml"] = @source_index.to_yaml
+
+    use_ui @ui do
+      fetched_index = @source_index.fetch_bulk_index @uri
+      assert_equal [@a1.full_name, @a2.full_name, @a_evil9.full_name,
+                    @c1_2.full_name].sort,
+                   fetched_index.gems.map { |n,s| n }.sort
+    end
+
+    paths = @fetcher.paths
+
+    assert_equal "#{@gem_repo}Marshal.#{@marshal_version}.Z", paths.shift
+    assert_equal "#{@gem_repo}Marshal.#{@marshal_version}", paths.shift
+    assert_equal "#{@gem_repo}yaml.Z", paths.shift
+    assert_equal "#{@gem_repo}yaml", paths.shift
+
+    assert paths.empty?, paths.join(', ')
+  end
+
+  def test_fetch_bulk_index_uncompressed
+    util_setup_bulk_fetch false
+    use_ui @ui do
+      fetched_index = @source_index.fetch_bulk_index @uri
+      assert_equal [@a1.full_name, @a2.full_name, @a_evil9.full_name,
+                    @c1_2.full_name].sort,
+                   fetched_index.gems.map { |n,s| n }.sort
+    end
+
+    paths = @fetcher.paths
+
+    assert_equal "#{@gem_repo}Marshal.#{@marshal_version}.Z", paths.shift
+    assert_equal "#{@gem_repo}Marshal.#{@marshal_version}", paths.shift
+
+    assert paths.empty?, paths.join(', ')
+  end
+
+  def test_fetch_quick_index
+    index = util_zip @gem_names
+    latest_index = util_zip [@a2.full_name, @b2.full_name].join("\n")
+
+    @fetcher.data["#{@gem_repo}quick/index.rz"] = index
+    @fetcher.data["#{@gem_repo}quick/latest_index.rz"] = latest_index
+
+    quick_index = @source_index.fetch_quick_index @uri, false
+    assert_equal [@a2.full_name, @b2.full_name].sort,
+                 quick_index.sort
+
+    paths = @fetcher.paths
+
+    assert_equal "#{@gem_repo}quick/latest_index.rz", paths.shift
+
+    assert paths.empty?, paths.join(', ')
+  end
+
+  def test_fetch_quick_index_all
+    index = util_zip @gem_names
+    latest_index = util_zip [@a2.full_name, @b2.full_name].join("\n")
+
+    @fetcher.data["#{@gem_repo}quick/index.rz"] = index
+    @fetcher.data["#{@gem_repo}quick/latest_index.rz"] = latest_index
+
+    quick_index = @source_index.fetch_quick_index @uri, true
+    assert_equal [@a1.full_name, @a2.full_name, @b2.full_name].sort,
+                 quick_index.sort
+
+    paths = @fetcher.paths
+
+    assert_equal "#{@gem_repo}quick/index.rz", paths.shift
+
+    assert paths.empty?, paths.join(', ')
+  end
+
+  def test_fetch_quick_index_error
+    @fetcher.data["#{@gem_repo}quick/index.rz"] =
+      proc { raise Exception }
+
+    e = assert_raise Gem::OperationNotSupportedError do
+      @source_index.fetch_quick_index @uri, true
+    end
+
+    assert_equal 'No quick index found: Exception', e.message
+
+    paths = @fetcher.paths
+
+    assert_equal "#{@gem_repo}quick/index.rz", paths.shift
+
+    assert paths.empty?, paths.join(', ')
+  end
+
   def test_create_from_directory
     # TODO
   end

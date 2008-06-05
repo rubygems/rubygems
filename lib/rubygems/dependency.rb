@@ -59,7 +59,7 @@ class Gem::Dependency
   end
 
   def to_s # :nodoc:
-    "#{name} (#{version_requirements}#{", #{type}" if type != :runtime})" #" vim
+    "#{name} (#{version_requirements}, #{@type || :runtime})"
   end
 
   def ==(other) # :nodoc:

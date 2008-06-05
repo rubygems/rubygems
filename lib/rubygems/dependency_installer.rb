@@ -195,6 +195,8 @@ class Gem::DependencyInstaller
       @specs_and_sources = [find_gems_with_sources(dep_or_name).last]
     end
 
+    @installed_gems = []
+
     gather_dependencies
 
     spec_dir = File.join @install_dir, 'specifications'

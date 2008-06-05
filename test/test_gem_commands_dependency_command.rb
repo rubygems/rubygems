@@ -26,7 +26,7 @@ class TestGemCommandsDependencyCommand < RubyGemTestCase
       @cmd.execute
     end
 
-    assert_equal "Gem foo-2\n  bar (> 1)\n\n", @ui.output
+    assert_equal "Gem foo-2\n  bar (> 1, runtime)\n\n", @ui.output
     assert_equal '', @ui.error
   end
 
@@ -79,9 +79,9 @@ class TestGemCommandsDependencyCommand < RubyGemTestCase
 
     expected = <<-EOF
 Gem foo-2
-  bar (> 1)
+  bar (> 1, runtime)
   Used by
-    baz-2 (foo (>= 0))
+    baz-2 (foo (>= 0, runtime))
 
     EOF
 
@@ -128,7 +128,7 @@ ERROR:  Only reverse dependencies for local gems are supported.
       @cmd.execute
     end
 
-    assert_equal "Gem foo-2\n  bar (> 1)\n\n", @ui.output
+    assert_equal "Gem foo-2\n  bar (> 1, runtime)\n\n", @ui.output
     assert_equal '', @ui.error
   end
 
@@ -159,7 +159,7 @@ ERROR:  Only reverse dependencies for local gems are supported.
       @cmd.execute
     end
 
-    assert_equal "Gem foo-2\n  bar (> 1)\n\n", @ui.output
+    assert_equal "Gem foo-2\n  bar (> 1, runtime)\n\n", @ui.output
 
     expected = <<-EOF
 WARNING:  RubyGems 1.2+ index not found for:

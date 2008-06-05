@@ -189,6 +189,8 @@ class RubyGemTestCase < Test::Unit::TestCase
 
     spec.loaded_from = written_path
 
+    Gem.source_index.add_spec spec
+
     return spec
   end
 

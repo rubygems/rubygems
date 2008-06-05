@@ -154,6 +154,8 @@ class Gem::Installer
     @spec.loaded_from = File.join(@gem_home, 'specifications',
                                   "#{@spec.full_name}.gemspec")
 
+    Gem.source_index.add_spec @spec
+
     return @spec
   rescue Zlib::GzipFile::Error
     raise Gem::InstallError, "gzip error installing #{@gem}"
@@ -174,12 +176,10 @@ class Gem::Installer
   end
 
   ##
-  # True if the current installed gems satisfy the given dependency.
-  #
-  # dependency :: Gem::Dependency
+  # True if the gems in Gem.source_index satisfy +dependency+.
+
   def installation_satisfies_dependency?(dependency)
-    current_index = Gem::SourceIndex.from_installed_gems
-    current_index.find_name(dependency.name, dependency.version_requirements).size > 0
+    Gem.source_index.find_name(dependency.name, dependency.version_requirements).size > 0
   end
 
   ##

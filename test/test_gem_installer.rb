@@ -102,7 +102,7 @@ load 'my_exec'
       @installer.ensure_dependency @spec, dep
     end
 
-    assert_equal 'a requires b (> 2)', e.message
+    assert_equal 'a requires b (> 2, runtime)', e.message
   end
 
   def test_expand_and_validate_gem_dir

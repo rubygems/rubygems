@@ -304,12 +304,14 @@ class TestGemDependencyInstaller < RubyGemTestCase
     FileUtils.mv @b1_gem, @tempdir
     inst = nil
 
+    Gem.source_index.gems.delete @a1.full_name
+
     Dir.chdir @tempdir do
       e = assert_raise Gem::InstallError do
         inst = Gem::DependencyInstaller.new :domain => :local
         inst.install 'b'
       end
-      assert_equal 'b requires a (>= 0)', e.message
+      assert_equal 'b requires a (>= 0, runtime)', e.message
     end
 
     assert_equal [], inst.installed_gems.map { |s| s.full_name }

@@ -2,6 +2,13 @@
 
 	* lib/rubygems/commands/source_index.rb:  Only fetch specs we need in
 	#outdated.
+	* lib/rubygems.rb:  Fix typo in ::activate exception.
+	* lib/rubygems/dependency.rb:  For #to_s, display dependency type when
+	nil.
+	* lib/rubygems/dependency_installer.rb:  Reset #installed_gems for
+	every #install.  Fixes bug #19444 by Glenn Rempe.
+	* lib/rubygems/installer.rb:  Don't re-read the disk to check for new
+	gems, add them by hand on install.
 
 2008-06-03  Eric Hodel  <drbrain@segment7.net>
 

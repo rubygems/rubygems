@@ -122,9 +122,11 @@ module Gem
 
     def choose_from_list(question, list)
       @outs.puts question
+
       list.each_with_index do |item, index|
         @outs.puts " #{index+1}. #{item}"
       end
+
       @outs.print "> "
       @outs.flush
 
@@ -142,24 +144,26 @@ module Gem
     # default.
 
     def ask_yes_no(question, default=nil)
-      if not @ins.tty? then
+      unless @ins.tty? then
         if default.nil? then
-          raise(
-              Gem::OperationNotSupportedError,
-              "Not connected to a tty and no default specified")
+          raise Gem::OperationNotSupportedError,
+                "Not connected to a tty and no default specified"
         else
           return default
         end
       end
+
       qstr = case default
-      when nil
-        'yn'
-      when true
-        'Yn'
-      else
-        'yN'
-      end
+             when nil
+               'yn'
+             when true
+               'Yn'
+             else
+               'yN'
+             end
+
       result = nil
+
       while result.nil?
         result = ask("#{question} [#{qstr}]")
         result = case result
@@ -173,6 +177,7 @@ module Gem
           nil
         end
       end
+
       return result
     end
 
@@ -181,8 +186,10 @@ module Gem
 
     def ask(question)
       return nil if not @ins.tty?
+
       @outs.print(question + "  ")
       @outs.flush
+
       result = @ins.gets
       result.chomp! if result
       result

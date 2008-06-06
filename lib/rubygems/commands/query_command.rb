@@ -77,7 +77,7 @@ class Gem::Commands::QueryCommand < Gem::Command
       specs = Gem.source_index.search name
 
       spec_tuples = specs.map do |spec|
-        [[spec.name, spec.version, spec.original_name, spec]]
+        [[spec.name, spec.version, spec.original_platform, spec], :local]
       end
 
       output_query_results spec_tuples
@@ -136,7 +136,7 @@ class Gem::Commands::QueryCommand < Gem::Command
 
     versions.each do |gem_name, matching_tuples|
       matching_tuples = matching_tuples.sort_by do |(name, version,),|
-        version.to_ints
+        version
       end.reverse
 
       seen = {}

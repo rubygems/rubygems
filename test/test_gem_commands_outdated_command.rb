@@ -2,7 +2,7 @@ require 'test/unit'
 require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'rubygems/commands/outdated_command'
 
-class TestGemOutdatedCommand < RubyGemTestCase
+class TestGemCommandsOutdatedCommand < RubyGemTestCase
 
   def setup
     super

@@ -144,7 +144,7 @@ gems:
 
   def test_fetch_size_socket_error
     fetcher = Gem::RemoteFetcher.new nil
-    def fetcher.connect_to(host, port)
+    def fetcher.connection_for(uri)
       raise SocketError
     end
 

@@ -43,6 +43,7 @@ class Gem::RemoteFetcher
     @fetcher ||= self.new Gem.configuration[:http_proxy]
   end
 
+  ##
   # Initialize a remote fetcher using the source URI and possible proxy
   # information.
   #
@@ -52,6 +53,7 @@ class Gem::RemoteFetcher
   # * nil: respect environment variables (HTTP_PROXY, HTTP_PROXY_USER,
   #        HTTP_PROXY_PASS)
   # * <tt>:no_proxy</tt>: ignore environment variables and _don't_ use a proxy
+
   def initialize(proxy)
     Socket.do_not_reverse_lookup = true
 
@@ -70,6 +72,7 @@ class Gem::RemoteFetcher
   # Moves the gem +spec+ from +source_uri+ to the cache dir unless it is
   # already there.  If the source_uri is local the gem cache dir copy is
   # always replaced.
+
   def download(spec, source_uri, install_dir = Gem.dir)
     cache_dir = File.join install_dir, 'cache'
     gem_file_name = "#{spec.full_name}.gem"
@@ -126,7 +129,9 @@ class Gem::RemoteFetcher
     local_gem_path
   end
 
-  # Downloads +uri+.
+  ##
+  # Downloads +uri+ and returns it as a String.
+
   def fetch_path(uri)
     open_uri_or_path(uri) do |input|
       input.read
@@ -141,7 +146,9 @@ class Gem::RemoteFetcher
     raise FetchError.new("#{e.class}: #{e}", uri)
   end
 
+  ##
   # Returns the size of +uri+ in bytes.
+
   def fetch_size(uri)
     return File.size(get_file_uri_path(uri)) if file_uri? uri
 
@@ -149,20 +156,11 @@ class Gem::RemoteFetcher
 
     raise ArgumentError, 'uri is not an HTTP URI' unless URI::HTTP === uri
 
-    http = connect_to uri.host, uri.port
-
-    request = Net::HTTP::Head.new uri.request_uri
-
-    request.basic_auth unescape(uri.user), unescape(uri.password) unless
-      uri.user.nil? or uri.user.empty?
-
-    response = http.request request
+    response = request uri, Net::HTTP::Head
 
     if response.code !~ /^2/ then
       raise FetchError.new("bad response #{response.message} #{response.code}", uri)
     end
-
-    say "fetched size of #{uri}" if $DEBUG
 
     if response['content-length'] then
       return response['content-length'].to_i
@@ -187,7 +185,9 @@ class Gem::RemoteFetcher
     URI.unescape(str)
   end
 
+  ##
   # Returns an HTTP proxy URI if one is set in the environment variables.
+
   def get_proxy_from_env
     env_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
 
@@ -204,84 +204,54 @@ class Gem::RemoteFetcher
     uri
   end
 
+  ##
   # Normalize the URI by adding "http://" if it is missing.
+
   def normalize_uri(uri)
     (uri =~ /^(https?|ftp|file):/) ? uri : "http://#{uri}"
   end
 
-  # Connect to the source host/port, using a proxy if needed.
-  def connect_to(host, port)
-    if @proxy_uri
-      Net::HTTP::Proxy(@proxy_uri.host, @proxy_uri.port, unescape(@proxy_uri.user), unescape(@proxy_uri.password)).new(host, port)
-    else
-      Net::HTTP.new(host, port)
+  ##
+  # Creates or an HTTP connection based on +uri+, or retrieves an existing
+  # connection, using a proxy if needed.
+
+  def connection_for(uri)
+    net_http_args = [uri.host, uri.port]
+
+    if @proxy_uri then
+      net_http_args += [
+        @proxy_uri.host,
+        @proxy_uri.port,
+        @proxy_uri.user,
+        @proxy_uri.password
+      ]
     end
+
+    connection_id = net_http_args.join ':'
+    @connections[connection_id] ||= Net::HTTP.new(*net_http_args)
+    connection = @connections[connection_id]
+
+    if uri.scheme == 'https' and not connection.started? then
+      http_obj.use_ssl = true
+      http_obj.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    end
+
+    connection.start unless connection.started?
+
+    connection
   end
 
+  ##
   # Read the data from the (source based) URI, but if it is a file:// URI,
   # read from the filesystem instead.
+
   def open_uri_or_path(uri, depth = 0, &block)
     if file_uri?(uri)
       open(get_file_uri_path(uri), &block)
     else
       uri = URI.parse uri unless URI::Generic === uri
-      net_http_args = [uri.host, uri.port]
 
-      if @proxy_uri then
-        net_http_args += [  @proxy_uri.host,
-                            @proxy_uri.port,
-                            @proxy_uri.user,
-                            @proxy_uri.password
-        ]
-      end
-
-      connection_id = net_http_args.join ':'
-      @connections[connection_id] ||= Net::HTTP.new(*net_http_args)
-      connection = @connections[connection_id]
-
-      if uri.scheme == 'https' && ! connection.started?
-        http_obj.use_ssl = true
-        http_obj.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      end
-
-      connection.start unless connection.started?
-
-      request = Net::HTTP::Get.new(uri.request_uri)
-      unless uri.nil? || uri.user.nil? || uri.user.empty? then
-        request.basic_auth(uri.user, uri.password)
-      end
-
-      ua = "RubyGems/#{Gem::RubyGemsVersion} #{Gem::Platform.local}"
-      ua << " Ruby/#{RUBY_VERSION} (#{RUBY_RELEASE_DATE}"
-      ua << " patchlevel #{RUBY_PATCHLEVEL}" if defined? RUBY_PATCHLEVEL
-      ua << ")"
-
-      request.add_field 'User-Agent', ua
-      request.add_field 'Connection', 'keep-alive'
-      request.add_field 'Keep-Alive', '30'
-
-      # HACK work around EOFError bug in Net::HTTP
-      # NOTE Errno::ECONNABORTED raised a lot on Windows, and make impossible
-      # to install gems.
-      retried = false
-      begin
-        @requests[connection_id] += 1
-        response = connection.request(request)
-        say "fetched #{uri}" if $DEBUG
-      rescue EOFError, Errno::ECONNABORTED
-        requests = @requests[connection_id]
-        say "connection reset after #{requests} requests, retrying" if
-          Gem.configuration.really_verbose
-
-        raise FetchError.new('too many connection resets', uri) if retried
-
-        @requests[connection_id] = 0
-
-        connection.finish
-        connection.start
-        retried = true
-        retry
-      end
+      response = request uri
 
       case response
       when Net::HTTPOK then
@@ -296,12 +266,67 @@ class Gem::RemoteFetcher
     end
   end
 
+  ##
+  # Performs a Net::HTTP request of type +request_class+ on +uri+ returning
+  # a Net::HTTP response object.  request maintains a table of persistent
+  # connections to reduce connect overhead.
+
+  def request(uri, request_class = Net::HTTP::Get)
+    request = request_class.new uri.request_uri
+
+    unless uri.nil? || uri.user.nil? || uri.user.empty? then
+      request.basic_auth uri.user, uri.password
+    end
+
+    ua = "RubyGems/#{Gem::RubyGemsVersion} #{Gem::Platform.local}"
+    ua << " Ruby/#{RUBY_VERSION} (#{RUBY_RELEASE_DATE}"
+    ua << " patchlevel #{RUBY_PATCHLEVEL}" if defined? RUBY_PATCHLEVEL
+    ua << ")"
+
+    request.add_field 'User-Agent', ua
+    request.add_field 'Connection', 'keep-alive'
+    request.add_field 'Keep-Alive', '30'
+
+    connection = connection_for uri
+
+    retried = false
+
+    # HACK work around EOFError bug in Net::HTTP
+    # NOTE Errno::ECONNABORTED raised a lot on Windows, and make impossible
+    # to install gems.
+    begin
+      @requests[connection.object_id] += 1
+      response = connection.request request
+      say "#{request.method} #{response.code} #{response.message}: #{uri}" if
+        Gem.configuration.really_verbose
+    rescue EOFError, Errno::ECONNABORTED, Errno::ECONNRESET
+      requests = @requests[connection.object_id]
+      say "connection reset after #{requests} requests, retrying" if
+        Gem.configuration.really_verbose
+
+      raise FetchError.new('too many connection resets', uri) if retried
+
+      @requests.delete connection.object_id
+
+      connection.finish
+      connection.start
+      retried = true
+      retry
+    end
+
+    response
+  end
+
+  ##
   # Checks if the provided string is a file:// URI.
+
   def file_uri?(uri)
     uri =~ %r{\Afile://}
   end
 
+  ##
   # Given a file:// URI, returns its local path.
+
   def get_file_uri_path(uri)
     uri.sub(%r{\Afile://}, '')
   end

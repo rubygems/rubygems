@@ -9,7 +9,11 @@
 	installation_path.  Fixes bug #19317 by Hemant Kumar.
 	* lib/rubygems/spec_fetcher.rb:  Fix legacy test against URI.
 	* lib/rubygems/remote_fetcher.rb:  Always raise FetchError from
-	RemoteFetcher.  Fix FetchErrors without URIs.
+	RemoteFetcher.  Fix FetchErrors without URIs.  Refactor Net::HTTP
+	request code to use persistent connections for HEAD requests.  Feature
+	Request #7973 by Christian Schachtzabel.
+	* lib/rubygems.rb:  Don't load custom_require until after the OS and
+	implementation have had a chance to set paths.
 
 2008-06-04  Eric Hodel  <drbrain@segment7.net>
 

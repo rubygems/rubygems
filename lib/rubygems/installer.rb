@@ -56,6 +56,7 @@ class Gem::Installer
   #                      foo_exec18.
   # :security_policy:: Use the specified security policy.  See Gem::Security
   # :wrappers:: Install wrappers if true, symlinks if false.
+
   def initialize(gem, options={})
     @gem = gem
 
@@ -99,6 +100,7 @@ class Gem::Installer
   #     cache/<gem-version>.gem #=> a cached copy of the installed gem
   #     gems/<gem-version>/... #=> extracted files
   #     specifications/<gem-version>.gemspec #=> the Gem::Specification
+
   def install
     # If we're forcing the install then disable security unless the security
     # policy says that we only install singed gems.
@@ -167,6 +169,7 @@ class Gem::Installer
   #
   # spec       :: Gem::Specification
   # dependency :: Gem::Dependency
+
   def ensure_dependency(spec, dependency)
     unless installation_satisfies_dependency? dependency then
       raise Gem::InstallError, "#{spec.name} requires #{dependency}"
@@ -184,7 +187,7 @@ class Gem::Installer
 
   ##
   # Unpacks the gem into the given directory.
-  #
+
   def unpack(directory)
     @gem_dir = directory
     @format = Gem::Format.from_file_by_path @gem, @security_policy
@@ -197,7 +200,7 @@ class Gem::Installer
   #
   # spec:: [Gem::Specification] The Gem specification to output
   # spec_path:: [String] The location (path) to write the gemspec to
-  #
+
   def write_spec
     rubycode = @spec.to_ruby
 
@@ -212,7 +215,7 @@ class Gem::Installer
 
   ##
   # Creates windows .bat files for easy running of commands
-  #
+
   def generate_windows_script(bindir, filename)
     if Gem.win_platform? then
       script_name = filename + ".bat"
@@ -231,7 +234,7 @@ class Gem::Installer
     # If the user has asked for the gem to be installed in a directory that is
     # the system gem directory, then use the system bin directory, else create
     # (or use) a new bin dir under the gem_home.
-    bindir = @bin_dir ? @bin_dir : (Gem.bindir @gem_home)
+    bindir = @bin_dir ? @bin_dir : Gem.bindir(@gem_home)
 
     Dir.mkdir bindir unless File.exist? bindir
     raise Gem::FilePermissionError.new(bindir) unless File.writable? bindir
@@ -256,7 +259,7 @@ class Gem::Installer
   # The Windows script is generated in addition to the regular one due to a
   # bug or misfeature in the Windows shell's pipe.  See
   # http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/193379
-  #
+
   def generate_bin_script(filename, bindir)
     bin_script_path = File.join bindir, formatted_program_filename(filename)
 
@@ -281,7 +284,7 @@ class Gem::Installer
   ##
   # Creates the symlinks to run the applications in the gem.  Moves
   # the symlink if the gem being installed has a newer version.
-  #
+
   def generate_bin_symlink(filename, bindir)
     if Gem.win_platform? then
       alert_warning "Unable to use symlinks on Windows, installing wrapper"
@@ -307,6 +310,7 @@ class Gem::Installer
   ##
   # Generates a #! line for +bin_file_name+'s wrapper copying arguments if
   # necessary.
+
   def shebang(bin_file_name)
     if @env_shebang then
       "#!/usr/bin/env " + Gem::ConfigMap[:ruby_install_name]
@@ -353,7 +357,9 @@ load '#{bin_file_name}'
 TEXT
   end
 
+  ##
   # return the stub script text used to launch the true ruby script
+
   def windows_stub_script(bindir, bin_file_name)
     <<-TEXT
 @ECHO OFF
@@ -365,8 +371,10 @@ GOTO :EOF
 TEXT
   end
 
+  ##
   # Builds extensions.  Valid types of extensions are extconf.rb files,
   # configure scripts and rakefiles or mkrf_conf files.
+
   def build_extensions
     return if @spec.extensions.empty?
     say "Building native extensions.  This could take a while..."
@@ -422,6 +430,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
   # Reads the file index and extracts each file into the gem directory.
   #
   # Ensures that files can't be installed outside the gem directory.
+
   def extract_files
     expand_and_validate_gem_dir
 
@@ -455,7 +464,9 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
     end
   end
 
+  ##
   # Prefix and suffix the program filename the same as ruby.
+
   def formatted_program_filename(filename)
     if @format_executable then
       self.class.exec_format % File.basename(filename)
@@ -466,7 +477,9 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
 
   private
 
+  ##
   # HACK Pathname is broken on windows.
+
   def absolute_path? pathname
     pathname.absolute? or (Gem.win_platform? and pathname.to_s =~ /\A[a-z]:/i)
   end

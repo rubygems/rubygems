@@ -5,6 +5,8 @@
 	* lib/rubygems/source_index.rb:  Gracefully handle ^C or explicit exit
 	while loading .gemspec files from disk.  Fixes bug #20523 by Joel
 	VanderWerf.
+	* lib/rubygems/specification.rb:  Use File#expand_path in
+	installation_path.  Fixes bug #19317 by Hemant Kumar.
 
 2008-06-04  Eric Hodel  <drbrain@segment7.net>
 

@@ -15,6 +15,12 @@ class TestGemUninstaller < GemInstallerTestCase
     end
   end
 
+  def test_initialize_expand_path
+    uninstaller = Gem::Uninstaller.new nil, :install_dir => '/foo//bar'
+
+    assert_equal '/foo/bar', uninstaller.instance_variable_get(:@gem_home)
+  end
+
   def test_remove_executables_force_keep
     uninstaller = Gem::Uninstaller.new nil, :executables => false
 

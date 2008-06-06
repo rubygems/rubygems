@@ -131,13 +131,14 @@ class Gem::RemoteFetcher
     open_uri_or_path(uri) do |input|
       input.read
     end
+  rescue FetchError
+    raise
   rescue Timeout::Error
     raise FetchError.new('timed out', uri)
   rescue IOError, SocketError, SystemCallError => e
     raise FetchError.new("#{e.class}: #{e}", uri)
   rescue => e
-    message = "#{e.class}: #{e}"
-    raise FetchError.new(message, uri)
+    raise FetchError.new("#{e.class}: #{e}", uri)
   end
 
   # Returns the size of +uri+ in bytes.
@@ -155,20 +156,19 @@ class Gem::RemoteFetcher
     request.basic_auth unescape(uri.user), unescape(uri.password) unless
       uri.user.nil? or uri.user.empty?
 
-    resp = http.request request
+    response = http.request request
 
-    if resp.code !~ /^2/ then
-      raise Gem::RemoteSourceException,
-            "HTTP Response #{resp.code} fetching #{uri}"
+    if response.code !~ /^2/ then
+      raise FetchError.new("bad response #{response.message} #{response.code}", uri)
     end
 
     say "fetched size of #{uri}" if $DEBUG
 
-    if resp['content-length'] then
-      return resp['content-length'].to_i
+    if response['content-length'] then
+      return response['content-length'].to_i
     else
-      resp = http.get uri.request_uri
-      return resp.body.size
+      response = http.get uri.request_uri
+      return response.body.size
     end
 
   rescue SocketError, SystemCallError, Timeout::Error => e
@@ -273,8 +273,7 @@ class Gem::RemoteFetcher
         say "connection reset after #{requests} requests, retrying" if
           Gem.configuration.really_verbose
 
-        raise Gem::RemoteFetcher::FetchError, 'too many connection resets' if
-          retried
+        raise FetchError.new('too many connection resets', uri) if retried
 
         @requests[connection_id] = 0
 
@@ -288,13 +287,11 @@ class Gem::RemoteFetcher
       when Net::HTTPOK then
         block.call(StringIO.new(response.body)) if block
       when Net::HTTPRedirection then
-        if depth > 10 then
-          raise Gem::RemoteFetcher::FetchError.new('too many redirects', uri)
-        end
+        raise FetchError.new('too many redirects', uri) if depth > 10
+
         open_uri_or_path(response['Location'], depth + 1, &block)
       else
-        raise Gem::RemoteFetcher::FetchError,
-              "bad response #{response.message} #{response.code}"
+        raise FetchError.new("bad response #{response.message} #{response.code}", uri)
       end
     end
   end

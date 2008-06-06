@@ -7,6 +7,9 @@
 	VanderWerf.
 	* lib/rubygems/specification.rb:  Use File#expand_path in
 	installation_path.  Fixes bug #19317 by Hemant Kumar.
+	* lib/rubygems/spec_fetcher.rb:  Fix legacy test against URI.
+	* lib/rubygems/remote_fetcher.rb:  Always raise FetchError from
+	RemoteFetcher.  Fixup last FetchErrors without URIs.
 
 2008-06-04  Eric Hodel  <drbrain@segment7.net>
 

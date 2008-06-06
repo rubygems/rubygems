@@ -142,7 +142,12 @@ class Gem::SpecFetcher
       begin
         @fetcher.fetch_size spec_path
       rescue Gem::RemoteFetcher::FetchError
-        @fetcher.fetch_size(source_uri + 'yaml') # re-raise if non-repo
+        begin
+          @fetcher.fetch_size(source_uri + 'yaml') # re-raise if non-repo
+        rescue Gem::RemoteFetcher::FetchError
+          alert_error "#{source_uri} does not appear to be a repository"
+          raise
+        end
         false
       end
     end
@@ -225,7 +230,8 @@ class Gem::SpecFetcher
   # exception indicates some other FetchError.
 
   def warn_legacy(exception)
-    if exception.uri =~ /specs\.#{Regexp.escape Gem.marshal_version}\.gz$/ then
+    uri = exception.uri.to_s
+    if uri =~ /specs\.#{Regexp.escape Gem.marshal_version}\.gz$/ then
       alert_warning <<-EOF
 RubyGems 1.2+ index not found for:
 \t#{legacy_repos.join "\n\t"}

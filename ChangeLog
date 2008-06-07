@@ -4,6 +4,11 @@
 	it is a symlink.
 	* lib/rubygems/commands/pristine_command.rb:  Force reinstallation of
 	the gem using the installer.  Fixes bug #20387 by Erik Persson.
+	* lib/rubygems/doc_manager.rb:  Ensure args to RDoc are all strings.
+	* lib/rubygems/source_index.rb:  Use find_matching to discover updated
+	specs instead of fetch.
+	* lib/rubygems/commands/query_command.rb:  Platform, not name in spec
+	tuples.
 
 2008-06-05  Eric Hodel  <drbrain@segment7.net>
 

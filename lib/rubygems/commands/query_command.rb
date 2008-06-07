@@ -103,7 +103,8 @@ class Gem::Commands::QueryCommand < Gem::Command
           specs = Gem::SourceInfoCache.search_with_source dep, false, all
 
           spec_tuples = specs.map do |spec, source_uri|
-            [[spec.name, spec.version, spec.original_name, spec], source_uri]
+            [[spec.name, spec.version, spec.original_platform, spec],
+             source_uri]
           end
         end
       end

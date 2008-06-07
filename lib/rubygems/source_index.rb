@@ -292,14 +292,24 @@ class Gem::SourceIndex
       name = local.name
 
       dependency = Gem::Dependency.new name, ">= #{local.version}"
-      remotes = Gem::SpecFetcher.fetcher.fetch dependency
-      remotes = remotes.map { |spec,| spec }
 
-      remote = remotes.select { |spec| spec.name == name }.
-        sort_by { |spec| spec.version.to_ints }.
-        last
+      begin
+        fetcher = Gem::SpecFetcher.fetcher
+        remotes = fetcher.find_matching dependency
+        remotes = remotes.map { |(name, version,),| version }
+      rescue Gem::RemoteFetcher::FetchError => e
+        raise unless fetcher.warn_legacy e do
+          require 'rubygems/source_info_cache'
 
-      outdateds << name if remote and local.version < remote.version
+          specs = Gem::SourceInfoCache.search_with_source dependency, true
+
+          remotes = specs.map { |spec,| spec.version }
+        end
+      end
+
+      latest = remotes.sort.last
+
+      outdateds << name if latest and local.version < latest
     end
 
     outdateds

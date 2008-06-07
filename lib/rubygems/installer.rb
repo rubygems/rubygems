@@ -267,6 +267,8 @@ class Gem::Installer
 
     # HACK some gems don't have #! in their executables, restore 2008/06
     #if File.read(exec_path, 2) == '#!' then
+      FileUtils.rm_f bin_script_path # prior install may have been --no-wrappers
+
       File.open bin_script_path, 'w', 0755 do |file|
         file.print app_script_text(filename)
       end
@@ -332,7 +334,9 @@ class Gem::Installer
     end
   end
 
+  ##
   # Return the text for an application file.
+
   def app_script_text(bin_file_name)
     <<-TEXT
 #{shebang bin_file_name}

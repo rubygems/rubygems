@@ -1,3 +1,10 @@
+2008-06-06  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/installer.rb:  Remove previous bin_script_path in case
+	it is a symlink.
+	* lib/rubygems/commands/pristine_command.rb:  Force reinstallation of
+	the gem using the installer.  Fixes bug #20387 by Erik Persson.
+
 2008-06-05  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/local_remote_options.rb:  Ensure remote repository URLs

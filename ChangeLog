@@ -1,3 +1,11 @@
+2008-06-07  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/server.rb:  Fully mirror Gem::Indexer indexes, set
+	correct content-type headers, always refresh the source index.
+	* lib/rubygems/source_index.rb:  Add spec_dirs so that #refresh! will
+	always reload from the same locations.  #refresh! on manually-built
+	SourceIndex now raises.  Fixes #20509 by Chad Woolley.
+
 2008-06-06  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb:  Remove previous bin_script_path in case

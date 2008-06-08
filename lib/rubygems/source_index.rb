@@ -28,6 +28,11 @@ class Gem::SourceIndex
 
   attr_reader :gems # :nodoc:
 
+  ##
+  # Directories to use to refresh this SourceIndex when calling refresh!
+
+  attr_accessor :spec_dirs
+
   class << self
     include Gem::UserInteraction
 
@@ -40,7 +45,7 @@ class Gem::SourceIndex
     #   +from_gems_in+.  This argument is deprecated and is provided
     #   just for backwards compatibility, and should not generally
     #   be used.
-    # 
+    #
     # return::
     #   SourceIndex instance
 
@@ -64,7 +69,9 @@ class Gem::SourceIndex
     # +spec_dirs+.
 
     def from_gems_in(*spec_dirs)
-      self.new.load_gems_in(*spec_dirs)
+      source_index = new
+      source_index.spec_dirs = spec_dirs
+      source_index.refresh!
     end
 
     ##
@@ -103,6 +110,7 @@ class Gem::SourceIndex
 
   def initialize(specifications={})
     @gems = specifications
+    @spec_dirs = nil
   end
 
   ##
@@ -276,10 +284,12 @@ class Gem::SourceIndex
 
   ##
   # Replaces the gems in the source index from specifications in the
-  # installed_spec_directories,
+  # directories this source index was created from.  Raises an exception if
+  # this source index wasn't created from a directory.
 
   def refresh!
-    load_gems_in(*self.class.installed_spec_directories)
+    raise 'source index not created from disk' if @spec_dirs.nil?
+    load_gems_in(*@spec_dirs)
   end
 
   ##

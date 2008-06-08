@@ -4,6 +4,7 @@ require 'zlib'
 require 'erb'
 
 require 'rubygems'
+require 'rubygems/doc_manager'
 
 ##
 # Gem::Server and allows users to serve gems for consumption by
@@ -25,6 +26,9 @@ require 'rubygems'
 #
 #   gem_server = Gem::Server.new Gem.dir, 8089, false
 #   gem_server.run
+#
+#--
+# TODO Refactor into a real WEBrick servlet to remove code duplication.
 
 class Gem::Server
 
@@ -39,7 +43,6 @@ class Gem::Server
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <title>RubyGems Documentation Index</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <link rel="stylesheet" href="gem-server-rdoc-style.css" type="text/css" media="screen" />
   </head>
   <body>
@@ -337,23 +340,42 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     logger = WEBrick::Log.new nil, WEBrick::BasicLog::FATAL
     @server = WEBrick::HTTPServer.new :DoNotListen => true, :Logger => logger
 
-    @spec_dir = File.join @gem_dir, "specifications"
+    @spec_dir = File.join @gem_dir, 'specifications'
+
+    unless File.directory? @spec_dir then
+      raise ArgumentError, "#{@gem_dir} does not appear to be a gem repository"
+    end
+
     @source_index = Gem::SourceIndex.from_gems_in @spec_dir
   end
 
   def Marshal(req, res)
-    res['content-type'] = 'text/plain'
+    @source_index.refresh!
+
     res['date'] = File.stat(@spec_dir).mtime
 
+    index = Marshal.dump @source_index
+
     if req.request_method == 'HEAD' then
-      res['content-length'] = Marshal.dump(@source_index).length
-    else
-      res.body << Marshal.dump(@source_index)
+      res['content-length'] = index.length
+      return
     end
+
+    if req.path =~ /Z$/ then
+      res['content-type'] = 'application/x-deflate'
+      index = Gem.deflate index
+    else
+      res['content-type'] = 'application/octet-stream'
+    end
+
+    res.body << index
   end
 
   def latest_specs(req, res)
+    @source_index.refresh!
+
     res['content-type'] = 'application/x-gzip'
+
     res['date'] = File.stat(@spec_dir).mtime
 
     specs = @source_index.latest_specs.sort.map do |spec|
@@ -363,7 +385,13 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     end
 
     specs = Marshal.dump specs
-    specs = Gem.gzip specs
+
+    if req.path =~ /\.gz$/ then
+      specs = Gem.gzip specs
+      res['content-type'] = 'application/x-gzip'
+    else
+      res['content-type'] = 'application/octet-stream'
+    end
 
     if req.request_method == 'HEAD' then
       res['content-length'] = specs.length
@@ -373,15 +401,25 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def quick(req, res)
+    @source_index.refresh!
+
     res['content-type'] = 'text/plain'
     res['date'] = File.stat(@spec_dir).mtime
 
-    case req.request_uri.request_uri
+    case req.request_uri.path
     when '/quick/index' then
-      res.body << @source_index.map { |name,_| name }.join("\n")
+      res.body << @source_index.map { |name,| name }.sort.join("\n")
     when '/quick/index.rz' then
-      index = @source_index.map { |name,_| name }.join("\n")
+      index = @source_index.map { |name,| name }.sort.join("\n")
+      res['content-type'] = 'application/x-deflate'
       res.body << Gem.deflate(index)
+    when '/quick/latest_index' then
+      index = @source_index.latest_specs.map { |spec| spec.full_name }
+      res.body << index.sort.join("\n")
+    when '/quick/latest_index.rz' then
+      index = @source_index.latest_specs.map { |spec| spec.full_name }
+      res['content-type'] = 'application/x-deflate'
+      res.body << Gem.deflate(index.sort.join("\n"))
     when %r|^/quick/(Marshal.#{Regexp.escape Gem.marshal_version}/)?(.*?)-([0-9.]+)(-.*?)?\.gemspec\.rz$| then
       dep = Gem::Dependency.new $2, $3
       specs = @source_index.search dep
@@ -403,21 +441,26 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
         res.status = 500
         res.body = "Multiple gems found matching #{selector}"
       elsif $1 then # marshal quickindex instead of YAML
+        res['content-type'] = 'application/x-deflate'
         res.body << Gem.deflate(Marshal.dump(specs.first))
       else # deprecated YAML format
+        res['content-type'] = 'application/x-deflate'
         res.body << Gem.deflate(specs.first.to_yaml)
       end
     else
-      res.status = 404
-      res.body = "#{req.request_uri} not found"
+      raise WEBrick::HTTPStatus::NotFound, "`#{req.path}' not found."
     end
   end
 
   def root(req, res)
+    @source_index.refresh!
+    res['date'] = File.stat(@spec_dir).mtime
+
+    raise WEBrick::HTTPStatus::NotFound, "`#{req.path}' not found." unless
+      req.path == '/'
+
     specs = []
     total_file_count = 0
-
-    @source_index.refresh!
 
     @source_index.each do |path, spec|
       total_file_count += spec.files.size
@@ -481,8 +524,10 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     # create page from template
     template = ERB.new(DOC_TEMPLATE)
     res['content-type'] = 'text/html'
+
     values = { "gem_count" => specs.size.to_s, "specs" => specs,
                "total_file_count" => total_file_count.to_s }
+
     result = template.result binding
     res.body = result
   end
@@ -494,17 +539,21 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     WEBrick::Daemon.start if @daemon
 
-    @server.mount_proc("/yaml", &method(:yaml))
+    @server.mount_proc "/yaml", method(:yaml)
+    @server.mount_proc "/yaml.Z", method(:yaml)
 
-    @server.mount_proc("/Marshal.#{Gem.marshal_version}", &method(:Marshal))
+    @server.mount_proc "/Marshal.#{Gem.marshal_version}", method(:Marshal)
+    @server.mount_proc "/Marshal.#{Gem.marshal_version}.Z", method(:Marshal)
 
-    @server.mount_proc("/specs.#{Gem.marshal_version}.gz",
-                       &method(:specs))
+    @server.mount_proc "/specs.#{Gem.marshal_version}", method(:specs)
+    @server.mount_proc "/specs.#{Gem.marshal_version}.gz", method(:specs)
 
-    @server.mount_proc("/latest_specs.#{Gem.marshal_version}.gz",
-                       &method(:latest_specs))
+    @server.mount_proc "/latest_specs.#{Gem.marshal_version}",
+                       method(:latest_specs)
+    @server.mount_proc "/latest_specs.#{Gem.marshal_version}.gz",
+                       method(:latest_specs)
 
-    @server.mount_proc("/quick/", &method(:quick))
+    @server.mount_proc "/quick/", method(:quick)
 
     @server.mount_proc("/gem-server-rdoc-style.css") do |req, res|
       res['content-type'] = 'text/css'
@@ -512,7 +561,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       res.body << RDOC_CSS
     end
 
-    @server.mount_proc("/", &method(:root))
+    @server.mount_proc "/", method(:root)
 
     paths = { "/gems" => "/cache/", "/doc_root" => "/doc/" }
     paths.each do |mount_point, mount_dir|
@@ -527,7 +576,8 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def specs(req, res)
-    res['content-type'] = 'application/x-gzip'
+    @source_index.refresh!
+
     res['date'] = File.stat(@spec_dir).mtime
 
     specs = @source_index.sort.map do |_, spec|
@@ -537,7 +587,13 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     end
 
     specs = Marshal.dump specs
-    specs = Gem.gzip specs
+
+    if req.path =~ /\.gz$/ then
+      specs = Gem.gzip specs
+      res['content-type'] = 'application/x-gzip'
+    else
+      res['content-type'] = 'application/octet-stream'
+    end
 
     if req.request_method == 'HEAD' then
       res['content-length'] = specs.length
@@ -547,14 +603,25 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def yaml(req, res)
-    res['content-type'] = 'text/plain'
+    @source_index.refresh!
+
     res['date'] = File.stat(@spec_dir).mtime
 
-    if req.request_method == 'HEAD' then
-      res['content-length'] = @source_index.to_yaml.length
+    index = @source_index.to_yaml
+
+    if req.path =~ /Z$/ then
+      res['content-type'] = 'application/x-deflate'
+      index = Gem.deflate index
     else
-      res.body << @source_index.to_yaml
+      res['content-type'] = 'text/plain'
     end
+
+    if req.request_method == 'HEAD' then
+      res['content-length'] = index.length
+      return
+    end
+
+    res.body << index
   end
 
 end

@@ -23,6 +23,27 @@ class TestGemSourceIndex < RubyGemTestCase
     util_setup_fake_fetcher
   end
 
+  def test_self_from_gems_in
+    spec_dir = File.join @gemhome, 'specifications'
+
+    FileUtils.rm_r spec_dir
+
+    FileUtils.mkdir_p spec_dir
+
+    a1 = quick_gem 'a', '1' do |spec| spec.author = 'author 1' end
+
+    spec_file = File.join spec_dir, "#{a1.full_name}.gemspec"
+
+    File.open spec_file, 'w' do |fp|
+      fp.write a1.to_ruby
+    end
+
+    si = Gem::SourceIndex.from_gems_in spec_dir
+
+    assert_equal [spec_dir], si.spec_dirs
+    assert_equal [a1.full_name], si.gems.keys
+  end
+
   def test_self_load_specification
     spec_dir = File.join @gemhome, 'specifications'
 
@@ -523,6 +544,16 @@ WARNING:  1 +
     source_index.refresh!
 
     assert source_index.gems.include?(@a1.full_name)
+  end
+
+  def test_refresh_bang_not_from_dir
+    source_index = Gem::SourceIndex.new
+
+    e = assert_raise RuntimeError do
+      source_index.refresh!
+    end
+
+    assert_equal 'source index not created from disk', e.message
   end
 
   def test_remove_extra

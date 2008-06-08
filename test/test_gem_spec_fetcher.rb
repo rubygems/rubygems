@@ -13,14 +13,14 @@ class TestGemSpecFetcher < RubyGemTestCase
 
     @source_index.add_spec @pl1
 
-    @specs = @source_index.map do |name, spec|
+    @specs = @source_index.gems.sort.map do |name, spec|
       [spec.name, spec.version, spec.original_platform]
-    end
+    end.sort
 
     @fetcher.data["#{@gem_repo}specs.#{Gem.marshal_version}.gz"] =
       util_gzip(Marshal.dump(@specs))
 
-    @latest_specs = @source_index.latest_specs.map do |spec|
+    @latest_specs = @source_index.latest_specs.sort.map do |spec|
       [spec.name, spec.version, spec.original_platform]
     end
 
@@ -220,26 +220,19 @@ RubyGems will revert to legacy indexes degrading performance.
     assert_equal expected, specs
   end
 
+  def test_list
+    specs = @sf.list
+
+    assert_equal [@uri], specs.keys
+    assert_equal @latest_specs, specs[@uri].sort
+  end
+
   def test_list_all
     specs = @sf.list true
 
     assert_equal [@uri], specs.keys
 
-    expected = [
-      ['a',      Gem::Version.new(1),     Gem::Platform::RUBY],
-      ['a',      Gem::Version.new(2),     Gem::Platform::RUBY],
-      ['a_evil', Gem::Version.new(9),     Gem::Platform::RUBY],
-      ['c',      Gem::Version.new('1.2'), Gem::Platform::RUBY],
-      ['pl',     Gem::Version.new(1),     'i386-linux'],
-    ]
-
-    assert_equal expected, specs[@uri].sort
-
-    cache_dir = File.join Gem.user_home, '.gem', 'specs', 'gems.example.com:80'
-    assert File.exist?(cache_dir)
-
-    cache_file = File.join cache_dir, "specs.#{Gem.marshal_version}"
-    assert File.exist?(cache_file)
+    assert_equal @specs, specs[@uri].sort
   end
 
   def test_list_cache
@@ -249,10 +242,44 @@ RubyGems will revert to legacy indexes degrading performance.
 
     @fetcher.data["#{@gem_repo}/latest_specs.#{Gem.marshal_version}.gz"] = nil
 
-    specs = @sf.list
+    cached_specs = @sf.list
+
+    assert_equal specs, cached_specs
   end
 
-  def test_list_disk_cache
+  def test_list_cache_all
+    specs = @sf.list true
+
+    assert !specs[@uri].empty?
+
+    @fetcher.data["#{@gem_repo}/specs.#{Gem.marshal_version}.gz"] = nil
+
+    cached_specs = @sf.list true
+
+    assert_equal specs, cached_specs
+  end
+
+  def test_load_specs
+    specs = @sf.load_specs @uri, 'specs'
+
+    expected = [
+      ['a',      Gem::Version.new(1),     Gem::Platform::RUBY],
+      ['a',      Gem::Version.new(2),     Gem::Platform::RUBY],
+      ['a_evil', Gem::Version.new(9),     Gem::Platform::RUBY],
+      ['c',      Gem::Version.new('1.2'), Gem::Platform::RUBY],
+      ['pl',     Gem::Version.new(1),     'i386-linux'],
+    ]
+
+    assert_equal expected, specs
+
+    cache_dir = File.join Gem.user_home, '.gem', 'specs', 'gems.example.com:80'
+    assert File.exist?(cache_dir)
+
+    cache_file = File.join cache_dir, "specs.#{Gem.marshal_version}"
+    assert File.exist?(cache_file)
+  end
+
+  def test_load_specs_cached
     @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] = nil
     @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}"] =
       ' ' * Marshal.dump(@latest_specs).length
@@ -267,30 +294,9 @@ RubyGems will revert to legacy indexes degrading performance.
       Marshal.dump @latest_specs, io
     end
 
-    specs = @sf.list
+    specs = @sf.load_specs @uri, 'specs'
 
-    assert !specs[@uri].empty?
-  end
-
-  def test_list_latest
-    specs = @sf.list
-
-    assert_equal [@uri], specs.keys
-
-    expected = [
-      ['a',      Gem::Version.new(2),     Gem::Platform::RUBY],
-      ['a_evil', Gem::Version.new(9),     Gem::Platform::RUBY],
-      ['c',      Gem::Version.new('1.2'), Gem::Platform::RUBY],
-      ['pl',     Gem::Version.new(1),     'i386-linux'],
-    ]
-
-    assert_equal expected, specs[@uri].sort
-
-    cache_dir = File.join Gem.user_home, '.gem', 'specs', 'gems.example.com:80'
-    assert File.exist?(cache_dir)
-
-    cache_file = File.join cache_dir, "latest_specs.#{Gem.marshal_version}"
-    assert File.exist?(cache_file)
+    assert_equal @specs, specs
   end
 
 end

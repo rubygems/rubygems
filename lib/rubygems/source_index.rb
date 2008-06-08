@@ -285,7 +285,8 @@ class Gem::SourceIndex
   ##
   # Replaces the gems in the source index from specifications in the
   # directories this source index was created from.  Raises an exception if
-  # this source index wasn't created from a directory.
+  # this source index wasn't created from a directory (via from_gems_in or
+  # from_installed_gems, or having spec_dirs set).
 
   def refresh!
     raise 'source index not created from disk' if @spec_dirs.nil?

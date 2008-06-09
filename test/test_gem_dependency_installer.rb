@@ -48,9 +48,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
     si = util_setup_spec_fetcher @a1, @b1, @d1, @d2, @x1_m, @x1_o, @w1, @y1,
                                  @y1_1_p, @z1
 
-    #@fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
-
     FileUtils.rm_rf File.join(@gemhome, 'gems')
+    Gem.source_index.refresh!
   end
 
   def test_install
@@ -331,6 +330,29 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
   end
 
+  def test_install_dual_repository
+    FileUtils.mv @a1_gem, @tempdir
+    FileUtils.mv @b1_gem, @tempdir
+    inst = nil
+
+    gemhome2 = "#{@gemhome}2"
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new :install_dir => @gemhome2
+      inst.install 'a'
+    end
+
+    ENV['GEM_PATH'] = [@gemhome, gemhome2].join ':'
+    Gem.clear_paths
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new
+      inst.install 'b'
+    end
+
+    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
   def test_install_remote
     a1_data = nil
     File.open @a1_gem, 'rb' do |fp|
@@ -549,5 +571,6 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
     assert_equal %w[d-1 e-1], inst.gems_to_install.map { |s| s.full_name }
   end
+
 end
 

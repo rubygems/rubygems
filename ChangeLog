@@ -1,3 +1,10 @@
+2008-06-09  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/dependency_installer.rb:  Only install all dependencies
+	when install_dir option is set.
+	* lib/rubygems/commands/query_command.rb:  Display authors, rubyforge
+	and homepage urls with details.
+
 2008-06-07  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/server.rb:  Fully mirror Gem::Indexer indexes, set

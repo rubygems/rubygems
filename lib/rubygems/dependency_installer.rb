@@ -50,13 +50,20 @@ class Gem::DependencyInstaller
     @force = options[:force]
     @format_executable = options[:format_executable]
     @ignore_dependencies = options[:ignore_dependencies]
-    @install_dir = options[:install_dir] || Gem.dir
     @security_policy = options[:security_policy]
     @wrappers = options[:wrappers]
 
+    @installed_gems = []
+
+    @install_dir = options[:install_dir] || Gem.dir
     @cache_dir = options[:cache_dir] || @install_dir
 
-    @installed_gems = []
+    if options[:install_dir] then
+      spec_dir = File.join @install_dir, 'specifications'
+      @source_index = Gem::SourceIndex.from_gems_in spec_dir
+    else
+      @source_index = Gem.source_index
+    end
   end
 
   ##
@@ -124,7 +131,7 @@ class Gem::DependencyInstaller
         deps |= spec.development_dependencies if @development
 
         deps.each do |dep|
-          results = find_gems_with_sources(dep).reverse # local gems first
+          results = find_gems_with_sources(dep).reverse
 
           results.each do |dep_spec, source_uri|
             next if seen[dep_spec.name]
@@ -199,13 +206,10 @@ class Gem::DependencyInstaller
 
     gather_dependencies
 
-    spec_dir = File.join @install_dir, 'specifications'
-    source_index = Gem::SourceIndex.from_gems_in spec_dir
-
     @gems_to_install.each do |spec|
       last = spec == @gems_to_install.last
       # HACK is this test for full_name acceptable?
-      next if source_index.any? { |n,_| n == spec.full_name } and not last
+      next if @source_index.any? { |n,_| n == spec.full_name } and not last
 
       # TODO: make this sorta_verbose so other users can benefit from it
       say "Installing gem #{spec.full_name}" if Gem.configuration.really_verbose

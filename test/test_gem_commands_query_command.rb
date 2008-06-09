@@ -10,7 +10,6 @@ class TestGemCommandsQueryCommand < RubyGemTestCase
     @cmd = Gem::Commands::QueryCommand.new
 
     util_setup_fake_fetcher
-    @a2.summary = 'This is a lot of text. ' * 4
 
     @si = util_setup_spec_fetcher @a1, @a2, @pl1
 
@@ -61,6 +60,13 @@ pl (1)
   end
 
   def test_execute_details
+    @a2.summary = 'This is a lot of text. ' * 4
+    @a2.authors = ['Abraham Lincoln', 'Hirohito']
+    @a2.homepage = 'http://a.example.com/'
+    @a2.rubyforge_project = 'rubygems'
+
+    @si = util_setup_spec_fetcher @a1, @a2, @pl1
+
     @cmd.handle_options %w[-r -d]
 
     use_ui @ui do
@@ -72,10 +78,17 @@ pl (1)
 *** REMOTE GEMS ***
 
 a (2)
+    Authors: Abraham Lincoln, Hirohito
+    Rubyforge: http://rubyforge.org/projects/rubygems
+    Homepage: http://a.example.com/
+
     This is a lot of text. This is a lot of text. This is a lot of text.
     This is a lot of text.
 
 pl (1)
+    Author: A User
+    Homepage: http://example.com
+
     this is a summary
     EOF
 

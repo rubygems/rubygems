@@ -4,6 +4,8 @@
 	when install_dir option is set.
 	* lib/rubygems/commands/query_command.rb:  Display authors, rubyforge
 	and homepage urls with details.
+	* lib/rubygems/commands/environment_command.rb:  Add executable
+	directory (from Rubinius).
 
 2008-06-07  Eric Hodel  <drbrain@segment7.net>
 

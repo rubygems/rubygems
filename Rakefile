@@ -394,8 +394,8 @@ task :rf => :rubyfiles
 # If you don't have this directory structure, set RUBY_PATH and/or
 # RUBINIUS_PATH.
 
-diff_options = "-urpN --exclude '*svn*' --exclude '*swp' --exclude '*rbc'"
-rsync_options = "-avP --exclude '*svn*' --exclude '*swp' --exclude '*rbc' --exclude '*.rej' --exclude '*.orig'"
+diff_options = "-urpN --exclude '*svn*' --exclude '*swp' --exclude '*rbc' --exclude 'lib/rubygems/defaults/*'"
+rsync_options = "-avP --exclude '*svn*' --exclude '*swp' --exclude '*rbc' --exclude '*.rej' --exclude '*.orig' --exclude 'lib/rubygems/defaults/*'"
 
 rubinius_dir = ENV['RUBINIUS_PATH'] || '../../../git/git.rubini.us/code'
 ruby_dir = ENV['RUBY_PATH'] || '../../ruby/trunk'

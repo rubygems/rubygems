@@ -394,7 +394,7 @@ task :rf => :rubyfiles
 # If you don't have this directory structure, set RUBY_PATH and/or
 # RUBINIUS_PATH.
 
-diff_options = "-urpN --exclude '*svn*' --exclude '*swp' --exclude '*rbc' --exclude 'lib/rubygems/defaults/*'"
+diff_options = "-urpN --exclude '*svn*' --exclude '*swp' --exclude '*rbc'"
 rsync_options = "-avP --exclude '*svn*' --exclude '*swp' --exclude '*rbc' --exclude '*.rej' --exclude '*.orig' --exclude 'lib/rubygems/defaults/*'"
 
 rubinius_dir = ENV['RUBINIUS_PATH'] || '../../../git/git.rubini.us/code'
@@ -423,7 +423,7 @@ end
 
 desc "Updates Rubinius HEAD with the currently checked-out copy of RubyGems."
 task :update_rubinius do
-  sh "rsync #{rsync_options} bin/gem #{rubinius_dir}/lib/bin/gem.rb"
+  sh "rsync #{rsync_options} bin/gem #{rubinius_dir}/lib/bin/gem"
   sh "rsync #{rsync_options} lib/ #{rubinius_dir}/lib"
   sh "rsync #{rsync_options} test/ #{rubinius_dir}/test/rubygems"
   sh "rsync #{rsync_options} util/gem_prelude.rb #{rubinius_dir}/kernel/core/gem_prelude.rb"
@@ -431,7 +431,7 @@ end
 
 desc "Diffs Rubinius HEAD with the currently checked-out copy of RubyGems."
 task :diff_rubinius do
-  sh "diff #{diff_options} bin/gem #{rubinius_dir}/lib/bin/gem.rb; true"
+  sh "diff #{diff_options} bin/gem #{rubinius_dir}/lib/bin/gem; true"
   sh "diff #{diff_options} lib/ubygems.rb #{rubinius_dir}/lib/ubygems.rb; true"
   sh "diff #{diff_options} lib/rubygems.rb #{rubinius_dir}/lib/rubygems.rb; true"
   sh "diff #{diff_options} lib/rubygems #{rubinius_dir}/lib/rubygems; true"

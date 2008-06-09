@@ -16,7 +16,6 @@ class Gem::Commands::InstallCommand < Gem::Command
     defaults = Gem::DependencyInstaller::DEFAULT_OPTIONS.merge({
       :generate_rdoc => true,
       :generate_ri   => true,
-      :install_dir => Gem.dir,
       :format_executable => false,
       :test => false,
       :version => Gem::Requirement.default,

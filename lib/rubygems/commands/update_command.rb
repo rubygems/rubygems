@@ -18,8 +18,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
       :generate_rdoc => true,
       :generate_ri => true,
       :force => false,
-      :test => false,
-      :install_dir => Gem.dir
+      :test => false
 
     add_install_update_options
 
@@ -60,7 +59,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     hig = {} # highest installed gems
 
-    Gem::SourceIndex.from_installed_gems.each do |name, spec|
+    Gem.source_index.each do |name, spec|
       if hig[spec.name].nil? or hig[spec.name].version < spec.version then
         hig[spec.name] = spec
       end
@@ -134,21 +133,35 @@ class Gem::Commands::UpdateCommand < Gem::Command
       next if not gem_names.empty? and
               gem_names.all? { |name| /#{name}/ !~ l_spec.name }
 
-      dep = Gem::Dependency.new l_spec.name, ">= #{l_spec.version}"
+      dependency = Gem::Dependency.new l_spec.name, "> #{l_spec.version}"
 
-      # TODO use #find_matching when SourceInfoCache is gone
-      remote_gemspecs = Gem::SpecFetcher.fetcher.fetch dep, false, false
+      begin
+        fetcher = Gem::SpecFetcher.fetcher
+        spec_tuples = fetcher.find_matching dependency
+      rescue Gem::RemoteFetcher::FetchError => e
+        raise unless fetcher.warn_legacy e do
+          require 'rubygems/source_info_cache'
 
-      matching_gems = remote_gemspecs.select do |spec,|
-        spec.name == l_name and Gem.platforms.any? do |platform|
-          platform == spec.platform
+          dependency.name = '' if dependency.name == //
+
+          specs = Gem::SourceInfoCache.search_with_source dependency
+
+          spec_tuples = specs.map do |spec, source_uri|
+            [[spec.name, spec.version, spec.original_platform], source_uri]
+          end
         end
       end
 
-      highest_remote_gem = matching_gems.sort_by { |spec,| spec.version }.last
+      matching_gems = spec_tuples.select do |(name, version, platform),|
+        name == l_name and Gem::Platform.match platform
+      end
+
+      highest_remote_gem = matching_gems.sort_by do |(name, version),|
+        version
+      end.last
 
       if highest_remote_gem and
-         l_spec.version < highest_remote_gem.first.version then
+         l_spec.version < highest_remote_gem.first[1] then
         result << l_name
       end
     end

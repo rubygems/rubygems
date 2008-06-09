@@ -435,7 +435,6 @@ task :diff_rubinius do
   sh "diff #{diff_options} lib/ubygems.rb #{rubinius_dir}/lib/ubygems.rb; true"
   sh "diff #{diff_options} lib/rubygems.rb #{rubinius_dir}/lib/rubygems.rb; true"
   sh "diff #{diff_options} lib/rubygems #{rubinius_dir}/lib/rubygems; true"
-  sh "diff #{diff_options} lib/rbconfig #{rubinius_dir}/lib/rbconfig; true"
   sh "diff #{diff_options} test #{rubinius_dir}/test/rubygems; true"
   sh "diff #{diff_options} util/gem_prelude.rb #{rubinius_dir}/kernel/core/gem_prelude.rb; true"
 end

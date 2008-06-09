@@ -214,6 +214,12 @@ class RubyGemTestCase < Test::Unit::TestCase
     end
   end
 
+  def util_clear_gems
+    FileUtils.rm_r File.join(@gemhome, 'gems')
+    FileUtils.rm_r File.join(@gemhome, 'specifications')
+    Gem.source_index.refresh!
+  end
+
   def util_gem(name, version, &block)
     spec = quick_gem(name, version, &block)
 

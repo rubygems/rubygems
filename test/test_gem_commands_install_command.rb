@@ -72,7 +72,7 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     end
 
     # HACK no repository was checked
-    assert_equal "ERROR:  could not find no_such_gem locally or in a repository\n",
+    assert_equal "ERROR:  could not find gem no_such_gem locally or in a repository\n",
                  @ui.error
   end
 
@@ -97,7 +97,7 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
       assert_equal 2, e.exit_code
     end
 
-    assert_equal "ERROR:  could not find nonexistent locally or in a repository\n",
+    assert_equal "ERROR:  could not find gem nonexistent locally or in a repository\n",
                  @ui.error
   end
 

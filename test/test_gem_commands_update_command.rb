@@ -23,7 +23,7 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
   end
 
   def test_execute
-    util_remove_gems
+    util_clear_gems
 
     Gem::Installer.new(@a1_path).install
 
@@ -82,7 +82,7 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
     @fetcher.data["#{@gem_repo}gems/#{@c2.full_name}.gem"] = read_binary @c2_path
 
     util_setup_spec_fetcher @a1, @a2, @b2, @c1_2, @c2
-    util_remove_gems
+    util_clear_gems
 
     Gem::Installer.new(@c1_2_path).install
     Gem::Installer.new(@a1_path).install
@@ -106,7 +106,7 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
   end
 
   def test_execute_named
-    util_remove_gems
+    util_clear_gems
 
     Gem::Installer.new(@a1_path).install
 
@@ -126,7 +126,7 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
   end
 
   def test_execute_named_up_to_date
-    util_remove_gems
+    util_clear_gems
 
     Gem::Installer.new(@a2_path).install
 
@@ -144,7 +144,7 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
   end
 
   def test_execute_up_to_date
-    util_remove_gems
+    util_clear_gems
 
     Gem::Installer.new(@a2_path).install
 
@@ -159,11 +159,6 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
     assert_equal "Nothing to update", out.shift
 
     assert out.empty?, out.inspect
-  end
-
-  def util_remove_gems
-    FileUtils.rm_r File.join(@gemhome, 'gems')
-    FileUtils.rm_r File.join(@gemhome, 'specifications')
   end
 
 end

@@ -48,8 +48,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     si = util_setup_spec_fetcher @a1, @b1, @d1, @d2, @x1_m, @x1_o, @w1, @y1,
                                  @y1_1_p, @z1
 
-    FileUtils.rm_rf File.join(@gemhome, 'gems')
-    Gem.source_index.refresh!
+    util_clear_gems
   end
 
   def test_install
@@ -83,6 +82,36 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert File.exist?(File.join(@tempdir, 'cache', "#{@b1.full_name}.gem"))
   end
 
+  def test_install_dependencies_satisfied
+    a2, a2_gem = util_gem 'a', '2'
+
+    FileUtils.rm_rf File.join(@gemhome, 'gems')
+    Gem.source_index.refresh!
+
+    FileUtils.mv @a1_gem, @tempdir
+    FileUtils.mv a2_gem, @tempdir # not in index
+    FileUtils.mv @b1_gem, @tempdir
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new
+      inst.install 'a-2'
+    end
+
+    FileUtils.rm File.join(@tempdir, "#{a2.full_name}.gem")
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new
+      inst.install 'b'
+    end
+
+    installed = Gem::SourceIndex.from_installed_gems.map { |n,s| s.full_name }
+
+    assert_equal %w[a-2 b-1], installed.sort
+
+    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
   def test_install_dependency
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv @b1_gem, @tempdir
@@ -96,7 +125,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
   end
 
-  def test_install_with_development_dependency
+  def test_install_dependency_development
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv @aa1_gem, @tempdir
     FileUtils.mv @b1_gem, @tempdir
@@ -393,6 +422,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
       s.platform = Gem::Platform.new %w[cpu other_platform 1]
     end
 
+    util_clear_gems
+
     si = util_setup_spec_fetcher @a1, a2_o
 
     @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
@@ -532,6 +563,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
     b2, = util_gem 'b', '2'
     c1, = util_gem 'c', '1' do |s| s.add_dependency 'b' end
 
+    util_clear_gems
+
     si = util_setup_spec_fetcher @a1, @b1, b2, c1
 
     inst = Gem::DependencyInstaller.new
@@ -562,6 +595,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
   def test_gather_dependencies_old_required
     e1, = util_gem 'e', '1' do |s| s.add_dependency 'd', '= 1' end
+
+    util_clear_gems
 
     si = util_setup_spec_fetcher @d1, @d2, e1
 

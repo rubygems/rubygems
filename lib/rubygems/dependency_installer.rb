@@ -133,6 +133,13 @@ class Gem::DependencyInstaller
         deps.each do |dep|
           results = find_gems_with_sources(dep).reverse
 
+          results.reject! do |spec,|
+            @source_index.any? do |_, installed_spec|
+              dep.name == installed_spec.name and
+                dep.version_requirements.satisfied_by? installed_spec.version
+            end
+          end
+
           results.each do |dep_spec, source_uri|
             next if seen[dep_spec.name]
             @specs_and_sources << [dep_spec, source_uri]
@@ -185,7 +192,7 @@ class Gem::DependencyInstaller
 
     if spec_and_source.nil? then
       raise Gem::GemNotFoundException,
-        "could not find #{gem_name} locally or in a repository"
+        "could not find gem #{gem_name} locally or in a repository"
     end
 
     @specs_and_sources = [spec_and_source]

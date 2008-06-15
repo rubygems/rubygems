@@ -16,6 +16,9 @@ if RUBY_VERSION < '1.9' then
     t - ((t.to_f + t.gmt_offset) % 86400)
   end unless defined? Time.today
 end
+
+class Date; end # for ruby_code if date.rb wasn't required
+
 # :startdoc:
 
 module Gem

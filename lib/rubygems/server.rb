@@ -423,6 +423,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     when %r|^/quick/(Marshal.#{Regexp.escape Gem.marshal_version}/)?(.*?)-([0-9.]+)(-.*?)?\.gemspec\.rz$| then
       dep = Gem::Dependency.new $2, $3
       specs = @source_index.search dep
+      marshal_format = $1
 
       selector = [$2, $3, $4].map { |s| s.inspect }.join ' '
 
@@ -440,7 +441,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       elsif specs.length > 1 then
         res.status = 500
         res.body = "Multiple gems found matching #{selector}"
-      elsif $1 then # marshal quickindex instead of YAML
+      elsif marshal_format then
         res['content-type'] = 'application/x-deflate'
         res.body << Gem.deflate(Marshal.dump(specs.first))
       else # deprecated YAML format

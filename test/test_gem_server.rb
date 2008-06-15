@@ -205,6 +205,25 @@ class TestGemServer < RubyGemTestCase
     assert_equal Gem::Version.new(1), spec.version
   end
 
+  def test_quick_marshal_a_1_mswin32_gemspec_rz
+    a1_p = quick_gem 'a', '1' do |s| s.platform = Gem::Platform.local end
+
+    data = StringIO.new "GET /quick/Marshal.#{Gem.marshal_version}/a-1-#{Gem::Platform.local}.gemspec.rz HTTP/1.0\r\n\r\n"
+    @req.parse data
+
+    @server.quick @req, @res
+
+    assert_equal 200, @res.status, @res.body
+    assert @res['date']
+    assert_equal 'application/x-deflate', @res['content-type']
+
+    spec = Marshal.load Gem.inflate(@res.body)
+    assert_equal 'a', spec.name
+    assert_equal Gem::Version.new(1), spec.version
+    assert_equal Gem::Platform.local, spec.platform
+  end
+
+
   def test_root
     data = StringIO.new "GET / HTTP/1.0\r\n\r\n"
     @req.parse data

@@ -367,7 +367,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     gemhome2 = "#{@gemhome}2"
 
     Dir.chdir @tempdir do
-      inst = Gem::DependencyInstaller.new :install_dir => @gemhome2
+      inst = Gem::DependencyInstaller.new :install_dir => gemhome2
       inst.install 'a'
     end
 

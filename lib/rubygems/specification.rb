@@ -6,6 +6,7 @@
 
 require 'rubygems'
 require 'rubygems/version'
+require 'rubygems/requirement'
 require 'rubygems/platform'
 
 # :stopdoc:

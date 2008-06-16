@@ -141,14 +141,14 @@ class Gem::Indexer
 
     quick_index = File.join @quick_dir, 'index'
     open quick_index, 'wb' do |io|
-      io.puts index.map { |_, spec| spec }
+      io.puts index.sort.map { |_, spec| spec.original_name }
     end
 
     say "Generating latest index"
 
     latest_index = File.join @quick_dir, 'latest_index'
     open latest_index, 'wb' do |io|
-      io.puts index.latest_specs.sort.map { |_, spec| spec }
+      io.puts index.latest_specs.sort.map { |spec| spec.original_name }
     end
 
     say "Generating Marshal master index"

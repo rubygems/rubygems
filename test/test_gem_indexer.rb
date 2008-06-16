@@ -53,10 +53,31 @@ class TestGemIndexer < RubyGemTestCase
     assert_indexed quickdir, "index"
     assert_indexed quickdir, "index.rz"
 
+    quick_index = File.read File.join(quickdir, 'index')
+    expected = <<-EOF
+a-1
+a-2
+a_evil-9
+b-2
+c-1.2
+pl-1-i386-linux
+    EOF
+
+    assert_equal expected, quick_index
+
     assert_indexed quickdir, "latest_index"
     assert_indexed quickdir, "latest_index.rz"
 
-    assert_no_match %r|a-1|, File.read(File.join(quickdir, 'latest_index'))
+    latest_quick_index = File.read File.join(quickdir, 'latest_index')
+    expected = <<-EOF
+a-2
+a_evil-9
+b-2
+c-1.2
+pl-1-i386-linux
+    EOF
+
+    assert_equal expected, latest_quick_index
 
     assert_indexed quickdir, "#{@a1.full_name}.gemspec.rz"
     assert_indexed quickdir, "#{@a2.full_name}.gemspec.rz"

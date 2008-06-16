@@ -208,6 +208,63 @@ RubyGems will revert to legacy indexes degrading performance.
     assert_equal expected, @ui.error
   end
 
+  def test_execute_local_details
+    @a2.summary = 'This is a lot of text. ' * 4
+    @a2.authors = ['Abraham Lincoln', 'Hirohito']
+    @a2.homepage = 'http://a.example.com/'
+    @a2.rubyforge_project = 'rubygems'
+
+    @cmd.handle_options %w[--local --details]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = <<-EOF
+
+*** LOCAL GEMS ***
+
+a (2, 1)
+    Author: A User
+    Homepage: http://example.com
+    Installed at (2): #{@gemhome}
+                 (1): #{@gemhome}
+
+    this is a summary
+
+a_evil (9)
+    Author: A User
+    Homepage: http://example.com
+    Installed at: #{@gemhome}
+
+    this is a summary
+
+b (2)
+    Author: A User
+    Homepage: http://example.com
+    Installed at: #{@gemhome}
+
+    this is a summary
+
+c (1.2)
+    Author: A User
+    Homepage: http://example.com
+    Installed at: #{@gemhome}
+
+    this is a summary
+
+pl (1)
+    Author: A User
+    Homepage: http://example.com
+    Installed at: #{@gemhome}
+
+    this is a summary
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+  end
+
   def test_execute_no_versions
     @cmd.handle_options %w[-r --no-versions]
 

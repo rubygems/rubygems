@@ -72,7 +72,9 @@ module Gem
     :ruby_install_name => RbConfig::CONFIG["ruby_install_name"],
     :ruby_version => RbConfig::CONFIG["ruby_version"],
     :sitedir => RbConfig::CONFIG["sitedir"],
-    :sitelibdir => RbConfig::CONFIG["sitelibdir"]
+    :sitelibdir => RbConfig::CONFIG["sitelibdir"],
+    :vendordir => RbConfig::CONFIG["vendordir"] ,
+    :vendorlibdir => RbConfig::CONFIG["vendorlibdir"]
   )
 
   DIRECTORIES = %w[cache doc gems specifications] unless defined?(DIRECTORIES)

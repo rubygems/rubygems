@@ -182,6 +182,20 @@ class Gem::Commands::QueryCommand < Gem::Command
           entry << "\n" << format_text("Homepage: #{spec.homepage}", 68, 4)
         end
 
+        if spec.loaded_from then
+          if matching_tuples.length == 1 then
+            loaded_from = File.dirname File.dirname(spec.loaded_from)
+            entry << "\n" << "    Installed at: #{loaded_from}"
+          else
+            label = 'Installed at'
+            matching_tuples.each do |(_,version,_,s),|
+              loaded_from = File.dirname File.dirname(s.loaded_from)
+              entry << "\n" << "    #{label} (#{version}): #{loaded_from}"
+              label = ' ' * label.length
+            end
+          end
+        end
+
         entry << "\n\n" << format_text(spec.summary, 68, 4)
       end
       output << entry

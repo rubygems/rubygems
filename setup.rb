@@ -20,30 +20,74 @@ end
 
 $:.unshift 'lib'
 require 'rubygems'
+require 'getoptlong'
 
-if ARGV.include? '--help' or ARGV.include? '-h' then
-  puts "ruby setup.rb [options]:"
-  puts
-  puts "RubyGems will install the gem command with a name matching ruby's"
-  puts "prefix and suffix.  If ruby was installed as `ruby18`, gem will be"
-  puts "installed as `gem18`."
-  puts
-  puts "By default, this RubyGems will install gem as:"
-  puts
-  puts "  #{Gem.default_exec_format % 'gem'}"
-  puts
-  puts "Options:"
-  puts
-  puts "  --prefix=DIR           Prefix path for installing RubyGems"
-  puts "                         Will not affect gem repository location"
-  puts
-  puts "  --no-format-executable Force installation as `gem`"
-  puts
-  puts "  --no-rdoc              Don't build RDoc for RubyGems"
-  puts
-  puts "  --no-ri                Don't build ri for RubyGems"
+opts = GetoptLong.new(
+    [ '--help',                   '-h', GetoptLong::NO_ARGUMENT ],
+    [ '--prefix',                       GetoptLong::REQUIRED_ARGUMENT ],
+    [ '--no-format-executable',         GetoptLong::NO_ARGUMENT ],
+    [ '--no-rdoc',                      GetoptLong::NO_ARGUMENT ],
+    [ '--no-ri',                        GetoptLong::NO_ARGUMENT ],
+    [ '--vendor',                       GetoptLong::NO_ARGUMENT ],
+    [ '--destdir',                      GetoptLong::REQUIRED_ARGUMENT ]
+)
 
-  exit
+prefix = ''
+format_executable = true
+rdoc = true
+ri = true
+site_or_vendor = :sitelibdir
+install_destdir = ''
+
+opts.each do | opt, arg |
+  case opt
+  when '--help'
+    puts <<HELP
+ruby setup.rb [options]:
+
+RubyGems will install the gem command with a name matching ruby's
+prefix and suffix.  If ruby was installed as `ruby18`, gem will be
+installed as `gem18`.
+
+By default, this RubyGems will install gem as:
+  #{Gem.default_exec_format % 'gem'}
+
+Options:
+  --help                 Print this message
+  --prefix=DIR           Prefix path for installing RubyGems
+                         Will not affect gem repository location
+  --no-format-executable Force installation as `gem`
+  --no-rdoc              Don't build RDoc for RubyGems
+  --no-ri                Don't build ri for RubyGems
+  --vendor               Install into vendorlibdir not sitelibdir
+                         (Requires Ruby 1.8.7)
+  --destdir              Root directory to install rubygems into
+                         Used mainly for packaging RubyGems
+HELP
+    exit 0
+
+  when '--no-rdoc'
+    rdoc = false
+
+  when '--no-ri'
+    ri = false
+
+  when '--no-format-executable'
+    format_executable = false
+
+  when '--prefix'
+    prefix = File.expand_path(arg)
+
+  when '--vendor'
+    vendor_dir_version = Gem::Version::Requirement.create('>= 1.8.7')
+    unless vendor_dir_version.satisfied_by? Gem.ruby_version then
+      abort "To use --vendor you need ruby #{vendor_dir_version}, current #{Gem.ruby_version}"
+    end
+    site_or_vendor = :vendorlibdir
+
+  when '--destdir'
+    install_destdir = File.expand_path(arg)
+  end
 end
 
 require 'fileutils'
@@ -65,41 +109,29 @@ end
 lib_dir = nil
 bin_dir = nil
 
-if ARGV.grep(/^--prefix/).empty? then
-  lib_dir = Gem::ConfigMap[:sitelibdir]
+if prefix.empty?
+  lib_dir = Gem::ConfigMap[site_or_vendor]
   bin_dir = Gem::ConfigMap[:bindir]
 else
-  prefix = nil
-
-  prefix_arg = ARGV.grep(/^--prefix=/).first
-  if prefix_arg =~ /^--prefix=(.*)/ then
-    prefix = $1
-  else
-    path_index = ARGV.index '--prefix'
-    prefix = ARGV[path_index + 1]
-  end
-
-  prefix = File.expand_path prefix
-
-  raise "invalid --prefix #{prefix.inspect}" if prefix.nil?
-
   # Apple installed RubyGems into libdir, and RubyGems <= 1.1.0 gets confused
-  # about installation location, so switch back to sitelibdir.
+  # about installation location, so switch back to sitelibdir/vendorlibdir.
   if defined?(APPLE_GEM_HOME) and
       # just in case Apple and RubyGems don't get this patched up proper.
      (prefix == Gem::ConfigMap[:libdir] or
       # this one is important
       prefix == File.join(Gem::ConfigMap[:libdir], 'ruby')) then
-    lib_dir = Gem::ConfigMap[:sitelibdir]
+    lib_dir = Gem::ConfigMap[site_or_vendor]
     bin_dir = Gem::ConfigMap[:bindir]
   else
     lib_dir = File.join prefix, 'lib'
     bin_dir = File.join prefix, 'bin'
-
-    mkdir_p lib_dir
-    mkdir_p bin_dir
   end
 end
+
+lib_dir = File.join install_destdir, lib_dir
+bin_dir = File.join install_destdir, bin_dir
+mkdir_p lib_dir
+mkdir_p bin_dir
 
 Dir.chdir 'lib' do
   lib_files = Dir[File.join('**', '*rb')]
@@ -121,7 +153,7 @@ Dir.chdir 'bin' do
   bin_files.delete 'update_rubygems'
 
   bin_files.each do |bin_file|
-    bin_file_formatted = if ARGV.include? '--no-format-executable' then
+    bin_file_formatted = if format_executable then
                            bin_file
                          else
                            Gem.default_exec_format % bin_file
@@ -201,18 +233,21 @@ abort "#{deprecation_message}"
 end
 
 # Remove source caches
+if install_destdir.empty?
+  require 'rubygems/source_info_cache'
 
-require 'rubygems/source_info_cache'
+  user_cache_file = File.join(install_destdir,
+                              Gem::SourceInfoCache.user_cache_file)
+  system_cache_file = File.join(install_destdir,
+                                Gem::SourceInfoCache.system_cache_file)
 
-user_cache_file = Gem::SourceInfoCache.user_cache_file
-system_cache_file = Gem::SourceInfoCache.system_cache_file
-
-rm_f user_cache_file if File.writable? File.dirname(user_cache_file)
-rm_f system_cache_file if File.writable? File.dirname(system_cache_file)
+  rm_f user_cache_file if File.writable? File.dirname(user_cache_file)
+  rm_f system_cache_file if File.writable? File.dirname(system_cache_file)
+end
 
 # install RDoc
 
-gem_doc_dir = File.join Gem.dir, 'doc'
+gem_doc_dir = File.join install_destdir, Gem.dir, 'doc'
 rubygems_name = "rubygems-#{Gem::RubyGemsVersion}"
 rubygems_doc_dir = File.join gem_doc_dir, rubygems_name
 
@@ -240,13 +275,13 @@ if File.writable? gem_doc_dir and
     r.document args
   end
 
-  unless ARGV.include? '--no-ri' then
+  if ri then
     ri_dir = File.join rubygems_doc_dir, 'ri'
     puts "Installing #{rubygems_name} ri into #{ri_dir}"
     run_rdoc '--ri', '--op', ri_dir
   end
 
-  unless ARGV.include? '--no-rdoc' then
+  if rdoc then
     rdoc_dir = File.join rubygems_doc_dir, 'rdoc'
     puts "Installing #{rubygems_name} rdoc into #{rdoc_dir}"
     run_rdoc '--op', rdoc_dir
@@ -254,50 +289,6 @@ if File.writable? gem_doc_dir and
 else
   puts "Skipping RDoc generation, #{gem_doc_dir} not writable"
   puts "Set the GEM_HOME environment variable if you want RDoc generated"
-end
-
-# Remove stubs
-
-def stub?(path)
-  return unless File.readable? path
-  File.read(path, 40) =~ /^# This file was generated by RubyGems/ and
-  File.readlines(path).size < 20
-end
-
-puts "As of RubyGems 0.8.0, library stubs are no longer needed."
-puts "Searching $LOAD_PATH for stubs to optionally delete (may take a while)"
-
-gemfiles = Dir[File.join("{#{($LOAD_PATH).join(',')}}", '**', '*.rb')]
-gemfiles = gemfiles.map { |file| File.expand_path file }.uniq
-
-puts "...done."
-
-seen_stub = false
-
-gemfiles.each do |file|
-  next if File.directory? file
-  next unless stub? file
-
-  unless seen_stub then
-    puts "\nRubyGems has detected stubs that can be removed.  Confirm their removal:"
-  end
-  seen_stub = true
-
-  print "  * remove #{file}? [y/n] "
-  answer = gets
-
-  if answer =~ /y/i then
-    unlink file
-    puts "        (removed)"
-  else
-    puts "        (skipping)"
-  end
-end
-
-if seen_stub then
-  puts "Finished with library stubs."
-else
-  puts "No library stubs found."
 end
 
 puts

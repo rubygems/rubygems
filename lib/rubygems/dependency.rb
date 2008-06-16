@@ -10,16 +10,35 @@ require 'rubygems'
 # The Dependency class holds a Gem name and a Gem::Requirement
 
 class Gem::Dependency
+
+  ##
+  # Valid dependency types.
+  #--
+  # When this list is updated, be sure to change
+  # Gem::Specification::CURRENT_SPECIFICATION_VERSION as well.
+
   TYPES = [
+    :development,
     :runtime,
-    :development
   ]
+
+  ##
+  # Dependency name or regular expression.
 
   attr_accessor :name
 
+  ##
+  # Dependency type.
+
   attr_reader :type
 
+  ##
+  # Dependent versions.
+
   attr_writer :version_requirements
+
+  ##
+  # Orders dependencies by name only.
 
   def <=>(other)
     [@name] <=> [other.name]
@@ -92,7 +111,7 @@ class Gem::Dependency
     version_requirements.satisfied_by? version
   end
 
-  def hash
+  def hash # :nodoc:
     name.hash + type.hash + version_requirements.hash
   end
 

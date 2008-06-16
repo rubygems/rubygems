@@ -4,6 +4,13 @@
 	format before running =~ again.  Fixes bug reported by Chad Wooley.
 	* lib/rubygems/commands/stale_command.rb:  `gem stale` lists gems by
 	last access time.  Patch #20593 by Aaron Patterson.
+	* lib/rubygems/setup.rb:  Add --vendor and --destdir to setup.rb for
+	packagers.  Patch #20610 by Richard Brown.  Don't look for stub
+	files to remove any more.
+	* lib/rubygems/specification.rb:  Bump specification version and be
+	backwards compatible with type 2 specs.
+	* lib/rubygems/commands/query_command.rb:  Add installed location to
+	details for installed gems.
 
 2008-06-09  Eric Hodel  <drbrain@segment7.net>
 

@@ -18,7 +18,7 @@ class Gem::ConfigFile
   DEFAULT_VERBOSITY = true
   DEFAULT_UPDATE_SOURCES = true
 
-  config_file = 
+  system_config_path = 
     begin
       require 'Win32API'
 
@@ -29,10 +29,10 @@ class Gem::ConfigFile
 
       path.strip
     rescue LoadError
-      '/etc/gemrc'
+      '/etc'
     end
 
-  SYSTEM_WIDE_CONFIG_FILE = config_file
+  SYSTEM_WIDE_CONFIG_FILE = File.join system_config_path, 'gemrc'
   
   # List of arguments supplied to the config file object.
   attr_reader :args

@@ -246,8 +246,10 @@ class TestGem < RubyGemTestCase
   end
 
   def test_self_path_default
-    orig_APPLE_GEM_HOME = APPLE_GEM_HOME
-    Object.send :remove_const, :APPLE_GEM_HOME
+    if defined? APPLE_GEM_HOME
+      orig_APPLE_GEM_HOME = APPLE_GEM_HOME
+      Object.send :remove_const, :APPLE_GEM_HOME
+    end
     Gem.instance_variable_set :@gem_path, nil
 
     assert_equal [Gem.default_path, Gem.dir], Gem.path

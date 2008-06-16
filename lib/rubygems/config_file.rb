@@ -17,7 +17,8 @@ class Gem::ConfigFile
   DEFAULT_BULK_THRESHOLD = 1000
   DEFAULT_VERBOSITY = true
   DEFAULT_UPDATE_SOURCES = true
-
+  SYSTEM_WIDE_CONFIG_FILE = '/etc/gemrc'
+  
   # List of arguments supplied to the config file object.
   attr_reader :args
 
@@ -81,18 +82,8 @@ class Gem::ConfigFile
     @verbose = DEFAULT_VERBOSITY
     @update_sources = DEFAULT_UPDATE_SOURCES
 
-    begin
-      # HACK $SAFE ok?
-      @hash = open(config_file_name.dup.untaint) {|f| YAML.load(f) }
-    rescue ArgumentError
-      warn "Failed to load #{config_file_name}"
-    rescue Errno::ENOENT
-      # Ignore missing config file error.
-    rescue Errno::EACCES
-      warn "Failed to load #{config_file_name} due to permissions problem."
-    end
-
-    @hash ||= {}
+    @hash = load_file(SYSTEM_WIDE_CONFIG_FILE)
+    @hash.merge!(load_file(config_file_name.dup.untaint))
 
     # HACK these override command-line args, which is bad
     @backtrace = @hash[:backtrace] if @hash.key? :backtrace
@@ -103,6 +94,16 @@ class Gem::ConfigFile
     @update_sources = @hash[:update_sources] if @hash.key? :update_sources
 
     handle_arguments arg_list
+  end
+
+  def load_file(filename)
+    begin
+      YAML.load(File.read(filename)) if filename and File.exist?(filename)
+    rescue ArgumentError
+      warn "Failed to load #{config_file_name}"
+    rescue Errno::EACCES
+      warn "Failed to load #{config_file_name} due to permissions problem."
+    end or {}
   end
 
   # True if the backtrace option has been specified, or debug is on.

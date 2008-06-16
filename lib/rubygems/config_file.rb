@@ -17,7 +17,22 @@ class Gem::ConfigFile
   DEFAULT_BULK_THRESHOLD = 1000
   DEFAULT_VERBOSITY = true
   DEFAULT_UPDATE_SOURCES = true
-  SYSTEM_WIDE_CONFIG_FILE = '/etc/gemrc'
+
+  config_file = 
+    begin
+      require 'Win32API'
+
+      CSIDL_COMMON_APPDATA = 0x0023
+      path = 0.chr * 260
+      SHGetFolderPath = Win32API.new 'shell32', 'SHGetFolderPath', 'LLLLP', 'L'
+      SHGetFolderPath.call 0, CSIDL_COMMON_APPDATA, 0, 1, path
+
+      path.strip
+    rescue LoadError
+      '/etc/gemrc'
+    end
+
+  SYSTEM_WIDE_CONFIG_FILE = config_file
   
   # List of arguments supplied to the config file object.
   attr_reader :args

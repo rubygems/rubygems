@@ -4,7 +4,8 @@
 	* lib/rubygems/specification.rb:  Correctly guard new spec features
 	for older RubyGems.
 	* lib/rubygems/config_file.rb:  Add system-wide config file
-	(/etc/gemrc).  Patch #14723 by Phil Hagelberg.
+	(/etc/gemrc).  Patch #14723 by Phil Hagelberg.  Add windows code to
+	use appropriate directory.  Code by Daniel Berger.
 
 2008-06-15  Eric Hodel  <drbrain@segment7.net>
 

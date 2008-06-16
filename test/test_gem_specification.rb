@@ -623,8 +623,6 @@ end
   s.name = %q{a}
   s.version = \"2\"
 
-  s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION} if s.respond_to? :specification_version=
-
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\") if s.respond_to? :required_rubygems_version=
   s.authors = [\"A User\"]
   s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
@@ -637,8 +635,15 @@ end
   s.rubygems_version = %q{#{Gem::RubyGemsVersion}}
   s.summary = %q{this is a summary}
 
-  if s.respond_to? :specification_version and s.specification_version >= 3 then
-    s.add_runtime_dependency(%q<b>, [\"= 1\"])
+  if s.respond_to? :specification_version then
+    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
+    s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
+
+    if current_version >= 3 then
+      s.add_runtime_dependency(%q<b>, [\"= 1\"])
+    else
+      s.add_dependency(%q<b>, [\"= 1\"])
+    end
   else
     s.add_dependency(%q<b>, [\"= 1\"])
   end
@@ -664,8 +669,6 @@ end
   s.version = \"1\"
   s.platform = Gem::Platform.new(#{expected_platform})
 
-  s.specification_version = 3 if s.respond_to? :specification_version=
-
   s.required_rubygems_version = Gem::Requirement.new(\">= 0\") if s.respond_to? :required_rubygems_version=
   s.authors = [\"A User\"]
   s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
@@ -684,10 +687,19 @@ end
   s.summary = %q{this is a summary}
   s.test_files = [\"test/suite.rb\"]
 
-  if s.respond_to? :specification_version and s.specification_version >= 3 then
-    s.add_runtime_dependency(%q<rake>, [\"> 0.4\"])
-    s.add_runtime_dependency(%q<jabber4r>, [\"> 0.0.0\"])
-    s.add_runtime_dependency(%q<pqa>, [\"> 0.4\", \"<= 0.6\"])
+  if s.respond_to? :specification_version then
+    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
+    s.specification_version = 3
+
+    if current_version >= 3 then
+      s.add_runtime_dependency(%q<rake>, [\"> 0.4\"])
+      s.add_runtime_dependency(%q<jabber4r>, [\"> 0.0.0\"])
+      s.add_runtime_dependency(%q<pqa>, [\"> 0.4\", \"<= 0.6\"])
+    else
+      s.add_dependency(%q<rake>, [\"> 0.4\"])
+      s.add_dependency(%q<jabber4r>, [\"> 0.0.0\"])
+      s.add_dependency(%q<pqa>, [\"> 0.4\", \"<= 0.6\"])
+    end
   else
     s.add_dependency(%q<rake>, [\"> 0.4\"])
     s.add_dependency(%q<jabber4r>, [\"> 0.0.0\"])

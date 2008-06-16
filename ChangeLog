@@ -1,3 +1,9 @@
+2008-06-16  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/indexer.rb:  Fix quick_index generation.
+	* lib/rubygems/specification.rb:  Correctly guard new spec features
+	for older RubyGems.
+
 2008-06-15  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/server.rb:  Store off if we are returning Marshal
@@ -11,7 +17,6 @@
 	backwards compatible with type 2 specs.
 	* lib/rubygems/commands/query_command.rb:  Add installed location to
 	details for installed gems.
-	* lib/rubygems/indexer.rb:  Fix quick_index generation.
 
 2008-06-09  Eric Hodel  <drbrain@segment7.net>
 

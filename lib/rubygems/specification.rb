@@ -824,8 +824,6 @@ module Gem
         result << "  s.platform = #{ruby_code original_platform}"
       end
       result << ""
-      result << "  s.specification_version = #{specification_version} if s.respond_to? :specification_version="
-      result << ""
       result << "  s.required_rubygems_version = #{ruby_code required_rubygems_version} if s.respond_to? :required_rubygems_version="
 
       handled = [
@@ -848,24 +846,39 @@ module Gem
         end
       end
 
-      unless dependencies.empty? then
-        result << nil
-        result << '  if s.respond_to? :specification_version and s.specification_version >= 3 then'
+      result << nil
+      result << "  if s.respond_to? :specification_version then"
+      result << "    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION"
+      result << "    s.specification_version = #{specification_version}"
+      result << nil
 
+      result << "    if current_version >= 3 then"
+
+      unless dependencies.empty? then
         dependencies.each do |dep|
           version_reqs_param = dep.requirements_list.inspect
           dep.instance_variable_set :@type, :runtime if dep.type.nil? # HACK
-          result << "    s.add_#{dep.type}_dependency(%q<#{dep.name}>, #{version_reqs_param})"
+          result << "      s.add_#{dep.type}_dependency(%q<#{dep.name}>, #{version_reqs_param})"
         end
+      end
 
-        result << '  else'
+      result << "    else"
 
+      unless dependencies.empty? then
+        dependencies.each do |dep|
+          version_reqs_param = dep.requirements_list.inspect
+          result << "      s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
+        end
+      end
+
+      result << '    end'
+
+      result << "  else"
         dependencies.each do |dep|
           version_reqs_param = dep.requirements_list.inspect
           result << "    s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
         end
-        result << '  end'
-      end
+      result << "  end"
 
       result << "end"
       result << nil

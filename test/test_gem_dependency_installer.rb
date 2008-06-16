@@ -371,6 +371,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
       inst.install 'a'
     end
 
+    ENV['GEM_HOME'] = @gemhome
     ENV['GEM_PATH'] = [@gemhome, gemhome2].join ':'
     Gem.clear_paths
 

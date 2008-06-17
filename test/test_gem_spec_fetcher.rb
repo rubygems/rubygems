@@ -272,7 +272,7 @@ RubyGems will revert to legacy indexes degrading performance.
 
     assert_equal expected, specs
 
-    cache_dir = File.join Gem.user_home, '.gem', 'specs', 'gems.example.com:80'
+    cache_dir = File.join Gem.user_home, '.gem', 'specs', 'gems.example.com%80'
     assert File.exist?(cache_dir)
 
     cache_file = File.join cache_dir, "specs.#{Gem.marshal_version}"

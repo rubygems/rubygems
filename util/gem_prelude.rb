@@ -2,9 +2,9 @@
 
 # empty gem_prelude.rb
 #
-# p Gem::Enable
+# p defined?(Gem)
 
-if defined?(Gem::Enable) && Gem::Enable then
+if defined?(Gem) then
 
   module Kernel
 
@@ -86,7 +86,9 @@ if defined?(Gem::Enable) && Gem::Enable then
             end
           end
 
-          Kernel.send :undef_method, :gem
+          Kernel.module_eval do
+            undef_method :gem if method_defined? :gem
+          end
 
           $".delete File.join(Gem::ConfigMap[:libdir], 'ruby',
                               Gem::ConfigMap[:ruby_version], 'rubygems.rb')
@@ -186,7 +188,11 @@ if defined?(Gem::Enable) && Gem::Enable then
 
       def const_missing(constant)
         QuickLoader.load_full_rubygems_library
-        Gem.const_get(constant)
+        if Gem.const_defined?(constant)
+          Gem.const_get(constant)
+        else
+          super
+        end
       end
 
       def method_missing(method, *args, &block)

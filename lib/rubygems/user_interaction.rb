@@ -26,7 +26,7 @@ module Gem
     end
 
     ##
-    # Set the default UI.  If the default UI is never explicity set, a simple
+    # Set the default UI.  If the default UI is never explicitly set, a simple
     # console based UserInteraction will be used automatically.
 
     def self.ui=(new_ui)
@@ -229,7 +229,7 @@ module Gem
     end
 
     ##
-    # Terminate the appliation with exit code +status+, running any exit
+    # Terminate the application with exit code +status+, running any exit
     # handlers that might have been defined.
 
     def terminate_interaction(status = 0)

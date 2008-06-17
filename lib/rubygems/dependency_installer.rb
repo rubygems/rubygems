@@ -70,7 +70,7 @@ class Gem::DependencyInstaller
   # Returns a list of pairs of gemspecs and source_uris that match
   # Gem::Dependency +dep+ from both local (Dir.pwd) and remote (Gem.sources)
   # sources.  Gems are sorted with newer gems prefered over older gems, and
-  # local gems prefered over remote gems.
+  # local gems preferred over remote gems.
 
   def find_gems_with_sources(dep)
     gems_and_sources = []

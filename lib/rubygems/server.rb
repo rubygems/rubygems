@@ -10,7 +10,7 @@ require 'rubygems/doc_manager'
 # Gem::Server and allows users to serve gems for consumption by
 # `gem --remote-install`.
 #
-# gem_server starts an HTTP server on the given port and serves the folowing:
+# gem_server starts an HTTP server on the given port and serves the following:
 # * "/" - Browsing of gem spec files for installed gems
 # * "/specs.#{Gem.marshal_version}.gz" - specs name/version/platform index
 # * "/latest_specs.#{Gem.marshal_version}.gz" - latest specs

@@ -115,7 +115,7 @@ class Gem::Requirement
   end
 
   ##
-  # True if this requirement satifised by the Gem::Version +version+.
+  # True if this requirement satisfied by the Gem::Version +version+.
 
   def satisfied_by?(version)
     normalize

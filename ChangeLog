@@ -5,6 +5,9 @@
 	no longer correspond to the same slot.  Fixes indexer bug reported by
 	Chad Wooley.
 	* setup.rb:  Fix --format-executable.  Patch #20698 by Richard Brown.
+	* util/gem_prelude.rb:  Prevent infinite recursion, check for Gem now.
+	Patch from ruby trunk by nobu.
+	* lib/*:  Spelling cleanup.  Patch from trunk by Evan Farrar.
 
 2008-06-16  Eric Hodel  <drbrain@segment7.net>
 

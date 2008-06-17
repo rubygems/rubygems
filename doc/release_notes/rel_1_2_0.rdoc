@@ -11,7 +11,7 @@ New features:
   code for compatibility.
 * RubyGems now has runtime and development dependency types.  Use
   #add_development_dependency and #add_runtime_dependency.  All typeless
-  dependencies are considered to be development dependencies.
+  dependencies are considered to be runtime dependencies.
 * RubyGems will now require rubygems/defaults/operating_system.rb and
   rubygems/defaults/#{RBX_ENGINE}.rb if they exist.  This allows packagers and
   ruby implementers to add custom behavior to RubyGems via these files.

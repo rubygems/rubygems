@@ -20,7 +20,7 @@ class TestGemValidator < RubyGemTestCase
 
   def test_verify_gem_file
     gem_file = File.join @tempdir, 'simple_gem.gem'
-    File.open gem_file, 'wb:ascii-8bit' do |fp| fp.write @simple_gem end
+    File.open gem_file, 'wb' do |fp| fp.write @simple_gem end
 
     assert_equal nil, @validator.verify_gem_file(gem_file)
   end

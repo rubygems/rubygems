@@ -130,7 +130,10 @@ load 'my_exec'
 
     thefile_path = File.join(util_gem_dir, 'thefile')
     assert_equal 'thefile', File.read(thefile_path)
-    assert_equal 0400, File.stat(thefile_path).mode & 0777
+
+    unless Gem.win_platform? then
+      assert_equal 0400, File.stat(thefile_path).mode & 0777
+    end
   end
 
   def test_extract_files_bad_dest

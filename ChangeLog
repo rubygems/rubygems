@@ -8,6 +8,7 @@
 	* util/gem_prelude.rb:  Prevent infinite recursion, check for Gem now.
 	Patch from ruby trunk by nobu.
 	* lib/*:  Spelling cleanup.  Patch from trunk by Evan Farrar.
+	* test/*:  Fixes for win32 test failures reported by Luis Lavena.
 
 2008-06-16  Eric Hodel  <drbrain@segment7.net>
 

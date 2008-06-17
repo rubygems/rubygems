@@ -6,6 +6,7 @@
 	* lib/rubygems/config_file.rb:  Add system-wide config file
 	(/etc/gemrc).  Patch #14723 by Phil Hagelberg.  Add windows code to
 	use appropriate directory.  Code by Daniel Berger.
+	* doc/release_notes/rel_1_2_0.rdoc:  Draft of 1.2.0 release notes.
 
 2008-06-15  Eric Hodel  <drbrain@segment7.net>
 

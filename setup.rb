@@ -154,9 +154,9 @@ Dir.chdir 'bin' do
 
   bin_files.each do |bin_file|
     bin_file_formatted = if format_executable then
-                           bin_file
-                         else
                            Gem.default_exec_format % bin_file
+                         else
+                           bin_file
                          end
 
     dest_file = File.join bin_dir, bin_file_formatted

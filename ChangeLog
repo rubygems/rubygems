@@ -4,6 +4,7 @@
 	on the version string, terms of the version string, so "1" and "1.0"
 	no longer correspond to the same slot.  Fixes indexer bug reported by
 	Chad Wooley.
+	* setup.rb:  Fix --format-executable.  Patch #20698 by Richard Brown.
 
 2008-06-16  Eric Hodel  <drbrain@segment7.net>
 

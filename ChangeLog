@@ -9,6 +9,7 @@
 	Patch from ruby trunk by nobu.
 	* lib/*:  Spelling cleanup.  Patch from trunk by Evan Farrar.
 	* test/*:  Fixes for win32 test failures reported by Luis Lavena.
+	* util/gem_prelude.rb:  Only remove methods added by gem_prelude.rb.
 
 2008-06-16  Eric Hodel  <drbrain@segment7.net>
 

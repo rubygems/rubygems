@@ -1,9 +1,16 @@
+2008-06-18  Chad Woolley  <thewoolleyman@gmail.com>
+
+	* lib/rubygems/config_file.rb:  Fix --config-file option with no
+	equals and subsequent options to properly assign config file.
+	Previously config file was overwritten by subsequent option.
+	Fixes Bug 16688.
+
 2008-06-17  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/version.rb:  Gem::Version #hash and #eql? now operate
 	on the version string, terms of the version string, so "1" and "1.0"
 	no longer correspond to the same slot.  Fixes indexer bug reported by
-	Chad Wooley.
+	Chad Woolley.
 	* setup.rb:  Fix --format-executable.  Patch #20698 by Richard Brown.
 	* util/gem_prelude.rb:  Prevent infinite recursion, check for Gem now.
 	Patch from ruby trunk by nobu.
@@ -24,7 +31,7 @@
 2008-06-15  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/server.rb:  Store off if we are returning Marshal
-	format before running =~ again.  Fixes bug reported by Chad Wooley.
+	format before running =~ again.  Fixes bug reported by Chad Woolley.
 	* lib/rubygems/commands/stale_command.rb:  `gem stale` lists gems by
 	last access time.  Patch #20593 by Aaron Patterson.
 	* lib/rubygems/setup.rb:  Add --vendor and --destdir to setup.rb for

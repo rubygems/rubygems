@@ -1,3 +1,8 @@
+2008-06-19  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/dependency_installer.rb:  Ensure that the entire
+	dependency chain is installed.  Fixes bug reported by Chad Wooley.
+
 2008-06-18  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/dependency_command.rb:  Restore matching

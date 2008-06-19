@@ -1,9 +1,15 @@
+2008-06-18  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/dependency_command.rb:  Restore matching
+	everything when no name is specified, regexp matching.  Fixes bug
+	#20716, bug #20717 by Chad Wooley.
+
 2008-06-18  Chad Woolley  <thewoolleyman@gmail.com>
 
 	* lib/rubygems/config_file.rb:  Fix --config-file option with no
 	equals and subsequent options to properly assign config file.
 	Previously config file was overwritten by subsequent option.
-	Fixes Bug 16688.
+	Fixes bug #16688.
 
 2008-06-17  Eric Hodel  <drbrain@segment7.net>
 

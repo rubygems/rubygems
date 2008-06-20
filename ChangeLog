@@ -1,3 +1,8 @@
+2008-06-20  Luis Lavena  <luislavena@gmail.com>
+
+	* setup.rb: Only prepend install_destdir when especified. Fixes
+	installation issues related to Windows paths (/C:/...)
+
 2008-06-19  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/dependency_installer.rb:  Ensure that the entire

@@ -128,8 +128,11 @@ else
   end
 end
 
-lib_dir = File.join install_destdir, lib_dir
-bin_dir = File.join install_destdir, bin_dir
+unless install_destdir.empty?
+  lib_dir = File.join install_destdir, lib_dir
+  bin_dir = File.join install_destdir, bin_dir
+end
+
 mkdir_p lib_dir
 mkdir_p bin_dir
 

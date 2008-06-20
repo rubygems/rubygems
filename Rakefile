@@ -336,7 +336,8 @@ task :install do
   svnversion = `svnversion`.split(':').last.sub(/[^\d]/, '').strip
 
   unless svnversion.empty? then
-    current_version = Gem::RubyGemsVersion.split '.', 4
+    File.read('lib/rubygems/rubygems_version.rb') =~ /RubyGemsVersion = '(.*)'/
+    current_version = $1.split '.', 4
     rubygems_version = (current_version[0, 3] << svnversion).join '.'
     rubygems_version_file = File.join Gem::ConfigMap[:sitelibdir], 'rubygems',
                                       'rubygems_version.rb'

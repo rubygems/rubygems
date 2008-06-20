@@ -1,3 +1,8 @@
+2008-06-20  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/uninstaller.rb:  Improve output when a gem to uninstall
+	isn't found.  Bug #20746 reported by Chad Wooley.
+
 2008-06-20  Luis Lavena  <luislavena@gmail.com>
 
 	* setup.rb: Only prepend install_destdir when especified. Fixes

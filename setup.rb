@@ -90,6 +90,8 @@ HELP
   end
 end
 
+ENV['GEM_HOME'] ||= install_destdir + Gem.default_dir 
+
 require 'fileutils'
 require 'rbconfig'
 require 'tmpdir'
@@ -250,7 +252,7 @@ end
 
 # install RDoc
 
-gem_doc_dir = File.join install_destdir, Gem.dir, 'doc'
+gem_doc_dir = File.join Gem.dir, 'doc'
 rubygems_name = "rubygems-#{Gem::RubyGemsVersion}"
 rubygems_doc_dir = File.join gem_doc_dir, rubygems_name
 

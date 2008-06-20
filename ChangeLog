@@ -1,13 +1,13 @@
 2008-06-19  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/dependency_installer.rb:  Ensure that the entire
-	dependency chain is installed.  Fixes bug reported by Chad Wooley.
+	dependency chain is installed.  Fixes bug reported by Chad Woolley.
 
 2008-06-18  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/dependency_command.rb:  Restore matching
 	everything when no name is specified, regexp matching.  Fixes bug
-	#20716, bug #20717 by Chad Wooley.
+	#20716, bug #20717 by Chad Woolley.
 
 2008-06-18  Chad Woolley  <thewoolleyman@gmail.com>
 

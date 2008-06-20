@@ -4,6 +4,8 @@
 	isn't found.  Bug #20746 reported by Chad Wooley.
 	* setup.rb:  Fix rdoc installation with --destdir.  Patch #20739 by
 	Matthew Kent.
+	* lib/rubygems/commands/install_command.rb:  Don't reset GEM_PATH when
+	installing.  Fixes Bug #20746 by Chad Wooley.
 
 2008-06-20  Luis Lavena  <luislavena@gmail.com>
 

@@ -208,17 +208,18 @@ module Gem
 
   ##
   # See if a given gem is available.
-  
+
   def self.available?(gem, *requirements)
     requirements = Gem::Requirement.default if requirements.empty?
-    
-    unless gem.respond_to?(:name) && gem.respond_to?(:version_requirements) 
-      gem = Gem::Dependency.new(gem, requirements)
+
+    unless gem.respond_to?(:name) and
+           gem.respond_to?(:version_requirements) then
+      gem = Gem::Dependency.new gem, requirements
     end
-    
+
     !Gem.source_index.search(gem).empty?
   end
-  
+
   ##
   # The mode needed to read a file as straight binary.
 

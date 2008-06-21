@@ -158,7 +158,9 @@ class Gem::RemoteFetcher
 
     response = request uri, Net::HTTP::Head
 
-    if response.code !~ /^2/ then
+    case response
+    when Net::HTTPOK then
+    else
       raise FetchError.new("bad response #{response.message} #{response.code}", uri)
     end
 
@@ -290,6 +292,7 @@ class Gem::RemoteFetcher
     connection = connection_for uri
 
     retried = false
+    bad_response = false
 
     # HACK work around EOFError bug in Net::HTTP
     # NOTE Errno::ECONNABORTED raised a lot on Windows, and make impossible
@@ -299,6 +302,13 @@ class Gem::RemoteFetcher
       response = connection.request request
       say "#{request.method} #{response.code} #{response.message}: #{uri}" if
         Gem.configuration.really_verbose
+    rescue Net::HTTPBadResponse
+      reset connection
+
+      raise FetchError.new('too many bad responses', uri) if bad_response
+
+      bad_response = true
+      retry
     rescue EOFError, Errno::ECONNABORTED, Errno::ECONNRESET
       requests = @requests[connection.object_id]
       say "connection reset after #{requests} requests, retrying" if
@@ -306,15 +316,23 @@ class Gem::RemoteFetcher
 
       raise FetchError.new('too many connection resets', uri) if retried
 
-      @requests.delete connection.object_id
+      reset connection
 
-      connection.finish
-      connection.start
       retried = true
       retry
     end
 
     response
+  end
+
+  ##
+  # Resets HTTP connection +connection+.
+
+  def reset(connection)
+    @requests.delete connection.object_id
+
+    connection.finish
+    connection.start
   end
 
   ##

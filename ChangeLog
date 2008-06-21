@@ -1,3 +1,10 @@
+2008-06-21  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb:  Load specifications from the future.
+	Roll back specification version change.
+	* lib/rubygems/remote_fetcher.rb:  Reset connection when an HTTP
+	server misbehaves.
+
 2008-06-20  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/uninstaller.rb:  Improve output when a gem to uninstall

@@ -5,6 +5,9 @@
 	* lib/rubygems/remote_fetcher.rb:  Reset connection when an HTTP
 	server misbehaves.
 	* setup.rb:  Fix --destdir for windows.
+	* doc/release_notes/rel_1_2_0.rdoc:  Bugs in RubyGems were
+	unintentionally added, order bug fixes by importance.
+	* lib/rubygems/rubygems_version.rb:  1.2.0.
 
 2008-06-20  Eric Hodel  <drbrain@segment7.net>
 

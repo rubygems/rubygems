@@ -284,7 +284,11 @@ PKG_FILES = FileList[
 ]
 
 PKG_FILES.exclude %r(^test/temp(/|$))
-PKG_FILES.exclude %r(*.rbc$)
+PKG_FILES.exclude %r(\*\.rbc$)
+
+task :package_files do
+  puts PKG_FILES.join("\n")
+end
 
 Rake::PackageTask.new("package") do |p|
   p.name = PKG_NAME
@@ -309,7 +313,7 @@ installation of RubyGems before this update can be applied.
   s.email = "rubygems-developers@rubyforge.org"
   s.homepage = "http://rubygems.rubyforge.org"
   s.rubyforge_project = "rubygems"
-  s.bindir = "bin"                               # Use these for applications.
+  s.bindir = "bin" # Use these for applications.
   s.executables = ["update_rubygems"]
   certdir = ENV['CERT_DIR']
   if certdir

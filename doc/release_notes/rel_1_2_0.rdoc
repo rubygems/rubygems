@@ -1,6 +1,6 @@
 = Announce: RubyGems Release 1.2.0
 
-Release 1.2.0 adds new features and some bugs.
+Release 1.2.0 adds new features and fixes some bugs.
 
 New features:
 
@@ -14,24 +14,27 @@ New features:
   dependencies are considered to be runtime dependencies.
 * RubyGems will now require rubygems/defaults/operating_system.rb and
   rubygems/defaults/#{RBX_ENGINE}.rb if they exist.  This allows packagers and
-  ruby implementers to add custom behavior to RubyGems via these files.
+  ruby implementers to add custom behavior to RubyGems via these files.  (If
+  the RubyGems API is insufficient, please suggest improvements via the
+  RubyGems list.)
 * /etc/gemrc (and windows equivalent) for global settings
 * setup.rb now handles --vendor and --destdir for packagers
 * `gem stale` command that lists gems by last access time
 
 Bugs Fixed:
 
+* File modes from gems are now honored, patch #19737
+* Marshal Gem::Specification objects from the future can now be loaded.
+* A trailing / is now added to remote sources when missing, bug #20134
+* Gems with legacy platforms will now be correctly uninstalled, patch #19877
 * `gem install --no-wrappers` followed by `gem install --wrappers` no longer
   overwrites executables
 * `gem pristine` now forces reinstallation of gems, bug #20387
-* A trailing / is now added to remote sources when missing, bug #20134
 * RubyGems gracefully handles ^C while loading .gemspec files from disk, bug
   #20523
 * Paths are expanded in more places, bug #19317, bug #19896
 * Gem::DependencyInstaller resets installed gems every install, bug #19444
-* Gems with legacy platforms will now be correctly uninstalled, patch #19877
 * Gem.default_path is now honored if GEM_PATH is not set, patch #19502
-* File modes from gems are now honored, patch #19737
 
 Other Changes Include:
 
@@ -39,7 +42,7 @@ Other Changes Include:
   * stub files created by RubyGems 0.7.x and older are no longer removed.  When
     upgrading from these ancient versions, upgrade to 1.1.x first to clean up
     stubs.
-  * RDoc is no longer required untill necessary, patch #20414
+  * RDoc is no longer required until necessary, patch #20414
 * `gem server`
   * Now completely matches the output of `gem generate_index` and
     has correct content types
@@ -48,12 +51,15 @@ Other Changes Include:
 * `gem query --details` and friends now display author, homepage, rubyforge url
   and installed location
 * `gem install` without -i no longer reinstalls dependencies if they are in
-  GEM_PATH and not in GEM_HOME
+  GEM_PATH but not in GEM_HOME
 * Gem::RemoteFetcher now performs persistent connections for HEAD requests,
   bug #7973
 
 For a full list of changes to RubyGems and the contributor for each change, see
 the ChangeLog file.
+
+Special thanks to Chad Wooley for backwards compatibility testing and Luis
+Lavena for continuing windows support.
 
 == How can I get RubyGems?
 

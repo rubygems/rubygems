@@ -4,6 +4,7 @@
 	Roll back specification version change.
 	* lib/rubygems/remote_fetcher.rb:  Reset connection when an HTTP
 	server misbehaves.
+	* setup.rb:  Fix --destdir for windows.
 
 2008-06-20  Eric Hodel  <drbrain@segment7.net>
 

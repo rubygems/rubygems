@@ -90,7 +90,10 @@ HELP
   end
 end
 
-ENV['GEM_HOME'] ||= install_destdir + Gem.default_dir 
+unless install_destdir.empty? then
+  ENV['GEM_HOME'] ||= File.join(install_destdir,
+                                Gem.default_dir.sub(/\A[a-z]:/i, ''))
+end
 
 require 'fileutils'
 require 'rbconfig'

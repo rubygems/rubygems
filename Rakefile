@@ -282,7 +282,9 @@ PKG_FILES = FileList[
   "setup.rb",
   "test/**/*"
 ]
-PKG_FILES.exclude(%r(^test/temp(/|$)))
+
+PKG_FILES.exclude %r(^test/temp(/|$))
+PKG_FILES.exclude %r(*.rbc$)
 
 Rake::PackageTask.new("package") do |p|
   p.name = PKG_NAME

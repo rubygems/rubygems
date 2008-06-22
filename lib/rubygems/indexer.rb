@@ -317,7 +317,8 @@ class Gem::Indexer
       dst_name = File.join @dest_directory, file
 
       FileUtils.rm_rf dst_name, :verbose => verbose
-      FileUtils.mv src_name, @dest_directory, :verbose => verbose
+      FileUtils.mv src_name, @dest_directory, :verbose => verbose,
+                   :force => true
     end
   end
 

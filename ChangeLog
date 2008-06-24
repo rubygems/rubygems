@@ -1,3 +1,15 @@
+# -*- coding: utf-8 -*-
+2008-06-24  Phil Hagelberg <technomancy@gmail.com>
+
+	* lib/rubygems/installer.rb: Fall back on ~/.gem if GEM_HOME is
+	not writable.
+	* lib/rubygems/install_update_options.rb: Allow --user-install or
+	--no-user-install command-line switch to explicitly force whether
+	or not ~/.gem should be used.
+	* lib/rubygems/remote_fetcher.rb: Use ~/.gem/cache if cache dir is
+	not writable.
+	* test/gemutilities.rb: Use MockGemUi for all tests.
+
 2008-06-21  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb:  Load specifications from the future.

@@ -288,6 +288,10 @@ class Gem::RemoteFetcher
     request.add_field 'Connection', 'keep-alive'
     request.add_field 'Keep-Alive', '30'
 
+    if last_modified then
+      request.add_field 'If-Modified-Since', last_modified.rfc2822
+    end
+
     connection = connection_for uri
 
     retried = false

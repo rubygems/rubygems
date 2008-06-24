@@ -1,5 +1,6 @@
 require 'net/http'
 require 'stringio'
+require 'time'
 require 'uri'
 
 require 'rubygems'
@@ -133,7 +134,7 @@ class Gem::RemoteFetcher
   # Downloads +uri+ and returns it as a String.
 
   def fetch_path(uri, mtime = nil)
-    open_uri_or_path(uri) do |input|
+    open_uri_or_path(uri, mtime) do |input|
       data = input.read
       data = Gem.gunzip data if uri.to_s =~ /gz$/
       data
@@ -247,24 +248,22 @@ class Gem::RemoteFetcher
   # Read the data from the (source based) URI, but if it is a file:// URI,
   # read from the filesystem instead.
 
-  def open_uri_or_path(uri, depth = 0, &block)
-    if file_uri?(uri)
-      open(get_file_uri_path(uri), &block)
+  def open_uri_or_path(uri, last_modified = nil, depth = 0, &block)
+    return open(get_file_uri_path(uri), &block) if file_uri? uri
+
+    uri = URI.parse uri unless URI::Generic === uri
+
+    response = request uri, Net::HTTP::Get, last_modified
+
+    case response
+    when Net::HTTPOK then
+      block.call(StringIO.new(response.body)) if block
+    when Net::HTTPRedirection then
+      raise FetchError.new('too many redirects', uri) if depth > 10
+
+      open_uri_or_path(response['Location'], last_modified, depth + 1, &block)
     else
-      uri = URI.parse uri unless URI::Generic === uri
-
-      response = request uri
-
-      case response
-      when Net::HTTPOK then
-        block.call(StringIO.new(response.body)) if block
-      when Net::HTTPRedirection then
-        raise FetchError.new('too many redirects', uri) if depth > 10
-
-        open_uri_or_path(response['Location'], depth + 1, &block)
-      else
-        raise FetchError.new("bad response #{response.message} #{response.code}", uri)
-      end
+      raise FetchError.new("bad response #{response.message} #{response.code}", uri)
     end
   end
 
@@ -273,7 +272,7 @@ class Gem::RemoteFetcher
   # a Net::HTTP response object.  request maintains a table of persistent
   # connections to reduce connect overhead.
 
-  def request(uri, request_class = Net::HTTP::Get)
+  def request(uri, request_class, last_modified = nil)
     request = request_class.new uri.request_uri
 
     unless uri.nil? || uri.user.nil? || uri.user.empty? then
@@ -288,6 +287,10 @@ class Gem::RemoteFetcher
     request.add_field 'User-Agent', ua
     request.add_field 'Connection', 'keep-alive'
     request.add_field 'Keep-Alive', '30'
+
+    if last_modified then
+      request.add_field 'If-Modified-Since', last_modified.rfc2822
+    end
 
     connection = connection_for uri
 

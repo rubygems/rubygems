@@ -376,7 +376,7 @@ gems:
   def test_fetch_path_io_error
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri) raise EOFError; end
+    def fetcher.open_uri_or_path(uri, mtime) raise EOFError; end
 
     e = assert_raise Gem::RemoteFetcher::FetchError do
       fetcher.fetch_path 'uri'
@@ -389,7 +389,7 @@ gems:
   def test_fetch_path_socket_error
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri) raise SocketError; end
+    def fetcher.open_uri_or_path(uri, mtime) raise SocketError; end
 
     e = assert_raise Gem::RemoteFetcher::FetchError do
       fetcher.fetch_path 'uri'
@@ -402,7 +402,7 @@ gems:
   def test_fetch_path_system_call_error
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri);
+    def fetcher.open_uri_or_path(uri, mtime = nil)
       raise Errno::ECONNREFUSED, 'connect(2)'
     end
 
@@ -417,6 +417,11 @@ gems:
 
   def test_fetch_path_unmodified
     fetcher = Gem::RemoteFetcher.new nil
+
+    def fetcher.open_uri_or_path(uri, mtime)
+      yield StringIO.new('')
+    end
+
     util_stub_connection_for o(:request => o(:body => '', :code => 304,
                                              :date => Time.at(0).to_s))
 
@@ -493,9 +498,9 @@ gems:
     conn = { 'gems.example.com:80' => conn }
     fetcher.instance_variable_set :@connections, conn
 
-    fetcher.send :open_uri_or_path, 'http://gems.example.com/redirect' do |io|
-      assert_equal 'real_path', io.read
-    end
+    data = fetcher.open_uri_or_path 'http://gems.example.com/redirect'
+
+    assert_equal 'real_path', data
   end
 
   def test_open_uri_or_path_limited_redirects
@@ -513,7 +518,7 @@ gems:
     fetcher.instance_variable_set :@connections, conn
 
     e = assert_raise Gem::RemoteFetcher::FetchError do
-      fetcher.send :open_uri_or_path, 'http://gems.example.com/redirect'
+      fetcher.open_uri_or_path 'http://gems.example.com/redirect'
     end
 
     assert_equal 'too many redirects (http://gems.example.com/redirect)',
@@ -524,7 +529,7 @@ gems:
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
     util_stub_connection_for o(:request => o(:body => :junk, :code => 200))
 
-    response = @fetcher.request uri
+    response = @fetcher.request uri, Net::HTTP::Get
 
     assert_equal 200, response.code
     assert_equal :junk, response.body

@@ -75,7 +75,12 @@ class Gem::RemoteFetcher
   # always replaced.
 
   def download(spec, source_uri, install_dir = Gem.dir)
-    cache_dir = File.join install_dir, 'cache'
+    if File.writable?(install_dir)
+      cache_dir = File.join install_dir, 'cache'
+    else
+      cache_dir = File.join(ENV['HOME'], '.gem', 'cache')
+    end
+
     gem_file_name = "#{spec.full_name}.gem"
     local_gem_path = File.join cache_dir, gem_file_name
 

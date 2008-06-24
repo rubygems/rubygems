@@ -248,6 +248,7 @@ gems:
     install_dir = File.join @tempdir, 'more_gems'
 
     a1_cache_gem = File.join install_dir, 'cache', "#{@a1.full_name}.gem"
+    FileUtils.mkdir_p(File.dirname(a1_cache_gem))
     actual = fetcher.download(@a1, 'http://gems.example.com', install_dir)
 
     assert_equal a1_cache_gem, actual
@@ -257,7 +258,7 @@ gems:
     assert File.exist?(a1_cache_gem)
   end
 
-  unless win_platform? then # File.chmod doesn't work
+  unless win_platform? # File.chmod doesn't work
     def test_download_local_read_only
       FileUtils.mv @a1_gem, @tempdir
       local_path = File.join @tempdir, "#{@a1.full_name}.gem"
@@ -275,19 +276,16 @@ gems:
     end
     
     def test_download_read_only
-      fetch_dir = File.join(@tempdir, 'more_gems')
-      FileUtils.mkdir(fetch_dir)
       File.chmod 0555, File.join(@gemhome, 'cache')
-      File.chmod 0555, @tempdir
+      File.chmod 0555, File.join(@gemhome)
 
-      Dir.chdir fetch_dir do
-        fetcher = util_fuck_with_fetcher File.read(@a1_gem)
-        fetcher.download(@a1, 'http://gems.example.com')
-        assert File.exist?(File.join(fetch_dir, "#{@a1.full_name}.gem"))
-      end
+      fetcher = util_fuck_with_fetcher File.read(@a1_gem)
+      fetcher.download(@a1, 'http://gems.example.com')
+      assert File.exist?(File.join(@userhome, '.gem',
+                                   'cache', "#{@a1.full_name}.gem"))
     ensure
+      File.chmod 0755, File.join(@gemhome)
       File.chmod 0755, File.join(@gemhome, 'cache')
-      File.chmod 0755, @tempdir
     end
   end
 

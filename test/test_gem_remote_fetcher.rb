@@ -502,6 +502,10 @@ gems:
                  e.message
   end
 
+  def test_request
+    flunk "we suck"
+  end
+
   def test_zip
     use_ui @ui do
       self.class.enable_zip = true

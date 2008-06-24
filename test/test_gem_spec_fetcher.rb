@@ -294,7 +294,7 @@ RubyGems will revert to legacy indexes degrading performance.
       Marshal.dump @latest_specs, io
     end
 
-    specs = @sf.load_specs @uri, 'specs'
+    specs = @sf.load_specs @uri, 'latest_specs'
 
     assert_equal @specs, specs
   end

@@ -190,8 +190,15 @@ class Gem::SpecFetcher
 
     if File.exist? local_file then
       spec_dump = @fetcher.fetch_path spec_path, File.mtime(local_file)
+
+      #if spec_dump.nil? then
+      #  spec_dump = Gem.read_binary local_file
+      #else
+      #  loaded = true
+      #end
     else
       spec_dump = @fetcher.fetch_path spec_path
+      loaded = true
     end
 
     specs = Marshal.load spec_dump

@@ -134,9 +134,9 @@ class Gem::RemoteFetcher
 
   def fetch_path(uri)
     open_uri_or_path(uri) do |input|
-      spec_dump = input.read
-      spec_dump = Gem.gunzip spec_dump if uri.to_s =~ /gz$/
-      spec_dump
+      data = input.read
+      data = Gem.gunzip data if uri.to_s =~ /gz$/
+      data
     end
   rescue FetchError
     raise

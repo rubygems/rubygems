@@ -40,7 +40,12 @@ class Gem::FakeFetcher
       raise Gem::RemoteFetcher::FetchError.new('no data', path)
     end
 
-    data.respond_to?(:call) ? data.call : data
+    if data.respond_to?(:call) then
+      data.call
+    else
+      data = Gem.gunzip data if path.to_s =~ /gz$/
+      data
+    end
   end
 
   def fetch_size(path)

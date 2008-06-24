@@ -26,6 +26,10 @@ module Gem
   def self.win_platform=(val)
     @@win_platform = val
   end
+  
+  module DefaultUserInteraction
+    @ui = MockGemUi.new
+  end
 end
 
 class RubyGemTestCase < Test::Unit::TestCase

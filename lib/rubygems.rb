@@ -650,6 +650,7 @@ module Gem
 
       @gem_path << Gem.dir
     else
+      # TODO: should this be Gem.default_path instead?
       @gem_path = [Gem.dir]
     end
 

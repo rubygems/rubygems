@@ -86,6 +86,7 @@ class Gem::Installer
     end
 
     if !File.writable? @gem_home or
+        # TODO: Shouldn't have to test for existence of bindir; tests need it.
         (File.exist? Gem.bindir and !File.writable? Gem.bindir)
       if options[:user_install] == false # You explicitly don't want to use ~
         raise Gem::FilePermissionError, @gem_home

@@ -175,8 +175,6 @@ class Gem::RemoteFetcher
     raise FetchError.new("#{e.message} (#{e.class})\n\tfetching size", uri)
   end
 
-  private
-
   def escape(str)
     return unless str
     URI.escape(str)

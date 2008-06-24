@@ -106,6 +106,8 @@ gems:
     @a1, @a1_gem = util_gem 'a', '1' do |s| s.executables << 'a_bin' end
 
     Gem::RemoteFetcher.fetcher = nil
+
+    @fetcher = Gem::RemoteFetcher.fetcher
   end
 
   def test_self_fetcher
@@ -117,7 +119,10 @@ gems:
   def test_self_fetcher_with_proxy
     proxy_uri = 'http://proxy.example.com'
     Gem.configuration[:http_proxy] = proxy_uri
+    Gem::RemoteFetcher.fetcher = nil
+
     fetcher = Gem::RemoteFetcher.fetcher
+
     assert_not_nil fetcher
     assert_kind_of Gem::RemoteFetcher, fetcher
     assert_equal proxy_uri, fetcher.instance_variable_get(:@proxy_uri).to_s
@@ -503,6 +508,22 @@ gems:
   end
 
   def test_request
+    uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    response = @fetcher.request uri
+
+    assert_equal 200, response.code
+    assert_equal :junk, response.body
+
+    flunk "we suck"
+  end
+
+  def test_request_head
+    uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    response = @fetcher.request uri, Net::HTTP::Head
+
+    assert_equal 200, response.code
+    assert_equal '', response.body
+
     flunk "we suck"
   end
 

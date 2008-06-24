@@ -283,8 +283,7 @@ class TestGem < RubyGemTestCase
     path_count = Gem.path.size
     path_count -= 1 if defined? APPLE_GEM_HOME
     Gem.clear_paths
-    util_ensure_gem_dirs
-
+    
     ENV['GEM_PATH'] = @additional.join(File::PATH_SEPARATOR)
 
     assert_equal @additional, Gem.path[0,2]

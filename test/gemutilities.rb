@@ -7,6 +7,8 @@
 
 at_exit { $SAFE = 1 }
 
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+
 require 'fileutils'
 require 'test/unit'
 require 'tmpdir'
@@ -83,8 +85,6 @@ class RubyGemTestCase < Test::Unit::TestCase
                                               'private_key.pem')
     @public_cert = File.expand_path File.join(File.dirname(__FILE__),
                                               'public_cert.pem')
-    $stdout = File.new('/dev/null','w')
-    $stderr = File.new('/dev/null','w')
   end
 
   def teardown
@@ -102,8 +102,6 @@ class RubyGemTestCase < Test::Unit::TestCase
     ENV.delete 'GEM_PATH'
 
     Gem.clear_paths
-    $stdout = STDOUT
-    $stderr = STDERR
   end
 
   def install_gem gem

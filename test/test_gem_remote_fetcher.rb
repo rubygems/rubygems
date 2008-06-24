@@ -381,10 +381,20 @@ gems:
     end
   end
 
+  def test_fetch_path_gzip
+    fetcher = Gem::RemoteFetcher.new nil
+
+    def fetcher.open_uri_or_path(uri, mtime, head = nil)
+      Gem.gzip 'foo'
+    end
+
+    assert_equal 'foo', fetcher.fetch_path(@uri + 'foo.gz')
+  end
+
   def test_fetch_path_io_error
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri, mtime, i = 1)
+    def fetcher.open_uri_or_path(uri, mtime, head = nil)
       raise EOFError
     end
 
@@ -399,7 +409,7 @@ gems:
   def test_fetch_path_socket_error
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri, mtime, hate = 2)
+    def fetcher.open_uri_or_path(uri, mtime, head = nil)
       raise SocketError
     end
 
@@ -414,7 +424,7 @@ gems:
   def test_fetch_path_system_call_error
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri, mtime = nil, drbrain = 3)
+    def fetcher.open_uri_or_path(uri, mtime = nil, head = nil)
       raise Errno::ECONNREFUSED, 'connect(2)'
     end
 
@@ -430,7 +440,7 @@ gems:
   def test_fetch_path_unmodified
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri, mtime, tons = 4)
+    def fetcher.open_uri_or_path(uri, mtime, head = nil)
       ''
     end
 

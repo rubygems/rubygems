@@ -527,7 +527,7 @@ gems:
 
   def test_request
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
-    util_stub_connection_for o(:request => o(:body => :junk, :code => 200))
+    util_stub_connection_for o(:body => :junk, :code => 200)
 
     response = @fetcher.request uri, Net::HTTP::Get
 
@@ -537,7 +537,7 @@ gems:
 
   def test_request_head
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
-    util_stub_connection_for o(:request => o(:body => '', :code => 200))
+    util_stub_connection_for o(:body => '', :code => 200)
     response = @fetcher.request uri, Net::HTTP::Head
 
     assert_equal 200, response.code
@@ -546,12 +546,14 @@ gems:
 
   def test_request_unmodifed
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
-    util_stub_connection_for o(:request => o(:body => '', :code => 304,
-                                             :date => Time.at(0).to_s))
-    response = @fetcher.request uri, Net::HTTP::Head
+    conn = util_stub_connection_for o(:body => '', :code => 304)
+
+    response = @fetcher.request uri, Net::HTTP::Head, Time.now
 
     assert_equal 304, response.code
     assert_equal '', response.body
+
+    assert conn.requests.first['if-modified-since']
   end
 
   def test_zip
@@ -581,15 +583,15 @@ gems:
   end
 
   def util_stub_connection_for *data
-    def @fetcher.stub_data= ary
-      @stub_data = ary
+    def @fetcher.connection= conn
+      @conn = conn
     end
 
-    def @fetcher.connection_for blah
-      return @stub_data.shift
+    def @fetcher.connection_for uri
+      @conn
     end
 
-    @fetcher.stub_data = data
+    @fetcher.connection = Conn.new data
   end
 
   def assert_error(exception_class=Exception)
@@ -608,6 +610,20 @@ gems:
 
   def assert_data_from_proxy(data)
     assert_block("Data is not from proxy") { data =~ /0\.4\.2/ }
+  end
+
+  class Conn
+    attr_reader :requests
+
+    def initialize(responses)
+      @responses = responses
+      @requests = []
+    end
+
+    def request(req)
+      @requests << req
+      @responses.shift
+    end
   end
 
   class NilLog < WEBrick::Log

@@ -10,6 +10,11 @@ require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'webrick'
 require 'zlib'
 require 'rubygems/remote_fetcher'
+require 'ostruct'
+
+def o hash
+  OpenStruct.new(hash)
+end
 
 # = Testing Proxy Settings
 #
@@ -509,22 +514,21 @@ gems:
 
   def test_request
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    util_stub_connection_for o(:request => o(:body => :junk, :code => 200))
+
     response = @fetcher.request uri
 
     assert_equal 200, response.code
     assert_equal :junk, response.body
-
-    flunk "we suck"
   end
 
   def test_request_head
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    util_stub_connection_for o(:request => o(:body => '', :code => 200))
     response = @fetcher.request uri, Net::HTTP::Head
 
     assert_equal 200, response.code
     assert_equal '', response.body
-
-    flunk "we suck"
   end
 
   def test_zip
@@ -553,7 +557,17 @@ gems:
     end
   end
 
-  private
+  def util_stub_connection_for *data
+    def @fetcher.stub_data= ary
+      @stub_data = ary
+    end
+
+    def @fetcher.connection_for blah
+      return @stub_data.shift
+    end
+
+    @fetcher.stub_data = data
+  end
 
   def assert_error(exception_class=Exception)
     got_exception = false

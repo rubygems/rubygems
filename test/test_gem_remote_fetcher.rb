@@ -273,6 +273,22 @@ gems:
     ensure
       File.chmod 0755, File.join(@gemhome, 'cache')
     end
+    
+    def test_download_read_only
+      fetch_dir = File.join(@tempdir, 'more_gems')
+      FileUtils.mkdir(fetch_dir)
+      File.chmod 0555, File.join(@gemhome, 'cache')
+      File.chmod 0555, @tempdir
+
+      Dir.chdir fetch_dir do
+        fetcher = util_fuck_with_fetcher File.read(@a1_gem)
+        fetcher.download(@a1, 'http://gems.example.com')
+        assert File.exist?(File.join(fetch_dir, "#{@a1.full_name}.gem"))
+      end
+    ensure
+      File.chmod 0755, File.join(@gemhome, 'cache')
+      File.chmod 0755, @tempdir
+    end
   end
 
   def test_download_platform_legacy

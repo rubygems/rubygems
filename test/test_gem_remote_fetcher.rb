@@ -415,6 +415,14 @@ gems:
     assert_equal 'uri', e.uri
   end
 
+  def test_fetch_path_unmodified
+    fetcher = Gem::RemoteFetcher.new nil
+    util_stub_connection_for o(:request => o(:body => '', :code => 304,
+                                             :date => Time.at(0).to_s))
+
+    assert_equal '', fetcher.fetch_path(URI.parse(@gem_repo), Time.at(0))
+  end
+
   def test_get_proxy_from_env_empty
     orig_env_HTTP_PROXY = ENV['HTTP_PROXY']
     orig_env_http_proxy = ENV['http_proxy']

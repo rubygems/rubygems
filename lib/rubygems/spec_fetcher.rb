@@ -187,15 +187,16 @@ class Gem::SpecFetcher
     spec_path  = source_uri + "#{file_name}.gz"
     cache_dir  = cache_dir spec_path
     local_file = File.join(cache_dir, file_name)
+    loaded     = false
 
     if File.exist? local_file then
       spec_dump = @fetcher.fetch_path spec_path, File.mtime(local_file)
 
-      #if spec_dump.nil? then
-      #  spec_dump = Gem.read_binary local_file
-      #else
-      #  loaded = true
-      #end
+      if spec_dump.empty? then
+        spec_dump = Gem.read_binary local_file
+      else
+        loaded = true
+      end
     else
       spec_dump = @fetcher.fetch_path spec_path
       loaded = true

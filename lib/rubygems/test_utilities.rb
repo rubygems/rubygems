@@ -30,7 +30,7 @@ class Gem::FakeFetcher
     @paths = []
   end
 
-  def fetch_path(path)
+  def fetch_path path, mtime = nil
     path = path.to_s
     @paths << path
     raise ArgumentError, 'need full URI' unless path =~ %r'^http://'
@@ -43,7 +43,7 @@ class Gem::FakeFetcher
     if data.respond_to?(:call) then
       data.call
     else
-      data = Gem.gunzip data if path.to_s =~ /gz$/
+      data = Gem.gunzip data if path.to_s =~ /gz$/ unless data.empty?
       data
     end
   end

@@ -132,7 +132,7 @@ class Gem::RemoteFetcher
   ##
   # Downloads +uri+ and returns it as a String.
 
-  def fetch_path(uri)
+  def fetch_path(uri, mtime = nil)
     open_uri_or_path(uri) do |input|
       data = input.read
       data = Gem.gunzip data if uri.to_s =~ /gz$/

@@ -138,49 +138,25 @@ class Gem::RemoteFetcher
   ##
   # Downloads +uri+ and returns it as a String.
 
-  def fetch_path(uri, mtime = nil)
-    open_uri_or_path(uri, mtime) do |input|
-      data = input.read
-      data = Gem.gunzip data if uri.to_s =~ /gz$/
-      data
-    end
+  def fetch_path(uri, mtime = nil, head = false)
+    data = open_uri_or_path(uri, mtime, head)
+    data = Gem.gunzip data if uri.to_s =~ /gz$/ and not head
+    data
   rescue FetchError
     raise
   rescue Timeout::Error
     raise FetchError.new('timed out', uri)
   rescue IOError, SocketError, SystemCallError => e
     raise FetchError.new("#{e.class}: #{e}", uri)
-  rescue => e
-    raise FetchError.new("#{e.class}: #{e}", uri)
   end
 
   ##
   # Returns the size of +uri+ in bytes.
 
-  def fetch_size(uri)
-    return File.size(get_file_uri_path(uri)) if file_uri? uri
+  def fetch_size(uri) # TODO: phase this out
+    response = fetch_path(uri, nil, true)
 
-    uri = URI.parse uri unless URI::Generic === uri
-
-    raise ArgumentError, 'uri is not an HTTP URI' unless URI::HTTP === uri
-
-    response = request uri, Net::HTTP::Head
-
-    case response
-    when Net::HTTPOK then
-    else
-      raise FetchError.new("bad response #{response.message} #{response.code}", uri)
-    end
-
-    if response['content-length'] then
-      return response['content-length'].to_i
-    else
-      response = http.get uri.request_uri
-      return response.body.size
-    end
-
-  rescue SocketError, SystemCallError, Timeout::Error => e
-    raise FetchError.new("#{e.message} (#{e.class})\n\tfetching size", uri)
+    response['content-length'].to_i
   end
 
   def escape(str)
@@ -253,20 +229,24 @@ class Gem::RemoteFetcher
   # Read the data from the (source based) URI, but if it is a file:// URI,
   # read from the filesystem instead.
 
-  def open_uri_or_path(uri, last_modified = nil, depth = 0)
+  def open_uri_or_path(uri, last_modified = nil, head = false, depth = 0)
+    raise "block is dead" if block_given?
+
     return open(get_file_uri_path(uri)) if file_uri? uri
 
     uri = URI.parse uri unless URI::Generic === uri
+    raise ArgumentError, 'uri is not an HTTP URI' unless URI::HTTP === uri
 
-    response = request uri, Net::HTTP::Get, last_modified
+    fetch_type = head ? Net::HTTP::Head : Net::HTTP::Get
+    response   = request uri, fetch_type, last_modified
 
     case response
     when Net::HTTPOK then
-      response.body
+      head ? response : response.body
     when Net::HTTPRedirection then
       raise FetchError.new('too many redirects', uri) if depth > 10
 
-      open_uri_or_path(response['Location'], last_modified, depth + 1)
+      open_uri_or_path(response['Location'], last_modified, head, depth + 1)
     else
       raise FetchError.new("bad response #{response.message} #{response.code}", uri)
     end

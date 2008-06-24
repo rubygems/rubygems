@@ -12,10 +12,6 @@ require 'zlib'
 require 'rubygems/remote_fetcher'
 require 'ostruct'
 
-def o hash
-  OpenStruct.new(hash)
-end
-
 # = Testing Proxy Settings
 #
 # These tests check the proper proxy server settings by running two
@@ -155,7 +151,7 @@ gems:
   def test_fetch_size_socket_error
     fetcher = Gem::RemoteFetcher.new nil
     def fetcher.connection_for(uri)
-      raise SocketError
+      raise SocketError, "tarded"
     end
 
     uri = 'http://gems.example.com/yaml'
@@ -163,15 +159,13 @@ gems:
       fetcher.fetch_size uri
     end
 
-    assert_equal "SocketError (SocketError)\n\tfetching size (#{uri})",
-                 e.message
+    assert_equal "SocketError: tarded (#{uri})", e.message
   end
 
   def test_no_proxy
     use_ui @ui do
-      fetcher = Gem::RemoteFetcher.new nil
-      assert_data_from_server fetcher.fetch_path(@server_uri)
-      assert_equal SERVER_DATA.size, fetcher.fetch_size(@server_uri)
+      assert_data_from_server @fetcher.fetch_path(@server_uri)
+      assert_equal SERVER_DATA.size, @fetcher.fetch_size(@server_uri)
     end
   end
 
@@ -390,7 +384,9 @@ gems:
   def test_fetch_path_io_error
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri, mtime) raise EOFError; end
+    def fetcher.open_uri_or_path(uri, mtime, i = 1)
+      raise EOFError
+    end
 
     e = assert_raise Gem::RemoteFetcher::FetchError do
       fetcher.fetch_path 'uri'
@@ -403,7 +399,9 @@ gems:
   def test_fetch_path_socket_error
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri, mtime) raise SocketError; end
+    def fetcher.open_uri_or_path(uri, mtime, hate = 2)
+      raise SocketError
+    end
 
     e = assert_raise Gem::RemoteFetcher::FetchError do
       fetcher.fetch_path 'uri'
@@ -416,7 +414,7 @@ gems:
   def test_fetch_path_system_call_error
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri, mtime = nil)
+    def fetcher.open_uri_or_path(uri, mtime = nil, drbrain = 3)
       raise Errno::ECONNREFUSED, 'connect(2)'
     end
 
@@ -432,12 +430,9 @@ gems:
   def test_fetch_path_unmodified
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri, mtime)
-      yield StringIO.new('')
+    def fetcher.open_uri_or_path(uri, mtime, tons = 4)
+      ''
     end
-
-    util_stub_connection_for o(:request => o(:body => '', :code => 304,
-                                             :date => Time.at(0).to_s))
 
     assert_equal '', fetcher.fetch_path(URI.parse(@gem_repo), Time.at(0))
   end
@@ -541,7 +536,7 @@ gems:
 
   def test_request
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
-    util_stub_connection_for o(:body => :junk, :code => 200)
+    util_stub_connection_for :body => :junk, :code => 200
 
     response = @fetcher.request uri, Net::HTTP::Get
 
@@ -551,7 +546,7 @@ gems:
 
   def test_request_head
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
-    util_stub_connection_for o(:body => '', :code => 200)
+    util_stub_connection_for :body => '', :code => 200
     response = @fetcher.request uri, Net::HTTP::Head
 
     assert_equal 200, response.code
@@ -560,32 +555,15 @@ gems:
 
   def test_request_unmodifed
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
-    conn = util_stub_connection_for o(:body => '', :code => 304)
+    conn = util_stub_connection_for :body => '', :code => 304
 
-    response = @fetcher.request uri, Net::HTTP::Head, Time.now
+    t = Time.now
+    response = @fetcher.request uri, Net::HTTP::Head, t
 
     assert_equal 304, response.code
     assert_equal '', response.body
 
-    assert conn.requests.first['if-modified-since']
-  end
-
-  def test_zip
-    use_ui @ui do
-      self.class.enable_zip = true
-      fetcher = Gem::RemoteFetcher.new nil
-      assert_equal SERVER_DATA.size, fetcher.fetch_size(@server_uri), "probably not from proxy"
-      zip_data = fetcher.fetch_path(@server_z_uri)
-      assert zip_data.size < SERVER_DATA.size, "Zipped data should be smaller"
-    end
-  end
-
-  def test_no_zip
-    use_ui @ui do
-      self.class.enable_zip = false
-      fetcher = Gem::RemoteFetcher.new nil
-      assert_error { fetcher.fetch_path(@server_z_uri) }
-    end
+    assert_equal t.rfc2822, conn.payload['if-modified-since']
   end
 
   def test_yaml_error_on_size
@@ -596,7 +574,7 @@ gems:
     end
   end
 
-  def util_stub_connection_for *data
+  def util_stub_connection_for hash
     def @fetcher.connection= conn
       @conn = conn
     end
@@ -605,7 +583,7 @@ gems:
       @conn
     end
 
-    @fetcher.connection = Conn.new data
+    @fetcher.connection = Conn.new OpenStruct.new(hash)
   end
 
   def assert_error(exception_class=Exception)
@@ -627,16 +605,16 @@ gems:
   end
 
   class Conn
-    attr_reader :requests
+    attr_accessor :payload
 
-    def initialize(responses)
-      @responses = responses
-      @requests = []
+    def initialize(response)
+      @response = response
+      self.payload = nil
     end
 
     def request(req)
-      @requests << req
-      @responses.shift
+      self.payload = req
+      @response
     end
   end
 

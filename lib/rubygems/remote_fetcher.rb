@@ -248,8 +248,8 @@ class Gem::RemoteFetcher
   # Read the data from the (source based) URI, but if it is a file:// URI,
   # read from the filesystem instead.
 
-  def open_uri_or_path(uri, last_modified = nil, depth = 0, &block)
-    return open(get_file_uri_path(uri), &block) if file_uri? uri
+  def open_uri_or_path(uri, last_modified = nil, depth = 0)
+    return open(get_file_uri_path(uri)) if file_uri? uri
 
     uri = URI.parse uri unless URI::Generic === uri
 
@@ -257,11 +257,11 @@ class Gem::RemoteFetcher
 
     case response
     when Net::HTTPOK then
-      block.call(StringIO.new(response.body)) if block
+      response.body
     when Net::HTTPRedirection then
       raise FetchError.new('too many redirects', uri) if depth > 10
 
-      open_uri_or_path(response['Location'], last_modified, depth + 1, &block)
+      open_uri_or_path(response['Location'], last_modified, depth + 1)
     else
       raise FetchError.new("bad response #{response.message} #{response.code}", uri)
     end
@@ -287,10 +287,6 @@ class Gem::RemoteFetcher
     request.add_field 'User-Agent', ua
     request.add_field 'Connection', 'keep-alive'
     request.add_field 'Keep-Alive', '30'
-
-    if last_modified then
-      request.add_field 'If-Modified-Since', last_modified.rfc2822
-    end
 
     connection = connection_for uri
 

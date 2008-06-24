@@ -635,7 +635,7 @@ load 'my_exec'
                                  "#{@spec.full_name}.gemspec"))
   end
 
-  def test_install_user_local
+  def test_install_user_local_fallback
     Dir.mkdir util_inst_bindir
     File.chmod 0755, @userhome
     File.chmod 0000, util_inst_bindir

@@ -85,15 +85,29 @@ class Gem::Installer
       raise Gem::InstallError, "invalid gem format for #{@gem}"
     end
 
-    if ! File.writable? @gem_home # or ! File.writable? RbConfig::CONFIG['bindir']
-      STDERR.puts "Warning: #{@gem_home} and #{@bin_dir} are not both writable."
+    if !File.writable? @gem_home # TODO: or !File.writable? RbConfig::CONFIG['bindir']
+      if options[:user_install] == false # You explicitly don't want to use ~
+        raise Gem::FilePermissionError, @gem_home
+      elsif options[:user_install].nil?
+        $stderr.puts "Warning: falling back to user-level install since #{@gem_home} and #{@bin_dir} aren't both writable."
+      end
+      options[:user_install] = true
+    end
+
+    if options[:user_install]
       @gem_home = File.join(ENV['HOME'], '.gem')
-      STDERR.puts "  Falling back to #{@gem_home}."
+
+      user_bin_dir = File.join(@gem_home, 'gems', 'bin')
+      if !ENV['PATH'].split(':').include?(user_bin_dir)
+        $stderr.puts "You don't have #{user_bin_dir} in your PATH."
+        $stderr.puts "You won't be able to run gem-installed executables until you add it."
+      end
+      
       Dir.mkdir @gem_home if ! File.directory? @gem_home
       # If it's still not writable, you've got issues.
       raise Gem::FilePermissionError, @gem_home if ! File.writable? @gem_home
     end
-    
+
     @spec = @format.spec
 
     @gem_dir = File.join(@gem_home, "gems", @spec.full_name).untaint
@@ -214,6 +228,7 @@ class Gem::Installer
 
     file_name = File.join @gem_home, 'specifications',
                           "#{@spec.full_name}.gemspec"
+
     file_name.untaint
 
     File.open(file_name, "w") do |file|

@@ -515,6 +515,7 @@ load 'my_exec'
     spec = quick_gem 'a' do |s| s.platform = Gem::Platform.new 'mswin32' end
     gem = File.join @tempdir, "#{spec.full_name}.gem"
 
+    Dir.mkdir util_inst_bindir
     util_build_gem spec
     FileUtils.mv File.join(@gemhome, 'cache', "#{spec.full_name}.gem"),
                  @tempdir
@@ -525,6 +526,7 @@ load 'my_exec'
   end
 
   def test_install
+    Dir.mkdir util_inst_bindir
     util_setup_gem
 
     use_ui @ui do
@@ -593,6 +595,7 @@ load 'my_exec'
   end
 
   def test_install_ignore_dependencies
+    Dir.mkdir util_inst_bindir
     @spec.add_dependency 'b', '> 5'
     util_setup_gem
     @installer.ignore_dependencies = true
@@ -634,24 +637,43 @@ load 'my_exec'
     assert File.exist?(File.join(@gemhome, 'specifications',
                                  "#{@spec.full_name}.gemspec"))
   end
+  unless win_platform? # File.chmod doesn't work
+    def test_install_user_local_fallback
+      Dir.mkdir util_inst_bindir
+      File.chmod 0755, @userhome
+      File.chmod 0000, util_inst_bindir
+      File.chmod 0000, Gem.dir
+      install_dir = File.join @userhome, '.gem', 'gems', @spec.full_name
+      @spec.executables = ["executable"]
 
-  def test_install_user_local_fallback
-    Dir.mkdir util_inst_bindir
-    File.chmod 0755, @userhome
-    File.chmod 0000, util_inst_bindir
-    File.chmod 0000, Gem.dir
-    install_dir = File.join @userhome, '.gem', 'gems', @spec.full_name
-    @spec.executables = ["executable"]
-
-    util_setup_gem
-    @installer.install
+      use_ui @ui do
+        util_setup_gem
+        @installer.install
+      end
     
-    assert File.exist?(File.join(install_dir, 'lib', 'code.rb'))
-    assert File.exist?(File.join(@userhome, '.gem', 'bin', 'executable'))
-  ensure
-    File.chmod 0755, Gem.dir
-    File.chmod 0755, util_inst_bindir
-  end unless win_platform? # File.chmod doesn't work
+      assert File.exist?(File.join(install_dir, 'lib', 'code.rb'))
+      assert File.exist?(File.join(@userhome, '.gem', 'bin', 'executable'))
+    ensure
+      File.chmod 0755, Gem.dir
+      File.chmod 0755, util_inst_bindir
+    end
+
+    def test_install_bindir_read_only
+      Dir.mkdir util_inst_bindir
+      File.chmod 0755, @userhome
+      File.chmod 0000, util_inst_bindir
+
+      use_ui @ui do
+        setup
+        util_setup_gem
+        @installer.install
+      end
+      
+      assert File.exist?(File.join(@userhome, '.gem', 'bin', 'executable'))
+    ensure
+      File.chmod 0755, util_inst_bindir
+    end
+  end
   
   def test_install_with_message
     @spec.post_install_message = 'I am a shiny gem!'

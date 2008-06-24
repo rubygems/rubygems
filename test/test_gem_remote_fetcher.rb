@@ -531,6 +531,16 @@ gems:
     assert_equal '', response.body
   end
 
+  def test_request_unmodifed
+    uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    util_stub_connection_for o(:request => o(:body => '', :code => 304,
+                                             :date => Time.at(0).to_s))
+    response = @fetcher.request uri, Net::HTTP::Head
+
+    assert_equal 304, response.code
+    assert_equal '', response.body
+  end
+
   def test_zip
     use_ui @ui do
       self.class.enable_zip = true

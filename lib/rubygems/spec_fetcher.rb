@@ -183,29 +183,15 @@ class Gem::SpecFetcher
   end
 
   def load_specs(source_uri, file)
-    file_name = "#{file}.#{Gem.marshal_version}.gz"
-
-    spec_path = source_uri + file_name
-
-    cache_dir = cache_dir spec_path
-
-    local_file = File.join(cache_dir, file_name).chomp '.gz'
+    file_name  = "#{file}.#{Gem.marshal_version}"
+    spec_path  = source_uri + "#{file_name}.gz"
+    cache_dir  = cache_dir spec_path
+    local_file = File.join(cache_dir, file_name)
 
     if File.exist? local_file then
-      local_size = File.stat(local_file).size
-
-      remote_file = spec_path.dup
-      remote_file.path = remote_file.path.chomp '.gz'
-      remote_size = @fetcher.fetch_size remote_file
-
-      spec_dump = Gem.read_binary local_file if remote_size == local_size
-    end
-
-    unless spec_dump then
-      loaded = true
-
-      spec_dump_gz = @fetcher.fetch_path spec_path
-      spec_dump = Gem.gunzip spec_dump_gz
+      spec_dump = @fetcher.fetch_path spec_path, File.mtime(local_file)
+    else
+      spec_dump = @fetcher.fetch_path spec_path
     end
 
     specs = Marshal.load spec_dump

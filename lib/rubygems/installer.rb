@@ -85,6 +85,15 @@ class Gem::Installer
       raise Gem::InstallError, "invalid gem format for #{@gem}"
     end
 
+    if ! File.writable? @gem_home # or ! File.writable? RbConfig::CONFIG['bindir']
+      STDERR.puts "Warning: #{@gem_home} and #{@bin_dir} are not both writable."
+      @gem_home = File.join(ENV['HOME'], '.gem')
+      STDERR.puts "  Falling back to #{@gem_home}."
+      Dir.mkdir @gem_home if ! File.directory? @gem_home
+      # If it's still not writable, you've got issues.
+      raise Gem::FilePermissionError, @gem_home if ! File.writable? @gem_home
+    end
+    
     @spec = @format.spec
 
     @gem_dir = File.join(@gem_home, "gems", @spec.full_name).untaint
@@ -132,7 +141,6 @@ class Gem::Installer
     end
 
     FileUtils.mkdir_p @gem_home unless File.directory? @gem_home
-    raise Gem::FilePermissionError, @gem_home unless File.writable? @gem_home
 
     Gem.ensure_gem_subdirectories @gem_home
 

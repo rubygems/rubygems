@@ -637,15 +637,17 @@ load 'my_exec'
 
   def test_install_user_local
     Dir.mkdir util_inst_bindir
+    File.chmod 0755, @userhome
     File.chmod 0000, util_inst_bindir
     File.chmod 0000, Gem.dir
-    gemdir = File.join @userhome, '.gem', 'gems'
-    
+    install_dir = File.join @userhome, '.gem', 'gems', @spec.full_name
+    @spec.executables = ["executable"]
+
     util_setup_gem
     @installer.install
     
-    assert File.exist?(File.join(gemdir, @spec.full_name, 'lib', 'code.rb'))
-    assert File.exist?(File.join(gemdir, 'bin', 'executable'))
+    assert File.exist?(File.join(install_dir, 'lib', 'code.rb'))
+    assert File.exist?(File.join(@userhome, '.gem', 'bin', 'executable'))
   ensure
     File.chmod 0755, Gem.dir
     File.chmod 0755, util_inst_bindir
@@ -661,22 +663,6 @@ load 'my_exec'
     end
 
     assert_match %r|I am a shiny gem!|, @ui.output
-  end
-
-  def test_install_writable
-    util_setup_gem
-
-    orig_mode = File.stat(Gem.dir).mode
-    File.chmod 0000, Gem.dir
-
-    e = assert_raise Gem::FilePermissionError do
-      @installer.install
-    end
-
-    assert_equal "You don't have write permissions into the #{@gemhome} directory.",
-                 e.message
-  ensure
-    File.chmod orig_mode, Gem.dir
   end
 
   def test_install_wrong_ruby_version

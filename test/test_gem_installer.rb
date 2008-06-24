@@ -635,6 +635,22 @@ load 'my_exec'
                                  "#{@spec.full_name}.gemspec"))
   end
 
+  def test_install_user_local
+    Dir.mkdir util_inst_bindir
+    File.chmod 0000, util_inst_bindir
+    File.chmod 0000, Gem.dir
+    gemdir = File.join @userhome, '.gem', 'gems'
+    
+    util_setup_gem
+    @installer.install
+    
+    assert File.exist?(File.join(gemdir, @spec.full_name, 'lib', 'code.rb'))
+    assert File.exist?(File.join(gemdir, 'bin', 'executable'))
+  ensure
+    File.chmod 0755, Gem.dir
+    File.chmod 0755, util_inst_bindir
+  end unless win_platform? # File.chmod doesn't work
+  
   def test_install_with_message
     @spec.post_install_message = 'I am a shiny gem!'
 

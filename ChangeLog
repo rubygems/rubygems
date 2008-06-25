@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+2008-06-24  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/remote_fetcher.rb:  Cleanup to support
+	if-modified-since requests.  pair: Ryan Davis
+	* lib/rubygems/indexer:  Force platform to Gem::Platform::RUBY when
+	nil or blank.  Fixes various uninstallable gems.
+
 2008-06-24  Phil Hagelberg <technomancy@gmail.com>
 
 	* lib/rubygems/installer.rb: Fall back on ~/.gem if GEM_HOME is

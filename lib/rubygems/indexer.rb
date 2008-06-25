@@ -116,7 +116,7 @@ class Gem::Indexer
     open @specs_index, 'wb' do |io|
       specs = index.sort.map do |_, spec|
         platform = spec.original_platform
-        platform = Gem::Platform::RUBY if platform.nil?
+        platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
         [spec.name, spec.version, platform]
       end
 
@@ -129,7 +129,9 @@ class Gem::Indexer
 
     open @latest_specs_index, 'wb' do |io|
       specs = index.latest_specs.sort.map do |spec|
-        [spec.name, spec.version, spec.original_platform]
+        platform = spec.original_platform
+        platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
+        [spec.name, spec.version, platform]
       end
 
       specs = compact_specs specs
@@ -283,10 +285,7 @@ class Gem::Indexer
   # Builds and installs indexicies.
 
   def generate_index
-    FileUtils.rm_rf @directory
-    FileUtils.mkdir_p @directory, :mode => 0700
-    FileUtils.mkdir_p @quick_marshal_dir
-
+    make_temp_directories
     index = collect_specs
     build_indicies index
     install_indicies
@@ -323,6 +322,15 @@ class Gem::Indexer
   end
 
   ##
+  # Make directories for index generation
+
+  def make_temp_directories
+    FileUtils.rm_rf @directory
+    FileUtils.mkdir_p @directory, :mode => 0700
+    FileUtils.mkdir_p @quick_marshal_dir
+  end
+
+  ##
   # Ensure +path+ and path with +extension+ are identical.
 
   def paranoid(path, extension)
@@ -344,6 +352,7 @@ class Gem::Indexer
     spec.description = sanitize_string(spec.description)
     spec.post_install_message = sanitize_string(spec.post_install_message)
     spec.authors = spec.authors.collect { |a| sanitize_string(a) }
+
     spec
   end
 

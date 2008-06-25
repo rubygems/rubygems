@@ -85,9 +85,10 @@ class Gem::Installer
       raise Gem::InstallError, "invalid gem format for #{@gem}"
     end
 
-    if !File.writable? @gem_home or
+    if not File.writable? @gem_home or
         # TODO: Shouldn't have to test for existence of bindir; tests need it.
-        (File.exist? Gem.bindir and !File.writable? Gem.bindir)
+        (@gem_home.to_s == Gem.dir and File.exist? Gem.bindir and 
+         not File.writable? Gem.bindir)
       if options[:user_install] == false # You explicitly don't want to use ~
         raise Gem::FilePermissionError, @gem_home
       elsif options[:user_install].nil?

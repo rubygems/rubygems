@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+2008-06-25  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/config_file.rb:  Add Gem::ConfigFile constants for
+	packagers and implementors to override defaults.
+
 2008-06-24  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/remote_fetcher.rb:  Cleanup to support

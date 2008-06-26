@@ -3,6 +3,8 @@
 
 	* lib/rubygems/config_file.rb:  Add Gem::ConfigFile constants for
 	packagers and implementors to override defaults.
+	* test/*:  Fixes to run tests when under test/rubygems/.  Patch by
+	Yusuke ENDOH [ruby-core:17353].
 
 2008-06-24  Eric Hodel  <drbrain@segment7.net>
 

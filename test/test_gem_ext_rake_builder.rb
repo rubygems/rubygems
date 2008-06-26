@@ -34,7 +34,7 @@ class TestGemExtRakeBuilder < RubyGemTestCase
     expected = [
       "#{Gem.ruby} mkrf_conf.rb",
       "",
-      "rake RUBYARCHDIR=#{@dest_path} RUBYLIBDIR=#{@dest_path}",
+      "#{ENV['rake'] || 'rake'} RUBYARCHDIR=#{@dest_path} RUBYLIBDIR=#{@dest_path}",
       "(in #{realdir})\n"
     ]
 

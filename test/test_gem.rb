@@ -337,6 +337,7 @@ class TestGem < RubyGemTestCase
 
     file_name = File.expand_path __FILE__
     prefix = File.dirname File.dirname(file_name)
+    prefix = File.dirname prefix if File.basename(prefix) == 'test'
 
     Gem::ConfigMap[:libdir] = prefix
 
@@ -350,6 +351,7 @@ class TestGem < RubyGemTestCase
 
     file_name = File.expand_path __FILE__
     prefix = File.dirname File.dirname(file_name)
+    prefix = File.dirname prefix if File.basename(prefix) == 'test'
 
     Gem::ConfigMap[:sitelibdir] = prefix
 

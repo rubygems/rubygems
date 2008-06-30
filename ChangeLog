@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+2008-06-30  Eric Hodel  <drbrain@segment7.net>
+
+	* test/test_ext_configure_builder.rb:  Locale-free patch by Yusuke
+	Endoh [ruby-core:17444].
+
 2008-06-25  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/config_file.rb:  Add Gem::ConfigFile constants for

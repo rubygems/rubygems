@@ -861,7 +861,7 @@ module Gem
       result << "    s.specification_version = #{specification_version}"
       result << nil
 
-      result << "    if current_version >= 3 then"
+      result << "    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then"
 
       unless dependencies.empty? then
         dependencies.each do |dep|

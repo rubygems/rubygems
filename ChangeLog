@@ -10,6 +10,8 @@
 	appropriate.  Minor refactoring of #uninstall.
 	* lib/rubygems/package/tar_reader.rb:  Some OSs raise EINVAL on seek.
 	Based on patch in bug #20791 by Neil Wilson.
+	* lib/rubygems/specification.rb:  Correctly check for support of
+	development dependencies for #to_ruby.  Bug #20778 by Evan Weaver.
 
 2008-06-25  Eric Hodel  <drbrain@segment7.net>
 

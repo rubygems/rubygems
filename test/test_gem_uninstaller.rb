@@ -77,13 +77,8 @@ class TestGemUninstaller < GemInstallerTestCase
 
     assert !File.exist?(gem_dir)
 
-    pre_uninstaller, spec = @pre_uninstall_hook_arg
-    assert_same uninstaller, pre_uninstaller
-    assert_equal @spec, spec
-
-    post_uninstaller, spec = @post_uninstall_hook_arg
-    assert_same uninstaller, post_uninstaller
-    assert_equal @spec, spec
+    assert_same uninstaller, @pre_uninstall_hook_arg
+    assert_same uninstaller, @post_uninstall_hook_arg
   end
 
 end

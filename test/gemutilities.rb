@@ -99,16 +99,16 @@ class RubyGemTestCase < Test::Unit::TestCase
       @post_install_hook_arg = installer
     end
 
-    Gem.post_uninstall do |uninstaller, spec|
-      @post_uninstall_hook_arg = [uninstaller, spec]
+    Gem.post_uninstall do |uninstaller|
+      @post_uninstall_hook_arg = uninstaller
     end
 
     Gem.pre_install do |installer|
       @pre_install_hook_arg = installer
     end
 
-    Gem.pre_uninstall do |uninstaller, spec|
-      @pre_uninstall_hook_arg = [uninstaller, spec]
+    Gem.pre_uninstall do |uninstaller|
+      @pre_uninstall_hook_arg = uninstaller
     end
   end
 

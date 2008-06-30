@@ -18,6 +18,11 @@ class Gem::Uninstaller
   include Gem::UserInteraction
 
   ##
+  # Spec currently being uninstalled.  Only set during #uninstall_gem
+
+  attr_reader :spec
+
+  ##
   # Constructs an Uninstaller instance
   #
   # gem:: [String] The Gem name to uninstall
@@ -68,16 +73,20 @@ class Gem::Uninstaller
   # Uninstalls gem +spec+
 
   def uninstall_gem(spec, specs)
+    @spec = spec
+
     Gem.pre_uninstall_hooks.each do |hook|
-      hook.call self, spec
+      hook.call self
     end
 
     remove spec, specs
     specs.each do |s| remove_executables s end
 
     Gem.post_uninstall_hooks.each do |hook|
-      hook.call self, spec
+      hook.call self
     end
+
+    @spec = nil
   end
 
   ##

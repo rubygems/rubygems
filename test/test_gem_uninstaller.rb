@@ -60,5 +60,31 @@ class TestGemUninstaller < GemInstallerTestCase
     assert_equal true, uninstaller.path_ok?(@spec)
   end
 
+  def test_uninstall
+    uninstaller = Gem::Uninstaller.new @spec.name
+
+    gem_dir = File.join @gemhome, 'gems', @spec.full_name
+
+    Gem.pre_uninstall do
+      assert File.exist?(gem_dir), 'gem_dir should exist'
+    end
+
+    Gem.post_uninstall do
+      assert !File.exist?(gem_dir), 'gem_dir should not exist'
+    end
+
+    uninstaller.uninstall
+
+    assert !File.exist?(gem_dir)
+
+    pre_uninstaller, spec = @pre_uninstall_hook_arg
+    assert_same uninstaller, pre_uninstaller
+    assert_equal @spec, spec
+
+    post_uninstaller, spec = @post_uninstall_hook_arg
+    assert_same uninstaller, post_uninstaller
+    assert_equal @spec, spec
+  end
+
 end
 

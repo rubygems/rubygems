@@ -26,7 +26,7 @@ module Gem
   def self.win_platform=(val)
     @@win_platform = val
   end
-  
+
   module DefaultUserInteraction
     @ui = MockGemUi.new
   end
@@ -89,6 +89,27 @@ class RubyGemTestCase < Test::Unit::TestCase
                                               'private_key.pem')
     @public_cert = File.expand_path File.join(File.dirname(__FILE__),
                                               'public_cert.pem')
+
+    Gem.post_install_hooks.clear
+    Gem.post_uninstall_hooks.clear
+    Gem.pre_install_hooks.clear
+    Gem.pre_uninstall_hooks.clear
+
+    Gem.post_install do |installer|
+      @post_install_hook_arg = installer
+    end
+
+    Gem.post_uninstall do |uninstaller, spec|
+      @post_uninstall_hook_arg = [uninstaller, spec]
+    end
+
+    Gem.pre_install do |installer|
+      @pre_install_hook_arg = installer
+    end
+
+    Gem.pre_uninstall do |uninstaller, spec|
+      @pre_uninstall_hook_arg = [uninstaller, spec]
+    end
   end
 
   def teardown

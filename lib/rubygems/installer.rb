@@ -20,6 +20,7 @@ require 'rubygems/require_paths_builder'
 # filesystem including unpacking the gem into its gem dir, installing the
 # gemspec in the specifications dir, storing the cached gem in the cache dir,
 # and installing either wrappers or symlinks for executables.
+
 class Gem::Installer
 
   ##
@@ -157,6 +158,10 @@ class Gem::Installer
       end
     end
 
+    Gem.pre_install_hooks.each do |hook|
+      hook.call self
+    end
+
     FileUtils.mkdir_p @gem_home unless File.directory? @gem_home
 
     Gem.ensure_gem_subdirectories @gem_home
@@ -182,6 +187,10 @@ class Gem::Installer
                                   "#{@spec.full_name}.gemspec")
 
     Gem.source_index.add_spec @spec
+
+    Gem.post_install_hooks.each do |hook|
+      hook.call self
+    end
 
     return @spec
   rescue Zlib::GzipFile::Error

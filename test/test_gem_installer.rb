@@ -529,6 +529,16 @@ load 'my_exec'
     Dir.mkdir util_inst_bindir
     util_setup_gem
 
+    cache_file = File.join @gemhome, 'cache', "#{@spec.full_name}.gem"
+
+    Gem.pre_install do |installer|
+      assert !File.exist?(cache_file), 'cache file should not exist yet'
+    end
+
+    Gem.post_install do |installer|
+      assert File.exist?(cache_file), 'cache file should exist'
+    end
+
     use_ui @ui do
       assert_equal @spec, @installer.install
     end
@@ -550,6 +560,9 @@ load 'my_exec'
 
     assert_equal spec_file, @spec.loaded_from
     assert File.exist?(spec_file)
+
+    assert_same @installer, @pre_install_hook_arg
+    assert_same @installer, @post_install_hook_arg
   end
 
   def test_install_bad_gem
@@ -674,7 +687,7 @@ load 'my_exec'
       File.chmod 0755, util_inst_bindir
     end
   end
-  
+
   def test_install_with_message
     @spec.post_install_message = 'I am a shiny gem!'
 

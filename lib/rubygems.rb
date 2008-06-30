@@ -104,6 +104,11 @@ module Gem
   @ruby = nil
   @sources = []
 
+  @post_install_hooks = []
+  @post_uninstall_hooks = []
+  @pre_uninstall_hooks = []
+  @pre_install_hooks = []
+
   ##
   # Activates an installed gem matching +gem+.  The gem must satisfy
   # +version_requirements+.
@@ -524,6 +529,40 @@ module Gem
   end
 
   ##
+  # Adds a post-install hook that will be passed an Gem::Installer instance
+  # when Gem::Installer#install is called
+
+  def self.post_install(&hook)
+    @post_install_hooks << hook
+  end
+
+  ##
+  # Adds a post-uninstall hook that will be passed a Gem::Uninstaller instance
+  # and the spec that was uninstalled when Gem::Uninstaller#uninstall is
+  # called
+
+  def self.post_uninstall(&hook)
+    @post_uninstall_hooks << hook
+  end
+
+  ##
+  # Adds a pre-install hook that will be passed an Gem::Installer instance
+  # when Gem::Installer#install is called
+
+  def self.pre_install(&hook)
+    @pre_install_hooks << hook
+  end
+
+  ##
+  # Adds a pre-uninstall hook that will be passed an Gem::Uninstaller instance
+  # and the spec that will be uninstalled when Gem::Uninstaller#uninstall is
+  # called
+
+  def self.pre_uninstall(&hook)
+    @pre_uninstall_hooks << hook
+  end
+
+  ##
   # The directory prefix this RubyGems was installed at.
 
   def self.prefix
@@ -730,6 +769,27 @@ module Gem
   class << self
 
     attr_reader :loaded_specs
+
+    ##
+    # The list of hooks to be run before Gem::Install#install does any work
+
+    attr_reader :post_install_hooks
+
+    ##
+    # The list of hooks to be run before Gem::Uninstall#uninstall does any
+    # work
+
+    attr_reader :post_uninstall_hooks
+
+    ##
+    # The list of hooks to be run after Gem::Install#install is finished
+
+    attr_reader :pre_install_hooks
+
+    ##
+    # The list of hooks to be run after Gem::Uninstall#uninstall is finished
+
+    attr_reader :pre_uninstall_hooks
 
     # :stopdoc:
 

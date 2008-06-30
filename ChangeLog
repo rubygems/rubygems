@@ -3,6 +3,11 @@
 
 	* test/test_ext_configure_builder.rb:  Locale-free patch by Yusuke
 	Endoh [ruby-core:17444].
+	* lib/rubygems.rb:  Add pre/post (un)install hooks.
+	* lib/rubygems/installer.rb:  Call pre/post install hooks as
+	appropriate.
+	* lib/rubygems/uninstaller.rb:  Call pre/post uninstall hooks as
+	appropriate.  Minor refactoring of #uninstall.
 
 2008-06-25  Eric Hodel  <drbrain@segment7.net>
 

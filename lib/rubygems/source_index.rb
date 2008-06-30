@@ -93,7 +93,7 @@ class Gem::SourceIndex
         alert_warning e
         alert_warning spec_code
       rescue Exception => e
-        alert_warning(e.inspect.to_s + "\n" + spec_code)
+        alert_warning "#{e.inspect}\n#{spec_code}"
         alert_warning "Invalid .gemspec format in '#{file_name}'"
       end
       return nil

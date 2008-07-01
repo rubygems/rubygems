@@ -32,6 +32,21 @@ class Gem::Installer
 
   include Gem::RequirePathsBuilder
 
+  ##
+  # The directory a gem's executables will be installed into
+
+  attr_reader :bin_dir
+
+  ##
+  # The gem repository the gem will be installed into
+
+  attr_reader :gem_home
+
+  ##
+  # The Gem::Specification for the gem being installed
+
+  attr_reader :spec
+
   class << self
 
     attr_writer :exec_format

@@ -18,7 +18,18 @@ class Gem::Uninstaller
   include Gem::UserInteraction
 
   ##
-  # Spec currently being uninstalled.  Only set during #uninstall_gem
+  # The directory a gem's executables will be installed into
+
+  attr_reader :bin_dir
+
+  ##
+  # The gem repository the gem will be installed into
+
+  attr_reader :gem_home
+
+  ##
+  # The Gem::Specification for the gem being uninstalled, only set during
+  # #uninstall_gem
 
   attr_reader :spec
 

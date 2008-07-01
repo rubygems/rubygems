@@ -12,6 +12,8 @@
 	Based on patch in bug #20791 by Neil Wilson.
 	* lib/rubygems/specification.rb:  Correctly check for support of
 	development dependencies for #to_ruby.  Bug #20778 by Evan Weaver.
+	* lib/rubygems/spec_fetcher.rb:  Correctly load all cache file even if
+	latest has been loaded.  Bug #20776 by Uwe Kubosch.
 
 2008-06-25  Eric Hodel  <drbrain@segment7.net>
 

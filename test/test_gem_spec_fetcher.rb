@@ -259,6 +259,16 @@ RubyGems will revert to legacy indexes degrading performance.
     assert_equal specs, cached_specs
   end
 
+  def test_list_latest_all
+    specs = @sf.list false
+
+    assert_equal [@latest_specs], specs.values
+
+    specs = @sf.list true
+
+    assert_equal [@specs], specs.values, 'specs file not loaded'
+  end
+
   def test_load_specs
     specs = @sf.load_specs @uri, 'specs'
 

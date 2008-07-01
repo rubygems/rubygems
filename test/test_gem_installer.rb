@@ -597,6 +597,29 @@ load 'my_exec'
     end
   end
 
+  def test_install_check_dependencies_install_dir
+    gemhome2 = "#{@gemhome}2"
+    @spec.add_dependency 'b'
+
+    b2 = quick_gem 'b', 2
+
+    FileUtils.mv @gemhome, gemhome2
+    Gem.source_index.gems.delete b2.full_name
+    source_index = Gem::SourceIndex.from_gems_in File.join(gemhome2,
+                                                           'specifications')
+
+    util_setup_gem
+
+    @installer = Gem::Installer.new @gem, :install_dir => gemhome2,
+                                    :source_index => source_index
+
+    use_ui @ui do
+      @installer.install
+    end
+
+    assert File.exist?(File.join(gemhome2, 'gems', @spec.full_name))
+  end
+
   def test_install_force
     use_ui @ui do
       installer = Gem::Installer.new old_ruby_required, :force => true
@@ -650,6 +673,7 @@ load 'my_exec'
     assert File.exist?(File.join(@gemhome, 'specifications',
                                  "#{@spec.full_name}.gemspec"))
   end
+
   unless win_platform? # File.chmod doesn't work
     def test_install_user_local_fallback
       Dir.mkdir util_inst_bindir

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 2008-07-01  Eric Hodel  <drbrain@segment7.net>
 
-	* lib/rubygems/installer.rb:  Add #gem_home, #bin_dir for hooks.
+	* lib/rubygems/installer.rb:  Add #gem_home, #bin_dir for hooks.  Use
+	DependencyInstaller's source_index so reinstallation via -i does not
+	fail.
 	* lib/rubygems/uninstaller.rb:  Add #gem_home, #bin_dir for hooks.
 
 2008-06-30  Eric Hodel  <drbrain@segment7.net>

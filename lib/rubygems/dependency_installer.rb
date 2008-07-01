@@ -41,6 +41,13 @@ class Gem::DependencyInstaller
   # :wrappers:: See Gem::Installer::new
 
   def initialize(options = {})
+    if options[:install_dir] then
+      spec_dir = options[:install_dir], 'specifications'
+      @source_index = Gem::SourceIndex.from_gems_in spec_dir
+    else
+      @source_index = Gem.source_index
+    end
+
     options = DEFAULT_OPTIONS.merge options
 
     @bin_dir = options[:bin_dir]
@@ -57,13 +64,6 @@ class Gem::DependencyInstaller
 
     @install_dir = options[:install_dir] || Gem.dir
     @cache_dir = options[:cache_dir] || @install_dir
-
-    if options[:install_dir] then
-      spec_dir = File.join @install_dir, 'specifications'
-      @source_index = Gem::SourceIndex.from_gems_in spec_dir
-    else
-      @source_index = Gem.source_index
-    end
   end
 
   ##
@@ -232,15 +232,16 @@ class Gem::DependencyInstaller
       end
 
       inst = Gem::Installer.new local_gem_path,
-                                :env_shebang => @env_shebang,
-                                :force => @force,
-                                :format_executable => @format_executable,
+                                :bin_dir             => @bin_dir,
+                                :development         => @development,
+                                :env_shebang         => @env_shebang,
+                                :force               => @force,
+                                :format_executable   => @format_executable,
                                 :ignore_dependencies => @ignore_dependencies,
-                                :install_dir => @install_dir,
-                                :security_policy => @security_policy,
-                                :wrappers => @wrappers,
-                                :bin_dir => @bin_dir,
-                                :development => @development
+                                :install_dir         => @install_dir,
+                                :security_policy     => @security_policy,
+                                :source_index        => @source_index,
+                                :wrappers            => @wrappers
 
       spec = inst.install
 

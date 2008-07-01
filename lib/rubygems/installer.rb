@@ -77,11 +77,12 @@ class Gem::Installer
     @gem = gem
 
     options = {
-      :force => false,
-      :install_dir => Gem.dir,
-      :exec_format => false,
-      :env_shebang => false,
-      :bin_dir => nil
+      :bin_dir      => nil,
+      :env_shebang  => false,
+      :exec_format  => false,
+      :force        => false,
+      :install_dir  => Gem.dir,
+      :source_index => Gem.source_index,
     }.merge options
 
     @env_shebang = options[:env_shebang]
@@ -94,6 +95,7 @@ class Gem::Installer
     @wrappers = options[:wrappers]
     @bin_dir = options[:bin_dir]
     @development = options[:development]
+    @source_index = options[:source_index]
 
     begin
       @format = Gem::Format.from_file_by_path @gem, @security_policy
@@ -201,7 +203,7 @@ class Gem::Installer
     @spec.loaded_from = File.join(@gem_home, 'specifications',
                                   "#{@spec.full_name}.gemspec")
 
-    Gem.source_index.add_spec @spec
+    @source_index.add_spec @spec
 
     Gem.post_install_hooks.each do |hook|
       hook.call self
@@ -228,10 +230,10 @@ class Gem::Installer
   end
 
   ##
-  # True if the gems in Gem.source_index satisfy +dependency+.
+  # True if the gems in the source_index satisfy +dependency+.
 
   def installation_satisfies_dependency?(dependency)
-    Gem.source_index.find_name(dependency.name, dependency.version_requirements).size > 0
+    @source_index.find_name(dependency.name, dependency.version_requirements).size > 0
   end
 
   ##

@@ -70,9 +70,11 @@ class Gem::Commands::QueryCommand < Gem::Command
     end
 
     if local? then
-      say
-      say "*** LOCAL GEMS ***"
-      say
+      if ui.outs.tty? then
+        say
+        say "*** LOCAL GEMS ***"
+        say
+      end
 
       specs = Gem.source_index.search name
 
@@ -84,9 +86,11 @@ class Gem::Commands::QueryCommand < Gem::Command
     end
 
     if remote? then
-      say
-      say "*** REMOTE GEMS ***"
-      say
+      if ui.outs.tty? then
+        say
+        say "*** REMOTE GEMS ***"
+        say
+      end
 
       all = options[:all]
 

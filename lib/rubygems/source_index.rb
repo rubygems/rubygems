@@ -270,7 +270,7 @@ class Gem::SourceIndex
 
     specs = @gems.values.select do |spec|
       spec.name =~ gem_pattern and
-      version_requirement.satisfied_by? spec.version
+        version_requirement.satisfied_by? spec.version
     end
 
     if only_platform then

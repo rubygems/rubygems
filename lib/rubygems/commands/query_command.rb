@@ -59,7 +59,7 @@ class Gem::Commands::QueryCommand < Gem::Command
       if name.source.empty? then
         alert_error "You must specify a gem name"
         exit_code |= 4
-      elsif installed? name.source, options[:version] then
+      elsif installed? name, options[:version] then
         say "true"
       else
         say "false"

@@ -7,6 +7,10 @@
 	* lib/rubygems/uninstaller.rb:  Add #gem_home, #bin_dir for hooks.
 	* lib/rubygems/commands/query_command.rb:  Don't print LOCAL/REMOTE
 	gems if stdout is not a TTY.
+	* lib/rubygems/commands/query_command.rb:  Use the regexp we already
+	have for `gem list --installed`.  Bug #20876 by Nick Hoffman.
+	* lib/rubygems/commands/which_command.rb:  Clarify what `gem which` is
+	for.
 
 2008-06-30  Eric Hodel  <drbrain@segment7.net>
 

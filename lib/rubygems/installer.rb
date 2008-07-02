@@ -105,7 +105,7 @@ class Gem::Installer
 
     if not File.writable? @gem_home or
         # TODO: Shouldn't have to test for existence of bindir; tests need it.
-        (@gem_home.to_s == Gem.dir and File.exist? Gem.bindir and 
+        (@gem_home.to_s == Gem.dir and File.exist? Gem.bindir and
          not File.writable? Gem.bindir)
       if options[:user_install] == false # You explicitly don't want to use ~
         raise Gem::FilePermissionError, @gem_home
@@ -116,15 +116,15 @@ class Gem::Installer
     end
 
     if options[:user_install]
-      @gem_home = File.join(ENV['HOME'], '.gem')
+      @gem_home = Gem.user_dir
 
       user_bin_dir = File.join(@gem_home, 'gems', 'bin')
       if !ENV['PATH'].split(':').include?(user_bin_dir)
         say "You don't have #{user_bin_dir} in your PATH."
         say "You won't be able to run gem-installed executables until you add it."
       end
-      
-      Dir.mkdir @gem_home if ! File.directory? @gem_home
+
+      FileUtils.mkdir_p @gem_home if ! File.directory? @gem_home
       # If it's still not writable, you've got issues.
       raise Gem::FilePermissionError, @gem_home if ! File.writable? @gem_home
     end

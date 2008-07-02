@@ -268,7 +268,7 @@ gems:
     ensure
       File.chmod 0755, File.join(@gemhome, 'cache')
     end
-    
+
     def test_download_read_only
       File.chmod 0555, File.join(@gemhome, 'cache')
       File.chmod 0555, File.join(@gemhome)

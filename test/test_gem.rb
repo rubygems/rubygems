@@ -428,6 +428,11 @@ class TestGem < RubyGemTestCase
     assert_equal @additional + [Gem.dir], Gem.path
   end
 
+  def test_self_user_dir
+    assert_equal File.join(@userhome, '.gem', Gem.ruby_engine,
+                           Gem::ConfigMap[:ruby_version]), Gem.user_dir
+  end
+
   def test_self_user_home
     if ENV['HOME'] then
       assert_equal ENV['HOME'], Gem.user_home

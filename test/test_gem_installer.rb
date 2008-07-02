@@ -687,12 +687,9 @@ load 'my_exec'
         @installer.install
       end
 
-      assert File.exist?(File.join(@userhome, '.gem', Gem.ruby_engine,
-                                   Gem::ConfigMap[:ruby_version],
-                                   'gems', @spec.full_name, 'lib', 'code.rb'))
-      assert File.exist?(File.join(@userhome, '.gem', Gem.ruby_engine,
-                                   Gem::ConfigMap[:ruby_version],
-                                   'bin', 'executable'))
+      assert File.exist?(File.join(Gem.user_dir, 'gems',
+                                   @spec.full_name, 'lib', 'code.rb'))
+      assert File.exist?(File.join(Gem.user_dir, 'bin', 'executable'))
     ensure
       File.chmod 0755, Gem.dir
       File.chmod 0755, util_inst_bindir
@@ -709,9 +706,7 @@ load 'my_exec'
         @installer.install
       end
 
-      assert File.exist?(File.join(@userhome, '.gem', Gem.ruby_engine,
-                                   Gem::ConfigMap[:ruby_version],
-                                   'bin', 'executable'))
+      assert File.exist?(File.join(Gem.user_dir, 'bin', 'executable'))
     ensure
       File.chmod 0755, util_inst_bindir
     end

@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+2008-07-02  Phil Hagelberg <technomancy@gmail.com>
+
+	* lib/rubygems/defaults.rb: Add Gem.user_dir to use paths like
+	~/.gem/ruby/1.8/gems and the like instead of just ~/.gem. Update
+	remote fetcher and installer to use it.
+
 2008-07-01  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb:  Add #gem_home, #bin_dir for hooks.  Use

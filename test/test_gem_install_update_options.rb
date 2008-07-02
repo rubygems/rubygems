@@ -41,10 +41,8 @@ class TestGemInstallUpdateOptions < GemInstallerTestCase
 
     @installer = Gem::Installer.new @gem, @cmd.options
     @installer.install
-    assert File.exist?(File.join(@userhome, '.gem', Gem.ruby_engine,
-                                 Gem::ConfigMap[:ruby_version], 'gems'))
-    assert File.exist?(File.join(@userhome, '.gem', Gem.ruby_engine,
-                                 Gem::ConfigMap[:ruby_version], 'gems',
+    assert File.exist?(File.join(Gem.user_dir, 'gems'))
+    assert File.exist?(File.join(Gem.user_dir, 'gems',
                                  @spec.full_name))
   end
 

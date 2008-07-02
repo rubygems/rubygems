@@ -275,8 +275,7 @@ gems:
 
       fetcher = util_fuck_with_fetcher File.read(@a1_gem)
       fetcher.download(@a1, 'http://gems.example.com')
-      assert File.exist?(File.join(@userhome, '.gem', Gem.ruby_engine,
-                                   Gem::ConfigMap[:ruby_version], 'cache',
+      assert File.exist?(File.join(Gem.user_dir, 'cache',
                                    "#{@a1.full_name}.gem"))
     ensure
       File.chmod 0755, File.join(@gemhome)

@@ -78,7 +78,7 @@ class Gem::RemoteFetcher
     if File.writable?(install_dir)
       cache_dir = File.join install_dir, 'cache'
     else
-      cache_dir = File.join(ENV['HOME'], '.gem', 'cache')
+      cache_dir = File.join(Gem.user_dir, 'cache')
     end
 
     gem_file_name = "#{spec.full_name}.gem"

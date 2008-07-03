@@ -110,7 +110,7 @@ class Gem::Installer
       if options[:user_install] == false # You explicitly don't want to use ~
         raise Gem::FilePermissionError, @gem_home
       elsif options[:user_install].nil?
-        say "Warning: falling back to user-level install since #{@gem_home} and #{@bin_dir} aren't both writable."
+        say "Warning: falling back to user-level install since #{@gem_home} and #{Gem.bindir} aren't both writable."
       end
       options[:user_install] = true
     end
@@ -118,7 +118,7 @@ class Gem::Installer
     if options[:user_install]
       @gem_home = Gem.user_dir
 
-      user_bin_dir = File.join(@gem_home, 'gems', 'bin')
+      user_bin_dir = File.join(@gem_home, 'bin')
       if !ENV['PATH'].split(':').include?(user_bin_dir)
         say "You don't have #{user_bin_dir} in your PATH."
         say "You won't be able to run gem-installed executables until you add it."

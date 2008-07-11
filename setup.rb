@@ -90,14 +90,17 @@ HELP
   end
 end
 
-unless install_destdir.empty? then
-  ENV['GEM_HOME'] ||= File.join(install_destdir,
-                                Gem.default_dir.sub(/\A[a-z]:/i, ''))
-end
-
 require 'fileutils'
 require 'rbconfig'
 require 'tmpdir'
+require 'pathname'
+
+unless install_destdir.empty? then
+  default_dir = Pathname.new(Gem.default_dir)
+  top_dir = Pathname.new(RbConfig::TOPDIR)
+  ENV['GEM_HOME'] ||= File.join(install_destdir,
+                                default_dir.relative_path_from(top_dir))
+end
 
 include FileUtils::Verbose
 
@@ -134,8 +137,12 @@ else
 end
 
 unless install_destdir.empty?
-  lib_dir = File.join install_destdir, lib_dir
-  bin_dir = File.join install_destdir, bin_dir
+  top_dir = Pathname.new(RbConfig::TOPDIR)
+  lib_dir_p = Pathname.new(lib_dir)
+  bin_dir_p = Pathname.new(bin_dir)
+
+  lib_dir = File.join install_destdir, lib_dir_p.relative_path_from(top_dir)
+  bin_dir = File.join install_destdir, bin_dir_p.relative_path_from(top_dir)
 end
 
 mkdir_p lib_dir
@@ -323,4 +330,5 @@ puts
 puts "If `gem` was installed by a previous RubyGems installation, you may need"
 puts "to remove it by hand."
 puts
+
 

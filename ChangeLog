@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+2008-07-11  Luis Lavena  <luislavena@gmail.com>
+
+	* setup.rb: Properly build --destdir folder structure using Pathname.
+
 2008-07-02  Phil Hagelberg <technomancy@gmail.com>
 
 	* lib/rubygems/defaults.rb: Add Gem.user_dir to use paths like

@@ -17,7 +17,7 @@ class MockGemUi < Gem::StreamUI
     attr_accessor :tty
 
     def tty?()
-      @tty = true if @tty.nil?
+      @tty = true unless defined?(@tty)
       @tty
     end
 

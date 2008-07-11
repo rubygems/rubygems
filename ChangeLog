@@ -2,6 +2,7 @@
 2008-07-11  Luis Lavena  <luislavena@gmail.com>
 
 	* setup.rb: Properly build --destdir folder structure using Pathname.
+	* test/mockgemui.rb: Fix warnings about instance variables in a module.
 
 2008-07-02  Phil Hagelberg <technomancy@gmail.com>
 

@@ -539,7 +539,7 @@ module Gem
   # objects to load properly.
   Cache = SourceIndex
 
-  # :starddoc:
+  # :startdoc:
 
 end
 

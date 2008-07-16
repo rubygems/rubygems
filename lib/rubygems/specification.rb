@@ -392,7 +392,7 @@ module Gem
     # true when this gemspec has been loaded from a specifications directory.
     # This attribute is not persisted.
 
-    attr_writer :loaded
+    attr_accessor :loaded
 
     # Path this gemspec was loaded from.  This attribute is not persisted.
     attr_accessor :loaded_from
@@ -552,9 +552,10 @@ module Gem
 
     # Predicates -----------------------------------------------------
     
-    def loaded?; @loaded ? true : false ; end
-    def has_rdoc?; has_rdoc ? true : false ; end
     def has_unit_tests?; not test_files.empty?; end
+
+    alias :loaded? :loaded
+    alias :has_rdoc? :has_rdoc
     alias has_test_suite? has_unit_tests?               # (deprecated)
     
     # Constructors ---------------------------------------------------

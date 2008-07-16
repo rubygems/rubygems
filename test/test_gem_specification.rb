@@ -500,7 +500,7 @@ end
   end
 
   def test_has_rdoc_eh
-    assert_equal true, @a1.has_rdoc?
+    assert @a1.has_rdoc?
   end
 
   def test_hash

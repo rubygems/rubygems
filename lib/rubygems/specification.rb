@@ -24,6 +24,7 @@ class Date; end # for ruby_code if date.rb wasn't required
 
 module Gem
 
+  ##
   # == Gem::Specification
   #
   # The Specification class contains the metadata for a Gem.  Typically
@@ -38,15 +39,13 @@ module Gem
   #
   # There are many <em>gemspec attributes</em>, and the best place to learn
   # about them in the "Gemspec Reference" linked from the RubyGems wiki.
-  #
+
   class Specification
 
     ##
     # Allows deinstallation of gems with legacy platforms.
 
     attr_accessor :original_platform # :nodoc:
-
-    # ------------------------- Specification version constants.
 
     ##
     # The the version number of a specification that does not specify one
@@ -88,77 +87,98 @@ module Gem
     TODAY = now - ((now.to_i + now.gmt_offset) % 86400)
     # :startdoc:
 
-    # ------------------------- Class variables.
-
+    ##
     # List of Specification instances.
+
     @@list = []
 
+    ##
     # Optional block used to gather newly defined instances.
+
     @@gather = nil
 
+    ##
     # List of attribute names: [:name, :version, ...]
     @@required_attributes = []
 
-    # List of _all_ attributes and default values: [[:name, nil], [:bindir, 'bin'], ...]
+    ##
+    # List of _all_ attributes and default values:
+    #
+    #   [[:name, nil],
+    #    [:bindir, 'bin'],
+    #    ...]
+
     @@attributes = []
 
     @@nil_attributes = []
     @@non_nil_attributes = [:@original_platform]
 
+    ##
     # List of array attributes
+
     @@array_attributes = []
 
+    ##
     # Map of attribute names to default values.
+
     @@default_value = {}
 
-    # ------------------------- Convenience class methods.
+    ##
+    # Names of all specification attributes
 
     def self.attribute_names
       @@attributes.map { |name, default| name }
     end
 
+    ##
+    # Default values for specification attributes
+
     def self.attribute_defaults
       @@attributes.dup
     end
+
+    ##
+    # The default value for specification attribute +name+
 
     def self.default_value(name)
       @@default_value[name]
     end
 
+    ##
+    # Required specification attributes
+
     def self.required_attributes
       @@required_attributes.dup
     end
+
+    ##
+    # Is +name+ a required attribute?
 
     def self.required_attribute?(name)
       @@required_attributes.include? name.to_sym
     end
 
+    ##
+    # Specification attributes that are arrays (appendable and so-forth)
+
     def self.array_attributes
       @@array_attributes.dup
     end
 
-    # ------------------------- Infrastructure class methods.
+    ##
+    # A list of Specification instances that have been defined in this Ruby
+    # instance.
 
-    # A list of Specification instances that have been defined in this Ruby instance.
     def self.list
       @@list
     end
 
-    # Used to specify the name and default value of a specification
-    # attribute.  The side effects are:
-    # * the name and default value are added to the @@attributes list
-    #   and @@default_value map
-    # * a standard _writer_ method (<tt>attribute=</tt>) is created
-    # * a non-standard _reader method (<tt>attribute</tt>) is created
+    ##
+    # Specifies the +name+ and +default+ for a specification attribute, and
+    # creates a reader and writer method like Module#attr_accessor.
     #
-    # The reader method behaves like this:
-    #   def attribute
-    #     @attribute ||= (copy of default value)
-    #   end
-    #
-    # This allows lazy initialization of attributes to their default
-    # values. 
-    #
+    # The reader method returns the default if the value hasn't been set.
+
     def self.attribute(name, default=nil)
       ivar_name = "@#{name}".intern
       if default.nil? then
@@ -172,8 +192,10 @@ module Gem
       attr_accessor(name)
     end
 
-    # Same as :attribute, but ensures that values assigned to the
-    # attribute are array values by applying :to_a to the value.
+    ##
+    # Same as :attribute, but ensures that values assigned to the attribute
+    # are array values by applying :to_a to the value.
+
     def self.array_attribute(name)
       @@non_nil_attributes << ["@#{name}".intern, []]
 
@@ -192,51 +214,60 @@ module Gem
       module_eval code, __FILE__, __LINE__ - 9
     end
 
+    ##
     # Same as attribute above, but also records this attribute as mandatory.
+
     def self.required_attribute(*args)
       @@required_attributes << args.first
       attribute(*args)
     end
 
-    # Sometimes we don't want the world to use a setter method for a particular attribute.
+    ##
+    # Sometimes we don't want the world to use a setter method for a
+    # particular attribute.
+    #
     # +read_only+ makes it private so we can still use it internally.
+
     def self.read_only(*names)
       names.each do |name|
         private "#{name}="
       end
     end
 
-    # Shortcut for creating several attributes at once (each with a default value of
-    # +nil+).
+    # Shortcut for creating several attributes at once (each with a default
+    # value of +nil+).
+
     def self.attributes(*args)
       args.each do |arg|
         attribute(arg, nil)
       end
     end
 
-    # Some attributes require special behaviour when they are accessed.  This allows for
-    # that.
+    ##
+    # Some attributes require special behaviour when they are accessed.  This
+    # allows for that.
+
     def self.overwrite_accessor(name, &block)
       remove_method name
       define_method(name, &block)
     end
 
-    # Defines a _singular_ version of an existing _plural_ attribute
-    # (i.e. one whose value is expected to be an array).  This means
-    # just creating a helper method that takes a single value and
-    # appends it to the array.  These are created for convenience, so
-    # that in a spec, one can write 
+    ##
+    # Defines a _singular_ version of an existing _plural_ attribute (i.e. one
+    # whose value is expected to be an array).  This means just creating a
+    # helper method that takes a single value and appends it to the array.
+    # These are created for convenience, so that in a spec, one can write 
     #
     #   s.require_path = 'mylib'
     #
-    # instead of
+    # instead of:
     #
     #   s.require_paths = ['mylib']
     #
-    # That above convenience is available courtesy of
+    # That above convenience is available courtesy of:
     #
     #   attribute_alias_singular :require_path, :require_paths 
-    #
+
     def self.attribute_alias_singular(singular, plural)
       define_method("#{singular}=") { |val|
         send("#{plural}=", [val])
@@ -320,189 +351,45 @@ module Gem
       spec
     end
 
-    # REQUIRED gemspec attributes ------------------------------------
-    
-    required_attribute :rubygems_version, Gem::RubyGemsVersion
-    required_attribute :specification_version, CURRENT_SPECIFICATION_VERSION
-    required_attribute :name
-    required_attribute :version
-    required_attribute :date, TODAY
-    required_attribute :summary
-    required_attribute :require_paths, ['lib']
-
-    # OPTIONAL gemspec attributes ------------------------------------
-    
-    attributes :email, :homepage, :rubyforge_project, :description
-    attributes :autorequire, :default_executable
-
-    attribute :bindir,                     'bin'
-    attribute :has_rdoc,                   false
-    attribute :required_ruby_version,      Gem::Requirement.default
-    attribute :required_rubygems_version,  Gem::Requirement.default
-    attribute :platform,                   Gem::Platform::RUBY
-
-    attribute :signing_key,            nil
-    attribute :cert_chain,             []
-    attribute :post_install_message,   nil
-
-    array_attribute :authors
-    array_attribute :files
-    array_attribute :test_files
-    array_attribute :rdoc_options
-    array_attribute :extra_rdoc_files
-    array_attribute :executables
-
-    # Array of extensions to build.  See Gem::Installer#build_extensions for
-    # valid values.
-
-    array_attribute :extensions
-    array_attribute :requirements
-    array_attribute :dependencies
-
-    read_only :dependencies
+    ##
+    # List of depedencies that will automatically be activated at runtime.
 
     def runtime_dependencies
       dependencies.select { |d| d.type == :runtime || d.type == nil }
     end
 
+    ##
+    # List of dependencies that are used for development
+
     def development_dependencies
       dependencies.select { |d| d.type == :development }
     end
 
-    # ALIASED gemspec attributes -------------------------------------
-    
-    attribute_alias_singular :executable,   :executables
-    attribute_alias_singular :author,   :authors
-    attribute_alias_singular :require_path, :require_paths
-    attribute_alias_singular :test_file,    :test_files
-
-    # DEPRECATED gemspec attributes ----------------------------------
-    
-    def test_suite_file
+    def test_suite_file # :nodoc:
       warn 'test_suite_file deprecated, use test_files'
       test_files.first
     end
 
-    def test_suite_file=(val)
+    def test_suite_file=(val) # :nodoc:
       warn 'test_suite_file= deprecated, use test_files='
       @test_files = [] unless defined? @test_files
       @test_files << val
     end
 
+    ##
     # true when this gemspec has been loaded from a specifications directory.
     # This attribute is not persisted.
 
     attr_accessor :loaded
 
+    ##
     # Path this gemspec was loaded from.  This attribute is not persisted.
+
     attr_accessor :loaded_from
 
-    # Special accessor behaviours (overwriting default) --------------
-    
-    overwrite_accessor :version= do |version|
-      @version = Version.create(version)
-    end
-
-    overwrite_accessor :platform do
-      @new_platform
-    end
-
-    overwrite_accessor :platform= do |platform|
-      if @original_platform.nil? or
-         @original_platform == Gem::Platform::RUBY then
-        @original_platform = platform
-      end
-
-      case platform
-      when Gem::Platform::CURRENT then
-        @new_platform = Gem::Platform.local
-        @original_platform = @new_platform.to_s
-
-      when Gem::Platform then
-        @new_platform = platform
-
-      # legacy constants
-      when nil, Gem::Platform::RUBY then
-        @new_platform = Gem::Platform::RUBY
-      when 'mswin32' then # was Gem::Platform::WIN32
-        @new_platform = Gem::Platform.new 'x86-mswin32'
-      when 'i586-linux' then # was Gem::Platform::LINUX_586
-        @new_platform = Gem::Platform.new 'x86-linux'
-      when 'powerpc-darwin' then # was Gem::Platform::DARWIN
-        @new_platform = Gem::Platform.new 'ppc-darwin'
-      else
-        @new_platform = Gem::Platform.new platform
-      end
-
-      @platform = @new_platform.to_s
-
-      @new_platform
-    end
-
-    overwrite_accessor :required_ruby_version= do |value|
-      @required_ruby_version = Gem::Requirement.create(value)
-    end
-
-    overwrite_accessor :required_rubygems_version= do |value|
-      @required_rubygems_version = Gem::Requirement.create(value)
-    end
-
-    overwrite_accessor :date= do |date|
-      # We want to end up with a Time object with one-day resolution.
-      # This is the cleanest, most-readable, faster-than-using-Date
-      # way to do it.
-      case date
-      when String then
-        @date = if /\A(\d{4})-(\d{2})-(\d{2})\Z/ =~ date then
-                  Time.local($1.to_i, $2.to_i, $3.to_i)
-                else
-                  require 'time'
-                  Time.parse date
-                end
-      when Time then
-        @date = Time.local(date.year, date.month, date.day)
-      when Date then
-        @date = Time.local(date.year, date.month, date.day)
-      else
-        @date = TODAY
-      end
-    end
-
-    overwrite_accessor :date do
-      self.date = nil if @date.nil?  # HACK Sets the default value for date
-      @date
-    end
-
-    overwrite_accessor :summary= do |str|
-      @summary = if str then
-                   str.strip.
-                   gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').
-                   gsub(/\n[ \t]*/, " ")
-                 end
-    end
-
-    overwrite_accessor :description= do |str|
-      @description = if str then
-                       str.strip.
-                       gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').
-                       gsub(/\n[ \t]*/, " ")
-                     end
-    end
-
-    overwrite_accessor :default_executable do
-      begin
-        if defined?(@default_executable) and @default_executable
-          result = @default_executable
-        elsif @executables and @executables.size == 1
-          result = Array(@executables).first
-        else
-          result = nil
-        end
-        result
-      rescue
-        nil
-      end
-    end
+    ##
+    # Returns an array with bindir attached to each executable in the
+    # executables list
 
     def add_bindir(executables)
       return nil if executables.nil?
@@ -516,17 +403,9 @@ module Gem
       return nil
     end
 
-    overwrite_accessor :files do
-      result = []
-      result.push(*@files) if defined?(@files)
-      result.push(*@test_files) if defined?(@test_files)
-      result.push(*(add_bindir(@executables)))
-      result.push(*@extra_rdoc_files) if defined?(@extra_rdoc_files)
-      result.push(*@extensions) if defined?(@extensions)
-      result.uniq.compact
-    end
-
+    ##
     # Files in the Gem under one of the require_paths
+
     def lib_files
       @files.select do |file|
         require_paths.any? do |path|
@@ -535,35 +414,25 @@ module Gem
       end
     end
 
-    overwrite_accessor :test_files do
-      # Handle the possibility that we have @test_suite_file but not
-      # @test_files.  This will happen when an old gem is loaded via
-      # YAML.
-      if defined? @test_suite_file then
-        @test_files = [@test_suite_file].flatten
-        @test_suite_file = nil
-      end
-      if defined?(@test_files) and @test_files then
-        @test_files
-      else
-        @test_files = []
-      end
-    end
-
-    # Predicates -----------------------------------------------------
-    
-    def has_unit_tests?; not test_files.empty?; end
+    ##
+    # True if this gem was loaded from disk
 
     alias :loaded? :loaded
-    alias :has_rdoc? :has_rdoc
-    alias has_test_suite? has_unit_tests?               # (deprecated)
+
+    ##
+    # True if this gem has files in test_files
+
+    def has_unit_tests?
+      not test_files.empty?
+    end
+
+    alias has_test_suite? has_unit_tests? # :nodoc: deprecated
     
-    # Constructors ---------------------------------------------------
-    
+    ##
     # Specification constructor.  Assigns the default values to the
     # attributes, adds this spec to the list of loaded specs (see
     # Specification.list), and yields itself for further initialization.
-    #
+
     def initialize
       @new_platform = nil
       assign_defaults
@@ -576,11 +445,13 @@ module Gem
       @@gather.call(self) if @@gather
     end
 
-    # Each attribute has a default value (possibly nil).  Here, we
-    # initialize all attributes to their default value.  This is
-    # done through the accessor methods, so special behaviours will
-    # be honored.  Furthermore, we take a _copy_ of the default so
-    # each specification instance has its own empty arrays, etc.
+    ##
+    # Each attribute has a default value (possibly nil).  Here, we initialize
+    # all attributes to their default value.  This is done through the
+    # accessor methods, so special behaviours will be honored.  Furthermore,
+    # we take a _copy_ of the default so each specification instance has its
+    # own empty arrays, etc.
+
     def assign_defaults
       @@nil_attributes.each do |name|
         instance_variable_set name, nil
@@ -599,13 +470,14 @@ module Gem
       instance_variable_set :@new_platform, Gem::Platform::RUBY
     end
 
-    # Special loader for YAML files.  When a Specification object is
-    # loaded from a YAML file, it bypasses the normal Ruby object
-    # initialization routine (#initialize).  This method makes up for
-    # that and deals with gems of different ages.
+    ##
+    # Special loader for YAML files.  When a Specification object is loaded
+    # from a YAML file, it bypasses the normal Ruby object initialization
+    # routine (#initialize).  This method makes up for that and deals with
+    # gems of different ages.
     #
     # 'input' can be anything that YAML.load() accepts: String or IO. 
-    #
+
     def self.from_yaml(input)
       input = normalize_yaml_input input
       spec = YAML.load input
@@ -628,6 +500,9 @@ module Gem
       spec
     end 
 
+    ##
+    # Loads ruby format gemspec from +filename+
+
     def self.load(filename)
       gemspec = nil
       fail "NESTED Specification.load calls not allowed!" if @@gather
@@ -639,22 +514,25 @@ module Gem
       @@gather = nil
     end
 
-    # Make sure the yaml specification is properly formatted with dashes.
+    ##
+    # Make sure the YAML specification is properly formatted with dashes
+
     def self.normalize_yaml_input(input)
       result = input.respond_to?(:read) ? input.read : input
       result = "--- " + result unless result =~ /^--- /
       result
     end
     
-    # Instance methods -----------------------------------------------
-    
-    # Sets the rubygems_version to Gem::RubyGemsVersion.
-    #
+    ##
+    # Sets the rubygems_version to the current RubyGems version
+
     def mark_version
       @rubygems_version = RubyGemsVersion
     end
 
-    # Ignore unknown attributes if the 
+    ##
+    # Ignore unknown attributes while loading
+
     def method_missing(sym, *a, &b) # :nodoc:
       if @specification_version > CURRENT_SPECIFICATION_VERSION and
          sym.to_s =~ /=$/ then
@@ -664,35 +542,39 @@ module Gem
       end
     end
 
-    # Adds a development dependency to this Gem.  For example,
+    ##
+    # Adds a development dependency named +gem+ with +requirements+ to this
+    # Gem.  For example:
     #
-    #   spec.add_development_dependency('jabber4r', '> 0.1', '<= 0.5')
+    #   spec.add_development_dependency 'jabber4r', '> 0.1', '<= 0.5'
     #
-    # Development dependencies aren't installed by default, and
-    # aren't activated when a gem is required.
-    #
-    # gem:: [String or Gem::Dependency] The Gem name/dependency.
-    # requirements:: [default=">= 0"] The version requirements.
+    # Development dependencies aren't installed by default and aren't
+    # activated when a gem is required.
+
     def add_development_dependency(gem, *requirements)
       add_dependency_with_type(gem, :development, *requirements)
     end
 
-    # Adds a runtime dependency to this Gem.  For example,
+    ##
+    # Adds a runtime dependency named +gem+ with +requirements+ to this Gem.
+    # For example:
     #
-    #   spec.add_runtime_dependency('jabber4r', '> 0.1', '<= 0.5')
-    #
-    # gem:: [String or Gem::Dependency] The Gem name/dependency.
-    # requirements:: [default=">= 0"] The version requirements.
+    #   spec.add_runtime_dependency 'jabber4r', '> 0.1', '<= 0.5'
+
     def add_runtime_dependency(gem, *requirements)
       add_dependency_with_type(gem, :runtime, *requirements)
     end
 
+    ##
+    # Adds a runtime dependency
+
     alias add_dependency add_runtime_dependency
 
+    ##
     # Returns the full name (name-version) of this Gem.  Platform information
-    # is included (name-version-platform) if it is specified (and not the
-    # default Ruby platform).
-    #
+    # is included (name-version-platform) if it is specified and not the
+    # default Ruby platform.
+
     def full_name
       if platform == Gem::Platform::RUBY or platform.nil? then
         "#{@name}-#{@version}"
@@ -701,9 +583,10 @@ module Gem
       end
     end
 
+    ##
     # Returns the full name (name-version) of this gemspec using the original
-    # platform.
-    #
+    # platform.  For use with legacy gems.
+
     def original_name # :nodoc:
       if platform == Gem::Platform::RUBY or platform.nil? then
         "#{@name}-#{@version}"
@@ -737,18 +620,16 @@ module Gem
       File.expand_path path
     end
 
-    # Checks if this Specification meets the requirement of the supplied
-    # dependency.
-    # 
-    # dependency:: [Gem::Dependency] the dependency to check
-    # return:: [Boolean] true if dependency is met, otherwise false
-    #
+    ##
+    # Checks if this specification meets the requirement of +dependency+.
+
     def satisfies_requirement?(dependency)
       return @name == dependency.name && 
         dependency.version_requirements.satisfied_by?(@version)
     end
 
-    # Comparison methods ---------------------------------------------
+    ##
+    # Returns an object you can use to sort specifications in #sort_by.
 
     def sort_obj
       [@name, @version.to_ints, @new_platform == Gem::Platform::RUBY ? -1 : 1]
@@ -758,12 +639,17 @@ module Gem
       sort_obj <=> other.sort_obj
     end
 
+    ##
     # Tests specs for equality (across all attributes).
+
     def ==(other) # :nodoc:
       self.class === other && same_attributes?(other)
     end
 
     alias eql? == # :nodoc:
+
+    ##
+    # True if this gem has the same attributes as +other+.
 
     def same_attributes?(other)
       @@attributes.each do |name, default|
@@ -771,6 +657,7 @@ module Gem
       end
       true
     end
+
     private :same_attributes?
 
     def hash # :nodoc:
@@ -779,8 +666,6 @@ module Gem
         hash_code + n
       }
     end
-
-    # Export methods (YAML and Ruby code) ----------------------------
 
     def to_yaml(opts = {}) # :nodoc:
       mark_version
@@ -896,16 +781,15 @@ module Gem
       result.join "\n"
     end
 
-    # Validation and normalization methods ---------------------------
-
-    # Checks that the specification contains all required fields, and
-    # does a very basic sanity check.
+    ##
+    # Checks that the specification contains all required fields, and does a
+    # very basic sanity check.
     #
-    # Raises InvalidSpecificationException if the spec does not pass
-    # the checks..
+    # Raises InvalidSpecificationException if the spec does not pass the
+    # checks..
+
     def validate
       extend Gem::UserInteraction
-
       normalize
 
       if rubygems_version != RubyGemsVersion then
@@ -960,13 +844,14 @@ module Gem
       true
     end
 
+    ##
     # Normalize the list of files so that:
     # * All file lists have redundancies removed.
-    # * Files referenced in the extra_rdoc_files are included in the
-    #   package file list. 
+    # * Files referenced in the extra_rdoc_files are included in the package
+    #   file list. 
     #
-    # Also, the summary and description are converted to a normal
-    # format. 
+    # Also, the summary and description are converted to a normal format. 
+
     def normalize
       if defined?(@extra_rdoc_files) and @extra_rdoc_files then
         @extra_rdoc_files.uniq!
@@ -976,15 +861,12 @@ module Gem
       @files.uniq! if @files
     end
 
-    # Dependency methods ---------------------------------------------
-    
-    # Return a list of all gems that have a dependency on this
-    # gemspec.  The list is structured with entries that conform to:
+    ##
+    # Return a list of all gems that have a dependency on this gemspec.  The
+    # list is structured with entries that conform to:
     #
     #   [depending_gem, dependency, [list_of_gems_that_satisfy_dependency]]
-    #
-    # return:: [Array] [[dependent_gem, dependency, [list_of_satisfiers]]]
-    #
+
     def dependent_gems
       out = []
       Gem.source_index.each do |name,gem|
@@ -1005,8 +887,6 @@ module Gem
       "#<Gem::Specification name=#{@name} version=#{@version}>"
     end
 
-    private
-
     def add_dependency_with_type(dependency, type, *requirements)
       requirements = if requirements.empty? then
                        Gem::Requirement.default
@@ -1023,6 +903,8 @@ module Gem
       dependencies << dependency
     end
 
+    private :add_dependency_with_type
+
     def find_all_satisfiers(dep)
       Gem.source_index.each do |name,gem|
         if(gem.satisfies_requirement?(dep)) then
@@ -1031,8 +913,12 @@ module Gem
       end
     end
 
-    # Return a string containing a Ruby code representation of the
-    # given object.
+    private :find_all_satisfiers
+
+    ##
+    # Return a string containing a Ruby code representation of the given
+    # object.
+
     def ruby_code(obj)
       case obj
       when String            then '%q{' + obj + '}'
@@ -1046,6 +932,326 @@ module Gem
       when Gem::Requirement  then "Gem::Requirement.new(#{obj.to_s.inspect})"
       else raise Exception, "ruby_code case not handled: #{obj.class}"
       end
+    end
+    
+    private :ruby_code
+
+    # :section: Required gemspec attributes
+    
+    ##
+    # The version of RubyGems used to create this gem
+
+    required_attribute :rubygems_version, Gem::RubyGemsVersion
+
+    ##
+    # The Gem::Specification version of this gemspec
+
+    required_attribute :specification_version, CURRENT_SPECIFICATION_VERSION
+
+    ##
+    # This gem's name
+
+    required_attribute :name
+
+    ##
+    # This gem's version
+
+    required_attribute :version
+
+    ##
+    # The date this gem was created
+
+    required_attribute :date, TODAY
+
+    ##
+    # A short summary of this gem's description.  Displayed in `gem list -d`.
+
+    required_attribute :summary
+
+    ##
+    # Paths in the gem to add to $LOAD_PATH when this gem is activated
+
+    required_attribute :require_paths, ['lib']
+
+    # :section: Optional gemspec attributes
+
+    ##
+    # A contact email for this gem
+    
+    attribute :email
+
+    ##
+    # The URL of this gem's home page
+
+    attribute :homepage
+
+    ##
+    # The rubyforge project this gem lives under.  i.e. RubyGems'
+    # rubyforge_project is "rubygems".
+    
+    attribute :rubyforge_project
+
+    ##
+    # A long description of this gem
+
+    attribute :description
+
+    ##
+    # Autorequire was used by old RubyGems to automatically require a file.
+    # It no longer is supported.
+
+    attribute :autorequire
+
+    ##
+    # The default executable for this gem.
+
+    attribute :default_executable
+
+    ##
+    # The path in the gem for executable scripts
+
+    attribute :bindir, 'bin'
+
+    ##
+    # True if this gem is RDoc-compliant
+
+    attribute :has_rdoc, false
+
+    ##
+    # True if this gem supports RDoc
+
+    alias :has_rdoc? :has_rdoc
+
+    ##
+    # The ruby of version required by this gem
+
+    attribute :required_ruby_version, Gem::Requirement.default
+
+    ##
+    # The RubyGems version required by this gem
+
+    attribute :required_rubygems_version, Gem::Requirement.default
+
+    ##
+    # The platform this gem runs on.  See Gem::Platform for details.
+
+    attribute :platform, Gem::Platform::RUBY
+
+    ##
+    # The key used to sign this gem.  See Gem::Security for details.
+
+    attribute :signing_key, nil
+
+    ##
+    # The certificate chain used to sign this gem.  See Gem::Security for
+    # details.
+
+    attribute :cert_chain, []
+
+    ##
+    # A message that gets displayed after the gem is installed
+
+    attribute :post_install_message, nil
+
+    ##
+    # The list of authors who wrote this gem
+
+    array_attribute :authors
+
+    ##
+    # Files included in this gem
+
+    array_attribute :files
+
+    ##
+    # Test files included in this gem
+
+    array_attribute :test_files
+
+    ##
+    # An ARGV-style array of options to RDoc
+
+    array_attribute :rdoc_options
+
+    ##
+    # Extra files to add to RDoc
+
+    array_attribute :extra_rdoc_files
+
+    ##
+    # Executables included in the gem
+
+    array_attribute :executables
+
+    ##
+    # Extensions to build when installing the gem.  See
+    # Gem::Installer#build_extensions for valid values.
+
+    array_attribute :extensions
+
+    ##
+    # An array or things required by this gem.  Not used by anything
+    # presently.
+
+    array_attribute :requirements
+
+    ##
+    # A list of Gem::Dependency objects this gem depends on.  Only appendable.
+
+    array_attribute :dependencies
+
+    read_only :dependencies
+
+    # :section: Aliased gemspec attributes
+
+    ##
+    # Singular accessor for executables
+    
+    attribute_alias_singular :executable, :executables
+
+    ##
+    # Singular accessor for authors
+
+    attribute_alias_singular :author, :authors
+
+    ##
+    # Singular accessor for require_paths
+
+    attribute_alias_singular :require_path, :require_paths
+
+    ##
+    # Singular accessor for test_files
+
+    attribute_alias_singular :test_file, :test_files
+
+    overwrite_accessor :version= do |version|
+      @version = Version.create(version)
+    end
+
+    overwrite_accessor :platform do
+      @new_platform
+    end
+
+    overwrite_accessor :platform= do |platform|
+      if @original_platform.nil? or
+         @original_platform == Gem::Platform::RUBY then
+        @original_platform = platform
+      end
+
+      case platform
+      when Gem::Platform::CURRENT then
+        @new_platform = Gem::Platform.local
+        @original_platform = @new_platform.to_s
+
+      when Gem::Platform then
+        @new_platform = platform
+
+      # legacy constants
+      when nil, Gem::Platform::RUBY then
+        @new_platform = Gem::Platform::RUBY
+      when 'mswin32' then # was Gem::Platform::WIN32
+        @new_platform = Gem::Platform.new 'x86-mswin32'
+      when 'i586-linux' then # was Gem::Platform::LINUX_586
+        @new_platform = Gem::Platform.new 'x86-linux'
+      when 'powerpc-darwin' then # was Gem::Platform::DARWIN
+        @new_platform = Gem::Platform.new 'ppc-darwin'
+      else
+        @new_platform = Gem::Platform.new platform
+      end
+
+      @platform = @new_platform.to_s
+
+      @new_platform
+    end
+
+    overwrite_accessor :required_ruby_version= do |value|
+      @required_ruby_version = Gem::Requirement.create(value)
+    end
+
+    overwrite_accessor :required_rubygems_version= do |value|
+      @required_rubygems_version = Gem::Requirement.create(value)
+    end
+
+    overwrite_accessor :date= do |date|
+      # We want to end up with a Time object with one-day resolution.
+      # This is the cleanest, most-readable, faster-than-using-Date
+      # way to do it.
+      case date
+      when String then
+        @date = if /\A(\d{4})-(\d{2})-(\d{2})\Z/ =~ date then
+                  Time.local($1.to_i, $2.to_i, $3.to_i)
+                else
+                  require 'time'
+                  Time.parse date
+                end
+      when Time then
+        @date = Time.local(date.year, date.month, date.day)
+      when Date then
+        @date = Time.local(date.year, date.month, date.day)
+      else
+        @date = TODAY
+      end
+    end
+
+    overwrite_accessor :date do
+      self.date = nil if @date.nil?  # HACK Sets the default value for date
+      @date
+    end
+
+    overwrite_accessor :summary= do |str|
+      @summary = if str then
+                   str.strip.
+                   gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').
+                   gsub(/\n[ \t]*/, " ")
+                 end
+    end
+
+    overwrite_accessor :description= do |str|
+      @description = if str then
+                       str.strip.
+                       gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').
+                       gsub(/\n[ \t]*/, " ")
+                     end
+    end
+
+    overwrite_accessor :default_executable do
+      begin
+        if defined?(@default_executable) and @default_executable
+          result = @default_executable
+        elsif @executables and @executables.size == 1
+          result = Array(@executables).first
+        else
+          result = nil
+        end
+        result
+      rescue
+        nil
+      end
+    end
+
+    overwrite_accessor :test_files do
+      # Handle the possibility that we have @test_suite_file but not
+      # @test_files.  This will happen when an old gem is loaded via
+      # YAML.
+      if defined? @test_suite_file then
+        @test_files = [@test_suite_file].flatten
+        @test_suite_file = nil
+      end
+      if defined?(@test_files) and @test_files then
+        @test_files
+      else
+        @test_files = []
+      end
+    end
+
+    overwrite_accessor :files do
+      result = []
+      result.push(*@files) if defined?(@files)
+      result.push(*@test_files) if defined?(@test_files)
+      result.push(*(add_bindir(@executables)))
+      result.push(*@extra_rdoc_files) if defined?(@extra_rdoc_files)
+      result.push(*@extensions) if defined?(@extensions)
+      result.uniq.compact
     end
 
   end

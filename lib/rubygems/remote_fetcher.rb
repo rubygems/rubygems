@@ -93,7 +93,7 @@ class Gem::RemoteFetcher
     scheme = nil if scheme =~ /^[a-z]$/i
 
     case scheme
-    when 'http' then
+    when 'http', 'https' then
       unless File.exist? local_gem_path then
         begin
           say "Downloading gem #{gem_file_name}" if
@@ -216,8 +216,9 @@ class Gem::RemoteFetcher
     connection = @connections[connection_id]
 
     if uri.scheme == 'https' and not connection.started? then
-      http_obj.use_ssl = true
-      http_obj.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      require 'net/https'
+      connection.use_ssl = true
+      connection.verify_mode = OpenSSL::SSL::VERIFY_NONE
     end
 
     connection.start unless connection.started?

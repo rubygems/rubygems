@@ -5,6 +5,8 @@
 	to ~/.gems.
 	* lib/rubygems/uninstaller.rb:  Fix uninstallation with -i.  Bug
 	#20812 by John Clayton.
+	* lib/rubygems/commands/update_command.rb:  Fix updating RubyGems when
+	no previous rubygems-update is installed.  Bug #20775 by Hemant Kumar.
 
 2008-08-11  Eric Hodel  <drbrain@segment7.net>
 

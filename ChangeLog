@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+2008-08-12  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/installer.rb:  Try to create directory before diverting
+	to ~/.gems.
+
 2008-08-11  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/remote_fetcher.rb:  Fix HTTPS support.  Patch #21072 by

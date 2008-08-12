@@ -3,6 +3,8 @@
 
 	* lib/rubygems/installer.rb:  Try to create directory before diverting
 	to ~/.gems.
+	* lib/rubygems/uninstaller.rb:  Fix uninstallation with -i.  Bug
+	#20812 by John Clayton.
 
 2008-08-11  Eric Hodel  <drbrain@segment7.net>
 

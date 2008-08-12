@@ -34,9 +34,7 @@ class Gem::Uninstaller
   attr_reader :spec
 
   ##
-  # Constructs an Uninstaller instance
-  #
-  # gem:: [String] The Gem name to uninstall
+  # Constructs an uninstaller that will uninstall +gem+
 
   def initialize(gem, options = {})
     @gem = gem
@@ -47,14 +45,17 @@ class Gem::Uninstaller
     @force_all = options[:all]
     @force_ignore = options[:ignore]
     @bin_dir = options[:bin_dir]
+
+    spec_dir = File.join @gem_home, 'specifications'
+    @source_index = Gem::SourceIndex.from_gems_in spec_dir
   end
 
   ##
-  # Performs the uninstall of the Gem.  This removes the spec, the
-  # Gem directory, and the cached .gem file,
+  # Performs the uninstall of the gem.  This removes the spec, the Gem
+  # directory, and the cached .gem file.
 
   def uninstall
-    list = Gem.source_index.search(/^#{@gem}$/, @version)
+    list = @source_index.search(/^#{@gem}$/, @version)
 
     if list.empty? then
       raise Gem::InstallError, "Unknown gem #{@gem} #{@version}"
@@ -110,7 +111,7 @@ class Gem::Uninstaller
     if gemspec.executables.size > 0 then
       bindir = @bin_dir ? @bin_dir : (Gem.bindir @gem_home)
 
-      list = Gem.source_index.search(gemspec.name).delete_if { |spec|
+      list = @source_index.search(gemspec.name).delete_if { |spec|
         spec.version == gemspec.version
       }
 
@@ -219,8 +220,7 @@ class Gem::Uninstaller
   def dependencies_ok?(spec)
     return true if @force_ignore
 
-    source_index = Gem::SourceIndex.from_installed_gems
-    deplist = Gem::DependencyList.from_source_index source_index
+    deplist = Gem::DependencyList.from_source_index @source_index
     deplist.ok_to_remove?(spec.full_name) || ask_if_ok(spec)
   end
 

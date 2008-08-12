@@ -4,7 +4,8 @@
 	* lib/rubygems/installer.rb:  Try to create directory before diverting
 	to ~/.gems.
 	* lib/rubygems/uninstaller.rb:  Fix uninstallation with -i.  Bug
-	#20812 by John Clayton.
+	#20812 by John Clayton.  Have #remove_all call #uninstall_gem so hooks
+	get called.  Bug #21242 by Neil Wilson.
 	* lib/rubygems/commands/update_command.rb:  Fix updating RubyGems when
 	no previous rubygems-update is installed.  Bug #20775 by Hemant Kumar.
 

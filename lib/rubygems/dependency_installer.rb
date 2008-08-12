@@ -38,6 +38,7 @@ class Gem::DependencyInstaller
   # :ignore_dependencies:: Don't install any dependencies.
   # :install_dir:: See Gem::Installer#install.
   # :security_policy:: See Gem::Installer::new and Gem::Security.
+  # :user_install:: See Gem::Installer.new
   # :wrappers:: See Gem::Installer::new
 
   def initialize(options = {})
@@ -58,6 +59,7 @@ class Gem::DependencyInstaller
     @format_executable = options[:format_executable]
     @ignore_dependencies = options[:ignore_dependencies]
     @security_policy = options[:security_policy]
+    @user_install = options[:user_install]
     @wrappers = options[:wrappers]
 
     @installed_gems = []
@@ -241,6 +243,7 @@ class Gem::DependencyInstaller
                                 :install_dir         => @install_dir,
                                 :security_policy     => @security_policy,
                                 :source_index        => @source_index,
+                                :user_install        => @user_install,
                                 :wrappers            => @wrappers
 
       spec = inst.install

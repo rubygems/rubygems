@@ -139,8 +139,8 @@ class Gem::RemoteFetcher
   # Downloads +uri+ and returns it as a String.
 
   def fetch_path(uri, mtime = nil, head = false)
-    data = open_uri_or_path(uri, mtime, head)
-    data = Gem.gunzip data if uri.to_s =~ /gz$/ and not head
+    data = open_uri_or_path uri, mtime, head
+    data = Gem.gunzip data if data and not head and uri.to_s =~ /gz$/
     data
   rescue FetchError
     raise
@@ -242,9 +242,10 @@ class Gem::RemoteFetcher
     response   = request uri, fetch_type, last_modified
 
     case response
-    when Net::HTTPOK then
+    when Net::HTTPOK, Net::HTTPNotModified then
       head ? response : response.body
-    when Net::HTTPRedirection then
+    when Net::HTTPMovedPermanently, Net::HTTPFound, Net::HTTPSeeOther,
+         Net::HTTPTemporaryRedirect then
       raise FetchError.new('too many redirects', uri) if depth > 10
 
       open_uri_or_path(response['Location'], last_modified, head, depth + 1)
@@ -275,6 +276,7 @@ class Gem::RemoteFetcher
     request.add_field 'Keep-Alive', '30'
 
     if last_modified then
+      last_modified = last_modified.utc
       request.add_field 'If-Modified-Since', last_modified.rfc2822
     end
 
@@ -283,9 +285,6 @@ class Gem::RemoteFetcher
     retried = false
     bad_response = false
 
-    # HACK work around EOFError bug in Net::HTTP
-    # NOTE Errno::ECONNABORTED raised a lot on Windows, and make impossible
-    # to install gems.
     begin
       @requests[connection.object_id] += 1
       response = connection.request request
@@ -298,6 +297,9 @@ class Gem::RemoteFetcher
 
       bad_response = true
       retry
+    # HACK work around EOFError bug in Net::HTTP
+    # NOTE Errno::ECONNABORTED raised a lot on Windows, and make impossible
+    # to install gems.
     rescue EOFError, Errno::ECONNABORTED, Errno::ECONNRESET
       requests = @requests[connection.object_id]
       say "connection reset after #{requests} requests, retrying" if

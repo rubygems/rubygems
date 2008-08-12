@@ -67,7 +67,7 @@ class TestGemSpecFetcher < RubyGemTestCase
   end
 
   def test_fetch_legacy_repo
-    @fetcher.data["#{@gem_repo}specs.#{Gem.marshal_version}.gz"] = nil
+    @fetcher.data.delete "#{@gem_repo}specs.#{Gem.marshal_version}.gz"
     @fetcher.data["#{@gem_repo}yaml"] = ''
     util_setup_source_info_cache @a1, @a2
 
@@ -290,7 +290,7 @@ RubyGems will revert to legacy indexes degrading performance.
   end
 
   def test_load_specs_cached
-    @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] = ''
+    @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] = nil
     @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}"] =
       ' ' * Marshal.dump(@latest_specs).length
 

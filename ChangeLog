@@ -2,7 +2,8 @@
 2008-08-11  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/remote_fetcher.rb:  Fix HTTPS support.  Patch #21072 by
-	Alex Arnell.
+	Alex Arnell.  Fix Not Modified handling.  Bug #21310 by Gordon
+	Thiesfeld.
 
 2008-07-11  Luis Lavena  <luislavena@gmail.com>
 

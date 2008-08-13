@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+2008-08-13  Wilson Bilkovich  <wilson@supremetyrant.com>
+
+	* lib/rubygems/uninstaller.rb:	Fix binary script uninstallation.
+		Bug #21234 by Neil Wilson.
+	* test/test_gem_commands_uninstall_command.rb: Added
+
 2008-08-12  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb:  Try to create directory before diverting

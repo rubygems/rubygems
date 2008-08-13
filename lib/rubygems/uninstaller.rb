@@ -91,8 +91,8 @@ class Gem::Uninstaller
       hook.call self
     end
 
+    specs.each { |s| remove_executables s }
     remove spec, specs
-    specs.each do |s| remove_executables s end
 
     Gem.post_uninstall_hooks.each do |hook|
       hook.call self

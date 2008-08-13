@@ -61,7 +61,7 @@ class TestGemUninstaller < GemInstallerTestCase
   end
 
   def test_uninstall
-    uninstaller = Gem::Uninstaller.new @spec.name
+    uninstaller = Gem::Uninstaller.new @spec.name, :executables => true
 
     gem_dir = File.join @gemhome, 'gems', @spec.full_name
 

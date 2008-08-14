@@ -337,7 +337,8 @@ end
 
 desc "Install RubyGems"
 task :install do
-  ruby 'setup.rb'
+  opts = ENV['SETUP_OPTIONS']
+  ruby "setup.rb #{opts}".strip
 
   svnversion = `svnversion`.split(':').last.sub(/[^\d]/, '').strip
 

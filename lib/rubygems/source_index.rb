@@ -230,7 +230,8 @@ class Gem::SourceIndex
   # Find a gem by an exact match on the short name.
 
   def find_name(gem_name, version_requirement = Gem::Requirement.default)
-    search(/^#{gem_name}$/, version_requirement)
+    dep = Gem::Dependency.new(/^#{gem_name}$/, version_requirement)
+    search dep
   end
 
   ##
@@ -246,7 +247,13 @@ class Gem::SourceIndex
     version_requirement = nil
     only_platform = false
 
-    case gem_pattern # TODO warn after 2008/03, remove three months after
+    # TODO - Remove support and warning for legacy arguments after 2008/11
+    unless Gem::Dependency === gem_pattern
+      warn "Gem::SourceIndex#search support for #{gem_pattern.class} patterns is deprecated"
+      warn "#{caller[0]} is outdated" 
+    end
+
+    case gem_pattern
     when Regexp then
       version_requirement = platform_only || Gem::Requirement.default
     when Gem::Dependency then

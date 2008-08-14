@@ -437,6 +437,27 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal [], missing
   end
 
+  def test_find_name
+    assert_equal [@a1, @a2], @source_index.find_name('a')
+    assert_equal [@a2], @source_index.find_name('a', '= 2')
+    assert_equal [], @source_index.find_name('bogusstring')
+    assert_equal [], @source_index.find_name('a', '= 3')
+
+    source_index = Gem::SourceIndex.new
+    source_index.add_spec @a1
+    source_index.add_spec @a2
+
+    assert_equal [@a1], source_index.find_name(@a1.name, '= 1')
+
+    r1 = Gem::Requirement.create '= 1'
+    assert_equal [@a1], source_index.find_name(@a1.name, r1)
+  end
+
+  def test_find_name_empty_cache
+    empty_source_index = Gem::SourceIndex.new({})
+    assert_equal [], empty_source_index.find_name("foo")
+  end
+
   def test_latest_specs
     p1_ruby = quick_gem 'p', '1'
     p1_platform = quick_gem 'p', '1' do |spec|
@@ -573,28 +594,12 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
   end
 
   def test_search
-    assert_equal [@a1, @a2, @a_evil9], @source_index.search('a')
-    assert_equal [@a2], @source_index.search('a', '= 2')
+    requirement = Gem::Requirement.create '= 9'
+    with_version = Gem::Dependency.new(/^a/, requirement)
+    assert_equal [@a_evil9], @source_index.search(with_version)
 
-    assert_equal [], @source_index.search('bogusstring')
-    assert_equal [], @source_index.search('a', '= 3')
-
-    source_index = Gem::SourceIndex.new
-    source_index.add_spec @a1
-    source_index.add_spec @a2
-
-    assert_equal [@a1], source_index.search(@a1.name, '= 1')
-
-    r1 = Gem::Requirement.create '= 1'
-    assert_equal [@a1], source_index.search(@a1.name, r1)
-
-    dep = Gem::Dependency.new @a1.name, r1
-    assert_equal [@a1], source_index.search(dep)
-  end
-
-  def test_search_empty_cache
-    empty_source_index = Gem::SourceIndex.new({})
-    assert_equal [], empty_source_index.search("foo")
+    with_default = Gem::Dependency.new(/^a/, Gem::Requirement.default)
+    assert_equal [@a1, @a2, @a_evil9], @source_index.search(with_default)
   end
 
   def test_search_platform

@@ -4,15 +4,15 @@
 	* lib/rubygems/source_index.rb: Deprecate options to 'search' other than 
 	Gem::Dependency instances and issue warning until November 2008.
 	* lib/rubygems/platform.rb:	Remove deprecated constant warnings and really 
-		deprecate them.
+	deprecate them.
 	* Rakefile: If the SETUP_OPTIONS environment variable is set, pass its 
-		contents as arguments to setup.rb
-	* lib/rubygems/platform.rb:	
+	contents as arguments to setup.rb
 	* test/test_gem_commands_uninstall_command.rb: Added
+
 2008-08-13  Wilson Bilkovich  <wilson@supremetyrant.com>
 
 	* lib/rubygems/uninstaller.rb:	Fix binary script uninstallation.
-		Bug #21234 by Neil Wilson.
+	Bug #21234 by Neil Wilson.
 	* test/test_gem_commands_uninstall_command.rb: Added
 
 2008-08-12  Eric Hodel  <drbrain@segment7.net>

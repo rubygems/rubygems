@@ -22,7 +22,12 @@ class TestGemCommandsUninstallCommand < GemInstallerTestCase
   end
 
   def test_execute_removes_executable
-    assert_equal true, File.symlink?(@executable)
+    if win_platform?
+      assert_equal true, File.exist?(@executable)
+    else
+      assert_equal true, File.symlink?(@executable)
+    end
+
     # Evil hack to prevent false removal success
     FileUtils.rm_f @executable
     File.open(@executable, "wb+") {|f| f.puts "binary"}

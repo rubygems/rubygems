@@ -44,7 +44,12 @@ class TestGem < RubyGemTestCase
 
   def test_self_bindir_default_dir
     default = Gem.default_dir
-    bindir = (defined? RUBY_FRAMEWORK_VERSION) ? '/usr/bin' : Config::CONFIG['bindir']    
+    bindir = if defined?(RUBY_FRAMEWORK_VERSION) then
+               '/usr/bin'
+             else
+               Config::CONFIG['bindir']
+             end
+
     assert_equal bindir, Gem.bindir(default)
     assert_equal bindir, Gem.bindir(Pathname.new(default))
   end
@@ -215,6 +220,36 @@ class TestGem < RubyGemTestCase
     assert_equal 'SSL is not installed on this system', e.message
   ensure
     Gem.ssl_available = orig_Gem_ssl_available
+  end
+
+  def test_self_find_files
+    foo1 = quick_gem 'foo', '1' do |s|
+      s.files << 'lib/foo/discover.rb'
+    end
+
+    foo2 = quick_gem 'foo', '2' do |s|
+      s.files << 'lib/foo/discover.rb'
+    end
+
+    path = File.join 'gems', foo1.full_name, 'lib', 'foo', 'discover.rb'
+    write_file(path) { |fp| fp.puts "# #{path}" }
+
+    path = File.join 'gems', foo2.full_name, 'lib', 'foo', 'discover.rb'
+    write_file(path) { |fp| fp.puts "# #{path}" }
+
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
+
+    Gem.source_index = util_setup_spec_fetcher foo1, foo2
+
+    Gem.searcher = nil
+
+    expected = [
+      File.join(foo1.full_gem_path, 'lib', 'foo', 'discover.rb'),
+      File.join(foo2.full_gem_path, 'lib', 'foo', 'discover.rb'),
+    ]
+
+    assert_equal expected, Gem.find_files('foo/discover').sort
   end
 
   def test_self_latest_load_paths

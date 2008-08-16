@@ -19,6 +19,10 @@ require 'rubygems/test_utilities'
 require File.join(File.expand_path(File.dirname(__FILE__)), 'mockgemui')
 
 module Gem
+  def self.searcher=(searcher)
+    MUTEX.synchronize do @searcher = searcher end
+  end
+
   def self.source_index=(si)
     @@source_index = si
   end

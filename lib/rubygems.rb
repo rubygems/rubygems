@@ -342,6 +342,22 @@ module Gem
   end
 
   ##
+  # Returns a list of paths matching +file+ that can be used by a gem to pick
+  # up features from other gems.  For example:
+  #
+  #   Gem.find_files('rdoc/discover').each do |path| load path end
+  #
+  # find_files does not search $LOAD_PATH for files, only gems.
+
+  def self.find_files(path)
+    specs = searcher.find_all path
+
+    specs.map do |spec|
+      searcher.matching_files spec, path
+    end.flatten
+  end
+
+  ##
   # Finds the user's home directory.
   #--
   # Some comments from the ruby-talk list regarding finding the home

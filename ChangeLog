@@ -5,6 +5,8 @@
 	  #local? and #remote?.
 	* lib/rubygems/commands/query_command.rb:  Print out LOCAL/REMOTE with
 	--both, even without a TTY.
+	* lib/rubygems.rb:  Add Gem.find_files, allows a gem to discover
+	features provided by other gems.
 
 2008-08-14  Wilson Bilkovich  <wilson@supremetyrant.com>
 

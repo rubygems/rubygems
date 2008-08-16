@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
+2008-08-16  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/local_remote_options.rb:  Added #both? to complement
+	  #local? and #remote?.
+	* lib/rubygems/commands/query_command.rb:  Print out LOCAL/REMOTE with
+	--both, even without a TTY.
+
 2008-08-14  Wilson Bilkovich  <wilson@supremetyrant.com>
 
-	* lib/rubygems/source_index.rb: Deprecate options to 'search' other than 
+	* lib/rubygems/source_index.rb: Deprecate options to 'search' other than
 	Gem::Dependency instances and issue warning until November 2008.
-	* lib/rubygems/platform.rb:	Remove deprecated constant warnings and really 
-	deprecate them.
-	* Rakefile: If the SETUP_OPTIONS environment variable is set, pass its 
+	* lib/rubygems/platform.rb:	Remove deprecated constant warnings
+	and really deprecate them.
+	* Rakefile: If the SETUP_OPTIONS environment variable is set, pass its
 	contents as arguments to setup.rb
 	* test/test_gem_commands_uninstall_command.rb: Added
 

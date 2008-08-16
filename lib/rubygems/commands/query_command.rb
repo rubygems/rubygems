@@ -72,7 +72,7 @@ class Gem::Commands::QueryCommand < Gem::Command
     dep = Gem::Dependency.new name, Gem::Requirement.default
 
     if local? then
-      if ui.outs.tty? then
+      if ui.outs.tty? or both? then
         say
         say "*** LOCAL GEMS ***"
         say
@@ -88,7 +88,7 @@ class Gem::Commands::QueryCommand < Gem::Command
     end
 
     if remote? then
-      if ui.outs.tty? then
+      if ui.outs.tty? or both? then
         say
         say "*** REMOTE GEMS ***"
         say

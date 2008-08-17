@@ -1,6 +1,6 @@
-= Announce: RubyGems Release 1.2.0
+= Announce: RubyGems Release 1.3.0
 
-Release 1.2.0 adds new features and fixes some bugs.
+Release 1.3.0 adds new features and fixes some bugs.
 
 New features:
 

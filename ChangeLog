@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+2008-08-17  Eric Hodel  <drbrain@segment7.net>
+
+	* doc/release_notes/rel_1_3_0.rdoc:  Initial release notes for 1.3.0.
+	* util/CL2notes:  Release note creation helper script.
+
 2008-08-16  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/local_remote_options.rb:  Added #both? to complement

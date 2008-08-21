@@ -423,6 +423,44 @@ class TestGem < RubyGemTestCase
                  Gem.required_location("a", "code.rb", "= 2")
   end
 
+  def test_self_ruby_escaping_spaces_in_path
+    orig_ruby = Gem.ruby
+    orig_bindir = Gem::ConfigMap[:bindir]
+    orig_ruby_install_name = Gem::ConfigMap[:ruby_install_name]
+    orig_exe_ext = Gem::ConfigMap[:EXEEXT]
+
+    Gem::ConfigMap[:bindir] = "C:/Ruby 1.8/bin"
+    Gem::ConfigMap[:ruby_install_name] = "ruby"
+    Gem::ConfigMap[:EXEEXT] = ".exe"
+    Gem.instance_variable_set("@ruby", nil)
+
+    assert_equal "\"C:/Ruby 1.8/bin/ruby.exe\"", Gem.ruby
+  ensure
+    Gem.instance_variable_set("@ruby", orig_ruby)
+    Gem::ConfigMap[:bindir] = orig_bindir
+    Gem::ConfigMap[:ruby_install_name] = orig_ruby_install_name
+    Gem::ConfigMap[:EXEEXT] = orig_exe_ext
+  end
+
+  def test_self_ruby_path_without_spaces
+    orig_ruby = Gem.ruby
+    orig_bindir = Gem::ConfigMap[:bindir]
+    orig_ruby_install_name = Gem::ConfigMap[:ruby_install_name]
+    orig_exe_ext = Gem::ConfigMap[:EXEEXT]
+
+    Gem::ConfigMap[:bindir] = "C:/Ruby18/bin"
+    Gem::ConfigMap[:ruby_install_name] = "ruby"
+    Gem::ConfigMap[:EXEEXT] = ".exe"
+    Gem.instance_variable_set("@ruby", nil)
+
+    assert_equal "C:/Ruby18/bin/ruby.exe", Gem.ruby
+  ensure
+    Gem.instance_variable_set("@ruby", orig_ruby)
+    Gem::ConfigMap[:bindir] = orig_bindir
+    Gem::ConfigMap[:ruby_install_name] = orig_ruby_install_name
+    Gem::ConfigMap[:EXEEXT] = orig_exe_ext
+  end
+
   def test_self_ruby_version
     version = RUBY_VERSION.dup
     version << ".#{RUBY_PATCHLEVEL}" if defined? RUBY_PATCHLEVEL

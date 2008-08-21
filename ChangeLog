@@ -2,7 +2,9 @@
 2008-08-22  Luis Lavena  <luislavena@gmail.com>
 
 	* lib/rubygems.rb: Corrected usage of HOMEDRIVE and HOMEPATH on Windows.
-	* test/test_gem.rb: Added test to verify.
+	Escape Gem.ruby if spaces in the path are present. Solves bug related to
+	extensions compile process.
+	* test/test_gem.rb: Added test to verify both conditions.
 
 2008-08-17  Eric Hodel  <drbrain@segment7.net>
 

@@ -655,6 +655,9 @@ module Gem
       @ruby = File.join(ConfigMap[:bindir],
                         ConfigMap[:ruby_install_name])
       @ruby << ConfigMap[:EXEEXT]
+
+      # escape string in case path to ruby executable contain spaces.
+      @ruby.sub!(/.*\s.*/m, '"\&"')
     end
 
     @ruby

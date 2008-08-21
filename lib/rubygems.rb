@@ -374,7 +374,7 @@ module Gem
     end
 
     if ENV['HOMEDRIVE'] && ENV['HOMEPATH'] then
-      return "#{ENV['HOMEDRIVE']}:#{ENV['HOMEPATH']}"
+      return "#{ENV['HOMEDRIVE']}#{ENV['HOMEPATH']}"
     end
 
     begin

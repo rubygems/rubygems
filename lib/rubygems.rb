@@ -487,13 +487,11 @@ module Gem
 
   ##
   # manage_gems is useless and deprecated.  Don't call it anymore.
-  #--
-  # TODO warn w/ RubyGems 1.2.x release.
 
-  def self.manage_gems
-    #file, lineno = location_of_caller
+  def self.manage_gems # :nodoc:
+    file, lineno = location_of_caller
 
-    #warn "#{file}:#{lineno}:Warning: Gem#manage_gems is deprecated and will be removed on or after September 2008."
+    warn "#{file}:#{lineno}:Warning: Gem::manage_gems is deprecated and will be removed on or after March 2009."
   end
 
   ##

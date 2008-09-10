@@ -6,6 +6,7 @@
 	help install`.
 	* lib/rubygems/commands/environment_command.rb:  Describe environment
 	variables and gemrc in `gem help env`.
+	* lib/rubygems.rb:  Warn when executing Gem::manage_gems.
 
 2008-08-22  Luis Lavena  <luislavena@gmail.com>
 

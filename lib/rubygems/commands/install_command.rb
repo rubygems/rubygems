@@ -119,6 +119,8 @@ version is also installed.
       installed_gems.each do |gem|
         Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
       end
+
+      Gem::DocManager.update_ri_cache
     end
 
     if options[:generate_rdoc] then

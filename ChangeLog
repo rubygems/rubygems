@@ -3,7 +3,9 @@
 2008-09-10  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/install_command.rb:  Describe _version_ in `gem
-	help`.
+	help install`.
+	* lib/rubygems/commands/environment_command.rb:  Describe environment
+	variables and gemrc in `gem help env`.
 
 2008-08-22  Luis Lavena  <luislavena@gmail.com>
 

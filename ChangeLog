@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+
+2008-09-10  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/install_command.rb:  Describe _version_ in `gem
+	help`.
+
 2008-08-22  Luis Lavena  <luislavena@gmail.com>
 
 	* lib/rubygems.rb: Corrected usage of HOMEDRIVE and HOMEPATH on Windows.

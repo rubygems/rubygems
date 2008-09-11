@@ -80,8 +80,14 @@ class Gem::SourceIndex
 
     def load_specification(file_name)
       begin
-        spec_code = File.read(file_name).untaint
+        spec_code = if RUBY_VERSION < '1.9' then
+                      File.read file_name
+                    else
+                      File.read file_name, :encoding => 'UTF-8'
+                    end.untaint
+
         gemspec = eval spec_code, binding, file_name
+
         if gemspec.is_a?(Gem::Specification)
           gemspec.loaded_from = file_name
           return gemspec

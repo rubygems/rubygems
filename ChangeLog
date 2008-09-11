@@ -8,6 +8,9 @@
 	variables and gemrc in `gem help env`.
 	* lib/rubygems.rb:  Warn when executing Gem::manage_gems.
 	* lib/rubygems/doc_manager.rb:  Have RubyGems update the ri cache.
+	* lib/rubygems/source_index.rb:  Ensure specs are read as UTF-8.
+	* lib/rubygems/specification.rb:  Add magic comment to .gemspec files
+	so they are read in as UTF-8.
 
 2008-08-22  Luis Lavena  <luislavena@gmail.com>
 

@@ -64,6 +64,54 @@ class TestGemSourceIndex < RubyGemTestCase
     assert_equal a1.author, spec.author
   end
 
+  def test_self_load_specification_utf_8
+    spec_dir = File.join @gemhome, 'specifications'
+
+    FileUtils.rm_r spec_dir
+
+    FileUtils.mkdir_p spec_dir
+
+    spec_file = File.join spec_dir, "utf-8.gemspec"
+    spec_data = <<-SPEC
+Gem::Specification.new do |s|
+  s.name = %q{utf}
+  s.version = "8"
+
+  s.required_rubygems_version = Gem::Requirement.new(">= 0")
+  s.authors = ["\317\200"]
+  s.date = %q{2008-09-10}
+  s.description = %q{This is a test description}
+  s.email = %q{example@example.com}
+  s.has_rdoc = true
+  s.homepage = %q{http://example.com}
+  s.require_paths = ["lib"]
+  s.rubygems_version = %q{1.2.0}
+  s.summary = %q{this is a summary}
+
+  if s.respond_to? :specification_version then
+    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
+    s.specification_version = 2
+
+    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    else
+    end
+  else
+  end
+end
+    SPEC
+
+    spec_data.force_encoding 'UTF-8'
+
+    File.open spec_file, 'w' do |io| io.write spec_data end
+
+    spec = Gem::SourceIndex.load_specification spec_file
+
+    pi = "\317\200"
+    pi.force_encoding 'UTF-8' if pi.respond_to? :force_encoding
+
+    assert_equal pi, spec.author
+  end if Gem.ruby_version > Gem::Version.new('1.9')
+
   def test_self_load_specification_exception
     spec_dir = File.join @gemhome, 'specifications'
 

@@ -711,6 +711,8 @@ module Gem
     def to_ruby
       mark_version
       result = []
+      result << "# -*- encoding: utf-8 -*-"
+      result << nil
       result << "Gem::Specification.new do |s|"
 
       result << "  s.name = #{ruby_code name}"

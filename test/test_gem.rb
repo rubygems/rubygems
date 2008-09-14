@@ -324,7 +324,7 @@ class TestGem < RubyGemTestCase
 
     assert_equal path_count + @additional.size, Gem.path.size,
                  "extra path components: #{Gem.path[2..-1].inspect}"
-    assert_match Gem.dir, Gem.path.last
+    assert_equal Gem.dir, Gem.path.last
   end
 
   def test_self_path_duplicate
@@ -513,7 +513,6 @@ class TestGem < RubyGemTestCase
       assert true, 'count this test'
     end
   end
-
 
   def test_self_user_home_user_drive_and_path
     # safe-keep env variables

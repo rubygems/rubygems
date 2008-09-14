@@ -316,9 +316,16 @@ installation of RubyGems before this update can be applied.
   s.bindir = "bin" # Use these for applications.
   s.executables = ["update_rubygems"]
   certdir = ENV['CERT_DIR']
-  if certdir
-    s.signing_key = File.join(certdir, 'gem-private_key.pem')
-    s.cert_chain  = [File.join(certdir, 'gem-public_cert.pem')]
+  if certdir then
+    key  = File.join certdir, 'gem-private_key.pem'
+    cert = File.join certdir, 'gem-public_cert.pem'
+
+    if File.exist? key and File.exist? cert then
+      s.signing_key = File.join(certdir, 'gem-private_key.pem')
+      s.cert_chain  = [File.join(certdir, 'gem-public_cert.pem')]
+    else
+      warn "WARNING:  gem will not be signed, no key or certificate found in #{ENV['CERT_DIR']}"
+    end
   end
 end
 

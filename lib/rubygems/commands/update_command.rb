@@ -111,6 +111,9 @@ class Gem::Commands::UpdateCommand < Gem::Command
     end
   end
 
+  ##
+  # Update the RubyGems software to +version+.
+
   def do_rubygems_update(version)
     args = []
     args.push '--prefix', Gem.prefix unless Gem.prefix.nil?
@@ -119,8 +122,6 @@ class Gem::Commands::UpdateCommand < Gem::Command
     args << '--no-format-executable' if options[:no_format_executable]
 
     update_dir = File.join Gem.dir, 'gems', "rubygems-update-#{version}"
-
-    success = false
 
     Dir.chdir update_dir do
       say "Installing RubyGems #{version}"

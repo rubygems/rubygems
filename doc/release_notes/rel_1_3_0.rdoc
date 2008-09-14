@@ -10,7 +10,7 @@ New features:
   gems.
 * Added pre/post (un)install hooks for packagers of RubyGems.  (Not for gems
   themselves).
-* RubyGems now installs into ~/.gem if GEM_HOME is not writable.  Use
+* RubyGems now installs gems into ~/.gem if GEM_HOME is not writable.  Use
   --no-user-install command-line switch to disable this behavior.
 * Fetching specs for update now uses If-Modified-Since requests.
 

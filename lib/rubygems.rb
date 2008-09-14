@@ -862,3 +862,5 @@ if RUBY_VERSION < '1.9' then
   require 'rubygems/custom_require'
 end
 
+Gem.clear_paths
+

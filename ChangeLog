@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2008-09-15  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_index.rb:  Autoload SpecFetcher to improve load
+	time.  Patch #21577 by Simon Chiang.
+
 2008-09-10  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/install_command.rb:  Describe _version_ in `gem

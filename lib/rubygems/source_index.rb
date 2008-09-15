@@ -7,7 +7,9 @@
 require 'rubygems'
 require 'rubygems/user_interaction'
 require 'rubygems/specification'
-require 'rubygems/spec_fetcher'
+module Gem
+  autoload(:SpecFetcher, 'rubygems/spec_fetcher')
+end
 
 ##
 # The SourceIndex object indexes all the gems available from a

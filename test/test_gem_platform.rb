@@ -92,6 +92,12 @@ class TestGemPlatform < RubyGemTestCase
     platform = Gem::Platform.new 'i386-mswin32-80'
 
     assert_equal expected, platform.to_a, 'i386-mswin32-80'
+
+    expected = ['x86', 'solaris', '2.10']
+
+    platform = Gem::Platform.new 'i386-solaris-2.10'
+
+    assert_equal expected, platform.to_a, 'i386-solaris-2.10'
   end
 
   def test_initialize_mswin32_vc6

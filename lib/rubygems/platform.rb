@@ -56,7 +56,7 @@ class Gem::Platform
              else cpu
              end
 
-      if arch.length == 2 and arch.last =~ /^\d+$/ then # for command-line
+      if arch.length == 2 and arch.last =~ /^\d+(\.\d+)?$/ then # for command-line
         @os, @version = arch
         return
       end

@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2008-09-16  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems.rb:  Only create ~/.gem by user owning ~.  Bug #21561
+	by Neil Wilson.
+
 2008-09-15  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/source_index.rb:  Autoload SpecFetcher to improve load

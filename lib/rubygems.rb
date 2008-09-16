@@ -711,7 +711,13 @@ module Gem
     end
 
     @gem_path.uniq!
-    @gem_path.each do |gp| ensure_gem_subdirectories(gp) end
+    @gem_path.each do |path|
+      if 0 == File.expand_path(path).index(Gem.user_home) and
+         Etc.getpwuid.uid != File::Stat.new(Gem.user_home).uid then
+        next # only create by matching user
+      end
+      ensure_gem_subdirectories path
+    end
   end
 
   private_class_method :set_paths

@@ -323,15 +323,20 @@ installation of RubyGems before this update can be applied.
     if File.exist? key and File.exist? cert then
       s.signing_key = File.join(certdir, 'gem-private_key.pem')
       s.cert_chain  = [File.join(certdir, 'gem-public_cert.pem')]
+      warn_unsigned = false
     else
-      warn "WARNING:  gem will not be signed, no key or certificate found in #{ENV['CERT_DIR']}"
+      warn_unsigned = true
     end
   end
 end
 
 # Add console output about signing the Gem
 file "pkg/#{Spec.full_name}.gem" do
-  puts "Signed with certificates in '#{ENV['CERT_DIR']}'" if ENV['CERT_DIR']
+  if warn_unsigned then
+    warn "WARNING:  gem will not be signed, no key or certificate found in #{ENV['CERT_DIR']}"
+  else
+    puts "Signed with certificates in '#{ENV['CERT_DIR']}'"
+  end
 end
 
 Rake::GemPackageTask.new(Spec) do |p| end

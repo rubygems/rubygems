@@ -266,9 +266,7 @@ module Gem
   # The standard configuration object for gems.
 
   def self.configuration
-    return @configuration if @configuration
-    require 'rubygems/config_file'
-    @configuration = Gem::ConfigFile.new []
+    @configuration ||= Gem::ConfigFile.new []
   end
 
   ##
@@ -508,11 +506,7 @@ module Gem
     @gem_path ||= nil
 
     unless @gem_path then
-      paths = if ENV['GEM_PATH'] then
-                [ENV['GEM_PATH']]
-              else
-                [default_path]
-              end
+      paths = [ENV['GEM_PATH'] || Gem.configuration.path || default_path]
 
       if defined?(APPLE_GEM_HOME) and not ENV['GEM_PATH'] then
         paths << APPLE_GEM_HOME
@@ -748,6 +742,14 @@ module Gem
   end
 
   ##
+  # Need to be able to set the sources without calling
+  # Gem.sources.replace since that would cause an infinite loop.
+
+  def self.sources=(new_sources)
+    @sources = new_sources
+  end
+
+  ##
   # Glob pattern for require-able path suffixes.
 
   def self.suffix_pattern
@@ -864,9 +866,10 @@ if defined?(RUBY_ENGINE) then
   end
 end
 
+require 'rubygems/config_file'
+
 if RUBY_VERSION < '1.9' then
   require 'rubygems/custom_require'
 end
 
 Gem.clear_paths
-

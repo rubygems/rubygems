@@ -249,7 +249,10 @@ module Gem
   def self.clear_paths
     @gem_home = nil
     @gem_path = nil
+    @user_home = nil
+
     @@source_index = nil
+
     MUTEX.synchronize do
       @searcher = nil
     end

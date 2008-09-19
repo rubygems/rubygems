@@ -515,6 +515,8 @@ class TestGem < RubyGemTestCase
   end
 
   def test_self_user_home_user_drive_and_path
+    Gem.clear_paths
+
     # safe-keep env variables
     orig_home, orig_user_profile = ENV['HOME'], ENV['USERPROFILE']
     orig_user_drive, orig_user_path = ENV['HOMEDRIVE'], ENV['HOMEPATH']

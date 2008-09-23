@@ -48,6 +48,7 @@ class Gem::Installer
   attr_reader :spec
 
   @home_install_warning = false
+  @path_warning = false
 
   class << self
 
@@ -55,6 +56,11 @@ class Gem::Installer
     # True if we've warned about ~/.gems install
 
     attr_accessor :home_install_warning
+
+    ##
+    # True if we've warned about PATH not including Gem.bindir
+
+    attr_accessor :path_warning
 
     attr_writer :exec_format
 
@@ -124,7 +130,7 @@ class Gem::Installer
         raise Gem::FilePermissionError, @gem_home
       elsif options[:user_install].nil? then
         unless self.class.home_install_warning then
-          say "Warning: falling back to ~/.gem install since #{@gem_home} and #{Gem.bindir} aren't both writable."
+          alert_warning "Installing to ~/.gem since #{@gem_home} and\n\t  #{Gem.bindir} aren't both writable."
           self.class.home_install_warning = true
         end
       end
@@ -136,8 +142,10 @@ class Gem::Installer
 
       user_bin_dir = File.join(@gem_home, 'bin')
       unless ENV['PATH'].split(File::PATH_SEPARATOR).include? user_bin_dir then
-        say "You don't have #{user_bin_dir} in your PATH."
-        say "You won't be able to run gem-installed executables until you add it."
+        unless self.class.path_warning then
+          alert_warning "You don't have #{user_bin_dir} in your PATH,\n\t  gem executables will not run."
+          self.class.path_warning = true
+        end
       end
 
       FileUtils.mkdir_p @gem_home unless File.directory? @gem_home

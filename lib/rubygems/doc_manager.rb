@@ -57,7 +57,16 @@ class Gem::DocManager
 
     require 'rdoc/ri/driver'
 
-    driver = RDoc::RI::Driver.new.class_cache
+    options = {
+      :use_cache => true,
+      :use_system => true,
+      :use_site => true,
+      :use_home => true,
+      :use_gems => true,
+      :formatter => RDoc::RI::Formatter,
+    }
+
+    driver = RDoc::RI::Driver.new(options).class_cache
   end
 
   ##

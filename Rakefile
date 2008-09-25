@@ -298,6 +298,8 @@ Rake::PackageTask.new("package") do |p|
   p.package_files = PKG_FILES
 end
 
+warn_unsigned = true
+
 Spec = Gem::Specification.new do |s|
   s.name = PKG_NAME + "-update"
   s.version = PKG_VERSION

@@ -70,7 +70,10 @@ load 'my_exec'
 #{Gem.ruby}: No such file or directory -- extconf.rb (LoadError)
     EOF
 
-    assert_equal expected, File.read(gem_make_out)
+    assert_match %r%#{Regexp.escape Gem.ruby} extconf.rb%,
+                 File.read(gem_make_out)
+    assert_match %r%#{Regexp.escape Gem.ruby}: No such file%,
+                 File.read(gem_make_out)
   end
 
   def test_build_extensions_unsupported
@@ -539,8 +542,10 @@ load 'my_exec'
       assert File.exist?(cache_file), 'cache file should exist'
     end
 
-    use_ui @ui do
-      assert_equal @spec, @installer.install
+    build_rake_in do
+      use_ui @ui do
+        assert_equal @spec, @installer.install
+      end
     end
 
     gemdir = File.join @gemhome, 'gems', @spec.full_name
@@ -636,8 +641,10 @@ load 'my_exec'
     util_setup_gem
     @installer.ignore_dependencies = true
 
-    use_ui @ui do
-      assert_equal @spec, @installer.install
+    build_rake_in do
+      use_ui @ui do
+        assert_equal @spec, @installer.install
+      end
     end
 
     gemdir = File.join @gemhome, 'gems', @spec.full_name
@@ -682,9 +689,11 @@ load 'my_exec'
       File.chmod 0000, Gem.dir
       @spec.executables = ["executable"]
 
-      use_ui @ui do
-        util_setup_gem
-        @installer.install
+      build_rake_in do
+        use_ui @ui do
+          util_setup_gem
+          @installer.install
+        end
       end
 
       assert File.exist?(File.join(Gem.user_dir, 'gems',
@@ -700,10 +709,12 @@ load 'my_exec'
       File.chmod 0755, @userhome
       File.chmod 0000, util_inst_bindir
 
-      use_ui @ui do
-        setup
-        util_setup_gem
-        @installer.install
+      build_rake_in do
+        use_ui @ui do
+          setup
+          util_setup_gem
+          @installer.install
+        end
       end
 
       assert File.exist?(File.join(Gem.user_dir, 'bin', 'executable'))

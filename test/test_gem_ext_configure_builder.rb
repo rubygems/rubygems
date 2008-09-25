@@ -59,7 +59,7 @@ class TestGemExtConfigureBuilder < RubyGemTestCase
     assert_match expected, error.message
 
     assert_equal "#{sh_prefix_configure}#{@dest_path}", output.shift
-    assert_match %r(#{shell_error_msg}\n), output.shift
+    assert_match %r(#{shell_error_msg}), output.shift
     assert_equal true, output.empty?
   end
 

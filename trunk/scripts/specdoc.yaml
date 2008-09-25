@@ -1,0 +1,433 @@
+SECTIONS:
+  - name: "Basics"
+    attributes:
+      - name
+      - version
+      - summary
+      - description                     
+      - platform                        
+      - required_ruby_version           
+      - requirements
+      - dependencies
+  
+  - name: "Files, Libraries, and Executables"
+    attributes:
+      - files                           
+      - require_paths
+      - autorequire                     
+      - bindir                          
+      - executables                     
+      - default_executable              
+  
+  - name: "C compilation"
+    attributes:
+      - extensions                      
+  
+  - name: "Documentation"
+    attributes:
+      - rdoc_options                    
+      - has_rdoc                        
+      - extra_rdoc_files
+  
+  - name: "Testing"
+    attributes:
+      - test_files
+  
+  - name: "About"
+    attributes:
+      - authors                          
+      - email                           
+      - homepage                        
+      - rubyforge_project               
+
+ATTRIBUTES:
+
+  - name: authors
+    klass: String
+    mandatory: false
+    default: 
+    description:
+      The author of the package contained in the gem.
+    usage: |
+        spec.author = "John Jones"
+    notes:
+
+  - name: autorequire
+    klass: String
+    mandatory: false
+    default: nil
+    description:
+      The file that will be loaded when <tt>require_gem</tt> is called.
+    usage: |
+        spec.files = ['lib/rake.rb", "lib/rake/**/*.rb", ...]
+        spec.autorequire = 'rake'
+    notes:
+      "In the above example, when the user's code calls <tt>require_gem
+      'rake'</tt>, an implicit <tt>require 'rake'</tt> is called afterwards.
+      It is a shortcut so the user doesn't have to do what seems to be a
+      redundant <tt>require</tt>.
+
+      Specifying <tt>autorequire</tt> is optional.  If there is no single
+      default file that should be loaded, then it doesn't make sense to
+      specify it."
+
+  - name: bindir
+    klass: String
+    mandatory: false
+    default: bin
+    description:
+      The directory containing the application files, if any.
+    usage: |
+        spec.bindir = 'bin'
+    notes:
+      An "application file" is a file that is intended to be run from the
+      command line.  If your package contains such files, they will typically
+      be placed in a <tt>bin</tt> directory, hence the name *bindir*.
+
+  - name: date
+    klass: Time
+    mandatory: true
+    default: Time.now
+    description:
+      The date/time that the gem was created.
+    usage: |
+        spec.date = File.utime('VERSION')
+    notes:
+      It's generally sufficient to leave it to the default.
+
+  - name: default_executable
+    klass: String
+    mandatory: false
+    default: ...
+    description:
+      Of all the application files in the package, the *default executable*
+      is the one that can be run directly through the gem.
+    usage: |
+        spec.executables = ['bin/foo', 'bin/bar']
+        spec.default_executable = 'bin/bar'
+    notes:
+      "If you only specify one application file in *executables*, that file
+      becomes the default executable.  Therefore, you only need to specify
+      this value if you have more than one application file.
+
+      The notion of running applications directly through a gem is not well
+      supported at the moment.  The idea is that you can download a gem, say
+      <tt>monopoly.gem</tt> (the board game), and run <tt>gem
+      monopoly.gem</tt>, which would run the <tt>monopoly</tt> application.
+      This is not an in-demand feature.
+
+      <em>XXX: Is the full path necessary?</em>"
+
+  - name: dependencies
+    klass: Array
+    mandatory: false
+    default: []
+    description:
+      Lists the gems that must be installed for this gem to work.
+    usage: |
+        spec.add_dependency('log4r', '>= 1.0.5')
+    notes:
+      When installing a gem with <tt>gem install ...</tt>, its dependencies
+      will be checked.  If they are not installed, <tt>gem</tt> will offer to
+      install them.
+
+      See also L(requirements).
+
+  - name: description
+    klass: String
+    mandatory: false
+    default: 
+    description:
+      Detailed description of the gem.  See also L(summary).
+    usage: |
+        spec.description = <<-EOF
+          Rake is a Make-like program implemented in Ruby. Tasks and
+          dependencies are specified in standard Ruby syntax.
+        EOF
+    notes:
+      When the gem is built, the description is re-formatted into a single
+      line with sensible whitespace.  This means you can use here-docs with
+      formatting, as demonstrated above, without worrying about the
+      formatting.
+
+      The _description_ should be more detailed than the _summary_.  You
+      might consider copying all or part of your project's README into this
+      field.
+
+  - name: email
+    klass: String
+    mandatory: false
+    default: 
+    description:
+      The author's email address.
+    usage: |
+        spec.email = 'john.jones@example.com'
+    notes:
+
+  - name: executables
+    klass: Array
+    mandatory: false
+    default: 
+    description:
+      A list of files in the package that are applications.
+    usage: |
+        # XXX: is this correct?
+        spec.executables << 'rake'
+    notes:
+      For example, the <tt>rake</tt> gem has <tt>rake</tt> as an executable.
+      You don't specify the full path (as in <tt>bin/rake</tt>); all
+      application-style files are expected to be found in L(bindir).
+
+  - name: extensions
+    klass: Array
+    mandatory: false
+    default: 
+    description:
+      The paths to <tt>extconf.rb</tt>-style files used to compile
+      extensions.
+    usage: |
+        spec.extensions << 'ext/rmagic/extconf.rb'
+    notes:
+      "These files will be run when the gem is installed, causing the C (or
+      whatever) code to be compiled on the user's machine.
+
+      <em>XXX: Any other comments?</em>"
+
+  - name: extra_rdoc_files
+    klass: Array
+    mandatory: false
+    default: 
+    description:
+      A list of _extra_ files that will be used by RDoc to generate the
+      documentation.
+    usage: |
+        spec.extra_rdoc_files = ['README', 'doc/user-guide.txt']
+    notes:
+      When the user elects to generate the RDoc documentation for a gem
+      (typically at install time), all the library files are sent to RDoc for
+      processing.  This option allows you to have some non-code files included
+      for a more complete set of documentation.
+
+  - name: files
+    klass: Array
+    mandatory: false
+    default: 
+    description:
+      The list of files to be contained in the gem.
+    usage: |
+        require 'rake'
+        spec.files = FileList['lib/**/*.rb', 'bin/*', '[A-Z]*', 'test/**/*'].to_a
+
+        # or without Rake...
+        spec.files = Dir['lib/**/*.rb'] + Dir['bin/*']
+        spec.files << Dir['[A-Z]*'] + Dir['test/**/*']
+        spec.files.reject! { |fn| fn.include? "CVS" }
+    notes:
+      You don't need to use Rake, obviously, but it does make it much easier to
+      specify files, as it automatically excludes CVS files, backups, etc.
+
+  - name: has_rdoc
+    klass: boolean
+    mandatory: false
+    default: false
+    description:
+      Indicates whether the code in the gem has been commented with RDoc in
+      mind.
+    usage: |
+        spec.has_rdoc = true
+    notes:
+      This attribute has an advisory role only.  Any gem can be submitted for
+      RDoc processing.
+
+  - name: homepage
+    klass: String
+    mandatory: false
+    default: 
+    description:
+      URL of the project or author.
+    usage: |
+        spec.hompage = 'http://rake.rubyforge.org'
+    notes:
+
+  - name: name
+    klass: String
+    mandatory: true
+    default: 
+    description:
+      The name of the gem.
+    usage: |
+        spec.name = 'rake'
+    notes:
+      The name does not include the version number; see L(version).
+
+  - name: platform
+    klass: String
+    mandatory: true
+    default: Gem::Platform::Ruby
+    description:
+      The target platform for the gem.
+    usage: |
+        spec.platform = Gem::Platform::WIN32
+    notes:
+      Most gems contain pure Ruby code; they should simply leave the default
+      value in place.  Some gems contain C (or other) code to be compiled into
+      a Ruby "extension".  The should leave the default value in place unless
+      their code will only compile on a certain type of system.  Some gems 
+      consist of pre-compiled code ("binary gems").  It's especially important 
+      that they set the _platform_ attribute appropriately.  A shortcut is
+      to set the platform to Gem::Platform::CURRENT, which will cause the 
+      gem builder to set the platform to the appropriate value for the system
+      on which the build is being performed.
+
+      If this attribute is set to a non-default value, it will be included in
+      the filename of the gem when it is built, e.g.
+      <tt>fxruby-1.2.0-win32.gem</tt>.
+
+  - name: rdoc_options
+    klass: Array
+    mandatory: false
+    default: []
+    description:
+      Specifies the <tt>rdoc</tt> options to be used when generating API
+      documentation.
+    usage: |
+        spec.rdoc_options << '--title' << 'Rake -- Ruby Make' <<
+                             '--main' << 'README' <<
+                             '--line-numbers'
+    notes:
+
+  - name: require_paths
+    klass: Array
+    mandatory: true
+    default: ['lib']
+    description:
+      List of ''require'' paths from the root of the gem.
+    usage: |
+        # If all library files are in the root directory...
+        spec.require_path = '.'
+
+        # If you have 'lib' and 'ext' directories...
+        spec.require_paths << 'ext'
+    notes:
+      "The default is sufficient in most cases, as Ruby packages tend to be
+      structured so that library code is found under the <tt>lib</tt>
+      directory.
+
+      The example above shows that you can use <tt>spec.require_path =
+      '...'</tt> instead of <tt>spec.require_paths = [...]</tt>.  This is a
+      shortcut, acknowledging that nearly all gems will have only one require
+      path element.
+
+      Be careful about interpreting this attribute, however.  It is used to
+      modify the <tt>LOAD_PATH</tt>, and thus to resolve <tt>require</tt>
+      calls.  So if code calls <tt>require 'rake/packagetask'</tt>, for
+      example, and the <tt>require_paths</tt> is set to <tt>lib</tt>, then
+      there had better be a file <tt>lib/rake/packagetask.rb</tt>."
+
+  - name: required_ruby_version
+    klass: Gem::Version::Requirement
+    mandatory: false
+    default: '> 0.0.0'
+    description:
+      The version of Ruby required to use the gem.
+    usage: |
+        # If it will work with 1.6.8 or greater...
+        spec.required_ruby_version = '>= 1.6.8'
+
+        # ...but not with 1.7/1.8...
+        spec.required_ruby_version = '~> 1.6.8'
+
+        # The typical case these days...
+        spec.required_ruby_version = '>= 1.8.1'
+    notes:
+      See the RubyGems wiki for documentation on specifying versions.
+
+  - name: rubygems_version
+    klass: String
+    mandatory: false
+    default: '<em>current version of RubyGems</em>'
+    description:
+      The version of RubyGems used to create this gem.
+    usage: |
+        No usage ... it is set automatically when the gem is created.
+
+  - name: specification_version
+    klass: Integer
+    mandatory: false
+    default: '<em>Revision level of the RubyGems specification this gem conforms to.</em>'
+    description:
+      The revision level of the GemSpec specification that this gem conforms to.
+    usage: |
+        No usage ... it is set automatically when the gem is created.
+
+  - name: requirements
+    klass: Array
+    mandatory: false
+    default: []
+    description:
+      Lists the external (to <nowiki>RubyGems</nowiki>) requirements that must
+      be met for this gem to work.  It's simply information for the user.
+    usage: |
+        spec.requirements << 'libmagick, v6.0 or greater'
+        spec.requirements << 'A powerful graphics card'
+    notes:
+      For requirements that can be met by other gems, see L(dependencies).
+
+  - name: rubyforge_project
+    klass: String
+    mandatory: false
+    default: 
+    description:
+      The RubyForge project corresponding to the gem.
+    usage: |
+        spec.rubyforge_project = 'rake'
+    notes:
+      Obviously, if your gem doesn't have a Rubyforge project, leave this
+      setting alone.
+
+  - name: summary
+    klass: String
+    mandatory: true
+    default: 
+    description:
+      A short description of the gem.
+    usage: |
+        spec.summary = 'Ruby based make-like utility.'
+    notes:
+      The summary is used to describe the gem in lists produced by the
+      <tt>gem</tt> tool.  See also L(description), which is less important.
+
+  - name: test_files
+    klass: Array
+    mandatory: false
+    default: []
+    description:
+      A collection of unit test files.  They will be loaded as unit tests when
+      the user requests a gem to be unit tested.
+    usage: |
+        spec.test_files = Dir.glob('test/tc_*.rb')     # (1)
+        spec.test_file  = 'tests/test-suite.rb'        # (2)
+        spec.test_files = ['tests/test-suite.rb']      # (3)
+    notes: >
+      Example (1) specifies that all files matching <tt>tc_*.rb</tt> in the
+      <tt>test</tt> directory are unit test files.
+
+      Example (2) shows that you can specify a test suite instead, which
+      presumably loads individual test cases.  This uses the shortcut method
+      <tt>test_file=</tt>, and has the same effect as example (3).
+
+  - name: version
+    klass: String
+    mandatory: true
+    default: 
+    description:
+      The version of the gem.  See RationalVersioningPolicy for some
+      advice on specifying the version number for your gem.
+    usage: |
+        spec.version = '0.4.1'
+    notes: 
+      The canonical way to represent versions in RubyGems is with the
+      <tt>Gem::Version</tt> class.  But the practical way to specify it in a
+      gemspec is with a String.
+
+      The version string must consist purely of numbers and periods.

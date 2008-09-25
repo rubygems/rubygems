@@ -1,0 +1,102 @@
+= Announce: RubyGems Release 0.8.11
+
+RubyGems Version 0.8.11 is now available.  This release includes a
+number of fixes and enhancements, including the work from the Seattle
+Ruby Brigade's RubyGems codefest.
+
+* Improved performance
+* Ability to sign gems (see http://docs.rubygems.org/read/chapter/21)
+* New Command: gem contents -- List the contents of an installed gem
+* New Command: gem rdoc -- Generate rdoc files from an installed gem
+
+== What is RubyGems?
+
+RubyGems is a package management system for Ruby applications and
+libraries.  RubyGems one command download makes installing Ruby software
+fun and enjoyable again. (Ok, not really.)
+
+Many gems are available for download from the RubyForge site.  Browse
+the list of gems with a "gem list --remote" command and download what
+you need with a simple "gem install <name-of-gem>".  RubyGems takes care
+of the details of installing, not only the gem you requested, but also
+any gems needed by the software you selected.
+
+== RubyGems Statistics
+
+* About 326 different gems available (Around 100 new gems since the
+  0.8.10 release)
+* Nearly 64,000 downloads of the RubyGems software
+* Almost 600,000 gem downloads
+
+If you are interested in finding out when new gems are released, I
+maintain an RSS feed at http://onestepback.org/gemwatch.rss.
+
+== How can I get RubyGems?
+
+If you have a recent version of RubyGems (0.8.5 or later), then all
+you need to do is:
+
+  $ gem update --system   (you might need to be admin/root)
+
+(Note: You may have to run the command twice if you have any previosly
+installed rubygems-update gems).
+
+If you have an older version of RubyGems installed, then you can still
+do it in two steps:
+
+  $ gem install rubygems-update  (again, might need to be admin/root)
+  $ update_rubygems              (... here too)
+
+If you don't have any gems install, there is still the pre-gem
+approach to getting software ... doing it manually:
+
+1. DOWNLOAD FROM: http://rubyforge.org/frs/?group_id=126
+2. UNPACK INTO A DIRECTORY AND CD THERE
+3. INSTALL WITH:  ruby setup.rb all  (you may need admin/root privilege)
+
+== Recent Changes
+
+* -y is a synonym for --include-dependencies.
+* Better handling of errors in the top level rescue clause.
+* Package list command (e.g. gem inspect GEM).
+* .gemrc now allows cvsrc-like options to set defaults per subcommand.
+* The autorequire gem spec field will now accept a list.
+* Substituted Time for Date in specs, increasing performance
+  dramatically.
+* Fixed reported bug of gem directories ending in "-" (reported by
+  Erik Hatcher).
+* Fixed but in installer that caused dependency installation to not
+  work.
+* Added Paul Duncan's gem signing patch.
+* Added Mark Hubbart's Framework patch (for better integration with OS
+  X).
+* Added David Glasser's install-from-mirror patch.
+* Additional internal structural cleanup and test reorganization.
+
+== What's Next
+
+We will probably see one more release in the 0.8.x series (hopefully
+soon) where the source index download function will be revised to
+perform better with a large number gems.
+
+After that, the 0.9.x series will start unifying the local and remote
+installers to get more consistent behavior.
+
+== Thanks
+
+Major contributors to this release include:
+
+* Thanks to the  Seattle Ruby  Brigade (Doug  Beaver,  Ryan Davis, Pat
+  Eyler, Eric Hodel,  Evan Webb, and Aaron  Johnson) for the work they
+  did in their code fest.
+
+* Thanks to Paul Duncan for the gem signing patch.
+
+* Thanks to Mark Hubbart for the Mac OS X framework patch.
+
+* Thanks to Doug Kearns for catching some embarassing typos in several
+  error messages.
+
+Keep those gems coming!
+
+-- Jim & Chad (for the RubyGems team)

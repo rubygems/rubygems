@@ -1,0 +1,117 @@
+= Announce: RubyGems Release 0.8.5
+
+Hello one and all.  It is time for another RubyGems update.  But first
+the numbers.
+
+Counting both the tarfile/zipfile download and the rubygem-update gem,
+we have exceed 20,000 downloads of the RubyGems software, and this
+doesn't count the number of RubyGems packages were downloaded as part of
+the Windows one-click installer.  New gems are being published all the
+time.  It was just a week or so ago when we saw the 200th gem released,
+and already we have more 213 unique gems available for download.
+
+We have just released RubyGems 0.8.5.  This latest version of RubyGems
+has some new functionality, fixes a few bugs and makes some things look
+prettier.  There are more changes in the works, but we wanted to get the
+new stuff out as fast as possible.
+
+== Faster Source Cache
+
+Do you know how you used to dread getting the following message while
+installing gems?
+
+  Updating Gem source index for: http://gems.rubyforge.org
+
+It could take up to 30 seconds (on my machine, even worse on others) for
+that crazy source index to update.
+
+This latest release of RubyGems speeds that wait time up considerably.
+The following table gives the following times for installing RedCloth
+with a required source index update on three system we had available to
+us.  No RDoc generation was included in the following times.
+
+  RubyGems    Linux         Mac OSX      Windows
+  0.8.4       33 secs       73 secs      58 secs
+  0.8.5        8 secs       14 secs      21 secs
+
+The new caching code is at least 3x faster than previous versions.  Woo
+Hoo!
+
+== What is RubyGems?
+
+RubyGems is a package management system for Ruby applications and
+libraries.  RubyGems one command download makes installing Ruby software
+fun and enjoyable again. (Ok, not really.)
+
+Many gems are available for download from the RubyForge site.  Browse
+the list of gems with a "gem list --remote" command and download what
+you need with a simple "gem install <name-of-gem>".  RubyGems takes care
+of the details of installing, not only the gem you requested, but also
+any gems needed by the software you selected.
+
+So now you are asking ...
+
+== How can I get all this great stuff?
+
+Well, here's how ...
+
+To download and install:
+
+1. DOWNLOAD FROM: http://rubyforge.org/frs/?group_id=126
+2. UNPACK INTO A DIRECTORY AND CD THERE
+3. INSTALL WITH:  ruby setup.rb all  (you may need admin/root privilege)
+
+... or, if you have an existing RubyGem installation ....
+
+  $ gem install rubygems-update  (again, might need to be admin/root)
+  $ update_rubygems              (... here too)
+
+== So What's Changed in this Release?
+
+* Fixed a bug where, during installation, partial matches on gem names
+  overshadowed an exact match on the gem name.  Exact matches are now
+  required.
+
+* Applied Austin Ziegler/Kasper Schiess's patch to fix unit test running
+  bug.
+
+* Applied Lyle Johnson's patch to fix a problem with multiple require
+  paths.
+
+* "gem update" now accepts a list of gems and only updates the gems
+  listed on the command line.  If no list is given then all gems are
+  updated (which is the bahvior of the previousversion.
+
+* gem_server has been updated with a very nice looking template.  Thanks
+  to Martin Ankerl.
+
+* RubyGems now actively requires Ruby version 1.8.0 or better.  Folks
+  trying to run RubyGems on OSX with the default Ruby installation will
+  now get a meaning error message (rather than mysteriously not
+  working).
+
+* Local source index caching is now /much/ faster.  It now using Marshal
+  rather than Yaml.
+
+* The update command now supports a --system option to update the
+  RubyGems software its self.  After installing 0.8.5, updating RubyGems
+  will be a one step process.
+
+* Dropped that really irritating warning about generating RDocs for
+  packages that didn't specify it had an RDoc.  No one really cared
+  about the message and it was confusing to new users.
+
+* Errors encountered while using require now corrctly reported.
+
+* Misc. bug fixes.  See the ChangeLog file for details.
+
+== Thanks
+
+I wish to give a special thanks to Lyle Johnson, Austing Ziegler, and
+Ksaper Schiess for the patches they provided.  And a big thanks to
+Martin Ankerl for the HTML template upgrade to the gem_server package.
+It looks really great.
+
+Keep those gems coming!
+
+-- Jim & Chad (for the RubyGems team)

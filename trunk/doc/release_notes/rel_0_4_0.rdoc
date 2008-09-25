@@ -1,0 +1,4 @@
+== Release 0.4.0: May 31, 2004
+
+* Minor bug fixes including Windows compatability issues
+

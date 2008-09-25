@@ -1,0 +1,85 @@
+= Announce: RubyGems Release 1.1.0
+
+Release 1.1.0 adds some new features and fixes some bugs.
+
+New features:
+
+* RubyGems now uses persistent connections on index updates.  Index updates are
+  much faster now.
+* RubyGems only updates from a latest index by default, cutting candidate gems
+  for updates to roughly 1/4 (at present).  Index updates are even faster
+  still.
+  * `gem list -r` may only show the latest version of a gem, add --all to see
+    all gems.
+* `gem spec` now extracts specifications from .gem files.
+* `gem query --installed` to aid automation of checking for gems.
+
+Bugs Fixed:
+
+* RubyGems works with both Config and RbConfig now.
+* Executables are now cleaned upon uninstall.
+* You can now uninstall from a particular directory.
+* Updating from non-default sources fixed.
+* Executable stubs now use ruby install name in shebang.
+* `gem unpack` checks every directory in Gem.path now.
+* `gem install` now exits with non-zero exit code when appropriate.
+* `gem update` only updates gems that need updates.
+* `gem update` doesn't force remote-only updates.
+* `gem update` handles dependencies properly when updating.
+* Gems are now loaded in Gem.path order.
+* Gem stub scripts on windows now work outside Gem.bindir.
+* `gem sources -r` now works without network access.
+
+Other Changes Include:
+
+* RubyGems now requires Ruby > 1.8.3.
+* Release notes are now printed upon installation.
+* `gem env path` now prints a usable path.
+* `gem install` reverts to local-only installation upon network error.
+* Tar handling code refactoring and cleanup.
+* Gem::DependencyInstaller's API has changed.
+
+For a full list of changes to RubyGems, see the ChangeLog file.
+
+== How can I get RubyGems?
+
+NOTE:  If you have installed RubyGems using a package system you may want to
+install a new RubyGems through the same packaging system.
+
+If you have a recent version of RubyGems (0.8.5 or later), then all
+you need to do is:
+
+  $ gem update --system   (you might need to be admin/root)
+
+(Note: You may have to run the command twice if you have any previosly
+installed rubygems-update gems).
+
+If you have an older version of RubyGems installed, then you can still
+do it in two steps:
+
+  $ gem install rubygems-update  (again, might need to be admin/root)
+  $ update_rubygems              (... here too)
+
+If you don't have any gems install, there is still the pre-gem
+approach to getting software ... doing it manually:
+
+1. DOWNLOAD FROM: http://rubyforge.org/frs/?group_id=126
+2. UNPACK INTO A DIRECTORY AND CD THERE
+3. INSTALL WITH:  ruby setup.rb  (you may need admin/root privilege)
+
+== To File Bugs
+
+The RubyGems bug tracker can be found on RubyForge at:
+http://rubyforge.org/tracker/?func=add&group_id=126&atid=575
+
+When filing a bug, `gem env` output will be helpful in diagnosing the issue.
+
+If you find a bug where RubyGems crashes, please provide debug output. You can
+do that with `gem --debug the_command`.
+
+== Thanks
+
+Keep those gems coming!
+
+-- Jim & Chad & Eric (for the RubyGems team)
+

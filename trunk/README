@@ -1,0 +1,69 @@
+= RubyGems
+
+(See Releases for release-specific information)
+
+== Installation
+
+Get it from RubyForge (http://rubygems.rubyforge.org) and run (as root, if appropriate and necessary)
+
+  ruby setup.rb
+
+For more details and other options, see:
+
+  ruby setup.rb --help
+
+* {User Guide/Installation}[http://docs.rubygems.org/read/chapter/3]
+
+== For User Documentation, see
+
+* {RubyGems User Guide}[http://docs.rubygems.org/read/book/1]
+* {Frequently Asked Questions}[http://docs.rubygems.org/read/book/3]
+
+== For developer docs see
+
+* {Creating Gems}[http://docs.rubygems.org/read/chapter/5]
+* {GEM Specification}[http://docs.rubygems.org/read/chapter/20]
+
+== The home page of the RubyGems Documentation
+
+* {RubyGems Home}[http://rubygems.rubyforge.org]
+
+== Additional directories
+
+[./bin/...]       binary commands (gem, gem_server, etc)
+[./lib/...]       the RubyGems library
+[./pkgs/...]  default RubyGems packages (currently only 'sources')
+[./test/...]      unit and functional tests
+
+== Credits
+
+RubyGems was originally developed at RubyConf 2003 by:
+
+* Rich Kilmer -- rich(at)infoether.com
+* Chad Fowler -- chad(at)chadfowler.com
+* David Black -- dblack(at)wobblini.net
+* Paul Brannan -- paul(at)atdesk.com
+* Jim Weirch -- {jim(at)weirichhouse.org}[mailto:jim@weirichhouse.org]
+
+== Contributors since then
+
+* Gavin Sinclair -- gsinclair(at)soyabean.com.au
+* George Marrows-- george.marrows(at)ntlworld.com
+* Dick Davies -- rasputnik(at)hellooperator.net
+* Mauricio Fernandez -- batsman.geo(at)yahoo.com
+* Simon Strandgaard -- neoneye(at)adslhome.dk
+* Dave Glasser -- glasser(at)mit.edu
+* Paul Duncan -- pabs(at)pablotron.org
+* Ville Aine -- vaine(at)cs.helsinki.fi
+* Ryan Davis -- 
+* Eric Hodel -- drbrain(at)segment7.net
+
+(If your name is missing, PLEASE let us know!)
+
+== Feedback
+
+Please provide us feedback at http://rubyforge.org/projects/rubygems
+
+Thanks!
+
+-The RubyGems Team

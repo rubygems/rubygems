@@ -1,0 +1,105 @@
+= Announce: RubyGems Release 1.2.0
+
+Release 1.2.0 adds new features and fixes some bugs.
+
+New features:
+
+* RubyGems no longer performs bulk updates and instead only fetches the gemspec
+  files it needs.  Alternate sources will need to upgrade to RubyGems 1.2 to
+  allow RubyGems to take advantage of the new metadata updater.  If a pre 1.2
+  remote source is in the sources list, RubyGems will revert to the bulk update
+  code for compatibility.
+* RubyGems now has runtime and development dependency types.  Use
+  #add_development_dependency and #add_runtime_dependency.  All typeless
+  dependencies are considered to be runtime dependencies.
+* RubyGems will now require rubygems/defaults/operating_system.rb and
+  rubygems/defaults/#{RBX_ENGINE}.rb if they exist.  This allows packagers and
+  ruby implementers to add custom behavior to RubyGems via these files.  (If
+  the RubyGems API is insufficient, please suggest improvements via the
+  RubyGems list.)
+* /etc/gemrc (and windows equivalent) for global settings
+* setup.rb now handles --vendor and --destdir for packagers
+* `gem stale` command that lists gems by last access time
+
+Bugs Fixed:
+
+* File modes from gems are now honored, patch #19737
+* Marshal Gem::Specification objects from the future can now be loaded.
+* A trailing / is now added to remote sources when missing, bug #20134
+* Gems with legacy platforms will now be correctly uninstalled, patch #19877
+* `gem install --no-wrappers` followed by `gem install --wrappers` no longer
+  overwrites executables
+* `gem pristine` now forces reinstallation of gems, bug #20387
+* RubyGems gracefully handles ^C while loading .gemspec files from disk, bug
+  #20523
+* Paths are expanded in more places, bug #19317, bug #19896
+* Gem::DependencyInstaller resets installed gems every install, bug #19444
+* Gem.default_path is now honored if GEM_PATH is not set, patch #19502
+
+Other Changes Include:
+
+* setup.rb
+  * stub files created by RubyGems 0.7.x and older are no longer removed.  When
+    upgrading from these ancient versions, upgrade to 1.1.x first to clean up
+    stubs.
+  * RDoc is no longer required until necessary, patch #20414
+* `gem server`
+  * Now completely matches the output of `gem generate_index` and
+    has correct content types
+  * Refreshes from source directories for every hit.  The server will no longer
+    need to be restarted after installing gems.
+* `gem query --details` and friends now display author, homepage, rubyforge url
+  and installed location
+* `gem install` without -i no longer reinstalls dependencies if they are in
+  GEM_PATH but not in GEM_HOME
+* Gem::RemoteFetcher now performs persistent connections for HEAD requests,
+  bug #7973
+
+For a full list of changes to RubyGems and the contributor for each change, see
+the ChangeLog file.
+
+Special thanks to Chad Wooley for backwards compatibility testing and Luis
+Lavena for continuing windows support.
+
+== How can I get RubyGems?
+
+NOTE:  If you have installed RubyGems using a package system you may want to
+install a new RubyGems through the same packaging system.
+
+If you have a recent version of RubyGems (0.8.5 or later), then all
+you need to do is:
+
+  $ gem update --system   (you might need to be admin/root)
+
+(Note: You may have to run the command twice if you have any previosly
+installed rubygems-update gems).
+
+If you have an older version of RubyGems installed, then you can still
+do it in two steps:
+
+  $ gem install rubygems-update  (again, might need to be admin/root)
+  $ update_rubygems              (... here too)
+
+If you don't have any gems install, there is still the pre-gem
+approach to getting software ... doing it manually:
+
+1. DOWNLOAD FROM: http://rubyforge.org/frs/?group_id=126
+2. UNPACK INTO A DIRECTORY AND CD THERE
+3. INSTALL WITH:  ruby setup.rb  (you may need admin/root privilege)
+
+== To File Bugs
+
+The RubyGems bug tracker can be found on RubyForge at:
+http://rubyforge.org/tracker/?func=add&group_id=126&atid=575
+
+When filing a bug, `gem env` output will be helpful in diagnosing the issue.
+
+If you find a bug where RubyGems crashes, please provide debug output. You can
+do that with `gem --debug the_command`.
+
+== Thanks
+
+Keep those gems coming!
+
+-- Jim & Chad & Eric (for the RubyGems team)
+

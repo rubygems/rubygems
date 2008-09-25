@@ -1,0 +1,4 @@
+== Release 0.7.0: Jul 9, 2004
+
+* See ChangeLog.
+

@@ -4,6 +4,10 @@
 
 	* doc/release_notes/rel_1_3_0.rdoc:  Final release notes for 1.3.0.
 	* lib/rubygems/rubygems_version.rb:  1.3.0.
+	* lib/rubygems/builder.rb:  Examine process status correctly.  Patch
+	  by Nobu.
+	* test/test_gem_ext_rake_builder.rb:  Override Gem.ruby and
+	  ENV['rake'] for 1.9 integration.  Patch by Nobu.
 
 2008-09-16  Eric Hodel  <drbrain@segment7.net>
 

@@ -13,6 +13,13 @@ New features:
 * RubyGems now installs gems into ~/.gem if GEM_HOME is not writable.  Use
   --no-user-install command-line switch to disable this behavior.
 * Fetching specs for update now uses If-Modified-Since requests.
+* RubyGems now updates the ri cache when the rdoc gem is installed and
+  documentation is generated.
+
+Deprecation Notices:
+
+* Gem::manage_gems now warns when called.  It will be removed on or after March
+  2009.
 
 Bugs Fixed:
 
@@ -33,9 +40,17 @@ Bugs Fixed:
 * Uninstallation with -i fixed.  Bug #20812 by John Clayton.
 * Gem::Uninstaller#remove_all now calls Gem::Uninstaller#uninstall_gem so hooks
   get called.  Bug #21242 by Neil Wilson.
+* Gem.ruby now properly escaped on windows.  Fixes problem with extension
+  compilation.
+* `gem lock --strict` works again.  Patch #21814 by Sven Engelhardt.
+* Platform detection for Solaris was improved.  Patch #21911 by Bob Remeika.
 
 Other Changes Include:
 
+* `gem help install` now describes _version_ argument to executable stubs
+* `gem help environment` describes environment variables and ~/.gemrc and
+  /etc/gemrc
+* On-disk gemspecs are now read in UTF-8 and written with a UTF-8 magic comment
 * Rakefile
   * If the SETUP_OPTIONS environment variable is set, pass its contents as
     arguments to setup.rb

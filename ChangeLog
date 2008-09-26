@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2008-09-26  Luis Lavena  <luislavena@gmail.com>
+
+	* lib/rubygems.rb:  Disregard ownership of ~ under Windows while
+	creating ~/.gem.  Fixes issues related to no uid support under
+	Windows.
+
 2008-09-24  Eric Hodel  <drbrain@segment7.net>
 
 	* doc/release_notes/rel_1_3_0.rdoc:  Final release notes for 1.3.0.

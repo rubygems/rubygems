@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2008-10-03  Phil Hagelberg <technomancy@gmail.com>
+
+	* lib/rubygems.rb: Make Gem.dir respect :gemhome value from config.
+	* lib/rubygems/config_file.rb: Expose :gemhome value.
+
 2008-09-26  Luis Lavena  <luislavena@gmail.com>
 
 	* lib/rubygems.rb:  Disregard ownership of ~ under Windows while

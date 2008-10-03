@@ -302,7 +302,7 @@ module Gem
 
   def self.dir
     @gem_home ||= nil
-    set_home(ENV['GEM_HOME'] || default_dir) unless @gem_home
+    set_home(ENV['GEM_HOME'] || Gem.configuration.home || default_dir) unless @gem_home
     @gem_home
   end
 

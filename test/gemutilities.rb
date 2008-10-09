@@ -9,8 +9,14 @@ at_exit { $SAFE = 1 }
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
+require 'rubygems'
 require 'fileutils'
-require 'test/unit'
+begin
+  require 'minitest/unit'
+rescue LoadError
+  warn "Install minitest gem"
+  raise
+end
 require 'tmpdir'
 require 'uri'
 require 'rubygems/package'
@@ -36,7 +42,7 @@ module Gem
   end
 end
 
-class RubyGemTestCase < Test::Unit::TestCase
+class RubyGemTestCase < MiniTest::Unit::TestCase
 
   include Gem::DefaultUserInteraction
 
@@ -478,4 +484,6 @@ class RubyGemTestCase < Test::Unit::TestCase
            end
 
 end
+
+MiniTest::Unit.autorun
 

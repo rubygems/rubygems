@@ -3,6 +3,7 @@
 2008-10-09  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb:  Fix requires for inflate, deflate, etc.
+	* test/*:  Convert to minitest/unit.
 
 2008-10-03  Phil Hagelberg <technomancy@gmail.com>
 

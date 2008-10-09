@@ -294,6 +294,7 @@ module Gem
   # A Zlib::Deflate.deflate wrapper
 
   def self.deflate(data)
+    require 'zlib'
     Zlib::Deflate.deflate data
   end
 
@@ -395,6 +396,8 @@ module Gem
   # Zlib::GzipReader wrapper that unzips +data+.
 
   def self.gunzip(data)
+    require 'stringio'
+    require 'zlib'
     data = StringIO.new data
 
     Zlib::GzipReader.new(data).read
@@ -404,6 +407,8 @@ module Gem
   # Zlib::GzipWriter wrapper that zips +data+.
 
   def self.gzip(data)
+    require 'stringio'
+    require 'zlib'
     zipped = StringIO.new
 
     Zlib::GzipWriter.wrap zipped do |io| io.write data end
@@ -415,6 +420,7 @@ module Gem
   # A Zlib::Inflate#inflate wrapper
 
   def self.inflate(data)
+    require 'zlib'
     Zlib::Inflate.inflate data
   end
 

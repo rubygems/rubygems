@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2008-10-10  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/unpack_command.rb:  Silence PATH warning.
+
 2008-10-09  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb:  Fix requires for inflate, deflate, etc.

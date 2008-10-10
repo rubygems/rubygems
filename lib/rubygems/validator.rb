@@ -133,31 +133,33 @@ class Gem::Validator
     errors
   end
 
-  class TestRunner
-    def initialize(suite, ui)
-      @suite = suite
-      @ui = ui
-    end
+  if RUBY_VERSION < '1.9' then
+    class TestRunner
+      def initialize(suite, ui)
+        @suite = suite
+        @ui = ui
+      end
 
-    def self.run(suite, ui)
-      require 'test/unit/ui/testrunnermediator'
-      return new(suite, ui).start
-    end
+      def self.run(suite, ui)
+        require 'test/unit/ui/testrunnermediator'
+        return new(suite, ui).start
+      end
 
-    def start
-      @mediator = Test::Unit::UI::TestRunnerMediator.new(@suite)
-      @mediator.add_listener(Test::Unit::TestResult::FAULT, &method(:add_fault))
-      return @mediator.run_suite
-    end
+      def start
+        @mediator = Test::Unit::UI::TestRunnerMediator.new(@suite)
+        @mediator.add_listener(Test::Unit::TestResult::FAULT, &method(:add_fault))
+        return @mediator.run_suite
+      end
 
-    def add_fault(fault)
-      if Gem.configuration.verbose then
-        @ui.say fault.long_display
+      def add_fault(fault)
+        if Gem.configuration.verbose then
+          @ui.say fault.long_display
+        end
       end
     end
-  end
 
-  autoload :TestRunner, 'test/unit/ui/testrunnerutilities'
+    autoload :TestRunner, 'test/unit/ui/testrunnerutilities'
+  end
 
   ##
   # Runs unit tests for a given gem specification
@@ -169,27 +171,28 @@ class Gem::Validator
     # XXX: why do we need this gem_spec when we've already got 'spec'?
     test_files = gem_spec.test_files
 
-    if test_files.empty?
+    if test_files.empty? then
       say "There are no unit tests to run for #{gem_spec.full_name}"
-      require 'test/unit/ui/console/testrunner'
-      return Test::Unit::TestResult.new
+      return nil
     end
 
     gem gem_spec.name, "= #{gem_spec.version.version}"
+
     test_files.each do |f| require f end
-    suite = Test::Unit::TestSuite.new("#{gem_spec.name}-#{gem_spec.version}")
 
-    ObjectSpace.each_object(Class) do |klass|
-      suite << klass.suite if (klass < Test::Unit::TestCase)
-    end
+    if RUBY_VERSION < '1.9' then
+      suite = Test::Unit::TestSuite.new("#{gem_spec.name}-#{gem_spec.version}")
 
-    result = TestRunner.run(suite, ui())
+      ObjectSpace.each_object(Class) do |klass|
+        suite << klass.suite if (klass < Test::Unit::TestCase)
+      end
 
-    unless result.passed?
-      alert_error(result.to_s)
-      #unless ask_yes_no(result.to_s + "...keep Gem?", true) then
-      #Gem::Uninstaller.new(gem_spec.name, gem_spec.version.version).uninstall
-      #end
+      result = TestRunner.run suite, ui
+
+      alert_error result.to_s unless result.passed?
+    else
+      result = MiniTest::Unit.new
+      result.run
     end
 
     result

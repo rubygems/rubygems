@@ -4,6 +4,8 @@
 
 	* lib/rubygems.rb:  Fix requires for inflate, deflate, etc.
 	* test/*:  Convert to minitest/unit.
+	* lib/rubygems/validator.rb:  Fix for MiniTest instead of test/unit
+	classic in 1.9.
 
 2008-10-03  Phil Hagelberg <technomancy@gmail.com>
 

@@ -490,8 +490,6 @@ module Gem
     [file, lineno]
   end
 
-  private_class_method :location_of_caller
-
   ##
   # manage_gems is useless and deprecated.  Don't call it anymore.
 

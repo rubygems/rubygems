@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 #--
 # Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
 # All rights reserved.
@@ -474,11 +473,11 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
 
   @@ruby = rubybin
   env_rake = ENV['rake']
-  ruby19_rake = @@ruby + " " + File.expand_path("../../../bin/rake", __FILE__)
+  ruby19_rake = File.expand_path("../../../bin/rake", __FILE__)
   @@rake = if env_rake then
              ENV["rake"]
            elsif File.exist? ruby19_rake then
-             ruby19_rake
+             @@ruby + " " + ruby19_rake
            else
              'rake'
            end

@@ -487,8 +487,10 @@ module Gem
   # The file name and line number of the caller of the caller of this method.
 
   def self.location_of_caller
-    file, lineno = caller[1].split(':')
-    lineno = lineno.to_i
+    caller[1] =~ /(.*?):(\d+)$/i
+    file = $1
+    lineno = $2.to_i
+
     [file, lineno]
   end
 

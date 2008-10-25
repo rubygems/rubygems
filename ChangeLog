@@ -3,8 +3,9 @@
 2008-10-25  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb, lib/rubygems/custom_require.rb:  Make kernel
-	methods private.  Patch #20801 by Stefan Rusterholz.  Also expose
-	our extensions to RDoc.
+	methods private.  Patch #20801 by Stefan Rusterholz.  Expose
+	our kernel extensions to RDoc.  Make Gem::location_of_caller behave on
+	Windows.  Patch by Daniel Berger.
 
 2008-10-10  Eric Hodel  <drbrain@segment7.net>
 

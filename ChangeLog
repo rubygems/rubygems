@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2008-10-25  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems.rb, lib/rubygems/custom_require.rb:  Make kernel
+	methods private.  Patch #20801 by Stefan Rusterholz.  Also expose
+	our extensions to RDoc.
+
 2008-10-10  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/unpack_command.rb:  Silence PATH warning.

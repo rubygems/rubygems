@@ -43,11 +43,13 @@ module Kernel
   #
   #   GEM_SKIP=libA:libB ruby -I../libA -I../libB ./mycode.rb
 
-  def gem(gem_name, *version_requirements)
+  def gem(gem_name, *version_requirements) # :doc:
     skip_list = (ENV['GEM_SKIP'] || "").split(/:/)
     raise Gem::LoadError, "skipping #{gem_name}" if skip_list.include? gem_name
     Gem.activate(gem_name, *version_requirements)
   end
+
+  private :gem
 
 end
 
@@ -104,10 +106,10 @@ module Gem
   @ruby = nil
   @sources = []
 
-  @post_install_hooks = []
-  @post_uninstall_hooks = []
-  @pre_uninstall_hooks = []
-  @pre_install_hooks = []
+  @post_install_hooks   ||= []
+  @post_uninstall_hooks ||= []
+  @pre_uninstall_hooks  ||= []
+  @pre_install_hooks    ||= []
 
   ##
   # Activates an installed gem matching +gem+.  The gem must satisfy

@@ -1,0 +1,75 @@
+= Announce: RubyGems Release 1.3.0
+
+NOTE:  RubyGems 1.1 and 1.2 have problems upgrading when there is no
+rubygems-update installed.  You will need to follow the second set of update
+instructions if you see "Nothing to update".
+
+Release 1.3.0 fixes some bugs.
+
+Bugs fixed:
+
+* Disregard ownership of ~ under Windows while creating ~/.gem.  Fixes
+  issues related to no uid support under Windows.
+* Fix requires for Gem::inflate, Gem::deflate, etc.
+* Make Gem.dir respect :gemhome value from config.  (Note: this feature may be
+  removed since it is hard to implement on 1.9.)
+* Kernel methods are now private.  Patch #20801 by Stefan Rusterholz.
+* Gem::location_of_caller now behaves on Windows.  Patch by Daniel Berger.
+* Silence PATH warning.
+
+Deprecation Notices:
+
+* Gem::manage_gems will be removed on or after March 2009.
+
+For a full list of changes to RubyGems and the contributor for each change, see
+the ChangeLog file.
+
+Special thanks to Chad Wooley for backwards compatibility testing and Luis
+Lavena for continuing windows support.
+
+== How can I get RubyGems?
+
+NOTE:  If you have installed RubyGems using a package system you may want to
+install a new RubyGems through the same packaging system.
+
+If you have a recent version of RubyGems (0.8.5 or later), then all
+you need to do is:
+
+  $ gem update --system   (you might need to be admin/root)
+
+NOTE:  RubyGems 1.1 and 1.2 have problems upgrading when there is no
+rubygems-update installed.  You will need to follow the second set of update
+instructions if you see "Nothing to update".
+
+NOTE: You may have to run the command twice if you have any previosly
+installed rubygems-update gems.
+
+If you have an older version of RubyGems installed, then you can still
+do it in two steps:
+
+  $ gem install rubygems-update  (again, might need to be admin/root)
+  $ update_rubygems              (... here too)
+
+If you don't have any gems install, there is still the pre-gem
+approach to getting software ... doing it manually:
+
+1. DOWNLOAD FROM: http://rubyforge.org/frs/?group_id=126
+2. UNPACK INTO A DIRECTORY AND CD THERE
+3. INSTALL WITH:  ruby setup.rb  (you may need admin/root privilege)
+
+== To File Bugs
+
+The RubyGems bug tracker can be found on RubyForge at:
+http://rubyforge.org/tracker/?func=add&group_id=126&atid=575
+
+When filing a bug, `gem env` output will be helpful in diagnosing the issue.
+
+If you find a bug where RubyGems crashes, please provide debug output. You can
+do that with `gem --debug the_command`.
+
+== Thanks
+
+Keep those gems coming!
+
+-- Jim & Chad & Eric (for the RubyGems team)
+

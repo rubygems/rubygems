@@ -6,6 +6,8 @@
 	methods private.  Patch #20801 by Stefan Rusterholz.  Expose
 	our kernel extensions to RDoc.  Make Gem::location_of_caller behave on
 	Windows.  Patch by Daniel Berger.
+	* doc/release_notes/rel_1_3_1.rdoc:  Final release notes for 1.3.1.
+	* lib/rubygems/rubygems_version.rb:  1.3.1.
 
 2008-10-10  Eric Hodel  <drbrain@segment7.net>
 

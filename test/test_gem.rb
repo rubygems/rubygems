@@ -475,6 +475,27 @@ class TestGem < RubyGemTestCase
     assert_kind_of Gem::GemPathSearcher, Gem.searcher
   end
 
+  def test_self_set_paths
+    other = File.join @tempdir, 'other'
+    path = [@userhome, other].join File::PATH_SEPARATOR
+    Gem.send :set_paths, path
+
+    assert File.exist?(File.join(@userhome, 'gems'))
+    assert File.exist?(File.join(other, 'gems'))
+  end
+
+  def test_self_set_paths_nonexistent_home
+    Gem.clear_paths
+
+    other = File.join @tempdir, 'other'
+
+    ENV['HOME'] = other
+
+    Gem.send :set_paths, other
+
+    refute File.exist?(File.join(other, 'gems'))
+  end
+
   def test_self_source_index
     assert_kind_of Gem::SourceIndex, Gem.source_index
   end

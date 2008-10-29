@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2008-10-29  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems.rb:  Handle nonexistent home directory.  Bug #22229 by
+	Alexey Verkhovsky.
+
 2008-10-25  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb, lib/rubygems/custom_require.rb:  Make kernel

@@ -13,7 +13,7 @@ Bugs fixed:
 * Fix requires for Gem::inflate, Gem::deflate, etc.
 * Make Gem.dir respect :gemhome value from config.  (Note: this feature may be
   removed since it is hard to implement on 1.9.)
-* Kernel methods are now private.  Patch #20801 by Stefan Rusterholz.
+* Kernel methods are now private.  Patch #20801 by James M. Lawrence.
 * Gem::location_of_caller now behaves on Windows.  Patch by Daniel Berger.
 * Silence PATH warning.
 

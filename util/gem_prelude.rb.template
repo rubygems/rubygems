@@ -86,7 +86,7 @@ if defined?(Gem) then
 
     begin
       verbose, debug = $VERBOSE, $DEBUG
-      $DEBUG = $VERBOSE = nil
+      $VERBOSE = $DEBUG = nil
 
       begin
         require 'rubygems/defaults/operating_system'

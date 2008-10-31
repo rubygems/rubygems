@@ -287,7 +287,7 @@ PKG_FILES.exclude %r(^test/temp(/|$))
 PKG_FILES.exclude %r(\*\.rbc$)
 
 task :package_files do
-  puts PKG_FILES.join("\n")
+  puts PKG_FILES
 end
 
 Rake::PackageTask.new("package") do |p|
@@ -445,7 +445,7 @@ rubinius_dir = ENV['RUBINIUS_PATH'] || '../../../git/git.rubini.us/code'
 ruby_dir = ENV['RUBY_PATH'] || '../../ruby/trunk'
 
 desc "Updates Ruby HEAD with the currently checked-out copy of RubyGems."
-task :update_ruby do
+task :update_ruby => 'util/gem_prelude.rb' do
   sh "rsync #{rsync_options} bin/gem #{ruby_dir}/bin/gem"
   sh "rsync #{rsync_options} lib/ #{ruby_dir}/lib"
   sh "rsync #{rsync_options} test/ #{ruby_dir}/test/rubygems"
@@ -453,7 +453,7 @@ task :update_ruby do
 end
 
 desc "Diffs Ruby HEAD with the currently checked-out copy of RubyGems."
-task :diff_ruby do
+task :diff_ruby => 'util/gem_prelude.rb' do
   options = "-urpN --exclude '*svn*' --exclude '*swp' --exclude '*rbc'"
 
   sh "diff #{diff_options} bin/gem #{ruby_dir}/bin/gem; true"
@@ -466,7 +466,7 @@ task :diff_ruby do
 end
 
 desc "Updates Rubinius HEAD with the currently checked-out copy of RubyGems."
-task :update_rubinius do
+task :update_rubinius => 'util/gem_prelude.rb' do
   sh "rsync #{rsync_options} bin/gem #{rubinius_dir}/lib/bin/gem"
   sh "rsync #{rsync_options} lib/ #{rubinius_dir}/lib"
   sh "rsync #{rsync_options} test/ #{rubinius_dir}/test/rubygems"
@@ -474,7 +474,7 @@ task :update_rubinius do
 end
 
 desc "Diffs Rubinius HEAD with the currently checked-out copy of RubyGems."
-task :diff_rubinius do
+task :diff_rubinius => 'util/gem_prelude.rb' do
   sh "diff #{diff_options} bin/gem #{rubinius_dir}/lib/bin/gem; true"
   sh "diff #{diff_options} lib/ubygems.rb #{rubinius_dir}/lib/ubygems.rb; true"
   sh "diff #{diff_options} lib/rubygems.rb #{rubinius_dir}/lib/rubygems.rb; true"

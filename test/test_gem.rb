@@ -11,7 +11,11 @@ class TestGem < RubyGemTestCase
     super
 
     @additional = %w[a b].map { |d| File.join @tempdir, d }
-    @default_dir_re = %r|/[Rr]uby/[Gg]ems/[0-9.]+|
+    @default_dir_re = if RUBY_VERSION > '1.9' then
+                        %r|/.*?[Rr]uby.*?/[Gg]ems/[0-9.]+|
+                      else
+                        %r|/[Rr]uby/[Gg]ems/[0-9.]+|
+                      end
   end
 
   def test_self_all_load_paths

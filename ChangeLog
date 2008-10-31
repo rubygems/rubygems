@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2008-10-31  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/defaults.rb:  Update to support 1.9 libdir.
+	* util/gem_prelude.rb:  Move to .template, automatically fold in
+	defaults.
+
 2008-10-29  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb:  Handle nonexistent home directory.  Bug #22229 by

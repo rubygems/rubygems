@@ -903,6 +903,15 @@ end
     end
   end
 
+  def test_validate_name
+    e = assert_raises Gem::InvalidSpecificationException do
+      @a1.name = :json
+      @a1.validate
+    end
+
+    assert_equal 'invalid value for attribute name: ":json"', e.message
+  end
+
   def test_validate_platform_legacy
     Dir.chdir @tempdir do
       @a1.platform = 'mswin32'

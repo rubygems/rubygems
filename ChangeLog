@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2008-11-03  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb:  Gem name must be a String.
+
 2008-10-31  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/defaults.rb:  Update to support 1.9 libdir.

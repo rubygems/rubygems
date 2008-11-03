@@ -804,11 +804,16 @@ module Gem
           raise Gem::InvalidSpecificationException,
                 "missing value for attribute #{symbol}"
         end
-      end 
+      end
+
+      unless String === name then
+        raise Gem::InvalidSpecificationException,
+              "invalid value for attribute name: \"#{name.inspect}\""
+      end
 
       if require_paths.empty? then
         raise Gem::InvalidSpecificationException,
-              "specification must have at least one require_path"
+              'specification must have at least one require_path'
       end
 
       case platform

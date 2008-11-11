@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+2008-11-11  Phil Hagelberg <technomancy@gmail.com>
+
+	* lib/rubygems/, test/: Make Version understand prerelease
+	versions using letters. (eg. '1.2.1.b') Thanks to Josh Susser and
+	Alex Vollmer.
+
 2008-11-03  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb:  Gem name must be a String.

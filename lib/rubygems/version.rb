@@ -144,6 +144,10 @@ class Gem::Version
     normalize
   end
 
+  def prerelease?
+    parts.last.alpha?
+  end
+
   def yaml_initialize(tag, values)
     self.version = values['version']
   end

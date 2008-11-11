@@ -568,6 +568,12 @@ end
     assert_equal Gem::Platform.new('ppc-darwin'), @a1.platform
   end
 
+  def test_prerelease_spec_adds_required_rubygems_version
+    @prerelease = quick_gem('tardis', '2.2.0.a')
+    assert ! @prerelease.required_rubygems_version.satisfied_by?(Gem::Version.new('1.3.1'))
+    assert @prerelease.required_rubygems_version.satisfied_by?(Gem::Version.new('1.3.2'))
+  end
+
   def test_require_paths
     @a1.require_path = 'lib'
     assert_equal %w[lib], @a1.require_paths

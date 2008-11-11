@@ -1133,6 +1133,8 @@ module Gem
 
     overwrite_accessor :version= do |version|
       @version = Version.create(version)
+      self.required_rubygems_version = '> 1.3.1' if @version.prerelease?
+      return @version
     end
 
     overwrite_accessor :platform do

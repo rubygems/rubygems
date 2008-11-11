@@ -167,6 +167,11 @@ class TestGemVersion < RubyGemTestCase
     assert_equal [1, 0, "a"], part_values(Gem::Version.new("1.0.a").parse_parts_from_version_string)
   end
 
+  def test_prerelease
+    ['1.2.0.a', '2.9.b', '22.1.50.0.d'].each { |v| assert Gem::Version.new(v).prerelease? }
+    ['1.2.0', '2.9', '22.1.50.0'].each { |v| assert ! Gem::Version.new(v).prerelease? }
+  end
+
   def test_satisfied_by_eh_boxed
     assert_inadequate("1.3", "~> 1.4")
     assert_adequate(  "1.4", "~> 1.4")

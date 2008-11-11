@@ -10,10 +10,50 @@ require 'rubygems'
 # The Version class processes string versions into comparable values
 
 class Gem::Version
+  
+  class Part
+    include Comparable
+
+    attr_reader :value
+
+    def initialize(value)
+      @value = (value =~ /\A\d+\z/) ? value.to_i : value
+    end
+
+    def to_s
+      self.value.to_s
+    end
+
+    def inspect
+      @value
+    end
+    
+    def alpha?
+      String === value
+    end
+
+    def numeric?
+      Fixnum === value
+    end
+
+    def <=>(other)
+      if    self.numeric? && other.alpha? then
+        1
+      elsif self.alpha? && other.numeric? then
+        -1
+      else
+        self.value <=> other.value
+      end
+    end
+
+    def succ
+      self.class.new(self.value.succ)
+    end
+  end
 
   include Comparable
 
-  attr_reader :ints
+  VERSION_PATTERN = '[0-9]+(\.[0-9a-z]+)*'
 
   attr_reader :version
 
@@ -22,7 +62,7 @@ class Gem::Version
 
   def self.correct?(version)
     case version
-    when Integer, /\A\s*(\d+(\.\d+)*)*\s*\z/ then true
+    when Integer, /\A\s*(#{VERSION_PATTERN})*\s*\z/o then true
     else false
     end
   end
@@ -70,17 +110,20 @@ class Gem::Version
     self.version = array[0]
   end
 
+  def parts
+    @parts ||= normalize
+  end
+
   ##
   # Strip ignored trailing zeros.
 
   def normalize
-    @ints = build_array_from_version_string
-
-    return if @ints.length == 1
-
-    @ints.pop while @ints.last == 0
-
-    @ints = [0] if @ints.empty?
+    parts_arr = parse_parts_from_version_string
+    if parts_arr.length != 1
+      parts_arr.pop while parts_arr.last && parts_arr.last.value == 0
+      parts_arr = [Part.new(0)] if parts_arr.empty?
+    end
+    parts_arr
   end
 
   ##
@@ -90,14 +133,6 @@ class Gem::Version
   #
   def to_s
     @version
-  end
-
-  ##
-  # Returns an integer array representation of this Version.
-
-  def to_ints
-    normalize unless @ints
-    @ints
   end
 
   def to_yaml_properties
@@ -120,7 +155,14 @@ class Gem::Version
   def <=>(other)
     return nil unless self.class === other
     return 1 unless other
-    @ints <=> other.ints
+    mine, theirs = balance(self.parts.dup, other.parts.dup)
+    mine <=> theirs
+  end
+
+  def balance(a, b)
+    a << Part.new(0) while a.size < b.size
+    b << Part.new(0) while b.size < a.size
+    [a, b]
   end
 
   ##
@@ -137,17 +179,18 @@ class Gem::Version
 
   # Return a new version object where the next to the last revision
   # number is one greater. (e.g.  5.3.1 => 5.4)
+  # Pre-release (alpha) parts are ignored. (e.g 5.3.1.b.2 => 5.4)
   def bump
-    ints = build_array_from_version_string
-    ints.pop if ints.size > 1
-    ints[-1] += 1
-    self.class.new(ints.join("."))
+    parts = parse_parts_from_version_string
+    parts.pop while parts.any? { |part| part.alpha? }
+    parts.pop if parts.size > 1
+    parts[-1] = parts[-1].succ
+    self.class.new(parts.join("."))
   end
 
-  def build_array_from_version_string
-    @version.to_s.scan(/\d+/).map { |s| s.to_i }
+  def parse_parts_from_version_string # :nodoc:
+    @version.to_s.scan(/[0-9a-z]+/i).map { |s| Part.new(s) }
   end
-  private :build_array_from_version_string
 
   #:stopdoc:
 

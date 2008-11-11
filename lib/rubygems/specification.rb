@@ -632,7 +632,7 @@ module Gem
     # Returns an object you can use to sort specifications in #sort_by.
 
     def sort_obj
-      [@name, @version.to_ints, @new_platform == Gem::Platform::RUBY ? -1 : 1]
+      [@name, @version, @new_platform == Gem::Platform::RUBY ? -1 : 1]
     end
 
     def <=>(other) # :nodoc:

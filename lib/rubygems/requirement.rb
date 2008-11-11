@@ -29,7 +29,7 @@ class Gem::Requirement
     "~>" =>  lambda { |v, r| v >= r && v < r.bump }
   }
 
-  OP_RE = /#{OPS.keys.map{ |k| Regexp.quote k }.join '|'}/o
+  OP_RE = OPS.keys.map{ |k| Regexp.quote k }.join '|'
 
   ##
   # Factory method to create a Gem::Requirement object.  Input may be a
@@ -138,9 +138,9 @@ class Gem::Requirement
 
   def parse(obj)
     case obj
-    when /^\s*(#{OP_RE})\s*([0-9.]+)\s*$/o then
+    when /^\s*(#{OP_RE})\s*(#{Gem::Version::VERSION_PATTERN})\s*$/o then
       [$1, Gem::Version.new($2)]
-    when /^\s*([0-9.]+)\s*$/ then
+    when /^\s*(#{Gem::Version::VERSION_PATTERN})\s*$/o then
       ['=', Gem::Version.new($1)]
     when /^\s*(#{OP_RE})\s*$/o then
       [$1, Gem::Version.new('0')]

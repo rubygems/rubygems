@@ -14,7 +14,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
       fp.puts "#!/usr/bin/ruby"
     end
     @a1, @a1_gem = util_gem 'a', '1' do |s| s.executables << 'a_bin' end
-    @aa1, @aa1_gem = util_gem 'aa', '1' 
+    @aa1, @aa1_gem = util_gem 'aa', '1'
+    @a1_pre, @a1_pre_gem = util_gem 'a', '1.a'
 
     @b1, @b1_gem = util_gem 'b', '1' do |s|
       s.add_dependency 'a'
@@ -44,7 +45,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     @fetcher = Gem::FakeFetcher.new
     Gem::RemoteFetcher.fetcher = @fetcher
 
-    si = util_setup_spec_fetcher @a1, @b1, @d1, @d2, @x1_m, @x1_o, @w1, @y1,
+    si = util_setup_spec_fetcher @a1, @a1_pre, @b1, @d1, @d2, @x1_m, @x1_o, @w1, @y1,
                                  @y1_1_p, @z1
 
     util_clear_gems
@@ -632,5 +633,17 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal %w[d-1 e-1], inst.gems_to_install.map { |s| s.full_name }
   end
 
-end
+  def test_prerelease_uses_full_index
+    util_setup_fake_fetcher
 
+    installer = Gem::DependencyInstaller.new
+    pre_installer = Gem::DependencyInstaller.new(:prerelease => true)
+    dependency = Gem::Dependency.new('a', Gem::Requirement.default)
+
+    releases = installer.find_gems_with_sources(dependency).map{ |gems, *| gems }
+    prereleases = pre_installer.find_gems_with_sources(dependency).map{ |gems, *| gems }
+
+    assert releases.select{ |s| s.name == 'a' and s.version.to_s == '1' }
+    assert prereleases.select{ |s| s.name == 'a' and s.version.to_s == '1.a' }
+  end
+end

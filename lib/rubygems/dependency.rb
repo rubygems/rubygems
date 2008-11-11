@@ -72,7 +72,7 @@ class Gem::Dependency
   alias requirements_list requirement_list
 
   def normalize
-    ver = @version_requirement.instance_eval { @version }
+    ver = @version_requirement.instance_variable_get :@version
     @version_requirements = Gem::Requirement.new([ver])
     @version_requirement = nil
   end

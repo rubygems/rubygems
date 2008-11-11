@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+2008-09-16  Phil Hagelberg <technomancy@gmail.com>
+
+	* lib/rubygems.rb: Use the path set in the config file if
+	applicable.
+	* lib/rubygems/config_file.rb: Expose the path.
 
 2008-11-03  Eric Hodel  <drbrain@segment7.net>
 

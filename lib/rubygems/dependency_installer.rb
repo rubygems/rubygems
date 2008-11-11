@@ -20,8 +20,9 @@ class Gem::DependencyInstaller
     :force => false,
     :format_executable => false, # HACK dup
     :ignore_dependencies => false,
+    :prerelease => false,
     :security_policy => nil, # HACK NoSecurity requires OpenSSL.  AlmostNo? Low?
-    :wrappers => true
+    :wrappers => true,
   }
 
   ##
@@ -37,6 +38,7 @@ class Gem::DependencyInstaller
   # :format_executable:: See Gem::Installer#initialize.
   # :ignore_dependencies:: Don't install any dependencies.
   # :install_dir:: See Gem::Installer#install.
+  # :prerelease:: Allow prerelease versions
   # :security_policy:: See Gem::Installer::new and Gem::Security.
   # :user_install:: See Gem::Installer.new
   # :wrappers:: See Gem::Installer::new
@@ -58,6 +60,7 @@ class Gem::DependencyInstaller
     @force = options[:force]
     @format_executable = options[:format_executable]
     @ignore_dependencies = options[:ignore_dependencies]
+    @prerelease = options[:prerelease]
     @security_policy = options[:security_policy]
     @user_install = options[:user_install]
     @wrappers = options[:wrappers]

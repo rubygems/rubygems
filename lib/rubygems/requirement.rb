@@ -129,6 +129,11 @@ class Gem::Requirement
     OPS[op].call(version, required_version)
   end
 
+  def prerelease?
+    # TODO: why is @requirements a nested array?
+    @requirements.any?{ |r| r[1].prerelease? }
+  end
+
   ##
   # Parse the version requirement obj returning the operator and version.
   #

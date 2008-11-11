@@ -102,6 +102,12 @@ module Gem::InstallUpdateOptions
                 "dependencies") do |value, options|
       options[:development] = true
     end
+
+    add_option(:"Install/Update", "--prerelease",
+               "Install prerelease versions of a gem if available.",
+               "Defaults to skipping prerelease versions.") do |value, options|
+      options[:prerelease] = true
+    end
   end
 
   # Default options for the gem install command.

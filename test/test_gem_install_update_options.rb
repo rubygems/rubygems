@@ -21,6 +21,11 @@ class TestGemInstallUpdateOptions < GemInstallerTestCase
     assert @cmd.handles?(args)
   end
 
+  def test_prerelease
+    @cmd.handle_options %w[--prerelease]
+    assert_equal true, @cmd.options[:prerelease]
+  end
+
   def test_security_policy
     @cmd.handle_options %w[-P HighSecurity]
 

@@ -66,16 +66,17 @@ version is also installed.
     ENV.delete 'GEM_PATH' if options[:install_dir].nil? and RUBY_VERSION > '1.9'
 
     install_options = {
-      :env_shebang => options[:env_shebang],
+      :bin_dir => options[:bin_dir],
+      :development => options[:development],
       :domain => options[:domain],
+      :env_shebang => options[:env_shebang],
       :force => options[:force],
       :format_executable => options[:format_executable],
       :ignore_dependencies => options[:ignore_dependencies],
       :install_dir => options[:install_dir],
+      :prerelease => options[:prerelease],
       :security_policy => options[:security_policy],
       :wrappers => options[:wrappers],
-      :bin_dir => options[:bin_dir],
-      :development => options[:development],
     }
 
     exit_code = 0

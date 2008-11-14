@@ -467,18 +467,18 @@ end
 
 desc "Updates Rubinius HEAD with the currently checked-out copy of RubyGems."
 task :update_rubinius => 'util/gem_prelude.rb' do
-  sh "rsync #{rsync_options} bin/gem #{rubinius_dir}/lib/bin/gem"
+  sh "rsync #{rsync_options} bin/gem #{rubinius_dir}/lib/bin/gem.rb"
   sh "rsync #{rsync_options} lib/ #{rubinius_dir}/lib"
   sh "rsync #{rsync_options} test/ #{rubinius_dir}/test/rubygems"
-  sh "rsync #{rsync_options} util/gem_prelude.rb #{rubinius_dir}/kernel/core/gem_prelude.rb"
+  sh "rsync #{rsync_options} util/gem_prelude.rb #{rubinius_dir}/kernel/common/gem_prelude.rb"
 end
 
 desc "Diffs Rubinius HEAD with the currently checked-out copy of RubyGems."
 task :diff_rubinius => 'util/gem_prelude.rb' do
-  sh "diff #{diff_options} bin/gem #{rubinius_dir}/lib/bin/gem; true"
+  sh "diff #{diff_options} bin/gem #{rubinius_dir}/lib/bin/gem.rb; true"
   sh "diff #{diff_options} lib/ubygems.rb #{rubinius_dir}/lib/ubygems.rb; true"
   sh "diff #{diff_options} lib/rubygems.rb #{rubinius_dir}/lib/rubygems.rb; true"
   sh "diff #{diff_options} lib/rubygems #{rubinius_dir}/lib/rubygems; true"
   sh "diff #{diff_options} test #{rubinius_dir}/test/rubygems; true"
-  sh "diff #{diff_options} util/gem_prelude.rb #{rubinius_dir}/kernel/core/gem_prelude.rb; true"
+  sh "diff #{diff_options} util/gem_prelude.rb #{rubinius_dir}/kernel/common/gem_prelude.rb; true"
 end

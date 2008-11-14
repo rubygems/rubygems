@@ -229,6 +229,13 @@ module Gem
     end
 
     ##
+    # Display a debug message on the same location as error messages.
+
+    def debug(statement)
+      @errs.puts statement
+    end
+
+    ##
     # Terminate the application with exit code +status+, running any exit
     # handlers that might have been defined.
 

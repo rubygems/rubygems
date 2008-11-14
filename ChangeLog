@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+2008-11-14  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/timer.rb:  Deprecate and move methods to Gem and
+	Gem::StreamUI.
+
 2008-11-11  Phil Hagelberg <technomancy@gmail.com>
 
 	* lib/rubygems/, test/: Make Version understand prerelease

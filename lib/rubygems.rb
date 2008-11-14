@@ -778,6 +778,31 @@ module Gem
   end
 
   ##
+  # Prints the amount of time the supplied block takes to run using the debug
+  # UI output.
+
+  def self.time(msg, width = 0)
+    now = Time.now
+
+    value = yield
+
+    elapsed = Time.now - now
+
+    ui.say "%2$*1$s: %3$3.3fs" % [-width, msg, elapsed]
+
+    value
+  end
+
+  ##
+  # Lazily loads DefaultUserInteraction and returns the default UI.
+
+  def self.ui
+    require 'rubygems/user_interaction'
+
+    Gem::DefaultUserInteraction.ui
+  end
+
+  ##
   # Use the +home+ and +paths+ values for Gem.dir and Gem.path.  Used mainly
   # by the unit tests to provide environment isolation.
 

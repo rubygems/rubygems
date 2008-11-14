@@ -91,112 +91,131 @@ class Gem::Indexer
   # Build various indicies
 
   def build_indicies(index)
+    quick_index = nil
+    latest_index = nil
+
     progress = ui.progress_reporter index.size,
                                     "Generating quick index gemspecs for #{index.size} gems",
                                     "Complete"
 
-    index.each do |original_name, spec|
-      spec_file_name = "#{original_name}.gemspec.rz"
-      yaml_name = File.join @quick_dir, spec_file_name
-      marshal_name = File.join @quick_marshal_dir, spec_file_name
+                                    Gem.time 'Generated quick index gemspecs' do
+      index.each do |original_name, spec|
+        spec_file_name = "#{original_name}.gemspec.rz"
+        yaml_name = File.join @quick_dir, spec_file_name
+        marshal_name = File.join @quick_marshal_dir, spec_file_name
 
-      yaml_zipped = Gem.deflate spec.to_yaml
-      open yaml_name, 'wb' do |io| io.write yaml_zipped end
+        yaml_zipped = Gem.deflate spec.to_yaml
+        open yaml_name, 'wb' do |io| io.write yaml_zipped end
 
-      marshal_zipped = Gem.deflate Marshal.dump(spec)
-      open marshal_name, 'wb' do |io| io.write marshal_zipped end
+        marshal_zipped = Gem.deflate Marshal.dump(spec)
+        open marshal_name, 'wb' do |io| io.write marshal_zipped end
 
-      progress.updated original_name
-    end
+        progress.updated original_name
+      end
 
-    progress.done
+      progress.done
+                                    end
 
     say "Generating specs index"
 
-    open @specs_index, 'wb' do |io|
-      specs = index.sort.map do |_, spec|
-        platform = spec.original_platform
-        platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
-        [spec.name, spec.version, platform]
+    Gem.time 'Generated specs index' do
+      open @specs_index, 'wb' do |io|
+        specs = index.sort.map do |_, spec|
+          platform = spec.original_platform
+          platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
+          [spec.name, spec.version, platform]
+        end
+
+        specs = compact_specs specs
+
+        Marshal.dump specs, io
       end
-
-      specs = compact_specs specs
-
-      Marshal.dump specs, io
     end
 
     say "Generating latest specs index"
 
-    open @latest_specs_index, 'wb' do |io|
-      specs = index.latest_specs.sort.map do |spec|
-        platform = spec.original_platform
-        platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
-        [spec.name, spec.version, platform]
+    Gem.time 'Generated latest specs index' do
+      open @latest_specs_index, 'wb' do |io|
+        specs = index.latest_specs.sort.map do |spec|
+          platform = spec.original_platform
+          platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
+          [spec.name, spec.version, platform]
+        end
+
+        specs = compact_specs specs
+
+        Marshal.dump specs, io
       end
-
-      specs = compact_specs specs
-
-      Marshal.dump specs, io
     end
 
     say "Generating quick index"
 
-    quick_index = File.join @quick_dir, 'index'
-    open quick_index, 'wb' do |io|
-      io.puts index.sort.map { |_, spec| spec.original_name }
+    Gem.time 'Generated quick index' do
+      quick_index = File.join @quick_dir, 'index'
+      open quick_index, 'wb' do |io|
+        io.puts index.sort.map { |_, spec| spec.original_name }
+      end
     end
 
     say "Generating latest index"
 
-    latest_index = File.join @quick_dir, 'latest_index'
-    open latest_index, 'wb' do |io|
-      io.puts index.latest_specs.sort.map { |spec| spec.original_name }
+    Gem.time 'Generated latest index' do
+      latest_index = File.join @quick_dir, 'latest_index'
+      open latest_index, 'wb' do |io|
+        io.puts index.latest_specs.sort.map { |spec| spec.original_name }
+      end
     end
 
     say "Generating Marshal master index"
 
-    open @marshal_index, 'wb' do |io|
-      io.write index.dump
+    Gem.time 'Generated Marshal master index' do
+      open @marshal_index, 'wb' do |io|
+        io.write index.dump
+      end
     end
 
     progress = ui.progress_reporter index.size,
                                     "Generating YAML master index for #{index.size} gems (this may take a while)",
                                     "Complete"
 
-    open @master_index, 'wb' do |io|
-      io.puts "--- !ruby/object:#{index.class}"
-      io.puts "gems:"
+    Gem.time 'Generated YAML master index' do
+      open @master_index, 'wb' do |io|
+        io.puts "--- !ruby/object:#{index.class}"
+        io.puts "gems:"
 
-      gems = index.sort_by { |name, gemspec| gemspec.sort_obj }
-      gems.each do |original_name, gemspec|
-        yaml = gemspec.to_yaml.gsub(/^/, '    ')
-        yaml = yaml.sub(/\A    ---/, '') # there's a needed extra ' ' here
-        io.print "  #{original_name}:"
-        io.puts yaml
+        gems = index.sort_by { |name, gemspec| gemspec.sort_obj }
+        gems.each do |original_name, gemspec|
+          yaml = gemspec.to_yaml.gsub(/^/, '    ')
+          yaml = yaml.sub(/\A    ---/, '') # there's a needed extra ' ' here
+          io.print "  #{original_name}:"
+          io.puts yaml
 
-        progress.updated original_name
+          progress.updated original_name
+        end
       end
-    end
 
-    progress.done
+      progress.done
+    end
 
     say "Compressing indicies"
     # use gzip for future files.
 
-    compress quick_index, 'rz'
-    paranoid quick_index, 'rz'
+    Gem.time 'Compressed indicies' do
+      compress quick_index, 'rz'
+      paranoid quick_index, 'rz'
 
-    compress latest_index, 'rz'
-    paranoid latest_index, 'rz'
+      compress latest_index, 'rz'
+      paranoid latest_index, 'rz'
 
-    compress @marshal_index, 'Z'
-    paranoid @marshal_index, 'Z'
+      compress @marshal_index, 'Z'
+      paranoid @marshal_index, 'Z'
 
-    compress @master_index, 'Z'
-    paranoid @master_index, 'Z'
+      compress @master_index, 'Z'
+      paranoid @master_index, 'Z'
 
-    gzip @specs_index
-    gzip @latest_specs_index
+      gzip @specs_index
+      gzip @latest_specs_index
+    end
   end
 
   ##
@@ -209,36 +228,38 @@ class Gem::Indexer
                                     "Loading #{gem_file_list.size} gems from #{@dest_directory}",
                                     "Loaded all gems"
 
-    gem_file_list.each do |gemfile|
-      if File.size(gemfile.to_s) == 0 then
-        alert_warning "Skipping zero-length gem: #{gemfile}"
-        next
-      end
-
-      begin
-        spec = Gem::Format.from_file_by_path(gemfile).spec
-
-        unless gemfile =~ /\/#{Regexp.escape spec.original_name}.*\.gem\z/i then
-          alert_warning "Skipping misnamed gem: #{gemfile} => #{spec.full_name} (#{spec.original_name})"
+    Gem.time 'loaded' do
+      gem_file_list.each do |gemfile|
+        if File.size(gemfile.to_s) == 0 then
+          alert_warning "Skipping zero-length gem: #{gemfile}"
           next
         end
 
-        abbreviate spec
-        sanitize spec
+        begin
+          spec = Gem::Format.from_file_by_path(gemfile).spec
 
-        index.gems[spec.original_name] = spec
+          unless gemfile =~ /\/#{Regexp.escape spec.original_name}.*\.gem\z/i then
+            alert_warning "Skipping misnamed gem: #{gemfile} => #{spec.full_name} (#{spec.original_name})"
+            next
+          end
 
-        progress.updated spec.original_name
+          abbreviate spec
+          sanitize spec
 
-      rescue SignalException => e
-        alert_error "Received signal, exiting"
-        raise
-      rescue Exception => e
-        alert_error "Unable to process #{gemfile}\n#{e.message} (#{e.class})\n\t#{e.backtrace.join "\n\t"}"
+          index.gems[spec.original_name] = spec
+
+          progress.updated spec.original_name
+
+        rescue SignalException => e
+          alert_error "Received signal, exiting"
+          raise
+        rescue Exception => e
+          alert_error "Unable to process #{gemfile}\n#{e.message} (#{e.class})\n\t#{e.backtrace.join "\n\t"}"
+        end
       end
-    end
 
-    progress.done
+      progress.done
+    end
 
     index
   end

@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+2008-11-17  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/indexer.rb:  Added ability to only generate modern or
+	legacy indicies.
+
 2008-11-14  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/timer.rb:  Deprecate and move methods to Gem and

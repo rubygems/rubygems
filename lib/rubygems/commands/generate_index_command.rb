@@ -6,16 +6,36 @@ class Gem::Commands::GenerateIndexCommand < Gem::Command
   def initialize
     super 'generate_index',
           'Generates the index files for a gem server directory',
-          :directory => '.'
+          :directory => '.', :build_legacy => true, :build_modern => true
 
     add_option '-d', '--directory=DIRNAME',
                'repository base dir containing gems subdir' do |dir, options|
       options[:directory] = File.expand_path dir
     end
+
+    add_option '--[no-]legacy',
+               'Generate indexes for RubyGems older than',
+               '1.2.0' do |value, options|
+      unless options[:build_modern] or value then
+        raise OptionParser::InvalidOption, 'no indicies will be built'
+      end
+
+      options[:build_legacy] = value
+    end
+
+    add_option '--[no-]modern',
+               'Only generate indexes for RubyGems older',
+               'than 1.2.0' do |value, options|
+      unless options[:build_legacy] or value then
+        raise OptionParser::InvalidOption, 'no indicies will be built'
+      end
+
+      options[:build_modern] = value
+    end
   end
 
   def defaults_str # :nodoc:
-    "--directory ."
+    "--directory . --legacy"
   end
 
   def description # :nodoc:
@@ -61,7 +81,7 @@ Marshal version changes.
       alert_error "unknown directory name #{directory}."
       terminate_interaction 1
     else
-      indexer = Gem::Indexer.new options[:directory]
+      indexer = Gem::Indexer.new options.delete(:directory), options
       indexer.generate_index
     end
   end

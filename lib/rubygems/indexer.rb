@@ -18,6 +18,16 @@ class Gem::Indexer
   include Gem::UserInteraction
 
   ##
+  # Build indexes for RubyGems older than 1.2.0 when true
+
+  attr_accessor :build_legacy
+
+  ##
+  # Build indexes for RubyGems 1.2.0 and newer when true
+
+  attr_accessor :build_modern
+
+  ##
   # Index install location
 
   attr_reader :dest_directory
@@ -30,11 +40,16 @@ class Gem::Indexer
   ##
   # Create an indexer that will index the gems in +directory+.
 
-  def initialize(directory)
+  def initialize(directory, options = {})
     unless ''.respond_to? :to_xs then
       fail "Gem::Indexer requires that the XML Builder library be installed:" \
            "\n\tgem install builder"
     end
+
+    options = { :build_legacy => true, :build_modern => true }.merge options
+
+    @build_legacy = options[:build_legacy]
+    @build_modern = options[:build_modern]
 
     @dest_directory = directory
     @directory = File.join Dir.tmpdir, "gem_generate_index_#{$$}"
@@ -91,21 +106,15 @@ class Gem::Indexer
   # Build various indicies
 
   def build_indicies(index)
-    quick_index = nil
-    latest_index = nil
-
+    # Marshal gemspecs are used by both modern and legacy RubyGems
     progress = ui.progress_reporter index.size,
-                                    "Generating quick index gemspecs for #{index.size} gems",
+                                    "Generating Marshal quick index gemspecs for #{index.size} gems",
                                     "Complete"
 
-                                    Gem.time 'Generated quick index gemspecs' do
+    Gem.time 'Generated Marshal quick index gemspecs' do
       index.each do |original_name, spec|
         spec_file_name = "#{original_name}.gemspec.rz"
-        yaml_name = File.join @quick_dir, spec_file_name
         marshal_name = File.join @quick_marshal_dir, spec_file_name
-
-        yaml_zipped = Gem.deflate spec.to_yaml
-        open yaml_name, 'wb' do |io| io.write yaml_zipped end
 
         marshal_zipped = Gem.deflate Marshal.dump(spec)
         open marshal_name, 'wb' do |io| io.write marshal_zipped end
@@ -114,45 +123,39 @@ class Gem::Indexer
       end
 
       progress.done
-                                    end
-
-    say "Generating specs index"
-
-    Gem.time 'Generated specs index' do
-      open @specs_index, 'wb' do |io|
-        specs = index.sort.map do |_, spec|
-          platform = spec.original_platform
-          platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
-          [spec.name, spec.version, platform]
-        end
-
-        specs = compact_specs specs
-
-        Marshal.dump specs, io
-      end
     end
 
-    say "Generating latest specs index"
+    build_legacy_indicies index if @build_legacy
+    build_modern_indicies index if @build_modern
+    compress_indicies
+  end
 
-    Gem.time 'Generated latest specs index' do
-      open @latest_specs_index, 'wb' do |io|
-        specs = index.latest_specs.sort.map do |spec|
-          platform = spec.original_platform
-          platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
-          [spec.name, spec.version, platform]
-        end
+  ##
+  # Builds indicies for RubyGems older than 1.2.x
 
-        specs = compact_specs specs
+  def build_legacy_indicies(index)
+    progress = ui.progress_reporter index.size,
+                                    "Generating YAML quick index gemspecs for #{index.size} gems",
+                                    "Complete"
 
-        Marshal.dump specs, io
+    Gem.time 'Generated YAML quick index gemspecs' do
+      index.each do |original_name, spec|
+        spec_file_name = "#{original_name}.gemspec.rz"
+        yaml_name = File.join @quick_dir, spec_file_name
+
+        yaml_zipped = Gem.deflate spec.to_yaml
+        open yaml_name, 'wb' do |io| io.write yaml_zipped end
+
+        progress.updated original_name
       end
+
+      progress.done
     end
 
     say "Generating quick index"
 
     Gem.time 'Generated quick index' do
-      quick_index = File.join @quick_dir, 'index'
-      open quick_index, 'wb' do |io|
+      open @quick_index, 'wb' do |io|
         io.puts index.sort.map { |_, spec| spec.original_name }
       end
     end
@@ -160,8 +163,7 @@ class Gem::Indexer
     say "Generating latest index"
 
     Gem.time 'Generated latest index' do
-      latest_index = File.join @quick_dir, 'latest_index'
-      open latest_index, 'wb' do |io|
+      open @latest_index, 'wb' do |io|
         io.puts index.latest_specs.sort.map { |spec| spec.original_name }
       end
     end
@@ -196,25 +198,42 @@ class Gem::Indexer
 
       progress.done
     end
+  end
 
-    say "Compressing indicies"
-    # use gzip for future files.
+  ##
+  # Builds indicies for RubyGems 1.2 and newer
 
-    Gem.time 'Compressed indicies' do
-      compress quick_index, 'rz'
-      paranoid quick_index, 'rz'
+  def build_modern_indicies(index)
+    say "Generating specs index"
 
-      compress latest_index, 'rz'
-      paranoid latest_index, 'rz'
+    Gem.time 'Generated specs index' do
+      open @specs_index, 'wb' do |io|
+        specs = index.sort.map do |_, spec|
+          platform = spec.original_platform
+          platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
+          [spec.name, spec.version, platform]
+        end
 
-      compress @marshal_index, 'Z'
-      paranoid @marshal_index, 'Z'
+        specs = compact_specs specs
 
-      compress @master_index, 'Z'
-      paranoid @master_index, 'Z'
+        Marshal.dump specs, io
+      end
+    end
 
-      gzip @specs_index
-      gzip @latest_specs_index
+    say "Generating latest specs index"
+
+    Gem.time 'Generated latest specs index' do
+      open @latest_specs_index, 'wb' do |io|
+        specs = index.latest_specs.sort.map do |spec|
+          platform = spec.original_platform
+          platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
+          [spec.name, spec.version, platform]
+        end
+
+        specs = compact_specs specs
+
+        Marshal.dump specs, io
+      end
     end
   end
 
@@ -262,6 +281,36 @@ class Gem::Indexer
     end
 
     index
+  end
+
+  ##
+  # Compresses indicies on disk
+  #--
+  # All future files should be compressed using gzip, not deflate
+
+  def compress_indicies
+    say "Compressing indicies"
+
+    Gem.time 'Compressed indicies' do
+      if @build_legacy then
+        compress @quick_index, 'rz'
+        paranoid @quick_index, 'rz'
+
+        compress @latest_index, 'rz'
+        paranoid @latest_index, 'rz'
+
+        compress @marshal_index, 'Z'
+        paranoid @marshal_index, 'Z'
+
+        compress @master_index, 'Z'
+        paranoid @master_index, 'Z'
+      end
+
+      if @build_modern then
+        gzip @specs_index
+        gzip @latest_specs_index
+      end
+    end
   end
 
   ##

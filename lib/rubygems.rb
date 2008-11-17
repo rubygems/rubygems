@@ -781,14 +781,14 @@ module Gem
   # Prints the amount of time the supplied block takes to run using the debug
   # UI output.
 
-  def self.time(msg, width = 0)
+  def self.time(msg, width = 0, display = Gem.configuration.verbose)
     now = Time.now
 
     value = yield
 
     elapsed = Time.now - now
 
-    ui.say "%2$*1$s: %3$3.3fs" % [-width, msg, elapsed]
+    ui.say "%2$*1$s: %3$3.3fs" % [-width, msg, elapsed] if display
 
     value
   end

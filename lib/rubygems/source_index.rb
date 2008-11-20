@@ -81,13 +81,15 @@ class Gem::SourceIndex
     # loaded spec.
 
     def load_specification(file_name)
-      begin
-        spec_code = if RUBY_VERSION < '1.9' then
-                      File.read file_name
-                    else
-                      File.read file_name, :encoding => 'UTF-8'
-                    end.untaint
+      return nil unless file_name and File.exist? file_name
 
+      spec_code = if RUBY_VERSION < '1.9' then
+                    File.read file_name
+                  else
+                    File.read file_name, :encoding => 'UTF-8'
+                  end.untaint
+
+      begin
         gemspec = eval spec_code, binding, file_name
 
         if gemspec.is_a?(Gem::Specification)
@@ -104,6 +106,7 @@ class Gem::SourceIndex
         alert_warning "#{e.inspect}\n#{spec_code}"
         alert_warning "Invalid .gemspec format in '#{file_name}'"
       end
+
       return nil
     end
 

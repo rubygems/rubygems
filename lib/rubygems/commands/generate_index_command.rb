@@ -32,10 +32,16 @@ class Gem::Commands::GenerateIndexCommand < Gem::Command
 
       options[:build_modern] = value
     end
+
+    add_option '--update',
+               'Update modern indexes with gems added',
+               'since the last update' do |value, options|
+      options[:update] = value
+    end
   end
 
   def defaults_str # :nodoc:
-    "--directory . --legacy"
+    "--directory . --legacy --modern"
   end
 
   def description # :nodoc:
@@ -82,7 +88,12 @@ Marshal version changes.
       terminate_interaction 1
     else
       indexer = Gem::Indexer.new options.delete(:directory), options
-      indexer.generate_index
+
+      if options[:update] then
+        indexer.update_index
+      else
+        indexer.generate_index
+      end
     end
   end
 

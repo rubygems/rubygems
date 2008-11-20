@@ -80,5 +80,11 @@ class TestGemCommandsGenerateIndexCommand < RubyGemTestCase
     refute @cmd.options[:build_modern]
   end
 
+  def test_handle_options_update
+    @cmd.handle_options %w[--update]
+
+    assert @cmd.options[:update]
+  end
+
 end if ''.respond_to? :to_xs
 

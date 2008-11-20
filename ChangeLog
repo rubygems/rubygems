@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+
+2008-11-20  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/source_index.rb:  Read the file outside the exception
+	block so we raise a sane error.
+	* lib/rubygems/indexer.rb:  Allow the modern index to be updated
+	incrementally.  Allow the legacy and modern indicies to be updated
+	separately.
+
 2008-11-17  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/indexer.rb:  Added ability to only generate modern or

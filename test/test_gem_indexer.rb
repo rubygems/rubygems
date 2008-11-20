@@ -199,6 +199,56 @@ pl-1-i386-linux
     refute_indexed @tempdir, "latest_specs.#{@marshal_version}.gz"
   end
 
+  def test_generate_index_modern_back_to_back
+    @indexer.build_modern = true
+    @indexer.build_legacy = true
+
+    use_ui @ui do
+      @indexer.generate_index
+    end
+
+    @indexer = Gem::Indexer.new @tempdir
+    @indexer.build_modern = false
+    @indexer.build_legacy = true
+
+    use_ui @ui do
+      @indexer.generate_index
+    end
+
+    assert_indexed @tempdir, 'yaml'
+    assert_indexed @tempdir, 'yaml.Z'
+    assert_indexed @tempdir, "Marshal.#{@marshal_version}"
+    assert_indexed @tempdir, "Marshal.#{@marshal_version}.Z"
+
+    quickdir = File.join @tempdir, 'quick'
+    marshal_quickdir = File.join quickdir, "Marshal.#{@marshal_version}"
+
+    assert File.directory?(quickdir)
+    assert File.directory?(marshal_quickdir)
+
+    assert_indexed quickdir, "index"
+    assert_indexed quickdir, "index.rz"
+
+    assert_indexed quickdir, "latest_index"
+    assert_indexed quickdir, "latest_index.rz"
+
+    assert_indexed quickdir, "#{@a1.full_name}.gemspec.rz"
+    assert_indexed quickdir, "#{@a2.full_name}.gemspec.rz"
+    assert_indexed quickdir, "#{@b2.full_name}.gemspec.rz"
+    assert_indexed quickdir, "#{@c1_2.full_name}.gemspec.rz"
+
+    assert_indexed quickdir, "#{@pl1.original_name}.gemspec.rz"
+
+    assert_indexed marshal_quickdir, "#{@a1.full_name}.gemspec.rz"
+    assert_indexed marshal_quickdir, "#{@a2.full_name}.gemspec.rz"
+
+    assert_indexed @tempdir, "specs.#{@marshal_version}"
+    assert_indexed @tempdir, "specs.#{@marshal_version}.gz"
+
+    assert_indexed @tempdir, "latest_specs.#{@marshal_version}"
+    assert_indexed @tempdir, "latest_specs.#{@marshal_version}.gz"
+  end
+
   def test_generate_index_modern
     @indexer.build_modern = true
     @indexer.build_legacy = false
@@ -215,7 +265,7 @@ pl-1-i386-linux
     quickdir = File.join @tempdir, 'quick'
     marshal_quickdir = File.join quickdir, "Marshal.#{@marshal_version}"
 
-    assert File.directory?(quickdir)
+    assert File.directory?(quickdir), 'quickdir should be directory'
     assert File.directory?(marshal_quickdir)
 
     refute_indexed quickdir, "index"
@@ -237,6 +287,56 @@ pl-1-i386-linux
 
     refute_indexed quickdir, "#{@c1_2.full_name}.gemspec"
     refute_indexed marshal_quickdir, "#{@c1_2.full_name}.gemspec"
+
+    assert_indexed @tempdir, "specs.#{@marshal_version}"
+    assert_indexed @tempdir, "specs.#{@marshal_version}.gz"
+
+    assert_indexed @tempdir, "latest_specs.#{@marshal_version}"
+    assert_indexed @tempdir, "latest_specs.#{@marshal_version}.gz"
+  end
+
+  def test_generate_index_modern_back_to_back
+    @indexer.build_modern = true
+    @indexer.build_legacy = true
+
+    use_ui @ui do
+      @indexer.generate_index
+    end
+
+    @indexer = Gem::Indexer.new @tempdir
+    @indexer.build_modern = true
+    @indexer.build_legacy = false
+
+    use_ui @ui do
+      @indexer.generate_index
+    end
+
+    assert_indexed @tempdir, 'yaml'
+    assert_indexed @tempdir, 'yaml.Z'
+    assert_indexed @tempdir, "Marshal.#{@marshal_version}"
+    assert_indexed @tempdir, "Marshal.#{@marshal_version}.Z"
+
+    quickdir = File.join @tempdir, 'quick'
+    marshal_quickdir = File.join quickdir, "Marshal.#{@marshal_version}"
+
+    assert File.directory?(quickdir)
+    assert File.directory?(marshal_quickdir)
+
+    assert_indexed quickdir, "index"
+    assert_indexed quickdir, "index.rz"
+
+    assert_indexed quickdir, "latest_index"
+    assert_indexed quickdir, "latest_index.rz"
+
+    assert_indexed quickdir, "#{@a1.full_name}.gemspec.rz"
+    assert_indexed quickdir, "#{@a2.full_name}.gemspec.rz"
+    assert_indexed quickdir, "#{@b2.full_name}.gemspec.rz"
+    assert_indexed quickdir, "#{@c1_2.full_name}.gemspec.rz"
+
+    assert_indexed quickdir, "#{@pl1.original_name}.gemspec.rz"
+
+    assert_indexed marshal_quickdir, "#{@a1.full_name}.gemspec.rz"
+    assert_indexed marshal_quickdir, "#{@a2.full_name}.gemspec.rz"
 
     assert_indexed @tempdir, "specs.#{@marshal_version}"
     assert_indexed @tempdir, "specs.#{@marshal_version}.gz"
@@ -352,6 +452,43 @@ pl-1-i386-linux
 
     assert_same latest_specs[0].last, latest_specs[1].last,
                 'identical platforms not identical'
+  end
+
+  def test_update_index
+    use_ui @ui do
+      @indexer.generate_index
+    end
+
+    quickdir = File.join @tempdir, 'quick'
+    marshal_quickdir = File.join quickdir, "Marshal.#{@marshal_version}"
+
+    assert File.directory?(quickdir)
+    assert File.directory?(marshal_quickdir)
+
+    @d2_1 = quick_gem 'd', '2.1'
+    util_build_gem @d2_1
+
+    gems = File.join @tempdir, 'gems'
+    FileUtils.mv File.join(@gemhome, 'cache', "#{@d2_1.full_name}.gem"), gems
+
+    use_ui @ui do
+      @indexer.update_index
+    end
+
+    assert_indexed marshal_quickdir, "#{@d2_1.full_name}.gemspec.rz"
+
+    specs_index = Marshal.load Gem.read_binary(@indexer.dest_specs_index)
+
+    assert_includes specs_index,
+                    [@d2_1.name, @d2_1.version, @d2_1.original_platform]
+                    
+    latest_specs_index = Marshal.load \
+      Gem.read_binary(@indexer.dest_latest_specs_index)
+
+    assert_includes latest_specs_index,
+                    [@d2_1.name, @d2_1.version, @d2_1.original_platform]
+    assert_includes latest_specs_index,
+                    [@d2_0.name, @d2_0.version, @d2_0.original_platform]
   end
 
   def assert_indexed(dir, name)

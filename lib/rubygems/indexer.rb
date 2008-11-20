@@ -33,6 +33,16 @@ class Gem::Indexer
   attr_reader :dest_directory
 
   ##
+  # Specs index install location
+
+  attr_reader :dest_specs_index
+
+  ##
+  # Latest specs index install location
+
+  attr_reader :dest_latest_specs_index
+
+  ##
   # Index build directory
 
   attr_reader :directory
@@ -70,21 +80,12 @@ class Gem::Indexer
     @latest_specs_index = File.join @directory,
                                     "latest_specs.#{Gem.marshal_version}"
 
-    files = [
-      @specs_index,
-      "#{@specs_index}.gz",
-      @latest_specs_index,
-      "#{@latest_specs_index}.gz",
-      @quick_dir,
-      @master_index,
-      "#{@master_index}.Z",
-      @marshal_index,
-      "#{@marshal_index}.Z",
-    ]
+    @dest_specs_index = File.join @dest_directory,
+                                  "specs.#{Gem.marshal_version}"
+    @dest_latest_specs_index = File.join @dest_directory,
+                                         "latest_specs.#{Gem.marshal_version}"
 
-    @files = files.map do |path|
-      path.sub @directory, ''
-    end
+    @files = []
   end
 
   ##
@@ -107,26 +108,10 @@ class Gem::Indexer
 
   def build_indicies(index)
     # Marshal gemspecs are used by both modern and legacy RubyGems
-    progress = ui.progress_reporter index.size,
-                                    "Generating Marshal quick index gemspecs for #{index.size} gems",
-                                    "Complete"
-
-    Gem.time 'Generated Marshal quick index gemspecs' do
-      index.each do |original_name, spec|
-        spec_file_name = "#{original_name}.gemspec.rz"
-        marshal_name = File.join @quick_marshal_dir, spec_file_name
-
-        marshal_zipped = Gem.deflate Marshal.dump(spec)
-        open marshal_name, 'wb' do |io| io.write marshal_zipped end
-
-        progress.updated original_name
-      end
-
-      progress.done
-    end
-
+    build_marshal_gemspecs index
     build_legacy_indicies index if @build_legacy
     build_modern_indicies index if @build_modern
+
     compress_indicies
   end
 
@@ -198,6 +183,43 @@ class Gem::Indexer
 
       progress.done
     end
+
+    @files << @quick_dir
+    @files << @master_index
+    @files << "#{@master_index}.Z"
+    @files << @marshal_index
+    @files << "#{@marshal_index}.Z"
+  end
+
+  ##
+  # Builds Marshal quick index gemspecs.
+
+  def build_marshal_gemspecs(index)
+    progress = ui.progress_reporter index.size,
+                                    "Generating Marshal quick index gemspecs for #{index.size} gems",
+                                    "Complete"
+
+    files = []
+
+    Gem.time 'Generated Marshal quick index gemspecs' do
+      index.each do |original_name, spec|
+        spec_file_name = "#{original_name}.gemspec.rz"
+        marshal_name = File.join @quick_marshal_dir, spec_file_name
+
+        marshal_zipped = Gem.deflate Marshal.dump(spec)
+        open marshal_name, 'wb' do |io| io.write marshal_zipped end
+
+        files << marshal_name
+
+        progress.updated original_name
+      end
+
+      progress.done
+    end
+
+    @files << @quick_marshal_dir
+
+    files
   end
 
   ##
@@ -235,20 +257,25 @@ class Gem::Indexer
         Marshal.dump specs, io
       end
     end
+
+    @files << @specs_index
+    @files << "#{@specs_index}.gz"
+    @files << @latest_specs_index
+    @files << "#{@latest_specs_index}.gz"
   end
 
   ##
   # Collect specifications from .gem files from the gem directory.
 
-  def collect_specs
+  def collect_specs(gems = gem_file_list)
     index = Gem::SourceIndex.new
 
-    progress = ui.progress_reporter gem_file_list.size,
-                                    "Loading #{gem_file_list.size} gems from #{@dest_directory}",
+    progress = ui.progress_reporter gems.size,
+                                    "Loading #{gems.size} gems from #{@dest_directory}",
                                     "Loaded all gems"
 
     Gem.time 'loaded' do
-      gem_file_list.each do |gemfile|
+      gems.each do |gemfile|
         if File.size(gemfile.to_s) == 0 then
           alert_warning "Skipping zero-length gem: #{gemfile}"
           next
@@ -381,7 +408,27 @@ class Gem::Indexer
 
     say "Moving index into production dir #{@dest_directory}" if verbose
 
-    @files.each do |file|
+    files = @files.dup
+    files.delete @quick_marshal_dir if files.include? @quick_dir
+
+    if files.include? @quick_marshal_dir and
+       not files.include? @quick_dir then
+      files.delete @quick_marshal_dir
+      quick_marshal_dir = @quick_marshal_dir.sub @directory, ''
+
+      dst_name = File.join @dest_directory, quick_marshal_dir
+
+      FileUtils.mkdir_p File.dirname(dst_name), :verbose => verbose
+      FileUtils.rm_rf dst_name, :verbose => verbose
+      FileUtils.mv @quick_marshal_dir, dst_name, :verbose => verbose,
+                   :force => true
+    end
+
+    files = files.map do |path|
+      path.sub @directory, ''
+    end
+
+    files.each do |file|
       src_name = File.join @directory, file
       dst_name = File.join @dest_directory, file
 
@@ -434,6 +481,82 @@ class Gem::Indexer
     # Strings for authors.  Need a way to disallow bad values on gempsec
     # generation.  (Probably won't happen.)
     string ? string.to_s.to_xs : string
+  end
+
+  ##
+  # Perform an in-place update of the repository from newly added gems.  Only
+  # works for modern indicies, and sets #build_legacy to false when run.
+
+  def update_index
+    @build_legacy = false
+
+    make_temp_directories
+
+    specs_ctime = File.stat(@dest_specs_index).ctime
+    newest_ctime = Time.at 0
+
+    updated_gems = gem_file_list.select do |gem|
+      gem_ctime = File.stat(gem).ctime
+      newest_ctime = gem_ctime if gem_ctime > newest_ctime
+      gem_ctime >= specs_ctime
+    end
+
+    if updated_gems.empty? then
+      say 'No new gems'
+      terminate_interaction 0
+    end
+
+    index = collect_specs updated_gems
+
+    files = build_marshal_gemspecs index
+
+    Gem.time 'Updated indexes' do
+      update_specs_index index, @dest_specs_index, @specs_index
+      update_specs_index index, @dest_latest_specs_index, @latest_specs_index
+    end
+
+    compress_indicies
+
+    verbose = Gem.configuration.really_verbose
+
+    say "Updating production dir #{@dest_directory}" if verbose
+
+    files << @specs_index
+    files << "#{@specs_index}.gz"
+    files << @latest_specs_index
+    files << "#{@latest_specs_index}.gz"
+
+    files = files.map do |path|
+      path.sub @directory, ''
+    end
+
+    files.each do |file|
+      src_name = File.join @directory, file
+      dst_name = File.join @dest_directory, File.dirname(file)
+
+      FileUtils.mv src_name, dst_name, :verbose => verbose,
+                   :force => true
+    end
+  end
+
+  ##
+  # Combines specs in +index+ and +source+ then writes out a new copy to
+  # +dest+.  For a latest index, does not ensure the new file is minimal.
+
+  def update_specs_index(index, source, dest)
+    specs_index = Marshal.load Gem.read_binary(source)
+
+    index.each do |_, spec|
+      platform = spec.original_platform
+      platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
+      specs_index << [spec.name, spec.version, platform]
+    end
+
+    specs_index = compact_specs specs_index.uniq.sort
+
+    open dest, 'wb' do |io|
+      Marshal.dump specs_index, io
+    end
   end
 
 end

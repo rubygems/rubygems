@@ -199,7 +199,7 @@ pl-1-i386-linux
     refute_indexed @tempdir, "latest_specs.#{@marshal_version}.gz"
   end
 
-  def test_generate_index_modern_back_to_back
+  def test_generate_index_legacy_back_to_back
     @indexer.build_modern = true
     @indexer.build_legacy = true
 

@@ -492,13 +492,13 @@ class Gem::Indexer
 
     make_temp_directories
 
-    specs_ctime = File.stat(@dest_specs_index).ctime
-    newest_ctime = Time.at 0
+    specs_mtime = File.stat(@dest_specs_index).mtime
+    newest_mtime = Time.at 0
 
     updated_gems = gem_file_list.select do |gem|
-      gem_ctime = File.stat(gem).ctime
-      newest_ctime = gem_ctime if gem_ctime > newest_ctime
-      gem_ctime >= specs_ctime
+      gem_mtime = File.stat(gem).mtime
+      newest_mtime = gem_mtime if gem_mtime > newest_mtime
+      gem_mtime >= specs_mtime
     end
 
     if updated_gems.empty? then
@@ -536,6 +536,8 @@ class Gem::Indexer
 
       FileUtils.mv src_name, dst_name, :verbose => verbose,
                    :force => true
+
+      File.utime newest_mtime, newest_mtime, dst_name
     end
   end
 

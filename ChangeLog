@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2008-11-25  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/install_command.rb:  Don't do any post-install
+	stuff if no gems were installed.  Issue by Daniel Berger.
+
 2008-11-20  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/source_index.rb:  Read the file outside the exception

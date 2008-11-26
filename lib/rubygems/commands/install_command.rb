@@ -110,33 +110,33 @@ version is also installed.
     unless installed_gems.empty? then
       gems = installed_gems.length == 1 ? 'gem' : 'gems'
       say "#{installed_gems.length} #{gems} installed"
-    end
 
-    # NOTE: *All* of the RI documents must be generated first.
-    # For some reason, RI docs cannot be generated after any RDoc
-    # documents are generated.
+      # NOTE: *All* of the RI documents must be generated first.  For some
+      # reason, RI docs cannot be generated after any RDoc documents are
+      # generated.
 
-    if options[:generate_ri] then
-      installed_gems.each do |gem|
-        Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
+      if options[:generate_ri] then
+        installed_gems.each do |gem|
+          Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
+        end
+
+        Gem::DocManager.update_ri_cache
       end
 
-      Gem::DocManager.update_ri_cache
-    end
-
-    if options[:generate_rdoc] then
-      installed_gems.each do |gem|
-        Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
+      if options[:generate_rdoc] then
+        installed_gems.each do |gem|
+          Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
+        end
       end
-    end
 
-    if options[:test] then
-      installed_gems.each do |spec|
-        gem_spec = Gem::SourceIndex.from_installed_gems.search(spec.name, spec.version.version).first
-        result = Gem::Validator.new.unit_test(gem_spec)
-        if result and not result.passed?
-          unless ask_yes_no("...keep Gem?", true) then
-            Gem::Uninstaller.new(spec.name, :version => spec.version.version).uninstall
+      if options[:test] then
+        installed_gems.each do |spec|
+          gem_spec = Gem::SourceIndex.from_installed_gems.search(spec.name, spec.version.version).first
+          result = Gem::Validator.new.unit_test(gem_spec)
+          if result and not result.passed?
+            unless ask_yes_no("...keep Gem?", true) then
+              Gem::Uninstaller.new(spec.name, :version => spec.version.version).uninstall
+            end
           end
         end
       end

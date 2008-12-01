@@ -55,7 +55,7 @@ class Gem::RemoteFetcher
   #        HTTP_PROXY_PASS)
   # * <tt>:no_proxy</tt>: ignore environment variables and _don't_ use a proxy
 
-  def initialize(proxy)
+  def initialize(proxy = nil)
     Socket.do_not_reverse_lookup = true
 
     @connections = {}

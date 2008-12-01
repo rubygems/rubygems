@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2008-12-01  Ryan Davis  <ryan@wrath.local>
+
+	* lib/rubygems/remote_fetcher.rb: made threadsafe.
+
 2008-11-25  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/install_command.rb:  Don't do any post-install

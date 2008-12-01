@@ -101,7 +101,7 @@ class Gem::RemoteFetcher
 
           remote_gem_path = source_uri + "gems/#{gem_file_name}"
 
-          gem = Gem::RemoteFetcher.fetcher.fetch_path remote_gem_path
+          gem = self.fetch_path remote_gem_path
         rescue Gem::RemoteFetcher::FetchError
           raise if spec.original_platform == spec.platform
 
@@ -112,7 +112,7 @@ class Gem::RemoteFetcher
 
           remote_gem_path = source_uri + "gems/#{alternate_name}"
 
-          gem = Gem::RemoteFetcher.fetcher.fetch_path remote_gem_path
+          gem = self.fetch_path remote_gem_path
         end
 
         File.open local_gem_path, 'wb' do |fp|

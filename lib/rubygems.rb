@@ -608,7 +608,7 @@ module Gem
     raise ArgumentError, "gem #{gem_name} is not activated" if gem.nil?
     raise ArgumentError, "gem #{over_name} is not activated" if over.nil?
 
-    last_gem_path = File.join(gem.full_gem_path, gem.require_paths).last
+    last_gem_path = File.join gem.full_gem_path, gem.require_paths.last
 
     over_paths = over.require_paths.map do |path|
       File.join over.full_gem_path, path

@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
-2008-12-01  Ryan Davis  <ryan@wrath.local>
+2008-12-08  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems.rb:  Add Gem::promote_load_path
+
+2008-12-01  Ryan Davis  <ryand-ruby@zenspider.com>
 
 	* lib/rubygems/remote_fetcher.rb: made threadsafe.
 

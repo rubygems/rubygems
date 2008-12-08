@@ -597,6 +597,33 @@ module Gem
   end
 
   ##
+  # Promotes the load paths of the +gem_name+ over the load paths of
+  # +over_name+.  Useful for allowing one gem to override features in another
+  # using #find_files.
+
+  def self.promote_load_path(gem_name, over_name)
+    gem = Gem.loaded_specs[gem_name]
+    over = Gem.loaded_specs[over_name]
+
+    raise ArgumentError, "gem #{gem_name} is not activated" if gem.nil?
+    raise ArgumentError, "gem #{over_name} is not activated" if over.nil?
+
+    last_gem_path = File.join(gem.full_gem_path, gem.require_paths).last
+
+    over_paths = over.require_paths.map do |path|
+      File.join over.full_gem_path, path
+    end
+
+    over_paths.each do |path|
+      $LOAD_PATH.delete path
+    end
+
+    gem = $LOAD_PATH.index(last_gem_path) + 1
+
+    $LOAD_PATH.insert(gem, *over_paths)
+  end
+
+  ##
   # Refresh source_index from disk and clear searcher.
 
   def self.refresh

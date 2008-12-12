@@ -4,6 +4,8 @@
 
 	* lib/rubygems/local_remote_options.rb:  Merge documentation fix by
 	okkez [ruby-dev:37271].
+	* lib/rubygems/source_info_cache_entry.rb:  Merge documentation fix
+	from [ruby-dev:37255].
 
 2008-12-08  Eric Hodel  <drbrain@segment7.net>
 

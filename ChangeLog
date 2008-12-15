@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2008-12-15  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/installer.rb:  Fix documentation for
+	Gem::Installer#write_spec.  Issue by okkez.
+
 2008-12-12  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/local_remote_options.rb:  Merge documentation fix by

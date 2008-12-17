@@ -52,8 +52,8 @@ module Gem
           }
         else
           gem_name = get_one_gem_name
-          specs = Gem::SourceIndex.from_installed_gems.search(
-            gem_name, options[:version])
+          dep = Gem::Dependency.new gem_name, options[:version]
+          specs = Gem::SourceIndex.from_installed_gems.search dep
         end
 
         if specs.empty?

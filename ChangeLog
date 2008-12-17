@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2008-12-16  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/doc_manager.rb:  Set title for generated documentation.
+
 2008-12-15  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb:  Fix documentation for

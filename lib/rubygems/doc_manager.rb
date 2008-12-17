@@ -151,6 +151,7 @@ class Gem::DocManager
     args << '--quiet'
     args << @spec.require_paths.clone
     args << @spec.extra_rdoc_files
+    args << '--title' << "#{@spec.full_name} Documentation"
     args = args.flatten.map do |arg| arg.to_s end
 
     r = RDoc::RDoc.new

@@ -89,15 +89,22 @@ class Gem::Dependency
   end
 
   ##
-  # Uses this dependency as a pattern to compare to the dependency +other+.
-  # This dependency will match if the name matches the other's name, and other
-  # has only an equal version requirement that satisfies this dependency.
+  # Uses this dependency as a pattern to compare to +other+.  This dependency
+  # will match if the name matches the other's name, and other has only an
+  # equal version requirement that satisfies this dependency.
 
   def =~(other)
-    return false unless self.class === other
+    other = if self.class === other then
+              other
+            else
+              return false unless other.respond_to? :name and
+                                  other.respond_to? :version
+
+              Gem::Dependency.new other.name, other.version
+            end
 
     pattern = @name
-    pattern = /\A#{@name}\Z/ unless Regexp === pattern
+    pattern = /\A#{Regexp.escape @name}\Z/ unless Regexp === pattern
 
     return false unless pattern =~ other.name
 

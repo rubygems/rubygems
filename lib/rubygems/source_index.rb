@@ -243,7 +243,7 @@ class Gem::SourceIndex
   # Find a gem by an exact match on the short name.
 
   def find_name(gem_name, version_requirement = Gem::Requirement.default)
-    dep = Gem::Dependency.new(/^#{gem_name}$/, version_requirement)
+    dep = Gem::Dependency.new gem_name, version_requirement
     search dep
   end
 

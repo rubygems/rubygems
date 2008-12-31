@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 
+2008-12-31  Daniel Berger <djberg96@gmail.com>
+
+   * lib/rubygems/local_remote_options: Allow 'https' as a valid scheme
+   in addition to 'http' [RubyForge: patch #22485] 
+   * setup.rb: Deal with extraneous quotation mark when autogenerating
+   .bat file on MS Windows [RubyForge: bug #22712]
+
 2008-12-30  Daniel Berger <djberg96@gmail.com>
 
    * lib/rubygems/builder.rb: Don't allow .gem file to be added back
@@ -7,9 +14,7 @@
    * lib/rubygems/defaults.rb: The default_path now only returns the
    default_dir if the Gem.user_home doesn't exist [RubyForge: bug #23037]
    * lib/rubygems.rb: Handle the possibility that Etc.getpwuid might
-   return nil on platforms other than Windows. [RubyForge: bug #22764]
-   * lib/rubygems/local_remote_options: Allow 'https' as a valid scheme
-   in addition to 'http'. [RubyForge: patch #22485] 
+   return nil on platforms other than Windows [RubyForge: bug #22764]
 
 2008-12-16  Eric Hodel  <drbrain@segment7.net>
 

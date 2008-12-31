@@ -6,6 +6,8 @@
    onto itself [RubyForge: bug #19136, patch #23346]
    * lib/rubygems/defaults.rb: The default_path now only returns the
    default_dir if the Gem.user_home doesn't exist [RubyForge: bug #23037]
+   * lib/rubygems.rb: Handle the possibility that Etc.getpwuid might
+   return nil on platforms other than Windows. [RubyForge: bug #22764]
 
 2008-12-16  Eric Hodel  <drbrain@segment7.net>
 

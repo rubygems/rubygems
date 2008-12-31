@@ -23,7 +23,9 @@ module Gem::LocalRemoteOptions
         raise OptionParser::InvalidArgument, value
       end
 
-      raise OptionParser::InvalidArgument, value unless uri.scheme == 'http'
+      unless ['http', 'https'].include?(uri.scheme)
+         raise OptionParser::InvalidArgument, value
+      end
 
       value
     end

@@ -3,7 +3,9 @@
 2008-12-30  Daniel Berger <djberg96@gmail.com>
 
    * lib/rubygems/builder.rb: Don't allow .gem file to be added back
-   onto itself. [rubyforge: bug #19136, patch #23346]
+   onto itself [RubyForge: bug #19136, patch #23346]
+   * lib/rubygems/defaults.rb: The default_path now only returns the
+   default_dir if the Gem.user_home doesn't exist [RubyForge: bug #23037]
 
 2008-12-16  Eric Hodel  <drbrain@segment7.net>
 

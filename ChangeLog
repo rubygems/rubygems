@@ -6,6 +6,8 @@
    in addition to 'http' [RubyForge: patch #22485] 
    * setup.rb: Deal with extraneous quotation mark when autogenerating
    .bat file on MS Windows [RubyForge: bug #22712]
+   * lib/rubygems/commands/unpack_command.rb: Fixed the --target option
+   [RubyForge: patch #22532]
 
 2008-12-30  Daniel Berger <djberg96@gmail.com>
 

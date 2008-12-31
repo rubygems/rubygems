@@ -748,7 +748,9 @@ module Gem
         next unless File.directory? Gem.user_home
         unless win_platform? then
           # only create by matching user
-          next if Etc.getpwuid.uid != File::Stat.new(Gem.user_home).uid
+          if Etc.getpwuid.nil? || Etc.getpwuid.uid != File::Stat.new(Gem.user_home).uid
+            next
+          end
         end
       end
       ensure_gem_subdirectories path

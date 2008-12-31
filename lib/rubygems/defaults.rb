@@ -41,7 +41,11 @@ module Gem
   # Default gem load path
 
   def self.default_path
-    [user_dir, default_dir]
+    if File.exist?(Gem.user_home)
+      [user_dir, default_dir]
+    else
+      [default_dir]
+    end
   end
 
   ##

@@ -71,6 +71,7 @@ EOM
 
           @spec.files.each do |file|
             next if File.directory? file
+            next if file == @spec.file_name # Don't add gem onto itself
 
             stat = File.stat file
             mode = stat.mode & 0777

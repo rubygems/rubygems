@@ -12,7 +12,7 @@ class Gem::Commands::UnpackCommand < Gem::Command
           :version => Gem::Requirement.default,
           :target  => Dir.pwd
 
-    add_option('--target', 'target directory for unpacking') do |value, options|
+    add_option('--target=DIR', 'target directory for unpacking') do |value, options|
       options[:target] = value
     end
 

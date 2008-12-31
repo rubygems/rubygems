@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2008-12-30  Daniel Berger <djberg96@gmail.com>
+
+   * lib/rubygems/builder.rb: Don't allow .gem file to be added back
+   onto itself. [rubyforge: bug #19136, patch #23346]
+
 2008-12-16  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/doc_manager.rb:  Set title for generated documentation.

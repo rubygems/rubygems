@@ -19,6 +19,11 @@ class TestGemDependency < RubyGemTestCase
 
     @r1_0 = Gem::Requirement.new ['> 1.0']
   end
+  
+
+  def dep(name, version)
+    Gem::Dependency.new name, version
+  end
 
   def test_initialize
     assert_equal "pkg", @pkg1_0.name
@@ -96,10 +101,6 @@ class TestGemDependency < RubyGemTestCase
   end
 
   def test_equals_tilde
-    def dep(name, version)
-      Gem::Dependency.new name, version
-    end
-
     a0   = dep 'a', '0'
     a1   = dep 'a', '1'
     b0   = dep 'b', '0'
@@ -145,10 +146,6 @@ class TestGemDependency < RubyGemTestCase
         spec.name = name
         spec.version = version
       end
-    end
-
-    def dep(name, version)
-      Gem::Dependency.new name, version
     end
 
     a0   = spec 'a', '0'

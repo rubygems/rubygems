@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2009-1-1  Daniel Berger <djberg96@gmail.com>
+
+   * test/test_gem_dependency.rb: Removed a duplicate "def dep" that
+   was causing a warning.
+
 2008-12-31  Daniel Berger <djberg96@gmail.com>
 
    * lib/rubygems/local_remote_options: Allow 'https' as a valid scheme

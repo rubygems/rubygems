@@ -3,6 +3,8 @@
 2009-1-2  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/ext/rake_builder.rb: Quote path if it contains spaces
    [RubyForge: patch #23003]
+   * lib/rubygems/local_remote_options.rb: Ignore duplicate sources
+   [RubyForge: bug #22277]
 
 2009-1-1  Daniel Berger <djberg96@gmail.com>
 

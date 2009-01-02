@@ -92,7 +92,7 @@ module Gem::LocalRemoteOptions
       source << '/' if source !~ /\/\z/
 
       if options[:added_source] then
-        Gem.sources << source
+        Gem.sources << source unless Gem.sources.include?(source)
       else
         options[:added_source] = true
         Gem.sources.replace [source]

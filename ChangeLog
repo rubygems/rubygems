@@ -4,6 +4,9 @@
 
    * test/test_gem_dependency.rb: Removed a duplicate "def dep" that
    was causing a warning.
+   * lib/rubygems/platform.rb: Added an empty? method in order to
+     better handle gem indexing when dealing with gems created
+     prior to 0.9.5. [Rubyforge: bug #22603]
 
 2008-12-31  Daniel Berger <djberg96@gmail.com>
 

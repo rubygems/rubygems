@@ -8,6 +8,7 @@
 require 'rubygems/rubygems_version'
 require 'rubygems/defaults'
 require 'thread'
+require 'etc'
 
 module Gem
   class LoadError < ::LoadError

@@ -105,6 +105,10 @@ class Gem::Platform
   def to_s
     to_a.compact.join '-'
   end
+  
+  def empty?
+    to_s.empty?
+  end
 
   ##
   # Is +other+ equal to this platform?  Two platforms are equal if they have

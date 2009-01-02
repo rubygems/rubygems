@@ -7,6 +7,8 @@
    [RubyForge: bug #22277]
    * lib/rubygems/remote_fetcher.rb: Automatically normalize the URI
    [RubyForge: bug #22151]
+   * lib/rubygems/specification.rb: Ensure that specification_version is
+   a Fixnum [RubyForge: bug #22598]
 
 2009-1-1  Daniel Berger <djberg96@gmail.com>
 

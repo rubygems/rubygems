@@ -463,6 +463,13 @@ gems:
     assert_equal nil, fetcher.fetch_path(URI.parse(@gem_repo), Time.at(0))
   end
 
+  def test_get_proxy_from_env_auto_normalizes
+    fetcher = Gem::RemoteFetcher.new(nil)
+    ENV['HTTP_PROXY'] = 'fakeurl:12345'
+
+    assert_equal('http://fakeurl:12345', fetcher.get_proxy_from_env.to_s)
+  end
+
   def test_get_proxy_from_env_empty
     orig_env_HTTP_PROXY = ENV['HTTP_PROXY']
     orig_env_http_proxy = ENV['http_proxy']

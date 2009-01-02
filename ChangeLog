@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2009-1-2  Daniel Berger <djberg96@gmail.com>
+   * lib/rubygems/ext/rake_builder.rb: Quote path if it contains spaces
+   [RubyForge: bug #23003]
+
 2009-1-1  Daniel Berger <djberg96@gmail.com>
 
    * test/test_gem_dependency.rb: Removed a duplicate "def dep" that

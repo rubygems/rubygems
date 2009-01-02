@@ -841,6 +841,21 @@ end
     end
   end
 
+  def test_validate_specification_version
+    Dir.chdir @tempdir do
+      @a1.specification_version = '1.0'
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        use_ui @ui do
+          @a1.validate
+        end
+      end
+
+      err = 'specification_version must be a Fixnum (did you mean version?)'
+      assert_equal err, e.message
+    end
+  end
+
   def test_validate_email
     Dir.chdir @tempdir do
       @a1.email = ''

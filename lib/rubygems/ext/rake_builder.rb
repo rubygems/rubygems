@@ -15,6 +15,9 @@ class Gem::Ext::RakeBuilder < Gem::Ext::Builder
       run cmd, results
     end
 
+    # Deal with possible spaces in the path, e.g. C:/Program Files
+    dest_path = '"' + dest_path + '"' if dest_path.include?(' ')
+
     cmd = ENV['rake'] || 'rake'
     cmd += " RUBYARCHDIR=#{dest_path} RUBYLIBDIR=#{dest_path}" # ENV is frozen
 

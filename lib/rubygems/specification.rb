@@ -816,6 +816,11 @@ module Gem
               'specification must have at least one require_path'
       end
 
+      unless specification_version.is_a?(Fixnum)
+        raise Gem::InvalidSpecificationException,
+              'specification_version must be a Fixnum (did you mean version?)'
+      end
+
       case platform
       when Gem::Platform, Platform::RUBY then # ok
       else

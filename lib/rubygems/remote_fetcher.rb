@@ -177,7 +177,7 @@ class Gem::RemoteFetcher
 
     return nil if env_proxy.nil? or env_proxy.empty?
 
-    uri = URI.parse env_proxy
+    uri = URI.parse(normalize_uri(env_proxy))
 
     if uri and uri.user.nil? and uri.password.nil? then
       # Probably we have http_proxy_* variables?

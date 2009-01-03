@@ -84,7 +84,7 @@ module Gem
     }
 
     # :stopdoc:
-    MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16 }
+    MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16, 3 => 17 }
 
     now = Time.at(Time.now.to_i)
     TODAY = now - ((now.to_i + now.gmt_offset) % 86400)

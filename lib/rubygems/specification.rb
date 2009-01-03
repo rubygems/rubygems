@@ -62,7 +62,7 @@ module Gem
     #
     # NOTE RubyGems < 1.2 cannot load specification versions > 2.
 
-    CURRENT_SPECIFICATION_VERSION = 2
+    CURRENT_SPECIFICATION_VERSION = 3
 
     ##
     # An informal list of changes to the specification.  The highest-valued
@@ -78,6 +78,9 @@ module Gem
         'Added "required_rubygems_version"',
         'Now forward-compatible with future versions',
       ],
+      3 => [
+         'Added Fixnum validation to the specification_version'
+      ]
     }
 
     # :stopdoc:

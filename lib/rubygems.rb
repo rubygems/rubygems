@@ -103,6 +103,7 @@ module Gem
 
   @configuration = nil
   @loaded_specs = {}
+  @loaded_stacks = {}
   @platforms = []
   @ruby = nil
   @sources = []
@@ -129,6 +130,14 @@ module Gem
   # Gem::Requirement and Gem::Version documentation.
 
   def self.activate(gem, *version_requirements)
+    if version_requirements.last.is_a?(Hash)
+      options = version_requirements.pop
+    else
+      options = {}
+    end
+
+    sources = options[:sources] || []
+
     if version_requirements.empty? then
       version_requirements = Gem::Requirement.default
     end
@@ -147,8 +156,14 @@ module Gem
       existing_spec = @loaded_specs[gem.name]
 
       unless matches.any? { |spec| spec.version == existing_spec.version } then
-        raise Gem::Exception,
-              "can't activate #{gem}, already activated #{existing_spec.full_name}"
+         sources_message = sources.map { |spec| spec.full_name }
+         stack_message = @loaded_stacks[gem.name].map { |spec| spec.full_name } 
+
+         msg = "can't activate #{gem} for #{sources_message.inspect}, "
+         msg << "already activated #{existing_spec.full_name} for "
+         msg << "#{stack_message.inspect}"
+
+         raise Gem::Exception, msg
       end
 
       return false
@@ -160,10 +175,11 @@ module Gem
 
     spec.loaded = true
     @loaded_specs[spec.name] = spec
+    @loaded_stacks[spec.name] = sources.dup
 
     # Load dependent gems first
     spec.runtime_dependencies.each do |dep_gem|
-      activate dep_gem
+      activate dep_gem, :sources => [spec, *sources]
     end
 
     # bin directory must come before library directories

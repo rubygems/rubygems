@@ -9,6 +9,8 @@
    [RubyForge: bug #22151]
    * lib/rubygems/specification.rb: Ensure that specification_version is
    a Fixnum [RubyForge: bug #22598]
+   * lib/rubygems/specification.rb: Bumped the CURRENT_SPECIFICATION_VERSION
+   and added an entry to the SPECIFICATION_VERSION_HISTORY
 
 2009-1-1  Daniel Berger <djberg96@gmail.com>
 

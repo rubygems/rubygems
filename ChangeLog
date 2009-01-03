@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2009-1-3  Daniel Berger <djberg96@gmail.com>
+   * lib/rubygems.rb: Better activation error message.
+   [RubyForge: patch #23082]
+
 2009-1-2  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/ext/rake_builder.rb: Quote path if it contains spaces
    [RubyForge: patch #23003]

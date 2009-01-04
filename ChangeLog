@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2009-1-4  Daniel Berger <djberg96@gmail.com>
+   * lib/rubygems/installer.rb: Remove existing path if it already
+   exists before installing.
+   [RubyForge: patch #22837]
+
 2009-1-3  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems.rb: Better activation error message.
    [RubyForge: patch #23082]

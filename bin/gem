@@ -15,10 +15,7 @@ unless required_version.satisfied_by? Gem.ruby_version then
   abort "Expected Ruby Version #{required_version}, was #{Gem.ruby_version}"
 end
 
-# We need to preserve the original ARGV to use for passing gem options
-# to source gems.  If there is a -- in the line, strip all options after
-# it...its for the source building process.
-args = !ARGV.include?("--") ? ARGV.clone : ARGV[0...ARGV.index("--")]
+args = ARGV.clone
 
 begin
   Gem::GemRunner.new.run args

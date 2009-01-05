@@ -1,5 +1,21 @@
 # -*- coding: utf-8 -*-
 
+2009-01-05  Chad Woolley  <thewoolleyman@gmail.com>
+
+	* move processing of build args out of gem binary so they are handled correctly via API usage.
+	* lib/rubygems/command.rb: Add class accessor for build_args.
+	* lib/rubygems/ext/rake_builder.rb: Use Gem::Command.build_args instead of ARGV.
+	* lib/rubygems/ext/ext_conf_builder.rb: Use Gem::Command.build_args instead of ARGV.
+	* lib/rubygems/gem_runner.rb: Move build arg processing from gem binary.
+	* lib/rubygems/commands/contents_command.rb: Use nonzero return code (required to make tests pass).
+	* bin/gem: Move build arg processing to gem_runner.rb.
+	[RubyForge: bug #23210]
+
+	* lib/rubygems/config_file.rb:  Fix --config-file option with no
+	equals and subsequent options to properly assign config file.
+	Previously config file was overwritten by subsequent option.
+	Fixes bug #16688.
+
 2009-1-4  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/installer.rb: Remove existing path if it already
    exists before installing.

@@ -288,6 +288,15 @@ module Gem
     ##################################################################
     # Class methods for Command.
     class << self
+      # arguments used when building gems
+      def build_args
+        @build_args ||= []
+      end
+      
+      def build_args=(value)
+        @build_args = value
+      end
+
       def common_options
         @common_options ||= []
       end

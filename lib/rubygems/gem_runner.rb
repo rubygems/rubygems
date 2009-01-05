@@ -24,6 +24,14 @@ module Gem
     # Run the gem command with the following arguments.
     def run(args)
       start_time = Time.now
+      if args.include?('--')
+        # We need to preserve the original ARGV to use for passing gem options
+        # to source gems.  If there is a -- in the line, strip all options after
+        # it...its for the source building process.
+        build_args = args[args.index("--") + 1...args.length]
+        args = args[0...args.index("--")]
+      end
+      Command.build_args = build_args if build_args
       do_configuration(args)
       cmd = @command_manager_class.instance
       cmd.command_names.each do |command_name|

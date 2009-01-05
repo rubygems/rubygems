@@ -61,7 +61,7 @@ class Gem::Commands::ContentsCommand < Gem::Command
         s.each { |dir| say dir }
       end
 
-      terminate_interaction
+      terminate_interaction 1
     end
 
     files = options[:lib_only] ? gem_spec.lib_files : gem_spec.files

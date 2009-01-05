@@ -28,11 +28,22 @@ class TestGemCommandsGenerateIndexCommand < RubyGemTestCase
   end
 
   def test_handle_options_directory
+    return if win_platform?
     refute_equal '/nonexistent', @cmd.options[:directory]
 
     @cmd.handle_options %w[--directory /nonexistent]
 
     assert_equal '/nonexistent', @cmd.options[:directory]
+  end
+
+  def test_handle_options_directory_windows
+    return unless win_platform?
+
+    refute_equal '/nonexistent', @cmd.options[:directory]
+
+    @cmd.handle_options %w[--directory C:/nonexistent]
+
+    assert_equal 'C:/nonexistent', @cmd.options[:directory]
   end
 
   def test_handle_options_invalid

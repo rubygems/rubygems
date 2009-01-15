@@ -186,6 +186,12 @@ class Gem::Commands::QueryCommand < Gem::Command
         if spec.homepage and not spec.homepage.empty? then
           entry << "\n" << format_text("Homepage: #{spec.homepage}", 68, 4)
         end
+        
+        if spec.license and not spec.license.empty? then
+          licenses = "License#{spec.licenses.length > 1 ? 's' : ''}: "
+          licenses << spec.licenses.join(', ')
+          entry << "\n" << format_text(licenses, 68, 4)
+        end         
 
         if spec.loaded_from then
           if matching_tuples.length == 1 then

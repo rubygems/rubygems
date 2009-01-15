@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 
+2009-01-14  Daniel Berger <djberg96@gmail.com>
+   * lib/rubygems/specification.rb: Added support for a license attribute.
+   [RubyForge: feature #11041 (partial)]
+   * lib/rubygems/commands/query_command.rb: Gem detail information now
+   includes license information.
+   * test/test_gem_specification.rb: Added tests for the license attribute.
+
 2009-01-05  Chad Woolley  <thewoolleyman@gmail.com>
 
 	* move processing of build args out of gem binary so they are handled correctly via API usage.

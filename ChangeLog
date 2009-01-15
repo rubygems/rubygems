@@ -2,7 +2,10 @@
 
 2009-01-15  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/commands/generate_index_command.rb: Fixed a typo in
-     the description.
+   the description.
+   * test/test_gem_doc_manager.rb: The test_uninstall_doc_unwritable
+   test is now skipped on MS Windows because File.chmod has no effect
+   on directories.
 
 2009-01-14  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/specification.rb: Added support for a license attribute.

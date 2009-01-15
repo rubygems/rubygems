@@ -305,6 +305,7 @@ module Gem
         @homepage,
         @has_rdoc,
         @new_platform,
+        @licenses
       ]
     end
 
@@ -349,6 +350,7 @@ module Gem
       spec.instance_variable_set :@has_rdoc,                  array[15]
       spec.instance_variable_set :@new_platform,              array[16]
       spec.instance_variable_set :@platform,                  array[16].to_s
+      spec.instance_variable_set :@license,                   array[17]
       spec.instance_variable_set :@loaded,                    false
 
       spec
@@ -1074,6 +1076,11 @@ module Gem
     array_attribute :authors
 
     ##
+    # The license(s) for the library
+
+    array_attribute :licenses
+
+    ##
     # Files included in this gem
 
     array_attribute :files
@@ -1128,6 +1135,11 @@ module Gem
     # Singular accessor for authors
 
     attribute_alias_singular :author, :authors
+
+    ##
+    # Singular accessor for licenses
+
+    attribute_alias_singular :license, :licenses
 
     ##
     # Singular accessor for require_paths

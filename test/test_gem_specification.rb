@@ -53,6 +53,7 @@ end
       s.test_file = 'test/suite.rb'
       s.requirements << 'A working computer'
       s.rubyforge_project = 'example'
+      s.license = 'MIT'
 
       s.add_dependency 'rake', '> 0.4'
       s.add_dependency 'jabber4r', '> 0.0.0'
@@ -91,6 +92,7 @@ end
       files
       has_rdoc
       homepage
+      licenses
       name
       platform
       post_install_message
@@ -514,6 +516,14 @@ end
     assert_equal %w[lib/foo.rb], @a1.lib_files
   end
 
+  def test_license
+    assert_equal 'MIT', @a1.license
+  end
+
+  def test_licenses
+    assert_equal ['MIT'], @a1.licenses
+  end
+
   def test_name
     assert_equal 'a', @a1.name
   end
@@ -706,6 +716,7 @@ Gem::Specification.new do |s|
   s.files = [\"lib/code.rb\", \"test/suite.rb\", \"bin/exec\", \"ext/a/extconf.rb\"]
   s.has_rdoc = %q{true}
   s.homepage = %q{http://example.com}
+  s.licenses = [\"MIT\"]
   s.require_paths = [\"lib\"]
   s.requirements = [\"A working computer\"]
   s.rubyforge_project = %q{example}

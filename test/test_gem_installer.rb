@@ -288,12 +288,16 @@ load 'my_exec'
     util_make_exec
 
     Dir.mkdir util_inst_bindir
-    File.chmod 0000, util_inst_bindir
 
-    assert_raises Gem::FilePermissionError do
-      @installer.generate_bin
+    if win_platform?
+      skip('test_generate_bin_script_no_perms skipped on MS Windows')
+    else
+      File.chmod 0000, util_inst_bindir
+
+      assert_raises Gem::FilePermissionError do
+        @installer.generate_bin
+      end
     end
-
   ensure
     File.chmod 0700, util_inst_bindir unless $DEBUG
   end
@@ -373,12 +377,16 @@ load 'my_exec'
     @installer.gem_dir = util_gem_dir
 
     Dir.mkdir util_inst_bindir
-    File.chmod 0000, util_inst_bindir
 
-    assert_raises Gem::FilePermissionError do
-      @installer.generate_bin
+    if win_platform?
+      skip('test_generate_bin_symlink_no_perms skipped on MS Windows')
+    else
+      File.chmod 0000, util_inst_bindir
+
+      assert_raises Gem::FilePermissionError do
+        @installer.generate_bin
+      end
     end
-
   ensure
     File.chmod 0700, util_inst_bindir unless $DEBUG
   end

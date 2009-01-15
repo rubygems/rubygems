@@ -48,7 +48,7 @@ class Gem::Commands::GenerateIndexCommand < Gem::Command
     <<-EOF
 The generate_index command creates a set of indexes for serving gems
 statically.  The command expects a 'gems' directory under the path given to
-the --directory option.  The given diretory will be the directory you serve
+the --directory option.  The given directory will be the directory you serve
 as the gem repository.
 
 For `gem generate_index --directory /path/to/repo`, expose /path/to/repo via

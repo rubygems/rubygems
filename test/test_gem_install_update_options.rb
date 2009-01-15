@@ -51,13 +51,17 @@ class TestGemInstallUpdateOptions < GemInstallerTestCase
   end
 
   def test_user_install_disabled_read_only
-    @cmd.handle_options %w[--no-user-install]
+    if win_platform?
+      skip('test_user_install_disabled_read_only test skipped on MS Windows')
+    else
+      @cmd.handle_options %w[--no-user-install]
 
-    File.chmod 0755, @userhome
-    FileUtils.chmod 0000, @gemhome
+      File.chmod 0755, @userhome
+      FileUtils.chmod 0000, @gemhome
 
-    assert_raises(Gem::FilePermissionError) do
-      @installer = Gem::Installer.new @gem, @cmd.options
+      assert_raises(Gem::FilePermissionError) do
+        @installer = Gem::Installer.new @gem, @cmd.options
+      end
     end
   ensure
     FileUtils.chmod 0755, @gemhome

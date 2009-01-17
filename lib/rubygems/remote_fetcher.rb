@@ -330,7 +330,7 @@ class Gem::RemoteFetcher
   # Checks if the provided string is a file:// URI.
 
   def file_uri?(uri)
-    uri.to_s =~ %r{\Afile://}
+    uri.to_s =~ %r{\Afile://*}
   end
 
 end

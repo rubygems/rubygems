@@ -233,7 +233,8 @@ class Gem::RemoteFetcher
   def open_uri_or_path(uri, last_modified = nil, head = false, depth = 0)
     raise "block is dead" if block_given?
 
-    return open(get_file_uri_path(uri)) if file_uri? uri
+    # TODO: File URL's needs additional work - Daniel Berger
+    return open(uri.path) if file_uri? uri
 
     uri = URI.parse uri unless URI::Generic === uri
     raise ArgumentError, 'uri is not an HTTP URI' unless URI::HTTP === uri
@@ -330,14 +331,7 @@ class Gem::RemoteFetcher
   # Checks if the provided string is a file:// URI.
 
   def file_uri?(uri)
-    uri =~ %r{\Afile://}
-  end
-
-  ##
-  # Given a file:// URI, returns its local path.
-
-  def get_file_uri_path(uri)
-    uri.sub(%r{\Afile://}, '')
+    uri.to_s =~ %r{\Afile://}
   end
 
 end

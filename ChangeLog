@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 
 2009-01-15  Daniel Berger <djberg96@gmail.com>
+   * lib/rubygems/remote_fetcher.rb: Removed the get_file_uri_path method
+   since the URI#path method already does the same thing, and changed
+   the file_uri? method so that it explicitly calls .to_s.
+   * lib/rubygems/local_remote_options.rb: Allow file urls.
+
+2009-01-15  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/commands/generate_index_command.rb: Fixed a typo in
    the description.
    * test/test_gem_doc_manager.rb: The test_uninstall_doc_unwritable

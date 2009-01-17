@@ -232,11 +232,19 @@ class Gem::RemoteFetcher
 
   def open_uri_or_path(uri, last_modified = nil, head = false, depth = 0)
     raise "block is dead" if block_given?
-
-    # TODO: File URL's needs additional work - Daniel Berger
-    return open(uri.path) if file_uri? uri
-
+    
     uri = URI.parse uri unless URI::Generic === uri
+
+    if file_uri?(uri)
+      path = uri.path
+      
+      # Deal with leading slash on Windows paths
+      if path[0].chr == '/' && path[1].chr =~ /[a-zA-Z]/ && path[2].chr == ':'
+         path = path[1..-1]    
+      end
+      
+      return path     
+    end
 
     fetch_type = head ? Net::HTTP::Head : Net::HTTP::Get
     response   = request uri, fetch_type, last_modified

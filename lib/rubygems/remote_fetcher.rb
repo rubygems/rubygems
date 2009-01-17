@@ -237,7 +237,6 @@ class Gem::RemoteFetcher
     return open(uri.path) if file_uri? uri
 
     uri = URI.parse uri unless URI::Generic === uri
-    raise ArgumentError, 'uri is not an HTTP URI' unless URI::HTTP === uri
 
     fetch_type = head ? Net::HTTP::Head : Net::HTTP::Get
     response   = request uri, fetch_type, last_modified

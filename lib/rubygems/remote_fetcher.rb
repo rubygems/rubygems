@@ -243,7 +243,7 @@ class Gem::RemoteFetcher
          path = path[1..-1]    
       end
       
-      return path     
+      return IO.read(path)     
     end
 
     fetch_type = head ? Net::HTTP::Head : Net::HTTP::Get

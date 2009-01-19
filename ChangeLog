@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
+2009-01-19  Daniel Berger <djberg96@gmail.com>
+   * lib/rubygems/remote_fetcher.rb: Added uri scheme validation back
+   into the open_uri_or_path method, though it now accepts 'https' and
+   'file' as well.
+   * test/test_gem_remote_fetcher.rb: Updated the test_fetch_size_bad_uri
+   to reflect the updated error message.
 
 2009-01-15  Daniel Berger <djberg96@gmail.com>
-   * lib/rubygems/remote_fetcher.rb: Removed the get_file_uri_path method
+   * lib/rubygems/remote_fetcher.rb: Removed the open_file_uri_path method
    since the URI#path method already does the same thing, and changed
    the file_uri? method so that it explicitly calls .to_s.
    * lib/rubygems/local_remote_options.rb: Allow file urls.

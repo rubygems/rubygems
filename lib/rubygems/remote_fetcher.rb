@@ -234,6 +234,13 @@ class Gem::RemoteFetcher
     raise "block is dead" if block_given?
     
     uri = URI.parse uri unless URI::Generic === uri
+    
+    # This check is redundant unless Gem::RemoteFetcher is likely
+    # to be used directly, since the scheme is checked elsewhere.
+    # - Daniel Berger
+    unless ['http', 'https', 'file'].include?(uri.scheme)
+       raise ArgumentError, 'uri scheme is invalid'
+    end
 
     if file_uri?(uri)
       path = uri.path

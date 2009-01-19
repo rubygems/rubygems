@@ -151,7 +151,7 @@ gems:
       fetcher.fetch_size 'gems.example.com/yaml'
     end
 
-    assert_equal 'uri is not an HTTP URI', e.message
+    assert_equal 'uri scheme is invalid', e.message
   end
 
   def test_fetch_size_socket_error

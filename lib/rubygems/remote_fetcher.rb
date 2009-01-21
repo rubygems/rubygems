@@ -242,7 +242,7 @@ class Gem::RemoteFetcher
        raise ArgumentError, 'uri scheme is invalid'
     end
 
-    if file_uri?(uri)
+    if uri.scheme == 'file'
       path = uri.path
       
       # Deal with leading slash on Windows paths
@@ -339,13 +339,6 @@ class Gem::RemoteFetcher
 
     connection.finish
     connection.start
-  end
-
-  ##
-  # Checks if the provided string is a file:// URI.
-
-  def file_uri?(uri)
-    uri.to_s =~ %r{\Afile://*}
   end
 
 end

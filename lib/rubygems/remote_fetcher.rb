@@ -119,7 +119,21 @@ class Gem::RemoteFetcher
           fp.write gem
         end
       end
-    when nil, 'file' then # TODO test for local overriding cache
+    when 'file' then
+      begin   
+        path = source_uri.path
+        path = File.dirname(path) if File.extname(path) == '.gem'
+               
+        remote_gem_path = File.join(path, 'gems', gem_file_name)
+               
+        FileUtils.cp(remote_gem_path, local_gem_path)
+      rescue Errno::EACCES
+        local_gem_path = source_uri.to_s
+      end
+       
+      say "Using local gem #{local_gem_path}" if
+        Gem.configuration.really_verbose
+    when nil then # TODO test for local overriding cache
       begin
         FileUtils.cp source_uri.to_s, local_gem_path
       rescue Errno::EACCES

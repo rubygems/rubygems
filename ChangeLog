@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+
+2009-01-21  Daniel Berger <djberg96@gmail.com>
+   * lib/rubygems/remote_fetcher.rb: Split out nil and file handling in
+   the download method. Modified file URI handling to work properly.
+   [RubyForge: bug #16495]
+
 2009-01-19  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/remote_fetcher.rb: Added uri scheme validation back
    into the open_uri_or_path method, though it now accepts 'https' and

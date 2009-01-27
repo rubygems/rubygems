@@ -354,7 +354,7 @@ task :install do
   opts = ENV['SETUP_OPTIONS']
   ruby "setup.rb #{opts}".strip
 
-  svnversion = `svnversion`.split(':').last.sub(/[^\d]/, '').strip
+  svnversion = `svnversion`.split(':').last.sub(/[^\d]+/, '').strip
 
   unless svnversion.empty? then
     File.read('lib/rubygems/rubygems_version.rb') =~ /RubyGemsVersion = '(.*)'/

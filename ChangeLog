@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2009-02-10  Daniel Berger <djberg96@gmail.com>
+   * lib/rubygems/validator.rb: The Gem::Validator#verify_gem_file method
+   now explicitly rescues Errno::EINVAL as well as Errno::ENOENT because
+   MS Windows raises a different SystemCallError for empty paths.
+
 2009-01-21  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/remote_fetcher.rb: Split out nil and file handling in
    the download method. Modified file URI handling to work properly.

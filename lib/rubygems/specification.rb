@@ -620,9 +620,7 @@ module Gem
     # The directory that this gem was installed into.
 
     def installation_path
-      path = File.dirname(@loaded_from).split(File::SEPARATOR)[0..-2]
-      path = path.join File::SEPARATOR
-      File.expand_path path
+      File.expand_path(File.dirname(File.dirname(@loaded_from)))
     end
 
     ##

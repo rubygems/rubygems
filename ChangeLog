@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 
 2009-02-10  Daniel Berger <djberg96@gmail.com>
+   * lib/rubygems/specification: Refactored and fixed the installation_path
+   method. It was overwrought and it now no longer uses File::SEPARATOR
+   explicitly.
+   [RubyForge: bug #23879]
+
+2009-02-10  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/validator.rb: The Gem::Validator#verify_gem_file method
    now explicitly rescues Errno::EINVAL as well as Errno::ENOENT because
    MS Windows raises a different SystemCallError for empty paths.

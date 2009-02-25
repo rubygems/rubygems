@@ -56,13 +56,11 @@ class Gem::Validator
 
   def find_files_for_gem(gem_directory)
     installed_files = []
-    Find.find(gem_directory) {|file_name|
-      fn = file_name.slice((gem_directory.size)..(file_name.size-1)).sub(/^\//, "")
-      if(!(fn =~ /CVS/ || File.directory?(fn) || fn == "")) then
-        installed_files << fn
-      end
-
-    }
+    Find.find gem_directory do |file_name|
+      fn = file_name[gem_directory.size..file_name.size-1].sub(/^\//, "")
+      installed_files << fn unless
+        fn =~ /CVS/ || fn.empty? || File.directory?(file_name)
+    end
     installed_files
   end
 
@@ -81,53 +79,86 @@ class Gem::Validator
   #
   # returns a hash of ErrorData objects, keyed on the problem gem's name.
 
-  def alien
-    errors = {}
+  def alien(gems=[])
+    errors = Hash.new { |h,k| h[k] = {} }
 
     Gem::SourceIndex.from_installed_gems.each do |gem_name, gem_spec|
-      errors[gem_name] ||= []
+      next unless gems.include? gem_spec.name unless gems.empty?
 
-      gem_path = File.join(Gem.dir, "cache", gem_spec.full_name) + ".gem"
-      spec_path = File.join(Gem.dir, "specifications", gem_spec.full_name) + ".gemspec"
-      gem_directory = File.join(Gem.dir, "gems", gem_spec.full_name)
+      install_dir = gem_spec.installation_path
+      gem_path = File.join(install_dir, "cache", gem_spec.full_name) + ".gem"
+      spec_path = File.join(install_dir, "specifications",
+                            gem_spec.full_name) + ".gemspec"
+      gem_directory = gem_spec.full_gem_path
 
-      installed_files = find_files_for_gem(gem_directory)
+      unless File.directory? gem_directory then
+        errors[gem_name][gem_spec.full_name] =
+          "Gem registered but doesn't exist at #{gem_directory}"
+        next
+      end
 
       unless File.exist? spec_path then
-        errors[gem_name] << ErrorData.new(spec_path, "Spec file doesn't exist for installed gem")
+        errors[gem_name][spec_path] = "Spec file doesn't exist for installed gem"
       end
 
       begin
         verify_gem_file(gem_path)
 
+        good, gone, unreadable = nil, nil, nil, nil
+
         open gem_path, Gem.binary_mode do |file|
           format = Gem::Format.from_file_by_path(gem_path)
-          format.file_entries.each do |entry, data|
-            # Found this file.  Delete it from list
-            installed_files.delete remove_leading_dot_dir(entry['path'])
 
-            next unless data # HACK `gem check -a mkrf`
+          good, gone = format.file_entries.partition { |entry, _|
+            File.exist? File.join(gem_directory, entry['path'])
+          }
 
-            open File.join(gem_directory, entry['path']), Gem.binary_mode do |f|
-              unless Gem::MD5.hexdigest(f.read).to_s ==
-                Gem::MD5.hexdigest(data).to_s then
-                errors[gem_name] << ErrorData.new(entry['path'], "installed file doesn't match original from gem")
+          gone.map! { |entry, _| entry['path'] }
+          gone.sort.each do |path|
+            errors[gem_name][path] = "File not found"
+          end
+
+          good, unreadable = good.partition { |entry, _|
+            File.readable? File.join(gem_directory, entry['path'])
+          }
+
+          unreadable.map! { |entry, _| entry['path'] }
+          unreadable.sort.each do |path|
+            errors[gem_name][path] = "File unreadable"
+          end
+
+          good.each do |entry, data|
+            begin
+              next unless data # HACK `gem check -a mkrf`
+
+              open File.join(gem_directory, entry['path']), Gem.binary_mode do |f|
+                unless Gem::MD5.hexdigest(f.read).to_s ==
+                    Gem::MD5.hexdigest(data).to_s then
+                  errors[gem_name][entry['path']] = "Modified from original"
+                end
               end
+            rescue Errno::EACCES => e
+              errors[gem_name][entry['path']] = e.message
+            rescue Errno::ENOENT, Errno::EACCES => e
+              errors[gem_name][entry['path']] = "Missing"
             end
           end
         end
-      rescue Gem::VerificationError => e
-        errors[gem_name] << ErrorData.new(gem_path, e.message)
-      end
 
-      # Clean out directories that weren't explicitly included in the gemspec
-      # FIXME: This still allows arbitrary incorrect directories.
-      installed_files.delete_if {|potential_directory|
-        File.directory?(File.join(gem_directory, potential_directory))
-      }
-      if(installed_files.size > 0) then
-        errors[gem_name] << ErrorData.new(gem_path, "Unmanaged files in gem: #{installed_files.inspect}")
+        installed_files = find_files_for_gem(gem_directory)
+        good.map! { |entry, _| entry['path'] }
+        extras = installed_files - good - unreadable
+
+        extras.each do |extra|
+          errors[gem_name][extra] = "Unmanaged file in gem"
+        end
+      rescue Gem::VerificationError => e
+        errors[gem_name][gem_path] = e.message
       end
+    end
+
+    errors.each do |name, subhash|
+      errors[name] = subhash.map { |path, msg| ErrorData.new(path, msg) }
     end
 
     errors
@@ -167,7 +198,7 @@ class Gem::Validator
   def unit_test(gem_spec)
     start_dir = Dir.pwd
     Dir.chdir(gem_spec.full_gem_path)
-    $: << File.join(Gem.dir, "gems", gem_spec.full_name)
+    $: << gem_spec.full_gem_path
     # XXX: why do we need this gem_spec when we've already got 'spec'?
     test_files = gem_spec.test_files
 

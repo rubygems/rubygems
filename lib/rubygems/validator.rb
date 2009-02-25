@@ -98,7 +98,7 @@ class Gem::Validator
       end
 
       unless File.exist? spec_path then
-        errors[gem_name][spec_path] = "Spec file doesn't exist for installed gem"
+        errors[gem_name][spec_path] = "Spec file missing for installed gem"
       end
 
       begin
@@ -115,7 +115,7 @@ class Gem::Validator
 
           gone.map! { |entry, _| entry['path'] }
           gone.sort.each do |path|
-            errors[gem_name][path] = "File not found"
+            errors[gem_name][path] = "Missing file"
           end
 
           good, unreadable = good.partition { |entry, _|
@@ -124,7 +124,7 @@ class Gem::Validator
 
           unreadable.map! { |entry, _| entry['path'] }
           unreadable.sort.each do |path|
-            errors[gem_name][path] = "File unreadable"
+            errors[gem_name][path] = "Unreadable file"
           end
 
           good.each do |entry, data|
@@ -137,10 +137,6 @@ class Gem::Validator
                   errors[gem_name][entry['path']] = "Modified from original"
                 end
               end
-            rescue Errno::EACCES => e
-              errors[gem_name][entry['path']] = e.message
-            rescue Errno::ENOENT, Errno::EACCES => e
-              errors[gem_name][entry['path']] = "Missing"
             end
           end
         end
@@ -150,7 +146,7 @@ class Gem::Validator
         extras = installed_files - good - unreadable
 
         extras.each do |extra|
-          errors[gem_name][extra] = "Unmanaged file in gem"
+          errors[gem_name][extra] = "Extra file"
         end
       rescue Gem::VerificationError => e
         errors[gem_name][gem_path] = e.message

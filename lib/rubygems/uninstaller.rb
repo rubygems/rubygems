@@ -58,7 +58,7 @@ class Gem::Uninstaller
     list = @source_index.find_name @gem, @version
 
     if list.empty? then
-      raise Gem::InstallError, "Unknown gem #{@gem} #{@version}"
+      warn "  Cannot uninstall. Check `gem list -d #{@gem}`"
 
     elsif list.size > 1 and @force_all then
       remove_all list.dup

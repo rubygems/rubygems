@@ -133,8 +133,17 @@ class Gem::Dependency
     version_requirements.satisfied_by? version
   end
 
-  def hash # :nodoc:
+  ##
+  # A dependency's hash is the sum of the hash of the #name, #type and
+  # #version_requirements
+
+  def hash
     name.hash + type.hash + version_requirements.hash
+  end
+
+  def inspect # :nodoc:
+    "<%s type=%p name=%p requirements=%p>" % [self.class, @type, @name,
+      version_requirements.to_s]
   end
 
 end

@@ -20,6 +20,7 @@ require 'tmpdir'
 require 'uri'
 require 'rubygems/package'
 require 'rubygems/test_utilities'
+require 'pp'
 
 require File.join(File.expand_path(File.dirname(__FILE__)), 'mockgemui')
 
@@ -156,6 +157,13 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
 
     gem = File.join(@tempdir, "#{gem.full_name}.gem").untaint
     Gem::Installer.new(gem, :wrappers => true).install
+  end
+
+  def mu_pp(obj)
+    s = ''
+    s = PP.pp obj, s
+    s = s.force_encoding(Encoding.default_external) if defined? Encoding
+    s
   end
 
   def prep_cache_files(lc)

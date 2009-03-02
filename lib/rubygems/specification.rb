@@ -909,6 +909,33 @@ module Gem
       "#<Gem::Specification name=#{@name} version=#{@version}>"
     end
 
+    def pretty_print(q) # :nodoc:
+      q.group 2, 'Gem::Specification.new do |s|', 'end' do
+        q.breakable
+
+        attributes = @@attributes.sort_by { |attr_name,| attr_name.to_s }
+
+        attributes.each do |attr_name, default|
+          current_value = self.send attr_name
+          if current_value != default or
+             self.class.required_attribute? attr_name then
+
+            q.text "s.#{attr_name} = "
+
+            if attr_name == :date then
+              current_value = current_value.utc
+
+              q.text "Time.utc(#{current_value.year}, #{current_value.month}, #{current_value.day})"
+            else
+              q.pp current_value
+            end
+
+            q.breakable
+          end
+        end
+      end
+    end
+
     def add_dependency_with_type(dependency, type, *requirements)
       requirements = if requirements.empty? then
                        Gem::Requirement.default

@@ -81,6 +81,21 @@ class Gem::Dependency
     "#{name} (#{version_requirements}, #{@type || :runtime})"
   end
 
+  def pretty_print(q) # :nodoc:
+    q.group 1, 'Gem::Dependency.new(', ')' do
+      q.pp @name
+      q.text ','
+      q.breakable
+
+      q.pp @version_requirements
+
+      q.text ','
+      q.breakable
+
+      q.pp @type
+    end
+  end
+
   def ==(other) # :nodoc:
     self.class === other &&
       self.name == other.name &&

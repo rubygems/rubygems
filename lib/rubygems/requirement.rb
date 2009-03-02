@@ -99,11 +99,15 @@ class Gem::Requirement
     as_list.join(", ")
   end
 
+  def pretty_print(q) # :nodoc:
+    q.group 1, 'Gem::Requirement.new(', ')' do
+      q.pp as_list
+    end
+  end
+
   def as_list
     normalize
-    @requirements.collect { |req|
-      "#{req[0]} #{req[1]}"
-    }
+    @requirements.map do |op, version| "#{op} #{version}" end
   end
 
   def normalize

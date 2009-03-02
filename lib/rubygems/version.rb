@@ -196,6 +196,10 @@ class Gem::Version
     @version.to_s.scan(/[0-9a-z]+/i).map { |s| Part.new(s) }
   end
 
+  def pretty_print(q) # :nodoc:
+    q.text "Gem::Version.new(#{@version.inspect})"
+  end
+
   #:stopdoc:
 
   require 'rubygems/requirement'

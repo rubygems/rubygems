@@ -163,7 +163,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     s = ''
     s = PP.pp obj, s
     s = s.force_encoding(Encoding.default_external) if defined? Encoding
-    s
+    s.chomp
   end
 
   def prep_cache_files(lc)
@@ -299,12 +299,17 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
   end
 
   def util_make_gems
+    @a1 = quick_gem 'a', '1' do |s|
+      s.files = %w[lib/code.rb]
+      s.require_paths = %w[lib]
+      s.date = Gem::Specification::TODAY - 86400
+    end
+
     init = proc do |s|
       s.files = %w[lib/code.rb]
       s.require_paths = %w[lib]
     end
 
-    @a1 = quick_gem('a', '1', &init)
     @a2 = quick_gem('a', '2', &init)
     @a_evil9 = quick_gem('a_evil', '9', &init)
     @b2 = quick_gem('b', '2', &init)

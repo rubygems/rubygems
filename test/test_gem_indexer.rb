@@ -19,7 +19,9 @@ class TestGemIndexer < RubyGemTestCase
 
     util_make_gems
 
-    @d2_0 = quick_gem 'd', '2.0'
+    @d2_0 = quick_gem 'd', '2.0' do |s|
+      s.date = Gem::Specification::TODAY - 86400 * 3
+    end
     util_build_gem @d2_0
 
     gems = File.join(@tempdir, 'gems')
@@ -27,7 +29,9 @@ class TestGemIndexer < RubyGemTestCase
     cache_gems = File.join @gemhome, 'cache', '*.gem'
     FileUtils.mv Dir[cache_gems], gems
 
-    @indexer = Gem::Indexer.new @tempdir
+    @indexer = Gem::Indexer.new @tempdir, :rss_title => 'ExampleForge gems',
+                                :rss_host => 'example.com',
+                                :rss_gems_host => 'gems.example.com'
   end
 
   def test_initialize
@@ -151,6 +155,77 @@ pl-1-i386-linux
 
     assert_indexed @tempdir, "latest_specs.#{@marshal_version}"
     assert_indexed @tempdir, "latest_specs.#{@marshal_version}.gz"
+
+    expected = <<-EOF
+<?xml version="1.0"?>
+<rss version="2.0">
+  <channel>
+    <title>ExampleForge gems</title>
+    <link>http://example.com</link>
+    <description>Recently released gems from http://example.com</description>
+    <generator>RubyGems v#{Gem::RubyGemsVersion}</generator>
+    <docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
+    <item>
+      <title>a-2</title>
+      <description>This is a test description</description>
+      <author>A User</author>
+      <guid>http://gems.example.com/gems/a-2.gem</guid>
+      <enclosure url="http://gems.example.com/gems/a-2.gem"
+                 length="3072" type="application/octet-stream" />
+      <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
+    </item>
+    <item>
+      <title>a_evil-9</title>
+      <description>This is a test description</description>
+      <author>A User</author>
+      <guid>http://gems.example.com/gems/a_evil-9.gem</guid>
+      <enclosure url="http://gems.example.com/gems/a_evil-9.gem"
+                 length="3072" type="application/octet-stream" />
+      <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
+    </item>
+    <item>
+      <title>b-2</title>
+      <description>This is a test description</description>
+      <author>A User</author>
+      <guid>http://gems.example.com/gems/b-2.gem</guid>
+      <enclosure url="http://gems.example.com/gems/b-2.gem"
+                 length="3072" type="application/octet-stream" />
+      <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
+    </item>
+    <item>
+      <title>c-1.2</title>
+      <description>This is a test description</description>
+      <author>A User</author>
+      <guid>http://gems.example.com/gems/c-1.2.gem</guid>
+      <enclosure url="http://gems.example.com/gems/c-1.2.gem"
+                 length="3072" type="application/octet-stream" />
+      <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
+    </item>
+    <item>
+      <title>pl-1-x86-linux</title>
+      <description>This is a test description</description>
+      <author>A User</author>
+      <guid>http://gems.example.com/gems/pl-1-x86-linux.gem</guid>
+      <enclosure url="http://gems.example.com/gems/pl-1-x86-linux.gem"
+                 length="3072" type="application/octet-stream" />
+      <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
+    </item>
+    <item>
+      <title>a-1</title>
+      <description>This is a test description</description>
+      <author>A User</author>
+      <guid>http://gems.example.com/gems/a-1.gem</guid>
+      <enclosure url="http://gems.example.com/gems/a-1.gem"
+                 length="3072" type="application/octet-stream" />
+      <pubDate>#{(Gem::Specification::TODAY - 86400).rfc2822}</pubDate>
+    </item>
+  </channel>
+</rss>
+    EOF
+
+    gems_rss = File.read File.join(@tempdir, 'index.rss')
+
+    assert_equal expected, gems_rss
   end
 
   def test_generate_index_legacy
@@ -481,7 +556,7 @@ pl-1-i386-linux
 
     assert_includes specs_index,
                     [@d2_1.name, @d2_1.version, @d2_1.original_platform]
-                    
+
     latest_specs_index = Marshal.load \
       Gem.read_binary(@indexer.dest_latest_specs_index)
 

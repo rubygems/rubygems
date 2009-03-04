@@ -91,6 +91,24 @@ class TestGemCommandsGenerateIndexCommand < RubyGemTestCase
     refute @cmd.options[:build_modern]
   end
 
+  def test_handle_options_rss_gems_host
+    @cmd.handle_options %w[--rss-gems-host gems.example.com]
+
+    assert_equal 'gems.example.com', @cmd.options[:rss_gems_host]
+  end
+
+  def test_handle_options_rss_host
+    @cmd.handle_options %w[--rss-host example.com]
+
+    assert_equal 'example.com', @cmd.options[:rss_host]
+  end
+
+  def test_handle_options_rss_title
+    @cmd.handle_options %w[--rss-title Example\ Gems]
+
+    assert_equal 'Example Gems', @cmd.options[:rss_title]
+  end
+
   def test_handle_options_update
     @cmd.handle_options %w[--update]
 

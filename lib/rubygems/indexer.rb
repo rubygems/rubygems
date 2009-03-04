@@ -61,6 +61,10 @@ class Gem::Indexer
     @build_legacy = options[:build_legacy]
     @build_modern = options[:build_modern]
 
+    @rss_title = options[:rss_title]
+    @rss_host = options[:rss_host]
+    @rss_gems_host = options[:rss_gems_host]
+
     @dest_directory = directory
     @directory = File.join Dir.tmpdir, "gem_generate_index_#{$$}"
 
@@ -84,6 +88,8 @@ class Gem::Indexer
                                   "specs.#{Gem.marshal_version}"
     @dest_latest_specs_index = File.join @dest_directory,
                                          "latest_specs.#{Gem.marshal_version}"
+
+    @rss_index = File.join @directory, 'index.rss'
 
     @files = []
   end
@@ -111,6 +117,7 @@ class Gem::Indexer
     build_marshal_gemspecs index
     build_legacy_indicies index if @build_legacy
     build_modern_indicies index if @build_modern
+    build_rss index
 
     compress_indicies
   end
@@ -265,6 +272,75 @@ class Gem::Indexer
   end
 
   ##
+  # Builds an RSS feed for latest gems
+
+  def build_rss(index)
+    if @rss_host.nil? or @rss_gems_host.nil? then
+      if Gem.configuration.really_verbose then
+        alert_warning "no --rss-host or --rss-gems-host, RSS generation disabled"
+      end
+      return
+    end
+
+    require 'cgi'
+
+    Gem.time 'Generated rss' do
+      open @rss_index, 'wb' do |io|
+        rss_host = CGI.escapeHTML @rss_host
+        rss_title = CGI.escapeHTML(@rss_title || 'gems')
+
+        io.puts <<-HEADER
+<?xml version="1.0"?>
+<rss version="2.0">
+  <channel>
+    <title>#{rss_title}</title>
+    <link>http://#{rss_host}</link>
+    <description>Recently released gems from http://#{rss_host}</description>
+    <generator>RubyGems v#{Gem::RubyGemsVersion}</generator>
+    <docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
+        HEADER
+
+        yesterday = Gem::Specification::TODAY - 86400
+
+        index = index.select do |_, spec|
+          spec_date = spec.date
+
+          case spec_date
+          when Date
+            Time.parse(spec_date.to_s) >= yesterday
+          when Time
+            spec_date >= yesterday
+          end
+        end
+
+        index.sort_by { |_, spec| [-spec.date.to_i, spec] }.each do |_, spec|
+          gem_path = CGI.escapeHTML "http://#{@rss_gems_host}/gems/#{spec.full_name}.gem"
+          size = File.stat(spec.loaded_from).size rescue next
+
+          io.puts <<-ITEM
+    <item>
+      <title>#{CGI.escapeHTML spec.full_name}</title>
+      <description>#{CGI.escapeHTML spec.description}</description>
+      <author>#{CGI.escapeHTML spec.authors.join(', ')}</author>
+      <guid>#{gem_path}</guid>
+      <enclosure url=\"#{gem_path}\"
+                 length=\"#{size}\" type=\"application/octet-stream\" />
+      <pubDate>#{spec.date.rfc2822}</pubDate>
+    </item>
+          ITEM
+        end
+
+        io.puts <<-FOOTER
+  </channel>
+</rss>
+        FOOTER
+      end
+    end
+
+    @files << @rss_index
+  end
+
+  ##
   # Collect specifications from .gem files from the gem directory.
 
   def collect_specs(gems = gem_file_list)
@@ -283,9 +359,13 @@ class Gem::Indexer
 
         begin
           spec = Gem::Format.from_file_by_path(gemfile).spec
+          spec.loaded_from = gemfile
 
           unless gemfile =~ /\/#{Regexp.escape spec.original_name}.*\.gem\z/i then
-            alert_warning "Skipping misnamed gem: #{gemfile} => #{spec.full_name} (#{spec.original_name})"
+            expected_name = spec.full_name
+            expected_name << " (#{spec.original_name})" if
+              spec.original_name != spec.full_name
+            alert_warning "Skipping misnamed gem: #{gemfile} should be named #{expected_name}"
             next
           end
 
@@ -379,7 +459,7 @@ class Gem::Indexer
   end
 
   ##
-  # Builds and installs indexicies.
+  # Builds and installs indicies.
 
   def generate_index
     make_temp_directories

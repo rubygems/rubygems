@@ -1,6 +1,11 @@
 require 'rubygems/command'
 require 'rubygems/indexer'
 
+##
+# Generates a index files for use as a gem server.
+#
+# See `gem help generate_index`
+
 class Gem::Commands::GenerateIndexCommand < Gem::Command
 
   def initialize
@@ -24,7 +29,7 @@ class Gem::Commands::GenerateIndexCommand < Gem::Command
     end
 
     add_option '--[no-]modern',
-               'Only generate indexes for RubyGems older',
+               'Only generate indexes for RubyGems newer',
                'than 1.2.0' do |value, options|
       unless options[:build_legacy] or value then
         raise OptionParser::InvalidOption, 'no indicies will be built'
@@ -37,6 +42,23 @@ class Gem::Commands::GenerateIndexCommand < Gem::Command
                'Update modern indexes with gems added',
                'since the last update' do |value, options|
       options[:update] = value
+    end
+
+    add_option :RSS, '--rss-gems-host=GEM_HOST',
+               'Host name where gems are served from,',
+               'used for GUID and enclosure values' do |value, options|
+      options[:rss_gems_host] = value
+    end
+
+    add_option :RSS, '--rss-host=HOST',
+               'Host name for more gems information,',
+               'used for RSS feed link' do |value, options|
+      options[:rss_host] = value
+    end
+
+    add_option :RSS, '--rss-title=TITLE',
+               'Set title for RSS feed' do |value, options|
+      options[:rss_title] = value
     end
   end
 
@@ -78,6 +100,9 @@ The Marshal version number comes from ruby's Marshal::MAJOR_VERSION and
 Marshal::MINOR_VERSION constants.  It is used to ensure compatibility.
 The yaml indexes exist for legacy RubyGems clients and fallback in case of
 Marshal version changes.
+
+If --rss-host and --rss-gem-host are given an RSS feed will be generated at
+index.rss containing gems released in the last two days.
     EOF
   end
 

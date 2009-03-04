@@ -1,5 +1,6 @@
 Autotest.add_hook :initialize do |at|
   at.order = :natural # I am a bad person - Eric Hodel
+  at.testlib = :minitest if at.respond_to? :testlib=
 
   at.add_exception %r%/\.svn/%
   at.add_exception %r%\.rbc$%

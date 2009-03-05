@@ -175,56 +175,62 @@ pl-1-i386-linux
     <item>
       <title>a-2</title>
       <description>This is a test description</description>
-      <author>A User</author>
-      <guid>http://gems.example.com/gems/a-2.gem</guid>
+      <author>example@example.com (A User)</author>
+      <guid>a-2</guid>
       <enclosure url="http://gems.example.com/gems/a-2.gem"
                  length="3072" type="application/octet-stream" />
       <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
+      <link>http://example.com</link>
     </item>
     <item>
       <title>a_evil-9</title>
       <description>This is a test description</description>
-      <author>A User</author>
-      <guid>http://gems.example.com/gems/a_evil-9.gem</guid>
+      <author>example@example.com (A User)</author>
+      <guid>a_evil-9</guid>
       <enclosure url="http://gems.example.com/gems/a_evil-9.gem"
                  length="3072" type="application/octet-stream" />
       <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
+      <link>http://example.com</link>
     </item>
     <item>
       <title>b-2</title>
       <description>This is a test description</description>
-      <author>A User</author>
-      <guid>http://gems.example.com/gems/b-2.gem</guid>
+      <author>example@example.com (A User)</author>
+      <guid>b-2</guid>
       <enclosure url="http://gems.example.com/gems/b-2.gem"
                  length="3072" type="application/octet-stream" />
       <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
+      <link>http://example.com</link>
     </item>
     <item>
       <title>c-1.2</title>
       <description>This is a test description</description>
-      <author>A User</author>
-      <guid>http://gems.example.com/gems/c-1.2.gem</guid>
+      <author>example@example.com (A User)</author>
+      <guid>c-1.2</guid>
       <enclosure url="http://gems.example.com/gems/c-1.2.gem"
                  length="3072" type="application/octet-stream" />
       <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
+      <link>http://example.com</link>
     </item>
     <item>
       <title>pl-1-x86-linux</title>
       <description>This is a test description</description>
-      <author>A User</author>
-      <guid>http://gems.example.com/gems/pl-1-x86-linux.gem</guid>
+      <author>example@example.com (A User)</author>
+      <guid>pl-1-x86-linux</guid>
       <enclosure url="http://gems.example.com/gems/pl-1-x86-linux.gem"
                  length="3072" type="application/octet-stream" />
       <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
+      <link>http://example.com</link>
     </item>
     <item>
       <title>a-1</title>
       <description>This is a test description</description>
-      <author>A User</author>
-      <guid>http://gems.example.com/gems/a-1.gem</guid>
+      <author>example@example.com (Example), example2@example.com (Example2)</author>
+      <guid>a-1</guid>
       <enclosure url="http://gems.example.com/gems/a-1.gem"
                  length="3072" type="application/octet-stream" />
       <pubDate>#{(Gem::Specification::TODAY - 86400).rfc2822}</pubDate>
+      <link>http://a.example.com</link>
     </item>
   </channel>
 </rss>

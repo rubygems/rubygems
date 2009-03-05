@@ -303,6 +303,9 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
       s.files = %w[lib/code.rb]
       s.require_paths = %w[lib]
       s.date = Gem::Specification::TODAY - 86400
+      s.homepage = 'http://a.example.com'
+      s.email = %w[example@example.com example2@example.com]
+      s.authors = %w[Example Example2]
     end
 
     init = proc do |s|

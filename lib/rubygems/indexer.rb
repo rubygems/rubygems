@@ -284,7 +284,8 @@ class Gem::Indexer
   end
 
   ##
-  # Builds an RSS feed for latest gems
+  # Builds an RSS feed for past two days gem releases according to the gem's
+  # date.
 
   def build_rss(index)
     if @rss_host.nil? or @rss_gems_host.nil? then
@@ -312,7 +313,8 @@ class Gem::Indexer
     <docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
         HEADER
 
-        yesterday = Gem::Specification::TODAY - 86400
+        today = Gem::Specification::TODAY
+        yesterday = today - 86400
 
         index = index.select do |_, spec|
           spec_date = spec.date
@@ -325,19 +327,44 @@ class Gem::Indexer
           end
         end
 
+        index = index.select do |_, spec|
+          spec_date = spec.date
+
+          case spec_date
+          when Date
+            Time.parse(spec_date.to_s) <= today
+          when Time
+            spec_date <= today
+          end
+        end
+
         index.sort_by { |_, spec| [-spec.date.to_i, spec] }.each do |_, spec|
           gem_path = CGI.escapeHTML "http://#{@rss_gems_host}/gems/#{spec.full_name}.gem"
           size = File.stat(spec.loaded_from).size rescue next
 
+          description = spec.description || spec.summary || ''
+          authors = Array spec.authors
+          emails = Array spec.email
+          authors = emails.zip(authors).map do |email, author|
+            email += " (#{author})" if author and not author.empty?
+          end.join ', '
+
           io.puts <<-ITEM
     <item>
       <title>#{CGI.escapeHTML spec.full_name}</title>
-      <description>#{CGI.escapeHTML spec.description}</description>
-      <author>#{CGI.escapeHTML spec.authors.join(', ')}</author>
-      <guid>#{gem_path}</guid>
+      <description>#{CGI.escapeHTML description}</description>
+      <author>#{CGI.escapeHTML authors}</author>
+      <guid>#{CGI.escapeHTML spec.full_name}</guid>
       <enclosure url=\"#{gem_path}\"
                  length=\"#{size}\" type=\"application/octet-stream\" />
       <pubDate>#{spec.date.rfc2822}</pubDate>
+          ITEM
+
+          io.puts <<-ITEM if spec.homepage
+      <link>#{CGI.escapeHTML spec.homepage}</link>
+          ITEM
+
+          io.puts <<-ITEM
     </item>
           ITEM
         end

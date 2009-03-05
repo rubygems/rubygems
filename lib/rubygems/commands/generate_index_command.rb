@@ -29,7 +29,7 @@ class Gem::Commands::GenerateIndexCommand < Gem::Command
     end
 
     add_option '--[no-]modern',
-               'Only generate indexes for RubyGems newer',
+               'Generate indexes for RubyGems newer',
                'than 1.2.0' do |value, options|
       unless options[:build_legacy] or value then
         raise OptionParser::InvalidOption, 'no indicies will be built'

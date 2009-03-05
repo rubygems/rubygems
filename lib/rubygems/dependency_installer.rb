@@ -94,10 +94,9 @@ class Gem::DependencyInstaller
         end
 
         all = requirements.length > 1 ||
-                (requirements.first != ">=" and requirements.first != ">") ||
-                @prerelease
+                (requirements.first != ">=" and requirements.first != ">")
 
-        found = Gem::SpecFetcher.fetcher.fetch dep, all
+        found = Gem::SpecFetcher.fetcher.fetch dep, all, true, @prerelease
         gems_and_sources.push(*found)
 
       rescue Gem::RemoteFetcher::FetchError => e

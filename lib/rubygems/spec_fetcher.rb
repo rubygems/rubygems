@@ -58,8 +58,8 @@ class Gem::SpecFetcher
   # versions are returned.  If +matching_platform+ is false, all platforms are
   # returned.
 
-  def fetch(dependency, all = false, matching_platform = true)
-    specs_and_sources = find_matching dependency, all, matching_platform
+  def fetch(dependency, all = false, matching_platform = true, prerelease = false)
+    specs_and_sources = find_matching dependency, all, matching_platform, prerelease
 
     specs_and_sources.map do |spec_tuple, source_uri|
       [fetch_spec(spec_tuple, URI.parse(source_uri)), source_uri]
@@ -110,10 +110,10 @@ class Gem::SpecFetcher
   # versions are returned.  If +matching_platform+ is false, gems for all
   # platforms are returned.
 
-  def find_matching(dependency, all = false, matching_platform = true)
+  def find_matching(dependency, all = false, matching_platform = true, prerelease = false)
     found = {}
 
-    list(all).each do |source_uri, specs|
+    list(all, prerelease).each do |source_uri, specs|
       found[source_uri] = specs.select do |spec_name, version, spec_platform|
         dependency =~ Gem::Dependency.new(spec_name, version) and
           (not matching_platform or Gem::Platform.match(spec_platform))
@@ -157,9 +157,10 @@ class Gem::SpecFetcher
   # Returns a list of gems available for each source in Gem::sources.  If
   # +all+ is true, all versions are returned instead of only latest versions.
 
-  def list(all = false)
+  def list(all, prerelease)
     list = {}
 
+    # TODO: honor prerelease
     file = all ? 'specs' : 'latest_specs'
 
     Gem.sources.each do |source_uri|

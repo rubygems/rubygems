@@ -174,6 +174,8 @@ class Gem::SourceIndex
       result[name] << spec
     end
 
+    # TODO: why is this a hash while @gems is an array? Seems like
+    # structural similarity would be good.
     result.values.flatten
   end
 

@@ -95,6 +95,7 @@ class TestGemIndexer < RubyGemTestCase
     assert_equal expected, latest_specs, 'latest_specs'
   end
 
+  # TODO: should split out modern vs legacy tests?
   def test_generate_index
     use_ui @ui do
       @indexer.generate_index

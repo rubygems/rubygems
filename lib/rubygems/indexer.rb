@@ -232,45 +232,46 @@ class Gem::Indexer
   end
 
   ##
-  # Builds indicies for RubyGems 1.2 and newer
+  # Build a single index for RubyGems 1.2 and newer
+
+  def build_modern_index(index, file, name)
+    say "Generating #{name} index"
+
+    Gem.time "Generated #{name} index" do
+      open(file, 'wb') do |io|
+        specs = index.map do |*spec|
+          # We have to splat here because latest_specs is an array,
+          # while the others are hashes. See the TODO in source_index.rb
+          spec = spec.flatten.last
+          platform = spec.original_platform
+          platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
+          [spec.name, spec.version, platform]
+        end
+
+        specs = compact_specs(specs)
+        Marshal.dump(specs, io)
+      end
+    end
+  end
+
+  ##
+  # Builds indicies for RubyGems 1.2 and newer. Handles full, latest, prerelease
 
   def build_modern_indicies(index)
-    say "Generating specs index"
+    build_modern_index(index.sort, @specs_index, 'specs')
+    build_modern_index(index.latest_specs.sort,
+                       @latest_specs_index,
+                       'latest specs')
+    build_modern_index(index.prerelease_specs,
+                       @prerelease_specs_index,
+                       'prerelease specs')
 
-    Gem.time 'Generated specs index' do
-      open @specs_index, 'wb' do |io|
-        specs = index.sort.map do |_, spec|
-          platform = spec.original_platform
-          platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
-          [spec.name, spec.version, platform]
-        end
-
-        specs = compact_specs specs
-
-        Marshal.dump specs, io
-      end
-    end
-
-    say "Generating latest specs index"
-
-    Gem.time 'Generated latest specs index' do
-      open @latest_specs_index, 'wb' do |io|
-        specs = index.latest_specs.sort.map do |spec|
-          platform = spec.original_platform
-          platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
-          [spec.name, spec.version, platform]
-        end
-
-        specs = compact_specs specs
-
-        Marshal.dump specs, io
-      end
-    end
-
-    @files << @specs_index
-    @files << "#{@specs_index}.gz"
-    @files << @latest_specs_index
-    @files << "#{@latest_specs_index}.gz"
+    @files += [@specs_index,
+               "#{@specs_index}.gz",
+               @latest_specs_index,
+               "#{@latest_specs_index}.gz",
+               @prerelease_specs_index,
+               "#{@prerelease_specs_index}.gz"]
   end
 
   ##

@@ -56,7 +56,7 @@ class Gem::SpecFetcher
   ##
   # Fetch specs matching +dependency+.  If +all+ is true, all matching
   # versions are returned.  If +matching_platform+ is false, all platforms are
-  # returned.
+  # returned. If +prerelease+ is true, prerelease versions are included.
 
   def fetch(dependency, all = false, matching_platform = true, prerelease = false)
     specs_and_sources = find_matching dependency, all, matching_platform, prerelease
@@ -155,10 +155,13 @@ class Gem::SpecFetcher
 
   ##
   # Returns a list of gems available for each source in Gem::sources.  If
-  # +all+ is true, all versions are returned instead of only latest versions.
+  # +all+ is true, all versions are returned instead of only latest
+  # versions. If +prerelease+ is true, include prerelease versions.
 
   def list(all = false, prerelease = false)
     list = {}
+
+    # TODO: honor prerelease flag
 
     file = all ? 'specs' : 'latest_specs'
 

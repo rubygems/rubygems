@@ -81,8 +81,9 @@ When done, it will generate a set of files like this:
   gems/*.gem                                   # .gem files you want to
                                                # index
 
-  latest_specs.<version>.gz                    # latest specs index
   specs.<version>.gz                           # specs index
+  latest_specs.<version>.gz                    # latest specs index
+  prerelease_specs.<version>.gz                # prerelease specs index
   quick/Marshal.<version>/<gemname>.gemspec.rz # Marshal quick index file
 
   # these files support legacy RubyGems

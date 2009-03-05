@@ -56,6 +56,15 @@ class Gem::Commands::SetupCommand < Gem::Command
     end
   end
 
+  def check_ruby_version
+    required_version = Gem::Version.new '1.8.3'
+
+    unless Gem.ruby_version > required_version then
+      alert_error "Ruby version > #{required_version} required, is #{Gem.ruby_version}"
+      terminate_interaction 1
+    end
+  end
+
   def defaults_str # :nodoc:
     "--format-executable --rdoc --ri"
   end
@@ -83,12 +92,7 @@ By default, this RubyGems will install gem as:
                                     default_dir.relative_path_from(top_dir))
     end
 
-    required_version = Gem::Version.new '1.8.3'
-
-    unless Gem.ruby_version > required_version then
-      alert_error "Ruby version > #{required_version} required, is #{Gem.ruby_version}"
-      terminate_interaction 1
-    end
+    check_ruby_version
 
     if Gem.configuration.really_verbose then
       extend FileUtils::Verbose
@@ -96,58 +100,48 @@ By default, this RubyGems will install gem as:
       extend FileUtils
     end
 
-    lib_dir = nil
-    bin_dir = nil
+    lib_dir, bin_dir = make_destination_dirs install_destdir
 
-    prefix = options[:prefix]
-    site_or_vendor = options[:site_or_vendor]
+    install_lib lib_dir
 
-    if prefix.empty? then
-      lib_dir = Gem::ConfigMap[site_or_vendor]
-      bin_dir = Gem::ConfigMap[:bindir]
+    install_executables bin_dir
+
+    remove_old_bin_files bin_dir
+
+    remove_source_caches install_destdir
+
+    install_rdoc
+
+    say
+    say "-" * 78
+    say
+
+    release_notes = File.join Dir.pwd, 'doc', 'release_notes',
+                              "rel_#{Gem::RubyGemsVersion.gsub '.', '_'}.rdoc"
+
+    if File.exist? release_notes then
+      say File.read(release_notes)
     else
-      # Apple installed RubyGems into libdir, and RubyGems <= 1.1.0 gets
-      # confused about installation location, so switch back to
-      # sitelibdir/vendorlibdir.
-      if defined?(APPLE_GEM_HOME) and
-        # just in case Apple and RubyGems don't get this patched up proper.
-        (prefix == Gem::ConfigMap[:libdir] or
-         # this one is important
-         prefix == File.join(Gem::ConfigMap[:libdir], 'ruby')) then
-         lib_dir = Gem::ConfigMap[site_or_vendor]
-         bin_dir = Gem::ConfigMap[:bindir]
-      else
-        lib_dir = File.join prefix, 'lib'
-        bin_dir = File.join prefix, 'bin'
-      end
+      say "Oh-no! Unable to find release notes!"
+      say "Looked in: #{release_notes}" if Gem.configuration.really_verbose
     end
 
-    unless install_destdir.empty? then
-      top_dir = Pathname.new(RbConfig::TOPDIR)
-      lib_dir_p = Pathname.new(lib_dir)
-      bin_dir_p = Pathname.new(bin_dir)
+    say
+    say "-" * 78
+    say
 
-      lib_dir = File.join install_destdir, lib_dir_p.relative_path_from(top_dir)
-      bin_dir = File.join install_destdir, bin_dir_p.relative_path_from(top_dir)
+    say "RubyGems installed the following executables:"
+    say bin_file_names.map { |name| "\t#{name}\n" }
+    say
+
+    unless bin_file_names.grep(/#{File::SEPARATOR}gem$/) then
+      say "If `gem` was installed by a previous RubyGems installation, you may need"
+      say "to remove it by hand."
+      say
     end
+  end
 
-    mkdir_p lib_dir
-    mkdir_p bin_dir
-
-    say "Installing RubyGems"
-
-    Dir.chdir 'lib' do
-      lib_files = Dir[File.join('**', '*rb')]
-
-      lib_files.each do |lib_file|
-        dest_file = File.join lib_dir, lib_file
-        dest_dir = File.dirname dest_file
-        mkdir_p dest_dir unless File.directory? dest_dir
-
-        install lib_file, dest_file, :mode => 0644
-      end
-    end
-
+  def install_executables(bin_dir)
     say "Installing gem executable"
 
     bin_file_names = []
@@ -204,9 +198,97 @@ TEXT
         end
       end
     end
+  end
 
-    # Replace old bin files with ones that abort.
+  def install_lib(lib_dir)
+    say "Installing RubyGems"
 
+    Dir.chdir 'lib' do
+      lib_files = Dir[File.join('**', '*rb')]
+
+      lib_files.each do |lib_file|
+        dest_file = File.join lib_dir, lib_file
+        dest_dir = File.dirname dest_file
+        mkdir_p dest_dir unless File.directory? dest_dir
+
+        install lib_file, dest_file, :mode => 0644
+      end
+    end
+  end
+
+  def install_rdoc
+    gem_doc_dir = File.join Gem.dir, 'doc'
+    rubygems_name = "rubygems-#{Gem::RubyGemsVersion}"
+    rubygems_doc_dir = File.join gem_doc_dir, rubygems_name
+
+    if File.writable? gem_doc_dir and
+       (not File.exist? rubygems_doc_dir or
+        File.writable? rubygems_doc_dir) then
+      say "Removing old RubyGems RDoc and ri"
+      Dir[File.join(Gem.dir, 'doc', 'rubygems-[0-9]*')].each do |dir|
+        rm_rf dir
+      end
+
+      if options[:ri] then
+        ri_dir = File.join rubygems_doc_dir, 'ri'
+        say "Installing #{rubygems_name} ri into #{ri_dir}"
+        run_rdoc '--ri', '--op', ri_dir
+      end
+
+      if options[:rdoc] then
+        rdoc_dir = File.join rubygems_doc_dir, 'rdoc'
+        say "Installing #{rubygems_name} rdoc into #{rdoc_dir}"
+        run_rdoc '--op', rdoc_dir
+      end
+    else
+      say "Skipping RDoc generation, #{gem_doc_dir} not writable"
+      say "Set the GEM_HOME environment variable if you want RDoc generated"
+    end
+  end
+
+  def make_destination_dirs(install_destdir)
+    lib_dir = nil
+    bin_dir = nil
+
+    prefix = options[:prefix]
+    site_or_vendor = options[:site_or_vendor]
+
+    if prefix.empty? then
+      lib_dir = Gem::ConfigMap[site_or_vendor]
+      bin_dir = Gem::ConfigMap[:bindir]
+    else
+      # Apple installed RubyGems into libdir, and RubyGems <= 1.1.0 gets
+      # confused about installation location, so switch back to
+      # sitelibdir/vendorlibdir.
+      if defined?(APPLE_GEM_HOME) and
+        # just in case Apple and RubyGems don't get this patched up proper.
+        (prefix == Gem::ConfigMap[:libdir] or
+         # this one is important
+         prefix == File.join(Gem::ConfigMap[:libdir], 'ruby')) then
+         lib_dir = Gem::ConfigMap[site_or_vendor]
+         bin_dir = Gem::ConfigMap[:bindir]
+      else
+        lib_dir = File.join prefix, 'lib'
+        bin_dir = File.join prefix, 'bin'
+      end
+    end
+
+    unless install_destdir.empty? then
+      top_dir = Pathname.new RbConfig::TOPDIR
+      lib_dir_p = Pathname.new lib_dir
+      bin_dir_p = Pathname.new bin_dir
+
+      lib_dir = File.join install_destdir, lib_dir_p.relative_path_from(top_dir)
+      bin_dir = File.join install_destdir, bin_dir_p.relative_path_from(top_dir)
+    end
+
+    mkdir_p lib_dir
+    mkdir_p bin_dir
+
+    return lib_dir, bin_dir
+  end
+
+  def remove_old_bin_files(bin_dir)
     old_bin_files = {
       'gem_mirror' => 'gem mirror',
       'gem_server' => 'gem server',
@@ -236,8 +318,9 @@ abort "#{deprecation_message}"
         fp.puts %{@ECHO.#{deprecation_message}}
       end
     end
+  end
 
-    # Remove source caches
+  def remove_source_caches(install_destdir)
     if install_destdir.empty?
       require 'rubygems/source_info_cache'
 
@@ -250,80 +333,22 @@ abort "#{deprecation_message}"
       rm_f user_cache_file if File.writable? File.dirname(user_cache_file)
       rm_f system_cache_file if File.writable? File.dirname(system_cache_file)
     end
+  end
 
-    # install RDoc
-
-    gem_doc_dir = File.join Gem.dir, 'doc'
-    rubygems_name = "rubygems-#{Gem::RubyGemsVersion}"
-    rubygems_doc_dir = File.join gem_doc_dir, rubygems_name
-
-    if File.writable? gem_doc_dir and
-       (not File.exist? rubygems_doc_dir or
-        File.writable? rubygems_doc_dir) then
-      say "Removing old RubyGems RDoc and ri"
-      Dir[File.join(Gem.dir, 'doc', 'rubygems-[0-9]*')].each do |dir|
-        rm_rf dir
-      end
-
-      def run_rdoc(*args)
-        begin
-          gem 'rdoc'
-        rescue Gem::LoadError
-        end
-
-        require 'rdoc/rdoc'
-
-        args << '--quiet'
-        args << '--main' << 'README'
-        args << '.' << 'README' << 'LICENSE.txt' << 'GPL.txt'
-
-        r = RDoc::RDoc.new
-        r.document args
-      end
-
-      if options[:ri] then
-        ri_dir = File.join rubygems_doc_dir, 'ri'
-        say "Installing #{rubygems_name} ri into #{ri_dir}"
-        run_rdoc '--ri', '--op', ri_dir
-      end
-
-      if options[:rdoc] then
-        rdoc_dir = File.join rubygems_doc_dir, 'rdoc'
-        say "Installing #{rubygems_name} rdoc into #{rdoc_dir}"
-        run_rdoc '--op', rdoc_dir
-      end
-    else
-      say "Skipping RDoc generation, #{gem_doc_dir} not writable"
-      say "Set the GEM_HOME environment variable if you want RDoc generated"
+  def run_rdoc(*args)
+    begin
+      gem 'rdoc'
+    rescue Gem::LoadError
     end
 
-    say
-    say "-" * 78
-    say
+    require 'rdoc/rdoc'
 
-    release_notes = File.join Dir.pwd, 'doc', 'release_notes',
-                              "rel_#{Gem::RubyGemsVersion.gsub '.', '_'}.rdoc"
+    args << '--quiet'
+    args << '--main' << 'README'
+    args << '.' << 'README' << 'LICENSE.txt' << 'GPL.txt'
 
-    if File.exist? release_notes then
-      say File.read(release_notes)
-    else
-      say "Oh-no! Unable to find release notes!"
-      say "Looked in: #{release_notes}" if Gem.configuration.really_verbose
-    end
-
-    say
-    say "-" * 78
-    say
-
-    say "RubyGems installed the following executables:"
-    say bin_file_names.map { |name| "\t#{name}\n" }
-    say
-
-    unless bin_file_names.grep(/#{File::SEPARATOR}gem$/) then
-      say "If `gem` was installed by a previous RubyGems installation, you may need"
-      say "to remove it by hand."
-      say
-    end
+    r = RDoc::RDoc.new
+    r.document args
   end
 
 end

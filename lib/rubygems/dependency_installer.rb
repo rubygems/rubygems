@@ -93,8 +93,8 @@ class Gem::DependencyInstaller
           req
         end
 
-        all = requirements.length > 1 ||
-                (requirements.first != ">=" and requirements.first != ">")
+        all = !@prerelease && (requirements.length > 1 ||
+                (requirements.first != ">=" and requirements.first != ">"))
 
         found = Gem::SpecFetcher.fetcher.fetch dep, all, true, @prerelease
         gems_and_sources.push(*found)

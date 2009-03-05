@@ -11,6 +11,52 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     @cmd.options[:generate_ri] = false
   end
 
+  def test_execute_exclude_prerelease
+    util_setup_fake_fetcher(:prerelease)
+    util_setup_spec_fetcher @a2, @a2_pre
+
+    @fetcher.data["#{@gem_repo}gems/#{@a2.full_name}.gem"] =
+      read_binary(File.join(@gemhome, 'cache', "#{@a2.full_name}.gem"))
+    @fetcher.data["#{@gem_repo}gems/#{@a2_pre.full_name}.gem"] =
+      read_binary(File.join(@gemhome, 'cache', "#{@a2_pre.full_name}.gem"))
+
+    @cmd.options[:args] = [@a2.name]
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        @cmd.execute
+      end
+      assert_equal 0, e.exit_code, @ui.error
+    end
+
+    assert_match /Successfully installed #{@a2.full_name}$/, @ui.output
+    assert ! @ui.output.match(/Successfully installed #{@a2_pre.full_name}$/)
+  end
+
+  def test_execute_explicit_version_includes_prerelease
+    util_setup_fake_fetcher(:prerelease)
+    util_setup_spec_fetcher @a2, @a2_pre
+
+    @fetcher.data["#{@gem_repo}gems/#{@a2.full_name}.gem"] =
+      read_binary(File.join(@gemhome, 'cache', "#{@a2.full_name}.gem"))
+    @fetcher.data["#{@gem_repo}gems/#{@a2_pre.full_name}.gem"] =
+      read_binary(File.join(@gemhome, 'cache', "#{@a2_pre.full_name}.gem"))
+
+    @cmd.handle_options [@a2_pre.name, '--version', @a2_pre.version.to_s]
+    assert @cmd.options[:prerelease]
+    assert @cmd.options[:version].satisfied_by?(@a2_pre.version)
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        @cmd.execute
+      end
+      assert_equal 0, e.exit_code, @ui.error
+    end
+
+    assert ! @ui.output.match(/Successfully installed #{@a2.full_name}$/)
+    assert_match /Successfully installed #{@a2_pre.full_name}$/, @ui.output
+  end
+
   def test_execute_include_dependencies
     @cmd.options[:include_dependencies] = true
     @cmd.options[:args] = []
@@ -98,6 +144,29 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
 
     assert_equal "ERROR:  could not find gem nonexistent locally or in a repository\n",
                  @ui.error
+  end
+
+  def test_execute_prerelease
+    util_setup_fake_fetcher(:prerelease)
+    util_setup_spec_fetcher @a2, @a2_pre
+
+    @fetcher.data["#{@gem_repo}gems/#{@a2.full_name}.gem"] =
+      read_binary(File.join(@gemhome, 'cache', "#{@a2.full_name}.gem"))
+    @fetcher.data["#{@gem_repo}gems/#{@a2_pre.full_name}.gem"] =
+      read_binary(File.join(@gemhome, 'cache', "#{@a2_pre.full_name}.gem"))
+
+    @cmd.options[:prerelease] = true
+    @cmd.options[:args] = [@a2_pre.name]
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        @cmd.execute
+      end
+      assert_equal 0, e.exit_code, @ui.error
+    end
+
+    assert ! @ui.output.match(/Successfully installed #{@a2.full_name}$/)
+    assert_match /Successfully installed #{@a2_pre.full_name}$/, @ui.output
   end
 
   def test_execute_remote

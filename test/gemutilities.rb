@@ -298,7 +298,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     out.string
   end
 
-  def util_make_gems
+  def util_make_gems(prerelease = false)
     @a1 = quick_gem 'a', '1' do |s|
       s.files = %w[lib/code.rb]
       s.require_paths = %w[lib]
@@ -319,6 +319,13 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
       s.require_paths = %w[lib]
       s.platform = Gem::Platform.new 'i386-linux'
       s.instance_variable_set :@original_platform, 'i386-linux'
+    end
+
+    if prerelease
+      @a2_pre = quick_gem('a', '2.a', &init)
+      write_file File.join(*%W[gems #{@a2_pre.original_name} lib code.rb]) do
+      end
+      util_build_gem @a2_pre
     end
 
     write_file File.join(*%W[gems #{@a1.original_name} lib code.rb]) do end
@@ -347,14 +354,14 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     platform
   end
 
-  def util_setup_fake_fetcher
+  def util_setup_fake_fetcher(prerelease = false)
     require 'zlib'
     require 'socket'
     require 'rubygems/remote_fetcher'
 
     @fetcher = Gem::FakeFetcher.new
 
-    util_make_gems
+    util_make_gems(prerelease)
 
     @all_gems = [@a1, @a2, @a_evil9, @b2, @c1_2].sort
     @all_gem_names = @all_gems.map { |gem| gem.full_name }
@@ -367,6 +374,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     @source_index.add_spec @a2
     @source_index.add_spec @a_evil9
     @source_index.add_spec @c1_2
+    @source_index.add_spec @a2_pre if prerelease
 
     Gem::RemoteFetcher.fetcher = @fetcher
   end

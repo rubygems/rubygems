@@ -593,6 +593,15 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal [updated_platform.name], @source_index.outdated
   end
 
+  def test_prerelease_specs_kept_in_right_place
+    gem_a1_alpha = quick_gem 'abba', '1.a'
+    @source_index.add_spec gem_a1_alpha
+
+    assert ! @source_index.latest_specs.include?(gem_a1_alpha)
+    assert_nil @source_index.specification(gem_a1_alpha.full_name)
+    assert @source_index.prerelease_specs.include?(gem_a1_alpha)
+  end
+
   def test_refresh_bang
     a1_spec = File.join @gemhome, "specifications", "#{@a1.full_name}.gemspec" 
 
@@ -680,14 +689,6 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal @a1, @source_index.specification(@a1.full_name)
 
     assert_nil @source_index.specification("foo-1.2.4")
-  end
-
-  def test_specs_exclude_prerelease
-    gem_a1_alpha = quick_gem 'abba', '1.a'
-    @source_index.add_spec gem_a1_alpha
-
-    assert ! @source_index.latest_specs.include?(gem_a1_alpha)
-    assert_nil @source_index.specification(gem_a1_alpha.full_name)
   end
 
   def test_index_signature

@@ -178,13 +178,22 @@ class Gem::SourceIndex
   end
 
   ##
+  # An array including only the prerelease gemspecs
+
+  def prerelease_specs
+    @prerelease_gems.values
+  end
+
+  ##
   # Add a gem specification to the source index.
 
-  def add_spec(gem_spec)
+  def add_spec(gem_spec, name = gem_spec.full_name)
+    # No idea why, but the Indexer wants to insert them using original_name
+    # instead of full_name. So we make it an optional arg.
     if gem_spec.version.prerelease?
-      @prerelease_gems[gem_spec.full_name] = gem_spec
+      @prerelease_gems[name] = gem_spec
     else
-      @gems[gem_spec.full_name] = gem_spec
+      @gems[name] = gem_spec
     end
   end
 

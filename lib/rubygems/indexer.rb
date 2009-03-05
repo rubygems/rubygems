@@ -83,6 +83,8 @@ class Gem::Indexer
     @specs_index = File.join @directory, "specs.#{Gem.marshal_version}"
     @latest_specs_index = File.join @directory,
                                     "latest_specs.#{Gem.marshal_version}"
+    @prerelease_specs_index = File.join(@directory,
+                                        "prerelease_specs.#{Gem.marshal_version}")
 
     @dest_specs_index = File.join @dest_directory,
                                   "specs.#{Gem.marshal_version}"

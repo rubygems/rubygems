@@ -1,9 +1,25 @@
 # -*- coding: utf-8 -*-
+
+2008-03-04  Eric Hodel  <drbrain@segment7.net>
+
+	* setup.rb:  Moved guts to lib/rubygems/commands/setup_command.rb.
+	* lib/rubygems/indexer.rb:  Added RSS feed generation on full index
+	  update.
+
 2008-03-04  Phil Hagelberg <technomancy@gmail.com>
 
 	* lib/*: Prerelease gems go into their own index now and are excluded
 	from other indices. InstallCommand only gets prereleases if explicitly
 	requested. Thanks to Alex Vollmer.
+
+2008-03-04  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/*: Add lots of pretty pretty_print stuff!
+
+2008-02-25  Ryan Davis  <ryand@zenspider.com>
+
+	* lib/rubygems/commands/check_command.rb:  Fix various usability
+	  issues.
 
 2009-02-10  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/specification: Refactored and fixed the installation_path
@@ -5201,3 +5217,7 @@ Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 	  lib/rubygems/specification.rb, lib/rubygems/version.rb,
 	  test/test_remote_installer.rb: Initial revision
 
+Local variables:
+indent-tabs-mode: t
+tab-width: 8
+end:

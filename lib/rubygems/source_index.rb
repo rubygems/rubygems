@@ -120,7 +120,8 @@ class Gem::SourceIndex
   #   [Hash] hash of [Gem name, Gem::Specification] pairs
 
   def initialize(specifications={})
-    @gems = specifications
+    @gems, @prerelease_gems = [{}, {}]
+    specifications.each{ |full_name, spec| add_spec spec }
     @spec_dirs = nil
   end
 
@@ -158,8 +159,6 @@ class Gem::SourceIndex
       next unless prev_ver.nil? or curr_ver >= prev_ver or
                   latest[name].platform != Gem::Platform::RUBY
 
-      next if spec.version.prerelease?
-
       if prev_ver.nil? or
          (curr_ver > prev_ver and spec.platform == Gem::Platform::RUBY) then
         result[name].clear
@@ -182,7 +181,11 @@ class Gem::SourceIndex
   # Add a gem specification to the source index.
 
   def add_spec(gem_spec)
-    @gems[gem_spec.full_name] = gem_spec
+    if gem_spec.version.prerelease?
+      @prerelease_gems[gem_spec.full_name] = gem_spec
+    else
+      @gems[gem_spec.full_name] = gem_spec
+    end
   end
 
   ##

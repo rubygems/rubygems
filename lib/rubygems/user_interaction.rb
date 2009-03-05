@@ -86,6 +86,30 @@ module Gem
 
     include DefaultUserInteraction
 
+    ##
+    # :method: alert
+
+    ##
+    # :method: alert_error
+
+    ##
+    # :method: alert_warning
+
+    ##
+    # :method: ask
+
+    ##
+    # :method: ask_yes_no
+
+    ##
+    # :method: choose_from_list
+
+    ##
+    # :method: say
+
+    ##
+    # :method: terminate_interaction
+
     [:alert,
      :alert_error,
      :alert_warning,

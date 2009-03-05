@@ -433,13 +433,12 @@ pl-1-i386-linux
     end
 
     assert_match %r%^Loading 9 gems from #{Regexp.escape @tempdir}$%, @ui.output
-    assert_match %r%^\.\.\.\.\.\.\.$%, @ui.output
+    assert_match %r%^\.\.\.\.\.\.\.\.\.$%, @ui.output
     assert_match %r%^Loaded all gems$%, @ui.output
     assert_match %r%^Generating Marshal quick index gemspecs for 7 gems$%,
                  @ui.output
     assert_match %r%^Generating YAML quick index gemspecs for 7 gems$%,
                  @ui.output
-    assert_match %r%^\.\.\.\.\.\.\.$%, @ui.output
     assert_match %r%^Complete$%, @ui.output
     assert_match %r%^Generating specs index$%, @ui.output
     assert_match %r%^Generating latest specs index$%, @ui.output
@@ -448,7 +447,6 @@ pl-1-i386-linux
     assert_match %r%^Generating prerelease specs index$%, @ui.output
     assert_match %r%^Generating Marshal master index$%, @ui.output
     assert_match %r%^Generating YAML master index for 7 gems \(this may take a while\)$%, @ui.output
-    assert_match %r%^\.\.\.\.\.\.\.$%, @ui.output
     assert_match %r%^Complete$%, @ui.output
     assert_match %r%^Compressing indicies$%, @ui.output
 
@@ -537,7 +535,25 @@ pl-1-i386-linux
                 'identical platforms not identical'
   end
 
+  def test_generate_index_prerelease_specs
+    use_ui @ui do
+      @indexer.generate_index
+    end
+
+    prerelease_specs_path = File.join @tempdir, "prerelease_specs.#{@marshal_version}"
+
+    prerelease_specs_dump = Gem.read_binary prerelease_specs_path
+    prerelease_specs = Marshal.load prerelease_specs_dump
+
+    assert_equal [['d', Gem::Version.new('2.0.a'), 'ruby'],
+                  ['d', Gem::Version.new('2.0.b'), 'ruby']], prerelease_specs
+  end
+
   def test_update_index
+    use_ui @ui do
+      @indexer.generate_index
+    end
+
     quickdir = File.join @tempdir, 'quick'
     marshal_quickdir = File.join quickdir, "Marshal.#{@marshal_version}"
 
@@ -568,20 +584,7 @@ pl-1-i386-linux
                     [@d2_1.name, @d2_1.version, @d2_1.original_platform]
     assert_includes latest_specs_index,
                     [@d2_0.name, @d2_0.version, @d2_0.original_platform]
-  end
-
-  def test_generate_index_prerelease_specs
-    use_ui @ui do
-      @indexer.generate_index
-    end
-
-    prerelease_specs_path = File.join @tempdir, "prerelease_specs.#{@marshal_version}"
-
-    prerelease_specs_dump = Gem.read_binary prerelease_specs_path
-    prerelease_specs = Marshal.load prerelease_specs_dump
-
-    assert_equal [['d', Gem::Version.new('2.0.a'), 'ruby'],
-                  ['d', Gem::Version.new('2.0.b'), 'ruby']], prerelease_specs
+    # TODO: test prerelease
   end
 
   def assert_indexed(dir, name)

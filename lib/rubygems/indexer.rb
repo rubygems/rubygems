@@ -43,6 +43,11 @@ class Gem::Indexer
   attr_reader :dest_latest_specs_index
 
   ##
+  # Prerelease specs index install location
+
+  attr_reader :dest_prerelease_specs_index
+
+  ##
   # Index build directory
 
   attr_reader :directory
@@ -90,6 +95,8 @@ class Gem::Indexer
                                   "specs.#{Gem.marshal_version}"
     @dest_latest_specs_index = File.join @dest_directory,
                                          "latest_specs.#{Gem.marshal_version}"
+    @dest_prerelease_specs_index = File.join @dest_directory,
+                                            "prerelease_specs.#{Gem.marshal_version}"
 
     @rss_index = File.join @directory, 'index.rss'
 
@@ -161,6 +168,8 @@ class Gem::Indexer
         io.puts index.latest_specs.sort.map { |spec| spec.original_name }
       end
     end
+
+    # Don't need prerelease legacy index
 
     say "Generating Marshal master index"
 
@@ -375,7 +384,7 @@ class Gem::Indexer
           abbreviate spec
           sanitize spec
 
-          index.gems[spec.original_name] = spec
+          index.add_spec spec, spec.original_name
 
           progress.updated spec.original_name
 
@@ -419,6 +428,7 @@ class Gem::Indexer
       if @build_modern then
         gzip @specs_index
         gzip @latest_specs_index
+        gzip @prerelease_specs_index
       end
     end
   end
@@ -596,6 +606,8 @@ class Gem::Indexer
     Gem.time 'Updated indexes' do
       update_specs_index index, @dest_specs_index, @specs_index
       update_specs_index index, @dest_latest_specs_index, @latest_specs_index
+      update_specs_index(index, @dest_prerelease_specs_index,
+                         @prerelease_specs_index)
     end
 
     compress_indicies
@@ -608,6 +620,8 @@ class Gem::Indexer
     files << "#{@specs_index}.gz"
     files << @latest_specs_index
     files << "#{@latest_specs_index}.gz"
+    files << @prerelease_specs_index
+    files << "#{@prerelease_specs_index}.gz"
 
     files = files.map do |path|
       path.sub @directory, ''

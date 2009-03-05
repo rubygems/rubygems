@@ -562,9 +562,15 @@ pl-1-i386-linux
 
     @d2_1 = quick_gem 'd', '2.1'
     util_build_gem @d2_1
+    @d2_1_tuple = [@d2_1.name, @d2_1.version, @d2_1.original_platform]
+
+    @d2_1_a = quick_gem 'd', '2.2.a'
+    util_build_gem @d2_1_a
+    @d2_1_a_tuple = [@d2_1_a.name, @d2_1_a.version, @d2_1_a.original_platform]
 
     gems = File.join @tempdir, 'gems'
     FileUtils.mv File.join(@gemhome, 'cache', "#{@d2_1.full_name}.gem"), gems
+    FileUtils.mv File.join(@gemhome, 'cache', "#{@d2_1_a.full_name}.gem"), gems
 
     use_ui @ui do
       @indexer.update_index
@@ -574,17 +580,23 @@ pl-1-i386-linux
 
     specs_index = Marshal.load Gem.read_binary(@indexer.dest_specs_index)
 
-    assert_includes specs_index,
-                    [@d2_1.name, @d2_1.version, @d2_1.original_platform]
-
+    assert_includes specs_index, @d2_1_tuple
+    refute_includes specs_index, @d2_1_a_tuple
+                    
     latest_specs_index = Marshal.load \
       Gem.read_binary(@indexer.dest_latest_specs_index)
 
-    assert_includes latest_specs_index,
-                    [@d2_1.name, @d2_1.version, @d2_1.original_platform]
+    assert_includes latest_specs_index, @d2_1_tuple
     assert_includes latest_specs_index,
                     [@d2_0.name, @d2_0.version, @d2_0.original_platform]
-    # TODO: test prerelease
+    refute_includes latest_specs_index, @d2_1_a_tuple
+
+    puts @indexer.dest_prerelease_specs_index
+    pre_specs_index = Marshal.load \
+      Gem.read_binary(@indexer.dest_prerelease_specs_index)
+
+    assert_includes pre_specs_index, @d2_1_a_tuple
+    refute_includes pre_specs_index, @d2_1_tuple
   end
 
   def assert_indexed(dir, name)

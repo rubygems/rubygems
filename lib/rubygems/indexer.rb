@@ -606,7 +606,7 @@ class Gem::Indexer
     Gem.time 'Updated indexes' do
       update_specs_index index, @dest_specs_index, @specs_index
       update_specs_index index, @dest_latest_specs_index, @latest_specs_index
-      update_specs_index(index, @dest_prerelease_specs_index,
+      update_specs_index(index.prerelease_gems, @dest_prerelease_specs_index,
                          @prerelease_specs_index)
     end
 

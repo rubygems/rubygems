@@ -301,8 +301,7 @@ abort "#{deprecation_message}"
     say "-" * 78
     say
 
-    base_dir = File.dirname File.dirname(File.dirname(File.dirname(__FILE__)))
-    release_notes = File.join base_dir, 'doc', 'release_notes',
+    release_notes = File.join Dir.pwd, 'doc', 'release_notes',
                               "rel_#{Gem::RubyGemsVersion.gsub '.', '_'}.rdoc"
 
     if File.exist? release_notes then
@@ -320,9 +319,11 @@ abort "#{deprecation_message}"
     say bin_file_names.map { |name| "\t#{name}\n" }
     say
 
-    say "If `gem` was installed by a previous RubyGems installation, you may need"
-    say "to remove it by hand."
-    say
+    unless bin_file_names.grep(/#{File::SEPARATOR}gem$/) then
+      say "If `gem` was installed by a previous RubyGems installation, you may need"
+      say "to remove it by hand."
+      say
+    end
   end
 
 end

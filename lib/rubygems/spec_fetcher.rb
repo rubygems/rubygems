@@ -157,10 +157,9 @@ class Gem::SpecFetcher
   # Returns a list of gems available for each source in Gem::sources.  If
   # +all+ is true, all versions are returned instead of only latest versions.
 
-  def list(all, prerelease)
+  def list(all = false, prerelease = false)
     list = {}
 
-    # TODO: honor prerelease
     file = all ? 'specs' : 'latest_specs'
 
     Gem.sources.each do |source_uri|

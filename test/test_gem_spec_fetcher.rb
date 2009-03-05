@@ -10,7 +10,12 @@ class TestGemSpecFetcher < RubyGemTestCase
 
     util_setup_fake_fetcher
 
+    @a1_pre = quick_gem('a', '1.a')
+    @d_pre = quick_gem('d', '3.b')
+
     @source_index.add_spec @pl1
+    @source_index.add_spec @a1_pre
+    @source_index.add_spec @d_pre
 
     @specs = @source_index.gems.sort.map do |name, spec|
       [spec.name, spec.version, spec.original_platform]
@@ -20,6 +25,10 @@ class TestGemSpecFetcher < RubyGemTestCase
       util_gzip(Marshal.dump(@specs))
 
     @latest_specs = @source_index.latest_specs.sort.map do |spec|
+      [spec.name, spec.version, spec.original_platform]
+    end
+
+    @prerelease_specs = @source_index.prerelease_specs.sort.map do |spec|
       [spec.name, spec.version, spec.original_platform]
     end
 
@@ -266,6 +275,16 @@ RubyGems will revert to legacy indexes degrading performance.
     specs = @sf.list true
 
     assert_equal [@specs], specs.values, 'specs file not loaded'
+  end
+
+  def test_list_prerelease_all
+    specs = @sf.list true, true
+    assert_equal [@prerelease_specs + @specs].sort, specs.values.sort
+  end
+
+  def test_list_prerelease_latest
+    specs = @sf.list false, true
+    assert_equal [@prerelease_specs + @latest_specs].sort, specs.values.sort
   end
 
   def test_load_specs

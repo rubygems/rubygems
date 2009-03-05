@@ -92,7 +92,7 @@ module Gem::InstallUpdateOptions
 
     add_option(:"Install/Update",       '--[no-]user-install',
                'Install in user\'s home directory instead',
-               'of GEM_HOME. Defaults to using home directory',
+               'of GEM_HOME. Defaults to using home',
                'only if GEM_HOME is not writable.') do |value, options|
       options[:user_install] = value
     end
@@ -104,8 +104,9 @@ module Gem::InstallUpdateOptions
     end
 
     add_option(:"Install/Update", "--prerelease",
-               "Install prerelease versions of a gem if available.",
-               "Defaults to skipping prerelease versions.") do |value, options|
+               "Install prerelease versions of a gem if",
+               "available. Defaults to skipping",
+               "prereleases.") do |value, options|
       options[:prerelease] = true
     end
   end

@@ -222,7 +222,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
 
     assert_equal "#{@gem_repo}Marshal.#{@marshal_version}.Z", paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_fetch_bulk_index_error
@@ -244,7 +244,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal "#{@gem_repo}yaml.Z", paths.shift
     assert_equal "#{@gem_repo}yaml", paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
 
     assert_equal 'Error fetching remote gem cache: SocketError',
                  e.message
@@ -272,7 +272,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal "#{@gem_repo}yaml.Z", paths.shift
     assert_equal "#{@gem_repo}yaml", paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_fetch_bulk_index_marshal_mismatch
@@ -296,7 +296,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal "#{@gem_repo}yaml.Z", paths.shift
     assert_equal "#{@gem_repo}yaml", paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_fetch_bulk_index_uncompressed
@@ -313,7 +313,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal "#{@gem_repo}Marshal.#{@marshal_version}.Z", paths.shift
     assert_equal "#{@gem_repo}Marshal.#{@marshal_version}", paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_fetch_quick_index
@@ -331,7 +331,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
 
     assert_equal "#{@gem_repo}quick/latest_index.rz", paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_fetch_quick_index_all
@@ -349,7 +349,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
 
     assert_equal "#{@gem_repo}quick/index.rz", paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_fetch_quick_index_error
@@ -366,7 +366,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
 
     assert_equal "#{@gem_repo}quick/index.rz", paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_fetch_quick_index_fallback
@@ -382,7 +382,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal "#{@gem_repo}quick/latest_index.rz", paths.shift
     assert_equal "#{@gem_repo}quick/index.rz", paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_fetch_quick_index_subdir
@@ -399,7 +399,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
 
     assert_equal "#{repo}quick/latest_index.rz", paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_fetch_single_spec
@@ -415,7 +415,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
 
     assert_equal a1_spec_url, paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_fetch_single_spec_subdir
@@ -432,7 +432,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
 
     assert_equal a1_spec_url, paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_fetch_single_spec_yaml
@@ -450,7 +450,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal "#{@gem_repo}quick/Marshal.#{Gem.marshal_version}/#{@a1.full_name}.gemspec.rz", paths.shift
     assert_equal a1_spec_url, paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_fetch_single_spec_yaml_subdir
@@ -468,7 +468,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal "#{repo}quick/Marshal.#{Gem.marshal_version}/#{@a1.full_name}.gemspec.rz", paths.shift
     assert_equal a1_spec_url, paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_find_missing
@@ -597,7 +597,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     gem_a1_alpha = quick_gem 'abba', '1.a'
     @source_index.add_spec gem_a1_alpha
 
-    assert ! @source_index.latest_specs.include?(gem_a1_alpha)
+    refute @source_index.latest_specs.include?(gem_a1_alpha)
     assert_nil @source_index.specification(gem_a1_alpha.full_name)
     assert @source_index.prerelease_specs.include?(gem_a1_alpha)
 
@@ -611,7 +611,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
 
     source_index = Gem::SourceIndex.from_installed_gems
 
-    assert !source_index.gems.include?(@a1.full_name)
+    refute source_index.gems.include?(@a1.full_name)
 
     FileUtils.mv File.join(@tempdir, "#{@a1.full_name}.gemspec"), a1_spec
 
@@ -722,7 +722,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal "#{@gem_repo}quick/index.rz", paths.shift
     assert_equal "#{@gem_repo}Marshal.#{@marshal_version}.Z", paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_update_incremental
@@ -747,7 +747,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal "#{@gem_repo}quick/latest_index.rz", paths.shift
     assert_equal marshal_uri, paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   ensure
     Gem.configuration = old_gem_conf
   end
@@ -773,7 +773,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal "#{@gem_repo}quick/index.rz", paths.shift
     assert_equal marshal_uri, paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   ensure
     Gem.configuration = old_gem_conf
   end
@@ -802,7 +802,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal marshal_uri, paths.shift
     assert_equal yaml_uri, paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   ensure
     Gem.configuration = old_gem_conf
   end
@@ -834,7 +834,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal marshal_uri, paths.shift
     assert_equal yaml_uri, paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   ensure
     Gem.configuration = old_gem_conf
   end
@@ -862,7 +862,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     assert_equal "#{@gem_repo}quick/index.rz", paths.shift
     assert_equal "#{@gem_repo}Marshal.#{@marshal_version}.Z", paths.shift
 
-    assert paths.empty?, paths.join(', ')
+    assert_empty paths, paths.join(', ')
   end
 
   def test_update_with_missing

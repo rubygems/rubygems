@@ -580,7 +580,7 @@ end
 
   def test_prerelease_spec_adds_required_rubygems_version
     @prerelease = quick_gem('tardis', '2.2.0.a')
-    assert ! @prerelease.required_rubygems_version.satisfied_by?(Gem::Version.new('1.3.1'))
+    refute @prerelease.required_rubygems_version.satisfied_by?(Gem::Version.new('1.3.1'))
     assert @prerelease.required_rubygems_version.satisfied_by?(Gem::Version.new('1.4.0'))
   end
 

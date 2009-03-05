@@ -72,12 +72,12 @@ class TestGemUninstaller < GemInstallerTestCase
     end
 
     Gem.post_uninstall do
-      assert !File.exist?(gem_dir), 'gem_dir should not exist'
+      refute File.exist?(gem_dir), 'gem_dir should not exist'
     end
 
     uninstaller.uninstall
 
-    assert !File.exist?(gem_dir)
+    refute File.exist?(gem_dir)
 
     assert_same uninstaller, @pre_uninstall_hook_arg
     assert_same uninstaller, @post_uninstall_hook_arg

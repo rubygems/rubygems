@@ -582,7 +582,7 @@ pl-1-i386-linux
 
     assert_includes specs_index, @d2_1_tuple
     refute_includes specs_index, @d2_1_a_tuple
-                    
+
     latest_specs_index = Marshal.load \
       Gem.read_binary(@indexer.dest_latest_specs_index)
 
@@ -591,7 +591,6 @@ pl-1-i386-linux
                     [@d2_0.name, @d2_0.version, @d2_0.original_platform]
     refute_includes latest_specs_index, @d2_1_a_tuple
 
-    puts @indexer.dest_prerelease_specs_index
     pre_specs_index = Marshal.load \
       Gem.read_binary(@indexer.dest_prerelease_specs_index)
 
@@ -606,7 +605,7 @@ pl-1-i386-linux
 
   def refute_indexed(dir, name)
     file = File.join dir, name
-    assert !File.exist?(file), "#{file} exists"
+    refute File.exist?(file), "#{file} exists"
   end
 
 end if ''.respond_to? :to_xs

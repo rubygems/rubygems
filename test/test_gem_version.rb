@@ -168,8 +168,13 @@ class TestGemVersion < RubyGemTestCase
   end
 
   def test_prerelease
-    ['1.2.0.a', '2.9.b', '22.1.50.0.d'].each { |v| assert Gem::Version.new(v).prerelease? }
-    ['1.2.0', '2.9', '22.1.50.0'].each { |v| assert ! Gem::Version.new(v).prerelease? }
+    assert Gem::Version.new('1.2.0.a').prerelease?
+    assert Gem::Version.new('2.9.b').prerelease?
+    assert Gem::Version.new('22.1.50.0.d').prerelease?
+
+    refute Gem::Version.new('1.2.0').prerelease?
+    refute Gem::Version.new('2.9').prerelease?
+    refute Gem::Version.new('22.1.50.0').prerelease?
   end
 
   def test_satisfied_by_eh_boxed
@@ -234,7 +239,7 @@ class TestGemVersion < RubyGemTestCase
   def assert_inadequate(version, requirement)
     ver = Gem::Version.new(version)
     req = Gem::Version::Requirement.new(requirement)
-    assert ! req.satisfied_by?(ver),
+    refute req.satisfied_by?(ver),
       "Version #{version} should not be adequate for Requirement #{requirement}"
   end
 

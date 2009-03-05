@@ -31,14 +31,14 @@ class TestKernel < RubyGemTestCase
 
   def test_gem_redundent
     assert gem('a', '= 1'), "Should load"
-    assert ! gem('a', '= 1'), "Should not load"
+    refute gem('a', '= 1'), "Should not load"
     assert_equal 1, $:.select { |p| %r{a-1/lib} =~ p }.size
     assert_equal 1, $:.select { |p| %r{a-1/bin} =~ p }.size
   end
 
   def test_gem_overlapping
     assert gem('a', '= 1'), "Should load"
-    assert ! gem('a', '>= 1'), "Should not load"
+    refute gem('a', '>= 1'), "Should not load"
     assert_equal 1, $:.select { |p| %r{a-1/lib} =~ p }.size
     assert_equal 1, $:.select { |p| %r{a-1/bin} =~ p }.size
   end
@@ -55,8 +55,8 @@ class TestKernel < RubyGemTestCase
 
     assert $:.any? { |p| %r{a-1/lib} =~ p }
     assert $:.any? { |p| %r{a-1/bin} =~ p }
-    assert ! $:.any? { |p| %r{a-2/lib} =~ p }
-    assert ! $:.any? { |p| %r{a-2/bin} =~ p }
+    refute $:.any? { |p| %r{a-2/lib} =~ p }
+    refute $:.any? { |p| %r{a-2/bin} =~ p }
   end
 
 end

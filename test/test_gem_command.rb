@@ -182,9 +182,9 @@ class TestGemCommand < RubyGemTestCase
     assert @cmd.handles?(['--help', 'command'])
     assert @cmd.handles?(['-f', 'filename'])
     assert @cmd.handles?(['--file=filename'])
-    assert ! @cmd.handles?(['-z'])
-    assert ! @cmd.handles?(['-f'])
-    assert ! @cmd.handles?(['--toothpaste'])
+    refute @cmd.handles?(['-z'])
+    refute @cmd.handles?(['-f'])
+    refute @cmd.handles?(['--toothpaste'])
 
     args = ['-h', 'command']
     @cmd.handles?(args)

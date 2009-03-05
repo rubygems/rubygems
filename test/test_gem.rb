@@ -171,7 +171,7 @@ class TestGem < RubyGemTestCase
   def test_self_ensure_gem_directories_missing_parents
     gemdir = File.join @tempdir, 'a/b/c/gemdir'
     FileUtils.rm_rf File.join(@tempdir, 'a') rescue nil
-    assert !File.exist?(File.join(@tempdir, 'a')),
+    refute File.exist?(File.join(@tempdir, 'a')),
            "manually remove #{File.join @tempdir, 'a'}, tests are broken"
     Gem.use_paths gemdir
 
@@ -184,14 +184,14 @@ class TestGem < RubyGemTestCase
     def test_self_ensure_gem_directories_write_protected
       gemdir = File.join @tempdir, "egd"
       FileUtils.rm_r gemdir rescue nil
-      assert !File.exist?(gemdir), "manually remove #{gemdir}, tests are broken"
+      refute File.exist?(gemdir), "manually remove #{gemdir}, tests are broken"
       FileUtils.mkdir_p gemdir
       FileUtils.chmod 0400, gemdir
       Gem.use_paths gemdir
 
       Gem.ensure_gem_subdirectories gemdir
 
-      assert !File.exist?("#{gemdir}/cache")
+      refute File.exist?("#{gemdir}/cache")
     ensure
       FileUtils.chmod 0600, gemdir
     end
@@ -201,14 +201,14 @@ class TestGem < RubyGemTestCase
       gemdir = "#{parent}/a/b/c"
 
       FileUtils.rm_r parent rescue nil
-      assert !File.exist?(parent), "manually remove #{parent}, tests are broken"
+      refute File.exist?(parent), "manually remove #{parent}, tests are broken"
       FileUtils.mkdir_p parent
       FileUtils.chmod 0400, parent
       Gem.use_paths(gemdir)
 
       Gem.ensure_gem_subdirectories gemdir
 
-      assert !File.exist?("#{gemdir}/cache")
+      refute File.exist?("#{gemdir}/cache")
     ensure
       FileUtils.chmod 0600, parent
     end
@@ -303,7 +303,7 @@ class TestGem < RubyGemTestCase
       apple_gem_home = File.join @tempdir, 'apple_gem_home'
       Gem.const_set :APPLE_GEM_HOME, apple_gem_home
 
-      assert Gem.path.include?(apple_gem_home)
+      assert_includes Gem.path, apple_gem_home
     ensure
       Gem.send :remove_const, :APPLE_GEM_HOME
     end
@@ -314,7 +314,7 @@ class TestGem < RubyGemTestCase
       apple_gem_home = File.join @tempdir, 'apple_gem_home'
       Gem.const_set :APPLE_GEM_HOME, apple_gem_home
 
-      assert !Gem.path.include?(apple_gem_home)
+      refute Gem.path.include?(apple_gem_home)
     ensure
       Gem.send :remove_const, :APPLE_GEM_HOME
     end
@@ -409,13 +409,13 @@ class TestGem < RubyGemTestCase
 
     FileUtils.mv a1_spec, @tempdir
 
-    assert !Gem.source_index.gems.include?(@a1.full_name)
+    refute Gem.source_index.gems.include?(@a1.full_name)
 
     FileUtils.mv File.join(@tempdir, "#{@a1.full_name}.gemspec"), a1_spec
 
     Gem.refresh
 
-    assert Gem.source_index.gems.include?(@a1.full_name)
+    assert_includes Gem.source_index.gems, @a1.full_name
     assert_equal nil, Gem.instance_variable_get(:@searcher)
   end
 

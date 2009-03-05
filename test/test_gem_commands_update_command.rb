@@ -38,7 +38,7 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
     assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "Gems updated: #{@a2.name}", out.shift
 
-    assert out.empty?, out.inspect
+    assert_empty out, out.inspect
   end
 
   # before:
@@ -101,7 +101,7 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
     assert_equal "Gems updated: #{@c2.name}, #{@b2.name}, #{@a2.name}",
                  out.shift
 
-    assert out.empty?, out.inspect
+    assert_empty out, out.inspect
   end
 
   def test_execute_named
@@ -121,7 +121,7 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
     assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "Gems updated: #{@a2.name}", out.shift
 
-    assert out.empty?, out.inspect
+    assert_empty out, out.inspect
   end
 
   def test_execute_named_up_to_date
@@ -139,7 +139,7 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
     assert_equal "Updating installed gems", out.shift
     assert_equal "Nothing to update", out.shift
 
-    assert out.empty?, out.inspect
+    assert_empty out, out.inspect
   end
 
   def test_execute_up_to_date
@@ -157,7 +157,7 @@ class TestGemCommandsUpdateCommand < RubyGemTestCase
     assert_equal "Updating installed gems", out.shift
     assert_equal "Nothing to update", out.shift
 
-    assert out.empty?, out.inspect
+    assert_empty out, out.inspect
   end
 
 end

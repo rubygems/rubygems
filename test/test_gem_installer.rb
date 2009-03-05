@@ -46,7 +46,7 @@ load 'my_exec'
     assert_equal '', @ui.output
     assert_equal '', @ui.error
 
-    assert !File.exist?('gem_make.out')
+    refute File.exist?('gem_make.out')
   end
 
   def test_build_extensions_extconf_bad
@@ -543,7 +543,7 @@ load 'my_exec'
     cache_file = File.join @gemhome, 'cache', "#{@spec.full_name}.gem"
 
     Gem.pre_install do |installer|
-      assert !File.exist?(cache_file), 'cache file should not exist yet'
+      refute File.exist?(cache_file), 'cache file should not exist yet'
     end
 
     Gem.post_install do |installer|
@@ -779,7 +779,7 @@ load 'my_exec'
     assert @installer.installation_satisfies_dependency?(dep)
 
     dep = Gem::Dependency.new 'a', '> 2'
-    assert ! @installer.installation_satisfies_dependency?(dep)
+    refute @installer.installation_satisfies_dependency?(dep)
   end
 
   def test_shebang
@@ -892,7 +892,7 @@ load 'my_exec'
     spec_dir = File.join @gemhome, 'specifications'
     spec_file = File.join spec_dir, "#{@spec.full_name}.gemspec"
     FileUtils.rm spec_file
-    assert !File.exist?(spec_file)
+    refute File.exist?(spec_file)
 
     @installer.spec = @spec
     @installer.gem_home = @gemhome

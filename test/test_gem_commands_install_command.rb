@@ -29,8 +29,8 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
       assert_equal 0, e.exit_code, @ui.error
     end
 
-    assert_match /Successfully installed #{@a2.full_name}$/, @ui.output
-    assert ! @ui.output.match(/Successfully installed #{@a2_pre.full_name}$/)
+    assert_match(/Successfully installed #{@a2.full_name}$/, @ui.output)
+    refute_match(/Successfully installed #{@a2_pre.full_name}$/, @ui.output)
   end
 
   def test_execute_explicit_version_includes_prerelease
@@ -53,8 +53,8 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
       assert_equal 0, e.exit_code, @ui.error
     end
 
-    assert ! @ui.output.match(/Successfully installed #{@a2.full_name}$/)
-    assert_match /Successfully installed #{@a2_pre.full_name}$/, @ui.output
+    refute_match(/Successfully installed #{@a2.full_name}$/, @ui.output)
+    assert_match(/Successfully installed #{@a2_pre.full_name}$/, @ui.output)
   end
 
   def test_execute_include_dependencies
@@ -165,8 +165,8 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
       assert_equal 0, e.exit_code, @ui.error
     end
 
-    assert ! @ui.output.match(/Successfully installed #{@a2.full_name}$/)
-    assert_match /Successfully installed #{@a2_pre.full_name}$/, @ui.output
+    refute_match(/Successfully installed #{@a2.full_name}$/, @ui.output)
+    assert_match(/Successfully installed #{@a2_pre.full_name}$/, @ui.output)
   end
 
   def test_execute_remote

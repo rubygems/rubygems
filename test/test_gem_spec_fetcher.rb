@@ -279,7 +279,7 @@ RubyGems will revert to legacy indexes degrading performance.
   def test_list_cache
     specs = @sf.list
 
-    assert !specs[@uri].empty?
+    refute specs[@uri].empty?
 
     @fetcher.data["#{@gem_repo}/latest_specs.#{Gem.marshal_version}.gz"] = nil
 
@@ -291,7 +291,7 @@ RubyGems will revert to legacy indexes degrading performance.
   def test_list_cache_all
     specs = @sf.list true
 
-    assert !specs[@uri].empty?
+    refute specs[@uri].empty?
 
     @fetcher.data["#{@gem_repo}/specs.#{Gem.marshal_version}.gz"] = nil
 

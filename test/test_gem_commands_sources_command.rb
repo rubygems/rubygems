@@ -175,12 +175,12 @@ Will cause RubyGems to revert to legacy indexes, degrading performance.
     assert_equal expected, @ui.output
     assert_equal '', @ui.error
 
-    assert !File.exist?(cache.system_cache_file),
+    refute File.exist?(cache.system_cache_file),
            'system cache file'
-    assert !File.exist?(cache.latest_system_cache_file),
+    refute File.exist?(cache.latest_system_cache_file),
            'latest system cache file'
 
-    assert !File.exist?(fetcher.dir), 'cache dir removed'
+    refute File.exist?(fetcher.dir), 'cache dir removed'
   end
 
   def test_execute_remove

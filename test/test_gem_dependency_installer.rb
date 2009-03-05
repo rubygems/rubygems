@@ -635,8 +635,6 @@ class TestGemDependencyInstaller < RubyGemTestCase
   end
 
   def test_prerelease_uses_pre_index
-    util_setup_fake_fetcher
-
     installer = Gem::DependencyInstaller.new
     pre_installer = Gem::DependencyInstaller.new(:prerelease => true)
     dependency = Gem::Dependency.new('a', Gem::Requirement.default)
@@ -646,6 +644,6 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
     assert releases.select{ |s| s.name == 'a' and s.version.to_s == '1' }.first
     assert releases.select{ |s| s.name == 'a' and s.version.to_s == '1.a' }.empty?
-    assert prereleases.select{ |s| s.name == 'a' and s.version.to_s == '1.a' }.first
+    assert_equal [@a1_pre], prereleases
   end
 end

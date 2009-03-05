@@ -26,6 +26,11 @@ class Gem::SpecFetcher
 
   attr_reader :specs # :nodoc:
 
+  ##
+  # Cache of prerelease specs
+
+  attr_reader :prerelease_specs # :nodoc:
+
   @fetcher = nil
 
   def self.fetcher
@@ -42,6 +47,7 @@ class Gem::SpecFetcher
 
     @specs = {}
     @latest_specs = {}
+    @prerelease_specs = {}
 
     @fetcher = Gem::RemoteFetcher.fetcher
   end
@@ -159,27 +165,33 @@ class Gem::SpecFetcher
   # versions. If +prerelease+ is true, include prerelease versions.
 
   def list(all = false, prerelease = false)
+    # TODO: make type the only argument
+    type = if all
+             :all
+           elsif prerelease
+             :prerelease
+           else
+             :latest
+           end
+
     list = {}
 
-    # TODO: honor prerelease flag
+    file = { :latest => 'latest_specs',
+      :prerelease => 'prerelease_specs',
+      :all => 'specs' }[type]
 
-    file = all ? 'specs' : 'latest_specs'
-
+    cache = { :latest => @latest_specs,
+      :prerelease => @prerelease_specs,
+      :all => @specs }[type]
+    
     Gem.sources.each do |source_uri|
       source_uri = URI.parse source_uri
 
-      if all and @specs.include? source_uri then
-        list[source_uri] = @specs[source_uri]
-      elsif not all and @latest_specs.include? source_uri then
-        list[source_uri] = @latest_specs[source_uri]
-      else
-        specs = load_specs source_uri, file
-
-        cache = all ? @specs : @latest_specs
-
-        cache[source_uri] = specs
-        list[source_uri] = specs
+      unless cache.include? source_uri
+        cache[source_uri] = load_specs source_uri, file
       end
+
+      list[source_uri] = cache[source_uri]
     end
 
     list

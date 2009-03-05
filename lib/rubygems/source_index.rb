@@ -28,7 +28,7 @@ class Gem::SourceIndex
 
   include Gem::UserInteraction
 
-  attr_reader :gems # :nodoc:
+  attr_reader :gems, :prerelease_gems # :nodoc:
 
   ##
   # Directories to use to refresh this SourceIndex when calling refresh!

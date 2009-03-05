@@ -10,30 +10,30 @@ class TestGemSpecFetcher < RubyGemTestCase
 
     util_setup_fake_fetcher
 
-    @a1_pre = quick_gem('a', '1.a')
-    @d_pre = quick_gem('d', '3.b')
-
+    @a_pre = quick_gem 'a', '1.a'
     @source_index.add_spec @pl1
-    @source_index.add_spec @a1_pre
-    @source_index.add_spec @d_pre
+    @source_index.add_spec @a_pre
 
     @specs = @source_index.gems.sort.map do |name, spec|
+      [spec.name, spec.version, spec.original_platform]
+    end.sort
+
+    @latest_specs = @source_index.latest_specs.sort.map do |spec|
+      [spec.name, spec.version, spec.original_platform]
+    end
+
+    @prerelease_specs = @source_index.prerelease_gems.sort.map do |name, spec|
       [spec.name, spec.version, spec.original_platform]
     end.sort
 
     @fetcher.data["#{@gem_repo}specs.#{Gem.marshal_version}.gz"] =
       util_gzip(Marshal.dump(@specs))
 
-    @latest_specs = @source_index.latest_specs.sort.map do |spec|
-      [spec.name, spec.version, spec.original_platform]
-    end
-
-    @prerelease_specs = @source_index.prerelease_specs.sort.map do |spec|
-      [spec.name, spec.version, spec.original_platform]
-    end
-
     @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] =
       util_gzip(Marshal.dump(@latest_specs))
+
+    @fetcher.data["#{@gem_repo}prerelease_specs.#{Gem.marshal_version}.gz"] =
+      util_gzip(Marshal.dump(@prerelease_specs))
 
     @sf = Gem::SpecFetcher.new
   end
@@ -43,6 +43,8 @@ class TestGemSpecFetcher < RubyGemTestCase
       util_zip(Marshal.dump(@a1))
     @fetcher.data["#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}#{@a2.full_name}.gemspec.rz"] =
       util_zip(Marshal.dump(@a2))
+    @fetcher.data["#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}#{@a_pre.full_name}.gemspec.rz"] =
+      util_zip(Marshal.dump(@a_pre))
 
     dep = Gem::Dependency.new 'a', 1
     specs_and_sources = @sf.fetch dep, true
@@ -63,6 +65,8 @@ class TestGemSpecFetcher < RubyGemTestCase
       util_zip(Marshal.dump(@a1))
     @fetcher.data["#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}#{@a2.full_name}.gemspec.rz"] =
       util_zip(Marshal.dump(@a2))
+    @fetcher.data["#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}#{@a_pre.full_name}.gemspec.rz"] =
+      util_zip(Marshal.dump(@a_pre))
 
     dep = Gem::Dependency.new 'a', 1
     specs_and_sources = @sf.fetch dep
@@ -72,6 +76,24 @@ class TestGemSpecFetcher < RubyGemTestCase
     end
 
     assert_equal [[@a2.full_name, @gem_repo]], spec_names
+  end
+
+  def test_fetch_prerelease
+    @fetcher.data["#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}#{@a1.full_name}.gemspec.rz"] =
+      util_zip(Marshal.dump(@a1))
+    @fetcher.data["#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}#{@a2.full_name}.gemspec.rz"] =
+      util_zip(Marshal.dump(@a2))
+    @fetcher.data["#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}#{@a_pre.full_name}.gemspec.rz"] =
+      util_zip(Marshal.dump(@a_pre))
+
+    dep = Gem::Dependency.new 'a', '1.a'
+    specs_and_sources = @sf.fetch dep, false, true, true
+
+    spec_names = specs_and_sources.map do |spec, source_uri|
+      [spec.full_name, source_uri]
+    end
+
+    assert_equal [[@a_pre.full_name, @gem_repo]], spec_names
   end
 
   def test_fetch_legacy_repo
@@ -195,6 +217,17 @@ RubyGems will revert to legacy indexes degrading performance.
     assert_equal expected, specs
   end
 
+  def test_find_matching_prerelease
+    dep = Gem::Dependency.new 'a', '1.a'
+    specs = @sf.find_matching dep, false, true, true
+
+    expected = [
+      [['a', Gem::Version.new('1.a'), Gem::Platform::RUBY], @gem_repo],
+    ]
+
+    assert_equal expected, specs
+  end
+
   def test_find_matching_platform
     util_set_arch 'i386-linux'
 
@@ -277,14 +310,10 @@ RubyGems will revert to legacy indexes degrading performance.
     assert_equal [@specs], specs.values, 'specs file not loaded'
   end
 
-  def test_list_prerelease_all
-    specs = @sf.list true, true
-    assert_equal [@prerelease_specs + @specs].sort, specs.values.sort
-  end
-
-  def test_list_prerelease_latest
+  def test_list_prerelease
     specs = @sf.list false, true
-    assert_equal [@prerelease_specs + @latest_specs].sort, specs.values.sort
+
+    assert_equal @prerelease_specs, specs[@uri].sort
   end
 
   def test_load_specs
@@ -326,6 +355,4 @@ RubyGems will revert to legacy indexes degrading performance.
 
     assert_equal @latest_specs, latest_specs
   end
-
 end
-

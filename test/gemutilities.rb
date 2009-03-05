@@ -409,7 +409,13 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
       spec_fetcher.latest_specs[@uri] << spec_tuple
     end
 
-    si.gems.sort_by { |_,spec| spec }.each do |_, spec|
+    spec_fetcher.prerelease_specs[@uri] = []
+    si.prerelease_specs.sort.each do |spec|
+      spec_tuple = [spec.name, spec.version, spec.original_platform]
+      spec_fetcher.prerelease_specs[@uri] << spec_tuple
+    end
+
+    (si.gems.merge si.prerelease_gems).sort_by { |_,spec| spec }.each do |_, spec|
       path = "#{@gem_repo}quick/Marshal.#{Gem.marshal_version}/#{spec.original_name}.gemspec.rz"
       data = Marshal.dump spec
       data_deflate = Zlib::Deflate.deflate data

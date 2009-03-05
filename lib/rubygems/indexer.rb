@@ -220,7 +220,7 @@ class Gem::Indexer
     files = []
 
     Gem.time 'Generated Marshal quick index gemspecs' do
-      index.each do |original_name, spec|
+      (index.gems.merge(index.prerelease_gems)).each do |original_name, spec|
         spec_file_name = "#{original_name}.gemspec.rz"
         marshal_name = File.join @quick_marshal_dir, spec_file_name
 

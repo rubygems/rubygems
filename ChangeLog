@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+2008-03-04  Phil Hagelberg <technomancy@gmail.com>
+
+	* lib/*: Prerelease gems go into their own index now and are excluded
+	from other indices. InstallCommand only gets prereleases if explicitly
+	requested. Thanks to Alex Vollmer.
 
 2009-02-10  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/specification: Refactored and fixed the installation_path

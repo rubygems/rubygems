@@ -291,43 +291,40 @@ task :package_files do
 end
 
 Rake::PackageTask.new("package") do |p|
-  p.name = PKG_NAME
-  p.version = PKG_VERSION
-  p.need_tar = true
-  p.need_zip = true
+  p.name          = PKG_NAME
+  p.version       = PKG_VERSION
+  p.need_tar      = true
+  p.need_zip      = true
   p.package_files = PKG_FILES
 end
 
 warn_unsigned = true
 
 Spec = Gem::Specification.new do |s|
-  s.name = PKG_NAME + "-update"
-  s.version = PKG_VERSION
+  s.name                  = PKG_NAME + "-update"
+  s.version               = PKG_VERSION
   s.required_ruby_version = Gem::Requirement.new '> 1.8.3'
-  s.summary = "RubyGems Update GEM"
-  s.description = %{RubyGems is a package management framework for Ruby.  This Gem
-is a update for the base RubyGems software.  You must have a base
-installation of RubyGems before this update can be applied.
-}
-  s.files = PKG_FILES.to_a
-  s.require_path = 'lib'
-  s.authors = ['Jim Weirich', 'Chad Fowler', 'Eric Hodel']
-  s.email = "rubygems-developers@rubyforge.org"
-  s.homepage = "http://rubygems.rubyforge.org"
-  s.rubyforge_project = "rubygems"
-  s.bindir = "bin" # Use these for applications.
-  s.executables = ["update_rubygems"]
-  certdir = ENV['CERT_DIR']
+  s.summary               = "RubyGems Update GEM"
+  s.description           = "RubyGems is a package management framework for Ruby. This Gem\nis a update for the base RubyGems software.  You must have a base\ninstallation of RubyGems before this update can be applied.\n"
+  s.files                 = PKG_FILES.to_a
+  s.require_path          = 'lib'
+  s.authors               = ['Jim Weirich', 'Chad Fowler', 'Eric Hodel']
+  s.email                 = "rubygems-developers@rubyforge.org"
+  s.homepage              = "http://rubygems.rubyforge.org"
+  s.rubyforge_project     = "rubygems"
+  s.bindir                = "bin" # Use these for applications.
+  s.executables           = ["update_rubygems"]
+  certdir                 = ENV['CERT_DIR']
+
   if certdir then
     key  = File.join certdir, 'gem-private_key.pem'
     cert = File.join certdir, 'gem-public_cert.pem'
 
-    if File.exist? key and File.exist? cert then
+    warn_unsigned = ! (File.exist? key and File.exist? cert)
+
+    unless warn_unsigned then
       s.signing_key = File.join(certdir, 'gem-private_key.pem')
       s.cert_chain  = [File.join(certdir, 'gem-public_cert.pem')]
-      warn_unsigned = false
-    else
-      warn_unsigned = true
     end
   end
 end
@@ -367,45 +364,7 @@ task :install do
   end
 end
 
-desc "Run local 'gem' e.g. rake rungem -- install -i ~/tmp/gems"
-task :rungem do
-  ARGV.shift
-  exec(Gem.ruby, '-Ilib', 'bin/gem', *ARGV)
-end
-
 # Misc Tasks ---------------------------------------------------------
-
-def egrep(pattern)
-  Dir['{bin,lib,test,util}/**/*.rb'].each do |fn|
-    count = 0
-    open(fn) do |f|
-      while line = f.gets
-        count += 1
-        if line =~ pattern
-          puts "#{fn}:#{count}:#{line}"
-        end
-      end
-    end
-  end
-end
-
-desc "Look for TODO and FIXME tags in the code"
-task :todo do
-  egrep /#.*(FIXME|TODO|TBD)/
-end
-
-desc "Look for Debugging print lines"
-task :dbg do
-  egrep /\bDBG|\bbreakpoint\b/
-end
-
-desc "List all ruby files"
-task :rubyfiles do
-  puts Dir['**/*.rb'].reject { |fn| fn =~ /^pkg/ }
-  puts Dir['bin/*'].reject { |fn| fn =~ /CVS|(~$)|(\.rb$)/ }
-end
-
-task :rf => :rubyfiles
 
 desc "build util/gem_prelude.rb from the template and defaults.rb"
 file 'util/gem_prelude.rb' =>

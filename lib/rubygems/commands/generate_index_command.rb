@@ -108,6 +108,12 @@ index.rss containing gems released in the last two days.
   end
 
   def execute
+    if options[:update] and
+       (options[:rss_host] or options[:rss_gems_host]) then
+      alert_error '--update not compatible with RSS generation'
+      terminate_interaction 1
+    end
+
     if not File.exist?(options[:directory]) or
        not File.directory?(options[:directory]) then
       alert_error "unknown directory name #{directory}."

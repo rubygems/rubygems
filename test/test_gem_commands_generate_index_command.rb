@@ -27,6 +27,22 @@ class TestGemCommandsGenerateIndexCommand < RubyGemTestCase
     assert File.exist?(quick_index_rz), quick_index_rz
   end
 
+  def test_execute_rss_update
+    @cmd.options[:update] = true
+    @cmd.options[:rss_host] = 'example.com'
+    @cmd.options[:rss_gems_host] = 'gems.example.com'
+
+    use_ui @ui do
+      assert_raises MockGemUi::TermError do
+        @cmd.execute
+      end
+    end
+
+    assert_equal "ERROR:  --update not compatible with RSS generation\n",
+                 @ui.error
+    assert_empty @ui.output
+  end
+
   def test_handle_options_directory
     return if win_platform?
     refute_equal '/nonexistent', @cmd.options[:directory]

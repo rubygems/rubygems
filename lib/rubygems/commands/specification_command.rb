@@ -12,7 +12,8 @@ class Gem::Commands::SpecificationCommand < Gem::Command
 
   def initialize
     super 'specification', 'Display gem specification (in yaml)',
-          :domain => :local, :version => Gem::Requirement.default
+          :domain => :local, :version => Gem::Requirement.default,
+          :format => :yaml
 
     add_version_option('examine')
     add_platform_option
@@ -20,6 +21,18 @@ class Gem::Commands::SpecificationCommand < Gem::Command
     add_option('--all', 'Output specifications for all versions of',
                'the gem') do |value, options|
       options[:all] = true
+    end
+
+    add_option('--ruby', 'Output ruby format') do |value, options|
+      options[:format] = :ruby
+    end
+
+    add_option('--yaml', 'Output RUBY format') do |value, options|
+      options[:format] = :yaml
+    end
+
+    add_option('--marshal', 'Output Marshal format') do |value, options|
+      options[:format] = :marshal
     end
 
     add_local_remote_options
@@ -30,7 +43,7 @@ class Gem::Commands::SpecificationCommand < Gem::Command
   end
 
   def defaults_str # :nodoc:
-    "--local --version '#{Gem::Requirement.default}'"
+    "--local --version '#{Gem::Requirement.default}' --yaml"
   end
 
   def usage # :nodoc:
@@ -63,7 +76,14 @@ class Gem::Commands::SpecificationCommand < Gem::Command
       terminate_interaction 1
     end
 
-    output = lambda { |s| say s.to_yaml; say "\n" }
+    output = lambda do |s|
+      say case options[:format]
+          when :ruby then s.to_ruby
+          when :marshal then Marshal.dump s
+          else s.to_yaml
+          end
+      say "\n"
+    end
 
     if options[:all] then
       specs.each(&output)

@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2008-03-06  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb:  Don't allow FIXME in specs.
+	* lib/rubygems/commands/spec_command.rb:  Add --ruby and --marshal
+	  formats.
+
 2008-03-04  Eric Hodel  <drbrain@segment7.net>
 
 	* setup.rb:  Moved guts to lib/rubygems/commands/setup_command.rb.

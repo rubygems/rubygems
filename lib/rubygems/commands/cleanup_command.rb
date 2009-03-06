@@ -77,6 +77,7 @@ class Gem::Commands::CleanupCommand < Gem::Command
         begin
           uninstaller.uninstall
         rescue Gem::DependencyRemovalException,
+               Gem::InstallError,
                Gem::GemNotInHomeException => e
           say "Unable to uninstall #{spec.full_name}:"
           say "\t#{e.class}: #{e.message}"

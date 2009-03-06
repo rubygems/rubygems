@@ -14,11 +14,11 @@ class Gem::Commands::InstallCommand < Gem::Command
 
   def initialize
     defaults = Gem::DependencyInstaller::DEFAULT_OPTIONS.merge({
-      :generate_rdoc => true,
-      :generate_ri   => true,
+      :generate_rdoc     => true,
+      :generate_ri       => true,
       :format_executable => false,
-      :test => false,
-      :version => Gem::Requirement.default,
+      :test              => false,
+      :version           => Gem::Requirement.default,
     })
 
     super 'install', 'Install a gem into the local repository', defaults
@@ -66,17 +66,17 @@ version is also installed.
     ENV.delete 'GEM_PATH' if options[:install_dir].nil? and RUBY_VERSION > '1.9'
 
     install_options = {
-      :bin_dir => options[:bin_dir],
-      :development => options[:development],
-      :domain => options[:domain],
-      :env_shebang => options[:env_shebang],
-      :force => options[:force],
-      :format_executable => options[:format_executable],
+      :bin_dir             => options[:bin_dir],
+      :development         => options[:development],
+      :domain              => options[:domain],
+      :env_shebang         => options[:env_shebang],
+      :force               => options[:force],
+      :format_executable   => options[:format_executable],
       :ignore_dependencies => options[:ignore_dependencies],
-      :install_dir => options[:install_dir],
-      :prerelease => options[:prerelease],
-      :security_policy => options[:security_policy],
-      :wrappers => options[:wrappers],
+      :install_dir         => options[:install_dir],
+      :prerelease          => options[:prerelease],
+      :security_policy     => options[:security_policy],
+      :wrappers            => options[:wrappers],
     }
 
     exit_code = 0
@@ -97,13 +97,6 @@ version is also installed.
       rescue Gem::GemNotFoundException => e
         alert_error e.message
         exit_code |= 2
-#      rescue => e
-#        # TODO: Fix this handle to allow the error to propagate to
-#        # the top level handler.  Examine the other errors as
-#        # well.  This implementation here looks suspicious to me --
-#        # JimWeirich (4/Jan/05)
-#        alert_error "Error installing gem #{gem_name}: #{e.message}"
-#        return
       end
     end
 

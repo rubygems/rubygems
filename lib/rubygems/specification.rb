@@ -844,6 +844,33 @@ module Gem
         end
       }
 
+      # FIXME
+
+      unless authors.grep(/FIXME/).empty? then
+        raise Gem::InvalidSpecificationException,
+              '"FIXME" is not an author'
+      end
+
+      unless Array(email).grep(/FIXME/).empty? then
+        raise Gem::InvalidSpecificationException,
+              '"FIXME" is not an email address'
+      end
+
+      if description =~ /FIXME/ then
+        raise Gem::InvalidSpecificationException,
+              '"FIXME" is not a description'
+      end
+
+      if summary =~ /FIXME/ then
+        raise Gem::InvalidSpecificationException,
+              '"FIXME" is not a summary'
+      end
+
+      unless homepage.empty? or homepage =~ /\A[a-z][a-z\d+.-]*:/i then
+        raise Gem::InvalidSpecificationException,
+              "\"#{homepage}\" is not a URI"
+      end
+
       # Warnings
 
       %w[author email homepage rubyforge_project summary].each do |attribute|

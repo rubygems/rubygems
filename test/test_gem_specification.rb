@@ -836,6 +836,14 @@ end
       end
 
       assert_equal 'authors must be Array of Strings', e.message
+
+      @a1.authors = ['FIXME (who is writing this software)']
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @a1.validate
+      end
+
+      assert_equal '"FIXME" is not an author', e.message
     end
   end
 
@@ -852,18 +860,15 @@ end
     end
   end
 
-  def test_validate_specification_version
+  def test_validate_description
     Dir.chdir @tempdir do
-      @a1.specification_version = '1.0'
+      @a1.description = 'FIXME (describe your package)'
 
       e = assert_raises Gem::InvalidSpecificationException do
-        use_ui @ui do
-          @a1.validate
-        end
+        @a1.validate
       end
 
-      err = 'specification_version must be a Fixnum (did you mean version?)'
-      assert_equal err, e.message
+      assert_equal '"FIXME" is not a description', e.message
     end
   end
 
@@ -876,6 +881,14 @@ end
       end
 
       assert_equal "WARNING:  no email specified\n", @ui.error, 'error'
+
+      @a1.email = 'FIXME (your e-mail)'
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @a1.validate
+      end
+
+      assert_equal '"FIXME" is not an email address', e.message
     end
   end
 
@@ -919,6 +932,14 @@ end
       end
 
       assert_equal "WARNING:  no homepage specified\n", @ui.error, 'error'
+
+      @a1.homepage = 'over at my cool site'
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @a1.validate
+      end
+
+      assert_equal '"over at my cool site" is not a URI', e.message
     end
   end
 
@@ -980,6 +1001,21 @@ end
                  e.message
   end
 
+  def test_validate_specification_version
+    Dir.chdir @tempdir do
+      @a1.specification_version = '1.0'
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        use_ui @ui do
+          @a1.validate
+        end
+      end
+
+      err = 'specification_version must be a Fixnum (did you mean version?)'
+      assert_equal err, e.message
+    end
+  end
+
   def test_validate_summary
     Dir.chdir @tempdir do
       @a1.summary = ''
@@ -989,6 +1025,14 @@ end
       end
 
       assert_equal "WARNING:  no summary specified\n", @ui.error, 'error'
+
+      @a1.summary = 'FIXME (describe your package)'
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @a1.validate
+      end
+
+      assert_equal '"FIXME" is not a summary', e.message
     end
   end
 

@@ -51,23 +51,17 @@ else
   CURRENT_VERSION = PKG_VERSION
 end
 
-CLEAN.include("COMMENTS")
 CLOBBER.include(
-  'InstalledFiles',
-  "test/data/one/one-*0.0.1.gem",
-  "test/temp",
-  'test/mock/gem/doc',
-  'test/mock/gem/cache',
-  'test/data/gemhome',
-  'test/data/[a-z]*.gem',
-  'scripts/*.hieraki',
+  '**/debug.log',
+  '*.out',
+  '.config',
   'data__',
   'html',
-  'pkgs/sources/sources*.gem',
-  '.config',
-  '**/debug.log',
   'logs',
-  '*.out'
+  'pkgs/sources/sources*.gem',
+  'scripts/*.hieraki',
+  'test/data/[a-z]*.gem',
+  'test/data/gemhome',
   )
 CLOBBER.exclude('test/data/broken-1.0.0.gem')
 
@@ -225,7 +219,7 @@ Rake::RDocTask.new("rdoc") { |rdoc|
   rdoc.rdoc_dir = 'html'
   rdoc.title    = "RubyGems"
   rdoc.options << '--line-numbers' << '--inline-source' << '--main' << 'README'
-  rdoc.rdoc_files.include('README', 'TODO', 'LICENSE.txt', 'GPL.txt')
+  rdoc.rdoc_files.include('README', 'LICENSE.txt', 'GPL.txt')
   rdoc.rdoc_files.include('lib/**/*.rb')
   rdoc.rdoc_files.include('doc/**/*.rdoc')
 }
@@ -273,7 +267,6 @@ PKG_FILES = FileList[
   "LICENSE.txt",
   "README",
   "Rakefile",
-  "TODO",
   "bin/*",
   "doc/release_notes/*",
   "lib/**/*.rb",

@@ -1,1 +1,0 @@
-* optional dependencies: "semitar can use REXML, but it works better if you have the ruby raptor library installed",  or not so optional as in: "you need Ruby/RSS > = 1.0 OR rss > 0.91 for this library to work"

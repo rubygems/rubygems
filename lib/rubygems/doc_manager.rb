@@ -195,20 +195,20 @@ class Gem::DocManager
     original_name = [
       @spec.name, @spec.version, @spec.original_platform].join '-'
 
-      doc_dir = File.join @spec.installation_path, 'doc', @spec.full_name
-      unless File.directory? doc_dir then
-        doc_dir = File.join @spec.installation_path, 'doc', original_name
-      end
+    doc_dir = File.join @spec.installation_path, 'doc', @spec.full_name
+    unless File.directory? doc_dir then
+      doc_dir = File.join @spec.installation_path, 'doc', original_name
+    end
 
-      FileUtils.rm_rf doc_dir
+    FileUtils.rm_rf doc_dir
 
-      ri_dir = File.join @spec.installation_path, 'ri', @spec.full_name
+    ri_dir = File.join @spec.installation_path, 'ri', @spec.full_name
 
-      unless File.directory? ri_dir then
-        ri_dir = File.join @spec.installation_path, 'ri', original_name
-      end
+    unless File.directory? ri_dir then
+      ri_dir = File.join @spec.installation_path, 'ri', original_name
+    end
 
-      FileUtils.rm_rf ri_dir
+    FileUtils.rm_rf ri_dir
   end
 
 end

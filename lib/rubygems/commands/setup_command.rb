@@ -131,10 +131,10 @@ By default, this RubyGems will install gem as:
     say
 
     say "RubyGems installed the following executables:"
-    say bin_file_names.map { |name| "\t#{name}\n" }
+    say @bin_file_names.map { |name| "\t#{name}\n" }
     say
 
-    unless bin_file_names.grep(/#{File::SEPARATOR}gem$/) then
+    unless @bin_file_names.grep(/#{File::SEPARATOR}gem$/) then
       say "If `gem` was installed by a previous RubyGems installation, you may need"
       say "to remove it by hand."
       say
@@ -144,7 +144,7 @@ By default, this RubyGems will install gem as:
   def install_executables(bin_dir)
     say "Installing gem executable"
 
-    bin_file_names = []
+    @bin_file_names = []
 
     Dir.chdir 'bin' do
       bin_files = Dir['*']
@@ -171,7 +171,7 @@ By default, this RubyGems will install gem as:
           end
 
           install bin_tmp_file, dest_file, :mode => 0755
-          bin_file_names << dest_file
+          @bin_file_names << dest_file
         ensure
           rm bin_tmp_file
         end

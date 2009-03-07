@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2008-03-07  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/installer.rb:  Use Gem::bin_path in executable stubs to
+	  work around Kernel#load bug.
+
 2008-03-06  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb:  Don't allow FIXME in specs.

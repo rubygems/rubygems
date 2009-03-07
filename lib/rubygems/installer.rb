@@ -430,7 +430,7 @@ if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1 then
 end
 
 gem '#{@spec.name}', version
-load '#{bin_file_name}'
+load Gem.bin_path('#{@spec.name}', '#{bin_file_name}', version)
 TEXT
   end
 

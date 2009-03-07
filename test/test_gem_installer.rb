@@ -31,7 +31,7 @@ if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1 then
 end
 
 gem 'a', version
-load 'my_exec'
+load Gem.bin_path('a', 'my_exec', version)
     EOF
 
     wrapper = @installer.app_script_text 'my_exec'

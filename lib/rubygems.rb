@@ -245,6 +245,35 @@ module Gem
   end
 
   ##
+  # Find the full path to the executable for gem +name+.  If the +exec_name+
+  # is not given, the gem's default_executable is chosen, otherwise the
+  # specifed executable's path is returned.  +version_requirements+ allows you
+  # to specify specific gem versions.
+
+  def self.bin_path(name, exec_name = nil, *version_requirements)
+    version_requirements = Gem::Requirement.default if
+      version_requirements.empty?
+    spec = Gem.source_index.find_name(name, version_requirements).last
+
+    raise Gem::GemNotFoundException,
+          "can't find gem #{name} (#{version_requirements})" unless spec
+
+    exec_name ||= spec.default_executable
+
+    unless exec_name
+      msg = "no default executable for #{spec.full_name}"
+      raise Gem::Exception, msg
+    end
+
+    unless spec.executables.include? exec_name
+      msg = "can't find executable #{exec_name} for #{spec.full_name}"
+      raise Gem::Exception, msg
+    end
+
+    File.join spec.full_gem_path, spec.bindir, exec_name
+  end
+
+  ##
   # The mode needed to read a file as straight binary.
 
   def self.binary_mode

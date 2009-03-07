@@ -5,6 +5,7 @@
 	* lib/rubygems/specification.rb:  Don't allow FIXME in specs.
 	* lib/rubygems/commands/spec_command.rb:  Add --ruby and --marshal
 	  formats.
+	* lib/rubygems.rb:  Add Gem::bin_path.  Patch #24114 by James Tucker.
 
 2008-03-04  Eric Hodel  <drbrain@segment7.net>
 

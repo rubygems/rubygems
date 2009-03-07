@@ -41,6 +41,48 @@ class TestGem < RubyGemTestCase
     assert(!Gem.available?("monkeys"))
   end
 
+  def test_self_bin_path_bin_name
+    util_exec_gem
+    assert_equal @abin_path, Gem.bin_path('a', 'abin')
+  end
+
+  def test_self_bin_path_bin_name_version
+    util_exec_gem
+    assert_equal @abin_path, Gem.bin_path('a', 'abin', '4')
+  end
+
+  def test_self_bin_path_name
+    util_exec_gem
+    assert_equal @exec_path, Gem.bin_path('a')
+  end
+
+  def test_self_bin_path_name_version
+    util_exec_gem
+    assert_equal @exec_path, Gem.bin_path('a', nil, '4')
+  end
+
+  def test_self_bin_path_no_default_bin
+    quick_gem 'a', '2' do |s|
+      s.executables = ['exec']
+    end
+    assert_raises(Gem::Exception) do
+      Gem.bin_path('a', '2')
+    end
+  end
+
+  def test_self_bin_path_no_bin_file
+    quick_gem 'a', '1'
+    assert_raises(Gem::Exception) do
+      Gem.bin_path('a', '1')
+    end
+  end
+
+  def test_self_bin_path_not_found
+    assert_raises(Gem::GemNotFoundException) do
+      Gem.bin_path('non-existent')
+    end
+  end
+
   def test_self_bindir
     assert_equal File.join(@gemhome, 'bin'), Gem.bindir
     assert_equal File.join(@gemhome, 'bin'), Gem.bindir(Gem.dir)
@@ -569,6 +611,16 @@ class TestGem < RubyGemTestCase
     @additional.each do |dir|
       Gem.ensure_gem_subdirectories @gemhome
     end
+  end
+
+  def util_exec_gem
+    spec, _ = quick_gem 'a', '4' do |s|
+      s.default_executable = 'exec'
+      s.executables = ['exec', 'abin']
+    end
+
+    @exec_path = File.join spec.full_gem_path, spec.bindir, 'exec'
+    @abin_path = File.join spec.full_gem_path, spec.bindir, 'abin'
   end
 
 end

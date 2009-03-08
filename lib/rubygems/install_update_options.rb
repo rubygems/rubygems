@@ -9,6 +9,7 @@ require 'rubygems/security'
 
 ##
 # Mixin methods for install and update options for Gem::Commands
+
 module Gem::InstallUpdateOptions
 
   # Add the install/update options to the option parser.

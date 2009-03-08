@@ -103,6 +103,32 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     assert out.empty?, out.inspect
   end
 
+  def test_no_user_install
+    util_setup_fake_fetcher
+    @cmd.options[:user_install] = false
+
+    FileUtils.mv File.join(@gemhome, 'cache', "#{@a2.full_name}.gem"),
+                 File.join(@tempdir)
+
+    @cmd.options[:args] = [@a2.name]
+
+    use_ui @ui do
+      orig_dir = Dir.pwd
+      begin
+        File.chmod 0755, @userhome
+        File.chmod 0555, @gemhome
+
+        Dir.chdir @tempdir
+        assert_raises Gem::FilePermissionError do
+          @cmd.execute
+        end
+      ensure
+        Dir.chdir orig_dir
+        File.chmod 0755, @gemhome
+      end
+    end
+  end
+
   def test_execute_local_missing
     util_setup_fake_fetcher
     @cmd.options[:domain] = :local

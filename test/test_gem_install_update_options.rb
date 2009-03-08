@@ -1,4 +1,3 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require File.join(File.expand_path(File.dirname(__FILE__)),
                   'gem_installer_test_case')
 require 'rubygems/install_update_options'
@@ -43,6 +42,8 @@ class TestGemInstallUpdateOptions < GemInstallerTestCase
   def test_user_install_enabled
     @cmd.handle_options %w[--user-install]
 
+    assert @cmd.options[:user_install]
+
     @installer = Gem::Installer.new @gem, @cmd.options
     @installer.install
     assert File.exist?(File.join(Gem.user_dir, 'gems'))
@@ -56,6 +57,8 @@ class TestGemInstallUpdateOptions < GemInstallerTestCase
     else
       @cmd.handle_options %w[--no-user-install]
 
+      refute @cmd.options[:user_install]
+
       File.chmod 0755, @userhome
       FileUtils.chmod 0000, @gemhome
 
@@ -66,4 +69,6 @@ class TestGemInstallUpdateOptions < GemInstallerTestCase
   ensure
     FileUtils.chmod 0755, @gemhome
   end
+
 end
+

@@ -4,6 +4,8 @@
 
 	* lib/rubygems/installer.rb:  Use Gem::bin_path in executable stubs to
 	  work around Kernel#load bug.
+	* lib/rubygems/commands/install_command.rb:  Copy user_install down to
+	  Gem::DependencyInstaller.  Patch #23573 by Alf Mikula.
 
 2008-03-06  Eric Hodel  <drbrain@segment7.net>
 

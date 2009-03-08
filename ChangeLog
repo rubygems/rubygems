@@ -6,6 +6,8 @@
 	  work around Kernel#load bug.
 	* lib/rubygems/commands/install_command.rb:  Copy user_install down to
 	  Gem::DependencyInstaller.  Patch #23573 by Alf Mikula.
+	* lib/rubygems/command.rb:  Add info on gem server directly to `gem
+	  help`.  Patch #22271 by Hugh Sasse.
 
 2008-03-06  Eric Hodel  <drbrain@segment7.net>
 

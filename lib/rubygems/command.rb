@@ -344,8 +344,7 @@ module Gem
     # Add the options common to all commands.
 
     add_common_option('-h', '--help',
-      'Get help on this command') do
-      |value, options|
+                      'Get help on this command') do |value, options|
       options[:help] = true
     end
 
@@ -368,18 +367,19 @@ module Gem
     # options get parsed.
 
     add_common_option('--config-file FILE',
-      "Use this config file instead of default") do
+                      'Use this config file instead of default') do
     end
 
     add_common_option('--backtrace',
-      'Show stack backtrace on errors') do
+                      'Show stack backtrace on errors') do
     end
 
     add_common_option('--debug',
-      'Turn on Ruby debugging') do
+                      'Turn on Ruby debugging') do
     end
 
     # :stopdoc:
+
     HELP = %{
       RubyGems is a sophisticated package manager for Ruby.  This is a
       basic help message containing pointers to more information.
@@ -401,15 +401,19 @@ module Gem
           gem help platforms           show information about platforms
           gem help <COMMAND>           show help on COMMAND
                                          (e.g. 'gem help install')
+          gem server                   present a web page at
+                                       http://localhost:8808/
+                                       with info about installed gems
         Further information:
           http://rubygems.rubyforge.org
-    }.gsub(/^    /, "")
+    }.gsub(/^    /, '')
 
     # :startdoc:
 
-  end # class
+  end
 
   # This is where Commands will be placed in the namespace
   module Commands; end
 
 end
+

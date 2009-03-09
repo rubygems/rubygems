@@ -6,6 +6,8 @@
 	  -d.
 	* lib/rubygems/commands/setup_command.rb:  Allow setup to run from
 	  read-only location.  Patch #21862 by Luis Herrera.
+	* lib/rubygems/package/tar_input.rb:  Use real File methods.  Bug
+	  #23966 by Mike Furr.
 
 2008-03-07  Eric Hodel  <drbrain@segment7.net>
 

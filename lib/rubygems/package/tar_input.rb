@@ -136,10 +136,10 @@ class Gem::Package::TarInput
 
   def extract_entry(destdir, entry, expected_md5sum = nil)
     if entry.directory? then
-      dest = File.join(destdir, entry.full_name)
+      dest = File.join destdir, entry.full_name
 
-      if File.dir? dest then
-        @fileops.chmod entry.header.mode, dest, :verbose=>false
+      if File.directory? dest then
+        @fileops.chmod entry.header.mode, dest, :verbose => false
       else
         @fileops.mkdir_p dest, :mode => entry.header.mode, :verbose => false
       end

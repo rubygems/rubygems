@@ -1,20 +1,6 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'rubygems/package'
 
-class File
-
-  # straight from setup.rb
-  def self.dir?(path)
-    # for corrupted windows stat()
-    File.directory?((path[-1,1] == '/') ? path : path + '/')
-  end
-
-  def self.read_b(name)
-    File.open(name, "rb") { |f| f.read }
-  end
-
-end
-
 class TarTestCase < RubyGemTestCase
 
   def ASCIIZ(str, length)

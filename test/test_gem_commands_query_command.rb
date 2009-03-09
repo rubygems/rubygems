@@ -85,6 +85,51 @@ a (2)
     This is a lot of text.
 
 pl (1)
+    Platform: i386-linux
+    Author: A User
+    Homepage: http://example.com
+
+    this is a summary
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+  end
+
+  def test_execute_details_platform
+    @a1.platform = 'x86-linux'
+
+    @a2.summary = 'This is a lot of text. ' * 4
+    @a2.authors = ['Abraham Lincoln', 'Hirohito']
+    @a2.homepage = 'http://a.example.com/'
+    @a2.rubyforge_project = 'rubygems'
+    @a2.platform = 'universal-darwin'
+
+    @si = util_setup_spec_fetcher @a1, @a2, @pl1
+
+    @cmd.handle_options %w[-r -d]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = <<-EOF
+
+*** REMOTE GEMS ***
+
+a (2, 1)
+    Platforms:
+        1: x86-linux
+        2: universal-darwin
+    Authors: Abraham Lincoln, Hirohito
+    Rubyforge: http://rubyforge.org/projects/rubygems
+    Homepage: http://a.example.com/
+
+    This is a lot of text. This is a lot of text. This is a lot of text.
+    This is a lot of text.
+
+pl (1)
+    Platform: i386-linux
     Author: A User
     Homepage: http://example.com
 
@@ -253,6 +298,7 @@ c (1.2)
     this is a summary
 
 pl (1)
+    Platform: i386-linux
     Author: A User
     Homepage: http://example.com
     Installed at: #{@gemhome}

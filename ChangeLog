@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2008-03-09  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/query_command.rb:  Add platforms to gem list
+	  -d.
+
 2008-03-07  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb:  Use Gem::bin_path in executable stubs to

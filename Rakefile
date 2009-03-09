@@ -61,7 +61,7 @@ CLOBBER.include(
   'pkgs/sources/sources*.gem',
   'scripts/*.hieraki',
   'test/data/[a-z]*.gem',
-  'test/data/gemhome',
+  'test/data/gemhome'
   )
 CLOBBER.exclude('test/data/broken-1.0.0.gem')
 

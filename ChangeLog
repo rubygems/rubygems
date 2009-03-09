@@ -4,6 +4,8 @@
 
 	* lib/rubygems/commands/query_command.rb:  Add platforms to gem list
 	  -d.
+	* lib/rubygems/commands/setup_command.rb:  Allow setup to run from
+	  read-only location.  Patch #21862 by Luis Herrera.
 
 2008-03-07  Eric Hodel  <drbrain@segment7.net>
 

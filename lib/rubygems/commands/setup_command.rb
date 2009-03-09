@@ -162,8 +162,7 @@ By default, this RubyGems will install gem as:
         bin_tmp_file = File.join Dir.tmpdir, bin_file
 
         begin
-          cp bin_file, bin_tmp_file
-          bin = File.readlines bin_tmp_file
+          bin = File.readlines bin_file
           bin[0] = "#!#{Gem.ruby}\n"
 
           File.open bin_tmp_file, 'w' do |fp|

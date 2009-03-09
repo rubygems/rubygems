@@ -10,6 +10,8 @@
 	  #23966 by Mike Furr.
 	* lib/rubygems.rb:  Don't add PATCHLEVEL if it's -1.  Patch #24048 by
 	  Jeremy Kemper.
+	* lib/rubygems/package/tar_input.rb:  Choose security policy
+	  correctly.  Bug #24001 by Mike Furr.
 
 2008-03-07  Eric Hodel  <drbrain@segment7.net>
 

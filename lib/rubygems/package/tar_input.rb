@@ -72,9 +72,9 @@ class Gem::Package::TarInput
       # map trust policy from string to actual class (or a serialized YAML
       # file, if that exists)
       if String === security_policy then
-        if Gem::Security::Policy.key? security_policy then
+        if Gem::Security::Policies.key? security_policy then
           # load one of the pre-defined security policies
-          security_policy = Gem::Security::Policy[security_policy]
+          security_policy = Gem::Security::Policies[security_policy]
         elsif File.exist? security_policy then
           # FIXME: this doesn't work yet
           security_policy = YAML.load File.read(security_policy)

@@ -8,6 +8,8 @@
 	  read-only location.  Patch #21862 by Luis Herrera.
 	* lib/rubygems/package/tar_input.rb:  Use real File methods.  Bug
 	  #23966 by Mike Furr.
+	* lib/rubygems.rb:  Don't add PATCHLEVEL if it's -1.  Patch #24048 by
+	  Jeremy Kemper.
 
 2008-03-07  Eric Hodel  <drbrain@segment7.net>
 

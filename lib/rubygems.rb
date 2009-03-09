@@ -745,7 +745,7 @@ module Gem
   def self.ruby_version
     return @ruby_version if defined? @ruby_version
     version = RUBY_VERSION.dup
-    version << ".#{RUBY_PATCHLEVEL}" if defined? RUBY_PATCHLEVEL
+    version << ".#{RUBY_PATCHLEVEL}" if defined?(RUBY_PATCHLEVEL) && RUBY_PATCHLEVEL != -1
     @ruby_version = Gem::Version.new version
   end
 

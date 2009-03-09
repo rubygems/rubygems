@@ -512,7 +512,7 @@ class TestGem < RubyGemTestCase
 
   def test_self_ruby_version
     version = RUBY_VERSION.dup
-    version << ".#{RUBY_PATCHLEVEL}" if defined? RUBY_PATCHLEVEL
+    version << ".#{RUBY_PATCHLEVEL}" if defined?(RUBY_PATCHLEVEL) && RUBY_PATCHLEVEL != -1
 
     assert_equal Gem::Version.new(version), Gem.ruby_version
   end

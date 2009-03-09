@@ -237,6 +237,21 @@ gems:
                  inst.download(@a1, local_path)
   end
 
+  def test_download_local_space
+    space_path = File.join @tempdir, 'space path'
+    FileUtils.mkdir space_path
+    FileUtils.mv @a1_gem, space_path
+    local_path = File.join space_path, "#{@a1.full_name}.gem"
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::RemoteFetcher.fetcher
+    end
+
+    assert_equal File.join(@gemhome, 'cache', "#{@a1.full_name}.gem"),
+                 inst.download(@a1, local_path)
+  end
+
   def test_download_install_dir
     a1_data = nil
     File.open @a1_gem, 'rb' do |fp|

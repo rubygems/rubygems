@@ -118,7 +118,7 @@ class Gem::Installer
 
     begin
       FileUtils.mkdir_p @gem_home
-    rescue Errno::EACCESS, Errno::ENOTDIR
+    rescue Errno::EACCES, Errno::ENOTDIR
       # We'll divert to ~/.gems below
     end
 

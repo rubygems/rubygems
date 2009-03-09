@@ -85,8 +85,17 @@ class Gem::RemoteFetcher
     local_gem_path = File.join cache_dir, gem_file_name
 
     FileUtils.mkdir_p cache_dir rescue nil unless File.exist? cache_dir
-
-    source_uri = URI.parse source_uri unless URI::Generic === source_uri
+    unless URI::Generic === source_uri
+      begin
+        source_uri = URI.parse source_uri
+      rescue URI::InvalidURIError
+        if source_uri =~ /\A#{File::SEPARATOR}/o then # HACK mswin
+          source_uri = URI.parse URI.escape(source_uri)
+        else
+          raise
+        end
+      end
+    end
     scheme = source_uri.scheme
 
     # URI.parse gets confused by MS Windows paths with forward slashes.
@@ -120,22 +129,22 @@ class Gem::RemoteFetcher
         end
       end
     when 'file' then
-      begin   
+      begin
         path = source_uri.path
         path = File.dirname(path) if File.extname(path) == '.gem'
-               
+
         remote_gem_path = File.join(path, 'gems', gem_file_name)
-               
+
         FileUtils.cp(remote_gem_path, local_gem_path)
       rescue Errno::EACCES
         local_gem_path = source_uri.to_s
       end
-       
+
       say "Using local gem #{local_gem_path}" if
         Gem.configuration.really_verbose
     when nil then # TODO test for local overriding cache
       begin
-        FileUtils.cp source_uri.to_s, local_gem_path
+        FileUtils.cp URI.unescape(source_uri.path), local_gem_path
       rescue Errno::EACCES
         local_gem_path = source_uri.to_s
       end
@@ -246,9 +255,9 @@ class Gem::RemoteFetcher
 
   def open_uri_or_path(uri, last_modified = nil, head = false, depth = 0)
     raise "block is dead" if block_given?
-    
+
     uri = URI.parse uri unless URI::Generic === uri
-    
+
     # This check is redundant unless Gem::RemoteFetcher is likely
     # to be used directly, since the scheme is checked elsewhere.
     # - Daniel Berger
@@ -258,13 +267,13 @@ class Gem::RemoteFetcher
 
     if uri.scheme == 'file'
       path = uri.path
-      
+
       # Deal with leading slash on Windows paths
       if path[0].chr == '/' && path[1].chr =~ /[a-zA-Z]/ && path[2].chr == ':'
-         path = path[1..-1]    
+         path = path[1..-1]
       end
-      
-      return IO.read(path)     
+
+      return Gem.read_binary(path)
     end
 
     fetch_type = head ? Net::HTTP::Head : Net::HTTP::Get

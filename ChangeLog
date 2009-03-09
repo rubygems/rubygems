@@ -12,6 +12,8 @@
 	  Jeremy Kemper.
 	* lib/rubygems/package/tar_input.rb:  Choose security policy
 	  correctly.  Bug #24001 by Mike Furr.
+	* lib/rubygems/remote_fetcher.rb:  Handle local paths with spaces.
+	  Bug #24169 by Ryan Davis.
 
 2008-03-07  Eric Hodel  <drbrain@segment7.net>
 

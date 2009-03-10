@@ -14,6 +14,8 @@
 	  correctly.  Bug #24001 by Mike Furr.
 	* lib/rubygems/remote_fetcher.rb:  Handle local paths with spaces.
 	  Bug #24169 by Ryan Davis.
+	* lib/rubygems/specification.rb:  Removed Gem::Specification::list,
+	  causes leaks.  Bug #23668 by Steve Purcell.
 
 2008-03-07  Eric Hodel  <drbrain@segment7.net>
 

@@ -91,11 +91,6 @@ module Gem
     # :startdoc:
 
     ##
-    # List of Specification instances.
-
-    @@list = []
-
-    ##
     # Optional block used to gather newly defined instances.
 
     @@gather = nil
@@ -166,14 +161,6 @@ module Gem
 
     def self.array_attributes
       @@array_attributes.dup
-    end
-
-    ##
-    # A list of Specification instances that have been defined in this Ruby
-    # instance.
-
-    def self.list
-      @@list
     end
 
     ##
@@ -434,16 +421,14 @@ module Gem
     alias has_test_suite? has_unit_tests? # :nodoc: deprecated
 
     ##
-    # Specification constructor.  Assigns the default values to the
-    # attributes, adds this spec to the list of loaded specs (see
-    # Specification.list), and yields itself for further initialization.
+    # Specification constructor.  Assigns the default values to the attributes
+    # and yields itself for further initialization.
 
     def initialize
       @new_platform = nil
       assign_defaults
       @loaded = false
       @loaded_from = nil
-      @@list << self
 
       yield self if block_given?
 

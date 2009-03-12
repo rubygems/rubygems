@@ -73,6 +73,11 @@ class Gem::Commands::SetupCommand < Gem::Command
     <<-EOF
 Installs RubyGems itself.
 
+RubyGems installs RDoc for itself in GEM_HOME.  By default this is:
+  #{Gem.dir}
+
+If you prefer a different directory, set the GEM_HOME environment variable.
+
 RubyGems will install the gem command with a name matching ruby's
 prefix and suffix.  If ruby was installed as `ruby18`, gem will be
 installed as `gem18`.

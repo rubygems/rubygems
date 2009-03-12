@@ -6,6 +6,9 @@
 	  newlines.
 	* lib/rubygems/indexer.rb:  Wrap description in a pre and force-wrap
 	  lines to 78 characters for prettier display.
+	* lib/rubygems/commands/setup_command.rb:  Clarify RubyGems RDoc
+	  installation location.  Bug #22656 by Gian Marco Gherardi.
+	  
 
 2008-03-09  Eric Hodel  <drbrain@segment7.net>
 

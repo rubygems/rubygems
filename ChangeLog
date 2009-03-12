@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 
+2008-03-12  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb:  #description no longer removes
+	  newlines.
+	* lib/rubygems/indexer.rb:  Wrap description in a pre and force-wrap
+	  lines to 78 characters for prettier display.
+
 2008-03-09  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/query_command.rb:  Add platforms to gem list

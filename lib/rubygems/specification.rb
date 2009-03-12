@@ -883,8 +883,6 @@ module Gem
     # * All file lists have redundancies removed.
     # * Files referenced in the extra_rdoc_files are included in the package
     #   file list.
-    #
-    # Also, the summary and description are converted to a normal format.
 
     def normalize
       if defined?(@extra_rdoc_files) and @extra_rdoc_files then
@@ -1280,11 +1278,7 @@ module Gem
     end
 
     overwrite_accessor :description= do |str|
-      @description = if str then
-                       str.strip.
-                       gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').
-                       gsub(/\n[ \t]*/, " ")
-                     end
+      @description = str.to_s
     end
 
     overwrite_accessor :default_executable do

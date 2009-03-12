@@ -95,7 +95,6 @@ class TestGemIndexer < RubyGemTestCase
     assert_equal expected, latest_specs, 'latest_specs'
   end
 
-  # TODO: should split out modern vs legacy tests?
   def test_generate_index
     use_ui @ui do
       @indexer.generate_index
@@ -174,7 +173,9 @@ pl-1-i386-linux
     <docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
     <item>
       <title>a-2</title>
-      <description>This is a test description</description>
+      <description>
+&lt;pre&gt;This is a test description&lt;/pre&gt;
+      </description>
       <author>example@example.com (A User)</author>
       <guid>a-2</guid>
       <enclosure url="http://gems.example.com/gems/a-2.gem"
@@ -184,7 +185,9 @@ pl-1-i386-linux
     </item>
     <item>
       <title>a_evil-9</title>
-      <description>This is a test description</description>
+      <description>
+&lt;pre&gt;This is a test description&lt;/pre&gt;
+      </description>
       <author>example@example.com (A User)</author>
       <guid>a_evil-9</guid>
       <enclosure url="http://gems.example.com/gems/a_evil-9.gem"
@@ -194,7 +197,9 @@ pl-1-i386-linux
     </item>
     <item>
       <title>b-2</title>
-      <description>This is a test description</description>
+      <description>
+&lt;pre&gt;This is a test description&lt;/pre&gt;
+      </description>
       <author>example@example.com (A User)</author>
       <guid>b-2</guid>
       <enclosure url="http://gems.example.com/gems/b-2.gem"
@@ -204,7 +209,9 @@ pl-1-i386-linux
     </item>
     <item>
       <title>c-1.2</title>
-      <description>This is a test description</description>
+      <description>
+&lt;pre&gt;This is a test description&lt;/pre&gt;
+      </description>
       <author>example@example.com (A User)</author>
       <guid>c-1.2</guid>
       <enclosure url="http://gems.example.com/gems/c-1.2.gem"
@@ -214,7 +221,9 @@ pl-1-i386-linux
     </item>
     <item>
       <title>pl-1-x86-linux</title>
-      <description>This is a test description</description>
+      <description>
+&lt;pre&gt;This is a test description&lt;/pre&gt;
+      </description>
       <author>example@example.com (A User)</author>
       <guid>pl-1-x86-linux</guid>
       <enclosure url="http://gems.example.com/gems/pl-1-x86-linux.gem"
@@ -224,11 +233,22 @@ pl-1-i386-linux
     </item>
     <item>
       <title>a-1</title>
-      <description>This is a test description</description>
+      <description>
+&lt;pre&gt;This line is really, really long.  So long, in fact, that it is more than
+eighty characters long!  The purpose of this line is for testing wrapping
+behavior because sometimes people don't wrap their text to eighty characters. 
+Without the wrapping, the text might not look good in the RSS feed.
+
+Also, a list:
+  * An entry that's actually kind of sort
+  * an entry that's really long, which will probably get wrapped funny. 
+That's ok, somebody wasn't thinking straight when they made it more than
+eighty characters.&lt;/pre&gt;
+      </description>
       <author>example@example.com (Example), example2@example.com (Example2)</author>
       <guid>a-1</guid>
       <enclosure url="http://gems.example.com/gems/a-1.gem"
-                 length="3072" type="application/octet-stream" />
+                 length="3584" type="application/octet-stream" />
       <pubDate>#{(Gem::Specification::TODAY - 86400).rfc2822}</pubDate>
       <link>http://a.example.com</link>
     </item>

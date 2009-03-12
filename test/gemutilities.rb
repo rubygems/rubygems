@@ -306,6 +306,13 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
       s.homepage = 'http://a.example.com'
       s.email = %w[example@example.com example2@example.com]
       s.authors = %w[Example Example2]
+      s.description = <<-DESC
+This line is really, really long.  So long, in fact, that it is more than eighty characters long!  The purpose of this line is for testing wrapping behavior because sometimes people don't wrap their text to eighty characters.  Without the wrapping, the text might not look good in the RSS feed.
+
+Also, a list:
+  * An entry that's actually kind of sort
+  * an entry that's really long, which will probably get wrapped funny.  That's ok, somebody wasn't thinking straight when they made it more than eighty characters.
+      DESC
     end
 
     init = proc do |s|

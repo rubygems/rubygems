@@ -2,9 +2,11 @@ require 'rubygems/command'
 require 'rubygems/local_remote_options'
 require 'rubygems/spec_fetcher'
 require 'rubygems/version_option'
+require 'rubygems/text'
 
 class Gem::Commands::QueryCommand < Gem::Command
 
+  include Gem::Text
   include Gem::LocalRemoteOptions
   include Gem::VersionOption
 
@@ -239,26 +241,6 @@ class Gem::Commands::QueryCommand < Gem::Command
     end
 
     say output.join(options[:details] ? "\n\n" : "\n")
-  end
-
-  ##
-  # Used for wrapping and indenting text
-
-  def format_text(text, wrap, indent=0)
-    result = []
-    work = text.dup
-
-    while work.length > wrap
-      if work =~ /^(.{0,#{wrap}})[ \n]/o then
-        result << $1
-        work.slice!(0, $&.length)
-      else
-        result << work.slice!(0, wrap)
-      end
-    end
-
-    result << work if work.length.nonzero?
-    result.join("\n").gsub(/^/, " " * indent)
   end
 
 end

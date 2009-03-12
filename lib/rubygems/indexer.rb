@@ -296,6 +296,9 @@ class Gem::Indexer
     end
 
     require 'cgi'
+    require 'rubygems/text'
+
+    extend Gem::Text
 
     Gem.time 'Generated rss' do
       open @rss_index, 'wb' do |io|
@@ -349,10 +352,20 @@ class Gem::Indexer
             email += " (#{author})" if author and not author.empty?
           end.join ', '
 
-          io.puts <<-ITEM
+          description = description.split(/\n\n+/).map do |chunk|
+            format_text chunk, 78
+          end
+
+          description = description.join "\n\n"
+
+          item = ''
+
+          item << <<-ITEM
     <item>
       <title>#{CGI.escapeHTML spec.full_name}</title>
-      <description>#{CGI.escapeHTML description}</description>
+      <description>
+&lt;pre&gt;#{CGI.escapeHTML description.chomp}&lt;/pre&gt;
+      </description>
       <author>#{CGI.escapeHTML authors}</author>
       <guid>#{CGI.escapeHTML spec.full_name}</guid>
       <enclosure url=\"#{gem_path}\"
@@ -360,13 +373,15 @@ class Gem::Indexer
       <pubDate>#{spec.date.rfc2822}</pubDate>
           ITEM
 
-          io.puts <<-ITEM if spec.homepage
+          item << <<-ITEM if spec.homepage
       <link>#{CGI.escapeHTML spec.homepage}</link>
           ITEM
 
-          io.puts <<-ITEM
+          item << <<-ITEM
     </item>
           ITEM
+
+          io.puts item
         end
 
         io.puts <<-FOOTER

@@ -1,16 +1,18 @@
 require 'rubygems/command'
 require 'rubygems/version_option'
 require 'rubygems/uninstaller'
+require 'rubygems/install_update_options'
 
 module Gem
   module Commands
     class UninstallCommand < Command
 
       include VersionOption
+      include InstallUpdateOptions
 
       def initialize
         super 'uninstall', 'Uninstall gems from the local repository',
-              :version => Gem::Requirement.default
+              :version => Gem::Requirement.default, :user_install => true
 
         add_option('-a', '--[no-]all',
           'Uninstall all matching versions'
@@ -40,6 +42,8 @@ module Gem
           options[:bin_dir] = File.expand_path(value)
         end
 
+        add_user_install_option
+
         add_version_option
         add_platform_option
       end
@@ -50,7 +54,8 @@ module Gem
 
       def defaults_str # :nodoc:
         "--version '#{Gem::Requirement.default}' --no-force " \
-        "--install-dir #{Gem.dir}"
+        "--install-dir #{Gem.dir} " \
+        "--user-install"
       end
 
       def usage # :nodoc:

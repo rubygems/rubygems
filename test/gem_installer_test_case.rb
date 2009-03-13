@@ -19,17 +19,17 @@ class GemInstallerTestCase < RubyGemTestCase
   def setup
     super
 
-    @spec = quick_gem "a"
+    @spec = quick_gem 'a'
     @gem = File.join @tempdir, "#{@spec.full_name}.gem"
 
-    util_build_gem @spec
-    FileUtils.mv File.join(@gemhome, 'cache', "#{@spec.full_name}.gem"),
-                 @tempdir
+    @installer = util_installer @spec, @gem, @gemhome
 
-    @installer = Gem::Installer.new @gem
-    @installer.gem_dir = util_gem_dir
-    @installer.gem_home = @gemhome
-    @installer.spec = @spec
+    @user_spec = quick_gem 'b'
+    @user_gem = File.join @tempdir, "#{@user_spec.full_name}.gem"
+
+    @user_installer = util_installer @user_spec, @user_gem, Gem.user_dir
+    @user_installer.gem_dir = File.join(Gem.user_dir, 'gems',
+                                        @user_spec.full_name)
   end
 
   def util_gem_bindir(version = '2')
@@ -79,6 +79,19 @@ class GemInstallerTestCase < RubyGemTestCase
     end
 
     @installer = Gem::Installer.new @gem
+  end
+
+  def util_installer(spec, gem_path, gem_home)
+    util_build_gem spec
+    FileUtils.mv File.join(@gemhome, 'cache', "#{spec.full_name}.gem"),
+                 @tempdir
+
+    installer = Gem::Installer.new gem_path
+    installer.gem_dir = util_gem_dir
+    installer.gem_home = gem_home
+    installer.spec = spec
+
+    installer
   end
 
 end

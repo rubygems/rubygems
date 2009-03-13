@@ -12,7 +12,9 @@ require 'rubygems/security'
 
 module Gem::InstallUpdateOptions
 
+  ##
   # Add the install/update options to the option parser.
+
   def add_install_update_options
     OptionParser.accept Gem::Security::Policy do |value|
       value = Gem::Security::Policies[value]
@@ -91,12 +93,7 @@ module Gem::InstallUpdateOptions
       options[:format_executable] = value
     end
 
-    add_option(:"Install/Update",       '--[no-]user-install',
-               'Install in user\'s home directory instead',
-               'of GEM_HOME. Defaults to using home',
-               'only if GEM_HOME is not writable.') do |value, options|
-      options[:user_install] = value
-    end
+    add_user_install_option :"Install/Update"
 
     add_option(:"Install/Update", "--development",
                 "Install any additional development",
@@ -112,7 +109,26 @@ module Gem::InstallUpdateOptions
     end
   end
 
+  ##
+  # Adds the --[no-]user-install option
+
+  def add_user_install_option(section = nil)
+    args = [
+      section,
+      '--[no-]user-install',
+      'Install in user\'s home directory instead',
+      'of GEM_HOME. Defaults to using home',
+      'only if GEM_HOME is not writable.'
+    ].compact
+
+    add_option(*args) do |value, options|
+      options[:user_install] = value
+    end
+  end
+
+  ##
   # Default options for the gem install command.
+
   def install_update_defaults_str
     '--rdoc --no-force --no-test --wrappers'
   end

@@ -46,8 +46,17 @@ class Gem::Uninstaller
     @force_ignore = options[:ignore]
     @bin_dir = options[:bin_dir]
 
+    # only add user directory if install_dir is not set
+    @user_install = false
+    @user_install = options[:user_install] unless options[:install_dir]
+
     spec_dir = File.join @gem_home, 'specifications'
     @source_index = Gem::SourceIndex.from_gems_in spec_dir
+
+    if @user_install then
+      user_dir = File.join Gem.user_dir, 'specifications'
+      @user_index = Gem::SourceIndex.from_gems_in user_dir
+    end
   end
 
   ##
@@ -56,6 +65,7 @@ class Gem::Uninstaller
 
   def uninstall
     list = @source_index.find_name @gem, @version
+    list += @user_index.find_name @gem, @version if @user_install
 
     if list.empty? then
       raise Gem::InstallError, "cannot uninstall, check `gem list -d #{@gem}`"
@@ -169,7 +179,8 @@ class Gem::Uninstaller
             "Uninstallation aborted due to dependent gem(s)"
     end
 
-    unless path_ok? spec then
+    unless path_ok?(@gem_home, spec) or
+           (@user_install and path_ok?(Gem.user_dir, spec)) then
       e = Gem::GemNotInHomeException.new \
             "Gem is not installed in directory #{@gem_home}"
       e.spec = spec
@@ -210,9 +221,12 @@ class Gem::Uninstaller
     list.delete spec
   end
 
-  def path_ok?(spec)
-    full_path = File.join @gem_home, 'gems', spec.full_name
-    original_path = File.join @gem_home, 'gems', spec.original_name
+  ##
+  # Is +spec+ in +gem_dir+?
+
+  def path_ok?(gem_dir, spec)
+    full_path = File.join gem_dir, 'gems', spec.full_name
+    original_path = File.join gem_dir, 'gems', spec.original_name
 
     full_path == spec.full_gem_path || original_path == spec.full_gem_path
   end
@@ -221,6 +235,7 @@ class Gem::Uninstaller
     return true if @force_ignore
 
     deplist = Gem::DependencyList.from_source_index @source_index
+    deplist.add(*@user_index.gems.values) if @user_install
     deplist.ok_to_remove?(spec.full_name) || ask_if_ok(spec)
   end
 

@@ -42,7 +42,11 @@ module Gem
           options[:bin_dir] = File.expand_path(value)
         end
 
-        add_user_install_option
+        add_option('--[no-]user-install',
+                   'Uninstall from user\'s home directory',
+                   'in addition to GEM_HOME.') do |value, options|
+          options[:user_install] = value
+        end
 
         add_version_option
         add_platform_option
@@ -54,7 +58,7 @@ module Gem
 
       def defaults_str # :nodoc:
         "--version '#{Gem::Requirement.default}' --no-force " \
-        "--install-dir #{Gem.dir} " \
+        "--install-dir #{Gem.dir}\n" \
         "--user-install"
       end
 

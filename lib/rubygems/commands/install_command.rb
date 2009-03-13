@@ -6,6 +6,11 @@ require 'rubygems/local_remote_options'
 require 'rubygems/validator'
 require 'rubygems/version_option'
 
+##
+# Gem installer command line tool
+#
+# See `gem help install`
+
 class Gem::Commands::InstallCommand < Gem::Command
 
   include Gem::VersionOption

@@ -80,13 +80,20 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     gems_to_update.uniq.sort.each do |name|
       next if updated.any? { |spec| spec.name == name }
+      success = false
 
       say "Updating #{name}"
-      installer.install name
+      begin
+        installer.install name
+        success = true
+      rescue Gem::InstallError => e
+        alert_error "Error installing #{name}:\n\t#{e.message}"
+        success = false
+      end
 
       installer.installed_gems.each do |spec|
         updated << spec
-        say "Successfully installed #{spec.full_name}"
+        say "Successfully installed #{spec.full_name}" if success
       end
     end
 

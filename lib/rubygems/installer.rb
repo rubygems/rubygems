@@ -441,10 +441,10 @@ TEXT
     <<-TEXT
 @ECHO OFF
 IF NOT "%~f0" == "~f0" GOTO :WinNT
-@"#{File.basename(Gem.ruby)}" "#{File.join(bindir, bin_file_name)}" %1 %2 %3 %4 %5 %6 %7 %8 %9
+@"#{File.basename(Gem.ruby).chomp('"')}" "#{File.join(bindir, bin_file_name)}" %1 %2 %3 %4 %5 %6 %7 %8 %9
 GOTO :EOF
 :WinNT
-@"#{File.basename(Gem.ruby)}" "%~dpn0" %*
+@"#{File.basename(Gem.ruby).chomp('"')}" "%~dpn0" %*
 TEXT
   end
 

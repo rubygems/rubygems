@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2009-03-14  Luis Lavena  <luislavena@gmail.com>
+
+	* lib/rubygems/installer.rb: Cleanup quotes on Windows stub scripts.
+	  Fixes Bug #24039.
+	* lib/rubygems/commands/setup_command.rb: ditto.
+
 2008-03-13  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/uninstall_command.rb:  Add --user-install to

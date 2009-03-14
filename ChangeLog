@@ -6,6 +6,10 @@
 	  allow uninstallation from ~/.gem.  Bug #23760 by Roger Pack.
 	* lib/rubygems/uninstaller.rb:  Automatically uninstall from
 	  Gem.user_dir.
+	* lib/rubygems/commands/update_command.rb:  Rescue InstallError
+	  and continue.  Bug #19268 by Gabriel Wilkins.
+	* lib/rubygems/doc_manager.rb:  Remove some options from the args list
+	  that RDoc no longer supports.
 
 2008-03-12  Eric Hodel  <drbrain@segment7.net>
 

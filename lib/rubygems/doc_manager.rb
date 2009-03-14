@@ -41,10 +41,21 @@ class Gem::DocManager
 
     begin
       require 'rdoc/rdoc'
+
+      @rdoc_version = if defined? RDoc::VERSION then
+                        Gem::Version.new RDoc::VERSION
+                      else
+                        Gem::Version.new '1.0.1' # HACK parsing is hard
+                      end
+
     rescue LoadError => e
       raise Gem::DocumentError,
           "ERROR: RDoc documentation generator not installed!"
     end
+  end
+
+  def self.rdoc_version
+    @rdoc_version
   end
 
   ##
@@ -153,6 +164,14 @@ class Gem::DocManager
     args << @spec.extra_rdoc_files
     args << '--title' << "#{@spec.full_name} Documentation"
     args = args.flatten.map do |arg| arg.to_s end
+
+    if self.class.rdoc_version >= Gem::Version.new('2.4.0') then
+      args.delete '--inline-source'
+      args.delete '--promiscuous'
+      args.delete '-p'
+      args.delete '--one-file'
+      # HACK more
+    end
 
     r = RDoc::RDoc.new
 

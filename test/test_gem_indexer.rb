@@ -572,7 +572,8 @@ eighty characters.&lt;/pre&gt;
     prerelease_specs = Marshal.load prerelease_specs_dump
 
     assert_equal [['d', Gem::Version.new('2.0.a'), 'ruby'],
-                  ['d', Gem::Version.new('2.0.b'), 'ruby']], prerelease_specs
+                  ['d', Gem::Version.new('2.0.b'), 'ruby']],
+                 prerelease_specs
   end
 
   def test_update_index

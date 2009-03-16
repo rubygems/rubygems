@@ -11,9 +11,10 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'rubygems'
 require 'fileutils'
 begin
+  gem 'minitest', '>= 1.3.1'
   require 'minitest/unit'
-rescue LoadError
-  warn "Install minitest gem"
+rescue Gem::LoadError
+  warn "Install minitest gem >= 1.3.1"
   raise
 end
 require 'tmpdir'

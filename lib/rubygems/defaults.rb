@@ -53,7 +53,7 @@ module Gem
 
   def self.default_exec_format
     baseruby = ConfigMap[:BASERUBY] || 'ruby'
-    ConfigMap[:RUBY_INSTALL_NAME].sub(baseruby, '%s') rescue '%s'
+    ConfigMap[:ruby_install_name].sub(baseruby, '%s') rescue '%s'
   end
 
   ##

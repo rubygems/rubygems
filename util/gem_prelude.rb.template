@@ -15,6 +15,7 @@ if defined?(Gem) then
   module Gem
 
     ConfigMap = {
+      :BASERUBY => RbConfig::CONFIG["BASERUBY"],
       :sitedir => RbConfig::CONFIG["sitedir"],
       :ruby_version => RbConfig::CONFIG["ruby_version"],
       :libdir => RbConfig::CONFIG["libdir"],

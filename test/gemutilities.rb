@@ -85,7 +85,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     Gem::SpecFetcher.fetcher = nil
 
     @orig_BASERUBY = Gem::ConfigMap[:BASERUBY]
-    Gem::ConfigMap[:BASERUBY] = Gem::ConfigMap[:RUBY_INSTALL_NAME]
+    Gem::ConfigMap[:BASERUBY] = Gem::ConfigMap[:ruby_install_name]
 
     @orig_arch = Gem::ConfigMap[:arch]
 

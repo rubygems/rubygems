@@ -66,7 +66,6 @@ module Gem
   ConfigMap.merge!(
     :BASERUBY => RbConfig::CONFIG["BASERUBY"],
     :EXEEXT => RbConfig::CONFIG["EXEEXT"],
-    :RUBY_INSTALL_NAME => RbConfig::CONFIG["RUBY_INSTALL_NAME"],
     :RUBY_SO_NAME => RbConfig::CONFIG["RUBY_SO_NAME"],
     :arch => RbConfig::CONFIG["arch"],
     :bindir => RbConfig::CONFIG["bindir"],

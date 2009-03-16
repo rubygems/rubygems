@@ -271,7 +271,7 @@ class Gem::Indexer
     build_modern_index(index.latest_specs.sort,
                        @latest_specs_index,
                        'latest specs')
-    build_modern_index(index.prerelease_specs,
+    build_modern_index(index.prerelease_specs.sort,
                        @prerelease_specs_index,
                        'prerelease specs')
 

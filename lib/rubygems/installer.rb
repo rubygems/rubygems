@@ -129,7 +129,7 @@ class Gem::Installer
       if options[:user_install] == false then # You don't want to use ~
         raise Gem::FilePermissionError, @gem_home
       elsif options[:user_install].nil? then
-        unless self.class.home_install_warning then
+        unless self.class.home_install_warning or options[:unpack] then
           alert_warning "Installing to ~/.gem since #{@gem_home} and\n\t  #{Gem.bindir} aren't both writable."
           self.class.home_install_warning = true
         end

@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 
+2009-03-17  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/query_command.rb:  Make `gem unpack` work with
+	  more than one gem name, fix warning about installation location.
+
 2009-03-16  James Tucker <jftucker@gmail.com>
 
 	* lib/rubygems.rb: Deprecate ConfigMap[:RUBY_INSTALL_NAME]
 	* lib/rubygems/defaults.rb: Gem.default_exec_format to use 
 		ConfigMap[:ruby_install_name].
 		Fixes Bug #24457
-	* util/gem_prelude.rb.template: Fix potential bug in Gem.default_exec_format
-		when ConfigMap[:BASERUBY] is not 'ruby'.
-	* Tests updated to use ConfigMap[:ruby_install_name].
+	* util/gem_prelude.rb.template: Fix potential bug in
+	  Gem.default_exec_format when ConfigMap[:BASERUBY] is not 'ruby'.
 
 2009-03-14  Luis Lavena  <luislavena@gmail.com>
 

@@ -149,7 +149,7 @@ class Gem::Commands::QueryCommand < Gem::Command
 
       platforms = Hash.new { |h,version| h[version] = [] }
 
-      matching_tuples.map do |(name, version, platform,),_|
+      matching_tuples.map do |(name, version, platform,_),_|
         platforms[version] << platform if platform
       end
 

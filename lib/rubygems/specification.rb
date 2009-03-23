@@ -821,7 +821,7 @@ module Gem
         raise Gem::InvalidSpecificationException,
               'authors must be Array of Strings'
       end
-      
+
       licenses.each{ |license|
         if license.length > 64
           raise Gem::InvalidSpecificationException,

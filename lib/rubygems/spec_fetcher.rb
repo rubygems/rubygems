@@ -1,4 +1,5 @@
 require 'zlib'
+require 'fileutils'
 
 require 'rubygems'
 require 'rubygems/remote_fetcher'

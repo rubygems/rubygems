@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2009-03-22  Daniel Berger <djberg96@gmail.com>
+
+   * lib/rubygems/remote_fetcher.rb: Always escape URI's to deal with spaces
+     and such, regardless of platform.
+
 2009-03-17  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/query_command.rb:  Make `gem unpack` work with

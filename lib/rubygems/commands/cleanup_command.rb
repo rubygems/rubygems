@@ -23,6 +23,13 @@ class Gem::Commands::CleanupCommand < Gem::Command
     "--no-dryrun"
   end
 
+  def description # :nodoc:
+    <<-EOF
+The cleanup command removes old gems from GEM_HOME.  If an older version is
+installed elsewhere in GEM_PATH the cleanup command won't touch it.
+    EOF
+  end
+
   def usage # :nodoc:
     "#{program_name} [GEMNAME ...]"
   end
@@ -42,7 +49,8 @@ class Gem::Commands::CleanupCommand < Gem::Command
 
     unless options[:args].empty? then
       options[:args].each do |gem_name|
-        specs = Gem.cache.search(/^#{gem_name}$/i)
+        dep = Gem::Dependency.new gem_name, Gem::Requirement.default
+        specs = Gem.cache.search dep
         specs.each do |spec|
           gems_to_cleanup << spec
         end

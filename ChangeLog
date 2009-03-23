@@ -4,6 +4,12 @@
 
    * lib/rubygems/remote_fetcher.rb: Always escape URI's to deal with spaces
      and such, regardless of platform.
+   * lib/rubygesm/validator.rb: Use the test-unit gem if installed.
+     Part of the fix for RF #24261
+   * lib/rubygems/commands/install_command.rb: Explictly require
+     rubygems/uninstaller.rb if the user wants to bail because of failed
+     tests.
+     Part of the fix for RF #24261
 
 2009-03-17  Eric Hodel  <drbrain@segment7.net>
 

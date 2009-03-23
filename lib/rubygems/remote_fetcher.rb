@@ -85,17 +85,12 @@ class Gem::RemoteFetcher
     local_gem_path = File.join cache_dir, gem_file_name
 
     FileUtils.mkdir_p cache_dir rescue nil unless File.exist? cache_dir
+
+   # Always escape URI's to deal with potential spaces and such
     unless URI::Generic === source_uri
-      begin
-        source_uri = URI.parse source_uri
-      rescue URI::InvalidURIError
-        if source_uri =~ /\A#{File::SEPARATOR}/o then # HACK mswin
-          source_uri = URI.parse URI.escape(source_uri)
-        else
-          raise
-        end
-      end
+      source_uri = URI.parse(URI.escape(source_uri))
     end
+
     scheme = source_uri.scheme
 
     # URI.parse gets confused by MS Windows paths with forward slashes.

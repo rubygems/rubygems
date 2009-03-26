@@ -9,8 +9,8 @@ require 'rubygems/user_interaction'
 
 ##
 # Base class for all Gem commands.  When creating a new gem command, define
-# #initialize, #execute, #arguments, #defaults_str, #description and #usage
-# (as appropriate).
+# #new, #execute, #arguments, #defaults_str, #description and #usage
+# (as appropriate).  See the above mentioned methods for details.
 
 class Gem::Command
 
@@ -105,7 +105,8 @@ class Gem::Command
   # options.  Defaults should be mirrored in #defaults_str, unless there are
   # none.
   #
-  # Use add_option to add command-line switches.
+  # When defining a new command subclass, use add_option to add command-line
+  # switches.
 
   def initialize(command, summary=nil, defaults={})
     @command = command
@@ -128,6 +129,12 @@ class Gem::Command
 
   ##
   # Override to provide command handling.
+  #
+  # #options will be filled in with your parsed options, unparsed options will
+  # be left in <tt>options[:args]</tt>.
+  #
+  # See also: #get_all_gem_names, #get_one_gem_name,
+  # #get_one_optional_argument
 
   def execute
     raise Gem::Exception, "generic command has no actions"
@@ -179,6 +186,16 @@ class Gem::Command
   ##
   # Override to provide details of the arguments a command takes.  It should
   # return a left-justified string, one argument per line.
+  #
+  # For example:
+  #
+  #   def usage
+  #     "#{program_name} FILE [FILE ...]"
+  #   end
+  #   
+  #   def arguments
+  #     "FILE          name of file to find"
+  #   end
 
   def arguments
     ""
@@ -187,6 +204,12 @@ class Gem::Command
   ##
   # Override to display the default values of the command options. (similar to
   # +arguments+, but displays the default values).
+  #
+  # For example:
+  #
+  #   def defaults_str
+  #     --no-gems-first --no-all
+  #   end
 
   def defaults_str
     ""
@@ -201,6 +224,8 @@ class Gem::Command
 
   ##
   # Override to display the usage for an individual gem command.
+  #
+  # The text "[options]" is automatically appended to the usage text.
 
   def usage
     program_name
@@ -247,6 +272,9 @@ class Gem::Command
   #
   # +handler+ will be called with two values, the value of the argument and
   # the options hash.
+  #
+  # If the first argument of +add_option+ is a Symbol, it's used to group
+  # options in output.  See `gem help list` for an example.
 
   def add_option(*opts, &handler) # :yields: value, options
     group_name = Symbol === opts.first ? opts.shift : :options

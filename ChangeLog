@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2009-03-25  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/install_command.rb:  Fix typo.  Patch #24446
+	  by Luis Parravicini.
+
 2009-03-22  Daniel Berger <djberg96@gmail.com>
 
    * lib/rubygems/remote_fetcher.rb: Always escape URI's to deal with spaces

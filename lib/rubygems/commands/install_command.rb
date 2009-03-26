@@ -48,7 +48,7 @@ class Gem::Commands::InstallCommand < Gem::Command
 The install command installs local or remote gem into a gem repository.
 
 For gems with executables ruby installs a wrapper file into the executable
-directory by deault.  This can be overridden with the --no-wrappers option.
+directory by default.  This can be overridden with the --no-wrappers option.
 The wrapper allows you to choose among alternate gem versions using _version_.
 
 For example `rake _0.7.3_ --version` will run rake version 0.7.3 if a newer

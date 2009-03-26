@@ -12,9 +12,13 @@ class TestGemVersion < RubyGemTestCase
   def setup
     super
 
+    version = Object.new
+    def version.to_s() '1.4.0' end
+
     @v1_0 = Gem::Version.new '1.0'
     @v1_2 = Gem::Version.new '1.2'
     @v1_3 = Gem::Version.new '1.3'
+    @v1_4_0 = Gem::Version.new version
   end
 
   def test_class_create
@@ -88,6 +92,20 @@ class TestGemVersion < RubyGemTestCase
     assert_equal false, @v1_3.eql?(@v1_2)
   end
 
+  def test_eql_eh4
+    v1_4   = Gem::Version.new '1.4'
+    v1_4_0 = Gem::Version.new "1.4.0"
+
+    assert_equal true, v1_4_0.eql?(@v1_4_0)
+    assert_equal true, @v1_4_0.eql?(v1_4_0)
+
+    assert_equal false, v1_4.eql?(@v1_4_0)
+    assert_equal false, @v1_4_0.eql?(v1_4)
+
+    assert_equal false, @v1_4_0.eql?(@v1_3)
+    assert_equal false, @v1_3.eql?(@v1_4_0)
+  end
+
   def test_equals2
     v = Gem::Version.new("1.2")
 
@@ -101,12 +119,17 @@ class TestGemVersion < RubyGemTestCase
   def test_hash
     v1_2   = Gem::Version.new "1.2"
     v1_2_0 = Gem::Version.new "1.2.0"
+    v1_4_0 = Gem::Version.new "1.4.0"
 
     assert_equal v1_2.hash, @v1_2.hash
 
     refute_equal v1_2_0.hash, @v1_2.hash
 
+    refute_equal v1_4_0.hash, @v1_4.hash
+
     refute_equal @v1_2.hash, @v1_3.hash
+
+    refute_equal @v1_2.hash, @v1_4.hash
   end
 
   def test_illformed_requirements

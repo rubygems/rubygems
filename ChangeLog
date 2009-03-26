@@ -4,6 +4,8 @@
 
 	* lib/rubygems/commands/install_command.rb:  Fix typo.  Patch #24446
 	  by Luis Parravicini.
+	* lib/rubygems/version.rb:  Handle non-String versions by calling
+	  #to_s.  Patch #24392 by Stephen Bannasch.
 
 2009-03-22  Daniel Berger <djberg96@gmail.com>
 

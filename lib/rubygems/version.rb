@@ -61,9 +61,10 @@ class Gem::Version
   # Returns true if +version+ is a valid version string.
 
   def self.correct?(version)
+    pattern = /\A\s*(#{VERSION_PATTERN})*\s*\z/o
     case version
-    when Integer, /\A\s*(#{VERSION_PATTERN})*\s*\z/o then true
-    else false
+    when Integer, pattern then true
+    else pattern === version.to_s
     end
   end
 

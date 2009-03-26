@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2009-03-26  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/package_task.rb:  Import from Rake's
+	  rake/gempackagetask.rb
+
 2009-03-25  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/install_command.rb:  Fix typo.  Patch #24446

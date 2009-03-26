@@ -13,7 +13,6 @@ require 'rake/clean'
 require 'rake/testtask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
-require 'rake/rdoctask'
 
 def announce(msg='')
   $stderr.puts msg
@@ -214,23 +213,30 @@ end
 # --------------------------------------------------------------------
 # Create a task to build the RDOC documentation tree.
 
-desc "Create the RDOC html files"
-Rake::RDocTask.new("rdoc") { |rdoc|
-  rdoc.rdoc_dir = 'html'
-  rdoc.title    = "RubyGems"
-  rdoc.options << '--line-numbers' << '--inline-source' << '--main' << 'README'
-  rdoc.rdoc_files.include('README', 'LICENSE.txt', 'GPL.txt')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-  rdoc.rdoc_files.include('doc/**/*.rdoc')
-}
+begin
+  gem 'rdoc'
+  require 'rdoc/task'
 
-desc "Publish the RDOCs on RubyForge"
-task :publish_rdoc => ["html/index.html"] do
-  # NOTE: This task assumes that you have an SSH alias setup for rubyforge.
-  mkdir_p "emptydir"
-  sh "scp -rq emptydir rubyforge:/var/www/gforge-projects/rubygems/rdoc"
-  sh "scp -rq html/* rubyforge:/var/www/gforge-projects/rubygems/rdoc"
-  rm_r "emptydir"
+  desc "Create the RDoc html files"
+  RDoc::Task.new("rdoc") { |rdoc|
+    rdoc.rdoc_dir = 'html'
+    rdoc.title    = "RubyGems"
+    rdoc.options << '--line-numbers' << '--main' << 'README'
+    rdoc.rdoc_files.include('README', 'LICENSE.txt', 'GPL.txt')
+    rdoc.rdoc_files.include('lib/**/*.rb')
+    rdoc.rdoc_files.include('doc/**/*.rdoc')
+  }
+
+  desc "Publish the RDOCs on RubyForge"
+  task :publish_rdoc => ["html/index.html"] do
+    # NOTE: This task assumes that you have an SSH alias setup for rubyforge.
+    mkdir_p "emptydir"
+    sh "scp -rq emptydir rubyforge:/var/www/gforge-projects/rubygems/rdoc"
+    sh "scp -rq html/* rubyforge:/var/www/gforge-projects/rubygems/rdoc"
+    rm_r "emptydir"
+  end
+rescue Gem::LoadError
+  warn "install RDoc 2.4.2+"
 end
 
 # Wiki Doc Targets

@@ -323,16 +323,22 @@ class Gem::Command
     @options[:args] = args
   end
 
+  ##
+  # Adds extra args from ~/.gemrc
+
   def add_extra_args(args)
     result = []
+
     s_extra = Gem::Command.specific_extra_args(@command)
     extra = Gem::Command.extra_args + s_extra
-    while ! extra.empty?
+
+    until extra.empty? do
       ex = []
       ex << extra.shift
       ex << extra.shift if extra.first.to_s =~ /^[^-]/
       result << ex if handles?(ex)
     end
+
     result.flatten!
     result.concat(args)
     result

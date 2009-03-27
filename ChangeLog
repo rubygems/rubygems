@@ -4,6 +4,7 @@
 
 	* lib/rubygems/package_task.rb:  Import from Rake's
 	  rake/gempackagetask.rb
+	* Rakefile:  Switched to RDoc::Task from RDoc 2.4.2.
 
 2009-03-25  Eric Hodel  <drbrain@segment7.net>
 

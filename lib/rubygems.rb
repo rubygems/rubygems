@@ -399,11 +399,21 @@ module Gem
   # find_files does not search $LOAD_PATH for files, only gems.
 
   def self.find_files(path)
+    load_path_files = $LOAD_PATH.map do |load_path|
+      files = Dir["#{File.expand_path path, load_path}#{Gem.suffix_pattern}"]
+
+      files.select do |load_path_file|
+        File.file? load_path_file.untaint
+      end
+    end.flatten
+
     specs = searcher.find_all path
 
-    specs.map do |spec|
+    specs_files = specs.map do |spec|
       searcher.matching_files spec, path
     end.flatten
+
+    (load_path_files + specs_files).flatten.uniq
   end
 
   ##

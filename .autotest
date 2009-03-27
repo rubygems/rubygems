@@ -8,6 +8,7 @@ Autotest.add_hook :initialize do |at|
 
   at.add_exception %r%/\.svn/%
   at.add_exception %r%\.rbc$%
+  at.add_exception %r%test/rubygems%
 
   at.find_directories.clear
   at.find_directories.push 'lib', 'test'

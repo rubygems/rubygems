@@ -270,18 +270,20 @@ class TestGem < RubyGemTestCase
   end
 
   def test_self_find_files
+    discover_path = File.join 'lib', 'foo', 'discover.rb'
+
     foo1 = quick_gem 'foo', '1' do |s|
-      s.files << 'lib/foo/discover.rb'
+      s.files << discover_path
     end
 
     foo2 = quick_gem 'foo', '2' do |s|
-      s.files << 'lib/foo/discover.rb'
+      s.files << discover_path
     end
 
-    path = File.join 'gems', foo1.full_name, 'lib', 'foo', 'discover.rb'
+    path = File.join 'gems', foo1.full_name, discover_path
     write_file(path) { |fp| fp.puts "# #{path}" }
 
-    path = File.join 'gems', foo2.full_name, 'lib', 'foo', 'discover.rb'
+    path = File.join 'gems', foo2.full_name, discover_path
     write_file(path) { |fp| fp.puts "# #{path}" }
 
     @fetcher = Gem::FakeFetcher.new
@@ -292,8 +294,9 @@ class TestGem < RubyGemTestCase
     Gem.searcher = nil
 
     expected = [
-      File.join(foo1.full_gem_path, 'lib', 'foo', 'discover.rb'),
-      File.join(foo2.full_gem_path, 'lib', 'foo', 'discover.rb'),
+      File.expand_path('foo/discover.rb', File.dirname(__FILE__)),
+      File.join(foo1.full_gem_path, discover_path),
+      File.join(foo2.full_gem_path, discover_path),
     ]
 
     assert_equal expected, Gem.find_files('foo/discover').sort

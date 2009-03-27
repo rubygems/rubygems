@@ -17,7 +17,8 @@ require 'rubygems/user_interaction'
 # register your command against the Gem::CommandManager instance, like this:
 #
 #   # file rubygems/discover_command.rb
-#   require 'rubygems/commands/edit_command'
+#   require 'rubygems/command_manager'
+#   require 'my_gem/edit_command'
 #   
 #   Gem::CommandManager.instance.register_command :edit
 #
@@ -34,7 +35,9 @@ class Gem::CommandManager
     @command_manager ||= new
   end
   
+  ##
   # Register all the subcommands supported by the gem command.
+
   def initialize
     @commands = {}
     register_command :build
@@ -66,24 +69,32 @@ class Gem::CommandManager
     register_command :which
   end
   
+  ##
   # Register the command object.
+
   def register_command(command_obj)
     @commands[command_obj] = false
   end
   
+  ##
   # Return the registered command from the command name.
+
   def [](command_name)
     command_name = command_name.intern
     return nil if @commands[command_name].nil?
     @commands[command_name] ||= load_and_instantiate(command_name)
   end
   
-  # Return a list of all command names (as strings).
+  ##
+  # Return a sorted list of all command names (as strings).
+
   def command_names
     @commands.keys.collect {|key| key.to_s}.sort
   end
   
+  ##
   # Run the config specified by +args+.
+
   def run(args)
     process_args(args)
   rescue StandardError, Timeout::Error => ex
@@ -120,11 +131,10 @@ class Gem::CommandManager
   end
 
   def find_command(cmd_name)
-    possibilities = find_command_possibilities(cmd_name)
-    if possibilities.size > 1
+    possibilities = find_command_possibilities cmd_name
+    if possibilities.size > 1 then
       raise "Ambiguous command #{cmd_name} matches [#{possibilities.join(', ')}]"
-    end
-    if possibilities.size < 1
+    elsif possibilities.size < 1 then
       raise "Unknown command #{cmd_name}"
     end
 
@@ -133,7 +143,8 @@ class Gem::CommandManager
 
   def find_command_possibilities(cmd_name)
     len = cmd_name.length
-    self.command_names.select { |n| cmd_name == n[0,len] }
+
+    command_names.select { |n| cmd_name == n[0, len] }
   end
   
   private
@@ -156,5 +167,15 @@ class Gem::CommandManager
     end
   end
 
+end
+
+command_extensions = Gem.find_files 'rubygems/discover_command'
+
+command_extensions.each do |extension|
+  begin
+    load extension
+  rescue => e
+    warn "error loading #{extension.inspect}: #{e.message} (#{e.class})"
+  end
 end
 

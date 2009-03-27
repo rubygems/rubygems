@@ -13,6 +13,8 @@
 	  install/uninstall hooks external to Rubygems via
 	  rubygems/discover_install.rb.  See Gem::Installer and
 	  Gem::Uninstaller for details.
+	* lib/rubygems/commands/sources_command.rb:  Allow sources to be added
+	  behind proxies.  Bug #24785 by Elia Schito.
 
 2009-03-25  Eric Hodel  <drbrain@segment7.net>
 

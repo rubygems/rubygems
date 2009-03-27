@@ -18,6 +18,8 @@ if ENV['RUBYOPT'] and defined? Gem then
   exec(ruby, 'setup.rb', *ARGV)
 end
 
+Dir.chdir File.dirname(__FILE__)
+
 $:.unshift 'lib'
 require 'rubygems'
 require 'rubygems/gem_runner'

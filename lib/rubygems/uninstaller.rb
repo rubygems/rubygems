@@ -12,6 +12,11 @@ require 'rubygems/user_interaction'
 
 ##
 # An Uninstaller.
+#
+# The uninstaller fires pre and post uninstall hooks.  Hooks
+# can be added either through a rubygems/discover_install.rb file or via a
+# rubygems/defaults/#{RUBY_ENGINE}.rb or rubygems/defaults/operating_system.rb
+# file.  See Gem.pre_uninstall and Gem.post_uninstall for details.
 
 class Gem::Uninstaller
 
@@ -254,4 +259,6 @@ class Gem::Uninstaller
   end
 
 end
+
+require 'rubygems/discover_install_hooks'
 

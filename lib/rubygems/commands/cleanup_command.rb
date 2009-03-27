@@ -50,7 +50,7 @@ installed elsewhere in GEM_PATH the cleanup command won't touch it.
     unless options[:args].empty? then
       options[:args].each do |gem_name|
         dep = Gem::Dependency.new gem_name, Gem::Requirement.default
-        specs = Gem.cache.search dep
+        specs = Gem.source_index.search dep
         specs.each do |spec|
           gems_to_cleanup << spec
         end

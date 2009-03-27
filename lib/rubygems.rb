@@ -996,3 +996,14 @@ if RUBY_VERSION < '1.9' then
 end
 
 Gem.clear_paths
+
+plugins = Gem.find_files 'rubygems_plugin'
+
+plugins.each do |plugin|
+  begin
+    load plugin
+  rescue => e
+    warn "error loading #{plugin.inspect}: #{e.message} (#{e.class})"
+  end
+end
+

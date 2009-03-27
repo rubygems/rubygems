@@ -22,7 +22,7 @@ require 'rubygems/require_paths_builder'
 # and installing either wrappers or symlinks for executables.
 #
 # The installer fires pre and post install hooks.  Hooks can be added either
-# through a rubygems/discover_install.rb file or via a
+# through a rubygems_plugin.rb file in an installed gem or via a
 # rubygems/defaults/#{RUBY_ENGINE}.rb or rubygems/defaults/operating_system.rb
 # file.  See Gem.pre_install and Gem.post_install for details.
 
@@ -578,6 +578,4 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
   end
 
 end
-
-require 'rubygems/discover_install_hooks'
 

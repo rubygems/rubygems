@@ -12,11 +12,11 @@ require 'rubygems/user_interaction'
 # The command manager registers and installs all the individual sub-commands
 # supported by the gem command.
 #
-# Extra commands can be provided by writing a rubygems/discover_command.rb
-# file that will be loaded automatically by the `gem` command.  You should
-# register your command against the Gem::CommandManager instance, like this:
+# Extra commands can be provided by writing a rubygems_plugin.rb
+# file in an installed gem.  You should register your command against the
+# Gem::CommandManager instance, like this:
 #
-#   # file rubygems/discover_command.rb
+#   # file rubygems_plugin.rb
 #   require 'rubygems/command_manager'
 #   require 'my_gem/edit_command'
 #   
@@ -167,15 +167,5 @@ class Gem::CommandManager
     end
   end
 
-end
-
-command_extensions = Gem.find_files 'rubygems/discover_command'
-
-command_extensions.each do |extension|
-  begin
-    load extension
-  rescue => e
-    warn "error loading #{extension.inspect}: #{e.message} (#{e.class})"
-  end
 end
 

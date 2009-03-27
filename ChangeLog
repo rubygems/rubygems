@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
+2009-03-27  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems.rb:  RubyGems now loads plugins from rubygems_plugin.rb
+	  in installed gems.  This can be used to add commands (See
+	  Gem::CommandManager) or add install/uninstall hooks (See
+	  Gem::Installer and Gem::Uninstaller).
+
 2009-03-26  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/package_task.rb:  Import from Rake's
 	  rake/gempackagetask.rb
 	* Rakefile:  Switched to RDoc::Task from RDoc 2.4.2.
 	* lib/rubygems.rb:  Gem.find_files now returns paths in $LOAD_PATH.
-	* lib/rubygems/command_manager.rb:  RubyGems now loads commands
-	  external to RubyGems via rubygems/discover_command.rb.  See
-	  Gem::CommandManager for details.
-	* lib/rubygems/discover_install_hooks.rb:  RubyGems now loads
-	  install/uninstall hooks external to Rubygems via
-	  rubygems/discover_install.rb.  See Gem::Installer and
-	  Gem::Uninstaller for details.
 	* lib/rubygems/commands/sources_command.rb:  Allow sources to be added
 	  behind proxies.  Bug #24785 by Elia Schito.
 

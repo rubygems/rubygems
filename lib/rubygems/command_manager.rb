@@ -18,8 +18,11 @@ require 'rubygems/user_interaction'
 #
 #   # file rubygems_plugin.rb
 #   require 'rubygems/command_manager'
-#   require 'my_gem/edit_command'
-#   
+#
+#   class Gem::Commands::EditCommand < Gem::Command
+#     # ...
+#   end
+#
 #   Gem::CommandManager.instance.register_command :edit
 #
 # See Gem::Command for instructions on writing gem commands.

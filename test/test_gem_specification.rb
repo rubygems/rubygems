@@ -814,12 +814,16 @@ end
   end
 
   def test_validate
+    util_setup_validate
+
     Dir.chdir @tempdir do
       assert @a1.validate
     end
   end
 
   def test_validate_authors
+    util_setup_validate
+
     Dir.chdir @tempdir do
       @a1.authors = []
 
@@ -848,6 +852,8 @@ end
   end
 
   def test_validate_autorequire
+    util_setup_validate
+
     Dir.chdir @tempdir do
       @a1.autorequire = 'code'
 
@@ -861,6 +867,8 @@ end
   end
 
   def test_validate_description
+    util_setup_validate
+
     Dir.chdir @tempdir do
       @a1.description = 'FIXME (describe your package)'
 
@@ -873,6 +881,8 @@ end
   end
 
   def test_validate_email
+    util_setup_validate
+
     Dir.chdir @tempdir do
       @a1.email = ''
 
@@ -893,6 +903,8 @@ end
   end
 
   def test_validate_empty
+    util_setup_validate
+
     e = assert_raises Gem::InvalidSpecificationException do
       Gem::Specification.new.validate
     end
@@ -901,6 +913,8 @@ end
   end
 
   def test_validate_executables
+    util_setup_validate
+
     FileUtils.mkdir_p File.join(@tempdir, 'bin')
     File.open File.join(@tempdir, 'bin', 'exec'), 'w' do end
 
@@ -915,6 +929,8 @@ end
   end
 
   def test_validate_empty_require_paths
+    util_setup_validate
+
     @a1.require_paths = []
     e = assert_raises Gem::InvalidSpecificationException do
       @a1.validate
@@ -923,7 +939,23 @@ end
     assert_equal 'specification must have at least one require_path', e.message
   end
 
+  def test_validate_files
+    util_setup_validate
+
+    @a1.files += ['lib']
+
+    e = assert_raises Gem::InvalidSpecificationException do
+      Dir.chdir @tempdir do
+        @a1.validate
+      end
+    end
+
+    assert_equal '["lib"] are not files', e.message
+  end
+
   def test_validate_homepage
+    util_setup_validate
+
     Dir.chdir @tempdir do
       @a1.homepage = ''
 
@@ -944,6 +976,8 @@ end
   end
 
   def test_validate_has_rdoc
+    util_setup_validate
+
     Dir.chdir @tempdir do
       @a1.has_rdoc = false
 
@@ -957,6 +991,8 @@ end
   end
 
   def test_validate_name
+    util_setup_validate
+
     e = assert_raises Gem::InvalidSpecificationException do
       @a1.name = :json
       @a1.validate
@@ -966,6 +1002,8 @@ end
   end
 
   def test_validate_platform_legacy
+    util_setup_validate
+
     Dir.chdir @tempdir do
       @a1.platform = 'mswin32'
       assert @a1.validate
@@ -979,6 +1017,8 @@ end
   end
 
   def test_validate_rubyforge_project
+    util_setup_validate
+
     Dir.chdir @tempdir do
       @a1.rubyforge_project = ''
 
@@ -992,6 +1032,8 @@ end
   end
 
   def test_validate_rubygems_version
+    util_setup_validate
+
     @a1.rubygems_version = "3"
     e = assert_raises Gem::InvalidSpecificationException do
       @a1.validate
@@ -1002,6 +1044,8 @@ end
   end
 
   def test_validate_specification_version
+    util_setup_validate
+
     Dir.chdir @tempdir do
       @a1.specification_version = '1.0'
 
@@ -1017,6 +1061,8 @@ end
   end
 
   def test_validate_summary
+    util_setup_validate
+
     Dir.chdir @tempdir do
       @a1.summary = ''
 
@@ -1038,6 +1084,18 @@ end
 
   def test_version
     assert_equal Gem::Version.new('1'), @a1.version
+  end
+
+  def util_setup_validate
+    Dir.chdir @tempdir do
+      FileUtils.mkdir_p File.join('ext', 'a')
+      FileUtils.mkdir_p 'lib'
+      FileUtils.mkdir_p 'test'
+
+      FileUtils.touch File.join('ext', 'a', 'extconf.rb')
+      FileUtils.touch File.join('lib', 'code.rb')
+      FileUtils.touch File.join('test', 'suite.rb')
+    end
   end
 
 end

@@ -9,6 +9,9 @@
 	  Soulier.
 	* lib/rubygems/commands/setup_command.rb:  Fix confusion with option
 	  names.  Patch #24971 by Richard Brown.
+	* lib/rubygems/specification.rb:  Make #validate complain about
+	  not-files.
+	* lib/gauntlet_rubygems.rb:  For verification of the validator.
 
 2009-03-27  Eric Hodel  <drbrain@segment7.net>
 

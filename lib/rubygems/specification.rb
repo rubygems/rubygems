@@ -802,6 +802,16 @@ class Gem::Specification
             'specification must have at least one require_path'
     end
 
+    non_files = files.select do |file|
+      !File.file? file
+    end
+
+    unless non_files.empty? then
+      non_files = non_files.map { |file| file.inspect }
+      raise Gem::InvalidSpecificationException,
+            "[#{non_files.join ", "}] are not files"
+    end
+
     unless specification_version.is_a?(Fixnum)
       raise Gem::InvalidSpecificationException,
             'specification_version must be a Fixnum (did you mean version?)'

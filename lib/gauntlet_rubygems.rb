@@ -7,7 +7,11 @@ class Gem::Gauntlet < Gauntlet
     warn name
     self.dirty = true
 
-    spec = Gem::Specification.load 'gemspec'
+    spec = begin
+             Gem::Specification.load 'gemspec'
+           rescue SyntaxError
+             Gem::Specification.from_yaml 'gemspec'
+           end
     spec.validate
 
     self.data[name] = false

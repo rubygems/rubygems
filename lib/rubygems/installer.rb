@@ -103,17 +103,17 @@ class Gem::Installer
       :source_index => Gem.source_index,
     }.merge options
 
-    @env_shebang = options[:env_shebang]
-    @force = options[:force]
-    gem_home = options[:install_dir]
-    @gem_home = Pathname.new(gem_home).expand_path
+    @env_shebang         = options[:env_shebang]
+    @force               = options[:force]
+    gem_home             = options[:install_dir]
+    @gem_home            = Pathname.new(gem_home).expand_path
     @ignore_dependencies = options[:ignore_dependencies]
-    @format_executable = options[:format_executable]
-    @security_policy = options[:security_policy]
-    @wrappers = options[:wrappers]
-    @bin_dir = options[:bin_dir]
-    @development = options[:development]
-    @source_index = options[:source_index]
+    @format_executable   = options[:format_executable]
+    @security_policy     = options[:security_policy]
+    @wrappers            = options[:wrappers]
+    @bin_dir             = options[:bin_dir]
+    @development         = options[:development]
+    @source_index        = options[:source_index]
 
     begin
       @format = Gem::Format.from_file_by_path @gem, @security_policy

@@ -54,6 +54,7 @@ module Gem
   def self.default_exec_format
     baseruby = ConfigMap[:BASERUBY] || 'ruby'
     exec_format = ConfigMap[:ruby_install_name].sub(baseruby, '%s') rescue '%s'
+
     unless exec_format =~ /%s/ then
       raise Gem::Exception,
         "[BUG] invalid exec_format #{exec_format.inspect}, no %s"

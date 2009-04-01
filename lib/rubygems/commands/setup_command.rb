@@ -14,7 +14,7 @@ class Gem::Commands::SetupCommand < Gem::Command
     super 'setup', 'Install RubyGems',
           :format_executable => true, :rdoc => true, :ri => true,
           :site_or_vendor => :sitelibdir,
-          :install_destdir => '', :prefix => ''
+          :destdir => '', :prefix => ''
 
     add_option '--prefix=PREFIX',
                'Prefix path for installing RubyGems',
@@ -36,7 +36,7 @@ class Gem::Commands::SetupCommand < Gem::Command
               "requires ruby 1.8.7+ (you have #{Gem.ruby_version})"
       end
 
-      options[:vendor] = vendor ? :vendorlibdir : :sitelibdir
+      options[:site_or_vendor] = vendor ? :vendorlibdir : :sitelibdir
     end
 
     add_option '--[no-]format_executable',
@@ -88,7 +88,7 @@ By default, this RubyGems will install gem as:
   end
 
   def execute
-    install_destdir = options[:install_destdir]
+    install_destdir = options[:destdir]
 
     unless install_destdir.empty? then
       default_dir = Pathname.new Gem.default_dir

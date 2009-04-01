@@ -7,6 +7,8 @@
 	* lib/rubygems/defaults.rb:  Add a sanity check to
 	  Gem.default_exec_format.  Workaround for bug #24958 by Michael
 	  Soulier.
+	* lib/rubygems/commands/setup_command.rb:  Fix confusion with option
+	  names.  Patch #24971 by Richard Brown.
 
 2009-03-27  Eric Hodel  <drbrain@segment7.net>
 

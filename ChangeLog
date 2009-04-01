@@ -1,11 +1,20 @@
 # -*- coding: utf-8 -*-
 
+2009-03-31  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/spec_fetcher.rb:  If the cached specs file won't load,
+	  refetch.  Bug #24961 by Dylan Stamat.
+	* lib/rubygems/defaults.rb:  Add a sanity check to
+	  Gem.default_exec_format.  Workaround for bug #24958 by Michael
+	  Soulier.
+
 2009-03-27  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb:  RubyGems now loads plugins from rubygems_plugin.rb
 	  in installed gems.  This can be used to add commands (See
 	  Gem::CommandManager) or add install/uninstall hooks (See
 	  Gem::Installer and Gem::Uninstaller).
+	* setup.rb:  Ensure we're in a RubyGems dir when installing.
 
 2009-03-26  Eric Hodel  <drbrain@segment7.net>
 

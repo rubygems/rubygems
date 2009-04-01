@@ -257,7 +257,7 @@ class Gem::RemoteFetcher
     # to be used directly, since the scheme is checked elsewhere.
     # - Daniel Berger
     unless ['http', 'https', 'file'].include?(uri.scheme)
-       raise ArgumentError, 'uri scheme is invalid'
+     raise ArgumentError, 'uri scheme is invalid'
     end
 
     if uri.scheme == 'file'

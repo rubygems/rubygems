@@ -355,4 +355,30 @@ RubyGems will revert to legacy indexes degrading performance.
 
     assert_equal @latest_specs, latest_specs
   end
+
+  def test_load_specs_cached_empty
+    @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] =
+      proc do
+        @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] =
+          util_gzip(Marshal.dump(@latest_specs))
+
+        nil
+      end
+
+    cache_dir = File.join Gem.user_home, '.gem', 'specs', 'gems.example.com%80'
+
+    FileUtils.mkdir_p cache_dir
+
+    cache_file = File.join cache_dir, "latest_specs.#{Gem.marshal_version}"
+
+    open cache_file, 'wb' do |io|
+      io.write Marshal.dump(@latest_specs)[0, 10]
+    end
+
+    latest_specs = @sf.load_specs @uri, 'latest_specs'
+
+    assert_equal @latest_specs, latest_specs
+  end
+
 end
+

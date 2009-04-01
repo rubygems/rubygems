@@ -222,7 +222,14 @@ class Gem::SpecFetcher
       loaded = true
     end
 
-    specs = Marshal.load spec_dump
+    specs = begin
+              Marshal.load spec_dump
+            rescue ArgumentError
+              spec_dump = @fetcher.fetch_path spec_path
+              loaded = true
+
+              Marshal.load spec_dump
+            end
 
     if loaded and @update_cache then
       begin

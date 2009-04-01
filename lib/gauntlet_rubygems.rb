@@ -22,6 +22,6 @@ class Gem::Gauntlet < Gauntlet
 
 end
 
-gantlet = Gem::Gauntlet.new
+gauntlet = Gem::Gauntlet.new
 gauntlet.run_the_gauntlet ARGV.shift
 

@@ -125,11 +125,11 @@ class TestGemVersion < RubyGemTestCase
 
     refute_equal v1_2_0.hash, @v1_2.hash
 
-    refute_equal v1_4_0.hash, @v1_4.hash
+    refute_equal v1_4_0.hash, @v1_4_0.hash
 
     refute_equal @v1_2.hash, @v1_3.hash
 
-    refute_equal @v1_2.hash, @v1_4.hash
+    refute_equal @v1_2.hash, @v1_4_0.hash
   end
 
   def test_illformed_requirements

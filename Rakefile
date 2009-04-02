@@ -74,6 +74,7 @@ desc "Run just the unit tests"
 Rake::TestTask.new(:test_units) do |t|
   t.test_files = FileList['test/test*.rb']
   t.warning = true
+  t.libs = %w[lib test]
 end
 
 desc "Run just the functional tests"

@@ -396,7 +396,10 @@ module Gem
   #
   #   Gem.find_files('rdoc/discover').each do |path| load path end
   #
-  # find_files does not search $LOAD_PATH for files, only gems.
+  # find_files search $LOAD_PATH for files as well as gems.
+  #
+  # Note that find_files will return all files even if they are from different
+  # versions of the same gem.
 
   def self.find_files(path)
     load_path_files = $LOAD_PATH.map do |load_path|

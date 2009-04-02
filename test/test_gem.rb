@@ -295,11 +295,11 @@ class TestGem < RubyGemTestCase
 
     expected = [
       File.expand_path('foo/discover.rb', File.dirname(__FILE__)),
-      File.join(foo1.full_gem_path, discover_path),
       File.join(foo2.full_gem_path, discover_path),
+      File.join(foo1.full_gem_path, discover_path),
     ]
 
-    assert_equal expected, Gem.find_files('foo/discover').sort
+    assert_equal expected, Gem.find_files('foo/discover')
   end
 
   def test_self_latest_load_paths

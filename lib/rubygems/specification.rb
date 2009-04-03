@@ -92,6 +92,7 @@ class Gem::Specification
 
   ##
   # List of attribute names: [:name, :version, ...]
+
   @@required_attributes = []
 
   ##
@@ -413,7 +414,9 @@ class Gem::Specification
     not test_files.empty?
   end
 
-  alias has_test_suite? has_unit_tests? # :nodoc: deprecated
+  # :stopdoc:
+  alias has_test_suite? has_unit_tests?
+  # :startdoc:
 
   ##
   # Specification constructor.  Assigns the default values to the attributes
@@ -920,7 +923,7 @@ class Gem::Specification
     out
   end
 
-  def to_s
+  def to_s # :nodoc:
     "#<Gem::Specification name=#{@name} version=#{@version}>"
   end
 
@@ -951,6 +954,11 @@ class Gem::Specification
     end
   end
 
+  ##
+  # Adds a dependency on gem +dependency+ with type +type+ that requires
+  # +requirements+.  Valid types are currently <tt>:runtime</tt> and
+  # <tt>:development</tt>.
+
   def add_dependency_with_type(dependency, type, *requirements)
     requirements = if requirements.empty? then
                      Gem::Requirement.default
@@ -969,11 +977,12 @@ class Gem::Specification
 
   private :add_dependency_with_type
 
+  ##
+  # Finds all gems that satisfy +dep+
+
   def find_all_satisfiers(dep)
-    Gem.source_index.each do |name,gem|
-      if(gem.satisfies_requirement?(dep)) then
-        yield gem
-      end
+    Gem.source_index.each do |_, gem|
+      yield gem if gem.satisfies_requirement? dep
     end
   end
 
@@ -1003,36 +1012,50 @@ class Gem::Specification
   # :section: Required gemspec attributes
 
   ##
+  # :attr_accessor: rubygems_version
+  #
   # The version of RubyGems used to create this gem
 
   required_attribute :rubygems_version, Gem::RubyGemsVersion
 
   ##
+  # :attr_accessor: specification_version
+  #
   # The Gem::Specification version of this gemspec
 
   required_attribute :specification_version, CURRENT_SPECIFICATION_VERSION
 
   ##
+  # :attr_accessor: name
+  #
   # This gem's name
 
   required_attribute :name
 
   ##
+  # :attr_accessor: version
+  #
   # This gem's version
 
   required_attribute :version
 
   ##
+  # :attr_accessor: date
+  #
   # The date this gem was created
 
   required_attribute :date, TODAY
 
   ##
+  # :attr_accessor: summary
+  #
   # A short summary of this gem's description.  Displayed in `gem list -d`.
 
   required_attribute :summary
 
   ##
+  # :attr_accessor: require_paths
+  #
   # Paths in the gem to add to $LOAD_PATH when this gem is activated
 
   required_attribute :require_paths, ['lib']
@@ -1040,43 +1063,59 @@ class Gem::Specification
   # :section: Optional gemspec attributes
 
   ##
+  # :attr_accessor: email
+  #
   # A contact email for this gem
 
   attribute :email
 
   ##
+  # :attr_accessor: homepage
+  #
   # The URL of this gem's home page
 
   attribute :homepage
 
   ##
+  # :attr_accessor: rubyforge_project
+  #
   # The rubyforge project this gem lives under.  i.e. RubyGems'
   # rubyforge_project is "rubygems".
 
   attribute :rubyforge_project
 
   ##
+  # :attr_accessor: description
+  #
   # A long description of this gem
 
   attribute :description
 
   ##
+  # :attr_accessor: autorequire
+  #
   # Autorequire was used by old RubyGems to automatically require a file.
   # It no longer is supported.
 
   attribute :autorequire
 
   ##
+  # :attr_accessor: default_executable
+  #
   # The default executable for this gem.
 
   attribute :default_executable
 
   ##
+  # :attr_accessor: bindir
+  #
   # The path in the gem for executable scripts
 
   attribute :bindir, 'bin'
 
   ##
+  # :attr_accessor: has_rdoc
+  #
   # True if this gem is RDoc-compliant
 
   attribute :has_rdoc, false
@@ -1087,85 +1126,120 @@ class Gem::Specification
   alias :has_rdoc? :has_rdoc
 
   ##
+  # :attr_accessor: required_ruby_version
+  #
   # The ruby of version required by this gem
 
   attribute :required_ruby_version, Gem::Requirement.default
 
   ##
+  # :attr_accessor: required_rubygems_version
+  #
   # The RubyGems version required by this gem
 
   attribute :required_rubygems_version, Gem::Requirement.default
 
   ##
+  # :attr_accessor: platform
+  #
   # The platform this gem runs on.  See Gem::Platform for details.
 
   attribute :platform, Gem::Platform::RUBY
 
   ##
+  # :attr_accessor: signing_key
+  #
   # The key used to sign this gem.  See Gem::Security for details.
 
   attribute :signing_key, nil
 
   ##
+  # :attr_accessor: cert_chain
+  #
   # The certificate chain used to sign this gem.  See Gem::Security for
   # details.
 
   attribute :cert_chain, []
 
   ##
+  # :attr_accessor: post_install_message
+  #
   # A message that gets displayed after the gem is installed
 
   attribute :post_install_message, nil
 
   ##
+  # :attr_accessor: authors
+  #
   # The list of authors who wrote this gem
 
   array_attribute :authors
 
   ##
-  # The license(s) for the library
+  # :attr_accessor: licenses
+  #
+  # The license(s) for the library.  Each license must be a short name, no
+  # more than 64 characters.
 
   array_attribute :licenses
 
   ##
-  # Files included in this gem
+  # :attr_accessor: files
+  #
+  # Files included in this gem.  You cannot append to this accessor, you must
+  # assign to it.
 
   array_attribute :files
 
   ##
-  # Test files included in this gem
+  # :attr_accessor: test_files
+  #
+  # Test files included in this gem.  You cannot append to this accessor, you
+  # must assign to it.
 
   array_attribute :test_files
 
   ##
+  # :attr_accessor: rdoc_options
+  #
   # An ARGV-style array of options to RDoc
 
   array_attribute :rdoc_options
 
   ##
+  # :attr_accessor: extra_rdoc_files
+  #
   # Extra files to add to RDoc
 
   array_attribute :extra_rdoc_files
 
   ##
+  # :attr_accessor: executables
+  #
   # Executables included in the gem
 
   array_attribute :executables
 
   ##
+  # :attr_accessor: extensions
+  #
   # Extensions to build when installing the gem.  See
   # Gem::Installer#build_extensions for valid values.
 
   array_attribute :extensions
 
   ##
+  # :attr_accessor: requirements
+  #
   # An array or things required by this gem.  Not used by anything
   # presently.
 
   array_attribute :requirements
 
   ##
-  # A list of Gem::Dependency objects this gem depends on.  Only appendable.
+  # :attr_reader: dependencies
+  #
+  # A list of Gem::Dependency objects this gem depends on.
 
   array_attribute :dependencies
 
@@ -1174,27 +1248,27 @@ class Gem::Specification
   # :section: Aliased gemspec attributes
 
   ##
-  # Singular accessor for executables
+  # Singular accessor for #executables
 
   attribute_alias_singular :executable, :executables
 
   ##
-  # Singular accessor for authors
+  # Singular accessor for #authors
 
   attribute_alias_singular :author, :authors
 
   ##
-  # Singular accessor for licenses
+  # Singular accessor for #licenses
 
   attribute_alias_singular :license, :licenses
 
   ##
-  # Singular accessor for require_paths
+  # Singular accessor for #require_paths
 
   attribute_alias_singular :require_path, :require_paths
 
   ##
-  # Singular accessor for test_files
+  # Singular accessor for #test_files
 
   attribute_alias_singular :test_file, :test_files
 

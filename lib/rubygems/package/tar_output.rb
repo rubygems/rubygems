@@ -66,8 +66,10 @@ class Gem::Package::TarOutput
       Zlib::GzipWriter.wrap(sio || inner) do |os|
 
         Gem::Package::TarWriter.new os do |data_tar_writer|
+          # :stopdoc:
           def data_tar_writer.metadata() @metadata end
           def data_tar_writer.metadata=(metadata) @metadata = metadata end
+          # :startdoc:
 
           yield data_tar_writer
 

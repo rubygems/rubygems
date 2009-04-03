@@ -16,6 +16,7 @@ warn "#{file}:#{lineno}:Warning: RubyGems' lib/rubygems/timer.rb deprecated and 
 
 $log = Object.new
 
+# :stopdoc:
 def $log.debug(message)
   Gem.debug message
 end
@@ -23,4 +24,5 @@ end
 def time(msg, width=25, &block)
   Gem.time(msg, width, &block)
 end
+# :startdoc:
 

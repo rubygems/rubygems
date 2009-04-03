@@ -83,6 +83,8 @@ end
 #
 # == Credits
 #
+# RubyGems is currently maintained by Eric Hodel.
+#
 # RubyGems was originally developed at RubyConf 2003 by:
 # 
 # * Rich Kilmer -- rich(at)infoether.com
@@ -91,12 +93,10 @@ end
 # * Paul Brannan -- paul(at)atdesk.com
 # * Jim Weirch -- {jim(at)weirichhouse.org}[mailto:jim@weirichhouse.org]
 #
-# RubyGems is currently maintained by Eric Hodel.
-#
 # Contributors:
 # 
 # * Gavin Sinclair -- gsinclair(at)soyabean.com.au
-# * George Marrows-- george.marrows(at)ntlworld.com
+# * George Marrows -- george.marrows(at)ntlworld.com
 # * Dick Davies -- rasputnik(at)hellooperator.net
 # * Mauricio Fernandez -- batsman.geo(at)yahoo.com
 # * Simon Strandgaard -- neoneye(at)adslhome.dk
@@ -116,9 +116,15 @@ end
 
 module Gem
 
+  ##
+  # Configuration settings from ::RbConfig
+
   ConfigMap = {} unless defined?(ConfigMap)
+
   require 'rbconfig'
+  # :stopdoc:
   RbConfig = Config unless defined? ::RbConfig
+  # :startdoc:
 
   ConfigMap.merge!(
     :BASERUBY => RbConfig::CONFIG["BASERUBY"],
@@ -136,11 +142,16 @@ module Gem
     :vendorlibdir => RbConfig::CONFIG["vendorlibdir"]
   )
 
+  ##
+  # Default directories in a gem repository
+
   DIRECTORIES = %w[cache doc gems specifications] unless defined?(DIRECTORIES)
 
+  # :stopdoc:
   MUTEX = Mutex.new
 
   RubyGemsPackageVersion = RubyGemsVersion
+  # :startdoc:
 
   ##
   # An Array of Regexps that match windows ruby platforms.
@@ -780,15 +791,23 @@ module Gem
 
   private_class_method :report_activate_error
 
-  def self.required_location(gemname, libfile, *version_constraints)
-    version_constraints = Gem::Requirement.default if version_constraints.empty?
-    matches = Gem.source_index.find_name(gemname, version_constraints)
+  ##
+  # Full path to +libfile+ in +gemname+.  Searches for the latest gem unless
+  # +requirements+ is given.
+
+  def self.required_location(gemname, libfile, *requirements)
+    requirements = Gem::Requirement.default if requirements.empty?
+
+    matches = Gem.source_index.find_name gemname, requirements
+
     return nil if matches.empty?
+
     spec = matches.last
     spec.require_paths.each do |path|
-      result = File.join(spec.full_gem_path, path, libfile)
-      return result if File.exist?(result)
+      result = File.join spec.full_gem_path, path, libfile
+      return result if File.exist? result
     end
+
     nil
   end
 
@@ -976,6 +995,9 @@ module Gem
 
   class << self
 
+    ##
+    # Hash of loaded Gem::Specification keyed by name
+
     attr_reader :loaded_specs
 
     ##
@@ -1007,7 +1029,13 @@ module Gem
 
   end
 
+  ##
+  # Location of Marshal quick gemspecs on remote repositories
+
   MARSHAL_SPEC_DIR = "quick/Marshal.#{Gem.marshal_version}/"
+
+  ##
+  # Location of legacy YAML quick gemspecs on remote repositories
 
   YAML_SPEC_DIR = 'quick/'
 

@@ -7,11 +7,16 @@
 
 require 'digest/sha2'
 
+# :stopdoc:
 module Gem
+
   if RUBY_VERSION >= '1.8.6'
     SHA256 = Digest::SHA256
   else
     require 'rubygems/digest/digest_adapter'
     SHA256 = DigestAdapter.new(Digest::SHA256)
   end
+
 end
+# :startdoc:
+

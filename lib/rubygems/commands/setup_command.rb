@@ -91,10 +91,8 @@ By default, this RubyGems will install gem as:
     install_destdir = options[:destdir]
 
     unless install_destdir.empty? then
-      default_dir = Pathname.new Gem.default_dir
-      top_dir = Pathname.new RbConfig::TOPDIR
       ENV['GEM_HOME'] ||= File.join(install_destdir,
-                                    default_dir.relative_path_from(top_dir))
+                                    Gem.default_dir.gsub(/^[a-zA-Z]:/, ''))
     end
 
     check_ruby_version
@@ -278,12 +276,8 @@ TEXT
     end
 
     unless install_destdir.empty? then
-      top_dir = Pathname.new RbConfig::TOPDIR
-      lib_dir_p = Pathname.new lib_dir
-      bin_dir_p = Pathname.new bin_dir
-
-      lib_dir = File.join install_destdir, lib_dir_p.relative_path_from(top_dir)
-      bin_dir = File.join install_destdir, bin_dir_p.relative_path_from(top_dir)
+      lib_dir = File.join install_destdir, lib_dir.gsub(/^[a-zA-Z]:/, '')
+      bin_dir = File.join install_destdir, bin_dir.gsub(/^[a-zA-Z]:/, '')
     end
 
     mkdir_p lib_dir

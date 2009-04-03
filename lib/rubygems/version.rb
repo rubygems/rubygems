@@ -157,8 +157,11 @@ class Gem::Version
     normalize
   end
 
+  ##
+  # A version is considered a prerelease if any part contains a letter.
+  
   def prerelease?
-    parts.last.alpha?
+    parts.any? { |part| part.alpha? }
   end
 
   def yaml_initialize(tag, values)
@@ -196,7 +199,7 @@ class Gem::Version
 
   # Return a new version object where the next to the last revision
   # number is one greater. (e.g.  5.3.1 => 5.4)
-  # Pre-release (alpha) parts are ignored. (e.g 5.3.1.b.2 => 5.4)
+  # Pre-release (alpha) parts are ignored. (e.g 5.3.1.b2 => 5.4)
   def bump
     parts = parse_parts_from_version_string
     parts.pop while parts.any? { |part| part.alpha? }

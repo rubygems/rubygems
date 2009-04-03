@@ -7,7 +7,19 @@
 require 'rubygems'
 
 ##
-# The Version class processes string versions into comparable values
+# The Version class processes string versions into comparable
+# values. A version string should normally be a series of numbers
+# separated by periods. Each part (digits separated by periods) is
+# considered its own number, and these are used for sorting. So for
+# instance, 3.10 sorts higher than 3.2 because ten is greater than
+# two.
+#
+# If any part contains letters (currently only a-z are supported) then
+# that version is considered prerelease. Versions with a prerelease
+# part in the Nth part sort less than versions with N-1 parts. Prerelease
+# parts are sorted alphabetically using the normal Ruby string sorting
+# rules.
+#
 
 class Gem::Version
   
@@ -88,7 +100,7 @@ class Gem::Version
 
   ##
   # Constructs a Version from the +version+ string.  A version string is a
-  # series of digits separated by dots.
+  # series of digits or ASCII letters separated by dots.
 
   def initialize(version)
     raise ArgumentError, "Malformed version number string #{version}" unless

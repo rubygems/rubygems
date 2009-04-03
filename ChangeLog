@@ -5,6 +5,11 @@
 	* lib/rubygems/commands/setup_command.rb:  Fix --destdir.  Patch
 	  #24970 by Richard Brown.
 
+2009-04-02  Phil Hagelberg <technomancy@gmail.com>
+
+	* lib/rubygems/version.rb: Documentation of prerelease
+	versions. See http://technomancy.us/123 for details.
+
 2009-03-31  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/spec_fetcher.rb:  If the cached specs file won't load,

@@ -55,7 +55,64 @@ module Kernel
 end
 
 ##
-# Main module to hold all RubyGem classes/modules.
+# RubyGems is the Ruby standard for publishing and managing third party
+# libraries.
+#
+# For user documentation, see:
+#
+# * <tt>gem help</tt> and <tt>gem help [command]</tt>
+# * {RubyGems User Guide}[http://docs.rubygems.org/read/book/1]
+# * {Frequently Asked Questions}[http://docs.rubygems.org/read/book/3]
+#
+# For gem developer documentation see:
+#
+# * {Creating Gems}[http://docs.rubygems.org/read/chapter/5]
+# * Gem::Specification
+#
+# Further RubyGems documentation can be found at:
+#
+# * {RubyGems API}[http://rubygems.rubyforge.org/rdoc] (also available from
+#   <tt>gem server</tt>)
+# * {RubyGems Bookshelf}[http://rubygem.org]
+#
+# == Bugs
+# 
+# You can submit bugs to the
+# {RubyGems bug tracker}[http://rubyforge.org/tracker/?atid=575&group_id=126&func=browse]
+# on RubyForge
+#
+# == Credits
+#
+# RubyGems was originally developed at RubyConf 2003 by:
+# 
+# * Rich Kilmer -- rich(at)infoether.com
+# * Chad Fowler -- chad(at)chadfowler.com
+# * David Black -- dblack(at)wobblini.net
+# * Paul Brannan -- paul(at)atdesk.com
+# * Jim Weirch -- {jim(at)weirichhouse.org}[mailto:jim@weirichhouse.org]
+#
+# RubyGems is currently maintained by Eric Hodel.
+#
+# Contributors:
+# 
+# * Gavin Sinclair -- gsinclair(at)soyabean.com.au
+# * George Marrows-- george.marrows(at)ntlworld.com
+# * Dick Davies -- rasputnik(at)hellooperator.net
+# * Mauricio Fernandez -- batsman.geo(at)yahoo.com
+# * Simon Strandgaard -- neoneye(at)adslhome.dk
+# * Dave Glasser -- glasser(at)mit.edu
+# * Paul Duncan -- pabs(at)pablotron.org
+# * Ville Aine -- vaine(at)cs.helsinki.fi
+# * Eric Hodel -- drbrain(at)segment7.net
+# * Daniel Berger -- djberg96(at)gmail.com
+# * Phil Hagelberg -- technomancy(at)gmail.com
+# * Ryan Davis
+#
+# (If your name is missing, PLEASE let us know!)
+#
+# Thanks!
+# 
+# -The RubyGems Team
 
 module Gem
 

@@ -23,8 +23,6 @@ class Date; end # for ruby_code if date.rb wasn't required
 # :startdoc:
 
 ##
-# == Gem::Specification
-#
 # The Specification class contains the metadata for a Gem.  Typically
 # defined in a .gemspec file or a Rakefile, and looks like this:
 #
@@ -35,8 +33,7 @@ class Date; end # for ruby_code if date.rb wasn't required
 #     ...
 #   end
 #
-# There are many <em>gemspec attributes</em>, and the best place to learn
-# about them in the "Gemspec Reference" linked from the RubyGems wiki.
+# For a great way to package gems, use Hoe.
 
 class Gem::Specification
 

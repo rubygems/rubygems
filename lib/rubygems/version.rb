@@ -69,15 +69,12 @@ class Gem::Version
 
   attr_reader :version
 
-  ##
-  # Returns true if +version+ is a valid version string.
-
   def self.correct?(version)
-    pattern = /\A\s*(#{VERSION_PATTERN})*\s*\z/o
-    case version
-    when Integer, pattern then true
-    else pattern === version.to_s
-    end
+    pattern = /\A\s*(#{VERSION_PATTERN})*\s*\z/
+
+    version.is_a? Integer or
+      version =~ pattern or
+      version.to_s =~ pattern
   end
 
   ##

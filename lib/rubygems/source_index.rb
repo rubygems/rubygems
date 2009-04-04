@@ -7,9 +7,12 @@
 require 'rubygems'
 require 'rubygems/user_interaction'
 require 'rubygems/specification'
+
+# :stopdoc:
 module Gem
-  autoload(:SpecFetcher, 'rubygems/spec_fetcher')
+  autoload :SpecFetcher, 'rubygems/spec_fetcher'
 end
+# :startdoc:
 
 ##
 # The SourceIndex object indexes all the gems available from a
@@ -564,15 +567,15 @@ class Gem::SourceIndex
 
 end
 
+# :stopdoc:
 module Gem
 
-  # :stopdoc:
-
+  ##
   # Cache is an alias for SourceIndex to allow older YAMLized source index
   # objects to load properly.
+
   Cache = SourceIndex
 
-  # :startdoc:
-
 end
+# :startdoc:
 

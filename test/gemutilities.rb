@@ -486,6 +486,12 @@ Also, a list:
     vc_windows? ? 'nmake' : 'make'
   end
 
+  # Returns whether or not the nmake command could be found.
+  #
+  def nmake_found?
+    system('nmake /? 1>NUL 2>&1')
+  end
+
   # NOTE Allow tests to use a random (but controlled) port number instead of
   # a hardcoded one. This helps CI tools when running parallels builds on
   # the same builder slave.

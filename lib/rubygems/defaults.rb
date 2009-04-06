@@ -52,8 +52,7 @@ module Gem
   # Deduce Ruby's --program-prefix and --program-suffix from its install name
 
   def self.default_exec_format
-    baseruby = ConfigMap[:BASERUBY] || 'ruby'
-    exec_format = ConfigMap[:ruby_install_name].sub(baseruby, '%s') rescue '%s'
+    exec_format = ConfigMap[:ruby_install_name].sub('ruby', '%s') rescue '%s'
 
     unless exec_format =~ /%s/ then
       raise Gem::Exception,

@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 
+2009-04-06  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rdoc/defaults.rb:  Don't allow gem to overwrite ruby on install.
+	  Fixes bug #24958 by Michael Soulier.
+
 2009-04-06  Daniel Berger  <djberg96@gmail.com>
 
-   * test/test_gem_ext_configure_builder.rb: Better handling for MS Windows.
-   * test/gemutilities.rb: Added the make_command and vc_windows? helper
-     methods.
+	* test/test_gem_ext_configure_builder.rb: Better handling for MS
+	  Windows.
+	* test/gemutilities.rb: Added the make_command and vc_windows? helper
+	  methods.
 
 2009-04-03  Eric Hodel  <drbrain@segment7.net>
 

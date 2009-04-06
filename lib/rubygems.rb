@@ -127,7 +127,6 @@ module Gem
   # :startdoc:
 
   ConfigMap.merge!(
-    :BASERUBY => RbConfig::CONFIG["BASERUBY"],
     :EXEEXT => RbConfig::CONFIG["EXEEXT"],
     :RUBY_SO_NAME => RbConfig::CONFIG["RUBY_SO_NAME"],
     :arch => RbConfig::CONFIG["arch"],

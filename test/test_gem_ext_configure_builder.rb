@@ -16,7 +16,7 @@ class TestGemExtConfigureBuilder < RubyGemTestCase
   end
 
   def test_self_build
-    return if RUBY_PLATFORM =~ /mswin/ # HACK
+    skip("test_self_build skipped on MS Windows") if win_platform?
 
     File.open File.join(@ext, './configure'), 'w' do |configure|
       configure.puts "#!/bin/sh\necho \"#{@makefile_body}\" > Makefile"
@@ -37,7 +37,7 @@ class TestGemExtConfigureBuilder < RubyGemTestCase
   end
 
   def test_self_build_fail
-    return if RUBY_PLATFORM =~ /mswin/ # HACK
+    skip("test_self_build_fail skipped on MS Windows") if win_platform?
     output = []
 
     error = assert_raises Gem::InstallError do
@@ -63,6 +63,12 @@ class TestGemExtConfigureBuilder < RubyGemTestCase
   end
 
   def test_self_build_has_makefile
+    if win_platform?
+      unless system('nmake /? 1>NUL 2>&1')
+        skip("test_self_build_has_makefile skipped - nmake not found")
+      end
+    end
+
     File.open File.join(@ext, 'Makefile'), 'w' do |makefile|
       makefile.puts @makefile_body
     end
@@ -72,8 +78,7 @@ class TestGemExtConfigureBuilder < RubyGemTestCase
       Gem::Ext::ConfigureBuilder.build nil, nil, @dest_path, output
     end
 
-    case RUBY_PLATFORM
-    when /mswin/ then
+    if win_platform?
       assert_equal 'nmake', output[0]
       assert_equal 'nmake install', output[2]
     else

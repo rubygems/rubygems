@@ -456,6 +456,36 @@ Also, a list:
     Gem.win_platform?
   end
 
+  # Returns whether or not we're on a version of Ruby built with VC++ (or
+  # Borland) versus Cygwin, Mingw, etc.
+  #
+  def self.vc_windows?
+    RUBY_PLATFORM.match('mswin')
+  end
+
+  # Returns whether or not we're on a version of Ruby built with VC++ (or
+  # Borland) versus Cygwin, Mingw, etc.
+  #
+  def vc_windows?
+    RUBY_PLATFORM.match('mswin')
+  end
+
+  # Returns the make command for the current platform. For versions of Ruby
+  # built on MS Windows with VC++ or Borland it will return 'nmake'. On all
+  # other platforms, including Cygwin, it will return 'make'.
+  #
+  def self.make_command
+    vc_windows? ? 'nmake' : 'make'
+  end
+
+  # Returns the make command for the current platform. For versions of Ruby
+  # built on MS Windows with VC++ or Borland it will return 'nmake'. On all
+  # other platforms, including Cygwin, it will return 'make'.
+  #
+  def make_command
+    vc_windows? ? 'nmake' : 'make'
+  end
+
   # NOTE Allow tests to use a random (but controlled) port number instead of
   # a hardcoded one. This helps CI tools when running parallels builds on
   # the same builder slave.

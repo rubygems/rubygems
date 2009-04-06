@@ -63,10 +63,8 @@ class TestGemExtConfigureBuilder < RubyGemTestCase
   end
 
   def test_self_build_has_makefile
-    if RUBY_PLATFORM =~ /mswin/
-      unless system('nmake /? 1>NUL 2>&1')
-        skip("test_self_build_has_makefile skipped - nmake not found")
-      end
+    if vc_windows? && !nmake_found?
+      skip("test_self_build_has_makefile skipped - nmake not found")
     end
 
     File.open File.join(@ext, 'Makefile'), 'w' do |makefile|

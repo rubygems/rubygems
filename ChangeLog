@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2009-04-06  Daniel Berger  <djberg96@gmail.com>
+
+   * test/test_gem_ext_configure_builder.rb: Better handling for MS Windows.
+
 2009-04-03  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/: RDoc improvements.

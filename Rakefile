@@ -351,7 +351,7 @@ file "pkg/#{Spec.full_name}.gem" do
   end
 end
 
-Rake::GemPackageTask.new(Spec) do |p| end
+Gem::PackageTask.new(Spec) do |p| end
 
 desc "Build the Gem spec file for the rubygems-update package"
 task :gemspec => "pkg/rubygems-update.gemspec"

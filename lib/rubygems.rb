@@ -620,15 +620,6 @@ module Gem
   end
 
   ##
-  # manage_gems is useless and deprecated.  Don't call it anymore.
-
-  def self.manage_gems # :nodoc:
-    file, lineno = location_of_caller
-
-    warn "#{file}:#{lineno}:Warning: Gem::manage_gems is deprecated and will be removed on or after March 2009."
-  end
-
-  ##
   # The version of the Marshal format for your Ruby.
 
   def self.marshal_version

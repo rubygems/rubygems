@@ -11,12 +11,7 @@ $:.unshift 'lib'
 require 'rubygems'
 require 'rake/clean'
 require 'rake/testtask'
-require 'rake/packagetask'
-require 'rake/gempackagetask'
-
-def announce(msg='')
-  $stderr.puts msg
-end
+require 'rubygems/package_task'
 
 def generate_rubygems_version(path, version)
   open path, 'w' do |f|
@@ -44,22 +39,15 @@ end
   end
 end
 
-if RUBY_PLATFORM.match('mswin')
-   ENV['CERT_DIR'] ||= (File.join(ENV['USERPROFILE'], '.gem'))
-else
-   ENV['CERT_DIR'] ||= File.expand_path(File.join('~', '.gem'))
-end
+ENV['CERT_DIR'] ||=  File.join(Gem.user_home, '.gem')
 
 PKG_NAME = 'rubygems'
-def package_version
-  `ruby -Ilib bin/gem environment packageversion`.chomp
-end
 
-if ENV['REL']
+if ENV['REL'] then
   PKG_VERSION = ENV['REL']
-  CURRENT_VERSION = package_version
+  CURRENT_VERSION = Gem::RubyGemsVersion
 else
-  PKG_VERSION = package_version
+  PKG_VERSION = Gem::RubyGemsVersion
   CURRENT_VERSION = PKG_VERSION
 end
 
@@ -102,32 +90,10 @@ Rake::TestTask.new(:test_all) do |t|
   t.warning = true
 end
 
-desc "Run the tests for a build"
-task :build_tests do
-  html_dir = ENV['TESTRESULTS'] || 'html/tests'
-  ruby %{-Ilib scripts/buildtests.rb #{html_dir}}
-  open("#{html_dir}/summary.html") do |inf|
-    open("#{html_dir}/summary.new", "w") do |outf|
-      inf.each do |line|
-        if line =~ /td align/
-          line = "    <td align=\"left\">#{Time.now}</td><td align=\"right\">"
-        end
-        outf.puts line
-      end
-    end
-  end
-  mv "#{html_dir}/summary.html", "#{html_dir}/summary.old"
-  mv "#{html_dir}/summary.new", "#{html_dir}/summary.html"
-end
-
 # Shortcuts for test targets
 task :tf => [:test_functional]
 task :tu => [:test_units]
 task :ta => [:test_all]
-
-task :gemtest do
-  ruby %{-Ilib -rscripts/runtest -e 'run_tests("test/test_gempaths.rb", true)'}
-end
 
 # --------------------------------------------------------------------
 # Creating a release
@@ -141,22 +107,18 @@ task :release => [
   :package,
   :tag] do
 
-  announce
-  announce "**************************************************************"
-  announce "* Release #{PKG_VERSION} Complete."
-  announce "* Packages ready to upload."
-  announce "**************************************************************"
-  announce
+  warn "**************************************************************"
+  warn "* Release #{PKG_VERSION} Complete."
+  warn "* Packages ready to upload."
+  warn "**************************************************************"
 end
 
 desc "Validate that everything is ready to go for a release."
 task :prerelease do
-  announce
-  announce "**************************************************************"
-  announce "* Making RubyGem Release #{PKG_VERSION}"
-  announce "* (current version #{CURRENT_VERSION})"
-  announce "**************************************************************"
-  announce
+  warn "**************************************************************"
+  warn "* Making RubyGem Release #{PKG_VERSION}"
+  warn "* (current version #{CURRENT_VERSION})"
+  warn "**************************************************************"
 
   # Is a release number supplied?
   raise "Usage: rake release REL=x.y.z [REUSE=tag_suffix]" unless ENV['REL']
@@ -168,28 +130,28 @@ task :prerelease do
   end
 
   # Are all source files checked in?
-  if ENV['RELTEST']
-    announce "Release Task Testing, skipping checked-in file test"
+  if ENV['RELTEST'] then
+    warn "Release Task Testing, skipping checked-in file test"
   else
-    announce "Checking for unchecked-in files..."
+    warn "Checking for unchecked-in files..."
     data = `svn st`
     unless data =~ /^$/
       abort "svn status is not clean ... do you have unchecked-in files?"
     end
-    announce "No outstanding checkins found ... OK"
+    warn "No outstanding checkins found ... OK"
   end
 end
 
 task :update_version => [:prerelease] do
-  if PKG_VERSION == CURRENT_VERSION
-    announce "No version change ... skipping version update"
+  if PKG_VERSION == CURRENT_VERSION then
+    warn "No version change ... skipping version update"
   else
-    announce "Updating RubyGem version to #{PKG_VERSION}"
+    warn "Updating RubyGem version to #{PKG_VERSION}"
 
     generate_rubygems_version 'lib/rubygems/rubygems_version.rb', PKG_VERSION
 
-    if ENV['RELTEST']
-      announce "Release Task Testing, skipping commiting of new version"
+    if ENV['RELTEST'] then
+      warn "Release Task Testing, skipping commiting of new version"
     else
       sh %{svn commit -m "Updated to version #{PKG_VERSION}" lib/rubygems/rubygems_version.rb} # "
     end
@@ -199,16 +161,14 @@ end
 task :tag => [:prerelease] do
   reltag = "REL_#{PKG_VERSION.gsub(/\./, '_')}"
   reltag = "REL_#{ENV['REUSE'].gsub(/\./, '_')}" if ENV['REUSE']
-  announce "Tagging SVN with [#{reltag}]"
+  warn "Tagging SVN with [#{reltag}]"
   software_dir = File.basename(Dir.pwd)
-  if ENV['RELTEST']
-    announce "Release Task Testing, skipping SVN tagging (in dir #{software_dir})"
+  if ENV['RELTEST'] then
+    warn "Release Task Testing, skipping SVN tagging (in dir #{software_dir})"
   else
     sh %{svn copy svn+ssh://rubyforge.org/var/svn/rubygems/trunk svn+ssh://rubyforge.org/var/svn/rubygems/tags/#{reltag}}
   end
 end
-
-# --------------------------------------------------------------------
 
 begin # rcov
   require 'rcov/rcovtask'
@@ -224,30 +184,21 @@ begin # rcov
 rescue LoadError
 end
 
-# --------------------------------------------------------------------
-# Create a task to build the RDOC documentation tree.
-
-begin
+begin # rdoc
   gem 'rdoc'
   require 'rdoc/task'
 
   desc "Create the RDoc html files"
-  RDoc::Task.new("rdoc") { |rdoc|
+  RDoc::Task.new :rdoc do |rdoc|
     rdoc.rdoc_dir = 'html'
-    rdoc.title    = "RubyGems"
+    rdoc.title    = "RubyGems #{CURRENT_VERSION}"
     rdoc.options << '--line-numbers' << '--main' << 'README'
-    rdoc.rdoc_files.include('README', 'LICENSE.txt', 'GPL.txt')
-    rdoc.rdoc_files.include('lib/**/*.rb')
-    rdoc.rdoc_files.include('doc/**/*.rdoc')
-  }
+    rdoc.rdoc_files.include 'README', 'LICENSE.txt', 'GPL.txt', 'lib', 'doc'
+  end
 
-  desc "Publish the RDOCs on RubyForge"
+  desc "Publish RDoc on RubyForge"
   task :publish_rdoc => ["html/index.html"] do
-    # NOTE: This task assumes that you have an SSH alias setup for rubyforge.
-    mkdir_p "emptydir"
-    sh "scp -rq emptydir rubyforge:/var/www/gforge-projects/rubygems/rdoc"
-    sh "scp -rq html/* rubyforge:/var/www/gforge-projects/rubygems/rdoc"
-    rm_r "emptydir"
+    sh "rsync -avP --delete html/ rubyforge.org:/var/www/gforge-projects/rubygems/rdoc"
   end
 rescue Gem::LoadError
   warn "install RDoc 2.4.2+"
@@ -280,30 +231,9 @@ end
 
 # Package tasks
 
-PKG_FILES = FileList[
-  ".document",
-  "ChangeLog",
-  "GPL.txt",
-  "LICENSE.txt",
-  "README",
-  "Rakefile",
-  "bin/*",
-  "doc/release_notes/*",
-  "lib/**/*.rb",
-  "pkgs/**/*",
-  "scripts/*.rb",
-  "setup.rb",
-  "test/**/*"
-]
+PKG_FILES = File.read('Manifest.txt').split "\n"
 
-PKG_FILES.exclude %r(^test/temp(/|$))
-PKG_FILES.exclude %r(\*\.rbc$)
-
-task :package_files do
-  puts PKG_FILES
-end
-
-Rake::PackageTask.new("package") do |p|
+Rake::PackageTask.new :package do |p|
   p.name          = PKG_NAME
   p.version       = PKG_VERSION
   p.need_tar      = true
@@ -317,16 +247,22 @@ Spec = Gem::Specification.new do |s|
   s.name                  = PKG_NAME + "-update"
   s.version               = PKG_VERSION
   s.required_ruby_version = Gem::Requirement.new '> 1.8.3'
-  s.summary               = "RubyGems Update GEM"
-  s.description           = "RubyGems is a package management framework for Ruby. This Gem\nis a update for the base RubyGems software.  You must have a base\ninstallation of RubyGems before this update can be applied.\n"
-  s.files                 = PKG_FILES.to_a
+  s.summary               = "RubyGems update gem"
+  s.description           = <<-DESCRIPTION
+RubyGems is a package management framework for Ruby.
+
+This gem is an update for the RubyGems software.  You must have an
+installation of RubyGems before this update can be applied.
+  DESCRIPTION
+  s.files                 = PKG_FILES
   s.require_path          = 'lib'
   s.authors               = ['Jim Weirich', 'Chad Fowler', 'Eric Hodel']
   s.email                 = "rubygems-developers@rubyforge.org"
   s.homepage              = "http://rubygems.rubyforge.org"
   s.rubyforge_project     = "rubygems"
-  s.bindir                = "bin" # Use these for applications.
+  s.bindir                = "bin"
   s.executables           = ["update_rubygems"]
+
   certdir                 = ENV['CERT_DIR']
 
   if certdir then
@@ -351,12 +287,14 @@ file "pkg/#{Spec.full_name}.gem" do
   end
 end
 
-Gem::PackageTask.new(Spec) do |p| end
+Gem::PackageTask.new Spec do |p| end
 
 desc "Build the Gem spec file for the rubygems-update package"
 task :gemspec => "pkg/rubygems-update.gemspec"
 file "pkg/rubygems-update.gemspec" => ["pkg", "Rakefile"] do |t|
-  open(t.name, "w") do |f| f.puts Spec.to_yaml end
+  open t.name, 'w' do |f|
+    f.puts Spec.to_yaml
+  end
 end
 
 desc "Install RubyGems"

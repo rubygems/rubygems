@@ -5,6 +5,8 @@
 	* lib/rubygems/defaults.rb:  Don't allow gem to overwrite ruby on
 	  install.  Fixes bug #24958 by Michael Soulier.
 	* doc/release_notes/rel_1_3_2.rdoc:  Preliminary 1.3.2 release notes.
+	* Rakefile:  Trim off some stale code, switch to Manifest.txt, one
+	  step closer to Hoe!
 
 2009-04-06  Daniel Berger  <djberg96@gmail.com>
 

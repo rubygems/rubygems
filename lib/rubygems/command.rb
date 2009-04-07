@@ -12,7 +12,7 @@ require 'rubygems/user_interaction'
 # #new, #execute, #arguments, #defaults_str, #description and #usage
 # (as appropriate).  See the above mentioned methods for details.
 #
-# A very good example to look at is Gem::Commands::OutdatedCommand
+# A very good example to look at is Gem::Commands::ContentsCommand
 
 class Gem::Command
 

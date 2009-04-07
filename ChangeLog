@@ -71,11 +71,11 @@
    * lib/rubygems/remote_fetcher.rb: Always escape URI's to deal with spaces
      and such, regardless of platform.
    * lib/rubygesm/validator.rb: Use the test-unit gem if installed.
-     Part of the fix for RF #24261
+     Part of the fix for RF #24261 by Daniel Berger
    * lib/rubygems/commands/install_command.rb: Explictly require
      rubygems/uninstaller.rb if the user wants to bail because of failed
      tests.
-     Part of the fix for RF #24261
+     Part of the fix for RF #24261 by Daniel Berger
 
 2009-03-17  Eric Hodel  <drbrain@segment7.net>
 
@@ -175,7 +175,7 @@
    * lib/rubygems/specification: Refactored and fixed the installation_path
    method. It was overwrought and it now no longer uses File::SEPARATOR
    explicitly.
-   [RubyForge: bug #23879]
+   [RubyForge: bug #23879 by Daniel Berger]
 
 2009-02-10  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/validator.rb: The Gem::Validator#verify_gem_file method
@@ -185,7 +185,7 @@
 2009-01-21  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/remote_fetcher.rb: Split out nil and file handling in
    the download method. Modified file URI handling to work properly.
-   [RubyForge: bug #16495]
+   [RubyForge: bug #16495 by Paul Sadauskas]
 
 2009-01-19  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/remote_fetcher.rb: Added uri scheme validation back
@@ -212,7 +212,7 @@
 
 2009-01-14  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/specification.rb: Added support for a license attribute.
-   [RubyForge: feature #11041 (partial)]
+   [RubyForge: feature #11041 (partial) by Kevin Williams]
    * lib/rubygems/commands/query_command.rb: Gem detail information now
    includes license information.
    * test/test_gem_specification.rb: Added tests for the license attribute.
@@ -236,23 +236,23 @@
 2009-1-4  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/installer.rb: Remove existing path if it already
    exists before installing.
-   [RubyForge: patch #22837]
+   [RubyForge: patch #22837 by Eric Wong]
    * lib/rubygems.rb: Minor modification to the location_of_caller
    method - deal with possible characters after line number
 
 2009-1-3  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems.rb: Better activation error message.
-   [RubyForge: patch #23082]
+   [RubyForge: patch #23082 by Tim Carey-Smith]
 
 2009-1-2  Daniel Berger <djberg96@gmail.com>
    * lib/rubygems/ext/rake_builder.rb: Quote path if it contains spaces
-   [RubyForge: patch #23003]
+   [RubyForge: patch #23003 by Charlie Savage]
    * lib/rubygems/local_remote_options.rb: Ignore duplicate sources
-   [RubyForge: bug #22277]
+   [RubyForge: bug #22277 by Elliot Temple]
    * lib/rubygems/remote_fetcher.rb: Automatically normalize the URI
-   [RubyForge: bug #22151]
+   [RubyForge: bug #22151 by Alex Legler]
    * lib/rubygems/specification.rb: Ensure that specification_version is
-   a Fixnum [RubyForge: bug #22598]
+   a Fixnum [RubyForge: bug #22598 by Tsutomu Kuroda]
    * lib/rubygems/specification.rb: Bumped the CURRENT_SPECIFICATION_VERSION
    and added an entry to the SPECIFICATION_VERSION_HISTORY
 
@@ -262,27 +262,29 @@
    was causing a warning.
    * lib/rubygems/platform.rb: Added an empty? method in order to
    better handle gem indexing when dealing with gems created
-   prior to 0.9.5. [Rubyforge: bug #22603]
+   prior to 0.9.5. [Rubyforge: bug #22603 by Johnathan Conley]
    * lib/rubygems.rb: Added an explicit 'require "etc"'.
-   [RubyForge: bug #22313]
+   [RubyForge: bug #22313 by Matthew Boedicker]
 
 2008-12-31  Daniel Berger <djberg96@gmail.com>
 
    * lib/rubygems/local_remote_options: Allow 'https' as a valid scheme
-   in addition to 'http' [RubyForge: patch #22485] 
+   in addition to 'http' [RubyForge: patch #22485 by Duarte Henriques] 
    * setup.rb: Deal with extraneous quotation mark when autogenerating
-   .bat file on MS Windows [RubyForge: bug #22712]
+   .bat file on MS Windows [RubyForge: bug #22712 Takayuki Ishikawa]
    * lib/rubygems/commands/unpack_command.rb: Fixed the --target option
-   [RubyForge: patch #22532]
+   [RubyForge: patch #22532 by Bryan Ash]
 
 2008-12-30  Daniel Berger <djberg96@gmail.com>
 
    * lib/rubygems/builder.rb: Don't allow .gem file to be added back
-   onto itself [RubyForge: bug #19136, patch #23346]
+   onto itself [RubyForge: bug #19136, patch #23346 by Daniel Berger]
    * lib/rubygems/defaults.rb: The default_path now only returns the
-   default_dir if the Gem.user_home doesn't exist [RubyForge: bug #23037]
+   default_dir if the Gem.user_home doesn't exist
+   [RubyForge: bug #23037 by Pierre PLR]
    * lib/rubygems.rb: Handle the possibility that Etc.getpwuid might
-   return nil on platforms other than Windows [RubyForge: bug #22764]
+   return nil on platforms other than Windows
+   [RubyForge: bug #22764 by Dudley Flanders]
 
 2008-12-16  Eric Hodel  <drbrain@segment7.net>
 

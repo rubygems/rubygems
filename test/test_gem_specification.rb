@@ -218,6 +218,80 @@ end
     assert_equal "1.3.5", spec.version.to_s
   end
 
+  def test_initialize_copy
+    spec = Gem::Specification.new do |s|
+      s.name = "blah"
+      s.version = "1.3.5"
+      s.summary = 'summary'
+      s.description = 'description'
+      s.authors = 'author a', 'author b'
+      s.licenses = 'BSD'
+      s.files = 'lib/file.rb'
+      s.test_files = 'test/file.rb'
+      s.rdoc_options = '--foo'
+      s.extra_rdoc_files = 'README.txt'
+      s.executables = 'exec'
+      s.extensions = 'ext/extconf.rb'
+      s.requirements = 'requirement'
+      s.add_dependency 'some_gem'
+    end
+
+    new_spec = spec.dup
+
+    assert_equal "blah", spec.name
+    assert_same  spec.name, new_spec.name
+
+    assert_equal "1.3.5", spec.version.to_s
+    assert_same spec.version, new_spec.version
+
+    assert_equal Gem::Platform::RUBY, spec.platform
+    assert_same spec.platform, new_spec.platform
+
+    assert_equal 'summary', spec.summary
+    assert_same spec.summary, new_spec.summary
+
+    assert_equal %w[lib/file.rb test/file.rb bin/exec README.txt
+                    ext/extconf.rb],
+                 spec.files
+    refute_same spec.files, new_spec.files, 'files'
+
+    assert_equal %w[test/file.rb], spec.test_files
+    refute_same spec.test_files, new_spec.test_files, 'test_files'
+
+    assert_equal %w[--foo], spec.rdoc_options
+    refute_same spec.rdoc_options, new_spec.rdoc_options, 'rdoc_options'
+
+    assert_equal %w[README.txt], spec.extra_rdoc_files
+    refute_same spec.extra_rdoc_files, new_spec.extra_rdoc_files,
+                'extra_rdoc_files'
+
+    assert_equal %w[exec], spec.executables
+    refute_same spec.executables, new_spec.executables, 'executables'
+
+    assert_equal %w[ext/extconf.rb], spec.extensions
+    refute_same spec.extensions, new_spec.extensions, 'extensions'
+
+    assert_equal %w[requirement], spec.requirements
+    refute_same spec.requirements, new_spec.requirements, 'requirements'
+
+    assert_equal [Gem::Dependency.new('some_gem', Gem::Requirement.default)],
+                 spec.dependencies
+    refute_same spec.dependencies, new_spec.dependencies, 'dependencies'
+
+    assert_equal 'bin', spec.bindir
+    assert_same spec.bindir, new_spec.bindir
+
+    assert_equal false, spec.has_rdoc
+    assert_same spec.has_rdoc, new_spec.has_rdoc
+
+    assert_equal '>= 0', spec.required_ruby_version.to_s
+    assert_same spec.required_ruby_version, new_spec.required_ruby_version
+
+    assert_equal '>= 0', spec.required_rubygems_version.to_s
+    assert_same spec.required_rubygems_version,
+                new_spec.required_rubygems_version
+  end
+
   def test__dump
     @a2.platform = Gem::Platform.local
     @a2.instance_variable_set :@original_platform, 'old_platform'

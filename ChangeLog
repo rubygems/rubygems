@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2009-04-07  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb:  Implement #initialize_copy.
+
 2009-04-06  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/defaults.rb:  Don't allow gem to overwrite ruby on

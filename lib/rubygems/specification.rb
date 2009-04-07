@@ -437,6 +437,21 @@ class Gem::Specification
   end
 
   ##
+  # Duplicates array_attributes from +other_spec+ so state isn't shared.
+
+  def initialize_copy(other_spec)
+    other_ivars = other_spec.instance_variables
+    other_ivars = other_ivars.map { |ivar| ivar.intern } if # for 1.9
+      other_ivars.any? { |ivar| String === ivar }
+
+    self.class.array_attributes.each do |name|
+      name = :"@#{name}"
+      next unless other_ivars.include? name
+      instance_variable_set name, other_spec.instance_variable_get(name).dup
+    end
+  end
+
+  ##
   # Each attribute has a default value (possibly nil).  Here, we initialize
   # all attributes to their default value.  This is done through the
   # accessor methods, so special behaviours will be honored.  Furthermore,

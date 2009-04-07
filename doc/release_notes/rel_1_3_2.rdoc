@@ -45,6 +45,7 @@ Select Bugs Fixed:
   * Now removes existing path before installing.  Bug #22837.
   * Uses Gem::bin_path in executable stubs to work around Kernel#load bug in
     1.9.
+  * Correctly handle build args (after --) via the API.  Bug #23210.
 * --user-install
   * `gem install --no-user-install` now works.  Patch #23573 by Alf Mikula.
   * `gem uninstall` can now uninstall from ~/.gem.  Bug #23760 by Roger Pack.

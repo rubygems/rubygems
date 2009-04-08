@@ -1213,7 +1213,10 @@ class Gem::Specification
   # Files included in this gem.  You cannot append to this accessor, you must
   # assign to it.
   #
-  # Only add files to this list, not directories, symlinks, etc.
+  # Only add files you can require to this list, not directories, etc.
+  #
+  # Directories are automatically stripped from this list when building a gem,
+  # other non-files cause an error.
 
   array_attribute :files
 

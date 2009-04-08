@@ -48,8 +48,7 @@ class GemInstallerTestCase < RubyGemTestCase
     @spec.executables = ["my_exec"]
 
     FileUtils.mkdir_p util_gem_bindir(version)
-    exec_file = @installer.formatted_program_filename "my_exec"
-    exec_path = File.join util_gem_bindir(version), exec_file
+    exec_path = File.join util_gem_bindir(version), "my_exec"
     File.open exec_path, 'w' do |f|
       f.puts shebang
     end

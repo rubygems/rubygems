@@ -3,6 +3,8 @@
 2009-04-07  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb:  Implement #initialize_copy.
+	* lib/rubygems/commands/contents_command.rb:  Add --no-prefix and
+	  --all.
 
 2009-04-06  Eric Hodel  <drbrain@segment7.net>
 

@@ -1016,15 +1016,20 @@ end
   def test_validate_files
     util_setup_validate
 
-    @a1.files += ['lib']
+    @a1.files += ['lib', 'lib2']
 
-    e = assert_raises Gem::InvalidSpecificationException do
-      Dir.chdir @tempdir do
+    Dir.chdir @tempdir do
+      FileUtils.ln_s '/root/path', 'lib2'
+
+      e = assert_raises Gem::InvalidSpecificationException do
         @a1.validate
       end
+
+      assert_equal '["lib2"] are not files', e.message
     end
 
-    assert_equal '["lib"] are not files', e.message
+    assert_equal %w[lib/code.rb test/suite.rb bin/exec ext/a/extconf.rb lib2],
+                 @a1.files
   end
 
   def test_validate_homepage

@@ -20,8 +20,9 @@ Select New Features:
 * Added Gem::bin_path to make finding executables easier.  Patch #24114 by
   James Tucker.
 * Various improvements to build arguments for installing gems.
+* `gem contents` added --all and --no-prefix.
 * Gem::Specification
-  * #validate complains about not-files.
+  * #validate strips directories and errors on not-files.
   * #description no longer removes newlines.
   * #name must be a String.
   * FIXME is no longer allowed in various fields.

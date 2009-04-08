@@ -820,6 +820,12 @@ class Gem::Specification
             'specification must have at least one require_path'
     end
 
+    @files.delete_if            do |file| File.directory? file end
+    @test_files.delete_if       do |file| File.directory? file end
+    @executables.delete_if      do |file| File.directory? file end
+    @extra_rdoc_files.delete_if do |file| File.directory? file end
+    @extensions.delete_if       do |file| File.directory? file end
+
     non_files = files.select do |file|
       !File.file? file
     end
@@ -1206,6 +1212,8 @@ class Gem::Specification
   #
   # Files included in this gem.  You cannot append to this accessor, you must
   # assign to it.
+  #
+  # Only add files to this list, not directories, symlinks, etc.
 
   array_attribute :files
 

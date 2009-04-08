@@ -23,6 +23,13 @@ require 'rubygems/package'
 require 'rubygems/test_utilities'
 require 'pp'
 
+begin
+  gem 'rdoc'
+rescue Gem::LoadError
+end
+
+require 'rdoc/rdoc'
+
 require File.join(File.expand_path(File.dirname(__FILE__)), 'mockgemui')
 
 module Gem

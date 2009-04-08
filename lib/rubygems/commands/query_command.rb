@@ -193,7 +193,9 @@ class Gem::Commands::QueryCommand < Gem::Command
             entry << "    #{title}: #{platforms.values.sort.join ', '}\n"
           else
             entry << "    Platforms:\n"
-            platforms.each do |version, pls|
+            platforms.sort_by do |version,|
+              version
+            end.each do |version, pls|
               label = "        #{version}: "
               data = format_text pls.sort.join(', '), 68, label.length
               data[0, label.length] = label
@@ -214,12 +216,12 @@ class Gem::Commands::QueryCommand < Gem::Command
         if spec.homepage and not spec.homepage.empty? then
           entry << "\n" << format_text("Homepage: #{spec.homepage}", 68, 4)
         end
-        
+
         if spec.license and not spec.license.empty? then
           licenses = "License#{spec.licenses.length > 1 ? 's' : ''}: "
           licenses << spec.licenses.join(', ')
           entry << "\n" << format_text(licenses, 68, 4)
-        end         
+        end
 
         if spec.loaded_from then
           if matching_tuples.length == 1 then

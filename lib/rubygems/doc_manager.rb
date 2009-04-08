@@ -50,7 +50,7 @@ class Gem::DocManager
 
     rescue LoadError => e
       raise Gem::DocumentError,
-          "ERROR: RDoc documentation generator not installed!"
+          "ERROR: RDoc documentation generator not installed: #{e}"
     end
   end
 

@@ -75,6 +75,32 @@ end
 #   <tt>gem server</tt>)
 # * {RubyGems Bookshelf}[http://rubygem.org]
 #
+# == RubyGems Plugins
+#
+# As of RubyGems 1.3.2, RubyGems will load plugins installed in gems or
+# $LOAD_PATH.  Plugins must be named 'rubygems_plugin' are discovered via
+# Gem::find_files then loaded.  Take care when implementing a plugin as your
+# plugin file may be loaded multiple times if multiple versions of your gem
+# are installed.
+#
+# For an example plugin, see the graph gem which adds a `gem graph` command.
+#
+# == RubyGems Defaults, Packaging
+#
+# RubyGems defaults are stored in rubygems/defaults.rb.  If you're packaging
+# RubyGems or implementing Ruby you can change RubyGems' defaults.
+#
+# For RubyGems packagers, provide lib/rubygems/operating_system.rb and
+# override any defaults from lib/rubygems/defaults.rb.
+#
+# For Ruby implementers, provide lib/rubygems/#{RUBY_ENGINE}.rb and override
+# any defaults from lib/rubygems/defaults.rb.
+#
+# If you need RubyGems to perform extra work on install or uninstall, your
+# defaults override file can set pre and post install and uninstall hooks.
+# See Gem::pre_install, Gem::pre_uninstall, Gem::post_install,
+# Gem::post_uninstall.
+#
 # == Bugs
 # 
 # You can submit bugs to the

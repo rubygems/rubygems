@@ -1019,7 +1019,7 @@ end
     @a1.files += ['lib', 'lib2']
 
     Dir.chdir @tempdir do
-      FileUtils.ln_s '/root/path', 'lib2'
+      FileUtils.ln_s '/root/path', 'lib2' unless vc_windows?
 
       e = assert_raises Gem::InvalidSpecificationException do
         @a1.validate

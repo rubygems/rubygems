@@ -253,6 +253,13 @@ class Gem::Indexer
           # while the others are hashes. See the TODO in source_index.rb
           spec = spec.flatten.last
           platform = spec.original_platform
+
+          # win32-api-1.0.4-x86-mswin32-60
+          unless String === platform then
+            alert_warning "Skipping invalid platform in gem: #{spec.full_name}"
+            next
+          end
+
           platform = Gem::Platform::RUBY if platform.nil? or platform.empty?
           [spec.name, spec.version, platform]
         end

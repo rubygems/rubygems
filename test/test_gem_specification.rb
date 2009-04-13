@@ -921,7 +921,15 @@ end
         @a1.validate
       end
 
-      assert_equal '"FIXME" is not an author', e.message
+      assert_equal '"FIXME" or "TODO" is not an author', e.message
+
+      @a1.authors = ['TODO (who is writing this software)']
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @a1.validate
+      end
+
+      assert_equal '"FIXME" or "TODO" is not an author', e.message
     end
   end
 
@@ -950,7 +958,15 @@ end
         @a1.validate
       end
 
-      assert_equal '"FIXME" is not a description', e.message
+      assert_equal '"FIXME" or "TODO" is not a description', e.message
+
+      @a1.description = 'TODO (describe your package)'
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @a1.validate
+      end
+
+      assert_equal '"FIXME" or "TODO" is not a description', e.message
     end
   end
 
@@ -972,7 +988,15 @@ end
         @a1.validate
       end
 
-      assert_equal '"FIXME" is not an email address', e.message
+      assert_equal '"FIXME" or "TODO" is not an email address', e.message
+
+      @a1.email = 'TODO (your e-mail)'
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @a1.validate
+      end
+
+      assert_equal '"FIXME" or "TODO" is not an email address', e.message
     end
   end
 
@@ -1157,7 +1181,15 @@ end
         @a1.validate
       end
 
-      assert_equal '"FIXME" is not a summary', e.message
+      assert_equal '"FIXME" or "TODO" is not a summary', e.message
+
+      @a1.summary = 'TODO (describe your package)'
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @a1.validate
+      end
+
+      assert_equal '"FIXME" or "TODO" is not a summary', e.message
     end
   end
 

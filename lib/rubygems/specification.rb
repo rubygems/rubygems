@@ -861,26 +861,26 @@ class Gem::Specification
       end
     }
 
-    # FIXME
+    # reject FIXME and TODO
 
-    unless authors.grep(/FIXME/).empty? then
+    unless authors.grep(/FIXME|TODO/).empty? then
       raise Gem::InvalidSpecificationException,
-            '"FIXME" is not an author'
+            '"FIXME" or "TODO" is not an author'
     end
 
-    unless Array(email).grep(/FIXME/).empty? then
+    unless Array(email).grep(/FIXME|TODO/).empty? then
       raise Gem::InvalidSpecificationException,
-            '"FIXME" is not an email address'
+            '"FIXME" or "TODO" is not an email address'
     end
 
-    if description =~ /FIXME/ then
+    if description =~ /FIXME|TODO/ then
       raise Gem::InvalidSpecificationException,
-            '"FIXME" is not a description'
+            '"FIXME" or "TODO" is not a description'
     end
 
-    if summary =~ /FIXME/ then
+    if summary =~ /FIXME|TODO/ then
       raise Gem::InvalidSpecificationException,
-            '"FIXME" is not a summary'
+            '"FIXME" or "TODO" is not a summary'
     end
 
     unless homepage.empty? or homepage =~ /\A[a-z][a-z\d+.-]*:/i then

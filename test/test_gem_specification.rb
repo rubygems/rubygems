@@ -952,6 +952,25 @@ end
     util_setup_validate
 
     Dir.chdir @tempdir do
+      @a1.description = ''
+
+      use_ui @ui do
+        @a1.validate
+      end
+
+      assert_equal "WARNING:  no description specified\n", @ui.error, 'error'
+
+      @ui = MockGemUi.new
+      @a1.summary = 'this is my summary'
+      @a1.description = @a1.summary
+
+      use_ui @ui do
+        @a1.validate
+      end
+
+      assert_equal "WARNING:  description and summary are identical\n",
+                   @ui.error, 'error'
+
       @a1.description = 'FIXME (describe your package)'
 
       e = assert_raises Gem::InvalidSpecificationException do

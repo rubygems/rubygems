@@ -25,7 +25,7 @@ Select New Features:
   * #validate strips directories and errors on not-files.
   * #description no longer removes newlines.
   * #name must be a String.
-  * FIXME is no longer allowed in various fields.
+  * FIXME and TODO are no longer allowed in various fields.
   * Added support for a license attribute.  Feature #11041 (partial).
   * Removed Gem::Specification::list, too much process growth.  Bug #23668 by
     Steve Purcell.

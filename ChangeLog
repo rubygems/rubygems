@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2009-04-14  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb:  Complain when summary and
+	  description are identical.
+
 2009-04-08  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb:  Strip directories, complain for

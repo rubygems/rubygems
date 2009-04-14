@@ -890,9 +890,13 @@ class Gem::Specification
 
     # Warnings
 
-    %w[author email homepage rubyforge_project summary].each do |attribute|
+    %w[author description email homepage rubyforge_project summary].each do |attribute|
       value = self.send attribute
       alert_warning "no #{attribute} specified" if value.nil? or value.empty?
+    end
+
+    if summary and not summary.empty? and description == summary then
+      alert_warning 'description and summary are identical'
     end
 
     alert_warning "RDoc will not be generated (has_rdoc == false)" unless

@@ -40,7 +40,8 @@ require 'rake/packagetask'
 # Example using a Gem::Specification:
 #
 #   require 'rubygems'
-#
+#   require 'rubygems/package_task'
+#   
 #   spec = Gem::Specification.new do |s|
 #     s.platform = Gem::Platform::RUBY
 #     s.summary = "Ruby based make-like utility."

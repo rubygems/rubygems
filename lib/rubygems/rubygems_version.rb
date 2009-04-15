@@ -5,5 +5,15 @@
 #++
 
 module Gem
-  RubyGemsVersion = '1.3.1.2403'
+
+  ##
+  # The version of RubyGems you are using
+
+  RubyGemsVersion = '1.3.2'
+
+  ##
+  # The version of RubyGems you are using (duplicated for familiarity)
+
+  VERSION = RubyGemsVersion
+
 end

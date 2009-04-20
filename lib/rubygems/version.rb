@@ -20,9 +20,15 @@ require 'rubygems'
 # parts are sorted alphabetically using the normal Ruby string sorting
 # rules.
 #
+# Prereleases sort between real releases (newest to oldest):
+#
+# 1. 1.0
+# 2. 1.0.b
+# 3. 1.0.a
+# 4. 0.9
 
 class Gem::Version
-  
+
   class Part
     include Comparable
 
@@ -39,7 +45,7 @@ class Gem::Version
     def inspect
       @value
     end
-    
+
     def alpha?
       String === value
     end
@@ -110,12 +116,16 @@ class Gem::Version
     "#<#{self.class} #{@version.inspect}>"
   end
 
+  ##
   # Dump only the raw version string, not the complete object
+
   def marshal_dump
     [@version]
   end
 
+  ##
   # Load custom marshal format
+
   def marshal_load(array)
     self.version = array[0]
   end
@@ -138,9 +148,7 @@ class Gem::Version
 
   ##
   # Returns the text representation of the version
-  #
-  # return:: [String] version as string
-  #
+
   def to_s
     @version
   end
@@ -156,7 +164,7 @@ class Gem::Version
 
   ##
   # A version is considered a prerelease if any part contains a letter.
-  
+
   def prerelease?
     parts.any? { |part| part.alpha? }
   end
@@ -194,9 +202,12 @@ class Gem::Version
     @version.hash
   end
 
-  # Return a new version object where the next to the last revision
-  # number is one greater. (e.g.  5.3.1 => 5.4)
+  ##
+  # Return a new version object where the next to the last revision number is
+  # one greater. (e.g.  5.3.1 => 5.4)
+  #
   # Pre-release (alpha) parts are ignored. (e.g 5.3.1.b2 => 5.4)
+
   def bump
     parts = parse_parts_from_version_string
     parts.pop while parts.any? { |part| part.alpha? }
@@ -217,6 +228,7 @@ class Gem::Version
 
   require 'rubygems/requirement'
 
+  ##
   # Gem::Requirement's original definition is nested in Version.
   # Although an inappropriate place, current gems specs reference the nested
   # class name explicitly.  To remain compatible with old software loading

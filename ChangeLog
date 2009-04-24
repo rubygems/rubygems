@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2009-04-24  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/specification_command.rb:  Added requesting
+	  single fields from a spec.
+
 2009-04-23  James Tucker  <jftucker@gmail.com>
 
 	* lib/rubygems/ext/configure_builder.rb: Support Gem::Command.build_args.

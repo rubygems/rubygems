@@ -39,7 +39,10 @@ class Gem::Commands::SpecificationCommand < Gem::Command
   end
 
   def arguments # :nodoc:
-    "GEMFILE       name of gem to show the gemspec for"
+    <<-ARGS
+GEMFILE       name of gem to show the gemspec for
+FIELD         name of gemspec field to show
+    ARGS
   end
 
   def defaults_str # :nodoc:
@@ -47,13 +50,34 @@ class Gem::Commands::SpecificationCommand < Gem::Command
   end
 
   def usage # :nodoc:
-    "#{program_name} [GEMFILE]"
+    "#{program_name} [GEMFILE] [FIELD]"
   end
 
   def execute
     specs = []
-    gem = get_one_gem_name
+    gem = options[:args].shift
+
+    unless gem then
+      raise Gem::CommandLineError,
+            "Please specify a gem name or file on the command line"
+    end
+
     dep = Gem::Dependency.new gem, options[:version]
+
+    field = get_one_optional_argument
+
+    if field then
+      field = field.intern
+
+      if options[:format] == :ruby then
+        raise Gem::CommandLineError, "--ruby and FIELD are mutually exclusive"
+      end
+
+      unless Gem::Specification.attribute_names.include? field then
+        raise Gem::CommandLineError,
+              "no field %p on Gem::Specification" % field.to_s
+      end
+    end
 
     if local? then
       if File.exist? gem then
@@ -77,11 +101,14 @@ class Gem::Commands::SpecificationCommand < Gem::Command
     end
 
     output = lambda do |s|
+      s = s.send field if field
+
       say case options[:format]
           when :ruby then s.to_ruby
           when :marshal then Marshal.dump s
           else s.to_yaml
           end
+
       say "\n"
     end
 

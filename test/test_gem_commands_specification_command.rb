@@ -70,6 +70,19 @@ class TestGemCommandsSpecificationCommand < RubyGemTestCase
     assert_equal '', @ui.error
   end
 
+  def test_execute_field
+    foo = quick_gem 'foo'
+    Gem.source_index.add_spec foo
+
+    @cmd.options[:args] = %w[foo name]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal "--- foo\n\n", @ui.output
+  end
+
   def test_execute_marshal
     foo = quick_gem 'foo'
     Gem.source_index.add_spec foo

@@ -11,9 +11,26 @@ require 'thread'
 require 'etc'
 
 module Gem
+
+  ##
+  # Raised when RubyGems is unable to load or activate a gem.  Contains the
+  # name and version requirements of the gem that either conflicts with
+  # already activated gems or that RubyGems is otherwise unable to activate.
+
   class LoadError < ::LoadError
-    attr_accessor :name, :version_requirement
+
+    ##
+    # Name of gem
+
+    attr_accessor :name
+
+    ##
+    # Version requirement of gem
+
+    attr_accessor :version_requirement
+
   end
+
 end
 
 module Kernel

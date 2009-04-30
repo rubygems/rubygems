@@ -115,7 +115,7 @@ version is also installed.
 
       if options[:test] then
         installed_gems.each do |spec|
-          gem_spec = Gem::SourceIndex.from_installed_gems.search(spec.name, spec.version.version).first
+          gem_spec = Gem::SourceIndex.from_installed_gems.find_name(spec.name, spec.version.version).first
           result = Gem::Validator.new.unit_test(gem_spec)
           if result and not result.passed?
             unless ask_yes_no("...keep Gem?", true)

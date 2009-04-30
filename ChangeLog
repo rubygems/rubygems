@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 
+2009-04-30  Daniel Berger  <djberg96@gmail.com>
+
+	* lib/rubygems/commands/install_command.rb:  Replaced deprecated
+	  Gem::SourceIndex method 'search' with 'find_name' when using
+	  the -t option. Fixes bug # 25632 by Daniel Berger.
+
 2009-04-30  James Tucker  <jftucker@gmail.com>
 
-  * lib/rubygems/ext/rake_builder.rb: Use explicit ruby command loading
-    rubygems to invoke rake.
+	* lib/rubygems/ext/rake_builder.rb: Use explicit ruby command loading
+	  rubygems to invoke rake.
 
 2009-04-24  Eric Hodel  <drbrain@segment7.net>
 

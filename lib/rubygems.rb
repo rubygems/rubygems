@@ -379,7 +379,7 @@ module Gem
       raise Gem::Exception, msg
     end
 
-    File.join spec.full_gem_path, spec.bindir, exec_name
+    File.join(spec.full_gem_path, spec.bindir, exec_name).sub(/.*\s.*/m, '"\&"')
   end
 
   ##

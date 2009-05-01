@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2009-05-01  James Tucker  <jftucker@gmail.com>
+
+	* lib/rubygems.rb: Gem.bin_path now escapes paths with spaces.
+
 2009-04-30  Daniel Berger  <djberg96@gmail.com>
 
 	* lib/rubygems/commands/install_command.rb:  Replaced deprecated

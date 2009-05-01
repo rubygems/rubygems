@@ -1094,6 +1094,16 @@ end
     util_setup_validate
 
     Dir.chdir @tempdir do
+      @a1.homepage = nil
+
+      use_ui @ui do
+        @a1.validate
+      end
+
+      assert_equal "WARNING:  no homepage specified\n", @ui.error, 'error'
+
+      @ui = MockGemUi.new
+
       @a1.homepage = ''
 
       use_ui @ui do

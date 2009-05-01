@@ -877,7 +877,8 @@ class Gem::Specification
             '"FIXME" or "TODO" is not a summary'
     end
 
-    unless homepage.empty? or homepage =~ /\A[a-z][a-z\d+.-]*:/i then
+    if homepage and not homepage.empty? and
+       homepage !~ /\A[a-z][a-z\d+.-]*:/i then
       raise Gem::InvalidSpecificationException,
             "\"#{homepage}\" is not a URI"
     end

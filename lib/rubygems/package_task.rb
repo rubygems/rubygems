@@ -77,7 +77,7 @@ class Gem::PackageTask < Rake::PackageTask
   # to define the task.
 
   def initialize(gem_spec)
-    init(gem_spec)
+    init gem_spec
     yield self if block_given?
     define if block_given?
   end
@@ -86,7 +86,7 @@ class Gem::PackageTask < Rake::PackageTask
   # Initialization tasks without the "yield self" or define operations.
 
   def init(gem)
-    super(gem.name, gem.version)
+    super gem.name, gem.version
     @gem_spec = gem
     @package_files += gem_spec.files if gem_spec.files
   end
@@ -109,10 +109,10 @@ class Gem::PackageTask < Rake::PackageTask
       }
     end
   end
-  
+
   def gem_file
     "#{@gem_spec.full_name}.gem"
   end
-  
+
 end
 

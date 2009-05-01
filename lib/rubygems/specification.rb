@@ -609,7 +609,11 @@ class Gem::Specification
   # The directory that this gem was installed into.
 
   def installation_path
-    File.expand_path(File.dirname(File.dirname(@loaded_from)))
+    unless @loaded_from then
+      raise Gem::Exception, "spec #{full_name} is not from an installed gem"
+    end
+
+    File.expand_path File.dirname(File.dirname(@loaded_from))
   end
 
   ##

@@ -584,6 +584,18 @@ end
     refute_equal @a1.hash, @a2.hash
   end
 
+  def test_installation_path
+    assert_equal @gemhome, @a1.installation_path
+
+    @a1.send :remove_instance_variable, :@loaded_from
+
+    e = assert_raises Gem::Exception do
+      @a1.installation_path
+    end
+
+    assert_equal 'spec a-1 is not from an installed gem', e.message
+  end
+
   def test_lib_files
     @a1.files = %w[lib/foo.rb Rakefile]
 

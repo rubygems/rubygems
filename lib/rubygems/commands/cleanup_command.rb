@@ -77,15 +77,21 @@ installed elsewhere in GEM_PATH the cleanup command won't touch it.
         say "Attempting to uninstall #{spec.full_name}"
 
         options[:args] = [spec.name]
-        options[:version] = "= #{spec.version}"
-        options[:executables] = false
 
-        uninstaller = Gem::Uninstaller.new spec.name, options
+        uninstall_options = {
+          :executables => false,
+          :version => "= #{spec.version}",
+        }
+
+        if Gem.user_dir == spec.installation_path then
+          uninstall_options[:install_dir] = spec.installation_path
+        end
+
+        uninstaller = Gem::Uninstaller.new spec.name, uninstall_options
 
         begin
           uninstaller.uninstall
-        rescue Gem::DependencyRemovalException,
-               Gem::InstallError,
+        rescue Gem::DependencyRemovalException, Gem::InstallError,
                Gem::GemNotInHomeException => e
           say "Unable to uninstall #{spec.full_name}:"
           say "\t#{e.class}: #{e.message}"

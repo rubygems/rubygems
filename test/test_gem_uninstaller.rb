@@ -10,6 +10,23 @@ class TestGemUninstaller < GemInstallerTestCase
     ui = MockGemUi.new
     util_setup_gem ui
 
+    @user_spec.executables = ["my_exec"]
+
+    # HACK util_make_exec
+    user_bin_dir = File.join Gem.user_dir, 'gems', @user_spec.full_name, 'bin'
+    FileUtils.mkdir_p user_bin_dir
+    exec_path = File.join user_bin_dir, "my_exec"
+    File.open exec_path, 'w' do |f|
+      f.puts "#!/usr/bin/ruby"
+    end
+
+    user_bin_dir = File.join Gem.user_dir, 'bin'
+    FileUtils.mkdir_p user_bin_dir
+    exec_path = File.join user_bin_dir, "my_exec"
+    File.open exec_path, 'w' do |f|
+      f.puts "#!/usr/bin/ruby"
+    end
+
     build_rake_in do
       use_ui ui do
         @installer.install
@@ -47,6 +64,19 @@ class TestGemUninstaller < GemInstallerTestCase
     assert_equal "Removing executable\n", @ui.output
 
     assert_equal false, File.exist?(File.join(@gemhome, 'bin', 'executable'))
+  end
+
+  def test_remove_executables_user
+    uninstaller = Gem::Uninstaller.new nil, :executables => true
+
+    use_ui @ui do
+      uninstaller.remove_executables @user_spec
+    end
+
+    exec_path = File.join Gem.user_dir, 'bin', 'my_exec'
+    assert_equal false, File.exist?(exec_path), 'removed exec from bin dir'
+
+    assert_equal "Removing my_exec\n", @ui.output
   end
 
   def test_path_ok_eh

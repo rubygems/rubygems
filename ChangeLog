@@ -6,6 +6,8 @@
 	  root.  Bug reported by David Chelimsky.
 	* lib/rubygems/commands/cleanup_command.rb:  Clean up --user-install
 	  gems.  Bug #25516 by Brett Eisenberg.
+	* lib/rubygems/uninstaller.rb:  Uninstall executables from the correct
+	  directory.  Bug #25555 by Brett Eisenberg.
 
 2009-05-01  James Tucker  <jftucker@gmail.com>
 

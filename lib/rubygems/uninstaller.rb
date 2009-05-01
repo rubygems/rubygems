@@ -106,8 +106,8 @@ class Gem::Uninstaller
       hook.call self
     end
 
-    specs.each { |s| remove_executables s }
-    remove spec, specs
+    remove_executables @spec
+    remove @spec, specs
 
     Gem.post_uninstall_hooks.each do |hook|
       hook.call self
@@ -120,29 +120,29 @@ class Gem::Uninstaller
   # Removes installed executables and batch files (windows only) for
   # +gemspec+.
 
-  def remove_executables(gemspec)
-    return if gemspec.nil?
+  def remove_executables(spec)
+    return if spec.nil?
 
-    if gemspec.executables.size > 0 then
-      bindir = @bin_dir ? @bin_dir : (Gem.bindir @gem_home)
+    unless spec.executables.empty? then
+      bindir = @bin_dir ? @bin_dir : Gem.bindir(spec.installation_path)
 
-      list = @source_index.find_name(gemspec.name).delete_if { |spec|
-        spec.version == gemspec.version
+      list = @source_index.find_name(spec.name).delete_if { |spec|
+        spec.version == spec.version
       }
 
-      executables = gemspec.executables.clone
+      executables = spec.executables.clone
 
       list.each do |spec|
         spec.executables.each do |exe_name|
-          executables.delete(exe_name)
+          executables.delete exe_name
         end
       end
 
-      return if executables.size == 0
+      return if executables.empty?
 
       answer = if @force_executables.nil? then
                  ask_yes_no("Remove executables:\n" \
-                            "\t#{gemspec.executables.join(", ")}\n\nin addition to the gem?",
+                            "\t#{spec.executables.join(", ")}\n\nin addition to the gem?",
                             true) # " # appease ruby-mode - don't ask
                else
                  @force_executables
@@ -153,7 +153,7 @@ class Gem::Uninstaller
       else
         raise Gem::FilePermissionError, bindir unless File.writable? bindir
 
-        gemspec.executables.each do |exe_name|
+        spec.executables.each do |exe_name|
           say "Removing #{exe_name}"
           FileUtils.rm_f File.join(bindir, exe_name)
           FileUtils.rm_f File.join(bindir, "#{exe_name}.bat")

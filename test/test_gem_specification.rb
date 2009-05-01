@@ -1034,12 +1034,15 @@ end
 
     FileUtils.mkdir_p File.join(@tempdir, 'bin')
     File.open File.join(@tempdir, 'bin', 'exec'), 'w' do end
+    FileUtils.mkdir_p File.join(@tempdir, 'exec')
 
     use_ui @ui do
       Dir.chdir @tempdir do
         assert @a1.validate
       end
     end
+
+    assert_equal %w[exec], @a1.executables
 
     assert_equal '', @ui.output, 'output'
     assert_equal "WARNING:  bin/exec is missing #! line\n", @ui.error, 'error'

@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2009-05-01  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb:  Check bindir for executables, not
+	  root.  Bug reported by David Chelimsky.
+
 2009-05-01  James Tucker  <jftucker@gmail.com>
 
 	* lib/rubygems.rb: Gem.bin_path now escapes paths with spaces.

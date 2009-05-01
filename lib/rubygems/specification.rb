@@ -822,7 +822,9 @@ class Gem::Specification
 
     @files.delete_if            do |file| File.directory? file end
     @test_files.delete_if       do |file| File.directory? file end
-    @executables.delete_if      do |file| File.directory? file end
+    @executables.delete_if      do |file|
+      File.directory? File.join(bindir, file)
+    end
     @extra_rdoc_files.delete_if do |file| File.directory? file end
     @extensions.delete_if       do |file| File.directory? file end
 

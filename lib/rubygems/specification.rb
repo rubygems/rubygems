@@ -10,19 +10,7 @@ require 'rubygems/requirement'
 require 'rubygems/platform'
 
 # :stopdoc:
-# Time::today has been deprecated in 0.9.5 and will be removed.
-if RUBY_VERSION < '1.9' then
-  def Time.today
-    file, lineno = location_of_caller
-    warn "#{file}:#{lineno}:Warning: Time::today is deprecated and will be removed in RubyGems 1.4."
-
-    t = Time.now
-    t - ((t.to_f + t.gmt_offset) % 86400)
-  end unless defined? Time.today
-end
-
 class Date; end # for ruby_code if date.rb wasn't required
-
 # :startdoc:
 
 ##

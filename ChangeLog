@@ -3,7 +3,8 @@
 2009-05-01  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb:  Check bindir for executables, not
-	  root.  Bug reported by David Chelimsky.
+	  root.  Bug reported by David Chelimsky.  Remove Time.today, no way
+	  to override it before RubyGems loads.
 	* lib/rubygems/commands/cleanup_command.rb:  Clean up --user-install
 	  gems.  Bug #25516 by Brett Eisenberg.
 	* lib/rubygems/uninstaller.rb:  Uninstall executables from the correct

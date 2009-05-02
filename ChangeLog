@@ -4,6 +4,8 @@
 
 	* lib/rubygems/commands/server_command.rb:  Allow port names with
 	  --port.
+	* lib/rubygems/requirement.rb:  Match prerelease versions and ~>
+	  correctly.  Patch #25759 by Yossef Mendelssohn.
 
 2009-05-01  Eric Hodel  <drbrain@segment7.net>
 

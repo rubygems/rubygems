@@ -199,6 +199,13 @@ class TestGemVersion < RubyGemTestCase
     refute Gem::Version.new('2.9').prerelease?
     refute Gem::Version.new('22.1.50.0').prerelease?
   end
+  
+  def test_release
+    assert_equal Gem::Version.new('1.2.0'), Gem::Version.new('1.2.0.a').release
+    assert_equal Gem::Version.new('1.1'),   Gem::Version.new('1.1.rc10').release
+    assert_equal Gem::Version.new('1.9.3'), Gem::Version.new('1.9.3.alpha.5').release
+    assert_equal Gem::Version.new('1.9.3'), Gem::Version.new('1.9.3').release
+  end
 
   def test_satisfied_by_eh_boxed
     assert_inadequate("1.3", "~> 1.4")
@@ -212,6 +219,11 @@ class TestGemVersion < RubyGemTestCase
     assert_adequate(  "1.4.5", "~> 1.4.4")
     assert_inadequate("1.5",   "~> 1.4.4")
     assert_inadequate("2.0",   "~> 1.4.4")
+    
+    assert_inadequate("1.1.pre", "~> 1.0.0")
+    assert_adequate(  "1.1.pre", "~> 1.1")
+    assert_inadequate("2.0.a",   "~> 1.0")
+    assert_adequate(  "2.0.a",   "~> 2.0")
   end
 
   def test_satisfied_by_eh_multiple

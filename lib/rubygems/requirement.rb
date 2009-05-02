@@ -26,7 +26,7 @@ class Gem::Requirement
     "<"  =>  lambda { |v, r| v < r },
     ">=" =>  lambda { |v, r| v >= r },
     "<=" =>  lambda { |v, r| v <= r },
-    "~>" =>  lambda { |v, r| v >= r && v < r.bump }
+    "~>" =>  lambda { |v, r| v = v.release; v >= r && v < r.bump }
   }
 
   OP_RE = OPS.keys.map{ |k| Regexp.quote k }.join '|'

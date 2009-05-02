@@ -168,6 +168,16 @@ class Gem::Version
   def prerelease?
     parts.any? { |part| part.alpha? }
   end
+  
+  ##
+  # The release for this version (e.g. 1.2.0.a -> 1.2.0)
+  # Non-prerelease versions return themselves
+  def release
+    return self unless prerelease?
+    rel_parts = parts.dup
+    rel_parts.pop while rel_parts.any? { |part| part.alpha? }
+    self.class.new(rel_parts.join('.'))
+  end
 
   def yaml_initialize(tag, values)
     self.version = values['version']

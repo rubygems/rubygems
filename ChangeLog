@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2009-05-02  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/server_command.rb:  Allow port names with
+	  --port.
+
 2009-05-01  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb:  Check bindir for executables, not
@@ -12,6 +17,8 @@
 	  gems.  Bug #25516 by Brett Eisenberg.
 	* lib/rubygems/uninstaller.rb:  Uninstall executables from the correct
 	  directory.  Bug #25555 by Brett Eisenberg.
+	* lib/rubygems/server.rb:  Add search that jumps to RDoc.  Patch
+	  #22959 by Vladimir Dobriakov.
 
 2009-05-01  James Tucker  <jftucker@gmail.com>
 

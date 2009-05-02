@@ -6,7 +6,8 @@
 	  root.  Bug reported by David Chelimsky.  Remove Time.today, no way
 	  to override it before RubyGems loads.  Raise Gem::Exception for
 	  #installation_path when not installed.  Bug #25741 by Daniel Berger.
-	  Don't error in #validate when homepage is nil.  Bug #25677.
+	  Don't error in #validate when homepage is nil.  Bug #25677 by Mike
+	  Burrows.
 	* lib/rubygems/commands/cleanup_command.rb:  Clean up --user-install
 	  gems.  Bug #25516 by Brett Eisenberg.
 	* lib/rubygems/uninstaller.rb:  Uninstall executables from the correct

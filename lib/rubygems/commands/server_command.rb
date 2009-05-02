@@ -37,6 +37,12 @@ for gem installation.
 
 To install gems from a running server, use `gem install GEMNAME --source
 http://gem_server_host:8808`
+
+You can set up a shortcut to gem server documentation using the URL:
+
+  http://localhost:8808/rdoc?q=%s - Firefox
+  http://localhost:8808/rdoc?q=* - LaunchBar
+
     EOF
   end
 

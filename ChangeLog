@@ -2,6 +2,8 @@
 
 2009-05-04  Eric Hodel  <drbrain@segment7.net>
 
+	* lib/rubygems/rubygems_version.rb: 1.3.3.
+	* doc/release_notes/rel_1_3_3.rdoc:  RubyGems 1.3.3 release notes.
 	* lib/rubygems/specification.rb:  Default has_rdoc to true, ignore
 	  its value.
 	* lib/rubygems/doc_manager.rb:  Always generate RDoc regardless of

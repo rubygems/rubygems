@@ -1071,7 +1071,7 @@ end
 
   def test_validate_empty_require_paths
     if win_platform? then
-      skip 'test_validate_empty_require_paths skipped on MS Windows'
+      skip 'test_validate_empty_require_paths skipped on MS Windows (symlink)'
     else
       util_setup_validate
 

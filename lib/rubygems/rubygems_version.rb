@@ -9,7 +9,7 @@ module Gem
   ##
   # The version of RubyGems you are using
 
-  RubyGemsVersion = '1.3.2'
+  RubyGemsVersion = '1.3.3'
 
   ##
   # The version of RubyGems you are using (duplicated for familiarity)

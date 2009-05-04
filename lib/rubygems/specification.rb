@@ -894,9 +894,6 @@ class Gem::Specification
       alert_warning 'description and summary are identical'
     end
 
-    alert_warning "RDoc will not be generated (has_rdoc == false)" unless
-      has_rdoc
-
     alert_warning "deprecated autorequire specified" if autorequire
 
     executables.each do |executable|
@@ -1139,9 +1136,11 @@ class Gem::Specification
   ##
   # :attr_accessor: has_rdoc
   #
-  # True if this gem is RDoc-compliant
+  # Deprecated and ignored, defaults to true.
+  #
+  # Formerly used to indicate this gem was RDoc-capable.
 
-  attribute :has_rdoc, false
+  attribute :has_rdoc, true
 
   ##
   # True if this gem supports RDoc
@@ -1299,6 +1298,20 @@ class Gem::Specification
   # Singular accessor for #test_files
 
   attribute_alias_singular :test_file, :test_files
+
+  ##
+  # has_rdoc is now ignored
+
+  overwrite_accessor :has_rdoc do
+    true
+  end
+
+  ##
+  # has_rdoc is now ignored
+
+  overwrite_accessor :has_rdoc= do |value|
+    @has_rdoc = true
+  end
 
   overwrite_accessor :version= do |version|
     @version = Gem::Version.create(version)

@@ -105,10 +105,8 @@ class Gem::DocManager
   # RI docs generation to fail if run after RDoc).
 
   def generate_ri
-    if @spec.has_rdoc then
-      setup_rdoc
-      install_ri # RDoc bug, ri goes first
-    end
+    setup_rdoc
+    install_ri # RDoc bug, ri goes first
 
     FileUtils.mkdir_p @doc_dir unless File.exist?(@doc_dir)
   end
@@ -121,10 +119,8 @@ class Gem::DocManager
   # RI docs generation to fail if run after RDoc).
 
   def generate_rdoc
-    if @spec.has_rdoc then
-      setup_rdoc
-      install_rdoc
-    end
+    setup_rdoc
+    install_rdoc
 
     FileUtils.mkdir_p @doc_dir unless File.exist?(@doc_dir)
   end

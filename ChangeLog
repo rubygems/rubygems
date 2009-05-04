@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 
+2009-05-04  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb:  Default has_rdoc to true, ignore
+	  its value.
+	* lib/rubygems/doc_manager.rb:  Always generate RDoc regardless of
+	  #has_rdoc?
+
 2009-05-02  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/server_command.rb:  Allow port names with

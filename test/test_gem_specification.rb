@@ -197,8 +197,8 @@ end
     assert_equal [], spec.requirements
     assert_equal [], spec.dependencies
     assert_equal 'bin', spec.bindir
-    assert_equal false, spec.has_rdoc
-    assert_equal false, spec.has_rdoc?
+    assert_equal true, spec.has_rdoc
+    assert_equal true, spec.has_rdoc?
     assert_equal '>= 0', spec.required_ruby_version.to_s
     assert_equal '>= 0', spec.required_rubygems_version.to_s
   end
@@ -281,7 +281,7 @@ end
     assert_equal 'bin', spec.bindir
     assert_same spec.bindir, new_spec.bindir
 
-    assert_equal false, spec.has_rdoc
+    assert_equal true, spec.has_rdoc
     assert_same spec.has_rdoc, new_spec.has_rdoc
 
     assert_equal '>= 0', spec.required_ruby_version.to_s
@@ -431,7 +431,7 @@ end
       s.homepage = %q{http://www.spice-of-life.net/download/cgikit/}
       s.autorequire = %q{cgikit}
       s.bindir = nil
-      s.has_rdoc = nil
+      s.has_rdoc = true
       s.required_ruby_version = nil
       s.platform = nil
       s.files = ["lib/cgikit", "lib/cgikit.rb", "lib/cgikit/components", "..."]
@@ -576,6 +576,17 @@ end
 
   def test_has_rdoc_eh
     assert @a1.has_rdoc?
+  end
+
+  def test_has_rdoc_equals
+
+    use_ui @ui do
+      @a1.has_rdoc = false
+    end
+
+    assert_equal '', @ui.output
+
+    assert_equal true, @a1.has_rdoc
   end
 
   def test_hash
@@ -748,7 +759,6 @@ Gem::Specification.new do |s|
   s.description = %q{This is a test description}
   s.email = %q{example@example.com}
   s.files = [\"lib/code.rb\"]
-  s.has_rdoc = true
   s.homepage = %q{http://example.com}
   s.require_paths = [\"lib\"]
   s.rubygems_version = %q{#{Gem::RubyGemsVersion}}
@@ -800,7 +810,6 @@ Gem::Specification.new do |s|
   s.executables = [\"exec\"]
   s.extensions = [\"ext/a/extconf.rb\"]
   s.files = [\"lib/code.rb\", \"test/suite.rb\", \"bin/exec\", \"ext/a/extconf.rb\"]
-  s.has_rdoc = %q{true}
   s.homepage = %q{http://example.com}
   s.licenses = [\"MIT\"]
   s.require_paths = [\"lib\"]
@@ -1061,14 +1070,19 @@ end
   end
 
   def test_validate_empty_require_paths
-    util_setup_validate
+    if win_platform? then
+      skip 'test_validate_empty_require_paths skipped on MS Windows'
+    else
+      util_setup_validate
 
-    @a1.require_paths = []
-    e = assert_raises Gem::InvalidSpecificationException do
-      @a1.validate
+      @a1.require_paths = []
+      e = assert_raises Gem::InvalidSpecificationException do
+        @a1.validate
+      end
+
+      assert_equal 'specification must have at least one require_path',
+                   e.message
     end
-
-    assert_equal 'specification must have at least one require_path', e.message
   end
 
   def test_validate_files
@@ -1119,21 +1133,6 @@ end
       end
 
       assert_equal '"over at my cool site" is not a URI', e.message
-    end
-  end
-
-  def test_validate_has_rdoc
-    util_setup_validate
-
-    Dir.chdir @tempdir do
-      @a1.has_rdoc = false
-
-      use_ui @ui do
-        @a1.validate
-      end
-
-      assert_equal "WARNING:  RDoc will not be generated (has_rdoc == false)\n",
-                   @ui.error, 'error'
     end
   end
 

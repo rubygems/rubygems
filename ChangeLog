@@ -6,6 +6,8 @@
 	  its value.
 	* lib/rubygems/doc_manager.rb:  Always generate RDoc regardless of
 	  #has_rdoc?
+	* lib/rubygems.rb:  Raise Gem::LoadError if Kernel#gem fails due to
+	  previously-loaded gem.  Bug reported by Alf Mikula.
 
 2009-05-02  Eric Hodel  <drbrain@segment7.net>
 
@@ -18,10 +20,10 @@
 
 	* lib/rubygems/specification.rb:  Check bindir for executables, not
 	  root.  Bug reported by David Chelimsky.  Remove Time.today, no way
-	  to override it before RubyGems loads.  Raise Gem::Exception for
-	  #installation_path when not installed.  Bug #25741 by Daniel Berger.
-	  Don't error in #validate when homepage is nil.  Bug #25677 by Mike
-	  Burrows.
+	  to override it before RubyGems loads.  Bug #25564 by Emanuele
+	  Vicentini.  Raise Gem::Exception for #installation_path when not
+	  installed.  Bug #25741 by Daniel Berger.  Don't error in #validate
+	  when homepage is nil.  Bug #25677 by Mike Burrows.
 	* lib/rubygems/commands/cleanup_command.rb:  Clean up --user-install
 	  gems.  Bug #25516 by Brett Eisenberg.
 	* lib/rubygems/uninstaller.rb:  Uninstall executables from the correct

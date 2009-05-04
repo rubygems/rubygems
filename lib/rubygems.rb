@@ -266,13 +266,17 @@ module Gem
 
       unless matches.any? { |spec| spec.version == existing_spec.version } then
          sources_message = sources.map { |spec| spec.full_name }
-         stack_message = @loaded_stacks[gem.name].map { |spec| spec.full_name } 
+         stack_message = @loaded_stacks[gem.name].map { |spec| spec.full_name }
 
          msg = "can't activate #{gem} for #{sources_message.inspect}, "
          msg << "already activated #{existing_spec.full_name} for "
          msg << "#{stack_message.inspect}"
 
-         raise Gem::Exception, msg
+         e = Gem::LoadError.new msg
+         e.name = gem.name
+         e.version_requirement = gem.version_requirements
+
+         raise e
       end
 
       return false

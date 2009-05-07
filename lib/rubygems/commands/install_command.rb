@@ -53,6 +53,46 @@ The wrapper allows you to choose among alternate gem versions using _version_.
 
 For example `rake _0.7.3_ --version` will run rake version 0.7.3 if a newer
 version is also installed.
+
+If an extension fails to compile during gem installation the gem
+specification is not written out, but the gem remains unpacked in the
+repository.  You may need to specify the path to the library's headers and
+libraries to continue.  You can do this by adding a -- between RubyGems'
+options and the extension's build options:
+
+  $ gem install some_extension_gem
+  [build fails]
+  Gem files will remain installed in \\
+  /path/to/gems/some_extension_gem-1.0 for inspection.
+  Results logged to /path/to/gems/some_extension_gem-1.0/gem_make.out
+  $ gem install some_extension_gem -- --with-extension-lib=/path/to/lib
+  [build succeeds]
+  $ gem list some_extension_gem
+
+  *** LOCAL GEMS ***
+
+  some_extension_gem (1.0)
+  $
+
+If you correct the compilation errors by editing the gem files you will need
+to write the specification by hand.  For example:
+
+  $ gem install some_extension_gem
+  [build fails]
+  Gem files will remain installed in \\
+  /path/to/gems/some_extension_gem-1.0 for inspection.
+  Results logged to /path/to/gems/some_extension_gem-1.0/gem_make.out
+  $ [cd /path/to/gems/some_extension_gem-1.0]
+  $ [edit files or what-have-you and run make]
+  $ gem spec ../../cache/some_extension_gem-1.0.gem --ruby > \\
+             ../../specifications/some_extension_gem-1.0.gemspec
+  $ gem list some_extension_gem
+
+  *** LOCAL GEMS ***
+
+  some_extension_gem (1.0)
+  $
+
     EOF
   end
 

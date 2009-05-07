@@ -329,6 +329,7 @@ Also, a list:
     end
 
     @a2 = quick_gem('a', '2', &init)
+    @a3a = quick_gem('a', '3.a', &init)
     @a_evil9 = quick_gem('a_evil', '9', &init)
     @b2 = quick_gem('b', '2', &init)
     @c1_2   = quick_gem('c', '1.2',   &init)

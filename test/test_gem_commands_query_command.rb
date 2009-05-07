@@ -10,7 +10,7 @@ class TestGemCommandsQueryCommand < RubyGemTestCase
 
     util_setup_fake_fetcher
 
-    @si = util_setup_spec_fetcher @a1, @a2, @pl1
+    @si = util_setup_spec_fetcher @a1, @a2, @pl1, @a3a
 
     @fetcher.data["#{@gem_repo}Marshal.#{Gem.marshal_version}"] = proc do
       raise Gem::RemoteFetcher::FetchError
@@ -252,6 +252,25 @@ RubyGems will revert to legacy indexes degrading performance.
     assert_equal expected, @ui.error
   end
 
+  def test_execute_legacy_prerelease
+    Gem::SpecFetcher.fetcher = nil
+    si = util_setup_source_info_cache @a1, @a2, @pl1
+
+    @fetcher.data["#{@gem_repo}yaml"] = YAML.dump si
+    @fetcher.data["#{@gem_repo}Marshal.#{Gem.marshal_version}"] =
+      si.dump
+
+    @fetcher.data.delete "#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"
+
+    @cmd.handle_options %w[-r --prerelease]
+
+    e = assert_raises Gem::OperationNotSupportedError do
+      @cmd.execute
+    end
+
+    assert_equal 'Prereleases not supported on legacy repositories', e.message
+  end
+
   def test_execute_local_details
     @a2.summary = 'This is a lot of text. ' * 4
     @a2.authors = ['Abraham Lincoln', 'Hirohito']
@@ -362,6 +381,24 @@ pl
     expected = <<-EOF
 a (2)
 pl (1)
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+  end
+
+  def test_execute_prerelease
+    @cmd.handle_options %w[-r --prerelease]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = <<-EOF
+
+*** REMOTE GEMS ***
+
+a (3.a)
     EOF
 
     assert_equal expected, @ui.output

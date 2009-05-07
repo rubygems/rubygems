@@ -109,6 +109,9 @@ class Gem::Command
   #
   # When defining a new command subclass, use add_option to add command-line
   # switches.
+  #
+  # Unhandled arguments (gem names, files, etc.) are left in
+  # <tt>options[:args]</tt>.
 
   def initialize(command, summary=nil, defaults={})
     @command = command
@@ -275,7 +278,7 @@ class Gem::Command
   # +handler+ will be called with two values, the value of the argument and
   # the options hash.
   #
-  # If the first argument of +add_option+ is a Symbol, it's used to group
+  # If the first argument of add_option is a Symbol, it's used to group
   # options in output.  See `gem help list` for an example.
 
   def add_option(*opts, &handler) # :yields: value, options

@@ -22,8 +22,8 @@ class TestGemCommandsUnpackCommand < RubyGemTestCase
       end
     end
 
-    assert File.exist?(File.join(@tempdir, 'a-2')), 'a should be installed'
-    assert File.exist?(File.join(@tempdir, 'b-2')), 'b should be installed'
+    assert File.exist?(File.join(@tempdir, 'a-3.a')), 'a should be installed'
+    assert File.exist?(File.join(@tempdir, 'b-2')),   'b should be installed'
   end
 
   def test_execute_gem_path
@@ -44,7 +44,7 @@ class TestGemCommandsUnpackCommand < RubyGemTestCase
       end
     end
 
-    assert File.exist?(File.join(@tempdir, 'a-2'))
+    assert File.exist?(File.join(@tempdir, 'a-3.a'))
   end
 
   def test_execute_gem_path_missing
@@ -81,7 +81,7 @@ class TestGemCommandsUnpackCommand < RubyGemTestCase
       end
     end
 
-    assert File.exist?(File.join(@tempdir, target, 'a-2'))
+    assert File.exist?(File.join(@tempdir, target, 'a-3.a'))
   end
 
   def test_execute_exact_match

@@ -61,6 +61,7 @@ class Gem::Commands::QueryCommand < Gem::Command
     exit_code = 0
 
     name = options[:name]
+    prerelease = options[:prerelease]
 
     if options[:installed] then
       if name.source.empty? then
@@ -79,6 +80,10 @@ class Gem::Commands::QueryCommand < Gem::Command
     dep = Gem::Dependency.new name, Gem::Requirement.default
 
     if local? then
+      if prerelease and not both? then
+        alert_warning "prereleases are always shown locally"
+      end
+
       if ui.outs.tty? or both? then
         say
         say "*** LOCAL GEMS ***"
@@ -102,7 +107,6 @@ class Gem::Commands::QueryCommand < Gem::Command
       end
 
       all = options[:all]
-      prerelease = options[:prerelease]
 
       begin
         fetcher = Gem::SpecFetcher.fetcher

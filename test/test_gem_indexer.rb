@@ -458,8 +458,9 @@ eighty characters.&lt;/pre&gt;
       @indexer.generate_index
     end
 
-    assert_match %r%^Loading 9 gems from #{Regexp.escape @tempdir}$%, @ui.output
-    assert_match %r%^\.\.\.\.\.\.\.\.\.$%, @ui.output
+    assert_match %r%^Loading 10 gems from #{Regexp.escape @tempdir}$%,
+                 @ui.output
+    assert_match %r%^\.\.\.\.\.\.\.\.\.\.$%, @ui.output
     assert_match %r%^Loaded all gems$%, @ui.output
     assert_match %r%^Generating Marshal quick index gemspecs for 7 gems$%,
                  @ui.output
@@ -571,7 +572,8 @@ eighty characters.&lt;/pre&gt;
     prerelease_specs_dump = Gem.read_binary prerelease_specs_path
     prerelease_specs = Marshal.load prerelease_specs_dump
 
-    assert_equal [['d', Gem::Version.new('2.0.a'), 'ruby'],
+    assert_equal [['a', Gem::Version.new('3.a'),   'ruby'],
+                  ['d', Gem::Version.new('2.0.a'), 'ruby'],
                   ['d', Gem::Version.new('2.0.b'), 'ruby']],
                  prerelease_specs
   end

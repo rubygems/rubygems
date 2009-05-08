@@ -3,7 +3,11 @@
 2009-05-07  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/query_command.rb:  Support prerelease version
-	  listing (--prerelease).
+	  listing (--prerelease), list locally installed prereleases.
+	* lib/rubygems/source_info_cache.rb:  Gem::SourceInfoCache is
+	  officially unsupported, maintaining its tests is hard.
+	* lib/rubygems/source_index.rb:  Add #all_gems, fix #remove_spec,
+	  #search to work with it.  Prerelease gems can now be used.
 
 2009-05-04  Eric Hodel  <drbrain@segment7.net>
 

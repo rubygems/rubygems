@@ -116,16 +116,23 @@ class Gem::SourceIndex
   end
 
   ##
-  # Constructs a source index instance from the provided
-  # specifications
-  #
-  # specifications::
-  #   [Hash] hash of [Gem name, Gem::Specification] pairs
+  # Constructs a source index instance from the provided specifications, which
+  # is a Hash of gem full names and Gem::Specifications.
+  #--
+  # TODO merge @gems and @prerelease_gems and provide a separate method
+  # #prerelease_gems
 
   def initialize(specifications={})
     @gems, @prerelease_gems = [{}, {}]
     specifications.each{ |full_name, spec| add_spec spec }
     @spec_dirs = nil
+  end
+
+  ##
+  # Both regular and prerelease gems
+
+  def all_gems
+    @gems.merge @prerelease_gems
   end
 
   ##
@@ -215,7 +222,11 @@ class Gem::SourceIndex
   # Remove a gem specification named +full_name+.
 
   def remove_spec(full_name)
-    @gems.delete(full_name)
+    if @gems.key? full_name then
+      @gems.delete full_name
+    else
+      @prerelease_gems.delete full_name
+    end
   end
 
   ##
@@ -279,7 +290,7 @@ class Gem::SourceIndex
 
     # TODO - Remove support and warning for legacy arguments after 2008/11
     unless Gem::Dependency === gem_pattern
-      warn "#{Gem.location_of_caller.join ':'}:Warning: Gem::SourceIndex#search support for #{gem_pattern.class} patterns is deprecated"
+      warn "#{Gem.location_of_caller.join ':'}:Warning: Gem::SourceIndex#search support for #{gem_pattern.class} patterns is deprecated, use #find_name"
     end
 
     case gem_pattern
@@ -304,7 +315,7 @@ class Gem::SourceIndex
       version_requirement = Gem::Requirement.create version_requirement
     end
 
-    specs = @gems.values.select do |spec|
+    specs = all_gems.values.select do |spec|
       spec.name =~ gem_pattern and
         version_requirement.satisfied_by? spec.version
     end

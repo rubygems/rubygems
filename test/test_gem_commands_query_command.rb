@@ -272,10 +272,10 @@ RubyGems will revert to legacy indexes degrading performance.
   end
 
   def test_execute_local_details
-    @a2.summary = 'This is a lot of text. ' * 4
-    @a2.authors = ['Abraham Lincoln', 'Hirohito']
-    @a2.homepage = 'http://a.example.com/'
-    @a2.rubyforge_project = 'rubygems'
+    @a3a.summary = 'This is a lot of text. ' * 4
+    @a3a.authors = ['Abraham Lincoln', 'Hirohito']
+    @a3a.homepage = 'http://a.example.com/'
+    @a3a.rubyforge_project = 'rubygems'
 
     @cmd.handle_options %w[--local --details]
 
@@ -287,10 +287,11 @@ RubyGems will revert to legacy indexes degrading performance.
 
 *** LOCAL GEMS ***
 
-a (2, 1)
+a (3.a, 2, 1)
     Author: A User
     Homepage: http://example.com
-    Installed at (2): #{@gemhome}
+    Installed at (3.a): #{@gemhome}
+                 (2): #{@gemhome}
                  (1): #{@gemhome}
 
     this is a summary
@@ -339,7 +340,7 @@ pl (1)
     end
 
     expected = <<-EOF
-a (2, 1)
+a (3.a, 2, 1)
 a_evil (9)
 b (2)
 c (1.2)
@@ -403,6 +404,28 @@ a (3.a)
 
     assert_equal expected, @ui.output
     assert_equal '', @ui.error
+  end
+
+  def test_execute_prerelease_local
+    @cmd.handle_options %w[-l --prerelease]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = <<-EOF
+
+*** LOCAL GEMS ***
+
+a (3.a, 2, 1)
+a_evil (9)
+b (2)
+c (1.2)
+pl (1)
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal "WARNING:  prereleases are always shown locally\n", @ui.error
   end
 
 end

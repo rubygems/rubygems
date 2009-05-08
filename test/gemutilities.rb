@@ -349,11 +349,14 @@ Also, a list:
 
     write_file File.join(*%W[gems #{@a1.original_name} lib code.rb]) do end
     write_file File.join(*%W[gems #{@a2.original_name} lib code.rb]) do end
+    write_file File.join(*%W[gems #{@a3a.original_name} lib code.rb]) do end
     write_file File.join(*%W[gems #{@b2.original_name} lib code.rb]) do end
     write_file File.join(*%W[gems #{@c1_2.original_name} lib code.rb]) do end
     write_file File.join(*%W[gems #{@pl1.original_name} lib code.rb]) do end
 
-    [@a1, @a2, @a_evil9, @b2, @c1_2, @pl1].each { |spec| util_build_gem spec }
+    [@a1, @a2, @a3a, @a_evil9, @b2, @c1_2, @pl1].each do |spec|
+      util_build_gem spec
+    end
 
     FileUtils.rm_r File.join(@gemhome, 'gems', @pl1.original_name)
 
@@ -382,15 +385,16 @@ Also, a list:
 
     util_make_gems(prerelease)
 
-    @all_gems = [@a1, @a2, @a_evil9, @b2, @c1_2].sort
+    @all_gems = [@a1, @a2, @a3a, @a_evil9, @b2, @c1_2].sort
     @all_gem_names = @all_gems.map { |gem| gem.full_name }
 
-    gem_names = [@a1.full_name, @a2.full_name, @b2.full_name]
+    gem_names = [@a1.full_name, @a2.full_name, @a3a.full_name, @b2.full_name]
     @gem_names = gem_names.sort.join("\n")
 
     @source_index = Gem::SourceIndex.new
     @source_index.add_spec @a1
     @source_index.add_spec @a2
+    @source_index.add_spec @a3a
     @source_index.add_spec @a_evil9
     @source_index.add_spec @c1_2
     @source_index.add_spec @a2_pre if prerelease

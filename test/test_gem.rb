@@ -24,6 +24,7 @@ class TestGem < RubyGemTestCase
     expected = [
       File.join(@gemhome, *%W[gems #{@a1.full_name} lib]),
       File.join(@gemhome, *%W[gems #{@a2.full_name} lib]),
+      File.join(@gemhome, *%W[gems #{@a3a.full_name} lib]),
       File.join(@gemhome, *%W[gems #{@a_evil9.full_name} lib]),
       File.join(@gemhome, *%W[gems #{@b2.full_name} lib]),
       File.join(@gemhome, *%W[gems #{@c1_2.full_name} lib]),
@@ -305,7 +306,7 @@ class TestGem < RubyGemTestCase
     util_make_gems
 
     expected = [
-      File.join(@gemhome, *%W[gems #{@a2.full_name} lib]),
+      File.join(@gemhome, *%W[gems #{@a3a.full_name} lib]),
       File.join(@gemhome, *%W[gems #{@a_evil9.full_name} lib]),
       File.join(@gemhome, *%W[gems #{@b2.full_name} lib]),
       File.join(@gemhome, *%W[gems #{@c1_2.full_name} lib]),

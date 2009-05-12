@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 
+2009-05-12  Daniel Berger  <djberg96@gmail.com>
+
+   * lib/rubygems/remote_fetcher.rb:  Fixed the download method in the
+     remote_fetcher.rb file so that it handles local installs on MS
+     Windows when using explicit paths that aren't on the 'C:' drive.
+     Bug #25882 by Lars Christensen.
+
 2009-05-07  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/query_command.rb:  Support prerelease version

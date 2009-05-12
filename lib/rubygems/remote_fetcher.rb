@@ -139,7 +139,11 @@ class Gem::RemoteFetcher
         Gem.configuration.really_verbose
     when nil then # TODO test for local overriding cache
       begin
-        FileUtils.cp URI.unescape(source_uri.path), local_gem_path
+        if Gem.win_platform? && source_uri.scheme && !source_uri.path.include?(':')
+          FileUtils.cp URI.unescape(source_uri.scheme + ':' + source_uri.path), local_gem_path
+        else
+          FileUtils.cp URI.unescape(source_uri.path), local_gem_path
+        end
       rescue Errno::EACCES
         local_gem_path = source_uri.to_s
       end

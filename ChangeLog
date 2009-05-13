@@ -6,6 +6,9 @@
      remote_fetcher.rb file so that it handles local installs on MS
      Windows when using explicit paths that aren't on the 'C:' drive.
      Bug #25882 by Lars Christensen.
+   * lib/rubygems/commands/update_command.rb:  Replaced deprecated
+     Gem::SourceIndex method 'search' with 'find_name' in the 'execute'
+     method.
 
 2009-05-07  Eric Hodel  <drbrain@segment7.net>
 

@@ -100,7 +100,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
     if gems_to_update.include? "rubygems-update" then
       Gem.source_index.refresh!
 
-      update_gems = Gem.source_index.search 'rubygems-update'
+      update_gems = Gem.source_index.find_name 'rubygems-update'
 
       latest_update_gem = update_gems.sort_by { |s| s.version }.last
 

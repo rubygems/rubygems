@@ -4,8 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems'
-
 ##
 # GemPathSearcher has the capability to find loadable files inside
 # gems.  It generates data up front to speed up searches later.

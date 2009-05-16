@@ -1,5 +1,3 @@
-require 'rubygems'
-
 ##
 # Available list of platforms for targeting Gem installations.
 

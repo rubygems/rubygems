@@ -4,8 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems'
-
 ##
 # The Version class processes string versions into comparable
 # values. A version string should normally be a series of numbers

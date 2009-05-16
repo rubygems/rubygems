@@ -4,8 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/ext'
-
 class Gem::Ext::Builder
 
   def self.class_name

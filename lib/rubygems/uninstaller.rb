@@ -126,14 +126,14 @@ class Gem::Uninstaller
     unless spec.executables.empty? then
       bindir = @bin_dir ? @bin_dir : Gem.bindir(spec.installation_path)
 
-      list = @source_index.find_name(spec.name).delete_if { |spec|
-        spec.version == spec.version
+      list = @source_index.find_name(spec.name).delete_if { |s|
+        s.version == spec.version
       }
 
       executables = spec.executables.clone
 
-      list.each do |spec|
-        spec.executables.each do |exe_name|
+      list.each do |s|
+        s.executables.each do |exe_name|
           executables.delete exe_name
         end
       end

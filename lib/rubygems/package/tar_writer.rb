@@ -3,8 +3,6 @@
 # See LICENSE.txt for additional licensing information.
 #--
 
-require 'rubygems/package'
-
 ##
 # Allows writing of tar files
 

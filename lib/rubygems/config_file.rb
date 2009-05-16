@@ -5,7 +5,6 @@
 #++
 
 require 'yaml'
-require 'rubygems'
 
 # Store the gem command options specified in the configuration file.  The
 # config file object acts much like a hash.

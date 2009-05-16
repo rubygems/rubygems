@@ -3,8 +3,6 @@
 # See LICENSE.txt for additional licensing information.
 #--
 
-require 'rubygems/package'
-
 ##
 # TarOutput is a wrapper to TarWriter that builds gem-format tar file.
 #

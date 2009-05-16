@@ -3,8 +3,6 @@
 # See LICENSE.txt for additional licensing information.
 #--
 
-require 'rubygems/package'
-
 ##
 # TarReader reads tar files and allows iteration over their items
 
@@ -102,4 +100,6 @@ class Gem::Package::TarReader
   end
 
 end
+
+require 'rubygems/package/tar_reader/entry'
 

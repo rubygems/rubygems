@@ -3,8 +3,6 @@
 # See LICENSE.txt for additional licensing information.
 #--
 
-require 'rubygems/package'
-
 ##
 # Class for reading entries out of a tar file
 

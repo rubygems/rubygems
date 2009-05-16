@@ -4,8 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/version'
-
 ##
 # Requirement version includes a prefaced comparator in addition
 # to a version number.

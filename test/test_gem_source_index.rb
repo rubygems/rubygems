@@ -391,13 +391,13 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
   def test_remove_spec
     deleted = @source_index.remove_spec 'a-1'
 
-    assert_equal %w[a_evil-9 a-3.a c-1.2 a-2],
-                 @source_index.all_gems.values.map { |s| s.full_name }
+    assert_equal %w[a-2 a-3.a a_evil-9 c-1.2],
+                 @source_index.all_gems.values.map { |s| s.full_name }.sort
 
     deleted = @source_index.remove_spec 'a-3.a'
 
-    assert_equal %w[a_evil-9 c-1.2 a-2],
-                 @source_index.all_gems.values.map { |s| s.full_name }
+    assert_equal %w[a-2 a_evil-9 c-1.2],
+                 @source_index.all_gems.values.map { |s| s.full_name }.sort
   end
 
   def test_search

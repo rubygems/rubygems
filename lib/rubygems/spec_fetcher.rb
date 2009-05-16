@@ -1,7 +1,6 @@
 require 'zlib'
 require 'fileutils'
 
-require 'rubygems'
 require 'rubygems/remote_fetcher'
 require 'rubygems/user_interaction'
 

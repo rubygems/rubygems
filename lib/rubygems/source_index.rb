@@ -4,7 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems'
 require 'rubygems/user_interaction'
 require 'rubygems/specification'
 

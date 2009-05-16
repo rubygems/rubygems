@@ -17,7 +17,6 @@ module Gem
     # platform?
 
     def ssl_available?
-      require 'rubygems/gem_openssl'
       @ssl_available
     end
 

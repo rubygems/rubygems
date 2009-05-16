@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2009-05-15  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems*:  Fix 1.9 warnings about circular require.
+
 2009-05-12  Daniel Berger  <djberg96@gmail.com>
 
    * lib/rubygems/remote_fetcher.rb:  Fixed the download method in the

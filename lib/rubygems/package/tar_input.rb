@@ -3,8 +3,6 @@
 # See LICENSE.txt for additional licensing information.
 #--
 
-require 'rubygems/package'
-
 class Gem::Package::TarInput
 
   include Gem::Package::FSyncDir

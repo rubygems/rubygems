@@ -4,8 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems'
-
 ##
 # The Dependency class holds a Gem name and a Gem::Requirement
 

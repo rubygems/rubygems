@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2009-05-19  Luis Lavena  <luislavena@gmail.com>
+
+	* test/test_gem_specification.rb: skip symlinks tests on Windows.
+	* test/test_gem_commands_install_command.rb: skip chmod test on 
+	  Windows.
+
 2009-05-15  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems*:  Fix 1.9 warnings about circular require.

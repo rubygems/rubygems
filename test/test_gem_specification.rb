@@ -1086,6 +1086,7 @@ end
   end
 
   def test_validate_files
+    skip 'test_validate_files skipped on MS Windows (symlink)' if win_platform?
     util_setup_validate
 
     @a1.files += ['lib', 'lib2']

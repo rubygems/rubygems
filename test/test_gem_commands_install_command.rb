@@ -104,6 +104,8 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
   end
 
   def test_no_user_install
+    skip 'skipped on MS Windows (chmod has no effect)' if win_platform?
+
     util_setup_fake_fetcher
     @cmd.options[:user_install] = false
 

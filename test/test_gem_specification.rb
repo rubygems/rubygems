@@ -598,7 +598,7 @@ end
   def test_installation_path
     assert_equal @gemhome, @a1.installation_path
 
-    @a1.send :remove_instance_variable, :@loaded_from
+    @a1.instance_variable_set :@loaded_from, nil
 
     e = assert_raises Gem::Exception do
       @a1.installation_path

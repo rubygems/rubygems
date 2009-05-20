@@ -6,6 +6,7 @@ require 'rubygems'
 require 'rubygems/format'
 
 begin
+  gem 'builder'
   require 'builder/xchar'
 rescue LoadError
 end

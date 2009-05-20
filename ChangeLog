@@ -1,9 +1,17 @@
 # -*- coding: utf-8 -*-
 
+2009-05-20  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/defaults.rb:  Restore 1.9.1 path behavior.
+	* lib/rubygems/specification.rb:  Fix undefined ivar warning.
+	* lib/rubygems/indexer.rb:  Force loading of builder gem.
+	* test/gemutilities.rb:  Remove gem_prelude code by hand to avoid 1.9
+	  warnings.
+
 2009-05-19  Luis Lavena  <luislavena@gmail.com>
 
 	* test/test_gem_specification.rb: skip symlinks tests on Windows.
-	* test/test_gem_commands_install_command.rb: skip chmod test on 
+	* test/test_gem_commands_install_command.rb: skip chmod test on
 	  Windows.
 
 2009-05-15  Eric Hodel  <drbrain@segment7.net>
@@ -12,13 +20,13 @@
 
 2009-05-12  Daniel Berger  <djberg96@gmail.com>
 
-   * lib/rubygems/remote_fetcher.rb:  Fixed the download method in the
-     remote_fetcher.rb file so that it handles local installs on MS
-     Windows when using explicit paths that aren't on the 'C:' drive.
-     Bug #25882 by Lars Christensen.
-   * lib/rubygems/commands/update_command.rb:  Replaced deprecated
-     Gem::SourceIndex method 'search' with 'find_name' in the 'execute'
-     method.
+	* lib/rubygems/remote_fetcher.rb:  Fixed the download method in the
+	  remote_fetcher.rb file so that it handles local installs on MS
+	  Windows when using explicit paths that aren't on the 'C:' drive.
+	  Bug #25882 by Lars Christensen.
+	* lib/rubygems/commands/update_command.rb:  Replaced deprecated
+	  Gem::SourceIndex method 'search' with 'find_name' in the 'execute'
+	  method.
 
 2009-05-07  Eric Hodel  <drbrain@segment7.net>
 
@@ -174,14 +182,14 @@
 
 2009-03-22  Daniel Berger <djberg96@gmail.com>
 
-   * lib/rubygems/remote_fetcher.rb: Always escape URI's to deal with spaces
-     and such, regardless of platform.
-   * lib/rubygesm/validator.rb: Use the test-unit gem if installed.
-     Part of the fix for RF #24261 by Daniel Berger
-   * lib/rubygems/commands/install_command.rb: Explictly require
-     rubygems/uninstaller.rb if the user wants to bail because of failed
-     tests.
-     Part of the fix for RF #24261 by Daniel Berger
+	* lib/rubygems/remote_fetcher.rb: Always escape URI's to deal with spaces
+	  and such, regardless of platform.
+	* lib/rubygesm/validator.rb: Use the test-unit gem if installed.
+	  Part of the fix for RF #24261 by Daniel Berger
+	* lib/rubygems/commands/install_command.rb: Explictly require
+	  rubygems/uninstaller.rb if the user wants to bail because of failed
+	  tests.
+	  Part of the fix for RF #24261 by Daniel Berger
 
 2009-03-17  Eric Hodel  <drbrain@segment7.net>
 
@@ -278,50 +286,50 @@
 	  issues.
 
 2009-02-10  Daniel Berger <djberg96@gmail.com>
-   * lib/rubygems/specification: Refactored and fixed the installation_path
-   method. It was overwrought and it now no longer uses File::SEPARATOR
-   explicitly.
-   [RubyForge: bug #23879 by Daniel Berger]
+	* lib/rubygems/specification: Refactored and fixed the installation_path
+	method. It was overwrought and it now no longer uses File::SEPARATOR
+	explicitly.
+	[RubyForge: bug #23879 by Daniel Berger]
 
 2009-02-10  Daniel Berger <djberg96@gmail.com>
-   * lib/rubygems/validator.rb: The Gem::Validator#verify_gem_file method
-   now explicitly rescues Errno::EINVAL as well as Errno::ENOENT because
-   MS Windows raises a different SystemCallError for empty paths.
-
+	* lib/rubygems/validator.rb: The Gem::Validator#verify_gem_file method
+	now explicitly rescues Errno::EINVAL as well as Errno::ENOENT because
+	MS Windows raises a different SystemCallError for empty paths.
+	
 2009-01-21  Daniel Berger <djberg96@gmail.com>
-   * lib/rubygems/remote_fetcher.rb: Split out nil and file handling in
-   the download method. Modified file URI handling to work properly.
-   [RubyForge: bug #16495 by Paul Sadauskas]
-
+	* lib/rubygems/remote_fetcher.rb: Split out nil and file handling in
+	the download method. Modified file URI handling to work properly.
+	[RubyForge: bug #16495 by Paul Sadauskas]
+	
 2009-01-19  Daniel Berger <djberg96@gmail.com>
-   * lib/rubygems/remote_fetcher.rb: Added uri scheme validation back
-   into the open_uri_or_path method, though it now accepts 'https' and
-   'file' as well.
-   * test/test_gem_remote_fetcher.rb: Updated the test_fetch_size_bad_uri
-   to reflect the updated error message.
+	* lib/rubygems/remote_fetcher.rb: Added uri scheme validation back
+	into the open_uri_or_path method, though it now accepts 'https' and
+	'file' as well.
+	* test/test_gem_remote_fetcher.rb: Updated the test_fetch_size_bad_uri
+	to reflect the updated error message.
 
 2009-01-15  Daniel Berger <djberg96@gmail.com>
-   * lib/rubygems/remote_fetcher.rb: Removed the open_file_uri_path method
-   since the URI#path method already does the same thing, and changed
-   the file_uri? method so that it explicitly calls .to_s.
-   * lib/rubygems/local_remote_options.rb: Allow file urls.
+	* lib/rubygems/remote_fetcher.rb: Removed the open_file_uri_path method
+	since the URI#path method already does the same thing, and changed
+	the file_uri? method so that it explicitly calls .to_s.
+	* lib/rubygems/local_remote_options.rb: Allow file urls.
 
 2009-01-15  Daniel Berger <djberg96@gmail.com>
-   * lib/rubygems/commands/generate_index_command.rb: Fixed a typo in
-   the description.
-   * test/test_gem_doc_manager.rb: The test_uninstall_doc_unwritable
-   test is now skipped on Windows.
-   * test/test_gem_install_update_options.rb: The
-   test_user_install_disabled_read_only test is now skipped on Windows.
-   * test/test_gem_installer.rb: The test_generate_bin_symlink_no_perms
-   and test_generate_bin_script_no_perms tests are now skipped on Windows.
+	* lib/rubygems/commands/generate_index_command.rb: Fixed a typo in
+	the description.
+	* test/test_gem_doc_manager.rb: The test_uninstall_doc_unwritable
+	test is now skipped on Windows.
+	* test/test_gem_install_update_options.rb: The
+	test_user_install_disabled_read_only test is now skipped on Windows.
+	* test/test_gem_installer.rb: The test_generate_bin_symlink_no_perms
+	and test_generate_bin_script_no_perms tests are now skipped on Windows.
 
 2009-01-14  Daniel Berger <djberg96@gmail.com>
-   * lib/rubygems/specification.rb: Added support for a license attribute.
-   [RubyForge: feature #11041 (partial) by Kevin Williams]
-   * lib/rubygems/commands/query_command.rb: Gem detail information now
-   includes license information.
-   * test/test_gem_specification.rb: Added tests for the license attribute.
+	* lib/rubygems/specification.rb: Added support for a license attribute.
+	[RubyForge: feature #11041 (partial) by Kevin Williams]
+	* lib/rubygems/commands/query_command.rb: Gem detail information now
+	includes license information.
+	* test/test_gem_specification.rb: Added tests for the license attribute.
 
 2009-01-05  Chad Woolley <thewoolleyman@gmail.com>
 
@@ -340,57 +348,57 @@
 	Fixes bug #16688.
 
 2009-1-4  Daniel Berger <djberg96@gmail.com>
-   * lib/rubygems/installer.rb: Remove existing path if it already
-   exists before installing.
-   [RubyForge: patch #22837 by Eric Wong]
-   * lib/rubygems.rb: Minor modification to the location_of_caller
-   method - deal with possible characters after line number
+	* lib/rubygems/installer.rb: Remove existing path if it already
+	exists before installing.
+	[RubyForge: patch #22837 by Eric Wong]
+	* lib/rubygems.rb: Minor modification to the location_of_caller
+	method - deal with possible characters after line number
 
 2009-1-3  Daniel Berger <djberg96@gmail.com>
-   * lib/rubygems.rb: Better activation error message.
-   [RubyForge: patch #23082 by Tim Carey-Smith]
+	* lib/rubygems.rb: Better activation error message.
+	[RubyForge: patch #23082 by Tim Carey-Smith]
 
 2009-1-2  Daniel Berger <djberg96@gmail.com>
-   * lib/rubygems/ext/rake_builder.rb: Quote path if it contains spaces
-   [RubyForge: patch #23003 by Charlie Savage]
-   * lib/rubygems/local_remote_options.rb: Ignore duplicate sources
-   [RubyForge: bug #22277 by Elliot Temple]
-   * lib/rubygems/remote_fetcher.rb: Automatically normalize the URI
-   [RubyForge: bug #22151 by Alex Legler]
-   * lib/rubygems/specification.rb: Ensure that specification_version is
-   a Fixnum [RubyForge: bug #22598 by Tsutomu Kuroda]
-   * lib/rubygems/specification.rb: Bumped the CURRENT_SPECIFICATION_VERSION
-   and added an entry to the SPECIFICATION_VERSION_HISTORY
+	* lib/rubygems/ext/rake_builder.rb: Quote path if it contains spaces
+	[RubyForge: patch #23003 by Charlie Savage]
+	* lib/rubygems/local_remote_options.rb: Ignore duplicate sources
+	[RubyForge: bug #22277 by Elliot Temple]
+	* lib/rubygems/remote_fetcher.rb: Automatically normalize the URI
+	[RubyForge: bug #22151 by Alex Legler]
+	* lib/rubygems/specification.rb: Ensure that specification_version is
+	a Fixnum [RubyForge: bug #22598 by Tsutomu Kuroda]
+	* lib/rubygems/specification.rb: Bumped the CURRENT_SPECIFICATION_VERSION
+	and added an entry to the SPECIFICATION_VERSION_HISTORY
 
 2009-1-1  Daniel Berger <djberg96@gmail.com>
 
-   * test/test_gem_dependency.rb: Removed a duplicate "def dep" that
-   was causing a warning.
-   * lib/rubygems/platform.rb: Added an empty? method in order to
-   better handle gem indexing when dealing with gems created
-   prior to 0.9.5. [Rubyforge: bug #22603 by Johnathan Conley]
-   * lib/rubygems.rb: Added an explicit 'require "etc"'.
-   [RubyForge: bug #22313 by Matthew Boedicker]
+	* test/test_gem_dependency.rb: Removed a duplicate "def dep" that
+	was causing a warning.
+	* lib/rubygems/platform.rb: Added an empty? method in order to
+	better handle gem indexing when dealing with gems created
+	prior to 0.9.5. [Rubyforge: bug #22603 by Johnathan Conley]
+	* lib/rubygems.rb: Added an explicit 'require "etc"'.
+	[RubyForge: bug #22313 by Matthew Boedicker]
 
 2008-12-31  Daniel Berger <djberg96@gmail.com>
 
-   * lib/rubygems/local_remote_options: Allow 'https' as a valid scheme
-   in addition to 'http' [RubyForge: patch #22485 by Duarte Henriques] 
-   * setup.rb: Deal with extraneous quotation mark when autogenerating
-   .bat file on MS Windows [RubyForge: bug #22712 Takayuki Ishikawa]
-   * lib/rubygems/commands/unpack_command.rb: Fixed the --target option
-   [RubyForge: patch #22532 by Bryan Ash]
+	* lib/rubygems/local_remote_options: Allow 'https' as a valid scheme
+	in addition to 'http' [RubyForge: patch #22485 by Duarte Henriques] 
+	* setup.rb: Deal with extraneous quotation mark when autogenerating
+	.bat file on MS Windows [RubyForge: bug #22712 Takayuki Ishikawa]
+	* lib/rubygems/commands/unpack_command.rb: Fixed the --target option
+	[RubyForge: patch #22532 by Bryan Ash]
 
 2008-12-30  Daniel Berger <djberg96@gmail.com>
 
-   * lib/rubygems/builder.rb: Don't allow .gem file to be added back
-   onto itself [RubyForge: bug #19136, patch #23346 by Daniel Berger]
-   * lib/rubygems/defaults.rb: The default_path now only returns the
-   default_dir if the Gem.user_home doesn't exist
-   [RubyForge: bug #23037 by Pierre PLR]
-   * lib/rubygems.rb: Handle the possibility that Etc.getpwuid might
-   return nil on platforms other than Windows
-   [RubyForge: bug #22764 by Dudley Flanders]
+	* lib/rubygems/builder.rb: Don't allow .gem file to be added back
+	onto itself [RubyForge: bug #19136, patch #23346 by Daniel Berger]
+	* lib/rubygems/defaults.rb: The default_path now only returns the
+	default_dir if the Gem.user_home doesn't exist
+	[RubyForge: bug #23037 by Pierre PLR]
+	* lib/rubygems.rb: Handle the possibility that Etc.getpwuid might
+	return nil on platforms other than Windows
+	[RubyForge: bug #22764 by Dudley Flanders]
 
 2008-12-16  Eric Hodel  <drbrain@segment7.net>
 
@@ -1993,8 +2001,8 @@
 	when it encounters a bad cache file.
 
 2007-05-14  Chad Fowler  <chad@chadfowler.com>
- 	* lib/rubygems/command_manager.rb: Re-added registration for
-        gem cleanup command which I accidentally removed during refactoring.
+		* lib/rubygems/command_manager.rb: Re-added registration for
+	gem cleanup command which I accidentally removed during refactoring.
 
 2007-05-10  Jim Weirich  <jim@weirichhouse.org>
 
@@ -2023,23 +2031,23 @@
 	New digest technique.
 
 	* experimental/test_deployment.rb (TestDeployment::test_deployed_file):
-          New digest technique.
+	New digest technique.
 
 2007-03-26  Chad Fowler <chad@chadfowler.com>
 
-  * Extracted the big ball of mud that was gem_commands.rb into    
-    separate files.
+	* Extracted the big ball of mud that was gem_commands.rb into    
+	separate files.
 
 2007-03-17  Chad Fowler <chad@chadfowler.com>
 
-  * Various ruby 1.8.6 fixes for failing tests.
-  
-  * Updated setup.rb to 3.4.1
-  
-  * Renamed cmd_manager to command_manager to keep names consistent
-  
-  * lib/installer.rb: Rework path checking to use Pathname (ara howard bug #8811)
-  
+	* Various ruby 1.8.6 fixes for failing tests.
+	
+	* Updated setup.rb to 3.4.1
+	
+	* Renamed cmd_manager to command_manager to keep names consistent
+	
+	* lib/installer.rb: Rework path checking to use Pathname (ara howard bug #8811)
+	
 2007-03-02  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb: Add bin directory before library directory,
@@ -2063,8 +2071,8 @@
 
 2007-02-04  Chad Fowler <chad@chadfowler.com>
 
-        * Fixed failing tests (changed from assert_equal to assert_match to 
-          deal with ARGV inconsistencies in test vs. production).
+	* Fixed failing tests (changed from assert_equal to assert_match to 
+	  deal with ARGV inconsistencies in test vs. production).
 
 2007-02-03  Jim Weirich  <jim@weirichhouse.org>
 
@@ -2270,17 +2278,17 @@
 
 	* test/: Added functional test for extension gems proving that
 	non-compiling extensions don't result in success message.
-   
+
 	* lib/rubygems/specification.rb: Raise exception if loaded spec is
 	nil.  Closes bug #7299.
-   
+
 	* test/gemenvironment.rb: Clean out gemhome every time to avoid dirty
 	directory failing tests.
-   
+
 	* lib/rubygems/installer.rb: Change uninstall to require a full gem
 	name (not a partial match).  Fixes bug #6007 and related unreported
 	issues.
-   
+
 2006-12-15  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/installer.rb (Gem::Uninstaller): Correctly uninstall
@@ -2355,7 +2363,7 @@
 
 2006-11-30  Chad Fowler <chad@chadfowler.com>
 
-       * lib/rubygems/open-uri.rb: Removed the duplicated library.
+	* lib/rubygems/open-uri.rb: Removed the duplicated library.
 
 2006-11-30  Eric Hodel  <drbrain@segment7.net>
 
@@ -2429,8 +2437,8 @@
 
 2006-11-18  Chad Fowler  <chad@chadfowler.com>
 
-        * lib/rubygems/installer.rb: Applied Kevin Clark's patch to make
-        RubyGems recognize mkrf files.
+	* lib/rubygems/installer.rb: Applied Kevin Clark's patch to make
+	RubyGems recognize mkrf files.
 
 2006-11-17  Eric Hodel  <drbrain@segment7.net>
 
@@ -2535,10 +2543,10 @@
 	'==' code.
 
 2006-09-18 Chad Fowler <chad@chadfowler.com>
-      
-        * lib/rubygems/remote_installer.rb
-        Only show the last 3 gem versions on a multiplatform remote
-        install list.
+
+	* lib/rubygems/remote_installer.rb
+	Only show the last 3 gem versions on a multiplatform remote
+	install list.
 
 2006-09-18  Jim Weirich  <jim@weirichhouse.org>
 
@@ -2669,19 +2677,19 @@ Tue Jan 24 16:26:13 2006  Chad Fowler <chad@chadfowler.com>
 Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 
 	* lib/rubygems/source_index.rb
- 	(Gem::SourceIndex::load_specification): Added an untaint call to
- 	make the code run in SAFE=1 mode under 1.8.3.
+		(Gem::SourceIndex::load_specification): Added an untaint call to
+		make the code run in SAFE=1 mode under 1.8.3.
 	(Gem::SourceIndex::load_gems_in): Untaint here too.
 
 	* lib/rubygems/installer.rb (Gem::Installer::install): Untaint
- 	here too.
+		here too.
 	(Gem::Installer::extract_files): Untaint here too.
 
 	* lib/rubygems/custom_require.rb
- 	(Gem::GemPathSearcher::matching_file): Untaint here too.
+		(Gem::GemPathSearcher::matching_file): Untaint here too.
 
 	* test/gemenvironment.rb: Added $SAFE=1 to the test environment to
- 	make sure we can run in $SAFE mode.
+		make sure we can run in $SAFE mode.
 
 2005-12-03  Jim Weirich  <jim@tardis>
 
@@ -2709,18 +2717,18 @@ Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 	index if given a nil value for the +si+ value.
 
 2005-11-08  Chad Fowler  <chad@chadfowler.com>
-       * lib/rubygems.rb: Ara Howard's fix to allow 0.0.0 to be a valid gem
-       version.
+	* lib/rubygems.rb: Ara Howard's fix to allow 0.0.0 to be a valid gem
+	version.
 
 2005-11-08  Chad Fowler  <chad@chadfowler.com>
-       * lib/rubygems/gem_commands.rb: Fixed bug in gem unpack.  It was
-       sorting incorrectly, resulting in the wrong version being unpacked in
-       some edge cases. Thanks to Jakob Skjerning for the detailed bug report.
+	* lib/rubygems/gem_commands.rb: Fixed bug in gem unpack.  It was
+	sorting incorrectly, resulting in the wrong version being unpacked in
+	some edge cases. Thanks to Jakob Skjerning for the detailed bug report.
 
 2005-11-03  Chad Fowler  <chad@chadfowler.com>
-       * lib/rubygems/installer.rb: Fixed bug that would cause the executables
-       from the wrong gem to be uninstalled if the names matched the same
-       regex.  Thanks Eric Hodel.
+	* lib/rubygems/installer.rb: Fixed bug that would cause the executables
+	from the wrong gem to be uninstalled if the names matched the same
+	regex.  Thanks Eric Hodel.
 
 2005-11-01  Jim Weirich  <jim@tardis>
 	* lib/rubygems/gem_commands.rb (Gem::UpdateCommand::initialize):
@@ -2729,12 +2737,12 @@ Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 	(Gem::UpdateCommand::execute): Upgrade => Update change.
 
 2005-11-01  Chad Fowler  <chad@chadfowler.com>
-       * lib/rubygems/gem_commands.rb: Allow gem unpack to accept a gem file
-       path instead of gem name: gem unpack mygem-1.0.0.gem.
+	* lib/rubygems/gem_commands.rb: Allow gem unpack to accept a gem file
+	path instead of gem name: gem unpack mygem-1.0.0.gem.
 
 2005-10-31  Chad Fowler  <chad@chadfowler.com>
-       * lib/rubygems/installer.rb: Tilman Sauerbeck's patch to support
-        extensions built with Rake!
+	* lib/rubygems/installer.rb: Tilman Sauerbeck's patch to support
+	extensions built with Rake!
 
 2005-09-13  Jim Weirich  <jim@weirichhouse.org>
 
@@ -2759,7 +2767,7 @@ Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 2005-07-08  Chad Fowler  <chad@chadfowler.com>
 
 	* lib/rubygems/remote_installer.rb: Applied Daniel Roux's patch
-        to make RubyGems work with authenticating proxies.
+	to make RubyGems work with authenticating proxies.
 
 2005-07-08  Jim Weirich  <jim@weirichhouse.org>
 
@@ -3282,7 +3290,7 @@ Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 	date/time stamping in fetching the source cache.
 
 2004-11-25  Ryan Davis <ryand@zenspider.com>
-        * lib/rubygems.rb: Added GEM_SKIP functionality, which will tell
+	* lib/rubygems.rb: Added GEM_SKIP functionality, which will tell
 	loadpath_manager not to load specific libs from gems.  For
 	testing/ development purposes.  Created by Ryan Davis.
 
@@ -3313,7 +3321,7 @@ Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 	* setup.rb,install.rb,bin/update_rubygems: removed install.rb and 
 	added setup.rb and post-install.rb.  Changed update_rubygems so that
 	params passed to it can be passed on to setup.rb
- 	
+		
 2004-10-25  Jim Weirich  <jim@weirichhouse.org>
 
 	* lib/rubygems/installer.rb
@@ -3383,12 +3391,12 @@ Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 
 2004-09-30  Rich Kilmer  <rich@infoether.com>
 
-        * lib/rubygems/specification.rb -  externalized the loaded_from runtime 
-          var on specification
-        * lib/rubygems/cache.rb - optimized cache refresh! method and refactored 
-          processing of files when building cache.
-        * lib/rubygems/loadpath_manager.rb - fixed bug in loadpath manager in 
-          finding native extensions that have ext on os x, win32 and solaris
+	* lib/rubygems/specification.rb -  externalized the loaded_from runtime 
+	var on specification
+	* lib/rubygems/cache.rb - optimized cache refresh! method and refactored 
+	processing of files when building cache.
+	* lib/rubygems/loadpath_manager.rb - fixed bug in loadpath manager in 
+	finding native extensions that have ext on os x, win32 and solaris
 
 2004-09-20  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems/gem_commands.rb:  If file match during local install is
@@ -3406,7 +3414,7 @@ Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 
 2004-09-12  Chad Fowler  <chad@chadfowler.com>
 	* lib/rubygems/specification.rb, test/test_specification.rb: Removed
-        library_stubs attribute.
+	library_stubs attribute.
 
 2004-09-12  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
@@ -3418,71 +3426,71 @@ Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 
 2004-09-11  Chad Fowler <chad@chadfowler.com>
 
-  * test/test_parse_commands.rb: Fix failing unit tests due to Rich's fix from
+	* test/test_parse_commands.rb: Fix failing unit tests due to Rich's fix from
 
-  * lib/rubygems/specification.rb: Add bindir to executable path on file list
+	* lib/rubygems/specification.rb: Add bindir to executable path on file list
 
 2004-09-11  Rich Kilmer <rich@infoether.com>
 
-  * lib/rubygems/gem_commands.rb - got rid of stub options
+	* lib/rubygems/gem_commands.rb - got rid of stub options
 
-  * lib/rubygems/install.rb - changed output of messages so the UI would format
-    better 
+	* lib/rubygems/install.rb - changed output of messages so the UI would format
+	better 
 
-  * bin/gem_server - exit! from ^c
+	* bin/gem_server - exit! from ^c
 
 2004-09-09  Chad Fowler <chad@chadfowler.com>
-  * lib/rubygems/loadpath_manager.rb: Small bug when gem specs have ruby 
-  version requirements.
-  * lib/rubygems/specification.rb, lib/rubygems/gem_commands.rb: Fixed failing
-  functional test.
+	* lib/rubygems/loadpath_manager.rb: Small bug when gem specs have ruby 
+	version requirements.
+	* lib/rubygems/specification.rb, lib/rubygems/gem_commands.rb: Fixed failing
+	functional test.
 
 2004-09-08  Chad Fowler <chad@chadfowler.com>
-  * install.rb: added stub removal to the install process
+	* install.rb: added stub removal to the install process
 
 2004-09-06  Chad Fowler <chad@chadfowler.com>
-  * test/test_package.rb: Fixed failing unit test as per Mauricio's email to 
-   the rubygems list.
-  * Fixed minor issues with Windows cmd file generation.
+	* test/test_package.rb: Fixed failing unit test as per Mauricio's email to 
+	the rubygems list.
+	* Fixed minor issues with Windows cmd file generation.
 
 2004-09-06  Rich Kilmer <rich@infoether.com>
-  * lib/rubygems/remote_installer.rb - enabled caching of source caches
-     based on the size of the yaml.Z/yaml file.
-     
+	* lib/rubygems/remote_installer.rb - enabled caching of source caches
+	based on the size of the yaml.Z/yaml file.
+	
 2004-08-29  Chad Fowler <chad@chadfowler.com>
 	* /lib/rubygems/gem_command.rb: small big fix for local gem installs
 	on Windows.
 
 2004-08-28  Rich Kilmer <rich@infoether.com>
 
-        * /lib/rubygems/installer.rb, /lib/rubygems/doc_manager.rb, 
-          /lib/rubygems/cmd_manager.rb - Added an exception: FilePermissionError
-          which checks to ensure write access to the install/uninstall/rdoc 
-          destination directories and raises a nice error instead of the standard
-          one. 
+	* /lib/rubygems/installer.rb, /lib/rubygems/doc_manager.rb, 
+	/lib/rubygems/cmd_manager.rb - Added an exception: FilePermissionError
+	which checks to ensure write access to the install/uninstall/rdoc 
+	destination directories and raises a nice error instead of the standard
+	one. 
 
 2004-08-28  Rich Kilmer <rich@infoether.com>
 
-        * /lib/rubygems/installer.rb - commented out stub addition and removal
+	* /lib/rubygems/installer.rb - commented out stub addition and removal
 
 2004-08-28  Rich Kilmer <rich@infoether.com>
 
-        * /lib/rubygems.rb, /lib/rubygems/loadpath_manager.rb -
-         this adds all the loadpath_manager stuff with the 'ultimate require hack' to
-         rubygems.rb.  Also, require_gem methods body has been extracted into a method
-         Gem.activate that differs in the calling signature in that the second param is
-         a boolean that determines whether to autorequire or not.
+	* /lib/rubygems.rb, /lib/rubygems/loadpath_manager.rb -
+	this adds all the loadpath_manager stuff with the 'ultimate require hack' to
+	rubygems.rb.  Also, require_gem methods body has been extracted into a method
+	Gem.activate that differs in the calling signature in that the second param is
+	a boolean that determines whether to autorequire or not.
 
 2004-08-27  Rich Kilmer <rich@infoether.com>
 
-        * lib/rubygems/user_interaction - added ask_yes_no as a method
-          which returns true/false and formats/processes the [yn] stuff.
-          it also has an optional second parameter of true/false for the
-          default value.
+	* lib/rubygems/user_interaction - added ask_yes_no as a method
+	which returns true/false and formats/processes the [yn] stuff.
+	it also has an optional second parameter of true/false for the
+	default value.
 
-        * lib/rubygems/installer.rb, lib/rubygems/remote_installer.rb, 
-          lib/rubygems/command_manager.rb - changed all places where ask 
-          was used with [Yn] to ask_yes_no
+	* lib/rubygems/installer.rb, lib/rubygems/remote_installer.rb, 
+	lib/rubygems/command_manager.rb - changed all places where ask 
+	was used with [Yn] to ask_yes_no
 
 2004-08-24  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
@@ -3495,8 +3503,8 @@ Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 	  command takes --rdoc as its default now.
 
 2004-08-22  Rich Kilmer <rich@infoether.com>
-        * lib/rubygems/installer.rb: fixed stub generation...i added the version 
-          stuff that only app stubs should have...sorry!
+	* lib/rubygems/installer.rb: fixed stub generation...i added the version 
+	stuff that only app stubs should have...sorry!
 
 2004-08-17  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
@@ -3542,7 +3550,7 @@ Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 	* lib/rubygems/remote_installer.rb, lib/rubygems/installer.rb: Fixed
 	minor bugs in default selections for questions asked during 
 	installation and uninstallation
- 
+	
 2004-08-17  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
 	* lib/rubygems/specification.rb:
@@ -3562,11 +3570,11 @@ Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 	* lib/rubygems/config_file.rb: ditto
 
 2004-08-11  Rich Kilmer <rich@infoether.com>
-        * lib/rubygems/installer.rb: The application stub now defaults to 
-          the latest version of the library, and optionally allows an initial 
-          parameter conforming to _VERSION_ to be passed to select a prior 
-          version of the library (this initial parameter, if present, is shifted 
-          off of ARGV). This change was re-added...I erased it somehow :(
+	* lib/rubygems/installer.rb: The application stub now defaults to 
+	the latest version of the library, and optionally allows an initial 
+	parameter conforming to _VERSION_ to be passed to select a prior 
+	version of the library (this initial parameter, if present, is shifted 
+	off of ARGV). This change was re-added...I erased it somehow :(
 
 2004-08-11  Gavin Sinclair  <gsinclair@soyabean.com.au>
 
@@ -3580,20 +3588,20 @@ Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 	  option and obsolete error message.
 
 2004-08-12  Chad Fowler <chad@chadfowler.com>
-       * Added "gem rdoc" command for generating docs for already-installed
-       gems
+	* Added "gem rdoc" command for generating docs for already-installed
+	gems
 
 2004-08-11  Rich Kilmer <rich@infoether.com>
-       * bin/generate_yaml_index: updated to work with new gem format (and use the Gem::Format
+	* bin/generate_yaml_index: updated to work with new gem format (and use the Gem::Format
 	 class to read).  Will deploy after testing on RubyForge.
-       * lib/rubygems/gem_commands.rb: generate rdoc by default on installs (I think this is
+	* lib/rubygems/gem_commands.rb: generate rdoc by default on installs (I think this is
 	 just good practice.
-       * lib/rubygems/remote_install.rb: raise an exception if dependent gems cannot be found 
+	* lib/rubygems/remote_install.rb: raise an exception if dependent gems cannot be found 
 	 on remote_install
 
 2004-08-11  Chad Fowler <chad@chadfowler.com>
-       * lib/rubygems/gem_commands.rb: query is now case insensitive (as it used to be)
-       * lib/rubygems/installer.rb: gem_make.out wasn't being written when an extension failed to compile.
+	* lib/rubygems/gem_commands.rb: query is now case insensitive (as it used to be)
+	* lib/rubygems/installer.rb: gem_make.out wasn't being written when an extension failed to compile.
 
 2004-08-11  Rich Kilmer <rich@infoether.com>
 
@@ -3732,7 +3740,7 @@ Tue Dec  6 14:51:13 2005  Jim Weirich  <jim@tardis>
 
 	* lib/rubygems/version.rb correct? is now a class method on
 	  Version enabling Gem::Version.correct?(...)
-       
+
 	* lib/rubygems/install.rb make it so uninstalling a gem will
 	  not remove executables if another version of that gem is 
 	  installed and needs those executables

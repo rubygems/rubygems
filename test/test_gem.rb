@@ -513,11 +513,28 @@ class TestGem < RubyGemTestCase
     Gem::ConfigMap[:EXEEXT] = orig_exe_ext
   end
 
-  def test_self_ruby_version
-    version = RUBY_VERSION.dup
-    version << ".#{RUBY_PATCHLEVEL}" if defined?(RUBY_PATCHLEVEL) && RUBY_PATCHLEVEL != -1
+  def test_self_ruby_version_1_8_5
+    util_set_RUBY_VERSION '1.8.5'
 
-    assert_equal Gem::Version.new(version), Gem.ruby_version
+    assert_equal Gem::Version.new('1.8.5'), Gem.ruby_version
+  ensure
+    util_restore_RUBY_VERSION
+  end
+
+  def test_self_ruby_version_1_8_6p287
+    util_set_RUBY_VERSION '1.8.6', 287
+
+    assert_equal Gem::Version.new('1.8.6.287'), Gem.ruby_version
+  ensure
+    util_restore_RUBY_VERSION
+  end
+
+  def test_self_ruby_version_1_9_2dev_r23493
+    util_set_RUBY_VERSION '1.9.2', -1, 23493
+
+    assert_equal Gem::Version.new('1.9.2.dev.23493'), Gem.ruby_version
+  ensure
+    util_restore_RUBY_VERSION
   end
 
   def test_self_searcher
@@ -624,6 +641,35 @@ class TestGem < RubyGemTestCase
 
     @exec_path = File.join spec.full_gem_path, spec.bindir, 'exec'
     @abin_path = File.join spec.full_gem_path, spec.bindir, 'abin'
+  end
+
+  def util_set_RUBY_VERSION(version, patchlevel = nil, revision = nil)
+    if Gem.instance_variables.include? :@ruby_version or
+       Gem.instance_variables.include? '@ruby_version' then
+      Gem.send :remove_instance_variable, :@ruby_version
+    end
+
+    @RUBY_VERSION    = RUBY_VERSION
+    @RUBY_PATCHLEVEL = RUBY_PATCHLEVEL if defined?(RUBY_PATCHLEVEL)
+    @RUBY_REVISION   = RUBY_REVISION   if defined?(RUBY_REVISION)
+
+    Object.send :remove_const, :RUBY_VERSION
+    Object.send :remove_const, :RUBY_PATCHLEVEL if defined?(RUBY_PATCHLEVEL)
+    Object.send :remove_const, :RUBY_REVISION   if defined?(RUBY_REVISION)
+
+    Object.const_set :RUBY_VERSION,    version
+    Object.const_set :RUBY_PATCHLEVEL, patchlevel if patchlevel
+    Object.const_set :RUBY_REVISION,   revision   if revision
+  end
+
+  def util_restore_RUBY_VERSION
+    Object.send :remove_const, :RUBY_VERSION
+    Object.send :remove_const, :RUBY_PATCHLEVEL if defined?(RUBY_PATCHLEVEL)
+    Object.send :remove_const, :RUBY_REVISION   if defined?(RUBY_REVISION)
+
+    Object.const_set :RUBY_VERSION,    @RUBY_VERSION
+    Object.const_set :RUBY_PATCHLEVEL, @RUBY_PATCHLEVEL if @RUBY_PATCHLEVEL
+    Object.const_set :RUBY_REVISION,   @RUBY_REVISION   if @RUBY_REVISION
   end
 
 end

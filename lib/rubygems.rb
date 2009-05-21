@@ -119,7 +119,7 @@ end
 # Gem::post_uninstall.
 #
 # == Bugs
-# 
+#
 # You can submit bugs to the
 # {RubyGems bug tracker}[http://rubyforge.org/tracker/?atid=575&group_id=126&func=browse]
 # on RubyForge
@@ -129,7 +129,7 @@ end
 # RubyGems is currently maintained by Eric Hodel.
 #
 # RubyGems was originally developed at RubyConf 2003 by:
-# 
+#
 # * Rich Kilmer -- rich(at)infoether.com
 # * Chad Fowler -- chad(at)chadfowler.com
 # * David Black -- dblack(at)wobblini.net
@@ -137,7 +137,7 @@ end
 # * Jim Weirch -- {jim(at)weirichhouse.org}[mailto:jim@weirichhouse.org]
 #
 # Contributors:
-# 
+#
 # * Gavin Sinclair -- gsinclair(at)soyabean.com.au
 # * George Marrows -- george.marrows(at)ntlworld.com
 # * Dick Davies -- rasputnik(at)hellooperator.net
@@ -154,7 +154,7 @@ end
 # (If your name is missing, PLEASE let us know!)
 #
 # Thanks!
-# 
+#
 # -The RubyGems Team
 
 module Gem
@@ -870,7 +870,13 @@ module Gem
   def self.ruby_version
     return @ruby_version if defined? @ruby_version
     version = RUBY_VERSION.dup
-    version << ".#{RUBY_PATCHLEVEL}" if defined?(RUBY_PATCHLEVEL) && RUBY_PATCHLEVEL != -1
+
+    if defined?(RUBY_PATCHLEVEL) && RUBY_PATCHLEVEL != -1 then
+      version << ".#{RUBY_PATCHLEVEL}"
+    elsif defined?(RUBY_REVISION) then
+      version << ".dev.#{RUBY_REVISION}"
+    end
+
     @ruby_version = Gem::Version.new version
   end
 

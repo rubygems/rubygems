@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2009-05-21  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems.rb:  Add 'dev' and svn revision for -1 RUBY_PATCHLEVEL
+	  and RUBY_REVISION.
+
 2009-05-20  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/defaults.rb:  Restore 1.9.1 path behavior.

@@ -4,6 +4,8 @@
 
 	* lib/rubygems/commands/setup_command.rb:  Fix --format-executable
 	  option name.
+	* lib/rubygems/requirement.rb:  Fix typo in #parse.  Bug #26000 by
+	  Mike Gunderloy.
 
 2009-05-21  Eric Hodel  <drbrain@segment7.net>
 

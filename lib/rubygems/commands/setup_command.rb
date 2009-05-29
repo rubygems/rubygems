@@ -39,7 +39,7 @@ class Gem::Commands::SetupCommand < Gem::Command
       options[:site_or_vendor] = vendor ? :vendorlibdir : :sitelibdir
     end
 
-    add_option '--[no-]format_executable',
+    add_option '--[no-]format-executable',
                'Makes `gem` match ruby',
                'If ruby is ruby18, gem will be gem18' do |value, options|
       options[:format_executable] = value

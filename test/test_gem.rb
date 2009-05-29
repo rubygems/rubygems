@@ -668,8 +668,10 @@ class TestGem < RubyGemTestCase
     Object.send :remove_const, :RUBY_REVISION   if defined?(RUBY_REVISION)
 
     Object.const_set :RUBY_VERSION,    @RUBY_VERSION
-    Object.const_set :RUBY_PATCHLEVEL, @RUBY_PATCHLEVEL if @RUBY_PATCHLEVEL
-    Object.const_set :RUBY_REVISION,   @RUBY_REVISION   if @RUBY_REVISION
+    Object.const_set :RUBY_PATCHLEVEL, @RUBY_PATCHLEVEL if
+      defined?(@RUBY_PATCHLEVEL)
+    Object.const_set :RUBY_REVISION,   @RUBY_REVISION   if
+      defined?(@RUBY_REVISION)
   end
 
 end

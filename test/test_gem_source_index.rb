@@ -407,6 +407,9 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
 
     with_default = Gem::Dependency.new(/^a/, Gem::Requirement.default)
     assert_equal [@a1, @a2, @a3a, @a_evil9], @source_index.search(with_default)
+
+    c1_1_dep = Gem::Dependency.new 'c', '~> 1.1'
+    assert_equal [@c1_2], @source_index.search(c1_1_dep)
   end
 
   def test_search_platform

@@ -38,6 +38,7 @@ doc/release_notes/rel_1_3_0.rdoc
 doc/release_notes/rel_1_3_1.rdoc
 doc/release_notes/rel_1_3_2.rdoc
 doc/release_notes/rel_1_3_3.rdoc
+doc/release_notes/rel_1_3_4.rdoc
 lib/gauntlet_rubygems.rb
 lib/rbconfig/datadir.rb
 lib/rubygems.rb

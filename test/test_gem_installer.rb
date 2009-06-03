@@ -516,7 +516,7 @@ load Gem.bin_path('a', 'my_exec', version)
 
     @installer.generate_bin
 
-    default_shebang = File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])
+    default_shebang = Gem.ruby
     shebang_line = open("#{@gemhome}/bin/my_exec") { |f| f.readlines.first }
     assert_match(/\A#!/, shebang_line)
     assert_match(/#{default_shebang}/, shebang_line)

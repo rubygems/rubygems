@@ -211,7 +211,9 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
-        @cmd.execute
+        capture_io do
+          @cmd.execute
+        end
       end
       assert_equal 0, e.exit_code
     end

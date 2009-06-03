@@ -29,6 +29,12 @@ require 'rubygems/require_paths_builder'
 class Gem::Installer
 
   ##
+  # Paths where env(1) might live.  Some systems are broken and have it in
+  # /bin
+
+  ENV_PATHS = %w[/usr/bin/env /bin/env]
+
+  ##
   # Raised when there is an error while building extensions.
   #
   class ExtensionBuildError < Gem::InstallError; end
@@ -392,23 +398,25 @@ class Gem::Installer
   # necessary.
 
   def shebang(bin_file_name)
-    if @env_shebang then
-      "#!/usr/bin/env " + Gem::ConfigMap[:ruby_install_name]
+    ruby_name = Gem::ConfigMap[:ruby_install_name] if @env_shebang
+    path = File.join @gem_dir, @spec.bindir, bin_file_name
+    first_line = File.open(path, "rb") {|file| file.gets}
+
+    if /\A#!/ =~ first_line then
+      # Preserve extra words on shebang line, like "-w".  Thanks RPA.
+      shebang = first_line.sub(/\A\#!.*?ruby\S*(?=(\s+\S+))/, "#!#{Gem.ruby}")
+      opts = $1
+      shebang.strip! # Avoid nasty ^M issues.
+    end
+
+    if not ruby_name then
+      "#!#{Gem.ruby}#{opts}"
+    elsif opts then
+      "#!/bin/sh\n'exec' #{ruby_name.dump} '-x' \"$0\" \"$@\"\n#{shebang}"
     else
-      path = File.join @gem_dir, @spec.bindir, bin_file_name
-
-      File.open(path, "rb") do |file|
-        first_line = file.gets
-        if first_line =~ /^#!/ then
-          # Preserve extra words on shebang line, like "-w".  Thanks RPA.
-          shebang = first_line.sub(/\A\#!.*?ruby\S*/, "#!#{Gem.ruby}")
-        else
-          # Create a plain shebang line.
-          shebang = "#!#{Gem.ruby}"
-        end
-
-        shebang.strip # Avoid nasty ^M issues.
-      end
+      # Create a plain shebang line.
+      @env_path ||= ENV_PATHS.find {|env_path| File.executable? env_path }
+      "#!#{@env_path} #{ruby_name}"
     end
   end
 

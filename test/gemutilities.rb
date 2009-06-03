@@ -75,6 +75,8 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     @latest_usrcache = File.join(@gemhome, ".gem", "latest_user_cache")
     @userhome = File.join @tempdir, 'userhome'
 
+    Gem.ensure_gem_subdirectories @gemhome
+
     @orig_ENV_HOME = ENV['HOME']
     ENV['HOME'] = @userhome
     Gem.instance_variable_set :@user_home, nil

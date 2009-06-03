@@ -259,7 +259,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
       inst.install 'a'
     end
 
-    assert_match %r|\A#!/usr/bin/env #{Gem::ConfigMap[:ruby_install_name]}\n|,
+    assert_match %r|\A#!/\S+/env #{Gem::ConfigMap[:ruby_install_name]}\n|,
                  File.read(File.join(@gemhome, 'bin', 'a_bin'))
   end
 

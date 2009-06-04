@@ -320,13 +320,15 @@ end
 
 desc "build util/gem_prelude.rb from the template and defaults.rb"
 file 'util/gem_prelude.rb' =>
-     %w[util/gem_prelude.rb.template lib/rubygems/defaults.rb] do
+     %w[util/gem_prelude.rb.template lib/rubygems/defaults.rb Rakefile] do
   gem_prelude = File.read 'util/gem_prelude.rb.template'
   defaults = File.read 'lib/rubygems/defaults.rb'
 
   raise 'template error' unless defaults.sub!(/^module Gem\n/, '')
   raise 'template error' unless defaults.sub!(/^end\n/, '')
 
+  defaults[0, 0] = "  # begin rubygems/defaults\n"
+  defaults << "  # end rubygems/defaults\n"
   defaults.gsub!(/^/, '  ')
 
   raise 'template error' unless
@@ -337,7 +339,9 @@ file 'util/gem_prelude.rb' =>
 
   open 'util/gem_prelude.rb', 'w' do |io|
     io.write gem_prelude
+    io.chmod 0444
   end
+
 end
 
 # These tasks expect to have the following directory structure:

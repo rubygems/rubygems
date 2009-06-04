@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2009-06-04  Eric Hodel  <drbrain@segment7.net>
+
+	* util/gem_prelude.rb.template:  Backports from 1.9.
+
 2009-06-03  Eric Hodel  <drbrain@segment7.net>
 
 	* bin/gem:  Support 1.8.6+

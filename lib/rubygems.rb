@@ -165,9 +165,6 @@ module Gem
   ConfigMap = {} unless defined?(ConfigMap)
 
   require 'rbconfig'
-  # :stopdoc:
-  RbConfig = Config unless defined? ::RbConfig
-  # :startdoc:
 
   ConfigMap.merge!(
     :EXEEXT => RbConfig::CONFIG["EXEEXT"],

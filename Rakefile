@@ -337,11 +337,12 @@ file 'util/gem_prelude.rb' =>
   raise 'template error' unless
     gem_prelude.sub!(/^    # INCLUDE rubygems\/defaults\n/, defaults)
 
+  rm_f 'util/gem_prelude.rb'
+
   open 'util/gem_prelude.rb', 'w' do |io|
     io.write gem_prelude
     io.chmod 0444
   end
-
 end
 
 # These tasks expect to have the following directory structure:

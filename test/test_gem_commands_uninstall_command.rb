@@ -62,12 +62,11 @@ class TestGemCommandsUninstallCommand < GemInstallerTestCase
     @spec = quick_gem "pre", "2.b"
     @gem = File.join @tempdir, "#{@spec.full_name}.gem"
     FileUtils.touch @gem
-    util_setup_gem @ui
 
-    build_rake_in do
-      use_ui ui do
-        @installer.install
-      end
+    util_setup_gem
+
+    use_ui @ui do
+      @installer.install
     end
 
     @cmd.options[:args] = ["pre"]
@@ -76,8 +75,8 @@ class TestGemCommandsUninstallCommand < GemInstallerTestCase
       @cmd.execute
     end
 
-    output = @ui.output.split("\n")
-    assert_match(/Successfully uninstalled/, output.shift)
+    output = @ui.output
+    assert_match(/Successfully uninstalled/, output)
   end
 end
 

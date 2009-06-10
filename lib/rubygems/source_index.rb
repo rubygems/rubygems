@@ -136,6 +136,10 @@ class Gem::SourceIndex
     @gems.reject{ |name, gem| !gem.version.prerelease? }
   end
 
+  def released_gems
+    @gems.reject{ |name, gem| gem.version.prerelease? }
+  end
+
   ##
   # Reconstruct the source index from the specifications in +spec_dirs+.
 
@@ -196,6 +200,13 @@ class Gem::SourceIndex
 
   def prerelease_specs
     prerelease_gems.values
+  end
+
+  ##
+  # An array including only the released gemspecs
+
+  def released_specs
+    released_gems.values
   end
 
   ##

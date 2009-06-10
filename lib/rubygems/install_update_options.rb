@@ -95,8 +95,7 @@ module Gem::InstallUpdateOptions
 
     add_option(:"Install/Update",       '--[no-]user-install',
                'Install in user\'s home directory instead',
-               'of GEM_HOME. Defaults to using home',
-               'only if GEM_HOME is not writable.') do |value, options|
+               'of GEM_HOME.') do |value, options|
       options[:user_install] = value
     end
 

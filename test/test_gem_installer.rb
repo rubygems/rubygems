@@ -691,47 +691,6 @@ load Gem.bin_path('a', 'my_exec', version)
                                  "#{@spec.full_name}.gemspec"))
   end
 
-  unless win_platform? # File.chmod doesn't work
-    def test_install_user_local_fallback
-      Dir.mkdir util_inst_bindir
-      File.chmod 0755, @userhome
-      File.chmod 0000, util_inst_bindir
-      File.chmod 0000, Gem.dir
-      @spec.executables = ["executable"]
-
-      build_rake_in do
-        use_ui @ui do
-          util_setup_gem
-          @installer.install
-        end
-      end
-
-      assert File.exist?(File.join(Gem.user_dir, 'gems',
-                                   @spec.full_name, 'lib', 'code.rb'))
-      assert File.exist?(File.join(Gem.user_dir, 'bin', 'executable'))
-    ensure
-      File.chmod 0755, Gem.dir
-      File.chmod 0755, util_inst_bindir
-    end
-
-    def test_install_bindir_read_only
-      Dir.mkdir util_inst_bindir
-      File.chmod 0755, @userhome
-      File.chmod 0000, util_inst_bindir
-
-      build_rake_in do
-        use_ui @ui do
-          util_setup_gem
-          @installer.install
-        end
-      end
-
-      assert File.exist?(File.join(Gem.user_dir, 'bin', 'executable'))
-    ensure
-      File.chmod 0755, util_inst_bindir
-    end
-  end
-
   def test_install_with_message
     @spec.post_install_message = 'I am a shiny gem!'
 

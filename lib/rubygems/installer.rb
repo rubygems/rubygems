@@ -58,15 +58,9 @@ class Gem::Installer
 
   attr_reader :spec
 
-  @home_install_warning = false
   @path_warning = false
 
   class << self
-
-    ##
-    # True if we've warned about ~/.gems install
-
-    attr_accessor :home_install_warning
 
     ##
     # True if we've warned about PATH not including Gem.bindir
@@ -127,27 +121,6 @@ class Gem::Installer
       raise Gem::InstallError, "invalid gem format for #{@gem}"
     end
 
-    begin
-      FileUtils.mkdir_p @gem_home
-    rescue Errno::EACCES, Errno::ENOTDIR
-      # We'll divert to ~/.gems below
-    end
-
-    if not File.writable? @gem_home or
-        # TODO: Shouldn't have to test for existence of bindir; tests need it.
-        (@gem_home.to_s == Gem.dir and File.exist? Gem.bindir and
-         not File.writable? Gem.bindir) then
-      if options[:user_install] == false then # You don't want to use ~
-        raise Gem::FilePermissionError, @gem_home
-      elsif options[:user_install].nil? then
-        unless self.class.home_install_warning or options[:unpack] then
-          alert_warning "Installing to ~/.gem since #{@gem_home} and\n\t  #{Gem.bindir} aren't both writable."
-          self.class.home_install_warning = true
-        end
-      end
-      options[:user_install] = true
-    end
-
     if options[:user_install] and not options[:unpack] then
       @gem_home = Gem.user_dir
 
@@ -158,11 +131,10 @@ class Gem::Installer
           self.class.path_warning = true
         end
       end
-
-      FileUtils.mkdir_p @gem_home unless File.directory? @gem_home
-      # If it's still not writable, you've got issues.
-      raise Gem::FilePermissionError, @gem_home unless File.writable? @gem_home
     end
+
+    FileUtils.mkdir_p @gem_home
+    raise Gem::FilePermissionError, @gem_home unless File.writable? @gem_home
 
     @spec = @format.spec
 

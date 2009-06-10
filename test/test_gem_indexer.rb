@@ -166,8 +166,8 @@ pl-1-i386-linux
     assert_indexed @tempdir, "latest_specs.#{@marshal_version}.gz"
 
     expected = <<-EOF
-<?xml version="1.0"?>
-<rss version="2.0">
+<?xml version=\"1.0\"?>
+<rss version=\"2.0\">
   <channel>
     <title>ExampleForge gems</title>
     <link>http://example.com</link>
@@ -181,9 +181,9 @@ pl-1-i386-linux
       </description>
       <author>example@example.com (A User)</author>
       <guid>a-2</guid>
-      <enclosure url="http://gems.example.com/gems/a-2.gem"
-                 length="3072" type="application/octet-stream" />
-      <pubDate>Tue, 09 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url=\"http://gems.example.com/gems/a-2.gem\"
+                 length=\"3072\" type=\"application/octet-stream\" />
+      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -193,9 +193,9 @@ pl-1-i386-linux
       </description>
       <author>example@example.com (A User)</author>
       <guid>a-3.a</guid>
-      <enclosure url="http://gems.example.com/gems/a-3.a.gem"
-                 length="3072" type="application/octet-stream" />
-      <pubDate>Tue, 09 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url=\"http://gems.example.com/gems/a-3.a.gem\"
+                 length=\"3072\" type=\"application/octet-stream\" />
+      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -205,9 +205,9 @@ pl-1-i386-linux
       </description>
       <author>example@example.com (A User)</author>
       <guid>a_evil-9</guid>
-      <enclosure url="http://gems.example.com/gems/a_evil-9.gem"
-                 length="3072" type="application/octet-stream" />
-      <pubDate>Tue, 09 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url=\"http://gems.example.com/gems/a_evil-9.gem\"
+                 length=\"3072\" type=\"application/octet-stream\" />
+      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -217,9 +217,9 @@ pl-1-i386-linux
       </description>
       <author>example@example.com (A User)</author>
       <guid>b-2</guid>
-      <enclosure url="http://gems.example.com/gems/b-2.gem"
-                 length="3072" type="application/octet-stream" />
-      <pubDate>Tue, 09 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url=\"http://gems.example.com/gems/b-2.gem\"
+                 length=\"3072\" type=\"application/octet-stream\" />
+      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -229,9 +229,9 @@ pl-1-i386-linux
       </description>
       <author>example@example.com (A User)</author>
       <guid>c-1.2</guid>
-      <enclosure url="http://gems.example.com/gems/c-1.2.gem"
-                 length="3072" type="application/octet-stream" />
-      <pubDate>Tue, 09 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url=\"http://gems.example.com/gems/c-1.2.gem\"
+                 length=\"3072\" type=\"application/octet-stream\" />
+      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -241,9 +241,9 @@ pl-1-i386-linux
       </description>
       <author>example@example.com (A User)</author>
       <guid>d-2.0.a</guid>
-      <enclosure url="http://gems.example.com/gems/d-2.0.a.gem"
-                 length="3072" type="application/octet-stream" />
-      <pubDate>Tue, 09 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url=\"http://gems.example.com/gems/d-2.0.a.gem\"
+                 length=\"3072\" type=\"application/octet-stream\" />
+      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -253,9 +253,9 @@ pl-1-i386-linux
       </description>
       <author>example@example.com (A User)</author>
       <guid>d-2.0.b</guid>
-      <enclosure url="http://gems.example.com/gems/d-2.0.b.gem"
-                 length="3072" type="application/octet-stream" />
-      <pubDate>Tue, 09 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url=\"http://gems.example.com/gems/d-2.0.b.gem\"
+                 length=\"3072\" type=\"application/octet-stream\" />
+      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -265,9 +265,9 @@ pl-1-i386-linux
       </description>
       <author>example@example.com (A User)</author>
       <guid>pl-1-x86-linux</guid>
-      <enclosure url="http://gems.example.com/gems/pl-1-x86-linux.gem"
-                 length="3072" type="application/octet-stream" />
-      <pubDate>Tue, 09 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url=\"http://gems.example.com/gems/pl-1-x86-linux.gem\"
+                 length=\"3072\" type=\"application/octet-stream\" />
+      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -286,9 +286,9 @@ eighty characters.&lt;/pre&gt;
       </description>
       <author>example@example.com (Example), example2@example.com (Example2)</author>
       <guid>a-1</guid>
-      <enclosure url="http://gems.example.com/gems/a-1.gem"
-                 length="3584" type="application/octet-stream" />
-      <pubDate>Mon, 08 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url=\"http://gems.example.com/gems/a-1.gem\"
+                 length=\"3584\" type=\"application/octet-stream\" />
+      <pubDate>Tue, 09 Jun 2009 00:00:00 -0700</pubDate>
       <link>http://a.example.com</link>
     </item>
   </channel>

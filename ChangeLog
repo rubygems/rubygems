@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+2009-06-14  Chad Woolley <thewoolleyman@gmail.com>
+
+	* Add install_build_dependencies.rb to ease installation of required
+	  build dependencies.
+	* Update cruise_config.rb to invoke install_build_dependencies.rb
+	  before running rake, to ensure dependencies are installed on
+	  on Continuous Integration environments.
+
 2009-06-04  Eric Hodel  <drbrain@segment7.net>
 
 	* util/gem_prelude.rb.template:  Backports from 1.9.

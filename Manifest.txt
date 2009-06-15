@@ -79,6 +79,7 @@ lib/rubygems/platform.rb
 lib/rubygems/remote_fetcher.rb
 lib/rubygems/require_paths_builder.rb
 lib/rubygems/requirement.rb
+lib/rubygems/rubygems_version.rb
 lib/rubygems/security.rb
 lib/rubygems/server.rb
 lib/rubygems/source_index.rb

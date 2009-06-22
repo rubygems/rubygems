@@ -1,5 +1,16 @@
 = RubyGems
 
+* http://rubygems.rubyforge.org/
+* http://rubyforge.org/projects/rubygems
+* http://rubygems.org/
+
+== DESCRIPTION
+
+RubyGems is a package management framework for Ruby.
+
+This gem is an update for the RubyGems software. You must have an
+installation of RubyGems before this update can be applied.
+
 (See Releases for release-specific information)
 
 == Installation

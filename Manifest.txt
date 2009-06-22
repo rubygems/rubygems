@@ -49,6 +49,10 @@ lib/rubygems/defaults.rb
 lib/rubygems/dependency.rb
 lib/rubygems/dependency_installer.rb
 lib/rubygems/dependency_list.rb
+lib/rubygems/digest/digest_adapter.rb
+lib/rubygems/digest/md5.rb
+lib/rubygems/digest/sha1.rb
+lib/rubygems/digest/sha2.rb
 lib/rubygems/doc_manager.rb
 lib/rubygems/exceptions.rb
 lib/rubygems/ext.rb
@@ -173,6 +177,7 @@ test/test_gem_config_file.rb
 test/test_gem_dependency.rb
 test/test_gem_dependency_installer.rb
 test/test_gem_dependency_list.rb
+test/test_gem_digest.rb
 test/test_gem_doc_manager.rb
 test/test_gem_ext_configure_builder.rb
 test/test_gem_ext_ext_conf_builder.rb

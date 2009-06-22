@@ -118,13 +118,10 @@ class TestGemIndexer < RubyGemTestCase
     expected = <<-EOF
 a-1
 a-2
-a-3.a
 a_evil-9
 b-2
 c-1.2
 d-2.0
-d-2.0.a
-d-2.0.b
 pl-1-i386-linux
     EOF
 
@@ -166,13 +163,13 @@ pl-1-i386-linux
     assert_indexed @tempdir, "latest_specs.#{@marshal_version}.gz"
 
     expected = <<-EOF
-<?xml version=\"1.0\"?>
-<rss version=\"2.0\">
+<?xml version="1.0"?>
+<rss version="2.0">
   <channel>
     <title>ExampleForge gems</title>
     <link>http://example.com</link>
     <description>Recently released gems from http://example.com</description>
-    <generator>RubyGems v1.3.4</generator>
+    <generator>RubyGems v#{Gem::RubyGemsVersion}</generator>
     <docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
     <item>
       <title>a-2</title>
@@ -181,21 +178,9 @@ pl-1-i386-linux
       </description>
       <author>example@example.com (A User)</author>
       <guid>a-2</guid>
-      <enclosure url=\"http://gems.example.com/gems/a-2.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
-      <link>http://example.com</link>
-    </item>
-    <item>
-      <title>a-3.a</title>
-      <description>
-&lt;pre&gt;This is a test description&lt;/pre&gt;
-      </description>
-      <author>example@example.com (A User)</author>
-      <guid>a-3.a</guid>
-      <enclosure url=\"http://gems.example.com/gems/a-3.a.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url="http://gems.example.com/gems/a-2.gem"
+                 length="3072" type="application/octet-stream" />
+      <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -205,9 +190,9 @@ pl-1-i386-linux
       </description>
       <author>example@example.com (A User)</author>
       <guid>a_evil-9</guid>
-      <enclosure url=\"http://gems.example.com/gems/a_evil-9.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url="http://gems.example.com/gems/a_evil-9.gem"
+                 length="3072" type="application/octet-stream" />
+      <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -217,9 +202,9 @@ pl-1-i386-linux
       </description>
       <author>example@example.com (A User)</author>
       <guid>b-2</guid>
-      <enclosure url=\"http://gems.example.com/gems/b-2.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url="http://gems.example.com/gems/b-2.gem"
+                 length="3072" type="application/octet-stream" />
+      <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -229,33 +214,9 @@ pl-1-i386-linux
       </description>
       <author>example@example.com (A User)</author>
       <guid>c-1.2</guid>
-      <enclosure url=\"http://gems.example.com/gems/c-1.2.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
-      <link>http://example.com</link>
-    </item>
-    <item>
-      <title>d-2.0.a</title>
-      <description>
-&lt;pre&gt;This is a test description&lt;/pre&gt;
-      </description>
-      <author>example@example.com (A User)</author>
-      <guid>d-2.0.a</guid>
-      <enclosure url=\"http://gems.example.com/gems/d-2.0.a.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
-      <link>http://example.com</link>
-    </item>
-    <item>
-      <title>d-2.0.b</title>
-      <description>
-&lt;pre&gt;This is a test description&lt;/pre&gt;
-      </description>
-      <author>example@example.com (A User)</author>
-      <guid>d-2.0.b</guid>
-      <enclosure url=\"http://gems.example.com/gems/d-2.0.b.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url="http://gems.example.com/gems/c-1.2.gem"
+                 length="3072" type="application/octet-stream" />
+      <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -265,9 +226,9 @@ pl-1-i386-linux
       </description>
       <author>example@example.com (A User)</author>
       <guid>pl-1-x86-linux</guid>
-      <enclosure url=\"http://gems.example.com/gems/pl-1-x86-linux.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url="http://gems.example.com/gems/pl-1-x86-linux.gem"
+                 length="3072" type="application/octet-stream" />
+      <pubDate>#{Gem::Specification::TODAY.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -286,9 +247,9 @@ eighty characters.&lt;/pre&gt;
       </description>
       <author>example@example.com (Example), example2@example.com (Example2)</author>
       <guid>a-1</guid>
-      <enclosure url=\"http://gems.example.com/gems/a-1.gem\"
-                 length=\"3584\" type=\"application/octet-stream\" />
-      <pubDate>Tue, 09 Jun 2009 00:00:00 -0700</pubDate>
+      <enclosure url="http://gems.example.com/gems/a-1.gem"
+                 length="3584" type="application/octet-stream" />
+      <pubDate>#{(Gem::Specification::TODAY - 86400).rfc2822}</pubDate>
       <link>http://a.example.com</link>
     </item>
   </channel>
@@ -501,9 +462,9 @@ eighty characters.&lt;/pre&gt;
                  @ui.output
     assert_match %r%^\.\.\.\.\.\.\.\.\.\.$%, @ui.output
     assert_match %r%^Loaded all gems$%, @ui.output
-    assert_match %r%^Generating Marshal quick index gemspecs for 10 gems$%,
+    assert_match %r%^Generating Marshal quick index gemspecs for 7 gems$%,
                  @ui.output
-    assert_match %r%^Generating YAML quick index gemspecs for 10 gems$%,
+    assert_match %r%^Generating YAML quick index gemspecs for 7 gems$%,
                  @ui.output
     assert_match %r%^Complete$%, @ui.output
     assert_match %r%^Generating specs index$%, @ui.output
@@ -512,7 +473,7 @@ eighty characters.&lt;/pre&gt;
     assert_match %r%^Generating latest index$%, @ui.output
     assert_match %r%^Generating prerelease specs index$%, @ui.output
     assert_match %r%^Generating Marshal master index$%, @ui.output
-    assert_match %r%^Generating YAML master index for 10 gems \(this may take a while\)$%, @ui.output
+    assert_match %r%^Generating YAML master index for 7 gems \(this may take a while\)$%, @ui.output
     assert_match %r%^Complete$%, @ui.output
     assert_match %r%^Compressing indicies$%, @ui.output
 

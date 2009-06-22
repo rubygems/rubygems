@@ -335,8 +335,10 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
     @source_index.add_spec gem_a1_alpha
 
     refute @source_index.latest_specs.include?(gem_a1_alpha)
-    assert @source_index.find_name(gem_a1_alpha.full_name).empty?
+    assert_nil @source_index.specification(gem_a1_alpha.full_name)
     assert @source_index.prerelease_specs.include?(gem_a1_alpha)
+
+    # TODO: don't think this tests writing prerelease index to disk
   end
 
   def test_refresh_bang

@@ -119,8 +119,8 @@ By default, this RubyGems will install gem as:
     say "-" * 78
     say
 
-    release_notes = File.join(Dir.pwd, 'release_notes',
-                              "rel_#{Gem::RubyGemsVersion.gsub '.', '_'}.rdoc")
+    release_notes = File.join Dir.pwd, 'doc', 'release_notes',
+                              "rel_#{Gem::RubyGemsVersion.gsub '.', '_'}.rdoc"
 
     if File.exist? release_notes then
       say File.read(release_notes)

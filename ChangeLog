@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
 
+2009-06-12  Ryan Davis  <ryand@zenspider.com>
+
+	* Rakefile:  Switched to Hoe.
+
+2009-06-10  Phil Hagelberg <technomancy@gmail.com>
+
+	* lib/rubygems/installer.rb:  --user-install is no longer enabled by
+	  default.
+	* lib/rubygems/source_index.rb:  Fix use of prerelease gems.
+
 2009-06-04  Eric Hodel  <drbrain@segment7.net>
 
 	* util/gem_prelude.rb.template:  Backports from 1.9.
@@ -18,6 +28,8 @@
 
 2009-05-30  Eric Hodel  <drbrain@segment7.net>
 
+	* lib/rubygems/commands/which_command.rb:  Only print out directory
+	  information to a TTY.
 	* lib/rubygems/rubygems_version.rb:  1.3.4.
 	* doc/release_notes/rel_1_3_4.rdoc:  RubyGems 1.3.4 release notes.
 

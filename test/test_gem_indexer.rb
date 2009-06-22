@@ -183,7 +183,7 @@ pl-1-i386-linux
       <guid>a-2</guid>
       <enclosure url=\"http://gems.example.com/gems/a-2.gem\"
                  length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
+      <pubDate>#{@a2.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -195,7 +195,7 @@ pl-1-i386-linux
       <guid>a-3.a</guid>
       <enclosure url=\"http://gems.example.com/gems/a-3.a.gem\"
                  length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
+      <pubDate>#{@a3a.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -207,7 +207,7 @@ pl-1-i386-linux
       <guid>a_evil-9</guid>
       <enclosure url=\"http://gems.example.com/gems/a_evil-9.gem\"
                  length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
+      <pubDate>#{@a_evil9.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -219,7 +219,7 @@ pl-1-i386-linux
       <guid>b-2</guid>
       <enclosure url=\"http://gems.example.com/gems/b-2.gem\"
                  length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
+      <pubDate>#{@b2.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -231,7 +231,7 @@ pl-1-i386-linux
       <guid>c-1.2</guid>
       <enclosure url=\"http://gems.example.com/gems/c-1.2.gem\"
                  length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
+      <pubDate>#{@c1_2.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -243,7 +243,7 @@ pl-1-i386-linux
       <guid>d-2.0.a</guid>
       <enclosure url=\"http://gems.example.com/gems/d-2.0.a.gem\"
                  length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
+      <pubDate>#{@d2_0_a.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -255,7 +255,7 @@ pl-1-i386-linux
       <guid>d-2.0.b</guid>
       <enclosure url=\"http://gems.example.com/gems/d-2.0.b.gem\"
                  length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
+      <pubDate>#{@d2_0_b.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -267,7 +267,7 @@ pl-1-i386-linux
       <guid>pl-1-x86-linux</guid>
       <enclosure url=\"http://gems.example.com/gems/pl-1-x86-linux.gem\"
                  length=\"3072\" type=\"application/octet-stream\" />
-      <pubDate>Wed, 10 Jun 2009 00:00:00 -0700</pubDate>
+      <pubDate>#{@pl1.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -288,7 +288,7 @@ eighty characters.&lt;/pre&gt;
       <guid>a-1</guid>
       <enclosure url=\"http://gems.example.com/gems/a-1.gem\"
                  length=\"3584\" type=\"application/octet-stream\" />
-      <pubDate>Tue, 09 Jun 2009 00:00:00 -0700</pubDate>
+      <pubDate>#{@a1.date.rfc2822}</pubDate>
       <link>http://a.example.com</link>
     </item>
   </channel>

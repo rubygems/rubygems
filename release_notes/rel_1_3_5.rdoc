@@ -4,7 +4,7 @@ NOTE:  RubyGems 1.1 and 1.2 have problems upgrading when there is no
 rubygems-update installed.  You will need to follow the second set of update
 instructions if you see "Nothing to update".
 
-Release 1.3.5 fixes some bugs and adds some features.
+Release 1.3.5 fixes a bug.
 
 Bug fixes:
 

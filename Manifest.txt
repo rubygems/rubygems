@@ -126,6 +126,7 @@ release_notes/rel_1_3_1.rdoc
 release_notes/rel_1_3_2.rdoc
 release_notes/rel_1_3_3.rdoc
 release_notes/rel_1_3_4.rdoc
+release_notes/rel_1_3_5.rdoc
 setup.rb
 test/bogussources.rb
 test/data/gem-private_key.pem

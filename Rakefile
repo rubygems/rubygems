@@ -50,7 +50,12 @@ end
 task :release => [:clobber, :sanity_check, :test_functional,
                   :test, :package, :tag]
 
-task :package => :sanity_check
+task :package => :sanity_check do
+  %w[tgz zip].each do |ext|
+    mv "pkg/rubygems-update-#{hoe.version}.#{ext}",
+       "pkg/rubygems-#{hoe.version}.#{ext}"
+  end
+end
 
 task :sanity_check do
   abort "svn status dirty. commit or revert them" unless `svn st`.empty?

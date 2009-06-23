@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2009-06-23  Eric Hodel  <drbrain@segment7.net>
+
+	* release_notes/rel_1_3_5.rdoc:  RubyGems 1.3.5 release notes.
+
 2009-06-12  Ryan Davis  <ryand@zenspider.com>
 
 	* Rakefile:  Switched to Hoe.

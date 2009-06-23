@@ -29,7 +29,8 @@ hoe = Hoe.spec 'rubygems-update' do
                    'pkgs/sources/sources*.gem',
                    'scripts/*.hieraki')
 
-  extra_dev_deps << 'builder' << 'session'
+  extra_dev_deps << 'builder' << 'session' << 'hoe-seattlerb'
+  extra_dev_deps << ['minitest', '~> 1.4']
 end
 
 desc "Run just the functional tests"

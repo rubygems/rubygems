@@ -598,12 +598,12 @@ class Gem::Specification
   end
 
   ##
-  # The default (generated) file name of the gem.
+  # The default (generated) file name of the gem.  See also #spec_name.
   #
   #   spec.file_name # => "example-1.0.gem"
 
   def file_name
-    full_name + ".gem"
+    full_name + '.gem'
   end
 
   ##
@@ -630,6 +630,15 @@ class Gem::Specification
 
   def sort_obj
     [@name, @version, @new_platform == Gem::Platform::RUBY ? -1 : 1]
+  end
+
+  ##
+  # The default name of the gemspec.  See also #file_name
+  #
+  #   spec.spec_name # => "example-1.0.gemspec"
+
+  def spec_name
+    full_name + '.gemspec'
   end
 
   def <=>(other) # :nodoc:

@@ -247,7 +247,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
       yield(s) if block_given?
     end
 
-    path = File.join "specifications", "#{spec.full_name}.gemspec"
+    path = File.join "specifications", spec.spec_name
     written_path = write_file path do |io|
       io.write(spec.to_ruby)
     end
@@ -293,8 +293,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     cache_file = File.join @tempdir, 'gems', "#{spec.original_name}.gem"
     FileUtils.mv File.join(@gemhome, 'cache', "#{spec.original_name}.gem"),
                  cache_file
-    FileUtils.rm File.join(@gemhome, 'specifications',
-                           "#{spec.full_name}.gemspec")
+    FileUtils.rm File.join(@gemhome, 'specifications', spec.spec_name)
 
     spec.loaded_from = nil
     spec.loaded = false

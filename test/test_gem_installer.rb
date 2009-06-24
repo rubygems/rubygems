@@ -568,8 +568,7 @@ load Gem.bin_path('a', 'my_exec', version)
 
     assert File.exist?(File.join(gemdir, 'ext', 'a', 'Rakefile'))
 
-    spec_file = File.join(@gemhome, 'specifications',
-                          "#{@spec.full_name}.gemspec")
+    spec_file = File.join(@gemhome, 'specifications', @spec.spec_name)
 
     assert_equal spec_file, @spec.loaded_from
     assert File.exist?(spec_file)
@@ -666,8 +665,7 @@ load Gem.bin_path('a', 'my_exec', version)
     assert_equal 0111, exe_mode, "0%o" % exe_mode unless win_platform?
     assert File.exist?(File.join(gemdir, 'lib', 'code.rb'))
 
-    assert File.exist?(File.join(@gemhome, 'specifications',
-                                 "#{@spec.full_name}.gemspec"))
+    assert File.exist?(File.join(@gemhome, 'specifications', @spec.spec_name))
   end
 
   def test_install_missing_dirs
@@ -687,8 +685,7 @@ load Gem.bin_path('a', 'my_exec', version)
     File.directory? File.join(Gem.dir, 'specifications')
 
     assert File.exist?(File.join(@gemhome, 'cache', @spec.file_name))
-    assert File.exist?(File.join(@gemhome, 'specifications',
-                                 "#{@spec.full_name}.gemspec"))
+    assert File.exist?(File.join(@gemhome, 'specifications', @spec.spec_name))
   end
 
   def test_install_with_message
@@ -849,7 +846,7 @@ load Gem.bin_path('a', 'my_exec', version)
 
   def test_write_spec
     spec_dir = File.join @gemhome, 'specifications'
-    spec_file = File.join spec_dir, "#{@spec.full_name}.gemspec"
+    spec_file = File.join spec_dir, @spec.spec_name
     FileUtils.rm spec_file
     refute File.exist?(spec_file)
 

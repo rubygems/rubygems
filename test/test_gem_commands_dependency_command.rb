@@ -173,8 +173,7 @@ ERROR:  Only reverse dependencies for local gems are supported.
 
     util_setup_spec_fetcher foo
 
-    FileUtils.rm File.join(@gemhome, 'specifications',
-                           "#{foo.full_name}.gemspec")
+    FileUtils.rm File.join(@gemhome, 'specifications', foo.spec_name)
 
     @cmd.options[:args] = %w[foo]
     @cmd.options[:domain] = :remote
@@ -204,8 +203,7 @@ ERROR:  Only reverse dependencies for local gems are supported.
 
     @fetcher.data.delete "#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"
 
-    FileUtils.rm File.join(@gemhome, 'specifications',
-                           "#{foo.full_name}.gemspec")
+    FileUtils.rm File.join(@gemhome, 'specifications', foo.spec_name)
 
     @cmd.options[:args] = %w[foo]
     @cmd.options[:domain] = :remote

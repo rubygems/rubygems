@@ -129,7 +129,7 @@ end
   end
 
   def test_self_load
-    spec = File.join @gemhome, 'specifications', "#{@a2.full_name}.gemspec"
+    spec = File.join @gemhome, 'specifications', @a2.spec_name
     gs = Gem::Specification.load spec
 
     assert_equal @a2, gs
@@ -538,8 +538,7 @@ end
 
   def test_full_gem_path_double_slash
     gemhome = @gemhome.sub(/\w\//, '\&/')
-    @a1.loaded_from = File.join gemhome, 'specifications',
-                                "#{@a1.full_name}.gemspec"
+    @a1.loaded_from = File.join gemhome, 'specifications', @a1.spec_name
 
     assert_equal File.join(@gemhome, 'gems', @a1.full_name),
                  @a1.full_gem_path
@@ -728,6 +727,10 @@ end
     assert_equal( -1, (s1 <=> s2))
     assert_equal(  0, (s1 <=> s1))
     assert_equal(  1, (s2 <=> s1))
+  end
+
+  def test_spec_name
+    assert_equal 'a-1.gemspec', @a1.spec_name
   end
 
   def test_summary

@@ -302,8 +302,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
     assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
 
-    assert File.exist?(File.join(gemhome2, 'specifications',
-                                 "#{@a1.full_name}.gemspec"))
+    assert File.exist?(File.join(gemhome2, 'specifications', @a1.spec_name))
     assert File.exist?(File.join(gemhome2, 'cache', @a1.file_name))
   end
 
@@ -326,10 +325,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
     a1, b1 = inst.installed_gems
 
-    a1_expected = File.join(@gemhome, 'specifications',
-                            "#{a1.full_name}.gemspec")
-    b1_expected = File.join(@gemhome, 'specifications',
-                            "#{b1.full_name}.gemspec")
+    a1_expected = File.join(@gemhome, 'specifications', a1.spec_name)
+    b1_expected = File.join(@gemhome, 'specifications', b1.spec_name)
 
     assert_equal a1_expected, a1.loaded_from
     assert_equal b1_expected, b1.loaded_from

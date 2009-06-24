@@ -15,7 +15,7 @@ class TestGemCommandsBuildCommand < RubyGemTestCase
   end
 
   def test_execute
-    gemspec_file = File.join(@tempdir, "#{@gem.full_name}.gemspec")
+    gemspec_file = File.join(@tempdir, @gem.spec_name)
 
     File.open gemspec_file, 'w' do |gs|
       gs.write @gem.to_ruby
@@ -25,7 +25,7 @@ class TestGemCommandsBuildCommand < RubyGemTestCase
   end
 
   def test_execute_yaml
-    gemspec_file = File.join(@tempdir, "#{@gem.full_name}.gemspec")
+    gemspec_file = File.join(@tempdir, @gem.spec_name)
 
     File.open gemspec_file, 'w' do |gs|
       gs.write @gem.to_yaml

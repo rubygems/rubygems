@@ -207,8 +207,7 @@ class Gem::Installer
 
     say @spec.post_install_message unless @spec.post_install_message.nil?
 
-    @spec.loaded_from = File.join(@gem_home, 'specifications',
-                                  "#{@spec.full_name}.gemspec")
+    @spec.loaded_from = File.join(@gem_home, 'specifications', @spec.spec_name)
 
     @source_index.add_spec @spec
 
@@ -259,8 +258,7 @@ class Gem::Installer
   def write_spec
     rubycode = @spec.to_ruby
 
-    file_name = File.join @gem_home, 'specifications',
-                          "#{@spec.full_name}.gemspec"
+    file_name = File.join @gem_home, 'specifications', @spec.spec_name
 
     file_name.untaint
 

@@ -94,8 +94,7 @@ class Gem::Validator
 
       install_dir = gem_spec.installation_path
       gem_path = File.join install_dir, "cache", gem_spec.file_name
-      spec_path = File.join(install_dir, "specifications",
-                            gem_spec.full_name) + ".gemspec"
+      spec_path = File.join install_dir, "specifications", gem_spec.spec_name
       gem_directory = gem_spec.full_gem_path
 
       unless File.directory? gem_directory then

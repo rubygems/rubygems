@@ -106,8 +106,7 @@ class TestGemCommandsSpecificationCommand < RubyGemTestCase
 
     util_setup_spec_fetcher foo
 
-    FileUtils.rm File.join(@gemhome, 'specifications',
-                           "#{foo.full_name}.gemspec")
+    FileUtils.rm File.join(@gemhome, 'specifications', foo.spec_name)
 
     @cmd.options[:args] = %w[foo]
     @cmd.options[:domain] = :remote

@@ -637,8 +637,8 @@ eighty characters.&lt;/pre&gt;
     @d2_1_a_tuple = [@d2_1_a.name, @d2_1_a.version, @d2_1_a.original_platform]
 
     gems = File.join @tempdir, 'gems'
-    FileUtils.mv File.join(@gemhome, 'cache', "#{@d2_1.full_name}.gem"), gems
-    FileUtils.mv File.join(@gemhome, 'cache', "#{@d2_1_a.full_name}.gem"), gems
+    FileUtils.mv File.join(@gemhome, 'cache', @d2_1.file_name), gems
+    FileUtils.mv File.join(@gemhome, 'cache', @d2_1_a.file_name), gems
 
     use_ui @ui do
       @indexer.update_index

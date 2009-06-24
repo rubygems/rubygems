@@ -15,8 +15,8 @@ class TestGemCommandsFetchCommand < RubyGemTestCase
     util_setup_fake_fetcher
     util_setup_spec_fetcher @a2
 
-    @fetcher.data["#{@gem_repo}gems/#{@a2.full_name}.gem"] =
-      File.read(File.join(@gemhome, 'cache', "#{@a2.full_name}.gem"))
+    @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
+      File.read(File.join(@gemhome, 'cache', @a2.file_name))
 
     @cmd.options[:args] = [@a2.name]
 
@@ -26,7 +26,7 @@ class TestGemCommandsFetchCommand < RubyGemTestCase
       end
     end
 
-    assert File.exist?(File.join(@tempdir, "#{@a2.full_name}.gem")),
+    assert File.exist?(File.join(@tempdir, @a2.file_name)),
            "#{@a2.full_name} fetched"
   end
 
@@ -35,8 +35,8 @@ class TestGemCommandsFetchCommand < RubyGemTestCase
     util_setup_source_info_cache @a2
 
     @fetcher.data["#{@gem_repo}yaml"] = ''
-    @fetcher.data["#{@gem_repo}gems/#{@a2.full_name}.gem"] =
-      File.read(File.join(@gemhome, 'cache', "#{@a2.full_name}.gem"))
+    @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
+      File.read(File.join(@gemhome, 'cache', @a2.file_name))
 
     @cmd.options[:args] = [@a2.name]
 
@@ -46,7 +46,7 @@ class TestGemCommandsFetchCommand < RubyGemTestCase
       end
     end
 
-    assert File.exist?(File.join(@tempdir, "#{@a2.full_name}.gem")),
+    assert File.exist?(File.join(@tempdir, @a2.file_name)),
            "#{@a2.full_name} fetched"
   end
 

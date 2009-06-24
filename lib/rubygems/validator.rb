@@ -93,7 +93,7 @@ class Gem::Validator
       next unless gems.include? gem_spec.name unless gems.empty?
 
       install_dir = gem_spec.installation_path
-      gem_path = File.join(install_dir, "cache", gem_spec.full_name) + ".gem"
+      gem_path = File.join install_dir, "cache", gem_spec.file_name
       spec_path = File.join(install_dir, "specifications",
                             gem_spec.full_name) + ".gemspec"
       gem_directory = gem_spec.full_gem_path

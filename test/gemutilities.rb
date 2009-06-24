@@ -169,7 +169,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
       end
     end
 
-    gem = File.join(@tempdir, "#{gem.full_name}.gem").untaint
+    gem = File.join(@tempdir, gem.file_name).untaint
     Gem::Installer.new(gem, :wrappers => true).install
   end
 
@@ -274,7 +274,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
         Gem::Builder.new(spec).build
       end
 
-      FileUtils.mv "#{spec.full_name}.gem",
+      FileUtils.mv spec.file_name,
                    File.join(@gemhome, 'cache', "#{spec.original_name}.gem")
     end
   end

@@ -43,7 +43,7 @@ class Gem::Builder
   Successfully built RubyGem
   Name: #{@spec.name}
   Version: #{@spec.version}
-  File: #{@spec.full_name+'.gem'}
+  File: #{@spec.file_name}
 EOM
   end
 

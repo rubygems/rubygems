@@ -79,7 +79,7 @@ class Gem::Commands::UnpackCommand < Gem::Command
     # We expect to find (basename).gem in the 'cache' directory.
     # Furthermore, the name match must be exact (ignoring case).
     if gemname =~ /^#{selected.name}$/i
-      filename = selected.full_name + '.gem'
+      filename = selected.file_name
       path = nil
 
       Gem.path.find do |gem_dir|

@@ -68,7 +68,7 @@ class Gem::FakeFetcher
   end
 
   def download spec, source_uri, install_dir = Gem.dir
-    name = "#{spec.full_name}.gem"
+    name = spec.file_name
     path = File.join(install_dir, 'cache', name)
 
     Gem.ensure_gem_subdirectories install_dir

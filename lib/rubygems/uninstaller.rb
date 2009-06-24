@@ -211,7 +211,7 @@ class Gem::Uninstaller
     FileUtils.rm_rf gemspec
 
     cache_dir = File.join spec.installation_path, 'cache'
-    gem = File.join cache_dir, "#{spec.full_name}.gem"
+    gem = File.join cache_dir, spec.file_name
 
     unless File.exist? gem then
       gem = File.join cache_dir, "#{original_platform_name}.gem"

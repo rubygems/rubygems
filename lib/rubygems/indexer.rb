@@ -350,7 +350,7 @@ class Gem::Indexer
         end
 
         index.sort_by { |_, spec| [-spec.date.to_i, spec] }.each do |_, spec|
-          gem_path = CGI.escapeHTML "http://#{@rss_gems_host}/gems/#{spec.full_name}.gem"
+          gem_path = CGI.escapeHTML "http://#{@rss_gems_host}/gems/#{spec.file_name}"
           size = File.stat(spec.loaded_from).size rescue next
 
           description = spec.description || spec.summary || ''

@@ -35,9 +35,15 @@ class Gem::ConfigFile
 
       CSIDL_COMMON_APPDATA = 0x0023
       path = 0.chr * 260
-      SHGetFolderPath = Win32API.new 'shell32', 'SHGetFolderPath', 'PLPLP', 'L',
-                                     :stdcall
-      SHGetFolderPath.call nil, CSIDL_COMMON_APPDATA, nil, 1, path
+      if RUBY_VERSION > '1.9' then
+        SHGetFolderPath = Win32API.new 'shell32', 'SHGetFolderPath', 'PLPLP',
+                                       'L', :stdcall
+        SHGetFolderPath.call nil, CSIDL_COMMON_APPDATA, nil, 1, path
+      else
+        SHGetFolderPath = Win32API.new 'shell32', 'SHGetFolderPath', 'LLLLP',
+                                       'L'
+        SHGetFolderPath.call 0, CSIDL_COMMON_APPDATA, 0, 1, path
+      end
 
       path.strip
     rescue LoadError

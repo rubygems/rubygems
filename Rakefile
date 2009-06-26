@@ -26,7 +26,8 @@ hoe = Hoe.spec 'rubygems-update' do
                    'html',
                    'logs',
                    'pkgs/sources/sources*.gem',
-                   'scripts/*.hieraki')
+                   'scripts/*.hieraki',
+                   'util/gem_prelude.rb')
 
   extra_dev_deps << 'builder' << 'session' << 'hoe-seattlerb'
   extra_dev_deps << ['minitest', '~> 1.4']

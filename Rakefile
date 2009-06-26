@@ -13,11 +13,12 @@ hoe = Hoe.spec 'rubygems-update' do
   self.rubyforge_name = 'rubygems'
   self.author         = ['Jim Weirich', 'Chad Fowler', 'Eric Hodel']
   self.email          = %w[rubygems-developers@rubyforge.org]
-  self.readme_file    = "README"
-  self.need_zip       = true
+  self.readme_file    = 'README'
+  self.need_zip       = false
+  self.need_tar       = false
 
   spec_extras[:required_ruby_version] = Gem::Requirement.new '> 1.8.3'
-  spec_extras[:executables]           = ["update_rubygems"]
+  spec_extras[:executables]           = ['update_rubygems']
 
   clean_globs.push('**/debug.log',
                    '*.out',
@@ -49,10 +50,15 @@ end
 task :release => [:clobber, :sanity_check, :test_functional,
                   :test, :package, :tag]
 
-task :package => :sanity_check do
-  %w[tgz zip].each do |ext|
-    mv "pkg/rubygems-update-#{hoe.version}.#{ext}",
-       "pkg/rubygems-#{hoe.version}.#{ext}"
+pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
+task pkg_dir_path do
+  mv pkg_dir_path, "pkg/rubygems-#{hoe.version}"
+end
+
+task :package => [pkg_dir_path, :sanity_check] do
+  Dir.chdir 'pkg' do
+    sh "tar -czf rubygems-#{hoe.version}.tgz rubygems-#{hoe.version}"
+    sh "zip -q -r rubygems-#{hoe.version}.zip rubygems-#{hoe.version}"
   end
 end
 

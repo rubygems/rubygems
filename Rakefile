@@ -32,7 +32,6 @@ hoe = Hoe.spec 'rubygems-update' do
   extra_dev_deps << 'builder' << 'session' << 'hoe-seattlerb'
   extra_dev_deps << ['minitest', '~> 1.4']
 
-  extra_rdoc_files << 'release_notes'
   spec_extras['rdoc_options'] = proc do |rdoc_options|
     rdoc_options << "--title=RubyGems #{self.version} Documentation"
   end

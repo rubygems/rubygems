@@ -12,9 +12,8 @@ Hoe.plugin :minitest
 hoe = Hoe.spec 'rubygems-update' do
   self.rubyforge_name = 'rubygems'
   self.author         = ['Jim Weirich', 'Chad Fowler', 'Eric Hodel']
-  self.email          = "rubygems-developers@rubyforge.org"
+  self.email          = %w[rubygems-developers@rubyforge.org]
   self.readme_file    = "README"
-  self.history_file   = "ChangeLog"
   self.need_zip       = true
 
   spec_extras[:required_ruby_version] = Gem::Requirement.new '> 1.8.3'

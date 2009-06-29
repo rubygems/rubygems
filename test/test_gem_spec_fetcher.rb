@@ -98,37 +98,6 @@ class TestGemSpecFetcher < RubyGemTestCase
     assert_equal [[@a_pre.full_name, @gem_repo]], spec_names
   end
 
-  def test_fetch_legacy_repo
-    @fetcher.data.delete "#{@gem_repo}specs.#{Gem.marshal_version}.gz"
-    @fetcher.data["#{@gem_repo}yaml"] = ''
-    util_setup_source_info_cache @a1, @a2
-
-    dep = Gem::Dependency.new 'a', 1
-    specs = nil
-
-    use_ui @ui do
-      specs = @sf.fetch dep, true
-    end
-
-    expected = <<-EOF
-WARNING:  RubyGems 1.2+ index not found for:
-\thttp://gems.example.com/
-
-RubyGems will revert to legacy indexes degrading performance.
-    EOF
-
-    assert_equal expected, @ui.error
-
-    specs = specs.map { |spec, source_uri| [spec.full_name, source_uri] }
-
-    expected = [
-      [@a1.full_name, @gem_repo],
-      [@a2.full_name, @gem_repo],
-    ]
-
-    assert_equal expected, specs
-  end
-
   def test_fetch_platform
     util_set_arch 'i386-linux'
 

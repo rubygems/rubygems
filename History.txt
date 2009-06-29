@@ -1,4 +1,4 @@
-=== 1.3.5 / 2009-06-??
+﻿=== 1.3.5 / 2009-06-??
 
 Bug fixes:
 
@@ -666,7 +666,7 @@ annoying issues involving other libraries that RubyGems depends upon.
 
 * Added workaround for the null byte in Dir string issue. (see
   http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/121702).
-  (Thanks to Mauricio Fern�ndez for the quick response on this one).
+  (Thanks to Mauricio Fernández for the quick response on this one).
 * Added workaround for old version of Zlib on windows that caused
   Ruwiki to fail to install. (see
   http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/121770)

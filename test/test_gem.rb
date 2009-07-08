@@ -78,14 +78,6 @@ class TestGem < RubyGemTestCase
     end
   end
 
-  def test_self_bin_path_with_spaces
-    quick_gem 'sp ace', '3' do |s|
-      s.executables = ['exec']
-    end
-    path = Gem.bin_path('sp ace', 'exec')
-    assert_equal %w(" "), [path[0,1], path[-1,1]], "Path should be escaped"
-  end
-
   def test_self_bin_path_not_found
     assert_raises(Gem::GemNotFoundException) do
       Gem.bin_path('non-existent')

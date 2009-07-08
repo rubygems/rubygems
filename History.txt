@@ -3,6 +3,7 @@
 Bug fixes:
 
 * Fix use of prerelease gems.
+* Gem.bin_path no longer escapes path with spaces. Bug #25935 and #26458.
 
 Deprecation Notices:
 

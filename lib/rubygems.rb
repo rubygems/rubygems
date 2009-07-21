@@ -11,7 +11,7 @@ require 'etc'
 
 module Gem
 
-  RubyGemsVersion = VERSION = '1.3.4'
+  RubyGemsVersion = VERSION = '1.3.5'
 
   ##
   # Raised when RubyGems is unable to load or activate a gem.  Contains the

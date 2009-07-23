@@ -1,3 +1,12 @@
+2009-07-23  Chad Woolley <thewoolleyman@gmail.com>
+
+	* lib/rubygems/commands/install_command.rb,
+	  lib/rubygems/command/update_command.rb,
+	  lib/rubygems/dependency_installer.rb,
+	  lib/rubygems/install_update_options.rb:  Make --format-executables
+	  the default for all commands including setup and system update.
+	  Addresses issue #1728 in Ruby core.
+
 2009-07-21  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/package.rb:  Remove dangling digest require.  Reported

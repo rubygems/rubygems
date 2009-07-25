@@ -37,7 +37,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
   end
 
   def defaults_str # :nodoc:
-    "--format-executable --rdoc --ri --no-force --no-test --install-dir #{Gem.dir}"
+    "--rdoc --ri --no-force --no-test --install-dir #{Gem.dir}"
   end
 
   def usage # :nodoc:
@@ -139,7 +139,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
     args.push '--prefix', Gem.prefix unless Gem.prefix.nil?
     args << '--no-rdoc' unless options[:generate_rdoc]
     args << '--no-ri' unless options[:generate_ri]
-    args << '--no-format-executable' unless options[:format_executable]
+    args << '--no-format-executable' if options[:no_format_executable]
 
     update_dir = File.join Gem.dir, 'gems', "rubygems-update-#{version}"
 

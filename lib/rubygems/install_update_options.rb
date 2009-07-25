@@ -117,7 +117,7 @@ module Gem::InstallUpdateOptions
   # Default options for the gem install command.
 
   def install_update_defaults_str
-    '--format-executable --rdoc --no-force --no-test --wrappers'
+    '--rdoc --no-force --no-test --wrappers'
   end
 
 end

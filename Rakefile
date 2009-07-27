@@ -30,8 +30,10 @@ hoe = Hoe.spec 'rubygems-update' do
                    'scripts/*.hieraki',
                    'util/gem_prelude.rb')
 
-  extra_dev_deps << 'builder' << 'session' << 'hoe-seattlerb'
+  extra_dev_deps << ['builder', '~> 2.1']
+  extra_dev_deps << ['hoe-seattlerb', '~> 1.2']
   extra_dev_deps << ['minitest', '~> 1.4']
+  extra_dev_deps << ['session', '~> 2.4']
 
   spec_extras['rdoc_options'] = proc do |rdoc_options|
     rdoc_options << "--title=RubyGems #{self.version} Documentation"

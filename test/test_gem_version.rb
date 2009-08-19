@@ -308,6 +308,18 @@ class TestGemVersionPart < RubyGemTestCase
     assert_equal( 1, Gem::Version::Part.new(1)   <=> Gem::Version::Part.new("a"))
   end
 
+  def test_to_s
+    assert_equal "1", Gem::Version::Part.new(1).to_s
+    assert_equal "1", Gem::Version::Part.new("1").to_s
+    assert_equal "a", Gem::Version::Part.new("a").to_s
+  end
+
+  def test_inspect
+    assert_equal "1",   Gem::Version::Part.new( 1 ).inspect
+    assert_equal "1",   Gem::Version::Part.new("1").inspect
+    assert_equal '"a"', Gem::Version::Part.new("a").inspect
+  end
+
   def test_succ
     assert_equal 2, Gem::Version::Part.new(1).succ.value
     assert_equal "b", Gem::Version::Part.new("a").succ.value

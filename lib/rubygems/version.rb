@@ -41,7 +41,7 @@ class Gem::Version
     end
 
     def inspect
-      @value
+      @value.inspect
     end
 
     def alpha?

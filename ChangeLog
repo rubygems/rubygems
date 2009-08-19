@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2009-08-19  Ryan Davis  <ryand-ruby@zenspider.com>
+
+	* lib/rubygems.rb: Cleanup of rdoc and file layout.
+	* lib/rubygems/versions.rb: Added Version#spermy_recommendation
+	and fixed bug in Version::Part#inspect. General cleanup.
+
 2009-07-29  John Barnette <jbarnette@rubyforge.org>
 
 	* lib/rubygems/package/tar_input.rb:  Add Maglev to the list of

@@ -9,69 +9,6 @@ require 'rubygems/defaults'
 require 'thread'
 require 'etc'
 
-module Gem
-
-  RubyGemsVersion = VERSION = '1.3.5'
-
-  ##
-  # Raised when RubyGems is unable to load or activate a gem.  Contains the
-  # name and version requirements of the gem that either conflicts with
-  # already activated gems or that RubyGems is otherwise unable to activate.
-
-  class LoadError < ::LoadError
-
-    ##
-    # Name of gem
-
-    attr_accessor :name
-
-    ##
-    # Version requirement of gem
-
-    attr_accessor :version_requirement
-
-  end
-
-end
-
-module Kernel
-
-  ##
-  # Use Kernel#gem to activate a specific version of +gem_name+.
-  #
-  # +version_requirements+ is a list of version requirements that the
-  # specified gem must match, most commonly "= example.version.number".  See
-  # Gem::Requirement for how to specify a version requirement.
-  #
-  # If you will be activating the latest version of a gem, there is no need to
-  # call Kernel#gem, Kernel#require will do the right thing for you.
-  #
-  # Kernel#gem returns true if the gem was activated, otherwise false.  If the
-  # gem could not be found, didn't match the version requirements, or a
-  # different version was already activated, an exception will be raised.
-  #
-  # Kernel#gem should be called *before* any require statements (otherwise
-  # RubyGems may load a conflicting library version).
-  #
-  # In older RubyGems versions, the environment variable GEM_SKIP could be
-  # used to skip activation of specified gems, for example to test out changes
-  # that haven't been installed yet.  Now RubyGems defers to -I and the
-  # RUBYLIB environment variable to skip activation of a gem.
-  #
-  # Example:
-  #
-  #   GEM_SKIP=libA:libB ruby -I../libA -I../libB ./mycode.rb
-
-  def gem(gem_name, *version_requirements) # :doc:
-    skip_list = (ENV['GEM_SKIP'] || "").split(/:/)
-    raise Gem::LoadError, "skipping #{gem_name}" if skip_list.include? gem_name
-    Gem.activate(gem_name, *version_requirements)
-  end
-
-  private :gem
-
-end
-
 ##
 # RubyGems is the Ruby standard for publishing and managing third party
 # libraries.
@@ -86,6 +23,7 @@ end
 #
 # * {Creating Gems}[http://docs.rubygems.org/read/chapter/5]
 # * Gem::Specification
+# * Gem::Version for version dependency notes
 #
 # Further RubyGems documentation can be found at:
 #
@@ -123,7 +61,7 @@ end
 # == Bugs
 #
 # You can submit bugs to the
-# {RubyGems bug tracker}[http://rubyforge.org/tracker/?atid=575&group_id=126&func=browse]
+# {RubyGems bug tracker}[http://rubyforge.org/tracker/?atid=575&group_id=126]
 # on RubyForge
 #
 # == Credits
@@ -132,26 +70,26 @@ end
 #
 # RubyGems was originally developed at RubyConf 2003 by:
 #
-# * Rich Kilmer -- rich(at)infoether.com
-# * Chad Fowler -- chad(at)chadfowler.com
-# * David Black -- dblack(at)wobblini.net
+# * Rich Kilmer  -- rich(at)infoether.com
+# * Chad Fowler  -- chad(at)chadfowler.com
+# * David Black  -- dblack(at)wobblini.net
 # * Paul Brannan -- paul(at)atdesk.com
-# * Jim Weirch -- {jim(at)weirichhouse.org}[mailto:jim@weirichhouse.org]
+# * Jim Weirch   -- jim(at)weirichhouse.org
 #
 # Contributors:
 #
-# * Gavin Sinclair -- gsinclair(at)soyabean.com.au
-# * George Marrows -- george.marrows(at)ntlworld.com
-# * Dick Davies -- rasputnik(at)hellooperator.net
+# * Gavin Sinclair     -- gsinclair(at)soyabean.com.au
+# * George Marrows     -- george.marrows(at)ntlworld.com
+# * Dick Davies        -- rasputnik(at)hellooperator.net
 # * Mauricio Fernandez -- batsman.geo(at)yahoo.com
-# * Simon Strandgaard -- neoneye(at)adslhome.dk
-# * Dave Glasser -- glasser(at)mit.edu
-# * Paul Duncan -- pabs(at)pablotron.org
-# * Ville Aine -- vaine(at)cs.helsinki.fi
-# * Eric Hodel -- drbrain(at)segment7.net
-# * Daniel Berger -- djberg96(at)gmail.com
-# * Phil Hagelberg -- technomancy(at)gmail.com
-# * Ryan Davis
+# * Simon Strandgaard  -- neoneye(at)adslhome.dk
+# * Dave Glasser       -- glasser(at)mit.edu
+# * Paul Duncan        -- pabs(at)pablotron.org
+# * Ville Aine         -- vaine(at)cs.helsinki.fi
+# * Eric Hodel         -- drbrain(at)segment7.net
+# * Daniel Berger      -- djberg96(at)gmail.com
+# * Phil Hagelberg     -- technomancy(at)gmail.com
+# * Ryan Davis         -- ryand-ruby(at)zenspider.com
 #
 # (If your name is missing, PLEASE let us know!)
 #
@@ -160,6 +98,20 @@ end
 # -The RubyGems Team
 
 module Gem
+  RubyGemsVersion = VERSION = '1.3.5'
+
+  ##
+  # Raised when RubyGems is unable to load or activate a gem.  Contains the
+  # name and version requirements of the gem that either conflicts with
+  # already activated gems or that RubyGems is otherwise unable to activate.
+
+  class LoadError < ::LoadError
+    # Name of gem
+    attr_accessor :name
+
+    # Version requirement of gem
+    attr_accessor :version_requirement
+  end
 
   ##
   # Configuration settings from ::RbConfig
@@ -169,18 +121,18 @@ module Gem
   require 'rbconfig'
 
   ConfigMap.merge!(
-    :EXEEXT => RbConfig::CONFIG["EXEEXT"],
-    :RUBY_SO_NAME => RbConfig::CONFIG["RUBY_SO_NAME"],
-    :arch => RbConfig::CONFIG["arch"],
-    :bindir => RbConfig::CONFIG["bindir"],
-    :datadir => RbConfig::CONFIG["datadir"],
-    :libdir => RbConfig::CONFIG["libdir"],
+    :EXEEXT            => RbConfig::CONFIG["EXEEXT"],
+    :RUBY_SO_NAME      => RbConfig::CONFIG["RUBY_SO_NAME"],
+    :arch              => RbConfig::CONFIG["arch"],
+    :bindir            => RbConfig::CONFIG["bindir"],
+    :datadir           => RbConfig::CONFIG["datadir"],
+    :libdir            => RbConfig::CONFIG["libdir"],
     :ruby_install_name => RbConfig::CONFIG["ruby_install_name"],
-    :ruby_version => RbConfig::CONFIG["ruby_version"],
-    :sitedir => RbConfig::CONFIG["sitedir"],
-    :sitelibdir => RbConfig::CONFIG["sitelibdir"],
-    :vendordir => RbConfig::CONFIG["vendordir"] ,
-    :vendorlibdir => RbConfig::CONFIG["vendorlibdir"]
+    :ruby_version      => RbConfig::CONFIG["ruby_version"],
+    :sitedir           => RbConfig::CONFIG["sitedir"],
+    :sitelibdir        => RbConfig::CONFIG["sitelibdir"],
+    :vendordir         => RbConfig::CONFIG["vendordir"] ,
+    :vendorlibdir      => RbConfig::CONFIG["vendorlibdir"]
   )
 
   ##
@@ -1067,6 +1019,44 @@ module Gem
   # Location of legacy YAML quick gemspecs on remote repositories
 
   YAML_SPEC_DIR = 'quick/'
+
+end
+
+module Kernel
+
+  ##
+  # Use Kernel#gem to activate a specific version of +gem_name+.
+  #
+  # +version_requirements+ is a list of version requirements that the
+  # specified gem must match, most commonly "= example.version.number".  See
+  # Gem::Requirement for how to specify a version requirement.
+  #
+  # If you will be activating the latest version of a gem, there is no need to
+  # call Kernel#gem, Kernel#require will do the right thing for you.
+  #
+  # Kernel#gem returns true if the gem was activated, otherwise false.  If the
+  # gem could not be found, didn't match the version requirements, or a
+  # different version was already activated, an exception will be raised.
+  #
+  # Kernel#gem should be called *before* any require statements (otherwise
+  # RubyGems may load a conflicting library version).
+  #
+  # In older RubyGems versions, the environment variable GEM_SKIP could be
+  # used to skip activation of specified gems, for example to test out changes
+  # that haven't been installed yet.  Now RubyGems defers to -I and the
+  # RUBYLIB environment variable to skip activation of a gem.
+  #
+  # Example:
+  #
+  #   GEM_SKIP=libA:libB ruby -I../libA -I../libB ./mycode.rb
+
+  def gem(gem_name, *version_requirements) # :doc:
+    skip_list = (ENV['GEM_SKIP'] || "").split(/:/)
+    raise Gem::LoadError, "skipping #{gem_name}" if skip_list.include? gem_name
+    Gem.activate(gem_name, *version_requirements)
+  end
+
+  private :gem
 
 end
 

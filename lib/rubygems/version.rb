@@ -24,6 +24,25 @@
 # 2. 1.0.b
 # 3. 1.0.a
 # 4. 0.9
+#
+# == Preventing Version Catastrophe:
+#
+# From: http://blog.zenspider.com/2008/10/rubygems-howto-preventing-cata.html
+#
+# Let's say you're depending on the fnord gem version 2.y.z. If you
+# specify your dependency as ">= 2.0.0" then, you're good, right? What
+# happens if fnord 3.0 comes out and it isn't backwards compatible with
+# 2.y.z? You're stuff will break as a result of using ">=". The better
+# route is to specify your dependency with a "spermy" version specifier.
+# They're a tad confusing, so here is how the dependency specifiers
+# work:
+#
+#   Specification From  ... To (exclusive)
+#   ">= 3.0"      3.0   ... &infin;
+#   "~> 3.0"      3.0   ... 4.0
+#   "~> 3.0.0"    3.0.0 ... 3.1
+#   "~> 3.5"      3.5   ... 4.0
+#   "~> 3.5.0"    3.5.0 ... 3.6
 
 class Gem::Version
 
@@ -166,7 +185,7 @@ class Gem::Version
   def prerelease?
     parts.any? { |part| part.alpha? }
   end
-  
+
   ##
   # The release for this version (e.g. 1.2.0.a -> 1.2.0)
   # Non-prerelease versions return themselves
@@ -230,6 +249,16 @@ class Gem::Version
 
   def pretty_print(q) # :nodoc:
     q.text "Gem::Version.new(#{@version.inspect})"
+  end
+
+  def spermy_recommendation
+    parts = parse_parts_from_version_string
+
+    parts.pop    while parts.any? { |part| part.alpha? }
+    parts.pop    while parts.size > 2
+    parts.push 0 while parts.size < 2
+
+    "~> #{parts.join(".")}"
   end
 
   #:stopdoc:

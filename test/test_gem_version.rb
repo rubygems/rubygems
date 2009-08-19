@@ -183,11 +183,17 @@ class TestGemVersion < RubyGemTestCase
     assert_adequate( "3.0.rc2",     "< 3.0.1")
   end
 
+  def assert_parse_parts expect, version
+    v = Gem::Version.new version
+    assert_equal expect, part_values(v.parse_parts_from_version_string)
+  end
+
   def test_parse_parts_from_version_string
-    assert_equal [], part_values(Gem::Version.new("").parse_parts_from_version_string)
-    assert_equal [1], part_values(Gem::Version.new("1").parse_parts_from_version_string)
-    assert_equal [1, 0], part_values(Gem::Version.new("1.0").parse_parts_from_version_string)
-    assert_equal [1, 0, "a"], part_values(Gem::Version.new("1.0.a").parse_parts_from_version_string)
+    assert_parse_parts [], ""
+    assert_parse_parts [1], "1"
+    assert_parse_parts [1, 0], "1.0"
+    assert_parse_parts [1, 0, "a"], "1.0.a"
+    assert_parse_parts [1, 0, "a", 1], "1.0.a.1"
   end
 
   def test_prerelease
@@ -199,7 +205,7 @@ class TestGemVersion < RubyGemTestCase
     refute Gem::Version.new('2.9').prerelease?
     refute Gem::Version.new('22.1.50.0').prerelease?
   end
-  
+
   def test_release
     assert_equal Gem::Version.new('1.2.0'), Gem::Version.new('1.2.0.a').release
     assert_equal Gem::Version.new('1.1'),   Gem::Version.new('1.1.rc10').release
@@ -219,7 +225,7 @@ class TestGemVersion < RubyGemTestCase
     assert_adequate(  "1.4.5", "~> 1.4.4")
     assert_inadequate("1.5",   "~> 1.4.4")
     assert_inadequate("2.0",   "~> 1.4.4")
-    
+
     assert_inadequate("1.1.pre", "~> 1.0.0")
     assert_adequate(  "1.1.pre", "~> 1.1")
     assert_inadequate("2.0.a",   "~> 1.0")
@@ -237,12 +243,25 @@ class TestGemVersion < RubyGemTestCase
   end
 
   def test_spaceship
-    assert_equal 0, Gem::Version.new('1.0') <=> Gem::Version.new('1.0.0')
-    assert_equal 1, Gem::Version.new('1.0') <=> Gem::Version.new('1.0.a')
-    assert_equal 1, Gem::Version.new('1.8.2') <=> Gem::Version.new('0.0.0')
-    assert_equal 1, Gem::Version.new('1.8.2') <=> Gem::Version.new('1.8.2.a')
+    assert_equal 0, Gem::Version.new('1.0')     <=> Gem::Version.new('1.0.0')
+    assert_equal 1, Gem::Version.new('1.0')     <=> Gem::Version.new('1.0.a')
+    assert_equal 1, Gem::Version.new('1.8.2')   <=> Gem::Version.new('0.0.0')
+    assert_equal 1, Gem::Version.new('1.8.2')   <=> Gem::Version.new('1.8.2.a')
     assert_equal 1, Gem::Version.new('1.8.2.b') <=> Gem::Version.new('1.8.2.a')
-    assert_equal 0, Gem::Version.new('') <=> Gem::Version.new('0')
+    assert_equal 0, Gem::Version.new('')        <=> Gem::Version.new('0')
+  end
+
+  def assert_spermy expect, version
+    assert_equal expect, Gem::Version.new(version).spermy_recommendation
+  end
+
+  def test_spermy_recommendation
+    assert_spermy "~> 1.0", "1"
+    assert_spermy "~> 1.0", "1.0"
+    assert_spermy "~> 1.2", "1.2"
+    assert_spermy "~> 1.2", "1.2.0"
+    assert_spermy "~> 1.2", "1.2.3"
+    assert_spermy "~> 1.2", "1.2.3.a.4"
   end
 
   def test_boxed

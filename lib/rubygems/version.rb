@@ -32,16 +32,16 @@ class Gem::Version
 
     attr_reader :value
 
-    def initialize(value)
-      @value = (value =~ /\A\d+\z/) ? value.to_i : value
+    def initialize value
+      @value = Integer(value) rescue value
     end
 
     def to_s
-      self.value.to_s
+      value.to_s
     end
 
     def inspect
-      @value.inspect
+      value.inspect
     end
 
     def alpha?
@@ -52,10 +52,10 @@ class Gem::Version
       Fixnum === value
     end
 
-    def <=>(other)
-      if    self.numeric? && other.alpha? then
-        1
-      elsif self.alpha? && other.numeric? then
+    def <=> other
+      if    self.numeric? && other.alpha?   then
+         1
+      elsif self.alpha?   && other.numeric? then
         -1
       else
         self.value <=> other.value
@@ -63,7 +63,7 @@ class Gem::Version
     end
 
     def succ
-      self.class.new(self.value.succ)
+      self.class.new value.succ
     end
   end
 

@@ -1,9 +1,3 @@
-#--
-# Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
-# All rights reserved.
-# See LICENSE.txt for permissions.
-#++
-
 ##
 # The Version class processes string versions into comparable
 # values. A version string should normally be a series of numbers
@@ -31,11 +25,11 @@
 #
 # Let's say you're depending on the fnord gem version 2.y.z. If you
 # specify your dependency as ">= 2.0.0" then, you're good, right? What
-# happens if fnord 3.0 comes out and it isn't backwards compatible with
-# 2.y.z? You're stuff will break as a result of using ">=". The better
-# route is to specify your dependency with a "spermy" version specifier.
-# They're a tad confusing, so here is how the dependency specifiers
-# work:
+# happens if fnord 3.0 comes out and it isn't backwards compatible
+# with 2.y.z? Your stuff will break as a result of using ">=". The
+# better route is to specify your dependency with a "spermy" version
+# specifier. They're a tad confusing, so here is how the dependency
+# specifiers work:
 #
 #   Specification From  ... To (exclusive)
 #   ">= 3.0"      3.0   ... &infin;
@@ -45,70 +39,35 @@
 #   "~> 3.5.0"    3.5.0 ... 3.6
 
 class Gem::Version
-
-  class Part
-    include Comparable
-
-    attr_reader :value
-
-    def initialize value
-      @value = Integer(value) rescue value
-    end
-
-    def to_s
-      value.to_s
-    end
-
-    def inspect
-      value.inspect
-    end
-
-    def alpha?
-      String === value
-    end
-
-    def numeric?
-      Fixnum === value
-    end
-
-    def <=> other
-      if    self.numeric? && other.alpha?   then
-         1
-      elsif self.alpha?   && other.numeric? then
-        -1
-      else
-        self.value <=> other.value
-      end
-    end
-
-    def succ
-      self.class.new value.succ
-    end
-  end
-
   include Comparable
 
-  VERSION_PATTERN = '[0-9]+(\.[0-9a-z]+)*'
+  VERSION_PATTERN = '[0-9]+(\.[0-9a-z]+)*' # :nodoc:
+  ANCHORED_VERSION_PATTERN = /\A\s*(#{VERSION_PATTERN})*\s*\z/ # :nodoc:
+
+  attr_reader :segments
+
+  ##
+  # A string representation of this Version.
 
   attr_reader :version
+  alias to_s version
 
-  def self.correct?(version)
-    pattern = /\A\s*(#{VERSION_PATTERN})*\s*\z/
+  ##
+  # True if the +version+ string matches RubyGems' requirements.
 
-    version.is_a? Integer or
-      version =~ pattern or
-      version.to_s =~ pattern
+  def self.correct? version
+    version.to_s =~ ANCHORED_VERSION_PATTERN
   end
 
   ##
-  # Factory method to create a Version object.  Input may be a Version or a
-  # String.  Intended to simplify client code.
+  # Factory method to create a Version object. Input may be a Version
+  # or a String. Intended to simplify client code.
   #
   #   ver1 = Version.create('1.3.17')   # -> (Version object)
   #   ver2 = Version.create(ver1)       # -> (ver1)
   #   ver3 = Version.create(nil)        # -> nil
 
-  def self.create(input)
+  def self.create input
     if input.respond_to? :version then
       input
     elsif input.nil? then
@@ -122,159 +81,125 @@ class Gem::Version
   # Constructs a Version from the +version+ string.  A version string is a
   # series of digits or ASCII letters separated by dots.
 
-  def initialize(version)
+  def initialize version
     raise ArgumentError, "Malformed version number string #{version}" unless
       self.class.correct?(version)
 
-    self.version = version
+    @version = version.to_s
+    @version.strip!
+
+    @segments = @version.scan(/[0-9a-z]+/i).map do |s|
+      /^\d+$/ =~ s ? s.to_i : s
+    end
+  end
+
+  ##
+  # Return a new version object where the next to the last revision
+  # number is one greater (e.g., 5.3.1 => 5.4).
+  #
+  # Pre-release (alpha) parts, e.g, 5.3.1.b2 => 5.4, are ignored.
+
+  def bump
+    segments = self.segments.dup
+    segments.pop while segments.any? { |s| String === s }
+    segments.pop if segments.size > 1
+
+    segments[-1] = segments[-1].succ
+    self.class.new segments.join(".")
+  end
+
+  ##
+  # A Version is only eql? to another version if it's specified to the
+  # same precision. Version "1.0" is not the same as version "1".
+
+  def eql? other
+    self.class === other and segments == other.segments
+  end
+
+  def hash # :nodoc:
+    segments.hash
   end
 
   def inspect # :nodoc:
-    "#<#{self.class} #{@version.inspect}>"
+    "#<#{self.class} #{version.inspect}>"
   end
 
   ##
-  # Dump only the raw version string, not the complete object
+  # Dump only the raw version string, not the complete object. It's a
+  # string for backwards (RubyGems 1.3.5 and earlier) compatibility.
 
   def marshal_dump
-    [@version]
+    [version]
   end
 
   ##
-  # Load custom marshal format
+  # Load custom marshal format. It's a string for backwards (RubyGems
+  # 1.3.5 and earlier) compatibility.
 
-  def marshal_load(array)
-    self.version = array[0]
-  end
-
-  def parts
-    @parts ||= normalize
+  def marshal_load array
+    initialize array[0]
   end
 
   ##
-  # Strip ignored trailing zeros.
-
-  def normalize
-    parts_arr = parse_parts_from_version_string
-    if parts_arr.length != 1
-      parts_arr.pop while parts_arr.last && parts_arr.last.value == 0
-      parts_arr = [Part.new(0)] if parts_arr.empty?
-    end
-    parts_arr
-  end
-
-  ##
-  # Returns the text representation of the version
-
-  def to_s
-    @version
-  end
-
-  def to_yaml_properties
-    ['@version']
-  end
-
-  def version=(version)
-    @version = version.to_s.strip
-    normalize
-  end
-
-  ##
-  # A version is considered a prerelease if any part contains a letter.
+  # A version is considered a prerelease if it contains a letter.
 
   def prerelease?
-    parts.any? { |part| part.alpha? }
+    @prerelease ||= segments.any? { |s| String === s }
+  end
+
+  def pretty_print q # :nodoc:
+    q.text "Gem::Version.new(#{version.inspect})"
   end
 
   ##
-  # The release for this version (e.g. 1.2.0.a -> 1.2.0)
-  # Non-prerelease versions return themselves
+  # The release for this version (e.g. 1.2.0.a -> 1.2.0).
+  # Non-prerelease versions return themselves.
+
   def release
     return self unless prerelease?
-    rel_parts = parts.dup
-    rel_parts.pop while rel_parts.any? { |part| part.alpha? }
-    self.class.new(rel_parts.join('.'))
+
+    segments = self.segments.dup
+    segments.pop while segments.any? { |s| String === s }
+    self.class.new segments.join('.')
   end
 
-  def yaml_initialize(tag, values)
-    self.version = values['version']
+  ##
+  # A recommended version for use with a ~> Requirement.
+
+  def spermy_recommendation
+    segments = self.segments.dup
+
+    segments.pop    while segments.any? { |s| String === s }
+    segments.pop    while segments.size > 2
+    segments.push 0 while segments.size < 2
+
+    "~> #{segments.join(".")}"
   end
 
   ##
   # Compares this version with +other+ returning -1, 0, or 1 if the other
   # version is larger, the same, or smaller than this one.
 
-  def <=>(other)
+  def <=> other
+    return   1 unless other # HACK: comparable with nil? why?
     return nil unless self.class === other
-    return 1 unless other
-    mine, theirs = balance(self.parts.dup, other.parts.dup)
-    mine <=> theirs
+
+    # This method's motto: Object allocation is for suckers. This
+    # method is used often enough that avoiding extra object creation
+    # makes a real difference.
+
+    lhsize = segments.size
+    rhsize = other.segments.size
+    limit  = (lhsize > rhsize ? lhsize : rhsize) - 1
+
+    0.upto(limit) do |i|
+      lhs, rhs = segments[i] || 0, other.segments[i] || 0
+
+      return  -1         if String  === lhs && Numeric === rhs
+      return   1         if Numeric === lhs && String  === rhs
+      return lhs <=> rhs if lhs != rhs
+    end
+
+    return 0
   end
-
-  def balance(a, b)
-    a << Part.new(0) while a.size < b.size
-    b << Part.new(0) while b.size < a.size
-    [a, b]
-  end
-
-  ##
-  # A Version is only eql? to another version if it has the same version
-  # string.  "1.0" is not the same version as "1".
-
-  def eql?(other)
-    self.class === other and @version == other.version
-  end
-
-  def hash # :nodoc:
-    @version.hash
-  end
-
-  ##
-  # Return a new version object where the next to the last revision number is
-  # one greater. (e.g.  5.3.1 => 5.4)
-  #
-  # Pre-release (alpha) parts are ignored. (e.g 5.3.1.b2 => 5.4)
-
-  def bump
-    parts = parse_parts_from_version_string
-    parts.pop while parts.any? { |part| part.alpha? }
-    parts.pop if parts.size > 1
-    parts[-1] = parts[-1].succ
-    self.class.new(parts.join("."))
-  end
-
-  def parse_parts_from_version_string # :nodoc:
-    @version.to_s.scan(/[0-9a-z]+/i).map { |s| Part.new(s) }
-  end
-
-  def pretty_print(q) # :nodoc:
-    q.text "Gem::Version.new(#{@version.inspect})"
-  end
-
-  def spermy_recommendation
-    parts = parse_parts_from_version_string
-
-    parts.pop    while parts.any? { |part| part.alpha? }
-    parts.pop    while parts.size > 2
-    parts.push 0 while parts.size < 2
-
-    "~> #{parts.join(".")}"
-  end
-
-  #:stopdoc:
-
-  require 'rubygems/requirement'
-
-  ##
-  # Gem::Requirement's original definition is nested in Version.
-  # Although an inappropriate place, current gems specs reference the nested
-  # class name explicitly.  To remain compatible with old software loading
-  # gemspecs, we leave a copy of original definition in Version, but define an
-  # alias Gem::Requirement for use everywhere else.
-
-  Requirement = ::Gem::Requirement
-
-  # :startdoc:
-
 end
-

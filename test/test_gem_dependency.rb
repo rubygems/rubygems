@@ -186,5 +186,130 @@ class TestGemDependency < RubyGemTestCase
     refute_equal(runtime.hash, development.hash)
   end
 
-end
+  # FIX: Below this line are tests that used to be in TestGemVersion,
+  # but belong here. I'll be refactoring them along with Dependency.
 
+  def test_ok
+    assert_adequate( "0.2.33",      "= 0.2.33")
+    assert_adequate( "0.2.34",      "> 0.2.33")
+    assert_adequate( "1.0",         "= 1.0")
+    assert_adequate( "1.0",         "1.0")
+    assert_adequate( "1.8.2",       "> 1.8.0")
+    assert_adequate( "1.112",       "> 1.111")
+    assert_adequate( "0.2",         "> 0.0.0")
+    assert_adequate( "0.0.0.0.0.2", "> 0.0.0")
+    assert_adequate( "0.0.1.0",     "> 0.0.0.1")
+    assert_adequate( "10.3.2",      "> 9.3.2")
+    assert_adequate( "1.0.0.0",     "= 1.0")
+    assert_adequate( "10.3.2",      "!= 9.3.4")
+    assert_adequate( "10.3.2",      "> 9.3.2")
+    assert_adequate( "10.3.2",      "> 9.3.2")
+    assert_adequate( " 9.3.2",      ">= 9.3.2")
+    assert_adequate( "9.3.2 ",      ">= 9.3.2")
+    assert_adequate( "",            "= 0")
+    assert_adequate( "",            "< 0.1")
+    assert_adequate( "  ",          "< 0.1 ")
+    assert_adequate( "",            " <  0.1")
+    assert_adequate( "  ",          "> 0.a ")
+    assert_adequate( "",            " >  0.a")
+    assert_adequate( "0",           "=")
+    assert_adequate( "0",           ">=")
+    assert_adequate( "0",           "<=")
+    assert_adequate( "3.1",         "< 3.2.rc1")
+    assert_adequate( "3.2.0",       "> 3.2.0.rc1")
+    assert_adequate( "3.2.0.rc2",   "> 3.2.0.rc1")
+    assert_adequate( "3.0.rc2",     "< 3.0")
+    assert_adequate( "3.0.rc2",     "< 3.0.0")
+    assert_adequate( "3.0.rc2",     "< 3.0.1")
+  end
+
+  def test_illformed_requirements
+    [ ">>> 1.3.5", "> blah" ].each do |rq|
+      assert_raises ArgumentError, "req [#{rq}] should fail" do
+        Gem::Requirement.new rq
+      end
+    end
+  end
+
+  def test_satisfied_by_eh_boxed
+    assert_inadequate("1.3", "~> 1.4")
+    assert_adequate(  "1.4", "~> 1.4")
+    assert_adequate(  "1.5", "~> 1.4")
+    assert_inadequate("2.0", "~> 1.4")
+
+    assert_inadequate("1.3",   "~> 1.4.4")
+    assert_inadequate("1.4",   "~> 1.4.4")
+    assert_adequate(  "1.4.4", "~> 1.4.4")
+    assert_adequate(  "1.4.5", "~> 1.4.4")
+    assert_inadequate("1.5",   "~> 1.4.4")
+    assert_inadequate("2.0",   "~> 1.4.4")
+
+    assert_inadequate("1.1.pre", "~> 1.0.0")
+    assert_adequate(  "1.1.pre", "~> 1.1")
+    assert_inadequate("2.0.a",   "~> 1.0")
+    assert_adequate(  "2.0.a",   "~> 2.0")
+  end
+
+  def test_satisfied_by_eh_multiple
+    req = [">= 1.4", "<= 1.6", "!= 1.5"]
+    assert_inadequate("1.3", req)
+    assert_adequate(  "1.4", req)
+    assert_inadequate("1.5", req)
+    assert_adequate(  "1.6", req)
+    assert_inadequate("1.7", req)
+    assert_inadequate("2.0", req)
+  end
+
+  def test_boxed
+    assert_inadequate("1.3", "~> 1.4")
+    assert_adequate(  "1.4", "~> 1.4")
+    assert_adequate(  "1.5", "~> 1.4")
+    assert_inadequate("2.0", "~> 1.4")
+
+    assert_inadequate("1.3",   "~> 1.4.4")
+    assert_inadequate("1.4",   "~> 1.4.4")
+    assert_adequate(  "1.4.4", "~> 1.4.4")
+    assert_adequate(  "1.4.5", "~> 1.4.4")
+    assert_inadequate("1.5",   "~> 1.4.4")
+    assert_inadequate("2.0",   "~> 1.4.4")
+  end
+
+  def test_bad
+    assert_inadequate( "",            "> 0.1")
+    assert_inadequate( "1.2.3",       "!= 1.2.3")
+    assert_inadequate( "1.2.003.0.0", "!= 1.02.3")
+    assert_inadequate( "4.5.6",       "< 1.2.3")
+    assert_inadequate( "1.0",         "> 1.1")
+    assert_inadequate( "0",           ">")
+    assert_inadequate( "0",           "<")
+    assert_inadequate( "",            "= 0.1")
+    assert_inadequate( "1.1.1",       "> 1.1.1")
+    assert_inadequate( "1.2",         "= 1.1")
+    assert_inadequate( "1.40",        "= 1.1")
+    assert_inadequate( "1.3",         "= 1.40")
+    assert_inadequate( "9.3.3",       "<= 9.3.2")
+    assert_inadequate( "9.3.1",       ">= 9.3.2")
+    assert_inadequate( "9.3.03",      "<= 9.3.2")
+    assert_inadequate( "1.0.0.1",     "= 1.0")
+  end
+
+  # Assert that +version+ can fulfill +requirement+.
+
+  def assert_adequate version, requirement
+    ver = Gem::Version.create version
+    req = Gem::Requirement.new requirement
+
+    assert req.satisfied_by?(ver),
+      "Version #{version} should be adequate for Requirement #{requirement}"
+  end
+
+  # Assert that +version+ is unable to fulfill +requirement+.
+
+  def assert_inadequate version, requirement
+    ver = Gem::Version.create version
+    req = Gem::Requirement.new(requirement)
+
+    refute req.satisfied_by?(ver),
+      "Version #{version} should not be adequate for Requirement #{requirement}"
+  end
+end

@@ -1,5 +1,22 @@
 # -*- coding: utf-8 -*-
 
+2009-09-01  John Barnette  <jbarnette@rubyforge.org>
+
+	* lib/rubygems/version.rb: Gem::Version immutability
+	burndown. Changed canonical internal representation to an
+	Array. Refactored significant amounts of the internals for
+	clarity. Breaking change: Gem::Version::Requirement is no longer
+	available, use Gem::Requirement instead. Breaking change: custom
+	YAML marshaling is gone. Credit to Yehuda Katz for certain bits of
+	a related patch.
+	* test/test_gem_dependency.rb: Moved a bunch of tests over from
+	test_gem_version.rb. Work in progress.
+	* test/test_gem_specification.rb: Removed a failing YAML
+	test. Many more will be going away shortly.
+	* test/test_gem_version.rb: Significant refactoring for
+	maintainability and clarity. Moved a ton of poorly-placed tests to
+	test_gem_dependency.rb for future refactoring.
+
 2009-08-19  Ryan Davis  <ryand-ruby@zenspider.com>
 
 	* lib/rubygems.rb: Cleanup of rdoc and file layout.

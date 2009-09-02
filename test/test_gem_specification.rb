@@ -145,16 +145,6 @@ end
     assert_equal false, spec.has_unit_tests?
   end
 
-  def test_self_load_legacy_yaml
-    s = YAML.load StringIO.new(LEGACY_YAML_SPEC)
-    assert_equal 'keyedlist', s.name
-    assert_equal '0.4.0', s.version.to_s
-    assert_equal true, s.has_rdoc?
-    #assert_equal Date.today, s.date
-    #assert s.required_ruby_version.satisfied_by?(Gem::Version.new('1'))
-    assert_equal false, s.has_unit_tests?
-  end
-
   def test_self_normalize_yaml_input_with_183_yaml
     input = "!ruby/object:Gem::Specification "
     assert_equal "--- #{input}", Gem::Specification.normalize_yaml_input(input)

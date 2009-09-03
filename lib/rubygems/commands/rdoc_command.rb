@@ -53,7 +53,7 @@ class Gem::Commands::RdocCommand < Gem::Command
     end
 
     if specs.empty?
-      fail "Failed to find gem #{gem_name} to generate RDoc for #{options[:version]}"
+      rails "Failed to find gem #{gem_name} to generate RDoc for #{options[:version]}"
     end
 
     if options[:include_ri]

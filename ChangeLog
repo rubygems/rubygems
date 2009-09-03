@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2009-09-03  John Barnette  <jbarnette@rubyforge.org>
+
+	* LOTS: Use "raise" consistently, not "fail".
+
 2009-09-01  John Barnette  <jbarnette@rubyforge.org>
 
 	* lib/rubygems/version.rb: Gem::Version immutability

@@ -498,7 +498,7 @@ class Gem::Specification
 
   def self.load(filename)
     gemspec = nil
-    fail "NESTED Specification.load calls not allowed!" if @@gather
+    raise "NESTED Specification.load calls not allowed!" if @@gather
     @@gather = proc { |gs| gemspec = gs }
     data = File.read(filename)
     eval(data)

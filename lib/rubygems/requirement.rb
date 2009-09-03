@@ -154,7 +154,7 @@ class Gem::Requirement
     when Gem::Version then
       ['=', obj]
     else
-      fail ArgumentError, "Illformed requirement [#{obj.inspect}]"
+      raise ArgumentError, "Illformed requirement [#{obj.inspect}]"
     end
   end
 

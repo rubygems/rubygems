@@ -159,3 +159,25 @@ desc "Diffs Rubinius HEAD with the currently checked-out copy of RubyGems."
 task :diff_rubinius   => 'util/gem_prelude.rb' do
   diff_with rubinius_dir
 end
+
+desc "Get coverage for a specific test, no system RubyGems."
+task "rcov:for", [:test] do |task, args|
+  mgem  = Gem.source_index.find_name("minitest").first rescue nil
+  rgem  = Gem.source_index.find_name(/rcov/).first
+  libs  = rgem.require_paths.map { |p| File.join rgem.full_gem_path, p }
+  rcov  = File.join rgem.full_gem_path, rgem.bindir, rgem.default_executable
+
+  if mgem
+    libs << mgem.require_paths.map { |p| File.join mgem.full_gem_path, p }
+  end
+
+  libs << "lib:test"
+
+  flags  = []
+  flags << "-I" << libs.flatten.join(":")
+
+  rflags  = []
+  rflags << "-i" << "lib/rubygems"
+
+  ruby "#{flags.join ' '} #{rcov} #{rflags.join ' '} #{args[:test]}"
+end

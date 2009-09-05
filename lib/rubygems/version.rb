@@ -1,44 +1,45 @@
-##
-# The Version class processes string versions into comparable
-# values. A version string should normally be a series of numbers
-# separated by periods. Each part (digits separated by periods) is
-# considered its own number, and these are used for sorting. So for
-# instance, 3.10 sorts higher than 3.2 because ten is greater than
-# two.
-#
-# If any part contains letters (currently only a-z are supported) then
-# that version is considered prerelease. Versions with a prerelease
-# part in the Nth part sort less than versions with N-1 parts. Prerelease
-# parts are sorted alphabetically using the normal Ruby string sorting
-# rules.
-#
-# Prereleases sort between real releases (newest to oldest):
-#
-# 1. 1.0
-# 2. 1.0.b
-# 3. 1.0.a
-# 4. 0.9
-#
-# == Preventing Version Catastrophe:
-#
-# From: http://blog.zenspider.com/2008/10/rubygems-howto-preventing-cata.html
-#
-# Let's say you're depending on the fnord gem version 2.y.z. If you
-# specify your dependency as ">= 2.0.0" then, you're good, right? What
-# happens if fnord 3.0 comes out and it isn't backwards compatible
-# with 2.y.z? Your stuff will break as a result of using ">=". The
-# better route is to specify your dependency with a "spermy" version
-# specifier. They're a tad confusing, so here is how the dependency
-# specifiers work:
-#
-#   Specification From  ... To (exclusive)
-#   ">= 3.0"      3.0   ... &infin;
-#   "~> 3.0"      3.0   ... 4.0
-#   "~> 3.0.0"    3.0.0 ... 3.1
-#   "~> 3.5"      3.5   ... 4.0
-#   "~> 3.5.0"    3.5.0 ... 3.6
-
 module Gem
+
+  ##
+  # The Version class processes string versions into comparable
+  # values. A version string should normally be a series of numbers
+  # separated by periods. Each part (digits separated by periods) is
+  # considered its own number, and these are used for sorting. So for
+  # instance, 3.10 sorts higher than 3.2 because ten is greater than
+  # two.
+  #
+  # If any part contains letters (currently only a-z are supported) then
+  # that version is considered prerelease. Versions with a prerelease
+  # part in the Nth part sort less than versions with N-1 parts. Prerelease
+  # parts are sorted alphabetically using the normal Ruby string sorting
+  # rules.
+  #
+  # Prereleases sort between real releases (newest to oldest):
+  #
+  # 1. 1.0
+  # 2. 1.0.b
+  # 3. 1.0.a
+  # 4. 0.9
+  #
+  # == Preventing Version Catastrophe:
+  #
+  # From: http://blog.zenspider.com/2008/10/rubygems-howto-preventing-cata.html
+  #
+  # Let's say you're depending on the fnord gem version 2.y.z. If you
+  # specify your dependency as ">= 2.0.0" then, you're good, right? What
+  # happens if fnord 3.0 comes out and it isn't backwards compatible
+  # with 2.y.z? Your stuff will break as a result of using ">=". The
+  # better route is to specify your dependency with a "spermy" version
+  # specifier. They're a tad confusing, so here is how the dependency
+  # specifiers work:
+  #
+  #   Specification From  ... To (exclusive)
+  #   ">= 3.0"      3.0   ... &infin;
+  #   "~> 3.0"      3.0   ... 4.0
+  #   "~> 3.0.0"    3.0.0 ... 3.1
+  #   "~> 3.5"      3.5   ... 4.0
+  #   "~> 3.5.0"    3.5.0 ... 3.6
+
   class Version
     include Comparable
 

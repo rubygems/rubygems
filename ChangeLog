@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2009-09-29  John Barnette  <jbarnette@rubyforge.org>
+
+	* lib/rubygems/spec_fetcher.rb: Be slightly more robust when faced
+	with corrupted indexes.
+
 2009-09-03  John Barnette  <jbarnette@rubyforge.org>
 
 	* LOTS: Use "raise" consistently, not "fail".

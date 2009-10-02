@@ -602,7 +602,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       "only_one_executable" => true,
       "full_name" => "rubygems-#{Gem::RubyGemsVersion}",
       "has_deps" => false,
-      "homepage" => "http://rubygems.org/",
+      "homepage" => "http://docs.rubygems.org/",
       "name" => 'rubygems',
       "rdoc_installed" => true,
       "summary" => "RubyGems itself",

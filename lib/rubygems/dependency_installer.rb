@@ -89,7 +89,7 @@ class Gem::DependencyInstaller
 
     if @domain == :both or @domain == :remote then
       begin
-        requirements = dep.version_requirements.requirements.map do |req, ver|
+        requirements = dep.requirement.requirements.map do |req, ver|
           req
         end
 
@@ -143,7 +143,7 @@ class Gem::DependencyInstaller
 
             @source_index.any? do |_, installed_spec|
               dep.name == installed_spec.name and
-                dep.version_requirements.satisfied_by? installed_spec.version
+                dep.requirement.satisfied_by? installed_spec.version
             end
           end
 

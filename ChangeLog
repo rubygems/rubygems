@@ -2,6 +2,10 @@
 
 2009-10-14  John Barnette  <jbarnette@rubygems.org>
 
+	* lib/rubygems/dependency.rb: Burndown/cleanup. Refactored code
+	and tests. Gem::Dependency.version_requirement(s) is deprecated in
+	favor of Gem::Dependency.requirement.
+
 	* lib/rubygems/requirement.rb: Burndown/cleanup. Refactored code
 	and tests. See test/support/shortcuts.rb for some new test helpers.
 

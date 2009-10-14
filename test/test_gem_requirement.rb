@@ -146,6 +146,106 @@ class TestGemRequirement < MiniTest::Unit::TestCase
     end
   end
 
+  def test_satisfied_by_eh_good
+    assert_satisfied_by "0.2.33",      "= 0.2.33"
+    assert_satisfied_by "0.2.34",      "> 0.2.33"
+    assert_satisfied_by "1.0",         "= 1.0"
+    assert_satisfied_by "1.0",         "1.0"
+    assert_satisfied_by "1.8.2",       "> 1.8.0"
+    assert_satisfied_by "1.112",       "> 1.111"
+    assert_satisfied_by "0.2",         "> 0.0.0"
+    assert_satisfied_by "0.0.0.0.0.2", "> 0.0.0"
+    assert_satisfied_by "0.0.1.0",     "> 0.0.0.1"
+    assert_satisfied_by "10.3.2",      "> 9.3.2"
+    assert_satisfied_by "1.0.0.0",     "= 1.0"
+    assert_satisfied_by "10.3.2",      "!= 9.3.4"
+    assert_satisfied_by "10.3.2",      "> 9.3.2"
+    assert_satisfied_by "10.3.2",      "> 9.3.2"
+    assert_satisfied_by " 9.3.2",      ">= 9.3.2"
+    assert_satisfied_by "9.3.2 ",      ">= 9.3.2"
+    assert_satisfied_by "",            "= 0"
+    assert_satisfied_by "",            "< 0.1"
+    assert_satisfied_by "  ",          "< 0.1 "
+    assert_satisfied_by "",            " <  0.1"
+    assert_satisfied_by "  ",          "> 0.a "
+    assert_satisfied_by "",            " >  0.a"
+    assert_satisfied_by "3.1",         "< 3.2.rc1"
+    assert_satisfied_by "3.2.0",       "> 3.2.0.rc1"
+    assert_satisfied_by "3.2.0.rc2",   "> 3.2.0.rc1"
+    assert_satisfied_by "3.0.rc2",     "< 3.0"
+    assert_satisfied_by "3.0.rc2",     "< 3.0.0"
+    assert_satisfied_by "3.0.rc2",     "< 3.0.1"
+  end
+
+  def test_illformed_requirements
+    [ ">>> 1.3.5", "> blah" ].each do |rq|
+      assert_raises ArgumentError, "req [#{rq}] should fail" do
+        Gem::Requirement.new rq
+      end
+    end
+  end
+
+  def test_satisfied_by_eh_boxed
+    refute_satisfied_by "1.3",     "~> 1.4"
+    assert_satisfied_by "1.4",     "~> 1.4"
+    assert_satisfied_by "1.5",     "~> 1.4"
+    refute_satisfied_by "2.0",     "~> 1.4"
+
+    refute_satisfied_by "1.3",     "~> 1.4.4"
+    refute_satisfied_by "1.4",     "~> 1.4.4"
+    assert_satisfied_by "1.4.4",   "~> 1.4.4"
+    assert_satisfied_by "1.4.5",   "~> 1.4.4"
+    refute_satisfied_by "1.5",     "~> 1.4.4"
+    refute_satisfied_by "2.0",     "~> 1.4.4"
+
+    refute_satisfied_by "1.1.pre", "~> 1.0.0"
+    assert_satisfied_by "1.1.pre", "~> 1.1"
+    refute_satisfied_by "2.0.a",   "~> 1.0"
+    assert_satisfied_by "2.0.a",   "~> 2.0"
+  end
+
+  def test_satisfied_by_eh_multiple
+    req = [">= 1.4", "<= 1.6", "!= 1.5"]
+
+    refute_satisfied_by "1.3", req
+    assert_satisfied_by "1.4", req
+    refute_satisfied_by "1.5", req
+    assert_satisfied_by "1.6", req
+    refute_satisfied_by "1.7", req
+    refute_satisfied_by "2.0", req
+  end
+
+  def test_satisfied_by_boxed
+    refute_satisfied_by "1.3",   "~> 1.4"
+    assert_satisfied_by "1.4",   "~> 1.4"
+    assert_satisfied_by "1.5",   "~> 1.4"
+    refute_satisfied_by "2.0",   "~> 1.4"
+
+    refute_satisfied_by "1.3",   "~> 1.4.4"
+    refute_satisfied_by "1.4",   "~> 1.4.4"
+    assert_satisfied_by "1.4.4", "~> 1.4.4"
+    assert_satisfied_by "1.4.5", "~> 1.4.4"
+    refute_satisfied_by "1.5",   "~> 1.4.4"
+    refute_satisfied_by "2.0",   "~> 1.4.4"
+  end
+
+  def test_bad
+    refute_satisfied_by "",            "> 0.1"
+    refute_satisfied_by "1.2.3",       "!= 1.2.3"
+    refute_satisfied_by "1.2.003.0.0", "!= 1.02.3"
+    refute_satisfied_by "4.5.6",       "< 1.2.3"
+    refute_satisfied_by "1.0",         "> 1.1"
+    refute_satisfied_by "",            "= 0.1"
+    refute_satisfied_by "1.1.1",       "> 1.1.1"
+    refute_satisfied_by "1.2",         "= 1.1"
+    refute_satisfied_by "1.40",        "= 1.1"
+    refute_satisfied_by "1.3",         "= 1.40"
+    refute_satisfied_by "9.3.3",       "<= 9.3.2"
+    refute_satisfied_by "9.3.1",       ">= 9.3.2"
+    refute_satisfied_by "9.3.03",      "<= 9.3.2"
+    refute_satisfied_by "1.0.0.1",     "= 1.0"
+  end
+
   # Assert that two requirements are equal. Handles Gem::Requirements,
   # strings, arrays, numbers, and versions.
 

@@ -251,7 +251,7 @@ class Gem::Uninstaller
     spec.dependent_gems.each do |gem,dep,satlist|
       msg <<
         ("#{gem.name}-#{gem.version} depends on " +
-        "[#{dep.name} (#{dep.version_requirements})]")
+        "[#{dep.name} (#{dep.requirement})]")
     end
     msg << 'If you remove this gems, one or more dependencies will not be met.'
     msg << 'Continue with Uninstall?'

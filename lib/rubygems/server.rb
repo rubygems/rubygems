@@ -566,7 +566,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       deps = spec.dependencies.map do |dep|
         { "name"    => dep.name,
           "type"    => dep.type,
-          "version" => dep.version_requirements.to_s, }
+          "version" => dep.requirement.to_s, }
       end
 
       deps = deps.sort_by { |dep| [dep["name"].downcase, dep["version"]] }

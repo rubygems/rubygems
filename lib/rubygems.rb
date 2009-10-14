@@ -203,11 +203,11 @@ module Gem
     end
 
     unless gem.respond_to?(:name) and
-           gem.respond_to?(:version_requirements) then
+           gem.respond_to?(:requirement) then
       gem = Gem::Dependency.new(gem, version_requirements)
     end
 
-    matches = Gem.source_index.find_name(gem.name, gem.version_requirements)
+    matches = Gem.source_index.find_name(gem.name, gem.requirement)
     report_activate_error(gem) if matches.empty?
 
     if @loaded_specs[gem.name] then
@@ -225,7 +225,7 @@ module Gem
 
          e = Gem::LoadError.new msg
          e.name = gem.name
-         e.version_requirement = gem.version_requirements
+         e.version_requirement = gem.requirement
 
          raise e
       end
@@ -301,7 +301,7 @@ module Gem
     requirements = Gem::Requirement.default if requirements.empty?
 
     unless gem.respond_to?(:name) and
-           gem.respond_to?(:version_requirements) then
+           gem.respond_to?(:requirement) then
       gem = Gem::Dependency.new gem, requirements
     end
 
@@ -765,15 +765,15 @@ module Gem
 
     if matches.empty? then
       error = Gem::LoadError.new(
-          "Could not find RubyGem #{gem.name} (#{gem.version_requirements})\n")
+          "Could not find RubyGem #{gem.name} (#{gem.requirement})\n")
     else
       error = Gem::LoadError.new(
           "RubyGem version error: " +
-          "#{gem.name}(#{matches.first.version} not #{gem.version_requirements})\n")
+          "#{gem.name}(#{matches.first.version} not #{gem.requirement})\n")
     end
 
     error.name = gem.name
-    error.version_requirement = gem.version_requirements
+    error.version_requirement = gem.requirement
     raise error
   end
 

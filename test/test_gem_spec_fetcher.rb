@@ -49,6 +49,7 @@ class TestGemSpecFetcher < RubyGemTestCase
       util_zip(Marshal.dump(@a3a))
 
     dep = Gem::Dependency.new 'a', 1
+
     specs_and_sources = @sf.fetch dep, true
 
     spec_names = specs_and_sources.map do |spec, source_uri|

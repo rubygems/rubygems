@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2009-10-13  John Barnette  <jbarnette@rubygems.org>
+
+	* lib/rubygems/local_remote_options.rb: Make --source additive,
+	not exclusive. If exclusive sources are desired, use
+	--clear-sources first.
+
 2009-09-29  John Barnette  <jbarnette@rubyforge.org>
 
 	* lib/rubygems/spec_fetcher.rb: Be slightly more robust when faced

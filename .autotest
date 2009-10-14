@@ -20,5 +20,12 @@ Autotest.add_hook :initialize do |at|
   at.add_mapping %r%^lib/rubygems/(.*).rb$% do |_, m|
     "test/test_gem_#{m[1].gsub '/', '_'}.rb"
   end
-end
 
+  at.add_mapping %r%^test/support/(.*).rb$% do |_, m|
+    at.files_matching %r%^test/test_(.*)\.rb$%
+  end
+
+  # at.add_mapping %r%^test/support/(.*).rb$% do |_, m|
+  #   files_matching %r%^test/test_(.*)\.rb%%
+  # end
+end

@@ -6,8 +6,10 @@
 
 require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'rubygems/version'
+require "support/shortcuts"
 
 class TestGemDependency < RubyGemTestCase
+  include Support::Shortcuts
 
   def setup
     super
@@ -18,10 +20,6 @@ class TestGemDependency < RubyGemTestCase
     @oth1_0 = Gem::Dependency.new 'other', ['> 1.0']
 
     @r1_0 = Gem::Requirement.new ['> 1.0']
-  end
-
-  def dep(name, version)
-    Gem::Dependency.new name, version
   end
 
   def test_initialize
@@ -212,9 +210,6 @@ class TestGemDependency < RubyGemTestCase
     assert_adequate( "",            " <  0.1")
     assert_adequate( "  ",          "> 0.a ")
     assert_adequate( "",            " >  0.a")
-    assert_adequate( "0",           "=")
-    assert_adequate( "0",           ">=")
-    assert_adequate( "0",           "<=")
     assert_adequate( "3.1",         "< 3.2.rc1")
     assert_adequate( "3.2.0",       "> 3.2.0.rc1")
     assert_adequate( "3.2.0.rc2",   "> 3.2.0.rc1")
@@ -280,8 +275,6 @@ class TestGemDependency < RubyGemTestCase
     assert_inadequate( "1.2.003.0.0", "!= 1.02.3")
     assert_inadequate( "4.5.6",       "< 1.2.3")
     assert_inadequate( "1.0",         "> 1.1")
-    assert_inadequate( "0",           ">")
-    assert_inadequate( "0",           "<")
     assert_inadequate( "",            "= 0.1")
     assert_inadequate( "1.1.1",       "> 1.1.1")
     assert_inadequate( "1.2",         "= 1.1")
@@ -296,7 +289,7 @@ class TestGemDependency < RubyGemTestCase
   # Assert that +version+ can fulfill +requirement+.
 
   def assert_adequate version, requirement
-    ver = Gem::Version.create version
+    ver = v version
     req = Gem::Requirement.new requirement
 
     assert req.satisfied_by?(ver),
@@ -306,7 +299,7 @@ class TestGemDependency < RubyGemTestCase
   # Assert that +version+ is unable to fulfill +requirement+.
 
   def assert_inadequate version, requirement
-    ver = Gem::Version.create version
+    ver = v version
     req = Gem::Requirement.new(requirement)
 
     refute req.satisfied_by?(ver),

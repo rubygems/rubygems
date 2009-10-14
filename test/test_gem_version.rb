@@ -1,7 +1,10 @@
 require "minitest/autorun"
+require "support/shortcuts"
 require "rubygems/version"
 
 class TestGemVersion < MiniTest::Unit::TestCase
+  include Support::Shortcuts
+
   def test_bump
     assert_bumped_version_equal "5.3", "5.2.4"
   end
@@ -165,11 +168,5 @@ class TestGemVersion < MiniTest::Unit::TestCase
 
   def refute_version_equal unexpected, actual
     refute_equal v(unexpected), v(actual)
-  end
-
-  # Construct a new Gem::Version from +string+. Convenience method.
-
-  def v string
-    Gem::Version.create string
   end
 end

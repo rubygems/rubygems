@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2009-10-14  John Barnette  <jbarnette@rubygems.org>
+
+	* lib/rubygems/requirement.rb: Burndown/cleanup. Refactored code
+	and tests. See test/support/shortcuts.rb for some new test helpers.
+
 2009-10-13  John Barnette  <jbarnette@rubygems.org>
 
 	* lib/rubygems/local_remote_options.rb: Make --source additive,

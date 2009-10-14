@@ -95,8 +95,6 @@ lib/rubygems/validator.rb
 lib/rubygems/version.rb
 lib/rubygems/version_option.rb
 lib/ubygems.rb
-pkgs/sources/lib/sources.rb
-pkgs/sources/sources.gemspec
 setup.rb
 test/bogussources.rb
 test/data/gem-private_key.pem
@@ -113,6 +111,7 @@ test/private_key.pem
 test/public_cert.pem
 test/rubygems_plugin.rb
 test/simple_gem.rb
+test/support/shortcuts.rb
 test/test_config.rb
 test/test_gem.rb
 test/test_gem_builder.rb
@@ -167,8 +166,6 @@ test/test_gem_remote_fetcher.rb
 test/test_gem_requirement.rb
 test/test_gem_server.rb
 test/test_gem_source_index.rb
-test/test_gem_source_info_cache.rb
-test/test_gem_source_info_cache_entry.rb
 test/test_gem_spec_fetcher.rb
 test/test_gem_specification.rb
 test/test_gem_stream_ui.rb

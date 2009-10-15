@@ -95,6 +95,7 @@ lib/rubygems/validator.rb
 lib/rubygems/version.rb
 lib/rubygems/version_option.rb
 lib/ubygems.rb
+pkgs/sources
 setup.rb
 test/bogussources.rb
 test/data/gem-private_key.pem

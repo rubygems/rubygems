@@ -1,3 +1,5 @@
+require "rubygems/requirement"
+
 ##
 # The Dependency class holds a Gem name and a Gem::Requirement.
 
@@ -9,7 +11,10 @@ class Gem::Dependency
   # When this list is updated, be sure to change
   # Gem::Specification::CURRENT_SPECIFICATION_VERSION as well.
 
-  TYPES = [:development, :runtime]
+  TYPES = [
+           :development,
+           :runtime,
+          ]
 
   ##
   # Dependency name or regular expression.
@@ -58,7 +63,7 @@ class Gem::Dependency
       [self.class, @type, @name, requirement.to_s]
   end
 
-  def requirements_list # FIX: stop using this
+  def requirements_list
     requirement.as_list
   end
 
@@ -82,8 +87,9 @@ class Gem::Dependency
   end
 
   def version_requirements # :nodoc:
-    warn "Gem::Dependency#version_requirements deprecated, " +
-      " use Gem::Dependency#requirement.\n#{caller.join "\n"}"
+    warn "Gem::Dependency#version_requirements is deprecated, " +
+      " and will be removed on or after April 2010. " +
+      " Use Gem::Dependency#requirement.\n#{caller.join "\n"}"
 
     requirement
   end

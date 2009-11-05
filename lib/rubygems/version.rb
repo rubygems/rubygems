@@ -145,8 +145,6 @@ module Gem
     VERSION_PATTERN = '[0-9]+(\.[0-9a-z]+)*' # :nodoc:
     ANCHORED_VERSION_PATTERN = /\A\s*(#{VERSION_PATTERN})*\s*\z/ # :nodoc:
 
-    attr_reader :segments
-
     ##
     # A string representation of this Version.
 
@@ -189,9 +187,7 @@ module Gem
       @version = version.to_s
       @version.strip!
 
-      @segments = @version.scan(/[0-9a-z]+/i).map do |s|
-        /^\d+$/ =~ s ? s.to_i : s
-      end
+      segments # prime @segments
     end
 
     ##
@@ -264,6 +260,18 @@ module Gem
       self.class.new segments.join('.')
     end
 
+    def segments # :nodoc:
+
+      # @segments is lazy so it can pick up @version values that come
+      # from old marshaled versions, which don't go through
+      # marshal_load. +segments+ is called in +initialize+ to "prime
+      # the pump" in normal cases.
+
+      @segments ||= @version.scan(/[0-9a-z]+/i).map do |s|
+        /^\d+$/ =~ s ? s.to_i : s
+      end
+    end
+
     ##
     # A recommended version for use with a ~> Requirement.
 
@@ -284,10 +292,6 @@ module Gem
     def <=> other
       return   1 unless other # HACK: comparable with nil? why?
       return nil unless self.class === other
-
-      # This method's motto: Object allocation is for suckers. This
-      # method is used often enough that avoiding extra object creation
-      # makes a real difference.
 
       lhsize = segments.size
       rhsize = other.segments.size

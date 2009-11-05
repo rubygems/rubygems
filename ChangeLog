@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2009-11-04  John Barnette  <jbarnette@rubygems.org>
+
+	* lib/rubygems/timer.rb: Removed. The deprecation sun set in July.
+
 2009-10-14  John Barnette  <jbarnette@rubygems.org>
 
 	* lib/rubygems/dependency.rb: Burndown/cleanup. Refactored code

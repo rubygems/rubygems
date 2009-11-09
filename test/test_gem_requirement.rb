@@ -23,6 +23,12 @@ class TestGemRequirement < MiniTest::Unit::TestCase
     assert_requirement_equal "= 2", v(2)
   end
 
+
+  def test_class_available_as_gem_version_requirement
+    assert_same Gem::Requirement, Gem::Version::Requirement,
+      "Gem::Version::Requirement is aliased for old YAML compatibility."
+  end
+
   def test_parse
     assert_equal ['=', Gem::Version.new(1)], Gem::Requirement.parse('  1')
     assert_equal ['=', Gem::Version.new(1)], Gem::Requirement.parse('= 1')

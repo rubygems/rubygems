@@ -30,6 +30,7 @@ class Gem::Dependency
   # What does this dependency require?
 
   def requirement
+    return @requirement if defined?(@requirement) and @requirement
 
     # @version_requirements and @version_requirement are legacy ivar
     # names, and supported here because older gems need to keep
@@ -52,7 +53,7 @@ class Gem::Dependency
       @version_requirements = Gem::Requirement.new version
     end
 
-    @requirement || defined?(@version_requirements) and @version_requirements
+    @requirement = @version_requirements if defined?(@version_requirements)
   end
 
   ##
@@ -118,7 +119,7 @@ class Gem::Dependency
   def version_requirements # :nodoc:
     warn "Gem::Dependency#version_requirements is deprecated, " +
       " and will be removed on or after April 2010. " +
-      " Use Gem::Dependency#requirement.\n#{caller.join "\n"}"
+      " Use Gem::Dependency#requirement: #{caller.first}"
 
     requirement
   end

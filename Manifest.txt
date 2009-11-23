@@ -88,7 +88,6 @@ lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
 lib/rubygems/test_utilities.rb
 lib/rubygems/text.rb
-lib/rubygems/timer.rb
 lib/rubygems/uninstaller.rb
 lib/rubygems/user_interaction.rb
 lib/rubygems/validator.rb

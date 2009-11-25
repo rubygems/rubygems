@@ -4,8 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'yaml'
-
 # Store the gem command options specified in the configuration file.  The
 # config file object acts much like a hash.
 
@@ -144,8 +142,10 @@ class Gem::ConfigFile
   end
 
   def load_file(filename)
+    return {} unless filename and File.exists?(filename)
     begin
-      YAML.load(File.read(filename)) if filename and File.exist?(filename)
+      require 'yaml'
+      YAML.load(File.read(filename))
     rescue ArgumentError
       warn "Failed to load #{config_file_name}"
     rescue Errno::EACCES

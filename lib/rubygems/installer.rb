@@ -5,7 +5,6 @@
 #++
 
 require 'fileutils'
-require 'pathname'
 require 'rbconfig'
 
 require 'rubygems/format'
@@ -106,7 +105,7 @@ class Gem::Installer
     @env_shebang         = options[:env_shebang]
     @force               = options[:force]
     gem_home             = options[:install_dir]
-    @gem_home            = Pathname.new(gem_home).expand_path
+    @gem_home            = File.expand_path(gem_home)
     @ignore_dependencies = options[:ignore_dependencies]
     @format_executable   = options[:format_executable]
     @security_policy     = options[:security_policy]
@@ -492,7 +491,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
   # Ensures that files can't be installed outside the gem directory.
 
   def extract_files
-    expand_and_validate_gem_dir
+    @gem_dir = File.expand_path @gem_dir
 
     raise ArgumentError, "format required to extract from" if @format.nil?
 
@@ -534,25 +533,6 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
     else
       filename
     end
-  end
-
-  private
-
-  ##
-  # HACK Pathname is broken on windows.
-
-  def absolute_path? pathname
-    pathname.absolute? or (Gem.win_platform? and pathname.to_s =~ /\A[a-z]:/i)
-  end
-
-  def expand_and_validate_gem_dir
-    @gem_dir = Pathname.new(@gem_dir).expand_path
-
-    unless absolute_path?(@gem_dir) then # HACK is this possible after #expand_path?
-      raise ArgumentError, "install directory %p not absolute" % @gem_dir
-    end
-
-    @gem_dir = @gem_dir.to_s
   end
 
 end

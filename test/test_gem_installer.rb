@@ -108,19 +108,6 @@ load Gem.bin_path('a', 'my_exec', version)
     assert_equal 'a requires b (> 2, runtime)', e.message
   end
 
-  def test_expand_and_validate_gem_dir
-    @installer.gem_dir = '/nonexistent'
-    expanded_gem_dir = @installer.send(:expand_and_validate_gem_dir)
-    if win_platform?
-      expected = File.expand_path('/nonexistent').downcase
-      expanded_gem_dir = expanded_gem_dir.downcase
-    else
-      expected = '/nonexistent'
-    end
-
-    assert_equal expected, expanded_gem_dir
-  end
-
   def test_extract_files
     format = Object.new
     def format.file_entries

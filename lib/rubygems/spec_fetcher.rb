@@ -242,7 +242,7 @@ class Gem::SpecFetcher
         FileUtils.mkdir_p cache_dir
 
         open local_file, 'wb' do |io|
-          Marshal.dump specs, io
+          io << spec_dump
         end
       rescue
       end

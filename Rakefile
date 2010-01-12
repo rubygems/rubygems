@@ -49,6 +49,19 @@ end
 # --------------------------------------------------------------------
 # Creating a release
 
+# It's good to have RG's development dependencies expressed in the Hoe
+# block above, but including them in the rubygems-update gemspec makes
+# it very difficult for people on old RG versions to install it,
+# especially since they're working against stub legacy indexes
+# now. Remove 'em before building the gem.
+
+task :debug_gem => :scrub_dev_deps
+Rake::Task[:gem].prerequisites.unshift :scrub_dev_deps
+
+task :scrub_dev_deps do
+  hoe.spec.dependencies.reject! { |d| :development == d.type }
+end
+
 task :release => [:clobber, :sanity_check, :test_functional,
                   :test, :package, :tag]
 

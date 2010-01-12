@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2010-01-12  John Barnette <jbarnette@rubygems.org>
+
+	* Rakefile: Don't add development deps when building the
+	rubygems-update gem, it borks older versions when they're updating
+	from a stub index.
+
 2009-12-22  Evan Phoenix  <evan@fallingsnow.net>
 
 	* lib/rubygems/spec_fetcher.rb: Don't bother re-Marshaling

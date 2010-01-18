@@ -33,8 +33,9 @@ class Gem::DependencyList
   end
 
   ##
-  # Return a list of the specifications in the dependency list, sorted in
-  # order so that no spec in the list depends on a gem earlier in the list.
+  # Return a list of the gem specifications in the dependency list, sorted in
+  # order so that no gemspec in the list depends on a gemspec earlier in the
+  # list.
   #
   # This is useful when removing gems from a set of installed gems.  By
   # removing them in the returned order, you don't get into as many dependency
@@ -77,6 +78,10 @@ class Gem::DependencyList
     @specs.find { |spec| spec.full_name == full_name }
   end
 
+  def inspect # :nodoc:
+    "#<%s:0x%x %p>" % [self.class, object_id, map { |s| s.full_name }]
+  end
+
   ##
   # Are all the dependencies in the list satisfied?
 
@@ -89,10 +94,10 @@ class Gem::DependencyList
   end
 
   ##
-  # Is is ok to remove a gem from the dependency list?
+  # Is is ok to remove a gemspec from the dependency list?
   #
   # If removing the gemspec creates breaks a currently ok dependency, then it
-  # is NOT ok to remove the gem.
+  # is NOT ok to remove the gemspec.
 
   def ok_to_remove?(full_name)
     gem_to_remove = find_name full_name
@@ -117,13 +122,16 @@ class Gem::DependencyList
     }
   end
 
+  ##
+  # Removes the gemspec matching +full_name+ from the dependency list
+
   def remove_by_name(full_name)
     @specs.delete_if { |spec| spec.full_name == full_name }
   end
 
   ##
   # Return a hash of predecessors.  <tt>result[spec]</tt> is an Array of
-  # gemspecs that have a dependency satisfied by the named spec.
+  # gemspecs that have a dependency satisfied by the named gemspec.
 
   def spec_predecessors
     result = Hash.new { |h,k| h[k] = [] }

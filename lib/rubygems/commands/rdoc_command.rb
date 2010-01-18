@@ -57,7 +57,7 @@ class Gem::Commands::RdocCommand < Gem::Command
     end
 
     if options[:include_ri]
-      specs.each do |spec|
+      specs.sort.each do |spec|
         Gem::DocManager.new(spec).generate_ri
       end
 
@@ -65,7 +65,7 @@ class Gem::Commands::RdocCommand < Gem::Command
     end
 
     if options[:include_rdoc]
-      specs.each do |spec|
+      specs.sort.each do |spec|
         Gem::DocManager.new(spec).generate_rdoc
       end
     end

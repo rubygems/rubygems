@@ -15,6 +15,7 @@ class TestGemCommandsDependencyCommand < RubyGemTestCase
   def test_execute
     quick_gem 'foo' do |gem|
       gem.add_dependency 'bar', '> 1'
+      gem.add_dependency 'baz', '> 1'
     end
 
     Gem.source_index = nil
@@ -25,7 +26,8 @@ class TestGemCommandsDependencyCommand < RubyGemTestCase
       @cmd.execute
     end
 
-    assert_equal "Gem foo-2\n  bar (> 1, runtime)\n\n", @ui.output
+    assert_equal "Gem foo-2\n  bar (> 1, runtime)\n  baz (> 1, runtime)\n\n",
+                 @ui.output
     assert_equal '', @ui.error
   end
 

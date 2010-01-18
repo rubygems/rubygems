@@ -120,7 +120,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
     if options[:pipe_format] then
       specs.values.sort_by { |_, spec| spec }.each do |_, spec|
         unless spec.dependencies.empty?
-          spec.dependencies.each do |dep|
+          spec.dependencies.sort_by { |dep| dep.name }.each do |dep|
             say "#{dep.name} --version '#{dep.requirement}'"
           end
         end
@@ -147,7 +147,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
     response = ''
     response << '  ' * level + "Gem #{spec.full_name}\n"
     unless spec.dependencies.empty? then
-      spec.dependencies.each do |dep|
+      spec.dependencies.sort_by { |dep| dep.name }.each do |dep|
         response << '  ' * level + "  #{dep}\n"
       end
     end

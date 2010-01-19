@@ -93,7 +93,10 @@ class Gem::DependencyInstaller
           req
         end
 
-        all = !@prerelease && (requirements.length > 1 ||
+        all = !@prerelease and
+              # we only need latest if there's one requirement and it is
+              # guaranteed to match the newest specs
+              (requirements.length > 1 or
                 (requirements.first != ">=" and requirements.first != ">"))
 
         found = Gem::SpecFetcher.fetcher.fetch dep, all, true, @prerelease

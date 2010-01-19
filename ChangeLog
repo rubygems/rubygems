@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2010-01-18  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/dependency_list.rb:  Ignore development dependencies
+	  unless explicitly needed.  Bug #27608 by Roger Pack.
+
 2010-01-12  John Barnette <jbarnette@rubygems.org>
 
 	* Rakefile: Don't add development deps when building the

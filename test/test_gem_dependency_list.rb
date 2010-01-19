@@ -71,6 +71,33 @@ class TestGemDependencyList < RubyGemTestCase
     assert_equal %w[b-1 c-1 a-1], order.map { |s| s.full_name }
   end
 
+  def test_dependency_order_development
+    e1 = quick_gem 'e', '1'
+    f1 = quick_gem 'f', '1'
+    g1 = quick_gem 'g', '1'
+
+    @a1.add_dependency 'e'
+    @a1.add_dependency 'f'
+    @a1.add_dependency 'g'
+    g1.add_development_dependency 'a'
+
+    deplist = Gem::DependencyList.new true
+    deplist.add @a1, e1, f1, g1
+
+    order = deplist.dependency_order
+
+    assert_equal %w[g-1 a-1 f-1 e-1], order.map { |s| s.full_name },
+                 'development on'
+
+    deplist2 = Gem::DependencyList.new
+    deplist2.add @a1, e1, f1, g1
+
+    order = deplist2.dependency_order
+
+    assert_equal %w[a-1 g-1 f-1 e-1], order.map { |s| s.full_name },
+                 'development off'
+  end
+
   def test_dependency_order_diamond
     util_diamond
     e1 = quick_gem 'e', '1'

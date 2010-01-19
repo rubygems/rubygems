@@ -6,23 +6,41 @@
 
 require 'tsort'
 
+##
+# Gem::DependencyList is used for installing and uninstalling gems in the
+# correct order to avoid conflicts.
+
 class Gem::DependencyList
 
   include Enumerable
   include TSort
 
-  def self.from_source_index(src_index)
-    deps = new
+  ##
+  # Allows enabling/disabling use of development dependencies
 
-    src_index.each do |full_name, spec|
-      deps.add spec
+  attr_accessor :development
+
+  ##
+  # Creates a DependencyList from a Gem::SourceIndex +source_index+
+
+  def self.from_source_index(source_index)
+    list = new
+
+    source_index.each do |full_name, spec|
+      list.add spec
     end
 
-    deps
+    list
   end
 
-  def initialize
+  ##
+  # Creates a new DependencyList.  If +development+ is true, development
+  # dependencies will be included.
+
+  def initialize development = false
     @specs = []
+
+    @development = development
   end
 
   ##
@@ -160,7 +178,10 @@ class Gem::DependencyList
   def tsort_each_child(node, &block)
     specs = @specs.sort.reverse
 
-    node.dependencies.each do |dep|
+    dependencies = node.runtime_dependencies
+    dependencies.push(*node.development_dependencies) if @development
+
+    dependencies.each do |dep|
       specs.each do |spec|
         if spec.satisfies_requirement? dep then
           begin

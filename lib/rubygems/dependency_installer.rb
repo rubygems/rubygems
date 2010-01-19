@@ -123,7 +123,7 @@ class Gem::DependencyInstaller
   def gather_dependencies
     specs = @specs_and_sources.map { |spec,_| spec }
 
-    dependency_list = Gem::DependencyList.new
+    dependency_list = Gem::DependencyList.new @development
     dependency_list.add(*specs)
 
     unless @ignore_dependencies then

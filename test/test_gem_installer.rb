@@ -693,7 +693,7 @@ load Gem.bin_path('a', 'my_exec', version)
       e = assert_raises Gem::InstallError do
         installer.install
       end
-      assert_equal 'old_ruby_required requires Ruby version = 1.4.6',
+      assert_equal 'old_ruby_required requires Ruby version = 1.4.6.',
                    e.message
     end
   end
@@ -712,8 +712,8 @@ load Gem.bin_path('a', 'my_exec', version)
       e = assert_raises Gem::InstallError do
         @installer.install
       end
-      assert_equal 'old_rubygems_required requires RubyGems version < 0',
-                   e.message
+      assert_equal 'old_rubygems_required requires RubyGems version < 0. ' +
+        "Try 'gem update --system' to update RubyGems itself.", e.message
     end
   end
 

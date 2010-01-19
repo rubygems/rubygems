@@ -160,14 +160,15 @@ class Gem::Installer
     unless @force then
       if rrv = @spec.required_ruby_version then
         unless rrv.satisfied_by? Gem.ruby_version then
-          raise Gem::InstallError, "#{@spec.name} requires Ruby version #{rrv}"
+          raise Gem::InstallError, "#{@spec.name} requires Ruby version #{rrv}."
         end
       end
 
       if rrgv = @spec.required_rubygems_version then
         unless rrgv.satisfied_by? Gem::Version.new(Gem::RubyGemsVersion) then
           raise Gem::InstallError,
-                "#{@spec.name} requires RubyGems version #{rrgv}"
+            "#{@spec.name} requires RubyGems version #{rrgv}. " +
+            "Try 'gem update --system' to update RubyGems itself."
         end
       end
 

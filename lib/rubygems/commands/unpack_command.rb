@@ -41,7 +41,7 @@ class Gem::Commands::UnpackCommand < Gem::Command
       path = get_path name, options[:version]
 
       if path then
-        basename = File.basename(path).sub(/\.gem$/, '')
+        basename = File.basename(path, '.gem')
         target_dir = File.expand_path File.join(options[:target], basename)
         FileUtils.mkdir_p target_dir
         Gem::Installer.new(path, :unpack => true).unpack target_dir

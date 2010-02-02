@@ -77,6 +77,9 @@ class Gem::ConfigFile
   # True if we want to update the SourceInfoCache every time, false otherwise
   attr_accessor :update_sources
 
+  # API key for RubyGems.org
+  attr_accessor :rubygems_api_key
+
   # Create the config file object.  +args+ is the list of arguments
   # from the command line.
   #
@@ -129,16 +132,44 @@ class Gem::ConfigFile
     @hash = @hash.merge user_config
 
     # HACK these override command-line args, which is bad
-    @backtrace = @hash[:backtrace] if @hash.key? :backtrace
-    @benchmark = @hash[:benchmark] if @hash.key? :benchmark
-    @bulk_threshold = @hash[:bulk_threshold] if @hash.key? :bulk_threshold
-    Gem.sources = @hash[:sources] if @hash.key? :sources
-    @verbose = @hash[:verbose] if @hash.key? :verbose
-    @update_sources = @hash[:update_sources] if @hash.key? :update_sources
-    @path = @hash[:gempath] if @hash.key? :gempath
-    @home = @hash[:gemhome] if @hash.key? :gemhome
+    @backtrace        = @hash[:backtrace]        if @hash.key? :backtrace
+    @benchmark        = @hash[:benchmark]        if @hash.key? :benchmark
+    @bulk_threshold   = @hash[:bulk_threshold]   if @hash.key? :bulk_threshold
+    @home             = @hash[:gemhome]          if @hash.key? :gemhome
+    @path             = @hash[:gempath]          if @hash.key? :gempath
+    @update_sources   = @hash[:update_sources]   if @hash.key? :update_sources
+    @verbose          = @hash[:verbose]          if @hash.key? :verbose
 
+    load_rubygems_api_key
+
+    Gem.sources = @hash[:sources] if @hash.key? :sources
     handle_arguments arg_list
+  end
+
+  ##
+  # Location of RubyGems.org credentials
+
+  def credentials_path
+    File.join(Gem.user_home, '.gem', 'credentials')
+  end
+
+  def load_rubygems_api_key
+    api_key_hash = File.exists?(credentials_path) ? load_file(credentials_path) : @hash
+
+    @rubygems_api_key = api_key_hash[:rubygems_api_key] if api_key_hash.key? :rubygems_api_key
+  end
+
+  def api_key=(api_key)
+    config = load_file(credentials_path).merge(:rubygems_api_key => api_key)
+
+    dirname = File.dirname(credentials_path)
+    Dir.mkdir(dirname) unless File.exists?(dirname)
+
+    File.open(credentials_path, 'w') do |f|
+      f.write config.to_yaml
+    end
+
+    @rubygems_api_key = api_key
   end
 
   def load_file(filename)

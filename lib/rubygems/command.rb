@@ -5,6 +5,8 @@
 #++
 
 require 'optparse'
+require 'net/http'
+require 'rubygems/remote_fetcher'
 require 'rubygems/user_interaction'
 
 ##
@@ -349,6 +351,60 @@ class Gem::Command
     result
   end
 
+  def sign_in
+    return if Gem.configuration.rubygems_api_key
+
+    say "Enter your RubyGems.org credentials. Don't have an account yet? Create one at http://rubygems.org/sign_up"
+
+    email    =              ask("   Email: ")
+    password = ask_for_password("Password: ")
+    say("\n")
+
+    response = rubygems_api_request(:get, "api/v1/api_key") do |request|
+      request.basic_auth email, password
+    end
+
+    with_response(response) do |resp|
+      say "Signed in."
+      Gem.configuration.api_key = resp.body
+    end
+  end
+
+  def rubygems_api_request(method, path, &block)
+    host = ENV['RUBYGEMS_HOST'] || 'https://rubygems.org'
+    uri = URI.parse("#{host}/#{path}")
+
+    request_method =
+      case method
+      when :get
+        Net::HTTP::Get
+      when :post
+        Net::HTTP::Post
+      when :put
+        Net::HTTP::Put
+      when :delete
+        Net::HTTP::Delete
+      else
+        raise ArgumentError
+      end
+
+    Gem::RemoteFetcher.fetcher.request(uri, request_method, &block)
+  end
+
+  def with_response(resp)
+    case resp
+    when Net::HTTPSuccess
+      if block_given?
+        yield resp
+      else
+        say resp.body
+      end
+    else
+      say resp.body
+      say terminate_interaction(1)
+    end
+  end
+
   private
 
   ##
@@ -501,6 +557,13 @@ class Gem::Command
 
   # :startdoc:
 
+end
+
+
+##
+# Required for Gemcutter gems so superclass mismatches don't happen
+
+class Gem::AbstractCommand < Gem::Command
 end
 
 ##

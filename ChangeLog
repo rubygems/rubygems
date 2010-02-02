@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2010-02-01  John Barnette  <jbarnette@rubygems.org>
+
+	* lots: Add 'gem push' and 'gem owner' for interacting with
+	  modern/Gemcutter sources [Nick Quaranto]
+
 2010-01-18  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/dependency_list.rb:  Ignore development dependencies

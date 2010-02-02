@@ -317,6 +317,8 @@ class Gem::RemoteFetcher
       request.add_field 'If-Modified-Since', last_modified.rfc2822
     end
 
+    yield request if block_given?
+
     connection = connection_for uri
 
     retried = false

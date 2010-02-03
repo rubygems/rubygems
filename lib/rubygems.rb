@@ -1103,6 +1103,12 @@ Gem.clear_paths
 plugins = Gem.find_files 'rubygems_plugin'
 
 plugins.each do |plugin|
+
+  # Skip older versions of the GemCutter plugin: Its commands are in
+  # RubyGems proper now.
+
+  next if plugin =~ /gemcutter-0\.[0-3]/
+
   begin
     load plugin
   rescue => e

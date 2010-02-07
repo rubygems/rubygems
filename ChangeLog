@@ -14,6 +14,8 @@
 	  Bruno Michel.
 	* lib/rubygems/doc_manager:  gem rdoc --overwrite to preserve built
 	  rdoc.  Patch #25982 by Akinori MUSHA.
+	* lib/rubygems/commands/which_command.rb:  Fail if no paths were
+	  found.  Adapted patch #27681 by Caio Chassot.
 
 2010-02-01  John Barnette  <jbarnette@rubygems.org>
 

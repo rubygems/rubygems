@@ -34,6 +34,8 @@ class Gem::Commands::WhichCommand < Gem::Command
   def execute
     searcher = Gem::GemPathSearcher.new
 
+    found = false
+
     options[:args].each do |arg|
       dirs = $LOAD_PATH
       spec = searcher.find arg
@@ -52,11 +54,14 @@ class Gem::Commands::WhichCommand < Gem::Command
       paths = find_paths arg, dirs
 
       if paths.empty? then
-        say "Can't find ruby library file or shared library #{arg}"
+        alert_error "Can't find ruby library file or shared library #{arg}"
       else
         say paths
+        found = true
       end
     end
+
+    terminate_interaction 1 unless found
   end
 
   def find_paths(package_name, dirs)

@@ -47,6 +47,19 @@ end
 # --------------------------------------------------------------------
 # Creating a release
 
+# It's good to have RG's development dependencies expressed in the Hoe
+# block above, but including them in the rubygems-update gemspec makes
+# it very difficult for people on old RG versions to install it,
+# especially since they're working against stub legacy indexes
+# now. Remove 'em before building the gem.
+
+task :debug_gem => :scrub_dev_deps
+Rake::Task[:gem].prerequisites.unshift :scrub_dev_deps
+
+task :scrub_dev_deps do
+  hoe.spec.dependencies.reject! { |d| :development == d.type }
+end
+
 task :release => [:clobber, :sanity_check, :test_functional,
                   :test, :package, :tag]
 
@@ -151,4 +164,26 @@ end
 desc "Diffs Rubinius HEAD with the currently checked-out copy of RubyGems."
 task :diff_rubinius   => 'util/gem_prelude.rb' do
   diff_with rubinius_dir
+end
+
+desc "Get coverage for a specific test, no system RubyGems."
+task "rcov:for", [:test] do |task, args|
+  mgem  = Gem.source_index.find_name("minitest").first rescue nil
+  rgem  = Gem.source_index.find_name(/rcov/).first
+  libs  = rgem.require_paths.map { |p| File.join rgem.full_gem_path, p }
+  rcov  = File.join rgem.full_gem_path, rgem.bindir, rgem.default_executable
+
+  if mgem
+    libs << mgem.require_paths.map { |p| File.join mgem.full_gem_path, p }
+  end
+
+  libs << "lib:test"
+
+  flags  = []
+  flags << "-I" << libs.flatten.join(":")
+
+  rflags  = []
+  rflags << "-i" << "lib/rubygems"
+
+  ruby "#{flags.join ' '} #{rcov} #{rflags.join ' '} #{args[:test]}"
 end

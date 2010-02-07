@@ -1,11 +1,4 @@
-#--
-# Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
-# All rights reserved.
-# See LICENSE.txt for permissions.
-#++
-
-require File.join(File.expand_path(File.dirname(__FILE__)),
-                  'gem_installer_test_case')
+require File.expand_path('../gem_installer_test_case', __FILE__)
 
 class TestGemInstaller < GemInstallerTestCase
 
@@ -106,19 +99,6 @@ load Gem.bin_path('a', 'my_exec', version)
     end
 
     assert_equal 'a requires b (> 2, runtime)', e.message
-  end
-
-  def test_expand_and_validate_gem_dir
-    @installer.gem_dir = '/nonexistent'
-    expanded_gem_dir = @installer.send(:expand_and_validate_gem_dir)
-    if win_platform?
-      expected = File.expand_path('/nonexistent').downcase
-      expanded_gem_dir = expanded_gem_dir.downcase
-    else
-      expected = '/nonexistent'
-    end
-
-    assert_equal expected, expanded_gem_dir
   end
 
   def test_extract_files
@@ -706,7 +686,7 @@ load Gem.bin_path('a', 'my_exec', version)
       e = assert_raises Gem::InstallError do
         installer.install
       end
-      assert_equal 'old_ruby_required requires Ruby version = 1.4.6',
+      assert_equal 'old_ruby_required requires Ruby version = 1.4.6.',
                    e.message
     end
   end
@@ -725,8 +705,8 @@ load Gem.bin_path('a', 'my_exec', version)
       e = assert_raises Gem::InstallError do
         @installer.install
       end
-      assert_equal 'old_rubygems_required requires RubyGems version < 0',
-                   e.message
+      assert_equal 'old_rubygems_required requires RubyGems version < 0. ' +
+        "Try 'gem update --system' to update RubyGems itself.", e.message
     end
   end
 

@@ -5,7 +5,6 @@
 #++
 
 require 'fileutils'
-require 'pathname'
 require 'rbconfig'
 
 require 'rubygems/format'
@@ -106,7 +105,7 @@ class Gem::Installer
     @env_shebang         = options[:env_shebang]
     @force               = options[:force]
     gem_home             = options[:install_dir]
-    @gem_home            = Pathname.new(gem_home).expand_path
+    @gem_home            = File.expand_path(gem_home)
     @ignore_dependencies = options[:ignore_dependencies]
     @format_executable   = options[:format_executable]
     @security_policy     = options[:security_policy]
@@ -161,14 +160,15 @@ class Gem::Installer
     unless @force then
       if rrv = @spec.required_ruby_version then
         unless rrv.satisfied_by? Gem.ruby_version then
-          raise Gem::InstallError, "#{@spec.name} requires Ruby version #{rrv}"
+          raise Gem::InstallError, "#{@spec.name} requires Ruby version #{rrv}."
         end
       end
 
       if rrgv = @spec.required_rubygems_version then
         unless rrgv.satisfied_by? Gem::Version.new(Gem::RubyGemsVersion) then
           raise Gem::InstallError,
-                "#{@spec.name} requires RubyGems version #{rrgv}"
+            "#{@spec.name} requires RubyGems version #{rrgv}. " +
+            "Try 'gem update --system' to update RubyGems itself."
         end
       end
 
@@ -239,7 +239,7 @@ class Gem::Installer
   # True if the gems in the source_index satisfy +dependency+.
 
   def installation_satisfies_dependency?(dependency)
-    @source_index.find_name(dependency.name, dependency.version_requirements).size > 0
+    @source_index.find_name(dependency.name, dependency.requirement).size > 0
   end
 
   ##
@@ -492,7 +492,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
   # Ensures that files can't be installed outside the gem directory.
 
   def extract_files
-    expand_and_validate_gem_dir
+    @gem_dir = File.expand_path @gem_dir
 
     raise ArgumentError, "format required to extract from" if @format.nil?
 
@@ -534,25 +534,6 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
     else
       filename
     end
-  end
-
-  private
-
-  ##
-  # HACK Pathname is broken on windows.
-
-  def absolute_path? pathname
-    pathname.absolute? or (Gem.win_platform? and pathname.to_s =~ /\A[a-z]:/i)
-  end
-
-  def expand_and_validate_gem_dir
-    @gem_dir = Pathname.new(@gem_dir).expand_path
-
-    unless absolute_path?(@gem_dir) then # HACK is this possible after #expand_path?
-      raise ArgumentError, "install directory %p not absolute" % @gem_dir
-    end
-
-    @gem_dir = @gem_dir.to_s
   end
 
 end

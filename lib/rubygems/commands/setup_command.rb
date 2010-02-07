@@ -2,7 +2,6 @@ require 'rubygems/command'
 require 'fileutils'
 require 'rbconfig'
 require 'tmpdir'
-require 'pathname'
 
 ##
 # Installs RubyGems itself.  This command is ordinarily only available from a

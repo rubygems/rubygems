@@ -1,11 +1,5 @@
-#--
-# Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
-# All rights reserved.
-# See LICENSE.txt for permissions.
-#++
-
+require File.expand_path('../gemutilities', __FILE__)
 require 'stringio'
-require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'rubygems/specification'
 
 class TestGemSpecification < RubyGemTestCase
@@ -143,16 +137,6 @@ end
     assert_equal Gem::Specification::TODAY, spec.date
     assert spec.required_ruby_version.satisfied_by?(Gem::Version.new('1'))
     assert_equal false, spec.has_unit_tests?
-  end
-
-  def test_self_load_legacy_yaml
-    s = YAML.load StringIO.new(LEGACY_YAML_SPEC)
-    assert_equal 'keyedlist', s.name
-    assert_equal '0.4.0', s.version.to_s
-    assert_equal true, s.has_rdoc?
-    #assert_equal Date.today, s.date
-    #assert s.required_ruby_version.satisfied_by?(Gem::Version.new('1'))
-    assert_equal false, s.has_unit_tests?
   end
 
   def test_self_normalize_yaml_input_with_183_yaml

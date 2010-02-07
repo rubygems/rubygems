@@ -58,7 +58,7 @@ class Gem::Indexer
 
   def initialize(directory, options = {})
     unless ''.respond_to? :to_xs then
-      fail "Gem::Indexer requires that the XML Builder library be installed:" \
+      raise "Gem::Indexer requires that the XML Builder library be installed:" \
            "\n\tgem install builder"
     end
 

@@ -1,4 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
+require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/commands/specification_command'
 
 class TestGemCommandsSpecificationCommand < RubyGemTestCase
@@ -80,7 +80,7 @@ class TestGemCommandsSpecificationCommand < RubyGemTestCase
       @cmd.execute
     end
 
-    assert_equal "--- foo\n\n", @ui.output
+    assert_equal "foo", YAML.load(@ui.output)
   end
 
   def test_execute_marshal

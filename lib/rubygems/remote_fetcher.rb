@@ -141,7 +141,8 @@ class Gem::RemoteFetcher
       begin
         if Gem.win_platform? && source_uri.scheme && !source_uri.path.include?(':')
           FileUtils.cp URI.unescape(source_uri.scheme + ':' + source_uri.path), local_gem_path
-        else
+        elsif File.expand_path(URI.unescape(source_uri.path)) !=
+                File.expand_path(local_gem_path)
           FileUtils.cp URI.unescape(source_uri.path), local_gem_path
         end
       rescue Errno::EACCES
@@ -317,6 +318,8 @@ class Gem::RemoteFetcher
       request.add_field 'If-Modified-Since', last_modified.rfc2822
     end
 
+    yield request if block_given?
+
     connection = connection_for uri
 
     retried = false
@@ -324,10 +327,16 @@ class Gem::RemoteFetcher
 
     begin
       @requests[connection.object_id] += 1
-      response = connection.request request
-      say "#{request.method} #{response.code} #{response.message}: #{uri}" if
+
+      say "#{request.method} #{uri}" if
         Gem.configuration.really_verbose
+      response = connection.request request
+      say "#{response.code} #{response.message}" if
+        Gem.configuration.really_verbose
+
     rescue Net::HTTPBadResponse
+      say "bad response" if Gem.configuration.really_verbose
+
       reset connection
 
       raise FetchError.new('too many bad responses', uri) if bad_response
@@ -337,7 +346,7 @@ class Gem::RemoteFetcher
     # HACK work around EOFError bug in Net::HTTP
     # NOTE Errno::ECONNABORTED raised a lot on Windows, and make impossible
     # to install gems.
-    rescue EOFError, Errno::ECONNABORTED, Errno::ECONNRESET
+    rescue EOFError, Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE
       requests = @requests[connection.object_id]
       say "connection reset after #{requests} requests, retrying" if
         Gem.configuration.really_verbose

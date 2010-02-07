@@ -1,4 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
+require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/command'
 require 'rubygems/version_option'
 

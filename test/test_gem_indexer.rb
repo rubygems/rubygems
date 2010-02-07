@@ -1,11 +1,4 @@
-#--
-# Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
-# All rights reserved.
-# See LICENSE.txt for permissions.
-#++
-
-require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
-
+require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/indexer'
 
 unless ''.respond_to? :to_xs then
@@ -172,7 +165,7 @@ pl-1-i386-linux
     <title>ExampleForge gems</title>
     <link>http://example.com</link>
     <description>Recently released gems from http://example.com</description>
-    <generator>RubyGems v1.3.4</generator>
+    <generator>RubyGems v#{Gem::RubyGemsVersion}</generator>
     <docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
     <item>
       <title>a-2</title>

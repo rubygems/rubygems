@@ -4,6 +4,8 @@
 
 	* test/test_gem_commands_specification_command.rb: Don't enforce YAML
 	  format.  Patch #27791 by Aaron Patterson.
+	* lib/rubygems/version.rb: Allow captial letters in prerelease
+	  versions
 
 2010-02-01  John Barnette  <jbarnette@rubygems.org>
 

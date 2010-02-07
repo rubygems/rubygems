@@ -142,7 +142,7 @@ module Gem
   class Version
     include Comparable
 
-    VERSION_PATTERN = '[0-9]+(\.[0-9a-z]+)*' # :nodoc:
+    VERSION_PATTERN = '[0-9]+(\.[0-9a-zA-Z]+)*' # :nodoc:
     ANCHORED_VERSION_PATTERN = /\A\s*(#{VERSION_PATTERN})*\s*\z/ # :nodoc:
 
     ##

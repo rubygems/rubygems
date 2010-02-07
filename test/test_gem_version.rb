@@ -75,6 +75,8 @@ class TestGemVersion < MiniTest::Unit::TestCase
     assert_prerelease "22.1.50.0.d"
     assert_prerelease "1.2.d.42"
 
+    assert_prerelease '1.A'
+
     refute_prerelease "1.2.0"
     refute_prerelease "2.9"
     refute_prerelease "22.1.50.0"

@@ -1,4 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
+require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/commands/pristine_command'
 
 class TestGemCommandsPristineCommand < RubyGemTestCase
@@ -75,7 +75,7 @@ class TestGemCommandsPristineCommand < RubyGemTestCase
 
     install_gem a
 
-    FileUtils.rm File.join(@gemhome, 'cache', "#{a.full_name}.gem")
+    FileUtils.rm File.join(@gemhome, 'cache', a.file_name)
 
     @cmd.options[:args] = %w[a]
 

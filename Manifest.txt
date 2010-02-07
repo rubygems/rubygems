@@ -31,7 +31,9 @@ lib/rubygems/commands/list_command.rb
 lib/rubygems/commands/lock_command.rb
 lib/rubygems/commands/mirror_command.rb
 lib/rubygems/commands/outdated_command.rb
+lib/rubygems/commands/owner_command.rb
 lib/rubygems/commands/pristine_command.rb
+lib/rubygems/commands/push_command.rb
 lib/rubygems/commands/query_command.rb
 lib/rubygems/commands/rdoc_command.rb
 lib/rubygems/commands/search_command.rb
@@ -50,10 +52,6 @@ lib/rubygems/defaults.rb
 lib/rubygems/dependency.rb
 lib/rubygems/dependency_installer.rb
 lib/rubygems/dependency_list.rb
-lib/rubygems/digest/digest_adapter.rb
-lib/rubygems/digest/md5.rb
-lib/rubygems/digest/sha1.rb
-lib/rubygems/digest/sha2.rb
 lib/rubygems/doc_manager.rb
 lib/rubygems/exceptions.rb
 lib/rubygems/ext.rb
@@ -65,6 +63,7 @@ lib/rubygems/format.rb
 lib/rubygems/gem_openssl.rb
 lib/rubygems/gem_path_searcher.rb
 lib/rubygems/gem_runner.rb
+lib/rubygems/gemcutter_utilities.rb
 lib/rubygems/indexer.rb
 lib/rubygems/install_update_options.rb
 lib/rubygems/installer.rb
@@ -117,6 +116,7 @@ test/private_key.pem
 test/public_cert.pem
 test/rubygems_plugin.rb
 test/simple_gem.rb
+test/support/shortcuts.rb
 test/test_config.rb
 test/test_gem.rb
 test/test_gem_builder.rb
@@ -135,7 +135,9 @@ test/test_gem_commands_list_command.rb
 test/test_gem_commands_lock_command.rb
 test/test_gem_commands_mirror_command.rb
 test/test_gem_commands_outdated_command.rb
+test/test_gem_commands_owner_command.rb
 test/test_gem_commands_pristine_command.rb
+test/test_gem_commands_push_command.rb
 test/test_gem_commands_query_command.rb
 test/test_gem_commands_server_command.rb
 test/test_gem_commands_sources_command.rb
@@ -144,11 +146,11 @@ test/test_gem_commands_stale_command.rb
 test/test_gem_commands_uninstall_command.rb
 test/test_gem_commands_unpack_command.rb
 test/test_gem_commands_update_command.rb
+test/test_gem_commands_which_command.rb
 test/test_gem_config_file.rb
 test/test_gem_dependency.rb
 test/test_gem_dependency_installer.rb
 test/test_gem_dependency_list.rb
-test/test_gem_digest.rb
 test/test_gem_doc_manager.rb
 test/test_gem_ext_configure_builder.rb
 test/test_gem_ext_ext_conf_builder.rb
@@ -156,6 +158,7 @@ test/test_gem_ext_rake_builder.rb
 test/test_gem_format.rb
 test/test_gem_gem_path_searcher.rb
 test/test_gem_gem_runner.rb
+test/test_gem_gemcutter_utilities.rb
 test/test_gem_indexer.rb
 test/test_gem_install_update_options.rb
 test/test_gem_installer.rb
@@ -172,8 +175,6 @@ test/test_gem_remote_fetcher.rb
 test/test_gem_requirement.rb
 test/test_gem_server.rb
 test/test_gem_source_index.rb
-test/test_gem_source_info_cache.rb
-test/test_gem_source_info_cache_entry.rb
 test/test_gem_spec_fetcher.rb
 test/test_gem_specification.rb
 test/test_gem_stream_ui.rb

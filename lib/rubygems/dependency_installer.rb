@@ -89,11 +89,14 @@ class Gem::DependencyInstaller
 
     if @domain == :both or @domain == :remote then
       begin
-        requirements = dep.version_requirements.requirements.map do |req, ver|
+        requirements = dep.requirement.requirements.map do |req, ver|
           req
         end
 
-        all = !@prerelease && (requirements.length > 1 ||
+        all = !@prerelease and
+              # we only need latest if there's one requirement and it is
+              # guaranteed to match the newest specs
+              (requirements.length > 1 or
                 (requirements.first != ">=" and requirements.first != ">"))
 
         found = Gem::SpecFetcher.fetcher.fetch dep, all, true, @prerelease
@@ -120,7 +123,7 @@ class Gem::DependencyInstaller
   def gather_dependencies
     specs = @specs_and_sources.map { |spec,_| spec }
 
-    dependency_list = Gem::DependencyList.new
+    dependency_list = Gem::DependencyList.new @development
     dependency_list.add(*specs)
 
     unless @ignore_dependencies then
@@ -143,7 +146,7 @@ class Gem::DependencyInstaller
 
             @source_index.any? do |_, installed_spec|
               dep.name == installed_spec.name and
-                dep.version_requirements.satisfied_by? installed_spec.version
+                dep.requirement.satisfied_by? installed_spec.version
             end
           end
 

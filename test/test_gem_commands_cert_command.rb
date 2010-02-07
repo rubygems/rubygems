@@ -1,5 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
-
+require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/commands/cert_command'
 
 unless defined? OpenSSL then

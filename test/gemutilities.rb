@@ -1,9 +1,3 @@
-#--
-# Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
-# All rights reserved.
-# See LICENSE.txt for permissions.
-#++
-
 at_exit { $SAFE = 1 }
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
@@ -74,6 +68,8 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     @usrcache = File.join(@gemhome, ".gem", "user_cache")
     @latest_usrcache = File.join(@gemhome, ".gem", "latest_user_cache")
     @userhome = File.join @tempdir, 'userhome'
+
+    Gem.ensure_gem_subdirectories @gemhome
 
     @orig_ENV_HOME = ENV['HOME']
     ENV['HOME'] = @userhome
@@ -167,7 +163,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
       end
     end
 
-    gem = File.join(@tempdir, "#{gem.full_name}.gem").untaint
+    gem = File.join(@tempdir, gem.file_name).untaint
     Gem::Installer.new(gem, :wrappers => true).install
   end
 
@@ -245,7 +241,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
       yield(s) if block_given?
     end
 
-    path = File.join "specifications", "#{spec.full_name}.gemspec"
+    path = File.join "specifications", spec.spec_name
     written_path = write_file path do |io|
       io.write(spec.to_ruby)
     end
@@ -272,7 +268,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
         Gem::Builder.new(spec).build
       end
 
-      FileUtils.mv "#{spec.full_name}.gem",
+      FileUtils.mv spec.file_name,
                    File.join(@gemhome, 'cache', "#{spec.original_name}.gem")
     end
   end
@@ -291,8 +287,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     cache_file = File.join @tempdir, 'gems', "#{spec.original_name}.gem"
     FileUtils.mv File.join(@gemhome, 'cache', "#{spec.original_name}.gem"),
                  cache_file
-    FileUtils.rm File.join(@gemhome, 'specifications',
-                           "#{spec.full_name}.gemspec")
+    FileUtils.rm File.join(@gemhome, 'specifications', spec.spec_name)
 
     spec.loaded_from = nil
     spec.loaded = false
@@ -404,26 +399,6 @@ Also, a list:
     @source_index.add_spec @a2_pre if prerelease
 
     Gem::RemoteFetcher.fetcher = @fetcher
-  end
-
-  def util_setup_source_info_cache(*specs)
-    require 'rubygems/source_info_cache'
-    require 'rubygems/source_info_cache_entry'
-
-    specs = Hash[*specs.map { |spec| [spec.full_name, spec] }.flatten]
-    si = Gem::SourceIndex.new specs
-
-    sice = Gem::SourceInfoCacheEntry.new si, 0
-    sic = Gem::SourceInfoCache.new
-
-    sic.set_cache_data( { @gem_repo => sice } )
-    sic.update
-    sic.write_cache
-    sic.reset_cache_data
-
-    Gem::SourceInfoCache.instance_variable_set :@cache, sic
-
-    si
   end
 
   def util_setup_spec_fetcher(*specs)

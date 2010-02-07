@@ -1,6 +1,5 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
-require File.join(File.expand_path(File.dirname(__FILE__)),
-                  'gem_installer_test_case')
+require File.expand_path('../gemutilities', __FILE__)
+require File.expand_path('../gem_installer_test_case', __FILE__)
 require 'rubygems/commands/uninstall_command'
 
 class TestGemCommandsUninstallCommand < GemInstallerTestCase
@@ -60,7 +59,7 @@ class TestGemCommandsUninstallCommand < GemInstallerTestCase
 
   def test_execute_prerelease
     @spec = quick_gem "pre", "2.b"
-    @gem = File.join @tempdir, "#{@spec.full_name}.gem"
+    @gem = File.join @tempdir, @spec.file_name
     FileUtils.touch @gem
 
     util_setup_gem

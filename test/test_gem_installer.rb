@@ -1,11 +1,4 @@
-#--
-# Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
-# All rights reserved.
-# See LICENSE.txt for permissions.
-#++
-
-require File.join(File.expand_path(File.dirname(__FILE__)),
-                  'gem_installer_test_case')
+require File.expand_path('../gem_installer_test_case', __FILE__)
 
 class TestGemInstaller < GemInstallerTestCase
 
@@ -106,19 +99,6 @@ load Gem.bin_path('a', 'my_exec', version)
     end
 
     assert_equal 'a requires b (> 2, runtime)', e.message
-  end
-
-  def test_expand_and_validate_gem_dir
-    @installer.gem_dir = '/nonexistent'
-    expanded_gem_dir = @installer.send(:expand_and_validate_gem_dir)
-    if win_platform?
-      expected = File.expand_path('/nonexistent').downcase
-      expanded_gem_dir = expanded_gem_dir.downcase
-    else
-      expected = '/nonexistent'
-    end
-
-    assert_equal expected, expanded_gem_dir
   end
 
   def test_extract_files
@@ -516,7 +496,7 @@ load Gem.bin_path('a', 'my_exec', version)
 
     @installer.generate_bin
 
-    default_shebang = File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])
+    default_shebang = Gem.ruby
     shebang_line = open("#{@gemhome}/bin/my_exec") { |f| f.readlines.first }
     assert_match(/\A#!/, shebang_line)
     assert_match(/#{default_shebang}/, shebang_line)
@@ -524,11 +504,11 @@ load Gem.bin_path('a', 'my_exec', version)
 
   def test_initialize
     spec = quick_gem 'a' do |s| s.platform = Gem::Platform.new 'mswin32' end
-    gem = File.join @tempdir, "#{spec.full_name}.gem"
+    gem = File.join @tempdir, spec.file_name
 
     Dir.mkdir util_inst_bindir
     util_build_gem spec
-    FileUtils.mv File.join(@gemhome, 'cache', "#{spec.full_name}.gem"),
+    FileUtils.mv File.join(@gemhome, 'cache', spec.file_name),
                  @tempdir
 
     installer = Gem::Installer.new gem
@@ -540,7 +520,7 @@ load Gem.bin_path('a', 'my_exec', version)
     Dir.mkdir util_inst_bindir
     util_setup_gem
 
-    cache_file = File.join @gemhome, 'cache', "#{@spec.full_name}.gem"
+    cache_file = File.join @gemhome, 'cache', @spec.file_name
 
     Gem.pre_install do |installer|
       refute File.exist?(cache_file), 'cache file should not exist yet'
@@ -568,8 +548,7 @@ load Gem.bin_path('a', 'my_exec', version)
 
     assert File.exist?(File.join(gemdir, 'ext', 'a', 'Rakefile'))
 
-    spec_file = File.join(@gemhome, 'specifications',
-                          "#{@spec.full_name}.gemspec")
+    spec_file = File.join(@gemhome, 'specifications', @spec.spec_name)
 
     assert_equal spec_file, @spec.loaded_from
     assert File.exist?(spec_file)
@@ -583,7 +562,7 @@ load Gem.bin_path('a', 'my_exec', version)
 
     use_ui @ui do
       Dir.chdir @tempdir do Gem::Builder.new(@spec).build end
-      gem = File.join @tempdir, "#{@spec.full_name}.gem"
+      gem = File.join @tempdir, @spec.file_name
     end
 
     gem_data = File.open gem, 'rb' do |fp| fp.read 1024 end
@@ -666,8 +645,7 @@ load Gem.bin_path('a', 'my_exec', version)
     assert_equal 0111, exe_mode, "0%o" % exe_mode unless win_platform?
     assert File.exist?(File.join(gemdir, 'lib', 'code.rb'))
 
-    assert File.exist?(File.join(@gemhome, 'specifications',
-                                 "#{@spec.full_name}.gemspec"))
+    assert File.exist?(File.join(@gemhome, 'specifications', @spec.spec_name))
   end
 
   def test_install_missing_dirs
@@ -677,7 +655,7 @@ load Gem.bin_path('a', 'my_exec', version)
 
     use_ui @ui do
       Dir.chdir @tempdir do Gem::Builder.new(@spec).build end
-      gem = File.join @tempdir, "#{@spec.full_name}.gem"
+      gem = File.join @tempdir, @spec.file_name
 
       @installer.install
     end
@@ -686,50 +664,8 @@ load Gem.bin_path('a', 'my_exec', version)
     File.directory? File.join(Gem.dir, 'docs')
     File.directory? File.join(Gem.dir, 'specifications')
 
-    assert File.exist?(File.join(@gemhome, 'cache', "#{@spec.full_name}.gem"))
-    assert File.exist?(File.join(@gemhome, 'specifications',
-                                 "#{@spec.full_name}.gemspec"))
-  end
-
-  unless win_platform? # File.chmod doesn't work
-    def test_install_user_local_fallback
-      Dir.mkdir util_inst_bindir
-      File.chmod 0755, @userhome
-      File.chmod 0000, util_inst_bindir
-      File.chmod 0000, Gem.dir
-      @spec.executables = ["executable"]
-
-      build_rake_in do
-        use_ui @ui do
-          util_setup_gem
-          @installer.install
-        end
-      end
-
-      assert File.exist?(File.join(Gem.user_dir, 'gems',
-                                   @spec.full_name, 'lib', 'code.rb'))
-      assert File.exist?(File.join(Gem.user_dir, 'bin', 'executable'))
-    ensure
-      File.chmod 0755, Gem.dir
-      File.chmod 0755, util_inst_bindir
-    end
-
-    def test_install_bindir_read_only
-      Dir.mkdir util_inst_bindir
-      File.chmod 0755, @userhome
-      File.chmod 0000, util_inst_bindir
-
-      build_rake_in do
-        use_ui @ui do
-          util_setup_gem
-          @installer.install
-        end
-      end
-
-      assert File.exist?(File.join(Gem.user_dir, 'bin', 'executable'))
-    ensure
-      File.chmod 0755, util_inst_bindir
-    end
+    assert File.exist?(File.join(@gemhome, 'cache', @spec.file_name))
+    assert File.exist?(File.join(@gemhome, 'specifications', @spec.spec_name))
   end
 
   def test_install_with_message
@@ -750,7 +686,7 @@ load Gem.bin_path('a', 'my_exec', version)
       e = assert_raises Gem::InstallError do
         installer.install
       end
-      assert_equal 'old_ruby_required requires Ruby version = 1.4.6',
+      assert_equal 'old_ruby_required requires Ruby version = 1.4.6.',
                    e.message
     end
   end
@@ -762,15 +698,15 @@ load Gem.bin_path('a', 'my_exec', version)
 
     util_build_gem spec
 
-    gem = File.join @gemhome, 'cache', "#{spec.full_name}.gem"
+    gem = File.join @gemhome, 'cache', spec.file_name
 
     use_ui @ui do
       @installer = Gem::Installer.new gem
       e = assert_raises Gem::InstallError do
         @installer.install
       end
-      assert_equal 'old_rubygems_required requires RubyGems version < 0',
-                   e.message
+      assert_equal 'old_rubygems_required requires RubyGems version < 0. ' +
+        "Try 'gem update --system' to update RubyGems itself.", e.message
     end
   end
 
@@ -890,7 +826,7 @@ load Gem.bin_path('a', 'my_exec', version)
 
   def test_write_spec
     spec_dir = File.join @gemhome, 'specifications'
-    spec_file = File.join spec_dir, "#{@spec.full_name}.gemspec"
+    spec_file = File.join spec_dir, @spec.spec_name
     FileUtils.rm spec_file
     refute File.exist?(spec_file)
 
@@ -910,7 +846,7 @@ load Gem.bin_path('a', 'my_exec', version)
 
     util_build_gem spec
 
-    File.join @gemhome, 'cache', "#{spec.full_name}.gem"
+    File.join @gemhome, 'cache', spec.file_name
   end
 
 end

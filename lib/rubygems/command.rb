@@ -49,7 +49,7 @@ class Gem::Command
   def self.build_args
     @build_args ||= []
   end
-  
+
   def self.build_args=(value)
     @build_args = value
   end
@@ -160,8 +160,8 @@ class Gem::Command
   end
 
   ##
-  # Get the single gem name from the command line.  Fail if there is no gem
-  # name or if there is more than one gem name given.
+  # Get a single gem name from the command line.  Fail if there is no gem name
+  # or if there is more than one gem name given.
 
   def get_one_gem_name
     args = options[:args]
@@ -197,7 +197,7 @@ class Gem::Command
   #   def usage
   #     "#{program_name} FILE [FILE ...]"
   #   end
-  #   
+  #
   #   def arguments
   #     "FILE          name of file to find"
   #   end
@@ -248,11 +248,12 @@ class Gem::Command
   # Invoke the command with the given list of arguments.
 
   def invoke(*args)
-    handle_options(args)
-    if options[:help]
+    handle_options args
+
+    if options[:help] then
       show_help
-    elsif @when_invoked
-      @when_invoked.call(options)
+    elsif @when_invoked then
+      @when_invoked.call options
     else
       execute
     end
@@ -471,36 +472,43 @@ class Gem::Command
 
   # :stopdoc:
 
-  HELP = %{
-    RubyGems is a sophisticated package manager for Ruby.  This is a
-    basic help message containing pointers to more information.
+  HELP = <<-HELP
+RubyGems is a sophisticated package manager for Ruby.  This is a
+basic help message containing pointers to more information.
 
-      Usage:
-        gem -h/--help
-        gem -v/--version
-        gem command [arguments...] [options...]
+  Usage:
+    gem -h/--help
+    gem -v/--version
+    gem command [arguments...] [options...]
 
-      Examples:
-        gem install rake
-        gem list --local
-        gem build package.gemspec
-        gem help install
+  Examples:
+    gem install rake
+    gem list --local
+    gem build package.gemspec
+    gem help install
 
-      Further help:
-        gem help commands            list all 'gem' commands
-        gem help examples            show some examples of usage
-        gem help platforms           show information about platforms
-        gem help <COMMAND>           show help on COMMAND
-                                       (e.g. 'gem help install')
-        gem server                   present a web page at
-                                     http://localhost:8808/
-                                     with info about installed gems
-      Further information:
-        http://rubygems.rubyforge.org
-  }.gsub(/^    /, '')
+  Further help:
+    gem help commands            list all 'gem' commands
+    gem help examples            show some examples of usage
+    gem help platforms           show information about platforms
+    gem help <COMMAND>           show help on COMMAND
+                                   (e.g. 'gem help install')
+    gem server                   present a web page at
+                                 http://localhost:8808/
+                                 with info about installed gems
+  Further information:
+    http://rubygems.rubyforge.org
+  HELP
 
   # :startdoc:
 
+end
+
+
+##
+# Required for Gemcutter gems so superclass mismatches don't happen
+
+class Gem::AbstractCommand < Gem::Command
 end
 
 ##

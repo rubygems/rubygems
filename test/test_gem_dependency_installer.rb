@@ -1,4 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
+require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/dependency_installer'
 
 class TestGemDependencyInstaller < RubyGemTestCase
@@ -104,8 +104,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
     assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
 
-    assert File.exist?(File.join(@tempdir, 'cache', "#{@a1.full_name}.gem"))
-    assert File.exist?(File.join(@tempdir, 'cache', "#{@b1.full_name}.gem"))
+    assert File.exist?(File.join(@tempdir, 'cache', @a1.file_name))
+    assert File.exist?(File.join(@tempdir, 'cache', @b1.file_name))
   end
 
   def test_install_dependencies_satisfied
@@ -124,7 +124,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
       inst.install 'a-2'
     end
 
-    FileUtils.rm File.join(@tempdir, "#{a2.full_name}.gem")
+    FileUtils.rm File.join(@tempdir, a2.file_name)
 
     Dir.chdir @tempdir do
       inst = Gem::DependencyInstaller.new
@@ -259,7 +259,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
       inst.install 'a'
     end
 
-    assert_match %r|\A#!/usr/bin/env #{Gem::ConfigMap[:ruby_install_name]}\n|,
+    assert_match %r|\A#!/\S+/env #{Gem::ConfigMap[:ruby_install_name]}\n|,
                  File.read(File.join(@gemhome, 'bin', 'a_bin'))
   end
 
@@ -302,10 +302,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
     assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
 
-    assert File.exist?(File.join(gemhome2, 'specifications',
-                                 "#{@a1.full_name}.gemspec"))
-    assert File.exist?(File.join(gemhome2, 'cache',
-                                 "#{@a1.full_name}.gem"))
+    assert File.exist?(File.join(gemhome2, 'specifications', @a1.spec_name))
+    assert File.exist?(File.join(gemhome2, 'cache', @a1.file_name))
   end
 
   def test_install_domain_both
@@ -327,10 +325,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
     a1, b1 = inst.installed_gems
 
-    a1_expected = File.join(@gemhome, 'specifications',
-                            "#{a1.full_name}.gemspec")
-    b1_expected = File.join(@gemhome, 'specifications',
-                            "#{b1.full_name}.gemspec")
+    a1_expected = File.join(@gemhome, 'specifications', a1.spec_name)
+    b1_expected = File.join(@gemhome, 'specifications', b1.spec_name)
 
     assert_equal a1_expected, a1.loaded_from
     assert_equal b1_expected, b1.loaded_from
@@ -463,9 +459,9 @@ class TestGemDependencyInstaller < RubyGemTestCase
     File.open @a1_gem, 'rb' do |fp| a1_data = fp.read end
     File.open a2_o_gem, 'rb' do |fp| a2_o_data = fp.read end
 
-    @fetcher.data["http://gems.example.com/gems/#{@a1.full_name}.gem"] =
+    @fetcher.data["http://gems.example.com/gems/#{@a1.file_name}"] =
       a1_data
-    @fetcher.data["http://gems.example.com/gems/#{a2_o.full_name}.gem"] =
+    @fetcher.data["http://gems.example.com/gems/#{a2_o.file_name}"] =
       a2_o_data
 
     inst = Gem::DependencyInstaller.new :domain => :remote
@@ -576,7 +572,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
     local = gems.last
     assert_equal 'a-1', local.first.full_name, 'local spec'
-    assert_equal File.join(@tempdir, "#{@a1.full_name}.gem"),
+    assert_equal File.join(@tempdir, @a1.file_name),
                  local.last, 'local path'
   end
 

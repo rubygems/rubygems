@@ -2,7 +2,6 @@ require 'rubygems/command'
 require 'fileutils'
 require 'rbconfig'
 require 'tmpdir'
-require 'pathname'
 
 ##
 # Installs RubyGems itself.  This command is ordinarily only available from a
@@ -57,10 +56,10 @@ class Gem::Commands::SetupCommand < Gem::Command
   end
 
   def check_ruby_version
-    required_version = Gem::Version.new '1.8.3'
+    required_version = Gem::Requirement.new '>= 1.8.6'
 
-    unless Gem.ruby_version > required_version then
-      alert_error "Ruby version > #{required_version} required, is #{Gem.ruby_version}"
+    unless required_version.satisfied_by? Gem.ruby_version then
+      alert_error "Expected Ruby version #{required_version}, is #{Gem.ruby_version}"
       terminate_interaction 1
     end
   end

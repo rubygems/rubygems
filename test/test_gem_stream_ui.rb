@@ -1,4 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
+require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/user_interaction'
 
 class TestGemStreamUI < RubyGemTestCase
@@ -42,6 +42,24 @@ class TestGemStreamUI < RubyGemTestCase
 
     timeout(0.1) do
       answer = @sui.ask("what is your favorite color?")
+      assert_equal nil, answer
+    end
+  end
+
+  def test_ask_for_password
+    timeout(1) do
+      expected_answer = "Arthur, King of the Britons"
+      @in.string = "#{expected_answer}\n"
+      actual_answer = @sui.ask_for_password("What is your name?")
+      assert_equal expected_answer, actual_answer
+    end
+  end
+
+  def test_ask_for_password_no_tty
+    @in.tty = false
+
+    timeout(0.1) do
+      answer = @sui.ask_for_password("what is the airspeed velocity of an unladen swallow?")
       assert_equal nil, answer
     end
   end

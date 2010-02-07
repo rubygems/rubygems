@@ -1,4 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
+require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/indexer'
 require 'rubygems/commands/mirror_command'
 
@@ -46,10 +46,10 @@ class TestGemCommandsMirrorCommand < RubyGemTestCase
       @cmd.execute
     end
 
-    assert File.exist?(File.join(mirror, 'gems', "#{@a1.full_name}.gem"))
-    assert File.exist?(File.join(mirror, 'gems', "#{@a2.full_name}.gem"))
-    assert File.exist?(File.join(mirror, 'gems', "#{@b2.full_name}.gem"))
-    assert File.exist?(File.join(mirror, 'gems', "#{@c1_2.full_name}.gem"))
+    assert File.exist?(File.join(mirror, 'gems', @a1.file_name))
+    assert File.exist?(File.join(mirror, 'gems', @a2.file_name))
+    assert File.exist?(File.join(mirror, 'gems', @b2.file_name))
+    assert File.exist?(File.join(mirror, 'gems', @c1_2.file_name))
     assert File.exist?(File.join(mirror, "Marshal.#{@marshal_version}"))
   ensure
     orig_HOME.nil? ? ENV.delete('HOME') : ENV['HOME'] = orig_HOME

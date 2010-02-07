@@ -1,4 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
+require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/commands/query_command'
 
 class TestGemCommandsQueryCommand < RubyGemTestCase
@@ -214,61 +214,6 @@ pl (1)
     assert_equal '', @ui.error
 
     assert_equal 1, e.exit_code
-  end
-
-  def test_execute_legacy
-    Gem::SpecFetcher.fetcher = nil
-    si = util_setup_source_info_cache @a1, @a2, @pl1
-
-    @fetcher.data["#{@gem_repo}yaml"] = YAML.dump si
-    @fetcher.data["#{@gem_repo}Marshal.#{Gem.marshal_version}"] =
-      si.dump
-
-    @fetcher.data.delete "#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"
-
-    @cmd.handle_options %w[-r]
-
-    use_ui @ui do
-      @cmd.execute
-    end
-
-    expected = <<-EOF
-
-*** REMOTE GEMS ***
-
-a (2)
-pl (1)
-    EOF
-
-    assert_equal expected, @ui.output
-
-    expected = <<-EOF
-WARNING:  RubyGems 1.2+ index not found for:
-\t#{@gem_repo}
-
-RubyGems will revert to legacy indexes degrading performance.
-    EOF
-
-    assert_equal expected, @ui.error
-  end
-
-  def test_execute_legacy_prerelease
-    Gem::SpecFetcher.fetcher = nil
-    si = util_setup_source_info_cache @a1, @a2, @pl1
-
-    @fetcher.data["#{@gem_repo}yaml"] = YAML.dump si
-    @fetcher.data["#{@gem_repo}Marshal.#{Gem.marshal_version}"] =
-      si.dump
-
-    @fetcher.data.delete "#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"
-
-    @cmd.handle_options %w[-r --prerelease]
-
-    e = assert_raises Gem::OperationNotSupportedError do
-      @cmd.execute
-    end
-
-    assert_equal 'Prereleases not supported on legacy repositories', e.message
   end
 
   def test_execute_local_details

@@ -1,11 +1,4 @@
-#--
-# Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
-# All rights reserved.
-# See LICENSE.txt for permissions.
-#++
-
-require File.join(File.expand_path(File.dirname(__FILE__)),
-                  'gem_package_tar_test_case')
+require File.expand_path('../gem_package_tar_test_case', __FILE__)
 require 'rubygems/package/tar_writer'
 
 class TestTarWriter < TarTestCase

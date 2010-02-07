@@ -1,4 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
+require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/ext'
 
 class TestGemExtConfigureBuilder < RubyGemTestCase
@@ -46,7 +46,7 @@ class TestGemExtConfigureBuilder < RubyGemTestCase
       end
     end
 
-    shell_error_msg = %r{(\./configure: .*)|(Can't open \./configure)}
+    shell_error_msg = %r{(\./configure: .*)|(Can't open \./configure(?:: No such file or directory)?)}
     sh_prefix_configure = "sh ./configure --prefix="
 
     expected = %r(configure failed:

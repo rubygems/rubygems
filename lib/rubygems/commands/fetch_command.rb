@@ -40,11 +40,9 @@ class Gem::Commands::FetchCommand < Gem::Command
     gem_names.each do |gem_name|
       dep = Gem::Dependency.new gem_name, version
 
-      specs_and_sources = Gem::SpecFetcher.fetcher.fetch dep, all
+      specs_and_sources = Gem::SpecFetcher.fetcher.fetch dep
 
-      specs_and_sources.sort_by { |spec,| spec.version }
-
-      spec, source_uri = specs_and_sources.last
+      spec, source_uri = specs_and_sources.sort_by { |s,| s.version }.last
 
       if spec.nil? then
         alert_error "Could not find #{gem_name} in any repository"
@@ -52,7 +50,7 @@ class Gem::Commands::FetchCommand < Gem::Command
       end
 
       path = Gem::RemoteFetcher.fetcher.download spec, source_uri
-      FileUtils.mv path, "#{spec.full_name}.gem"
+      FileUtils.mv path, spec.file_name
 
       say "Downloaded #{spec.full_name}"
     end

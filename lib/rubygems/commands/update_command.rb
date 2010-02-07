@@ -51,7 +51,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
       say "Updating RubyGems"
 
       unless options[:args].empty? then
-        fail "No gem names are allowed with the --system option"
+        raise "No gem names are allowed with the --system option"
       end
 
       rubygems_update = Gem::Specification.new

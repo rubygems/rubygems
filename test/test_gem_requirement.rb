@@ -1,3 +1,4 @@
+require "rubygems"
 require "minitest/autorun"
 require "support/shortcuts"
 require "rubygems/requirement"
@@ -22,7 +23,6 @@ class TestGemRequirement < MiniTest::Unit::TestCase
     assert_requirement_equal "= 2", ["2"]
     assert_requirement_equal "= 2", v(2)
   end
-
 
   def test_class_available_as_gem_version_requirement
     assert_same Gem::Requirement, Gem::Version::Requirement,
@@ -51,6 +51,20 @@ class TestGemRequirement < MiniTest::Unit::TestCase
     end
 
     assert_equal 'Illformed requirement [""]', e.message
+  end
+
+  def test_prerelease_eh
+    r = req '= 1'
+
+    refute r.prerelease?
+
+    r = req '= 1.a'
+
+    assert r.prerelease?
+
+    r = req '> 1.a', '< 2'
+
+    assert r.prerelease?
   end
 
   def test_satisfied_by_eh_bang_equal

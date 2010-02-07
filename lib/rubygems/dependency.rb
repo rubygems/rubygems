@@ -66,6 +66,13 @@ class Gem::Dependency
       [self.class, @type, @name, requirement.to_s]
   end
 
+  ##
+  # Does this dependency require a prerelease?
+
+  def prerelease?
+    requirement.prerelease?
+  end
+
   def pretty_print(q) # :nodoc:
     q.group 1, 'Gem::Dependency.new(', ')' do
       q.pp name

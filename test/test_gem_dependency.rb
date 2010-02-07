@@ -1,6 +1,7 @@
-require "minitest/autorun"
-require "support/shortcuts"
-require "rubygems/dependency"
+require 'rubygems'
+require 'minitest/autorun'
+require 'support/shortcuts'
+require 'rubygems/dependency'
 
 class TestGemDependency < MiniTest::Unit::TestCase
   include Support::Shortcuts
@@ -102,4 +103,20 @@ class TestGemDependency < MiniTest::Unit::TestCase
     refute_equal dep("pkg", "1.0").hash,   dep("abc", "1.0").hash, "name"
     refute_equal dep("pkg", :development), dep("pkg", :runtime), "type"
   end
+
+  def test_prerelease_eh
+    d = dep "pkg", "= 1"
+
+    refute d.prerelease?
+
+    d = dep "pkg", "= 1.a"
+
+    assert d.prerelease?
+
+    d = dep "pkg", "> 1.a", "> 2"
+
+    assert d.prerelease?
+  end
+
 end
+

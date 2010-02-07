@@ -32,13 +32,13 @@
 2010-01-12  John Barnette <jbarnette@rubygems.org>
 
 	* Rakefile: Don't add development deps when building the
-	rubygems-update gem, it borks older versions when they're updating
-	from a stub index.
+	  rubygems-update gem, it borks older versions when they're updating
+	  from a stub index.
 
 2009-12-22  Evan Phoenix  <evan@fallingsnow.net>
 
-	* lib/rubygems/spec_fetcher.rb: Don't bother re-Marshaling
-	the spec YAML list.
+	* lib/rubygems/spec_fetcher.rb: Don't bother re-Marshaling the spec
+	  YAML list.
 
 2009-11-04  John Barnette  <jbarnette@rubygems.org>
 
@@ -47,22 +47,22 @@
 2009-10-14  John Barnette  <jbarnette@rubygems.org>
 
 	* lib/rubygems/dependency.rb: Burndown/cleanup. Refactored code
-	and tests. Gem::Dependency.version_requirement(s) is deprecated in
-	favor of Gem::Dependency.requirement.
+	  and tests. Gem::Dependency.version_requirement(s) is deprecated in
+	  favor of Gem::Dependency.requirement.
 
 	* lib/rubygems/requirement.rb: Burndown/cleanup. Refactored code
-	and tests. See test/support/shortcuts.rb for some new test helpers.
+	  and tests. See test/support/shortcuts.rb for some new test helpers.
 
 2009-10-13  John Barnette  <jbarnette@rubygems.org>
 
 	* lib/rubygems/local_remote_options.rb: Make --source additive,
-	not exclusive. If exclusive sources are desired, use
-	--clear-sources first.
+	  not exclusive. If exclusive sources are desired, use
+	  --clear-sources first.
 
 2009-09-29  John Barnette  <jbarnette@rubyforge.org>
 
 	* lib/rubygems/spec_fetcher.rb: Be slightly more robust when faced
-	with corrupted indexes.
+	  with corrupted indexes.
 
 2009-09-03  John Barnette  <jbarnette@rubyforge.org>
 
@@ -71,25 +71,25 @@
 2009-09-01  John Barnette  <jbarnette@rubyforge.org>
 
 	* lib/rubygems/version.rb: Gem::Version immutability
-	burndown. Changed canonical internal representation to an
-	Array. Refactored significant amounts of the internals for
-	clarity. Breaking change: Gem::Version::Requirement is no longer
-	available, use Gem::Requirement instead. Breaking change: custom
-	YAML marshaling is gone. Credit to Yehuda Katz for certain bits of
-	a related patch.
+	  burndown. Changed canonical internal representation to an
+	  Array. Refactored significant amounts of the internals for
+	  clarity. Breaking change: Gem::Version::Requirement is no longer
+	  available, use Gem::Requirement instead. Breaking change: custom
+	  YAML marshaling is gone. Credit to Yehuda Katz for certain bits of
+	  a related patch.
 	* test/test_gem_dependency.rb: Moved a bunch of tests over from
-	test_gem_version.rb. Work in progress.
+	  test_gem_version.rb. Work in progress.
 	* test/test_gem_specification.rb: Removed a failing YAML
-	test. Many more will be going away shortly.
+	  test. Many more will be going away shortly.
 	* test/test_gem_version.rb: Significant refactoring for
-	maintainability and clarity. Moved a ton of poorly-placed tests to
-	test_gem_dependency.rb for future refactoring.
+	  maintainability and clarity. Moved a ton of poorly-placed tests to
+	  test_gem_dependency.rb for future refactoring.
 
 2009-08-19  Ryan Davis  <ryand-ruby@zenspider.com>
 
 	* lib/rubygems.rb: Cleanup of rdoc and file layout.
 	* lib/rubygems/versions.rb: Added Version#spermy_recommendation
-	and fixed bug in Version::Part#inspect. General cleanup.
+	  and fixed bug in Version::Part#inspect. General cleanup.
 
 2009-07-29  John Barnette <jbarnette@rubyforge.org>
 

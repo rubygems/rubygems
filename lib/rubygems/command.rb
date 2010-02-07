@@ -5,8 +5,6 @@
 #++
 
 require 'optparse'
-require 'net/http'
-require 'rubygems/remote_fetcher'
 require 'rubygems/user_interaction'
 
 ##

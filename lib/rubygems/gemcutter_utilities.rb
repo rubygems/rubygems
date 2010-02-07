@@ -1,3 +1,6 @@
+require 'net/http'
+require 'rubygems/remote_fetcher'
+
 module Gem::GemcutterUtilities
 
   def sign_in

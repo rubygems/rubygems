@@ -51,7 +51,7 @@ class Gem::Command
   def self.build_args
     @build_args ||= []
   end
-  
+
   def self.build_args=(value)
     @build_args = value
   end
@@ -162,8 +162,8 @@ class Gem::Command
   end
 
   ##
-  # Get the single gem name from the command line.  Fail if there is no gem
-  # name or if there is more than one gem name given.
+  # Get a single gem name from the command line.  Fail if there is no gem name
+  # or if there is more than one gem name given.
 
   def get_one_gem_name
     args = options[:args]
@@ -199,7 +199,7 @@ class Gem::Command
   #   def usage
   #     "#{program_name} FILE [FILE ...]"
   #   end
-  #   
+  #
   #   def arguments
   #     "FILE          name of file to find"
   #   end
@@ -250,11 +250,12 @@ class Gem::Command
   # Invoke the command with the given list of arguments.
 
   def invoke(*args)
-    handle_options(args)
-    if options[:help]
+    handle_options args
+
+    if options[:help] then
       show_help
-    elsif @when_invoked
-      @when_invoked.call(options)
+    elsif @when_invoked then
+      @when_invoked.call options
     else
       execute
     end
@@ -349,60 +350,6 @@ class Gem::Command
     result.flatten!
     result.concat(args)
     result
-  end
-
-  def sign_in
-    return if Gem.configuration.rubygems_api_key
-
-    say "Enter your RubyGems.org credentials. Don't have an account yet? Create one at http://rubygems.org/sign_up"
-
-    email    =              ask("   Email: ")
-    password = ask_for_password("Password: ")
-    say("\n")
-
-    response = rubygems_api_request(:get, "api/v1/api_key") do |request|
-      request.basic_auth email, password
-    end
-
-    with_response(response) do |resp|
-      say "Signed in."
-      Gem.configuration.api_key = resp.body
-    end
-  end
-
-  def rubygems_api_request(method, path, &block)
-    host = ENV['RUBYGEMS_HOST'] || 'https://rubygems.org'
-    uri = URI.parse("#{host}/#{path}")
-
-    request_method =
-      case method
-      when :get
-        Net::HTTP::Get
-      when :post
-        Net::HTTP::Post
-      when :put
-        Net::HTTP::Put
-      when :delete
-        Net::HTTP::Delete
-      else
-        raise ArgumentError
-      end
-
-    Gem::RemoteFetcher.fetcher.request(uri, request_method, &block)
-  end
-
-  def with_response(resp)
-    case resp
-    when Net::HTTPSuccess
-      if block_given?
-        yield resp
-      else
-        say resp.body
-      end
-    else
-      say resp.body
-      say terminate_interaction(1)
-    end
   end
 
   private
@@ -527,33 +474,33 @@ class Gem::Command
 
   # :stopdoc:
 
-  HELP = %{
-    RubyGems is a sophisticated package manager for Ruby.  This is a
-    basic help message containing pointers to more information.
+  HELP = <<-HELP
+RubyGems is a sophisticated package manager for Ruby.  This is a
+basic help message containing pointers to more information.
 
-      Usage:
-        gem -h/--help
-        gem -v/--version
-        gem command [arguments...] [options...]
+  Usage:
+    gem -h/--help
+    gem -v/--version
+    gem command [arguments...] [options...]
 
-      Examples:
-        gem install rake
-        gem list --local
-        gem build package.gemspec
-        gem help install
+  Examples:
+    gem install rake
+    gem list --local
+    gem build package.gemspec
+    gem help install
 
-      Further help:
-        gem help commands            list all 'gem' commands
-        gem help examples            show some examples of usage
-        gem help platforms           show information about platforms
-        gem help <COMMAND>           show help on COMMAND
-                                       (e.g. 'gem help install')
-        gem server                   present a web page at
-                                     http://localhost:8808/
-                                     with info about installed gems
-      Further information:
-        http://rubygems.rubyforge.org
-  }.gsub(/^    /, '')
+  Further help:
+    gem help commands            list all 'gem' commands
+    gem help examples            show some examples of usage
+    gem help platforms           show information about platforms
+    gem help <COMMAND>           show help on COMMAND
+                                   (e.g. 'gem help install')
+    gem server                   present a web page at
+                                 http://localhost:8808/
+                                 with info about installed gems
+  Further information:
+    http://rubygems.rubyforge.org
+  HELP
 
   # :startdoc:
 

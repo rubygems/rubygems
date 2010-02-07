@@ -27,10 +27,6 @@ class Gem::Commands::WhichCommand < Gem::Command
     "--no-gems-first --no-all"
   end
 
-  def usage # :nodoc:
-    "#{program_name} FILE [FILE ...]"
-  end
-
   def execute
     searcher = Gem::GemPathSearcher.new
 
@@ -46,9 +42,6 @@ class Gem::Commands::WhichCommand < Gem::Command
         else
           dirs = $LOAD_PATH + gem_paths(spec)
         end
-
-        say "(checking gem #{spec.full_name} for #{arg})" if
-          Gem.configuration.verbose and $stdout.tty?
       end
 
       paths = find_paths arg, dirs
@@ -85,7 +78,7 @@ class Gem::Commands::WhichCommand < Gem::Command
   end
 
   def usage # :nodoc:
-    "#{program_name} FILE [...]"
+    "#{program_name} FILE [FILE ...]"
   end
 
 end

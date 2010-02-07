@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 
+2010-02-06  Eric Hodel  <drbrain@segment7.net>
+
+	* test/test_gem_commands_specification_command.rb: Don't enforce YAML
+	  format.  Patch #27791 by Aaron Patterson.
+
 2010-02-01  John Barnette  <jbarnette@rubygems.org>
 
-	* lots: Add 'gem push' and 'gem owner' for interacting with
-	  modern/Gemcutter sources [Nick Quaranto]
+	* lib/rubygems/command*: Add 'gem push' and 'gem owner' for
+	  interacting with modern/Gemcutter sources [Nick Quaranto]
 
 2010-01-18  Eric Hodel  <drbrain@segment7.net>
 

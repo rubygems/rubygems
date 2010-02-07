@@ -80,7 +80,7 @@ class TestGemCommandsSpecificationCommand < RubyGemTestCase
       @cmd.execute
     end
 
-    assert_equal "--- foo\n\n", @ui.output
+    assert_equal "foo", YAML.load(@ui.output)
   end
 
   def test_execute_marshal

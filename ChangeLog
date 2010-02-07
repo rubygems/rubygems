@@ -10,6 +10,8 @@
 	  #27698 by J Smith.
 	* lib/rubygems/gem_path_searcher.rb:  Handle nil require_paths.
 	  Patch #27334 by Roger Pack.
+	* lib/rubygems/server.rb:  Handle --bind option.  Patch #27357 by
+	  Bruno Michel.
 
 2010-02-01  John Barnette  <jbarnette@rubygems.org>
 

@@ -42,7 +42,7 @@ class Gem::Commands::FetchCommand < Gem::Command
 
       specs_and_sources = Gem::SpecFetcher.fetcher.fetch dep
 
-      spec, source_uri = specs_and_sources.sort_by { |spec,| spec.version }.last
+      spec, source_uri = specs_and_sources.sort_by { |s,| s.version }.last
 
       if spec.nil? then
         alert_error "Could not find #{gem_name} in any repository"

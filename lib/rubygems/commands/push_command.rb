@@ -6,15 +6,15 @@ class Gem::Commands::PushCommand < Gem::AbstractCommand
   include Gem::LocalRemoteOptions
   include Gem::GemcutterUtilities
 
-  def description
+  def description # :nodoc:
     'Push a gem up to RubyGems.org'
   end
 
-  def arguments
+  def arguments # :nodoc:
     "GEM       built gem to push up"
   end
 
-  def usage
+  def usage # :nodoc:
     "#{program_name} GEM"
   end
 

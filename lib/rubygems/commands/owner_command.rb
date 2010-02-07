@@ -6,11 +6,11 @@ class Gem::Commands::OwnerCommand < Gem::AbstractCommand
   include Gem::LocalRemoteOptions
   include Gem::GemcutterUtilities
 
-  def description
+  def description # :nodoc:
     'Manage gem owners on RubyGems.org.'
   end
 
-  def arguments
+  def arguments # :nodoc:
     "GEM       gem to manage owners for"
   end
 

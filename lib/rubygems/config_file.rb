@@ -4,8 +4,26 @@
 # See LICENSE.txt for permissions.
 #++
 
-# Store the gem command options specified in the configuration file.  The
-# config file object acts much like a hash.
+##
+# Gem::ConfigFile RubyGems options and gem command options from ~/.gemrc.
+#
+# ~/.gemrc is a YAML file that uses strings to match gem command arguments and
+# symbols to match RubyGems options.
+#
+# Gem command arguments use a String key that matches the command name and
+# allow you to specify default arguments:
+#
+#   install: --no-rdoc --no-ri
+#   update: --no-rdoc --no-ri
+#
+# You can use <tt>gem:</tt> to set default arguments for all commands.
+#
+# RubyGems options use symbol keys.  Valid options are:
+#
+# +:backtrace+:: See #backtrace
+# +:benchmark+:: See #benchmark
+# +:sources+:: Sets Gem::sources
+# +:verbose+:: See #verbose
 
 class Gem::ConfigFile
 
@@ -50,52 +68,74 @@ class Gem::ConfigFile
 
   SYSTEM_WIDE_CONFIG_FILE = File.join system_config_path, 'gemrc'
 
+  ##
   # List of arguments supplied to the config file object.
+
   attr_reader :args
 
-  # Where to look for gems
+  ##
+  # Where to look for gems (deprecated)
+
   attr_accessor :path
+
+  ##
+  # Where to install gems (deprecated)
 
   attr_accessor :home
 
+  ##
   # True if we print backtraces on errors.
+
   attr_writer :backtrace
 
+  ##
   # True if we are benchmarking this run.
+
   attr_accessor :benchmark
 
-  # Bulk threshold value.  If the number of missing gems are above
-  # this threshold value, then a bulk download technique is used.
+  ##
+  # Bulk threshold value.  If the number of missing gems are above this
+  # threshold value, then a bulk download technique is used.  (deprecated)
+
   attr_accessor :bulk_threshold
 
+  ##
   # Verbose level of output:
   # * false -- No output
   # * true -- Normal output
   # * :loud -- Extra output
+
   attr_accessor :verbose
 
+  ##
   # True if we want to update the SourceInfoCache every time, false otherwise
+
   attr_accessor :update_sources
 
+  ##
   # API key for RubyGems.org
+
   attr_accessor :rubygems_api_key
 
+  ##
   # Create the config file object.  +args+ is the list of arguments
   # from the command line.
   #
   # The following command line options are handled early here rather
   # than later at the time most command options are processed.
   #
-  # * --config-file and --config-file==NAME -- Obviously these need
-  #   to be handled by the ConfigFile object to ensure we get the
-  #   right config file.
+  # <tt>--config-file</tt>, <tt>--config-file==NAME</tt>::
+  #   Obviously these need to be handled by the ConfigFile object to ensure we
+  #   get the right config file.
   #
-  # * --backtrace -- Backtrace needs to be turned on early so that
-  #   errors before normal option parsing can be properly handled.
+  # <tt>--backtrace</tt>::
+  #   Backtrace needs to be turned on early so that errors before normal
+  #   option parsing can be properly handled.
   #
-  # * --debug -- Enable Ruby level debug messages.  Handled early
-  #   for the same reason as --backtrace.
-  #
+  # <tt>--debug</tt>::
+  #   Enable Ruby level debug messages.  Handled early for the same reason as
+  #   --backtrace.
+
   def initialize(arg_list)
     @config_file_name = nil
     need_config_file_name = false
@@ -270,8 +310,8 @@ class Gem::ConfigFile
 
   # Writes out this config file, replacing its source.
   def write
-    File.open config_file_name, 'w' do |fp|
-      fp.write self.to_yaml
+    open config_file_name, 'w' do |io|
+      io.write to_yaml
     end
   end
 

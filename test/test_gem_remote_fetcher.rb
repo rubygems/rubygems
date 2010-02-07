@@ -1,8 +1,8 @@
 require File.expand_path('../gemutilities', __FILE__)
-require 'webrick'
-require 'zlib'
-require 'rubygems/remote_fetcher'
 require 'ostruct'
+require 'webrick'
+require 'rubygems/remote_fetcher'
+require 'rubygems/format'
 
 # = Testing Proxy Settings
 #
@@ -319,6 +319,23 @@ gems:
     assert_equal("http://gems.example.com/gems/#{e1.original_name}.gem",
                  fetcher.instance_variable_get(:@test_arg).to_s)
     assert File.exist?(e1_cache_gem)
+  end
+
+  def test_download_same_file
+    FileUtils.mv @a1_gem, @tempdir
+    local_path = File.join @tempdir, @a1.file_name
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::RemoteFetcher.fetcher
+    end
+
+    cache_path = File.join @gemhome, 'cache', @a1.file_name
+    FileUtils.mv local_path, cache_path
+
+    gem = Gem::Format.from_file_by_path cache_path
+
+    assert_equal cache_path, inst.download(gem.spec, cache_path)
   end
 
   def test_download_unsupported

@@ -141,7 +141,8 @@ class Gem::RemoteFetcher
       begin
         if Gem.win_platform? && source_uri.scheme && !source_uri.path.include?(':')
           FileUtils.cp URI.unescape(source_uri.scheme + ':' + source_uri.path), local_gem_path
-        else
+        elsif File.expand_path(URI.unescape(source_uri.path)) !=
+                File.expand_path(local_gem_path)
           FileUtils.cp URI.unescape(source_uri.path), local_gem_path
         end
       rescue Errno::EACCES

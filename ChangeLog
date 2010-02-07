@@ -16,6 +16,8 @@
 	  rdoc.  Patch #25982 by Akinori MUSHA.
 	* lib/rubygems/commands/which_command.rb:  Fail if no paths were
 	  found.  Adapted patch #27681 by Caio Chassot.
+	* lib/rubygems/remote_fetcher.rb:  Don't copy if the file is where we
+	  want it.  Patch #27409 by Jakub Šťastný.
 
 2010-02-01  John Barnette  <jbarnette@rubygems.org>
 

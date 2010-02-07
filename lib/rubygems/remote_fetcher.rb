@@ -326,10 +326,16 @@ class Gem::RemoteFetcher
 
     begin
       @requests[connection.object_id] += 1
-      response = connection.request request
-      say "#{request.method} #{response.code} #{response.message}: #{uri}" if
+
+      say "#{request.method} #{uri}" if
         Gem.configuration.really_verbose
+      response = connection.request request
+      say "#{response.code} #{response.message}" if
+        Gem.configuration.really_verbose
+
     rescue Net::HTTPBadResponse
+      say "bad response" if Gem.configuration.really_verbose
+
       reset connection
 
       raise FetchError.new('too many bad responses', uri) if bad_response

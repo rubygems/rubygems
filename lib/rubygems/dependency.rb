@@ -27,7 +27,59 @@ class Gem::Dependency
   attr_reader :type
 
   ##
+  # Constructs a dependency with +name+ and +requirements+. The last
+  # argument can optionally be the dependency type, which defaults to
+  # <tt>:runtime</tt>.
+
+  def initialize name, *requirements
+    type         = Symbol === requirements.last ? requirements.pop : :runtime
+    requirements = requirements.first if 1 == requirements.length # unpack
+
+    unless TYPES.include? type
+      raise ArgumentError, "Valid types are #{TYPES.inspect}, "
+        + "not #{@type.inspect}"
+    end
+
+    @name        = name
+    @requirement = Gem::Requirement.create requirements
+    @type        = type
+
+    # This is for Marshal backwards compatability. See the comments in
+    # +requirement+ for the dirty details.
+
+    @version_requirements = @requirement
+  end
+
+  ##
   # What does this dependency require?
+
+  ##
+  # A dependency's hash is the XOR of the hashes of +name+, +type+,
+  # and +requirement+.
+
+  def hash # :nodoc:
+    name.hash ^ type.hash ^ requirement.hash
+  end
+
+  def inspect # :nodoc:
+    "<%s type=%p name=%p requirements=%p>" %
+      [self.class, @type, @name, requirement.to_s]
+  end
+
+  def pretty_print(q) # :nodoc:
+    q.group 1, 'Gem::Dependency.new(', ')' do
+      q.pp name
+      q.text ','
+      q.breakable
+
+      q.pp requirement
+
+      q.text ','
+      q.breakable
+
+      q.pp type
+    end
+  end
 
   def requirement
     return @requirement if defined?(@requirement) and @requirement
@@ -56,64 +108,12 @@ class Gem::Dependency
     @requirement = @version_requirements if defined?(@version_requirements)
   end
 
-  ##
-  # Constructs a dependency with +name+ and +requirements+. The last
-  # argument can optionally be the dependency type, which defaults to
-  # <tt>:runtime</tt>.
-
-  def initialize name, *requirements
-    type         = Symbol === requirements.last ? requirements.pop : :runtime
-    requirements = requirements.first if 1 == requirements.length # unpack
-
-    unless TYPES.include? type
-      raise ArgumentError, "Valid types are #{TYPES.inspect}, "
-        + "not #{@type.inspect}"
-    end
-
-    @name        = name
-    @requirement = Gem::Requirement.create requirements
-    @type        = type
-
-    # This is for Marshal backwards compatability. See the comments in
-    # +requirement+ for the dirty details.
-
-    @version_requirements = @requirement
-  end
-
-  ##
-  # A dependency's hash is the XOR of the hashes of +name+, +type+,
-  # and +requirement+.
-
-  def hash
-    name.hash ^ type.hash ^ requirement.hash
-  end
-
-  def inspect # :nodoc:
-    "<%s type=%p name=%p requirements=%p>" %
-      [self.class, @type, @name, requirement.to_s]
-  end
-
   def requirements_list
     requirement.as_list
   end
 
   def to_s # :nodoc:
     "#{name} (#{requirement}, #{type})"
-  end
-
-  def pretty_print(q) # :nodoc:
-    q.group 1, 'Gem::Dependency.new(', ')' do
-      q.pp name
-      q.text ','
-      q.breakable
-
-      q.pp requirement
-
-      q.text ','
-      q.breakable
-
-      q.pp type
-    end
   end
 
   def version_requirements # :nodoc:
@@ -165,4 +165,6 @@ class Gem::Dependency
 
     requirement.satisfied_by? version
   end
+
 end
+

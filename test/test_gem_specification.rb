@@ -1,11 +1,5 @@
-#--
-# Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
-# All rights reserved.
-# See LICENSE.txt for permissions.
-#++
-
+require File.expand_path('../gemutilities', __FILE__)
 require 'stringio'
-require File.join(File.expand_path(File.dirname(__FILE__)), 'gemutilities')
 require 'rubygems/specification'
 
 class TestGemSpecification < RubyGemTestCase

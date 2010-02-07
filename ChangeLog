@@ -12,6 +12,8 @@
 	  Patch #27334 by Roger Pack.
 	* lib/rubygems/server.rb:  Handle --bind option.  Patch #27357 by
 	  Bruno Michel.
+	* lib/rubygems/doc_manager:  gem rdoc --overwrite to preserve built
+	  rdoc.  Patch #25982 by Akinori MUSHA.
 
 2010-02-01  John Barnette  <jbarnette@rubygems.org>
 

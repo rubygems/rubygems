@@ -2,12 +2,14 @@
 
 2010-02-06  Eric Hodel  <drbrain@segment7.net>
 
-	* test/test_gem_commands_specification_command.rb: Don't enforce YAML
+	* test/test_gem_commands_specification_command.rb:  Don't enforce YAML
 	  format.  Patch #27791 by Aaron Patterson.
-	* lib/rubygems/version.rb: Allow captial letters in prerelease
+	* lib/rubygems/version.rb:  Allow captial letters in prerelease
 	  versions.
-	* lib/rubygems/config_file.rb: Explain format of ~/.gemrc.  Bug #27698
-	  by J Smith.
+	* lib/rubygems/config_file.rb:  Explain format of ~/.gemrc.  Bug
+	  #27698 by J Smith.
+	* lib/rubygems/gem_path_searcher.rb:  Handle nil require_paths.
+	  Patch #27334 by Roger Pack.
 
 2010-02-01  John Barnette  <jbarnette@rubygems.org>
 

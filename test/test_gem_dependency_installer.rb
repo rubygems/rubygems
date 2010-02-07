@@ -576,6 +576,19 @@ class TestGemDependencyInstaller < RubyGemTestCase
                  local.last, 'local path'
   end
 
+  def test_find_gems_with_sources_prerelease
+    installer = Gem::DependencyInstaller.new
+    pre_installer = Gem::DependencyInstaller.new(:prerelease => true)
+    dependency = Gem::Dependency.new('a', Gem::Requirement.default)
+
+    releases = installer.find_gems_with_sources(dependency).map{ |gems, *| gems }
+    prereleases = pre_installer.find_gems_with_sources(dependency).map{ |gems, *| gems }
+
+    assert releases.select{ |s| s.name == 'a' and s.version.to_s == '1' }.first
+    assert releases.select{ |s| s.name == 'a' and s.version.to_s == '1.a' }.empty?
+    assert_equal [@a1_pre], prereleases
+  end
+
   def test_gather_dependencies
     inst = Gem::DependencyInstaller.new
     inst.find_spec_by_name_and_version 'b'
@@ -632,16 +645,5 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal %w[d-1 e-1], inst.gems_to_install.map { |s| s.full_name }
   end
 
-  def test_prerelease_uses_pre_index
-    installer = Gem::DependencyInstaller.new
-    pre_installer = Gem::DependencyInstaller.new(:prerelease => true)
-    dependency = Gem::Dependency.new('a', Gem::Requirement.default)
-
-    releases = installer.find_gems_with_sources(dependency).map{ |gems, *| gems }
-    prereleases = pre_installer.find_gems_with_sources(dependency).map{ |gems, *| gems }
-
-    assert releases.select{ |s| s.name == 'a' and s.version.to_s == '1' }.first
-    assert releases.select{ |s| s.name == 'a' and s.version.to_s == '1.a' }.empty?
-    assert_equal [@a1_pre], prereleases
-  end
 end
+

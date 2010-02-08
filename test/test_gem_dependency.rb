@@ -109,7 +109,15 @@ class TestGemDependency < MiniTest::Unit::TestCase
 
     refute d.prerelease?
 
+    d.prerelease = true
+
+    assert d.prerelease?
+
     d = dep "pkg", "= 1.a"
+
+    assert d.prerelease?
+
+    d.prerelease = false
 
     assert d.prerelease?
 

@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2010-02-07  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/dependency_installer.rb:  Allow prerelease gems to
+	  depend on non-prerelease gems.
+
 2010-02-06  Eric Hodel  <drbrain@segment7.net>
 
 	* test/test_gem_commands_specification_command.rb:  Don't enforce YAML

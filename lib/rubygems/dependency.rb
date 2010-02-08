@@ -22,6 +22,11 @@ class Gem::Dependency
   attr_accessor :name
 
   ##
+  # Allows you to force this dependency to be a prerelease.
+
+  attr_writer :prerelease
+
+  ##
   # Dependency type.
 
   attr_reader :type
@@ -43,6 +48,7 @@ class Gem::Dependency
     @name        = name
     @requirement = Gem::Requirement.create requirements
     @type        = type
+    @prerelease  = false
 
     # This is for Marshal backwards compatability. See the comments in
     # +requirement+ for the dirty details.
@@ -70,7 +76,7 @@ class Gem::Dependency
   # Does this dependency require a prerelease?
 
   def prerelease?
-    requirement.prerelease?
+    @prerelease || requirement.prerelease?
   end
 
   def pretty_print(q) # :nodoc:

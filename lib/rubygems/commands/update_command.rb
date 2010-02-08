@@ -28,8 +28,8 @@ class Gem::Commands::UpdateCommand < Gem::Command
     end
 
     add_local_remote_options
-
     add_platform_option
+    add_prerelease_option "as update targets"
   end
 
   def arguments # :nodoc:

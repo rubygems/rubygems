@@ -3,6 +3,7 @@
 2010-02-08  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/dependency_command.rb:  Support --prerelease.
+	* lib/rubygems/commands/fetch_command.rb:  Support --prerelease.
 
 2010-02-07  Eric Hodel  <drbrain@segment7.net>
 

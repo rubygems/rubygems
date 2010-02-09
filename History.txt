@@ -1,4 +1,6 @@
-﻿New features:
+﻿=== 1.3.6 / 2010-02-??
+
+New features:
 
 * `gem` commands
   * Added `gem push` and `gem owner` for interacting with modern/Gemcutter

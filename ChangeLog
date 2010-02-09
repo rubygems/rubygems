@@ -6,6 +6,7 @@
 	* lib/rubygems/commands/fetch_command.rb:  Support --prerelease.
 	* lib/rubygems/format.rb:  Don't crash on empty files.  Bug #27292 by
 	  Ian Ragsdale.
+	* lib/rubygems/server.rb:  Fix markup.  Bug #27045 by Eric Young.
 
 2010-02-07  Eric Hodel  <drbrain@segment7.net>
 

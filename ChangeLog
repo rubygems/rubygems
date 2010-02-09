@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2010-02-09  Eric Hodel  <drbrain@segment7.net>
+
+	* bin/update_rubygems:  Use system, exec more correctly, remove
+	  useless puts.
+
 2010-02-08  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/dependency_command.rb:  Support --prerelease.

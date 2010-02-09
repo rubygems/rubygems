@@ -23,9 +23,9 @@ Bug fixes:
   * Development dependencies are ignored unless explicitly needed.  Bug #27608
     by Roger Pack.
 * `gem` commands
-  * `gem which` fails if no paths were found.  Adapted patch #27681 by Caio
-    Chassot.
-  * `gem server` had invalid markup.  Bug #27045 by Eric Young.
+  * `gem which` now fails if no paths were found.  Adapted patch #27681 by
+    Caio Chassot.
+  * `gem server` no longer has invalid markup.  Bug #27045 by Eric Young.
 * Gem::Format no longer crashes on empty files.  Bug #27292 by Ian Ragsdale.
 * Gem::GemPathSearcher handles nil require_paths. Patch #27334 by Roger Pack.
 * Gem::RemoteFetcher no longer copies the file if it is where we want it.

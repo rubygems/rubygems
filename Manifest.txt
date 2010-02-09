@@ -116,7 +116,6 @@ test/private_key.pem
 test/public_cert.pem
 test/rubygems_plugin.rb
 test/simple_gem.rb
-test/support/shortcuts.rb
 test/test_config.rb
 test/test_gem.rb
 test/test_gem_builder.rb

@@ -39,9 +39,9 @@ class Gem::Server
   SEARCH = <<-SEARCH
       <form class="headerSearch" name="headerSearchForm" method="get" action="/rdoc">
         <div id="search" style="float:right">
-          <span>Filter/Search</span>
-          <input id="q" type="text" style="width:10em" name="q"/>
-          <button type="submit" style="display:none" />
+          <label for="q">Filter/Search</label>
+          <input id="q" type="text" style="width:10em" name="q">
+          <button type="submit" style="display:none"></button>
         </div>
       </form>
   SEARCH
@@ -513,7 +513,6 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       begin
         @server.listen address, @port
         @server.listeners[listeners..-1].each do |listener|
-          p listener.addr
           host, port = listener.addr.values_at 2, 1
           host = "[#{host}]" if host =~ /:/ # we don't reverse lookup
           say "Server started at http://#{host}:#{port}"

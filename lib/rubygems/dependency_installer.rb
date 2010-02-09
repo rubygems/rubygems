@@ -38,7 +38,7 @@ class Gem::DependencyInstaller
   # :format_executable:: See Gem::Installer#initialize.
   # :ignore_dependencies:: Don't install any dependencies.
   # :install_dir:: See Gem::Installer#install.
-  # :prerelease:: Allow prerelease versions
+  # :prerelease:: Allow prerelease versions.  See #install.
   # :security_policy:: See Gem::Installer::new and Gem::Security.
   # :user_install:: See Gem::Installer.new
   # :wrappers:: See Gem::Installer::new
@@ -93,13 +93,14 @@ class Gem::DependencyInstaller
           req
         end
 
-        all = !@prerelease and
+        all = !dep.prerelease? and
               # we only need latest if there's one requirement and it is
               # guaranteed to match the newest specs
               (requirements.length > 1 or
                 (requirements.first != ">=" and requirements.first != ">"))
 
-        found = Gem::SpecFetcher.fetcher.fetch dep, all, true, @prerelease
+        found = Gem::SpecFetcher.fetcher.fetch dep, all, true, dep.prerelease?
+
         gems_and_sources.push(*found)
 
       rescue Gem::RemoteFetcher::FetchError => e
@@ -167,7 +168,9 @@ class Gem::DependencyInstaller
   # +version+.  Returns an Array of specs and sources required for
   # installation of the gem.
 
-  def find_spec_by_name_and_version gem_name, version = Gem::Requirement.default
+  def find_spec_by_name_and_version(gem_name,
+                                    version = Gem::Requirement.default,
+                                    prerelease = false)
     spec_and_source = nil
 
     glob = if File::ALT_SEPARATOR then
@@ -192,6 +195,7 @@ class Gem::DependencyInstaller
 
     if spec_and_source.nil? then
       dep = Gem::Dependency.new gem_name, version
+      dep.prerelease = true if prerelease
       spec_and_sources = find_gems_with_sources(dep).reverse
 
       spec_and_source = spec_and_sources.find { |spec, source|
@@ -208,13 +212,24 @@ class Gem::DependencyInstaller
   end
 
   ##
-  # Installs the gem and all its dependencies.  Returns an Array of installed
-  # gems specifications.
+  # Installs the gem +dep_or_name+ and all its dependencies.  Returns an Array
+  # of installed gem specifications.
+  #
+  # If the +:prerelease+ option is set and there is a prerelease for
+  # +dep_or_name+ the prerelease version will be installed.
+  #
+  # Unless explicitly specified as a prerelease dependency, prerelease gems
+  # that +dep_or_name+ depend on will not be installed.
+  #
+  # If c-1.a depends on b-1 and a-1.a and there is a gem b-1.a available then
+  # c-1.a, b-1 and a-1.a will be installed.  b-1.a will need to be installed
+  # separately.
 
   def install dep_or_name, version = Gem::Requirement.default
     if String === dep_or_name then
-      find_spec_by_name_and_version dep_or_name, version
+      find_spec_by_name_and_version dep_or_name, version, @prerelease
     else
+      dep_or_name.prerelease = @prerelease
       @specs_and_sources = [find_gems_with_sources(dep_or_name).last]
     end
 

@@ -30,5 +30,27 @@ class TestGemCommandsFetchCommand < RubyGemTestCase
            "#{@a2.full_name} fetched"
   end
 
+  def test_execute_prerelease
+    util_setup_fake_fetcher true
+    util_setup_spec_fetcher @a2, @a2_pre
+
+    @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
+      File.read(File.join(@gemhome, 'cache', @a2.file_name))
+    @fetcher.data["#{@gem_repo}gems/#{@a2_pre.file_name}"] =
+      File.read(File.join(@gemhome, 'cache', @a2_pre.file_name))
+
+    @cmd.options[:args] = [@a2.name]
+    @cmd.options[:prerelease] = true
+
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        @cmd.execute
+      end
+    end
+
+    assert File.exist?(File.join(@tempdir, @a2_pre.file_name)),
+           "#{@a2_pre.full_name} not fetched"
+  end
+
 end
 

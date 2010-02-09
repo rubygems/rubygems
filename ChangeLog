@@ -1,5 +1,18 @@
 # -*- coding: utf-8 -*-
 
+2010-02-08  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/dependency_command.rb:  Support --prerelease.
+	* lib/rubygems/commands/fetch_command.rb:  Support --prerelease.
+	* lib/rubygems/format.rb:  Don't crash on empty files.  Bug #27292 by
+	  Ian Ragsdale.
+	* lib/rubygems/server.rb:  Fix markup.  Bug #27045 by Eric Young.
+
+2010-02-07  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/dependency_installer.rb:  Allow prerelease gems to
+	  depend on non-prerelease gems.
+
 2010-02-06  Eric Hodel  <drbrain@segment7.net>
 
 	* test/test_gem_commands_specification_command.rb:  Don't enforce YAML

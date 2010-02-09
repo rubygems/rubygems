@@ -1,9 +1,7 @@
-require "minitest/autorun"
-require "support/shortcuts"
+require File.expand_path('../gemutilities', __FILE__)
 require "rubygems/version"
 
-class TestGemVersion < MiniTest::Unit::TestCase
-  include Support::Shortcuts
+class TestGemVersion < RubyGemTestCase
 
   def test_bump
     assert_bumped_version_equal "5.3", "5.2.4"

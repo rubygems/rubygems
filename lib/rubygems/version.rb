@@ -137,7 +137,7 @@
 #   "~> 3.5"      3.5   ... 4.0
 #   "~> 3.5.0"    3.5.0 ... 3.6
 
-class Version
+class Gem::Version
   include Comparable
 
   VERSION_PATTERN = '[0-9]+(\.[0-9a-zA-Z]+)*' # :nodoc:

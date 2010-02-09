@@ -4,6 +4,8 @@
 
 	* lib/rubygems/commands/dependency_command.rb:  Support --prerelease.
 	* lib/rubygems/commands/fetch_command.rb:  Support --prerelease.
+	* lib/rubygems/format.rb:  Don't crash on empty files.  Bug #27292 by
+	  Ian Ragsdale.
 
 2010-02-07  Eric Hodel  <drbrain@segment7.net>
 

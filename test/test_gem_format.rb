@@ -28,6 +28,15 @@ class TestGemFormat < RubyGemTestCase
     end
   end
 
+  def test_class_from_file_by_path_empty
+    util_make_gems
+
+    empty_gem = File.join @tempdir, 'empty.gem'
+    FileUtils.touch empty_gem
+
+    assert_nil Gem::Format.from_file_by_path(empty_gem)
+  end
+
   def test_class_from_file_by_path_nonexistent
     assert_raises Gem::Exception do
       Gem::Format.from_file_by_path '/nonexistent'

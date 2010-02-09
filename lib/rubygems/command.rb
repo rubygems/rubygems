@@ -507,12 +507,6 @@ basic help message containing pointers to more information.
 end
 
 ##
-# Required for Gemcutter gems so superclass mismatches don't happen
-
-class Gem::AbstractCommand < Gem::Command
-end
-
-##
 # This is where Commands will be placed in the namespace
 
 module Gem::Commands

@@ -10,8 +10,6 @@ New features:
   * `gem server` now supports --bind.  Patch #27357 by Bruno Michel.
   * `gem rdoc` no longer overwrites built documentation.  Use --overwrite
     force rebuilding.  Patch #25982 by Akinori MUSHA.
-  * --source is now additive, not exclusive. If exclusive sources are desired,
-    use --clear-sources first.
 * Captial letters are now allowed in prerelease versions.
 
 Bug fixes:

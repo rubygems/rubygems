@@ -1,9 +1,8 @@
 require "rubygems/version"
 
 ##
-# A Requirement is a set of one or more version restrictions. It
-# supports a few (<tt>=, !=, >, <, >=, <=, ~></tt>) different
-# restriction operators.
+# A Requirement is a set of one or more version restrictions. It supports a
+# few (<tt>=, !=, >, <, >=, <=, ~></tt>) different restriction operators.
 
 class Gem::Requirement
   include Comparable
@@ -139,8 +138,11 @@ class Gem::Requirement
   end
 end
 
-# Gem::Version::Requirement is used in a lot of old YAML specs. It's
-# aliased here for backwards compatibility. I'd like to remove this,
-# maybe in RubyGems 2.0.
+# :stopdoc:
+# Gem::Version::Requirement is used in a lot of old YAML specs. It's aliased
+# here for backwards compatibility. I'd like to remove this, maybe in RubyGems
+# 2.0.
 
 ::Gem::Version::Requirement = ::Gem::Requirement
+# :startdoc:
+

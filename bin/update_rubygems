@@ -8,19 +8,19 @@
 require 'rubygems'
 
 if ARGV.include? '-h' or ARGV.include? '--help' then
-  puts "rubygems_update [options]"
-  puts
-  puts "This will install the latest version of RubyGems."
-  puts
-  puts "\t--version=X.Y\tUpdate rubygems from the X.Y version."
+  $stderr.puts "rubygems_update [options]"
+  $stderr.puts
+  $stderr.puts "This will install the latest version of RubyGems."
+  $stderr.puts
+  $stderr.puts "\t--version=X.Y\tUpdate rubygems from the X.Y version."
   exit
 end
 
 unless ARGV.grep(/--version=([\d\.]*)/).empty? then
-  exec "#{Gem.ruby} -S #{$PROGRAM_NAME} _#{$1}_"
+  exec Gem.ruby, '-S', $PROGRAM_NAME, "_#{$1}_"
 end
 
-update_dir = $LOAD_PATH.find { |fn| fn =~ /rubygems-update/ }
+update_dir = $LOAD_PATH.find { |dir| dir =~ /rubygems-update/ }
 
 if update_dir.nil?
   puts "Error: Cannot find RubyGems Update Path!"
@@ -31,8 +31,6 @@ if update_dir.nil?
 else
   update_dir = File.dirname(update_dir)
   Dir.chdir update_dir
-  update_dir =~ /([0-9.]*)$/
-  RGVERSION = $1
-  puts "Installing RubyGems #{RGVERSION}"
-  system "#{Gem.ruby} setup.rb #{ARGV.join(' ')}"
+  system(Gem.ruby, 'setup.rb', *ARGV)
 end
+

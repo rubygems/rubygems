@@ -363,7 +363,8 @@ abort "#{deprecation_message}"
   def uninstall_old_gemcutter
     require 'rubygems/uninstaller'
 
-    ui = Gem::Uninstaller.new 'gemcutter', :all => true, :ignore => true
+    ui = Gem::Uninstaller.new('gemcutter', :all => true, :ignore => true,
+                              :version => '< 0.4')
     ui.uninstall
   rescue Gem::InstallError
   end

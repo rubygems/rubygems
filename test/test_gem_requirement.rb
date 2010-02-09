@@ -1,10 +1,7 @@
-require "rubygems"
-require "minitest/autorun"
-require "support/shortcuts"
+require File.expand_path('../gemutilities', __FILE__)
 require "rubygems/requirement"
 
-class TestGemRequirement < MiniTest::Unit::TestCase
-  include Support::Shortcuts
+class TestGemRequirement < RubyGemTestCase
 
   def test_equals2
     r = req "= 1.2"

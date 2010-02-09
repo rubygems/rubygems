@@ -1,10 +1,7 @@
-require 'rubygems'
-require 'minitest/autorun'
-require 'support/shortcuts'
+require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/dependency'
 
-class TestGemDependency < MiniTest::Unit::TestCase
-  include Support::Shortcuts
+class TestGemDependency < RubyGemTestCase
 
   def test_initialize
     d = dep "pkg", "> 1.0"

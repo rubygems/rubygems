@@ -21,7 +21,7 @@ def format_text(text, wrap, indent=0)
   result.join("\n").gsub(/^/, " " * indent)
 end
 
-version = ARGV.shift || Gem::RubyGemsVersion
+version = ARGV.shift || Gem::VERSION
 
 entries = Hash.new { |h,file| h[file] = [] }
 entry = []

@@ -75,7 +75,7 @@ task pkg_dir_path do
   mv pkg_dir_path, "pkg/rubygems-#{hoe.version}"
 end
 
-task :package => [pkg_dir_path, :sanity_check] do
+task :package => [pkg_dir_path] do
   Dir.chdir 'pkg' do
     sh "tar -czf rubygems-#{hoe.version}.tgz rubygems-#{hoe.version}"
     sh "zip -q -r rubygems-#{hoe.version}.zip rubygems-#{hoe.version}"

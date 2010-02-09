@@ -116,6 +116,8 @@ By default, this RubyGems will install gem as:
 
     say "RubyGems #{Gem::VERSION} installed"
 
+    uninstall_old_gemcutter
+
     install_rdoc
 
     say
@@ -356,6 +358,13 @@ abort "#{deprecation_message}"
 
     r = RDoc::RDoc.new
     r.document args
+  end
+
+  def uninstall_old_gemcutter
+    require 'rubygems/uninstaller'
+
+    ui = Gem::Uninstaller.new 'gemcutter', :all => true, :ignore => true
+    ui.uninstall
   end
 
 end

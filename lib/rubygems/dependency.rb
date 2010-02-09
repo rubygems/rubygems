@@ -131,7 +131,7 @@ class Gem::Dependency
 
   def version_requirements # :nodoc:
     warn "Gem::Dependency#version_requirements is deprecated, " +
-      " and will be removed on or after April 2010. " +
+      " and will be removed on or after August 2010. " +
       " Use Gem::Dependency#requirement: #{caller.first}"
 
     requirement

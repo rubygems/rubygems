@@ -38,6 +38,7 @@ hoe = Hoe.spec 'rubygems-update' do
   spec_extras['rdoc_options'] = proc do |rdoc_options|
     rdoc_options << "--title=RubyGems #{self.version} Documentation"
   end
+  spec_extras['require_paths'] = %w[hide_lib_for_update]
 end
 
 desc "Run just the functional tests"

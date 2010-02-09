@@ -93,7 +93,7 @@ class Gem::DependencyInstaller
           req
         end
 
-        all = !dep.prerelease? and
+        all = !dep.prerelease? &&
               # we only need latest if there's one requirement and it is
               # guaranteed to match the newest specs
               (requirements.length > 1 or

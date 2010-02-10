@@ -24,6 +24,8 @@ Bug fixes:
   * `gem which` now fails if no paths were found.  Adapted patch #27681 by
     Caio Chassot.
   * `gem server` no longer has invalid markup.  Bug #27045 by Eric Young.
+  * `gem list` and friends show both prerelease and regular gems when
+    --prerelease --all is given
 * Gem::Format no longer crashes on empty files.  Bug #27292 by Ian Ragsdale.
 * Gem::GemPathSearcher handles nil require_paths. Patch #27334 by Roger Pack.
 * Gem::RemoteFetcher no longer copies the file if it is where we want it.

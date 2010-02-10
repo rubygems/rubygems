@@ -3,6 +3,17 @@ require 'rubygems/dependency'
 
 class TestGemDependency < RubyGemTestCase
 
+  def test_subclass
+    sc = Class.new Gem::Dependency
+    def sc.requirement() bogus; end
+
+    out, err = capture_io do
+      assert_equal Gem::Requirement.default, sc.new('a').version_requirement
+    end
+
+    assert_match %r%deprecated%, err
+  end
+
   def test_initialize
     d = dep "pkg", "> 1.0"
 

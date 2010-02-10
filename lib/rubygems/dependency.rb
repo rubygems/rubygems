@@ -121,6 +121,12 @@ class Gem::Dependency
     @requirement = @version_requirements if defined?(@version_requirements)
   end
 
+  ##
+  # Rails subclasses Gem::Dependency and uses this method, so we'll hack
+  # around it.
+
+  alias __requirement requirement # :nodoc:
+
   def requirements_list
     requirement.as_list
   end
@@ -130,11 +136,11 @@ class Gem::Dependency
   end
 
   def version_requirements # :nodoc:
-    warn "Gem::Dependency#version_requirements is deprecated, " +
-      " and will be removed on or after August 2010. " +
-      " Use Gem::Dependency#requirement: #{caller.first}"
+    warn "Gem::Dependency#version_requirements is deprecated" \
+         " and will be removed on or after August 2010. " \
+         " Use Gem::Dependency#requirement: #{caller.first}"
 
-    requirement
+    __requirement
   end
 
   alias_method :version_requirement, :version_requirements

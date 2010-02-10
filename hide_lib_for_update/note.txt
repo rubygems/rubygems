@@ -1,0 +1,5 @@
+This directory exists to prevent rubygems-update from being used as real code.
+
+If you haven't, you probably want to run `update_rubygems`.
+
+You can gem uninstall rubygems-update after doing that.

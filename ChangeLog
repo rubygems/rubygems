@@ -4,6 +4,8 @@
 
 	* bin/update_rubygems:  Use system, exec more correctly, remove
 	  useless puts.
+	* lib/rubygems/commands/query_command.rb:  List every version when
+	  --prerelease --all is given.
 
 2010-02-08  Eric Hodel  <drbrain@segment7.net>
 

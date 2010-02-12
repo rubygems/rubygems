@@ -17,8 +17,9 @@ hoe = Hoe.spec 'rubygems-update' do
   self.need_zip       = false
   self.need_tar       = false
 
-  spec_extras[:required_ruby_version] = Gem::Requirement.new '> 1.8.3'
-  spec_extras[:executables]           = ['update_rubygems']
+  spec_extras[:required_rubygems_version] = Gem::Requirement.default
+  spec_extras[:required_ruby_version]     = Gem::Requirement.new '> 1.8.3'
+  spec_extras[:executables]               = ['update_rubygems']
 
   clean_globs.push('**/debug.log',
                    '*.out',

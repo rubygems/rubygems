@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2010-02-11  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems.rb:  http://rubygems.org is now the default source.
+	* lib/rubygems/dependency.rb:  Only warn once about
+	  #version_requirement
+
 2010-02-09  Eric Hodel  <drbrain@segment7.net>
 
 	* bin/update_rubygems:  Use system, exec more correctly, remove

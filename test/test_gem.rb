@@ -181,7 +181,7 @@ class TestGem < RubyGemTestCase
   end
 
   def test_self_default_sources
-    assert_equal %w[http://gems.rubyforge.org/], Gem.default_sources
+    assert_equal %w[http://rubygems.org/], Gem.default_sources
   end
 
   def test_self_dir

@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2010-02-12  Eric Hodel  <drbrain@segment7.net>
+
+	* Rakefile:  RubyGems doesn't depend on previous RubyGems.
+
 2010-02-11  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb:  http://rubygems.org is now the default source.

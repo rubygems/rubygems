@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2010-02-15  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/config_file.rb:  Fix use of ConfigFile#api_key= vs
+	  #rubygems_api_key=.  Patch by Nick Quaranto.
+
 2010-02-12  Eric Hodel  <drbrain@segment7.net>
 
 	* Rakefile:  RubyGems doesn't depend on previous RubyGems.

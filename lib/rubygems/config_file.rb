@@ -115,7 +115,7 @@ class Gem::ConfigFile
   ##
   # API key for RubyGems.org
 
-  attr_accessor :rubygems_api_key
+  attr_reader :rubygems_api_key
 
   ##
   # Create the config file object.  +args+ is the list of arguments
@@ -199,7 +199,7 @@ class Gem::ConfigFile
     @rubygems_api_key = api_key_hash[:rubygems_api_key] if api_key_hash.key? :rubygems_api_key
   end
 
-  def api_key=(api_key)
+  def rubygems_api_key=(api_key)
     config = load_file(credentials_path).merge(:rubygems_api_key => api_key)
 
     dirname = File.dirname(credentials_path)

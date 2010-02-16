@@ -19,7 +19,7 @@ module Gem::GemcutterUtilities
 
     with_response response do |resp|
       say "Signed in."
-      Gem.configuration.api_key = resp.body
+      Gem.configuration.rubygems_api_key = resp.body
     end
   end
 

@@ -75,6 +75,8 @@ class TestGemGemcutterUtilities < RubyGemTestCase
   end
 
   def util_sign_in response, host = nil
+    skip 'Always uses $stdin on windows' if Gem.win_platform?
+
     email    = 'you@example.com'
     password = 'secret'
 

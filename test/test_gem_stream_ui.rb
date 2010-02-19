@@ -47,6 +47,8 @@ class TestGemStreamUI < RubyGemTestCase
   end
 
   def test_ask_for_password
+    skip 'Always uses $stdin on windows' if Gem.win_platform?
+
     timeout(1) do
       expected_answer = "Arthur, King of the Britons"
       @in.string = "#{expected_answer}\n"

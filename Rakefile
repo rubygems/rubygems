@@ -67,10 +67,7 @@ end
 task :release => [:clobber, :sanity_check, :test_functional,
                   :test, :package, :tag]
 
-task :release_to_rubyforge do
-  files = Dir["rubygems-update*.gem"]
-  rf.add_file rubyforge_name, 'rubygems', version, files.first
-end
+Rake::Task[:release_to_rubyforge].clear
 
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
 task pkg_dir_path do

@@ -762,7 +762,11 @@ load Gem.bin_path('a', 'my_exec', version)
     @installer.env_shebang = true
 
     shebang = @installer.shebang 'my_exec'
-    assert_equal "#!/usr/bin/env #{Gem::ConfigMap[:ruby_install_name]}", shebang
+
+    env_shebang = "/usr/bin/env" unless Gem.win_platform?
+
+    assert_equal("#!#{env_shebang} #{Gem::ConfigMap[:ruby_install_name]}",
+                 shebang)
   end
 
   def test_shebang_nested

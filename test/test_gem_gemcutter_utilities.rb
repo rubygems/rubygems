@@ -66,6 +66,8 @@ class TestGemGemcutterUtilities < RubyGemTestCase
   end
 
   def test_sign_in_with_bad_credentials
+    skip 'Always uses $stdin on windows' if Gem.win_platform?
+
     assert_raises MockGemUi::TermError do
       util_sign_in ['Access Denied.', 403, 'Forbidden']
     end

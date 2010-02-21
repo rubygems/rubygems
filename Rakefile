@@ -67,10 +67,7 @@ end
 task :release => [:clobber, :sanity_check, :test_functional,
                   :test, :package, :tag]
 
-task :release_to_rubyforge do
-  files = Dir["rubygems-update*.gem"]
-  rf.add_file rubyforge_name, name, version, files.first
-end
+Rake::Task[:release_to_rubyforge].clear
 
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
 task pkg_dir_path do
@@ -89,7 +86,7 @@ task :sanity_check do
 end
 
 task :tag => [:sanity_check] do
-  reltag = "REL_#{PKG_VERSION.gsub(/\./, '_')}"
+  reltag = "REL_#{Gem::VERSION.gsub(/\./, '_')}"
   svn_url = "svn+ssh://rubyforge.org/var/svn/rubygems"
   sh %{svn copy #{svn_url}/trunk #{svn_url}/tags/#{reltag}}
 end

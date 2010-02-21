@@ -86,7 +86,7 @@ task :sanity_check do
 end
 
 task :tag => [:sanity_check] do
-  reltag = "REL_#{PKG_VERSION.gsub(/\./, '_')}"
+  reltag = "REL_#{Gem::VERSION.gsub(/\./, '_')}"
   svn_url = "svn+ssh://rubyforge.org/var/svn/rubygems"
   sh %{svn copy #{svn_url}/trunk #{svn_url}/tags/#{reltag}}
 end

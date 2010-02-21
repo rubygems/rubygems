@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2010-02-20  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems.rb:  1.3.6.
+	* test/*:  Windows test fixes
+	* lib/rubygems/remote_fetcher.rb:  Fix same file detection on windows.
+
 2010-02-15  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/config_file.rb:  Fix use of ConfigFile#api_key= vs

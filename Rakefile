@@ -120,6 +120,45 @@ file 'util/gem_prelude.rb' =>
   end
 end
 
+# Git mirror support. You probably don't need to care about
+# these. Don't run 'em unless you have a John-style git-svn setup
+# pointed at a valid, pushable Git remote called "origin".
+
+namespace :git do
+  namespace :svn do
+    task(:fetch) { sh "git svn fetch" }
+  end
+
+  task :sync => %w(svn:fetch sync:branches sync:tags)
+
+  namespace :sync do
+    task :branches do
+      {
+        "trunk" => "master",
+      }.each do |svn, git|
+        sh "git push origin svn/#{svn}:#{git}"
+      end
+    end
+
+    task :tags do
+      old    = `git tag`
+      tags   = `git for-each-ref refs/remotes/svn/tags`.split "\n"
+      tagged = false
+
+      tags.each do |tag|
+        next unless /(REL_.*)$/ =~ tag
+        name, sha, _, sym = $1, *tag.split(/\s/)
+
+        next if /#{name}/ =~ old
+        sh "git tag -f '#{name}' #{sha}"
+        tagged = true
+      end
+
+      sh "git push --tags" if tagged
+    end
+  end
+end
+
 # These tasks expect to have the following directory structure:
 #
 #   git/git.rubini.us/code # Rubinius git HEAD checkout

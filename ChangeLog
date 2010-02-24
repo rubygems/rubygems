@@ -1,3 +1,8 @@
+2010-02-24  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/unpack_command.rb:  `gem unpack` now unpacks
+	  remote gems.
+
 # -*- coding: utf-8 -*-
 
 2010-02-23  Eric Hodel  <drbrain@segment7.net>

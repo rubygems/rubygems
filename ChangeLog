@@ -2,6 +2,8 @@
 
 2010-02-23  Eric Hodel  <drbrain@segment7.net>
 
+	* lib/rubygems/dependency.rb:  Support #version_requirements= with a
+	  warning.  Bug #27868 by Wei Jen Lu.
 	* lib/rubygems/installer.rb:  Fix `gem unpack`.  Bug #27872 by Timothy
 	  Jones.
 	* lib, test:  Import changes from ruby trunk.

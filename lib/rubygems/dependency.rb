@@ -69,9 +69,6 @@ class Gem::Dependency
   end
 
   ##
-  # What does this dependency require?
-
-  ##
   # A dependency's hash is the XOR of the hashes of +name+, +type+,
   # and +requirement+.
 
@@ -105,6 +102,9 @@ class Gem::Dependency
       q.pp type
     end
   end
+
+  ##
+  # What does this dependency require?
 
   def requirement
     return @requirement if defined?(@requirement) and @requirement
@@ -160,7 +160,16 @@ class Gem::Dependency
     __requirement
   end
 
-  alias_method :version_requirement, :version_requirements
+  alias version_requirement version_requirements # :nodoc:
+
+  def version_requirements= requirements # :nodoc:
+    warn "#{Gem.location_of_caller.join ':'}:Warning: " \
+         "Gem::Dependency#version_requirements= is deprecated " \
+         "and will be removed on or after August 2010.  " \
+         "Use Gem::Dependency.new."
+
+    @requirement = Gem::Requirement.create requirements
+  end
 
   def == other # :nodoc:
     Gem::Dependency === other &&

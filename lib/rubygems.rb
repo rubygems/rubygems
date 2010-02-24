@@ -129,6 +129,7 @@ module Gem
     :libdir            => RbConfig::CONFIG["libdir"],
     :ruby_install_name => RbConfig::CONFIG["ruby_install_name"],
     :ruby_version      => RbConfig::CONFIG["ruby_version"],
+    :rubylibprefix     => RbConfig::CONFIG["rubylibprefix"],
     :sitedir           => RbConfig::CONFIG["sitedir"],
     :sitelibdir        => RbConfig::CONFIG["sitelibdir"],
     :vendordir         => RbConfig::CONFIG["vendordir"] ,
@@ -699,14 +700,15 @@ module Gem
   # The directory prefix this RubyGems was installed at.
 
   def self.prefix
-    prefix = File.dirname File.expand_path(__FILE__)
+    dir = File.dirname File.expand_path(__FILE__)
+    prefix = File.dirname dir
 
-    if File.dirname(prefix) == File.expand_path(ConfigMap[:sitelibdir]) or
-       File.dirname(prefix) == File.expand_path(ConfigMap[:libdir]) or
-       'lib' != File.basename(prefix) then
+    if prefix == File.expand_path(ConfigMap[:sitelibdir]) or
+       prefix == File.expand_path(ConfigMap[:libdir]) or
+       'lib' != File.basename(dir) then
       nil
     else
-      File.dirname prefix
+      prefix
     end
   end
 
@@ -1023,6 +1025,8 @@ module Gem
 end
 
 module Kernel
+
+  undef gem if respond_to? :gem # defined in gem_prelude.rb on 1.9
 
   ##
   # Use Kernel#gem to activate a specific version of +gem_name+.

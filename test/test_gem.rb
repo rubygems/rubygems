@@ -258,6 +258,8 @@ class TestGem < RubyGemTestCase
 
   def test_self_find_files
     discover_path = File.join 'lib', 'foo', 'discover.rb'
+    cwd = File.expand_path '..', __FILE__
+    $LOAD_PATH.unshift cwd.dup
 
     foo1 = quick_gem 'foo', '1' do |s|
       s.files << discover_path
@@ -281,12 +283,14 @@ class TestGem < RubyGemTestCase
     Gem.searcher = nil
 
     expected = [
-      File.expand_path('foo/discover.rb', File.dirname(__FILE__)),
+      File.expand_path('../foo/discover.rb', __FILE__),
       File.join(foo2.full_gem_path, discover_path),
       File.join(foo1.full_gem_path, discover_path),
     ]
 
     assert_equal expected, Gem.find_files('foo/discover')
+  ensure
+    assert_equal cwd, $LOAD_PATH.shift
   end
 
   def test_self_latest_load_paths
@@ -437,7 +441,7 @@ class TestGem < RubyGemTestCase
   def test_self_refresh
     util_make_gems
 
-    a1_spec = File.join @gemhome, "specifications", @a1.spec_name 
+    a1_spec = File.join @gemhome, "specifications", @a1.spec_name
 
     FileUtils.mv a1_spec, @tempdir
 

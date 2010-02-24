@@ -184,7 +184,7 @@ class Gem::SpecFetcher
     cache = { :latest => @latest_specs,
       :prerelease => @prerelease_specs,
       :all => @specs }[type]
-    
+
     Gem.sources.each do |source_uri|
       source_uri = URI.parse source_uri
 

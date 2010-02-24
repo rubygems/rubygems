@@ -1,7 +1,8 @@
-#++
-# Copyright (C) 2004 Mauricio Julio Fern·ndez Pradier
-# See LICENSE.txt for additional licensing information.
+# -*- coding: utf-8 -*-
 #--
+# Copyright (C) 2004 Mauricio Julio Fern√°ndez Pradier
+# See LICENSE.txt for additional licensing information.
+#++
 
 ##
 # TarOutput is a wrapper to TarWriter that builds gem-format tar file.

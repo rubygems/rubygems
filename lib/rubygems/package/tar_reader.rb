@@ -1,7 +1,8 @@
-#++
-# Copyright (C) 2004 Mauricio Julio Fern·ndez Pradier
-# See LICENSE.txt for additional licensing information.
+# -*- coding: utf-8 -*-
 #--
+# Copyright (C) 2004 Mauricio Julio Fern√°ndez Pradier
+# See LICENSE.txt for additional licensing information.
+#++
 
 ##
 # TarReader reads tar files and allows iteration over their items

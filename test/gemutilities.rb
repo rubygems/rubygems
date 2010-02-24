@@ -71,6 +71,13 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
 
     Gem.ensure_gem_subdirectories @gemhome
 
+    @orig_ruby = if ruby = ENV['RUBY'] then
+                   Gem.class_eval { ruby, @ruby = @ruby, ruby }
+                   ruby
+                 end
+
+    Gem.ensure_gem_subdirectories @gemhome
+
     @orig_ENV_HOME = ENV['HOME']
     ENV['HOME'] = @userhome
     Gem.instance_variable_set :@user_home, nil
@@ -146,6 +153,8 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     ENV.delete 'GEM_PATH'
 
     Gem.clear_paths
+
+    Gem.class_eval { @ruby = ruby } if ruby = @orig_ruby
 
     if @orig_ENV_HOME then
       ENV['HOME'] = @orig_ENV_HOME

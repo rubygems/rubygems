@@ -334,7 +334,7 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
   end
 
   def test_refresh_bang
-    a1_spec = File.join @gemhome, "specifications", @a1.spec_name 
+    a1_spec = File.join @gemhome, "specifications", @a1.spec_name
 
     FileUtils.mv a1_spec, @tempdir
 

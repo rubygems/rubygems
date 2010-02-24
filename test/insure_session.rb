@@ -15,7 +15,7 @@ def install_session
     puts
     puts "with the appropriate admin privileges."
     puts "*****************************************************************"
-    puts 
+    puts
     exit
   end
   gem 'session'

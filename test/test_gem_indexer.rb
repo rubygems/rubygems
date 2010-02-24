@@ -2,7 +2,7 @@ require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/indexer'
 
 unless ''.respond_to? :to_xs then
-  warn "Gem::Indexer tests are being skipped.  Install builder gem."
+  warn "Gem::Indexer tests are being skipped.  Install builder gem." if $VERBOSE
 end
 
 class TestGemIndexer < RubyGemTestCase

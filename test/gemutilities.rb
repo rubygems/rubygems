@@ -10,7 +10,7 @@ end
 require 'fileutils'
 begin
   gem 'minitest', '>= 1.3.1'
-  require 'minitest/unit'
+  require 'minitest/autorun'
 rescue Gem::LoadError
   warn "Install minitest gem >= 1.3.1"
   raise
@@ -586,6 +586,4 @@ Also, a list:
   end
 
 end
-
-MiniTest::Unit.autorun
 

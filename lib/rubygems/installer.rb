@@ -133,7 +133,8 @@ class Gem::Installer
     end
 
     FileUtils.mkdir_p @gem_home
-    raise Gem::FilePermissionError, @gem_home unless File.writable? @gem_home
+    raise Gem::FilePermissionError, @gem_home unless
+      options[:unpack] or File.writable? @gem_home
 
     @spec = @format.spec
 

@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2010-02-23  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/installer.rb:  Fix `gem unpack`.  Bug #27872 by Timothy
+	  Jones.
+	* lib, test:  Import changes from ruby trunk.
+
 2010-02-20  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb:  1.3.6.

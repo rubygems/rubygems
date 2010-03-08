@@ -505,7 +505,7 @@ class Gem::Specification
     raise "NESTED Specification.load calls not allowed!" if @@gather
     @@gather = proc { |gs| gemspec = gs }
     data = File.read(filename)
-    eval(data)
+    eval(data, nil, filename)
     gemspec
   ensure
     @@gather = nil

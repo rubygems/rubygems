@@ -1228,6 +1228,20 @@ end
     assert_equal Gem::Version.new('1'), @a1.version
   end
 
+  def test_load_errors_contain_filename
+    specfile = Tempfile.new(self.class.name.downcase)
+    specfile.write "raise 'boom'"
+    specfile.close
+    begin
+      Gem::Specification.load(specfile.path)
+    rescue => e
+      name_rexp = Regexp.new(Regexp.escape(specfile.path))
+      assert e.backtrace.grep(name_rexp).any?
+    end
+  ensure
+    specfile.delete
+  end
+
   def util_setup_validate
     Dir.chdir @tempdir do
       FileUtils.mkdir_p File.join('ext', 'a')

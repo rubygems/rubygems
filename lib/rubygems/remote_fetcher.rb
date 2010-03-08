@@ -351,7 +351,9 @@ class Gem::RemoteFetcher
     # HACK work around EOFError bug in Net::HTTP
     # NOTE Errno::ECONNABORTED raised a lot on Windows, and make impossible
     # to install gems.
-    rescue EOFError, Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE
+    rescue EOFError, Timeout::Error,
+           Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE
+
       requests = @requests[connection.object_id]
       say "connection reset after #{requests} requests, retrying" if
         Gem.configuration.really_verbose

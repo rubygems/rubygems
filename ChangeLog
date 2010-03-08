@@ -1,3 +1,9 @@
+2010-03-08  James Tucker  <jftucker@gmail.com>
+
+	* lib/rubygems/remote_fetcher.rb: fetcher now retries on a read timeout.
+	* lib/rubygems/specification.rb: specifications loaded from file are now
+	  evaluated with their filename to aid debugging.
+
 2010-02-24  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/commands/unpack_command.rb:  `gem unpack` now unpacks

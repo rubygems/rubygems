@@ -1481,14 +1481,12 @@ class Gem::Specification
   end
 
   overwrite_accessor :files do
-    result = []
-    result.push(*@files) if defined?(@files)
-    result.push(*@test_files) if defined?(@test_files)
-    result.push(*(add_bindir(@executables)))
-    result.push(*@extra_rdoc_files) if defined?(@extra_rdoc_files)
-    result.push(*@extensions) if defined?(@extensions)
-    result.uniq.compact
+    # DO NOT CHANGE TO ||= ! This is not a normal accessor. (yes, it sucks)
+    @files = [@files,
+              @test_files,
+              add_bindir(@executables),
+              @extra_rdoc_files,
+              @extensions,
+             ].flatten.uniq.compact
   end
-
 end
-

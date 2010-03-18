@@ -473,6 +473,31 @@ end
     assert_equal expected, @a1.files.sort
   end
 
+  def test_files_append
+    @a1.files            = %w(files bin/common)
+    @a1.test_files       = %w(test_files bin/common)
+    @a1.executables      = %w(executables common)
+    @a1.extra_rdoc_files = %w(extra_rdoc_files bin/common)
+    @a1.extensions       = %w(extensions bin/common)
+
+    expected = %w[
+      bin/common
+      bin/executables
+      extensions
+      extra_rdoc_files
+      files
+      test_files
+    ]
+    assert_equal expected, @a1.files.sort
+
+    @a1.files << "generated_file.c"
+
+    expected << "generated_file.c"
+    expected.sort!
+
+    assert_equal expected, @a1.files.sort
+  end
+
   def test_files_duplicate
     @a2.files = %w[a b c d b]
     @a2.extra_rdoc_files = %w[x y z x]

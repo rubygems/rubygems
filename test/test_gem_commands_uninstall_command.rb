@@ -64,8 +64,10 @@ class TestGemCommandsUninstallCommand < GemInstallerTestCase
 
     util_setup_gem
 
-    use_ui @ui do
-      @installer.install
+    build_rake_in do
+      use_ui @ui do
+        @installer.install
+      end
     end
 
     @cmd.options[:args] = ["pre"]

@@ -2,8 +2,10 @@
 
 2010-03-25  Eric Hodel  <drbrain@segment7.net>
 
-	* lib/rubygems/builder.rb: now requires user_interaction.  Ruby
+	* lib/rubygems/builder.rb:  Now requires user_interaction.  Ruby
 	  Bug #1040 by Phillip Toland.
+	* lib/rubygems/installer.rb:  Make argument order match for
+	  generate_windows_script.  Ruby patch #825 by okkez.
 
 2010-03-08  James Tucker  <jftucker@gmail.com>
 

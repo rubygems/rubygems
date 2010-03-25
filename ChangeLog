@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+
+2010-03-25  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/builder.rb: now requires user_interaction.  Ruby
+	  Bug #1040 by Phillip Toland.
+
 2010-03-08  James Tucker  <jftucker@gmail.com>
 
 	* lib/rubygems/remote_fetcher.rb: fetcher now retries on a read timeout.
@@ -8,8 +15,6 @@
 
 	* lib/rubygems/commands/unpack_command.rb:  `gem unpack` now unpacks
 	  remote gems.
-
-# -*- coding: utf-8 -*-
 
 2010-02-23  Eric Hodel  <drbrain@segment7.net>
 

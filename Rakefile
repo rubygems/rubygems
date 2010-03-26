@@ -28,8 +28,7 @@ hoe = Hoe.spec 'rubygems-update' do
                    'html',
                    'logs',
                    'pkgs/sources/sources*.gem',
-                   'scripts/*.hieraki',
-                   'util/gem_prelude.rb')
+                   'scripts/*.hieraki')
 
   extra_dev_deps << ['builder', '~> 2.1']
   extra_dev_deps << ['hoe-seattlerb', '~> 1.2']
@@ -165,22 +164,22 @@ rubinius_dir = ENV['RUBINIUS_PATH'] || '../../../git/git.rubini.us/code'
 ruby_dir     = ENV['RUBY_PATH']     || '../../ruby/trunk'
 
 desc "Updates Ruby HEAD with the currently checked-out copy of RubyGems."
-task :update_ruby     => 'util/gem_prelude.rb' do
+task :update_ruby do
   rsync_with ruby_dir
 end
 
 desc "Updates Rubinius HEAD with the currently checked-out copy of RubyGems."
-task :update_rubinius => 'util/gem_prelude.rb' do
+task :update_rubinius do
   rsync_with rubinius_dir
 end
 
 desc "Diffs Ruby HEAD with the currently checked-out copy of RubyGems."
-task :diff_ruby       => 'util/gem_prelude.rb' do
+task :diff_ruby do
   diff_with ruby_dir
 end
 
 desc "Diffs Rubinius HEAD with the currently checked-out copy of RubyGems."
-task :diff_rubinius   => 'util/gem_prelude.rb' do
+task :diff_rubinius do
   diff_with rubinius_dir
 end
 

@@ -6,6 +6,8 @@
 	  Bug #1040 by Phillip Toland.
 	* lib/rubygems/installer.rb:  Make argument order match for
 	  generate_windows_script.  Ruby patch #825 by okkez.
+	* lib/rubygems/package_task.rb:  Depend on the package dir like the
+	  other package tasks.
 
 2010-03-08  James Tucker  <jftucker@gmail.com>
 

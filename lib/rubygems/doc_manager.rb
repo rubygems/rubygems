@@ -179,7 +179,10 @@ class Gem::DocManager
     r = RDoc::RDoc.new
 
     old_pwd = Dir.pwd
-    Dir.chdir(@spec.full_gem_path)
+    Dir.chdir @spec.full_gem_path
+
+    say "rdoc #{args.join ' '}" if Gem.configuration.really_verbose
+
     begin
       r.document args
     rescue Errno::EACCES => e

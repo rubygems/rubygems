@@ -197,9 +197,12 @@ class Gem::Dependency
     end
 
     pattern = name
-    pattern = /\A#{Regexp.escape pattern}\Z/ unless Regexp === pattern
 
-    return false unless pattern =~ other.name
+    if Regexp === pattern
+      return false unless pattern =~ other.name
+    else
+      return false unless pattern == other.name
+    end
 
     reqs = other.requirement.requirements
 

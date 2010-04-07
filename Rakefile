@@ -142,7 +142,7 @@ end
 
 def rsync_with dir
   rsync_options = "-avP --exclude '*svn*' --exclude '*swp' --exclude '*rbc'" +
-    "--exclude '*.rej' --exclude '*.orig' --exclude 'lib/rubygems/defaults/*'"
+    " --exclude '*.rej' --exclude '*.orig' --exclude 'lib/rubygems/defaults/*'"
   sh "rsync #{rsync_options} bin/gem             #{dir}/bin/gem"
   sh "rsync #{rsync_options} lib/                #{dir}/lib"
   sh "rsync #{rsync_options} test/               #{dir}/test/rubygems"

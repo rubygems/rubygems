@@ -122,7 +122,7 @@ class Gem::SpecFetcher
 
     list(all, prerelease).each do |source_uri, specs|
       found[source_uri] = specs.select do |spec_name, version, spec_platform|
-        dependency =~ Gem::Dependency.new(spec_name, version) and
+        dependency.match?(spec_name, version) and
           (not matching_platform or Gem::Platform.match(spec_platform))
       end
     end

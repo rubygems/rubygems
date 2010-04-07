@@ -214,5 +214,19 @@ class Gem::Dependency
     requirement.satisfied_by? version
   end
 
+  def match?(spec_name, spec_version)
+    pattern = name
+
+    if Regexp === pattern
+      return false unless pattern =~ spec_name
+    else
+      return false unless pattern == spec_name
+    end
+
+    return true if requirement.none?
+
+    requirement.satisfied_by? Gem::Version.new(spec_version)
+  end
+
 end
 

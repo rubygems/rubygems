@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2010-04-14  James Tucker <jftucker@gmail.com>
+
+	* lib/rubygems/command_manager.rb: Now catches errors caused by command
+	  loading. (Protect against broken plugins)
+
 2010-03-25  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/builder.rb:  Now requires user_interaction.  Ruby

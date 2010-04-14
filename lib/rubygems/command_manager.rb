@@ -167,7 +167,12 @@ class Gem::CommandManager
         raise
       else
         retried = true
-        require "rubygems/commands/#{command_name}_command"
+        begin
+          require "rubygems/commands/#{command_name}_command"
+        rescue Exception => ex
+          alert_error "Loading command: #{command_name} (#{ex.class})\n    #{ex.to_s}"
+          ui.errs.puts "\t#{ex.backtrace.join "\n\t"}" if Gem.configuration.backtrace
+        end
         retry
       end
     end.new

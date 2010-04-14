@@ -976,6 +976,28 @@ module Gem
     @@win_platform
   end
 
+  ##
+  # Find all 'rubygems_plugin' files and load them
+
+  def self.load_plugins
+    plugins = Gem.find_files 'rubygems_plugin'
+
+    plugins.each do |plugin|
+
+      # Skip older versions of the GemCutter plugin: Its commands are in
+      # RubyGems proper now.
+
+      next if plugin =~ /gemcutter-0\.[0-3]/
+
+      begin
+        load plugin
+      rescue ::Exception => e
+        details = "#{plugin.inspect}: #{e.message} (#{e.class})"
+        warn "Error loading RubyGems plugin #{details}"
+      end
+    end
+  end
+
   class << self
 
     ##
@@ -1104,19 +1126,5 @@ end
 
 Gem.clear_paths
 
-plugins = Gem.find_files 'rubygems_plugin'
-
-plugins.each do |plugin|
-
-  # Skip older versions of the GemCutter plugin: Its commands are in
-  # RubyGems proper now.
-
-  next if plugin =~ /gemcutter-0\.[0-3]/
-
-  begin
-    load plugin
-  rescue => e
-    warn "error loading #{plugin.inspect}: #{e.message} (#{e.class})"
-  end
-end
+Gem.load_plugins
 

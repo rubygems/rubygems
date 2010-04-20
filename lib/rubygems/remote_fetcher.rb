@@ -309,7 +309,7 @@ class Gem::RemoteFetcher
       request.basic_auth uri.user, uri.password
     end
 
-    ua = "RubyGems/#{Gem::RubyGemsVersion} #{Gem::Platform.local}"
+    ua = "RubyGems/#{Gem::VERSION} #{Gem::Platform.local}"
     ua << " Ruby/#{RUBY_VERSION} (#{RUBY_RELEASE_DATE}"
     ua << " patchlevel #{RUBY_PATCHLEVEL}" if defined? RUBY_PATCHLEVEL
     ua << ")"

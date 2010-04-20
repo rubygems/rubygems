@@ -630,16 +630,16 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     specs << {
       "authors" => "Chad Fowler, Rich Kilmer, Jim Weirich, Eric Hodel and others",
       "dependencies" => [],
-      "doc_path" => "/doc_root/rubygems-#{Gem::RubyGemsVersion}/rdoc/index.html",
+      "doc_path" => "/doc_root/rubygems-#{Gem::VERSION}/rdoc/index.html",
       "executables" => [{"executable" => 'gem', "is_last" => true}],
       "only_one_executable" => true,
-      "full_name" => "rubygems-#{Gem::RubyGemsVersion}",
+      "full_name" => "rubygems-#{Gem::VERSION}",
       "has_deps" => false,
       "homepage" => "http://docs.rubygems.org/",
       "name" => 'rubygems',
       "rdoc_installed" => true,
       "summary" => "RubyGems itself",
-      "version" => Gem::RubyGemsVersion,
+      "version" => Gem::VERSION,
     }
 
     specs = specs.sort_by { |spec| [spec["name"].downcase, spec["version"]] }

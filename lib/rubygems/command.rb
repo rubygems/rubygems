@@ -5,8 +5,6 @@
 #++
 
 require 'optparse'
-require 'net/http'
-require 'rubygems/remote_fetcher'
 require 'rubygems/user_interaction'
 
 ##
@@ -507,7 +505,6 @@ basic help message containing pointers to more information.
   # :startdoc:
 
 end
-
 
 ##
 # This is where Commands will be placed in the namespace

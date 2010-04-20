@@ -1,5 +1,36 @@
 # -*- coding: utf-8 -*-
 
+2010-04-19  Eric Hodel  <drbrain@segment7.net>
+
+	* lib, test: Stop using Gem::RubyGemsVersion
+
+2010-04-14  James Tucker <jftucker@gmail.com>
+
+	* lib/rubygems/command_manager.rb: Now catches errors caused by command
+	  loading. (Protect against broken plugins)
+	* lib/rubygems.rb: Introduce and use Gem.load_plugins, RubyGems now
+	  protects against exceptions being raised by plugins.
+
+2010-03-25  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/builder.rb:  Now requires user_interaction.  Ruby
+	  Bug #1040 by Phillip Toland.
+	* lib/rubygems/installer.rb:  Make argument order match for
+	  generate_windows_script.  Ruby patch #825 by okkez.
+	* lib/rubygems/package_task.rb:  Depend on the package dir like the
+	  other package tasks.
+
+2010-03-08  James Tucker  <jftucker@gmail.com>
+
+	* lib/rubygems/remote_fetcher.rb: fetcher now retries on a read timeout.
+	* lib/rubygems/specification.rb: specifications loaded from file are now
+	  evaluated with their filename to aid debugging.
+
+2010-02-24  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/unpack_command.rb:  `gem unpack` now unpacks
+	  remote gems.
+
 2010-02-23  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/dependency.rb:  Support #version_requirements= with a

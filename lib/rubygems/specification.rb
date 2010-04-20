@@ -677,31 +677,41 @@ class Gem::Specification
     }
   end
 
-  def to_yaml(opts = {}) # :nodoc:
+  def encode_with coder # :nodoc:
     mark_version
 
     attributes = @@attributes.map { |name,| name.to_s }.sort
     attributes = attributes - %w[name version platform]
 
+    coder.add 'name', @name
+    coder.add 'version', @version
+    platform = case @original_platform
+               when nil, '' then
+                 'ruby'
+               when String then
+                 @original_platform
+               else
+                 @original_platform.to_s
+               end
+    coder.add 'platform', platform
+
+    attributes.each do |name|
+      coder.add name, instance_variable_get("@#{name}")
+    end
+  end
+
+  def to_yaml(opts = {}) # :nodoc:
+    return super unless YAML.const_defined?(:ENGINE) && YAML::ENGINE.syck?
+
     yaml = YAML.quick_emit object_id, opts do |out|
       out.map taguri, to_yaml_style do |map|
-        map.add 'name', @name
-        map.add 'version', @version
-        platform = case @original_platform
-                   when nil, '' then
-                     'ruby'
-                   when String then
-                     @original_platform
-                   else
-                     @original_platform.to_s
-                   end
-        map.add 'platform', platform
-
-        attributes.each do |name|
-          map.add name, instance_variable_get("@#{name}")
-        end
+        encode_with map
       end
     end
+  end
+
+  def init_with coder # :nodoc:
+    yaml_initialize coder.tag, coder.map
   end
 
   def yaml_initialize(tag, vals) # :nodoc:

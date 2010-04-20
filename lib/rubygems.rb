@@ -254,8 +254,6 @@ module Gem
       File.join spec.full_gem_path, path
     end
 
-    sitelibdir = ConfigMap[:sitelibdir]
-
     # gem directories must come after -I and ENV['RUBYLIB']
     insert_index = load_path_insert_index
 
@@ -312,8 +310,8 @@ module Gem
   ##
   # Find the full path to the executable for gem +name+.  If the +exec_name+
   # is not given, the gem's default_executable is chosen, otherwise the
-  # specifed executable's path is returned.  +version_requirements+ allows you
-  # to specify specific gem versions.
+  # specified executable's path is returned.  +version_requirements+ allows
+  # you to specify specific gem versions.
 
   def self.bin_path(name, exec_name = nil, *version_requirements)
     version_requirements = Gem::Requirement.default if
@@ -342,7 +340,7 @@ module Gem
   # The mode needed to read a file as straight binary.
 
   def self.binary_mode
-    @binary_mode ||= RUBY_VERSION > '1.9' ? 'rb:ascii-8bit' : 'rb'
+    'rb'
   end
 
   ##

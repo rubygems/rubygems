@@ -163,18 +163,17 @@ class Gem::CommandManager
     begin
       commands.const_get const_name
     rescue NameError
-      if retried then
-        raise
-      else
-        retried = true
-        begin
-          require "rubygems/commands/#{command_name}_command"
-        rescue Exception => ex
-          alert_error "Loading command: #{command_name} (#{ex.class})\n    #{ex.to_s}"
-          ui.errs.puts "\t#{ex.backtrace.join "\n\t"}" if Gem.configuration.backtrace
-        end
-        retry
+      raise if retried
+
+      retried = true
+      begin
+        require "rubygems/commands/#{command_name}_command"
+      rescue Exception => e
+        alert_error "Loading command: #{command_name} (#{e.class})\n    #{e}"
+        ui.errs.puts "\t#{e.backtrace.join "\n\t"}" if
+          Gem.configuration.backtrace
       end
+      retry
     end.new
   end
 

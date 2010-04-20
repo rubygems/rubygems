@@ -198,7 +198,7 @@ class Gem::Dependency
 
     pattern = name
 
-    if Regexp === pattern
+    if Regexp === pattern then
       return false unless pattern =~ other.name
     else
       return false unless pattern == other.name

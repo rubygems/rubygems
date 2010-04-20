@@ -1,6 +1,5 @@
 # depends on: array.rb dir.rb env.rb file.rb hash.rb module.rb regexp.rb
 # vim: filetype=ruby
-# WARN
 
 # NOTICE: Ruby is during initialization here.
 # * Encoding.default_external does not reflects -E.
@@ -16,9 +15,7 @@ if defined?(Gem) then
     def gem(gem_name, *version_requirements)
       Gem.push_gem_version_on_load_path(gem_name, *version_requirements)
     end
-
     private :gem
-
   end
 
   module Gem
@@ -69,8 +66,8 @@ if defined?(Gem) then
     end
 
     def self.set_home(home)
-      home = home.dup.force_encoding Encoding.find('filesystem')
-      home.gsub! File::ALT_SEPARATOR, File::SEPARATOR if File::ALT_SEPARATOR
+      home = home.dup.force_encoding(Encoding.find('filesystem'))
+      home.gsub!(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
       @gem_home = home
     end
 
@@ -91,12 +88,11 @@ if defined?(Gem) then
       end
 
       @gem_path.uniq!
-      @gem_path.map! { |dir| dir.force_encoding Encoding.find('filesystem') }
+      @gem_path.map!{|x|x.force_encoding(Encoding.find('filesystem'))}
     end
 
     def self.user_home
-      @user_home ||= File.expand_path("~").force_encoding \
-        Encoding.find('filesystem')
+      @user_home ||= File.expand_path("~").force_encoding(Encoding.find('filesystem'))
     rescue
       if File::ALT_SEPARATOR then
         "C:/"
@@ -109,6 +105,7 @@ if defined?(Gem) then
     # NOTE: this require will be replaced with in-place eval before compilation.
     require 'lib/rubygems/defaults.rb'
     # end rubygems/defaults
+
 
     ##
     # Methods before this line will be removed when QuickLoader is replaced
@@ -157,32 +154,29 @@ if defined?(Gem) then
         end
 
         $".delete path_to_full_rubygems_library
-
         $".each do |path|
-          if /#{Regexp.escape File::SEPARATOR}rubygems\.rb\z/ =~ path then
+          if /#{Regexp.escape File::SEPARATOR}rubygems\.rb\z/ =~ path
             raise LoadError, "another rubygems is already loaded from #{path}"
           end
         end
-
         require 'rubygems'
       end
 
       def self.fake_rubygems_as_loaded
         path = path_to_full_rubygems_library
-        $" << path unless $".include? path
+        $" << path unless $".include?(path)
       end
 
       def self.path_to_full_rubygems_library
-        installed_path = File.join(Gem::ConfigMap[:rubylibprefix],
-                                   Gem::ConfigMap[:ruby_version])
-
-        if $:.include? installed_path then
-          File.join installed_path, 'rubygems.rb'
+        installed_path = File.join(Gem::ConfigMap[:rubylibprefix], Gem::ConfigMap[:ruby_version])
+        if $:.include?(installed_path)
+          return File.join(installed_path, 'rubygems.rb')
         else # e.g., on test-all
           $:.each do |dir|
-            return path if File.exist?(path = File.join(dir, 'rubygems.rb'))
+            if File.exist?( path = File.join(dir, 'rubygems.rb') )
+              return path
+            end
           end
-
           raise LoadError, 'rubygems.rb'
         end
       end
@@ -240,13 +234,12 @@ if defined?(Gem) then
               next if gem_directory_name == "." || gem_directory_name == ".."
 
               next unless gem_name = gem_directory_name[/(.*)-(.*)/, 1]
-              new_version = integers_for $2
+              new_version = integers_for($2)
               current_version = GemVersions[gem_name]
 
               if !current_version or (current_version <=> new_version) < 0 then
                 GemVersions[gem_name] = new_version
-                GemPaths[gem_name] = File.join(gems_directory,
-                                               gem_directory_name)
+                GemPaths[gem_name] = File.join(gems_directory, gem_directory_name)
               end
             end
           end
@@ -274,7 +267,7 @@ if defined?(Gem) then
           require_paths.first.instance_variable_set(:@gem_prelude_index, true)
         end
         # gem directories must come after -I and ENV['RUBYLIB']
-        $:[$:.index(ConfigMap[:sitelibdir]),0] = require_paths
+        $:[$:.index{|e|e.instance_variable_defined?(:@gem_prelude_index)}||-1,0] = require_paths
       end
 
       def const_missing(constant)

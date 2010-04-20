@@ -196,7 +196,7 @@ class Gem::DocManager
       Gem.configuration.backtrace
       ui.errs.puts "(continuing with the rest of the installation)"
     ensure
-      Dir.chdir(old_pwd)
+      Dir.chdir old_pwd
     end
   end
 

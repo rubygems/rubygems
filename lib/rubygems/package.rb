@@ -1,7 +1,8 @@
-#++
-# Copyright (C) 2004 Mauricio Julio Fern·ndez Pradier
-# See LICENSE.txt for additional licensing information.
+# -*- coding: utf-8 -*-
 #--
+# Copyright (C) 2004 Mauricio Julio Fern√°ndez Pradier
+# See LICENSE.txt for additional licensing information.
+#++
 
 require 'fileutils'
 require 'find'
@@ -12,8 +13,10 @@ require 'zlib'
 require 'rubygems/security'
 require 'rubygems/specification'
 
+##
 # Wrapper for FileUtils meant to provide logging and additional operations if
 # needed.
+
 class Gem::FileOperations
 
   def initialize(logger = nil)

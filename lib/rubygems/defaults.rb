@@ -20,9 +20,8 @@ module Gem
     if defined? RUBY_FRAMEWORK_VERSION then
       File.join File.dirname(ConfigMap[:sitedir]), 'Gems',
                 ConfigMap[:ruby_version]
-    # 1.9.2dev reverted to 1.8 style path
-    elsif RUBY_VERSION > '1.9' and RUBY_VERSION < '1.9.2' then
-      File.join(ConfigMap[:libdir], ConfigMap[:ruby_install_name], 'gems',
+    elsif ConfigMap[:rubylibprefix] then
+      File.join(ConfigMap[:rubylibprefix], 'gems',
                 ConfigMap[:ruby_version])
     else
       File.join(ConfigMap[:libdir], ruby_engine, 'gems',
@@ -34,15 +33,14 @@ module Gem
   # Path for gems in the user's home directory
 
   def self.user_dir
-    File.join(Gem.user_home, '.gem', ruby_engine,
-              ConfigMap[:ruby_version])
+    File.join Gem.user_home, '.gem', ruby_engine, ConfigMap[:ruby_version]
   end
 
   ##
   # Default gem load path
 
   def self.default_path
-    if File.exist?(Gem.user_home)
+    if File.exist? Gem.user_home then
       [user_dir, default_dir]
     else
       [default_dir]

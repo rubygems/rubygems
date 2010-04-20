@@ -156,20 +156,25 @@ class Gem::CommandManager
 
   def load_and_instantiate(command_name)
     command_name = command_name.to_s
+    const_name = command_name.capitalize.gsub(/_(.)/) { $1.upcase } << "Command"
+    commands = Gem::Commands
     retried = false
 
     begin
-      const_name = command_name.capitalize.gsub(/_(.)/) { $1.upcase }
-      Gem::Commands.const_get("#{const_name}Command").new
+      commands.const_get const_name
     rescue NameError
-      if retried then
-        raise
-      else
-        retried = true
+      raise if retried
+
+      retried = true
+      begin
         require "rubygems/commands/#{command_name}_command"
-        retry
+      rescue Exception => e
+        alert_error "Loading command: #{command_name} (#{e.class})\n    #{e}"
+        ui.errs.puts "\t#{e.backtrace.join "\n\t"}" if
+          Gem.configuration.backtrace
       end
-    end
+      retry
+    end.new
   end
 
 end

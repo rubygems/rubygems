@@ -8,13 +8,7 @@ else
   require 'rubygems'
 end
 require 'fileutils'
-begin
-  gem 'minitest', '>= 1.3.1'
-  require 'minitest/unit'
-rescue Gem::LoadError
-  warn "Install minitest gem >= 1.3.1"
-  raise
-end
+require 'minitest/autorun'
 require 'tmpdir'
 require 'uri'
 require 'rubygems/package'
@@ -68,6 +62,13 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     @usrcache = File.join(@gemhome, ".gem", "user_cache")
     @latest_usrcache = File.join(@gemhome, ".gem", "latest_user_cache")
     @userhome = File.join @tempdir, 'userhome'
+
+    Gem.ensure_gem_subdirectories @gemhome
+
+    @orig_ruby = if ruby = ENV['RUBY'] then
+                   Gem.class_eval { ruby, @ruby = @ruby, ruby }
+                   ruby
+                 end
 
     Gem.ensure_gem_subdirectories @gemhome
 
@@ -146,6 +147,8 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     ENV.delete 'GEM_PATH'
 
     Gem.clear_paths
+
+    Gem.class_eval { @ruby = ruby } if ruby = @orig_ruby
 
     if @orig_ENV_HOME then
       ENV['HOME'] = @orig_ENV_HOME
@@ -577,6 +580,4 @@ Also, a list:
   end
 
 end
-
-MiniTest::Unit.autorun
 

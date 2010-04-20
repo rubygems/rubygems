@@ -129,6 +129,7 @@ module Gem
     :libdir            => RbConfig::CONFIG["libdir"],
     :ruby_install_name => RbConfig::CONFIG["ruby_install_name"],
     :ruby_version      => RbConfig::CONFIG["ruby_version"],
+    :rubylibprefix     => RbConfig::CONFIG["rubylibprefix"],
     :sitedir           => RbConfig::CONFIG["sitedir"],
     :sitelibdir        => RbConfig::CONFIG["sitelibdir"],
     :vendordir         => RbConfig::CONFIG["vendordir"] ,
@@ -253,8 +254,6 @@ module Gem
       File.join spec.full_gem_path, path
     end
 
-    sitelibdir = ConfigMap[:sitelibdir]
-
     # gem directories must come after -I and ENV['RUBYLIB']
     insert_index = load_path_insert_index
 
@@ -311,8 +310,8 @@ module Gem
   ##
   # Find the full path to the executable for gem +name+.  If the +exec_name+
   # is not given, the gem's default_executable is chosen, otherwise the
-  # specifed executable's path is returned.  +version_requirements+ allows you
-  # to specify specific gem versions.
+  # specified executable's path is returned.  +version_requirements+ allows
+  # you to specify specific gem versions.
 
   def self.bin_path(name, exec_name = nil, *version_requirements)
     version_requirements = Gem::Requirement.default if
@@ -341,7 +340,7 @@ module Gem
   # The mode needed to read a file as straight binary.
 
   def self.binary_mode
-    @binary_mode ||= RUBY_VERSION > '1.9' ? 'rb:ascii-8bit' : 'rb'
+    'rb'
   end
 
   ##
@@ -699,14 +698,15 @@ module Gem
   # The directory prefix this RubyGems was installed at.
 
   def self.prefix
-    prefix = File.dirname File.expand_path(__FILE__)
+    dir = File.dirname File.expand_path(__FILE__)
+    prefix = File.dirname dir
 
-    if File.dirname(prefix) == File.expand_path(ConfigMap[:sitelibdir]) or
-       File.dirname(prefix) == File.expand_path(ConfigMap[:libdir]) or
-       'lib' != File.basename(prefix) then
+    if prefix == File.expand_path(ConfigMap[:sitelibdir]) or
+       prefix == File.expand_path(ConfigMap[:libdir]) or
+       'lib' != File.basename(dir) then
       nil
     else
-      File.dirname prefix
+      prefix
     end
   end
 
@@ -974,6 +974,28 @@ module Gem
     @@win_platform
   end
 
+  ##
+  # Find all 'rubygems_plugin' files and load them
+
+  def self.load_plugins
+    plugins = Gem.find_files 'rubygems_plugin'
+
+    plugins.each do |plugin|
+
+      # Skip older versions of the GemCutter plugin: Its commands are in
+      # RubyGems proper now.
+
+      next if plugin =~ /gemcutter-0\.[0-3]/
+
+      begin
+        load plugin
+      rescue ::Exception => e
+        details = "#{plugin.inspect}: #{e.message} (#{e.class})"
+        warn "Error loading RubyGems plugin #{details}"
+      end
+    end
+  end
+
   class << self
 
     ##
@@ -1023,6 +1045,8 @@ module Gem
 end
 
 module Kernel
+
+  undef gem if respond_to? :gem # defined in gem_prelude.rb on 1.9
 
   ##
   # Use Kernel#gem to activate a specific version of +gem_name+.
@@ -1100,19 +1124,5 @@ end
 
 Gem.clear_paths
 
-plugins = Gem.find_files 'rubygems_plugin'
-
-plugins.each do |plugin|
-
-  # Skip older versions of the GemCutter plugin: Its commands are in
-  # RubyGems proper now.
-
-  next if plugin =~ /gemcutter-0\.[0-3]/
-
-  begin
-    load plugin
-  rescue => e
-    warn "error loading #{plugin.inspect}: #{e.message} (#{e.class})"
-  end
-end
+Gem.load_plugins
 

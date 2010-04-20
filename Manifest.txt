@@ -183,4 +183,4 @@ test/test_gem_version.rb
 test/test_gem_version_option.rb
 test/test_kernel.rb
 util/CL2notes
-util/gem_prelude.rb.template
+util/gem_prelude.rb

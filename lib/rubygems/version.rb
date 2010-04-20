@@ -212,7 +212,7 @@ class Gem::Version
   end
 
   def hash # :nodoc:
-    segments.hash
+    @hash ||= segments.hash
   end
 
   def inspect # :nodoc:

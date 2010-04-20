@@ -26,6 +26,24 @@ class TestGemCommandsUnpackCommand < RubyGemTestCase
     assert File.exist?(File.join(@tempdir, 'b-2')),   'b should be installed'
   end
 
+  def test_execute_sudo
+    util_make_gems
+
+    File.chmod 0555, @gemhome
+
+    @cmd.options[:args] = %w[b]
+
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        @cmd.execute
+      end
+    end
+
+    assert File.exist?(File.join(@tempdir, 'b-2')), 'b should be unpacked'
+  ensure
+    File.chmod 0755, @gemhome
+  end
+
   def test_execute_gem_path
     util_make_gems
 

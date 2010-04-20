@@ -165,7 +165,7 @@ pl-1-i386-linux
     <title>ExampleForge gems</title>
     <link>http://example.com</link>
     <description>Recently released gems from http://example.com</description>
-    <generator>RubyGems v#{Gem::RubyGemsVersion}</generator>
+    <generator>RubyGems v#{Gem::VERSION}</generator>
     <docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
     <item>
       <title>a-2</title>

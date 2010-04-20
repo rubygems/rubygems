@@ -524,7 +524,7 @@ class Gem::Specification
   # Sets the rubygems_version to the current RubyGems version
 
   def mark_version
-    @rubygems_version = Gem::RubyGemsVersion
+    @rubygems_version = Gem::VERSION
   end
 
   ##
@@ -759,7 +759,7 @@ class Gem::Specification
     result << "    s.specification_version = #{specification_version}"
     result << nil
 
-    result << "    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then"
+    result << "    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then"
 
     unless dependencies.empty? then
       dependencies.each do |dep|
@@ -804,9 +804,9 @@ class Gem::Specification
     extend Gem::UserInteraction
     normalize
 
-    if rubygems_version != Gem::RubyGemsVersion then
+    if rubygems_version != Gem::VERSION then
       raise Gem::InvalidSpecificationException,
-            "expected RubyGems version #{Gem::RubyGemsVersion}, was #{rubygems_version}"
+            "expected RubyGems version #{Gem::VERSION}, was #{rubygems_version}"
     end
 
     @@required_attributes.each do |symbol|
@@ -1052,7 +1052,7 @@ class Gem::Specification
   #
   # Do not set this, it is set automatically when the gem is packaged.
 
-  required_attribute :rubygems_version, Gem::RubyGemsVersion
+  required_attribute :rubygems_version, Gem::VERSION
 
   ##
   # :attr_accessor: specification_version

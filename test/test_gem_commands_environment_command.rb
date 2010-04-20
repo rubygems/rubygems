@@ -125,7 +125,7 @@ class TestGemCommandsEnvironmentCommand < RubyGemTestCase
       @cmd.execute
     end
 
-    assert_equal "#{Gem::RubyGemsVersion}\n", @ui.output
+    assert_equal "#{Gem::VERSION}\n", @ui.output
     assert_equal '', @ui.error
   end
 

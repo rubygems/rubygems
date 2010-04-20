@@ -144,7 +144,7 @@ module Gem
   # :stopdoc:
   MUTEX = Mutex.new
 
-  RubyGemsPackageVersion = RubyGemsVersion
+  RubyGemsPackageVersion = VERSION
   # :startdoc:
 
   ##

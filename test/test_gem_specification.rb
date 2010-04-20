@@ -773,14 +773,14 @@ Gem::Specification.new do |s|
   s.files = [\"lib/code.rb\"]
   s.homepage = %q{http://example.com}
   s.require_paths = [\"lib\"]
-  s.rubygems_version = %q{#{Gem::RubyGemsVersion}}
+  s.rubygems_version = %q{#{Gem::VERSION}}
   s.summary = %q{this is a summary}
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<b>, [\"= 1\"])
     else
       s.add_dependency(%q<b>, [\"= 1\"])
@@ -827,7 +827,7 @@ Gem::Specification.new do |s|
   s.require_paths = [\"lib\"]
   s.requirements = [\"A working computer\"]
   s.rubyforge_project = %q{example}
-  s.rubygems_version = %q{#{Gem::RubyGemsVersion}}
+  s.rubygems_version = %q{#{Gem::VERSION}}
   s.summary = %q{this is a summary}
   s.test_files = [\"test/suite.rb\"]
 
@@ -835,7 +835,7 @@ Gem::Specification.new do |s|
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rake>, [\"> 0.4\"])
       s.add_runtime_dependency(%q<jabber4r>, [\"> 0.0.0\"])
       s.add_runtime_dependency(%q<pqa>, [\"> 0.4\", \"<= 0.6\"])
@@ -1198,7 +1198,7 @@ end
       @a1.validate
     end
 
-    assert_equal "expected RubyGems version #{Gem::RubyGemsVersion}, was 3",
+    assert_equal "expected RubyGems version #{Gem::VERSION}, was 3",
                  e.message
   end
 

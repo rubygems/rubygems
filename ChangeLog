@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2010-04-20  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/specification.rb:  Avoid deprecated API for YAML.  Ruby
+	  bug #3102 by Aaron Patterson.
+
 2010-04-19  Eric Hodel  <drbrain@segment7.net>
 
 	* lib, test: Stop using Gem::RubyGemsVersion

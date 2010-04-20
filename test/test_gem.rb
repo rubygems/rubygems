@@ -16,6 +16,8 @@ class TestGem < RubyGemTestCase
                       else
                         %r|/[Rr]uby/[Gg]ems/[0-9.]+|
                       end
+
+    util_remove_interrupt_command
   end
 
   def test_self_all_load_paths
@@ -621,9 +623,13 @@ class TestGem < RubyGemTestCase
     with_plugin('load') { Gem.load_plugins }
     assert_equal :loaded, TEST_PLUGIN_LOAD
 
+    util_remove_interrupt_command
+
     # Should attempt to cause a StandardError
     with_plugin('standarderror') { Gem.load_plugins }
     assert_equal :loaded, TEST_PLUGIN_STANDARDERROR
+
+    util_remove_interrupt_command
 
     # Should attempt to cause an Exception
     with_plugin('exception') { Gem.load_plugins }
@@ -631,14 +637,18 @@ class TestGem < RubyGemTestCase
   end
 
   def with_plugin(path)
-    test_plugin_path = File.expand_path("../plugin/#{path}", __FILE__)
+    test_plugin_path = File.expand_path "../plugin/#{path}", __FILE__
+
     # A single test plugin should get loaded once only, in order to preserve
     # sane test semantics.
-    assert !$LOAD_PATH.include?(test_plugin_path)
+    refute_includes $LOAD_PATH, test_plugin_path
     $LOAD_PATH.unshift test_plugin_path
-    yield
+
+    capture_io do
+      yield
+    end
   ensure
-    $LOAD_PATH.delete(test_plugin_path)
+    $LOAD_PATH.delete test_plugin_path
   end
 
   def util_ensure_gem_dirs
@@ -687,6 +697,11 @@ class TestGem < RubyGemTestCase
       defined?(@RUBY_PATCHLEVEL)
     Object.const_set :RUBY_REVISION,   @RUBY_REVISION   if
       defined?(@RUBY_REVISION)
+  end
+
+  def util_remove_interrupt_command
+    Gem::Commands.send :remove_const, :InterruptCommand if
+      Gem::Commands.const_defined? :InterruptCommand
   end
 
 end

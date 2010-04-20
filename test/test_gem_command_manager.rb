@@ -10,6 +10,8 @@ class TestGemCommandManager < RubyGemTestCase
   end
 
   def test_run_interrupt
+    Gem.load_plugins
+
     use_ui @ui do
       assert_raises MockGemUi::TermError do
         @command_manager.run 'interrupt'
@@ -18,7 +20,7 @@ class TestGemCommandManager < RubyGemTestCase
       assert_equal "ERROR:  Interrupted\n", ui.error
     end
   end
-  
+
   def test_run_crash_command
     @command_manager.register_command :crash
     use_ui @ui do

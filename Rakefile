@@ -64,7 +64,9 @@ task :scrub_dev_deps do
 end
 
 task :release => [:clobber, :sanity_check, :test_functional,
-                  :test, :package, :tag]
+                  :test, :package]
+
+task :postrelease => [:tag, :publish_docs]
 
 Rake::Task[:release_to_rubyforge].clear
 
@@ -84,7 +86,7 @@ task :sanity_check do
   abort "svn status dirty. commit or revert them" unless `svn st`.empty?
 end
 
-task :tag => [:sanity_check] do
+task :tag => :sanity_check do
   reltag = "REL_#{Gem::VERSION.gsub(/\./, '_')}"
   svn_url = "svn+ssh://rubyforge.org/var/svn/rubygems"
   sh %{svn copy #{svn_url}/trunk #{svn_url}/tags/#{reltag}}
@@ -204,3 +206,4 @@ task "rcov:for", [:test] do |task, args|
 
   ruby "#{flags.join ' '} #{rcov} #{rflags.join ' '} #{args[:test]}"
 end
+

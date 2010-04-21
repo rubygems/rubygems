@@ -14,6 +14,8 @@
 	  by Roger Pack.
 	* lib/rubygems/remote_fetcher.rb:  Raise a better error when the host
 	  is down.  Bug #28092 by Eric Peterson.
+	* History.txt:  Add reminder to include --user-install change in the
+	  1.3.7 release notes.  Bug #27896 by Matt Patterson.
 
 2010-04-19  Eric Hodel  <drbrain@segment7.net>
 

@@ -701,7 +701,7 @@ class Gem::Specification
   end
 
   def to_yaml(opts = {}) # :nodoc:
-    return super unless YAML.const_defined?(:ENGINE) && YAML::ENGINE.syck?
+    return super if YAML.const_defined?(:ENGINE) && !YAML::ENGINE.syck?
 
     yaml = YAML.quick_emit object_id, opts do |out|
       out.map taguri, to_yaml_style do |map|

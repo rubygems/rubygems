@@ -6,6 +6,8 @@
 	  bug #3102 by Aaron Patterson.
 	* lib/rubygems/remote_fetcher.rb:  Avoid deprecated API for URI.  Ruby
 	  bug #3103 by Aaron Patterson.
+	* lib/rubygems/platform.rb:  Add platform support for IronRuby.  Patch
+	  #27951 by Will Green.
 
 2010-04-19  Eric Hodel  <drbrain@segment7.net>
 

@@ -8,6 +8,8 @@
 	  bug #3103 by Aaron Patterson.
 	* lib/rubygems/platform.rb:  Add platform support for IronRuby.  Patch
 	  #27951 by Will Green.
+	* lib/rubygems/commands/fetch_command.rb:  Restore fetching of old
+	  versions.  Bug #27960 by Eric Hankins.
 
 2010-04-19  Eric Hodel  <drbrain@segment7.net>
 

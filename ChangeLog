@@ -10,6 +10,8 @@
 	  #27951 by Will Green.
 	* lib/rubygems/commands/fetch_command.rb:  Restore fetching of old
 	  versions.  Bug #27960 by Eric Hankins.
+	* lib/rubygems/command_manager.rb:  Update documentation.  Bug #28024
+	  by Roger Pack.
 
 2010-04-19  Eric Hodel  <drbrain@segment7.net>
 

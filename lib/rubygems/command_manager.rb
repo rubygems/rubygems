@@ -75,10 +75,10 @@ class Gem::CommandManager
   end
 
   ##
-  # Register the command object.
+  # Register the Symbol +command+ as a gem command.
 
-  def register_command(command_obj)
-    @commands[command_obj] = false
+  def register_command(command)
+    @commands[command] = false
   end
 
   ##

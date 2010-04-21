@@ -12,6 +12,8 @@
 	  versions.  Bug #27960 by Eric Hankins.
 	* lib/rubygems/command_manager.rb:  Update documentation.  Bug #28024
 	  by Roger Pack.
+	* lib/rubygems/remote_fetcher.rb:  Raise a better error when the host
+	  is down.  Bug #28092 by Eric Peterson.
 
 2010-04-19  Eric Hodel  <drbrain@segment7.net>
 

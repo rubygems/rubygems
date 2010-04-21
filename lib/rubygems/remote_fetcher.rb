@@ -254,6 +254,8 @@ class Gem::RemoteFetcher
     connection.start unless connection.started?
 
     connection
+  rescue Errno::EHOSTDOWN => e
+    raise FetchError.new(e.message, uri)
   end
 
   ##

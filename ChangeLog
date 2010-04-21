@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2010-04-21  Evan Phoenix <evan@fallingsnow.net>
+
+	* lib, test: Add ability to install and fetch to report that the
+	  reason they couldn't find a gem was because all available gems can't
+	  be used on the current platform.
+
 2010-04-20  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb:  Avoid deprecated API for YAML.  Ruby

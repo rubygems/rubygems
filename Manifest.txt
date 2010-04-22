@@ -54,6 +54,7 @@ lib/rubygems/dependency.rb
 lib/rubygems/dependency_installer.rb
 lib/rubygems/dependency_list.rb
 lib/rubygems/doc_manager.rb
+lib/rubygems/errors.rb
 lib/rubygems/exceptions.rb
 lib/rubygems/ext.rb
 lib/rubygems/ext/builder.rb
@@ -112,8 +113,12 @@ test/gem_package_tar_test_case.rb
 test/gemutilities.rb
 test/insure_session.rb
 test/mockgemui.rb
+test/plugin/exception/rubygems_plugin.rb
+test/plugin/load/rubygems_plugin.rb
+test/plugin/standarderror/rubygems_plugin.rb
 test/private_key.pem
 test/public_cert.pem
+test/rubygems/commands/crash_command.rb
 test/rubygems_plugin.rb
 test/simple_gem.rb
 test/test_config.rb

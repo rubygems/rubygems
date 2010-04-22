@@ -8,6 +8,8 @@
 	  for security.
 	* lib/rubygems/commands/server_command.rb:  Allow specification of
 	  multiple gem dirs.  Bug #27573 by Yuki Sonoda.
+	* lib/rubygems.rb:  Require rubygems/custom_require if --disable-gem
+	  was set.  Bug #27700 by Roger Pack.
 
 2010-04-21  Evan Phoenix <evan@fallingsnow.net>
 

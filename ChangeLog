@@ -2,6 +2,7 @@
 
 2010-04-21  Eric Hodel  <drbrain@segment7.net>
 
+	* lib/rubygems.rb:  1.3.7.pre.1.
 	* lib/rubygems/commands/contents_command.rb:  Make --prefix the
 	  default as specified in --help.  Bug #27211 by Mamoru Tasaka.
 	* lib/rubygems/commands/environment_command.rb:  Hide gemcutter_key to

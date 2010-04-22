@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2010-04-21  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/contents_command.rb:  Make --prefix the
+	  default as specified in --help.  Bug #27211 by Mamoru Tasaka.
+
 2010-04-21  Evan Phoenix <evan@fallingsnow.net>
 
 	* lib, test: Add ability to install and fetch to report that the

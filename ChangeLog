@@ -4,6 +4,8 @@
 
 	* lib/rubygems/commands/contents_command.rb:  Make --prefix the
 	  default as specified in --help.  Bug #27211 by Mamoru Tasaka.
+	* lib/rubygems/commands/environment_command.rb:  Hide gemcutter_key to
+	  for security.
 
 2010-04-21  Evan Phoenix <evan@fallingsnow.net>
 

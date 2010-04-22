@@ -5,6 +5,8 @@
 # See LICENSE.txt for permissions.
 #++
 
+gem_disabled = !defined? Gem
+
 require 'rubygems/defaults'
 require 'thread'
 require 'etc'
@@ -1105,12 +1107,18 @@ require 'rubygems/platform'
 require 'rubygems/builder'              # HACK: Needed for rake's package task.
 
 begin
+  ##
+  # Defaults the operating system (or packager) wants to provide for RubyGems.
+
   require 'rubygems/defaults/operating_system'
 rescue LoadError
 end
 
 if defined?(RUBY_ENGINE) then
   begin
+    ##
+    # Defaults the ruby implementation wants to provide for RubyGems
+
     require "rubygems/defaults/#{RUBY_ENGINE}"
   rescue LoadError
   end
@@ -1118,9 +1126,13 @@ end
 
 require 'rubygems/config_file'
 
-if RUBY_VERSION < '1.9' then
-  require 'rubygems/custom_require'
-end
+##
+# Enables the require hook for RubyGems.
+#
+# Ruby 1.9 allows --disable-gems, so we require it when we didn't detect a Gem
+# constant at rubygems.rb load time.
+
+require 'rubygems/custom_require' if gem_disabled or RUBY_VERSION < '1.9'
 
 Gem.clear_paths
 

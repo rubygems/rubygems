@@ -109,6 +109,7 @@ lib/rubygems/defaults/operating_system.rb
 
       out << "  - GEM CONFIGURATION:\n"
       Gem.configuration.each do |name, value|
+        value = value.gsub(/./, '*') if name == 'gemcutter_key'
         out << "     - #{name.inspect} => #{value.inspect}\n"
       end
 

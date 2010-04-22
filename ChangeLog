@@ -1,9 +1,42 @@
 # -*- coding: utf-8 -*-
 
+2010-04-21  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/commands/contents_command.rb:  Make --prefix the
+	  default as specified in --help.  Bug #27211 by Mamoru Tasaka.
+	* lib/rubygems/commands/environment_command.rb:  Hide gemcutter_key to
+	  for security.
+	* lib/rubygems/commands/server_command.rb:  Allow specification of
+	  multiple gem dirs.  Bug #27573 by Yuki Sonoda.
+	* lib/rubygems.rb:  Require rubygems/custom_require if --disable-gem
+	  was set.  Bug #27700 by Roger Pack.
+
+2010-04-21  Evan Phoenix <evan@fallingsnow.net>
+
+	* lib, test: Add ability to install and fetch to report that the
+	  reason they couldn't find a gem was because all available gems can't
+	  be used on the current platform.
+
 2010-04-20  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/specification.rb:  Avoid deprecated API for YAML.  Ruby
 	  bug #3102 by Aaron Patterson.
+	* lib/rubygems/remote_fetcher.rb:  Avoid deprecated API for URI.  Ruby
+	  bug #3103 by Aaron Patterson.
+	* lib/rubygems/platform.rb:  Add platform support for IronRuby.  Patch
+	  #27951 by Will Green.
+	* lib/rubygems/commands/fetch_command.rb:  Restore fetching of old
+	  versions.  Bug #27960 by Eric Hankins.
+	* lib/rubygems/command_manager.rb:  Update documentation.  Bug #28024
+	  by Roger Pack.
+	* lib/rubygems/remote_fetcher.rb:  Raise a better error when the host
+	  is down.  Bug #28092 by Eric Peterson.
+	* History.txt:  Add reminder to include --user-install change in the
+	  1.3.7 release notes.  Bug #27896 by Matt Patterson.
+	* lib/rubygems/commands/query_command.rb:  --version is only for use
+	  with --installed.  Bug #27857 by Greg Hazel.
+	* lib/rubygems/commands/query_command.rb:  Regular output now lists
+	  platforms.  Bug #27856 by Greg Hazel.
 
 2010-04-19  Eric Hodel  <drbrain@segment7.net>
 

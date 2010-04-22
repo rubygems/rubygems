@@ -432,6 +432,9 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
         options[:addresses]).run
   end
 
+  ##
+  # Only the first directory in gem_dirs is used for serving gems
+
   def initialize(gem_dirs, port, daemon, addresses = nil)
     Socket.do_not_reverse_lookup = true
 
@@ -730,7 +733,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   # documentation - just put it underneath the main doc folder.
 
   def show_rdoc_for_pattern(pattern, res)
-    found_gems = Dir.glob("#{@gem_dir}/doc/#{pattern}").select {|path|
+    found_gems = Dir.glob("{#{@gem_dirs.join ','}}/doc/#{pattern}").select {|path|
       File.exist? File.join(path, 'rdoc/index.html')
     }
     case found_gems.length
@@ -794,7 +797,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     paths = { "/gems" => "/cache/", "/doc_root" => "/doc/" }
     paths.each do |mount_point, mount_dir|
       @server.mount(mount_point, WEBrick::HTTPServlet::FileHandler,
-                    File.join(@gem_dir, mount_dir), true)
+                    File.join(@gem_dir.first, mount_dir), true)
     end
 
     trap("INT") { @server.shutdown; exit! }

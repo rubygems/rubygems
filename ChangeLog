@@ -6,6 +6,8 @@
 	  default as specified in --help.  Bug #27211 by Mamoru Tasaka.
 	* lib/rubygems/commands/environment_command.rb:  Hide gemcutter_key to
 	  for security.
+	* lib/rubygems/commands/server_command.rb:  Allow specification of
+	  multiple gem dirs.  Bug #27573 by Yuki Sonoda.
 
 2010-04-21  Evan Phoenix <evan@fallingsnow.net>
 

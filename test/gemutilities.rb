@@ -15,7 +15,10 @@ require 'rubygems/package'
 require 'rubygems/test_utilities'
 require 'pp'
 require 'yaml'
-YAML::ENGINE.yamler = 'psych' if YAML.const_defined? :ENGINE
+begin
+  YAML::ENGINE.yamler = 'psych'
+rescue LoadError
+end if YAML.const_defined? :ENGINE
 
 begin
   gem 'rdoc'

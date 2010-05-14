@@ -63,12 +63,18 @@ task :scrub_dev_deps do
   hoe.spec.dependencies.reject! { |d| :development == d.type }
 end
 
-task :release => [:clobber, :sanity_check, :test_functional,
-                  :test, :package]
+task :prerelease => [:clobber, :sanity_check, :test, :test_functional]
 
 task :postrelease => [:tag, :publish_docs]
 
 Rake::Task[:release_to_rubyforge].clear
+
+task :release_to_rubyforge do
+  files = Dir["rubygems-update*.gem"]
+  rf = RubyForge.new.configure
+  rf.login
+  rf.add_file rubyforge_name, name, version, files.first
+end
 
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
 task pkg_dir_path do

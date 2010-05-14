@@ -27,6 +27,7 @@ hoe = Hoe.spec 'rubygems-update' do
                    'data__',
                    'html',
                    'logs',
+                   'graph.dot',
                    'pkgs/sources/sources*.gem',
                    'scripts/*.hieraki')
 
@@ -67,13 +68,13 @@ task :prerelease => [:clobber, :sanity_check, :test, :test_functional]
 
 task :postrelease => [:tag, :publish_docs]
 
-Rake::Task[:release_to_rubyforge].clear
+Rake::Task[:release_to_rubyforge].clear_actions
 
 task :release_to_rubyforge do
   files = Dir["rubygems-update*.gem"]
   rf = RubyForge.new.configure
   rf.login
-  rf.add_file hoe.rubyforge_name, hoe.name, hoe.version, files.first
+  rf.add_file hoe.rubyforge_name, hoe.rubyforge_name, hoe.version, files.first
 end
 
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
@@ -211,5 +212,29 @@ task "rcov:for", [:test] do |task, args|
   rflags << "-i" << "lib/rubygems"
 
   ruby "#{flags.join ' '} #{rcov} #{rflags.join ' '} #{args[:test]}"
+end
+
+task :graph do
+  $: << File.expand_path("~/Work/p4/zss/src/graph/dev/lib")
+  require 'graph'
+  deps = Graph.new
+  deps.rotate
+
+  current = nil
+  `rake -P -s`.each_line do |line|
+    case line
+    when /^rake (.+)/
+      current = $1
+      deps[current] if current # force the node to exist, in case of a leaf
+    when /^\s+(.+)/
+      deps[current] << $1 if current
+    else
+      warn "unparsed: #{line.chomp}"
+    end
+  end
+
+
+  deps.boxes
+  deps.save "graph", nil
 end
 

@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+2010-05-13  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems.rb:  1.3.7.
+
 2010-04-30  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/server.rb:  Use gem_dirs, not gem_dir.

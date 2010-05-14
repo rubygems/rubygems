@@ -27,6 +27,7 @@ hoe = Hoe.spec 'rubygems-update' do
                    'data__',
                    'html',
                    'logs',
+                   'graph.dot',
                    'pkgs/sources/sources*.gem',
                    'scripts/*.hieraki')
 
@@ -67,13 +68,13 @@ task :prerelease => [:clobber, :sanity_check, :test, :test_functional]
 
 task :postrelease => [:tag, :publish_docs]
 
-Rake::Task[:release_to_rubyforge].clear
+Rake::Task[:release_to_rubyforge].clear_actions
 
 task :release_to_rubyforge do
   files = Dir["rubygems-update*.gem"]
   rf = RubyForge.new.configure
   rf.login
-  rf.add_file hoe.rubyforge_name, hoe.name, hoe.version, files.first
+  rf.add_file hoe.rubyforge_name, hoe.rubyforge_name, hoe.version, files.first
 end
 
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"

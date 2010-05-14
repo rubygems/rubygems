@@ -73,7 +73,7 @@ task :release_to_rubyforge do
   files = Dir["rubygems-update*.gem"]
   rf = RubyForge.new.configure
   rf.login
-  rf.add_file rubyforge_name, name, version, files.first
+  rf.add_file hoe.rubyforge_name, hoe.name, hoe.version, files.first
 end
 
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"

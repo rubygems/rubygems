@@ -258,5 +258,36 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
     assert out.empty?, out.inspect
   end
 
+  def test_execute_conservative
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher @b2
+
+    @fetcher.data["#{@gem_repo}gems/#{@b2.file_name}"] =
+      read_binary(File.join(@gemhome, 'cache', @b2.file_name))
+
+    uninstall_gem(@b2)
+
+    @cmd.options[:conservative] = true
+
+    @cmd.options[:args] = [@a2.name, @b2.name]
+
+    use_ui @ui do
+      orig_dir = Dir.pwd
+      begin
+        Dir.chdir @tempdir
+        e = assert_raises Gem::SystemExitException do
+          @cmd.execute
+        end
+        assert_equal 0, e.exit_code
+      ensure
+        Dir.chdir orig_dir
+      end
+    end
+
+    out = @ui.output.split "\n"
+    assert_equal "Successfully installed #{@b2.full_name}", out.shift
+    assert_equal "1 gem installed", out.shift
+    assert out.empty?, out.inspect
+  end
 end
 

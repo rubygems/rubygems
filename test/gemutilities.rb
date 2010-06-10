@@ -175,6 +175,12 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     Gem::Installer.new(gem, :wrappers => true).install
   end
 
+  def uninstall_gem gem
+    uninstaller = Gem::Uninstaller.new gem.name, :executables => true,
+                 :user_install => true
+    uninstaller.uninstall
+  end
+
   def mu_pp(obj)
     s = ''
     s = PP.pp obj, s

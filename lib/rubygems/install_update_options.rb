@@ -104,6 +104,12 @@ module Gem::InstallUpdateOptions
                 "dependencies") do |value, options|
       options[:development] = true
     end
+
+    add_option(:"Install/Update", "--conservative",
+                "Don't attempt to upgrade gems already",
+                "meeting version requirement") do |value, options|
+      options[:conservative] = true
+    end
   end
 
   ##

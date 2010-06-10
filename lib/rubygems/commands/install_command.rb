@@ -115,6 +115,8 @@ to write the specification by hand.  For example:
 
     get_all_gem_names.each do |gem_name|
       begin
+        next if options[:conservative] && Gem.available?(gem_name, options[:version])
+
         inst = Gem::DependencyInstaller.new options
         inst.install gem_name, options[:version]
 

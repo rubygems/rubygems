@@ -290,17 +290,22 @@ class Gem::Version
   def <=> other
     return   1 unless other # HACK: comparable with nil? why?
     return nil unless self.class === other
+    return   0     if version == other.version
 
-    lhsize = segments.size
-    rhsize = other.segments.size
+    lhsegments = segments
+    rhsegments = other.segments
+
+    lhsize = lhsegments.size
+    rhsize = rhsegments.size
     limit  = (lhsize > rhsize ? lhsize : rhsize) - 1
 
     0.upto(limit) do |i|
-      lhs, rhs = segments[i] || 0, other.segments[i] || 0
+      lhs, rhs = lhsegments[i] || 0, rhsegments[i] || 0
 
+      next               if lhs == rhs
       return  -1         if String  === lhs && Numeric === rhs
       return   1         if Numeric === lhs && String  === rhs
-      return lhs <=> rhs if lhs != rhs
+      return lhs <=> rhs
     end
 
     return 0

@@ -13,7 +13,7 @@ hoe = Hoe.spec 'rubygems-update' do
   self.rubyforge_name = 'rubygems'
   self.author         = ['Jim Weirich', 'Chad Fowler', 'Eric Hodel']
   self.email          = %w[rubygems-developers@rubyforge.org]
-  self.readme_file    = 'README'
+  self.readme_file    = 'README.rdoc'
   self.need_zip       = false
   self.need_tar       = false
 
@@ -35,6 +35,8 @@ hoe = Hoe.spec 'rubygems-update' do
   extra_dev_deps << ['hoe-seattlerb', '~> 1.2']
   extra_dev_deps << ['minitest', '~> 1.4']
   extra_dev_deps << ['session', '~> 2.4']
+
+  self.extra_rdoc_files = Dir["*.rdoc"]
 
   spec_extras['rdoc_options'] = proc do |rdoc_options|
     rdoc_options << "--title=RubyGems #{self.version} Documentation"

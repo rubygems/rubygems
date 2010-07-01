@@ -1,9 +1,9 @@
 = RubyGems
 
-* http://rubygems.org/
-* http://docs.rubygems.org/
-* http://rubygems.rubyforge.org/
-* http://rubyforge.org/projects/rubygems
+* http://rubygems.org
+* http://docs.rubygems.org
+* http://help.rubygems.org
+* http://github.com/rubygems
 
 == DESCRIPTION
 

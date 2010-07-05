@@ -8,7 +8,6 @@
 gem_disabled = !defined? Gem
 
 require 'rubygems/defaults'
-require 'thread'
 require 'etc'
 
 ##
@@ -142,9 +141,6 @@ module Gem
   # Default directories in a gem repository
 
   DIRECTORIES = %w[cache doc gems specifications] unless defined?(DIRECTORIES)
-
-  # :stopdoc:
-  MUTEX = Mutex.new
 
   RubyGemsPackageVersion = VERSION
   # :startdoc:
@@ -370,9 +366,7 @@ module Gem
 
     @@source_index = nil
 
-    MUTEX.synchronize do
-      @searcher = nil
-    end
+    @searcher = nil
   end
 
   ##
@@ -758,9 +752,7 @@ module Gem
   def self.refresh
     source_index.refresh!
 
-    MUTEX.synchronize do
-      @searcher = nil
-    end
+    @searcher = nil
   end
 
   ##
@@ -850,9 +842,7 @@ module Gem
   # The GemPathSearcher object used to search for matching installed gems.
 
   def self.searcher
-    MUTEX.synchronize do
-      @searcher ||= Gem::GemPathSearcher.new
-    end
+    @searcher ||= Gem::GemPathSearcher.new
   end
 
   ##

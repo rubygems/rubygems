@@ -113,28 +113,24 @@ module Gem
     attr_accessor :version_requirement
   end
 
-  ##
-  # Configuration settings from ::RbConfig
+  RbConfigPriorities = %w[
+    EXEEXT RUBY_SO_NAME arch bindir datadir libdir ruby_install_name
+    ruby_version rubylibprefix sitedir sitelibdir vendordir vendorlibdir
+  ]
 
-  ConfigMap = {} unless defined?(ConfigMap)
-
-  require 'rbconfig'
-
-  ConfigMap.merge!(
-    :EXEEXT            => RbConfig::CONFIG["EXEEXT"],
-    :RUBY_SO_NAME      => RbConfig::CONFIG["RUBY_SO_NAME"],
-    :arch              => RbConfig::CONFIG["arch"],
-    :bindir            => RbConfig::CONFIG["bindir"],
-    :datadir           => RbConfig::CONFIG["datadir"],
-    :libdir            => RbConfig::CONFIG["libdir"],
-    :ruby_install_name => RbConfig::CONFIG["ruby_install_name"],
-    :ruby_version      => RbConfig::CONFIG["ruby_version"],
-    :rubylibprefix     => RbConfig::CONFIG["rubylibprefix"],
-    :sitedir           => RbConfig::CONFIG["sitedir"],
-    :sitelibdir        => RbConfig::CONFIG["sitelibdir"],
-    :vendordir         => RbConfig::CONFIG["vendordir"] ,
-    :vendorlibdir      => RbConfig::CONFIG["vendorlibdir"]
-  )
+  unless defined?(ConfigMap)
+    ##
+    # Configuration settings from ::RbConfig
+    ConfigMap = Hash.new do |cm, key|
+      require 'rbconfig'
+      cm[key] = RbConfig::CONFIG[key.to_s]
+    end
+  else
+    require 'rbconfig'
+    RbConfigPriorities.each do |key|
+      ConfigMap[key.to_sym] = RbConfig::CONFIG[key]
+    end
+  end
 
   ##
   # Default directories in a gem repository
@@ -1117,9 +1113,11 @@ end
 # Otherwise return a path to the share area as define by
 # "#{ConfigMap[:datadir]}/#{package_name}".
 
-def RbConfig.datadir(package_name)
-  Gem.datadir(package_name) ||
-    File.join(Gem::ConfigMap[:datadir], package_name)
+module Config
+  def self.datadir(package_name)
+    Gem.datadir(package_name) ||
+      File.join(Gem::ConfigMap[:datadir], package_name)
+  end
 end
 
 require 'rubygems/exceptions'

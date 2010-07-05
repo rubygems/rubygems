@@ -138,6 +138,8 @@
 #   "~> 3.5.0"    3.5.0 ... 3.6
 
 class Gem::Version
+  autoload :Requirement, 'rubygems/requirement'
+
   include Comparable
 
   VERSION_PATTERN = '[0-9]+(\.[0-9a-zA-Z]+)*' # :nodoc:

@@ -7,12 +7,6 @@
 require 'rubygems/user_interaction'
 require 'rubygems/specification'
 
-# :stopdoc:
-module Gem
-  autoload :SpecFetcher, 'rubygems/spec_fetcher'
-end
-# :startdoc:
-
 ##
 # The SourceIndex object indexes all the gems available from a
 # particular source (e.g. a list of gem directories, or a remote

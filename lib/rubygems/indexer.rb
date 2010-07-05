@@ -1,7 +1,3 @@
-require 'fileutils'
-require 'tmpdir'
-require 'zlib'
-
 require 'rubygems'
 require 'rubygems/format'
 
@@ -57,6 +53,10 @@ class Gem::Indexer
   # Create an indexer that will index the gems in +directory+.
 
   def initialize(directory, options = {})
+    require 'fileutils'
+    require 'tmpdir'
+    require 'zlib'
+
     unless ''.respond_to? :to_xs then
       raise "Gem::Indexer requires that the XML Builder library be installed:" \
            "\n\tgem install builder"

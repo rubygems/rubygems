@@ -1,4 +1,3 @@
-require 'yaml'
 require 'rubygems/command'
 require 'rubygems/local_remote_options'
 require 'rubygems/version_option'
@@ -11,6 +10,8 @@ class Gem::Commands::SpecificationCommand < Gem::Command
   include Gem::VersionOption
 
   def initialize
+    require 'yaml'
+
     super 'specification', 'Display gem specification (in yaml)',
           :domain => :local, :version => Gem::Requirement.default,
           :format => :yaml

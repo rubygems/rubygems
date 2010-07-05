@@ -1,5 +1,3 @@
-require 'fileutils'
-
 require 'rubygems'
 require 'rubygems/source_info_cache_entry'
 require 'rubygems/user_interaction'
@@ -102,6 +100,7 @@ class Gem::SourceInfoCache
   end
 
   def initialize # :nodoc:
+    require 'fileutils'
     @cache_data = nil
     @cache_file = nil
     @dirty = false

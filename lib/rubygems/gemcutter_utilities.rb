@@ -1,4 +1,3 @@
-require 'net/http'
 require 'rubygems/remote_fetcher'
 
 module Gem::GemcutterUtilities
@@ -24,6 +23,7 @@ module Gem::GemcutterUtilities
   end
 
   def rubygems_api_request(method, path, &block)
+    require 'net/http'
     host = ENV['RUBYGEMS_HOST'] || 'https://rubygems.org'
     uri = URI.parse "#{host}/#{path}"
 

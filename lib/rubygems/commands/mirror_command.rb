@@ -1,12 +1,12 @@
-require 'yaml'
-require 'zlib'
-
 require 'rubygems/command'
-require 'open-uri'
 
 class Gem::Commands::MirrorCommand < Gem::Command
 
   def initialize
+    require 'yaml'
+    require 'zlib'
+    require 'open-uri'
+
     super 'mirror', 'Mirror a gem repository'
   end
 

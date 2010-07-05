@@ -1,4 +1,3 @@
-require 'fileutils'
 require 'rubygems/command'
 require 'rubygems/remote_fetcher'
 require 'rubygems/source_info_cache'
@@ -10,6 +9,8 @@ class Gem::Commands::SourcesCommand < Gem::Command
   include Gem::LocalRemoteOptions
 
   def initialize
+    require 'fileutils'
+
     super 'sources',
           'Manage the sources and cache file RubyGems uses to search for gems'
 

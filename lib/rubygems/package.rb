@@ -4,12 +4,6 @@
 # See LICENSE.txt for additional licensing information.
 #++
 
-require 'fileutils'
-require 'find'
-require 'stringio'
-require 'yaml'
-require 'zlib'
-
 require 'rubygems/security'
 require 'rubygems/specification'
 
@@ -20,6 +14,7 @@ require 'rubygems/specification'
 class Gem::FileOperations
 
   def initialize(logger = nil)
+    require 'fileutils'
     @logger = logger
   end
 

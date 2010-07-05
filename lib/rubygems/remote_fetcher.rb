@@ -1,8 +1,3 @@
-require 'net/http'
-require 'stringio'
-require 'time'
-require 'uri'
-
 require 'rubygems'
 
 ##
@@ -56,6 +51,11 @@ class Gem::RemoteFetcher
   # * <tt>:no_proxy</tt>: ignore environment variables and _don't_ use a proxy
 
   def initialize(proxy = nil)
+    require 'net/http'
+    require 'stringio'
+    require 'time'
+    require 'uri'
+
     Socket.do_not_reverse_lookup = true
 
     @connections = {}

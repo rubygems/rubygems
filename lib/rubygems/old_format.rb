@@ -5,9 +5,6 @@
 #++
 
 require 'rubygems'
-require 'fileutils'
-require 'yaml'
-require 'zlib'
 
 ##
 # The format class knows the guts of the RubyGem .gem file format and provides
@@ -24,6 +21,9 @@ class Gem::OldFormat
   # gem:: [String] The file name of the gem
 
   def initialize(gem_path)
+    require 'fileutils'
+    require 'yaml'
+    require 'zlib'
     @gem_path = gem_path
   end
 

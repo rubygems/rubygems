@@ -4,9 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'fileutils'
-require 'rbconfig'
-
 require 'rubygems/format'
 require 'rubygems/ext'
 require 'rubygems/require_paths_builder'
@@ -91,6 +88,8 @@ class Gem::Installer
   # :wrappers:: Install wrappers if true, symlinks if false.
 
   def initialize(gem, options={})
+    require 'fileutils'
+
     @gem = gem
 
     options = {

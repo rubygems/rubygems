@@ -8,7 +8,6 @@
 gem_disabled = !defined? Gem
 
 require 'rubygems/defaults'
-require 'etc'
 
 ##
 # RubyGems is the Ruby standard for publishing and managing third party

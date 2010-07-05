@@ -1159,5 +1159,6 @@ require 'rubygems/custom_require' if gem_disabled or RUBY_VERSION < '1.9'
 
 Gem.clear_paths
 
-Gem.load_plugins
+# XXX  performance outlier, this forces a full load of the source_index
+# Gem.load_plugins
 

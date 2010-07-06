@@ -4,17 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-module RbConfig
-
-  ##
-  # Return the path to the data directory associated with the given package
-  # name.  Normally this is just
-  # "#{RbConfig::CONFIG['datadir']}/#{package_name}", but may be modified by
-  # packages like RubyGems to handle versioned data directories.
-
-  def self.datadir(package_name)
-    File.join(CONFIG['datadir'], package_name)
-  end unless RbConfig.respond_to?(:datadir)
-
-end
-
+warn 'rbconfig/datadir.rb is being deprecated from RubyGems, and will be\
+ removed in a future release. If you wish to rely on a datadir, please\
+ use Gem.datadir, and mark rubygems as a dependency.'

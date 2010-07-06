@@ -1125,6 +1125,9 @@ end
 
 module Config
   def self.datadir(package_name)
+    warn 'RbConfig.datadir is being deprecated from RubyGems, and will be
+removed in a future release. If you wish to rely on a datadir, please
+use Gem.datadir, and mark rubygems as a dependency.'
     Gem.datadir(package_name) ||
       File.join(Gem::ConfigMap[:datadir], package_name)
   end

@@ -4,9 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'find'
-
-require 'digest'
 require 'rubygems/format'
 require 'rubygems/installer'
 
@@ -22,6 +19,11 @@ end
 class Gem::Validator
 
   include Gem::UserInteraction
+
+  def initialize
+    require 'find'
+    require 'digest'
+  end
 
   ##
   # Given a gem file's contents, validates against its own MD5 checksum

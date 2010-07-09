@@ -765,7 +765,6 @@ class Gem::Specification
 
     result << nil
     result << "  if s.respond_to? :specification_version then"
-    result << "    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION"
     result << "    s.specification_version = #{specification_version}"
     result << nil
 

@@ -499,11 +499,11 @@ module Gem
   def self.find_home
     unless RUBY_VERSION > '1.9' then
       ['HOME', 'USERPROFILE'].each do |homekey|
-        return ENV[homekey] if ENV[homekey]
+        return File.expand_path(ENV[homekey]) if ENV[homekey]
       end
 
       if ENV['HOMEDRIVE'] && ENV['HOMEPATH'] then
-        return "#{ENV['HOMEDRIVE']}#{ENV['HOMEPATH']}"
+        return File.expand_path("#{ENV['HOMEDRIVE']}#{ENV['HOMEPATH']}")
       end
     end
 

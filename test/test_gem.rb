@@ -597,27 +597,48 @@ class TestGem < RubyGemTestCase
     end
   end
 
-  def test_self_user_home_user_drive_and_path
+  def test_self_user_home_userprofile
+    skip 'Ruby 1.9 properly handles ~ path expansion' if RUBY_VERSION > '1.9'
+
     Gem.clear_paths
 
     # safe-keep env variables
     orig_home, orig_user_profile = ENV['HOME'], ENV['USERPROFILE']
-    orig_user_drive, orig_user_path = ENV['HOMEDRIVE'], ENV['HOMEPATH']
+
+    # prepare for the test
+    ENV.delete('HOME')
+    ENV['USERPROFILE'] = "W:\\Users\\RubyUser"
+
+    assert_equal 'W:/Users/RubyUser', Gem.user_home
+
+  ensure
+    ENV['HOME'] = orig_home
+    ENV['USERPROFILE'] = orig_user_profile
+  end
+
+  def test_self_user_home_user_drive_and_path
+    skip 'Ruby 1.9 properly handles ~ path expansion' if RUBY_VERSION > '1.9'
+
+    Gem.clear_paths
+
+    # safe-keep env variables
+    orig_home, orig_user_profile = ENV['HOME'], ENV['USERPROFILE']
+    orig_home_drive, orig_home_path = ENV['HOMEDRIVE'], ENV['HOMEPATH']
 
     # prepare the environment
     ENV.delete('HOME')
     ENV.delete('USERPROFILE')
     ENV['HOMEDRIVE'] = 'Z:'
-    ENV['HOMEPATH'] = '\\Users\\RubyUser'
+    ENV['HOMEPATH'] = "\\Users\\RubyUser"
 
-    assert_equal "Z:\\Users\\RubyUser", Gem.user_home
+    assert_equal 'Z:/Users/RubyUser', Gem.user_home
 
   ensure
     ENV['HOME'] = orig_home
     ENV['USERPROFILE'] = orig_user_profile
-    ENV['USERDRIVE'] = orig_user_drive
-    ENV['USERPATH'] = orig_user_path
-  end if '1.9' > RUBY_VERSION
+    ENV['HOMEDRIVE'] = orig_home_drive
+    ENV['HOMEPATH'] = orig_home_path
+  end
 
   def test_load_plugins
     with_plugin('load') { Gem.load_plugins }

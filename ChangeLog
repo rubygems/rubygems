@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2010-07-10  Luis Lavena <luislavena@gmail.com>
+
+	* lib/rubygems.rb: Expand Windows user home canditates for Ruby 1.8
+	  Bug #28371
+
 2010-05-13  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems.rb:  1.3.7.

@@ -148,12 +148,15 @@ class Gem::Command
   ##
   #
   # Display to the user that a gem couldn't be found and reasons why
-  def show_lookup_failure(gem_name, version, errors=nil)
+  def show_lookup_failure(gem_name, version, errors=nil, suggestions=nil)
     if errors and !errors.empty?
       alert_error "Could not find a valid gem '#{gem_name}' (#{version}), here is why:"
       errors.each { |x| say "          #{x.wordy}" }
     else
       alert_error "Could not find a valid gem '#{gem_name}' (#{version}) in any repository"
+      if suggestions and not suggestions.empty?
+        say "        Possible alternatives: #{suggestions.join(", ")}"
+      end
     end
   end
 

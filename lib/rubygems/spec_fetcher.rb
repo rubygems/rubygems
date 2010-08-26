@@ -160,6 +160,56 @@ class Gem::SpecFetcher
   end
 
   ##
+  # Returns an Array of gem names similar to +gem_name+.
+  #
+
+  def find_similar(gem_name, matching_platform = true)
+    matches = []
+    #Gem name argument is frozen
+    gem_name = gem_name.downcase
+    gem_name.gsub!(/_|-/, "")
+    limit = gem_name.length / 2  #Limit on how dissimilar two strings can be
+    match_limit = 12  #Limit on how many matches to return
+
+    early_break = false
+    list.each do |source_uri, specs|
+      specs.each do |spec_name, version, spec_platform|
+        next if matching_platform and !Gem::Platform.match(spec_platform)
+
+	normalized_spec_name = spec_name.downcase.gsub(/_|-/, "")
+
+	distance = similarity gem_name, normalized_spec_name, limit
+
+	#Consider this a perfect match and return it
+        if distance == 0
+          return [spec_name]
+        end
+        
+        if distance < limit
+          matches << [spec_name, distance]
+	  #Only stop early if it has at least inspected gem names starting with the same
+	  #letter.
+          if matches.length > match_limit and normalized_spec_name[0,1] > gem_name[0,1]
+            early_break = true
+            break
+          end
+        end
+      end
+      break if early_break
+    end
+    
+    #Sort by closest match
+    matches = matches.uniq.sort_by { |m| m[1] }.map { |m| m[0] }
+
+    #Limit number of results
+    if early_break
+      matches = matches[0, match_limit] << "..."
+    end
+
+    matches
+  end
+
+  ##
   # Returns Array of gem repositories that were generated with RubyGems less
   # than 1.2.
 
@@ -274,6 +324,54 @@ class Gem::SpecFetcher
   end
 
   ##
+  # Returns a number indicating how similar the +input+ is to a given
+  # +gem_name+.
+  # +limit+ sets an upper limit on how dissimilar two strings can be, but the
+  # method may still return a higher number.
+  # 
+  # 0 is considered a perfect match, but note the function does some processing
+  # on the strings, so this is not the same as +input+ == +gem_name+.
+
+  def similarity input, gem_name, limit
+    #Check for same string
+    return 0 if input == gem_name
+
+    len1 = input.length
+    len2 = gem_name.length
+  
+    #Check if input matches beginning of gem name
+    #But not if the input is tiny
+    if len1 > 3 and gem_name[0, len1] == input
+      return limit - 1
+    end
+
+    #Check if string lengths are too different
+    return limit if (len1 - len2).abs > limit
+
+    #Compute Damerau–Levenshtein distance
+    #Based on http://gist.github.com/182759
+    oneago = nil
+    row = (1..len2).to_a << 0
+    len1.times do |i|
+      twoago, oneago, row = oneago, row, Array.new(len2) {0} << (i + 1)
+      len2.times do |j|
+        cost = input[i] == gem_name[j] ? 0 : 1
+        delcost = oneago[j] + 1
+        addcost = row[j - 1] + 1
+        subcost = oneago[j - 1] + cost
+        row[j] = [delcost, addcost, subcost].min
+        if i > 0 and j > 0 and input[i] == gem_name[j-1] and 
+                input[i-1] == gem_name[j]
+           row[j] = [row[j], twoago[j - 2] + cost].min
+        end
+      end
+    end
+    
+    row[len2 - 1]
+  end
+
+  private :similarity
+
   # Warn about legacy repositories if +exception+ indicates only legacy
   # repositories are available, and yield to the block.  Returns false if the
   # exception indicates some other FetchError.

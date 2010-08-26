@@ -129,7 +129,7 @@ to write the specification by hand.  For example:
         alert_error "Error installing #{gem_name}:\n\t#{e.message}"
         exit_code |= 1
       rescue Gem::GemNotFoundException => e
-        show_lookup_failure e.name, e.version, e.errors
+        show_lookup_failure e.name, e.version, e.errors, e.suggestions
 
         exit_code |= 2
       end

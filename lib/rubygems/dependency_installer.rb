@@ -210,9 +210,15 @@ class Gem::DependencyInstaller
     end
 
     if spec_and_source.nil? then
+      if version != Gem::Requirement.default or @domain == :local
+        suggestions = nil
+      else
+        suggestions = Gem::SpecFetcher.fetcher.find_similar(gem_name)
+      end
+
       raise Gem::GemNotFoundException.new(
         "Could not find a valid gem '#{gem_name}' (#{version}) locally or in a repository",
-        gem_name, version, @errors)
+        gem_name, version, @errors, suggestions)
     end
 
     @specs_and_sources = [spec_and_source]

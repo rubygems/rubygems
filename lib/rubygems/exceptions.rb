@@ -38,14 +38,15 @@ class Gem::FormatException < Gem::Exception
 end
 
 class Gem::GemNotFoundException < Gem::Exception
-  def initialize(msg, name=nil, version=nil, errors=nil)
+  def initialize(msg, name=nil, version=nil, errors=nil, suggestions=nil)
     super msg
     @name = name
     @version = version
     @errors = errors
+    @suggestions = suggestions
   end
 
-  attr_reader :name, :version, :errors
+  attr_reader :name, :version, :errors, :suggestions
 end
 
 class Gem::InstallError < Gem::Exception; end

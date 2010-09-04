@@ -55,6 +55,11 @@ class Gem::Installer
 
   attr_reader :spec
 
+  ##
+  # The options passed when the Gem::Installer was instantiated.
+  
+  attr_reader :options
+
   @path_warning = false
 
   class << self
@@ -92,7 +97,8 @@ class Gem::Installer
     require 'fileutils'
 
     @gem = gem
-    process_options(options)
+    @options = options
+    process_options
     load_gem_file
     
     if options[:user_install] and not options[:unpack] then
@@ -353,27 +359,27 @@ class Gem::Installer
     end
   end
 
-  def process_options(options)
-    options = {
+  def process_options
+    @options = {
       :bin_dir      => nil,
       :env_shebang  => false,
       :exec_format  => false,
       :force        => false,
       :install_dir  => Gem.dir,
       :source_index => Gem.source_index,
-    }.merge options
+    }.merge @options
 
-    @env_shebang         = options[:env_shebang]
-    @force               = options[:force]
-    gem_home             = options[:install_dir]
+    @env_shebang         = @options[:env_shebang]
+    @force               = @options[:force]
+    gem_home             = @options[:install_dir]
     @gem_home            = File.expand_path(gem_home)
-    @ignore_dependencies = options[:ignore_dependencies]
-    @format_executable   = options[:format_executable]
-    @security_policy     = options[:security_policy]
-    @wrappers            = options[:wrappers]
-    @bin_dir             = options[:bin_dir]
-    @development         = options[:development]
-    @source_index        = options[:source_index]
+    @ignore_dependencies = @options[:ignore_dependencies]
+    @format_executable   = @options[:format_executable]
+    @security_policy     = @options[:security_policy]
+    @wrappers            = @options[:wrappers]
+    @bin_dir             = @options[:bin_dir]
+    @development         = @options[:development]
+    @source_index        = @options[:source_index]
   end
   
   def load_gem_file

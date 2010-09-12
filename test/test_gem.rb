@@ -64,19 +64,19 @@ class TestGem < RubyGemTestCase
     assert_equal @exec_path, Gem.bin_path('a', nil, '4')
   end
 
-  def test_self_bin_path_no_default_bin
+  def test_self_bin_path_nonexistent_binfile
     quick_gem 'a', '2' do |s|
       s.executables = ['exec']
     end
-    assert_raises(Gem::Exception) do
-      Gem.bin_path('a', '2')
+    assert_raises(Gem::GemNotFoundException) do
+      Gem.bin_path('a', 'other', '2')
     end
   end
 
   def test_self_bin_path_no_bin_file
     quick_gem 'a', '1'
     assert_raises(Gem::Exception) do
-      Gem.bin_path('a', '1')
+      Gem.bin_path('a', nil, '1')
     end
   end
 
@@ -84,6 +84,16 @@ class TestGem < RubyGemTestCase
     assert_raises(Gem::GemNotFoundException) do
       Gem.bin_path('non-existent')
     end
+  end
+
+  def test_self_bin_path_bin_file_gone_in_latest
+    util_exec_gem
+    quick_gem 'a', '10' do |s|
+      s.executables = []
+      s.default_executable = nil
+    end
+    # Should not find a-10's non-abin (bug)
+    assert_equal @abin_path, Gem.bin_path('a', 'abin')
   end
 
   def test_self_bindir

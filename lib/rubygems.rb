@@ -318,20 +318,24 @@ module Gem
   def self.bin_path(name, exec_name = nil, *version_requirements)
     version_requirements = Gem::Requirement.default if
       version_requirements.empty?
-    spec = Gem.source_index.find_name(name, version_requirements).last
+    specs = Gem.source_index.find_name(name, version_requirements)
 
     raise Gem::GemNotFoundException,
-          "can't find gem #{name} (#{version_requirements})" unless spec
+          "can't find gem #{name} (#{version_requirements})" if specs.empty?
+
+    specs = specs.find_all do |spec|
+      spec.executables.include?(exec_name)
+    end if exec_name
+
+    unless spec = specs.last
+      msg = "can't find gem #{name} (#{version_requirements}) with executable #{exec_name}"
+      raise Gem::GemNotFoundException, msg
+    end
 
     exec_name ||= spec.default_executable
 
     unless exec_name
-      msg = "no default executable for #{spec.full_name}"
-      raise Gem::Exception, msg
-    end
-
-    unless spec.executables.include? exec_name
-      msg = "can't find executable #{exec_name} for #{spec.full_name}"
+      msg = "no default executable for #{spec.full_name} and none given"
       raise Gem::Exception, msg
     end
 

@@ -4,6 +4,7 @@ require 'time'
 require 'uri'
 
 require 'rubygems'
+require 'rubygems/progressbar'
 
 ##
 # RemoteFetcher handles the details of fetching gems and gem information from
@@ -341,7 +342,30 @@ class Gem::RemoteFetcher
 
       say "#{request.method} #{uri}" if
         Gem.configuration.really_verbose
-      response = connection.request request
+
+      if request.response_body_permitted?
+        response = connection.request request do |incomplete_response|
+          if Net::HTTPOK === incomplete_response
+            file_name = uri.to_s.split('/')[-1]
+            say "Downloading #{file_name}"
+            progress_bar = ProgressBar.new("Progress", 100)
+            file_size = incomplete_response.content_length
+            downloaded_size = 0
+            data = ''
+            incomplete_response.read_body do |segment|
+              data << segment
+              downloaded_size += segment.length
+              downloaded_percentage = (downloaded_size * 100) / file_size
+              progress_bar.set(downloaded_percentage)
+            end
+            incomplete_response.body = data
+            progress_bar.finish
+          end
+        end  
+      else
+        response = connection.request request
+      end
+
       say "#{response.code} #{response.message}" if
         Gem.configuration.really_verbose
 

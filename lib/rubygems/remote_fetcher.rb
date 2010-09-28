@@ -348,7 +348,7 @@ class Gem::RemoteFetcher
           if Net::HTTPOK === incomplete_response
             file_name = uri.to_s.split('/')[-1]
             say "Downloading #{file_name}"
-            progress_bar = ProgressBar.new("Progress", 100)
+            progress_bar = Gem::ProgressBar.new("Progress", 100)
             file_size = incomplete_response.content_length
             downloaded_size = 0
             data = ''

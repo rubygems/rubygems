@@ -7,6 +7,7 @@
 require 'rubygems/version'
 require 'rubygems/requirement'
 require 'rubygems/platform'
+require 'yaml'
 
 # :stopdoc:
 class Date; end # for ruby_code if date.rb wasn't required
@@ -477,7 +478,7 @@ class Gem::Specification
 
   def self.from_yaml(input)
     input = normalize_yaml_input input
-    spec = YAML.load input
+    spec = ::YAML.load input
 
     if spec && spec.class == FalseClass then
       raise Gem::EndOfYAMLException

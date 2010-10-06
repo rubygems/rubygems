@@ -672,8 +672,7 @@ class Gem::Specification
 
   def hash # :nodoc:
     @@attributes.inject(0) { |hash_code, (name, default_value)|
-      n = self.send(name).hash
-      hash_code + n
+      hash_code ^ self.send(name).hash
     }
   end
 

@@ -116,6 +116,8 @@ module Gem::UserInteraction
    :ask_yes_no,
    :choose_from_list,
    :say,
+   :say_no_newline,
+   :say_flush,
    :terminate_interaction ].each do |methname|
     class_eval %{
       def #{methname}(*args)
@@ -268,6 +270,20 @@ class Gem::StreamUI
   def say(statement="")
     @outs.puts statement
   end
+
+  ##
+  # Display a statement without a carriage return.
+
+  def say_no_newline(statement="")
+    @outs.print statement
+  end
+
+  ##
+  # Flush the stream
+
+  def say_flush
+    @outs.flush
+  end 
 
   ##
   # Display an informational alert.  Will ask +question+ if it is not nil.

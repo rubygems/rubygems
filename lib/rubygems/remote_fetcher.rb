@@ -355,12 +355,12 @@ class Gem::RemoteFetcher
               downloaded_size += segment.length
               downloaded_percentage = (downloaded_size * 100) / file_size
               if downloaded_percentage != previous_percentage
-                print "\r%s [%3d%%]" % [file_name, downloaded_percentage] if downloaded_percentage != previous_percentage
-                STDOUT.flush
+                say_no_newline "\r%s [%3d%%]" % [file_name, downloaded_percentage] if downloaded_percentage != previous_percentage
+                say_flush()
               end
               previous_percentage = downloaded_percentage
             end
-            print "\r#{' ' * (file_name.length + 7)}\r"
+            say_no_newline "\r#{' ' * (file_name.length + 7)}\r"
             if incomplete_response.respond_to? :body=
               incomplete_response.body = data
             else

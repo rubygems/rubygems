@@ -54,7 +54,7 @@ class Gem::Dependency
 
     unless TYPES.include? type
       raise ArgumentError, "Valid types are #{TYPES.inspect}, "
-        + "not #{@type.inspect}"
+        + "not #{type.inspect}"
     end
 
     @name        = name

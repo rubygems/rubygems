@@ -466,27 +466,36 @@ module Gem
   #
   #   Gem.find_files('rdoc/discover').each do |path| load path end
   #
-  # find_files search $LOAD_PATH for files as well as gems.
+  # if +check_load_path+ is true (the default), then find_files also searches
+  # $LOAD_PATH for files as well as gems.
   #
   # Note that find_files will return all files even if they are from different
   # versions of the same gem.
 
-  def self.find_files(path)
-    load_path_files = $LOAD_PATH.map do |load_path|
-      files = Dir["#{File.expand_path path, load_path}#{Gem.suffix_pattern}"]
+  def self.find_files(path, check_load_path=true)
+    files = []
 
-      files.select do |load_path_file|
-        File.file? load_path_file.untaint
+    if check_load_path
+      $LOAD_PATH.each do |load_path|
+        globbed = Dir["#{File.expand_path path, load_path}#{Gem.suffix_pattern}"]
+
+        globbed.each do |load_path_file|
+          files << load_path_file if File.file?(load_path_file.untaint)
+        end
       end
-    end.flatten
+    end
 
-    specs = searcher.find_all path
+    specs = searcher.find_all_dot_rb path
 
-    specs_files = specs.map do |spec|
-      searcher.matching_files spec, path
-    end.flatten
+    specs.each do |spec|
+      files.concat searcher.matching_files(spec, path)
+    end
 
-    (load_path_files + specs_files).flatten.uniq
+    # $LOAD_PATH might contain duplicate entries or reference
+    # the spec dirs directly, so we prune.
+    files.uniq! if check_load_path
+
+    return files
   end
 
   ##
@@ -981,11 +990,9 @@ module Gem
   end
 
   ##
-  # Find all 'rubygems_plugin' files and load them
+  # Load +plugins+ as ruby files
 
-  def self.load_plugins
-    plugins = Gem.find_files 'rubygems_plugin'
-
+  def self.load_plugin_files(plugins)
     plugins.each do |plugin|
 
       # Skip older versions of the GemCutter plugin: Its commands are in
@@ -1000,6 +1007,31 @@ module Gem
         warn "Error loading RubyGems plugin #{details}"
       end
     end
+  end
+
+  ##
+  # Find all 'rubygems_plugin' files in installed gems and load them
+
+  def self.load_plugins
+    load_plugin_files find_files('rubygems_plugin', false)
+  end
+
+  ##
+  # Find all 'rubygems_plugin' files in $LOAD_PATH and load them
+
+  def self.load_env_plugins
+    path = "rubygems_plugin"
+
+    files = []
+    $LOAD_PATH.each do |load_path|
+      globbed = Dir["#{File.expand_path path, load_path}#{Gem.suffix_pattern}"]
+
+      globbed.each do |load_path_file|
+        files << load_path_file if File.file?(load_path_file.untaint)
+      end
+    end
+
+    load_plugin_files files
   end
 
   class << self

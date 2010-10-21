@@ -653,19 +653,44 @@ class TestGem < RubyGemTestCase
   end
 
   def test_load_plugins
-    with_plugin('load') { Gem.load_plugins }
+    plugin_path = File.join "lib", "rubygems_plugin.rb"
+
+    Dir.chdir @tempdir do
+      FileUtils.mkdir_p 'lib'
+      File.open plugin_path, "w" do |fp|
+        fp.puts "TestGem::TEST_SPEC_PLUGIN_LOAD = :loaded"
+      end
+
+      foo = quick_gem 'foo', '1' do |s|
+        s.files << plugin_path
+      end
+
+      install_gem foo
+    end
+
+    Gem.source_index = nil
+
+    gem 'foo'
+
+    Gem.load_plugins
+
+    assert_equal :loaded, TEST_SPEC_PLUGIN_LOAD
+  end
+
+  def test_load_env_plugins
+    with_plugin('load') { Gem.load_env_plugins }
     assert_equal :loaded, TEST_PLUGIN_LOAD
 
     util_remove_interrupt_command
 
     # Should attempt to cause a StandardError
-    with_plugin('standarderror') { Gem.load_plugins }
+    with_plugin('standarderror') { Gem.load_env_plugins }
     assert_equal :loaded, TEST_PLUGIN_STANDARDERROR
 
     util_remove_interrupt_command
 
     # Should attempt to cause an Exception
-    with_plugin('exception') { Gem.load_plugins }
+    with_plugin('exception') { Gem.load_env_plugins }
     assert_equal :loaded, TEST_PLUGIN_EXCEPTION
   end
 

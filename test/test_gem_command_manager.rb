@@ -10,7 +10,7 @@ class TestGemCommandManager < RubyGemTestCase
   end
 
   def test_run_interrupt
-    Gem.load_plugins
+    Gem.load_env_plugins
 
     use_ui @ui do
       assert_raises MockGemUi::TermError do

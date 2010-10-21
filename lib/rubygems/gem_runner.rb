@@ -9,6 +9,11 @@ require 'rubygems/config_file'
 require 'rubygems/doc_manager'
 
 ##
+# Load additional plugins from $LOAD_PATH
+
+Gem.load_env_plugins
+
+##
 # Run an instance of the gem program.
 #
 # Gem::GemRunner is only intended for internal use by RubyGems itself.  It

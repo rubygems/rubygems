@@ -55,6 +55,23 @@ class Gem::GemPathSearcher
   end
 
   ##
+  # Find all files +path+ .rb advertised by all gemspecs.
+  # Only files in the gemspec's require paths are considered.
+
+  def find_all_dot_rb(path)
+    rb_path = "#{path}.rb"
+
+    @gemspecs.select do |spec|
+      rp = spec.require_paths
+      next false unless rp
+
+      rp.find do |lib|
+        spec.files.include? File.join(lib, rb_path)
+      end
+    end
+  end
+
+  ##
   # Attempts to find a matching path using the require_paths of the given
   # +spec+.
 

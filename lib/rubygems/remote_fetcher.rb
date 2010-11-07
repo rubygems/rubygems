@@ -243,7 +243,7 @@ class Gem::RemoteFetcher
       ]
     end
 
-    connection_id = net_http_args.join ':'
+    connection_id = [Thread.current.object_id, *net_http_args].join ':'
     @connections[connection_id] ||= Net::HTTP.new(*net_http_args)
     connection = @connections[connection_id]
 

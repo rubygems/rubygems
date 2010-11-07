@@ -562,7 +562,7 @@ gems:
       end
     end
 
-    conn = { 'gems.example.com:80' => conn }
+    conn = { "#{Thread.current.object_id}:gems.example.com:80" => conn }
     fetcher.instance_variable_set :@connections, conn
 
     data = fetcher.open_uri_or_path 'http://gems.example.com/redirect'
@@ -581,7 +581,7 @@ gems:
       res
     end
 
-    conn = { 'gems.example.com:80' => conn }
+    conn = { "#{Thread.current.object_id}:gems.example.com:80" => conn }
     fetcher.instance_variable_set :@connections, conn
 
     e = assert_raises Gem::RemoteFetcher::FetchError do

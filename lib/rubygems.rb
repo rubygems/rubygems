@@ -1051,6 +1051,10 @@ module Gem
 
     alias cache source_index # an alias for the old name
 
+    # Internal helper to inform us if we were fastloaded, so plugins.rb should
+    # or should not load plugins.
+    attr_reader :fast
+
     # :startdoc:
 
   end
@@ -1164,3 +1168,6 @@ require 'rubygems/config_file'
 require 'rubygems/custom_require' if gem_disabled or RUBY_VERSION < '1.9'
 
 Gem.clear_paths
+
+require 'rubygems/plugins' unless Gem.fast
+

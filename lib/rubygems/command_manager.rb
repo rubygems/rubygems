@@ -179,5 +179,3 @@ class Gem::CommandManager
 
 end
 
-# Load rubygems plugins after the command manager is loaded.
-require 'rubygems/plugins'

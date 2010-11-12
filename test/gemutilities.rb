@@ -295,7 +295,15 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     Gem.source_index.refresh!
   end
 
-  def util_gem(name, version, &block)
+  def util_gem(name, version, deps = nil, &block)
+    if deps then # fuck you eric
+      block = proc do |s|
+        deps.each do |name, req|
+          s.add_dependency name, req
+        end
+      end
+    end
+
     spec = quick_gem(name, version, &block)
 
     util_build_gem spec

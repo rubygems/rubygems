@@ -299,7 +299,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     if deps then # fuck you eric
       block = proc do |s|
         deps.each do |name, req|
-          s.add_dependency name, req
+          s.add_dependency name, (req || '>= 0')
         end
       end
     end

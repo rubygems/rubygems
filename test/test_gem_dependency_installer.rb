@@ -44,14 +44,14 @@ class TestGemDependencyInstaller < RubyGemTestCase
       s.platform = Gem::Platform.new %w[cpu other_platform 1]
     end
 
-    @w1, @w1_gem = util_gem 'w', '1' do |s| s.add_dependency 'x' end
+    @w1, @w1_gem = util_gem 'w', '1', 'x' => nil
 
     @y1, @y1_gem = util_gem 'y', '1'
     @y1_1_p, @y1_1_p_gem = util_gem 'y', '1.1' do |s|
       s.platform = Gem::Platform.new %w[cpu my_platform 1]
     end
 
-    @z1, @z1_gem = util_gem 'z', '1'   do |s| s.add_dependency 'y' end
+    @z1, @z1_gem = util_gem 'z', '1', 'y' => nil
 
     @fetcher = Gem::FakeFetcher.new
     Gem::RemoteFetcher.fetcher = @fetcher
@@ -191,7 +191,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
   def test_install_dependency_old
     e1, e1_gem = util_gem 'e', '1'
-    f1, f1_gem = util_gem 'f', '1' do |s| s.add_dependency 'e' end
+    f1, f1_gem = util_gem 'f', '1', 'e' => nil
     f2, f2_gem = util_gem 'f', '2'
 
     FileUtils.mv e1_gem, @tempdir
@@ -617,7 +617,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
   def test_gather_dependencies_dropped
     b2, = util_gem 'b', '2'
-    c1, = util_gem 'c', '1' do |s| s.add_dependency 'b' end
+    c1, = util_gem 'c', '1', 'b' => nil
 
     util_clear_gems
 
@@ -712,7 +712,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
   end
 
   def test_gather_dependencies_old_required
-    e1, = util_gem 'e', '1' do |s| s.add_dependency 'd', '= 1' end
+    e1, = util_gem 'e', '1', 'd' => '= 1'
 
     util_clear_gems
 

@@ -652,7 +652,34 @@ class TestGemDependencyInstaller < RubyGemTestCase
     inst.find_spec_by_name_and_version 'a'
     inst.gather_dependencies
 
-    assert_equal %w[b-1.0 c-1.0 a-1.0], inst.gems_to_install.map { |s| s.full_name }
+    actual = inst.gems_to_install.map { |s| s.full_name }
+    assert_equal %w[b-1.0 c-1.0 a-1.0], actual
+  end
+
+  ##
+  # [A] depends on
+  #     [B] ~> 1.0 (satisfied by 1.1)
+  #     [C]  = 1.0 depends on
+  #         [B] = 1.0
+  #
+  # and should resolve using b-1.0
+
+  def test_gather_dependencies_under
+    a,   _ = util_gem 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
+    b10, _ = util_gem 'b', '1.0'
+    b11, _ = util_gem 'b', '1.1'
+    c,   _ = util_gem 'c', '1.0', 'b' => '= 1.0'
+
+    util_clear_gems
+
+    si = util_setup_spec_fetcher a, b10, b11, c
+
+    inst = Gem::DependencyInstaller.new
+    inst.find_spec_by_name_and_version 'a'
+    inst.gather_dependencies
+
+    actual = inst.gems_to_install.map { |s| s.full_name }
+    assert_equal %w[b-1.0 c-1.0 a-1.0], actual
   end
 
   # under
@@ -661,9 +688,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
   #     [B] ~> 1.0 (satisfied by 1.0)
   #     [C]  = 1.0 depends on
   #         [B] = 2.0
-  # should break
 
-  def test_gather_dependencies_under
+  def test_gather_dependencies_divergent
     a, _  = util_gem 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
     b1, _ = util_gem 'b', '1.0'
     b2, _ = util_gem 'b', '2.0'
@@ -679,8 +705,6 @@ class TestGemDependencyInstaller < RubyGemTestCase
       inst.find_spec_by_name_and_version 'a'
       inst.gather_dependencies
     end
-
-    assert_equal %w[b-1.0 c-1.0 a-1.0], inst.gems_to_install.map { |s| s.full_name }
   end
 
   def test_gather_dependencies_platform_alternate

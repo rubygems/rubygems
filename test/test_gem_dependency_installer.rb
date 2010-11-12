@@ -630,6 +630,59 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal %w[b-2 c-1], inst.gems_to_install.map { |s| s.full_name }
   end
 
+  ##
+  # [A] depends on
+  #     [B] >= 1.0 (satisfied by 2.0)
+  #     [C]  = 1.0 depends on
+  #         [B] ~> 1.0
+  #
+  # and should resolve using b-1.0
+
+  def test_gather_dependencies_over
+    a, _  = util_gem 'a', '1.0', 'b' => '>= 1.0', 'c' => '= 1.0'
+    b1, _ = util_gem 'b', '1.0'
+    b2, _ = util_gem 'b', '2.0'
+    c,  _ = util_gem 'c', '1.0', 'b' => '~> 1.0'
+
+    util_clear_gems
+
+    si = util_setup_spec_fetcher a, b1, b2, c
+
+    inst = Gem::DependencyInstaller.new
+    inst.find_spec_by_name_and_version 'a'
+    inst.gather_dependencies
+
+    assert_equal %w[b-1.0 c-1.0 a-1.0], inst.gems_to_install.map { |s| s.full_name }
+  end
+
+  # under
+  #
+  # [A] depends on
+  #     [B] ~> 1.0 (satisfied by 1.0)
+  #     [C]  = 1.0 depends on
+  #         [B] = 2.0
+  # should break
+
+  def test_gather_dependencies_under
+    a, _  = util_gem 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
+    b1, _ = util_gem 'b', '1.0'
+    b2, _ = util_gem 'b', '2.0'
+    c,  _ = util_gem 'c', '1.0', 'b' => '= 2.0'
+
+    util_clear_gems
+
+    si = util_setup_spec_fetcher a, b1, b2, c
+
+    inst = Gem::DependencyInstaller.new
+
+    assert_raises Gem::DependencyError do
+      inst.find_spec_by_name_and_version 'a'
+      inst.gather_dependencies
+    end
+
+    assert_equal %w[b-1.0 c-1.0 a-1.0], inst.gems_to_install.map { |s| s.full_name }
+  end
+
   def test_gather_dependencies_platform_alternate
     util_set_arch 'cpu-my_platform1'
 

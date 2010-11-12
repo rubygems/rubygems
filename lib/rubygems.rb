@@ -8,6 +8,7 @@
 gem_disabled = !defined? Gem
 
 require 'rubygems/defaults'
+require 'rbconfig'
 
 ##
 # RubyGems is the Ruby standard for publishing and managing third party
@@ -122,11 +123,9 @@ module Gem
     ##
     # Configuration settings from ::RbConfig
     ConfigMap = Hash.new do |cm, key|
-      require 'rbconfig'
       cm[key] = RbConfig::CONFIG[key.to_s]
     end
   else
-    require 'rbconfig'
     RbConfigPriorities.each do |key|
       ConfigMap[key.to_sym] = RbConfig::CONFIG[key]
     end
@@ -1123,14 +1122,10 @@ end
 # Otherwise return a path to the share area as define by
 # "#{ConfigMap[:datadir]}/#{package_name}".
 
-module Config
-  def self.datadir(package_name)
-    warn 'RbConfig.datadir is being deprecated from RubyGems, and will be
-removed in a future release. If you wish to rely on a datadir, please
-use Gem.datadir, and mark rubygems as a dependency.'
-    Gem.datadir(package_name) ||
-      File.join(Gem::ConfigMap[:datadir], package_name)
-  end
+def RbConfig.datadir(package_name)
+  require 'rbconfig/datadir' # TODO Deprecate after January 2010.
+  Gem.datadir(package_name) ||
+    File.join(Gem::ConfigMap[:datadir], package_name)
 end
 
 require 'rubygems/exceptions'

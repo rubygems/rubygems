@@ -28,4 +28,6 @@ Autotest.add_hook :initialize do |at|
   # at.add_mapping %r%^test/support/(.*).rb$% do |_, m|
   #   files_matching %r%^test/test_(.*)\.rb%%
   # end
+
+  at.find_directories = ARGV unless ARGV.empty?
 end

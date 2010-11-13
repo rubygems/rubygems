@@ -33,48 +33,21 @@ class Gem::Commands::WhichCommand < Gem::Command
     found = false
 
     options[:args].each do |arg|
-      dirs = $LOAD_PATH
-      spec = searcher.find arg
+      paths = Gem.find_files(arg, false)
 
-      if spec then
-        if options[:search_gems_first] then
-          dirs = gem_paths(spec) + $LOAD_PATH
-        else
-          dirs = $LOAD_PATH + gem_paths(spec)
-        end
+      if options[:search_gems_first]
+        paths |= Gem.find_files(arg, true)
       end
-
-      paths = find_paths arg, dirs
 
       if paths.empty? then
         alert_error "Can't find ruby library file or shared library #{arg}"
       else
-        say paths
+        say options[:show_all] ? paths : paths.first
         found = true
       end
     end
 
     terminate_interaction 1 unless found
-  end
-
-  def find_paths(package_name, dirs)
-    result = []
-
-    dirs.each do |dir|
-      EXT.each do |ext|
-        full_path = File.join dir, "#{package_name}#{ext}"
-        if File.exist? full_path then
-          result << full_path
-          return result unless options[:show_all]
-        end
-      end
-    end
-
-    result
-  end
-
-  def gem_paths(spec)
-    spec.require_paths.collect { |d| File.join spec.full_gem_path, d }
   end
 
   def usage # :nodoc:

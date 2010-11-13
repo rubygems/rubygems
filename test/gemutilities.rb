@@ -15,6 +15,8 @@ require 'rubygems/package'
 require 'rubygems/test_utilities'
 require 'pp'
 require 'yaml'
+require 'zlib'
+
 begin
   YAML::ENGINE.yamler = 'psych'
 rescue LoadError

@@ -54,7 +54,7 @@ class Gem::Dependency
 
     unless TYPES.include? type
       raise ArgumentError, "Valid types are #{TYPES.inspect}, "
-        + "not #{@type.inspect}"
+        + "not #{type.inspect}"
     end
 
     @name        = name
@@ -226,6 +226,13 @@ class Gem::Dependency
     return true if requirement.none?
 
     requirement.satisfied_by? Gem::Version.new(spec_version)
+  end
+
+  def matches_spec?(spec)
+    return false unless name === spec.name # name can be a Regexp, so use ===
+    return true  if requirement.none?
+
+    requirement.satisfied_by?(spec.version)
   end
 
 end

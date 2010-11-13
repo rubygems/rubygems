@@ -475,7 +475,7 @@ module Gem
 
     specs = searcher.find_all_dot_rb path
 
-    specs.each do |spec|
+    specs.sort.each do |spec|
       files.concat searcher.matching_files(spec, path)
     end
 

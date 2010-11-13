@@ -22,7 +22,6 @@ class Gem::Commands::InstallCommand < Gem::Command
       :generate_rdoc     => true,
       :generate_ri       => true,
       :format_executable => false,
-      :test              => false,
       :version           => Gem::Requirement.default,
     })
 
@@ -41,7 +40,7 @@ class Gem::Commands::InstallCommand < Gem::Command
 
   def defaults_str # :nodoc:
     "--both --version '#{Gem::Requirement.default}' --rdoc --ri --no-force\n" \
-    "--no-test --install-dir #{Gem.dir}"
+    "--install-dir #{Gem.dir}"
   end
 
   def description # :nodoc:
@@ -154,19 +153,6 @@ to write the specification by hand.  For example:
       if options[:generate_rdoc] then
         installed_gems.each do |gem|
           Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
-        end
-      end
-
-      if options[:test] then
-        installed_gems.each do |spec|
-          gem_spec = Gem::SourceIndex.from_installed_gems.find_name(spec.name, spec.version.version).first
-          result = Gem::Validator.new.unit_test(gem_spec)
-          if result and not result.passed?
-            unless ask_yes_no("...keep Gem?", true)
-              require 'rubygems/uninstaller'
-              Gem::Uninstaller.new(spec.name, :version => spec.version.version).uninstall
-            end
-          end
         end
       end
     end

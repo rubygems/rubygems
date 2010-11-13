@@ -301,8 +301,11 @@ class Gem::Version
     rhsize = rhsegments.size
     limit  = (lhsize > rhsize ? lhsize : rhsize) - 1
 
-    0.upto(limit) do |i|
+    i = 0
+
+    while i <= limit
       lhs, rhs = lhsegments[i] || 0, rhsegments[i] || 0
+      i += 1
 
       next               if lhs == rhs
       return  -1         if String  === lhs && Numeric === rhs

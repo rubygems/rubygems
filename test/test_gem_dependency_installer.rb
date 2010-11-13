@@ -607,6 +607,19 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal [@a1_pre], prereleases
   end
 
+  def assert_resolve expected, *specs
+    util_clear_gems
+
+    si = util_setup_spec_fetcher(*specs)
+
+    inst = Gem::DependencyInstaller.new
+    inst.find_spec_by_name_and_version 'a'
+    inst.gather_dependencies
+
+    actual = inst.gems_to_install.map { |s| s.full_name }
+    assert_equal expected, actual
+  end
+
   def test_gather_dependencies
     inst = Gem::DependencyInstaller.new
     inst.find_spec_by_name_and_version 'b'
@@ -619,15 +632,26 @@ class TestGemDependencyInstaller < RubyGemTestCase
     b2, = util_gem 'b', '2'
     c1, = util_gem 'c', '1', 'b' => nil
 
-    util_clear_gems
+    assert_resolve %w[b-2 c-1], @a1, @b1, b2, c1
+  end
 
-    si = util_setup_spec_fetcher @a1, @b1, b2, c1
+  ##
+  # [A] depends on
+  #     [B] >= 1.0 (satisfied by 1.1) depends on
+  #         [Z]
+  #     [C] >= 1.0 depends on
+  #         [B] = 1.0
+  #
+  # and should backtrack to resolve using b-1.0, pruning Z from the
+  # resolve.
 
-    inst = Gem::DependencyInstaller.new
-    inst.find_spec_by_name_and_version 'c'
-    inst.gather_dependencies
+  def test_gather_dependencies_raggi_the_edgecase_generator
+    a,  _ = util_gem 'a', '1.0', 'b' => '>= 1.0', 'c' => '>= 1.0'
+    b1, _ = util_gem 'b', '1.0'
+    b2, _ = util_gem 'b', '1.1', 'z' => '>= 1.0'
+    c,  _ = util_gem 'c', '1.0', 'b' => '= 1.0'
 
-    assert_equal %w[b-2 c-1], inst.gems_to_install.map { |s| s.full_name }
+    assert_resolve %w[b-1.0 c-1.0 a-1.0], a, b1, b2, c
   end
 
   ##
@@ -644,16 +668,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     b2, _ = util_gem 'b', '2.0'
     c,  _ = util_gem 'c', '1.0', 'b' => '~> 1.0'
 
-    util_clear_gems
-
-    si = util_setup_spec_fetcher a, b1, b2, c
-
-    inst = Gem::DependencyInstaller.new
-    inst.find_spec_by_name_and_version 'a'
-    inst.gather_dependencies
-
-    actual = inst.gems_to_install.map { |s| s.full_name }
-    assert_equal %w[b-1.0 c-1.0 a-1.0], actual
+    assert_resolve %w[b-1.0 c-1.0 a-1.0], a, b1, b2, c
   end
 
   ##
@@ -663,6 +678,9 @@ class TestGemDependencyInstaller < RubyGemTestCase
   #         [B] = 1.0
   #
   # and should resolve using b-1.0
+  #
+  # TODO: this is not under, but over... under would require depth
+  # first resolve through a dependency that is later pruned.
 
   def test_gather_dependencies_under
     a,   _ = util_gem 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
@@ -670,16 +688,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     b11, _ = util_gem 'b', '1.1'
     c,   _ = util_gem 'c', '1.0', 'b' => '= 1.0'
 
-    util_clear_gems
-
-    si = util_setup_spec_fetcher a, b10, b11, c
-
-    inst = Gem::DependencyInstaller.new
-    inst.find_spec_by_name_and_version 'a'
-    inst.gather_dependencies
-
-    actual = inst.gems_to_install.map { |s| s.full_name }
-    assert_equal %w[b-1.0 c-1.0 a-1.0], actual
+    assert_resolve %w[b-1.0 c-1.0 a-1.0], a, b10, b11, c
   end
 
   # under

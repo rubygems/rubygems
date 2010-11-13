@@ -241,7 +241,7 @@ class Gem::Version
   # A version is considered a prerelease if it contains a letter.
 
   def prerelease?
-    @prerelease ||= segments.any? { |s| String === s }
+    @prerelease ||= @version =~ /[a-zA-Z]/
   end
 
   def pretty_print q # :nodoc:

@@ -228,5 +228,12 @@ class Gem::Dependency
     requirement.satisfied_by? Gem::Version.new(spec_version)
   end
 
+  def matches_spec?(spec)
+    return false unless name === spec.name # name can be a Regexp, so use ===
+    return true  if requirement.none?
+
+    requirement.satisfied_by?(spec.version)
+  end
+
 end
 

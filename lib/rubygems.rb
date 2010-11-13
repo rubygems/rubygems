@@ -511,7 +511,7 @@ module Gem
     File.expand_path "~"
   rescue
     if File::ALT_SEPARATOR then
-      "C:/"
+      "#{ENV['HOMEDRIVE']}/" # C:/ or /
     else
       "/"
     end

@@ -511,7 +511,8 @@ module Gem
     File.expand_path "~"
   rescue
     if File::ALT_SEPARATOR then
-      "#{ENV['HOMEDRIVE']}/" # C:/ or /
+      drive = ENV['HOMEDRIVE'] || ENV['SystemDrive']
+      File.join(drive.to_s, '/')
     else
       "/"
     end

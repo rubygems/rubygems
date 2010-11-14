@@ -290,9 +290,9 @@ class Gem::Version
   # version is larger, the same, or smaller than this one.
 
   def <=> other
+    return   0     if @version == other.version
     return   1 unless other # HACK: comparable with nil? why?
-    return nil unless self.class === other
-    return   0     if version == other.version
+    return nil unless other.is_a?(self.class)
 
     lhsegments = segments
     rhsegments = other.segments

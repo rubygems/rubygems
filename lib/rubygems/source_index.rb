@@ -269,8 +269,8 @@ class Gem::SourceIndex
   ##
   # Find a gem by an exact match on the short name.
 
-  def find_name(gem_name, version_requirement = Gem::Requirement.default)
-    dep = Gem::Dependency.new gem_name, version_requirement
+  def find_name(gem_name, requirement = Gem::Requirement.default)
+    dep = Gem::Dependency.new gem_name, requirement
     search dep
   end
 
@@ -284,7 +284,7 @@ class Gem::SourceIndex
   # behavior is deprecated and will be removed.
 
   def search(gem_pattern, platform_only = false)
-    version_requirement = nil
+    requirement = nil
     only_platform = false
 
     # TODO - Remove support and warning for legacy arguments after 2008/11
@@ -294,10 +294,10 @@ class Gem::SourceIndex
 
     case gem_pattern
     when Regexp then
-      version_requirement = platform_only || Gem::Requirement.default
+      requirement = platform_only || Gem::Requirement.default
     when Gem::Dependency then
       only_platform = platform_only
-      version_requirement = gem_pattern.requirement
+      requirement = gem_pattern.requirement
       gem_pattern = if Regexp === gem_pattern.name then
                       gem_pattern.name
                     elsif gem_pattern.name.empty? then
@@ -306,17 +306,17 @@ class Gem::SourceIndex
                       /^#{Regexp.escape gem_pattern.name}$/
                     end
     else
-      version_requirement = platform_only || Gem::Requirement.default
+      requirement = platform_only || Gem::Requirement.default
       gem_pattern = /#{gem_pattern}/i
     end
 
-    unless Gem::Requirement === version_requirement then
-      version_requirement = Gem::Requirement.create version_requirement
+    unless Gem::Requirement === requirement then
+      requirement = Gem::Requirement.create requirement
     end
 
     specs = all_gems.values.select do |spec|
       spec.name =~ gem_pattern and
-        version_requirement.satisfied_by? spec.version
+        requirement.satisfied_by? spec.version
     end
 
     if only_platform then

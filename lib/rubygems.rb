@@ -111,7 +111,25 @@ module Gem
     attr_accessor :name
 
     # Version requirement of gem
-    attr_accessor :version_requirement
+    attr_accessor :requirement
+
+    def version_requirement
+      warn "#{Gem.location_of_caller.join ':'}:Warning: " \
+        "Gem::LoadError#version_requirement is deprecated " \
+        "and will be removed on or after January 2011. " \
+        "Use #requirement."
+
+      requirement
+    end
+
+    def version_requirement= requirement
+      warn "#{Gem.location_of_caller.join ':'}:Warning: " \
+        "Gem::LoadError#version_requirement= is deprecated " \
+        "and will be removed on or after January 2011. " \
+        "Use #requirement."
+
+      self.requirement = requirement
+    end
   end
 
   RbConfigPriorities = %w[
@@ -168,7 +186,7 @@ module Gem
 
   ##
   # Activates an installed gem matching +gem+.  The gem must satisfy
-  # +version_requirements+.
+  # +requirements+.
   #
   # Returns true if the gem is activated, false if it is already
   # loaded, or an exception otherwise.
@@ -182,22 +200,22 @@ module Gem
   # More information on version requirements can be found in the
   # Gem::Requirement and Gem::Version documentation.
 
-  def self.activate(gem, *version_requirements)
-    if version_requirements.last.is_a?(Hash)
-      options = version_requirements.pop
+  def self.activate(gem, *requirements)
+    if requirements.last.is_a?(Hash)
+      options = requirements.pop
     else
       options = {}
     end
 
     sources = options[:sources] || []
 
-    if version_requirements.empty? then
-      version_requirements = Gem::Requirement.default
+    if requirements.empty? then
+      requirements = Gem::Requirement.default
     end
 
     unless gem.respond_to?(:name) and
            gem.respond_to?(:requirement) then
-      gem = Gem::Dependency.new(gem, version_requirements)
+      gem = Gem::Dependency.new(gem, requirements)
     end
 
     matches = Gem.source_index.find_name(gem.name, gem.requirement)
@@ -218,7 +236,7 @@ module Gem
 
          e = Gem::LoadError.new msg
          e.name = gem.name
-         e.version_requirement = gem.requirement
+         e.requirement = gem.requirement
 
          raise e
       end
@@ -302,23 +320,23 @@ module Gem
   ##
   # Find the full path to the executable for gem +name+.  If the +exec_name+
   # is not given, the gem's default_executable is chosen, otherwise the
-  # specified executable's path is returned.  +version_requirements+ allows
+  # specified executable's path is returned.  +requirements+ allows
   # you to specify specific gem versions.
 
-  def self.bin_path(name, exec_name = nil, *version_requirements)
-    version_requirements = Gem::Requirement.default if
-      version_requirements.empty?
-    specs = Gem.source_index.find_name(name, version_requirements)
+  def self.bin_path(name, exec_name = nil, *requirements)
+    requirements = Gem::Requirement.default if
+      requirements.empty?
+    specs = Gem.source_index.find_name(name, requirements)
 
     raise Gem::GemNotFoundException,
-          "can't find gem #{name} (#{version_requirements})" if specs.empty?
+          "can't find gem #{name} (#{requirements})" if specs.empty?
 
     specs = specs.find_all do |spec|
       spec.executables.include?(exec_name)
     end if exec_name
 
     unless spec = specs.last
-      msg = "can't find gem #{name} (#{version_requirements}) with executable #{exec_name}"
+      msg = "can't find gem #{name} (#{requirements}) with executable #{exec_name}"
       raise Gem::GemNotFoundException, msg
     end
 
@@ -775,7 +793,7 @@ module Gem
     end
 
     error.name = gem.name
-    error.version_requirement = gem.requirement
+    error.requirement = gem.requirement
     raise error
   end
 
@@ -1084,7 +1102,7 @@ module Kernel
   ##
   # Use Kernel#gem to activate a specific version of +gem_name+.
   #
-  # +version_requirements+ is a list of version requirements that the
+  # +requirements+ is a list of version requirements that the
   # specified gem must match, most commonly "= example.version.number".  See
   # Gem::Requirement for how to specify a version requirement.
   #
@@ -1107,10 +1125,10 @@ module Kernel
   #
   #   GEM_SKIP=libA:libB ruby -I../libA -I../libB ./mycode.rb
 
-  def gem(gem_name, *version_requirements) # :doc:
+  def gem(gem_name, *requirements) # :doc:
     skip_list = (ENV['GEM_SKIP'] || "").split(/:/)
     raise Gem::LoadError, "skipping #{gem_name}" if skip_list.include? gem_name
-    Gem.activate(gem_name, *version_requirements)
+    Gem.activate(gem_name, *requirements)
   end
 
   private :gem

@@ -12,8 +12,8 @@ if defined?(Gem) then
 
   module Kernel
 
-    def gem(gem_name, *version_requirements)
-      Gem.push_gem_version_on_load_path(gem_name, *version_requirements)
+    def gem(gem_name, *requirements)
+      Gem.push_gem_version_on_load_path(gem_name, *requirements)
     end
     private :gem
   end
@@ -184,8 +184,8 @@ if defined?(Gem) then
       GemPaths = {}
       GemVersions = {}
 
-      def push_gem_version_on_load_path(gem_name, *version_requirements)
-        if version_requirements.empty?
+      def push_gem_version_on_load_path(gem_name, *requirements)
+        if requirements.empty?
           unless GemPaths.has_key?(gem_name) then
             raise Gem::LoadError, "Could not find RubyGem #{gem_name} (>= 0)\n"
           end
@@ -193,12 +193,12 @@ if defined?(Gem) then
           # highest version gems already active
           return false
         else
-          if version_requirements.length > 1 then
+          if requirements.length > 1 then
             QuickLoader.load_full_rubygems_library
-            return gem(gem_name, *version_requirements)
+            return gem(gem_name, *requirements)
           end
 
-          requirement, version = version_requirements[0].split
+          requirement, version = requirements[0].split
           requirement.strip!
 
           if loaded_version = GemVersions[gem_name] then
@@ -214,7 +214,7 @@ if defined?(Gem) then
           end
 
           QuickLoader.load_full_rubygems_library
-          gem gem_name, *version_requirements
+          gem gem_name, *requirements
         end
       end
 

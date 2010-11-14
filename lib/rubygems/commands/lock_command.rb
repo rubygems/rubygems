@@ -75,7 +75,7 @@ lock it down to the exact version.
     until pending.empty? do
       full_name = pending.shift
 
-      spec = Gem::SourceIndex.load_specification spec_path(full_name)
+      spec = Gem::Specification.load spec_path(full_name)
 
       if spec.nil? then
         complain "Could not find gem #{full_name}, try using the full name"

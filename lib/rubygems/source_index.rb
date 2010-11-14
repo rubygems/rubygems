@@ -77,33 +77,7 @@ class Gem::SourceIndex
     # loaded spec.
 
     def load_specification(file_name)
-      return nil unless file_name and File.exist? file_name
-
-      spec_code = if defined? Encoding then
-                    File.read file_name, :encoding => 'UTF-8'
-                  else
-                    File.read file_name
-                  end.untaint
-
-      begin
-        gemspec = eval spec_code, binding, file_name
-
-        if gemspec.is_a?(Gem::Specification)
-          gemspec.loaded_from = file_name
-          return gemspec
-        end
-        alert_warning "File '#{file_name}' does not evaluate to a gem specification"
-      rescue SignalException, SystemExit
-        raise
-      rescue SyntaxError => e
-        alert_warning e
-        alert_warning spec_code
-      rescue Exception => e
-        alert_warning "#{e.inspect}\n#{spec_code}"
-        alert_warning "Invalid .gemspec format in '#{file_name}'"
-      end
-
-      return nil
+      Gem::Specification.load file_name
     end
 
   end
@@ -144,7 +118,7 @@ class Gem::SourceIndex
       spec_files = Dir.glob File.join(spec_dir, '*.gemspec')
 
       spec_files.each do |spec_file|
-        gemspec = self.class.load_specification spec_file.untaint
+        gemspec = Gem::Specification.load spec_file
         add_spec gemspec if gemspec
       end
     end

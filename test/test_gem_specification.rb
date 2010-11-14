@@ -1256,7 +1256,9 @@ end
     specfile.write "raise 'boom'"
     specfile.close
     begin
-      Gem::Specification.load(specfile.path)
+      capture_io do
+        Gem::Specification.load(specfile.path)
+      end
     rescue => e
       name_rexp = Regexp.new(Regexp.escape(specfile.path))
       assert e.backtrace.grep(name_rexp).any?

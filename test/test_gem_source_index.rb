@@ -116,19 +116,14 @@ end
       fp.write 'raise Exception, "epic fail"'
     end
 
-    use_ui @ui do
+    out, err = capture_io do
       assert_equal nil, Gem::SourceIndex.load_specification(spec_file)
     end
 
-    assert_equal '', @ui.output
+    assert_equal '', out
 
-    expected = <<-EOF
-WARNING:  #<Exception: epic fail>
-raise Exception, "epic fail"
-WARNING:  Invalid .gemspec format in '#{spec_file}'
-    EOF
-
-    assert_equal expected, @ui.error
+    expected = "Invalid gemspec in [#{spec_file}]: epic fail\n"
+    assert_equal expected, err
   end
 
   def test_self_load_specification_interrupt
@@ -163,14 +158,13 @@ WARNING:  Invalid .gemspec format in '#{spec_file}'
       fp.write '1 +'
     end
 
-    use_ui @ui do
+    out, err = capture_io do
       assert_equal nil, Gem::SourceIndex.load_specification(spec_file)
     end
 
-    assert_equal '', @ui.output
+    assert_equal '', out
 
-    assert_match(/syntax error/, @ui.error)
-    assert_match(/1 \+/, @ui.error)
+    assert_match(/syntax error/, err)
   end
 
   def test_self_load_specification_system_exit

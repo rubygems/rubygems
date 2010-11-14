@@ -496,6 +496,8 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
 
     raise ArgumentError, "format required to extract from" if @format.nil?
 
+    dirs = []
+
     @format.file_entries.each do |entry, file_data|
       path = entry['path'].untaint
 
@@ -513,7 +515,12 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
       end
 
       FileUtils.rm_rf(path) if File.exists?(path)
-      FileUtils.mkdir_p File.dirname(path)
+
+      dir = File.dirname(path)
+      if !dirs.include?(dir)
+        dirs << dir
+        FileUtils.mkdir_p dir
+      end
 
       File.open(path, "wb") do |out|
         out.write file_data

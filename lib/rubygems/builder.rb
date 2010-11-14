@@ -5,6 +5,9 @@
 #++
 
 require 'rubygems/user_interaction'
+require "yaml"
+require "rubygems/package"
+require "rubygems/security"
 
 ##
 # The Builder class processes RubyGem specification files
@@ -20,10 +23,6 @@ class Gem::Builder
   # spec:: [Gem::Specification] The specification instance
 
   def initialize(spec)
-    require "yaml"
-    require "rubygems/package"
-    require "rubygems/security"
-
     @spec = spec
   end
 

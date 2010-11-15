@@ -286,13 +286,14 @@ class Gem::Version
   end
 
   ##
-  # Compares this version with +other+ returning -1, 0, or 1 if the other
-  # version is larger, the same, or smaller than this one.
+  # Compares this version with +other+ returning -1, 0, or 1 if the
+  # other version is larger, the same, or smaller than this
+  # one. Attempts to compare to something that's not a
+  # <tt>Gem::Version</tt> return +nil+.
 
   def <=> other
-    return   0     if @version == other.version
-    return   1 unless other # HACK: comparable with nil? why?
-    return nil unless other.is_a?(self.class)
+    return unless Gem::Version === other
+    return 0 if @version == other.version
 
     lhsegments = segments
     rhsegments = other.segments

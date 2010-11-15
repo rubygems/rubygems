@@ -95,6 +95,8 @@ class TestGemVersion < RubyGemTestCase
     assert_equal( 1, v("1.8.2.b") <=> v("1.8.2.a"))
     assert_equal(-1, v("1.8.2.a") <=> v("1.8.2"))
     assert_equal( 0, v("")        <=> v("0"))
+
+    assert_nil v("1.0") <=> "whatever"
   end
 
   def test_spermy_recommendation

@@ -182,7 +182,7 @@ class Gem::Dependency
   # Dependencies are ordered by name.
 
   def <=> other
-    [@name] <=> [other.name]
+    @name <=> other.name
   end
 
   ##
@@ -193,16 +193,11 @@ class Gem::Dependency
 
   def =~ other
     unless Gem::Dependency === other
-      other = Gem::Dependency.new other.name, other.version rescue return false
+      return unless other.respond_to?(:name) && other.respond_to?(:version)
+      other = Gem::Dependency.new other.name, other.version
     end
 
-    pattern = name
-
-    if Regexp === pattern then
-      return false unless pattern =~ other.name
-    else
-      return false unless pattern == other.name
-    end
+    return false unless name === other.name
 
     reqs = other.requirement.requirements
 
@@ -215,14 +210,7 @@ class Gem::Dependency
   end
 
   def match?(spec_name, spec_version)
-    pattern = name
-
-    if Regexp === pattern
-      return false unless pattern =~ spec_name
-    else
-      return false unless pattern == spec_name
-    end
-
+    return false unless name === spec_name
     return true if requirement.none?
 
     requirement.satisfied_by? Gem::Version.new(spec_version)

@@ -12,7 +12,7 @@
 # parts. Prerelease parts are sorted alphabetically using the normal
 # Ruby string sorting rules. If a prerelease part contains both
 # letters and numbers, it will be broken into multiple parts to
-# provide expected sort behavior.(1.0.a10 becomes 1.0.a.10, and is
+# provide expected sort behavior (1.0.a10 becomes 1.0.a.10, and is
 # greater than 1.0.a9).
 #
 # Prereleases sort between real releases (newest to oldest):

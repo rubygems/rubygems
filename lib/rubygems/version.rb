@@ -8,9 +8,12 @@
 #
 # If any part contains letters (currently only a-z are supported) then
 # that version is considered prerelease. Versions with a prerelease
-# part in the Nth part sort less than versions with N-1 parts. Prerelease
-# parts are sorted alphabetically using the normal Ruby string sorting
-# rules.
+# part in the Nth part sort less than versions with N-1
+# parts. Prerelease parts are sorted alphabetically using the normal
+# Ruby string sorting rules. If a prerelease part contains both
+# letters and numbers, it will be broken into multiple parts to
+# provide expected sort behavior.(1.0.a10 becomes 1.0.a.10, and is
+# greater than 1.0.a9).
 #
 # Prereleases sort between real releases (newest to oldest):
 #
@@ -267,7 +270,7 @@ class Gem::Version
     # marshal_load. +segments+ is called in +initialize+ to "prime
     # the pump" in normal cases.
 
-    @segments ||= @version.scan(/[0-9a-z]+/i).map do |s|
+    @segments ||= @version.scan(/[0-9]+|[a-z]+/i).map do |s|
       /^\d+$/ =~ s ? s.to_i : s
     end
   end

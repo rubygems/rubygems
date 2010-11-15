@@ -88,7 +88,7 @@ class Gem::Dependency
     @prerelease || requirement.prerelease?
   end
 
-  def pretty_print(q) # :nodoc:
+  def pretty_print q # :nodoc:
     q.group 1, 'Gem::Dependency.new(', ')' do
       q.pp name
       q.text ','
@@ -209,15 +209,15 @@ class Gem::Dependency
     requirement.satisfied_by? version
   end
 
-  def match?(spec_name, spec_version)
-    return false unless name === spec_name
+  def match? name, version
+    return false unless self.name === name
     return true if requirement.none?
 
-    requirement.satisfied_by? Gem::Version.new(spec_version)
+    requirement.satisfied_by? Gem::Version.new(version)
   end
 
-  def matches_spec?(spec)
-    return false unless name === spec.name # name can be a Regexp, so use ===
+  def matches_spec? spec
+    return false unless name === spec.name
     return true  if requirement.none?
 
     requirement.satisfied_by?(spec.version)

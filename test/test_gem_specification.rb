@@ -1173,21 +1173,6 @@ end
     end
   end
 
-  def test_validate_rubyforge_project
-    util_setup_validate
-
-    Dir.chdir @tempdir do
-      @a1.rubyforge_project = ''
-
-      use_ui @ui do
-        @a1.validate
-      end
-
-      assert_equal "WARNING:  no rubyforge_project specified\n",
-                   @ui.error, 'error'
-    end
-  end
-
   def test_validate_rubygems_version
     util_setup_validate
 

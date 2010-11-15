@@ -308,9 +308,10 @@ class Gem::Version
       lhs, rhs = lhsegments[i] || 0, rhsegments[i] || 0
       i += 1
 
-      next               if lhs == rhs
-      return  -1         if String  === lhs && Numeric === rhs
-      return   1         if Numeric === lhs && String  === rhs
+      next      if lhs == rhs
+      return -1 if String  === lhs && Numeric === rhs
+      return  1 if Numeric === lhs && String  === rhs
+
       return lhs <=> rhs
     end
 

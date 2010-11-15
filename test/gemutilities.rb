@@ -300,8 +300,8 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
   def util_gem(name, version, deps = nil, &block)
     if deps then # fuck you eric
       block = proc do |s|
-        deps.each do |name, req|
-          s.add_dependency name, (req || '>= 0')
+        deps.each do |n, req|
+          s.add_dependency n, (req || '>= 0')
         end
       end
     end

@@ -85,7 +85,7 @@ class TestGemGemcutterUtilities < RubyGemTestCase
     if host
       ENV['RUBYGEMS_HOST'] = host
     else
-      host = "https://rubygems.org"
+      host = Gem.host
     end
 
     @fetcher = Gem::FakeFetcher.new

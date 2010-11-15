@@ -22,9 +22,9 @@ module Gem::GemcutterUtilities
     end
   end
 
-  def rubygems_api_request(method, path, &block)
+  def rubygems_api_request(method, path, host = Gem.host, &block)
     require 'net/http'
-    host = ENV['RUBYGEMS_HOST'] || 'https://rubygems.org'
+    host = ENV['RUBYGEMS_HOST'] if ENV['RUBYGEMS_HOST']
     uri = URI.parse "#{host}/#{path}"
 
     request_method = Net::HTTP.const_get method.to_s.capitalize

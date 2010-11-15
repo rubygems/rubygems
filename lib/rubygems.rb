@@ -571,6 +571,20 @@ module Gem
   end
 
   ##
+  # Get the default RubyGems API host. This is normally
+  # <tt>https://rubygems.org</tt>.
+
+  def self.host
+    @host ||= "https://rubygems.org"
+  end
+
+  ## Set the default RubyGems API host.
+
+  def self.host= host
+    @host = host
+  end
+
+  ##
   # Return a list of all possible load paths for the latest version for all
   # gems in the Gem installation.
 

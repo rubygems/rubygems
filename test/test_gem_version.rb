@@ -11,6 +11,10 @@ class TestGemVersion < RubyGemTestCase
     assert_bumped_version_equal "5.3", "5.2.4.a"
   end
 
+  def test_bump_alphanumeric
+    assert_bumped_version_equal "5.3", "5.2.4.a10"
+  end
+
   def test_bump_trailing_zeros
     assert_bumped_version_equal "5.1", "5.0.0"
   end

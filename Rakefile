@@ -7,6 +7,8 @@ require 'rubygems/package_task'
 
 require 'hoe'
 
+Hoe::RUBY_FLAGS << " --disable-gems" if RUBY_VERSION > "1.9"
+
 Hoe.plugin :minitest
 
 hoe = Hoe.spec 'rubygems-update' do

@@ -4,6 +4,9 @@
 # See LICENSE.txt for additional licensing information.
 #--
 
+require "yaml"
+require "zlib"
+
 class Gem::Package::TarInput
 
   include Gem::Package::FSyncDir

@@ -5,6 +5,7 @@
 #++
 
 require 'rubygems/format'
+require 'rubygems/exceptions'
 require 'rubygems/ext'
 require 'rubygems/require_paths_builder'
 

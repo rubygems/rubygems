@@ -304,6 +304,27 @@ class Gem::RemoteFetcher
   end
 
   ##
+  # Returns the width of the terminal or defaults to 80 characters
+  # Modified from the Hirb gem by Gabriel Horner which is MIT licensed
+
+  def console_width
+    default_width = 80
+    begin
+      if (ENV['COLUMNS'] =~ /^\d+$/)
+        ENV['COLUMNS'].to_i
+      elsif (RUBY_PLATFORM =~ /java/ || (!STDIN.tty? && ENV['TERM'])) && command_exists?('tput')
+        `tput cols`.to_i
+      elsif STDIN.tty? && command_exists?('stty')
+        `stty size`.scan(/\d+/).map { |s| s.to_i }[1]
+      else
+        default_width
+      end
+    rescue
+      default_width
+    end 
+  end
+
+  ##
   # Performs a Net::HTTP request of type +request_class+ on +uri+ returning
   # a Net::HTTP response object.  request maintains a table of persistent
   # connections to reduce connect overhead.
@@ -341,21 +362,26 @@ class Gem::RemoteFetcher
 
       say "#{request.method} #{uri}" if
         Gem.configuration.really_verbose
-   
+  
+      console_width_minus_1 = console_width() - 1
       file_name = File.basename(uri.path)
       if request.response_body_permitted? and file_name =~ /\.gem$/
         response = connection.request request do |incomplete_response|
           if Net::HTTPOK === incomplete_response
             file_size = incomplete_response.content_length
+            file_size_kb = file_size / 1024
             downloaded_size = 0
             data = ''
             previous_percentage = nil
             incomplete_response.read_body do |segment|
               data << segment
               downloaded_size += segment.length
+              downloaded_size_kb = downloaded_size / 1024
               downloaded_percentage = (downloaded_size * 100) / file_size
               if downloaded_percentage != previous_percentage
-                say_no_newline "\r%s [%3d%%]" % [file_name, downloaded_percentage] if downloaded_percentage != previous_percentage
+                progress_string = "\r%s [%dkB/%dkB %3d%%] " % [file_name, downloaded_size_kb, file_size_kb, downloaded_percentage]
+                progress_string << (" " * (console_width_minus_1 - progress_string.length)) if progress_string.length < console_width_minus_1
+                say_no_newline progress_string
                 say_flush()
               end
               previous_percentage = downloaded_percentage

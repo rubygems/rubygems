@@ -269,15 +269,15 @@ class TestGem < RubyGemTestCase
   end
 
   def test_self_find_files
-    discover_path = File.join 'lib', 'foo', 'discover.rb'
+    discover_path = File.join 'lib', 'sff', 'discover.rb'
     cwd = File.expand_path '..', __FILE__
     $LOAD_PATH.unshift cwd.dup
 
-    foo1 = quick_gem 'foo', '1' do |s|
+    foo1 = quick_gem 'sff', '1' do |s|
       s.files << discover_path
     end
 
-    foo2 = quick_gem 'foo', '2' do |s|
+    foo2 = quick_gem 'sff', '2' do |s|
       s.files << discover_path
     end
 
@@ -295,12 +295,12 @@ class TestGem < RubyGemTestCase
     Gem.searcher = nil
 
     expected = [
-      File.expand_path('../foo/discover.rb', __FILE__),
+      File.expand_path('../sff/discover.rb', __FILE__),
       File.join(foo2.full_gem_path, discover_path),
       File.join(foo1.full_gem_path, discover_path),
     ]
 
-    assert_equal expected, Gem.find_files('foo/discover')
+    assert_equal expected, Gem.find_files('sff/discover')
   ensure
     assert_equal cwd, $LOAD_PATH.shift
   end

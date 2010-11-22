@@ -137,9 +137,13 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     Gem.pre_uninstall do |uninstaller|
       @pre_uninstall_hook_arg = uninstaller
     end
+
+    @orig_LOAD_PATH = $LOAD_PATH.dup
   end
 
   def teardown
+    $LOAD_PATH.replace @orig_LOAD_PATH
+
     Gem::ConfigMap[:BASERUBY] = @orig_BASERUBY
     Gem::ConfigMap[:arch] = @orig_arch
 

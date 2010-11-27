@@ -72,7 +72,7 @@ class Gem::Commands::ContentsCommand < Gem::Command
       unless gem_spec then
         say "Unable to find gem '#{name}' in #{path_kind}"
 
-        if Gem.configuration.verbose then
+        if Gem.configuration.verbose
           say "\nDirectories searched:"
           spec_dirs.each { |dir| say dir }
         end

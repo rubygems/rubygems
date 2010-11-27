@@ -71,7 +71,7 @@ installed elsewhere in GEM_PATH the cleanup command won't touch it.
     deps = deplist.strongly_connected_components.flatten.reverse
 
     deps.each do |spec|
-      if options[:dryrun] then
+      if options[:dryrun]
         say "Dry Run Mode: Would uninstall #{spec.full_name}"
       else
         say "Attempting to uninstall #{spec.full_name}"
@@ -83,7 +83,7 @@ installed elsewhere in GEM_PATH the cleanup command won't touch it.
           :version => "= #{spec.version}",
         }
 
-        if Gem.user_dir == spec.installation_path then
+        if Gem.user_dir == spec.installation_path
           uninstall_options[:install_dir] = spec.installation_path
         end
 

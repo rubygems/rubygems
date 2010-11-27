@@ -48,7 +48,7 @@ class TarTestCase < RubyGemTestCase
       name = fields.shift
       length = fields.shift.to_i
 
-      if name == "checksum" then
+      if name == "checksum"
         chksum_off = offset
         offset += length
         next

@@ -36,7 +36,7 @@ class Gem::Format
 
     start = File.read file_path, 20
 
-    if start.nil? or start.length < 20 then
+    if start.nil? or start.length < 20
       nil
     elsif start.include?("MD5SUM =") # old version gems
       require 'rubygems/old_format'

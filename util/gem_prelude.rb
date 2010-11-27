@@ -6,7 +6,7 @@
 # * Should not expect Encoding.default_internal.
 # * Locale encoding is available.
 
-if defined?(Gem) then
+if defined?(Gem)
 
   # :stopdoc:
 
@@ -75,7 +75,7 @@ if defined?(Gem) then
       if gpaths
         @gem_path = gpaths.split(File::PATH_SEPARATOR)
 
-        if File::ALT_SEPARATOR then
+        if File::ALT_SEPARATOR
           @gem_path.map! do |path|
             path.gsub File::ALT_SEPARATOR, File::SEPARATOR
           end
@@ -94,7 +94,7 @@ if defined?(Gem) then
     def self.user_home
       @user_home ||= File.expand_path("~").force_encoding(Encoding.find('filesystem'))
     rescue
-      if File::ALT_SEPARATOR then
+      if File::ALT_SEPARATOR
         "C:/"
       else
         "/"
@@ -122,7 +122,7 @@ if defined?(Gem) then
       rescue ::LoadError
       end
 
-      if defined?(RUBY_ENGINE) then
+      if defined?(RUBY_ENGINE)
         begin
           require "rubygems/defaults/#{RUBY_ENGINE}"
         rescue ::LoadError
@@ -193,7 +193,7 @@ if defined?(Gem) then
           # highest version gems already active
           return false
         else
-          if requirements.length > 1 then
+          if requirements.length > 1
             QuickLoader.load_full_rubygems_library
             return gem(gem_name, *requirements)
           end
@@ -201,7 +201,7 @@ if defined?(Gem) then
           requirement, version = requirements[0].split
           requirement.strip!
 
-          if loaded_version = GemVersions[gem_name] then
+          if loaded_version = GemVersions[gem_name]
             case requirement
             when ">", ">=" then
               return false if
@@ -229,7 +229,7 @@ if defined?(Gem) then
         Gem.path.each do |path|
           gems_directory = File.join(path, "gems")
 
-          if File.exist?(gems_directory) then
+          if File.exist?(gems_directory)
             Dir.entries(gems_directory).each do |gem_directory_name|
               next if gem_directory_name == "." || gem_directory_name == ".."
 
@@ -237,7 +237,7 @@ if defined?(Gem) then
               new_version = integers_for($2)
               current_version = GemVersions[gem_name]
 
-              if !current_version or (current_version <=> new_version) < 0 then
+              if !current_version or (current_version <=> new_version) < 0
                 GemVersions[gem_name] = new_version
                 GemPaths[gem_name] = File.join(gems_directory, gem_directory_name)
               end
@@ -248,7 +248,7 @@ if defined?(Gem) then
         require_paths = []
 
         GemPaths.each_value do |path|
-          if File.exist?(file = File.join(path, ".require_paths")) then
+          if File.exist?(file = File.join(path, ".require_paths"))
             paths = File.read(file).split.map do |require_path|
               File.join path, require_path
             end
@@ -273,7 +273,7 @@ if defined?(Gem) then
       def const_missing(constant)
         QuickLoader.load_full_rubygems_library
 
-        if Gem.const_defined?(constant) then
+        if Gem.const_defined?(constant)
           Gem.const_get constant
         else
           super

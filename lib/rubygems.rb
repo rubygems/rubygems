@@ -209,7 +209,7 @@ module Gem
 
     sources = options[:sources] || []
 
-    if requirements.empty? then
+    if requirements.empty?
       requirements = Gem::Requirement.default
     end
 
@@ -221,7 +221,7 @@ module Gem
     matches = Gem.source_index.find_name(gem.name, gem.requirement)
     report_activate_error(gem) if matches.empty?
 
-    if @loaded_specs[gem.name] then
+    if @loaded_specs[gem.name]
       # This gem is already loaded.  If the currently loaded gem is not in the
       # list of candidate gems, then we have a version conflict.
       existing_spec = @loaded_specs[gem.name]
@@ -267,7 +267,7 @@ module Gem
     # gem directories must come after -I and ENV['RUBYLIB']
     insert_index = load_path_insert_index
 
-    if insert_index then
+    if insert_index
       # gem directories must come after -I and ENV['RUBYLIB']
       $LOAD_PATH.insert(insert_index, *require_paths)
     else
@@ -521,14 +521,14 @@ module Gem
         return File.expand_path(ENV[homekey]) if ENV[homekey]
       end
 
-      if ENV['HOMEDRIVE'] && ENV['HOMEPATH'] then
+      if ENV['HOMEDRIVE'] && ENV['HOMEPATH']
         return File.expand_path("#{ENV['HOMEDRIVE']}#{ENV['HOMEPATH']}")
       end
     end
 
     File.expand_path "~"
   rescue
-    if File::ALT_SEPARATOR then
+    if File::ALT_SEPARATOR
       drive = ENV['HOMEDRIVE'] || ENV['SystemDrive']
       File.join(drive.to_s, '/')
     else
@@ -607,7 +607,7 @@ module Gem
     latest = {}
     all_partials(gemdir).each do |gp|
       base = File.basename(gp)
-      if base =~ /(.*)-((\d+\.)*\d+)/ then
+      if base =~ /(.*)-((\d+\.)*\d+)/
         name, version = $1, $2
         ver = Gem::Version.new(version)
         if latest[name].nil? || ver > latest[name][0]
@@ -668,7 +668,7 @@ module Gem
     unless @gem_path then
       paths = [ENV['GEM_PATH'] || Gem.configuration.path || default_path]
 
-      if defined?(APPLE_GEM_HOME) and not ENV['GEM_PATH'] then
+      if defined?(APPLE_GEM_HOME) and not ENV['GEM_PATH']
         paths << APPLE_GEM_HOME
       end
 
@@ -797,7 +797,7 @@ module Gem
   def self.report_activate_error(gem)
     matches = Gem.source_index.find_name(gem.name)
 
-    if matches.empty? then
+    if matches.empty?
       error = Gem::LoadError.new(
           "Could not find RubyGem #{gem.name} (#{gem.requirement})\n")
     else
@@ -837,7 +837,7 @@ module Gem
   # The path to the running Ruby interpreter.
 
   def self.ruby
-    if @ruby.nil? then
+    if @ruby.nil?
       @ruby = File.join(ConfigMap[:bindir],
                         ConfigMap[:ruby_install_name])
       @ruby << ConfigMap[:EXEEXT]
@@ -856,7 +856,7 @@ module Gem
     return @ruby_version if defined? @ruby_version
     version = RUBY_VERSION.dup
 
-    if defined?(RUBY_PATCHLEVEL) && RUBY_PATCHLEVEL != -1 then
+    if defined?(RUBY_PATCHLEVEL) && RUBY_PATCHLEVEL != -1
       version << ".#{RUBY_PATCHLEVEL}"
     elsif defined?(RUBY_REVISION) then
       version << ".dev.#{RUBY_REVISION}"
@@ -889,7 +889,7 @@ module Gem
     if gpaths
       @gem_path = gpaths.split(File::PATH_SEPARATOR)
 
-      if File::ALT_SEPARATOR then
+      if File::ALT_SEPARATOR
         @gem_path.map! do |path|
           path.gsub File::ALT_SEPARATOR, File::SEPARATOR
         end
@@ -919,7 +919,7 @@ module Gem
   # default_sources if it is not installed.
 
   def self.sources
-    if @sources.empty? then
+    if @sources.empty?
       begin
         gem 'sources', '> 0.0.1'
         require 'sources'
@@ -999,7 +999,7 @@ module Gem
   # Is this a windows platform?
 
   def self.win_platform?
-    if @@win_platform.nil? then
+    if @@win_platform.nil?
       @@win_platform = !!WIN_PATTERNS.find { |r| RUBY_PLATFORM =~ r }
     end
 
@@ -1171,7 +1171,7 @@ begin
 rescue LoadError
 end
 
-if defined?(RUBY_ENGINE) then
+if defined?(RUBY_ENGINE)
   begin
     ##
     # Defaults the ruby implementation wants to provide for RubyGems

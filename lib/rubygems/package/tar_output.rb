@@ -78,7 +78,7 @@ class Gem::Package::TarOutput
 
       # if we have a signing key, then sign the data
       # digest and return the signature
-      if @signer then
+      if @signer
         digest = Gem::Security::OPT[:dgst_algo].digest sio.string
         @data_signature = @signer.sign digest
         inner.write sio.string
@@ -106,7 +106,7 @@ class Gem::Package::TarOutput
 
         # if we have a signing key, then sign the metadata digest and return
         # the signature
-        if @signer then
+        if @signer
           digest = Gem::Security::OPT[:dgst_algo].digest sio.string
           @meta_signature = @signer.sign digest
           io.write sio.string
@@ -120,13 +120,13 @@ class Gem::Package::TarOutput
   # a Gem::Security::Signer was sent to initialize.
 
   def add_signatures
-    if @data_signature then
+    if @data_signature
       @tar_writer.add_file 'data.tar.gz.sig', 0644 do |io|
         io.write @data_signature
       end
     end
 
-    if @meta_signature then
+    if @meta_signature
       @tar_writer.add_file 'metadata.gz.sig', 0644 do |io|
         io.write @meta_signature
       end

@@ -85,7 +85,7 @@ class TestGemPackageTarInput < TarTestCase
           tar_input.extract_entry @tempdir, entry
           name = File.join @tempdir, entry.header.name
 
-          if entry.directory? then
+          if entry.directory?
             assert File.directory?(name)
           else
             assert File.file?(name)

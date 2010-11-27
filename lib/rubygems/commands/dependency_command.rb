@@ -62,18 +62,18 @@ class Gem::Commands::DependencyCommand < Gem::Command
     dependency = Gem::Dependency.new pattern, options[:version]
     dependency.prerelease = options[:prerelease]
 
-    if options[:reverse_dependencies] and remote? and not local? then
+    if options[:reverse_dependencies] and remote? and not local?
       alert_error 'Only reverse dependencies for local gems are supported.'
       terminate_interaction 1
     end
 
-    if local? then
+    if local?
       Gem.source_index.search(dependency).each do |spec|
         source_indexes[:local].add_spec spec
       end
     end
 
-    if remote? and not options[:reverse_dependencies] then
+    if remote? and not options[:reverse_dependencies]
       fetcher = Gem::SpecFetcher.fetcher
 
       begin
@@ -98,7 +98,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
       end
     end
 
-    if source_indexes.empty? then
+    if source_indexes.empty?
       patterns = options[:args].join ','
       say "No gems found matching #{patterns} (#{options[:version]})" if
         Gem.configuration.verbose
@@ -116,13 +116,13 @@ class Gem::Commands::DependencyCommand < Gem::Command
 
     reverse = Hash.new { |h, k| h[k] = [] }
 
-    if options[:reverse_dependencies] then
+    if options[:reverse_dependencies]
       specs.values.each do |_, spec|
         reverse[spec.full_name] = find_reverse_dependencies spec
       end
     end
 
-    if options[:pipe_format] then
+    if options[:pipe_format]
       specs.values.sort_by { |_, spec| spec }.each do |_, spec|
         unless spec.dependencies.empty?
           spec.dependencies.sort_by { |dep| dep.name }.each do |dep|

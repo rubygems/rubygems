@@ -59,7 +59,7 @@ EOM
   def sign
     signer = nil
 
-    if @spec.respond_to?(:signing_key) and @spec.signing_key then
+    if @spec.respond_to?(:signing_key) and @spec.signing_key
       signer = Gem::Security::Signer.new @spec.signing_key, @spec.cert_chain
       @spec.signing_key = nil
       @spec.cert_chain = signer.cert_chain.map { |cert| cert.to_s }

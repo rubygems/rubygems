@@ -296,8 +296,8 @@ class Gem::Indexer
   # date.
 
   def build_rss(index)
-    if @rss_host.nil? or @rss_gems_host.nil? then
-      if Gem.configuration.really_verbose then
+    if @rss_host.nil? or @rss_gems_host.nil?
+      if Gem.configuration.really_verbose
         alert_warning "no --rss-host or --rss-gems-host, RSS generation disabled"
       end
       return
@@ -414,7 +414,7 @@ class Gem::Indexer
 
     Gem.time 'loaded' do
       gems.each do |gemfile|
-        if File.size(gemfile.to_s) == 0 then
+        if File.size(gemfile.to_s) == 0
           alert_warning "Skipping zero-length gem: #{gemfile}"
           next
         end
@@ -461,7 +461,7 @@ class Gem::Indexer
     say "Compressing indicies"
 
     Gem.time 'Compressed indicies' do
-      if @build_legacy then
+      if @build_legacy
         compress @quick_index, 'rz'
         paranoid @quick_index, 'rz'
 
@@ -475,7 +475,7 @@ class Gem::Indexer
         paranoid @master_index, 'Z'
       end
 
-      if @build_modern then
+      if @build_modern
         gzip @specs_index
         gzip @latest_specs_index
         gzip @prerelease_specs_index
@@ -644,7 +644,7 @@ class Gem::Indexer
       gem_mtime >= specs_mtime
     end
 
-    if updated_gems.empty? then
+    if updated_gems.empty?
       say 'No new gems'
       terminate_interaction 0
     end

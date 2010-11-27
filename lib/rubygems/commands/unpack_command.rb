@@ -53,7 +53,7 @@ class Gem::Commands::UnpackCommand < Gem::Command
       dependency = Gem::Dependency.new name, options[:version]
       path = get_path dependency
 
-      if path then
+      if path
         basename = File.basename path, '.gem'
         target_dir = File.expand_path basename, options[:target]
         FileUtils.mkdir_p target_dir

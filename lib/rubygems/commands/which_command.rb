@@ -39,7 +39,7 @@ class Gem::Commands::WhichCommand < Gem::Command
         paths |= Gem.find_files(arg, true)
       end
 
-      if paths.empty? then
+      if paths.empty?
         alert_error "Can't find ruby library file or shared library #{arg}"
       else
         say options[:show_all] ? paths : paths.first

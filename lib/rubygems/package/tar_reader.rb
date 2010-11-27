@@ -91,7 +91,7 @@ class Gem::Package::TarReader
   # NOTE: Do not call #rewind during #each
 
   def rewind
-    if @init_pos == 0 then
+    if @init_pos == 0
       raise Gem::Package::NonSeekableIO unless @io.respond_to? :rewind
       @io.rewind
     else

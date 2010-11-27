@@ -44,7 +44,7 @@ class Gem::DependencyInstaller
   # :wrappers:: See Gem::Installer::new
 
   def initialize(options = {})
-    if options[:install_dir] then
+    if options[:install_dir]
       spec_dir = options[:install_dir], 'specifications'
       @source_index = Gem::SourceIndex.from_gems_in spec_dir
     else
@@ -86,14 +86,14 @@ class Gem::DependencyInstaller
     @errors = nil
     gems_and_sources = []
 
-    if @domain == :both or @domain == :local then
+    if @domain == :both or @domain == :local
       Dir[File.join(Dir.pwd, "#{dep.name}-[0-9]*.gem")].each do |gem_file|
         spec = Gem::Format.from_file_by_path(gem_file).spec
         gems_and_sources << [spec, gem_file] if spec.name == dep.name
       end
     end
 
-    if @domain == :both or @domain == :remote then
+    if @domain == :both or @domain == :remote
       begin
         requirements = dep.requirement.requirements.map do |req, ver|
           req
@@ -110,7 +110,7 @@ class Gem::DependencyInstaller
         gems_and_sources.push(*found)
 
       rescue Gem::RemoteFetcher::FetchError => e
-        if Gem.configuration.really_verbose then
+        if Gem.configuration.really_verbose
           say "Error fetching remote data:\t\t#{e.message}"
           say "Falling back to local-only install"
         end
@@ -206,7 +206,7 @@ class Gem::DependencyInstaller
       end
     end
 
-    if spec_and_source.nil? then
+    if spec_and_source.nil?
       dep = Gem::Dependency.new gem_name, version
       dep.prerelease = true if prerelease
       spec_and_sources = find_gems_with_sources(dep).reverse
@@ -216,7 +216,7 @@ class Gem::DependencyInstaller
       }
     end
 
-    if spec_and_source.nil? then
+    if spec_and_source.nil?
       raise Gem::GemNotFoundException.new(
         "Could not find a valid gem '#{gem_name}' (#{version}) locally or in a repository",
         gem_name, version, @errors)
@@ -240,7 +240,7 @@ class Gem::DependencyInstaller
   # separately.
 
   def install dep_or_name, version = Gem::Requirement.default
-    if String === dep_or_name then
+    if String === dep_or_name
       find_spec_by_name_and_version dep_or_name, version, @prerelease
     else
       dep_or_name.prerelease = @prerelease

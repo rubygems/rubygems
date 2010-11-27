@@ -776,10 +776,10 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{#{Gem::VERSION}}
   s.summary = %q{this is a summary}
 
-  if s.respond_to? :specification_version then
+  if s.respond_to? :specification_version
     s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0')
       s.add_runtime_dependency(%q<b>, [\"= 1\"])
     else
       s.add_dependency(%q<b>, [\"= 1\"])
@@ -830,10 +830,10 @@ Gem::Specification.new do |s|
   s.summary = %q{this is a summary}
   s.test_files = [\"test/suite.rb\"]
 
-  if s.respond_to? :specification_version then
+  if s.respond_to? :specification_version
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0')
       s.add_runtime_dependency(%q<rake>, [\"> 0.4\"])
       s.add_runtime_dependency(%q<jabber4r>, [\"> 0.0.0\"])
       s.add_runtime_dependency(%q<pqa>, [\"> 0.4\", \"<= 0.6\"])
@@ -1080,7 +1080,7 @@ end
   end
 
   def test_validate_empty_require_paths
-    if win_platform? then
+    if win_platform?
       skip 'test_validate_empty_require_paths skipped on MS Windows (symlink)'
     else
       util_setup_validate

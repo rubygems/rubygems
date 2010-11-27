@@ -211,7 +211,7 @@ class Gem::RemoteFetcher
 
     uri = URI.parse(normalize_uri(env_proxy))
 
-    if uri and uri.user.nil? and uri.password.nil? then
+    if uri and uri.user.nil? and uri.password.nil?
       # Probably we have http_proxy_* variables?
       uri.user = escape(ENV['http_proxy_user'] || ENV['HTTP_PROXY_USER'])
       uri.password = escape(ENV['http_proxy_pass'] || ENV['HTTP_PROXY_PASS'])
@@ -234,7 +234,7 @@ class Gem::RemoteFetcher
   def connection_for(uri)
     net_http_args = [uri.host, uri.port]
 
-    if @proxy_uri then
+    if @proxy_uri
       net_http_args += [
         @proxy_uri.host,
         @proxy_uri.port,
@@ -247,7 +247,7 @@ class Gem::RemoteFetcher
     @connections[connection_id] ||= Net::HTTP.new(*net_http_args)
     connection = @connections[connection_id]
 
-    if uri.scheme == 'https' and not connection.started? then
+    if uri.scheme == 'https' and not connection.started?
       require 'net/https'
       connection.use_ssl = true
       connection.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -324,7 +324,7 @@ class Gem::RemoteFetcher
     request.add_field 'Connection', 'keep-alive'
     request.add_field 'Keep-Alive', '30'
 
-    if last_modified then
+    if last_modified
       last_modified = last_modified.utc
       request.add_field 'If-Modified-Since', last_modified.rfc2822
     end

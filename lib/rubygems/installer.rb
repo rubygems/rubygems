@@ -120,7 +120,7 @@ class Gem::Installer
       raise Gem::InstallError, "invalid gem format for #{@gem}"
     end
 
-    if options[:user_install] and not options[:unpack] then
+    if options[:user_install] and not options[:unpack]
       @gem_home = Gem.user_dir
 
       user_bin_dir = File.join(@gem_home, 'bin')
@@ -159,13 +159,13 @@ class Gem::Installer
                               not @security_policy.only_signed
 
     unless @force then
-      if rrv = @spec.required_ruby_version then
+      if rrv = @spec.required_ruby_version
         unless rrv.satisfied_by? Gem.ruby_version then
           raise Gem::InstallError, "#{@spec.name} requires Ruby version #{rrv}."
         end
       end
 
-      if rrgv = @spec.required_rubygems_version then
+      if rrgv = @spec.required_rubygems_version
         unless rrgv.satisfied_by? Gem::Version.new(Gem::VERSION) then
           raise Gem::InstallError,
             "#{@spec.name} requires RubyGems version #{rrgv}. " +
@@ -272,7 +272,7 @@ class Gem::Installer
   # Creates windows .bat files for easy running of commands
 
   def generate_windows_script(filename, bindir)
-    if Gem.win_platform? then
+    if Gem.win_platform?
       script_name = filename + ".bat"
       script_path = File.join bindir, File.basename(script_name)
       File.open script_path, 'w' do |file|
@@ -300,7 +300,7 @@ class Gem::Installer
       mode = File.stat(bin_path).mode | 0111
       File.chmod mode, bin_path
 
-      if @wrappers then
+      if @wrappers
         generate_bin_script filename, bindir
       else
         generate_bin_symlink filename, bindir
@@ -343,7 +343,7 @@ class Gem::Installer
   # the symlink if the gem being installed has a newer version.
 
   def generate_bin_symlink(filename, bindir)
-    if Gem.win_platform? then
+    if Gem.win_platform?
       alert_warning "Unable to use symlinks on Windows, installing wrapper"
       generate_bin_script filename, bindir
       return
@@ -352,8 +352,8 @@ class Gem::Installer
     src = File.join @gem_dir, 'bin', filename
     dst = File.join bindir, formatted_program_filename(filename)
 
-    if File.exist? dst then
-      if File.symlink? dst then
+    if File.exist? dst
+      if File.symlink? dst
         link = File.readlink(dst).split File::SEPARATOR
         cur_version = Gem::Version.create(link[-3].sub(/^.*-/, ''))
         return if @spec.version < cur_version
@@ -373,14 +373,14 @@ class Gem::Installer
     path = File.join @gem_dir, @spec.bindir, bin_file_name
     first_line = File.open(path, "rb") {|file| file.gets}
 
-    if /\A#!/ =~ first_line then
+    if /\A#!/ =~ first_line
       # Preserve extra words on shebang line, like "-w".  Thanks RPA.
       shebang = first_line.sub(/\A\#!.*?ruby\S*(?=(\s+\S+))/, "#!#{Gem.ruby}")
       opts = $1
       shebang.strip! # Avoid nasty ^M issues.
     end
 
-    if not ruby_name then
+    if not ruby_name
       "#!#{Gem.ruby}#{opts}"
     elsif opts then
       "#!/bin/sh\n'exec' #{ruby_name.dump} '-x' \"$0\" \"$@\"\n#{shebang}"
@@ -408,7 +408,7 @@ require 'rubygems'
 
 version = "#{Gem::Requirement.default}"
 
-if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1 then
+if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1
   version = $1
   ARGV.shift
 end
@@ -509,7 +509,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
 
       path = File.expand_path File.join(@gem_dir, path)
 
-      if path !~ /\A#{Regexp.escape @gem_dir}/ then
+      if path !~ /\A#{Regexp.escape @gem_dir}/
         msg = "attempt to install file into %p under %p" %
                 [entry['path'], @gem_dir]
         raise Gem::InstallError, msg
@@ -537,7 +537,7 @@ Results logged to #{File.join(Dir.pwd, 'gem_make.out')}
   # Prefix and suffix the program filename the same as ruby.
 
   def formatted_program_filename(filename)
-    if @format_executable then
+    if @format_executable
       self.class.exec_format % File.basename(filename)
     else
       filename

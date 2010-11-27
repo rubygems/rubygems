@@ -180,7 +180,7 @@ class Gem::SourceInfoCache
   # Merges the complete cache file into this Gem::SourceInfoCache.
 
   def read_all_cache_data
-    if @only_latest then
+    if @only_latest
       @only_latest = false
       all_data = read_cache_data cache_file
 
@@ -212,7 +212,7 @@ class Gem::SourceInfoCache
       cache = sice['cache']
       size  = sice['size']
 
-      if cache.is_a?(Gem::SourceIndex) and size.is_a?(Numeric) then
+      if cache.is_a?(Gem::SourceIndex) and size.is_a?(Numeric)
         new_sice = Gem::SourceInfoCacheEntry.new cache, size
         cache_data[url] = new_sice
       else # irreperable, force refetch.
@@ -224,7 +224,7 @@ class Gem::SourceInfoCache
   rescue Errno::ENOENT
     {}
   rescue => e
-    if Gem.configuration.really_verbose then
+    if Gem.configuration.really_verbose
       say "Exception during cache_data handling: #{e.class} - #{e}"
       say "Cache file was: #{file}"
       say "\t#{e.backtrace.join "\n\t"}"
@@ -240,7 +240,7 @@ class Gem::SourceInfoCache
   def refresh(all)
     Gem.sources.each do |source_uri|
       cache_entry = cache_data[source_uri]
-      if cache_entry.nil? then
+      if cache_entry.nil?
         cache_entry = Gem::SourceInfoCacheEntry.new nil, 0
         cache_data[source_uri] = cache_entry
       end
@@ -377,7 +377,7 @@ class Gem::SourceInfoCache
   # Write data to the proper cache files.
 
   def write_cache
-    if not File.exist?(cache_file) or not @only_latest then
+    if not File.exist?(cache_file) or not @only_latest
       open cache_file, 'wb' do |io|
         io.write Marshal.dump(cache_data)
       end

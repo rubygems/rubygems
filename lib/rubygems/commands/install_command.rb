@@ -101,7 +101,7 @@ to write the specification by hand.  For example:
   end
 
   def execute
-    if options[:include_dependencies] then
+    if options[:include_dependencies]
       alert "`gem install -y` is now default and will be removed"
       alert "use --ignore-dependencies to install only the gems you list"
     end
@@ -142,7 +142,7 @@ to write the specification by hand.  For example:
       # reason, RI docs cannot be generated after any RDoc documents are
       # generated.
 
-      if options[:generate_ri] then
+      if options[:generate_ri]
         installed_gems.each do |gem|
           Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
         end
@@ -150,7 +150,7 @@ to write the specification by hand.  For example:
         Gem::DocManager.update_ri_cache
       end
 
-      if options[:generate_rdoc] then
+      if options[:generate_rdoc]
         installed_gems.each do |gem|
           Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
         end

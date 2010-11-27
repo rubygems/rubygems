@@ -45,7 +45,7 @@ Multiple sources and destinations may be specified.
 
       gems_dir = File.join save_to, "gems"
 
-      if File.exist? gems_dir then
+      if File.exist? gems_dir
         raise "Not a directory: #{gems_dir}" unless File.directory? gems_dir
       else
         Dir.mkdir gems_dir
@@ -57,7 +57,7 @@ Multiple sources and destinations may be specified.
 
       get_from = URI.parse get_from
 
-      if get_from.scheme.nil? then
+      if get_from.scheme.nil?
         get_from = get_from.to_s
       elsif get_from.scheme == 'file' then
         # check if specified URI contains a drive letter (file:/D:/Temp)

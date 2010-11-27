@@ -600,14 +600,14 @@ class TestGem < RubyGemTestCase
   end
 
   def test_self_user_home
-    if ENV['HOME'] then
+    if ENV['HOME']
       assert_equal ENV['HOME'], Gem.user_home
     else
       assert true, 'count this test'
     end
   end
 
-  if Gem.win_platform? then
+  if Gem.win_platform?
     def test_self_user_home_userprofile
       skip 'Ruby 1.9 properly handles ~ path expansion' unless '1.9' > RUBY_VERSION
 

@@ -47,7 +47,7 @@ class TestGemPackageTarOutput < TarTestCase
     gz.close if gz
   end
 
-  if defined? OpenSSL then
+  if defined? OpenSSL
     def test_self_open_signed
       signer = Gem::Security::Signer.new @private_key, [@public_cert]
 

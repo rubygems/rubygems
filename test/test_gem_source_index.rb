@@ -81,11 +81,11 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.2.0}
   s.summary = %q{this is a summary}
 
-  if s.respond_to? :specification_version then
+  if s.respond_to? :specification_version
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 2
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0')
     else
     end
   else
@@ -444,7 +444,7 @@ end
   def util_setup_bulk_fetch(compressed)
     source_index = @source_index.dump
 
-    if compressed then
+    if compressed
       @fetcher.data["#{@gem_repo}Marshal.#{@marshal_version}.Z"] = util_zip source_index
     else
       @fetcher.data["#{@gem_repo}Marshal.#{@marshal_version}"] = source_index

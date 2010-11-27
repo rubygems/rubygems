@@ -34,7 +34,7 @@ class Gem::Requirement
     when Gem::Version, Array then
       new input
     else
-      if input.respond_to? :to_str then
+      if input.respond_to? :to_str
         new [input.to_str]
       else
         default

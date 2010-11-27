@@ -46,10 +46,10 @@ class Gem::FakeFetcher
   def fetch_path path, mtime = nil
     data = find_data(path)
 
-    if data.respond_to?(:call) then
+    if data.respond_to?(:call)
       data.call
     else
-      if path.to_s =~ /gz$/ and not data.nil? and not data.empty? then
+      if path.to_s =~ /gz$/ and not data.nil? and not data.empty?
         data = Gem.gunzip data
       end
 
@@ -102,7 +102,7 @@ class Gem::FakeFetcher
 
     Gem.ensure_gem_subdirectories install_dir
 
-    if source_uri =~ /^http/ then
+    if source_uri =~ /^http/
       File.open(path, "wb") do |f|
         f.write fetch_path(File.join(source_uri, "gems", name))
       end

@@ -1,5 +1,5 @@
 #++
-# Copyright (C) 2004 Mauricio Julio Fern·ndez Pradier
+# Copyright (C) 2004 Mauricio Julio Fern√°ndez Pradier
 # See LICENSE.txt for additional licensing information.
 #--
 
@@ -62,7 +62,7 @@ class Gem::Package::TarReader::Entry
   # Full name of the tar entry
 
   def full_name
-    if @header.prefix != "" then
+    if @header.prefix != ""
       File.join @header.prefix, @header.name
     else
       @header.name

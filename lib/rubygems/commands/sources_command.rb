@@ -48,11 +48,11 @@ class Gem::Commands::SourcesCommand < Gem::Command
                        options[:remove] ||
                        options[:update])
 
-    if options[:clear_all] then
+    if options[:clear_all]
       path = Gem::SpecFetcher.fetcher.dir
       FileUtils.rm_rf path
 
-      if not File.exist?(path) then
+      if not File.exist?(path)
         say "*** Removed specs cache ***"
       elsif not File.writable?(path) then
         say "*** Unable to remove source cache (write protected) ***"
@@ -67,7 +67,7 @@ class Gem::Commands::SourcesCommand < Gem::Command
       remove_cache_file 'latest system', sic.latest_system_cache_file
     end
 
-    if options[:add] then
+    if options[:add]
       source_uri = options[:add]
       uri = URI.parse source_uri
 
@@ -100,7 +100,7 @@ Will cause RubyGems to revert to legacy indexes, degrading performance.
       end
     end
 
-    if options[:remove] then
+    if options[:remove]
       source_uri = options[:remove]
 
       unless Gem.sources.include? source_uri then
@@ -113,10 +113,10 @@ Will cause RubyGems to revert to legacy indexes, degrading performance.
       end
     end
 
-    if options[:update] then
+    if options[:update]
       fetcher = Gem::SpecFetcher.fetcher
 
-      if fetcher.legacy_repos.empty? then
+      if fetcher.legacy_repos.empty?
         Gem.sources.each do |update_uri|
           update_uri = URI.parse update_uri
           fetcher.load_specs update_uri, 'specs'
@@ -130,7 +130,7 @@ Will cause RubyGems to revert to legacy indexes, degrading performance.
       say "source cache successfully updated"
     end
 
-    if options[:list] then
+    if options[:list]
       say "*** CURRENT SOURCES ***"
       say
 
@@ -145,7 +145,7 @@ Will cause RubyGems to revert to legacy indexes, degrading performance.
   def remove_cache_file(desc, path)
     FileUtils.rm_rf path
 
-    if not File.exist?(path) then
+    if not File.exist?(path)
       say "*** Removed #{desc} source cache ***"
     elsif not File.writable?(path) then
       say "*** Unable to remove #{desc} source cache (write protected) ***"

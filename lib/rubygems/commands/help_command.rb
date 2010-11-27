@@ -104,7 +104,7 @@ platform.
     command_manager = Gem::CommandManager.instance
     arg = options[:args][0]
 
-    if begins? "commands", arg then
+    if begins? "commands", arg
       out = []
       out << "GEM commands are:"
       out << nil

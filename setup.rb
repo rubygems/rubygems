@@ -6,7 +6,7 @@
 #++
 
 # Make sure rubygems isn't already loaded.
-if ENV['RUBYOPT'] and defined? Gem then
+if ENV['RUBYOPT'] and defined? Gem
   ENV.delete 'RUBYOPT'
 
   require 'rbconfig'

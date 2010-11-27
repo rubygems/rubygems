@@ -58,7 +58,7 @@ class Gem::Uninstaller
     spec_dir = File.join @gem_home, 'specifications'
     @source_index = Gem::SourceIndex.from_gems_in spec_dir
 
-    if @user_install then
+    if @user_install
       user_dir = File.join Gem.user_dir, 'specifications'
       @user_index = Gem::SourceIndex.from_gems_in user_dir
     end
@@ -72,7 +72,7 @@ class Gem::Uninstaller
     list = @source_index.find_name @gem, @version
     list += @user_index.find_name @gem, @version if @user_install
 
-    if list.empty? then
+    if list.empty?
       raise Gem::InstallError, "cannot uninstall, check `gem list -d #{@gem}`"
 
     elsif list.size > 1 and @force_all then
@@ -84,7 +84,7 @@ class Gem::Uninstaller
       say
       _, index = choose_from_list "Select gem to uninstall:", gem_names
 
-      if index == list.size then
+      if index == list.size
         remove_all list.dup
       elsif index >= 0 && index < list.size then
         uninstall_gem list[index], list.dup

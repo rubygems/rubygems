@@ -54,7 +54,7 @@ The rdoc command builds RDoc and RI documentation for installed gems.  Use
   end
 
   def execute
-    if options[:all] then
+    if options[:all]
       specs = Gem::SourceIndex.from_installed_gems.collect { |name, spec|
         spec
       }

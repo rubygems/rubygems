@@ -72,13 +72,13 @@ class Gem::OldFormat
     end_seen = false
     loop {
       line = file.gets
-      if(line == nil || line.chomp == "__END__") then
+      if(line == nil || line.chomp == "__END__")
         end_seen = true
         break
       end
     }
 
-    if end_seen == false then
+    if end_seen == false
       raise Gem::Exception.new("Failed to find end of ruby script while reading gem")
     end
   end

@@ -498,7 +498,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
   end
 
-  if defined? OpenSSL then
+  if defined? OpenSSL
     def test_install_security_policy
       data = File.open(@a1_gem, 'rb') { |f| f.read }
       @fetcher.data['http://gems.example.com/gems/a-1.gem'] = data

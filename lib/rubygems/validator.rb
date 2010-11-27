@@ -167,7 +167,7 @@ class Gem::Validator
     errors
   end
 
-  if RUBY_VERSION < '1.9' then
+  if RUBY_VERSION < '1.9'
     class TestRunner
       def initialize(suite, ui)
         @suite = suite
@@ -186,7 +186,7 @@ class Gem::Validator
       end
 
       def add_fault(fault)
-        if Gem.configuration.verbose then
+        if Gem.configuration.verbose
           @ui.say fault.long_display
         end
       end
@@ -205,7 +205,7 @@ class Gem::Validator
     # XXX: why do we need this gem_spec when we've already got 'spec'?
     test_files = gem_spec.test_files
 
-    if test_files.empty? then
+    if test_files.empty?
       say "There are no unit tests to run for #{gem_spec.full_name}"
       return nil
     end
@@ -214,7 +214,7 @@ class Gem::Validator
 
     test_files.each do |f| require f end
 
-    if RUBY_VERSION < '1.9' then
+    if RUBY_VERSION < '1.9'
       suite = Test::Unit::TestSuite.new("#{gem_spec.name}-#{gem_spec.version}")
 
       ObjectSpace.each_object(Class) do |klass|

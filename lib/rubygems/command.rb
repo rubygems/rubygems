@@ -163,7 +163,7 @@ class Gem::Command
   def get_all_gem_names
     args = options[:args]
 
-    if args.nil? or args.empty? then
+    if args.nil? or args.empty?
       raise Gem::CommandLineError,
             "Please specify at least one gem name (e.g. gem build GEMNAME)"
     end
@@ -178,12 +178,12 @@ class Gem::Command
   def get_one_gem_name
     args = options[:args]
 
-    if args.nil? or args.empty? then
+    if args.nil? or args.empty?
       raise Gem::CommandLineError,
             "Please specify a gem name on the command line (e.g. gem build GEMNAME)"
     end
 
-    if args.size > 1 then
+    if args.size > 1
       raise Gem::CommandLineError,
             "Too many gem names (#{args.join(', ')}); please specify only one"
     end
@@ -262,7 +262,7 @@ class Gem::Command
   def invoke(*args)
     handle_options args
 
-    if options[:help] then
+    if options[:help]
       show_help
     elsif @when_invoked then
       @when_invoked.call options
@@ -402,7 +402,7 @@ class Gem::Command
       @parser.separator "    #{line.strip}"
     end
 
-    if description then
+    if description
       formatted = description.split("\n\n").map do |chunk|
         wrap chunk, 80 - 4
       end.join "\n"
@@ -457,7 +457,7 @@ class Gem::Command
   add_common_option('-V', '--[no-]verbose',
                     'Set the verbose level of output') do |value, options|
     # Set us to "really verbose" so the progress meter works
-    if Gem.configuration.verbose and value then
+    if Gem.configuration.verbose and value
       Gem.configuration.verbose = 1
     else
       Gem.configuration.verbose = value

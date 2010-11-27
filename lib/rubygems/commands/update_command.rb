@@ -47,7 +47,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
   def execute
     hig = {}
 
-    if options[:system] then
+    if options[:system]
       say "Updating RubyGems"
 
       unless options[:args].empty? then
@@ -66,7 +66,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
       hig = {} # highest installed gems
 
       Gem.source_index.each do |name, spec|
-        if hig[spec.name].nil? or hig[spec.name].version < spec.version then
+        if hig[spec.name].nil? or hig[spec.name].version < spec.version
           hig[spec.name] = spec
         end
       end
@@ -97,7 +97,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
       end
     end
 
-    if gems_to_update.include? "rubygems-update" then
+    if gems_to_update.include? "rubygems-update"
       Gem.source_index.refresh!
 
       update_gems = Gem.source_index.find_name 'rubygems-update'
@@ -109,12 +109,12 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
       say "RubyGems system software updated" if installed
     else
-      if updated.empty? then
+      if updated.empty?
         say "Nothing to update"
       else
         say "Gems updated: #{updated.map { |spec| spec.name }.join ', '}"
 
-        if options[:generate_ri] then
+        if options[:generate_ri]
           updated.each do |gem|
             Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
           end
@@ -122,7 +122,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
           Gem::DocManager.update_ri_cache
         end
 
-        if options[:generate_rdoc] then
+        if options[:generate_rdoc]
           updated.each do |gem|
             Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
           end

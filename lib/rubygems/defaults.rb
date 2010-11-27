@@ -17,7 +17,7 @@ module Gem
   # specified in the environment
 
   def self.default_dir
-    if defined? RUBY_FRAMEWORK_VERSION then
+    if defined? RUBY_FRAMEWORK_VERSION
       File.join File.dirname(ConfigMap[:sitedir]), 'Gems',
                 ConfigMap[:ruby_version]
     elsif ConfigMap[:rubylibprefix] then
@@ -40,7 +40,7 @@ module Gem
   # Default gem load path
 
   def self.default_path
-    if File.exist? Gem.user_home then
+    if File.exist? Gem.user_home
       [user_dir, default_dir]
     else
       [default_dir]
@@ -90,7 +90,7 @@ module Gem
   # A wrapper around RUBY_ENGINE const that may not be defined
 
   def self.ruby_engine
-    if defined? RUBY_ENGINE then
+    if defined? RUBY_ENGINE
       RUBY_ENGINE
     else
       'ruby'

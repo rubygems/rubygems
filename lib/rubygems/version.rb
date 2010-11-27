@@ -170,7 +170,7 @@ class Gem::Version
   #   ver3 = Version.create(nil)        # -> nil
 
   def self.create input
-    if input.respond_to? :version then
+    if input.respond_to? :version
       input
     elsif input.nil? then
       nil

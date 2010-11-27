@@ -147,7 +147,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     Gem::ConfigMap[:BASERUBY] = @orig_BASERUBY
     Gem::ConfigMap[:arch] = @orig_arch
 
-    if defined? Gem::RemoteFetcher then
+    if defined? Gem::RemoteFetcher
       Gem::RemoteFetcher.fetcher = nil
     end
 
@@ -161,7 +161,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
 
     Gem.class_eval { @ruby = ruby } if ruby = @orig_ruby
 
-    if @orig_ENV_HOME then
+    if @orig_ENV_HOME
       ENV['HOME'] = @orig_ENV_HOME
     else
       ENV.delete 'HOME'

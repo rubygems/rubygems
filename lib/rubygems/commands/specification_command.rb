@@ -67,10 +67,10 @@ FIELD         name of gemspec field to show
 
     field = get_one_optional_argument
 
-    if field then
+    if field
       field = field.intern
 
-      if options[:format] == :ruby then
+      if options[:format] == :ruby
         raise Gem::CommandLineError, "--ruby and FIELD are mutually exclusive"
       end
 
@@ -80,23 +80,23 @@ FIELD         name of gemspec field to show
       end
     end
 
-    if local? then
-      if File.exist? gem then
+    if local?
+      if File.exist? gem
         specs << Gem::Format.from_file_by_path(gem).spec rescue nil
       end
 
-      if specs.empty? then
+      if specs.empty?
         specs.push(*Gem.source_index.search(dep))
       end
     end
 
-    if remote? then
+    if remote?
       found = Gem::SpecFetcher.fetcher.fetch dep
 
       specs.push(*found.map { |spec,| spec })
     end
 
-    if specs.empty? then
+    if specs.empty?
       alert_error "Unknown gem '#{gem}'"
       terminate_interaction 1
     end
@@ -113,7 +113,7 @@ FIELD         name of gemspec field to show
       say "\n"
     end
 
-    if options[:all] then
+    if options[:all]
       specs.each(&output)
     else
       spec = specs.sort_by { |s| s.version }.last

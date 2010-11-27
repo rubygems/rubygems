@@ -137,7 +137,7 @@ class Gem::CommandManager
 
   def find_command(cmd_name)
     possibilities = find_command_possibilities cmd_name
-    if possibilities.size > 1 then
+    if possibilities.size > 1
       raise "Ambiguous command #{cmd_name} matches [#{possibilities.join(', ')}]"
     elsif possibilities.size < 1 then
       raise "Unknown command #{cmd_name}"

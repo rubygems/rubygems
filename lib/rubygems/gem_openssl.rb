@@ -80,7 +80,7 @@ module Gem::SSL
   # method that makes a direct reference to SSL software must be
   # protected with a Gem.ensure_ssl_available call.
 
-  if Gem.ssl_available? then
+  if Gem.ssl_available?
     PKEY_RSA = OpenSSL::PKey::RSA
     DIGEST_SHA1 = OpenSSL::Digest::SHA1
   else

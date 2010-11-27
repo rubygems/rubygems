@@ -168,7 +168,7 @@ class Gem::DocManager
     args << '--title' << "#{@spec.full_name} Documentation"
     args = args.flatten.map do |arg| arg.to_s end
 
-    if self.class.rdoc_version >= Gem::Version.new('2.4.0') then
+    if self.class.rdoc_version >= Gem::Version.new('2.4.0')
       args.delete '--inline-source'
       args.delete '--promiscuous'
       args.delete '-p'
@@ -201,7 +201,7 @@ class Gem::DocManager
   end
 
   def setup_rdoc
-    if File.exist?(@doc_dir) && !File.writable?(@doc_dir) then
+    if File.exist?(@doc_dir) && !File.writable?(@doc_dir)
       raise Gem::FilePermissionError.new(@doc_dir)
     end
 

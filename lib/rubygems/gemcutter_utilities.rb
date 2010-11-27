@@ -35,7 +35,7 @@ module Gem::GemcutterUtilities
   def with_response(resp)
     case resp
     when Net::HTTPSuccess then
-      if block_given? then
+      if block_given?
         yield resp
       else
         say resp.body

@@ -149,7 +149,7 @@ class Gem::SourceIndex
         latest[name] = spec
       end
 
-      if spec.platform != Gem::Platform::RUBY then
+      if spec.platform != Gem::Platform::RUBY
         result[name].delete_if do |result_spec|
           result_spec.platform == spec.platform
         end
@@ -293,7 +293,7 @@ class Gem::SourceIndex
         requirement.satisfied_by? spec.version
     end
 
-    if only_platform then
+    if only_platform
       specs = specs.select do |spec|
         Gem::Platform.match spec.platform
       end
@@ -371,7 +371,7 @@ class Gem::SourceIndex
       use_incremental = false
     end
 
-    if use_incremental then
+    if use_incremental
       update_with_missing(source_uri, missing_gems)
     else
       new_index = fetch_bulk_index(source_uri)
@@ -414,13 +414,13 @@ class Gem::SourceIndex
         spec_data = fetcher.fetch_path index
         spec_data = unzip(spec_data) if name =~ /\.Z$/
 
-        if name =~ /Marshal/ then
+        if name =~ /Marshal/
           return Marshal.load(spec_data)
         else
           return YAML.load(spec_data)
         end
       rescue => e
-        if Gem.configuration.really_verbose then
+        if Gem.configuration.really_verbose
           alert_error "Unable to fetch #{name}: #{e.message}"
         end
 
@@ -436,7 +436,7 @@ class Gem::SourceIndex
       Gem.configuration.verbose
 
     index = fetch_index_from(source_uri)
-    if index.nil? then
+    if index.nil?
       raise Gem::RemoteSourceException,
               "Error fetching remote gem cache: #{@fetch_error}"
     end
@@ -509,7 +509,7 @@ class Gem::SourceIndex
     rescue => ex
       @fetch_error = ex
 
-      if Gem.configuration.really_verbose then
+      if Gem.configuration.really_verbose
         say "unable to fetch marshal gemspec #{marshal_uri}: #{ex.class} - #{ex}"
       end
     end
@@ -520,7 +520,7 @@ class Gem::SourceIndex
       return YAML.load(unzip(zipped))
     rescue => ex
       @fetch_error = ex
-      if Gem.configuration.really_verbose then
+      if Gem.configuration.really_verbose
         say "unable to fetch YAML gemspec #{yaml_uri}: #{ex.class} - #{ex}"
       end
     end
@@ -536,7 +536,7 @@ class Gem::SourceIndex
         "Updating metadata for #{missing_names.size} gems from #{source_uri}")
     missing_names.each do |spec_name|
       gemspec = fetch_single_spec(source_uri, spec_name)
-      if gemspec.nil? then
+      if gemspec.nil?
         ui.say "Failed to download spec #{spec_name} from #{source_uri}:\n" \
                  "\t#{@fetch_error.message}"
       else

@@ -121,7 +121,7 @@ index.rss containing gems released in the last two days.
     else
       indexer = Gem::Indexer.new options.delete(:directory), options
 
-      if options[:update] then
+      if options[:update]
         indexer.update_index
       else
         indexer.generate_index

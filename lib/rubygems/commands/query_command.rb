@@ -63,8 +63,8 @@ class Gem::Commands::QueryCommand < Gem::Command
     name = options[:name]
     prerelease = options[:prerelease]
 
-    if options[:installed] then
-      if name.source.empty? then
+    if options[:installed]
+      if name.source.empty?
         alert_error "You must specify a gem name"
         exit_code |= 4
       elsif installed? name, options[:version] then
@@ -79,12 +79,12 @@ class Gem::Commands::QueryCommand < Gem::Command
 
     dep = Gem::Dependency.new name, Gem::Requirement.default
 
-    if local? then
-      if prerelease and not both? then
+    if local?
+      if prerelease and not both?
         alert_warning "prereleases are always shown locally"
       end
 
-      if ui.outs.tty? or both? then
+      if ui.outs.tty? or both?
         say
         say "*** LOCAL GEMS ***"
         say
@@ -99,8 +99,8 @@ class Gem::Commands::QueryCommand < Gem::Command
       output_query_results spec_tuples
     end
 
-    if remote? then
-      if ui.outs.tty? or both? then
+    if remote?
+      if ui.outs.tty? or both?
         say
         say "*** REMOTE GEMS ***"
         say
@@ -115,7 +115,7 @@ class Gem::Commands::QueryCommand < Gem::Command
         spec_tuples += fetcher.find_matching dep, false, false, true if
           prerelease and all
       rescue Gem::RemoteFetcher::FetchError => e
-        if prerelease then
+        if prerelease
           raise Gem::OperationNotSupportedError,
                 "Prereleases not supported on legacy repositories"
         end
@@ -174,7 +174,7 @@ class Gem::Commands::QueryCommand < Gem::Command
       seen = {}
 
       matching_tuples.delete_if do |(_, version,_),_|
-        if seen[version] then
+        if seen[version]
           true
         else
           seen[version] = true
@@ -184,12 +184,12 @@ class Gem::Commands::QueryCommand < Gem::Command
 
       entry = gem_name.dup
 
-      if options[:versions] then
+      if options[:versions]
         list = if platforms.empty? or options[:details] then
                  matching_tuples.map { |(_, version,_),_| version }.uniq
                else
                  platforms.sort.reverse.map do |version, pls|
-                   if pls == [Gem::Platform::RUBY] then
+                   if pls == [Gem::Platform::RUBY]
                      version
                    else
                      ruby = pls.delete Gem::Platform::RUBY
@@ -202,7 +202,7 @@ class Gem::Commands::QueryCommand < Gem::Command
         entry << " (#{list})"
       end
 
-      if options[:details] then
+      if options[:details]
         detail_tuple = matching_tuples.first
 
         spec = if detail_tuple.first.length == 4 then
@@ -218,8 +218,8 @@ class Gem::Commands::QueryCommand < Gem::Command
           pls.any? { |pl| pl != Gem::Platform::RUBY }
         end
 
-        if non_ruby then
-          if platforms.length == 1 then
+        if non_ruby
+          if platforms.length == 1
             title = platforms.values.length == 1 ? 'Platform' : 'Platforms'
             entry << "    #{title}: #{platforms.values.sort.join ', '}\n"
           else
@@ -239,23 +239,23 @@ class Gem::Commands::QueryCommand < Gem::Command
         authors << spec.authors.join(', ')
         entry << format_text(authors, 68, 4)
 
-        if spec.rubyforge_project and not spec.rubyforge_project.empty? then
+        if spec.rubyforge_project and not spec.rubyforge_project.empty?
           rubyforge = "Rubyforge: http://rubyforge.org/projects/#{spec.rubyforge_project}"
           entry << "\n" << format_text(rubyforge, 68, 4)
         end
 
-        if spec.homepage and not spec.homepage.empty? then
+        if spec.homepage and not spec.homepage.empty?
           entry << "\n" << format_text("Homepage: #{spec.homepage}", 68, 4)
         end
 
-        if spec.license and not spec.license.empty? then
+        if spec.license and not spec.license.empty?
           licenses = "License#{spec.licenses.length > 1 ? 's' : ''}: "
           licenses << spec.licenses.join(', ')
           entry << "\n" << format_text(licenses, 68, 4)
         end
 
-        if spec.loaded_from then
-          if matching_tuples.length == 1 then
+        if spec.loaded_from
+          if matching_tuples.length == 1
             loaded_from = File.dirname File.dirname(spec.loaded_from)
             entry << "\n" << "    Installed at: #{loaded_from}"
           else

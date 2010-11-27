@@ -213,7 +213,7 @@ class Gem::Package::TarWriter
   def split_name(name) # :nodoc:
     raise Gem::Package::TooLongFileName if name.size > 256
 
-    if name.size <= 100 then
+    if name.size <= 100
       prefix = ""
     else
       parts = name.split(/\//)
@@ -229,7 +229,7 @@ class Gem::Package::TarWriter
       prefix = (parts + [nxt]).join "/"
       name = newname
 
-      if name.size > 100 or prefix.size > 155 then
+      if name.size > 100 or prefix.size > 155
         raise Gem::Package::TooLongFileName 
       end
     end

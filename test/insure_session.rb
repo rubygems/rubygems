@@ -31,7 +31,7 @@ rescue LoadError => e
   puts
   print "Install now from RubyGems distribution? [Yn]"
   answer = gets
-  if(answer =~ /^y/i || answer =~ /^[^a-zA-Z0-9]$/) then
+  if(answer =~ /^y/i || answer =~ /^[^a-zA-Z0-9]$/)
     install_session
     puts
     puts "Retry running the functional tests."

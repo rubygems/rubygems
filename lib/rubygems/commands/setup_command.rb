@@ -29,7 +29,7 @@ class Gem::Commands::SetupCommand < Gem::Command
     add_option '--[no-]vendor',
                'Install into vendorlibdir not sitelibdir',
                '(Requires Ruby 1.8.7)' do |vendor, options|
-      if vendor and Gem.ruby_version < Gem::Version.new('1.8.7') then
+      if vendor and Gem.ruby_version < Gem::Version.new('1.8.7')
         raise OptionParser::InvalidOption,
               "requires ruby 1.8.7+ (you have #{Gem.ruby_version})"
       end
@@ -98,7 +98,7 @@ By default, this RubyGems will install gem as:
     check_ruby_version
 
     require 'fileutils'
-    if Gem.configuration.really_verbose then
+    if Gem.configuration.really_verbose
       extend FileUtils::Verbose
     else
       extend FileUtils
@@ -121,7 +121,7 @@ By default, this RubyGems will install gem as:
     install_rdoc
 
     say
-    if @verbose then
+    if @verbose
       say "-" * 78
       say
     end
@@ -242,13 +242,13 @@ TEXT
         rm_rf dir
       end
 
-      if options[:ri] then
+      if options[:ri]
         ri_dir = File.join rubygems_doc_dir, 'ri'
         say "Installing #{rubygems_name} ri into #{ri_dir}" if @verbose
         run_rdoc '--ri', '--op', ri_dir
       end
 
-      if options[:rdoc] then
+      if options[:rdoc]
         rdoc_dir = File.join rubygems_doc_dir, 'rdoc'
         say "Installing #{rubygems_name} rdoc into #{rdoc_dir}" if @verbose
         run_rdoc '--op', rdoc_dir
@@ -266,7 +266,7 @@ TEXT
     prefix = options[:prefix]
     site_or_vendor = options[:site_or_vendor]
 
-    if prefix.empty? then
+    if prefix.empty?
       lib_dir = Gem::ConfigMap[site_or_vendor]
       bin_dir = Gem::ConfigMap[:bindir]
     else

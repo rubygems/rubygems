@@ -51,7 +51,7 @@ class Gem::ConfigFile
 
       CSIDL_COMMON_APPDATA = 0x0023
       path = 0.chr * 260
-      if RUBY_VERSION > '1.9' then
+      if RUBY_VERSION > '1.9'
         SHGetFolderPath = Win32API.new 'shell32', 'SHGetFolderPath', 'PLPLP',
                                        'L', :stdcall
         SHGetFolderPath.call nil, CSIDL_COMMON_APPDATA, nil, 1, path
@@ -141,7 +141,7 @@ class Gem::ConfigFile
     need_config_file_name = false
 
     arg_list = arg_list.map do |arg|
-      if need_config_file_name then
+      if need_config_file_name
         @config_file_name = arg
         need_config_file_name = false
         nil

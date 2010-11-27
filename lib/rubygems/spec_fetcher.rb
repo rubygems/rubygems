@@ -97,7 +97,7 @@ class Gem::SpecFetcher
 
     local_spec = File.join cache_dir, spec_file_name
 
-    if File.exist? local_spec then
+    if File.exist? local_spec
       spec = Gem.read_binary local_spec
     else
       uri.path << '.rz'
@@ -105,7 +105,7 @@ class Gem::SpecFetcher
       spec = @fetcher.fetch_path uri
       spec = Gem.inflate spec
 
-      if @update_cache then
+      if @update_cache
         FileUtils.mkdir_p cache_dir
 
         open local_spec, 'wb' do |io|
@@ -236,10 +236,10 @@ class Gem::SpecFetcher
     local_file = File.join(cache_dir, file_name)
     loaded     = false
 
-    if File.exist? local_file then
+    if File.exist? local_file
       spec_dump = @fetcher.fetch_path spec_path, File.mtime(local_file)
 
-      if spec_dump.nil? then
+      if spec_dump.nil?
         spec_dump = Gem.read_binary local_file
       else
         loaded = true
@@ -258,7 +258,7 @@ class Gem::SpecFetcher
               Marshal.load spec_dump
             end
 
-    if loaded and @update_cache then
+    if loaded and @update_cache
       begin
         FileUtils.mkdir_p cache_dir
 
@@ -279,7 +279,7 @@ class Gem::SpecFetcher
 
   def warn_legacy(exception)
     uri = exception.uri.to_s
-    if uri =~ /specs\.#{Regexp.escape Gem.marshal_version}\.gz$/ then
+    if uri =~ /specs\.#{Regexp.escape Gem.marshal_version}\.gz$/
       alert_warning <<-EOF
 RubyGems 1.2+ index not found for:
 \t#{legacy_repos.join "\n\t"}

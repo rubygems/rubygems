@@ -465,12 +465,12 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     index = Marshal.dump @source_index
 
-    if req.request_method == 'HEAD' then
+    if req.request_method == 'HEAD'
       res['content-length'] = index.length
       return
     end
 
-    if req.path =~ /Z$/ then
+    if req.path =~ /Z$/
       res['content-type'] = 'application/x-deflate'
       index = Gem.deflate index
     else
@@ -501,14 +501,14 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     specs = Marshal.dump specs
 
-    if req.path =~ /\.gz$/ then
+    if req.path =~ /\.gz$/
       specs = Gem.gzip specs
       res['content-type'] = 'application/x-gzip'
     else
       res['content-type'] = 'application/octet-stream'
     end
 
-    if req.request_method == 'HEAD' then
+    if req.request_method == 'HEAD'
       res['content-length'] = specs.length
     else
       res.body << specs
@@ -539,7 +539,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       end
     end
 
-    if @server.listeners.empty? then
+    if @server.listeners.empty?
       say "Unable to start a server."
       say "Check for running servers or your --bind and --port arguments"
       terminate_interaction 1
@@ -581,7 +581,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
       specs = specs.select { |s| s.platform == platform }
 
-      if specs.empty? then
+      if specs.empty?
         res.status = 404
         res.body = "No gems found matching #{selector}"
       elsif specs.length > 1 then
@@ -819,14 +819,14 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     specs = Marshal.dump specs
 
-    if req.path =~ /\.gz$/ then
+    if req.path =~ /\.gz$/
       specs = Gem.gzip specs
       res['content-type'] = 'application/x-gzip'
     else
       res['content-type'] = 'application/octet-stream'
     end
 
-    if req.request_method == 'HEAD' then
+    if req.request_method == 'HEAD'
       res['content-length'] = specs.length
     else
       res.body << specs
@@ -840,14 +840,14 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     index = @source_index.to_yaml
 
-    if req.path =~ /Z$/ then
+    if req.path =~ /Z$/
       res['content-type'] = 'application/x-deflate'
       index = Gem.deflate index
     else
       res['content-type'] = 'text/plain'
     end
 
-    if req.request_method == 'HEAD' then
+    if req.request_method == 'HEAD'
       res['content-length'] = index.length
       return
     end

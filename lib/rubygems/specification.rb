@@ -157,7 +157,7 @@ class Gem::Specification
 
   def self.attribute(name, default=nil)
     ivar_name = "@#{name}".intern
-    if default.nil? then
+    if default.nil?
       @@nil_attributes << ivar_name
     else
       @@non_nil_attributes << [ivar_name, default]
@@ -301,7 +301,7 @@ class Gem::Specification
                     MARSHAL_FIELDS[spec.specification_version]
                   end
 
-    if array.size < field_count then
+    if array.size < field_count
       raise TypeError, "invalid Gem::Specification format #{array.inspect}"
     end
 
@@ -372,7 +372,7 @@ class Gem::Specification
   def add_bindir(executables)
     return nil if executables.nil?
 
-    if @bindir then
+    if @bindir
       Array(executables).map { |e| File.join(@bindir, e) }
     else
       executables
@@ -479,7 +479,7 @@ class Gem::Specification
     input = normalize_yaml_input input
     spec = YAML.load input
 
-    if spec && spec.class == FalseClass then
+    if spec && spec.class == FalseClass
       raise Gem::EndOfYAMLException
     end
 
@@ -593,7 +593,7 @@ class Gem::Specification
   # default Ruby platform.
 
   def full_name
-    if platform == Gem::Platform::RUBY or platform.nil? then
+    if platform == Gem::Platform::RUBY or platform.nil?
       "#{@name}-#{@version}"
     else
       "#{@name}-#{@version}-#{platform}"
@@ -605,7 +605,7 @@ class Gem::Specification
   # platform.  For use with legacy gems.
 
   def original_name # :nodoc:
-    if platform == Gem::Platform::RUBY or platform.nil? then
+    if platform == Gem::Platform::RUBY or platform.nil?
       "#{@name}-#{@version}"
     else
       "#{@name}-#{@version}-#{@original_platform}"
@@ -832,7 +832,7 @@ class Gem::Specification
     extend Gem::UserInteraction
     normalize
 
-    if rubygems_version != Gem::VERSION then
+    if rubygems_version != Gem::VERSION
       raise Gem::InvalidSpecificationException,
             "expected RubyGems version #{Gem::VERSION}, was #{rubygems_version}"
     end
@@ -849,7 +849,7 @@ class Gem::Specification
             "invalid value for attribute name: \"#{name.inspect}\""
     end
 
-    if require_paths.empty? then
+    if require_paths.empty?
       raise Gem::InvalidSpecificationException,
             'specification must have at least one require_path'
     end
@@ -909,12 +909,12 @@ class Gem::Specification
             '"FIXME" or "TODO" is not an email address'
     end
 
-    if description =~ /FIXME|TODO/ then
+    if description =~ /FIXME|TODO/
       raise Gem::InvalidSpecificationException,
             '"FIXME" or "TODO" is not a description'
     end
 
-    if summary =~ /FIXME|TODO/ then
+    if summary =~ /FIXME|TODO/
       raise Gem::InvalidSpecificationException,
             '"FIXME" or "TODO" is not a summary'
     end
@@ -932,7 +932,7 @@ class Gem::Specification
       alert_warning "no #{attribute} specified" if value.nil? or value.empty?
     end
 
-    if summary and not summary.empty? and description == summary then
+    if summary and not summary.empty? and description == summary
       alert_warning 'description and summary are identical'
     end
 
@@ -955,7 +955,7 @@ class Gem::Specification
   #   file list.
 
   def normalize
-    if defined?(@extra_rdoc_files) and @extra_rdoc_files then
+    if defined?(@extra_rdoc_files) and @extra_rdoc_files
       @extra_rdoc_files.uniq!
       @files ||= []
       @files.concat(@extra_rdoc_files)
@@ -973,7 +973,7 @@ class Gem::Specification
     out = []
     Gem.source_index.each do |name,gem|
       gem.dependencies.each do |dep|
-        if self.satisfies_requirement?(dep) then
+        if self.satisfies_requirement?(dep)
           sats = []
           find_all_satisfiers(dep) do |sat|
             sats << sat
@@ -1002,7 +1002,7 @@ class Gem::Specification
 
           q.text "s.#{attr_name} = "
 
-          if attr_name == :date then
+          if attr_name == :date
             current_value = current_value.utc
 
             q.text "Time.utc(#{current_value.year}, #{current_value.month}, #{current_value.day})"
@@ -1497,11 +1497,11 @@ class Gem::Specification
     # Handle the possibility that we have @test_suite_file but not
     # @test_files.  This will happen when an old gem is loaded via
     # YAML.
-    if defined? @test_suite_file then
+    if defined? @test_suite_file
       @test_files = [@test_suite_file].flatten
       @test_suite_file = nil
     end
-    if defined?(@test_files) and @test_files then
+    if defined?(@test_files) and @test_files
       @test_files
     else
       @test_files = []

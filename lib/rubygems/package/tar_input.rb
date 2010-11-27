@@ -1,6 +1,5 @@
-# -*- coding: iso-8859-1 -*-
 #++
-# Copyright (C) 2004 Mauricio Julio Fernández Pradier
+# Copyright (C) 2004 Mauricio Julio FernÃ¡ndez Pradier
 # See LICENSE.txt for additional licensing information.
 #--
 
@@ -68,13 +67,13 @@ class Gem::Package::TarInput
       end
     end
 
-    if security_policy then
+    if security_policy
       Gem.ensure_ssl_available
 
       # map trust policy from string to actual class (or a serialized YAML
       # file, if that exists)
-      if String === security_policy then
-        if Gem::Security::Policies.key? security_policy then
+      if String === security_policy
+        if Gem::Security::Policies.key? security_policy
           # load one of the pre-defined security policies
           security_policy = Gem::Security::Policies[security_policy]
         elsif File.exist? security_policy then
@@ -85,7 +84,7 @@ class Gem::Package::TarInput
         end
       end
 
-      if data_sig && data_dgst && meta_sig && meta_dgst then
+      if data_sig && data_dgst && meta_sig && meta_dgst
         # the user has a trust policy, and we have a signed gem
         # file, so use the trust policy to verify the gem signature
 
@@ -137,10 +136,10 @@ class Gem::Package::TarInput
   end
 
   def extract_entry(destdir, entry, expected_md5sum = nil)
-    if entry.directory? then
+    if entry.directory?
       dest = File.join destdir, entry.full_name
 
-      if File.directory? dest then
+      if File.directory? dest
         @fileops.chmod entry.header.mode, dest, :verbose => false
       else
         @fileops.mkdir_p dest, :mode => entry.header.mode, :verbose => false
@@ -175,7 +174,7 @@ class Gem::Package::TarInput
     fsync_dir File.dirname(destfile)
     fsync_dir File.join(File.dirname(destfile), "..")
 
-    if expected_md5sum && expected_md5sum != md5.hexdigest then
+    if expected_md5sum && expected_md5sum != md5.hexdigest
       raise Gem::Package::BadCheckSum
     end
   end
@@ -203,7 +202,7 @@ class Gem::Package::TarInput
   # times.  And that's the way it is.
 
   def zipped_stream(entry)
-    if defined? Rubinius or defined? Maglev then
+    if defined? Rubinius or defined? Maglev
       # these implementations have working Zlib
       zis = Zlib::GzipReader.new entry
       dis = zis.read

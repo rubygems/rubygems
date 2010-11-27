@@ -60,7 +60,7 @@ revert the gem.
                                                           options[:version])
             end
 
-    if specs.empty? then
+    if specs.empty?
       raise Gem::Exception,
             "Failed to find gem #{gem_name} #{options[:version]}"
     end
@@ -75,7 +75,7 @@ revert the gem.
     specs.each do |spec|
       gem = Dir[File.join(Gem.dir, 'cache', spec.file_name)].first
 
-      if gem.nil? then
+      if gem.nil?
         alert_error "Cached gem for #{spec.full_name} not found, use `gem install` to restore"
         next
       end

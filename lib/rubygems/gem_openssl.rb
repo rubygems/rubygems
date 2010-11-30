@@ -42,9 +42,7 @@ begin
   # Reference a constant defined in the .rb portion of ssl (just to
   # make sure that part is loaded too).
 
-  OpenSSL::Digest::SHA1
-
-  Gem.ssl_available = true
+  Gem.ssl_available = !!OpenSSL::Digest::SHA1
 
   class OpenSSL::X509::Certificate # :nodoc:
     # Check the validity of this certificate.

@@ -87,7 +87,7 @@ class Gem::Server
   	<% if spec["rdoc_installed"] then %>
   	  <a href="<%=spec["doc_path"]%>">[rdoc]</a>
   	<% else %>
-  	  <span title="rdoc not installed">[rdoc]</span>
+  	  <a href="<%=spec["doc_gen_path"]%>">[rdoc]</a>
   	<% end %>
 
   	<% if spec["homepage"] then %>
@@ -625,18 +625,21 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       executables = nil if executables.empty?
       executables.last["is_last"] = true if executables
 
+      has_rdoc = Gem::DocManager.new(spec).rdoc_installed?
+
       specs << {
         "authors"             => spec.authors.sort.join(", "),
         "date"                => spec.date.to_s,
         "dependencies"        => deps,
         "doc_path"            => "/doc_root/#{spec.full_name}/rdoc/index.html",
+        "doc_gen_path"        => "/rdoc-generate?gem=#{spec.full_name}",
         "executables"         => executables,
         "only_one_executable" => (executables && executables.size == 1),
         "full_name"           => spec.full_name,
         "has_deps"            => !deps.empty?,
         "homepage"            => spec.homepage,
         "name"                => spec.name,
-        "rdoc_installed"      => Gem::DocManager.new(spec).rdoc_installed?,
+        "rdoc_installed"      => has_rdoc,
         "summary"             => spec.summary,
         "version"             => spec.version.to_s,
       }
@@ -763,6 +766,33 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     end
   end
 
+  #
+  def rdoc_generate(req, res)
+    gem = req.query['gem']
+
+    spec = @source_index.specification(gem)
+     
+    if spec
+      doc_manager = Gem::DocManager.new(spec)
+      if doc_manager.rdoc_installed?
+        res.status = 302
+        res['Location'] = "/doc_root/#{gem}/rdoc/index.html"
+        return true
+      else
+        doc_manager.new(spec).generate_rdoc
+
+        res.status = 302
+        res['Location'] = "/doc_root/#{gem}/rdoc/index.html"
+        return true
+      end
+    else
+      template = ERB.new RDOC_NO_DOCUMENTATION
+
+      res['content-type'] = 'text/html'
+      res.body = template.result binding
+    end
+  end
+
   def run
     listen
 
@@ -793,6 +823,8 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     @server.mount_proc "/", method(:root)
 
     @server.mount_proc "/rdoc", method(:rdoc)
+
+    @server.mount_proc "/rdoc-generate", method(:rdoc_generate)
 
     paths = { "/gems" => "/cache/", "/doc_root" => "/doc/" }
     paths.each do |mount_point, mount_dir|

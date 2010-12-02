@@ -376,6 +376,43 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 </html>
   NO_DOC
 
+  RDOC_PERMISSON_ERROR = <<-'NO_DOC'
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Found documentation</title>
+    <link rel="stylesheet" href="gem-server-rdoc-style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="fileHeader">
+<%= SEARCH %>
+      <h1>Documentation could not be generated</h1>
+    </div>
+
+    <div id="bodyContent">
+      <div id="contextContent">
+        <div id="description">
+          <p>Documentation for <%= h gem %> gem could not be generated due to permission restrictions.
+          To correct, either run the gem server with administrator privileges (e.g. <code>sudo gem server</code>),
+          use a local gem source or a localizing tool like RVM, or generate the documentation
+          manually (e.g. <code>sudo gem rdoc --all</code>).</p>
+
+          <p>
+            Back to <a href="/">complete gem index</a>
+          </p>
+
+        </div>
+      </div>
+    </div>
+    <div id="validator-badges">
+      <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+    </div>
+  </body>
+</html>
+  NO_DOC
+
   RDOC_SEARCH_TEMPLATE = <<-'RDOC_SEARCH'
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -771,7 +808,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     gem = req.query['gem']
 
     spec = @source_index.specification(gem)
-     
+
     if spec
       doc_manager = Gem::DocManager.new(spec)
       if doc_manager.rdoc_installed?
@@ -779,15 +816,20 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
         res['Location'] = "/doc_root/#{gem}/rdoc/index.html"
         return true
       else
-        doc_manager.new(spec).generate_rdoc
-
-        res.status = 302
-        res['Location'] = "/doc_root/#{gem}/rdoc/index.html"
-        return true
+        begin
+          doc_manager.generate_rdoc
+        rescue Gem::FilePermissionError
+          template = ERB.new(RDOC_PERMISSON_ERROR)
+          res['content-type'] = 'text/html'
+          res.body = template.result binding       
+        else
+          res.status = 302
+          res['Location'] = "/doc_root/#{gem}/rdoc/index.html"
+          return true
+        end
       end
     else
-      template = ERB.new RDOC_NO_DOCUMENTATION
-
+      template = ERB.new(RDOC_NO_DOCUMENTATION)
       res['content-type'] = 'text/html'
       res.body = template.result binding
     end

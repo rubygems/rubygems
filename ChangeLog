@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+2010-12-01  Eric Hodel  <drbrain@segment7.net>
+
+	* lib/rubygems/security.rb: Fixed indent, described how to manually
+	  verify signed gems.
+
 2010-07-10  Luis Lavena <luislavena@gmail.com>
 
 	* lib/rubygems.rb: Expand Windows user home canditates for Ruby 1.8

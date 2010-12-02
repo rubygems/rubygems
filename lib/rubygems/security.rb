@@ -265,6 +265,34 @@ require 'rubygems/gem_openssl'
 # A more detailed description of each options is available in the walkthrough
 # above.
 #
+# == Manually verifying signatures
+#
+# In case you don't trust RubyGems you can verify gem signatures manually:
+#
+# 1. Fetch and unpack the gem
+#
+#     gem fetch some_signed_gem
+#     tar -xf some_signed_gem-1.0.gem
+#
+# 2. Grab the public key from the gemspec
+#
+#     gem spec some_signed_gem-1.0.gem cert_chain | \
+#       ruby -pe 'sub(/^ +/, "")' > public_key.crt
+#
+# 3. Generate a SHA1 hash of the data.tar.gz
+#
+#     openssl dgst -sha1 < data.tar.gz > my.hash
+#
+# 4. Verify the signature
+#
+#     openssl rsautl -verify -inkey public_key.crt -certin \
+#       -in data.tar.gz.sig > verified.hash
+#
+# 5. Compare your hash to the verified hash
+#
+#     diff -s verified.hash my.hash
+#
+# 6. Repeat 5 and 6 with metadata.gz
 #
 # == OpenSSL Reference
 #
@@ -338,31 +366,31 @@ module Gem::Security
       'basicConstraints'      => 'CA:FALSE',
       'subjectKeyIdentifier'  => 'hash',
       'keyUsage'              => 'keyEncipherment,dataEncipherment,digitalSignature',
-  },
+    },
 
-  # save the key and cert to a file in build_self_signed_cert()?
-  :save_key   => true,
-  :save_cert  => true,
+    # save the key and cert to a file in build_self_signed_cert()?
+    :save_key   => true,
+    :save_cert  => true,
 
-  # if you define either of these, then they'll be used instead of
-  # the output_fmt macro below
-  :save_key_path => nil,
-  :save_cert_path => nil,
+    # if you define either of these, then they'll be used instead of
+    # the output_fmt macro below
+    :save_key_path => nil,
+    :save_cert_path => nil,
 
-  # output name format for self-signed certs
-  :output_fmt => 'gem-%s.pem',
-  :munge_re   => Regexp.new(/[^a-z0-9_.-]+/),
+    # output name format for self-signed certs
+    :output_fmt => 'gem-%s.pem',
+    :munge_re   => Regexp.new(/[^a-z0-9_.-]+/),
 
-  # output directory for trusted certificate checksums
-  :trust_dir => File::join(Gem.user_home, '.gem', 'trust'),
+    # output directory for trusted certificate checksums
+    :trust_dir => File::join(Gem.user_home, '.gem', 'trust'),
 
-  # default permissions for trust directory and certs
-  :perms => {
-    :trust_dir      => 0700,
-    :trusted_cert   => 0600,
-    :signing_cert   => 0600,
-    :signing_key    => 0600,
-  },
+    # default permissions for trust directory and certs
+    :perms => {
+      :trust_dir      => 0700,
+      :trusted_cert   => 0600,
+      :signing_cert   => 0600,
+      :signing_key    => 0600,
+    },
   }
 
   #

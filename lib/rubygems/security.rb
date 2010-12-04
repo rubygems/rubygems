@@ -669,29 +669,29 @@ module Gem::Security
   #
   def self.build_cert(name, key, opt = {})
     Gem.ensure_ssl_available
-    opt = OPT.merge(opt)
+    opt = OPT.merge opt
 
-    # create new cert
-    ret = OpenSSL::X509::Certificate.new
+    cert = OpenSSL::X509::Certificate.new
 
-    # populate cert attributes
-    ret.version = 2
-    ret.serial = 0
-    ret.public_key = key.public_key
-    ret.not_before = Time.now
-    ret.not_after = Time.now + opt[:cert_age]
-    ret.subject = name
+    cert.not_after  = Time.now + opt[:cert_age]
+    cert.not_before = Time.now
+    cert.public_key = key.public_key
+    cert.serial     = 0
+    cert.subject    = name
+    cert.version    = 2
 
-    # add certificate extensions
-    ef = OpenSSL::X509::ExtensionFactory.new(nil, ret)
-    ret.extensions = opt[:cert_exts].map { |k, v| ef.create_extension(k, v) }
+    ef = OpenSSL::X509::ExtensionFactory.new nil, cert
 
-    # sign cert
-    i_key, i_cert = opt[:issuer_key] || key, opt[:issuer_cert] || ret
-    ret = sign_cert(ret, i_key, i_cert, opt)
+    cert.extensions = opt[:cert_exts].map do |name, value|
+      ef.create_extension name, value
+    end
 
-    # return cert
-    ret
+    i_key  = opt[:issuer_key]  || key
+    i_cert = opt[:issuer_cert] || cert
+
+    cert = sign_cert cert, i_key, i_cert, opt
+
+    cert
   end
 
   #

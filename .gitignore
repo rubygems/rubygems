@@ -1,4 +1,6 @@
 *.rbc
-.rvmrc
-doc
-pkg
+*.swp
+/.rvmrc
+/TAGS
+/doc
+/pkg

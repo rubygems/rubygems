@@ -72,7 +72,7 @@ class TestGemCommandsCertCommand < RubyGemTestCase
     assert_equal '', @ui.error
 
     assert_equal File.read(@cert_file_name),
-                 Gem::Security::OPT[:issuer_cert].to_s
+                 @cmd.options[:issuer_cert].to_s
   end
 
   def test_execute_list
@@ -93,7 +93,7 @@ class TestGemCommandsCertCommand < RubyGemTestCase
     assert_equal '', @ui.error
 
     assert_equal File.read(@pkey_file_name),
-                 Gem::Security::OPT[:issuer_key].to_s
+                 @cmd.options[:issuer_key].to_s
   end
 
   def test_execute_remove

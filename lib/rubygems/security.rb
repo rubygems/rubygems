@@ -7,6 +7,7 @@
 require 'rubygems/exceptions'
 require 'rubygems/gem_openssl'
 
+#
 # = Signed Gems README
 #
 # == Table of Contents
@@ -347,11 +348,14 @@ require 'rubygems/gem_openssl'
 
 module Gem::Security
 
+  ##
+  # Gem::Security default exception type
+
   class Exception < Gem::Exception; end
 
-  #
-  # default options for most of the methods below
-  #
+  ##
+  # Default options for most of the methods below
+
   OPT = {
     # private key options
     :key_algo   => Gem::SSL::PKEY_RSA,
@@ -393,11 +397,11 @@ module Gem::Security
     },
   }
 
-  #
+  ##
   # A Gem::Security::Policy object encapsulates the settings for verifying
   # signed gem files.  This is the base class.  You can either declare an
   # instance of this or use one of the preset security policies below.
-  #
+
   class Policy
     attr_accessor :verify_data, :verify_signer, :verify_chain,
       :verify_root, :only_trusted, :only_signed
@@ -537,9 +541,9 @@ module Gem::Security
     end
   end
 
-  #
+  ##
   # No security policy: all package signature checks are disabled.
-  #
+
   NoSecurity = Policy.new(
     :verify_data      => false,
     :verify_signer    => false,
@@ -549,14 +553,14 @@ module Gem::Security
     :only_signed      => false
   )
 
-  #
+  ##
   # AlmostNo security policy: only verify that the signing certificate is the
   # one that actually signed the data.  Make no attempt to verify the signing
   # certificate chain.
   #
   # This policy is basically useless. better than nothing, but can still be
   # easily spoofed, and is not recommended.
-  #
+
   AlmostNoSecurity = Policy.new(
     :verify_data      => true,
     :verify_signer    => false,
@@ -566,13 +570,13 @@ module Gem::Security
     :only_signed      => false
   )
 
-  #
+  ##
   # Low security policy: only verify that the signing certificate is actually
   # the gem signer, and that the signing certificate is valid.
   #
   # This policy is better than nothing, but can still be easily spoofed, and
   # is not recommended.
-  #
+
   LowSecurity = Policy.new(
     :verify_data      => true,
     :verify_signer    => true,
@@ -582,7 +586,7 @@ module Gem::Security
     :only_signed      => false
   )
 
-  #
+  ##
   # Medium security policy: verify the signing certificate, verify the signing
   # certificate chain all the way to the root certificate, and only trust root
   # certificates that we have explicitly allowed trust for.
@@ -590,7 +594,7 @@ module Gem::Security
   # This security policy is reasonable, but it allows unsigned packages, so a
   # malicious person could simply delete the package signature and pass the
   # gem off as unsigned.
-  #
+
   MediumSecurity = Policy.new(
     :verify_data      => true,
     :verify_signer    => true,
@@ -600,7 +604,7 @@ module Gem::Security
     :only_signed      => false
   )
 
-  #
+  ##
   # High security policy: only allow signed gems to be installed, verify the
   # signing certificate, verify the signing certificate chain all the way to
   # the root certificate, and only trust root certificates that we have
@@ -608,7 +612,7 @@ module Gem::Security
   #
   # This security policy is significantly more difficult to bypass, and offers
   # a reasonable guarantee that the contents of the gem have not been altered.
-  #
+
   HighSecurity = Policy.new(
     :verify_data      => true,
     :verify_signer    => true,
@@ -618,9 +622,9 @@ module Gem::Security
     :only_signed      => true
   )
 
-  #
+  ##
   # Hash of configured security policies
-  #
+
   Policies = {
     'NoSecurity'       => NoSecurity,
     'AlmostNoSecurity' => AlmostNoSecurity,
@@ -629,10 +633,10 @@ module Gem::Security
     'HighSecurity'     => HighSecurity,
   }
 
-  #
+  ##
   # Sign the cert cert with @signing_key and @signing_cert, using the digest
   # algorithm opt[:dgst_algo]. Returns the newly signed certificate.
-  #
+
   def self.sign_cert(cert, signing_key, signing_cert, opt = {})
     opt = OPT.merge(opt)
 
@@ -642,11 +646,11 @@ module Gem::Security
     cert
   end
 
-  #
+  ##
   # Make sure the trust directory exists.  If it does exist, make sure it's
   # actually a directory.  If not, then create it with the appropriate
   # permissions.
-  #
+
   def self.verify_trust_dir(path, perms)
     # if the directory exists, then make sure it is in fact a directory.  if
     # it doesn't exist, then create it with the appropriate permissions
@@ -663,9 +667,9 @@ module Gem::Security
     end
   end
 
-  #
+  ##
   # Build a certificate from the given DN and private key.
-  #
+
   def self.build_cert(name, key, opt = {})
     Gem.ensure_ssl_available
     opt = OPT.merge opt
@@ -693,9 +697,9 @@ module Gem::Security
     cert
   end
 
-  #
+  ##
   # Build a self-signed certificate for the given email address.
-  #
+
   def self.build_self_signed_cert(email_addr, opt = {})
     Gem.ensure_ssl_available
     opt = OPT.merge(opt)
@@ -750,12 +754,12 @@ module Gem::Security
     OpenSSL::X509::Name.parse name
   end
 
-  #
+  ##
   # Add certificate to trusted cert list.
   #
   # Note: At the moment these are stored in OPT[:trust_dir], although that
   # directory may change in the future.
-  #
+
   def self.add_trusted_cert(cert, opt = {})
     opt = OPT.merge(opt)
 
@@ -775,11 +779,13 @@ module Gem::Security
     nil
   end
 
-  #
+  ##
   # Basic OpenSSL-based package signing class.
-  #
+
   class Signer
-    attr_accessor :key, :cert_chain
+
+    attr_accessor :cert_chain
+    attr_accessor :key
 
     def initialize(key, cert_chain)
       Gem.ensure_ssl_available
@@ -806,13 +812,14 @@ module Gem::Security
       end
     end
 
-    #
+    ##
     # Sign data with given digest algorithm
-    #
+
     def sign(data)
       @key.sign(@algo.new, data)
     end
 
   end
+
 end
 

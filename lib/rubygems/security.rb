@@ -636,9 +636,8 @@ module Gem::Security
   def self.sign_cert(cert, signing_key, signing_cert, opt = {})
     opt = OPT.merge(opt)
 
-    # set up issuer information
     cert.issuer = signing_cert.subject
-    cert.sign(signing_key, opt[:dgst_algo].new)
+    cert.sign signing_key, opt[:dgst_algo].new
 
     cert
   end
@@ -702,17 +701,7 @@ module Gem::Security
     opt = OPT.merge(opt)
     path = { :key => nil, :cert => nil }
 
-    # split email address up
-    cn, dcs = email_addr.split('@')
-    dcs = dcs.split('.')
-
-    # munge email CN and DCs
-    cn = cn.gsub(opt[:munge_re], '_')
-    dcs = dcs.map { |dc| dc.gsub(opt[:munge_re], '_') }
-
-    # create DN
-    name = "CN=#{cn}/" << dcs.map { |dc| "DC=#{dc}" }.join('/')
-    name = OpenSSL::X509::Name::parse(name)
+    name = email_to_name email_addr, opt[:munge_re]
 
     # build private key
     key = opt[:key_algo].new(opt[:key_size])
@@ -744,6 +733,25 @@ module Gem::Security
     # return key, cert, and paths (if applicable)
     { :key => key, :cert => cert,
       :key_path => path[:key], :cert_path => path[:cert] }
+  end
+
+  ##
+  # Turns +email_address+ into an OpenSSL::X509::Name
+
+  def self.email_to_name email_address, munge_re
+    cn, dcs = email_address.split '@'
+
+    dcs = dcs.split '.'
+
+    cn = cn.gsub munge_re, '_'
+
+    dcs = dcs.map do |dc|
+      dc.gsub munge_re, '_'
+    end
+
+    name = "CN=#{cn}/" << dcs.map { |dc| "DC=#{dc}" }.join('/')
+
+    OpenSSL::X509::Name.parse name
   end
 
   #

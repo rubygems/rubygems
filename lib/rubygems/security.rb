@@ -703,34 +703,30 @@ module Gem::Security
 
     name = email_to_name email_addr, opt[:munge_re]
 
-    # build private key
-    key = opt[:key_algo].new(opt[:key_size])
+    key = opt[:key_algo].new opt[:key_size]
 
-    # method name pretty much says it all :)
-    verify_trust_dir(opt[:trust_dir], opt[:perms][:trust_dir])
+    verify_trust_dir opt[:trust_dir], opt[:perms][:trust_dir]
 
-    # if we're saving the key, then write it out
-    if opt[:save_key]
+    if opt[:save_key] then
       path[:key] = opt[:save_key_path] || (opt[:output_fmt] % 'private_key')
-      File.open(path[:key], 'wb') do |file|
-        file.chmod(opt[:perms][:signing_key])
-        file.write(key.to_pem)
+
+      open path[:key], 'wb' do |io|
+        io.chmod opt[:perms][:signing_key]
+        io.write key.to_pem
       end
     end
 
-    # build self-signed public cert from key
-    cert = build_cert(name, key, opt)
+    cert = build_cert name, key, opt
 
-    # if we're saving the cert, then write it out
-    if opt[:save_cert]
+    if opt[:save_cert] then
       path[:cert] = opt[:save_cert_path] || (opt[:output_fmt] % 'public_cert')
-      File.open(path[:cert], 'wb') do |file|
-        file.chmod(opt[:perms][:signing_cert])
-        file.write(cert.to_pem)
+
+      open path[:cert], 'wb' do |file|
+        file.chmod opt[:perms][:signing_cert]
+        file.write cert.to_pem
       end
     end
 
-    # return key, cert, and paths (if applicable)
     { :key => key, :cert => cert,
       :key_path => path[:key], :cert_path => path[:cert] }
   end

@@ -44,7 +44,9 @@ class Gem::Commands::ServerCommand < Gem::Command
       options[:addresses].push(*address)
     end
 
-    add_option '--launch', 'launch a browser window' do |launch, options|
+    add_option '-l', '--launch[=COMMAND]', 
+               'launch a browser window' do |launch, options|
+      launch ||= Gem.win_platform? ? 'start' : 'open'
       options[:launch] = launch
     end
   end

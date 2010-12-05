@@ -43,6 +43,10 @@ class Gem::Commands::ServerCommand < Gem::Command
       options[:addresses] ||= []
       options[:addresses].push(*address)
     end
+
+    add_option '--launch', 'launch a browser window' do |launch, options|
+      options[:launch] = launch
+    end
   end
 
   def defaults_str # :nodoc:

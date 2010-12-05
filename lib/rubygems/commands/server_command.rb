@@ -45,7 +45,9 @@ class Gem::Commands::ServerCommand < Gem::Command
     end
 
     add_option '-l', '--launch[=COMMAND]', 
-               'launch a browser window' do |launch, options|
+               'launches a browser window',
+               'COMMAND defaults to start on Windows',
+               'and open on all other platforms' do |launch, options|
       launch ||= Gem.win_platform? ? 'start' : 'open'
       options[:launch] = launch
     end

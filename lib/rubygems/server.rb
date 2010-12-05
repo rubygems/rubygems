@@ -862,9 +862,8 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     listeners = @server.listeners.map{|l| l.addr[2] }
     
     host = listeners.any?{|l| l == '0.0.0.0'} ? 'localhost' : listeners.first
-    cmd  = Gem.win_platform? ? 'start' : 'open'
 
-    system("#{cmd} http://#{host}:#{@port}")  
+    system("#{@launch} http://#{host}:#{@port}")  
   end
 
 end

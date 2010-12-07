@@ -36,18 +36,21 @@ class TestGemRequirement < RubyGemTestCase
       Gem::Requirement.parse(Gem::Version.new('2'))
   end
 
+  def test_parse_suffix
+    assert_equal ['>=', Gem::Version.new(1)], Gem::Requirement.parse('1+')
+    assert_equal ['<=', Gem::Version.new(1)], Gem::Requirement.parse("1-")
+    assert_equal ['~>', Gem::Version.new(1)], Gem::Requirement.parse("1~")
+  end
+
   def test_parse_bad
-    e = assert_raises ArgumentError do
-      Gem::Requirement.parse nil
+    samples = [nil, "", ">1.0+"]
+
+    samples.each do |sample|
+      e = assert_raises ArgumentError do
+        Gem::Requirement.parse sample
+      end
+      assert_equal "Illformed requirement [#{sample.inspect}]", e.message
     end
-
-    assert_equal 'Illformed requirement [nil]', e.message
-
-    e = assert_raises ArgumentError do
-      Gem::Requirement.parse ""
-    end
-
-    assert_equal 'Illformed requirement [""]', e.message
   end
 
   def test_prerelease_eh

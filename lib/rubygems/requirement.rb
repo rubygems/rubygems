@@ -20,6 +20,9 @@ class Gem::Requirement
   quoted  = OPS.keys.map { |k| Regexp.quote k }.join "|"
   PATTERN = /\A\s*(#{quoted})?\s*(#{Gem::Version::VERSION_PATTERN})\s*\z/
 
+  OPS_TRANSLATE  = {'+'=>'>=', '-'=>'<=', '~'=>'~>'}
+  PATTERN_SUFFIX = /\A\s*(#{Gem::Version::VERSION_PATTERN})([+-~])\s*\z/
+
   ##
   # Factory method to create a Gem::Requirement object.  Input may be
   # a Version, a String, or nil.  Intended to simplify client code.
@@ -64,15 +67,23 @@ class Gem::Requirement
   #     parse("> 1.0")                 # => [">", "1.0"]
   #     parse("1.0")                   # => ["=", "1.0"]
   #     parse(Gem::Version.new("1.0")) # => ["=,  "1.0"]
-
+  #
+  # Strings can use suffix constraints.
+  #
+  #     parse("1.0+")                 # => [">=", "1.0"]
+  #     parse("1.0-")                 # => ["<=", "1.0"]
+  #     parse("1.0~")                 # => ["~>", "1.0"]
+  #
   def self.parse obj
     return ["=", obj] if Gem::Version === obj
 
-    unless PATTERN =~ obj.to_s
+    if PATTERN =~ obj.to_s
+      [$1 || "=", Gem::Version.new($2)]
+    elsif PATTERN_SUFFIX =~ obj.to_s
+      [OPS_TRANSLATE[$3], Gem::Version.new($1)]
+    else
       raise ArgumentError, "Illformed requirement [#{obj.inspect}]"
     end
-
-    [$1 || "=", Gem::Version.new($2)]
   end
 
   ##

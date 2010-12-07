@@ -189,8 +189,6 @@ class Gem::Version
 
     @version = version.to_s
     @version.strip!
-
-    segments # prime @segments
   end
 
   ##

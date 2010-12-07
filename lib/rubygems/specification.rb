@@ -474,16 +474,21 @@ class Gem::Specification
   # gems of different ages.
   #
   # 'input' can be anything that YAML.load() accepts: String or IO.
+  #
+  # The YAML input can be a serialized Gem::Specification, or it can be
+  # a plain-style YAML mapping.
 
   def self.from_yaml(input)
     input = normalize_yaml_input input
     spec = YAML.load input
 
-    if spec && spec.class == FalseClass then
+    if spec && spec.class == FalseClass
       raise Gem::EndOfYAMLException
     end
 
-    unless Gem::Specification === spec then
+    spec = from_hash(spec) if Hash === spec
+
+    unless Gem::Specification === spec
       raise Gem::Exception, "YAML data doesn't evaluate to gem specification"
     end
 
@@ -494,6 +499,29 @@ class Gem::Specification
                                  NONEXISTENT_SPECIFICATION_VERSION
     end
 
+    spec
+  end
+
+  ##
+  # Loads gemspec from a plain Hash. This is used by the the YAML loader
+  # when YAML.load returns a Hash instead of a Gem::Specification. This
+  # allows developer's to write thier .gemspec files in plain, undecorated
+  # YAML, if they so choose.
+
+  def self.from_hash(hash)
+    name    = hash.delete('name')
+    version = hash.delete('version')
+    spec = new(name, version)
+    hash.each do |key, val|
+      case key
+      when 'dependencies'
+        val.each do |dep|
+          spec.dependencies << Gem::Dependency.from_string(dep)
+        end
+      else
+        spec.__send__("#{key}=", val)
+      end
+    end
     spec
   end
 
@@ -536,7 +564,10 @@ class Gem::Specification
 
   def self.normalize_yaml_input(input)
     result = input.respond_to?(:read) ? input.read : input
-    result = "--- " + result unless result =~ /^--- /
+    # if `!ruby/object:Gem::Specification` but `---` was forgotten.
+    result = "--- " + result  if result.strip =~ /\A\s*\!/
+    # make sure there is a triple dash
+    result = "---\n" + result if result.strip !~ /\A---/
     result
   end
 

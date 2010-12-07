@@ -18,6 +18,24 @@ class Gem::Dependency
   # :startdoc:
 
   ##
+  # Create dependency from simple string description.
+  #
+  #   Gem::Dependency.from_string('rake >0.8')
+  #
+  # A dependency type can be place at the end in parenthesis.
+  #
+  #   Gem::Dependency.from_string('rake >0.8 (development)')
+  #
+  def self.from_string(dependency)
+    parts = dependency.split(/\s+/)
+    if md = /\((.*?)\)/.match(parts.last)
+      parts.pop
+      parts << md[1].to_sym
+    end
+    new(*parts)
+  end
+
+  ##
   # Valid dependency types.
   #--
   # When this list is updated, be sure to change

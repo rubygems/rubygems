@@ -23,6 +23,26 @@ email: flgr@ccan.de
 has_rdoc: true
   EOF
 
+  PLAIN_YAML_SPEC = <<-EOF
+---
+rubygems_version: "1.0"
+name: keyedlist
+version: 0.4.0
+platform: ruby
+summary: A Hash which automatically computes keys.
+require_paths:
+  - lib
+files:
+  - lib/keyedlist.rb
+autorequire: keyedlist
+author: Florian Gross
+email: flgr@ccan.de
+has_rdoc: true
+dependencies:
+  - blah ~>1.3.5
+  - uhhh =1.0 (development)
+  EOF
+
   LEGACY_RUBY_SPEC = <<-EOF
 Gem::Specification.new do |s|
   s.name = %q{keyedlist}
@@ -137,6 +157,23 @@ end
     assert_equal Gem::Specification::TODAY, spec.date
     assert spec.required_ruby_version.satisfied_by?(Gem::Version.new('1'))
     assert_equal false, spec.has_unit_tests?
+  end
+
+  def test_self_load_plain_yaml
+    spec = Gem::Specification.from_yaml(PLAIN_YAML_SPEC)
+    assert_equal 'keyedlist', spec.name
+    assert_equal '0.4.0', spec.version.to_s
+    assert_equal true, spec.has_rdoc?
+    assert_equal Gem::Specification::TODAY, spec.date
+    assert spec.required_ruby_version.satisfied_by?(Gem::Version.new('1'))
+    assert_equal false, spec.has_unit_tests?
+    assert_equal 2, spec.dependencies.size
+    assert_equal 'blah', spec.dependencies[0].name
+    assert_equal :runtime, spec.dependencies[0].type
+    assert_equal '~> 1.3.5', spec.dependencies[0].requirement.to_s
+    assert_equal 'uhhh', spec.dependencies[1].name
+    assert_equal :development, spec.dependencies[1].type
+    assert_equal '= 1.0', spec.dependencies[1].requirement.to_s
   end
 
   def test_self_normalize_yaml_input_with_183_yaml

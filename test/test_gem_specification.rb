@@ -39,7 +39,7 @@ author: Florian Gross
 email: flgr@ccan.de
 has_rdoc: true
 dependencies:
-  - blah ~>1.3.5
+  - blah ~> 1.3.5
   - uhhh =1.0 (development)
   EOF
 

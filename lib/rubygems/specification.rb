@@ -518,6 +518,10 @@ class Gem::Specification
         val.each do |dep|
           spec.dependencies << Gem::Dependency.from_string(dep)
         end
+      when 'development_dependencies'
+        val.each do |dep|
+          spec.dependencies << Gem::Dependency.from_string(dep, :development)
+        end
       else
         spec.__send__("#{key}=", val)
       end

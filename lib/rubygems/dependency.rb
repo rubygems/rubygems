@@ -22,16 +22,22 @@ class Gem::Dependency
   #
   #   Gem::Dependency.from_string('rake >0.8')
   #
-  # A dependency type can be place at the end in parenthesis.
+  # A dependency type can be placed at the end in parentheses.
   #
   #   Gem::Dependency.from_string('rake >0.8 (development)')
   #
-  def self.from_string(dependency)
-    parts = dependency.split(/\s+/)
+  # Or forced into a specific type regardless of the string's desination
+  # using the option +type+ argument.
+  #
+  #   Gem::Dependency.from_string('rake >= 0.8', :development)
+
+  def self.from_string(dependency, type=nil)
+    parts = dependency.split(/\s+(?=[>=<~])/)
     if md = /\((.*?)\)/.match(parts.last)
       parts.pop
-      parts << md[1].to_sym
+      type = md[1] if !type
     end
+    parts << type.to_sym if type
     new(*parts)
   end
 

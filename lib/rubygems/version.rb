@@ -18,8 +18,8 @@
 # Prereleases sort between real releases (newest to oldest):
 #
 # 1. 1.0
-# 2. 1.0.b
-# 3. 1.0.a
+# 2. 1.0.b1
+# 3. 1.0.a.2
 # 4. 0.9
 #
 # == How Software Changes
@@ -195,7 +195,7 @@ class Gem::Version
   # Return a new version object where the next to the last revision
   # number is one greater (e.g., 5.3.1 => 5.4).
   #
-  # Pre-release (alpha) parts, e.g, 5.3.1.b2 => 5.4, are ignored.
+  # Pre-release (alpha) parts, e.g, 5.3.1.b.2 => 5.4, are ignored.
 
   def bump
     segments = self.segments.dup
@@ -263,10 +263,8 @@ class Gem::Version
 
   def segments # :nodoc:
 
-    # @segments is lazy so it can pick up @version values that come
-    # from old marshaled versions, which don't go through
-    # marshal_load. +segments+ is called in +initialize+ to "prime
-    # the pump" in normal cases.
+    # segments is lazy so it can pick up version values that come from
+    # old marshaled versions, which don't go through marshal_load.
 
     @segments ||= @version.scan(/[0-9]+|[a-z]+/i).map do |s|
       /^\d+$/ =~ s ? s.to_i : s

@@ -482,7 +482,8 @@ class Gem::SourceIndex
   end
 
   def remove_extra(spec_names)
-    dictionary = spec_names.inject({}) { |h, k| h[k] = true; h }
+    dictionary = {}
+    spec_names.each { |k| dictionary[k] = true }
     each do |name, spec|
       remove_spec name unless dictionary.include? spec.original_name
     end

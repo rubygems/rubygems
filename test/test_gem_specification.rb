@@ -53,6 +53,8 @@ end
       s.add_dependency 'jabber4r', '> 0.0.0'
       s.add_dependency 'pqa', ['> 0.4', '<= 0.6']
 
+      s.add_resource 'wiki', 'http://somewiki.org'
+
       s.mark_version
       s.files = %w[lib/code.rb]
     end
@@ -95,6 +97,7 @@ end
       required_ruby_version
       required_rubygems_version
       requirements
+      resources
       rubyforge_project
       rubygems_version
       signing_key
@@ -363,6 +366,11 @@ end
     pqa = Gem::Dependency.new 'pqa', ['> 0.4', '<= 0.6']
 
     assert_equal [rake, jabber, pqa], @a1.dependencies
+  end
+
+  def test_resources
+    r = Gem::Resources.new 'wiki' => 'http://somewiki.org'
+    assert_equal r, @a1.resources
   end
 
   def test_dependencies_scoped_by_type
@@ -776,6 +784,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{#{Gem::VERSION}}
   s.summary = %q{this is a summary}
 
+  s.add_resource(:wiki, "http://somewiki.org")
+
   if s.respond_to? :specification_version then
     s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
 
@@ -829,6 +839,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{#{Gem::VERSION}}
   s.summary = %q{this is a summary}
   s.test_files = [\"test/suite.rb\"]
+
+  s.add_resource(:wiki, "http://somewiki.org")
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

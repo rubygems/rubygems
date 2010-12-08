@@ -7,6 +7,7 @@
 require 'rubygems/version'
 require 'rubygems/requirement'
 require 'rubygems/platform'
+require 'rubygems/resources'
 
 # :stopdoc:
 class Date; end # for ruby_code if date.rb wasn't required
@@ -278,7 +279,8 @@ class Gem::Specification
       @homepage,
       @has_rdoc,
       @new_platform,
-      @licenses
+      @licenses,
+      @resources
     ]
   end
 
@@ -324,6 +326,7 @@ class Gem::Specification
     spec.instance_variable_set :@new_platform,              array[16]
     spec.instance_variable_set :@platform,                  array[16].to_s
     spec.instance_variable_set :@license,                   array[17]
+    spec.instance_variable_set :@resources,                 array[18]
     spec.instance_variable_set :@loaded,                    false
 
     spec
@@ -764,6 +767,7 @@ class Gem::Specification
 
     handled = [
       :dependencies,
+      :resources,
       :name,
       :platform,
       :required_rubygems_version,
@@ -779,6 +783,14 @@ class Gem::Specification
       if current_value != default or
          self.class.required_attribute? attr_name then
         result << "  s.#{attr_name} = #{ruby_code current_value}"
+      end
+    end
+
+    result << nil
+
+    unless resources.empty? then
+      resources.each do |k,v|
+        result << "  s.add_resource(#{k.inspect}, #{v.inspect})"
       end
     end
 
@@ -1040,6 +1052,17 @@ class Gem::Specification
   private :add_dependency_with_type
 
   ##
+  # Adds a resource to the gem with given +label and +url+.
+  # Some labels are synonymous with others, e.g. +mail+ with 
+  # +mailing_list+. See Resources class for details.
+
+  def add_resource(label, url)
+    resources.add_resource(label, url)
+  end
+
+  alias_method :resource, :add_resource
+
+  ##
   # Finds all gems that satisfy +dep+
 
   def find_all_satisfiers(dep)
@@ -1065,6 +1088,7 @@ class Gem::Specification
     when true, false, nil  then obj.inspect
     when Gem::Platform     then "Gem::Platform.new(#{obj.to_a.inspect})"
     when Gem::Requirement  then "Gem::Requirement.new(#{obj.to_s.inspect})"
+    when Gem::Resources    then "Gem::Resources.new(#{obj.to_h.inspect})"
     else raise Gem::Exception, "ruby_code case not handled: #{obj.class}"
     end
   end
@@ -1348,6 +1372,17 @@ class Gem::Specification
   array_attribute :dependencies
 
   read_only :dependencies
+
+  ##
+  # :attr_reader: resources
+  #
+  # Resources instance which stores a mapping of label to URL.
+  #
+  # Use #resource or #add_resource to add a resource to a gem.
+
+  attribute :resources, Gem::Resources.new
+
+  read_only :resources
 
   # :section: Aliased gemspec attributes
 

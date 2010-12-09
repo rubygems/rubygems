@@ -1052,15 +1052,13 @@ class Gem::Specification
   private :add_dependency_with_type
 
   ##
-  # Adds a resource to the gem with given +label and +url+.
+  # Adds a resource to the gem with given +label+ and +url+.
   # Some labels are synonymous with others, e.g. +mail+ with 
   # +mailing_list+. See Resources class for details.
 
   def add_resource(label, url)
     resources.add_resource(label, url)
   end
-
-  alias_method :resource, :add_resource
 
   ##
   # Finds all gems that satisfy +dep+

@@ -2,22 +2,29 @@
 # Track Internet resources related to a gem.
 
 class Gem::Resources
+  include Enumerable
+
+  ##
+  # Valid URL (TODO: improve)
+
+  URL = /^(http|https|ftp|mailto)\:\/\/.*?$/
 
   ##
   # Specail accessor stores values in a hash and can also handle hash 
   # key +aliases+.
 
   def self.attr_accessor(name, *aliases)
-    list = [name] + aliases
+    list = ([name] + aliases).map{ |k| k.to_sym }
     list.each do |label|
       #list << list.shift until list.first == name
       define_method(label) do
-        key = list.find{ |k| @table[k.to_sym] } || label
-        @table[key.to_sym]
+        key = list.find{ |k| @table[k] } || label
+        @table[key]
       end
-      define_method("#{label}=") do |value|
-        key = list.find{ |k| @table[k.to_sym] } || label
-        @table[key.to_sym] = value
+      define_method("#{label}=") do |url|
+        raise ArgumentError unless URL =~ url
+        key = list.find{ |k| @table[k] } || label
+        @table[key] = url
       end
     end
   end
@@ -35,10 +42,6 @@ class Gem::Resources
 
   ##
   # Add a new resource.
-  #
-  # Internally the +label+ is stored as a Symbol.
-  #
-  # TODO: validate URL ?
 
   def add_resource(label, url)
     __send__("#{label}=", url)
@@ -54,42 +57,45 @@ class Gem::Resources
   end
 
   ##
-  #
+  # Project homepage.
 
   attr_accessor :home, :homepage
 
   ##
-  #
+  # Source code browser.
 
   attr_accessor :code, :source, :source_code
 
   ##
-  #
+  # Issue tracker.
 
   attr_accessor :bugs, :bug_tracker, :issues, :issue_tracker
 
   ##
-  #
+  # Mialing list.
 
   attr_accessor :mail, :mailing_list
 
   ##
-  #
+  # Documentation.
 
   attr_accessor :docs, :documentation
 
   ##
-  #
+  # Wiki pages.
 
   attr_accessor :wiki
 
   ##
   # Support arbitrary resource labels.
 
-  def method_missing(label, *a, &b)
+  def method_missing(label, *args)
     case label.to_s
     when /=$/
-      set(label.to_s.chomp('='), a.first)
+      url = args.first
+      raise ArgumentError unless URL =~ url
+      label = label.to_s.chomp('=').to_sym
+      @table[label] = url
     else
       @table[label]
     end
@@ -103,33 +109,28 @@ class Gem::Resources
   end
 
   ##
-  #
+  # Equality.
 
   def ==(other)
     self.class == other.class and @table == other.table
   end
 
   ##
-  #
+  # Iterate over each label, url pair.
 
-  def eql?(other)
-    self.class == other.class and @table.eql?(other.table)
-  end
-
-  #
   def each(&block)
     @table.each(&block)
+  end
+
+  ##
+  # Returns the number of reources.
+
+  def size
+    @table.size
   end
 
   protected
 
   attr :table
 
-  private
-
-  def set(label, url)
-    @table[label.to_sym] = url
-  end
-
 end
-

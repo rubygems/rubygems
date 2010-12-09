@@ -2,18 +2,6 @@ require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/dependency'
 
 class TestGemDependency < RubyGemTestCase
-
-  def test_subclass
-    sc = Class.new Gem::Dependency
-    def sc.requirement() bogus; end
-
-    out, err = capture_io do
-      assert_equal Gem::Requirement.default, sc.new('a').version_requirement
-    end
-
-    assert_match %r%deprecated%, err
-  end
-
   def test_initialize
     d = dep "pkg", "> 1.0"
 
@@ -133,17 +121,5 @@ class TestGemDependency < RubyGemTestCase
 
     assert d.prerelease?
   end
-
-  def test_version_requirements_equals_deprecated
-    d = dep "pkg", "1.0"
-
-    out, err = capture_io do
-      d.version_requirements = '2.0'
-      assert_equal Gem::Requirement.new(%w[2.0]), d.requirement
-    end
-
-    assert_match %r%deprecated%, err
-  end
-
 end
 

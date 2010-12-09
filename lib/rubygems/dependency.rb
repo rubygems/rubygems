@@ -5,18 +5,6 @@ require "rubygems/requirement"
 
 class Gem::Dependency
 
-  # :stopdoc:
-  @warned_version_requirement = false
-
-  def self.warned_version_requirement
-    @warned_version_requirement
-  end
-
-  def self.warned_version_requirement= value
-    @warned_version_requirement = value
-  end
-  # :startdoc:
-
   ##
   # Valid dependency types.
   #--
@@ -133,42 +121,12 @@ class Gem::Dependency
     @requirement = @version_requirements if defined?(@version_requirements)
   end
 
-  ##
-  # Rails subclasses Gem::Dependency and uses this method, so we'll hack
-  # around it.
-
-  alias __requirement requirement # :nodoc:
-
   def requirements_list
     requirement.as_list
   end
 
   def to_s # :nodoc:
     "#{name} (#{requirement}, #{type})"
-  end
-
-  def version_requirements # :nodoc:
-    unless Gem::Dependency.warned_version_requirement then
-      warn "#{Gem.location_of_caller.join ':'}:Warning: " \
-           "Gem::Dependency#version_requirements is deprecated " \
-           "and will be removed on or after August 2010.  " \
-           "Use #requirement"
-
-      Gem::Dependency.warned_version_requirement = true
-    end
-
-    __requirement
-  end
-
-  alias version_requirement version_requirements # :nodoc:
-
-  def version_requirements= requirements # :nodoc:
-    warn "#{Gem.location_of_caller.join ':'}:Warning: " \
-         "Gem::Dependency#version_requirements= is deprecated " \
-         "and will be removed on or after August 2010.  " \
-         "Use Gem::Dependency.new."
-
-    @requirement = Gem::Requirement.create requirements
   end
 
   def == other # :nodoc:

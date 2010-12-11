@@ -429,18 +429,19 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
   def self.run(options)
     new(options[:gemdir], options[:port], options[:daemon],
-        options[:addresses]).run
+        options[:launch],options[:addresses]).run
   end
 
   ##
   # Only the first directory in gem_dirs is used for serving gems
 
-  def initialize(gem_dirs, port, daemon, addresses = nil)
+  def initialize(gem_dirs, port, daemon, launch, addresses = nil)
     Socket.do_not_reverse_lookup = true
 
     @gem_dirs = Array gem_dirs
     @port = port
     @daemon = daemon
+    @launch = launch
     @addresses = addresses
     logger = WEBrick::Log.new nil, WEBrick::BasicLog::FATAL
     @server = WEBrick::HTTPServer.new :DoNotListen => true, :Logger => logger
@@ -802,6 +803,8 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     trap("INT") { @server.shutdown; exit! }
     trap("TERM") { @server.shutdown; exit! }
+    
+    launch if @launch
 
     @server.start
   end
@@ -853,6 +856,14 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     end
 
     res.body << index
+  end
+  
+  def launch
+    listeners = @server.listeners.map{|l| l.addr[2] }
+    
+    host = listeners.any?{|l| l == '0.0.0.0'} ? 'localhost' : listeners.first
+
+    system("#{@launch} http://#{host}:#{@port}")  
   end
 
 end

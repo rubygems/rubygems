@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 
+2010-12-10  Luis Lavena  <luislavena@gmail.com>
+
+	* lib/rubygems/commands/server_command.rb: Added --launch option to
+	  automatically launch a browser window. Pull Request #11 by Gordon
+	  Thiesfeld.
+	* lib/rubygems/server.rb: ditto.
+
 2010-12-01  Eric Hodel  <drbrain@segment7.net>
 
 	* lib/rubygems/security.rb: Fixed indent, described how to manually

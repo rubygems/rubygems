@@ -72,15 +72,6 @@ task :prerelease => [:clobber, :sanity_check, :test, :test_functional]
 
 task :postrelease => [:tag, :publish_docs]
 
-Rake::Task[:release_to_rubyforge].clear_actions
-
-task :release_to_rubyforge do
-  files = Dir["pkg/rubygems-update*.gem"]
-  rf = RubyForge.new.configure
-  rf.login
-  rf.add_file hoe.rubyforge_name, hoe.rubyforge_name, hoe.version, files.first
-end
-
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
 task pkg_dir_path do
   mv pkg_dir_path, "pkg/rubygems-#{hoe.version}"
@@ -98,51 +89,10 @@ task :sanity_check do
 end
 
 task :tag => :sanity_check do
-  reltag = "REL_#{Gem::VERSION.gsub(/\./, '_')}"
-  svn_url = "svn+ssh://rubyforge.org/var/svn/rubygems"
-  sh %{svn copy #{svn_url}/trunk #{svn_url}/tags/#{reltag}}
+  raise "need a git version of rake tag written"
 end
 
 # Misc Tasks ---------------------------------------------------------
-
-# Git mirror support. You probably don't need to care about
-# these. Don't run 'em unless you have a John-style git-svn setup
-# pointed at a valid, pushable Git remote called "origin".
-
-namespace :git do
-  namespace :svn do
-    task(:fetch) { sh "git svn fetch" }
-  end
-
-  task :sync => %w(svn:fetch sync:branches sync:tags)
-
-  namespace :sync do
-    task :branches do
-      {
-        "trunk" => "master",
-      }.each do |svn, git|
-        sh "git push origin svn/#{svn}:#{git}"
-      end
-    end
-
-    task :tags do
-      old    = `git tag`
-      tags   = `git for-each-ref refs/remotes/svn/tags`.split "\n"
-      tagged = false
-
-      tags.each do |tag|
-        next unless /(REL_.*)$/ =~ tag
-        name, sha, _, sym = $1, *tag.split(/\s/)
-
-        next if /#{name}/ =~ old
-        sh "git tag -f '#{name}' #{sha}"
-        tagged = true
-      end
-
-      sh "git push --tags" if tagged
-    end
-  end
-end
 
 # These tasks expect to have the following directory structure:
 #

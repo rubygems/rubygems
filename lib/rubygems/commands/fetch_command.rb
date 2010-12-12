@@ -52,7 +52,7 @@ class Gem::Commands::FetchCommand < Gem::Command
       spec, source_uri = specs_and_sources.sort_by { |s,| s.version }.last
 
       if spec.nil? then
-        show_lookup_failure gem_name, version, errors
+        show_lookup_failure gem_name, version, errors, options[:domain]
         next
       end
 

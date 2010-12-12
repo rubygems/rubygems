@@ -146,14 +146,22 @@ class Gem::Command
   end
 
   ##
-  #
   # Display to the user that a gem couldn't be found and reasons why
-  def show_lookup_failure(gem_name, version, errors=nil)
+
+  def show_lookup_failure(gem_name, version, errors, domain)
     if errors and !errors.empty?
       alert_error "Could not find a valid gem '#{gem_name}' (#{version}), here is why:"
       errors.each { |x| say "          #{x.wordy}" }
     else
       alert_error "Could not find a valid gem '#{gem_name}' (#{version}) in any repository"
+    end
+
+    unless domain == :local then # HACK
+      suggestions = Gem::SpecFetcher.fetcher.suggest_gems_from_name gem_name
+
+      unless suggestions.empty?
+        alert_error "Possible alternatives: #{suggestions.join(", ")}"
+      end
     end
   end
 

@@ -184,11 +184,8 @@ class Gem::SpecFetcher
   end
 
   ##
-  # Suggests a gem based on the supplied +gem_name+. Returns a string
-  # of the gem name if an approximate match can be found or nil
-  # otherwise. NOTE: for performance reasons only gems which exactly
-  # match the first character of +gem_name+ are considered.
-
+  # Suggests gems based on the supplied +gem_name+. Returns an array of
+	# alternative gem names.
   def suggest_gems_from_name gem_name
     gem_name        = gem_name.downcase
     max             = gem_name.size / 2

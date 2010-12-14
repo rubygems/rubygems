@@ -70,7 +70,7 @@ class Gem::Platform
                       when /hpux(\d+)/ then            [ 'hpux',      $1  ]
                       when /^java$/, /^jruby$/ then    [ 'java',      nil ]
                       when /^java([\d.]*)/ then        [ 'java',      $1  ]
-                      when /^dotnet$/ then             [ 'dotnet',    nil ]                       
+                      when /^dotnet$/ then             [ 'dotnet',    nil ]
                       when /^dotnet([\d.]*)/ then      [ 'dotnet',    $1  ]
                       when /linux/ then                [ 'linux',     $1  ]
                       when /mingw32/ then              [ 'mingw32',   nil ]

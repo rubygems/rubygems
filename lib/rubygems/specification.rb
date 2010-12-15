@@ -75,6 +75,9 @@ class Gem::Specification
   TODAY = now - ((now.to_i + now.gmt_offset) % 86400)
   # :startdoc:
 
+  # Regular expression used to validate resource URIs.
+  VALID_RESOURCE_URI = /\A[a-z][a-z\d+.-]*:/i
+
   ##
   # Optional block used to gather newly defined instances.
 
@@ -275,10 +278,11 @@ class Gem::Specification
       @email,
       @authors,
       @description,
-      @homepage,
+      nil,  # to maintain order, this used to be @homepage
       @has_rdoc,
       @new_platform,
-      @licenses
+      @licenses,
+      @resources
     ]
   end
 
@@ -319,11 +323,12 @@ class Gem::Specification
     spec.instance_variable_set :@email,                     array[11]
     spec.instance_variable_set :@authors,                   array[12]
     spec.instance_variable_set :@description,               array[13]
-    spec.instance_variable_set :@homepage,                  array[14]
+    #spec.instance_variable_set :@homepage,                 array[14]
     spec.instance_variable_set :@has_rdoc,                  array[15]
     spec.instance_variable_set :@new_platform,              array[16]
     spec.instance_variable_set :@platform,                  array[16].to_s
     spec.instance_variable_set :@license,                   array[17]
+    spec.instance_variable_set :@resources,                 array[18]
     spec.instance_variable_set :@loaded,                    false
 
     spec
@@ -586,6 +591,29 @@ class Gem::Specification
   # Adds a runtime dependency
 
   alias add_dependency add_runtime_dependency
+
+  # Map short-cut resource names to canonical long names.
+  RESOURCE_TYPE_MAP = {
+    'home' => 'homepage',
+    'code' => 'source_code',
+    'mail' => 'mailing_list',
+    'docs' => 'documentation',
+    'bugs' => 'bug_tracker'
+  }
+
+  ##
+  # Adds a resource of +type+ and +url+. Each type can only be used once.
+  #
+  # Some common type names are treated as abbreviations and translated to longer
+  # _canonical_ type names as a convenience for writing .gemspec files.
+  # See the RESOURCE_TYPE_MAP for a list of these translations. Note that the
+  # long name must always be used to lookup the URL.
+
+  def add_resource(type, url)
+    type = type.to_s
+    type = RESOURCE_TYPE_MAP[type] || type
+    @resources[type] = url
+  end
 
   ##
   # Returns the full name (name-version) of this Gem.  Platform information
@@ -897,6 +925,14 @@ class Gem::Specification
       end
     }
 
+    resources.each { |type, uri|
+      next if uri.nil? or uri.empty?
+      if VALID_RESOURCE_URI !~ uri
+        raise Gem::InvalidSpecificationException,
+          %{"#{uri}" is not a URI}
+      end
+    }
+
     # reject FIXME and TODO
 
     unless authors.grep(/FIXME|TODO/).empty? then
@@ -917,12 +953,6 @@ class Gem::Specification
     if summary =~ /FIXME|TODO/ then
       raise Gem::InvalidSpecificationException,
             '"FIXME" or "TODO" is not a summary'
-    end
-
-    if homepage and not homepage.empty? and
-       homepage !~ /\A[a-z][a-z\d+.-]*:/i then
-      raise Gem::InvalidSpecificationException,
-            "\"#{homepage}\" is not a URI"
     end
 
     # Warnings
@@ -1058,6 +1088,7 @@ class Gem::Specification
     case obj
     when String            then '%q{' + obj + '}'
     when Array             then obj.inspect
+    when Hash              then obj.inspect
     when Gem::Version      then obj.to_s.inspect
     when Date              then '%q{' + obj.strftime('%Y-%m-%d') + '}'
     when Time              then '%q{' + obj.strftime('%Y-%m-%d') + '}'
@@ -1256,6 +1287,17 @@ class Gem::Specification
   # A message that gets displayed after the gem is installed
 
   attribute :post_install_message, nil
+
+  ##
+  # :attr_accessor: resources
+  #
+  # The list of urls that relate to this gem.
+  #
+  # Resources must be given as a hash of +type+ => +url+.
+  #
+  # An alternative is to use #add_resource to add one resource at a time.
+
+  attribute :resources, {}
 
   ##
   # :attr_accessor: authors
@@ -1478,6 +1520,20 @@ class Gem::Specification
     @description = str.to_s
   end
 
+  overwrite_accessor :resources= do |map|
+    map.each do |type, url|
+      add_resource(type, url)
+    end
+  end
+
+  overwrite_accessor :homepage= do |uri|
+    add_resource('homepage', uri)
+  end
+
+  overwrite_accessor :homepage do
+    @resources['homepage']
+  end
+
   overwrite_accessor :default_executable do
     begin
       if defined?(@default_executable) and @default_executable
@@ -1517,4 +1573,5 @@ class Gem::Specification
               @extensions,
              ].flatten.uniq.compact
   end
+
 end

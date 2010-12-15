@@ -95,6 +95,7 @@ end
       required_ruby_version
       required_rubygems_version
       requirements
+      resources
       rubyforge_project
       rubygems_version
       signing_key
@@ -773,6 +774,7 @@ Gem::Specification.new do |s|
   s.files = [\"lib/code.rb\"]
   s.homepage = %q{http://example.com}
   s.require_paths = [\"lib\"]
+  s.resources = {\"homepage\"=>\"http://example.com\"}
   s.rubygems_version = %q{#{Gem::VERSION}}
   s.summary = %q{this is a summary}
 
@@ -825,6 +827,7 @@ Gem::Specification.new do |s|
   s.licenses = [\"MIT\"]
   s.require_paths = [\"lib\"]
   s.requirements = [\"A working computer\"]
+  s.resources = {\"homepage\"=>\"http://example.com\"}
   s.rubyforge_project = %q{example}
   s.rubygems_version = %q{#{Gem::VERSION}}
   s.summary = %q{this is a summary}
@@ -1250,6 +1253,17 @@ end
     end
   ensure
     specfile.delete
+  end
+
+  def test_resources
+    spec = quick_gem 'r', '1' do |s|
+      s.resources = {
+        :home => 'http://foo.net',
+        :mail => 'mailto:bar@foo.net'
+      }
+    end
+    assert_equal 'http://foo.net', spec.homepage
+    assert_equal 'mailto:bar@foo.net', spec.resources['mailing_list']
   end
 
   def util_setup_validate

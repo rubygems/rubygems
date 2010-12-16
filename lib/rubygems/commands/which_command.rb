@@ -33,6 +33,7 @@ class Gem::Commands::WhichCommand < Gem::Command
     found = false
 
     options[:args].each do |arg|
+      arg = arg.sub(/#{Regexp.union(*EXT)}$/, '')
       dirs = $LOAD_PATH
       spec = searcher.find arg
 

@@ -278,11 +278,10 @@ class Gem::Specification
       @email,
       @authors,
       @description,
-      nil,  # to maintain order, this used to be @homepage
+      @resources,  # to maintain order (this used to be @homepage)
       @has_rdoc,
       @new_platform,
-      @licenses,
-      @resources
+      @licenses
     ]
   end
 
@@ -323,12 +322,11 @@ class Gem::Specification
     spec.instance_variable_set :@email,                     array[11]
     spec.instance_variable_set :@authors,                   array[12]
     spec.instance_variable_set :@description,               array[13]
-    #spec.instance_variable_set :@homepage,                 array[14]
+    spec.instance_variable_set :@resources,                 array[14]
     spec.instance_variable_set :@has_rdoc,                  array[15]
     spec.instance_variable_set :@new_platform,              array[16]
     spec.instance_variable_set :@platform,                  array[16].to_s
     spec.instance_variable_set :@license,                   array[17]
-    spec.instance_variable_set :@resources,                 array[18]
     spec.instance_variable_set :@loaded,                    false
 
     spec
@@ -594,11 +592,11 @@ class Gem::Specification
 
   # Map short-cut resource names to canonical long names.
   RESOURCE_TYPE_MAP = {
-    'home' => 'homepage',
-    'code' => 'source_code',
-    'mail' => 'mailing_list',
-    'docs' => 'documentation',
-    'bugs' => 'bug_tracker'
+    :home => :homepage,
+    :code => :source_code,
+    :mail => :mailing_list,
+    :docs => :documentation,
+    :bugs => :bug_tracker
   }
 
   ##
@@ -609,10 +607,28 @@ class Gem::Specification
   # See the RESOURCE_TYPE_MAP for a list of these translations. Note that the
   # long name must always be used to lookup the URL.
 
-  def add_resource(type, url)
-    type = type.to_s
+  def add_resource(type, uri)
+    if String == @resources
+      @resources = {:homepage=>@resources}
+    end
+    type = type.to_sym
     type = RESOURCE_TYPE_MAP[type] || type
-    @resources[type] = url
+    @resources[type] = uri
+  end
+
+  #
+  def homepage=(uri)
+    add_resource(:homepage, uri)
+  end
+
+  #
+  def homepage
+    case @resources
+    when String
+      @resources
+    else
+      @resources[:homepage]
+    end
   end
 
   ##
@@ -1182,12 +1198,12 @@ class Gem::Specification
 
   attribute :email
 
-  ##
-  # :attr_accessor: homepage
-  #
-  # The URL of this gem's home page
-
-  attribute :homepage
+#  ##
+#  # :attr_accessor: homepage
+#  #
+#  # The URL of this gem's home page
+#
+#  attribute :homepage
 
   ##
   # :attr_accessor: rubyforge_project
@@ -1520,18 +1536,18 @@ class Gem::Specification
     @description = str.to_s
   end
 
+  overwrite_accessor :resources do
+    if String === @resources
+      {:homepage=>@resources}
+    else
+      @resources
+    end
+  end
+
   overwrite_accessor :resources= do |map|
     map.each do |type, url|
       add_resource(type, url)
     end
-  end
-
-  overwrite_accessor :homepage= do |uri|
-    add_resource('homepage', uri)
-  end
-
-  overwrite_accessor :homepage do
-    @resources['homepage']
   end
 
   overwrite_accessor :default_executable do

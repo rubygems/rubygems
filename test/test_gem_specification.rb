@@ -85,7 +85,6 @@ end
       extra_rdoc_files
       files
       has_rdoc
-      homepage
       licenses
       name
       platform
@@ -772,9 +771,8 @@ Gem::Specification.new do |s|
   s.description = %q{This is a test description}
   s.email = %q{example@example.com}
   s.files = [\"lib/code.rb\"]
-  s.homepage = %q{http://example.com}
   s.require_paths = [\"lib\"]
-  s.resources = {\"homepage\"=>\"http://example.com\"}
+  s.resources = {:homepage=>\"http://example.com\"}
   s.rubygems_version = %q{#{Gem::VERSION}}
   s.summary = %q{this is a summary}
 
@@ -823,11 +821,10 @@ Gem::Specification.new do |s|
   s.executables = [\"exec\"]
   s.extensions = [\"ext/a/extconf.rb\"]
   s.files = [\"lib/code.rb\", \"test/suite.rb\", \"bin/exec\", \"ext/a/extconf.rb\"]
-  s.homepage = %q{http://example.com}
   s.licenses = [\"MIT\"]
   s.require_paths = [\"lib\"]
   s.requirements = [\"A working computer\"]
-  s.resources = {\"homepage\"=>\"http://example.com\"}
+  s.resources = {:homepage=>\"http://example.com\"}
   s.rubyforge_project = %q{example}
   s.rubygems_version = %q{#{Gem::VERSION}}
   s.summary = %q{this is a summary}
@@ -1263,7 +1260,7 @@ end
       }
     end
     assert_equal 'http://foo.net', spec.homepage
-    assert_equal 'mailto:bar@foo.net', spec.resources['mailing_list']
+    assert_equal 'mailto:bar@foo.net', spec.resources[:mailing_list]
   end
 
   def util_setup_validate

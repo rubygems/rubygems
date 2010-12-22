@@ -96,4 +96,38 @@ EOF
     assert_equal '', @ui.error
     assert_equal api_keys, Gem.configuration.api_keys
   end
+
+  def test_execute_add
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
+    @fetcher.data['https://rubygems.org/api/v1/api_key'] = ['701229f217cdf23b1344c7b4b54ca97', 200, 'OK']
+
+    @cmd.handle_options %w(--add another)
+
+    @ui = MockGemUi.new("email@example.com\npassword\n")
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_match %r{Added another API key}, @ui.output
+    assert_match '701229f217cdf23b1344c7b4b54ca97', Gem.configuration.api_keys[:another]
+  end
+
+  def test_execute_add_with_bad_credentials
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
+    @fetcher.data['https://rubygems.org/api/v1/api_key'] = ['HTTP Basic: Access denied', 401, 'Not Authorized']
+
+    @cmd.handle_options %w(--add unauthorized)
+ 
+    @ui = MockGemUi.new("email@example.com\npassword\n")
+    use_ui @ui do
+      assert_raises MockGemUi::TermError do
+        @cmd.execute
+      end
+    end
+
+    refute_includes Gem.configuration.api_keys, :unauthorized
+    assert_match %r{Access denied}, @ui.output
+  end
 end

@@ -1,6 +1,8 @@
 require 'rubygems/command'
+require 'rubygems/gemcutter_utilities'
 
 class Gem::Commands::KeysCommand < Gem::Command
+  include Gem::GemcutterUtilities
 
   def initialize
     super 'keys', 'Manage API keys for RubyGems.org'
@@ -17,6 +19,12 @@ class Gem::Commands::KeysCommand < Gem::Command
     add_option '-r', '--remove KEYNAME',
                'Remove an API key from the list of available keys' do |value,options|
       options[:remove] = value
+    end
+
+    add_option '-a', '--add KEYNAME',
+               'Add an API key to the list of available keys' do |value,options|
+
+      options[:add] = value
     end
   end
 
@@ -37,7 +45,26 @@ class Gem::Commands::KeysCommand < Gem::Command
   end
 
   def execute
-    options[:list] = !(options[:default] || options[:remove])
+    options[:list] = !(options[:default] || options[:remove] || options[:add])
+
+    if options[:add] then
+      say "Enter your Rubygems.org credentials" # TODO customize with host
+
+      email    =              ask "   Email: "
+      password = ask_for_password "Password: "
+      say
+
+      response = rubygems_api_request :get, "api/v1/api_key" do |request|
+        request.basic_auth email, password
+      end
+
+      with_response response do
+        added = options[:add].to_sym
+        keys = Gem.configuration.api_keys.merge(added => response.body)
+        Gem.configuration.api_keys = keys
+        say "Added #{added} API key"
+      end
+    end
 
     if options[:default] then
       default = options[:default].to_sym

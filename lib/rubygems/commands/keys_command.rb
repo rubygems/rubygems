@@ -8,6 +8,11 @@ class Gem::Commands::KeysCommand < Gem::Command
     add_option '-l', '--list', 'List available API keys' do |value,options|
       options[:list] = value
     end
+
+    add_option '-d', '--default KEYNAME',
+               'Set the API key to use when none is specified' do |value,options|
+      options[:default] = value
+    end
   end
 
   def description # :nodoc:
@@ -27,7 +32,19 @@ class Gem::Commands::KeysCommand < Gem::Command
   end
 
   def execute
-    options[:list] = true
+    options[:list] = !(options[:default])
+
+    if options[:default] then
+      default = options[:default].to_sym
+
+      if Gem.configuration.api_keys.key? default then
+        Gem.configuration.rubygems_api_key = Gem.configuration.api_keys[default]
+        say "Now using #{default} API key"
+      else
+        alert_error "No such API key. You can add it with gem keys --add #{default}"
+        terminate_interaction 1
+      end
+    end
 
     if options[:list] then
       api_keys = Gem.configuration.api_keys.sort_by { |k,v| k.to_s }

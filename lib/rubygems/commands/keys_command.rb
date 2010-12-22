@@ -13,6 +13,11 @@ class Gem::Commands::KeysCommand < Gem::Command
                'Set the API key to use when none is specified' do |value,options|
       options[:default] = value
     end
+
+    add_option '-r', '--remove KEYNAME',
+               'Remove an API key from the list of available keys' do |value,options|
+      options[:remove] = value
+    end
   end
 
   def description # :nodoc:
@@ -32,7 +37,7 @@ class Gem::Commands::KeysCommand < Gem::Command
   end
 
   def execute
-    options[:list] = !(options[:default])
+    options[:list] = !(options[:default] || options[:remove])
 
     if options[:default] then
       default = options[:default].to_sym
@@ -43,6 +48,19 @@ class Gem::Commands::KeysCommand < Gem::Command
       else
         alert_error "No such API key. You can add it with gem keys --add #{default}"
         terminate_interaction 1
+      end
+    end
+
+    if options[:remove] then
+      removed = options[:remove].to_sym
+
+      if Gem.configuration.api_keys.key? removed then
+        keys = Gem.configuration.api_keys
+        keys.delete removed
+        Gem.configuration.api_keys = keys
+        say "Removed #{removed} API key"
+      else
+        say "No such API key"
       end
     end
 

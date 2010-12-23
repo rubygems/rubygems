@@ -27,8 +27,11 @@ class Gem::Commands::KeysCommand < Gem::Command
 
     add_option '-a', '--add KEYNAME',
                'Add an API key to the list of available keys' do |value,options|
-
       options[:add] = value
+    end
+
+    add_option '--host HOST', 'Use another gemcutter-compatible host' do |value,options|
+      options[:host] = value
     end
   end
 
@@ -52,13 +55,16 @@ class Gem::Commands::KeysCommand < Gem::Command
     options[:list] = !(options[:default] || options[:remove] || options[:add])
 
     if options[:add] then
-      say "Enter your Rubygems.org credentials" # TODO customize with host
+      say "Enter your #{URI.parse(options[:host] || Gem.host).host} credentials"
 
       email    =              ask "   Email: "
       password = ask_for_password "Password: "
       say
 
-      response = rubygems_api_request :get, "api/v1/api_key" do |request|
+      args = [:get, "api/v1/api_key"]
+      args << options[:host] if options[:host]
+
+      response = rubygems_api_request(*args) do |request|
         request.basic_auth email, password
       end
 

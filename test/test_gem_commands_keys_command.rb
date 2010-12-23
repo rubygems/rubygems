@@ -134,4 +134,20 @@ EOF
     refute_includes Gem.configuration.api_keys, :unauthorized
     assert_match %r{Access denied}, @ui.output
   end
+
+  def test_execute_add_with_host
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
+    @fetcher.data['http://otherhost.com/api/v1/api_key'] = ['701229f217cdf23b1344c7b4b54ca97', 200, 'OK']
+
+    @cmd.handle_options %w(--add thirdparty --host http://otherhost.com)
+
+    @ui = MockGemUi.new("email@example.com\npassword\n")
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_match %r{Enter your otherhost\.com credentials}, @ui.output
+    assert_match '701229f217cdf23b1344c7b4b54ca97', Gem.configuration.api_keys[:thirdparty]
+  end
 end

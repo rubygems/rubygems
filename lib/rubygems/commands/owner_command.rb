@@ -39,7 +39,7 @@ class Gem::Commands::OwnerCommand < Gem::Command
   end
 
   def show_owners name
-    api_key = options[:key] ? verify_api_key(options[:key].to_sym) :
+    api_key = options[:key] ? verify_api_key(options[:key]) :
                               Gem.configuration.rubygems_api_key
 
     response = rubygems_api_request :get, "api/v1/gems/#{name}/owners.yaml" do |request|
@@ -65,7 +65,7 @@ class Gem::Commands::OwnerCommand < Gem::Command
   end
 
   def manage_owners method, name, owners
-    api_key = options[:key] ? verify_api_key(options[:key].to_sym) :
+    api_key = options[:key] ? verify_api_key(options[:key]) :
                               Gem.configuration.rubygems_api_key
 
     owners.each do |owner|

@@ -15,17 +15,17 @@ class Gem::Commands::KeysCommand < Gem::Command
       options[:list] = value
     end
 
-    add_option '-d', '--default KEYNAME',
+    add_option '-d', '--default KEYNAME', Symbol,
                'Set the API key to use when none is specified' do |value,options|
       options[:default] = value
     end
 
-    add_option '-r', '--remove KEYNAME',
+    add_option '-r', '--remove KEYNAME', Symbol,
                'Remove an API key from the list of available keys' do |value,options|
       options[:remove] = value
     end
 
-    add_option '-a', '--add KEYNAME',
+    add_option '-a', '--add KEYNAME', Symbol,
                'Add an API key to the list of available keys' do |value,options|
       options[:add] = value
     end
@@ -69,33 +69,28 @@ class Gem::Commands::KeysCommand < Gem::Command
       end
 
       with_response response do
-        added = options[:add].to_sym
-        keys = Gem.configuration.api_keys.merge(added => response.body)
+        keys = Gem.configuration.api_keys.merge(options[:add] => response.body)
         Gem.configuration.api_keys = keys
-        say "Added #{added} API key"
+        say "Added #{options[:add]} API key"
       end
     end
 
     if options[:default] then
-      default = options[:default].to_sym
-
-      if Gem.configuration.api_keys.key? default then
-        Gem.configuration.rubygems_api_key = Gem.configuration.api_keys[default]
-        say "Now using #{default} API key"
+      if Gem.configuration.api_keys.key? options[:default] then
+        Gem.configuration.rubygems_api_key = Gem.configuration.api_keys[options[:default]]
+        say "Now using #{options[:default]} API key"
       else
-        alert_error "No such API key. You can add it with gem keys --add #{default}"
+        alert_error "No such API key. You can add it with gem keys --add #{options[:default]}"
         terminate_interaction 1
       end
     end
 
     if options[:remove] then
-      removed = options[:remove].to_sym
-
-      if Gem.configuration.api_keys.key? removed then
+      if Gem.configuration.api_keys.key? options[:remove] then
         keys = Gem.configuration.api_keys
-        keys.delete removed
+        keys.delete options[:remove]
         Gem.configuration.api_keys = keys
-        say "Removed #{removed} API key"
+        say "Removed #{options[:remove]} API key"
       else
         say "No such API key"
       end

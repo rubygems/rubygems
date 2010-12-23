@@ -1,12 +1,15 @@
 require 'rubygems/remote_fetcher'
 
 module Gem::GemcutterUtilities
+  OptionParser.accept Symbol do |value|
+    value.to_sym
+  end
 
   ##
   # Add the --key option
 
   def add_key_option
-    add_option '-k', '--key KEYNAME', 'Use the given API key' do |value,options|
+    add_option '-k', '--key KEYNAME', Symbol, 'Use the given API key' do |value,options|
       options[:key] = value
     end
   end

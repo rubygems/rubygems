@@ -12,6 +12,10 @@ class TestGemCommandsKeysCommand < RubyGemTestCase
     Gem.configuration.api_keys = @orig_keys
   end
 
+  def test_initialize_proxy
+    assert @cmd.handles?(['--http-proxy', 'http://proxy.example.com'])
+  end
+
   def test_execute_list
     Gem.configuration.rubygems_api_key = '701229f217cdf23b1344c7b4b54ca97'
     Gem.configuration.api_keys = { :rubygems =>'701229f217cdf23b1344c7b4b54ca97',

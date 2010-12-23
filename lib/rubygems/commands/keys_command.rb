@@ -1,11 +1,15 @@
 require 'rubygems/command'
 require 'rubygems/gemcutter_utilities'
+require 'rubygems/local_remote_options'
 
 class Gem::Commands::KeysCommand < Gem::Command
   include Gem::GemcutterUtilities
+  include Gem::LocalRemoteOptions
 
   def initialize
     super 'keys', 'Manage API keys for RubyGems.org'
+
+    add_proxy_option
 
     add_option '-l', '--list', 'List available API keys' do |value,options|
       options[:list] = value

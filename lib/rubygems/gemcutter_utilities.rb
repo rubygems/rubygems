@@ -55,8 +55,10 @@ module Gem::GemcutterUtilities
     end
   end
 
-  def validate_api_key(key)
-    unless Gem.configuration.api_keys.key? key.to_sym
+  def verify_api_key(key)
+    if Gem.configuration.api_keys.key? key then
+      Gem.configuration.api_keys[key]
+    else
       alert_error "No such API key. You can add it with gem keys --add #{key}"
       terminate_interaction 1
     end

@@ -99,9 +99,14 @@ class TestGemGemcutterUtilities < RubyGemTestCase
     end
   end
 
-  def test_validate_missing_api_key
+  def test_verify_api_key
+    Gem.configuration.api_keys = {:other => 'a5fdbb6ba150cbb83aad2bb2fede64cf040453903'}
+    assert_equal 'a5fdbb6ba150cbb83aad2bb2fede64cf040453903', @cmd.verify_api_key(:other)
+  end
+
+  def test_verify_missing_api_key
     assert_raises MockGemUi::TermError do
-      @cmd.validate_api_key :missing
+      @cmd.verify_api_key :missing
     end
   end
 

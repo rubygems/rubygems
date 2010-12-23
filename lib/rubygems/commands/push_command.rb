@@ -43,13 +43,8 @@ class Gem::Commands::PushCommand < Gem::Command
 
     args << options[:host] if options[:host]
 
-    if options[:key] then
-      key = options[:key].to_sym
-      validate_api_key key
-      api_key = Gem.configuration.api_keys[key]
-    else
-      api_key = Gem.configuration.rubygems_api_key
-    end
+    api_key = options[:key] ? verify_api_key(options[:key].to_sym) :
+                              Gem.configuration.rubygems_api_key
 
     response = rubygems_api_request(*args) do |request|
       request.body = Gem.read_binary name

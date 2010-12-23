@@ -39,13 +39,8 @@ class Gem::Commands::OwnerCommand < Gem::Command
   end
 
   def show_owners name
-    if options[:key] then
-      key = options[:key].to_sym
-      validate_api_key key
-      api_key = Gem.configuration.api_keys[key]
-    else
-      api_key = Gem.configuration.rubygems_api_key
-    end
+    api_key = options[:key] ? verify_api_key(options[:key].to_sym) :
+                              Gem.configuration.rubygems_api_key
 
     response = rubygems_api_request :get, "api/v1/gems/#{name}/owners.yaml" do |request|
       request.add_field "Authorization", api_key
@@ -70,13 +65,8 @@ class Gem::Commands::OwnerCommand < Gem::Command
   end
 
   def manage_owners method, name, owners
-    if options[:key] then
-      key = options[:key].to_sym
-      validate_api_key key
-      api_key = Gem.configuration.api_keys[key]
-    else
-      api_key = Gem.configuration.rubygems_api_key
-    end
+    api_key = options[:key] ? verify_api_key(options[:key].to_sym) :
+                              Gem.configuration.rubygems_api_key
 
     owners.each do |owner|
       response = rubygems_api_request method, "api/v1/gems/#{name}/owners" do |request|

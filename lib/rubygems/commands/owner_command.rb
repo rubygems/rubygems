@@ -17,6 +17,7 @@ class Gem::Commands::OwnerCommand < Gem::Command
   def initialize
     super 'owner', description
     add_proxy_option
+    add_key_option
     defaults.merge! :add => [], :remove => []
 
     add_option '-a', '--add EMAIL', 'Add an owner' do |value, options|
@@ -38,8 +39,16 @@ class Gem::Commands::OwnerCommand < Gem::Command
   end
 
   def show_owners name
+    if options[:key] then
+      key = options[:key].to_sym
+      validate_api_key key
+      api_key = Gem.configuration.api_keys[key]
+    else
+      api_key = Gem.configuration.rubygems_api_key
+    end
+
     response = rubygems_api_request :get, "api/v1/gems/#{name}/owners.yaml" do |request|
-      request.add_field "Authorization", Gem.configuration.rubygems_api_key
+      request.add_field "Authorization", api_key
     end
 
     with_response response do |resp|

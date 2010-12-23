@@ -47,6 +47,17 @@ EOF
     assert_match response, @ui.output
   end
 
+  def test_show_owners_key
+    response = "- email: user1@example.com\n"
+    @fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners.yaml"] = [response, 200, 'OK']
+    Gem.configuration.api_keys = {:other => '701229f217cdf23b1344c7b4b54ca97'}
+
+    @cmd.handle_options %w(-k other)
+    @cmd.show_owners('freewill')
+
+    assert_equal '701229f217cdf23b1344c7b4b54ca97', @fetcher.last_request['Authorization']
+  end
+
   def test_add_owners
     response = "Owner added successfully."
     @fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners"] = [response, 200, 'OK']

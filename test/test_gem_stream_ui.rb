@@ -1,5 +1,6 @@
 require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/user_interaction'
+require 'timeout'
 
 class TestGemStreamUI < RubyGemTestCase
 

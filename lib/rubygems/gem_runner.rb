@@ -81,3 +81,4 @@ class Gem::GemRunner
 
 end
 
+Gem.load_plugins

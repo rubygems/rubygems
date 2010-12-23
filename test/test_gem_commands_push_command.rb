@@ -77,5 +77,16 @@ class TestGemCommandsPushCommand < RubyGemTestCase
     assert_match response, @ui.output
   end
 
+  def test_sending_gem_key
+    @response = "Successfully registered gem: freewill (1.0.0)"
+    @fetcher.data["#{Gem.host}/api/v1/gems"] = [@response, 200, "OK"]
+    Gem.configuration.api_keys = {:other => '701229f217cdf23b1344c7b4b54ca97'}
+
+    @cmd.handle_options %w(-k other)
+    @cmd.send_gem(@path)
+
+    assert_equal Gem.configuration.api_keys[:other], @fetcher.last_request["Authorization"]
+  end
+
 end
 

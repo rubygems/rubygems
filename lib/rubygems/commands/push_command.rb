@@ -21,6 +21,7 @@ class Gem::Commands::PushCommand < Gem::Command
   def initialize
     super 'push', description
     add_proxy_option
+    add_key_option
     
     add_option(
       '--host HOST',
@@ -42,11 +43,19 @@ class Gem::Commands::PushCommand < Gem::Command
 
     args << options[:host] if options[:host]
 
+    if options[:key] then
+      key = options[:key].to_sym
+      validate_api_key key
+      api_key = Gem.configuration.api_keys[key]
+    else
+      api_key = Gem.configuration.rubygems_api_key
+    end
+
     response = rubygems_api_request(*args) do |request|
       request.body = Gem.read_binary name
       request.add_field "Content-Length", request.body.size
       request.add_field "Content-Type",   "application/octet-stream"
-      request.add_field "Authorization",  Gem.configuration.rubygems_api_key
+      request.add_field "Authorization",  api_key
     end
 
     with_response response

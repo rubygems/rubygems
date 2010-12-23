@@ -2,6 +2,15 @@ require 'rubygems/remote_fetcher'
 
 module Gem::GemcutterUtilities
 
+  ##
+  # Add the --key option
+
+  def add_key_option
+    add_option '-k', '--key KEYNAME', 'Use the given API key' do |value,options|
+      options[:key] = value
+    end
+  end
+
   def sign_in
     return if Gem.configuration.rubygems_api_key
 
@@ -42,6 +51,13 @@ module Gem::GemcutterUtilities
       end
     else
       say resp.body
+      terminate_interaction 1
+    end
+  end
+
+  def validate_api_key(key)
+    unless Gem.configuration.api_keys.key? key.to_sym
+      alert_error "No such API key. You can add it with gem keys --add #{key}"
       terminate_interaction 1
     end
   end

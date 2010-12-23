@@ -99,5 +99,11 @@ class TestGemGemcutterUtilities < RubyGemTestCase
     end
   end
 
+  def test_validate_missing_api_key
+    assert_raises MockGemUi::TermError do
+      @cmd.validate_api_key :missing
+    end
+  end
+
 end
 

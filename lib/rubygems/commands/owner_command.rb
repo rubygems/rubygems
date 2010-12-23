@@ -70,10 +70,18 @@ class Gem::Commands::OwnerCommand < Gem::Command
   end
 
   def manage_owners method, name, owners
+    if options[:key] then
+      key = options[:key].to_sym
+      validate_api_key key
+      api_key = Gem.configuration.api_keys[key]
+    else
+      api_key = Gem.configuration.rubygems_api_key
+    end
+
     owners.each do |owner|
       response = rubygems_api_request method, "api/v1/gems/#{name}/owners" do |request|
         request.set_form_data 'email' => owner
-        request.add_field "Authorization", Gem.configuration.rubygems_api_key
+        request.add_field "Authorization", api_key
       end
 
       with_response response

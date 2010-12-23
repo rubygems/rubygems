@@ -76,13 +76,8 @@ class Gem::Commands::KeysCommand < Gem::Command
     end
 
     if options[:default] then
-      if Gem.configuration.api_keys.key? options[:default] then
-        Gem.configuration.rubygems_api_key = Gem.configuration.api_keys[options[:default]]
-        say "Now using #{options[:default]} API key"
-      else
-        alert_error "No such API key. You can add it with gem keys --add #{options[:default]}"
-        terminate_interaction 1
-      end
+      Gem.configuration.rubygems_api_key = verify_api_key(options[:default])
+      say "Now using #{options[:default]} API key"
     end
 
     if options[:remove] then

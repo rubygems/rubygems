@@ -412,6 +412,33 @@ class Gem::StreamUI
     end
   end
 
+  ##
+  # Return a download reporter object chosen from the current verbosity
+
+  def download_reporter(*args)
+    case Gem.configuration.verbose
+    when nil, false
+      SilentDownloadReporter.new(@outs, *args)
+    end
+  end
+
+  ##
+  # An absolutely silent download reporter.
+
+  class SilentDownloadReporter
+    def initialize(out_stream, *args)
+    end
+
+    def fetch(filename, filesize)
+    end
+
+    def update(current)
+    end
+
+    def done
+    end
+  end
+
 end
 
 ##

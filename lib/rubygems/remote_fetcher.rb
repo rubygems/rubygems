@@ -341,7 +341,34 @@ class Gem::RemoteFetcher
 
       say "#{request.method} #{uri}" if
         Gem.configuration.really_verbose
-      response = connection.request request
+
+      file_name = File.basename(uri.path)
+      # perform download progress reporter only for gems
+      if request.response_body_permitted? && file_name =~ /\.gem$/
+        reporter = ui.download_reporter
+        response = connection.request(request) do |incomplete_respose|
+          if Net::HTTPOK === incomplete_respose
+            reporter.fetch(file_name, incomplete_respose.content_length)
+            downloaded = 0
+            data = ''
+
+            incomplete_respose.read_body do |segment|
+              data << segment
+              downloaded += segment.length
+              reporter.update(downloaded)
+            end
+            reporter.done
+            if incomplete_respose.respond_to? :body=
+              incomplete_respose.body = data
+            else
+              incomplete_respose.instance_variable_set(:@body, data)
+            end
+          end
+        end
+      else
+        response = connection.request request
+      end
+
       say "#{response.code} #{response.message}" if
         Gem.configuration.really_verbose
 

@@ -419,6 +419,8 @@ class Gem::StreamUI
     case Gem.configuration.verbose
     when nil, false
       SilentDownloadReporter.new(@outs, *args)
+    else
+      VerboseDownloadReporter.new(@outs, *args)
     end
   end
 
@@ -439,6 +441,46 @@ class Gem::StreamUI
     end
   end
 
+  ##
+  # A progress reporter that prints out messages about the current progress.
+
+  class VerboseDownloadReporter
+    attr_reader :file_name, :total_bytes, :progress
+
+    def initialize(out_stream, *args)
+      @out = out_stream
+    end
+
+    def fetch(file_name, total_bytes)
+      @file_name, @total_bytes = file_name, total_bytes
+      update_display(false)
+    end
+
+    def update(bytes)
+      new_progress = ((bytes.to_f * 100) / total_bytes.to_f).ceil
+      return if new_progress == @progress
+
+      @progress = new_progress
+      update_display
+    end
+
+    def done
+      @progress = 100
+      update_display(true, true)
+    end
+
+  private
+
+    def update_display(show_progress = true, new_line = false)
+      return unless @out.tty?
+      if show_progress
+        @out.print "\rFetching: %s (%3d%%)" % [@file_name, @progress]
+      else
+        @out.print "Fetching: %s" % @file_name
+      end
+      @out.puts if new_line
+    end
+  end
 end
 
 ##

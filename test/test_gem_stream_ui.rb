@@ -25,6 +25,7 @@ class TestGemStreamUI < RubyGemTestCase
     @err = StringIO.new
 
     @in.extend IsTty
+    @out.extend IsTty
 
     @sui = Gem::StreamUI.new @in, @out, @err
   end
@@ -146,6 +147,54 @@ class TestGemStreamUI < RubyGemTestCase
     reporter = @sui.download_reporter
     reporter.fetch 'a.gem', 1024
     assert_kind_of Gem::StreamUI::SilentDownloadReporter, reporter
+    assert_equal "", @out.string
+  end
+
+  def test_download_reporter_anything
+    @cfg.verbose = 0
+    reporter = @sui.download_reporter
+    assert_kind_of Gem::StreamUI::VerboseDownloadReporter, reporter
+  end
+
+  def test_verbose_download_reporter
+    @cfg.verbose = true
+    reporter = @sui.download_reporter
+    reporter.fetch 'a.gem', 1024
+    assert_equal "Fetching: a.gem", @out.string
+  end
+
+  def test_verbose_download_reporter_progress
+    @cfg.verbose = true
+    reporter = @sui.download_reporter
+    reporter.fetch 'a.gem', 1024
+    reporter.update 512
+    assert_equal "Fetching: a.gem\rFetching: a.gem ( 50%)", @out.string
+  end
+
+  def test_verbose_download_reporter_progress_once
+    @cfg.verbose = true
+    reporter = @sui.download_reporter
+    reporter.fetch 'a.gem', 1024
+    reporter.update 510
+    reporter.update 512
+    assert_equal "Fetching: a.gem\rFetching: a.gem ( 50%)", @out.string
+  end
+
+  def test_verbose_download_reporter_progress_complete
+    @cfg.verbose = true
+    reporter = @sui.download_reporter
+    reporter.fetch 'a.gem', 1024
+    reporter.update 510
+    reporter.done
+    assert_equal "Fetching: a.gem\rFetching: a.gem ( 50%)\rFetching: a.gem (100%)\n", @out.string
+  end
+
+  def test_verbose_download_reporter_no_tty
+    @out.tty = false
+
+    @cfg.verbose = true
+    reporter = @sui.download_reporter
+    reporter.fetch 'a.gem', 1024
     assert_equal "", @out.string
   end
 end

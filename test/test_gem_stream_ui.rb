@@ -133,5 +133,19 @@ class TestGemStreamUI < RubyGemTestCase
     assert_equal "hi\n", @out.string
   end
 
-end
+  def test_download_reporter_silent_nil
+    @cfg.verbose = nil
+    reporter = @sui.download_reporter
+    reporter.fetch 'a.gem', 1024
+    assert_kind_of Gem::StreamUI::SilentDownloadReporter, reporter
+    assert_equal "", @out.string
+  end
 
+  def test_download_reporter_silent_false
+    @cfg.verbose = false
+    reporter = @sui.download_reporter
+    reporter.fetch 'a.gem', 1024
+    assert_kind_of Gem::StreamUI::SilentDownloadReporter, reporter
+    assert_equal "", @out.string
+  end
+end

@@ -100,7 +100,13 @@ class TestGemGemcutterUtilities < RubyGemTestCase
   end
 
   def test_verify_api_key
-    Gem.configuration.api_keys = {:other => 'a5fdbb6ba150cbb83aad2bb2fede64cf040453903'}
+    keys = {:other => 'a5fdbb6ba150cbb83aad2bb2fede64cf040453903'}
+    FileUtils.mkdir_p File.dirname(Gem.configuration.credentials_path)
+    File.open Gem.configuration.credentials_path, 'w' do |f|
+      f.write keys.to_yaml
+    end
+    Gem.configuration.load_api_keys
+
     assert_equal 'a5fdbb6ba150cbb83aad2bb2fede64cf040453903', @cmd.verify_api_key(:other)
   end
 

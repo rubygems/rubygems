@@ -50,7 +50,10 @@ EOF
   def test_show_owners_key
     response = "- email: user1@example.com\n"
     @fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners.yaml"] = [response, 200, 'OK']
-    Gem.configuration.api_keys = {:other => '701229f217cdf23b1344c7b4b54ca97'}
+    File.open Gem.configuration.credentials_path, 'a' do |f|
+      f.write ':other: 701229f217cdf23b1344c7b4b54ca97'
+    end
+    Gem.configuration.load_api_keys
 
     @cmd.handle_options %w(-k other)
     @cmd.show_owners('freewill')
@@ -89,7 +92,10 @@ EOF
   def test_add_owners_key
     response = "Owner added successfully."
     @fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners"] = [response, 200, 'OK']
-    Gem.configuration.api_keys = {:other => '701229f217cdf23b1344c7b4b54ca97'}
+    File.open Gem.configuration.credentials_path, 'a' do |f|
+      f.write ':other: 701229f217cdf23b1344c7b4b54ca97'
+    end
+    Gem.configuration.load_api_keys
 
     @cmd.handle_options %w(-k other)
     @cmd.add_owners('freewill', ['user-new1@example.com'])
@@ -128,7 +134,10 @@ EOF
   def test_remove_owners_key
     response = "Owner removed successfully."
     @fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners"] = [response, 200, 'OK']
-    Gem.configuration.api_keys = {:other => '701229f217cdf23b1344c7b4b54ca97'}
+    File.open Gem.configuration.credentials_path, 'a' do |f|
+      f.write ':other: 701229f217cdf23b1344c7b4b54ca97'
+    end
+    Gem.configuration.load_api_keys
 
     @cmd.handle_options %w(-k other)
     @cmd.remove_owners('freewill', ['user-remove1@example.com'])

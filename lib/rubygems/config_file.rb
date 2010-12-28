@@ -221,20 +221,6 @@ class Gem::ConfigFile
     @rubygems_api_key = api_key
   end
 
-  def api_keys=(keys)
-    keys.merge(:rubygems_api_key => @rubygems_api_key) if defined? @rubygems_api_key
-    dirname = File.dirname(credentials_path)
-    Dir.mkdir(dirname) unless File.exists?(dirname)
-
-    require 'yaml'
-
-    File.open(credentials_path, 'w') do |f|
-      f.write keys.to_yaml
-    end
-
-    @api_keys = keys
-  end
-
   def load_file(filename)
     return {} unless filename and File.exists?(filename)
     begin

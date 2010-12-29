@@ -111,14 +111,14 @@ class Gem::PackageTask < Rake::PackageTask
     Gem.configuration.verbose = trace
 
     file gem_path => [package_dir, gem_dir] + @gem_spec.files do
-      when_writing "Creating #{gem_spec.file_name}" do
-        Gem::Builder.new(gem_spec).build
-        verbose trace do
-          mv gem_file, gem_path
+      chdir(gem_dir) do
+        when_writing "Creating #{gem_spec.file_name}" do
+          Gem::Builder.new(gem_spec).build
+          verbose(true) {
+            mv gem_file, ".."
+          }
         end
       end
     end
   end
-
 end
-

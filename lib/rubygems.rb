@@ -9,6 +9,7 @@ gem_disabled = !defined? Gem
 
 require 'rubygems/defaults'
 require 'rbconfig'
+require 'thread' # HACK: remove me for 1.5 - this is here just for rails
 
 ##
 # RubyGems is the Ruby standard for publishing and managing third party

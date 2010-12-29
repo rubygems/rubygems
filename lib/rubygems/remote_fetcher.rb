@@ -346,22 +346,22 @@ class Gem::RemoteFetcher
       # perform download progress reporter only for gems
       if request.response_body_permitted? && file_name =~ /\.gem$/
         reporter = ui.download_reporter
-        response = connection.request(request) do |incomplete_respose|
-          if Net::HTTPOK === incomplete_respose
-            reporter.fetch(file_name, incomplete_respose.content_length)
+        response = connection.request(request) do |incomplete_response|
+          if Net::HTTPOK === incomplete_response
+            reporter.fetch(file_name, incomplete_response.content_length)
             downloaded = 0
             data = ''
 
-            incomplete_respose.read_body do |segment|
+            incomplete_response.read_body do |segment|
               data << segment
               downloaded += segment.length
               reporter.update(downloaded)
             end
             reporter.done
-            if incomplete_respose.respond_to? :body=
-              incomplete_respose.body = data
+            if incomplete_response.respond_to? :body=
+              incomplete_response.body = data
             else
-              incomplete_respose.instance_variable_set(:@body, data)
+              incomplete_response.instance_variable_set(:@body, data)
             end
           end
         end

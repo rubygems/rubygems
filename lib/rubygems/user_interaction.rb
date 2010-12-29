@@ -469,7 +469,7 @@ class Gem::StreamUI
       update_display(true, true)
     end
 
-  private
+    private
 
     def update_display(show_progress = true, new_line = false)
       return unless @out.tty?

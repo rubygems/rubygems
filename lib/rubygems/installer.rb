@@ -300,8 +300,10 @@ class Gem::Installer
     @spec.executables.each do |filename|
       filename.untaint
       bin_path = File.expand_path "#{@spec.bindir}/#{filename}", @gem_dir
-      mode = File.stat(bin_path).mode | 0111
-      File.chmod mode, bin_path
+      if File.exist?(bin_path)
+        mode = File.stat(bin_path).mode | 0111
+        File.chmod mode, bin_path
+      end
 
       if @wrappers then
         generate_bin_script filename, bindir

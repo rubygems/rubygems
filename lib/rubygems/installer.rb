@@ -191,6 +191,9 @@ class Gem::Installer
 
     Gem.ensure_gem_subdirectories @gem_home
 
+    # Completely remove any previous gem files
+    FileUtils.rm_rf(@gem_dir) if File.exist?(@gem_dir)
+
     FileUtils.mkdir_p @gem_dir
 
     extract_files

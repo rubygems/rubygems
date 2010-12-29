@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2010-12-29  Luis Lavena  <luislavena@gmail.com>
+
+	* lib/rubygems/user_interaction.rb: Implemented SimpleDownloadReporter
+	  and VerboseDownloadReporter to provide a progress indicator during
+	  gem installation. Idea and patch by Ryan Melt (Pull #2)
+
 2010-12-10  Luis Lavena  <luislavena@gmail.com>
 
 	* lib/rubygems/commands/server_command.rb: Added --launch option to

@@ -18,22 +18,32 @@ To upgrade to the latest RubyGems, run:
 
   $ gem update --system  # you might need to be an administrator or root
 
-NOTE:  RubyGems 1.1 and 1.2 have problems upgrading when there is no
-rubygems-update installed.  You will need to use the following instructions
-if you see "Nothing to update".
+See UPGRADING.rdoc for more details and alternative instructions.
 
-If you have an older version of RubyGems installed, then you can still
-do it in two steps:
+-----
 
-  $ gem install rubygems-update  # again, might need to be admin/root
-  $ update_rubygems              # ... here too
+NOTE: Ruby 1.9 ships with rubygems and contains a very buggy
+"gem-prelude". It is a gem loading system that can interfere with
+updating rubygems itself. We do NOT recommend you update to rubygems
+1.4 if you're running ruby 1.9.x until we get that sorted out in a
+future ruby release.
+
+If you absolutely hate kittens and you _must_ upgrade, you're going to
+have to do something really hokey like:
+
+% alias ruby19="ruby19 --disable-gems"
+% alias gem19="ruby19 --disable-gems -S gem"
+
+Even deleting the stock rubygems in 1.9 doesn't fix this situation.
+
+-----
 
 If you don't have any RubyGems install, there is still the pre-gem approach to
 getting software, doing it manually:
 
-1. Download from: http://rubyforge.org/frs/?group_id=126
-2. Unpack into a directory and cd there
-3. Install with: ruby setup.rb  # you may need admin/root privilege
+* Download from: https://rubygems.org/pages/download
+* Unpack into a directory and cd there
+* Install with: ruby setup.rb  # you may need admin/root privilege
 
 For more details and other options, see:
 

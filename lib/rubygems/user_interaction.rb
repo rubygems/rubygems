@@ -449,6 +449,7 @@ class Gem::StreamUI
 
     def initialize(out_stream, *args)
       @out = out_stream
+      @progress = 0
     end
 
     def fetch(file_name, total_bytes)

@@ -73,11 +73,8 @@ task :prerelease => [:clobber, :sanity_check, :test, :test_functional]
 task :postrelease => [:tag, :publish_docs]
 
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
-task pkg_dir_path do
+task :package do
   mv pkg_dir_path, "pkg/rubygems-#{hoe.version}"
-end
-
-task :package => [pkg_dir_path] do
   Dir.chdir 'pkg' do
     sh "tar -czf rubygems-#{hoe.version}.tgz rubygems-#{hoe.version}"
     sh "zip -q -r rubygems-#{hoe.version}.zip rubygems-#{hoe.version}"

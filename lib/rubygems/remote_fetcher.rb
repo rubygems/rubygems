@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rubygems/user_interaction'
+require 'uri'
 
 ##
 # RemoteFetcher handles the details of fetching gems and gem information from
@@ -150,7 +151,7 @@ class Gem::RemoteFetcher
                       source_uri.path
                     end
 
-      source_path = URI.unescape source_path
+      source_path = unescape source_path
 
       begin
         FileUtils.cp source_path, local_gem_path unless

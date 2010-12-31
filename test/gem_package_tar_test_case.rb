@@ -120,8 +120,10 @@ class TarTestCase < RubyGemTestCase
 
   def util_entry(tar)
     io = TempIO.new tar
+
     header = Gem::Package::TarHeader.from io
-    entry = Gem::Package::TarReader::Entry.new header, io
+
+    Gem::Package::TarReader::Entry.new header, io
   end
 
   def util_dir_entry

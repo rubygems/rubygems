@@ -92,7 +92,7 @@ class TestGemServer < RubyGemTestCase
   def test_listen
     util_listen
 
-    out, err = capture_io do
+    capture_io do
       @server.listen
     end
 
@@ -102,10 +102,10 @@ class TestGemServer < RubyGemTestCase
   def test_listen_addresses
     util_listen
 
-    out, err = capture_io do
+    capture_io do
       @server.listen %w[a b]
     end
-    
+
     assert_equal 2, @server.server.listeners.length
   end
 
@@ -125,7 +125,7 @@ class TestGemServer < RubyGemTestCase
   end
 
   def test_quick_a_1_mswin32_gemspec_rz
-    a1_p = quick_gem 'a', '1' do |s| s.platform = Gem::Platform.local end
+    quick_gem 'a', '1' do |s| s.platform = Gem::Platform.local end
 
     data = StringIO.new "GET /quick/a-1-#{Gem::Platform.local}.gemspec.rz HTTP/1.0\r\n\r\n"
     @req.parse data
@@ -143,7 +143,7 @@ class TestGemServer < RubyGemTestCase
   end
 
   def test_quick_common_substrings
-    ab1 = quick_gem 'ab', '1'
+    quick_gem 'ab', '1'
 
     data = StringIO.new "GET /quick/a-1.gemspec.rz HTTP/1.0\r\n\r\n"
     @req.parse data
@@ -236,7 +236,7 @@ class TestGemServer < RubyGemTestCase
   end
 
   def test_quick_marshal_a_1_mswin32_gemspec_rz
-    a1_p = quick_gem 'a', '1' do |s| s.platform = Gem::Platform.local end
+    quick_gem 'a', '1' do |s| s.platform = Gem::Platform.local end
 
     data = StringIO.new "GET /quick/Marshal.#{Gem.marshal_version}/a-1-#{Gem::Platform.local}.gemspec.rz HTTP/1.0\r\n\r\n"
     @req.parse data

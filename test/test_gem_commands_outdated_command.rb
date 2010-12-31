@@ -14,8 +14,8 @@ class TestGemCommandsOutdatedCommand < RubyGemTestCase
   end
 
   def test_execute
-    local_01 = quick_gem 'foo', '0.1'
-    local_02 = quick_gem 'foo', '0.2'
+    quick_gem 'foo', '0.1'
+    quick_gem 'foo', '0.2'
     remote_10 = quick_gem 'foo', '1.0'
     remote_20 = quick_gem 'foo', '2.0'
 

@@ -159,7 +159,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
 
     Gem.clear_paths
 
-    Gem.class_eval { @ruby = ruby } if ruby = @orig_ruby
+    Gem.class_eval { @ruby = _ } if _ = @orig_ruby
 
     if @orig_ENV_HOME then
       ENV['HOME'] = @orig_ENV_HOME

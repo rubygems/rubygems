@@ -25,8 +25,8 @@ class TestGemCommandsSpecificationCommand < RubyGemTestCase
   end
 
   def test_execute_all
-    foo1 = quick_gem 'foo', '0.0.1'
-    foo2 = quick_gem 'foo', '0.0.2'
+    quick_gem 'foo', '0.0.1'
+    quick_gem 'foo', '0.0.2'
 
     @cmd.options[:args] = %w[foo]
     @cmd.options[:all] = true
@@ -56,8 +56,8 @@ class TestGemCommandsSpecificationCommand < RubyGemTestCase
   end
 
   def test_execute_exact_match
-    foo = quick_gem 'foo'
-    foo_bar = quick_gem 'foo_bar'
+    quick_gem 'foo'
+    quick_gem 'foo_bar'
 
     @cmd.options[:args] = %w[foo]
 

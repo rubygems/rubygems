@@ -58,10 +58,6 @@ load Gem.bin_path('a', 'my_exec', version)
     assert_equal '', @ui.error
 
     gem_make_out = File.join @gemhome, 'gems', @spec.full_name, 'gem_make.out'
-    expected = <<-EOF
-#{Gem.ruby} extconf.rb
-#{Gem.ruby}: No such file or directory -- extconf.rb (LoadError)
-    EOF
 
     assert_match %r%#{Regexp.escape Gem.ruby} extconf\.rb%,
                  File.read(gem_make_out)
@@ -655,7 +651,6 @@ load Gem.bin_path('a', 'my_exec', version)
 
     use_ui @ui do
       Dir.chdir @tempdir do Gem::Builder.new(@spec).build end
-      gem = File.join @tempdir, @spec.file_name
 
       @installer.install
     end

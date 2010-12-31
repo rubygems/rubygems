@@ -64,9 +64,6 @@ pl (1 i386-linux)
   end
 
   def test_execute_all
-    a1_name = @a1.full_name
-    a2_name = @a2.full_name
-
     @cmd.handle_options %w[-r --all]
 
     use_ui @ui do
@@ -86,9 +83,6 @@ pl (1 i386-linux)
   end
 
   def test_execute_all_prerelease
-    a1_name = @a1.full_name
-    a2_name = @a2.full_name
-
     @cmd.handle_options %w[-r --all --prerelease]
 
     use_ui @ui do

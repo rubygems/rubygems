@@ -28,15 +28,6 @@ class TestGemExtExtConfBuilder < RubyGemTestCase
       Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
     end
 
-    expected = [
-      "ruby extconf.rb",
-      "creating Makefile\n",
-      "make",
-      "make: Nothing to be done for `all'.\n",
-      "make install",
-      "make: Nothing to be done for `install'.\n"
-    ]
-
     assert_match(/^#{Gem.ruby} extconf.rb/, output[0])
     assert_equal "creating Makefile\n", output[1]
     case RUBY_PLATFORM

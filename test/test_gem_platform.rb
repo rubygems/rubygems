@@ -117,7 +117,6 @@ class TestGemPlatform < RubyGemTestCase
 
   def test_initialize_platform
     platform = Gem::Platform.new 'cpu-my_platform1'
-    expected = Gem::Platform.new platform
 
     assert_equal 'cpu', platform.cpu
     assert_equal 'my_platform', platform.os

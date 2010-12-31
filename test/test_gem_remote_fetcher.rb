@@ -646,11 +646,13 @@ gems:
 
   def assert_error(exception_class=Exception)
     got_exception = false
+
     begin
       yield
-    rescue exception_class => ex
+    rescue exception_class
       got_exception = true
     end
+
     assert got_exception, "Expected exception conforming to #{exception_class}"
   end
 

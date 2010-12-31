@@ -685,8 +685,8 @@ module Gem::Security
 
     ef = OpenSSL::X509::ExtensionFactory.new nil, cert
 
-    cert.extensions = opt[:cert_exts].map do |name, value|
-      ef.create_extension name, value
+    cert.extensions = opt[:cert_exts].map do |ext_name, value|
+      ef.create_extension ext_name, value
     end
 
     i_key  = opt[:issuer_key]  || key

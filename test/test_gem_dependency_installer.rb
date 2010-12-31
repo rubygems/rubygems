@@ -56,8 +56,8 @@ class TestGemDependencyInstaller < RubyGemTestCase
     @fetcher = Gem::FakeFetcher.new
     Gem::RemoteFetcher.fetcher = @fetcher
 
-    si = util_setup_spec_fetcher(@a1, @a1_pre, @b1, @b1_pre, @c1_pre, @d1, @d2,
-                                 @x1_m, @x1_o, @w1, @y1, @y1_1_p, @z1)
+    util_setup_spec_fetcher(@a1, @a1_pre, @b1, @b1_pre, @c1_pre, @d1, @d2,
+                            @x1_m, @x1_o, @w1, @y1, @y1_1_p, @z1)
 
     util_clear_gems
   end
@@ -78,7 +78,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
   end
 
   def test_install_all_dependencies
-    e1, e1_gem = util_gem 'e', '1' do |s|
+    _, e1_gem = util_gem 'e', '1' do |s|
       s.add_dependency 'b'
     end
 
@@ -190,9 +190,9 @@ class TestGemDependencyInstaller < RubyGemTestCase
   end
 
   def test_install_dependency_old
-    e1, e1_gem = util_gem 'e', '1'
-    f1, f1_gem = util_gem 'f', '1', 'e' => nil
-    f2, f2_gem = util_gem 'f', '2'
+    _, e1_gem = util_gem 'e', '1'
+    _, f1_gem = util_gem 'f', '1', 'e' => nil
+    _, f2_gem = util_gem 'f', '2'
 
     FileUtils.mv e1_gem, @tempdir
     FileUtils.mv f1_gem, @tempdir
@@ -610,7 +610,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
   def assert_resolve expected, *specs
     util_clear_gems
 
-    si = util_setup_spec_fetcher(*specs)
+    util_setup_spec_fetcher(*specs)
 
     inst = Gem::DependencyInstaller.new
     inst.find_spec_by_name_and_version 'a'
@@ -661,7 +661,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
     util_clear_gems
 
-    si = util_setup_spec_fetcher @d1, @d2, e1
+    util_setup_spec_fetcher @d1, @d2, e1
 
     inst = Gem::DependencyInstaller.new
     inst.find_spec_by_name_and_version 'e'

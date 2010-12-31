@@ -191,7 +191,6 @@ class Gem::SpecFetcher
 
   def suggest_gems_from_name gem_name
     gem_name        = gem_name.downcase
-    gem_starts_with = gem_name[0,1]
     max             = gem_name.size / 2
     specs           = list.values.flatten(1) # flatten(1) is 1.8.7 and up
 

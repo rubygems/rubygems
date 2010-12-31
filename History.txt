@@ -1,4 +1,33 @@
-﻿=== 1.3.7 / 2010-05-13
+﻿=== 1.4.0 / 2010-12-31
+
+NOTE: In order to better maintain rubygems and to get it in sync with
+the world (eg, 1.9's 1.3.7 is different from our 1.3.7), rubygems is
+switching to a 4-6 week release schedule. This release is the
+precursor to that process and as such may be a bit on the wild side!
+You have been warned!
+
+NOTE: We've switched to git/github. See README.rdoc for details.
+
+New features:
+
+* Added --launch option to `gem server`. (gthiesfeld)
+* Added fuzzy name matching on install failures. (gstark/presidentbeef)
+* Allow searching w/ file extensions: gem which fileutils.rb
+* Progress indicator during download (Ryan Melton)
+* Speed up Gem::Version#<=> by 2-3x in common cases. (raggi)
+
+Bug fixes:
+
+* Dependency "~>"s now respect lower-bound prerelease versions.
+* Ensure the gem directories exist on download.
+* Expand Windows user home candidates for Ruby 1.8. Bug #28371 & #28494
+* Fix find_files to order by version.
+* Fix ivar typo. [Josh Peek]
+* Normalized requires and made many of them lazy.
+  Do not depend on rubygems to require stdlib stuff for you. (raggi/tmm1)
+* Treat 1.0.a10 like 1.0.a.10 for sorting, etc. Fixes #27903. (dchelimsky)
+
+=== 1.3.7 / 2010-05-13
 
 NOTE:
 

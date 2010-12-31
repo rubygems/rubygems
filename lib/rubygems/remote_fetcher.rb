@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'rubygems/user_interaction'
 
 ##
 # RemoteFetcher handles the details of fetching gems and gem information from

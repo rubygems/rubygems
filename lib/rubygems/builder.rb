@@ -5,9 +5,15 @@
 #++
 
 require 'rubygems/user_interaction'
-require "yaml"
-require "rubygems/package"
-require "rubygems/security"
+
+begin
+  require 'psych'
+rescue LoadError
+end
+
+require 'yaml'
+require 'rubygems/package'
+require 'rubygems/security'
 
 ##
 # The Builder class processes RubyGem specification files
@@ -71,7 +77,12 @@ EOM
   def write_package
     open @spec.file_name, 'wb' do |gem_io|
       Gem::Package.open gem_io, 'w', @signer do |pkg|
-        pkg.metadata = @spec.to_yaml
+        yaml = if defined?(Psych) then
+                 Psych.dump(@spec)
+               else
+                 YAML.dump(@spec)
+               end
+        pkg.metadata = yaml
 
         @spec.files.each do |file|
           next if File.directory? file

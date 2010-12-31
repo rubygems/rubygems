@@ -173,18 +173,19 @@ class TestGemCommandsInstallCommand < RubyGemTestCase
   end
 
   def test_execute_nonexistent_with_hint
-    misspelled="nonexistent_with_hint"
-    correctly_spelled="non_existent_with_hint"
+    misspelled = "nonexistent_with_hint"
+    correctly_spelled = "non_existent_with_hint"
 
     util_setup_fake_fetcher
     util_setup_spec_fetcher quick_gem(correctly_spelled, '2')
 
-    @cmd.options[:args] = misspelled
+    @cmd.options[:args] = [misspelled]
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
         @cmd.execute
       end
+
       assert_equal 2, e.exit_code
     end
 

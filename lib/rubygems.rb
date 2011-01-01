@@ -258,9 +258,6 @@ module Gem
       activate dep_gem, :sources => [spec, *sources]
     end
 
-    # bin directory must come before library directories
-    spec.require_paths.unshift spec.bindir if spec.bindir
-
     require_paths = spec.require_paths.map do |path|
       File.join spec.full_gem_path, path
     end

@@ -1,5 +1,4 @@
 require File.expand_path('../gemutilities', __FILE__)
-require 'rubygems/package'
 
 class TestKernel < RubyGemTestCase
 
@@ -20,21 +19,18 @@ class TestKernel < RubyGemTestCase
   def test_gem
     assert gem('a', '= 1'), "Should load"
     assert $:.any? { |p| %r{a-1/lib} =~ p }
-    assert $:.any? { |p| %r{a-1/bin} =~ p }
   end
 
   def test_gem_redundent
     assert gem('a', '= 1'), "Should load"
     refute gem('a', '= 1'), "Should not load"
     assert_equal 1, $:.select { |p| %r{a-1/lib} =~ p }.size
-    assert_equal 1, $:.select { |p| %r{a-1/bin} =~ p }.size
   end
 
   def test_gem_overlapping
     assert gem('a', '= 1'), "Should load"
     refute gem('a', '>= 1'), "Should not load"
     assert_equal 1, $:.select { |p| %r{a-1/lib} =~ p }.size
-    assert_equal 1, $:.select { |p| %r{a-1/bin} =~ p }.size
   end
 
   def test_gem_conflicting
@@ -50,10 +46,11 @@ class TestKernel < RubyGemTestCase
     assert_equal Gem::Requirement.new('= 2'), ex.requirement
 
     assert $:.any? { |p| %r{a-1/lib} =~ p }
-    assert $:.any? { |p| %r{a-1/bin} =~ p }
     refute $:.any? { |p| %r{a-2/lib} =~ p }
-    refute $:.any? { |p| %r{a-2/bin} =~ p }
   end
 
+  def test_gem_not_adding_bin
+    assert gem('a', '= 1'), "Should load"
+    refute $:.any? { |p| %r{a-1/bin} =~ p }
+  end
 end
-

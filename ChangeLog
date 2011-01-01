@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+2010-12-31  Luis Lavena  <luislavena@gmail.com>
+
+	* lib/rubygems.rb (Gem.activate): Do not add gem bindir to the
+	  $LOAD_PATH. Bug #25208.
+	* test/test_kernel.rb: ditto.
+
 2010-12-29  Luis Lavena  <luislavena@gmail.com>
 
 	* lib/rubygems/user_interaction.rb: Implemented SimpleDownloadReporter

@@ -503,7 +503,7 @@ class Gem::Specification
   def self.load file
     return unless file && File.file?(file)
 
-    file = file.untaint
+    file = file.dup.untaint
 
     code = if defined? Encoding
              File.read file, :encoding => "UTF-8"

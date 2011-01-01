@@ -5,6 +5,9 @@
 	* lib/rubygems.rb (Gem.activate): Do not add gem bindir to the
 	  $LOAD_PATH. Bug #25208.
 	* test/test_kernel.rb: ditto.
+	* lib/rubygems/commands/environment_command.rb: Add support for 'platform'
+	  suboption. Feature Request #28300
+	* test/test_gem_commands_environment_command.rb: ditto.
 
 2010-12-29  Luis Lavena  <luislavena@gmail.com>
 

@@ -13,6 +13,7 @@ class Gem::Commands::EnvironmentCommand < Gem::Command
           gempath         display path used to search for gems
           version         display the gem format version
           remotesources   display the remote gem servers
+          platform        display the supporte gem platforms
           <omitted>       display everything
     EOF
     return args.gsub(/^\s+/, '')
@@ -76,6 +77,8 @@ lib/rubygems/defaults/operating_system.rb
       out << Gem.path.join(File::PATH_SEPARATOR)
     when /^remotesources/ then
       out << Gem.sources.join("\n")
+    when /^platform/ then
+      out << Gem.platforms.join(File::PATH_SEPARATOR)
     when nil then
       out = "RubyGems Environment:\n"
 

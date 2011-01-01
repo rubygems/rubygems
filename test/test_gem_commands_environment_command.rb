@@ -131,5 +131,14 @@ class TestGemCommandsEnvironmentCommand < RubyGemTestCase
     assert_equal '', @ui.error
   end
 
-end
+  def test_execute_platform
+    @cmd.send :handle_options, %w[platform]
 
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal "#{Gem.platforms.join File::PATH_SEPARATOR}\n", @ui.output
+    assert_equal '', @ui.error
+  end
+end

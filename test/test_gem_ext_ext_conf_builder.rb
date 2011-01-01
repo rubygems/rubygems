@@ -40,6 +40,52 @@ class TestGemExtExtConfBuilder < RubyGemTestCase
     end
   end
 
+  def test_class_build_rbconfig_make_prog
+    configure_args = RbConfig::CONFIG['configure_args']
+    RbConfig::CONFIG['configure_args'] = '--with-make-prog=mymake'
+
+    File.open File.join(@ext, 'extconf.rb'), 'w' do |extconf|
+      extconf.puts "require 'mkmf'\ncreate_makefile 'foo'"
+    end
+
+    output = []
+
+    assert_raises Gem::InstallError do
+      Dir.chdir @ext do
+        Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
+      end
+    end
+
+    assert_equal "creating Makefile\n", output[1]
+    assert_equal "mymake", output[2]
+  ensure
+    RbConfig::CONFIG['configure_args'] = configure_args
+  end
+
+  def test_class_build_env_make
+    configure_args, env_make = RbConfig::CONFIG['configure_args'], ENV.delete('make')
+    RbConfig::CONFIG['configure_args'] = ''
+    ENV['make'] = 'anothermake'
+
+    File.open File.join(@ext, 'extconf.rb'), 'w' do |extconf|
+      extconf.puts "require 'mkmf'\ncreate_makefile 'foo'"
+    end
+
+    output = []
+
+    assert_raises Gem::InstallError do
+      Dir.chdir @ext do
+        Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
+      end
+    end
+
+    assert_equal "creating Makefile\n", output[1]
+    assert_equal "anothermake", output[2]
+  ensure
+    RbConfig::CONFIG['configure_args'] = configure_args
+    ENV['make'] = env_make
+  end
+
   def test_class_build_extconf_fail
     if vc_windows? && !nmake_found?
       skip("test_class_build_extconf_fail skipped - nmake not found")

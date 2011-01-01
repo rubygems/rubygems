@@ -8,6 +8,10 @@
 	* lib/rubygems/commands/environment_command.rb: Add support for 'platform'
 	  suboption. Feature Request #28300
 	* test/test_gem_commands_environment_command.rb: ditto.
+	* lib/rubygems/ext/builder.rb: Give priority to make-prog from Ruby
+	  configure process. Bug #28399
+	* test/test_gem_ext_ext_conf_builder.rb: Added 2 tests to check both
+	  --with-make-prog and ENV['make'] conditions.
 
 2010-12-29  Luis Lavena  <luislavena@gmail.com>
 

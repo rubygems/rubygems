@@ -2,22 +2,29 @@
 require 'socket'
 
 Project.configure do |project|
-  
-  # Send email notifications about broken and fixed builds to email1@your.site, email2@your.site (default: send to nobody)
-  project.email_notifier.emails = ['rubygems-developers@rubyforge.org'] if Socket.gethostname =~ /ci.pivotallabs.com/
+  # To add a build for a new interpreter (from ccrb root):
+  # ./cruise add RubyGems-x_y_z-pxxx -s git -r git://github.com/rubygems/rubygems.git
+  interpreter = Regexp.new(/RubyGems-(.*)$/i).match(project.name)[1]
+  interpreter.gsub!('_','.')
 
-  # Set email 'from' field to john@doe.com:
-  project.email_notifier.from = 'devnull+rubygems-ci@pivotallabs.com'
+  # only send notifications from the official ci box
+  if Socket.gethostname =~ /cibuilder.pivotallabs.com/
+    # explicitly enable dev list notification only for interpreters which should be green
+    interpreters_with_enabled_notification = [
+      '1.8.7-p302'
+    ]
+    if interpreters_with_enabled_notification.include?(interpreter)
+      project.email_notifier.emails = ['rubygems-developers@rubyforge.org']
+    end
 
-  # Build the project by invoking rake task 'custom'
-  # project.rake_task = 'custom'
+    # Always notify the following for all interpreters:
+    project.email_notifier.emails.concat([
+      'thewoolleyman+rubygems-ci@gmail.com'
+    ])
+  end
 
-  # Build the project by invoking shell script "build_my_app.sh". Keep in mind that when the script is invoked,
-  # current working directory is <em>[cruise&nbsp;data]</em>/projects/your_project/work, so if you do not keep build_my_app.sh
-  # in version control, it should be '../build_my_app.sh' instead
-  project.build_command = 'rake check_extra_deps default'
+  project.build_command = "./ci_build.sh '#{interpreter}@rubygems'"
 
-  # Ping Subversion for new revisions every 5 minutes (default: 30 seconds)
+  project.email_notifier.from = 'thewoolleyman+rubygems-ci@gmail.com'
   project.scheduler.polling_interval = 5.minutes
-
 end

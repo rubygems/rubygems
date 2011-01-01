@@ -2,17 +2,19 @@
 
 $:.unshift 'lib'
 
-Gem::QuickLoader.load_full_rubygems_library if defined?(Gem::QuickLoader)
+if defined?(Gem::QuickLoader) then
+  Gem::QuickLoader.load_full_rubygems_library
 
-class << Gem
-  remove_method :try_activate if Gem.respond_to?(:try_activate, true)
+  class << Gem
+    remove_method :try_activate if Gem.respond_to?(:try_activate, true)
 
-  def try_activate(path)
-    spec = Gem.searcher.find(path)
-    return false unless spec
+    def try_activate(path)
+      spec = Gem.searcher.find(path)
+      return false unless spec
 
-    Gem.activate(spec.name, "= #{spec.version}")
-    return true
+      Gem.activate(spec.name, "= #{spec.version}")
+      return true
+    end
   end
 end
 

@@ -188,14 +188,14 @@ class Gem::SpecFetcher
   # alternative gem names.
 
   def suggest_gems_from_name gem_name
-    gem_name        = gem_name.downcase
+    gem_name        = gem_name.downcase.tr('_-', '')
     max             = gem_name.size / 2
     specs           = list.values.flatten(1) # flatten(1) is 1.8.7 and up
 
     matches = specs.map { |name, version, platform|
       next unless Gem::Platform.match platform
 
-      distance = levenshtein_distance gem_name, name.downcase
+      distance = levenshtein_distance gem_name, name.downcase.tr('_-', '')
 
       next if distance >= max
 

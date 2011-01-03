@@ -1116,6 +1116,7 @@ module Gem
   autoload :SourceIndex, 'rubygems/source_index'
   autoload :Platform, 'rubygems/platform'
   autoload :Builder, 'rubygems/builder'
+  autoload :ConfigFile, 'rubygems/config_file'
 end
 
 module Kernel
@@ -1191,8 +1192,6 @@ unless gem_preluded then
     end
   end
 end
-
-require 'rubygems/config_file'
 
 ##
 # Enables the require hook for RubyGems.

@@ -75,14 +75,6 @@ class Gem::SpecFetcher
     end
 
     return [ss, errors]
-
-  rescue Gem::RemoteFetcher::FetchError => e
-    raise unless warn_legacy e do
-      require 'rubygems/source_info_cache'
-
-      return [Gem::SourceInfoCache.search_with_source(dependency,
-                                                     matching_platform, all), nil]
-    end
   end
 
   def fetch(*args)
@@ -158,29 +150,6 @@ class Gem::SpecFetcher
 
   def find_matching(*args)
     find_matching_with_errors(*args).first
-  end
-
-  ##
-  # Returns Array of gem repositories that were generated with RubyGems less
-  # than 1.2.
-
-  def legacy_repos
-    Gem.sources.reject do |source_uri|
-      source_uri = URI.parse source_uri
-      spec_path = source_uri + "specs.#{Gem.marshal_version}.gz"
-
-      begin
-        @fetcher.fetch_size spec_path
-      rescue Gem::RemoteFetcher::FetchError
-        begin
-          @fetcher.fetch_size(source_uri + 'yaml') # re-raise if non-repo
-        rescue Gem::RemoteFetcher::FetchError
-          alert_error "#{source_uri} does not appear to be a repository"
-          raise
-        end
-        false
-      end
-    end
   end
 
   ##
@@ -300,29 +269,6 @@ class Gem::SpecFetcher
     end
 
     specs
-  end
-
-  ##
-  # Warn about legacy repositories if +exception+ indicates only legacy
-  # repositories are available, and yield to the block.  Returns false if the
-  # exception indicates some other FetchError.
-
-  def warn_legacy(exception)
-    uri = exception.uri.to_s
-    if uri =~ /specs\.#{Regexp.escape Gem.marshal_version}\.gz$/ then
-      alert_warning <<-EOF
-RubyGems 1.2+ index not found for:
-\t#{legacy_repos.join "\n\t"}
-
-RubyGems will revert to legacy indexes degrading performance.
-      EOF
-
-      yield
-
-      return true
-    end
-
-    false
   end
 
 end

@@ -80,23 +80,7 @@ class Gem::Commands::SourcesCommand < Gem::Command
       rescue URI::Error, ArgumentError
         say "#{source_uri} is not a URI"
       rescue Gem::RemoteFetcher::FetchError => e
-        yaml_uri = uri + 'yaml'
-        gem_repo = Gem::RemoteFetcher.fetcher.fetch_size yaml_uri rescue false
-
-        if e.uri =~ /specs\.#{Regexp.escape Gem.marshal_version}\.gz$/ and
-           gem_repo then
-
-          alert_warning <<-EOF
-RubyGems 1.2+ index not found for:
-\t#{source_uri}
-
-Will cause RubyGems to revert to legacy indexes, degrading performance.
-          EOF
-
-          say "#{source_uri} added to sources"
-        else
-          say "Error fetching #{source_uri}:\n\t#{e.message}"
-        end
+        say "Error fetching #{source_uri}:\n\t#{e.message}"
       end
     end
 
@@ -116,15 +100,10 @@ Will cause RubyGems to revert to legacy indexes, degrading performance.
     if options[:update] then
       fetcher = Gem::SpecFetcher.fetcher
 
-      if fetcher.legacy_repos.empty? then
-        Gem.sources.each do |update_uri|
-          update_uri = URI.parse update_uri
-          fetcher.load_specs update_uri, 'specs'
-          fetcher.load_specs update_uri, 'latest_specs'
-        end
-      else
-        Gem::SourceInfoCache.cache true
-        Gem::SourceInfoCache.cache.flush
+      Gem.sources.each do |update_uri|
+        update_uri = URI.parse update_uri
+        fetcher.load_specs update_uri, 'specs'
+        fetcher.load_specs update_uri, 'latest_specs'
       end
 
       say "source cache successfully updated"

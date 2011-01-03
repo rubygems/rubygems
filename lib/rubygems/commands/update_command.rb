@@ -164,22 +164,8 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
       dependency = Gem::Dependency.new l_spec.name, "> #{l_spec.version}"
 
-      begin
-        fetcher = Gem::SpecFetcher.fetcher
-        spec_tuples = fetcher.find_matching dependency
-      rescue Gem::RemoteFetcher::FetchError => e
-        raise unless fetcher.warn_legacy e do
-          require 'rubygems/source_info_cache'
-
-          dependency.name = '' if dependency.name == //
-
-          specs = Gem::SourceInfoCache.search_with_source dependency
-
-          spec_tuples = specs.map do |spec, source_uri|
-            [[spec.name, spec.version, spec.original_platform], source_uri]
-          end
-        end
-      end
+      fetcher = Gem::SpecFetcher.fetcher
+      spec_tuples = fetcher.find_matching dependency
 
       matching_gems = spec_tuples.select do |(name, _, platform),|
         name == l_name and Gem::Platform.match platform

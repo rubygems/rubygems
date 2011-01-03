@@ -317,19 +317,9 @@ class Gem::SourceIndex
     latest_specs.each do |local|
       dependency = Gem::Dependency.new local.name, ">= #{local.version}"
 
-      begin
-        fetcher = Gem::SpecFetcher.fetcher
-        remotes = fetcher.find_matching dependency
-        remotes = remotes.map { |(_, version, _), _| version }
-      rescue Gem::RemoteFetcher::FetchError => e
-        raise unless fetcher.warn_legacy e do
-          require 'rubygems/source_info_cache'
-
-          specs = Gem::SourceInfoCache.search_with_source dependency, true
-
-          remotes = specs.map { |spec,| spec.version }
-        end
-      end
+      fetcher = Gem::SpecFetcher.fetcher
+      remotes = fetcher.find_matching dependency
+      remotes = remotes.map { |(_, version, _), _| version }
 
       latest = remotes.sort.last
 

@@ -33,8 +33,6 @@ is a YAML file with the following YAML keys:
             levels
   :update_sources: Enable/disable automatic updating of repository metadata
   :backtrace: Print backtrace when RubyGems encounters an error
-  :bulk_threshold: Switch to a bulk update when this many sources are out of
-                   date (legacy setting)
   :gempath: The paths in which to look for gems
   gem_command: A string containing arguments for the specified gem command
 

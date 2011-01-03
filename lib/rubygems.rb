@@ -1106,11 +1106,6 @@ module Gem
 
   MARSHAL_SPEC_DIR = "quick/Marshal.#{Gem.marshal_version}/"
 
-  ##
-  # Location of legacy YAML quick gemspecs on remote repositories
-
-  YAML_SPEC_DIR = 'quick/'
-
   autoload :Version, 'rubygems/version'
   autoload :Requirement, 'rubygems/requirement'
   autoload :Dependency, 'rubygems/dependency'

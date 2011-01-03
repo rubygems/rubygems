@@ -5,7 +5,23 @@
 # See LICENSE.txt for permissions.
 #++
 
-gem_disabled = !defined? Gem
+gem_preluded = defined? Gem
+
+if defined?(Gem::QuickLoader) then
+  Gem::QuickLoader.load_full_rubygems_library
+
+  class << Gem
+    remove_method :try_activate if Gem.respond_to?(:try_activate, true)
+
+    def try_activate(path)
+      spec = Gem.searcher.find(path)
+      return false unless spec
+
+      Gem.activate(spec.name, "= #{spec.version}")
+      return true
+    end
+  end
+end
 
 require 'rubygems/defaults'
 require 'rbconfig'
@@ -424,7 +440,7 @@ module Gem
 
   def self.dir
     @gem_home ||= nil
-    set_home(ENV['GEM_HOME'] || Gem.configuration.home || default_dir) unless @gem_home
+    set_home(ENV['GEM_HOME'] || default_dir) unless @gem_home
     @gem_home
   end
 
@@ -664,7 +680,7 @@ module Gem
     @gem_path ||= nil
 
     unless @gem_path then
-      paths = [ENV['GEM_PATH'] || Gem.configuration.path || default_path]
+      paths = [ENV['GEM_PATH'] || default_path]
 
       if defined?(APPLE_GEM_HOME) and not ENV['GEM_PATH'] then
         paths << APPLE_GEM_HOME
@@ -1161,21 +1177,23 @@ end
 
 require 'rubygems/exceptions'
 
-begin
-  ##
-  # Defaults the operating system (or packager) wants to provide for RubyGems.
-
-  require 'rubygems/defaults/operating_system'
-rescue LoadError
-end
-
-if defined?(RUBY_ENGINE) then
+unless gem_preluded then
   begin
     ##
-    # Defaults the ruby implementation wants to provide for RubyGems
+    # Defaults the operating system (or packager) wants to provide for RubyGems.
 
-    require "rubygems/defaults/#{RUBY_ENGINE}"
+    require 'rubygems/defaults/operating_system'
   rescue LoadError
+  end
+
+  if defined?(RUBY_ENGINE) then
+    begin
+      ##
+      # Defaults the ruby implementation wants to provide for RubyGems
+
+      require "rubygems/defaults/#{RUBY_ENGINE}"
+    rescue LoadError
+    end
   end
 end
 
@@ -1187,6 +1205,7 @@ require 'rubygems/config_file'
 # Ruby 1.9 allows --disable-gems, so we require it when we didn't detect a Gem
 # constant at rubygems.rb load time.
 
-require 'rubygems/custom_require' if gem_disabled or RUBY_VERSION < '1.9'
+require 'rubygems/custom_require' unless gem_preluded and RUBY_VERSION > '1.9'
 
 Gem.clear_paths
+

@@ -4,7 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/user_interaction'
 require 'rubygems/specification'
 
 ##
@@ -22,8 +21,6 @@ class Gem::SourceIndex
 
   include Enumerable
 
-  include Gem::UserInteraction
-
   attr_reader :gems # :nodoc:
 
   ##
@@ -32,8 +29,6 @@ class Gem::SourceIndex
   attr_accessor :spec_dirs
 
   class << self
-    include Gem::UserInteraction
-
     ##
     # Factory method to construct a source index instance for a given
     # path.
@@ -344,210 +339,12 @@ class Gem::SourceIndex
     outdateds
   end
 
-  ##
-  # Updates this SourceIndex from +source_uri+.  If +all+ is false, only the
-  # latest gems are fetched.
-
-  def update(source_uri, all)
-    source_uri = URI.parse source_uri unless URI::Generic === source_uri
-    source_uri.path += '/' unless source_uri.path =~ /\/$/
-
-    use_incremental = false
-
-    begin
-      gem_names = fetch_quick_index source_uri, all
-      remove_extra gem_names
-      missing_gems = find_missing gem_names
-
-      return false if missing_gems.size.zero?
-
-      say "Missing metadata for #{missing_gems.size} gems" if
-      missing_gems.size > 0 and Gem.configuration.really_verbose
-
-      use_incremental = missing_gems.size <= Gem.configuration.bulk_threshold
-    rescue Gem::OperationNotSupportedError => ex
-      alert_error "Falling back to bulk fetch: #{ex.message}" if
-      Gem.configuration.really_verbose
-      use_incremental = false
-    end
-
-    if use_incremental then
-      update_with_missing(source_uri, missing_gems)
-    else
-      new_index = fetch_bulk_index(source_uri)
-      @gems.replace(new_index.gems)
-    end
-
-    true
-  end
-
   def ==(other) # :nodoc:
     self.class === other and @gems == other.gems
   end
 
   def dump
     Marshal.dump(self)
-  end
-
-  private
-
-  def fetcher
-    require 'rubygems/remote_fetcher'
-
-    Gem::RemoteFetcher.fetcher
-  end
-
-  def fetch_index_from(source_uri)
-    @fetch_error = nil
-
-    indexes = %W[
-        Marshal.#{Gem.marshal_version}.Z
-        Marshal.#{Gem.marshal_version}
-        yaml.Z
-        yaml
-      ]
-
-    indexes.each do |name|
-      spec_data = nil
-      index = source_uri + name
-      begin
-        spec_data = fetcher.fetch_path index
-        spec_data = unzip(spec_data) if name =~ /\.Z$/
-
-        if name =~ /Marshal/ then
-          return Marshal.load(spec_data)
-        else
-          return YAML.load(spec_data)
-        end
-      rescue => e
-        if Gem.configuration.really_verbose then
-          alert_error "Unable to fetch #{name}: #{e.message}"
-        end
-
-        @fetch_error = e
-      end
-    end
-
-    nil
-  end
-
-  def fetch_bulk_index(source_uri)
-    say "Bulk updating Gem source index for: #{source_uri}" if
-      Gem.configuration.verbose
-
-    index = fetch_index_from(source_uri)
-    if index.nil? then
-      raise Gem::RemoteSourceException,
-              "Error fetching remote gem cache: #{@fetch_error}"
-    end
-    @fetch_error = nil
-    index
-  end
-
-  ##
-  # Get the quick index needed for incremental updates.
-
-  def fetch_quick_index(source_uri, all)
-    index = all ? 'index' : 'latest_index'
-
-    zipped_index = fetcher.fetch_path source_uri + "quick/#{index}.rz"
-
-    unzip(zipped_index).split("\n")
-  rescue ::Exception => e
-    unless all then
-      say "Latest index not found, using quick index" if
-        Gem.configuration.really_verbose
-
-      fetch_quick_index source_uri, true
-    else
-      raise Gem::OperationNotSupportedError,
-            "No quick index found: #{e.message}"
-    end
-  end
-
-  ##
-  # Make a list of full names for all the missing gemspecs.
-
-  def find_missing(spec_names)
-    unless defined? @originals then
-      @originals = {}
-      each do |full_name, spec|
-        @originals[spec.original_name] = spec
-      end
-    end
-
-    spec_names.find_all { |full_name|
-      @originals[full_name].nil?
-    }
-  end
-
-  def remove_extra(spec_names)
-    dictionary = {}
-    spec_names.each { |k| dictionary[k] = true }
-    each do |name, spec|
-      remove_spec name unless dictionary.include? spec.original_name
-    end
-  end
-
-  ##
-  # Unzip the given string.
-
-  def unzip(string)
-    require 'zlib'
-    Gem.inflate string
-  end
-
-  ##
-  # Tries to fetch Marshal representation first, then YAML
-
-  def fetch_single_spec(source_uri, spec_name)
-    @fetch_error = nil
-
-    begin
-      marshal_uri = source_uri + "quick/Marshal.#{Gem.marshal_version}/#{spec_name}.gemspec.rz"
-      zipped = fetcher.fetch_path marshal_uri
-      return Marshal.load(unzip(zipped))
-    rescue => ex
-      @fetch_error = ex
-
-      if Gem.configuration.really_verbose then
-        say "unable to fetch marshal gemspec #{marshal_uri}: #{ex.class} - #{ex}"
-      end
-    end
-
-    begin
-      yaml_uri = source_uri + "quick/#{spec_name}.gemspec.rz"
-      zipped = fetcher.fetch_path yaml_uri
-      return YAML.load(unzip(zipped))
-    rescue => ex
-      @fetch_error = ex
-      if Gem.configuration.really_verbose then
-        say "unable to fetch YAML gemspec #{yaml_uri}: #{ex.class} - #{ex}"
-      end
-    end
-
-    nil
-  end
-
-  ##
-  # Update the cached source index with the missing names.
-
-  def update_with_missing(source_uri, missing_names)
-    progress = ui.progress_reporter(missing_names.size,
-        "Updating metadata for #{missing_names.size} gems from #{source_uri}")
-    missing_names.each do |spec_name|
-      gemspec = fetch_single_spec(source_uri, spec_name)
-      if gemspec.nil? then
-        ui.say "Failed to download spec #{spec_name} from #{source_uri}:\n" \
-                 "\t#{@fetch_error.message}"
-      else
-        add_spec gemspec
-        progress.updated spec_name
-      end
-      @fetch_error = nil
-    end
-    progress.done
-    progress.count
   end
 
 end

@@ -2,12 +2,6 @@ require File.expand_path('../gemutilities', __FILE__)
 require 'rubygems/source_index'
 require 'rubygems/config_file'
 
-class Gem::SourceIndex
-  public :fetcher, :fetch_bulk_index, :fetch_quick_index,
-         :find_missing, :gems, :remove_extra,
-         :update_with_missing, :unzip
-end
-
 class TestGemSourceIndex < RubyGemTestCase
 
   def setup
@@ -192,23 +186,6 @@ end
     # TODO
   end
 
-  def test_fetcher
-    assert_equal @fetcher, @source_index.fetcher
-  end
-
-  def test_find_missing
-    missing = @source_index.find_missing [@b2.full_name]
-    assert_equal [@b2.full_name], missing
-  end
-
-  def test_find_missing_none_missing
-    missing = @source_index.find_missing [
-      @a1.full_name, @a2.full_name, @c1_2.full_name
-    ]
-
-    assert_equal [], missing
-  end
-
   def test_find_name
     assert_equal [@a1, @a2, @a3a], @source_index.find_name('a')
     assert_equal [@a2], @source_index.find_name('a', '= 2')
@@ -353,27 +330,6 @@ end
     assert_equal 'source index not created from disk', e.message
   end
 
-  def test_remove_extra
-    @source_index.add_spec @a1
-    @source_index.add_spec @a2
-    @source_index.add_spec @pl1
-
-    @source_index.remove_extra [@a1.full_name, @pl1.full_name]
-
-    assert_equal [@a1.full_name],
-                 @source_index.gems.map { |n,s| n }.sort
-  end
-
-  def test_remove_extra_no_changes
-    gems = [@a1.full_name, @a2.full_name]
-    @source_index.add_spec @a1
-    @source_index.add_spec @a2
-
-    @source_index.remove_extra gems
-
-    assert_equal gems, @source_index.gems.map { |n,s| n }.sort
-  end
-
   def test_remove_spec
     deleted = @source_index.remove_spec 'a-1'
 
@@ -434,21 +390,6 @@ end
   def test_index_signature
     sig = @source_index.index_signature
     assert_match(/^[a-f0-9]{64}$/, sig)
-  end
-
-  def test_unzip
-    input = "x\234+\316\317MU(I\255(\001\000\021\350\003\232"
-    assert_equal 'some text', @source_index.unzip(input)
-  end
-
-  def util_setup_bulk_fetch(compressed)
-    source_index = @source_index.dump
-
-    if compressed then
-      @fetcher.data["#{@gem_repo}Marshal.#{@marshal_version}.Z"] = util_zip source_index
-    else
-      @fetcher.data["#{@gem_repo}Marshal.#{@marshal_version}"] = source_index
-    end
   end
 
 end

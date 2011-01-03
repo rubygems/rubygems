@@ -655,9 +655,11 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     template = ERB.new(DOC_TEMPLATE)
     res['content-type'] = 'text/html'
 
-    # this is used by binding, 1.9.3dev warns anyways
     values = { "gem_count" => specs.size.to_s, "specs" => specs,
                "total_file_count" => total_file_count.to_s }
+
+    # suppress 1.9.3dev warning about unused variable
+    values = values
 
     result = template.result binding
     res.body = result

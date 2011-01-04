@@ -11,7 +11,8 @@ begin
 rescue LoadError
 end
 
-require 'yaml'
+Gem.load_yaml
+
 require 'rubygems/package'
 require 'rubygems/security'
 
@@ -77,11 +78,7 @@ EOM
   def write_package
     open @spec.file_name, 'wb' do |gem_io|
       Gem::Package.open gem_io, 'w', @signer do |pkg|
-        yaml = if defined?(Psych) then
-                 Psych.dump(@spec)
-               else
-                 YAML.dump(@spec)
-               end
+        yaml = @spec.to_yaml
         pkg.metadata = yaml
 
         @spec.files.each do |file|

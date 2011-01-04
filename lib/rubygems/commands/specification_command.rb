@@ -10,7 +10,7 @@ class Gem::Commands::SpecificationCommand < Gem::Command
   include Gem::VersionOption
 
   def initialize
-    require 'yaml'
+    Gem.load_yaml
 
     super 'specification', 'Display gem specification (in yaml)',
           :domain => :local, :version => Gem::Requirement.default,

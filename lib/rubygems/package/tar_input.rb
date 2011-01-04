@@ -4,8 +4,8 @@
 # See LICENSE.txt for additional licensing information.
 #--
 
-require "yaml"
-require "zlib"
+require 'zlib'
+Gem.load_yaml
 
 class Gem::Package::TarInput
 

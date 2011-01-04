@@ -656,6 +656,16 @@ module Gem
   end
 
   ##
+  # Loads YAML, preferring Psych
+
+  def self.load_yaml
+    require 'psych'
+  rescue ::LoadError
+  ensure
+    require 'yaml'
+  end
+
+  ##
   # The file name and line number of the caller of the caller of this method.
 
   def self.location_of_caller

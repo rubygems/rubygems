@@ -11,6 +11,12 @@ class Gem::SpecFetcher
   include Gem::UserInteraction
   include Gem::Text
 
+  FILES = {
+    :all        => 'specs',
+    :latest     => 'latest_specs',
+    :prerelease => 'prerelease_specs',
+  }
+
   ##
   # The SpecFetcher cache dir.
 
@@ -50,6 +56,12 @@ class Gem::SpecFetcher
     @specs = {}
     @latest_specs = {}
     @prerelease_specs = {}
+
+    @caches = {
+      :latest => @latest_specs,
+      :prerelease => @prerelease_specs,
+      :all => @specs
+    }
 
     @fetcher = Gem::RemoteFetcher.fetcher
   end
@@ -195,15 +207,9 @@ class Gem::SpecFetcher
              :latest
            end
 
-    list = {}
-
-    file = { :latest => 'latest_specs',
-      :prerelease => 'prerelease_specs',
-      :all => 'specs' }[type]
-
-    cache = { :latest => @latest_specs,
-      :prerelease => @prerelease_specs,
-      :all => @specs }[type]
+    list  = {}
+    file  = FILES[type]
+    cache = @caches[type]
 
     Gem.sources.each do |source_uri|
       source_uri = URI.parse source_uri

@@ -195,12 +195,20 @@ class Gem::RemoteFetcher
 
   def escape(str)
     return unless str
-    URI.escape(str)
+    @uri_parser ||= uri_escaper
+    @uri_parser.escape str
   end
 
   def unescape(str)
     return unless str
-    URI.unescape(str)
+    @uri_parser ||= uri_escaper
+    @uri_parser.unescape str
+  end
+
+  def uri_escaper
+    URI::Parser.new
+  rescue NameError
+    URI
   end
 
   ##

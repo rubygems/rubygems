@@ -215,6 +215,7 @@ class Gem::ConfigFile
   end
 
   def load_file(filename)
+    require "yaml"
     return {} unless filename and File.exists?(filename)
     begin
       YAML.load(File.read(filename))

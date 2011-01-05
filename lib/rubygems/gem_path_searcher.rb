@@ -22,7 +22,7 @@ class Gem::GemPathSearcher
   end
 
   ##
-  # Look in all the installed gems until a matching _path_ is found.
+  # Look in all the installed gems until a matching +glob+ is found.
   # Return the _gemspec_ of the gem where it was found.  If no match
   # is found, return nil.
   #
@@ -41,33 +41,18 @@ class Gem::GemPathSearcher
   # This method doesn't care about the full filename that matches;
   # only that there is a match.
 
-  def find(path)
-    @gemspecs.find do |spec| matching_file? spec, path end
-  end
-
-  ##
-  # Works like #find, but finds all gemspecs matching +path+.
-
-  def find_all(path)
-    @gemspecs.select do |spec|
-      matching_file? spec, path
+  def find(glob)
+    @gemspecs.find do |spec|
+      matching_file? spec, glob
     end
   end
 
   ##
-  # Find all files +path+ .rb advertised by all gemspecs.
-  # Only files in the gemspec's require paths are considered.
+  # Works like #find, but finds all gemspecs matching +glob+.
 
-  def find_all_dot_rb(path)
-    rb_path = "#{path}.rb"
-
+  def find_all(glob)
     @gemspecs.select do |spec|
-      rp = spec.require_paths
-      next false unless rp
-
-      rp.find do |lib|
-        spec.files.include? File.join(lib, rb_path)
-      end
+      matching_file? spec, glob
     end
   end
 

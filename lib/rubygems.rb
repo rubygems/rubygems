@@ -468,7 +468,7 @@ module Gem
   end
 
   ##
-  # Returns a list of paths matching +file+ that can be used by a gem to pick
+  # Returns a list of paths matching +glob+ that can be used by a gem to pick
   # up features from other gems.  For example:
   #
   #   Gem.find_files('rdoc/discover').each do |path| load path end
@@ -479,12 +479,12 @@ module Gem
   # Note that find_files will return all files even if they are from different
   # versions of the same gem.
 
-  def self.find_files(path, check_load_path=true)
+  def self.find_files(glob, check_load_path=true)
     files = []
 
     if check_load_path
       $LOAD_PATH.each do |load_path|
-        globbed = Dir["#{File.expand_path path, load_path}#{Gem.suffix_pattern}"]
+        globbed = Dir["#{File.expand_path glob, load_path}#{Gem.suffix_pattern}"]
 
         globbed.each do |load_path_file|
           files << load_path_file if File.file?(load_path_file.untaint)
@@ -492,10 +492,10 @@ module Gem
       end
     end
 
-    specs = searcher.find_all_dot_rb path
+    specs = searcher.find_all glob
 
     specs.each do |spec|
-      files.concat searcher.matching_files(spec, path)
+      files.concat searcher.matching_files(spec, glob)
     end
 
     # $LOAD_PATH might contain duplicate entries or reference

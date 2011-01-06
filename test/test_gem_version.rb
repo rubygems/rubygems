@@ -42,9 +42,10 @@ class TestGemVersion < RubyGemTestCase
     refute_version_eql "1.2.b1", "1.2.b.1"
   end
 
-  def test_equals
-    assert_version_equal "1.2", "1.2"
-    refute_version_equal "1.2", "1.3"
+  def test_equals2
+    assert_version_equal "1.2",    "1.2"
+    refute_version_equal "1.2",    "1.3"
+    assert_version_equal "1.2.b1", "1.2.b.1"
   end
 
   # REVISIT: consider removing as too impl-bound

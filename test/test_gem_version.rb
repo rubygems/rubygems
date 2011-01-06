@@ -36,9 +36,10 @@ class TestGemVersion < RubyGemTestCase
   end
 
   def test_eql_eh
-    assert_version_eql "1.2", "1.2"
-    refute_version_eql "1.2", "1.2.0"
-    refute_version_eql "1.2", "1.3"
+    assert_version_eql "1.2",    "1.2"
+    refute_version_eql "1.2",    "1.2.0"
+    refute_version_eql "1.2",    "1.3"
+    refute_version_eql "1.2.b1", "1.2.b.1"
   end
 
   def test_equals

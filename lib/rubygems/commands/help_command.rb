@@ -14,11 +14,6 @@ Some examples of 'gem' usage.
 
     gem install rake --remote
 
-* Install 'rake' from remote server, and run unit tests,
-  and generate RDocs:
-
-    gem install --remote rake --test --rdoc --ri
-
 * Install 'rake', but only version 0.3.1, even if dependencies
   are not met, and into a user-specific directory:
 

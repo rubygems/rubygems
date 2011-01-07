@@ -13,7 +13,7 @@ class TestGemInstallUpdateOptions < GemInstallerTestCase
   end
 
   def test_add_install_update_options
-    args = %w[-i /install_to --rdoc --ri -E -f -t -w -P HighSecurity
+    args = %w[-i /install_to --rdoc --ri -E -f -w -P HighSecurity
               --ignore-dependencies --format-exec --include-dependencies]
 
     assert @cmd.handles?(args)

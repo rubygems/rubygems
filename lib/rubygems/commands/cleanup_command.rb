@@ -8,7 +8,7 @@ class Gem::Commands::CleanupCommand < Gem::Command
   def initialize
     super 'cleanup',
           'Clean up old versions of installed gems in the local repository',
-          :force => false, :test => false, :install_dir => Gem.dir
+          :force => false, :install_dir => Gem.dir
 
     add_option('-d', '--dryrun', "") do |value, options|
       options[:dryrun] = true

@@ -38,6 +38,8 @@ Use the Normal Upgrade Recipe below.
 
 == Downgrade Recipe
 
+=== Normal Downgrade
+
 Use sudo/su as appropriate:
 
     $ gem install rubygems-update -v 1.3.7
@@ -49,6 +51,17 @@ the latest.
 
 Do make sure that you don't have any other versions of rubygems-update
 installed when you run the second command.
+
+=== 1.9.2 Downgrade from Rubygems 1.4.x to stock 1.9 rubygems:
+
+Use sudo/su as appropriate:
+
+    $ ruby --disable-gems -S gem which rubygems
+    ~/.rvm/rubies/ruby-1.9.2-p136/lib/ruby/site_ruby/1.9.1/rubygems.rb
+    $ rm ~/.rvm/rubies/ruby-1.9.2-p136/lib/ruby/site_ruby/1.9.1/rubygems.rb
+    $ rm -rf ~/.rvm/rubies/ruby-1.9.2-p136/lib/ruby/site_ruby/1.9.1/rubygems
+    $ gem -v
+    1.3.7
 
 == Upgrade Recipes
 

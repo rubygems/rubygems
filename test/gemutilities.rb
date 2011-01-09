@@ -63,6 +63,10 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
   def setup
     super
 
+    @orig_gem_home  = ENV['GEM_HOME']
+    @orig_gem_path  = ENV['GEM_PATH']
+    @orig_gem_cache = ENV['GEMCACHE']
+
     @ui = MockGemUi.new
     tmpdir = nil
     Dir.chdir Dir.tmpdir do tmpdir = Dir.pwd end # HACK OSX /private/tmp
@@ -161,9 +165,9 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
 
     FileUtils.rm_rf @tempdir unless ENV['KEEP_FILES']
 
-    ENV.delete 'GEMCACHE'
-    ENV.delete 'GEM_HOME'
-    ENV.delete 'GEM_PATH'
+    ENV['GEM_HOME'] = @orig_gem_home
+    ENV['GEM_PATH'] = @orig_gem_path
+    ENV['GEMCACHE'] = @orig_gem_cache
 
     Gem.clear_paths
 

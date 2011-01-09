@@ -59,6 +59,19 @@ class Gem::Commands::UpdateCommand < Gem::Command
       hig['rubygems-update'] = rubygems_update
 
       options[:user_install] = false
+
+      Gem.source_index.refresh!
+
+      update_gems = Gem.source_index.find_name 'rubygems-update'
+
+      latest_update_gem = update_gems.sort_by { |s| s.version }.last
+
+      say "Updating RubyGems to #{latest_update_gem.version}"
+      installed = do_rubygems_update latest_update_gem.version
+
+      say "RubyGems system software updated" if installed
+
+      return
     else
       say "Updating installed gems"
 
@@ -96,35 +109,22 @@ class Gem::Commands::UpdateCommand < Gem::Command
       end
     end
 
-    if gems_to_update.include? "rubygems-update" then
-      Gem.source_index.refresh!
-
-      update_gems = Gem.source_index.find_name 'rubygems-update'
-
-      latest_update_gem = update_gems.sort_by { |s| s.version }.last
-
-      say "Updating RubyGems to #{latest_update_gem.version}"
-      installed = do_rubygems_update latest_update_gem.version
-
-      say "RubyGems system software updated" if installed
+    if updated.empty? then
+      say "Nothing to update"
     else
-      if updated.empty? then
-        say "Nothing to update"
-      else
-        say "Gems updated: #{updated.map { |spec| spec.name }.join ', '}"
+      say "Gems updated: #{updated.map { |spec| spec.name }.join ', '}"
 
-        if options[:generate_ri] then
-          updated.each do |gem|
-            Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
-          end
-
-          Gem::DocManager.update_ri_cache
+      if options[:generate_ri] then
+        updated.each do |gem|
+          Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
         end
 
-        if options[:generate_rdoc] then
-          updated.each do |gem|
-            Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
-          end
+        Gem::DocManager.update_ri_cache
+      end
+
+      if options[:generate_rdoc] then
+        updated.each do |gem|
+          Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
         end
       end
     end

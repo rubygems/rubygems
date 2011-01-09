@@ -44,6 +44,10 @@ module Gem
     @@win_platform = val
   end
 
+  def self.ruby= ruby
+    @ruby = ruby
+  end
+
   module DefaultUserInteraction
     @ui = MockGemUi.new
   end
@@ -62,7 +66,11 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     @ui = MockGemUi.new
     tmpdir = nil
     Dir.chdir Dir.tmpdir do tmpdir = Dir.pwd end # HACK OSX /private/tmp
-    @tempdir = File.join tmpdir, "test_rubygems_#{$$}"
+    if ENV['KEEP_FILES'] then
+      @tempdir = File.join tmpdir, "test_rubygems_#{$$}.#{Time.now.to_i}"
+    else
+      @tempdir = File.join tmpdir, "test_rubygems_#{$$}"
+    end
     @tempdir.untaint
     @gemhome = File.join @tempdir, "gemhome"
     @gemcache = File.join(@gemhome, "source_cache")
@@ -151,7 +159,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
       Gem::RemoteFetcher.fetcher = nil
     end
 
-    FileUtils.rm_rf @tempdir
+    FileUtils.rm_rf @tempdir unless ENV['KEEP_FILES']
 
     ENV.delete 'GEMCACHE'
     ENV.delete 'GEM_HOME'
@@ -526,13 +534,12 @@ Also, a list:
 
   def build_rake_in
     gem_ruby = Gem.ruby
-    ruby = @@ruby
-    Gem.module_eval {@ruby = ruby}
+    Gem.ruby = @@ruby
     env_rake = ENV["rake"]
     ENV["rake"] = @@rake
     yield @@rake
   ensure
-    Gem.module_eval {@ruby = gem_ruby}
+    Gem.ruby = gem_ruby
     if env_rake
       ENV["rake"] = env_rake
     else
@@ -541,11 +548,10 @@ Also, a list:
   end
 
   def self.rubybin
-    if ruby = ENV["RUBY"]
-      return ruby
-    end
+    return ruby if ruby = ENV["RUBY"]
     ruby = "ruby"
-    rubyexe = ruby+".exe"
+    rubyexe = "#{ruby}.exe"
+
     3.times do
       if File.exist? ruby and File.executable? ruby and !File.directory? ruby
         return File.expand_path(ruby)
@@ -555,12 +561,12 @@ Also, a list:
       end
       ruby = File.join("..", ruby)
     end
+
     begin
       require "rbconfig"
-      File.join(
-        RbConfig::CONFIG["bindir"],
-	RbConfig::CONFIG["ruby_install_name"] + RbConfig::CONFIG["EXEEXT"]
-      )
+      File.join(RbConfig::CONFIG["bindir"],
+                RbConfig::CONFIG["ruby_install_name"] +
+                RbConfig::CONFIG["EXEEXT"])
     rescue LoadError
       "ruby"
     end

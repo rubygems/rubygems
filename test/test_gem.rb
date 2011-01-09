@@ -329,11 +329,18 @@ class TestGem < RubyGemTestCase
     assert_equal true, Gem.loaded_specs.keys.include?('foo')
   end
 
+  def util_path
+    ENV.delete "GEM_HOME"
+    ENV.delete "GEM_PATH"
+  end
+
   def test_self_path
     assert_equal [Gem.dir], Gem.path
   end
 
   def test_self_path_default
+    util_path
+
     if defined? APPLE_GEM_HOME
       orig_APPLE_GEM_HOME = APPLE_GEM_HOME
       Object.send :remove_const, :APPLE_GEM_HOME
@@ -347,6 +354,8 @@ class TestGem < RubyGemTestCase
 
   unless win_platform?
     def test_self_path_APPLE_GEM_HOME
+      util_path
+
       Gem.clear_paths
       apple_gem_home = File.join @tempdir, 'apple_gem_home'
       Gem.const_set :APPLE_GEM_HOME, apple_gem_home

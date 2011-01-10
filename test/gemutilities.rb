@@ -65,7 +65,6 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
 
     @orig_gem_home  = ENV['GEM_HOME']
     @orig_gem_path  = ENV['GEM_PATH']
-    @orig_gem_cache = ENV['GEMCACHE']
 
     @ui = MockGemUi.new
     tmpdir = nil
@@ -76,10 +75,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
       @tempdir = File.join tmpdir, "test_rubygems_#{$$}"
     end
     @tempdir.untaint
-    @gemhome = File.join @tempdir, "gemhome"
-    @gemcache = File.join(@gemhome, "source_cache")
-    @usrcache = File.join(@gemhome, ".gem", "user_cache")
-    @latest_usrcache = File.join(@gemhome, ".gem", "latest_user_cache")
+    @gemhome  = File.join @tempdir, 'gemhome'
     @userhome = File.join @tempdir, 'userhome'
 
     Gem.ensure_gem_subdirectories @gemhome
@@ -98,7 +94,6 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     FileUtils.mkdir_p @gemhome
     FileUtils.mkdir_p @userhome
 
-    ENV['GEMCACHE'] = @usrcache
     Gem.use_paths(@gemhome)
     Gem.loaded_specs.clear
 
@@ -167,7 +162,6 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
 
     ENV['GEM_HOME'] = @orig_gem_home
     ENV['GEM_PATH'] = @orig_gem_path
-    ENV['GEMCACHE'] = @orig_gem_cache
 
     Gem.clear_paths
 

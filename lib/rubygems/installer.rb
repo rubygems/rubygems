@@ -318,24 +318,15 @@ class Gem::Installer
   def generate_bin_script(filename, bindir)
     bin_script_path = File.join bindir, formatted_program_filename(filename)
 
-    File.join @gem_dir, @spec.bindir, filename
+    FileUtils.rm_f bin_script_path # prior install may have been --no-wrappers
 
-    # HACK some gems don't have #! in their executables, restore 2008/06
-    #if File.read(exec_path, 2) == '#!' then
-      FileUtils.rm_f bin_script_path # prior install may have been --no-wrappers
+    File.open bin_script_path, 'w', 0755 do |file|
+      file.print app_script_text(filename)
+    end
 
-      File.open bin_script_path, 'w', 0755 do |file|
-        file.print app_script_text(filename)
-      end
+    say bin_script_path if Gem.configuration.really_verbose
 
-      say bin_script_path if Gem.configuration.really_verbose
-
-      generate_windows_script filename, bindir
-    #else
-    #  FileUtils.rm_f bin_script_path
-    #  FileUtils.cp exec_path, bin_script_path,
-    #               :verbose => Gem.configuration.really_verbose
-    #end
+    generate_windows_script filename, bindir
   end
 
   ##

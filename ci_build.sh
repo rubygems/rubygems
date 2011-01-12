@@ -2,7 +2,7 @@
 export rvm_install_on_use_flag=1
 export rvm_gemset_create_on_use_flag=1
 rvm use $1
-. $HOME/.rvm/environments/ruby-$1
+. "$HOME/.rvm/environments/ruby-$(rvm-prompt)"
 
 # TODO: How can you make Hoe's check_extra_deps not use sudo?
 #rake check_extra_deps default

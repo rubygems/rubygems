@@ -5,6 +5,7 @@
 #++
 
 require 'rubygems/package'
+require 'rubygems/user_interaction'
 
 ##
 # Gem::Format knows the guts of the RubyGem .gem file format and provides the

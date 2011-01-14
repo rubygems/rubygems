@@ -10,6 +10,7 @@ Rakefile
 UPGRADING.rdoc
 bin/gem
 bin/update_rubygems
+ci_build.sh
 cruise_config.rb
 hide_lib_for_update/note.txt
 lib/gauntlet_rubygems.rb
@@ -31,7 +32,6 @@ lib/rubygems/commands/help_command.rb
 lib/rubygems/commands/install_command.rb
 lib/rubygems/commands/list_command.rb
 lib/rubygems/commands/lock_command.rb
-lib/rubygems/commands/mirror_command.rb
 lib/rubygems/commands/outdated_command.rb
 lib/rubygems/commands/owner_command.rb
 lib/rubygems/commands/pristine_command.rb
@@ -88,8 +88,6 @@ lib/rubygems/requirement.rb
 lib/rubygems/security.rb
 lib/rubygems/server.rb
 lib/rubygems/source_index.rb
-lib/rubygems/source_info_cache.rb
-lib/rubygems/source_info_cache_entry.rb
 lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
 lib/rubygems/test_utilities.rb
@@ -121,6 +119,7 @@ test/private_key.pem
 test/public_cert.pem
 test/rubygems/commands/crash_command.rb
 test/rubygems_plugin.rb
+test/sff/discover.rb
 test/simple_gem.rb
 test/test_config.rb
 test/test_gem.rb
@@ -138,7 +137,6 @@ test/test_gem_commands_generate_index_command.rb
 test/test_gem_commands_install_command.rb
 test/test_gem_commands_list_command.rb
 test/test_gem_commands_lock_command.rb
-test/test_gem_commands_mirror_command.rb
 test/test_gem_commands_outdated_command.rb
 test/test_gem_commands_owner_command.rb
 test/test_gem_commands_pristine_command.rb
@@ -178,11 +176,13 @@ test/test_gem_package_task.rb
 test/test_gem_platform.rb
 test/test_gem_remote_fetcher.rb
 test/test_gem_requirement.rb
+test/test_gem_security.rb
 test/test_gem_server.rb
 test/test_gem_source_index.rb
 test/test_gem_spec_fetcher.rb
 test/test_gem_specification.rb
 test/test_gem_stream_ui.rb
+test/test_gem_text.rb
 test/test_gem_uninstaller.rb
 test/test_gem_validator.rb
 test/test_gem_version.rb

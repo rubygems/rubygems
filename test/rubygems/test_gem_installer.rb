@@ -1,4 +1,4 @@
-require File.expand_path('../gem_installer_test_case', __FILE__)
+require "test/rubygems/gem_installer_test_case"
 
 class TestGemInstaller < GemInstallerTestCase
 

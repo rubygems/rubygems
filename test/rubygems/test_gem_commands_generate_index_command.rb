@@ -1,4 +1,4 @@
-require File.expand_path('../gemutilities', __FILE__)
+require "test/rubygems/gemutilities"
 require 'rubygems/indexer'
 require 'rubygems/commands/generate_index_command'
 

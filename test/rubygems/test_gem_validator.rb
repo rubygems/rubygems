@@ -1,5 +1,5 @@
-require File.expand_path('../gemutilities', __FILE__)
-require File.expand_path('../simple_gem', __FILE__)
+require "test/rubygems/gemutilities"
+require "test/rubygems/simple_gem"
 require 'rubygems/validator'
 
 class TestGemValidator < RubyGemTestCase

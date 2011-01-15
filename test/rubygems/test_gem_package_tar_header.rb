@@ -1,4 +1,4 @@
-require File.expand_path('../gem_package_tar_test_case', __FILE__)
+require "test/rubygems/gem_package_tar_test_case"
 require 'rubygems/package'
 
 class TestGemPackageTarHeader < TarTestCase

@@ -1,4 +1,4 @@
-require File.expand_path('../gemutilities', __FILE__)
+require "test/rubygems/gemutilities"
 require 'ostruct'
 require 'webrick'
 require 'rubygems/remote_fetcher'

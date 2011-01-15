@@ -1,6 +1,6 @@
 at_exit { $SAFE = 1 }
 
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+# $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 if defined? Gem::QuickLoader
   Gem::QuickLoader.load_full_rubygems_library
@@ -29,7 +29,7 @@ end
 
 require 'rdoc/rdoc'
 
-require File.join(File.expand_path(File.dirname(__FILE__)), 'mockgemui')
+require "test/rubygems/mockgemui"
 
 module Gem
   def self.searcher=(searcher)

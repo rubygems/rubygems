@@ -10,6 +10,8 @@ class TestGemCommandManager < RubyGemTestCase
   end
 
   def test_run_interrupt
+    old_load_path = $:.dup
+    $: << "test/rubygems"
     Gem.load_env_plugins
 
     use_ui @ui do
@@ -19,9 +21,14 @@ class TestGemCommandManager < RubyGemTestCase
       assert_equal '', ui.output
       assert_equal "ERROR:  Interrupted\n", ui.error
     end
+  ensure
+    $:.replace old_load_path
   end
 
   def test_run_crash_command
+    old_load_path = $:.dup
+    $: << "test/rubygems"
+
     @command_manager.register_command :crash
     use_ui @ui do
       assert_raises MockGemUi::TermError do
@@ -31,6 +38,8 @@ class TestGemCommandManager < RubyGemTestCase
       err = ui.error.split("\n").first
       assert_equal "ERROR:  Loading command: crash (RuntimeError)", err
     end
+  ensure
+    $:.replace old_load_path
   end
 
   def test_process_args_bad_arg

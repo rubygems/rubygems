@@ -506,13 +506,9 @@ module Gem
     files = []
 
     if check_load_path
-      $LOAD_PATH.each do |load_path|
-        globbed = Dir["#{File.expand_path glob, load_path}#{Gem.suffix_pattern}"]
-
-        globbed.each do |load_path_file|
-          files << load_path_file if File.file?(load_path_file.untaint)
-        end
-      end
+      files = $LOAD_PATH.map { |load_path|
+        Dir["#{File.expand_path glob, load_path}#{Gem.suffix_pattern}"]
+      }.flatten.select { |file| File.file? file.untaint }
     end
 
     specs = searcher.find_all glob

@@ -5,21 +5,18 @@
 # See LICENSE.txt for permissions.
 #++
 
-gem_preluded = defined? Gem
+# TODO: remove when 1.9.1 no longer supported
+QUICKLOADER_SUCKAGE = RUBY_VERSION >= "1.9.1" and RUBY_VERSION < "1.9.2"
+# TODO: remove when 1.9.2 no longer supported
+GEM_PRELUDE_SUCKAGE = RUBY_VERSION >= "1.9.2" and RUBY_VERSION < "1.9.3"
 
-if defined?(Gem::QuickLoader) then
+gem_preluded = GEM_PRELUDE_SUCKAGE and defined? Gem
+
+if GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader) then
   Gem::QuickLoader.load_full_rubygems_library
 
   class << Gem
     remove_method :try_activate if Gem.respond_to?(:try_activate, true)
-
-    def try_activate(path)
-      spec = Gem.searcher.find(path)
-      return false unless spec
-
-      Gem.activate(spec.name, "= #{spec.version}")
-      return true
-    end
   end
 end
 
@@ -200,6 +197,19 @@ module Gem
   @post_uninstall_hooks ||= []
   @pre_uninstall_hooks  ||= []
   @pre_install_hooks    ||= []
+
+  ##
+  # Try to activate a gem containing +path+. Returns true if
+  # activation succeeded or wasn't needed because it was already
+  # activated. Returns false if it can't find the path in a gem.
+
+  def self.try_activate path
+    spec = Gem.searcher.find path
+    return false unless spec
+
+    Gem.activate spec.name, "= #{spec.version}"
+    return true
+  end
 
   ##
   # Activates an installed gem matching +gem+.  The gem must satisfy
@@ -644,11 +654,13 @@ module Gem
   def self.load_path_insert_index
     index = $LOAD_PATH.index ConfigMap[:sitelibdir]
 
-    $LOAD_PATH.each_with_index do |path, i|
-      if path.instance_variables.include?(:@gem_prelude_index) or
-        path.instance_variables.include?('@gem_prelude_index') then
-        index = i
-        break
+    if QUICKLOADER_SUCKAGE then
+      $LOAD_PATH.each_with_index do |path, i|
+        if path.instance_variables.include?(:@gem_prelude_index) or
+            path.instance_variables.include?('@gem_prelude_index') then
+          index = i
+          break
+        end
       end
     end
 
@@ -974,7 +986,13 @@ module Gem
   # Suffixes for require-able paths.
 
   def self.suffixes
-    ['', '.rb', '.rbw', '.so', '.bundle', '.dll', '.sl', '.jar']
+    @suffixes ||= ['',
+                   '.rb',
+                   *%w(DLEXT DLEXT2).map { |key|
+                     val = RbConfig::CONFIG[key]
+                     ".#{val}" unless val.empty?
+                   }
+                  ].compact.uniq
   end
 
   ##
@@ -1131,7 +1149,7 @@ end
 
 module Kernel
 
-  undef gem if respond_to? :gem # defined in gem_prelude.rb on 1.9
+  remove_method :gem if respond_to? :gem # defined in gem_prelude.rb on 1.9
 
   ##
   # Use Kernel#gem to activate a specific version of +gem_name+.
@@ -1176,14 +1194,14 @@ end
 # "#{ConfigMap[:datadir]}/#{package_name}".
 
 def RbConfig.datadir(package_name)
-  require 'rbconfig/datadir' # TODO Deprecate after January 2010.
+  require 'rbconfig/datadir' # TODO Deprecate after June 2010.
   Gem.datadir(package_name) ||
     File.join(Gem::ConfigMap[:datadir], package_name)
 end
 
 require 'rubygems/exceptions'
 
-unless gem_preluded then
+unless gem_preluded then # TODO: remove guard after 1.9.2 dropped
   begin
     ##
     # Defaults the operating system (or packager) wants to provide for RubyGems.
@@ -1209,7 +1227,7 @@ end
 # Ruby 1.9 allows --disable-gems, so we require it when we didn't detect a Gem
 # constant at rubygems.rb load time.
 
-require 'rubygems/custom_require' unless gem_preluded and RUBY_VERSION > '1.9'
+require 'rubygems/custom_require' unless RUBY_VERSION > '1.9'
 
 Gem.clear_paths
 

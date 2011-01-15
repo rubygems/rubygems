@@ -218,48 +218,66 @@ class Gem::StreamUI
     result
   end
 
-  ##
-  # Ask for a password. Does not echo response to terminal.
+  if RUBY_VERSION >= "1.9" then
+    ##
+    # Ask for a password. Does not echo response to terminal.
 
-  def ask_for_password(question)
-    return nil if not @ins.tty?
+    def ask_for_password(question)
+      return nil if not @ins.tty?
 
-    @outs.print(question + "  ")
-    @outs.flush
+      require 'io/console'
 
-    Gem.win_platform? ? ask_for_password_on_windows : ask_for_password_on_unix
-  end
+      @outs.print(question + "  ")
+      @outs.flush
 
-  ##
-  # Asks for a password that works on windows. Ripped from the Heroku gem.
+      password = @ins.noecho {@ins.gets}
+      password.chomp! if password
+      password
+    end
+  else
+    ##
+    # Ask for a password. Does not echo response to terminal.
 
-  def ask_for_password_on_windows
-    require "Win32API"
-    char = nil
-    password = ''
+    def ask_for_password(question)
+      return nil if not @ins.tty?
 
-    while char = Win32API.new("crtdll", "_getch", [ ], "L").Call do
-      break if char == 10 || char == 13 # received carriage return or newline
-      if char == 127 || char == 8 # backspace and delete
-        password.slice!(-1, 1)
-      else
-        password << char.chr
-      end
+      @outs.print(question + "  ")
+      @outs.flush
+
+      Gem.win_platform? ? ask_for_password_on_windows : ask_for_password_on_unix
     end
 
-    puts
-    password
-  end
+    ##
+    # Asks for a password that works on windows. Ripped from the Heroku gem.
 
-  ##
-  # Asks for a password that works on unix
+    def ask_for_password_on_windows
+      require "Win32API"
+      char = nil
+      password = ''
 
-  def ask_for_password_on_unix
-    system "stty -echo"
-    password = @ins.gets
-    password.chomp! if password
-    system "stty echo"
-    password
+      while char = Win32API.new("crtdll", "_getch", [ ], "L").Call do
+        break if char == 10 || char == 13 # received carriage return or newline
+        if char == 127 || char == 8 # backspace and delete
+          password.slice!(-1, 1)
+        else
+          password << char.chr
+        end
+      end
+
+      puts
+      password
+    end
+
+    ##
+    # Asks for a password that works on unix
+
+    def ask_for_password_on_unix
+      system "stty -echo"
+      password = @ins.gets
+      password.chomp! if password
+      system "stty echo"
+      password
+    end
   end
 
   ##

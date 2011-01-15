@@ -301,6 +301,7 @@ class TestGem < RubyGemTestCase
     ]
 
     assert_equal expected, Gem.find_files('sff/discover')
+    assert_equal expected, Gem.find_files('sff/**.rb'), '[ruby-core:31730]'
   ensure
     assert_equal cwd, $LOAD_PATH.shift
   end

@@ -38,7 +38,7 @@ class Gem::Installer
 
   include Gem::UserInteraction
 
-  include Gem::RequirePathsBuilder
+  include Gem::RequirePathsBuilder if QUICKLOADER_SUCKAGE
 
   ##
   # The directory a gem's executables will be installed into
@@ -198,7 +198,7 @@ class Gem::Installer
     build_extensions
     write_spec
 
-    write_require_paths_file_if_needed
+    write_require_paths_file_if_needed if QUICKLOADER_SUCKAGE
 
     # HACK remove?  Isn't this done in multiple places?
     cached_gem = File.join @gem_home, "cache", @gem.split(/\//).pop

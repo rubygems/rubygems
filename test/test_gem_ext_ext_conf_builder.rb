@@ -42,7 +42,6 @@ class TestGemExtExtConfBuilder < RubyGemTestCase
 
   def test_class_build_rbconfig_make_prog
     configure_args = RbConfig::CONFIG['configure_args']
-    RbConfig::CONFIG['configure_args'] = '--with-make-prog=mymake'
 
     File.open File.join(@ext, 'extconf.rb'), 'w' do |extconf|
       extconf.puts "require 'mkmf'\ncreate_makefile 'foo'"
@@ -50,14 +49,13 @@ class TestGemExtExtConfBuilder < RubyGemTestCase
 
     output = []
 
-    assert_raises Gem::InstallError do
-      Dir.chdir @ext do
-        Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
-      end
+    Dir.chdir @ext do
+      Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
     end
 
     assert_equal "creating Makefile\n", output[1]
-    assert_equal "mymake", output[2]
+    assert_equal make_command, output[2]
+    assert_equal "#{make_command} install", output[4]
   ensure
     RbConfig::CONFIG['configure_args'] = configure_args
   end

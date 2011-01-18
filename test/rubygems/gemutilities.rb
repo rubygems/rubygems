@@ -172,7 +172,8 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
 
     Gem.clear_paths
 
-    Gem.class_eval { @ruby = _ } if _ = @orig_ruby
+    _ = @orig_ruby
+    Gem.class_eval { @ruby = _ } if _
 
     if @orig_ENV_HOME then
       ENV['HOME'] = @orig_ENV_HOME
@@ -553,7 +554,8 @@ Also, a list:
   end
 
   def self.rubybin
-    return ruby if ruby = ENV["RUBY"]
+    ruby = ENV["RUBY"]
+    return ruby if ruby
     ruby = "ruby"
     rubyexe = "#{ruby}.exe"
 

@@ -113,7 +113,7 @@ require 'thread' # HACK: remove me for 1.5 - this is here just for rails
 # -The RubyGems Team
 
 module Gem
-  RubyGemsVersion = VERSION = '1.4.2'
+  RubyGemsVersion = VERSION = '1.5.0'
 
   ##
   # Raised when RubyGems is unable to load or activate a gem.  Contains the

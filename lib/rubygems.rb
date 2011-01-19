@@ -13,7 +13,14 @@ GEM_PRELUDE_SUCKAGE = RUBY_VERSION >= "1.9.2" and RUBY_VERSION < "1.9.3"
 gem_preluded = GEM_PRELUDE_SUCKAGE and defined? Gem
 
 if GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader) then
-  Gem::QuickLoader.load_full_rubygems_library
+  Gem::QuickLoader.remove
+
+  $LOADED_FEATURES.delete Gem::QuickLoader.path_to_full_rubygems_library
+
+  if $LOADED_FEATURES.any? do |path| path.end_with? '/rubygems.rb' end then
+    # TODO path does not exist here
+    raise LoadError, "another rubygems is already loaded from #{path}"
+  end
 
   class << Gem
     remove_method :try_activate if Gem.respond_to?(:try_activate, true)

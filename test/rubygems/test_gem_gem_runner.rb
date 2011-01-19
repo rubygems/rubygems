@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/gem_runner'
 
-class TestGemGemRunner < RubyGemTestCase
+class TestGemGemRunner < Gem::TestCase
 
   def test_do_configuration
     Gem.clear_paths

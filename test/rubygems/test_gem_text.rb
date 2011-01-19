@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require "rubygems/text"
 
-class TestGemText < RubyGemTestCase
+class TestGemText < Gem::TestCase
   include Gem::Text
 
   def test_format_text

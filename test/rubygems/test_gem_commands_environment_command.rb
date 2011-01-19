@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/commands/environment_command'
 
-class TestGemCommandsEnvironmentCommand < RubyGemTestCase
+class TestGemCommandsEnvironmentCommand < Gem::TestCase
 
   def setup
     super

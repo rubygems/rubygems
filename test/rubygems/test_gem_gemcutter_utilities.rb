@@ -1,8 +1,8 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems'
 require 'rubygems/gemcutter_utilities'
 
-class TestGemGemcutterUtilities < RubyGemTestCase
+class TestGemGemcutterUtilities < Gem::TestCase
 
   def setup
     super
@@ -68,7 +68,7 @@ class TestGemGemcutterUtilities < RubyGemTestCase
   def test_sign_in_with_bad_credentials
     skip 'Always uses $stdin on windows' if Gem.win_platform?
 
-    assert_raises MockGemUi::TermError do
+    assert_raises Gem::MockGemUi::TermError do
       util_sign_in ['Access Denied.', 403, 'Forbidden']
     end
 
@@ -92,7 +92,7 @@ class TestGemGemcutterUtilities < RubyGemTestCase
     @fetcher.data["#{host}/api/v1/api_key"] = response
     Gem::RemoteFetcher.fetcher = @fetcher
 
-    @sign_in_ui = MockGemUi.new "#{email}\n#{password}\n"
+    @sign_in_ui = Gem::MockGemUi.new "#{email}\n#{password}\n"
 
     use_ui @sign_in_ui do
       @cmd.sign_in

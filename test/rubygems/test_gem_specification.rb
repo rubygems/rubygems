@@ -1,8 +1,8 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'stringio'
 require 'rubygems/specification'
 
-class TestGemSpecification < RubyGemTestCase
+class TestGemSpecification < Gem::TestCase
 
   LEGACY_YAML_SPEC = <<-EOF
 --- !ruby/object:Gem::Specification
@@ -991,7 +991,7 @@ end
 
       assert_equal "WARNING:  no description specified\n", @ui.error, 'error'
 
-      @ui = MockGemUi.new
+      @ui = Gem::MockGemUi.new
       @a1.summary = 'this is my summary'
       @a1.description = @a1.summary
 
@@ -1127,7 +1127,7 @@ end
 
       assert_equal "WARNING:  no homepage specified\n", @ui.error, 'error'
 
-      @ui = MockGemUi.new
+      @ui = Gem::MockGemUi.new
 
       @a1.homepage = ''
 

@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/commands/lock_command'
 
-class TestGemCommandsLockCommand < RubyGemTestCase
+class TestGemCommandsLockCommand < Gem::TestCase
 
   def setup
     super

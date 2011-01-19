@@ -1,8 +1,8 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/commands/build_command'
 require 'rubygems/format'
 
-class TestGemCommandsBuildCommand < RubyGemTestCase
+class TestGemCommandsBuildCommand < Gem::TestCase
 
   def setup
     super

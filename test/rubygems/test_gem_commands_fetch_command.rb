@@ -1,9 +1,9 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/package'
 require 'rubygems/security'
 require 'rubygems/commands/fetch_command'
 
-class TestGemCommandsFetchCommand < RubyGemTestCase
+class TestGemCommandsFetchCommand < Gem::TestCase
 
   def setup
     super

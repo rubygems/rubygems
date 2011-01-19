@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/commands/stale_command'
 
-class TestGemCommandsStaleCommand < RubyGemTestCase
+class TestGemCommandsStaleCommand < Gem::TestCase
 
   def setup
     super

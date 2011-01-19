@@ -1,11 +1,11 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/command'
 
 class Gem::Command
   public :parser
 end
 
-class TestGemCommand < RubyGemTestCase
+class TestGemCommand < Gem::TestCase
 
   def setup
     super

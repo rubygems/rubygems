@@ -1,8 +1,8 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems'
 require 'rubygems/package_task'
 
-class TestGemPackageTask < RubyGemTestCase
+class TestGemPackageTask < Gem::TestCase
 
   def test_gem_package
     gem = Gem::Specification.new do |g|

@@ -1,7 +1,7 @@
-require "test/rubygems/gem_package_tar_test_case"
+require 'rubygems/package/tar_test_case'
 require 'rubygems/package'
 
-class TestGemPackageTarHeader < TarTestCase
+class TestGemPackageTarHeader < Gem::Package::TarTestCase
 
   def setup
     super

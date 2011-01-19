@@ -1,8 +1,8 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require "test/rubygems/simple_gem"
 require 'rubygems/format'
 
-class TestGemFormat < RubyGemTestCase
+class TestGemFormat < Gem::TestCase
 
   def setup
     super

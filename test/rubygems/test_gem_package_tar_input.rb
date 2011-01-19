@@ -1,7 +1,7 @@
-require "test/rubygems/gem_package_tar_test_case"
+require 'rubygems/package/tar_test_case'
 require 'rubygems/package/tar_input'
 
-class TestGemPackageTarInput < TarTestCase
+class TestGemPackageTarInput < Gem::Package::TarTestCase
 
   # Sometimes the setgid bit doesn't take.  Don't know if this is a problem on
   # all systems, or just some.  But for now, we will ignore it in the tests.

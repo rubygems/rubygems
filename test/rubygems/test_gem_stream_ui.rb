@@ -1,8 +1,8 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/user_interaction'
 require 'timeout'
 
-class TestGemStreamUI < RubyGemTestCase
+class TestGemStreamUI < Gem::TestCase
 
   module IsTty
     attr_accessor :tty

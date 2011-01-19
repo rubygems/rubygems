@@ -1,8 +1,8 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require "test/rubygems/simple_gem"
 require 'rubygems/validator'
 
-class TestGemValidator < RubyGemTestCase
+class TestGemValidator < Gem::TestCase
 
   def setup
     super

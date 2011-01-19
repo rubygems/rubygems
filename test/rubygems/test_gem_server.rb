@@ -1,4 +1,4 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/server'
 require 'stringio'
 
@@ -7,7 +7,7 @@ class Gem::Server
   attr_reader :server
 end
 
-class TestGemServer < RubyGemTestCase
+class TestGemServer < Gem::TestCase
 
   def setup
     super

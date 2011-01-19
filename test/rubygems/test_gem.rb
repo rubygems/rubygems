@@ -1,11 +1,11 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems'
 require 'rubygems/gem_openssl'
 require 'rubygems/installer'
 require 'pathname'
 require 'tmpdir'
 
-class TestGem < RubyGemTestCase
+class TestGem < Gem::TestCase
 
   def setup
     super

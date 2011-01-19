@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require "rubygems/requirement"
 
-class TestGemRequirement < RubyGemTestCase
+class TestGemRequirement < Gem::TestCase
 
   def test_equals2
     r = req "= 1.2"

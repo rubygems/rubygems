@@ -1,6 +1,6 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 
-class TestKernel < RubyGemTestCase
+class TestKernel < Gem::TestCase
 
   def setup
     super

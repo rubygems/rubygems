@@ -1,6 +1,6 @@
-require "test/rubygems/gem_installer_test_case"
+require 'rubygems/installer_test_case'
 
-class TestGemInstaller < GemInstallerTestCase
+class TestGemInstaller < Gem::InstallerTestCase
 
   def test_app_script_text
     util_make_exec '2', ''

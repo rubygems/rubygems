@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/security'
 
-class TestGemSecurity < RubyGemTestCase
+class TestGemSecurity < Gem::TestCase
 
   def test_class_build_cert
     name = OpenSSL::X509::Name.parse "CN=nobody/DC=example"

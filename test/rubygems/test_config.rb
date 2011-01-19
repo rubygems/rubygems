@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems'
 
-class TestConfig < RubyGemTestCase
+class TestConfig < Gem::TestCase
 
   def test_datadir
     _, err = capture_io do

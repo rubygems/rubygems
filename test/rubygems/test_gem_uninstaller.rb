@@ -1,13 +1,10 @@
-require "test/rubygems/gem_installer_test_case"
+require 'rubygems/installer_test_case'
 require 'rubygems/uninstaller'
 
-class TestGemUninstaller < GemInstallerTestCase
+class TestGemUninstaller < Gem::InstallerTestCase
 
   def setup
     super
-
-    ui = MockGemUi.new
-    util_setup_gem ui
 
     @user_spec.executables = ["my_exec"]
 
@@ -15,14 +12,14 @@ class TestGemUninstaller < GemInstallerTestCase
     user_bin_dir = File.join Gem.user_dir, 'gems', @user_spec.full_name, 'bin'
     FileUtils.mkdir_p user_bin_dir
     exec_path = File.join user_bin_dir, "my_exec"
-    File.open exec_path, 'w' do |f|
+    open exec_path, 'w' do |f|
       f.puts "#!/usr/bin/ruby"
     end
 
     user_bin_dir = File.join Gem.user_dir, 'bin'
     FileUtils.mkdir_p user_bin_dir
     exec_path = File.join user_bin_dir, "my_exec"
-    File.open exec_path, 'w' do |f|
+    open exec_path, 'w' do |f|
       f.puts "#!/usr/bin/ruby"
     end
 
@@ -44,11 +41,14 @@ class TestGemUninstaller < GemInstallerTestCase
   def test_remove_executables_force_keep
     uninstaller = Gem::Uninstaller.new nil, :executables => false
 
+    executable = File.join Gem.user_dir, 'bin', 'my_exec'
+    assert File.exist? executable
+
     use_ui @ui do
-      uninstaller.remove_executables @spec
+      uninstaller.remove_executables @user_spec
     end
 
-    assert_equal true, File.exist?(File.join(@gemhome, 'bin', 'executable'))
+    assert File.exist? executable
 
     assert_equal "Executables and scripts will remain installed.\n", @ui.output
   end
@@ -56,13 +56,16 @@ class TestGemUninstaller < GemInstallerTestCase
   def test_remove_executables_force_remove
     uninstaller = Gem::Uninstaller.new nil, :executables => true
 
+    executable = File.join Gem.user_dir, 'bin', 'my_exec'
+    assert File.exist? executable
+
     use_ui @ui do
-      uninstaller.remove_executables @spec
+      uninstaller.remove_executables @user_spec
     end
 
-    assert_equal "Removing executable\n", @ui.output
+    assert_equal "Removing my_exec\n", @ui.output
 
-    assert_equal false, File.exist?(File.join(@gemhome, 'bin', 'executable'))
+    refute File.exist? executable
   end
 
   def test_remove_executables_user

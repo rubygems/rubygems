@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/spec_fetcher'
 
-class TestGemSpecFetcher < RubyGemTestCase
+class TestGemSpecFetcher < Gem::TestCase
 
   def setup
     super

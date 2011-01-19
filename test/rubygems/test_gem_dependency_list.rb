@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/dependency_list'
 
-class TestGemDependencyList < RubyGemTestCase
+class TestGemDependencyList < Gem::TestCase
 
   def setup
     super

@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/builder'
 
-class TestGemBuilder < RubyGemTestCase
+class TestGemBuilder < Gem::TestCase
 
   def test_build
     builder = Gem::Builder.new quick_gem('a')

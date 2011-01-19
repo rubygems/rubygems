@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/commands/specification_command'
 
-class TestGemCommandsSpecificationCommand < RubyGemTestCase
+class TestGemCommandsSpecificationCommand < Gem::TestCase
 
   def setup
     super
@@ -45,7 +45,7 @@ class TestGemCommandsSpecificationCommand < RubyGemTestCase
   def test_execute_bad_name
     @cmd.options[:args] = %w[foo]
 
-    assert_raises MockGemUi::TermError do
+    assert_raises Gem::MockGemUi::TermError do
       use_ui @ui do
         @cmd.execute
       end

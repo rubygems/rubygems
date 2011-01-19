@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/commands/owner_command'
 
-class TestGemCommandsOwnerCommand < RubyGemTestCase
+class TestGemCommandsOwnerCommand < Gem::TestCase
 
   def setup
     super
@@ -38,7 +38,7 @@ EOF
     response = "You don't have permission to push to this gem"
     @fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners.yaml"] = [response, 403, 'Forbidden']
 
-    assert_raises MockGemUi::TermError do
+    assert_raises Gem::MockGemUi::TermError do
       use_ui @ui do
         @cmd.show_owners("freewill")
       end
@@ -66,7 +66,7 @@ EOF
     response = "You don't have permission to push to this gem"
     @fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners"] = [response, 403, 'Forbidden']
 
-    assert_raises MockGemUi::TermError do
+    assert_raises Gem::MockGemUi::TermError do
       use_ui @ui do
         @cmd.add_owners("freewill", ["user-new1@example.com"])
       end
@@ -94,7 +94,7 @@ EOF
     response = "You don't have permission to push to this gem"
     @fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners"] = [response, 403, 'Forbidden']
 
-    assert_raises MockGemUi::TermError do
+    assert_raises Gem::MockGemUi::TermError do
       use_ui @ui do
         @cmd.remove_owners("freewill", ["user-remove1@example.com"])
       end

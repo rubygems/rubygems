@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/doc_manager'
 
-class TestGemDocManager < RubyGemTestCase
+class TestGemDocManager < Gem::TestCase
 
   def setup
     super

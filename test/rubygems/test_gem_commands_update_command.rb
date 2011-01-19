@@ -1,7 +1,7 @@
-require "test/rubygems/gemutilities"
+require 'rubygems/test_case'
 require 'rubygems/commands/update_command'
 
-class TestGemCommandsUpdateCommand < RubyGemTestCase
+class TestGemCommandsUpdateCommand < Gem::TestCase
 
   def setup
     super

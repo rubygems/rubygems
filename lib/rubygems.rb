@@ -999,7 +999,8 @@ module Gem
                    '.rb',
                    *%w(DLEXT DLEXT2).map { |key|
                      val = RbConfig::CONFIG[key]
-                     ".#{val}" unless val.empty?
+                     next unless val and not val.empty?
+                     ".#{val}"
                    }
                   ].compact.uniq
   end

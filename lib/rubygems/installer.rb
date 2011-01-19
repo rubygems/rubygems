@@ -57,7 +57,7 @@ class Gem::Installer
 
   ##
   # The options passed when the Gem::Installer was instantiated.
-  
+
   attr_reader :options
 
   @path_warning = false
@@ -100,7 +100,7 @@ class Gem::Installer
     @options = options
     process_options
     load_gem_file
-    
+
     if options[:user_install] and not options[:unpack] then
       @gem_home = Gem.user_dir
       check_that_user_bin_dir_is_in_path
@@ -139,7 +139,7 @@ class Gem::Installer
     Gem.pre_install_hooks.each do |hook|
       hook.call self
     end
-    
+
     Gem.ensure_gem_subdirectories @gem_home
 
     FileUtils.mkdir_p @gem_dir
@@ -339,7 +339,7 @@ class Gem::Installer
       end
     end
   end
-  
+
   def ensure_required_rubygems_version_met
     if rrgv = @spec.required_rubygems_version then
       unless rrgv.satisfied_by? Gem::Version.new(Gem::VERSION) then
@@ -347,9 +347,9 @@ class Gem::Installer
           "#{@spec.name} requires RubyGems version #{rrgv}. " +
           "Try 'gem update --system' to update RubyGems itself."
       end
-    end    
+    end
   end
-  
+
   def ensure_dependencies_met
     deps = @spec.runtime_dependencies
     deps |= @spec.development_dependencies if @development
@@ -381,7 +381,7 @@ class Gem::Installer
     @development         = @options[:development]
     @source_index        = @options[:source_index]
   end
-  
+
   def load_gem_file
     begin
       @format = Gem::Format.from_file_by_path @gem, @security_policy
@@ -389,7 +389,7 @@ class Gem::Installer
       raise Gem::InstallError, "invalid gem format for #{@gem}"
     end
   end
-  
+
   def check_that_user_bin_dir_is_in_path
     user_bin_dir = File.join(@gem_home, 'bin')
     unless ENV['PATH'].split(File::PATH_SEPARATOR).include? user_bin_dir then
@@ -399,13 +399,13 @@ class Gem::Installer
       end
     end
   end
-  
+
   def verify_gem_home(unpack = false)
     FileUtils.mkdir_p @gem_home
     raise Gem::FilePermissionError, @gem_home unless
       unpack or File.writable? @gem_home
   end
-  
+
   ##
   # Return the text for an application file.
 

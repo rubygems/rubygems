@@ -747,7 +747,8 @@ module Gem
 
   ##
   # Adds a pre-install hook that will be passed an Gem::Installer instance
-  # when Gem::Installer#install is called
+  # when Gem::Installer#install is called.  If the hook returns +false+ then
+  # the install will be aborted.
 
   def self.pre_install(&hook)
     @pre_install_hooks << hook

@@ -139,6 +139,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
 
     Gem.pre_install do |installer|
       @pre_install_hook_arg = installer
+      true
     end
 
     Gem.pre_uninstall do |uninstaller|

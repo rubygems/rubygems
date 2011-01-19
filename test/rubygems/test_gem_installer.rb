@@ -520,6 +520,7 @@ load Gem.bin_path('a', 'my_exec', version)
 
     Gem.pre_install do |installer|
       refute File.exist?(cache_file), 'cache file should not exist yet'
+      true
     end
 
     Gem.post_install do |installer|
@@ -661,6 +662,42 @@ load Gem.bin_path('a', 'my_exec', version)
 
     assert File.exist?(File.join(@gemhome, 'cache', @spec.file_name))
     assert File.exist?(File.join(@gemhome, 'specifications', @spec.spec_name))
+  end
+
+  def test_install_pre_install_false
+    util_clear_gems
+
+    Gem.pre_install do
+      false
+    end
+
+    use_ui @ui do
+      e = assert_raises Gem::InstallError do
+        @installer.install
+      end
+
+      location = "#{__FILE__}:#{__LINE__ - 9}"
+
+      assert_equal "pre-install hook at #{location} failed for a-2", e.message
+    end
+
+    spec_file = File.join @gemhome, 'specifications', @spec.spec_name
+    refute File.exist? spec_file
+  end
+
+  def test_install_pre_install_nil
+    util_clear_gems
+
+    Gem.pre_install do
+      nil
+    end
+
+    use_ui @ui do
+      @installer.install
+    end
+
+    spec_file = File.join @gemhome, 'specifications', @spec.spec_name
+    assert File.exist? spec_file
   end
 
   def test_install_with_message

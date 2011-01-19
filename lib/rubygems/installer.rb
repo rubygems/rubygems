@@ -18,7 +18,7 @@ require 'rubygems/require_paths_builder'
 # gemspec in the specifications dir, storing the cached gem in the cache dir,
 # and installing either wrappers or symlinks for executables.
 #
-# The installer fires pre and post install hooks.  Hooks can be added either
+# The installer invokes pre and post install hooks.  Hooks can be added either
 # through a rubygems_plugin.rb file in an installed gem or via a
 # rubygems/defaults/#{RUBY_ENGINE}.rb or rubygems/defaults/operating_system.rb
 # file.  See Gem.pre_install and Gem.post_install for details.
@@ -126,7 +126,7 @@ class Gem::Installer
 
   def install
     # If we're forcing the install then disable security unless the security
-    # policy says that we only install singed gems.
+    # policy says that we only install signed gems.
     @security_policy = nil if @force and @security_policy and
                               not @security_policy.only_signed
 
@@ -137,7 +137,14 @@ class Gem::Installer
     end
 
     Gem.pre_install_hooks.each do |hook|
-      hook.call self
+      result = hook.call self
+
+      if result == false then
+        location = " at #{$1}" if hook.inspect =~ /@(.*:\d+)/
+
+        message = "pre-install hook#{location} failed for #{@spec.full_name}"
+        raise Gem::InstallError, message
+      end
     end
 
     Gem.ensure_gem_subdirectories @gem_home

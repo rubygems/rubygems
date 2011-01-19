@@ -218,7 +218,7 @@ class Gem::StreamUI
     result
   end
 
-  if RUBY_VERSION >= "1.9" then
+  if RUBY_VERSION > '1.9.2' then
     ##
     # Ask for a password. Does not echo response to terminal.
 

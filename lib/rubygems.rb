@@ -1219,11 +1219,8 @@ end
 
 ##
 # Enables the require hook for RubyGems.
-#
-# Ruby 1.9 allows --disable-gems, so we require it when we didn't detect a Gem
-# constant at rubygems.rb load time.
 
-require 'rubygems/custom_require' unless RUBY_VERSION > '1.9'
+require 'rubygems/custom_require'
 
 Gem.clear_paths
 

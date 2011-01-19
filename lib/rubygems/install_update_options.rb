@@ -5,7 +5,13 @@
 #++
 
 require 'rubygems'
-require 'rubygems/security'
+
+# forward-declare
+
+module Gem::Security # :nodoc:
+  class Policy # :nodoc:
+  end
+end
 
 ##
 # Mixin methods for install and update options for Gem::Commands
@@ -17,6 +23,8 @@ module Gem::InstallUpdateOptions
 
   def add_install_update_options
     OptionParser.accept Gem::Security::Policy do |value|
+      require 'rubygems/security'
+
       value = Gem::Security::Policies[value]
       raise OptionParser::InvalidArgument, value if value.nil?
       value

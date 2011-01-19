@@ -51,19 +51,17 @@ class Gem::Commands::SourcesCommand < Gem::Command
       path = Gem::SpecFetcher.fetcher.dir
       FileUtils.rm_rf path
 
-      if not File.exist?(path) then
+      unless File.exist? path then
         say "*** Removed specs cache ***"
-      elsif not File.writable?(path) then
-        say "*** Unable to remove source cache (write protected) ***"
       else
-        say "*** Unable to remove source cache ***"
-      end
+        unless File.writable? path then
+          say "*** Unable to remove source cache (write protected) ***"
+        else
+          say "*** Unable to remove source cache ***"
+        end
 
-      sic = Gem::SourceInfoCache
-      remove_cache_file 'user',          sic.user_cache_file
-      remove_cache_file 'latest user',   sic.latest_user_cache_file
-      remove_cache_file 'system',        sic.system_cache_file
-      remove_cache_file 'latest system', sic.latest_system_cache_file
+        terminate_interaction 1
+      end
     end
 
     if options[:add] then
@@ -78,8 +76,10 @@ class Gem::Commands::SourcesCommand < Gem::Command
         say "#{source_uri} added to sources"
       rescue URI::Error, ArgumentError
         say "#{source_uri} is not a URI"
+        terminate_interaction 1
       rescue Gem::RemoteFetcher::FetchError => e
         say "Error fetching #{source_uri}:\n\t#{e.message}"
+        terminate_interaction 1
       end
     end
 

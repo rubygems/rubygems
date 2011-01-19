@@ -84,7 +84,9 @@ class TestGemCommandsSourcesCommand < RubyGemTestCase
     util_setup_spec_fetcher
 
     use_ui @ui do
-      @cmd.execute
+      assert_raises MockGemUi::TermError do
+        @cmd.execute
+      end
     end
 
     expected = <<-EOF
@@ -102,7 +104,9 @@ Error fetching http://beta-gems.example.com:
     util_setup_spec_fetcher
 
     use_ui @ui do
-      @cmd.execute
+      assert_raises MockGemUi::TermError do
+        @cmd.execute
+      end
     end
 
     assert_equal [@gem_repo], Gem.sources
@@ -131,10 +135,6 @@ beta-gems.example.com is not a URI
 
     expected = <<-EOF
 *** Removed specs cache ***
-*** Removed user source cache ***
-*** Removed latest user source cache ***
-*** Removed system source cache ***
-*** Removed latest system source cache ***
     EOF
 
     assert_equal expected, @ui.output

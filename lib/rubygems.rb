@@ -1240,7 +1240,7 @@ end
 ##
 # Enables the require hook for RubyGems.
 
-require 'rubygems/custom_require'
+require 'rubygems/custom_require' unless GEM_PRELUDE_SUCKAGE
 
 Gem.clear_paths
 

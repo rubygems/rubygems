@@ -124,10 +124,16 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     @public_cert = File.expand_path File.join(File.dirname(__FILE__),
                                               'public_cert.pem')
 
+    Gem.post_build_hooks.clear
     Gem.post_install_hooks.clear
     Gem.post_uninstall_hooks.clear
     Gem.pre_install_hooks.clear
     Gem.pre_uninstall_hooks.clear
+
+    Gem.post_build do |installer|
+      @post_build_hook_arg = installer
+      true
+    end
 
     Gem.post_install do |installer|
       @post_install_hook_arg = installer

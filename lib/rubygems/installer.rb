@@ -152,8 +152,22 @@ class Gem::Installer
     FileUtils.mkdir_p @gem_dir
 
     extract_files
-    generate_bin
     build_extensions
+
+    Gem.post_build_hooks.each do |hook|
+      result = hook.call self
+
+      if result == false then
+        FileUtils.rm_rf @gem_dir
+
+        location = " at #{$1}" if hook.inspect =~ /@(.*:\d+)/
+
+        message = "post-build hook#{location} failed for #{@spec.full_name}"
+        raise Gem::InstallError, message
+      end
+    end
+
+    generate_bin
     write_spec
 
     write_require_paths_file_if_needed if QUICKLOADER_SUCKAGE

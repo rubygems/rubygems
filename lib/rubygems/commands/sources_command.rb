@@ -1,6 +1,5 @@
 require 'rubygems/command'
 require 'rubygems/remote_fetcher'
-require 'rubygems/source_info_cache'
 require 'rubygems/spec_fetcher'
 require 'rubygems/local_remote_options'
 

@@ -471,12 +471,20 @@ class Gem::StreamUI
     end
 
     def fetch(file_name, total_bytes)
-      @file_name, @total_bytes = file_name, total_bytes
+      @file_name = file_name
+      @total_bytes = total_bytes.to_i
+      @units = @total_bytes.zero? ? 'B' : '%'
+
       update_display(false)
     end
 
     def update(bytes)
-      new_progress = ((bytes.to_f * 100) / total_bytes.to_f).ceil
+      new_progress = if @units == 'B' then
+                       bytes
+                     else
+                       ((bytes.to_f * 100) / total_bytes.to_f).ceil
+                     end
+
       return if new_progress == @progress
 
       @progress = new_progress
@@ -484,7 +492,7 @@ class Gem::StreamUI
     end
 
     def done
-      @progress = 100
+      @progress = 100 if @units == '%'
       update_display(true, true)
     end
 
@@ -492,8 +500,9 @@ class Gem::StreamUI
 
     def update_display(show_progress = true, new_line = false)
       return unless @out.tty?
-      if show_progress
-        @out.print "\rFetching: %s (%3d%%)" % [@file_name, @progress]
+
+      if show_progress then
+        @out.print "\rFetching: %s (%3d%s)" % [@file_name, @progress, @units]
       else
         @out.print "Fetching: %s" % @file_name
       end

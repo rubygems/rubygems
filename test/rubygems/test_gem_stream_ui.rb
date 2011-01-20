@@ -193,6 +193,24 @@ class TestGemStreamUI < Gem::TestCase
     assert_equal "Fetching: a.gem\rFetching: a.gem ( 50%)\rFetching: a.gem (100%)\n", @out.string
   end
 
+  def test_verbose_download_reporter_progress_nil_length
+    @cfg.verbose = true
+    reporter = @sui.download_reporter
+    reporter.fetch 'a.gem', nil
+    reporter.update 512
+    reporter.done
+    assert_equal "Fetching: a.gem\rFetching: a.gem (512B)\rFetching: a.gem (512B)\n", @out.string
+  end
+
+  def test_verbose_download_reporter_progress_zero_length
+    @cfg.verbose = true
+    reporter = @sui.download_reporter
+    reporter.fetch 'a.gem', 0
+    reporter.update 512
+    reporter.done
+    assert_equal "Fetching: a.gem\rFetching: a.gem (512B)\rFetching: a.gem (512B)\n", @out.string
+  end
+
   def test_verbose_download_reporter_no_tty
     @out.tty = false
 

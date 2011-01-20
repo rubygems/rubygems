@@ -6,8 +6,13 @@ else
   require 'rubygems'
 end
 
-require 'fileutils'
+begin
+  gem 'minitest'
+rescue Gem::LoadError
+end
+
 require 'minitest/autorun'
+require 'fileutils'
 require 'tmpdir'
 require 'uri'
 require 'rubygems/package'

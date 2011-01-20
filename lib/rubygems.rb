@@ -1172,7 +1172,7 @@ end
 
 module Kernel
 
-  remove_method :gem if respond_to? :gem # defined in gem_prelude.rb on 1.9
+  remove_method :gem if 'method' == defined? gem # from gem_prelude.rb on 1.9
 
   ##
   # Use Kernel#gem to activate a specific version of +gem_name+.

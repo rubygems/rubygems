@@ -70,7 +70,9 @@ lib/rubygems/gemcutter_utilities.rb
 lib/rubygems/indexer.rb
 lib/rubygems/install_update_options.rb
 lib/rubygems/installer.rb
+lib/rubygems/installer_test_case.rb
 lib/rubygems/local_remote_options.rb
+lib/rubygems/mock_gem_ui.rb
 lib/rubygems/old_format.rb
 lib/rubygems/package.rb
 lib/rubygems/package/f_sync_dir.rb
@@ -79,6 +81,7 @@ lib/rubygems/package/tar_input.rb
 lib/rubygems/package/tar_output.rb
 lib/rubygems/package/tar_reader.rb
 lib/rubygems/package/tar_reader/entry.rb
+lib/rubygems/package/tar_test_case.rb
 lib/rubygems/package/tar_writer.rb
 lib/rubygems/package_task.rb
 lib/rubygems/platform.rb
@@ -90,6 +93,7 @@ lib/rubygems/server.rb
 lib/rubygems/source_index.rb
 lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
+lib/rubygems/test_case.rb
 lib/rubygems/test_utilities.rb
 lib/rubygems/text.rb
 lib/rubygems/uninstaller.rb
@@ -107,11 +111,7 @@ test/rubygems/data/gem-public_cert.pem
 test/rubygems/fake_certlib/openssl.rb
 test/rubygems/foo/discover.rb
 test/rubygems/functional.rb
-test/rubygems/gem_installer_test_case.rb
-test/rubygems/gem_package_tar_test_case.rb
-test/rubygems/gemutilities.rb
 test/rubygems/insure_session.rb
-test/rubygems/mockgemui.rb
 test/rubygems/plugin/exception/rubygems_plugin.rb
 test/rubygems/plugin/load/rubygems_plugin.rb
 test/rubygems/plugin/standarderror/rubygems_plugin.rb

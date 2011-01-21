@@ -8,6 +8,7 @@ require 'rubygems/format'
 require 'rubygems/exceptions'
 require 'rubygems/ext'
 require 'rubygems/require_paths_builder'
+require 'rubygems/user_interaction'
 
 ##
 # The installer class processes RubyGem .gem files and installs the files

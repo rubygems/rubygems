@@ -58,7 +58,7 @@ class TestGemDependency < Gem::TestCase
   def test_equals_tilde
     d = dep "a", "0"
 
-    assert_match d,                  d,             "matche self"
+    assert_match d,                  d,             "match self"
     assert_match dep("a", ">= 0"),   d,             "match version exact"
     assert_match dep("a", ">= 0"),   dep("a", "1"), "match version"
     assert_match dep(/a/, ">= 0"),   d,             "match simple regexp"

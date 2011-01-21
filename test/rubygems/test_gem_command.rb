@@ -87,7 +87,7 @@ class TestGemCommand < Gem::TestCase
     assert done
   end
 
-  def test_invode_with_bad_options
+  def test_invoke_with_bad_options
     use_ui @ui do
       @cmd.when_invoked do true end
 

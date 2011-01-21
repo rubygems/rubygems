@@ -21,7 +21,7 @@ class TestKernel < Gem::TestCase
     assert $:.any? { |p| %r{a-1/lib} =~ p }
   end
 
-  def test_gem_redundent
+  def test_gem_redundant
     assert gem('a', '= 1'), "Should load"
     refute gem('a', '= 1'), "Should not load"
     assert_equal 1, $:.select { |p| %r{a-1/lib} =~ p }.size

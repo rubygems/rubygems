@@ -104,7 +104,7 @@ class TestGemDependencyList < Gem::TestCase
                  'deps of trimmed specs not included'
   end
 
-  def test_dependency_order_no_dependendencies
+  def test_dependency_order_no_dependencies
     @deplist.add @a1, @c2
 
     order = @deplist.dependency_order

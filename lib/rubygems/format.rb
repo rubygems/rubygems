@@ -16,8 +16,6 @@ class Gem::Format
   attr_accessor :file_entries
   attr_accessor :gem_path
 
-  extend Gem::UserInteraction
-
   ##
   # Constructs a Format representing the gem's data which came from +gem_path+
 

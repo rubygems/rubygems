@@ -1,5 +1,5 @@
 SIMPLE_GEM = <<-GEMDATA
-        MD5SUM = "b12a4d48febeb2289c539c2574c4b6f8"
+        MD5SUM = "989bf34a1cbecd52e0ea66b662b3a405"
         if $0 == __FILE__
           require 'optparse'
 

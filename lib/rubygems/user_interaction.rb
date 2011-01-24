@@ -540,9 +540,5 @@ class Gem::SilentUI < Gem::StreamUI
 
     super reader, writer, writer
   end
-
-  def method_missing(sym, *args, &block)
-    self
-  end
 end
 

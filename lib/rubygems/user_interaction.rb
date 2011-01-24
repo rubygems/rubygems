@@ -66,7 +66,7 @@ module Gem::DefaultUserInteraction
 end
 
 ##
-# Make the default UI accessable without the "ui." prefix.  Classes
+# Make the default UI accessible without the "ui." prefix.  Classes
 # including this module may use the interaction methods on the default UI
 # directly.  Classes may also reference the ui and ui= methods.
 #

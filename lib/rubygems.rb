@@ -6,10 +6,8 @@
 #++
 
 module Gem
-  # TODO: remove when 1.9.1 no longer supported
-  QUICKLOADER_SUCKAGE = RUBY_VERSION >= "1.9.1" and RUBY_VERSION < "1.9.2"
-  # TODO: remove when 1.9.2 no longer supported
-  GEM_PRELUDE_SUCKAGE = RUBY_VERSION >= "1.9.2" and RUBY_VERSION < "1.9.3"
+  QUICKLOADER_SUCKAGE = RUBY_VERSION =~ /^1\.9\.1/
+  GEM_PRELUDE_SUCKAGE = RUBY_VERSION =~ /^1\.9\.2/
 end
 
 if Gem::GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader) then

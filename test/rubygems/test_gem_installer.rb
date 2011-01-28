@@ -66,6 +66,7 @@ load Gem.bin_path('a', 'my_exec', version)
   end
 
   def test_build_extensions_unsupported
+    gem_make_out = File.join @gemhome, 'gems', @spec.full_name, 'gem_make.out'
     @spec.extensions << nil
 
     e = assert_raises Gem::Installer::ExtensionBuildError do
@@ -74,15 +75,15 @@ load Gem.bin_path('a', 'my_exec', version)
       end
     end
 
-    assert_match(/^No builder for extension ''$/, e.message)
+    assert_match(/^\s*No builder for extension ''$/, e.message)
 
     assert_equal "Building native extensions.  This could take a while...\n",
                  @ui.output
     assert_equal '', @ui.error
 
-    assert_equal "No builder for extension ''\n", File.read('gem_make.out')
+    assert_equal "No builder for extension ''\n", File.read(gem_make_out)
   ensure
-    FileUtils.rm_f 'gem_make.out'
+    FileUtils.rm_f gem_make_out
   end
 
   def test_ensure_dependency

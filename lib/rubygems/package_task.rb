@@ -114,11 +114,20 @@ class Gem::PackageTask < Rake::PackageTask
       chdir(gem_dir) do
         when_writing "Creating #{gem_spec.file_name}" do
           Gem::Builder.new(gem_spec).build
-          verbose(true) {
-            mv gem_file, ".."
-          }
+          verbose trace do
+            mv gem_file, '..'
+          end
         end
       end
     end
   end
+
+  ##
+  # This method works around rake not understanding platforms
+
+  def package_name
+    @gem_spec.full_name
+  end
+
 end
+

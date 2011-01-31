@@ -50,6 +50,8 @@ class TestGemPackageTask < Gem::TestCase
     end
 
     pkg = Gem::PackageTask.new gem
+    pkg.define
+
     assert_equal 'pkg/nokogiri-1.5.0-java', pkg.package_dir_path
   end
 

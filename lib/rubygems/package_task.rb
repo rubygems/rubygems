@@ -86,7 +86,7 @@ class Gem::PackageTask < Rake::PackageTask
   # Initialization tasks without the "yield self" or define operations.
 
   def init(gem)
-    super gem.name, gem.version
+    super gem.full_name, :noversion
     @gem_spec = gem
     @package_files += gem_spec.files if gem_spec.files
   end
@@ -120,13 +120,6 @@ class Gem::PackageTask < Rake::PackageTask
         end
       end
     end
-  end
-
-  ##
-  # This method works around rake not understanding platforms
-
-  def package_name
-    @gem_spec.full_name
   end
 
 end

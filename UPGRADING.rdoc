@@ -2,21 +2,9 @@
 
 == On Ruby 1.9.x:
 
-tl;dr: Just don't... for now.
+=== From stock ruby shipping with 1.9:
 
-Ruby 1.9 ships with rubygems and contains a very buggy
-"gem-prelude". It is a gem loading system that can interfere with
-updating rubygems itself. We do NOT recommend you update to rubygems
-1.4 if you're running ruby 1.9.x until we get that sorted out in a
-future ruby release.
-
-If you absolutely hate kittens and you _must_ upgrade, you're going to
-have to do something really hokey like:
-
-    % alias ruby19="ruby19 --disable-gems"
-    % alias gem19="ruby19 --disable-gems -S gem"
-
-Even deleting the stock rubygems in 1.9 doesn't fix this situation.
+Use the Normal Upgrade Method below. (finally!)
 
 == On Ruby 1.8.x:
 
@@ -52,7 +40,7 @@ the latest.
 Do make sure that you don't have any other versions of rubygems-update
 installed when you run the second command.
 
-=== 1.9.2 Downgrade from Rubygems 1.4.x to stock 1.9 rubygems:
+=== 1.9.2 Downgrade from Rubygems 1.4.x+ to stock 1.9 rubygems:
 
 Use sudo/su as appropriate:
 

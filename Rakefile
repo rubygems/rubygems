@@ -5,6 +5,15 @@ $:.unshift 'lib'
 require 'rubygems'
 require 'rubygems/package_task'
 
+# HACK bootstrap load_yaml, remove after 1.5 release
+def Gem.load_yaml; end unless Gem.respond_to? :load_yaml
+
+begin
+  require 'psych'
+rescue ::LoadError
+  require 'yaml'
+end
+
 require 'hoe'
 
 Hoe::RUBY_FLAGS << " --disable-gems" if RUBY_VERSION > "1.9"

@@ -19,6 +19,7 @@ require 'hoe'
 Hoe::RUBY_FLAGS << " --disable-gems" if RUBY_VERSION > "1.9"
 
 Hoe.plugin :minitest
+Hoe.plugin :git
 
 hoe = Hoe.spec 'rubygems-update' do
   self.rubyforge_name = 'rubygems'
@@ -52,7 +53,26 @@ hoe = Hoe.spec 'rubygems-update' do
   spec_extras['rdoc_options'] = proc do |rdoc_options|
     rdoc_options << "--title=RubyGems #{self.version} Documentation"
   end
-  spec_extras['require_paths'] = %w[hide_lib_for_update]
+
+  # FIX: this exists because update --system installs the gem and
+  # doesn't uninstall it. It should uninstall or better, not install
+  # in the first place.
+  spec_extras['require_paths'] = %w[hide_lib_for_update] unless
+    ENV['RAKE_SUCKS']
+end
+
+task :docs => :rake_sucks
+task :rake_sucks do
+  # This exists ENTIRELY because the rake design convention of
+  # RDocTask.new is broken. Because most of the work is being done
+  # inside initialize(?!?) BEFORE tasks are even running, too much
+  # stuff is set in stone, and we can't deal with the require_paths
+  # issue above.
+  unless ENV['RAKE_SUCKS'] then
+    ENV['RAKE_SUCKS'] = "1"
+    rm_rf "doc"
+    sh "rake docs"
+  end
 end
 
 desc "Run just the functional tests"

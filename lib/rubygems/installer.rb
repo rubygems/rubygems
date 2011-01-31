@@ -382,26 +382,26 @@ class Gem::Installer
   end
 
   def process_options
-    @options = {
+    self.options = {
       :bin_dir      => nil,
       :env_shebang  => false,
       :exec_format  => false,
       :force        => false,
       :install_dir  => Gem.dir,
       :source_index => Gem.source_index,
-    }.merge @options
+    }.merge options
 
-    @env_shebang         = @options[:env_shebang]
-    @force               = @options[:force]
-    gem_home             = @options[:install_dir]
+    @env_shebang         = options[:env_shebang]
+    @force               = options[:force]
+    gem_home             = options[:install_dir]
     @gem_home            = File.expand_path(gem_home)
-    @ignore_dependencies = @options[:ignore_dependencies]
-    @format_executable   = @options[:format_executable]
-    @security_policy     = @options[:security_policy]
-    @wrappers            = @options[:wrappers]
-    @bin_dir             = @options[:bin_dir]
-    @development         = @options[:development]
-    @source_index        = @options[:source_index]
+    @ignore_dependencies = options[:ignore_dependencies]
+    @format_executable   = options[:format_executable]
+    @security_policy     = options[:security_policy]
+    @wrappers            = options[:wrappers]
+    @bin_dir             = options[:bin_dir]
+    @development         = options[:development]
+    @source_index        = options[:source_index]
   end
 
   def load_gem_file
@@ -502,7 +502,7 @@ TEXT
                       rescue TypeError # extension == nil
                         @gem_dir
                       end
-                        
+
 
       begin
         Dir.chdir extension_dir do

@@ -336,8 +336,10 @@ abort "#{deprecation_message}"
     require 'rdoc/rdoc'
 
     args << '--quiet'
-    args << '--main' << 'README'
-    args << '.' << 'README' << 'LICENSE.txt' << 'GPL.txt'
+    args << '--main' << 'README.rdoc'
+    args << '.'
+    args << 'README.rdoc' << 'UPDGRADING.rdoc'
+    args << 'LICENSE.txt' << 'GPL.txt' << 'History.txt'
 
     r = RDoc::RDoc.new
     r.document args

@@ -382,7 +382,7 @@ class Gem::Installer
   end
 
   def process_options
-    self.options = {
+    @options = {
       :bin_dir      => nil,
       :env_shebang  => false,
       :exec_format  => false,

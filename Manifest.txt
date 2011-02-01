@@ -178,6 +178,7 @@ test/rubygems/test_gem_remote_fetcher.rb
 test/rubygems/test_gem_requirement.rb
 test/rubygems/test_gem_security.rb
 test/rubygems/test_gem_server.rb
+test/rubygems/test_gem_silent_ui.rb
 test/rubygems/test_gem_source_index.rb
 test/rubygems/test_gem_spec_fetcher.rb
 test/rubygems/test_gem_specification.rb

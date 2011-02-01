@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 #++
-# Copyright (C) 2004 Mauricio Julio Fern·ndez Pradier
+# Copyright (C) 2004 Mauricio Julio Fern√°ndez Pradier
 # See LICENSE.txt for additional licensing information.
 #--
 

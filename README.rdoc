@@ -23,22 +23,6 @@ See UPGRADING.rdoc for more details and alternative instructions.
 
 -----
 
-NOTE: Ruby 1.9 ships with rubygems and contains a very buggy
-"gem-prelude". It is a gem loading system that can interfere with
-updating rubygems itself. We do NOT recommend you update to rubygems
-1.4 if you're running ruby 1.9.x until we get that sorted out in a
-future ruby release.
-
-If you absolutely hate kittens and you _must_ upgrade, you're going to
-have to do something really hokey like:
-
-% alias ruby19="ruby19 --disable-gems"
-% alias gem19="ruby19 --disable-gems -S gem"
-
-Even deleting the stock rubygems in 1.9 doesn't fix this situation.
-
------
-
 If you don't have any RubyGems install, there is still the pre-gem approach to
 getting software, doing it manually:
 

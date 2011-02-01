@@ -13,6 +13,7 @@ gem install 'builder' -v '~> 2.1' --no-ri --no-rdoc
 gem install 'hoe-seattlerb' -v '~> 1.2' --no-ri --no-rdoc
 gem install 'minitest' -v '~> 1.4' --no-ri --no-rdoc
 gem install 'session' -v '~> 2.4' --no-ri --no-rdoc
+gem install 'rubyforge' --no-ri --no-rdoc
 
 echo "----------------------------"
 echo "Build environment:"

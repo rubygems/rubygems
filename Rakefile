@@ -29,7 +29,7 @@ hoe = Hoe.spec 'rubygems-update' do
   self.readme_file    = 'README.rdoc'
 
   spec_extras[:required_rubygems_version] = Gem::Requirement.default
-  spec_extras[:required_ruby_version]     = Gem::Requirement.new '> 1.8.3'
+  spec_extras[:required_ruby_version]     = Gem::Requirement.new '>= 1.8.7'
   spec_extras[:executables]               = ['update_rubygems']
 
   clean_globs.push('**/debug.log',

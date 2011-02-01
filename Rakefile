@@ -82,9 +82,9 @@ end
 # --------------------------------------------------------------------
 # Creating a release
 
-task :prerelease => [:clobber, :sanity_check, :test, :test_functional]
+task :prerelease => [:clobber, :check_manifest, :test, :test_functional]
 
-task :postrelease => ['git:tag', :publish_docs]
+task :postrelease => :publish_docs
 
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
 task :package do
@@ -93,14 +93,6 @@ task :package do
     sh "tar -czf rubygems-#{hoe.version}.tgz rubygems-#{hoe.version}"
     sh "zip -q -r rubygems-#{hoe.version}.zip rubygems-#{hoe.version}"
   end
-end
-
-task :sanity_check do
-  abort "svn status dirty. commit or revert them" unless `svn st`.empty?
-end
-
-task :tag => :sanity_check do
-  raise "need a git version of rake tag written"
 end
 
 # Misc Tasks ---------------------------------------------------------
@@ -177,29 +169,5 @@ task "rcov:for", [:test] do |task, args|
   rflags << "-i" << "lib/rubygems"
 
   ruby "#{flags.join ' '} #{rcov} #{rflags.join ' '} #{args[:test]}"
-end
-
-task :graph do
-  $: << File.expand_path("~/Work/p4/zss/src/graph/dev/lib")
-  require 'graph'
-  deps = Graph.new
-  deps.rotate
-
-  current = nil
-  `rake -P -s`.each_line do |line|
-    case line
-    when /^rake (.+)/
-      current = $1
-      deps[current] if current # force the node to exist, in case of a leaf
-    when /^\s+(.+)/
-      deps[current] << $1 if current
-    else
-      warn "unparsed: #{line.chomp}"
-    end
-  end
-
-
-  deps.boxes
-  deps.save "graph", nil
 end
 

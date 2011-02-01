@@ -15,6 +15,8 @@ Minor Enhancements:
 * Always require custom_require now that require_gem is gone
 * Added GemInstaller accessors for @options so plugins can reference them.
 * Optimized Gem.find_files. ~10% faster than 1.4.2. ~40% faster than ruby 1.9.
+* Gem::SilentUI now behaves like Gem::StreamUI for asking questions.  Patch by
+  Erik Hollensbe.
 
 Bug Fixes:
 
@@ -24,6 +26,9 @@ Bug Fixes:
 * 1.9.3: Use chdir {} when building extensions to prevent warnings. Fixes #4337
 * 1.9.2: Fix circular require warning.
 * Make requiring openssl even lazier at request of NaHi
+* `gem unpack` will now download the gem if it is not in the cache. Patch by
+  Erik Hollensbe.
+* rubygems-update lists its development dependencies again
 
 === 1.4.2 / 2011-01-06
 

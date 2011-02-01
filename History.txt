@@ -1,4 +1,31 @@
-﻿=== 1.4.2 / 2011-01-06
+﻿=== 1.5.0 / 2011-01-31
+
+Major Enhancements:
+
+* Finally fixed all known 1.9.x issues. Upgrading is now possible!
+* Merged huge 1.3.7/ruby-core changes to master.
+
+Minor Enhancements:
+
+* Added UPGRADING.rdoc to help deal with 1.9 issues.
+* Gem::Format now gives better errors for corrupt gem files and includes paths
+* Pre-install hooks can now abort gem installation by returning false
+* Move shareable TestCase classes to lib/ to help plugin authors with tests.
+* Add post-build hooks that can cancel the gem install
+* Always require custom_require now that require_gem is gone
+* Added GemInstaller accessors for @options so plugins can reference them.
+* Optimized Gem.find_files. ~10% faster than 1.4.2. ~40% faster than ruby 1.9.
+
+Bug Fixes:
+
+* `gem update` was implicitly doing --system.
+* 1.9.3: Fixed encoding errors causing gem installs to die during rdoc phase.
+* Add RubyForge URL to README. Closes #28825
+* 1.9.3: Use chdir {} when building extensions to prevent warnings. Fixes #4337
+* 1.9.2: Fix circular require warning.
+* Make requiring openssl even lazier at request of NaHi
+
+=== 1.4.2 / 2011-01-06
 
 Bug fixes:
 

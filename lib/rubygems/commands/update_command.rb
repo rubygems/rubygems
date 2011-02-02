@@ -21,7 +21,11 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     add_install_update_options
 
-    add_option('--system',
+    OptionParser.accept Gem::Requirement do |value|
+      Gem::Requirement.new value
+    end
+
+    add_option('--system [VERSION]', Gem::Requirement,
                'Update the RubyGems system software') do |value, options|
       options[:system] = value
     end
@@ -111,26 +115,24 @@ class Gem::Commands::UpdateCommand < Gem::Command
   # Update RubyGems software to the latest version.
 
   def update_rubygems
-    hig = {}
-
     say "Updating RubyGems"
 
     unless options[:args].empty? then
       raise "No gem names are allowed with the --system option"
     end
 
-    rubygems_update         = Gem::Specification.new
-    rubygems_update.name    = 'rubygems-update'
-    rubygems_update.version = Gem::Version.new Gem::VERSION
-    hig['rubygems-update']  = rubygems_update
-
     options[:user_install] = false
 
     Gem.source_index.refresh!
 
-    update_gems = Gem.source_index.find_name 'rubygems-update'
+    req = if Gem::Requirement === options[:system] then
+            options[:system]
+          else
+            Gem::Requirement.new
+          end
 
-    latest_update_gem = update_gems.sort_by { |s| s.version }.last
+    update_gems       = Gem.source_index.find_name 'rubygems-update', req
+    latest_update_gem = update_gems.last
 
     say "Updating RubyGems to #{latest_update_gem.version}"
     version = latest_update_gem.version

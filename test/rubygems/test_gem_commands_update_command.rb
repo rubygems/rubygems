@@ -134,6 +134,40 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_empty out
   end
 
+  def test_execute_system_options_plain
+    @cmd.handle_options %w[--system]
+
+    expected = {
+      :generate_ri   => true,
+      :system        => Gem::Requirement.default,
+      :force         => false,
+      :args          => [],
+      :generate_rdoc => true,
+    }
+
+    assert_equal expected, @cmd.options
+  end
+
+  def test_execute_system_options_bad
+    assert_raises ArgumentError do
+      @cmd.handle_options %w[--system fuck-you]
+    end
+  end
+
+  def test_execute_system_options_specific
+    @cmd.handle_options %w[--system 1.3.7]
+
+    expected = {
+      :generate_ri   => true,
+      :system        => Gem::Requirement.new(["= 1.3.7"]),
+      :force         => false,
+      :args          => [],
+      :generate_rdoc => true,
+    }
+
+    assert_equal expected, @cmd.options
+  end
+
   # before:
   #   a1 -> c1.2
   # after:

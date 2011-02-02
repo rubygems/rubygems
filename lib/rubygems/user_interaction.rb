@@ -530,15 +530,16 @@ class Gem::SilentUI < Gem::StreamUI
 
     reader, writer = nil, nil
 
-    if Gem.win_platform?
-      reader = File.open('nul', 'r')
-      writer = File.open('nul', 'w')
-    else
+    begin
       reader = File.open('/dev/null', 'r')
       writer = File.open('/dev/null', 'w')
+    rescue Errno::ENOENT => e
+      reader = File.open('nul', 'r')
+      writer = File.open('nul', 'w')
     end
 
     super reader, writer, writer
   end
+
 end
 

@@ -47,30 +47,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
     hig = {}
 
     if options[:system] then
-      say "Updating RubyGems"
-
-      unless options[:args].empty? then
-        raise "No gem names are allowed with the --system option"
-      end
-
-      rubygems_update = Gem::Specification.new
-      rubygems_update.name = 'rubygems-update'
-      rubygems_update.version = Gem::Version.new Gem::VERSION
-      hig['rubygems-update'] = rubygems_update
-
-      options[:user_install] = false
-
-      Gem.source_index.refresh!
-
-      update_gems = Gem.source_index.find_name 'rubygems-update'
-
-      latest_update_gem = update_gems.sort_by { |s| s.version }.last
-
-      say "Updating RubyGems to #{latest_update_gem.version}"
-      installed = do_rubygems_update latest_update_gem.version
-
-      say "RubyGems system software updated" if installed
-
+      update_rubygems
       return
     else
       say "Updating installed gems"
@@ -131,9 +108,33 @@ class Gem::Commands::UpdateCommand < Gem::Command
   end
 
   ##
-  # Update the RubyGems software to +version+.
+  # Update RubyGems software to the latest version.
 
-  def do_rubygems_update(version)
+  def update_rubygems
+    hig = {}
+
+    say "Updating RubyGems"
+
+    unless options[:args].empty? then
+      raise "No gem names are allowed with the --system option"
+    end
+
+    rubygems_update         = Gem::Specification.new
+    rubygems_update.name    = 'rubygems-update'
+    rubygems_update.version = Gem::Version.new Gem::VERSION
+    hig['rubygems-update']  = rubygems_update
+
+    options[:user_install] = false
+
+    Gem.source_index.refresh!
+
+    update_gems = Gem.source_index.find_name 'rubygems-update'
+
+    latest_update_gem = update_gems.sort_by { |s| s.version }.last
+
+    say "Updating RubyGems to #{latest_update_gem.version}"
+    version = latest_update_gem.version
+
     args = []
     args << '--prefix' << Gem.prefix if Gem.prefix
     args << '--no-rdoc' unless options[:generate_rdoc]
@@ -149,9 +150,9 @@ class Gem::Commands::UpdateCommand < Gem::Command
       # Make sure old rubygems isn't loaded
       old = ENV["RUBYOPT"]
       ENV.delete("RUBYOPT") if old
-      result = system setup_cmd
+      installed = system setup_cmd
+      say "RubyGems system software updated" if installed
       ENV["RUBYOPT"] = old if old
-      result
     end
   end
 

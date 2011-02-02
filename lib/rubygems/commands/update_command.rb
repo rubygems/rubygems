@@ -135,7 +135,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
   def do_rubygems_update(version)
     args = []
-    args.push '--prefix', Gem.prefix unless Gem.prefix.nil?
+    args << '--prefix' << Gem.prefix if Gem.prefix
     args << '--no-rdoc' unless options[:generate_rdoc]
     args << '--no-ri' unless options[:generate_ri]
     args << '--no-format-executable' if options[:no_format_executable]
@@ -148,9 +148,10 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
       # Make sure old rubygems isn't loaded
       old = ENV["RUBYOPT"]
-      ENV.delete("RUBYOPT")
-      system setup_cmd
+      ENV.delete("RUBYOPT") if old
+      result = system setup_cmd
       ENV["RUBYOPT"] = old if old
+      result
     end
   end
 

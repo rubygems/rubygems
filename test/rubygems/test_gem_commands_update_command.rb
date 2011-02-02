@@ -48,6 +48,69 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_empty out
   end
 
+  def util_setup_rubygem version
+    gem = quick_gem('rubygems-update', version.to_s) do |s|
+      s.files = %w[setup.rb]
+    end
+    write_file File.join(*%W[gems #{gem.original_name} setup.rb])
+    util_build_gem gem
+    util_setup_spec_fetcher gem
+    gem
+  end
+
+  def util_setup_rubygem9
+    @rubygem9 = util_setup_rubygem 9
+  end
+
+  def util_setup_rubygem8
+    @rubygem9 = util_setup_rubygem 8
+  end
+
+  def test_execute_system
+    util_clear_gems
+    util_setup_rubygem9
+
+    @cmd.options[:args]          = []
+    @cmd.options[:system]        = true  # --system
+    @cmd.options[:generate_rdoc] = false
+    @cmd.options[:generate_ri]   = false
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    out = @ui.output.split "\n"
+    assert_equal "Updating RubyGems", out.shift
+    assert_equal "Updating RubyGems to 9", out.shift
+    assert_equal "Installing RubyGems 9", out.shift
+    assert_equal "RubyGems system software updated", out.shift
+
+    assert_empty out
+  end
+
+  def test_execute_system_multiple
+    util_clear_gems
+    util_setup_rubygem9
+    util_setup_rubygem8
+
+    @cmd.options[:args]          = []
+    @cmd.options[:system]        = true  # --system
+    @cmd.options[:generate_rdoc] = false
+    @cmd.options[:generate_ri]   = false
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    out = @ui.output.split "\n"
+    assert_equal "Updating RubyGems", out.shift
+    assert_equal "Updating RubyGems to 9", out.shift
+    assert_equal "Installing RubyGems 9", out.shift
+    assert_equal "RubyGems system software updated", out.shift
+
+    assert_empty out
+  end
+
   # before:
   #   a1 -> c1.2
   # after:
@@ -65,9 +128,9 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     @a2.add_dependency 'c', '2'
     @a2.add_dependency 'b', '2'
 
-    @b2_path = File.join @gemhome, 'cache', @b2.file_name
+    @b2_path   = File.join @gemhome, 'cache', @b2.file_name
     @c1_2_path = File.join @gemhome, 'cache', @c1_2.file_name
-    @c2_path = File.join @gemhome, 'cache', @c2.file_name
+    @c2_path   = File.join @gemhome, 'cache', @c2.file_name
 
     @source_index = Gem::SourceIndex.new
     @source_index.add_spec @a1

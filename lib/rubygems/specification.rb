@@ -829,6 +829,7 @@ class Gem::Specification
   # checks..
 
   def validate
+    require 'rubygems/user_interaction'
     extend Gem::UserInteraction
     normalize
 

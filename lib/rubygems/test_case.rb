@@ -430,6 +430,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # Additional +prerelease+ gems may also be created:
   #
   # +@a2_pre+:: gem a version 2.a
+  # TODO: nuke this and fix tests. this should speed up a lot
 
   def util_make_gems(prerelease = false)
     @a1 = quick_gem 'a', '1' do |s|
@@ -453,11 +454,12 @@ Also, a list:
       s.require_paths = %w[lib]
     end
 
-    @a2 = quick_gem('a', '2', &init)
-    @a3a = quick_gem('a', '3.a', &init)
+    @a2      = quick_gem('a', '2',      &init)
+    @a3a     = quick_gem('a', '3.a',    &init)
     @a_evil9 = quick_gem('a_evil', '9', &init)
-    @b2 = quick_gem('b', '2', &init)
-    @c1_2   = quick_gem('c', '1.2',   &init)
+    @b2      = quick_gem('b', '2',      &init)
+    @c1_2    = quick_gem('c', '1.2',    &init)
+
     @pl1     = quick_gem 'pl', '1' do |s| # l for legacy
       s.files = %w[lib/code.rb]
       s.require_paths = %w[lib]
@@ -471,12 +473,12 @@ Also, a list:
       util_build_gem @a2_pre
     end
 
-    write_file File.join(*%W[gems #{@a1.original_name} lib code.rb])
-    write_file File.join(*%W[gems #{@a2.original_name} lib code.rb])
-    write_file File.join(*%W[gems #{@a3a.original_name} lib code.rb])
-    write_file File.join(*%W[gems #{@b2.original_name} lib code.rb])
+    write_file File.join(*%W[gems #{@a1.original_name}   lib code.rb])
+    write_file File.join(*%W[gems #{@a2.original_name}   lib code.rb])
+    write_file File.join(*%W[gems #{@a3a.original_name}  lib code.rb])
+    write_file File.join(*%W[gems #{@b2.original_name}   lib code.rb])
     write_file File.join(*%W[gems #{@c1_2.original_name} lib code.rb])
-    write_file File.join(*%W[gems #{@pl1.original_name} lib code.rb])
+    write_file File.join(*%W[gems #{@pl1.original_name}  lib code.rb])
 
     [@a1, @a2, @a3a, @a_evil9, @b2, @c1_2, @pl1].each do |spec|
       util_build_gem spec

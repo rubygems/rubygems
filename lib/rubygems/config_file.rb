@@ -32,6 +32,8 @@ class Gem::ConfigFile
   DEFAULT_BULK_THRESHOLD = 1000
   DEFAULT_VERBOSITY = true
   DEFAULT_UPDATE_SOURCES = true
+  DEFAULT_CERT_CHAIN = []
+  DEFAULT_SIGNING_KEY = nil
 
   ##
   # For Ruby packagers to set configuration defaults.  Set in
@@ -119,6 +121,17 @@ class Gem::ConfigFile
   attr_accessor :update_sources
 
   ##
+  # Certificate chain for gem signing if none is specified in the gemspec
+  # This needs to be an array
+
+  attr_accessor :cert_chain
+
+  ##
+  # Key for gem signing if none is specified in the gemspec
+
+  attr_accessor :signing_key
+
+  ##
   # API key for RubyGems.org
 
   attr_reader :rubygems_api_key
@@ -167,6 +180,8 @@ class Gem::ConfigFile
     @bulk_threshold = DEFAULT_BULK_THRESHOLD
     @verbose = DEFAULT_VERBOSITY
     @update_sources = DEFAULT_UPDATE_SOURCES
+    @cert_chain = DEFAULT_CERT_CHAIN
+    @signing_key = DEFAULT_SIGNING_KEY
 
     operating_system_config = Marshal.load Marshal.dump(OPERATING_SYSTEM_DEFAULTS)
     platform_config = Marshal.load Marshal.dump(PLATFORM_DEFAULTS)
@@ -185,6 +200,8 @@ class Gem::ConfigFile
     @path             = @hash[:gempath]          if @hash.key? :gempath
     @update_sources   = @hash[:update_sources]   if @hash.key? :update_sources
     @verbose          = @hash[:verbose]          if @hash.key? :verbose
+    @cert_chain       = @hash[:cert_chain]       if @hash.key? :cert_chain
+    @signing_key      = @hash[:signing_key]      if @hash.key? :signing_key
 
     load_rubygems_api_key
 

@@ -738,5 +738,13 @@ gems:
     end
   end
 
+  def test_correct_for_windows_path
+    path = "/C:/WINDOWS/Temp/gems"
+    assert_equal "C:/WINDOWS/Temp/gems", @fetcher.correct_for_windows_path(path)
+
+    path = "/home/skillet"
+    assert_equal "/home/skillet", @fetcher.correct_for_windows_path(path)
+  end
+
 end
 

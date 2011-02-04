@@ -878,6 +878,9 @@ end
 
   def test_to_yaml
     yaml_str = @a1.to_yaml
+
+    refute_match '!!null', yaml_str
+
     same_spec = YAML.load(yaml_str)
 
     assert_equal @a1, same_spec

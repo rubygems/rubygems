@@ -536,8 +536,8 @@ class Gem::Specification
 
   def self.normalize_yaml_input(input)
     result = input.respond_to?(:read) ? input.read : input
-    result = "--- " + result unless result =~ /^--- /
-    result
+    result = "--- " + result unless result =~ /\A--- /
+    result.gsub(/ !!null \n/, " \n")
   end
 
   ##
@@ -730,7 +730,7 @@ class Gem::Specification
              end
            end
 
-    yaml.gsub(/ !!null \n/, "\n")
+    yaml.gsub(/ !!null \n/, " \n")
   end
 
   def init_with coder # :nodoc:

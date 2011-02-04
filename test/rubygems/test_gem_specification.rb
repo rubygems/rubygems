@@ -161,6 +161,13 @@ end
       Gem::Specification.normalize_yaml_input(StringIO.new(input))
   end
 
+  def test_self_normalize_yaml_input_with_192_yaml
+    input = "--- !ruby/object:Gem::Specification \nblah: !!null \n"
+    expected = "--- !ruby/object:Gem::Specification \nblah: \n"
+
+    assert_equal expected, Gem::Specification.normalize_yaml_input(input)
+  end
+
   def test_initialize
     spec = Gem::Specification.new do |s|
       s.name = "blah"

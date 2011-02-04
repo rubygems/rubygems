@@ -720,17 +720,15 @@ class Gem::Specification
   end
 
   def to_yaml(opts = {}) # :nodoc:
-    yaml = if YAML.const_defined?(:ENGINE) && !YAML::ENGINE.syck? then
-             super
-           else
-             YAML.quick_emit object_id, opts do |out|
-               out.map taguri, to_yaml_style do |map|
-                 encode_with map
-               end
-             end
-           end
-
-    yaml.gsub(/ !!null \n/, " \n")
+    if YAML.const_defined?(:ENGINE) && !YAML::ENGINE.syck? then
+      super.gsub(/ !!null \n/, " \n")
+    else
+      YAML.quick_emit object_id, opts do |out|
+        out.map taguri, to_yaml_style do |map|
+          encode_with map
+        end
+      end
+    end
   end
 
   def init_with coder # :nodoc:

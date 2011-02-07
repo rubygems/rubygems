@@ -11,7 +11,9 @@ Project.configure do |project|
   if Socket.gethostname =~ /cibuilder.pivotallabs.com/
     # explicitly enable dev list notification only for interpreters which should be green
     interpreters_with_enabled_notification = [
-      '1.8.7-p302'
+      '1.8.7-p330',
+      '1.9.1-p378',
+      '1.9.2-p136'
     ]
     if interpreters_with_enabled_notification.include?(interpreter)
       project.email_notifier.emails = ['rubygems-developers@rubyforge.org']

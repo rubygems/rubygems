@@ -533,7 +533,7 @@ class Gem::SilentUI < Gem::StreamUI
     begin
       reader = File.open('/dev/null', 'r')
       writer = File.open('/dev/null', 'w')
-    rescue Errno::ENOENT => e
+    rescue Errno::ENOENT
       reader = File.open('nul', 'r')
       writer = File.open('nul', 'w')
     end

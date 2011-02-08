@@ -88,7 +88,6 @@ class TestGemSilentUI < Gem::TestCase
   end
 
   def test_progress_reporter
-    value = nil
     out, err = capture_io do
       use_ui @sui do
         @sui.progress_reporter 10, 'hi'
@@ -100,7 +99,6 @@ class TestGemSilentUI < Gem::TestCase
   end
 
   def test_download_reporter
-    value = nil
     out, err = capture_io do
       use_ui @sui do
         @sui.download_reporter.fetch 'a.gem', 1024

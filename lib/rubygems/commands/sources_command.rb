@@ -68,18 +68,23 @@ class Gem::Commands::SourcesCommand < Gem::Command
       source_uri = options[:add]
       uri = URI.parse source_uri
 
-      begin
-        Gem::SpecFetcher.fetcher.load_specs uri, 'specs'
-        Gem.sources << source_uri
-        Gem.configuration.write
+      if Gem.sources.include?(source_uri)
+        say "#{source_uri} is already registered. Ignoring."
+        terminate_interaction 0
+      else
+        begin
+          Gem::SpecFetcher.fetcher.load_specs uri, 'specs'
+          Gem.sources << source_uri
+          Gem.configuration.write
 
-        say "#{source_uri} added to sources"
-      rescue URI::Error, ArgumentError
-        say "#{source_uri} is not a URI"
-        terminate_interaction 1
-      rescue Gem::RemoteFetcher::FetchError => e
-        say "Error fetching #{source_uri}:\n\t#{e.message}"
-        terminate_interaction 1
+          say "#{source_uri} added to sources"
+        rescue URI::Error, ArgumentError
+          say "#{source_uri} is not a URI"
+          terminate_interaction 1
+        rescue Gem::RemoteFetcher::FetchError => e
+          say "Error fetching #{source_uri}:\n\t#{e.message}"
+          terminate_interaction 1
+        end
       end
     end
 

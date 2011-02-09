@@ -69,6 +69,47 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
     assert_equal '', @ui.error
   end
 
+  def test_execute_add_duplicate
+    util_setup_fake_fetcher
+
+    si = Gem::SourceIndex.new
+    si.add_spec @a1
+
+    specs = si.map do |_, spec|
+      [spec.name, spec.version, spec.original_platform]
+    end
+
+    specs_dump_gz = StringIO.new
+    Zlib::GzipWriter.wrap specs_dump_gz do |io|
+      Marshal.dump specs, io
+    end
+
+    @fetcher.data["#{@new_repo}/specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+
+    @cmd.handle_options %W[--add #{@new_repo}]
+
+    util_setup_spec_fetcher
+
+    Gem.sources << @new_repo
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        @cmd.execute
+      end
+      assert_equal 0, e.exit_code, @ui.error
+    end
+
+    assert_equal [@gem_repo, @new_repo], Gem.sources
+
+    expected = <<-EOF
+#{@new_repo} is already registered. Ignoring.
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+  end
+
   def test_execute_add_nonexistent_source
     util_setup_fake_fetcher
 

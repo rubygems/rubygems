@@ -300,6 +300,7 @@ end
     @source_index.add_spec gem_a1_alpha
 
     refute @source_index.latest_specs.include?(gem_a1_alpha)
+    assert @source_index.latest_specs(true).include?(gem_a1_alpha)
     assert @source_index.find_name(gem_a1_alpha.full_name).empty?
     assert @source_index.prerelease_specs.include?(gem_a1_alpha)
   end

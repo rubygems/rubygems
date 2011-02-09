@@ -94,8 +94,14 @@ class Gem::Commands::UnpackCommand < Gem::Command
     specs = Gem.source_index.search dependency
 
     selected = specs.sort_by { |s| s.version }.last
-
-    return dependency.download if selected.nil?
+    
+    if selected.nil?
+      return Gem::RemoteFetcher.fetcher.
+        download_to_cache(
+          dependency.name, 
+          dependency.requirement
+        )
+    end
 
     return unless dependency.name =~ /^#{selected.name}$/i
 
@@ -103,7 +109,14 @@ class Gem::Commands::UnpackCommand < Gem::Command
     # the name match must be exact (ignoring case).
     
     path = find_in_cache(selected.file_name)
-    return dependency.download unless path
+  
+    unless path
+      return Gem::RemoteFetcher.fetcher.
+        download_to_cache(
+          dependency.name, 
+          dependency.requirement
+        )
+    end
 
     path
   end

@@ -180,20 +180,5 @@ class Gem::Dependency
 
     requirement.satisfied_by?(spec.version)
   end
-
-  #
-  # Facade for Gem::SpecFetcher and Gem::RemoteFetcher. Downloads this
-  # dependency into cache and returns the path.
-  #
-
-  def download 
-    found = Gem::SpecFetcher.fetcher.fetch self
-
-    return if found.empty?
-
-    spec, source_uri = found.first
-
-    Gem::RemoteFetcher.fetcher.download spec, source_uri
-  end
 end
 

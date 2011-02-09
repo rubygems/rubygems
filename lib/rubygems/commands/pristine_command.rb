@@ -47,13 +47,6 @@ revert the gem.
     "#{program_name} [args]"
   end
 
-  #
-  # macro for the cache dir file -- probably should move this to Gem::Specification
-  #
-  def cache_dir spec
-    return Dir[File.join(Gem.dir, 'cache', spec.file_name)].first
-  end
-
   def execute
     gem_name = nil
 
@@ -80,12 +73,12 @@ revert the gem.
     say "Restoring gem(s) to pristine condition..."
 
     specs.each do |spec|
-      gem = cache_dir spec
+      gem = spec.cache_gem
 
       if gem.nil? then
         say "Cached gem for #{spec.full_name} not found, attempting to fetch..."
-        Gem::Dependency.new(spec.name, spec.version).download
-        gem = cache_dir spec
+        Gem::RemoteFetcher.fetcher.download_to_cache(spec.name, spec.version)
+        gem = spec.cache_gem
       end
 
       # TODO use installer options

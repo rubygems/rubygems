@@ -102,7 +102,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     [
       "Restoring gem\(s\) to pristine condition...",
       "Restored a-1", 
-      "Cached gem for a-2 not found, attempting to install from scratch...", 
+      "Cached gem for a-2 not found, attempting to fetch...", 
       "Restored a-2", 
       "Restored a-3.a"
     ].each do |line|

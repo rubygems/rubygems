@@ -28,7 +28,7 @@ Use the Normal Upgrade Recipe below.
 
 === Normal Downgrade
 
-==== With rubygems 1.6.0 and higher:
+==== With rubygems 1.5.1 and higher:
 
     $ gem update --system 1.3.7
 

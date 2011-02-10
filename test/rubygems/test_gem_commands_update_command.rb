@@ -63,23 +63,24 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
   end
 
   def util_setup_rubygem8
-    @rubygem9 = util_setup_rubygem 8
+    @rubygem8 = util_setup_rubygem 8
   end
 
   def test_execute_system
     util_clear_gems
     util_setup_rubygem9
+    util_setup_spec_fetcher @rubygem9
 
     rubygems9_file = File.join @gemhome, 'cache', @rubygem9.file_name
 
-    @fetcher.data['http://gems.example.com/gems/rubygems-update.gem'] =
+    @fetcher.data['http://gems.example.com/gems/rubygems-update-9.gem'] =
       Gem.read_binary rubygems9_file
 
     FileUtils.rm_r File.join(@gemhome, 'specifications')
     Gem.source_index.refresh!
 
     @cmd.options[:args]          = []
-    @cmd.options[:system]        = true  # --system
+    @cmd.options[:system]        = Gem::Version.new(Gem::VERSION) # --system
     @cmd.options[:generate_rdoc] = false
     @cmd.options[:generate_ri]   = false
 
@@ -100,9 +101,20 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     util_clear_gems
     util_setup_rubygem9
     util_setup_rubygem8
+    util_setup_spec_fetcher @rubygem8, @rubygem9
+
+    rubygems8_file = File.join @gemhome, 'cache', @rubygem8.file_name
+
+    @fetcher.data['http://gems.example.com/gems/rubygems-update-8.gem'] =
+      Gem.read_binary rubygems8_file
+
+    rubygems9_file = File.join @gemhome, 'cache', @rubygem9.file_name
+
+    @fetcher.data['http://gems.example.com/gems/rubygems-update-9.gem'] =
+      Gem.read_binary rubygems9_file
 
     @cmd.options[:args]          = []
-    @cmd.options[:system]        = true  # --system
+    @cmd.options[:system]        = Gem::Version.new(Gem::VERSION) # --system
     @cmd.options[:generate_rdoc] = false
     @cmd.options[:generate_ri]   = false
 
@@ -123,9 +135,10 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     util_clear_gems
     util_setup_rubygem9
     util_setup_rubygem8
+    util_setup_spec_fetcher @rubygem8, @rubygem9
 
     @cmd.options[:args]          = []
-    @cmd.options[:system]        = Gem::Requirement.new("8")
+    @cmd.options[:system]        = Gem::Version.new("8")
     @cmd.options[:generate_rdoc] = false
     @cmd.options[:generate_ri]   = false
 
@@ -147,7 +160,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     expected = {
       :generate_ri   => true,
-      :system        => Gem::Requirement.default,
+      :system        => Gem::Version.new(Gem::VERSION),
       :force         => false,
       :args          => [],
       :generate_rdoc => true,
@@ -167,7 +180,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     expected = {
       :generate_ri   => true,
-      :system        => Gem::Requirement.new(["= 1.3.7"]),
+      :system        => Gem::Version.new("1.3.7"),
       :force         => false,
       :args          => [],
       :generate_rdoc => true,

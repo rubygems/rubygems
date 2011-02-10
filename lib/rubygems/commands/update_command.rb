@@ -23,11 +23,14 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     OptionParser.accept Gem::Version do |value|
       Gem::Version.new value
+
+      value
     end
 
     add_option('--system [VERSION]', Gem::Version,
                'Update the RubyGems system software') do |value, options|
-      value = Gem::Version.new(Gem::VERSION) unless Gem::Version === value
+      value = Gem::VERSION unless value
+
       options[:system] = value
     end
 
@@ -122,8 +125,6 @@ class Gem::Commands::UpdateCommand < Gem::Command
   # Update RubyGems software to the latest version.
 
   def update_rubygems
-    say "Updating RubyGems"
-
     unless options[:args].empty? then
       raise "No gem names are allowed with the --system option"
     end
@@ -145,10 +146,8 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     Gem.source_index.refresh!
 
-    update_gems = Gem.source_index.find_name 'rubygems-update', version.version
-    version        = update_gems.last.version
-
-    say "Updating RubyGems to #{version}"
+    update_gems = Gem.source_index.find_name 'rubygems-update', ">= #{version}"
+    version     = update_gems.last.version
 
     args = []
     args << '--prefix' << Gem.prefix if Gem.prefix

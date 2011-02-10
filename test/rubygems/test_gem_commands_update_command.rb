@@ -60,27 +60,29 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
   def util_setup_rubygem9
     @rubygem9 = util_setup_rubygem 9
-  end
-
-  def util_setup_rubygem8
-    @rubygem8 = util_setup_rubygem 8
-  end
-
-  def test_execute_system
-    util_clear_gems
-    util_setup_rubygem9
-    util_setup_spec_fetcher @rubygem9
 
     rubygems9_file = File.join @gemhome, 'cache', @rubygem9.file_name
 
     @fetcher.data['http://gems.example.com/gems/rubygems-update-9.gem'] =
       Gem.read_binary rubygems9_file
+  end
 
-    FileUtils.rm_r File.join(@gemhome, 'specifications')
-    Gem.source_index.refresh!
+  def util_setup_rubygem8
+    @rubygem8 = util_setup_rubygem 8
+
+    rubygems8_file = File.join @gemhome, 'cache', @rubygem8.file_name
+
+    @fetcher.data['http://gems.example.com/gems/rubygems-update-8.gem'] =
+      Gem.read_binary rubygems8_file
+  end
+
+  def test_execute_system
+    util_setup_rubygem9
+    util_setup_spec_fetcher @rubygem9
+    util_clear_gems
 
     @cmd.options[:args]          = []
-    @cmd.options[:system]        = Gem::Version.new(Gem::VERSION) # --system
+    @cmd.options[:system]        = Gem::VERSION
     @cmd.options[:generate_rdoc] = false
     @cmd.options[:generate_ri]   = false
 
@@ -89,8 +91,8 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     end
 
     out = @ui.output.split "\n"
-    assert_equal "Updating RubyGems", out.shift
-    assert_equal "Updating RubyGems to 9", out.shift
+    assert_equal "Updating rubygems-update", out.shift
+    assert_equal "Successfully installed rubygems-update-9", out.shift
     assert_equal "Installing RubyGems 9", out.shift
     assert_equal "RubyGems system software updated", out.shift
 
@@ -98,23 +100,13 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
   end
 
   def test_execute_system_multiple
-    util_clear_gems
     util_setup_rubygem9
     util_setup_rubygem8
     util_setup_spec_fetcher @rubygem8, @rubygem9
-
-    rubygems8_file = File.join @gemhome, 'cache', @rubygem8.file_name
-
-    @fetcher.data['http://gems.example.com/gems/rubygems-update-8.gem'] =
-      Gem.read_binary rubygems8_file
-
-    rubygems9_file = File.join @gemhome, 'cache', @rubygem9.file_name
-
-    @fetcher.data['http://gems.example.com/gems/rubygems-update-9.gem'] =
-      Gem.read_binary rubygems9_file
+    util_clear_gems
 
     @cmd.options[:args]          = []
-    @cmd.options[:system]        = Gem::Version.new(Gem::VERSION) # --system
+    @cmd.options[:system]        = Gem::VERSION
     @cmd.options[:generate_rdoc] = false
     @cmd.options[:generate_ri]   = false
 
@@ -123,8 +115,8 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     end
 
     out = @ui.output.split "\n"
-    assert_equal "Updating RubyGems", out.shift
-    assert_equal "Updating RubyGems to 9", out.shift
+    assert_equal "Updating rubygems-update", out.shift
+    assert_equal "Successfully installed rubygems-update-9", out.shift
     assert_equal "Installing RubyGems 9", out.shift
     assert_equal "RubyGems system software updated", out.shift
 
@@ -138,7 +130,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     util_setup_spec_fetcher @rubygem8, @rubygem9
 
     @cmd.options[:args]          = []
-    @cmd.options[:system]        = Gem::Version.new("8")
+    @cmd.options[:system]        = "8"
     @cmd.options[:generate_rdoc] = false
     @cmd.options[:generate_ri]   = false
 
@@ -147,8 +139,8 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     end
 
     out = @ui.output.split "\n"
-    assert_equal "Updating RubyGems", out.shift
-    assert_equal "Updating RubyGems to 8", out.shift
+    assert_equal "Updating rubygems-update", out.shift
+    assert_equal "Successfully installed rubygems-update-8", out.shift
     assert_equal "Installing RubyGems 8", out.shift
     assert_equal "RubyGems system software updated", out.shift
 
@@ -160,7 +152,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     expected = {
       :generate_ri   => true,
-      :system        => Gem::Version.new(Gem::VERSION),
+      :system        => Gem::VERSION,
       :force         => false,
       :args          => [],
       :generate_rdoc => true,
@@ -180,7 +172,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     expected = {
       :generate_ri   => true,
-      :system        => Gem::Version.new("1.3.7"),
+      :system        => "1.3.7",
       :force         => false,
       :args          => [],
       :generate_rdoc => true,

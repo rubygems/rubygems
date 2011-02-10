@@ -147,6 +147,27 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_empty out
   end
 
+  def test_execute_system_with_gems
+    util_setup_rubygem9
+    util_setup_spec_fetcher @rubygem9
+    util_clear_gems
+
+    @cmd.options[:args]          = %w[gem]
+    @cmd.options[:system]        = true
+    @cmd.options[:generate_rdoc] = false
+    @cmd.options[:generate_ri]   = false
+
+    assert_raises Gem::MockGemUi::TermError do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    assert_empty @ui.output
+    assert_equal "ERROR:  Gem names are not allowed with the --system option\n",
+                 @ui.error
+  end
+
   # before:
   #   a1 -> c1.2
   # after:

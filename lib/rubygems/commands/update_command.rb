@@ -129,7 +129,8 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
   def update_rubygems
     unless options[:args].empty? then
-      raise "No gem names are allowed with the --system option"
+      alert_error "Gem names are not allowed with the --system option"
+      terminate_interaction 1
     end
 
     options[:user_install] = false

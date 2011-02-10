@@ -58,27 +58,31 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     gem
   end
 
-  def util_setup_rubygem9
-    @rubygem9 = util_setup_rubygem 9
-
-    rubygems9_file = File.join @gemhome, 'cache', @rubygem9.file_name
-
-    @fetcher.data['http://gems.example.com/gems/rubygems-update-9.gem'] =
-      Gem.read_binary rubygems9_file
-  end
-
   def util_setup_rubygem8
     @rubygem8 = util_setup_rubygem 8
+  end
 
-    rubygems8_file = File.join @gemhome, 'cache', @rubygem8.file_name
+  def util_setup_rubygem9
+    @rubygem9 = util_setup_rubygem 9
+  end
 
-    @fetcher.data['http://gems.example.com/gems/rubygems-update-8.gem'] =
-      Gem.read_binary rubygems8_file
+  def util_setup_rubygem_current
+    @rubygem_current = util_setup_rubygem Gem::VERSION
+  end
+
+  def util_add_to_fetcher *specs
+    specs.each do |spec|
+      gem_file = File.join @gemhome, 'cache', spec.file_name
+
+      @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
+        Gem.read_binary gem_file
+    end
   end
 
   def test_execute_system
     util_setup_rubygem9
     util_setup_spec_fetcher @rubygem9
+    util_add_to_fetcher @rubygem9
     util_clear_gems
 
     @cmd.options[:args]          = []
@@ -99,10 +103,33 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_empty out
   end
 
+  def test_execute_system_at_latest
+    util_setup_rubygem_current
+    util_setup_spec_fetcher @rubygem_current
+    util_add_to_fetcher @rubygem_current
+    util_clear_gems
+
+    @cmd.options[:args]          = []
+    @cmd.options[:system]        = true
+    @cmd.options[:generate_rdoc] = false
+    @cmd.options[:generate_ri]   = false
+
+    assert_raises Gem::SystemExitException do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    out = @ui.output.split "\n"
+    assert_equal 'Nothing to update, at latest version', out.shift
+    assert_empty out
+  end
+
   def test_execute_system_multiple
     util_setup_rubygem9
     util_setup_rubygem8
     util_setup_spec_fetcher @rubygem8, @rubygem9
+    util_add_to_fetcher @rubygem8, @rubygem9
     util_clear_gems
 
     @cmd.options[:args]          = []
@@ -128,6 +155,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     util_setup_rubygem9
     util_setup_rubygem8
     util_setup_spec_fetcher @rubygem8, @rubygem9
+    util_add_to_fetcher @rubygem8, @rubygem9
 
     @cmd.options[:args]          = []
     @cmd.options[:system]        = "8"
@@ -148,10 +176,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
   end
 
   def test_execute_system_with_gems
-    util_setup_rubygem9
-    util_setup_spec_fetcher @rubygem9
-    util_clear_gems
-
     @cmd.options[:args]          = %w[gem]
     @cmd.options[:system]        = true
     @cmd.options[:generate_rdoc] = false

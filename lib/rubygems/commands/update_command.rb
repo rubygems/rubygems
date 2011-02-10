@@ -157,8 +157,8 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     Gem.source_index.refresh!
 
-    update_gems = Gem.source_index.find_name 'rubygems-update', requirement
-    version     = update_gems.last.version
+    installed_gems = Gem.source_index.find_name 'rubygems-update', requirement
+    version        = installed_gems.last.version
 
     args = []
     args << '--prefix' << Gem.prefix if Gem.prefix

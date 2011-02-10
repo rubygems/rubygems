@@ -1,4 +1,18 @@
-﻿=== 1.5.1 / 2011-02-09
+﻿=== 1.5.2 / 2011-02-10
+
+NOTE:  RubyGems 1.5.0 and 1.5.1 have a broken <tt>gem update --system</tt>.
+
+To upgrade you'll need to use the manual upgrade recipe.  Using sudo/su as
+appropriate:
+
+  $ gem install rubygems-update
+  $ update_rubygems
+
+Bug Fixes:
+
+* Fixed <tt>gem update --system</tt>.  RubyGems can now update itself again.
+
+=== 1.5.1 / 2011-02-09
 
 Minor Enhancement:
 

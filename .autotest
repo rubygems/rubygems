@@ -4,6 +4,7 @@ require 'autotest/restart'
 
 Autotest.add_hook :initialize do |at|
   at.testlib = 'minitest/autorun'
+  at.unit_diff = "cat -u"
 
   at.add_exception %r%/\.git/%
   at.add_exception %r%/\.svn/%
@@ -25,9 +26,12 @@ Autotest.add_hook :initialize do |at|
     at.files_matching %r%^test/rubygems/test_(.*)\.rb$%
   end
 
-  # at.add_mapping %r%^test/support/(.*).rb$% do |_, m|
-  #   files_matching %r%^test/test_(.*)\.rb%%
-  # end
-
   at.find_directories = ARGV unless ARGV.empty?
+end
+
+class Autotest
+  alias :old_path_to_classname :path_to_classname
+  def path_to_classname s
+    old_path_to_classname(s.sub(/test.rubygems.test_/, ""))
+  end
 end

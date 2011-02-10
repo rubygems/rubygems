@@ -153,6 +153,12 @@ class Gem::Commands::UpdateCommand < Gem::Command
     }
 
     gems_to_update = which_to_update hig, options[:args]
+
+    if gems_to_update.empty? then
+      say "Latest version currently installed. Aborting."
+      terminate_interaction
+    end
+
     update_gem gems_to_update.first, requirement
 
     Gem.source_index.refresh!

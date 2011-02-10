@@ -50,6 +50,7 @@ class Gem::Uninstaller
     @force_all = options[:all]
     @force_ignore = options[:ignore]
     @bin_dir = options[:bin_dir]
+    @pre_opted = options[:pre_opted]
 
     # only add user directory if install_dir is not set
     @user_install = false
@@ -244,6 +245,7 @@ class Gem::Uninstaller
   end
 
   def ask_if_ok(spec)
+    return @pre_opted unless @pre_opted.nil?
     msg = ['']
     msg << 'You have requested to uninstall the gem:'
     msg << "\t#{spec.full_name}"

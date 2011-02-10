@@ -13,6 +13,14 @@ class Gem::Commands::CleanupCommand < Gem::Command
     add_option('-d', '--dryrun', "") do |value, options|
       options[:dryrun] = true
     end
+
+    # add_option('-y', '--yes', "Force to uninstall gems having dependants") do |value, options|
+    #  options[:pre_opted] = true
+    # end
+
+    add_option('-n', '--no', "Do not uninstall gems having dependants") do |value, options|
+      options[:pre_opted] = false
+    end
   end
 
   def arguments # :nodoc:
@@ -82,6 +90,9 @@ installed elsewhere in GEM_PATH the cleanup command won't touch it.
           :executables => false,
           :version => "= #{spec.version}",
         }
+
+        pre_opted = options[:pre_opted]
+        uninstall_options[:pre_opted] = pre_opted unless pre_opted.nil?
 
         if Gem.user_dir == spec.installation_path then
           uninstall_options[:install_dir] = spec.installation_path

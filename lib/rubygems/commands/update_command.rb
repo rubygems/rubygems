@@ -21,13 +21,14 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     add_install_update_options
 
-    OptionParser.accept Gem::Requirement do |value|
-      Gem::Requirement.new value
+    OptionParser.accept Gem::Version do |value|
+      Gem::Version.new value
     end
 
-    add_option('--system [VERSION]', Gem::Requirement,
+    add_option('--system [VERSION]', Gem::Version,
                'Update the RubyGems system software') do |value, options|
-      options[:system] = value || Gem::Requirement.default
+      value = Gem::Version.new(Gem::VERSION) unless Gem::Version === value
+      options[:system] = value
     end
 
     add_local_remote_options
@@ -67,6 +68,30 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     gems_to_update = which_to_update hig, options[:args]
 
+    updated = update_gems gems_to_update
+
+    if updated.empty? then
+      say "Nothing to update"
+    else
+      say "Gems updated: #{updated.map { |spec| spec.name }.join ', '}"
+
+      if options[:generate_ri] then
+        updated.each do |gem|
+          Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
+        end
+
+        Gem::DocManager.update_ri_cache
+      end
+
+      if options[:generate_rdoc] then
+        updated.each do |gem|
+          Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
+        end
+      end
+    end
+  end
+
+  def update_gems gems_to_update
     updated = []
 
     installer = Gem::DependencyInstaller.new options
@@ -90,25 +115,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
       end
     end
 
-    if updated.empty? then
-      say "Nothing to update"
-    else
-      say "Gems updated: #{updated.map { |spec| spec.name }.join ', '}"
-
-      if options[:generate_ri] then
-        updated.each do |gem|
-          Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
-        end
-
-        Gem::DocManager.update_ri_cache
-      end
-
-      if options[:generate_rdoc] then
-        updated.each do |gem|
-          Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
-        end
-      end
-    end
+    updated
   end
 
   ##
@@ -123,19 +130,25 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     options[:user_install] = false
 
+    version = options[:system]
+
+    rubygems_update         = Gem::Specification.new
+    rubygems_update.name    = 'rubygems-update'
+    rubygems_update.version = version
+
+    hig = {
+      'rubygems-update' => rubygems_update
+    }
+
+    gems_to_update = which_to_update hig, options[:args]
+    updated        = update_gems gems_to_update
+
     Gem.source_index.refresh!
 
-    req = if Gem::Requirement === options[:system] then
-            options[:system]
-          else
-            Gem::Requirement.new
-          end
+    update_gems = Gem.source_index.find_name 'rubygems-update', version.version
+    version        = update_gems.last.version
 
-    update_gems       = Gem.source_index.find_name 'rubygems-update', req
-    latest_update_gem = update_gems.last
-
-    say "Updating RubyGems to #{latest_update_gem.version}"
-    version = latest_update_gem.version
+    say "Updating RubyGems to #{version}"
 
     args = []
     args << '--prefix' << Gem.prefix if Gem.prefix

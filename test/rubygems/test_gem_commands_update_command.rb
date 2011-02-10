@@ -82,7 +82,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     util_clear_gems
 
     @cmd.options[:args]          = []
-    @cmd.options[:system]        = Gem::VERSION
+    @cmd.options[:system]        = true
     @cmd.options[:generate_rdoc] = false
     @cmd.options[:generate_ri]   = false
 
@@ -106,7 +106,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     util_clear_gems
 
     @cmd.options[:args]          = []
-    @cmd.options[:system]        = Gem::VERSION
+    @cmd.options[:system]        = true
     @cmd.options[:generate_rdoc] = false
     @cmd.options[:generate_ri]   = false
 
@@ -145,40 +145,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_equal "RubyGems system software updated", out.shift
 
     assert_empty out
-  end
-
-  def test_execute_system_options_plain
-    @cmd.handle_options %w[--system]
-
-    expected = {
-      :generate_ri   => true,
-      :system        => Gem::VERSION,
-      :force         => false,
-      :args          => [],
-      :generate_rdoc => true,
-    }
-
-    assert_equal expected, @cmd.options
-  end
-
-  def test_execute_system_options_bad
-    assert_raises ArgumentError do
-      @cmd.handle_options %w[--system fuck-you]
-    end
-  end
-
-  def test_execute_system_options_specific
-    @cmd.handle_options %w[--system 1.3.7]
-
-    expected = {
-      :generate_ri   => true,
-      :system        => "1.3.7",
-      :force         => false,
-      :args          => [],
-      :generate_rdoc => true,
-    }
-
-    assert_equal expected, @cmd.options
   end
 
   # before:
@@ -299,4 +265,39 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     assert_empty out
   end
+
+  def test_handle_options_system
+    @cmd.handle_options %w[--system]
+
+    expected = {
+      :generate_ri   => true,
+      :system        => true,
+      :force         => false,
+      :args          => [],
+      :generate_rdoc => true,
+    }
+
+    assert_equal expected, @cmd.options
+  end
+
+  def test_handle_options_system_non_version
+    assert_raises ArgumentError do
+      @cmd.handle_options %w[--system non-version]
+    end
+  end
+
+  def test_handle_options_system_specific
+    @cmd.handle_options %w[--system 1.3.7]
+
+    expected = {
+      :generate_ri   => true,
+      :system        => "1.3.7",
+      :force         => false,
+      :args          => [],
+      :generate_rdoc => true,
+    }
+
+    assert_equal expected, @cmd.options
+  end
+
 end

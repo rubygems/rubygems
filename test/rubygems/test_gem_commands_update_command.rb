@@ -70,6 +70,14 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     util_clear_gems
     util_setup_rubygem9
 
+    rubygems9_file = File.join @gemhome, 'cache', @rubygem9.file_name
+
+    @fetcher.data['http://gems.example.com/gems/rubygems-update.gem'] =
+      Gem.read_binary rubygems9_file
+
+    FileUtils.rm_r File.join(@gemhome, 'specifications')
+    Gem.source_index.refresh!
+
     @cmd.options[:args]          = []
     @cmd.options[:system]        = true  # --system
     @cmd.options[:generate_rdoc] = false

@@ -181,5 +181,24 @@ class Gem::Dependency
     requirement.satisfied_by?(spec.version)
   end
 
+  ##
+  # Merges the requirements of +other+ into this dependency
+
+  def merge other
+    unless name == other.name then
+      raise ArgumentError,
+            "#{self} and #{other} have different names"
+    end
+
+    default = Gem::Requirement.default
+    self_req  = self.requirement
+    other_req = other.requirement
+
+    return self.class.new name, self_req  if other_req == default
+    return self.class.new name, other_req if self_req  == default
+
+    self.class.new name, self_req.as_list.concat(other_req.as_list)
+  end
+
 end
 

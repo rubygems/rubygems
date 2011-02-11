@@ -148,6 +148,7 @@ class Gem::DependencyInstaller
 
   def add_found_dependencies to_do, dependency_list
     seen = {}
+    dependencies = Hash.new { |h, name| h[name] = Gem::Dependency.new name }
 
     until to_do.empty? do
       spec = to_do.shift
@@ -158,6 +159,8 @@ class Gem::DependencyInstaller
       deps |= spec.development_dependencies if @development
 
       deps.each do |dep|
+        dependencies[dep.name] = dependencies[dep.name].merge dep
+
         results = find_gems_with_sources(dep).reverse
 
         # FIX: throw in everything that satisfies, and let
@@ -172,14 +175,6 @@ class Gem::DependencyInstaller
           end
         end
 
-        # remove everything already added that hits but doesn't
-        # satisfy the current dep.
-        # TODO: move this over to deplist
-        dependency_list.specs.reject! { |d_spec|
-          d_spec.name == dep.name &&
-          ! dep.requirement.satisfied_by?(d_spec.version)
-        }
-
         results.each do |dep_spec, source_uri|
           # next if seen[dep_spec.name]
           @specs_and_sources << [dep_spec, source_uri]
@@ -189,6 +184,13 @@ class Gem::DependencyInstaller
         end
       end
     end
+
+    # remove everything already added that hits but doesn't
+    # satisfy the current dep.
+    # TODO: move this over to deplist
+    dependency_list.specs.reject! { |spec|
+      ! dependencies[spec.name].requirement.satisfied_by?(spec.version)
+    }
   end
 
   ##

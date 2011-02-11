@@ -105,11 +105,36 @@ class Gem::DependencyList
   # Are all the dependencies in the list satisfied?
 
   def ok?
+    source_index = Gem.source_index
     @specs.all? do |spec|
       spec.runtime_dependencies.all? do |dep|
-        @specs.find { |s| s.satisfies_requirement? dep }
+        installed = source_index.any? { |_, installed_spec|
+          dep.name == installed_spec.name and
+            dep.requirement.satisfied_by? installed_spec.version
+        }
+
+        installed or @specs.find { |s| s.satisfies_requirement? dep }
       end
     end
+  end
+
+  # REFACTOR with ok?
+  def why_not_ok?
+    unsatisfied = Hash.new { |h,k| h[k] = [] }
+    source_index = Gem.source_index
+    @specs.each do |spec|
+      spec.runtime_dependencies.each do |dep|
+        inst = source_index.any? { |_, installed_spec|
+          dep.name == installed_spec.name and
+            dep.requirement.satisfied_by? installed_spec.version
+        }
+
+        unless inst or @specs.find { |s| s.satisfies_requirement? dep } then
+          unsatisfied[spec.name] << dep
+        end
+      end
+    end
+    unsatisfied
   end
 
   ##

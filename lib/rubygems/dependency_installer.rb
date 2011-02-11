@@ -136,12 +136,21 @@ class Gem::DependencyInstaller
 
     add_found_dependencies to_do, dependency_list unless @ignore_dependencies
 
+    dependency_list.specs.reject! { |spec|
+      @source_index.any? { |n,_| n == spec.full_name }
+    }
+
+
     # TODO: improve message as to why
     # TODO: bring back to life. causing other tests to fail and I
     # don't think they should
-    #
-    # raise Gem::DependencyError, "Unable to resolve dependencies" unless
-    #   dependency_list.ok?
+    # TODO: I'm not sure force is right here
+    unless dependency_list.ok? or @ignore_dependencies or @force then
+      reason = dependency_list.why_not_ok?.map { |k,v|
+        "#{k} requires #{v.join(", ")}"
+      }.join("; ")
+      raise Gem::DependencyError, "Unable to resolve dependencies: #{reason}"
+    end
 
     @gems_to_install = dependency_list.dependency_order.reverse
   end

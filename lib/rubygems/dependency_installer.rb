@@ -130,6 +130,9 @@ class Gem::DependencyInstaller
   def gather_dependencies
     specs = @specs_and_sources.map { |spec,_| spec }
 
+    # these gems were listed by the user, always install them
+    keep_names = specs.map { |spec| spec.full_name }
+
     dependency_list = Gem::DependencyList.new @development
     dependency_list.add(*specs)
     to_do = specs.dup
@@ -137,9 +140,9 @@ class Gem::DependencyInstaller
     add_found_dependencies to_do, dependency_list unless @ignore_dependencies
 
     dependency_list.specs.reject! { |spec|
-      @source_index.any? { |n,_| n == spec.full_name }
+      ! keep_names.include? spec.full_name and
+        @source_index.any? { |n,_| n == spec.full_name }
     }
-
 
     # TODO: improve message as to why
     # TODO: bring back to life. causing other tests to fail and I

@@ -628,6 +628,14 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal %w[a-1 b-1], inst.gems_to_install.map { |s| s.full_name }
   end
 
+  ##
+  # [A1] depends on nothing
+  # [B1] depends on
+  #    [A] > 0 (satisfied by 1.0)
+  # [B2] depends on nothing!
+  # [C] depends on
+  #   [B] >= 1.0 (satisfied by 2.0)
+
   def test_gather_dependencies_dropped
     b2, = util_gem 'b', '2'
     c1, = util_gem 'c', '1', 'b' => nil

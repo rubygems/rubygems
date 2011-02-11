@@ -25,25 +25,26 @@ class TestGemDependencyInstaller < Gem::TestCase
       s.add_development_dependency 'aa'
     end
 
-    @b1_pre, @b1_pre_gem = util_gem 'b', '1.a' do |s|
-      s.add_dependency 'a'
-      s.add_development_dependency 'aa'
-    end
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
 
+    util_reset_gems
+  end
+
+  def util_setup_c1_pre
     @c1_pre, @c1_pre_gem = util_gem 'c', '1.a' do |s|
       s.add_dependency 'a', '1.a'
       s.add_dependency 'b', '1'
     end
 
+    util_reset_gems
+  end
+
+  def util_setup_d
     @d1, @d1_gem = util_gem 'd', '1'
     @d2, @d2_gem = util_gem 'd', '2'
 
-    @fetcher = Gem::FakeFetcher.new
-    Gem::RemoteFetcher.fetcher = @fetcher
-
-    util_setup_spec_fetcher(@a1, @a1_pre, @b1, @b1_pre, @c1_pre, @d1, @d2)
-
-    util_clear_gems
+    util_reset_gems
   end
 
   def util_setup_wxyz
@@ -64,8 +65,13 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     @z1, @z1_gem = util_gem 'z', '1', 'y' => nil
 
-    util_setup_spec_fetcher(@a1, @a1_pre, @b1, @b1_pre, @c1_pre, @d1, @d2,
-                            @x1_m, @x1_o, @w1, @y1, @y1_1_p, @z1)
+    util_reset_gems
+  end
+
+  def util_reset_gems
+    util_setup_spec_fetcher(*[@a1, @a1_pre, @b1, @c1_pre,
+                              @d1, @d2, @x1_m, @x1_o, @w1, @y1,
+                              @y1_1_p, @z1].compact)
 
     util_clear_gems
   end
@@ -541,6 +547,8 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def test_install_version
+    util_setup_d
+
     data = File.open(@d2_gem, 'rb') { |f| f.read }
     @fetcher.data['http://gems.example.com/gems/d-2.gem'] = data
 
@@ -555,6 +563,8 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def test_install_version_default
+    util_setup_d
+
     data = File.open(@d2_gem, 'rb') { |f| f.read }
     @fetcher.data['http://gems.example.com/gems/d-2.gem'] = data
 
@@ -755,6 +765,8 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def test_gather_dependencies_prerelease
+    util_setup_c1_pre
+
     inst = Gem::DependencyInstaller.new :prerelease => true
     inst.find_spec_by_name_and_version 'c', '1.a'
     inst.gather_dependencies
@@ -764,6 +776,8 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def test_gather_dependencies_old_required
+    util_setup_d
+
     e1, = util_gem 'e', '1', 'd' => '= 1'
 
     util_clear_gems

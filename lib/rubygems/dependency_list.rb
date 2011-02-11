@@ -157,6 +157,17 @@ class Gem::DependencyList
   end
 
   ##
+  # Remove everything in the DependencyList that matches but doesn't
+  # satisfy items in +dependencies+ (a hash of gem names to arrays of
+  # dependencies).
+
+  def remove_specs_unsatisfied_by dependencies
+    specs.reject! { |spec|
+      not dependencies[spec.name].requirement.satisfied_by? spec.version
+    }
+  end
+
+  ##
   # Removes the gemspec matching +full_name+ from the dependency list
 
   def remove_by_name(full_name)

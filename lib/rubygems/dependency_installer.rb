@@ -144,10 +144,6 @@ class Gem::DependencyInstaller
         @source_index.any? { |n,_| n == spec.full_name }
     }
 
-    # TODO: improve message as to why
-    # TODO: bring back to life. causing other tests to fail and I
-    # don't think they should
-    # TODO: I'm not sure force is right here
     unless dependency_list.ok? or @ignore_dependencies or @force then
       reason = dependency_list.why_not_ok?.map { |k,v|
         "#{k} requires #{v.join(", ")}"
@@ -175,8 +171,6 @@ class Gem::DependencyInstaller
 
         results = find_gems_with_sources(dep).reverse
 
-        # FIX: throw in everything that satisfies, and let
-        # FIX: dependencylist reduce to the chosen few
         results.reject! do |dep_spec,|
           to_do.push dep_spec
 
@@ -188,21 +182,14 @@ class Gem::DependencyInstaller
         end
 
         results.each do |dep_spec, source_uri|
-          # next if seen[dep_spec.name]
           @specs_and_sources << [dep_spec, source_uri]
 
-          # FIX: this is the bug
           dependency_list.add dep_spec
         end
       end
     end
 
-    # remove everything already added that hits but doesn't
-    # satisfy the current dep.
-    # TODO: move this over to deplist
-    dependency_list.specs.reject! { |spec|
-      ! dependencies[spec.name].requirement.satisfied_by?(spec.version)
-    }
+    dependency_list.remove_specs_unsatisfied_by dependencies
   end
 
   ##

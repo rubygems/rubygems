@@ -122,6 +122,8 @@ class TestGemDependencyList < Gem::TestCase
   end
 
   def test_ok_eh
+    util_clear_gems
+
     assert @deplist.ok?, 'no dependencies'
 
     @deplist.add @b2
@@ -131,6 +133,22 @@ class TestGemDependencyList < Gem::TestCase
     @deplist.add @a1
 
     assert @deplist.ok?, 'satisfied dependency'
+  end
+
+  def test_why_not_ok_eh
+    util_clear_gems
+
+    assert_equal({},  @deplist.why_not_ok?)
+
+    @deplist.add @b2
+
+    exp = {
+      "b" => [
+              Gem::Dependency.new "a", ">= 1"
+             ]
+    }
+
+    assert_equal exp, @deplist.why_not_ok?
   end
 
   def test_ok_eh_mismatch
@@ -186,6 +204,8 @@ class TestGemDependencyList < Gem::TestCase
   end
 
   def test_remove_by_name
+    util_clear_gems
+
     @deplist.add @a1, @b2
 
     @deplist.remove_by_name "a-1"

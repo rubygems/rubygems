@@ -269,7 +269,6 @@ class Gem::DependencyInstaller
 
     @gems_to_install.each do |spec|
       last = spec == @gems_to_install.last
-      # HACK is this test for full_name acceptable?
       next if @source_index.any? { |n,_| n == spec.full_name } and not last
 
       # TODO: make this sorta_verbose so other users can benefit from it

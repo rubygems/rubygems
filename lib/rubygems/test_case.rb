@@ -18,13 +18,8 @@ require 'uri'
 require 'rubygems/package'
 require 'rubygems/test_utilities'
 require 'pp'
-require 'yaml'
 require 'zlib'
-
-begin
-  YAML::ENGINE.yamler = 'psych'
-rescue LoadError
-end if YAML.const_defined? :ENGINE
+Gem.load_yaml
 
 begin
   gem 'rdoc'

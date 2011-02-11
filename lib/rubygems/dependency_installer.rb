@@ -136,6 +136,13 @@ class Gem::DependencyInstaller
 
     add_found_dependencies to_do, dependency_list unless @ignore_dependencies
 
+    # TODO: improve message as to why
+    # TODO: bring back to life. causing other tests to fail and I
+    # don't think they should
+    #
+    # raise Gem::DependencyError, "Unable to resolve dependencies" unless
+    #   dependency_list.ok?
+
     @gems_to_install = dependency_list.dependency_order.reverse
   end
 
@@ -165,8 +172,16 @@ class Gem::DependencyInstaller
           end
         end
 
+        # remove everything already added that hits but doesn't
+        # satisfy the current dep.
+        # TODO: move this over to deplist
+        dependency_list.specs.reject! { |d_spec|
+          d_spec.name == dep.name &&
+          ! dep.requirement.satisfied_by?(d_spec.version)
+        }
+
         results.each do |dep_spec, source_uri|
-          next if seen[dep_spec.name]
+          # next if seen[dep_spec.name]
           @specs_and_sources << [dep_spec, source_uri]
 
           # FIX: this is the bug

@@ -1,5 +1,10 @@
 = How to upgrade/downgrade Rubygems:
 
+== For RubyGems 1.5.0 and 1.5.1:
+
+RubyGems 1.5.0 and 1.5.1 shipped with a broken <tt>gem update --system</tt>.
+You will need to use the Manual Upgrade Recipe below.
+
 == On Ruby 1.9.x:
 
 === From stock ruby shipping with 1.9:
@@ -28,11 +33,11 @@ Use the Normal Upgrade Recipe below.
 
 === Normal Downgrade
 
-==== With rubygems 1.6.0 and higher:
+==== With rubygems 1.5.2 and higher:
 
     $ gem update --system 1.3.7
 
-==== With rubygems 1.5.0 and lower:
+==== With rubygems 1.5.1 and lower:
 
 Use sudo/su as appropriate:
 

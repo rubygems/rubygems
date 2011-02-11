@@ -58,20 +58,35 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     gem
   end
 
+  def util_setup_rubygem8
+    @rubygem8 = util_setup_rubygem 8
+  end
+
   def util_setup_rubygem9
     @rubygem9 = util_setup_rubygem 9
   end
 
-  def util_setup_rubygem8
-    @rubygem9 = util_setup_rubygem 8
+  def util_setup_rubygem_current
+    @rubygem_current = util_setup_rubygem Gem::VERSION
+  end
+
+  def util_add_to_fetcher *specs
+    specs.each do |spec|
+      gem_file = File.join @gemhome, 'cache', spec.file_name
+
+      @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
+        Gem.read_binary gem_file
+    end
   end
 
   def test_execute_system
-    util_clear_gems
     util_setup_rubygem9
+    util_setup_spec_fetcher @rubygem9
+    util_add_to_fetcher @rubygem9
+    util_clear_gems
 
     @cmd.options[:args]          = []
-    @cmd.options[:system]        = true  # --system
+    @cmd.options[:system]        = true
     @cmd.options[:generate_rdoc] = false
     @cmd.options[:generate_ri]   = false
 
@@ -80,21 +95,45 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     end
 
     out = @ui.output.split "\n"
-    assert_equal "Updating RubyGems", out.shift
-    assert_equal "Updating RubyGems to 9", out.shift
+    assert_equal "Updating rubygems-update", out.shift
+    assert_equal "Successfully installed rubygems-update-9", out.shift
     assert_equal "Installing RubyGems 9", out.shift
     assert_equal "RubyGems system software updated", out.shift
 
     assert_empty out
   end
 
-  def test_execute_system_multiple
+  def test_execute_system_at_latest
+    util_setup_rubygem_current
+    util_setup_spec_fetcher @rubygem_current
+    util_add_to_fetcher @rubygem_current
     util_clear_gems
-    util_setup_rubygem9
-    util_setup_rubygem8
 
     @cmd.options[:args]          = []
-    @cmd.options[:system]        = true  # --system
+    @cmd.options[:system]        = true
+    @cmd.options[:generate_rdoc] = false
+    @cmd.options[:generate_ri]   = false
+
+    assert_raises Gem::SystemExitException do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    out = @ui.output.split "\n"
+    assert_equal "Latest version currently installed. Aborting.", out.shift
+    assert_empty out
+  end
+
+  def test_execute_system_multiple
+    util_setup_rubygem9
+    util_setup_rubygem8
+    util_setup_spec_fetcher @rubygem8, @rubygem9
+    util_add_to_fetcher @rubygem8, @rubygem9
+    util_clear_gems
+
+    @cmd.options[:args]          = []
+    @cmd.options[:system]        = true
     @cmd.options[:generate_rdoc] = false
     @cmd.options[:generate_ri]   = false
 
@@ -103,8 +142,8 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     end
 
     out = @ui.output.split "\n"
-    assert_equal "Updating RubyGems", out.shift
-    assert_equal "Updating RubyGems to 9", out.shift
+    assert_equal "Updating rubygems-update", out.shift
+    assert_equal "Successfully installed rubygems-update-9", out.shift
     assert_equal "Installing RubyGems 9", out.shift
     assert_equal "RubyGems system software updated", out.shift
 
@@ -115,9 +154,11 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     util_clear_gems
     util_setup_rubygem9
     util_setup_rubygem8
+    util_setup_spec_fetcher @rubygem8, @rubygem9
+    util_add_to_fetcher @rubygem8, @rubygem9
 
     @cmd.options[:args]          = []
-    @cmd.options[:system]        = Gem::Requirement.new("8")
+    @cmd.options[:system]        = "8"
     @cmd.options[:generate_rdoc] = false
     @cmd.options[:generate_ri]   = false
 
@@ -126,46 +167,29 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     end
 
     out = @ui.output.split "\n"
-    assert_equal "Updating RubyGems", out.shift
-    assert_equal "Updating RubyGems to 8", out.shift
+    assert_equal "Updating rubygems-update", out.shift
+    assert_equal "Successfully installed rubygems-update-8", out.shift
     assert_equal "Installing RubyGems 8", out.shift
     assert_equal "RubyGems system software updated", out.shift
 
     assert_empty out
   end
 
-  def test_execute_system_options_plain
-    @cmd.handle_options %w[--system]
+  def test_execute_system_with_gems
+    @cmd.options[:args]          = %w[gem]
+    @cmd.options[:system]        = true
+    @cmd.options[:generate_rdoc] = false
+    @cmd.options[:generate_ri]   = false
 
-    expected = {
-      :generate_ri   => true,
-      :system        => Gem::Requirement.default,
-      :force         => false,
-      :args          => [],
-      :generate_rdoc => true,
-    }
-
-    assert_equal expected, @cmd.options
-  end
-
-  def test_execute_system_options_bad
-    assert_raises ArgumentError do
-      @cmd.handle_options %w[--system fuck-you]
+    assert_raises Gem::MockGemUi::TermError do
+      use_ui @ui do
+        @cmd.execute
+      end
     end
-  end
 
-  def test_execute_system_options_specific
-    @cmd.handle_options %w[--system 1.3.7]
-
-    expected = {
-      :generate_ri   => true,
-      :system        => Gem::Requirement.new(["= 1.3.7"]),
-      :force         => false,
-      :args          => [],
-      :generate_rdoc => true,
-    }
-
-    assert_equal expected, @cmd.options
+    assert_empty @ui.output
+    assert_equal "ERROR:  Gem names are not allowed with the --system option\n",
+                 @ui.error
   end
 
   # before:
@@ -286,4 +310,39 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     assert_empty out
   end
+
+  def test_handle_options_system
+    @cmd.handle_options %w[--system]
+
+    expected = {
+      :generate_ri   => true,
+      :system        => true,
+      :force         => false,
+      :args          => [],
+      :generate_rdoc => true,
+    }
+
+    assert_equal expected, @cmd.options
+  end
+
+  def test_handle_options_system_non_version
+    assert_raises ArgumentError do
+      @cmd.handle_options %w[--system non-version]
+    end
+  end
+
+  def test_handle_options_system_specific
+    @cmd.handle_options %w[--system 1.3.7]
+
+    expected = {
+      :generate_ri   => true,
+      :system        => "1.3.7",
+      :force         => false,
+      :args          => [],
+      :generate_rdoc => true,
+    }
+
+    assert_equal expected, @cmd.options
+  end
+
 end

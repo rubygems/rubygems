@@ -3,16 +3,18 @@ require 'rubygems/dependency_installer'
 
 class TestGemDependencyInstaller < Gem::TestCase
 
+  def util_write_a1_bin
+    write_file File.join('gems', 'a-1', 'bin', 'a_bin') do |fp|
+      fp.puts "#!/usr/bin/ruby"
+    end
+  end
+
   def setup
     super
 
     @gems_dir = File.join @tempdir, 'gems'
     @cache_dir = File.join @gemhome, 'cache'
     FileUtils.mkdir @gems_dir
-
-    write_file File.join('gems', 'a-1', 'bin', 'a_bin') do |fp|
-      fp.puts "#!/usr/bin/ruby"
-    end
 
     @a1, @a1_gem = util_gem 'a', '1' do |s| s.executables << 'a_bin' end
     @aa1, @aa1_gem = util_gem 'aa', '1'
@@ -23,19 +25,29 @@ class TestGemDependencyInstaller < Gem::TestCase
       s.add_development_dependency 'aa'
     end
 
-    @b1_pre, @b1_pre_gem = util_gem 'b', '1.a' do |s|
-      s.add_dependency 'a'
-      s.add_development_dependency 'aa'
-    end
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
 
+    util_reset_gems
+  end
+
+  def util_setup_c1_pre
     @c1_pre, @c1_pre_gem = util_gem 'c', '1.a' do |s|
       s.add_dependency 'a', '1.a'
       s.add_dependency 'b', '1'
     end
 
+    util_reset_gems
+  end
+
+  def util_setup_d
     @d1, @d1_gem = util_gem 'd', '1'
     @d2, @d2_gem = util_gem 'd', '2'
 
+    util_reset_gems
+  end
+
+  def util_setup_wxyz
     @x1_m, @x1_m_gem = util_gem 'x', '1' do |s|
       s.platform = Gem::Platform.new %w[cpu my_platform 1]
     end
@@ -53,11 +65,13 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     @z1, @z1_gem = util_gem 'z', '1', 'y' => nil
 
-    @fetcher = Gem::FakeFetcher.new
-    Gem::RemoteFetcher.fetcher = @fetcher
+    util_reset_gems
+  end
 
-    util_setup_spec_fetcher(@a1, @a1_pre, @b1, @b1_pre, @c1_pre, @d1, @d2,
-                            @x1_m, @x1_o, @w1, @y1, @y1_1_p, @z1)
+  def util_reset_gems
+    util_setup_spec_fetcher(*[@a1, @a1_pre, @b1, @c1_pre,
+                              @d1, @d2, @x1_m, @x1_o, @w1, @y1,
+                              @y1_1_p, @z1].compact)
 
     util_clear_gems
   end
@@ -533,6 +547,8 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def test_install_version
+    util_setup_d
+
     data = File.open(@d2_gem, 'rb') { |f| f.read }
     @fetcher.data['http://gems.example.com/gems/d-2.gem'] = data
 
@@ -547,6 +563,8 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def test_install_version_default
+    util_setup_d
+
     data = File.open(@d2_gem, 'rb') { |f| f.read }
     @fetcher.data['http://gems.example.com/gems/d-2.gem'] = data
 
@@ -628,7 +646,104 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal %w[a-1 b-1], inst.gems_to_install.map { |s| s.full_name }
   end
 
+  ##
+  # [A1] depends on nothing
+  # [B1] depends on
+  #    [A] > 0 (satisfied by 1.0)
+  # [B2] depends on nothing!
+  # [C] depends on
+  #   [B] >= 1.0 (satisfied by 2.0)
+
+  def test_gather_dependencies_dropped
+    b2, = util_gem 'b', '2'
+    c1, = util_gem 'c', '1', 'b' => nil
+
+    assert_resolve %w[b-2 c-1], @a1, @b1, b2, c1
+  end
+
+  ##
+  # [A] depends on
+  #     [B] >= 1.0 (satisfied by 1.1) depends on
+  #         [Z]
+  #     [C] >= 1.0 depends on
+  #         [B] = 1.0
+  #
+  # and should backtrack to resolve using b-1.0, pruning Z from the
+  # resolve.
+
+  def test_gather_dependencies_raggi_the_edgecase_generator
+    a,  _ = util_gem 'a', '1.0', 'b' => '>= 1.0', 'c' => '>= 1.0'
+    b1, _ = util_gem 'b', '1.0'
+    b2, _ = util_gem 'b', '1.1', 'z' => '>= 1.0'
+    c,  _ = util_gem 'c', '1.0', 'b' => '= 1.0'
+
+    assert_resolve %w[b-1.0 c-1.0 a-1.0], a, b1, b2, c
+  end
+
+  ##
+  # [A] depends on
+  #     [B] >= 1.0 (satisfied by 2.0)
+  #     [C]  = 1.0 depends on
+  #         [B] ~> 1.0
+  #
+  # and should resolve using b-1.0
+
+  def test_gather_dependencies_over
+    a, _  = util_gem 'a', '1.0', 'b' => '>= 1.0', 'c' => '= 1.0'
+    b1, _ = util_gem 'b', '1.0'
+    b2, _ = util_gem 'b', '2.0'
+    c,  _ = util_gem 'c', '1.0', 'b' => '~> 1.0'
+
+    assert_resolve %w[b-1.0 c-1.0 a-1.0], a, b1, b2, c
+  end
+
+  ##
+  # [A] depends on
+  #     [B] ~> 1.0 (satisfied by 1.1)
+  #     [C]  = 1.0 depends on
+  #         [B] = 1.0
+  #
+  # and should resolve using b-1.0
+  #
+  # TODO: this is not under, but over... under would require depth
+  # first resolve through a dependency that is later pruned.
+
+  def test_gather_dependencies_under
+    a,   _ = util_gem 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
+    b10, _ = util_gem 'b', '1.0'
+    b11, _ = util_gem 'b', '1.1'
+    c,   _ = util_gem 'c', '1.0', 'b' => '= 1.0'
+
+    assert_resolve %w[b-1.0 c-1.0 a-1.0], a, b10, b11, c
+  end
+
+  # under
+  #
+  # [A] depends on
+  #     [B] ~> 1.0 (satisfied by 1.0)
+  #     [C]  = 1.0 depends on
+  #         [B] = 2.0
+
+  def test_gather_dependencies_divergent
+    a, _  = util_gem 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
+    b1, _ = util_gem 'b', '1.0'
+    b2, _ = util_gem 'b', '2.0'
+    c,  _ = util_gem 'c', '1.0', 'b' => '= 2.0'
+
+    util_clear_gems
+
+    si = util_setup_spec_fetcher a, b1, b2, c
+
+    inst = Gem::DependencyInstaller.new
+
+    assert_raises Gem::DependencyError do
+      inst.find_spec_by_name_and_version 'a'
+      inst.gather_dependencies
+    end
+  end
+
   def test_gather_dependencies_platform_alternate
+    util_setup_wxyz
     util_set_arch 'cpu-my_platform1'
 
     inst = Gem::DependencyInstaller.new
@@ -640,6 +755,8 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def test_gather_dependencies_platform_bump
+    util_setup_wxyz
+
     inst = Gem::DependencyInstaller.new
     inst.find_spec_by_name_and_version 'z'
     inst.gather_dependencies
@@ -648,6 +765,8 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def test_gather_dependencies_prerelease
+    util_setup_c1_pre
+
     inst = Gem::DependencyInstaller.new :prerelease => true
     inst.find_spec_by_name_and_version 'c', '1.a'
     inst.gather_dependencies
@@ -657,6 +776,8 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def test_gather_dependencies_old_required
+    util_setup_d
+
     e1, = util_gem 'e', '1', 'd' => '= 1'
 
     util_clear_gems

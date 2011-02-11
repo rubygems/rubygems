@@ -11,6 +11,7 @@ require 'tsort'
 # correct order to avoid conflicts.
 
 class Gem::DependencyList
+  attr_reader :specs
 
   include Enumerable
   include TSort

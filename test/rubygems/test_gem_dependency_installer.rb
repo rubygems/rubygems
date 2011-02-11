@@ -3,16 +3,18 @@ require 'rubygems/dependency_installer'
 
 class TestGemDependencyInstaller < Gem::TestCase
 
+  def util_write_a1_bin
+    write_file File.join('gems', 'a-1', 'bin', 'a_bin') do |fp|
+      fp.puts "#!/usr/bin/ruby"
+    end
+  end
+
   def setup
     super
 
     @gems_dir = File.join @tempdir, 'gems'
     @cache_dir = File.join @gemhome, 'cache'
     FileUtils.mkdir @gems_dir
-
-    write_file File.join('gems', 'a-1', 'bin', 'a_bin') do |fp|
-      fp.puts "#!/usr/bin/ruby"
-    end
 
     @a1, @a1_gem = util_gem 'a', '1' do |s| s.executables << 'a_bin' end
     @aa1, @aa1_gem = util_gem 'aa', '1'
@@ -36,6 +38,15 @@ class TestGemDependencyInstaller < Gem::TestCase
     @d1, @d1_gem = util_gem 'd', '1'
     @d2, @d2_gem = util_gem 'd', '2'
 
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
+
+    util_setup_spec_fetcher(@a1, @a1_pre, @b1, @b1_pre, @c1_pre, @d1, @d2)
+
+    util_clear_gems
+  end
+
+  def util_setup_wxyz
     @x1_m, @x1_m_gem = util_gem 'x', '1' do |s|
       s.platform = Gem::Platform.new %w[cpu my_platform 1]
     end
@@ -52,9 +63,6 @@ class TestGemDependencyInstaller < Gem::TestCase
     end
 
     @z1, @z1_gem = util_gem 'z', '1', 'y' => nil
-
-    @fetcher = Gem::FakeFetcher.new
-    Gem::RemoteFetcher.fetcher = @fetcher
 
     util_setup_spec_fetcher(@a1, @a1_pre, @b1, @b1_pre, @c1_pre, @d1, @d2,
                             @x1_m, @x1_o, @w1, @y1, @y1_1_p, @z1)
@@ -725,6 +733,7 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def test_gather_dependencies_platform_alternate
+    util_setup_wxyz
     util_set_arch 'cpu-my_platform1'
 
     inst = Gem::DependencyInstaller.new
@@ -736,6 +745,8 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def test_gather_dependencies_platform_bump
+    util_setup_wxyz
+
     inst = Gem::DependencyInstaller.new
     inst.find_spec_by_name_and_version 'z'
     inst.gather_dependencies

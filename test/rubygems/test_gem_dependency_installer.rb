@@ -434,6 +434,22 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name }
   end
 
+  def test_install_reinstall
+    Gem::Installer.new(@a1_gem).install
+    FileUtils.mv @a1_gem, @tempdir
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new
+      inst.install 'a'
+    end
+
+    assert_equal Gem::SourceIndex.new(@a1.full_name => @a1),
+                 Gem::SourceIndex.from_installed_gems
+
+    assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
   def test_install_remote
     a1_data = nil
     File.open @a1_gem, 'rb' do |fp|
@@ -469,7 +485,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
   end
 
-  def test_install_domain_remote_platform_newer
+  def test_install_remote_platform_newer
     a2_o, a2_o_gem = util_gem 'a', '2' do |s|
       s.platform = Gem::Platform.new %w[cpu other_platform 1]
     end
@@ -493,22 +509,6 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     inst = Gem::DependencyInstaller.new :domain => :remote
     inst.install 'a'
-
-    assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
-  end
-
-  def test_install_reinstall
-    Gem::Installer.new(@a1_gem).install
-    FileUtils.mv @a1_gem, @tempdir
-    inst = nil
-
-    Dir.chdir @tempdir do
-      inst = Gem::DependencyInstaller.new
-      inst.install 'a'
-    end
-
-    assert_equal Gem::SourceIndex.new(@a1.full_name => @a1),
-                 Gem::SourceIndex.from_installed_gems
 
     assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
   end

@@ -106,16 +106,17 @@ class Gem::DependencyList
 
   def ok?
     source_index = Gem.source_index
-    @specs.all? do |spec|
-      spec.runtime_dependencies.all? do |dep|
+    @specs.all? { |spec|
+      spec.runtime_dependencies.all? { |dep|
+        # REFACTOR into source_index
         installed = source_index.any? { |_, installed_spec|
           dep.name == installed_spec.name and
             dep.requirement.satisfied_by? installed_spec.version
         }
 
         installed or @specs.find { |s| s.satisfies_requirement? dep }
-      end
-    end
+      }
+    }
   end
 
   # REFACTOR with ok?

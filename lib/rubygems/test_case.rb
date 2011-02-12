@@ -21,13 +21,6 @@ require 'pp'
 require 'zlib'
 Gem.load_yaml
 
-begin
-  gem 'rdoc'
-rescue Gem::LoadError
-end
-
-require 'rdoc/rdoc'
-
 require 'rubygems/mock_gem_ui'
 
 module Gem

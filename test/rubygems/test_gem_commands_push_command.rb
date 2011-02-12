@@ -7,7 +7,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     super
 
     @gems_dir = File.join @tempdir, 'gems'
-    @cache_dir = File.join @gemhome, 'cache'
+    @cache_dir = Gem.cache_dir(@gemhome)
     FileUtils.mkdir @gems_dir
     Gem.configuration.rubygems_api_key = "ed244fbf2b1a52e012da8616c512fa47f9aa5250"
     @spec, @path = util_gem("freewill", "1.0.0")

@@ -75,7 +75,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
 
     install_gem a
 
-    FileUtils.rm File.join(@gemhome, 'cache', a.file_name)
+    FileUtils.rm Gem.cache_gem(a.file_name, @gemhome)
 
     @cmd.options[:args] = %w[a]
 

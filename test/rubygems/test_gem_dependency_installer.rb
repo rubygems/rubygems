@@ -648,18 +648,20 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   ##
-  # [A1] depends on nothing
+  # [A1] depends on
+  #    [B] > 0 (satisfied by 2.0)
   # [B1] depends on
-  #    [A] > 0 (satisfied by 1.0)
+  #    [C] > 0 (satisfied by 1.0)
   # [B2] depends on nothing!
-  # [C] depends on
-  #   [B] >= 1.0 (satisfied by 2.0)
+  # [C1] depends on nothing
 
   def test_gather_dependencies_dropped
+    a1, = util_gem 'a', '1', 'b' => nil
+    b1, = util_gem 'b', '1', 'c' => nil
     b2, = util_gem 'b', '2'
-    c1, = util_gem 'c', '1', 'b' => nil
+    c1, = util_gem 'c', '1'
 
-    assert_resolve %w[b-2 c-1], @a1, @b1, b2, c1
+    assert_resolve %w[b-2 a-1], a1, b1, b2, c1
   end
 
   ##

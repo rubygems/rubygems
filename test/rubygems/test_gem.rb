@@ -787,14 +787,14 @@ class TestGem < Gem::TestCase
     util_ensure_gem_dirs
 
     assert_equal File.join(@gemhome, 'cache'), Gem.cache_dir
-    assert_equal File.join(@userhome, '.gem', Gem.ruby_engine, Gem::ConfigMap[:ruby_version], 'cache'), Gem.cache_dir(true)
+    assert_equal File.join(@userhome, '.gem', Gem.ruby_engine, Gem::ConfigMap[:ruby_version], 'cache'), Gem.cache_dir(Gem.user_dir)
   end
 
   def test_self_cache_gem
     util_ensure_gem_dirs
 
     assert_equal File.join(@gemhome, 'cache', 'test.gem'), Gem.cache_gem('test.gem')
-    assert_equal File.join(@userhome, '.gem', Gem.ruby_engine, Gem::ConfigMap[:ruby_version], 'cache', 'test.gem'), Gem.cache_gem('test.gem', true)
+    assert_equal File.join(@userhome, '.gem', Gem.ruby_engine, Gem::ConfigMap[:ruby_version], 'cache', 'test.gem'), Gem.cache_gem('test.gem', Gem.user_dir)
   end
 
   if Gem.win_platform? then

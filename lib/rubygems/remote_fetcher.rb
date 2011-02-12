@@ -80,9 +80,9 @@ class Gem::RemoteFetcher
     Gem.ensure_gem_subdirectories(install_dir) rescue nil
 
     if File.writable?(install_dir)
-      cache_dir = File.join install_dir, 'cache'
+      cache_dir = Gem.cache_dir(install_dir)
     else
-      cache_dir = File.join(Gem.user_dir, 'cache')
+      cache_dir = Gem.cache_dir(Gem.user_dir)
     end
 
     gem_file_name = spec.file_name

@@ -68,6 +68,8 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
 
   def test_execute_gem_path
     util_make_gems
+    util_setup_spec_fetcher
+    util_setup_fake_fetcher
 
     Gem.clear_paths
 

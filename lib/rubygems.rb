@@ -719,18 +719,19 @@ module Gem
   ##
   # Get the appropriate cache path.
   #
-  # Pass true to get the user path as opposed to the system path.
+  # Pass a string to use a different base path, or nil/false (default) for
+  # Gem.dir.
   #
   
-  def self.cache_dir(user_dir=false)
-    File.join(user_dir ? Gem.user_dir : Gem.dir, 'cache')
+  def self.cache_dir(custom_dir=false)
+    File.join(custom_dir ? custom_dir : Gem.dir, 'cache')
   end
 
   ##
   # Given a gem path, find the gem in cache.
   #
-  # If passed true as a second argument, will attempt the user path instead of
-  # the system path.
+  # Pass a string as the second argument to use a different base path, or
+  # nil/false (default) for Gem.dir.
 
   def self.cache_gem(filename, user_dir=false)
     File.join(cache_dir(user_dir), filename)

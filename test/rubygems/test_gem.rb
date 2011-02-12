@@ -372,7 +372,7 @@ class TestGem < Gem::TestCase
 
     Gem.ensure_gem_subdirectories @gemhome
 
-    assert File.directory?(File.join(@gemhome, "cache"))
+    assert File.directory?(Gem.cache_dir(@gemhome))
   end
 
   def test_self_ensure_gem_directories_missing_parents
@@ -384,7 +384,7 @@ class TestGem < Gem::TestCase
 
     Gem.ensure_gem_subdirectories gemdir
 
-    assert File.directory?("#{gemdir}/cache")
+    assert File.directory?(Gem.cache_dir(gemdir))
   end
 
   unless win_platform? then # only for FS that support write protection
@@ -398,7 +398,7 @@ class TestGem < Gem::TestCase
 
       Gem.ensure_gem_subdirectories gemdir
 
-      refute File.exist?("#{gemdir}/cache")
+      refute File.exist?(Gem.cache_dir(gemdir))
     ensure
       FileUtils.chmod 0600, gemdir
     end
@@ -415,7 +415,7 @@ class TestGem < Gem::TestCase
 
       Gem.ensure_gem_subdirectories gemdir
 
-      refute File.exist?("#{gemdir}/cache")
+      refute File.exist?(Gem.cache_dir(gemdir))
     ensure
       FileUtils.chmod 0600, parent
     end

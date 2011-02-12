@@ -102,6 +102,13 @@ class Gem::Uninstaller
   def uninstall_gem(spec, specs)
     @spec = spec
 
+    unless dependencies_ok? spec
+      unless ask_if_ok(spec)
+        raise Gem::DependencyRemovalException,
+          "Uninstallation aborted due to dependent gem(s)"
+      end
+    end
+
     Gem.pre_uninstall_hooks.each do |hook|
       hook.call self
     end
@@ -178,11 +185,6 @@ class Gem::Uninstaller
   # uninstalled a gem, it is removed from that list.
 
   def remove(spec, list)
-    unless dependencies_ok? spec then
-      raise Gem::DependencyRemovalException,
-            "Uninstallation aborted due to dependent gem(s)"
-    end
-
     unless path_ok?(@gem_home, spec) or
            (@user_install and path_ok?(Gem.user_dir, spec)) then
       e = Gem::GemNotInHomeException.new \
@@ -240,7 +242,7 @@ class Gem::Uninstaller
 
     deplist = Gem::DependencyList.from_source_index @source_index
     deplist.add(*@user_index.gems.values) if @user_install
-    deplist.ok_to_remove?(spec.full_name) || ask_if_ok(spec)
+    deplist.ok_to_remove?(spec.full_name)
   end
 
   def ask_if_ok(spec)

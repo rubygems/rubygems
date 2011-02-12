@@ -12,7 +12,6 @@ class TestGemDependencyInstaller < Gem::TestCase
     FileUtils.mkdir @gems_dir
 
     @a1, @a1_gem         = util_gem 'a', '1' do |s| s.executables << 'a_bin' end
-    @aa1, @aa1_gem       = util_gem 'aa', '1'
     @a1_pre, @a1_pre_gem = util_gem 'a', '1.a'
     @b1, @b1_gem         = util_gem 'b', '1' do |s|
       s.add_dependency 'a'
@@ -124,6 +123,10 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def test_install_dependency_development
+    @aa1, @aa1_gem = util_gem 'aa', '1'
+
+    util_reset_gems
+
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv @aa1_gem, @tempdir
     FileUtils.mv @b1_gem, @tempdir
@@ -580,7 +583,22 @@ class TestGemDependencyInstaller < Gem::TestCase
     util_setup_spec_fetcher(*specs)
 
     inst = Gem::DependencyInstaller.new
-    inst.find_spec_by_name_and_version 'a'
+    inst.find_spec_by_name_and_version specs.first.name
+    inst.gather_dependencies
+
+    actual = inst.gems_to_install.map { |s| s.full_name }
+    assert_equal expected, actual
+  end
+
+  def assert_resolve_pre expected, *specs
+    util_clear_gems
+
+    util_setup_spec_fetcher(*specs)
+
+    spec = specs.first
+
+    inst = Gem::DependencyInstaller.new :prerelease => true
+    inst.find_spec_by_name_and_version spec.name, spec.version
     inst.gather_dependencies
 
     actual = inst.gems_to_install.map { |s| s.full_name }
@@ -681,15 +699,8 @@ class TestGemDependencyInstaller < Gem::TestCase
     b2, _ = util_spec 'b', '2.0'
     c,  _ = util_spec 'c', '1.0', 'b' => '= 2.0'
 
-    util_clear_gems
-
-    si = util_setup_spec_fetcher a, b1, b2, c
-
-    inst = Gem::DependencyInstaller.new
-
     assert_raises Gem::DependencyError do
-      inst.find_spec_by_name_and_version 'a'
-      inst.gather_dependencies
+      assert_resolve :ignored, a, b1, b2, c
     end
   end
 
@@ -697,49 +708,27 @@ class TestGemDependencyInstaller < Gem::TestCase
     util_setup_wxyz
     util_set_arch 'cpu-my_platform1'
 
-    inst = Gem::DependencyInstaller.new
-    inst.find_spec_by_name_and_version 'w'
-    inst.gather_dependencies
-
-    assert_equal %w[x-1-cpu-my_platform-1 w-1],
-                 inst.gems_to_install.map { |s| s.full_name }
+    assert_resolve %w[x-1-cpu-my_platform-1 w-1], @w1, @x1_m
   end
 
   def test_gather_dependencies_platform_bump
     util_setup_wxyz
 
-    inst = Gem::DependencyInstaller.new
-    inst.find_spec_by_name_and_version 'z'
-    inst.gather_dependencies
-
-    assert_equal %w[y-1 z-1], inst.gems_to_install.map { |s| s.full_name }
+    assert_resolve %w[y-1 z-1], @z1, @y1
   end
 
   def test_gather_dependencies_prerelease
     util_setup_c1_pre
 
-    inst = Gem::DependencyInstaller.new :prerelease => true
-    inst.find_spec_by_name_and_version 'c', '1.a'
-    inst.gather_dependencies
-
-    assert_equal %w[a-1.a b-1 c-1.a],
-                 inst.gems_to_install.map { |s| s.full_name }
+    assert_resolve_pre %w[a-1.a b-1 c-1.a], @c1_pre, @a1_pre, @b1
   end
 
   def test_gather_dependencies_old_required
     util_setup_d
-
     e1, = util_spec 'e', '1', 'd' => '= 1'
-
     util_clear_gems
 
-    util_setup_spec_fetcher @d1, @d2, e1
-
-    inst = Gem::DependencyInstaller.new
-    inst.find_spec_by_name_and_version 'e'
-    inst.gather_dependencies
-
-    assert_equal %w[d-1 e-1], inst.gems_to_install.map { |s| s.full_name }
+    assert_resolve %w[d-1 e-1], e1, @d1, @d2
   end
 
   def util_write_a1_bin

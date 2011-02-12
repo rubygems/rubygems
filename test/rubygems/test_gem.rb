@@ -783,6 +783,20 @@ class TestGem < Gem::TestCase
     end
   end
 
+  def test_self_cache_dir
+    util_ensure_gem_dirs
+
+    assert_equal File.join(@gemhome, 'cache'), Gem.cache_dir
+    assert_equal File.join(@userhome, '.gem', Gem.ruby_engine, Gem::ConfigMap[:ruby_version], 'cache'), Gem.cache_dir(true)
+  end
+
+  def test_self_cache_gem
+    util_ensure_gem_dirs
+
+    assert_equal File.join(@gemhome, 'cache', 'test.gem'), Gem.cache_gem('test.gem')
+    assert_equal File.join(@userhome, '.gem', Gem.ruby_engine, Gem::ConfigMap[:ruby_version], 'cache', 'test.gem'), Gem.cache_gem('test.gem', true)
+  end
+
   if Gem.win_platform? then
     def test_self_user_home_userprofile
       skip 'Ruby 1.9 properly handles ~ path expansion' unless '1.9' > RUBY_VERSION

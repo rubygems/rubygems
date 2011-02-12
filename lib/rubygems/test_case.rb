@@ -308,14 +308,14 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     require 'rubygems/specification'
 
     spec = Gem::Specification.new do |s|
-      s.platform = Gem::Platform::RUBY
-      s.name = name
-      s.version = version
-      s.author = 'A User'
-      s.email = 'example@example.com'
-      s.homepage = 'http://example.com'
-      s.has_rdoc = true
-      s.summary = "this is a summary"
+      s.platform    = Gem::Platform::RUBY
+      s.name        = name
+      s.version     = version
+      s.author      = 'A User'
+      s.email       = 'example@example.com'
+      s.homepage    = 'http://example.com'
+      s.has_rdoc    = true
+      s.summary     = "this is a summary"
       s.description = "This is a test description"
 
       yield(s) if block_given?
@@ -361,9 +361,26 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # Removes all installed gems from +@gemhome+.
 
   def util_clear_gems
-    FileUtils.rm_r File.join(@gemhome, 'gems')
-    FileUtils.rm_r File.join(@gemhome, 'specifications')
+    FileUtils.rm_rf File.join(@gemhome, 'gems')
+    FileUtils.rm_rf File.join(@gemhome, 'specifications')
     Gem.source_index.refresh!
+  end
+
+  ##
+  # Creates a spec with +name+, +version+ and +deps+.
+
+  def util_spec(name, version, deps = nil, &block)
+    raise "deps or block, not both" if deps and block
+
+    if deps then
+      block = proc do |s|
+        deps.each do |n, req|
+          s.add_dependency n, (req || '>= 0')
+        end
+      end
+    end
+
+    quick_gem(name, version, &block)
   end
 
   ##
@@ -373,15 +390,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # location are returned.
 
   def util_gem(name, version, deps = nil, &block)
-    if deps then
-      block = proc do |s|
-        deps.each do |n, req|
-          s.add_dependency n, (req || '>= 0')
-        end
-      end
-    end
-
-    spec = quick_gem(name, version, &block)
+    spec = util_spec(name, version, deps, &block)
 
     util_build_gem spec
 

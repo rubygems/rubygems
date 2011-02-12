@@ -345,7 +345,7 @@ class Gem::StreamUI
   # Return a progress reporter object chosen from the current verbosity.
 
   def progress_reporter(*args)
-    if usetty?(@outs)
+    if !usetty?(@outs)
       return SilentProgressReporter.new(@outs, *args)
     end
 
@@ -451,7 +451,7 @@ class Gem::StreamUI
   # Return a download reporter object chosen from the current verbosity
 
   def download_reporter(*args)
-    if usetty?(@outs)
+    if !usetty?(@outs)
       return SilentDownloadReporter.new(@outs, *args)
     end
 

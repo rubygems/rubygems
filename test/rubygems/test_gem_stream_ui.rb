@@ -31,11 +31,11 @@ class TestGemStreamUI < Gem::TestCase
     @in.extend IsTty
     @out.extend IsTty
 
-    @sui = Gem::StreamUI.new @in, @out, @err, false
+    @sui = Gem::StreamUI.new @in, @out, @err, true
   end
 
   def test_ask
-    skip 'TTY detection broken on windows'
+    skip 'TTY detection broken on windows' if Gem.win_platform?
 
     timeout(1) do
       expected_answer = "Arthur, King of the Britons"

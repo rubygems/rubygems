@@ -7,7 +7,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     super
 
     @gems_dir  = File.join @tempdir, 'gems'
-    @cache_dir = File.join @gemhome, 'cache'
+    @cache_dir = Gem.cache_dir(@gemhome)
 
     FileUtils.mkdir @gems_dir
 
@@ -75,8 +75,8 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
 
-    assert File.exist?(File.join(@tempdir, 'cache', @a1.file_name))
-    assert File.exist?(File.join(@tempdir, 'cache', @b1.file_name))
+    assert Gem.cache_gem(@a1.file_name, @gemhome)
+    assert Gem.cache_gem(@b1.file_name, @gemhome)
   end
 
   def test_install_dependencies_satisfied
@@ -280,7 +280,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
 
     assert File.exist?(File.join(gemhome2, 'specifications', @a1.spec_name))
-    assert File.exist?(File.join(gemhome2, 'cache', @a1.file_name))
+    assert File.exist?(Gem.cache_gem(@a1.file_name, gemhome2))
   end
 
   def test_install_domain_both

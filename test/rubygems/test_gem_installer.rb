@@ -505,8 +505,7 @@ load Gem.bin_path('a', 'my_exec', version)
 
     Dir.mkdir util_inst_bindir
     util_build_gem spec
-    FileUtils.mv File.join(@gemhome, 'cache', spec.file_name),
-                 @tempdir
+    FileUtils.mv Gem.cache_gem(spec.file_name, @gemhome), @tempdir
 
     installer = Gem::Installer.new gem
 
@@ -519,7 +518,7 @@ load Gem.bin_path('a', 'my_exec', version)
     util_clear_gems
 
     gemdir     = File.join @gemhome, 'gems', @spec.full_name
-    cache_file = File.join @gemhome, 'cache', @spec.file_name
+    cache_file = Gem.cache_gem(@spec.file_name, @gemhome)
     stub_exe   = File.join @gemhome, 'bin', 'executable'
     rakefile   = File.join gemdir, 'ext', 'a', 'Rakefile'
 
@@ -660,7 +659,7 @@ load Gem.bin_path('a', 'my_exec', version)
   end
 
   def test_install_missing_dirs
-    FileUtils.rm_f File.join(Gem.dir, 'cache')
+    FileUtils.rm_f Gem.cache_dir
     FileUtils.rm_f File.join(Gem.dir, 'docs')
     FileUtils.rm_f File.join(Gem.dir, 'specifications')
 
@@ -670,11 +669,11 @@ load Gem.bin_path('a', 'my_exec', version)
       @installer.install
     end
 
-    File.directory? File.join(Gem.dir, 'cache')
+    File.directory? Gem.cache_dir
     File.directory? File.join(Gem.dir, 'docs')
     File.directory? File.join(Gem.dir, 'specifications')
 
-    assert File.exist?(File.join(@gemhome, 'cache', @spec.file_name))
+    assert File.exist?(Gem.cache_gem(@spec.file_name, @gemhome))
     assert File.exist?(File.join(@gemhome, 'specifications', @spec.spec_name))
   end
 
@@ -786,7 +785,7 @@ load Gem.bin_path('a', 'my_exec', version)
 
     util_build_gem spec
 
-    gem = File.join @gemhome, 'cache', spec.file_name
+    gem = Gem.cache_gem(spec.file_name, @gemhome)
 
     use_ui @ui do
       @installer = Gem::Installer.new gem
@@ -938,7 +937,7 @@ load Gem.bin_path('a', 'my_exec', version)
 
     util_build_gem spec
 
-    File.join @gemhome, 'cache', spec.file_name
+    Gem.cache_gem(spec.file_name, @gemhome)
   end
 
 end

@@ -126,9 +126,12 @@ class TestGem < Gem::TestCase
     b2, _ = util_spec 'b', '2.0'
     c,  _ = util_spec 'c', '1.0', 'b' => '= 2.0'
 
-    assert_raises Gem::DependencyError do
+    e = assert_raises Gem::LoadError do
       assert_activate :ignored, a, b1, b2, c
     end
+
+    assert_match /can\'t activate b .= 2.0, runtime./, e.message
+    assert_match /already activated b-1.0/, e.message
   end
 
   def test_self_activate_platform_alternate

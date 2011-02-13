@@ -88,6 +88,7 @@ end
       has_rdoc
       homepage
       licenses
+      metadata
       name
       platform
       post_install_message
@@ -1261,6 +1262,104 @@ end
     end
   ensure
     specfile.delete
+  end
+
+  def test_metadata_validation
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @m1 = quick_gem 'm', '1' do |s|
+        s.files = %w[lib/code.rb]
+        s.metadata = { :one => "two", :two => "three" }
+      end
+
+      use_ui @ui do
+        @m1.validate
+      end
+
+      @m2 = quick_gem 'm', '2' do |s|
+        s.files = %w[lib/code.rb]
+        s.metadata = { :one => "two", 1 => "fail" }
+      end
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @m2.validate
+      end
+
+      assert_equal "metadata keys must be a Symbol", e.message
+      
+      @m2 = quick_gem 'm', '2' do |s|
+        s.files = %w[lib/code.rb]
+        s.metadata = { :one => "two", "fail" => "fail" }
+      end
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @m2.validate
+      end
+
+      assert_equal "metadata keys must be a Symbol", e.message
+
+      @m2 = quick_gem 'm', '2' do |s|
+        s.files = %w[lib/code.rb]
+        s.metadata = { :one => "two", :fail => [] }
+      end
+      
+      e = assert_raises Gem::InvalidSpecificationException do
+        @m2.validate
+      end
+      
+      assert_equal "metadata values must be a String", e.message
+      
+      @m2 = quick_gem 'm', '2' do |s|
+        s.files = %w[lib/code.rb]
+        s.metadata = { :one => "two", :fail => :symbol }
+      end
+      
+      e = assert_raises Gem::InvalidSpecificationException do
+        @m2.validate
+      end
+      
+      assert_equal "metadata values must be a String", e.message
+    end
+  end
+
+  def test_metadata_specs
+    valid_ruby_spec = <<-EOF
+# -*- encoding: utf-8 -*-
+
+Gem::Specification.new do |s|
+  s.name = %q{m}
+  s.version = "1"
+
+  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.authors = ["A User"]
+  s.date = %q{2011-02-13}
+  s.description = %q{This is a test description}
+  s.email = %q{example@example.com}
+  s.files = ["lib/code.rb"]
+  s.homepage = %q{http://example.com}
+  s.metadata = {:one=>"two", :two=>"three"}
+  s.require_paths = ["lib"]
+  s.rubygems_version = %q{1.5.2}
+  s.summary = %q{this is a summary}
+
+  if s.respond_to? :specification_version then
+    s.specification_version = 3
+
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+    else
+    end
+  else
+  end
+end
+    EOF
+
+    @m1 = quick_gem 'm', '1' do |s|
+      s.files = %w[lib/code.rb]
+      s.metadata = { :one => "two", :two => "three" }
+    end
+
+    assert_equal @m1.to_ruby, valid_ruby_spec
   end
 
   def util_setup_validate

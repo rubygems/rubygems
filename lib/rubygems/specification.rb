@@ -893,6 +893,21 @@ class Gem::Specification
             'authors must be Array of Strings'
     end
 
+    unless Hash === metadata
+      raise Gem::InvalidSpecificationException,
+        'metadata must be a hash'
+    end
+
+    if metadata.keys.find { |x| !x.kind_of?(Symbol) }
+      raise Gem::InvalidSpecificationException,
+        'metadata keys must be a Symbol'
+    end
+    
+    if metadata.values.find { |x| !x.kind_of?(String) }
+      raise Gem::InvalidSpecificationException,
+        'metadata values must be a String'
+    end
+
     licenses.each { |license|
       if license.length > 64
         raise Gem::InvalidSpecificationException,
@@ -1060,7 +1075,7 @@ class Gem::Specification
   def ruby_code(obj)
     case obj
     when String            then '%q{' + obj + '}'
-    when Array             then obj.inspect
+    when Array, Hash       then obj.inspect
     when Gem::Version      then obj.to_s.inspect
     when Date              then '%q{' + obj.strftime('%Y-%m-%d') + '}'
     when Time              then '%q{' + obj.strftime('%Y-%m-%d') + '}'
@@ -1139,6 +1154,16 @@ class Gem::Specification
   required_attribute :require_paths, ['lib']
 
   # :section: Optional gemspec attributes
+  
+  ##
+  # :attr_accessor: metadata
+  #
+  # Arbitrary metadata for this gem. An instance of Hash.
+  #
+  # metadata is simply a Symbol => String association that contains arbitary
+  # data that could be useful to other consumers.
+
+  attribute :metadata, { }
 
   ##
   # :attr_accessor: email

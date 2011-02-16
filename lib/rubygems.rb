@@ -289,17 +289,17 @@ module Gem
     @loaded_specs[spec.name]  = spec
     @loaded_stacks[spec.name] = sources.dup
 
-    spec.runtime_dependencies.each do |dep|
-      next if Gem.loaded_specs.include? dep.name
-      specs = Gem.source_index.search dep, true
+    spec.runtime_dependencies.each do |spec_dep|
+      next if Gem.loaded_specs.include? spec_dep.name
+      specs = Gem.source_index.search spec_dep, true
 
       _unresolved.add(*specs)
     end
 
     current = Hash.new { |h, name| h[name] = Gem::Dependency.new name }
     Gem.loaded_specs.each do |n,s|
-      s.runtime_dependencies.each do |dep|
-        current[dep.name] = current[dep.name].merge dep
+      s.runtime_dependencies.each do |s_dep|
+        current[s_dep.name] = current[s_dep.name].merge s_dep
       end
     end
 

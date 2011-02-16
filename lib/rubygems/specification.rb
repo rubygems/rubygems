@@ -791,7 +791,7 @@ class Gem::Specification
 
     result << "    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then"
 
-    unless dependencies.empty? then
+    unless dependencies.empty? then # TODO remove
       dependencies.each do |dep|
         version_reqs_param = dep.requirements_list.inspect
         dep.instance_variable_set :@type, :runtime if dep.type.nil? # HACK
@@ -1519,5 +1519,22 @@ class Gem::Specification
               @extra_rdoc_files,
               @extensions,
              ].flatten.uniq.compact
+  end
+
+  def conflicts
+    conflicts = {}
+    Gem.loaded_specs.values.each do |spec|
+      satisfied = spec.runtime_dependencies.any? { |dep|
+        satisfies_requirement? dep
+      }
+
+      unless satisfied then
+        bad = spec.runtime_dependencies.find_all { |dep|
+          not satisfies_requirement? dep
+        }
+        conflicts[spec.full_name] = bad unless bad.empty?
+      end
+    end
+    conflicts
   end
 end

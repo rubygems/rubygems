@@ -27,6 +27,8 @@ module Gem::GemcutterUtilities
     host = ENV['RUBYGEMS_HOST'] if ENV['RUBYGEMS_HOST']
     uri = URI.parse "#{host}/#{path}"
 
+    say "Pushing gem to #{host}..."
+
     request_method = Net::HTTP.const_get method.to_s.capitalize
 
     Gem::RemoteFetcher.fetcher.request(uri, request_method, &block)

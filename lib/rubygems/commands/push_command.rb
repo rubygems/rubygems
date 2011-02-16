@@ -36,11 +36,14 @@ class Gem::Commands::PushCommand < Gem::Command
   end
 
   def send_gem name
-    say "Pushing gem to #{options[:host] || Gem.host}..."
-
     args = [:post, "api/v1/gems"]
 
     args << options[:host] if options[:host]
+
+    if Gem.latest_rubygems_version < Gem::Version.new(Gem::VERSION) then
+      alert_error "Using beta/unreleased version of rubygems. Not pushing."
+      return
+    end
 
     response = rubygems_api_request(*args) do |request|
       request.body = Gem.read_binary name

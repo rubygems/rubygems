@@ -737,6 +737,27 @@ module Gem
   end
 
   ##
+  # Get the appropriate cache path.
+  #
+  # Pass a string to use a different base path, or nil/false (default) for
+  # Gem.dir.
+  #
+  
+  def self.cache_dir(custom_dir=false)
+    File.join(custom_dir ? custom_dir : Gem.dir, 'cache')
+  end
+
+  ##
+  # Given a gem path, find the gem in cache.
+  #
+  # Pass a string as the second argument to use a different base path, or
+  # nil/false (default) for Gem.dir.
+
+  def self.cache_gem(filename, user_dir=false)
+    File.join(cache_dir(user_dir), filename)
+  end
+
+  ##
   # Set array of platforms this RubyGems supports (primarily for testing).
 
   def self.platforms=(platforms)

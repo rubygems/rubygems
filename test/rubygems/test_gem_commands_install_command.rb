@@ -16,9 +16,9 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     util_setup_spec_fetcher @a2, @a2_pre
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
-      read_binary(File.join(@gemhome, 'cache', @a2.file_name))
+      read_binary(Gem.cache_gem(@a2.file_name, @gemhome))
     @fetcher.data["#{@gem_repo}gems/#{@a2_pre.file_name}"] =
-      read_binary(File.join(@gemhome, 'cache', @a2_pre.file_name))
+      read_binary(Gem.cache_gem(@a2_pre.file_name, @gemhome))
 
     @cmd.options[:args] = [@a2.name]
 
@@ -38,9 +38,9 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     util_setup_spec_fetcher @a2, @a2_pre
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
-      read_binary(File.join(@gemhome, 'cache', @a2.file_name))
+      read_binary(Gem.cache_gem(@a2.file_name, @gemhome))
     @fetcher.data["#{@gem_repo}gems/#{@a2_pre.file_name}"] =
-      read_binary(File.join(@gemhome, 'cache', @a2_pre.file_name))
+      read_binary(Gem.cache_gem(@a2_pre.file_name, @gemhome))
 
     @cmd.handle_options [@a2_pre.name, '--version', @a2_pre.version.to_s]
     assert @cmd.options[:prerelease]
@@ -79,8 +79,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     util_setup_fake_fetcher
     @cmd.options[:domain] = :local
 
-    FileUtils.mv File.join(@gemhome, 'cache', @a2.file_name),
-                 File.join(@tempdir)
+    FileUtils.mv Gem.cache_gem(@a2.file_name, @gemhome), @tempdir
 
     @cmd.options[:args] = [@a2.name]
 
@@ -109,8 +108,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     util_setup_fake_fetcher
     @cmd.options[:user_install] = false
 
-    FileUtils.mv File.join(@gemhome, 'cache', @a2.file_name),
-                 File.join(@tempdir)
+    FileUtils.mv Gem.cache_gem(@a2.file_name, @gemhome), @tempdir
 
     @cmd.options[:args] = [@a2.name]
 
@@ -201,9 +199,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     util_setup_spec_fetcher @a2, @a2_pre
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
-      read_binary(File.join(@gemhome, 'cache', @a2.file_name))
+      read_binary(Gem.cache_gem(@a2.file_name, @gemhome))
     @fetcher.data["#{@gem_repo}gems/#{@a2_pre.file_name}"] =
-      read_binary(File.join(@gemhome, 'cache', @a2_pre.file_name))
+      read_binary(Gem.cache_gem(@a2_pre.file_name, @gemhome))
 
     @cmd.options[:prerelease] = true
     @cmd.options[:args] = [@a2_pre.name]
@@ -227,7 +225,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     util_setup_spec_fetcher @a2
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
-      read_binary(File.join(@gemhome, 'cache', @a2.file_name))
+      read_binary(Gem.cache_gem(@a2.file_name, @gemhome))
 
     @cmd.options[:args] = [@a2.name]
 
@@ -254,11 +252,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     util_setup_fake_fetcher
     @cmd.options[:domain] = :local
 
-    FileUtils.mv File.join(@gemhome, 'cache', @a2.file_name),
-                 File.join(@tempdir)
+    FileUtils.mv Gem.cache_gem(@a2.file_name, @gemhome), @tempdir
 
-    FileUtils.mv File.join(@gemhome, 'cache', @b2.file_name),
-                 File.join(@tempdir)
+    FileUtils.mv Gem.cache_gem(@b2.file_name, @gemhome), @tempdir
 
     @cmd.options[:args] = [@a2.name, @b2.name]
 
@@ -287,7 +283,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     util_setup_spec_fetcher @b2
 
     @fetcher.data["#{@gem_repo}gems/#{@b2.file_name}"] =
-      read_binary(File.join(@gemhome, 'cache', @b2.file_name))
+      read_binary(Gem.cache_gem(@b2.file_name, @gemhome))
 
     uninstall_gem(@b2)
 

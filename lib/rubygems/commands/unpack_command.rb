@@ -63,8 +63,9 @@ class Gem::Commands::UnpackCommand < Gem::Command
   # TODO: see comments in get_path() about general service.
 
   def find_in_cache(filename)
-    Gem.path.each do |gem_dir|
-      this_path = File.join gem_dir, 'cache', filename
+
+    Gem.path.each do |path|
+      this_path = Gem.cache_gem(filename, path)
       return this_path if File.exist? this_path
     end
 

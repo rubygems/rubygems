@@ -13,8 +13,8 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     util_setup_fake_fetcher
 
-    @a1_path = File.join @gemhome, 'cache', @a1.file_name
-    @a2_path = File.join @gemhome, 'cache', @a2.file_name
+    @a1_path = Gem.cache_gem(@a1.file_name, @gemhome)
+    @a2_path = Gem.cache_gem(@a2.file_name, @gemhome)
 
     util_setup_spec_fetcher @a1, @a2
 
@@ -72,7 +72,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
   def util_add_to_fetcher *specs
     specs.each do |spec|
-      gem_file = File.join @gemhome, 'cache', spec.file_name
+      gem_file = Gem.cache_gem(spec.file_name, @gemhome)
 
       @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
         Gem.read_binary gem_file
@@ -209,9 +209,9 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     @a2.add_dependency 'c', '2'
     @a2.add_dependency 'b', '2'
 
-    @b2_path   = File.join @gemhome, 'cache', @b2.file_name
-    @c1_2_path = File.join @gemhome, 'cache', @c1_2.file_name
-    @c2_path   = File.join @gemhome, 'cache', @c2.file_name
+    @b2_path   = Gem.cache_gem(@b2.file_name, @gemhome)
+    @c1_2_path = Gem.cache_gem(@c1_2.file_name, @gemhome)
+    @c2_path   = Gem.cache_gem(@c2.file_name, @gemhome)
 
     @source_index = Gem::SourceIndex.new
     @source_index.add_spec @a1

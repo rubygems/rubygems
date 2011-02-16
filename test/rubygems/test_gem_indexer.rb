@@ -25,8 +25,7 @@ class TestGemIndexer < Gem::TestCase
 
     gems = File.join(@tempdir, 'gems')
     FileUtils.mkdir_p gems
-    cache_gems = File.join @gemhome, 'cache', '*.gem'
-    FileUtils.mv Dir[cache_gems], gems
+    FileUtils.mv Dir[Gem.cache_gem('*.gem', @gemhome)], gems
 
     @indexer = Gem::Indexer.new @tempdir, :rss_title => 'ExampleForge gems',
                                 :rss_host => 'example.com',
@@ -513,8 +512,8 @@ eighty characters.&lt;/pre&gt;
     @d2_1_a_tuple = [@d2_1_a.name, @d2_1_a.version, @d2_1_a.original_platform]
 
     gems = File.join @tempdir, 'gems'
-    FileUtils.mv File.join(@gemhome, 'cache', @d2_1.file_name), gems
-    FileUtils.mv File.join(@gemhome, 'cache', @d2_1_a.file_name), gems
+    FileUtils.mv Gem.cache_gem(@d2_1.file_name, @gemhome), gems
+    FileUtils.mv Gem.cache_gem(@d2_1_a.file_name, @gemhome), gems
 
     use_ui @ui do
       @indexer.update_index

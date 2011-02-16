@@ -401,7 +401,7 @@ class TestGem < Gem::TestCase
 
     Gem.ensure_gem_subdirectories @gemhome
 
-    assert File.directory?(File.join(@gemhome, "cache"))
+    assert File.directory?(Gem.cache_dir(@gemhome))
   end
 
   def test_self_ensure_gem_directories_missing_parents
@@ -413,7 +413,7 @@ class TestGem < Gem::TestCase
 
     Gem.ensure_gem_subdirectories gemdir
 
-    assert File.directory?("#{gemdir}/cache")
+    assert File.directory?(Gem.cache_dir(gemdir))
   end
 
   unless win_platform? then # only for FS that support write protection
@@ -427,7 +427,7 @@ class TestGem < Gem::TestCase
 
       Gem.ensure_gem_subdirectories gemdir
 
-      refute File.exist?("#{gemdir}/cache")
+      refute File.exist?(Gem.cache_dir(gemdir))
     ensure
       FileUtils.chmod 0600, gemdir
     end
@@ -444,7 +444,7 @@ class TestGem < Gem::TestCase
 
       Gem.ensure_gem_subdirectories gemdir
 
-      refute File.exist?("#{gemdir}/cache")
+      refute File.exist?(Gem.cache_dir(gemdir))
     ensure
       FileUtils.chmod 0600, parent
     end
@@ -810,6 +810,20 @@ class TestGem < Gem::TestCase
     else
       assert true, 'count this test'
     end
+  end
+
+  def test_self_cache_dir
+    util_ensure_gem_dirs
+
+    assert_equal File.join(@gemhome, 'cache'), Gem.cache_dir
+    assert_equal File.join(@userhome, '.gem', Gem.ruby_engine, Gem::ConfigMap[:ruby_version], 'cache'), Gem.cache_dir(Gem.user_dir)
+  end
+
+  def test_self_cache_gem
+    util_ensure_gem_dirs
+
+    assert_equal File.join(@gemhome, 'cache', 'test.gem'), Gem.cache_gem('test.gem')
+    assert_equal File.join(@userhome, '.gem', Gem.ruby_engine, Gem::ConfigMap[:ruby_version], 'cache', 'test.gem'), Gem.cache_gem('test.gem', Gem.user_dir)
   end
 
   if Gem.win_platform? then

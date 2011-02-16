@@ -173,10 +173,9 @@ class Gem::Installer
 
     write_require_paths_file_if_needed if Gem::QUICKLOADER_SUCKAGE
 
-    # HACK remove?  Isn't this done in multiple places?
-    cached_gem = File.join @gem_home, "cache", @gem.split(/\//).pop
+    cached_gem = Gem.cache_gem(File.basename(@gem), @gem_home)
     unless File.exist? cached_gem then
-      FileUtils.cp @gem, File.join(@gem_home, "cache")
+      FileUtils.cp @gem, Gem.cache_dir(@gem_home)
     end
 
     say @spec.post_install_message unless @spec.post_install_message.nil?

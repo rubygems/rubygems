@@ -121,9 +121,7 @@ class Gem::InstallerTestCase < Gem::TestCase
 
   def util_installer(spec, gem_path, gem_home)
     util_build_gem spec
-    FileUtils.mv File.join(@gemhome, 'cache', spec.file_name),
-                 @tempdir
-
+    FileUtils.mv Gem.cache_gem(spec.file_name), @tempdir
     installer = Gem::Installer.new gem_path
     installer.gem_dir = util_gem_dir
     installer.gem_home = gem_home

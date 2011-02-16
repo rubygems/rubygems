@@ -347,7 +347,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       end
 
       FileUtils.mv spec.file_name,
-                   File.join(@gemhome, 'cache', "#{spec.original_name}.gem")
+                   Gem.cache_gem("#{spec.original_name}.gem")
     end
   end
 
@@ -389,8 +389,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     util_build_gem spec
 
     cache_file = File.join @tempdir, 'gems', "#{spec.original_name}.gem"
-    FileUtils.mv File.join(@gemhome, 'cache', "#{spec.original_name}.gem"),
-                 cache_file
+    FileUtils.mv Gem.cache_gem("#{spec.original_name}.gem"), cache_file
     FileUtils.rm File.join(@gemhome, 'specifications', spec.spec_name)
 
     spec.loaded_from = nil

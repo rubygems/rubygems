@@ -791,21 +791,17 @@ class Gem::Specification
 
     result << "    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then"
 
-    unless dependencies.empty? then # TODO remove
-      dependencies.each do |dep|
-        version_reqs_param = dep.requirements_list.inspect
-        dep.instance_variable_set :@type, :runtime if dep.type.nil? # HACK
-        result << "      s.add_#{dep.type}_dependency(%q<#{dep.name}>, #{version_reqs_param})"
-      end
+    dependencies.each do |dep|
+      req = dep.requirements_list.inspect
+      dep.instance_variable_set :@type, :runtime if dep.type.nil? # HACK
+      result << "      s.add_#{dep.type}_dependency(%q<#{dep.name}>, #{req})"
     end
 
     result << "    else"
 
-    unless dependencies.empty? then
-      dependencies.each do |dep|
-        version_reqs_param = dep.requirements_list.inspect
-        result << "      s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
-      end
+    dependencies.each do |dep|
+      version_reqs_param = dep.requirements_list.inspect
+      result << "      s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
     end
 
     result << '    end'

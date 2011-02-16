@@ -240,55 +240,64 @@ module Gem
       options = {}
     end
 
+    requirements = Gem::Requirement.default if requirements.empty?
+    dep = Gem::Dependency.new(gem, requirements)
+
     sources = options[:sources] || []
+    matches = _unresolved.find_all { |spec| spec.satisfies_requirement? dep }
 
-    if requirements.empty? then
-      requirements = Gem::Requirement.default
-    end
+    if matches.empty? then
+      matches = Gem.source_index.find_name(dep.name, dep.requirement)
+      report_activate_error(dep) if matches.empty?
 
-    unless gem.respond_to?(:name) and
-           gem.respond_to?(:requirement) then
-      gem = Gem::Dependency.new(gem, requirements)
-    end
+      if @loaded_specs[dep.name] then
+        # This gem is already loaded.  If the currently loaded gem is not in the
+        # list of candidate gems, then we have a version conflict.
+        existing_spec = @loaded_specs[dep.name]
 
-    matches = Gem.source_index.find_name(gem.name, gem.requirement)
-    report_activate_error(gem) if matches.empty?
+        unless matches.any? { |spec| spec.version == existing_spec.version } then
+          sources_message = sources.map { |spec| spec.full_name }
+          stack_message = @loaded_stacks[dep.name].map { |spec| spec.full_name }
 
-    if @loaded_specs[gem.name] then
-      # This gem is already loaded.  If the currently loaded gem is not in the
-      # list of candidate gems, then we have a version conflict.
-      existing_spec = @loaded_specs[gem.name]
+          msg = "can't activate #{dep} for #{sources_message.inspect}, "
+          msg << "already activated #{existing_spec.full_name} for "
+          msg << "#{stack_message.inspect}"
 
-      unless matches.any? { |spec| spec.version == existing_spec.version } then
-         sources_message = sources.map { |spec| spec.full_name }
-         stack_message = @loaded_stacks[gem.name].map { |spec| spec.full_name }
+          e = Gem::LoadError.new msg
+          e.name = dep.name
+          e.requirement = dep.requirement
 
-         msg = "can't activate #{gem} for #{sources_message.inspect}, "
-         msg << "already activated #{existing_spec.full_name} for "
-         msg << "#{stack_message.inspect}"
+          raise e
+        end
 
-         e = Gem::LoadError.new msg
-         e.name = gem.name
-         e.requirement = gem.requirement
-
-         raise e
+        return false
       end
-
-      return false
     end
 
-    # new load
     spec = matches.last
+
+    # TODO: raise LoadError if loaded_specs.conflicts_with? spec
     return false if spec.loaded?
 
     spec.loaded = true
-    @loaded_specs[spec.name] = spec
+    @loaded_specs[spec.name]  = spec
     @loaded_stacks[spec.name] = sources.dup
 
-    # Load dependent gems first
-    spec.runtime_dependencies.each do |dep_gem|
-      activate dep_gem, :sources => [spec, *sources]
+    spec.runtime_dependencies.each do |dep|
+      next if Gem.loaded_specs.include? dep.name
+      specs = Gem.source_index.search dep, true
+
+      _unresolved.add(*specs)
     end
+
+    current = Hash.new { |h, name| h[name] = Gem::Dependency.new name }
+    Gem.loaded_specs.each do |n,s|
+      s.runtime_dependencies.each do |dep|
+        current[dep.name] = current[dep.name].merge dep
+      end
+    end
+
+    _unresolved.remove_specs_unsatisfied_by current
 
     require_paths = spec.require_paths.map do |path|
       File.join spec.full_gem_path, path
@@ -306,6 +315,11 @@ module Gem
     end
 
     return true
+  end
+
+  def self._unresolved
+    require "rubygems/dependency_list"
+    @unresolved ||= Gem::DependencyList.new
   end
 
   ##

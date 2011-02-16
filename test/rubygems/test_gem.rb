@@ -21,11 +21,18 @@ class TestGem < Gem::TestCase
   end
 
   def assert_activate expected, *specs
-    Gem.activate specs.first.name
-
-    expected.each do |spec|
-      assert_includes Gem.loaded_specs.values.map(&:full_name), spec
+    specs.each do |spec|
+      case spec
+      when String
+        Gem.activate spec
+      else
+        Gem.activate spec.name
+      end
     end
+
+    loaded = Gem.loaded_specs.values.map(&:full_name)
+
+    assert_equal expected.sort, loaded.sort if expected
   end
 
   def test_self_activate
@@ -38,42 +45,6 @@ class TestGem < Gem::TestCase
     foo = util_spec 'foo', '1'
     assert Gem.activate 'foo'
     refute Gem.activate 'foo'
-  end
-
-  ##
-  # [A1] depends on
-  #    [B] > 0 (satisfied by 2.0)
-  # [B1] depends on
-  #    [C] > 0 (satisfied by 1.0)
-  # [B2] depends on nothing!
-  # [C1] depends on nothing
-
-  def test_self_activate_dropped
-    a1, = util_spec 'a', '1', 'b' => nil
-    b1, = util_spec 'b', '1', 'c' => nil
-    b2, = util_spec 'b', '2'
-    c1, = util_spec 'c', '1'
-
-    assert_activate %w[b-2 a-1], a1, b1, b2, c1
-  end
-
-  ##
-  # [A] depends on
-  #     [B] >= 1.0 (satisfied by 1.1) depends on
-  #         [Z]
-  #     [C] >= 1.0 depends on
-  #         [B] = 1.0
-  #
-  # and should backtrack to resolve using b-1.0, pruning Z from the
-  # resolve.
-
-  def test_self_activate_raggi_the_edgecase_generator
-    a,  _ = util_spec 'a', '1.0', 'b' => '>= 1.0', 'c' => '>= 1.0'
-    b1, _ = util_spec 'b', '1.0'
-    b2, _ = util_spec 'b', '1.1', 'z' => '>= 1.0'
-    c,  _ = util_spec 'c', '1.0', 'b' => '= 1.0'
-
-    assert_activate %w[b-1.0 c-1.0 a-1.0], a, b1, b2, c
   end
 
   ##
@@ -90,7 +61,7 @@ class TestGem < Gem::TestCase
     b2, _ = util_spec 'b', '2.0'
     c,  _ = util_spec 'c', '1.0', 'b' => '~> 1.0'
 
-    assert_activate %w[b-1.0 c-1.0 a-1.0], a, b1, b2, c
+    assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
   end
 
   ##
@@ -110,11 +81,46 @@ class TestGem < Gem::TestCase
     b11, _ = util_spec 'b', '1.1'
     c,   _ = util_spec 'c', '1.0', 'b' => '= 1.0'
 
-    assert_activate %w[b-1.0 c-1.0 a-1.0], a, b10, b11, c
+    assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
   end
 
-  # under
+  ##
+  # [A1] depends on
+  #    [B] > 0 (satisfied by 2.0)
+  # [B1] depends on
+  #    [C] > 0 (satisfied by 1.0)
+  # [B2] depends on nothing!
+  # [C1] depends on nothing
+
+  def test_self_activate_dropped
+    a1, = util_spec 'a', '1', 'b' => nil
+    b1, = util_spec 'b', '1', 'c' => nil
+    b2, = util_spec 'b', '2'
+    c1, = util_spec 'c', '1'
+
+    assert_activate %w[b-2 a-1], a1, "b"
+  end
+
+  ##
+  # [A] depends on
+  #     [B] >= 1.0 (satisfied by 1.1) depends on
+  #         [Z]
+  #     [C] >= 1.0 depends on
+  #         [B] = 1.0
   #
+  # and should backtrack to resolve using b-1.0, pruning Z from the
+  # resolve.
+
+  def test_self_activate_raggi_the_edgecase_generator
+    a,  _ = util_spec 'a', '1.0', 'b' => '>= 1.0', 'c' => '>= 1.0'
+    b1, _ = util_spec 'b', '1.0'
+    b2, _ = util_spec 'b', '1.1', 'z' => '>= 1.0'
+    c,  _ = util_spec 'c', '1.0', 'b' => '= 1.0'
+
+    assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
+  end
+
+  ##
   # [A] depends on
   #     [B] ~> 1.0 (satisfied by 1.0)
   #     [C]  = 1.0 depends on
@@ -127,47 +133,70 @@ class TestGem < Gem::TestCase
     c,  _ = util_spec 'c', '1.0', 'b' => '= 2.0'
 
     e = assert_raises Gem::LoadError do
-      assert_activate :ignored, a, b1, b2, c
+      assert_activate nil, a, c, "b"
     end
 
     assert_match /can\'t activate b .= 2.0, runtime./, e.message
     assert_match /already activated b-1.0/, e.message
   end
 
+  ##
+  # DOC
+
   def test_self_activate_platform_alternate
-    util_setup_wxyz
+    @x1_m = util_spec 'x', '1' do |s|
+      s.platform = Gem::Platform.new %w[cpu my_platform 1]
+    end
+
+    @x1_o = util_spec 'x', '1' do |s|
+      s.platform = Gem::Platform.new %w[cpu other_platform 1]
+    end
+
+    @w1 = util_spec 'w', '1', 'x' => nil
+
     util_set_arch 'cpu-my_platform1'
 
     assert_activate %w[x-1-cpu-my_platform-1 w-1], @w1, @x1_m
   end
 
+  ##
+  # DOC
+
   def test_self_activate_platform_bump
-    util_setup_wxyz
+    @y1 = util_spec 'y', '1'
+
+    @y1_1_p = util_spec 'y', '1.1' do |s|
+      s.platform = Gem::Platform.new %w[cpu my_platform 1]
+    end
+
+    @z1 = util_spec 'z', '1', 'y' => nil
 
     assert_activate %w[y-1 z-1], @z1, @y1
   end
 
+  ##
+  # DOC
+
   def test_self_activate_prerelease
-    util_setup_c1_pre
+    @c1_pre = util_spec 'c', '1.a', "a" => "1.a", "b" => "1"
+    @a1_pre = util_spec 'a', '1.a'
+    @b1     = util_spec 'b', '1' do |s|
+      s.add_dependency 'a'
+      s.add_development_dependency 'aa'
+    end
 
     assert_activate %w[a-1.a b-1 c-1.a], @c1_pre, @a1_pre, @b1
   end
 
+  ##
+  # DOC
+
   def test_self_activate_old_required
-    util_setup_d
     e1, = util_spec 'e', '1', 'd' => '= 1'
-    util_clear_gems
-
-    assert_activate %w[d-1 e-1], e1, @d1, @d2
-  end
-
-  def util_setup_c1_pre
-    @c1_pre = util_spec 'c', '1.a', "a" => "1.a", "b" => "1"
-  end
-
-  def util_setup_d
     @d1 = util_spec 'd', '1'
     @d2 = util_spec 'd', '2'
+
+    assert_activate %w[d-1 e-1], e1, "d"
   end
 
   def util_setup_wxyz
@@ -304,27 +333,27 @@ class TestGem < Gem::TestCase
     assert_equal expected, Gem.configuration
   end
 
-  # def test_self_datadir
-  #   foo = nil
-  #
-  #   Dir.chdir @tempdir do
-  #     FileUtils.mkdir_p 'data'
-  #     File.open File.join('data', 'foo.txt'), 'w' do |fp|
-  #       fp.puts 'blah'
-  #     end
-  #
-  #     foo = quick_gem 'foo' do |s| s.files = %w[data/foo.txt] end
-  #     install_gem foo
-  #   end
-  #
-  #   Gem.source_index = nil
-  #
-  #   gem 'foo'
-  #
-  #   expected = File.join @gemhome, 'gems', foo.full_name, 'data', 'foo'
-  #
-  #   assert_equal expected, Gem.datadir('foo')
-  # end
+  def test_self_datadir
+    foo = nil
+
+    Dir.chdir @tempdir do
+      FileUtils.mkdir_p 'data'
+      File.open File.join('data', 'foo.txt'), 'w' do |fp|
+        fp.puts 'blah'
+      end
+
+      foo = quick_gem 'foo' do |s| s.files = %w[data/foo.txt] end
+      install_gem foo
+    end
+
+    Gem.source_index = nil
+
+    gem 'foo'
+
+    expected = File.join @gemhome, 'gems', foo.full_name, 'data', 'foo'
+
+    assert_equal expected, Gem.datadir('foo')
+  end
 
   def test_self_datadir_nonexistent_package
     assert_nil Gem.datadir('xyzzy')
@@ -489,15 +518,15 @@ class TestGem < Gem::TestCase
     assert_equal expected, Gem.latest_load_paths.sort
   end
 
-  # def test_self_loaded_specs
-  #   foo = quick_gem 'foo'
-  #   install_gem foo
-  #   Gem.source_index = nil
-  #
-  #   Gem.activate 'foo'
-  #
-  #   assert_equal true, Gem.loaded_specs.keys.include?('foo')
-  # end
+  def test_self_loaded_specs
+    foo = quick_gem 'foo'
+    install_gem foo
+    Gem.source_index = nil
+
+    Gem.activate 'foo'
+
+    assert_equal true, Gem.loaded_specs.keys.include?('foo')
+  end
 
   def util_path
     ENV.delete "GEM_HOME"
@@ -940,6 +969,5 @@ class TestGem < Gem::TestCase
     Gem::Commands.send :remove_const, :InterruptCommand if
       Gem::Commands.const_defined? :InterruptCommand
   end
-
 end
 

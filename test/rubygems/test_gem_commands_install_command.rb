@@ -79,8 +79,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     util_setup_fake_fetcher
     @cmd.options[:domain] = :local
 
-    FileUtils.mv Gem.cache_gem(@a2.file_name, @gemhome),
-                 File.join(@tempdir)
+    FileUtils.mv Gem.cache_gem(@a2.file_name, @gemhome), @tempdir
 
     @cmd.options[:args] = [@a2.name]
 
@@ -109,8 +108,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     util_setup_fake_fetcher
     @cmd.options[:user_install] = false
 
-    FileUtils.mv Gem.cache_gem(@a2.file_name, @gemhome),
-                 File.join(@tempdir)
+    FileUtils.mv Gem.cache_gem(@a2.file_name, @gemhome), @tempdir
 
     @cmd.options[:args] = [@a2.name]
 
@@ -254,11 +252,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     util_setup_fake_fetcher
     @cmd.options[:domain] = :local
 
-    FileUtils.mv Gem.cache_gem(@a2.file_name, @gemhome),
-                 File.join(@tempdir)
+    FileUtils.mv Gem.cache_gem(@a2.file_name, @gemhome), @tempdir
 
-    FileUtils.mv Gem.cache_gem(@b2.file_name, @gemhome),
-                 File.join(@tempdir)
+    FileUtils.mv Gem.cache_gem(@b2.file_name, @gemhome), @tempdir
 
     @cmd.options[:args] = [@a2.name, @b2.name]
 

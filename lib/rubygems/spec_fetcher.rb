@@ -94,6 +94,7 @@ class Gem::SpecFetcher
   end
 
   def fetch_spec(spec, source_uri)
+    source_uri = URI.parse source_uri if String === source_uri
     spec = spec - [nil, 'ruby', '']
     spec_file_name = "#{spec.join '-'}.gemspec"
 

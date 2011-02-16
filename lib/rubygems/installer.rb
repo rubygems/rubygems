@@ -173,7 +173,7 @@ class Gem::Installer
 
     write_require_paths_file_if_needed if Gem::QUICKLOADER_SUCKAGE
 
-    cached_gem = File.join Gem.cache_gem(File.basename(@gem), @gem_home)
+    cached_gem = Gem.cache_gem(File.basename(@gem), @gem_home)
     unless File.exist? cached_gem then
       FileUtils.cp @gem, Gem.cache_dir(@gem_home)
     end

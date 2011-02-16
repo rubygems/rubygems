@@ -51,6 +51,10 @@ class Gem::DependencyList
     @specs.push(*gemspecs)
   end
 
+  def clear
+    @specs.clear
+  end
+
   ##
   # Return a list of the gem specifications in the dependency list, sorted in
   # order so that no gemspec in the list depends on a gemspec earlier in the
@@ -163,7 +167,8 @@ class Gem::DependencyList
 
   def remove_specs_unsatisfied_by dependencies
     specs.reject! { |spec|
-      not dependencies[spec.name].requirement.satisfied_by? spec.version
+      dep = dependencies[spec.name]
+      dep and not dep.requirement.satisfied_by? spec.version
     }
   end
 

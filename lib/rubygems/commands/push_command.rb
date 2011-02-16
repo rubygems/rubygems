@@ -21,7 +21,7 @@ class Gem::Commands::PushCommand < Gem::Command
   def initialize
     super 'push', description
     add_proxy_option
-    
+
     add_option(
       '--host HOST',
       'Push to another gemcutter-compatible host'

@@ -1520,13 +1520,13 @@ class Gem::Specification
   def conflicts
     conflicts = {}
     Gem.loaded_specs.values.each do |spec|
-      satisfied = spec.runtime_dependencies.any? { |dep|
-        satisfies_requirement? dep
+      unsatisfied = spec.runtime_dependencies.any? { |dep|
+        self.name == dep.name and not satisfies_requirement? dep
       }
 
-      unless satisfied then
+      if unsatisfied then
         bad = spec.runtime_dependencies.find_all { |dep|
-          not satisfies_requirement? dep
+          self.name == dep.name and not satisfies_requirement? dep
         }
         conflicts[spec.full_name] = bad unless bad.empty?
       end

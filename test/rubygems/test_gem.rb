@@ -136,8 +136,8 @@ class TestGem < Gem::TestCase
       assert_activate nil, a, c, "b"
     end
 
-    assert_match /can\'t activate b .= 2.0, runtime./, e.message
-    assert_match /already activated b-1.0/, e.message
+    assert_match /Unable to activate b-2.0,/, e.message
+    assert_match /but a-1.0 depends on b .~> 1.0/, e.message
   end
 
   ##
@@ -175,7 +175,10 @@ class TestGem < Gem::TestCase
   end
 
   ##
-  # DOC
+  # [C] depends on
+  #     [A] = 1.a
+  #     [B] = 1.0 depends on
+  #         [A] >= 0 (satisfied by 1.a)
 
   def test_self_activate_prerelease
     @c1_pre = util_spec 'c', '1.a', "a" => "1.a", "b" => "1"
@@ -197,25 +200,6 @@ class TestGem < Gem::TestCase
     @d2 = util_spec 'd', '2'
 
     assert_activate %w[d-1 e-1], e1, "d"
-  end
-
-  def util_setup_wxyz
-    @x1_m = util_spec 'x', '1' do |s|
-      s.platform = Gem::Platform.new %w[cpu my_platform 1]
-    end
-
-    @x1_o = util_spec 'x', '1' do |s|
-      s.platform = Gem::Platform.new %w[cpu other_platform 1]
-    end
-
-    @w1 = util_spec 'w', '1', 'x' => nil
-
-    @y1 = util_spec 'y', '1'
-    @y1_1_p = util_spec 'y', '1.1' do |s|
-      s.platform = Gem::Platform.new %w[cpu my_platform 1]
-    end
-
-    @z1 = util_spec 'z', '1', 'y' => nil
   end
 
   def test_self_all_load_paths

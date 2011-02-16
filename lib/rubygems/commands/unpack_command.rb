@@ -94,29 +94,18 @@ class Gem::Commands::UnpackCommand < Gem::Command
     specs = Gem.source_index.search dependency
 
     selected = specs.sort_by { |s| s.version }.last
-    
-    if selected.nil?
-      return Gem::RemoteFetcher.fetcher.
-        download_to_cache(
-          dependency.name, 
-          dependency.requirement
-        )
-    end
+
+    return Gem::RemoteFetcher.fetcher.download_to_cache(dependency) unless
+      selected
 
     return unless dependency.name =~ /^#{selected.name}$/i
 
     # We expect to find (basename).gem in the 'cache' directory.  Furthermore,
     # the name match must be exact (ignoring case).
-    
-    path = find_in_cache(selected.file_name)
-  
-    unless path
-      return Gem::RemoteFetcher.fetcher.
-        download_to_cache(
-          dependency.name, 
-          dependency.requirement
-        )
-    end
+
+    path = find_in_cache selected.file_name
+
+    return Gem::RemoteFetcher.fetcher.download_to_cache(dependency) unless path
 
     path
   end

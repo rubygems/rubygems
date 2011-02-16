@@ -74,20 +74,17 @@ class Gem::RemoteFetcher
   ##
   # Given a name and requirement, downloads this gem into cache and returns the
   # filename. Returns nil if the gem cannot be located.
-  #
   #--
-  #
   # Should probably be integrated with #download below, but that will be a
   # larger, more emcompassing effort. -erikh
-  #
 
-  def download_to_cache(name, requirement)
-    found = Gem::SpecFetcher.fetcher.fetch Gem::Dependency.new(name, requirement)
- 
+  def download_to_cache dependency
+    found = Gem::SpecFetcher.fetcher.fetch dependency
+
     return if found.empty?
- 
+
     spec, source_uri = found.first
- 
+
     download spec, source_uri
   end
 

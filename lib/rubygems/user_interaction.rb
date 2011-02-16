@@ -525,9 +525,7 @@ end
 # SilentUI is a UI choice that is absolutely silent.
 
 class Gem::SilentUI < Gem::StreamUI
-
   def initialize
-
     reader, writer = nil, nil
 
     begin
@@ -541,5 +539,12 @@ class Gem::SilentUI < Gem::StreamUI
     super reader, writer, writer
   end
 
+  def download_reporter(*args)
+    SilentDownloadReporter.new(@outs, *args)
+  end
+
+  def progress_reporter(*args)
+    SilentProgressReporter.new(@outs, *args)
+  end
 end
 

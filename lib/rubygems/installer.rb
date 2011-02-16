@@ -150,6 +150,9 @@ class Gem::Installer
 
     Gem.ensure_gem_subdirectories @gem_home
 
+    # Completely remove any previous gem files
+    FileUtils.rm_rf(@gem_dir) if File.exist?(@gem_dir)
+
     FileUtils.mkdir_p @gem_dir
 
     extract_files
@@ -268,8 +271,10 @@ class Gem::Installer
     @spec.executables.each do |filename|
       filename.untaint
       bin_path = File.expand_path "#{@spec.bindir}/#{filename}", @gem_dir
-      mode = File.stat(bin_path).mode | 0111
-      File.chmod mode, bin_path
+      if File.exist?(bin_path)
+        mode = File.stat(bin_path).mode | 0111
+        File.chmod mode, bin_path
+      end
 
       if @wrappers then
         generate_bin_script filename, bindir

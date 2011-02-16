@@ -567,6 +567,42 @@ load Gem.bin_path('a', 'my_exec', version)
     assert_same @installer, @pre_install_hook_arg
   end
 
+  def test_install_with_no_prior_files
+    Dir.mkdir util_inst_bindir
+    util_clear_gems
+
+    util_setup_gem
+    build_rake_in do
+      use_ui @ui do
+        assert_equal @spec, @installer.install
+      end
+    end
+
+    gemdir = File.join(@gemhome, 'gems', @spec.full_name)
+    assert File.exist?(File.join(gemdir, 'lib', 'code.rb'))
+
+    util_setup_gem
+    # Morph spec to have lib/other.rb instead of code.rb and recreate
+    @spec.files = File.join('lib', 'other.rb')
+    Dir.chdir @tempdir do
+      File.open File.join('lib', 'other.rb'), 'w' do |f| f.puts '1' end
+      use_ui ui do
+        FileUtils.rm @gem
+        Gem::Builder.new(@spec).build
+      end
+    end
+    @installer = Gem::Installer.new @gem
+    build_rake_in do
+      use_ui @ui do
+        assert_equal @spec, @installer.install
+      end
+    end
+
+    assert File.exist?(File.join(gemdir, 'lib', 'other.rb'))
+    refute(File.exist?(File.join(gemdir, 'lib', 'code.rb')),
+           "code.rb from prior install of same gem shouldn't remain here")
+  end
+
   def test_install_bad_gem
     gem = nil
 

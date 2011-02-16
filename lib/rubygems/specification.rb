@@ -677,6 +677,14 @@ class Gem::Specification
   end
 
   alias eql? == # :nodoc:
+  
+  ##
+  # A macro to yield cached gem path
+  #
+  def cache_gem
+    cache_name = File.join(Gem.dir, 'cache', file_name)
+    return File.exist?(cache_name) ? cache_name : nil
+  end
 
   ##
   # True if this gem has the same attributes as +other+.

@@ -113,6 +113,16 @@ class Gem::FakeFetcher
     path
   end
 
+  def download_to_cache(name, version)
+    found = Gem::SpecFetcher.fetcher.fetch Gem::Dependency.new(name, version)
+ 
+    return if found.empty?
+ 
+    spec, source_uri = found.first
+ 
+    download spec, source_uri
+  end
+
 end
 
 # :stopdoc:

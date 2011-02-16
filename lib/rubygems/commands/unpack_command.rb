@@ -33,16 +33,6 @@ class Gem::Commands::UnpackCommand < Gem::Command
     "#{program_name} GEMNAME"
   end
 
-  def download dependency
-    found = Gem::SpecFetcher.fetcher.fetch dependency
-
-    return if found.empty?
-
-    spec, source_uri = found.first
-
-    Gem::RemoteFetcher.fetcher.download spec, source_uri
-  end
-
   #--
   # TODO: allow, e.g., 'gem unpack rake-0.3.1'.  Find a general solution for
   # this, so that it works for uninstall as well.  (And check other commands
@@ -104,8 +94,14 @@ class Gem::Commands::UnpackCommand < Gem::Command
     specs = Gem.source_index.search dependency
 
     selected = specs.sort_by { |s| s.version }.last
-
-    return download(dependency) if selected.nil?
+    
+    if selected.nil?
+      return Gem::RemoteFetcher.fetcher.
+        download_to_cache(
+          dependency.name, 
+          dependency.requirement
+        )
+    end
 
     return unless dependency.name =~ /^#{selected.name}$/i
 
@@ -113,7 +109,14 @@ class Gem::Commands::UnpackCommand < Gem::Command
     # the name match must be exact (ignoring case).
     
     path = find_in_cache(selected.file_name)
-    return download(dependency) unless path
+  
+    unless path
+      return Gem::RemoteFetcher.fetcher.
+        download_to_cache(
+          dependency.name, 
+          dependency.requirement
+        )
+    end
 
     path
   end

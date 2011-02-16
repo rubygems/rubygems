@@ -1,5 +1,6 @@
 require 'rubygems/test_case'
 require 'rubygems/security'
+require 'rubygems/fix_openssl_warnings'
 
 class TestGemSecurity < Gem::TestCase
 

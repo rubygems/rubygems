@@ -1,6 +1,14 @@
 require 'rubygems/test_case'
 require 'rubygems/commands/push_command'
 
+module Gem
+  class << self; remove_method :latest_rubygems_version; end
+
+  def self.latest_rubygems_version
+    Gem::Version.new Gem::VERSION
+  end
+end
+
 class TestGemCommandsPushCommand < Gem::TestCase
 
   def setup
@@ -76,6 +84,4 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
     assert_match response, @ui.output
   end
-
 end
-

@@ -1,6 +1,12 @@
 require 'rubygems/test_case'
 require 'rubygems/commands/update_command'
 
+begin
+  gem "rdoc"
+rescue Gem::LoadError
+  # ignore
+end
+
 class TestGemCommandsUpdateCommand < Gem::TestCase
 
   def setup

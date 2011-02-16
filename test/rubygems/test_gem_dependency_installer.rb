@@ -775,6 +775,16 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def util_reset_gems
+    @c1_pre ||= nil
+    @d1     ||= nil
+    @d2     ||= nil
+    @w1     ||= nil
+    @x1_m   ||= nil
+    @x1_o   ||= nil
+    @y1     ||= nil
+    @y1_1_p ||= nil
+    @z1     ||= nil
+
     util_setup_spec_fetcher(*[@a1, @a1_pre, @b1, @c1_pre,
                               @d1, @d2, @x1_m, @x1_o, @w1, @y1,
                               @y1_1_p, @z1].compact)

@@ -136,8 +136,8 @@ class TestGem < Gem::TestCase
       assert_activate nil, a, c, "b"
     end
 
-    assert_match /Unable to activate b-2.0,/, e.message
-    assert_match /but a-1.0 depends on b .~> 1.0/, e.message
+    assert_match(/Unable to activate b-2.0,/, e.message)
+    assert_match(/but a-1.0 depends on b .~> 1.0/, e.message)
   end
 
   ##

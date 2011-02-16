@@ -940,6 +940,29 @@ module Gem
     @ruby
   end
 
+  def self.latest_spec_for name
+    dependency  = Gem::Dependency.new name
+    fetcher     = Gem::SpecFetcher.fetcher
+    spec_tuples = fetcher.find_matching dependency
+
+    match = spec_tuples.select { |(n, _, p), _|
+      n == name and Gem::Platform.match p
+    }.sort_by { |(_, version, _), _|
+      version
+    }.last
+
+    match and fetcher.fetch_spec(*match)
+  end
+
+  def self.latest_version_for name
+    spec = latest_spec_for name
+    spec and spec.version
+  end
+
+  def self.latest_rubygems_version
+    latest_version_for "rubygems-update"
+  end
+
   ##
   # A Gem::Version for the currently running ruby.
 

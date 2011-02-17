@@ -46,9 +46,6 @@ class Gem::Commands::PushCommand < Gem::Command
       return
     end
 
-    api_key = options[:key] ? verify_api_key(options[:key]) :
-                              Gem.configuration.rubygems_api_key
-
     response = rubygems_api_request(*args) do |request|
       request.body = Gem.read_binary name
       request.add_field "Content-Length", request.body.size

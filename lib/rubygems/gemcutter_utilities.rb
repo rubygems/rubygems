@@ -14,6 +14,14 @@ module Gem::GemcutterUtilities
     end
   end
 
+  def api_key
+    if options[:key] then
+      verify_api_key options[:key]
+    else
+      Gem.configuration.rubygems_api_key
+    end
+  end
+
   def sign_in
     return if Gem.configuration.rubygems_api_key
 

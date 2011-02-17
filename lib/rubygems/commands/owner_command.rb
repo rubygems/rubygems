@@ -39,9 +39,6 @@ class Gem::Commands::OwnerCommand < Gem::Command
   end
 
   def show_owners name
-    api_key = options[:key] ? verify_api_key(options[:key]) :
-                              Gem.configuration.rubygems_api_key
-
     response = rubygems_api_request :get, "api/v1/gems/#{name}/owners.yaml" do |request|
       request.add_field "Authorization", api_key
     end
@@ -65,9 +62,6 @@ class Gem::Commands::OwnerCommand < Gem::Command
   end
 
   def manage_owners method, name, owners
-    api_key = options[:key] ? verify_api_key(options[:key]) :
-                              Gem.configuration.rubygems_api_key
-
     owners.each do |owner|
       response = rubygems_api_request method, "api/v1/gems/#{name}/owners" do |request|
         request.set_form_data 'email' => owner

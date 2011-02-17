@@ -136,7 +136,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
     assert File.exist?(gem_dir),    'gem_dir must exist'
     assert File.exist?(executable), 'executable must exist'
 
-    ui = Gem::MockGemUi.new "y\nn\n"
+    ui = Gem::MockGemUi.new "n\n"
 
     assert_raises Gem::DependencyRemovalException do
       use_ui ui do

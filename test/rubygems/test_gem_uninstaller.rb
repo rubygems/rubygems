@@ -123,6 +123,31 @@ class TestGemUninstaller < Gem::InstallerTestCase
     assert_same uninstaller, @post_uninstall_hook_arg
   end
 
+  def test_uninstall_not_ok
+    quick_gem 'z' do |s|
+      s.add_runtime_dependency @spec.name
+    end
+
+    uninstaller = Gem::Uninstaller.new @spec.name
+
+    gem_dir = File.join @gemhome, 'gems', @spec.full_name
+    executable = File.join @gemhome, 'bin', 'executable'
+
+    assert File.exist?(gem_dir),    'gem_dir must exist'
+    assert File.exist?(executable), 'executable must exist'
+
+    ui = Gem::MockGemUi.new "y\nn\n"
+
+    assert_raises Gem::DependencyRemovalException do
+      use_ui ui do
+        uninstaller.uninstall
+      end
+    end
+
+    assert File.exist?(gem_dir),    'gem_dir must still exist'
+    assert File.exist?(executable), 'executable must still exist'
+  end
+
   def test_uninstall_user
     uninstaller = Gem::Uninstaller.new @user_spec.name, :executables => true,
                   :user_install => true

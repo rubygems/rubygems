@@ -151,7 +151,7 @@ class Gem::RemoteFetcher
         path = source_uri.path
         path = File.dirname(path) if File.extname(path) == '.gem'
 
-        remote_gem_path = File.join(path, 'gems', gem_file_name)
+        remote_gem_path = correct_for_windows_path(File.join(path, 'gems', gem_file_name))
 
         FileUtils.cp(remote_gem_path, local_gem_path)
       rescue Errno::EACCES
@@ -287,6 +287,14 @@ class Gem::RemoteFetcher
     raise FetchError.new(e.message, uri)
   end
 
+  def correct_for_windows_path(path)
+    if path[0].chr == '/' && path[1].chr =~ /[a-zA-Z]/ && path[2].chr == ':'
+      path = path[1..-1]
+    else
+      path
+    end
+  end
+
   ##
   # Read the data from the (source based) URI, but if it is a file:// URI,
   # read from the filesystem instead.
@@ -304,13 +312,7 @@ class Gem::RemoteFetcher
     end
 
     if uri.scheme == 'file'
-      path = uri.path
-
-      # Deal with leading slash on Windows paths
-      if path[0].chr == '/' && path[1].chr =~ /[a-zA-Z]/ && path[2].chr == ':'
-         path = path[1..-1]
-      end
-
+      path = correct_for_windows_path(uri.path)
       return Gem.read_binary(path)
     end
 

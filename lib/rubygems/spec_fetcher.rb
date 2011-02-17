@@ -70,7 +70,8 @@ class Gem::SpecFetcher
   # Returns the local directory to write +uri+ to.
 
   def cache_dir(uri)
-    File.join @dir, "#{uri.host}%#{uri.port}", File.dirname(uri.path)
+    escaped_path = uri.path.sub(%r[^/([a-zA-z]):/], '/\\1-/') # Correct for windows paths
+    File.join @dir, "#{uri.host}%#{uri.port}", File.dirname(escaped_path)
   end
 
   ##

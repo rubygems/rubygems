@@ -42,7 +42,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_activate_loaded
-    foo = util_spec 'foo', '1'
+    util_spec 'foo', '1'
     assert Gem.activate 'foo'
     refute Gem.activate 'foo'
   end
@@ -54,7 +54,7 @@ class TestGem < Gem::TestCase
 
   def test_self_activate_unrelated
     a = util_spec 'a', '1.0', 'b' => '>= 1.0'
-    b = util_spec 'b', '1.0'
+        util_spec 'b', '1.0'
     c = util_spec 'c', '1.0'
 
     assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
@@ -70,8 +70,8 @@ class TestGem < Gem::TestCase
 
   def test_self_activate_over
     a, _  = util_spec 'a', '1.0', 'b' => '>= 1.0', 'c' => '= 1.0'
-    b1, _ = util_spec 'b', '1.0'
-    b2, _ = util_spec 'b', '2.0'
+            util_spec 'b', '1.0'
+            util_spec 'b', '2.0'
     c,  _ = util_spec 'c', '1.0', 'b' => '~> 1.0'
 
     assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
@@ -90,8 +90,8 @@ class TestGem < Gem::TestCase
 
   def test_self_activate_under
     a,   _ = util_spec 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
-    b10, _ = util_spec 'b', '1.0'
-    b11, _ = util_spec 'b', '1.1'
+             util_spec 'b', '1.0'
+             util_spec 'b', '1.1'
     c,   _ = util_spec 'c', '1.0', 'b' => '= 1.0'
 
     assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
@@ -107,9 +107,9 @@ class TestGem < Gem::TestCase
 
   def test_self_activate_dropped
     a1, = util_spec 'a', '1', 'b' => nil
-    b1, = util_spec 'b', '1', 'c' => nil
-    b2, = util_spec 'b', '2'
-    c1, = util_spec 'c', '1'
+          util_spec 'b', '1', 'c' => nil
+          util_spec 'b', '2'
+          util_spec 'c', '1'
 
     assert_activate %w[b-2 a-1], a1, "b"
   end
@@ -126,8 +126,8 @@ class TestGem < Gem::TestCase
 
   def test_self_activate_raggi_the_edgecase_generator
     a,  _ = util_spec 'a', '1.0', 'b' => '>= 1.0', 'c' => '>= 1.0'
-    b1, _ = util_spec 'b', '1.0'
-    b2, _ = util_spec 'b', '1.1', 'z' => '>= 1.0'
+            util_spec 'b', '1.0'
+            util_spec 'b', '1.1', 'z' => '>= 1.0'
     c,  _ = util_spec 'c', '1.0', 'b' => '= 1.0'
 
     assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
@@ -141,8 +141,8 @@ class TestGem < Gem::TestCase
 
   def test_self_activate_divergent
     a, _  = util_spec 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
-    b1, _ = util_spec 'b', '1.0'
-    b2, _ = util_spec 'b', '2.0'
+            util_spec 'b', '1.0'
+            util_spec 'b', '2.0'
     c,  _ = util_spec 'c', '1.0', 'b' => '= 2.0'
 
     e = assert_raises Gem::LoadError do

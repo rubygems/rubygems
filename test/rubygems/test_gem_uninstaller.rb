@@ -6,19 +6,19 @@ class TestGemUninstaller < Gem::InstallerTestCase
   def setup
     super
 
-    @user_spec.executables = ["my_exec"]
+    @user_spec.executables = ["executable"]
 
     # HACK util_make_exec
     user_bin_dir = File.join Gem.user_dir, 'gems', @user_spec.full_name, 'bin'
     FileUtils.mkdir_p user_bin_dir
-    exec_path = File.join user_bin_dir, "my_exec"
+    exec_path = File.join user_bin_dir, "executable"
     open exec_path, 'w' do |f|
       f.puts "#!/usr/bin/ruby"
     end
 
     user_bin_dir = File.join Gem.user_dir, 'bin'
     FileUtils.mkdir_p user_bin_dir
-    exec_path = File.join user_bin_dir, "my_exec"
+    exec_path = File.join user_bin_dir, "executable"
     open exec_path, 'w' do |f|
       f.puts "#!/usr/bin/ruby"
     end
@@ -41,8 +41,8 @@ class TestGemUninstaller < Gem::InstallerTestCase
   def test_remove_executables_force_keep
     uninstaller = Gem::Uninstaller.new nil, :executables => false
 
-    executable = File.join Gem.user_dir, 'bin', 'my_exec'
-    assert File.exist? executable
+    executable = File.join Gem.user_dir, 'bin', 'executable'
+    assert File.exist?(executable), 'executable not written'
 
     use_ui @ui do
       uninstaller.remove_executables @user_spec
@@ -56,14 +56,14 @@ class TestGemUninstaller < Gem::InstallerTestCase
   def test_remove_executables_force_remove
     uninstaller = Gem::Uninstaller.new nil, :executables => true
 
-    executable = File.join Gem.user_dir, 'bin', 'my_exec'
-    assert File.exist? executable
+    executable = File.join Gem.user_dir, 'bin', 'executable'
+    assert File.exist?(executable), 'executable not written'
 
     use_ui @ui do
       uninstaller.remove_executables @user_spec
     end
 
-    assert_equal "Removing my_exec\n", @ui.output
+    assert_equal "Removing executable\n", @ui.output
 
     refute File.exist? executable
   end
@@ -75,10 +75,10 @@ class TestGemUninstaller < Gem::InstallerTestCase
       uninstaller.remove_executables @user_spec
     end
 
-    exec_path = File.join Gem.user_dir, 'bin', 'my_exec'
+    exec_path = File.join Gem.user_dir, 'bin', 'executable'
     assert_equal false, File.exist?(exec_path), 'removed exec from bin dir'
 
-    assert_equal "Removing my_exec\n", @ui.output
+    assert_equal "Removing executable\n", @ui.output
   end
 
   def test_path_ok_eh

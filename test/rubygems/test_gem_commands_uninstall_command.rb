@@ -27,7 +27,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
       end
     end
 
-    if win_platform?
+    if win_platform? then
       assert File.exist?(@executable)
     else
       assert File.symlink?(@executable)
@@ -36,9 +36,9 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     # Evil hack to prevent false removal success
     FileUtils.rm_f @executable
 
-    open(@executable, "wb+") {|f| f.puts "binary"}
+    open @executable, "wb+" do |f| f.puts "binary" end
 
-    @cmd.options[:args] = Array(@spec.name)
+    @cmd.options[:args] = [@spec.name]
     use_ui @ui do
       @cmd.execute
     end

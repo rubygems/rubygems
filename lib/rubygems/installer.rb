@@ -296,7 +296,7 @@ class Gem::Installer
 
     FileUtils.rm_f bin_script_path # prior install may have been --no-wrappers
 
-    File.open bin_script_path, 'w', 0755 do |file|
+    File.open bin_script_path, 'wb', 0755 do |file|
       file.print app_script_text(filename)
     end
 

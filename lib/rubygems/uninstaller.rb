@@ -38,6 +38,17 @@ class Gem::Uninstaller
 
   attr_reader :spec
 
+  class << self
+
+    attr_writer :exec_format
+
+    # Defaults to use Ruby's program prefix and suffix.
+    def exec_format
+      @exec_format ||= Gem.default_exec_format
+    end
+
+  end
+
   ##
   # Constructs an uninstaller that will uninstall +gem+
 
@@ -50,6 +61,7 @@ class Gem::Uninstaller
     @force_all = options[:all]
     @force_ignore = options[:ignore]
     @bin_dir = options[:bin_dir]
+    @format_executable = options[:format_executable]
 
     # only add user directory if install_dir is not set
     @user_install = false
@@ -162,8 +174,8 @@ class Gem::Uninstaller
 
       spec.executables.each do |exe_name|
         say "Removing #{exe_name}"
-        FileUtils.rm_f File.join(bindir, exe_name)
-        FileUtils.rm_f File.join(bindir, "#{exe_name}.bat")
+        FileUtils.rm_f File.join(bindir, formatted_program_filename(exe_name))
+        FileUtils.rm_f File.join(bindir, "#{formatted_program_filename(exe_name)}.bat")
       end
     end
   end
@@ -257,6 +269,15 @@ class Gem::Uninstaller
     msg << 'Continue with Uninstall?'
     return ask_yes_no(msg.join("\n"), true)
   end
+
+  def formatted_program_filename(filename)
+    if @format_executable then
+      self.class.exec_format % File.basename(filename)
+    else
+      filename
+    end
+  end
+
 
 end
 

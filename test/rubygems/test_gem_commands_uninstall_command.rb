@@ -49,6 +49,26 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     assert_equal false, File.exist?(@executable)
     assert_nil output.shift, "UI output should have contained only two lines"
   end
+  
+  def test_execute_removes_formatted_executable
+    FileUtils.rm_f @executable # Wish this didn't happen in #setup
+    
+    Gem::Installer.exec_format = 'foo-%s-bar'
+
+    @installer.format_executable = true
+    @installer.install
+
+    formatted_executable = File.join(@gemhome, 'bin', 'foo-executable-bar')
+    assert_equal true, File.exist?(@formatted_executable)
+    
+    @cmd.options[:format_executable] = true
+    @cmd.execute
+    
+    assert_equal false, File.exist?(@formatted_executable)
+    
+  rescue
+    Gem::Installer.exec_format = nil
+  end
 
   def test_execute_not_installed
     @cmd.options[:args] = ["foo"]

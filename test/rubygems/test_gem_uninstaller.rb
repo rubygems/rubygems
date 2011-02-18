@@ -81,6 +81,41 @@ class TestGemUninstaller < Gem::InstallerTestCase
     assert_equal "Removing executable\n", @ui.output
   end
 
+  def test_remove_executables_user_format
+    Gem::Uninstaller.exec_format = 'foo-%s-bar'
+
+    uninstaller = Gem::Uninstaller.new nil, :executables => true, :format_executable => true
+
+    use_ui @ui do
+      uninstaller.remove_executables @user_spec
+    end
+
+    exec_path = File.join Gem.user_dir, 'bin', 'foo-my_exec-bar'
+    assert_equal false, File.exist?(exec_path), 'removed exec from bin dir'
+
+    assert_equal "Removing my_exec\n", @ui.output
+  ensure
+    Gem::Uninstaller.exec_format = nil
+  end
+
+  def test_remove_executables_user_format_disabled
+    Gem::Uninstaller.exec_format = 'foo-%s-bar'
+
+    uninstaller = Gem::Uninstaller.new nil, :executables => true
+
+    use_ui @ui do
+      uninstaller.remove_executables @user_spec
+    end
+
+    exec_path = File.join Gem.user_dir, 'bin', 'my_exec'
+    assert_equal false, File.exist?(exec_path), 'removed exec from bin dir'
+
+    assert_equal "Removing my_exec\n", @ui.output
+  ensure
+    Gem::Uninstaller.exec_format = nil
+  end
+
+
   def test_path_ok_eh
     uninstaller = Gem::Uninstaller.new nil
 

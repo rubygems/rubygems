@@ -90,10 +90,10 @@ class TestGemUninstaller < Gem::InstallerTestCase
       uninstaller.remove_executables @user_spec
     end
 
-    exec_path = File.join Gem.user_dir, 'bin', 'foo-my_exec-bar'
+    exec_path = File.join Gem.user_dir, 'bin', 'foo-executable-bar'
     assert_equal false, File.exist?(exec_path), 'removed exec from bin dir'
 
-    assert_equal "Removing my_exec\n", @ui.output
+    assert_equal "Removing executable\n", @ui.output
   ensure
     Gem::Uninstaller.exec_format = nil
   end
@@ -107,10 +107,10 @@ class TestGemUninstaller < Gem::InstallerTestCase
       uninstaller.remove_executables @user_spec
     end
 
-    exec_path = File.join Gem.user_dir, 'bin', 'my_exec'
+    exec_path = File.join Gem.user_dir, 'bin', 'executable'
     assert_equal false, File.exist?(exec_path), 'removed exec from bin dir'
 
-    assert_equal "Removing my_exec\n", @ui.output
+    assert_equal "Removing executable\n", @ui.output
   ensure
     Gem::Uninstaller.exec_format = nil
   end

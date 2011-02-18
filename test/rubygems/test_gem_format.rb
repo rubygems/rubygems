@@ -1,5 +1,5 @@
 require 'rubygems/package/tar_test_case'
-require 'test/rubygems/simple_gem'
+require 'rubygems/simple_gem'
 require 'rubygems/format'
 
 class TestGemFormat < Gem::Package::TarTestCase

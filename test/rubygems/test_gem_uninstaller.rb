@@ -82,7 +82,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
   end
 
   def test_remove_executables_user_format
-    Gem::Uninstaller.exec_format = 'foo-%s-bar'
+    Gem::Installer.exec_format = 'foo-%s-bar'
 
     uninstaller = Gem::Uninstaller.new nil, :executables => true, :format_executable => true
 
@@ -95,11 +95,11 @@ class TestGemUninstaller < Gem::InstallerTestCase
 
     assert_equal "Removing executable\n", @ui.output
   ensure
-    Gem::Uninstaller.exec_format = nil
+    Gem::Installer.exec_format = nil
   end
 
   def test_remove_executables_user_format_disabled
-    Gem::Uninstaller.exec_format = 'foo-%s-bar'
+    Gem::Installer.exec_format = 'foo-%s-bar'
 
     uninstaller = Gem::Uninstaller.new nil, :executables => true
 
@@ -112,7 +112,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
 
     assert_equal "Removing executable\n", @ui.output
   ensure
-    Gem::Uninstaller.exec_format = nil
+    Gem::Installer.exec_format = nil
   end
 
 

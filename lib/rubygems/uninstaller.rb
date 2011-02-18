@@ -38,17 +38,6 @@ class Gem::Uninstaller
 
   attr_reader :spec
 
-  class << self
-
-    attr_writer :exec_format
-
-    # Defaults to use Ruby's program prefix and suffix.
-    def exec_format
-      @exec_format ||= Gem.default_exec_format
-    end
-
-  end
-
   ##
   # Constructs an uninstaller that will uninstall +gem+
 
@@ -272,7 +261,7 @@ class Gem::Uninstaller
 
   def formatted_program_filename(filename)
     if @format_executable then
-      self.class.exec_format % File.basename(filename)
+      Gem::Installer.exec_format % File.basename(filename)
     else
       filename
     end

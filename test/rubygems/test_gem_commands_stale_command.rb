@@ -13,6 +13,7 @@ class TestGemCommandsStaleCommand < Gem::TestCase
     foo_bar = quick_spec 'foo_bar' do |gem|
       gem.files = files
     end
+
     bar_baz = quick_spec 'bar_baz' do |gem|
       gem.files = files
     end
@@ -30,6 +31,7 @@ class TestGemCommandsStaleCommand < Gem::TestCase
     use_ui @ui do
       @cmd.execute
     end
+
     lines = @ui.output.split("\n")
     assert_equal("#{foo_bar.name}-#{foo_bar.version}", lines[0].split.first)
     assert_equal("#{bar_baz.name}-#{bar_baz.version}", lines[1].split.first)

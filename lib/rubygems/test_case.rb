@@ -344,7 +344,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       yield(s) if block_given?
     end
 
-    spec.loaded_from = "blah"
+    spec.loaded_from = @gemhome
 
     Gem.source_index.add_spec spec
 

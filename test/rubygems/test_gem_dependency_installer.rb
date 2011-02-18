@@ -1,5 +1,6 @@
 require 'rubygems/test_case'
 require 'rubygems/dependency_installer'
+require 'rubygems/security'
 
 class TestGemDependencyInstaller < Gem::TestCase
 

@@ -327,6 +327,30 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     return spec
   end
 
+  def quick_spec name, version
+    require 'rubygems/specification'
+
+    spec = Gem::Specification.new do |s|
+      s.platform    = Gem::Platform::RUBY
+      s.name        = name
+      s.version     = version
+      s.author      = 'A User'
+      s.email       = 'example@example.com'
+      s.homepage    = 'http://example.com'
+      s.has_rdoc    = true
+      s.summary     = "this is a summary"
+      s.description = "This is a test description"
+
+      yield(s) if block_given?
+    end
+
+    spec.loaded_from = "blah"
+
+    Gem.source_index.add_spec spec
+
+    return spec
+  end
+
   ##
   # Builds a gem from +spec+ and places it in <tt>File.join @gemhome,
   # 'cache'</tt>.  Automatically creates files based on +spec.files+
@@ -374,7 +398,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       end
     end
 
-    quick_gem(name, version, &block)
+    quick_spec(name, version, &block)
   end
 
   ##
@@ -384,7 +408,17 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # location are returned.
 
   def util_gem(name, version, deps = nil, &block)
-    spec = util_spec(name, version, deps, &block)
+    raise "deps or block, not both" if deps and block
+
+    if deps then
+      block = proc do |s|
+        deps.each do |n, req|
+          s.add_dependency n, (req || '>= 0')
+        end
+      end
+    end
+
+    spec = quick_gem(name, version, &block)
 
     util_build_gem spec
 

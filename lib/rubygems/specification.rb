@@ -677,7 +677,7 @@ class Gem::Specification
   end
 
   alias eql? == # :nodoc:
-  
+
   ##
   # A macro to yield cached gem path
   #

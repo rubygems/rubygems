@@ -10,10 +10,10 @@ class TestGemCommandsStaleCommand < Gem::TestCase
 
   def test_execute_sorts
     files = %w[lib/foo_bar.rb Rakefile]
-    foo_bar = quick_gem 'foo_bar' do |gem|
+    foo_bar = quick_spec 'foo_bar' do |gem|
       gem.files = files
     end
-    bar_baz = quick_gem 'bar_baz' do |gem|
+    bar_baz = quick_spec 'bar_baz' do |gem|
       gem.files = files
     end
 

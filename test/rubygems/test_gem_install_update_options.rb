@@ -63,6 +63,4 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
   ensure
     FileUtils.chmod 0755, @gemhome
   end
-
 end
-

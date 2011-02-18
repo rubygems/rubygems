@@ -55,7 +55,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
   end
 
   def util_setup_rubygem version
-    gem = quick_gem('rubygems-update', version.to_s) do |s|
+    gem = quick_spec('rubygems-update', version.to_s) do |s|
       s.files = %w[setup.rb]
     end
     write_file File.join(*%W[gems #{gem.original_name} setup.rb])
@@ -207,7 +207,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
   def test_execute_dependencies
     @a1.add_dependency 'c', '1.2'
 
-    @c2 = quick_gem 'c', '2' do |s|
+    @c2 = quick_spec 'c', '2' do |s|
       s.files = %w[lib/code.rb]
       s.require_paths = %w[lib]
     end

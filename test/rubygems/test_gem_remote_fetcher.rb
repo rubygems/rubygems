@@ -96,6 +96,7 @@ gems:
     @cache_dir = Gem.cache_dir(@gemhome)
     FileUtils.mkdir @gems_dir
 
+    # TODO: why does the remote fetcher need it written to disk?
     @a1, @a1_gem = util_gem 'a', '1' do |s| s.executables << 'a_bin' end
 
     Gem::RemoteFetcher.fetcher = nil
@@ -285,7 +286,7 @@ gems:
     end
 
     def test_download_read_only
-      File.chmod 0555, Gem.cache_dir(@gemhome) 
+      File.chmod 0555, Gem.cache_dir(@gemhome)
       File.chmod 0555, File.join(@gemhome)
 
       fetcher = util_fuck_with_fetcher File.read(@a1_gem)

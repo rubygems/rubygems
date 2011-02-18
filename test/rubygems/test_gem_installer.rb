@@ -511,7 +511,7 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_initialize
-    spec = quick_gem 'a' do |s| s.platform = Gem::Platform.new 'mswin32' end
+    spec = quick_spec 'a' do |s| s.platform = Gem::Platform.new 'mswin32' end
     gem = File.join @tempdir, spec.file_name
 
     Dir.mkdir util_inst_bindir
@@ -650,7 +650,7 @@ load Gem.bin_path('a', 'executable', version)
     gemhome2 = "#{@gemhome}2"
     @spec.add_dependency 'b'
 
-    b2 = quick_gem 'b', 2
+    b2 = quick_spec 'b', 2
 
     FileUtils.mv @gemhome, gemhome2
     Gem.source_index.gems.delete b2.full_name
@@ -826,7 +826,7 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_install_wrong_rubygems_version
-    spec = quick_gem 'old_rubygems_required', '1' do |s|
+    spec = quick_spec 'old_rubygems_required', '1' do |s|
       s.required_rubygems_version = '< 0'
     end
 
@@ -978,7 +978,7 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def old_ruby_required
-    spec = quick_gem 'old_ruby_required', '1' do |s|
+    spec = quick_spec 'old_ruby_required', '1' do |s|
       s.required_ruby_version = '= 1.4.6'
     end
 
@@ -988,7 +988,7 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def util_execless
-    @spec = quick_gem 'z'
+    @spec = quick_spec 'z'
 
     gem = File.join @tempdir, @spec.file_name
 

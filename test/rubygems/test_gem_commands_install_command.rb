@@ -181,7 +181,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     correctly_spelled = "non_existent_with_hint"
 
     util_setup_fake_fetcher
-    util_setup_spec_fetcher quick_gem(correctly_spelled, '2')
+    util_setup_spec_fetcher quick_spec(correctly_spelled, '2')
 
     @cmd.options[:args] = [misspelled]
 

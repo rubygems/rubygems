@@ -77,7 +77,7 @@ Gem pl-1-x86-linux
   end
 
   def test_execute_pipe_format
-    quick_gem 'foo' do |gem|
+    quick_spec 'foo' do |gem|
       gem.add_dependency 'bar', '> 1'
     end
 
@@ -121,6 +121,7 @@ Gem b-2
   end
 
   def test_execute_reverse
+    # FIX: this shouldn't need to write out, but fails if you switch it
     quick_gem 'foo' do |gem|
       gem.add_dependency 'bar', '> 1'
     end

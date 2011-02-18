@@ -171,8 +171,8 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
   end
 
   def test_execute_exact_match
-    foo_spec = quick_gem 'foo'
-    foo_bar_spec = quick_gem 'foo_bar'
+    foo_spec = quick_spec 'foo'
+    foo_bar_spec = quick_spec 'foo_bar'
 
     use_ui @ui do
       Dir.chdir @tempdir do

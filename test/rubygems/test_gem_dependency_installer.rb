@@ -738,7 +738,7 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def util_setup_c1_pre
-    @c1_pre, @c1_pre_gem = util_gem 'c', '1.a' do |s|
+    @c1_pre, @c1_pre_gem = util_spec 'c', '1.a' do |s|
       s.add_dependency 'a', '1.a'
       s.add_dependency 'b', '1'
     end
@@ -754,22 +754,22 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def util_setup_wxyz
-    @x1_m, @x1_m_gem = util_gem 'x', '1' do |s|
+    @x1_m, @x1_m_gem = util_spec 'x', '1' do |s|
       s.platform = Gem::Platform.new %w[cpu my_platform 1]
     end
 
-    @x1_o, @x1_o_gem = util_gem 'x', '1' do |s|
+    @x1_o, @x1_o_gem = util_spec 'x', '1' do |s|
       s.platform = Gem::Platform.new %w[cpu other_platform 1]
     end
 
-    @w1, @w1_gem = util_gem 'w', '1', 'x' => nil
+    @w1, @w1_gem = util_spec 'w', '1', 'x' => nil
 
-    @y1, @y1_gem = util_gem 'y', '1'
-    @y1_1_p, @y1_1_p_gem = util_gem 'y', '1.1' do |s|
+    @y1, @y1_gem = util_spec 'y', '1'
+    @y1_1_p, @y1_1_p_gem = util_spec 'y', '1.1' do |s|
       s.platform = Gem::Platform.new %w[cpu my_platform 1]
     end
 
-    @z1, @z1_gem = util_gem 'z', '1', 'y' => nil
+    @z1, @z1_gem = util_spec 'z', '1', 'y' => nil
 
     util_reset_gems
   end

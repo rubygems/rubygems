@@ -84,7 +84,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_execute_prerelease
-    @spec = quick_gem "pre", "2.b"
+    @spec = quick_spec "pre", "2.b"
     @gem = File.join @tempdir, @spec.file_name
     FileUtils.touch @gem
 

@@ -9,7 +9,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute
-    a = quick_gem 'a' do |s| s.executables = %w[foo] end
+    a = quick_spec 'a' do |s| s.executables = %w[foo] end
     FileUtils.mkdir_p File.join(@tempdir, 'bin')
     File.open File.join(@tempdir, 'bin', 'foo'), 'w' do |fp|
       fp.puts "#!/usr/bin/ruby"
@@ -39,7 +39,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_all
-    a = quick_gem 'a' do |s| s.executables = %w[foo] end
+    a = quick_spec 'a' do |s| s.executables = %w[foo] end
     FileUtils.mkdir_p File.join(@tempdir, 'bin')
     File.open File.join(@tempdir, 'bin', 'foo'), 'w' do |fp|
       fp.puts "#!/usr/bin/ruby"
@@ -67,7 +67,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_missing_cache_gem
-    a = quick_gem 'a' do |s|
+    a = quick_spec 'a' do |s|
       s.executables = %w[foo]
     end
 

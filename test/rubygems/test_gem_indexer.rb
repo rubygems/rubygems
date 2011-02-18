@@ -12,15 +12,15 @@ class TestGemIndexer < Gem::TestCase
 
     util_make_gems
 
-    @d2_0 = quick_gem 'd', '2.0' do |s|
+    @d2_0 = quick_spec 'd', '2.0' do |s|
       s.date = Gem::Specification::TODAY - 86400 * 3
     end
     util_build_gem @d2_0
 
-    @d2_0_a = quick_gem 'd', '2.0.a'
+    @d2_0_a = quick_spec 'd', '2.0.a'
     util_build_gem @d2_0_a
 
-    @d2_0_b = quick_gem 'd', '2.0.b'
+    @d2_0_b = quick_spec 'd', '2.0.b'
     util_build_gem @d2_0_b
 
     gems = File.join(@tempdir, 'gems')
@@ -53,7 +53,7 @@ class TestGemIndexer < Gem::TestCase
   end
 
   def test_build_indicies
-    spec = quick_gem 'd', '2.0'
+    spec = quick_spec 'd', '2.0'
     spec.instance_variable_set :@original_platform, ''
 
     @indexer.make_temp_directories
@@ -503,11 +503,11 @@ eighty characters.&lt;/pre&gt;
     assert File.directory?(quickdir)
     assert File.directory?(marshal_quickdir)
 
-    @d2_1 = quick_gem 'd', '2.1'
+    @d2_1 = quick_spec 'd', '2.1'
     util_build_gem @d2_1
     @d2_1_tuple = [@d2_1.name, @d2_1.version, @d2_1.original_platform]
 
-    @d2_1_a = quick_gem 'd', '2.2.a'
+    @d2_1_a = quick_spec 'd', '2.2.a'
     util_build_gem @d2_1_a
     @d2_1_a_tuple = [@d2_1_a.name, @d2_1_a.version, @d2_1_a.original_platform]
 

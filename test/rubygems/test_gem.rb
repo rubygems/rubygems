@@ -260,7 +260,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_bin_path_nonexistent_binfile
-    quick_gem 'a', '2' do |s|
+    quick_spec 'a', '2' do |s|
       s.executables = ['exec']
     end
     assert_raises(Gem::GemNotFoundException) do
@@ -269,7 +269,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_bin_path_no_bin_file
-    quick_gem 'a', '1'
+    quick_spec 'a', '1'
     assert_raises(Gem::Exception) do
       Gem.bin_path('a', nil, '1')
     end
@@ -283,7 +283,7 @@ class TestGem < Gem::TestCase
 
   def test_self_bin_path_bin_file_gone_in_latest
     util_exec_gem
-    quick_gem 'a', '10' do |s|
+    quick_spec 'a', '10' do |s|
       s.executables = []
       s.default_executable = nil
     end
@@ -339,7 +339,7 @@ class TestGem < Gem::TestCase
         fp.puts 'blah'
       end
 
-      foo = quick_gem 'foo' do |s| s.files = %w[data/foo.txt] end
+      foo = quick_spec 'foo' do |s| s.files = %w[data/foo.txt] end
       install_gem foo
     end
 
@@ -516,7 +516,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_loaded_specs
-    foo = quick_gem 'foo'
+    foo = quick_spec 'foo'
     install_gem foo
     Gem.source_index = nil
 
@@ -871,30 +871,30 @@ class TestGem < Gem::TestCase
     end
   end
 
-  # def test_load_plugins
-  #   plugin_path = File.join "lib", "rubygems_plugin.rb"
-  #
-  #   Dir.chdir @tempdir do
-  #     FileUtils.mkdir_p 'lib'
-  #     File.open plugin_path, "w" do |fp|
-  #       fp.puts "TestGem::TEST_SPEC_PLUGIN_LOAD = :loaded"
-  #     end
-  #
-  #     foo = quick_gem 'foo', '1' do |s|
-  #       s.files << plugin_path
-  #     end
-  #
-  #     install_gem foo
-  #   end
-  #
-  #   Gem.source_index = nil
-  #
-  #   gem 'foo'
-  #
-  #   Gem.load_plugins
-  #
-  #   assert_equal :loaded, TEST_SPEC_PLUGIN_LOAD
-  # end
+  def test_load_plugins
+    plugin_path = File.join "lib", "rubygems_plugin.rb"
+
+    Dir.chdir @tempdir do
+      FileUtils.mkdir_p 'lib'
+      File.open plugin_path, "w" do |fp|
+        fp.puts "TestGem::TEST_SPEC_PLUGIN_LOAD = :loaded"
+      end
+
+      foo = quick_spec 'foo', '1' do |s|
+        s.files << plugin_path
+      end
+
+      install_gem foo
+    end
+
+    Gem.source_index = nil
+
+    gem 'foo'
+
+    Gem.load_plugins
+
+    assert_equal :loaded, TEST_SPEC_PLUGIN_LOAD
+  end
 
   def test_load_env_plugins
     with_plugin('load') { Gem.load_env_plugins }
@@ -936,7 +936,7 @@ class TestGem < Gem::TestCase
   end
 
   def util_exec_gem
-    spec, _ = quick_gem 'a', '4' do |s|
+    spec, _ = quick_spec 'a', '4' do |s|
       s.default_executable = 'exec'
       s.executables = ['exec', 'abin']
     end

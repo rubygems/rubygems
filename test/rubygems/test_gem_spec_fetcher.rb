@@ -10,7 +10,7 @@ class TestGemSpecFetcher < Gem::TestCase
 
     util_setup_fake_fetcher
 
-    @a_pre = quick_gem 'a', '1.a'
+    @a_pre = quick_spec 'a', '1.a'
     @source_index.add_spec @pl1
     @source_index.add_spec @a_pre
 

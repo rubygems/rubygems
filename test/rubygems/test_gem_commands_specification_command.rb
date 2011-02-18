@@ -10,7 +10,7 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
   end
 
   def test_execute
-    foo = quick_gem 'foo'
+    foo = quick_spec 'foo'
     Gem.source_index.add_spec foo
 
     @cmd.options[:args] = %w[foo]
@@ -25,8 +25,8 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
   end
 
   def test_execute_all
-    quick_gem 'foo', '0.0.1'
-    quick_gem 'foo', '0.0.2'
+    quick_spec 'foo', '0.0.1'
+    quick_spec 'foo', '0.0.2'
 
     @cmd.options[:args] = %w[foo]
     @cmd.options[:all] = true
@@ -56,8 +56,8 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
   end
 
   def test_execute_exact_match
-    quick_gem 'foo'
-    quick_gem 'foo_bar'
+    quick_spec 'foo'
+    quick_spec 'foo_bar'
 
     @cmd.options[:args] = %w[foo]
 
@@ -71,7 +71,7 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
   end
 
   def test_execute_field
-    foo = quick_gem 'foo'
+    foo = quick_spec 'foo'
     Gem.source_index.add_spec foo
 
     @cmd.options[:args] = %w[foo name]
@@ -84,7 +84,7 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
   end
 
   def test_execute_marshal
-    foo = quick_gem 'foo'
+    foo = quick_spec 'foo'
     Gem.source_index.add_spec foo
 
     @cmd.options[:args] = %w[foo]
@@ -120,7 +120,7 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
   end
 
   def test_execute_ruby
-    foo = quick_gem 'foo'
+    foo = quick_spec 'foo'
     Gem.source_index.add_spec foo
 
     @cmd.options[:args] = %w[foo]

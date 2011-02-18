@@ -327,7 +327,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     return spec
   end
 
-  def quick_spec name, version
+  def quick_spec name, version = '2'
     require 'rubygems/specification'
 
     spec = Gem::Specification.new do |s|

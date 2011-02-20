@@ -131,24 +131,6 @@ module Gem
 
     # Version requirement of gem
     attr_accessor :requirement
-
-    def version_requirement
-      warn "#{Gem.location_of_caller.join ':'}:Warning: " \
-        "Gem::LoadError#version_requirement is deprecated " \
-        "and will be removed on or after January 2011. " \
-        "Use #requirement."
-
-      requirement
-    end
-
-    def version_requirement= requirement
-      warn "#{Gem.location_of_caller.join ':'}:Warning: " \
-        "Gem::LoadError#version_requirement= is deprecated " \
-        "and will be removed on or after January 2011. " \
-        "Use #requirement."
-
-      self.requirement = requirement
-    end
   end
 
   RbConfigPriorities = %w[

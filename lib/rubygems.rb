@@ -1208,7 +1208,14 @@ module Gem
 
     # :stopdoc:
 
-    alias cache source_index # an alias for the old name
+    def self.cache
+      warn "#{Gem.location_of_caller.join ':'}:Warning: " \
+        "Gem::cache is deprecated and will be removed on or after " \
+        "August 2012.  " \
+        "Use Gem::source_index."
+
+      source_index
+    end
 
     # :startdoc:
 

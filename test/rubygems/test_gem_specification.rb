@@ -840,7 +840,7 @@ Gem::Specification.new do |s|
   s.test_files = [\"test/suite.rb\"]
 
   if s.respond_to? :specification_version then
-    s.specification_version = 3
+    s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rake>, [\"> 0.4\"])
@@ -1333,18 +1333,18 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["A User"]
-  s.date = %q{2011-02-13}
+  s.date = %q{#{Gem::Specification::TODAY.strftime("%Y-%m-%d")}}
   s.description = %q{This is a test description}
   s.email = %q{example@example.com}
   s.files = ["lib/code.rb"]
   s.homepage = %q{http://example.com}
   s.metadata = {:one=>"two", :two=>"three"}
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.5.2}
+  s.rubygems_version = %q{#{Gem::VERSION}}
   s.summary = %q{this is a summary}
 
   if s.respond_to? :specification_version then
-    s.specification_version = 3
+    s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
     else

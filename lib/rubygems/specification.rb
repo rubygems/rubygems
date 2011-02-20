@@ -47,7 +47,7 @@ class Gem::Specification
   #
   # NOTE RubyGems < 1.2 cannot load specification versions > 2.
 
-  CURRENT_SPECIFICATION_VERSION = 3
+  CURRENT_SPECIFICATION_VERSION = 4
 
   ##
   # An informal list of changes to the specification.  The highest-valued
@@ -65,11 +65,14 @@ class Gem::Specification
     ],
     3 => [
        'Added Fixnum validation to the specification_version'
+    ],
+    4 => [
+      'Added sandboxed freeform metadata to the specification version.'
     ]
   }
 
   # :stopdoc:
-  MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16, 3 => 17 }
+  MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16, 3 => 17, 4 => 18 }
 
   now = Time.at(Time.now.to_i)
   TODAY = now - ((now.to_i + now.gmt_offset) % 86400)
@@ -278,7 +281,8 @@ class Gem::Specification
       @homepage,
       @has_rdoc,
       @new_platform,
-      @licenses
+      @licenses,
+      @metadata
     ]
   end
 
@@ -324,6 +328,7 @@ class Gem::Specification
     spec.instance_variable_set :@new_platform,              array[16]
     spec.instance_variable_set :@platform,                  array[16].to_s
     spec.instance_variable_set :@license,                   array[17]
+    spec.instance_variable_set :@metadata,                  array[18]
     spec.instance_variable_set :@loaded,                    false
 
     spec

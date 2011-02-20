@@ -21,13 +21,6 @@ require 'pp'
 require 'zlib'
 Gem.load_yaml
 
-begin
-  gem 'rdoc'
-rescue Gem::LoadError
-end
-
-require 'rdoc/rdoc'
-
 require 'rubygems/mock_gem_ui'
 
 module Gem
@@ -135,6 +128,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     Gem.use_paths(@gemhome)
     Gem.loaded_specs.clear
+    Gem._unresolved.clear
 
     Gem.configuration.verbose = true
     Gem.configuration.update_sources = true
@@ -308,14 +302,14 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     require 'rubygems/specification'
 
     spec = Gem::Specification.new do |s|
-      s.platform = Gem::Platform::RUBY
-      s.name = name
-      s.version = version
-      s.author = 'A User'
-      s.email = 'example@example.com'
-      s.homepage = 'http://example.com'
-      s.has_rdoc = true
-      s.summary = "this is a summary"
+      s.platform    = Gem::Platform::RUBY
+      s.name        = name
+      s.version     = version
+      s.author      = 'A User'
+      s.email       = 'example@example.com'
+      s.homepage    = 'http://example.com'
+      s.has_rdoc    = true
+      s.summary     = "this is a summary"
       s.description = "This is a test description"
 
       yield(s) if block_given?
@@ -327,6 +321,30 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     end
 
     spec.loaded_from = written_path
+
+    Gem.source_index.add_spec spec
+
+    return spec
+  end
+
+  def quick_spec name, version = '2'
+    require 'rubygems/specification'
+
+    spec = Gem::Specification.new do |s|
+      s.platform    = Gem::Platform::RUBY
+      s.name        = name
+      s.version     = version
+      s.author      = 'A User'
+      s.email       = 'example@example.com'
+      s.homepage    = 'http://example.com'
+      s.has_rdoc    = true
+      s.summary     = "this is a summary"
+      s.description = "This is a test description"
+
+      yield(s) if block_given?
+    end
+
+    spec.loaded_from = @gemhome
 
     Gem.source_index.add_spec spec
 
@@ -353,7 +371,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       end
 
       FileUtils.mv spec.file_name,
-                   File.join(@gemhome, 'cache', "#{spec.original_name}.gem")
+                   Gem.cache_gem("#{spec.original_name}.gem")
     end
   end
 
@@ -361,9 +379,26 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # Removes all installed gems from +@gemhome+.
 
   def util_clear_gems
-    FileUtils.rm_r File.join(@gemhome, 'gems')
-    FileUtils.rm_r File.join(@gemhome, 'specifications')
+    FileUtils.rm_rf File.join(@gemhome, 'gems')
+    FileUtils.rm_rf File.join(@gemhome, 'specifications')
     Gem.source_index.refresh!
+  end
+
+  ##
+  # Creates a spec with +name+, +version+ and +deps+.
+
+  def util_spec(name, version, deps = nil, &block)
+    raise "deps or block, not both" if deps and block
+
+    if deps then
+      block = proc do |s|
+        deps.each do |n, req|
+          s.add_dependency n, (req || '>= 0')
+        end
+      end
+    end
+
+    quick_spec(name, version, &block)
   end
 
   ##
@@ -373,6 +408,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # location are returned.
 
   def util_gem(name, version, deps = nil, &block)
+    raise "deps or block, not both" if deps and block
+
     if deps then
       block = proc do |s|
         deps.each do |n, req|
@@ -386,8 +423,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     util_build_gem spec
 
     cache_file = File.join @tempdir, 'gems', "#{spec.original_name}.gem"
-    FileUtils.mv File.join(@gemhome, 'cache', "#{spec.original_name}.gem"),
-                 cache_file
+    FileUtils.mv Gem.cache_gem("#{spec.original_name}.gem"), cache_file
     FileUtils.rm File.join(@gemhome, 'specifications', spec.spec_name)
 
     spec.loaded_from = nil

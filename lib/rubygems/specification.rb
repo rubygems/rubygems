@@ -679,6 +679,14 @@ class Gem::Specification
   alias eql? == # :nodoc:
 
   ##
+  # A macro to yield cached gem path
+  #
+  def cache_gem
+    cache_name = File.join(Gem.dir, 'cache', file_name)
+    return File.exist?(cache_name) ? cache_name : nil
+  end
+
+  ##
   # True if this gem has the same attributes as +other+.
 
   def same_attributes?(other)
@@ -791,21 +799,17 @@ class Gem::Specification
 
     result << "    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then"
 
-    unless dependencies.empty? then
-      dependencies.each do |dep|
-        version_reqs_param = dep.requirements_list.inspect
-        dep.instance_variable_set :@type, :runtime if dep.type.nil? # HACK
-        result << "      s.add_#{dep.type}_dependency(%q<#{dep.name}>, #{version_reqs_param})"
-      end
+    dependencies.each do |dep|
+      req = dep.requirements_list.inspect
+      dep.instance_variable_set :@type, :runtime if dep.type.nil? # HACK
+      result << "      s.add_#{dep.type}_dependency(%q<#{dep.name}>, #{req})"
     end
 
     result << "    else"
 
-    unless dependencies.empty? then
-      dependencies.each do |dep|
-        version_reqs_param = dep.requirements_list.inspect
-        result << "      s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
-      end
+    dependencies.each do |dep|
+      version_reqs_param = dep.requirements_list.inspect
+      result << "      s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
     end
 
     result << '    end'
@@ -1519,5 +1523,22 @@ class Gem::Specification
               @extra_rdoc_files,
               @extensions,
              ].flatten.uniq.compact
+  end
+
+  def conflicts
+    conflicts = {}
+    Gem.loaded_specs.values.each do |spec|
+      unsatisfied = spec.runtime_dependencies.any? { |dep|
+        self.name == dep.name and not satisfies_requirement? dep
+      }
+
+      if unsatisfied then
+        bad = spec.runtime_dependencies.find_all { |dep|
+          self.name == dep.name and not satisfies_requirement? dep
+        }
+        conflicts[spec.full_name] = bad unless bad.empty?
+      end
+    end
+    conflicts
   end
 end

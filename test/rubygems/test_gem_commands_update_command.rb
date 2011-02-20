@@ -1,6 +1,12 @@
 require 'rubygems/test_case'
 require 'rubygems/commands/update_command'
 
+begin
+  gem "rdoc"
+rescue Gem::LoadError
+  # ignore
+end
+
 class TestGemCommandsUpdateCommand < Gem::TestCase
 
   def setup
@@ -13,8 +19,8 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     util_setup_fake_fetcher
 
-    @a1_path = File.join @gemhome, 'cache', @a1.file_name
-    @a2_path = File.join @gemhome, 'cache', @a2.file_name
+    @a1_path = Gem.cache_gem(@a1.file_name, @gemhome)
+    @a2_path = Gem.cache_gem(@a2.file_name, @gemhome)
 
     util_setup_spec_fetcher @a1, @a2
 
@@ -49,7 +55,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
   end
 
   def util_setup_rubygem version
-    gem = quick_gem('rubygems-update', version.to_s) do |s|
+    gem = quick_spec('rubygems-update', version.to_s) do |s|
       s.files = %w[setup.rb]
     end
     write_file File.join(*%W[gems #{gem.original_name} setup.rb])
@@ -72,7 +78,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
   def util_add_to_fetcher *specs
     specs.each do |spec|
-      gem_file = File.join @gemhome, 'cache', spec.file_name
+      gem_file = Gem.cache_gem(spec.file_name, @gemhome)
 
       @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
         Gem.read_binary gem_file
@@ -201,7 +207,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
   def test_execute_dependencies
     @a1.add_dependency 'c', '1.2'
 
-    @c2 = quick_gem 'c', '2' do |s|
+    @c2 = quick_spec 'c', '2' do |s|
       s.files = %w[lib/code.rb]
       s.require_paths = %w[lib]
     end
@@ -209,9 +215,9 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     @a2.add_dependency 'c', '2'
     @a2.add_dependency 'b', '2'
 
-    @b2_path   = File.join @gemhome, 'cache', @b2.file_name
-    @c1_2_path = File.join @gemhome, 'cache', @c1_2.file_name
-    @c2_path   = File.join @gemhome, 'cache', @c2.file_name
+    @b2_path   = Gem.cache_gem(@b2.file_name, @gemhome)
+    @c1_2_path = Gem.cache_gem(@c1_2.file_name, @gemhome)
+    @c2_path   = Gem.cache_gem(@c2.file_name, @gemhome)
 
     @source_index = Gem::SourceIndex.new
     @source_index.add_spec @a1

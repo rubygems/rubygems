@@ -185,29 +185,24 @@ class Gem::StreamUI
       end
     end
 
-    qstr = case default
-           when nil
-             'yn'
-           when true
-             'Yn'
-           else
-             'yN'
-           end
+    default_answer = case default
+                     when nil
+                       'yn'
+                     when true
+                       'Yn'
+                     else
+                       'yN'
+                     end
 
     result = nil
 
-    while result.nil?
-      result = ask("#{question} [#{qstr}]")
-      result = case result
-      when /^[Yy].*/
-        true
-      when /^[Nn].*/
-        false
-      when /^$/
-        default
-      else
-        nil
-      end
+    while result.nil? do
+      result = case ask "#{question} [#{default_answer}]"
+               when /^y/i then true
+               when /^n/i then false
+               when /^$/  then default
+               else            nil
+               end
     end
 
     return result
@@ -546,9 +541,7 @@ end
 # SilentUI is a UI choice that is absolutely silent.
 
 class Gem::SilentUI < Gem::StreamUI
-
   def initialize
-
     reader, writer = nil, nil
 
     begin
@@ -562,5 +555,12 @@ class Gem::SilentUI < Gem::StreamUI
     super reader, writer, writer, false
   end
 
+  def download_reporter(*args)
+    SilentDownloadReporter.new(@outs, *args)
+  end
+
+  def progress_reporter(*args)
+    SilentProgressReporter.new(@outs, *args)
+  end
 end
 

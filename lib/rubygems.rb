@@ -118,7 +118,7 @@ require 'thread' # HACK: remove me for 1.5 - this is here just for rails
 # -The RubyGems Team
 
 module Gem
-  RubyGemsVersion = VERSION = '1.5.2'
+  RubyGemsVersion = VERSION = '1.6.0'
 
   ##
   # Raised when RubyGems is unable to load or activate a gem.  Contains the
@@ -240,55 +240,70 @@ module Gem
       options = {}
     end
 
+    requirements = Gem::Requirement.default if requirements.empty?
+    dep = Gem::Dependency.new(gem, requirements)
+
     sources = options[:sources] || []
+    matches = _unresolved.find_all { |spec| spec.satisfies_requirement? dep }
 
-    if requirements.empty? then
-      requirements = Gem::Requirement.default
-    end
+    if matches.empty? then
+      matches = Gem.source_index.find_name(dep.name, dep.requirement)
+      report_activate_error(dep) if matches.empty?
 
-    unless gem.respond_to?(:name) and
-           gem.respond_to?(:requirement) then
-      gem = Gem::Dependency.new(gem, requirements)
-    end
+      if @loaded_specs[dep.name] then
+        # This gem is already loaded.  If the currently loaded gem is not in the
+        # list of candidate gems, then we have a version conflict.
+        existing_spec = @loaded_specs[dep.name]
 
-    matches = Gem.source_index.find_name(gem.name, gem.requirement)
-    report_activate_error(gem) if matches.empty?
+        unless matches.any? { |spec| spec.version == existing_spec.version } then
+          sources_message = sources.map { |spec| spec.full_name }
+          stack_message = @loaded_stacks[dep.name].map { |spec| spec.full_name }
 
-    if @loaded_specs[gem.name] then
-      # This gem is already loaded.  If the currently loaded gem is not in the
-      # list of candidate gems, then we have a version conflict.
-      existing_spec = @loaded_specs[gem.name]
+          msg = "can't activate #{dep} for #{sources_message.inspect}, "
+          msg << "already activated #{existing_spec.full_name} for "
+          msg << "#{stack_message.inspect}"
 
-      unless matches.any? { |spec| spec.version == existing_spec.version } then
-         sources_message = sources.map { |spec| spec.full_name }
-         stack_message = @loaded_stacks[gem.name].map { |spec| spec.full_name }
+          e = Gem::LoadError.new msg
+          e.name = dep.name
+          e.requirement = dep.requirement
 
-         msg = "can't activate #{gem} for #{sources_message.inspect}, "
-         msg << "already activated #{existing_spec.full_name} for "
-         msg << "#{stack_message.inspect}"
+          raise e
+        end
 
-         e = Gem::LoadError.new msg
-         e.name = gem.name
-         e.requirement = gem.requirement
-
-         raise e
+        return false
       end
-
-      return false
     end
 
-    # new load
     spec = matches.last
+
+    conf = spec.conflicts
+    unless conf.empty? then
+      why = conf.map { |k,v| "#{k} depends on #{v.join(", ")}" }.join ", "
+
+      raise LoadError, "Unable to activate #{spec.full_name}, but #{why}"
+    end
+
     return false if spec.loaded?
 
     spec.loaded = true
-    @loaded_specs[spec.name] = spec
+    @loaded_specs[spec.name]  = spec
     @loaded_stacks[spec.name] = sources.dup
 
-    # Load dependent gems first
-    spec.runtime_dependencies.each do |dep_gem|
-      activate dep_gem, :sources => [spec, *sources]
+    spec.runtime_dependencies.each do |spec_dep|
+      next if Gem.loaded_specs.include? spec_dep.name
+      specs = Gem.source_index.search spec_dep, true
+
+      _unresolved.add(*specs)
     end
+
+    current = Hash.new { |h, name| h[name] = Gem::Dependency.new name }
+    Gem.loaded_specs.each do |n,s|
+      s.runtime_dependencies.each do |s_dep|
+        current[s_dep.name] = current[s_dep.name].merge s_dep
+      end
+    end
+
+    _unresolved.remove_specs_unsatisfied_by current
 
     require_paths = spec.require_paths.map do |path|
       File.join spec.full_gem_path, path
@@ -306,6 +321,11 @@ module Gem
     end
 
     return true
+  end
+
+  def self._unresolved
+    require "rubygems/dependency_list"
+    @unresolved ||= Gem::DependencyList.new
   end
 
   ##
@@ -717,6 +737,27 @@ module Gem
   end
 
   ##
+  # Get the appropriate cache path.
+  #
+  # Pass a string to use a different base path, or nil/false (default) for
+  # Gem.dir.
+  #
+  
+  def self.cache_dir(custom_dir=false)
+    File.join(custom_dir ? custom_dir : Gem.dir, 'cache')
+  end
+
+  ##
+  # Given a gem path, find the gem in cache.
+  #
+  # Pass a string as the second argument to use a different base path, or
+  # nil/false (default) for Gem.dir.
+
+  def self.cache_gem(filename, user_dir=false)
+    File.join(cache_dir(user_dir), filename)
+  end
+
+  ##
   # Set array of platforms this RubyGems supports (primarily for testing).
 
   def self.platforms=(platforms)
@@ -897,6 +938,29 @@ module Gem
     end
 
     @ruby
+  end
+
+  def self.latest_spec_for name
+    dependency  = Gem::Dependency.new name
+    fetcher     = Gem::SpecFetcher.fetcher
+    spec_tuples = fetcher.find_matching dependency
+
+    match = spec_tuples.select { |(n, _, p), _|
+      n == name and Gem::Platform.match p
+    }.sort_by { |(_, version, _), _|
+      version
+    }.last
+
+    match and fetcher.fetch_spec(*match)
+  end
+
+  def self.latest_version_for name
+    spec = latest_spec_for name
+    spec and spec.version
+  end
+
+  def self.latest_rubygems_version
+    latest_version_for "rubygems-update"
   end
 
   ##

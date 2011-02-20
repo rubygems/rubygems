@@ -40,6 +40,7 @@ end
   def setup
     super
 
+    # TODO: there is no reason why the spec tests need to write to disk
     @a1 = quick_gem 'a', '1' do |s|
       s.executable = 'exec'
       s.extensions << 'ext/a/extconf.rb'
@@ -295,7 +296,7 @@ end
   end
 
   def test_add_dependency_with_explicit_type
-    gem = quick_gem "awesome", "1.0" do |awesome|
+    gem = quick_spec "awesome", "1.0" do |awesome|
       awesome.add_development_dependency "monkey"
     end
 
@@ -373,7 +374,7 @@ end
   end
 
   def test_dependencies_scoped_by_type
-    gem = quick_gem "awesome", "1.0" do |awesome|
+    gem = quick_spec "awesome", "1.0" do |awesome|
       awesome.add_runtime_dependency "bonobo", []
       awesome.add_development_dependency "monkey", []
     end
@@ -391,8 +392,8 @@ end
   end
 
   def test_eql_eh
-    g1 = quick_gem 'gem'
-    g2 = quick_gem 'gem'
+    g1 = quick_spec 'gem'
+    g2 = quick_spec 'gem'
 
     assert_equal g1, g2
     assert_equal g1.hash, g2.hash
@@ -691,7 +692,7 @@ end
   end
 
   def test_prerelease_spec_adds_required_rubygems_version
-    @prerelease = quick_gem('tardis', '2.2.0.a')
+    @prerelease = quick_spec('tardis', '2.2.0.a')
     refute @prerelease.required_rubygems_version.satisfied_by?(Gem::Version.new('1.3.1'))
     assert @prerelease.required_rubygems_version.satisfied_by?(Gem::Version.new('1.4.0'))
   end
@@ -717,8 +718,8 @@ end
   end
 
   def test_spaceship_name
-    s1 = quick_gem 'a', '1'
-    s2 = quick_gem 'b', '1'
+    s1 = quick_spec 'a', '1'
+    s2 = quick_spec 'b', '1'
 
     assert_equal(-1, (s1 <=> s2))
     assert_equal( 0, (s1 <=> s1))
@@ -726,8 +727,8 @@ end
   end
 
   def test_spaceship_platform
-    s1 = quick_gem 'a', '1'
-    s2 = quick_gem 'a', '1' do |s|
+    s1 = quick_spec 'a', '1'
+    s2 = quick_spec 'a', '1' do |s|
       s.platform = Gem::Platform.new 'x86-my_platform1'
     end
 
@@ -737,8 +738,8 @@ end
   end
 
   def test_spaceship_version
-    s1 = quick_gem 'a', '1'
-    s2 = quick_gem 'a', '2'
+    s1 = quick_spec 'a', '1'
+    s2 = quick_spec 'a', '2'
 
     assert_equal( -1, (s1 <=> s2))
     assert_equal(  0, (s1 <=> s1))

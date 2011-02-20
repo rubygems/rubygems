@@ -20,6 +20,201 @@ class TestGem < Gem::TestCase
     util_remove_interrupt_command
   end
 
+  def assert_activate expected, *specs
+    specs.each do |spec|
+      case spec
+      when String
+        Gem.activate spec
+      else
+        Gem.activate spec.name
+      end
+    end
+
+    loaded = Gem.loaded_specs.values.map(&:full_name)
+
+    assert_equal expected.sort, loaded.sort if expected
+  end
+
+  def test_self_activate
+    foo = util_spec 'foo', '1'
+
+    assert_activate %w[foo-1], foo
+  end
+
+  def test_self_activate_loaded
+    util_spec 'foo', '1'
+    assert Gem.activate 'foo'
+    refute Gem.activate 'foo'
+  end
+
+  ##
+  # [A] depends on
+  #     [B] >= 1.0 (satisfied by 2.0)
+  # [C] depends on nothing
+
+  def test_self_activate_unrelated
+    a = util_spec 'a', '1.0', 'b' => '>= 1.0'
+        util_spec 'b', '1.0'
+    c = util_spec 'c', '1.0'
+
+    assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
+  end
+
+  ##
+  # [A] depends on
+  #     [B] >= 1.0 (satisfied by 2.0)
+  #     [C]  = 1.0 depends on
+  #         [B] ~> 1.0
+  #
+  # and should resolve using b-1.0
+
+  def test_self_activate_over
+    a, _  = util_spec 'a', '1.0', 'b' => '>= 1.0', 'c' => '= 1.0'
+            util_spec 'b', '1.0'
+            util_spec 'b', '2.0'
+    c,  _ = util_spec 'c', '1.0', 'b' => '~> 1.0'
+
+    assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
+  end
+
+  ##
+  # [A] depends on
+  #     [B] ~> 1.0 (satisfied by 1.1)
+  #     [C]  = 1.0 depends on
+  #         [B] = 1.0
+  #
+  # and should resolve using b-1.0
+  #
+  # TODO: this is not under, but over... under would require depth
+  # first resolve through a dependency that is later pruned.
+
+  def test_self_activate_under
+    a,   _ = util_spec 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
+             util_spec 'b', '1.0'
+             util_spec 'b', '1.1'
+    c,   _ = util_spec 'c', '1.0', 'b' => '= 1.0'
+
+    assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
+  end
+
+  ##
+  # [A1] depends on
+  #    [B] > 0 (satisfied by 2.0)
+  # [B1] depends on
+  #    [C] > 0 (satisfied by 1.0)
+  # [B2] depends on nothing!
+  # [C1] depends on nothing
+
+  def test_self_activate_dropped
+    a1, = util_spec 'a', '1', 'b' => nil
+          util_spec 'b', '1', 'c' => nil
+          util_spec 'b', '2'
+          util_spec 'c', '1'
+
+    assert_activate %w[b-2 a-1], a1, "b"
+  end
+
+  ##
+  # [A] depends on
+  #     [B] >= 1.0 (satisfied by 1.1) depends on
+  #         [Z]
+  #     [C] >= 1.0 depends on
+  #         [B] = 1.0
+  #
+  # and should backtrack to resolve using b-1.0, pruning Z from the
+  # resolve.
+
+  def test_self_activate_raggi_the_edgecase_generator
+    a,  _ = util_spec 'a', '1.0', 'b' => '>= 1.0', 'c' => '>= 1.0'
+            util_spec 'b', '1.0'
+            util_spec 'b', '1.1', 'z' => '>= 1.0'
+    c,  _ = util_spec 'c', '1.0', 'b' => '= 1.0'
+
+    assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
+  end
+
+  ##
+  # [A] depends on
+  #     [B] ~> 1.0 (satisfied by 1.0)
+  #     [C]  = 1.0 depends on
+  #         [B] = 2.0
+
+  def test_self_activate_divergent
+    a, _  = util_spec 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
+            util_spec 'b', '1.0'
+            util_spec 'b', '2.0'
+    c,  _ = util_spec 'c', '1.0', 'b' => '= 2.0'
+
+    e = assert_raises Gem::LoadError do
+      assert_activate nil, a, c, "b"
+    end
+
+    assert_match(/Unable to activate b-2.0,/, e.message)
+    assert_match(/but a-1.0 depends on b .~> 1.0/, e.message)
+  end
+
+  ##
+  # DOC
+
+  def test_self_activate_platform_alternate
+    @x1_m = util_spec 'x', '1' do |s|
+      s.platform = Gem::Platform.new %w[cpu my_platform 1]
+    end
+
+    @x1_o = util_spec 'x', '1' do |s|
+      s.platform = Gem::Platform.new %w[cpu other_platform 1]
+    end
+
+    @w1 = util_spec 'w', '1', 'x' => nil
+
+    util_set_arch 'cpu-my_platform1'
+
+    assert_activate %w[x-1-cpu-my_platform-1 w-1], @w1, @x1_m
+  end
+
+  ##
+  # DOC
+
+  def test_self_activate_platform_bump
+    @y1 = util_spec 'y', '1'
+
+    @y1_1_p = util_spec 'y', '1.1' do |s|
+      s.platform = Gem::Platform.new %w[cpu my_platform 1]
+    end
+
+    @z1 = util_spec 'z', '1', 'y' => nil
+
+    assert_activate %w[y-1 z-1], @z1, @y1
+  end
+
+  ##
+  # [C] depends on
+  #     [A] = 1.a
+  #     [B] = 1.0 depends on
+  #         [A] >= 0 (satisfied by 1.a)
+
+  def test_self_activate_prerelease
+    @c1_pre = util_spec 'c', '1.a', "a" => "1.a", "b" => "1"
+    @a1_pre = util_spec 'a', '1.a'
+    @b1     = util_spec 'b', '1' do |s|
+      s.add_dependency 'a'
+      s.add_development_dependency 'aa'
+    end
+
+    assert_activate %w[a-1.a b-1 c-1.a], @c1_pre, @a1_pre, @b1
+  end
+
+  ##
+  # DOC
+
+  def test_self_activate_old_required
+    e1, = util_spec 'e', '1', 'd' => '= 1'
+    @d1 = util_spec 'd', '1'
+    @d2 = util_spec 'd', '2'
+
+    assert_activate %w[d-1 e-1], e1, "d"
+  end
+
   def test_self_all_load_paths
     util_make_gems
 
@@ -65,7 +260,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_bin_path_nonexistent_binfile
-    quick_gem 'a', '2' do |s|
+    quick_spec 'a', '2' do |s|
       s.executables = ['exec']
     end
     assert_raises(Gem::GemNotFoundException) do
@@ -74,7 +269,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_bin_path_no_bin_file
-    quick_gem 'a', '1'
+    quick_spec 'a', '1'
     assert_raises(Gem::Exception) do
       Gem.bin_path('a', nil, '1')
     end
@@ -88,7 +283,7 @@ class TestGem < Gem::TestCase
 
   def test_self_bin_path_bin_file_gone_in_latest
     util_exec_gem
-    quick_gem 'a', '10' do |s|
+    quick_spec 'a', '10' do |s|
       s.executables = []
       s.default_executable = nil
     end
@@ -144,7 +339,7 @@ class TestGem < Gem::TestCase
         fp.puts 'blah'
       end
 
-      foo = quick_gem 'foo' do |s| s.files = %w[data/foo.txt] end
+      foo = quick_spec 'foo' do |s| s.files = %w[data/foo.txt] end
       install_gem foo
     end
 
@@ -206,7 +401,7 @@ class TestGem < Gem::TestCase
 
     Gem.ensure_gem_subdirectories @gemhome
 
-    assert File.directory?(File.join(@gemhome, "cache"))
+    assert File.directory?(Gem.cache_dir(@gemhome))
   end
 
   def test_self_ensure_gem_directories_missing_parents
@@ -218,7 +413,7 @@ class TestGem < Gem::TestCase
 
     Gem.ensure_gem_subdirectories gemdir
 
-    assert File.directory?("#{gemdir}/cache")
+    assert File.directory?(Gem.cache_dir(gemdir))
   end
 
   unless win_platform? then # only for FS that support write protection
@@ -232,7 +427,7 @@ class TestGem < Gem::TestCase
 
       Gem.ensure_gem_subdirectories gemdir
 
-      refute File.exist?("#{gemdir}/cache")
+      refute File.exist?(Gem.cache_dir(gemdir))
     ensure
       FileUtils.chmod 0600, gemdir
     end
@@ -249,7 +444,7 @@ class TestGem < Gem::TestCase
 
       Gem.ensure_gem_subdirectories gemdir
 
-      refute File.exist?("#{gemdir}/cache")
+      refute File.exist?(Gem.cache_dir(gemdir))
     ensure
       FileUtils.chmod 0600, parent
     end
@@ -321,7 +516,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_loaded_specs
-    foo = quick_gem 'foo'
+    foo = quick_spec 'foo'
     install_gem foo
     Gem.source_index = nil
 
@@ -617,6 +812,20 @@ class TestGem < Gem::TestCase
     end
   end
 
+  def test_self_cache_dir
+    util_ensure_gem_dirs
+
+    assert_equal File.join(@gemhome, 'cache'), Gem.cache_dir
+    assert_equal File.join(@userhome, '.gem', Gem.ruby_engine, Gem::ConfigMap[:ruby_version], 'cache'), Gem.cache_dir(Gem.user_dir)
+  end
+
+  def test_self_cache_gem
+    util_ensure_gem_dirs
+
+    assert_equal File.join(@gemhome, 'cache', 'test.gem'), Gem.cache_gem('test.gem')
+    assert_equal File.join(@userhome, '.gem', Gem.ruby_engine, Gem::ConfigMap[:ruby_version], 'cache', 'test.gem'), Gem.cache_gem('test.gem', Gem.user_dir)
+  end
+
   if Gem.win_platform? then
     def test_self_user_home_userprofile
       skip 'Ruby 1.9 properly handles ~ path expansion' unless '1.9' > RUBY_VERSION
@@ -671,7 +880,7 @@ class TestGem < Gem::TestCase
         fp.puts "TestGem::TEST_SPEC_PLUGIN_LOAD = :loaded"
       end
 
-      foo = quick_gem 'foo', '1' do |s|
+      foo = quick_spec 'foo', '1' do |s|
         s.files << plugin_path
       end
 
@@ -727,7 +936,7 @@ class TestGem < Gem::TestCase
   end
 
   def util_exec_gem
-    spec, _ = quick_gem 'a', '4' do |s|
+    spec, _ = quick_spec 'a', '4' do |s|
       s.default_executable = 'exec'
       s.executables = ['exec', 'abin']
     end
@@ -771,6 +980,5 @@ class TestGem < Gem::TestCase
     Gem::Commands.send :remove_const, :InterruptCommand if
       Gem::Commands.const_defined? :InterruptCommand
   end
-
 end
 

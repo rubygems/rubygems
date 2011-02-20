@@ -6,18 +6,19 @@ class TestGemDocManager < Gem::TestCase
   def setup
     super
 
-    @spec = quick_gem 'a'
+    @spec = quick_gem 'a', 2
     @manager = Gem::DocManager.new(@spec)
   end
 
   def test_uninstall_doc_unwritable
+    path = @spec.installation_path
     orig_mode = File.stat(@spec.installation_path).mode
 
     # File.chmod has no effect on MS Windows directories (it needs ACL).
     if win_platform?
       skip("test_uninstall_doc_unwritable skipped on MS Windows")
     else
-      File.chmod(0, @spec.installation_path)
+      File.chmod 0000, @spec.installation_path
     end
 
     assert_raises Gem::FilePermissionError do

@@ -1,5 +1,5 @@
 require 'rubygems/test_case'
-require "test/rubygems/simple_gem"
+require "rubygems/simple_gem"
 require 'rubygems/validator'
 
 class TestGemValidator < Gem::TestCase

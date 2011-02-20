@@ -977,6 +977,25 @@ load Gem.bin_path('a', 'executable', version)
     assert_equal @spec, eval(File.read(spec_file))
   end
 
+  def test_write_spec_writes_cached_spec
+    spec_dir = File.join @gemhome, 'specifications'
+    spec_file = File.join spec_dir, @spec.spec_name
+    FileUtils.rm spec_file
+    refute File.exist?(spec_file)
+
+    @spec.files = %w[a.rb b.rb c.rb]
+
+    @installer.spec = @spec
+    @installer.gem_home = @gemhome
+
+    @installer.write_spec
+
+    # cached specs have no file manifest:
+    @spec.files = []
+
+    assert_equal @spec, eval(File.read(spec_file))
+  end
+
   def old_ruby_required
     spec = quick_spec 'old_ruby_required', '1' do |s|
       s.required_ruby_version = '= 1.4.6'

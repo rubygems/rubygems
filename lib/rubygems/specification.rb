@@ -827,6 +827,15 @@ class Gem::Specification
     result.join "\n"
   end
 
+  def to_ruby_for_cache
+    s = dup
+    # remove large blobs that aren't used at runtime:
+    s.files = nil
+    s.extra_rdoc_files = nil
+    s.rdoc_options = nil
+    s.to_ruby
+  end
+
   ##
   # Checks that the specification contains all required fields, and does a
   # very basic sanity check.

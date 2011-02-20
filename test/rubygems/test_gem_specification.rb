@@ -805,6 +805,54 @@ end
     assert_equal @a2, same_spec
   end
 
+  def test_to_ruby_for_cache
+    @a2.add_runtime_dependency 'b', '1'
+    @a2.dependencies.first.instance_variable_set :@type, nil
+    @a2.required_rubygems_version = Gem::Requirement.new '> 0'
+
+    # cached specs do not have spec.files populated:
+    ruby_code = @a2.to_ruby_for_cache
+
+    expected = <<-SPEC
+# -*- encoding: utf-8 -*-
+
+Gem::Specification.new do |s|
+  s.name = %q{a}
+  s.version = \"2\"
+
+  s.required_rubygems_version = Gem::Requirement.new(\"> 0\") if s.respond_to? :required_rubygems_version=
+  s.authors = [\"A User\"]
+  s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
+  s.description = %q{This is a test description}
+  s.email = %q{example@example.com}
+  s.homepage = %q{http://example.com}
+  s.require_paths = [\"lib\"]
+  s.rubygems_version = %q{#{Gem::VERSION}}
+  s.summary = %q{this is a summary}
+
+  if s.respond_to? :specification_version then
+    s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
+
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<b>, [\"= 1\"])
+    else
+      s.add_dependency(%q<b>, [\"= 1\"])
+    end
+  else
+    s.add_dependency(%q<b>, [\"= 1\"])
+  end
+end
+    SPEC
+
+    assert_equal expected, ruby_code
+
+    same_spec = eval ruby_code
+
+    # cached specs do not have spec.files populated:
+    @a2.files = []
+    assert_equal @a2, same_spec
+  end
+
   def test_to_ruby_fancy
     @a1.platform = Gem::Platform.local
     ruby_code = @a1.to_ruby

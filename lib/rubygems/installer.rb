@@ -231,7 +231,7 @@ class Gem::Installer
   # specifications directory.
 
   def write_spec
-    rubycode = @spec.to_ruby
+    rubycode = @spec.to_ruby_for_cache
 
     file_name = File.join @gem_home, 'specifications', @spec.spec_name
 

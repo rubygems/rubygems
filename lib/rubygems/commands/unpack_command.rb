@@ -1,6 +1,7 @@
 require 'rubygems/command'
 require 'rubygems/installer'
 require 'rubygems/version_option'
+require 'rubygems/remote_fetcher'
 
 class Gem::Commands::UnpackCommand < Gem::Command
 

@@ -34,3 +34,17 @@ For more details and other options, see:
 
   ruby setup.rb --help
 
+== GETTING HELP
+
+=== Support Requests
+
+Are you unsure of how to use rubygems?  Do you think you've found a bug and
+you're not sure?  If that is the case, the best place for you is to file a
+support request at {help.rubygems.org}[http://help.rubygems.org].
+
+==== Filing tickets
+
+You're sure you've found a bug!  But where do you let us know?  The best place
+for letting the RubyGems team know about bugs you've found is {on the rubygems
+tracker at rubyforge}[http://rubyforge.org/tracker/?group_id=126].
+

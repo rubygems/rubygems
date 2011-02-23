@@ -165,13 +165,13 @@ class TestGem < Gem::TestCase
   #     [B] = 2.3.9
 
   def test_non_latest_unresolved_spec_with_path_activation
-    a, _ = util_spec 'a', '2.3.9', 'b' => '= 2.3.9'
-           util_spec 'b', '2.3.9' do |spec|
+    a, _ = util_gem 'a', '2.3.9', 'b' => '= 2.3.9'
+           util_gem 'b', '2.3.9' do |spec|
              spec.files << 'lib/b.rb'
            end
            # Latest versions we don't want to activate:
-           util_spec 'a', '3.0.0'
-           util_spec 'b', '3.0.0' do |spec|
+           util_gem 'a', '3.0.0'
+           util_gem 'b', '3.0.0' do |spec|
              spec.files << 'lib/b.rb'
            end
 
@@ -904,7 +904,7 @@ class TestGem < Gem::TestCase
     Dir.chdir @tempdir do
       FileUtils.mkdir_p 'lib'
       File.open plugin_path, "w" do |fp|
-        fp.puts "TestGem::TEST_SPEC_PLUGIN_LOAD = :loaded"
+        fp.puts "class TestGem; TEST_SPEC_PLUGIN_LOAD = :loaded; end"
       end
 
       foo = quick_spec 'foo', '1' do |s|
@@ -915,6 +915,7 @@ class TestGem < Gem::TestCase
     end
 
     Gem.source_index = nil
+    Gem.searcher = nil
 
     gem 'foo'
 

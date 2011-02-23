@@ -24,7 +24,7 @@ class TestGem < Gem::TestCase
     specs.each do |spec|
       case spec
       when Array
-        Gem.activate *spec
+        Gem.activate(*spec)
       when String
         Gem.activate spec
       else
@@ -153,31 +153,6 @@ class TestGem < Gem::TestCase
 
     assert_match(/Unable to activate b-2.0,/, e.message)
     assert_match(/but a-1.0 depends on b .~> 1.0/, e.message)
-  end
-
-  ##
-  # Example case, rails 3 installed and rails 2.3.9 installed. Activating
-  # rails 2.3.9.
-  #
-  # [A] 2.3.9 and 3.0.0 installed (+deps)
-  #
-  # [A] 2.3.9 depends on
-  #     [B] = 2.3.9
-
-  def test_non_latest_unresolved_spec_with_path_activation
-    a, _ = util_gem 'a', '2.3.9', 'b' => '= 2.3.9'
-           util_gem 'b', '2.3.9' do |spec|
-             spec.files << 'lib/b.rb'
-           end
-           # Latest versions we don't want to activate:
-           util_gem 'a', '3.0.0'
-           util_gem 'b', '3.0.0' do |spec|
-             spec.files << 'lib/b.rb'
-           end
-
-    assert_activate %w[a-2.3.9], ['a', '< 3.0.0']
-    assert Gem.try_activate('b'), 'Path activation of b.rb must find b-2.3.9'
-    assert_activate %w[a-2.3.9 b-2.3.9]
   end
 
   ##

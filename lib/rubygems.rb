@@ -155,6 +155,9 @@ module Gem
   DIRECTORIES = %w[cache doc gems specifications] unless defined?(DIRECTORIES)
 
   RubyGemsPackageVersion = VERSION
+
+  RUBYGEMS_DIR = File.dirname File.expand_path(__FILE__)
+
   # :startdoc:
 
   ##
@@ -809,17 +812,16 @@ module Gem
   end
 
   ##
-  # The directory prefix this RubyGems was installed at.
+  # The directory prefix this RubyGems was installed at. If your
+  # prefix is in a standard location (ie, rubygems is installed where
+  # you'd expect it to be), then prefix returns nil.
 
   def self.prefix
-    dir = File.dirname File.expand_path(__FILE__)
-    prefix = File.dirname dir
+    prefix = File.dirname RUBYGEMS_DIR
 
-    if prefix == File.expand_path(ConfigMap[:sitelibdir]) or
-       prefix == File.expand_path(ConfigMap[:libdir]) or
-       'lib' != File.basename(dir) then
-      nil
-    else
+    if prefix != File.expand_path(ConfigMap[:sitelibdir]) and
+       prefix != File.expand_path(ConfigMap[:libdir]) and
+       'lib' == File.basename(RUBYGEMS_DIR) then
       prefix
     end
   end

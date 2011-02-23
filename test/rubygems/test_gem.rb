@@ -467,7 +467,7 @@ class TestGem < Gem::TestCase
 
   def test_self_find_files
     discover_path = File.join 'lib', 'sff', 'discover.rb'
-    cwd = File.expand_path("test/rubygems", @project_dir)
+    cwd = File.expand_path("test/rubygems", @@project_dir)
     $LOAD_PATH.unshift cwd
 
     foo1 = quick_gem 'sff', '1' do |s|
@@ -492,7 +492,7 @@ class TestGem < Gem::TestCase
     Gem.searcher = nil
 
     expected = [
-      File.expand_path('test/rubygems/sff/discover.rb', @project_dir),
+      File.expand_path('test/rubygems/sff/discover.rb', @@project_dir),
       File.join(foo2.full_gem_path, discover_path),
       File.join(foo1.full_gem_path, discover_path),
     ]
@@ -621,22 +621,12 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_prefix
-    file_name = File.expand_path __FILE__
-
-    prefix = File.dirname File.dirname(file_name)
-    prefix = File.dirname prefix if File.basename(prefix) == 'test'
-
-    assert_equal prefix, Gem.prefix
+    assert_equal @@project_dir, Gem.prefix
   end
 
   def test_self_prefix_libdir
     orig_libdir = Gem::ConfigMap[:libdir]
-
-    file_name = File.expand_path __FILE__
-    prefix = File.dirname File.dirname(file_name)
-    prefix = File.dirname prefix if File.basename(prefix) == 'test'
-
-    Gem::ConfigMap[:libdir] = prefix
+    Gem::ConfigMap[:libdir] = @@project_dir
 
     assert_nil Gem.prefix
   ensure
@@ -645,12 +635,7 @@ class TestGem < Gem::TestCase
 
   def test_self_prefix_sitelibdir
     orig_sitelibdir = Gem::ConfigMap[:sitelibdir]
-
-    file_name = File.expand_path __FILE__
-    prefix = File.dirname File.dirname(file_name)
-    prefix = File.dirname prefix if File.basename(prefix) == 'test'
-
-    Gem::ConfigMap[:sitelibdir] = prefix
+    Gem::ConfigMap[:sitelibdir] = @@project_dir
 
     assert_nil Gem.prefix
   ensure
@@ -917,7 +902,8 @@ class TestGem < Gem::TestCase
   end
 
   def with_plugin(path)
-    test_plugin_path = File.expand_path "../plugin/#{path}", __FILE__
+    test_plugin_path = File.expand_path("test/rubygems/plugin/#{path}",
+                                        @@project_dir)
 
     # A single test plugin should get loaded once only, in order to preserve
     # sane test semantics.

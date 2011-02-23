@@ -81,6 +81,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   undef_method :default_test if instance_methods.include? 'default_test' or
                                 instance_methods.include? :default_test
 
+  @@project_dir = Dir.pwd
+
   ##
   # #setup prepares a sandboxed location to install gems.  All installs are
   # directed to a temporary directory.  All install plugins are removed.
@@ -95,7 +97,6 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   def setup
     super
 
-    @project_dir = Dir.pwd
     @orig_gem_home = ENV['GEM_HOME']
     @orig_gem_path = ENV['GEM_PATH']
 
@@ -198,7 +199,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       Gem::RemoteFetcher.fetcher = nil
     end
 
-    Dir.chdir @project_dir
+    Dir.chdir @@project_dir
 
     FileUtils.rm_rf @tempdir unless ENV['KEEP_FILES']
 
@@ -730,7 +731,7 @@ Also, a list:
 
   @@ruby = rubybin
   env_rake = ENV['rake']
-  ruby19_rake = File.expand_path("../../../bin/rake", __FILE__)
+  ruby19_rake = File.expand_path("bin/rake", @@project_dir)
   @@rake = if env_rake then
              ENV["rake"]
            elsif File.exist? ruby19_rake then

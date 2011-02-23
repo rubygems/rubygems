@@ -16,7 +16,7 @@ class TestGemCommandsCertCommand < Gem::TestCase
 
     @cmd = Gem::Commands::CertCommand.new
 
-    root = File.expand_path(File.dirname(__FILE__))
+    root = File.expand_path(File.dirname(__FILE__), @project_dir)
 
     FileUtils.cp File.join(root, 'data', 'gem-private_key.pem'), @tempdir
     FileUtils.cp File.join(root, 'data', 'gem-public_cert.pem'), @tempdir

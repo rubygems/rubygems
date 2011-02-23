@@ -95,6 +95,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   def setup
     super
 
+    @project_dir = Dir.pwd
     @orig_gem_home = ENV['GEM_HOME']
     @orig_gem_path = ENV['GEM_PATH']
 
@@ -110,14 +111,14 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     @gemhome  = File.join @tempdir, 'gemhome'
     @userhome = File.join @tempdir, 'userhome'
 
-    Gem.ensure_gem_subdirectories @gemhome
-
     @orig_ruby = if ruby = ENV['RUBY'] then
                    Gem.class_eval { ruby, @ruby = @ruby, ruby }
                    ruby
                  end
 
     Gem.ensure_gem_subdirectories @gemhome
+
+    Dir.chdir @tempdir
 
     @orig_ENV_HOME = ENV['HOME']
     ENV['HOME'] = @userhome
@@ -151,11 +152,6 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     end
 
     @marshal_version = "#{Marshal::MAJOR_VERSION}.#{Marshal::MINOR_VERSION}"
-
-    @private_key = File.expand_path('../../../test/rubygems/private_key.pem',
-                                    __FILE__)
-    @public_cert = File.expand_path('../../../test/rubygems/public_cert.pem',
-                                    __FILE__)
 
     Gem.post_build_hooks.clear
     Gem.post_install_hooks.clear
@@ -201,6 +197,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     if defined? Gem::RemoteFetcher then
       Gem::RemoteFetcher.fetcher = nil
     end
+
+    Dir.chdir @project_dir
 
     FileUtils.rm_rf @tempdir unless ENV['KEEP_FILES']
 

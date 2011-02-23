@@ -729,7 +729,7 @@ module Gem
   # Pass a string to use a different base path, or nil/false (default) for
   # Gem.dir.
   #
-  
+
   def self.cache_dir(custom_dir=false)
     File.join(custom_dir ? custom_dir : Gem.dir, 'cache')
   end
@@ -1193,19 +1193,15 @@ module Gem
 
     attr_reader :pre_uninstall_hooks
 
-    # :stopdoc:
+  end
 
-    def self.cache
-      warn "#{Gem.location_of_caller.join ':'}:Warning: " \
-        "Gem::cache is deprecated and will be removed on or after " \
-        "August 2012.  " \
-        "Use Gem::source_index."
+  def self.cache # :nodoc:
+    warn "#{Gem.location_of_caller.join ':'}:Warning: " \
+      "Gem::cache is deprecated and will be removed on or after " \
+      "August 2012.  " \
+      "Use Gem::source_index."
 
-      source_index
-    end
-
-    # :startdoc:
-
+    source_index
   end
 
   ##

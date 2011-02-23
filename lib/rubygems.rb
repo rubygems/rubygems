@@ -27,7 +27,6 @@ end
 
 require 'rubygems/defaults'
 require 'rbconfig'
-require 'thread' # HACK: remove me for 1.5 - this is here just for rails
 
 ##
 # RubyGems is the Ruby standard for publishing and managing third party
@@ -192,10 +191,16 @@ module Gem
   # activated. Returns false if it can't find the path in a gem.
 
   def self.try_activate path
+    # finds the _latest_ version... regardless of loaded specs and their deps
     spec = Gem.searcher.find path
     return false unless spec
 
-    Gem.activate spec.name, "= #{spec.version}"
+    begin
+      Gem.activate spec.name, "= #{spec.version}"
+    rescue Gem::LoadError # this could fail due to gem dep collisions, go lax
+      Gem.activate spec.name
+    end
+
     return true
   end
 

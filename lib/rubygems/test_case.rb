@@ -139,6 +139,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     @uri = URI.parse @gem_repo
     Gem.sources.replace [@gem_repo]
 
+    Gem.searcher = nil
     Gem::SpecFetcher.fetcher = nil
 
     @orig_BASERUBY = Gem::ConfigMap[:BASERUBY]
@@ -154,12 +155,14 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     @marshal_version = "#{Marshal::MAJOR_VERSION}.#{Marshal::MINOR_VERSION}"
 
+    # TODO: move to installer test cases
     Gem.post_build_hooks.clear
     Gem.post_install_hooks.clear
     Gem.post_uninstall_hooks.clear
     Gem.pre_install_hooks.clear
     Gem.pre_uninstall_hooks.clear
 
+    # TODO: move to installer test cases
     Gem.post_build do |installer|
       @post_build_hook_arg = installer
       true
@@ -381,6 +384,34 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     FileUtils.rm_rf File.join(@gemhome, 'gems')
     FileUtils.rm_rf File.join(@gemhome, 'specifications')
     Gem.source_index.refresh!
+  end
+
+  ##
+  # Install the provided specs
+
+  def install_specs(*specs)
+    specs.each do |spec|
+      # TODO: inverted responsibility
+      Gem.source_index.add_spec spec
+    end
+  end
+
+  ##
+  # Create a new spec (or gem if passed an array of files) and set it
+  # up properly. Use this instead of util_spec and util_gem.
+
+  def new_spec name, version, deps = nil, *files
+    # TODO: unfactor and deprecate util_gem and util_spec
+    spec, = unless files.empty? then
+              util_gem name, version, deps do |s|
+                s.files.push(*files)
+              end
+            else
+              util_spec name, version, deps
+            end
+    spec.loaded_from = File.join @gemhome, 'specifications', spec.spec_name
+    spec.loaded = false
+    spec
   end
 
   ##

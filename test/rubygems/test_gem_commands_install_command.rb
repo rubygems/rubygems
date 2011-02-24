@@ -48,7 +48,8 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     @fetcher.data["#{@gem_repo}gems/#{@a2_pre.file_name}"] =
       read_binary(Gem.cache_gem(@a2_pre.file_name, @gemhome))
 
-    @cmd.handle_options [@a2_pre.name, '--version', @a2_pre.version.to_s]
+    @cmd.handle_options [@a2_pre.name, '--version', @a2_pre.version.to_s,
+                         "--no-ri", "--no-rdoc"]
     assert @cmd.options[:prerelease]
     assert @cmd.options[:version].satisfied_by?(@a2_pre.version)
 

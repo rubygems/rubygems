@@ -230,37 +230,19 @@ module Gem
   def self.activate(gem, *requirements)
     parse_opts_and_requirements(gem, *requirements)
 
-    matches = _unresolved.find_all { |spec| spec.satisfies_requirement? @dep }
+    @matches = _unresolved.find_all { |spec| spec.satisfies_requirement? @dep }
 
-    if matches.empty? then
-      matches = Gem.source_index.find_name(@dep.name, @dep.requirement)
-      report_activate_error(@dep) if matches.empty?
+    if @matches.empty? then
+      @matches = Gem.source_index.find_name(@dep.name, @dep.requirement)
+      report_activate_error(@dep) if @matches.empty?
 
       if @loaded_specs[@dep.name] then
-        # This gem is already loaded.  If the currently loaded gem is not in the
-        # list of candidate gems, then we have a version conflict.
-        existing_spec = @loaded_specs[@dep.name]
-
-        unless matches.any? { |spec| spec.version == existing_spec.version } then
-          sources_message = @sources.map { |spec| spec.full_name }
-          stack_message = @loaded_stacks[@dep.name].map { |spec| spec.full_name }
-
-          msg = "can't activate #{@dep} for #{sources_message.inspect}, "
-          msg << "already activated #{existing_spec.full_name} for "
-          msg << "#{stack_message.inspect}"
-
-          e = Gem::LoadError.new msg
-          e.name = @dep.name
-          e.requirement = @dep.requirement
-
-          raise e
-        end
-
+        report_version_conflict_if_there_is_one
         return false
       end
     end
 
-    spec = matches.last
+    spec = @matches.last
 
     conf = spec.conflicts
     unless conf.empty? then
@@ -307,6 +289,27 @@ module Gem
     end
 
     return true
+  end
+
+  # This gem is already loaded.  If the currently loaded gem is not in the
+  # list of candidate gems, then we have a version conflict.
+  def self.report_version_conflict_if_there_is_one
+    existing_spec = @loaded_specs[@dep.name]
+
+    unless @matches.any? { |spec| spec.version == existing_spec.version } then
+      sources_message = @sources.map { |spec| spec.full_name }
+      stack_message = @loaded_stacks[@dep.name].map { |spec| spec.full_name }
+
+      msg = "can't activate #{@dep} for #{sources_message.inspect}, "
+      msg << "already activated #{existing_spec.full_name} for "
+      msg << "#{stack_message.inspect}"
+
+      e = Gem::LoadError.new msg
+      e.name = @dep.name
+      e.requirement = @dep.requirement
+
+      raise e
+    end
   end
 
   def self.parse_opts_and_requirements(gem, *requirements)

@@ -34,7 +34,6 @@ module Kernel
       if specs.empty? then
         gem_original_require path
       else
-        # TODO: actually check the unresolves specs only
         spec = specs.first
         Gem.activate spec.name, spec.version # FIX: holy shit this is dumb
         return gem_original_require(path)

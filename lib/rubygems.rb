@@ -26,6 +26,7 @@ if Gem::GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader) then
 end
 
 require 'rubygems/defaults'
+require "rubygems/dependency_list"
 require 'rbconfig'
 
 ##
@@ -298,6 +299,7 @@ module Gem
     end
 
     _unresolved.remove_specs_unsatisfied_by current
+    _unresolved.specs.delete spec
 
     require_paths = spec.require_paths.map do |path|
       File.join spec.full_gem_path, path
@@ -318,7 +320,6 @@ module Gem
   end
 
   def self._unresolved
-    require "rubygems/dependency_list"
     @unresolved ||= Gem::DependencyList.new
   end
 

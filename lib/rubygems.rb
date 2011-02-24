@@ -117,7 +117,7 @@ require 'rbconfig'
 # -The RubyGems Team
 
 module Gem
-  RubyGemsVersion = VERSION = '1.6.0'
+  VERSION = '1.6.0'
 
   ##
   # Raised when RubyGems is unable to load or activate a gem.  Contains the
@@ -131,6 +131,10 @@ module Gem
     # Version requirement of gem
     attr_accessor :requirement
   end
+
+  # :stopdoc:
+
+  RubyGemsVersion = VERSION
 
   RbConfigPriorities = %w[
     EXEEXT RUBY_SO_NAME arch bindir datadir libdir ruby_install_name
@@ -550,6 +554,7 @@ module Gem
   #   to be depending on HOME in those code samples. I propose that
   #   it should fallback to USERPROFILE and HOMEDRIVE + HOMEPATH (at
   #   least on Win32).
+  #++
 
   def self.find_home
     unless RUBY_VERSION > '1.9' then

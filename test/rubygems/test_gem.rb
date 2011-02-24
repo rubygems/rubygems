@@ -43,6 +43,18 @@ class TestGem < Gem::TestCase
     assert_activate %w[foo-1], foo
   end
 
+  def test_self_activate_via_require
+    a1 = new_spec "a", "1", "b" => "= 1"
+    b1 = new_spec "b", "1", nil, "lib/b/c.rb"
+    b2 = new_spec "b", "2", nil, "lib/b/c.rb"
+
+    install_specs a1, b1
+
+    Gem.activate "a", "= 1"
+    require "b/c"
+    assert_equal %w(a-1 b-1), Gem.loaded_specs.values.map(&:full_name).sort
+  end
+
   def test_self_activate_loaded
     util_spec 'foo', '1'
     assert Gem.activate 'foo'

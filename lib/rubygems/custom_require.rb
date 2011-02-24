@@ -25,8 +25,21 @@ module Kernel
   # The normal <tt>require</tt> functionality of returning false if
   # that file has already been loaded is preserved.
 
-  def require(path) # :doc:
-    gem_original_require path
+  def require path
+    if Gem._unresolved.specs.empty? then
+      gem_original_require path
+    else
+      specs = Gem.searcher.find_all path
+
+      if specs.empty? then
+        gem_original_require path
+      else
+        # TODO: actually check the unresolves specs only
+        spec = specs.first
+        Gem.activate spec.name, spec.version # FIX: holy shit this is dumb
+        return gem_original_require(path)
+      end
+    end
   rescue LoadError => load_error
     if load_error.message.end_with?(path) and Gem.try_activate(path) then
       return gem_original_require(path)

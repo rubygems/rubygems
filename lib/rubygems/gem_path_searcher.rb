@@ -43,7 +43,8 @@ class Gem::GemPathSearcher
   # only that there is a match.
 
   def find(glob)
-    @gemspecs.find do |spec|
+    # HACK violation
+    (Gem._unresolved.specs + @gemspecs).find do |spec|
       # TODO: inverted responsibility
       matching_file? spec, glob
     end
@@ -53,7 +54,8 @@ class Gem::GemPathSearcher
   # Works like #find, but finds all gemspecs matching +glob+.
 
   def find_all(glob)
-    @gemspecs.select do |spec|
+    # HACK violation
+    (Gem._unresolved.specs + @gemspecs).select do |spec|
       # TODO: inverted responsibility
       matching_file? spec, glob
     end || []

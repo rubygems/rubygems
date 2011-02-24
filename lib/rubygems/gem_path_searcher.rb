@@ -10,6 +10,7 @@ class Gem::GemPathSearcher
   def initialize
     # We want a record of all the installed gemspecs, in the order we wish to
     # examine them.
+    # TODO: remove this stupid method
     @gemspecs = init_gemspecs
 
     # Map gem spec to glob of full require_path directories.  Preparing this
@@ -43,6 +44,7 @@ class Gem::GemPathSearcher
 
   def find(glob)
     @gemspecs.find do |spec|
+      # TODO: inverted responsibility
       matching_file? spec, glob
     end
   end
@@ -52,8 +54,9 @@ class Gem::GemPathSearcher
 
   def find_all(glob)
     @gemspecs.select do |spec|
+      # TODO: inverted responsibility
       matching_file? spec, glob
-    end
+    end || []
   end
 
   ##

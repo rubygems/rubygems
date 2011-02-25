@@ -15,8 +15,8 @@ class Gem::Commands::UpdateCommand < Gem::Command
   def initialize
     super 'update',
           'Update the named gems (or all installed gems) in the local repository',
-      :generate_rdoc => true,
-      :generate_ri   => true,
+      :generate_rdoc => false,
+      :generate_ri   => false,
       :force         => false
 
     add_install_update_options
@@ -44,7 +44,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
   end
 
   def defaults_str # :nodoc:
-    "--rdoc --ri --no-force --install-dir #{Gem.dir}"
+    "--no-rdoc --no-ri --no-force --install-dir #{Gem.dir}"
   end
 
   def usage # :nodoc:

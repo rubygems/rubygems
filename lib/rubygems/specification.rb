@@ -505,7 +505,7 @@ class Gem::Specification
 
     file = file.dup.untaint
 
-    code = if defined? Encoding
+    code = if Config::CONFIG['MAJOR'] == '1' && Config::CONFIG['MINOR'] == '9'
              File.read file, :encoding => "UTF-8"
            else
              File.read file

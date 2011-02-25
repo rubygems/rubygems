@@ -1,6 +1,7 @@
 # -*- ruby -*-
 
-$:.unshift 'lib'
+# this ensures that we start w/ our rubygem files, not those preloaded.
+exec Gem.ruby, "-Ilib", "-S", "rake", *ARGV unless $LOAD_PATH.include? "lib"
 
 require 'rubygems'
 require 'rubygems/package_task'

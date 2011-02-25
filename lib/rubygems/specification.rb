@@ -1393,17 +1393,15 @@ class Gem::Specification
   attribute_alias_singular :test_file, :test_files
 
   ##
-  # has_rdoc is now ignored
-
-  overwrite_accessor :has_rdoc do
-    true
-  end
-
-  ##
-  # has_rdoc is now ignored
+  # Allow has_rdoc to specify the type of documentation.
 
   overwrite_accessor :has_rdoc= do |value|
-    @has_rdoc = true
+    case value
+    when String, Symbol
+      @has_rdoc = value.to_s
+    else
+      @has_rdoc = value ? true : false
+    end
   end
 
   overwrite_accessor :version= do |version|

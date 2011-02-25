@@ -63,6 +63,14 @@ class Gem::GemPathSearcher
     end || []
   end
 
+  def find_in_unresolved(glob)
+    # HACK violation
+    (Gem._unresolved.specs || []).select do |spec|
+      # TODO: inverted responsibility
+      matching_file? spec, glob
+    end || []
+  end
+
   ##
   # Attempts to find a matching path using the require_paths of the given
   # +spec+.

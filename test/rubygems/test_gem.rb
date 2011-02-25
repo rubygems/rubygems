@@ -43,6 +43,10 @@ class TestGem < Gem::TestCase
     assert_activate %w[foo-1], foo
   end
 
+  def loaded_spec_names
+    Gem.loaded_specs.values.map(&:full_name).sort
+  end
+
   def test_self_activate_via_require
     a1 = new_spec "a", "1", "b" => "= 1"
     b1 = new_spec "b", "1", nil, "lib/b/c.rb"
@@ -50,7 +54,31 @@ class TestGem < Gem::TestCase
 
     Gem.activate "a", "= 1"
     require "b/c"
-    assert_equal %w(a-1 b-1), Gem.loaded_specs.values.map(&:full_name).sort
+
+    assert_equal %w(a-1 b-1), loaded_spec_names
+  end
+
+  def test_self_activate_via_require_not_too_eager
+    a1 = new_spec "a", "1", "b" => "= 1"
+    b1 = new_spec "b", "1", nil, "lib/b/c.rb"
+    b2 = new_spec "b", "2", nil, "lib/benchmark.rb"
+
+    Gem.activate "a", "= 1"
+    require 'benchmark'
+
+    assert_equal %w(a-1), loaded_spec_names
+  end
+
+  def test_self_activate_via_require_respects_loaded_files
+    require 'benchmark' # stdlib
+
+    a1 = new_spec "a", "1", "b" => "= 1"
+    b1 = new_spec "b", "1", nil, "lib/benchmark.rb"
+
+    Gem.activate "a", "= 1"
+
+    refute require('benchmark'), "benchmark should have already been loaded"
+    assert_equal %w(a-1), loaded_spec_names
   end
 
   def test_self_activate_loaded

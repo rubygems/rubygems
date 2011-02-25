@@ -26,10 +26,10 @@ module Kernel
   # that file has already been loaded is preserved.
 
   def require path
-    if Gem._unresolved.specs.empty? then
+    if Gem._unresolved.specs.empty? or Gem.loaded_path? path then
       gem_original_require path
     else
-      specs = Gem.searcher.find_all path
+      specs = Gem.searcher.find_in_unresolved path
 
       if specs.empty? then
         gem_original_require path

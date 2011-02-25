@@ -186,7 +186,6 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     end
 
     @orig_LOAD_PATH = $LOAD_PATH.dup
-    @orig_LOADED_FEATURES = $LOADED_FEATURES.dup
   end
 
   ##
@@ -194,7 +193,6 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # tempdir unless the +KEEP_FILES+ environment variable was set.
 
   def teardown
-    $LOADED_FEATURES.replace @orig_LOADED_FEATURES
     $LOAD_PATH.replace @orig_LOAD_PATH
 
     Gem::ConfigMap[:BASERUBY] = @orig_BASERUBY

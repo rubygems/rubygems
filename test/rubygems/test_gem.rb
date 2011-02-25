@@ -61,23 +61,57 @@ class TestGem < Gem::TestCase
   def test_self_activate_via_require_not_too_eager
     a1 = new_spec "a", "1", "b" => "= 1"
     b1 = new_spec "b", "1", nil, "lib/b/c.rb"
-    b2 = new_spec "b", "2", nil, "lib/benchmark.rb"
+    b2 = new_spec "b", "2", nil, "lib/pathname.rb"
+
+    install_specs a1, b1, b2
 
     Gem.activate "a", "= 1"
-    require 'benchmark'
+    require 'pathname'
 
     assert_equal %w(a-1), loaded_spec_names
   end
 
+  def test_self_activate_via_require_two_hops
+    a1 = new_spec "a", "1", "b" => "= 1"
+    b1 = new_spec "b", "1", "c" => "= 1"
+    b2 = new_spec "b", "2", "c" => "= 2"
+    c1 = new_spec "c", "1", nil, "lib/d.rb"
+    c2 = new_spec "c", "2", nil, "lib/d.rb"
+
+    install_specs a1, b1, b2, c1, c2
+
+    Gem.activate "a", "= 1"
+    require 'd'
+
+    assert_equal %w(a-1 c-1), loaded_spec_names
+  end
+
+  def test_self_activate_via_require_three_hops
+    a1 = new_spec "a", "1", "b" => "= 1"
+    b1 = new_spec "b", "1", "c" => "= 1"
+    b2 = new_spec "b", "2", "c" => "= 2"
+    c1 = new_spec "c", "1", "d" => "= 1"
+    c2 = new_spec "c", "2", "d" => "= 2"
+    d1 = new_spec "d", "1", nil, "lib/e.rb"
+    d2 = new_spec "d", "2", nil, "lib/e.rb"
+
+    install_specs a1, b1, b2, c1, c2, d1, d2
+
+    Gem.activate "a", "= 1"
+    require 'e'
+
+    assert_equal %w(a-1 d-1), loaded_spec_names
+  end
+
   def test_self_activate_via_require_respects_loaded_files
-    require 'benchmark' # stdlib
+    require 'pathname' # stdlib
 
     a1 = new_spec "a", "1", "b" => "= 1"
-    b1 = new_spec "b", "1", nil, "lib/benchmark.rb"
+    b1 = new_spec "b", "1", nil, "lib/pathname.rb"
 
     Gem.activate "a", "= 1"
 
-    refute require('benchmark'), "benchmark should have already been loaded"
+    refute require('pathname'), "pathname should have already been loaded"
     assert_equal %w(a-1), loaded_spec_names
   end
 

@@ -373,18 +373,19 @@ end
     assert_equal [rake, jabber, pqa], @a1.dependencies
   end
 
-  def test_dependencies_scoped_by_type
-    gem = quick_spec "awesome", "1.0" do |awesome|
-      awesome.add_runtime_dependency "bonobo", []
-      awesome.add_development_dependency "monkey", []
-    end
+  def test_dependencies
+    util_setup_deps
+    assert_equal [@bonobo, @monkey], @gem.dependencies
+  end
 
-    bonobo = Gem::Dependency.new("bonobo", [])
-    monkey = Gem::Dependency.new("monkey", [], :development)
+  def test_runtime_dependencies
+    util_setup_deps
+    assert_equal [@bonobo], @gem.runtime_dependencies
+  end
 
-    assert_equal([bonobo, monkey], gem.dependencies)
-    assert_equal([bonobo], gem.runtime_dependencies)
-    assert_equal([monkey], gem.development_dependencies)
+  def test_development_dependencies
+    util_setup_deps
+    assert_equal [@monkey], @gem.development_dependencies
   end
 
   def test_description
@@ -1311,6 +1312,16 @@ end
     specfile.delete
   end
 
+  def util_setup_deps
+    @gem = quick_spec "awesome", "1.0" do |awesome|
+      awesome.add_runtime_dependency "bonobo", []
+      awesome.add_development_dependency "monkey", []
+    end
+
+    @bonobo = Gem::Dependency.new("bonobo", [])
+    @monkey = Gem::Dependency.new("monkey", [], :development)
+  end
+
   def util_setup_validate
     Dir.chdir @tempdir do
       FileUtils.mkdir_p File.join('ext', 'a')
@@ -1322,6 +1333,4 @@ end
       FileUtils.touch File.join('test', 'suite.rb')
     end
   end
-
 end
-

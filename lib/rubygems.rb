@@ -273,7 +273,7 @@ module Gem
 
     conf = spec.conflicts
     unless conf.empty? then
-      why = conf.map { |k,v| "#{k} depends on #{v.join(", ")}" }.join ", "
+      why = conf.map { |k,v| "#{k.full_name} depends on #{v.join(", ")}" }.join ", "
 
       raise LoadError, "Unable to activate #{spec.full_name}, but #{why}"
     end

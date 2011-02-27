@@ -333,6 +333,7 @@ class Gem::Specification
   # List of dependencies that will automatically be activated at runtime.
 
   def runtime_dependencies
+    # TODO: fix #type to return :runtime if nil
     dependencies.select { |d| d.type == :runtime || d.type == nil }
   end
 
@@ -1545,7 +1546,7 @@ class Gem::Specification
         bad = spec.runtime_dependencies.find_all { |dep|
           self.name == dep.name and not satisfies_requirement? dep
         }
-        conflicts[spec.full_name] = bad unless bad.empty?
+        conflicts[spec] = bad unless bad.empty?
       end
     end
     conflicts

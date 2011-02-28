@@ -10,6 +10,14 @@ module Gem
   GEM_PRELUDE_SUCKAGE = RUBY_VERSION =~ /^1\.9\.2/
 end
 
+if RUBY_VERSION =~ /^1\.8\.6/
+  class String
+    def end_with? substr
+      self =~ /#{Regexp.escape(substr)}$/
+    end
+  end
+end
+
 if Gem::GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader) then
   Gem::QuickLoader.remove
 

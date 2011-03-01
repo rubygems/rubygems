@@ -96,7 +96,7 @@ load Gem.bin_path('a', 'executable', version)
       @installer.ensure_dependency @spec, dep
     end
 
-    assert_equal 'a requires b (> 2, runtime)', e.message
+    assert_equal 'a requires b (> 2)', e.message
   end
 
   def test_extract_files

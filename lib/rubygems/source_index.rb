@@ -267,6 +267,7 @@ class Gem::SourceIndex
     when Gem::Dependency then
       only_platform = platform_only
       requirement = gem_pattern.requirement
+
       gem_pattern = if Regexp === gem_pattern.name then
                       gem_pattern.name
                     elsif gem_pattern.name.empty? then

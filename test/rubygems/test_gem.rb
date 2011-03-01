@@ -47,6 +47,10 @@ class TestGem < Gem::TestCase
     Gem.loaded_specs.values.map(&:full_name).sort
   end
 
+  def unresolved_names
+    Gem.unresolved_deps.values.map(&:to_s).sort
+  end
+
   def test_self_activate_via_require
     a1 = new_spec "a", "1", "b" => "= 1"
     b1 = new_spec "b", "1", nil, "lib/b/c.rb"
@@ -58,61 +62,38 @@ class TestGem < Gem::TestCase
     assert_equal %w(a-1 b-1), loaded_spec_names
   end
 
-  def test_self_activate_via_require_not_too_eager
-    a1 = new_spec "a", "1", "b" => "= 1"
-    b1 = new_spec "b", "1", nil, "lib/b/c.rb"
-    b2 = new_spec "b", "2", nil, "lib/pathname.rb"
-
-    install_specs a1, b1, b2
-
-    Gem.activate "a", "= 1"
-    require 'pathname'
-
-    assert_equal %w(a-1), loaded_spec_names
-  end
-
-  def test_self_activate_via_require_two_hops
+  def test_self_activate_deep_unambiguous
     a1 = new_spec "a", "1", "b" => "= 1"
     b1 = new_spec "b", "1", "c" => "= 1"
     b2 = new_spec "b", "2", "c" => "= 2"
+    c1 = new_spec "c", "1"
+    c2 = new_spec "c", "2"
+
+    install_specs a1, b1, b2, c1, c2
+
+    Gem.activate "a", "= 1"
+    assert_equal %w(a-1 b-1 c-1), loaded_spec_names
+  end
+
+  def test_self_activate_ambiguous
+    a1 = new_spec "a", "1", "b" => "> 0"
+    b1 = new_spec "b", "1", "c" => ">= 1"
+    b2 = new_spec "b", "2", "c" => ">= 2"
     c1 = new_spec "c", "1", nil, "lib/d.rb"
     c2 = new_spec "c", "2", nil, "lib/d.rb"
 
     install_specs a1, b1, b2, c1, c2
 
     Gem.activate "a", "= 1"
-    require 'd'
-
-    assert_equal %w(a-1 c-1), loaded_spec_names
-  end
-
-  def test_self_activate_via_require_three_hops
-    a1 = new_spec "a", "1", "b" => "= 1"
-    b1 = new_spec "b", "1", "c" => "= 1"
-    b2 = new_spec "b", "2", "c" => "= 2"
-    c1 = new_spec "c", "1", "d" => "= 1"
-    c2 = new_spec "c", "2", "d" => "= 2"
-    d1 = new_spec "d", "1", nil, "lib/e.rb"
-    d2 = new_spec "d", "2", nil, "lib/e.rb"
-
-    install_specs a1, b1, b2, c1, c2, d1, d2
-
-    Gem.activate "a", "= 1"
-    require 'e'
-
-    assert_equal %w(a-1 d-1), loaded_spec_names
-  end
-
-  def test_self_activate_via_require_respects_loaded_files
-    require 'pathname' # stdlib
-
-    a1 = new_spec "a", "1", "b" => "= 1"
-    b1 = new_spec "b", "1", nil, "lib/pathname.rb"
-
-    Gem.activate "a", "= 1"
-
-    refute require('pathname'), "pathname should have already been loaded"
     assert_equal %w(a-1), loaded_spec_names
+    assert_equal ["b (> 0)"], unresolved_names
+
+    require "d"
+
+    assert_equal %w(a-1 b-2 c-2), loaded_spec_names
+    assert_equal [], unresolved_names
+
+    flunk
   end
 
   def test_self_activate_loaded
@@ -146,10 +127,14 @@ class TestGem < Gem::TestCase
   def test_self_activate_over
     a, _  = util_spec 'a', '1.0', 'b' => '>= 1.0', 'c' => '= 1.0'
             util_spec 'b', '1.0'
+            util_spec 'b', '1.1'
             util_spec 'b', '2.0'
     c,  _ = util_spec 'c', '1.0', 'b' => '~> 1.0'
 
-    assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
+    Gem.activate "a"
+
+    assert_equal %w[a-1.0 c-1.0], loaded_spec_names
+    assert_equal ["b (>= 1.0, ~> 1.0)"], unresolved_names
   end
 
   ##
@@ -208,6 +193,17 @@ class TestGem < Gem::TestCase
     assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
   end
 
+  def test_self_activate_conflict
+    util_spec 'b', '1.0'
+    util_spec 'b', '2.0'
+
+    gem "b", "= 1.0"
+
+    assert_raises Gem::LoadError do
+      gem "b", "= 2.0"
+    end
+  end
+
   ##
   # [A] depends on
   #     [B] ~> 1.0 (satisfied by 1.0)
@@ -224,8 +220,8 @@ class TestGem < Gem::TestCase
       assert_activate nil, a, c, "b"
     end
 
-    assert_match(/Unable to activate b-2.0,/, e.message)
-    assert_match(/but a-1.0 depends on b .~> 1.0/, e.message)
+    assert_match(/Unable to activate c-1.0,/, e.message)
+    assert_match(/because b-1.0 conflicts with b .= 2.0/, e.message)
   end
 
   ##

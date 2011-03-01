@@ -334,7 +334,7 @@ class Gem::Specification
 
   def runtime_dependencies
     # TODO: fix #type to return :runtime if nil
-    dependencies.select { |d| d.type == :runtime || d.type == nil }
+    dependencies.select { |d| d.type == :runtime }
   end
 
   ##
@@ -1538,16 +1538,11 @@ class Gem::Specification
   def conflicts
     conflicts = {}
     Gem.loaded_specs.values.each do |spec|
-      unsatisfied = spec.runtime_dependencies.any? { |dep|
-        self.name == dep.name and not satisfies_requirement? dep
+      bad = self.runtime_dependencies.find_all { |dep|
+        spec.name == dep.name and not spec.satisfies_requirement? dep
       }
 
-      if unsatisfied then
-        bad = spec.runtime_dependencies.find_all { |dep|
-          self.name == dep.name and not satisfies_requirement? dep
-        }
-        conflicts[spec] = bad unless bad.empty?
-      end
+      conflicts[spec] = bad unless bad.empty?
     end
     conflicts
   end

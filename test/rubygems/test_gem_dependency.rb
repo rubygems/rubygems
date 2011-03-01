@@ -126,7 +126,7 @@ class TestGemDependency < Gem::TestCase
       a.merge b
     end
 
-    assert_equal 'a (>= 0, runtime) and b (>= 0, runtime) have different names',
+    assert_equal 'a (>= 0) and b (>= 0) have different names',
                  e.message
   end
 

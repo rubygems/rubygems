@@ -200,6 +200,9 @@ module Gem
 
   def self.try_activate path
     # finds the _latest_ version... regardless of loaded specs and their deps
+
+    # TODO: use find_all and bork if ambiguous
+
     spec = Gem.searcher.find path
     return false unless spec
 
@@ -213,13 +216,13 @@ module Gem
   end
 
   ##
-  # Activates an installed gem matching +gem+.  The gem must satisfy
+  # Activates an installed gem matching +dep+.  The gem must satisfy
   # +requirements+.
   #
   # Returns true if the gem is activated, false if it is already
   # loaded, or an exception otherwise.
   #
-  # Gem#activate adds the library paths in +gem+ to $LOAD_PATH.  Before a Gem
+  # Gem#activate adds the library paths in +dep+ to $LOAD_PATH.  Before a Gem
   # is activated its required Gems are activated.  If the version information
   # is omitted, the highest version Gem of the supplied name is loaded.  If a
   # Gem is not found that meets the version requirements or a required Gem is
@@ -228,7 +231,8 @@ module Gem
   # More information on version requirements can be found in the
   # Gem::Requirement and Gem::Version documentation.
 
-  def self.activate(gem, *requirements)
+  def self.activate(dep, *requirements)
+    # TODO: remove options entirely
     if requirements.last.is_a?(Hash)
       options = requirements.pop
     else
@@ -236,46 +240,47 @@ module Gem
     end
 
     requirements = Gem::Requirement.default if requirements.empty?
-    dep = Gem::Dependency.new(gem, requirements)
+    dep = Gem::Dependency.new(dep, requirements) unless Gem::Dependency === dep
 
+    # TODO: remove sources entirely
     sources = options[:sources] || []
-    matches = _unresolved.find_all { |spec| spec.satisfies_requirement? dep }
+    matches = Gem.source_index.search dep, true
+    report_activate_error(dep) if matches.empty?
 
-    if matches.empty? then
-      matches = Gem.source_index.find_name(dep.name, dep.requirement)
-      report_activate_error(dep) if matches.empty?
+    if @loaded_specs[dep.name] then
+      # This gem is already loaded.  If the currently loaded gem is not in the
+      # list of candidate gems, then we have a version conflict.
+      existing_spec = @loaded_specs[dep.name]
 
-      if @loaded_specs[dep.name] then
-        # This gem is already loaded.  If the currently loaded gem is not in the
-        # list of candidate gems, then we have a version conflict.
-        existing_spec = @loaded_specs[dep.name]
+      unless matches.any? { |spec| spec.version == existing_spec.version } then
+        sources_message = sources.map { |spec| spec.full_name }
+        stack_message = @loaded_stacks[dep.name].map { |spec| spec.full_name }
 
-        unless matches.any? { |spec| spec.version == existing_spec.version } then
-          sources_message = sources.map { |spec| spec.full_name }
-          stack_message = @loaded_stacks[dep.name].map { |spec| spec.full_name }
+        msg = "can't activate #{dep} for #{sources_message.inspect}, "
+        msg << "already activated #{existing_spec.full_name} for "
+        msg << "#{stack_message.inspect}"
 
-          msg = "can't activate #{dep} for #{sources_message.inspect}, "
-          msg << "already activated #{existing_spec.full_name} for "
-          msg << "#{stack_message.inspect}"
+        e = Gem::LoadError.new msg
+        e.name = dep.name
+        e.requirement = dep.requirement
 
-          e = Gem::LoadError.new msg
-          e.name = dep.name
-          e.requirement = dep.requirement
-
-          raise e
-        end
-
-        return false
+        raise e
       end
+
+      return false
     end
 
     spec = matches.last
 
     conf = spec.conflicts
     unless conf.empty? then
-      why = conf.map { |k,v| "#{k.full_name} depends on #{v.join(", ")}" }.join ", "
+      why = conf.map { |act,con|
+        "#{act.full_name} conflicts with #{con.join(", ")}"
+      }.join ", "
 
-      raise LoadError, "Unable to activate #{spec.full_name}, but #{why}"
+      # TODO: improve message by saying who activated `con`
+
+      raise LoadError, "Unable to activate #{spec.full_name}, because #{why}"
     end
 
     return false if spec.loaded?
@@ -288,18 +293,15 @@ module Gem
       next if Gem.loaded_specs.include? spec_dep.name
       specs = Gem.source_index.search spec_dep, true
 
-      _unresolved.add(*specs)
-    end
-
-    current = Hash.new { |h, name| h[name] = Gem::Dependency.new name }
-    Gem.loaded_specs.each do |n,s|
-      s.runtime_dependencies.each do |s_dep|
-        current[s_dep.name] = current[s_dep.name].merge s_dep
+      if specs.size == 1 then
+        self.activate spec_dep
+      else
+        name = spec_dep.name
+        unresolved_deps[name] = unresolved_deps[name].merge spec_dep
       end
     end
 
-    _unresolved.remove_specs_unsatisfied_by current
-    _unresolved.specs.delete spec
+    unresolved_deps.delete spec.name
 
     require_paths = spec.require_paths.map do |path|
       File.join spec.full_gem_path, path
@@ -319,8 +321,8 @@ module Gem
     return true
   end
 
-  def self._unresolved
-    @unresolved ||= Gem::DependencyList.new
+  def self.unresolved_deps
+    @unresolved_deps ||= Hash.new { |h, n| h[n] = Gem::Dependency.new n }
   end
 
   ##

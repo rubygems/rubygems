@@ -44,8 +44,7 @@ class Gem::GemPathSearcher
 
   def find(glob)
     # HACK violation of encapsulation
-    # try _unresolved first to attempt to activate properly dependent versions
-    (Gem._unresolved.specs + @gemspecs).find do |spec|
+    @gemspecs.find do |spec|
       # TODO: inverted responsibility
       matching_file? spec, glob
     end
@@ -56,8 +55,7 @@ class Gem::GemPathSearcher
 
   def find_all(glob)
     # HACK violation of encapsulation
-    # try _unresolved first to attempt to activate properly dependent versions
-    (Gem._unresolved.specs + @gemspecs).select do |spec|
+    @gemspecs.select do |spec|
       # TODO: inverted responsibility
       matching_file? spec, glob
     end || []
@@ -65,7 +63,11 @@ class Gem::GemPathSearcher
 
   def find_in_unresolved(glob)
     # HACK violation
-    (Gem._unresolved.specs || []).select do |spec|
+    specs = Gem.unresolved_deps.values.map { |dep|
+      Gem.source_index.search dep, true
+    }.flatten
+
+    specs.select do |spec|
       # TODO: inverted responsibility
       matching_file? spec, glob
     end || []

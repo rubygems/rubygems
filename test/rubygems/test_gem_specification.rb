@@ -893,16 +893,16 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rake>, [\"> 0.4\"])
       s.add_runtime_dependency(%q<jabber4r>, [\"> 0.0.0\"])
-      s.add_runtime_dependency(%q<pqa>, [\"> 0.4\", \"<= 0.6\"])
+      s.add_runtime_dependency(%q<pqa>, [\"<= 0.6\", \"> 0.4\"])
     else
       s.add_dependency(%q<rake>, [\"> 0.4\"])
       s.add_dependency(%q<jabber4r>, [\"> 0.0.0\"])
-      s.add_dependency(%q<pqa>, [\"> 0.4\", \"<= 0.6\"])
+      s.add_dependency(%q<pqa>, [\"<= 0.6\", \"> 0.4\"])
     end
   else
     s.add_dependency(%q<rake>, [\"> 0.4\"])
     s.add_dependency(%q<jabber4r>, [\"> 0.0.0\"])
-    s.add_dependency(%q<pqa>, [\"> 0.4\", \"<= 0.6\"])
+    s.add_dependency(%q<pqa>, [\"<= 0.6\", \"> 0.4\"])
   end
 end
     SPEC

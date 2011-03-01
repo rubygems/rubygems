@@ -102,7 +102,7 @@ class Gem::Requirement
   end
 
   def as_list # :nodoc:
-    requirements.map { |op, version| "#{op} #{version}" }
+    requirements.map { |op, version| "#{op} #{version}" }.sort
   end
 
   def hash # :nodoc:

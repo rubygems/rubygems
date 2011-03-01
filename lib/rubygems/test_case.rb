@@ -130,7 +130,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     Gem.use_paths(@gemhome)
     Gem.loaded_specs.clear
-    Gem._unresolved.clear
+    Gem.unresolved_deps.clear
 
     Gem.configuration.verbose = true
     Gem.configuration.update_sources = true

@@ -1546,4 +1546,8 @@ class Gem::Specification
     end
     conflicts
   end
+
+  def dependent_specs
+    runtime_dependencies.map { |dep| Gem.source_index.search dep, true }.flatten
+  end
 end

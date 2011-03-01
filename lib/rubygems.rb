@@ -1215,7 +1215,7 @@ module Gem
   def self.cache # :nodoc:
     warn "#{Gem.location_of_caller.join ':'}:Warning: " \
       "Gem::cache is deprecated and will be removed on or after " \
-      "August 2012.  " \
+      "August 2011.  " \
       "Use Gem::source_index."
 
     source_index
@@ -1286,7 +1286,13 @@ end
 # "#{ConfigMap[:datadir]}/#{package_name}".
 
 def RbConfig.datadir(package_name)
-  require 'rbconfig/datadir' # TODO Deprecate after June 2010.
+  warn "#{Gem.location_of_caller.join ':'}:Warning: " \
+    "RbConfig.datadir is deprecated and will be removed on or after " \
+    "August 2011.  " \
+    "Use Gem::datadir."
+
+  require 'rbconfig/datadir'
+
   Gem.datadir(package_name) ||
     File.join(Gem::ConfigMap[:datadir], package_name)
 end

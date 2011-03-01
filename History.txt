@@ -36,7 +36,6 @@
 * Always install gems that were listed by the user even if they are already installed.
 * Completely remove any previous gem files in Installer.install.
 * Fixed Installer.generate_bin to only chmod files that exist.
-* Fixed RF#28935: rdoc/ri invokations were quietly ignoring bogus args.
 * Fixed bug in syck causing install to fail when gem packaged w/ psych.
 * Fixed handling of Windows style file:/// uris.
 * Fixed requires in tests. (shota)

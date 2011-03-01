@@ -1,6 +1,6 @@
 require 'rubygems/test_case'
 require 'rubygems/commands/cert_command'
-require 'rubygems/fix_openssl_warnings'
+require 'rubygems/fix_openssl_warnings' if RUBY_VERSION < "1.9"
 
 unless defined? OpenSSL then
   warn "`gem cert` tests are being skipped, module OpenSSL not found"

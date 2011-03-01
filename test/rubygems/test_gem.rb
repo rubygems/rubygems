@@ -75,24 +75,78 @@ class TestGem < Gem::TestCase
     assert_equal %w(a-1 b-1 c-1), loaded_spec_names
   end
 
-  def test_self_activate_ambiguous
-    a1 = new_spec "a", "1", "b" => "> 0"
-    b1 = new_spec "b", "1", "c" => ">= 1"
-    b2 = new_spec "b", "2", "c" => ">= 2"
-    c1 = new_spec "c", "1", nil, "lib/d.rb"
-    c2 = new_spec "c", "2", nil, "lib/d.rb"
+  def save_loaded_features
+    old_loaded_features = $LOADED_FEATURES.dup
+    yield
+  ensure
+    $LOADED_FEATURES.replace old_loaded_features
+  end
 
-    install_specs a1, b1, b2, c1, c2
+  def test_self_activate_ambiguous_direct
+    save_loaded_features do
+      a1 = new_spec "a", "1", "b" => "> 0"
+      b1 = new_spec("b", "1", { "c" => ">= 1" }, "lib/d.rb")
+      b2 = new_spec("b", "2", { "c" => ">= 2" }, "lib/d.rb")
+      c1 = new_spec "c", "1"
+      c2 = new_spec "c", "2"
 
-    Gem.activate "a", "= 1"
-    assert_equal %w(a-1), loaded_spec_names
-    assert_equal ["b (> 0)"], unresolved_names
+      install_specs a1, b1, b2, c1, c2
 
-    require "d"
+      Gem.activate "a", "= 1"
+      assert_equal %w(a-1), loaded_spec_names
+      assert_equal ["b (> 0)"], unresolved_names
 
-    assert_equal %w(a-1 b-2 c-2), loaded_spec_names
-    assert_equal [], unresolved_names
+      require "d"
 
+      assert_equal %w(a-1 b-2 c-2), loaded_spec_names
+      assert_equal [], unresolved_names
+    end
+
+    flunk
+  end
+
+  def test_self_activate_ambiguous_indirect
+    save_loaded_features do
+      a1 = new_spec "a", "1", "b" => "> 0"
+      b1 = new_spec "b", "1", "c" => ">= 1"
+      b2 = new_spec "b", "2", "c" => ">= 1"
+      c1 = new_spec "c", "1", nil, "lib/d.rb"
+      c2 = new_spec "c", "2", nil, "lib/d.rb"
+
+      install_specs a1, b1, b2, c1, c2
+
+      Gem.activate "a", "= 1"
+      assert_equal %w(a-1), loaded_spec_names
+      assert_equal ["b (> 0)"], unresolved_names
+
+      require "d"
+
+      assert_equal %w(a-1 b-2 c-2), loaded_spec_names
+      assert_equal [], unresolved_names
+    end
+    flunk
+  end
+
+  def test_self_activate_ambiguous_indirect_conflict
+    save_loaded_features do
+      a1 = new_spec "a", "1", "b" => "> 0"
+      a2 = new_spec "a", "2", "b" => "> 0"
+      b1 = new_spec "b", "1", "c" => ">= 1"
+      b2 = new_spec "b", "2", "c" => ">= 2"
+      c1 = new_spec "c", "1", nil, "lib/d.rb"
+      c2 = new_spec("c", "2", { "a" => "1" }, "lib/d.rb") # conflicts with a-2
+
+      install_specs a1, b1, b2, c1, c2
+
+      Gem.activate "a", "= 2"
+      assert_equal %w(a-2), loaded_spec_names
+      assert_equal ["b (> 0)"], unresolved_names
+
+      require "d"
+
+      assert_equal %w(a-2 b-1 c-1), loaded_spec_names
+      assert_equal [], unresolved_names
+    end
     flunk
   end
 

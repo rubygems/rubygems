@@ -6,10 +6,16 @@
 
 module Kernel
 
-  ##
-  # The Kernel#require from before RubyGems was loaded.
+  if defined?(gem_original_require) then
+    # Ruby ships with a custom_require, override its require
+    remove_method :require
+  else
+    ##
+    # The Kernel#require from before RubyGems was loaded.
 
-  alias gem_original_require require
+    alias gem_original_require require
+    private :gem_original_require
+  end
 
   ##
   # When RubyGems is required, Kernel#require is replaced with our own which
@@ -51,7 +57,6 @@ module Kernel
   end
 
   private :require
-  private :gem_original_require
 
 end
 

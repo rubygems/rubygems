@@ -1,9 +1,5 @@
 # -*- ruby -*-
 
-# this ensures that we start w/ our rubygem files, not those preloaded.
-exec Gem.ruby, "-Ilib", "-S", "rake", *ARGV unless
-  $LOAD_PATH.include? "lib" or $LOAD_PATH.include? File.expand_path("lib")
-
 require 'rubygems'
 require 'rubygems/package_task'
 

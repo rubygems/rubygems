@@ -73,12 +73,39 @@ class Gem::GemPathSearcher
     end || []
   end
 
+  def find_in_unresolved_tree glob
+    # HACK violation
+    # TODO: inverted responsibility
+    specs = Gem.unresolved_deps.values.map { |dep|
+      Gem.source_index.search dep, true
+    }.flatten
+
+    specs.reverse_each do |spec|
+      trails = matching_paths(spec, glob)
+      next if trails.empty?
+      return trails.map(&:reverse).sort.first.reverse
+    end
+
+    []
+  end
+
   ##
   # Attempts to find a matching path using the require_paths of the given
   # +spec+.
 
   def matching_file?(spec, path)
-    !matching_files(spec, path).empty?
+    not matching_files(spec, path).empty?
+  end
+
+  def matching_paths(spec, path)
+    trails = []
+
+    spec.traverse do |from_spec, dep, to_spec, trail|
+      next unless to_spec.conflicts.empty?
+      trails << trail unless matching_files(to_spec, path).empty?
+    end
+
+    trails
   end
 
   ##

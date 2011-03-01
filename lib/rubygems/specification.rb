@@ -1547,6 +1547,18 @@ class Gem::Specification
     conflicts
   end
 
+  def traverse trail = [], &b
+    trail = trail + [self]
+    runtime_dependencies.each do |dep|
+      dep_specs = Gem.source_index.search dep, true
+      dep_specs.each do |dep_spec|
+        b[self, dep, dep_spec, trail + [dep_spec]]
+        dep_spec.traverse(trail, &b) unless
+          trail.map(&:name).include? dep_spec.name
+      end
+    end
+  end
+
   def dependent_specs
     runtime_dependencies.map { |dep| Gem.source_index.search dep, true }.flatten
   end

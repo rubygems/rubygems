@@ -30,14 +30,17 @@ module Kernel
       gem_original_require path
     else
       specs = Gem.searcher.find_in_unresolved path
-
-      if specs.empty? then
-        gem_original_require path
+      unless specs.empty? then
+        specs = [specs.last]
       else
-        spec = specs.first
-        Gem.activate spec.name, spec.version # FIX: holy shit this is dumb
-        return gem_original_require(path)
+        specs = Gem.searcher.find_in_unresolved_tree path
       end
+
+      specs.each do |spec|
+        Gem.activate spec.name, spec.version # FIX: this is dumb
+      end
+
+      return gem_original_require path
     end
   rescue LoadError => load_error
     if load_error.message.end_with?(path) and Gem.try_activate(path) then

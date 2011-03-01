@@ -404,7 +404,10 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   def new_spec name, version, deps = nil, *files
     # TODO: unfactor and deprecate util_gem and util_spec
     spec, = unless files.empty? then
-              util_gem name, version, deps do |s|
+              util_gem name, version do |s|
+                Array(deps).each do |n,v|
+                  s.add_dependency n, v
+                end
                 s.files.push(*files)
               end
             else

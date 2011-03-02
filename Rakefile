@@ -29,6 +29,9 @@ hoe = Hoe.spec 'rubygems-update' do
   spec_extras[:required_ruby_version]     = Gem::Requirement.new '>= 1.8.7'
   spec_extras[:executables]               = ['update_rubygems']
 
+  rdoc_locations <<
+    'rubyforge.org:/var/www/gforge-projects/rubygems/rubygems-update/'
+
   clean_globs.push('**/debug.log',
                    '*.out',
                    '.config',

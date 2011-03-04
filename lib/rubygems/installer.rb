@@ -387,7 +387,7 @@ class Gem::Installer
 
   def process_options
     @options = {
-      :bin_dir      => nil, # TODO should this be Gem.dir.bin ?
+      :bin_dir      => nil,
       :env_shebang  => false,
       :exec_format  => false,
       :force        => false,

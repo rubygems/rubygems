@@ -1,4 +1,15 @@
-﻿=== 1.6.0 / 2011-02-29
+﻿=== 1.6.1 / 2011-03-03
+
+Bug Fixes:
+
+* Installation no longer fails when a dependency from a version that won't be
+  installed is unsatisfied.
+* README.rdoc now shows how to file tickets and get help.  Pull Request #40 by
+  Aaron Patterson.
+* Gem files are cached correctly again.  Patch #29051 by Mamoru Tasaka.
+* Tests now pass with non-022 umask.  Patch #29050 by Mamoru Tasaka.
+
+=== 1.6.0 / 2011-02-29
 
 4 Deprecations:
 

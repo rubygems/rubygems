@@ -103,7 +103,7 @@ class Gem::RemoteFetcher
     end
 
     gem_file_name = spec.file_name
-    local_gem_path = File.join cache_dir, gem_file_name
+    local_gem_path = cache_dir.add(gem_file_name)
 
     FileUtils.mkdir_p cache_dir rescue nil unless File.exist? cache_dir
 

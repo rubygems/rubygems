@@ -109,8 +109,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       @tempdir = File.join tmpdir, "test_rubygems_#{$$}"
     end
     @tempdir.untaint
-    @gemhome  = File.join @tempdir, 'gemhome'
-    @userhome = File.join @tempdir, 'userhome'
+    @gemhome  = Gem::FileSystem.new File.join @tempdir, 'gemhome'
+    @userhome = Gem::FileSystem.new File.join @tempdir, 'userhome'
 
     @orig_ruby = if ruby = ENV['RUBY'] then
                    Gem.class_eval { ruby, @ruby = @ruby, ruby }
@@ -278,7 +278,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # Writes a binary file to +path+ which is relative to +@gemhome+
 
   def write_file(path)
-    path = File.join @gemhome, path
+    path = @gemhome.add(path)
     dir = File.dirname path
     FileUtils.mkdir_p dir
 
@@ -358,7 +358,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # 'cache'</tt>.  Automatically creates files based on +spec.files+
 
   def util_build_gem(spec)
-    dir = File.join(@gemhome, 'gems', spec.full_name)
+    dir = @gemhome.gems.add(spec.full_name)
     FileUtils.mkdir_p dir
 
     Dir.chdir dir do
@@ -381,8 +381,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # Removes all installed gems from +@gemhome+.
 
   def util_clear_gems
-    FileUtils.rm_rf File.join(@gemhome, 'gems')
-    FileUtils.rm_rf File.join(@gemhome, 'specifications')
+    FileUtils.rm_rf @gemhome.gems
+    FileUtils.rm_rf @gemhome.specifications
     Gem.source_index.refresh!
   end
 
@@ -413,7 +413,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
             else
               util_spec name, version, deps
             end
-    spec.loaded_from = File.join @gemhome, 'specifications', spec.spec_name
+    spec.loaded_from = @gemhome.specifications.add(spec.spec_name)
     spec.loaded = false
     spec
   end
@@ -459,7 +459,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     cache_file = File.join @tempdir, 'gems', "#{spec.original_name}.gem"
     FileUtils.mkdir_p File.dirname cache_file
     FileUtils.mv Gem.cache_gem("#{spec.original_name}.gem"), cache_file
-    FileUtils.rm File.join(@gemhome, 'specifications', spec.spec_name)
+    FileUtils.rm @gemhome.specifications.add(spec.spec_name)
 
     spec.loaded_from = nil
     spec.loaded = false
@@ -550,7 +550,7 @@ Also, a list:
       util_build_gem spec
     end
 
-    FileUtils.rm_r File.join(@gemhome, 'gems', @pl1.original_name)
+    FileUtils.rm_r @gemhome.gems.add(@pl1.original_name)
 
     Gem.source_index = nil
   end

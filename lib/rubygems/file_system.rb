@@ -30,6 +30,10 @@ module Gem
       path.add 'source_cache'
     end
 
+    def add(obj)
+      path.add(obj)
+    end
+
     def to_s
       path.to_s
     end
@@ -89,7 +93,6 @@ module Gem
       def hash
         to_s.hash
       end
-
     end
   end
 end

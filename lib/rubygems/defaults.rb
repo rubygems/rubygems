@@ -67,9 +67,9 @@ module Gem
 
   def self.default_bindir
     if defined? RUBY_FRAMEWORK_VERSION then # mac framework support
-      '/usr/bin'
+      Gem::FileSystem::Path.new '/usr/bin'
     else # generic install
-      ConfigMap[:bindir]
+      Gem::FileSystem::Path.new ConfigMap[:bindir].to_s
     end
   end
 

@@ -125,7 +125,10 @@ class TestGemUninstaller < Gem::InstallerTestCase
   def test_path_ok_eh_legacy
     uninstaller = Gem::Uninstaller.new nil
 
-    @spec.loaded_from.gsub! @spec.full_name, '\&-legacy'
+    @spec.loaded_from = Gem::FileSystem::Path.new( 
+      @spec.loaded_from.to_s.gsub @spec.full_name, '\&-legacy'
+    )
+      
     @spec.platform = 'legacy'
 
     assert_equal true, uninstaller.path_ok?(@gemhome, @spec)

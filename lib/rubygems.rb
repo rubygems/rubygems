@@ -27,6 +27,7 @@ end
 
 require 'rubygems/defaults'
 require "rubygems/dependency_list"
+require 'rubygems/file_system'
 require 'rbconfig'
 
 ##
@@ -474,7 +475,7 @@ module Gem
   def self.dir
     @gem_home ||= nil
     set_home(ENV['GEM_HOME'] || default_dir) unless @gem_home
-    @gem_home
+    Gem::FileSystem.new(@gem_home)
   end
 
   ##
@@ -731,7 +732,7 @@ module Gem
       set_paths paths.compact.join(File::PATH_SEPARATOR)
     end
 
-    @gem_path
+    @gem_path.map { |x| Gem::FileSystem.new(x) }.uniq
   end
 
   ##
@@ -988,7 +989,7 @@ module Gem
 
   def self.set_home(home)
     home = home.gsub File::ALT_SEPARATOR, File::SEPARATOR if File::ALT_SEPARATOR
-    @gem_home = home
+    @gem_home = Gem::FileSystem.new(home)
   end
 
   private_class_method :set_home
@@ -1012,7 +1013,7 @@ module Gem
       @gem_path = [Gem.dir]
     end
 
-    @gem_path.uniq!
+    @gem_path.map { |path| Gem::FileSystem.new(path) }.uniq!
   end
 
   private_class_method :set_paths

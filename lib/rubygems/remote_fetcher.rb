@@ -110,8 +110,8 @@ class Gem::RemoteFetcher
    # Always escape URI's to deal with potential spaces and such
     unless URI::Generic === source_uri
       source_uri = URI.parse(URI.const_defined?(:DEFAULT_PARSER) ?
-                             URI::DEFAULT_PARSER.escape(source_uri) :
-                             URI.escape(source_uri))
+                             URI::DEFAULT_PARSER.escape(source_uri.to_s) :
+                             URI.escape(source_uri.to_s))
     end
 
     scheme = source_uri.scheme

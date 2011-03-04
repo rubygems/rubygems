@@ -409,6 +409,9 @@ module Gem
   # The path where gem executables are to be installed.
 
   def self.bindir(install_dir=Gem.dir)
+    #
+    # NOTE can't use FileSystem here because of Apple, see defaults.rb.
+    #
     return File.join(install_dir, 'bin') unless
       install_dir.to_s == Gem.default_dir
     Gem.default_bindir
@@ -732,7 +735,7 @@ module Gem
       set_paths paths.compact.join(File::PATH_SEPARATOR)
     end
 
-    @gem_path.map { |x| Gem::FileSystem.new(x) }.uniq
+    @gem_path.uniq
   end
 
   ##
@@ -743,7 +746,7 @@ module Gem
   #
 
   def self.cache_dir(custom_dir=false)
-    File.join(custom_dir ? custom_dir : Gem.dir, 'cache')
+    (custom_dir ? Gem::FileSystem.new(custom_dir) : Gem.dir).cache
   end
 
   ##
@@ -753,7 +756,7 @@ module Gem
   # nil/false (default) for Gem.dir.
 
   def self.cache_gem(filename, user_dir=false)
-    File.join(cache_dir(user_dir), filename)
+    cache_dir(user_dir).add(filename)
   end
 
   ##
@@ -1013,7 +1016,7 @@ module Gem
       @gem_path = [Gem.dir]
     end
 
-    @gem_path.map { |path| Gem::FileSystem.new(path) }.uniq!
+    @gem_path.map! { |path| Gem::FileSystem.new(path) }.uniq!
   end
 
   private_class_method :set_paths

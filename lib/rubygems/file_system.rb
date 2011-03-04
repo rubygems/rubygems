@@ -26,6 +26,10 @@ module Gem
       path.add 'doc'
     end
 
+    def source_cache
+      path.add 'source_cache'
+    end
+
     def to_s
       path.to_s
     end
@@ -73,7 +77,7 @@ module Gem
       alias to_str to_s
 
       def add(filename)
-        self.class.new(@path, filename)
+        self.class.new(File.join @path, filename)
       end
 
       def eql?(other_path)

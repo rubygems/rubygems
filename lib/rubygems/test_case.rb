@@ -117,7 +117,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
                    ruby
                  end
 
-    Gem.ensure_gem_subdirectories @gemhome
+    @gemhome.ensure_gem_subdirectories
 
     Dir.chdir @tempdir
 

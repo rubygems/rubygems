@@ -550,7 +550,7 @@ class TestGem < Gem::TestCase
     FileUtils.rm_r @gemhome
     Gem.use_paths @gemhome
 
-    Gem.ensure_gem_subdirectories @gemhome
+    @gemhome.ensure_gem_subdirectories
 
     assert File.directory?(Gem.cache_dir(@gemhome))
   end
@@ -562,7 +562,7 @@ class TestGem < Gem::TestCase
            "manually remove #{File.join @tempdir, 'a'}, tests are broken"
     Gem.use_paths gemdir
 
-    Gem.ensure_gem_subdirectories gemdir
+    gemdir.ensure_gem_subdirectories
 
     assert File.directory?(Gem.cache_dir(gemdir))
   end
@@ -576,7 +576,7 @@ class TestGem < Gem::TestCase
       FileUtils.chmod 0400, gemdir
       Gem.use_paths gemdir
 
-      Gem.ensure_gem_subdirectories gemdir
+      gemdir.ensure_gem_subdirectories
 
       refute File.exist?(Gem.cache_dir(gemdir))
     ensure
@@ -593,7 +593,7 @@ class TestGem < Gem::TestCase
       FileUtils.chmod 0400, parent
       Gem.use_paths(gemdir)
 
-      Gem.ensure_gem_subdirectories gemdir
+      gemdir.ensure_gem_subdirectories
 
       refute File.exist?(Gem.cache_dir(gemdir))
     ensure
@@ -1067,9 +1067,13 @@ class TestGem < Gem::TestCase
   end
 
   def util_ensure_gem_dirs
-    Gem.ensure_gem_subdirectories @gemhome
+    @gemhome.ensure_gem_subdirectories
+
+    #
+    # FIXME what does this solve precisely? -ebh
+    #
     @additional.each do |dir|
-      Gem.ensure_gem_subdirectories @gemhome
+      @gemhome.ensure_gem_subdirectories
     end
   end
 

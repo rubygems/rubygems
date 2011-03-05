@@ -11,6 +11,11 @@ module Gem
       @path = Path.new(*paths)
     end
 
+    ##
+    # Quietly ensure the named Gem directory contains all the proper
+    # subdirectories.  If we can't create a directory due to a permission
+    # problem, then we will silently continue.
+
     def ensure_gem_subdirectories
       require 'fileutils'
 

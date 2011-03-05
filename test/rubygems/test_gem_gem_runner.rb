@@ -11,8 +11,8 @@ class TestGemGemRunner < Gem::TestCase
     other_gem_path = Gem::FileSystem.new @tempdir, 'other_gem_path'
     other_gem_home = Gem::FileSystem.new @tempdir, 'other_gem_home'
 
-    Gem.ensure_gem_subdirectories other_gem_path
-    Gem.ensure_gem_subdirectories other_gem_home
+    other_gem_path.ensure_gem_subdirectories
+    other_gem_home.ensure_gem_subdirectories
 
     File.open temp_conf, 'w' do |fp|
       fp.puts "gem: --commands"

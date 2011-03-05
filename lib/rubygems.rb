@@ -499,15 +499,6 @@ module Gem
   private_class_method :each_load_path
 
   ##
-  # Quietly ensure the named Gem directory contains all the proper
-  # subdirectories.  If we can't create a directory due to a permission
-  # problem, then we will silently continue.
-
-  def self.ensure_gem_subdirectories(gemdir)
-    gemdir.ensure_gem_subdirectories
-  end
-
-  ##
   # Returns a list of paths matching +glob+ that can be used by a gem to pick
   # up features from other gems.  For example:
   #

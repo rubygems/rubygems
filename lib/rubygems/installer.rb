@@ -148,7 +148,7 @@ class Gem::Installer
       end
     end
 
-    Gem.ensure_gem_subdirectories @gem_home
+    @gem_home.ensure_gem_subdirectories
 
     # Completely remove any previous gem files
     FileUtils.rm_rf(@gem_dir) if File.exist?(@gem_dir)

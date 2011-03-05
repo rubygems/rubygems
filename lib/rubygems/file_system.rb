@@ -2,8 +2,8 @@ module Gem
   class FileSystem
     attr_reader :path
 
-    def initialize(path)
-      @path = Path.new(path)
+    def initialize(*paths)
+      @path = Path.new(*paths)
     end
 
     def bin
@@ -58,8 +58,8 @@ module Gem
     end
 
     class Path
-      def initialize(path)
-        @path = path
+      def initialize(*paths)
+        @path = File.join(paths)
       end
 
       def readable?
@@ -95,4 +95,6 @@ module Gem
       end
     end
   end
+
+  FS = FileSystem
 end

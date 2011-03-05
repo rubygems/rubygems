@@ -155,11 +155,6 @@ module Gem
     end
   end
 
-  ##
-  # Default directories in a gem repository
-
-  DIRECTORIES = %w[cache doc gems specifications] unless defined?(DIRECTORIES)
-
   RubyGemsPackageVersion = VERSION
 
   RUBYGEMS_DIR = File.dirname File.expand_path(__FILE__)
@@ -509,12 +504,7 @@ module Gem
   # problem, then we will silently continue.
 
   def self.ensure_gem_subdirectories(gemdir)
-    require 'fileutils'
-
-    Gem::DIRECTORIES.each do |filename|
-      fn = File.join gemdir, filename
-      FileUtils.mkdir_p fn rescue nil unless File.exist? fn
-    end
+    gemdir.ensure_gem_subdirectories
   end
 
   ##

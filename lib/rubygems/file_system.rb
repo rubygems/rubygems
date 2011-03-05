@@ -2,8 +2,22 @@ module Gem
   class FileSystem
     attr_reader :path
 
+    ##
+    # Default directories in a gem repository
+
+    DIRECTORIES = %w[cache doc gems specifications] unless defined?(DIRECTORIES)
+
     def initialize(*paths)
       @path = Path.new(*paths)
+    end
+
+    def ensure_gem_subdirectories
+      require 'fileutils'
+
+      DIRECTORIES.each do |name|
+        fn = send(name)
+        FileUtils.mkdir_p fn rescue nil unless File.exist? fn
+      end
     end
 
     def bin

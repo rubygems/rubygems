@@ -405,7 +405,7 @@ module Gem
 
   def self.bindir(install_dir=Gem.dir)
     #
-    # NOTE can't use FileSystem here because of Apple, see defaults.rb.
+    # FIXME rework after Specification is converted.
     #
     return File.join(install_dir, 'bin') unless
       install_dir.to_s == Gem.default_dir

@@ -316,7 +316,7 @@ class Gem::Installer
       return
     end
 
-    src = @gem_dir.add(@spec.bindir).add(filename)
+    src = @gem_dir.add(@spec.bindir, filename)
     dst = File.join bindir, formatted_program_filename(filename)
 
     if File.exist? dst then
@@ -337,7 +337,7 @@ class Gem::Installer
 
   def shebang(bin_file_name)
     ruby_name = Gem::ConfigMap[:ruby_install_name] if @env_shebang
-    path = @gem_dir.add(@spec.bindir).add(bin_file_name)
+    path = @gem_dir.add(@spec.bindir, bin_file_name)
     first_line = File.open(path, "rb") {|file| file.gets}
 
     if /\A#!/ =~ first_line then

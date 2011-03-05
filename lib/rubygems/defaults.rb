@@ -18,23 +18,33 @@ module Gem
 
   def self.default_dir
     path = if defined? RUBY_FRAMEWORK_VERSION then
-             File.join File.dirname(ConfigMap[:sitedir]), 'Gems',
+             [ 
+               File.dirname(ConfigMap[:sitedir]), 
+               'Gems',
                ConfigMap[:ruby_version]
+             ]
            elsif ConfigMap[:rubylibprefix] then
-             File.join(ConfigMap[:rubylibprefix], 'gems',
-                       ConfigMap[:ruby_version])
+             [
+              ConfigMap[:rubylibprefix], 
+              'gems',
+              ConfigMap[:ruby_version]
+             ]
            else
-             File.join(ConfigMap[:libdir], ruby_engine, 'gems',
-                       ConfigMap[:ruby_version])
+             [
+               ConfigMap[:libdir], 
+               ruby_engine, 
+               'gems',
+               ConfigMap[:ruby_version]
+             ]
            end
-    Gem::FileSystem.new(path)
+    Gem::FileSystem.new(*path)
   end
 
   ##
   # Path for gems in the user's home directory
 
   def self.user_dir
-    Gem::FileSystem.new File.join Gem.user_home, '.gem', ruby_engine, ConfigMap[:ruby_version]
+    Gem::FileSystem.new Gem.user_home, '.gem', ruby_engine, ConfigMap[:ruby_version]
   end
 
   ##
@@ -88,7 +98,7 @@ module Gem
     # NOTE Probably an argument for moving this to per-ruby supported dirs like
     # user_dir
     #
-    Gem::FileSystem.new(File.join Gem.user_home, '.gem').source_cache
+    Gem::FileSystem.new(Gem.user_home, '.gem').source_cache
   end
 
   ##

@@ -30,8 +30,8 @@ module Gem
       path.add 'source_cache'
     end
 
-    def add(obj)
-      path.add(obj)
+    def add(*parts)
+      path.add(*parts)
     end
 
     def to_s
@@ -80,8 +80,8 @@ module Gem
       
       alias to_str to_s
 
-      def add(filename)
-        self.class.new(File.join @path, filename)
+      def add(*parts)
+        self.class.new(@path, *parts)
       end
 
       def eql?(other_path)

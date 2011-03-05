@@ -692,9 +692,10 @@ class TestGem < Gem::TestCase
       orig_APPLE_GEM_HOME = APPLE_GEM_HOME
       Object.send :remove_const, :APPLE_GEM_HOME
     end
-    Gem.instance_variable_set :@gem_path, nil
 
-    assert_equal [Gem.default_path, Gem.dir].flatten, Gem.path
+    Gem.instance_variable_set :@paths, nil
+
+    assert_equal [Gem.default_path, Gem.dir].flatten.uniq, Gem.path
   ensure
     Object.const_set :APPLE_GEM_HOME, orig_APPLE_GEM_HOME
   end
@@ -725,7 +726,12 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_path_ENV_PATH
-    Gem.send :set_paths, nil
+    #
+    # FIXME remove after fixing test_case
+    #
+    ENV.delete('GEM_HOME')
+
+    Gem.instance_variable_set :@paths, nil
     path_count = Gem.path.size
     Gem.clear_paths
 
@@ -888,9 +894,14 @@ class TestGem < Gem::TestCase
   def test_self_set_paths
     other = File.join @tempdir, 'other'
     path = [@userhome, other].join File::PATH_SEPARATOR
-    Gem.send :set_paths, path
 
-    assert_equal [@userhome, other, @gemhome], Gem.path
+    #
+    # FIXME remove after fixing test_case
+    #
+    ENV["GEM_HOME"] = @gemhome
+    Gem.paths = { :path => path }
+
+    assert_equal [@userhome, Gem::FileSystem.new(other), @gemhome], Gem.path
   end
 
   def test_self_set_paths_nonexistent_home
@@ -901,7 +912,7 @@ class TestGem < Gem::TestCase
 
     ENV['HOME'] = other
 
-    Gem.send :set_paths, other
+    Gem.paths = { :path => other }
 
     assert_equal [other, @gemhome], Gem.path
   end

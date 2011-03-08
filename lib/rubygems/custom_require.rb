@@ -35,15 +35,19 @@ module Kernel
     if Gem.unresolved_deps.empty? or Gem.loaded_path? path then
       gem_original_require path
     else
-      specs = Gem.searcher.find_in_unresolved path
-      unless specs.empty? then
-        specs = [specs.last]
-      else
-        specs = Gem.searcher.find_in_unresolved_tree path
-      end
+      spec = Gem.searcher.find_active path
 
-      specs.each do |spec|
-        Gem.activate spec.name, spec.version # FIX: this is dumb
+      unless spec then
+        specs = Gem.searcher.find_in_unresolved path
+        unless specs.empty? then
+          specs = [specs.last]
+        else
+          specs = Gem.searcher.find_in_unresolved_tree path
+        end
+
+        specs.each do |spec|
+          Gem.activate spec.name, spec.version # FIX: this is dumb
+        end
       end
 
       return gem_original_require path

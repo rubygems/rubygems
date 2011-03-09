@@ -38,15 +38,16 @@ module Kernel
       spec = Gem.searcher.find_active path
 
       unless spec then
-        specs = Gem.searcher.find_in_unresolved path
-        unless specs.empty? then
-          specs = [specs.last]
+        found_specs = Gem.searcher.find_in_unresolved path
+        unless found_specs.empty? then
+          found_specs = [found_specs.last]
         else
-          specs = Gem.searcher.find_in_unresolved_tree path
+          found_specs = Gem.searcher.find_in_unresolved_tree path
         end
 
-        specs.each do |spec|
-          Gem.activate spec.name, spec.version # FIX: this is dumb
+        found_specs.each do |found_spec|
+          # FIX: this is dumb, activate a spec instead of name/version
+          Gem.activate found_spec.name, found_spec.version
         end
       end
 

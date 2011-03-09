@@ -118,7 +118,7 @@ require 'rbconfig'
 # -The RubyGems Team
 
 module Gem
-  VERSION = '1.6.1'
+  VERSION = '1.6.2'
 
   ##
   # Raised when RubyGems is unable to load or activate a gem.  Contains the

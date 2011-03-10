@@ -67,9 +67,9 @@ class Gem::Commands::ContentsCommand < Gem::Command
                 end
 
     gem_names.each do |name|
-      gem_spec = si.find_name(name, version).last
+      spec = si.find_name(name, version).last
 
-      unless gem_spec then
+      unless spec then
         say "Unable to find gem '#{name}' in #{path_kind}"
 
         if Gem.configuration.verbose then
@@ -80,16 +80,25 @@ class Gem::Commands::ContentsCommand < Gem::Command
         terminate_interaction 1 if gem_names.length == 1
       end
 
-      files = options[:lib_only] ? gem_spec.lib_files : gem_spec.files
+      gem_path = spec.full_gem_path
 
-      files.each do |f|
-        path = if options[:prefix] then
-                 File.join gem_spec.full_gem_path, f
-               else
-                 f
-               end
+      files = if options[:lib_only] then
+                glob = File.join(gem_path, "{#{spec.require_paths.join ','}}",
+                                 '**/*')
 
-        say path
+                Dir[glob]
+              else
+                Dir[File.join(gem_path, '**/*')]
+              end
+
+      gem_path = File.join gem_path, '' # to strip trailing /
+
+      files.each do |file|
+        next if File.directory? file
+
+        file = file.sub gem_path, '' unless options[:prefix]
+
+        say file
       end
     end
   end

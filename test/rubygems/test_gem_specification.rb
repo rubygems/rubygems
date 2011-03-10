@@ -124,10 +124,12 @@ end
   end
 
   def test_self_load
-    spec = File.join @gemhome, 'specifications', @a2.spec_name
-    gs = Gem::Specification.load spec
+    spec_path = File.join @gemhome, 'specifications', @a2.spec_name
+    spec = Gem::Specification.load spec_path
 
-    assert_equal @a2, gs
+    @a2.files.clear
+
+    assert_equal @a2, spec
   end
 
   def test_self_load_legacy_ruby
@@ -534,6 +536,24 @@ end
 
     assert_equal %w[E ERF F TF bin/X], @a1.files.sort
     assert_kind_of Integer, @a1.hash
+  end
+
+  def test_for_cache
+    @a2.add_runtime_dependency 'b', '1'
+    @a2.dependencies.first.instance_variable_set :@type, nil
+    @a2.required_rubygems_version = Gem::Requirement.new '> 0'
+    @a2.test_files = %w[test/test_b.rb]
+
+    refute_empty @a2.files
+    refute_empty @a2.test_files
+
+    spec = @a2.for_cache
+
+    assert_empty spec.files
+    assert_empty spec.test_files
+
+    refute_empty @a2.files
+    refute_empty @a2.test_files
   end
 
   def test_full_gem_path

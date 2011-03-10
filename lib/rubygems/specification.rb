@@ -728,6 +728,18 @@ class Gem::Specification
     end
   end
 
+  ##
+  # Creates a duplicate spec without large blobs that aren't used at runtime.
+
+  def for_cache
+    spec = dup
+
+    spec.files = nil
+    spec.test_files = nil
+
+    spec
+  end
+
   def to_yaml(opts = {}) # :nodoc:
     if YAML.const_defined?(:ENGINE) && !YAML::ENGINE.syck? then
       super.gsub(/ !!null \n/, " \n")
@@ -829,12 +841,7 @@ class Gem::Specification
   end
 
   def to_ruby_for_cache
-    s = dup
-    # remove large blobs that aren't used at runtime:
-    s.files = nil
-    s.extra_rdoc_files = nil
-    s.rdoc_options = nil
-    s.to_ruby
+    for_cache.to_ruby
   end
 
   ##

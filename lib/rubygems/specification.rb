@@ -439,7 +439,16 @@ class Gem::Specification
     self.class.array_attributes.each do |name|
       name = :"@#{name}"
       next unless other_ivars.include? name
-      instance_variable_set name, other_spec.instance_variable_get(name).dup
+
+      begin
+        instance_variable_set name, other_spec.instance_variable_get(name).dup
+      rescue TypeError
+        e = Gem::FormatException.new \
+          "#{full_name} has an invalid value for #{name}"
+
+        e.file_path = loaded_from
+        raise e
+      end
     end
   end
 

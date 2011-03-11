@@ -286,6 +286,23 @@ end
                 new_spec.required_rubygems_version
   end
 
+  def test_initialize_copy_broken
+    spec = Gem::Specification.new do |s|
+      s.name = 'a'
+      s.version = '1'
+    end
+
+    spec.instance_variable_set :@licenses, nil
+    spec.loaded_from = '/path/to/file'
+
+    e = assert_raises Gem::FormatException do
+      spec.dup
+    end
+
+    assert_equal 'a-1 has an invalid value for @licenses', e.message
+    assert_equal '/path/to/file', e.file_path
+  end
+
   def test__dump
     @a2.platform = Gem::Platform.local
     @a2.instance_variable_set :@original_platform, 'old_platform'

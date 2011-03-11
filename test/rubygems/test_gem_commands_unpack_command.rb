@@ -136,6 +136,22 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
     assert File.exist?(File.join(@tempdir, 'a-2')), 'a should be unpacked'
   end
 
+  def test_execute_spec
+    util_make_gems
+
+    @cmd.options[:args] = %w[a b]
+    @cmd.options[:spec] = true
+
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        @cmd.execute
+      end
+    end
+
+    assert File.exist?(File.join(@tempdir, 'a-3.a.gemspec'))
+    assert File.exist?(File.join(@tempdir, 'b-2.gemspec'))
+  end
+
   def test_execute_sudo
     util_make_gems
 
@@ -195,6 +211,14 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
     end
 
     assert File.exist?(File.join(@tempdir, foo_spec.full_name))
+  end
+
+  def test_handle_options_metadata
+    refute @cmd.options[:spec]
+
+    @cmd.send :handle_options, %w[--spec a]
+
+    assert @cmd.options[:spec]
   end
 
 end

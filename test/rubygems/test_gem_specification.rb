@@ -1247,6 +1247,26 @@ end
     assert_equal 'invalid value for attribute name: ":json"', e.message
   end
 
+  def test_validate_non_nil
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      assert @a1.validate
+
+      Gem::Specification.non_nil_attributes.each do |name, _|
+        next if name == :@files # set by #normalize
+        spec = @a1.dup
+        spec.instance_variable_set name, nil
+
+        e = assert_raises Gem::InvalidSpecificationException do
+          spec.validate
+        end
+
+        assert_match %r%^#{name}%, e.message
+      end
+    end
+  end
+
   def test_validate_platform_legacy
     util_setup_validate
 

@@ -95,7 +95,7 @@ class Gem::Specification
   @@attributes = []
 
   @@nil_attributes = []
-  @@non_nil_attributes = [:@original_platform]
+  @@non_nil_attributes = []
 
   ##
   # List of array attributes
@@ -147,6 +147,13 @@ class Gem::Specification
 
   def self.array_attributes
     @@array_attributes.dup
+  end
+
+  ##
+  # Specification attributes that must be non-nil
+
+  def self.non_nil_attributes
+    @@non_nil_attributes.dup
   end
 
   ##
@@ -864,6 +871,15 @@ class Gem::Specification
     require 'rubygems/user_interaction'
     extend Gem::UserInteraction
     normalize
+
+    nil_attributes = self.class.non_nil_attributes.find_all do |name, _| 
+      instance_variable_get(name).nil?
+    end
+
+    unless nil_attributes.empty? then
+      raise Gem::InvalidSpecificationException,
+        "#{nil_attributes.join ', '} must not be nil"
+    end
 
     if rubygems_version != Gem::VERSION then
       raise Gem::InvalidSpecificationException,

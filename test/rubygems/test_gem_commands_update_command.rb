@@ -1,5 +1,6 @@
 require 'rubygems/test_case'
 require 'rubygems/commands/update_command'
+require 'ruby-debug'
 
 begin
   gem "rdoc"
@@ -173,6 +174,35 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_equal "Updating rubygems-update", out.shift
     assert_equal "Successfully installed rubygems-update-8", out.shift
     assert_equal "Installing RubyGems 8", out.shift
+    assert_equal "RubyGems system software updated", out.shift
+
+    assert_empty out
+  end
+
+  def test_execute_system_specifically_to_latest_version
+    util_clear_gems
+    util_setup_rubygem9
+    util_setup_rubygem8
+    util_setup_spec_fetcher @rubygem8, @rubygem9
+    util_add_to_fetcher @rubygem8, @rubygem9
+
+    @cmd.options[:args]          = []
+    @cmd.options[:system]        = "9"
+    @cmd.options[:generate_rdoc] = false
+    @cmd.options[:generate_ri]   = false
+
+    use_ui @ui do
+      begin
+        @cmd.execute
+      rescue Gem::SystemExitException => e # No assert_nothing_raised in minitest :(
+        flunk "#{e} should not have been raised, but was !"
+      end
+    end
+
+    out = @ui.output.split "\n"
+    assert_equal "Updating rubygems-update", out.shift
+    assert_equal "Successfully installed rubygems-update-9", out.shift
+    assert_equal "Installing RubyGems 9", out.shift
     assert_equal "RubyGems system software updated", out.shift
 
     assert_empty out

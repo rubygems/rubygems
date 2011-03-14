@@ -81,19 +81,13 @@ class Gem::Commands::ContentsCommand < Gem::Command
       end
 
       gem_path = spec.full_gem_path
+      extra    = "/{#{spec.require_paths.join ','}}" if options[:lib_only]
+      glob     = "#{gem_path}#{extra}/**/*"
+      files    = Dir[glob]
 
-      files = if options[:lib_only] then
-                glob = File.join(gem_path, "{#{spec.require_paths.join ','}}",
-                                 '**/*')
+      gem_path = File.join gem_path, '' # add trailing / if missing
 
-                Dir[glob]
-              else
-                Dir[File.join(gem_path, '**/*')]
-              end
-
-      gem_path = File.join gem_path, '' # to strip trailing /
-
-      files.each do |file|
+      files.sort.each do |file|
         next if File.directory? file
 
         file = file.sub gem_path, '' unless options[:prefix]

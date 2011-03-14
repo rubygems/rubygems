@@ -118,8 +118,8 @@ class TestGemCommandsContentsCommand < Gem::TestCase
     end
 
     expected = <<-EOF
-lib/foo.rb
 Rakefile
+lib/foo.rb
     EOF
 
     assert_equal expected, @ui.output

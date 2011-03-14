@@ -46,8 +46,7 @@ module Kernel
         end
 
         found_specs.each do |found_spec|
-          # FIX: this is dumb, activate a spec instead of name/version
-          Gem.activate found_spec.name, found_spec.version
+          Gem.activate_spec found_spec
         end
       end
 

@@ -341,7 +341,7 @@ class TestGemDependencyInstaller < Gem::TestCase
         inst.install 'b'
       end
 
-      expected = "Unable to resolve dependencies: b requires a (>= 0, runtime)"
+      expected = "Unable to resolve dependencies: b requires a (>= 0)"
       assert_equal expected, e.message
     end
 

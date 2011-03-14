@@ -27,11 +27,6 @@ class Gem::Dependency
   attr_writer :prerelease
 
   ##
-  # Dependency type.
-
-  attr_reader :type
-
-  ##
   # Constructs a dependency with +name+ and +requirements+. The last
   # argument can optionally be the dependency type, which defaults to
   # <tt>:runtime</tt>.
@@ -66,7 +61,7 @@ class Gem::Dependency
 
   def inspect # :nodoc:
     "<%s type=%p name=%p requirements=%p>" %
-      [self.class, @type, @name, requirement.to_s]
+      [self.class, self.type, self.name, requirement.to_s]
   end
 
   ##
@@ -126,7 +121,18 @@ class Gem::Dependency
   end
 
   def to_s # :nodoc:
-    "#{name} (#{requirement}, #{type})"
+    if type != :runtime then
+      "#{name} (#{requirement}, #{type})"
+    else
+      "#{name} (#{requirement})"
+    end
+  end
+
+  ##
+  # Dependency type.
+
+  def type
+    @type ||= :runtime
   end
 
   def == other # :nodoc:
@@ -140,7 +146,7 @@ class Gem::Dependency
   # Dependencies are ordered by name.
 
   def <=> other
-    @name <=> other.name
+    self.name <=> other.name
   end
 
   ##

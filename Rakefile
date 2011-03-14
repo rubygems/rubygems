@@ -1,7 +1,5 @@
 # -*- ruby -*-
 
-$:.unshift 'lib'
-
 require 'rubygems'
 require 'rubygems/package_task'
 
@@ -20,7 +18,6 @@ Hoe::RUBY_FLAGS << " --disable-gems" if RUBY_VERSION > "1.9"
 
 Hoe.plugin :minitest
 Hoe.plugin :git
-Hoe.plugin :rubyforge
 
 hoe = Hoe.spec 'rubygems-update' do
   self.rubyforge_name = 'rubygems'
@@ -31,6 +28,9 @@ hoe = Hoe.spec 'rubygems-update' do
   spec_extras[:required_rubygems_version] = Gem::Requirement.default
   spec_extras[:required_ruby_version]     = Gem::Requirement.new '>= 1.8.7'
   spec_extras[:executables]               = ['update_rubygems']
+
+  rdoc_locations <<
+    'rubyforge.org:/var/www/gforge-projects/rubygems/rubygems-update/'
 
   clean_globs.push('**/debug.log',
                    '*.out',

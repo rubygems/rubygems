@@ -288,7 +288,7 @@ class Gem::RemoteFetcher
   end
 
   def correct_for_windows_path(path)
-    if path[0].chr == '/' && path[1].chr =~ /[a-zA-Z]/ && path[2].chr == ':'
+    if path[0].chr == '/' && path[1].chr =~ /[a-z]/i && path[2].chr == ':'
       path = path[1..-1]
     else
       path

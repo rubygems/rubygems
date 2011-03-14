@@ -1,6 +1,5 @@
 .autotest
 .document
-ChangeLog
 GPL.txt
 History.txt
 LICENSE.txt
@@ -109,6 +108,7 @@ test/rubygems/bogussources.rb
 test/rubygems/data/gem-private_key.pem
 test/rubygems/data/gem-public_cert.pem
 test/rubygems/fake_certlib/openssl.rb
+test/rubygems/fix_openssl_warnings.rb
 test/rubygems/foo/discover.rb
 test/rubygems/functional.rb
 test/rubygems/insure_session.rb

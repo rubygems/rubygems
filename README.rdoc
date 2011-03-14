@@ -23,8 +23,7 @@ See UPGRADING.rdoc for more details and alternative instructions.
 
 -----
 
-If you don't have any RubyGems install, there is still the pre-gem approach to
-getting software, doing it manually:
+If you don't have RubyGems installed, your can still do it manually:
 
 * Download from: https://rubygems.org/pages/download
 * Unpack into a directory and cd there
@@ -33,4 +32,18 @@ getting software, doing it manually:
 For more details and other options, see:
 
   ruby setup.rb --help
+
+== GETTING HELP
+
+=== Support Requests
+
+Are you unsure of how to use RubyGems?  Do you think you've found a bug and
+you're not sure?  If that is the case, the best place for you is to file a
+support request at {help.rubygems.org}[http://help.rubygems.org].
+
+=== Filing Tickets
+
+You're sure you've found a bug!  But where do you let us know?  The best place
+for letting the RubyGems team know about bugs you've found is {on the rubygems
+tracker at rubyforge}[http://rubyforge.org/tracker/?group_id=126].
 

@@ -1,18 +1,93 @@
-﻿=== 1.5.2 / 2011-02-10
+﻿=== 1.6.2 / 2011-03-08
 
-NOTE:  RubyGems 1.5.0 and 1.5.1 have a broken <tt>gem update --system</tt>.
+Bug Fixes:
 
-To upgrade you'll need to use the manual upgrade recipe.  Using sudo/su as
-appropriate:
+* require of an activated gem could cause activation conflicts.  Fixes
+  Bug #29056 by Dave Verwer.
+* `gem outdated` now works with up-to-date prerelease gems.
 
-  $ gem install rubygems-update
-  $ update_rubygems
+=== 1.6.1 / 2011-03-03
+
+Bug Fixes:
+
+* Installation no longer fails when a dependency from a version that won't be
+  installed is unsatisfied.
+* README.rdoc now shows how to file tickets and get help.  Pull Request #40 by
+  Aaron Patterson.
+* Gem files are cached correctly again.  Patch #29051 by Mamoru Tasaka.
+* Tests now pass with non-022 umask.  Patch #29050 by Mamoru Tasaka.
+
+=== 1.6.0 / 2011-02-29
+
+4 Deprecations:
+
+* RubyGems no longer requires 'thread'.  Rails < 3 will need to add require
+  'thread' to their applications.
+* Gem.cache is deprecated.  Use Gem.source_index.
+* RbConfig.datadir is deprecated.  Use Gem.datadir.
+* Gem::LoadError#version_requirements has been removed.  Use
+  Gem::LoadError#requirement.
+
+2 Major Enhancements:
+
+* Rewrote how Gem::activate (gem and require) resolves dependencies.
+* Gem::LoadError#version_requirement has been removed. Use
+  Gem::LoadError#requirement.
+
+17 Minor Enhancments:
+
+* Added --key to `gem push` for setting alternate API keys.
+* Added --format-executable support to gem uninstall.
+* Added Gem::DependencyList#clear.
+* Added Gem::DependencyList#remove_specs_unsatisfied_by
+* Added Gem.latest_spec_for, latest_version_for, and latest_rubygems_version.
+* Added Gem::Dependency#merge which merges requirements for two
+  dependencies.
+* Added Gem::TestCase#util_spec for faster tests.
+* Added Gem::Specification#dependent_specs.
+* Added Gem::TestCase#new_spec and Gem::TestCase#install_specs.
+* Added flag to include prerelease gems in Gem::SourceIndex#latest_specs.
+* Gem.cache_dir always references the proper cache dir. 
+  Pass true to support a user path.
+* Gem.cache_gem, given a filename always references the cache gem.
+  Pass true to support a user path.
+* Added Gem::Specification#conflicts
+* Removed rdoc gem/require from test_case.rb.
+* Rubygems will no longer let you push if you're using beta or unreleased
+  rubygems.
+* Save RAM / GC churn by removing spec.files and rdoc options from
+  locally cached gem specifications.
+* SpecFetcher.fetch_spec can now take a string source_uri.
+
+10 Bug Fixes:
+
+* Added missing require of Gem::RemoteFetcher to the unpack command.
+* RubyGems now completely removes a previous install when reinstalling.
+* Fixed Gem::Installer#generate_bin to only chmod files that exist.
+* Fixed handling of Windows style file:/// uris.
+* Fixed requires in tests. (shota)
+* Fixed script generation on Windows.
+* Fixed test issues if you have older rubygems installed.
+* Gem::DependencyInstaller tests use Gem::Security, add the missing require.
+* Gem::Security used FileUtils but didn't require it.  Reported by Elia Schito.
+* Gem::Uninstaller now respects --format-executable.
+
+=== 1.5.3 / 2011-02-26
+
+Bug Fixes:
+
+* Fix for a bug in Syck which causes install failures for gems packaged with
+  Psych.  Bug #28965 by Aaron Patterson.
+
+=== 1.5.2 / 2011-02-10
 
 Bug Fixes:
 
 * Fixed <tt>gem update --system</tt>.  RubyGems can now update itself again.
 
 === 1.5.1 / 2011-02-09
+
+==== NOTE: `gem update --system` is broken. See UPGRADING.rdoc.
 
 Minor Enhancement:
 
@@ -28,6 +103,8 @@ Bug Fixes:
 * RubyGems now enforces ruby 1.8.7 or newer.
 
 === 1.5.0 / 2011-01-31
+
+==== NOTE: `gem update --system` is broken. See UPGRADING.rdoc.
 
 Major Enhancements:
 

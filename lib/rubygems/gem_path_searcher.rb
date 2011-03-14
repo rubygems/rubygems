@@ -10,6 +10,7 @@ class Gem::GemPathSearcher
   def initialize
     # We want a record of all the installed gemspecs, in the order we wish to
     # examine them.
+    # TODO: remove this stupid method
     @gemspecs = init_gemspecs
 
     # Map gem spec to glob of full require_path directories.  Preparing this
@@ -42,8 +43,18 @@ class Gem::GemPathSearcher
   # only that there is a match.
 
   def find(glob)
+    # HACK violation of encapsulation
     @gemspecs.find do |spec|
+      # TODO: inverted responsibility
       matching_file? spec, glob
+    end
+  end
+
+  def find_active(glob)
+    # HACK violation of encapsulation
+    @gemspecs.find do |spec|
+      # TODO: inverted responsibility
+      spec.loaded? and matching_file? spec, glob
     end
   end
 
@@ -51,9 +62,39 @@ class Gem::GemPathSearcher
   # Works like #find, but finds all gemspecs matching +glob+.
 
   def find_all(glob)
+    # HACK violation of encapsulation
     @gemspecs.select do |spec|
+      # TODO: inverted responsibility
       matching_file? spec, glob
+    end || []
+  end
+
+  def find_in_unresolved(glob)
+    # HACK violation
+    specs = Gem.unresolved_deps.values.map { |dep|
+      Gem.source_index.search dep, true
+    }.flatten
+
+    specs.select do |spec|
+      # TODO: inverted responsibility
+      matching_file? spec, glob
+    end || []
+  end
+
+  def find_in_unresolved_tree glob
+    # HACK violation
+    # TODO: inverted responsibility
+    specs = Gem.unresolved_deps.values.map { |dep|
+      Gem.source_index.search dep, true
+    }.flatten
+
+    specs.reverse_each do |spec|
+      trails = matching_paths(spec, glob)
+      next if trails.empty?
+      return trails.map(&:reverse).sort.first.reverse
     end
+
+    []
   end
 
   ##
@@ -61,7 +102,18 @@ class Gem::GemPathSearcher
   # +spec+.
 
   def matching_file?(spec, path)
-    !matching_files(spec, path).empty?
+    not matching_files(spec, path).empty?
+  end
+
+  def matching_paths(spec, path)
+    trails = []
+
+    spec.traverse do |from_spec, dep, to_spec, trail|
+      next unless to_spec.conflicts.empty?
+      trails << trail unless matching_files(to_spec, path).empty?
+    end
+
+    trails
   end
 
   ##

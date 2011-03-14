@@ -1,5 +1,6 @@
 *.rbc
 *.swp
+.DS_Store
 /.rvmrc
 /TAGS
 /doc

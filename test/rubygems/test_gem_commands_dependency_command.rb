@@ -26,7 +26,7 @@ class TestGemCommandsDependencyCommand < Gem::TestCase
       @cmd.execute
     end
 
-    assert_equal "Gem foo-2\n  bar (> 1, runtime)\n  baz (> 1, runtime)\n\n",
+    assert_equal "Gem foo-2\n  bar (> 1)\n  baz (> 1)\n\n",
                  @ui.output
     assert_equal '', @ui.error
   end
@@ -141,9 +141,9 @@ Gem b-2
 
     expected = <<-EOF
 Gem foo-2
-  bar (> 1, runtime)
+  bar (> 1)
   Used by
-    baz-2 (foo (>= 0, runtime))
+    baz-2 (foo (>= 0))
 
     EOF
 
@@ -189,7 +189,7 @@ ERROR:  Only reverse dependencies for local gems are supported.
       @cmd.execute
     end
 
-    assert_equal "Gem foo-2\n  bar (> 1, runtime)\n\n", @ui.output
+    assert_equal "Gem foo-2\n  bar (> 1)\n\n", @ui.output
     assert_equal '', @ui.error
   end
 

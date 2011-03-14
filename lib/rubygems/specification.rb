@@ -98,7 +98,7 @@ class Gem::Specification
   @@attributes = []
 
   @@nil_attributes = []
-  @@non_nil_attributes = [:@original_platform]
+  @@non_nil_attributes = []
 
   ##
   # List of array attributes
@@ -150,6 +150,13 @@ class Gem::Specification
 
   def self.array_attributes
     @@array_attributes.dup
+  end
+
+  ##
+  # Specification attributes that must be non-nil
+
+  def self.non_nil_attributes
+    @@non_nil_attributes.dup
   end
 
   ##
@@ -338,7 +345,8 @@ class Gem::Specification
   # List of dependencies that will automatically be activated at runtime.
 
   def runtime_dependencies
-    dependencies.select { |d| d.type == :runtime || d.type == nil }
+    # TODO: fix #type to return :runtime if nil
+    dependencies.select { |d| d.type == :runtime }
   end
 
   ##
@@ -443,7 +451,16 @@ class Gem::Specification
     self.class.array_attributes.each do |name|
       name = :"@#{name}"
       next unless other_ivars.include? name
-      instance_variable_set name, other_spec.instance_variable_get(name).dup
+
+      begin
+        instance_variable_set name, other_spec.instance_variable_get(name).dup
+      rescue TypeError
+        e = Gem::FormatException.new \
+          "#{full_name} has an invalid value for #{name}"
+
+        e.file_path = loaded_from
+        raise e
+      end
     end
   end
 
@@ -732,6 +749,18 @@ class Gem::Specification
     end
   end
 
+  ##
+  # Creates a duplicate spec without large blobs that aren't used at runtime.
+
+  def for_cache
+    spec = dup
+
+    spec.files = nil
+    spec.test_files = nil
+
+    spec
+  end
+
   def to_yaml(opts = {}) # :nodoc:
     if YAML.const_defined?(:ENGINE) && !YAML::ENGINE.syck? then
       super.gsub(/ !!null \n/, " \n")
@@ -832,6 +861,10 @@ class Gem::Specification
     result.join "\n"
   end
 
+  def to_ruby_for_cache
+    for_cache.to_ruby
+  end
+
   ##
   # Checks that the specification contains all required fields, and does a
   # very basic sanity check.
@@ -843,6 +876,15 @@ class Gem::Specification
     require 'rubygems/user_interaction'
     extend Gem::UserInteraction
     normalize
+
+    nil_attributes = self.class.non_nil_attributes.find_all do |name, _| 
+      instance_variable_get(name).nil?
+    end
+
+    unless nil_attributes.empty? then
+      raise Gem::InvalidSpecificationException,
+        "#{nil_attributes.join ', '} must not be nil"
+    end
 
     if rubygems_version != Gem::VERSION then
       raise Gem::InvalidSpecificationException,
@@ -1558,17 +1600,28 @@ class Gem::Specification
   def conflicts
     conflicts = {}
     Gem.loaded_specs.values.each do |spec|
-      unsatisfied = spec.runtime_dependencies.any? { |dep|
-        self.name == dep.name and not satisfies_requirement? dep
+      bad = self.runtime_dependencies.find_all { |dep|
+        spec.name == dep.name and not spec.satisfies_requirement? dep
       }
 
-      if unsatisfied then
-        bad = spec.runtime_dependencies.find_all { |dep|
-          self.name == dep.name and not satisfies_requirement? dep
-        }
-        conflicts[spec.full_name] = bad unless bad.empty?
-      end
+      conflicts[spec] = bad unless bad.empty?
     end
     conflicts
+  end
+
+  def traverse trail = [], &b
+    trail = trail + [self]
+    runtime_dependencies.each do |dep|
+      dep_specs = Gem.source_index.search dep, true
+      dep_specs.each do |dep_spec|
+        b[self, dep, dep_spec, trail + [dep_spec]]
+        dep_spec.traverse(trail, &b) unless
+          trail.map(&:name).include? dep_spec.name
+      end
+    end
+  end
+
+  def dependent_specs
+    runtime_dependencies.map { |dep| Gem.source_index.search dep, true }.flatten
   end
 end

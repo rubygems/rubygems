@@ -81,6 +81,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   undef_method :default_test if instance_methods.include? 'default_test' or
                                 instance_methods.include? :default_test
 
+  @@project_dir = Dir.pwd
+
   ##
   # #setup prepares a sandboxed location to install gems.  All installs are
   # directed to a temporary directory.  All install plugins are removed.
@@ -110,14 +112,14 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     @gemhome  = File.join @tempdir, 'gemhome'
     @userhome = File.join @tempdir, 'userhome'
 
-    Gem.ensure_gem_subdirectories @gemhome
-
     @orig_ruby = if ruby = ENV['RUBY'] then
                    Gem.class_eval { ruby, @ruby = @ruby, ruby }
                    ruby
                  end
 
     Gem.ensure_gem_subdirectories @gemhome
+
+    Dir.chdir @tempdir
 
     @orig_ENV_HOME = ENV['HOME']
     ENV['HOME'] = @userhome
@@ -128,7 +130,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     Gem.use_paths(@gemhome)
     Gem.loaded_specs.clear
-    Gem._unresolved.clear
+    Gem.unresolved_deps.clear
 
     Gem.configuration.verbose = true
     Gem.configuration.update_sources = true
@@ -137,6 +139,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     @uri = URI.parse @gem_repo
     Gem.sources.replace [@gem_repo]
 
+    Gem.searcher = nil
     Gem::SpecFetcher.fetcher = nil
 
     @orig_BASERUBY = Gem::ConfigMap[:BASERUBY]
@@ -152,17 +155,14 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     @marshal_version = "#{Marshal::MAJOR_VERSION}.#{Marshal::MINOR_VERSION}"
 
-    @private_key = File.expand_path('../../../test/rubygems/private_key.pem',
-                                    __FILE__)
-    @public_cert = File.expand_path('../../../test/rubygems/public_cert.pem',
-                                    __FILE__)
-
+    # TODO: move to installer test cases
     Gem.post_build_hooks.clear
     Gem.post_install_hooks.clear
     Gem.post_uninstall_hooks.clear
     Gem.pre_install_hooks.clear
     Gem.pre_uninstall_hooks.clear
 
+    # TODO: move to installer test cases
     Gem.post_build do |installer|
       @post_build_hook_arg = installer
       true
@@ -201,6 +201,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     if defined? Gem::RemoteFetcher then
       Gem::RemoteFetcher.fetcher = nil
     end
+
+    Dir.chdir @@project_dir
 
     FileUtils.rm_rf @tempdir unless ENV['KEEP_FILES']
 
@@ -315,14 +317,16 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       yield(s) if block_given?
     end
 
+    installed_spec = spec.for_cache
+
     path = File.join "specifications", spec.spec_name
     written_path = write_file path do |io|
-      io.write(spec.to_ruby)
+      io.write installed_spec.to_ruby_for_cache
     end
 
-    spec.loaded_from = written_path
+    spec.loaded_from = installed_spec.loaded_from = written_path
 
-    Gem.source_index.add_spec spec
+    Gem.source_index.add_spec installed_spec
 
     return spec
   end
@@ -385,6 +389,38 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   end
 
   ##
+  # Install the provided specs
+
+  def install_specs(*specs)
+    specs.each do |spec|
+      # TODO: inverted responsibility
+      Gem.source_index.add_spec spec
+    end
+    Gem.searcher = nil
+  end
+
+  ##
+  # Create a new spec (or gem if passed an array of files) and set it
+  # up properly. Use this instead of util_spec and util_gem.
+
+  def new_spec name, version, deps = nil, *files
+    # TODO: unfactor and deprecate util_gem and util_spec
+    spec, = unless files.empty? then
+              util_gem name, version do |s|
+                Array(deps).each do |n,v|
+                  s.add_dependency n, v
+                end
+                s.files.push(*files)
+              end
+            else
+              util_spec name, version, deps
+            end
+    spec.loaded_from = File.join @gemhome, 'specifications', spec.spec_name
+    spec.loaded = false
+    spec
+  end
+
+  ##
   # Creates a spec with +name+, +version+ and +deps+.
 
   def util_spec(name, version, deps = nil, &block)
@@ -423,6 +459,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     util_build_gem spec
 
     cache_file = File.join @tempdir, 'gems', "#{spec.original_name}.gem"
+    FileUtils.mkdir_p File.dirname cache_file
     FileUtils.mv Gem.cache_gem("#{spec.original_name}.gem"), cache_file
     FileUtils.rm File.join(@gemhome, 'specifications', spec.spec_name)
 
@@ -730,7 +767,7 @@ Also, a list:
 
   @@ruby = rubybin
   env_rake = ENV['rake']
-  ruby19_rake = File.expand_path("../../../bin/rake", __FILE__)
+  ruby19_rake = File.expand_path("bin/rake", @@project_dir)
   @@rake = if env_rake then
              ENV["rake"]
            elsif File.exist? ruby19_rake then

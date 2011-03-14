@@ -43,7 +43,7 @@ class Gem::Commands::PushCommand < Gem::Command
 
     if Gem.latest_rubygems_version < Gem::Version.new(Gem::VERSION) then
       alert_error "Using beta/unreleased version of rubygems. Not pushing."
-      return
+      terminate_interaction 1
     end
 
     response = rubygems_api_request(*args) do |request|

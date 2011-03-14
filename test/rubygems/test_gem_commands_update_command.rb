@@ -36,8 +36,8 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     Gem::Installer.new(@a1_path).install
 
     @cmd.options[:args] = []
-    @cmd.options[:generate_rdoc] = true
-    @cmd.options[:generate_ri]   = true
+    @cmd.options[:generate_rdoc] = false
+    @cmd.options[:generate_ri]   = false
 
     use_ui @ui do
       @cmd.execute
@@ -48,9 +48,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_equal "Updating #{@a2.name}", out.shift
     assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "Gems updated: #{@a2.name}", out.shift
-    assert_equal "Installing ri documentation for a-2...", out.shift
-    assert_equal "Installing RDoc documentation for a-2...", out.shift
-
     assert_empty out
   end
 

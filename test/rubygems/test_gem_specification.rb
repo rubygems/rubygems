@@ -124,10 +124,12 @@ end
   end
 
   def test_self_load
-    spec = File.join @gemhome, 'specifications', @a2.spec_name
-    gs = Gem::Specification.load spec
+    spec_path = File.join @gemhome, 'specifications', @a2.spec_name
+    spec = Gem::Specification.load spec_path
 
-    assert_equal @a2, gs
+    @a2.files.clear
+
+    assert_equal @a2, spec
   end
 
   def test_self_load_legacy_ruby
@@ -282,6 +284,23 @@ end
     assert_equal '>= 0', spec.required_rubygems_version.to_s
     assert_same spec.required_rubygems_version,
                 new_spec.required_rubygems_version
+  end
+
+  def test_initialize_copy_broken
+    spec = Gem::Specification.new do |s|
+      s.name = 'a'
+      s.version = '1'
+    end
+
+    spec.instance_variable_set :@licenses, nil
+    spec.loaded_from = '/path/to/file'
+
+    e = assert_raises Gem::FormatException do
+      spec.dup
+    end
+
+    assert_equal 'a-1 has an invalid value for @licenses', e.message
+    assert_equal '/path/to/file', e.file_path
   end
 
   def test__dump
@@ -534,6 +553,24 @@ end
 
     assert_equal %w[E ERF F TF bin/X], @a1.files.sort
     assert_kind_of Integer, @a1.hash
+  end
+
+  def test_for_cache
+    @a2.add_runtime_dependency 'b', '1'
+    @a2.dependencies.first.instance_variable_set :@type, nil
+    @a2.required_rubygems_version = Gem::Requirement.new '> 0'
+    @a2.test_files = %w[test/test_b.rb]
+
+    refute_empty @a2.files
+    refute_empty @a2.test_files
+
+    spec = @a2.for_cache
+
+    assert_empty spec.files
+    assert_empty spec.test_files
+
+    refute_empty @a2.files
+    refute_empty @a2.test_files
   end
 
   def test_full_gem_path
@@ -1208,6 +1245,26 @@ end
     end
 
     assert_equal 'invalid value for attribute name: ":json"', e.message
+  end
+
+  def test_validate_non_nil
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      assert @a1.validate
+
+      Gem::Specification.non_nil_attributes.each do |name, _|
+        next if name == :@files # set by #normalize
+        spec = @a1.dup
+        spec.instance_variable_set name, nil
+
+        e = assert_raises Gem::InvalidSpecificationException do
+          spec.validate
+        end
+
+        assert_match %r%^#{name}%, e.message
+      end
+    end
   end
 
   def test_validate_platform_legacy

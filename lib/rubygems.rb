@@ -119,7 +119,7 @@ require 'rbconfig'
 # -The RubyGems Team
 
 module Gem
-  VERSION = '1.6.1'
+  VERSION = '1.6.2'
 
   ##
   # Raised when RubyGems is unable to load or activate a gem.  Contains the
@@ -248,6 +248,7 @@ module Gem
       # list of candidate gems, then we have a version conflict.
       existing_spec = @loaded_specs[dep.name]
 
+      # TODO: unless dep.matches_spec? existing_spec then
       unless matches.any? { |spec| spec.version == existing_spec.version } then
         sources_message = sources.map { |spec| spec.full_name }
         stack_message = @loaded_stacks[dep.name].map { |spec| spec.full_name }

@@ -49,6 +49,7 @@ class Gem::Package::TarInput
             sio.rewind
           end
 
+          # TODO use Gem.gunzip
           gzis = Zlib::GzipReader.new(sio || entry)
           # YAML wants an instance of IO
           @metadata = load_gemspec(gzis)

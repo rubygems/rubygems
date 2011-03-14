@@ -1,4 +1,12 @@
-﻿=== 1.6.1 / 2011-03-03
+﻿=== 1.6.2 / 2011-03-08
+
+Bug Fixes:
+
+* require of an activated gem could cause activation conflicts.  Fixes
+  Bug #29056 by Dave Verwer.
+* `gem outdated` now works with up-to-date prerelease gems.
+
+=== 1.6.1 / 2011-03-03
 
 Bug Fixes:
 

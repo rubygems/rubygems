@@ -19,6 +19,10 @@ class Gem::Commands::UnpackCommand < Gem::Command
       options[:target] = value
     end
 
+    add_option('--spec', 'unpack the gem specification') do |value, options|
+      options[:spec] = true
+    end
+
     add_version_option
   end
 
@@ -44,14 +48,28 @@ class Gem::Commands::UnpackCommand < Gem::Command
       dependency = Gem::Dependency.new name, options[:version]
       path = get_path dependency
 
-      if path then
+      unless path then
+        alert_error "Gem '#{name}' not installed nor fetchable."
+        next
+      end
+
+      if @options[:spec] then
+        spec, metadata = get_metadata path
+
+        if metadata.nil? then
+          alert_error "--spec is unsupported on '#{name}' (old format gem)"
+          next
+        end
+
+        open spec.spec_name, 'w' do |io|
+          io.write metadata
+        end
+      else
         basename = File.basename path, '.gem'
         target_dir = File.expand_path basename, options[:target]
         FileUtils.mkdir_p target_dir
         Gem::Installer.new(path, :unpack => true).unpack target_dir
         say "Unpacked gem: '#{target_dir}'"
-      else
-        alert_error "Gem '#{name}' not installed."
       end
     end
   end
@@ -64,7 +82,6 @@ class Gem::Commands::UnpackCommand < Gem::Command
   # TODO: see comments in get_path() about general service.
 
   def find_in_cache(filename)
-
     Gem.path.each do |path|
       this_path = Gem.cache_gem(filename, path)
       return this_path if File.exist? this_path
@@ -110,6 +127,31 @@ class Gem::Commands::UnpackCommand < Gem::Command
     return Gem::RemoteFetcher.fetcher.download_to_cache(dependency) unless path
 
     path
+  end
+
+  ##
+  # Extracts the Gem::Specification and raw metadata from the .gem file at
+  # +path+.
+
+  def get_metadata path
+    format = Gem::Format.from_file_by_path path
+    spec = format.spec
+
+    metadata = nil
+
+    open path, Gem.binary_mode do |io|
+      tar = Gem::Package::TarReader.new io
+      tar.each_entry do |entry|
+        case entry.full_name
+        when 'metadata' then
+          metadata = entry.read
+        when 'metadata.gz' then
+          metadata = Gem.gunzip entry.read
+        end
+      end
+    end
+
+    return spec, metadata
   end
 
 end

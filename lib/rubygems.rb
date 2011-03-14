@@ -419,8 +419,7 @@ module Gem
   # mainly used by the unit tests to provide test isolation.
 
   def self.clear_paths
-    @gem_home = nil
-    @gem_path = nil
+    @paths = nil
     @user_home = nil
 
     @@source_index = nil
@@ -468,13 +467,23 @@ module Gem
     Zlib::Deflate.deflate data
   end
 
+  def self.paths
+    @paths ||= Gem::PathSupport.new
+  end
+
+  def self.paths=(env)
+    @paths = Gem::PathSupport.new env
+  end
+
   ##
   # The path where gems are to be installed.
 
   def self.dir
-    @gem_home ||= nil
-    set_home(ENV['GEM_HOME'] || default_dir) unless @gem_home
-    @gem_home
+    paths.home
+  end
+
+  def self.path
+    paths.path
   end
 
   ##
@@ -699,25 +708,6 @@ module Gem
 
   def self.marshal_version
     "#{Marshal::MAJOR_VERSION}.#{Marshal::MINOR_VERSION}"
-  end
-
-  ##
-  # Array of paths to search for Gems.
-
-  def self.path
-    @gem_path ||= nil
-
-    unless @gem_path then
-      paths = [ENV['GEM_PATH'] || default_path]
-
-      if defined?(APPLE_GEM_HOME) and not ENV['GEM_PATH'] then
-        paths << APPLE_GEM_HOME
-      end
-
-      set_paths paths.compact.join(File::PATH_SEPARATOR)
-    end
-
-    @gem_path.uniq
   end
 
   ##
@@ -970,40 +960,6 @@ module Gem
   end
 
   ##
-  # Set the Gem home directory (as reported by Gem.dir).
-
-  def self.set_home(home)
-    home = home.gsub File::ALT_SEPARATOR, File::SEPARATOR if File::ALT_SEPARATOR
-    @gem_home = Gem::FileSystem.new(home)
-  end
-
-  private_class_method :set_home
-
-  ##
-  # Set the Gem search path (as reported by Gem.path).
-
-  def self.set_paths(gpaths)
-    if gpaths
-      @gem_path = gpaths.split(File::PATH_SEPARATOR)
-
-      if File::ALT_SEPARATOR then
-        @gem_path.map! do |path|
-          path.gsub File::ALT_SEPARATOR, File::SEPARATOR
-        end
-      end
-
-      @gem_path << Gem.dir
-    else
-      # TODO: should this be Gem.default_path instead?
-      @gem_path = [Gem.dir]
-    end
-
-    @gem_path.map! { |path| Gem::FileSystem.new(path) }.uniq!
-  end
-
-  private_class_method :set_paths
-
-  ##
   # Returns the Gem::SourceIndex of specifications that are in the Gem.path
 
   def self.source_index
@@ -1095,8 +1051,7 @@ module Gem
 
   def self.use_paths(home, paths=[])
     clear_paths
-    set_home(home) if home
-    set_paths(paths.join(File::PATH_SEPARATOR)) if paths
+    self.paths = { :home => home, :path => paths }
   end
 
   ##

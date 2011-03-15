@@ -426,6 +426,7 @@ class Gem::Specification
     assign_defaults
     @loaded = false
     @loaded_from = nil
+    @original_platform = nil
 
     self.name = name if name
     self.version = version if version

@@ -25,6 +25,7 @@ Gem.load_env_plugins rescue nil
 class Gem::GemRunner
 
   def initialize(options={})
+    # TODO: nuke these options
     @command_manager_class = options[:command_manager] || Gem::CommandManager
     @config_file_class = options[:config_file] || Gem::ConfigFile
     @doc_manager_class = options[:doc_manager] || Gem::DocManager

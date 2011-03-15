@@ -1,6 +1,5 @@
 require 'rubygems/test_case'
 require 'rubygems/commands/update_command'
-require 'ruby-debug'
 
 begin
   gem "rdoc"
@@ -118,7 +117,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     @cmd.options[:generate_rdoc] = false
     @cmd.options[:generate_ri]   = false
 
-    assert_raises Gem::SystemExitException do
+    assert_raises Gem::MockGemUi::SystemExitException do
       use_ui @ui do
         @cmd.execute
       end
@@ -192,11 +191,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     @cmd.options[:generate_ri]   = false
 
     use_ui @ui do
-      begin
-        @cmd.execute
-      rescue Gem::SystemExitException => e # No assert_nothing_raised in minitest :(
-        flunk "#{e} should not have been raised, but was !"
-      end
+      @cmd.execute
     end
 
     out = @ui.output.split "\n"

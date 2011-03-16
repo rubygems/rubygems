@@ -858,7 +858,7 @@ class Gem::Specification
   # Raises InvalidSpecificationException if the spec does not pass the
   # checks..
 
-  def validate
+  def validate packaging = true
     require 'rubygems/user_interaction'
     extend Gem::UserInteraction
     normalize
@@ -872,7 +872,7 @@ class Gem::Specification
         "#{nil_attributes.join ', '} must not be nil"
     end
 
-    if rubygems_version != Gem::VERSION then
+    if packaging and rubygems_version != Gem::VERSION then
       raise Gem::InvalidSpecificationException,
             "expected RubyGems version #{Gem::VERSION}, was #{rubygems_version}"
     end
@@ -906,7 +906,7 @@ class Gem::Specification
       !File.file? file
     end
 
-    unless non_files.empty? then
+    unless not packaging or non_files.empty? then
       non_files = non_files.map { |file| file.inspect }
       raise Gem::InvalidSpecificationException,
             "[#{non_files.join ", "}] are not files"

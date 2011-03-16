@@ -766,12 +766,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_path_ENV_PATH
-    #
-    # FIXME remove after fixing test_case
-    #
-    ENV.delete('GEM_HOME')
-
-    Gem.instance_variable_set :@paths, nil
     path_count = Gem.path.size
     Gem.clear_paths
 

@@ -16,6 +16,7 @@ module Gem
     def initialize(env=ENV)
       @env = env
 
+      # ENV the machine environment, is type Object, which is why this works.
       if env.kind_of?(Hash)
         @home = Gem::FileSystem.new(env[:home] || ENV["GEM_HOME"] || Gem.default_dir)
         self.path = env[:path] || ENV["GEM_PATH"]

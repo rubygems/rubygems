@@ -440,16 +440,6 @@ class TestGem < Gem::TestCase
     assert_equal @abin_path, Gem.bin_path('a', 'abin', '4')
   end
 
-  def test_self_bin_path_name
-    util_exec_gem
-    assert_equal @exec_path, Gem.bin_path('a')
-  end
-
-  def test_self_bin_path_name_version
-    util_exec_gem
-    assert_equal @exec_path, Gem.bin_path('a', nil, '4')
-  end
-
   def test_self_bin_path_nonexistent_binfile
     quick_spec 'a', '2' do |s|
       s.executables = ['exec']
@@ -461,14 +451,14 @@ class TestGem < Gem::TestCase
 
   def test_self_bin_path_no_bin_file
     quick_spec 'a', '1'
-    assert_raises(Gem::Exception) do
+    assert_raises(ArgumentError) do
       Gem.bin_path('a', nil, '1')
     end
   end
 
   def test_self_bin_path_not_found
     assert_raises(Gem::GemNotFoundException) do
-      Gem.bin_path('non-existent')
+      Gem.bin_path('non-existent', 'blah')
     end
   end
 

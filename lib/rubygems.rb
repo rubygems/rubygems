@@ -390,6 +390,8 @@ module Gem
   # you to specify specific gem versions.
 
   def self.bin_path(name, exec_name = nil, *requirements)
+    raise ArgumentError, "you must supply exec_name" unless exec_name
+
     requirements = Gem::Requirement.default if
       requirements.empty?
     specs = Gem.source_index.find_name(name, requirements)

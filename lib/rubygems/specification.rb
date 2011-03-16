@@ -42,6 +42,17 @@ class Gem::Specification
   # The specification version applied to any new Specification instances
   # created.  This should be bumped whenever something in the spec format
   # changes.
+  #
+  # Specification Version History:
+  #
+  #   spec   ruby
+  #    ver    ver yyyy-mm-dd description
+  #     -1 <0.8.0            pre-spec-version-history
+  #      1  0.8.0 2004-08-01 Deprecated "test_suite_file" for "test_files"
+  #                          "test_file=x" is a shortcut for "test_files=[x]"
+  #      2  0.9.5 2007-10-01 Added "required_rubygems_version"
+  #                          Now forward-compatible with future versions
+  #      3  1.3.2 2009-01-03 Added Fixnum validation to specification_version
   #--
   # When updating this number, be sure to also update #to_ruby.
   #
@@ -49,26 +60,9 @@ class Gem::Specification
 
   CURRENT_SPECIFICATION_VERSION = 3
 
-  ##
-  # An informal list of changes to the specification.  The highest-valued
-  # key should be equal to the CURRENT_SPECIFICATION_VERSION.
-
-  SPECIFICATION_VERSION_HISTORY = {
-    -1 => ['(RubyGems versions up to and including 0.7 did not have versioned specifications)'],
-    1  => [
-      'Deprecated "test_suite_file" in favor of the new, but equivalent, "test_files"',
-      '"test_file=x" is a shortcut for "test_files=[x]"'
-    ],
-    2  => [
-      'Added "required_rubygems_version"',
-      'Now forward-compatible with future versions',
-    ],
-    3 => [
-       'Added Fixnum validation to the specification_version'
-    ]
-  }
-
   # :stopdoc:
+
+  # version => # of fields
   MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16, 3 => 17 }
 
   now = Time.at(Time.now.to_i)

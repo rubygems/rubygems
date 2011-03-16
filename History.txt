@@ -972,11 +972,11 @@ There has been some minor usability enhancements and changes ...
   names.  This was useful for him while testing libs that he had in
   development.
 
-=== 0.8.1 / 2009-09-14
+=== 0.8.1 / 2004-09-17
 
 * Quick release to capture some bug fixes.
 
-=== 0.8.0 / 2009-09-12
+=== 0.8.0 / 2004-09-15
 
 * Remove need for library stubs.  Set the RUBYOPT environment variable to
   include "rrubygems", and a normal require will find gem files.  Continue to
@@ -1000,6 +1000,10 @@ There has been some minor usability enhancements and changes ...
 * Added "gem unpack" for "unpacking" a gem to the current directory
 
 === 0.7.0 / 2004-07-09
+
+See ChangeLog
+
+=== 0.6.1 / 2004-06-08
 
 See ChangeLog
 
@@ -1039,7 +1043,7 @@ See ChangeLog
   automatically included.
 * Some small bug fixes
 
-=== 0.4.0 / 2004-05-31
+=== 0.4.0 / 2004-05-30
 
 * Minor bug fixes including Windows compatability issues
 

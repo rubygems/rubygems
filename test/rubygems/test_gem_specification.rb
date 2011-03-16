@@ -351,29 +351,35 @@ end
 
   def test_date_equals_date
     @a1.date = Date.new(2003, 9, 17)
-    assert_equal Time.local(2003, 9, 17, 0,0,0), @a1.date
+    assert_equal Time.utc(2003, 9, 17, 0,0,0), @a1.date
   end
 
   def test_date_equals_string
     @a1.date = '2003-09-17'
-    assert_equal Time.local(2003, 9, 17, 0,0,0), @a1.date
+    assert_equal Time.utc(2003, 9, 17, 0,0,0), @a1.date
+  end
+
+  def test_date_equals_string_bad
+    assert_raises Gem::InvalidSpecificationException do
+      @a1.date = '9/11/2003'
+    end
   end
 
   def test_date_equals_time
     @a1.date = Time.local(2003, 9, 17, 0,0,0)
-    assert_equal Time.local(2003, 9, 17, 0,0,0), @a1.date
+    assert_equal Time.utc(2003, 9, 17, 0,0,0), @a1.date
   end
 
   def test_date_equals_time_local
     # HACK PDT
     @a1.date = Time.local(2003, 9, 17, 19,50,0)
-    assert_equal Time.local(2003, 9, 17, 0,0,0), @a1.date
+    assert_equal Time.utc(2003, 9, 17, 0,0,0), @a1.date
   end
 
   def test_date_equals_time_utc
     # HACK PDT
-    @a1.date = Time.local(2003, 9, 17, 19,50,0)
-    assert_equal Time.local(2003, 9, 17, 0,0,0), @a1.date
+    @a1.date = Time.utc(2003, 9, 17, 19,50,0)
+    assert_equal Time.utc(2003, 9, 17, 0,0,0), @a1.date
   end
 
   def test_default_executable
@@ -1140,8 +1146,6 @@ end
   end
 
   def test_validate_empty
-    util_setup_validate
-
     e = assert_raises Gem::InvalidSpecificationException do
       Gem::Specification.new.validate
     end
@@ -1253,10 +1257,10 @@ end
     Dir.chdir @tempdir do
       assert @a1.validate
 
-      Gem::Specification.non_nil_attributes.each do |name, _|
-        next if name == :@files # set by #normalize
+      Gem::Specification.non_nil_attributes.each do |name|
+        next if name == :files # set by #normalize
         spec = @a1.dup
-        spec.instance_variable_set name, nil
+        spec.instance_variable_set "@#{name}", nil
 
         e = assert_raises Gem::InvalidSpecificationException do
           spec.validate

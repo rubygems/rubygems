@@ -65,14 +65,10 @@ class Gem::Specification
   # version => # of fields
   MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16, 3 => 17 }
 
-  now = Time.at(Time.now.to_i)
-  TODAY = now - ((now.to_i + now.gmt_offset) % 86400)
+  today = Time.now.utc
+  TODAY = Time.utc(today.year, today.month, today.day)
+
   # :startdoc:
-
-  ##
-  # Optional block used to gather newly defined instances.
-
-  @@gather = nil
 
   ##
   # List of attribute names: [:name, :version, ...]
@@ -266,7 +262,7 @@ class Gem::Specification
       @specification_version,
       @name,
       @version,
-      (Time === @date ? @date : (require 'time'; Time.parse(@date.to_s))),
+      date,
       @summary,
       @required_ruby_version,
       @required_rubygems_version,
@@ -1491,23 +1487,25 @@ class Gem::Specification
     case date
     when String then
       @date = if /\A(\d{4})-(\d{2})-(\d{2})\Z/ =~ date then
-                Time.local($1.to_i, $2.to_i, $3.to_i)
+                Time.utc($1.to_i, $2.to_i, $3.to_i)
               else
-                require 'time'
-                Time.parse date
+                raise(Gem::InvalidSpecificationException,
+                      "invalid date format in specification: #{date.inspect}")
               end
     when Time then
-      @date = Time.local(date.year, date.month, date.day)
+      @date = Time.utc(date.year, date.month, date.day)
     when Date then
-      @date = Time.local(date.year, date.month, date.day)
+      @date = Time.utc(date.year, date.month, date.day)
     else
       @date = TODAY
     end
   end
 
-  overwrite_accessor :date do
-    self.date = nil if @date.nil?  # HACK Sets the default value for date
-    @date
+  ##
+  # The date this gem was created. Lazily defaults to TODAY.
+
+  def date
+    @date ||= TODAY
   end
 
   overwrite_accessor :summary= do |str|

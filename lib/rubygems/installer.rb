@@ -400,7 +400,7 @@ class Gem::Installer
     gem_home             = options[:install_dir]
     @gem_home            = 
       gem_home.kind_of?(String) ? 
-      Gem::FS.new(File.expand_path(gem_home)) : 
+      Gem::FS.new(gem_home) :
       gem_home
     @ignore_dependencies = options[:ignore_dependencies]
     @format_executable   = options[:format_executable]
@@ -545,7 +545,7 @@ EOF
   # Ensures that files can't be installed outside the gem directory.
 
   def extract_files
-    @gem_dir = Gem::FS.new(File.expand_path @gem_dir)
+    @gem_dir = Gem::FS.new(@gem_dir)
 
     raise ArgumentError, "format required to extract from" if @format.nil?
 

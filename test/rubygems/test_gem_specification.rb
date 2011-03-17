@@ -41,7 +41,7 @@ end
     super
 
     # TODO: there is no reason why the spec tests need to write to disk
-    @a1 = quick_gem 'a', '1' do |s|
+    @a1 = quick_spec 'a', '1' do |s|
       s.executable = 'exec'
       s.extensions << 'ext/a/extconf.rb'
       s.has_rdoc = 'true'
@@ -58,13 +58,8 @@ end
       s.files = %w[lib/code.rb]
     end
 
-    @a2 = quick_gem 'a', '2' do |s|
+    @a2 = quick_spec 'a', '2' do |s|
       s.files = %w[lib/code.rb]
-    end
-
-    FileUtils.mkdir_p File.join(@tempdir, 'bin')
-    File.open File.join(@tempdir, 'bin', 'exec'), 'w' do |fp|
-      fp.puts "#!#{Gem.ruby}"
     end
 
     @current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
@@ -124,8 +119,13 @@ end
   end
 
   def test_self_load
-    spec_path = File.join @gemhome, 'specifications', @a2.spec_name
-    spec = Gem::Specification.load spec_path
+    full_path = File.join @gemhome, 'specifications', @a2.spec_name
+    path      = File.join "specifications", @a2.spec_name
+    written_path = write_file path do |io|
+      io.write @a2.to_ruby_for_cache
+    end
+
+    spec = Gem::Specification.load full_path
 
     @a2.files.clear
 
@@ -371,13 +371,11 @@ end
   end
 
   def test_date_equals_time_local
-    # HACK PDT
-    @a1.date = Time.local(2003, 9, 17, 19,50,0)
+    @a1.date = Time.local(2003, 9, 17, 19,50,0) # may not pass in utc >= +4
     assert_equal Time.utc(2003, 9, 17, 0,0,0), @a1.date
   end
 
   def test_date_equals_time_utc
-    # HACK PDT
     @a1.date = Time.utc(2003, 9, 17, 19,50,0)
     assert_equal Time.utc(2003, 9, 17, 0,0,0), @a1.date
   end
@@ -580,8 +578,7 @@ end
   end
 
   def test_full_gem_path
-    assert_equal File.join(@gemhome, 'gems', @a1.full_name),
-                 @a1.full_gem_path
+    assert_equal File.join(@gemhome, 'gems', @a1.full_name), @a1.full_gem_path
 
     @a1.original_platform = 'mswin32'
 
@@ -1021,6 +1018,11 @@ end
     end
   end
 
+  def x s; s.gsub(/xxx/, ''); end
+  def w; x "WARxxxNING"; end
+  def t; x "TOxxxDO"; end
+  def f; x "FxxxIXME"; end
+
   def test_validate_authors
     util_setup_validate
 
@@ -1031,7 +1033,7 @@ end
         @a1.validate
       end
 
-      assert_equal "WARNING:  no author specified\n", @ui.error, 'error'
+      assert_equal "#{w}:  no author specified\n", @ui.error, 'error'
 
       @a1.authors = [Object.new]
 
@@ -1039,23 +1041,23 @@ end
         @a1.validate
       end
 
-      assert_equal 'authors must be Array of Strings', e.message
+      assert_equal "authors must be an Array of String instances", e.message
 
-      @a1.authors = ['FIXME (who is writing this software)']
-
-      e = assert_raises Gem::InvalidSpecificationException do
-        @a1.validate
-      end
-
-      assert_equal '"FIXME" or "TODO" is not an author', e.message
-
-      @a1.authors = ['TODO (who is writing this software)']
+      @a1.authors = ["#{f} (who is writing this software)"]
 
       e = assert_raises Gem::InvalidSpecificationException do
         @a1.validate
       end
 
-      assert_equal '"FIXME" or "TODO" is not an author', e.message
+      assert_equal %{"#{f}" or "#{t}" is not an author}, e.message
+
+      @a1.authors = ["#{t} (who is writing this software)"]
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @a1.validate
+      end
+
+      assert_equal %{"#{f}" or "#{t}" is not an author}, e.message
     end
   end
 
@@ -1069,7 +1071,7 @@ end
         @a1.validate
       end
 
-      assert_equal "WARNING:  deprecated autorequire specified\n",
+      assert_equal "#{w}:  deprecated autorequire specified\n",
                    @ui.error, 'error'
     end
   end
@@ -1084,34 +1086,34 @@ end
         @a1.validate
       end
 
-      assert_equal "WARNING:  no description specified\n", @ui.error, 'error'
+      assert_equal "#{w}:  no description specified\n", @ui.error, "error"
 
       @ui = Gem::MockGemUi.new
-      @a1.summary = 'this is my summary'
+      @a1.summary = "this is my summary"
       @a1.description = @a1.summary
 
       use_ui @ui do
         @a1.validate
       end
 
-      assert_equal "WARNING:  description and summary are identical\n",
-                   @ui.error, 'error'
+      assert_equal "#{w}:  description and summary are identical\n",
+                   @ui.error, "error"
 
-      @a1.description = 'FIXME (describe your package)'
-
-      e = assert_raises Gem::InvalidSpecificationException do
-        @a1.validate
-      end
-
-      assert_equal '"FIXME" or "TODO" is not a description', e.message
-
-      @a1.description = 'TODO (describe your package)'
+      @a1.description = "#{f} (describe your package)"
 
       e = assert_raises Gem::InvalidSpecificationException do
         @a1.validate
       end
 
-      assert_equal '"FIXME" or "TODO" is not a description', e.message
+      assert_equal %{"#{f}" or "#{t}" is not a description}, e.message
+
+      @a1.description = "#{t} (describe your package)"
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @a1.validate
+      end
+
+      assert_equal %{"#{f}" or "#{t}" is not a description}, e.message
     end
   end
 
@@ -1119,29 +1121,29 @@ end
     util_setup_validate
 
     Dir.chdir @tempdir do
-      @a1.email = ''
+      @a1.email = ""
 
       use_ui @ui do
         @a1.validate
       end
 
-      assert_equal "WARNING:  no email specified\n", @ui.error, 'error'
+      assert_equal "#{w}:  no email specified\n", @ui.error, "error"
 
-      @a1.email = 'FIXME (your e-mail)'
-
-      e = assert_raises Gem::InvalidSpecificationException do
-        @a1.validate
-      end
-
-      assert_equal '"FIXME" or "TODO" is not an email address', e.message
-
-      @a1.email = 'TODO (your e-mail)'
+      @a1.email = "FIxxxXME (your e-mail)".sub(/xxx/, "")
 
       e = assert_raises Gem::InvalidSpecificationException do
         @a1.validate
       end
 
-      assert_equal '"FIXME" or "TODO" is not an email address', e.message
+      assert_equal %{"#{f}" or "#{t}" is not an email}, e.message
+
+      @a1.email = "#{t} (your e-mail)"
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @a1.validate
+      end
+
+      assert_equal %{"#{f}" or "#{t}" is not an email}, e.message
     end
   end
 
@@ -1169,7 +1171,7 @@ end
     assert_equal %w[exec], @a1.executables
 
     assert_equal '', @ui.output, 'output'
-    assert_equal "WARNING:  bin/exec is missing #! line\n", @ui.error, 'error'
+    assert_equal "#{w}:  bin/exec is missing #! line\n", @ui.error, 'error'
   end
 
   def test_validate_empty_require_paths
@@ -1218,7 +1220,7 @@ end
         @a1.validate
       end
 
-      assert_equal "WARNING:  no homepage specified\n", @ui.error, 'error'
+      assert_equal "#{w}:  no homepage specified\n", @ui.error, 'error'
 
       @ui = Gem::MockGemUi.new
 
@@ -1228,7 +1230,7 @@ end
         @a1.validate
       end
 
-      assert_equal "WARNING:  no homepage specified\n", @ui.error, 'error'
+      assert_equal "#{w}:  no homepage specified\n", @ui.error, 'error'
 
       @a1.homepage = 'over at my cool site'
 
@@ -1325,23 +1327,23 @@ end
         @a1.validate
       end
 
-      assert_equal "WARNING:  no summary specified\n", @ui.error, 'error'
+      assert_equal "#{w}:  no summary specified\n", @ui.error, 'error'
 
-      @a1.summary = 'FIXME (describe your package)'
-
-      e = assert_raises Gem::InvalidSpecificationException do
-        @a1.validate
-      end
-
-      assert_equal '"FIXME" or "TODO" is not a summary', e.message
-
-      @a1.summary = 'TODO (describe your package)'
+      @a1.summary = "#{f} (describe your package)"
 
       e = assert_raises Gem::InvalidSpecificationException do
         @a1.validate
       end
 
-      assert_equal '"FIXME" or "TODO" is not a summary', e.message
+      assert_equal %{"#{f}" or "#{t}" is not a summary}, e.message
+
+      @a1.summary = "#{t} (describe your package)"
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @a1.validate
+      end
+
+      assert_equal %{"#{f}" or "#{t}" is not a summary}, e.message
     end
   end
 
@@ -1377,13 +1379,18 @@ end
 
   def util_setup_validate
     Dir.chdir @tempdir do
-      FileUtils.mkdir_p File.join('ext', 'a')
-      FileUtils.mkdir_p 'lib'
-      FileUtils.mkdir_p 'test'
+      FileUtils.mkdir_p File.join("ext", "a")
+      FileUtils.mkdir_p "lib"
+      FileUtils.mkdir_p "test"
+      FileUtils.mkdir_p "bin"
 
-      FileUtils.touch File.join('ext', 'a', 'extconf.rb')
-      FileUtils.touch File.join('lib', 'code.rb')
-      FileUtils.touch File.join('test', 'suite.rb')
+      FileUtils.touch File.join("ext", "a", "extconf.rb")
+      FileUtils.touch File.join("lib", "code.rb")
+      FileUtils.touch File.join("test", "suite.rb")
+
+      File.open "bin/exec", "w" do |fp|
+        fp.puts "#!#{Gem.ruby}"
+      end
     end
   end
 end

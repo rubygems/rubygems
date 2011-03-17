@@ -488,12 +488,7 @@ class Gem::Specification
       raise Gem::Exception, "YAML data doesn't evaluate to gem specification"
     end
 
-    unless (spec.instance_variables.include? '@specification_version' or
-            spec.instance_variables.include? :@specification_version) and
-           spec.instance_variable_get :@specification_version
-      spec.instance_variable_set :@specification_version,
-                                 NONEXISTENT_SPECIFICATION_VERSION
-    end
+    spec.instance_eval { @specification ||= NONEXISTENT_SPECIFICATION_VERSION }
 
     spec
   end
@@ -1336,13 +1331,9 @@ class Gem::Specification
   # Duplicates array_attributes from +other_spec+ so state isn't shared.
 
   def initialize_copy other_spec
-    other_ivars = other_spec.instance_variables
-    other_ivars = other_ivars.map { |ivar| ivar.intern } if # for 1.9
-      String === other_ivars.first
-
     self.class.array_attributes.each do |name|
       name = :"@#{name}"
-      next unless other_ivars.include? name
+      next unless other_spec.instance_variable_defined? name
 
       begin
         val = other_spec.instance_variable_get(name)

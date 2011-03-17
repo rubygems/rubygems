@@ -625,8 +625,7 @@ module Gem
 
     if QUICKLOADER_SUCKAGE then
       $LOAD_PATH.each_with_index do |path, i|
-        if path.instance_variables.include?(:@gem_prelude_index) or
-            path.instance_variables.include?('@gem_prelude_index') then
+        if path.instance_variable_defined?(:@gem_prelude_index) then
           index = i
           break
         end

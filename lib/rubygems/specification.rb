@@ -534,7 +534,7 @@ class Gem::Specification
       spec = eval code, binding, file
 
       if Gem::Specification === spec
-        spec.loaded_from = file
+        spec.loaded_from = Gem::FileSystem::Path.new(file)
         return spec
       end
 
@@ -633,9 +633,9 @@ class Gem::Specification
   # The full path to the gem (install path + full name).
 
   def full_gem_path
-    path = File.join installation_path, 'gems', full_name
-    return path if File.directory? path
-    File.join installation_path, 'gems', original_name
+    path = installation_path.gems.add(full_name)
+    return path if path.directory?
+    installation_path.gems.add(original_name)
   end
 
   ##
@@ -655,7 +655,7 @@ class Gem::Specification
       raise Gem::Exception, "spec #{full_name} is not from an installed gem"
     end
 
-    File.expand_path File.dirname(File.dirname(@loaded_from))
+    Gem::FileSystem.new(@loaded_from.dirname.dirname)
   end
 
   ##

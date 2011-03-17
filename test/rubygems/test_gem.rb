@@ -496,6 +496,8 @@ class TestGem < Gem::TestCase
                RbConfig::CONFIG['bindir']
              end
 
+    bindir = Gem::FS::Path.new(bindir)
+
     assert_equal bindir, Gem.bindir(default)
     assert_equal bindir, Gem.bindir(Pathname.new(default))
   end

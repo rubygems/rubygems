@@ -235,19 +235,19 @@ load Gem.bin_path('a', 'executable', version)
     @installer.wrappers = true
     @spec.executables = %w[executable]
 
-    gem_dir = Gem::FileSystem.new("#{@gemhome}2").gems.add(@spec.full_name)
+    gem_dir = Gem::FS.new("#{@gemhome}2").gems.add(@spec.full_name)
     gem_bindir = gem_dir.add('bin')
     FileUtils.mkdir_p gem_bindir
     File.open gem_bindir.add('executable'), 'w' do |f|
       f.puts "#!/bin/ruby"
     end
 
-    @installer.gem_home = Gem::FileSystem.new "#{@gemhome}2"
+    @installer.gem_home = Gem::FS.new "#{@gemhome}2"
     @installer.gem_dir = gem_dir
 
     @installer.generate_bin
 
-    installed_exec = Gem::FileSystem.new("#{@gemhome}2").bin.add('executable')
+    installed_exec = Gem::FS.new("#{@gemhome}2").bin.add('executable')
     assert_equal true, File.exist?(installed_exec)
     assert_equal mask, File.stat(installed_exec).mode unless win_platform?
 

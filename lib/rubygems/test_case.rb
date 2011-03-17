@@ -109,8 +109,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       @tempdir = File.join tmpdir, "test_rubygems_#{$$}"
     end
     @tempdir.untaint
-    @gemhome  = Gem::FileSystem.new @tempdir, 'gemhome'
-    @userhome = Gem::FileSystem.new @tempdir, 'userhome'
+    @gemhome  = Gem::FS.new @tempdir, 'gemhome'
+    @userhome = Gem::FS.new @tempdir, 'userhome'
 
     @orig_ruby = if ruby = ENV['RUBY'] then
                    Gem.class_eval { ruby, @ruby = @ruby, ruby }

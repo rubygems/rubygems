@@ -584,7 +584,7 @@ end
   end
 
   def test_full_gem_path_double_slash
-    gemhome = Gem::FileSystem.new @gemhome.to_s.sub(/\w\//, '\&/')
+    gemhome = Gem::FS.new @gemhome.to_s.sub(/\w\//, '\&/')
     @a1.loaded_from = gemhome.specifications.add(@a1.spec_name)
 
     assert_equal @gemhome.gems.add(@a1.full_name),

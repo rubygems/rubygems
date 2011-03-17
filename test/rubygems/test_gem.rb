@@ -496,7 +496,7 @@ class TestGem < Gem::TestCase
                RbConfig::CONFIG['bindir']
              end
 
-    bindir = Gem::FS::Path.new(bindir)
+    bindir = Gem::Path.new(bindir)
 
     assert_equal bindir, Gem.bindir(default)
     assert_equal bindir, Gem.bindir(Pathname.new(default))
@@ -598,7 +598,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_ensure_gem_directories_missing_parents
-    gemdir = Gem::FileSystem.new @tempdir, 'a/b/c/gemdir'
+    gemdir = Gem::FS.new @tempdir, 'a/b/c/gemdir'
     FileUtils.rm_rf File.join(@tempdir, 'a') rescue nil
     refute File.exist?(File.join(@tempdir, 'a')),
            "manually remove #{File.join @tempdir, 'a'}, tests are broken"
@@ -611,7 +611,7 @@ class TestGem < Gem::TestCase
 
   unless win_platform? then # only for FS that support write protection
     def test_self_ensure_gem_directories_write_protected
-      gemdir = Gem::FileSystem.new @tempdir, "egd"
+      gemdir = Gem::FS.new @tempdir, "egd"
       FileUtils.rm_r gemdir rescue nil
       refute File.exist?(gemdir), "manually remove #{gemdir}, tests are broken"
       FileUtils.mkdir_p gemdir
@@ -627,7 +627,7 @@ class TestGem < Gem::TestCase
 
     def test_self_ensure_gem_directories_write_protected_parents
       parent = File.join(@tempdir, "egd")
-      gemdir = Gem::FileSystem.new "#{parent}/a/b/c"
+      gemdir = Gem::FS.new "#{parent}/a/b/c"
 
       FileUtils.rm_r parent rescue nil
       refute File.exist?(parent), "manually remove #{parent}, tests are broken"
@@ -937,7 +937,7 @@ class TestGem < Gem::TestCase
     ENV["GEM_HOME"] = @gemhome
     Gem.paths = { :path => path }
 
-    assert_equal [@userhome, Gem::FileSystem.new(other), @gemhome], Gem.path
+    assert_equal [@userhome, Gem::FS.new(other), @gemhome], Gem.path
   end
 
   def test_self_set_paths_nonexistent_home

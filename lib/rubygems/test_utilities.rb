@@ -100,7 +100,7 @@ class Gem::FakeFetcher
     name = spec.file_name
     path = Gem.cache_gem(name, install_dir)
 
-    Gem::FileSystem.new(install_dir).ensure_gem_subdirectories
+    Gem::FS.new(install_dir).ensure_gem_subdirectories
 
     if source_uri =~ /^http/ then
       File.open(path, "wb") do |f|

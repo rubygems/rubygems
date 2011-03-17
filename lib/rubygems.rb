@@ -717,7 +717,7 @@ module Gem
   #
 
   def self.cache_dir(custom_dir=false)
-    (custom_dir ? Gem::FileSystem.new(custom_dir) : Gem.dir).cache
+    (custom_dir ? Gem::FS.new(custom_dir) : Gem.dir).cache
   end
 
   ##

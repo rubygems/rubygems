@@ -534,7 +534,7 @@ class Gem::Specification
       spec = eval code, binding, file
 
       if Gem::Specification === spec
-        spec.loaded_from = Gem::FileSystem::Path.new(file)
+        spec.loaded_from = Gem::Path.new(file)
         return spec
       end
 
@@ -655,7 +655,7 @@ class Gem::Specification
       raise Gem::Exception, "spec #{full_name} is not from an installed gem"
     end
 
-    Gem::FileSystem.new(@loaded_from.dirname.dirname)
+    Gem::FS.new(@loaded_from.dirname.dirname)
   end
 
   ##

@@ -72,8 +72,8 @@ class Gem::Indexer
     @rss_host = options[:rss_host]
     @rss_gems_host = options[:rss_gems_host]
 
-    @dest_directory = Gem::FileSystem.new(directory)
-    @directory = Gem::FileSystem::Path.new(Dir.tmpdir, "gem_generate_index_#{$$}")
+    @dest_directory = Gem::FS.new(directory)
+    @directory = Gem::Path.new(Dir.tmpdir, "gem_generate_index_#{$$}")
 
     marshal_name = "Marshal.#{Gem.marshal_version}"
 
@@ -477,7 +477,7 @@ class Gem::Indexer
 
     say "Moving index into production dir #{@dest_directory}" if verbose
 
-    files = @files.dup.map { |x| Gem::FileSystem::Path.new(x) }
+    files = @files.dup.map { |x| Gem::Path.new(x) }
     files.delete @quick_marshal_dir if files.include? @quick_dir
 
     if files.include? @quick_marshal_dir and
@@ -494,7 +494,7 @@ class Gem::Indexer
     end
 
     files = files.map do |path|
-      Gem::FileSystem::Path.new(path).subtract(@directory)
+      Gem::Path.new(path).subtract(@directory)
     end
 
     files.each do |file|
@@ -608,7 +608,7 @@ class Gem::Indexer
     files << "#{@prerelease_specs_index}.gz"
 
     files = files.map do |path|
-      Gem::FileSystem::Path.new(path).subtract(@directory)
+      Gem::Path.new(path).subtract(@directory)
     end
 
     files.each do |file|

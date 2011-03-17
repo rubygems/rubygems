@@ -18,10 +18,10 @@ module Gem
 
       # ENV the machine environment, is type Object, which is why this works.
       if env.kind_of?(Hash)
-        @home = Gem::FileSystem.new(env[:home] || ENV["GEM_HOME"] || Gem.default_dir)
+        @home = Gem::FS.new(env[:home] || ENV["GEM_HOME"] || Gem.default_dir)
         self.path = env[:path] || ENV["GEM_PATH"]
       else
-        @home = Gem::FileSystem.new(env["GEM_HOME"] || Gem.default_dir) 
+        @home = Gem::FS.new(env["GEM_HOME"] || Gem.default_dir) 
         self.path = env["GEM_PATH"]
       end
     end
@@ -32,7 +32,7 @@ module Gem
     # Set the Gem home directory (as reported by Gem.dir).
 
     def home=(home)
-      @home = Gem::FileSystem.new(home)
+      @home = Gem::FS.new(home)
     end
 
     ##
@@ -65,7 +65,7 @@ module Gem
         end
       end
 
-      @path = gem_path.map { |this_path| Gem::FileSystem.new(this_path) }.uniq
+      @path = gem_path.map { |this_path| Gem::FS.new(this_path) }.uniq
     end
   end
 
@@ -140,7 +140,7 @@ module Gem
     end
   end
 
-  class FileSystem < Gem::Path
+  class FS < Gem::Path
     ##
     # Default directories in a gem repository
 
@@ -184,7 +184,4 @@ module Gem
       path.add 'source_cache'
     end
   end
-
-  FS = FileSystem
-  FileSystem::Path = Path
 end

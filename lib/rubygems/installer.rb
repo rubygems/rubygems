@@ -97,7 +97,7 @@ class Gem::Installer
   def initialize(gem, options={})
     require 'fileutils'
 
-    @gem = Gem::FileSystem::Path.new(gem)
+    @gem = Gem::Path.new(gem)
     @options = options
     process_options
     load_gem_file
@@ -221,7 +221,7 @@ class Gem::Installer
   # Unpacks the gem into the given directory.
 
   def unpack(directory)
-    @gem_dir = Gem::FileSystem.new directory
+    @gem_dir = Gem::FS.new directory
     @format = Gem::Format.from_file_by_path @gem, @security_policy
     extract_files
   end
@@ -400,7 +400,7 @@ class Gem::Installer
     gem_home             = options[:install_dir]
     @gem_home            = 
       gem_home.kind_of?(String) ? 
-      Gem::FileSystem.new(File.expand_path(gem_home)) : 
+      Gem::FS.new(File.expand_path(gem_home)) : 
       gem_home
     @ignore_dependencies = options[:ignore_dependencies]
     @format_executable   = options[:format_executable]
@@ -545,7 +545,7 @@ EOF
   # Ensures that files can't be installed outside the gem directory.
 
   def extract_files
-    @gem_dir = Gem::FileSystem.new(File.expand_path @gem_dir)
+    @gem_dir = Gem::FS.new(File.expand_path @gem_dir)
 
     raise ArgumentError, "format required to extract from" if @format.nil?
 

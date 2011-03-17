@@ -37,14 +37,14 @@ module Gem
                ConfigMap[:ruby_version]
              ]
            end
-    Gem::FileSystem.new(*path)
+    Gem::FS.new(*path)
   end
 
   ##
   # Path for gems in the user's home directory
 
   def self.user_dir
-    Gem::FileSystem.new Gem.user_home, '.gem', ruby_engine, ConfigMap[:ruby_version]
+    Gem::FS.new Gem.user_home, '.gem', ruby_engine, ConfigMap[:ruby_version]
   end
 
   ##
@@ -77,9 +77,9 @@ module Gem
 
   def self.default_bindir
     if defined? RUBY_FRAMEWORK_VERSION then # mac framework support
-      Gem::FileSystem::Path.new '/usr/bin'
+      Gem::Path.new '/usr/bin'
     else # generic install
-      Gem::FileSystem::Path.new ConfigMap[:bindir].to_s
+      Gem::Path.new ConfigMap[:bindir].to_s
     end
   end
 
@@ -98,7 +98,7 @@ module Gem
     # NOTE Probably an argument for moving this to per-ruby supported dirs like
     # user_dir
     #
-    Gem::FileSystem.new(Gem.user_home, '.gem').source_cache
+    Gem::FS.new(Gem.user_home, '.gem').source_cache
   end
 
   ##

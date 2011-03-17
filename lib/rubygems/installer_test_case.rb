@@ -96,7 +96,7 @@ class Gem::InstallerTestCase < Gem::TestCase
       io.puts shebang
     end
 
-    temp_bin = Gem::FileSystem::Path.new(@tempdir).add('bin')
+    temp_bin = Gem::Path.new(@tempdir).add('bin')
     FileUtils.mkdir_p temp_bin
     open temp_bin.add('executable'), 'w' do |io|
       io.puts shebang
@@ -125,15 +125,15 @@ class Gem::InstallerTestCase < Gem::TestCase
       end
     end
 
-    @installer = Gem::Installer.new Gem::FileSystem.new @gem
+    @installer = Gem::Installer.new Gem::FS.new @gem
   end
 
   def util_installer(spec, gem_path, gem_home)
     util_build_gem spec
     FileUtils.mv Gem.cache_gem(spec.file_name), @tempdir
-    installer = Gem::Installer.new Gem::FileSystem.new gem_path
+    installer = Gem::Installer.new Gem::FS.new gem_path
     installer.gem_dir = util_gem_dir
-    installer.gem_home = Gem::FileSystem.new gem_home
+    installer.gem_home = Gem::FS.new gem_home
     installer.spec = spec
 
     installer

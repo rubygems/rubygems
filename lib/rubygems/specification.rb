@@ -1456,6 +1456,7 @@ class Gem::Specification
     result
   end
 
+  undef_method :test_files
   def test_files
     # Handle the possibility that we have @test_suite_file but not
     # @test_files.  This will happen when an old gem is loaded via
@@ -1471,6 +1472,7 @@ class Gem::Specification
     end
   end
 
+  undef_method :files
   def files
     # DO NOT CHANGE TO ||= ! This is not a normal accessor. (yes, it sucks)
     @files = [@files,

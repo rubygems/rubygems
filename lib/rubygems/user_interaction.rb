@@ -117,11 +117,9 @@ module Gem::UserInteraction
    :choose_from_list,
    :say,
    :terminate_interaction ].each do |methname|
-    class_eval %{
-      def #{methname}(*args)
-        ui.#{methname}(*args)
-      end
-    }, __FILE__, __LINE__
+    define_method methname do |*args|
+      ui.send(methname, *args)
+    end
   end
 end
 

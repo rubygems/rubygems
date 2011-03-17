@@ -168,16 +168,14 @@ class Gem::Specification
   # are array values by applying :to_a to the value.
 
   def self.array_attribute(name)
-    code = %{
-      def #{name}
-        @#{name} ||= []
-      end
-      def #{name}=(value)
-        @#{name} = Array(value)
-      end
-    }
-
-    module_eval code, __FILE__, __LINE__ - 9
+    var = :"@#{name}"
+    define_method name do
+      (instance_variable_defined?(var) and instance_variable_get(var)) or
+        instance_variable_set(var, [])
+    end
+    define_method "#{name}=" do |value|
+      instance_variable_set(var, Array(value))
+    end
   end
 
   ##

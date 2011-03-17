@@ -73,48 +73,65 @@ class Gem::Specification
   ##
   # List of attribute names: [:name, :version, ...]
 
-  @@required_attributes = []
-
-  ##
-  # List of _all_ attributes and default values:
-  #
-  #   [[:name, nil],
-  #    [:bindir, 'bin'],
-  #    ...]
-
-  @@attributes = []
-
-  @@nil_attributes = []
-  @@non_nil_attributes = []
-
-  ##
-  # List of array attributes
-
-  @@array_attributes = []
+  @@required_attributes = [:rubygems_version,
+                           :specification_version,
+                           :name,
+                           :version,
+                           :date,
+                           :summary,
+                           :require_paths]
 
   ##
   # Map of attribute names to default values.
 
-  @@default_value = {}
+  @@default_value = {
+    :authors                   => [],
+    :autorequire               => nil,
+    :bindir                    => "bin",
+    :cert_chain                => [],
+    :date                      => TODAY,
+    :default_executable        => nil,
+    :dependencies              => [],
+    :description               => nil,
+    :email                     => nil,
+    :executables               => [],
+    :extensions                => [],
+    :extra_rdoc_files          => [],
+    :files                     => [],
+    :has_rdoc                  => true,
+    :homepage                  => nil,
+    :licenses                  => [],
+    :name                      => nil,
+    :platform                  => Gem::Platform::RUBY,
+    :post_install_message      => nil,
+    :rdoc_options              => [],
+    :require_paths             => ["lib"],
+    :required_ruby_version     => Gem::Requirement.default,
+    :required_rubygems_version => Gem::Requirement.default,
+    :requirements              => [],
+    :rubyforge_project         => nil,
+    :rubygems_version          => Gem::VERSION,
+    :signing_key               => nil,
+    :specification_version     => CURRENT_SPECIFICATION_VERSION,
+    :summary                   => nil,
+    :test_files                => [],
+    :version                   => nil,
+  }
 
-  ##
-  # Names of all specification attributes
+  @@attributes = @@default_value.keys.sort_by { |s| s.to_s }
+  @@array_attributes = @@default_value.reject { |k,v| v != [] }.keys
+  @@nil_attributes, @@non_nil_attributes = @@default_value.keys.partition { |k|
+    @@default_value[k].nil?
+  }
 
   def self.attribute_names
-    @@attributes.map { |name, default| name }
-  end
-
-  ##
-  # Default values for specification attributes
-
-  def self.attribute_defaults
     @@attributes.dup
   end
 
   ##
   # The default value for specification attribute +name+
 
-  def self.default_value(name)
+  def default_value(name)
     @@default_value[name]
   end
 
@@ -147,34 +164,10 @@ class Gem::Specification
   end
 
   ##
-  # Specifies the +name+ and +default+ for a specification attribute, and
-  # creates a reader and writer method like Module#attr_accessor.
-  #
-  # The reader method returns the default if the value hasn't been set.
-
-  def self.attribute(name, default=nil)
-    ivar_name = "@#{name}".intern
-    if default.nil? then
-      @@nil_attributes << ivar_name
-    else
-      @@non_nil_attributes << [ivar_name, default]
-    end
-
-    @@attributes << [name, default]
-    @@default_value[name] = default
-    attr_accessor(name)
-  end
-
-  ##
   # Same as :attribute, but ensures that values assigned to the attribute
   # are array values by applying :to_a to the value.
 
   def self.array_attribute(name)
-    @@non_nil_attributes << ["@#{name}".intern, []]
-
-    @@array_attributes << name
-    @@attributes << [name, []]
-    @@default_value[name] = []
     code = %{
       def #{name}
         @#{name} ||= []
@@ -188,73 +181,10 @@ class Gem::Specification
   end
 
   ##
-  # Same as attribute above, but also records this attribute as mandatory.
-
-  def self.required_attribute(*args)
-    @@required_attributes << args.first
-    attribute(*args)
-  end
-
-  ##
-  # Sometimes we don't want the world to use a setter method for a
-  # particular attribute.
-  #
-  # +read_only+ makes it private so we can still use it internally.
-
-  def self.read_only(*names)
-    names.each do |name|
-      private "#{name}="
-    end
-  end
-
-  # Shortcut for creating several attributes at once (each with a default
-  # value of +nil+).
-
-  def self.attributes(*args)
-    args.each do |arg|
-      attribute(arg, nil)
-    end
-  end
-
-  ##
-  # Some attributes require special behaviour when they are accessed.  This
-  # allows for that.
-
-  def self.overwrite_accessor(name, &block)
-    remove_method name
-    define_method(name, &block)
-  end
-
-  ##
-  # Defines a _singular_ version of an existing _plural_ attribute (i.e. one
-  # whose value is expected to be an array).  This means just creating a
-  # helper method that takes a single value and appends it to the array.
-  # These are created for convenience, so that in a spec, one can write
-  #
-  #   s.require_path = 'mylib'
-  #
-  # instead of:
-  #
-  #   s.require_paths = ['mylib']
-  #
-  # That above convenience is available courtesy of:
-  #
-  #   attribute_alias_singular :require_path, :require_paths
-
-  def self.attribute_alias_singular(singular, plural)
-    define_method("#{singular}=") { |val|
-      send("#{plural}=", [val])
-    }
-    define_method("#{singular}") {
-      val = send("#{plural}")
-      val.nil? ? nil : val.first
-    }
-  end
-
-  ##
   # Dump only crucial instance variables.
   #--
   # MAINTAIN ORDER!
+  # (down with the man)
 
   def _dump(limit)
     Marshal.dump [
@@ -330,7 +260,6 @@ class Gem::Specification
   # List of dependencies that will automatically be activated at runtime.
 
   def runtime_dependencies
-    # TODO: fix #type to return :runtime if nil
     dependencies.select { |d| d.type == :runtime }
   end
 
@@ -413,17 +342,31 @@ class Gem::Specification
 
   def initialize name = nil, version = nil
     @new_platform = nil
-    assign_defaults
     @loaded = false
     @loaded_from = nil
     @original_platform = nil
+
+    @@nil_attributes.each do |key|
+      instance_variable_set "@#{key}", nil
+    end
+
+    @@non_nil_attributes.each do |key|
+      default = default_value(key)
+      value = case default
+              when Time, Numeric, Symbol, true, false, nil then default
+              else default.dup
+              end
+
+      instance_variable_set "@#{key}", value
+    end
+
+    # HACK
+    instance_variable_set :@new_platform, Gem::Platform::RUBY
 
     self.name = name if name
     self.version = version if version
 
     yield self if block_given?
-
-    @@gather.call(self) if @@gather
   end
 
   ##
@@ -432,7 +375,7 @@ class Gem::Specification
   def initialize_copy(other_spec)
     other_ivars = other_spec.instance_variables
     other_ivars = other_ivars.map { |ivar| ivar.intern } if # for 1.9
-      other_ivars.any? { |ivar| String === ivar }
+      String === other_ivars.first
 
     self.class.array_attributes.each do |name|
       name = :"@#{name}"
@@ -448,31 +391,6 @@ class Gem::Specification
         raise e
       end
     end
-  end
-
-  ##
-  # Each attribute has a default value (possibly nil).  Here, we initialize
-  # all attributes to their default value.  This is done through the
-  # accessor methods, so special behaviours will be honored.  Furthermore,
-  # we take a _copy_ of the default so each specification instance has its
-  # own empty arrays, etc.
-
-  def assign_defaults
-    @@nil_attributes.each do |name|
-      instance_variable_set name, nil
-    end
-
-    @@non_nil_attributes.each do |name, default|
-      value = case default
-              when Time, Numeric, Symbol, true, false, nil then default
-              else default.dup
-              end
-
-      instance_variable_set name, value
-    end
-
-    # HACK
-    instance_variable_set :@new_platform, Gem::Platform::RUBY
   end
 
   ##
@@ -635,7 +553,7 @@ class Gem::Specification
   #   spec.file_name # => "example-1.0.gem"
 
   def file_name
-    full_name + '.gem'
+    "#{full_name}.gem"
   end
 
   ##
@@ -670,7 +588,7 @@ class Gem::Specification
   #   spec.spec_name # => "example-1.0.gemspec"
 
   def spec_name
-    full_name + '.gemspec'
+    "#{full_name}.gemspec"
   end
 
   def <=>(other) # :nodoc:
@@ -715,9 +633,6 @@ class Gem::Specification
   def encode_with coder # :nodoc:
     mark_version
 
-    attributes = @@attributes.map { |name,| name.to_s }.sort
-    attributes = attributes - %w[name version platform]
-
     coder.add 'name', @name
     coder.add 'version', @version
     platform = case @original_platform
@@ -730,6 +645,7 @@ class Gem::Specification
                end
     coder.add 'platform', platform
 
+    attributes = @@attributes.map(&:to_s) - %w[name version platform]
     attributes.each do |name|
       coder.add name, instance_variable_get("@#{name}")
     end
@@ -801,12 +717,10 @@ class Gem::Specification
       :version,
     ]
 
-    attributes = @@attributes.sort_by { |attr_name,| attr_name.to_s }
-
-    attributes.each do |attr_name, default|
+    @@attributes.each do |attr_name|
       next if handled.include? attr_name
       current_value = self.send(attr_name)
-      if current_value != default or
+      if current_value != default_value(attr_name) or
          self.class.required_attribute? attr_name then
         result << "  s.#{attr_name} = #{ruby_code current_value}"
       end
@@ -863,8 +777,8 @@ class Gem::Specification
     extend Gem::UserInteraction
     normalize
 
-    nil_attributes = self.class.non_nil_attributes.find_all do |name, _| 
-      instance_variable_get(name).nil?
+    nil_attributes = self.class.non_nil_attributes.find_all do |name|
+      instance_variable_get("@#{name}").nil?
     end
 
     unless nil_attributes.empty? then
@@ -924,10 +838,14 @@ class Gem::Specification
             "invalid platform #{platform.inspect}, see Gem::Platform"
     end
 
-    unless Array === authors and
-           authors.all? { |author| String === author } then
-      raise Gem::InvalidSpecificationException,
-            'authors must be Array of Strings'
+    self.class.array_attributes.each do |symbol|
+      val = self.send symbol
+      klass = symbol == :dependencies ? Gem::Dependency : String
+
+      unless Array === val and val.all? { |x| klass === x } then
+        raise(Gem::InvalidSpecificationException,
+              "#{symbol} must be an Array of #{klass} instances")
+      end
     end
 
     licenses.each { |license|
@@ -937,26 +855,24 @@ class Gem::Specification
       end
     }
 
-    # reject FIXME and TODO
+    # reject lazy developers:
 
-    unless authors.grep(/FIXME|TODO/).empty? then
-      raise Gem::InvalidSpecificationException,
-            '"FIXME" or "TODO" is not an author'
+    lazy = '"FIxxxXME" or "TOxxxDO"'.gsub(/xxx/, '')
+
+    unless authors.grep(/FI XME|TO DO/x).empty? then
+      raise Gem::InvalidSpecificationException, "#{lazy} is not an author"
     end
 
-    unless Array(email).grep(/FIXME|TODO/).empty? then
-      raise Gem::InvalidSpecificationException,
-            '"FIXME" or "TODO" is not an email address'
+    unless Array(email).grep(/FI XME|TO DO/x).empty? then
+      raise Gem::InvalidSpecificationException, "#{lazy} is not an email"
     end
 
-    if description =~ /FIXME|TODO/ then
-      raise Gem::InvalidSpecificationException,
-            '"FIXME" or "TODO" is not a description'
+    if description =~ /FI XME|TO DO/x then
+      raise Gem::InvalidSpecificationException, "#{lazy} is not a description"
     end
 
-    if summary =~ /FIXME|TODO/ then
-      raise Gem::InvalidSpecificationException,
-            '"FIXME" or "TODO" is not a summary'
+    if summary =~ /FI XME|TO DO/x then
+      raise Gem::InvalidSpecificationException, "#{lazy} is not a summary"
     end
 
     if homepage and not homepage.empty? and
@@ -972,10 +888,11 @@ class Gem::Specification
       alert_warning "no #{attribute} specified" if value.nil? or value.empty?
     end
 
-    if summary and not summary.empty? and description == summary then
+    if description == summary then
       alert_warning 'description and summary are identical'
     end
 
+    # TODO: raise at some given date
     alert_warning "deprecated autorequire specified" if autorequire
 
     executables.each do |executable|
@@ -1033,11 +950,10 @@ class Gem::Specification
     q.group 2, 'Gem::Specification.new do |s|', 'end' do
       q.breakable
 
-      attributes = @@attributes.sort_by { |attr_name,| attr_name.to_s }
-
-      attributes.each do |attr_name, default|
+      # REFACTOR: each_attr - use in to_yaml as well
+      @@attributes.each do |attr_name|
         current_value = self.send attr_name
-        if current_value != default or
+        if current_value != default_value(attr_name) or
            self.class.required_attribute? attr_name then
 
           q.text "s.#{attr_name} = "
@@ -1114,49 +1030,30 @@ class Gem::Specification
   # :section: Required gemspec attributes
 
   ##
-  # :attr_accessor: rubygems_version
-  #
   # The version of RubyGems used to create this gem.
   #
   # Do not set this, it is set automatically when the gem is packaged.
 
-  required_attribute :rubygems_version, Gem::VERSION
+  attr_accessor :rubygems_version
 
   ##
-  # :attr_accessor: specification_version
-  #
   # The Gem::Specification version of this gemspec.
   #
   # Do not set this, it is set automatically when the gem is packaged.
 
-  required_attribute :specification_version, CURRENT_SPECIFICATION_VERSION
+  attr_accessor :specification_version
 
   ##
-  # :attr_accessor: name
-  #
   # This gem's name
 
-  required_attribute :name
+  attr_accessor :name
 
   ##
-  # :attr_accessor: version
-  #
   # This gem's version
 
-  required_attribute :version
+  attr_reader :version
 
   ##
-  # :attr_accessor: date
-  #
-  # The date this gem was created
-  #
-  # Do not set this, it is set automatically when the gem is packaged.
-
-  required_attribute :date, TODAY
-
-  ##
-  # :attr_accessor: summary
-  #
   # A short summary of this gem's description.  Displayed in `gem list -d`.
   #
   # The description should be more detailed than the summary.  For example,
@@ -1164,22 +1061,18 @@ class Gem::Specification
   #
   # As of RubyGems 1.3.2 newlines are no longer stripped.
 
-  required_attribute :summary
+  attr_reader :summary
 
   ##
-  # :attr_accessor: require_paths
-  #
   # Paths in the gem to add to $LOAD_PATH when this gem is activated.
   #
   # The default 'lib' is typically sufficient.
 
-  required_attribute :require_paths, ['lib']
+  attr_accessor :require_paths
 
   # :section: Optional gemspec attributes
 
   ##
-  # :attr_accessor: email
-  #
   # A contact email for this gem
   #
   # If you are providing multiple authors and multiple emails they should be
@@ -1189,113 +1082,65 @@ class Gem::Specification
   #
   # Gives a hash of author name to email address.
 
-  attribute :email
+  attr_accessor :email
 
   ##
-  # :attr_accessor: homepage
-  #
   # The URL of this gem's home page
 
-  attribute :homepage
+  attr_accessor :homepage
 
   ##
-  # :attr_accessor: rubyforge_project
-  #
   # The rubyforge project this gem lives under.  i.e. RubyGems'
   # rubyforge_project is "rubygems".
 
-  attribute :rubyforge_project
+  attr_accessor :rubyforge_project
 
   ##
-  # :attr_accessor: description
-  #
   # A long description of this gem
 
-  attribute :description
+  attr_reader :description
 
   ##
-  # :attr_accessor: autorequire
-  #
   # Autorequire was used by old RubyGems to automatically require a file.
   # It no longer is supported.
 
-  attribute :autorequire
+  attr_accessor :autorequire
 
   ##
-  # :attr_accessor: default_executable
-  #
   # The default executable for this gem.
-  #
-  # This is not used.
 
-  attribute :default_executable
+  attr_writer :default_executable
 
   ##
-  # :attr_accessor: bindir
-  #
   # The path in the gem for executable scripts
 
-  attribute :bindir, 'bin'
+  attr_accessor :bindir
 
   ##
-  # :attr_accessor: has_rdoc
-  #
-  # Deprecated and ignored, defaults to true.
-  #
-  # Formerly used to indicate this gem was RDoc-capable.
-
-  attribute :has_rdoc, true
-
-  ##
-  # True if this gem supports RDoc
-
-  alias :has_rdoc? :has_rdoc
-
-  ##
-  # :attr_accessor: required_ruby_version
-  #
   # The version of ruby required by this gem
 
-  attribute :required_ruby_version, Gem::Requirement.default
+  attr_reader :required_ruby_version
 
   ##
-  # :attr_accessor: required_rubygems_version
-  #
   # The RubyGems version required by this gem
 
-  attribute :required_rubygems_version, Gem::Requirement.default
+  attr_reader :required_rubygems_version
 
   ##
-  # :attr_accessor: platform
-  #
-  # The platform this gem runs on.  See Gem::Platform for details.
-  #
-  # Setting this to any value other than Gem::Platform::RUBY or
-  # Gem::Platform::CURRENT is probably wrong.
-
-  attribute :platform, Gem::Platform::RUBY
-
-  ##
-  # :attr_accessor: signing_key
-  #
   # The key used to sign this gem.  See Gem::Security for details.
 
-  attribute :signing_key, nil
+  attr_accessor :signing_key
 
   ##
-  # :attr_accessor: cert_chain
-  #
   # The certificate chain used to sign this gem.  See Gem::Security for
   # details.
 
-  attribute :cert_chain, []
+  attr_accessor :cert_chain
 
   ##
-  # :attr_accessor: post_install_message
-  #
   # A message that gets displayed after the gem is installed
 
-  attribute :post_install_message, nil
+  attr_accessor :post_install_message
 
   ##
   # :attr_accessor: authors
@@ -1387,60 +1232,124 @@ class Gem::Specification
 
   array_attribute :dependencies
 
-  read_only :dependencies
+  private :"dependencies="
 
   # :section: Aliased gemspec attributes
 
   ##
   # Singular accessor for #executables
 
-  attribute_alias_singular :executable, :executables
+  def executable
+    val = executables and val.first
+  end
+
+  ##
+  # Singular accessor for #executables
+
+  def executable=o
+    self.executables = [o]
+  end
 
   ##
   # Singular accessor for #authors
 
-  attribute_alias_singular :author, :authors
+  def author
+    val = authors and val.first
+  end
+
+  ##
+  # Singular accessor for #authors
+
+  def author=o
+    self.authors = [o]
+  end
 
   ##
   # Singular accessor for #licenses
 
-  attribute_alias_singular :license, :licenses
+  def license
+    val = licenses and val.first
+  end
+
+  ##
+  # Singular accessor for #licenses
+
+  def license=o
+    self.licenses = [o]
+  end
 
   ##
   # Singular accessor for #require_paths
 
-  attribute_alias_singular :require_path, :require_paths
+  def require_path
+    val = require_paths and val.first
+  end
+
+  ##
+  # Singular accessor for #require_paths
+
+  def require_path=o
+    self.require_paths = [o]
+  end
 
   ##
   # Singular accessor for #test_files
 
-  attribute_alias_singular :test_file, :test_files
+  def test_file
+    val = test_files and val.first
+  end
 
   ##
-  # has_rdoc is now ignored
+  # Singular accessor for #test_files
 
-  overwrite_accessor :has_rdoc do
+  def test_file=o
+    self.test_files = [o]
+  end
+
+  ##
+  # Deprecated and ignored, defaults to true.
+  #
+  # Formerly used to indicate this gem was RDoc-capable.
+
+  def has_rdoc
+    # TODO: deprecate
     true
   end
 
   ##
-  # has_rdoc is now ignored
+  # Deprecated and ignored.
+  #
+  # Formerly used to indicate this gem was RDoc-capable.
 
-  overwrite_accessor :has_rdoc= do |value|
+  def has_rdoc= v
+    # TODO: deprecate
     @has_rdoc = true
   end
 
-  overwrite_accessor :version= do |version|
+  alias :has_rdoc? :has_rdoc
+
+  def version= version
     @version = Gem::Version.create(version)
     self.required_rubygems_version = '> 1.3.1' if @version.prerelease?
     return @version
   end
 
-  overwrite_accessor :platform do
+  ##
+  # The platform this gem runs on.  See Gem::Platform for details.
+
+  def platform
+    # TODO: deprecate
     @new_platform
   end
 
-  overwrite_accessor :platform= do |platform|
+  ##
+  # The platform this gem runs on.  See Gem::Platform for details.
+  #
+  # Setting this to any value other than Gem::Platform::RUBY or
+  # Gem::Platform::CURRENT is probably wrong.
+
+  def platform= platform
+    # TODO: deprecate
     if @original_platform.nil? or
        @original_platform == Gem::Platform::RUBY then
       @original_platform = platform
@@ -1472,33 +1381,42 @@ class Gem::Specification
     @new_platform
   end
 
-  overwrite_accessor :required_ruby_version= do |value|
+  ##
+  # The version of ruby required by this gem
+
+  def required_ruby_version= value
     @required_ruby_version = Gem::Requirement.create(value)
   end
 
-  overwrite_accessor :required_rubygems_version= do |value|
+  ##
+  # The RubyGems version required by this gem
+
+  def required_rubygems_version= value
     @required_rubygems_version = Gem::Requirement.create(value)
   end
 
-  overwrite_accessor :date= do |date|
+  ##
+  # The date this gem was created
+  #
+  # Do not set this, it is set automatically when the gem is packaged.
+
+  def date= date
     # We want to end up with a Time object with one-day resolution.
     # This is the cleanest, most-readable, faster-than-using-Date
     # way to do it.
-    case date
-    when String then
-      @date = if /\A(\d{4})-(\d{2})-(\d{2})\Z/ =~ date then
+    @date = case date
+            when String then
+              if /\A(\d{4})-(\d{2})-(\d{2})\Z/ =~ date then
                 Time.utc($1.to_i, $2.to_i, $3.to_i)
               else
                 raise(Gem::InvalidSpecificationException,
                       "invalid date format in specification: #{date.inspect}")
               end
-    when Time then
-      @date = Time.utc(date.year, date.month, date.day)
-    when Date then
-      @date = Time.utc(date.year, date.month, date.day)
-    else
-      @date = TODAY
-    end
+            when Time, Date then
+              Time.utc(date.year, date.month, date.day)
+            else
+              TODAY
+            end
   end
 
   ##
@@ -1508,34 +1426,37 @@ class Gem::Specification
     @date ||= TODAY
   end
 
-  overwrite_accessor :summary= do |str|
-    @summary = if str then
-                 str.strip.
-                 gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').
-                 gsub(/\n[ \t]*/, " ")
-               end
+  ##
+  # A short summary of this gem's description.
+
+  def summary= str
+    @summary = str.to_s.strip.
+      gsub(/(\w-)\n[ \t]*(\w)/, '\1\2').gsub(/\n[ \t]*/, " ") # so. weird.
   end
 
-  overwrite_accessor :description= do |str|
+  ##
+  # A long description of this gem
+
+  def description= str
     @description = str.to_s
   end
 
-  overwrite_accessor :default_executable do
-    begin
-      if defined?(@default_executable) and @default_executable
-        result = @default_executable
-      elsif @executables and @executables.size == 1
-        result = Array(@executables).first
-      else
-        result = nil
-      end
-      result
-    rescue
-      nil
+  ##
+  # The default executable for this gem.
+
+  def default_executable
+    # TODO: deprecate
+    if defined?(@default_executable) and @default_executable
+      result = @default_executable
+    elsif @executables and @executables.size == 1
+      result = Array(@executables).first
+    else
+      result = nil
     end
+    result
   end
 
-  overwrite_accessor :test_files do
+  def test_files
     # Handle the possibility that we have @test_suite_file but not
     # @test_files.  This will happen when an old gem is loaded via
     # YAML.
@@ -1550,7 +1471,7 @@ class Gem::Specification
     end
   end
 
-  overwrite_accessor :files do
+  def files
     # DO NOT CHANGE TO ||= ! This is not a normal accessor. (yes, it sucks)
     @files = [@files,
               @test_files,

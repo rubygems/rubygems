@@ -406,7 +406,7 @@ module Gem
   # The path where gem executables are to be installed.
 
   def self.bindir(install_dir=Gem.dir)
-    return Gem::Path.new(install_dir.to_s).add('bin') unless
+    return Gem::Path.new(install_dir).add('bin') unless
       install_dir.to_s == Gem.default_dir.to_s
     Gem.default_bindir
   end

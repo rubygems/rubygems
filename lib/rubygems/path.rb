@@ -1,6 +1,12 @@
 class Gem::Path
   def initialize(*paths)
-    @path = File.expand_path(File.join(paths))
+
+    # we do it this way to avoid requiring pathname
+    if paths.length == 1 and paths[0].class.name == "Pathname"
+      @path = File.expand_path(paths[0].to_s)
+    else
+      @path = File.expand_path(File.join(paths))
+    end
   end
 
   def readable?

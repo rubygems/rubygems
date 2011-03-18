@@ -1,4 +1,4 @@
-require 'rubygems/file_system'
+require 'rubygems/fs'
 
 module Gem
   class PathSupport

@@ -27,7 +27,7 @@ end
 
 require 'rubygems/defaults'
 require "rubygems/dependency_list"
-require 'rubygems/file_system'
+require 'rubygems/fs'
 require 'rubygems/path_support'
 require 'rbconfig'
 

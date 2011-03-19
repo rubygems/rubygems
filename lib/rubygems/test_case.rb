@@ -317,16 +317,14 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       yield(s) if block_given?
     end
 
-    installed_spec = spec.for_cache
-
     path = File.join "specifications", spec.spec_name
     written_path = write_file path do |io|
-      io.write installed_spec.to_ruby_for_cache
+      io.write spec.to_ruby_for_cache
     end
 
-    spec.loaded_from = installed_spec.loaded_from = written_path
+    spec.loaded_from = spec.loaded_from = written_path
 
-    Gem.source_index.add_spec installed_spec
+    Gem.source_index.add_spec spec.for_cache
 
     return spec
   end
@@ -348,7 +346,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       yield(s) if block_given?
     end
 
-    spec.loaded_from = @gemhome
+    path = File.join @gemhome, "specifications", spec.spec_name
+    spec.loaded_from = path
 
     Gem.source_index.add_spec spec
 

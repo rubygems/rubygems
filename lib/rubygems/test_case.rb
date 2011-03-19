@@ -330,7 +330,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       yield(s) if block_given?
     end
 
-    path = File.join "specifications", spec.spec_name
+    path = File.join("specifications", spec.spec_name)
     written_path = write_file path do |io|
       io.write spec.to_ruby_for_cache
     end

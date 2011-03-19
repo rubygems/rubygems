@@ -21,11 +21,11 @@ class TestGemPath < Gem::TestCase
 
     path = Gem::Path.new("~")
 
-    refute_equal "~", path.to_s, 'Gem::Path expands paths'
+    assert_equal "~", path.to_s, 'Gem::Path does not expands paths'
 
     path = Gem::Path.new(Pathname.new("~"))
 
-    refute_equal "~", path.to_s, 'Gem::Path properly handles Pathname'
+    assert_equal "~", path.to_s, 'Gem::Path properly handles Pathname'
   end
 
   def test_readable?
@@ -79,7 +79,7 @@ class TestGemPath < Gem::TestCase
     path = Gem::Path.new(@tempdir, 'foo')
 
     assert_equal File.expand_path(path.to_s.sub('foo', '')), 
-      path.subtract('foo'), 
+      path.subtract('foo').expand_path, 
       'works like #sub'
 
     assert_kind_of Gem::Path, path.subtract('foo'), 

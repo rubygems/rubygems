@@ -18,10 +18,22 @@ class Gem::Path
   def initialize(*paths)
     # we do it this way to avoid requiring pathname
     if paths.length == 1 and paths[0].class.name == "Pathname"
-      @path = File.expand_path(paths[0].to_s)
+      @path = paths[0].to_s
     else
-      @path = File.expand_path(File.join(paths))
+      @path = File.join(paths)
     end
+  end
+
+  ##
+  #
+  # expand the path
+  #
+  #--
+  # FIXME test
+  #++
+  
+  def expand_path
+    Gem::Path.new(File.expand_path(@path))
   end
 
   ##
@@ -54,10 +66,90 @@ class Gem::Path
 
   ##
   #
+  # Appends the path and another string.
+  #
+  #--
+  #
+  # FIXME test
+  #
+  #++
+
+  def +(other_str)
+    @path + other_str
+  end
+
+  ##
+  #
   # Remove data from any part of the path. Exercise caution using this method.
   #
   def subtract(part)
     Gem::Path.new(@path.sub(part, ''))
+  end
+
+
+  ##
+  #
+  # Split the path by the path separator.
+  #
+  # Returns strings, not Gem::Path objects.
+  #
+  #-- 
+  #
+  # FIXME tests
+  #
+  def split
+    array = []
+
+    lead = @path
+    
+    while tmp = File.split(lead)
+
+      lead, part = *tmp
+
+      array.unshift(part)
+      if lead == array[0]
+        break
+      end
+    end
+
+    return array
+  end
+
+  ##
+  #
+  # Compute the relative path based on the existing path minus the passed path:
+  #
+  #   p = Gem::Path.new('/path/to/something')
+  #   p.relative('/path/to').to_s #=> 'something'
+  #
+  #--
+  # 
+  # FIXME tests
+  #
+  #++
+  
+  def relative(path)
+
+    if @path == path.to_s
+      return self
+    end
+
+    passed_parts = path.respond_to?(:split) ? path.split : Gem::Path.new(path).split
+    internal_parts = split
+
+    part = nil
+
+    while true
+      part = internal_parts.shift
+
+      if part != passed_parts.shift
+        break
+      end
+    end
+
+    internal_parts.unshift(part)
+
+    Gem::Path.new(internal_parts)
   end
 
   ##
@@ -74,6 +166,14 @@ class Gem::Path
   #
   def dirname
     Gem::Path.new(File.dirname(@path))
+  end
+  
+  ##
+  #
+  # Obtain the dirname for this path. See File.dirname
+  #
+  def basename(ext='')
+    Gem::Path.new(File.basename(@path, ext))
   end
 
   ##
@@ -121,9 +221,28 @@ class Gem::Path
   #
   # Perform a regular expression match on this path. See String#=~
   #
+  # due to how ruby treats these variables, this will not fill $1, $2, etc
+  # properly. Use #to_s =~.
+  #
   def =~(regex)
-    @path =~ regex
+    res = @path =~ regex
+    return res
   end
+
+  ##
+  #
+  # Perform a substitution on the path.
+  #
+  #--
+  #
+  # FIXME tests
+  #
+  #++
+  
+  def sub(regex, replacement=nil, &block)
+    Gem::Path.new(@path.sub(regex, replacement, &block))
+  end
+
 
   ##
   #

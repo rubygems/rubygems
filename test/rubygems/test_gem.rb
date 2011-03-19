@@ -417,7 +417,7 @@ class TestGem < Gem::TestCase
       File.join(@gemhome, *%W[gems #{@b2.full_name} lib]),
       File.join(@gemhome, *%W[gems #{@c1_2.full_name} lib]),
       File.join(@gemhome, *%W[gems #{@pl1.full_name} lib]),
-    ]
+    ].map { |x| Gem::Path.new(x) }
 
     assert_equal expected, Gem.all_load_paths.sort
   end
@@ -688,11 +688,11 @@ class TestGem < Gem::TestCase
     util_make_gems
 
     expected = [
-      File.join(@gemhome, *%W[gems #{@a3a.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@a_evil9.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@b2.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@c1_2.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@pl1.full_name} lib]),
+      @gemhome.add(*%W[gems #{@a3a.full_name} lib]),
+      @gemhome.add(*%W[gems #{@a_evil9.full_name} lib]),
+      @gemhome.add(*%W[gems #{@b2.full_name} lib]),
+      @gemhome.add(*%W[gems #{@c1_2.full_name} lib]),
+      @gemhome.add(*%W[gems #{@pl1.full_name} lib]),
     ]
 
     assert_equal expected, Gem.latest_load_paths.sort

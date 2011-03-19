@@ -542,9 +542,9 @@ class Gem::Specification
   # The full path to the gem (install path + full name).
 
   def full_gem_path
-    path = installation_path.gems.add(full_name)
+    path = installation_path.gems.add(full_name).expand_path
     return path if path.directory?
-    installation_path.gems.add(original_name)
+    installation_path.gems.add(original_name).expand_path
   end
 
   ##

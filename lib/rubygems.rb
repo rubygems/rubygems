@@ -319,7 +319,7 @@ module Gem
     unresolved_deps.delete spec.name
 
     require_paths = spec.require_paths.map do |path|
-      File.join spec.full_gem_path, path
+      spec.full_gem_path.add(path)
     end
 
     # gem directories must come after -I and ENV['RUBYLIB']
@@ -350,7 +350,7 @@ module Gem
 
     Gem.path.each do |gemdir|
       each_load_path all_partials(gemdir) do |load_path|
-        result << load_path
+        result << gemdir.add(load_path).expand_path
       end
     end
 
@@ -361,7 +361,7 @@ module Gem
   # Return all the partial paths in +gemdir+.
 
   def self.all_partials(gemdir)
-    Dir[File.join(gemdir, 'gems/*')]
+    Gem::FS.new(gemdir).gems.glob('*').map { |x| x.relative(gemdir) }
   end
 
   private_class_method :all_partials
@@ -412,7 +412,7 @@ module Gem
       raise Gem::Exception, msg
     end
 
-    File.join(spec.full_gem_path, spec.bindir, exec_name)
+    spec.full_gem_path.add(spec.bindir).add(exec_name)
   end
 
   ##
@@ -449,7 +449,7 @@ module Gem
   # The path to standard location of the user's .gemrc file.
 
   def self.config_file
-    File.join Gem.user_home, '.gemrc'
+    Gem.user_home.add('.gemrc')
   end
 
   ##
@@ -474,7 +474,7 @@ module Gem
   def self.datadir(gem_name)
     spec = @loaded_specs[gem_name]
     return nil if spec.nil?
-    File.join(spec.full_gem_path, 'data', gem_name)
+    spec.full_gem_path.add('data').add(gem_name)
   end
 
   ##
@@ -512,16 +512,16 @@ module Gem
 
   def self.each_load_path(partials)
     partials.each do |gp|
-      base = File.basename(gp)
-      specfn = File.join(dir, "specifications", base + ".gemspec")
-      if File.exist?(specfn)
+      base = gp.basename
+      specfn = dir.specifications.add(base.to_s + ".gemspec")
+      if specfn.exist?
         spec = eval(File.read(specfn))
         spec.require_paths.each do |rp|
-          yield(File.join(gp, rp))
+          yield(gp.add(rp))
         end
       else
-        filename = File.join(gp, 'lib')
-        yield(filename) if File.exist?(filename)
+        filename = dir.add(gp, 'lib')
+        yield(filename) if filename.exist?
       end
     end
   end
@@ -585,25 +585,30 @@ module Gem
   #   it should fallback to USERPROFILE and HOMEDRIVE + HOMEPATH (at
   #   least on Win32).
   #++
+  #--
+  #
+  # FIXME move to pathsupport
+  #
+  #++
 
   def self.find_home
     unless RUBY_VERSION > '1.9' then
       ['HOME', 'USERPROFILE'].each do |homekey|
-        return File.expand_path(ENV[homekey]) if ENV[homekey]
+        return Gem::Path.new(ENV[homekey]).expand_path if ENV[homekey]
       end
 
       if ENV['HOMEDRIVE'] && ENV['HOMEPATH'] then
-        return File.expand_path("#{ENV['HOMEDRIVE']}#{ENV['HOMEPATH']}")
+        return Gem::Path.new("#{ENV['HOMEDRIVE']}#{ENV['HOMEPATH']}").expand_path
       end
     end
 
-    File.expand_path "~"
+    return Gem::Path.new("~").expand_path
   rescue
     if File::ALT_SEPARATOR then
       drive = ENV['HOMEDRIVE'] || ENV['SystemDrive']
-      File.join(drive.to_s, '/')
+      Gem::Path.new(drive.to_s, '/').expand_path
     else
-      "/"
+      Gem::Path.new("/").expand_path
     end
   end
 
@@ -665,7 +670,7 @@ module Gem
 
     Gem.path.each do |gemdir|
       each_load_path(latest_partials(gemdir)) do |load_path|
-        result << load_path
+        result << gemdir.add(load_path).expand_path
       end
     end
 
@@ -678,8 +683,9 @@ module Gem
   def self.latest_partials(gemdir)
     latest = {}
     all_partials(gemdir).each do |gp|
-      base = File.basename(gp)
-      if base =~ /(.*)-((\d+\.)*\d+)/ then
+      base = gp.basename
+
+      if base.to_s =~ /(.*)-((\d+\.)*\d+)/ then
         name, version = $1, $2
         ver = Gem::Version.new(version)
         if latest[name].nil? || ver > latest[name][0]
@@ -857,10 +863,10 @@ module Gem
     raise ArgumentError, "gem #{gem_name} is not activated" if gem.nil?
     raise ArgumentError, "gem #{over_name} is not activated" if over.nil?
 
-    last_gem_path = File.join gem.full_gem_path, gem.require_paths.last
+    last_gem_path = gem.full_gem_path.add(gem.require_paths.last)
 
     over_paths = over.require_paths.map do |path|
-      File.join over.full_gem_path, path
+      over.full_gem_path.add(path)
     end
 
     over_paths.each do |path|
@@ -925,8 +931,8 @@ module Gem
 
     spec = matches.last
     spec.require_paths.each do |path|
-      result = File.join spec.full_gem_path, path, libfile
-      return result if File.exist? result
+      result = spec.full_gem_path.add(path, libfile)
+      return result if result.exist?
     end
 
     nil
@@ -937,12 +943,10 @@ module Gem
 
   def self.ruby
     if @ruby.nil? then
-      @ruby = File.join(ConfigMap[:bindir],
-                        ConfigMap[:ruby_install_name])
-      @ruby << ConfigMap[:EXEEXT]
+      @ruby = Gem::Path.new(ConfigMap[:bindir], ConfigMap[:ruby_install_name] + ConfigMap[:EXEEXT])
 
       # escape string in case path to ruby executable contain spaces.
-      @ruby.sub!(/.*\s.*/m, '"\&"')
+      @ruby = @ruby.sub(/.*\s.*/m, '"\&"')
     end
 
     @ruby
@@ -1270,7 +1274,7 @@ def RbConfig.datadir(package_name)
   require 'rbconfig/datadir'
 
   Gem.datadir(package_name) ||
-    File.join(Gem::ConfigMap[:datadir], package_name)
+    Gem::Path.new(Gem::ConfigMap[:datadir]).add(package_name)
 end
 
 require 'rubygems/exceptions'

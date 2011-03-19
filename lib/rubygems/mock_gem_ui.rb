@@ -7,6 +7,7 @@ require 'rubygems/user_interaction'
 
 class Gem::MockGemUi < Gem::StreamUI
   class TermError < RuntimeError; end
+  class SystemExitException < RuntimeError; end
 
   module TTY
 
@@ -56,7 +57,7 @@ class Gem::MockGemUi < Gem::StreamUI
     @terminated = true
 
     raise TermError unless status == 0
-    raise Gem::SystemExitException, status
+    raise SystemExitException, status
   end
 
 end

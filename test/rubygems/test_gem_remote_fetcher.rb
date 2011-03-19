@@ -625,6 +625,85 @@ gems:
     assert_equal t.rfc2822, conn.payload['if-modified-since']
   end
 
+  def test_user_agent
+    ua = @fetcher.user_agent
+
+    assert_match %r%^RubyGems/\S+ \S+ Ruby/\S+ \(.*?\)%,          ua
+    assert_match %r%RubyGems/#{Regexp.escape Gem::VERSION}%,      ua
+    assert_match %r% #{Regexp.escape Gem::Platform.local.to_s} %, ua
+    assert_match %r%Ruby/#{Regexp.escape RUBY_VERSION}%,          ua
+    assert_match %r%\(#{Regexp.escape RUBY_RELEASE_DATE} %,       ua
+  end
+
+  def test_user_agent_engine
+    util_save_version
+
+    Object.send :remove_const, :RUBY_ENGINE if defined?(RUBY_ENGINE)
+    Object.send :const_set,    :RUBY_ENGINE, 'vroom'
+
+    ua = @fetcher.user_agent
+
+    assert_match %r%\) vroom%, ua
+  ensure
+    util_restore_version
+  end
+
+  def test_user_agent_engine_ruby
+    util_save_version
+
+    Object.send :remove_const, :RUBY_ENGINE if defined?(RUBY_ENGINE)
+    Object.send :const_set,    :RUBY_ENGINE, 'ruby'
+
+    ua = @fetcher.user_agent
+
+    assert_match %r%\)%, ua
+  ensure
+    util_restore_version
+  end
+
+  def test_user_agent_patchlevel
+    util_save_version
+
+    Object.send :remove_const, :RUBY_PATCHLEVEL
+    Object.send :const_set,    :RUBY_PATCHLEVEL, 5
+
+    ua = @fetcher.user_agent
+
+    assert_match %r% patchlevel 5\)%, ua
+  ensure
+    util_restore_version
+  end
+
+  def test_user_agent_revision
+    util_save_version
+
+    Object.send :remove_const, :RUBY_PATCHLEVEL
+    Object.send :const_set,    :RUBY_PATCHLEVEL, -1
+    Object.send :remove_const, :RUBY_REVISION if defined?(RUBY_REVISION)
+    Object.send :const_set,    :RUBY_REVISION, 6
+
+    ua = @fetcher.user_agent
+
+    assert_match %r% revision 6\)%, ua
+    assert_match %r%Ruby/#{Regexp.escape RUBY_VERSION}dev%, ua
+  ensure
+    util_restore_version
+  end
+
+  def test_user_agent_revision_missing
+    util_save_version
+
+    Object.send :remove_const, :RUBY_PATCHLEVEL
+    Object.send :const_set,    :RUBY_PATCHLEVEL, -1
+    Object.send :remove_const, :RUBY_REVISION if defined?(RUBY_REVISION)
+
+    ua = @fetcher.user_agent
+
+    assert_match %r%\(#{Regexp.escape RUBY_RELEASE_DATE}\)%, ua
+  ensure
+    util_restore_version
+  end
+
   def test_yaml_error_on_size
     use_ui @ui do
       self.class.enable_yaml = false
@@ -745,6 +824,25 @@ gems:
 
     path = "/home/skillet"
     assert_equal "/home/skillet", @fetcher.correct_for_windows_path(path)
+  end
+
+  def util_save_version
+    @orig_RUBY_ENGINE     = RUBY_ENGINE if defined? RUBY_ENGINE
+    @orig_RUBY_PATCHLEVEL = RUBY_PATCHLEVEL
+    @orig_RUBY_REVISION   = RUBY_REVISION if defined? RUBY_REVISION
+  end
+
+  def util_restore_version
+    Object.send :remove_const, :RUBY_ENGINE if defined?(RUBY_ENGINE)
+    Object.send :const_set,    :RUBY_ENGINE, @orig_RUBY_ENGINE if
+      defined?(@orig_RUBY_ENGINE)
+
+    Object.send :remove_const, :RUBY_PATCHLEVEL
+    Object.send :const_set,    :RUBY_PATCHLEVEL, @orig_RUBY_PATCHLEVEL
+
+    Object.send :remove_const, :RUBY_REVISION if defined?(RUBY_REVISION)
+    Object.send :const_set,    :RUBY_REVISION, @orig_RUBY_REVISION if
+      defined?(@orig_RUBY_REVISION)
   end
 
 end

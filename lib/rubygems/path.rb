@@ -26,14 +26,14 @@ class Gem::Path
 
   ##
   #
-  # expand the path
+  # Expand the path. See File.expand_path.
   #
   #--
   # FIXME test
   #++
   
-  def expand_path
-    Gem::Path.new(File.expand_path(@path))
+  def expand_path(*args)
+    Gem::Path.new(File.expand_path(@path, *args))
   end
 
   ##
@@ -172,6 +172,9 @@ class Gem::Path
   #
   # Obtain the dirname for this path. See File.dirname
   #
+  #--
+  # FIXME test
+  #++
   def basename(ext='')
     Gem::Path.new(File.basename(@path, ext))
   end
@@ -225,8 +228,7 @@ class Gem::Path
   # properly. Use #to_s =~.
   #
   def =~(regex)
-    res = @path =~ regex
-    return res
+    @path =~ regex
   end
 
   ##
@@ -242,7 +244,6 @@ class Gem::Path
   def sub(regex, replacement=nil, &block)
     Gem::Path.new(@path.sub(regex, replacement, &block))
   end
-
 
   ##
   #

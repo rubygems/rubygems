@@ -608,8 +608,8 @@ class Gem::Specification
   # A macro to yield cached gem path
   #
   def cache_gem
-    cache_name = File.join(Gem.dir, 'cache', file_name)
-    return File.exist?(cache_name) ? cache_name : nil
+    cache_name = Gem.dir.cache.add(file_name)
+    return cache_name.exist? ? cache_name : nil
   end
 
   ##

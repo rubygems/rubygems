@@ -359,7 +359,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       yield(s) if block_given?
     end
 
-    path = File.join @gemhome, "specifications", spec.spec_name
+    path = @gemhome.specifications.add(spec.spec_name)
     spec.loaded_from = path
 
     Gem.source_index.add_spec spec

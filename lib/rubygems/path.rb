@@ -7,6 +7,8 @@
 #
 class Gem::Path
 
+  include Comparable
+
   ##
   #
   # Constructor. Takes a list of path parts, which are joined and then the path
@@ -57,8 +59,6 @@ class Gem::Path
   def subtract(part)
     Gem::Path.new(@path.sub(part, ''))
   end
-
-  alias - subtract
 
   ##
   #
@@ -142,5 +142,9 @@ class Gem::Path
   #
   def hash
     @path.hash
+  end
+
+  def <=>(obj)
+    @path <=> obj.to_s
   end
 end

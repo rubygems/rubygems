@@ -6,6 +6,9 @@ require 'fileutils'
 class TestGemFS < Gem::TestCase
 
   def test_fs_constructor
+    #
+    # These tests aren't probably necessary, but they help me sleep.
+    #
     fs = Gem::FS.new(@tempdir)
 
     assert_kind_of Gem::FS, fs, "kind of Gem::FS"

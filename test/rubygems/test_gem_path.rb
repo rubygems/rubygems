@@ -191,4 +191,64 @@ class TestGemPath < Gem::TestCase
     assert_equal path.to_s.hash, path.hash, "hash and hash of string are equivalent"
     assert_equal 0, path <=> path, "Comparable works"
   end
+
+  def test_expand_path
+    assert_equal File.expand_path("~"), 
+      Gem::Path.new("~").expand_path, 
+      "#expand_path works."
+  end
+
+  def test_plus
+    assert_equal "/tmp/foo.gem", 
+      Gem::Path.new("/tmp/foo") + ".gem", 
+      "#+ works."
+  end
+
+  def test_split
+    assert_equal ["/", "tmp", "foo"], 
+      Gem::Path.new("/tmp/foo").split,
+      "paths get split into individual components"
+
+    assert_equal ["/", "tmp", "foo"],
+      Gem::Path.new("/tmp//foo").split,
+      "paths get split into individual components, part 2"
+    
+    assert_equal [".", "tmp", "foo"],
+      Gem::Path.new("tmp/foo").split,
+      "paths get split into individual components, part 3"
+  end
+
+  def test_relative
+    assert_equal Gem::Path.new("foo"),
+      Gem::Path.new("/tmp/bar/foo").relative("/tmp/bar"),
+      "relative takes a string path and gets the right value"
+
+    assert_equal Gem::Path.new("foo"),
+      Gem::Path.new("/tmp/bar/foo").relative(Gem::Path.new("/tmp/bar")),
+      "relative takes a Gem::Path and gets the right value"
+
+    assert_equal Gem::Path.new("foo"),
+      Gem::Path.new("tmp/bar/foo").relative("tmp/bar"),
+      "relative paths should work with #relative"
+  end
+
+  def test_basename
+    assert_equal Gem::Path.new("foo"),
+      Gem::Path.new("/tmp/bar/foo").basename,
+      "basename works"
+
+    assert_equal Gem::Path.new("foo"),
+      Gem::Path.new("/tmp/bar/foo.gem").basename('.gem'),
+      "basename works with an extension argument"
+  end
+
+  def test_sub
+    assert_equal "/tmp/", 
+      Gem::Path.new("/tmp/foo").sub(/foo/, ''),
+      "basic #sub works"
+
+    assert_equal "/tmp/",
+      Gem::Path.new("/tmp/foo").sub(/foo/) { '' },
+      "block sub works"
+  end
 end

@@ -28,10 +28,6 @@ class Gem::Path
   #
   # Expand the path. See File.expand_path.
   #
-  #--
-  # FIXME test
-  #++
-  
   def expand_path(*args)
     Gem::Path.new(File.expand_path(@path, *args))
   end
@@ -66,14 +62,8 @@ class Gem::Path
 
   ##
   #
-  # Appends the path and another string.
+  # Appends the path and another string. Returns a string, not a Gem::Path.
   #
-  #--
-  #
-  # FIXME test
-  #
-  #++
-
   def +(other_str)
     @path + other_str
   end
@@ -92,10 +82,6 @@ class Gem::Path
   # Split the path by the path separator.
   #
   # Returns strings, not Gem::Path objects.
-  #
-  #-- 
-  #
-  # FIXME tests
   #
   def split
     array = []
@@ -122,19 +108,13 @@ class Gem::Path
   #   p = Gem::Path.new('/path/to/something')
   #   p.relative('/path/to').to_s #=> 'something'
   #
-  #--
-  # 
-  # FIXME tests
-  #
-  #++
-  
   def relative(path)
 
     if @path == path.to_s
       return self
     end
 
-    passed_parts = path.respond_to?(:split) ? path.split : Gem::Path.new(path).split
+    passed_parts = path.kind_of?(Gem::Path) ? path.split : Gem::Path.new(path).split
     internal_parts = split
 
     part = nil
@@ -172,9 +152,6 @@ class Gem::Path
   #
   # Obtain the dirname for this path. See File.dirname
   #
-  #--
-  # FIXME test
-  #++
   def basename(ext='')
     Gem::Path.new(File.basename(@path, ext))
   end
@@ -235,14 +212,12 @@ class Gem::Path
   #
   # Perform a substitution on the path.
   #
-  #--
-  #
-  # FIXME tests
-  #
-  #++
-  
   def sub(regex, replacement=nil, &block)
-    Gem::Path.new(@path.sub(regex, replacement, &block))
+    if replacement
+      Gem::Path.new(@path.sub(regex, replacement))
+    else
+      Gem::Path.new(@path.sub(regex, &block))
+    end
   end
 
   ##

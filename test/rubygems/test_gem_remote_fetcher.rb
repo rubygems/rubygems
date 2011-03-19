@@ -685,6 +685,7 @@ gems:
     ua = @fetcher.user_agent
 
     assert_match %r% revision 6\)%, ua
+    assert_match %r%Ruby/#{Regexp.escape RUBY_VERSION}dev%, ua
   ensure
     util_restore_version
   end

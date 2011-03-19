@@ -45,7 +45,7 @@ class Gem::Path
   # Append to this path. A new object will be returned.
   #
   def add(*parts)
-    self.class.new(@path, *parts)
+    Gem::Path.new(@path, *parts)
   end
 
   alias / add
@@ -55,7 +55,7 @@ class Gem::Path
   # Remove data from any part of the path. Exercise caution using this method.
   #
   def subtract(part)
-    self.class.new(@path.sub(part, ''))
+    Gem::Path.new(@path.sub(part, ''))
   end
 
   alias - subtract
@@ -73,7 +73,7 @@ class Gem::Path
   # Obtain the dirname for this path. See File.dirname
   #
   def dirname
-    self.class.new(File.dirname(@path))
+    Gem::Path.new(File.dirname(@path))
   end
 
   ## 
@@ -81,7 +81,7 @@ class Gem::Path
   # Obtain a list of Gem::Path objects given a glob pattern. See Dir.glob.
   #
   def glob(pattern)
-    Dir.glob(File.join(@path, pattern)).map { |x| self.class.new(x) }
+    Dir.glob(File.join(@path, pattern)).map { |x| Gem::Path.new(x) }
   end
 
   ##

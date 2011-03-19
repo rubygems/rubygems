@@ -1,5 +1,10 @@
 require 'rubygems/fs'
 
+##
+#
+# Gem::PathSupport facilitates the GEM_HOME and GEM_PATH environment settings
+# to the rest of RubyGems.
+#
 class Gem::PathSupport
   ##
   # The system environment provided. Defaults to ENV.
@@ -13,6 +18,11 @@ class Gem::PathSupport
   # Array of paths to search for Gems.
   attr_reader :path
 
+  ##
+  #
+  # Constructor. Takes a single argument which is to be treated like a
+  # hashtable, or defaults to ENV, the system environment.
+  #
   def initialize(env=ENV)
     @env = env
 

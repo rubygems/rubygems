@@ -24,7 +24,6 @@ class Gem::Path
     self.class.new(@path, *parts)
   end
 
-  alias + add
   alias / add
 
   def subtract(part)
@@ -54,22 +53,22 @@ class Gem::Path
   end
 
   def to_s
-    @path.to_s
+    @path.dup
   end
 
   alias to_str to_s
 
   def =~(regex)
-    to_s =~ regex
+    @path =~ regex
   end
 
   def eql?(other_path)
-    to_s.eql?(other_path.to_s)
+    @path.eql?(other_path.to_s)
   end
 
   alias == eql?
 
   def hash
-    to_s.hash
+    @path.hash
   end
 end

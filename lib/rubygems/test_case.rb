@@ -101,8 +101,10 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     @orig_gem_path = ENV['GEM_PATH']
 
     @ui = Gem::MockGemUi.new
+
     tmpdir = nil
     Dir.chdir Dir.tmpdir do tmpdir = Dir.pwd end # HACK OSX /private/tmp
+
     if ENV['KEEP_FILES'] then
       @tempdir = File.join tmpdir, "test_rubygems_#{$$}.#{Time.now.to_i}"
     else
@@ -246,6 +248,17 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     uninstaller = Gem::Uninstaller.new spec.name, :executables => true,
                  :user_install => true
     uninstaller.uninstall
+  end
+
+  ##
+  # creates a temporary directory with hax
+
+  def create_tmpdir
+    tmpdir = nil
+    Dir.chdir Dir.tmpdir do tmpdir = Dir.pwd end # HACK OSX /private/tmp
+    tmpdir = File.join tmpdir, "test_rubygems_#{$$}"
+    FileUtils.mkdir_p tmpdir
+    return tmpdir
   end
 
   ##

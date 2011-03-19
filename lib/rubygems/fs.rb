@@ -24,7 +24,7 @@ class Gem::FS < Gem::Path
   ##
   # Default directories in a gem repository
 
-  DIRECTORIES = %w[cache doc gems specifications] unless defined?(DIRECTORIES)
+  DIRECTORIES = %w[cache doc gems specifications]
 
   ##
   # Quietly ensure the named Gem directory contains all the proper

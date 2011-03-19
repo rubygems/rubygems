@@ -76,6 +76,13 @@ class Gem::Path
     Gem::Path.new(File.dirname(@path))
   end
 
+  ##
+  # Does this path exist?
+  #
+  def exist?
+    File.exist?(@path)
+  end
+
   ## 
   #
   # Obtain a list of Gem::Path objects given a glob pattern. See Dir.glob.

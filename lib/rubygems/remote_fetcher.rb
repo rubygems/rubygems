@@ -69,6 +69,7 @@ class Gem::RemoteFetcher
       when URI::HTTP then proxy
       else URI.parse(proxy)
       end
+    @user_agent = user_agent
   end
 
   ##
@@ -344,12 +345,7 @@ class Gem::RemoteFetcher
       request.basic_auth uri.user, uri.password
     end
 
-    ua = "RubyGems/#{Gem::VERSION} #{Gem::Platform.local}"
-    ua << " Ruby/#{RUBY_VERSION} (#{RUBY_RELEASE_DATE}"
-    ua << " patchlevel #{RUBY_PATCHLEVEL}" if defined? RUBY_PATCHLEVEL
-    ua << ")"
-
-    request.add_field 'User-Agent', ua
+    request.add_field 'User-Agent', @user_agent
     request.add_field 'Connection', 'keep-alive'
     request.add_field 'Keep-Alive', '30'
 
@@ -439,6 +435,25 @@ class Gem::RemoteFetcher
 
     connection.finish
     connection.start
+  end
+
+  def user_agent
+    ua = "RubyGems/#{Gem::VERSION} #{Gem::Platform.local}"
+
+    ruby_version = RUBY_VERSION
+    ruby_version += 'dev' if RUBY_PATCHLEVEL == -1
+
+    ua << " Ruby/#{ruby_version} (#{RUBY_RELEASE_DATE}"
+    if RUBY_PATCHLEVEL >= 0 then
+      ua << " patchlevel #{RUBY_PATCHLEVEL}"
+    elsif defined?(RUBY_REVISION) then
+      ua << " revision #{RUBY_REVISION}"
+    end
+    ua << ")"
+
+    ua << " #{RUBY_ENGINE}" if defined?(RUBY_ENGINE) and RUBY_ENGINE != 'ruby'
+
+    ua
   end
 
 end

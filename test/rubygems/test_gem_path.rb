@@ -142,5 +142,53 @@ class TestGemPath < Gem::TestCase
     assert_equal %w[file_one file_two not_file_three].map { |x| path.add(x) }, 
       path.glob("*file*").sort, 
       "globs work, part 2"
+
+    FileUtils.rm_r path
+  end
+
+  def test_stat
+    path = Gem::Path.new(@tempdir, 'file')
+
+    File.open(path, 'w').close
+
+    assert_kind_of File::Stat, path.stat, 
+      "stat returns a File::Stat object"
+
+    FileUtils.rm path
+  end
+
+  def test_directory?
+    path = Gem::Path.new(@tempdir, 'dir')
+
+    FileUtils.mkdir_p path
+
+    assert path.directory?, "path is a directory"
+
+    file = Gem::Path.new(@tempdir, 'file')
+
+    File.open(file, 'w').close
+
+    assert !file.directory?, "file is not a directory"
+
+    FileUtils.rm_r path
+    FileUtils.rm file
+  end
+
+  def test_string_handling
+    path = Gem::Path.new(@tempdir)
+
+    assert_kind_of String, path.to_s, "to_s yields a string"
+    assert_kind_of String, path.to_str, "to_str yields a string"
+
+    refute_equal path.instance_variable_get(:@path).object_id, 
+      path.to_s.object_id, 
+      "objects are not the same"
+
+    assert_respond_to path, :=~, "responds to =~"
+
+    assert path =~ /#{Regexp.escape @tempdir}/
+
+    assert_equal path.to_s.hash, path.hash, "hash and hash of string are equivalent"
+    assert_equal 0, path <=> path, "Comparable works"
   end
 end

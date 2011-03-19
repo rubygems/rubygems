@@ -79,7 +79,7 @@ module Gem
     if defined? RUBY_FRAMEWORK_VERSION then # mac framework support
       Gem::Path.new '/usr/bin'
     else # generic install
-      Gem::Path.new ConfigMap[:bindir].to_s
+      Gem::Path.new ConfigMap[:bindir]
     end
   end
 

@@ -76,7 +76,6 @@ class Gem::Path
     Gem::Path.new(@path.sub(part, ''))
   end
 
-
   ##
   #
   # Split the path by the path separator.
@@ -239,6 +238,10 @@ class Gem::Path
     @path.hash
   end
 
+  ##
+  #
+  # Comparison operator. Used by comparable.
+  #
   def <=>(obj)
     @path <=> obj.to_s
   end

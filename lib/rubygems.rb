@@ -513,9 +513,9 @@ module Gem
   def self.each_load_path(partials)
     partials.each do |gp|
       base = gp.basename
-      specfn = dir.specifications.add(base.to_s + ".gemspec")
+      specfn = dir.specifications.add(base + ".gemspec")
       if specfn.exist?
-        spec = eval(File.read(specfn))
+        spec = eval(specfn.read)
         spec.require_paths.each do |rp|
           yield(gp.add(rp))
         end

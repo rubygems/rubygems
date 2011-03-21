@@ -251,4 +251,13 @@ class TestGemPath < Gem::TestCase
       Gem::Path.new("/tmp/foo").sub(/foo/) { '' },
       "block sub works"
   end
+
+  def test_read
+
+    File.open(@gemhome.add('test_read'), 'w') { |f| f.print "hello" }
+
+    assert_equal "hello", 
+      @gemhome.add('test_read').read, 
+      "#read works"
+  end
 end

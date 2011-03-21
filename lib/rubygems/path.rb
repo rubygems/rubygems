@@ -141,6 +141,14 @@ class Gem::Path
 
   ##
   #
+  # Read the full contents of path and return a string. See File.read.
+  #
+  def read
+    File.read(@path)
+  end
+
+  ##
+  #
   # Obtain the dirname for this path. See File.dirname
   #
   def dirname
@@ -240,7 +248,7 @@ class Gem::Path
 
   ##
   #
-  # Comparison operator. Used by comparable.
+  # Comparison operator. Used by Comparable.
   #
   def <=>(obj)
     @path <=> obj.to_s

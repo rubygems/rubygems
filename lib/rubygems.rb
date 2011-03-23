@@ -607,6 +607,7 @@ module Gem
   # Zlib::GzipReader wrapper that unzips +data+.
 
   def self.gunzip(data)
+    # TODO: move to utils
     require 'stringio'
     require 'zlib'
     data = StringIO.new data
@@ -618,6 +619,7 @@ module Gem
   # Zlib::GzipWriter wrapper that zips +data+.
 
   def self.gzip(data)
+    # TODO: move to utils
     require 'stringio'
     require 'zlib'
     zipped = StringIO.new
@@ -631,6 +633,7 @@ module Gem
   # A Zlib::Inflate#inflate wrapper
 
   def self.inflate(data)
+    # TODO: move to utils
     require 'zlib'
     Zlib::Inflate.inflate data
   end
@@ -640,12 +643,14 @@ module Gem
   # <tt>https://rubygems.org</tt>.
 
   def self.host
+    # TODO: move to utils
     @host ||= "https://rubygems.org"
   end
 
   ## Set the default RubyGems API host.
 
   def self.host= host
+    # TODO: move to utils
     @host = host
   end
 

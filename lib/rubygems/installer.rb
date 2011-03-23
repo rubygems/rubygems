@@ -479,7 +479,7 @@ TEXT
 
   def build_extensions
     return if @spec.extensions.empty?
-    say "Building native extensions.  This could take a while..."
+    say "Building native extensions. This could take a while..."
     dest_path = File.join @gem_dir, @spec.require_paths.first
     ran_rake = false # only run rake once
 

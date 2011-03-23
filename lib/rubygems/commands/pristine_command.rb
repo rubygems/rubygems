@@ -76,6 +76,8 @@ revert the gem.
       gem = spec.cache_gem
 
       if gem.nil? then
+        require 'rubygems/remote_fetcher'
+
         say "Cached gem for #{spec.full_name} not found, attempting to fetch..."
         dep = Gem::Dependency.new spec.name, spec.version
         Gem::RemoteFetcher.fetcher.download_to_cache dep

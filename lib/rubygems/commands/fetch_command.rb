@@ -35,18 +35,21 @@ class Gem::Commands::FetchCommand < Gem::Command
     version = options[:version] || Gem::Requirement.default
     all = Gem::Requirement.default != version
 
+    platform  = Gem.platforms.last
     gem_names = get_all_gem_names
 
     gem_names.each do |gem_name|
       dep = Gem::Dependency.new gem_name, version
       dep.prerelease = options[:prerelease]
 
-      specs_and_sources = Gem::SpecFetcher.fetcher.fetch(dep, all, true,
-                                                         dep.prerelease?)
-
       specs_and_sources, errors =
         Gem::SpecFetcher.fetcher.fetch_with_errors(dep, all, true,
                                                    dep.prerelease?)
+
+      if platform then
+        filtered = specs_and_sources.select { |s,| s.platform == platform }
+        specs_and_sources = filtered unless filtered.empty?
+      end
 
       spec, source_uri = specs_and_sources.sort_by { |s,| s.version }.last
 

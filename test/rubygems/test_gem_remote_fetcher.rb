@@ -146,7 +146,7 @@ gems:
       fetcher.fetch_size 'gems.example.com/yaml'
     end
 
-    assert_equal 'uri scheme is invalid', e.message
+    assert_equal 'uri scheme is invalid: nil', e.message
   end
 
   def test_fetch_size_socket_error
@@ -416,7 +416,7 @@ gems:
   def test_fetch_path_gzip
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri, mtime, head = nil)
+    def fetcher.fetch_http(uri, mtime, head = nil)
       Gem.gzip 'foo'
     end
 
@@ -426,7 +426,7 @@ gems:
   def test_fetch_path_gzip_unmodified
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri, mtime, head = nil)
+    def fetcher.fetch_http(uri, mtime, head = nil)
       nil
     end
 
@@ -436,53 +436,59 @@ gems:
   def test_fetch_path_io_error
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri, mtime, head = nil)
+    def fetcher.fetch_http(*)
       raise EOFError
     end
 
+    url = 'http://example.com/uri'
+
     e = assert_raises Gem::RemoteFetcher::FetchError do
-      fetcher.fetch_path 'uri'
+      fetcher.fetch_path url
     end
 
-    assert_equal 'EOFError: EOFError (uri)', e.message
-    assert_equal 'uri', e.uri
+    assert_equal "EOFError: EOFError (#{url})", e.message
+    assert_equal url, e.uri
   end
 
   def test_fetch_path_socket_error
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri, mtime, head = nil)
+    def fetcher.fetch_http(uri, mtime, head = nil)
       raise SocketError
     end
 
+    url = 'http://example.com/uri'
+
     e = assert_raises Gem::RemoteFetcher::FetchError do
-      fetcher.fetch_path 'uri'
+      fetcher.fetch_path url
     end
 
-    assert_equal 'SocketError: SocketError (uri)', e.message
-    assert_equal 'uri', e.uri
+    assert_equal "SocketError: SocketError (#{url})", e.message
+    assert_equal url, e.uri
   end
 
   def test_fetch_path_system_call_error
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri, mtime = nil, head = nil)
+    def fetcher.fetch_http(uri, mtime = nil, head = nil)
       raise Errno::ECONNREFUSED, 'connect(2)'
     end
 
+    url = 'http://example.com/uri'
+
     e = assert_raises Gem::RemoteFetcher::FetchError do
-      fetcher.fetch_path 'uri'
+      fetcher.fetch_path url
     end
 
-    assert_match %r|ECONNREFUSED:.*connect\(2\) \(uri\)\z|,
+    assert_match %r|ECONNREFUSED:.*connect\(2\) \(#{Regexp.escape url}\)\z|,
                  e.message
-    assert_equal 'uri', e.uri
+    assert_equal url, e.uri
   end
 
   def test_fetch_path_unmodified
     fetcher = Gem::RemoteFetcher.new nil
 
-    def fetcher.open_uri_or_path(uri, mtime, head = nil)
+    def fetcher.fetch_http(uri, mtime, head = nil)
       nil
     end
 
@@ -545,16 +551,18 @@ gems:
     end
   end
 
-  def test_open_uri_or_path
+  def test_fetch_http
     fetcher = Gem::RemoteFetcher.new nil
+    url = 'http://gems.example.com/redirect'
 
     conn = Object.new
     def conn.started?() true end
     def conn.request(req)
+      url = 'http://gems.example.com/redirect'
       unless defined? @requested then
         @requested = true
         res = Net::HTTPMovedPermanently.new nil, 301, nil
-        res.add_field 'Location', 'http://gems.example.com/real_path'
+        res.add_field 'Location', url
         res
       else
         res = Net::HTTPOK.new nil, 200, nil
@@ -566,19 +574,21 @@ gems:
     conn = { "#{Thread.current.object_id}:gems.example.com:80" => conn }
     fetcher.instance_variable_set :@connections, conn
 
-    data = fetcher.open_uri_or_path 'http://gems.example.com/redirect'
+    data = fetcher.fetch_http URI.parse(url)
 
     assert_equal 'real_path', data
   end
 
-  def test_open_uri_or_path_limited_redirects
+  def test_fetch_http_redirects
     fetcher = Gem::RemoteFetcher.new nil
+    url = 'http://gems.example.com/redirect'
 
     conn = Object.new
     def conn.started?() true end
     def conn.request(req)
+      url = 'http://gems.example.com/redirect'
       res = Net::HTTPMovedPermanently.new nil, 301, nil
-      res.add_field 'Location', 'http://gems.example.com/redirect'
+      res.add_field 'Location', url
       res
     end
 
@@ -586,11 +596,10 @@ gems:
     fetcher.instance_variable_set :@connections, conn
 
     e = assert_raises Gem::RemoteFetcher::FetchError do
-      fetcher.open_uri_or_path 'http://gems.example.com/redirect'
+      fetcher.fetch_http URI.parse(url)
     end
 
-    assert_equal 'too many redirects (http://gems.example.com/redirect)',
-                 e.message
+    assert_equal "too many redirects (#{url})", e.message
   end
 
   def test_request

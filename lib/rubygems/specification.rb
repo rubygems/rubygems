@@ -164,23 +164,6 @@ class Gem::Specification
   end
 
   ##
-  # Same as :attribute, but ensures that values assigned to the attribute
-  # are array values by applying :to_a to the value.
-
-  def self.array_attribute(name)
-    code = %{
-      def #{name}
-        @#{name} ||= []
-      end
-      def #{name}=(value)
-        @#{name} = Array(value)
-      end
-    }
-
-    module_eval code, __FILE__, __LINE__ - 9
-  end
-
-  ##
   # Dump only crucial instance variables.
   #--
   # MAINTAIN ORDER!
@@ -1143,8 +1126,6 @@ class Gem::Specification
   attr_accessor :post_install_message
 
   ##
-  # :attr_accessor: authors
-  #
   # The list of author names who wrote this gem.
   #
   # If you are providing multiple authors and multiple emails they should be
@@ -1154,19 +1135,27 @@ class Gem::Specification
   #
   # Gives a hash of author name to email address.
 
-  array_attribute :authors
+  def authors
+    @authors ||= []
+  end
+
+  def authors=(value)
+    @authors = Array(value)
+  end
 
   ##
-  # :attr_accessor: licenses
-  #
   # The license(s) for the library.  Each license must be a short name, no
   # more than 64 characters.
 
-  array_attribute :licenses
+  def licenses
+    @licenses ||= []
+  end
+
+  def licenses=(value)
+    @licenses = Array(value)
+  end
 
   ##
-  # :attr_accessor: files
-  #
   # Files included in this gem.  You cannot append to this accessor, you must
   # assign to it.
   #
@@ -1175,64 +1164,97 @@ class Gem::Specification
   # Directories are automatically stripped from this list when building a gem,
   # other non-files cause an error.
 
-  array_attribute :files
+  def files
+    @files ||= []
+  end
+
+  def files=(value)
+    @files = Array(value)
+  end
 
   ##
-  # :attr_accessor: test_files
-  #
   # Test files included in this gem.  You cannot append to this accessor, you
   # must assign to it.
 
-  array_attribute :test_files
+  def test_files
+    @test_files ||= []
+  end
+
+  def test_files=(value)
+    @test_files = Array(value)
+  end
 
   ##
-  # :attr_accessor: rdoc_options
-  #
   # An ARGV style array of options to RDoc
 
-  array_attribute :rdoc_options
+  def rdoc_options
+    @rdoc_options ||= []
+  end
+
+  def rdoc_options=(value)
+    # TODO: warn about setting instead of pushing
+    @rdoc_options = Array(value)
+  end
 
   ##
-  # :attr_accessor: extra_rdoc_files
-  #
   # Extra files to add to RDoc such as README or doc/examples.txt
 
-  array_attribute :extra_rdoc_files
+  def extra_rdoc_files
+    @extra_rdoc_files ||= []
+  end
+
+  def extra_rdoc_files=(value)
+    # TODO: warn about setting instead of pushing
+    @extra_rdoc_files = Array(value)
+  end
 
   ##
-  # :attr_accessor: executables
-  #
   # Executables included in the gem.
 
-  array_attribute :executables
+  def executables
+    @executables ||= []
+  end
+
+  def executables=(value)
+    # TODO: warn about setting instead of pushing
+    @executables = Array(value)
+  end
 
   ##
-  # :attr_accessor: extensions
-  #
   # Extensions to build when installing the gem.  See
   # Gem::Installer#build_extensions for valid values.
 
-  array_attribute :extensions
+  def extensions
+    @extensions ||= []
+  end
+
+  def extensions=(value)
+    # TODO: warn about setting instead of pushing
+    @extensions = Array(value)
+  end
 
   ##
-  # :attr_accessor: requirements
-  #
   # An array or things required by this gem.  Not used by anything
   # presently.
 
-  array_attribute :requirements
+  def requirements
+    @requirements ||= []
+  end
+
+  def requirements=(value)
+    # TODO: warn about setting instead of pushing
+    @requirements = Array(value)
+  end
 
   ##
-  # :attr_reader: dependencies
-  #
   # A list of Gem::Dependency objects this gem depends on.
   #
   # Use #add_dependency or #add_development_dependency to add dependencies to
   # a gem.
 
-  array_attribute :dependencies
-
-  private :"dependencies="
+  def dependencies
+    @dependencies ||= []
+  end
 
   # :section: Aliased gemspec attributes
 

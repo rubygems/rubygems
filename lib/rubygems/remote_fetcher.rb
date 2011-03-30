@@ -188,18 +188,54 @@ class Gem::RemoteFetcher
   end
 
   ##
+  # File Fetcher. Dispatched by +fetch_path+. Use it instead.
+
+  def fetch_file uri, *_
+    Gem.read_binary correct_for_windows_path uri.path
+  end
+
+  ##
+  # HTTP Fetcher. Dispatched by +fetch_path+. Use it instead.
+
+  def fetch_http uri, last_modified = nil, head = false, depth = 0
+    fetch_type = head ? Net::HTTP::Head : Net::HTTP::Get
+    response   = request uri, fetch_type, last_modified
+
+    case response
+    when Net::HTTPOK, Net::HTTPNotModified then
+      head ? response : response.body
+    when Net::HTTPMovedPermanently, Net::HTTPFound, Net::HTTPSeeOther,
+         Net::HTTPTemporaryRedirect then
+      raise FetchError.new('too many redirects', uri) if depth > 10
+
+      location = URI.parse response['Location']
+      fetch_http(location, last_modified, head, depth + 1)
+    else
+      raise FetchError.new("bad response #{response.message} #{response.code}", uri)
+    end
+  end
+
+  alias :fetch_https :fetch_http
+
+  ##
   # Downloads +uri+ and returns it as a String.
 
   def fetch_path(uri, mtime = nil, head = false)
-    data = open_uri_or_path uri, mtime, head
+    uri = URI.parse uri unless URI::Generic === uri
+
+    raise ArgumentError, "bad uri: #{uri}" unless uri
+    raise ArgumentError, "uri scheme is invalid: #{uri.scheme.inspect}" unless
+      uri.scheme
+
+    data = send "fetch_#{uri.scheme}", uri, mtime, head
     data = Gem.gunzip data if data and not head and uri.to_s =~ /gz$/
     data
   rescue FetchError
     raise
   rescue Timeout::Error
-    raise FetchError.new('timed out', uri)
+    raise FetchError.new('timed out', uri.to_s)
   rescue IOError, SocketError, SystemCallError => e
-    raise FetchError.new("#{e.class}: #{e}", uri)
+    raise FetchError.new("#{e.class}: #{e}", uri.to_s)
   end
 
   ##
@@ -301,36 +337,8 @@ class Gem::RemoteFetcher
   # read from the filesystem instead.
 
   def open_uri_or_path(uri, last_modified = nil, head = false, depth = 0)
-    raise "block is dead" if block_given?
-
-    uri = URI.parse uri unless URI::Generic === uri
-
-    # This check is redundant unless Gem::RemoteFetcher is likely
-    # to be used directly, since the scheme is checked elsewhere.
-    # - Daniel Berger
-    unless ['http', 'https', 'file'].include?(uri.scheme)
-     raise ArgumentError, 'uri scheme is invalid'
-    end
-
-    if uri.scheme == 'file'
-      path = correct_for_windows_path(uri.path)
-      return Gem.read_binary(path)
-    end
-
-    fetch_type = head ? Net::HTTP::Head : Net::HTTP::Get
-    response   = request uri, fetch_type, last_modified
-
-    case response
-    when Net::HTTPOK, Net::HTTPNotModified then
-      head ? response : response.body
-    when Net::HTTPMovedPermanently, Net::HTTPFound, Net::HTTPSeeOther,
-         Net::HTTPTemporaryRedirect then
-      raise FetchError.new('too many redirects', uri) if depth > 10
-
-      open_uri_or_path(response['Location'], last_modified, head, depth + 1)
-    else
-      raise FetchError.new("bad response #{response.message} #{response.code}", uri)
-    end
+    raise "NO: Use fetch_path instead"
+    # TODO: deprecate for fetch_path
   end
 
   ##

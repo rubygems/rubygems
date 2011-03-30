@@ -259,5 +259,22 @@ class TestGemPath < Gem::TestCase
     assert_equal "hello", 
       @gemhome.add('test_read').read, 
       "#read works"
+
+    assert_equal "he",
+      @gemhome.add('test_read').read(2),
+      "#read works with a numeric argument"
+
+    FileUtils.rm @gemhome.add('test_read')
+  end
+
+  def test_file?
+    FileUtils.mkdir(@gemhome.add('test_dir'))
+    File.open(@gemhome.add('test_file'), 'w').close
+
+    assert @gemhome.add('test_file').file?, "test_file is a file"
+    refute @gemhome.add('test_dir').file?, "test_dir is not a file"
+
+    FileUtils.rm_r @gemhome.add('test_dir')
+    FileUtils.rm @gemhome.add('test_file')
   end
 end

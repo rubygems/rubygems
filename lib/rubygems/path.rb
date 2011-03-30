@@ -48,6 +48,14 @@ class Gem::Path
     File.writable?(@path)
   end
 
+  ##
+  #
+  # Is this path a file?
+  #
+  def file?
+    File.file?(@path)
+  end
+
   alias path dup
 
   ##
@@ -143,8 +151,8 @@ class Gem::Path
   #
   # Read the full contents of path and return a string. See File.read.
   #
-  def read
-    File.read(@path)
+  def read(*args)
+    File.read(@path, *args)
   end
 
   ##

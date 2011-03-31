@@ -406,22 +406,6 @@ class TestGem < Gem::TestCase
     assert_activate %w[d-1 e-1], e1, "d"
   end
 
-  def test_self_all_load_paths
-    util_make_gems
-
-    expected = [
-      File.join(@gemhome, *%W[gems #{@a1.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@a2.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@a3a.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@a_evil9.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@b2.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@c1_2.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@pl1.full_name} lib]),
-    ]
-
-    assert_equal expected, Gem.all_load_paths.sort
-  end
-
   def test_self_available?
     util_make_gems
     assert(Gem.available?("a"))
@@ -680,20 +664,6 @@ class TestGem < Gem::TestCase
     assert_equal expected, Gem.find_files('sff/**.rb'), '[ruby-core:31730]'
   ensure
     assert_equal cwd, $LOAD_PATH.shift
-  end
-
-  def test_self_latest_load_paths
-    util_make_gems
-
-    expected = [
-      File.join(@gemhome, *%W[gems #{@a3a.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@a_evil9.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@b2.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@c1_2.full_name} lib]),
-      File.join(@gemhome, *%W[gems #{@pl1.full_name} lib]),
-    ]
-
-    assert_equal expected, Gem.latest_load_paths.sort
   end
 
   def test_self_loaded_specs

@@ -28,6 +28,7 @@ end
 require 'rubygems/defaults'
 require "rubygems/dependency_list"
 require 'rbconfig'
+require "rubygems/deprecate"
 
 ##
 # RubyGems is the Ruby standard for publishing and managing third party
@@ -231,7 +232,6 @@ module Gem
   # Gem::Requirement and Gem::Version documentation.
 
   def self.activate(dep, *requirements)
-    # TODO: warn of deprecation
     activate_dep dep, *requirements
   end
 
@@ -348,7 +348,6 @@ module Gem
   # Gem installation.
 
   def self.all_load_paths
-    # TODO: deprecate -- not called anywhere
     result = []
 
     Gem.path.each do |gemdir|
@@ -659,7 +658,6 @@ module Gem
   # gems in the Gem installation.
 
   def self.latest_load_paths
-    # TODO: deprecate -- not called anywhere
     result = []
 
     Gem.path.each do |gemdir|
@@ -868,7 +866,6 @@ module Gem
   # using #find_files.
 
   def self.promote_load_path(gem_name, over_name)
-    # TODO: deprecate -- not called anywhere -- untested
     gem = Gem.loaded_specs[gem_name]
     over = Gem.loaded_specs[over_name]
 
@@ -1242,11 +1239,6 @@ module Gem
   end
 
   def self.cache # :nodoc:
-    warn "#{Gem.location_of_caller.join ':'}:Warning: " \
-      "Gem::cache is deprecated and will be removed on or after " \
-      "August 2011.  " \
-      "Use Gem::source_index."
-
     source_index
   end
 
@@ -1266,6 +1258,16 @@ module Gem
   autoload :Platform, 'rubygems/platform'
   autoload :Builder, 'rubygems/builder'
   autoload :ConfigFile, 'rubygems/config_file'
+
+  class << self
+    extend Deprecate
+    # Can't do this one until I add Specification#activate
+    # deprecate :activate,          "Specification#activate", 2011, 10
+    deprecate :all_load_paths,    :none,                    2011, 10
+    deprecate :latest_load_paths, :none,                    2011, 10
+    deprecate :promote_load_path, :none,                    2011, 10
+    deprecate :cache,             "Gem::source_index",      2011, 8
+  end
 end
 
 module Kernel

@@ -33,11 +33,12 @@ module Deprecate
       old = "_deprecated_#{name}"
       alias_method old, name
       define_method name do |*args|
-        klass = self.class.kind_of? Module
+        klass = self.kind_of? Module
         target = klass ? "#{self}." : "#{self.class}#"
         msg = [ "NOTE: #{target}#{name} is deprecated",
                 repl == :none ? " with no replacement" : ", use #{repl}",
-                ". It will be removed on or after %4d-%02d-01" % [year, month]
+                ". It will be removed on or after %4d-%02d-01." % [year, month],
+                "\n#{target}#{name} called from #{Gem.location_of_caller.join(":")}",
               ]
         warn "#{msg.join}."
         send old, *args

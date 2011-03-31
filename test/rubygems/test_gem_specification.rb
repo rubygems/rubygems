@@ -44,7 +44,6 @@ end
     @a1 = quick_spec 'a', '1' do |s|
       s.executable = 'exec'
       s.extensions << 'ext/a/extconf.rb'
-      s.has_rdoc = 'true'
       s.test_file = 'test/suite.rb'
       s.requirements << 'A working computer'
       s.rubyforge_project = 'example'
@@ -72,7 +71,6 @@ end
       bindir
       cert_chain
       date
-      default_executable
       dependencies
       description
       email
@@ -80,7 +78,6 @@ end
       extensions
       extra_rdoc_files
       files
-      has_rdoc
       homepage
       licenses
       name
@@ -136,7 +133,6 @@ end
     spec = eval LEGACY_RUBY_SPEC
     assert_equal 'keyedlist', spec.name
     assert_equal '0.4.0', spec.version.to_s
-    assert_equal true, spec.has_rdoc?
     assert_equal Gem::Specification::TODAY, spec.date
     assert spec.required_ruby_version.satisfied_by?(Gem::Version.new('1'))
     assert_equal false, spec.has_unit_tests?
@@ -191,8 +187,6 @@ end
     assert_equal [], spec.requirements
     assert_equal [], spec.dependencies
     assert_equal 'bin', spec.bindir
-    assert_equal true, spec.has_rdoc
-    assert_equal true, spec.has_rdoc?
     assert_equal '>= 0', spec.required_ruby_version.to_s
     assert_equal '>= 0', spec.required_rubygems_version.to_s
   end
@@ -274,9 +268,6 @@ end
 
     assert_equal 'bin', spec.bindir
     assert_same spec.bindir, new_spec.bindir
-
-    assert_equal true, spec.has_rdoc
-    assert_same spec.has_rdoc, new_spec.has_rdoc
 
     assert_equal '>= 0', spec.required_ruby_version.to_s
     assert_same spec.required_ruby_version, new_spec.required_ruby_version
@@ -380,14 +371,6 @@ end
     assert_equal Time.utc(2003, 9, 17, 0,0,0), @a1.date
   end
 
-  def test_default_executable
-    assert_equal 'exec', @a1.default_executable
-
-    @a1.default_executable = nil
-    @a1.instance_variable_set :@executables, nil
-    assert_equal nil, @a1.default_executable
-  end
-
   def test_dependencies
     util_setup_deps
     assert_equal [@bonobo, @monkey], @gem.dependencies
@@ -439,21 +422,12 @@ end
       s.homepage = %q{http://www.spice-of-life.net/download/cgikit/}
       s.autorequire = %q{cgikit}
       s.bindir = nil
-      s.has_rdoc = true
       s.required_ruby_version = nil
       s.platform = nil
       s.files = ["lib/cgikit", "lib/cgikit.rb", "lib/cgikit/components", "..."]
     end
 
     assert_equal cgikit, cgikit
-  end
-
-  def test_equals2_default_executable
-    spec = @a1.dup
-    spec.default_executable = 'xx'
-
-    refute_equal @a1, spec
-    refute_equal spec, @a1
   end
 
   def test_equals2_extensions
@@ -621,21 +595,6 @@ end
       @a1.platform = 'current'
       assert_equal expected, @a1.full_name
     end
-  end
-
-  def test_has_rdoc_eh
-    assert @a1.has_rdoc?
-  end
-
-  def test_has_rdoc_equals
-
-    use_ui @ui do
-      @a1.has_rdoc = false
-    end
-
-    assert_equal '', @ui.output
-
-    assert_equal true, @a1.has_rdoc
   end
 
   def test_hash
@@ -904,7 +863,6 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(\">= 0\") if s.respond_to? :required_rubygems_version=
   s.authors = [\"A User\"]
   s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
-  s.default_executable = %q{exec}
   s.description = %q{This is a test description}
   s.email = %q{example@example.com}
   s.executables = [\"exec\"]

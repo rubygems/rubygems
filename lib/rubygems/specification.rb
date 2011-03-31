@@ -7,6 +7,7 @@
 require 'rubygems/version'
 require 'rubygems/requirement'
 require 'rubygems/platform'
+require "rubygems/deprecate"
 
 # :stopdoc:
 class Date; end # for ruby_code if date.rb wasn't required
@@ -90,7 +91,6 @@ class Gem::Specification
     :bindir                    => "bin",
     :cert_chain                => [],
     :date                      => TODAY,
-    :default_executable        => nil,
     :dependencies              => [],
     :description               => nil,
     :email                     => nil,
@@ -98,7 +98,6 @@ class Gem::Specification
     :extensions                => [],
     :extra_rdoc_files          => [],
     :files                     => [],
-    :has_rdoc                  => true,
     :homepage                  => nil,
     :licenses                  => [],
     :name                      => nil,
@@ -186,7 +185,7 @@ class Gem::Specification
       @authors,
       @description,
       @homepage,
-      @has_rdoc,
+      true, # has_rdoc
       @new_platform,
       @licenses
     ]
@@ -254,12 +253,10 @@ class Gem::Specification
   end
 
   def test_suite_file # :nodoc:
-    warn 'test_suite_file deprecated, use test_files'
     test_files.first
   end
 
   def test_suite_file=(val) # :nodoc:
-    warn 'test_suite_file= deprecated, use test_files='
     @test_files = [] unless defined? @test_files
     @test_files << val
   end
@@ -698,6 +695,7 @@ class Gem::Specification
       :required_rubygems_version,
       :specification_version,
       :version,
+      :has_rdoc,
     ]
 
     @@attributes.each do |attr_name|
@@ -1334,7 +1332,6 @@ class Gem::Specification
   # Formerly used to indicate this gem was RDoc-capable.
 
   def has_rdoc
-    # TODO: deprecate
     true
   end
 
@@ -1344,7 +1341,6 @@ class Gem::Specification
   # Formerly used to indicate this gem was RDoc-capable.
 
   def has_rdoc= v
-    # TODO: deprecate
     @has_rdoc = true
   end
 
@@ -1360,7 +1356,6 @@ class Gem::Specification
   # The platform this gem runs on.  See Gem::Platform for details.
 
   def platform
-    # TODO: deprecate
     @new_platform
   end
 
@@ -1371,7 +1366,6 @@ class Gem::Specification
   # Gem::Platform::CURRENT is probably wrong.
 
   def platform= platform
-    # TODO: deprecate
     if @original_platform.nil? or
        @original_platform == Gem::Platform::RUBY then
       @original_platform = platform
@@ -1467,7 +1461,6 @@ class Gem::Specification
   # The default executable for this gem.
 
   def default_executable
-    # TODO: deprecate
     if defined?(@default_executable) and @default_executable
       result = @default_executable
     elsif @executables and @executables.size == 1
@@ -1532,4 +1525,16 @@ class Gem::Specification
   def dependent_specs
     runtime_dependencies.map { |dep| Gem.source_index.search dep, true }.flatten
   end
+
+  extend Deprecate
+
+  deprecate :test_suite_file,     :test_file,  2011, 10
+  deprecate :test_suite_file=,    :test_file=, 2011, 10
+  deprecate :has_rdoc,            :none,       2011, 10
+  deprecate :has_rdoc?,           :none,       2011, 10
+  deprecate :default_executable,  :none,       2011, 10
+
+  # TODO: enable these deprecations.... noisy because they're in every spec.
+  # deprecate :"has_rdoc=",         :none,       2011, 10
+  # deprecate :default_executable=, :none,       2011, 10
 end

@@ -310,7 +310,6 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       s.author      = 'A User'
       s.email       = 'example@example.com'
       s.homepage    = 'http://example.com'
-      s.has_rdoc    = true
       s.summary     = "this is a summary"
       s.description = "This is a test description"
 
@@ -339,7 +338,6 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       s.author      = 'A User'
       s.email       = 'example@example.com'
       s.homepage    = 'http://example.com'
-      s.has_rdoc    = true
       s.summary     = "this is a summary"
       s.description = "This is a test description"
 

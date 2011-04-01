@@ -194,14 +194,15 @@ def changelog_section code
   puts
 end
 
-# TODO: get this code back into hoe-git
-
-module Hoe::Git
-  module_function :git_tags, :git_svn?, :git_release_tag_prefix
-end
-
 desc "Print the current changelog."
 task "git:newchangelog" do
+  # This must be in here until rubygems depends on the version of hoe that has
+  # git_tags
+  # TODO: get this code back into hoe-git
+  module Hoe::Git
+    module_function :git_tags, :git_svn?, :git_release_tag_prefix
+  end
+
   tags  = Hoe::Git.git_tags
   tag   = ENV["FROM"] || tags.last
   range = [tag, "HEAD"].compact.join ".."

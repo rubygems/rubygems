@@ -1,4 +1,10 @@
-﻿=== 1.7.0 / 2011-03-32
+﻿=== 1.7.1 / 2011-03-32
+
+* 1 bug fix:
+  * Fixed missing file in Manifest.txt.  (Also a bug in hoe was fixed where
+    `rake check_manifest` showing a diff would not exit with an error.)
+
+=== 1.7.0 / 2011-03-32
 
 * 16 Deprecations (woot!)
   * Deprecated Gem.all_load_paths, latest_load_paths, promote_load_path, and

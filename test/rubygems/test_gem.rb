@@ -450,7 +450,6 @@ class TestGem < Gem::TestCase
     util_exec_gem
     quick_spec 'a', '10' do |s|
       s.executables = []
-      s.default_executable = nil
     end
     # Should not find a-10's non-abin (bug)
     assert_equal @abin_path, Gem.bin_path('a', 'abin')
@@ -1075,7 +1074,6 @@ class TestGem < Gem::TestCase
 
   def util_exec_gem
     spec, _ = quick_spec 'a', '4' do |s|
-      s.default_executable = 'exec'
       s.executables = ['exec', 'abin']
     end
 

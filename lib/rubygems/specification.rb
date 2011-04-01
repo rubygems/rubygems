@@ -1532,9 +1532,7 @@ class Gem::Specification
   deprecate :test_suite_file=,    :test_file=, 2011, 10
   deprecate :has_rdoc,            :none,       2011, 10
   deprecate :has_rdoc?,           :none,       2011, 10
+  deprecate :has_rdoc=,           :none,       2011, 10
   deprecate :default_executable,  :none,       2011, 10
-
-  # TODO: enable these deprecations.... noisy because they're in every spec.
-  # deprecate :"has_rdoc=",         :none,       2011, 10
-  # deprecate :default_executable=, :none,       2011, 10
+  deprecate :default_executable=, :none,       2011, 10
 end

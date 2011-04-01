@@ -130,7 +130,9 @@ end
   end
 
   def test_self_load_legacy_ruby
-    spec = eval LEGACY_RUBY_SPEC
+    spec = Deprecate.skip_during do
+      eval LEGACY_RUBY_SPEC
+    end
     assert_equal 'keyedlist', spec.name
     assert_equal '0.4.0', spec.version.to_s
     assert_equal Gem::Specification::TODAY, spec.date
@@ -905,7 +907,9 @@ end
   end
 
   def test_to_ruby_legacy
-    gemspec1 = eval LEGACY_RUBY_SPEC
+    gemspec1 = Deprecate.skip_during do
+      eval LEGACY_RUBY_SPEC
+    end
     ruby_code = gemspec1.to_ruby
     gemspec2 = eval ruby_code
 

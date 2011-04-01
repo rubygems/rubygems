@@ -1,17 +1,18 @@
 ﻿=== 1.7.0 / 2011-03-31
 
 * 16 Deprecations (woot!)
-
-  * Deprecated Gem.all_load_paths, latest_load_paths, promote_load_path, and cache.
+  * Deprecated Gem.all_load_paths, latest_load_paths, promote_load_path, and
+    cache.
   * Deprecated RemoteFetcher#open_uri_or_path.
   * Deprecated SourceIndex#all_gems.
   * Deprecated SourceIndex#initialize(hash_of_specs).
-  * Deprecated SourceIndex.from_installed_gems, from_gems_in, and load_specification.
-  * Deprecated Specification#has_rdoc, default_executable, and test_suite_file(=).
+  * Deprecated SourceIndex.from_installed_gems, from_gems_in, and
+    load_specification.
+  * Deprecated Specification#has_rdoc, default_executable, and
+    test_suite_file(=).
   * Deprecated Specification#has_rdoc= and default_executable=
 
 * 26 minor enhancements:
-
   * Added stupid simple deprecation module.
   * Added --spec option to `gem unpack` to output a gem's original metadata
   * Added packaging option to Specification#validate
@@ -29,18 +30,21 @@
   * Removed Specification.required_attribute.
   * Removed Specification::SPECIFICATION_VERSION_HISTORY and turned into rdoc
   * Removed blanket rescue in default_executable. Hope it doesn't blow up! :P
-  * Removed nearly all metaprogramming from Specification. Yay for attr_accessor!
-  * SourceIndex#initialize changed to prefer an array of spec dirs, defaulting to none.
-  * SourceIndex.new is now the preferred way to create SourceIndex instances. *gasp*
+  * Removed nearly all metaprogramming from Specification. Yay for
+    attr_accessor!
+  * SourceIndex#initialize changed to prefer an array of spec dirs, defaulting
+    to none.
+  * SourceIndex.new is now the preferred way to create SourceIndex instances.
+    *gasp*
   * Specification#validate now checks that array attribs are indeed arrays.
   * Specification.default_value is now an instance method.
   * Switched Specification::TODAY to be proper midnight @ UTC
-  * Update Gem::RemoteFetcher\'s User-Agent to handle RUBY_ENGINE and RUBY_REVISION when patchlevel is -1
+  * Update Gem::RemoteFetcher\'s User-Agent to handle RUBY_ENGINE and
+    RUBY_REVISION when patchlevel is -1
   * UpdateCommand#gems_to_update now returns (name, version) pairs.
   * UpdateCommand#which_to_update now takes an optional system argument.
 
 * 11 bug fixes:
-
   * Added missing remote fetcher require to pristine command (aarnell)
   * Building gems now checks to ensure all required fields are non-nil
   * Fix option parser when summary is nil.
@@ -48,9 +52,12 @@
   * Fixed `gem update --system x.y.z` where x.y.z == latest version. (MGPalmer)
   * Fixed gem contents sorting and tests. (MGPalmer)
   * Fixed intermittant problem in `gem fetch` with --platform specified (quix)
-  * Fixed lightweight specifications so `gem rdoc` will generate proper documentation
-  * MockGemUI#terminate_interaction should not raise Gem::SystemExitException. (MGPalmer)
-  * RubyGems now raises a better error for broken .gem files.  Bug #29067 by Elias Baixas
+  * Fixed lightweight specifications so `gem rdoc` will generate proper
+    documentation
+  * MockGemUI#terminate_interaction should not raise Gem::SystemExitException.
+    (MGPalmer)
+  * RubyGems now raises a better error for broken .gem files.  Bug #29067 by
+    Elias Baixas
   * `gem update` now uniq's command line arguments.
 
 === 1.6.2 / 2011-03-08

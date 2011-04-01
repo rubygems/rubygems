@@ -1,4 +1,4 @@
-﻿=== 1.7.0 / 2011-03-31
+﻿=== 1.7.0 / 2011-03-32
 
 * 16 Deprecations (woot!)
   * Deprecated Gem.all_load_paths, latest_load_paths, promote_load_path, and

@@ -40,7 +40,6 @@ end
   def setup
     super
 
-    # TODO: there is no reason why the spec tests need to write to disk
     @a1 = quick_spec 'a', '1' do |s|
       s.executable = 'exec'
       s.extensions << 'ext/a/extconf.rb'

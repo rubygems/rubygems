@@ -1,6 +1,7 @@
 require 'rubygems/test_case'
 require 'rubygems/source_index'
 require 'rubygems/config_file'
+require 'rubygems/deprecate'
 
 class TestGemSourceIndex < Gem::TestCase
 
@@ -8,182 +9,6 @@ class TestGemSourceIndex < Gem::TestCase
     super
 
     util_setup_fake_fetcher
-  end
-
-  def test_self_from_gems_in
-    spec_dir = File.join @gemhome, 'specifications'
-
-    FileUtils.rm_r spec_dir
-
-    FileUtils.mkdir_p spec_dir
-
-    a1 = quick_spec 'a', '1' do |spec| spec.author = 'author 1' end
-
-    spec_file = File.join spec_dir, a1.spec_name
-
-    File.open spec_file, 'w' do |fp|
-      fp.write a1.to_ruby
-    end
-
-    si = Gem::SourceIndex.from_gems_in spec_dir
-
-    assert_equal [spec_dir], si.spec_dirs
-    assert_equal [a1.full_name], si.gems.keys
-  end
-
-  def test_self_load_specification
-    spec_dir = File.join @gemhome, 'specifications'
-
-    FileUtils.rm_r spec_dir
-
-    FileUtils.mkdir_p spec_dir
-
-    a1 = quick_spec 'a', '1' do |spec| spec.author = 'author 1' end
-
-    spec_file = File.join spec_dir, a1.spec_name
-
-    File.open spec_file, 'w' do |fp|
-      fp.write a1.to_ruby
-    end
-
-    spec = Gem::SourceIndex.load_specification spec_file
-
-    assert_equal a1.author, spec.author
-  end
-
-  def test_self_load_specification_utf_8
-    spec_dir = File.join @gemhome, 'specifications'
-
-    FileUtils.rm_r spec_dir
-
-    FileUtils.mkdir_p spec_dir
-
-    spec_file = File.join spec_dir, "utf-8.gemspec"
-    spec_data = <<-SPEC
-Gem::Specification.new do |s|
-  s.name = %q{utf}
-  s.version = "8"
-
-  s.required_rubygems_version = Gem::Requirement.new(">= 0")
-  s.authors = ["\317\200"]
-  s.date = %q{2008-09-10}
-  s.description = %q{This is a test description}
-  s.email = %q{example@example.com}
-  s.has_rdoc = true
-  s.homepage = %q{http://example.com}
-  s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.2.0}
-  s.summary = %q{this is a summary}
-
-  if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    s.specification_version = 2
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-    else
-    end
-  else
-  end
-end
-    SPEC
-
-    spec_data.force_encoding 'UTF-8'
-
-    File.open spec_file, 'w' do |io| io.write spec_data end
-
-    spec = Gem::SourceIndex.load_specification spec_file
-
-    pi = "\317\200"
-    pi.force_encoding 'UTF-8' if pi.respond_to? :force_encoding
-
-    assert_equal pi, spec.author
-  end if Gem.ruby_version > Gem::Version.new('1.9')
-
-  def test_self_load_specification_exception
-    spec_dir = File.join @gemhome, 'specifications'
-
-    FileUtils.mkdir_p spec_dir
-
-    spec_file = File.join spec_dir, 'a-1.gemspec'
-
-    File.open spec_file, 'w' do |fp|
-      fp.write 'raise Exception, "epic fail"'
-    end
-
-    out, err = capture_io do
-      assert_equal nil, Gem::SourceIndex.load_specification(spec_file)
-    end
-
-    assert_equal '', out
-
-    expected = "Invalid gemspec in [#{spec_file}]: epic fail\n"
-    assert_equal expected, err
-  end
-
-  def test_self_load_specification_interrupt
-    spec_dir = File.join @gemhome, 'specifications'
-
-    FileUtils.mkdir_p spec_dir
-
-    spec_file = File.join spec_dir, 'a-1.gemspec'
-
-    File.open spec_file, 'w' do |fp|
-      fp.write 'raise Interrupt, "^C"'
-    end
-
-    use_ui @ui do
-      assert_raises Interrupt do
-        Gem::SourceIndex.load_specification(spec_file)
-      end
-    end
-
-    assert_equal '', @ui.output
-    assert_equal '', @ui.error
-  end
-
-  def test_self_load_specification_syntax_error
-    spec_dir = File.join @gemhome, 'specifications'
-
-    FileUtils.mkdir_p spec_dir
-
-    spec_file = File.join spec_dir, 'a-1.gemspec'
-
-    File.open spec_file, 'w' do |fp|
-      fp.write '1 +'
-    end
-
-    out, err = capture_io do
-      assert_equal nil, Gem::SourceIndex.load_specification(spec_file)
-    end
-
-    assert_equal '', out
-
-    assert_match(/syntax error/, err)
-  end
-
-  def test_self_load_specification_system_exit
-    spec_dir = File.join @gemhome, 'specifications'
-
-    FileUtils.mkdir_p spec_dir
-
-    spec_file = File.join spec_dir, 'a-1.gemspec'
-
-    File.open spec_file, 'w' do |fp|
-      fp.write 'raise SystemExit, "bye-bye"'
-    end
-
-    use_ui @ui do
-      assert_raises SystemExit do
-        Gem::SourceIndex.load_specification(spec_file)
-      end
-    end
-
-    assert_equal '', @ui.output
-    assert_equal '', @ui.error
-  end
-
-  def test_create_from_directory
-    # TODO
   end
 
   def test_find_name
@@ -203,7 +28,7 @@ end
   end
 
   def test_find_name_empty_cache
-    empty_source_index = Gem::SourceIndex.new({})
+    empty_source_index = Gem::SourceIndex.new
     assert_equal [], empty_source_index.find_name("foo")
   end
 
@@ -310,7 +135,7 @@ end
 
     FileUtils.mv a1_spec, @tempdir
 
-    source_index = Gem::SourceIndex.from_installed_gems
+    source_index = Gem.source_index
 
     refute source_index.gems.include?(@a1.full_name)
 
@@ -321,26 +146,16 @@ end
     assert source_index.gems.include?(@a1.full_name)
   end
 
-  def test_refresh_bang_not_from_dir
-    source_index = Gem::SourceIndex.new
-
-    e = assert_raises RuntimeError do
-      source_index.refresh!
-    end
-
-    assert_equal 'source index not created from disk', e.message
-  end
-
   def test_remove_spec
     deleted = @source_index.remove_spec 'a-1'
 
     assert_equal %w[a-2 a-3.a a_evil-9 c-1.2],
-                 @source_index.all_gems.values.map { |s| s.full_name }.sort
+                 @source_index.gems.values.map { |s| s.full_name }.sort
 
     deleted = @source_index.remove_spec 'a-3.a'
 
     assert_equal %w[a-2 a_evil-9 c-1.2],
-                 @source_index.all_gems.values.map { |s| s.full_name }.sort
+                 @source_index.gems.values.map { |s| s.full_name }.sort
   end
 
   def test_search
@@ -366,8 +181,8 @@ end
       s.platform = Gem::Platform.new 'x86-other_platform1'
     end
 
-    si = Gem::SourceIndex.new(a1.full_name => a1, a1_mine.full_name => a1_mine,
-                              a1_other.full_name => a1_other)
+    si = Gem::SourceIndex.new
+    si.add_specs a1, a1_mine, a1_other
 
     dep = Gem::Dependency.new 'a', Gem::Requirement.new('1')
 

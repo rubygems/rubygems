@@ -22,12 +22,8 @@ class TestGemDependencyList < Gem::TestCase
   end
 
   def test_self_from_source_index
-    hash = {
-      'a-1' => @a1,
-      'b-2' => @b2,
-    }
-
-    si = Gem::SourceIndex.new hash
+    si = Gem::SourceIndex.new
+    si.add_specs @a1, @b2
     deps = Gem::DependencyList.from_source_index si
 
     assert_equal %w[b-2 a-1], deps.dependency_order.map { |s| s.full_name }

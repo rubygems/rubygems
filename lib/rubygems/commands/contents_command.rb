@@ -58,7 +58,7 @@ class Gem::Commands::ContentsCommand < Gem::Command
                   "specified path"
                 end
 
-    si = Gem::SourceIndex.from_gems_in(*spec_dirs)
+    si = Gem::SourceIndex.new spec_dirs
 
     gem_names = if options[:all] then
                   si.map { |_, spec| spec.name }

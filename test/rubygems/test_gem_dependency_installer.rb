@@ -33,8 +33,10 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'a'
     end
 
-    assert_equal Gem::SourceIndex.new(@a1.full_name => @a1),
-                 Gem::SourceIndex.from_installed_gems
+    si = Gem::SourceIndex.new
+    si.add_spec @a1
+
+    assert_equal Gem.source_index, si
 
     assert_equal [@a1], inst.installed_gems
   end
@@ -103,7 +105,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b'
     end
 
-    installed = Gem::SourceIndex.from_installed_gems.map { |n,s| s.full_name }
+    installed = Gem.source_index.map { |n,s| s.full_name }
 
     assert_equal %w[a-2 b-1], installed.sort
 
@@ -396,8 +398,10 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'a'
     end
 
-    assert_equal Gem::SourceIndex.new(@a1.full_name => @a1),
-                 Gem::SourceIndex.from_installed_gems
+    si = Gem::SourceIndex.new
+    si.add_spec @a1
+
+    assert_equal Gem.source_index, si
 
     assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
   end

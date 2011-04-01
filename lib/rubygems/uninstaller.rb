@@ -57,11 +57,11 @@ class Gem::Uninstaller
     @user_install = options[:user_install] unless options[:install_dir]
 
     spec_dir = File.join @gem_home, 'specifications'
-    @source_index = Gem::SourceIndex.from_gems_in spec_dir
+    @source_index = Gem::SourceIndex.new [spec_dir]
 
     if @user_install then
       user_dir = File.join Gem.user_dir, 'specifications'
-      @user_index = Gem::SourceIndex.from_gems_in user_dir
+      @user_index = Gem::SourceIndex.new [user_dir]
     end
   end
 

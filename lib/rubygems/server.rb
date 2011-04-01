@@ -454,7 +454,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       spec_dir
     end
 
-    @source_index = Gem::SourceIndex.from_gems_in(*@spec_dirs)
+    @source_index = Gem::SourceIndex.new(@spec_dirs)
   end
 
   def Marshal(req, res)

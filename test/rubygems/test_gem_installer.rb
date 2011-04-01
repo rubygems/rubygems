@@ -654,8 +654,7 @@ load Gem.bin_path('a', 'executable', version)
 
     FileUtils.mv @gemhome, gemhome2
     Gem.source_index.gems.delete b2.full_name
-    source_index = Gem::SourceIndex.from_gems_in File.join(gemhome2,
-                                                           'specifications')
+    source_index = Gem::SourceIndex.new [File.join(gemhome2, 'specifications')]
 
     util_setup_gem
 

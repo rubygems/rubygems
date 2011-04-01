@@ -46,7 +46,7 @@ class Gem::DependencyInstaller
   def initialize(options = {})
     if options[:install_dir] then
       spec_dir = options[:install_dir], 'specifications'
-      @source_index = Gem::SourceIndex.from_gems_in spec_dir
+      @source_index = Gem::SourceIndex.new [spec_dir]
     else
       @source_index = Gem.source_index
     end

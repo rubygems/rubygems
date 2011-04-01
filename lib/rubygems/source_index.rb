@@ -43,10 +43,10 @@ class Gem::SourceIndex
   #   SourceIndex instance
 
   def self.from_installed_gems(*deprecated)
-    # TODO: deprecate
     if deprecated.empty?
       from_gems_in(*installed_spec_directories)
     else
+      warn "NOTE: from_installed_gems(arg) is deprecated. From #{caller.first}"
       from_gems_in(*deprecated) # HACK warn
     end
   end
@@ -55,7 +55,7 @@ class Gem::SourceIndex
   # Returns a list of directories from Gem.path that contain specifications.
 
   def self.installed_spec_directories
-    # TODO: deprecate
+    # TODO: move to Gem::Utils
     Gem.path.collect { |dir| File.join(dir, "specifications") }
   end
 
@@ -64,10 +64,7 @@ class Gem::SourceIndex
   # +spec_dirs+.
 
   def self.from_gems_in(*spec_dirs)
-    # TODO: deprecate
-    source_index = new
-    source_index.spec_dirs = spec_dirs
-    source_index.refresh!
+    new spec_dirs
   end
 
   ##
@@ -75,7 +72,6 @@ class Gem::SourceIndex
   # loaded spec.
 
   def self.load_specification(file_name)
-    # TODO: deprecate
     Deprecate.skip_during do
       Gem::Specification.load file_name
     end
@@ -88,14 +84,24 @@ class Gem::SourceIndex
   # TODO merge @gems and @prerelease_gems and provide a separate method
   # #prerelease_gems
 
-  def initialize(specifications={})
+  def initialize specs_or_dirs = []
     @gems = {}
-    specifications.each{ |full_name, spec| add_spec spec }
     @spec_dirs = nil
+
+    case specs_or_dirs
+    when Hash then
+      warn "NOTE: SourceIndex.new(hash) is deprecated; From #{caller.first}."
+      specs_or_dirs.each{ |full_name, spec| add_spec spec }
+    when Array, String then
+      self.spec_dirs = Array(specs_or_dirs)
+      refresh!
+    else
+      arg = specs_or_dirs.inspect
+      warn "NOTE: SourceIndex.new(#{arg}) is deprecated; From #{caller.first}."
+    end
   end
 
   def all_gems
-    # TODO: deprecate
     @gems
   end
 
@@ -344,6 +350,15 @@ class Gem::SourceIndex
     Marshal.dump(self)
   end
 
+  extend Deprecate
+  deprecate :all_gems, :none,  2011, 10
+
+  class << self
+    extend Deprecate
+    deprecate :from_installed_gems,        :none, 2011, 10
+    deprecate :from_gems_in,               :none, 2011, 10
+    deprecate :load_specification,         :none, 2011, 10
+  end
 end
 
 # :stopdoc:

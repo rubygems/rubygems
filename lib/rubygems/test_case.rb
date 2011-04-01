@@ -604,8 +604,8 @@ Also, a list:
   # Best used with +@all_gems+ from #util_setup_fake_fetcher.
 
   def util_setup_spec_fetcher(*specs)
-    specs = Hash[*specs.map { |spec| [spec.full_name, spec] }.flatten]
-    si = Gem::SourceIndex.new specs
+    si = Gem::SourceIndex.new
+    si.add_specs(*specs)
 
     spec_fetcher = Gem::SpecFetcher.fetcher
 

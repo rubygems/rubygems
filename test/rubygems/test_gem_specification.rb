@@ -117,7 +117,7 @@ end
   def test_self_load
     full_path = File.join @gemhome, 'specifications', @a2.spec_name
     path      = File.join "specifications", @a2.spec_name
-    written_path = write_file path do |io|
+    write_file path do |io|
       io.write @a2.to_ruby_for_cache
     end
 

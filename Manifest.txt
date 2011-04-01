@@ -53,6 +53,7 @@ lib/rubygems/defaults.rb
 lib/rubygems/dependency.rb
 lib/rubygems/dependency_installer.rb
 lib/rubygems/dependency_list.rb
+lib/rubygems/deprecate.rb
 lib/rubygems/doc_manager.rb
 lib/rubygems/errors.rb
 lib/rubygems/exceptions.rb

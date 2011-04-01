@@ -22,6 +22,24 @@
 
 module Deprecate
 
+  def self.skip # :nodoc:
+    @skip ||= false
+  end
+
+  def self.skip= v # :nodoc:
+    @skip = v
+  end
+
+  ##
+  # Temporarily turn off warnings. Intended for tests only.
+
+  def skip_during
+    Deprecate.skip, original = true, Deprecate.skip
+    yield
+  ensure
+    Deprecate.skip = original
+  end
+
   ##
   # Simple deprecation method that deprecates +name+ by wrapping it up
   # in a dummy method. It warns on each call to the dummy method
@@ -38,13 +56,13 @@ module Deprecate
         msg = [ "NOTE: #{target}#{name} is deprecated",
                 repl == :none ? " with no replacement" : ", use #{repl}",
                 ". It will be removed on or after %4d-%02d-01." % [year, month],
-                "\n#{target}#{name} called from #{Gem.location_of_caller.join(":")}",
+                "\n#{target}#{name} called from #{Gem.location_of_caller.join(":")}\n",
               ]
-        warn "#{msg.join}."
+        warn "#{msg.join}." unless Deprecate.skip
         send old, *args
       end
     }
   end
 
-  module_function :deprecate
+  module_function :deprecate, :skip_during
 end

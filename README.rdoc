@@ -47,3 +47,6 @@ You're sure you've found a bug!  But where do you let us know?  The best place
 for letting the RubyGems team know about bugs you've found is {on the rubygems
 tracker at rubyforge}[http://rubyforge.org/tracker/?group_id=126].
 
+=== Bundler Compatibility
+
+See http://gembundler.com/compatibility for known issues.

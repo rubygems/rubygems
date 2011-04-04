@@ -76,7 +76,7 @@ module Gem::LocalRemoteOptions
     add_option(:"Local/Remote", '--clear-sources',
                'Clear the gem sources') do |value, options|
 
-      Gem.sources.clear
+      Gem.sources = nil
       options[:sources_cleared] = true
     end
   end

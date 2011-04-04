@@ -1013,23 +1013,14 @@ module Gem
   # default_sources if it is not installed.
 
   def self.sources
-    if @sources.empty? then
-      begin
-        gem 'sources', '> 0.0.1'
-        require 'sources'
-      rescue LoadError
-        @sources = default_sources
-      end
-    end
-
-    @sources
+    @sources ||= default_sources
   end
 
   ##
   # Need to be able to set the sources without calling
   # Gem.sources.replace since that would cause an infinite loop.
 
-  def self.sources=(new_sources)
+  def self.sources= new_sources
     @sources = new_sources
   end
 

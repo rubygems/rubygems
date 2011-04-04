@@ -351,6 +351,16 @@ end
     assert_equal Time.utc(2003, 9, 17, 0,0,0), @a1.date
   end
 
+  def test_date_equals_string_where_month_without_leading_zeroes
+    @a1.date = '2003-9-17'
+    assert_equal Time.utc(2003, 9, 17, 0,0,0), @a1.date
+  end
+
+  def test_date_equals_string_where_day_without_leading_zeroes
+    @a1.date = '2003-08-1'
+    assert_equal Time.utc(2003, 8, 1, 0,0,0), @a1.date
+  end
+
   def test_date_equals_string_bad
     assert_raises Gem::InvalidSpecificationException do
       @a1.date = '9/11/2003'

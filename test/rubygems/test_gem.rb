@@ -24,11 +24,11 @@ class TestGem < Gem::TestCase
     specs.each do |spec|
       case spec
       when Array
-        Gem.activate(*spec)
+        Gem::Specification.find(*spec).activate
       when String
-        Gem.activate spec
+        Gem::Specification.find(spec).activate
       else
-        Gem.activate spec.name
+        spec.activate
       end
     end
 
@@ -51,17 +51,19 @@ class TestGem < Gem::TestCase
     Gem.unresolved_deps.values.map(&:to_s).sort
   end
 
+  # TODO: move these to specification
   def test_self_activate_via_require
-    new_spec "a", "1", "b" => "= 1"
+    a1 = new_spec "a", "1", "b" => "= 1"
     new_spec "b", "1", nil, "lib/b/c.rb"
     new_spec "b", "2", nil, "lib/b/c.rb"
 
-    Gem.activate "a", "= 1"
+    a1.activate
     require "b/c"
 
     assert_equal %w(a-1 b-1), loaded_spec_names
   end
 
+  # TODO: move these to specification
   def test_self_activate_deep_unambiguous
     a1 = new_spec "a", "1", "b" => "= 1"
     b1 = new_spec "b", "1", "c" => "= 1"
@@ -71,7 +73,7 @@ class TestGem < Gem::TestCase
 
     install_specs a1, b1, b2, c1, c2
 
-    Gem.activate "a", "= 1"
+    a1.activate
     assert_equal %w(a-1 b-1 c-1), loaded_spec_names
   end
 
@@ -82,6 +84,7 @@ class TestGem < Gem::TestCase
     $LOADED_FEATURES.replace old_loaded_features
   end
 
+  # TODO: move these to specification
   def test_self_activate_ambiguous_direct
     save_loaded_features do
       a1 = new_spec "a", "1", "b" => "> 0"
@@ -92,7 +95,7 @@ class TestGem < Gem::TestCase
 
       install_specs a1, b1, b2, c1, c2
 
-      Gem.activate "a", "= 1"
+      a1.activate
       assert_equal %w(a-1), loaded_spec_names
       assert_equal ["b (> 0)"], unresolved_names
 
@@ -103,6 +106,7 @@ class TestGem < Gem::TestCase
     end
   end
 
+  # TODO: move these to specification
   def test_self_activate_ambiguous_indirect
     save_loaded_features do
       a1 = new_spec "a", "1", "b" => "> 0"
@@ -113,7 +117,7 @@ class TestGem < Gem::TestCase
 
       install_specs a1, b1, b2, c1, c2
 
-      Gem.activate "a", "= 1"
+      a1.activate
       assert_equal %w(a-1), loaded_spec_names
       assert_equal ["b (> 0)"], unresolved_names
 
@@ -124,6 +128,7 @@ class TestGem < Gem::TestCase
     end
   end
 
+  # TODO: move these to specification
   def test_self_activate_ambiguous_unrelated
     save_loaded_features do
       a1 = new_spec "a", "1", "b" => "> 0"
@@ -135,7 +140,7 @@ class TestGem < Gem::TestCase
 
       install_specs a1, b1, b2, c1, c2, d1
 
-      Gem.activate "a", "= 1"
+      a1.activate
       assert_equal %w(a-1), loaded_spec_names
       assert_equal ["b (> 0)"], unresolved_names
 
@@ -146,6 +151,7 @@ class TestGem < Gem::TestCase
     end
   end
 
+  # TODO: move these to specification
   def test_self_activate_ambiguous_indirect_conflict
     save_loaded_features do
       a1 = new_spec "a", "1", "b" => "> 0"
@@ -157,7 +163,7 @@ class TestGem < Gem::TestCase
 
       install_specs a1, a2, b1, b2, c1, c2
 
-      Gem.activate "a", "= 2"
+      a2.activate
       assert_equal %w(a-2), loaded_spec_names
       assert_equal ["b (> 0)"], unresolved_names
 
@@ -168,13 +174,14 @@ class TestGem < Gem::TestCase
     end
   end
 
+  # TODO: move these to specification
   def test_require_already_activated
     save_loaded_features do
       a1 = new_spec "a", "1", nil, "lib/d.rb"
 
       install_specs a1 # , a2, b1, b2, c1, c2
 
-      Gem.activate "a", "= 1"
+      a1.activate
       assert_equal %w(a-1), loaded_spec_names
       assert_equal [], unresolved_names
 
@@ -185,6 +192,7 @@ class TestGem < Gem::TestCase
     end
   end
 
+  # TODO: move these to specification
   def test_require_already_activated_indirect_conflict
     save_loaded_features do
       a1 = new_spec "a", "1", "b" => "> 0"
@@ -196,8 +204,8 @@ class TestGem < Gem::TestCase
 
       install_specs a1, a2, b1, b2, c1, c2
 
-      Gem.activate "a", "= 1"
-      Gem.activate "c", "= 1"
+      a1.activate
+      c1.activate
       assert_equal %w(a-1 c-1), loaded_spec_names
       assert_equal ["b (> 0)"], unresolved_names
 
@@ -216,11 +224,12 @@ class TestGem < Gem::TestCase
     end
   end
 
+  # TODO: move these to specification
   def test_self_activate_loaded
-    util_spec 'foo', '1'
+    foo = util_spec 'foo', '1'
 
-    assert Gem.activate 'foo'
-    refute Gem.activate 'foo'
+    assert foo.activate
+    refute foo.activate
   end
 
   ##
@@ -243,15 +252,16 @@ class TestGem < Gem::TestCase
   #         [B] ~> 1.0
   #
   # and should resolve using b-1.0
+  # TODO: move these to specification
 
   def test_self_activate_over
-    util_spec 'a', '1.0', 'b' => '>= 1.0', 'c' => '= 1.0'
+    a = util_spec 'a', '1.0', 'b' => '>= 1.0', 'c' => '= 1.0'
     util_spec 'b', '1.0'
     util_spec 'b', '1.1'
     util_spec 'b', '2.0'
     util_spec 'c', '1.0', 'b' => '~> 1.0'
 
-    Gem.activate "a"
+    a.activate
 
     assert_equal %w[a-1.0 c-1.0], loaded_spec_names
     assert_equal ["b (>= 1.0, ~> 1.0)"], unresolved_names
@@ -672,7 +682,7 @@ class TestGem < Gem::TestCase
     install_gem foo
     Gem.source_index = nil
 
-    Gem.activate 'foo'
+    foo.activate
 
     assert_equal true, Gem.loaded_specs.keys.include?('foo')
   end
@@ -807,17 +817,6 @@ class TestGem < Gem::TestCase
 
     assert_includes Gem.source_index.gems, @a1.full_name
     assert_equal nil, Gem.instance_variable_get(:@searcher)
-  end
-
-  def test_self_required_location
-    util_make_gems
-
-    assert_equal File.join(@tempdir, *%w[gemhome gems c-1.2 lib code.rb]),
-                 Gem.required_location("c", "code.rb")
-    assert_equal File.join(@tempdir, *%w[gemhome gems a-1 lib code.rb]),
-                 Gem.required_location("a", "code.rb", "< 2")
-    assert_equal File.join(@tempdir, *%w[gemhome gems a-2 lib code.rb]),
-                 Gem.required_location("a", "code.rb", "= 2")
   end
 
   def test_self_ruby_escaping_spaces_in_path

@@ -447,6 +447,21 @@ class Gem::Specification
   end
 
   ##
+  # Find the best specification matching a dependency or a name +
+  # requirements.
+
+  def self.find name_or_dep, *requirements
+    dep = name_or_dep
+
+    unless Gem::Dependency === dep then
+      requirements = Gem::Requirement.default if requirements.empty?
+      dep = Gem::Dependency.new(dep, requirements)
+    end
+
+    dep.to_spec
+  end
+
+  ##
   # Sets the rubygems_version to the current RubyGems version
 
   def mark_version
@@ -1524,6 +1539,83 @@ class Gem::Specification
 
   def dependent_specs
     runtime_dependencies.map { |dep| Gem.source_index.search dep, true }.flatten
+  end
+
+  def raise_if_conflicts
+    other = Gem.loaded_specs[self.name]
+
+    if other and self.version != other.version then
+      # This gem is already loaded.  If the currently loaded gem is not in the
+      # list of candidate gems, then we have a version conflict.
+
+      msg = "can't activate #{full_name}, already activated #{other.full_name}"
+
+      e = Gem::LoadError.new msg
+      e.name = self.name
+      # TODO: e.requirement = dep.requirement
+
+      raise e
+    end
+
+    conf = self.conflicts
+
+    unless conf.empty? then
+      y = conf.map { |act,con|
+        "#{act.full_name} conflicts with #{con.join(", ")}"
+      }.join ", "
+
+      # TODO: improve message by saying who activated `con`
+
+      raise Gem::LoadError, "Unable to activate #{self.full_name}, because #{y}"
+    end
+  end
+
+  def activate
+    raise_if_conflicts
+
+    return false if Gem.loaded_specs[self.name]
+
+    self.loaded = true
+    Gem.loaded_specs[self.name] = self
+
+    activate_dependencies
+    add_self_to_load_path
+
+    return true
+  end
+
+  def add_self_to_load_path
+    require_paths = self.require_paths.map do |path|
+      self.full_gem_path.add(path)
+    end
+
+    # gem directories must come after -I and ENV['RUBYLIB']
+    insert_index = Gem.load_path_insert_index
+
+    if insert_index then
+      # gem directories must come after -I and ENV['RUBYLIB']
+      $LOAD_PATH.insert(insert_index, *require_paths)
+    else
+      # we are probably testing in core, -I and RUBYLIB don't apply
+      $LOAD_PATH.unshift(*require_paths)
+    end
+  end
+
+  def activate_dependencies
+    self.runtime_dependencies.each do |spec_dep|
+      # TODO: check for conflicts! not just name!
+      next if Gem.loaded_specs.include? spec_dep.name
+      specs = Gem.source_index.search spec_dep, true
+
+      if specs.size == 1 then
+        specs.first.activate
+      else
+        name = spec_dep.name
+        Gem.unresolved_deps[name] = Gem.unresolved_deps[name].merge spec_dep
+      end
+    end
+
+    Gem.unresolved_deps.delete self.name
   end
 
   extend Deprecate

@@ -206,5 +206,20 @@ class Gem::Dependency
     self.class.new name, self_req.as_list.concat(other_req.as_list)
   end
 
-end
+  def to_spec
+    matches = Gem.source_index.search self, true
 
+    # TODO: check Gem.activated_spec[self.name] in case matches falls outside
+
+    if matches.empty? then
+      error = Gem::LoadError.new "Could not find #{name} (#{requirement})"
+      error.name        = self.name
+      error.requirement = self.requirement
+      raise error
+    end
+
+    # TODO: any other resolver validations should go here
+
+    matches.find { |spec| spec.loaded? } or matches.last
+  end
+end

@@ -46,7 +46,7 @@ module Kernel
         end
 
         found_specs.each do |found_spec|
-          Gem.activate_spec found_spec
+          found_spec.activate
         end
       end
 

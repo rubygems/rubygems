@@ -196,6 +196,7 @@ module Gem
   # activated. Returns false if it can't find the path in a gem.
 
   def self.try_activate path
+    # TODO: deprecate when 1.9.3 comes out.
     # finds the _latest_ version... regardless of loaded specs and their deps
 
     # TODO: use find_all and bork if ambiguous
@@ -204,9 +205,10 @@ module Gem
     return false unless spec
 
     begin
-      Gem.activate spec.name, "= #{spec.version}"
+      spec.activate
     rescue Gem::LoadError # this could fail due to gem dep collisions, go lax
-      Gem.activate spec.name
+      # TODO: actually test this
+      Gem::Specification.find(spec.name).activate
     end
 
     return true
@@ -229,111 +231,15 @@ module Gem
   # Gem::Requirement and Gem::Version documentation.
 
   def self.activate(dep, *requirements)
-    activate_dep dep, *requirements
+    Gem::Specification.find(dep, *requirements).activate
   end
 
-  def self.activate_dep dep, *requirements
-    requirements = Gem::Requirement.default if requirements.empty?
-    dep = Gem::Dependency.new(dep, requirements) unless Gem::Dependency === dep
-
-    matches = Gem.source_index.search dep, true
-    report_activate_error(dep) if matches.empty?
-
-    existing_spec = @loaded_specs[dep.name]
-
-    # TODO: move this to Dependency
-    if existing_spec then
-      # This gem is already loaded.  If the currently loaded gem is not in the
-      # list of candidate gems, then we have a version conflict.
-
-      # TODO: unless dep.matches_spec? existing_spec then
-      unless matches.any? { |spec| spec.version == existing_spec.version } then
-        msg = "can't activate #{dep}, "
-        msg << "already activated #{existing_spec.full_name}"
-
-        e = Gem::LoadError.new msg
-        e.name = dep.name
-        e.requirement = dep.requirement
-
-        raise e
-      end
-
-      return false
-    end
-
-    # TODO: this + spec.conflicts hint that activation is still dumb
-    spec = matches.last
-
-    activate_spec spec
+  def self.activate_dep dep, *requirements # :nodoc:
+    Gem::Specification.find(dep, *requirements).activate
   end
 
-  def self.activate_spec spec
-    existing_spec = @loaded_specs[spec.name]
-
-    # TODO: move this to Specification
-    if existing_spec then
-      if spec.version != existing_spec.version then
-        # This gem is already loaded.  If the currently loaded gem is not in the
-        # list of candidate gems, then we have a version conflict.
-
-        msg = "can't activate #{dep}, "
-        msg << "already activated #{existing_spec.full_name}"
-
-        e = Gem::LoadError.new msg
-        e.name = dep.name
-        e.requirement = dep.requirement
-
-        raise e
-      end
-
-      return false
-    end
-
-    conf = spec.conflicts
-
-    unless conf.empty? then
-      why = conf.map { |act,con|
-        "#{act.full_name} conflicts with #{con.join(", ")}"
-      }.join ", "
-
-      # TODO: improve message by saying who activated `con`
-
-      raise LoadError, "Unable to activate #{spec.full_name}, because #{why}"
-    end
-
-    spec.loaded = true
-    @loaded_specs[spec.name]  = spec
-
-    spec.runtime_dependencies.each do |spec_dep|
-      next if Gem.loaded_specs.include? spec_dep.name
-      specs = Gem.source_index.search spec_dep, true
-
-      if specs.size == 1 then
-        self.activate spec_dep
-      else
-        name = spec_dep.name
-        unresolved_deps[name] = unresolved_deps[name].merge spec_dep
-      end
-    end
-
-    unresolved_deps.delete spec.name
-
-    require_paths = spec.require_paths.map do |path|
-      spec.full_gem_path.add(path)
-    end
-
-    # gem directories must come after -I and ENV['RUBYLIB']
-    insert_index = load_path_insert_index
-
-    if insert_index then
-      # gem directories must come after -I and ENV['RUBYLIB']
-      $LOAD_PATH.insert(insert_index, *require_paths)
-    else
-      # we are probably testing in core, -I and RUBYLIB don't apply
-      $LOAD_PATH.unshift(*require_paths)
-    end
-
-    return true
+  def self.activate_spec spec # :nodoc:
+    spec.activate
   end
 
   def self.unresolved_deps
@@ -436,16 +342,9 @@ module Gem
   # mainly used by the unit tests to provide test isolation.
 
   def self.clear_paths
-<<<<<<< HEAD
-    @paths = nil
-    @user_home = nil
-
-=======
-    @gem_home      = nil
-    @gem_path      = nil
-    @user_home     = nil
->>>>>>> minor formatting and moved all deprecations to the end of the file sorted by date.
     @@source_index = nil
+    @paths         = nil
+    @user_home     = nil
     @searcher      = nil
   end
 
@@ -1245,7 +1144,8 @@ module Kernel
   def gem(gem_name, *requirements) # :doc:
     skip_list = (ENV['GEM_SKIP'] || "").split(/:/)
     raise Gem::LoadError, "skipping #{gem_name}" if skip_list.include? gem_name
-    Gem.activate(gem_name, *requirements)
+    spec = Gem::Dependency.new(gem_name, *requirements).to_spec
+    spec.activate if spec
   end
 
   private :gem

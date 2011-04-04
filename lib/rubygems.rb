@@ -436,12 +436,17 @@ module Gem
   # mainly used by the unit tests to provide test isolation.
 
   def self.clear_paths
+<<<<<<< HEAD
     @paths = nil
     @user_home = nil
 
+=======
+    @gem_home      = nil
+    @gem_path      = nil
+    @user_home     = nil
+>>>>>>> minor formatting and moved all deprecations to the end of the file sorted by date.
     @@source_index = nil
-
-    @searcher = nil
+    @searcher      = nil
   end
 
   ##
@@ -1194,28 +1199,18 @@ module Gem
 
   MARSHAL_SPEC_DIR = "quick/Marshal.#{Gem.marshal_version}/"
 
-  autoload :Version, 'rubygems/version'
-  autoload :Requirement, 'rubygems/requirement'
-  autoload :Dependency, 'rubygems/dependency'
+  autoload :Version,         'rubygems/version'
+  autoload :Requirement,     'rubygems/requirement'
+  autoload :Dependency,      'rubygems/dependency'
   autoload :GemPathSearcher, 'rubygems/gem_path_searcher'
-  autoload :SpecFetcher, 'rubygems/spec_fetcher'
-  autoload :Specification, 'rubygems/specification'
-  autoload :Cache, 'rubygems/source_index'
-  autoload :SourceIndex, 'rubygems/source_index'
-  autoload :Platform, 'rubygems/platform'
-  autoload :Builder, 'rubygems/builder'
-  autoload :ConfigFile, 'rubygems/config_file'
-
-  class << self
-    extend Deprecate
-    # Can't do this one until I add Specification#activate
-    # deprecate :activate,          "Specification#activate", 2011, 10
-    deprecate :all_load_paths,    :none,                    2011, 10
-    deprecate :latest_load_paths, :none,                    2011, 10
-    deprecate :promote_load_path, :none,                    2011, 10
-    deprecate :cache,             "Gem::source_index",      2011, 8
+  autoload :SpecFetcher,     'rubygems/spec_fetcher'
+  autoload :Specification,   'rubygems/specification'
+  autoload :Cache,           'rubygems/source_index'
+  autoload :SourceIndex,     'rubygems/source_index'
+  autoload :Platform,        'rubygems/platform'
+  autoload :Builder,         'rubygems/builder'
+  autoload :ConfigFile,      'rubygems/config_file'
   end
-end
 
 module Kernel
 
@@ -1305,3 +1300,17 @@ require 'rubygems/custom_require'
 
 Gem.clear_paths
 
+module Gem
+  class << self
+    extend Deprecate
+    deprecate :activate_dep,          "Specification#activate", 2011,  6
+    deprecate :activate_spec,         "Specification#activate", 2011,  6
+    deprecate :cache,                 "Gem::source_index",      2011,  8
+    deprecate :activate,              "Specification#activate", 2011, 10
+    deprecate :all_load_paths,        :none,                    2011, 10
+    deprecate :latest_load_paths,     :none,                    2011, 10
+    deprecate :promote_load_path,     :none,                    2011, 10
+    deprecate :report_activate_error, :none,                    2011, 11
+    deprecate :required_location,     :none,                    2011, 11
+  end
+end

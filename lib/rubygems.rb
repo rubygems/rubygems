@@ -1109,7 +1109,7 @@ module Gem
   autoload :Platform,        'rubygems/platform'
   autoload :Builder,         'rubygems/builder'
   autoload :ConfigFile,      'rubygems/config_file'
-  end
+end
 
 module Kernel
 

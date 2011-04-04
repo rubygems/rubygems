@@ -70,20 +70,19 @@ class Gem::InstallerTestCase < Gem::TestCase
     @user_gem = File.join @tempdir, @user_spec.file_name
 
     @user_installer = util_installer @user_spec, @user_gem, Gem.user_dir
-    @user_installer.gem_dir = File.join(Gem.user_dir, 'gems',
-                                        @user_spec.full_name)
+    @user_installer.gem_dir = Gem.user_dir.gems.add(@user_spec.full_name)
   end
 
   def util_gem_bindir spec = @spec
-    File.join util_gem_dir(spec), "bin"
+    util_gem_dir(spec).add("bin")
   end
 
   def util_gem_dir spec = @spec
-    File.join @gemhome, "gems", spec.full_name
+    @gemhome.gems.add(spec.full_name)
   end
 
   def util_inst_bindir
-    File.join @gemhome, "bin"
+    @gemhome.bin
   end
 
   def util_make_exec(spec = @spec, shebang = "#!/usr/bin/ruby")
@@ -92,14 +91,14 @@ class Gem::InstallerTestCase < Gem::TestCase
 
     bindir = util_gem_bindir spec
     FileUtils.mkdir_p bindir
-    exec_path = File.join bindir, 'executable'
+    exec_path = bindir.add('executable')
     open exec_path, 'w' do |io|
       io.puts shebang
     end
 
-    temp_bin = File.join(@tempdir, 'bin')
+    temp_bin = Gem::Path.new(@tempdir).add('bin')
     FileUtils.mkdir_p temp_bin
-    open File.join(temp_bin, 'executable'), 'w' do |io|
+    open temp_bin.add('executable'), 'w' do |io|
       io.puts shebang
     end
   end
@@ -126,15 +125,15 @@ class Gem::InstallerTestCase < Gem::TestCase
       end
     end
 
-    @installer = Gem::Installer.new @gem
+    @installer = Gem::Installer.new Gem::FS.new @gem
   end
 
   def util_installer(spec, gem_path, gem_home)
     util_build_gem spec
     FileUtils.mv Gem.cache_gem(spec.file_name), @tempdir
-    installer = Gem::Installer.new gem_path
+    installer = Gem::Installer.new Gem::FS.new gem_path
     installer.gem_dir = util_gem_dir
-    installer.gem_home = gem_home
+    installer.gem_home = Gem::FS.new gem_home
     installer.spec = spec
 
     installer

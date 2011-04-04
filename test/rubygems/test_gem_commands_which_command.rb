@@ -56,8 +56,8 @@ class TestGemCommandsWhichCommand < Gem::TestCase
     end
 
     files.each do |file|
-      filename = @foo_bar.full_gem_path + "/#{file}"
-      FileUtils.mkdir_p File.dirname(filename)
+      filename = @foo_bar.full_gem_path.add(file)
+      FileUtils.mkdir_p filename.dirname
       FileUtils.touch filename
     end
   end

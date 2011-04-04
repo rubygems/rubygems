@@ -72,35 +72,30 @@ class Gem::Indexer
     @rss_host = options[:rss_host]
     @rss_gems_host = options[:rss_gems_host]
 
-    @dest_directory = directory
-    @directory = File.join Dir.tmpdir, "gem_generate_index_#{$$}"
+    @dest_directory = Gem::FS.new(directory)
+    @directory = Gem::Path.new(Dir.tmpdir, "gem_generate_index_#{$$}")
 
     marshal_name = "Marshal.#{Gem.marshal_version}"
 
-    @master_index = File.join @directory, 'yaml'
-    @marshal_index = File.join @directory, marshal_name
+    @master_index = @directory.add('yaml')
+    @marshal_index = @directory.add(marshal_name)
 
-    @quick_dir = File.join @directory, 'quick'
+    @quick_dir = @directory.add('quick')
 
-    @quick_marshal_dir = File.join @quick_dir, marshal_name
+    @quick_marshal_dir = @quick_dir.add(marshal_name)
 
-    @quick_index = File.join @quick_dir, 'index'
-    @latest_index = File.join @quick_dir, 'latest_index'
+    @quick_index = @quick_dir.add('index')
+    @latest_index = @quick_dir.add('latest_index')
 
-    @specs_index = File.join @directory, "specs.#{Gem.marshal_version}"
-    @latest_specs_index = File.join @directory,
-                                    "latest_specs.#{Gem.marshal_version}"
-    @prerelease_specs_index = File.join(@directory,
-                                        "prerelease_specs.#{Gem.marshal_version}")
+    @specs_index = @directory.add("specs.#{Gem.marshal_version}")
+    @latest_specs_index = @directory.add("latest_specs.#{Gem.marshal_version}")
+                                    
+    @prerelease_specs_index = @directory.add("prerelease_specs.#{Gem.marshal_version}")
+    @dest_specs_index = @dest_directory.add("specs.#{Gem.marshal_version}")
+    @dest_latest_specs_index = @dest_directory.add("latest_specs.#{Gem.marshal_version}")
+    @dest_prerelease_specs_index = @dest_directory.add("prerelease_specs.#{Gem.marshal_version}")
 
-    @dest_specs_index = File.join @dest_directory,
-                                  "specs.#{Gem.marshal_version}"
-    @dest_latest_specs_index = File.join @dest_directory,
-                                         "latest_specs.#{Gem.marshal_version}"
-    @dest_prerelease_specs_index = File.join @dest_directory,
-                                            "prerelease_specs.#{Gem.marshal_version}"
-
-    @rss_index = File.join @directory, 'index.rss'
+    @rss_index = @directory.add('index.rss')
 
     @files = []
   end
@@ -162,7 +157,7 @@ class Gem::Indexer
     Gem.time 'Generated Marshal quick index gemspecs' do
       index.gems.each do |original_name, spec|
         spec_file_name = "#{original_name}.gemspec.rz"
-        marshal_name = File.join @quick_marshal_dir, spec_file_name
+        marshal_name = @quick_marshal_dir.add(spec_file_name)
 
         marshal_zipped = Gem.deflate Marshal.dump(spec)
         open marshal_name, 'wb' do |io| io.write marshal_zipped end
@@ -353,7 +348,8 @@ class Gem::Indexer
 
     Gem.time 'loaded' do
       gems.each do |gemfile|
-        if File.size(gemfile.to_s) == 0 then
+
+        if gemfile.size == 0 then
           alert_warning "Skipping zero-length gem: #{gemfile}"
           next
         end
@@ -362,7 +358,7 @@ class Gem::Indexer
           spec = Gem::Format.from_file_by_path(gemfile).spec
           spec.loaded_from = gemfile
 
-          unless gemfile =~ /\/#{Regexp.escape spec.original_name}.*\.gem\z/i then
+          unless gemfile =~ /\/#{Regexp.escape spec.original_name.to_s}.*\.gem\z/i then
             expected_name = spec.full_name
             expected_name << " (#{spec.original_name})" if
               spec.original_name != spec.full_name
@@ -448,7 +444,7 @@ class Gem::Indexer
   # List of gem file names to index.
 
   def gem_file_list
-    Dir.glob(File.join(@dest_directory, "gems", "*.gem"))
+    @dest_directory.gems.glob('*.gem')
   end
 
   ##
@@ -481,15 +477,15 @@ class Gem::Indexer
 
     say "Moving index into production dir #{@dest_directory}" if verbose
 
-    files = @files.dup
+    files = @files.dup.map { |x| Gem::Path.new(x) }
     files.delete @quick_marshal_dir if files.include? @quick_dir
 
     if files.include? @quick_marshal_dir and
        not files.include? @quick_dir then
       files.delete @quick_marshal_dir
-      quick_marshal_dir = @quick_marshal_dir.sub @directory, ''
+      quick_marshal_dir = @quick_marshal_dir.subtract(@directory)
 
-      dst_name = File.join @dest_directory, quick_marshal_dir
+      dst_name = @dest_directory.add(quick_marshal_dir)
 
       FileUtils.mkdir_p File.dirname(dst_name), :verbose => verbose
       FileUtils.rm_rf dst_name, :verbose => verbose
@@ -498,12 +494,12 @@ class Gem::Indexer
     end
 
     files = files.map do |path|
-      path.sub @directory, ''
+      Gem::Path.new(path).subtract(@directory)
     end
 
     files.each do |file|
-      src_name = File.join @directory, file
-      dst_name = File.join @dest_directory, file
+      src_name = @directory.add(file)
+      dst_name = @dest_directory.add(file)
 
       FileUtils.rm_rf dst_name, :verbose => verbose
       FileUtils.mv src_name, @dest_directory, :verbose => verbose,
@@ -573,11 +569,11 @@ class Gem::Indexer
 
     make_temp_directories
 
-    specs_mtime = File.stat(@dest_specs_index).mtime
+    specs_mtime = @dest_specs_index.stat.mtime
     newest_mtime = Time.at 0
 
     updated_gems = gem_file_list.select do |gem|
-      gem_mtime = File.stat(gem).mtime
+      gem_mtime = gem.stat.mtime
       newest_mtime = gem_mtime if gem_mtime > newest_mtime
       gem_mtime >= specs_mtime
     end
@@ -612,12 +608,12 @@ class Gem::Indexer
     files << "#{@prerelease_specs_index}.gz"
 
     files = files.map do |path|
-      path.sub @directory, ''
+      Gem::Path.new(path).subtract(@directory)
     end
 
     files.each do |file|
-      src_name = File.join @directory, file
-      dst_name = File.join @dest_directory, File.dirname(file)
+      src_name = @directory.add(file)
+      dst_name = @dest_directory.add(file)
 
       FileUtils.mv src_name, dst_name, :verbose => verbose,
                    :force => true

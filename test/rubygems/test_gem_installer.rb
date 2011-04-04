@@ -235,19 +235,19 @@ load Gem.bin_path('a', 'executable', version)
     @installer.wrappers = true
     @spec.executables = %w[executable]
 
-    gem_dir = File.join "#{@gemhome}2", 'gems', @spec.full_name
-    gem_bindir = File.join gem_dir, 'bin'
+    gem_dir = Gem::FS.new("#{@gemhome}2").gems.add(@spec.full_name)
+    gem_bindir = gem_dir.add('bin')
     FileUtils.mkdir_p gem_bindir
-    File.open File.join(gem_bindir, 'executable'), 'w' do |f|
+    File.open gem_bindir.add('executable'), 'w' do |f|
       f.puts "#!/bin/ruby"
     end
 
-    @installer.gem_home = "#{@gemhome}2"
+    @installer.gem_home = Gem::FS.new "#{@gemhome}2"
     @installer.gem_dir = gem_dir
 
     @installer.generate_bin
 
-    installed_exec = File.join("#{@gemhome}2", 'bin', 'executable')
+    installed_exec = Gem::FS.new("#{@gemhome}2").bin.add('executable')
     assert_equal true, File.exist?(installed_exec)
     assert_equal mask, File.stat(installed_exec).mode unless win_platform?
 
@@ -340,7 +340,7 @@ load Gem.bin_path('a', 'executable', version)
 
     @installer.generate_bin
     assert_equal true, File.directory?(util_inst_bindir)
-    installed_exec = File.join(util_inst_bindir, 'executable')
+    installed_exec = util_inst_bindir.add('executable')
     assert_equal true, File.symlink?(installed_exec)
     assert_equal(File.join(util_gem_dir, 'bin', 'executable'),
                  File.readlink(installed_exec))
@@ -398,7 +398,7 @@ load Gem.bin_path('a', 'executable', version)
 
     @spec.version = 3
     util_make_exec
-    @installer.gem_dir = File.join util_gem_dir @spec
+    @installer.gem_dir = util_gem_dir @spec
     @installer.generate_bin
     installed_exec = File.join(util_inst_bindir, 'executable')
     assert_equal(File.join(util_gem_bindir(@spec), 'executable'),
@@ -435,8 +435,8 @@ load Gem.bin_path('a', 'executable', version)
 
     @installer.generate_bin
 
-    installed_exec = File.join(util_inst_bindir, 'executable')
-    assert_equal(File.join(util_gem_dir, 'bin', 'executable'),
+    installed_exec = util_inst_bindir.add('executable')
+    assert_equal(util_gem_dir.add('bin').add('executable'),
                  File.readlink(installed_exec),
                  "Ensure symlink not moved")
   end
@@ -449,7 +449,7 @@ load Gem.bin_path('a', 'executable', version)
     @installer.gem_dir = util_gem_dir
 
     @installer.generate_bin
-    installed_exec = File.join(util_inst_bindir, 'executable')
+    installed_exec = util_inst_bindir.add('executable')
     assert_equal true, File.exist?(installed_exec)
 
     @spec = Gem::Specification.new do |s|

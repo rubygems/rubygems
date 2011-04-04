@@ -423,7 +423,7 @@ class Gem::Specification
       spec = eval code, binding, file
 
       if Gem::Specification === spec
-        spec.loaded_from = file
+        spec.loaded_from = Gem::Path.new(file)
         return spec
       end
 
@@ -522,9 +522,9 @@ class Gem::Specification
   # The full path to the gem (install path + full name).
 
   def full_gem_path
-    path = File.join installation_path, 'gems', full_name
-    return path if File.directory? path
-    File.join installation_path, 'gems', original_name
+    path = installation_path.gems.add(full_name).expand_path
+    return path if path.directory?
+    installation_path.gems.add(original_name).expand_path
   end
 
   ##
@@ -544,7 +544,7 @@ class Gem::Specification
       raise Gem::Exception, "spec #{full_name} is not from an installed gem"
     end
 
-    File.expand_path File.dirname(File.dirname(@loaded_from))
+    Gem::FS.new(@loaded_from.dirname.dirname)
   end
 
   ##
@@ -588,8 +588,8 @@ class Gem::Specification
   # A macro to yield cached gem path
   #
   def cache_gem
-    cache_name = File.join(Gem.dir, 'cache', file_name)
-    return File.exist?(cache_name) ? cache_name : nil
+    cache_name = Gem.dir.cache.add(file_name)
+    return cache_name.exist? ? cache_name : nil
   end
 
   ##

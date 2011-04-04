@@ -19,12 +19,12 @@ class TestGemCommandsStaleCommand < Gem::TestCase
     end
 
     files.each do |file|
-      filename = bar_baz.full_gem_path + "/#{file}"
-      FileUtils.mkdir_p(File.dirname(filename))
+      filename = bar_baz.full_gem_path.add(file)
+      FileUtils.mkdir_p(filename.dirname)
       FileUtils.touch(filename, :mtime => Time.now)
 
-      filename = foo_bar.full_gem_path + "/#{file}"
-      FileUtils.mkdir_p(File.dirname(filename))
+      filename = foo_bar.full_gem_path.add(file)
+      FileUtils.mkdir_p(filename.dirname)
       FileUtils.touch(filename, :mtime => Time.now - 86400)
     end
 

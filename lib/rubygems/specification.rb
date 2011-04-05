@@ -362,7 +362,12 @@ class Gem::Specification
       next unless other_ivars.include? name
 
       begin
-        instance_variable_set name, other_spec.instance_variable_get(name).dup
+        val = other_spec.instance_variable_get(name)
+        if val then
+          instance_variable_set name, val.dup
+        else
+          warn "WARNING: #{full_name} has an invalid nil value for #{name}"
+        end
       rescue TypeError
         e = Gem::FormatException.new \
           "#{full_name} has an invalid value for #{name}"

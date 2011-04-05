@@ -493,8 +493,6 @@ class TestGem < Gem::TestCase
 
     Gem.clear_paths
 
-    assert_equal nil, Gem.instance_variable_get(:@gem_home)
-    assert_equal nil, Gem.instance_variable_get(:@gem_path)
     refute_equal searcher, Gem.searcher
     refute_equal source_index.object_id, Gem.source_index.object_id
   end

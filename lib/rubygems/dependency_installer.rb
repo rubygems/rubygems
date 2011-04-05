@@ -15,14 +15,14 @@ class Gem::DependencyInstaller
   attr_reader :installed_gems
 
   DEFAULT_OPTIONS = {
-    :env_shebang => false,
-    :domain => :both, # HACK dup
-    :force => false,
-    :format_executable => false, # HACK dup
+    :env_shebang         => false,
+    :domain              => :both, # HACK dup
+    :force               => false,
+    :format_executable   => false, # HACK dup
     :ignore_dependencies => false,
-    :prerelease => false,
-    :security_policy => nil, # HACK NoSecurity requires OpenSSL.  AlmostNo? Low?
-    :wrappers => true,
+    :prerelease          => false,
+    :security_policy     => nil, # HACK NoSecurity requires OpenSSL. AlmostNo? Low?
+    :wrappers            => true,
   }
 
   ##
@@ -45,25 +45,28 @@ class Gem::DependencyInstaller
 
   def initialize(options = {})
     if options[:install_dir] then
-      spec_dir = options[:install_dir], 'specifications'
-      @source_index = Gem::SourceIndex.new [spec_dir]
+      @gem_home     = options[:install_dir]
+      @gem_home     = Gem::FS.new(@gem_home) if String === @gem_home
+      @source_index = Gem::SourceIndex.new [@gem_home.specifications]
+
+      options[:install_dir] = @gem_home # because we suck and reuse below
     else
       @source_index = Gem.source_index
     end
 
     options = DEFAULT_OPTIONS.merge options
 
-    @bin_dir = options[:bin_dir]
-    @development = options[:development]
-    @domain = options[:domain]
-    @env_shebang = options[:env_shebang]
-    @force = options[:force]
-    @format_executable = options[:format_executable]
+    @bin_dir             = options[:bin_dir]
+    @development         = options[:development]
+    @domain              = options[:domain]
+    @env_shebang         = options[:env_shebang]
+    @force               = options[:force]
+    @format_executable   = options[:format_executable]
     @ignore_dependencies = options[:ignore_dependencies]
-    @prerelease = options[:prerelease]
-    @security_policy = options[:security_policy]
-    @user_install = options[:user_install]
-    @wrappers = options[:wrappers]
+    @prerelease          = options[:prerelease]
+    @security_policy     = options[:security_policy]
+    @user_install        = options[:user_install]
+    @wrappers            = options[:wrappers]
 
     @installed_gems = []
 

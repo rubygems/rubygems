@@ -182,7 +182,7 @@ module Gem
   @loaded_specs = {}
   @platforms = []
   @ruby = nil
-  @sources = []
+  @sources = nil
 
   @post_build_hooks     ||= []
   @post_install_hooks   ||= []
@@ -440,7 +440,7 @@ module Gem
   # TODO: deprecate this.
 
   def self.ensure_gem_subdirectories(gemdir)
-    Gem::FileSystem.new(gemdir).ensure_gem_subdirectories
+    Gem::FS.new(gemdir).ensure_gem_subdirectories
   end
 
   ##

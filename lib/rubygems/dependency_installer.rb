@@ -45,8 +45,11 @@ class Gem::DependencyInstaller
 
   def initialize(options = {})
     if options[:install_dir] then
-      spec_dir = options[:install_dir], 'specifications'
-      @source_index = Gem::SourceIndex.new [spec_dir]
+      @gem_home     = options[:install_dir]
+      @gem_home     = Gem::FS.new(@gem_home) if String === @gem_home
+      @source_index = Gem::SourceIndex.new [@gem_home.specifications]
+
+      options[:install_dir] = @gem_home # because we suck and reuse below
     else
       @source_index = Gem.source_index
     end

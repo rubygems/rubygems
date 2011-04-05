@@ -182,7 +182,7 @@ module Gem
   @loaded_specs = {}
   @platforms = []
   @ruby = nil
-  @sources = []
+  @sources = nil
 
   @post_build_hooks     ||= []
   @post_install_hooks   ||= []

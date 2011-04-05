@@ -1623,6 +1623,20 @@ class Gem::Specification
     Gem.unresolved_deps.delete self.name
   end
 
+  def contains_requirable_file?(file)
+    root = full_gem_path
+
+    require_paths.each do |lib|
+      base = "#{root}/#{lib}/#{file}"
+      Gem.suffixes.each do |suf|
+        path = "#{base}#{suf}"
+        return true if File.file? path
+      end
+    end
+
+    return false
+  end
+
   extend Deprecate
 
   deprecate :test_suite_file,     :test_file,  2011, 10

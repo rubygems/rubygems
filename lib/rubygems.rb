@@ -201,7 +201,7 @@ module Gem
 
     # TODO: use find_all and bork if ambiguous
 
-    spec = Gem.searcher.find path
+    spec = Gem.searcher.find_spec_for_file path
     return false unless spec
 
     begin

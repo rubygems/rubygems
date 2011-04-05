@@ -224,6 +224,20 @@ class TestGem < Gem::TestCase
     end
   end
 
+  def test_require_does_not_glob
+    save_loaded_features do
+      a1 = new_spec "a", "1", nil, "lib/a1.rb"
+
+      install_specs a1
+
+      assert_raises ::LoadError do
+        require "a*"
+      end
+
+      assert_equal [], loaded_spec_names
+    end
+  end
+
   # TODO: move these to specification
   def test_self_activate_loaded
     foo = util_spec 'foo', '1'

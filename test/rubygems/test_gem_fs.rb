@@ -51,9 +51,7 @@ class TestGemFS < Gem::TestCase
   def test_fs_inheritance
     fs = Gem::FS.new(@tempdir)
     assert_kind_of Gem::Path, fs, "Gem::FS objects are also Gem::Path objects"
-p Gem::Path.instance_methods - Gem::FS.instance_methods
 
-p Gem::FS.instance_methods - Gem::Path.instance_methods
-
+    assert_empty Gem::Path.instance_methods - Gem::FS.instance_methods
   end
 end

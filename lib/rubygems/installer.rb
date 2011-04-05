@@ -555,14 +555,13 @@ EOF
       path = entry['path'].untaint
 
       if path =~ /\A\// then # for extra sanity
-        raise Gem::InstallError,
-              "attempt to install file into #{entry['path'].inspect}"
+        raise Gem::InstallError, "attempt to install file into #{path.inspect}"
       end
 
       path = File.expand_path @gem_dir.add(path)
 
       if path !~ /\A#{Regexp.escape @gem_dir}/ then
-        msg = "attempt to install file into %p under %p" %
+        msg = "attempt to install file into %p under %s" %
                 [entry['path'], @gem_dir]
         raise Gem::InstallError, msg
       end

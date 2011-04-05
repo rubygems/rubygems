@@ -1,6 +1,12 @@
-﻿=== 1.7.1 / 2011-03-32
+﻿=== 1.7.2 / 2011-04-05
 
-* 1 bug fix:
+* 1 Bug Fix:
+  * Warn on loading bad spec array values (ntlm-http gem has nil in its cert
+    chain)
+
+=== 1.7.1 / 2011-03-32
+
+* 1 Bug Fix:
   * Fixed missing file in Manifest.txt.  (Also a bug in hoe was fixed where
     `rake check_manifest` showing a diff would not exit with an error.)
 

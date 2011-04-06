@@ -29,8 +29,8 @@ Gem::Specification.new do |s|
   s.version = %q{0.4.0}
   s.has_rdoc = true
   s.summary = %q{A Hash which automatically computes keys.}
-  s.files = ["lib/keyedlist.rb"]
-  s.require_paths = ["lib"]
+  s.files = [%q{lib/keyedlist.rb}]
+  s.require_paths = [%q{lib}]
   s.autorequire = %q{keyedlist}
   s.author = %q{Florian Gross}
   s.email = %q{flgr@ccan.de}
@@ -767,13 +767,13 @@ Gem::Specification.new do |s|
   s.version = \"2\"
 
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\") if s.respond_to? :required_rubygems_version=
-  s.authors = [\"A User\"]
+  s.authors = [%q{A User}]
   s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
   s.description = %q{This is a test description}
   s.email = %q{example@example.com}
-  s.files = [\"lib/code.rb\"]
+  s.files = [%q{lib/code.rb}]
   s.homepage = %q{http://example.com}
-  s.require_paths = [\"lib\"]
+  s.require_paths = [%q{lib}]
   s.rubygems_version = %q{#{Gem::VERSION}}
   s.summary = %q{this is a summary}
 
@@ -814,12 +814,12 @@ Gem::Specification.new do |s|
   s.version = \"2\"
 
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\") if s.respond_to? :required_rubygems_version=
-  s.authors = [\"A User\"]
+  s.authors = [%q{A User}]
   s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
   s.description = %q{This is a test description}
   s.email = %q{example@example.com}
   s.homepage = %q{http://example.com}
-  s.require_paths = [\"lib\"]
+  s.require_paths = [%q{lib}]
   s.rubygems_version = %q{#{Gem::VERSION}}
   s.summary = %q{this is a summary}
 
@@ -862,21 +862,21 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform.new(#{expected_platform})
 
   s.required_rubygems_version = Gem::Requirement.new(\">= 0\") if s.respond_to? :required_rubygems_version=
-  s.authors = [\"A User\"]
+  s.authors = [%q{A User}]
   s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
   s.description = %q{This is a test description}
   s.email = %q{example@example.com}
-  s.executables = [\"exec\"]
-  s.extensions = [\"ext/a/extconf.rb\"]
-  s.files = [\"lib/code.rb\", \"test/suite.rb\", \"bin/exec\", \"ext/a/extconf.rb\"]
+  s.executables = [%q{exec}]
+  s.extensions = [%q{ext/a/extconf.rb}]
+  s.files = [%q{lib/code.rb}, %q{test/suite.rb}, %q{bin/exec}, %q{ext/a/extconf.rb}]
   s.homepage = %q{http://example.com}
-  s.licenses = [\"MIT\"]
-  s.require_paths = [\"lib\"]
-  s.requirements = [\"A working computer\"]
+  s.licenses = [%q{MIT}]
+  s.require_paths = [%q{lib}]
+  s.requirements = [%q{A working computer}]
   s.rubyforge_project = %q{example}
   s.rubygems_version = %q{#{Gem::VERSION}}
   s.summary = %q{this is a summary}
-  s.test_files = [\"test/suite.rb\"]
+  s.test_files = [%q{test/suite.rb}]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

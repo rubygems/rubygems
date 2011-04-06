@@ -88,7 +88,7 @@ class Gem::Specification
   @@default_value = {
     :authors                   => [],
     :autorequire               => nil,
-    :bindir                    => "bin",
+    :bindir                    => Gem::Path.new("bin"),
     :cert_chain                => [],
     :date                      => TODAY,
     :dependencies              => [],
@@ -104,7 +104,7 @@ class Gem::Specification
     :platform                  => Gem::Platform::RUBY,
     :post_install_message      => nil,
     :rdoc_options              => [],
-    :require_paths             => ["lib"],
+    :require_paths             => [Gem::Path.new("lib")],
     :required_ruby_version     => Gem::Requirement.default,
     :required_rubygems_version => Gem::Requirement.default,
     :requirements              => [],
@@ -1014,7 +1014,8 @@ class Gem::Specification
   def ruby_code(obj)
     case obj
     when String            then '%q{' + obj + '}'
-    when Array             then obj.inspect
+    when Gem::Path         then '%q{' + obj.path + '}'
+    when Array             then '[' + obj.map { |x| ruby_code x }.join(", ") + ']'
     when Gem::Version      then obj.to_s.inspect
     when Date              then '%q{' + obj.strftime('%Y-%m-%d') + '}'
     when Time              then '%q{' + obj.strftime('%Y-%m-%d') + '}'

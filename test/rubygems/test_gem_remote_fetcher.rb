@@ -287,7 +287,7 @@ gems:
 
     def test_download_read_only
       File.chmod 0555, Gem.cache_dir(@gemhome)
-      File.chmod 0555, File.join(@gemhome)
+      File.chmod 0555, @gemhome
 
       fetcher = util_fuck_with_fetcher File.read(@a1_gem)
       fetcher.download(@a1, 'http://gems.example.com')

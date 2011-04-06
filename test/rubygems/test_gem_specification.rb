@@ -1002,7 +1002,7 @@ end
         @a1.validate
       end
 
-      assert_equal "authors must be an Array of String instances", e.message
+      assert_equal "authors must be an Array of these instances: Gem::Path, String", e.message
 
       @a1.authors = ["#{f} (who is writing this software)"]
 

@@ -280,7 +280,7 @@ class Gem::Specification
     return nil if executables.nil?
 
     if @bindir then
-      Array(executables).map { |e| File.join(@bindir, e) }
+      Array(executables).map { |e| @bindir.add(e) }
     else
       executables
     end
@@ -812,7 +812,7 @@ class Gem::Specification
     @files.delete_if            do |file| File.directory? file end
     @test_files.delete_if       do |file| File.directory? file end
     @executables.delete_if      do |file|
-      File.directory? File.join(bindir, file)
+      File.directory? bindir.add(file)
     end
     @extra_rdoc_files.delete_if do |file| File.directory? file end
     @extensions.delete_if       do |file| File.directory? file end
@@ -841,11 +841,11 @@ class Gem::Specification
 
     self.class.array_attributes.each do |symbol|
       val = self.send symbol
-      klass = symbol == :dependencies ? Gem::Dependency : String
+      klass = symbol == :dependencies ? [Gem::Dependency] : [Gem::Path, String]
 
-      unless Array === val and val.all? { |x| klass === x } then
+      unless Array === val and val.all? { |x| klass.any? { |k| k === x } } then
         raise(Gem::InvalidSpecificationException,
-              "#{symbol} must be an Array of #{klass} instances")
+              "#{symbol} must be an Array of these instances: #{klass.join(", ")}")
       end
     end
 
@@ -897,7 +897,7 @@ class Gem::Specification
     alert_warning "deprecated autorequire specified" if autorequire
 
     executables.each do |executable|
-      executable_path = File.join bindir, executable
+      executable_path = bindir.add(executable)
       shebang = File.read(executable_path, 2) == '#!'
 
       alert_warning "#{executable_path} is missing #! line" unless shebang

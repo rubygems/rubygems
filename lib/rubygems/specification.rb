@@ -841,7 +841,14 @@ class Gem::Specification
 
     self.class.array_attributes.each do |symbol|
       val = self.send symbol
-      klass = symbol == :dependencies ? [Gem::Dependency] : [Gem::Path, String]
+      klass = case symbol
+              when :dependencies 
+                [Gem::Dependency] 
+              when :authors
+                [String]
+              else
+                [Gem::Path, String]
+              end
 
       unless Array === val and val.all? { |x| klass.any? { |k| k === x } } then
         raise(Gem::InvalidSpecificationException,

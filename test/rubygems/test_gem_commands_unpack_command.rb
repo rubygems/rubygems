@@ -151,6 +151,8 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
   end
 
   def test_execute_sudo
+    skip 'Cannot perform this test on windows (chmod)' if win_platform?
+
     util_make_gems
 
     File.chmod 0555, @gemhome

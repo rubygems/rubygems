@@ -35,7 +35,7 @@ class TestGemFS < Gem::TestCase
       assert path.add(dir).exist?, "path #{dir} exists"
     end
 
-    FileUtils.rm_r fs
+    FileUtils.rm_rf fs
   end
 
   def test_fs_statics

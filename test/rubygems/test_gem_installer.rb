@@ -281,7 +281,7 @@ load Gem.bin_path('a', 'executable', version)
       end
     end
   ensure
-    File.chmod 0700, util_inst_bindir unless $DEBUG
+    File.chmod 0755, util_inst_bindir unless ($DEBUG or win_platform?)
   end
 
   def test_generate_bin_script_no_shebang
@@ -373,7 +373,7 @@ load Gem.bin_path('a', 'executable', version)
       end
     end
   ensure
-    File.chmod 0700, util_inst_bindir unless $DEBUG
+    File.chmod 0755, util_inst_bindir unless ($DEBUG or win_platform?)
   end
 
   def test_generate_bin_symlink_update_newer

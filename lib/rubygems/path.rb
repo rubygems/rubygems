@@ -204,6 +204,17 @@ class Gem::Path
 
   ##
   #
+  # Perform chmod on the path. See File.chmod.
+  #
+
+  def chmod(mode)
+    # hack around the fact that File.chmod from ftools thinks anything that is
+    # not of the String class is capable of processing.
+    File.chmod(mode, @path)
+  end
+
+  ##
+  #
   # Convert this path to a string.
   #
   def to_s

@@ -274,14 +274,14 @@ load Gem.bin_path('a', 'executable', version)
     if win_platform?
       skip('test_generate_bin_script_no_perms skipped on MS Windows')
     else
-      File.chmod 0000, util_inst_bindir
+      util_inst_bindir.chmod 0000
 
       assert_raises Gem::FilePermissionError do
         @installer.generate_bin
       end
     end
   ensure
-    File.chmod 0755, util_inst_bindir unless ($DEBUG or win_platform?)
+    util_inst_bindir.chmod 0755 unless ($DEBUG or win_platform?)
   end
 
   def test_generate_bin_script_no_shebang
@@ -366,14 +366,14 @@ load Gem.bin_path('a', 'executable', version)
     if win_platform?
       skip('test_generate_bin_symlink_no_perms skipped on MS Windows')
     else
-      File.chmod 0000, util_inst_bindir
+      util_inst_bindir.chmod 0000
 
       assert_raises Gem::FilePermissionError do
         @installer.generate_bin
       end
     end
   ensure
-    File.chmod 0755, util_inst_bindir unless ($DEBUG or win_platform?)
+    util_inst_bindir.chmod 0755 unless ($DEBUG or win_platform?)
   end
 
   def test_generate_bin_symlink_update_newer

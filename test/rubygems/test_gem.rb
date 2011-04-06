@@ -596,14 +596,14 @@ class TestGem < Gem::TestCase
       FileUtils.rm_r gemdir rescue nil
       refute File.exist?(gemdir), "manually remove #{gemdir}, tests are broken"
       FileUtils.mkdir_p gemdir
-      FileUtils.chmod 0400, gemdir
+      gemdir.chmod 0400
       Gem.use_paths gemdir
 
       gemdir.ensure_gem_subdirectories
 
       refute File.exist?(Gem.cache_dir(gemdir))
     ensure
-      FileUtils.chmod 0600, gemdir
+      gemdir.chmod 0600
     end
 
     def test_self_ensure_gem_directories_write_protected_parents

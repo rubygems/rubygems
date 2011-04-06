@@ -36,12 +36,14 @@ class TestGemPath < Gem::TestCase
 
     skip "Windows doesn't support chmod" if win_platform?
 
-    FileUtils.chmod 0000, @tempdir
-
-    assert !File.readable?(@tempdir), "File no longer thinks #{@tempdir} is readable"
-    assert !path.readable?, "Gem::Path no longer thinks #{@tempdir} is readable"
-
-    FileUtils.chmod 0750, @tempdir
+    begin
+      FileUtils.chmod 0000, @tempdir
+  
+      assert !File.readable?(@tempdir), "File no longer thinks #{@tempdir} is readable"
+      assert !path.readable?, "Gem::Path no longer thinks #{@tempdir} is readable"
+    ensure  
+      FileUtils.chmod 0750, @tempdir
+    end
   end
 
   def test_writable?
@@ -52,15 +54,17 @@ class TestGemPath < Gem::TestCase
     
     skip "Windows doesn't support chmod" if win_platform?
 
-    FileUtils.chmod 0000, @tempdir
+    begin
+      FileUtils.chmod 0000, @tempdir
 
-    assert !File.writable?(@tempdir), 
-      "File no longer thinks #{@tempdir} is writable"
+      assert !File.writable?(@tempdir), 
+        "File no longer thinks #{@tempdir} is writable"
 
-    assert !path.writable?, 
-      "Gem::Path no longer thinks #{@tempdir} is writable"
-    
-    FileUtils.chmod 0750, @tempdir
+      assert !path.writable?, 
+        "Gem::Path no longer thinks #{@tempdir} is writable"
+    ensure
+      FileUtils.chmod 0750, @tempdir
+    end
   end
 
   def test_add

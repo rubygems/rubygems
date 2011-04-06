@@ -237,6 +237,18 @@ class Gem::Path
 
   ##
   #
+  # Perform a global substitution on the path.
+  #
+  def gsub(regex, replacement=nil, &block)
+    if replacement
+      Gem::Path.new(@path.gsub(regex, replacement))
+    else
+      Gem::Path.new(@path.gsub(regex, &block))
+    end
+  end
+
+  ##
+  #
   # Does this path equal another path? Anything that responds to .to_s works
   # here!
   #

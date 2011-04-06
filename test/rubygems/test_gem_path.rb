@@ -34,6 +34,8 @@ class TestGemPath < Gem::TestCase
     assert File.readable?(@tempdir), "File thinks #{@tempdir} is readable"
     assert path.readable?, "Gem::Path thinks #{@tempdir} is readable"
 
+    skip "Windows doesn't support chmod" if win_platform?
+
     FileUtils.chmod 0000, @tempdir
 
     assert !File.readable?(@tempdir), "File no longer thinks #{@tempdir} is readable"
@@ -48,6 +50,8 @@ class TestGemPath < Gem::TestCase
     assert File.writable?(@tempdir), "File thinks #{@tempdir} is writable"
     assert path.writable?, "Gem::Path thinks #{@tempdir} is writable"
     
+    skip "Windows doesn't support chmod" if win_platform?
+
     FileUtils.chmod 0000, @tempdir
 
     assert !File.writable?(@tempdir), 

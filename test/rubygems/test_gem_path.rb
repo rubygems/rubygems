@@ -29,7 +29,7 @@ class TestGemPath < Gem::TestCase
   end
 
   def test_readable?
-    skip 'Windows doesn't handle chmod' if win_platform?
+    skip "Windows doesn't handle chmod" if win_platform?
 
     path = Gem::Path.new(@tempdir)
 
@@ -45,7 +45,7 @@ class TestGemPath < Gem::TestCase
   end
 
   def test_writable?
-    skip 'Windows doesn't handle chmod' if win_platform?
+    skip "Windows doesn't handle chmod" if win_platform?
 
     path = Gem::Path.new(@tempdir)
 

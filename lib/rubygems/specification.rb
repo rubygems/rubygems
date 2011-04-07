@@ -428,7 +428,7 @@ class Gem::Specification
       spec = eval code, binding, file
 
       if Gem::Specification === spec
-        spec.loaded_from = Gem::Path.new(file)
+        spec.loaded_from = file
         return spec
       end
 

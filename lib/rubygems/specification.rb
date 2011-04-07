@@ -1207,7 +1207,7 @@ class Gem::Specification
   end
 
   def test_files=(value)
-    @test_files = Array(value).map { |x| Gem::Path.new(x) }
+    @test_files = Array(value)
   end
 
   ##
@@ -1231,7 +1231,7 @@ class Gem::Specification
 
   def extra_rdoc_files=(value)
     # TODO: warn about setting instead of pushing
-    @extra_rdoc_files = Array(value).map { |x| Gem::Path.new(x) }
+    @extra_rdoc_files = Array(value)
   end
 
   ##
@@ -1243,7 +1243,7 @@ class Gem::Specification
 
   def executables=(value)
     # TODO: warn about setting instead of pushing
-    @executables = Array(value).map { |x| Gem::Path.new(x) }
+    @executables = Array(value)
   end
 
   ##
@@ -1256,7 +1256,7 @@ class Gem::Specification
 
   def extensions=(value)
     # TODO: warn about setting instead of pushing
-    @extensions = Array(value).map { |x| Gem::Path.new(x) }
+    @extensions = Array(value)
   end
 
   ##

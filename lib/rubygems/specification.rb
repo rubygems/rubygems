@@ -809,22 +809,17 @@ class Gem::Specification
             'specification must have at least one require_path'
     end
 
-    @files.delete_if            do |file| File.directory? file end
-    @test_files.delete_if       do |file| File.directory? file end
-    @executables.delete_if      do |file|
-      File.directory? bindir.add(file)
-    end
-    @extra_rdoc_files.delete_if do |file| File.directory? file end
-    @extensions.delete_if       do |file| File.directory? file end
+    @files.delete_if(&:directory?)
+    @test_files.delete_if(&:directory?)
+    @executables.delete_if { |file| bindir.add(file).directory? }
+    @extra_rdoc_files.delete_if(&:directory?)
+    @extensions.delete_if(&:directory?)
 
-    non_files = files.select do |file|
-      !File.file? file
-    end
+    non_files = files.reject(&:file?)
 
     unless not packaging or non_files.empty? then
-      non_files = non_files.map { |file| file.inspect }
       raise Gem::InvalidSpecificationException,
-            "[#{non_files.join ", "}] are not files"
+            "[\"#{non_files.map(&:to_s).join "\", \""}\"] are not files"
     end
 
     unless specification_version.is_a?(Fixnum)
@@ -925,7 +920,12 @@ class Gem::Specification
       @files ||= []
       @files.concat(@extra_rdoc_files)
     end
-    @files.uniq! if @files
+
+    @files            = @files.uniq.map { |x| Gem::Path.new(x) } if @files
+    @extensions       = @extensions.uniq.map { |x| Gem::Path.new(x) } if @extensions
+    @test_files       = @test_files.uniq.map { |x| Gem::Path.new(x) } if @test_files
+    @executables      = @executables.uniq.map { |x| Gem::Path.new(x) } if @executables
+    @extra_rdoc_files = @extra_rdoc_files.uniq.map { |x| Gem::Path.new(x) } if @extra_rdoc_files
   end
 
   ##
@@ -1207,7 +1207,7 @@ class Gem::Specification
   end
 
   def test_files=(value)
-    @test_files = Array(value)
+    @test_files = Array(value).map { |x| Gem::Path.new(x) }
   end
 
   ##
@@ -1231,7 +1231,7 @@ class Gem::Specification
 
   def extra_rdoc_files=(value)
     # TODO: warn about setting instead of pushing
-    @extra_rdoc_files = Array(value)
+    @extra_rdoc_files = Array(value).map { |x| Gem::Path.new(x) }
   end
 
   ##
@@ -1243,7 +1243,7 @@ class Gem::Specification
 
   def executables=(value)
     # TODO: warn about setting instead of pushing
-    @executables = Array(value)
+    @executables = Array(value).map { |x| Gem::Path.new(x) }
   end
 
   ##
@@ -1256,7 +1256,7 @@ class Gem::Specification
 
   def extensions=(value)
     # TODO: warn about setting instead of pushing
-    @extensions = Array(value)
+    @extensions = Array(value).map { |x| Gem::Path.new(x) }
   end
 
   ##

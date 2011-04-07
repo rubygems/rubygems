@@ -115,8 +115,8 @@ end
   end
 
   def test_self_load
-    full_path = File.join @gemhome, 'specifications', @a2.spec_name
-    path      = File.join "specifications", @a2.spec_name
+    full_path = @gemhome.specifications.add(@a2.spec_name)
+    path      = Gem::Path.new("specifications", @a2.spec_name)
     write_file path do |io|
       io.write @a2.to_ruby_for_cache
     end
@@ -1318,7 +1318,7 @@ end
     specfile.close
     begin
       capture_io do
-        Gem::Specification.load(specfile.path)
+        Gem::Specification.load(Gem::Path.new(specfile.path))
       end
     rescue => e
       name_rexp = Regexp.new(Regexp.escape(specfile.path))

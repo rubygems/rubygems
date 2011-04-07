@@ -73,7 +73,7 @@ class Gem::SourceIndex
 
   def self.load_specification(file_name)
     Deprecate.skip_during do
-      Gem::Specification.load file_name
+      Gem::Specification.load Gem::Path.new(file_name)
     end
   end
 
@@ -93,7 +93,7 @@ class Gem::SourceIndex
       warn "NOTE: SourceIndex.new(hash) is deprecated; From #{caller.first}."
       specs_or_dirs.each{ |full_name, spec| add_spec spec }
     when Array, String then
-      self.spec_dirs = Array(specs_or_dirs)
+      self.spec_dirs = Array(specs_or_dirs.map { |x| Gem::Path.new(x) } )
       refresh!
     else
       arg = specs_or_dirs.inspect
@@ -120,7 +120,7 @@ class Gem::SourceIndex
     @gems.clear
 
     spec_dirs.reverse_each do |spec_dir|
-      spec_files = Dir.glob File.join(spec_dir, '*.gemspec')
+      spec_files = spec_dir.glob("*.gemspec")
 
       spec_files.each do |spec_file|
         gemspec = Deprecate.skip_during do
@@ -371,5 +371,4 @@ module Gem
   Cache = SourceIndex
 
 end
-# :startdoc:
-
+# :startdoc: 

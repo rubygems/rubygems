@@ -412,7 +412,7 @@ class Gem::Specification
   # Loads Ruby format gemspec from +file+.
 
   def self.load file
-    return unless file && File.file?(file)
+    return unless file && file.file?
 
     file = file.dup.untaint
 

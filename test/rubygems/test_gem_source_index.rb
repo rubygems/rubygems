@@ -88,15 +88,18 @@ class TestGemSourceIndex < Gem::TestCase
     a1 = quick_spec 'a', '1' do |spec| spec.author = 'author 1' end
     a2 = quick_spec 'a', '1' do |spec| spec.author = 'author 2' end
 
-    File.open File.join(spec_dir1, a1.spec_name), 'w' do |fp|
+    path1 = Gem::Path.new(spec_dir1, a1.spec_name)
+    path2 = Gem::Path.new(spec_dir2, a2.spec_name)
+
+    File.open path1, 'w' do |fp|
       fp.write a1.to_ruby
     end
 
-    File.open File.join(spec_dir2, a2.spec_name), 'w' do |fp|
+    File.open path2, 'w' do |fp|
       fp.write a2.to_ruby
     end
 
-    @source_index.load_gems_in spec_dir1, spec_dir2
+    @source_index.load_gems_in path1.dirname, path2.dirname
 
     assert_equal a1.author, @source_index.specification(a1.full_name).author
   end

@@ -79,10 +79,10 @@ EOM
         pkg.metadata = yaml
 
         @spec.files.each do |file|
-          next if File.directory? file
+          next if file.directory?
           next if file == @spec.file_name # Don't add gem onto itself
 
-          stat = File.stat file
+          stat = file.stat
           mode = stat.mode & 0777
           size = stat.size
 

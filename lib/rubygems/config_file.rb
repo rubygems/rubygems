@@ -48,7 +48,7 @@ class Gem::ConfigFile
   system_config_path =
     begin
       require "etc"
-      Etc.sysconfdir
+      Gem::Path.new(Etc.sysconfdir)
     rescue LoadError, NoMethodError
       begin
         # TODO: remove after we drop 1.8.7 and 1.9.1
@@ -66,13 +66,13 @@ class Gem::ConfigFile
           SHGetFolderPath.call 0, CSIDL_COMMON_APPDATA, 0, 1, path
         end
 
-        path.strip
+        Gem::Path.new(path.strip)
       rescue LoadError
-        "/etc"
+        Gem::Path.new("/etc")
       end
     end
 
-  SYSTEM_WIDE_CONFIG_FILE = File.join system_config_path, 'gemrc'
+  SYSTEM_WIDE_CONFIG_FILE = system_config_path.add('gemrc')
 
   ##
   # List of arguments supplied to the config file object.
@@ -153,11 +153,11 @@ class Gem::ConfigFile
 
     arg_list = arg_list.map do |arg|
       if need_config_file_name then
-        @config_file_name = arg
+        @config_file_name = Gem::Path.new(arg)
         need_config_file_name = false
         nil
       elsif arg =~ /^--config-file=(.*)/ then
-        @config_file_name = $1
+        @config_file_name = Gem::Path.new($1)
         nil
       elsif arg =~ /^--config-file$/ then
         need_config_file_name = true
@@ -201,11 +201,11 @@ class Gem::ConfigFile
   # Location of RubyGems.org credentials
 
   def credentials_path
-    File.join(Gem.user_home, '.gem', 'credentials')
+    Gem.user_home.add('.gem', 'credentials')
   end
 
   def load_api_keys
-    @api_keys = File.exists?(credentials_path) ? load_file(credentials_path) : @hash
+    @api_keys = credentials_path.exist? ? load_file(credentials_path) : @hash
     if @api_keys.key? :rubygems_api_key then
       @rubygems_api_key = @api_keys[:rubygems_api_key]
       @api_keys[:rubygems] = @api_keys.delete :rubygems_api_key unless @api_keys.key? :rubygems
@@ -215,8 +215,8 @@ class Gem::ConfigFile
   def rubygems_api_key=(api_key)
     config = load_file(credentials_path).merge(:rubygems_api_key => api_key)
 
-    dirname = File.dirname(credentials_path)
-    Dir.mkdir(dirname) unless File.exists?(dirname)
+    dirname = credentials_path.dirname
+    Dir.mkdir(dirname) unless dirname.exist?
 
     Gem.load_yaml
 
@@ -230,7 +230,7 @@ class Gem::ConfigFile
   def load_file(filename)
     Gem.load_yaml
 
-    return {} unless filename and File.exists?(filename)
+    return {} unless filename and filename.exist?
     begin
       YAML.load(File.read(filename))
     rescue ArgumentError
@@ -354,6 +354,4 @@ class Gem::ConfigFile
   protected
 
   attr_reader :hash
-
 end
-

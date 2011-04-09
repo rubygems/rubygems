@@ -106,9 +106,9 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     Dir.chdir Dir.tmpdir do tmpdir = Dir.pwd end # HACK OSX /private/tmp
 
     if ENV['KEEP_FILES'] then
-      @tempdir = File.join tmpdir, "test_rubygems_#{$$}.#{Time.now.to_i}"
+      @tempdir = Gem::Path.new(tmpdir, "test_rubygems_#{$$}.#{Time.now.to_i}")
     else
-      @tempdir = File.join tmpdir, "test_rubygems_#{$$}"
+      @tempdir = Gem::Path.new(tmpdir, "test_rubygems_#{$$}")
     end
     @tempdir.untaint
     @gemhome  = Gem::FS.new @tempdir, 'gemhome'

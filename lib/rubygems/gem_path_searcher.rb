@@ -50,6 +50,15 @@ class Gem::GemPathSearcher
     end
   end
 
+  # Looks through the available gemspecs and finds the first
+  # one that contains +file+ as a requirable file.
+
+  def find_spec_for_file(file)
+    @gemspecs.find do |spec|
+      return spec if spec.contains_requirable_file?(file)
+    end
+  end
+
   def find_active(glob)
     # HACK violation of encapsulation
     @gemspecs.find do |spec|

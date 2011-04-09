@@ -57,6 +57,8 @@ hoe = Hoe.spec 'rubygems-update' do
   # in the first place.
   spec_extras['require_paths'] = %w[hide_lib_for_update] unless
     ENV['RAKE_SUCKS']
+
+  self.testlib = :minitest
 end
 
 task :docs => :rake_sucks

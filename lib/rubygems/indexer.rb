@@ -285,7 +285,7 @@ class Gem::Indexer
 
         index.sort_by { |_, spec| [-spec.date.to_i, spec] }.each do |_, spec|
           gem_path = CGI.escapeHTML "http://#{@rss_gems_host}/gems/#{spec.file_name}"
-          size = File.stat(spec.loaded_from).size rescue next
+          size = spec.loaded_from.stat.size rescue next
 
           description = spec.description || spec.summary || ''
           authors = Array spec.authors
@@ -487,14 +487,14 @@ class Gem::Indexer
 
       dst_name = @dest_directory.add(quick_marshal_dir)
 
-      FileUtils.mkdir_p File.dirname(dst_name), :verbose => verbose
+      FileUtils.mkdir_p dst_name.dirname, :verbose => verbose
       FileUtils.rm_rf dst_name, :verbose => verbose
       FileUtils.mv @quick_marshal_dir, dst_name, :verbose => verbose,
                    :force => true
     end
 
     files = files.map do |path|
-      Gem::Path.new(path).subtract(@directory)
+      path.subtract(@directory)
     end
 
     files.each do |file|

@@ -158,7 +158,7 @@ load Gem.bin_path('a', 'executable', version)
       @installer.extract_files
     end
 
-    assert_equal 'attempt to install file into "/thefile"', e.message
+    assert_equal 'attempt to install file into /thefile', e.message
     assert_equal false, File.file?(File.join('/thefile')),
                  "You may need to remove this file if you broke the test once"
   end

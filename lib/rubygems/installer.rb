@@ -151,7 +151,7 @@ class Gem::Installer
     @gem_home.ensure_gem_subdirectories
 
     # Completely remove any previous gem files
-    FileUtils.rm_rf(@gem_dir) if File.exist?(@gem_dir)
+    FileUtils.rm_rf(@gem_dir) if @gem_dir.exist?
 
     FileUtils.mkdir_p @gem_dir
 
@@ -270,10 +270,10 @@ class Gem::Installer
 
     @spec.executables.each do |filename|
       filename.untaint
-      bin_path = File.expand_path "#{@spec.bindir}/#{filename}", @gem_dir
-      if File.exist?(bin_path)
-        mode = File.stat(bin_path).mode | 0111
-        File.chmod mode, bin_path
+      bin_path = @gem_dir.add(@spec.bindir, filename).expand_path(@gem_dir)
+      if bin_path.exist?
+        mode = bin_path.stat.mode | 0111
+        bin_path.chmod mode
       end
 
       if @wrappers then
@@ -317,9 +317,9 @@ class Gem::Installer
     end
 
     src = @gem_dir.add(@spec.bindir, filename)
-    dst = File.join bindir, formatted_program_filename(filename)
+    dst = bindir.add(formatted_program_filename(filename))
 
-    if File.exist? dst then
+    if dst.exist? then
       if File.symlink? dst then
         link = File.readlink(dst).split File::SEPARATOR
         cur_version = Gem::Version.create(link[-3].sub(/^.*-/, ''))
@@ -432,7 +432,7 @@ class Gem::Installer
   def verify_gem_home(unpack = false)
     FileUtils.mkdir_p @gem_home
     raise Gem::FilePermissionError, @gem_home unless
-      unpack or File.writable? @gem_home
+      unpack or @gem_home.writable?
   end
 
   ##
@@ -469,10 +469,10 @@ TEXT
     return <<-TEXT
 @ECHO OFF
 IF NOT "%~f0" == "~f0" GOTO :WinNT
-@"#{File.basename(Gem.ruby).chomp('"')}" "#{File.join(bindir, bin_file_name)}" %1 %2 %3 %4 %5 %6 %7 %8 %9
+@"#{Gem.ruby.basename.to_s.chomp('"')}" "#{bindir.add(bin_file_name)}" %1 %2 %3 %4 %5 %6 %7 %8 %9
 GOTO :EOF
 :WinNT
-@"#{File.basename(Gem.ruby).chomp('"')}" "%~dpn0" %*
+@"#{Gem.ruby.basename.to_s.chomp('"')}" "%~dpn0" %*
 TEXT
 
   end
@@ -552,23 +552,23 @@ EOF
     dirs = []
 
     @format.file_entries.each do |entry, file_data|
-      path = entry['path'].untaint
+      path = Gem::Path.new(entry['path']).untaint
 
       if path =~ /\A\// then # for extra sanity
         raise Gem::InstallError, "attempt to install file into #{path.inspect}"
       end
 
-      path = File.expand_path @gem_dir.add(path)
+      path = @gem_dir.add(path).expand_path
 
-      if path !~ /\A#{Regexp.escape @gem_dir}/ then
+      if path.to_s !~ /\A#{Regexp.escape @gem_dir}/ then
         msg = "attempt to install file into %p under %s" %
                 [entry['path'], @gem_dir]
         raise Gem::InstallError, msg
       end
 
-      FileUtils.rm_rf(path) if File.exists?(path)
+      FileUtils.rm_rf(path) if path.exist?
 
-      dir = File.dirname(path)
+      dir = path.dirname
       if !dirs.include?(dir)
         dirs << dir
         FileUtils.mkdir_p dir
@@ -578,7 +578,7 @@ EOF
         out.write file_data
       end
 
-      FileUtils.chmod entry['mode'], path
+      path.chmod entry['mode']
 
       say path if Gem.configuration.really_verbose
     end

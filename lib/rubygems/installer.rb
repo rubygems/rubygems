@@ -555,7 +555,7 @@ EOF
       path = Gem::Path.new(entry['path']).untaint
 
       if path =~ /\A\// then # for extra sanity
-        raise Gem::InstallError, "attempt to install file into #{path.inspect}"
+        raise Gem::InstallError, "attempt to install file into #{entry['path']}"
       end
 
       path = @gem_dir.add(path).expand_path

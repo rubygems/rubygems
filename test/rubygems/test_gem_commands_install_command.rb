@@ -122,8 +122,8 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     use_ui @ui do
       orig_dir = Dir.pwd
       begin
-        @userhome.chmod 0755
-        @gemhome.chmod 0555
+        FileUtils.chmod 0755, @userhome
+        FileUtils.chmod 0555, @gemhome
 
         Dir.chdir @tempdir
         assert_raises Gem::FilePermissionError do
@@ -131,7 +131,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
         end
       ensure
         Dir.chdir orig_dir
-        @gemhome.chmod 0755
+        FileUtils.chmod 0755, @gemhome
       end
     end
   end

@@ -18,14 +18,14 @@ class TestGemDocManager < Gem::TestCase
     if win_platform?
       skip("test_uninstall_doc_unwritable skipped on MS Windows")
     else
-      path.chmod 0000
+      FileUtils.chmod 0000, path
     end
 
     assert_raises Gem::FilePermissionError do
       @manager.uninstall_doc
     end
   ensure
-    path.chmod orig_mode
+    FileUtils.chmod orig_mode, path
   end
 
 end

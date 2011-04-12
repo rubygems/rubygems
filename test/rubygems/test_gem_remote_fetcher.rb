@@ -273,7 +273,7 @@ gems:
       FileUtils.mv @a1_gem, @tempdir
       local_path = File.join @tempdir, @a1.file_name
       inst = nil
-      Gem.cache_dir(@gemhome).chmod 0555
+      FileUtils.chmod 0555, Gem.cache_dir(@gemhome)
 
       Dir.chdir @tempdir do
         inst = Gem::RemoteFetcher.fetcher
@@ -282,19 +282,19 @@ gems:
       assert_equal File.join(@tempdir, @a1.file_name),
         inst.download(@a1, local_path)
     ensure
-      Gem.cache_dir(@gemhome).chmod 0755
+      FileUtils.chmod 0755, Gem.cache_dir(@gemhome)
     end
 
     def test_download_read_only
-      Gem.cache_dir(@gemhome).chmod 0555
-      @gemhome.chmod 0555
+      FileUtils.chmod 0555, Gem.cache_dir(@gemhome)
+      FileUtils.chmod 0555, @gemhome
 
       fetcher = util_fuck_with_fetcher File.read(@a1_gem)
       fetcher.download(@a1, 'http://gems.example.com')
       assert File.exist?(Gem.cache_gem(@a1.file_name, Gem.user_dir))
     ensure
-      @gemhome.chmod 0755
-      Gem.cache_dir(@gemhome).chmod 0755
+      FileUtils.chmod 0755, @gemhome
+      FileUtils.chmod 0755, Gem.cache_dir(@gemhome)
     end
   end
 

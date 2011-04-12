@@ -273,7 +273,7 @@ class Gem::Installer
       bin_path = @gem_dir.add(@spec.bindir, filename).expand_path(@gem_dir)
       if bin_path.exist?
         mode = bin_path.stat.mode | 0111
-        bin_path.chmod mode
+        FileUtils.chmod mode, bin_path
       end
 
       if @wrappers then
@@ -578,7 +578,7 @@ EOF
         out.write file_data
       end
 
-      path.chmod entry['mode']
+      FileUtils.chmod entry['mode'], path
 
       say path if Gem.configuration.really_verbose
     end

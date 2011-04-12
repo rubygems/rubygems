@@ -6,32 +6,6 @@
 
 require 'rubygems/specification'
 
-##
-# Wrapper for FileUtils meant to provide logging and additional operations if
-# needed.
-
-class Gem::FileOperations
-
-  def initialize(logger = nil)
-    require 'fileutils'
-    @logger = logger
-  end
-
-  def method_missing(meth, *args, &block)
-    case
-    when FileUtils.respond_to?(meth)
-      @logger.log "#{meth}: #{args}" if @logger
-      FileUtils.send meth, *args, &block
-    when Gem::FileOperations.respond_to?(meth)
-      @logger.log "#{meth}: #{args}" if @logger
-      Gem::FileOperations.send meth, *args, &block
-    else
-      super
-    end
-  end
-
-end
-
 module Gem::Package
 
   class Error < StandardError; end

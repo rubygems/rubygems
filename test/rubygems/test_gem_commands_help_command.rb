@@ -45,18 +45,6 @@ class TestGemCommandsHelpCommand < Gem::TestCase
     end
   end
 
-  def test_all_command_helps
-    mgr = Gem::CommandManager.new
-    mgr.command_names.each do |cmdname|
-      util_gem cmdname do |out, err|
-        assert_match(/Usage: gem #{cmdname}/, out)
-      end
-    end
-  end
-
-  # :section: Help Methods
-
-  # Run a gem command without the SSL library.
   def util_gem *args
     @cmd.options[:args] = args
 
@@ -67,9 +55,5 @@ class TestGemCommandsHelpCommand < Gem::TestCase
     end
 
     yield @ui.output, @ui.error
-  end
-
-  def assert_status(expected_status=0)
-    assert_equal expected_status, @status
   end
 end

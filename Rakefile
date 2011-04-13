@@ -73,16 +73,10 @@ task :rake_sucks do
   end
 end
 
-desc "Run just the functional tests"
-Rake::TestTask.new(:test_functional) do |t|
-  t.test_files = FileList['test/functional*.rb']
-  t.warning = true
-end
-
 # --------------------------------------------------------------------
 # Creating a release
 
-task :prerelease => [:clobber, :check_manifest, :test, :test_functional]
+task :prerelease => [:clobber, :check_manifest, :test]
 
 task :postrelease => :publish_docs
 

@@ -5,6 +5,7 @@ class TestGemCommandsWhichCommand < Gem::TestCase
 
   def setup
     super
+    Gem::Specification.reset
     @cmd = Gem::Commands::WhichCommand.new
   end
 
@@ -22,6 +23,8 @@ class TestGemCommandsWhichCommand < Gem::TestCase
   end
 
   def test_execute_one_missing
+    # TODO: this test fails in isolation
+
     util_foo_bar
 
     @cmd.handle_options %w[foo_bar missing]
@@ -31,7 +34,7 @@ class TestGemCommandsWhichCommand < Gem::TestCase
     end
 
     assert_equal "#{@foo_bar.full_gem_path}/lib/foo_bar.rb\n", @ui.output
-    assert_match %r%Can't find ruby library file or shared library missing\n%,
+    assert_match %r%Can.t find ruby library file or shared library missing\n%,
                  @ui.error
   end
 
@@ -45,7 +48,7 @@ class TestGemCommandsWhichCommand < Gem::TestCase
     end
 
     assert_equal '', @ui.output
-    assert_match %r%Can't find ruby library file or shared library missing\n%,
+    assert_match %r%Can.t find ruby library file or shared library missing\n%,
                  @ui.error
   end
 

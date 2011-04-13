@@ -159,5 +159,12 @@ class Gem::GemPathSearcher
       spec.require_paths
   end
 
-end
+  extend Deprecate
 
+  deprecate :find,                    :none,  2011, 10
+  deprecate :find_active,             :none,  2011, 10
+  deprecate :find_all,                :none,  2011, 10
+  deprecate :find_in_unresolved,      :none,  2011, 10
+  deprecate :find_in_unresolved_tree, :none,  2011, 10
+  deprecate :find_spec_for_file,      :none,  2011, 10
+end

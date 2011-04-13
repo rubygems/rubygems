@@ -201,7 +201,7 @@ module Gem
 
     # TODO: use find_all and bork if ambiguous
 
-    spec = Gem.searcher.find_spec_for_file path
+    spec = Gem::Specification.find_by_path path
     return false unless spec
 
     begin
@@ -231,11 +231,14 @@ module Gem
   # Gem::Requirement and Gem::Version documentation.
 
   def self.activate(dep, *requirements)
-    Gem::Specification.find(dep, *requirements).activate
+    raise ArgumentError, "Deprecated use of Gem.activate(dep)" if
+      Gem::Dependency === dep
+
+    Gem::Specification.find_by_name(dep, *requirements).activate
   end
 
   def self.activate_dep dep, *requirements # :nodoc:
-    Gem::Specification.find(dep, *requirements).activate
+    dep.to_spec.activate
   end
 
   def self.activate_spec spec # :nodoc:
@@ -346,6 +349,7 @@ module Gem
     @paths         = nil
     @user_home     = nil
     @searcher      = nil
+    Gem::Specification.reset
   end
 
   ##
@@ -464,11 +468,9 @@ module Gem
       }.flatten.select { |file| File.file? file.untaint }
     end
 
-    specs = searcher.find_all glob
-
-    specs.each do |spec|
-      files.concat searcher.matching_files(spec, glob)
-    end
+    files.concat Gem::Specification.map { |spec|
+      spec.matches_for_glob("#{glob}#{Gem.suffix_pattern}")
+    }.flatten
 
     # $LOAD_PATH might contain duplicate entries or reference
     # the spec dirs directly, so we prune.
@@ -790,6 +792,7 @@ module Gem
   def self.refresh
     source_index.refresh!
 
+    Gem::Specification.reset
     @searcher = nil
   end
 

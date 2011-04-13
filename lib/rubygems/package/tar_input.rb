@@ -110,7 +110,6 @@ class Gem::Package::TarInput
     end
 
     @tarreader.rewind
-    @fileops = Gem::FileOperations.new
 
     unless has_meta then
       path = io.path if io.respond_to? :path
@@ -146,9 +145,9 @@ class Gem::Package::TarInput
       dest = File.join destdir, entry.full_name
 
       if File.directory? dest then
-        @fileops.chmod entry.header.mode, dest, :verbose => false
+        FileUtils.chmod entry.header.mode, dest, :verbose => false
       else
-        @fileops.mkdir_p dest, :mode => entry.header.mode, :verbose => false
+        FileUtils.mkdir_p dest, :mode => entry.header.mode, :verbose => false
       end
 
       fsync_dir dest
@@ -160,9 +159,9 @@ class Gem::Package::TarInput
     # it's a file
     md5 = Digest::MD5.new if expected_md5sum
     destdir = File.join destdir, File.dirname(entry.full_name)
-    @fileops.mkdir_p destdir, :mode => 0755, :verbose => false
+    FileUtils.mkdir_p destdir, :mode => 0755, :verbose => false
     destfile = File.join destdir, File.basename(entry.full_name)
-    @fileops.chmod 0600, destfile, :verbose => false rescue nil # Errno::ENOENT
+    FileUtils.chmod 0600, destfile, :verbose => false rescue nil # Errno::ENOENT
 
     open destfile, "wb", entry.header.mode do |os|
       loop do
@@ -176,7 +175,7 @@ class Gem::Package::TarInput
       os.fsync
     end
 
-    @fileops.chmod entry.header.mode, destfile, :verbose => false
+    FileUtils.chmod entry.header.mode, destfile, :verbose => false
     fsync_dir File.dirname(destfile)
     fsync_dir File.join(File.dirname(destfile), "..")
 

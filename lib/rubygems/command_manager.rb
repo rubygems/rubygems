@@ -81,6 +81,13 @@ class Gem::CommandManager
   end
 
   ##
+  # Unregister the Symbol +command+ as a gem command.
+
+  def unregister_command(command)
+    @commands.delete command
+  end
+
+  ##
   # Return the registered command from the command name.
 
   def [](command_name)
@@ -160,7 +167,7 @@ class Gem::CommandManager
     retried = false
 
     begin
-      commands.const_get const_name
+      commands.const_get(const_name).new
     rescue NameError
       raise if retried
 
@@ -173,7 +180,7 @@ class Gem::CommandManager
           Gem.configuration.backtrace
       end
       retry
-    end.new
+    end
   end
 
 end

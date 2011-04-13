@@ -931,7 +931,7 @@ end
 
     refute_match '!!null', yaml_str
 
-    same_spec = YAML.load(yaml_str)
+    same_spec = Gem::Specification.from_yaml(yaml_str)
 
     assert_equal @a1, same_spec
   end
@@ -940,7 +940,7 @@ end
     @a1.platform = Gem::Platform.local
     yaml_str = @a1.to_yaml
 
-    same_spec = YAML.load(yaml_str)
+    same_spec = Gem::Specification.from_yaml(yaml_str)
 
     assert_equal Gem::Platform.local, same_spec.platform
 

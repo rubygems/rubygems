@@ -405,6 +405,17 @@ class Gem::Specification
                                  NONEXISTENT_SPECIFICATION_VERSION
     end
 
+    %w[bindir require_paths files executables test_files].each do |x|
+      obj = spec.send(x)
+
+      case obj
+      when Array
+        spec.send("#{x}=", obj.map { |x| Gem::Path.new(x) })
+      when String
+        spec.send("#{x}=", Gem::Path.new(obj))
+      end
+    end
+
     spec
   end
 
@@ -629,8 +640,12 @@ class Gem::Specification
                  @original_platform.to_s
                end
     coder.add 'platform', platform
+    coder.add 'bindir', @bindir.to_s
+    coder.add 'require_paths', @require_paths.map(&:to_s)
+    coder.add 'files', @files.map(&:to_s)
+    coder.add 'test_files', @test_files.map(&:to_s)
 
-    attributes = @@attributes.map(&:to_s) - %w[name version platform]
+    attributes = @@attributes.map(&:to_s) - %w[name version platform bindir require_paths files test_files]
     attributes.each do |name|
       coder.add name, instance_variable_get("@#{name}")
     end

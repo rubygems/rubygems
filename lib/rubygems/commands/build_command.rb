@@ -16,7 +16,7 @@ class Gem::Commands::BuildCommand < Gem::Command
   end
 
   def execute
-    gemspec = Gem::Path.new(get_one_gem_name) # FIXME refactor get_one_gem_name
+    gemspec = Gem::Path.new(get_one_gem_name)
 
     if gemspec.exist?
       spec = load_gemspec gemspec

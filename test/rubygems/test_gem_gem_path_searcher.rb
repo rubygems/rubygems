@@ -7,7 +7,6 @@ class Gem::GemPathSearcher
 end
 
 class TestGemGemPathSearcher < Gem::TestCase
-
   def setup
     super
 
@@ -34,45 +33,59 @@ class TestGemGemPathSearcher < Gem::TestCase
     @gps = Gem::GemPathSearcher.new
   end
 
-  # def test_find
-  #   assert_equal @foo1, @gps.find('foo')
-  # end
-  #
-  # def test_find_all
-  #   assert_equal [@foo1], @gps.find_all('foo')
-  # end
-  #
-  # def test_init_gemspecs
-  #   assert_equal [@bar2, @bar1, @foo2, @foo1], @gps.init_gemspecs
-  # end
-  #
-  # def test_lib_dirs_for
-  #   lib_dirs = @gps.lib_dirs_for(@foo1)
-  #   expected = File.join @gemhome, 'gems', @foo1.full_name, '{lib,lib2}'
-  #
-  #   assert_equal expected, lib_dirs
-  # end
-  #
-  # def test_lib_dirs_for_nil_require_paths
-  #   assert_nil @gps.lib_dirs_for(@nrp)
-  # end
-  #
-  # def test_matching_file_eh
-  #   refute @gps.matching_file?(@foo1, 'bar')
-  #   assert @gps.matching_file?(@foo1, 'foo')
-  # end
-  #
-  # def test_matching_files
-  #   assert_equal [], @gps.matching_files(@foo1, 'bar')
-  #
-  #   expected = File.join @foo1.full_gem_path, 'lib', 'foo.rb'
-  #
-  #   assert_equal [expected], @gps.matching_files(@foo1, 'foo')
-  # end
-  #
-  # def test_matching_files_nil_require_paths
-  #   assert_empty @gps.matching_files(@nrp, 'foo')
-  # end
+  def test_find
+    Deprecate.skip_during do
+      assert_equal @foo1, @gps.find('foo')
+    end
+  end
 
+  def test_find_all
+    Deprecate.skip_during do
+      assert_equal [@foo1], @gps.find_all('foo')
+    end
+  end
+
+  def test_init_gemspecs
+    Deprecate.skip_during do
+      assert_equal [@bar2, @bar1, @foo2, @foo1], @gps.init_gemspecs
+    end
+  end
+
+  def test_lib_dirs_for
+    Deprecate.skip_during do
+      lib_dirs = @gps.lib_dirs_for(@foo1)
+      expected = File.join @gemhome, 'gems', @foo1.full_name, '{lib,lib2}'
+
+      assert_equal expected, lib_dirs
+    end
+  end
+
+  def test_lib_dirs_for_nil_require_paths
+    Deprecate.skip_during do
+      assert_nil @gps.lib_dirs_for(@nrp)
+    end
+  end
+
+  def test_matching_file_eh
+    Deprecate.skip_during do
+      refute @gps.matching_file?(@foo1, 'bar')
+      assert @gps.matching_file?(@foo1, 'foo')
+    end
+  end
+
+  def test_matching_files
+    Deprecate.skip_during do
+      assert_equal [], @gps.matching_files(@foo1, 'bar')
+
+      expected = File.join @foo1.full_gem_path, 'lib', 'foo.rb'
+
+      assert_equal [expected], @gps.matching_files(@foo1, 'foo')
+    end
+  end
+
+  def test_matching_files_nil_require_paths
+    Deprecate.skip_during do
+      assert_empty @gps.matching_files(@nrp, 'foo')
+    end
+  end
 end
-

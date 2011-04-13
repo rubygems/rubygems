@@ -644,8 +644,9 @@ class Gem::Specification
     coder.add 'require_paths', @require_paths.map(&:to_s)
     coder.add 'files', @files.map(&:to_s)
     coder.add 'test_files', @test_files.map(&:to_s)
+    coder.add 'executables', @executables.map(&:to_s)
 
-    attributes = @@attributes.map(&:to_s) - %w[name version platform bindir require_paths files test_files]
+    attributes = @@attributes.map(&:to_s) - %w[name version platform bindir require_paths files test_files executables]
     attributes.each do |name|
       coder.add name, instance_variable_get("@#{name}")
     end

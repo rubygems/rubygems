@@ -23,12 +23,12 @@ class TestGem < Gem::TestCase
   def assert_activate expected, *specs
     specs.each do |spec|
       case spec
-      when Array
-        Gem::Specification.find(*spec).activate
-      when String
-        Gem::Specification.find(spec).activate
-      else
+      when String then
+        Gem::Specification.find_by_name(spec).activate
+      when Gem::Specification then
         spec.activate
+      else
+        flunk spec.inspect
       end
     end
 
@@ -677,7 +677,9 @@ class TestGem < Gem::TestCase
 
     Gem.source_index = util_setup_spec_fetcher foo1, foo2
 
+    # HACK should be Gem.refresh
     Gem.searcher = nil
+    Gem::Specification.reset
 
     expected = [
       File.expand_path('test/rubygems/sff/discover.rb', @@project_dir),
@@ -1044,6 +1046,7 @@ class TestGem < Gem::TestCase
 
     Gem.source_index = nil
     Gem.searcher = nil
+    Gem::Specification.reset
 
     gem 'foo'
 

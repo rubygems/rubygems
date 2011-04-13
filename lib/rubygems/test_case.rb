@@ -396,6 +396,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     FileUtils.rm_rf @gemhome.gems
     FileUtils.rm_rf @gemhome.specifications
     Gem.source_index.refresh!
+    Gem::Specification.reset
   end
 
   ##

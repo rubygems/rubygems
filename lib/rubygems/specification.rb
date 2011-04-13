@@ -452,21 +452,6 @@ class Gem::Specification
   end
 
   ##
-  # Find the best specification matching a dependency or a name +
-  # requirements.
-
-  def self.find name_or_dep, *requirements
-    dep = name_or_dep
-
-    unless Gem::Dependency === dep then
-      requirements = Gem::Requirement.default if requirements.empty?
-      dep = Gem::Dependency.new(dep, requirements)
-    end
-
-    dep.to_spec
-  end
-
-  ##
   # Sets the rubygems_version to the current RubyGems version
 
   def mark_version
@@ -1635,6 +1620,95 @@ class Gem::Specification
     end
 
     return false
+  end
+
+  def self.reset
+    @@all = nil
+  end
+
+  extend Enumerable
+
+  def self.each
+    unless block_given? then
+      enum_for(:each)
+    else
+      self.all.each do |x|
+        yield x
+      end
+    end
+  end
+
+  def self.all
+    # FIX: zomg deps broken
+    @@all ||= Gem.source_index.map { |_, spec| spec }.sort { |a, b|
+      names = a.name <=> b.name
+      next names if names.nonzero?
+      b.version <=> a.version
+    }
+  end
+
+  def self.find_by_path path
+    self.find { |spec|
+      spec.contains_requirable_file? path
+    }
+  end
+
+  ##
+  # Find the best specification matching a name + requirements. Raises
+  # if the dependency doesn't resolve to a valid specification.
+
+  def self.find_by_name name, *requirements
+    requirements = Gem::Requirement.default if requirements.empty?
+
+    Gem::Dependency.new(name, *requirements).to_spec
+  end
+
+  def lib_dirs_glob
+    dirs = if self.require_paths.size > 1 then
+             "{#{self.require_paths.join(',')}}"
+           else
+             self.require_paths.first
+           end
+
+    "#{self.full_gem_path}/#{dirs}"
+  end
+
+  def matches_for_glob glob # TODO: rename?
+    glob = File.join(self.lib_dirs_glob, glob)
+
+    Dir[glob].map { |f| f.untaint } # FIX our tests are brokey
+  end
+
+  def self.find_in_unresolved(path)
+    specs = Gem.unresolved_deps.values.map { |dep|
+      # TODO: nuke this:
+      Gem.source_index.search dep, true
+    }.flatten
+
+    specs.find_all { |spec|
+      spec.contains_requirable_file? path
+    }
+  end
+
+  def self.find_in_unresolved_tree path
+    specs = Gem.unresolved_deps.values.map { |dep|
+      # TODO: nuke this:
+      Gem.source_index.search dep, true
+    }.flatten
+
+    specs.reverse_each do |spec|
+      trails = []
+      spec.traverse do |from_spec, dep, to_spec, trail|
+        next unless to_spec.conflicts.empty?
+        trails << trail if to_spec.contains_requirable_file? path
+      end
+
+      next if trails.empty?
+
+      return trails.map(&:reverse).sort.first.reverse
+    end
+
+    []
   end
 
   extend Deprecate

@@ -23,6 +23,7 @@ class TestGemCommandManager < Gem::TestCase
     end
   ensure
     $:.replace old_load_path
+    Gem::CommandManager.reset
   end
 
   def test_run_crash_command

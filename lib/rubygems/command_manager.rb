@@ -38,6 +38,13 @@ class Gem::CommandManager
   end
 
   ##
+  # Reset the authoritative instance of the command manager.
+
+  def self.reset
+    @command_manager = nil
+  end
+
+  ##
   # Register all the subcommands supported by the gem command.
 
   def initialize

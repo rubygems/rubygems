@@ -370,7 +370,6 @@ class Gem::SourceIndex
   # deprecate :==,               :none, 2011, 11 # makes tests noisy
   # deprecate :add_spec,         :none, 2011, 11 # just noisy
   # deprecate :add_specs,        :none, 2011, 11 # just noisy
-  deprecate :all_gems,         :none, 2011, 11
   deprecate :dump,             :none, 2011, 11
   # HACK: deprecate :each,             :none, 2011, 11
   deprecate :find_name,        :none, 2011, 11

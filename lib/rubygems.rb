@@ -284,7 +284,7 @@ module Gem
       dep = Gem::Dependency.new dep, requirements
     end
 
-    not dep.to_specs.empty?
+    not dep.matching_specs(true).empty?
   end
 
   ##
@@ -299,7 +299,7 @@ module Gem
     requirements = Gem::Requirement.default if
       requirements.empty?
 
-    specs = Gem::Dependency.new(name, requirements).to_specs
+    specs = Gem::Dependency.new(name, requirements).matching_specs(true)
 
     raise Gem::GemNotFoundException,
           "can't find gem #{name} (#{requirements})" if specs.empty?
@@ -790,7 +790,7 @@ module Gem
   # Refresh source_index from disk and clear searcher.
 
   def self.refresh
-    source_index.refresh!
+    Deprecate.skip_during { source_index.refresh! }
 
     Gem::Specification.reset
     @searcher = nil
@@ -1219,5 +1219,6 @@ module Gem
     deprecate :report_activate_error, :none,                    2011, 11
     deprecate :required_location,     :none,                    2011, 11
     deprecate :source_index,          "Specification",          2011, 11
+    deprecate :searcher,              "Specification",          2011, 11
   end
 end

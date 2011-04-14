@@ -190,7 +190,7 @@ class Gem::SourceIndex
   def add_spec(gem_spec, name = gem_spec.full_name)
     # No idea why, but the Indexer wants to insert them using original_name
     # instead of full_name. So we make it an optional arg.
-    
+    Gem::Specification.reset # HACK
     @gems[name] = gem_spec
   end
 
@@ -253,7 +253,10 @@ class Gem::SourceIndex
 
   def find_name(gem_name, requirement = Gem::Requirement.default)
     dep = Gem::Dependency.new gem_name, requirement
-    search dep
+
+    Deprecate.skip_during do
+      search dep
+    end
   end
 
   ##
@@ -265,7 +268,7 @@ class Gem::SourceIndex
   # +gem_pattern+, and a Gem::Requirement for +platform_only+.  This
   # behavior is deprecated and will be removed.
 
-  def search(gem_pattern, platform_only = false)
+  def search(gem_pattern, platform_or_requirement = false)
     requirement = nil
     only_platform = false # FIX: WTF is this?!?
 
@@ -276,9 +279,9 @@ class Gem::SourceIndex
 
     case gem_pattern
     when Regexp then
-      requirement = platform_only || Gem::Requirement.default
+      requirement = platform_or_requirement || Gem::Requirement.default
     when Gem::Dependency then
-      only_platform = platform_only
+      only_platform = platform_or_requirement
       requirement = gem_pattern.requirement
 
       gem_pattern = if Regexp === gem_pattern.name then
@@ -289,7 +292,7 @@ class Gem::SourceIndex
                       /^#{Regexp.escape gem_pattern.name}$/
                     end
     else
-      requirement = platform_only || Gem::Requirement.default
+      requirement = platform_or_requirement || Gem::Requirement.default
       gem_pattern = /#{gem_pattern}/i
     end
 

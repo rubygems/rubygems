@@ -161,6 +161,7 @@ class Gem::GemPathSearcher
 
   extend Deprecate
 
+  deprecate :initialize,              :none,  2011, 10
   deprecate :find,                    :none,  2011, 10
   deprecate :find_active,             :none,  2011, 10
   deprecate :find_all,                :none,  2011, 10

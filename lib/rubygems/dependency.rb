@@ -206,20 +206,21 @@ class Gem::Dependency
     self.class.new name, self_req.as_list.concat(other_req.as_list)
   end
 
-  def matching_specs
+  def matching_specs platform_only = false
     matches = Gem::Specification.find_all { |spec|
       self.name == spec.name and
-        requirement.satisfied_by? spec.version and
-        Gem::Platform.match spec.platform
+        requirement.satisfied_by? spec.version
     }
+
+    matches.reject! { |spec|
+      not Gem::Platform.match spec.platform
+    } if platform_only
 
     matches = matches.sort_by { |s| s.sort_obj } # HACK: shouldn't be needed
   end
 
-  alias :to_specs :matching_specs # TODO: maybe remove this
-
-  def to_spec
-    matches = self.matching_specs
+  def to_specs
+    matches = matching_specs true
 
     # TODO: check Gem.activated_spec[self.name] in case matches falls outside
 
@@ -232,6 +233,12 @@ class Gem::Dependency
     end
 
     # TODO: any other resolver validations should go here
+
+    matches
+  end
+
+  def to_spec
+    matches = self.to_specs
 
     matches.find { |spec| spec.loaded? } or matches.last
   end

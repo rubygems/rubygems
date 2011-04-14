@@ -403,8 +403,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   def util_clear_gems
     FileUtils.rm_rf @gemhome.gems
     FileUtils.rm_rf @gemhome.specifications
-    Gem.source_index.refresh!
-    Gem::Specification.reset
+    Gem.source_index = nil
   end
 
   ##

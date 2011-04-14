@@ -504,16 +504,14 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_clear_paths
-    Gem.dir
-    Gem.path
-    searcher = Gem.searcher
+    assert_match(/gemhome$/, Gem.dir)
+    assert_match(/gemhome$/, Gem.path.first)
 
     Gem.clear_paths
 
     assert_nil Gem.instance_variable_get(:@gem_home)
     assert_nil Gem.instance_variable_get(:@gem_path)
     assert_nil Gem::Specification.send(:class_variable_get, :@@all)
-    refute_same searcher, Gem.searcher
   end
 
   def test_self_configuration
@@ -835,7 +833,6 @@ class TestGem < Gem::TestCase
     Gem.refresh
 
     assert_includes Gem::Specification.all.map(&:full_name), @a1.full_name
-    assert_equal nil, Gem.instance_variable_get(:@searcher)
   end
 
   def test_self_ruby_escaping_spaces_in_path
@@ -898,10 +895,6 @@ class TestGem < Gem::TestCase
     assert_equal Gem::Version.new('1.9.2.dev.23493'), Gem.ruby_version
   ensure
     util_restore_RUBY_VERSION
-  end
-
-  def test_self_searcher
-    assert_kind_of Gem::GemPathSearcher, Gem.searcher
   end
 
   def test_self_set_paths

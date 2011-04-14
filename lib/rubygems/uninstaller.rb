@@ -249,11 +249,13 @@ class Gem::Uninstaller
     msg = ['']
     msg << 'You have requested to uninstall the gem:'
     msg << "\t#{spec.full_name}"
-    spec.dependent_gems.each do |gem,dep,satlist|
+
+    spec.dependent_gems.each do |dep_spec, dep, satlist|
       msg <<
-        ("#{gem.name}-#{gem.version} depends on " +
-        "[#{dep.name} (#{dep.requirement})]")
+        ("#{dep_spec.name}-#{dep_spec.version} depends on " +
+         "[#{dep.name} (#{dep.requirement})]")
     end
+
     msg << 'If you remove this gems, one or more dependencies will not be met.'
     msg << 'Continue with Uninstall?'
     return ask_yes_no(msg.join("\n"), true)

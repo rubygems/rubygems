@@ -114,10 +114,9 @@ class Gem::DependencyList
 
   def why_not_ok? quick = false
     unsatisfied = Hash.new { |h,k| h[k] = [] }
-    source_index = Gem.source_index
     each do |spec|
       spec.runtime_dependencies.each do |dep|
-        inst = source_index.any? { |_, installed_spec|
+        inst = Gem::Specification.any? { |installed_spec|
           dep.name == installed_spec.name and
             dep.requirement.satisfied_by? installed_spec.version
         }
@@ -128,6 +127,7 @@ class Gem::DependencyList
         end
       end
     end
+
     unsatisfied
   end
 

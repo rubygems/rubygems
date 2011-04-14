@@ -312,6 +312,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     end
 
     out = @ui.output.split "\n"
+    assert_equal "", @ui.error
     assert_equal "Successfully installed #{@b2.full_name}", out.shift
     assert_equal "1 gem installed", out.shift
     assert out.empty?, out.inspect

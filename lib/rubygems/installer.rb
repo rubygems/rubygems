@@ -185,7 +185,7 @@ class Gem::Installer
 
     @spec.loaded_from = @gem_home.specifications.add(@spec.spec_name)
 
-    @source_index.add_spec @spec
+    Deprecate.skip_during { Gem.source_index.add_spec @spec }
 
     Gem.post_install_hooks.each do |hook|
       hook.call self
@@ -214,7 +214,7 @@ class Gem::Installer
   # True if the gems in the source_index satisfy +dependency+.
 
   def installation_satisfies_dependency?(dependency)
-    @source_index.find_name(dependency.name, dependency.requirement).size > 0
+    Gem.source_index.find_name(dependency.name, dependency.requirement).size > 0
   end
 
   ##
@@ -392,7 +392,6 @@ class Gem::Installer
       :exec_format  => false,
       :force        => false,
       :install_dir  => Gem.dir,
-      :source_index => Deprecate.skip_during { Gem.source_index },
     }.merge options
 
     @env_shebang         = options[:env_shebang]
@@ -405,7 +404,9 @@ class Gem::Installer
     @wrappers            = options[:wrappers]
     @bin_dir             = options[:bin_dir]
     @development         = options[:development]
-    @source_index        = options[:source_index]
+
+    raise "NOTE: Installer option :source_index is dead" if
+      options[:source_index]
   end
 
   def load_gem_file

@@ -47,12 +47,9 @@ class Gem::DependencyInstaller
     if options[:install_dir] then
       @gem_home     = options[:install_dir]
       @gem_home     = Gem::FS.new(@gem_home) if String === @gem_home
-      @source_index = Gem::SourceIndex.new [@gem_home.specifications]
-      Gem.source_index = @source_index # HACK
+      Gem.source_index = Gem::SourceIndex.new [@gem_home.specifications]
 
       options[:install_dir] = @gem_home # because we suck and reuse below
-    else
-      @source_index = Gem.source_index
     end
 
     options = DEFAULT_OPTIONS.merge options
@@ -144,8 +141,8 @@ class Gem::DependencyInstaller
     add_found_dependencies to_do, dependency_list unless @ignore_dependencies
 
     dependency_list.specs.reject! { |spec|
-      ! keep_names.include? spec.full_name and
-        @source_index.any? { |n,_| n == spec.full_name }
+      not keep_names.include?(spec.full_name) and
+      Gem::Specification.include?(spec)
     }
 
     unless dependency_list.ok? or @ignore_dependencies or @force then
@@ -179,7 +176,7 @@ class Gem::DependencyInstaller
           to_do.push dep_spec
 
           # already locally installed
-          @source_index.any? do |_, installed_spec|
+          Gem::Specification.any? do |installed_spec|
             dep.name == installed_spec.name and
               dep.requirement.satisfied_by? installed_spec.version
           end
@@ -271,9 +268,9 @@ class Gem::DependencyInstaller
 
     gather_dependencies
 
-    @gems_to_install.each do |spec|
-      last = spec == @gems_to_install.last
-      next if @source_index.any? { |n,_| n == spec.full_name } and not last
+    last = @gems_to_install.size - 1
+    @gems_to_install.each_with_index do |spec, index|
+      next if Gem::Specification.include?(spec) and index != last
 
       # TODO: make this sorta_verbose so other users can benefit from it
       say "Installing gem #{spec.full_name}" if Gem.configuration.really_verbose
@@ -296,7 +293,6 @@ class Gem::DependencyInstaller
                                 :ignore_dependencies => @ignore_dependencies,
                                 :install_dir         => @install_dir,
                                 :security_policy     => @security_policy,
-                                :source_index        => @source_index,
                                 :user_install        => @user_install,
                                 :wrappers            => @wrappers
 

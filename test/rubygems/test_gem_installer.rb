@@ -654,13 +654,13 @@ load Gem.bin_path('a', 'executable', version)
     b2 = quick_spec 'b', 2
 
     FileUtils.mv @gemhome, gemhome2
-    Gem.source_index.gems.delete b2.full_name
-    source_index = Gem::SourceIndex.new [File.join(gemhome2, 'specifications')]
+
+    Gem.source_index =
+      Gem::SourceIndex.new [File.join(gemhome2, 'specifications')]
 
     util_setup_gem
 
-    @installer = Gem::Installer.new @gem, :install_dir => gemhome2,
-                                    :source_index => source_index
+    @installer = Gem::Installer.new @gem, :install_dir => gemhome2
 
     build_rake_in do
       use_ui @ui do

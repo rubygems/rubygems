@@ -123,6 +123,9 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     @gemhome.ensure_gem_subdirectories
 
+    @orig_LOAD_PATH = $LOAD_PATH.dup
+    $LOAD_PATH.map! { |s| File.expand_path s }
+
     Dir.chdir @tempdir
 
     @orig_ENV_HOME = ENV['HOME']
@@ -189,8 +192,6 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     Gem.pre_uninstall do |uninstaller|
       @pre_uninstall_hook_arg = uninstaller
     end
-
-    @orig_LOAD_PATH = $LOAD_PATH.dup
   end
 
   ##

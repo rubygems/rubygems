@@ -507,12 +507,13 @@ class TestGem < Gem::TestCase
     Gem.dir
     Gem.path
     searcher = Gem.searcher
-    source_index = Gem.source_index
 
     Gem.clear_paths
 
-    refute_equal searcher, Gem.searcher
-    refute_equal source_index.object_id, Gem.source_index.object_id
+    assert_nil Gem.instance_variable_get(:@gem_home)
+    assert_nil Gem.instance_variable_get(:@gem_path)
+    assert_nil Gem::Specification.send(:class_variable_get, :@@all)
+    refute_same searcher, Gem.searcher
   end
 
   def test_self_configuration
@@ -827,13 +828,13 @@ class TestGem < Gem::TestCase
 
     FileUtils.mv a1_spec, @tempdir
 
-    refute Gem.source_index.gems.include?(@a1.full_name)
+    refute_includes Gem::Specification.all.map(&:full_name), @a1.full_name
 
     FileUtils.mv File.join(@tempdir, @a1.spec_name), a1_spec
 
     Gem.refresh
 
-    assert_includes Gem.source_index.gems, @a1.full_name
+    assert_includes Gem::Specification.all.map(&:full_name), @a1.full_name
     assert_equal nil, Gem.instance_variable_get(:@searcher)
   end
 
@@ -930,7 +931,9 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_source_index
-    assert_kind_of Gem::SourceIndex, Gem.source_index
+    Deprecate.skip_during do
+      assert_kind_of Gem::SourceIndex, Gem.source_index
+    end
   end
 
   def test_self_sources

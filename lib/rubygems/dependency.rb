@@ -206,13 +206,26 @@ class Gem::Dependency
     self.class.new name, self_req.as_list.concat(other_req.as_list)
   end
 
+  def matching_specs
+    matches = Gem::Specification.find_all { |spec|
+      self.name == spec.name and
+        requirement.satisfied_by? spec.version and
+        Gem::Platform.match spec.platform
+    }
+
+    matches = matches.sort_by { |s| s.sort_obj } # HACK: shouldn't be needed
+  end
+
+  alias :to_specs :matching_specs # TODO: maybe remove this
+
   def to_spec
-    matches = Gem.source_index.search self, true
+    matches = self.matching_specs
 
     # TODO: check Gem.activated_spec[self.name] in case matches falls outside
 
     if matches.empty? then
-      error = Gem::LoadError.new "Could not find #{name} (#{requirement})"
+      specs = Gem::Specification.map(&:full_name).join ", "
+      error = Gem::LoadError.new "Could not find #{name} (#{requirement}) amongst [#{specs}]"
       error.name        = self.name
       error.requirement = self.requirement
       raise error

@@ -277,15 +277,14 @@ module Gem
   ##
   # See if a given gem is available.
 
-  def self.available?(gem, *requirements)
+  def self.available?(dep, *requirements)
     requirements = Gem::Requirement.default if requirements.empty?
 
-    unless gem.respond_to?(:name) and
-           gem.respond_to?(:requirement) then
-      gem = Gem::Dependency.new gem, requirements
+    unless dep.respond_to?(:name) and dep.respond_to?(:requirement) then
+      dep = Gem::Dependency.new dep, requirements
     end
 
-    !Gem.source_index.search(gem).empty?
+    not dep.to_specs.empty?
   end
 
   ##
@@ -299,14 +298,15 @@ module Gem
 
     requirements = Gem::Requirement.default if
       requirements.empty?
-    specs = Gem.source_index.find_name(name, requirements)
+
+    specs = Gem::Dependency.new(name, requirements).to_specs
 
     raise Gem::GemNotFoundException,
           "can't find gem #{name} (#{requirements})" if specs.empty?
 
-    specs = specs.find_all do |spec|
-      spec.executables.include?(exec_name)
-    end if exec_name
+    specs = specs.find_all { |spec|
+      spec.executables.include? exec_name
+    } if exec_name
 
     unless spec = specs.last
       msg = "can't find gem #{name} (#{requirements}) with executable #{exec_name}"
@@ -809,7 +809,7 @@ module Gem
   # any version by the requested name.
 
   def self.report_activate_error(gem)
-    matches = Gem.source_index.find_name(gem.name)
+    matches = Gem::Specification.find_by_name(gem.name)
 
     if matches.empty? then
       error = Gem::LoadError.new(
@@ -911,7 +911,9 @@ module Gem
   # Returns the Gem::SourceIndex of specifications that are in the Gem.path
 
   def self.source_index
-    @@source_index ||= SourceIndex.new Gem::SourceIndex.installed_spec_directories
+    Deprecate.skip_during do
+      @@source_index ||= SourceIndex.new Gem::SourceIndex.installed_spec_directories
+    end
   end
 
   ##
@@ -1213,7 +1215,9 @@ module Gem
     deprecate :all_load_paths,        :none,                    2011, 10
     deprecate :latest_load_paths,     :none,                    2011, 10
     deprecate :promote_load_path,     :none,                    2011, 10
+    deprecate :available?,       "Specification::find_by_name", 2011, 11
     deprecate :report_activate_error, :none,                    2011, 11
     deprecate :required_location,     :none,                    2011, 11
+    deprecate :source_index,          "Specification",          2011, 11
   end
 end

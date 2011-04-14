@@ -392,16 +392,13 @@ class Gem::Installer
       :exec_format  => false,
       :force        => false,
       :install_dir  => Gem.dir,
-      :source_index => Gem.source_index,
+      :source_index => Deprecate.skip_during { Gem.source_index },
     }.merge options
 
     @env_shebang         = options[:env_shebang]
     @force               = options[:force]
-    gem_home             = options[:install_dir]
-    @gem_home            = 
-      gem_home.kind_of?(String) ? 
-      Gem::FS.new(gem_home) :
-      gem_home
+    home                 = options[:install_dir]
+    @gem_home            = String === home ? Gem::FS.new(home) : home
     @ignore_dependencies = options[:ignore_dependencies]
     @format_executable   = options[:format_executable]
     @security_policy     = options[:security_policy]

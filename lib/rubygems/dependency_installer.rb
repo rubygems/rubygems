@@ -48,6 +48,7 @@ class Gem::DependencyInstaller
       @gem_home     = options[:install_dir]
       @gem_home     = Gem::FS.new(@gem_home) if String === @gem_home
       @source_index = Gem::SourceIndex.new [@gem_home.specifications]
+      Gem.source_index = @source_index # HACK
 
       options[:install_dir] = @gem_home # because we suck and reuse below
     else

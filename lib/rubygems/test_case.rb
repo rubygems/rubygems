@@ -11,6 +11,7 @@ begin
 rescue Gem::LoadError
 end
 
+require "rubygems/deprecate"
 require 'minitest/autorun'
 require 'fileutils'
 require 'tmpdir'
@@ -38,6 +39,7 @@ module Gem
   # requiring 'rubygems/test_case'
 
   def self.source_index=(si)
+    Gem::Specification.reset # HACK
     @@source_index = si
   end
 
@@ -142,6 +144,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     Gem.sources.replace [@gem_repo]
 
     Gem.searcher = nil
+    Gem::Specification.reset
     Gem::SpecFetcher.fetcher = nil
 
     @orig_BASERUBY = Gem::ConfigMap[:BASERUBY]
@@ -336,7 +339,9 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     spec.loaded_from = spec.loaded_from = written_path
 
-    Gem.source_index.add_spec spec.for_cache
+    Deprecate.skip_during do
+      Gem.source_index.add_spec spec.for_cache
+    end
 
     return spec
   end
@@ -360,7 +365,9 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     path = @gemhome.specifications.add(spec.spec_name)
     spec.loaded_from = path
 
-    Gem.source_index.add_spec spec
+    Deprecate.skip_during do
+      Gem.source_index.add_spec spec
+    end
 
     return spec
   end
@@ -405,9 +412,12 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   def install_specs(*specs)
     specs.each do |spec|
       # TODO: inverted responsibility
-      Gem.source_index.add_spec spec
+      Deprecate.skip_during do
+        Gem.source_index.add_spec spec
+      end
     end
     Gem.searcher = nil
+    Gem::Specification.reset
   end
 
   ##
@@ -602,13 +612,15 @@ Also, a list:
     gem_names = [@a1.full_name, @a2.full_name, @a3a.full_name, @b2.full_name]
     @gem_names = gem_names.sort.join("\n")
 
-    @source_index = Gem::SourceIndex.new
-    @source_index.add_spec @a1
-    @source_index.add_spec @a2
-    @source_index.add_spec @a3a
-    @source_index.add_spec @a_evil9
-    @source_index.add_spec @c1_2
-    @source_index.add_spec @a2_pre if prerelease
+    Deprecate.skip_during do
+      @source_index = Gem::SourceIndex.new
+      @source_index.add_spec @a1
+      @source_index.add_spec @a2
+      @source_index.add_spec @a3a
+      @source_index.add_spec @a_evil9
+      @source_index.add_spec @c1_2
+      @source_index.add_spec @a2_pre if prerelease
+    end
 
     Gem::RemoteFetcher.fetcher = @fetcher
   end
@@ -618,34 +630,37 @@ Also, a list:
   # Best used with +@all_gems+ from #util_setup_fake_fetcher.
 
   def util_setup_spec_fetcher(*specs)
-    si = Gem::SourceIndex.new
-    si.add_specs(*specs)
+    si = nil
+    Deprecate.skip_during do
+      si = Gem::SourceIndex.new
+      si.add_specs(*specs)
 
-    spec_fetcher = Gem::SpecFetcher.fetcher
+      spec_fetcher = Gem::SpecFetcher.fetcher
 
-    spec_fetcher.specs[@uri] = []
-    si.gems.sort_by { |_, spec| spec }.each do |_, spec|
-      spec_tuple = [spec.name, spec.version, spec.original_platform]
-      spec_fetcher.specs[@uri] << spec_tuple
-    end
+      spec_fetcher.specs[@uri] = []
+      si.gems.sort_by { |_, spec| spec }.each do |_, spec|
+        spec_tuple = [spec.name, spec.version, spec.original_platform]
+        spec_fetcher.specs[@uri] << spec_tuple
+      end
 
-    spec_fetcher.latest_specs[@uri] = []
-    si.latest_specs.sort.each do |spec|
-      spec_tuple = [spec.name, spec.version, spec.original_platform]
-      spec_fetcher.latest_specs[@uri] << spec_tuple
-    end
+      spec_fetcher.latest_specs[@uri] = []
+      si.latest_specs.sort.each do |spec|
+        spec_tuple = [spec.name, spec.version, spec.original_platform]
+        spec_fetcher.latest_specs[@uri] << spec_tuple
+      end
 
-    spec_fetcher.prerelease_specs[@uri] = []
-    si.prerelease_specs.sort.each do |spec|
-      spec_tuple = [spec.name, spec.version, spec.original_platform]
-      spec_fetcher.prerelease_specs[@uri] << spec_tuple
-    end
+      spec_fetcher.prerelease_specs[@uri] = []
+      si.prerelease_specs.sort.each do |spec|
+        spec_tuple = [spec.name, spec.version, spec.original_platform]
+        spec_fetcher.prerelease_specs[@uri] << spec_tuple
+      end
 
-    (si.gems.merge si.prerelease_gems).sort_by { |_,spec| spec }.each do |_, spec|
-      path = "#{@gem_repo}quick/Marshal.#{Gem.marshal_version}/#{spec.original_name}.gemspec.rz"
-      data = Marshal.dump spec
-      data_deflate = Zlib::Deflate.deflate data
-      @fetcher.data[path] = data_deflate
+      (si.gems.merge si.prerelease_gems).sort_by { |_,spec| spec }.each do |_, spec|
+        path = "#{@gem_repo}quick/Marshal.#{Gem.marshal_version}/#{spec.original_name}.gemspec.rz"
+        data = Marshal.dump spec
+        data_deflate = Zlib::Deflate.deflate data
+        @fetcher.data[path] = data_deflate
+      end
     end
 
     si

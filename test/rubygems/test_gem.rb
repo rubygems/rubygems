@@ -21,6 +21,8 @@ class TestGem < Gem::TestCase
   end
 
   def assert_activate expected, *specs
+    Gem::Specification.reset # HACK? not sure... maybe
+
     specs.each do |spec|
       case spec
       when String then
@@ -432,10 +434,12 @@ class TestGem < Gem::TestCase
 
   def test_self_available?
     util_make_gems
-    assert(Gem.available?("a"))
-    assert(Gem.available?("a", "1"))
-    assert(Gem.available?("a", ">1"))
-    assert(!Gem.available?("monkeys"))
+    Deprecate.skip_during do
+      assert(Gem.available?("a"))
+      assert(Gem.available?("a", "1"))
+      assert(Gem.available?("a", ">1"))
+      assert(!Gem.available?("monkeys"))
+    end
   end
 
   def test_self_bin_path_bin_name

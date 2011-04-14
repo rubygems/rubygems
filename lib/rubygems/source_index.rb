@@ -190,6 +190,7 @@ class Gem::SourceIndex
   def add_spec(gem_spec, name = gem_spec.full_name)
     # No idea why, but the Indexer wants to insert them using original_name
     # instead of full_name. So we make it an optional arg.
+    
     @gems[name] = gem_spec
   end
 
@@ -266,7 +267,7 @@ class Gem::SourceIndex
 
   def search(gem_pattern, platform_only = false)
     requirement = nil
-    only_platform = false
+    only_platform = false # FIX: WTF is this?!?
 
     # TODO - Remove support and warning for legacy arguments after 2008/11
     unless Gem::Dependency === gem_pattern
@@ -349,16 +350,6 @@ class Gem::SourceIndex
   def dump
     Marshal.dump(self)
   end
-
-  extend Deprecate
-  deprecate :all_gems, :none,  2011, 10
-
-  class << self
-    extend Deprecate
-    deprecate :from_installed_gems,        :none, 2011, 10
-    deprecate :from_gems_in,               :none, 2011, 10
-    deprecate :load_specification,         :none, 2011, 10
-  end
 end
 
 # :stopdoc:
@@ -371,4 +362,46 @@ module Gem
   Cache = SourceIndex
 
 end
-# :startdoc: 
+
+class Gem::SourceIndex
+  extend Deprecate
+
+  deprecate :all_gems,         :none, 2011, 10
+  # deprecate :==,               :none, 2011, 11 # makes tests noisy
+  # deprecate :add_spec,         :none, 2011, 11 # just noisy
+  # deprecate :add_specs,        :none, 2011, 11 # just noisy
+  deprecate :all_gems,         :none, 2011, 11
+  deprecate :dump,             :none, 2011, 11
+  # HACK: deprecate :each,             :none, 2011, 11
+  deprecate :find_name,        :none, 2011, 11
+  deprecate :gem_signature,    :none, 2011, 11
+  # deprecate :gems,             :none, 2011, 11
+  deprecate :index_signature,  :none, 2011, 11
+  deprecate :initialize,       :none, 2011, 11
+  deprecate :latest_specs,     :none, 2011, 11
+  deprecate :length,           :none, 2011, 11
+  # deprecate :load_gems_in,     :none, 2011, 11
+  deprecate :outdated,         :none, 2011, 11
+  deprecate :prerelease_gems,  :none, 2011, 11
+  deprecate :prerelease_specs, :none, 2011, 11
+  # deprecate :refresh!,         :none, 2011, 11
+  deprecate :released_gems,    :none, 2011, 11
+  deprecate :released_specs,   :none, 2011, 11
+  deprecate :remove_spec,      :none, 2011, 11
+  deprecate :search,           :none, 2011, 11
+  deprecate :size,             :none, 2011, 11
+  deprecate :spec_dirs,        :none, 2011, 11
+  # deprecate :spec_dirs=,       :none, 2011, 11 # noisy tests
+  deprecate :specification,    :none, 2011, 11
+
+  class << self
+    extend Deprecate
+
+    deprecate :from_gems_in,               :none, 2011, 10
+    deprecate :from_installed_gems,        :none, 2011, 10
+    deprecate :installed_spec_directories, :none, 2011, 11
+    deprecate :load_specification,         :none, 2011, 10
+  end
+end
+
+# :startdoc:

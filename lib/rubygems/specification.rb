@@ -919,14 +919,14 @@ class Gem::Specification
 
   def dependent_gems
     out = []
-    Gem.source_index.each do |name,gem|
-      gem.dependencies.each do |dep|
+    Gem::Specification.each do |spec|
+      spec.dependencies.each do |dep|
         if self.satisfies_requirement?(dep) then
           sats = []
           find_all_satisfiers(dep) do |sat|
             sats << sat
           end
-          out << [gem, dep, sats]
+          out << [spec, dep, sats]
         end
       end
     end
@@ -990,8 +990,8 @@ class Gem::Specification
   # Finds all gems that satisfy +dep+
 
   def find_all_satisfiers(dep)
-    Gem.source_index.each do |_, gem|
-      yield gem if gem.satisfies_requirement? dep
+    Gem::Specification.each do |spec|
+      yield spec if spec.satisfies_requirement? dep
     end
   end
 
@@ -1524,8 +1524,7 @@ class Gem::Specification
   def traverse trail = [], &b
     trail = trail + [self]
     runtime_dependencies.each do |dep|
-      dep_specs = Gem.source_index.search dep, true
-      dep_specs.each do |dep_spec|
+      dep.to_specs.each do |dep_spec|
         b[self, dep, dep_spec, trail + [dep_spec]]
         dep_spec.traverse(trail, &b) unless
           trail.map(&:name).include? dep_spec.name
@@ -1534,7 +1533,7 @@ class Gem::Specification
   end
 
   def dependent_specs
-    runtime_dependencies.map { |dep| Gem.source_index.search dep, true }.flatten
+    runtime_dependencies.map { |dep| dep.to_specs }.flatten
   end
 
   def raise_if_conflicts
@@ -1601,7 +1600,7 @@ class Gem::Specification
     self.runtime_dependencies.each do |spec_dep|
       # TODO: check for conflicts! not just name!
       next if Gem.loaded_specs.include? spec_dep.name
-      specs = Gem.source_index.search spec_dep, true
+      specs = spec_dep.to_specs
 
       if specs.size == 1 then
         specs.first.activate
@@ -1646,11 +1645,13 @@ class Gem::Specification
 
   def self.all
     # FIX: zomg deps broken
-    @@all ||= Gem.source_index.map { |_, spec| spec }.sort { |a, b|
-      names = a.name <=> b.name
-      next names if names.nonzero?
-      b.version <=> a.version
-    }
+    Deprecate.skip_during do
+      @@all ||= Gem.source_index.map { |_, spec| spec }.sort { |a, b|
+        names = a.name <=> b.name
+        next names if names.nonzero?
+        b.version <=> a.version
+      }
+    end
   end
 
   def self.find_by_path path
@@ -1682,25 +1683,17 @@ class Gem::Specification
   def matches_for_glob glob # TODO: rename?
     glob = File.join(self.lib_dirs_glob, glob)
 
-    Dir[glob].map { |f| f.untaint } # FIX our tests are brokey
+    Dir[glob].map { |f| f.untaint } # FIX our tests are brokey, run w/ SAFE=1
   end
 
   def self.find_in_unresolved(path)
-    specs = Gem.unresolved_deps.values.map { |dep|
-      # TODO: nuke this:
-      Gem.source_index.search dep, true
-    }.flatten
+    specs = Gem.unresolved_deps.values.map { |dep| dep.to_specs }.flatten
 
-    specs.find_all { |spec|
-      spec.contains_requirable_file? path
-    }
+    specs.find_all { |spec| spec.contains_requirable_file? path }
   end
 
   def self.find_in_unresolved_tree path
-    specs = Gem.unresolved_deps.values.map { |dep|
-      # TODO: nuke this:
-      Gem.source_index.search dep, true
-    }.flatten
+    specs = Gem.unresolved_deps.values.map { |dep| dep.to_specs }.flatten
 
     specs.reverse_each do |spec|
       trails = []
@@ -1715,6 +1708,16 @@ class Gem::Specification
     end
 
     []
+  end
+
+  def self.sanity_check specs1, specs2
+    if specs1 != specs2
+      p :m1 => specs1.map(&:full_name)
+      p :m2 => specs2.map(&:full_name)
+      p :si => Gem.source_index.map(&:last).sort_by { |s| s.sort_obj }.map(&:full_name)
+      p :sp => Gem::Specification.all.map(&:full_name)
+      raise "wtf"
+    end
   end
 
   extend Deprecate

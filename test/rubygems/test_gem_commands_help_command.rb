@@ -1,5 +1,4 @@
 require "rubygems"
-require "minitest/autorun"
 require "rubygems/test_case"
 require "rubygems/commands/help_command"
 require "rubygems/format"

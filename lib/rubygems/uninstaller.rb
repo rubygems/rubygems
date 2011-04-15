@@ -238,7 +238,7 @@ class Gem::Uninstaller
   def dependencies_ok?(spec)
     return true if @force_ignore
 
-    deplist = Gem::DependencyList.from_source_index Gem.source_index
+    deplist = Gem::DependencyList.from_source_index
     deplist.ok_to_remove?(spec.full_name)
   end
 

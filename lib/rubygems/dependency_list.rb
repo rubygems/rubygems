@@ -24,10 +24,12 @@ class Gem::DependencyList
   ##
   # Creates a DependencyList from a Gem::SourceIndex +source_index+
 
-  def self.from_source_index(source_index)
+  def self.from_source_index(ignored=nil)
+    warn "NOTE: DependencyList.from_source_index ignores it's arg" if ignored
+
     list = new
 
-    source_index.each do |full_name, spec|
+    Gem::Specification.each do |spec|
       list.add spec
     end
 

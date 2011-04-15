@@ -207,6 +207,7 @@ class Gem::SourceIndex
   # Remove a gem specification named +full_name+.
 
   def remove_spec(full_name)
+    Gem::Specification.reset # HACK
     @gems.delete full_name
   end
 

@@ -68,7 +68,7 @@ class Gem::Uninstaller
   # directory, and the cached .gem file.
 
   def uninstall
-    list = Gem.source_index.find_name @gem, @version
+    list = Gem::Specification.find_all_by_name(@gem, @version)
 
     if list.empty? then
       raise Gem::InstallError, "cannot uninstall, check `gem list -d #{@gem}`"
@@ -130,9 +130,8 @@ class Gem::Uninstaller
 
     bindir = @bin_dir ? @bin_dir : Gem.bindir(spec.installation_path)
 
-    list = Gem.source_index.find_name(spec.name).delete_if { |s|
-
-      s.version == spec.version
+    list = Gem::Specification.find_all { |s|
+      s.name == spec.name && s.version != spec.version
     }
 
     executables = spec.executables.clone
@@ -222,7 +221,7 @@ class Gem::Uninstaller
 
     say "Successfully uninstalled #{spec.full_name}"
 
-    Gem.source_index.remove_spec spec.full_name
+    Deprecate.skip_during { Gem.source_index.remove_spec spec.full_name }
   end
 
   ##

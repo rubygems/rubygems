@@ -47,7 +47,9 @@ class Gem::DependencyInstaller
     if options[:install_dir] then
       @gem_home     = options[:install_dir]
       @gem_home     = Gem::FS.new(@gem_home) if String === @gem_home
-      Gem.source_index = Gem::SourceIndex.new [@gem_home.specifications]
+      Deprecate.skip_during do
+        Gem.source_index = Gem::SourceIndex.new [@gem_home.specifications]
+      end
 
       options[:install_dir] = @gem_home # because we suck and reuse below
     end

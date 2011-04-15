@@ -214,7 +214,7 @@ class Gem::Installer
   # True if the gems in the source_index satisfy +dependency+.
 
   def installation_satisfies_dependency?(dependency)
-    Gem.source_index.find_name(dependency.name, dependency.requirement).size > 0
+    not dependency.matching_specs.empty?
   end
 
   ##

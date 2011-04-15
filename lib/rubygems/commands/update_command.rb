@@ -65,7 +65,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
       hig = {} # highest installed gems
 
-      Gem.source_index.each do |name, spec|
+      Gem::Specification.each do |spec|
         if hig[spec.name].nil? or hig[spec.name].version < spec.version then
           hig[spec.name] = spec
         end
@@ -173,9 +173,9 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     update_gem name, target
 
-    Gem.source_index.refresh!
+    Deprecate.skip_during { Gem.source_index.refresh! }
 
-    installed_gems = Gem.source_index.find_name 'rubygems-update', requirement
+    installed_gems = Gem::Specification.find_all_by_name 'rubygems-update', requirement
     version        = installed_gems.last.version
 
     args = []

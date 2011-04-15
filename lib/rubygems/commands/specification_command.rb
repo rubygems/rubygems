@@ -85,7 +85,7 @@ FIELD         name of gemspec field to show
       end
 
       if specs.empty? then
-        specs.push(*Gem.source_index.search(dep))
+        specs.push(*dep.matching_specs)
       end
     end
 

@@ -454,15 +454,15 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       spec_dir
     end
 
-    @source_index = Gem::SourceIndex.new(@spec_dirs)
+    Deprecate.skip_during {Gem.source_index = Gem::SourceIndex.new(@spec_dirs)}
   end
 
   def Marshal(req, res)
-    @source_index.refresh!
+    Deprecate.skip_during { Gem.source_index.refresh! }
 
     add_date res
 
-    index = Marshal.dump @source_index
+    index = Deprecate.skip_during { Marshal.dump Gem.source_index }
 
     if req.request_method == 'HEAD' then
       res['content-length'] = index.length
@@ -486,13 +486,17 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def latest_specs(req, res)
-    @source_index.refresh!
+    Deprecate.skip_during { Gem.source_index.refresh! }
 
     res['content-type'] = 'application/x-gzip'
 
     add_date res
 
-    specs = @source_index.latest_specs.sort.map do |spec|
+    latest_specs = Deprecate.skip_during {
+      Gem.source_index.latest_specs
+    }
+
+    specs = latest_specs.sort.map do |spec|
       platform = spec.original_platform
       platform = Gem::Platform::RUBY if platform.nil?
       [spec.name, spec.version, platform]
@@ -546,21 +550,20 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def quick(req, res)
-    @source_index.refresh!
+    Deprecate.skip_during { Gem.source_index.refresh! }
 
     res['content-type'] = 'text/plain'
     add_date res
 
     case req.request_uri.path
     when %r|^/quick/(Marshal.#{Regexp.escape Gem.marshal_version}/)?(.*?)-([0-9.]+)(-.*?)?\.gemspec\.rz$| then
-      dep = Gem::Dependency.new $2, $3
-      specs = @source_index.search dep
-      marshal_format = $1
+      marshal_format, name, version, platform = $1, $2, $3, $4
+      specs = Gem::Specification.find_all_by_name name, version
 
-      selector = [$2, $3, $4].map { |s| s.inspect }.join ' '
+      selector = [name, version, platform].map(&:inspect).join ' '
 
-      platform = if $4 then
-                   Gem::Platform.new $4.sub(/^-/, '')
+      platform = if platform then
+                   Gem::Platform.new platform.sub(/^-/, '')
                  else
                    Gem::Platform::RUBY
                  end
@@ -583,7 +586,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def root(req, res)
-    @source_index.refresh!
+    Deprecate.skip_during { Gem.source_index.refresh! }
     add_date res
 
     raise WEBrick::HTTPStatus::NotFound, "`#{req.path}' not found." unless
@@ -592,13 +595,15 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     specs = []
     total_file_count = 0
 
-    @source_index.each do |path, spec|
+    Gem::Specification.each do |spec|
       total_file_count += spec.files.size
-      deps = spec.dependencies.map do |dep|
-        { "name"    => dep.name,
+      deps = spec.dependencies.map { |dep|
+        {
+          "name"    => dep.name,
           "type"    => dep.type,
-          "version" => dep.requirement.to_s, }
-      end
+          "version" => dep.requirement.to_s,
+        }
+      }
 
       deps = deps.sort_by { |dep| [dep["name"].downcase, dep["version"]] }
       deps.last["is_last"] = true unless deps.empty?
@@ -792,13 +797,12 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def specs(req, res)
-    @source_index.refresh!
+    Deprecate.skip_during { Gem.source_index.refresh! }
 
     add_date res
 
-    specs = @source_index.sort.map do |_, spec|
-      platform = spec.original_platform
-      platform = Gem::Platform::RUBY if platform.nil?
+    specs = Gem::Specification.sort_by(&:sort_obj).map do |spec|
+      platform = spec.original_platform || Gem::Platform::RUBY
       [spec.name, spec.version, platform]
     end
 
@@ -821,12 +825,11 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   def launch
     listeners = @server.listeners.map{|l| l.addr[2] }
 
+    # TODO: 0.0.0.0 == any, not localhost.
     host = listeners.any?{|l| l == '0.0.0.0'} ? 'localhost' : listeners.first
 
     say "Launching browser to http://#{host}:#{@port}"
 
     system("#{@launch} http://#{host}:#{@port}")
   end
-
 end
-

@@ -110,7 +110,7 @@ class Gem::Commands::UnpackCommand < Gem::Command
   def get_path dependency
     return dependency.name if dependency.name =~ /\.gem$/i
 
-    specs = Gem.source_index.search dependency
+    specs = dependency.matching_specs
 
     selected = specs.sort_by { |s| s.version }.last
 

@@ -30,7 +30,7 @@ class TestGemGemPathSearcher < Gem::TestCase
 
     Gem.source_index = util_setup_spec_fetcher @foo1, @foo2, @bar1, @bar2
 
-    @gps = Gem::GemPathSearcher.new
+    @gps = Deprecate.skip_during { Gem::GemPathSearcher.new }
   end
 
   def test_find

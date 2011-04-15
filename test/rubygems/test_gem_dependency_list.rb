@@ -24,7 +24,8 @@ class TestGemDependencyList < Gem::TestCase
   def test_self_from_source_index
     si = Gem::SourceIndex.new
     si.add_specs @a1, @b2
-    deps = Gem::DependencyList.from_source_index si
+    Gem.source_index = si
+    deps = Gem::DependencyList.from_source_index
 
     assert_equal %w[b-2 a-1], deps.dependency_order.map { |s| s.full_name }
   end

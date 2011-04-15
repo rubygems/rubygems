@@ -655,8 +655,10 @@ load Gem.bin_path('a', 'executable', version)
 
     FileUtils.mv @gemhome, gemhome2
 
-    Gem.source_index =
-      Gem::SourceIndex.new [File.join(gemhome2, 'specifications')]
+    Deprecate.skip_during do
+      Gem.source_index =
+        Gem::SourceIndex.new [File.join(gemhome2, 'specifications')]
+    end
 
     util_setup_gem
 

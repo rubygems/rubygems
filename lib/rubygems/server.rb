@@ -75,47 +75,47 @@ class Gem::Server
 
   <dl>
   <% values["specs"].each do |spec| %>
-  	<dt>
-  	<% if spec["first_name_entry"] then %>
-  	  <a name="<%=spec["name"]%>"></a>
-  	<% end %>
+    <dt>
+    <% if spec["first_name_entry"] then %>
+      <a name="<%=spec["name"]%>"></a>
+    <% end %>
 
-  	<b><%=spec["name"]%> <%=spec["version"]%></b>
+    <b><%=spec["name"]%> <%=spec["version"]%></b>
 
-  	<% if spec["rdoc_installed"] then %>
-  	  <a href="<%=spec["doc_path"]%>">[rdoc]</a>
-  	<% else %>
-  	  <span title="rdoc not installed">[rdoc]</span>
-  	<% end %>
+    <% if spec["rdoc_installed"] then %>
+      <a href="<%=spec["doc_path"]%>">[rdoc]</a>
+    <% else %>
+      <span title="rdoc not installed">[rdoc]</span>
+    <% end %>
 
-  	<% if spec["homepage"] then %>
-  		<a href="<%=spec["homepage"]%>" title="<%=spec["homepage"]%>">[www]</a>
-  	<% else %>
-  		<span title="no homepage available">[www]</span>
-  	<% end %>
+    <% if spec["homepage"] then %>
+      <a href="<%=spec["homepage"]%>" title="<%=spec["homepage"]%>">[www]</a>
+    <% else %>
+      <span title="no homepage available">[www]</span>
+    <% end %>
 
-  	<% if spec["has_deps"] then %>
-  	 - depends on
-  		<%= spec["dependencies"].map { |v| "<a href=\"##{v["name"]}\">#{v["name"]}</a>" }.join ', ' %>.
-  	<% end %>
-  	</dt>
-  	<dd>
-  	<%=spec["summary"]%>
-  	<% if spec["executables"] then %>
-  	  <br/>
+    <% if spec["has_deps"] then %>
+     - depends on
+      <%= spec["dependencies"].map { |v| "<a href=\"##{v["name"]}\">#{v["name"]}</a>" }.join ', ' %>.
+    <% end %>
+    </dt>
+    <dd>
+    <%=spec["summary"]%>
+    <% if spec["executables"] then %>
+      <br/>
 
-  		<% if spec["only_one_executable"] then %>
-  		    Executable is
-  		<% else %>
-  		    Executables are
-  		<%end%>
+      <% if spec["only_one_executable"] then %>
+          Executable is
+      <% else %>
+          Executables are
+      <%end%>
 
-  		<%= spec["executables"].map { |v| "<span class=\"context-item-name\">#{v["executable"]}</span>"}.join ', ' %>.
+      <%= spec["executables"].map { |v| "<span class=\"context-item-name\">#{v["executable"]}</span>"}.join ', ' %>.
 
-  	<%end%>
-  	<br/>
-  	<br/>
-  	</dd>
+    <%end%>
+    <br/>
+    <br/>
+    </dd>
   <% end %>
   </dl>
 

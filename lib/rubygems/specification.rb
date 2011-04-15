@@ -1670,6 +1670,12 @@ class Gem::Specification
     Gem::Dependency.new(name, *requirements).to_spec
   end
 
+  def self.find_all_by_name name, *requirements
+    requirements = Gem::Requirement.default if requirements.empty?
+
+    Gem::Dependency.new(name, *requirements).matching_specs
+  end
+
   def lib_dirs_glob
     dirs = if self.require_paths.size > 1 then
              "{#{self.require_paths.join(',')}}"

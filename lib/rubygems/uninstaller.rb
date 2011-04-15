@@ -58,7 +58,9 @@ class Gem::Uninstaller
     spec_dir = File.join @gem_home, 'specifications'
     user_dir = File.join Gem.user_dir, 'specifications' if @user_install
 
-    Gem.source_index = Gem::SourceIndex.new [spec_dir, user_dir].compact
+    Deprecate.skip_during do
+      Gem.source_index = Gem::SourceIndex.new [spec_dir, user_dir].compact
+    end
   end
 
   ##

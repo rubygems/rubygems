@@ -18,24 +18,26 @@ class TestGemSpecFetcher < Gem::TestCase
       [spec.name, spec.version, spec.original_platform]
     end.sort
 
-    @latest_specs = @source_index.latest_specs.sort.map do |spec|
-      [spec.name, spec.version, spec.original_platform]
+    Deprecate.skip_during do
+      @latest_specs = @source_index.latest_specs.sort.map do |spec|
+        [spec.name, spec.version, spec.original_platform]
+      end
+
+      @prerelease_specs = @source_index.prerelease_gems.sort.map do |name, spec|
+        [spec.name, spec.version, spec.original_platform]
+      end.sort
+
+      @fetcher.data["#{@gem_repo}specs.#{Gem.marshal_version}.gz"] =
+        util_gzip(Marshal.dump(@specs))
+
+      @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] =
+        util_gzip(Marshal.dump(@latest_specs))
+
+      @fetcher.data["#{@gem_repo}prerelease_specs.#{Gem.marshal_version}.gz"] =
+        util_gzip(Marshal.dump(@prerelease_specs))
+
+      @sf = Gem::SpecFetcher.new
     end
-
-    @prerelease_specs = @source_index.prerelease_gems.sort.map do |name, spec|
-      [spec.name, spec.version, spec.original_platform]
-    end.sort
-
-    @fetcher.data["#{@gem_repo}specs.#{Gem.marshal_version}.gz"] =
-      util_gzip(Marshal.dump(@specs))
-
-    @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] =
-      util_gzip(Marshal.dump(@latest_specs))
-
-    @fetcher.data["#{@gem_repo}prerelease_specs.#{Gem.marshal_version}.gz"] =
-      util_gzip(Marshal.dump(@prerelease_specs))
-
-    @sf = Gem::SpecFetcher.new
   end
 
   def test_fetch_all

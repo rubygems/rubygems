@@ -18,6 +18,7 @@ Hoe::RUBY_FLAGS << " --disable-gems" if RUBY_VERSION > "1.9"
 
 Hoe.plugin :minitest
 Hoe.plugin :git
+Hoe.plugin :isolate
 
 hoe = Hoe.spec 'rubygems-update' do
   self.rubyforge_name = 'rubygems'
@@ -45,6 +46,7 @@ hoe = Hoe.spec 'rubygems-update' do
   extra_dev_deps << ['builder', '~> 2.1']
   extra_dev_deps << ['hoe-seattlerb', '~> 1.2']
   extra_dev_deps << ['session', '~> 2.4']
+  extra_dev_deps << ['rdoc', '~> 3.0']
 
   self.extra_rdoc_files = Dir["*.rdoc"]
 

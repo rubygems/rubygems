@@ -165,8 +165,6 @@ class Gem::SourceIndex
       result[name] << spec
     end
 
-    # TODO: why is this a hash while @gems is an array? Seems like
-    # structural similarity would be good.
     result.values.flatten
   end
 
@@ -207,7 +205,6 @@ class Gem::SourceIndex
   # Remove a gem specification named +full_name+.
 
   def remove_spec(full_name)
-    Gem::Specification.reset # HACK
     @gems.delete full_name
   end
 

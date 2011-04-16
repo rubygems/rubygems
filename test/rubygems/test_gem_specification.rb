@@ -1328,6 +1328,64 @@ end
     specfile.delete
   end
 
+  ##
+  # KEEP p-1-x86-darwin-8
+  # KEEP p-1
+  # KEEP c-1.2
+  # KEEP a_evil-9
+  #      a-1
+  #      a-1-x86-my_platform-1
+  # KEEP a-2
+  #      a-2-x86-other_platform-1
+  # KEEP a-2-x86-my_platform-1
+  #      a-3.a
+  # KEEP a-3-x86-other_platform-1
+
+  def test_latest_specs
+    Deprecate.skip_during do
+      Gem.source_index = nil
+      util_setup_fake_fetcher
+      Gem.source_index.remove_spec @b2.full_name
+      Gem.source_index.remove_spec @pl1.full_name
+    end
+
+    quick_spec 'p', '1'
+
+    p1_curr = quick_spec 'p', '1' do |spec|
+      spec.platform = Gem::Platform::CURRENT
+    end
+
+    quick_spec @a1.name, @a1.version do |s|
+      s.platform = Gem::Platform.new 'x86-my_platform1'
+    end
+
+    quick_spec @a2.name, @a2.version do |s|
+      s.platform = Gem::Platform.new 'x86-my_platform1'
+    end
+
+    quick_spec @a2.name, @a2.version do |s|
+      s.platform = Gem::Platform.new 'x86-other_platform1'
+    end
+
+    quick_spec @a2.name, @a2.version.bump do |s|
+      s.platform = Gem::Platform.new 'x86-other_platform1'
+    end
+
+    expected = %W[
+                  a-2
+                  a-2-x86-my_platform-1
+                  a-3-x86-other_platform-1
+                  a_evil-9
+                  c-1.2
+                  p-1
+                  #{p1_curr.full_name}
+                 ]
+
+    latest_specs = Gem::Specification.latest_specs.map { |s| s.full_name }.sort
+
+    assert_equal expected, latest_specs
+  end
+
   def util_setup_deps
     @gem = quick_spec "awesome", "1.0" do |awesome|
       awesome.add_runtime_dependency "bonobo", []

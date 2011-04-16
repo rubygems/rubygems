@@ -1726,6 +1726,18 @@ class Gem::Specification
     end
   end
 
+  def self.latest_specs prerelease = false
+    result = Hash.new { |h,k| h[k] = {} }
+
+    Gem::Specification.all.reverse_each do |spec|
+      next if spec.version.prerelease? unless prerelease
+      # FIX: :( platform hash/eql isn't properly defined
+      result[spec.name][spec.platform.to_s] = spec
+    end
+
+    result.map(&:last).map(&:values).flatten
+  end
+
   extend Deprecate
 
   deprecate :test_suite_file,     :test_file,  2011, 10

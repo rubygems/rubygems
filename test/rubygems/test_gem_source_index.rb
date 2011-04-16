@@ -112,6 +112,7 @@ class TestGemSourceIndex < Gem::TestCase
     end
   end
 
+  # REFACTOR: move to test_gem_commands_outdated_command.rb
   def test_outdated
     Deprecate.skip_during do
       util_setup_spec_fetcher

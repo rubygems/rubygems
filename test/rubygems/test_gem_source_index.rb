@@ -138,10 +138,10 @@ class TestGemSourceIndex < Gem::TestCase
       gem_a1_alpha = quick_spec 'abba', '1.a'
       @source_index.add_spec gem_a1_alpha
 
-      refute @source_index.latest_specs.include?(gem_a1_alpha)
-      assert @source_index.latest_specs(true).include?(gem_a1_alpha)
-      assert @source_index.find_name(gem_a1_alpha.full_name).empty?
-      assert @source_index.prerelease_specs.include?(gem_a1_alpha)
+      refute_includes @source_index.latest_specs,       gem_a1_alpha
+      assert_includes @source_index.latest_specs(true), gem_a1_alpha
+      assert_empty    @source_index.find_name           gem_a1_alpha.full_name
+      assert_includes @source_index.prerelease_specs,   gem_a1_alpha
     end
   end
 

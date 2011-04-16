@@ -1002,7 +1002,7 @@ end
         @a1.validate
       end
 
-      assert_equal "authors must be an Array of these instances: String", e.message
+      assert_equal "authors must be an Array of String", e.message
 
       @a1.authors = ["#{f} (who is writing this software)"]
 
@@ -1318,7 +1318,7 @@ end
     specfile.close
     begin
       capture_io do
-        Gem::Specification.load(Gem::Path.new(specfile.path))
+        Gem::Specification.load(specfile.path)
       end
     rescue => e
       name_rexp = Regexp.new(Regexp.escape(specfile.path))

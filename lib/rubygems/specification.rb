@@ -88,7 +88,7 @@ class Gem::Specification
   @@default_value = {
     :authors                   => [],
     :autorequire               => nil,
-    :bindir                    => Gem::Path.new("bin"),
+    :bindir                    => 'bin',
     :cert_chain                => [],
     :date                      => TODAY,
     :dependencies              => [],
@@ -104,7 +104,7 @@ class Gem::Specification
     :platform                  => Gem::Platform::RUBY,
     :post_install_message      => nil,
     :rdoc_options              => [],
-    :require_paths             => [Gem::Path.new("lib")],
+    :require_paths             => ['lib'],
     :required_ruby_version     => Gem::Requirement.default,
     :required_rubygems_version => Gem::Requirement.default,
     :requirements              => [],
@@ -280,7 +280,7 @@ class Gem::Specification
     return nil if executables.nil?
 
     if @bindir then
-      Array(executables).map { |e| @bindir.add(e) }
+      Array(executables).map { |e| File.join(@bindir, e) }
     else
       executables
     end
@@ -405,17 +405,6 @@ class Gem::Specification
                                  NONEXISTENT_SPECIFICATION_VERSION
     end
 
-    %w[bindir require_paths files executables test_files].each do |x|
-      obj = spec.send(x)
-
-      case obj
-      when Array
-        spec.send("#{x}=", obj.map { |x| Gem::Path.new(x) })
-      when String
-        spec.send("#{x}=", Gem::Path.new(obj))
-      end
-    end
-
     spec
   end
 
@@ -423,7 +412,7 @@ class Gem::Specification
   # Loads Ruby format gemspec from +file+.
 
   def self.load file
-    return unless file && file.file?
+    return unless file && File.file?(file)
 
     file = file.dup.untaint
 
@@ -640,13 +629,8 @@ class Gem::Specification
                  @original_platform.to_s
                end
     coder.add 'platform', platform
-    coder.add 'bindir', @bindir.to_s
-    coder.add 'require_paths', @require_paths.map(&:to_s)
-    coder.add 'files', @files.map(&:to_s)
-    coder.add 'test_files', @test_files.map(&:to_s)
-    coder.add 'executables', @executables.map(&:to_s)
 
-    attributes = @@attributes.map(&:to_s) - %w[name version platform bindir require_paths files test_files executables]
+    attributes = @@attributes.map(&:to_s) - %w[name version platform]
     attributes.each do |name|
       coder.add name, instance_variable_get("@#{name}")
     end
@@ -810,17 +794,17 @@ class Gem::Specification
             'specification must have at least one require_path'
     end
 
-    @files.delete_if(&:directory?)
-    @test_files.delete_if(&:directory?)
-    @executables.delete_if { |file| bindir.add(file).directory? }
-    @extra_rdoc_files.delete_if(&:directory?)
-    @extensions.delete_if(&:directory?)
+    @files.delete_if { |x| File.directory?(x) }
+    @test_files.delete_if { |x| File.directory?(x) }
+    @executables.delete_if { |x| File.directory?(File.join(@bindir, x)) }
+    @extra_rdoc_files.delete_if { |x| File.directory?(x) }
+    @extensions.delete_if { |x| File.directory?(x) }
 
-    non_files = files.reject(&:file?)
+    non_files = files.reject { |x| File.file?(x) }
 
     unless not packaging or non_files.empty? then
       raise Gem::InvalidSpecificationException,
-            "[\"#{non_files.map(&:to_s).join "\", \""}\"] are not files"
+            "[\"#{non_files.join "\", \""}\"] are not files"
     end
 
     unless specification_version.is_a?(Fixnum)
@@ -839,16 +823,14 @@ class Gem::Specification
       val = self.send symbol
       klass = case symbol
               when :dependencies 
-                [Gem::Dependency] 
-              when :authors
-                [String]
+                Gem::Dependency
               else
-                [Gem::Path, String]
+                String
               end
 
-      unless Array === val and val.all? { |x| klass.any? { |k| k === x } } then
+      unless Array === val and val.all? { |x| x.kind_of?(klass) } then
         raise(Gem::InvalidSpecificationException,
-              "#{symbol} must be an Array of these instances: #{klass.join(", ")}")
+              "#{symbol} must be an Array of #{klass}")
       end
     end
 
@@ -900,7 +882,7 @@ class Gem::Specification
     alert_warning "deprecated autorequire specified" if autorequire
 
     executables.each do |executable|
-      executable_path = bindir.add(executable)
+      executable_path = File.join(bindir, executable)
       shebang = File.read(executable_path, 2) == '#!'
 
       alert_warning "#{executable_path} is missing #! line" unless shebang
@@ -922,11 +904,11 @@ class Gem::Specification
       @files.concat(@extra_rdoc_files)
     end
 
-    @files            = @files.uniq.map { |x| Gem::Path.new(x) } if @files
-    @extensions       = @extensions.uniq.map { |x| Gem::Path.new(x) } if @extensions
-    @test_files       = @test_files.uniq.map { |x| Gem::Path.new(x) } if @test_files
-    @executables      = @executables.uniq.map { |x| Gem::Path.new(x) } if @executables
-    @extra_rdoc_files = @extra_rdoc_files.uniq.map { |x| Gem::Path.new(x) } if @extra_rdoc_files
+    @files            = @files.uniq if @files
+    @extensions       = @extensions.uniq if @extensions
+    @test_files       = @test_files.uniq if @test_files
+    @executables      = @executables.uniq if @executables
+    @extra_rdoc_files = @extra_rdoc_files.uniq if @extra_rdoc_files
   end
 
   ##

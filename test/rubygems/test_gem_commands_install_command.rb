@@ -294,6 +294,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     uninstall_gem(@b2)
 
+    Gem.source_index = nil
+
     @cmd.options[:conservative] = true
 
     @cmd.options[:args] = [@a2.name, @b2.name]
@@ -302,10 +304,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
       orig_dir = Dir.pwd
       begin
         Dir.chdir @tempdir
-        e = assert_raises Gem::SystemExitException do
+        assert_raises Gem::SystemExitException do
           @cmd.execute
         end
-        assert_equal 0, e.exit_code
       ensure
         Dir.chdir orig_dir
       end

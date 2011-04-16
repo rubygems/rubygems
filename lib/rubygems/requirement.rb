@@ -135,6 +135,9 @@ class Gem::Requirement
     requirements.all? { |op, rv| (OPS[op] || OPS["="]).call version, rv }
   end
 
+  alias :=== :satisfied_by?
+  alias :=~ :satisfied_by?
+
   def to_s # :nodoc:
     as_list.join ", "
   end

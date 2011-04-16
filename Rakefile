@@ -164,6 +164,7 @@ task "rcov:for", [:test] do |task, args|
 
   rflags  = []
   rflags << "-i" << "lib/rubygems"
+  rflags << "--no-color" << "--save coverage.info" << "-T" << "--no-html"
 
   ruby "#{flags.join ' '} #{rcov} #{rflags.join ' '} #{args[:test]}"
 end

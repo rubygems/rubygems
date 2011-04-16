@@ -33,10 +33,12 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'a'
     end
 
-    si = Gem::SourceIndex.new
+    si = Deprecate.skip_during { Gem::SourceIndex.new }
     si.add_spec @a1
 
-    assert_equal Gem.source_index, si
+    Deprecate.skip_during {
+      assert_equal Gem.source_index, si
+    }
 
     assert_equal [@a1], inst.installed_gems
   end
@@ -86,7 +88,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     a2, a2_gem = util_gem 'a', '2'
 
     FileUtils.rm_rf File.join(@gemhome, 'gems')
-    Gem.source_index.refresh!
+    Deprecate.skip_during { Gem.source_index.refresh! }
 
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv a2_gem, @tempdir # not in index
@@ -105,7 +107,9 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b'
     end
 
-    installed = Gem.source_index.map { |n,s| s.full_name }
+    installed = Deprecate.skip_during {
+      Gem.source_index.map { |n,s| s.full_name }
+    }
 
     assert_equal %w[a-2 b-1], installed.sort
 
@@ -334,8 +338,10 @@ class TestGemDependencyInstaller < Gem::TestCase
     FileUtils.mv @b1_gem, @tempdir
     inst = nil
 
-    Gem.source_index.remove_spec @a1.full_name
-    Gem.source_index.remove_spec @a1_pre.full_name
+    Deprecate.skip_during {
+      Gem.source_index.remove_spec @a1.full_name
+      Gem.source_index.remove_spec @a1_pre.full_name
+    }
 
     Dir.chdir @tempdir do
       e = assert_raises Gem::DependencyError do
@@ -398,11 +404,12 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'a'
     end
 
-    si = Gem::SourceIndex.new
-    si.add_spec @a1
+    Deprecate.skip_during {
+      si = Gem::SourceIndex.new
+      si.add_spec @a1
 
-    assert_equal Gem.source_index, si
-
+      assert_equal Gem.source_index, si
+    }
     assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
   end
 

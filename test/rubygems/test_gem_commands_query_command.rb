@@ -10,7 +10,8 @@ class TestGemCommandsQueryCommand < Gem::TestCase
 
     util_setup_fake_fetcher
 
-    @si = util_setup_spec_fetcher @a1, @a2, @pl1, @a3a
+    # HACK: can't set Gem.source_index. causes failures.
+    util_setup_spec_fetcher(@a1, @a2, @pl1, @a3a)
 
     @fetcher.data["#{@gem_repo}Marshal.#{Gem.marshal_version}"] = proc do
       raise Gem::RemoteFetcher::FetchError
@@ -42,7 +43,7 @@ pl (1 i386-linux)
     @a1.platform = 'x86-linux'
     @a2.platform = 'universal-darwin'
 
-    @si = util_setup_spec_fetcher @a1, @a1r, @a2, @b2, @pl1
+    util_setup_spec_fetcher @a1, @a1r, @a2, @b2, @pl1
 
     @cmd.handle_options %w[-r -a]
 
@@ -107,7 +108,7 @@ pl (1 i386-linux)
     @a2.homepage = 'http://a.example.com/'
     @a2.rubyforge_project = 'rubygems'
 
-    @si = util_setup_spec_fetcher @a1, @a2, @pl1
+    util_setup_spec_fetcher @a1, @a2, @pl1
 
     @cmd.handle_options %w[-r -d]
 
@@ -148,7 +149,7 @@ pl (1)
     @a2.rubyforge_project = 'rubygems'
     @a2.platform = 'universal-darwin'
 
-    @si = util_setup_spec_fetcher @a1, @a2, @pl1
+    util_setup_spec_fetcher @a1, @a2, @pl1
 
     @cmd.handle_options %w[-r -d]
 
@@ -186,23 +187,20 @@ pl (1)
   def test_execute_installed
     @cmd.handle_options %w[-n c --installed]
 
-    e = assert_raises Gem::SystemExitException do
+    e = assert_raises Gem::MockGemUi::SystemExitException do
       use_ui @ui do
         @cmd.execute
       end
     end
 
-    assert_equal 0, e.exit_code
-
     assert_equal "true\n", @ui.output
-
     assert_equal '', @ui.error
   end
 
   def test_execute_installed_no_name
     @cmd.handle_options %w[--installed]
 
-    e = assert_raises Gem::SystemExitException do
+    e = assert_raises Gem::MockGemUi::TermError do
       use_ui @ui do
         @cmd.execute
       end
@@ -217,7 +215,7 @@ pl (1)
   def test_execute_installed_not_installed
     @cmd.handle_options %w[-n not_installed --installed]
 
-    e = assert_raises Gem::SystemExitException do
+    e = assert_raises Gem::MockGemUi::TermError do
       use_ui @ui do
         @cmd.execute
       end
@@ -232,7 +230,7 @@ pl (1)
   def test_execute_installed_version
     @cmd.handle_options %w[-n c --installed --version 1.2]
 
-    e = assert_raises Gem::SystemExitException do
+    e = assert_raises Gem::MockGemUi::SystemExitException do
       use_ui @ui do
         @cmd.execute
       end
@@ -240,14 +238,12 @@ pl (1)
 
     assert_equal "true\n", @ui.output
     assert_equal '', @ui.error
-
-    assert_equal 0, e.exit_code
   end
 
   def test_execute_installed_version_not_installed
     @cmd.handle_options %w[-n c --installed --version 2]
 
-    e = assert_raises Gem::SystemExitException do
+    e = assert_raises Gem::MockGemUi::TermError do
       use_ui @ui do
         @cmd.execute
       end

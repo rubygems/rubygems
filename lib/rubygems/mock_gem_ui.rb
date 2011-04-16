@@ -6,7 +6,9 @@ require 'rubygems/user_interaction'
 # retrieval during tests.
 
 class Gem::MockGemUi < Gem::StreamUI
-  class TermError < RuntimeError; end
+  class TermError < RuntimeError
+    alias :exit_code :message
+  end
   class SystemExitException < RuntimeError; end
 
   module TTY
@@ -56,8 +58,8 @@ class Gem::MockGemUi < Gem::StreamUI
   def terminate_interaction(status=0)
     @terminated = true
 
-    raise TermError unless status == 0
-    raise SystemExitException, status
+    raise TermError, status if status != 0
+    raise SystemExitException
   end
 
 end

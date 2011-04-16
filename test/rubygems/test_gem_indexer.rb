@@ -60,12 +60,14 @@ class TestGemIndexer < Gem::TestCase
 
     @indexer.make_temp_directories
 
-    index = Gem::SourceIndex.new
-    index.add_spec spec
+    Deprecate.skip_during {
+      index = Gem::SourceIndex.new
+      index.add_spec spec
 
-    use_ui @ui do
-      @indexer.build_indicies index
-    end
+      use_ui @ui do
+        @indexer.build_indicies index
+      end
+    }
 
     specs_path = File.join @indexer.directory, "specs.#{@marshal_version}"
     specs_dump = Gem.read_binary specs_path
@@ -496,7 +498,7 @@ eighty characters.&lt;/pre&gt;
 
   def test_update_index
     use_ui @ui do
-      @indexer.generate_index
+      Deprecate.skip_during { @indexer.generate_index }
     end
 
     quickdir = File.join @tempdir, 'quick'
@@ -518,7 +520,7 @@ eighty characters.&lt;/pre&gt;
     FileUtils.mv Gem.cache_gem(@d2_1_a.file_name, @gemhome), gems
 
     use_ui @ui do
-      @indexer.update_index
+      Deprecate.skip_during { @indexer.update_index }
     end
 
     assert_indexed marshal_quickdir, "#{@d2_1.spec_name}.rz"

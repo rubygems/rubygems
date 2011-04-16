@@ -41,7 +41,7 @@ class TestGemServer < Gem::TestCase
     assert_match %r| \d\d:\d\d:\d\d |, @res['date']
     assert_equal 'application/octet-stream', @res['content-type']
 
-    si = Gem::SourceIndex.new
+    si = Deprecate.skip_during { Gem::SourceIndex.new }
     si.add_specs @a1, @a2
 
     assert_equal si, Marshal.load(@res.body)
@@ -57,7 +57,7 @@ class TestGemServer < Gem::TestCase
     assert_match %r| \d\d:\d\d:\d\d |, @res['date']
     assert_equal 'application/x-deflate', @res['content-type']
 
-    si = Gem::SourceIndex.new
+    si = Deprecate.skip_during { Gem::SourceIndex.new }
     si.add_specs @a1, @a2
 
     assert_equal si, Marshal.load(Gem.inflate(@res.body))

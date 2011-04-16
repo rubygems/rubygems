@@ -32,6 +32,8 @@ class Gem::Dependency
   # <tt>:runtime</tt>.
 
   def initialize name, *requirements
+    # TODO: raise ArgumentError, "fuck you: #{name.inspect}" if Regexp === name
+
     type         = Symbol === requirements.last ? requirements.pop : :runtime
     requirements = requirements.first if 1 == requirements.length # unpack
 

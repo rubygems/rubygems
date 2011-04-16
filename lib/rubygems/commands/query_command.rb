@@ -74,10 +74,11 @@ class Gem::Commands::QueryCommand < Gem::Command
         exit_code |= 1
       end
 
-      raise Gem::SystemExitException, exit_code
+      terminate_interaction exit_code
     end
 
-    dep = Gem::Dependency.new name, Gem::Requirement.default
+    req = Gem::Requirement.default
+    dep = Gem::Dependency.new name, req
 
     if local? then
       if prerelease and not both? then
@@ -90,7 +91,9 @@ class Gem::Commands::QueryCommand < Gem::Command
         say
       end
 
-      specs = Gem.source_index.search dep
+      specs = Gem::Specification.find_all { |s|
+        s.name =~ name and req =~ s.version
+      }
 
       spec_tuples = specs.map do |spec|
         [[spec.name, spec.version, spec.original_platform, spec], :local]
@@ -123,9 +126,8 @@ class Gem::Commands::QueryCommand < Gem::Command
   ##
   # Check if gem +name+ version +version+ is installed.
 
-  def installed?(name, version = Gem::Requirement.default)
-    dep = Gem::Dependency.new name, version
-    !Gem.source_index.search(dep).empty?
+  def installed?(name, req = Gem::Requirement.default)
+    Gem::Specification.any? { |s| s.name =~ name and req =~ s.version }
   end
 
   def output_query_results(spec_tuples)

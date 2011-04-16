@@ -241,12 +241,14 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     @c1_2_path = Gem.cache_gem(@c1_2.file_name, @gemhome)
     @c2_path   = Gem.cache_gem(@c2.file_name, @gemhome)
 
-    @source_index = Gem::SourceIndex.new
-    @source_index.add_spec @a1
-    @source_index.add_spec @a2
-    @source_index.add_spec @b2
-    @source_index.add_spec @c1_2
-    @source_index.add_spec @c2
+    @source_index = Deprecate.skip_during { Gem::SourceIndex.new }
+    Deprecate.skip_during {
+      @source_index.add_spec @a1
+      @source_index.add_spec @a2
+      @source_index.add_spec @b2
+      @source_index.add_spec @c1_2
+      @source_index.add_spec @c2
+    }
 
     util_build_gem @a1
     util_build_gem @a2

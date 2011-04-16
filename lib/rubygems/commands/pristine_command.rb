@@ -51,12 +51,10 @@ revert the gem.
     gem_name = nil
 
     specs = if options[:all] then
-              Gem.source_index.map do |name, spec|
-                spec
-              end
+              Gem::Specification.all
             else
               gem_name = get_one_gem_name
-              Gem.source_index.find_name(gem_name, options[:version])
+              Gem::Specification.find_all_by_name gem_name, options[:version]
             end
 
     if specs.empty? then

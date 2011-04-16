@@ -52,7 +52,7 @@ class Gem::Commands::ContentsCommand < Gem::Command
     end.flatten
 
     path_kind = if spec_dirs.empty? then
-                  spec_dirs = Gem::SourceIndex.installed_spec_directories
+                  spec_dirs = Deprecate.skip_during { Gem::SourceIndex.installed_spec_directories }
                   "default gem paths"
                 else
                   "specified path"

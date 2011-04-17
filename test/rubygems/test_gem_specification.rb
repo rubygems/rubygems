@@ -1359,6 +1359,10 @@ end
       s.platform = Gem::Platform.new 'x86-my_platform1'
     end
 
+    quick_spec @a1.name, @a1.version do |s|
+      s.platform = Gem::Platform.new 'x86-third_platform1'
+    end
+
     quick_spec @a2.name, @a2.version do |s|
       s.platform = Gem::Platform.new 'x86-my_platform1'
     end

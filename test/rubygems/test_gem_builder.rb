@@ -44,16 +44,6 @@ class TestGemBuilder < Gem::TestCase
     end
   end
 
-  def test_build_signing_happens
-    util_make_gems
-
-    @a1.signing_key = File.join(@@project_dir, *%w[test rubygems private_key.pem])
-
-    spec = build_gem_and_yield_spec @a1
-
-    assert_equal @a1.signing_key, spec.signing_key
-  end
-
   def build_gem_and_yield_spec(spec)
     builder = Gem::Builder.new spec
 

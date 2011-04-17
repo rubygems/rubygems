@@ -895,7 +895,7 @@ class TestGem < Gem::TestCase
     util_restore_RUBY_VERSION
   end
 
-  def test_self_set_paths
+  def test_self_paths_eq
     other = File.join @tempdir, 'other'
     path = [@userhome, other].join File::PATH_SEPARATOR
 
@@ -903,12 +903,12 @@ class TestGem < Gem::TestCase
     # FIXME remove after fixing test_case
     #
     ENV["GEM_HOME"] = @gemhome
-    Gem.paths = { :path => path }
+    Gem.paths = { "GEM_PATH" => path }
 
     assert_equal [@userhome, Gem::FS.new(other), @gemhome], Gem.path
   end
 
-  def test_self_set_paths_nonexistent_home
+  def test_self_paths_eq_nonexistent_home
     ENV['GEM_HOME'] = @gemhome
     Gem.clear_paths
 
@@ -916,7 +916,7 @@ class TestGem < Gem::TestCase
 
     ENV['HOME'] = other
 
-    Gem.paths = { :path => other }
+    Gem.paths = { "GEM_PATH" => other }
 
     assert_equal [other, @gemhome], Gem.path
   end

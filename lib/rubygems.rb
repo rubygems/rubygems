@@ -992,7 +992,7 @@ module Gem
 
   def self.use_paths(home, paths=[])
     clear_paths
-    self.paths = { :home => home, :path => paths }
+    self.paths = { "GEM_HOME" => home, "GEM_PATH" => paths }
   end
 
   ##

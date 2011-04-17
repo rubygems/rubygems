@@ -75,7 +75,7 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
 
     gemhome2 = File.join @tempdir, 'gemhome2'
 
-    Gem.paths = { :path => [gemhome2, @gemhome], :home => gemhome2 }
+    Gem.paths = { "GEM_PATH" => [gemhome2, @gemhome], "GEM_HOME" => gemhome2 }
 
     @cmd.options[:args] = %w[a]
 
@@ -96,7 +96,7 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
 
     gemhome2 = File.join @tempdir, 'gemhome2'
 
-    Gem.paths = { :path => [gemhome2, @gemhome], :home => gemhome2 }
+    Gem.paths = { "GEM_PATH" => [gemhome2, @gemhome], "GEM_HOME" => gemhome2 }
 
     @cmd.options[:args] = %w[z]
 

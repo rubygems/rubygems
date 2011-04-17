@@ -26,30 +26,8 @@ class Gem::PathSupport
   def initialize(env=ENV)
     @env = env
 
-    # hack for JRuby, which treats ENV as Hash, inappropriately
-    # more info: http://jira.codehaus.org/browse/JRUBY-4947
-    is_not_system_env = if RUBY_PLATFORM =~ /java/
-                          # note that this does not work around dup, clone,
-                          # etc. This is intentional as we *should not* be
-                          # modifying the system environment at that point.
-                          #
-                          # Once ENV is dup'd the string constraint no longer
-                          # applies, as well.
-                          #
-                          # -ebh
-                          !env.equal?(ENV)
-                        else
-                          env.kind_of?(Hash)
-                        end
-
-    # ENV the machine environment, is type Object, which is why this works.
-    if is_not_system_env
-      @home = Gem::FS.new(env[:home] || ENV["GEM_HOME"] || Gem.default_dir)
-      self.path = env[:path] || ENV["GEM_PATH"]
-    else
-      @home = Gem::FS.new(env["GEM_HOME"] || Gem.default_dir) 
-      self.path = env["GEM_PATH"]
-    end
+    @home = Gem::FS.new(env["GEM_HOME"] || ENV["GEM_HOME"] || Gem.default_dir)
+    self.path =         env["GEM_PATH"] || ENV["GEM_PATH"]
   end
 
   private
@@ -67,6 +45,7 @@ class Gem::PathSupport
   def path=(gpaths)
     gem_path = []
 
+    # FIX: I can't tell wtf this is doing.
     gpaths ||= (ENV['GEM_PATH'] || "").empty? ? nil : ENV["GEM_PATH"]
 
     if gpaths

@@ -1728,14 +1728,19 @@ class Gem::Specification
 
   def self.latest_specs prerelease = false
     result = Hash.new { |h,k| h[k] = {} }
+    native = {}
 
     Gem::Specification.all.reverse_each do |spec|
       next if spec.version.prerelease? unless prerelease
       # FIX: :( platform hash/eql isn't properly defined
+      native[spec.name] = spec.version if spec.platform == Gem::Platform::RUBY
       result[spec.name][spec.platform.to_s] = spec
     end
 
-    result.map(&:last).map(&:values).flatten
+    result.map(&:last).map(&:values).flatten.reject { |spec|
+      minimum = native[spec.name]
+      minimum && spec.version < minimum
+    }
   end
 
   extend Deprecate

@@ -53,7 +53,9 @@ class Gem::Commands::DependencyCommand < Gem::Command
                 /\A#{Regexp.union(*options[:args])}/
               end
 
-    dependency = Gem::Dependency.new pattern, options[:version]
+    dependency = Deprecate.skip_during {
+      Gem::Dependency.new pattern, options[:version]
+    }
     dependency.prerelease = options[:prerelease]
 
     if options[:reverse_dependencies] and remote? and not local? then

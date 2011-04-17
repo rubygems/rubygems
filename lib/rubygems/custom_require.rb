@@ -35,8 +35,8 @@ module Kernel
     if Gem.unresolved_deps.empty? or Gem.loaded_path? path then
       gem_original_require path
     else
-      spec = Gem::Specification.find { |spec|
-        spec.loaded? and spec.contains_requirable_file? path
+      spec = Gem::Specification.find { |s|
+        s.loaded? and s.contains_requirable_file? path
       }
 
       unless spec then

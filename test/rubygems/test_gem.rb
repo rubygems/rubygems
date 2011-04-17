@@ -509,8 +509,6 @@ class TestGem < Gem::TestCase
 
     Gem.clear_paths
 
-    assert_nil Gem.instance_variable_get(:@gem_home)
-    assert_nil Gem.instance_variable_get(:@gem_path)
     assert_nil Gem::Specification.send(:class_variable_get, :@@all)
   end
 

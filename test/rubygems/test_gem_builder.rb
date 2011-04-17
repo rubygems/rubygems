@@ -26,15 +26,9 @@ class TestGemBuilder < Gem::TestCase
 
   def test_build_specification_result
     util_make_gems
+
+    spec = build_gem_and_yield_spec @a1
     
-    builder = Gem::Builder.new @a1
-
-    spec = Dir.chdir @tempdir do
-      FileUtils.mkdir 'lib'
-      File.open('lib/code.rb', 'w') { |f| f << "something" }
-      Gem::Package.open(File.open(builder.build)) { |x| x.metadata }
-    end
-
     omit = %w[@loaded_from @loaded]
 
     if RUBY_VERSION > '1.9'
@@ -47,6 +41,26 @@ class TestGemBuilder < Gem::TestCase
         spec.instance_variable_get(ivar), 
         "#{ivar} is equivalent between built spec and existing spec"
       )
+    end
+  end
+
+  def test_build_signing_happens
+    util_make_gems
+
+    @a1.signing_key = File.join(@@project_dir, *%w[test rubygems private_key.pem])
+
+    spec = build_gem_and_yield_spec @a1
+
+    assert_equal @a1.signing_key, spec.signing_key
+  end
+
+  def build_gem_and_yield_spec(spec)
+    builder = Gem::Builder.new spec
+
+    spec = Dir.chdir @tempdir do
+      FileUtils.mkdir 'lib'
+      File.open('lib/code.rb', 'w') { |f| f << "something" }
+      Gem::Package.open(File.open(builder.build)) { |x| x.metadata }
     end
   end
 end

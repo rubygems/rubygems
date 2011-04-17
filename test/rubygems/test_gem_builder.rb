@@ -64,4 +64,3 @@ class TestGemBuilder < Gem::TestCase
     end
   end
 end
-

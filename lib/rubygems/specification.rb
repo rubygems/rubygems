@@ -270,7 +270,15 @@ class Gem::Specification
   ##
   # Path this gemspec was loaded from.  This attribute is not persisted.
 
-  attr_accessor :loaded_from
+  attr_reader :loaded_from
+
+  ##
+  # Set the location a Specification was loaded from. +obj+ is converted
+  # to a String.
+
+  def loaded_from=(obj)
+    @loaded_from = obj.to_s
+  end
 
   ##
   # Returns an array with bindir attached to each executable in the
@@ -428,7 +436,7 @@ class Gem::Specification
       spec = eval code, binding, file
 
       if Gem::Specification === spec
-        spec.loaded_from = file
+        spec.loaded_from = file.to_s
         return spec
       end
 
@@ -528,8 +536,8 @@ class Gem::Specification
 
   def full_gem_path
     path = installation_path.gems.add(full_name).expand_path
-    return path if path.directory?
-    installation_path.gems.add(original_name).expand_path
+    return path.to_s if path.directory?
+    installation_path.gems.add(original_name).expand_path.to_s
   end
 
   ##
@@ -549,7 +557,7 @@ class Gem::Specification
       raise Gem::Exception, "spec #{full_name} is not from an installed gem"
     end
 
-    Gem::FS.new(@loaded_from.dirname.dirname)
+    Gem::FS.new(Gem::Path.path(@loaded_from).dirname.dirname)
   end
 
   ##
@@ -1580,8 +1588,8 @@ class Gem::Specification
   end
 
   def add_self_to_load_path
-    require_paths = self.require_paths.map do |path|
-      self.full_gem_path.add(path)
+    paths = require_paths.map do |path|
+      Gem::Path.path(full_gem_path).add(path).to_s
     end
 
     # gem directories must come after -I and ENV['RUBYLIB']
@@ -1589,10 +1597,10 @@ class Gem::Specification
 
     if insert_index then
       # gem directories must come after -I and ENV['RUBYLIB']
-      $LOAD_PATH.insert(insert_index, *require_paths)
+      $LOAD_PATH.insert(insert_index, *paths)
     else
       # we are probably testing in core, -I and RUBYLIB don't apply
-      $LOAD_PATH.unshift(*require_paths)
+      $LOAD_PATH.unshift(*paths)
     end
   end
 

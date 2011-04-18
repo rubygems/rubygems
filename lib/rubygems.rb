@@ -320,7 +320,7 @@ module Gem
       raise Gem::Exception, msg
     end
 
-    spec.full_gem_path.add(spec.bindir).add(exec_name)
+    Gem::Path.path(spec.full_gem_path).add(spec.bindir).add(exec_name)
   end
 
   ##
@@ -381,7 +381,7 @@ module Gem
   def self.datadir(gem_name)
     spec = @loaded_specs[gem_name]
     return nil if spec.nil?
-    spec.full_gem_path.add('data').add(gem_name)
+    Gem::Path.path(spec.full_gem_path).add('data').add(gem_name)
   end
 
   ##
@@ -771,10 +771,10 @@ module Gem
     raise ArgumentError, "gem #{gem_name} is not activated" if gem.nil?
     raise ArgumentError, "gem #{over_name} is not activated" if over.nil?
 
-    last_gem_path = gem.full_gem_path.add(gem.require_paths.last)
+    last_gem_path = Gem::Path.path(gem.full_gem_path).add(gem.require_paths.last)
 
     over_paths = over.require_paths.map do |path|
-      over.full_gem_path.add(path)
+      Gem::Path.path(over.full_gem_path).add(path).to_s
     end
 
     over_paths.each do |path|
@@ -840,7 +840,7 @@ module Gem
 
     spec = matches.last
     spec.require_paths.each do |path|
-      result = spec.full_gem_path.add(path, libfile)
+      result = Gem::Path.path(spec.full_gem_path).add(path, libfile)
       return result if result.exist?
     end
 

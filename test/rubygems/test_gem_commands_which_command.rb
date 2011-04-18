@@ -59,7 +59,7 @@ class TestGemCommandsWhichCommand < Gem::TestCase
     end
 
     files.each do |file|
-      filename = @foo_bar.full_gem_path.add(file)
+      filename = Gem::Path.path(@foo_bar.full_gem_path).add(file)
       FileUtils.mkdir_p filename.dirname
       FileUtils.touch filename
     end

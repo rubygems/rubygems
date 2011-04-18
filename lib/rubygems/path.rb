@@ -24,6 +24,17 @@ class Gem::Path
     end
   end
 
+  def self.path(obj)
+    case obj
+    when nil
+      nil
+    when Gem::Path
+      obj
+    else
+      Gem::Path.new(obj)
+    end
+  end
+
   ##
   #
   # Expand the path. See File.expand_path.

@@ -285,7 +285,7 @@ class Gem::Indexer
 
         index.sort_by { |_, spec| [-spec.date.to_i, spec] }.each do |_, spec|
           gem_path = CGI.escapeHTML "http://#{@rss_gems_host}/gems/#{spec.file_name}"
-          size = spec.loaded_from.stat.size rescue next
+          size = Gem::Path.path(spec.loaded_from).stat.size rescue next
 
           description = spec.description || spec.summary || ''
           authors = Array spec.authors

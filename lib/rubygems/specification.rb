@@ -1642,12 +1642,10 @@ class Gem::Specification
   extend Enumerable
 
   def self.each
-    unless block_given? then
-      enum_for(:each)
-    else
-      self.all.each do |x|
-        yield x
-      end
+    return enum_for(:each) unless block_given?
+
+    self.all.each do |x|
+      yield x
     end
   end
 

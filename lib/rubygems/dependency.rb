@@ -218,9 +218,11 @@ class Gem::Dependency
         requirement.satisfied_by? spec.version
     }
 
-    matches.reject! { |spec|
-      not Gem::Platform.match spec.platform
-    } if platform_only
+    if platform_only
+      matches.reject! { |spec|
+        not Gem::Platform.match spec.platform
+      }
+    end
 
     matches = matches.sort_by { |s| s.sort_obj } # HACK: shouldn't be needed
   end

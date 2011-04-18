@@ -1649,15 +1649,25 @@ class Gem::Specification
     end
   end
 
-  def self.all
+  ##
+  # Load all specs that are available to the system.
+  #
+  # NOTE: Leave this as a method because Bundler overrides it
+  # to return their own view of the available specs.
+
+  def self.load_all_specs
     # FIX: zomg deps broken
     Deprecate.skip_during do
-      @@all ||= Gem.source_index.map { |_, spec| spec }.sort { |a, b|
+      Gem.source_index.map { |_, spec| spec }.sort { |a, b|
         names = a.name <=> b.name
         next names if names.nonzero?
         b.version <=> a.version
       }
     end
+  end
+
+  def self.all
+    @@all ||= load_all_specs
   end
 
   def self.find_by_path path

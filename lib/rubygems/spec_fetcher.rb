@@ -85,6 +85,7 @@ class Gem::SpecFetcher
                         all               = false,
                         matching_platform = true,
                         prerelease        = false)
+
     specs_and_sources, errors = find_matching_with_errors(dependency,
                                                           all,
                                                           matching_platform,
@@ -138,7 +139,10 @@ class Gem::SpecFetcher
   # matching released versions are returned.  If +matching_platform+
   # is false, gems for all platforms are returned.
 
-  def find_matching_with_errors(dependency, all = false, matching_platform = true, prerelease = false)
+  def find_matching_with_errors(dependency,
+                                all               = false,
+                                matching_platform = true,
+                                prerelease        = false)
     found = {}
 
     rejected_specs = {}

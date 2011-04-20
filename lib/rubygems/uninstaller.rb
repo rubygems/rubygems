@@ -221,7 +221,7 @@ class Gem::Uninstaller
 
     say "Successfully uninstalled #{spec.full_name}"
 
-    Deprecate.skip_during { Gem.source_index.remove_spec spec.full_name }
+    Gem::Specification.remove_spec spec
   end
 
   ##

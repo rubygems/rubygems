@@ -31,7 +31,7 @@ class Gem::Specification
   ##
   # Allows deinstallation of gems with legacy platforms.
 
-  attr_accessor :original_platform # :nodoc:
+  attr_writer :original_platform # :nodoc:
 
   ##
   # The the version number of a specification that does not specify one
@@ -329,7 +329,6 @@ class Gem::Specification
   # initialization. Optionally takes +name+ and +version+.
 
   def initialize name = nil, version = nil
-    @new_platform = nil
     @loaded = false
     @loaded_from = nil
     @original_platform = nil
@@ -348,8 +347,7 @@ class Gem::Specification
       instance_variable_set "@#{key}", value
     end
 
-    # HACK
-    instance_variable_set :@new_platform, Gem::Platform::RUBY
+    @new_platform = Gem::Platform::RUBY
 
     self.name = name if name
     self.version = version if version
@@ -672,6 +670,7 @@ class Gem::Specification
     yaml_initialize coder.tag, coder.map
   end
 
+  # FIX: have this handle the platform/new_platform/original_platform bullshit
   def yaml_initialize(tag, vals) # :nodoc:
     vals.each do |ivar, val|
       instance_variable_set "@#{ivar}", val
@@ -1375,7 +1374,11 @@ class Gem::Specification
   # The platform this gem runs on.  See Gem::Platform for details.
 
   def platform
-    @new_platform
+    @new_platform ||= Gem::Platform::RUBY
+  end
+
+  def original_platform
+    @original_platform ||= platform
   end
 
   ##

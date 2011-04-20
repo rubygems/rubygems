@@ -458,7 +458,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def Marshal(req, res)
-    Deprecate.skip_during { Gem.source_index.refresh! }
+    Gem::Specification.reset
 
     add_date res
 
@@ -486,7 +486,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def latest_specs(req, res)
-    Deprecate.skip_during { Gem.source_index.refresh! }
+    Gem::Specification.reset
 
     res['content-type'] = 'application/x-gzip'
 
@@ -550,7 +550,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def quick(req, res)
-    Deprecate.skip_during { Gem.source_index.refresh! }
+    Gem::Specification.reset
 
     res['content-type'] = 'text/plain'
     add_date res
@@ -586,7 +586,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def root(req, res)
-    Deprecate.skip_during { Gem.source_index.refresh! }
+    Gem::Specification.reset
     add_date res
 
     raise WEBrick::HTTPStatus::NotFound, "`#{req.path}' not found." unless
@@ -797,7 +797,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def specs(req, res)
-    Deprecate.skip_during { Gem.source_index.refresh! }
+    Gem::Specification.reset
 
     add_date res
 

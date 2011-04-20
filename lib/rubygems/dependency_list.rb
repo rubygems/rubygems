@@ -5,6 +5,7 @@
 #++
 
 require 'tsort'
+require 'rubygems/deprecate'
 
 ##
 # Gem::DependencyList is used for installing and uninstalling gems in the
@@ -22,18 +23,21 @@ class Gem::DependencyList
   attr_accessor :development
 
   ##
+  # Creates a DependencyList from the current specs.
+
+  def self.from_specs
+    list = new
+    list.add(*Gem::Specification.all)
+    list
+  end
+
+  ##
   # Creates a DependencyList from a Gem::SourceIndex +source_index+
 
   def self.from_source_index(ignored=nil)
     warn "NOTE: DependencyList.from_source_index ignores it's arg" if ignored
 
-    list = new
-
-    Gem::Specification.each do |spec|
-      list.add spec
-    end
-
-    list
+    from_specs
   end
 
   ##
@@ -238,6 +242,11 @@ class Gem::DependencyList
   def active_count(specs, ignored)
     specs.count { |spec| ignored[spec.full_name].nil? }
   end
-
 end
 
+class Gem::DependencyList
+  class << self
+    extend Deprecate
+    deprecate :from_source_index, "from_specs", 2011, 11
+  end
+end

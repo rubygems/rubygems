@@ -32,6 +32,9 @@ module Kernel
   # that file has already been loaded is preserved.
 
   def require path
+    # Convert the passed object into a string in case the path is a Pathname 
+    # for instance.
+    path = path.to_s
     if Gem.unresolved_deps.empty? or Gem.loaded_path? path then
       gem_original_require path
     else

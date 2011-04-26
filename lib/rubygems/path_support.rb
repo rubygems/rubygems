@@ -43,6 +43,8 @@ class Gem::PathSupport
   # Set the Gem search path (as reported by Gem.path).
 
   def path=(gpaths)
+    # FIX: it should be [home, *path], not [*path, home]
+
     gem_path = []
 
     # FIX: I can't tell wtf this is doing.

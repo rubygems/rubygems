@@ -47,11 +47,9 @@ class Gem::DependencyInstaller
     if options[:install_dir] then
       @gem_home     = options[:install_dir]
       @gem_home     = Gem::FS.new(@gem_home) if String === @gem_home
-      Deprecate.skip_during do
-        Gem.source_index = Gem::SourceIndex.new [@gem_home.specifications]
-      end
 
-      options[:install_dir] = @gem_home # because we suck and reuse below
+      Gem::Specification.dirs = @gem_home
+      options[:install_dir] = @gem_home # FIX: because we suck and reuse below
     end
 
     options = DEFAULT_OPTIONS.merge options
@@ -98,6 +96,7 @@ class Gem::DependencyInstaller
 
     if @domain == :both or @domain == :remote then
       begin
+        # REFACTOR: all = dep.requirement.needs_all?
         requirements = dep.requirement.requirements.map do |req, ver|
           req
         end
@@ -213,23 +212,20 @@ class Gem::DependencyInstaller
 
     local_gems = Dir["#{glob}*"].sort.reverse
 
-    unless local_gems.empty? then
-      local_gems.each do |gem_file|
-        next unless gem_file =~ /gem$/
-        begin
-          spec = Gem::Format.from_file_by_path(gem_file).spec
-          spec_and_source = [spec, gem_file]
-          break
-        rescue SystemCallError, Gem::Package::FormatError
-        end
+    local_gems.each do |gem_file|
+      next unless gem_file =~ /gem$/
+      begin
+        spec = Gem::Format.from_file_by_path(gem_file).spec
+        spec_and_source = [spec, gem_file]
+        break
+      rescue SystemCallError, Gem::Package::FormatError
       end
     end
 
-    if spec_and_source.nil? then
+    unless spec_and_source then
       dep = Gem::Dependency.new gem_name, version
       dep.prerelease = true if prerelease
       spec_and_sources = find_gems_with_sources(dep).reverse
-
       spec_and_source = spec_and_sources.find { |spec, source|
         Gem::Platform.match spec.platform
       }
@@ -305,6 +301,4 @@ class Gem::DependencyInstaller
 
     @installed_gems
   end
-
 end
-

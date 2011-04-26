@@ -55,12 +55,10 @@ class Gem::Uninstaller
     @user_install = false
     @user_install = options[:user_install] unless options[:install_dir]
 
-    spec_dir = File.join @gem_home, 'specifications'
-    user_dir = File.join Gem.user_dir, 'specifications' if @user_install
+    dirs = [@gem_home]
+    dirs << Gem.user_dir if @user_install
 
-    Deprecate.skip_during do
-      Gem.source_index = Gem::SourceIndex.new [spec_dir, user_dir].compact
-    end
+    Gem::Specification.dirs = dirs
   end
 
   ##
@@ -237,7 +235,7 @@ class Gem::Uninstaller
   def dependencies_ok?(spec)
     return true if @force_ignore
 
-    deplist = Gem::DependencyList.from_source_index
+    deplist = Gem::DependencyList.from_specs
     deplist.ok_to_remove?(spec.full_name)
   end
 

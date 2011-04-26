@@ -185,7 +185,7 @@ class Gem::Installer
 
     @spec.loaded_from = @gem_home.specifications.add(@spec.spec_name)
 
-    Deprecate.skip_during { Gem.source_index.add_spec @spec }
+    Gem::Specification.add_spec @spec unless Gem::Specification.include? @spec
 
     Gem.post_install_hooks.each do |hook|
       hook.call self

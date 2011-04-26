@@ -998,6 +998,12 @@ load Gem.bin_path('a', 'executable', version)
     assert_equal @spec, eval(File.read(spec_file))
   end
 
+  def test_dir
+    assert_match @installer.dir, %r!/gemhome/gems/a-2$!
+    @installer.dir.gsub!(/.+/, '')
+    assert_match @installer.dir, %r!/gemhome/gems/a-2$!
+  end
+
   def old_ruby_required
     spec = quick_spec 'old_ruby_required', '1' do |s|
       s.required_ruby_version = '= 1.4.6'

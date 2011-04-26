@@ -593,5 +593,14 @@ EOF
     end
   end
 
+  ##
+  #
+  # Obtain the target directory where the gem is to be installed. This
+  # directory is not guaranteed to be populated.
+  #
+
+  def dir
+    @gem_dir.to_s
+  end
 end
 

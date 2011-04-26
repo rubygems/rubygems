@@ -586,14 +586,16 @@ class Gem::Specification
     sort_obj <=> other.sort_obj
   end
 
-  ##
-  # Tests specs for equality (across all attributes).
-
-  def ==(other) # :nodoc:
-    self.class === other && same_attributes?(other)
+  def == other # :nodoc:
+    self.class === other &&
+      name == other.name &&
+      version == other.version &&
+      platform == other.platform
   end
 
-  alias eql? == # :nodoc:
+  def eql? other # :nodoc:
+    self.class === other && same_attributes?(other)
+  end
 
   ##
   # A macro to yield cached gem path
@@ -607,10 +609,7 @@ class Gem::Specification
   # True if this gem has the same attributes as +other+.
 
   def same_attributes?(other)
-    @@attributes.each do |name, default|
-      return false unless self.send(name) == other.send(name)
-    end
-    true
+    @@attributes.all? { |name, default| self.send(name) == other.send(name) }
   end
 
   private :same_attributes?

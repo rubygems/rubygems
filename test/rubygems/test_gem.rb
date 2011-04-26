@@ -95,6 +95,7 @@ class TestGem < Gem::TestCase
       c1 = new_spec "c", "1"
       c2 = new_spec "c", "2"
 
+      Gem::Specification.reset
       install_specs a1, b1, b2, c1, c2
 
       a1.activate

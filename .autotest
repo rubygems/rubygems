@@ -25,7 +25,8 @@ Autotest.add_hook :initialize do |at|
     at.files_matching %r%^test/rubygems/test_(.*)\.rb$%
   end
 
-  at.find_directories = ARGV unless ARGV.empty?
+  args = ARGV.reject { |a| a =~ /^-/ }
+  at.find_directories = args unless args.empty?
 end
 
 class Autotest

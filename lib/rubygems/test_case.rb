@@ -639,40 +639,42 @@ Also, a list:
   # Best used with +@all_gems+ from #util_setup_fake_fetcher.
 
   def util_setup_spec_fetcher(*specs)
-    si = nil
-    Deprecate.skip_during do
-      si = Gem::SourceIndex.new
-      si.add_specs(*specs)
+    specs -= Gem::Specification._all
+    Gem::Specification.add_specs(*specs)
 
-      spec_fetcher = Gem::SpecFetcher.fetcher
+    spec_fetcher = Gem::SpecFetcher.fetcher
 
-      spec_fetcher.specs[@uri] = []
-      si.gems.sort_by { |_, spec| spec }.each do |_, spec|
-        spec_tuple = [spec.name, spec.version, spec.original_platform]
-        spec_fetcher.specs[@uri] << spec_tuple
-      end
+    prerelease, released = Gem::Specification.partition { |spec|
+      spec.version.prerelease?
+    }
 
-      spec_fetcher.latest_specs[@uri] = []
-      si.latest_specs.sort.each do |spec|
-        spec_tuple = [spec.name, spec.version, spec.original_platform]
-        spec_fetcher.latest_specs[@uri] << spec_tuple
-      end
-
-      spec_fetcher.prerelease_specs[@uri] = []
-      si.prerelease_specs.sort.each do |spec|
-        spec_tuple = [spec.name, spec.version, spec.original_platform]
-        spec_fetcher.prerelease_specs[@uri] << spec_tuple
-      end
-
-      (si.gems.merge si.prerelease_gems).sort_by { |_,spec| spec }.each do |_, spec|
-        path = "#{@gem_repo}quick/Marshal.#{Gem.marshal_version}/#{spec.original_name}.gemspec.rz"
-        data = Marshal.dump spec
-        data_deflate = Zlib::Deflate.deflate data
-        @fetcher.data[path] = data_deflate
-      end
+    spec_fetcher.specs[@uri] = []
+    Gem::Specification.each do |spec|
+      spec_tuple = [spec.name, spec.version, spec.original_platform]
+      spec_fetcher.specs[@uri] << spec_tuple
     end
 
-    si
+    spec_fetcher.latest_specs[@uri] = []
+    Gem::Specification.latest_specs.each do |spec|
+      spec_tuple = [spec.name, spec.version, spec.original_platform]
+      spec_fetcher.latest_specs[@uri] << spec_tuple
+    end
+
+    spec_fetcher.prerelease_specs[@uri] = []
+    prerelease.each do |spec|
+      spec_tuple = [spec.name, spec.version, spec.original_platform]
+      spec_fetcher.prerelease_specs[@uri] << spec_tuple
+    end
+
+    v = Gem.marshal_version
+    Gem::Specification.each do |spec|
+      path = "#{@gem_repo}quick/Marshal.#{v}/#{spec.original_name}.gemspec.rz"
+      data = Marshal.dump spec
+      data_deflate = Zlib::Deflate.deflate data
+      @fetcher.data[path] = data_deflate
+    end
+
+    nil # force errors
   end
 
   ##

@@ -1647,35 +1647,10 @@ class Gem::Specification
   extend Enumerable
 
   def self.each
-<<<<<<< HEAD
     return enum_for(:each) unless block_given?
 
-    self.all.each do |x|
+    self._all.each do |x|
       yield x
-    end
-  end
-
-  ##
-  # Load all specs that are available to the system.
-  #
-  # NOTE: Leave this as a method because Bundler overrides it
-  # to return their own view of the available specs.
-
-  def self.load_all_specs
-    # FIX: zomg deps broken
-    Deprecate.skip_during do
-      Gem.source_index.map { |_, spec| spec }.sort { |a, b|
-        names = a.name <=> b.name
-        next names if names.nonzero?
-        b.version <=> a.version
-      }
-=======
-    unless block_given? then
-      enum_for(:each)
-    else
-      _all.each do |x|
-        yield x
-      end
     end
   end
 
@@ -1700,7 +1675,6 @@ class Gem::Specification
         }
       }.flatten
       _resort!
->>>>>>> Refactored all to _all so that calls to all could be warned against (Temporary)
     end
     @@all
   end
@@ -1716,10 +1690,6 @@ class Gem::Specification
   def self.all
     warn "NOTE: Specification.all called from #{caller.first}" unless Deprecate.skip
     _all
-  end
-
-  def self.all
-    @@all ||= load_all_specs
   end
 
   def self.find_by_path path

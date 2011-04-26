@@ -173,8 +173,6 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     update_gem name, target
 
-    Deprecate.skip_during { Gem.source_index.refresh! }
-
     installed_gems = Gem::Specification.find_all_by_name 'rubygems-update', requirement
     version        = installed_gems.last.version
 

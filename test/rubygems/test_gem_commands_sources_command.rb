@@ -182,11 +182,9 @@ beta-gems.example.com is not a URI
     util_setup_fake_fetcher
     util_setup_spec_fetcher @a1
 
-    source_index = Gem.source_index
-
-    specs = source_index.map do |name, spec|
+    specs = Gem::Specification.map { |spec|
       [spec.name, spec.version, spec.original_platform]
-    end
+    }
 
     @fetcher.data["#{@gem_repo}specs.#{Gem.marshal_version}.gz"] =
       util_gzip Marshal.dump(specs)

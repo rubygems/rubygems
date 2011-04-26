@@ -51,7 +51,7 @@ revert the gem.
     gem_name = nil
 
     specs = if options[:all] then
-              Gem::Specification.all
+              Gem::Specification.map
             else
               gem_name = get_one_gem_name
               Gem::Specification.find_all_by_name gem_name, options[:version]

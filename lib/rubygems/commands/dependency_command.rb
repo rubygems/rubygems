@@ -53,6 +53,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
                 /\A#{Regexp.union(*options[:args])}/
               end
 
+    # TODO: deprecate for real damnit
     dependency = Deprecate.skip_during {
       Gem::Dependency.new pattern, options[:version]
     }

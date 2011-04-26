@@ -1705,12 +1705,14 @@ class Gem::Specification
   end
 
   def matches_for_glob glob # TODO: rename?
+    # TODO: do we need these?? Kill it
     glob = File.join(self.lib_dirs_glob, glob)
 
     Dir[glob].map { |f| f.untaint } # FIX our tests are brokey, run w/ SAFE=1
   end
 
-  def self.find_in_unresolved(path)
+  def self.find_in_unresolved path
+    # TODO: do we need these?? Kill it
     specs = Gem.unresolved_deps.values.map { |dep| dep.to_specs }.flatten
 
     specs.find_all { |spec| spec.contains_requirable_file? path }

@@ -90,27 +90,31 @@ class Gem::SourceIndex
 
     case specs_or_dirs
     when Hash then
-      warn "NOTE: SourceIndex.new(hash) is deprecated; From #{caller.first}."
       specs_or_dirs.each{ |full_name, spec| add_spec spec }
     when Array, String then
-      self.spec_dirs = Array(specs_or_dirs.map { |x| Gem::Path.new(x) } )
-      refresh!
+#       if specs_or_dirs != [Gem.path.to_s + "/specifications"] then
+# # TODO: raise
+#         warn "NOTE: ignoring #{specs_or_dirs.inspect} for now." unless
+#           specs_or_dirs.empty?
+#       end
+      Gem::Specification.each do |spec|
+        @gems[spec.full_name] = spec
+      end
     else
       arg = specs_or_dirs.inspect
-      warn "NOTE: SourceIndex.new(#{arg}) is deprecated; From #{caller.first}."
     end
   end
 
   def all_gems
-    @gems
+    gems
   end
 
   def prerelease_gems
-    @gems.reject{ |name, gem| !gem.version.prerelease? }
+    @gems.reject { |name, gem| !gem.version.prerelease? }
   end
 
   def released_gems
-    @gems.reject{ |name, gem| gem.version.prerelease? }
+    @gems.reject { |name, gem| gem.version.prerelease? }
   end
 
   ##

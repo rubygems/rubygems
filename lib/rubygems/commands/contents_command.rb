@@ -52,16 +52,14 @@ class Gem::Commands::ContentsCommand < Gem::Command
     end.flatten
 
     path_kind = if spec_dirs.empty? then
-                  spec_dirs = Deprecate.skip_during { Gem::SourceIndex.installed_spec_directories }
+                  spec_dirs = Gem::Specification.dirs
                   "default gem paths"
                 else
                   "specified path"
                 end
 
     gem_names = if options[:all] then
-                  # TODO: I think the spec_dirs var is wrong for SI.new
-                  Deprecate.skip_during { Gem.source_index = Gem::SourceIndex.new spec_dirs }
-                  Gem::Specification.map { |spec| spec.name }
+                  Gem::Specification.map(&:name)
                 else
                   get_all_gem_names
                 end

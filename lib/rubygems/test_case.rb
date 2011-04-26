@@ -136,6 +136,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     FileUtils.mkdir_p @userhome
 
     Gem.use_paths(@gemhome)
+
     Gem.loaded_specs.clear
     Gem.unresolved_deps.clear
 
@@ -147,7 +148,6 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     Gem.sources.replace [@gem_repo]
 
     Gem.searcher = nil
-    Gem::Specification.reset
     Gem::SpecFetcher.fetcher = nil
 
     @orig_BASERUBY = Gem::ConfigMap[:BASERUBY]
@@ -215,8 +215,6 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     ENV['GEM_HOME'] = @orig_gem_home
     ENV['GEM_PATH'] = @orig_gem_path
 
-    Gem.clear_paths
-
     _ = @orig_ruby
     Gem.class_eval { @ruby = _ } if _
 
@@ -249,9 +247,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   def uninstall_gem spec
     require 'rubygems/uninstaller'
 
-    uninstaller = Gem::Uninstaller.new spec.name, :executables => true,
-                 :user_install => true
-    uninstaller.uninstall
+    Gem::Uninstaller.new(spec.name,
+                         :executables => true, :user_install => true).uninstall
   end
 
   ##
@@ -340,14 +337,13 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     spec.loaded_from = spec.loaded_from = written_path
 
-    Deprecate.skip_during do
-      Gem.source_index.add_spec spec.for_cache
-    end
+    Gem::Specification.add_spec spec.for_cache
 
     return spec
   end
 
   def quick_spec name, version = '2'
+    # TODO: deprecate
     require 'rubygems/specification'
 
     spec = Gem::Specification.new do |s|
@@ -366,9 +362,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     path = @gemhome.specifications.add(spec.spec_name)
     spec.loaded_from = path
 
-    Deprecate.skip_during do
-      Gem.source_index.add_spec spec
-    end
+    Gem::Specification.add_spec spec
 
     return spec
   end
@@ -392,8 +386,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
         Gem::Builder.new(spec).build
       end
 
-      FileUtils.mv spec.file_name,
-                   Gem.cache_gem("#{spec.original_name}.gem")
+      FileUtils.mv spec.file_name, Gem.cache_gem("#{spec.original_name}.gem")
     end
   end
 
@@ -404,20 +397,15 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     FileUtils.rm_rf @gemhome.gems
     FileUtils.rm_rf @gemhome.specifications
     Gem.source_index = nil
+    Gem::Specification.reset
   end
 
   ##
   # Install the provided specs
 
   def install_specs(*specs)
-    specs.each do |spec|
-      # TODO: inverted responsibility
-      Deprecate.skip_during do
-        Gem.source_index.add_spec spec
-      end
-    end
+    Gem::Specification.add_specs(*specs)
     Gem.searcher = nil
-    Gem::Specification.reset
   end
 
   ##
@@ -445,6 +433,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # Creates a spec with +name+, +version+ and +deps+.
 
   def util_spec(name, version, deps = nil, &block)
+    # TODO: deprecate
     raise "deps or block, not both" if deps and block
 
     if deps then
@@ -465,6 +454,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # location are returned.
 
   def util_gem(name, version, deps = nil, &block)
+    # TODO: deprecate
     raise "deps or block, not both" if deps and block
 
     if deps then
@@ -533,8 +523,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 This line is really, really long.  So long, in fact, that it is more than eighty characters long!  The purpose of this line is for testing wrapping behavior because sometimes people don't wrap their text to eighty characters.  Without the wrapping, the text might not look good in the RSS feed.
 
 Also, a list:
-  * An entry that's actually kind of sort
-  * an entry that's really long, which will probably get wrapped funny.  That's ok, somebody wasn't thinking straight when they made it more than eighty characters.
+  * An entry that\'s actually kind of sort
+  * an entry that\'s really long, which will probably get wrapped funny.  That's ok, somebody wasn't thinking straight when they made it more than eighty characters.
       DESC
     end
 
@@ -575,7 +565,7 @@ Also, a list:
 
     FileUtils.rm_r @gemhome.gems.add(@pl1.original_name)
 
-    Gem.source_index = nil
+    Gem.source_index = nil # TODO nuke
   end
 
   ##
@@ -605,22 +595,13 @@ Also, a list:
     @fetcher = Gem::FakeFetcher.new
 
     util_make_gems(prerelease)
+    Gem::Specification.reset
 
     @all_gems = [@a1, @a2, @a3a, @a_evil9, @b2, @c1_2].sort
     @all_gem_names = @all_gems.map { |gem| gem.full_name }
 
     gem_names = [@a1.full_name, @a2.full_name, @a3a.full_name, @b2.full_name]
     @gem_names = gem_names.sort.join("\n")
-
-    Deprecate.skip_during do
-      @source_index = Gem::SourceIndex.new
-      @source_index.add_spec @a1
-      @source_index.add_spec @a2
-      @source_index.add_spec @a3a
-      @source_index.add_spec @a_evil9
-      @source_index.add_spec @c1_2
-      @source_index.add_spec @a2_pre if prerelease
-    end
 
     Gem::RemoteFetcher.fetcher = @fetcher
   end

@@ -790,9 +790,8 @@ module Gem
   # Refresh source_index from disk and clear searcher.
 
   def self.refresh
-    Deprecate.skip_during { source_index.refresh! }
-
     Gem::Specification.reset
+    @source_index = nil
     @searcher = nil
   end
 
@@ -911,8 +910,8 @@ module Gem
   # Returns the Gem::SourceIndex of specifications that are in the Gem.path
 
   def self.source_index
-    Deprecate.skip_during do
-      @@source_index ||= SourceIndex.new Gem::SourceIndex.installed_spec_directories
+    @@source_index ||= Deprecate.skip_during do
+      SourceIndex.new Gem::Specification.dirs
     end
   end
 

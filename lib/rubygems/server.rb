@@ -492,13 +492,10 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     add_date res
 
-    latest_specs = Deprecate.skip_during {
-      Gem.source_index.latest_specs
-    }
+    latest_specs = Gem::Specification.latest_specs
 
     specs = latest_specs.sort.map do |spec|
-      platform = spec.original_platform
-      platform = Gem::Platform::RUBY if platform.nil?
+      platform = spec.original_platform || Gem::Platform::RUBY
       [spec.name, spec.version, platform]
     end
 

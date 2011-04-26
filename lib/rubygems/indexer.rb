@@ -451,12 +451,10 @@ class Gem::Indexer
   # Builds and installs indicies.
 
   def generate_index
-    Deprecate.skip_during do
-      make_temp_directories
-      index = collect_specs
-      build_indicies index
-      install_indicies
-    end
+    make_temp_directories
+    index = collect_specs
+    build_indicies index
+    install_indicies
   rescue SignalException
   ensure
     FileUtils.rm_rf @directory

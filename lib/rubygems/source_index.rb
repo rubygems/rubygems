@@ -371,40 +371,40 @@ end
 class Gem::SourceIndex
   extend Deprecate
 
-  deprecate :all_gems,         :none, 2011, 10
-  # deprecate :==,               :none, 2011, 11 # makes tests noisy
-  # deprecate :add_spec,         :none, 2011, 11 # just noisy
-  # deprecate :add_specs,        :none, 2011, 11 # just noisy
-  deprecate :dump,             :none, 2011, 11
-  # HACK: deprecate :each,             :none, 2011, 11
-  deprecate :find_name,        :none, 2011, 11
-  deprecate :gem_signature,    :none, 2011, 11
-  # deprecate :gems,             :none, 2011, 11
-  deprecate :index_signature,  :none, 2011, 11
-  deprecate :initialize,       :none, 2011, 11
-  deprecate :latest_specs,     :none, 2011, 11
-  deprecate :length,           :none, 2011, 11
-  # deprecate :load_gems_in,     :none, 2011, 11
-  deprecate :outdated,         :none, 2011, 11
-  deprecate :prerelease_gems,  :none, 2011, 11
-  deprecate :prerelease_specs, :none, 2011, 11
-  # deprecate :refresh!,         :none, 2011, 11
-  deprecate :released_gems,    :none, 2011, 11
-  deprecate :released_specs,   :none, 2011, 11
-  deprecate :remove_spec,      :none, 2011, 11
-  deprecate :search,           :none, 2011, 11
-  deprecate :size,             :none, 2011, 11
-  deprecate :spec_dirs,        :none, 2011, 11
-  # deprecate :spec_dirs=,       :none, 2011, 11 # noisy tests
-  deprecate :specification,    :none, 2011, 11
+  deprecate :all_gems,         :none,                        2011, 10
+
+  deprecate :==,               :none,                        2011, 11 # noisy
+  deprecate :add_specs,        :none,                        2011, 11 # noisy
+  deprecate :each,             :none,                        2011, 11
+  deprecate :gems,             :none,                        2011, 11
+  deprecate :load_gems_in,     :none,                        2011, 11
+  deprecate :refresh!,         :none,                        2011, 11
+  deprecate :spec_dirs=,       "Specification.dirs=",        2011, 11 # noisy
+  deprecate :add_spec,         "Specification.add_spec",     2011, 11
+  deprecate :find_name,        "Specification.find_by_name", 2011, 11
+  deprecate :gem_signature,    :none,                        2011, 11
+  deprecate :index_signature,  :none,                        2011, 11
+  deprecate :initialize,       :none,                        2011, 11
+  deprecate :latest_specs,     "Specification.latest_specs", 2011, 11
+  deprecate :length,           "Specification.all.length",   2011, 11
+  deprecate :outdated,         :none,                        2011, 11
+  deprecate :prerelease_gems,  :none,                        2011, 11
+  deprecate :prerelease_specs, :none,                        2011, 11
+  deprecate :released_gems,    :none,                        2011, 11
+  deprecate :released_specs,   :none,                        2011, 11
+  deprecate :remove_spec,      "Specification.remove_spec",  2011, 11
+  deprecate :search,           :none,                        2011, 11
+  deprecate :size,             "Specification.all.size",     2011, 11
+  deprecate :spec_dirs,        "Specification.dirs",         2011, 11
+  deprecate :specification,    "Specification.find",         2011, 11
 
   class << self
     extend Deprecate
 
-    deprecate :from_gems_in,               :none, 2011, 10
-    deprecate :from_installed_gems,        :none, 2011, 10
-    deprecate :installed_spec_directories, :none, 2011, 11
-    deprecate :load_specification,         :none, 2011, 10
+    deprecate :from_gems_in,               :none,                2011, 10
+    deprecate :from_installed_gems,        :none,                2011, 10
+    deprecate :installed_spec_directories, "Specification.dirs", 2011, 11
+    deprecate :load_specification,         :none,                2011, 10
   end
 end
 

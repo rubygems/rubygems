@@ -303,6 +303,10 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     path
   end
 
+  def all_spec_names
+    Gem::Specification.map(&:full_name)
+  end
+
   ##
   # Creates a Gem::Specification with a minimum of extra work.  +name+ and
   # +version+ are the gem's name and version,  platform, author, email,

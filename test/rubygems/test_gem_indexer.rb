@@ -226,12 +226,12 @@ class TestGemIndexer < Gem::TestCase
       <description>
 &lt;pre&gt;This line is really, really long.  So long, in fact, that it is more than
 eighty characters long!  The purpose of this line is for testing wrapping
-behavior because sometimes people don't wrap their text to eighty characters. 
+behavior because sometimes people don't wrap their text to eighty characters.
 Without the wrapping, the text might not look good in the RSS feed.
 
 Also, a list:
   * An entry that's actually kind of sort
-  * an entry that's really long, which will probably get wrapped funny. 
+  * an entry that's really long, which will probably get wrapped funny.
 That's ok, somebody wasn't thinking straight when they made it more than
 eighty characters.&lt;/pre&gt;
       </description>

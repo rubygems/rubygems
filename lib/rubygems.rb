@@ -397,7 +397,9 @@ module Gem
   end
 
   def self.paths=(env)
+    clear_paths
     @paths = Gem::PathSupport.new env
+    Gem::Specification.dirs = @paths.path # FIX: home is at end
   end
 
   ##
@@ -990,8 +992,8 @@ module Gem
   # by the unit tests to provide environment isolation.
 
   def self.use_paths(home, paths=[])
-    clear_paths
     self.paths = { "GEM_HOME" => home, "GEM_PATH" => paths }
+    # TODO: self.paths = home, paths
   end
 
   ##

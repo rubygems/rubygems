@@ -39,7 +39,7 @@ module Gem
   # requiring 'rubygems/test_case'
 
   def self.source_index=(si)
-    Gem::Specification.reset # HACK
+    Gem::Specification.reset if si # HACK
     @@source_index = si
   end
 
@@ -333,6 +333,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
       yield(s) if block_given?
     end
+
+    Gem::Specification.map # HACK: force specs to (re-)load before we write
 
     path = File.join("specifications", spec.spec_name)
     written_path = write_file path do |io|

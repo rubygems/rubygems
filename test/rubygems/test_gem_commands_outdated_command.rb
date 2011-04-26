@@ -17,18 +17,15 @@ class TestGemCommandsOutdatedCommand < Gem::TestCase
     remote_10 = quick_spec 'foo', '1.0'
     remote_20 = quick_spec 'foo', '2.0'
 
-    Gem.source_index = nil
+    Gem::RemoteFetcher.fetcher = @fetcher = Gem::FakeFetcher.new
+
+    util_clear_gems
+    util_setup_spec_fetcher remote_10, remote_20
 
     quick_gem 'foo', '0.1'
     quick_gem 'foo', '0.2'
 
-    remote_spec_file = File.join @gemhome, 'specifications', remote_10.spec_name
-    remote_spec_file = File.join @gemhome, 'specifications', remote_20.spec_name
-
-    @fetcher = Gem::FakeFetcher.new
-    Gem::RemoteFetcher.fetcher = @fetcher
-
-    util_setup_spec_fetcher remote_10, remote_20
+    Gem::Specification.reset
 
     use_ui @ui do
       @cmd.execute

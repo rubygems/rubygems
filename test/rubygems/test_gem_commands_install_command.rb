@@ -18,8 +18,8 @@ class TestGemCommandsInstallCommand < Gem::TestCase
   end
 
   def test_execute_exclude_prerelease
-    util_setup_fake_fetcher(:prerelease)
-    util_setup_spec_fetcher @a2, @a2_pre
+    util_setup_fake_fetcher :prerelease
+    util_setup_spec_fetcher
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
       read_binary(Gem.cache_gem(@a2.file_name, @gemhome))
@@ -40,8 +40,8 @@ class TestGemCommandsInstallCommand < Gem::TestCase
   end
 
   def test_execute_explicit_version_includes_prerelease
-    util_setup_fake_fetcher(:prerelease)
-    util_setup_spec_fetcher @a2, @a2_pre
+    util_setup_fake_fetcher :prerelease
+    util_setup_spec_fetcher
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
       read_binary(Gem.cache_gem(@a2.file_name, @gemhome))
@@ -202,7 +202,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_execute_prerelease
-    util_setup_fake_fetcher(:prerelease)
+    util_setup_fake_fetcher :prerelease
+    util_clear_gems
     util_setup_spec_fetcher @a2, @a2_pre
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
@@ -229,7 +230,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:generate_ri] = true
 
     util_setup_fake_fetcher
-    util_setup_spec_fetcher @a2
+    util_setup_spec_fetcher
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
       read_binary(Gem.cache_gem(@a2.file_name, @gemhome))
@@ -287,7 +288,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
   def test_execute_conservative
     util_setup_fake_fetcher
-    util_setup_spec_fetcher @b2
+    util_setup_spec_fetcher
 
     @fetcher.data["#{@gem_repo}gems/#{@b2.file_name}"] =
       read_binary(Gem.cache_gem(@b2.file_name, @gemhome))

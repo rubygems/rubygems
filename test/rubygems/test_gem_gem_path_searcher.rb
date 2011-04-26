@@ -10,25 +10,24 @@ class TestGemGemPathSearcher < Gem::TestCase
   def setup
     super
 
-    @foo1 = quick_gem 'foo', '0.1' do |s|
-      s.require_paths << 'lib2'
-      s.files << 'lib/foo.rb'
-    end
-
+    @foo1 = new_spec 'foo', '0.1', nil, "lib/foo.rb"
+    @foo1.require_paths << 'lib2'
     path = File.join 'gems', @foo1.full_name, 'lib', 'foo.rb'
     write_file(path) { |fp| fp.puts "# #{path}" }
 
-    @foo2 = quick_gem 'foo', '0.2'
-    @bar1 = quick_gem 'bar', '0.1'
-    @bar2 = quick_gem 'bar', '0.2'
-    @nrp = quick_gem 'nil_require_paths', '0.1'
-    @nrp.require_paths = nil
+    @foo2 = new_spec 'foo', '0.2'
+    @bar1 = new_spec 'bar', '0.1'
+    @bar2 = new_spec 'bar', '0.2'
+    @nrp  = new_spec 'nil_require_paths', '0.1' do |s|
+      s.require_paths = nil
+    end
 
+    util_setup_fake_fetcher
+    Gem::Specification.reset
+    util_setup_spec_fetcher @foo1, @foo2, @bar1, @bar2
 
     @fetcher = Gem::FakeFetcher.new
     Gem::RemoteFetcher.fetcher = @fetcher
-
-    Gem.source_index = util_setup_spec_fetcher @foo1, @foo2, @bar1, @bar2
 
     @gps = Deprecate.skip_during { Gem::GemPathSearcher.new }
   end
@@ -47,7 +46,11 @@ class TestGemGemPathSearcher < Gem::TestCase
 
   def test_init_gemspecs
     Deprecate.skip_during do
-      assert_equal [@bar2, @bar1, @foo2, @foo1], @gps.init_gemspecs
+      util_clear_gems
+      util_setup_spec_fetcher @foo1, @foo2, @bar1, @bar2
+      expected = [@bar2, @bar1, @foo2, @foo1].map(&:full_name)
+      actual   = @gps.init_gemspecs.map(&:full_name)
+      assert_equal expected, actual
     end
   end
 

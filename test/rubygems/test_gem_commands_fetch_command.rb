@@ -32,6 +32,7 @@ class TestGemCommandsFetchCommand < Gem::TestCase
 
   def test_execute_prerelease
     util_setup_fake_fetcher true
+    util_clear_gems
     util_setup_spec_fetcher @a2, @a2_pre
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =

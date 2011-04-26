@@ -9,9 +9,8 @@ class TestGemCommandsQueryCommand < Gem::TestCase
     @cmd = Gem::Commands::QueryCommand.new
 
     util_setup_fake_fetcher
-
-    # HACK: can't set Gem.source_index. causes failures.
-    util_setup_spec_fetcher(@a1, @a2, @pl1, @a3a)
+    util_clear_gems
+    util_setup_spec_fetcher @a1, @a2, @pl1, @a3a
 
     @fetcher.data["#{@gem_repo}Marshal.#{Gem.marshal_version}"] = proc do
       raise Gem::RemoteFetcher::FetchError
@@ -43,6 +42,7 @@ pl (1 i386-linux)
     @a1.platform = 'x86-linux'
     @a2.platform = 'universal-darwin'
 
+    util_clear_gems
     util_setup_spec_fetcher @a1, @a1r, @a2, @b2, @pl1
 
     @cmd.handle_options %w[-r -a]
@@ -108,6 +108,7 @@ pl (1 i386-linux)
     @a2.homepage = 'http://a.example.com/'
     @a2.rubyforge_project = 'rubygems'
 
+    util_clear_gems
     util_setup_spec_fetcher @a1, @a2, @pl1
 
     @cmd.handle_options %w[-r -d]
@@ -149,6 +150,7 @@ pl (1)
     @a2.rubyforge_project = 'rubygems'
     @a2.platform = 'universal-darwin'
 
+    util_clear_gems
     util_setup_spec_fetcher @a1, @a2, @pl1
 
     @cmd.handle_options %w[-r -d]
@@ -185,7 +187,7 @@ pl (1)
   end
 
   def test_execute_installed
-    @cmd.handle_options %w[-n c --installed]
+    @cmd.handle_options %w[-n a --installed]
 
     e = assert_raises Gem::MockGemUi::SystemExitException do
       use_ui @ui do
@@ -228,7 +230,7 @@ pl (1)
   end
 
   def test_execute_installed_version
-    @cmd.handle_options %w[-n c --installed --version 1.2]
+    @cmd.handle_options %w[-n a --installed --version 2]
 
     e = assert_raises Gem::MockGemUi::SystemExitException do
       use_ui @ui do
@@ -255,65 +257,6 @@ pl (1)
     assert_equal 1, e.exit_code
   end
 
-  def test_execute_local_details
-    @a3a.summary = 'This is a lot of text. ' * 4
-    @a3a.authors = ['Abraham Lincoln', 'Hirohito']
-    @a3a.homepage = 'http://a.example.com/'
-    @a3a.rubyforge_project = 'rubygems'
-
-    @cmd.handle_options %w[--local --details]
-
-    use_ui @ui do
-      @cmd.execute
-    end
-
-    expected = <<-EOF
-
-*** LOCAL GEMS ***
-
-a (3.a, 2, 1)
-    Author: A User
-    Homepage: http://example.com
-    Installed at (3.a): #{@gemhome}
-                 (2): #{@gemhome}
-                 (1): #{@gemhome}
-
-    this is a summary
-
-a_evil (9)
-    Author: A User
-    Homepage: http://example.com
-    Installed at: #{@gemhome}
-
-    this is a summary
-
-b (2)
-    Author: A User
-    Homepage: http://example.com
-    Installed at: #{@gemhome}
-
-    this is a summary
-
-c (1.2)
-    Author: A User
-    Homepage: http://example.com
-    Installed at: #{@gemhome}
-
-    this is a summary
-
-pl (1)
-    Platform: i386-linux
-    Author: A User
-    Homepage: http://example.com
-    Installed at: #{@gemhome}
-
-    this is a summary
-    EOF
-
-    assert_equal expected, @ui.output
-    assert_equal '', @ui.error
-  end
-
   def test_execute_local_notty
     @cmd.handle_options %w[]
 
@@ -325,9 +268,6 @@ pl (1)
 
     expected = <<-EOF
 a (3.a, 2, 1)
-a_evil (9)
-b (2)
-c (1.2)
 pl (1 i386-linux)
     EOF
 
@@ -402,9 +342,6 @@ a (3.a)
 *** LOCAL GEMS ***
 
 a (3.a, 2, 1)
-a_evil (9)
-b (2)
-c (1.2)
 pl (1 i386-linux)
     EOF
 

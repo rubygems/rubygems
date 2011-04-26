@@ -197,9 +197,8 @@ ERROR:  Only reverse dependencies for local gems are supported.
     @fetcher = Gem::FakeFetcher.new
     Gem::RemoteFetcher.fetcher = @fetcher
 
+    util_clear_gems
     util_setup_spec_fetcher @a2_pre
-
-    FileUtils.rm File.join(@gemhome, 'specifications', @a2_pre.spec_name)
 
     @cmd.options[:args] = %w[a]
     @cmd.options[:domain] = :remote

@@ -392,51 +392,20 @@ end
   end
 
   def test_eql_eh
-    g1 = quick_spec 'gem'
-    g2 = quick_spec 'gem'
+    g1 = new_spec 'gem', 1
+    g2 = new_spec 'gem', 1
 
     assert_equal g1, g2
     assert_equal g1.hash, g2.hash
     assert_equal true, g1.eql?(g2)
   end
 
-  def test_equals2
-    assert_equal @a1, @a1
-    assert_equal @a1, @a1.dup
-    refute_equal @a1, @a2
-    refute_equal @a1, Object.new
-  end
-
-  # The cgikit specification was reported to be causing trouble in at least
-  # one version of RubyGems, so we test explicitly for it.
-  def test_equals2_cgikit
-    cgikit = Gem::Specification.new do |s|
-      s.name = %q{cgikit}
-      s.version = "1.1.0"
-      s.date = %q{2004-03-13}
-      s.summary = %q{CGIKit is a componented-oriented web application } +
-      %q{framework like Apple Computers WebObjects.  } +
-      %{This framework services Model-View-Controller architecture } +
-      %q{programming by components based on a HTML file, a definition } +
-      %q{file and a Ruby source.  }
-      s.email = %q{info@spice-of-life.net}
-      s.homepage = %q{http://www.spice-of-life.net/download/cgikit/}
-      s.autorequire = %q{cgikit}
-      s.bindir = nil
-      s.required_ruby_version = nil
-      s.platform = nil
-      s.files = ["lib/cgikit", "lib/cgikit.rb", "lib/cgikit/components", "..."]
-    end
-
-    assert_equal cgikit, cgikit
-  end
-
-  def test_equals2_extensions
+  def test_eql_eh_extensions
     spec = @a1.dup
     spec.extensions = 'xx'
 
-    refute_equal @a1, spec
-    refute_equal spec, @a1
+    refute_operator @a1, :eql?, spec
+    refute_operator spec, :eql?, @a1
   end
 
   def test_executables
@@ -711,8 +680,8 @@ end
   end
 
   def test_spaceship_name
-    s1 = quick_spec 'a', '1'
-    s2 = quick_spec 'b', '1'
+    s1 = new_spec 'a', '1'
+    s2 = new_spec 'b', '1'
 
     assert_equal(-1, (s1 <=> s2))
     assert_equal( 0, (s1 <=> s1))
@@ -720,8 +689,8 @@ end
   end
 
   def test_spaceship_platform
-    s1 = quick_spec 'a', '1'
-    s2 = quick_spec 'a', '1' do |s|
+    s1 = new_spec 'a', '1'
+    s2 = new_spec 'a', '1' do |s|
       s.platform = Gem::Platform.new 'x86-my_platform1'
     end
 
@@ -731,8 +700,8 @@ end
   end
 
   def test_spaceship_version
-    s1 = quick_spec 'a', '1'
-    s2 = quick_spec 'a', '2'
+    s1 = new_spec 'a', '1'
+    s2 = new_spec 'a', '2'
 
     assert_equal( -1, (s1 <=> s2))
     assert_equal(  0, (s1 <=> s1))
@@ -1342,12 +1311,8 @@ end
   # KEEP a-3-x86-other_platform-1
 
   def test_latest_specs
-    Deprecate.skip_during do
-      Gem.source_index = nil
-      util_setup_fake_fetcher
-      Gem.source_index.remove_spec @b2.full_name
-      Gem.source_index.remove_spec @pl1.full_name
-    end
+    util_clear_gems
+    util_setup_fake_fetcher
 
     quick_spec 'p', '1'
 
@@ -1375,6 +1340,9 @@ end
       s.platform = Gem::Platform.new 'x86-other_platform1'
     end
 
+    Gem::Specification.remove_spec @b2
+    Gem::Specification.remove_spec @pl1
+
     expected = %W[
                   a-2
                   a-2-x86-my_platform-1
@@ -1385,7 +1353,7 @@ end
                   #{p1_curr.full_name}
                  ]
 
-    latest_specs = Gem::Specification.latest_specs.map { |s| s.full_name }.sort
+    latest_specs = Gem::Specification.latest_specs.map(&:full_name).sort
 
     assert_equal expected, latest_specs
   end

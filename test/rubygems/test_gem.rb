@@ -21,8 +21,6 @@ class TestGem < Gem::TestCase
   end
 
   def assert_activate expected, *specs
-    Gem::Specification.reset # HACK? not sure... maybe
-
     specs.each do |spec|
       case spec
       when String then
@@ -56,8 +54,10 @@ class TestGem < Gem::TestCase
   # TODO: move these to specification
   def test_self_activate_via_require
     a1 = new_spec "a", "1", "b" => "= 1"
-    new_spec "b", "1", nil, "lib/b/c.rb"
-    new_spec "b", "2", nil, "lib/b/c.rb"
+    b1 = new_spec "b", "1", nil, "lib/b/c.rb"
+    b2 = new_spec "b", "2", nil, "lib/b/c.rb"
+
+    install_specs a1, b1, b2
 
     a1.activate
     require "b/c"
@@ -653,28 +653,22 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_find_files
-    discover_path = File.join 'lib', 'sff', 'discover.rb'
     cwd = File.expand_path("test/rubygems", @@project_dir)
     $LOAD_PATH.unshift cwd
 
-    foo1 = quick_gem 'sff', '1' do |s|
-      s.files << discover_path
-    end
+    discover_path = File.join 'lib', 'sff', 'discover.rb'
 
-    foo2 = quick_gem 'sff', '2' do |s|
-      s.files << discover_path
-    end
+    foo1, foo2 = %w(1 2).map { |version|
+      spec = quick_gem 'sff', version do |s|
+        s.files << discover_path
+      end
 
-    path = File.join 'gems', foo1.full_name, discover_path
-    write_file(path) { |fp| fp.puts "# #{path}" }
+      write_file(File.join 'gems', spec.full_name, discover_path) do |fp|
+        fp.puts "# #{spec.full_name}"
+      end
 
-    path = File.join 'gems', foo2.full_name, discover_path
-    write_file(path) { |fp| fp.puts "# #{path}" }
-
-    @fetcher = Gem::FakeFetcher.new
-    Gem::RemoteFetcher.fetcher = @fetcher
-
-    Gem.source_index = util_setup_spec_fetcher foo1, foo2
+      spec
+    }
 
     # HACK should be Gem.refresh
     Gem.searcher = nil
@@ -824,13 +818,15 @@ class TestGem < Gem::TestCase
 
     FileUtils.mv a1_spec, @tempdir
 
-    refute_includes Gem::Specification.all.map(&:full_name), @a1.full_name
+    Gem.refresh
+
+    refute_includes Gem::Specification.map(&:full_name), @a1.full_name
 
     FileUtils.mv File.join(@tempdir, @a1.spec_name), a1_spec
 
     Gem.refresh
 
-    assert_includes Gem::Specification.all.map(&:full_name), @a1.full_name
+    assert_includes Gem::Specification.map(&:full_name), @a1.full_name
   end
 
   def test_self_ruby_escaping_spaces_in_path

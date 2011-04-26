@@ -6,8 +6,11 @@ class TestGemDependencyList < Gem::TestCase
   def setup
     super
 
+    util_clear_gems
+
     @deplist = Gem::DependencyList.new
 
+    # TODO: switch to new_spec
     @a1 = quick_spec 'a', '1'
     @a2 = quick_spec 'a', '2'
     @a3 = quick_spec 'a', '3'
@@ -22,10 +25,9 @@ class TestGemDependencyList < Gem::TestCase
   end
 
   def test_self_from_source_index
-    Deprecate.skip_during {
-      Gem.source_index = nil
-      Gem.source_index.add_specs @a1, @b2
-    }
+    util_clear_gems
+    install_specs @a1, @b2
+
     deps = Gem::DependencyList.from_source_index
 
     assert_equal %w[b-2 a-1], deps.dependency_order.map { |s| s.full_name }

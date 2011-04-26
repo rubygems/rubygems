@@ -36,12 +36,11 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
   def test_execute_add
     util_setup_fake_fetcher
 
-    si = Deprecate.skip_during { Gem::SourceIndex.new }
-    si.add_spec @a1
+    install_specs @a1
 
-    specs = si.map do |_, spec|
+    specs = Gem::Specification.map { |spec|
       [spec.name, spec.version, spec.original_platform]
-    end
+    }
 
     specs_dump_gz = StringIO.new
     Zlib::GzipWriter.wrap specs_dump_gz do |io|
@@ -181,7 +180,9 @@ beta-gems.example.com is not a URI
     @cmd.handle_options %w[--update]
 
     util_setup_fake_fetcher
-    source_index = util_setup_spec_fetcher @a1
+    util_setup_spec_fetcher @a1
+
+    source_index = Gem.source_index
 
     specs = source_index.map do |name, spec|
       [spec.name, spec.version, spec.original_platform]
@@ -190,10 +191,8 @@ beta-gems.example.com is not a URI
     @fetcher.data["#{@gem_repo}specs.#{Gem.marshal_version}.gz"] =
       util_gzip Marshal.dump(specs)
 
-    latest_specs = Deprecate.skip_during {
-      source_index.latest_specs.map do |spec|
-        [spec.name, spec.version, spec.original_platform]
-      end
+    latest_specs = Gem::Specification.latest_specs.map { |spec|
+      [spec.name, spec.version, spec.original_platform]
     }
 
     @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] =

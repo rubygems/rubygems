@@ -10,16 +10,14 @@ class TestGemUninstaller < Gem::InstallerTestCase
 
     # HACK util_make_exec
     user_bin_dir = File.join Gem.user_dir, 'gems', @user_spec.full_name, 'bin'
-    FileUtils.mkdir_p user_bin_dir
     exec_path = File.join user_bin_dir, "executable"
-    open exec_path, 'w' do |f|
+    write_file exec_path do |f|
       f.puts "#!/usr/bin/ruby"
     end
 
     user_bin_dir = File.join Gem.user_dir, 'bin'
-    FileUtils.mkdir_p user_bin_dir
     exec_path = File.join user_bin_dir, "executable"
-    open exec_path, 'w' do |f|
+    write_file exec_path do |f|
       f.puts "#!/usr/bin/ruby"
     end
 
@@ -125,10 +123,10 @@ class TestGemUninstaller < Gem::InstallerTestCase
   def test_path_ok_eh_legacy
     uninstaller = Gem::Uninstaller.new nil
 
-    @spec.loaded_from = Gem::Path.new( 
+    @spec.loaded_from = Gem::Path.new(
       @spec.loaded_from.to_s.gsub @spec.full_name, '\&-legacy'
     )
-      
+
     @spec.platform = 'legacy'
 
     assert_equal true, uninstaller.path_ok?(@gemhome, @spec)
@@ -187,8 +185,9 @@ class TestGemUninstaller < Gem::InstallerTestCase
   end
 
   def test_uninstall_user
-    uninstaller = Gem::Uninstaller.new @user_spec.name, :executables => true,
-                  :user_install => true
+    uninstaller = Gem::Uninstaller.new(@user_spec.name,
+                                       :executables  => true,
+                                       :user_install => true)
 
     gem_dir = File.join Gem.user_dir, 'gems', @user_spec.full_name
 

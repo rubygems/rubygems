@@ -22,8 +22,8 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
   end
 
   def test_get_path
-    util_make_gems
     util_setup_fake_fetcher
+    util_clear_gems
     util_setup_spec_fetcher @a1
 
     a1_data = nil
@@ -67,9 +67,8 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
   end
 
   def test_execute_gem_path
-    util_make_gems
-    util_setup_spec_fetcher
     util_setup_fake_fetcher
+    util_setup_spec_fetcher
 
     Gem.clear_paths
 
@@ -89,7 +88,7 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
   end
 
   def test_execute_gem_path_missing
-    util_make_gems
+    util_setup_fake_fetcher
     util_setup_spec_fetcher
 
     Gem.clear_paths

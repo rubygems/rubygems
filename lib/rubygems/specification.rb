@@ -1638,12 +1638,16 @@ class Gem::Specification
   end
 
   def self.reset
+    # from = caller.first(10).reject { |s| s =~ /minitest/ }
+    # warn ""
+    # warn "NOTE: Specification.reset from #{from.inspect}"
     @@all = nil
   end
 
   extend Enumerable
 
   def self.each
+<<<<<<< HEAD
     return enum_for(:each) unless block_given?
 
     self.all.each do |x|
@@ -1665,7 +1669,53 @@ class Gem::Specification
         next names if names.nonzero?
         b.version <=> a.version
       }
+=======
+    unless block_given? then
+      enum_for(:each)
+    else
+      _all.each do |x|
+        yield x
+      end
     end
+  end
+
+  def self.dirs= dirs
+# warn "NOTE: dirs= called from #{caller.first} for #{dirs.inspect}"
+    self.reset
+    # ugh
+    @@dirs = Array(dirs).map { |dir| Gem::Path.new(dir).add("specifications") }
+  end
+
+  def self.dirs
+    @@dirs ||= Gem.path.collect { |dir|
+      Gem::Path.new(dir).add("specifications")
+    }
+  end
+
+  def self._all
+    unless defined?(@@all) && @@all then
+      @@all = self.dirs.reverse.map { |dir|
+        dir.glob("*.gemspec").map { |path|
+          Gem::Specification.load path
+        }
+      }.flatten
+      _resort!
+>>>>>>> Refactored all to _all so that calls to all could be warned against (Temporary)
+    end
+    @@all
+  end
+
+  def self._resort!
+    @@all.sort! { |a, b|
+      names = a.name <=> b.name
+      next names if names.nonzero?
+      b.version <=> a.version
+    }
+  end
+
+  def self.all
+    warn "NOTE: Specification.all called from #{caller.first}" unless Deprecate.skip
+    _all
   end
 
   def self.all
@@ -1750,7 +1800,7 @@ class Gem::Specification
     result = Hash.new { |h,k| h[k] = {} }
     native = {}
 
-    Gem::Specification.all.reverse_each do |spec|
+    Gem::Specification._all.reverse_each do |spec|
       next if spec.version.prerelease? unless prerelease
       # FIX: :( platform hash/eql isn't properly defined
       native[spec.name] = spec.version if spec.platform == Gem::Platform::RUBY
@@ -1761,6 +1811,43 @@ class Gem::Specification
       minimum = native[spec.name]
       minimum && spec.version < minimum
     }
+  end
+
+  def self.add_spec spec
+    # TODO: find all extraneous adds
+    # p :add_spec => [spec.full_name, caller.first(5)]
+    # TODO: flush the rest of the crap from the tests
+    # raise "no dupes #{spec.full_name} in #{all_names.inspect}" if
+    #   _all.include? spec
+    raise "nil spec!" unless spec # TODO: remove once we're happy with tests
+
+    return if _all.include? spec
+
+    Gem.source_index = nil # TODO: this shouldn't be necessary anymore
+    _all << spec
+    _resort!
+  end
+
+  def self.add_specs *specs
+    Gem.source_index = nil # TODO: this shouldn't be necessary anymore
+    raise "nil spec!" if specs.any?(&:nil?) # TODO: remove once we're happy
+    # TODO: this is much more efficient, but we need the extra checks for now
+    # _all.concat specs
+    # _resort!
+    specs.each do |spec| # TODO: slow
+      add_spec spec
+    end
+  end
+
+  def self.all_names
+    self._all.map(&:full_name)
+  end
+
+  def self.remove_spec spec
+    Gem.source_index = nil
+    raise "wtf: #{spec.full_name} not in #{all_names.inspect}" unless
+      _all.include? spec
+    _all.delete spec
   end
 
   extend Deprecate

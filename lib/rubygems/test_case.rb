@@ -417,19 +417,43 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # up properly. Use this instead of util_spec and util_gem.
 
   def new_spec name, version, deps = nil, *files
-    # TODO: unfactor and deprecate util_gem and util_spec
-    spec, = unless files.empty? then
-              util_gem name, version do |s|
-                Array(deps).each do |n,v|
-                  s.add_dependency n, v
-                end
-                s.files.push(*files)
-              end
-            else
-              util_spec name, version, deps
-            end
-    spec.loaded_from = @gemhome.specifications.add(spec.spec_name)
+    require 'rubygems/specification'
+
+    spec = Gem::Specification.new do |s|
+      s.platform    = Gem::Platform::RUBY
+      s.name        = name
+      s.version     = version
+      s.author      = 'A User'
+      s.email       = 'example@example.com'
+      s.homepage    = 'http://example.com'
+      s.summary     = "this is a summary"
+      s.description = "This is a test description"
+
+      Array(deps).each do |n, req|
+        s.add_dependency n, (req || '>= 0')
+      end
+
+      s.files.push(*files) unless files.empty?
+
+      yield s if block_given?
+    end
+
+    spec.loaded_from = @gemhome.specifications.add spec.spec_name
     spec.loaded = false
+
+    unless files.empty? then
+      write_file File.join("specifications", spec.spec_name) do |io|
+        io.write spec.to_ruby_for_cache
+      end
+
+      util_build_gem spec
+
+      cache_file = File.join @tempdir, 'gems', "#{spec.full_name}.gem"
+      FileUtils.mkdir_p File.dirname cache_file
+      FileUtils.mv Gem.cache_gem("#{spec.full_name}.gem"), cache_file
+      FileUtils.rm @gemhome.specifications.add(spec.spec_name)
+    end
+
     spec
   end
 

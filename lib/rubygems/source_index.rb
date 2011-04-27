@@ -80,9 +80,6 @@ class Gem::SourceIndex
   ##
   # Constructs a source index instance from the provided specifications, which
   # is a Hash of gem full names and Gem::Specifications.
-  #--
-  # TODO merge @gems and @prerelease_gems and provide a separate method
-  # #prerelease_gems
 
   def initialize specs_or_dirs = []
     @gems = {}
@@ -90,18 +87,15 @@ class Gem::SourceIndex
 
     case specs_or_dirs
     when Hash then
-      specs_or_dirs.each{ |full_name, spec| add_spec spec }
-    when Array, String then
-#       if specs_or_dirs != [Gem.path.to_s + "/specifications"] then
-# # TODO: raise
-#         warn "NOTE: ignoring #{specs_or_dirs.inspect} for now." unless
-#           specs_or_dirs.empty?
-#       end
-      Gem::Specification.each do |spec|
-        @gems[spec.full_name] = spec
+      specs_or_dirs.each do |full_name, spec|
+        add_spec spec
       end
+    when Array, String then
+      self.spec_dirs = Array(specs_or_dirs)
+      refresh!
     else
       arg = specs_or_dirs.inspect
+      warn "NOTE: SourceIndex.new(#{arg}) is deprecated; From #{caller.first}."
     end
   end
 
@@ -192,7 +186,6 @@ class Gem::SourceIndex
   def add_spec(gem_spec, name = gem_spec.full_name)
     # No idea why, but the Indexer wants to insert them using original_name
     # instead of full_name. So we make it an optional arg.
-    Gem::Specification.reset # HACK
     @gems[name] = gem_spec
   end
 

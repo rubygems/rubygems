@@ -57,7 +57,7 @@ revert the gem.
               Gem::Specification.find_all_by_name gem_name, options[:version]
             end
 
-    if specs.empty? then
+    if specs.to_a.empty? then
       raise Gem::Exception,
             "Failed to find gem #{gem_name} #{options[:version]}"
     end

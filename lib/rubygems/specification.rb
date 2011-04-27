@@ -674,6 +674,12 @@ class Gem::Specification
     vals.each do |ivar, val|
       instance_variable_set "@#{ivar}", val
     end
+    # Attempt to fix the date in case the YAML parser fails.
+    # This happens when the YAML is serialized by psych but read by syck,
+    # because the latter can't parse timestamps written by the former.
+    if String === @date && /\A(\d{4})-(\d{2})-(\d{2})/ =~ @date
+      @date = Time.utc($1.to_i, $2.to_i, $3.to_i)
+    end
 
     @original_platform = @platform # for backwards compatibility
     self.platform = Gem::Platform.new @platform
@@ -1443,7 +1449,7 @@ class Gem::Specification
     # way to do it.
     @date = case date
             when String then
-              if /\A(\d{4})-(\d{2})-(\d{2})\Z/ =~ date then
+              if /\A(\d{4})-(\d{2})-(\d{2})(\s|\Z)/ =~ date then
                 Time.utc($1.to_i, $2.to_i, $3.to_i)
               else
                 raise(Gem::InvalidSpecificationException,

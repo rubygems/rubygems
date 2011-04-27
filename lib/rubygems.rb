@@ -315,13 +315,6 @@ module Gem
       raise Gem::GemNotFoundException, msg
     end
 
-    exec_name ||= spec.default_executable
-
-    unless exec_name
-      msg = "no default executable for #{spec.full_name} and none given"
-      raise Gem::Exception, msg
-    end
-
     Gem::Path.path(spec.full_gem_path).add(spec.bindir).add(exec_name)
   end
 

@@ -443,6 +443,14 @@ class TestGem < Gem::TestCase
     end
   end
 
+  def test_self_bin_path_no_exec_name
+    e = assert_raises ArgumentError do
+      Gem.bin_path 'a'
+    end
+
+    assert_equal 'you must supply exec_name', e.message
+  end
+
   def test_self_bin_path_bin_name
     util_exec_gem
     assert_equal @abin_path, Gem.bin_path('a', 'abin')

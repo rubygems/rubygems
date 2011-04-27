@@ -38,51 +38,51 @@ class TestGemSourceIndex < Gem::TestCase
   end
 
   # HACK: deprecated impl is failing tests, but I may want to port it over
-  # def test_latest_specs
-  #   Deprecate.skip_during do
-  #     p1_ruby = quick_spec 'p', '1'
-  #     p1_platform = quick_spec 'p', '1' do |spec|
-  #       spec.platform = Gem::Platform::CURRENT
-  #     end
-  #
-  #     a1_platform = quick_spec @a1.name, (@a1.version) do |s|
-  #       s.platform = Gem::Platform.new 'x86-my_platform1'
-  #     end
-  #
-  #     a2_platform = quick_spec @a2.name, (@a2.version) do |s|
-  #       s.platform = Gem::Platform.new 'x86-my_platform1'
-  #     end
-  #
-  #     a2_platform_other = quick_spec @a2.name, (@a2.version) do |s|
-  #       s.platform = Gem::Platform.new 'x86-other_platform1'
-  #     end
-  #
-  #     a3_platform_other = quick_spec @a2.name, (@a2.version.bump) do |s|
-  #       s.platform = Gem::Platform.new 'x86-other_platform1'
-  #     end
-  #
-  #     @source_index.add_spec p1_ruby
-  #     @source_index.add_spec p1_platform
-  #     @source_index.add_spec a1_platform
-  #     @source_index.add_spec a2_platform
-  #     @source_index.add_spec a2_platform_other
-  #     @source_index.add_spec a3_platform_other
-  #
-  #     expected = [
-  #                 @a2.full_name,
-  #                 a2_platform.full_name,
-  #                 a3_platform_other.full_name,
-  #                 @c1_2.full_name,
-  #                 @a_evil9.full_name,
-  #                 p1_ruby.full_name,
-  #                 p1_platform.full_name,
-  #                ].sort
-  #
-  #     latest_specs = @source_index.latest_specs.map { |s| s.full_name }.sort
-  #
-  #     assert_equal expected, latest_specs
-  #   end
-  # end
+  def test_latest_specs
+    Deprecate.skip_during do
+      p1_ruby = quick_spec 'p', '1'
+      p1_platform = quick_spec 'p', '1' do |spec|
+        spec.platform = Gem::Platform::CURRENT
+      end
+
+      a1_platform = quick_spec @a1.name, (@a1.version) do |s|
+        s.platform = Gem::Platform.new 'x86-my_platform1'
+      end
+
+      a2_platform = quick_spec @a2.name, (@a2.version) do |s|
+        s.platform = Gem::Platform.new 'x86-my_platform1'
+      end
+
+      a2_platform_other = quick_spec @a2.name, (@a2.version) do |s|
+        s.platform = Gem::Platform.new 'x86-other_platform1'
+      end
+
+      a3_platform_other = quick_spec @a2.name, (@a2.version.bump) do |s|
+        s.platform = Gem::Platform.new 'x86-other_platform1'
+      end
+
+      @source_index.add_spec p1_ruby
+      @source_index.add_spec p1_platform
+      @source_index.add_spec a1_platform
+      @source_index.add_spec a2_platform
+      @source_index.add_spec a2_platform_other
+      @source_index.add_spec a3_platform_other
+
+      expected = [
+                  @a2.full_name,
+                  a2_platform.full_name,
+                  a3_platform_other.full_name,
+                  @c1_2.full_name,
+                  @a_evil9.full_name,
+                  p1_ruby.full_name,
+                  p1_platform.full_name,
+                 ].sort
+
+      latest_specs = @source_index.latest_specs.map { |s| s.full_name }.sort
+
+      assert_equal expected, latest_specs
+    end
+  end
 
   def test_load_gems_in
     Deprecate.skip_during do
@@ -115,58 +115,58 @@ class TestGemSourceIndex < Gem::TestCase
   end
 
   # REFACTOR: move to test_gem_commands_outdated_command.rb
-  # def test_outdated
-  #   Deprecate.skip_during do
-  #     util_setup_spec_fetcher
-  #
-  #     assert_equal [], @source_index.outdated
-  #
-  #     updated = quick_spec @a2.name, (@a2.version.bump)
-  #     util_setup_spec_fetcher updated
-  #
-  #     assert_equal [updated.name], @source_index.outdated
-  #
-  #     updated_platform = quick_spec @a2.name, (updated.version.bump) do |s|
-  #       s.platform = Gem::Platform.new 'x86-other_platform1'
-  #     end
-  #
-  #     util_setup_spec_fetcher updated, updated_platform
-  #
-  #     assert_equal [updated_platform.name], @source_index.outdated
-  #   end
-  # end
+  def test_outdated
+    Deprecate.skip_during do
+      util_setup_spec_fetcher
 
-  # def test_prerelease_specs_kept_in_right_place
-  #   Deprecate.skip_during do
-  #     gem_a1_alpha = quick_spec 'abba', '1.a'
-  #     @source_index.add_spec gem_a1_alpha
-  #
-  #     refute_includes @source_index.latest_specs,       gem_a1_alpha
-  #     assert_includes @source_index.latest_specs(true), gem_a1_alpha
-  #     assert_empty    @source_index.find_name           gem_a1_alpha.full_name
-  #     assert_includes @source_index.prerelease_specs,   gem_a1_alpha
-  #   end
-  # end
+      assert_equal [], @source_index.outdated
 
-  # def test_refresh_bang
-  #   Deprecate.skip_during do
-  #     a1_spec = File.join @gemhome, "specifications", @a1.spec_name
-  #
-  #     FileUtils.mv a1_spec, @tempdir
-  #
-  #     Gem::Specification.reset
-  #     # Gem.source_index = nil
-  #     source_index = Gem.source_index
-  #
-  #     refute_includes source_index.gems.keys.sort, @a1.full_name
-  #
-  #     FileUtils.mv File.join(@tempdir, @a1.spec_name), a1_spec
-  #
-  #     source_index.refresh!
-  #
-  #     assert source_index.gems.include?(@a1.full_name)
-  #   end
-  # end
+      updated = quick_spec @a2.name, (@a2.version.bump)
+      util_setup_spec_fetcher updated
+
+      assert_equal [updated.name], @source_index.outdated
+
+      updated_platform = quick_spec @a2.name, (updated.version.bump) do |s|
+        s.platform = Gem::Platform.new 'x86-other_platform1'
+      end
+
+      util_setup_spec_fetcher updated, updated_platform
+
+      assert_equal [updated_platform.name], @source_index.outdated
+    end
+  end
+
+  def test_prerelease_specs_kept_in_right_place
+    Deprecate.skip_during do
+      gem_a1_alpha = quick_spec 'abba', '1.a'
+      @source_index.add_spec gem_a1_alpha
+
+      refute_includes @source_index.latest_specs,       gem_a1_alpha
+      assert_includes @source_index.latest_specs(true), gem_a1_alpha
+      assert_empty    @source_index.find_name           gem_a1_alpha.full_name
+      assert_includes @source_index.prerelease_specs,   gem_a1_alpha
+    end
+  end
+
+  def test_refresh_bang
+    Deprecate.skip_during do
+      a1_spec = File.join @gemhome, "specifications", @a1.spec_name
+
+      FileUtils.mv a1_spec, @tempdir
+
+      Gem::Specification.reset
+      # Gem.source_index = nil
+      source_index = Gem.source_index
+
+      refute_includes source_index.gems.keys.sort, @a1.full_name
+
+      FileUtils.mv File.join(@tempdir, @a1.spec_name), a1_spec
+
+      source_index.refresh!
+
+      assert source_index.gems.include?(@a1.full_name)
+    end
+  end
 
   def test_remove_spec
     Deprecate.skip_during do

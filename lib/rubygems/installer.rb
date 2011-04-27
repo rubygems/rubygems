@@ -595,7 +595,7 @@ EOF
 
   ##
   #
-  # Obtain the target directory where the gem is to be installed. This
+  # Return the target directory where the gem is to be installed. This
   # directory is not guaranteed to be populated.
   #
 

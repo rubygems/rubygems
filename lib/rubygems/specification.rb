@@ -134,7 +134,7 @@ class Gem::Specification
   ##
   # Paths in the gem to add to $LOAD_PATH when this gem is activated.
   #
-  # The default 'lib' is typically sufficient.
+  # The default ['lib'] is typically sufficient.
 
   attr_accessor :require_paths
 
@@ -157,8 +157,6 @@ class Gem::Specification
   #
   # The description should be more detailed than the summary.  For example,
   # you might wish to copy the entire README into the description.
-  #
-  # As of RubyGems 1.3.2 newlines are no longer stripped.
 
   attr_reader :summary
 
@@ -168,12 +166,12 @@ class Gem::Specification
   ##
   # Autorequire was used by old RubyGems to automatically require a file.
   #
-  # Deprecated: It no longer is supported.
+  # Deprecated: It is neither supported nor functional.
 
   attr_accessor :autorequire
 
   ##
-  # The path in the gem for executable scripts
+  # The path in the gem for executable scripts.  Usually 'bin'
 
   attr_accessor :bindir
 
@@ -189,7 +187,10 @@ class Gem::Specification
   attr_reader :description
 
   ##
-  # The default executable for this gem.
+  # Sets the default executable for this gem.
+  #
+  # Deprecated: The name of the gem is assumed to be the name of the
+  # executable now.  See Gem.bin_path.
 
   attr_writer :default_executable
 
@@ -275,7 +276,7 @@ class Gem::Specification
   end
 
   ##
-  # Add +spec+ to the known specifications, keeping the collection
+  # Adds +spec+ to the known specifications, keeping the collection
   # properly sorted.
 
   def self.add_spec spec
@@ -297,7 +298,7 @@ class Gem::Specification
   end
 
   ##
-  # Add multiple specs to the known specifications.
+  # Adds multiple specs to the known specifications.
 
   def self.add_specs *specs
     Gem.source_index = nil # TODO: this shouldn't be necessary anymore
@@ -314,7 +315,7 @@ class Gem::Specification
   end
 
   ##
-  # Return all specifications. This method is discouraged from use.
+  # Returns all specifications. This method is discouraged from use.
   # You probably want to use one of the Enumerable methods instead.
 
   def self.all
@@ -390,7 +391,8 @@ class Gem::Specification
   extend Enumerable
 
   ##
-  # Enumerate every known spec.
+  # Enumerate every known spec.  See ::dirs= and ::add_spec to set the list of
+  # specs.
 
   def self.each
     return enum_for(:each) unless block_given?
@@ -412,7 +414,7 @@ class Gem::Specification
   end
 
   ##
-  # Find the best specification matching a name + requirements. Raises
+  # Find the best specification matching a +name+ and +requirements+. Raises
   # if the dependency doesn't resolve to a valid specification.
 
   def self.find_by_name name, *requirements
@@ -470,7 +472,7 @@ class Gem::Specification
   # routine (#initialize).  This method makes up for that and deals with
   # gems of different ages.
   #
-  # 'input' can be anything that YAML.load() accepts: String or IO.
+  # +input+ can be anything that YAML.load() accepts: String or IO.
 
   def self.from_yaml(input)
     input = normalize_yaml_input input
@@ -566,7 +568,7 @@ class Gem::Specification
   end
 
   ##
-  # Remove +spec+ from the known specs.
+  # Removes +spec+ from the known specs.
 
   def self.remove_spec spec
     Gem.source_index = nil
@@ -734,7 +736,7 @@ class Gem::Specification
 
   ##
   # Returns an array with bindir attached to each executable in the
-  # executables list
+  # +executables+ list
 
   def add_bindir(executables)
     return nil if executables.nil?
@@ -775,7 +777,7 @@ class Gem::Specification
   # Adds a development dependency named +gem+ with +requirements+ to this
   # Gem.  For example:
   #
-  #   spec.add_development_dependency 'jabber4r', '> 0.1', '<= 0.5'
+  #   spec.add_development_dependency 'example', '~> 1.1', '>= 1.1.4'
   #
   # Development dependencies aren't installed by default and aren't
   # activated when a gem is required.
@@ -788,7 +790,7 @@ class Gem::Specification
   # Adds a runtime dependency named +gem+ with +requirements+ to this Gem.
   # For example:
   #
-  #   spec.add_runtime_dependency 'jabber4r', '> 0.1', '<= 0.5'
+  #   spec.add_runtime_dependency 'example', '~> 1.1', '>= 1.1.4'
 
   def add_runtime_dependency(gem, *requirements)
     add_dependency_with_type(gem, :runtime, *requirements)
@@ -797,7 +799,7 @@ class Gem::Specification
   alias add_dependency add_runtime_dependency
 
   ##
-  # Adds this spec's require paths to LOAD_PATH, in the right location.
+  # Adds this spec's require paths to LOAD_PATH, in the proper location.
 
   def add_self_to_load_path
     paths = require_paths.map do |path|
@@ -817,16 +819,16 @@ class Gem::Specification
   end
 
   ##
-  # Singular accessor for #authors
+  # Singular reader for #authors
 
   def author
     val = authors and val.first
   end
 
   ##
-  # Singular accessor for #authors
+  # Singular writer for #authors
 
-  def author=o
+  def author= o
     self.authors = [o]
   end
 
@@ -926,6 +928,9 @@ class Gem::Specification
 
   ##
   # The default executable for this gem.
+  #
+  # Deprecated: The name of the gem is assumed to be the name of the
+  # executable now.  See Gem.bin_path.
 
   def default_executable
     if defined?(@default_executable) and @default_executable
@@ -941,7 +946,7 @@ class Gem::Specification
   ##
   # The default value for specification attribute +name+
 
-  def default_value(name)
+  def default_value name
     @@default_value[name]
   end
 
@@ -1062,12 +1067,12 @@ class Gem::Specification
   end
 
   ##
-  # Sets extensions to +value+, ensuring it is an array. Don't
+  # Sets extensions to +extensions+, ensuring it is an array. Don't
   # use this, push onto the array instead.
 
-  def extensions=(value)
+  def extensions= extensions
     # TODO: warn about setting instead of pushing
-    @extensions = Array(value)
+    @extensions = Array extensions
   end
 
   ##
@@ -1078,12 +1083,12 @@ class Gem::Specification
   end
 
   ##
-  # Sets extra_rdoc_files to +value+, ensuring it is an array. Don't
+  # Sets extra_rdoc_files to +files+, ensuring it is an array. Don't
   # use this, push onto the array instead.
 
-  def extra_rdoc_files= value
+  def extra_rdoc_files= files
     # TODO: warn about setting instead of pushing
-    @extra_rdoc_files = Array(value)
+    @extra_rdoc_files = Array files
   end
 
   ##
@@ -1115,16 +1120,16 @@ class Gem::Specification
   end
 
   ##
-  # Sets files to +value+, ensuring it is an array.
+  # Sets files to +files+, ensuring it is an array.
 
-  def files= value
-    @files = Array(value)
+  def files= files
+    @files = Array files
   end
 
   ##
   # Finds all gems that satisfy +dep+
 
-  def find_all_satisfiers(dep)
+  def find_all_satisfiers dep
     Gem::Specification.each do |spec|
       yield spec if spec.satisfies_requirement? dep
     end
@@ -1180,7 +1185,7 @@ class Gem::Specification
   #
   # Formerly used to indicate this gem was RDoc-capable.
 
-  def has_rdoc= v
+  def has_rdoc= ignored
     @has_rdoc = true
   end
 
@@ -1208,9 +1213,9 @@ class Gem::Specification
   end
 
   ##
-  # Specification constructor. Assigns the default values to the
-  # attributes and yields itself for further initialization.
-  # Optionally takes +name+ and +version+.
+  # Specification constructor. Assigns the default values to the attributes
+  # and yields itself for further initialization.  Optionally takes +name+ and
+  # +version+.
 
   def initialize name = nil, version = nil
     @loaded = false
@@ -1321,26 +1326,24 @@ class Gem::Specification
   ##
   # The license(s) for the library.  Each license must be a short name, no
   # more than 64 characters.
-  #--
-  # TODO: why is license plural??
 
   def licenses
     @licenses ||= []
   end
 
   ##
-  # Set licenses to +value+, ensuring it is an array.
+  # Set licenses to +licenses+, ensuring it is an array.
 
-  def licenses= value
-    @licenses = Array(value)
+  def licenses= licenses
+    @licenses = Array licenses
   end
 
   ##
   # Set the location a Specification was loaded from. +obj+ is converted
   # to a String.
 
-  def loaded_from=(obj)
-    @loaded_from = obj.to_s
+  def loaded_from= path
+    @loaded_from = path.to_s
   end
 
   ##
@@ -1407,7 +1410,7 @@ class Gem::Specification
   ##
   # Cruft. Use +platform+.
 
-  def original_platform
+  def original_platform # :nodoc:
     @original_platform ||= platform
   end
 
@@ -1525,9 +1528,9 @@ class Gem::Specification
   # Sets rdoc_options to +value+, ensuring it is an array. Don't
   # use this, push onto the array instead.
 
-  def rdoc_options=(value)
+  def rdoc_options= options
     # TODO: warn about setting instead of pushing
-    @rdoc_options = Array(value)
+    @rdoc_options = Array options
   end
 
   ##
@@ -1540,22 +1543,22 @@ class Gem::Specification
   ##
   # Singular accessor for #require_paths
 
-  def require_path=o
-    self.require_paths = [o]
+  def require_path= path
+    self.require_paths = [path]
   end
 
   ##
   # The version of ruby required by this gem
 
-  def required_ruby_version= value
-    @required_ruby_version = Gem::Requirement.create(value)
+  def required_ruby_version= req
+    @required_ruby_version = Gem::Requirement.create req
   end
 
   ##
   # The RubyGems version required by this gem
 
-  def required_rubygems_version= value
-    @required_rubygems_version = Gem::Requirement.create(value)
+  def required_rubygems_version= req
+    @required_rubygems_version = Gem::Requirement.create req
   end
 
   ##
@@ -1567,12 +1570,12 @@ class Gem::Specification
   end
 
   ##
-  # Set requirements to +value+, ensuring it is an array. Don't
+  # Set requirements to +req+, ensuring it is an array. Don't
   # use this, push onto the array instead.
 
-  def requirements=(value)
+  def requirements= req
     # TODO: warn about setting instead of pushing
-    @requirements = Array(value)
+    @requirements = Array req
   end
 
   ##
@@ -1607,8 +1610,8 @@ class Gem::Specification
   ##
   # True if this gem has the same attributes as +other+.
 
-  def same_attributes?(other)
-    @@attributes.all? { |name, default| self.send(name) == other.send(name) }
+  def same_attributes? spec
+    @@attributes.all? { |name, default| self.send(name) == spec.send(name) }
   end
 
   private :same_attributes?
@@ -1616,7 +1619,7 @@ class Gem::Specification
   ##
   # Checks if this specification meets the requirement of +dependency+.
 
-  def satisfies_requirement?(dependency)
+  def satisfies_requirement? dependency
     return @name == dependency.name &&
       dependency.requirement.satisfied_by?(@version)
   end
@@ -1656,8 +1659,8 @@ class Gem::Specification
   ##
   # Singular accessor for #test_files
 
-  def test_file=o
-    self.test_files = [o]
+  def test_file= file
+    self.test_files = [file]
   end
 
   ##
@@ -1680,10 +1683,10 @@ class Gem::Specification
   end
 
   ##
-  # Set test_files to +value+, ensuring it is an array.
+  # Set test_files to +files+, ensuring it is an array.
 
-  def test_files=(value)
-    @test_files = Array(value)
+  def test_files= files
+    @test_files = Array files
   end
 
   def test_suite_file # :nodoc:
@@ -1691,17 +1694,16 @@ class Gem::Specification
     test_files.first
   end
 
-  def test_suite_file=(val) # :nodoc:
+  def test_suite_file= file # :nodoc:
     # TODO: deprecate
     @test_files = [] unless defined? @test_files
-    @test_files << val
+    @test_files << file
   end
 
   ##
-  # Returns a Ruby code representation of this specification, such
-  # that it can be eval'ed and reconstruct the same specification
-  # later. Attributes that still have their default values are
-  # omitted.
+  # Returns a Ruby code representation of this specification, such that it can
+  # be eval'ed and reconstruct the same specification later.  Attributes that
+  # still have their default values are omitted.
 
   def to_ruby
     mark_version
@@ -1773,8 +1775,8 @@ class Gem::Specification
   end
 
   ##
-  # Returns a Ruby lighter-weight code representation of this
-  # specification, used for indexing only.
+  # Returns a Ruby lighter-weight code representation of this specification,
+  # used for indexing only.
   #
   # See #to_ruby.
 
@@ -1799,15 +1801,15 @@ class Gem::Specification
   end
 
   ##
-  # Recursively walk dependencies of this spec, executing +b+ for each
+  # Recursively walk dependencies of this spec, executing the +block+ for each
   # hop.
 
-  def traverse trail = [], &b
+  def traverse trail = [], &block
     trail = trail + [self]
     runtime_dependencies.each do |dep|
       dep.to_specs.each do |dep_spec|
-        b[self, dep, dep_spec, trail + [dep_spec]]
-        dep_spec.traverse(trail, &b) unless
+        block[self, dep, dep_spec, trail + [dep_spec]]
+        dep_spec.traverse(trail, &block) unless
           trail.map(&:name).include? dep_spec.name
       end
     end

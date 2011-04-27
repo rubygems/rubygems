@@ -1641,7 +1641,9 @@ class Gem::Specification
     # from = caller.first(10).reject { |s| s =~ /minitest/ }
     # warn ""
     # warn "NOTE: Specification.reset from #{from.inspect}"
+    Gem.pre_reset_hooks.each  { |hook| hook.call }
     @@all = nil
+    Gem.post_reset_hooks.each { |hook| hook.call }
   end
 
   extend Enumerable
@@ -1667,6 +1669,21 @@ class Gem::Specification
     }
   end
 
+  ##
+  # Sets the known specs to +specs+. Not guaranteed to work for you in
+  # the future. Use at your own risk. Caveat emptor. Doomy doom doom.
+  # Etc etc.
+
+  def self.all= specs
+    @@all = specs
+  end
+
+  def self.all
+    warn "NOTE: Specification.all called from #{caller.first}" unless
+      Deprecate.skip
+    _all
+  end
+
   def self._all
     unless defined?(@@all) && @@all then
       @@all = self.dirs.reverse.map { |dir|
@@ -1685,11 +1702,6 @@ class Gem::Specification
       next names if names.nonzero?
       b.version <=> a.version
     }
-  end
-
-  def self.all
-    warn "NOTE: Specification.all called from #{caller.first}" unless Deprecate.skip
-    _all
   end
 
   def self.find_by_path path

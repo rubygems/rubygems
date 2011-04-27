@@ -189,6 +189,8 @@ module Gem
   @post_uninstall_hooks ||= []
   @pre_uninstall_hooks  ||= []
   @pre_install_hooks    ||= []
+  @pre_reset_hooks      ||= []
+  @post_reset_hooks     ||= []
 
   ##
   # Try to activate a gem containing +path+. Returns true if
@@ -720,6 +722,14 @@ module Gem
   end
 
   ##
+  # Adds a hook that will get run after Gem::Specification.reset is
+  # run.
+
+  def self.post_reset(&hook)
+    @post_reset_hooks << hook
+  end
+
+  ##
   # Adds a post-uninstall hook that will be passed a Gem::Uninstaller instance
   # and the spec that was uninstalled when Gem::Uninstaller#uninstall is
   # called
@@ -735,6 +745,14 @@ module Gem
 
   def self.pre_install(&hook)
     @pre_install_hooks << hook
+  end
+
+  ##
+  # Adds a hook that will get run before Gem::Specification.reset is
+  # run.
+
+  def self.pre_reset(&hook)
+    @pre_reset_hooks << hook
   end
 
   ##
@@ -1078,6 +1096,11 @@ module Gem
     attr_reader :post_install_hooks
 
     ##
+    # The list of hooks to be run after Gem::Specification.reset is run.
+
+    attr_reader :post_reset_hooks
+
+    ##
     # The list of hooks to be run before Gem::Uninstall#uninstall does any
     # work
 
@@ -1089,10 +1112,14 @@ module Gem
     attr_reader :pre_install_hooks
 
     ##
+    # The list of hooks to be run before Gem::Specification.reset is run.
+
+    attr_reader :pre_reset_hooks
+
+    ##
     # The list of hooks to be run after Gem::Uninstall#uninstall is finished
 
     attr_reader :pre_uninstall_hooks
-
   end
 
   def self.cache # :nodoc:

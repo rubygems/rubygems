@@ -105,8 +105,6 @@ lib/rubygems/validator.rb
 lib/rubygems/version.rb
 lib/rubygems/version_option.rb
 lib/ubygems.rb
-pkgs/sources/lib/sources.rb
-pkgs/sources/sources.gemspec
 setup.rb
 test/rubygems/bogussources.rb
 test/rubygems/data/gem-private_key.pem
@@ -114,7 +112,6 @@ test/rubygems/data/gem-public_cert.pem
 test/rubygems/fake_certlib/openssl.rb
 test/rubygems/fix_openssl_warnings.rb
 test/rubygems/foo/discover.rb
-test/rubygems/functional.rb
 test/rubygems/insure_session.rb
 test/rubygems/plugin/exception/rubygems_plugin.rb
 test/rubygems/plugin/load/rubygems_plugin.rb
@@ -138,6 +135,7 @@ test/rubygems/test_gem_commands_dependency_command.rb
 test/rubygems/test_gem_commands_environment_command.rb
 test/rubygems/test_gem_commands_fetch_command.rb
 test/rubygems/test_gem_commands_generate_index_command.rb
+test/rubygems/test_gem_commands_help_command.rb
 test/rubygems/test_gem_commands_install_command.rb
 test/rubygems/test_gem_commands_list_command.rb
 test/rubygems/test_gem_commands_lock_command.rb

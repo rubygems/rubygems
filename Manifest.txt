@@ -1,8 +1,8 @@
 .autotest
 .document
-GPL.txt
 History.txt
 LICENSE.txt
+MIT.txt
 Manifest.txt
 README.rdoc
 Rakefile

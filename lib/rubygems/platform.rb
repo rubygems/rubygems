@@ -1,3 +1,5 @@
+require "rubygems/deprecate"
+
 ##
 # Available list of platforms for targeting Gem installations.
 
@@ -115,8 +117,13 @@ class Gem::Platform
   # the same CPU, OS and version.
 
   def ==(other)
-    self.class === other and
-      @cpu == other.cpu and @os == other.os and @version == other.version
+    self.class === other and to_a == other.to_a
+  end
+
+  alias :eql? :==
+
+  def hash # :nodoc:
+    to_a.hash
   end
 
   ##
@@ -179,5 +186,8 @@ class Gem::Platform
 
   CURRENT = 'current'
 
+  extend Deprecate
+
+  deprecate :empty?, :none, 2011, 11
 end
 

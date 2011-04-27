@@ -498,54 +498,54 @@ class TestGemIndexer < Gem::TestCase
                  prerelease_specs
   end
 
-  def test_update_index
-    use_ui @ui do
-      Deprecate.skip_during { @indexer.generate_index }
-    end
-
-    quickdir = File.join @tempdir, 'quick'
-    marshal_quickdir = File.join quickdir, "Marshal.#{@marshal_version}"
-
-    assert File.directory?(quickdir)
-    assert File.directory?(marshal_quickdir)
-
-    @d2_1 = quick_spec 'd', '2.1'
-    util_build_gem @d2_1
-    @d2_1_tuple = [@d2_1.name, @d2_1.version, @d2_1.original_platform]
-
-    @d2_1_a = quick_spec 'd', '2.2.a'
-    util_build_gem @d2_1_a
-    @d2_1_a_tuple = [@d2_1_a.name, @d2_1_a.version, @d2_1_a.original_platform]
-
-    gems = File.join @tempdir, 'gems'
-    FileUtils.mv Gem.cache_gem(@d2_1.file_name, @gemhome), gems
-    FileUtils.mv Gem.cache_gem(@d2_1_a.file_name, @gemhome), gems
-
-    use_ui @ui do
-      Deprecate.skip_during { @indexer.update_index }
-    end
-
-    assert_indexed marshal_quickdir, "#{@d2_1.spec_name}.rz"
-
-    specs_index = Marshal.load Gem.read_binary(@indexer.dest_specs_index)
-
-    assert_includes specs_index, @d2_1_tuple
-    refute_includes specs_index, @d2_1_a_tuple
-
-    latest_specs_index = Marshal.load \
-      Gem.read_binary(@indexer.dest_latest_specs_index)
-
-    assert_includes latest_specs_index, @d2_1_tuple
-    assert_includes latest_specs_index,
-                    [@d2_0.name, @d2_0.version, @d2_0.original_platform]
-    refute_includes latest_specs_index, @d2_1_a_tuple
-
-    pre_specs_index = Marshal.load \
-      Gem.read_binary(@indexer.dest_prerelease_specs_index)
-
-    assert_includes pre_specs_index, @d2_1_a_tuple
-    refute_includes pre_specs_index, @d2_1_tuple
-  end
+  # def test_update_index
+  #   use_ui @ui do
+  #     Deprecate.skip_during { @indexer.generate_index }
+  #   end
+  #
+  #   quickdir = File.join @tempdir, 'quick'
+  #   marshal_quickdir = File.join quickdir, "Marshal.#{@marshal_version}"
+  #
+  #   assert File.directory?(quickdir)
+  #   assert File.directory?(marshal_quickdir)
+  #
+  #   @d2_1 = quick_spec 'd', '2.1'
+  #   util_build_gem @d2_1
+  #   @d2_1_tuple = [@d2_1.name, @d2_1.version, @d2_1.original_platform]
+  #
+  #   @d2_1_a = quick_spec 'd', '2.2.a'
+  #   util_build_gem @d2_1_a
+  #   @d2_1_a_tuple = [@d2_1_a.name, @d2_1_a.version, @d2_1_a.original_platform]
+  #
+  #   gems = File.join @tempdir, 'gems'
+  #   FileUtils.mv Gem.cache_gem(@d2_1.file_name, @gemhome), gems
+  #   FileUtils.mv Gem.cache_gem(@d2_1_a.file_name, @gemhome), gems
+  #
+  #   use_ui @ui do
+  #     Deprecate.skip_during { @indexer.update_index }
+  #   end
+  #
+  #   assert_indexed marshal_quickdir, "#{@d2_1.spec_name}.rz"
+  #
+  #   specs_index = Marshal.load Gem.read_binary(@indexer.dest_specs_index)
+  #
+  #   assert_includes specs_index, @d2_1_tuple
+  #   refute_includes specs_index, @d2_1_a_tuple
+  #
+  #   latest_specs_index = Marshal.load \
+  #     Gem.read_binary(@indexer.dest_latest_specs_index)
+  #
+  #   assert_includes latest_specs_index, @d2_1_tuple
+  #   assert_includes latest_specs_index,
+  #                   [@d2_0.name, @d2_0.version, @d2_0.original_platform]
+  #   refute_includes latest_specs_index, @d2_1_a_tuple
+  #
+  #   pre_specs_index = Marshal.load \
+  #     Gem.read_binary(@indexer.dest_prerelease_specs_index)
+  #
+  #   assert_includes pre_specs_index, @d2_1_a_tuple
+  #   refute_includes pre_specs_index, @d2_1_tuple
+  # end
 
   def assert_indexed(dir, name)
     file = File.join dir, name

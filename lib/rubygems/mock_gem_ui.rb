@@ -7,7 +7,12 @@ require 'rubygems/user_interaction'
 
 class Gem::MockGemUi < Gem::StreamUI
   class TermError < RuntimeError
-    alias :exit_code :message
+    attr_reader :exit_code
+
+    def initialize exit_code
+      super
+      @exit_code = exit_code
+    end
   end
   class SystemExitException < RuntimeError; end
 

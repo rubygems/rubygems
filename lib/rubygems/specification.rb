@@ -189,8 +189,7 @@ class Gem::Specification
   ##
   # Sets the default executable for this gem.
   #
-  # Deprecated: The name of the gem is assumed to be the name of the
-  # executable now.  See Gem.bin_path.
+  # Deprecated: You must now specify the executable name to  Gem.bin_path.
 
   attr_writer :default_executable
 

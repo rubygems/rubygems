@@ -541,8 +541,6 @@ class TestGem < Gem::TestCase
       install_gem foo
     end
 
-    Gem.source_index = nil
-
     gem 'foo'
 
     expected = File.join @gemhome, 'gems', foo.full_name, 'data', 'foo'
@@ -698,7 +696,6 @@ class TestGem < Gem::TestCase
   def test_self_loaded_specs
     foo = quick_spec 'foo'
     install_gem foo
-    Gem.source_index = nil
 
     foo.activate
 
@@ -1045,7 +1042,6 @@ class TestGem < Gem::TestCase
       install_gem foo
     end
 
-    Gem.source_index = nil
     Gem.searcher = nil
     Gem::Specification.reset
 

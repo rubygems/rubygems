@@ -39,6 +39,7 @@ module Gem
   # requiring 'rubygems/test_case'
 
   def self.source_index=(si)
+    raise "This method is not supported"
     Gem::Specification.reset if si # HACK
     @@source_index = si
   end
@@ -402,7 +403,6 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   def util_clear_gems
     FileUtils.rm_rf @gemhome.gems
     FileUtils.rm_rf @gemhome.specifications
-    Gem.source_index = nil
     Gem::Specification.reset
   end
 
@@ -594,8 +594,6 @@ Also, a list:
     end
 
     FileUtils.rm_r @gemhome.gems.add(@pl1.original_name)
-
-    Gem.source_index = nil # TODO nuke
   end
 
   ##

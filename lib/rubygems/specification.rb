@@ -291,7 +291,6 @@ class Gem::Specification
 
     return if _all.include? spec
 
-    Gem.source_index = nil # TODO: this shouldn't be necessary anymore
     _all << spec
     _resort!
   end
@@ -300,8 +299,6 @@ class Gem::Specification
   # Adds multiple specs to the known specifications.
 
   def self.add_specs *specs
-    Gem.source_index = nil # TODO: this shouldn't be necessary anymore
-
     raise "nil spec!" if specs.any?(&:nil?) # TODO: remove once we're happy
 
     # TODO: this is much more efficient, but we need the extra checks for now
@@ -570,7 +567,6 @@ class Gem::Specification
   # Removes +spec+ from the known specs.
 
   def self.remove_spec spec
-    Gem.source_index = nil
     # TODO: beat on the tests
     raise "wtf: #{spec.full_name} not in #{all_names.inspect}" unless
       _all.include? spec

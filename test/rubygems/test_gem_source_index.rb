@@ -157,7 +157,7 @@ class TestGemSourceIndex < Gem::TestCase
       FileUtils.mv a1_spec, @tempdir
 
       Gem::Specification.reset
-      Gem.source_index = nil
+      Gem.send :class_variable_set, :@@source_index, nil
       source_index = Gem.source_index
 
       refute_includes source_index.gems.keys.sort, @a1.full_name

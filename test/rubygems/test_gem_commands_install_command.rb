@@ -295,8 +295,6 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     uninstall_gem(@b2)
 
-    Gem.source_index = nil
-
     @cmd.options[:conservative] = true
 
     @cmd.options[:args] = [@a2.name, @b2.name]

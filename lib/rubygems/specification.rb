@@ -596,6 +596,7 @@ class Gem::Specification
   # registered in Gem.
 
   def self.reset
+    @@dirs = nil
     # from = caller.first(10).reject { |s| s =~ /minitest/ }
     # warn ""
     # warn "NOTE: Specification.reset from #{from.inspect}"

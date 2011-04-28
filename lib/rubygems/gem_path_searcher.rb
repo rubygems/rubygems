@@ -141,9 +141,7 @@ class Gem::GemPathSearcher
   # in reverse version order.  (bar-2, bar-1, foo-2)
 
   def init_gemspecs
-    specs = Gem.source_index.map { |_, spec| spec }
-
-    specs.sort { |a, b|
+    Gem::Specification.sort { |a, b|
       names = a.name <=> b.name
       next names if names.nonzero?
       b.version <=> a.version

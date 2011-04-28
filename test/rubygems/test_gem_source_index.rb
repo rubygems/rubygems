@@ -72,10 +72,12 @@ class TestGemSourceIndex < Gem::TestCase
                   @a2.full_name,
                   a2_platform.full_name,
                   a3_platform_other.full_name,
+                  @b2.full_name,
                   @c1_2.full_name,
                   @a_evil9.full_name,
                   p1_ruby.full_name,
                   p1_platform.full_name,
+                  @pl1.full_name
                  ].sort
 
       latest_specs = @source_index.latest_specs.map { |s| s.full_name }.sort
@@ -155,7 +157,7 @@ class TestGemSourceIndex < Gem::TestCase
       FileUtils.mv a1_spec, @tempdir
 
       Gem::Specification.reset
-      # Gem.source_index = nil
+      Gem.source_index = nil
       source_index = Gem.source_index
 
       refute_includes source_index.gems.keys.sort, @a1.full_name

@@ -33,7 +33,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
 
     out = @ui.output.split "\n"
 
-    assert_equal "Restoring gem(s) to pristine condition...", out.shift
+    assert_equal "Restoring gems to pristine condition...", out.shift
     assert_equal "Restored #{a.full_name}", out.shift
     assert_empty out, out.inspect
   end
@@ -61,8 +61,35 @@ class TestGemCommandsPristineCommand < Gem::TestCase
 
     out = @ui.output.split "\n"
 
-    assert_equal "Restoring gem(s) to pristine condition...", out.shift
+    assert_equal "Restoring gems to pristine condition...", out.shift
     assert_equal "Restored #{a.full_name}", out.shift
+    assert_empty out, out.inspect
+  end
+
+  def test_execute_no_exetension
+    a = quick_spec 'a' do |s| s.extensions << 'ext/a/extconf.rb' end
+
+    ext_path = File.join @tempdir, 'ext', 'a', 'extconf.rb'
+    FileUtils.mkdir_p File.dirname ext_path
+
+    open ext_path, 'w' do |io|
+      io.write '# extconf.rb'
+    end
+
+    util_build_gem a
+
+    @cmd.options[:args] = %w[a]
+    @cmd.options[:extensions] = false
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    out = @ui.output.split "\n"
+
+    assert_equal 'Restoring gems to pristine condition...', out.shift
+    assert_equal "Skipped #{a.full_name}, it needs to compile an extension",
+                 out.shift
     assert_empty out, out.inspect
   end
 
@@ -100,7 +127,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     out = @ui.output.split "\n"
 
     [
-      "Restoring gem\(s\) to pristine condition...",
+      "Restoring gems to pristine condition...",
       "Restored a-1",
       "Cached gem for a-2 not found, attempting to fetch...",
       "Restored a-2",

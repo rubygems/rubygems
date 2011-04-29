@@ -10,12 +10,18 @@ class Gem::Commands::PristineCommand < Gem::Command
   def initialize
     super 'pristine',
           'Restores installed gems to pristine condition from files located in the gem cache',
-          :version => Gem::Requirement.default
+          :version => Gem::Requirement.default, :extensions => true,
+          :all => false
 
     add_option('--all',
                'Restore all installed gems to pristine',
                'condition') do |value, options|
       options[:all] = value
+    end
+
+    add_option('--[no-]extensions',
+               'Restore gems with extensions') do |value, options|
+      options[:extensions] = value
     end
 
     add_version_option('restore to', 'pristine condition')
@@ -26,7 +32,7 @@ class Gem::Commands::PristineCommand < Gem::Command
   end
 
   def defaults_str # :nodoc:
-    "--all"
+    "--all --extensions"
   end
 
   def description # :nodoc:
@@ -40,6 +46,9 @@ for the gem are regenerated.
 
 If the cached gem cannot be found, you will need to use `gem install` to
 revert the gem.
+
+If --no-extensions is provided pristine will not attempt to restore gems with
+extensions.
     EOF
   end
 
@@ -67,9 +76,14 @@ revert the gem.
     raise Gem::FilePermissionError.new(install_dir) unless
       File.writable?(install_dir)
 
-    say "Restoring gem(s) to pristine condition..."
+    say "Restoring gems to pristine condition..."
 
     specs.each do |spec|
+      unless spec.extensions.empty? or options[:extensions] then
+        say "Skipped #{spec.full_name}, it needs to compile an extension"
+        next
+      end
+
       gem = spec.cache_gem
 
       if gem.nil? then

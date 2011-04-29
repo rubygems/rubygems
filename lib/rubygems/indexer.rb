@@ -332,7 +332,7 @@ class Gem::Indexer
 
   def map_gems_to_specs gems
     gems.map { |gemfile|
-      if gemfile.size == 0 then
+      if gemfile.filesize == 0 then
         alert_warning "Skipping zero-length gem: #{gemfile}"
         next
       end

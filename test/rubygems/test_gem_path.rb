@@ -93,15 +93,15 @@ class TestGemPath < Gem::TestCase
       'objects are not the same'
   end
 
-  def test_size
+  def test_filesize
     File.open(File.join(@tempdir, 'size_test'), 'w') { |f| f.print "hello" }
     File.open(File.join(@tempdir, 'size_test2'), 'w') { |f| }
 
     path_with_size = Gem::Path.new(@tempdir, 'size_test')
     path_zero_size = Gem::Path.new(@tempdir, 'size_test2')
 
-    assert_equal 5, path_with_size.size, 'size of 5'
-    assert_equal 0, path_zero_size.size, 'size of 0'
+    assert_equal 5, path_with_size.filesize, 'size of 5'
+    assert_equal 0, path_zero_size.filesize, 'size of 0'
 
     FileUtils.rm path_with_size
     FileUtils.rm path_zero_size

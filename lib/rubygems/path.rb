@@ -154,7 +154,7 @@ class Gem::Path
   #
   # Obtain the filesize for this path. See File.size
   #
-  def size
+  def filesize
     File.size(@path)
   end
 

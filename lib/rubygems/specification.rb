@@ -846,7 +846,7 @@ class Gem::Specification
   # Sets the list of authors, ensuring it is an array.
 
   def authors= value
-    @authors = Array(value)
+    @authors = Array(value).flatten.grep(String)
   end
 
   ##

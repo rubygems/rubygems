@@ -57,38 +57,37 @@ class TestGemIndexer < Gem::TestCase
   end
 
   def test_build_indicies
-    spec = @d2_0
-    spec.instance_variable_set :@original_platform, ''
-
     @indexer.make_temp_directories
 
-    Deprecate.skip_during {
-      index = Gem::SourceIndex.new nil
-      index.add_spec spec
-
-      use_ui @ui do
-        @indexer.build_indicies index
-      end
-    }
+    use_ui @ui do
+      @indexer.build_indicies
+    end
 
     specs_path = File.join @indexer.directory, "specs.#{@marshal_version}"
     specs_dump = Gem.read_binary specs_path
     specs = Marshal.load specs_dump
 
-    expected = [
-      ['d',      Gem::Version.new('2.0'), 'ruby'],
-    ]
+    expected = [["a",      Gem::Version.new("1"),   "ruby"],
+                ["a",      Gem::Version.new("2"),   "ruby"],
+                ["a_evil", Gem::Version.new("9"),   "ruby"],
+                ["b",      Gem::Version.new("2"),   "ruby"],
+                ["c",      Gem::Version.new("1.2"), "ruby"],
+                ["d",      Gem::Version.new("2.0"), "ruby"],
+                ["pl",     Gem::Version.new("1"),   "i386-linux"]]
 
-    assert_equal expected, specs, 'specs'
+    assert_equal expected, specs
 
-    latest_specs_path = File.join @indexer.directory,
-                                  "latest_specs.#{@marshal_version}"
+    latest_specs_path = File.join(@indexer.directory,
+                                  "latest_specs.#{@marshal_version}")
     latest_specs_dump = Gem.read_binary latest_specs_path
     latest_specs = Marshal.load latest_specs_dump
 
-    expected = [
-      ['d',      Gem::Version.new('2.0'), 'ruby'],
-    ]
+    expected = [["a",      Gem::Version.new("2"),   "ruby"],
+                ["a_evil", Gem::Version.new("9"),   "ruby"],
+                ["b",      Gem::Version.new("2"),   "ruby"],
+                ["c",      Gem::Version.new("1.2"), "ruby"],
+                ["d",      Gem::Version.new("2.0"), "ruby"],
+                ["pl",     Gem::Version.new("1"),   "i386-linux"]]
 
     assert_equal expected, latest_specs, 'latest_specs'
   end
@@ -402,10 +401,7 @@ eighty characters.&lt;/pre&gt;
       @indexer.generate_index
     end
 
-    assert_match %r%^Loading 10 gems from #{Regexp.escape @tempdir}$%,
-                 @ui.output
     assert_match %r%^\.\.\.\.\.\.\.\.\.\.$%, @ui.output
-    assert_match %r%^Loaded all gems$%, @ui.output
     assert_match %r%^Generating Marshal quick index gemspecs for 10 gems$%,
                  @ui.output
     assert_match %r%^Complete$%, @ui.output
@@ -500,7 +496,7 @@ eighty characters.&lt;/pre&gt;
 
   def test_update_index
     use_ui @ui do
-      Deprecate.skip_during { @indexer.generate_index }
+      @indexer.generate_index
     end
 
     quickdir = File.join @tempdir, 'quick'
@@ -522,7 +518,7 @@ eighty characters.&lt;/pre&gt;
     FileUtils.mv Gem.cache_gem(@d2_1_a.file_name, @gemhome), gems
 
     use_ui @ui do
-      Deprecate.skip_during { @indexer.update_index }
+      @indexer.update_index
     end
 
     assert_indexed marshal_quickdir, "#{@d2_1.spec_name}.rz"

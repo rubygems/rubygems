@@ -1879,10 +1879,10 @@ class Gem::Specification
             "invalid platform #{platform.inspect}, see Gem::Platform"
     end
 
-    self.class.array_attributes.each do |symbol|
-      val = self.send symbol
-      klass = case symbol
-              when :dependencies 
+    self.class.array_attributes.each do |field|
+      val = self.send field
+      klass = case field
+              when :dependencies
                 Gem::Dependency
               else
                 String
@@ -1890,8 +1890,14 @@ class Gem::Specification
 
       unless Array === val and val.all? { |x| x.kind_of?(klass) } then
         raise(Gem::InvalidSpecificationException,
-              "#{symbol} must be an Array of #{klass}")
+              "#{field} must be an Array of #{klass}")
       end
+    end
+
+    [:authors].each do |field|
+      val = self.send field
+      raise Gem::InvalidSpecificationException, "#{field} may not be empty" if
+        val.empty?
     end
 
     licenses.each { |license|

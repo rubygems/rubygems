@@ -957,7 +957,7 @@ end
     util_setup_validate
 
     Dir.chdir @tempdir do
-      @a1.authors = []
+      @a1.authors = [""]
 
       use_ui @ui do
         @a1.validate
@@ -967,11 +967,13 @@ end
 
       @a1.authors = [Object.new]
 
+      assert_equal [], @a1.authors
+
       e = assert_raises Gem::InvalidSpecificationException do
         @a1.validate
       end
 
-      assert_equal "authors must be an Array of String", e.message
+      assert_equal "authors may not be empty", e.message
 
       @a1.authors = ["#{f} (who is writing this software)"]
 

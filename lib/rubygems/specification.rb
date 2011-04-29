@@ -1854,11 +1854,11 @@ class Gem::Specification
             'specification must have at least one require_path'
     end
 
-    @files.delete_if { |x| File.directory?(x) }
-    @test_files.delete_if { |x| File.directory?(x) }
-    @executables.delete_if { |x| File.directory?(File.join(@bindir, x)) }
+    @files.delete_if            { |x| File.directory?(x) }
+    @test_files.delete_if       { |x| File.directory?(x) }
+    @executables.delete_if      { |x| File.directory?(File.join(@bindir, x)) }
     @extra_rdoc_files.delete_if { |x| File.directory?(x) }
-    @extensions.delete_if { |x| File.directory?(x) }
+    @extensions.delete_if       { |x| File.directory?(x) }
 
     non_files = files.reject { |x| File.file?(x) }
 

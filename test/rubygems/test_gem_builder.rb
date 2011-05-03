@@ -28,20 +28,8 @@ class TestGemBuilder < Gem::TestCase
     util_make_gems
 
     spec = build_gem_and_yield_spec @a1
-    
-    omit = %w[@loaded_from @loaded]
 
-    if RUBY_VERSION > '1.9'
-      omit.map!(&:to_sym)
-    end
-
-    (@a1.instance_variables - omit).each do |ivar|
-      assert_equal(
-        @a1.instance_variable_get(ivar), 
-        spec.instance_variable_get(ivar), 
-        "#{ivar} is equivalent between built spec and existing spec"
-      )
-    end
+    assert_operator @a1, :eql?, spec
   end
 
   def build_gem_and_yield_spec(spec)

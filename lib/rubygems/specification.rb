@@ -856,14 +856,48 @@ class Gem::Specification
   end
 
   ##
-  # A macro to yield cached gem path.
-  #--
-  # FIX: macro?!?
+  # Returns the full path to the base gem directory.
+  #
+  # eg: /usr/local/lib/ruby/gems/1.8
 
-  def cache_gem
-    cache_name = Gem.dir.cache.add(file_name)
-    return cache_name.exist? ? cache_name : nil
+  def base_dir
+    return Gem.dir unless loaded_from
+    @base_dir ||= File.dirname File.dirname loaded_from
   end
+
+  ##
+  # Returns the full path to installed gem's bin directory.
+  #
+  # NOTE: do not confuse this with +bindir+, which is just 'bin', not
+  # a full path.
+
+  def bin_dir
+    @bin_dir ||= File.join gem_dir, bindir # TODO: this is unfortunate
+  end
+
+  ##
+  # Returns the full path to an executable named +name+ in this gem.
+
+  def bin_file name
+    File.join bin_dir, name
+  end
+
+  ##
+  # Returns the full path to the cache directory containing this
+  # spec's cached gem.
+
+  def cache_dir
+    @cache_dir ||= File.join base_dir, "cache"
+  end
+
+  ##
+  # Returns the full path to the cached gem for this spec.
+
+  def cache_file
+    @cache_file ||= File.join cache_dir, "#{full_name}.gem"
+  end
+
+  alias :cache_gem :cache_file
 
   ##
   # Return any possible conflicts against the currently loaded specs.
@@ -1003,6 +1037,13 @@ class Gem::Specification
 
   def development_dependencies
     dependencies.select { |d| d.type == :development }
+  end
+
+  ##
+  # Returns the full path to this spec's documentation directory.
+
+  def doc_dir
+    @doc_dir ||= File.join base_dir, 'doc', full_name
   end
 
   def encode_with coder # :nodoc:
@@ -1171,6 +1212,23 @@ class Gem::Specification
     else
       "#{@name}-#{@version}-#{platform}"
     end
+  end
+
+  ##
+  # Returns the full path to this spec's gem directory.
+  # eg: /usr/local/lib/ruby/1.8/gems/mygem-1.0
+
+  def gem_dir
+    @gem_dir ||= File.expand_path File.join(gems_dir, full_name)
+  end
+
+  ##
+  # Returns the full path to the gems directory containing this spec's
+  # gem directory. eg: /usr/local/lib/ruby/1.8/gems
+
+  def gems_dir
+    # TODO: this logic seems terribly broken, but tests fail if just base_dir
+    @gems_dir ||= File.join(loaded_from && base_dir || Gem.dir, "gems")
   end
 
   ##
@@ -1581,6 +1639,13 @@ class Gem::Specification
   end
 
   ##
+  # Returns the full path to this spec's ri directory.
+
+  def ri_dir
+    @ri_dir ||= File.join base_dir, 'ri', full_name
+  end
+
+  ##
   # Return a string containing a Ruby code representation of the given
   # object.
 
@@ -1632,6 +1697,22 @@ class Gem::Specification
   def sort_obj
     # TODO: this is horrible. Deprecate it.
     [@name, @version, @new_platform == Gem::Platform::RUBY ? -1 : 1]
+  end
+
+  ##
+  # Returns the full path to the directory containing this spec's
+  # gemspec file. eg: /usr/local/lib/ruby/gems/1.8/specifications
+
+  def spec_dir
+    @spec_dir ||= File.join base_dir, "specifications"
+  end
+
+  ##
+  # Returns the full path to this spec's gemspec file.
+  # eg: /usr/local/lib/ruby/gems/1.8/specifications/mygem-1.0.gemspec
+
+  def spec_file
+    @spec_file ||= File.join spec_dir, "#{full_name}.gemspec"
   end
 
   ##

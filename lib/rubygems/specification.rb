@@ -1341,13 +1341,10 @@ class Gem::Specification
 
   ##
   # The directory that this gem was installed into.
+  # TODO: rename - horrible. this is the base_dir for a gem path
 
   def installation_path
-    unless @loaded_from then
-      raise Gem::Exception, "spec #{full_name} is not from an installed gem"
-    end
-
-    Gem::FS.new(Gem::Path.path(@loaded_from).dirname.dirname)
+    loaded_from && base_dir
   end
 
   ##

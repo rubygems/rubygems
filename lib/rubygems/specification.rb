@@ -1813,6 +1813,7 @@ class Gem::Specification
       :specification_version,
       :version,
       :has_rdoc,
+      :default_executable,
     ]
 
     @@attributes.each do |attr_name|

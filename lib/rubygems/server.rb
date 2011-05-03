@@ -454,8 +454,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       spec_dir
     end
 
-    # TODO source_index= is gone, use the new way!
-    # Deprecate.skip_during {Gem.source_index = Gem::SourceIndex.new(@spec_dirs)}
+    Gem::Specification.dirs = @gem_dirs
   end
 
   def Marshal(req, res)

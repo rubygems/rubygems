@@ -2079,4 +2079,12 @@ class Gem::Specification
   deprecate :has_rdoc=,           :none,       2011, 10
   deprecate :default_executable,  :none,       2011, 10
   deprecate :default_executable=, :none,       2011, 10
+  deprecate :loaded,              :activated,  2011, 10
+  deprecate :loaded?,             :activated?, 2011, 10
+  deprecate :loaded=,             :activated=, 2011, 10
+  deprecate :installation_path,   :base_dir,   2011, 10
+  deprecate :cache_gem,           :cache_file, 2011, 10
+  # deprecate :spec_name,           :spec_file,  2011, 10
+  # deprecate :file_name,           :cache_file, 2011, 10
+  # deprecate :full_gem_path,     :cache_file, 2011, 10
 end

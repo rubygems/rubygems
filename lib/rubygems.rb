@@ -1244,12 +1244,17 @@ module Gem
     deprecate :cache,                 "Gem::source_index",      2011,  8
     deprecate :activate,              "Specification#activate", 2011, 10
     deprecate :all_load_paths,        :none,                    2011, 10
+    deprecate :all_partials,          :none,                    2011, 10
     deprecate :latest_load_paths,     :none,                    2011, 10
     deprecate :promote_load_path,     :none,                    2011, 10
     deprecate :available?,       "Specification::find_by_name", 2011, 11
+    deprecate :cache_dir,           "Specification#cache_dir",  2011, 11
+    deprecate :cache_gem,           "Specification#cache_file", 2011, 11
+    deprecate :default_system_source_cache_dir, :none,          2011, 11
+    deprecate :default_user_source_cache_dir,   :none,          2011, 11
     deprecate :report_activate_error, :none,                    2011, 11
     deprecate :required_location,     :none,                    2011, 11
-    deprecate :source_index,          "Specification",          2011, 11
     deprecate :searcher,              "Specification",          2011, 11
+    deprecate :source_index,          "Specification",          2011, 11
   end
 end

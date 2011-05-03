@@ -115,9 +115,8 @@ end
   end
 
   def test_self_load
-    full_path = @gemhome.specifications.add(@a2.spec_name)
-    path      = Gem::Path.new("specifications", @a2.spec_name)
-    write_file path do |io|
+    full_path = @a2.spec_file
+    write_file full_path do |io|
       io.write @a2.to_ruby_for_cache
     end
 
@@ -531,11 +530,11 @@ end
   end
 
   def test_full_gem_path_double_slash
-    gemhome = Gem::FS.new @gemhome.to_s.sub(/\w\//, '\&/')
-    @a1.loaded_from = gemhome.specifications.add(@a1.spec_name)
+    gemhome = @gemhome.to_s.sub(/\w\//, '\&/')
+    @a1.loaded_from = File.join gemhome, "specifications", @a1.spec_name
 
-    assert_equal @gemhome.gems.add(@a1.full_name),
-                 @a1.full_gem_path
+    expected = File.join @gemhome, "gems", @a1.full_name
+    assert_equal expected, @a1.full_gem_path
   end
 
   def test_full_name
@@ -574,15 +573,14 @@ end
   end
 
   def test_installation_path
-    assert_equal @gemhome, @a1.installation_path
+    Deprecate.skip_during do
+      assert_equal @gemhome, @a1.installation_path
 
-    @a1.instance_variable_set :@loaded_from, nil
+      @a1.instance_variable_set :@loaded_from, nil
+      @a1.instance_variable_set :@loaded, false
 
-    e = assert_raises Gem::Exception do
-      @a1.installation_path
+      assert_nil @a1.installation_path
     end
-
-    assert_equal 'spec a-1 is not from an installed gem', e.message
   end
 
   def test_lib_files

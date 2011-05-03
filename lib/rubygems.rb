@@ -27,7 +27,6 @@ end
 
 require 'rubygems/defaults'
 require "rubygems/dependency_list"
-require 'rubygems/fs'
 require 'rubygems/path_support'
 require 'rbconfig'
 require "rubygems/deprecate"

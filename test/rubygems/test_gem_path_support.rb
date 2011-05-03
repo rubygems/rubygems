@@ -1,6 +1,5 @@
 require 'rubygems/test_case'
 require 'rubygems'
-require 'rubygems/fs'
 require 'fileutils'
 
 class TestGemPathSupport < Gem::TestCase

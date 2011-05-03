@@ -211,12 +211,18 @@ class Gem::Specification
   attr_accessor :homepage
 
   ##
-  # true when this gemspec has been loaded from a specifications directory.
-  # This attribute is not persisted.
+  # True when this gemspec has been activated. This attribute is not persisted.
 
   attr_accessor :loaded
 
   alias :loaded? :loaded
+
+  ##
+  # True when this gemspec has been activated. This attribute is not persisted.
+
+  attr_accessor :activated
+
+  alias :activated? :activated
 
   ##
   # Path this gemspec was loaded from.  This attribute is not persisted.
@@ -699,7 +705,7 @@ class Gem::Specification
 
     return false if Gem.loaded_specs[self.name]
 
-    self.loaded = true
+    self.activated = true
     Gem.loaded_specs[self.name] = self
 
     activate_dependencies

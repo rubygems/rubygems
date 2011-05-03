@@ -36,7 +36,7 @@ module Kernel
       gem_original_require path
     else
       spec = Gem::Specification.find { |s|
-        s.loaded? and s.contains_requirable_file? path
+        s.activated? and s.contains_requirable_file? path
       }
 
       unless spec then

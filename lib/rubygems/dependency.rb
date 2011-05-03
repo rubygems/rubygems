@@ -248,6 +248,6 @@ class Gem::Dependency
   def to_spec
     matches = self.to_specs
 
-    matches.find { |spec| spec.loaded? } or matches.last
+    matches.find { |spec| spec.activated? } or matches.last
   end
 end

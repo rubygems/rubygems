@@ -61,7 +61,9 @@ class Gem::Commands::UnpackCommand < Gem::Command
           next
         end
 
-        open spec.spec_name, 'w' do |io|
+        spec_file = File.basename spec.spec_file
+
+        open spec_file, 'w' do |io|
           io.write metadata
         end
       else
@@ -83,7 +85,7 @@ class Gem::Commands::UnpackCommand < Gem::Command
 
   def find_in_cache(filename)
     Gem.path.each do |path|
-      this_path = Gem.cache_gem(filename, path)
+      this_path = File.join(path, "cache", filename)
       return this_path if File.exist? this_path
     end
 
@@ -112,7 +114,7 @@ class Gem::Commands::UnpackCommand < Gem::Command
 
     specs = dependency.matching_specs
 
-    selected = specs.sort_by { |s| s.version }.last
+    selected = specs.sort_by { |s| s.version }.last # HACK: hunt last down
 
     return Gem::RemoteFetcher.fetcher.download_to_cache(dependency) unless
       selected
@@ -122,7 +124,7 @@ class Gem::Commands::UnpackCommand < Gem::Command
     # We expect to find (basename).gem in the 'cache' directory.  Furthermore,
     # the name match must be exact (ignoring case).
 
-    path = find_in_cache selected.file_name
+    path = find_in_cache File.basename selected.cache_file
 
     return Gem::RemoteFetcher.fetcher.download_to_cache(dependency) unless path
 

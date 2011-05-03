@@ -271,7 +271,7 @@ module Gem
   # Return all the partial paths in +gemdir+.
 
   def self.all_partials(gemdir)
-    Gem::FS.new(gemdir).gems.glob('*').map { |x| x.relative(gemdir) }
+    Dir[File.join(gemdir, "gems/*")]
   end
 
   private_class_method :all_partials
@@ -296,6 +296,9 @@ module Gem
   # you to specify specific gem versions.
 
   def self.bin_path(name, exec_name = nil, *requirements)
+    # TODO: fails test_self_bin_path_bin_file_gone_in_latest
+    # Gem::Specification.find_by_name(name, *requirements).bin_file exec_name
+
     raise ArgumentError, "you must supply exec_name" unless exec_name
 
     requirements = Gem::Requirement.default if
@@ -315,7 +318,7 @@ module Gem
       raise Gem::GemNotFoundException, msg
     end
 
-    Gem::Path.path(spec.full_gem_path).add(spec.bindir).add(exec_name)
+    spec.bin_file exec_name
   end
 
   ##
@@ -329,7 +332,8 @@ module Gem
   # The path where gem executables are to be installed.
 
   def self.bindir(install_dir=Gem.dir)
-    return Gem::Path.new(install_dir).add('bin') unless
+    # TODO: move to Gem::Dirs
+    return File.join install_dir, 'bin' unless
       install_dir.to_s == Gem.default_dir.to_s
     Gem.default_bindir
   end
@@ -351,7 +355,7 @@ module Gem
   # The path to standard location of the user's .gemrc file.
 
   def self.config_file
-    Gem.user_home.add('.gemrc')
+    @config_file ||= File.join Gem.user_home, '.gemrc'
   end
 
   ##
@@ -374,9 +378,10 @@ module Gem
   # package is not available as a gem, return nil.
 
   def self.datadir(gem_name)
+# TODO: deprecate
     spec = @loaded_specs[gem_name]
     return nil if spec.nil?
-    Gem::Path.path(spec.full_gem_path).add('data').add(gem_name)
+    File.join spec.full_gem_path, "data", gem_name
   end
 
   ##
@@ -403,10 +408,12 @@ module Gem
   # FIXME deprecate these once everything else has been done -ebh
 
   def self.dir
+    # TODO: raise "no"
     paths.home
   end
 
   def self.path
+    # TODO: raise "no"
     paths.path
   end
 
@@ -437,11 +444,15 @@ module Gem
   # Quietly ensure the named Gem directory contains all the proper
   # subdirectories.  If we can't create a directory due to a permission
   # problem, then we will silently continue.
-  #--
-  # TODO: deprecate this.
 
-  def self.ensure_gem_subdirectories(gemdir)
-    Gem::FS.new(gemdir).ensure_gem_subdirectories
+  def self.ensure_gem_subdirectories dir = Gem.dir
+    require 'fileutils'
+
+    %w[cache doc gems specifications].each do |name|
+      subdir = File.join dir, name
+      next if File.exist? subdir
+      FileUtils.mkdir_p subdir rescue nil # in case of perms issues -- lame
+    end
   end
 
   ##
@@ -494,23 +505,23 @@ module Gem
   #++
 
   def self.find_home
-    unless RUBY_VERSION > '1.9' then
-      ['HOME', 'USERPROFILE'].each do |homekey|
-        return Gem::Path.new(ENV[homekey]).expand_path if ENV[homekey]
+    windows = File::ALT_SEPARATOR
+    if not windows or RUBY_VERSION >= '1.9' then
+      File.expand_path "~"
+    else
+      ['HOME', 'USERPROFILE'].each do |key|
+        return File.expand_path ENV[key] if ENV[key]
       end
 
       if ENV['HOMEDRIVE'] && ENV['HOMEPATH'] then
-        return Gem::Path.new("#{ENV['HOMEDRIVE']}#{ENV['HOMEPATH']}").expand_path
+        File.expand_path "#{ENV['HOMEDRIVE']}#{ENV['HOMEPATH']}"
       end
     end
-
-    return Gem::Path.new("~").expand_path
   rescue
-    if File::ALT_SEPARATOR then
-      drive = ENV['HOMEDRIVE'] || ENV['SystemDrive']
-      Gem::Path.new(drive.to_s, '/').expand_path
+    if windows then
+      File.expand_path File.join(ENV['HOMEDRIVE'] || ENV['SystemDrive'], '/')
     else
-      Gem::Path.new("/").expand_path
+      File.expand_path "/"
     end
   end
 
@@ -664,7 +675,7 @@ module Gem
   #
 
   def self.cache_dir(custom_dir=false)
-    (custom_dir ? Gem::FS.new(custom_dir) : Gem.dir).cache
+    File.join(custom_dir || Gem.dir, "cache")
   end
 
   ##
@@ -864,10 +875,10 @@ module Gem
 
   def self.ruby
     if @ruby.nil? then
-      @ruby = Gem::Path.new(ConfigMap[:bindir], ConfigMap[:ruby_install_name] + ConfigMap[:EXEEXT])
+      @ruby = File.join(ConfigMap[:bindir],
+                        "#{ConfigMap[:ruby_install_name]}#{ConfigMap[:EXEEXT]}")
 
-      # escape string in case path to ruby executable contain spaces.
-      @ruby = @ruby.sub(/.*\s.*/m, '"\&"')
+      @ruby = "\"#{@ruby}\"" if @ruby =~ /\s/
     end
 
     @ruby
@@ -1192,8 +1203,7 @@ def RbConfig.datadir(package_name)
 
   require 'rbconfig/datadir'
 
-  Gem.datadir(package_name) ||
-    Gem::Path.new(Gem::ConfigMap[:datadir]).add(package_name)
+  Gem.datadir(package_name) || File.join(Gem::ConfigMap[:datadir], package_name)
 end
 
 require 'rubygems/exceptions'

@@ -99,11 +99,11 @@ lock it down to the exact version.
   end
 
   def spec_path(gem_full_name)
-    gemspecs = Gem.path.map do |path|
-      path.specifications.add("#{gem_full_name}.gemspec")
-    end
+    gemspecs = Gem.path.map { |path|
+      File.join path, "specifications", "#{gem_full_name}.gemspec"
+    }
 
-    gemspecs.find(&:exist?)
+    gemspecs.find { |path| File.exist? path }
   end
 
 end

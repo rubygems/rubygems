@@ -10,8 +10,8 @@ class TestGemCommandsPristineCommand < Gem::TestCase
 
   def test_execute
     a = quick_spec 'a' do |s| s.executables = %w[foo] end
-    FileUtils.mkdir_p File.join(@tempdir, 'bin')
-    File.open File.join(@tempdir, 'bin', 'foo'), 'w' do |fp|
+
+    write_file File.join(@tempdir, 'bin', 'foo') do |fp|
       fp.puts "#!/usr/bin/ruby"
     end
 
@@ -19,7 +19,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
 
     foo_path = File.join @gemhome, 'gems', a.full_name, 'bin', 'foo'
 
-    File.open foo_path, 'w' do |io|
+    write_file foo_path do |io|
       io.puts 'I changed it!'
     end
 
@@ -40,8 +40,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
 
   def test_execute_all
     a = quick_spec 'a' do |s| s.executables = %w[foo] end
-    FileUtils.mkdir_p File.join(@tempdir, 'bin')
-    File.open File.join(@tempdir, 'bin', 'foo'), 'w' do |fp|
+    write_file File.join(@tempdir, 'bin', 'foo') do |fp|
       fp.puts "#!/usr/bin/ruby"
     end
 
@@ -70,9 +69,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     a = quick_spec 'a' do |s| s.extensions << 'ext/a/extconf.rb' end
 
     ext_path = File.join @tempdir, 'ext', 'a', 'extconf.rb'
-    FileUtils.mkdir_p File.dirname ext_path
-
-    open ext_path, 'w' do |io|
+    write_file ext_path do |io|
       io.write '# extconf.rb'
     end
 
@@ -98,9 +95,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
       s.executables = %w[foo]
     end
 
-    FileUtils.mkdir_p File.join(@tempdir, 'bin')
-
-    File.open File.join(@tempdir, 'bin', 'foo'), 'w' do |fp|
+    write_file File.join(@tempdir, 'bin', 'foo') do |fp|
       fp.puts "#!/usr/bin/ruby"
     end
 
@@ -114,9 +109,10 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     util_setup_fake_fetcher
     util_setup_spec_fetcher a
 
-    Gem::RemoteFetcher.fetcher.data["http://gems.example.com/gems/#{a.file_name}"] = a_data
+    url = "http://gems.example.com/gems/#{a.file_name}"
+    Gem::RemoteFetcher.fetcher.data[url] = a_data
 
-    FileUtils.rm Gem.cache_gem(a.file_name, @gemhome)
+    FileUtils.rm a.cache_file
 
     @cmd.options[:args] = %w[a]
 

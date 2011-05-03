@@ -118,7 +118,7 @@ class Gem::SourceIndex
     @gems.clear
 
     spec_dirs.reverse_each do |spec_dir|
-      spec_files = Gem::Path.path(spec_dir).glob("*.gemspec")
+      spec_files = Dir[File.join(spec_dir, "*.gemspec")]
 
       spec_files.each do |spec_file|
         gemspec = Deprecate.skip_during do

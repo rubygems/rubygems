@@ -506,8 +506,6 @@ class TestGem < Gem::TestCase
                RbConfig::CONFIG['bindir']
              end
 
-    bindir = Gem::Path.new(bindir)
-
     assert_equal bindir, Gem.bindir(default)
     assert_equal bindir, Gem.bindir(Pathname.new(default))
   end
@@ -595,42 +593,42 @@ class TestGem < Gem::TestCase
     FileUtils.rm_r @gemhome
     Gem.use_paths @gemhome
 
-    @gemhome.ensure_gem_subdirectories
+    Gem.ensure_gem_subdirectories @gemhome
 
-    assert File.directory?(Gem.cache_dir(@gemhome))
+    assert File.directory? File.join(@gemhome, "cache")
   end
 
   def test_self_ensure_gem_directories_missing_parents
-    gemdir = Gem::FS.new @tempdir, 'a/b/c/gemdir'
+    gemdir = File.join @tempdir, 'a/b/c/gemdir'
     FileUtils.rm_rf File.join(@tempdir, 'a') rescue nil
     refute File.exist?(File.join(@tempdir, 'a')),
            "manually remove #{File.join @tempdir, 'a'}, tests are broken"
     Gem.use_paths gemdir
 
-    gemdir.ensure_gem_subdirectories
+    Gem.ensure_gem_subdirectories gemdir
 
-    assert File.directory?(Gem.cache_dir(gemdir))
+    assert File.directory?(util_cache_dir)
   end
 
   unless win_platform? then # only for FS that support write protection
     def test_self_ensure_gem_directories_write_protected
-      gemdir = Gem::FS.new @tempdir, "egd"
+      gemdir = File.join @tempdir, "egd"
       FileUtils.rm_r gemdir rescue nil
       refute File.exist?(gemdir), "manually remove #{gemdir}, tests are broken"
       FileUtils.mkdir_p gemdir
       FileUtils.chmod 0400, gemdir
       Gem.use_paths gemdir
 
-      gemdir.ensure_gem_subdirectories
+      Gem.ensure_gem_subdirectories gemdir
 
-      refute File.exist?(Gem.cache_dir(gemdir))
+      refute File.exist?(util_cache_dir)
     ensure
       FileUtils.chmod 0600, gemdir
     end
 
     def test_self_ensure_gem_directories_write_protected_parents
       parent = File.join(@tempdir, "egd")
-      gemdir = Gem::FS.new "#{parent}/a/b/c"
+      gemdir = "#{parent}/a/b/c"
 
       FileUtils.rm_r parent rescue nil
       refute File.exist?(parent), "manually remove #{parent}, tests are broken"
@@ -638,9 +636,9 @@ class TestGem < Gem::TestCase
       FileUtils.chmod 0400, parent
       Gem.use_paths(gemdir)
 
-      gemdir.ensure_gem_subdirectories
+      Gem.ensure_gem_subdirectories gemdir
 
-      refute File.exist?(Gem.cache_dir(gemdir))
+      refute File.exist? File.join(gemdir, "gems")
     ensure
       FileUtils.chmod 0600, parent
     end
@@ -820,19 +818,20 @@ class TestGem < Gem::TestCase
   def test_self_refresh
     util_make_gems
 
-    a1_spec = File.join @gemhome, "specifications", @a1.spec_name
+    a1_spec = @a1.spec_file
+    moved_path = File.join @tempdir, File.basename(a1_spec)
 
-    FileUtils.mv a1_spec, @tempdir
-
-    Gem.refresh
-
-    refute_includes Gem::Specification.map(&:full_name), @a1.full_name
-
-    FileUtils.mv File.join(@tempdir, @a1.spec_name), a1_spec
+    FileUtils.mv a1_spec, moved_path
 
     Gem.refresh
 
-    assert_includes Gem::Specification.map(&:full_name), @a1.full_name
+    refute_includes Gem::Specification.all_names, @a1.full_name
+
+    FileUtils.mv moved_path, a1_spec
+
+    Gem.refresh
+
+    assert_includes Gem::Specification.all_names, @a1.full_name
   end
 
   def test_self_ruby_escaping_spaces_in_path
@@ -907,7 +906,7 @@ class TestGem < Gem::TestCase
     ENV["GEM_HOME"] = @gemhome
     Gem.paths = { "GEM_PATH" => path }
 
-    assert_equal [@userhome, Gem::FS.new(other), @gemhome], Gem.path
+    assert_equal [@userhome, other, @gemhome], Gem.path
   end
 
   def test_self_paths_eq_nonexistent_home
@@ -965,20 +964,6 @@ class TestGem < Gem::TestCase
     else
       assert true, 'count this test'
     end
-  end
-
-  def test_self_cache_dir
-    util_ensure_gem_dirs
-
-    assert_equal File.join(@gemhome, 'cache'), Gem.cache_dir
-    assert_equal File.join(@userhome, '.gem', Gem.ruby_engine, Gem::ConfigMap[:ruby_version], 'cache'), Gem.cache_dir(Gem.user_dir)
-  end
-
-  def test_self_cache_gem
-    util_ensure_gem_dirs
-
-    assert_equal File.join(@gemhome, 'cache', 'test.gem'), Gem.cache_gem('test.gem')
-    assert_equal File.join(@userhome, '.gem', Gem.ruby_engine, Gem::ConfigMap[:ruby_version], 'cache', 'test.gem'), Gem.cache_gem('test.gem', Gem.user_dir)
   end
 
   if Gem.win_platform? then
@@ -1086,13 +1071,13 @@ class TestGem < Gem::TestCase
   end
 
   def util_ensure_gem_dirs
-    @gemhome.ensure_gem_subdirectories
+    Gem.ensure_gem_subdirectories @gemhome
 
     #
     # FIXME what does this solve precisely? -ebh
     #
     @additional.each do |dir|
-      @gemhome.ensure_gem_subdirectories
+      Gem.ensure_gem_subdirectories @gemhome
     end
   end
 
@@ -1139,6 +1124,10 @@ class TestGem < Gem::TestCase
   def util_remove_interrupt_command
     Gem::Commands.send :remove_const, :InterruptCommand if
       Gem::Commands.const_defined? :InterruptCommand
+  end
+
+  def util_cache_dir
+    File.join Gem.dir, "cache"
   end
 end
 

@@ -21,12 +21,12 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     util_clear_gems
     util_setup_spec_fetcher @a1, @a2
 
-    @a1_path = Gem.cache_gem(@a1.file_name, @gemhome)
-    @a2_path = Gem.cache_gem(@a2.file_name, @gemhome)
+    @a1_path = @a1.cache_file
+    @a2_path = @a2.cache_file
 
-    @fetcher.data["#{@gem_repo}gems/#{@a1.file_name}"] =
+    @fetcher.data["#{@gem_repo}gems/#{File.basename @a1_path}"] =
       read_binary @a1_path
-    @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
+    @fetcher.data["#{@gem_repo}gems/#{File.basename @a2_path}"] =
       read_binary @a2_path
   end
 
@@ -75,9 +75,10 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
   def util_add_to_fetcher *specs
     specs.each do |spec|
-      gem_file = Gem.cache_gem(spec.file_name, @gemhome)
+      gem_file = spec.cache_file
+      file_name = File.basename gem_file
 
-      @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
+      @fetcher.data["http://gems.example.com/gems/#{file_name}"] =
         Gem.read_binary gem_file
     end
   end
@@ -237,9 +238,9 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     @a2.add_dependency 'c', '2'
     @a2.add_dependency 'b', '2'
 
-    @b2_path   = Gem.cache_gem(@b2.file_name, @gemhome)
-    @c1_2_path = Gem.cache_gem(@c1_2.file_name, @gemhome)
-    @c2_path   = Gem.cache_gem(@c2.file_name, @gemhome)
+    @b2_path   = @b2.cache_file
+    @c1_2_path = @c1_2.cache_file
+    @c2_path   = @c2.cache_file
 
     install_specs @a1, @a2, @b2, @c1_2, @c2
 

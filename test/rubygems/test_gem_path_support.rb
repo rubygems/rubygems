@@ -14,8 +14,7 @@ class TestGemPathSupport < Gem::TestCase
   def test_initialize
     ps = Gem::PathSupport.new
 
-    assert_equal ENV, ps.env
-    assert_equal Gem::Path.new(ENV["GEM_HOME"]), ps.home
+    assert_equal ENV["GEM_HOME"], ps.home
 
     expected = util_path
     assert_equal expected, ps.path, "defaults to GEM_PATH"
@@ -24,23 +23,21 @@ class TestGemPathSupport < Gem::TestCase
   def test_initialize_home
     ps = Gem::PathSupport.new "GEM_HOME" => "#{@tempdir}/foo"
 
-    refute_equal ENV, ps.env
-    assert_equal Gem::Path.new(@tempdir, "foo"), ps.home
+    assert_equal File.join(@tempdir, "foo"), ps.home
 
-    expected = util_path + [Gem::Path.new(@tempdir, 'foo')]
+    expected = util_path + [File.join(@tempdir, 'foo')]
     assert_equal expected, ps.path
   end
 
   def test_initialize_path
     ps = Gem::PathSupport.new "GEM_PATH" => %W[#{@tempdir}/foo #{@tempdir}/bar]
 
-    refute_equal ENV, ps.env
-    assert_equal Gem::Path.new(ENV["GEM_HOME"]), ps.home
+    assert_equal ENV["GEM_HOME"], ps.home
 
     expected = [
-                Gem::Path.new(@tempdir, 'foo'),
-                Gem::Path.new(@tempdir, 'bar'),
-                Gem::Path.new(ENV["GEM_HOME"])
+                File.join(@tempdir, 'foo'),
+                File.join(@tempdir, 'bar'),
+                ENV["GEM_HOME"],
                ]
 
     assert_equal expected, ps.path
@@ -50,16 +47,13 @@ class TestGemPathSupport < Gem::TestCase
     ps = Gem::PathSupport.new("GEM_HOME" => "#{@tempdir}/foo",
                               "GEM_PATH" => %W[#{@tempdir}/foo #{@tempdir}/bar])
 
-    refute_equal ENV, ps.env
-    assert_equal Gem::Path.new(@tempdir, "foo"), ps.home
+    assert_equal File.join(@tempdir, "foo"), ps.home
 
-    expected = [Gem::Path.new(@tempdir, 'foo'), Gem::Path.new(@tempdir, 'bar')]
+    expected = [File.join(@tempdir, 'foo'), File.join(@tempdir, 'bar')]
     assert_equal expected, ps.path
   end
 
   def util_path
-    ENV["GEM_PATH"].split(File::PATH_SEPARATOR).map { |x|
-      Gem::Path.new x
-    }
+    ENV["GEM_PATH"].split(File::PATH_SEPARATOR)
   end
 end

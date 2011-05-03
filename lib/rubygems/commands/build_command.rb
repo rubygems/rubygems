@@ -16,9 +16,9 @@ class Gem::Commands::BuildCommand < Gem::Command
   end
 
   def execute
-    gemspec = Gem::Path.new(get_one_gem_name)
+    gemspec = get_one_gem_name
 
-    if gemspec.exist?
+    if File.exist? gemspec
       spec = load_gemspec gemspec
 
       if spec then

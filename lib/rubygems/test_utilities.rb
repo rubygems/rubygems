@@ -97,10 +97,10 @@ class Gem::FakeFetcher
   end
 
   def download spec, source_uri, install_dir = Gem.dir
-    name = spec.file_name
-    path = Gem.cache_gem(name, install_dir)
+    name = File.basename spec.cache_file
+    path = File.join install_dir, "cache", name
 
-    Gem::FS.new(install_dir).ensure_gem_subdirectories
+    Gem.ensure_gem_subdirectories install_dir
 
     if source_uri =~ /^http/ then
       File.open(path, "wb") do |f|

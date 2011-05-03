@@ -89,7 +89,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     assert_equal [], output
     assert_equal '', @ui.error
 
-    gem_file = File.join @tempdir, gem.file_name
+    gem_file = File.join @tempdir, File.basename(gem.cache_file)
     assert File.exist?(gem_file)
 
     spec = Gem::Format.from_file_by_path(gem_file).spec

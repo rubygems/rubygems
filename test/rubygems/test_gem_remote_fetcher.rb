@@ -93,7 +93,7 @@ gems:
 
     # REFACTOR: copied from test_gem_dependency_installer.rb
     @gems_dir = File.join @tempdir, 'gems'
-    @cache_dir = Gem.cache_dir(@gemhome)
+    @cache_dir = File.join @gemhome, "cache"
     FileUtils.mkdir @gems_dir
 
     # TODO: why does the remote fetcher need it written to disk?
@@ -203,7 +203,7 @@ gems:
 
     fetcher = util_fuck_with_fetcher a1_data
 
-    a1_cache_gem = Gem.cache_gem(@a1.file_name, @gemhome)
+    a1_cache_gem = @a1.cache_file
     assert_equal a1_cache_gem, fetcher.download(@a1, 'http://gems.example.com')
     assert_equal("http://gems.example.com/gems/a-1.gem",
                  fetcher.instance_variable_get(:@test_arg).to_s)
@@ -215,8 +215,7 @@ gems:
 
     inst = Gem::RemoteFetcher.fetcher
 
-    assert_equal Gem.cache_gem(@a1.file_name, @gemhome),
-                 inst.download(@a1, 'http://gems.example.com')
+    assert_equal @a1.cache_file, inst.download(@a1, 'http://gems.example.com')
   end
 
   def test_download_local
@@ -228,8 +227,7 @@ gems:
       inst = Gem::RemoteFetcher.fetcher
     end
 
-    assert_equal Gem.cache_gem(@a1.file_name, @gemhome),
-                 inst.download(@a1, local_path)
+    assert_equal @a1.cache_file, inst.download(@a1, local_path)
   end
 
   def test_download_local_space
@@ -243,21 +241,19 @@ gems:
       inst = Gem::RemoteFetcher.fetcher
     end
 
-    assert_equal Gem.cache_gem(@a1.file_name, @gemhome),
-                 inst.download(@a1, local_path)
+    assert_equal @a1.cache_file, inst.download(@a1, local_path)
   end
 
   def test_download_install_dir
-    a1_data = nil
-    File.open @a1_gem, 'rb' do |fp|
-      a1_data = fp.read
+    a1_data = File.open @a1_gem, 'rb' do |fp|
+      fp.read
     end
 
     fetcher = util_fuck_with_fetcher a1_data
 
     install_dir = File.join @tempdir, 'more_gems'
 
-    a1_cache_gem = Gem.cache_gem(@a1.file_name, install_dir)
+    a1_cache_gem = File.join install_dir, "cache", @a1.file_name
     FileUtils.mkdir_p(File.dirname(a1_cache_gem))
     actual = fetcher.download(@a1, 'http://gems.example.com', install_dir)
 
@@ -273,7 +269,7 @@ gems:
       FileUtils.mv @a1_gem, @tempdir
       local_path = File.join @tempdir, @a1.file_name
       inst = nil
-      FileUtils.chmod 0555, Gem.cache_dir(@gemhome)
+      FileUtils.chmod 0555, @a1.cache_dir
 
       Dir.chdir @tempdir do
         inst = Gem::RemoteFetcher.fetcher
@@ -282,19 +278,20 @@ gems:
       assert_equal File.join(@tempdir, @a1.file_name),
         inst.download(@a1, local_path)
     ensure
-      FileUtils.chmod 0755, Gem.cache_dir(@gemhome)
+      FileUtils.chmod 0755, @a1.cache_dir
     end
 
     def test_download_read_only
-      FileUtils.chmod 0555, Gem.cache_dir(@gemhome)
+      FileUtils.chmod 0555, @a1.cache_dir
       FileUtils.chmod 0555, @gemhome
 
       fetcher = util_fuck_with_fetcher File.read(@a1_gem)
       fetcher.download(@a1, 'http://gems.example.com')
-      assert File.exist?(Gem.cache_gem(@a1.file_name, Gem.user_dir))
+      a1_cache_gem = File.join Gem.user_dir, "cache", @a1.file_name
+      assert File.exist? a1_cache_gem
     ensure
       FileUtils.chmod 0755, @gemhome
-      FileUtils.chmod 0755, Gem.cache_dir(@gemhome)
+      FileUtils.chmod 0755, @a1.cache_dir
     end
   end
 
@@ -313,7 +310,7 @@ gems:
 
     fetcher = util_fuck_with_fetcher e1_data, :blow_chunks
 
-    e1_cache_gem = Gem.cache_gem(e1.file_name, @gemhome)
+    e1_cache_gem = e1.cache_file
 
     assert_equal e1_cache_gem, fetcher.download(e1, 'http://gems.example.com')
 
@@ -331,7 +328,7 @@ gems:
       inst = Gem::RemoteFetcher.fetcher
     end
 
-    cache_path = Gem.cache_gem(@a1.file_name, @gemhome)
+    cache_path = @a1.cache_file
     FileUtils.mv local_path, cache_path
 
     gem = Gem::Format.from_file_by_path cache_path

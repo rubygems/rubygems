@@ -22,9 +22,9 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     util_setup_spec_fetcher
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
-      read_binary(Gem.cache_gem(@a2.file_name, @gemhome))
+      read_binary(@a2.cache_file)
     @fetcher.data["#{@gem_repo}gems/#{@a2_pre.file_name}"] =
-      read_binary(Gem.cache_gem(@a2_pre.file_name, @gemhome))
+      read_binary(@a2_pre.cache_file)
 
     @cmd.options[:args] = [@a2.name]
 
@@ -44,9 +44,9 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     util_setup_spec_fetcher
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
-      read_binary(Gem.cache_gem(@a2.file_name, @gemhome))
+      read_binary(@a2.cache_file)
     @fetcher.data["#{@gem_repo}gems/#{@a2_pre.file_name}"] =
-      read_binary(Gem.cache_gem(@a2_pre.file_name, @gemhome))
+      read_binary(@a2_pre.cache_file)
 
     @cmd.handle_options [@a2_pre.name, '--version', @a2_pre.version.to_s,
                          "--no-ri", "--no-rdoc"]
@@ -86,7 +86,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     util_setup_fake_fetcher
     @cmd.options[:domain] = :local
 
-    FileUtils.mv Gem.cache_gem(@a2.file_name, @gemhome), @tempdir
+    FileUtils.mv @a2.cache_file, @tempdir
 
     @cmd.options[:args] = [@a2.name]
 
@@ -115,7 +115,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     util_setup_fake_fetcher
     @cmd.options[:user_install] = false
 
-    FileUtils.mv Gem.cache_gem(@a2.file_name, @gemhome), @tempdir
+    FileUtils.mv @a2.cache_file, @tempdir
 
     @cmd.options[:args] = [@a2.name]
 
@@ -207,9 +207,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     util_setup_spec_fetcher @a2, @a2_pre
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
-      read_binary(Gem.cache_gem(@a2.file_name, @gemhome))
+      read_binary(@a2.cache_file)
     @fetcher.data["#{@gem_repo}gems/#{@a2_pre.file_name}"] =
-      read_binary(Gem.cache_gem(@a2_pre.file_name, @gemhome))
+      read_binary(@a2_pre.cache_file)
 
     @cmd.options[:prerelease] = true
     @cmd.options[:args] = [@a2_pre.name]
@@ -233,7 +233,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     util_setup_spec_fetcher
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
-      read_binary(Gem.cache_gem(@a2.file_name, @gemhome))
+      read_binary(@a2.cache_file)
 
     @cmd.options[:args] = [@a2.name]
 
@@ -260,9 +260,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     util_setup_fake_fetcher
     @cmd.options[:domain] = :local
 
-    FileUtils.mv Gem.cache_gem(@a2.file_name, @gemhome), @tempdir
+    FileUtils.mv @a2.cache_file, @tempdir
 
-    FileUtils.mv Gem.cache_gem(@b2.file_name, @gemhome), @tempdir
+    FileUtils.mv @b2.cache_file, @tempdir
 
     @cmd.options[:args] = [@a2.name, @b2.name]
 
@@ -291,7 +291,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     util_setup_spec_fetcher
 
     @fetcher.data["#{@gem_repo}gems/#{@b2.file_name}"] =
-      read_binary(Gem.cache_gem(@b2.file_name, @gemhome))
+      read_binary(@b2.cache_file)
 
     uninstall_gem(@b2)
 

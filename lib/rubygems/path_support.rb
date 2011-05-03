@@ -7,10 +7,6 @@ require 'rubygems/fs'
 #
 class Gem::PathSupport
   ##
-  # The system environment provided. Defaults to ENV.
-  attr_reader :env
-
-  ##
   # The default system path for managing Gems.
   attr_reader :home
 
@@ -26,8 +22,9 @@ class Gem::PathSupport
   def initialize(env=ENV)
     @env = env
 
-    @home = Gem::FS.new(env["GEM_HOME"] || ENV["GEM_HOME"] || Gem.default_dir)
-    self.path =         env["GEM_PATH"] || ENV["GEM_PATH"]
+    # note 'env' vs 'ENV'...
+    @home     = env["GEM_HOME"] || ENV["GEM_HOME"] || Gem.default_dir
+    self.path = env["GEM_PATH"] || ENV["GEM_PATH"]
   end
 
   private
@@ -36,7 +33,7 @@ class Gem::PathSupport
   # Set the Gem home directory (as reported by Gem.dir).
 
   def home=(home)
-    @home = Gem::FS.new(home)
+    @home = home.to_s
   end
 
   ##
@@ -72,6 +69,6 @@ class Gem::PathSupport
       end
     end
 
-    @path = gem_path.map { |this_path| Gem::FS.new(this_path) }.uniq
+    @path = gem_path.uniq
   end
 end

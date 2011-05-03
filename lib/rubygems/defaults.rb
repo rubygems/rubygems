@@ -1,5 +1,7 @@
 module Gem
 
+  # TODO: move this whole file back into rubygems.rb
+
   @post_install_hooks   ||= []
   @post_uninstall_hooks ||= []
   @pre_uninstall_hooks  ||= []
@@ -18,33 +20,34 @@ module Gem
 
   def self.default_dir
     path = if defined? RUBY_FRAMEWORK_VERSION then
-             [ 
-               File.dirname(ConfigMap[:sitedir]), 
+             [
+               File.dirname(ConfigMap[:sitedir]),
                'Gems',
                ConfigMap[:ruby_version]
              ]
            elsif ConfigMap[:rubylibprefix] then
              [
-              ConfigMap[:rubylibprefix], 
+              ConfigMap[:rubylibprefix],
               'gems',
               ConfigMap[:ruby_version]
              ]
            else
              [
-               ConfigMap[:libdir], 
-               ruby_engine, 
+               ConfigMap[:libdir],
+               ruby_engine,
                'gems',
                ConfigMap[:ruby_version]
              ]
            end
-    Gem::FS.new(*path)
+
+    @default_dir ||= File.join(*path)
   end
 
   ##
   # Path for gems in the user's home directory
 
   def self.user_dir
-    Gem::FS.new Gem.user_home, '.gem', ruby_engine, ConfigMap[:ruby_version]
+    File.join Gem.user_home, '.gem', ruby_engine, ConfigMap[:ruby_version]
   end
 
   ##
@@ -77,9 +80,9 @@ module Gem
 
   def self.default_bindir
     if defined? RUBY_FRAMEWORK_VERSION then # mac framework support
-      Gem::Path.new '/usr/bin'
+      '/usr/bin'
     else # generic install
-      Gem::Path.new ConfigMap[:bindir]
+      ConfigMap[:bindir]
     end
   end
 
@@ -87,7 +90,7 @@ module Gem
   # The default system-wide source info cache directory
 
   def self.default_system_source_cache_dir
-    Gem.dir.source_cache
+    File.join(Gem.dir, 'source_cache')
   end
 
   ##
@@ -98,7 +101,7 @@ module Gem
     # NOTE Probably an argument for moving this to per-ruby supported dirs like
     # user_dir
     #
-    Gem::FS.new(Gem.user_home, '.gem').source_cache
+    File.join(Gem.user_home, '.gem', 'source_cache')
   end
 
   ##
@@ -111,6 +114,4 @@ module Gem
       'ruby'
     end
   end
-
 end
-

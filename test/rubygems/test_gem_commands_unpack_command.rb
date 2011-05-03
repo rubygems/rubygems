@@ -15,8 +15,8 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
     util_make_gems
 
     assert_equal(
-      @cmd.find_in_cache(@a1.file_name),
-      Gem.cache_gem(@a1.file_name, @gemhome),
+      @cmd.find_in_cache(File.basename @a1.cache_file),
+      @a1.cache_file,
       'found a-1.gem in the cache'
     )
   end
@@ -28,7 +28,7 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
 
     a1_data = nil
 
-    open Gem.cache_gem(@a1.file_name, @gemhome), 'rb' do |fp|
+    open @a1.cache_file, 'rb' do |fp|
       a1_data = fp.read
     end
 
@@ -38,15 +38,15 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
     dep = Gem::Dependency.new(@a1.name, @a1.version)
     assert_equal(
       @cmd.get_path(dep),
-      Gem.cache_gem(@a1.file_name, @gemhome),
+      @a1.cache_file,
       'fetches a-1 and returns the cache path'
     )
 
-    FileUtils.rm Gem.cache_gem(@a1.file_name, @gemhome)
+    FileUtils.rm @a1.cache_file
 
     assert_equal(
       @cmd.get_path(dep),
-      Gem.cache_gem(@a1.file_name, @gemhome),
+      @a1.cache_file,
       'when removed from cache, refetches a-1'
     )
   end
@@ -114,7 +114,7 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
     util_clear_gems
 
     a2_data = nil
-    open Gem.cache_gem(@a2.file_name, @gemhome), 'rb' do |fp|
+    open @a2.cache_file, 'rb' do |fp|
       a2_data = fp.read
     end
 

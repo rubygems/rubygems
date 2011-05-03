@@ -55,10 +55,11 @@ class Gem::Uninstaller
     @user_install = false
     @user_install = options[:user_install] unless options[:install_dir]
 
-    dirs = [@gem_home]
-    dirs << Gem.user_dir if @user_install
-
-    Gem::Specification.dirs = dirs
+    if @user_install then
+      Gem.use_paths Gem.user_dir, @gem_home
+    else
+      Gem.use_paths @gem_home
+    end
   end
 
   ##
@@ -126,8 +127,6 @@ class Gem::Uninstaller
   def remove_executables(spec)
     return if spec.nil? or spec.executables.empty?
 
-    bindir = @bin_dir ? @bin_dir : Gem.bindir(spec.installation_path)
-
     list = Gem::Specification.find_all { |s|
       s.name == spec.name && s.version != spec.version
     }
@@ -154,6 +153,8 @@ class Gem::Uninstaller
     unless remove then
       say "Executables and scripts will remain installed."
     else
+      bindir = @bin_dir || Gem.bindir(spec.base_dir)
+
       raise Gem::FilePermissionError, bindir unless File.writable? bindir
 
       spec.executables.each do |exe_name|
@@ -190,28 +191,27 @@ class Gem::Uninstaller
       raise e
     end
 
-    raise Gem::FilePermissionError, spec.installation_path unless
-      File.writable?(spec.installation_path)
+    raise Gem::FilePermissionError, spec.base_dir unless
+      File.writable?(spec.base_dir)
 
     FileUtils.rm_rf spec.full_gem_path
 
-    original_platform_name = [
-      spec.name, spec.version, spec.original_platform].join '-'
+    # TODO: should this be moved to spec?... I vote eww (also exists in docmgr)
+    old_platform_name = [spec.name,
+                         spec.version,
+                         spec.original_platform].join '-'
 
-    spec_dir = File.join spec.installation_path, 'specifications'
-    gemspec = File.join spec_dir, spec.spec_name
+    gemspec = spec.spec_file
 
     unless File.exist? gemspec then
-      gemspec = File.join spec_dir, "#{original_platform_name}.gemspec"
+      gemspec = File.join(File.dirname(gemspec), "#{old_platform_name}.gemspec")
     end
 
     FileUtils.rm_rf gemspec
 
-    gem = Gem.cache_gem(spec.file_name, spec.installation_path)
-
-    unless File.exist? gem then
-      gem = Gem.cache_gem("#{original_platform_name}.gem", spec.installation_path)
-    end
+    gem = spec.cache_file
+    gem = File.join(spec.cache_dir, "#{old_platform_name}.gem") unless
+      File.exist? gem
 
     FileUtils.rm_rf gem
 
@@ -226,7 +226,7 @@ class Gem::Uninstaller
   # Is +spec+ in +gem_dir+?
 
   def path_ok?(gem_dir, spec)
-    full_path = File.join gem_dir, 'gems', spec.full_name
+    full_path     = File.join gem_dir, 'gems', spec.full_name
     original_path = File.join gem_dir, 'gems', spec.original_name
 
     full_path == spec.full_gem_path || original_path == spec.full_gem_path

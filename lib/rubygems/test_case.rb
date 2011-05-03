@@ -79,6 +79,18 @@ end
 
 class Gem::TestCase < MiniTest::Unit::TestCase
 
+  # TODO: move to minitest
+  def assert_path_exists path, msg = nil
+    msg = message(msg) { "Expected path '#{path}' to exist" }
+    assert File.exist?(path), msg
+  end
+
+  # TODO: move to minitest
+  def refute_path_exists path, msg = nil
+    msg = message(msg) { "Expected path '#{path}' to not exist" }
+    refute File.exist?(path), msg
+  end
+
   include Gem::DefaultUserInteraction
 
   undef_method :default_test if instance_methods.include? 'default_test' or
@@ -109,20 +121,20 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     Dir.chdir Dir.tmpdir do tmpdir = Dir.pwd end # HACK OSX /private/tmp
 
     if ENV['KEEP_FILES'] then
-      @tempdir = Gem::Path.new(tmpdir, "test_rubygems_#{$$}.#{Time.now.to_i}")
+      @tempdir = File.join(tmpdir, "test_rubygems_#{$$}.#{Time.now.to_i}")
     else
-      @tempdir = Gem::Path.new(tmpdir, "test_rubygems_#{$$}")
+      @tempdir = File.join(tmpdir, "test_rubygems_#{$$}")
     end
     @tempdir.untaint
-    @gemhome  = Gem::FS.new @tempdir, 'gemhome'
-    @userhome = Gem::FS.new @tempdir, 'userhome'
+    @gemhome  = File.join @tempdir, 'gemhome'
+    @userhome = File.join @tempdir, 'userhome'
 
     @orig_ruby = if ruby = ENV['RUBY'] then
                    Gem.class_eval { ruby, @ruby = @ruby, ruby }
                    ruby
                  end
 
-    @gemhome.ensure_gem_subdirectories
+    Gem.ensure_gem_subdirectories @gemhome
 
     @orig_LOAD_PATH = $LOAD_PATH.dup
     $LOAD_PATH.map! { |s| File.expand_path s }
@@ -238,7 +250,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       end
     end
 
-    gem = File.join(@tempdir, spec.file_name).untaint
+    gem = File.join(@tempdir, File.basename(spec.cache_file)).untaint
 
     Gem::Installer.new(gem, :wrappers => true).install
   end
@@ -293,7 +305,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # Writes a binary file to +path+ which is relative to +@gemhome+
 
   def write_file(path)
-    path = @gemhome.add(path)
+    path = File.join @gemhome, path unless path =~ /^\//
     dir = File.dirname path
     FileUtils.mkdir_p dir
 
@@ -337,8 +349,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     Gem::Specification.map # HACK: force specs to (re-)load before we write
 
-    path = File.join("specifications", spec.spec_name)
-    written_path = write_file path do |io|
+    written_path = write_file spec.spec_file do |io|
       io.write spec.to_ruby_for_cache
     end
 
@@ -366,8 +377,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       yield(s) if block_given?
     end
 
-    path = @gemhome.specifications.add(spec.spec_name)
-    spec.loaded_from = path
+    spec.loaded_from = spec.spec_file
 
     Gem::Specification.add_spec spec
 
@@ -379,7 +389,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # 'cache'</tt>.  Automatically creates files based on +spec.files+
 
   def util_build_gem(spec)
-    dir = @gemhome.gems.add(spec.full_name)
+    dir = spec.gem_dir
     FileUtils.mkdir_p dir
 
     Dir.chdir dir do
@@ -393,7 +403,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
         Gem::Builder.new(spec).build
       end
 
-      FileUtils.mv spec.file_name, Gem.cache_gem("#{spec.original_name}.gem")
+      cache = spec.cache_file
+      FileUtils.mv File.basename(cache), cache
     end
   end
 
@@ -401,8 +412,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # Removes all installed gems from +@gemhome+.
 
   def util_clear_gems
-    FileUtils.rm_rf @gemhome.gems
-    FileUtils.rm_rf @gemhome.specifications
+    FileUtils.rm_rf File.join(@gemhome, "gems") # TODO: use Gem::Dirs
+    FileUtils.rm_rf File.join(@gemhome, "specifications")
     Gem::Specification.reset
   end
 
@@ -440,11 +451,10 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       yield s if block_given?
     end
 
-    spec.loaded_from = @gemhome.specifications.add spec.spec_name
-    spec.loaded = false
+    spec.loaded_from = spec.spec_file
 
     unless files.empty? then
-      write_file File.join("specifications", spec.spec_name) do |io|
+      write_file spec.spec_file do |io|
         io.write spec.to_ruby_for_cache
       end
 
@@ -452,8 +462,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
       cache_file = File.join @tempdir, 'gems', "#{spec.full_name}.gem"
       FileUtils.mkdir_p File.dirname cache_file
-      FileUtils.mv Gem.cache_gem("#{spec.full_name}.gem"), cache_file
-      FileUtils.rm @gemhome.specifications.add(spec.spec_name)
+      FileUtils.mv spec.cache_file, cache_file
+      FileUtils.rm spec.spec_file
     end
 
     spec
@@ -501,11 +511,10 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     cache_file = File.join @tempdir, 'gems', "#{spec.original_name}.gem"
     FileUtils.mkdir_p File.dirname cache_file
-    FileUtils.mv Gem.cache_gem("#{spec.original_name}.gem"), cache_file
-    FileUtils.rm @gemhome.specifications.add(spec.spec_name)
+    FileUtils.mv spec.cache_file, cache_file
+    FileUtils.rm spec.spec_file
 
     spec.loaded_from = nil
-    spec.loaded = false
 
     [spec, cache_file]
   end
@@ -593,7 +602,7 @@ Also, a list:
       util_build_gem spec
     end
 
-    FileUtils.rm_r @gemhome.gems.add(@pl1.original_name)
+    FileUtils.rm_r File.join(@gemhome, "gems", @pl1.original_name)
   end
 
   ##

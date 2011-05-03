@@ -263,7 +263,7 @@ class Gem::Specification
   def self._all # :nodoc:
     unless defined?(@@all) && @@all then
       @@all = self.dirs.reverse.map { |dir|
-        dir.glob("*.gemspec").map { |path|
+        Dir[File.join(dir, "*.gemspec")].map { |path|
           Gem::Specification.load path
         }
       }.flatten
@@ -372,7 +372,7 @@ class Gem::Specification
 
   def self.dirs
     @@dirs ||= Gem.path.collect { |dir|
-      Gem::Path.new(dir).add("specifications")
+      File.join dir, "specifications"
     }
   end
 
@@ -387,7 +387,7 @@ class Gem::Specification
     self.reset
 
     # ugh
-    @@dirs = Array(dirs).map { |dir| Gem::Path.new(dir).add("specifications") }
+    @@dirs = Array(dirs).map { |dir| File.join dir, "specifications" }
   end
 
   extend Enumerable
@@ -805,7 +805,7 @@ class Gem::Specification
 
   def add_self_to_load_path
     paths = require_paths.map do |path|
-      Gem::Path.path(full_gem_path).add(path).to_s
+      File.join full_gem_path, path
     end
 
     # gem directories must come after -I and ENV['RUBYLIB']
@@ -1196,9 +1196,15 @@ class Gem::Specification
   # The full path to the gem (install path + full name).
 
   def full_gem_path
-    path = installation_path.gems.add(full_name).expand_path
-    return path.to_s if path.directory?
-    installation_path.gems.add(original_name).expand_path.to_s
+    # TODO: try to get rid of this... or the awkward
+    # TODO: also, shouldn't it default to full_name if it hasn't been written?
+    return @full_gem_path if defined?(@full_gem_path) && @full_gem_path
+
+    @full_gem_path = File.expand_path File.join(gems_dir, full_name)
+
+    return @full_gem_path if File.directory? @full_gem_path
+
+    @full_gem_path = File.expand_path File.join(gems_dir, original_name)
   end
 
   ##
@@ -1652,7 +1658,6 @@ class Gem::Specification
   def ruby_code(obj)
     case obj
     when String            then '%q{' + obj + '}'
-    when Gem::Path         then '%q{' + obj.path + '}'
     when Array             then '[' + obj.map { |x| ruby_code x }.join(", ") + ']'
     when Gem::Version      then obj.to_s.inspect
     when Date              then '%q{' + obj.strftime('%Y-%m-%d') + '}'

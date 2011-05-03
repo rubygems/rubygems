@@ -45,10 +45,10 @@ class Gem::DependencyInstaller
 
   def initialize(options = {})
     if options[:install_dir] then
-      @gem_home     = options[:install_dir]
-      @gem_home     = Gem::FS.new(@gem_home) if String === @gem_home
+      @gem_home = options[:install_dir]
 
       Gem::Specification.dirs = @gem_home
+      Gem.ensure_gem_subdirectories @gem_home
       options[:install_dir] = @gem_home # FIX: because we suck and reuse below
     end
 

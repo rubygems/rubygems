@@ -11,7 +11,7 @@ class TestGemDocManager < Gem::TestCase
   end
 
   def test_uninstall_doc_unwritable
-    path = @spec.installation_path
+    path = @spec.base_dir
     orig_mode = File.stat(path).mode
 
     # File.chmod has no effect on MS Windows directories (it needs ACL).

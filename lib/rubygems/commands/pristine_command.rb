@@ -84,15 +84,14 @@ extensions.
         next
       end
 
-      gem = spec.cache_gem
+      gem = spec.cache_file
 
-      if gem.nil? then
+      unless File.exist? gem then
         require 'rubygems/remote_fetcher'
 
         say "Cached gem for #{spec.full_name} not found, attempting to fetch..."
         dep = Gem::Dependency.new spec.name, spec.version
         Gem::RemoteFetcher.fetcher.download_to_cache dep
-        gem = spec.cache_gem
       end
 
       # TODO use installer options

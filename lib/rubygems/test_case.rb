@@ -653,7 +653,7 @@ Also, a list:
 
     spec_fetcher = Gem::SpecFetcher.fetcher
 
-    prerelease, released = Gem::Specification.partition { |spec|
+    prerelease, _ = Gem::Specification.partition { |spec|
       spec.version.prerelease?
     }
 

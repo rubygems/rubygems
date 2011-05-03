@@ -189,7 +189,7 @@ pl (1)
   def test_execute_installed
     @cmd.handle_options %w[-n a --installed]
 
-    e = assert_raises Gem::MockGemUi::SystemExitException do
+    assert_raises Gem::MockGemUi::SystemExitException do
       use_ui @ui do
         @cmd.execute
       end
@@ -232,7 +232,7 @@ pl (1)
   def test_execute_installed_version
     @cmd.handle_options %w[-n a --installed --version 2]
 
-    e = assert_raises Gem::MockGemUi::SystemExitException do
+    assert_raises Gem::MockGemUi::SystemExitException do
       use_ui @ui do
         @cmd.execute
       end

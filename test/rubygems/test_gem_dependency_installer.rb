@@ -831,6 +831,9 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def util_reset_gems
+    @a1     ||= nil
+    @b1     ||= nil
+    @a1_pre ||= nil
     @c1_pre ||= nil
     @d1     ||= nil
     @d2     ||= nil

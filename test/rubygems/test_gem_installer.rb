@@ -673,7 +673,7 @@ load Gem.bin_path('a', 'executable', version)
     gemhome2 = "#{@gemhome}2"
     @spec.add_dependency 'b'
 
-    b2 = quick_gem 'b', 2
+    quick_gem 'b', 2
 
     FileUtils.mv @gemhome, gemhome2
 

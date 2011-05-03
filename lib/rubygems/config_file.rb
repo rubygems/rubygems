@@ -49,7 +49,7 @@ class Gem::ConfigFile
     begin
       require "etc"
       Etc.sysconfdir
-    rescue LoadError, NoMethodError => e
+    rescue LoadError, NoMethodError
       begin
         # TODO: remove after we drop 1.8.7 and 1.9.1
         require 'Win32API'

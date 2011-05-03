@@ -20,7 +20,7 @@ class TestGemCommandsListCommand < Gem::TestCase
   def test_execute_installed
     @cmd.handle_options %w[c --installed]
 
-    e = assert_raises Gem::MockGemUi::SystemExitException do
+    assert_raises Gem::MockGemUi::SystemExitException do
       use_ui @ui do
         @cmd.execute
       end

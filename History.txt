@@ -23,7 +23,7 @@
   * SourceIndex is now TOTALLY disconnected from Specification.all
   * Refactored GemPathSearcher entirely out. RIPMF
 
-* 40 minor enhancements:
+* 41 minor enhancements:
 
   * Added CommandManager#unregister_command
   * Added Dependency#matching_specs + to_specs.
@@ -56,6 +56,7 @@
   * Revamped indexer to mostly not use SourceIndex (legacy index requires it).
   * Rewrote our last functional test suite to be happy and fast
   * RubyGems is now under the Ruby License or the MIT license
+  * Skip outputting default_executable in Specification#to_ruby
   * Specification#== now only checks name, version, and platform.
   * Specification#authors= now forcefully flattens contents (bad rspec! no cookie!)
   * Specification#eql? checks all fields.

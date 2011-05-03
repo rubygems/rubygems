@@ -1,4 +1,81 @@
-﻿=== 1.7.1 / 2011-03-32
+﻿=== 1.8.0 / 2011-04-34
+
+* 22(+) Deprecations (WOOT!):
+
+  * DependencyList.from_source_index deprecated the source_index argument.
+  * Deprecated Dependency.new(/regex/).
+  * Deprecated Gem.searcher.
+  * Deprecated Gem.source_index and Gem.available?
+  * Deprecated Gem: activate_dep, activate_spec, activate, report_activate_error, and required_location.
+  * Deprecated Gem::all_partials
+  * Deprecated Gem::cache_dir
+  * Deprecated Gem::cache_gem
+  * Deprecated Gem::default_system_source_cache_dir
+  * Deprecated Gem::default_user_source_cache_dir
+  * Deprecated Platform#empty?
+  * Deprecated Specification.cache_gem
+  * Deprecated Specification.installation_path
+  * Deprecated Specification.loaded, loaded?, and loaded=
+  * Deprecated all of SourceIndex.
+
+* 2 major enhancements:
+
+  * SourceIndex is now TOTALLY disconnected from Specification.all
+  * Refactored GemPathSearcher entirely out. RIPMF
+
+* 40 minor enhancements:
+
+  * Added CommandManager#unregister_command
+  * Added Dependency#matching_specs + to_specs.
+  * Added Dependency#to_spec
+  * Added Gem.pre_reset_hook/s and post_reset_hook/s.
+  * Added GemCommand.reset to reinitialize the singleton
+  * Added Specification#activate.
+  * Added Specification#activated, activated=, and activated?
+  * Added Specification#base_dir.
+  * Added Specification#bin_dir and bin_file.
+  * Added Specification#cache_dir and cache_file. Aliased cache_gem.
+  * Added Specification#doc_dir and ri_dir.
+  * Added Specification#find(name_or_dep, *requirements).
+  * Added Specification#gem_dir and gems_dir.
+  * Added Specification#spec_dir and spec_file.
+  * Added Specification.add_spec, add_specs, and remove_spec.
+  * Added Specification.all=. If you use this, we will light you on fire.
+  * Added Specification.all_names.
+  * Added Specification.dirs and dirs=. dirs= resets.
+  * Added Specification.find_all_by_name(name, *reqs)
+  * Added Specification.latest_specs. SO TINY!
+  * Added TestCase#all_spec_names to help clean up tests
+  * Added TestCase#assert_path_exists and refute_path_exists. Will move to minitest.
+  * Gem.sources no longer tries to load sources gem. Only uses default_sources.
+  * Installer no longer accepts a source_index option.
+  * More low-level integration.
+  * Removed Gem::FileOperations since it is a dummy class
+  * Removed a comment because I am dumb
+  * Removed pkgs/sources/lib/sources.rb
+  * Revamped indexer to mostly not use SourceIndex (legacy index requires it).
+  * Rewrote our last functional test suite to be happy and fast
+  * RubyGems is now under the Ruby License or the MIT license
+  * Specification#== now only checks name, version, and platform.
+  * Specification#authors= now forcefully flattens contents (bad rspec! no cookie!)
+  * Specification#eql? checks all fields.
+  * Specification#installation_path no longer raises if it hasn't been activated.
+  * Specification#validate now ensures that authors is not empty.
+  * TestCase.util_setup_spec_fetcher no longer returns a SourceIndex.
+  * Uninstaller no longer passes around SourceIndex instances
+  * Warn on loading bad spec array values (ntlm-http gem has nil in its cert chain)
+  * `gem pristine` now accepts --no-executables to skip restoring gems with extensions.
+
+* 5 bug fixes:
+
+  * DependencyInstaller passed around a source_index instance but used Gem.source_index.
+  * Fixed Platform#== and #hash so instances may be used as hash keys.
+  * Fixed broken Specification#original_platform. It should never be nil.
+  * Gem::Text#format_text now strips trailing whitespace
+  * Normalize LOAD_PATH with File.expand_path
+  * `gem build` errors should exit 1.
+
+=== 1.7.1 / 2011-03-32
 
 * 1 bug fix:
   * Fixed missing file in Manifest.txt.  (Also a bug in hoe was fixed where

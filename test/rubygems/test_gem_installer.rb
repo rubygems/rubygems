@@ -2,6 +2,25 @@ require 'rubygems/installer_test_case'
 
 class TestGemInstaller < Gem::InstallerTestCase
 
+  def setup
+    super
+
+    if __name__ !~ /^test_install(_|$)/ then
+      @gemhome = @installer_tmp
+      Gem.use_paths @installer_tmp
+
+      @spec = Gem::Specification.find_by_name 'a'
+      @user_spec = Gem::Specification.find_by_name 'b'
+
+      @installer.spec = @spec
+      @installer.gem_home = @installer_tmp
+      @installer.gem_dir = @spec.gem_dir
+      @user_installer.spec = @user_spec
+      @user_installer.gem_home = @installer_tmp
+    end
+  end
+
+
   def test_app_script_text
     @spec.version = 2
     util_make_exec @spec, ''
@@ -102,7 +121,7 @@ load Gem.bin_path('a', 'executable', version)
   def test_extract_files
     format = Object.new
     def format.file_entries
-      [[{'size' => 7, 'mode' => 0400, 'path' => 'thefile'}, 'thefile']]
+      [[{'size' => 7, 'mode' => 0400, 'path' => 'thefile'}, 'content']]
     end
 
     @installer.format = format
@@ -110,7 +129,7 @@ load Gem.bin_path('a', 'executable', version)
     @installer.extract_files
 
     thefile_path = File.join(util_gem_dir, 'thefile')
-    assert_equal 'thefile', File.read(thefile_path)
+    assert_equal 'content', File.read(thefile_path)
 
     unless Gem.win_platform? then
       assert_equal 0400, File.stat(thefile_path).mode & 0777
@@ -551,12 +570,14 @@ load Gem.bin_path('a', 'executable', version)
       assert File.exist?(cache_file), 'cache file must exist'
     end
 
+    @newspec = nil
     build_rake_in do
       use_ui @ui do
-        assert_equal @spec, @installer.install
+        @newspec = @installer.install
       end
     end
 
+    assert_equal @spec, @newspec
     assert File.exist? gemdir
     assert File.exist?(stub_exe), 'gem executable must exist'
 
@@ -572,7 +593,7 @@ load Gem.bin_path('a', 'executable', version)
 
     spec_file = File.join(@gemhome, 'specifications', @spec.spec_name)
 
-    assert_equal spec_file, @spec.loaded_from
+    assert_equal spec_file, @newspec.loaded_from
     assert File.exist?(spec_file)
 
     assert_same @installer, @post_build_hook_arg
@@ -656,7 +677,7 @@ load Gem.bin_path('a', 'executable', version)
 
     FileUtils.mv @gemhome, gemhome2
 
-    Gem::Specification.dirs = [gemhome2]
+    Gem::Specification.dirs = [gemhome2] # TODO: switch all dirs= to use_paths
 
     util_setup_gem
 

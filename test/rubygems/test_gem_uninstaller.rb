@@ -8,24 +8,15 @@ class TestGemUninstaller < Gem::InstallerTestCase
 
     @user_spec.executables = ["executable"]
 
-    # HACK util_make_exec
-    user_bin_dir = File.join Gem.user_dir, 'gems', @user_spec.full_name, 'bin'
-    exec_path = File.join user_bin_dir, "executable"
-    write_file exec_path do |f|
-      f.puts "#!/usr/bin/ruby"
-    end
-
-    user_bin_dir = File.join Gem.user_dir, 'bin'
-    exec_path = File.join user_bin_dir, "executable"
-    write_file exec_path do |f|
-      f.puts "#!/usr/bin/ruby"
-    end
-
     build_rake_in do
       use_ui ui do
         @installer.install
         @user_installer.install
-        Gem::Uninstaller.new(@user_spec.name, :executables => false).uninstall
+
+        Gem.use_paths @gemhome, Gem.user_dir
+
+        @spec      = Gem::Specification.find_by_name 'a'
+        @user_spec = Gem::Specification.find_by_name 'b'
       end
     end
   end
@@ -106,13 +97,12 @@ class TestGemUninstaller < Gem::InstallerTestCase
     end
 
     exec_path = File.join Gem.user_dir, 'bin', 'executable'
-    assert_equal false, File.exist?(exec_path), 'removed exec from bin dir'
+    refute File.exist?(exec_path), 'removed exec from bin dir'
 
     assert_equal "Removing executable\n", @ui.output
   ensure
     Gem::Installer.exec_format = nil
   end
-
 
   def test_path_ok_eh
     uninstaller = Gem::Uninstaller.new nil
@@ -123,10 +113,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
   def test_path_ok_eh_legacy
     uninstaller = Gem::Uninstaller.new nil
 
-    @spec.loaded_from = Gem::Path.new(
-      @spec.loaded_from.to_s.gsub @spec.full_name, '\&-legacy'
-    )
-
+    @spec.loaded_from = @spec.loaded_from.gsub @spec.full_name, '\&-legacy'
     @spec.platform = 'legacy'
 
     assert_equal true, uninstaller.path_ok?(@gemhome, @spec)
@@ -185,6 +172,8 @@ class TestGemUninstaller < Gem::InstallerTestCase
   end
 
   def test_uninstall_user
+    @user_spec = Gem::Specification.find_by_name 'b'
+
     uninstaller = Gem::Uninstaller.new(@user_spec.name,
                                        :executables  => true,
                                        :user_install => true)
@@ -192,20 +181,18 @@ class TestGemUninstaller < Gem::InstallerTestCase
     gem_dir = File.join Gem.user_dir, 'gems', @user_spec.full_name
 
     Gem.pre_uninstall do
-      assert File.exist?(gem_dir), 'gem_dir should exist'
+      assert_path_exists gem_dir
     end
 
     Gem.post_uninstall do
-      refute File.exist?(gem_dir), 'gem_dir should not exist'
+      refute_path_exists gem_dir
     end
 
     uninstaller.uninstall
 
-    refute File.exist?(gem_dir)
+    refute_path_exists gem_dir
 
     assert_same uninstaller, @pre_uninstall_hook_arg
     assert_same uninstaller, @post_uninstall_hook_arg
   end
-
 end
-

@@ -195,4 +195,19 @@ class TestGemUninstaller < Gem::InstallerTestCase
     assert_same uninstaller, @pre_uninstall_hook_arg
     assert_same uninstaller, @post_uninstall_hook_arg
   end
+
+  def test_uninstall_selection_greater_than_one
+    util_make_gems
+    
+    list = Gem::Specification.find_all_by_name('a')
+
+    uninstaller = Gem::Uninstaller.new('a')
+
+    use_ui Gem::MockGemUi.new("2\n") do
+      uninstaller.uninstall
+    end
+
+    updated_list = Gem::Specification.find_all_by_name('a')
+    assert_equal list.length - 1, updated_list.length
+  end
 end

@@ -84,7 +84,7 @@ class Gem::Uninstaller
       if index == list.size then
         remove_all list.dup
       elsif index >= 0 && index < list.size then
-        uninstall_gem list[index], list.dup
+        uninstall_gem list[index]
       else
         say "Error: must enter a number [1-#{list.size+1}]"
       end

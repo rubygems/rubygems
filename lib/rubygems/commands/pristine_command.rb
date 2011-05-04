@@ -62,8 +62,9 @@ extensions.
     specs = if options[:all] then
               Gem::Specification.map
             else
-              gem_name = get_one_gem_name
-              Gem::Specification.find_all_by_name gem_name, options[:version]
+              get_all_gem_names.map do |gem_name|
+                Gem::Specification.find_all_by_name gem_name, options[:version]
+              end.flatten
             end
 
     if specs.to_a.empty? then

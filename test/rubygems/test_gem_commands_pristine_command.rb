@@ -90,6 +90,27 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     assert_empty out, out.inspect
   end
 
+  def test_execute_many
+    a = quick_spec 'a'
+    b = quick_spec 'b'
+
+    install_gem a
+    install_gem b
+
+    @cmd.options[:args] = %w[a b]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    out = @ui.output.split "\n"
+
+    assert_equal "Restoring gems to pristine condition...", out.shift
+    assert_equal "Restored #{a.full_name}", out.shift
+    assert_equal "Restored #{b.full_name}", out.shift
+    assert_empty out, out.inspect
+  end
+
   def test_execute_missing_cache_gem
     a = quick_spec 'a' do |s|
       s.executables = %w[foo]
@@ -144,7 +165,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
       end
     end
 
-    assert_match %r|specify a gem name|, e.message
+    assert_match %r|at least one gem name|, e.message
   end
 
 end

@@ -50,7 +50,7 @@ installed elsewhere in GEM_PATH the cleanup command won't touch it.
                           Gem::Specification.find_all_by_name gem_name
                         end.flatten
                       else
-                        Gem::Specification.all
+                        Gem::Specification.to_a
                       end
 
     gems_to_cleanup = gems_to_cleanup.select { |spec|

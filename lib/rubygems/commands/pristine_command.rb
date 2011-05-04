@@ -57,8 +57,6 @@ extensions.
   end
 
   def execute
-    gem_name = nil
-
     specs = if options[:all] then
               Gem::Specification.map
             else
@@ -69,7 +67,7 @@ extensions.
 
     if specs.to_a.empty? then
       raise Gem::Exception,
-            "Failed to find gem #{gem_name} #{options[:version]}"
+            "Failed to find gems #{options[:args]} #{options[:version]}"
     end
 
     install_dir = Gem.dir # TODO use installer option

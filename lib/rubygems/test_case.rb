@@ -20,6 +20,7 @@ require 'rubygems/package'
 require 'rubygems/test_utilities'
 require 'pp'
 require 'zlib'
+require 'pathname'
 Gem.load_yaml
 
 require 'rubygems/mock_gem_ui'
@@ -305,7 +306,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # Writes a binary file to +path+ which is relative to +@gemhome+
 
   def write_file(path)
-    path = File.join @gemhome, path unless path =~ /^\//
+    path = File.join @gemhome, path unless Pathname.new(path).absolute?
     dir = File.dirname path
     FileUtils.mkdir_p dir
 

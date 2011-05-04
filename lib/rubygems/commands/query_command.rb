@@ -241,12 +241,13 @@ class Gem::Commands::QueryCommand < Gem::Command
           if matching_tuples.length == 1 then
             loaded_from = File.dirname File.dirname(spec.loaded_from)
             entry << "\n" << "    Installed at: #{loaded_from}"
-            entry << "\n" << "    Created: #{spec.date.strftime("%Y-%m-%d")}"
           else
-            entry << format_multi_label('Installed at', matching_tuples) do |spec|
-              File.dirname File.dirname(spec.loaded_from)
-            end 
-            entry << format_multi_label('Created', matching_tuples) { |s| s.date.strftime("%Y-%m-%d") }
+            label = 'Installed at'
+            matching_tuples.each do |(_,version,_,s),|
+              loaded_from = File.dirname File.dirname(s.loaded_from)
+              entry << "\n" << "    #{label} (#{version}): #{loaded_from}"
+              label = ' ' * label.length
+            end
           end
         end
 
@@ -258,16 +259,5 @@ class Gem::Commands::QueryCommand < Gem::Command
     say output.join(options[:details] ? "\n\n" : "\n")
   end
 
-  def format_multi_label(label, matching_tuples)
-    entry = ""
-
-    matching_tuples.each do |(_,version,_,s),|
-      target = yield s
-      entry << "\n" << "    #{label} (#{version}): #{target}"
-      label = ' ' * label.length
-    end
-
-    return entry
-  end
 end
 

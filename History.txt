@@ -4,6 +4,15 @@ This release focused on properly encapsulating functionality.  Most of this
 work focused on moving functionality out of Gem::SourceIndex and
 Gem::GemPathSearcher into Gem::Specification where it belongs.
 
+After installing RubyGems 1.8.0 you will see deprecations when loading your
+exsting gems.  Run `gem pristine --all --no-extensions` to regenerate your
+gem specifications safely.
+
+Currently RubyGems does not save the build arguments used to build gems with
+extensions.  You will need to run `gem pristine gem_with_extension --
+--build-arg` to regenerate a gem with an extension where it requires special
+build arguments.
+
 * 24(+) Deprecations (WOOT!):
 
   * DependencyList.from_source_index deprecated the source_index argument.

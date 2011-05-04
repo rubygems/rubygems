@@ -855,7 +855,7 @@ module Gem
   def self.required_location(gemname, libfile, *requirements)
     requirements = Gem::Requirement.default if requirements.empty?
 
-    matches = Gem.source_index.find_name gemname, requirements
+    matches = Gem::Specification.find_all_by_name gemname, *requirements
 
     return nil if matches.empty?
 

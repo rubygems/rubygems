@@ -932,6 +932,22 @@ class TestGem < Gem::TestCase
     assert_equal %w[http://gems.example.com/], Gem.sources
   end
 
+  def test_self_try_activate_missing_dep
+    a = util_spec 'a', '1.0', 'b' => '>= 1.0'
+
+    a_file = File.join a.gem_dir, 'lib', 'a_file.rb'
+
+    write_file a_file do |io|
+      io.puts '# a_file.rb'
+    end
+
+    e = assert_raises Gem::LoadError do
+      Gem.try_activate 'a_file'
+    end
+
+    assert_match %r%Could not find b %, e.message
+  end
+
   def test_ssl_available_eh
     orig_Gem_ssl_available = Gem.ssl_available?
 

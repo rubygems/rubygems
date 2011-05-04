@@ -208,8 +208,7 @@ module Gem
     begin
       spec.activate
     rescue Gem::LoadError # this could fail due to gem dep collisions, go lax
-      # TODO: actually test this
-      Gem::Specification.find(spec.name).activate
+      Gem::Specification.find_by_name(spec.name).activate
     end
 
     return true

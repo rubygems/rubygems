@@ -112,28 +112,24 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_missing_cache_gem
-    a = quick_spec 'a' do |s|
-      s.executables = %w[foo]
-    end
+    a_2 = quick_spec 'a', 2
+    a_3 = quick_spec 'a', 3
 
-    write_file File.join(@tempdir, 'bin', 'foo') do |fp|
-      fp.puts "#!/usr/bin/ruby"
-    end
+    install_gem a_2
+    install_gem a_3
 
-    install_gem a
-
-    a_data = nil
-    open File.join(@gemhome, 'cache', a.file_name), 'rb' do |fp|
-      a_data = fp.read
+    a_2_data = nil
+    open File.join(@gemhome, 'cache', a_2.file_name), 'rb' do |fp|
+      a_2_data = fp.read
     end
 
     util_setup_fake_fetcher
-    util_setup_spec_fetcher a
+    util_setup_spec_fetcher a_2
 
-    url = "http://gems.example.com/gems/#{a.file_name}"
-    Gem::RemoteFetcher.fetcher.data[url] = a_data
+    url = "http://gems.example.com/gems/#{a_2.file_name}"
+    Gem::RemoteFetcher.fetcher.data[url] = a_2_data
 
-    FileUtils.rm a.cache_file
+    FileUtils.rm a_2.cache_file
 
     @cmd.options[:args] = %w[a]
 
@@ -148,7 +144,8 @@ class TestGemCommandsPristineCommand < Gem::TestCase
       "Restored a-1",
       "Cached gem for a-2 not found, attempting to fetch...",
       "Restored a-2",
-      "Restored a-3.a"
+      "Restored a-3.a",
+      "Restored a-3",
     ].each do |line|
       assert_equal line, out.shift
     end

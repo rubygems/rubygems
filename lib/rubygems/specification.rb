@@ -705,12 +705,11 @@ class Gem::Specification
 
     return false if Gem.loaded_specs[self.name]
 
-    self.activated = true
-
     activate_dependencies
     add_self_to_load_path
 
     Gem.loaded_specs[self.name] = self
+    self.activated = true
 
     return true
   end

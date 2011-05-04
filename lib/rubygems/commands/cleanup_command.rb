@@ -1,5 +1,4 @@
 require 'rubygems/command'
-require 'rubygems/source_index'
 require 'rubygems/dependency_list'
 require 'rubygems/uninstaller'
 

@@ -195,8 +195,8 @@ class Gem::Indexer
     Gem.time "Generated #{name} index" do
       open(file, 'wb') do |io|
         specs = index.map do |*spec|
-          # We have to splat here because latest_specs is an array,
-          # while the others are hashes. See the TODO in source_index.rb
+          # We have to splat here because latest_specs is an array, while the
+          # others are hashes.
           spec = spec.flatten.last
           platform = spec.original_platform
 

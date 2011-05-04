@@ -155,17 +155,5 @@ class Gem::Commands::DependencyCommand < Gem::Command
     result
   end
 
-  def find_gems(name, source_index)
-    specs = {}
-
-    spec_list = source_index.search name, options[:version]
-
-    spec_list.each do |spec|
-      specs[spec.full_name] = [source_index, spec]
-    end
-
-    specs
-  end
-
 end
 

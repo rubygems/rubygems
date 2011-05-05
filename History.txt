@@ -1,4 +1,17 @@
-﻿=== 1.8.0 / 2011-04-34
+﻿=== 1.8.1 / 2011-05-05
+
+* 1 minor enhancement:
+
+  * Added Gem::Requirement#specific? and Gem::Dependency#specific?
+
+* 4 bug fixes:
+
+  * Typo on Indexer rendered it useless on Windows
+  * gem dep can fetch remote dependencies for non-latest gems again.
+  * gem uninstall with multiple versions no longer crashes with ArgumentError
+  * Always use binary mode for File.open to keep Windows happy
+
+=== 1.8.0 / 2011-04-34
 
 This release focused on properly encapsulating functionality.  Most of this
 work focused on moving functionality out of Gem::SourceIndex and

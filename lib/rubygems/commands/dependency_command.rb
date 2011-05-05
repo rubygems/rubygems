@@ -43,6 +43,11 @@ class Gem::Commands::DependencyCommand < Gem::Command
   end
 
   def execute
+    if options[:reverse_dependencies] and remote? and not local? then
+      alert_error 'Only reverse dependencies for local gems are supported.'
+      terminate_interaction 1
+    end
+
     options[:args] << '' if options[:args].empty?
 
     pattern = if options[:args].length == 1 and
@@ -58,11 +63,6 @@ class Gem::Commands::DependencyCommand < Gem::Command
       Gem::Dependency.new pattern, options[:version]
     }
     dependency.prerelease = options[:prerelease]
-
-    if options[:reverse_dependencies] and remote? and not local? then
-      alert_error 'Only reverse dependencies for local gems are supported.'
-      terminate_interaction 1
-    end
 
     specs = []
 

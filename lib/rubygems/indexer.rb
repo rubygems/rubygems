@@ -80,7 +80,7 @@ class Gem::Indexer
     @master_index = File.join @directory, 'yaml'
     @marshal_index = File.join @directory, marshal_name
 
-    @quick_dir = File.join, @directory, 'quick'
+    @quick_dir = File.join @directory, 'quick'
     @quick_marshal_dir = File.join @quick_dir, marshal_name
     @quick_marshal_dir_base = File.join "quick", marshal_name # FIX: UGH
 

@@ -72,7 +72,8 @@ class Gem::Commands::DependencyCommand < Gem::Command
       fetcher = Gem::SpecFetcher.fetcher
 
       # REFACTOR: fetcher.find_specs_matching => specs
-      specs_and_sources = fetcher.find_matching(dependency, false, true,
+      specs_and_sources = fetcher.find_matching(dependency,
+                                                dependency.specific?, true,
                                                 dependency.prerelease?)
 
       specs.concat specs_and_sources.map { |spec_tuple, source_uri|

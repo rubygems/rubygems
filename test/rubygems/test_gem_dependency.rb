@@ -166,5 +166,12 @@ class TestGemDependency < Gem::TestCase
 
     assert d.prerelease?
   end
+
+  def test_specific
+    refute dep('a', '> 1').specific?
+
+    assert dep('a', '= 1').specific?
+  end
+
 end
 

@@ -185,6 +185,24 @@ ERROR:  Only reverse dependencies for local gems are supported.
     assert_equal '', @ui.error
   end
 
+  def test_execute_remote_version
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
+
+    util_setup_spec_fetcher @a1, @a2
+
+    @cmd.options[:args] = %w[a]
+    @cmd.options[:domain] = :remote
+    @cmd.options[:version] = req '= 1'
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal "Gem a-1\n\n", @ui.output
+    assert_equal '', @ui.error
+  end
+
   def test_execute_prerelease
     @fetcher = Gem::FakeFetcher.new
     Gem::RemoteFetcher.fetcher = @fetcher

@@ -227,6 +227,13 @@ class Gem::Dependency
     matches = matches.sort_by { |s| s.sort_obj } # HACK: shouldn't be needed
   end
 
+  ##
+  # True if the dependency will not always match the latest version.
+
+  def specific?
+    @requirement.specific?
+  end
+
   def to_specs
     matches = matching_specs true
 

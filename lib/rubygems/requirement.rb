@@ -138,6 +138,15 @@ class Gem::Requirement
   alias :=== :satisfied_by?
   alias :=~ :satisfied_by?
 
+  ##
+  # True if the requirement will not always match the latest version.
+
+  def specific?
+    return true if @requirements.length > 1 # GIGO, > 1, > 2 is silly
+
+    not %w[> >=].include? @requirements.first.first # grab the operator
+  end
+
   def to_s # :nodoc:
     as_list.join ", "
   end

@@ -38,7 +38,7 @@ class TestGemBuilder < Gem::TestCase
     spec = Dir.chdir @tempdir do
       FileUtils.mkdir 'lib'
       File.open('lib/code.rb', 'w') { |f| f << "something" }
-      Gem::Package.open(File.open(builder.build)) { |x| x.metadata }
+      Gem::Package.open(File.open(builder.build, 'rb')) { |x| x.metadata }
     end
   end
 end

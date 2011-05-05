@@ -31,6 +31,8 @@ module Gem::Package
 
   class TarInvalidError < Error; end
 
+  # FIX: zenspider said: does it really take an IO?
+  # passed to a method called open?!? that seems stupid.
   def self.open(io, mode = "r", signer = nil, &block)
     tar_type = case mode
                when 'r' then TarInput

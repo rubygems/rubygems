@@ -73,7 +73,7 @@ class Gem::Uninstaller
       raise Gem::InstallError, "cannot uninstall, check `gem list -d #{@gem}`"
 
     elsif list.size > 1 and @force_all then
-      remove_all list.dup
+      remove_all list
 
     elsif list.size > 1 then
       gem_names = list.collect {|gem| gem.full_name} + ["All versions"]
@@ -82,7 +82,7 @@ class Gem::Uninstaller
       _, index = choose_from_list "Select gem to uninstall:", gem_names
 
       if index == list.size then
-        remove_all list.dup
+        remove_all list
       elsif index >= 0 && index < list.size then
         uninstall_gem list[index]
       else
@@ -171,7 +171,7 @@ class Gem::Uninstaller
   # NOTE: removes uninstalled gems from +list+.
 
   def remove_all(list)
-    list.dup.each { |spec| uninstall_gem spec }
+    list.each { |spec| uninstall_gem spec }
   end
 
   ##

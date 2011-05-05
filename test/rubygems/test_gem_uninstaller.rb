@@ -27,6 +27,18 @@ class TestGemUninstaller < Gem::InstallerTestCase
     assert_match %r|/foo/bar$|, uninstaller.instance_variable_get(:@gem_home)
   end
 
+  def test_remove_all
+    uninstaller = Gem::Uninstaller.new nil
+
+    ui = Gem::MockGemUi.new "y\n"
+
+    use_ui ui do
+      uninstaller.remove_all [@spec]
+    end
+
+    refute_path_exists @spec.gem_dir
+  end
+
   def test_remove_executables_force_keep
     uninstaller = Gem::Uninstaller.new nil, :executables => false
 

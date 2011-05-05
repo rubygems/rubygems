@@ -171,7 +171,7 @@ class Gem::Uninstaller
   # NOTE: removes uninstalled gems from +list+.
 
   def remove_all(list)
-    list.dup.each { |spec| uninstall_gem spec, list }
+    list.dup.each { |spec| uninstall_gem spec }
   end
 
   ##

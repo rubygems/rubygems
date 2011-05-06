@@ -421,7 +421,7 @@ module Gem
 
   def self.each_load_path(partials)
     partials.each do |gp|
-      base = gp.basename
+      base = File.basename(gp)
       specfn = dir.specifications.add(base + ".gemspec")
       if specfn.exist?
         spec = eval(specfn.read)
@@ -598,7 +598,7 @@ module Gem
   def self.latest_partials(gemdir)
     latest = {}
     all_partials(gemdir).each do |gp|
-      base = gp.basename
+      base = File.basename(gp)
 
       if base.to_s =~ /(.*)-((\d+\.)*\d+)/ then
         name, version = $1, $2

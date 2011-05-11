@@ -1,3 +1,6 @@
+require "rubygems"
+require "rubygems/deprecate"
+
 ##
 # GemPathSearcher has the capability to find loadable files inside
 # gems.  It generates data up front to speed up searches later.

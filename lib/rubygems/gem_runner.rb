@@ -4,6 +4,7 @@
 # See LICENSE.txt for permissions.
 #++
 
+require "rubygems"
 require 'rubygems/command_manager'
 require 'rubygems/config_file'
 require 'rubygems/doc_manager'

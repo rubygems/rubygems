@@ -23,7 +23,7 @@
 module Deprecate
 
   def self.skip # :nodoc:
-    @skip ||= false
+    @skip.nil? ? (@skip = true) : @skip
   end
 
   def self.skip= v # :nodoc:
@@ -33,8 +33,8 @@ module Deprecate
   ##
   # Temporarily turn off warnings. Intended for tests only.
 
-  def skip_during
-    Deprecate.skip, original = true, Deprecate.skip
+  def skip_during(will_skip = true)
+    Deprecate.skip, original = will_skip, Deprecate.skip
     yield
   ensure
     Deprecate.skip = original

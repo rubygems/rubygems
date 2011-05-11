@@ -240,7 +240,7 @@ class Gem::Dependency
     # TODO: check Gem.activated_spec[self.name] in case matches falls outside
 
     if matches.empty? then
-      specs = Gem::Specification.map(&:full_name).join ", "
+      specs = Gem::Specification.all_names.join ", "
       error = Gem::LoadError.new "Could not find #{name} (#{requirement}) amongst [#{specs}]"
       error.name        = self.name
       error.requirement = self.requirement

@@ -103,7 +103,6 @@ module Deprecate
       alias_method old, name
       define_method name do |*args, &block| # TODO: really works on 1.8.7?
         unless Deprecate.skip
-          klass = 
           warning = Warning.new({
             :target => (self.kind_of? Module) ? "#{self}." : "#{self.class}#",
             :method_name => name,

@@ -274,6 +274,9 @@ class Gem::Specification
 
   def self._resort! # :nodoc:
     @@all.sort! { |a, b|
+      if a.nil? or b.nil?
+        p self
+      end
       names = a.name <=> b.name
       next names if names.nonzero?
       b.version <=> a.version
@@ -547,7 +550,7 @@ class Gem::Specification
     rescue SignalException, SystemExit
       raise
     rescue SyntaxError, Exception => e
-      warn "Invalid gemspec in [#{file}]: #{e}"
+      warn "Invalid gemspec in [#{file}]: #{e}\n\t#{e.backtrace.first}"
     end
 
     nil

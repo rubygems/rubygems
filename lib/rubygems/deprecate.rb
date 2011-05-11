@@ -21,13 +21,46 @@
 #     end
 
 module Deprecate
+  
+  SKIP_DEFAULT = false
+  @skip = nil
 
   def self.skip # :nodoc:
-    @skip.nil? ? (@skip = true) : @skip
+    @skip.nil? ? SKIP_DEFAULT : @skip
   end
 
   def self.skip= v # :nodoc:
     @skip = v
+  end
+
+  def self.saved_warnings # :nodoc:
+    @saved_warnings ||= []
+  end
+  
+  def self.add_warning w  # :nodoc:
+    warn "Warning: #{w.message} (Further warnings suppressed until exit.)\n#{w.loc}" if saved_warnings.empty?
+    unless saved_warnings.include? w
+      @saved_warnings << w
+    end
+  end
+
+  at_exit do
+    # todo: extract and test
+    unless Deprecate.saved_warnings.size == 0
+      warn Deprecate.report
+    end
+  end
+  
+  def self.report
+    out = ""
+    out << "Some of your installed gems called deprecated methods. See http://blog.zenspider.com/2011/05/rubygems-18-is-coming.html for background. Use 'gem pristine --all' to fix or 'rubygems update --system 1.7.2' to downgrade.\n"
+    last_message = nil
+    warnings = @saved_warnings.sort_by{|w| w.full_name}.each do |w|
+      out << (last_message = w.message) + "\n" unless last_message == w.message
+      out << w.loc
+      out << "\n"
+    end
+    out
   end
 
   ##
@@ -38,6 +71,24 @@ module Deprecate
     yield
   ensure
     Deprecate.skip = original
+  end
+
+  require 'ostruct'
+  class Warning < OpenStruct
+    def message
+      [ "#{target}#{method_name} is deprecated",
+              repl == :none ? " with no replacement" : "; use #{replacement} instead.",
+              " It will be removed on or after %4d-%02d-01." % [year, month]
+      ].join
+    end
+    
+    def loc
+      "  called from #{location.join(":")}"
+    end
+    
+    def full_name
+      "#{target}#{method_name}"
+    end
   end
 
   ##
@@ -51,14 +102,18 @@ module Deprecate
       old = "_deprecated_#{name}"
       alias_method old, name
       define_method name do |*args, &block| # TODO: really works on 1.8.7?
-        klass = self.kind_of? Module
-        target = klass ? "#{self}." : "#{self.class}#"
-        msg = [ "NOTE: #{target}#{name} is deprecated",
-                repl == :none ? " with no replacement" : ", use #{repl}",
-                ". It will be removed on or after %4d-%02d-01." % [year, month],
-                "\n#{target}#{name} called from #{Gem.location_of_caller.join(":")}",
-              ]
-        warn "#{msg.join}." unless Deprecate.skip
+        unless Deprecate.skip
+          klass = 
+          warning = Warning.new({
+            :target => (self.kind_of? Module) ? "#{self}." : "#{self.class}#",
+            :method_name => name,
+            :location => Gem.location_of_caller,
+            :replacement => repl,
+            :year => year,
+            :month => month
+          })
+          Deprecate.add_warning warning
+        end
         send old, *args, &block
       end
     }

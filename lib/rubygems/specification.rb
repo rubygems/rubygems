@@ -570,6 +570,28 @@ class Gem::Specification
   end
 
   ##
+  # Return a list of all outdated specifications. This method is HEAVY
+  # as it must go fetch specifications from the server.
+
+  def self.outdated
+    outdateds = []
+
+    # TODO: maybe we should switch to rubygems' version service?
+    fetcher = Gem::SpecFetcher.fetcher
+
+    latest_specs.each do |local|
+      dependency = Gem::Dependency.new local.name, ">= #{local.version}"
+      remotes    = fetcher.find_matching dependency
+      remotes    = remotes.map { |(_, version, _), _| version }
+      latest     = remotes.sort.last
+
+      outdateds << local.name if latest and local.version < latest
+    end
+
+    outdateds
+  end
+
+  ##
   # Removes +spec+ from the known specs.
 
   def self.remove_spec spec

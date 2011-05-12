@@ -1,4 +1,17 @@
-﻿=== 1.8.1 / 2011-05-05
+﻿=== 1.8.2 / 2011-05-11
+
+* 2 minor enhancements:
+
+  * Moved #outdated from OutdatedCommand to Specification (for Isolate).
+  * Print out a warning about missing executables.
+
+* 3 bug fixes:
+
+  * Added missing requires to fix various upgrade issues.
+  * `gem pristine` respects multiple gem repositories.
+  * setup.rb now execs with --disable-gems when possible
+
+=== 1.8.1 / 2011-05-05
 
 * 1 minor enhancement:
 

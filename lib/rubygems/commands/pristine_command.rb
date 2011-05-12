@@ -94,12 +94,13 @@ extensions.
       end
 
       # TODO use installer options
-      installer = Gem::Installer.new gem, :wrappers => true, :force => true
+      installer = Gem::Installer.new(gem,
+                                     :wrappers => true,
+                                     :force => true,
+                                     :install_dir => spec.base_dir)
       installer.install
 
       say "Restored #{spec.full_name}"
     end
   end
-
 end
-

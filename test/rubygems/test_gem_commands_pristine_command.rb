@@ -111,6 +111,36 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     assert_empty out, out.inspect
   end
 
+  def test_execute_many_multi_repo
+    a = quick_spec 'a'
+    install_gem a
+
+    Gem.clear_paths
+    gemhome2 = File.join @tempdir, 'gemhome2'
+    Gem.paths = { "GEM_PATH" => [gemhome2, @gemhome], "GEM_HOME" => gemhome2 }
+
+    b = quick_spec 'b'
+    install_gem b
+
+    @cmd.options[:args] = %w[a b]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    out = @ui.output.split "\n"
+
+    assert_equal "Restoring gems to pristine condition...", out.shift
+    assert_equal "Restored #{a.full_name}", out.shift
+    assert_equal "Restored #{b.full_name}", out.shift
+    assert_empty out, out.inspect
+
+    assert_path_exists File.join(@gemhome, "gems", 'a-2')
+    refute_path_exists File.join(gemhome2, "gems", 'a-2')
+    assert_path_exists File.join(gemhome2, "gems", 'b-2')
+    refute_path_exists File.join(@gemhome, "gems", 'b-2')
+  end
+
   def test_execute_missing_cache_gem
     a_2 = quick_spec 'a', 2
     a_3 = quick_spec 'a', 3

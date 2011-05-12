@@ -109,8 +109,8 @@ module Deprecate
     
     def message
       [ "#{target}#{method_name} is deprecated",
-              replacement == :none ? " with no replacement" : "; use #{replacement} instead.",
-              " It will be removed on or after %4d-%02d-01." % [year, month]
+              replacement == :none ? " with no replacement" : "; use #{replacement} instead",
+              ". It will be removed on or after %4d-%02d-01." % [year, month]
       ].join
     end
     

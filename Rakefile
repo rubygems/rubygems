@@ -93,6 +93,13 @@ task :package do
   end
 end
 
+task :upload_to_rubyforge do
+  v = hoe.version
+  sh "rubyforge add_release rubygems rubygems #{v} pkg/rubygems-update-#{v}.gem"
+  sh "rubyforge add_file rubygems rubygems #{v} pkg/rubygems-#{v}.zip"
+  sh "rubyforge add_file rubygems rubygems #{v} pkg/rubygems-#{v}.tgz"
+end
+
 # Misc Tasks ---------------------------------------------------------
 
 # These tasks expect to have the following directory structure:

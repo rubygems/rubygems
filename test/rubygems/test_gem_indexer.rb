@@ -73,7 +73,9 @@ class TestGemIndexer < Gem::TestCase
                 ["b",      Gem::Version.new("2"),   "ruby"],
                 ["c",      Gem::Version.new("1.2"), "ruby"],
                 ["d",      Gem::Version.new("2.0"), "ruby"],
-                ["pl",     Gem::Version.new("1"),   "i386-linux"]]
+                ["dep_x",  Gem::Version.new("1"),   "ruby"],
+                ["pl",     Gem::Version.new("1"),   "i386-linux"],
+                ["x",      Gem::Version.new("1"),   "ruby"]]
 
     assert_equal expected, specs
 
@@ -87,7 +89,9 @@ class TestGemIndexer < Gem::TestCase
                 ["b",      Gem::Version.new("2"),   "ruby"],
                 ["c",      Gem::Version.new("1.2"), "ruby"],
                 ["d",      Gem::Version.new("2.0"), "ruby"],
-                ["pl",     Gem::Version.new("1"),   "i386-linux"]]
+                ["dep_x",  Gem::Version.new("1"),   "ruby"],
+                ["pl",     Gem::Version.new("1"),   "i386-linux"],
+                ["x",      Gem::Version.new("1"),   "ruby"]]
 
     assert_equal expected, latest_specs, 'latest_specs'
   end
@@ -211,6 +215,18 @@ class TestGemIndexer < Gem::TestCase
       <link>http://example.com</link>
     </item>
     <item>
+      <title>dep_x-1</title>
+      <description>
+&lt;pre&gt;This is a test description&lt;/pre&gt;
+      </description>
+      <author>example@example.com (A User)</author>
+      <guid>dep_x-1</guid>
+      <enclosure url=\"http://gems.example.com/gems/dep_x-1.gem\"
+                 length=\"3584\" type=\"application/octet-stream\" />
+      <pubDate>#{@dep_x.date.rfc2822}</pubDate>
+      <link>http://example.com</link>
+    </item>
+    <item>
       <title>pl-1-x86-linux</title>
       <description>
 &lt;pre&gt;This is a test description&lt;/pre&gt;
@@ -220,6 +236,18 @@ class TestGemIndexer < Gem::TestCase
       <enclosure url=\"http://gems.example.com/gems/pl-1-x86-linux.gem\"
                  length=\"3072\" type=\"application/octet-stream\" />
       <pubDate>#{@pl1.date.rfc2822}</pubDate>
+      <link>http://example.com</link>
+    </item>
+    <item>
+      <title>x-1</title>
+      <description>
+&lt;pre&gt;This is a test description&lt;/pre&gt;
+      </description>
+      <author>example@example.com (A User)</author>
+      <guid>x-1</guid>
+      <enclosure url=\"http://gems.example.com/gems/x-1.gem\"
+                 length=\"3072\" type=\"application/octet-stream\" />
+      <pubDate>#{@x.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
     <item>
@@ -401,8 +429,8 @@ eighty characters.&lt;/pre&gt;
       @indexer.generate_index
     end
 
-    assert_match %r%^\.\.\.\.\.\.\.\.\.\.$%, @ui.output
-    assert_match %r%^Generating Marshal quick index gemspecs for 10 gems$%,
+    assert_match %r%^\.\.\.\.\.\.\.\.\.\.\.\.$%, @ui.output
+    assert_match %r%^Generating Marshal quick index gemspecs for 12 gems$%,
                  @ui.output
     assert_match %r%^Complete$%, @ui.output
     assert_match %r%^Generating specs index$%, @ui.output
@@ -432,7 +460,9 @@ eighty characters.&lt;/pre&gt;
       ['b',      Gem::Version.new(2),     'ruby'],
       ['c',      Gem::Version.new('1.2'), 'ruby'],
       ['d',      Gem::Version.new('2.0'), 'ruby'],
+      ['dep_x',  Gem::Version.new(1),     'ruby'],
       ['pl',     Gem::Version.new(1),     'i386-linux'],
+      ['x',      Gem::Version.new(1),     'ruby'],
     ]
 
     assert_equal expected, specs
@@ -466,7 +496,9 @@ eighty characters.&lt;/pre&gt;
       ['b',      Gem::Version.new(2),     'ruby'],
       ['c',      Gem::Version.new('1.2'), 'ruby'],
       ['d',      Gem::Version.new('2.0'), 'ruby'],
+      ['dep_x',  Gem::Version.new(1),     'ruby'],
       ['pl',     Gem::Version.new(1),     'i386-linux'],
+      ['x',      Gem::Version.new(1),     'ruby'],
     ]
 
     assert_equal expected, latest_specs

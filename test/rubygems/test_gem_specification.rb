@@ -1349,8 +1349,10 @@ end
                   a-3-x86-other_platform-1
                   a_evil-9
                   c-1.2
+                  dep_x-1
                   p-1
                   #{p1_curr.full_name}
+                  x-1
                  ]
 
     latest_specs = Gem::Specification.latest_specs.map(&:full_name).sort

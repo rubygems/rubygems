@@ -13,7 +13,6 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     end
 
     @cmd = Gem::Commands::UninstallCommand.new
-    @cmd.options[:executables] = true
     @executable = File.join(@gemhome, 'bin', 'executable')
   end
 
@@ -38,6 +37,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
 
     open @executable, "wb+" do |f| f.puts "binary" end
 
+    @cmd.options[:executables] = true
     @cmd.options[:args] = [@spec.name]
     use_ui @ui do
       @cmd.execute
@@ -61,6 +61,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     formatted_executable = File.join @gemhome, 'bin', 'foo-executable-bar'
     assert_equal true, File.exist?(formatted_executable)
 
+    @cmd.options[:executables] = true
     @cmd.options[:format_executable] = true
     @cmd.execute
 
@@ -70,6 +71,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_execute_not_installed
+    @cmd.options[:executables] = true
     @cmd.options[:args] = ["foo"]
     e = assert_raises Gem::InstallError do
       use_ui @ui do
@@ -95,6 +97,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
       end
     end
 
+    @cmd.options[:executables] = true
     @cmd.options[:args] = ["pre"]
 
     use_ui @ui do
@@ -103,6 +106,62 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
 
     output = @ui.output
     assert_match(/Successfully uninstalled/, output)
+  end
+
+  def test_execute_with_force_leaves_executable
+    ui = Gem::MockGemUi.new
+
+    util_make_gems
+    util_setup_gem ui
+    
+    @cmd.options[:version] = '1'
+    @cmd.options[:force] = true
+    @cmd.options[:args] = ['a']
+
+    use_ui ui do
+      @cmd.execute
+    end
+
+    assert !Gem::Specification.all_names.include?('a')
+    assert File.exist? File.join(@gemhome, 'bin', 'executable') 
+  end
+
+  def test_execute_with_force_uninstalls_all_versions
+    ui = Gem::MockGemUi.new
+
+    util_make_gems
+    util_setup_gem ui
+
+    assert Gem::Specification.find_all_by_name('a').length > 1
+    
+    @cmd.options[:force] = true
+    @cmd.options[:args] = ['a']
+
+    use_ui ui do
+      @cmd.execute
+    end
+
+    assert !Gem::Specification.all_names.include?('a')
+  end
+
+  def test_execute_with_force_ignores_dependencies
+    ui = Gem::MockGemUi.new
+
+    util_make_gems
+    util_setup_gem ui
+
+    assert Gem::Specification.find_all_by_name('dep_x').length > 0
+    assert Gem::Specification.find_all_by_name('x').length > 0
+    
+    @cmd.options[:force] = true
+    @cmd.options[:args] = ['x']
+
+    use_ui ui do
+      @cmd.execute
+    end
+
+    assert Gem::Specification.find_all_by_name('dep_x').length > 0
+    assert Gem::Specification.find_all_by_name('x').length == 0
   end
 end
 

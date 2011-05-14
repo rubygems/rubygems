@@ -16,7 +16,7 @@ class TestGemFormat < Gem::Package::TarTestCase
 
     gems = Dir[File.join(@gemhome, "cache", "*.gem")]
 
-    names = [@a1, @a2, @a3a, @a_evil9, @b2, @c1_2, @pl1].map do |spec|
+    names = [@a1, @a2, @a3a, @a_evil9, @b2, @c1_2, @dep_x, @pl1, @x].map do |spec|
       spec.original_name
     end
 

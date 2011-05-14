@@ -51,6 +51,11 @@ class Gem::Uninstaller
     @bin_dir           = options[:bin_dir]
     @format_executable = options[:format_executable]
 
+    if options[:force]
+      @force_all = true
+      @force_ignore = true
+    end
+
     # only add user directory if install_dir is not set
     @user_install = false
     @user_install = options[:user_install] unless options[:install_dir]
@@ -72,7 +77,7 @@ class Gem::Uninstaller
     if list.empty? then
       raise Gem::InstallError, "cannot uninstall, check `gem list -d #{@gem}`"
 
-    elsif list.size > 1 and @force_all then
+    elsif @force_all
       remove_all list
 
     elsif list.size > 1 then
@@ -98,7 +103,7 @@ class Gem::Uninstaller
 
   def uninstall_gem(spec)
     @spec = spec
-
+      
     unless dependencies_ok? spec
       unless ask_if_ok(spec)
         raise Gem::DependencyRemovalException,

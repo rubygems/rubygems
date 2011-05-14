@@ -75,9 +75,11 @@ class TestGemSourceIndex < Gem::TestCase
                   @b2.full_name,
                   @c1_2.full_name,
                   @a_evil9.full_name,
+                  @dep_x.full_name,
                   p1_ruby.full_name,
                   p1_platform.full_name,
-                  @pl1.full_name
+                  @pl1.full_name,
+                  @x.full_name,
                  ].sort
 
       latest_specs = @source_index.latest_specs.map { |s| s.full_name }.sort

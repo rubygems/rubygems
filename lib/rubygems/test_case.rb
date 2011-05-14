@@ -578,6 +578,12 @@ Also, a list:
     @a_evil9 = quick_gem('a_evil', '9', &init)
     @b2      = quick_gem('b', '2',      &init)
     @c1_2    = quick_gem('c', '1.2',    &init)
+    @x       = quick_gem('x', '1', &init)
+    @dep_x   = quick_gem('dep_x', '1') do |s|
+      s.files = %w[lib/code.rb]
+      s.require_paths = %w[lib]
+      s.add_dependency 'x', '>= 1'
+    end
 
     @pl1     = quick_gem 'pl', '1' do |s| # l for legacy
       s.files = %w[lib/code.rb]
@@ -598,8 +604,10 @@ Also, a list:
     write_file File.join(*%W[gems #{@b2.original_name}   lib code.rb])
     write_file File.join(*%W[gems #{@c1_2.original_name} lib code.rb])
     write_file File.join(*%W[gems #{@pl1.original_name}  lib code.rb])
+    write_file File.join(*%W[gems #{@x.original_name}  lib code.rb])
+    write_file File.join(*%W[gems #{@dep_x.original_name}  lib code.rb])
 
-    [@a1, @a2, @a3a, @a_evil9, @b2, @c1_2, @pl1].each do |spec|
+    [@a1, @a2, @a3a, @a_evil9, @b2, @c1_2, @pl1, @x, @dep_x].each do |spec|
       util_build_gem spec
     end
 

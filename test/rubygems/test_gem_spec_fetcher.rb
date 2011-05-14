@@ -286,7 +286,9 @@ class TestGemSpecFetcher < Gem::TestCase
                   ["a",      Gem::Version.new("2"),   "ruby"],
                   ["a_evil", Gem::Version.new("9"),   "ruby"],
                   ["c",      Gem::Version.new("1.2"), "ruby"],
-                  ["pl",     Gem::Version.new("1"),   "i386-linux"]],
+                  ['dep_x',  Gem::Version.new(1),     'ruby'],
+                  ["pl",     Gem::Version.new("1"),   "i386-linux"],
+                  ['x',  Gem::Version.new(1),     'ruby']],
                  specs[@uri].sort)
   end
 
@@ -325,7 +327,9 @@ class TestGemSpecFetcher < Gem::TestCase
                    ["a", Gem::Version.new("2"), "ruby"],
                    ["a_evil", Gem::Version.new("9"), "ruby"],
                    ["c", Gem::Version.new("1.2"), "ruby"],
-                   ["pl", Gem::Version.new("1"), "i386-linux"]]],
+                   ["dep_x", Gem::Version.new("1"), "ruby"],
+                   ["pl", Gem::Version.new("1"), "i386-linux"],
+                   ["x", Gem::Version.new("1"), "ruby"]]],
                  specs.values, 'specs file not loaded')
   end
 
@@ -343,7 +347,9 @@ class TestGemSpecFetcher < Gem::TestCase
       ['a',      Gem::Version.new('3.a'), Gem::Platform::RUBY],
       ['a_evil', Gem::Version.new(9),     Gem::Platform::RUBY],
       ['c',      Gem::Version.new('1.2'), Gem::Platform::RUBY],
+      ['dep_x',  Gem::Version.new(1),     Gem::Platform::RUBY],
       ['pl',     Gem::Version.new(1),     'i386-linux'],
+      ['x',      Gem::Version.new(1),     Gem::Platform::RUBY]
     ]
 
     assert_equal expected, @sf.load_specs(@uri, 'specs')

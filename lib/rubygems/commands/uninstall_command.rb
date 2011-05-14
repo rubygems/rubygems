@@ -54,6 +54,11 @@ class Gem::Commands::UninstallCommand < Gem::Command
       options[:format_executable] = value
     end
 
+    add_option('--[no-]force',
+               'Uninstall all gems according to name, regardless of dependencies upon it.') do |value, options|
+      options[:force] = value 
+    end
+
     add_version_option
     add_platform_option
   end

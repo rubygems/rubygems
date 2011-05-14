@@ -31,7 +31,9 @@ require 'rubygems/exceptions'
 Gem::CommandManager.instance.register_command :setup
 
 args = ARGV.clone
-
+if ENV["GEM_PREV_VER"]
+  args = [ '--previous-version', ENV["GEM_PREV_VER"] ] + args
+end
 args.unshift 'setup'
 
 begin

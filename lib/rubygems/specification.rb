@@ -17,14 +17,16 @@ class Date; end # for ruby_code if date.rb wasn't required
 # The Specification class contains the metadata for a Gem.  Typically
 # defined in a .gemspec file or a Rakefile, and looks like this:
 #
-#   spec = Gem::Specification.new do |s|
-#     s.name = 'example'
-#     s.version = '1.0'
-#     s.summary = 'Example gem specification'
-#     ...
+#   Gem::Specification.new do |s|
+#     s.name        = 'example'
+#     s.version     = '0.1.0'
+#     s.summary     = "This is an example!"
+#     s.description = "Much longer explanation of the example!"
+#     s.authors     = ["Ruby Coder"]
+#     s.email       = 'rubycoder@example.com'
+#     s.files       = ["lib/example.rb"]
+#     s.homepage    = 'http://rubygems.org/gems/example'
 #   end
-#
-# For a great way to package gems, use Hoe.
 
 class Gem::Specification
 
@@ -122,19 +124,37 @@ class Gem::Specification
   # :section: Required gemspec attributes
 
   ##
-  # This gem's name
+  # This gem's name.
+  #
+  # Usage:
+  #
+  #   spec.name = 'rake'
 
   attr_accessor :name
 
   ##
-  # This gem's version
+  # This gem's version.
+  #
+  # The version string can contain numbers and periods, such as +1.0.0+.
+  # A gem is a 'prerelease' gem if the version has a letter in it, such as
+  # +1.0.0.pre+.
+  #
+  # Usage:
+  #
+  #   spec.version = '0.4.1'
 
   attr_reader :version
 
   ##
-  # Paths in the gem to add to $LOAD_PATH when this gem is activated.
+  # Paths in the gem to add to <tt>$LOAD_PATH</tt> when this gem is activated.
   #
-  # The default ['lib'] is typically sufficient.
+  # Usage:
+  #
+  #   # If all library files are in the root directory...
+  #   spec.require_path = '.'
+  #
+  #   # If you have 'lib' and 'ext' directories...
+  #   spec.require_paths << 'ext'
 
   attr_accessor :require_paths
 
@@ -146,32 +166,110 @@ class Gem::Specification
   attr_accessor :rubygems_version
 
   ##
-  # The Gem::Specification version of this gemspec.
-  #
-  # Do not set this, it is set automatically when the gem is packaged.
-
-  attr_accessor :specification_version
-
-  ##
   # A short summary of this gem's description.  Displayed in `gem list -d`.
   #
-  # The description should be more detailed than the summary.  For example,
-  # you might wish to copy the entire README into the description.
+  # The description should be more detailed than the summary.
+  #
+  # Usage:
+  #
+  #   spec.summary = "This is a small summary of my gem"
 
   attr_reader :summary
+
+  ##
+  # The platform this gem runs on.
+  #
+  # This is usually Gem::Platform::RUBY or Gem::Platform::CURRENT.
+  #
+  # Most gems contain pure Ruby code; they should simply leave the default value
+  # in place. Some gems contain C (or other) code to be compiled into a Ruby
+  # “extension”. The should leave the default value in place unless their code
+  # will only compile on a certain type of system. Some gems consist of
+  # pre-compiled code (“binary gems”). It’s especially important that they set
+  # the platform attribute appropriately. A shortcut is to set the platform to
+  # Gem::Platform::CURRENT, which will cause the gem builder to set the platform
+  # to the appropriate value for the system on which the build is being performed.
+  #
+  # If this attribute is set to a non-default value, it will be included in the
+  # filename of the gem when it is built, e.g. fxruby-1.2.0-win32.gem.
+  #
+  # Usage:
+  #
+  #   spec.platform = Gem::Platform::Win32
+
+  def platform= platform
+    if @original_platform.nil? or
+       @original_platform == Gem::Platform::RUBY then
+      @original_platform = platform
+    end
+
+    case platform
+    when Gem::Platform::CURRENT then
+      @new_platform = Gem::Platform.local
+      @original_platform = @new_platform.to_s
+
+    when Gem::Platform then
+      @new_platform = platform
+
+    # legacy constants
+    when nil, Gem::Platform::RUBY then
+      @new_platform = Gem::Platform::RUBY
+    when 'mswin32' then # was Gem::Platform::WIN32
+      @new_platform = Gem::Platform.new 'x86-mswin32'
+    when 'i586-linux' then # was Gem::Platform::LINUX_586
+      @new_platform = Gem::Platform.new 'x86-linux'
+    when 'powerpc-darwin' then # was Gem::Platform::DARWIN
+      @new_platform = Gem::Platform.new 'ppc-darwin'
+    else
+      @new_platform = Gem::Platform.new platform
+    end
+
+    @platform = @new_platform.to_s
+
+    @new_platform
+  end
+
+  ##
+  # Files included in this gem.  You cannot append to this accessor, you must
+  # assign to it.
+  #
+  # Only add files you can require to this list, not directories, etc.
+  #
+  # Directories are automatically stripped from this list when building a gem,
+  # other non-files cause an error.
+  #
+  # Usage:
+  #
+  #   require 'rake'
+  #   spec.files = FileList['lib/**/*.rb',
+  #                         'bin/*',
+  #                         '[A-Z]*',
+  #                         'test/**/*'].to_a
+  #
+  #   # or without Rake...
+  #   spec.files = Dir['lib/**/*.rb'] + Dir['bin/*']
+  #   spec.files += Dir['[A-Z]*'] + Dir['test/**/*']
+  #   spec.files.reject! { |fn| fn.include? "CVS" }
+
+  def files
+    # DO NOT CHANGE TO ||= ! This is not a normal accessor. (yes, it sucks)
+    @files = [@files,
+              @test_files,
+              add_bindir(@executables),
+              @extra_rdoc_files,
+              @extensions,
+             ].flatten.uniq.compact
+  end
 
   ######################################################################
   # :section: Optional gemspec attributes
 
   ##
-  # Autorequire was used by old RubyGems to automatically require a file.
-  #
-  # Deprecated: It is neither supported nor functional.
-
-  attr_accessor :autorequire
-
-  ##
   # The path in the gem for executable scripts.  Usually 'bin'
+  #
+  # Usage:
+  #
+  #   spec.bindir = 'bin'
 
   attr_accessor :bindir
 
@@ -183,8 +281,244 @@ class Gem::Specification
 
   ##
   # A long description of this gem
+  #
+  # The description should be more detailed than the summary.
+  #
+  # Usage:
+  #
+  #   spec.description = <<-EOF
+  #     Rake is a Make-like program implemented in Ruby. Tasks and
+  #     dependencies are specified in standard Ruby syntax.
+  #   EOF
 
   attr_reader :description
+
+  ##
+  # A contact email for this gem
+  #
+  # Usage:
+  #
+  #   spec.email = 'john.jones@example.com'
+  #   spec.email = ['jack@example.com', 'jill@example.com']
+
+  attr_accessor :email
+
+  ##
+  # The URL of this gem's home page
+  #
+  # Usage:
+  #
+  #   spec.homepage = 'http://rake.rubyforge.org'
+
+  attr_accessor :homepage
+
+  ##
+  # A message that gets displayed after the gem is installed.
+  #
+  # Usage:
+  #
+  #   spec.post_install_message = "Thanks for installing!"
+
+  attr_accessor :post_install_message
+
+  ##
+  # The key used to sign this gem.  See Gem::Security for details.
+
+  attr_accessor :signing_key
+
+  ##
+  # Adds a development dependency named +gem+ with +requirements+ to this
+  # gem.
+  #
+  # Usage:
+  #
+  #   spec.add_development_dependency 'example', '~> 1.1', '>= 1.1.4'
+  #
+  # Development dependencies aren't installed by default and aren't
+  # activated when a gem is required.
+
+  def add_development_dependency(gem, *requirements)
+    add_dependency_with_type(gem, :development, *requirements)
+  end
+
+  ##
+  # Adds a runtime dependency named +gem+ with +requirements+ to this gem.
+  #
+  # Usage:
+  #
+  #   spec.add_runtime_dependency 'example', '~> 1.1', '>= 1.1.4'
+
+  def add_runtime_dependency(gem, *requirements)
+    add_dependency_with_type(gem, :runtime, *requirements)
+  end
+
+  ##
+  # Singular writer for #authors
+  #
+  # Usage:
+  #
+  #   spec.author = 'John Jones'
+
+  def author= o
+    self.authors = [o]
+  end
+
+  ##
+  # Sets the list of authors, ensuring it is an array.
+  #
+  # Usage:
+  #
+  #   spec.authors = ['John Jones', 'Mary Smith']
+
+  def authors= value
+    @authors = Array(value).flatten.grep(String)
+  end
+
+  ##
+  # Executables included in the gem.
+  #
+  # For example, the rake gem has rake as an executable. You don’t specify the
+  # full path (as in bin/rake); all application-style files are expected to be
+  # found in bindir.
+  #
+  # Usage:
+  #
+  #   spec.executables << 'rake'
+
+  def executables
+    @executables ||= []
+  end
+
+  ##
+  # Extensions to build when installing the gem, specifically the paths to
+  # extconf.rb-style files used to compile extensions.
+  #
+  # These files will be run when the gem is installed, causing the C (or
+  # whatever) code to be compiled on the user’s machine.
+  #
+  # Usage:
+  #
+  #  spec.extensions << 'ext/rmagic/extconf.rb'
+
+  def extensions
+    @extensions ||= []
+  end
+
+  ##
+  # Extra files to add to RDoc such as README or doc/examples.txt
+  #
+  # When the user elects to generate the RDoc documentation for a gem (typically
+  # at install time), all the library files are sent to RDoc for processing.
+  # This option allows you to have some non-code files included for a more
+  # complete set of documentation.
+  #
+  # Usage:
+  #
+  #  spec.extra_rdoc_files = ['README', 'doc/user-guide.txt']
+
+  def extra_rdoc_files
+    @extra_rdoc_files ||= []
+  end
+
+  ##
+  # The license for this gem.
+  #
+  # The license must be a short name, no more than 64 characters.
+  #
+  # This should just be the name of your license, make to include the full
+  # text of the license inside of the gem when you build it.
+  #
+  # Usage:
+  #   spec.license = 'MIT'
+
+  def license=o
+    self.licenses = [o]
+  end
+
+  ##
+  # The license(s) for the library.
+  #
+  # Each license must be a short name, no more than 64 characters.
+  #
+  # This should just be the name of your license, make to include the full
+  # text of the license inside of the gem when you build it.
+  #
+  # Usage:
+  #   spec.licenses = ['MIT', 'GPL-2']
+
+  def licenses= licenses
+    @licenses = Array licenses
+  end
+
+  ##
+  # Specifies the rdoc options to be used when generating API documentation.
+  #
+  # Usage:
+  #
+  #   spec.rdoc_options << '--title' << 'Rake -- Ruby Make' <<
+  #     '--main' << 'README' <<
+  #     '--line-numbers'
+
+  def rdoc_options
+    @rdoc_options ||= []
+  end
+
+  ##
+  # The version of ruby required by this gem
+  #
+  # Usage:
+  #
+  #  # If it will work with 1.8.6 or greater...
+  #  spec.required_ruby_version = '>= 1.8.6'
+  #
+  #  # Hopefully by now:
+  #  spec.required_ruby_version = '>= 1.9.2'
+
+  def required_ruby_version= req
+    @required_ruby_version = Gem::Requirement.create req
+  end
+
+  ##
+  # Lists the external (to RubyGems) requirements that must be met for this gem
+  # to work. It’s simply information for the user.
+  #
+  # Usage:
+  #
+  #   spec.requirements << 'libmagick, v6.0'
+  #   spec.requirements << 'A good graphics card'
+
+  def requirements
+    @requirements ||= []
+  end
+
+  ##
+  # A collection of unit test files. They will be loaded as unit tests when
+  # the user requests a gem to be unit tested.
+  #
+  # Usage:
+  #   spec.test_files = Dir.glob('test/tc_*.rb')
+  #   spec.test_files = ['tests/test-suite.rb']
+
+  def test_files= files
+    @test_files = Array files
+  end
+
+  ######################################################################
+  # :section: Specification internals
+
+  ##
+  # True when this gemspec has been activated. This attribute is not persisted.
+
+  attr_accessor :activated
+
+  alias :activated? :activated
+
+  ##
+  # Autorequire was used by old RubyGems to automatically require a file.
+  #
+  # Deprecated: It is neither supported nor functional.
+
+  attr_accessor :autorequire
 
   ##
   # Sets the default executable for this gem.
@@ -194,35 +528,11 @@ class Gem::Specification
   attr_writer :default_executable
 
   ##
-  # A contact email for this gem
-  #
-  # If you are providing multiple authors and multiple emails they should be
-  # in the same order such that:
-  #
-  #   Hash[*spec.authors.zip(spec.emails).flatten]
-  #
-  # Gives a hash of author name to email address.
-
-  attr_accessor :email
-
-  ##
-  # The URL of this gem's home page
-
-  attr_accessor :homepage
-
-  ##
   # True when this gemspec has been activated. This attribute is not persisted.
 
   attr_accessor :loaded
 
   alias :loaded? :loaded
-
-  ##
-  # True when this gemspec has been activated. This attribute is not persisted.
-
-  attr_accessor :activated
-
-  alias :activated? :activated
 
   ##
   # Path this gemspec was loaded from.  This attribute is not persisted.
@@ -235,11 +545,6 @@ class Gem::Specification
   attr_writer :original_platform # :nodoc:
 
   ##
-  # A message that gets displayed after the gem is installed
-
-  attr_accessor :post_install_message
-
-  ##
   # The version of ruby required by this gem
 
   attr_reader :required_ruby_version
@@ -248,7 +553,6 @@ class Gem::Specification
   # The RubyGems version required by this gem
 
   attr_reader :required_rubygems_version
-
   ##
   # The rubyforge project this gem lives under.  i.e. RubyGems'
   # rubyforge_project is "rubygems".
@@ -256,9 +560,11 @@ class Gem::Specification
   attr_accessor :rubyforge_project
 
   ##
-  # The key used to sign this gem.  See Gem::Security for details.
+  # The Gem::Specification version of this gemspec.
+  #
+  # Do not set this, it is set automatically when the gem is packaged.
 
-  attr_accessor :signing_key
+  attr_accessor :specification_version
 
   def self._all # :nodoc:
     unless defined?(@@all) && @@all then
@@ -797,29 +1103,6 @@ class Gem::Specification
 
   private :add_dependency_with_type
 
-  ##
-  # Adds a development dependency named +gem+ with +requirements+ to this
-  # Gem.  For example:
-  #
-  #   spec.add_development_dependency 'example', '~> 1.1', '>= 1.1.4'
-  #
-  # Development dependencies aren't installed by default and aren't
-  # activated when a gem is required.
-
-  def add_development_dependency(gem, *requirements)
-    add_dependency_with_type(gem, :development, *requirements)
-  end
-
-  ##
-  # Adds a runtime dependency named +gem+ with +requirements+ to this Gem.
-  # For example:
-  #
-  #   spec.add_runtime_dependency 'example', '~> 1.1', '>= 1.1.4'
-
-  def add_runtime_dependency(gem, *requirements)
-    add_dependency_with_type(gem, :runtime, *requirements)
-  end
-
   alias add_dependency add_runtime_dependency
 
   ##
@@ -850,31 +1133,10 @@ class Gem::Specification
   end
 
   ##
-  # Singular writer for #authors
-
-  def author= o
-    self.authors = [o]
-  end
-
-  ##
   # The list of author names who wrote this gem.
-  #
-  # If you are providing multiple authors and multiple emails they should be
-  # in the same order such that:
-  #
-  #   Hash[*spec.authors.zip(spec.emails).flatten]
-  #
-  # Gives a hash of author name to email address.
 
   def authors
     @authors ||= []
-  end
-
-  ##
-  # Sets the list of authors, ensuring it is an array.
-
-  def authors= value
-    @authors = Array(value).flatten.grep(String)
   end
 
   ##
@@ -1108,13 +1370,6 @@ class Gem::Specification
   end
 
   ##
-  # Executables included in the gem.
-
-  def executables
-    @executables ||= []
-  end
-
-  ##
   # Sets executables to +value+, ensuring it is an array. Don't
   # use this, push onto the array instead.
 
@@ -1124,27 +1379,12 @@ class Gem::Specification
   end
 
   ##
-  # Extensions to build when installing the gem.  See
-  # Gem::Installer#build_extensions for valid values.
-
-  def extensions
-    @extensions ||= []
-  end
-
-  ##
   # Sets extensions to +extensions+, ensuring it is an array. Don't
   # use this, push onto the array instead.
 
   def extensions= extensions
     # TODO: warn about setting instead of pushing
     @extensions = Array extensions
-  end
-
-  ##
-  # Extra files to add to RDoc such as README or doc/examples.txt
-
-  def extra_rdoc_files
-    @extra_rdoc_files ||= []
   end
 
   ##
@@ -1163,25 +1403,6 @@ class Gem::Specification
 
   def file_name
     "#{full_name}.gem"
-  end
-
-  ##
-  # Files included in this gem.  You cannot append to this accessor, you must
-  # assign to it.
-  #
-  # Only add files you can require to this list, not directories, etc.
-  #
-  # Directories are automatically stripped from this list when building a gem,
-  # other non-files cause an error.
-
-  def files
-    # DO NOT CHANGE TO ||= ! This is not a normal accessor. (yes, it sucks)
-    @files = [@files,
-              @test_files,
-              add_bindir(@executables),
-              @extra_rdoc_files,
-              @extensions,
-             ].flatten.uniq.compact
   end
 
   ##
@@ -1402,25 +1623,10 @@ class Gem::Specification
   end
 
   ##
-  # Singular accessor for #licenses
-
-  def license=o
-    self.licenses = [o]
-  end
-
-  ##
-  # The license(s) for the library.  Each license must be a short name, no
-  # more than 64 characters.
+  # Plural accessor for setting licenses
 
   def licenses
     @licenses ||= []
-  end
-
-  ##
-  # Set licenses to +licenses+, ensuring it is an array.
-
-  def licenses= licenses
-    @licenses = Array licenses
   end
 
   ##
@@ -1506,44 +1712,6 @@ class Gem::Specification
     @new_platform ||= Gem::Platform::RUBY
   end
 
-  ##
-  # The platform this gem runs on.  See Gem::Platform for details.
-  #
-  # Setting this to any value other than Gem::Platform::RUBY or
-  # Gem::Platform::CURRENT is probably wrong.
-
-  def platform= platform
-    if @original_platform.nil? or
-       @original_platform == Gem::Platform::RUBY then
-      @original_platform = platform
-    end
-
-    case platform
-    when Gem::Platform::CURRENT then
-      @new_platform = Gem::Platform.local
-      @original_platform = @new_platform.to_s
-
-    when Gem::Platform then
-      @new_platform = platform
-
-    # legacy constants
-    when nil, Gem::Platform::RUBY then
-      @new_platform = Gem::Platform::RUBY
-    when 'mswin32' then # was Gem::Platform::WIN32
-      @new_platform = Gem::Platform.new 'x86-mswin32'
-    when 'i586-linux' then # was Gem::Platform::LINUX_586
-      @new_platform = Gem::Platform.new 'x86-linux'
-    when 'powerpc-darwin' then # was Gem::Platform::DARWIN
-      @new_platform = Gem::Platform.new 'ppc-darwin'
-    else
-      @new_platform = Gem::Platform.new platform
-    end
-
-    @platform = @new_platform.to_s
-
-    @new_platform
-  end
-
   def pretty_print(q) # :nodoc:
     q.group 2, 'Gem::Specification.new do |s|', 'end' do
       q.breakable
@@ -1603,13 +1771,6 @@ class Gem::Specification
   end
 
   ##
-  # An ARGV style array of options to RDoc
-
-  def rdoc_options
-    @rdoc_options ||= []
-  end
-
-  ##
   # Sets rdoc_options to +value+, ensuring it is an array. Don't
   # use this, push onto the array instead.
 
@@ -1633,25 +1794,10 @@ class Gem::Specification
   end
 
   ##
-  # The version of ruby required by this gem
-
-  def required_ruby_version= req
-    @required_ruby_version = Gem::Requirement.create req
-  end
-
-  ##
   # The RubyGems version required by this gem
 
   def required_rubygems_version= req
     @required_rubygems_version = Gem::Requirement.create req
-  end
-
-  ##
-  # An array or things required by this gem.  Not used by anything
-  # presently.
-
-  def requirements
-    @requirements ||= []
   end
 
   ##
@@ -1787,13 +1933,6 @@ class Gem::Specification
     else
       @test_files = []
     end
-  end
-
-  ##
-  # Set test_files to +files+, ensuring it is an array.
-
-  def test_files= files
-    @test_files = Array files
   end
 
   def test_suite_file # :nodoc:

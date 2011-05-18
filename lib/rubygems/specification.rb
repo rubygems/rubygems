@@ -488,7 +488,7 @@ class Gem::Specification
       raise Gem::Exception, "YAML data doesn't evaluate to gem specification"
     end
 
-    spec.instance_eval { @specification ||= NONEXISTENT_SPECIFICATION_VERSION }
+    spec.instance_eval { @specification_version ||= NONEXISTENT_SPECIFICATION_VERSION }
 
     spec
   end

@@ -18,7 +18,7 @@ class TestDeprecate < Gem::TestCase
   end
 
   def test_defaults
-    assert_equal Deprecate::SKIP_DEFAULT, @original_skip
+    assert_equal false, @original_skip
   end
 
   def test_assignment
@@ -42,7 +42,7 @@ class TestDeprecate < Gem::TestCase
     end
 
     Deprecate.skip_during(nil) do
-      assert_equal Deprecate::SKIP_DEFAULT, Deprecate.skip
+      assert_equal false, Deprecate.skip
     end
 
     Deprecate.skip = nil
@@ -187,6 +187,7 @@ class TestDeprecate < Gem::TestCase
       s = Deprecate.report
       f = __FILE__
       assert_equal s, <<-REPORT
+
 Some of your installed gems called deprecated methods. See http://blog.zenspider.com/2011/05/rubygems-18-is-coming.html for background. Use 'gem pristine --all' to fix or 'rubygems update --system 1.7.2' to downgrade.
 
 TestDeprecate::Thing#foo is deprecated; use bar instead. It will be removed on or after 2099-03-01.

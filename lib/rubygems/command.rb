@@ -9,7 +9,7 @@ require 'rubygems/user_interaction'
 
 ##
 # Base class for all Gem commands.  When creating a new gem command, define
-# #new, #execute, #arguments, #defaults_str, #description and #usage
+# #initialize, #execute, #arguments, #defaults_str, #description and #usage
 # (as appropriate).  See the above mentioned methods for details.
 #
 # A very good example to look at is Gem::Commands::ContentsCommand
@@ -529,7 +529,7 @@ basic help message containing pointers to more information.
 end
 
 ##
-# This is where Commands will be placed in the namespace
+# \Commands will be placed in this namespace
 
 module Gem::Commands
 end

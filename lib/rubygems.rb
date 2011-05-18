@@ -72,8 +72,8 @@ require "rubygems/deprecate"
 # For RubyGems packagers, provide lib/rubygems/operating_system.rb and
 # override any defaults from lib/rubygems/defaults.rb.
 #
-# For Ruby implementers, provide lib/rubygems/#{RUBY_ENGINE}.rb and override
-# any defaults from lib/rubygems/defaults.rb.
+# For Ruby implementers, provide lib/rubygems/defaults/#{RUBY_ENGINE}.rb and
+# override any defaults from lib/rubygems/defaults.rb.
 #
 # If you need RubyGems to perform extra work on install or uninstall, your
 # defaults override file can set pre and post install and uninstall hooks.

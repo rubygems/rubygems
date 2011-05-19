@@ -114,6 +114,20 @@ end
     assert_equal @current_version, new_spec.specification_version
   end
 
+  def test_self_from_yaml_syck_bug
+    # This is equivalent to (and totally valid) psych 1.0 output and
+    # causes parse errors on syck.
+    yaml = @a1.to_yaml
+    yaml.sub!(/^date:.*/, "date: 2011-04-26 00:00:00.000000000Z")
+
+    new_spec = with_syck do
+      Gem::Specification.from_yaml yaml
+    end
+
+    assert_kind_of Time, @a1.date
+    assert_kind_of Time, new_spec.date
+  end
+
   def test_self_load
     full_path = @a2.spec_file
     write_file full_path do |io|
@@ -1382,6 +1396,24 @@ end
       File.open "bin/exec", "w" do |fp|
         fp.puts "#!#{Gem.ruby}"
       end
+    end
+  end
+
+  def with_syck
+    begin
+      require "yaml"
+      old_engine = YAML::ENGINE.yamler
+      YAML::ENGINE.yamler = 'syck'
+    rescue NameError
+      # probably on 1.8, ignore
+    end
+
+    yield
+  ensure
+    begin
+      YAML::ENGINE.yamler = old_engine
+    rescue NameError
+      # ignore
     end
   end
 end

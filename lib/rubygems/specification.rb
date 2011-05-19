@@ -266,7 +266,7 @@ class Gem::Specification
         Dir[File.join(dir, "*.gemspec")].map { |path|
           Gem::Specification.load path
         }
-      }.flatten
+      }.flatten.compact
       _resort!
     end
     @@all

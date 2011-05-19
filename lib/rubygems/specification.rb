@@ -561,7 +561,11 @@ class Gem::Specification
   def self.normalize_yaml_input(input)
     result = input.respond_to?(:read) ? input.read : input
     result = "--- " + result unless result =~ /\A--- /
-    result.gsub(/ !!null \n/, " \n")
+    result.gsub!(/ !!null \n/, " \n")
+    # date: 2011-04-26 00:00:00.000000000Z
+    # date: 2011-04-26 00:00:00.000000000 Z
+    result.gsub!(/^(date: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+?)Z/, '\1 Z')
+    result
   end
 
   ##

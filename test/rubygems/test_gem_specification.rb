@@ -141,6 +141,21 @@ end
     assert_equal @a2, spec
   end
 
+  def test_self_load_tainted
+    full_path = @a2.spec_file
+    write_file full_path do |io|
+      io.write @a2.to_ruby_for_cache
+    end
+
+    full_path.taint
+    loader = Thread.new { $SAFE = 1; Gem::Specification.load full_path }
+    spec = loader.value
+
+    @a2.files.clear
+
+    assert_equal @a2, spec
+  end
+
   def test_self_load_legacy_ruby
     spec = Deprecate.skip_during do
       eval LEGACY_RUBY_SPEC

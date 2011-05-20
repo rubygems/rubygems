@@ -518,9 +518,9 @@ class Gem::Specification
   # Loads Ruby format gemspec from +file+.
 
   def self.load file
-    return unless file && File.file?(file)
-
+    return unless file
     file = file.dup.untaint
+    return unless File.file?(file)
 
     code = if defined? Encoding
              File.read file, :encoding => "UTF-8"

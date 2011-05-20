@@ -1,4 +1,15 @@
-﻿=== 1.8.2 / 2011-05-11
+﻿=== 1.8.3 / 2011-05-19
+
+* 4 bug fixes:
+
+  * Fix independent testing of test_gem_package_tar_output.  Ruby Bug #4686 by
+    Shota Fukumori
+  * Fix test failures for systems with separate ruby versions.  Ruby Bug #3808
+    by Jeremy Evans
+  * Fixed some bad calls left behind after rolling out some refactorings.
+  * Syck has a parse error on (good) times output from Psych. (dazuma, et al)
+
+=== 1.8.2 / 2011-05-11
 
 * 2 minor enhancements:
 

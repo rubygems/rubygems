@@ -5,6 +5,12 @@ require 'rubygems/installer'
 require 'pathname'
 require 'tmpdir'
 
+# TODO: push this up to test_case.rb once battle tested
+$SAFE=1
+$LOAD_PATH.each do |path|
+  path.untaint
+end
+
 class TestGem < Gem::TestCase
 
   def setup

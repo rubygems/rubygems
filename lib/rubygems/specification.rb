@@ -264,7 +264,7 @@ class Gem::Specification
     unless defined?(@@all) && @@all then
       @@all = self.dirs.reverse.map { |dir|
         Dir[File.join(dir, "*.gemspec")].map { |path|
-          Gem::Specification.load path
+          Gem::Specification.load path.untaint
         }
       }.flatten.compact
       _resort!
@@ -1234,11 +1234,11 @@ class Gem::Specification
   # default Ruby platform.
 
   def full_name
-    if platform == Gem::Platform::RUBY or platform.nil? then
-      "#{@name}-#{@version}"
-    else
-      "#{@name}-#{@version}-#{platform}"
-    end
+    @full_name ||= if platform == Gem::Platform::RUBY or platform.nil? then
+                     "#{@name}-#{@version}".untaint
+                   else
+                     "#{@name}-#{@version}-#{platform}".untaint
+                   end
   end
 
   ##
@@ -2078,7 +2078,7 @@ class Gem::Specification
   # FIX: have this handle the platform/new_platform/original_platform bullshit
   def yaml_initialize(tag, vals) # :nodoc:
     vals.each do |ivar, val|
-      instance_variable_set "@#{ivar}", val
+      instance_variable_set "@#{ivar}", val.untaint
     end
 
     @original_platform = @platform # for backwards compatibility

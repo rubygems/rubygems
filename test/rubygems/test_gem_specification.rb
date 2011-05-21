@@ -569,14 +569,17 @@ end
   def test_full_name
     assert_equal 'a-1', @a1.full_name
 
+    @a1 = Gem::Specification.new "a", 1
     @a1.platform = Gem::Platform.new ['universal', 'darwin', nil]
     assert_equal 'a-1-universal-darwin', @a1.full_name
 
+    @a1 = Gem::Specification.new "a", 1
     @a1.instance_variable_set :@new_platform, 'mswin32'
     assert_equal 'a-1-mswin32', @a1.full_name, 'legacy'
 
     return if win_platform?
 
+    @a1 = Gem::Specification.new "a", 1
     @a1.platform = 'current'
     assert_equal 'a-1-x86-darwin-8', @a1.full_name
   end
@@ -589,6 +592,7 @@ end
     }
 
     test_cases.each do |arch, expected|
+      @a1 = Gem::Specification.new "a", 1
       util_set_arch arch
       @a1.platform = 'current'
       assert_equal expected, @a1.full_name

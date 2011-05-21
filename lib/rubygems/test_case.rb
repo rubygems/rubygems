@@ -1,4 +1,4 @@
-at_exit { $SAFE = 1 }
+# TODO: $SAFE = 1
 
 if defined? Gem::QuickLoader
   Gem::QuickLoader.load_full_rubygems_library
@@ -97,7 +97,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   undef_method :default_test if instance_methods.include? 'default_test' or
                                 instance_methods.include? :default_test
 
-  @@project_dir = Dir.pwd
+  @@project_dir = Dir.pwd.untaint
 
   ##
   # #setup prepares a sandboxed location to install gems.  All installs are
@@ -118,8 +118,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     @ui = Gem::MockGemUi.new
 
-    tmpdir = nil
-    Dir.chdir Dir.tmpdir do tmpdir = Dir.pwd end # HACK OSX /private/tmp
+    # Need to do this in the project because $SAFE fucks up _everything_
+    tmpdir = File.expand_path("tmp/test")
 
     if ENV['KEEP_FILES'] then
       @tempdir = File.join(tmpdir, "test_rubygems_#{$$}.#{Time.now.to_i}")
@@ -138,7 +138,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     Gem.ensure_gem_subdirectories @gemhome
 
     @orig_LOAD_PATH = $LOAD_PATH.dup
-    $LOAD_PATH.map! { |s| File.expand_path s }
+    $LOAD_PATH.map! { |s| File.expand_path(s).untaint }
 
     Dir.chdir @tempdir
 
@@ -251,7 +251,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       end
     end
 
-    gem = File.join(@tempdir, File.basename(spec.cache_file)).untaint
+    gem = File.join @tempdir, File.basename(spec.cache_file)
 
     Gem::Installer.new(gem, :wrappers => true).install
   end
@@ -267,6 +267,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
   ##
   # creates a temporary directory with hax
+  # TODO: deprecate and remove
 
   def create_tmpdir
     tmpdir = nil

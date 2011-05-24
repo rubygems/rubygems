@@ -252,41 +252,26 @@ class Gem::SpecFetcher
     spec_path  = source_uri + "#{file_name}.gz"
     cache_dir  = cache_dir spec_path
     local_file = File.join(cache_dir, file_name)
-    loaded     = false
+    retried    = false
 
-    if File.exist? local_file then
-      spec_dump =
-        @fetcher.fetch_path(spec_path, File.mtime(local_file)) rescue nil
-
-      loaded = true if spec_dump
-
-      spec_dump ||= Gem.read_binary local_file
+    spec_dump = if @update_cache then
+      FileUtils.mkdir_p cache_dir
+      @fetcher.cache_update_path(spec_path, local_file)
     else
-      spec_dump = @fetcher.fetch_path spec_path
-      loaded = true
+      @fetcher.cache_update_path(spec_path)
     end
 
-    specs = begin
-              Marshal.load spec_dump
-            rescue ArgumentError
-              spec_dump = @fetcher.fetch_path spec_path
-              loaded = true
-
-              Marshal.load spec_dump
-            end
-
-    if loaded and @update_cache then
-      begin
-        FileUtils.mkdir_p cache_dir
-
-        open local_file, 'wb' do |io|
-          io << spec_dump
-        end
-      rescue
+    begin
+      Marshal.load spec_dump
+    rescue ArgumentError
+      if @update_cache && !retried
+        FileUtils.rm local_file
+        retried = true
+        retry
+      else
+        raise Gem::Exception.new("Invalid spec cache file in #{local_file}")
       end
     end
-
-    specs
   end
 
 end

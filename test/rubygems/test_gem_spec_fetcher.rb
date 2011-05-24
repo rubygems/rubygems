@@ -362,6 +362,9 @@ class TestGemSpecFetcher < Gem::TestCase
   end
 
   def test_load_specs_cached
+    # Make sure the cached version is actually different:
+    @latest_specs << ['cached', Gem::Version.new('1.0.0'), 'ruby']
+    
     @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] = nil
     @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}"] =
       ' ' * Marshal.dump(@latest_specs).length
@@ -382,13 +385,11 @@ class TestGemSpecFetcher < Gem::TestCase
   end
 
   def test_load_specs_cached_empty
+    # Make sure the cached version is actually different:
+    @latest_specs << ['fixed', Gem::Version.new('1.0.0'), 'ruby']
+    # Setup valid data on the 'remote'
     @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] =
-      proc do
-        @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] =
           util_gzip(Marshal.dump(@latest_specs))
-
-        nil
-      end
 
     cache_dir = File.join Gem.user_home, '.gem', 'specs', 'gems.example.com%80'
 
@@ -397,6 +398,7 @@ class TestGemSpecFetcher < Gem::TestCase
     cache_file = File.join cache_dir, "latest_specs.#{Gem.marshal_version}"
 
     open cache_file, 'wb' do |io|
+      # Setup invalid data in the cache:
       io.write Marshal.dump(@latest_specs)[0, 10]
     end
 

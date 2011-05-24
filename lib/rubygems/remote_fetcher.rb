@@ -130,7 +130,7 @@ class Gem::RemoteFetcher
 
           remote_gem_path = source_uri + "gems/#{gem_file_name}"
 
-          gem = self.fetch_path remote_gem_path
+          gem = self.cache_update_path remote_gem_path, local_gem_path
         rescue Gem::RemoteFetcher::FetchError
           raise if spec.original_platform == spec.platform
 
@@ -141,11 +141,7 @@ class Gem::RemoteFetcher
 
           remote_gem_path = source_uri + "gems/#{alternate_name}"
 
-          gem = self.fetch_path remote_gem_path
-        end
-
-        File.open local_gem_path, 'wb' do |fp|
-          fp.write gem
+          gem = self.cache_update_path remote_gem_path, local_gem_path
         end
       end
     when 'file' then
@@ -237,6 +233,24 @@ class Gem::RemoteFetcher
     raise FetchError.new('timed out', uri.to_s)
   rescue IOError, SocketError, SystemCallError => e
     raise FetchError.new("#{e.class}: #{e}", uri.to_s)
+  end
+
+  ##
+  # Downloads +uri+ to +path+ if necessary. If no path is given, it just
+  # passes the data.
+
+  def cache_update_path(uri, path = nil)
+    mtime = path && File.stat(path).mtime rescue nil
+
+    if mtime && Net::HTTPNotModified === fetch_path(uri, mtime, true)
+      Gem.read_binary(path)
+    else
+      data = fetch_path(uri)
+      open(path, 'wb') do |io|
+        io.write data
+      end if path
+      data
+    end
   end
 
   ##

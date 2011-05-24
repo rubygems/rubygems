@@ -1039,6 +1039,29 @@ end
     end
   end
 
+  def test_default_executable_deprecation_warning
+    ENV["RUBYGEMS_SUPPRESS_DEPRECATION_WARNINGS"] = "*"
+    output = util_catch_stderr do
+      Gem::Specification.new.default_executable = 'dummy'
+    end
+    
+    assert output.split("\n").grep(/Gem::Specification#default_executable= is deprecated/).empty?
+
+    ENV["RUBYGEMS_SUPPRESS_DEPRECATION_WARNINGS"] = "Gem::Specification#default_executable="
+    output = util_catch_stderr do
+      Gem::Specification.new.default_executable = 'dummy'
+    end
+    
+    assert output.split("\n").grep(/Gem::Specification#default_executable= is deprecated/).empty?
+
+    ENV.delete("RUBYGEMS_SUPPRESS_DEPRECATION_WARNINGS")
+    output = util_catch_stderr do
+      Gem::Specification.new.default_executable = 'dummy'
+    end
+
+    assert !output.split("\n").grep(/Gem::Specification#default_executable= is deprecated/).empty?
+  end
+
   def test_validate_description
     util_setup_validate
 
@@ -1418,6 +1441,18 @@ end
         fp.puts "#!#{Gem.ruby}"
       end
     end
+  end
+  
+  def util_catch_stderr
+    old_stderr = $stderr
+    output = String.new
+    $stderr = StringIO.new(output, "w+")
+    
+    yield
+    
+    $stderr.close
+    $stderr = old_stderr
+    output
   end
 
   def with_syck

@@ -58,7 +58,12 @@ module Deprecate
                 ". It will be removed on or after %4d-%02d-01." % [year, month],
                 "\n#{target}#{name} called from #{Gem.location_of_caller.join(":")}",
               ]
-        warn "#{msg.join}." unless Deprecate.skip
+        # Having "NOTE: Gem::Specification#default_executable= is deprecated with no replacement. It will be removed on or after 2011-10-01."
+        # on servers is really useless. My development environment will tell me which gems use deprecated stuff. I would like my tasks
+        # run in crontabs to be quiet. Even if a task completes succesfully, I still get an email now, because of all that deprecation
+        # cruft.
+        warn "#{msg.join}." unless Deprecate.skip ||
+                                   (ENV['RUBYGEMS_SUPPRESS_DEPRECATION_WARNINGS'] || '') =~ /(^|,)(#{target}#{name}|\*)(,|$)/
         send old, *args, &block
       end
     }

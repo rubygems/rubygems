@@ -1076,6 +1076,14 @@ class TestGem < Gem::TestCase
     assert_equal :loaded, TEST_PLUGIN_EXCEPTION rescue nil
   end
 
+  def test_running
+    assert !Gem.running
+    Gem.running do
+      assert Gem.running
+    end
+    assert !Gem.running
+  end
+
   def with_plugin(path)
     test_plugin_path = File.expand_path("test/rubygems/plugin/#{path}",
                                         @@project_dir)

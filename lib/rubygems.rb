@@ -1078,6 +1078,22 @@ module Gem
     load_plugin_files files
   end
 
+  ##
+  # Indicates if Gem::Runner is executing commands
+
+  def self.running
+    @running ||= false
+    if block_given?
+      begin
+        @running = true
+        yield
+      ensure
+        @running = false
+      end
+    end
+    @running
+  end
+
   class << self
 
     ##

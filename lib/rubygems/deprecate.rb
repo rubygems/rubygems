@@ -59,7 +59,7 @@ module Gem
             ". It will be removed on or after %4d-%02d-01." % [year, month],
             "\n#{target}#{name} called from #{Gem.location_of_caller.join(":")}",
           ]
-          warn "#{msg.join}." if loud && !Gem::Deprecate.skip
+          warn "#{msg.join}." if (loud || Gem.running) && !Gem::Deprecate.skip
           send old, *args, &block
         end
       }

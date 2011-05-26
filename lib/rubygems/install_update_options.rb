@@ -115,6 +115,11 @@ module Gem::InstallUpdateOptions
                 "meeting version requirement") do |value, options|
       options[:conservative] = true
     end
+    
+    add_option(:"Install/Update", "--[no-]warnings",
+                "Display warnings about deprecated methods") do |value, options|
+      Deprecate.skip = !value
+    end
   end
 
   ##

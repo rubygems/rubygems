@@ -2226,20 +2226,20 @@ class Gem::Specification
 
   extend Gem::Deprecate
 
-  deprecate :test_suite_file,     :test_file,  2011, 10
-  deprecate :test_suite_file=,    :test_file=, 2011, 10
-  deprecate :has_rdoc,            :none,       2011, 10
-  deprecate :has_rdoc?,           :none,       2011, 10
-  deprecate :has_rdoc=,           :none,       2011, 10
-  deprecate :loaded,              :activated,  2011, 10
-  deprecate :loaded?,             :activated?, 2011, 10
-  deprecate :loaded=,             :activated=, 2011, 10
-  deprecate :installation_path,   :base_dir,   2011, 10
-  deprecate :cache_gem,           :cache_file, 2011, 10
+  deprecate_quiet :test_suite_file,     :test_file,  2011, 10
+  deprecate_quiet :test_suite_file=,    :test_file=, 2011, 10
+  deprecate_quiet :has_rdoc,            :none,       2011, 10
+  deprecate_quiet :has_rdoc?,           :none,       2011, 10
+  deprecate_quiet :has_rdoc=,           :none,       2011, 10
+  deprecate_quiet :loaded,              :activated,  2011, 10
+  deprecate_quiet :loaded?,             :activated?, 2011, 10
+  deprecate_quiet :loaded=,             :activated=, 2011, 10
+  deprecate_quiet :installation_path,   :base_dir,   2011, 10
+  deprecate_quiet :cache_gem,           :cache_file, 2011, 10
   # TODO:
-  # deprecate :default_executable,  :none,       2011, 10
-  # deprecate :default_executable=, :none,       2011, 10
-  # deprecate :spec_name,           :spec_file,  2011, 10
-  # deprecate :file_name,           :cache_file, 2011, 10
-  # deprecate :full_gem_path,     :cache_file, 2011, 10
+  # deprecate_quiet :default_executable,  :none,       2011, 10
+  # deprecate_quiet :default_executable=, :none,       2011, 10
+  # deprecate_quiet :spec_name,           :spec_file,  2011, 10
+  # deprecate_quiet :file_name,           :cache_file, 2011, 10
+  # deprecate_quiet :full_gem_path,     :cache_file, 2011, 10
 end

@@ -628,7 +628,7 @@ class Gem::Specification
 
   def self.all
     warn "NOTE: Specification.all called from #{caller.first}" unless
-      Deprecate.skip
+      Gem::Deprecate.skip
     _all
   end
 
@@ -2224,7 +2224,7 @@ class Gem::Specification
     self.platform = Gem::Platform.new @platform
   end
 
-  extend Deprecate
+  extend Gem::Deprecate
 
   deprecate :test_suite_file,     :test_file,  2011, 10
   deprecate :test_suite_file=,    :test_file=, 2011, 10

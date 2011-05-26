@@ -9,11 +9,11 @@ class TestGemSourceIndex < Gem::TestCase
 
     util_setup_fake_fetcher
 
-    @source_index = Deprecate.skip_during { Gem.source_index }
+    @source_index = Gem::Deprecate.skip_during { Gem.source_index }
   end
 
   def test_find_name
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       assert_equal [@a1, @a2, @a3a], @source_index.find_name('a')
       assert_equal [@a2], @source_index.find_name('a', '= 2')
       assert_equal [], @source_index.find_name('bogusstring')
@@ -31,7 +31,7 @@ class TestGemSourceIndex < Gem::TestCase
   end
 
   def test_find_name_empty_cache
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       empty_source_index = Gem::SourceIndex.new
       assert_equal [], empty_source_index.find_name("foo")
     end
@@ -39,7 +39,7 @@ class TestGemSourceIndex < Gem::TestCase
 
   # HACK: deprecated impl is failing tests, but I may want to port it over
   def test_latest_specs
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       p1_ruby = quick_spec 'p', '1'
       p1_platform = quick_spec 'p', '1' do |spec|
         spec.platform = Gem::Platform::CURRENT
@@ -89,7 +89,7 @@ class TestGemSourceIndex < Gem::TestCase
   end
 
   def test_load_gems_in
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       spec_dir1 = File.join @gemhome, 'specifications'
       spec_dir2 = File.join @tempdir, 'gemhome2', 'specifications'
 
@@ -120,7 +120,7 @@ class TestGemSourceIndex < Gem::TestCase
 
   # REFACTOR: move to test_gem_commands_outdated_command.rb
   def test_outdated
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       util_setup_spec_fetcher
 
       assert_equal [], @source_index.outdated
@@ -141,7 +141,7 @@ class TestGemSourceIndex < Gem::TestCase
   end
 
   def test_prerelease_specs_kept_in_right_place
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       gem_a1_alpha = quick_spec 'abba', '1.a'
       @source_index.add_spec gem_a1_alpha
 
@@ -153,7 +153,7 @@ class TestGemSourceIndex < Gem::TestCase
   end
 
   def test_refresh_bang
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       a1_spec = File.join @gemhome, "specifications", @a1.spec_name
 
       FileUtils.mv a1_spec, @tempdir
@@ -173,7 +173,7 @@ class TestGemSourceIndex < Gem::TestCase
   end
 
   def test_remove_spec
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       si = Gem.source_index
 
       expected = si.gems.keys.sort
@@ -191,7 +191,7 @@ class TestGemSourceIndex < Gem::TestCase
   end
 
   def test_search
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       requirement = Gem::Requirement.create '= 9'
       with_version = Gem::Dependency.new(/^a/, requirement)
       assert_equal [@a_evil9], @source_index.search(with_version)
@@ -205,7 +205,7 @@ class TestGemSourceIndex < Gem::TestCase
   end
 
   def test_search_platform
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       util_set_arch 'x86-my_platform1'
 
       a1 = quick_spec 'a', '1'
@@ -228,7 +228,7 @@ class TestGemSourceIndex < Gem::TestCase
   end
 
   def test_signature
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       sig = @source_index.gem_signature('foo-1.2.3')
       assert_equal 64, sig.length
       assert_match(/^[a-f0-9]{64}$/, sig)
@@ -236,7 +236,7 @@ class TestGemSourceIndex < Gem::TestCase
   end
 
   def test_specification
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       assert_equal @a1, @source_index.specification(@a1.full_name)
 
       assert_nil @source_index.specification("foo-1.2.4")
@@ -244,7 +244,7 @@ class TestGemSourceIndex < Gem::TestCase
   end
 
   def test_index_signature
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       sig = @source_index.index_signature
       assert_match(/^[a-f0-9]{64}$/, sig)
     end

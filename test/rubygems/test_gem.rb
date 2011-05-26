@@ -441,7 +441,7 @@ class TestGem < Gem::TestCase
 
   def test_self_available?
     util_make_gems
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       assert(Gem.available?("a"))
       assert(Gem.available?("a", "1"))
       assert(Gem.available?("a", ">1"))
@@ -929,7 +929,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_source_index
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       assert_kind_of Gem::SourceIndex, Gem.source_index
     end
   end

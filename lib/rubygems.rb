@@ -956,7 +956,7 @@ module Gem
   # Returns the Gem::SourceIndex of specifications that are in the Gem.path
 
   def self.source_index
-    @@source_index ||= Deprecate.skip_during do
+    @@source_index ||= Gem::Deprecate.skip_during do
       SourceIndex.new Gem::Specification.dirs
     end
   end
@@ -1262,7 +1262,7 @@ require 'rubygems/custom_require'
 
 module Gem
   class << self
-    extend Deprecate
+    extend Gem::Deprecate
     deprecate :activate_dep,          "Specification#activate", 2011,  6
     deprecate :activate_spec,         "Specification#activate", 2011,  6
     deprecate :cache,                 "Gem::source_index",      2011,  8

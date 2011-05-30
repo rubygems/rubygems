@@ -568,11 +568,20 @@ class Gem::Specification
 
   def self._all # :nodoc:
     unless defined?(@@all) && @@all then
-      @@all = self.dirs.reverse.map { |dir|
-        Dir[File.join(dir, "*.gemspec")].map { |path|
-          Gem::Specification.load path.untaint
+
+      specs = []
+
+      self.dirs.reverse_each { |dir|
+        Dir[File.join(dir, "*.gemspec")].each { |path|
+          spec = Gem::Specification.load path.untaint
+          # #load returns nil if the spec is bad, so we just ignore
+          # it at this stage
+          specs << spec if spec
         }
-      }.flatten.compact
+      }
+
+      @@all = specs
+
       _resort!
     end
     @@all

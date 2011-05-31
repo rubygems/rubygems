@@ -53,7 +53,21 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
     end
 
     assert_equal '', @ui.output
-    assert_equal "ERROR:  Unknown gem 'foo'\n", @ui.error
+    assert_equal "ERROR:  No gem matching 'foo (>= 0)' found\n", @ui.error
+  end
+
+  def test_execute_bad_name_with_version
+    @cmd.options[:args] = %w[foo]
+    @cmd.options[:version] = "1.3.2"
+
+    assert_raises Gem::MockGemUi::TermError do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    assert_equal '', @ui.output
+    assert_equal "ERROR:  No gem matching 'foo (= 1.3.2)' found\n", @ui.error
   end
 
   def test_execute_exact_match

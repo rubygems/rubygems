@@ -86,7 +86,7 @@ FIELD         name of gemspec field to show
     end
 
     if specs.empty? then
-      alert_error "Unknown gem '#{gem}'"
+      alert_error "No gem matching '#{dep}' found"
       terminate_interaction 1
     end
 

@@ -2237,15 +2237,15 @@ class Gem::Specification
 
   deprecate_quiet :test_suite_file,     :test_file,  2011, 10
   deprecate_quiet :test_suite_file=,    :test_file=, 2011, 10
-  deprecate_quiet :has_rdoc,            :none,       2011, 10
-  deprecate_quiet :has_rdoc?,           :none,       2011, 10
-  deprecate_quiet :has_rdoc=,           :none,       2011, 10
   deprecate_quiet :loaded,              :activated,  2011, 10
   deprecate_quiet :loaded?,             :activated?, 2011, 10
   deprecate_quiet :loaded=,             :activated=, 2011, 10
   deprecate_quiet :installation_path,   :base_dir,   2011, 10
   deprecate_quiet :cache_gem,           :cache_file, 2011, 10
   # TODO:
+  # deprecate_quiet :has_rdoc,            :none,       2011, 10
+  # deprecate_quiet :has_rdoc?,           :none,       2011, 10
+  # deprecate_quiet :has_rdoc=,           :none,       2011, 10
   # deprecate_quiet :default_executable,  :none,       2011, 10
   # deprecate_quiet :default_executable=, :none,       2011, 10
   # deprecate_quiet :spec_name,           :spec_file,  2011, 10

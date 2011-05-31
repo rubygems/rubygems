@@ -683,6 +683,8 @@ load Gem.bin_path('a', 'executable', version)
 
     @installer = Gem::Installer.new @gem, :install_dir => gemhome2
 
+    gem_home = Gem.dir
+
     build_rake_in do
       use_ui @ui do
         @installer.install
@@ -690,6 +692,7 @@ load Gem.bin_path('a', 'executable', version)
     end
 
     assert File.exist?(File.join(gemhome2, 'gems', @spec.full_name))
+    assert_equal gem_home, Gem.dir
   end
 
   def test_install_force

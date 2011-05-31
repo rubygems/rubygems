@@ -1,6 +1,6 @@
-﻿=== 1.8.4 / 2011-05-31
+﻿=== 1.8.5 / 2011-05-31
 
-* 1 minor enhancement:
+* 2 minor enhancement:
 
   * The -u option to 'update local source cache' is official deprecated.
   * Remove has_rdoc deprecations from Specification.

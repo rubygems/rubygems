@@ -262,6 +262,7 @@ class Gem::Uninstaller
 
   def formatted_program_filename(filename)
     if @format_executable then
+      require "rubygems/installer"
       Gem::Installer.exec_format % File.basename(filename)
     else
       filename

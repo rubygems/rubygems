@@ -141,10 +141,10 @@ class Gem::Installer
   #     specifications/<gem-version>.gemspec #=> the Gem::Specification
 
   def install
-    verify_gem_home(options[:unpack])
     current_home = Gem.dir
     current_path = Gem.paths.path
 
+    verify_gem_home(options[:unpack])
     Gem.use_paths gem_home, current_path # HACK: shouldn't need Gem.paths.path
 
     # If we're forcing the install then disable security unless the security
@@ -214,7 +214,10 @@ class Gem::Installer
   rescue Zlib::GzipFile::Error
     raise Gem::InstallError, "gzip error installing #{gem}"
   ensure
-    Gem.use_paths current_home, current_path
+    # conditional since we might be here because we're erroring out early.
+    if current_path
+      Gem.use_paths current_home, current_path
+    end
   end
 
   ##

@@ -285,7 +285,7 @@ class Gem::Installer
     # (or use) a new bin dir under the gem_home.
     bindir = @bin_dir || Gem.bindir(gem_home)
 
-    Dir.mkdir bindir unless File.exist? bindir
+    FileUtils.mkdir_p bindir unless File.exist? bindir
     raise Gem::FilePermissionError.new(bindir) unless File.writable? bindir
 
     spec.executables.each do |filename|

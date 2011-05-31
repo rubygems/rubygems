@@ -1,4 +1,16 @@
-﻿=== 1.8.4 / 2011-05-25
+﻿=== 1.8.4 / 2011-05-31
+
+* 1 minor enhancement:
+
+  * The -u option to 'update local source cache' is official deprecated.
+  * Remove has_rdoc deprecations from Specification.
+
+* 2 bug fixes:
+
+  * Handle bad specs more gracefully.
+  * Reset any Gem paths changed in the installer.
+
+=== 1.8.4 / 2011-05-25
 
 * 1 minor enhancement:
 

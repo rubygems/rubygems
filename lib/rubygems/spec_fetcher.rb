@@ -115,18 +115,20 @@ class Gem::SpecFetcher
 
     if File.exist? local_spec then
       spec = Gem.read_binary local_spec
-    else
-      uri.path << '.rz'
+      spec = Marshal.load(spec) rescue nil
+      return spec if spec
+    end
 
-      spec = @fetcher.fetch_path uri
-      spec = Gem.inflate spec
+    uri.path << '.rz'
 
-      if @update_cache then
-        FileUtils.mkdir_p cache_dir
+    spec = @fetcher.fetch_path uri
+    spec = Gem.inflate spec
 
-        open local_spec, 'wb' do |io|
-          io.write spec
-        end
+    if @update_cache then
+      FileUtils.mkdir_p cache_dir
+
+      open local_spec, 'wb' do |io|
+        io.write spec
       end
     end
 

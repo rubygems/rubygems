@@ -47,7 +47,7 @@ module Gem
     # telling the user of +repl+ (unless +repl+ is :none) and the
     # year/month that it is planned to go away.
 
-    def deprecate name, repl, year, month, loud = true
+    def deprecate name, repl, year, month
       class_eval {
         old = "_deprecated_#{name}"
         alias_method old, name
@@ -59,20 +59,12 @@ module Gem
             ". It will be removed on or after %4d-%02d-01." % [year, month],
             "\n#{target}#{name} called from #{Gem.location_of_caller.join(":")}",
           ]
-          warn "#{msg.join}." if (loud || Gem.running) && !Gem::Deprecate.skip
+          warn "#{msg.join}." unless Gem::Deprecate.skip
           send old, *args, &block
         end
       }
     end
 
-    ##
-    # Like deprecate, except with the always set to false. In rubygems this
-    # effectively means warnings will only be put out if skip is falsish.
-
-    def deprecate_quiet name, repl, year, month
-      deprecate name, repl, year, month, $VERBOSE
-    end
-
-    module_function :deprecate, :deprecate_quiet, :skip_during
+    module_function :deprecate, :skip_during
   end
 end

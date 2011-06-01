@@ -18,9 +18,7 @@ end
 args = ARGV.clone
 
 begin
-  Gem.running do
-    Gem::GemRunner.new.run args
-  end
+  Gem::GemRunner.new.run args
 rescue Gem::SystemExitException => e
   exit e.exit_code
 end

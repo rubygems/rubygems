@@ -201,6 +201,22 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal expected, @ui.error
   end
 
+  def test_execute_conflicting_install_options
+    @cmd.options[:user_install] = true
+    @cmd.options[:install_dir] = "whatever"
+
+    use_ui @ui do
+      e = assert_raises Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+    end
+
+    expected = "ERROR:  Use --install-dir or --user-install but not both\n"
+
+    assert_equal expected, @ui.error
+  end
+
+
   def test_execute_prerelease
     util_setup_fake_fetcher :prerelease
     util_clear_gems

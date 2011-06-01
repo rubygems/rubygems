@@ -110,6 +110,11 @@ to write the specification by hand.  For example:
 
     ENV.delete 'GEM_PATH' if options[:install_dir].nil? and RUBY_VERSION > '1.9'
 
+    if options[:install_dir] and options[:user_install]
+      alert_error "Use --install-dir or --user-install but not both"
+      terminate_interaction 1
+    end
+
     exit_code = 0
 
     get_all_gem_names.each do |gem_name|

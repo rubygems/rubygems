@@ -777,12 +777,13 @@ Also, a list:
   ##
   # Allows the proper version of +rake+ to be used for the test.
 
-  def build_rake_in
+  def build_rake_in(good=true)
     gem_ruby = Gem.ruby
     Gem.ruby = @@ruby
     env_rake = ENV["rake"]
-    ENV["rake"] = @@rake
-    yield @@rake
+    rake = (good ? @@good_rake : @@bad_rake)
+    ENV["rake"] = rake
+    yield rake
   ensure
     Gem.ruby = gem_ruby
     if env_rake
@@ -822,15 +823,8 @@ Also, a list:
   end
 
   @@ruby = rubybin
-  env_rake = ENV['rake']
-  ruby19_rake = File.expand_path("bin/rake", @@project_dir)
-  @@rake = if env_rake then
-             ENV["rake"]
-           elsif File.exist? ruby19_rake then
-             @@ruby + " " + ruby19_rake
-           else
-             'rake'
-           end
+  @@good_rake = "#{rubybin} #{File.expand_path('../../../test/rubygems/good_rake.rb', __FILE__)}"
+  @@bad_rake = "#{rubybin} #{File.expand_path('../../../test/rubygems/bad_rake.rb', __FILE__)}"
 
   ##
   # Construct a new Gem::Dependency.

@@ -105,15 +105,17 @@ module Gem::InstallUpdateOptions
     end
 
     add_option(:"Install/Update", "--development",
-                "Install any additional development",
+                "Install additional development",
                 "dependencies") do |value, options|
       options[:development] = true
+      options[:dev_shallow] = true
     end
 
-    add_option(:"Install/Update", "--dev-shallow",
-                "Only install development dependencies for",
-                "the directly specified specs") do |value, options|
-      options[:dev_shallow] = true
+    add_option(:"Install/Update", "--development-all",
+                "Install development dependencies for all",
+                "gems (including dev deps themselves)") do |value, options|
+      options[:development] = true
+      options[:dev_shallow] = false
     end
 
     add_option(:"Install/Update", "--conservative",

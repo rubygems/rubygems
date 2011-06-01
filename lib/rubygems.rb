@@ -112,6 +112,7 @@ require "rubygems/deprecate"
 # * Daniel Berger      -- djberg96(at)gmail.com
 # * Phil Hagelberg     -- technomancy(at)gmail.com
 # * Ryan Davis         -- ryand-ruby(at)zenspider.com
+# * Evan Phoenix       -- evan(at)fallingsnow.net
 #
 # (If your name is missing, PLEASE let us know!)
 #

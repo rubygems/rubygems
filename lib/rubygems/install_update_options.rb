@@ -122,6 +122,13 @@ module Gem::InstallUpdateOptions
                 "Don't attempt to upgrade gems already",
                 "meeting version requirement") do |value, options|
       options[:conservative] = true
+      options[:minimal_deps] = true
+    end
+
+    add_option(:"Install/Update", "--minimal-deps",
+                "Don't upgrade any dependencies that already",
+                "meet version requirements") do |value, options|
+      options[:minimal_deps] = true
     end
   end
 

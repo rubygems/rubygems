@@ -67,6 +67,10 @@ class Gem::DependencyInstaller
     @user_install        = options[:user_install]
     @wrappers            = options[:wrappers]
 
+    # Indicates that we should not try to update any deps unless
+    # we absolutely must.
+    @minimal_deps        = options[:minimal_deps]
+
     @installed_gems = []
     @toplevel_specs = nil
 
@@ -184,6 +188,13 @@ class Gem::DependencyInstaller
 
       deps.each do |dep|
         dependencies[dep.name] = dependencies[dep.name].merge dep
+
+        if @minimal_deps
+          next if Gem::Specification.any? do |installed_spec|
+                    dep.name == installed_spec.name and
+                      dep.requirement.satisfied_by? installed_spec.version
+                  end
+        end
 
         results = find_gems_with_sources(dep).reverse
 

@@ -77,6 +77,34 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal %w[e-1 a-1], inst.installed_gems.map { |s| s.full_name }
   end
 
+  def test_install_ignore_satified_deps
+    util_setup_gems
+
+    _, e1_gem = util_gem 'e', '1' do |s|
+      s.add_dependency 'b'
+    end
+
+    util_clear_gems
+
+    FileUtils.mv @a1_gem, @tempdir
+    FileUtils.mv @b1_gem, @tempdir
+    FileUtils.mv e1_gem, @tempdir
+
+    Dir.chdir @tempdir do
+      i = Gem::DependencyInstaller.new :ignore_dependencies => true
+      i.install 'b'
+    end
+
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new :minimal_deps => true
+      inst.install 'e'
+    end
+
+    assert_equal %w[e-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
   def test_install_cache_dir
     util_setup_gems
 

@@ -23,6 +23,14 @@ class TestGemDependencyInstaller < Gem::TestCase
       s.add_development_dependency 'aa'
     end
 
+    @c1, @c1_gem         = util_gem 'c', '1' do |s|
+      s.add_development_dependency 'b'
+    end
+
+    @d1, @d1_gem         = util_gem 'd', '1' do |s|
+      s.add_development_dependency 'c'
+    end
+
     util_clear_gems
     util_reset_gems
   end
@@ -150,6 +158,50 @@ class TestGemDependencyInstaller < Gem::TestCase
     end
 
     assert_equal %w[a-1 aa-1 b-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
+  def test_install_dependency_development_deep
+    util_setup_gems
+
+    @aa1, @aa1_gem = util_gem 'aa', '1'
+
+    util_reset_gems
+
+    FileUtils.mv @a1_gem, @tempdir
+    FileUtils.mv @aa1_gem, @tempdir
+    FileUtils.mv @b1_gem, @tempdir
+    FileUtils.mv @c1_gem, @tempdir
+    FileUtils.mv @d1_gem, @tempdir
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new(:development => true)
+      inst.install 'd'
+    end
+
+    assert_equal %w[a-1 aa-1 b-1 c-1 d-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
+  def test_install_dependency_development_shallow
+    util_setup_gems
+
+    @aa1, @aa1_gem = util_gem 'aa', '1'
+
+    util_reset_gems
+
+    FileUtils.mv @a1_gem, @tempdir
+    FileUtils.mv @aa1_gem, @tempdir
+    FileUtils.mv @b1_gem, @tempdir
+    FileUtils.mv @c1_gem, @tempdir
+    FileUtils.mv @d1_gem, @tempdir
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new(:development => true, :dev_shallow => true)
+      inst.install 'd'
+    end
+
+    assert_equal %w[c-1 d-1], inst.installed_gems.map { |s| s.full_name }
   end
 
   def test_install_dependency_existing

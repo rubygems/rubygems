@@ -56,6 +56,7 @@ class Gem::DependencyInstaller
 
     @bin_dir             = options[:bin_dir]
     @development         = options[:development]
+    @dev_shallow         = options[:dev_shallow]
     @domain              = options[:domain]
     @env_shebang         = options[:env_shebang]
     @force               = options[:force]
@@ -67,6 +68,7 @@ class Gem::DependencyInstaller
     @wrappers            = options[:wrappers]
 
     @installed_gems = []
+    @toplevel_specs = nil
 
     @install_dir = options[:install_dir] || Gem.dir
     @cache_dir = options[:cache_dir] || @install_dir
@@ -135,10 +137,13 @@ class Gem::DependencyInstaller
     # these gems were listed by the user, always install them
     keep_names = specs.map { |spec| spec.full_name }
 
+    if @dev_shallow
+      @toplevel_specs = keep_names
+    end
+
     dependency_list = Gem::DependencyList.new @development
     dependency_list.add(*specs)
     to_do = specs.dup
-
     add_found_dependencies to_do, dependency_list unless @ignore_dependencies
 
     dependency_list.specs.reject! { |spec|
@@ -166,7 +171,16 @@ class Gem::DependencyInstaller
       seen[spec.name] = true
 
       deps = spec.runtime_dependencies
-      deps |= spec.development_dependencies if @development
+
+      if @development
+        if @dev_shallow
+          if @toplevel_specs.include? spec.full_name
+            deps |= spec.development_dependencies
+          end
+        else
+          deps |= spec.development_dependencies
+        end
+      end
 
       deps.each do |dep|
         dependencies[dep.name] = dependencies[dep.name].merge dep
@@ -285,9 +299,17 @@ class Gem::DependencyInstaller
         raise
       end
 
+      if @development
+        if @dev_shallow
+          is_dev = @toplevel_specs.include? spec.full_name
+        else
+          is_dev = true
+        end
+      end
+
       inst = Gem::Installer.new local_gem_path,
                                 :bin_dir             => @bin_dir,
-                                :development         => @development,
+                                :development         => is_dev,
                                 :env_shebang         => @env_shebang,
                                 :force               => @force,
                                 :format_executable   => @format_executable,

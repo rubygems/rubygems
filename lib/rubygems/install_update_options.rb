@@ -110,6 +110,12 @@ module Gem::InstallUpdateOptions
       options[:development] = true
     end
 
+    add_option(:"Install/Update", "--dev-shallow",
+                "Only install development dependencies for",
+                "the directly specified specs") do |value, options|
+      options[:dev_shallow] = true
+    end
+
     add_option(:"Install/Update", "--conservative",
                 "Don't attempt to upgrade gems already",
                 "meeting version requirement") do |value, options|

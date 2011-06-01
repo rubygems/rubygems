@@ -32,6 +32,13 @@ class Gem::RemoteFetcher
 
   end
 
+  ##
+  # A FetchError that indicates that the reason for not being
+  # able to fetch data was that the host could not be contacted
+
+  class UnknownHostError < FetchError
+  end
+
   @fetcher = nil
 
   ##
@@ -221,18 +228,32 @@ class Gem::RemoteFetcher
     uri = URI.parse uri unless URI::Generic === uri
 
     raise ArgumentError, "bad uri: #{uri}" unless uri
-    raise ArgumentError, "uri scheme is invalid: #{uri.scheme.inspect}" unless
-      uri.scheme
+
+    unless uri.scheme
+      raise ArgumentError, "uri scheme is invalid: #{uri.scheme.inspect}"
+    end
 
     data = send "fetch_#{uri.scheme}", uri, mtime, head
-    data = Gem.gunzip data if data and not head and uri.to_s =~ /gz$/
+
+    if data and !head and uri.to_s =~ /gz$/
+      begin
+        data = Gem.gunzip data
+      rescue Zlib::GzipFile::Error
+        raise FetchError.new("server did not return a valid file", uri.to_s)
+      end
+    end
+
     data
   rescue FetchError
     raise
   rescue Timeout::Error
-    raise FetchError.new('timed out', uri.to_s)
+    raise UnknownHostError.new('timed out', uri.to_s)
   rescue IOError, SocketError, SystemCallError => e
-    raise FetchError.new("#{e.class}: #{e}", uri.to_s)
+    if e.message =~ /getaddrinfo/
+      raise UnknownHostError.new('no such name', uri.to_s)
+    else
+      raise FetchError.new("#{e.class}: #{e}", uri.to_s)
+    end
   end
 
   ##
@@ -246,9 +267,13 @@ class Gem::RemoteFetcher
       Gem.read_binary(path)
     else
       data = fetch_path(uri)
-      open(path, 'wb') do |io|
-        io.write data
-      end if path
+
+      if path
+        open(path, 'wb') do |io|
+          io.write data
+        end
+      end
+
       data
     end
   end

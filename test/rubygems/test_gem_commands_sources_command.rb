@@ -90,7 +90,7 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
 
     expected = <<-EOF
 Error fetching http://beta-gems.example.com:
-\tit died (#{uri})
+\tBad source, unable to get specs (http://beta-gems.example.com)
     EOF
 
     assert_equal expected, @ui.output

@@ -77,7 +77,7 @@ class Gem::Commands::SourcesCommand < Gem::Command
       rescue URI::Error, ArgumentError
         say "#{source_uri} is not a URI"
         terminate_interaction 1
-      rescue Gem::RemoteFetcher::FetchError => e
+      rescue Gem::RemoteFetcher::FetchError, Gem::SourceError => e
         say "Error fetching #{source_uri}:\n\t#{e.message}"
         terminate_interaction 1
       end

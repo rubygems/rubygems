@@ -1,7 +1,9 @@
 ##
 # Base exception class for RubyGems.  All exception raised by RubyGems are a
 # subclass of this one.
-class Gem::Exception < RuntimeError; end
+class Gem::Exception < RuntimeError
+  attr_accessor :source_exception
+end
 
 class Gem::CommandLineError < Gem::Exception; end
 
@@ -89,3 +91,21 @@ class Gem::SystemExitException < SystemExit
   end
 
 end
+
+##
+# An error that indicates there is an error with the source
+# itself (such as the latest_spec file being invalid)
+
+class Gem::SourceError < Gem::Exception
+  def initialize(message, uri)
+    @uri = uri
+    super message
+  end
+
+  attr_reader :uri
+
+  def to_s
+    "#{super} (#{@uri})"
+  end
+end
+

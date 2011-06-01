@@ -256,22 +256,12 @@ class Gem::SpecFetcher
     local_file = File.join(cache_dir, file_name)
     retried    = false
 
-    begin
-      spec_dump = if @update_cache then
-                    FileUtils.mkdir_p cache_dir
-                    @fetcher.cache_update_path(spec_path, local_file)
-                  else
-                    @fetcher.cache_update_path(spec_path)
-                  end
-    rescue Gem::RemoteFetcher::UnknownHostError => e
-      exc = Gem::SourceError.new("Could not contact source", source_uri)
-      exc.source_exception = e
-      raise exc
-    rescue Gem::RemoteFetcher::FetchError => e
-      exc = Gem::SourceError.new("Bad source, unable to get specs", source_uri)
-      exc.source_exception = e
-      raise exc
-    end
+    spec_dump = if @update_cache then
+                  FileUtils.mkdir_p cache_dir
+                  @fetcher.cache_update_path(spec_path, local_file)
+                else
+                  @fetcher.cache_update_path(spec_path)
+                end
 
     begin
       Marshal.load spec_dump

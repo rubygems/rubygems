@@ -92,20 +92,3 @@ class Gem::SystemExitException < SystemExit
 
 end
 
-##
-# An error that indicates there is an error with the source
-# itself (such as the latest_spec file being invalid)
-
-class Gem::SourceError < Gem::Exception
-  def initialize(message, uri)
-    @uri = uri
-    super message
-  end
-
-  attr_reader :uri
-
-  def to_s
-    "#{super} (#{@uri})"
-  end
-end
-

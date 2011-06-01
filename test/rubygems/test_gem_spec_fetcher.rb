@@ -364,7 +364,7 @@ class TestGemSpecFetcher < Gem::TestCase
   def test_load_specs_cached
     # Make sure the cached version is actually different:
     @latest_specs << ['cached', Gem::Version.new('1.0.0'), 'ruby']
-    
+
     @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] = nil
     @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}"] =
       ' ' * Marshal.dump(@latest_specs).length

@@ -56,7 +56,7 @@ class Gem::FakeFetcher
       data
     end
   end
-  
+
   def cache_update_path uri, path = nil
     if data = fetch_path(uri)
       open(path, 'wb') { |io| io.write data } if path

@@ -103,7 +103,7 @@ class Gem::Uninstaller
 
   def uninstall_gem(spec)
     @spec = spec
-      
+
     unless dependencies_ok? spec
       unless ask_if_ok(spec)
         raise Gem::DependencyRemovalException,

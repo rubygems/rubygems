@@ -256,6 +256,48 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert out.empty?, out.inspect
   end
 
+  def test_execute_remote_ignores_files
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher
+
+    @cmd.options[:domain] = :remote
+
+    FileUtils.mv @a2.cache_file, @tempdir
+
+    @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
+      read_binary(@a1.cache_file)
+
+    @cmd.options[:args] = [@a2.name]
+
+    gemdir     = File.join @gemhome, 'specifications'
+
+    a2_gemspec = File.join(gemdir, "a-2.gemspec")
+    a1_gemspec = File.join(gemdir, "a-1.gemspec")
+
+    FileUtils.rm_rf a1_gemspec
+    FileUtils.rm_rf a2_gemspec
+
+    start = Dir["#{gemdir}/*"]
+
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        e = assert_raises Gem::SystemExitException do
+          @cmd.execute
+        end
+        assert_equal 0, e.exit_code
+      end
+    end
+
+    out = @ui.output.split "\n"
+    assert_equal "Successfully installed #{@a1.full_name}", out.shift
+    assert_equal "1 gem installed", out.shift
+    assert out.empty?, out.inspect
+
+    fin = Dir["#{gemdir}/*"]
+
+    assert_equal [a1_gemspec], fin - start
+  end
+
   def test_execute_two
     util_setup_fake_fetcher
     @cmd.options[:domain] = :local

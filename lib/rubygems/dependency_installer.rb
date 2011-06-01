@@ -202,23 +202,26 @@ class Gem::DependencyInstaller
   def find_spec_by_name_and_version(gem_name,
                                     version = Gem::Requirement.default,
                                     prerelease = false)
+
     spec_and_source = nil
 
-    glob = if File::ALT_SEPARATOR then
-             gem_name.gsub File::ALT_SEPARATOR, File::SEPARATOR
-           else
-             gem_name
-           end
+    if @domain != :remote
+      glob = if File::ALT_SEPARATOR then
+               gem_name.gsub File::ALT_SEPARATOR, File::SEPARATOR
+             else
+               gem_name
+             end
 
-    local_gems = Dir["#{glob}*"].sort.reverse
+      local_gems = Dir["#{glob}*"].sort.reverse
 
-    local_gems.each do |gem_file|
-      next unless gem_file =~ /gem$/
-      begin
-        spec = Gem::Format.from_file_by_path(gem_file).spec
-        spec_and_source = [spec, gem_file]
-        break
-      rescue SystemCallError, Gem::Package::FormatError
+      local_gems.each do |gem_file|
+        next unless gem_file =~ /gem$/
+        begin
+          spec = Gem::Format.from_file_by_path(gem_file).spec
+          spec_and_source = [spec, gem_file]
+          break
+        rescue SystemCallError, Gem::Package::FormatError
+        end
       end
     end
 

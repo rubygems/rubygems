@@ -205,9 +205,12 @@ class Gem::Commands::UpdateCommand < Gem::Command
               gem_names.all? { |name| /#{name}/ !~ l_spec.name }
 
       dependency = Gem::Dependency.new l_spec.name, "> #{l_spec.version}"
+      dependency.prerelease = options[:prerelease]
 
       fetcher = Gem::SpecFetcher.fetcher
-      spec_tuples = fetcher.find_matching dependency
+
+      spec_tuples = fetcher.find_matching dependency, false, true,
+                                          options[:prerelease]
 
       matching_gems = spec_tuples.select do |(name, _, platform),|
         name == l_name and Gem::Platform.match platform

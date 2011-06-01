@@ -638,10 +638,23 @@ module Gem
   # Loads YAML, preferring Psych
 
   def self.load_yaml
-    require 'psych'
-  rescue ::LoadError
-  ensure
-    require 'yaml'
+    begin
+      require 'psych'
+    rescue ::LoadError
+    ensure
+      require 'yaml'
+    end
+
+    # Hack to handle syck's DefaultKey bug with psych.
+    # See the note at the top of lib/rubygems/requirement.rb for
+    # why we end up defining DefaultKey more than once.
+    if !defined? YAML::Syck
+      YAML.module_eval do
+          const_set 'Syck', Module.new {
+            const_set 'DefaultKey', Class.new
+          }
+        end
+    end
   end
 
   ##

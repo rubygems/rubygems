@@ -1,9 +1,8 @@
-<<<<<<< HEAD
 === 1.8.5 / 2011-05-31
 
 * 2 minor enhancement:
 
-  * The -u option to 'update local source cache' is official deprecated.
+  * The -u option to 'update local source cache' is officially deprecated.
   * Remove has_rdoc deprecations from Specification.
 
 * 2 bug fixes:

@@ -1193,6 +1193,18 @@ module Kernel
   def gem(gem_name, *requirements) # :doc:
     skip_list = (ENV['GEM_SKIP'] || "").split(/:/)
     raise Gem::LoadError, "skipping #{gem_name}" if skip_list.include? gem_name
+
+    if gem_name.kind_of? Gem::Dependency
+      unless Gem::Deprecate.skip
+        warn "#{Gem.location_of_caller.join ':'}:Warning: Kernel.gem no longer "\
+          "accepts a Gem::Dependency object, please pass the name "\
+          "and requirements directly"
+      end
+
+      requirements = gem_name.requirement
+      gem_name = gem_name.name
+    end
+
     spec = Gem::Dependency.new(gem_name, *requirements).to_spec
     spec.activate if spec
   end

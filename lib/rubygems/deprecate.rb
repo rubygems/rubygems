@@ -31,6 +31,15 @@ module Gem
       @skip = v
     end
 
+    def self.did_warn_about(name, for_caller)
+      @did_warn_about ||= Hash.new { |h,k| h[k] = 0 }
+
+      warning_count =
+        @did_warn_about[[ name, for_caller ]] += 1
+
+      warning_count > 1
+    end
+
     ##
     # Temporarily turn off warnings. Intended for tests only.
 
@@ -59,7 +68,9 @@ module Gem
             ". It will be removed on or after %4d-%02d-01." % [year, month],
             "\n#{target}#{name} called from #{Gem.location_of_caller.join(":")}",
           ]
-          warn "#{msg.join}." unless Gem::Deprecate.skip
+          unless (Deprecate.skip or Deprecate.did_warn_about(name, caller[0]))
+            warn "#{msg.join}." 
+          end
           send old, *args, &block
         end
       }

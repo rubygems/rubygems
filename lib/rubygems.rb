@@ -423,15 +423,15 @@ module Gem
   def self.each_load_path(partials)
     partials.each do |gp|
       base = File.basename gp
-      specfn = dir.specifications.add(base + ".gemspec")
-      if specfn.exist?
-        spec = eval(specfn.read)
+      specfn = File.join(dir, "specifications", "#{base}.gemspec")
+      if File.exists? specfn
+        spec = eval(File.read(specfn))
         spec.require_paths.each do |rp|
-          yield(gp.add(rp))
+          yield File.join(gp,rp)
         end
       else
-        filename = dir.add(gp, 'lib')
-        yield(filename) if filename.exist?
+        filename = File.join(gp, 'lib')
+        yield(filename) if File.exists? filename
       end
     end
   end
@@ -586,7 +586,7 @@ module Gem
 
     Gem.path.each do |gemdir|
       each_load_path(latest_partials(gemdir)) do |load_path|
-        result << gemdir.add(load_path).expand_path
+        result << load_path
       end
     end
 

@@ -1447,7 +1447,9 @@ class Gem::Specification
   # The full path to the gem (install path + full name).
 
   def full_gem_path
-    # TODO: try to get rid of this... or the awkward
+    # TODO: This is a heavily used method by gems, so we'll need
+    # to aleast just alias it to #gem_dir rather than remove it.
+
     # TODO: also, shouldn't it default to full_name if it hasn't been written?
     return @full_gem_path if defined?(@full_gem_path) && @full_gem_path
 

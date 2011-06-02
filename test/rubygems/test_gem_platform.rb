@@ -259,5 +259,22 @@ class TestGemPlatform < Gem::TestCase
     assert_match 'sparc-solaris2.8-mq5.3', Gem::Platform.local
   end
 
+  def test_windows_matches_any_windows_platform
+    windows_platform = Gem::Platform.new('universal-windows')
+    mswin32_platform = Gem::Platform.new('x86-mswin32')
+    mingw32_platform = Gem::Platform.new('x86-mingw32')
+
+    assert windows_platform =~ mswin32_platform
+    assert windows_platform =~ mingw32_platform
+    assert windows_platform =~ windows_platform
+
+    assert windows_platform === mswin32_platform
+    assert windows_platform === mingw32_platform
+    assert windows_platform === windows_platform
+
+    assert mswin32_platform =~ windows_platform
+    assert mingw32_platform =~ windows_platform
+    assert windows_platform =~ windows_platform
+  end
 end
 

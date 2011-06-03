@@ -155,6 +155,12 @@ class TestGemDependencyInstaller < Gem::TestCase
 
   def test_install_dependency
     util_setup_gems
+    post_installs_ran = false
+
+    Gem.post_installs do |gems|
+      post_installs_ran = true
+      assert_equal [@a1, @b1], gems
+    end
 
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv @b1_gem, @tempdir
@@ -166,6 +172,8 @@ class TestGemDependencyInstaller < Gem::TestCase
     end
 
     assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
+
+    assert post_installs_ran, 'post installs hook was not run'
   end
 
   def test_install_dependency_development

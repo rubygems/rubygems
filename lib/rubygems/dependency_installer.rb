@@ -336,6 +336,10 @@ class Gem::DependencyInstaller
       @installed_gems << spec
     end
 
+    Gem.post_installs_hooks.each do |hook|
+      hook.call @installed_gems
+    end
+
     @installed_gems
   end
 end

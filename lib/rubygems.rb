@@ -737,6 +737,14 @@ module Gem
   end
 
   ##
+  # Adds a post-installs hook that will be passed a list of installed gem
+  # specifications when Gem::DependencyInstaller#install is complete
+
+  def self.post_installs(&hook)
+    @post_installs_hooks << hook
+  end
+
+  ##
   # Adds a hook that will get run after Gem::Specification.reset is
   # run.
 
@@ -1101,15 +1109,22 @@ module Gem
     attr_reader :loaded_specs
 
     ##
-    # The list of hooks to be run before Gem::Install#install finishes
-    # installation
+    # The list of hooks to be run after Gem::Installer#install extracts files
+    # and builds extensions
 
     attr_reader :post_build_hooks
 
     ##
-    # The list of hooks to be run before Gem::Install#install does any work
+    # The list of hooks to be run after Gem::Installer#install completes
+    # installation
 
     attr_reader :post_install_hooks
+
+    ##
+    # The list of hooks to be run after Gem::DependencyInstaller installs a
+    # set of gems
+
+    attr_reader :post_installs_hooks
 
     ##
     # The list of hooks to be run after Gem::Specification.reset is run.
@@ -1117,13 +1132,13 @@ module Gem
     attr_reader :post_reset_hooks
 
     ##
-    # The list of hooks to be run before Gem::Uninstall#uninstall does any
-    # work
+    # The list of hooks to be run after Gem::Uninstaller#uninstall completes
+    # installation
 
     attr_reader :post_uninstall_hooks
 
     ##
-    # The list of hooks to be run after Gem::Install#install is finished
+    # The list of hooks to be run before Gem::Installer#install does any work
 
     attr_reader :pre_install_hooks
 
@@ -1133,7 +1148,8 @@ module Gem
     attr_reader :pre_reset_hooks
 
     ##
-    # The list of hooks to be run after Gem::Uninstall#uninstall is finished
+    # The list of hooks to be run before Gem::Uninstaller#uninstall does any
+    # work
 
     attr_reader :pre_uninstall_hooks
   end

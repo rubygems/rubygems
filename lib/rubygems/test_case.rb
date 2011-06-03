@@ -180,6 +180,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     # TODO: move to installer test cases
     Gem.post_build_hooks.clear
     Gem.post_install_hooks.clear
+    Gem.post_installs_hooks.clear
     Gem.post_reset_hooks.clear
     Gem.post_uninstall_hooks.clear
     Gem.pre_install_hooks.clear

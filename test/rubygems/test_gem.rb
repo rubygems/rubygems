@@ -944,6 +944,14 @@ class TestGem < Gem::TestCase
     assert_equal 2, Gem.post_install_hooks.length
   end
 
+  def test_self_post_installs
+    assert_empty Gem.post_installs_hooks
+
+    Gem.post_installs do |gems| end
+
+    assert_equal 1, Gem.post_installs_hooks.length
+  end
+
   def test_self_post_reset
     assert_empty Gem.post_reset_hooks
 

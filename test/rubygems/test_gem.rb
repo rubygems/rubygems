@@ -928,6 +928,62 @@ class TestGem < Gem::TestCase
     assert_equal [other, @gemhome], Gem.path
   end
 
+  def test_self_post_build
+    assert_equal 1, Gem.post_build_hooks.length
+
+    Gem.post_build do |installer| end
+
+    assert_equal 2, Gem.post_build_hooks.length
+  end
+
+  def test_self_post_install
+    assert_equal 1, Gem.post_install_hooks.length
+
+    Gem.post_install do |installer| end
+
+    assert_equal 2, Gem.post_install_hooks.length
+  end
+
+  def test_self_post_reset
+    assert_empty Gem.post_reset_hooks
+
+    Gem.post_reset do |installer| end
+
+    assert_equal 1, Gem.post_reset_hooks.length
+  end
+
+  def test_self_post_uninstall
+    assert_equal 1, Gem.post_uninstall_hooks.length
+
+    Gem.post_uninstall do |installer| end
+
+    assert_equal 2, Gem.post_uninstall_hooks.length
+  end
+
+  def test_self_pre_install
+    assert_equal 1, Gem.pre_install_hooks.length
+
+    Gem.pre_install do |installer| end
+
+    assert_equal 2, Gem.pre_install_hooks.length
+  end
+
+  def test_self_pre_reset
+    assert_empty Gem.pre_reset_hooks
+
+    Gem.pre_reset do |installer| end
+
+    assert_equal 1, Gem.pre_reset_hooks.length
+  end
+
+  def test_self_pre_uninstall
+    assert_equal 1, Gem.pre_uninstall_hooks.length
+
+    Gem.pre_uninstall do |installer| end
+
+    assert_equal 2, Gem.pre_uninstall_hooks.length
+  end
+
   def test_self_source_index
     Gem::Deprecate.skip_during do
       assert_kind_of Gem::SourceIndex, Gem.source_index

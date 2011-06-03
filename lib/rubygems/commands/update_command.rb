@@ -78,20 +78,6 @@ class Gem::Commands::UpdateCommand < Gem::Command
       say "Nothing to update"
     else
       say "Gems updated: #{updated.map { |spec| spec.name }.join ', '}"
-
-      if options[:document].include? 'ri' then
-        updated.each do |gem|
-          Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
-        end
-
-        Gem::DocManager.update_ri_cache
-      end
-
-      if options[:document].include? 'rdoc' then
-        updated.each do |gem|
-          Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
-        end
-      end
     end
   end
 

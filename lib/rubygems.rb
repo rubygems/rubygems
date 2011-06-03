@@ -737,8 +737,9 @@ module Gem
   end
 
   ##
-  # Adds a post-installs hook that will be passed a list of installed gem
-  # specifications when Gem::DependencyInstaller#install is complete
+  # Adds a post-installs hook that will be passed a Gem::DependencyInstaller
+  # and a list of installed specifications when
+  # Gem::DependencyInstaller#install is complete
 
   def self.post_installs(&hook)
     @post_installs_hooks << hook

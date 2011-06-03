@@ -141,24 +141,6 @@ to write the specification by hand.  For example:
     unless installed_gems.empty? then
       gems = installed_gems.length == 1 ? 'gem' : 'gems'
       say "#{installed_gems.length} #{gems} installed"
-
-      # NOTE: *All* of the RI documents must be generated first.  For some
-      # reason, RI docs cannot be generated after any RDoc documents are
-      # generated.
-
-      if options[:document].include? 'ri' then
-        installed_gems.each do |gem|
-          Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
-        end
-
-        Gem::DocManager.update_ri_cache
-      end
-
-      if options[:document].include? 'rdoc' then
-        installed_gems.each do |gem|
-          Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
-        end
-      end
     end
 
     raise Gem::SystemExitException, exit_code

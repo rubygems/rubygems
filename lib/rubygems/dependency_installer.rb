@@ -14,6 +14,17 @@ class Gem::DependencyInstaller
   attr_reader :gems_to_install
   attr_reader :installed_gems
 
+  ##
+  # Arguments for use by RDoc.  Used to generate documentation by
+  # Gem::DocManager
+
+  attr_reader :rdoc_args
+
+  ##
+  # Documentation types.  For use by the Gem.post_installs hook
+
+  attr_reader :document
+
   DEFAULT_OPTIONS = {
     :env_shebang         => false,
     :document            => %w[rdoc ri],
@@ -56,14 +67,16 @@ class Gem::DependencyInstaller
     options = DEFAULT_OPTIONS.merge options
 
     @bin_dir             = options[:bin_dir]
-    @development         = options[:development]
     @dev_shallow         = options[:dev_shallow]
+    @development         = options[:development]
+    @document            = options[:document]
     @domain              = options[:domain]
     @env_shebang         = options[:env_shebang]
     @force               = options[:force]
     @format_executable   = options[:format_executable]
     @ignore_dependencies = options[:ignore_dependencies]
     @prerelease          = options[:prerelease]
+    @rdoc_args           = options[:rdoc_args]
     @security_policy     = options[:security_policy]
     @user_install        = options[:user_install]
     @wrappers            = options[:wrappers]
@@ -337,7 +350,7 @@ class Gem::DependencyInstaller
     end
 
     Gem.post_installs_hooks.each do |hook|
-      hook.call @installed_gems
+      hook.call self, @installed_gems
     end
 
     @installed_gems

@@ -79,6 +79,29 @@ class Gem::DocManager
     RDoc::RI::Driver.new(options).class_cache
   end
 
+  def self.generation_hook installer, specs
+    rdoc_args = installer.rdoc_args
+    types     = installer.document
+
+    # NOTE: *All* of the RI documents must be generated first.  For some
+    # reason of legacy rdoc, RI docs cannot be generated after any RDoc
+    # documents are generated.
+
+    if types.include? 'ri' then
+      specs.each do |spec|
+        Gem::DocManager.new(spec, rdoc_args).generate_ri
+      end
+
+      Gem::DocManager.update_ri_cache
+    end
+
+    if types.include? 'rdoc' then
+      specs.each do |spec|
+        Gem::DocManager.new(spec, rdoc_args).generate_rdoc
+      end
+    end
+  end
+
   ##
   # Create a document manager for +spec+. +rdoc_args+ contains arguments for
   # RDoc (template etc.) as a String.
@@ -238,4 +261,6 @@ class Gem::DocManager
   end
 
 end
+
+Gem.post_installs(&Gem::DocManager.method(:generation_hook))
 

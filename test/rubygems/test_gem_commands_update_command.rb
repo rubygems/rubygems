@@ -267,8 +267,11 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_empty out
   end
 
-  def test_execute_documentation
+  def test_execute_rdoc
+    Gem.post_installs(&Gem::DocManager.method(:generation_hook))
+
     @cmd.options[:document] = %w[rdoc ri]
+
     util_clear_gems
 
     Gem::Installer.new(@a1_path).install

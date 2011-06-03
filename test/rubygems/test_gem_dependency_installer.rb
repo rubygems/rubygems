@@ -155,16 +155,18 @@ class TestGemDependencyInstaller < Gem::TestCase
 
   def test_install_dependency
     util_setup_gems
-    post_installs_ran = false
 
-    Gem.post_installs do |gems|
+    post_installs_ran = false
+    inst = nil
+
+    Gem.post_installs do |installer, specs|
       post_installs_ran = true
-      assert_equal [@a1, @b1], gems
+      assert_equal inst, installer
+      assert_equal [@a1, @b1], specs
     end
 
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv @b1_gem, @tempdir
-    inst = nil
 
     Dir.chdir @tempdir do
       inst = Gem::DependencyInstaller.new

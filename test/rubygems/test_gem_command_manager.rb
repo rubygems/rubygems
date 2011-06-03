@@ -54,6 +54,7 @@ class TestGemCommandManager < Gem::TestCase
     assert_match(/invalid option: --bad-arg/i, @ui.error)
   end
 
+  # HACK move to install command test
   def test_process_args_install
     #capture all install options
     use_ui @ui do
@@ -65,7 +66,7 @@ class TestGemCommandManager < Gem::TestCase
 
       #check defaults
       @command_manager.process_args("install")
-      assert_equal true, check_options[:generate_rdoc]
+      assert_equal %w[rdoc ri], check_options[:document].sort
       assert_equal false, check_options[:force]
       assert_equal :both, check_options[:domain]
       assert_equal true, check_options[:wrappers]
@@ -77,7 +78,7 @@ class TestGemCommandManager < Gem::TestCase
       check_options = nil
       @command_manager.process_args(
         "install --force --local --rdoc --install-dir . --version 3.0 --no-wrapper --bindir . ")
-      assert_equal true, check_options[:generate_rdoc]
+      assert_equal %w[rdoc ri], check_options[:document].sort
       assert_equal true, check_options[:force]
       assert_equal :local, check_options[:domain]
       assert_equal false, check_options[:wrappers]
@@ -102,6 +103,7 @@ class TestGemCommandManager < Gem::TestCase
     end
   end
 
+  # HACK move to uninstall command test
   def test_process_args_uninstall
     #capture all uninstall options
     check_options = nil
@@ -121,6 +123,7 @@ class TestGemCommandManager < Gem::TestCase
     assert_equal Gem::Requirement.new('3.0'), check_options[:version]
   end
 
+  # HACK move to check command test
   def test_process_args_check
     #capture all check options
     check_options = nil
@@ -141,6 +144,7 @@ class TestGemCommandManager < Gem::TestCase
     assert_equal true, check_options[:alien]
   end
 
+  # HACK move to build command test
   def test_process_args_build
     #capture all build options
     check_options = nil
@@ -159,6 +163,7 @@ class TestGemCommandManager < Gem::TestCase
     assert_equal 'foobar.rb', check_options[:args].first
   end
 
+  # HACK move to query command test
   def test_process_args_query
     #capture all query options
     check_options = nil
@@ -191,6 +196,7 @@ class TestGemCommandManager < Gem::TestCase
     assert_equal :both, check_options[:domain]
   end
 
+  # HACK move to update command test
   def test_process_args_update
     #capture all update options
     check_options = nil
@@ -201,12 +207,12 @@ class TestGemCommandManager < Gem::TestCase
 
     #check defaults
     @command_manager.process_args("update")
-    assert_equal true, check_options[:generate_rdoc]
+    assert_includes check_options[:document], 'rdoc'
 
     #check settings
     check_options = nil
     @command_manager.process_args("update --force --rdoc --install-dir .")
-    assert_equal true, check_options[:generate_rdoc]
+    assert_includes check_options[:document], 'ri'
     assert_equal true, check_options[:force]
     assert_equal Dir.pwd, check_options[:install_dir]
   end

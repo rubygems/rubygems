@@ -16,6 +16,7 @@ class Gem::DependencyInstaller
 
   DEFAULT_OPTIONS = {
     :env_shebang         => false,
+    :document            => %w[rdoc ri],
     :domain              => :both, # HACK dup
     :force               => false,
     :format_executable   => false, # HACK dup
@@ -23,7 +24,7 @@ class Gem::DependencyInstaller
     :prerelease          => false,
     :security_policy     => nil, # HACK NoSecurity requires OpenSSL. AlmostNo? Low?
     :wrappers            => true,
-  }
+  }.freeze
 
   ##
   # Creates a new installer instance.

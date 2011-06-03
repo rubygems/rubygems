@@ -13,8 +13,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     super
 
     @cmd = Gem::Commands::InstallCommand.new
-    @cmd.options[:generate_rdoc] = false
-    @cmd.options[:generate_ri] = false
+    @cmd.options[:document] = []
   end
 
   def test_execute_exclude_prerelease
@@ -109,7 +108,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     assert out.empty?, out.inspect
   end
 
-  def test_no_user_install
+  def test_execute_no_user_install
     skip 'skipped on MS Windows (chmod has no effect)' if win_platform?
 
     util_setup_fake_fetcher
@@ -241,10 +240,30 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_match(/Successfully installed #{@a2_pre.full_name}$/, @ui.output)
   end
 
-  def test_execute_remote
-    @cmd.options[:generate_rdoc] = true
-    @cmd.options[:generate_ri] = true
+  def test_execute_rdoc
+    util_setup_fake_fetcher
+    @cmd.options[:document] = %w[rdoc ri]
+    @cmd.options[:domain] = :local
 
+    FileUtils.mv @a2.cache_file, @tempdir
+
+    @cmd.options[:args] = [@a2.name]
+
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        e = assert_raises Gem::SystemExitException do
+          @cmd.execute
+        end
+
+        assert_equal 0, e.exit_code
+      end
+    end
+
+    assert_path_exists File.join(@a2.doc_dir, 'ri')
+    assert_path_exists File.join(@a2.doc_dir, 'rdoc')
+  end
+
+  def test_execute_remote
     util_setup_fake_fetcher
     util_setup_spec_fetcher
 
@@ -265,10 +284,6 @@ ERROR:  Possible alternatives: non_existent_with_hint
     out = @ui.output.split "\n"
     assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "1 gem installed", out.shift
-    assert_equal "Installing ri documentation for #{@a2.full_name}...",
-                 out.shift
-    assert_equal "Installing RDoc documentation for #{@a2.full_name}...",
-                 out.shift
     assert out.empty?, out.inspect
   end
 

@@ -13,11 +13,9 @@ class Gem::Commands::UpdateCommand < Gem::Command
   include Gem::VersionOption
 
   def initialize
-    super 'update',
-          'Update the named gems (or all installed gems) in the local repository',
-      :generate_rdoc => true,
-      :generate_ri   => true,
-      :force         => false
+    super 'update', 'Update installed gems to the latest version',
+      :document => %w[rdoc ri],
+      :force    => false
 
     add_install_update_options
 
@@ -81,7 +79,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
     else
       say "Gems updated: #{updated.map { |spec| spec.name }.join ', '}"
 
-      if options[:generate_ri] then
+      if options[:document].include? 'ri' then
         updated.each do |gem|
           Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
         end
@@ -89,7 +87,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
         Gem::DocManager.update_ri_cache
       end
 
-      if options[:generate_rdoc] then
+      if options[:document].include? 'rdoc' then
         updated.each do |gem|
           Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
         end
@@ -178,8 +176,9 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     args = []
     args << '--prefix' << Gem.prefix if Gem.prefix
-    args << '--no-rdoc' unless options[:generate_rdoc]
-    args << '--no-ri' unless options[:generate_ri]
+    # TODO use --document for >= 1.9 , --no-rdoc --no-ri < 1.9
+    args << '--no-rdoc' unless options[:document].include? 'rdoc'
+    args << '--no-ri'   unless options[:document].include? 'ri'
     args << '--no-format-executable' if options[:no_format_executable]
 
     update_dir = File.join Gem.dir, 'gems', "rubygems-update-#{version}"

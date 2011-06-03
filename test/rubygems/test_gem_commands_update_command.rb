@@ -14,8 +14,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     @cmd = Gem::Commands::UpdateCommand.new
 
-    @cmd.options[:generate_rdoc] = false
-    @cmd.options[:generate_ri]   = false
+    @cmd.options[:document] = []
 
     util_setup_fake_fetcher(true)
     util_clear_gems
@@ -39,8 +38,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     Gem::Installer.new(@a1_path).install
 
     @cmd.options[:args] = []
-    @cmd.options[:generate_rdoc] = false
-    @cmd.options[:generate_ri]   = false
 
     use_ui @ui do
       @cmd.execute
@@ -94,8 +91,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     @cmd.options[:args]          = []
     @cmd.options[:system]        = true
-    @cmd.options[:generate_rdoc] = false
-    @cmd.options[:generate_ri]   = false
 
     use_ui @ui do
       @cmd.execute
@@ -118,8 +113,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     @cmd.options[:args]          = []
     @cmd.options[:system]        = true
-    @cmd.options[:generate_rdoc] = false
-    @cmd.options[:generate_ri]   = false
 
     assert_raises Gem::MockGemUi::SystemExitException do
       use_ui @ui do
@@ -141,8 +134,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     @cmd.options[:args]          = []
     @cmd.options[:system]        = true
-    @cmd.options[:generate_rdoc] = false
-    @cmd.options[:generate_ri]   = false
 
     use_ui @ui do
       @cmd.execute
@@ -166,8 +157,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     @cmd.options[:args]          = []
     @cmd.options[:system]        = "8"
-    @cmd.options[:generate_rdoc] = false
-    @cmd.options[:generate_ri]   = false
 
     use_ui @ui do
       @cmd.execute
@@ -191,8 +180,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     @cmd.options[:args]          = []
     @cmd.options[:system]        = "9"
-    @cmd.options[:generate_rdoc] = false
-    @cmd.options[:generate_ri]   = false
 
     use_ui @ui do
       @cmd.execute
@@ -210,8 +197,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
   def test_execute_system_with_gems
     @cmd.options[:args]          = %w[gem]
     @cmd.options[:system]        = true
-    @cmd.options[:generate_rdoc] = false
-    @cmd.options[:generate_ri]   = false
 
     assert_raises Gem::MockGemUi::TermError do
       use_ui @ui do
@@ -280,6 +265,22 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
                  out.shift
 
     assert_empty out
+  end
+
+  def test_execute_documentation
+    @cmd.options[:document] = %w[rdoc ri]
+    util_clear_gems
+
+    Gem::Installer.new(@a1_path).install
+
+    @cmd.options[:args] = [@a1.name]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_path_exists File.join(@a2.doc_dir, 'ri')
+    assert_path_exists File.join(@a2.doc_dir, 'rdoc')
   end
 
   def test_execute_named
@@ -363,11 +364,10 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     @cmd.handle_options %w[--system]
 
     expected = {
-      :generate_ri   => true,
-      :system        => true,
-      :force         => false,
-      :args          => [],
-      :generate_rdoc => true,
+      :args     => [],
+      :document => %w[rdoc ri],
+      :force    => false,
+      :system   => true,
     }
 
     assert_equal expected, @cmd.options
@@ -383,11 +383,10 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     @cmd.handle_options %w[--system 1.3.7]
 
     expected = {
-      :generate_ri   => true,
-      :system        => "1.3.7",
-      :force         => false,
-      :args          => [],
-      :generate_rdoc => true,
+      :args     => [],
+      :document => %w[rdoc ri],
+      :force    => false,
+      :system   => "1.3.7",
     }
 
     assert_equal expected, @cmd.options

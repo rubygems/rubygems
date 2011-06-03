@@ -19,8 +19,6 @@ class Gem::Commands::InstallCommand < Gem::Command
 
   def initialize
     defaults = Gem::DependencyInstaller::DEFAULT_OPTIONS.merge({
-      :generate_rdoc     => true,
-      :generate_ri       => true,
       :format_executable => false,
       :version           => Gem::Requirement.default,
     })
@@ -148,7 +146,7 @@ to write the specification by hand.  For example:
       # reason, RI docs cannot be generated after any RDoc documents are
       # generated.
 
-      if options[:generate_ri] then
+      if options[:document].include? 'ri' then
         installed_gems.each do |gem|
           Gem::DocManager.new(gem, options[:rdoc_args]).generate_ri
         end
@@ -156,7 +154,7 @@ to write the specification by hand.  For example:
         Gem::DocManager.update_ri_cache
       end
 
-      if options[:generate_rdoc] then
+      if options[:document].include? 'rdoc' then
         installed_gems.each do |gem|
           Gem::DocManager.new(gem, options[:rdoc_args]).generate_rdoc
         end

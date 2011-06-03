@@ -44,16 +44,39 @@ module Gem::InstallUpdateOptions
       options[:bin_dir] = File.expand_path(value)
     end
 
-    add_option(:"Install/Update", '-d', '--[no-]rdoc',
-               'Generate RDoc documentation for the gem on',
-               'install') do |value, options|
-      options[:generate_rdoc] = value
+    add_option(:"Install/Update", '-d', '--[no-]document=[TYPE,TYPE]', Array,
+               'Generate documentation for installed gems',
+               'List the documentation types you wish to',
+               'generate.  For example: rdoc,ri') do |value, options|
+      options[:document] = case value
+                           when nil   then %w[rdoc ri]
+                           when false then []
+                           else            value
+                           end
     end
 
-    add_option(:"Install/Update", '--[no-]ri',
-               'Generate RI documentation for the gem on',
-               'install') do |value, options|
-      options[:generate_ri] = value
+    add_option(:Deprecated, '--[no-]rdoc',
+               'Generate RDoc for installed gems',
+               'Use --document instead') do |value, options|
+      if value then
+        options[:document] << 'rdoc'
+      else
+        options[:document].delete 'rdoc'
+      end
+
+      options[:document].uniq!
+    end
+
+    add_option(:Deprecated, '--[no-]ri',
+               'Generate ri data for installed gems.',
+               'Use --document instead') do |value, options|
+      if value then
+        options[:document] << 'ri'
+      else
+        options[:document].delete 'ri'
+      end
+
+      options[:document].uniq!
     end
 
     add_option(:"Install/Update", '-E', '--[no-]env-shebang',
@@ -136,7 +159,7 @@ module Gem::InstallUpdateOptions
   # Default options for the gem install command.
 
   def install_update_defaults_str
-    '--rdoc --no-force --wrappers'
+    '--document=rdoc,ri --wrappers'
   end
 
 end

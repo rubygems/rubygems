@@ -344,7 +344,7 @@ class Gem::Command
 
   def handle_options(args)
     args = add_extra_args(args)
-    @options = @defaults.clone
+    @options = Marshal.load Marshal.dump @defaults # deep copy
     parser.parse!(args)
     @options[:args] = args
   end

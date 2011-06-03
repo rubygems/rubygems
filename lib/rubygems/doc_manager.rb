@@ -181,26 +181,24 @@ class Gem::DocManager
     r = RDoc::RDoc.new
 
     old_pwd = Dir.pwd
-    Dir.chdir @spec.full_gem_path
+    Dir.chdir @spec.full_gem_path do
+      say "rdoc #{args.join ' '}" if Gem.configuration.really_verbose
 
-    say "rdoc #{args.join ' '}" if Gem.configuration.really_verbose
-
-    begin
-      r.document args
-    rescue Errno::EACCES => e
-      dirname = File.dirname e.message.split("-")[1].strip
-      raise Gem::FilePermissionError.new(dirname)
-    rescue Interrupt => e
-      raise e
-    rescue Exception => ex
-      alert_error "While generating documentation for #{@spec.full_name}"
-      ui.errs.puts "... MESSAGE:   #{ex}"
-      ui.errs.puts "... RDOC args: #{debug_args.join(' ')}"
-      ui.errs.puts "\t#{ex.backtrace.join "\n\t"}" if
-        Gem.configuration.backtrace
-      terminate_interaction 1
-    ensure
-      Dir.chdir old_pwd
+      begin
+        r.document args
+      rescue Errno::EACCES => e
+        dirname = File.dirname e.message.split("-")[1].strip
+        raise Gem::FilePermissionError.new(dirname)
+      rescue Interrupt => e
+        raise e
+      rescue Exception => ex
+        alert_error "While generating documentation for #{@spec.full_name}"
+        ui.errs.puts "... MESSAGE:   #{ex}"
+        ui.errs.puts "... RDOC args: #{debug_args.join(' ')}"
+        ui.errs.puts "\t#{ex.backtrace.join "\n\t"}" if
+          Gem.configuration.backtrace
+        terminate_interaction 1
+      end
     end
   end
 

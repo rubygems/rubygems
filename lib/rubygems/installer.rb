@@ -358,6 +358,17 @@ class Gem::Installer
   ##
   # Generates a #! line for +bin_file_name+'s wrapper copying arguments if
   # necessary.
+  #
+  # If the :custom_shebang config is set, then it is used as a template
+  # for how to create the shebang used for to run a gem's executables.
+  #
+  # The template supports 4 expansions:
+  #
+  #  $env    the path to the unix env utility
+  #  $ruby   the path to the currently running ruby interpreter
+  #  $exec   the path to the gem's executable
+  #  $name   the name of the gem the executable is for
+  #
 
   def shebang(bin_file_name)
     ruby_name = Gem::ConfigMap[:ruby_install_name] if @env_shebang
@@ -369,6 +380,25 @@ class Gem::Installer
       shebang = first_line.sub(/\A\#!.*?ruby\S*(?=(\s+\S+))/, "#!#{Gem.ruby}")
       opts = $1
       shebang.strip! # Avoid nasty ^M issues.
+    end
+
+    if which = Gem.configuration[:custom_shebang]
+      which = which.gsub(/\$(\w+)/) do
+        case $1
+        when "env"
+          @env_path ||= ENV_PATHS.find do |env_path|
+                          File.executable? env_path
+                        end
+        when "ruby"
+          "#{Gem.ruby}#{opts}"
+        when "exec"
+          bin_file_name
+        when "name"
+          spec.name
+        end
+      end
+
+      return "#!#{which}"
     end
 
     if not ruby_name then

@@ -18,8 +18,14 @@ class TestGemInstaller < Gem::InstallerTestCase
       @user_installer.spec = @user_spec
       @user_installer.gem_home = @installer_tmp
     end
+
+    @config = Gem.configuration
   end
 
+  def teardown
+    super
+    Gem.configuration = @config
+  end
 
   def test_app_script_text
     @spec.version = 2
@@ -992,6 +998,45 @@ load Gem.bin_path('a', 'executable', version)
     shebang = @installer.shebang 'executable'
 
     assert_equal "#!#{Gem.ruby} -ws", shebang
+  end
+
+  def test_shebang_custom
+    conf = Gem::ConfigFile.new []
+    conf[:custom_shebang] = 'test'
+
+    Gem.configuration = conf
+
+    util_make_exec @spec, "#!/usr/bin/ruby"
+
+    shebang = @installer.shebang 'executable'
+
+    assert_equal "#!test", shebang
+  end
+
+  def test_shebang_custom_with_expands
+    conf = Gem::ConfigFile.new []
+    conf[:custom_shebang] = '1 $env 2 $ruby 3 $exec 4 $name'
+
+    Gem.configuration = conf
+
+    util_make_exec @spec, "#!/usr/bin/ruby"
+
+    shebang = @installer.shebang 'executable'
+
+    assert_equal "#!1 /usr/bin/env 2 #{Gem.ruby} 3 executable 4 a", shebang
+  end
+
+  def test_shebang_custom_with_expands_and_arguments
+    conf = Gem::ConfigFile.new []
+    conf[:custom_shebang] = '1 $env 2 $ruby 3 $exec'
+
+    Gem.configuration = conf
+
+    util_make_exec @spec, "#!/usr/bin/ruby -ws"
+
+    shebang = @installer.shebang 'executable'
+
+    assert_equal "#!1 /usr/bin/env 2 #{Gem.ruby} -ws 3 executable", shebang
   end
 
   def test_unpack

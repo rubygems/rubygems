@@ -955,7 +955,7 @@ class TestGem < Gem::TestCase
   def test_self_post_reset
     assert_empty Gem.post_reset_hooks
 
-    Gem.post_reset do |installer| end
+    Gem.post_reset { }
 
     assert_equal 1, Gem.post_reset_hooks.length
   end
@@ -979,7 +979,7 @@ class TestGem < Gem::TestCase
   def test_self_pre_reset
     assert_empty Gem.pre_reset_hooks
 
-    Gem.pre_reset do |installer| end
+    Gem.pre_reset { }
 
     assert_equal 1, Gem.pre_reset_hooks.length
   end

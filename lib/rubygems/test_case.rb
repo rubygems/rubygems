@@ -149,10 +149,11 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     FileUtils.mkdir_p @gemhome
     FileUtils.mkdir_p @userhome
 
+    Gem::Specification.unresolved_deps.clear # done to avoid cross-test warnings
     Gem.use_paths(@gemhome)
 
     Gem.loaded_specs.clear
-    Gem.unresolved_deps.clear
+    Gem::Specification.unresolved_deps.clear
 
     Gem.configuration.verbose = true
     Gem.configuration.update_sources = true

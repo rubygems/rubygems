@@ -756,7 +756,7 @@ class Gem::Specification
 
   def self.find_in_unresolved path
     # TODO: do we need these?? Kill it
-    specs = Gem.unresolved_deps.values.map { |dep| dep.to_specs }.flatten
+    specs = unresolved_deps.values.map { |dep| dep.to_specs }.flatten
 
     specs.find_all { |spec| spec.contains_requirable_file? path }
   end
@@ -766,7 +766,7 @@ class Gem::Specification
   # specs that contain the file matching +path+.
 
   def self.find_in_unresolved_tree path
-    specs = Gem.unresolved_deps.values.map { |dep| dep.to_specs }.flatten
+    specs = unresolved_deps.values.map { |dep| dep.to_specs }.flatten
 
     specs.reverse_each do |spec|
       trails = []
@@ -1060,6 +1060,8 @@ class Gem::Specification
   # resolved later, as needed.
 
   def activate_dependencies
+    unresolved = Gem::Specification.unresolved_deps
+
     self.runtime_dependencies.each do |spec_dep|
       # TODO: check for conflicts! not just name!
       next if Gem.loaded_specs.include? spec_dep.name
@@ -1069,11 +1071,11 @@ class Gem::Specification
         specs.first.activate
       else
         name = spec_dep.name
-        Gem.unresolved_deps[name] = Gem.unresolved_deps[name].merge spec_dep
+        unresolved[name] = unresolved[name].merge spec_dep
       end
     end
 
-    Gem.unresolved_deps.delete self.name
+    unresolved.delete self.name
   end
 
   ##

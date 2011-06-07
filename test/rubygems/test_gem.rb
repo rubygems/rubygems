@@ -54,7 +54,7 @@ class TestGem < Gem::TestCase
   end
 
   def unresolved_names
-    Gem.unresolved_deps.values.map(&:to_s).sort
+    Gem::Specification.unresolved_deps.values.map(&:to_s).sort
   end
 
   # TODO: move these to specification

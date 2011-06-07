@@ -1298,5 +1298,6 @@ module Gem
     deprecate :required_location,     :none,                    2011, 11
     deprecate :searcher,              "Specification",          2011, 11
     deprecate :source_index,          "Specification",          2011, 11
+    deprecate :unresolved_deps, "Specification.unresolved_deps", 2011, 12
   end
 end

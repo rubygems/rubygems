@@ -79,6 +79,7 @@ end
       files
       homepage
       licenses
+      metadata
       name
       platform
       post_install_message
@@ -887,7 +888,7 @@ Gem::Specification.new do |s|
   s.test_files = [%q{test/suite.rb}]
 
   if s.respond_to? :specification_version then
-    s.specification_version = 3
+    s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rake>, [\"> 0.4\"])
@@ -1399,6 +1400,128 @@ end
     latest_specs = Gem::Specification.latest_specs.map(&:full_name).sort
 
     assert_equal expected, latest_specs
+  end
+
+  def test_metadata_validates_ok
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @m1 = quick_gem 'm', '1' do |s|
+        s.files = %w[lib/code.rb]
+        s.metadata = { 'one' => "two", 'two' => "three" }
+      end
+
+      use_ui @ui do
+        @m1.validate
+      end
+    end
+  end
+
+  def test_metadata_key_type_validation_fails
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @m2 = quick_gem 'm', '2' do |s|
+        s.files = %w[lib/code.rb]
+        s.metadata = { 1 => "fail" }
+      end
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @m2.validate
+      end
+
+      assert_equal "metadata keys must be a String", e.message
+    end
+  end
+
+  def test_metadata_key_size_validation_fails
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @m2 = quick_gem 'm', '2' do |s|
+        s.files = %w[lib/code.rb]
+        s.metadata = { ("x" * 129) => "fail" }
+      end
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @m2.validate
+      end
+
+      assert_equal "metadata key too large (129 > 128)", e.message
+    end
+  end
+
+  def test_metadata_value_type_validation_fails
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @m2 = quick_gem 'm', '2' do |s|
+        s.files = %w[lib/code.rb]
+        s.metadata = { 'fail' => [] }
+      end
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @m2.validate
+      end
+
+      assert_equal "metadata values must be a String", e.message
+    end
+  end
+
+  def test_metadata_value_size_validation_fails
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @m2 = quick_gem 'm', '2' do |s|
+        s.files = %w[lib/code.rb]
+        s.metadata = { 'fail' => ("x" * 1025) }
+      end
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @m2.validate
+      end
+
+      assert_equal "metadata value too large (1025 > 1024)", e.message
+    end
+  end
+
+  def test_metadata_specs
+    valid_ruby_spec = <<-EOF
+# -*- encoding: utf-8 -*-
+
+Gem::Specification.new do |s|
+  s.name = %q{m}
+  s.version = "1"
+
+  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.metadata = { %q{one} => %q{two}, %q{two} => %q{three} } if s.respond_to? :metadata=
+  s.authors = [%q{A User}]
+  s.date = %q{#{Gem::Specification::TODAY.strftime("%Y-%m-%d")}}
+  s.description = %q{This is a test description}
+  s.email = %q{example@example.com}
+  s.files = [%q{lib/code.rb}]
+  s.homepage = %q{http://example.com}
+  s.require_paths = [%q{lib}]
+  s.rubygems_version = %q{#{Gem::VERSION}}
+  s.summary = %q{this is a summary}
+
+  if s.respond_to? :specification_version then
+    s.specification_version = 4
+
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+    else
+    end
+  else
+  end
+end
+    EOF
+
+    @m1 = quick_gem 'm', '1' do |s|
+      s.files = %w[lib/code.rb]
+      s.metadata = { 'one' => "two", 'two' => "three" }
+    end
+
+    assert_equal @m1.to_ruby, valid_ruby_spec
   end
 
   def util_setup_deps

@@ -14,7 +14,7 @@ class Date; end # for ruby_code if date.rb wasn't required
 # :startdoc:
 
 ##
-# The Specification class contains the metadata for a Gem.  Typically
+# The Specification class contains the information for a Gem.  Typically
 # defined in a .gemspec file or a Rakefile, and looks like this:
 #
 #   Gem::Specification.new do |s|
@@ -27,11 +27,26 @@ class Date; end # for ruby_code if date.rb wasn't required
 #     s.files       = ["lib/example.rb"]
 #     s.homepage    = 'http://rubygems.org/gems/example'
 #   end
+#
+#   Starting in RubyGems 1.9.0, a Specification can hold arbitrary
+#   metadata. This metadata is accessed via Specification#metadata
+#   and has the following restrictions:
+#
+#     * Must be a Hash object
+#     * All keys and values must be Strings
+#     * Keys can be a maximum of 128 bytes and values can be a
+#       maximum of 1024 bytes
+#     * All strings must be UTF8, no binary data is allowed
+#
+#   For example, to add metadata for the location of a bugtracker:
+#
+#   s.metadata = { "bugtracker" => "http://somewhere.com/blah" }
+#
 
 class Gem::Specification
 
   ##
-  # The the version number of a specification that does not specify one
+  # The version number of a specification that does not specify one
   # (i.e. RubyGems 0.7 or earlier).
 
   NONEXISTENT_SPECIFICATION_VERSION = -1
@@ -51,17 +66,37 @@ class Gem::Specification
   #      2  0.9.5 2007-10-01 Added "required_rubygems_version"
   #                          Now forward-compatible with future versions
   #      3  1.3.2 2009-01-03 Added Fixnum validation to specification_version
+  #      4  1.9.0 2011-06-07 Added metadata
   #--
   # When updating this number, be sure to also update #to_ruby.
   #
   # NOTE RubyGems < 1.2 cannot load specification versions > 2.
 
-  CURRENT_SPECIFICATION_VERSION = 3
+  CURRENT_SPECIFICATION_VERSION = 4
 
-  # :stopdoc:
+  ##
+  # An informal list of changes to the specification.  The highest-valued
+  # key should be equal to the CURRENT_SPECIFICATION_VERSION.
 
-  # version => # of fields
-  MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16, 3 => 17 }
+  SPECIFICATION_VERSION_HISTORY = {
+    -1 => ['(RubyGems versions up to and including 0.7 did not have versioned specifications)'],
+    1  => [
+      'Deprecated "test_suite_file" in favor of the new, but equivalent, "test_files"',
+      '"test_file=x" is a shortcut for "test_files=[x]"'
+    ],
+    2  => [
+      'Added "required_rubygems_version"',
+      'Now forward-compatible with future versions',
+    ],
+    3 => [
+       'Added Fixnum validation to the specification_version'
+    ],
+    4 => [
+      'Added sandboxed freeform metadata to the specification version.'
+    ]
+  }
+
+  MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16, 3 => 17, 4 => 18 }
 
   today = Time.now.utc
   TODAY = Time.utc(today.year, today.month, today.day)
@@ -97,6 +132,7 @@ class Gem::Specification
     :files                     => [],
     :homepage                  => nil,
     :licenses                  => [],
+    :metadata                  => {},
     :name                      => nil,
     :platform                  => Gem::Platform::RUBY,
     :post_install_message      => nil,
@@ -325,6 +361,16 @@ class Gem::Specification
   # The key used to sign this gem.  See Gem::Security for details.
 
   attr_accessor :signing_key
+
+  ##
+  # :attr_accessor: metadata
+  #
+  # Arbitrary metadata for this gem. An instance of Hash.
+  #
+  # metadata is simply a Symbol => String association that contains arbitary
+  # data that could be useful to other consumers.
+
+  attr_accessor :metadata
 
   ##
   # Adds a development dependency named +gem+ with +requirements+ to this
@@ -997,6 +1043,7 @@ class Gem::Specification
     spec.instance_variable_set :@new_platform,              array[16]
     spec.instance_variable_set :@platform,                  array[16].to_s
     spec.instance_variable_set :@license,                   array[17]
+    spec.instance_variable_set :@metadata,                  array[18]
     spec.instance_variable_set :@loaded,                    false
 
     spec
@@ -1038,7 +1085,8 @@ class Gem::Specification
       @homepage,
       true, # has_rdoc
       @new_platform,
-      @licenses
+      @licenses,
+      @metadata
     ]
   end
 
@@ -1856,6 +1904,9 @@ class Gem::Specification
     case obj
     when String            then '%q{' + obj + '}'
     when Array             then '[' + obj.map { |x| ruby_code x }.join(", ") + ']'
+    when Hash              then
+      seg = obj.keys.sort.map { |k| "%q{#{k}} => %q{#{obj[k]}}" }
+      "{ #{seg.join(', ')} }"
     when Gem::Version      then obj.to_s.inspect
     when Date              then '%q{' + obj.strftime('%Y-%m-%d') + '}'
     when Time              then '%q{' + obj.strftime('%Y-%m-%d') + '}'
@@ -1998,6 +2049,10 @@ class Gem::Specification
     result << ""
     result << "  s.required_rubygems_version = #{ruby_code required_rubygems_version} if s.respond_to? :required_rubygems_version="
 
+    if metadata and !metadata.empty?
+      result << "  s.metadata = #{ruby_code metadata} if s.respond_to? :metadata="
+    end
+
     handled = [
       :dependencies,
       :name,
@@ -2007,6 +2062,7 @@ class Gem::Specification
       :version,
       :has_rdoc,
       :default_executable,
+      :metadata
     ]
 
     @@attributes.each do |attr_name|
@@ -2181,6 +2237,35 @@ class Gem::Specification
       val = self.send field
       raise Gem::InvalidSpecificationException, "#{field} may not be empty" if
         val.empty?
+    end
+
+    unless Hash === metadata
+      raise Gem::InvalidSpecificationException,
+              'metadata must be a hash'
+    end
+
+    metadata.keys.each do |k|
+      if !k.kind_of?(String)
+        raise Gem::InvalidSpecificationException,
+                'metadata keys must be a String'
+      end
+
+      if k.size > 128
+        raise Gem::InvalidSpecificationException,
+                "metadata key too large (#{k.size} > 128)"
+      end
+    end
+
+    metadata.values.each do |k|
+      if !k.kind_of?(String)
+        raise Gem::InvalidSpecificationException,
+                'metadata values must be a String'
+      end
+
+      if k.size > 1024
+        raise Gem::InvalidSpecificationException,
+                "metadata value too large (#{k.size} > 1024)"
+      end
     end
 
     licenses.each { |license|

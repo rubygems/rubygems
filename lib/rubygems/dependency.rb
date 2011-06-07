@@ -1,5 +1,4 @@
 require "rubygems/requirement"
-require "rubygems/deprecate"
 
 ##
 # The Dependency class holds a Gem name and a Gem::Requirement.
@@ -121,10 +120,6 @@ class Gem::Dependency
     end
 
     @requirement = @version_requirements if defined?(@version_requirements)
-  end
-
-  def version_requirements
-    requirement
   end
 
   def requirements_list
@@ -262,8 +257,4 @@ class Gem::Dependency
 
     matches.find { |spec| spec.activated? } or matches.last
   end
-
-  extend Gem::Deprecate
-
-  deprecate :version_requirements, :requirement, 2011, 10
 end

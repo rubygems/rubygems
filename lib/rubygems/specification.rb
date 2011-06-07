@@ -943,6 +943,10 @@ class Gem::Specification
     Gem.post_reset_hooks.each { |hook| hook.call }
   end
 
+  def self.unresolved_deps
+    @unresolved_deps ||= Hash.new { |h, n| h[n] = Gem::Dependency.new n }
+  end
+
   ##
   # Load custom marshal format, re-initializing defaults as needed
 

@@ -247,7 +247,7 @@ module Gem
   end
 
   def self.unresolved_deps
-    @unresolved_deps ||= Hash.new { |h, n| h[n] = Gem::Dependency.new n }
+    Gem::Specification.unresolved_deps
   end
 
   ##
@@ -1169,12 +1169,13 @@ module Gem
   autoload :Dependency,      'rubygems/dependency'
   autoload :GemPathSearcher, 'rubygems/gem_path_searcher'
   autoload :SpecFetcher,     'rubygems/spec_fetcher'
-  autoload :Specification,   'rubygems/specification'
   autoload :Cache,           'rubygems/source_index'
   autoload :SourceIndex,     'rubygems/source_index'
   autoload :Platform,        'rubygems/platform'
   autoload :Builder,         'rubygems/builder'
   autoload :ConfigFile,      'rubygems/config_file'
+
+  require "rubygems/specification"
 end
 
 module Kernel

@@ -217,7 +217,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # tempdir unless the +KEEP_FILES+ environment variable was set.
 
   def teardown
-    $LOAD_PATH.replace @orig_LOAD_PATH
+    $LOAD_PATH.replace @orig_LOAD_PATH if @orig_LOAD_PATH
 
     Gem::ConfigMap[:BASERUBY] = @orig_BASERUBY
     Gem::ConfigMap[:arch] = @orig_arch

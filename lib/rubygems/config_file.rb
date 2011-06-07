@@ -147,25 +147,24 @@ class Gem::ConfigFile
   #   Enable Ruby level debug messages.  Handled early for the same reason as
   #   --backtrace.
 
-  def initialize(arg_list)
+  def initialize(args)
     @config_file_name = nil
     need_config_file_name = false
 
-    arg_list = arg_list.map do |arg|
+    arg_list = []
+
+    args.each do |arg|
       if need_config_file_name then
         @config_file_name = arg
         need_config_file_name = false
-        nil
       elsif arg =~ /^--config-file=(.*)/ then
         @config_file_name = $1
-        nil
       elsif arg =~ /^--config-file$/ then
         need_config_file_name = true
-        nil
       else
-        arg
+        arg_list << arg
       end
-    end.compact
+    end
 
     @backtrace = DEFAULT_BACKTRACE
     @benchmark = DEFAULT_BENCHMARK
@@ -235,13 +234,16 @@ class Gem::ConfigFile
     Gem.load_yaml
 
     return {} unless filename and File.exist? filename
+
     begin
-      YAML.load(File.read(filename))
+      return YAML.load(File.read(filename))
     rescue ArgumentError
       warn "Failed to load #{config_file_name}"
     rescue Errno::EACCES
       warn "Failed to load #{config_file_name} due to permissions problem."
-    end or {}
+    end
+
+    {}
   end
 
   # True if the backtrace option has been specified, or debug is on.
@@ -295,25 +297,47 @@ class Gem::ConfigFile
   # Really verbose mode gives you extra output.
   def really_verbose
     case verbose
-    when true, false, nil then false
-    else true
+    when true, false, nil then
+      false
+    else
+      true
     end
   end
 
   # to_yaml only overwrites things you can't override on the command line.
   def to_yaml # :nodoc:
     yaml_hash = {}
-    yaml_hash[:backtrace] = @hash.key?(:backtrace) ? @hash[:backtrace] :
-      DEFAULT_BACKTRACE
-    yaml_hash[:benchmark] = @hash.key?(:benchmark) ? @hash[:benchmark] :
-      DEFAULT_BENCHMARK
-    yaml_hash[:bulk_threshold] = @hash.key?(:bulk_threshold) ?
-      @hash[:bulk_threshold] : DEFAULT_BULK_THRESHOLD
+    yaml_hash[:backtrace] = if @hash.key?(:backtrace)
+                              @hash[:backtrace]
+                            else
+                              DEFAULT_BACKTRACE
+                            end
+
+    yaml_hash[:benchmark] = if @hash.key?(:benchmark)
+                              @hash[:benchmark]
+                            else
+                              DEFAULT_BENCHMARK
+                            end
+
+    yaml_hash[:bulk_threshold] = if @hash.key?(:bulk_threshold)
+                                   @hash[:bulk_threshold]
+                                 else
+                                   DEFAULT_BULK_THRESHOLD
+                                 end
+
     yaml_hash[:sources] = Gem.sources
-    yaml_hash[:update_sources] = @hash.key?(:update_sources) ?
-      @hash[:update_sources] : DEFAULT_UPDATE_SOURCES
-    yaml_hash[:verbose] = @hash.key?(:verbose) ? @hash[:verbose] :
-      DEFAULT_VERBOSITY
+
+    yaml_hash[:update_sources] = if @hash.key?(:update_sources)
+                                   @hash[:update_sources]
+                                 else
+                                   DEFAULT_UPDATE_SOURCES
+                                 end
+
+    yaml_hash[:verbose] = if @hash.key?(:verbose)
+                            @hash[:verbose]
+                          else
+                            DEFAULT_VERBOSITY
+                          end
 
     keys = yaml_hash.keys.map { |key| key.to_s }
     keys << 'debug'
@@ -347,15 +371,14 @@ class Gem::ConfigFile
 
   def ==(other) # :nodoc:
     self.class === other and
-    @backtrace == other.backtrace and
-    @benchmark == other.benchmark and
-    @bulk_threshold == other.bulk_threshold and
-    @verbose == other.verbose and
-    @update_sources == other.update_sources and
-    @hash == other.hash
+      @backtrace == other.backtrace and
+      @benchmark == other.benchmark and
+      @bulk_threshold == other.bulk_threshold and
+      @verbose == other.verbose and
+      @update_sources == other.update_sources and
+      @hash == other.hash
   end
 
-  protected
-
   attr_reader :hash
+  protected :hash
 end

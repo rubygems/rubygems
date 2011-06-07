@@ -935,11 +935,19 @@ class Gem::Specification
 
   def self.reset
     @@dirs = nil
-    # from = caller.first(10).reject { |s| s =~ /minitest/ }
-    # warn ""
-    # warn "NOTE: Specification.reset from #{from.inspect}"
-    Gem.pre_reset_hooks.each  { |hook| hook.call }
+    Gem.pre_reset_hooks.each { |hook| hook.call }
     @@all = nil
+    unresolved = unresolved_deps
+    unless unresolved.empty? then
+      w = "W" + "ARN"
+      warn "#{w}: Unresolved specs during Gem::Specification.reset:"
+      unresolved.values.each do |dep|
+        warn "      #{dep}"
+      end
+      warn "#{w}: Clearing out unresolved specs."
+      warn "Please report a bug if this causes problems."
+      unresolved.clear
+    end
     Gem.post_reset_hooks.each { |hook| hook.call }
   end
 

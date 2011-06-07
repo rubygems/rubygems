@@ -7,9 +7,14 @@
 require 'rubygems'
 
 ##
-# The documentation manager generates RDoc and RI for RubyGems.
+# The documentation manager formerly generated RDoc and RI for RubyGems.
+#
+# This file is no longer used, see rubygems/rdoc.rb for details of modern
+# usage.
+#
+# Require 'rubygems/rdoc' and use Gem::RDoc now.
 
-class Gem::DocManager
+class Gem::DocManager # :nodoc: all
 
   include Gem::UserInteraction
 
@@ -267,6 +272,4 @@ class Gem::DocManager
   end
 
 end
-
-Gem.post_installs(&Gem::DocManager.method(:generation_hook))
 

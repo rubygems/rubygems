@@ -7,7 +7,7 @@
 require 'fileutils'
 require 'rubygems'
 require 'rubygems/dependency_list'
-require 'rubygems/doc_manager'
+require 'rubygems/rdoc'
 require 'rubygems/user_interaction'
 
 ##
@@ -220,7 +220,7 @@ class Gem::Uninstaller
 
     FileUtils.rm_rf gem
 
-    Gem::DocManager.new(spec).uninstall_doc
+    Gem::RDoc.new(spec).remove
 
     say "Successfully uninstalled #{spec.full_name}"
 

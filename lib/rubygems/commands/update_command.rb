@@ -1,10 +1,12 @@
 require 'rubygems/command'
 require 'rubygems/command_manager'
+require 'rubygems/dependency_installer'
 require 'rubygems/install_update_options'
 require 'rubygems/local_remote_options'
 require 'rubygems/spec_fetcher'
 require 'rubygems/version_option'
-require 'rubygems/commands/install_command'
+require 'rubygems/install_message' # must come before rdoc for messaging
+require 'rubygems/rdoc'
 
 class Gem::Commands::UpdateCommand < Gem::Command
 
@@ -96,7 +98,6 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     @installer.installed_gems.each do |spec|
       @updated << spec
-      say "Successfully installed #{spec.full_name}" if success
     end
   end
 

@@ -15,8 +15,7 @@ class Gem::DependencyInstaller
   attr_reader :installed_gems
 
   ##
-  # Arguments for use by RDoc.  Used to generate documentation by
-  # Gem::DocManager
+  # Arguments for use by RDoc to generate documentation
 
   attr_reader :rdoc_args
 

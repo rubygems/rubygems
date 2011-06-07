@@ -26,11 +26,18 @@ class Gem::EndOfYAMLException < Gem::Exception; end
 
 ##
 # Signals that a file permission error is preventing the user from
-# installing in the requested directories.
+# operating on the given directory.
+
 class Gem::FilePermissionError < Gem::Exception
-  def initialize(path)
-    super("You don't have write permissions into the #{path} directory.")
+
+  attr_reader :directory
+
+  def initialize directory
+    @directory = directory
+
+    super "You don't have write permissions for the #{directory} directory."
   end
+
 end
 
 ##

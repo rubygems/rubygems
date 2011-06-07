@@ -1,10 +1,11 @@
 require 'rubygems/command'
-require 'rubygems/doc_manager'
 require 'rubygems/install_update_options'
 require 'rubygems/dependency_installer'
 require 'rubygems/local_remote_options'
 require 'rubygems/validator'
 require 'rubygems/version_option'
+require 'rubygems/install_message' # must come before rdoc for messaging
+require 'rubygems/rdoc'
 
 ##
 # Gem installer command line tool
@@ -12,6 +13,8 @@ require 'rubygems/version_option'
 # See `gem help install`
 
 class Gem::Commands::InstallCommand < Gem::Command
+
+  attr_reader :installed_specs # :nodoc:
 
   include Gem::VersionOption
   include Gem::LocalRemoteOptions
@@ -30,6 +33,8 @@ class Gem::Commands::InstallCommand < Gem::Command
     add_platform_option
     add_version_option
     add_prerelease_option "to be installed. (Only for listed gems)"
+
+    @installed_specs = nil
   end
 
   def arguments # :nodoc:
@@ -104,7 +109,7 @@ to write the specification by hand.  For example:
       alert "use --ignore-dependencies to install only the gems you list"
     end
 
-    installed_gems = []
+    @installed_specs = []
 
     ENV.delete 'GEM_PATH' if options[:install_dir].nil? and RUBY_VERSION > '1.9'
 
@@ -123,11 +128,7 @@ to write the specification by hand.  For example:
         inst = Gem::DependencyInstaller.new options
         inst.install gem_name, options[:version]
 
-        inst.installed_gems.each do |spec|
-          say "Successfully installed #{spec.full_name}"
-        end
-
-        installed_gems.push(*inst.installed_gems)
+        @installed_specs.push(*inst.installed_gems)
       rescue Gem::InstallError => e
         alert_error "Error installing #{gem_name}:\n\t#{e.message}"
         exit_code |= 1
@@ -138,9 +139,9 @@ to write the specification by hand.  For example:
       end
     end
 
-    unless installed_gems.empty? then
-      gems = installed_gems.length == 1 ? 'gem' : 'gems'
-      say "#{installed_gems.length} #{gems} installed"
+    unless @installed_specs.empty? then
+      gems = @installed_specs.length == 1 ? 'gem' : 'gems'
+      say "#{@installed_specs.length} #{gems} installed"
     end
 
     raise Gem::SystemExitException, exit_code

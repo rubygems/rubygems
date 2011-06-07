@@ -46,7 +46,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     out = @ui.output.split "\n"
     assert_equal "Updating installed gems", out.shift
     assert_equal "Updating #{@a2.name}", out.shift
-    assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "Gems updated: #{@a2.name}", out.shift
     assert_empty out
   end
@@ -98,7 +97,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     out = @ui.output.split "\n"
     assert_equal "Updating rubygems-update", out.shift
-    assert_equal "Successfully installed rubygems-update-9", out.shift
     assert_equal "Installing RubyGems 9", out.shift
     assert_equal "RubyGems system software updated", out.shift
 
@@ -141,7 +139,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     out = @ui.output.split "\n"
     assert_equal "Updating rubygems-update", out.shift
-    assert_equal "Successfully installed rubygems-update-9", out.shift
     assert_equal "Installing RubyGems 9", out.shift
     assert_equal "RubyGems system software updated", out.shift
 
@@ -164,7 +161,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     out = @ui.output.split "\n"
     assert_equal "Updating rubygems-update", out.shift
-    assert_equal "Successfully installed rubygems-update-8", out.shift
     assert_equal "Installing RubyGems 8", out.shift
     assert_equal "RubyGems system software updated", out.shift
 
@@ -187,7 +183,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     out = @ui.output.split "\n"
     assert_equal "Updating rubygems-update", out.shift
-    assert_equal "Successfully installed rubygems-update-9", out.shift
     assert_equal "Installing RubyGems 9", out.shift
     assert_equal "RubyGems system software updated", out.shift
 
@@ -258,9 +253,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     out = @ui.output.split "\n"
     assert_equal "Updating installed gems", out.shift
     assert_equal "Updating #{@a2.name}", out.shift
-    assert_equal "Successfully installed #{@c2.full_name}", out.shift
-    assert_equal "Successfully installed #{@b2.full_name}", out.shift
-    assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "Gems updated: #{@c2.name}, #{@b2.name}, #{@a2.name}",
                  out.shift
 
@@ -268,7 +260,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
   end
 
   def test_execute_rdoc
-    Gem.post_installs(&Gem::DocManager.method(:generation_hook))
+    Gem.post_installs(&Gem::RDoc.method(:generation_hook))
 
     @cmd.options[:document] = %w[rdoc ri]
 
@@ -300,7 +292,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     out = @ui.output.split "\n"
     assert_equal "Updating installed gems", out.shift
     assert_equal "Updating #{@a2.name}", out.shift
-    assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "Gems updated: #{@a2.name}", out.shift
 
     assert_empty out
@@ -339,7 +330,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     out = @ui.output.split "\n"
     assert_equal "Updating installed gems", out.shift
     assert_equal "Updating #{@a3a.name}", out.shift
-    assert_equal "Successfully installed #{@a3a.full_name}", out.shift
     assert_equal "Gems updated: #{@a3a.name}", out.shift
 
     assert_empty out

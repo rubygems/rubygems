@@ -1,12 +1,6 @@
 require 'rubygems/test_case'
 require 'rubygems/commands/install_command'
 
-begin
-  gem "rdoc"
-rescue Gem::LoadError
-  # ignore
-end
-
 class TestGemCommandsInstallCommand < Gem::TestCase
 
   def setup
@@ -34,8 +28,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
       assert_equal 0, e.exit_code, @ui.error
     end
 
-    assert_match(/Successfully installed #{@a2.full_name}$/, @ui.output)
-    refute_match(/Successfully installed #{@a2_pre.full_name}$/, @ui.output)
+    assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
   end
 
   def test_execute_explicit_version_includes_prerelease
@@ -59,8 +52,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
       assert_equal 0, e.exit_code, @ui.error
     end
 
-    refute_match(/Successfully installed #{@a2.full_name}$/, @ui.output)
-    assert_match(/Successfully installed #{@a2_pre.full_name}$/, @ui.output)
+    assert_equal %w[a-2.a], @cmd.installed_specs.map { |spec| spec.full_name }
   end
 
   def test_execute_include_dependencies
@@ -72,6 +64,8 @@ class TestGemCommandsInstallCommand < Gem::TestCase
         @cmd.execute
       end
     end
+
+    assert_equal %w[], @cmd.installed_specs.map { |spec| spec.full_name }
 
     output = @ui.output.split "\n"
     assert_equal "INFO:  `gem install -y` is now default and will be removed",
@@ -102,8 +96,9 @@ class TestGemCommandsInstallCommand < Gem::TestCase
       end
     end
 
+    assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
+
     out = @ui.output.split "\n"
-    assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "1 gem installed", out.shift
     assert out.empty?, out.inspect
   end
@@ -235,14 +230,13 @@ ERROR:  Possible alternatives: non_existent_with_hint
       assert_equal 0, e.exit_code, @ui.error
     end
 
-    refute_match(/Successfully installed #{@a2.full_name}$/, @ui.output)
-    assert_match(/Successfully installed #{@a2_pre.full_name}$/, @ui.output)
+    assert_equal %w[a-2.a], @cmd.installed_specs.map { |spec| spec.full_name }
   end
 
   def test_execute_rdoc
     util_setup_fake_fetcher
 
-    Gem.post_installs(&Gem::DocManager.method(:generation_hook))
+    Gem.post_installs(&Gem::RDoc.method(:generation_hook))
 
     @cmd.options[:document] = %w[rdoc ri]
     @cmd.options[:domain] = :local
@@ -290,8 +284,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
       assert_equal 0, e.exit_code
     end
 
+    assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
+
     out = @ui.output.split "\n"
-    assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "1 gem installed", out.shift
     assert out.empty?, out.inspect
   end
@@ -328,8 +323,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
       end
     end
 
+    assert_equal %w[a-1], @cmd.installed_specs.map { |spec| spec.full_name }
+
     out = @ui.output.split "\n"
-    assert_equal "Successfully installed #{@a1.full_name}", out.shift
     assert_equal "1 gem installed", out.shift
     assert out.empty?, out.inspect
 
@@ -361,9 +357,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
       end
     end
 
+    assert_equal %w[a-2 b-2], @cmd.installed_specs.map { |spec| spec.full_name }
+
     out = @ui.output.split "\n"
-    assert_equal "Successfully installed #{@a2.full_name}", out.shift
-    assert_equal "Successfully installed #{@b2.full_name}", out.shift
     assert_equal "2 gems installed", out.shift
     assert out.empty?, out.inspect
   end
@@ -393,9 +389,10 @@ ERROR:  Possible alternatives: non_existent_with_hint
       end
     end
 
+    assert_equal %w[b-2], @cmd.installed_specs.map { |spec| spec.full_name }
+
     out = @ui.output.split "\n"
     assert_equal "", @ui.error
-    assert_equal "Successfully installed #{@b2.full_name}", out.shift
     assert_equal "1 gem installed", out.shift
     assert out.empty?, out.inspect
   end

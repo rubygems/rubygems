@@ -26,9 +26,6 @@ class TestGemRDoc < Gem::TestCase
     assert @rdoc.generate_rdoc
     assert @rdoc.generate_ri
 
-    assert_equal "#{@a.doc_dir}/rdoc", @rdoc.rdoc_dir
-    assert_equal "#{@a.doc_dir}/ri",   @rdoc.ri_dir
-
     rdoc = Gem::RDoc.new @a, false, false
 
     refute rdoc.generate_rdoc
@@ -57,7 +54,7 @@ class TestGemRDoc < Gem::TestCase
     @rdoc.instance_variable_set :@rdoc, @rdoc.new_rdoc
     @rdoc.instance_variable_set :@file_info, []
 
-    @rdoc.document 'darkfish', options, @rdoc.rdoc_dir
+    @rdoc.document 'darkfish', options, @a.doc_dir('rdoc')
 
     assert @rdoc.rdoc_installed?
   end
@@ -87,29 +84,29 @@ class TestGemRDoc < Gem::TestCase
   def test_generate_force
     skip 'RDoc 3+ required' unless rdoc_3?
 
-    FileUtils.mkdir_p @rdoc.rdoc_dir
-    FileUtils.mkdir_p @rdoc.ri_dir
+    FileUtils.mkdir_p @a.doc_dir 'ri'
+    FileUtils.mkdir_p @a.doc_dir 'rdoc'
     FileUtils.mkdir_p File.join(@a.gem_dir, 'lib')
 
     @rdoc.force = true
 
     @rdoc.generate
 
-    assert_path_exists File.join(@rdoc.rdoc_dir, 'index.html')
-    assert_path_exists File.join(@rdoc.ri_dir,   'cache.ri')
+    assert_path_exists File.join(@a.doc_dir('rdoc'), 'index.html')
+    assert_path_exists File.join(@a.doc_dir('ri'),   'cache.ri')
   end
 
   def test_generate_no_overwrite
     skip 'RDoc 3+ required' unless rdoc_3?
 
-    FileUtils.mkdir_p @rdoc.rdoc_dir
-    FileUtils.mkdir_p @rdoc.ri_dir
+    FileUtils.mkdir_p @a.doc_dir 'ri'
+    FileUtils.mkdir_p @a.doc_dir 'rdoc'
     FileUtils.mkdir_p File.join(@a.gem_dir, 'lib')
 
     @rdoc.generate
 
-    refute_path_exists File.join(@rdoc.rdoc_dir, 'index.html')
-    refute_path_exists File.join(@rdoc.ri_dir,   'created.rid')
+    refute_path_exists File.join(@a.doc_dir('rdoc'), 'index.html')
+    refute_path_exists File.join(@a.doc_dir('ri'),   'cache.ri')
   end
 
   def test_generate_legacy
@@ -126,7 +123,7 @@ class TestGemRDoc < Gem::TestCase
     FileUtils.mkdir_p @a.doc_dir
     FileUtils.mkdir_p File.join(@a.gem_dir, 'lib')
 
-    @rdoc.legacy_rdoc '--op', @rdoc.rdoc_dir
+    @rdoc.legacy_rdoc '--op', @a.doc_dir('rdoc')
 
     assert @rdoc.rdoc_installed?
   end
@@ -138,19 +135,21 @@ class TestGemRDoc < Gem::TestCase
   def test_rdoc_installed?
     refute @rdoc.rdoc_installed?
 
-    FileUtils.mkdir_p @rdoc.rdoc_dir
+    FileUtils.mkdir_p @a.doc_dir 'rdoc'
 
     assert @rdoc.rdoc_installed?
   end
 
   def test_remove
-    FileUtils.mkdir_p @rdoc.rdoc_dir
-    FileUtils.mkdir_p @rdoc.ri_dir
+    FileUtils.mkdir_p @a.doc_dir 'rdoc'
+    FileUtils.mkdir_p @a.doc_dir 'ri'
 
     @rdoc.remove
 
     refute @rdoc.rdoc_installed?
     refute @rdoc.ri_installed?
+
+    assert_path_exists @a.doc_dir
   end
 
   def test_remove_unwritable
@@ -170,7 +169,7 @@ class TestGemRDoc < Gem::TestCase
   def test_ri_installed?
     refute @rdoc.ri_installed?
 
-    FileUtils.mkdir_p @rdoc.ri_dir
+    FileUtils.mkdir_p @a.doc_dir 'ri'
 
     assert @rdoc.ri_installed?
   end

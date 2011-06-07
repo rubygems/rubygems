@@ -405,6 +405,14 @@ end
     assert_equal [@bonobo, @monkey], @gem.dependencies
   end
 
+  def test_doc_dir
+    assert_equal File.join(@gemhome, 'doc', 'a-1'), @a1.doc_dir
+  end
+
+  def test_doc_dir_type
+    assert_equal File.join(@gemhome, 'doc', 'a-1', 'ri'), @a1.doc_dir('ri')
+  end
+
   def test_runtime_dependencies
     util_setup_deps
     assert_equal [@bonobo], @gem.runtime_dependencies

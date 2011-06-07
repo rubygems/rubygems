@@ -32,11 +32,6 @@ class Gem::RDoc
   @specs = []
 
   ##
-  # Documentation dir for this specification
-
-  attr_reader :doc_dir
-
-  ##
   # Force installation of documentation?
 
   attr_accessor :force
@@ -50,9 +45,6 @@ class Gem::RDoc
   # Generate ri data?
 
   attr_accessor :generate_ri
-
-  attr_reader :rdoc_dir
-  attr_reader :ri_dir
 
   ##
   # Specification to be documented
@@ -116,11 +108,11 @@ class Gem::RDoc
     @rdoc      = nil
     @spec      = spec
 
-    @generate_ri   = generate_ri
     @generate_rdoc = generate_rdoc
+    @generate_ri   = generate_ri
 
-    @ri_dir   = File.join @doc_dir, 'ri' # TODO Gem::Specification#doc_dir 'ri'
-    @rdoc_dir = File.join @doc_dir, 'rdoc'
+    @rdoc_dir = spec.doc_dir 'rdoc'
+    @ri_dir   = spec.doc_dir 'ri'
   end
 
   ##
@@ -281,7 +273,7 @@ class Gem::RDoc
 
     raise Gem::FilePermissionError, base_dir unless File.writable? base_dir
 
-    FileUtils.rm_rf @doc_dir
+    FileUtils.rm_rf @rdoc_dir
     FileUtils.rm_rf @ri_dir
   end
 

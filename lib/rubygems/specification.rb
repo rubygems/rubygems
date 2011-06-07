@@ -1346,10 +1346,21 @@ class Gem::Specification
   end
 
   ##
-  # Returns the full path to this spec's documentation directory.
+  # Returns the full path to this spec's documentation directory.  If +type+
+  # is given it will be appended to the end.  For examlpe:
+  #
+  #   spec.doc_dir      # => "/path/to/gem_repo/doc/a-1"
+  #
+  #   spec.doc_dir 'ri' # => "/path/to/gem_repo/doc/a-1/ri"
 
-  def doc_dir
+  def doc_dir type = nil
     @doc_dir ||= File.join base_dir, 'doc', full_name
+
+    if type then
+      File.join @doc_dir, type
+    else
+      @doc_dir
+    end
   end
 
   def encode_with coder # :nodoc:

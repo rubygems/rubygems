@@ -46,11 +46,6 @@ class Gem::RDoc
 
   attr_accessor :generate_ri
 
-  ##
-  # Specification to be documented
-
-  attr_reader :spec
-
   class << self
 
     ##

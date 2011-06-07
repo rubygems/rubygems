@@ -687,7 +687,7 @@ class Gem::Specification
 
   def self.dirs
     @@dirs ||= Gem.path.collect { |dir|
-      File.join dir, "specifications"
+      File.join dir.dup.untaint, "specifications"
     }
   end
 
@@ -1458,6 +1458,7 @@ class Gem::Specification
     return @full_gem_path if defined?(@full_gem_path) && @full_gem_path
 
     @full_gem_path = File.expand_path File.join(gems_dir, full_name)
+    @full_gem_path.untaint
 
     return @full_gem_path if File.directory? @full_gem_path
 

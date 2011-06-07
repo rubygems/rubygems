@@ -204,7 +204,11 @@ class Gem::DocManager
     r = RDoc::RDoc.new
 
     old_pwd = Dir.pwd
-    Dir.chdir @spec.full_gem_path do
+
+    # Can't use Dir.chdir with a block because r.document might
+    # and you get a warning then.
+    begin
+      Dir.chdir @spec.full_gem_path
       say "rdoc #{args.join ' '}" if Gem.configuration.really_verbose
 
       begin
@@ -222,6 +226,8 @@ class Gem::DocManager
           Gem.configuration.backtrace
         terminate_interaction 1
       end
+    ensure
+      Dir.chdir old_pwd
     end
   end
 

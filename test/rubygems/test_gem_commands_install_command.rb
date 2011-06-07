@@ -252,13 +252,20 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:args] = [@a2.name]
 
     use_ui @ui do
-      Dir.chdir @tempdir do
+      # Don't use Dir.chdir with a block, it warnings a lot because
+      # of a downstream Dir.chdir with a block
+      old = Dir.getwd
+
+      begin
+        Dir.chdir @tempdir
         e = assert_raises Gem::SystemExitException do
           @cmd.execute
         end
-
-        assert_equal 0, e.exit_code
+      ensure
+        Dir.chdir old
       end
+
+      assert_equal 0, e.exit_code
     end
 
     assert_path_exists File.join(@a2.doc_dir, 'ri')

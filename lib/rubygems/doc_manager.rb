@@ -85,7 +85,6 @@ class Gem::DocManager # :nodoc: all
   end
 
   def self.generation_hook installer, specs
-    rdoc_args = installer.rdoc_args
     types     = installer.document
 
     # NOTE: *All* of the RI documents must be generated first.  For some
@@ -94,7 +93,7 @@ class Gem::DocManager # :nodoc: all
 
     if types.include? 'ri' then
       specs.each do |spec|
-        Gem::DocManager.new(spec, rdoc_args).generate_ri
+        Gem::DocManager.new(spec, nil).generate_ri
       end
 
       Gem::DocManager.update_ri_cache
@@ -102,7 +101,7 @@ class Gem::DocManager # :nodoc: all
 
     if types.include? 'rdoc' then
       specs.each do |spec|
-        Gem::DocManager.new(spec, rdoc_args).generate_rdoc
+        Gem::DocManager.new(spec, nil).generate_rdoc
       end
     end
   end

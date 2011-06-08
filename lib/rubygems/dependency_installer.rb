@@ -15,11 +15,6 @@ class Gem::DependencyInstaller
   attr_reader :installed_gems
 
   ##
-  # Arguments for use by RDoc to generate documentation
-
-  attr_reader :rdoc_args
-
-  ##
   # Documentation types.  For use by the Gem.done_installing hook
 
   attr_reader :document
@@ -75,7 +70,6 @@ class Gem::DependencyInstaller
     @format_executable   = options[:format_executable]
     @ignore_dependencies = options[:ignore_dependencies]
     @prerelease          = options[:prerelease]
-    @rdoc_args           = options[:rdoc_args]
     @security_policy     = options[:security_policy]
     @user_install        = options[:user_install]
     @wrappers            = options[:wrappers]

@@ -60,7 +60,6 @@ class Gem::RDoc
   # +specs+
 
   def self.generation_hook installer, specs
-    rdoc_args = installer.rdoc_args
     types     = installer.document
 
     generate_rdoc = types.include? 'rdoc'

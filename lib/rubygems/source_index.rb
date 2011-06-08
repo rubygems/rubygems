@@ -46,7 +46,7 @@ class Gem::SourceIndex
     if deprecated.empty?
       from_gems_in(*installed_spec_directories)
     else
-      warn "NOTE: from_installed_gems(arg) is deprecated. From #{caller.first}"
+      warn "NOTE: from_installed_gems(arg) is deprecated. From #{caller.first}" if $VERBOSE
       from_gems_in(*deprecated) # HACK warn
     end
   end
@@ -95,7 +95,7 @@ class Gem::SourceIndex
       refresh!
     else
       arg = specs_or_dirs.inspect
-      warn "NOTE: SourceIndex.new(#{arg}) is deprecated; From #{caller.first}."
+      warn "NOTE: SourceIndex.new(#{arg}) is deprecated; From #{caller.first}." if $VERBOSE
     end
   end
 
@@ -271,7 +271,7 @@ class Gem::SourceIndex
 
     # TODO - Remove support and warning for legacy arguments after 2008/11
     unless Gem::Dependency === gem_pattern
-      warn "#{Gem.location_of_caller.join ':'}:Warning: Gem::SourceIndex#search support for #{gem_pattern.class} patterns is deprecated, use #find_name"
+      warn "#{Gem.location_of_caller.join ':'}:Warning: Gem::SourceIndex#search support for #{gem_pattern.class} patterns is deprecated, use #find_name" if $VERBOSE
     end
 
     case gem_pattern

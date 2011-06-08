@@ -32,6 +32,28 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
     assert @cmd.handles?(args)
   end
 
+  def test_doc
+    @cmd.handle_options %w[--doc]
+
+    assert_equal %w[rdoc ri], @cmd.options[:document].sort
+  end
+
+  def test_doc_rdoc
+    @cmd.handle_options %w[--doc=rdoc]
+
+    assert_equal %w[rdoc], @cmd.options[:document]
+
+    @cmd.handle_options %w[--doc ri]
+
+    assert_equal %w[ri], @cmd.options[:document]
+  end
+
+  def test_doc_no
+    @cmd.handle_options %w[--no-doc]
+
+    assert_equal [], @cmd.options[:document]
+  end
+
   def test_document
     @cmd.handle_options %w[--document]
 
@@ -48,6 +70,10 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
     @cmd.handle_options %w[--document=rdoc]
 
     assert_equal %w[rdoc], @cmd.options[:document]
+
+    @cmd.handle_options %w[--document ri]
+
+    assert_equal %w[ri], @cmd.options[:document]
   end
 
   def test_rdoc

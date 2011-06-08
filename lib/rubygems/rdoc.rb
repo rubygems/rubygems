@@ -170,8 +170,15 @@ class Gem::RDoc
       options.files.push(*@spec.extra_rdoc_files)
 
       args = @spec.rdoc_options
+
+      case config_args = Gem.configuration[:rdoc]
+      when String then
+        args = args.concat Gem.configuration[:rdoc].split
+      when Array then
+        args = args.concat Gem.configuration[:rdoc]
+      end
+
       delete_legacy_args args
-      # TODO Gem.configuration[:rdoc]
       options.parse args
       options.quiet = !Gem.configuration.really_verbose
 

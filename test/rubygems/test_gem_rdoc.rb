@@ -69,6 +69,40 @@ class TestGemRDoc < Gem::TestCase
 
     assert @rdoc.rdoc_installed?
     assert @rdoc.ri_installed?
+
+    rdoc = @rdoc.instance_variable_get :@rdoc
+
+    refute rdoc.options.hyperlink_all
+  end
+
+  def test_generate_configuration_rdoc_array
+    skip 'RDoc 3+ required' unless rdoc_3?
+
+    Gem.configuration[:rdoc] = %w[-A]
+
+    FileUtils.mkdir_p @a.doc_dir
+    FileUtils.mkdir_p File.join(@a.gem_dir, 'lib')
+
+    @rdoc.generate
+
+    rdoc = @rdoc.instance_variable_get :@rdoc
+
+    assert rdoc.options.hyperlink_all
+  end
+
+  def test_generate_configuration_rdoc_string
+    skip 'RDoc 3+ required' unless rdoc_3?
+
+    Gem.configuration[:rdoc] = '-A'
+
+    FileUtils.mkdir_p @a.doc_dir
+    FileUtils.mkdir_p File.join(@a.gem_dir, 'lib')
+
+    @rdoc.generate
+
+    rdoc = @rdoc.instance_variable_get :@rdoc
+
+    assert rdoc.options.hyperlink_all
   end
 
   def test_generate_disabled

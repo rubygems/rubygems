@@ -995,8 +995,8 @@ module Gem
   # Suffixes for require-able paths.
 
   def self.suffixes
-    @suffixes ||= ['',
-                   '.rb',
+    @suffixes ||= ['.rb',
+                   '',
                    *%w(DLEXT DLEXT2).map { |key|
                      val = RbConfig::CONFIG[key]
                      next unless val and not val.empty?

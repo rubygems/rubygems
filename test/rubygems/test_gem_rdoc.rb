@@ -16,6 +16,8 @@ class TestGemRDoc < Gem::TestCase
     rescue Gem::DocumentError => e
       skip e.message
     end
+
+    Gem.configuration[:rdoc] = nil
   end
 
   def rdoc_3?

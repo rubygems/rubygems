@@ -1272,17 +1272,13 @@ class Gem::Specification
   # Return true if this spec can require +file+.
 
   def contains_requirable_file? file
-    root = full_gem_path
+    root     = full_gem_path
+    suffixes = Gem.suffixes
 
-    require_paths.each do |lib|
+    require_paths.any? do |lib|
       base = "#{root}/#{lib}/#{file}"
-      Gem.suffixes.each do |suf|
-        path = "#{base}#{suf}"
-        return true if File.file? path
-      end
+      suffixes.any? { |suf| File.file? "#{base}#{suf}" }
     end
-
-    return false
   end
 
   ##

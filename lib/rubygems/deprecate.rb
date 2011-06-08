@@ -24,7 +24,7 @@ module Gem
   module Deprecate
 
     def self.skip # :nodoc:
-      @skip ||= false
+      @skip ||= !$VERBOSE
     end
 
     def self.skip= v # :nodoc:

@@ -293,5 +293,5 @@ class Gem::RDoc
 
 end unless loaded_hook
 
-Gem.post_installs(&Gem::RDoc.method(:generation_hook)) unless loaded_hook
+Gem.done_installing(&Gem::RDoc.method(:generation_hook)) unless loaded_hook
 

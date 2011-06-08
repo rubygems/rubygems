@@ -3,7 +3,7 @@ module Gem
   # TODO: move this whole file back into rubygems.rb
 
   @post_install_hooks   ||= []
-  @post_installs_hooks  ||= []
+  @done_installing_hooks  ||= []
   @post_uninstall_hooks ||= []
   @pre_uninstall_hooks  ||= []
   @pre_install_hooks    ||= []

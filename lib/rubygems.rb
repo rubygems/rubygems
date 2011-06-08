@@ -741,8 +741,8 @@ module Gem
   # and a list of installed specifications when
   # Gem::DependencyInstaller#install is complete
 
-  def self.post_installs(&hook)
-    @post_installs_hooks << hook
+  def self.done_installing(&hook)
+    @done_installing_hooks << hook
   end
 
   ##
@@ -1125,7 +1125,7 @@ module Gem
     # The list of hooks to be run after Gem::DependencyInstaller installs a
     # set of gems
 
-    attr_reader :post_installs_hooks
+    attr_reader :done_installing_hooks
 
     ##
     # The list of hooks to be run after Gem::Specification.reset is run.

@@ -156,11 +156,11 @@ class TestGemDependencyInstaller < Gem::TestCase
   def test_install_dependency
     util_setup_gems
 
-    post_installs_ran = false
+    done_installing_ran = false
     inst = nil
 
-    Gem.post_installs do |installer, specs|
-      post_installs_ran = true
+    Gem.done_installing do |installer, specs|
+      done_installing_ran = true
       assert_equal inst, installer
       assert_equal [@a1, @b1], specs
     end
@@ -175,7 +175,7 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
 
-    assert post_installs_ran, 'post installs hook was not run'
+    assert done_installing_ran, 'post installs hook was not run'
   end
 
   def test_install_dependency_development

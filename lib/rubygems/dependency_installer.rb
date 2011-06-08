@@ -20,7 +20,7 @@ class Gem::DependencyInstaller
   attr_reader :rdoc_args
 
   ##
-  # Documentation types.  For use by the Gem.post_installs hook
+  # Documentation types.  For use by the Gem.done_installing hook
 
   attr_reader :document
 
@@ -348,7 +348,7 @@ class Gem::DependencyInstaller
       @installed_gems << spec
     end
 
-    Gem.post_installs_hooks.each do |hook|
+    Gem.done_installing_hooks.each do |hook|
       hook.call self, @installed_gems
     end
 

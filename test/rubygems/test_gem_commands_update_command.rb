@@ -260,7 +260,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
   end
 
   def test_execute_rdoc
-    Gem.post_installs(&Gem::RDoc.method(:generation_hook))
+    Gem.done_installing(&Gem::RDoc.method(:generation_hook))
 
     @cmd.options[:document] = %w[rdoc ri]
 

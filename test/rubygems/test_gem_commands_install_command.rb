@@ -236,7 +236,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
   def test_execute_rdoc
     util_setup_fake_fetcher
 
-    Gem.post_installs(&Gem::RDoc.method(:generation_hook))
+    Gem.done_installing(&Gem::RDoc.method(:generation_hook))
 
     @cmd.options[:document] = %w[rdoc ri]
     @cmd.options[:domain] = :local

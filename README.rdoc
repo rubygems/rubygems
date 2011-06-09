@@ -5,6 +5,7 @@ Documentation: :: http://guides.rubygems.org
 Support:       :: http://help.rubygems.org
 Source:        :: http://github.com/rubygems/rubygems
 Bugtracker:    :: http://github.com/rubygems/rubygems/issues
+Mailing List:  :: http://rubyforge.org/mailman/listinfo/rubygems-developers
 
 == DESCRIPTION
 
@@ -35,17 +36,10 @@ For more details and other options, see:
 
 == GETTING HELP
 
-=== Support Requests
-
-Are you unsure of how to use RubyGems?  Do you think you've found a bug and
-you're not sure?  If that is the case, the best place for you is to file a
-support request at {help.rubygems.org}[http://help.rubygems.org].
-
-=== Filing Tickets
-
-You're sure you've found a bug!  But where do you let us know?  The best place
-for letting the RubyGems team know about bugs you've found is {on the rubygems
-tracker at rubyforge}[http://rubyforge.org/tracker/?group_id=126].
+Got a bug and you're not sure?  You're sure you have a bug, but don't know
+what to do next?  In any case, let us know about it!  The best place
+for letting the RubyGems team know about bugs or problems you're having is
+{on the rubygems issues page at github}[http://github.com/rubygems/rubygems/issues].
 
 === Bundler Compatibility
 

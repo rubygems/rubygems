@@ -72,7 +72,7 @@ class Gem::SourceIndex
   # loaded spec.
 
   def self.load_specification(file_name)
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       Gem::Specification.load Gem::Path.new(file_name)
     end
   end
@@ -121,7 +121,7 @@ class Gem::SourceIndex
       spec_files = Dir[File.join(spec_dir, "*.gemspec")]
 
       spec_files.each do |spec_file|
-        gemspec = Deprecate.skip_during do
+        gemspec = Gem::Deprecate.skip_during do
           Gem::Specification.load spec_file
         end
         add_spec gemspec if gemspec
@@ -193,8 +193,10 @@ class Gem::SourceIndex
   # Add gem specifications to the source index.
 
   def add_specs(*gem_specs)
-    gem_specs.each do |spec|
-      add_spec spec
+    Gem::Deprecate.skip_during do
+      gem_specs.each do |spec|
+        add_spec spec
+      end
     end
   end
 
@@ -249,7 +251,7 @@ class Gem::SourceIndex
   def find_name(gem_name, requirement = Gem::Requirement.default)
     dep = Gem::Dependency.new gem_name, requirement
 
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       search dep
     end
   end
@@ -362,7 +364,7 @@ module Gem
 end
 
 class Gem::SourceIndex
-  extend Deprecate
+  extend Gem::Deprecate
 
   deprecate :all_gems,         :none,                        2011, 10
 
@@ -392,7 +394,7 @@ class Gem::SourceIndex
   deprecate :specification,    "Specification.find",         2011, 11
 
   class << self
-    extend Deprecate
+    extend Gem::Deprecate
 
     deprecate :from_gems_in,               :none,                2011, 10
     deprecate :from_installed_gems,        :none,                2011, 10

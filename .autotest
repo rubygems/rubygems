@@ -35,6 +35,9 @@ end
 class Autotest
   alias :old_path_to_classname :path_to_classname
   def path_to_classname s
-    old_path_to_classname(s.sub(/test.rubygems.test_/, ""))
+    classname = old_path_to_classname(s.sub(/test.rubygems.test_/, ""))
+    classname = classname.gsub('Rdoc', 'RDoc')
+
+    classname
   end
 end

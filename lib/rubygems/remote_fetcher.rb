@@ -32,6 +32,13 @@ class Gem::RemoteFetcher
 
   end
 
+  ##
+  # A FetchError that indicates that the reason for not being
+  # able to fetch data was that the host could not be contacted
+
+  class UnknownHostError < FetchError
+  end
+
   @fetcher = nil
 
   ##
@@ -130,7 +137,7 @@ class Gem::RemoteFetcher
 
           remote_gem_path = source_uri + "gems/#{gem_file_name}"
 
-          gem = self.fetch_path remote_gem_path
+          gem = self.cache_update_path remote_gem_path, local_gem_path
         rescue Gem::RemoteFetcher::FetchError
           raise if spec.original_platform == spec.platform
 
@@ -141,11 +148,7 @@ class Gem::RemoteFetcher
 
           remote_gem_path = source_uri + "gems/#{alternate_name}"
 
-          gem = self.fetch_path remote_gem_path
-        end
-
-        File.open local_gem_path, 'wb' do |fp|
-          fp.write gem
+          gem = self.cache_update_path remote_gem_path, local_gem_path
         end
       end
     when 'file' then
@@ -225,18 +228,54 @@ class Gem::RemoteFetcher
     uri = URI.parse uri unless URI::Generic === uri
 
     raise ArgumentError, "bad uri: #{uri}" unless uri
-    raise ArgumentError, "uri scheme is invalid: #{uri.scheme.inspect}" unless
-      uri.scheme
+
+    unless uri.scheme
+      raise ArgumentError, "uri scheme is invalid: #{uri.scheme.inspect}"
+    end
 
     data = send "fetch_#{uri.scheme}", uri, mtime, head
-    data = Gem.gunzip data if data and not head and uri.to_s =~ /gz$/
+
+    if data and !head and uri.to_s =~ /gz$/
+      begin
+        data = Gem.gunzip data
+      rescue Zlib::GzipFile::Error
+        raise FetchError.new("server did not return a valid file", uri.to_s)
+      end
+    end
+
     data
   rescue FetchError
     raise
   rescue Timeout::Error
-    raise FetchError.new('timed out', uri.to_s)
+    raise UnknownHostError.new('timed out', uri.to_s)
   rescue IOError, SocketError, SystemCallError => e
-    raise FetchError.new("#{e.class}: #{e}", uri.to_s)
+    if e.message =~ /getaddrinfo/
+      raise UnknownHostError.new('no such name', uri.to_s)
+    else
+      raise FetchError.new("#{e.class}: #{e}", uri.to_s)
+    end
+  end
+
+  ##
+  # Downloads +uri+ to +path+ if necessary. If no path is given, it just
+  # passes the data.
+
+  def cache_update_path(uri, path = nil)
+    mtime = path && File.stat(path).mtime rescue nil
+
+    if mtime && Net::HTTPNotModified === fetch_path(uri, mtime, true)
+      Gem.read_binary(path)
+    else
+      data = fetch_path(uri)
+
+      if path
+        open(path, 'wb') do |io|
+          io.write data
+        end
+      end
+
+      data
+    end
   end
 
   ##

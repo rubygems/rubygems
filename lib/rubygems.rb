@@ -112,6 +112,7 @@ require "rubygems/deprecate"
 # * Daniel Berger      -- djberg96(at)gmail.com
 # * Phil Hagelberg     -- technomancy(at)gmail.com
 # * Ryan Davis         -- ryand-ruby(at)zenspider.com
+# * Evan Phoenix       -- evan(at)fallingsnow.net
 #
 # (If your name is missing, PLEASE let us know!)
 #
@@ -120,7 +121,7 @@ require "rubygems/deprecate"
 # -The RubyGems Team
 
 module Gem
-  VERSION = '1.8.3'
+  VERSION = '1.8.5'
 
   ##
   # Raised when RubyGems is unable to load or activate a gem.  Contains the
@@ -246,7 +247,7 @@ module Gem
   end
 
   def self.unresolved_deps
-    @unresolved_deps ||= Hash.new { |h, n| h[n] = Gem::Dependency.new n }
+    Gem::Specification.unresolved_deps
   end
 
   ##
@@ -422,15 +423,15 @@ module Gem
   def self.each_load_path(partials)
     partials.each do |gp|
       base = File.basename gp
-      specfn = dir.specifications.add(base + ".gemspec")
-      if specfn.exist?
-        spec = eval(specfn.read)
+      specfn = File.join(dir, "specifications", "#{base}.gemspec")
+      if File.exists? specfn
+        spec = eval(File.read(specfn))
         spec.require_paths.each do |rp|
-          yield(gp.add(rp))
+          yield File.join(gp,rp)
         end
       else
-        filename = dir.add(gp, 'lib')
-        yield(filename) if filename.exist?
+        filename = File.join(gp, 'lib')
+        yield(filename) if File.exists? filename
       end
     end
   end
@@ -585,7 +586,7 @@ module Gem
 
     Gem.path.each do |gemdir|
       each_load_path(latest_partials(gemdir)) do |load_path|
-        result << gemdir.add(load_path).expand_path
+        result << load_path
       end
     end
 
@@ -639,10 +640,23 @@ module Gem
   # Loads YAML, preferring Psych
 
   def self.load_yaml
-    require 'psych'
-  rescue ::LoadError
-  ensure
-    require 'yaml'
+    begin
+      require 'psych' unless ENV['TEST_SYCK']
+    rescue ::LoadError
+    ensure
+      require 'yaml'
+    end
+
+    # Hack to handle syck's DefaultKey bug with psych.
+    # See the note at the top of lib/rubygems/requirement.rb for
+    # why we end up defining DefaultKey more than once.
+    if !defined? YAML::Syck
+      YAML.module_eval do
+          const_set 'Syck', Module.new {
+            const_set 'DefaultKey', Class.new
+          }
+        end
+    end
   end
 
   ##
@@ -720,6 +734,15 @@ module Gem
 
   def self.post_install(&hook)
     @post_install_hooks << hook
+  end
+
+  ##
+  # Adds a post-installs hook that will be passed a Gem::DependencyInstaller
+  # and a list of installed specifications when
+  # Gem::DependencyInstaller#install is complete
+
+  def self.done_installing(&hook)
+    @done_installing_hooks << hook
   end
 
   ##
@@ -931,7 +954,7 @@ module Gem
   # Returns the Gem::SourceIndex of specifications that are in the Gem.path
 
   def self.source_index
-    @@source_index ||= Deprecate.skip_during do
+    @@source_index ||= Gem::Deprecate.skip_during do
       SourceIndex.new Gem::Specification.dirs
     end
   end
@@ -962,9 +985,10 @@ module Gem
 
   def self.loaded_path? path
     # TODO: ruby needs a feature to let us query what's loaded in 1.8 and 1.9
-    $LOADED_FEATURES.find { |s|
-      s =~ /(^|\/)#{Regexp.escape path.to_s}#{Regexp.union(*Gem.suffixes)}$/
-    }
+
+    re = /(^|\/)#{Regexp.escape path.to_s}#{Regexp.union(*Gem.suffixes)}$/
+
+    $LOADED_FEATURES.find { |s| s =~ re }
   end
 
   ##
@@ -1086,15 +1110,22 @@ module Gem
     attr_reader :loaded_specs
 
     ##
-    # The list of hooks to be run before Gem::Install#install finishes
-    # installation
+    # The list of hooks to be run after Gem::Installer#install extracts files
+    # and builds extensions
 
     attr_reader :post_build_hooks
 
     ##
-    # The list of hooks to be run before Gem::Install#install does any work
+    # The list of hooks to be run after Gem::Installer#install completes
+    # installation
 
     attr_reader :post_install_hooks
+
+    ##
+    # The list of hooks to be run after Gem::DependencyInstaller installs a
+    # set of gems
+
+    attr_reader :done_installing_hooks
 
     ##
     # The list of hooks to be run after Gem::Specification.reset is run.
@@ -1102,13 +1133,13 @@ module Gem
     attr_reader :post_reset_hooks
 
     ##
-    # The list of hooks to be run before Gem::Uninstall#uninstall does any
-    # work
+    # The list of hooks to be run after Gem::Uninstaller#uninstall completes
+    # installation
 
     attr_reader :post_uninstall_hooks
 
     ##
-    # The list of hooks to be run after Gem::Install#install is finished
+    # The list of hooks to be run before Gem::Installer#install does any work
 
     attr_reader :pre_install_hooks
 
@@ -1118,7 +1149,8 @@ module Gem
     attr_reader :pre_reset_hooks
 
     ##
-    # The list of hooks to be run after Gem::Uninstall#uninstall is finished
+    # The list of hooks to be run before Gem::Uninstaller#uninstall does any
+    # work
 
     attr_reader :pre_uninstall_hooks
   end
@@ -1137,12 +1169,13 @@ module Gem
   autoload :Dependency,      'rubygems/dependency'
   autoload :GemPathSearcher, 'rubygems/gem_path_searcher'
   autoload :SpecFetcher,     'rubygems/spec_fetcher'
-  autoload :Specification,   'rubygems/specification'
   autoload :Cache,           'rubygems/source_index'
   autoload :SourceIndex,     'rubygems/source_index'
   autoload :Platform,        'rubygems/platform'
   autoload :Builder,         'rubygems/builder'
   autoload :ConfigFile,      'rubygems/config_file'
+
+  require "rubygems/specification"
 end
 
 module Kernel
@@ -1178,6 +1211,18 @@ module Kernel
   def gem(gem_name, *requirements) # :doc:
     skip_list = (ENV['GEM_SKIP'] || "").split(/:/)
     raise Gem::LoadError, "skipping #{gem_name}" if skip_list.include? gem_name
+
+    if gem_name.kind_of? Gem::Dependency
+      unless Gem::Deprecate.skip
+        warn "#{Gem.location_of_caller.join ':'}:Warning: Kernel.gem no longer "\
+          "accepts a Gem::Dependency object, please pass the name "\
+          "and requirements directly"
+      end
+
+      requirements = gem_name.requirement
+      gem_name = gem_name.name
+    end
+
     spec = Gem::Dependency.new(gem_name, *requirements).to_spec
     spec.activate if spec
   end
@@ -1235,7 +1280,7 @@ Gem.clear_paths
 
 module Gem
   class << self
-    extend Deprecate
+    extend Gem::Deprecate
     deprecate :activate_dep,          "Specification#activate", 2011,  6
     deprecate :activate_spec,         "Specification#activate", 2011,  6
     deprecate :cache,                 "Gem::source_index",      2011,  8
@@ -1253,5 +1298,6 @@ module Gem
     deprecate :required_location,     :none,                    2011, 11
     deprecate :searcher,              "Specification",          2011, 11
     deprecate :source_index,          "Specification",          2011, 11
+    deprecate :unresolved_deps, "Specification.unresolved_deps", 2011, 12
   end
 end

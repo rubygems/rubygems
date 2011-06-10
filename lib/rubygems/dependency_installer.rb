@@ -14,8 +14,14 @@ class Gem::DependencyInstaller
   attr_reader :gems_to_install
   attr_reader :installed_gems
 
+  ##
+  # Documentation types.  For use by the Gem.done_installing hook
+
+  attr_reader :document
+
   DEFAULT_OPTIONS = {
     :env_shebang         => false,
+    :document            => %w[rdoc ri],
     :domain              => :both, # HACK dup
     :force               => false,
     :format_executable   => false, # HACK dup
@@ -23,7 +29,7 @@ class Gem::DependencyInstaller
     :prerelease          => false,
     :security_policy     => nil, # HACK NoSecurity requires OpenSSL. AlmostNo? Low?
     :wrappers            => true,
-  }
+  }.freeze
 
   ##
   # Creates a new installer instance.
@@ -55,7 +61,9 @@ class Gem::DependencyInstaller
     options = DEFAULT_OPTIONS.merge options
 
     @bin_dir             = options[:bin_dir]
+    @dev_shallow         = options[:dev_shallow]
     @development         = options[:development]
+    @document            = options[:document]
     @domain              = options[:domain]
     @env_shebang         = options[:env_shebang]
     @force               = options[:force]
@@ -66,7 +74,12 @@ class Gem::DependencyInstaller
     @user_install        = options[:user_install]
     @wrappers            = options[:wrappers]
 
+    # Indicates that we should not try to update any deps unless
+    # we absolutely must.
+    @minimal_deps        = options[:minimal_deps]
+
     @installed_gems = []
+    @toplevel_specs = nil
 
     @install_dir = options[:install_dir] || Gem.dir
     @cache_dir = options[:cache_dir] || @install_dir
@@ -135,10 +148,13 @@ class Gem::DependencyInstaller
     # these gems were listed by the user, always install them
     keep_names = specs.map { |spec| spec.full_name }
 
+    if @dev_shallow
+      @toplevel_specs = keep_names
+    end
+
     dependency_list = Gem::DependencyList.new @development
     dependency_list.add(*specs)
     to_do = specs.dup
-
     add_found_dependencies to_do, dependency_list unless @ignore_dependencies
 
     dependency_list.specs.reject! { |spec|
@@ -166,10 +182,26 @@ class Gem::DependencyInstaller
       seen[spec.name] = true
 
       deps = spec.runtime_dependencies
-      deps |= spec.development_dependencies if @development
+
+      if @development
+        if @dev_shallow
+          if @toplevel_specs.include? spec.full_name
+            deps |= spec.development_dependencies
+          end
+        else
+          deps |= spec.development_dependencies
+        end
+      end
 
       deps.each do |dep|
         dependencies[dep.name] = dependencies[dep.name].merge dep
+
+        if @minimal_deps
+          next if Gem::Specification.any? do |installed_spec|
+                    dep.name == installed_spec.name and
+                      dep.requirement.satisfied_by? installed_spec.version
+                  end
+        end
 
         results = find_gems_with_sources(dep).reverse
 
@@ -202,23 +234,26 @@ class Gem::DependencyInstaller
   def find_spec_by_name_and_version(gem_name,
                                     version = Gem::Requirement.default,
                                     prerelease = false)
+
     spec_and_source = nil
 
-    glob = if File::ALT_SEPARATOR then
-             gem_name.gsub File::ALT_SEPARATOR, File::SEPARATOR
-           else
-             gem_name
-           end
+    if @domain != :remote
+      glob = if File::ALT_SEPARATOR then
+               gem_name.gsub File::ALT_SEPARATOR, File::SEPARATOR
+             else
+               gem_name
+             end
 
-    local_gems = Dir["#{glob}*"].sort.reverse
+      local_gems = Dir["#{glob}*"].sort.reverse
 
-    local_gems.each do |gem_file|
-      next unless gem_file =~ /gem$/
-      begin
-        spec = Gem::Format.from_file_by_path(gem_file).spec
-        spec_and_source = [spec, gem_file]
-        break
-      rescue SystemCallError, Gem::Package::FormatError
+      local_gems.each do |gem_file|
+        next unless gem_file =~ /gem$/
+        begin
+          spec = Gem::Format.from_file_by_path(gem_file).spec
+          spec_and_source = [spec, gem_file]
+          break
+        rescue SystemCallError, Gem::Package::FormatError
+        end
       end
     end
 
@@ -282,9 +317,17 @@ class Gem::DependencyInstaller
         raise
       end
 
+      if @development
+        if @dev_shallow
+          is_dev = @toplevel_specs.include? spec.full_name
+        else
+          is_dev = true
+        end
+      end
+
       inst = Gem::Installer.new local_gem_path,
                                 :bin_dir             => @bin_dir,
-                                :development         => @development,
+                                :development         => is_dev,
                                 :env_shebang         => @env_shebang,
                                 :force               => @force,
                                 :format_executable   => @format_executable,
@@ -297,6 +340,10 @@ class Gem::DependencyInstaller
       spec = inst.install
 
       @installed_gems << spec
+    end
+
+    Gem.done_installing_hooks.each do |hook|
+      hook.call self, @installed_gems
     end
 
     @installed_gems

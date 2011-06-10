@@ -23,6 +23,14 @@ class TestGemDependencyInstaller < Gem::TestCase
       s.add_development_dependency 'aa'
     end
 
+    @c1, @c1_gem         = util_gem 'c', '1' do |s|
+      s.add_development_dependency 'b'
+    end
+
+    @d1, @d1_gem         = util_gem 'd', '1' do |s|
+      s.add_development_dependency 'c'
+    end
+
     util_clear_gems
     util_reset_gems
   end
@@ -67,6 +75,34 @@ class TestGemDependencyInstaller < Gem::TestCase
     end
 
     assert_equal %w[e-1 a-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
+  def test_install_ignore_satified_deps
+    util_setup_gems
+
+    _, e1_gem = util_gem 'e', '1' do |s|
+      s.add_dependency 'b'
+    end
+
+    util_clear_gems
+
+    FileUtils.mv @a1_gem, @tempdir
+    FileUtils.mv @b1_gem, @tempdir
+    FileUtils.mv e1_gem, @tempdir
+
+    Dir.chdir @tempdir do
+      i = Gem::DependencyInstaller.new :ignore_dependencies => true
+      i.install 'b'
+    end
+
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new :minimal_deps => true
+      inst.install 'e'
+    end
+
+    assert_equal %w[e-1], inst.installed_gems.map { |s| s.full_name }
   end
 
   def test_install_cache_dir
@@ -120,9 +156,17 @@ class TestGemDependencyInstaller < Gem::TestCase
   def test_install_dependency
     util_setup_gems
 
+    done_installing_ran = false
+    inst = nil
+
+    Gem.done_installing do |installer, specs|
+      done_installing_ran = true
+      assert_equal inst, installer
+      assert_equal [@a1, @b1], specs
+    end
+
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv @b1_gem, @tempdir
-    inst = nil
 
     Dir.chdir @tempdir do
       inst = Gem::DependencyInstaller.new
@@ -130,6 +174,8 @@ class TestGemDependencyInstaller < Gem::TestCase
     end
 
     assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
+
+    assert done_installing_ran, 'post installs hook was not run'
   end
 
   def test_install_dependency_development
@@ -150,6 +196,50 @@ class TestGemDependencyInstaller < Gem::TestCase
     end
 
     assert_equal %w[a-1 aa-1 b-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
+  def test_install_dependency_development_deep
+    util_setup_gems
+
+    @aa1, @aa1_gem = util_gem 'aa', '1'
+
+    util_reset_gems
+
+    FileUtils.mv @a1_gem, @tempdir
+    FileUtils.mv @aa1_gem, @tempdir
+    FileUtils.mv @b1_gem, @tempdir
+    FileUtils.mv @c1_gem, @tempdir
+    FileUtils.mv @d1_gem, @tempdir
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new(:development => true)
+      inst.install 'd'
+    end
+
+    assert_equal %w[a-1 aa-1 b-1 c-1 d-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
+  def test_install_dependency_development_shallow
+    util_setup_gems
+
+    @aa1, @aa1_gem = util_gem 'aa', '1'
+
+    util_reset_gems
+
+    FileUtils.mv @a1_gem, @tempdir
+    FileUtils.mv @aa1_gem, @tempdir
+    FileUtils.mv @b1_gem, @tempdir
+    FileUtils.mv @c1_gem, @tempdir
+    FileUtils.mv @d1_gem, @tempdir
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new(:development => true, :dev_shallow => true)
+      inst.install 'd'
+    end
+
+    assert_equal %w[c-1 d-1], inst.installed_gems.map { |s| s.full_name }
   end
 
   def test_install_dependency_existing

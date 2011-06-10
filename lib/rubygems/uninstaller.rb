@@ -7,7 +7,7 @@
 require 'fileutils'
 require 'rubygems'
 require 'rubygems/dependency_list'
-require 'rubygems/doc_manager'
+require 'rubygems/rdoc'
 require 'rubygems/user_interaction'
 
 ##
@@ -103,7 +103,7 @@ class Gem::Uninstaller
 
   def uninstall_gem(spec)
     @spec = spec
-      
+
     unless dependencies_ok? spec
       unless ask_if_ok(spec)
         raise Gem::DependencyRemovalException,
@@ -220,7 +220,7 @@ class Gem::Uninstaller
 
     FileUtils.rm_rf gem
 
-    Gem::DocManager.new(spec).uninstall_doc
+    Gem::RDoc.new(spec).remove
 
     say "Successfully uninstalled #{spec.full_name}"
 
@@ -250,18 +250,17 @@ class Gem::Uninstaller
     msg << "\t#{spec.full_name}"
 
     spec.dependent_gems.each do |dep_spec, dep, satlist|
-      msg <<
-        ("#{dep_spec.name}-#{dep_spec.version} depends on " +
-         "[#{dep.name} (#{dep.requirement})]")
+      msg << "#{dep_spec.name}-#{dep_spec.version} depends on #{dep}"
     end
 
-    msg << 'If you remove this gems, one or more dependencies will not be met.'
+    msg << 'If you remove this gem, one or more dependencies will not be met.'
     msg << 'Continue with Uninstall?'
     return ask_yes_no(msg.join("\n"), true)
   end
 
   def formatted_program_filename(filename)
     if @format_executable then
+      require "rubygems/installer"
       Gem::Installer.exec_format % File.basename(filename)
     else
       filename

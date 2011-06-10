@@ -53,7 +53,21 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
     end
 
     assert_equal '', @ui.output
-    assert_equal "ERROR:  Unknown gem 'foo'\n", @ui.error
+    assert_equal "ERROR:  No gem matching 'foo (>= 0)' found\n", @ui.error
+  end
+
+  def test_execute_bad_name_with_version
+    @cmd.options[:args] = %w[foo]
+    @cmd.options[:version] = "1.3.2"
+
+    assert_raises Gem::MockGemUi::TermError do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    assert_equal '', @ui.output
+    assert_equal "ERROR:  No gem matching 'foo (= 1.3.2)' found\n", @ui.error
   end
 
   def test_execute_exact_match
@@ -120,6 +134,61 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
 
     assert_match %r|\A--- !ruby/object:Gem::Specification|, @ui.output
     assert_match %r|name: foo|, @ui.output
+  end
+
+  def test_execute_remote_without_prerelease
+    foo = new_spec 'foo', '2.0.0'
+    foo_pre = new_spec 'foo', '2.0.1.pre'
+
+    install_specs foo, foo_pre
+
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
+
+    util_setup_spec_fetcher foo
+    util_setup_spec_fetcher foo_pre
+
+    @cmd.options[:args] = %w[foo]
+    @cmd.options[:domain] = :remote
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_match %r|\A--- !ruby/object:Gem::Specification|, @ui.output
+    assert_match %r|name: foo|, @ui.output
+
+    spec = YAML.load @ui.output
+
+    assert_equal Gem::Version.new("2.0.0"), spec.version
+  end
+
+  def test_execute_remote_with_prerelease
+    foo = new_spec 'foo', '2.0.0'
+    foo_pre = new_spec 'foo', '2.0.1.pre'
+
+    install_specs foo, foo_pre
+
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
+
+    util_setup_spec_fetcher foo
+    util_setup_spec_fetcher foo_pre
+
+    @cmd.options[:args] = %w[foo]
+    @cmd.options[:domain] = :remote
+    @cmd.options[:prerelease] = true
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_match %r|\A--- !ruby/object:Gem::Specification|, @ui.output
+    assert_match %r|name: foo|, @ui.output
+
+    spec = YAML.load @ui.output
+
+    assert_equal Gem::Version.new("2.0.1.pre"), spec.version
   end
 
   def test_execute_ruby

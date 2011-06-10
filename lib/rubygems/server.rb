@@ -3,7 +3,7 @@ require 'zlib'
 require 'erb'
 
 require 'rubygems'
-require 'rubygems/doc_manager'
+require 'rubygems/rdoc'
 
 ##
 # Gem::Server and allows users to serve gems for consumption by
@@ -462,7 +462,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     add_date res
 
-    index = Deprecate.skip_during { Marshal.dump Gem.source_index }
+    index = Gem::Deprecate.skip_during { Marshal.dump Gem.source_index }
 
     if req.request_method == 'HEAD' then
       res['content-length'] = index.length
@@ -621,7 +621,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
         "has_deps"            => !deps.empty?,
         "homepage"            => spec.homepage,
         "name"                => spec.name,
-        "rdoc_installed"      => Gem::DocManager.new(spec).rdoc_installed?,
+        "rdoc_installed"      => Gem::RDoc.new(spec).rdoc_installed?,
         "summary"             => spec.summary,
         "version"             => spec.version.to_s,
       }

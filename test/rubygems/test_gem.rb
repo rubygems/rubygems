@@ -54,7 +54,7 @@ class TestGem < Gem::TestCase
   end
 
   def unresolved_names
-    Gem.unresolved_deps.values.map(&:to_s).sort
+    Gem::Specification.unresolved_deps.values.map(&:to_s).sort
   end
 
   # TODO: move these to specification
@@ -441,7 +441,7 @@ class TestGem < Gem::TestCase
 
   def test_self_available?
     util_make_gems
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       assert(Gem.available?("a"))
       assert(Gem.available?("a", "1"))
       assert(Gem.available?("a", ">1"))
@@ -928,8 +928,72 @@ class TestGem < Gem::TestCase
     assert_equal [other, @gemhome], Gem.path
   end
 
+  def test_self_post_build
+    assert_equal 1, Gem.post_build_hooks.length
+
+    Gem.post_build do |installer| end
+
+    assert_equal 2, Gem.post_build_hooks.length
+  end
+
+  def test_self_post_install
+    assert_equal 1, Gem.post_install_hooks.length
+
+    Gem.post_install do |installer| end
+
+    assert_equal 2, Gem.post_install_hooks.length
+  end
+
+  def test_self_done_installing
+    assert_empty Gem.done_installing_hooks
+
+    Gem.done_installing do |gems| end
+
+    assert_equal 1, Gem.done_installing_hooks.length
+  end
+
+  def test_self_post_reset
+    assert_empty Gem.post_reset_hooks
+
+    Gem.post_reset { }
+
+    assert_equal 1, Gem.post_reset_hooks.length
+  end
+
+  def test_self_post_uninstall
+    assert_equal 1, Gem.post_uninstall_hooks.length
+
+    Gem.post_uninstall do |installer| end
+
+    assert_equal 2, Gem.post_uninstall_hooks.length
+  end
+
+  def test_self_pre_install
+    assert_equal 1, Gem.pre_install_hooks.length
+
+    Gem.pre_install do |installer| end
+
+    assert_equal 2, Gem.pre_install_hooks.length
+  end
+
+  def test_self_pre_reset
+    assert_empty Gem.pre_reset_hooks
+
+    Gem.pre_reset { }
+
+    assert_equal 1, Gem.pre_reset_hooks.length
+  end
+
+  def test_self_pre_uninstall
+    assert_equal 1, Gem.pre_uninstall_hooks.length
+
+    Gem.pre_uninstall do |installer| end
+
+    assert_equal 2, Gem.pre_uninstall_hooks.length
+  end
+
   def test_self_source_index
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       assert_kind_of Gem::SourceIndex, Gem.source_index
     end
   end
@@ -1074,6 +1138,25 @@ class TestGem < Gem::TestCase
     # Should attempt to cause an Exception
     with_plugin('exception') { Gem.load_env_plugins }
     assert_equal :loaded, TEST_PLUGIN_EXCEPTION rescue nil
+  end
+
+  def test_latest_load_paths
+    stem = Gem.path.first
+
+    spec = quick_spec 'a', '4' do |s|
+      s.require_paths = ["lib"]
+    end
+
+    install_gem spec
+
+    # @exec_path = File.join spec.full_gem_path, spec.bindir, 'exec'
+    # @abin_path = File.join spec.full_gem_path, spec.bindir, 'abin'
+    # FileUtils.mkdir_p File.join(stem, "gems", "test-3")
+
+    Gem::Deprecate.skip_during do
+      expected = [File.join(@gemhome, "gems", "a-4", "lib")]
+      assert_equal expected, Gem.latest_load_paths
+    end
   end
 
   def with_plugin(path)

@@ -141,8 +141,11 @@ class Gem::Installer
   #     specifications/<gem-version>.gemspec #=> the Gem::Specification
 
   def install
+    current_home = Gem.dir
+    current_path = Gem.paths.path
+
     verify_gem_home(options[:unpack])
-    Gem.use_paths gem_home, Gem.paths.path # HACK: shouldn't need Gem.paths.path
+    Gem.use_paths gem_home, current_path # HACK: shouldn't need Gem.paths.path
 
     # If we're forcing the install then disable security unless the security
     # policy says that we only install signed gems.
@@ -210,6 +213,11 @@ class Gem::Installer
     return spec
   rescue Zlib::GzipFile::Error
     raise Gem::InstallError, "gzip error installing #{gem}"
+  ensure
+    # conditional since we might be here because we're erroring out early.
+    if current_path
+      Gem.use_paths current_home, current_path
+    end
   end
 
   ##
@@ -277,7 +285,7 @@ class Gem::Installer
     # (or use) a new bin dir under the gem_home.
     bindir = @bin_dir || Gem.bindir(gem_home)
 
-    Dir.mkdir bindir unless File.exist? bindir
+    FileUtils.mkdir_p bindir unless File.exist? bindir
     raise Gem::FilePermissionError.new(bindir) unless File.writable? bindir
 
     spec.executables.each do |filename|
@@ -350,6 +358,17 @@ class Gem::Installer
   ##
   # Generates a #! line for +bin_file_name+'s wrapper copying arguments if
   # necessary.
+  #
+  # If the :custom_shebang config is set, then it is used as a template
+  # for how to create the shebang used for to run a gem's executables.
+  #
+  # The template supports 4 expansions:
+  #
+  #  $env    the path to the unix env utility
+  #  $ruby   the path to the currently running ruby interpreter
+  #  $exec   the path to the gem's executable
+  #  $name   the name of the gem the executable is for
+  #
 
   def shebang(bin_file_name)
     ruby_name = Gem::ConfigMap[:ruby_install_name] if @env_shebang
@@ -361,6 +380,25 @@ class Gem::Installer
       shebang = first_line.sub(/\A\#!.*?ruby\S*(?=(\s+\S+))/, "#!#{Gem.ruby}")
       opts = $1
       shebang.strip! # Avoid nasty ^M issues.
+    end
+
+    if which = Gem.configuration[:custom_shebang]
+      which = which.gsub(/\$(\w+)/) do
+        case $1
+        when "env"
+          @env_path ||= ENV_PATHS.find do |env_path|
+                          File.executable? env_path
+                        end
+        when "ruby"
+          "#{Gem.ruby}#{opts}"
+        when "exec"
+          bin_file_name
+        when "name"
+          spec.name
+        end
+      end
+
+      return "#!#{which}"
     end
 
     if not ruby_name then
@@ -425,7 +463,7 @@ class Gem::Installer
   end
 
   def check_that_user_bin_dir_is_in_path
-    user_bin_dir = File.join gem_home, "bin"
+    user_bin_dir = @bin_dir || Gem.bindir(gem_home)
     unless ENV['PATH'].split(File::PATH_SEPARATOR).include? user_bin_dir then
       unless self.class.path_warning then
         alert_warning "You don't have #{user_bin_dir} in your PATH,\n\t  gem executables will not run."

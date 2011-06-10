@@ -1,4 +1,22 @@
-﻿=== 1.8.3 / 2011-05-19
+=== 1.8.5 / 2011-05-31
+
+* 2 minor enhancement:
+
+  * The -u option to 'update local source cache' is officially deprecated.
+  * Remove has_rdoc deprecations from Specification.
+
+* 2 bug fixes:
+
+  * Handle bad specs more gracefully.
+  * Reset any Gem paths changed in the installer.
+
+=== 1.8.4 / 2011-05-25
+
+* 1 minor enhancement:
+
+  * Removed default_executable deprecations from Specification.
+
+=== 1.8.3 / 2011-05-19
 
 * 4 bug fixes:
 
@@ -447,12 +465,12 @@ New features:
   * `gem server` now supports --bind.  Patch #27357 by Bruno Michel.
   * `gem rdoc` no longer overwrites built documentation.  Use --overwrite
     force rebuilding.  Patch #25982 by Akinori MUSHA.
-* Captial letters are now allowed in prerelease versions.
+* Capital letters are now allowed in prerelease versions.
 
 Bug fixes:
 
 * Development deps are no longer added to rubygems-update gem so older
-  versions can update sucessfully.
+  versions can update successfully.
 * Installer bugs:
   * Prerelease gems can now depend on non-prerelease gems.
   * Development dependencies are ignored unless explicitly needed.  Bug #27608
@@ -466,7 +484,7 @@ Bug fixes:
 * Gem::Format no longer crashes on empty files.  Bug #27292 by Ian Ragsdale.
 * Gem::GemPathSearcher handles nil require_paths. Patch #27334 by Roger Pack.
 * Gem::RemoteFetcher no longer copies the file if it is where we want it.
-  Patch #27409 by Jakub Šťastný.
+  Patch #27409 by Jakub Stastny.
 
 Deprecation Notices:
 
@@ -1146,7 +1164,7 @@ annoying issues involving other libraries that RubyGems depends upon.
 
 * Added workaround for the null byte in Dir string issue. (see
   http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/121702).
-  (Thanks to Mauricio Fernández for the quick response on this one).
+  (Thanks to Mauricio Fernandez for the quick response on this one).
 * Added workaround for old version of Zlib on windows that caused
   Ruwiki to fail to install. (see
   http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/121770)

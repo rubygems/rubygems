@@ -113,7 +113,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
 
     util_make_gems
     util_setup_gem ui
-    
+
     @cmd.options[:version] = '1'
     @cmd.options[:force] = true
     @cmd.options[:args] = ['a']
@@ -123,7 +123,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     end
 
     assert !Gem::Specification.all_names.include?('a')
-    assert File.exist? File.join(@gemhome, 'bin', 'executable') 
+    assert File.exist? File.join(@gemhome, 'bin', 'executable')
   end
 
   def test_execute_with_force_uninstalls_all_versions
@@ -133,7 +133,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     util_setup_gem ui
 
     assert Gem::Specification.find_all_by_name('a').length > 1
-    
+
     @cmd.options[:force] = true
     @cmd.options[:args] = ['a']
 
@@ -152,7 +152,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
 
     assert Gem::Specification.find_all_by_name('dep_x').length > 0
     assert Gem::Specification.find_all_by_name('x').length > 0
-    
+
     @cmd.options[:force] = true
     @cmd.options[:args] = ['x']
 

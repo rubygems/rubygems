@@ -192,7 +192,7 @@ class Gem::Platform
 
   CURRENT = 'current'
 
-  extend Deprecate
+  extend Gem::Deprecate
 
   deprecate :empty?, :none, 2011, 11
 end

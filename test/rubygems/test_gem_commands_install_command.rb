@@ -1,20 +1,13 @@
 require 'rubygems/test_case'
 require 'rubygems/commands/install_command'
 
-begin
-  gem "rdoc"
-rescue Gem::LoadError
-  # ignore
-end
-
 class TestGemCommandsInstallCommand < Gem::TestCase
 
   def setup
     super
 
     @cmd = Gem::Commands::InstallCommand.new
-    @cmd.options[:generate_rdoc] = false
-    @cmd.options[:generate_ri] = false
+    @cmd.options[:document] = []
   end
 
   def test_execute_exclude_prerelease
@@ -35,8 +28,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
       assert_equal 0, e.exit_code, @ui.error
     end
 
-    assert_match(/Successfully installed #{@a2.full_name}$/, @ui.output)
-    refute_match(/Successfully installed #{@a2_pre.full_name}$/, @ui.output)
+    assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
   end
 
   def test_execute_explicit_version_includes_prerelease
@@ -60,8 +52,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
       assert_equal 0, e.exit_code, @ui.error
     end
 
-    refute_match(/Successfully installed #{@a2.full_name}$/, @ui.output)
-    assert_match(/Successfully installed #{@a2_pre.full_name}$/, @ui.output)
+    assert_equal %w[a-2.a], @cmd.installed_specs.map { |spec| spec.full_name }
   end
 
   def test_execute_include_dependencies
@@ -73,6 +64,8 @@ class TestGemCommandsInstallCommand < Gem::TestCase
         @cmd.execute
       end
     end
+
+    assert_equal %w[], @cmd.installed_specs.map { |spec| spec.full_name }
 
     output = @ui.output.split "\n"
     assert_equal "INFO:  `gem install -y` is now default and will be removed",
@@ -103,13 +96,14 @@ class TestGemCommandsInstallCommand < Gem::TestCase
       end
     end
 
+    assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
+
     out = @ui.output.split "\n"
-    assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "1 gem installed", out.shift
     assert out.empty?, out.inspect
   end
 
-  def test_no_user_install
+  def test_execute_no_user_install
     skip 'skipped on MS Windows (chmod has no effect)' if win_platform?
 
     util_setup_fake_fetcher
@@ -201,6 +195,21 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal expected, @ui.error
   end
 
+  def test_execute_conflicting_install_options
+    @cmd.options[:user_install] = true
+    @cmd.options[:install_dir] = "whatever"
+
+    use_ui @ui do
+      e = assert_raises Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+    end
+
+    expected = "ERROR:  Use --install-dir or --user-install but not both\n"
+
+    assert_equal expected, @ui.error
+  end
+
   def test_execute_prerelease
     util_setup_fake_fetcher :prerelease
     util_clear_gems
@@ -221,14 +230,43 @@ ERROR:  Possible alternatives: non_existent_with_hint
       assert_equal 0, e.exit_code, @ui.error
     end
 
-    refute_match(/Successfully installed #{@a2.full_name}$/, @ui.output)
-    assert_match(/Successfully installed #{@a2_pre.full_name}$/, @ui.output)
+    assert_equal %w[a-2.a], @cmd.installed_specs.map { |spec| spec.full_name }
+  end
+
+  def test_execute_rdoc
+    util_setup_fake_fetcher
+
+    Gem.done_installing(&Gem::RDoc.method(:generation_hook))
+
+    @cmd.options[:document] = %w[rdoc ri]
+    @cmd.options[:domain] = :local
+
+    FileUtils.mv @a2.cache_file, @tempdir
+
+    @cmd.options[:args] = [@a2.name]
+
+    use_ui @ui do
+      # Don't use Dir.chdir with a block, it warnings a lot because
+      # of a downstream Dir.chdir with a block
+      old = Dir.getwd
+
+      begin
+        Dir.chdir @tempdir
+        e = assert_raises Gem::SystemExitException do
+          @cmd.execute
+        end
+      ensure
+        Dir.chdir old
+      end
+
+      assert_equal 0, e.exit_code
+    end
+
+    assert_path_exists File.join(@a2.doc_dir, 'ri')
+    assert_path_exists File.join(@a2.doc_dir, 'rdoc')
   end
 
   def test_execute_remote
-    @cmd.options[:generate_rdoc] = true
-    @cmd.options[:generate_ri] = true
-
     util_setup_fake_fetcher
     util_setup_spec_fetcher
 
@@ -246,14 +284,54 @@ ERROR:  Possible alternatives: non_existent_with_hint
       assert_equal 0, e.exit_code
     end
 
+    assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
+
     out = @ui.output.split "\n"
-    assert_equal "Successfully installed #{@a2.full_name}", out.shift
     assert_equal "1 gem installed", out.shift
-    assert_equal "Installing ri documentation for #{@a2.full_name}...",
-                 out.shift
-    assert_equal "Installing RDoc documentation for #{@a2.full_name}...",
-                 out.shift
     assert out.empty?, out.inspect
+  end
+
+  def test_execute_remote_ignores_files
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher
+
+    @cmd.options[:domain] = :remote
+
+    FileUtils.mv @a2.cache_file, @tempdir
+
+    @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
+      read_binary(@a1.cache_file)
+
+    @cmd.options[:args] = [@a2.name]
+
+    gemdir     = File.join @gemhome, 'specifications'
+
+    a2_gemspec = File.join(gemdir, "a-2.gemspec")
+    a1_gemspec = File.join(gemdir, "a-1.gemspec")
+
+    FileUtils.rm_rf a1_gemspec
+    FileUtils.rm_rf a2_gemspec
+
+    start = Dir["#{gemdir}/*"]
+
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        e = assert_raises Gem::SystemExitException do
+          @cmd.execute
+        end
+        assert_equal 0, e.exit_code
+      end
+    end
+
+    assert_equal %w[a-1], @cmd.installed_specs.map { |spec| spec.full_name }
+
+    out = @ui.output.split "\n"
+    assert_equal "1 gem installed", out.shift
+    assert out.empty?, out.inspect
+
+    fin = Dir["#{gemdir}/*"]
+
+    assert_equal [a1_gemspec], fin - start
   end
 
   def test_execute_two
@@ -279,9 +357,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
       end
     end
 
+    assert_equal %w[a-2 b-2], @cmd.installed_specs.map { |spec| spec.full_name }
+
     out = @ui.output.split "\n"
-    assert_equal "Successfully installed #{@a2.full_name}", out.shift
-    assert_equal "Successfully installed #{@b2.full_name}", out.shift
     assert_equal "2 gems installed", out.shift
     assert out.empty?, out.inspect
   end
@@ -311,9 +389,10 @@ ERROR:  Possible alternatives: non_existent_with_hint
       end
     end
 
+    assert_equal %w[b-2], @cmd.installed_specs.map { |spec| spec.full_name }
+
     out = @ui.output.split "\n"
     assert_equal "", @ui.error
-    assert_equal "Successfully installed #{@b2.full_name}", out.shift
     assert_equal "1 gem installed", out.shift
     assert out.empty?, out.inspect
   end

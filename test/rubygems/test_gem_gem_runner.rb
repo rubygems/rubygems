@@ -27,7 +27,6 @@ class TestGemGemRunner < Gem::TestCase
 
     assert_equal [other_gem_path, other_gem_home], Gem.path
     assert_equal %w[--commands], Gem::Command.extra_args
-    assert_equal %w[--all], Gem::DocManager.configured_args
   end
 
   def test_build_args__are_handled

@@ -67,8 +67,8 @@ class Gem::PathSupport
     else
       gem_path = Gem.default_path + [@home]
 
-      if defined?(Gem::APPLE_GEM_HOME)
-        gem_path << Gem::APPLE_GEM_HOME
+      if defined?(APPLE_GEM_HOME)
+        gem_path << APPLE_GEM_HOME
       end
     end
 

@@ -143,7 +143,11 @@ class Gem::Platform
     (@cpu == 'universal' or other.cpu == 'universal' or @cpu == other.cpu) and
 
     # os
-    ((@os == 'windows' && Gem::WIN_PATTERNS.any?{ |pat| pat.match(other.os) }) or (@os == other.os)) and
+    (
+      (@os == 'windows' && Gem::WIN_PATTERNS.any?{ |pat| pat.match(other.os) }) or
+      (other.os == 'windows' && Gem::WIN_PATTERNS.any?{ |pat| pat.match(@os) }) or
+      (@os == other.os)
+    ) and
 
     # version
     (@version.nil? or other.version.nil? or @version == other.version)

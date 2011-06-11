@@ -41,10 +41,11 @@ module Kernel
 
       unless spec then
         found_specs = Gem::Specification.find_in_unresolved path
-        unless found_specs.empty? then
-          found_specs = [found_specs.last]
-        else
+
+        if found_specs.empty? then
           found_specs = Gem::Specification.find_in_unresolved_tree path
+        else
+          found_specs = [found_specs.last]
         end
 
         found_specs.each do |found_spec|

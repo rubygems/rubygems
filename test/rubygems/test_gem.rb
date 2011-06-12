@@ -66,7 +66,9 @@ class TestGem < Gem::TestCase
     install_specs a1, b1, b2
 
     a1.activate
-    require "b/c"
+    save_loaded_features do
+      require "b/c"
+    end
 
     assert_equal %w(a-1 b-1), loaded_spec_names
   end

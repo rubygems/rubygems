@@ -32,7 +32,7 @@ module Kernel
   # that file has already been loaded is preserved.
 
   def require path
-    if Gem::Specification.unresolved_deps.empty? or Gem.loaded_path? path then
+    if Gem::Specification.unresolved_deps.empty? then
       gem_original_require path
     else
       spec = Gem::Specification.find { |s|

@@ -92,8 +92,15 @@ class Gem::SpecFetcher
                                                           prerelease)
 
     ss = specs_and_sources.map do |spec_tuple, source_uri|
-      [fetch_spec(spec_tuple, URI.parse(source_uri)), source_uri]
+      begin
+        [fetch_spec(spec_tuple, URI.parse(source_uri)), source_uri]
+      rescue Gem::RemoteFetcher::FetchError => e
+        errors << Gem::UnableToFetch.new(spec_tuple.first, e.message)
+        nil
+      end
     end
+
+    ss.compact!
 
     return [ss, errors]
   end

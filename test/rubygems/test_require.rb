@@ -80,6 +80,28 @@ class TestRequire < Gem::TestCase
     end
   end
 
+  def test_already_activated_direct_conflict
+    save_loaded_features do
+      a1 = new_spec "a", "1", { "b" => "> 0" }
+      b1 = new_spec "b", "1", { "c" => ">= 1" }, "lib/ib.rb"
+      b2 = new_spec "b", "2", { "c" => ">= 2" }, "lib/ib.rb"
+      c1 = new_spec "c", "1", nil, "lib/d.rb"
+      c2 = new_spec("c", "2", nil, "lib/d.rb")
+
+      install_specs a1, b1, b2, c1, c2
+
+      a1.activate
+      c1.activate
+      assert_equal %w(a-1 c-1), loaded_spec_names
+      assert_equal ["b (> 0)"], unresolved_names
+
+      assert require("ib")
+
+      assert_equal %w(a-1 b-1 c-1), loaded_spec_names
+      assert_equal [], unresolved_names
+    end
+  end
+
   def loaded_spec_names
     Gem.loaded_specs.values.map(&:full_name).sort
   end

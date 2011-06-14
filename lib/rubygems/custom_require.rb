@@ -42,14 +42,44 @@ module Kernel
       unless spec then
         found_specs = Gem::Specification.find_in_unresolved path
 
+        # If there are no directly unresolved gems, then try and find +path+
+        # in any gems that are available via the currently unresolved gems.
+        # For example, given:
+        #
+        #   a => b => c => d
+        #
+        # If a and b are currently active with c being unresolved and d.rb is
+        # requested, then find_in_unresolved_tree will find d.rb in d because
+        # it's a dependency of c.
+        #
         if found_specs.empty? then
           found_specs = Gem::Specification.find_in_unresolved_tree path
-        else
-          found_specs = [found_specs.last]
-        end
 
-        found_specs.each do |found_spec|
-          found_spec.activate
+          found_specs.each do |found_spec|
+            found_spec.activate
+          end
+
+        # We found +path+ directly in an unresolved gem. Now we figure out, of
+        # the possible found specs, which one we should activate.
+        else
+
+          # Check that all the found specs are just different
+          # versions of the same gem
+          names = found_specs.map(&:name).uniq
+
+          if names.size > 1
+            raise Gem::LoadError, "ambigious path (#{path}) found in multiple gems: #{names.join(', ')}"
+          end
+
+          # Ok, now find a gem that has no conflicts, starting
+          # at the highest version.
+          valid = found_specs.select { |s| s.conflicts.empty? }.last
+
+          unless valid
+            raise Gem::LoadError, "unable to find a version of '#{names.first}' to activate"
+          end
+
+          valid.activate
         end
       end
 

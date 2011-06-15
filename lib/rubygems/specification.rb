@@ -1686,7 +1686,7 @@ class Gem::Specification
   def lib_files
     @files.select do |file|
       require_paths.any? do |path|
-        file.index(path) == 0
+        file.start_with? path
       end
     end
   end

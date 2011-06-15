@@ -904,6 +904,10 @@ class TestGem < Gem::TestCase
     util_restore_RUBY_VERSION
   end
 
+  def test_self_rubygems_version
+    assert_equal Gem::Version.new(Gem::VERSION), Gem.rubygems_version
+  end
+
   def test_self_paths_eq
     other = File.join @tempdir, 'other'
     path = [@userhome, other].join File::PATH_SEPARATOR

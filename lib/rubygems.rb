@@ -944,6 +944,14 @@ module Gem
   end
 
   ##
+  # A Gem::Version for the currently running RubyGems
+
+  def self.rubygems_version
+    return @rubygems_version if defined? @rubygems_version
+    @rubygems_version = Gem::Version.new Gem::VERSION
+  end
+
+  ##
   # The GemPathSearcher object used to search for matching installed gems.
 
   def self.searcher

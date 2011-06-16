@@ -12,6 +12,9 @@ loaded_hook = false
 begin
   require 'rdoc/rubygems_hook'
   loaded_hook = true
+  module Gem
+    RDoc = RDoc::RubygemsHook
+  end
 rescue LoadError
 end
 
@@ -299,5 +302,5 @@ class Gem::RDoc
 
 end unless loaded_hook
 
-Gem.done_installing(&Gem::RDoc.method(:generation_hook)) unless loaded_hook
+Gem.done_installing(&Gem::RDoc.method(:generation_hook))
 

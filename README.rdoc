@@ -45,7 +45,7 @@ support request at {help.rubygems.org}[http://help.rubygems.org].
 
 You're sure you've found a bug!  But where do you let us know?  The best place
 for letting the RubyGems team know about bugs you've found is {on the rubygems
-tracker at rubyforge}[http://rubyforge.org/tracker/?group_id=126].
+issue tracker at github}[http://github.com/rubygems/rubygems/issues].
 
 === Bundler Compatibility
 

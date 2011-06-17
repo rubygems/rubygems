@@ -64,6 +64,12 @@ class Gem::FakeFetcher
     else
       Gem.read_binary(path) if path
     end
+  rescue Gem::RemoteFetcher::FetchError
+    if File.exists?(path)
+      Gem.read_binary(path)
+    else
+      raise
+    end
   end
 
   # Thanks, FakeWeb!

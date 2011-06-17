@@ -396,5 +396,92 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal "1 gem installed", out.shift
     assert out.empty?, out.inspect
   end
+
+  #Checks the case where one remote source works fine
+  #but the other contains only specs*.gz and latest_specs*.gz,
+  #no individual specs or gems
+  def test_execute_one_failing_gem_source
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher
+
+    new_repo = "http://gems.example2.com"
+    Gem.sources << new_repo
+
+    specs = Gem::Specification.map { |spec|
+      [spec.name, spec.version, spec.original_platform]
+    }
+
+    specs_dump_gz = StringIO.new
+    Zlib::GzipWriter.wrap specs_dump_gz do |io|
+      Marshal.dump specs, io
+    end
+
+    @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
+      read_binary(@a2.cache_file)
+
+    @fetcher.data["#{new_repo}/specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+
+    @fetcher.data["#{new_repo}/latest_specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+
+    @cmd.options[:args]  = [@a2.name]
+
+    use_ui @ui do
+      orig_dir = Dir.pwd
+      begin
+        Dir.chdir @tempdir
+        e = assert_raises Gem::SystemExitException do
+          @cmd.execute
+        end
+        assert_equal 0, e.exit_code
+      ensure
+        Dir.chdir orig_dir
+      end
+    end
+
+    assert_equal "1 gem installed\n", @ui.output
+    assert_equal "", @ui.error
+  end
+
+  def test_execute_one_failing_source
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher
+
+    #Add the failing source
+    new_repo = "http://gems.example2.com"
+    Gem.sources << new_repo
+
+    specs = Gem::Specification.map { |spec|
+      [spec.name, spec.version, spec.original_platform]
+    }
+
+    #If the source was added, then the specs file should exist locally
+    #Sources cannot be added unless they exist at the time
+    write_file("#{@userhome}/.gem/specs/gems.example2.com%80/latest_specs.4.8") do |file|
+      Marshal.dump specs, file
+    end
+
+    @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
+      read_binary(@a2.cache_file)
+
+    @cmd.options[:args]  = [@a2.name]
+
+    use_ui @ui do
+      orig_dir = Dir.pwd
+      begin
+        Dir.chdir @tempdir
+        e = assert_raises Gem::SystemExitException do
+          @cmd.execute
+        end
+        assert_equal 0, e.exit_code
+      ensure
+        Dir.chdir orig_dir
+      end
+    end
+
+    assert_equal "1 gem installed\n", @ui.output
+    assert_equal "", @ui.error
+  end
 end
 

@@ -177,6 +177,9 @@ class Gem::Requirement
   end
 
   def <=> other # :nodoc:
+    return unless Gem::Requirement === other
+
+    # TODO: remove this method: comparing requirements doesn't even make sense
     to_s <=> other.to_s
   end
 

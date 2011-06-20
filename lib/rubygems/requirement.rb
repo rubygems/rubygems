@@ -29,8 +29,8 @@ class Gem::Requirement
   OPS = { #:nodoc:
     "="  =>  lambda { |v, r| v == r },
     "!=" =>  lambda { |v, r| v != r },
-    ">"  =>  lambda { |v, r| v > r  },
-    "<"  =>  lambda { |v, r| v < r  },
+    ">"  =>  lambda { |v, r| v >  r },
+    "<"  =>  lambda { |v, r| v <  r },
     ">=" =>  lambda { |v, r| v >= r },
     "<=" =>  lambda { |v, r| v <= r },
     "~>" =>  lambda { |v, r| v >= r && v.release < r.bump }
@@ -63,10 +63,6 @@ class Gem::Requirement
 
   ##
   # A default "version requirement" can surely _only_ be '>= 0'.
-  #--
-  # This comment once said:
-  #
-  # "A default "version requirement" can surely _only_ be '> 0'."
 
   def self.default
     new '>= 0'

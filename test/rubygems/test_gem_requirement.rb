@@ -275,8 +275,6 @@ class TestGemRequirement < Gem::TestCase
     assert_equal  1, req("= 1") <=> req("= 0")
 
     assert_nil req("= 1") <=> v("42")
-
-    flunk "not yet"
   end
 
   def test_specific

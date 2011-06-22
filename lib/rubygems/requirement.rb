@@ -129,18 +129,15 @@ class Gem::Requirement
   end
 
   def marshal_dump # :nodoc:
+    fix_syck_default_key_in_requirements!
+
     [@requirements]
   end
 
   def marshal_load array # :nodoc:
     @requirements = array[0]
 
-    # Fixup the Syck DefaultKey bug
-    @requirements.each do |r|
-      if r[0].kind_of? YAML::Syck::DefaultKey
-        r[0] = "="
-      end
-    end
+    fix_syck_default_key_in_requirements!
   end
 
   def prerelease?
@@ -179,6 +176,17 @@ class Gem::Requirement
 
   def <=> other # :nodoc:
     to_s <=> other.to_s
+  end
+
+  private
+
+  def fix_syck_default_key_in_requirements!
+    # Fixup the Syck DefaultKey bug
+    @requirements.each do |r|
+      if r[0].kind_of? YAML::Syck::DefaultKey
+        r[0] = "="
+      end
+    end
   end
 end
 

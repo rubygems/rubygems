@@ -1,4 +1,5 @@
 require "rubygems/version"
+require "rubygems/deprecate"
 
 # Hack to handle syck's DefaultKey bug with psych
 #
@@ -177,6 +178,16 @@ class Gem::Requirement
 
     # TODO: remove this method: comparing requirements doesn't even make sense
     to_s <=> other.to_s
+  end
+
+  def == other
+    Gem::Requirement === other and to_s == other.to_s
+  end
+
+  extend Gem::Deprecate
+
+  %w(<=> < > <= >=).each do |name|
+    deprecate name, :none, 2011, 12
   end
 
   private

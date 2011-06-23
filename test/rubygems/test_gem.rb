@@ -738,11 +738,14 @@ class TestGem < Gem::TestCase
 
       Gem.clear_paths
       apple_gem_home = File.join @tempdir, 'apple_gem_home'
-      Gem.const_set :APPLE_GEM_HOME, apple_gem_home
+
+      old, $-w = $-w, nil
+      Object.const_set :APPLE_GEM_HOME, apple_gem_home
+      $-w = old
 
       assert_includes Gem.path, apple_gem_home
     ensure
-      Gem.send :remove_const, :APPLE_GEM_HOME
+      Object.send :remove_const, :APPLE_GEM_HOME
     end
 
     def test_self_path_APPLE_GEM_HOME_GEM_PATH

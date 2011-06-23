@@ -271,7 +271,7 @@ class TestGemRequirement < Gem::TestCase
 
   def test_spaceship
     Gem::Deprecate.skip_during do
-      assert_equal -1, req("= 0") <=> req("= 1")
+      assert_equal(-1, req("= 0") <=> req("= 1"))
       assert_equal  0, req("= 0") <=> req("= 0")
       assert_equal  1, req("= 1") <=> req("= 0")
 

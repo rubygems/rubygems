@@ -1504,15 +1504,6 @@ Gem::Specification.new do |s|
   s.require_paths = [%q{lib}]
   s.rubygems_version = %q{#{Gem::VERSION}}
   s.summary = %q{this is a summary}
-
-  if s.respond_to? :specification_version then
-    s.specification_version = 4
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-    else
-    end
-  else
-  end
 end
     EOF
 

@@ -2070,34 +2070,36 @@ class Gem::Specification
       end
     end
 
-    result << nil
-    result << "  if s.respond_to? :specification_version then"
-    result << "    s.specification_version = #{specification_version}"
-    result << nil
+    unless dependencies.empty? then
+      result << nil
+      result << "  if s.respond_to? :specification_version then"
+      result << "    s.specification_version = #{specification_version}"
+      result << nil
 
-    result << "    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then"
+      result << "    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then"
 
-    dependencies.each do |dep|
-      req = dep.requirements_list.inspect
-      dep.instance_variable_set :@type, :runtime if dep.type.nil? # HACK
-      result << "      s.add_#{dep.type}_dependency(%q<#{dep.name}>, #{req})"
-    end
+      dependencies.each do |dep|
+        req = dep.requirements_list.inspect
+        dep.instance_variable_set :@type, :runtime if dep.type.nil? # HACK
+        result << "      s.add_#{dep.type}_dependency(%q<#{dep.name}>, #{req})"
+      end
 
-    result << "    else"
+      result << "    else"
 
-    dependencies.each do |dep|
-      version_reqs_param = dep.requirements_list.inspect
-      result << "      s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
-    end
+      dependencies.each do |dep|
+        version_reqs_param = dep.requirements_list.inspect
+        result << "      s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
+      end
 
-    result << '    end'
+      result << '    end'
 
-    result << "  else"
+      result << "  else"
       dependencies.each do |dep|
         version_reqs_param = dep.requirements_list.inspect
         result << "    s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
       end
-    result << "  end"
+      result << "  end"
+    end
 
     result << "end"
     result << nil

@@ -924,7 +924,8 @@ module Gem
   end
 
   def self.latest_rubygems_version
-    latest_version_for "rubygems-update"
+    latest_version_for("rubygems-update") or
+      raise "Can't find 'rubygems-update' in any repo. Check `gem source list`."
   end
 
   ##

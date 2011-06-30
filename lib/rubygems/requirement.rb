@@ -27,6 +27,8 @@ end
 class Gem::Requirement
   include Comparable
 
+  GEMMED_RUBY_VERSION = Gem::Version.new(RUBY_VERSION)
+
   OPS = { #:nodoc:
     "="  =>  lambda { |v, r| v == r },
     "!=" =>  lambda { |v, r| v != r },
@@ -34,7 +36,13 @@ class Gem::Requirement
     "<"  =>  lambda { |v, r| v <  r },
     ">=" =>  lambda { |v, r| v >= r },
     "<=" =>  lambda { |v, r| v <= r },
-    "~>" =>  lambda { |v, r| v >= r && v.release < r.bump }
+    "~>" =>  lambda { |v, r| v >= r && v.release < r.bump },
+    "R=" =>  lambda { |v, r| GEMMED_RUBY_VERSION == r },
+    "R>" =>  lambda { |v, r| GEMMED_RUBY_VERSION > r },
+    "R>=" => lambda { |v, r| GEMMED_RUBY_VERSION >= r },
+    "R<=" => lambda { |v, r| GEMMED_RUBY_VERSION <= r },
+    "R<"  => lambda { |v, r| GEMMED_RUBY_VERSION < r },
+    "R~>" => lambda { |v, r| GEMMED_RUBY_VERSION < r.bump }
   }
 
   quoted  = OPS.keys.map { |k| Regexp.quote k }.join "|"

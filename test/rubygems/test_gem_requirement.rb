@@ -309,6 +309,60 @@ class TestGemRequirement < Gem::TestCase
     refute_satisfied_by "1.0.0.1",     "= 1.0"
   end
 
+  def test_ruby_requirement_standalone
+    real_ruby_version = RUBY_VERSION
+
+    assert_satisfied_by '1.2.3', "R=#{real_ruby_version}"
+    assert_satisfied_by '1.2.3', "R>=#{real_ruby_version}"
+    refute_satisfied_by '1.2.3', "R>#{real_ruby_version}"
+    refute_satisfied_by '1.2.3', "R<#{real_ruby_version}"
+    refute_satisfied_by '1.2.3', "R=1.6.0"
+
+    # set to a fixed point that's so low (by modern standards) it's not
+    # probable to test the same stuff twice.
+    $-w = nil 
+    Gem::Requirement.const_set(:GEMMED_RUBY_VERSION, Gem::Version.new('1.6.0'))
+    $-w = true
+
+    assert_satisfied_by '1.2.3', 'R<=1.8.6'
+    assert_satisfied_by '1.2.3', 'R=1.6.0'
+    refute_satisfied_by '1.2.3', 'R=1.6.1'
+    refute_satisfied_by '1.2.3', 'R>=1.6.1'
+    refute_satisfied_by '1.2.3', 'R>1.6.0'
+    assert_satisfied_by '1.2.3', 'R~>1.6.0'
+
+    $-w = nil
+    Gem::Requirement.const_set(:GEMMED_RUBY_VERSION, Gem::Version.new(real_ruby_version))
+    $-w = true
+  end
+
+  def test_ruby_requirement_with_versions
+    real_ruby_version = RUBY_VERSION
+
+    assert_satisfied_by '1.2.3', ['=1.2.3',  "R=#{real_ruby_version}"]
+    assert_satisfied_by '1.2.3', ['>1.2',    "R>=#{real_ruby_version}"]
+    refute_satisfied_by '1.2.3', ['~>1.2.1', "R>#{real_ruby_version}"]
+    refute_satisfied_by '1.2.3', ['>=1.2.3', "R<#{real_ruby_version}"]
+    refute_satisfied_by '1.2.3', ['=1.2.3',  "R=1.6.0"]
+
+    # set to a fixed point that's so low (by modern standards) it's not
+    # probable to test the same stuff twice.
+    $-w = nil
+    Gem::Requirement.const_set(:GEMMED_RUBY_VERSION, Gem::Version.new('1.6.0'))
+    $-w = true
+
+    assert_satisfied_by '1.2.3', ['=1.2.3', 'R<=1.8.6']
+    assert_satisfied_by '1.2.3', ['>1.2',   'R=1.6.0']
+    refute_satisfied_by '1.2.3', ['~>1.2.1','R=1.6.1']
+    refute_satisfied_by '1.2.3', ['>=1.2.3','R>=1.6.1']
+    refute_satisfied_by '1.2.3', ['=1.2.3', 'R>1.6.0']
+    assert_satisfied_by '1.2.3', ['=1.2.3', 'R~>1.6.0']
+
+    $-w = nil 
+    Gem::Requirement.const_set(:GEMMED_RUBY_VERSION, Gem::Version.new(real_ruby_version))
+    $-w = true
+  end
+
   # Assert that two requirements are equal. Handles Gem::Requirements,
   # strings, arrays, numbers, and versions.
 

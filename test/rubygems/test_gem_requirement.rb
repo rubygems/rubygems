@@ -320,7 +320,7 @@ class TestGemRequirement < Gem::TestCase
 
     # set to a fixed point that's so low (by modern standards) it's not
     # probable to test the same stuff twice.
-    $-w = false
+    $-w = nil 
     Gem::Requirement.const_set(:GEMMED_RUBY_VERSION, Gem::Version.new('1.6.0'))
     $-w = true
 
@@ -331,7 +331,7 @@ class TestGemRequirement < Gem::TestCase
     refute_satisfied_by '1.2.3', 'R>1.6.0'
     assert_satisfied_by '1.2.3', 'R~>1.6.0'
 
-    $-w = false
+    $-w = nil
     Gem::Requirement.const_set(:GEMMED_RUBY_VERSION, Gem::Version.new(real_ruby_version))
     $-w = true
   end
@@ -347,7 +347,7 @@ class TestGemRequirement < Gem::TestCase
 
     # set to a fixed point that's so low (by modern standards) it's not
     # probable to test the same stuff twice.
-    $-w = false
+    $-w = nil
     Gem::Requirement.const_set(:GEMMED_RUBY_VERSION, Gem::Version.new('1.6.0'))
     $-w = true
 
@@ -358,7 +358,7 @@ class TestGemRequirement < Gem::TestCase
     refute_satisfied_by '1.2.3', ['=1.2.3', 'R>1.6.0']
     assert_satisfied_by '1.2.3', ['=1.2.3', 'R~>1.6.0']
 
-    $-w = false
+    $-w = nil 
     Gem::Requirement.const_set(:GEMMED_RUBY_VERSION, Gem::Version.new(real_ruby_version))
     $-w = true
   end

@@ -26,8 +26,6 @@ if Gem::GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader) then
 end
 
 require 'rubygems/defaults'
-require "rubygems/dependency_list"
-require 'rubygems/path_support'
 require 'rbconfig'
 require "rubygems/deprecate"
 
@@ -1168,10 +1166,13 @@ module Gem
   autoload :Version,         'rubygems/version'
   autoload :Requirement,     'rubygems/requirement'
   autoload :Dependency,      'rubygems/dependency'
+  autoload :DependencyList,  'rubygems/dependency_list'
   autoload :GemPathSearcher, 'rubygems/gem_path_searcher'
   autoload :SpecFetcher,     'rubygems/spec_fetcher'
+  autoload :Specification,   'rubygems/specification'
   autoload :Cache,           'rubygems/source_index'
   autoload :SourceIndex,     'rubygems/source_index'
+  autoload :PathSupport,     'rubygems/path_support'
   autoload :Platform,        'rubygems/platform'
   autoload :Builder,         'rubygems/builder'
   autoload :ConfigFile,      'rubygems/config_file'
@@ -1276,8 +1277,6 @@ end
 # Enables the require hook for RubyGems.
 
 require 'rubygems/custom_require'
-
-Gem.clear_paths
 
 module Gem
   class << self

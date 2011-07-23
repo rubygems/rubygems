@@ -59,12 +59,6 @@ class Gem::Uninstaller
     # only add user directory if install_dir is not set
     @user_install = false
     @user_install = options[:user_install] unless options[:install_dir]
-
-    if @user_install then
-      Gem.use_paths Gem.user_dir, @gem_home
-    else
-      Gem.use_paths @gem_home
-    end
   end
 
   ##
@@ -74,12 +68,22 @@ class Gem::Uninstaller
   def uninstall
     list = Gem::Specification.find_all_by_name(@gem, @version)
 
-    list = list.select { |spec| @gem_home == spec.base_dir }
+    list, other_repo_specs =
+      list.partition { |spec| @gem_home == spec.base_dir }
 
     if list.empty? then
-      raise Gem::InstallError, "cannot uninstall, check `gem list -d #{@gem}`"
+      raise Gem::InstallError, "#{@gem} does not appear to be installed" if
+        other_repo_specs.empty?
 
-    elsif @force_all
+      other_repos = other_repo_specs.map { |spec| spec.base_dir }.uniq
+
+      message = ["#{@gem} is not installed in GEM_HOME, try:"]
+      message.concat other_repos.map { |repo|
+        "\tgem uninstall -i #{repo} #{@gem}"
+      }
+
+      raise Gem::InstallError, message.join("\n")
+    elsif @force_all then
       remove_all list
 
     elsif list.size > 1 then

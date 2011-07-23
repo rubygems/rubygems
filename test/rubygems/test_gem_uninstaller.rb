@@ -156,6 +156,18 @@ class TestGemUninstaller < Gem::InstallerTestCase
     assert_same uninstaller, @post_uninstall_hook_arg
   end
 
+  def test_uninstall_not_installed
+    Gem.use_paths @gemhome2
+
+    uninstaller = Gem::Uninstaller.new @spec.name, :executables => true
+
+    e = assert_raises Gem::InstallError do
+      uninstaller.uninstall
+    end
+
+    assert_equal 'a does not appear to be installed', e.message
+  end
+
   def test_uninstall_not_ok
     quick_gem 'z' do |s|
       s.add_runtime_dependency @spec.name
@@ -204,6 +216,23 @@ class TestGemUninstaller < Gem::InstallerTestCase
 
     assert_same uninstaller, @pre_uninstall_hook_arg
     assert_same uninstaller, @post_uninstall_hook_arg
+  end
+
+  def test_uninstall_wrong_repo
+    Gem.use_paths "#{@gemhome}2", [@gemhome]
+
+    uninstaller = Gem::Uninstaller.new @spec.name, :executables => true
+
+    e = assert_raises Gem::InstallError do
+      uninstaller.uninstall
+    end
+
+    expected = <<-MESSAGE.strip
+#{@spec.name} is not installed in GEM_HOME, try:
+\tgem uninstall -i #{@gemhome} a
+    MESSAGE
+
+    assert_equal expected, e.message
   end
 
   def test_uninstall_selection_greater_than_one

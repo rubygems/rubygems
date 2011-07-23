@@ -576,9 +576,9 @@ class Gem::Specification
   ##
   # True when this gemspec has been activated. This attribute is not persisted.
 
-  attr_accessor :loaded
+  attr_accessor :loaded # :nodoc:
 
-  alias :loaded? :loaded
+  alias :loaded? :loaded # :nodoc:
 
   ##
   # Path this gemspec was loaded from.  This attribute is not persisted.
@@ -1045,6 +1045,7 @@ class Gem::Specification
     spec.instance_variable_set :@license,                   array[17]
     spec.instance_variable_set :@metadata,                  array[18]
     spec.instance_variable_set :@loaded,                    false
+    spec.instance_variable_set :@activated,                 false
 
     spec
   end
@@ -1105,7 +1106,8 @@ class Gem::Specification
     add_self_to_load_path
 
     Gem.loaded_specs[self.name] = self
-    self.activated = true
+    @activated = true
+    @loaded = true
 
     return true
   end
@@ -1608,6 +1610,7 @@ class Gem::Specification
 
   def initialize name = nil, version = nil
     @loaded = false
+    @activated = false
     @loaded_from = nil
     @original_platform = nil
 

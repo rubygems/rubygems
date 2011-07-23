@@ -1713,7 +1713,20 @@ class Gem::Specification
   # to a String.
 
   def loaded_from= path
-    @loaded_from = path.to_s
+    @loaded_from   = path.to_s
+
+    # reset everything @loaded_from depends upon
+    @base_dir      = nil
+    @bin_dir       = nil
+    @cache_dir     = nil
+    @cache_file    = nil
+    @doc_dir       = nil
+    @full_gem_path = nil
+    @gem_dir       = nil
+    @gems_dir      = nil
+    @ri_dir        = nil
+    @spec_dir      = nil
+    @spec_file     = nil
   end
 
   ##

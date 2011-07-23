@@ -11,8 +11,7 @@ require 'rubygems/require_paths_builder'
 require 'rubygems/user_interaction'
 
 ##
-# The installer class processes RubyGem .gem files and installs the files
-# contained in the .gem into the Gem.path.
+# The installer installs the files contained in the .gem into the Gem.home.
 #
 # Gem::Installer does the work of putting files in all the right places on the
 # filesystem including unpacking the gem into its gem dir, installing the
@@ -280,19 +279,14 @@ class Gem::Installer
   def generate_bin
     return if spec.executables.nil? or spec.executables.empty?
 
-    # If the user has asked for the gem to be installed in a directory that is
-    # the system gem directory, then use the system bin directory, else create
-    # (or use) a new bin dir under the gem_home.
-    bindir = @bin_dir || Gem.bindir(gem_home)
-
-    FileUtils.mkdir_p bindir unless File.exist? bindir
-    raise Gem::FilePermissionError.new(bindir) unless File.writable? bindir
+    Dir.mkdir @bin_dir unless File.exist? @bin_dir
+    raise Gem::FilePermissionError.new(@bin_dir) unless File.writable? @bin_dir
 
     spec.executables.each do |filename|
       filename.untaint
-      bin_path = File.expand_path File.join(gem_dir, spec.bindir, filename)
+      bin_path = File.expand_path File.join(spec.bin_dir, filename)
 
-      unless File.exist? bin_path
+      unless File.exist? bin_path then
         warn "Hey?!?! Where did #{bin_path} go??"
         next
       end
@@ -301,9 +295,9 @@ class Gem::Installer
       FileUtils.chmod mode, bin_path
 
       if @wrappers then
-        generate_bin_script filename, bindir
+        generate_bin_script filename, @bin_dir
       else
-        generate_bin_symlink filename, bindir
+        generate_bin_symlink filename, @bin_dir
       end
     end
   end
@@ -455,7 +449,11 @@ class Gem::Installer
     @format_executable   = options[:format_executable]
     @security_policy     = options[:security_policy]
     @wrappers            = options[:wrappers]
-    @bin_dir             = options[:bin_dir]
+
+    # If the user has asked for the gem to be installed in a directory that is
+    # the system gem directory, then use the system bin directory, else create
+    # (or use) a new bin dir under the gem_home.
+    @bin_dir             = options[:bin_dir] || Gem.bindir(gem_home)
     @development         = options[:development]
 
     raise "NOTE: Installer option :source_index is dead" if
@@ -548,13 +546,11 @@ TEXT
                   nil
                 end
 
-
       extension_dir = begin
                         File.join gem_dir, File.dirname(extension)
                       rescue TypeError # extension == nil
                         gem_dir
                       end
-
 
       begin
         Dir.chdir extension_dir do

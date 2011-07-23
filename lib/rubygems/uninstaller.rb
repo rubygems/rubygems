@@ -74,6 +74,8 @@ class Gem::Uninstaller
   def uninstall
     list = Gem::Specification.find_all_by_name(@gem, @version)
 
+    list = list.select { |spec| @gem_home == spec.base_dir }
+
     if list.empty? then
       raise Gem::InstallError, "cannot uninstall, check `gem list -d #{@gem}`"
 

@@ -758,6 +758,11 @@ end
     assert_equal(  1, (s2 <=> s1))
   end
 
+  def test_spec_file
+    assert_equal File.join(@gemhome, 'specifications', 'a-1.gemspec'),
+                 @a1.spec_file
+  end
+
   def test_spec_name
     assert_equal 'a-1.gemspec', @a1.spec_name
   end

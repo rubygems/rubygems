@@ -98,6 +98,7 @@ gems:
 
     # TODO: why does the remote fetcher need it written to disk?
     @a1, @a1_gem = util_gem 'a', '1' do |s| s.executables << 'a_bin' end
+    @a1.loaded_from = File.join(@gemhome, 'specifications', @a1.full_name)
 
     Gem::RemoteFetcher.fetcher = nil
 
@@ -302,6 +303,7 @@ gems:
       s.platform = Gem::Platform::CURRENT
       s.instance_variable_set :@original_platform, original_platform
     end
+    e1.loaded_from = File.join(@gemhome, 'specifications', e1.full_name)
 
     e1_data = nil
     File.open e1_gem, 'rb' do |fp|

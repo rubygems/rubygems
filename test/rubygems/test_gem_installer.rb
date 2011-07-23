@@ -5,18 +5,9 @@ class TestGemInstaller < Gem::InstallerTestCase
   def setup
     super
 
-    if __name__ !~ /^test_install(_|$)/ then
-      @gemhome = @installer_tmp
-      Gem.use_paths @installer_tmp
-
-      @spec = Gem::Specification.find_by_name 'a'
-      @user_spec = Gem::Specification.find_by_name 'b'
-
-      @installer.spec = @spec
-      @installer.gem_home = @installer_tmp
-      @installer.gem_dir = @spec.gem_dir
-      @user_installer.spec = @user_spec
-      @user_installer.gem_home = @installer_tmp
+    if __name__ =~ /^test_install(_|$)/ then
+      FileUtils.rm_r @spec.gem_dir
+      FileUtils.rm_r @user_spec.gem_dir
     end
 
     @config = Gem.configuration
@@ -69,6 +60,7 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_build_extensions_extconf_bad
+    @installer.spec = @spec
     @spec.extensions << 'extconf.rb'
 
     e = assert_raises Gem::Installer::ExtensionBuildError do
@@ -92,7 +84,9 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_build_extensions_unsupported
-    gem_make_out = File.join @gemhome, 'gems', @spec.full_name, 'gem_make.out'
+    @installer.spec = @spec
+    FileUtils.mkdir_p @spec.gem_dir
+    gem_make_out = File.join @spec.gem_dir, 'gem_make.out'
     @spec.extensions << nil
 
     e = assert_raises Gem::Installer::ExtensionBuildError do
@@ -113,6 +107,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_ensure_dependency
+    quick_spec 'a'
+
     dep = Gem::Dependency.new 'a', '>= 2'
     assert @installer.ensure_dependency(@spec, dep)
 
@@ -126,6 +122,8 @@ load Gem.bin_path('a', 'executable', version)
 
   def test_extract_files
     format = Object.new
+    format.instance_variable_set :@spec, @spec
+    def format.spec() @spec end
     def format.file_entries
       [[{'size' => 7, 'mode' => 0400, 'path' => 'thefile'}, 'content']]
     end
@@ -154,6 +152,8 @@ load Gem.bin_path('a', 'executable', version)
 
   def test_extract_files_relative
     format = Object.new
+    format.instance_variable_set :@spec, @spec
+    def format.spec() @spec end
     def format.file_entries
       [[{'size' => 10, 'mode' => 0644, 'path' => '../thefile'}, '../thefile']]
     end
@@ -173,6 +173,8 @@ load Gem.bin_path('a', 'executable', version)
 
   def test_extract_files_absolute
     format = Object.new
+    format.instance_variable_set :@spec, @spec
+    def format.spec() @spec end
     def format.file_entries
       [[{'size' => 8, 'mode' => 0644, 'path' => '/thefile'}, '/thefile']]
     end
@@ -277,7 +279,6 @@ load Gem.bin_path('a', 'executable', version)
 
   def test_generate_bin_script_install_dir
     @installer.wrappers = true
-    @spec.executables = %w[executable]
 
     gem_dir = File.join("#{@gemhome}2", "gems", @spec.full_name)
     gem_bindir = File.join gem_dir, 'bin'
@@ -288,11 +289,12 @@ load Gem.bin_path('a', 'executable', version)
 
     @installer.gem_home = "#{@gemhome}2"
     @installer.gem_dir = gem_dir
+    @installer.bin_dir = File.join "#{@gemhome}2", 'bin'
 
     @installer.generate_bin
 
     installed_exec = File.join("#{@gemhome}2", "bin", 'executable')
-    assert_equal true, File.exist?(installed_exec)
+    assert File.exist? installed_exec
     assert_equal mask, File.stat(installed_exec).mode unless win_platform?
 
     wrapper = File.read installed_exec
@@ -759,8 +761,6 @@ load Gem.bin_path('a', 'executable', version)
     FileUtils.rm_f File.join(Gem.dir, 'specifications')
 
     use_ui @ui do
-      Dir.chdir @tempdir do Gem::Builder.new(@spec).build end
-
       @installer.install
     end
 
@@ -894,6 +894,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_installation_satisfies_dependency_eh
+    quick_spec 'a'
+
     dep = Gem::Dependency.new 'a', '>= 2'
     assert @installer.installation_satisfies_dependency?(dep)
 
@@ -1051,25 +1053,21 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_write_spec
-    spec_dir = File.join @gemhome, 'specifications'
-    spec_file = File.join spec_dir, @spec.spec_name
-    FileUtils.rm spec_file
-    refute File.exist?(spec_file)
+    FileUtils.rm @spec.spec_file
+    refute File.exist?(@spec.spec_file)
 
     @installer.spec = @spec
     @installer.gem_home = @gemhome
 
     @installer.write_spec
 
-    assert File.exist?(spec_file)
-    assert_equal @spec, eval(File.read(spec_file))
+    assert File.exist?(@spec.spec_file)
+    assert_equal @spec, eval(File.read(@spec.spec_file))
   end
 
   def test_write_spec_writes_cached_spec
-    spec_dir = File.join @gemhome, 'specifications'
-    spec_file = File.join spec_dir, @spec.spec_name
-    FileUtils.rm spec_file
-    refute File.exist?(spec_file)
+    FileUtils.rm @spec.spec_file
+    refute File.exist?(@spec.spec_file)
 
     @spec.files = %w[a.rb b.rb c.rb]
 
@@ -1081,11 +1079,11 @@ load Gem.bin_path('a', 'executable', version)
     # cached specs have no file manifest:
     @spec.files = []
 
-    assert_equal @spec, eval(File.read(spec_file))
+    assert_equal @spec, eval(File.read(@spec.spec_file))
   end
 
   def test_dir
-    assert_match @installer.dir, %r!/installer/gems/a-2$!
+    assert_match %r!/gemhome/gems/a-2$!, @installer.dir
   end
 
   def old_ruby_required

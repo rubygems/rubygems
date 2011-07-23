@@ -6,19 +6,17 @@ class TestGemUninstaller < Gem::InstallerTestCase
   def setup
     super
 
-    @user_spec.executables = ["executable"]
-
     build_rake_in do
       use_ui ui do
         @installer.install
+        @spec = @installer.spec
+
         @user_installer.install
-
-        Gem.use_paths @gemhome, Gem.user_dir
-
-        @spec      = Gem::Specification.find_by_name 'a'
-        @user_spec = Gem::Specification.find_by_name 'b'
+        @user_spec = @user_installer.spec
       end
     end
+
+    Gem::Specification.reset
   end
 
   def test_initialize_expand_path
@@ -77,7 +75,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
     end
 
     exec_path = File.join Gem.user_dir, 'bin', 'executable'
-    assert_equal false, File.exist?(exec_path), 'removed exec from bin dir'
+    refute File.exist?(exec_path), 'exec still exists in user bin dir'
 
     assert_equal "Removing executable\n", @ui.output
   end
@@ -190,7 +188,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
                                        :executables  => true,
                                        :user_install => true)
 
-    gem_dir = File.join Gem.user_dir, 'gems', @user_spec.full_name
+    gem_dir = File.join @user_spec.gem_dir
 
     Gem.pre_uninstall do
       assert_path_exists gem_dir

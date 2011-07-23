@@ -27,7 +27,7 @@ end
 # hooks to load RDoc generation code from the "rdoc" gem and a fallback in
 # case the installed version of RDoc does not have them.
 
-class Gem::RDoc
+class Gem::RDoc # :nodoc: all
 
   include Gem::UserInteraction
 
@@ -201,7 +201,8 @@ class Gem::RDoc
   end
 
   ##
-  # Generates RDoc and ri data for legacy RDoc versions
+  # Generates RDoc and ri data for legacy RDoc versions.  This method will not
+  # exist in future versions.
 
   def generate_legacy
     if @generate_rdoc then
@@ -218,7 +219,8 @@ class Gem::RDoc
   end
 
   ##
-  # Generates RDoc using a legacy version of RDoc from the ARGV-like +args+
+  # Generates RDoc using a legacy version of RDoc from the ARGV-like +args+.
+  # This method will not exist in future versions.
 
   def legacy_rdoc *args
     args << @spec.rdoc_options
@@ -258,7 +260,7 @@ class Gem::RDoc
   # #new_rdoc creates a new RDoc instance.  This method is provided only to
   # make testing easier.
 
-  def new_rdoc # :nodoc:
+  def new_rdoc
     ::RDoc::RDoc.new
   end
 

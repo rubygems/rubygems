@@ -1086,7 +1086,7 @@ class TestGem < Gem::TestCase
     # @abin_path = File.join spec.full_gem_path, spec.bindir, 'abin'
     # FileUtils.mkdir_p File.join(stem, "gems", "test-3")
 
-    Gem::Deprecate.skip_during do
+    Deprecate.skip_during do
       expected = [File.join(@gemhome, "gems", "a-4", "lib")]
       assert_equal expected, Gem.latest_load_paths
     end

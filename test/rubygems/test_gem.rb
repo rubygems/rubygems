@@ -712,7 +712,7 @@ class TestGem < Gem::TestCase
   def test_self_path_default
     util_path
 
-    if defined? APPLE_GEM_HOME
+    if defined?(APPLE_GEM_HOME)
       orig_APPLE_GEM_HOME = APPLE_GEM_HOME
       Object.send :remove_const, :APPLE_GEM_HOME
     end
@@ -721,7 +721,7 @@ class TestGem < Gem::TestCase
 
     assert_equal [Gem.default_path, Gem.dir].flatten.uniq, Gem.path
   ensure
-    Object.const_set :APPLE_GEM_HOME, orig_APPLE_GEM_HOME
+    Object.const_set :APPLE_GEM_HOME, orig_APPLE_GEM_HOME if orig_APPLE_GEM_HOME
   end
 
   unless win_platform?

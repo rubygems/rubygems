@@ -242,7 +242,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
 
     uninstaller = Gem::Uninstaller.new('a')
 
-    use_ui Gem::MockGemUi.new("2\n") do
+    use_ui Gem::MockGemUi.new("2\ny\n") do
       uninstaller.uninstall
     end
 

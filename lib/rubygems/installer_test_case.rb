@@ -62,14 +62,18 @@ class Gem::InstallerTestCase < Gem::TestCase
   def setup
     super
 
-    @spec = quick_gem 'a'
-    util_make_exec @spec
-    util_build_gem @spec
-    @gem = @spec.cache_file
+    @spec = quick_gem 'a' do |spec|
+      util_make_exec spec
+    end
 
-    @user_spec = quick_gem 'b'
-    util_make_exec @user_spec
+    @user_spec = quick_gem 'b' do |spec|
+      util_make_exec spec
+    end
+
+    util_build_gem @spec
     util_build_gem @user_spec
+
+    @gem = @spec.cache_file
     @user_gem = @user_spec.cache_file
 
     @installer      = util_installer @spec, @gemhome

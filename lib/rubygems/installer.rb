@@ -106,14 +106,18 @@ class Gem::Installer
   ##
   # Checks if +filename+ exists in +@bin_dir+.
   #
+  # If +@force+ is set +filename+ is overwritten.
+  #
   # If +filename+ exists and is a RubyGems wrapper the user is consulted.
   #
-  # If +filename+ exists and +@bin_dir+ is Gem.default_bindir the user is
-  # consulted.
+  # If +filename+ exists and +@bin_dir+ is Gem.default_bindir (/usr/local) the
+  # user is consulted.
   #
   # Otherwise +filename+ is overwritten.
 
   def check_executable_overwrite filename # :nodoc:
+    return if @force
+
     generated_bin = File.join @bin_dir, filename
 
     return unless File.exist? generated_bin

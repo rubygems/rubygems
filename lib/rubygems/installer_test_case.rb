@@ -16,6 +16,11 @@ class Gem::Installer
   ##
   # Available through requiring rubygems/installer_test_case
 
+  attr_writer :force
+
+  ##
+  # Available through requiring rubygems/installer_test_case
+
   attr_writer :format
 
   ##

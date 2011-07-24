@@ -167,7 +167,7 @@ class Gem::SpecFetcher
 
     found.each do |source_uri, specs|
       uri_str = source_uri.to_s
-      specs_and_sources.push(*specs.map { |spec| [spec, uri_str] })
+      specs_and_sources.concat(specs.map { |spec| [spec, uri_str] })
     end
 
     [specs_and_sources, errors]

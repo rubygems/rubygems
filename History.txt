@@ -1,8 +1,30 @@
+﻿=== 1.8.6 / 2011-07-25
+
+* 1 major enhancement:
+
+  * Restore behavior of Gem::Specification#loaded?  Ruby Bug #5032
+
+* 1 minor enhancement:
+
+  * Add autorequires and delay startup of RubyGems until require is called.
+    See Ruby bug #4962
+
+* 1 bug fix:
+
+  * Clean up SourceIndex.add_specs to not be so damn noisy. (tadman)
+  * Added missing APPLE_GEM_HOME in paths.
+  * Extend YAML::Syck::DefaultKey fixing to `marshal_dump` as well.
+  * Fix #29216: check correct bin_dir in check_that_user_bin_dir_is_in_path.
+  * Revert Gem.latest_load_paths to working order (PathSupport revert).
+  * Restore normalization of GEM_HOME.
+  * Handle the Syck DefaultKey problem once and for all.
+  * Fix SystemStackError occurring with "gem list -r -a" on 1.9.
+
 === 1.8.5 / 2011-05-31
 
 * 2 minor enhancement:
 
-  * The -u option to 'update local source cache' is officially deprecated.
+  * The -u option to 'update local source cache' is official deprecated.
   * Remove has_rdoc deprecations from Specification.
 
 * 2 bug fixes:
@@ -465,12 +487,12 @@ New features:
   * `gem server` now supports --bind.  Patch #27357 by Bruno Michel.
   * `gem rdoc` no longer overwrites built documentation.  Use --overwrite
     force rebuilding.  Patch #25982 by Akinori MUSHA.
-* Capital letters are now allowed in prerelease versions.
+* Captial letters are now allowed in prerelease versions.
 
 Bug fixes:
 
 * Development deps are no longer added to rubygems-update gem so older
-  versions can update successfully.
+  versions can update sucessfully.
 * Installer bugs:
   * Prerelease gems can now depend on non-prerelease gems.
   * Development dependencies are ignored unless explicitly needed.  Bug #27608
@@ -484,7 +506,7 @@ Bug fixes:
 * Gem::Format no longer crashes on empty files.  Bug #27292 by Ian Ragsdale.
 * Gem::GemPathSearcher handles nil require_paths. Patch #27334 by Roger Pack.
 * Gem::RemoteFetcher no longer copies the file if it is where we want it.
-  Patch #27409 by Jakub Stastny.
+  Patch #27409 by Jakub Šťastný.
 
 Deprecation Notices:
 
@@ -1164,7 +1186,7 @@ annoying issues involving other libraries that RubyGems depends upon.
 
 * Added workaround for the null byte in Dir string issue. (see
   http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/121702).
-  (Thanks to Mauricio Fernandez for the quick response on this one).
+  (Thanks to Mauricio Fernández for the quick response on this one).
 * Added workaround for old version of Zlib on windows that caused
   Ruwiki to fail to install. (see
   http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/121770)

@@ -1074,8 +1074,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_latest_load_paths
-    stem = Gem.path.first
-
     spec = quick_spec 'a', '4' do |s|
       s.require_paths = ["lib"]
     end

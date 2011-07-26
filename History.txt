@@ -6,18 +6,19 @@
 
 * 1 minor enhancement:
 
-  * Add autorequires and delay startup of RubyGems until require is called.  See Ruby bug #4962
+  * Add autorequires and delay startup of RubyGems until require is called.
+    See Ruby bug #4962
 
 * 1 bug fix:
 
   * Clean up SourceIndex.add_specs to not be so damn noisy. (tadman)
   * Added missing APPLE_GEM_HOME in paths.
   * Extend YAML::Syck::DefaultKey fixing to `marshal_dump` as well.
-  * Fix #29216: check correct bin_dir in check_that_user_bin_dir_is_in_path
-  * Fix Gem.latest_load_paths
-  * Restore normalization of GEM_HOME
-  * Handle the Syck DefaultKey problem once and for all
-  * fix SystemStackError occurring with "gem list -r -a" on 1.9
+  * Fix #29216: check correct bin_dir in check_that_user_bin_dir_is_in_path.
+  * Revert Gem.latest_load_paths to working order (PathSupport revert).
+  * Restore normalization of GEM_HOME.
+  * Handle the Syck DefaultKey problem once and for all.
+  * Fix SystemStackError occurring with "gem list -r -a" on 1.9.
 
 === 1.8.5 / 2011-05-31
 

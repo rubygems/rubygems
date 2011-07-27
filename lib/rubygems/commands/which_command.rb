@@ -60,7 +60,7 @@ class Gem::Commands::WhichCommand < Gem::Command
     dirs.each do |dir|
       Gem.suffixes.each do |ext|
         full_path = File.join dir, "#{package_name}#{ext}"
-        if File.exist? full_path then
+        if File.exist? full_path and not File.directory? full_path then
           result << full_path
           return result unless options[:show_all]
         end

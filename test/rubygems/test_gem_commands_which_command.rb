@@ -22,6 +22,20 @@ class TestGemCommandsWhichCommand < Gem::TestCase
     assert_equal '', @ui.error
   end
 
+  def test_execute_directory
+    @cmd.handle_options %w[directory]
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+    end
+
+    assert_equal '', @ui.output
+    assert_match %r%Can.t find ruby library file or shared library directory\n%,
+                 @ui.error
+  end
+
   def test_execute_one_missing
     # TODO: this test fails in isolation
 
@@ -53,7 +67,7 @@ class TestGemCommandsWhichCommand < Gem::TestCase
   end
 
   def util_foo_bar
-    files = %w[lib/foo_bar.rb Rakefile]
+    files = %w[lib/foo_bar.rb lib/directory/baz.rb Rakefile]
     @foo_bar = quick_spec 'foo_bar' do |gem|
       gem.files = files
     end

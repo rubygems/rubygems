@@ -130,8 +130,10 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_check_executable_overwrite_default_bin_dir
-    orig_RUBY_FRAMEWORK_VERSION = RUBY_FRAMEWORK_VERSION if
-      defined?(RUBY_FRAMEWORK_VERSION)
+    if defined?(RUBY_FRAMEWORK_VERSION)
+      orig_RUBY_FRAMEWORK_VERSION = RUBY_FRAMEWORK_VERSION
+      Object.send :remove_const, :RUBY_FRAMEWORK_VERSION
+    end
     orig_bindir = Gem::ConfigMap[:bindir]
     Gem::ConfigMap[:bindir] = Gem.bindir
 

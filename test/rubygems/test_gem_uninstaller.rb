@@ -158,6 +158,16 @@ class TestGemUninstaller < Gem::InstallerTestCase
     assert_same uninstaller, @post_uninstall_hook_arg
   end
 
+  def test_uninstall_nonexistent
+    uninstaller = Gem::Uninstaller.new 'bogus', :executables => true
+
+    e = assert_raises Gem::InstallError do
+      uninstaller.uninstall
+    end
+
+    assert_equal 'gem "bogus" is not installed', e.message
+  end
+
   def test_uninstall_not_ok
     quick_gem 'z' do |s|
       s.add_runtime_dependency @spec.name

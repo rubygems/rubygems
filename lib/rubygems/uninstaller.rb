@@ -70,7 +70,7 @@ class Gem::Uninstaller
     list = Gem::Specification.find_all_by_name(@gem, @version)
 
     if list.empty? then
-      raise Gem::InstallError, "cannot uninstall, check `gem list -d #{@gem}`"
+      raise Gem::InstallError, "gem #{@gem.inspect} is not installed"
 
     elsif list.size > 1 and @force_all then
       remove_all list

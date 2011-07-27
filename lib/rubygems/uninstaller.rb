@@ -72,7 +72,7 @@ class Gem::Uninstaller
       list.partition { |spec| @gem_home == spec.base_dir }
 
     if list.empty? then
-      raise Gem::InstallError, "#{@gem} does not appear to be installed" if
+      raise Gem::InstallError, "gem #{@gem.inspect} is not installed" if
         other_repo_specs.empty?
 
       other_repos = other_repo_specs.map { |spec| spec.base_dir }.uniq

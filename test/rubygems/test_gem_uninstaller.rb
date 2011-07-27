@@ -156,16 +156,14 @@ class TestGemUninstaller < Gem::InstallerTestCase
     assert_same uninstaller, @post_uninstall_hook_arg
   end
 
-  def test_uninstall_not_installed
-    Gem.use_paths @gemhome2
-
-    uninstaller = Gem::Uninstaller.new @spec.name, :executables => true
+  def test_uninstall_nonexistent
+    uninstaller = Gem::Uninstaller.new 'bogus', :executables => true
 
     e = assert_raises Gem::InstallError do
       uninstaller.uninstall
     end
 
-    assert_equal 'a does not appear to be installed', e.message
+    assert_equal 'gem "bogus" is not installed', e.message
   end
 
   def test_uninstall_not_ok

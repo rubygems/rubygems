@@ -176,9 +176,9 @@ class Gem::RDoc # :nodoc: all
 
       case config_args = Gem.configuration[:rdoc]
       when String then
-        args = args.concat Gem.configuration[:rdoc].split
+        args = args.concat config_args.split
       when Array then
-        args = args.concat Gem.configuration[:rdoc]
+        args = args.concat config_args
       end
 
       delete_legacy_args args

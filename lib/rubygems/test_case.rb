@@ -691,12 +691,13 @@ Also, a list:
     end
 
     v = Gem.marshal_version
+
     Gem::Specification.each do |spec|
       path = "#{@gem_repo}quick/Marshal.#{v}/#{spec.original_name}.gemspec.rz"
       data = Marshal.dump spec
       data_deflate = Zlib::Deflate.deflate data
       @fetcher.data[path] = data_deflate
-    end
+    end unless Gem::RemoteFetcher === @fetcher # HACK for test_download_to_cache
 
     nil # force errors
   end

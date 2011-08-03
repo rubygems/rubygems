@@ -9,6 +9,8 @@
   * Fixed `gem unpack uninstalled_gem` default version picker
   * RubyGems no longer claims a nonexistent gem can be uninstalled
   * `gem which` no longer claims directories are requirable files
+  * `gem cleanup` continues cleaning up gems if one can't be uninstalled due
+    to permissions.  Issue #82
 
 === 1.8.6 / 2011-07-25
 

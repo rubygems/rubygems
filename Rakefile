@@ -127,7 +127,6 @@ def diff_with dir
   sh "diff #{diff_options} lib/rubygems        #{dir}/lib/rubygems;    true"
   sh "diff #{diff_options} lib/rbconfig        #{dir}/lib/rbconfig;    true"
   sh "diff #{diff_options} test                #{dir}/test/rubygems;   true"
-  sh "diff #{diff_options} util/gem_prelude.rb #{dir}/gem_prelude.rb;  true"
 end
 
 rubinius_dir = ENV['RUBINIUS_PATH'] || '../git.rubini.us/code'

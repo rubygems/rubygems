@@ -1,16 +1,23 @@
-﻿=== 1.8.6 / 2011-07-25
+﻿=== 1.8.7 / 2011-08-02
 
-* 1 major enhancement:
+* 5 bug fixes:
+  * Added missing require for `gem uninstall --format-executable`
+  * The correct name of the executable being uninstalled is now displayed with
+    --format-executable
+  * Fixed `gem unpack uninstalled_gem` default version picker
+  * RubyGems no longer claims a nonexistent gem can be uninstalled
+  * `gem which` no longer claims directories are requirable files
 
-  * Restore behavior of Gem::Specification#loaded?  Ruby Bug #5032
+=== 1.8.6 / 2011-07-25
 
 * 1 minor enhancement:
 
   * Add autorequires and delay startup of RubyGems until require is called.
     See Ruby bug #4962
 
-* 1 bug fix:
+* 9 bug fixes:
 
+  * Restore behavior of Gem::Specification#loaded?  Ruby Bug #5032
   * Clean up SourceIndex.add_specs to not be so damn noisy. (tadman)
   * Added missing APPLE_GEM_HOME in paths.
   * Extend YAML::Syck::DefaultKey fixing to `marshal_dump` as well.

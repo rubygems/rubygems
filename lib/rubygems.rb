@@ -1211,7 +1211,7 @@ end
 # Otherwise return a path to the share area as define by
 # "#{ConfigMap[:datadir]}/#{package_name}".
 
-def RbConfig.datadir(package_name)
+def RbConfig.datadir(package_name) # :nodoc:
   warn "#{Gem.location_of_caller.join ':'}:Warning: " \
     "RbConfig.datadir is deprecated and will be removed on or after " \
     "August 2011.  " \

@@ -68,8 +68,10 @@ class Gem::Uninstaller
   def uninstall
     list = Gem::Specification.find_all_by_name(@gem, @version)
 
-    list, other_repo_specs =
-      list.partition { |spec| @gem_home == spec.base_dir }
+    list, other_repo_specs = list.partition do |spec|
+      @gem_home == spec.base_dir or
+      (@user_install and spec.base_dir == Gem.user_dir)
+    end
 
     if list.empty? then
       raise Gem::InstallError, "gem #{@gem.inspect} is not installed" if

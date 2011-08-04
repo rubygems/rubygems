@@ -444,11 +444,16 @@ module Gem
   def self.ensure_gem_subdirectories dir = Gem.dir
     require 'fileutils'
 
+    old_umask = File.umask
+    File.umask old_umask | 022
+
     %w[cache doc gems specifications].each do |name|
       subdir = File.join dir, name
       next if File.exist? subdir
       FileUtils.mkdir_p subdir rescue nil # in case of perms issues -- lame
     end
+  ensure
+    File.umask old_umask
   end
 
   ##

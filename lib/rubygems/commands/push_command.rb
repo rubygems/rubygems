@@ -46,6 +46,8 @@ class Gem::Commands::PushCommand < Gem::Command
       terminate_interaction 1
     end
 
+    say "Pushing gem to #{options[:host] || Gem.host}..."
+
     response = rubygems_api_request(*args) do |request|
       request.body = Gem.read_binary name
       request.add_field "Content-Length", request.body.size

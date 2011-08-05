@@ -11,6 +11,8 @@
   * `gem which` no longer claims directories are requirable files
   * `gem cleanup` continues cleaning up gems if one can't be uninstalled due
     to permissions.  Issue #82
+  * Gem repository directories are no longer created world-writable.  Patch by
+    Sakuro OZAWA.  Ruby Bug #4930
 
 === 1.8.6 / 2011-07-25
 

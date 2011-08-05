@@ -71,7 +71,7 @@ class Gem::Commands::OwnerCommand < Gem::Command
 
         with_response response
       rescue => e
-        warn e
+        # ignore
       end
     end
   end

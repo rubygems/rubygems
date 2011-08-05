@@ -64,7 +64,7 @@ module Gem::GemcutterUtilities
       end
     else
       say resp.body
-      terminate_interaction 1
+      terminate_interaction 1 # TODO: question this
     end
   end
 
@@ -73,7 +73,7 @@ module Gem::GemcutterUtilities
       Gem.configuration.api_keys[key]
     else
       alert_error "No such API key. You can add it with gem keys --add #{key}"
-      terminate_interaction 1
+      terminate_interaction 1 # TODO: question this
     end
   end
 

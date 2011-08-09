@@ -75,6 +75,7 @@ class Gem::Platform
                       when /^dotnet$/ then             [ 'dotnet',    nil ]
                       when /^dotnet([\d.]*)/ then      [ 'dotnet',    $1  ]
                       when /linux/ then                [ 'linux',     $1  ]
+                      when /windows/ then              [ 'windows',   nil ]
                       when /mingw32/ then              [ 'mingw32',   nil ]
                       when /(mswin\d+)(\_(\d+))?/ then
                         os, version = $1, $3
@@ -130,6 +131,10 @@ class Gem::Platform
   # Does +other+ match this platform?  Two platforms match if they have the
   # same CPU, or either has a CPU of 'universal', they have the same OS, and
   # they have the same version, or either has no version.
+  #
+  # In the special os case 'windows', it is considered to match any standard
+  # Windows platform name, e.g. mingw32, mswin32, etc.
+  #
 
   def ===(other)
     return nil unless Gem::Platform === other
@@ -138,7 +143,11 @@ class Gem::Platform
     (@cpu == 'universal' or other.cpu == 'universal' or @cpu == other.cpu) and
 
     # os
-    @os == other.os and
+    (
+      (@os == 'windows' && Gem::WIN_PATTERNS.any?{ |pat| pat.match(other.os) }) or
+      (other.os == 'windows' && Gem::WIN_PATTERNS.any?{ |pat| pat.match(@os) }) or
+      (@os == other.os)
+    ) and
 
     # version
     (@version.nil? or other.version.nil? or @version == other.version)
@@ -163,6 +172,7 @@ class Gem::Platform
               when /powerpc-darwin(\d)/   then ['powerpc',   'darwin',  $1    ]
               when /sparc-solaris2.8/     then ['sparc',     'solaris', '2.8' ]
               when /universal-darwin(\d)/ then ['universal', 'darwin',  $1    ]
+              when /universal-windows/    then ['universal', 'windows',  $1    ]
               else                             other
               end
 

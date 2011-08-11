@@ -1,5 +1,10 @@
 # coding: UTF-8
 
+=== 1.8.8 / 2011-08-11
+
+* Bug fix:
+  * The encoding of a gem's YAML spec is now UTF-8.  Issue #149
+
 === 1.8.7 / 2011-08-04
 
 * Bug fixes:

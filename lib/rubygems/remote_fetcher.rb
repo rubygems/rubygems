@@ -105,11 +105,14 @@ class Gem::RemoteFetcher
   def download(spec, source_uri, install_dir = Gem.dir)
     Gem.ensure_gem_subdirectories(install_dir) rescue nil
 
-    if File.writable?(install_dir)
-      cache_dir = File.join install_dir, "cache"
-    else
-      cache_dir = File.join Gem.user_dir, "cache"
-    end
+    cache_dir =
+      if Dir.pwd == install_dir then # see fetch_command
+        install_dir
+      elsif File.writable? install_dir then
+        File.join install_dir, "cache"
+      else
+        File.join Gem.user_dir, "cache"
+      end
 
     gem_file_name = File.basename spec.cache_file
     local_gem_path = File.join cache_dir, gem_file_name

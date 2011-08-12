@@ -131,6 +131,8 @@ class Gem::RemoteFetcher
     # URI.parse gets confused by MS Windows paths with forward slashes.
     scheme = nil if scheme =~ /^[a-z]$/i
 
+    # REFACTOR: split this up and dispatch on scheme (eg download_http)
+    # REFACTOR: be sure to clean up fake fetcher when you do this... cleaner
     case scheme
     when 'http', 'https' then
       unless File.exist? local_gem_path then
@@ -140,7 +142,7 @@ class Gem::RemoteFetcher
 
           remote_gem_path = source_uri + "gems/#{gem_file_name}"
 
-          gem = self.cache_update_path remote_gem_path, local_gem_path
+          self.cache_update_path remote_gem_path, local_gem_path
         rescue Gem::RemoteFetcher::FetchError
           raise if spec.original_platform == spec.platform
 
@@ -151,7 +153,7 @@ class Gem::RemoteFetcher
 
           remote_gem_path = source_uri + "gems/#{alternate_name}"
 
-          gem = self.cache_update_path remote_gem_path, local_gem_path
+          self.cache_update_path remote_gem_path, local_gem_path
         end
       end
     when 'file' then

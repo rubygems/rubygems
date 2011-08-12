@@ -256,12 +256,9 @@ class Gem::SpecFetcher
     local_file = File.join(cache_dir, file_name)
     retried    = false
 
-    spec_dump = if @update_cache then
-                  FileUtils.mkdir_p cache_dir
-                  @fetcher.cache_update_path(spec_path, local_file)
-                else
-                  @fetcher.cache_update_path(spec_path)
-                end
+    FileUtils.mkdir_p cache_dir if @update_cache
+
+    spec_dump = @fetcher.cache_update_path(spec_path, local_file)
 
     begin
       Marshal.load spec_dump

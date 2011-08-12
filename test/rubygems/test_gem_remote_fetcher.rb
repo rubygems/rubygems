@@ -276,8 +276,8 @@ gems:
         inst = Gem::RemoteFetcher.fetcher
       end
 
-      assert_equal File.join(@tempdir, @a1.file_name),
-        inst.download(@a1, local_path)
+      assert_equal(File.join(@tempdir, @a1.file_name),
+                   inst.download(@a1, local_path))
     ensure
       FileUtils.chmod 0755, @a1.cache_dir
     end

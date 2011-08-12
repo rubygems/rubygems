@@ -26,8 +26,8 @@ class TestGemCommandsFetchCommand < Gem::TestCase
       end
     end
 
-    assert File.exist?(File.join(@tempdir, @a2.file_name)),
-           "#{@a2.full_name} not fetched"
+    assert_path_exists(File.join(@tempdir, @a2.file_name),
+                       "#{@a2.full_name} not fetched")
   end
 
   def test_execute_prerelease
@@ -49,8 +49,8 @@ class TestGemCommandsFetchCommand < Gem::TestCase
       end
     end
 
-    assert File.exist?(File.join(@tempdir, @a2_pre.file_name)),
-           "#{@a2_pre.full_name} not fetched"
+    assert_path_exists(File.join(@tempdir, @a2_pre.file_name),
+                       "#{@a2_pre.full_name} not fetched")
   end
 
   def test_execute_specific_prerelease
@@ -73,8 +73,8 @@ class TestGemCommandsFetchCommand < Gem::TestCase
       end
     end
 
-    assert File.exist?(File.join(@tempdir, @a2_pre.file_name)),
-           "#{@a2_pre.full_name} not fetched"
+    assert_path_exists(File.join(@tempdir, @a2_pre.file_name),
+                       "#{@a2_pre.full_name} not fetched")
   end
 
   def test_execute_version
@@ -93,8 +93,8 @@ class TestGemCommandsFetchCommand < Gem::TestCase
       end
     end
 
-    assert File.exist?(File.join(@tempdir, @a1.file_name)),
-           "#{@a1.full_name} not fetched"
+    assert_path_exists(File.join(@tempdir, @a1.file_name),
+                       "#{@a1.full_name} not fetched")
   end
 
 end

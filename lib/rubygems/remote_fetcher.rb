@@ -188,7 +188,7 @@ class Gem::RemoteFetcher
       say "Using local gem #{local_gem_path}" if
         Gem.configuration.really_verbose
     else
-      raise Gem::InstallError, "unsupported URI scheme #{source_uri.scheme}"
+      raise ArgumentError, "unsupported URI scheme #{source_uri.scheme}"
     end
 
     local_gem_path

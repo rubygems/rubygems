@@ -341,7 +341,7 @@ gems:
   def test_download_unsupported
     inst = Gem::RemoteFetcher.fetcher
 
-    e = assert_raises Gem::InstallError do
+    e = assert_raises ArgumentError do
       inst.download @a1, 'ftp://gems.rubyforge.org'
     end
 

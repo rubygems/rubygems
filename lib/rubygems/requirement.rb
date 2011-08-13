@@ -112,8 +112,10 @@ class Gem::Requirement
     requirements.compact!
     requirements.uniq!
 
-    requirements << ">= 0" if requirements.empty?
-    @none = (requirements == ">= 0")
+    if requirements.empty?
+      requirements << ">= 0"
+      @none = true
+    end
     @requirements = requirements.map! { |r| self.class.parse r }
   end
 

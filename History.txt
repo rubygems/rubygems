@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 1.8.9 / 2011-08-23
+
+* Bug fixes:
+
+  * Fixed uninstalling multiple gems using `gem uninstall`
+  * Gem.use_paths splatted to take multiple paths!  Issue #148
+
 === 1.8.8 / 2011-08-11
 
 * Bug fix:

@@ -644,7 +644,7 @@ module Gem
 
   def self.load_yaml
     begin
-      gem 'psych', '~> 1.2.0' unless ENV['TEST_SYCK']
+      gem 'psych', '~> 1.2', '>= 1.2.1' unless ENV['TEST_SYCK']
     rescue Gem::LoadError
       # It's OK if the user does not have the psych gem installed.  We will
       # attempt to require the stdlib version

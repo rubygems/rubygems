@@ -1914,10 +1914,10 @@ class Gem::Specification
 
   def ruby_code(obj)
     case obj
-    when String            then '%q{' + obj + '}'
+    when String            then obj.inspect
     when Array             then '[' + obj.map { |x| ruby_code x }.join(", ") + ']'
     when Hash              then
-      seg = obj.keys.sort.map { |k| "%q{#{k}} => %q{#{obj[k]}}" }
+      seg = obj.keys.sort.map { |k| "#{ruby_code k} => #{ruby_code obj[k]}" }
       "{ #{seg.join(', ')} }"
     when Gem::Version      then obj.to_s.inspect
     when Date              then '%q{' + obj.strftime('%Y-%m-%d') + '}'

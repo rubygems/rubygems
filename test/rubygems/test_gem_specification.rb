@@ -114,7 +114,7 @@ end
     assert_equal @current_version, new_spec.specification_version
   end
 
-  def test_self_from_yaml_syck_bug
+  def test_self_from_yaml_syck_date_bug
     # This is equivalent to (and totally valid) psych 1.0 output and
     # causes parse errors on syck.
     yaml = @a1.to_yaml
@@ -126,6 +126,37 @@ end
 
     assert_kind_of Time, @a1.date
     assert_kind_of Time, new_spec.date
+  end
+
+  def test_self_from_yaml_syck_default_key_bug
+    skip 'syck default_key bug is only for ruby 1.8' unless RUBY_VERSION < '1.9'
+    # This is equivalent to (and totally valid) psych 1.0 output and
+    # causes parse errors on syck.
+    yaml = <<-YAML
+--- !ruby/object:Gem::Specification
+name: posix-spawn
+version: !ruby/object:Gem::Version
+  version: 0.3.6
+  prerelease: 
+dependencies:
+- !ruby/object:Gem::Dependency
+  name: rake-compiler
+  requirement: &70243867725240 !ruby/object:Gem::Requirement
+    none: false
+    requirements:
+    - - =
+      - !ruby/object:Gem::Version
+        version: 0.7.6
+  type: :development
+  prerelease: false
+  version_requirements: *70243867725240
+    YAML
+
+    new_spec = with_syck do
+      Gem::Specification.from_yaml yaml
+    end
+
+    refute_match /DefaultKey/, new_spec.to_ruby
   end
 
   def test_self_load

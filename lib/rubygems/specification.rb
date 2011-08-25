@@ -1459,7 +1459,7 @@ class Gem::Specification
     # TODO: do we need these?? Kill it
     glob = File.join(self.lib_dirs_glob, glob)
 
-    Dir[glob].map { |f| f.untaint } # FIX our tests are brokey, run w/ SAFE=1
+    Dir[glob].map { |f| f.untaint } # FIX our tests are broken, run w/ SAFE=1
   end
 
   ##

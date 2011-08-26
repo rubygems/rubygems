@@ -70,7 +70,7 @@ class Gem::Commands::OwnerCommand < Gem::Command
         end
 
         with_response response
-      rescue => e
+      rescue
         # ignore
       end
     end

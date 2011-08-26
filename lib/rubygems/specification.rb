@@ -1914,14 +1914,14 @@ class Gem::Specification
 
   def ruby_code(obj)
     case obj
-    when String            then '%q{' + obj + '}'
+    when String            then obj.dump
     when Array             then '[' + obj.map { |x| ruby_code x }.join(", ") + ']'
     when Hash              then
-      seg = obj.keys.sort.map { |k| "%q{#{k}} => %q{#{obj[k]}}" }
+      seg = obj.keys.sort.map { |k| "#{k.to_s.dump} => #{obj[k].to_s.dump}" }
       "{ #{seg.join(', ')} }"
-    when Gem::Version      then obj.to_s.inspect
-    when Date              then '%q{' + obj.strftime('%Y-%m-%d') + '}'
-    when Time              then '%q{' + obj.strftime('%Y-%m-%d') + '}'
+    when Gem::Version      then obj.to_s.dump
+    when Date              then obj.strftime('%Y-%m-%d').dump
+    when Time              then obj.strftime('%Y-%m-%d').dump
     when Numeric           then obj.inspect
     when true, false, nil  then obj.inspect
     when Gem::Platform     then "Gem::Platform.new(#{obj.to_a.inspect})"

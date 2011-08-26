@@ -150,13 +150,17 @@ dependencies:
   type: :development
   prerelease: false
   version_requirements: *70243867725240
+platform: ruby
+files: []
+test_files: []
+bindir:
     YAML
 
     new_spec = with_syck do
       Gem::Specification.from_yaml yaml
     end
 
-    refute_match /DefaultKey/, new_spec.to_ruby
+    refute_match %r%DefaultKey%, new_spec.to_ruby
   end
 
   def test_self_load

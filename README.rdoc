@@ -23,7 +23,7 @@ See UPGRADING.rdoc for more details and alternative instructions.
 
 -----
 
-If you don't have RubyGems installed, your can still do it manually:
+If you don't have RubyGems installed, you can still do it manually:
 
 * Download from: https://rubygems.org/pages/download
 * Unpack into a directory and cd there

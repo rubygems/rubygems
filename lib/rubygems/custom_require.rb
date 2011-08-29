@@ -101,6 +101,7 @@ module Kernel
       return gem_original_require(path)
     end
 
+    load_error.set_backtrace caller(2)
     raise load_error
   end
 

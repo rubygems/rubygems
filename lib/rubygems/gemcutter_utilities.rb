@@ -39,12 +39,8 @@ module Gem::GemcutterUtilities
     end
 
     with_response response do |resp|
-      if resp.body =~ /:"([a-z0-9]+)"/
-        say "Signed in."
-        Gem.configuration.rubygems_api_key = $1
-      else
-        say "Unable to parse api response."
-      end
+      say "Signed in."
+      Gem.configuration.rubygems_api_key = resp.body
     end
   end
 

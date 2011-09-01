@@ -37,10 +37,14 @@ module Gem::GemcutterUtilities
     response = rubygems_api_request :get, "api/v1/api_key" do |request|
       request.basic_auth email, password
     end
-
+    
     with_response response do |resp|
-      say "Signed in."
-      Gem.configuration.rubygems_api_key = resp.body
+      if resp.body =~ /"rubygems_api_key"\s*:\s*"([a-z0-9]+)"/
+        say "Signed in."
+        Gem.configuration.rubygems_api_key = $1
+      else
+        say "Unable to parse api response."
+      end
     end
   end
 

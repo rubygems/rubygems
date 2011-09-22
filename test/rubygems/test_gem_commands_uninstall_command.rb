@@ -16,6 +16,29 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     @executable = File.join(@gemhome, 'bin', 'executable')
   end
 
+  def test_execute_dependency_order
+    c = quick_gem 'c' do |spec|
+      spec.add_dependency 'a'
+    end
+
+    util_build_gem c
+    installer = util_installer c, @gemhome
+    use_ui @ui do installer.install end
+
+    ui = Gem::MockGemUi.new
+
+    @cmd.options[:args] = %w[a c]
+
+    use_ui ui do
+      @cmd.execute
+    end
+
+    output = ui.output.split "\n"
+
+    assert_equal 'Successfully uninstalled a-1', output.shift
+    assert_equal 'Successfully uninstalled c-1', output.shift
+  end
+
   def test_execute_removes_executable
     ui = Gem::MockGemUi.new
     util_setup_gem ui

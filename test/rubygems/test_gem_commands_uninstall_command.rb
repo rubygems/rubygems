@@ -28,6 +28,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     ui = Gem::MockGemUi.new
 
     @cmd.options[:args] = %w[a c]
+    @cmd.options[:executables] = true
 
     use_ui ui do
       @cmd.execute
@@ -35,8 +36,9 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
 
     output = ui.output.split "\n"
 
-    assert_equal 'Successfully uninstalled a-1', output.shift
-    assert_equal 'Successfully uninstalled c-1', output.shift
+    assert_equal 'Successfully uninstalled c-2', output.shift
+    assert_equal "Removing executable",          output.shift
+    assert_equal 'Successfully uninstalled a-2', output.shift
   end
 
   def test_execute_removes_executable

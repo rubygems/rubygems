@@ -8,3 +8,6 @@ rvm:
   - jruby
   - rbx-2.0
   - ruby-head
+notifications:
+  email:
+    - drbrain@segment7.net

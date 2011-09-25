@@ -47,7 +47,7 @@ hoe = Hoe.spec 'rubygems-update' do
   extra_dev_deps << ['hoe-seattlerb', '~> 1.2']
   extra_dev_deps << ['session', '~> 2.4']
   extra_dev_deps << ['rdoc', '~> 3.0']
-  extra_dev_deps << ['rcov', '~> 0.9.0']
+  extra_dev_deps << ['rcov', '~> 0.9.0'] unless ENV['TRAVIS']
   extra_dev_deps << ['ZenTest', '~> 4.5']
 
   self.extra_rdoc_files = Dir["*.rdoc"]

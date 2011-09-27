@@ -85,6 +85,8 @@ gems:
     ENV.delete 'HTTP_PROXY_USER'
     ENV.delete 'http_proxy_pass'
     ENV.delete 'HTTP_PROXY_PASS'
+    ENV.delete 'no_proxy'
+    ENV.delete 'NO_PROXY'
 
     base_server_uri = "http://localhost:#{SERVER_PORT}"
     @proxy_uri = "http://localhost:#{PROXY_PORT}"
@@ -637,6 +639,50 @@ gems:
     end
 
     assert_equal "too many redirects (#{url})", e.message
+  end
+
+  def test_observe_no_proxy_env_single_host
+    orig_env_HTTP_PROXY = ENV['HTTP_PROXY']
+
+    orig_env_NO_PROXY = ENV["NO_PROXY"]
+    orig_env_no_proxy = ENV["no_proxy"]
+
+    use_ui @ui do
+      ENV["HTTP_PROXY"] = @proxy_uri
+      ENV["NO_PROXY"] = "#{URI::parse(@server_uri).host}"
+      fetcher = Gem::RemoteFetcher.new nil
+      assert_data_from_server fetcher.fetch_path(@server_uri)
+    end
+
+    ensure
+      orig_env_HTTP_PROXY.nil? ? ENV.delete('HTTP_PROXY') :
+                                 ENV['HTTP_PROXY'] = orig_env_HTTP_PROXY
+      orig_env_NO_PROXY.nil? ? ENV.delete('NO_PROXY') :
+                               ENV['NO_PROXY'] = orig_env_NO_PROXY
+      orig_env_no_proxy.nil? ? ENV.delete('no_proxy') :
+                               ENV['no_proxy'] = orig_env_no_proxy
+  end
+
+  def test_observe_no_proxy_env_list
+    orig_env_HTTP_PROXY = ENV['HTTP_PROXY']
+
+    orig_env_NO_PROXY = ENV["NO_PROXY"]
+    orig_env_no_proxy = ENV["no_proxy"]
+
+    use_ui @ui do
+      ENV["HTTP_PROXY"] = @proxy_uri
+      ENV["NO_PROXY"] = "fakeurl.com, #{URI::parse(@server_uri).host}"
+      fetcher = Gem::RemoteFetcher.new nil
+      assert_data_from_server fetcher.fetch_path(@server_uri)
+    end
+
+    ensure
+      orig_env_HTTP_PROXY.nil? ? ENV.delete('HTTP_PROXY') :
+                                 ENV['HTTP_PROXY'] = orig_env_HTTP_PROXY
+      orig_env_NO_PROXY.nil? ? ENV.delete('NO_PROXY') :
+                               ENV['NO_PROXY'] = orig_env_NO_PROXY
+      orig_env_no_proxy.nil? ? ENV.delete('no_proxy') :
+                               ENV['no_proxy'] = orig_env_no_proxy
   end
 
   def test_request

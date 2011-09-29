@@ -130,7 +130,6 @@ end
   end
 
   def test_self_from_yaml_syck_default_key_bug
-    skip 'syck default_key bug is only for ruby 1.8' unless RUBY_VERSION < '1.9'
     # This is equivalent to (and totally valid) psych 1.0 output and
     # causes parse errors on syck.
     yaml = <<-YAML

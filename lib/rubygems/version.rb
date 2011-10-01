@@ -129,7 +129,7 @@
 # specify your dependency as ">= 2.0.0" then, you're good, right? What
 # happens if fnord 3.0 comes out and it isn't backwards compatible
 # with 2.y.z? Your stuff will break as a result of using ">=". The
-# better route is to specify your dependency with a "spermy" version
+# better route is to specify your dependency with a "twiddle wakka" version
 # specifier. They're a tad confusing, so here is how the dependency
 # specifiers work:
 #
@@ -273,7 +273,7 @@ class Gem::Version
   ##
   # A recommended version for use with a ~> Requirement.
 
-  def spermy_recommendation
+  def twiddle_wakka_recommendation
     segments = self.segments.dup
 
     segments.pop    while segments.any? { |s| String === s }

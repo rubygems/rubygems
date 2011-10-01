@@ -106,13 +106,13 @@ class TestGemVersion < Gem::TestCase
     assert_nil v("1.0") <=> "whatever"
   end
 
-  def test_spermy_recommendation
-    assert_spermy_equal "~> 1.0", "1"
-    assert_spermy_equal "~> 1.0", "1.0"
-    assert_spermy_equal "~> 1.2", "1.2"
-    assert_spermy_equal "~> 1.2", "1.2.0"
-    assert_spermy_equal "~> 1.2", "1.2.3"
-    assert_spermy_equal "~> 1.2", "1.2.3.a.4"
+  def test_twiddle_wakka_recommendation
+    assert_twiddle_wakka_equal "~> 1.0", "1"
+    assert_twiddle_wakka_equal "~> 1.0", "1.0"
+    assert_twiddle_wakka_equal "~> 1.2", "1.2"
+    assert_twiddle_wakka_equal "~> 1.2", "1.2.0"
+    assert_twiddle_wakka_equal "~> 1.2", "1.2.3"
+    assert_twiddle_wakka_equal "~> 1.2", "1.2.3.a.4"
   end
 
   def test_to_s
@@ -125,10 +125,10 @@ class TestGemVersion < Gem::TestCase
     assert v(version).prerelease?, "#{version} is a prerelease"
   end
 
-  # Assert that +expected+ is the "spermy" recommendation for +version".
+  # Assert that +expected+ is the "twiddle wakka" recommendation for +version".
 
-  def assert_spermy_equal expected, version
-    assert_equal expected, v(version).spermy_recommendation
+  def assert_twiddle_wakka_equal expected, version
+    assert_equal expected, v(version).twiddle_wakka_recommendation
   end
 
   # Assert that bumping the +unbumped+ version yields the +expected+.

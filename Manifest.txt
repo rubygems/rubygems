@@ -31,6 +31,7 @@ lib/rubygems/commands/help_command.rb
 lib/rubygems/commands/install_command.rb
 lib/rubygems/commands/list_command.rb
 lib/rubygems/commands/lock_command.rb
+lib/rubygems/commands/mirror_command.rb
 lib/rubygems/commands/outdated_command.rb
 lib/rubygems/commands/owner_command.rb
 lib/rubygems/commands/pristine_command.rb
@@ -125,6 +126,7 @@ test/rubygems/rubygems_plugin.rb
 test/rubygems/sff/discover.rb
 test/rubygems/simple_gem.rb
 test/rubygems/test_config.rb
+test/rubygems/test_deprecate.rb
 test/rubygems/test_gem.rb
 test/rubygems/test_gem_builder.rb
 test/rubygems/test_gem_command.rb
@@ -142,6 +144,7 @@ test/rubygems/test_gem_commands_help_command.rb
 test/rubygems/test_gem_commands_install_command.rb
 test/rubygems/test_gem_commands_list_command.rb
 test/rubygems/test_gem_commands_lock_command.rb
+test/rubygems/test_gem_commands_mirror.rb
 test/rubygems/test_gem_commands_outdated_command.rb
 test/rubygems/test_gem_commands_owner_command.rb
 test/rubygems/test_gem_commands_pristine_command.rb
@@ -196,4 +199,5 @@ test/rubygems/test_gem_validator.rb
 test/rubygems/test_gem_version.rb
 test/rubygems/test_gem_version_option.rb
 test/rubygems/test_kernel.rb
+test/rubygems/test_require.rb
 util/CL2notes

@@ -120,7 +120,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     @ui = Gem::MockGemUi.new
 
     # Need to do this in the project because $SAFE fucks up _everything_
-    tmpdir = File.expand_path("tmp/test")
+    tmpdir = File.expand_path("../../../tmp/test", __FILE__)
 
     if ENV['KEEP_FILES'] then
       @tempdir = File.join(tmpdir, "test_rubygems_#{$$}.#{Time.now.to_i}")

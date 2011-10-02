@@ -262,6 +262,8 @@ class Gem::Specification
 
     @platform = @new_platform.to_s
 
+    invalidate_memoized_attributes
+
     @new_platform
   end
 
@@ -1662,6 +1664,17 @@ class Gem::Specification
   end
 
   ##
+  # Expire memoized instance variables that can incorrectly generate, replace
+  # or miss files due changes in certain attributes used to compute them.
+
+  def invalidate_memoized_attributes
+    @full_name = nil
+    @cache_file = nil
+  end
+
+  private :invalidate_memoized_attributes
+
+  ##
   # The directory that this gem was installed into.
   # TODO: rename - horrible. this is the base_dir for a gem path
 
@@ -2347,6 +2360,8 @@ class Gem::Specification
   def version= version
     @version = Gem::Version.create(version)
     self.required_rubygems_version = '> 1.3.1' if @version.prerelease?
+    invalidate_memoized_attributes
+
     return @version
   end
 
@@ -2381,4 +2396,3 @@ class Gem::Specification
 end
 
 Gem.clear_paths
-

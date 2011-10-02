@@ -745,6 +745,20 @@ bindir:
     assert_equal Gem::Platform::RUBY, @a1.platform
   end
 
+  def test_platform_change_reset_full_name
+    orig_full_name = @a1.full_name
+
+    @a1.platform = "universal-unknown"
+    refute_equal orig_full_name, @a1.full_name
+  end
+
+  def test_platform_change_reset_cache_file
+    orig_cache_file = @a1.cache_file
+
+    @a1.platform = "universal-unknown"
+    refute_equal orig_cache_file, @a1.cache_file
+  end
+
   def test_platform_equals
     @a1.platform = nil
     assert_equal Gem::Platform::RUBY, @a1.platform
@@ -1427,6 +1441,22 @@ end
 
   def test_version
     assert_equal Gem::Version.new('1'), @a1.version
+  end
+
+  def test_version_change_reset_full_name
+    orig_full_name = @a1.full_name
+
+    @a1.version = "2"
+
+    refute_equal orig_full_name, @a1.full_name
+  end
+
+  def test_version_change_reset_cache_file
+    orig_cache_file = @a1.cache_file
+
+    @a1.version = "2"
+
+    refute_equal orig_cache_file, @a1.cache_file
   end
 
   def test_load_errors_contain_filename

@@ -1110,6 +1110,7 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_shebang_custom_with_expands
+    bin_env = win_platform? ? '' : '/usr/bin/env'
     conf = Gem::ConfigFile.new []
     conf[:custom_shebang] = '1 $env 2 $ruby 3 $exec 4 $name'
 
@@ -1119,10 +1120,11 @@ load Gem.bin_path('a', 'executable', version)
 
     shebang = @installer.shebang 'executable'
 
-    assert_equal "#!1 /usr/bin/env 2 #{Gem.ruby} 3 executable 4 a", shebang
+    assert_equal "#!1 #{bin_env} 2 #{Gem.ruby} 3 executable 4 a", shebang
   end
 
   def test_shebang_custom_with_expands_and_arguments
+    bin_env = win_platform? ? '' : '/usr/bin/env'
     conf = Gem::ConfigFile.new []
     conf[:custom_shebang] = '1 $env 2 $ruby 3 $exec'
 
@@ -1132,7 +1134,7 @@ load Gem.bin_path('a', 'executable', version)
 
     shebang = @installer.shebang 'executable'
 
-    assert_equal "#!1 /usr/bin/env 2 #{Gem.ruby} -ws 3 executable", shebang
+    assert_equal "#!1 #{bin_env} 2 #{Gem.ruby} -ws 3 executable", shebang
   end
 
   def test_unpack

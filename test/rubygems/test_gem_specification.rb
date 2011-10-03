@@ -404,7 +404,7 @@ bindir:
 
     assert @a2.activated?
 
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       assert @a2.loaded?
     end
   end

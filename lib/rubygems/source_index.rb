@@ -193,7 +193,7 @@ class Gem::SourceIndex
   # Add gem specifications to the source index.
 
   def add_specs(*gem_specs)
-    Deprecate.skip_during do
+    Gem::Deprecate.skip_during do
       gem_specs.each do |spec|
         add_spec spec
       end

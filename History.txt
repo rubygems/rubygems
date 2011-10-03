@@ -1,5 +1,11 @@
 # coding: UTF-8
 
+=== 1.8.11 / 2011-10-03
+
+* Bug fix:
+  * Deprecate was moved to Gem::Deprecate to stop polluting the top-level
+    namespace.
+
 === 1.8.10 / 2011-08-25
 
 RubyGems 1.8.10 contains a security fix that prevents malicious gems from

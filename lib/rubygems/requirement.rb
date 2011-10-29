@@ -132,16 +132,24 @@ class Gem::Requirement
     requirements.hash
   end
 
-  def marshal_dump # :nodoc:
-    fix_syck_default_key_in_requirements
-
-    [@requirements]
-  end
-
   def marshal_load array # :nodoc:
     @requirements = array[0]
 
     fix_syck_default_key_in_requirements
+  end
+
+  def yaml_initialize tag, map # :nodoc:
+    fill_values map
+
+    fix_syck_default_key_in_requirements
+  end
+
+  def init_with coder # :nodoc:
+    fill_values coder.map
+  end
+
+  def fill_values map # :nodoc:
+    map.each { |var_name, var_value| self.instance_variable_set :"@#{var_name}", var_value }
   end
 
   def prerelease?
@@ -202,7 +210,7 @@ class Gem::Requirement
   def fix_syck_default_key_in_requirements
     # Fixup the Syck DefaultKey bug
     @requirements.each do |r|
-      if r[0].kind_of? YAML::Syck::DefaultKey
+      if r[0].class.name =~ /DefaultKey$/
         r[0] = "="
       end
     end

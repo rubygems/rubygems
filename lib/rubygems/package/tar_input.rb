@@ -16,7 +16,7 @@ class Gem::Package::TarInput
 
   private_class_method :new
 
-  def self.open(io, security_policy = nil,  &block)
+  def self.open(io, security_policy = nil)
     is = new io, security_policy
 
     yield is

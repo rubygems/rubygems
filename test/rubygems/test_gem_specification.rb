@@ -82,6 +82,7 @@ end
       metadata
       name
       platform
+      post_install
       post_install_message
       rdoc_options
       require_paths

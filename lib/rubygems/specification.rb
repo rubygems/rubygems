@@ -135,6 +135,7 @@ class Gem::Specification
     :metadata                  => {},
     :name                      => nil,
     :platform                  => Gem::Platform::RUBY,
+    :post_install              => nil,
     :post_install_message      => nil,
     :rdoc_options              => [],
     :require_paths             => ['lib'],
@@ -373,6 +374,19 @@ class Gem::Specification
   # data that could be useful to other consumers.
 
   attr_accessor :metadata
+
+  ##
+  # A block that gets called after the gem is installed.
+  #
+  # Usage:
+  #   spec.post_install do
+  #     # something amazing...
+  #   end
+
+  def post_install(&block)
+    return unless block_given?
+    Gem.post_install_hooks << block
+  end
 
   ##
   # Adds a development dependency named +gem+ with +requirements+ to this
@@ -1937,6 +1951,7 @@ class Gem::Specification
     when Time              then obj.strftime('%Y-%m-%d').dump
     when Numeric           then obj.inspect
     when true, false, nil  then obj.inspect
+    when Proc              then obj.inspect
     when Gem::Platform     then "Gem::Platform.new(#{obj.to_a.inspect})"
     when Gem::Requirement  then "Gem::Requirement.new(#{obj.to_s.inspect})"
     else raise Gem::Exception, "ruby_code case not handled: #{obj.class}"

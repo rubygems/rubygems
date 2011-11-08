@@ -957,6 +957,34 @@ load Gem.bin_path('a', 'executable', version)
     assert_match %r|I am a shiny gem!|, @ui.output
   end
 
+  def test_install_with_successful_post_install
+    @spec.post_install do
+      @ui.say "Running post install hook!"
+    end
+
+    use_ui @ui do
+      path = Gem::Builder.new(@spec).build
+
+      @installer = Gem::Installer.new path
+      @installer.install
+    end
+
+    assert_match %r|Running post install hook!|, @ui.output
+  end
+
+  def test_install_with_failed_post_install
+    @spec.post_install do
+      raise Exception
+    end
+
+    assert_raises Exception do
+      path = Gem::Builder.new(@spec).build
+
+      @installer = Gem::Installer.new path
+      @installer.install
+    end
+  end
+
   def test_install_wrong_ruby_version
     use_ui @ui do
       installer = Gem::Installer.new old_ruby_required

@@ -14,7 +14,7 @@ require 'rubygems/deprecate'
 # specification.
 #
 # NOTE:: The class used to be named Cache, but that became
-#        confusing when cached source fetchers where introduced. The
+#        confusing when cached source fetchers were introduced. The
 #        constant Gem::Cache is an alias for this class to allow old
 #        YAMLized source index objects to load properly.
 

@@ -213,7 +213,7 @@ class Gem::DependencyList
     @specs.each(&block)
   end
 
-  def tsort_each_child(node, &block)
+  def tsort_each_child(node)
     specs = @specs.sort.reverse
 
     dependencies = node.runtime_dependencies

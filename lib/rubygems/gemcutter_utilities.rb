@@ -19,6 +19,8 @@ module Gem::GemcutterUtilities
   def api_key
     if options[:key] then
       verify_api_key options[:key]
+    elsif (host = ENV['RUBYGEMS_HOST']) && Gem.configuration.api_keys.key?(host)
+      Gem.configuration.api_keys[host]
     else
       Gem.configuration.rubygems_api_key
     end

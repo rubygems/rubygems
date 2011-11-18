@@ -13,6 +13,8 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
   def setup
     super
+    ENV["RUBYGEMS_HOST"] = nil
+    Gem.host = Gem::DEFAULT_HOST
 
     @gems_dir  = File.join @tempdir, 'gems'
     @cache_dir = File.join @gemhome, "cache"
@@ -23,6 +25,8 @@ class TestGemCommandsPushCommand < Gem::TestCase
       "ed244fbf2b1a52e012da8616c512fa47f9aa5250"
 
     @spec, @path = util_gem "freewill", "1.0.0"
+    @host = Gem.host
+    @api_key = Gem.configuration.rubygems_api_key
 
     @fetcher = Gem::FakeFetcher.new
     Gem::RemoteFetcher.fetcher = @fetcher
@@ -35,15 +39,53 @@ class TestGemCommandsPushCommand < Gem::TestCase
       @cmd.send_gem(@path)
     end
 
-    assert_match %r{Pushing gem to #{Gem.host}...}, @ui.output
+    assert_match %r{Pushing gem to #{@host}...}, @ui.output
 
     assert_equal Net::HTTP::Post, @fetcher.last_request.class
     assert_equal Gem.read_binary(@path), @fetcher.last_request.body
     assert_equal File.size(@path), @fetcher.last_request["Content-Length"].to_i
     assert_equal "application/octet-stream", @fetcher.last_request["Content-Type"]
-    assert_equal Gem.configuration.rubygems_api_key, @fetcher.last_request["Authorization"]
+    assert_equal @api_key, @fetcher.last_request["Authorization"]
 
     assert_match @response, @ui.output
+  end
+
+  def test_sending_gem_to_spec_host
+    @host = "http://rubygems.engineyard.com"
+    @spec, @path = util_gem "freebird", "1.0.1" do |spec|
+      spec.host = @host
+    end
+
+    @response = "Successfully registered gem: freebird (1.0.1)"
+    @fetcher.data["#{@host}/api/v1/gems"]  = [@response, 200, 'OK']
+
+    send_battery
+  end
+
+  def test_sending_gem_to_spec_host_with_different_key_from_credentials
+    ENV["RUBYGEMS_HOST"] = nil
+    @host = "http://rubygems.engineyard.com"
+
+    @spec, @path = util_gem "freebird", "1.0.1" do |spec|
+      spec.host = @host
+    end
+
+    @api_key = "EYKEY"
+
+    keys = {
+      :rubygems_api_key => 'KEY',
+      @host => @api_key
+    }
+
+    FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path
+    open Gem.configuration.credentials_path, 'w' do |f|
+      f.write keys.to_yaml
+    end
+    Gem.configuration.load_api_keys
+
+    @response = "Successfully registered gem: freebird (1.0.1)"
+    @fetcher.data["#{@host}/api/v1/gems"]  = [@response, 200, 'OK']
+    send_battery
   end
 
   def test_sending_gem_default

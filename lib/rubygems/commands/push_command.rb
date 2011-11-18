@@ -1,6 +1,7 @@
 require 'rubygems/command'
 require 'rubygems/local_remote_options'
 require 'rubygems/gemcutter_utilities'
+require 'rubygems/format'
 
 class Gem::Commands::PushCommand < Gem::Command
   include Gem::LocalRemoteOptions
@@ -36,20 +37,28 @@ class Gem::Commands::PushCommand < Gem::Command
     send_gem get_one_gem_name
   end
 
-  def send_gem name
+  def send_gem(name)
     args = [:post, "api/v1/gems"]
 
-    args << options[:host] if options[:host]
 
     if Gem.latest_rubygems_version < Gem::Version.new(Gem::VERSION) then
       alert_error "Using beta/unreleased version of rubygems. Not pushing."
       terminate_interaction 1
     end
 
-    say "Pushing gem to #{options[:host] || Gem.host}..."
+    binary_data = Gem.read_binary name
+
+    host = options[:host]
+    unless host
+      host = Gem::Format.from_io(StringIO.new(binary_data)).spec.host if binary_data
+    end
+
+    args << host if host
+
+    say "Pushing gem to #{host || Gem.host}..."
 
     response = rubygems_api_request(*args) do |request|
-      request.body = Gem.read_binary name
+      request.body = binary_data
       request.add_field "Content-Length", request.body.size
       request.add_field "Content-Type",   "application/octet-stream"
       request.add_field "Authorization",  api_key

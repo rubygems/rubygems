@@ -37,17 +37,19 @@ class TestGemRequirement < Gem::TestCase
   end
 
   def test_parse_bad
-    e = assert_raises ArgumentError do
+    e = assert_raises Gem::Requirement::IllformedRequirementError do
       Gem::Requirement.parse nil
     end
 
     assert_equal 'Illformed requirement [nil]', e.message
 
-    e = assert_raises ArgumentError do
+    e = assert_raises Gem::Requirement::IllformedRequirementError do
       Gem::Requirement.parse ""
     end
 
     assert_equal 'Illformed requirement [""]', e.message
+    
+    assert_equal Gem::Requirement::IllformedRequirementError.superclass, ArgumentError
   end
 
   def test_prerelease_eh
@@ -209,7 +211,7 @@ class TestGemRequirement < Gem::TestCase
 
   def test_illformed_requirements
     [ ">>> 1.3.5", "> blah" ].each do |rq|
-      assert_raises ArgumentError, "req [#{rq}] should fail" do
+      assert_raises Gem::Requirement::IllformedRequirementError, "req [#{rq}] should fail" do
         Gem::Requirement.new rq
       end
     end

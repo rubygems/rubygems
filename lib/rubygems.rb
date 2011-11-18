@@ -120,6 +120,7 @@ require "rubygems/deprecate"
 
 module Gem
   VERSION = '1.8.10'
+  DEFAULT_HOST = "https://rubygems.org"
 
   ##
   # Raised when RubyGems is unable to load or activate a gem.  Contains the
@@ -570,7 +571,7 @@ module Gem
 
   def self.host
     # TODO: move to utils
-    @host ||= "https://rubygems.org"
+    @host ||= Gem::DEFAULT_HOST
   end
 
   ## Set the default RubyGems API host.

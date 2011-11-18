@@ -46,9 +46,9 @@ class Gem::Requirement
 
   quoted  = OPS.keys.map { |k| Regexp.quote k }.join "|"
   PATTERN = /\A\s*(#{quoted})?\s*(#{Gem::Version::VERSION_PATTERN})\s*\z/
-  
+
   class IllformedRequirementError < ArgumentError; end
-  
+
   ##
   # Factory method to create a Gem::Requirement object.  Input may be
   # a Version, a String, or nil.  Intended to simplify client code.

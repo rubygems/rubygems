@@ -48,7 +48,7 @@ class TestGemRequirement < Gem::TestCase
     end
 
     assert_equal 'Illformed requirement [""]', e.message
-    
+
     assert_equal Gem::Requirement::IllformedRequirementError.superclass, ArgumentError
   end
 

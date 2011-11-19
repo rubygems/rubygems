@@ -54,7 +54,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     @host = "http://rubygems.engineyard.com"
 
     @spec, @path = util_gem "freebird", "1.0.1" do |spec|
-      spec.metadata['host'] = @host
+      spec.metadata['default_gem_server'] = @host
     end
 
     @api_key = "EYKEY"

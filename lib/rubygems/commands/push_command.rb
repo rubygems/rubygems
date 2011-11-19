@@ -50,7 +50,7 @@ class Gem::Commands::PushCommand < Gem::Command
 
     host = options[:host]
     unless host
-      host = Gem::Format.from_io(StringIO.new(binary_data)).spec.metadata['host'] if binary_data
+      host = Gem::Format.from_io(StringIO.new(binary_data)).spec.metadata['default_gem_server'] if binary_data
     end
 
     args << host if host

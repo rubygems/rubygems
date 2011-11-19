@@ -50,24 +50,11 @@ class TestGemCommandsPushCommand < Gem::TestCase
     assert_match @response, @ui.output
   end
 
-  def test_sending_gem_to_spec_host
-    @host = "http://rubygems.engineyard.com"
-    @spec, @path = util_gem "freebird", "1.0.1" do |spec|
-      spec.host = @host
-    end
-
-    @response = "Successfully registered gem: freebird (1.0.1)"
-    @fetcher.data["#{@host}/api/v1/gems"]  = [@response, 200, 'OK']
-
-    send_battery
-  end
-
-  def test_sending_gem_to_spec_host_with_different_key_from_credentials
-    ENV["RUBYGEMS_HOST"] = nil
+  def test_sending_gem_to_metadata_host
     @host = "http://rubygems.engineyard.com"
 
     @spec, @path = util_gem "freebird", "1.0.1" do |spec|
-      spec.host = @host
+      spec.metadata['host'] = @host
     end
 
     @api_key = "EYKEY"
@@ -82,6 +69,8 @@ class TestGemCommandsPushCommand < Gem::TestCase
       f.write keys.to_yaml
     end
     Gem.configuration.load_api_keys
+
+    FileUtils.rm Gem.configuration.credentials_path
 
     @response = "Successfully registered gem: freebird (1.0.1)"
     @fetcher.data["#{@host}/api/v1/gems"]  = [@response, 200, 'OK']
@@ -98,7 +87,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
   def test_sending_gem_host
     @response = "Successfully registered gem: freewill (1.0.0)"
     @fetcher.data["#{Gem.host}/api/v1/gems"] = [@response, 200, 'OK']
-    @cmd.options[:host] = "#{Gem.host}"
+    @cmd.options['host'] = "#{Gem.host}"
 
     send_battery
   end

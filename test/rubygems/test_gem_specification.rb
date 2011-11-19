@@ -78,7 +78,6 @@ end
       extra_rdoc_files
       files
       homepage
-      host
       licenses
       metadata
       name

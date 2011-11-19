@@ -48,12 +48,18 @@ module Gem::GemcutterUtilities
 
   attr_writer :host
   def host
-    @host ||= ENV['RUBYGEMS_HOST'] || Gem.host
+    @host ||= ENV['RUBYGEMS_HOST'] || (!Gem.configuration.disable_default_gem_server && Gem.host)
   end
 
   def rubygems_api_request(method, path, host = nil, &block)
     require 'net/http'
+
     self.host = host if host
+    unless self.host
+      alert_error "You must specify a gem server"
+      terminate_interaction 1 # TODO: question this
+    end
+
     uri = URI.parse "#{self.host}/#{path}"
 
     request_method = Net::HTTP.const_get method.to_s.capitalize

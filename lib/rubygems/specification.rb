@@ -67,7 +67,6 @@ class Gem::Specification
   #                          Now forward-compatible with future versions
   #      3  1.3.2 2009-01-03 Added Fixnum validation to specification_version
   #      4  1.9.0 2011-06-07 Added metadata
-  #      5  1.9.0 2011-11-18 Added host
   #--
   # When updating this number, be sure to also update #to_ruby.
   #
@@ -149,7 +148,6 @@ class Gem::Specification
     :summary                   => nil,
     :test_files                => [],
     :version                   => nil,
-    :host                      => Gem::DEFAULT_HOST
   }
 
   @@attributes = @@default_value.keys.sort_by { |s| s.to_s }
@@ -375,20 +373,6 @@ class Gem::Specification
   # data that could be useful to other consumers.
 
   attr_accessor :metadata
-
-  ##
-  # :attr_accessor: host
-  #
-  # Specify the default host to push this gem to.
-  #
-  # This specifies the host for pushing gems to. It defaults to Gem::DEFAULT_HOST
-  # and can be overridden by the RUBYGEMS_HOST environment variable.
-  #
-  # Usage:
-  #
-  #   spec.host = "rubygems.engineyard.com"
-
-  attr_accessor :host
 
   ##
   # Adds a development dependency named +gem+ with +requirements+ to this

@@ -102,14 +102,14 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
   def test_sending_gem_default
     @response = "Successfully registered gem: freewill (1.0.0)"
-    @fetcher.data["#{Gem.host}/api/v1/gems"]  = [@response, 200, 'OK']
+    @fetcher.data["#{@host}/api/v1/gems"]  = [@response, 200, 'OK']
 
     send_battery
   end
 
   def test_sending_gem_host
     @response = "Successfully registered gem: freewill (1.0.0)"
-    @fetcher.data["#{Gem.host}/api/v1/gems"] = [@response, 200, 'OK']
+    @fetcher.data["#{@host}/api/v1/gems"] = [@response, 200, 'OK']
     @cmd.options['host'] = "#{Gem.host}"
 
     send_battery
@@ -117,7 +117,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
   def test_sending_gem_ENV
     @response = "Successfully registered gem: freewill (1.0.0)"
-    @fetcher.data["#{Gem.host}/api/v1/gems"] = [@response, 200, 'OK']
+    @fetcher.data["#{@host}/api/v1/gems"] = [@response, 200, 'OK']
     ENV["RUBYGEMS_HOST"] = "#{Gem.host}"
 
     send_battery
@@ -132,7 +132,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
   def test_sending_gem_denied
     response = "You don't have permission to push to this gem"
-    @fetcher.data["#{Gem.host}/api/v1/gems"] = [response, 403, 'Forbidden']
+    @fetcher.data["#{@host}/api/v1/gems"] = [response, 403, 'Forbidden']
 
     assert_raises Gem::MockGemUi::TermError do
       use_ui @ui do
@@ -145,7 +145,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
   def test_sending_gem_key
     @response = "Successfully registered gem: freewill (1.0.0)"
-    @fetcher.data["#{Gem.host}/api/v1/gems"] = [@response, 200, "OK"]
+    @fetcher.data["#{@host}/api/v1/gems"] = [@response, 200, "OK"]
     File.open Gem.configuration.credentials_path, 'a' do |f|
       f.write ':other: 701229f217cdf23b1344c7b4b54ca97'
     end

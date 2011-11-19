@@ -15,6 +15,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     super
     ENV["RUBYGEMS_HOST"] = nil
     Gem.host = Gem::DEFAULT_HOST
+    Gem.configuration.disable_default_gem_server = false
 
     @gems_dir  = File.join @tempdir, 'gems'
     @cache_dir = File.join @gemhome, "cache"
@@ -48,6 +49,28 @@ class TestGemCommandsPushCommand < Gem::TestCase
     assert_equal @api_key, @fetcher.last_request["Authorization"]
 
     assert_match @response, @ui.output
+  end
+
+  def test_sending_when_default_host_disabled
+    Gem.configuration.disable_default_gem_server = true
+    response = "You must specify a gem server"
+
+    assert_raises Gem::MockGemUi::TermError do
+      use_ui @ui do
+        @cmd.send_gem(@path)
+      end
+    end
+
+    assert_match response, @ui.error
+  end
+
+  def test_sending_when_default_host_disabled_with_override
+    ENV["RUBYGEMS_HOST"] = @host
+    Gem.configuration.disable_default_gem_server = true
+    @response = "Successfully registered gem: freewill (1.0.0)"
+    @fetcher.data["#{@host}/api/v1/gems"]  = [@response, 200, 'OK']
+
+    send_battery
   end
 
   def test_sending_gem_to_metadata_host

@@ -427,7 +427,8 @@ class Gem::Specification
   #
   # For example, the rake gem has rake as an executable. You don’t specify the
   # full path (as in bin/rake); all application-style files are expected to be
-  # found in bindir.
+  # found in bindir.  These files must be executable ruby files.  Files that
+  # use bash or other interpreters will not work.
   #
   # Usage:
   #

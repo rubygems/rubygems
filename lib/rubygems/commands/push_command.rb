@@ -46,11 +46,12 @@ class Gem::Commands::PushCommand < Gem::Command
       terminate_interaction 1
     end
 
-    binary_data = Gem.read_binary name
-
     host = options[:host]
     unless host
-      host = Gem::Format.from_io(StringIO.new(binary_data)).spec.metadata['default_gem_server'] if binary_data
+      if binary_data = Gem.read_binary(name)
+        spec = Gem::Format.from_io(StringIO.new(binary_data)).spec
+        host = spec.metadata['default_gem_server']
+      end
     end
 
     args << host if host

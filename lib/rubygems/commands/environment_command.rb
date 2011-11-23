@@ -34,6 +34,7 @@ is a YAML file with the following YAML keys:
   :update_sources: Enable/disable automatic updating of repository metadata
   :backtrace: Print backtrace when RubyGems encounters an error
   :gempath: The paths in which to look for gems
+  :disable_default_gem_server: Force specification of gem server host on push
   gem_command: A string containing arguments for the specified gem command
 
 Example:
@@ -41,6 +42,7 @@ Example:
   :verbose: false
   install: --no-wrappers
   update: --no-wrappers
+  :disable_default_gem_server: true
 
 RubyGems' default local repository can be overridden with the GEM_PATH and
 GEM_HOME environment variables.  GEM_HOME sets the default repository to

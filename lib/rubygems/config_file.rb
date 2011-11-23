@@ -129,6 +129,11 @@ class Gem::ConfigFile
   attr_reader :api_keys
 
   ##
+  # True if we want to force specification of gem server when pushing a gem
+
+  attr_accessor :disable_default_gem_server
+
+  ##
   # Create the config file object.  +args+ is the list of arguments
   # from the command line.
   #
@@ -182,13 +187,14 @@ class Gem::ConfigFile
     @hash = @hash.merge user_config
 
     # HACK these override command-line args, which is bad
-    @backtrace        = @hash[:backtrace]        if @hash.key? :backtrace
-    @benchmark        = @hash[:benchmark]        if @hash.key? :benchmark
-    @bulk_threshold   = @hash[:bulk_threshold]   if @hash.key? :bulk_threshold
-    @home             = @hash[:gemhome]          if @hash.key? :gemhome
-    @path             = @hash[:gempath]          if @hash.key? :gempath
-    @update_sources   = @hash[:update_sources]   if @hash.key? :update_sources
-    @verbose          = @hash[:verbose]          if @hash.key? :verbose
+    @backtrace                    = @hash[:backtrace]        if @hash.key? :backtrace
+    @benchmark                    = @hash[:benchmark]        if @hash.key? :benchmark
+    @bulk_threshold               = @hash[:bulk_threshold]   if @hash.key? :bulk_threshold
+    @home                         = @hash[:gemhome]          if @hash.key? :gemhome
+    @path                         = @hash[:gempath]          if @hash.key? :gempath
+    @update_sources               = @hash[:update_sources]   if @hash.key? :update_sources
+    @verbose                      = @hash[:verbose]          if @hash.key? :verbose
+    @disable_default_gem_server   = @hash[:verbose]          if @hash.key? :disable_default_gem_server
 
     load_api_keys
 

@@ -48,9 +48,8 @@ class Gem::Commands::PushCommand < Gem::Command
 
     host = options[:host]
     unless host
-      if binary_data = Gem.read_binary(name)
-        spec = Gem::Format.from_io(StringIO.new(binary_data)).spec
-        host = spec.metadata['default_gem_server']
+      if gem_data = Gem::Format.from_file_by_path(name)
+        host = gem_data.spec.metadata['default_gem_server']
       end
     end
 
@@ -59,7 +58,7 @@ class Gem::Commands::PushCommand < Gem::Command
     say "Pushing gem to #{host || Gem.host}..."
 
     response = rubygems_api_request(*args) do |request|
-      request.body = binary_data
+      request.body = Gem.read_binary name
       request.add_field "Content-Length", request.body.size
       request.add_field "Content-Type",   "application/octet-stream"
       request.add_field "Authorization",  api_key

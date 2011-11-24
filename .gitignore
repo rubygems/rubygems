@@ -2,6 +2,7 @@
 *.swp
 .DS_Store
 /.rvmrc
+/.rbenv-version
 /TAGS
 /doc
 /pkg

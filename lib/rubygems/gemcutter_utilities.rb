@@ -48,8 +48,8 @@ module Gem::GemcutterUtilities
 
   attr_writer :host
   def host
-    configured_host = nil
-    configured_host = Gem.host unless Gem.configuration.disable_default_gem_server
+    configured_host = Gem.host unless
+      Gem.configuration.disable_default_gem_server
 
     @host ||= ENV['RUBYGEMS_HOST'] || configured_host
   end

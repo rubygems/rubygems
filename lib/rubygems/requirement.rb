@@ -190,7 +190,7 @@ class Gem::Requirement
   def fix_syck_default_key_in_requirements
     # Fixup the Syck DefaultKey bug
     @requirements.each do |r|
-      if r[0].kind_of? YAML::Syck::DefaultKey
+      if r[0].kind_of? Gem::SyckDefaultKey
         r[0] = "="
       end
     end

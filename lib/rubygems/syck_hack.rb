@@ -49,4 +49,13 @@ if !defined?(Syck)
   Syck = YAML::Syck
 end
 
+# Now that we've got Syck setup in all the right places, store
+# a reference to the DefaultKey class inside Gem. We do this so that
+# if later on YAML, etc are redefined, we've still got a consistent
+# place to find the DefaultKey class for comparison.
+
+module Gem
+  SyckDefaultKey = YAML::Syck::DefaultKey
+end
+
 # :startdoc:

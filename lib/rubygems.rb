@@ -658,16 +658,9 @@ module Gem
       require 'yaml'
     end
 
-    # Hack to handle syck's DefaultKey bug with psych.
-    # See the note at the top of lib/rubygems/requirement.rb for
-    # why we end up defining DefaultKey more than once.
-    if !defined? YAML::Syck
-      YAML.module_eval do
-          const_set 'Syck', Module.new {
-            const_set 'DefaultKey', Class.new
-          }
-        end
-    end
+    # Now that we're sure some kind of yaml library is loaded, pull
+    # in our hack to deal with Syck's DefaultKey ugliness.
+    require 'rubygems/syck_hack'
   end
 
   ##

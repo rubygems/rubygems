@@ -129,7 +129,6 @@ end
   end
 
   def test_self_from_yaml_syck_default_key_bug
-    skip 'syck default_key bug is only for ruby 1.8' unless RUBY_VERSION < '1.9'
     # This is equivalent to (and totally valid) psych 1.0 output and
     # causes parse errors on syck.
     yaml = <<-YAML
@@ -137,7 +136,7 @@ end
 name: posix-spawn
 version: !ruby/object:Gem::Version
   version: 0.3.6
-  prerelease: 
+  prerelease:
 dependencies:
 - !ruby/object:Gem::Dependency
   name: rake-compiler
@@ -160,8 +159,80 @@ bindir:
       Gem::Specification.from_yaml yaml
     end
 
+    op = new_spec.dependencies.first.requirement.requirements.first.first
+    refute_kind_of YAML::Syck::DefaultKey, op
+
     refute_match %r%DefaultKey%, new_spec.to_ruby
   end
+
+  def test_self_from_yaml_cleans_up_defaultkey
+    yaml = <<-YAML
+--- !ruby/object:Gem::Specification
+name: posix-spawn
+version: !ruby/object:Gem::Version
+  version: 0.3.6
+  prerelease:
+dependencies:
+- !ruby/object:Gem::Dependency
+  name: rake-compiler
+  requirement: &70243867725240 !ruby/object:Gem::Requirement
+    none: false
+    requirements:
+    - - !ruby/object:YAML::Syck::DefaultKey {}
+
+      - !ruby/object:Gem::Version
+        version: 0.7.6
+  type: :development
+  prerelease: false
+  version_requirements: *70243867725240
+platform: ruby
+files: []
+test_files: []
+bindir:
+    YAML
+
+    new_spec = Gem::Specification.from_yaml yaml
+
+    op = new_spec.dependencies.first.requirement.requirements.first.first
+    refute_kind_of YAML::Syck::DefaultKey, op
+
+    refute_match %r%DefaultKey%, new_spec.to_ruby
+  end
+
+  def test_self_from_yaml_cleans_up_defaultkey_from_newer_192
+    yaml = <<-YAML
+--- !ruby/object:Gem::Specification
+name: posix-spawn
+version: !ruby/object:Gem::Version
+  version: 0.3.6
+  prerelease:
+dependencies:
+- !ruby/object:Gem::Dependency
+  name: rake-compiler
+  requirement: &70243867725240 !ruby/object:Gem::Requirement
+    none: false
+    requirements:
+    - - !ruby/object:Syck::DefaultKey {}
+
+      - !ruby/object:Gem::Version
+        version: 0.7.6
+  type: :development
+  prerelease: false
+  version_requirements: *70243867725240
+platform: ruby
+files: []
+test_files: []
+bindir:
+    YAML
+
+    new_spec = Gem::Specification.from_yaml yaml
+
+    op = new_spec.dependencies.first.requirement.requirements.first.first
+    refute_kind_of YAML::Syck::DefaultKey, op
+
+    refute_match %r%DefaultKey%, new_spec.to_ruby
+  end
+
 
   def test_self_load
     full_path = @a2.spec_file

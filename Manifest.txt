@@ -94,6 +94,7 @@ lib/rubygems/server.rb
 lib/rubygems/source_index.rb
 lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
+lib/rubygems/syck_hack.rb
 lib/rubygems/test_case.rb
 lib/rubygems/test_utilities.rb
 lib/rubygems/text.rb

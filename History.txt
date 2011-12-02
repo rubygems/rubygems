@@ -1,5 +1,11 @@
 # coding: UTF-8
 
+=== 1.8.12 / 2011-12-02
+
+* Bug fix:
+  * Handle more cases where Syck's DefaultKey showed up in requirements
+    and wasn't cleaned out.
+
 === 1.8.11 / 2011-10-03
 
 * Bug fix:

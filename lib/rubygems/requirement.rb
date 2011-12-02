@@ -94,6 +94,18 @@ class Gem::Requirement
     requirements << ">= 0" if requirements.empty?
     @none = (requirements == ">= 0")
     @requirements = requirements.map! { |r| self.class.parse r }
+    fix_syck_default_key_in_requirements
+  end
+
+  def yaml_initialize(tag, vals) # :nodoc:
+    vals.each do |ivar, val|
+      instance_variable_set "@#{ivar}", val.untaint
+    end
+    fix_syck_default_key_in_requirements
+  end
+
+  def init_with coder # :nodoc:
+    yaml_initialize coder.tag, coder.map
   end
 
   def none?
@@ -109,8 +121,6 @@ class Gem::Requirement
   end
 
   def marshal_dump # :nodoc:
-    fix_syck_default_key_in_requirements
-
     [@requirements]
   end
 
@@ -190,7 +200,7 @@ class Gem::Requirement
   def fix_syck_default_key_in_requirements
     # Fixup the Syck DefaultKey bug
     @requirements.each do |r|
-      if r[0].kind_of? YAML::Syck::DefaultKey
+      if r[0].class.name =~ /DefaultKey$/
         r[0] = "="
       end
     end

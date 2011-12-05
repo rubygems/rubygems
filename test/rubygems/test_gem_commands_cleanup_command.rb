@@ -23,6 +23,20 @@ class TestGemCommandsCleanupCommand < Gem::TestCase
     refute_path_exists @a_1.gem_dir
   end
 
+  def test_execute_comma_separated
+    @b_1 = quick_spec 'b', 1
+    @b_2 = quick_spec 'b', 2
+    install_gem @b_1
+    install_gem @b_2
+
+    @cmd.options[:args] = %w[a,b]
+
+    @cmd.execute
+
+    refute_path_exists @a_1.gem_dir
+    refute_path_exists @b_1.gem_dir
+  end
+
   def test_execute_all
     @b_1 = quick_spec 'b', 1
     @b_2 = quick_spec 'b', 2
@@ -86,4 +100,3 @@ class TestGemCommandsCleanupCommand < Gem::TestCase
   end
 
 end
-

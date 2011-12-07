@@ -980,9 +980,8 @@ module Gem
 
   def self.loaded_path? path
     # TODO: ruby needs a feature to let us query what's loaded in 1.8 and 1.9
-    $LOADED_FEATURES.find { |s|
-      s =~ /(^|\/)#{Regexp.escape path}#{Regexp.union(*Gem.suffixes)}$/
-    }
+    re = /(^|\/)#{Regexp.escape path}#{Regexp.union(*Gem.suffixes)}$/
+    $LOADED_FEATURES.any? { |s| s =~ re }
   end
 
   ##

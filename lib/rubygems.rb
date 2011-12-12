@@ -509,7 +509,7 @@ module Gem
 
   def self.find_home
     windows = File::ALT_SEPARATOR
-    if not windows or RUBY_VERSION >= '1.9' then
+    if not windows then
       File.expand_path "~"
     else
       ['HOME', 'USERPROFILE'].each do |key|

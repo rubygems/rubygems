@@ -47,7 +47,7 @@ hoe = Hoe.spec 'rubygems-update' do
   extra_dev_deps << ['hoe-seattlerb', '~> 1.2']
   extra_dev_deps << ['session', '~> 2.4']
   extra_dev_deps << ['rdoc', '~> 3.0']
-  extra_dev_deps << ['rcov', '~> 0.9.0']
+  extra_dev_deps << ['rcov', '~> 0.9.0'] unless ENV['TRAVIS']
   extra_dev_deps << ['ZenTest', '~> 4.5']
 
   self.extra_rdoc_files = Dir["*.rdoc"]
@@ -116,8 +116,7 @@ def rsync_with dir
     " --exclude '*.rej' --exclude '*.orig' --exclude 'lib/rubygems/defaults/*'"
   sh "rsync #{rsync_options} bin/gem             #{dir}/bin/gem"
   sh "rsync #{rsync_options} lib/                #{dir}/lib"
-  sh "rsync #{rsync_options} test/               #{dir}/test/rubygems"
-  sh "rsync #{rsync_options} util/gem_prelude.rb #{dir}/gem_prelude.rb"
+  sh "rsync #{rsync_options} test/               #{dir}/test"
 end
 
 def diff_with dir
@@ -128,11 +127,10 @@ def diff_with dir
   sh "diff #{diff_options} lib/rubygems        #{dir}/lib/rubygems;    true"
   sh "diff #{diff_options} lib/rbconfig        #{dir}/lib/rbconfig;    true"
   sh "diff #{diff_options} test                #{dir}/test/rubygems;   true"
-  sh "diff #{diff_options} util/gem_prelude.rb #{dir}/gem_prelude.rb;  true"
 end
 
-rubinius_dir = ENV['RUBINIUS_PATH'] || '../../../git/git.rubini.us/code'
-ruby_dir     = ENV['RUBY_PATH']     || '../../ruby/trunk'
+rubinius_dir = ENV['RUBINIUS_PATH'] || '../git.rubini.us/code'
+ruby_dir     = ENV['RUBY_PATH']     || '../../svn/ruby/trunk'
 
 desc "Updates Ruby HEAD with the currently checked-out copy of RubyGems."
 task :update_ruby do

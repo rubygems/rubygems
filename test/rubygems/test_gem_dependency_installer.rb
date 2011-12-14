@@ -108,11 +108,13 @@ class TestGemDependencyInstaller < Gem::TestCase
   def test_install_cache_dir
     util_setup_gems
 
-    FileUtils.mv @a1_gem, @tempdir
-    FileUtils.mv @b1_gem, @tempdir
+    dir = "dir"
+    Dir.mkdir dir
+    FileUtils.mv @a1_gem, dir
+    FileUtils.mv @b1_gem, dir
     inst = nil
 
-    Dir.chdir @tempdir do
+    Dir.chdir dir do
       inst = Gem::DependencyInstaller.new :cache_dir => @tempdir
       inst.install 'b'
     end

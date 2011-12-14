@@ -16,7 +16,7 @@ class Gem::Package::TarInput
 
   private_class_method :new
 
-  def self.open(io, security_policy = nil,  &block)
+  def self.open(io, security_policy = nil)
     is = new io, security_policy
 
     yield is
@@ -49,8 +49,13 @@ class Gem::Package::TarInput
             sio.rewind
           end
 
-          # TODO use Gem.gunzip
-          gzis = Zlib::GzipReader.new(sio || entry)
+          # Ruby 1.8 doesn't have encoding and YAML is UTF-8
+          args = [sio || entry]
+          args << { :external_encoding => Encoding::UTF_8 } if
+            Object.const_defined?(:Encoding)
+
+          gzis = Zlib::GzipReader.new(*args)
+
           # YAML wants an instance of IO
           @metadata = load_gemspec(gzis)
           has_meta = true

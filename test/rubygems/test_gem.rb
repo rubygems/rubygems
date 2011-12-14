@@ -606,6 +606,20 @@ class TestGem < Gem::TestCase
     assert File.directory? File.join(@gemhome, "cache")
   end
 
+  def test_self_ensure_gem_directories_safe_permissions
+    FileUtils.rm_r @gemhome
+    Gem.use_paths @gemhome
+
+    old_umask = File.umask
+    File.umask 0
+    Gem.ensure_gem_subdirectories @gemhome
+
+    assert_equal 0, File::Stat.new(@gemhome).mode & 022
+    assert_equal 0, File::Stat.new(File.join(@gemhome, "cache")).mode & 022
+  ensure
+    File.umask old_umask
+  end unless win_platform?
+
   def test_self_ensure_gem_directories_missing_parents
     gemdir = File.join @tempdir, 'a/b/c/gemdir'
     FileUtils.rm_rf File.join(@tempdir, 'a') rescue nil
@@ -720,7 +734,7 @@ class TestGem < Gem::TestCase
   def test_self_path_default
     util_path
 
-    if defined? APPLE_GEM_HOME
+    if defined?(APPLE_GEM_HOME)
       orig_APPLE_GEM_HOME = APPLE_GEM_HOME
       Object.send :remove_const, :APPLE_GEM_HOME
     end
@@ -729,7 +743,7 @@ class TestGem < Gem::TestCase
 
     assert_equal [Gem.default_path, Gem.dir].flatten.uniq, Gem.path
   ensure
-    Object.const_set :APPLE_GEM_HOME, orig_APPLE_GEM_HOME
+    Object.const_set :APPLE_GEM_HOME, orig_APPLE_GEM_HOME if orig_APPLE_GEM_HOME
   end
 
   unless win_platform?
@@ -738,11 +752,14 @@ class TestGem < Gem::TestCase
 
       Gem.clear_paths
       apple_gem_home = File.join @tempdir, 'apple_gem_home'
-      Gem.const_set :APPLE_GEM_HOME, apple_gem_home
+
+      old, $-w = $-w, nil
+      Object.const_set :APPLE_GEM_HOME, apple_gem_home
+      $-w = old
 
       assert_includes Gem.path, apple_gem_home
     ensure
-      Gem.send :remove_const, :APPLE_GEM_HOME
+      Object.send :remove_const, :APPLE_GEM_HOME
     end
 
     def test_self_path_APPLE_GEM_HOME_GEM_PATH
@@ -904,6 +921,10 @@ class TestGem < Gem::TestCase
     util_restore_RUBY_VERSION
   end
 
+  def test_self_rubygems_version
+    assert_equal Gem::Version.new(Gem::VERSION), Gem.rubygems_version
+  end
+
   def test_self_paths_eq
     other = File.join @tempdir, 'other'
     path = [@userhome, other].join File::PATH_SEPARATOR
@@ -1054,9 +1075,9 @@ class TestGem < Gem::TestCase
     end
   end
 
-  if Gem.win_platform? then
+  if Gem.win_platform? && '1.9' > RUBY_VERSION
+    # Ruby 1.9 properly handles ~ path expansion, so no need to run such tests.
     def test_self_user_home_userprofile
-      skip 'Ruby 1.9 properly handles ~ path expansion' unless '1.9' > RUBY_VERSION
 
       Gem.clear_paths
 
@@ -1075,8 +1096,6 @@ class TestGem < Gem::TestCase
     end
 
     def test_self_user_home_user_drive_and_path
-      skip 'Ruby 1.9 properly handles ~ path expansion' unless '1.9' > RUBY_VERSION
-
       Gem.clear_paths
 
       # safe-keep env variables
@@ -1143,17 +1162,11 @@ class TestGem < Gem::TestCase
   end
 
   def test_latest_load_paths
-    stem = Gem.path.first
-
     spec = quick_spec 'a', '4' do |s|
       s.require_paths = ["lib"]
     end
 
     install_gem spec
-
-    # @exec_path = File.join spec.full_gem_path, spec.bindir, 'exec'
-    # @abin_path = File.join spec.full_gem_path, spec.bindir, 'abin'
-    # FileUtils.mkdir_p File.join(stem, "gems", "test-3")
 
     Gem::Deprecate.skip_during do
       expected = [File.join(@gemhome, "gems", "a-4", "lib")]

@@ -105,11 +105,14 @@ class Gem::RemoteFetcher
   def download(spec, source_uri, install_dir = Gem.dir)
     Gem.ensure_gem_subdirectories(install_dir) rescue nil
 
-    if File.writable?(install_dir)
-      cache_dir = File.join install_dir, "cache"
-    else
-      cache_dir = File.join Gem.user_dir, "cache"
-    end
+    cache_dir =
+      if Dir.pwd == install_dir then # see fetch_command
+        install_dir
+      elsif File.writable? install_dir then
+        File.join install_dir, "cache"
+      else
+        File.join Gem.user_dir, "cache"
+      end
 
     gem_file_name = File.basename spec.cache_file
     local_gem_path = File.join cache_dir, gem_file_name
@@ -128,6 +131,8 @@ class Gem::RemoteFetcher
     # URI.parse gets confused by MS Windows paths with forward slashes.
     scheme = nil if scheme =~ /^[a-z]$/i
 
+    # REFACTOR: split this up and dispatch on scheme (eg download_http)
+    # REFACTOR: be sure to clean up fake fetcher when you do this... cleaner
     case scheme
     when 'http', 'https' then
       unless File.exist? local_gem_path then
@@ -137,7 +142,7 @@ class Gem::RemoteFetcher
 
           remote_gem_path = source_uri + "gems/#{gem_file_name}"
 
-          gem = self.cache_update_path remote_gem_path, local_gem_path
+          self.cache_update_path remote_gem_path, local_gem_path
         rescue Gem::RemoteFetcher::FetchError
           raise if spec.original_platform == spec.platform
 
@@ -148,7 +153,7 @@ class Gem::RemoteFetcher
 
           remote_gem_path = source_uri + "gems/#{alternate_name}"
 
-          gem = self.cache_update_path remote_gem_path, local_gem_path
+          self.cache_update_path remote_gem_path, local_gem_path
         end
       end
     when 'file' then
@@ -185,7 +190,7 @@ class Gem::RemoteFetcher
       say "Using local gem #{local_gem_path}" if
         Gem.configuration.really_verbose
     else
-      raise Gem::InstallError, "unsupported URI scheme #{source_uri.scheme}"
+      raise ArgumentError, "unsupported URI scheme #{source_uri.scheme}"
     end
 
     local_gem_path

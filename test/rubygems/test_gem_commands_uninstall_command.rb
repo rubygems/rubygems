@@ -16,6 +16,31 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     @executable = File.join(@gemhome, 'bin', 'executable')
   end
 
+  def test_execute_dependency_order
+    c = quick_gem 'c' do |spec|
+      spec.add_dependency 'a'
+    end
+
+    util_build_gem c
+    installer = util_installer c, @gemhome
+    use_ui @ui do installer.install end
+
+    ui = Gem::MockGemUi.new
+
+    @cmd.options[:args] = %w[a c]
+    @cmd.options[:executables] = true
+
+    use_ui ui do
+      @cmd.execute
+    end
+
+    output = ui.output.split "\n"
+
+    assert_equal 'Successfully uninstalled c-2', output.shift
+    assert_equal "Removing executable",          output.shift
+    assert_equal 'Successfully uninstalled a-2', output.shift
+  end
+
   def test_execute_removes_executable
     ui = Gem::MockGemUi.new
     util_setup_gem ui
@@ -70,20 +95,6 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     Gem::Installer.exec_format = nil
   end
 
-  def test_execute_not_installed
-    @cmd.options[:executables] = true
-    @cmd.options[:args] = ["foo"]
-    e = assert_raises Gem::InstallError do
-      use_ui @ui do
-        @cmd.execute
-      end
-    end
-
-    assert_match(/\Acannot uninstall, check `gem list -d foo`$/, e.message)
-    output = @ui.output.split "\n"
-    assert_empty output, "UI output should be empty after an uninstall error"
-  end
-
   def test_execute_prerelease
     @spec = quick_spec "pre", "2.b"
     @gem = File.join @tempdir, @spec.file_name
@@ -127,7 +138,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_execute_with_force_uninstalls_all_versions
-    ui = Gem::MockGemUi.new
+    ui = Gem::MockGemUi.new "y\n"
 
     util_make_gems
     util_setup_gem ui
@@ -141,7 +152,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
       @cmd.execute
     end
 
-    assert !Gem::Specification.all_names.include?('a')
+    refute_includes Gem::Specification.all_names, 'a'
   end
 
   def test_execute_with_force_ignores_dependencies

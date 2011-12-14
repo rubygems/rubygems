@@ -32,29 +32,70 @@ module Kernel
   # that file has already been loaded is preserved.
 
   def require path
+    # If there are no unresolved deps, then we can use just try
+    # normal require handle loading a gem from the rescue below.
+
     if Gem::Specification.unresolved_deps.empty? then
-      gem_original_require path
-    else
-      spec = Gem::Specification.find { |s|
-        s.activated? and s.contains_requirable_file? path
-      }
+      return gem_original_require(path)
+    end
 
-      unless spec then
-        found_specs = Gem::Specification.find_in_unresolved path
+    # If +path+ is for a gem that has already been loaded, don't
+    # bother trying to find it in an unresolved gem, just go straight
+    # to normal require.
 
-        if found_specs.empty? then
-          found_specs = Gem::Specification.find_in_unresolved_tree path
-        else
-          found_specs = [found_specs.last]
-        end
+    spec = Gem::Specification.find { |s|
+      s.activated? and s.contains_requirable_file? path
+    }
 
-        found_specs.each do |found_spec|
-          found_spec.activate
-        end
+    return gem_original_require(path) if spec
+
+    # Attempt to find +path+ in any unresolved gems...
+
+    found_specs = Gem::Specification.find_in_unresolved path
+
+    # If there are no directly unresolved gems, then try and find +path+
+    # in any gems that are available via the currently unresolved gems.
+    # For example, given:
+    #
+    #   a => b => c => d
+    #
+    # If a and b are currently active with c being unresolved and d.rb is
+    # requested, then find_in_unresolved_tree will find d.rb in d because
+    # it's a dependency of c.
+    #
+    if found_specs.empty? then
+      found_specs = Gem::Specification.find_in_unresolved_tree path
+
+      found_specs.each do |found_spec|
+        found_spec.activate
       end
 
-      return gem_original_require path
+    # We found +path+ directly in an unresolved gem. Now we figure out, of
+    # the possible found specs, which one we should activate.
+    else
+
+      # Check that all the found specs are just different
+      # versions of the same gem
+      names = found_specs.map(&:name).uniq
+
+      if names.size > 1 then
+        raise Gem::LoadError, "#{path} found in multiple gems: #{names.join ', '}"
+      end
+
+      # Ok, now find a gem that has no conflicts, starting
+      # at the highest version.
+      valid = found_specs.select { |s| s.conflicts.empty? }.last
+
+      unless valid then
+        le = Gem::LoadError.new "unable to find a version of '#{names.first}' to activate"
+        le.name = names.first
+        raise le
+      end
+
+      valid.activate
     end
+
+    gem_original_require path
   rescue LoadError => load_error
     if load_error.message.end_with?(path) and Gem.try_activate(path) then
       return gem_original_require(path)

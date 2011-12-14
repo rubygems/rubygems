@@ -1,23 +1,5 @@
 require "rubygems/version"
-
-# Hack to handle syck's DefaultKey bug with psych
-#
-# Quick note! If/when psych loads in 1.9, it will redefine
-# YAML to point to Psych by removing the YAML constant.
-# Thusly, over in Gem.load_yaml, we define DefaultKey again
-# after proper yaml library has been loaded.
-#
-# All this is so that there is always a YAML::Syck::DefaultKey
-# class no matter if the full yaml library has loaded or not.
-#
-module YAML
-  if !defined? Syck
-    module Syck
-      class DefaultKey
-      end
-    end
-  end
-end
+require "rubygems/deprecate"
 
 ##
 # A Requirement is a set of one or more version restrictions. It supports a
@@ -29,8 +11,8 @@ class Gem::Requirement
   OPS = { #:nodoc:
     "="  =>  lambda { |v, r| v == r },
     "!=" =>  lambda { |v, r| v != r },
-    ">"  =>  lambda { |v, r| v > r  },
-    "<"  =>  lambda { |v, r| v < r  },
+    ">"  =>  lambda { |v, r| v >  r },
+    "<"  =>  lambda { |v, r| v <  r },
     ">=" =>  lambda { |v, r| v >= r },
     "<=" =>  lambda { |v, r| v <= r },
     "~>" =>  lambda { |v, r| v >= r && v.release < r.bump }
@@ -38,6 +20,8 @@ class Gem::Requirement
 
   quoted  = OPS.keys.map { |k| Regexp.quote k }.join "|"
   PATTERN = /\A\s*(#{quoted})?\s*(#{Gem::Version::VERSION_PATTERN})\s*\z/
+
+  class BadRequirementError < ArgumentError; end
 
   ##
   # Factory method to create a Gem::Requirement object.  Input may be
@@ -63,10 +47,6 @@ class Gem::Requirement
 
   ##
   # A default "version requirement" can surely _only_ be '>= 0'.
-  #--
-  # This comment once said:
-  #
-  # "A default "version requirement" can surely _only_ be '> 0'."
 
   def self.default
     new '>= 0'
@@ -88,7 +68,7 @@ class Gem::Requirement
     return ["=", obj] if Gem::Version === obj
 
     unless PATTERN =~ obj.to_s
-      raise ArgumentError, "Illformed requirement [#{obj.inspect}]"
+      raise BadRequirementError, "Illformed requirement [#{obj.inspect}]"
     end
 
     [$1 || "=", Gem::Version.new($2)]
@@ -129,18 +109,27 @@ class Gem::Requirement
   end
 
   def marshal_dump # :nodoc:
+    fix_syck_default_key_in_requirements
+
     [@requirements]
   end
 
   def marshal_load array # :nodoc:
     @requirements = array[0]
 
-    # Fixup the Syck DefaultKey bug
-    @requirements.each do |r|
-      if r[0].kind_of? YAML::Syck::DefaultKey
-        r[0] = "="
-      end
+    fix_syck_default_key_in_requirements
+  end
+
+  def yaml_initialize(tag, vals) # :nodoc:
+    vals.each do |ivar, val|
+      instance_variable_set "@#{ivar}", val
     end
+
+    fix_syck_default_key_in_requirements
+  end
+
+  def init_with coder # :nodoc:
+    yaml_initialize coder.tag, coder.map
   end
 
   def prerelease?
@@ -157,6 +146,8 @@ class Gem::Requirement
   # True if +version+ satisfies this Requirement.
 
   def satisfied_by? version
+    raise ArgumentError, "Need a Gem::Version: #{version.inspect}" unless
+      Gem::Version === version
     # #28965: syck has a bug with unquoted '=' YAML.loading as YAML::DefaultKey
     requirements.all? { |op, rv| (OPS[op] || OPS["="]).call version, rv }
   end
@@ -178,7 +169,31 @@ class Gem::Requirement
   end
 
   def <=> other # :nodoc:
+    return unless Gem::Requirement === other
+
+    # TODO: remove this method: comparing requirements doesn't even make sense
     to_s <=> other.to_s
+  end
+
+  def == other
+    Gem::Requirement === other and to_s == other.to_s
+  end
+
+  extend Gem::Deprecate
+
+  %w(<=> < > <= >=).each do |name|
+    deprecate name, :none, 2011, 12
+  end
+
+  private
+
+  def fix_syck_default_key_in_requirements
+    # Fixup the Syck DefaultKey bug
+    @requirements.each do |r|
+      if r[0].kind_of? Gem::SyckDefaultKey
+        r[0] = "="
+      end
+    end
   end
 end
 

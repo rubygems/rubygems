@@ -26,8 +26,6 @@ if Gem::GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader) then
 end
 
 require 'rubygems/defaults'
-require "rubygems/dependency_list"
-require 'rubygems/path_support'
 require 'rbconfig'
 require "rubygems/deprecate"
 
@@ -121,7 +119,8 @@ require "rubygems/deprecate"
 # -The RubyGems Team
 
 module Gem
-  VERSION = '1.8.5'
+  VERSION = '1.8.10'
+  DEFAULT_HOST = "https://rubygems.org"
 
   ##
   # Raised when RubyGems is unable to load or activate a gem.  Contains the
@@ -447,11 +446,16 @@ module Gem
   def self.ensure_gem_subdirectories dir = Gem.dir
     require 'fileutils'
 
+    old_umask = File.umask
+    File.umask old_umask | 022
+
     %w[cache doc gems specifications].each do |name|
       subdir = File.join dir, name
       next if File.exist? subdir
       FileUtils.mkdir_p subdir rescue nil # in case of perms issues -- lame
     end
+  ensure
+    File.umask old_umask
   end
 
   ##
@@ -567,7 +571,7 @@ module Gem
 
   def self.host
     # TODO: move to utils
-    @host ||= "https://rubygems.org"
+    @host ||= Gem::DEFAULT_HOST
   end
 
   ## Set the default RubyGems API host.
@@ -641,22 +645,23 @@ module Gem
 
   def self.load_yaml
     begin
+      gem 'psych', '~> 1.2', '>= 1.2.1' unless ENV['TEST_SYCK']
+    rescue Gem::LoadError
+      # It's OK if the user does not have the psych gem installed.  We will
+      # attempt to require the stdlib version
+    end
+
+    begin
+      # Try requiring the gem version *or* stdlib version of psych.
       require 'psych' unless ENV['TEST_SYCK']
     rescue ::LoadError
     ensure
       require 'yaml'
     end
 
-    # Hack to handle syck's DefaultKey bug with psych.
-    # See the note at the top of lib/rubygems/requirement.rb for
-    # why we end up defining DefaultKey more than once.
-    if !defined? YAML::Syck
-      YAML.module_eval do
-          const_set 'Syck', Module.new {
-            const_set 'DefaultKey', Class.new
-          }
-        end
-    end
+    # Now that we're sure some kind of yaml library is loaded, pull
+    # in our hack to deal with Syck's DefaultKey ugliness.
+    require 'rubygems/syck_hack'
   end
 
   ##
@@ -924,7 +929,8 @@ module Gem
   end
 
   def self.latest_rubygems_version
-    latest_version_for "rubygems-update"
+    latest_version_for("rubygems-update") or
+      raise "Can't find 'rubygems-update' in any repo. Check `gem source list`."
   end
 
   ##
@@ -941,6 +947,14 @@ module Gem
     end
 
     @ruby_version = Gem::Version.new version
+  end
+
+  ##
+  # A Gem::Version for the currently running RubyGems
+
+  def self.rubygems_version
+    return @rubygems_version if defined? @rubygems_version
+    @rubygems_version = Gem::Version.new Gem::VERSION
   end
 
   ##
@@ -1026,7 +1040,9 @@ module Gem
   # Use the +home+ and +paths+ values for Gem.dir and Gem.path.  Used mainly
   # by the unit tests to provide environment isolation.
 
-  def self.use_paths(home, paths=[])
+  def self.use_paths(home, *paths)
+    paths = nil if paths == [nil]
+    paths = paths.first if Array === Array(paths).first
     self.paths = { "GEM_HOME" => home, "GEM_PATH" => paths }
     # TODO: self.paths = home, paths
   end
@@ -1159,10 +1175,13 @@ module Gem
   autoload :Version,         'rubygems/version'
   autoload :Requirement,     'rubygems/requirement'
   autoload :Dependency,      'rubygems/dependency'
+  autoload :DependencyList,  'rubygems/dependency_list'
   autoload :GemPathSearcher, 'rubygems/gem_path_searcher'
   autoload :SpecFetcher,     'rubygems/spec_fetcher'
+  autoload :Specification,   'rubygems/specification'
   autoload :Cache,           'rubygems/source_index'
   autoload :SourceIndex,     'rubygems/source_index'
+  autoload :PathSupport,     'rubygems/path_support'
   autoload :Platform,        'rubygems/platform'
   autoload :Builder,         'rubygems/builder'
   autoload :ConfigFile,      'rubygems/config_file'
@@ -1229,7 +1248,7 @@ end
 # Otherwise return a path to the share area as define by
 # "#{ConfigMap[:datadir]}/#{package_name}".
 
-def RbConfig.datadir(package_name)
+def RbConfig.datadir(package_name) # :nodoc:
   warn "#{Gem.location_of_caller.join ':'}:Warning: " \
     "RbConfig.datadir is deprecated and will be removed on or after " \
     "August 2011.  " \
@@ -1267,8 +1286,6 @@ end
 # Enables the require hook for RubyGems.
 
 require 'rubygems/custom_require'
-
-Gem.clear_paths
 
 module Gem
   class << self

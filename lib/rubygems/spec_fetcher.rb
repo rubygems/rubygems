@@ -176,7 +176,7 @@ class Gem::SpecFetcher
 
     found.each do |source_uri, specs|
       uri_str = source_uri.to_s
-      specs_and_sources.push(*specs.map { |spec| [spec, uri_str] })
+      specs_and_sources.concat(specs.map { |spec| [spec, uri_str] })
     end
 
     [specs_and_sources, errors]
@@ -263,12 +263,9 @@ class Gem::SpecFetcher
     local_file = File.join(cache_dir, file_name)
     retried    = false
 
-    spec_dump = if @update_cache then
-                  FileUtils.mkdir_p cache_dir
-                  @fetcher.cache_update_path(spec_path, local_file)
-                else
-                  @fetcher.cache_update_path(spec_path)
-                end
+    FileUtils.mkdir_p cache_dir if @update_cache
+
+    spec_dump = @fetcher.cache_update_path(spec_path, local_file)
 
     begin
       Marshal.load spec_dump

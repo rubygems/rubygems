@@ -37,17 +37,19 @@ class TestGemRequirement < Gem::TestCase
   end
 
   def test_parse_bad
-    e = assert_raises ArgumentError do
+    e = assert_raises Gem::Requirement::BadRequirementError do
       Gem::Requirement.parse nil
     end
 
     assert_equal 'Illformed requirement [nil]', e.message
 
-    e = assert_raises ArgumentError do
+    e = assert_raises Gem::Requirement::BadRequirementError do
       Gem::Requirement.parse ""
     end
 
     assert_equal 'Illformed requirement [""]', e.message
+
+    assert_equal Gem::Requirement::BadRequirementError.superclass, ArgumentError
   end
 
   def test_prerelease_eh
@@ -67,28 +69,37 @@ class TestGemRequirement < Gem::TestCase
   def test_satisfied_by_eh_bang_equal
     r = req '!= 1.2'
 
-    assert_satisfied_by nil,   r
     assert_satisfied_by "1.1", r
     refute_satisfied_by "1.2", r
     assert_satisfied_by "1.3", r
+
+    assert_raises ArgumentError do
+      assert_satisfied_by nil, r
+    end
   end
 
   def test_satisfied_by_eh_blank
     r = req "1.2"
 
-    refute_satisfied_by nil,   r
     refute_satisfied_by "1.1", r
     assert_satisfied_by "1.2", r
     refute_satisfied_by "1.3", r
+
+    assert_raises ArgumentError do
+      assert_satisfied_by nil, r
+    end
   end
 
   def test_satisfied_by_eh_equal
     r = req "= 1.2"
 
-    refute_satisfied_by nil,   r
     refute_satisfied_by "1.1", r
     assert_satisfied_by "1.2", r
     refute_satisfied_by "1.3", r
+
+    assert_raises ArgumentError do
+      assert_satisfied_by nil, r
+    end
   end
 
   def test_satisfied_by_eh_gt
@@ -98,7 +109,7 @@ class TestGemRequirement < Gem::TestCase
     refute_satisfied_by "1.2", r
     assert_satisfied_by "1.3", r
 
-    assert_raises NoMethodError do
+    assert_raises ArgumentError do
       r.satisfied_by? nil
     end
   end
@@ -110,7 +121,7 @@ class TestGemRequirement < Gem::TestCase
     assert_satisfied_by "1.2", r
     assert_satisfied_by "1.3", r
 
-    assert_raises NoMethodError do
+    assert_raises ArgumentError do
       r.satisfied_by? nil
     end
   end
@@ -122,7 +133,7 @@ class TestGemRequirement < Gem::TestCase
     assert_satisfied_by "1.2", r
     refute_satisfied_by "1.3", r
 
-    assert_raises NoMethodError do
+    assert_raises ArgumentError do
       r.satisfied_by? nil
     end
   end
@@ -134,7 +145,7 @@ class TestGemRequirement < Gem::TestCase
     refute_satisfied_by "1.2", r
     refute_satisfied_by "1.3", r
 
-    assert_raises NoMethodError do
+    assert_raises ArgumentError do
       r.satisfied_by? nil
     end
   end
@@ -146,7 +157,7 @@ class TestGemRequirement < Gem::TestCase
     assert_satisfied_by "1.2", r
     refute_satisfied_by "1.3", r
 
-    assert_raises NoMethodError do
+    assert_raises ArgumentError do
       r.satisfied_by? nil
     end
   end
@@ -158,7 +169,7 @@ class TestGemRequirement < Gem::TestCase
     assert_satisfied_by "1.2", r
     assert_satisfied_by "1.3", r
 
-    assert_raises NoMethodError do
+    assert_raises ArgumentError do
       r.satisfied_by? nil
     end
   end
@@ -200,9 +211,19 @@ class TestGemRequirement < Gem::TestCase
 
   def test_illformed_requirements
     [ ">>> 1.3.5", "> blah" ].each do |rq|
-      assert_raises ArgumentError, "req [#{rq}] should fail" do
+      assert_raises Gem::Requirement::BadRequirementError, "req [#{rq}] should fail" do
         Gem::Requirement.new rq
       end
+    end
+  end
+
+  def test_satisfied_by_eh_non_versions
+    assert_raises ArgumentError do
+      req(">= 0").satisfied_by? Object.new
+    end
+
+    assert_raises ArgumentError do
+      req(">= 0").satisfied_by? Gem::Requirement.default
     end
   end
 
@@ -248,6 +269,16 @@ class TestGemRequirement < Gem::TestCase
     assert_satisfied_by "1.4.5", "~> 1.4.4"
     refute_satisfied_by "1.5",   "~> 1.4.4"
     refute_satisfied_by "2.0",   "~> 1.4.4"
+  end
+
+  def test_spaceship
+    Gem::Deprecate.skip_during do
+      assert_equal(-1, req("= 0") <=> req("= 1"))
+      assert_equal  0, req("= 0") <=> req("= 0")
+      assert_equal  1, req("= 1") <=> req("= 0")
+
+      assert_nil req("= 1") <=> v("42")
+    end
   end
 
   def test_specific

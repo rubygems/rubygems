@@ -1,5 +1,0 @@
-- Gem::DocManager is no longer used by RubyGems.  Gem::RDoc is now used.
-
-- Gem::FilePermissionError now has an a #directory accessor.
-
-The "Successfully installed foo-1.0" message is now printed by a post_install hook.

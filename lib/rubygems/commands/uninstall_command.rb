@@ -78,7 +78,17 @@ class Gem::Commands::UninstallCommand < Gem::Command
   end
 
   def execute
-    get_all_gem_names.each do |gem_name|
+    # REFACTOR: stolen from cleanup_command
+    deplist = Gem::DependencyList.new
+    get_all_gem_names.uniq.each do |name|
+      Gem::Specification.find_all_by_name(name).each do |spec|
+        deplist.add spec
+      end
+    end
+
+    deps = deplist.strongly_connected_components.flatten.reverse
+
+    deps.map(&:name).uniq.each do |gem_name|
       begin
         Gem::Uninstaller.new(gem_name, options).uninstall
       rescue Gem::GemNotInHomeException => e

@@ -113,7 +113,13 @@ class Gem::FakeFetcher
 
   def download spec, source_uri, install_dir = Gem.dir
     name = File.basename spec.cache_file
-    path = File.join install_dir, "cache", name
+    path = if Dir.pwd == install_dir then # see fetch_command
+             install_dir
+           else
+             File.join install_dir, "cache"
+           end
+
+    path = File.join path, name
 
     Gem.ensure_gem_subdirectories install_dir
 
@@ -154,6 +160,8 @@ end
 ##
 # A StringIO duck-typed class that uses Tempfile instead of String as the
 # backing store.
+#
+# This is available when rubygems/test_utilities is required.
 #--
 # This class was added to flush out problems in Rubinius' IO implementation.
 

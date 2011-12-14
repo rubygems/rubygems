@@ -69,8 +69,7 @@ class Gem::Commands::FetchCommand < Gem::Command
         next
       end
 
-      path = Gem::RemoteFetcher.fetcher.download spec, source_uri
-      FileUtils.mv path, File.basename(spec.cache_file)
+      Gem::RemoteFetcher.fetcher.download spec, source_uri, Dir.pwd
 
       say "Downloaded #{spec.full_name}"
     end

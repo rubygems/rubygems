@@ -200,7 +200,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:install_dir] = "whatever"
 
     use_ui @ui do
-      e = assert_raises Gem::MockGemUi::TermError do
+      assert_raises Gem::MockGemUi::TermError do
         @cmd.execute
       end
     end

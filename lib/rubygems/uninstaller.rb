@@ -59,12 +59,6 @@ class Gem::Uninstaller
     # only add user directory if install_dir is not set
     @user_install = false
     @user_install = options[:user_install] unless options[:install_dir]
-
-    if @user_install then
-      Gem.use_paths Gem.user_dir, @gem_home
-    else
-      Gem.use_paths @gem_home
-    end
   end
 
   ##
@@ -74,10 +68,24 @@ class Gem::Uninstaller
   def uninstall
     list = Gem::Specification.find_all_by_name(@gem, @version)
 
-    if list.empty? then
-      raise Gem::InstallError, "cannot uninstall, check `gem list -d #{@gem}`"
+    list, other_repo_specs = list.partition do |spec|
+      @gem_home == spec.base_dir or
+      (@user_install and spec.base_dir == Gem.user_dir)
+    end
 
-    elsif @force_all
+    if list.empty? then
+      raise Gem::InstallError, "gem #{@gem.inspect} is not installed" if
+        other_repo_specs.empty?
+
+      other_repos = other_repo_specs.map { |spec| spec.base_dir }.uniq
+
+      message = ["#{@gem} is not installed in GEM_HOME, try:"]
+      message.concat other_repos.map { |repo|
+        "\tgem uninstall -i #{repo} #{@gem}"
+      }
+
+      raise Gem::InstallError, message.join("\n")
+    elsif @force_all then
       remove_all list
 
     elsif list.size > 1 then
@@ -146,9 +154,11 @@ class Gem::Uninstaller
 
     return if executables.empty?
 
+    executables = executables.map { |exec| formatted_program_filename exec }
+
     remove = if @force_executables.nil? then
                ask_yes_no("Remove executables:\n" \
-                          "\t#{spec.executables.join ', '}\n\n" \
+                          "\t#{executables.join ', '}\n\n" \
                           "in addition to the gem?",
                           true)
              else
@@ -158,14 +168,17 @@ class Gem::Uninstaller
     unless remove then
       say "Executables and scripts will remain installed."
     else
-      bindir = @bin_dir || Gem.bindir(spec.base_dir)
+      bin_dir = @bin_dir || Gem.bindir(spec.base_dir)
 
-      raise Gem::FilePermissionError, bindir unless File.writable? bindir
+      raise Gem::FilePermissionError, bin_dir unless File.writable? bin_dir
 
-      spec.executables.each do |exe_name|
+      executables.each do |exe_name|
         say "Removing #{exe_name}"
-        FileUtils.rm_f File.join(bindir, formatted_program_filename(exe_name))
-        FileUtils.rm_f File.join(bindir, "#{formatted_program_filename(exe_name)}.bat")
+
+        exe_file = File.join bin_dir, exe_name
+
+        FileUtils.rm_f exe_file
+        FileUtils.rm_f "#{exe_file}.bat"
       end
     end
   end
@@ -260,7 +273,7 @@ class Gem::Uninstaller
 
   def formatted_program_filename(filename)
     if @format_executable then
-      require "rubygems/installer"
+      require 'rubygems/installer'
       Gem::Installer.exec_format % File.basename(filename)
     else
       filename

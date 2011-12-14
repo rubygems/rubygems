@@ -24,6 +24,10 @@ class TestGemRDoc < Gem::TestCase
     Gem::Requirement.new('>= 3').satisfied_by? @rdoc.class.rdoc_version
   end
 
+  def rdoc_3_8?
+    Gem::Requirement.new('>= 3.8').satisfied_by? @rdoc.class.rdoc_version
+  end
+
   def test_initialize
     assert @rdoc.generate_rdoc
     assert @rdoc.generate_ri
@@ -146,6 +150,8 @@ class TestGemRDoc < Gem::TestCase
   end
 
   def test_generate_legacy
+    skip 'RDoc < 3.8 required' if rdoc_3_8?
+
     FileUtils.mkdir_p @a.doc_dir
     FileUtils.mkdir_p File.join(@a.gem_dir, 'lib')
 
@@ -156,6 +162,8 @@ class TestGemRDoc < Gem::TestCase
   end
 
   def test_legacy_rdoc
+    skip 'RDoc < 3.8 required' if rdoc_3_8?
+
     FileUtils.mkdir_p @a.doc_dir
     FileUtils.mkdir_p File.join(@a.gem_dir, 'lib')
 

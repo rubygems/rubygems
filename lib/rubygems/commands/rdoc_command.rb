@@ -72,7 +72,13 @@ The rdoc command builds RDoc and RI documentation for installed gems.  Use
 
       doc.force = options[:overwrite]
 
-      doc.generate
+      begin
+        doc.generate
+      rescue Errno::ENOENT => e
+        e.message =~ / - /
+        alert_error "Unable to document #{spec.full_name}, #{$'} is missing, skipping"
+        terminate_interaction 1 if specs.length == 1
+      end
     end
   end
 

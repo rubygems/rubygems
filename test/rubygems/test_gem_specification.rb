@@ -115,7 +115,7 @@ end
     assert_equal @current_version, new_spec.specification_version
   end
 
-  def test_self_from_yaml_syck_bug
+  def test_self_from_yaml_syck_date_bug
     # This is equivalent to (and totally valid) psych 1.0 output and
     # causes parse errors on syck.
     yaml = @a1.to_yaml
@@ -128,6 +128,112 @@ end
     assert_kind_of Time, @a1.date
     assert_kind_of Time, new_spec.date
   end
+
+  def test_self_from_yaml_syck_default_key_bug
+    # This is equivalent to (and totally valid) psych 1.0 output and
+    # causes parse errors on syck.
+    yaml = <<-YAML
+--- !ruby/object:Gem::Specification
+name: posix-spawn
+version: !ruby/object:Gem::Version
+  version: 0.3.6
+  prerelease:
+dependencies:
+- !ruby/object:Gem::Dependency
+  name: rake-compiler
+  requirement: &70243867725240 !ruby/object:Gem::Requirement
+    none: false
+    requirements:
+    - - =
+      - !ruby/object:Gem::Version
+        version: 0.7.6
+  type: :development
+  prerelease: false
+  version_requirements: *70243867725240
+platform: ruby
+files: []
+test_files: []
+bindir:
+    YAML
+
+    new_spec = with_syck do
+      Gem::Specification.from_yaml yaml
+    end
+
+    op = new_spec.dependencies.first.requirement.requirements.first.first
+    refute_kind_of YAML::Syck::DefaultKey, op
+
+    refute_match %r%DefaultKey%, new_spec.to_ruby
+  end
+
+  def test_self_from_yaml_cleans_up_defaultkey
+    yaml = <<-YAML
+--- !ruby/object:Gem::Specification
+name: posix-spawn
+version: !ruby/object:Gem::Version
+  version: 0.3.6
+  prerelease:
+dependencies:
+- !ruby/object:Gem::Dependency
+  name: rake-compiler
+  requirement: &70243867725240 !ruby/object:Gem::Requirement
+    none: false
+    requirements:
+    - - !ruby/object:YAML::Syck::DefaultKey {}
+
+      - !ruby/object:Gem::Version
+        version: 0.7.6
+  type: :development
+  prerelease: false
+  version_requirements: *70243867725240
+platform: ruby
+files: []
+test_files: []
+bindir:
+    YAML
+
+    new_spec = Gem::Specification.from_yaml yaml
+
+    op = new_spec.dependencies.first.requirement.requirements.first.first
+    refute_kind_of YAML::Syck::DefaultKey, op
+
+    refute_match %r%DefaultKey%, new_spec.to_ruby
+  end
+
+  def test_self_from_yaml_cleans_up_defaultkey_from_newer_192
+    yaml = <<-YAML
+--- !ruby/object:Gem::Specification
+name: posix-spawn
+version: !ruby/object:Gem::Version
+  version: 0.3.6
+  prerelease:
+dependencies:
+- !ruby/object:Gem::Dependency
+  name: rake-compiler
+  requirement: &70243867725240 !ruby/object:Gem::Requirement
+    none: false
+    requirements:
+    - - !ruby/object:Syck::DefaultKey {}
+
+      - !ruby/object:Gem::Version
+        version: 0.7.6
+  type: :development
+  prerelease: false
+  version_requirements: *70243867725240
+platform: ruby
+files: []
+test_files: []
+bindir:
+    YAML
+
+    new_spec = Gem::Specification.from_yaml yaml
+
+    op = new_spec.dependencies.first.requirement.requirements.first.first
+    refute_kind_of YAML::Syck::DefaultKey, op
+
+    refute_match %r%DefaultKey%, new_spec.to_ruby
+  end
+
 
   def test_self_load
     full_path = @a2.spec_file
@@ -151,6 +257,51 @@ end
     full_path.taint
     loader = Thread.new { $SAFE = 1; Gem::Specification.load full_path }
     spec = loader.value
+
+    @a2.files.clear
+
+    assert_equal @a2, spec
+  end
+
+  def test_self_load_escape_curly
+    @a2.name = 'a};raise "improper escaping";%q{'
+
+    full_path = @a2.spec_file
+    write_file full_path do |io|
+      io.write @a2.to_ruby_for_cache
+    end
+
+    spec = Gem::Specification.load full_path
+
+    @a2.files.clear
+
+    assert_equal @a2, spec
+  end
+
+  def test_self_load_escape_interpolation
+    @a2.name = 'a#{raise %<improper escaping>}'
+
+    full_path = @a2.spec_file
+    write_file full_path do |io|
+      io.write @a2.to_ruby_for_cache
+    end
+
+    spec = Gem::Specification.load full_path
+
+    @a2.files.clear
+
+    assert_equal @a2, spec
+  end
+
+  def test_self_load_escape_quote
+    @a2.name = 'a";raise "improper escaping";"'
+
+    full_path = @a2.spec_file
+    write_file full_path do |io|
+      io.write @a2.to_ruby_for_cache
+    end
+
+    spec = Gem::Specification.load full_path
 
     @a2.files.clear
 
@@ -333,6 +484,16 @@ end
     same_spec = Marshal.load data
 
     assert_equal 'old_platform', same_spec.original_platform
+  end
+
+  def test_activate
+    @a2.activate
+
+    assert @a2.activated?
+
+    Gem::Deprecate.skip_during do
+      assert @a2.loaded?
+    end
   end
 
   def test_add_dependency_with_explicit_type
@@ -655,6 +816,20 @@ end
     assert_equal Gem::Platform::RUBY, @a1.platform
   end
 
+  def test_platform_change_reset_full_name
+    orig_full_name = @a1.full_name
+
+    @a1.platform = "universal-unknown"
+    refute_equal orig_full_name, @a1.full_name
+  end
+
+  def test_platform_change_reset_cache_file
+    orig_cache_file = @a1.cache_file
+
+    @a1.platform = "universal-unknown"
+    refute_equal orig_cache_file, @a1.cache_file
+  end
+
   def test_platform_equals
     @a1.platform = nil
     assert_equal Gem::Platform::RUBY, @a1.platform
@@ -748,6 +923,11 @@ end
     assert_equal(  1, (s2 <=> s1))
   end
 
+  def test_spec_file
+    assert_equal File.join(@gemhome, 'specifications', 'a-1.gemspec'),
+                 @a1.spec_file
+  end
+
   def test_spec_name
     assert_equal 'a-1.gemspec', @a1.spec_name
   end
@@ -772,19 +952,19 @@ end
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{a}
-  s.version = \"2\"
+  s.name = "a"
+  s.version = "2"
 
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\") if s.respond_to? :required_rubygems_version=
-  s.authors = [%q{A User}]
-  s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
-  s.description = %q{This is a test description}
-  s.email = %q{example@example.com}
-  s.files = [%q{lib/code.rb}]
-  s.homepage = %q{http://example.com}
-  s.require_paths = [%q{lib}]
-  s.rubygems_version = %q{#{Gem::VERSION}}
-  s.summary = %q{this is a summary}
+  s.authors = ["A User"]
+  s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
+  s.description = "This is a test description"
+  s.email = "example@example.com"
+  s.files = ["lib/code.rb"]
+  s.homepage = "http://example.com"
+  s.require_paths = ["lib"]
+  s.rubygems_version = "#{Gem::VERSION}"
+  s.summary = "this is a summary"
 
   if s.respond_to? :specification_version then
     s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
@@ -819,18 +999,18 @@ end
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{a}
-  s.version = \"2\"
+  s.name = "a"
+  s.version = "2"
 
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\") if s.respond_to? :required_rubygems_version=
-  s.authors = [%q{A User}]
-  s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
-  s.description = %q{This is a test description}
-  s.email = %q{example@example.com}
-  s.homepage = %q{http://example.com}
-  s.require_paths = [%q{lib}]
-  s.rubygems_version = %q{#{Gem::VERSION}}
-  s.summary = %q{this is a summary}
+  s.authors = ["A User"]
+  s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
+  s.description = "This is a test description"
+  s.email = "example@example.com"
+  s.homepage = "http://example.com"
+  s.require_paths = ["lib"]
+  s.rubygems_version = "#{Gem::VERSION}"
+  s.summary = "this is a summary"
 
   if s.respond_to? :specification_version then
     s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
@@ -866,26 +1046,26 @@ end
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{a}
-  s.version = \"1\"
+  s.name = "a"
+  s.version = "1"
   s.platform = Gem::Platform.new(#{expected_platform})
 
   s.required_rubygems_version = Gem::Requirement.new(\">= 0\") if s.respond_to? :required_rubygems_version=
-  s.authors = [%q{A User}]
-  s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
-  s.description = %q{This is a test description}
-  s.email = %q{example@example.com}
-  s.executables = [%q{exec}]
-  s.extensions = [%q{ext/a/extconf.rb}]
-  s.files = [%q{lib/code.rb}, %q{test/suite.rb}, %q{bin/exec}, %q{ext/a/extconf.rb}]
-  s.homepage = %q{http://example.com}
-  s.licenses = [%q{MIT}]
-  s.require_paths = [%q{lib}]
-  s.requirements = [%q{A working computer}]
-  s.rubyforge_project = %q{example}
-  s.rubygems_version = %q{#{Gem::VERSION}}
-  s.summary = %q{this is a summary}
-  s.test_files = [%q{test/suite.rb}]
+  s.authors = ["A User"]
+  s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
+  s.description = "This is a test description"
+  s.email = "example@example.com"
+  s.executables = ["exec"]
+  s.extensions = ["ext/a/extconf.rb"]
+  s.files = ["lib/code.rb", "test/suite.rb", "bin/exec", "ext/a/extconf.rb"]
+  s.homepage = "http://example.com"
+  s.licenses = ["MIT"]
+  s.require_paths = ["lib"]
+  s.requirements = ["A working computer"]
+  s.rubyforge_project = "example"
+  s.rubygems_version = "#{Gem::VERSION}"
+  s.summary = "this is a summary"
+  s.test_files = ["test/suite.rb"]
 
   if s.respond_to? :specification_version then
     s.specification_version = 4
@@ -922,6 +1102,17 @@ end
     gemspec2 = eval ruby_code
 
     assert_equal gemspec1, gemspec2
+  end
+
+  def test_to_ruby_nested_hash
+    metadata = {}
+    metadata[metadata] = metadata
+
+    @a2.metadata = metadata
+
+    ruby = @a2.to_ruby
+
+    assert_match %r%^  s\.metadata = \{ "%, ruby
   end
 
   def test_to_ruby_platform
@@ -1323,6 +1514,22 @@ end
     assert_equal Gem::Version.new('1'), @a1.version
   end
 
+  def test_version_change_reset_full_name
+    orig_full_name = @a1.full_name
+
+    @a1.version = "2"
+
+    refute_equal orig_full_name, @a1.full_name
+  end
+
+  def test_version_change_reset_cache_file
+    orig_cache_file = @a1.cache_file
+
+    @a1.version = "2"
+
+    refute_equal orig_cache_file, @a1.cache_file
+  end
+
   def test_load_errors_contain_filename
     specfile = Tempfile.new(self.class.name.downcase)
     specfile.write "raise 'boom'"
@@ -1490,29 +1697,20 @@ end
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{m}
+  s.name = "m"
   s.version = "1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.metadata = { %q{one} => %q{two}, %q{two} => %q{three} } if s.respond_to? :metadata=
-  s.authors = [%q{A User}]
-  s.date = %q{#{Gem::Specification::TODAY.strftime("%Y-%m-%d")}}
-  s.description = %q{This is a test description}
-  s.email = %q{example@example.com}
-  s.files = [%q{lib/code.rb}]
-  s.homepage = %q{http://example.com}
-  s.require_paths = [%q{lib}]
-  s.rubygems_version = %q{#{Gem::VERSION}}
-  s.summary = %q{this is a summary}
-
-  if s.respond_to? :specification_version then
-    s.specification_version = 4
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-    else
-    end
-  else
-  end
+  s.metadata = { "one" => "two", "two" => "three" } if s.respond_to? :metadata=
+  s.authors = ["A User"]
+  s.date = "#{Gem::Specification::TODAY.strftime("%Y-%m-%d")}"
+  s.description = "This is a test description"
+  s.email = "example@example.com"
+  s.files = ["lib/code.rb"]
+  s.homepage = "http://example.com"
+  s.require_paths = ["lib"]
+  s.rubygems_version = "#{Gem::VERSION}"
+  s.summary = "this is a summary"
 end
     EOF
 

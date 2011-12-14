@@ -37,6 +37,9 @@ class Gem::Commands::UpdateCommand < Gem::Command
     add_local_remote_options
     add_platform_option
     add_prerelease_option "as update targets"
+
+    @updated   = []
+    @installer = Gem::DependencyInstaller.new options
   end
 
   def arguments # :nodoc:
@@ -52,9 +55,6 @@ class Gem::Commands::UpdateCommand < Gem::Command
   end
 
   def execute
-    @installer = Gem::DependencyInstaller.new options
-    @updated   = []
-
     hig = {}
 
     if options[:system] then

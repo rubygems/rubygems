@@ -1,9 +1,9 @@
 # -*- ruby -*-
 
-ENV['GEM_HOME'] = "tmp/isolate/ruby-1.8"
 Gem.refresh
 
 require 'autotest/restart'
+require 'autotest/isolate'
 
 Autotest.add_hook :initialize do |at|
   at.testlib = 'minitest/autorun'

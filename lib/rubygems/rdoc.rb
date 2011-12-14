@@ -12,6 +12,9 @@ loaded_hook = false
 begin
   require 'rdoc/rubygems_hook'
   loaded_hook = true
+  module Gem
+    RDoc = RDoc::RubygemsHook
+  end
 rescue LoadError
 end
 
@@ -24,7 +27,7 @@ end
 # hooks to load RDoc generation code from the "rdoc" gem and a fallback in
 # case the installed version of RDoc does not have them.
 
-class Gem::RDoc
+class Gem::RDoc # :nodoc: all
 
   include Gem::UserInteraction
 
@@ -173,9 +176,9 @@ class Gem::RDoc
 
       case config_args = Gem.configuration[:rdoc]
       when String then
-        args = args.concat Gem.configuration[:rdoc].split
+        args = args.concat config_args.split
       when Array then
-        args = args.concat Gem.configuration[:rdoc]
+        args = args.concat config_args
       end
 
       delete_legacy_args args
@@ -198,7 +201,8 @@ class Gem::RDoc
   end
 
   ##
-  # Generates RDoc and ri data for legacy RDoc versions
+  # Generates RDoc and ri data for legacy RDoc versions.  This method will not
+  # exist in future versions.
 
   def generate_legacy
     if @generate_rdoc then
@@ -215,7 +219,8 @@ class Gem::RDoc
   end
 
   ##
-  # Generates RDoc using a legacy version of RDoc from the ARGV-like +args+
+  # Generates RDoc using a legacy version of RDoc from the ARGV-like +args+.
+  # This method will not exist in future versions.
 
   def legacy_rdoc *args
     args << @spec.rdoc_options
@@ -255,7 +260,7 @@ class Gem::RDoc
   # #new_rdoc creates a new RDoc instance.  This method is provided only to
   # make testing easier.
 
-  def new_rdoc # :nodoc:
+  def new_rdoc
     ::RDoc::RDoc.new
   end
 
@@ -299,5 +304,5 @@ class Gem::RDoc
 
 end unless loaded_hook
 
-Gem.done_installing(&Gem::RDoc.method(:generation_hook)) unless loaded_hook
+Gem.done_installing(&Gem::RDoc.method(:generation_hook))
 

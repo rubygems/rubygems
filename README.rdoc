@@ -1,6 +1,7 @@
 = RubyGems
 
 Homepage:      :: http://rubygems.org
+Announcements: :: http://blog.rubygems.org
 Documentation: :: http://guides.rubygems.org
 Support:       :: http://help.rubygems.org
 Source:        :: http://github.com/rubygems/rubygems
@@ -23,7 +24,7 @@ See UPGRADING.rdoc for more details and alternative instructions.
 
 -----
 
-If you don't have RubyGems installed, your can still do it manually:
+If you don't have RubyGems installed, you can still do it manually:
 
 * Download from: https://rubygems.org/pages/download
 * Unpack into a directory and cd there
@@ -43,9 +44,10 @@ support request at {help.rubygems.org}[http://help.rubygems.org].
 
 === Filing Tickets
 
-You're sure you've found a bug!  But where do you let us know?  The best place
-for letting the RubyGems team know about bugs you've found is {on the rubygems
-tracker at rubyforge}[http://rubyforge.org/tracker/?group_id=126].
+Got a bug and you're not sure?  You're sure you have a bug, but don't know
+what to do next?  In any case, let us know about it!  The best place
+for letting the RubyGems team know about bugs or problems you're having is
+{on the rubygems issues page at github}[http://github.com/rubygems/rubygems/issues].
 
 === Bundler Compatibility
 

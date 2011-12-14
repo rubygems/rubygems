@@ -262,6 +262,8 @@ class Gem::Specification
 
     @platform = @new_platform.to_s
 
+    invalidate_memoized_attributes
+
     @new_platform
   end
 
@@ -576,9 +578,9 @@ class Gem::Specification
   ##
   # True when this gemspec has been activated. This attribute is not persisted.
 
-  attr_accessor :loaded
+  attr_accessor :loaded # :nodoc:
 
-  alias :loaded? :loaded
+  alias :loaded? :loaded # :nodoc:
 
   ##
   # Path this gemspec was loaded from.  This attribute is not persisted.
@@ -1045,6 +1047,7 @@ class Gem::Specification
     spec.instance_variable_set :@license,                   array[17]
     spec.instance_variable_set :@metadata,                  array[18]
     spec.instance_variable_set :@loaded,                    false
+    spec.instance_variable_set :@activated,                 false
 
     spec
   end
@@ -1105,7 +1108,8 @@ class Gem::Specification
     add_self_to_load_path
 
     Gem.loaded_specs[self.name] = self
-    self.activated = true
+    @activated = true
+    @loaded = true
 
     return true
   end
@@ -1608,6 +1612,7 @@ class Gem::Specification
 
   def initialize name = nil, version = nil
     @loaded = false
+    @activated = false
     @loaded_from = nil
     @original_platform = nil
 
@@ -1659,6 +1664,17 @@ class Gem::Specification
   end
 
   ##
+  # Expire memoized instance variables that can incorrectly generate, replace
+  # or miss files due changes in certain attributes used to compute them.
+
+  def invalidate_memoized_attributes
+    @full_name = nil
+    @cache_file = nil
+  end
+
+  private :invalidate_memoized_attributes
+
+  ##
   # The directory that this gem was installed into.
   # TODO: rename - horrible. this is the base_dir for a gem path
 
@@ -1686,7 +1702,7 @@ class Gem::Specification
   def lib_files
     @files.select do |file|
       require_paths.any? do |path|
-        file.index(path) == 0
+        file.start_with? path
       end
     end
   end
@@ -1710,7 +1726,20 @@ class Gem::Specification
   # to a String.
 
   def loaded_from= path
-    @loaded_from = path.to_s
+    @loaded_from   = path.to_s
+
+    # reset everything @loaded_from depends upon
+    @base_dir      = nil
+    @bin_dir       = nil
+    @cache_dir     = nil
+    @cache_file    = nil
+    @doc_dir       = nil
+    @full_gem_path = nil
+    @gem_dir       = nil
+    @gems_dir      = nil
+    @ri_dir        = nil
+    @spec_dir      = nil
+    @spec_file     = nil
   end
 
   ##
@@ -1727,7 +1756,7 @@ class Gem::Specification
     # TODO: do we need these?? Kill it
     glob = File.join(self.lib_dirs_glob, glob)
 
-    Dir[glob].map { |f| f.untaint } # FIX our tests are brokey, run w/ SAFE=1
+    Dir[glob].map { |f| f.untaint } # FIX our tests are broken, run w/ SAFE=1
   end
 
   ##
@@ -1898,14 +1927,14 @@ class Gem::Specification
 
   def ruby_code(obj)
     case obj
-    when String            then '%q{' + obj + '}'
+    when String            then obj.dump
     when Array             then '[' + obj.map { |x| ruby_code x }.join(", ") + ']'
     when Hash              then
-      seg = obj.keys.sort.map { |k| "%q{#{k}} => %q{#{obj[k]}}" }
+      seg = obj.keys.sort.map { |k| "#{k.to_s.dump} => #{obj[k].to_s.dump}" }
       "{ #{seg.join(', ')} }"
-    when Gem::Version      then obj.to_s.inspect
-    when Date              then '%q{' + obj.strftime('%Y-%m-%d') + '}'
-    when Time              then '%q{' + obj.strftime('%Y-%m-%d') + '}'
+    when Gem::Version      then obj.to_s.dump
+    when Date              then obj.strftime('%Y-%m-%d').dump
+    when Time              then obj.strftime('%Y-%m-%d').dump
     when Numeric           then obj.inspect
     when true, false, nil  then obj.inspect
     when Gem::Platform     then "Gem::Platform.new(#{obj.to_a.inspect})"
@@ -2070,34 +2099,36 @@ class Gem::Specification
       end
     end
 
-    result << nil
-    result << "  if s.respond_to? :specification_version then"
-    result << "    s.specification_version = #{specification_version}"
-    result << nil
+    unless dependencies.empty? then
+      result << nil
+      result << "  if s.respond_to? :specification_version then"
+      result << "    s.specification_version = #{specification_version}"
+      result << nil
 
-    result << "    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then"
+      result << "    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then"
 
-    dependencies.each do |dep|
-      req = dep.requirements_list.inspect
-      dep.instance_variable_set :@type, :runtime if dep.type.nil? # HACK
-      result << "      s.add_#{dep.type}_dependency(%q<#{dep.name}>, #{req})"
-    end
+      dependencies.each do |dep|
+        req = dep.requirements_list.inspect
+        dep.instance_variable_set :@type, :runtime if dep.type.nil? # HACK
+        result << "      s.add_#{dep.type}_dependency(%q<#{dep.name}>, #{req})"
+      end
 
-    result << "    else"
+      result << "    else"
 
-    dependencies.each do |dep|
-      version_reqs_param = dep.requirements_list.inspect
-      result << "      s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
-    end
+      dependencies.each do |dep|
+        version_reqs_param = dep.requirements_list.inspect
+        result << "      s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
+      end
 
-    result << '    end'
+      result << '    end'
 
-    result << "  else"
+      result << "  else"
       dependencies.each do |dep|
         version_reqs_param = dep.requirements_list.inspect
         result << "    s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
       end
-    result << "  end"
+      result << "  end"
+    end
 
     result << "end"
     result << nil
@@ -2329,6 +2360,8 @@ class Gem::Specification
   def version= version
     @version = Gem::Version.create(version)
     self.required_rubygems_version = '> 1.3.1' if @version.prerelease?
+    invalidate_memoized_attributes
+
     return @version
   end
 
@@ -2361,3 +2394,5 @@ class Gem::Specification
   # deprecate :file_name,           :cache_file, 2011, 10
   # deprecate :full_gem_path,     :cache_file, 2011, 10
 end
+
+Gem.clear_paths

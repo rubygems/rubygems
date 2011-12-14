@@ -98,6 +98,7 @@ gems:
 
     # TODO: why does the remote fetcher need it written to disk?
     @a1, @a1_gem = util_gem 'a', '1' do |s| s.executables << 'a_bin' end
+    @a1.loaded_from = File.join(@gemhome, 'specifications', @a1.full_name)
 
     Gem::RemoteFetcher.fetcher = nil
 
@@ -275,8 +276,8 @@ gems:
         inst = Gem::RemoteFetcher.fetcher
       end
 
-      assert_equal File.join(@tempdir, @a1.file_name),
-        inst.download(@a1, local_path)
+      assert_equal(File.join(@tempdir, @a1.file_name),
+                   inst.download(@a1, local_path))
     ensure
       FileUtils.chmod 0755, @a1.cache_dir
     end
@@ -302,6 +303,7 @@ gems:
       s.platform = Gem::Platform::CURRENT
       s.instance_variable_set :@original_platform, original_platform
     end
+    e1.loaded_from = File.join(@gemhome, 'specifications', e1.full_name)
 
     e1_data = nil
     File.open e1_gem, 'rb' do |fp|
@@ -339,11 +341,33 @@ gems:
   def test_download_unsupported
     inst = Gem::RemoteFetcher.fetcher
 
-    e = assert_raises Gem::InstallError do
+    e = assert_raises ArgumentError do
       inst.download @a1, 'ftp://gems.rubyforge.org'
     end
 
     assert_equal 'unsupported URI scheme ftp', e.message
+  end
+
+  def test_download_to_cache
+    @a2, @a2_gem = util_gem 'a', '2'
+
+    util_setup_spec_fetcher @a1, @a2
+    @fetcher.instance_variable_set :@a1, @a1
+    @fetcher.instance_variable_set :@a2, @a2
+    def @fetcher.fetch_path uri, mtime = nil, head = false
+      case uri.request_uri
+      when /#{@a1.spec_name}/ then
+        Gem.deflate Marshal.dump @a1
+      when /#{@a2.spec_name}/ then
+        Gem.deflate Marshal.dump @a2
+      else
+        uri.to_s
+      end
+    end
+
+    gem = Gem::RemoteFetcher.fetcher.download_to_cache dep 'a'
+
+    assert_equal @a2.file_name, File.basename(gem)
   end
 
   def test_explicit_proxy

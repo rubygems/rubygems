@@ -201,7 +201,7 @@ class Gem::CommandManager
         ui.errs.puts "\t#{e.backtrace.join "\n\t"}" if
           Gem.configuration.backtrace
       end
-      retry
+      retry # TODO: ugh. remove the clevar
     end
   end
 

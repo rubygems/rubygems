@@ -94,11 +94,15 @@
 #
 # -The RubyGems Team
 
+# Ruby 1.9.x has introduced some things that are awkward, and we need to
+# support them, so we define some constants to use later.
 module Gem
   QUICKLOADER_SUCKAGE = RUBY_VERSION =~ /^1\.9\.1/
   GEM_PRELUDE_SUCKAGE = RUBY_VERSION =~ /^1\.9\.2/
 end
 
+# Gem::QuickLoader exists in the gem prelude code in ruby 1.9.2 itself.
+# We gotta get rid of it if it's there, before we do anything else.
 if Gem::GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader) then
   Gem::QuickLoader.remove
 

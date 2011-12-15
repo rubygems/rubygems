@@ -452,7 +452,7 @@ module Gem
     require 'fileutils'
 
     old_umask = File.umask
-    File.umask old_umask | 022
+    File.umask old_umask | 002
 
     %w[cache doc gems specifications].each do |name|
       subdir = File.join dir, name

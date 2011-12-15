@@ -5,30 +5,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-module Gem
-  QUICKLOADER_SUCKAGE = RUBY_VERSION =~ /^1\.9\.1/
-  GEM_PRELUDE_SUCKAGE = RUBY_VERSION =~ /^1\.9\.2/
-end
-
-if Gem::GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader) then
-  Gem::QuickLoader.remove
-
-  $LOADED_FEATURES.delete Gem::QuickLoader.path_to_full_rubygems_library
-
-  if $LOADED_FEATURES.any? do |path| path.end_with? '/rubygems.rb' end then
-    # TODO path does not exist here
-    raise LoadError, "another rubygems is already loaded from #{path}"
-  end
-
-  class << Gem
-    remove_method :try_activate if Gem.respond_to?(:try_activate, true)
-  end
-end
-
-require 'rubygems/defaults'
-require 'rbconfig'
-require "rubygems/deprecate"
-
 ##
 # RubyGems is the Ruby standard for publishing and managing third party
 # libraries.
@@ -117,6 +93,31 @@ require "rubygems/deprecate"
 # Thanks!
 #
 # -The RubyGems Team
+
+module Gem
+  QUICKLOADER_SUCKAGE = RUBY_VERSION =~ /^1\.9\.1/
+  GEM_PRELUDE_SUCKAGE = RUBY_VERSION =~ /^1\.9\.2/
+end
+
+if Gem::GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader) then
+  Gem::QuickLoader.remove
+
+  $LOADED_FEATURES.delete Gem::QuickLoader.path_to_full_rubygems_library
+
+  if $LOADED_FEATURES.any? do |path| path.end_with? '/rubygems.rb' end then
+    # TODO path does not exist here
+    raise LoadError, "another rubygems is already loaded from #{path}"
+  end
+
+  class << Gem
+    remove_method :try_activate if Gem.respond_to?(:try_activate, true)
+  end
+end
+
+require 'rubygems/defaults'
+require 'rbconfig'
+require "rubygems/deprecate"
+
 
 module Gem
   VERSION = '1.8.10'

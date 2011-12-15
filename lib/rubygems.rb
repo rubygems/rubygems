@@ -57,8 +57,8 @@
 # == Bugs
 #
 # You can submit bugs to the
-# {RubyGems bug tracker}[http://rubyforge.org/tracker/?atid=575&group_id=126]
-# on RubyForge
+# {RubyGems bug tracker}[https://github.com/rubygems/rubygems/issues]
+# on GitHub
 #
 # == Credits
 #

@@ -353,6 +353,29 @@ class TestGem < Gem::TestCase
 
   ##
   # [A] depends on
+  #     [C]  = 1.0 depends on
+  #         [B] = 2.0
+  #     [B] ~> 1.0 (satisfied by 1.0)
+
+  def test_self_activate_checks_dependencies
+    a, _  = util_spec 'a', '1.0'
+            a.add_dependency 'c', '= 1.0'
+            a.add_dependency 'b', '~> 1.0'
+
+            util_spec 'b', '1.0'
+            util_spec 'b', '2.0'
+    c,  _ = util_spec 'c', '1.0', 'b' => '= 2.0'
+
+    e = assert_raises Gem::LoadError do
+      assert_activate nil, a, c, "b"
+    end
+
+    expected = "can't satisfy 'b (~> 1.0)', already activated 'b-2.0'"
+    assert_equal expected, e.message
+  end
+
+  ##
+  # [A] depends on
   #     [B] ~> 1.0 (satisfied by 1.0)
   #     [C]  = 1.0 depends on
   #         [B] = 2.0

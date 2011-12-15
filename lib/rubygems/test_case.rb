@@ -499,8 +499,11 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     if deps then
       block = proc do |s|
-        deps.each do |n, req|
-          s.add_dependency n, (req || '>= 0')
+        # Since Hash#each is unordered in 1.8, sort
+        # the keys and iterate that way so the tests are
+        # deteriminstic on all implementations.
+        deps.keys.sort.each do |n|
+          s.add_dependency n, (deps[n] || '>= 0')
         end
       end
     end
@@ -520,8 +523,11 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     if deps then
       block = proc do |s|
-        deps.each do |n, req|
-          s.add_dependency n, (req || '>= 0')
+        # Since Hash#each is unordered in 1.8, sort
+        # the keys and iterate that way so the tests are
+        # deteriminstic on all implementations.
+        deps.keys.sort.each do |n|
+          s.add_dependency n, (deps[n] || '>= 0')
         end
       end
     end

@@ -104,6 +104,9 @@ end
 
 # Gem::QuickLoader exists in the gem prelude code in ruby 1.9.2 itself.
 # We gotta get rid of it if it's there, before we do anything else.
+# 
+# REFACTOR: Pulling this kind of thing out into some sort of file with
+# all of the hacks would be a Good Idea.
 if Gem::GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader) then
   Gem::QuickLoader.remove
 
@@ -140,7 +143,12 @@ module Gem
     # Version requirement of gem
     attr_accessor :requirement
   end
-
+  
+  # REFACTOR: Things like stopdoc tend to indicate that something might not
+  # be particularly well factored, and in this case, this is true. We're
+  # sort of patching over weirdness with RbConfig. This should be pulled
+  # out into some sort of file with all the compatibility hacks in it.
+  
   # :stopdoc:
 
   RubyGemsVersion = VERSION

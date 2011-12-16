@@ -259,6 +259,8 @@ module Gem
     spec.activate
   end
 
+  # DOC: This needs to be documented or nodoc'd.
+
   def self.unresolved_deps
     Gem::Specification.unresolved_deps
   end
@@ -404,10 +406,12 @@ module Gem
     Zlib::Deflate.deflate data
   end
 
+  # DOC: needs doc'd or :nodoc'd
   def self.paths
     @paths ||= Gem::PathSupport.new
   end
 
+  # DOC: needs doc'd or :nodoc'd
   def self.paths=(env)
     clear_paths
     @paths = Gem::PathSupport.new env
@@ -923,6 +927,7 @@ module Gem
     @ruby
   end
 
+  # DOC: needs doc'd or :nodoc'd
   def self.latest_spec_for name
     dependency  = Gem::Dependency.new name
     fetcher     = Gem::SpecFetcher.fetcher
@@ -937,11 +942,13 @@ module Gem
     match and fetcher.fetch_spec(*match)
   end
 
+  # DOC: needs doc'd or :nodoc'd
   def self.latest_version_for name
     spec = latest_spec_for name
     spec and spec.version
   end
 
+  # DOC: needs doc'd or :nodoc'd
   def self.latest_rubygems_version
     latest_version_for("rubygems-update") or
       raise "Can't find 'rubygems-update' in any repo. Check `gem source list`."
@@ -999,6 +1006,9 @@ module Gem
   ##
   # Need to be able to set the sources without calling
   # Gem.sources.replace since that would cause an infinite loop.
+  #
+  # DOC: This comment is not documentation about the method itself, it's
+  # more of a code comment about the implementation.
 
   def self.sources= new_sources
     @sources = new_sources
@@ -1124,6 +1134,9 @@ module Gem
     load_plugin_files files
   end
 
+  # FIX: Almost everywhere else we use the `def self.` way of defining class
+  # methods, and then we switch over to `class << self` here. Pick one or the
+  # other.
   class << self
 
     ##
@@ -1203,8 +1216,10 @@ module Gem
   require "rubygems/specification"
 end
 
+# REFACTOR: All these patches should be pulled out into their own file.
 module Kernel
 
+  # REFACTOR: This should be pulled out into some kind of hacks file.
   remove_method :gem if 'method' == defined? gem # from gem_prelude.rb on 1.9
 
   ##
@@ -1261,6 +1276,11 @@ end
 # the package is loaded as a gem, return the gem specific data directory.
 # Otherwise return a path to the share area as define by
 # "#{ConfigMap[:datadir]}/#{package_name}".
+# 
+# REFACTOR: This should be pulled out into some kind of compatiblity file
+# with all the hacks to other stuff.
+#
+# FIX: This has both a comment and nodoc. Which is right?
 
 def RbConfig.datadir(package_name) # :nodoc:
   warn "#{Gem.location_of_caller.join ':'}:Warning: " \
@@ -1275,6 +1295,7 @@ end
 
 require 'rubygems/exceptions'
 
+# REFACTOR: This should be pulled out into some kind of hacks file.
 gem_preluded = Gem::GEM_PRELUDE_SUCKAGE and defined? Gem
 unless gem_preluded then # TODO: remove guard after 1.9.2 dropped
   begin
@@ -1301,6 +1322,7 @@ end
 
 require 'rubygems/custom_require'
 
+# REFACTOR: This should be pulled out into some kind of file.
 module Gem
   class << self
     extend Gem::Deprecate

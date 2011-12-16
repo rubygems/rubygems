@@ -45,7 +45,7 @@ installed elsewhere in GEM_PATH the cleanup command won't touch it.
     end
 
     gems_to_cleanup = unless options[:args].empty? then
-                        options[:args].map do |gem_name|
+                        options[:args].map {|arg| arg.split(',')}.compact.flatten.map do |gem_name|
                           Gem::Specification.find_all_by_name gem_name
                         end.flatten
                       else

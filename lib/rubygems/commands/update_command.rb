@@ -79,7 +79,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
     if updated.empty? then
       say "Nothing to update"
     else
-      say "Gems updated: #{updated.map { |spec| spec.name }.join ', '}"
+      say "Gems updated: #{updated.map { |spec| spec.name }.join ' '}"
     end
   end
 

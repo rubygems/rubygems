@@ -4,15 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/version'
-require 'rubygems/requirement'
-require 'rubygems/platform'
-require "rubygems/deprecate"
-
-# :stopdoc:
-class Date; end # for ruby_code if date.rb wasn't required
-# :startdoc:
-
 ##
 # The Specification class contains the information for a Gem.  Typically
 # defined in a .gemspec file or a Rakefile, and looks like this:
@@ -42,6 +33,16 @@ class Date; end # for ruby_code if date.rb wasn't required
 #
 #   s.metadata = { "bugtracker" => "http://somewhere.com/blah" }
 #
+
+
+require 'rubygems/version'
+require 'rubygems/requirement'
+require 'rubygems/platform'
+require "rubygems/deprecate"
+
+# :stopdoc:
+class Date; end # for ruby_code if date.rb wasn't required
+# :startdoc:
 
 class Gem::Specification
 

@@ -87,6 +87,7 @@
 # * Phil Hagelberg     -- technomancy(at)gmail.com
 # * Ryan Davis         -- ryand-ruby(at)zenspider.com
 # * Evan Phoenix       -- evan(at)fallingsnow.net
+# * Steve Klabnik      -- steve(at)steveklabnik.com
 #
 # (If your name is missing, PLEASE let us know!)
 #

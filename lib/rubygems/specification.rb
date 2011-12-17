@@ -4,15 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/version'
-require 'rubygems/requirement'
-require 'rubygems/platform'
-require "rubygems/deprecate"
-
-# :stopdoc:
-class Date; end # for ruby_code if date.rb wasn't required
-# :startdoc:
-
 ##
 # The Specification class contains the information for a Gem.  Typically
 # defined in a .gemspec file or a Rakefile, and looks like this:
@@ -43,7 +34,24 @@ class Date; end # for ruby_code if date.rb wasn't required
 #   s.metadata = { "bugtracker" => "http://somewhere.com/blah" }
 #
 
+
+require 'rubygems/version'
+require 'rubygems/requirement'
+require 'rubygems/platform'
+require "rubygems/deprecate"
+
+# REFACTOR: This should be pulled out into some sort of 'all the
+# compatability hacks' file.
+
+# :stopdoc:
+class Date; end # for ruby_code if date.rb wasn't required
+# :startdoc:
+
 class Gem::Specification
+
+  # REFACTOR: Consider breaking out this version stuff into a separate
+  # module. There's enough special stuff around it that it may justify
+  # a separate class.
 
   ##
   # The version number of a specification that does not specify one
@@ -98,6 +106,8 @@ class Gem::Specification
 
   MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16, 3 => 17, 4 => 18 }
 
+  # FIX: Do we really need a local and a constant? Do we need the
+  # constant? It's only used three times. What about `Date.today`?
   today = Time.now.utc
   TODAY = Time.utc(today.year, today.month, today.day)
 
@@ -291,6 +301,7 @@ class Gem::Specification
 
   def files
     # DO NOT CHANGE TO ||= ! This is not a normal accessor. (yes, it sucks)
+    # DOC: Why isn't it normal? Why does it suck? How can we fix this?
     @files = [@files,
               @test_files,
               add_bindir(@executables),
@@ -1000,6 +1011,7 @@ class Gem::Specification
     Gem.post_reset_hooks.each { |hook| hook.call }
   end
 
+  # DOC: This method needs documented or nodoc'd
   def self.unresolved_deps
     @unresolved_deps ||= Hash.new { |h, n| h[n] = Gem::Dependency.new n }
   end
@@ -1358,6 +1370,7 @@ class Gem::Specification
   #   [depending_gem, dependency, [list_of_gems_that_satisfy_dependency]]
 
   def dependent_gems
+    # REFACTOR: out = []; each; out; ? Really? No #collect love?
     out = []
     Gem::Specification.each do |spec|
       spec.dependencies.each do |dep|
@@ -2019,7 +2032,7 @@ class Gem::Specification
   end
 
   ##
-  # Singular accessor for #test_files
+  # Singular mutator for #test_files
 
   def test_file= file
     self.test_files = [file]
@@ -2059,6 +2072,10 @@ class Gem::Specification
   # Returns a Ruby code representation of this specification, such that it can
   # be eval'ed and reconstruct the same specification later.  Attributes that
   # still have their default values are omitted.
+  #
+  # REFACTOR: This, plus stuff like #ruby_code and #pretty_print, should
+  # probably be extracted out into some sort of separate class. SRP, do you
+  # speak it!??!
 
   def to_ruby
     mark_version
@@ -2261,6 +2278,7 @@ class Gem::Specification
       end
     end
 
+    # FIX: uhhhh single element array.each?
     [:authors].each do |field|
       val = self.send field
       raise Gem::InvalidSpecificationException, "#{field} may not be empty" if
@@ -2305,6 +2323,7 @@ class Gem::Specification
 
     # reject lazy developers:
 
+    # FIX: Doesn't this just evaluate to "FIXME" or "TODO"?
     lazy = '"FIxxxXME" or "TOxxxDO"'.gsub(/xxx/, '')
 
     unless authors.grep(/FI XME|TO DO/x).empty? then
@@ -2396,4 +2415,5 @@ class Gem::Specification
   # deprecate :full_gem_path,     :cache_file, 2011, 10
 end
 
+# DOC: What is this and why is it here, randomly, at the end of this file?
 Gem.clear_paths

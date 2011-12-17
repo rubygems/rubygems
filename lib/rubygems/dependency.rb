@@ -11,6 +11,9 @@ class Gem::Dependency
   # When this list is updated, be sure to change
   # Gem::Specification::CURRENT_SPECIFICATION_VERSION as well.
 
+  # REFACTOR: This type of constant, TYPES, indicates we might want
+  # two classes, used via inheretance or duck typing.
+
   TYPES = [
            :development,
            :runtime,
@@ -112,6 +115,8 @@ class Gem::Dependency
     #
     # Children, define explicit marshal and unmarshal behavior for
     # public classes. Marshal formats are part of your public API.
+    
+    # REFACTOR: See above
 
     if defined?(@version_requirement) && @version_requirement
       version = @version_requirement.instance_variable_get :@version
@@ -122,6 +127,7 @@ class Gem::Dependency
     @requirement = @version_requirements if defined?(@version_requirements)
   end
 
+  # DOC: this method needs documentation or :nodoc''d
   def requirements_list
     requirement.as_list
   end
@@ -179,12 +185,16 @@ class Gem::Dependency
     requirement.satisfied_by? version
   end
 
+  # DOC: this method needs either documented or :nodoc'd
+
   def match? name, version
     return false unless self.name === name
     return true if requirement.none?
 
     requirement.satisfied_by? Gem::Version.new(version)
   end
+
+  # DOC: this method needs either documented or :nodoc'd
 
   def matches_spec? spec
     return false unless name === spec.name
@@ -212,6 +222,8 @@ class Gem::Dependency
     self.class.new name, self_req.as_list.concat(other_req.as_list)
   end
 
+  # DOC: this method needs either documented or :nodoc'd
+
   def matching_specs platform_only = false
     matches = Gem::Specification.find_all { |spec|
       self.name === spec.name and # TODO: == instead of ===
@@ -234,6 +246,8 @@ class Gem::Dependency
     @requirement.specific?
   end
 
+  # DOC: this method needs either documented or :nodoc'd
+
   def to_specs
     matches = matching_specs true
 
@@ -251,6 +265,8 @@ class Gem::Dependency
 
     matches
   end
+
+  # DOC: this method needs either documented or :nodoc'd
 
   def to_spec
     matches = self.to_specs

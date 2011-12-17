@@ -47,7 +47,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     res = Gem::DependencyResolver.new(s, deps)
 
-    assert_set [a, b], res.resolve!
+    assert_set [a, b], res.resolve
   end
 
   def test_pulls_in_dependencies
@@ -65,7 +65,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     res = Gem::DependencyResolver.new(s, deps)
 
-    assert_set [a, b, c], res.resolve!
+    assert_set [a, b, c], res.resolve
   end
 
   def test_picks_highest_version
@@ -78,7 +78,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     res = Gem::DependencyResolver.new(s, [ad])
 
-    assert_set [a2], res.resolve!
+    assert_set [a2], res.resolve
   end
 
   def test_only_returns_spec_once
@@ -94,7 +94,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     res = Gem::DependencyResolver.new(s, [ad, bd])
 
-    assert_set [a1, b1, c1], res.resolve!
+    assert_set [a1, b1, c1], res.resolve
   end
 
   def test_picks_lower_version_when_needed
@@ -111,7 +111,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     res = Gem::DependencyResolver.new(s, [ad, bd])
 
-    assert_set [a1, b1, c1], res.resolve!
+    assert_set [a1, b1, c1], res.resolve
 
     cons = res.conflicts
 
@@ -139,7 +139,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     res = Gem::DependencyResolver.new(s, [ad, bd])
 
-    assert_set [a1, b1, c1, d4], res.resolve!
+    assert_set [a1, b1, c1, d4], res.resolve
 
     cons = res.conflicts
 
@@ -165,8 +165,10 @@ class TestGemDependencyResolver < Gem::TestCase
     r = Gem::DependencyResolver.new(s, [ad, bd])
 
     e = assert_raises Gem::DependencyResolutionError do
-      r.resolve!
+      r.resolve
     end
+
+    assert_equal "unable to resolve conflicting dependencies 'c (= 2)' and 'c (= 1)'", e.message
 
     deps = [make_dep("c", "= 2"), make_dep("c", "= 1")]
     assert_equal deps, e.conflicting_dependencies
@@ -189,8 +191,10 @@ class TestGemDependencyResolver < Gem::TestCase
     r = Gem::DependencyResolver.new(set(), [ad])
 
     e = assert_raises Gem::UnsatisfiableDepedencyError do
-      r.resolve!
+      r.resolve
     end
+
+    assert_equal "unable to find any gem matching dependency 'a (>= 0)'", e.message
 
     assert_equal "a (>= 0)", e.dependency.to_s
   end
@@ -203,7 +207,7 @@ class TestGemDependencyResolver < Gem::TestCase
     r = Gem::DependencyResolver.new(set(a1), [ad])
 
     e = assert_raises Gem::UnsatisfiableDepedencyError do
-      r.resolve!
+      r.resolve
     end
 
     assert_equal "a (= 3)", e.dependency.to_s
@@ -225,8 +229,10 @@ class TestGemDependencyResolver < Gem::TestCase
     r = Gem::DependencyResolver.new(s, [ad, bd])
 
     e = assert_raises Gem::ImpossibleDependenciesError do
-      r.resolve!
+      r.resolve
     end
+
+    assert_equal "detected 2 conflicts with dependency 'c (>= 2)'", e.message
 
     assert_equal "c (>= 2)", e.dependency.to_s
 
@@ -253,6 +259,31 @@ class TestGemDependencyResolver < Gem::TestCase
 
     r = Gem::DependencyResolver.new(s, [ad, bd])
 
-    assert_set [a1, b1, c1], r.resolve!
+    assert_set [a1, b1, c1], r.resolve
+  end
+
+  def test_common_rack_activation_scenario
+    rack100 = util_spec "rack", "1.0.0"
+    rack101 = util_spec "rack", "1.0.1"
+
+    lib1 =    util_spec "lib", "1", "rack" => ">= 1.0.1"
+
+    rails =   util_spec "rails", "3", "actionpack" => "= 3"
+    ap =      util_spec "actionpack", "3", "rack" => ">= 1.0.0"
+
+    d1 = make_dep "rails"
+    d2 = make_dep "lib"
+
+    s = set(lib1, rails, ap, rack100, rack101)
+
+    r = Gem::DependencyResolver.new(s, [d1, d2])
+
+    assert_set [rails, ap, rack101, lib1], r.resolve
+
+    # check it with the deps reverse too
+
+    r = Gem::DependencyResolver.new(s, [d2, d1])
+
+    assert_set [lib1, rack101, rails, ap], r.resolve
   end
 end

@@ -1,13 +1,17 @@
+require 'rubygems/dependency'
+require 'rubygems/exceptions'
+
 module Gem
 
   # Raised when a DependencyConflict reaches the toplevel.
   # Indicates which dependencies were incompatible.
   #
-  class DependencyResolutionError < RuntimeError
+  class DependencyResolutionError < Gem::Exception
     def initialize(conflict)
-      super "error resolving dependencies"
-
       @conflict = conflict
+      a, b = conflicting_dependencies
+
+      super "unable to resolve conflicting dependencies '#{a}' and '#{b}'"
     end
 
     attr_reader :conflict
@@ -20,9 +24,10 @@ module Gem
   # Raised when a dependency requests a gem for which there is
   # no spec.
   #
-  class UnsatisfiableDepedencyError < StandardError
+  class UnsatisfiableDepedencyError < Gem::Exception
     def initialize(dep)
-      super "No gem found for dependency - #{dep}"
+      super "unable to find any gem matching dependency '#{dep}'"
+
       @dependency = dep
     end
 
@@ -32,8 +37,9 @@ module Gem
   # Raised when dependencies conflict and create the inability to
   # find a valid possible spec for a request.
   #
-  class ImpossibleDependenciesError < StandardError
+  class ImpossibleDependenciesError < Gem::Exception
     def initialize(request, conflicts)
+      super "detected #{conflicts.size} conflicts with dependency '#{request.dep}'"
       @request = request
       @conflicts = conflicts
     end
@@ -55,11 +61,7 @@ module Gem
       @available = available
       @needed = needed
 
-      @possible = Hash.new { |h,k| h[k] = [] }
-
-      @debug = false
-
-      @conflicts = []
+      @conflicts = nil
     end
 
     # Contains all the conflicts encountered while doing resolution
@@ -69,7 +71,9 @@ module Gem
     # Proceed with resolution! Returns an array of ActivationRequest
     # objects.
     #
-    def resolve!
+    def resolve
+      @conflicts = []
+
       needed = @needed.map { |n| DependencyRequest.new(n, nil) }
 
       res = resolve_for needed, []

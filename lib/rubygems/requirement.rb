@@ -1,9 +1,9 @@
-require "rubygems/version"
-require "rubygems/deprecate"
-
 ##
 # A Requirement is a set of one or more version restrictions. It supports a
 # few (<tt>=, !=, >, <, >=, <=, ~></tt>) different restriction operators.
+
+require "rubygems/version"
+require "rubygems/deprecate"
 
 class Gem::Requirement
   include Comparable

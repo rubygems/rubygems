@@ -1,7 +1,7 @@
-require "rubygems/requirement"
-
 ##
 # The Dependency class holds a Gem name and a Gem::Requirement.
+
+require "rubygems/requirement"
 
 class Gem::Dependency
 

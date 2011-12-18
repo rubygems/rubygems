@@ -105,10 +105,7 @@ require 'rubygems/defaults'
 require "rubygems/deprecate"
 require 'rubygems/compatability'
 
-
 module Gem
-  DEFAULT_HOST = "https://rubygems.org"
-
   ##
   # Raised when RubyGems is unable to load or activate a gem.  Contains the
   # name and version requirements of the gem that either conflicts with

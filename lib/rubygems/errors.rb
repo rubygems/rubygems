@@ -1,3 +1,18 @@
+module Gem
+  ##
+  # Raised when RubyGems is unable to load or activate a gem.  Contains the
+  # name and version requirements of the gem that either conflicts with
+  # already activated gems or that RubyGems is otherwise unable to activate.
+
+  class LoadError < ::LoadError
+    # Name of gem
+    attr_accessor :name
+
+    # Version requirement of gem
+    attr_accessor :requirement
+  end
+end
+
 class Gem::ErrorReason; end
 
 # Generated when trying to lookup a gem to indicate that the gem

@@ -104,21 +104,9 @@ end
 require 'rubygems/defaults'
 require 'rubygems/deprecate'
 require 'rubygems/compatability'
+require 'rubygems/errors'
 
 module Gem
-  ##
-  # Raised when RubyGems is unable to load or activate a gem.  Contains the
-  # name and version requirements of the gem that either conflicts with
-  # already activated gems or that RubyGems is otherwise unable to activate.
-
-  class LoadError < ::LoadError
-    # Name of gem
-    attr_accessor :name
-
-    # Version requirement of gem
-    attr_accessor :requirement
-  end
-
   RUBYGEMS_DIR = File.dirname File.expand_path(__FILE__)
   
   ##

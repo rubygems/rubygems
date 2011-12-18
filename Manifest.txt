@@ -48,6 +48,7 @@ lib/rubygems/commands/uninstall_command.rb
 lib/rubygems/commands/unpack_command.rb
 lib/rubygems/commands/update_command.rb
 lib/rubygems/commands/which_command.rb
+lib/rubygems/compatability.rb
 lib/rubygems/config_file.rb
 lib/rubygems/custom_require.rb
 lib/rubygems/defaults.rb

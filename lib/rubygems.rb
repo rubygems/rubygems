@@ -95,40 +95,18 @@
 #
 # -The RubyGems Team
 
-# Ruby 1.9.x has introduced some things that are awkward, and we need to
-# support them, so we define some constants to use later.
-module Gem
-  QUICKLOADER_SUCKAGE = RUBY_VERSION =~ /^1\.9\.1/
-  GEM_PRELUDE_SUCKAGE = RUBY_VERSION =~ /^1\.9\.2/
-end
-
-# Gem::QuickLoader exists in the gem prelude code in ruby 1.9.2 itself.
-# We gotta get rid of it if it's there, before we do anything else.
-# 
-# REFACTOR: Pulling this kind of thing out into some sort of file with
-# all of the hacks would be a Good Idea.
-if Gem::GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader) then
-  Gem::QuickLoader.remove
-
-  $LOADED_FEATURES.delete Gem::QuickLoader.path_to_full_rubygems_library
-
-  if $LOADED_FEATURES.any? do |path| path.end_with? '/rubygems.rb' end then
-    # TODO path does not exist here
-    raise LoadError, "another rubygems is already loaded from #{path}"
-  end
-
-  class << Gem
-    remove_method :try_activate if Gem.respond_to?(:try_activate, true)
-  end
-end
-
-require 'rubygems/defaults'
 require 'rbconfig'
-require "rubygems/deprecate"
-
 
 module Gem
   VERSION = '1.8.10'
+end
+
+require 'rubygems/defaults'
+require "rubygems/deprecate"
+require 'rubygems/compatability'
+
+
+module Gem
   DEFAULT_HOST = "https://rubygems.org"
 
   ##
@@ -143,39 +121,9 @@ module Gem
     # Version requirement of gem
     attr_accessor :requirement
   end
-  
-  # REFACTOR: Things like stopdoc tend to indicate that something might not
-  # be particularly well factored, and in this case, this is true. We're
-  # sort of patching over weirdness with RbConfig. This should be pulled
-  # out into some sort of file with all the compatibility hacks in it.
-  
-  # :stopdoc:
-
-  RubyGemsVersion = VERSION
-
-  RbConfigPriorities = %w[
-    EXEEXT RUBY_SO_NAME arch bindir datadir libdir ruby_install_name
-    ruby_version rubylibprefix sitedir sitelibdir vendordir vendorlibdir
-  ]
-
-  unless defined?(ConfigMap)
-    ##
-    # Configuration settings from ::RbConfig
-    ConfigMap = Hash.new do |cm, key|
-      cm[key] = RbConfig::CONFIG[key.to_s]
-    end
-  else
-    RbConfigPriorities.each do |key|
-      ConfigMap[key.to_sym] = RbConfig::CONFIG[key]
-    end
-  end
-
-  RubyGemsPackageVersion = VERSION
 
   RUBYGEMS_DIR = File.dirname File.expand_path(__FILE__)
-
-  # :startdoc:
-
+  
   ##
   # An Array of Regexps that match windows ruby platforms.
 

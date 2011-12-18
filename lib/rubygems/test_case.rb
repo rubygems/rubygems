@@ -11,7 +11,7 @@ begin
 rescue Gem::LoadError
 end
 
-require "rubygems/deprecate"
+require 'rubygems/deprecate'
 require 'minitest/autorun'
 require 'fileutils'
 require 'tmpdir'

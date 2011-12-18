@@ -1,3 +1,9 @@
+##
+# This file contains all the various exceptions and other errors that are used
+# inside of RubyGems.
+# 
+# DOC: Confirm _all_
+
 module Gem
   ##
   # Raised when RubyGems is unable to load or activate a gem.  Contains the
@@ -11,40 +17,57 @@ module Gem
     # Version requirement of gem
     attr_accessor :requirement
   end
-end
 
-class Gem::ErrorReason; end
+  # FIX: does this need to exist? The subclass is the only other reference
+  # I can find.
+  class ErrorReason; end
 
-# Generated when trying to lookup a gem to indicate that the gem
-# was found, but that it isn't usable on the current platform.
-#
-# fetch and install read these and report them to the user to aid
-# in figuring out why a gem couldn't be installed.
-#
-class Gem::PlatformMismatch < Gem::ErrorReason
+  # Generated when trying to lookup a gem to indicate that the gem
+  # was found, but that it isn't usable on the current platform.
+  #
+  # fetch and install read these and report them to the user to aid
+  # in figuring out why a gem couldn't be installed.
+  #
+  class PlatformMismatch < ErrorReason
 
-  attr_reader :name
-  attr_reader :version
-  attr_reader :platforms
+    ##
+    # the name of the gem
+    attr_reader :name
 
-  def initialize(name, version)
-    @name = name
-    @version = version
-    @platforms = []
-  end
+    ##
+    # the version
+    attr_reader :version
 
-  def add_platform(platform)
-    @platforms << platform
-  end
+    ##
+    # The platforms that are mismatched
+    attr_reader :platforms
 
-  def wordy
-    prefix = "Found #{@name} (#{@version})"
+    def initialize(name, version)
+      @name = name
+      @version = version
+      @platforms = []
+    end
 
-    if @platforms.size == 1
-      "#{prefix}, but was for platform #{@platforms[0]}"
-    else
-      "#{prefix}, but was for platforms #{@platforms.join(' ,')}"
+    ##
+    # append a platform to the list of mismatched platforms.
+    # 
+    # Platforms are added via this instead of injected via the constructor
+    # so that we can loop over a list of mismatches and just add them rather
+    # than perform some kind of calculation mismatch summary before creation.
+    def add_platform(platform)
+      @platforms << platform
+    end
+
+    ##
+    # A wordy description of the error.
+    def wordy
+      prefix = "Found #{@name} (#{@version})"
+
+      "Found %s (%), but was for platform%s %s" %
+        [@name,
+         @version,
+         @platforms.size == 1 ? 's' : '', 
+         @platforms.join(' ,')]
     end
   end
-
 end

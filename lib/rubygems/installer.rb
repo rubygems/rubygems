@@ -172,7 +172,7 @@ class Gem::Installer
   # Lazy accessor for the spec's gem directory.
 
   def gem_dir
-    @gem_dir ||= spec.gem_dir.dup.untaint
+    @gem_dir ||= File.join(gem_home, "gems", spec.full_name)
   end
 
   ##
@@ -209,9 +209,6 @@ class Gem::Installer
     current_path = Gem.paths.path
 
     verify_gem_home(options[:unpack])
-
-    # HACK don't change the global settings just to install a gem!
-    Gem.use_paths gem_home, current_path
 
     # If we're forcing the install then disable security unless the security
     # policy says that we only install signed gems.
@@ -266,13 +263,13 @@ class Gem::Installer
 
     # TODO should be always cache the file? Other classes have options
     # to controls if caching is done.
-    cache_file = spec.cache_file
+    cache_file = File.join(gem_home, "cache", "#{spec.full_name}.gem")
 
     FileUtils.cp gem, cache_file unless File.exist? cache_file
 
     say spec.post_install_message unless spec.post_install_message.nil?
 
-    spec.loaded_from = spec.spec_file
+    spec.loaded_from = spec_file
 
     Gem::Specification.add_spec spec unless Gem::Specification.include? spec
 
@@ -286,12 +283,6 @@ class Gem::Installer
   # move this rescue to arround the code that actually might raise it.
   rescue Zlib::GzipFile::Error
     raise Gem::InstallError, "gzip error installing #{gem}"
-  ensure
-    # conditional since we might be here because we're erroring out early.
-    # HACK again, don't manipulate the global settings to install.
-    if current_path
-      Gem.use_paths current_home, current_path
-    end
   end
 
   ##
@@ -325,13 +316,19 @@ class Gem::Installer
   end
 
   ##
+  # The location of of the spec file that is installed.
+  #
+
+  def spec_file
+    File.join gem_home, "specifications", "#{spec.full_name}.gemspec"
+  end
+
+  ##
   # Writes the .gemspec specification (in Ruby) to the gem home's
   # specifications directory.
 
   def write_spec
-    file_name = spec.spec_file.untaint
-
-    File.open(file_name, "w") do |file|
+    File.open(spec_file, "w") do |file|
       file.puts spec.to_ruby_for_cache
     end
   end
@@ -359,7 +356,7 @@ class Gem::Installer
 
     spec.executables.each do |filename|
       filename.untaint
-      bin_path = spec.bin_file filename
+      bin_path = File.join gem_dir, spec.bindir, filename
 
       unless File.exist? bin_path then
         # TODO change this to a more useful warning
@@ -445,7 +442,7 @@ class Gem::Installer
 
   def shebang(bin_file_name)
     ruby_name = Gem::ConfigMap[:ruby_install_name] if @env_shebang
-    path = spec.bin_file bin_file_name
+    path = File.join gem_dir, spec.bindir, bin_file_name
     first_line = File.open(path, "rb") {|file| file.gets}
 
     if /\A#!/ =~ first_line then

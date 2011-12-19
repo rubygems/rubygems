@@ -1,5 +1,9 @@
+require 'rubygems'
 require 'rubygems/dependency'
 require 'rubygems/exceptions'
+
+require 'uri'
+require 'net/http'
 
 module Gem
 
@@ -39,29 +43,219 @@ module Gem
   #
   class ImpossibleDependenciesError < Gem::Exception
     def initialize(request, conflicts)
-      super "detected #{conflicts.size} conflicts with dependency '#{request.dep}'"
+      s = conflicts.size == 1 ? "" : "s"
+      super "detected #{conflicts.size} conflict#{s} with dependency '#{request.dependency}'"
       @request = request
       @conflicts = conflicts
     end
 
     def dependency
-      @request.dep
+      @request.dependency
     end
 
     attr_reader :conflicts
   end
 
   # Given a set of Gem::Dependency objects as +needed+ and a way
-  # to query the set of available specs via +available+, calculates
+  # to query the set of available specs via +set+, calculates
   # a set of ActivationRequest objects which indicate all the specs
   # that should be activated to meet the all the requirements.
   #
   class DependencyResolver
-    def initialize(available, needed)
-      @available = available
+
+    # Represents a specification retrieved via the rubygems.org
+    # API. This is used to avoid having to load the full
+    # Specification object when all we need is the name, version,
+    # and dependencies.
+    #
+    class APISpecification
+      def initialize(set, api_data)
+        @set = set
+        @name = api_data[:name]
+        @version = Gem::Version.new api_data[:number]
+        @dependencies = api_data[:dependencies].map do |name, ver|
+          Gem::Dependency.new name, ver.split(/\s*,\s*/)
+        end
+      end
+
+      attr_reader :name, :version, :dependencies
+
+      def full_name
+        "#{@name}-#{@version}"
+      end
+    end
+
+    # The global rubygems pool, available via the rubygems.org API.
+    # Returns instances of APISpecification.
+    #
+    class APISet
+      def initialize
+        @data = Hash.new { |h,k| h[k] = [] }
+      end
+
+      # Return data for all versions of the gem +name+.
+      #
+      def versions(name)
+        if @data.key?(name)
+          return @data[name]
+        end
+
+        u = URI.parse "http://rubygems.org/api/v1/dependencies?gems=#{name}"
+        str = Net::HTTP.get(u)
+
+        Marshal.load(str).each do |ver|
+          @data[ver[:name]] << ver
+        end
+
+        @data[name]
+      end
+
+      # Return an array of APISpecification objects matching
+      # DependencyRequest +req+.
+      #
+      def find_all(req)
+        res = []
+
+        versions(req.name).each do |ver|
+          if req.dependency.match? req.name, ver[:number]
+            res << APISpecification.new(self, ver)
+          end
+        end
+
+        res
+      end
+
+      # A hint run by the resolver to allow the Set to fetch
+      # data for DependencyRequests +reqs+.
+      #
+      def prefetch(reqs)
+        names = reqs.map { |r| r.dependency.name }
+        needed = names.find_all { |d| !@data.key?(d) }
+
+        return if needed.empty?
+
+        u = URI.parse "http://rubygems.org/api/v1/dependencies?gems=#{needed.join ','}"
+        str = Net::HTTP.get(u)
+
+        Marshal.load(str).each do |ver|
+          @data[ver[:name]] << ver
+        end
+      end
+    end
+
+    # Represents a possible Specification object returned
+    # from IndexSet. Used to delay needed to download full
+    # Specification objects when only the +name+ and +version+
+    # are needed.
+    #
+    class IndexSpecification
+      def initialize(set, name, version, source, plat)
+        @set = set
+        @name = name
+        @version = version
+        @source = source
+        @platform = plat
+
+        @spec = nil
+      end
+
+      attr_reader :name, :version
+
+      def full_name
+        "#{@name}-#{@version}"
+      end
+
+      def spec
+        @spec ||= @set.load_spec(@name, @version, @source)
+      end
+
+      def dependencies
+        spec.dependencies
+      end
+    end
+
+    # The global rubygems pool represented via the traditional
+    # source index.
+    #
+    class IndexSet
+      def initialize
+        @f = Gem::SpecFetcher.fetcher
+
+        @all = Hash.new { |h,k| h[k] = [] }
+
+        @f.list(true, true).each do |uri, specs|
+          specs.each do |name, ver, plat|
+            @all[name] << [uri, ver, plat]
+          end
+        end
+
+        @specs = {}
+      end
+
+      # Return an array of IndexSpecification objects matching
+      # DependencyRequest +req+.
+      #
+      def find_all(req)
+        res = []
+
+        name = req.dependency.name
+
+        @all[name].each do |uri, ver, plat|
+          if req.dependency.match? name, ver
+            res << IndexSpecification.new(self, name, ver, uri, plat)
+          end
+        end
+
+        res
+      end
+
+      # No prefetching needed since we load the whole index in
+      # initially.
+      #
+      def prefetch(gems)
+      end
+
+      # Called from IndexSpecification to get a true Specification
+      # object.
+      #
+      def load_spec(name, ver, uri)
+        key = "#{name}-#{ver}"
+        @specs[key] ||= @f.fetch_spec([name, ver], uri)
+      end
+    end
+
+    # A set which represents the installed gems. Respects
+    # all the normal settings that control where to look
+    # for installed gems.
+    #
+    class CurrentSet
+      def find_all(req)
+        req.dependency.matching_specs
+      end
+
+      def prefetch(gems)
+      end
+    end
+
+    # Create DependencyResolver object which will resolve
+    # the tree starting with +needed+ Depedency objects.
+    #
+    # +set+ is an object that provides where to look for
+    # specifications to satisify the Dependencies. This
+    # defaults to IndexSet, which will query rubygems.org.
+    #
+    def initialize(needed, set=IndexSet.new)
+      @set = set
       @needed = needed
 
       @conflicts = nil
+    end
+
+    # Provide a DependencyResolver that queries only against
+    # the already installed gems.
+    #
+    def self.for_current_gems(needed)
+      new needed, CurrentSet.new
     end
 
     # Contains all the conflicts encountered while doing resolution
@@ -99,7 +293,7 @@ module Gem
       # Return the Specification that listed the dependency
       #
       def requester
-        @dependency.spec
+        @dependency.requester
       end
 
       def for_spec?(spec)
@@ -109,7 +303,7 @@ module Gem
       # Return the 2 dependency objects that conflicted
       #
       def conflicting_dependencies
-        [@dependency.dep, @activated.for_dependency.dep]
+        [@dependency.dependency, @activated.request.dependency]
       end
     end
 
@@ -117,31 +311,31 @@ module Gem
     # which spec contained the Dependency.
     #
     class DependencyRequest
-      def initialize(dep, spec)
-        @dep = dep
-        @spec = spec
+      def initialize(dep, act)
+        @dependency = dep
+        @requester = act
       end
 
-      attr_reader :dep, :spec
+      attr_reader :dependency, :requester
 
       def name
-        @dep.name
+        @dependency.name
       end
 
       def matches_spec?(spec)
-        @dep.matches_spec? spec
+        @dependency.matches_spec? spec
       end
 
       def to_s
-        @dep.to_s
+        @dependency.to_s
       end
 
       def ==(other)
         case other
         when Dependency
-          @dep == other
+          @dependency == other
         when DependencyRequest
-          @dep == other.dep && @spec == other.spec
+          @dependency == other.dep && @requester == other.requester
         else
           false
         end
@@ -153,18 +347,18 @@ module Gem
     # activation.
     #
     class ActivationRequest
-      def initialize(spec, dep)
+      def initialize(spec, req)
         @spec = spec
-        @for_dependency = dep
+        @request = req
       end
 
-      attr_reader :spec, :for_dependency
+      attr_reader :spec, :request
 
       # Return the ActivationRequest that contained the dependency
       # that we were activated for.
       #
       def parent
-        @for_dependency.spec
+        @request.requester
       end
 
       def name
@@ -184,11 +378,23 @@ module Gem
         when Gem::Specification
           @spec == other
         when ActivationRequest
-          @spec == other.spec && @for_dependency == other.for_dependency
+          @spec == other.spec && @request == other.request
         else
           false
         end
       end
+    end
+
+    def requests(s, act)
+      reqs = []
+      s.dependencies.each do |d|
+        next unless d.type == :runtime
+        reqs << DependencyRequest.new(d, act)
+      end
+
+      @set.prefetch(reqs)
+
+      reqs
     end
 
     # The meat of the algorithm. Given +needed+ DependencyRequest objects
@@ -217,7 +423,7 @@ module Gem
         end
 
         # Get a list of all specs that satisfy dep
-        possible = @available.find_all(dep)
+        possible = @set.find_all(dep)
 
         case possible.size
         when 0
@@ -238,11 +444,7 @@ module Gem
           # searching done by the multiple case code below.
           #
           # This keeps the error messages consistent.
-          more = spec.dependencies.map do |d|
-                   DependencyRequest.new(d, act)
-                 end
-
-          needed = needed + more
+          needed = requests(spec, act) + needed
         else
           # There are multiple specs for this dep. This is
           # the case that this class is built to handle.
@@ -271,9 +473,7 @@ module Gem
 
             act = ActivationRequest.new(s, dep)
 
-            try = needed + s.dependencies.map do |d|
-                             DependencyRequest.new(d, act)
-                           end
+            try = requests(s, act) + needed
 
             res = resolve_for(try, specs + [act])
 
@@ -289,6 +489,14 @@ module Gem
 
               # Otherwise, this is a conflict that we can attempt to fix
               conflicts << [s, res]
+
+              # Optimization:
+              #
+              # Because the conflict indicates the dependency that trigger
+              # it, we can prune possible based on this new information.
+              #
+              # This cuts down on the number of iterations needed.
+              possible.delete_if { |s| !res.dependency.matches_spec? s }
             else
               # No conflict, return the specs
               return res

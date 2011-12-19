@@ -17,6 +17,9 @@ class TestGemDependencyResolver < Gem::TestCase
     def find_all(dep)
       @specs.find_all { |s| dep.matches_spec? s }
     end
+
+    def prefetch(reqs)
+    end
   end
 
   def make_dep(name, *req)
@@ -45,7 +48,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     s = set(a, b)
 
-    res = Gem::DependencyResolver.new(s, deps)
+    res = Gem::DependencyResolver.new(deps, s)
 
     assert_set [a, b], res.resolve
   end
@@ -63,7 +66,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     s = set(a, b, c)
 
-    res = Gem::DependencyResolver.new(s, deps)
+    res = Gem::DependencyResolver.new(deps, s)
 
     assert_set [a, b, c], res.resolve
   end
@@ -76,7 +79,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     ad = make_dep "a"
 
-    res = Gem::DependencyResolver.new(s, [ad])
+    res = Gem::DependencyResolver.new([ad], s)
 
     assert_set [a2], res.resolve
   end
@@ -92,7 +95,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     s = set(a1, b1, c1)
 
-    res = Gem::DependencyResolver.new(s, [ad, bd])
+    res = Gem::DependencyResolver.new([ad, bd], s)
 
     assert_set [a1, b1, c1], res.resolve
   end
@@ -109,7 +112,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     s = set(a1, b1, c1, c2)
 
-    res = Gem::DependencyResolver.new(s, [ad, bd])
+    res = Gem::DependencyResolver.new([ad, bd], s)
 
     assert_set [a1, b1, c1], res.resolve
 
@@ -137,7 +140,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     s = set(a1, b1, d3, d4, c1, c2)
 
-    res = Gem::DependencyResolver.new(s, [ad, bd])
+    res = Gem::DependencyResolver.new([ad, bd], s)
 
     assert_set [a1, b1, c1, d4], res.resolve
 
@@ -162,7 +165,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     s = set(a1, b1, c1, c2)
 
-    r = Gem::DependencyResolver.new(s, [ad, bd])
+    r = Gem::DependencyResolver.new([ad, bd], s)
 
     e = assert_raises Gem::DependencyResolutionError do
       r.resolve
@@ -188,7 +191,7 @@ class TestGemDependencyResolver < Gem::TestCase
   def test_raises_when_a_gem_is_missing
     ad = make_dep "a"
 
-    r = Gem::DependencyResolver.new(set(), [ad])
+    r = Gem::DependencyResolver.new([ad], set)
 
     e = assert_raises Gem::UnsatisfiableDepedencyError do
       r.resolve
@@ -204,7 +207,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     ad = make_dep "a", "= 3"
 
-    r = Gem::DependencyResolver.new(set(a1), [ad])
+    r = Gem::DependencyResolver.new([ad], set(a1))
 
     e = assert_raises Gem::UnsatisfiableDepedencyError do
       r.resolve
@@ -226,23 +229,18 @@ class TestGemDependencyResolver < Gem::TestCase
     ad = make_dep "a"
     bd = make_dep "b"
 
-    r = Gem::DependencyResolver.new(s, [ad, bd])
+    r = Gem::DependencyResolver.new([ad, bd], s)
 
     e = assert_raises Gem::ImpossibleDependenciesError do
       r.resolve
     end
 
-    assert_equal "detected 2 conflicts with dependency 'c (>= 2)'", e.message
+    assert_equal "detected 1 conflict with dependency 'c (>= 2)'", e.message
 
     assert_equal "c (>= 2)", e.dependency.to_s
 
     s, con = e.conflicts[0]
     assert_equal "c-3", s.full_name
-    assert_equal "c (= 1)", con.dependency.to_s
-    assert_equal "b-1", con.requester.full_name
-
-    s, con = e.conflicts[1]
-    assert_equal "c-2", s.full_name
     assert_equal "c (= 1)", con.dependency.to_s
     assert_equal "b-1", con.requester.full_name
   end
@@ -257,7 +255,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     s = set(a1, b1, c1)
 
-    r = Gem::DependencyResolver.new(s, [ad, bd])
+    r = Gem::DependencyResolver.new([ad, bd], s)
 
     assert_set [a1, b1, c1], r.resolve
   end
@@ -276,14 +274,56 @@ class TestGemDependencyResolver < Gem::TestCase
 
     s = set(lib1, rails, ap, rack100, rack101)
 
-    r = Gem::DependencyResolver.new(s, [d1, d2])
+    r = Gem::DependencyResolver.new([d1, d2], s)
 
     assert_set [rails, ap, rack101, lib1], r.resolve
 
     # check it with the deps reverse too
 
-    r = Gem::DependencyResolver.new(s, [d2, d1])
+    r = Gem::DependencyResolver.new([d2, d1], s)
 
     assert_set [lib1, rack101, rails, ap], r.resolve
+  end
+
+  def test_backtracks_to_the_first_conflict
+    a1 = util_spec "a", "1"
+    a2 = util_spec "a", "2"
+    a3 = util_spec "a", "3"
+    a4 = util_spec "a", "4"
+
+    d1 = make_dep "a"
+    d2 = make_dep "a", ">= 2"
+    d3 = make_dep "a", "= 1"
+
+    s = set(a1, a2, a3, a4)
+
+    r = Gem::DependencyResolver.new([d1, d2, d3], s)
+
+    assert_raises Gem::ImpossibleDependenciesError do
+      r.resolve
+    end
+  end
+
+  # actionmailer 2.3.4
+  # activemerchant 1.5.0
+  # activesupport 2.3.5, 2.3.4
+  # Activemerchant needs activesupport >= 2.3.2. When you require activemerchant, it will activate the latest version that meets that requirement which is 2.3.5. Actionmailer on the other hand needs activesupport = 2.3.4. When rubygems tries to activate activesupport 2.3.4, it will raise an error.
+
+
+  def test_simple_activesupport_problem
+    sup1  = util_spec "activesupport", "2.3.4"
+    sup2  = util_spec "activesupport", "2.3.5"
+
+    merch = util_spec "activemerchant", "1.5.0", "activesupport" => ">= 2.3.2"
+    mail =  util_spec "actionmailer", "2.3.4", "activesupport" => "= 2.3.4"
+
+    s = set(mail, merch, sup1, sup2)
+
+    d1 = make_dep "activemerchant"
+    d2 = make_dep "actionmailer"
+
+    r = Gem::DependencyResolver.new([d1, d2], s)
+
+    assert_set [merch, mail, sup1], r.resolve
   end
 end

@@ -242,11 +242,11 @@ class Gem::DependencyList
   def active_count(specs, ignored)
     specs.count { |spec| ignored[spec.full_name].nil? }
   end
-end
 
-class Gem::DependencyList
   class << self
     extend Gem::Deprecate
     deprecate :from_source_index, "from_specs", 2011, 11
   end
+
 end
+

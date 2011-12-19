@@ -42,6 +42,7 @@ class Gem::Uninstaller
   # Constructs an uninstaller that will uninstall +gem+
 
   def initialize(gem, options = {})
+    # TODO document the valid options
     @gem               = gem
     @version           = options[:version] || Gem::Requirement.default
     @gem_home          = File.expand_path(options[:install_dir] || Gem.dir)
@@ -140,11 +141,14 @@ class Gem::Uninstaller
   def remove_executables(spec)
     return if spec.nil? or spec.executables.empty?
 
+    executables = spec.executables.clone
+
+    # Leave any executables created by other installed versions
+    # of this gem installed.
+
     list = Gem::Specification.find_all { |s|
       s.name == spec.name && s.version != spec.version
     }
-
-    executables = spec.executables.clone
 
     list.each do |s|
       s.executables.each do |exe_name|
@@ -165,9 +169,7 @@ class Gem::Uninstaller
                @force_executables
              end
 
-    unless remove then
-      say "Executables and scripts will remain installed."
-    else
+    if remove then
       bin_dir = @bin_dir || Gem.bindir(spec.base_dir)
 
       raise Gem::FilePermissionError, bin_dir unless File.writable? bin_dir
@@ -180,6 +182,8 @@ class Gem::Uninstaller
         FileUtils.rm_f exe_file
         FileUtils.rm_f "#{exe_file}.bat"
       end
+    else
+      say "Executables and scripts will remain installed."
     end
   end
 
@@ -272,6 +276,9 @@ class Gem::Uninstaller
   end
 
   def formatted_program_filename(filename)
+    # TODO perhaps the installer should leave a small manifest
+    # of what it did for us to find rather than trying to recreate
+    # it again.
     if @format_executable then
       require 'rubygems/installer'
       Gem::Installer.exec_format % File.basename(filename)

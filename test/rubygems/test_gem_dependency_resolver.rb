@@ -31,10 +31,10 @@ class TestGemDependencyResolver < Gem::TestCase
   end
 
   def assert_set(expected, actual)
-    e = expected.sort_by { |s| s.full_name }
-    a = actual.map { |a| a.spec }.sort_by { |s| s.full_name }
+    exp = expected.sort_by { |s| s.full_name }
+    act = actual.map { |a| a.spec }.sort_by { |s| s.full_name }
 
-    assert_equal e, a
+    assert_equal exp, act
   end
 
   def test_no_overlap_specificly
@@ -60,7 +60,6 @@ class TestGemDependencyResolver < Gem::TestCase
 
     ad = make_dep "a", "= 1"
     bd = make_dep "b", "= 1"
-    cd = make_dep "c", "= 1"
 
     deps = [ad, bd]
 

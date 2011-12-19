@@ -496,7 +496,7 @@ module Gem
               # it, we can prune possible based on this new information.
               #
               # This cuts down on the number of iterations needed.
-              possible.delete_if { |s| !res.dependency.matches_spec? s }
+              possible.delete_if { |x| !res.dependency.matches_spec? x }
             else
               # No conflict, return the specs
               return res

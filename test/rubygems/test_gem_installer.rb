@@ -791,13 +791,15 @@ load Gem.bin_path('a', 'executable', version)
 
   def test_install_check_dependencies_install_dir
     gemhome2 = "#{@gemhome}2"
-    @spec.add_dependency 'b'
+    @spec.add_dependency 'd'
 
-    quick_gem 'b', 2
+    quick_gem 'd', 2
 
     FileUtils.mv @gemhome, gemhome2
 
-    Gem::Specification.dirs = [gemhome2] # TODO: switch all dirs= to use_paths
+    # Don't leak any already activated gems into the installer, require
+    # that it work everything out on it's own.
+    Gem::Specification.reset
 
     util_setup_gem
 

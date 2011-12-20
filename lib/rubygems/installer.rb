@@ -286,6 +286,24 @@ class Gem::Installer
   end
 
   ##
+  #
+  # Return an Array of Specifications contained within the gem_home
+  # we'll be installing into.
+
+  def installed_specs
+    @specs ||= begin
+      specs = []
+
+      Dir[File.join(gem_home, "specifications", "*.gemspec")].each do |path|
+        spec = Gem::Specification.load path.untaint
+        specs << spec if spec
+      end
+
+      specs
+    end
+  end
+
+  ##
   # Ensure that the dependency is satisfied by the current installation of
   # gem.  If it is not an exception is raised.
   #
@@ -303,6 +321,7 @@ class Gem::Installer
   # True if the gems in the source_index satisfy +dependency+.
 
   def installation_satisfies_dependency?(dependency)
+    return true if installed_specs.detect { |s| dependency.matches_spec? s }
     not dependency.matching_specs.empty?
   end
 

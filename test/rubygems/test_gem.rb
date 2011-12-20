@@ -17,11 +17,6 @@ class TestGem < Gem::TestCase
     super
 
     @additional = %w[a b].map { |d| File.join @tempdir, d }
-    @default_dir_re = if RUBY_VERSION > '1.9' then
-                        %r|/.*?[Rr]uby.*?/[Gg]ems/[0-9.]+|
-                      else
-                        %r|/[Rr]uby/[Gg]ems/[0-9.]+|
-                      end
 
     util_remove_interrupt_command
   end
@@ -537,8 +532,7 @@ class TestGem < Gem::TestCase
                RbConfig::CONFIG['bindir']
              end
 
-    assert_equal bindir, Gem.bindir(default)
-    assert_equal bindir, Gem.bindir(Pathname.new(default))
+    assert_equal Gem.default_bindir, Gem.bindir(default)
   end
 
   def test_self_clear_paths
@@ -579,10 +573,6 @@ class TestGem < Gem::TestCase
 
   def test_self_datadir_nonexistent_package
     assert_nil Gem.datadir('xyzzy')
-  end
-
-  def test_self_default_dir
-    assert_match @default_dir_re, Gem.default_dir
   end
 
   def test_self_default_exec_format

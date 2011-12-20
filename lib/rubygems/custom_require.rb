@@ -42,6 +42,8 @@ module Kernel
     # If +path+ is for a gem that has already been loaded, don't
     # bother trying to find it in an unresolved gem, just go straight
     # to normal require.
+    #--
+    # TODO request access to the C implementation of this to speed up RubyGems
 
     spec = Gem::Specification.find { |s|
       s.activated? and s.contains_requirable_file? path

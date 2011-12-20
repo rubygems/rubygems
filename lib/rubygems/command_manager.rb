@@ -99,7 +99,7 @@ class Gem::CommandManager
   end
 
   ##
-  # Return the registered command from the command name.
+  # Returns a Command instance for +command_name+
 
   def [](command_name)
     command_name = command_name.intern
@@ -108,14 +108,14 @@ class Gem::CommandManager
   end
 
   ##
-  # Return a sorted list of all command names (as strings).
+  # Return a sorted list of all command names as strings.
 
   def command_names
     @commands.keys.collect {|key| key.to_s}.sort
   end
 
   ##
-  # Run the config specified by +args+.
+  # Run the command specified by +args+.
 
   def run(args)
     process_args(args)
@@ -165,7 +165,8 @@ class Gem::CommandManager
 
   def find_command(cmd_name)
     possibilities = find_command_possibilities cmd_name
-    if possibilities.size > 1 then
+    if possibilities.size > 1 then # TODO if there's an exact match, pick it
+      # TODO raise Gem::Exception subclass
       raise "Ambiguous command #{cmd_name} matches [#{possibilities.join(', ')}]"
     elsif possibilities.size < 1 then
       raise "Unknown command #{cmd_name}"

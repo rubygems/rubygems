@@ -1,6 +1,7 @@
 require 'rubygems/remote_fetcher'
 
 module Gem::GemcutterUtilities
+  # TODO: move to Gem::Command
   OptionParser.accept Symbol do |value|
     value.to_sym
   end

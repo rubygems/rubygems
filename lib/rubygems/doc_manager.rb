@@ -4,6 +4,8 @@
 # See LICENSE.txt for permissions.
 #++
 
+# TODO delete, superseded by lib/rubygems/rdoc.rb
+
 require 'rubygems'
 
 ##

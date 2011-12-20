@@ -151,6 +151,8 @@ class Gem::ConfigFile
   # <tt>--debug</tt>::
   #   Enable Ruby level debug messages.  Handled early for the same reason as
   #   --backtrace.
+  #--
+  # TODO: parse options upstream, pass in options directly
 
   def initialize(args)
     @config_file_name = nil
@@ -187,14 +189,14 @@ class Gem::ConfigFile
     @hash = @hash.merge user_config
 
     # HACK these override command-line args, which is bad
-    @backtrace                    = @hash[:backtrace]        if @hash.key? :backtrace
-    @benchmark                    = @hash[:benchmark]        if @hash.key? :benchmark
-    @bulk_threshold               = @hash[:bulk_threshold]   if @hash.key? :bulk_threshold
-    @home                         = @hash[:gemhome]          if @hash.key? :gemhome
-    @path                         = @hash[:gempath]          if @hash.key? :gempath
-    @update_sources               = @hash[:update_sources]   if @hash.key? :update_sources
-    @verbose                      = @hash[:verbose]          if @hash.key? :verbose
-    @disable_default_gem_server   = @hash[:verbose]          if @hash.key? :disable_default_gem_server
+    @backtrace                  = @hash[:backtrace]      if @hash.key? :backtrace
+    @benchmark                  = @hash[:benchmark]      if @hash.key? :benchmark
+    @bulk_threshold             = @hash[:bulk_threshold] if @hash.key? :bulk_threshold
+    @home                       = @hash[:gemhome]        if @hash.key? :gemhome
+    @path                       = @hash[:gempath]        if @hash.key? :gempath
+    @update_sources             = @hash[:update_sources] if @hash.key? :update_sources
+    @verbose                    = @hash[:verbose]        if @hash.key? :verbose
+    @disable_default_gem_server = @hash[:verbose]        if @hash.key? :disable_default_gem_server
 
     load_api_keys
 
@@ -215,6 +217,7 @@ class Gem::ConfigFile
                 else
                   @hash
                 end
+
     if @api_keys.key? :rubygems_api_key then
       @rubygems_api_key = @api_keys[:rubygems_api_key]
       @api_keys[:rubygems] = @api_keys.delete :rubygems_api_key unless @api_keys.key? :rubygems

@@ -1,3 +1,8 @@
+# TODO: the documentation in here is terrible.
+#
+# Each exception needs a brief description and the scenarios where it is
+# likely to be raised
+
 ##
 # Base exception class for RubyGems.  All exception raised by RubyGems are a
 # subclass of this one.

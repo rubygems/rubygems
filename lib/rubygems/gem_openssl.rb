@@ -46,6 +46,7 @@ begin
 
   Gem.ssl_available = !!OpenSSL::Digest::SHA1
 
+  # TODO: isn't this available on 1.8.7+?
   class OpenSSL::X509::Certificate
     # Check the validity of this certificate.
     def check_validity(issuer_cert = nil, time = Time.now)

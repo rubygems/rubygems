@@ -109,6 +109,8 @@ class Gem::Indexer
   # searching, downloading and related activities and do not need deployment
   # specific information (e.g. list of files).  So we abbreviate the spec,
   # making it much smaller for quicker downloads.
+  #--
+  # TODO move to Gem::Specification
 
   def abbreviate(spec)
     spec.files = []

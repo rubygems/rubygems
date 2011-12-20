@@ -22,6 +22,7 @@ module Gem::InstallUpdateOptions
   # Add the install/update options to the option parser.
 
   def add_install_update_options
+    # TODO: use @parser.accept
     OptionParser.accept Gem::Security::Policy do |value|
       require 'rubygems/security'
 

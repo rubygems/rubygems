@@ -1,10 +1,9 @@
-class Gem::ErrorReason; end
+class Gem::ErrorReason; end # TODO: remove, unnecessary superclass
 
-# Generated when trying to lookup a gem to indicate that the gem
-# was found, but that it isn't usable on the current platform.
-#
-# fetch and install read these and report them to the user to aid
-# in figuring out why a gem couldn't be installed.
+# TODO move to lib/rubygems/platform_mismatch.rb
+# TODO write tests
+#--
+# Generated when a gem is found that isn't usable on the current platform.
 #
 class Gem::PlatformMismatch < Gem::ErrorReason
 
@@ -22,6 +21,8 @@ class Gem::PlatformMismatch < Gem::ErrorReason
     @platforms << platform
   end
 
+  #--
+  # Replace only "platforms", remove duplicate strings
   def wordy
     prefix = "Found #{@name} (#{@version})"
 

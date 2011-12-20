@@ -61,6 +61,8 @@ end
 
 ##
 # A test case for Gem::Installer.
+#--
+# TODO document these utility methods
 
 class Gem::InstallerTestCase < Gem::TestCase
 

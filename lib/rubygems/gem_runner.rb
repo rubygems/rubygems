@@ -40,6 +40,7 @@ class Gem::GemRunner
       # We need to preserve the original ARGV to use for passing gem options
       # to source gems.  If there is a -- in the line, strip all options after
       # it...its for the source building process.
+      # TODO use slice!
       build_args = args[args.index("--") + 1...args.length]
       args = args[0...args.index("--")]
     end
@@ -63,6 +64,7 @@ class Gem::GemRunner
     cmd.run Gem.configuration.args
     end_time = Time.now
 
+    # TODO: remove benchmark, time(1) is good enough
     if Gem.configuration.benchmark then
       printf "\nExecution time: %0.2f seconds.\n", end_time - start_time
       puts "Press Enter to finish"

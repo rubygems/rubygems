@@ -4,11 +4,12 @@
 # See LICENSE.txt for permissions.
 #++
 
+# TODO: Merge with Gem::Builder as Gem::GemFile or something to read and write
+
 require 'rubygems/package'
 
 ##
-# Gem::Format knows the guts of the RubyGem .gem file format and provides the
-# capability to read gem files
+# Gem::Format can read a .gem file
 
 class Gem::Format
 
@@ -26,6 +27,8 @@ class Gem::Format
   ##
   # Reads the gem +file_path+ using +security_policy+ and returns a Format
   # representing the data in the gem
+  #--
+  # TODO this method name is terrible, use ::read
 
   def self.from_file_by_path(file_path, security_policy = nil)
     unless File.file?(file_path)
@@ -41,6 +44,7 @@ class Gem::Format
 
       Gem::OldFormat.from_file_by_path file_path
     else
+      # TODO move to an instance method
       begin
         open file_path, Gem.binary_mode do |io|
           from_io io, file_path, security_policy
@@ -59,6 +63,7 @@ class Gem::Format
   def self.from_io(io, gem_path="(io)", security_policy = nil)
     format = new gem_path
 
+    # TODO move to an instance method
     Gem::Package.open io, 'r', security_policy do |pkg|
       format.spec = pkg.metadata
       format.file_entries = []
@@ -70,7 +75,7 @@ class Gem::Format
         format.file_entries << [{
             "size" => size, "mode" => mode, "path" => entry.full_name,
           },
-          entry.read
+          entry.read # TODO does entry handle this so we can delete it? or seek instead?
         ]
       end
     end

@@ -221,39 +221,19 @@ class Gem::Installer
       ensure_dependencies_met unless @ignore_dependencies
     end
 
-    Gem.pre_install_hooks.each do |hook|
-      result = hook.call self
-
-      if result == false then
-        location = " at #{$1}" if hook.inspect =~ /@(.*:\d+)/
-
-        message = "pre-install hook#{location} failed for #{spec.full_name}"
-        raise Gem::InstallError, message
-      end
-    end
+    run_pre_install_hooks
 
     Gem.ensure_gem_subdirectories gem_home
 
     # Completely remove any previous gem files
-    FileUtils.rm_rf(gem_dir) if File.exist? gem_dir
+    FileUtils.rm_rf(gem_dir)
 
     FileUtils.mkdir_p gem_dir
 
     extract_files
     build_extensions
 
-    Gem.post_build_hooks.each do |hook|
-      result = hook.call self
-
-      if result == false then
-        FileUtils.rm_rf gem_dir
-
-        location = " at #{$1}" if hook.inspect =~ /@(.*:\d+)/
-
-        message = "post-build hook#{location} failed for #{spec.full_name}"
-        raise Gem::InstallError, message
-      end
-    end
+    run_post_build_hooks
 
     generate_bin
     write_spec
@@ -273,16 +253,44 @@ class Gem::Installer
 
     Gem::Specification.add_spec spec unless Gem::Specification.include? spec
 
-    Gem.post_install_hooks.each do |hook|
-      hook.call self
-    end
+    run_post_install_hooks
 
-    return spec
+    spec
 
   # TODO This rescue is in the wrong place. What is raising this exception?
   # move this rescue to arround the code that actually might raise it.
   rescue Zlib::GzipFile::Error
     raise Gem::InstallError, "gzip error installing #{gem}"
+  end
+
+  def run_pre_install_hooks # :nodoc:
+    Gem.pre_install_hooks.each do |hook|
+      if hook.call(self) == false then
+        location = " at #{$1}" if hook.inspect =~ /@(.*:\d+)/
+
+        message = "pre-install hook#{location} failed for #{spec.full_name}"
+        raise Gem::InstallError, message
+      end
+    end
+  end
+
+  def run_post_build_hooks # :nodoc:
+    Gem.post_build_hooks.each do |hook|
+      if hook.call(self) == false then
+        FileUtils.rm_rf gem_dir
+
+        location = " at #{$1}" if hook.inspect =~ /@(.*:\d+)/
+
+        message = "post-build hook#{location} failed for #{spec.full_name}"
+        raise Gem::InstallError, message
+      end
+    end
+  end
+
+  def run_post_install_hooks # :nodoc:
+    Gem.post_install_hooks.each do |hook|
+      hook.call self
+    end
   end
 
   ##

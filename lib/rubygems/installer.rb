@@ -92,6 +92,8 @@ class Gem::Installer
   # :security_policy:: Use the specified security policy.  See Gem::Security
   # :user_install:: Indicate that the gem should be unpacked into the users
   #                 personal gem directory.
+  # :only_install_dir:: Only validate dependencies against what is in the
+  #                     install_dir
   # :wrappers:: Install wrappers if true, symlinks if false.
 
   def initialize(gem, options={})
@@ -322,6 +324,7 @@ class Gem::Installer
 
   def installation_satisfies_dependency?(dependency)
     return true if installed_specs.detect { |s| dependency.matches_spec? s }
+    return false if @only_install_dir
     not dependency.matching_specs.empty?
   end
 
@@ -534,6 +537,7 @@ class Gem::Installer
       :env_shebang  => false,
       :force        => false,
       :install_dir  => Gem.dir,
+      :only_install_dir => false
     }.merge options
 
     @env_shebang         = options[:env_shebang]
@@ -543,6 +547,7 @@ class Gem::Installer
     @format_executable   = options[:format_executable]
     @security_policy     = options[:security_policy]
     @wrappers            = options[:wrappers]
+    @only_install_dir    = options[:only_install_dir]
 
     # If the user has asked for the gem to be installed in a directory that is
     # the system gem directory, then use the system bin directory, else create

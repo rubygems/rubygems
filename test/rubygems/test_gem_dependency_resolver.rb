@@ -3,25 +3,6 @@ require 'rubygems/dependency_resolver'
 
 class TestGemDependencyResolver < Gem::TestCase
 
-  class StaticSet
-    def initialize(specs)
-      @specs = specs.sort_by { |s| s.full_name }
-    end
-
-    def find_spec(dep)
-      @specs.reverse_each do |s|
-        return s if dep.matches_spec? s
-      end
-    end
-
-    def find_all(dep)
-      @specs.find_all { |s| dep.matches_spec? s }
-    end
-
-    def prefetch(reqs)
-    end
-  end
-
   def make_dep(name, *req)
     Gem::Dependency.new(name, *req)
   end

@@ -159,7 +159,7 @@ module Gem
         @spec = nil
       end
 
-      attr_reader :name, :version
+      attr_reader :name, :version, :source
 
       def full_name
         "#{@name}-#{@version}"
@@ -245,7 +245,7 @@ module Gem
     # defaults to IndexSet, which will query rubygems.org.
     #
     def initialize(needed, set=IndexSet.new)
-      @set = set
+      @set = set || IndexSet.new # Allow nil to mean IndexSet
       @needed = needed
 
       @conflicts = nil
@@ -371,6 +371,20 @@ module Gem
 
       def version
         @spec.version
+      end
+
+      def full_spec
+        Gem::Specification === @spec ? @spec : @spec.spec
+      end
+
+      def download(path)
+        if @spec.respond_to? :source
+          source = @spec.source.to_s
+        else
+          source = Gem.sources.first
+        end
+
+        Gem::RemoteFetcher.fetcher.download full_spec, source, path
       end
 
       def ==(other)

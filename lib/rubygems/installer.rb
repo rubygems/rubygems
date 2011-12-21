@@ -510,7 +510,7 @@ class Gem::Installer
 
   def ensure_required_rubygems_version_met
     if rrgv = spec.required_rubygems_version then
-      unless rrgv.satisfied_by? Gem::Version.new(Gem::VERSION) then
+      unless rrgv.satisfied_by? Gem.rubygems_version then
         raise Gem::InstallError,
           "#{spec.name} requires RubyGems version #{rrgv}. " +
           "Try 'gem update --system' to update RubyGems itself."

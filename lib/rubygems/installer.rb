@@ -207,9 +207,6 @@ class Gem::Installer
   #     specifications/<gem-version>.gemspec #=> the Gem::Specification
 
   def install
-    current_home = Gem.dir
-    current_path = Gem.paths.path
-
     verify_gem_home(options[:unpack])
 
     # If we're forcing the install then disable security unless the security

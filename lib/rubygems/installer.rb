@@ -630,6 +630,9 @@ TEXT
       break if ran_rake
       results = []
 
+      extension ||= ""
+      extension_dir = File.join gem_dir, File.dirname(extension)
+
       builder = case extension
                 when /extconf/ then
                   Gem::Ext::ExtConfBuilder
@@ -639,15 +642,9 @@ TEXT
                   ran_rake = true
                   Gem::Ext::RakeBuilder
                 else
-                  results = ["No builder for extension '#{extension}'"]
-                  nil
+                  message = "No builder for extension '#{extension}'"
+                  extension_build_error extension_dir, message
                 end
-
-      extension_dir = begin
-                        File.join gem_dir, File.dirname(extension)
-                      rescue TypeError # extension == nil
-                        gem_dir
-                      end
 
       begin
         Dir.chdir extension_dir do
@@ -656,24 +653,29 @@ TEXT
           say results.join("\n") if Gem.configuration.really_verbose
         end
       rescue
-        results = results.join "\n"
+        extension_build_error(extension_dir, results.join("\n"))
+      end
+    end
+  end
 
-        gem_make_out = File.join extension_dir, 'gem_make.out'
+  ##
+  # Logs the build +output+ in +build_dir+, then raises ExtensionBuildError.
 
-        open gem_make_out, 'wb' do |io| io.puts results end
+  def extension_build_error(build_dir, output)
+    gem_make_out = File.join build_dir, 'gem_make.out'
 
-        message = <<-EOF
+    open gem_make_out, 'wb' do |io| io.puts output end
+
+    message = <<-EOF
 ERROR: Failed to build gem native extension.
 
-        #{results}
+    #{output}
 
 Gem files will remain installed in #{gem_dir} for inspection.
 Results logged to #{gem_make_out}
 EOF
 
-        raise ExtensionBuildError, message
-      end
-    end
+    raise ExtensionBuildError, message
   end
 
   ##

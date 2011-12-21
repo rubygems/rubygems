@@ -40,6 +40,7 @@ class Gem::Installer
 
   include Gem::RequirePathsBuilder if Gem::QUICKLOADER_SUCKAGE
 
+  # DOC: Missing docs or :nodoc:.
   attr_reader :gem
 
   ##
@@ -66,6 +67,7 @@ class Gem::Installer
 
     attr_accessor :path_warning
 
+    # DOC: Missing docs or :nodoc:.
     attr_writer :exec_format
 
     # Defaults to use Ruby's program prefix and suffix.
@@ -366,6 +368,7 @@ class Gem::Installer
     end
   end
 
+  # DOC: Missing docs or :nodoc:.
   def generate_bin
     return if spec.executables.nil? or spec.executables.empty?
 
@@ -500,6 +503,7 @@ class Gem::Installer
     end
   end
 
+  # DOC: Missing docs or :nodoc:.
   def ensure_required_ruby_version_met
     if rrv = spec.required_ruby_version then
       unless rrv.satisfied_by? Gem.ruby_version then
@@ -508,6 +512,7 @@ class Gem::Installer
     end
   end
 
+  # DOC: Missing docs or :nodoc:.
   def ensure_required_rubygems_version_met
     if rrgv = spec.required_rubygems_version then
       unless rrgv.satisfied_by? Gem.rubygems_version then
@@ -518,6 +523,7 @@ class Gem::Installer
     end
   end
 
+  # DOC: Missing docs or :nodoc:.
   def ensure_dependencies_met
     deps = spec.runtime_dependencies
     deps |= spec.development_dependencies if @development
@@ -527,6 +533,7 @@ class Gem::Installer
     end
   end
 
+  # DOC: Missing docs or :nodoc:.
   def process_options
     @options = {
       :bin_dir      => nil,
@@ -555,6 +562,7 @@ class Gem::Installer
       options[:source_index]
   end
 
+  # DOC: Missing docs or :nodoc:.
   def check_that_user_bin_dir_is_in_path
     user_bin_dir = @bin_dir || Gem.bindir(gem_home)
     user_bin_dir.gsub!(File::SEPARATOR, File::ALT_SEPARATOR) if File::ALT_SEPARATOR
@@ -567,6 +575,7 @@ class Gem::Installer
     end
   end
 
+  # DOC: Missing docs or :nodoc:.
   def verify_gem_home(unpack = false)
     FileUtils.mkdir_p gem_home
     raise Gem::FilePermissionError, gem_home unless

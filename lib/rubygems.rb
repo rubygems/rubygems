@@ -103,7 +103,7 @@ end
 
 require 'rubygems/defaults'
 require 'rubygems/deprecate'
-require 'rubygems/compatability'
+require 'rubygems/compatibility'
 require 'rubygems/errors'
 
 module Gem

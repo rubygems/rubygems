@@ -41,7 +41,7 @@ require 'rubygems/platform'
 require "rubygems/deprecate"
 
 # REFACTOR: This should be pulled out into some sort of 'all the
-# compatability hacks' file.
+# compatibility hacks' file.
 
 # :stopdoc:
 class Date; end # for ruby_code if date.rb wasn't required

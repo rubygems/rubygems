@@ -220,13 +220,3 @@ class Gem::Requirement
     end
   end
 end
-
-# :stopdoc:
-# FIX: 
-# Gem::Version::Requirement is used in a lot of old YAML specs. It's aliased
-# here for backwards compatibility. I'd like to remove this, maybe in RubyGems
-# 2.0.
-
-::Gem::Version::Requirement = ::Gem::Requirement
-# :startdoc:
-

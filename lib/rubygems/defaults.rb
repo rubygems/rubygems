@@ -1,6 +1,5 @@
 module Gem
-
-  # TODO: move this whole file back into rubygems.rb
+  DEFAULT_HOST = "https://rubygems.org"
 
   @post_install_hooks   ||= []
   @done_installing_hooks  ||= []

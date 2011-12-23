@@ -18,7 +18,7 @@ unless Gem::Dependency.new('rdoc', '>= 3.10').matching_specs.empty?
   gem 'json'
 end
 
-require "rubygems/deprecate"
+require 'rubygems/deprecate'
 require 'minitest/autorun'
 require 'fileutils'
 require 'tmpdir'

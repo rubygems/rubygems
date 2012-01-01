@@ -14,6 +14,10 @@ class Gem::Commands::OwnerCommand < Gem::Command
     "GEM       gem to manage owners for"
   end
 
+  def usage # :nodoc:
+    "#{program_name} GEM"
+  end
+
   def initialize
     super 'owner', description
     add_proxy_option

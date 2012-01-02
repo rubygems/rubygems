@@ -5,9 +5,9 @@
 #++
 
 ##
-# Gem::ConfigFile RubyGems options and gem command options from ~/.gemrc.
+# Gem::ConfigFile RubyGems options and gem command options from gemrc.
 #
-# ~/.gemrc is a YAML file that uses strings to match gem command arguments and
+# gemrc is a YAML file that uses strings to match gem command arguments and
 # symbols to match RubyGems options.
 #
 # Gem command arguments use a String key that matches the command name and
@@ -24,6 +24,13 @@
 # +:benchmark+:: See #benchmark
 # +:sources+:: Sets Gem::sources
 # +:verbose+:: See #verbose
+#
+# gemrc files may exist in various locations and are read and merged in
+# the following order:
+#
+# - system wide (/etc/gemrc)
+# - per user (~/.gemrc)
+# - per environment (gemrc files listed in the GEMRC environment variable)
 
 class Gem::ConfigFile
 
@@ -183,10 +190,15 @@ class Gem::ConfigFile
     platform_config = Marshal.load Marshal.dump(PLATFORM_DEFAULTS)
     system_config = load_file SYSTEM_WIDE_CONFIG_FILE
     user_config = load_file config_file_name.dup.untaint
+    environment_config = (ENV['GEMRC'] || '').split(/[:;]/).inject({}) do |result, file|
+      result.merge load_file file
+    end
+
 
     @hash = operating_system_config.merge platform_config
     @hash = @hash.merge system_config
     @hash = @hash.merge user_config
+    @hash = @hash.merge environment_config
 
     # HACK these override command-line args, which is bad
     @backtrace                  = @hash[:backtrace]      if @hash.key? :backtrace

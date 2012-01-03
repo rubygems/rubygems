@@ -10,6 +10,7 @@
 
 require "rubygems/version"
 require "rubygems/deprecate"
+require "rubygems/syck_hack"
 
 class Gem::Requirement
   include Comparable

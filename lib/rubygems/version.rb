@@ -241,6 +241,14 @@ class Gem::Version
     initialize array[0]
   end
 
+  def to_yaml_properties
+    ["@version"]
+  end
+
+  def encode_with coder
+    coder.add 'version', @version
+  end
+
   ##
   # A version is considered a prerelease if it contains a letter.
 

@@ -150,6 +150,14 @@ class Gem::Requirement
     yaml_initialize coder.tag, coder.map
   end
 
+  def to_yaml_properties
+    ["@requirements"]
+  end
+
+  def encode_with(coder)
+    code.add 'requirements', @requirements
+  end
+
   ##
   # A requirement is a prerelease if any of the versions inside of it
   # are prereleases

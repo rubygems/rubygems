@@ -1923,7 +1923,15 @@ class Gem::Specification
 
   def to_yaml(opts = {}) # :nodoc:
     if YAML.const_defined?(:ENGINE) && !YAML::ENGINE.syck? then
-      super.gsub(/ !!null \n/, " \n")
+      builder = Gem::NoAliasYAMLTree.new({})
+      builder << self
+      ast = builder.tree
+
+      io = StringIO.new
+
+      Psych::Visitors::Emitter.new(io).accept(ast)
+
+      io.string.gsub(/ !!null \n/, " \n")
     else
       YAML.quick_emit object_id, opts do |out|
         out.map taguri, to_yaml_style do |map|

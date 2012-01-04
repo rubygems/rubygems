@@ -664,6 +664,8 @@ module Gem
       require 'yaml'
     end
 
+    require 'rubygems/psych_tree'
+
     # Now that we're sure some kind of yaml library is loaded, pull
     # in our hack to deal with Syck's DefaultKey ugliness.
     require 'rubygems/syck_hack'

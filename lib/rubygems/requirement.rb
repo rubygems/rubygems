@@ -155,7 +155,7 @@ class Gem::Requirement
   end
 
   def encode_with(coder)
-    code.add 'requirements', @requirements
+    coder.add 'requirements', @requirements
   end
 
   ##

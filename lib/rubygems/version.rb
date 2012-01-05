@@ -241,6 +241,12 @@ class Gem::Version
     initialize array[0]
   end
 
+  def yaml_initialize(tag, map)
+    @version = map['version']
+    @segments = nil
+    @hash = nil
+  end
+
   def to_yaml_properties
     ["@version"]
   end

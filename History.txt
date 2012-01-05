@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 1.8.14 / 2012-01-05
+
+* 2 bug fixes:
+
+  * Ignore old/bad cache data in Version
+  * Make sure our YAML workarounds are loaded properly. Fixes #250.
+
 === 1.8.13 / 2011-12-21
 
 * 1 bug fix:

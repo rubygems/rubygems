@@ -484,6 +484,8 @@ class Gem::Specification
   # +input+ can be anything that YAML.load() accepts: String or IO.
 
   def self.from_yaml(input)
+    Gem.load_yaml
+
     input = normalize_yaml_input input
     spec = YAML.load input
 

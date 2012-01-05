@@ -1,5 +1,35 @@
 # coding: UTF-8
 
+=== 1.8.14 / 2012-01-05
+
+* 2 bug fixes:
+
+  * Ignore old/bad cache data in Version
+  * Make sure our YAML workarounds are loaded properly. Fixes #250.
+
+=== 1.8.13 / 2011-12-21
+
+* 1 bug fix:
+
+  * Check loaded_specs properly when trying to satisfy a dep
+
+* 2 minor enhancements:
+
+  * Remove using #loaded_path? for performance
+  * Remove Zlib workaround for Windows build.
+
+=== 1.8.12 / 2011-12-02
+
+* Bug fix:
+  * Handle more cases where Syck's DefaultKey showed up in requirements
+    and wasn't cleaned out.
+
+=== 1.8.11 / 2011-10-03
+
+* Bug fix:
+  * Deprecate was moved to Gem::Deprecate to stop polluting the top-level
+    namespace.
+
 === 1.8.10 / 2011-08-25
 
 RubyGems 1.8.10 contains a security fix that prevents malicious gems from

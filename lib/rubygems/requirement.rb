@@ -13,10 +13,6 @@ require "rubygems/version"
 require "rubygems/version"
 require "rubygems/deprecate"
 
-# If we're being loaded after yaml was already required, then
-# load our yaml + workarounds now.
-Gem.load_yaml if defined? ::YAML
-
 class Gem::Requirement
   include Comparable
 

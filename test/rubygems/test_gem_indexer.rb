@@ -222,7 +222,7 @@ class TestGemIndexer < Gem::TestCase
       <author>example@example.com (A User)</author>
       <guid>dep_x-1</guid>
       <enclosure url=\"http://gems.example.com/gems/dep_x-1.gem\"
-                 length=\"3584\" type=\"application/octet-stream\" />
+                 length=\"3072\" type=\"application/octet-stream\" />
       <pubDate>#{@dep_x.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>

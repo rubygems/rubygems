@@ -17,6 +17,10 @@ module YAML
   if defined? ::Syck
     Syck = ::Syck
 
+  # JRuby's "Syck" is called "Yecht"
+  elsif defined? YAML::Yecht
+    Syck = YAML::Yecht
+
   # Otherwise, if there is no YAML::Syck, then we've got just psych
   # loaded, so lets define a stub for DefaultKey.
   elsif !defined? YAML::Syck

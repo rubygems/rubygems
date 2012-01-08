@@ -52,8 +52,8 @@ class TestGemRequestSet < Gem::TestCase
 
     util_setup_spec_fetcher a, b
 
-    @fetcher.data["http://gems.example.com/gems/#{a.file_name}"] = File.read(ad)
-    @fetcher.data["http://gems.example.com/gems/#{b.file_name}"] = File.read(bd)
+    @fetcher.data["http://gems.example.com/gems/#{a.file_name}"] = Gem.read_binary(ad)
+    @fetcher.data["http://gems.example.com/gems/#{b.file_name}"] = Gem.read_binary(bd)
 
     rs = Gem::RequestSet.new
     rs.gem "a"

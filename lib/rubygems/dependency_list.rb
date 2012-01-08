@@ -31,7 +31,7 @@ class Gem::DependencyList
 
   def self.from_specs
     list = new
-    list.add(*Gem::Specification.map)
+    list.add(*Gem::Specification.to_a)
     list
   end
 

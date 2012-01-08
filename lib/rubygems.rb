@@ -591,10 +591,14 @@ module Gem
     index
   end
 
+  @yaml_loaded = false
+
   ##
   # Loads YAML, preferring Psych
 
   def self.load_yaml
+    return if @yaml_loaded
+
     begin
       gem 'psych', '~> 1.2', '>= 1.2.1' unless ENV['TEST_SYCK']
     rescue Gem::LoadError
@@ -610,9 +614,13 @@ module Gem
       require 'yaml'
     end
 
+    require 'rubygems/psych_tree'
+
     # Now that we're sure some kind of yaml library is loaded, pull
     # in our hack to deal with Syck's DefaultKey ugliness.
     require 'rubygems/syck_hack'
+
+    @yaml_loaded = true
   end
 
   ##

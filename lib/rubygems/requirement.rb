@@ -11,6 +11,10 @@
 require "rubygems/version"
 require "rubygems/deprecate"
 
+# If we're being loaded after yaml was already required, then
+# load our yaml + workarounds now.
+Gem.load_yaml if defined? ::YAML
+
 class Gem::Requirement
   include Comparable
 
@@ -143,11 +147,20 @@ class Gem::Requirement
       instance_variable_set "@#{ivar}", val
     end
 
+    Gem.load_yaml
     fix_syck_default_key_in_requirements
   end
 
   def init_with coder # :nodoc:
     yaml_initialize coder.tag, coder.map
+  end
+
+  def to_yaml_properties
+    ["@requirements"]
+  end
+
+  def encode_with(coder)
+    coder.add 'requirements', @requirements
   end
 
   ##
@@ -212,6 +225,8 @@ class Gem::Requirement
 
   # DOC: this should probably be :nodoc'd
   def fix_syck_default_key_in_requirements
+    Gem.load_yaml
+
     # Fixup the Syck DefaultKey bug
     @requirements.each do |r|
       if r[0].kind_of? Gem::SyckDefaultKey

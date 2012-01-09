@@ -20,7 +20,7 @@ class TestGemValidator < Gem::TestCase
 
     FileUtils.rm    File.join(@spec.gem_dir, 'lib/b.rb')
     FileUtils.touch File.join(@spec.gem_dir, 'lib/c.rb')
-    
+
     alien = @validator.alien 'a'
 
     expected = {

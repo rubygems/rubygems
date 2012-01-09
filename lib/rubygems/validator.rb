@@ -70,7 +70,15 @@ class Gem::Validator
 
   public
 
-  ErrorData = Struct.new :path, :problem
+  ErrorData = Struct.new :path, :problem do
+
+    def <=> other
+      return nil unless self.class === other
+
+      [path, problem] <=> [other.path, other.problem]
+    end
+
+  end
 
   ##
   # Checks the gem directory for the following potential
@@ -136,6 +144,7 @@ class Gem::Validator
               next unless data # HACK `gem check -a mkrf`
 
               open File.join(gem_directory, entry['path']), Gem.binary_mode do |f|
+                # TODO upgrade digest to SHA-family
                 unless Digest::MD5.hexdigest(f.read).to_s ==
                     Digest::MD5.hexdigest(data).to_s then
                   errors[gem_name][entry['path']] = "Modified from original"
@@ -157,7 +166,7 @@ class Gem::Validator
     end
 
     errors.each do |name, subhash|
-      errors[name] = subhash.map { |path, msg| ErrorData.new(path, msg) }
+      errors[name] = subhash.map { |path, msg| ErrorData.new(path, msg) }.sort
     end
 
     errors

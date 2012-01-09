@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rubygems/dependency_list'
+require 'rubygems/format'
 require 'rubygems/installer'
 require 'rubygems/spec_fetcher'
 require 'rubygems/user_interaction'
@@ -107,7 +108,7 @@ class Gem::DependencyInstaller
       # REFACTOR rather than hardcoding using Dir.pwd, delegate to some config
       # that allows knows the directory to look for local gems.
       Dir[File.join(Dir.pwd, "#{dep.name}-[0-9]*.gem")].each do |gem_file|
-        spec = Gem::Format.from_file_by_path(gem_file).spec
+        spec = Gem::Package.new(gem_file).spec
         gems_and_sources << [spec, gem_file] if spec.name == dep.name
       end
     end
@@ -266,7 +267,7 @@ class Gem::DependencyInstaller
       local_gems.each do |gem_file|
         next unless gem_file =~ /gem$/
         begin
-          spec = Gem::Format.from_file_by_path(gem_file).spec
+          spec = Gem::Package.new(gem_file).spec
           spec_and_source = [spec, gem_file]
           break
         rescue SystemCallError, Gem::Package::FormatError

@@ -58,11 +58,13 @@ class Gem::Validator
 
   def find_files_for_gem(gem_directory)
     installed_files = []
+
     Find.find gem_directory do |file_name|
       fn = file_name[gem_directory.size..file_name.size-1].sub(/^\//, "")
       installed_files << fn unless
         fn =~ /CVS/ || fn.empty? || File.directory?(file_name)
     end
+
     installed_files
   end
 
@@ -80,20 +82,22 @@ class Gem::Validator
   # * 1 cache - 1 spec - 1 directory.
   #
   # returns a hash of ErrorData objects, keyed on the problem gem's name.
+  #--
+  # TODO needs further cleanup
 
   def alien(gems=[])
     errors = Hash.new { |h,k| h[k] = {} }
 
-    Gem::SourceIndex.from_installed_gems.each do |gem_name, gem_spec|
-      next unless gems.include? gem_spec.name unless gems.empty?
+    Gem::Specification.each do |spec|
+      next unless gems.include? spec.name unless gems.empty?
 
-      install_dir = gem_spec.installation_path
-      gem_path = Gem.cache_gem(gem_spec.file_name, install_dir)
-      spec_path = File.join install_dir, "specifications", gem_spec.spec_name
-      gem_directory = gem_spec.full_gem_path
+      gem_name      = spec.file_name
+      gem_path      = spec.cache_file
+      spec_path     = spec.spec_file
+      gem_directory = spec.full_gem_path
 
       unless File.directory? gem_directory then
-        errors[gem_name][gem_spec.full_name] =
+        errors[gem_name][spec.full_name] =
           "Gem registered but doesn't exist at #{gem_directory}"
         next
       end
@@ -108,19 +112,18 @@ class Gem::Validator
         good, gone, unreadable = nil, nil, nil, nil
 
         open gem_path, Gem.binary_mode do |file|
-          format = Gem::Format.from_file_by_path(gem_path)
+          package = Gem::Package.new gem_path
 
-          good, gone = format.file_entries.partition { |entry, _|
-            File.exist? File.join(gem_directory, entry['path'])
+          good, gone = package.contents.partition { |file_name|
+            File.exist? File.join(gem_directory, file_name)
           }
 
-          gone.map! { |entry, _| entry['path'] }
           gone.sort.each do |path|
             errors[gem_name][path] = "Missing file"
           end
 
-          good, unreadable = good.partition { |entry, _|
-            File.readable? File.join(gem_directory, entry['path'])
+          good, unreadable = good.partition { |file_name|
+            File.readable? File.join(gem_directory, file_name)
           }
 
           unreadable.map! { |entry, _| entry['path'] }
@@ -143,7 +146,6 @@ class Gem::Validator
         end
 
         installed_files = find_files_for_gem(gem_directory)
-        good.map! { |entry, _| entry['path'] }
         extras = installed_files - good - unreadable
 
         extras.each do |extra|

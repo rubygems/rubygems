@@ -99,6 +99,24 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
     assert_equal "foo", YAML.load(@ui.output)
   end
 
+  def test_execute_file
+    foo = quick_spec 'foo' do |s|
+      s.files = %w[lib/code.rb]
+    end
+
+    util_build_gem foo
+
+    @cmd.options[:args] = [foo.cache_file]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_match %r|Gem::Specification|, @ui.output
+    assert_match %r|name: foo|, @ui.output
+    assert_equal '', @ui.error
+  end
+
   def test_execute_marshal
     foo = new_spec 'foo', '2'
 

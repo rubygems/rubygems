@@ -92,7 +92,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     gem_file = File.join @tempdir, File.basename(gem.cache_file)
     assert File.exist?(gem_file)
 
-    spec = Gem::Format.from_file_by_path(gem_file).spec
+    spec = Gem::Package.new(gem_file).spec
 
     assert_equal "some_gem", spec.name
     assert_equal "this is a summary", spec.summary

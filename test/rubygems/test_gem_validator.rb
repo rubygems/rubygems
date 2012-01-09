@@ -11,6 +11,28 @@ class TestGemValidator < Gem::TestCase
     @validator = Gem::Validator.new
   end
 
+  def test_alien
+    @spec = quick_gem 'a' do |s|
+      s.files = %w[lib/a.rb lib/b.rb]
+    end
+
+    util_build_gem @spec
+
+    FileUtils.rm    File.join(@spec.gem_dir, 'lib/b.rb')
+    FileUtils.touch File.join(@spec.gem_dir, 'lib/c.rb')
+    
+    alien = @validator.alien 'a'
+
+    expected = {
+      @spec.file_name => [
+        Gem::Validator::ErrorData.new('lib/b.rb', 'Missing file'),
+        Gem::Validator::ErrorData.new('lib/c.rb', 'Extra file'),
+      ]
+    }
+
+    assert_equal expected, alien
+  end
+
   def test_verify_gem_file
     gem_file = File.join @tempdir, 'simple_gem.gem'
     File.open gem_file, 'wb' do |fp| fp.write @simple_gem end

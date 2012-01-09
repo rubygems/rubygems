@@ -4,7 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/format'
 require 'rubygems/exceptions'
 require 'rubygems/ext'
 require 'rubygems/require_paths_builder'
@@ -103,7 +102,11 @@ class Gem::Installer
 
     @gem = gem
     @options = options
+    @package = Gem::Package.new @gem
+
     process_options
+
+    @package.security_policy = @security_policy
 
     if options[:user_install] and not options[:unpack] then
       @gem_home = Gem.user_dir
@@ -179,21 +182,12 @@ class Gem::Installer
   end
 
   ##
-  # Lazy accessor for the installer's Gem::Format instance.
-
-  def format
-    begin
-      @format ||= Gem::Format.from_file_by_path gem, @security_policy
-    rescue Gem::Package::FormatError
-      raise Gem::InstallError, "invalid gem format for #{gem}"
-    end
-  end
-
-  ##
   # Lazy accessor for the installer's spec.
 
   def spec
-    @spec ||= format.spec
+    @spec ||= @package.spec
+  rescue Gem::Package::Error => e
+    raise Gem::InstallError, "invalid gem: #{e.message}"
   end
 
   ##
@@ -339,7 +333,6 @@ class Gem::Installer
 
   def unpack(directory)
     @gem_dir = directory
-    @format = Gem::Format.from_file_by_path gem, @security_policy
     extract_files
   end
 
@@ -701,36 +694,7 @@ EOF
   # Ensures that files can't be installed outside the gem directory.
 
   def extract_files
-    raise ArgumentError, "format required to extract from" if @format.nil?
-
-    @format.file_entries.each do |entry, file_data|
-      path = entry['path'].untaint
-
-      if path.start_with? "/" then # for extra sanity
-        raise Gem::InstallError, "attempt to install file into #{entry['path']}"
-      end
-
-      path = File.expand_path File.join(gem_dir, path)
-
-      unless path.start_with? gem_dir then
-        msg = "attempt to install file into %p under %s" %
-                [entry['path'], gem_dir]
-        raise Gem::InstallError, msg
-      end
-
-      FileUtils.rm_rf(path) if File.exist? path
-
-      dir = File.dirname path
-      FileUtils.mkdir_p dir unless File.exist? dir
-
-      File.open(path, "wb") do |out|
-        out.write file_data
-      end
-
-      FileUtils.chmod entry['mode'], path
-
-      say path if Gem.configuration.really_verbose
-    end
+    @package.extract_files gem_dir
   end
 
   ##

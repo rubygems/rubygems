@@ -4,7 +4,7 @@
 # See LICENSE.txt for permissions.
 #++
 
-# TODO: Merge with Gem::Format
+# TODO: Merge with Gem::Package
 
 require 'rubygems'
 require 'rubygems/user_interaction'

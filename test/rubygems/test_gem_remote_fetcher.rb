@@ -333,7 +333,7 @@ gems:
     cache_path = @a1.cache_file
     FileUtils.mv local_path, cache_path
 
-    gem = Gem::Format.from_file_by_path cache_path
+    gem = Gem::Package.new cache_path
 
     assert_equal cache_path, inst.download(gem.spec, cache_path)
   end

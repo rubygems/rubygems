@@ -47,14 +47,15 @@ begin
   Gem.ssl_available = !!OpenSSL::Digest::SHA1
 
   # TODO: isn't this available on 1.8.7+?
+  # TODO remove this monkey patch
   class OpenSSL::X509::Certificate
     # Check the validity of this certificate.
     def check_validity(issuer_cert = nil, time = Time.now)
-      ret = if @not_before && @not_before > time
-              [false, :expired, "not valid before '#@not_before'"]
-            elsif @not_after && @not_after < time
-              [false, :expired, "not valid after '#@not_after'"]
-            elsif issuer_cert && !verify(issuer_cert.public_key)
+      ret = if not_before && not_before > time then
+              [false, :expired, "not valid before #{not_before}"]
+            elsif not_after && not_after < time then
+              [false, :expired, "not valid after #{not_after}"]
+            elsif issuer_cert && !verify(issuer_cert.public_key) then
               [false, :issuer, "#{issuer_cert.subject} is not issuer"]
             else
               [true, :ok, 'Valid certificate']

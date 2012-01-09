@@ -526,11 +526,6 @@ class TestGem < Gem::TestCase
 
   def test_self_bindir_default_dir
     default = Gem.default_dir
-    bindir = if defined?(RUBY_FRAMEWORK_VERSION) then
-               '/usr/bin'
-             else
-               RbConfig::CONFIG['bindir']
-             end
 
     assert_equal Gem.default_bindir, Gem.bindir(default)
   end

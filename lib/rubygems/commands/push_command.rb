@@ -48,7 +48,7 @@ class Gem::Commands::PushCommand < Gem::Command
 
     host = options[:host]
     unless host
-      if gem_data = Gem::Format.from_file_by_path(name)
+      if gem_data = Gem::Package.new(name) then
         host = gem_data.spec.metadata['default_gem_server']
       end
     end

@@ -72,7 +72,7 @@ FIELD         name of gemspec field to show
 
     if local? then
       if File.exist? gem then
-        specs << Gem::Format.from_file_by_path(gem).spec rescue nil
+        specs << Gem::Package.new(gem).spec rescue nil
       end
 
       if specs.empty? then

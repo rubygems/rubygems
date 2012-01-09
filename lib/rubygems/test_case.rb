@@ -87,6 +87,23 @@ end
 
 class Gem::TestCase < MiniTest::Unit::TestCase
 
+  PRIVATE_KEY = OpenSSL::PKey::RSA.new 512
+
+  name = OpenSSL::X509::Name.parse 'CN=nobody/DC=example'
+
+  cert = OpenSSL::X509::Certificate.new
+  cert.version = 2
+  cert.serial = 0
+  cert.not_before = Time.now
+  cert.not_after = Time.now + 3600
+  cert.public_key = PRIVATE_KEY.public_key
+  cert.subject = name
+  cert.issuer = name
+
+  cert.sign PRIVATE_KEY, OpenSSL::Digest::SHA1.new
+
+  PUBLIC_CERT = cert
+
   # TODO: move to minitest
   def assert_path_exists path, msg = nil
     msg = message(msg) { "Expected path '#{path}' to exist" }
@@ -170,6 +187,9 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     end
     Gem.use_paths(@gemhome)
 
+    @orig_trust_dir = Gem::Security::OPT[:trust_dir]
+    Gem::Security::OPT[:trust_dir] = File.join @userhome, '.gem/trust'
+
     Gem.loaded_specs.clear
     Gem::Specification.unresolved_deps.clear
 
@@ -239,6 +259,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     Gem::ConfigMap[:BASERUBY] = @orig_BASERUBY
     Gem::ConfigMap[:arch] = @orig_arch
+    Gem::Security::OPT[:trust_dir] = @orig_trust_dir
 
     if defined? Gem::RemoteFetcher then
       Gem::RemoteFetcher.fetcher = nil

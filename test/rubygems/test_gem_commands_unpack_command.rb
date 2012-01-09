@@ -209,7 +209,7 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
       end
     end
 
-    assert File.exist?(File.join(@tempdir, foo_spec.full_name))
+    assert_path_exists File.join(@tempdir, foo_spec.full_name)
   end
 
   def test_handle_options_metadata

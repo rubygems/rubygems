@@ -212,73 +212,9 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_extract_files
-    format = Object.new
-    format.instance_variable_set :@spec, @spec
-    def format.spec() @spec end
-    def format.file_entries
-      [[{'size' => 7, 'mode' => 0400, 'path' => 'thefile'}, 'content']]
-    end
-
-    @installer.format = format
-
     @installer.extract_files
 
-    thefile_path = File.join(util_gem_dir, 'thefile')
-    assert_equal 'content', File.read(thefile_path)
-
-    unless Gem.win_platform? then
-      assert_equal 0400, File.stat(thefile_path).mode & 0777
-    end
-  end
-
-  def test_extract_files_bad_dest
-    @installer.gem_dir = 'somedir'
-    @installer.format = nil
-    e = assert_raises ArgumentError do
-      @installer.extract_files
-    end
-
-    assert_equal 'format required to extract from', e.message
-  end
-
-  def test_extract_files_relative
-    format = Object.new
-    format.instance_variable_set :@spec, @spec
-    def format.spec() @spec end
-    def format.file_entries
-      [[{'size' => 10, 'mode' => 0644, 'path' => '../thefile'}, '../thefile']]
-    end
-
-    @installer.format = format
-
-    e = assert_raises Gem::InstallError do
-      @installer.extract_files
-    end
-
-    dir = util_gem_dir
-    expected = "attempt to install file into \"../thefile\" under #{dir}"
-    assert_equal expected, e.message
-    assert_equal false, File.file?(File.join(@tempdir, '../thefile')),
-                 "You may need to remove this file if you broke the test once"
-  end
-
-  def test_extract_files_absolute
-    format = Object.new
-    format.instance_variable_set :@spec, @spec
-    def format.spec() @spec end
-    def format.file_entries
-      [[{'size' => 8, 'mode' => 0644, 'path' => '/thefile'}, '/thefile']]
-    end
-
-    @installer.format = format
-
-    e = assert_raises Gem::InstallError do
-      @installer.extract_files
-    end
-
-    assert_equal 'attempt to install file into /thefile', e.message
-    assert_equal false, File.file?(File.join('/thefile')),
-                 "You may need to remove this file if you broke the test once"
+    assert_path_exists File.join util_gem_dir, 'bin/executable'
   end
 
   def test_generate_bin_bindir
@@ -314,7 +250,7 @@ load Gem.bin_path('a', 'executable', version)
       :install_dir => "/non/existant"
     }
 
-    inst = Gem::Installer.new nil, options
+    inst = Gem::Installer.new '', options
 
     Gem::Installer.path_warning = false
 
@@ -775,7 +711,7 @@ load Gem.bin_path('a', 'executable', version)
       end
     end
 
-    assert_equal "invalid gem format for #{gem}", e.message
+    assert_equal "invalid gem: package metadata is missing in #{gem}", e.message
   end
 
   def test_install_check_dependencies

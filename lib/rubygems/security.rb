@@ -404,6 +404,7 @@ module Gem::Security
   # instance of this or use one of the preset security policies below.
 
   class Policy
+    attr_reader :name
     attr_accessor :verify_data, :verify_signer, :verify_chain,
       :verify_root, :only_trusted, :only_signed
 
@@ -411,9 +412,11 @@ module Gem::Security
     # Create a new Gem::Security::Policy object with the given mode and
     # options.
     #
-    def initialize(policy = {}, opt = {})
+    def initialize(name, policy = {}, opt = {})
+      @name = name
+
       # set options
-      @opt = Gem::Security::OPT.merge(opt)
+      @opt = opt
 
       # build policy
       policy.each_pair do |key, val|
@@ -457,11 +460,12 @@ module Gem::Security
 
       chain = chain.map{ |str| cert_class.new(str) }
       signer, ch_len = chain[-1], chain.size
+      opt = Gem::Security::OPT.merge(@opt)
 
       # make sure signature is valid
       if @verify_data
         # get digest algorithm (TODO: this should be configurable)
-        dgst = @opt[:dgst_algo]
+        dgst = opt[:dgst_algo]
 
         # verify the data signature (this is the most important part, so don't
         # screw it up :D)
@@ -508,8 +512,8 @@ module Gem::Security
           # verify that the chain root is trusted
           if @only_trusted
             # get digest algorithm, calculate checksum of root.subject
-            algo = @opt[:dgst_algo]
-            path = Gem::Security::Policy.trusted_cert_path(root, @opt)
+            algo = opt[:dgst_algo]
+            path = Gem::Security::Policy.trusted_cert_path(root, opt)
 
             # check to make sure trusted path exists
             raise exc, "%s: cert = '%s', error = '%s'" % [
@@ -540,12 +544,15 @@ module Gem::Security
         chain.map { |cert| cert.subject }
       end
     end
+
+    alias to_s name # :nodoc:
   end
 
   ##
   # No security policy: all package signature checks are disabled.
 
   NoSecurity = Policy.new(
+    'No Security',
     :verify_data      => false,
     :verify_signer    => false,
     :verify_chain     => false,
@@ -563,6 +570,7 @@ module Gem::Security
   # easily spoofed, and is not recommended.
 
   AlmostNoSecurity = Policy.new(
+    'Almost No Security',
     :verify_data      => true,
     :verify_signer    => false,
     :verify_chain     => false,
@@ -579,6 +587,7 @@ module Gem::Security
   # is not recommended.
 
   LowSecurity = Policy.new(
+    'Low Security',
     :verify_data      => true,
     :verify_signer    => true,
     :verify_chain     => false,
@@ -597,6 +606,7 @@ module Gem::Security
   # gem off as unsigned.
 
   MediumSecurity = Policy.new(
+    'Medium Security',
     :verify_data      => true,
     :verify_signer    => true,
     :verify_chain     => true,
@@ -615,6 +625,7 @@ module Gem::Security
   # a reasonable guarantee that the contents of the gem have not been altered.
 
   HighSecurity = Policy.new(
+    'High Security',
     :verify_data      => true,
     :verify_signer    => true,
     :verify_chain     => true,

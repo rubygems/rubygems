@@ -609,11 +609,12 @@ class TestGemDependencyInstaller < Gem::TestCase
       policy = Gem::Security::HighSecurity
       inst = Gem::DependencyInstaller.new :security_policy => policy
 
-      e = assert_raises Gem::Exception do
+      e = assert_raises Gem::Security::Exception do
         inst.install 'b'
       end
 
-      assert_equal 'Unsigned gem', e.message
+      assert_equal 'unsigned gems are not allowed by the High Security policy',
+                   e.message
 
       assert_equal %w[], inst.installed_gems.map { |s| s.full_name }
     end

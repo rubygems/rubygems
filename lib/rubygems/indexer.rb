@@ -346,7 +346,7 @@ class Gem::Indexer
       end
 
       begin
-        spec = Gem::Format.from_file_by_path(gemfile).spec
+        spec = Gem::Package.new(gemfile).spec
         spec.loaded_from = gemfile
 
         # HACK: fuck this shit - borks all tests that use pl1

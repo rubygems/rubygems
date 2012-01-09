@@ -46,7 +46,6 @@ class Gem::Package
   # passed to a method called open?!? that seems stupid.
   def self.open(io, mode = "r", signer = nil, &block)
     tar_type = case mode
-               when 'r' then TarInput
                when 'w' then TarOutput
                else
                  raise "Unknown Package open mode"

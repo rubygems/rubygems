@@ -55,7 +55,7 @@ class TestGemPackage < Gem::Package::TarTestCase
     assert_equal %w[lib/code.rb], files
   end
 
-   def test_build
+  def test_build
     spec = Gem::Specification.new 'build', '1'
     spec.summary = 'build'
     spec.authors = 'build'

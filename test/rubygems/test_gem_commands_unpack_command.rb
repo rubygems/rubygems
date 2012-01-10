@@ -191,8 +191,8 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
 
     use_ui @ui do
       Dir.chdir @tempdir do
-        Gem::Builder.new(foo_spec).build
-        Gem::Builder.new(foo_bar_spec).build
+        Gem::Package.build foo_spec
+        Gem::Package.build foo_bar_spec
       end
     end
 

@@ -678,7 +678,7 @@ load Gem.bin_path('a', 'executable', version)
       File.open File.join('lib', 'other.rb'), 'w' do |f| f.puts '1' end
       use_ui ui do
         FileUtils.rm @gem
-        Gem::Builder.new(@spec).build
+        Gem::Package.build @spec
       end
     end
     @installer = Gem::Installer.new @gem
@@ -691,27 +691,6 @@ load Gem.bin_path('a', 'executable', version)
     assert File.exist?(File.join(gemdir, 'lib', 'other.rb'))
     refute(File.exist?(File.join(gemdir, 'lib', 'code.rb')),
            "code.rb from prior install of same gem shouldn't remain here")
-  end
-
-  def test_install_bad_gem
-    gem = nil
-
-    use_ui @ui do
-      Dir.chdir @tempdir do Gem::Builder.new(@spec).build end
-      gem = File.join @tempdir, @spec.file_name
-    end
-
-    gem_data = File.open gem, 'rb' do |fp| fp.read 1024 end
-    File.open gem, 'wb' do |fp| fp.write gem_data end
-
-    e = assert_raises Gem::InstallError do
-      use_ui @ui do
-        @installer = Gem::Installer.new gem
-        @installer.install
-      end
-    end
-
-    assert_equal "invalid gem: package metadata is missing in #{gem}", e.message
   end
 
   def test_install_check_dependencies
@@ -886,7 +865,7 @@ load Gem.bin_path('a', 'executable', version)
     @spec.post_install_message = 'I am a shiny gem!'
 
     use_ui @ui do
-      path = Gem::Builder.new(@spec).build
+      path = Gem::Package.build @spec
 
       @installer = Gem::Installer.new path
       @installer.install

@@ -138,7 +138,7 @@ class TestGemIndexer < Gem::TestCase
       <author>example@example.com (A User)</author>
       <guid>a-2</guid>
       <enclosure url=\"http://gems.example.com/gems/a-2.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
+                 length=\"5120\" type=\"application/octet-stream\" />
       <pubDate>#{@a2.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
@@ -150,7 +150,7 @@ class TestGemIndexer < Gem::TestCase
       <author>example@example.com (A User)</author>
       <guid>a-3.a</guid>
       <enclosure url=\"http://gems.example.com/gems/a-3.a.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
+                 length=\"5120\" type=\"application/octet-stream\" />
       <pubDate>#{@a3a.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
@@ -162,7 +162,7 @@ class TestGemIndexer < Gem::TestCase
       <author>example@example.com (A User)</author>
       <guid>a_evil-9</guid>
       <enclosure url=\"http://gems.example.com/gems/a_evil-9.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
+                 length=\"5120\" type=\"application/octet-stream\" />
       <pubDate>#{@a_evil9.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
@@ -174,7 +174,7 @@ class TestGemIndexer < Gem::TestCase
       <author>example@example.com (A User)</author>
       <guid>b-2</guid>
       <enclosure url=\"http://gems.example.com/gems/b-2.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
+                 length=\"5120\" type=\"application/octet-stream\" />
       <pubDate>#{@b2.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
@@ -186,7 +186,7 @@ class TestGemIndexer < Gem::TestCase
       <author>example@example.com (A User)</author>
       <guid>c-1.2</guid>
       <enclosure url=\"http://gems.example.com/gems/c-1.2.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
+                 length=\"5120\" type=\"application/octet-stream\" />
       <pubDate>#{@c1_2.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
@@ -198,7 +198,7 @@ class TestGemIndexer < Gem::TestCase
       <author>example@example.com (A User)</author>
       <guid>d-2.0.a</guid>
       <enclosure url=\"http://gems.example.com/gems/d-2.0.a.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
+                 length=\"5120\" type=\"application/octet-stream\" />
       <pubDate>#{@d2_0_a.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
@@ -210,7 +210,7 @@ class TestGemIndexer < Gem::TestCase
       <author>example@example.com (A User)</author>
       <guid>d-2.0.b</guid>
       <enclosure url=\"http://gems.example.com/gems/d-2.0.b.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
+                 length=\"5120\" type=\"application/octet-stream\" />
       <pubDate>#{@d2_0_b.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
@@ -222,7 +222,7 @@ class TestGemIndexer < Gem::TestCase
       <author>example@example.com (A User)</author>
       <guid>dep_x-1</guid>
       <enclosure url=\"http://gems.example.com/gems/dep_x-1.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
+                 length=\"5120\" type=\"application/octet-stream\" />
       <pubDate>#{@dep_x.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
@@ -234,7 +234,7 @@ class TestGemIndexer < Gem::TestCase
       <author>example@example.com (A User)</author>
       <guid>pl-1-x86-linux</guid>
       <enclosure url=\"http://gems.example.com/gems/pl-1-x86-linux.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
+                 length=\"5120\" type=\"application/octet-stream\" />
       <pubDate>#{@pl1.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
@@ -246,7 +246,7 @@ class TestGemIndexer < Gem::TestCase
       <author>example@example.com (A User)</author>
       <guid>x-1</guid>
       <enclosure url=\"http://gems.example.com/gems/x-1.gem\"
-                 length=\"3072\" type=\"application/octet-stream\" />
+                 length=\"5120\" type=\"application/octet-stream\" />
       <pubDate>#{@x.date.rfc2822}</pubDate>
       <link>http://example.com</link>
     </item>
@@ -267,7 +267,7 @@ eighty characters.&lt;/pre&gt;
       <author>example@example.com (Example), example2@example.com (Example2)</author>
       <guid>a-1</guid>
       <enclosure url=\"http://gems.example.com/gems/a-1.gem\"
-                 length=\"3584\" type=\"application/octet-stream\" />
+                 length=\"5632\" type=\"application/octet-stream\" />
       <pubDate>#{@a1.date.rfc2822}</pubDate>
       <link>http://a.example.com</link>
     </item>

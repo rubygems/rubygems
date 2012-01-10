@@ -135,7 +135,7 @@ class Gem::InstallerTestCase < Gem::TestCase
       use_ui ui do
         FileUtils.rm_f @gem
 
-        @gem = Gem::Builder.new(@spec).build
+        @gem = Gem::Package.build @spec
       end
     end
 

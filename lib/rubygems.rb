@@ -1151,7 +1151,6 @@ module Gem
   autoload :SourceIndex,     'rubygems/source_index'
   autoload :PathSupport,     'rubygems/path_support'
   autoload :Platform,        'rubygems/platform'
-  autoload :Builder,         'rubygems/builder'
   autoload :ConfigFile,      'rubygems/config_file'
 
   require "rubygems/specification"

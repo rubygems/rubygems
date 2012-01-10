@@ -27,6 +27,110 @@ class TestGemPackage < Gem::Package::TarTestCase
     assert package.spec
   end
 
+  def test_add_files
+    spec = Gem::Specification.new
+    spec.files = 'lib/code.rb'
+
+    FileUtils.mkdir 'lib'
+    open 'lib/code.rb',  'w' do |io| io.write '# lib/code.rb'  end
+    open 'lib/extra.rb', 'w' do |io| io.write '# lib/extra.rb' end
+
+    package = Gem::Package.new 'bogus.gem'
+    package.spec = spec
+
+    tar = util_tar do |tar_io|
+      package.add_files tar_io
+    end
+
+    tar.rewind
+
+    files = []
+
+    Gem::Package::TarReader.new tar do |tar_io|
+      tar_io.each_entry do |entry|
+        files << entry.full_name
+      end
+    end
+
+    assert_equal %w[lib/code.rb], files
+  end
+
+   def test_build
+    spec = Gem::Specification.new 'build', '1'
+    spec.summary = 'build'
+    spec.authors = 'build'
+    spec.files = ['lib/code.rb']
+
+    FileUtils.mkdir 'lib'
+
+    open 'lib/code.rb', 'w' do |io|
+      io.write '# lib/code.rb'
+    end
+
+    package = Gem::Package.new spec.file_name
+    package.spec = spec
+
+    package.build
+
+    assert_equal Gem::VERSION, spec.rubygems_version
+    assert_path_exists spec.file_name
+
+    reader = Gem::Package.new spec.file_name
+    assert_equal spec, reader.spec
+
+    assert_equal %w[metadata.gz metadata.gz.sum data.tar.gz data.tar.gz.sum],
+                 reader.files
+
+    assert_equal %w[lib/code.rb], reader.contents
+  end
+
+  def test_build_invalid
+    spec = Gem::Specification.new 'build', '1'
+
+    package = Gem::Package.new spec.file_name
+    package.spec = spec
+
+    e = assert_raises Gem::InvalidSpecificationException do
+      package.build
+    end
+
+    assert_equal 'missing value for attribute summary', e.message
+  end
+
+  def test_build_signed
+    spec = Gem::Specification.new 'build', '1'
+    spec.summary = 'build'
+    spec.authors = 'build'
+    spec.files = ['lib/code.rb']
+    spec.cert_chain = [PUBLIC_CERT.to_pem]
+    spec.signing_key = PRIVATE_KEY
+
+    FileUtils.mkdir 'lib'
+
+    open 'lib/code.rb', 'w' do |io|
+      io.write '# lib/code.rb'
+    end
+
+    package = Gem::Package.new spec.file_name
+    package.spec = spec
+
+    package.build
+
+    assert_equal Gem::VERSION, spec.rubygems_version
+    assert_path_exists spec.file_name
+
+    reader = Gem::Package.new spec.file_name
+    assert reader.verify
+
+    assert_equal spec, reader.spec
+
+    assert_equal %w[metadata.gz metadata.gz.sum metadata.gz.sig
+                    data.tar.gz data.tar.gz.sum data.tar.gz.sig],
+                 reader.files
+
+    assert_equal %w[lib/code.rb], reader.contents
+  end
+
   def test_contents
     package = Gem::Package.new @gem
 
@@ -129,7 +233,8 @@ class TestGemPackage < Gem::Package::TarTestCase
     package.verify
 
     assert_equal @spec, package.spec
-    assert_equal %w[data.tar.gz metadata.gz], package.files.sort
+    assert_equal %w[data.tar.gz data.tar.gz.sum metadata.gz metadata.gz.sum],
+                 package.files.sort
   end
 
   def test_verify_corrupt
@@ -195,7 +300,8 @@ class TestGemPackage < Gem::Package::TarTestCase
       package.verify
     end
 
-    assert_equal 'package metadata is missing in bad.gem', e.message
+    assert_equal 'package content (data.tar.gz) is missing in bad.gem',
+                 e.message
   end
 
   def test_verify_signatures

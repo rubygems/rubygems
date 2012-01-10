@@ -97,6 +97,16 @@ class Gem::Package
 
   attr_writer :spec
 
+  def self.build spec
+    gem_file = spec.file_name
+
+    package = new gem_file
+    package.spec = spec
+    package.build
+
+    gem_file
+  end
+
   ##
   # Creates a new Gem::Package for the file at +gem+.
   #
@@ -126,6 +136,82 @@ class Gem::Package
     @files = nil
     @security_policy = nil
     @spec = nil
+    @signer = nil
+  end
+
+  ##
+  # Adds the files listed in the packages's Gem::Specification to data.tar.gz
+  # and adds this file to the +tar+.
+
+  def add_contents tar # :nodoc:
+    tar.add_file_signed 'data.tar.gz', 0444, @signer do |io|
+      Zlib::GzipWriter.wrap io do |gz_io|
+        Gem::Package::TarWriter.new gz_io do |data_tar|
+          add_files data_tar
+        end
+      end
+    end
+  end
+
+  ##
+  # Adds files included the package's Gem::Specification to the +tar+ file
+
+  def add_files tar # :nodoc:
+    @spec.files.each do |file|
+      stat = File.stat file
+
+      tar.add_file_simple file, stat.mode, stat.size do |dst_io|
+        open file, 'rb' do |src_io|
+          dst_io.write src_io.read 16384 until src_io.eof?
+        end
+      end
+    end
+  end
+
+  ##
+  # Adds the package's Gem::Specification to the +tar+ file
+
+  def add_metadata tar # :nodoc:
+    metadata = @spec.to_yaml
+    metadata_gz = Gem.gzip metadata
+
+    tar.add_file_signed 'metadata.gz', 0444, @signer do |io|
+      io.write metadata_gz
+    end
+  end
+
+  ##
+  # Builds this package based on the specification set by #spec=
+
+  def build
+    @spec.validate
+    @spec.mark_version
+
+    if @spec.signing_key then
+      require 'rubygems/security'
+
+      @signer = Gem::Security::Signer.new @spec.signing_key, @spec.cert_chain
+      @spec.signing_key = nil
+      @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_s }
+    else
+      @signer = Gem::Security::Signer.new nil, nil
+    end
+
+    open @gem, 'wb' do |gem_io|
+      Gem::Package::TarWriter.new gem_io do |gem|
+        add_metadata gem
+        add_contents gem
+      end
+    end
+
+    say <<-EOM
+  Successfully built RubyGem
+  Name: #{@spec.name}
+  Version: #{@spec.version}
+  File: #{File.basename @spec.cache_file}
+EOM
+  ensure
+    @signer = nil
   end
 
   ##
@@ -325,6 +411,8 @@ class Gem::Package
     end
 
     verify_signatures digests, signatures
+
+    true
   rescue Errno::ENOENT => e
     raise Gem::Package::FormatError.new e.message
   rescue Gem::Package::TarInvalidError => e
@@ -363,11 +451,10 @@ class Gem::Package
 
 end
 
+require 'rubygems/package/digest_io'
 require 'rubygems/package/old'
 require 'rubygems/package/f_sync_dir'
 require 'rubygems/package/tar_header'
-require 'rubygems/package/tar_input'
-require 'rubygems/package/tar_output'
 require 'rubygems/package/tar_reader'
 require 'rubygems/package/tar_reader/entry'
 require 'rubygems/package/tar_writer'

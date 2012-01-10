@@ -1,5 +1,5 @@
 require 'rubygems/command'
-require 'rubygems/builder'
+require 'rubygems/package'
 
 class Gem::Commands::BuildCommand < Gem::Command
 
@@ -22,7 +22,7 @@ class Gem::Commands::BuildCommand < Gem::Command
       spec = load_gemspec gemspec
 
       if spec then
-        Gem::Builder.new(spec).build
+        Gem::Package.build spec
       else
         alert_error "Error loading gemspec. Aborting."
         terminate_interaction 1
@@ -52,4 +52,6 @@ class Gem::Commands::BuildCommand < Gem::Command
     result = line =~ %r{!ruby/object:Gem::Specification}
     result
   end
+
 end
+

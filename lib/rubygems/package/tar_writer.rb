@@ -130,6 +130,50 @@ class Gem::Package::TarWriter
   end
 
   ##
+  # Adds +name+ with permissions +mode+ to the tar, yielding +io+ for writing
+  # the file.  The +digest_algorithm+ is written to a read-only +name+.sum
+  # file following the given file contents containing the digest name and
+  # hexdigest separated by a tab.
+  #
+  # The created digest object is returned.
+
+  def add_file_digest name, mode, digest_algorithm # :yields: io
+    digest = digest_algorithm.new
+
+    add_file name, mode do |io|
+      Gem::Package::DigestIO.wrap io, digest do |digest_io|
+        yield digest_io
+      end
+    end
+
+    checksum = "#{digest.name}\t#{digest.hexdigest}\n"
+
+    add_file_simple "#{name}.sum", 0444, checksum.length do |io|
+      io.write checksum
+    end
+
+    digest
+  end
+
+  ##
+  # Adds +name+ with permissions +mode+ to the tar, yielding +io+ for writing
+  # the file.  The +signer+ is used to add a digest file using its
+  # digest_algorithm per add_file_digest and a cryptographic signature in
+  # +name+.sig.  If the signer has no key only the checksum file is added.
+
+  def add_file_signed name, mode, signer
+    digest = add_file_digest name, mode, signer.digest_algorithm do |io|
+      yield io
+    end
+
+    signature = signer.sign digest.digest
+
+    add_file_simple "#{name}.sig", 0444, signature.length do |io|
+      io.write signature
+    end if signature
+  end
+
+  ##
   # Add file +name+ with permissions +mode+ +size+ bytes long.  Yields an IO
   # to write the file to.
 

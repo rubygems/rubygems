@@ -1,7 +1,7 @@
 require 'rubygems/package/tar_test_case'
 require 'rubygems/package/tar_writer'
 
-class TestTarWriter < Gem::Package::TarTestCase
+class TestGemPackageTarWriter < Gem::Package::TarTestCase
 
   def setup
     super
@@ -24,6 +24,77 @@ class TestTarWriter < Gem::Package::TarTestCase
                          @io.string[0, 512])
     assert_equal "aaaaaaaaaa#{"\0" * 502}", @io.string[512, 512]
     assert_equal 1024, @io.pos
+  end
+
+  def test_add_file_digest
+    digest_algorithm = OpenSSL::Digest::SHA256
+
+    digest = @tar_writer.add_file_digest 'x', 0644, digest_algorithm do |io|
+      io.write 'a' * 10
+    end
+
+    assert_equal 'bf2cb58a68f684d95a3b78ef8f661c9a4e5b09e82cc8f9cc88cce90528caeb27',
+                 digest.hexdigest
+
+    assert_headers_equal(tar_file_header('x', '', 0644, 10),
+                         @io.string[0, 512])
+    assert_equal "aaaaaaaaaa#{"\0" * 502}", @io.string[512, 512]
+
+    assert_headers_equal(tar_file_header('x.sum', '', 0444, 72),
+                         @io.string[1024, 512])
+    assert_equal "SHA256\t#{digest.hexdigest}\n#{"\0" * 440}",
+                 @io.string[1536, 512]
+    assert_equal 2048, @io.pos
+  end
+
+  def test_add_file_signer
+    signer = Gem::Security::Signer.new PRIVATE_KEY, [PUBLIC_CERT]
+
+    @tar_writer.add_file_signed 'x', 0644, signer do |io|
+      io.write 'a' * 10
+    end
+
+    assert_headers_equal(tar_file_header('x', '', 0644, 10),
+                         @io.string[0, 512])
+    assert_equal "aaaaaaaaaa#{"\0" * 502}", @io.string[512, 512]
+
+    digest = signer.digest_algorithm.new
+    digest.update 'a' * 10
+
+    assert_headers_equal(tar_file_header('x.sum', '', 0444, 46),
+                         @io.string[1024, 512])
+    assert_equal "SHA1\t#{digest.hexdigest}\n#{"\0" * 466}",
+                 @io.string[1536, 512]
+
+    signature = signer.sign digest.digest
+
+    assert_headers_equal(tar_file_header('x.sig', '', 0444, signature.length),
+                         @io.string[2048, 512])
+    assert_equal "#{signature}#{"\0" * (512 - signature.length)}",
+                 @io.string[2560, 512]
+
+    assert_equal 3072, @io.pos
+  end
+
+  def test_add_file_signer_empty
+    signer = Gem::Security::Signer.new nil, nil
+
+    @tar_writer.add_file_signed 'x', 0644, signer do |io|
+      io.write 'a' * 10
+    end
+
+    assert_headers_equal(tar_file_header('x', '', 0644, 10),
+                         @io.string[0, 512])
+    assert_equal "aaaaaaaaaa#{"\0" * 502}", @io.string[512, 512]
+
+    digest = signer.digest_algorithm.new
+    digest.update 'a' * 10
+
+    assert_headers_equal(tar_file_header('x.sum', '', 0444, 46),
+                         @io.string[1024, 512])
+    assert_equal "SHA1\t#{digest.hexdigest}\n#{"\0" * 466}",
+                 @io.string[1536, 512]
+    assert_equal 2048, @io.pos
   end
 
   def test_add_file_simple

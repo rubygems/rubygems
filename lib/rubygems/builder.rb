@@ -63,7 +63,7 @@ EOM
   def sign
     signer = nil
 
-    if @spec.respond_to?(:signing_key) and @spec.signing_key then
+    if @spec.signing_key then
       require 'rubygems/security'
 
       signer = Gem::Security::Signer.new @spec.signing_key, @spec.cert_chain

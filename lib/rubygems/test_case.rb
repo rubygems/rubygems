@@ -290,7 +290,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     use_ui Gem::MockGemUi.new do
       Dir.chdir @tempdir do
-        Gem::Builder.new(spec).build
+        Gem::Package.build spec
       end
     end
 
@@ -307,7 +307,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     use_ui Gem::MockGemUi.new do
       Dir.chdir @tempdir do
-        Gem::Builder.new(spec).build
+        Gem::Package.build spec
       end
     end
 
@@ -464,7 +464,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       end
 
       use_ui Gem::MockGemUi.new do
-        Gem::Builder.new(spec).build
+        Gem::Package.build spec
       end
 
       cache = spec.cache_file

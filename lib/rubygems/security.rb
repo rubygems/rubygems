@@ -798,10 +798,11 @@ module Gem::Security
 
     attr_accessor :cert_chain
     attr_accessor :key
+    attr_reader :digest_algorithm
 
-    def initialize(key, cert_chain)
+    def initialize key, cert_chain
       Gem.ensure_ssl_available
-      @algo = Gem::Security::OPT[:dgst_algo]
+      @digest_algorithm = Gem::Security::OPT[:dgst_algo]
       @key, @cert_chain = key, cert_chain
 
       # check key, if it's a file, and if it's key, leave it alone
@@ -827,8 +828,10 @@ module Gem::Security
     ##
     # Sign data with given digest algorithm
 
-    def sign(data)
-      @key.sign(@algo.new, data)
+    def sign data
+      return unless @key
+
+      @key.sign @digest_algorithm.new, data
     end
 
   end

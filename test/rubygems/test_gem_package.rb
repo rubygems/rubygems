@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 require 'rubygems/package/tar_test_case'
 require 'rubygems/simple_gem'
 
@@ -7,6 +9,7 @@ class TestGemPackage < Gem::Package::TarTestCase
     super
 
     @spec = quick_gem 'a' do |s|
+      s.description = 'π'
       s.files = %w[lib/code.rb]
     end
 
@@ -225,6 +228,17 @@ class TestGemPackage < Gem::Package::TarTestCase
 
     assert_equal("installing into parent path #{parent} of " \
                  "#{@destination} is not allowed", e.message)
+  end
+
+  def test_load_spec
+    entry = StringIO.new Gem.gzip @spec.to_yaml
+    def entry.full_name() 'metadata.gz' end
+
+    package = Gem::Package.new 'nonexistent.gem'
+
+    spec = package.load_spec entry
+
+    assert_equal @spec, spec
   end
 
   def test_verify

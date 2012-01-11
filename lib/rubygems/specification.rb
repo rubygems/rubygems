@@ -900,7 +900,7 @@ class Gem::Specification
     return unless File.file?(file)
 
     code = if defined? Encoding
-             File.read file, :encoding => "UTF-8"
+             File.read file, :mode => 'r:UTF-8:-'
            else
              File.read file
            end

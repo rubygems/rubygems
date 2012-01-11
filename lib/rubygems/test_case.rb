@@ -87,22 +87,15 @@ end
 
 class Gem::TestCase < MiniTest::Unit::TestCase
 
-  PRIVATE_KEY = OpenSSL::PKey::RSA.new 512
+  private_key = File.expand_path('../../../test/rubygems/private_key.pem',
+                                 __FILE__)
+  private_key = File.read private_key
+  PRIVATE_KEY = OpenSSL::PKey::RSA.new private_key
 
-  name = OpenSSL::X509::Name.parse 'CN=nobody/DC=example'
-
-  cert = OpenSSL::X509::Certificate.new
-  cert.version = 2
-  cert.serial = 0
-  cert.not_before = Time.now
-  cert.not_after = Time.now + 3600
-  cert.public_key = PRIVATE_KEY.public_key
-  cert.subject = name
-  cert.issuer = name
-
-  cert.sign PRIVATE_KEY, OpenSSL::Digest::SHA1.new
-
-  PUBLIC_CERT = cert
+  public_cert = File.expand_path('../../../test/rubygems/public_cert.pem',
+                                 __FILE__)
+  public_cert = File.read public_cert
+  PUBLIC_CERT = OpenSSL::X509::Certificate.new public_cert
 
   # TODO: move to minitest
   def assert_path_exists path, msg = nil

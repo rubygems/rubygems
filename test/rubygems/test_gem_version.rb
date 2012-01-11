@@ -127,12 +127,8 @@ class TestGemVersion < Gem::TestCase
     assert_less_than "1.0.0-alpha.1", "1.0.0-beta.2"
     assert_less_than "1.0.0-beta.2", "1.0.0-beta.11"
     assert_less_than "1.0.0-beta.11", "1.0.0-rc.1"
-    assert_less_than "1.0.0-rc.1", "1.0.0-rc.1+build.1"
-    assert_less_than "1.0.0-rc.1+build.1", "1.0.0"
-    assert_less_than "1.0.0", "1.0.0+0.3.7"
-    assert_less_than "1.0.0+0.3.7", "1.3.7+build"
-    assert_less_than "1.3.7+build", "1.3.7+build.2.b8f12d7"
-    assert_less_than "1.3.7+build.2.b8f12d7", "1.3.7+build.11.e0f985a"
+    assert_less_than "1.0.0-rc1", "1.0.0"
+    assert_less_than "1.0.0-1", "1"
   end
 
   # Asserts that +version+ is a prerelease.

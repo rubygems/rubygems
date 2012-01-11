@@ -402,7 +402,7 @@ EOM
   # cryptographically secure.  Missing checksums are ignored.
 
   def verify_checksums digests, checksums # :nodoc:
-    checksums.each do |name, checksum|
+    checksums.sort.each do |name, checksum|
       digest = digests[name]
       checksum =~ /#{digest.name}\t(.*)/
 

@@ -286,7 +286,7 @@ class TestGemPackage < Gem::Package::TarTestCase
       package.verify
     end
 
-    assert_equal 'checksum mismatch for metadata.gz in mismatch.gem', e.message
+    assert_equal 'checksum mismatch for data.tar.gz in mismatch.gem', e.message
   end
 
   def test_verify_checksum_missing

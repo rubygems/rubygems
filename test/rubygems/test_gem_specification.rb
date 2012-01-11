@@ -311,8 +311,8 @@ bindir:
   if defined?(Encoding)
   def test_self_load_utf8_with_ascii_encoding
     int_enc = Encoding.default_internal
-    Encoding.default_internal = 'US-ASCII'
-    
+    silence_warnings { Encoding.default_internal = 'US-ASCII' }
+
     spec2 = @a2.dup
     bin = "\u5678"
     spec2.authors = [bin]
@@ -327,7 +327,7 @@ bindir:
 
     assert_equal spec2, spec
   ensure
-    Encoding.default_internal = int_enc
+    silence_warnings { Encoding.default_internal = int_enc }
   end
   end
 
@@ -1788,5 +1788,12 @@ end
     rescue NameError
       # ignore
     end
+  end
+
+  def silence_warnings
+    old_verbose, $VERBOSE = $VERBOSE, false
+    yield
+  ensure
+    $VERBOSE = old_verbose
   end
 end

@@ -436,7 +436,6 @@ end
 
 require 'rubygems/package/digest_io'
 require 'rubygems/package/old'
-require 'rubygems/package/f_sync_dir'
 require 'rubygems/package/tar_header'
 require 'rubygems/package/tar_reader'
 require 'rubygems/package/tar_reader/entry'

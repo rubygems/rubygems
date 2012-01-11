@@ -13,6 +13,7 @@ class Gem::Package
   include Gem::UserInteraction
 
   class Error < Gem::Exception; end
+
   class FormatError < Error
     attr_reader :path
 
@@ -25,13 +26,16 @@ class Gem::Package
     end
 
   end
+
   class PathError < Error
     def initialize destination, destination_dir
       super "installing into parent path %s of %s is not allowed" %
               [destination, destination_dir]
     end
   end
+
   class NonSeekableIO < Error; end
+
   class TooLongFileName < Error; end
 
   ##
@@ -210,7 +214,7 @@ EOM
 
     entry.rewind
 
-    digester.digest
+    digester
   end
 
   ##
@@ -334,6 +338,7 @@ EOM
 
     digests    = {}
     signatures = {}
+    checksums  = {}
 
     open @gem, 'rb' do |io|
       reader = Gem::Package::TarReader.new io
@@ -342,12 +347,14 @@ EOM
         file_name = entry.full_name
         @files << file_name
 
-        if @security_policy then
-          if file_name =~ /.sig$/ then
-            signatures[$'] = entry.read
-            next
-          end
-
+        case file_name
+        when /\.sig$/ then
+          signatures[$`] = entry.read if @security_policy
+          next
+        when /\.sum$/ then
+          checksums[$`] = entry.read
+          next
+        else
           digests[file_name] = digest entry
         end
 
@@ -369,6 +376,7 @@ EOM
               'package content (data.tar.gz) is missing', @gem
     end
 
+    verify_checksums digests, checksums
     verify_signatures digests, signatures
 
     true
@@ -390,9 +398,25 @@ EOM
   end
 
   ##
+  # Verifies the +checksums+ against the +digests+.  This check is not
+  # cryptographically secure.  Missing checksums are ignored.
+
+  def verify_checksums digests, checksums # :nodoc:
+    checksums.each do |name, checksum|
+      digest = digests[name]
+      checksum =~ /#{digest.name}\t(.*)/
+
+      unless digest.hexdigest == $1 then
+        raise Gem::Package::FormatError.new("checksum mismatch for #{name}",
+                                            @gem)
+      end
+    end
+  end
+
+  ##
   # TODO move to Gem::Security::Policy
 
-  def verify_signatures digests, signatures
+  def verify_signatures digests, signatures # :nodoc:
     return unless @security_policy
 
     if @security_policy.only_signed and signatures.empty? then
@@ -404,7 +428,7 @@ EOM
       signature = signatures[file]
       raise Gem::Security::Exception, "missing signature for #{file}" unless
         signature
-      @security_policy.verify_gem signature, digest, @spec.cert_chain
+      @security_policy.verify_gem signature, digest.digest, @spec.cert_chain
     end
   end
 

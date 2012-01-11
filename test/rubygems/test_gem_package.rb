@@ -237,6 +237,96 @@ class TestGemPackage < Gem::Package::TarTestCase
                  package.files.sort
   end
 
+  def test_verify_checksum_bad
+    data_tgz = util_tar_gz do |tar|
+      tar.add_file 'lib/code.rb', 0444 do |io|
+        io.write '# lib/code.rb'
+      end
+    end
+
+    data_tgz = data_tgz.string
+
+    gem = util_tar do |tar|
+      metadata_gz = Gem.gzip @spec.to_yaml
+
+      tar.add_file 'metadata.gz', 0444 do |io|
+        io.write metadata_gz
+      end
+
+      digest = OpenSSL::Digest::SHA1.new
+      digest << metadata_gz
+      digest << 'bogus'
+      checksum = "#{digest.name}\t#{digest.hexdigest}\n"
+
+      tar.add_file 'metadata.gz.sum', 0444 do |io|
+        io.write checksum
+      end
+
+      tar.add_file 'data.tar.gz', 0444 do |io|
+        io.write data_tgz
+      end
+
+      digest = OpenSSL::Digest::SHA1.new
+      digest << data_tgz
+      digest << 'bogus'
+      checksum = "#{digest.name}\t#{digest.hexdigest}\n"
+
+      tar.add_file 'data.tar.gz.sum', 0444 do |io|
+        io.write checksum
+      end
+    end
+
+    open 'mismatch.gem', 'wb' do |io|
+      io.write gem.string
+    end
+
+    package = Gem::Package.new 'mismatch.gem'
+
+    e = assert_raises Gem::Package::FormatError do
+      package.verify
+    end
+
+    assert_equal 'checksum mismatch for metadata.gz in mismatch.gem', e.message
+  end
+
+  def test_verify_checksum_missing
+    data_tgz = util_tar_gz do |tar|
+      tar.add_file 'lib/code.rb', 0444 do |io|
+        io.write '# lib/code.rb'
+      end
+    end
+
+    data_tgz = data_tgz.string
+
+    gem = util_tar do |tar|
+      metadata_gz = Gem.gzip @spec.to_yaml
+
+      tar.add_file 'metadata.gz', 0444 do |io|
+        io.write metadata_gz
+      end
+
+      digest = OpenSSL::Digest::SHA1.new
+      digest << metadata_gz
+      checksum = "#{digest.name}\t#{digest.hexdigest}\n"
+
+      tar.add_file 'metadata.gz.sum', 0444 do |io|
+        io.write checksum
+      end
+
+      tar.add_file 'data.tar.gz', 0444 do |io|
+        io.write data_tgz
+      end
+    end
+
+    open 'data_checksum_missing.gem', 'wb' do |io|
+      io.write gem.string
+    end
+
+    package = Gem::Package.new 'data_checksum_missing.gem'
+
+    assert package.verify
+  end
+
   def test_verify_corrupt
     Tempfile.open 'corrupt' do |io|
       data = Gem.gzip 'a' * 10
@@ -317,13 +407,14 @@ class TestGemPackage < Gem::Package::TarTestCase
     package.spec = @spec
     package.security_policy = Gem::Security::HighSecurity
 
-    metadata_gz_digest = digest.digest metadata_gz
+    metadata_gz_digest = package.digest StringIO.new metadata_gz
 
     digests = {}
     digests['metadata.gz'] = metadata_gz_digest
 
     signatures = {}
-    signatures['metadata.gz'] = PRIVATE_KEY.sign digest.new, metadata_gz_digest
+    signatures['metadata.gz'] =
+      PRIVATE_KEY.sign digest.new, metadata_gz_digest.digest
 
     package.verify_signatures digests, signatures
   end
@@ -341,14 +432,15 @@ class TestGemPackage < Gem::Package::TarTestCase
     package.spec = @spec
     package.security_policy = Gem::Security::HighSecurity
 
-    metadata_gz_digest = digest.digest metadata_gz
+    metadata_gz_digest = package.digest StringIO.new metadata_gz
 
     digests = {}
     digests['metadata.gz'] = metadata_gz_digest
-    digests['data.tar.gz'] = digest.digest 'hello' # fake
+    digests['data.tar.gz'] = package.digest StringIO.new 'hello' # fake
 
     signatures = {}
-    signatures['metadata.gz'] = PRIVATE_KEY.sign digest.new, metadata_gz_digest
+    signatures['metadata.gz'] =
+      PRIVATE_KEY.sign digest.new, metadata_gz_digest.digest
 
     e = assert_raises Gem::Security::Exception do
       package.verify_signatures digests, signatures

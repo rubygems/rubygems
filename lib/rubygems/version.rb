@@ -147,7 +147,7 @@ class Gem::Version
 
   # FIX: These are only used once, in .correct?. Do they deserve to be
   # constants?
-  VERSION_PATTERN = '[0-9]+(\.[0-9a-zA-Z]+)*' # :nodoc:
+  VERSION_PATTERN = '[0-9]+(\.[0-9a-zA-Z]+)*(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?' # :nodoc:
   ANCHORED_VERSION_PATTERN = /\A\s*(#{VERSION_PATTERN})*\s*\z/ # :nodoc:
 
   ##
@@ -192,6 +192,7 @@ class Gem::Version
       self.class.correct?(version)
 
     @version = version.to_s.dup.strip
+    @segments = nil
   end
 
   ##
@@ -287,9 +288,28 @@ class Gem::Version
     # segments is lazy so it can pick up version values that come from
     # old marshaled versions, which don't go through marshal_load.
 
-    @segments ||= @version.scan(/[0-9]+|[a-z]+/i).map do |s|
+    return @segments if @segments
+
+    if plus = @version.index("+")
+      ver = @version[0, plus]
+      tail = @version[plus+1, @version.size]
+
+      @build_segments = tail.scan(/[0-9]+|[a-z]+/i).map do |s|
+        /^\d+$/ =~ s ? s.to_i : s
+      end
+    else
+      ver = @version
+      @build_segments = nil
+    end
+
+    @segments = ver.scan(/[0-9]+|[a-z]+/i).map do |s|
       /^\d+$/ =~ s ? s.to_i : s
     end
+  end
+
+  def build_segments # :nodoc:
+    segments # this populates @build_segments
+    @build_segments
   end
 
   ##
@@ -333,6 +353,34 @@ class Gem::Version
       return  1 if Numeric === lhs && String  === rhs
 
       return lhs <=> rhs
+    end
+
+    my_bs = build_segments
+    ot_bs = other.build_segments
+
+    if my_bs and ot_bs
+      lhsize = my_bs.size
+      rhsize = ot_bs.size
+      limit  = (lhsize > rhsize ? lhsize : rhsize) - 1
+
+      i = 0
+
+      while i <= limit
+        lhs, rhs = my_bs[i] || 0, ot_bs[i] || 0
+        i += 1
+
+        next      if lhs == rhs
+        return -1 if String  === lhs && Numeric === rhs
+        return  1 if Numeric === lhs && String  === rhs
+
+        return lhs <=> rhs
+      end
+
+      return 0
+    elsif my_bs
+      return 1
+    elsif ot_bs
+      return -1
     end
 
     return 0

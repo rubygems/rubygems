@@ -381,7 +381,8 @@ EOM
     end
 
     verify_checksums digests, checksums
-    verify_signatures digests, signatures
+    @security_policy.verify_signatures @spec, digests, signatures if
+      @security_policy
 
     true
   rescue Errno::ENOENT => e
@@ -414,25 +415,6 @@ EOM
         raise Gem::Package::FormatError.new("checksum mismatch for #{name}",
                                             @gem)
       end
-    end
-  end
-
-  ##
-  # TODO move to Gem::Security::Policy
-
-  def verify_signatures digests, signatures # :nodoc:
-    return unless @security_policy
-
-    if @security_policy.only_signed and signatures.empty? then
-      raise Gem::Security::Exception,
-            "unsigned gems are not allowed by the #{@security_policy} policy"
-    end
-
-    digests.each do |file, digest|
-      signature = signatures[file]
-      raise Gem::Security::Exception, "missing signature for #{file}" unless
-        signature
-      @security_policy.verify_gem signature, digest.digest, @spec.cert_chain
     end
   end
 

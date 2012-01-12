@@ -452,7 +452,7 @@ module Gem::Security
     # Verify that the gem data with the given signature and signing chain
     # matched this security policy at the specified time.
     #
-    def verify_gem(signature, data, chain, time = Time.now)
+    def verify_signature signature, data, chain, time = Time.now
       Gem.ensure_ssl_available
       cert_class = OpenSSL::X509::Certificate
       exc = Gem::Security::Exception
@@ -542,6 +542,23 @@ module Gem::Security
 
         # return the signing chain
         chain.map { |cert| cert.subject }
+      end
+    end
+
+    ##
+    # Verifies +digests+ match +signatures+
+
+    def verify_signatures spec, digests, signatures
+      if only_signed and signatures.empty? then
+        raise Gem::Security::Exception,
+          "unsigned gems are not allowed by the #{name} policy"
+      end
+
+      digests.each do |file, digest|
+        signature = signatures[file]
+        raise Gem::Security::Exception, "missing signature for #{file}" unless
+        signature
+        verify_signature signature, digest.digest, spec.cert_chain
       end
     end
 

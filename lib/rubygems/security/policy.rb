@@ -18,13 +18,11 @@ class Gem::Security::Policy
   # Create a new Gem::Security::Policy object with the given mode and
   # options.
 
-  def initialize(name, policy = {}, opt = {})
+  def initialize name, policy = {}, opt = {}
     @name = name
 
-    # set options
     @opt = opt
 
-    # build policy
     policy.each_pair do |key, val|
       case key
       when :verify_data   then @verify_data   = val
@@ -40,18 +38,15 @@ class Gem::Security::Policy
   ##
   # Get the path to the file for this cert.
 
-  def self.trusted_cert_path(cert, opt = {})
-    opt = Gem::Security::OPT.merge(opt)
+  def self.trusted_cert_path cert, opt = {}
+    opt = Gem::Security::OPT.merge opt
 
-    # get digest algorithm, calculate checksum of root.subject
     algo = opt[:dgst_algo]
-    dgst = algo.hexdigest(cert.subject.to_s)
+    dgst = algo.hexdigest cert.subject.to_s
 
-    # build path to trusted cert file
     name = "cert-#{dgst}.pem"
 
-    # join and return path components
-    File.join(opt[:trust_dir], name)
+    File.join opt[:trust_dir], name
   end
 
   ##
@@ -60,28 +55,26 @@ class Gem::Security::Policy
 
   def verify_signature signature, data, chain, time = Time.now
     Gem.ensure_ssl_available
-    cert_class = OpenSSL::X509::Certificate
     exc = Gem::Security::Exception
     chain ||= []
 
-    chain = chain.map{ |str| cert_class.new(str) }
+    chain = chain.map { |cert| OpenSSL::X509::Certificate.new cert }
     signer, ch_len = chain[-1], chain.size
-    opt = Gem::Security::OPT.merge(@opt)
+    opt = Gem::Security::OPT.merge @opt
 
     # make sure signature is valid
-    if @verify_data
-      # get digest algorithm (TODO: this should be configurable)
+    if @verify_data then
       dgst = opt[:dgst_algo]
 
       # verify the data signature (this is the most important part, so don't
       # screw it up :D)
-      v = signer.public_key.verify(dgst.new, signature, data)
+      v = signer.public_key.verify dgst.new, signature, data
       raise exc, "Invalid Gem Signature" unless v
 
       # make sure the signer is valid
       if @verify_signer
         # make sure the signing cert is valid right now
-        v = signer.check_validity(nil, time)
+        v = signer.check_validity nil, time
         raise exc, "Invalid Signature: #{v[:desc]}" unless v[:is_valid]
       end
     end
@@ -90,9 +83,9 @@ class Gem::Security::Policy
     if @verify_chain
       # iterate down over the chain and verify each certificate against it's
       # issuer
-      (ch_len - 1).downto(1) do |i|
+      (ch_len - 1).downto 1 do |i|
         issuer, cert = chain[i - 1, 2]
-        v = cert.check_validity(issuer, time)
+        v = cert.check_validity issuer, time
         raise exc, "%s: cert = '%s', error = '%s'" % [
             'Invalid Signing Chain', cert.subject, v[:desc]
         ] unless v[:is_valid]
@@ -110,7 +103,7 @@ class Gem::Security::Policy
         ] unless root.issuer.to_s == root.subject.to_s
 
         # make sure root is valid
-        v = root.check_validity(root, time)
+        v = root.check_validity root, time
         raise exc, "%s: cert = '%s', error = '%s'" % [
             'Invalid Signing Chain Root', root.subject, v[:desc]
         ] unless v[:is_valid]
@@ -119,22 +112,22 @@ class Gem::Security::Policy
         if @only_trusted
           # get digest algorithm, calculate checksum of root.subject
           algo = opt[:dgst_algo]
-          path = Gem::Security::Policy.trusted_cert_path(root, opt)
+          path = Gem::Security::Policy.trusted_cert_path root, opt
 
           # check to make sure trusted path exists
           raise exc, "%s: cert = '%s', error = '%s'" % [
               'Untrusted Signing Chain Root',
               root.subject.to_s,
               "path \"#{path}\" does not exist",
-          ] unless File.exist?(path)
+          ] unless File.exist? path
 
           # load calculate digest from saved cert file
-          save_cert = OpenSSL::X509::Certificate.new(File.read(path))
-          save_dgst = algo.digest(save_cert.public_key.to_s)
+          save_cert = OpenSSL::X509::Certificate.new File.read path
+          save_dgst = algo.digest save_cert.public_key.to_s
 
           # create digest of public key
           pkey_str = root.public_key.to_s
-          cert_dgst = algo.digest(pkey_str)
+          cert_dgst = algo.digest pkey_str
 
           # now compare the two digests, raise exception
           # if they don't match

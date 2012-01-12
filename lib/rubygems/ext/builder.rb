@@ -39,11 +39,21 @@ class Gem::Ext::Builder
     '2>&1'
   end
 
+  class << self
+    attr_accessor :verbose
+  end
+
   def self.run(command, results, command_name = nil)
-    results << command
-    results << `#{command} #{redirector}`
+    if verbose
+      puts(command)
+      system(command)
+    else
+      results << command
+      results << `#{command} #{redirector}`
+    end
 
     unless $?.success? then
+      results << "Look above for error messages!" if verbose
       raise Gem::InstallError, "#{command_name || class_name} failed:\n\n#{results.join "\n"}"
     end
   end

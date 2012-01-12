@@ -92,7 +92,13 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   private_key = File.read private_key
   PRIVATE_KEY = OpenSSL::PKey::RSA.new private_key
 
-  public_cert = File.expand_path('../../../test/rubygems/public_cert.pem',
+  public_cert = if 32 == (Time.at(2**32) rescue 32) then
+                  'public_cert_32.pem'
+                else
+                  'public_cert.pem'
+                end
+
+  public_cert = File.expand_path("../../../test/rubygems/#{public_cert}.pem",
                                  __FILE__)
   public_cert = File.read public_cert
   PUBLIC_CERT = OpenSSL::X509::Certificate.new public_cert

@@ -98,7 +98,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
                   'public_cert.pem'
                 end
 
-  public_cert = File.expand_path("../../../test/rubygems/#{public_cert}.pem",
+  public_cert = File.expand_path("../../../test/rubygems/#{public_cert}",
                                  __FILE__)
   public_cert = File.read public_cert
   PUBLIC_CERT = OpenSSL::X509::Certificate.new public_cert

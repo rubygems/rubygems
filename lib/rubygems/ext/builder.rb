@@ -39,11 +39,9 @@ class Gem::Ext::Builder
     '2>&1'
   end
 
-  class << self
-    attr_accessor :verbose
-  end
-
   def self.run(command, results, command_name = nil)
+    verbose = Gem.configuration.really_verbose
+
     if verbose
       puts(command)
       system(command)

@@ -1,7 +1,7 @@
 require 'rubygems/command'
 require 'rubygems/local_remote_options'
 require 'rubygems/gemcutter_utilities'
-require 'rubygems/format'
+require 'rubygems/package'
 
 class Gem::Commands::PushCommand < Gem::Command
   include Gem::LocalRemoteOptions

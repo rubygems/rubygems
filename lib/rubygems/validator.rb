@@ -4,7 +4,7 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/format'
+require 'rubygems/package'
 require 'rubygems/installer'
 
 ##

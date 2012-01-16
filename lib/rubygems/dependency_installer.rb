@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'rubygems/dependency_list'
-require 'rubygems/format'
+require 'rubygems/package'
 require 'rubygems/installer'
 require 'rubygems/spec_fetcher'
 require 'rubygems/user_interaction'

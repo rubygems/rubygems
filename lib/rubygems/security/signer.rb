@@ -8,7 +8,6 @@ class Gem::Security::Signer
   attr_reader :digest_algorithm
 
   def initialize key, cert_chain
-    Gem.ensure_ssl_available
     @digest_algorithm = Gem::Security::OPT[:dgst_algo]
     @key, @cert_chain = key, cert_chain
 

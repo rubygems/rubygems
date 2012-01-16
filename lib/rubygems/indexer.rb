@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'rubygems/format'
+require 'rubygems/package'
 require 'time'
 
 begin

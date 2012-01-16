@@ -1,5 +1,5 @@
 require 'rubygems/command'
-require 'rubygems/format'
+require 'rubygems/package'
 require 'rubygems/installer'
 require 'rubygems/version_option'
 

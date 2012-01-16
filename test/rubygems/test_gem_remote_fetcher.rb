@@ -2,7 +2,7 @@ require 'rubygems/test_case'
 require 'ostruct'
 require 'webrick'
 require 'rubygems/remote_fetcher'
-require 'rubygems/format'
+require 'rubygems/package'
 
 # = Testing Proxy Settings
 #

@@ -1,6 +1,6 @@
 require 'rubygems/test_case'
 require 'rubygems/commands/build_command'
-require 'rubygems/format'
+require 'rubygems/package'
 
 class TestGemCommandsBuildCommand < Gem::TestCase
 

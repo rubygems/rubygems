@@ -1,7 +1,7 @@
 require "rubygems"
 require "rubygems/test_case"
 require "rubygems/commands/help_command"
-require "rubygems/format"
+require "rubygems/package"
 require "rubygems/command_manager"
 
 class TestGemCommandsHelpCommand < Gem::TestCase

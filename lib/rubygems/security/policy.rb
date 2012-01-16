@@ -105,7 +105,7 @@ class Gem::Security::Policy
 
     # get digest algorithm, calculate checksum of root.subject
     path = Gem::Security.trusted_cert_path(root, :trust_dir => trust_dir,
-                                             :digester  => digester)
+                                           :digester  => digester)
 
     # check to make sure trusted path exists
     unless File.exist? path
@@ -131,6 +131,14 @@ class Gem::Security::Policy
       save_dgst == cert_dgst
 
     true
+  end
+
+  def inspect # :nodoc:
+    "[Policy: %s - data: %p signer: %p chain: %p root: %p " \
+      "signed-only: %p trusted-only: %p]" % [
+      @name, @verify_chain, @verify_data, @verify_root, @verify_signer,
+      @only_signed, @only_trusted,
+    ]
   end
 
   ##

@@ -5,7 +5,7 @@
 #++
 
 require 'rubygems/exceptions'
-require 'rubygems/gem_openssl'
+require 'openssl'
 require 'fileutils'
 
 #
@@ -359,12 +359,12 @@ module Gem::Security
 
   OPT = {
     # private key options
-    :key_algo   => Gem::SSL::PKEY_RSA,
+    :key_algo   => OpenSSL::PKey::RSA,
     :key_size   => 2048,
 
     # public cert options
     :cert_age   => 365 * 24 * 3600, # 1 year
-    :dgst_algo  => Gem::SSL::DIGEST_SHA1,
+    :dgst_algo  => OpenSSL::Digest::SHA1,
 
     # x509 certificate extensions
     :cert_exts  => {
@@ -436,7 +436,6 @@ module Gem::Security
   # Build a certificate from the given DN and private key.
 
   def self.build_cert(name, key, opt = {})
-    Gem.ensure_ssl_available
     opt = OPT.merge opt
 
     cert = OpenSSL::X509::Certificate.new
@@ -466,7 +465,6 @@ module Gem::Security
   # Build a self-signed certificate for the given email address.
 
   def self.build_self_signed_cert(email_addr, opt = {})
-    Gem.ensure_ssl_available
     opt = OPT.merge(opt)
     path = { :key => nil, :cert => nil }
 

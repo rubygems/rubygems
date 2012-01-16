@@ -5,6 +5,7 @@
 #++
 
 require 'rubygems/exceptions'
+require 'rubygems/package'
 require 'rubygems/ext'
 require 'rubygems/require_paths_builder'
 require 'rubygems/user_interaction'

@@ -7,6 +7,7 @@
 require 'rubygems/security'
 require 'rubygems/specification'
 require 'rubygems/user_interaction'
+require 'zlib'
 
 class Gem::Package
 
@@ -381,6 +382,7 @@ EOM
     end
 
     verify_checksums digests, checksums
+
     @security_policy.verify_signatures @spec, digests, signatures if
       @security_policy
 

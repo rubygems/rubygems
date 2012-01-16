@@ -37,22 +37,6 @@ class Gem::Security::Policy
   end
 
   ##
-  # Get the path to the file for this cert.
-  #--
-  # TODO move to Gem::Security
-
-  def self.trusted_cert_path cert, opt = {}
-    opt = Gem::Security::OPT.merge opt
-
-    digester = opt[:dgst_algo]
-    digest = digester.hexdigest cert.subject.to_s
-
-    name = "cert-#{digest}.pem"
-
-    File.join opt[:trust_dir], name
-  end
-
-  ##
   # Verifies each certificate in +chain+ has signed the following certificate
   # and is valid for the given +time+.
 
@@ -120,9 +104,8 @@ class Gem::Security::Policy
     root = chain.first
 
     # get digest algorithm, calculate checksum of root.subject
-    path = Gem::Security::Policy.trusted_cert_path(root,
-                                                   :trust_dir => trust_dir,
-                                                   :digester  => digester)
+    path = Gem::Security.trusted_cert_path(root, :trust_dir => trust_dir,
+                                             :digester  => digester)
 
     # check to make sure trusted path exists
     unless File.exist? path
@@ -155,7 +138,6 @@ class Gem::Security::Policy
   # matched this security policy at the specified time.
 
   def verify_signature signature, data, chain, time = Time.now
-    Gem.ensure_ssl_available
     chain ||= []
 
     chain = chain.map { |cert| OpenSSL::X509::Certificate.new cert }

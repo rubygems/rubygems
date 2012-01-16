@@ -71,6 +71,40 @@ class TestGemSecurity < Gem::TestCase
     assert_equal name.to_s, signed.subject.to_s
   end
 
+  def test_trusted_cert_path
+    path = Gem::Security.trusted_cert_path PUBLIC_CERT
+
+    digest = OpenSSL::Digest::SHA1.hexdigest PUBLIC_CERT.subject.to_s
+
+    expected = File.join @userhome, ".gem/trust/cert-#{digest}.pem"
+
+    assert_equal expected, path
+  end
+
+  def test_trusted_cert_path_digest
+    digester = OpenSSL::Digest::SHA256
+
+    path = Gem::Security.trusted_cert_path PUBLIC_CERT, :dgst_algo => digester
+
+    digest = digester.hexdigest PUBLIC_CERT.subject.to_s
+
+    expected = File.join @userhome, ".gem/trust/cert-#{digest}.pem"
+
+    assert_equal expected, path
+  end
+
+  def test_trusted_cert_path_trust_dir
+    trust_dir = File.join @userhome, 'my_trust'
+
+    path = Gem::Security.trusted_cert_path PUBLIC_CERT, :trust_dir => trust_dir
+
+    digest = OpenSSL::Digest::SHA1.hexdigest PUBLIC_CERT.subject.to_s
+
+    expected = File.join trust_dir, "cert-#{digest}.pem"
+
+    assert_equal expected, path
+  end
+
   def test_class_email_to_name
     munger = Gem::Security::OPT[:munge_re]
 

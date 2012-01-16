@@ -412,6 +412,20 @@ module Gem::Security
   end
 
   ##
+  # Returns the path to the trusted certificate +cert+.
+
+  def self.trusted_cert_path cert, opt = {}
+    opt = Gem::Security::OPT.merge opt
+
+    digester = opt[:dgst_algo]
+    digest = digester.hexdigest cert.subject.to_s
+
+    name = "cert-#{digest}.pem"
+
+    File.join opt[:trust_dir], name
+  end
+
+  ##
   # Make sure the trust directory exists.  If it does exist, make sure it's
   # actually a directory.  If not, then create it with the appropriate
   # permissions.
@@ -527,7 +541,7 @@ module Gem::Security
     opt = OPT.merge(opt)
 
     # get destination path
-    path = Gem::Security::Policy.trusted_cert_path(cert, opt)
+    path = Gem::Security.trusted_cert_path(cert, opt)
 
     # verify trust directory (can't write to nowhere, you know)
     verify_trust_dir(opt[:trust_dir], opt[:perms][:trust_dir])

@@ -934,7 +934,8 @@ Also, a list:
   def self.load_cert cert_name
     if 32 == (Time.at(2**32) rescue 32) then
       cert_file =
-        File.expand_path "../../../test/rubygems/#{cert_name}_32.pem", __FILE__
+        File.expand_path "../../../test/rubygems/#{cert_name}_cert_32.pem",
+                         __FILE__
 
       cert_file = nil unless File.exist? cert_file
     end

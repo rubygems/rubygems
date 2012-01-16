@@ -1,7 +1,8 @@
 ##
 # A Gem::Security::Policy object encapsulates the settings for verifying
 # signed gem files.  This is the base class.  You can either declare an
-# instance of this or use one of the preset security policies below.
+# instance of this or use one of the preset security policies in
+# Gem::Security::Policies.
 
 class Gem::Security::Policy
 
@@ -37,16 +38,116 @@ class Gem::Security::Policy
 
   ##
   # Get the path to the file for this cert.
+  #--
+  # TODO move to Gem::Security
 
   def self.trusted_cert_path cert, opt = {}
     opt = Gem::Security::OPT.merge opt
 
-    algo = opt[:dgst_algo]
-    dgst = algo.hexdigest cert.subject.to_s
+    digester = opt[:dgst_algo]
+    digest = digester.hexdigest cert.subject.to_s
 
-    name = "cert-#{dgst}.pem"
+    name = "cert-#{digest}.pem"
 
     File.join opt[:trust_dir], name
+  end
+
+  ##
+  # Verifies each certificate in +chain+ has signed the following certificate
+  # and is valid for the given +time+.
+
+  def check_chain chain, time
+    chain.each_cons 2 do |issuer, cert|
+      check_cert cert, issuer, time
+    end
+
+    true
+  rescue Gem::Security::Exception => e
+    raise Gem::Security::Exception, "invalid signing chain: #{e.message}"
+  end
+
+  ##
+  # Verifies that +data+ matches the +signature+ created by +public_key+ and
+  # the +digest+ algorithm.
+
+  def check_data public_key, digest, signature, data
+    raise Gem::Security::Exception, "invalid signature" unless
+      public_key.verify digest.new, signature, data
+
+    true
+  end
+
+  ##
+  # Ensures that +signer+ is valid for +time+ and was signed by the +issuer+.
+  # If the +issuer+ is +nil+ no verification is performed.
+
+  def check_cert signer, issuer, time
+    message = "certificate #{signer.subject}"
+
+    if not_before = signer.not_before and not_before > time then
+      raise Gem::Security::Exception,
+            "#{message} not valid before #{not_before}"
+    end
+
+    if not_after = signer.not_after and not_after < time then
+      raise Gem::Security::Exception, "#{message} not valid after #{not_after}"
+    end
+
+    if issuer and not signer.verify issuer.public_key then
+      raise Gem::Security::Exception,
+            "#{message} was not issued by #{issuer.subject}"
+    end
+
+    true
+  end
+
+  ##
+  # Ensures the root certificate in +chain+ is self-signed and valid for
+  # +time+.
+
+  def check_root chain, time
+    root = chain.first
+
+    raise Gem::Security::Exception,
+          "root certificate #{root.subject} is not self-signed " \
+          "(issuer #{root.issuer})" if
+      root.issuer != root.subject
+
+    check_cert root, root, time
+  end
+
+  def check_trust chain, digester, trust_dir
+    root = chain.first
+
+    # get digest algorithm, calculate checksum of root.subject
+    path = Gem::Security::Policy.trusted_cert_path(root,
+                                                   :trust_dir => trust_dir,
+                                                   :digester  => digester)
+
+    # check to make sure trusted path exists
+    unless File.exist? path
+      message = "root cert #{root.subject} is not trusted"
+
+      message << " (root of signing cert #{chain.last.subject})" if
+        chain.length > 1
+
+      raise Gem::Security::Exception, message
+    end
+
+    # load calculate digest from saved cert file
+    save_cert = OpenSSL::X509::Certificate.new File.read path
+    save_dgst = digester.digest save_cert.public_key.to_s
+
+    # create digest of public key
+    pkey_str = root.public_key.to_s
+    cert_dgst = digester.digest pkey_str
+
+    raise Gem::Security::Exception,
+          "trusted root certificate #{root.subject} checksum " \
+          "does not match signing root certificate checksum" unless
+      save_dgst == cert_dgst
+
+    true
   end
 
   ##
@@ -55,93 +156,26 @@ class Gem::Security::Policy
 
   def verify_signature signature, data, chain, time = Time.now
     Gem.ensure_ssl_available
-    exc = Gem::Security::Exception
     chain ||= []
 
     chain = chain.map { |cert| OpenSSL::X509::Certificate.new cert }
-    signer, ch_len = chain[-1], chain.size
-    opt = Gem::Security::OPT.merge @opt
+    signer = chain.last
 
-    # make sure signature is valid
-    if @verify_data then
-      dgst = opt[:dgst_algo]
+    opt       = Gem::Security::OPT.merge @opt
+    digester  = opt[:dgst_algo]
+    trust_dir = opt[:trust_dir]
 
-      # verify the data signature (this is the most important part, so don't
-      # screw it up :D)
-      v = signer.public_key.verify dgst.new, signature, data
-      raise exc, "Invalid Gem Signature" unless v
+    check_data signer.public_key, digester, signature, data if @verify_data
 
-      # make sure the signer is valid
-      if @verify_signer
-        # make sure the signing cert is valid right now
-        v = signer.check_validity nil, time
-        raise exc, "Invalid Signature: #{v[:desc]}" unless v[:is_valid]
-      end
-    end
+    check_cert signer, nil, time if @verify_signer
 
-    # make sure the certificate chain is valid
-    if @verify_chain
-      # iterate down over the chain and verify each certificate against it's
-      # issuer
-      (ch_len - 1).downto 1 do |i|
-        issuer, cert = chain[i - 1, 2]
-        v = cert.check_validity issuer, time
-        raise exc, "%s: cert = '%s', error = '%s'" % [
-            'Invalid Signing Chain', cert.subject, v[:desc]
-        ] unless v[:is_valid]
-      end
+    check_chain chain, time if @verify_chain
 
-      # verify root of chain
-      if @verify_root
-        # make sure root is self-signed
-        root = chain[0]
-        raise exc, "%s: %s (subject = '%s', issuer = '%s')" % [
-            'Invalid Signing Chain Root',
-            'Subject does not match Issuer for Gem Signing Chain',
-            root.subject.to_s,
-            root.issuer.to_s,
-        ] unless root.issuer.to_s == root.subject.to_s
+    check_root chain, time if @verify_root
 
-        # make sure root is valid
-        v = root.check_validity root, time
-        raise exc, "%s: cert = '%s', error = '%s'" % [
-            'Invalid Signing Chain Root', root.subject, v[:desc]
-        ] unless v[:is_valid]
+    check_trust chain, digester, trust_dir if @only_trusted
 
-        # verify that the chain root is trusted
-        if @only_trusted
-          # get digest algorithm, calculate checksum of root.subject
-          algo = opt[:dgst_algo]
-          path = Gem::Security::Policy.trusted_cert_path root, opt
-
-          # check to make sure trusted path exists
-          raise exc, "%s: cert = '%s', error = '%s'" % [
-              'Untrusted Signing Chain Root',
-              root.subject.to_s,
-              "path \"#{path}\" does not exist",
-          ] unless File.exist? path
-
-          # load calculate digest from saved cert file
-          save_cert = OpenSSL::X509::Certificate.new File.read path
-          save_dgst = algo.digest save_cert.public_key.to_s
-
-          # create digest of public key
-          pkey_str = root.public_key.to_s
-          cert_dgst = algo.digest pkey_str
-
-          # now compare the two digests, raise exception
-          # if they don't match
-          raise exc, "%s: %s (saved = '%s', root = '%s')" % [
-              'Invalid Signing Chain Root',
-              "Saved checksum doesn't match root checksum",
-              save_dgst, cert_dgst,
-          ] unless save_dgst == cert_dgst
-        end
-      end
-
-      # return the signing chain
-      chain.map { |cert| cert.subject }
-    end
+    true
   end
 
   ##

@@ -87,22 +87,6 @@ end
 
 class Gem::TestCase < MiniTest::Unit::TestCase
 
-  private_key = File.expand_path('../../../test/rubygems/private_key.pem',
-                                 __FILE__)
-  private_key = File.read private_key
-  PRIVATE_KEY = OpenSSL::PKey::RSA.new private_key
-
-  public_cert = if 32 == (Time.at(2**32) rescue 32) then
-                  'public_cert_32.pem'
-                else
-                  'public_cert.pem'
-                end
-
-  public_cert = File.expand_path("../../../test/rubygems/#{public_cert}",
-                                 __FILE__)
-  public_cert = File.read public_cert
-  PUBLIC_CERT = OpenSSL::X509::Certificate.new public_cert
-
   # TODO: move to minitest
   def assert_path_exists path, msg = nil
     msg = message(msg) { "Expected path '#{path}' to exist" }
@@ -941,6 +925,44 @@ Also, a list:
     def prefetch(reqs)
     end
   end
+
+  ##
+  # Loads certificate name +cert_name+ from <tt>test/rubygems/</tt>.  If
+  # +thirty_two+ is true and this system does not support a 64 bit time_t a
+  # certificate expiring in 2038 when time_t rolls over is returned.
+
+  def self.load_cert cert_name
+    if 32 == (Time.at(2**32) rescue 32) then
+      cert_file =
+        File.expand_path "../../../test/rubygems/#{cert_name}_32.pem", __FILE__
+
+      cert_file = nil unless File.exist? cert_file
+    end
+
+    cert_file ||=
+      File.expand_path "../../../test/rubygems/#{cert_name}_cert.pem", __FILE__
+
+    cert = File.read cert_file
+
+    OpenSSL::X509::Certificate.new cert
+  end
+
+  ##
+  # Loads an RSA private key named +key_name+ in <tt>test/rubygems/</tt>
+
+  def self.load_key key_name
+    key_file =
+      File.expand_path "../../../test/rubygems/#{key_name}_key.pem", __FILE__
+
+    key = File.read key_file
+
+    OpenSSL::PKey::RSA.new key
+  end
+
+  PRIVATE_KEY = load_key 'private'
+  PUBLIC_KEY  = PRIVATE_KEY.public_key
+
+  PUBLIC_CERT = load_cert 'public'
 
 end
 

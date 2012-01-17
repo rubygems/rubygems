@@ -1,6 +1,5 @@
 require 'rubygems/test_case'
 require 'rubygems'
-require 'rubygems/gem_openssl'
 require 'rubygems/installer'
 require 'pathname'
 require 'tmpdir'
@@ -674,19 +673,6 @@ class TestGem < Gem::TestCase
     end
   end
 
-  def test_ensure_ssl_available
-    orig_Gem_ssl_available = Gem.ssl_available?
-
-    Gem.ssl_available = true
-    Gem.ensure_ssl_available
-
-    Gem.ssl_available = false
-    e = assert_raises Gem::Exception do Gem.ensure_ssl_available end
-    assert_equal 'SSL is not installed on this system', e.message
-  ensure
-    Gem.ssl_available = orig_Gem_ssl_available
-  end
-
   def test_self_find_files
     cwd = File.expand_path("test/rubygems", @@project_dir)
     $LOAD_PATH.unshift cwd
@@ -1047,18 +1033,6 @@ class TestGem < Gem::TestCase
     end
 
     assert_match %r%Could not find b %, e.message
-  end
-
-  def test_ssl_available_eh
-    orig_Gem_ssl_available = Gem.ssl_available?
-
-    Gem.ssl_available = true
-    assert_equal true, Gem.ssl_available?
-
-    Gem.ssl_available = false
-    assert_equal false, Gem.ssl_available?
-  ensure
-    Gem.ssl_available = orig_Gem_ssl_available
   end
 
   def test_self_use_paths

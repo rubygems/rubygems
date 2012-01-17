@@ -24,6 +24,14 @@ class Gem::Security::Policy
 
     @opt = opt
 
+    # Default to security
+    @only_signed   = true
+    @only_trusted  = true
+    @verify_chain  = true
+    @verify_data   = true
+    @verify_root   = true
+    @verify_signer = true
+
     policy.each_pair do |key, val|
       case key
       when :verify_data   then @verify_data   = val
@@ -95,7 +103,7 @@ class Gem::Security::Policy
     raise Gem::Security::Exception,
           "root certificate #{root.subject} is not self-signed " \
           "(issuer #{root.issuer})" if
-      root.issuer != root.subject
+      root.issuer.to_s != root.subject.to_s # HACK to_s is for ruby 1.8
 
     check_cert root, root, time
   end
@@ -177,12 +185,16 @@ class Gem::Security::Policy
         "unsigned gems are not allowed by the #{name} policy"
     end
 
+    return true if signatures.empty? # TODO test this line
+
     digests.each do |file, digest|
       signature = signatures[file]
       raise Gem::Security::Exception, "missing signature for #{file}" unless
-      signature
+        signature
       verify_signature signature, digest.digest, spec.cert_chain
     end
+
+    true
   end
 
   alias to_s name # :nodoc:

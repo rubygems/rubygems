@@ -41,7 +41,7 @@ class TestGemSecurityPolicy < Gem::TestCase
       :verify_signer => true,
       :verify_chain  => true,
       :verify_root   => false,
-      :only_trusetd  => false,
+      :only_trusted  => false,
       :only_signed   => false
     )
 
@@ -51,7 +51,7 @@ class TestGemSecurityPolicy < Gem::TestCase
       :verify_signer => true,
       :verify_chain  => true,
       :verify_root   => true,
-      :only_trusetd  => false,
+      :only_trusted  => false,
       :only_signed   => false
     )
   end

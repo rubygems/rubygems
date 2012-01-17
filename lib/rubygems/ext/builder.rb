@@ -31,11 +31,7 @@ class Gem::Ext::Builder
 
     ['', ' install'].each do |target|
       cmd = "#{make_program}#{target}"
-      results << cmd
-      results << `#{cmd} #{redirector}`
-
-      raise Gem::InstallError, "make#{target} failed:\n\n#{results}" unless
-        $?.success?
+      run(cmd, results, "make#{target}")
     end
   end
 
@@ -43,12 +39,20 @@ class Gem::Ext::Builder
     '2>&1'
   end
 
-  def self.run(command, results)
-    results << command
-    results << `#{command} #{redirector}`
+  def self.run(command, results, command_name = nil)
+    verbose = Gem.configuration.really_verbose
+
+    if verbose
+      puts(command)
+      system(command)
+    else
+      results << command
+      results << `#{command} #{redirector}`
+    end
 
     unless $?.success? then
-      raise Gem::InstallError, "#{class_name} failed:\n\n#{results.join "\n"}"
+      results << "Building has failed. See above output for more information on the failure." if verbose
+      raise Gem::InstallError, "#{command_name || class_name} failed:\n\n#{results.join "\n"}"
     end
   end
 

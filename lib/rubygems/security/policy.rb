@@ -108,15 +108,17 @@ class Gem::Security::Policy
     check_cert root, root, time
   end
 
+  ##
+  # Ensures the root of +chain+ has a trusted certificate in +trust_dir+ and
+  # the digests of the two certificates match according to +digester+
+
   def check_trust chain, digester, trust_dir
     root = chain.first
 
-    # get digest algorithm, calculate checksum of root.subject
     path = Gem::Security.trusted_cert_path(root, :trust_dir => trust_dir,
                                            :digester  => digester)
 
-    # check to make sure trusted path exists
-    unless File.exist? path
+    unless File.exist? path then
       message = "root cert #{root.subject} is not trusted"
 
       message << " (root of signing cert #{chain.last.subject})" if
@@ -125,11 +127,9 @@ class Gem::Security::Policy
       raise Gem::Security::Exception, message
     end
 
-    # load calculate digest from saved cert file
     save_cert = OpenSSL::X509::Certificate.new File.read path
     save_dgst = digester.digest save_cert.public_key.to_s
 
-    # create digest of public key
     pkey_str = root.public_key.to_s
     cert_dgst = digester.digest pkey_str
 
@@ -150,20 +150,22 @@ class Gem::Security::Policy
   end
 
   ##
-  # Verify that the gem data with the given signature and signing chain
-  # matched this security policy at the specified time.
+  # Verifies the +digests+ and +signatures+ for the given +spec+ match the
+  # certificate chain from +spec+ according to the policy
 
-  def verify_signature signature, data, chain, time = Time.now
-    chain ||= []
-
-    chain = chain.map { |cert| OpenSSL::X509::Certificate.new cert }
-    signer = chain.last
+  def verify_signatures spec, digests, signatures
+    if @only_signed and signatures.empty? then
+      raise Gem::Security::Exception,
+        "unsigned gems are not allowed by the #{name} policy"
+    end
 
     opt       = Gem::Security::OPT.merge @opt
     digester  = opt[:dgst_algo]
     trust_dir = opt[:trust_dir]
+    time      = Time.now
 
-    check_data signer.public_key, digester, signature, data if @verify_data
+    chain = spec.cert_chain.map { |cert| OpenSSL::X509::Certificate.new cert }
+    signer = chain.last
 
     check_cert signer, nil, time if @verify_signer
 
@@ -173,25 +175,13 @@ class Gem::Security::Policy
 
     check_trust chain, digester, trust_dir if @only_trusted
 
-    true
-  end
-
-  ##
-  # Verifies +digests+ match +signatures+
-
-  def verify_signatures spec, digests, signatures
-    if only_signed and signatures.empty? then
-      raise Gem::Security::Exception,
-        "unsigned gems are not allowed by the #{name} policy"
-    end
-
-    return true if signatures.empty? # TODO test this line
-
     digests.each do |file, digest|
       signature = signatures[file]
+
       raise Gem::Security::Exception, "missing signature for #{file}" unless
         signature
-      verify_signature signature, digest.digest, spec.cert_chain
+
+      check_data signer.public_key, digester, signature, digest if @verify_data
     end
 
     true

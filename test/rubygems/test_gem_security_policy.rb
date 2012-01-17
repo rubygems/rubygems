@@ -204,46 +204,56 @@ class TestGemSecurityPolicy < Gem::TestCase
                  "(root of signing cert #{CHILD_CERT.subject})", e.message
   end
 
-  def test_verify_signature_chain
+  def test_verify_signatures_chain
     data = @sha1.digest 'hello'
+    digest    = { 0 => data }
+    signature = { 0 => sign(data, CHILD_KEY) }
 
-    signature = sign data, CHILD_KEY
+    @spec.cert_chain = [PUBLIC_CERT, CHILD_CERT]
 
-    assert @chain.verify_signature signature, data, [PUBLIC_CERT, CHILD_CERT]
+    assert @chain.verify_signatures @spec, digest, signature
   end
 
-  def test_verify_signature_data
+  def test_verify_signatures_data
     data = @sha1.digest 'hello'
+    digest    = { 0 => data }
+    signature = { 0 => sign(data) }
 
-    signature = sign data
+    @spec.cert_chain = [PUBLIC_CERT]
 
-    @almost_no.verify_signature signature, data, [PUBLIC_CERT]
+    @almost_no.verify_signatures @spec, digest, signature
   end
 
-  def test_verify_signature_root
+  def test_verify_signatures_root
     data = @sha1.digest 'hello'
+    digest    = { 0 => data }
+    signature = { 0 => sign(data, CHILD_KEY) }
 
-    signature = sign data, CHILD_KEY
+    @spec.cert_chain = [PUBLIC_CERT, CHILD_CERT]
 
-    assert @root.verify_signature signature, data, [PUBLIC_CERT, CHILD_CERT]
+    assert @root.verify_signatures @spec, digest, signature
   end
 
-  def test_verify_signature_signer
+  def test_verify_signatures_signer
     data = @sha1.digest 'hello'
+    digest    = { 0 => data }
+    signature = { 0 => sign(data) }
 
-    signature = sign data
+    @spec.cert_chain = [PUBLIC_CERT]
 
-    assert @low.verify_signature signature, data, [PUBLIC_CERT]
+    assert @low.verify_signatures @spec, digest, signature
   end
 
-  def test_verify_signature_trust
+  def test_verify_signatures_trust
     Gem::Security.add_trusted_cert PUBLIC_CERT
 
-    data = @sha1.digest 'hello'
+    data = @sha1.digest('hello')
+    digest    = { 0 => data }
+    signature = { 0 => sign(data, PRIVATE_KEY) }
 
-    signature = sign data, PRIVATE_KEY
+    @spec.cert_chain = [PUBLIC_CERT]
 
-    assert @high.verify_signature signature, data, [PUBLIC_CERT]
+    assert @high.verify_signatures @spec, digest, signature
   end
 
   def test_verify_signatures
@@ -260,13 +270,13 @@ class TestGemSecurityPolicy < Gem::TestCase
     metadata_gz_digest = package.digest StringIO.new metadata_gz
 
     digests = {}
-    digests['metadata.gz'] = metadata_gz_digest
+    digests['metadata.gz'] = metadata_gz_digest.digest
 
     signatures = {}
     signatures['metadata.gz'] =
       PRIVATE_KEY.sign digest.new, metadata_gz_digest.digest
 
-    Gem::Security::HighSecurity.verify_signatures @spec, digests, signatures
+    assert @high.verify_signatures @spec, digests, signatures
   end
 
   def test_verify_signatures_missing
@@ -283,7 +293,7 @@ class TestGemSecurityPolicy < Gem::TestCase
     metadata_gz_digest = package.digest StringIO.new metadata_gz
 
     digests = {}
-    digests['metadata.gz'] = metadata_gz_digest
+    digests['metadata.gz'] = metadata_gz_digest.digest
     digests['data.tar.gz'] = package.digest StringIO.new 'hello' # fake
 
     signatures = {}
@@ -291,10 +301,32 @@ class TestGemSecurityPolicy < Gem::TestCase
       PRIVATE_KEY.sign digest.new, metadata_gz_digest.digest
 
     e = assert_raises Gem::Security::Exception do
-      Gem::Security::HighSecurity.verify_signatures @spec, digests, signatures
+      @high.verify_signatures @spec, digests, signatures
     end
 
     assert_equal 'missing signature for data.tar.gz', e.message
+  end
+
+  def test_verify_signatures_none
+    Gem::Security.add_trusted_cert PUBLIC_CERT
+
+    digest = Gem::Security::OPT[:dgst_algo]
+
+    @spec.cert_chain = [PUBLIC_CERT.to_s]
+
+    metadata_gz = Gem.gzip @spec.to_yaml
+
+    package = Gem::Package.new 'nonexistent.gem'
+
+    metadata_gz_digest = package.digest StringIO.new metadata_gz
+
+    digests = {}
+    digests['metadata.gz'] = metadata_gz_digest
+    digests['data.tar.gz'] = package.digest StringIO.new 'hello' # fake
+
+    assert_raises Gem::Security::Exception do
+      @almost_no.verify_signatures @spec, digests, {}
+    end
   end
 
   def sign data, key = PRIVATE_KEY

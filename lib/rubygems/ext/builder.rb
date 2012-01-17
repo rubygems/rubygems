@@ -51,7 +51,7 @@ class Gem::Ext::Builder
     end
 
     unless $?.success? then
-      results << "Look above for error messages!" if verbose
+      results << "Building has failed. See above output for more information on the failure." if verbose
       raise Gem::InstallError, "#{command_name || class_name} failed:\n\n#{results.join "\n"}"
     end
   end

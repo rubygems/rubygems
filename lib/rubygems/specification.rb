@@ -1320,13 +1320,18 @@ class Gem::Specification
   #
   # Do not set this, it is set automatically when the gem is packaged.
 
+  DateTimeFormat = /\A
+                     (\d{4})-(\d{2})-(\d{2})
+                     (\s+ \d{2}:\d{2}:\d{2}\.\d+ \s* (Z | [-+]\d\d:\d\d) )?
+                   \Z/x
+
   def date= date
     # We want to end up with a Time object with one-day resolution.
     # This is the cleanest, most-readable, faster-than-using-Date
     # way to do it.
     @date = case date
             when String then
-              if /\A(\d{4})-(\d{2})-(\d{2})\Z/ =~ date then
+              if DateTimeFormat =~ date then
                 Time.utc($1.to_i, $2.to_i, $3.to_i)
               else
                 raise(Gem::InvalidSpecificationException,

@@ -585,6 +585,16 @@ bindir:
     assert_equal Time.utc(2003, 9, 17, 0,0,0), @a1.date
   end
 
+  def test_date_tolerates_hour_sec_zulu
+    @a1.date = "2012-01-12 11:22:33.4444444 Z"
+    assert_equal Time.utc(2012,01,12,0,0,0), @a1.date
+  end
+
+  def test_date_tolerates_hour_sec_and_timezone
+    @a1.date = "2012-01-12 11:22:33.4444444 +02:33"
+    assert_equal Time.utc(2012,01,12,0,0,0), @a1.date
+  end
+
   def test_dependencies
     util_setup_deps
     assert_equal [@bonobo, @monkey], @gem.dependencies

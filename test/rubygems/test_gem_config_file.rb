@@ -17,6 +17,9 @@ class TestGemConfigFile < Gem::TestCase
     Gem::ConfigFile::OPERATING_SYSTEM_DEFAULTS.clear
     Gem::ConfigFile::PLATFORM_DEFAULTS.clear
 
+    @env_gemrc = ENV['GEMRC']
+    ENV['GEMRC'] = ''
+
     util_config_file
   end
 
@@ -26,6 +29,8 @@ class TestGemConfigFile < Gem::TestCase
     Gem::ConfigFile.send :remove_const, :SYSTEM_WIDE_CONFIG_FILE
     Gem::ConfigFile.send :const_set, :SYSTEM_WIDE_CONFIG_FILE,
                          @orig_SYSTEM_WIDE_CONFIG_FILE
+
+    ENV['GEMRC'] = @env_gemrc
 
     super
   end
@@ -125,6 +130,40 @@ class TestGemConfigFile < Gem::TestCase
 
     assert_equal 2048, @cfg.bulk_threshold
     assert_equal true, @cfg.backtrace
+  end
+
+  def test_initialize_environment_variable_override
+    File.open Gem::ConfigFile::SYSTEM_WIDE_CONFIG_FILE, 'w' do |fp|
+      fp.puts ':backtrace: false'
+      fp.puts ':benchmark: false'
+      fp.puts ':verbose: false'
+      fp.puts ':bulk_threshold: 2048'
+    end
+
+    conf1 = File.join @tempdir, 'gemrc1'
+    File.open conf1, 'w' do |fp|
+      fp.puts ':backtrace: true'
+    end
+
+    conf2 = File.join @tempdir, 'gemrc2'
+    File.open conf2, 'w' do |fp|
+      fp.puts ':benchmark: true'
+      fp.puts ':verbose: true'
+    end
+
+    conf3 = File.join @tempdir, 'gemrc3'
+    File.open conf3, 'w' do |fp|
+      fp.puts ':verbose: :loud'
+    end
+
+    ENV['GEMRC'] = conf1 + ':' + conf2 + ';' + conf3
+
+    util_config_file
+
+    assert_equal true, @cfg.backtrace
+    assert_equal true, @cfg.benchmark
+    assert_equal :loud, @cfg.verbose
+    assert_equal 2048, @cfg.bulk_threshold
   end
 
   def test_handle_arguments

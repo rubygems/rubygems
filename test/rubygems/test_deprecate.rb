@@ -6,12 +6,16 @@ require 'rubygems/deprecate'
 class TestDeprecate < Gem::TestCase
 
   def setup
+    super
+
     # Gem::Deprecate.saved_warnings.clear
     @original_skip = Gem::Deprecate.skip
     Gem::Deprecate.skip = false
   end
 
   def teardown
+    super
+
     # Gem::Deprecate.saved_warnings.clear
     Gem::Deprecate.skip = @original_skip
   end

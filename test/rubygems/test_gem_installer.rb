@@ -15,6 +15,7 @@ class TestGemInstaller < Gem::InstallerTestCase
 
   def teardown
     super
+
     Gem.configuration = @config
   end
 

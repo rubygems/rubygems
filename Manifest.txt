@@ -213,6 +213,7 @@ test/rubygems/test_gem_request_set.rb
 test/rubygems/test_gem_requirement.rb
 test/rubygems/test_gem_security.rb
 test/rubygems/test_gem_security_policy.rb
+test/rubygems/test_gem_security_signer.rb
 test/rubygems/test_gem_server.rb
 test/rubygems/test_gem_silent_ui.rb
 test/rubygems/test_gem_source_index.rb

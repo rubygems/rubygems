@@ -17,6 +17,8 @@ class TestGemCommandsMirrorCommand < Gem::TestCase
     @mirror_specs.each do |spec|
       Gem::Specification.add_spec spec
     end
+
+    super
   end
 
   def test_execute

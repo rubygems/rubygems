@@ -549,6 +549,9 @@ eighty characters.&lt;/pre&gt;
 
     FileUtils.mv @d2_1.cache_file, gems
     FileUtils.mv @d2_1_a.cache_file, gems
+ 
+    # Ensure we load them from disk
+    Gem::Specification.reset
 
     use_ui @ui do
       @indexer.update_index

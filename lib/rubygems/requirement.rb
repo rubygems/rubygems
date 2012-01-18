@@ -31,6 +31,8 @@ class Gem::Requirement
   quoted  = OPS.keys.map { |k| Regexp.quote k }.join "|"
   PATTERN = /\A\s*(#{quoted})?\s*(#{Gem::Version::VERSION_PATTERN})\s*\z/
 
+  DefaultRequirement = [">=", Gem::Version.new(0)]
+
   class BadRequirementError < ArgumentError; end
 
   ##
@@ -89,7 +91,11 @@ class Gem::Requirement
       raise BadRequirementError, "Illformed requirement [#{obj.inspect}]"
     end
 
-    [$1 || "=", Gem::Version.new($2)]
+    if $1 == ">=" && $2 == "0"
+      DefaultRequirement
+    else
+      [$1 || "=", Gem::Version.new($2)]
+    end
   end
 
   ##
@@ -109,9 +115,11 @@ class Gem::Requirement
     requirements.compact!
     requirements.uniq!
 
-    requirements << ">= 0" if requirements.empty?
-    @none = (requirements == ">= 0")
-    @requirements = requirements.map! { |r| self.class.parse r }
+    if requirements.empty?
+      @requirements = [DefaultRequirement]
+    else
+      @requirements = requirements.map! { |r| self.class.parse r }
+    end
   end
 
   ##
@@ -119,7 +127,11 @@ class Gem::Requirement
   
   # FIX: maybe this should be using #default ?
   def none?
-    @none ||= (to_s == ">= 0")
+    if @requirements.size == 1
+      @requirements[0] == DefaultRequirement
+    else
+      false
+    end
   end
 
   def as_list # :nodoc:

@@ -21,6 +21,21 @@ class TestGemRequirement < Gem::TestCase
     assert_requirement_equal "= 2", v(2)
   end
 
+  def test_empty_requirements_is_none
+    r = Gem::Requirement.new
+    assert_equal true, r.none?
+  end
+
+  def test_explicit_default_is_none
+    r = Gem::Requirement.new ">= 0"
+    assert_equal true, r.none?
+  end
+
+  def test_basic_non_none
+    r = Gem::Requirement.new "= 1"
+    assert_equal false, r.none?
+  end
+
   def test_parse
     assert_equal ['=', Gem::Version.new(1)], Gem::Requirement.parse('  1')
     assert_equal ['=', Gem::Version.new(1)], Gem::Requirement.parse('= 1')

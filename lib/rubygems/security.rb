@@ -384,7 +384,6 @@ module Gem::Security
 
     # output name format for self-signed certs
     :output_fmt => 'gem-%s.pem',
-    :munge_re   => Regexp.new(/[^a-z0-9_.-]+/),
 
     # output directory for trusted certificate checksums
     :trust_dir => File.join(Gem.user_home, '.gem', 'trust'),
@@ -482,7 +481,7 @@ module Gem::Security
     opt = OPT.merge(opt)
     path = { :key => nil, :cert => nil }
 
-    name = email_to_name email_addr, opt[:munge_re]
+    name = email_to_name email_addr
 
     key = opt[:key_algo].new opt[:key_size]
 
@@ -515,18 +514,14 @@ module Gem::Security
   ##
   # Turns +email_address+ into an OpenSSL::X509::Name
 
-  def self.email_to_name email_address, munge_re
+  def self.email_to_name email_address
+    email_address = email_address.gsub(/[^\w@.-]+/i, '_')
+
     cn, dcs = email_address.split '@'
 
     dcs = dcs.split '.'
 
-    cn = cn.gsub munge_re, '_'
-
-    dcs = dcs.map do |dc|
-      dc.gsub munge_re, '_'
-    end
-
-    name = "CN=#{cn}/" << dcs.map { |dc| "DC=#{dc}" }.join('/')
+    name = "CN=#{cn}/#{dcs.map { |dc| "DC=#{dc}" }.join '/'}"
 
     OpenSSL::X509::Name.parse name
   end

@@ -108,19 +108,17 @@ class TestGemSecurity < Gem::TestCase
   end
 
   def test_class_email_to_name
-    munger = Gem::Security::OPT[:munge_re]
-
     assert_equal '/CN=nobody/DC=example',
-                 Gem::Security.email_to_name('nobody@example', munger).to_s
+                 Gem::Security.email_to_name('nobody@example').to_s
 
     assert_equal '/CN=nobody/DC=example/DC=com',
-                 Gem::Security.email_to_name('nobody@example.com', munger).to_s
+                 Gem::Security.email_to_name('nobody@example.com').to_s
 
     assert_equal '/CN=no.body/DC=example',
-                 Gem::Security.email_to_name('no.body@example', munger).to_s
+                 Gem::Security.email_to_name('no.body@example').to_s
 
     assert_equal '/CN=no_body/DC=example',
-                 Gem::Security.email_to_name('no+body@example', munger).to_s
+                 Gem::Security.email_to_name('no+body@example').to_s
   end
 
 end if defined?(OpenSSL)

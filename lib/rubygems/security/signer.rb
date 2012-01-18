@@ -7,28 +7,24 @@ class Gem::Security::Signer
   attr_accessor :key
   attr_reader :digest_algorithm
 
+  ##
+  # Creates a new signer with an RSA +key+ or path to a key, and a
+  # +cert_chain+ containing X509 certificates or paths to X509 certificates.
+
   def initialize key, cert_chain
+    @cert_chain = cert_chain
+    @key        = key
+
     @digest_algorithm = Gem::Security::DIGEST_ALGORITHM
-    @key, @cert_chain = key, cert_chain
 
-    # check key, if it's a file, and if it's key, leave it alone
-    if @key && !@key.kind_of?(OpenSSL::PKey::PKey)
-      @key = OpenSSL::PKey::RSA.new(File.read(@key))
-    end
+    @key = OpenSSL::PKey::RSA.new File.read @key if
+      @key and not OpenSSL::PKey::RSA === @key
 
-    # check cert chain, if it's a file, load it, if it's cert data, convert
-    # it into a cert object, and if it's a cert object, leave it alone
-    if @cert_chain
-      @cert_chain = @cert_chain.map do |cert|
-        # check cert, if it's a file, load it, if it's cert data, convert it
-        # into a cert object, and if it's a cert object, leave it alone
-        if cert && !cert.kind_of?(OpenSSL::X509::Certificate)
-          cert = File.read(cert) if File::exist?(cert)
-          cert = OpenSSL::X509::Certificate.new(cert)
-        end
-        cert
-      end
-    end
+    @cert_chain = @cert_chain.compact.map do |cert|
+      next cert if OpenSSL::X509::Certificate === cert
+
+      OpenSSL::X509::Certificate.new File.read cert
+    end if @cert_chain
   end
 
   ##

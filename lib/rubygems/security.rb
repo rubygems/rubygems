@@ -358,10 +358,6 @@ module Gem::Security
   # Default options for most of the methods below
 
   OPT = {
-    # private key options
-    :key_algo   => OpenSSL::PKey::RSA,
-    :key_size   => 2048,
-
     # public cert options
     :cert_age   => 365 * 24 * 3600, # 1 year
 
@@ -400,6 +396,16 @@ module Gem::Security
   # Digest algorithm used to sign gems
 
   DIGEST_ALGORITHM = OpenSSL::Digest::SHA1
+
+  ##
+  # Algorithm for creating the keypair used to sign gems
+
+  KEY_ALGORITHM = OpenSSL::PKey::RSA
+
+  ##
+  # Length of keys created by KEY_ALGORITHM
+
+  KEY_LENGTH = 2048
 
   ##
   # Sign the cert cert with @signing_key and @signing_cert, using the
@@ -481,13 +487,13 @@ module Gem::Security
   ##
   # Build a self-signed certificate for the given email address.
 
-  def self.build_self_signed_cert(email_addr, opt = {})
+  def self.build_self_signed_cert email_addr, key_length = KEY_LENGTH, opt = {}
     opt = OPT.merge(opt)
     path = { :key => nil, :cert => nil }
 
     name = email_to_name email_addr
 
-    key = opt[:key_algo].new opt[:key_size]
+    key = KEY_ALGORITHM.new key_length
 
     verify_trust_dir opt[:trust_dir], opt[:perms][:trust_dir]
 

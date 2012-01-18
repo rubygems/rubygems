@@ -43,12 +43,11 @@ class TestGemSecurity < Gem::TestCase
 
     opt = {
       :cert_age  => 60,
-      :key_size  => 512,
       :save_cert => false,
       :save_key  => false,
     }
 
-    result = Gem::Security.build_self_signed_cert email, opt
+    result = Gem::Security.build_self_signed_cert email, 512, opt
 
     key = result[:key]
 

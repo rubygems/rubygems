@@ -84,11 +84,9 @@ class TestGemSecurity < Gem::TestCase
   end
 
   def test_trusted_cert_path_digest
-    digester = OpenSSL::Digest::SHA256
+    path = Gem::Security.trusted_cert_path PUBLIC_CERT
 
-    path = Gem::Security.trusted_cert_path PUBLIC_CERT, :dgst_algo => digester
-
-    digest = digester.hexdigest PUBLIC_CERT.subject.to_s
+    digest = Gem::Security::DIGEST_ALGORITHM.hexdigest PUBLIC_CERT.subject.to_s
 
     expected = File.join @userhome, ".gem/trust/cert-#{digest}.pem"
 

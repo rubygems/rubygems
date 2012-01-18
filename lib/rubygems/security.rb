@@ -364,7 +364,6 @@ module Gem::Security
 
     # public cert options
     :cert_age   => 365 * 24 * 3600, # 1 year
-    :dgst_algo  => OpenSSL::Digest::SHA1,
 
     # x509 certificate extensions
     :cert_exts  => {
@@ -398,14 +397,19 @@ module Gem::Security
   }
 
   ##
-  # Sign the cert cert with @signing_key and @signing_cert, using the digest
-  # algorithm opt[:dgst_algo]. Returns the newly signed certificate.
+  # Digest algorithm used to sign gems
+
+  DIGEST_ALGORITHM = OpenSSL::Digest::SHA1
+
+  ##
+  # Sign the cert cert with @signing_key and @signing_cert, using the
+  # DIGEST_ALGORITHM.  Returns the newly signed certificate.
 
   def self.sign_cert(cert, signing_key, signing_cert, opt = {})
     opt = OPT.merge(opt)
 
     cert.issuer = signing_cert.subject
-    cert.sign signing_key, opt[:dgst_algo].new
+    cert.sign signing_key, DIGEST_ALGORITHM.new
 
     cert
   end
@@ -416,7 +420,7 @@ module Gem::Security
   def self.trusted_cert_path cert, opt = {}
     opt = Gem::Security::OPT.merge opt
 
-    digester = opt[:dgst_algo]
+    digester = DIGEST_ALGORITHM
     digest = digester.hexdigest cert.subject.to_s
 
     name = "cert-#{digest}.pem"

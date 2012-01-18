@@ -259,8 +259,6 @@ class TestGemSecurityPolicy < Gem::TestCase
   def test_verify_signatures
     Gem::Security.add_trusted_cert PUBLIC_CERT
 
-    digest = Gem::Security::OPT[:dgst_algo]
-
     @spec.cert_chain = [PUBLIC_CERT.to_s]
 
     metadata_gz = Gem.gzip @spec.to_yaml
@@ -274,15 +272,13 @@ class TestGemSecurityPolicy < Gem::TestCase
 
     signatures = {}
     signatures['metadata.gz'] =
-      PRIVATE_KEY.sign digest.new, metadata_gz_digest.digest
+      PRIVATE_KEY.sign @sha1.new, metadata_gz_digest.digest
 
     assert @high.verify_signatures @spec, digests, signatures
   end
 
   def test_verify_signatures_missing
     Gem::Security.add_trusted_cert PUBLIC_CERT
-
-    digest = Gem::Security::OPT[:dgst_algo]
 
     @spec.cert_chain = [PUBLIC_CERT.to_s]
 
@@ -298,7 +294,7 @@ class TestGemSecurityPolicy < Gem::TestCase
 
     signatures = {}
     signatures['metadata.gz'] =
-      PRIVATE_KEY.sign digest.new, metadata_gz_digest.digest
+      PRIVATE_KEY.sign @sha1.new, metadata_gz_digest.digest
 
     e = assert_raises Gem::Security::Exception do
       @high.verify_signatures @spec, digests, signatures
@@ -309,8 +305,6 @@ class TestGemSecurityPolicy < Gem::TestCase
 
   def test_verify_signatures_none
     Gem::Security.add_trusted_cert PUBLIC_CERT
-
-    digest = Gem::Security::OPT[:dgst_algo]
 
     @spec.cert_chain = [PUBLIC_CERT.to_s]
 

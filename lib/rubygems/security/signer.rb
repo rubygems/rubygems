@@ -8,7 +8,7 @@ class Gem::Security::Signer
   attr_reader :digest_algorithm
 
   def initialize key, cert_chain
-    @digest_algorithm = Gem::Security::OPT[:dgst_algo]
+    @digest_algorithm = Gem::Security::DIGEST_ALGORITHM
     @key, @cert_chain = key, cert_chain
 
     # check key, if it's a file, and if it's key, leave it alone

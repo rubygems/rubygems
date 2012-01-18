@@ -160,7 +160,7 @@ class Gem::Security::Policy
     end
 
     opt       = Gem::Security::OPT.merge @opt
-    digester  = opt[:dgst_algo]
+    digester  = Gem::Security::DIGEST_ALGORITHM
     trust_dir = opt[:trust_dir]
     time      = Time.now
 

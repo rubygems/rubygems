@@ -95,7 +95,7 @@ class Gem::Package
     @gem   = gem
 
     @contents = nil
-    @digest = Gem::Security::OPT[:dgst_algo]
+    @digest = Gem::Security::DIGEST_ALGORITHM
     @files = nil
     @security_policy = nil
     @spec = nil

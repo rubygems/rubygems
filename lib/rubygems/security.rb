@@ -457,9 +457,9 @@ module Gem::Security
     cert.not_after  = Time.now + opt[:cert_age]
     cert.not_before = Time.now
     cert.public_key = key.public_key
-    cert.serial     = 0
+    cert.serial     = 1
     cert.subject    = name
-    cert.version    = 2
+    cert.version    = 3
 
     ef = OpenSSL::X509::ExtensionFactory.new nil, cert
 

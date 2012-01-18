@@ -5,16 +5,16 @@ require 'rubygems/fix_openssl_warnings' if RUBY_VERSION < "1.9"
 class TestGemSecurity < Gem::TestCase
 
   def test_class_build_cert
-    name = OpenSSL::X509::Name.parse "CN=nobody/DC=example"
-    key = OpenSSL::PKey::RSA.new 512
+    name = PUBLIC_CERT.subject
+    key = PRIVATE_KEY
     opt = { :cert_age => 60 }
 
     cert = Gem::Security.build_cert name, key, opt
 
     assert_kind_of OpenSSL::X509::Certificate, cert
 
-    assert_equal    2,                     cert.version
-    assert_equal    0,                     cert.serial
+    assert_equal    3,                     cert.version
+    assert_equal    1,                     cert.serial
     assert_equal    key.public_key.to_pem, cert.public_key.to_pem
     assert_in_delta Time.now,              cert.not_before, 10
     assert_in_delta Time.now + 60,         cert.not_after, 10
@@ -31,6 +31,8 @@ class TestGemSecurity < Gem::TestCase
 
     key_ident = cert.extensions.find { |ext| ext.oid == 'subjectKeyIdentifier' }
     assert_equal 59, key_ident.value.length
+    assert_equal 'B0:EB:9C:A5:E5:8E:7D:94:BB:4B:3B:D6:80:CB:A5:AD:5D:12:88:90',
+                 key_ident.value
 
     assert_equal name.to_s, cert.issuer.to_s
     assert_equal name.to_s, cert.subject.to_s
@@ -38,6 +40,7 @@ class TestGemSecurity < Gem::TestCase
 
   def test_class_build_self_signed_cert
     email = 'nobody@example'
+
     opt = {
       :cert_age  => 60,
       :key_size  => 512,
@@ -50,7 +53,6 @@ class TestGemSecurity < Gem::TestCase
     key = result[:key]
 
     assert_kind_of OpenSSL::PKey::RSA, key
-    # assert_equal 512, key.something_here
 
     cert = result[:cert]
 
@@ -58,8 +60,8 @@ class TestGemSecurity < Gem::TestCase
   end
 
   def test_class_sign_cert
-    name = OpenSSL::X509::Name.parse "CN=nobody/DC=example"
-    key  = OpenSSL::PKey::RSA.new 512
+    name = PUBLIC_CERT.subject
+    key  = PRIVATE_KEY
     cert = OpenSSL::X509::Certificate.new
 
     cert.subject    = name
@@ -122,3 +124,4 @@ class TestGemSecurity < Gem::TestCase
   end
 
 end if defined?(OpenSSL)
+

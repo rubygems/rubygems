@@ -47,8 +47,6 @@ hoe = Hoe.spec 'rubygems-update' do
   extra_dev_deps << ['hoe-seattlerb', '~> 1.2']
   extra_dev_deps << ['session', '~> 2.4']
   extra_dev_deps << ['rdoc', '~> 3.0']
-  extra_dev_deps << ['rcov', '~> 0.9.0'] unless
-    ENV['TRAVIS'] or RUBY_VERSION > '2.0'
   extra_dev_deps << ['ZenTest', '~> 4.5']
 
   self.extra_rdoc_files = Dir["*.rdoc"]
@@ -151,29 +149,6 @@ end
 desc "Diffs Rubinius HEAD with the currently checked-out copy of RubyGems."
 task :diff_rubinius do
   diff_with rubinius_dir
-end
-
-desc "Get coverage for a specific test, no system RubyGems."
-task "rcov:for", [:test] do |task, args|
-  mgem  = Gem.source_index.find_name("minitest").first rescue nil
-  rgem  = Gem.source_index.find_name(/rcov/).first
-  libs  = rgem.require_paths.map { |p| File.join rgem.full_gem_path, p }
-  rcov  = File.join rgem.full_gem_path, rgem.bindir, rgem.default_executable
-
-  if mgem
-    libs << mgem.require_paths.map { |p| File.join mgem.full_gem_path, p }
-  end
-
-  libs << "lib:test"
-
-  flags  = []
-  flags << "-I" << libs.flatten.join(":")
-
-  rflags  = []
-  rflags << "-i" << "lib/rubygems"
-  rflags << "--no-color" << "--save coverage.info" << "-T" << "--no-html"
-
-  ruby "#{flags.join ' '} #{rcov} #{rflags.join ' '} #{args[:test]}"
 end
 
 def changelog_section code

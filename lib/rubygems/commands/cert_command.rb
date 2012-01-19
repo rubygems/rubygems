@@ -8,9 +8,11 @@ class Gem::Commands::CertCommand < Gem::Command
 
     add_option('-a', '--add CERT',
                'Add a trusted certificate.') do |value, options|
-      cert = OpenSSL::X509::Certificate.new(File.read(value))
-      Gem::Security.add_trusted_cert(cert)
-      say "Added '#{cert.subject.to_s}'"
+      cert = OpenSSL::X509::Certificate.new File.read value
+
+      Gem::Security.trust_dir.trust_cert cert
+
+      say "Added '#{cert.subject}'"
     end
 
     add_option('-l', '--list',

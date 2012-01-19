@@ -382,14 +382,6 @@ module Gem::Security
 
     # output directory for trusted certificate checksums
     :trust_dir => File.join(Gem.user_home, '.gem', 'trust'),
-
-    # default permissions for trust directory and certs
-    :perms => {
-      :trust_dir      => 0700,
-      :trusted_cert   => 0600,
-      :signing_cert   => 0600,
-      :signing_key    => 0600,
-    },
   }
 
   ##
@@ -407,6 +399,24 @@ module Gem::Security
 
   KEY_LENGTH = 2048
 
+  SIGNING_CERT_PERMISSIONS = 0600
+
+  SIGNING_KEY_PERMISSIONS = 0600
+
+  def self.reset
+    @trust_dir = nil
+  end
+
+  reset
+
+  def self.trust_dir
+    return @trust_dir if @trust_dir
+
+    dir = File.join Gem.user_home, '.gem', 'trust'
+
+    @trust_dir ||= Gem::Security::TrustDir.new dir
+  end
+
   ##
   # Sign the cert cert with @signing_key and @signing_cert, using the
   # DIGEST_ALGORITHM.  Returns the newly signed certificate.
@@ -418,41 +428,6 @@ module Gem::Security
     cert.sign signing_key, DIGEST_ALGORITHM.new
 
     cert
-  end
-
-  ##
-  # Returns the path to the trusted certificate +cert+.
-
-  def self.trusted_cert_path cert, opt = {}
-    opt = Gem::Security::OPT.merge opt
-
-    digester = DIGEST_ALGORITHM
-    digest = digester.hexdigest cert.subject.to_s
-
-    name = "cert-#{digest}.pem"
-
-    File.join opt[:trust_dir], name
-  end
-
-  ##
-  # Make sure the trust directory exists.  If it does exist, make sure it's
-  # actually a directory.  If not, then create it with the appropriate
-  # permissions.
-
-  def self.verify_trust_dir(path, perms)
-    # if the directory exists, then make sure it is in fact a directory.  if
-    # it doesn't exist, then create it with the appropriate permissions
-    if File.exist?(path)
-      # verify that the trust directory is actually a directory
-      unless File.directory?(path)
-        err = "trust directory #{path} isn't a directory"
-        raise Gem::Security::Exception, err
-      end
-    else
-      # trust directory doesn't exist, so create it with permissions
-      FileUtils.mkdir_p(path)
-      FileUtils.chmod(perms, path)
-    end
   end
 
   ##
@@ -495,13 +470,10 @@ module Gem::Security
 
     key = KEY_ALGORITHM.new key_length
 
-    verify_trust_dir opt[:trust_dir], opt[:perms][:trust_dir]
-
     if opt[:save_key] then
       path[:key] = opt[:save_key_path] || (opt[:output_fmt] % 'private_key')
 
-      open path[:key], 'wb' do |io|
-        io.chmod opt[:perms][:signing_key]
+      open path[:key], 'wb', SIGNING_KEY_PERMISSIONS do |io|
         io.write key.to_pem
       end
     end
@@ -511,8 +483,7 @@ module Gem::Security
     if opt[:save_cert] then
       path[:cert] = opt[:save_cert_path] || (opt[:output_fmt] % 'public_cert')
 
-      open path[:cert], 'wb' do |file|
-        file.chmod opt[:perms][:signing_cert]
+      open path[:cert], 'wb', SIGNING_CERT_PERMISSIONS do |file|
         file.write cert.to_pem
       end
     end
@@ -536,34 +507,10 @@ module Gem::Security
     OpenSSL::X509::Name.parse name
   end
 
-  ##
-  # Add certificate to trusted cert list.
-  #
-  # Note: At the moment these are stored in OPT[:trust_dir], although that
-  # directory may change in the future.
-
-  def self.add_trusted_cert(cert, opt = {})
-    opt = OPT.merge(opt)
-
-    # get destination path
-    path = Gem::Security.trusted_cert_path(cert, opt)
-
-    # verify trust directory (can't write to nowhere, you know)
-    verify_trust_dir(opt[:trust_dir], opt[:perms][:trust_dir])
-
-    # write cert to output file
-    File.open(path, 'wb') do |file|
-      file.chmod(opt[:perms][:trusted_cert])
-      file.write(cert.to_pem)
-    end
-
-    # return nil
-    nil
-  end
-
 end
 
 require 'rubygems/security/policy'
 require 'rubygems/security/policies'
 require 'rubygems/security/signer'
+require 'rubygems/security/trust_dir'
 

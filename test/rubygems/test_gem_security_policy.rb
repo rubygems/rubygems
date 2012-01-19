@@ -178,19 +178,19 @@ class TestGemSecurityPolicy < Gem::TestCase
   end
 
   def test_check_trust
-    Gem::Security.add_trusted_cert PUBLIC_CERT
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
     assert @high.check_trust [PUBLIC_CERT], @sha1, @trust_dir
   end
 
   def test_check_trust_child
-    Gem::Security.add_trusted_cert PUBLIC_CERT
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
     assert @high.check_trust [PUBLIC_CERT, CHILD_CERT], @sha1, @trust_dir
   end
 
   def test_check_trust_mismatch
-    Gem::Security.add_trusted_cert PUBLIC_CERT
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
     e = assert_raises Gem::Security::Exception do
       @high.check_trust [WRONG_KEY_CERT], @sha1, @trust_dir
@@ -218,7 +218,7 @@ class TestGemSecurityPolicy < Gem::TestCase
   end
 
   def test_verify
-    Gem::Security.add_trusted_cert PUBLIC_CERT
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
     data = @sha1.digest('hello')
     digest    = { 0 => data }
@@ -228,7 +228,7 @@ class TestGemSecurityPolicy < Gem::TestCase
   end
 
   def test_verify_chain_signatures
-    Gem::Security.add_trusted_cert PUBLIC_CERT
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
     data = @sha1.digest('hello')
     digest    = { 0 => data }
@@ -282,7 +282,7 @@ class TestGemSecurityPolicy < Gem::TestCase
   end
 
   def test_verify_signatures_trust
-    Gem::Security.add_trusted_cert PUBLIC_CERT
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
     data = @sha1.digest('hello')
     digest    = { 0 => data }
@@ -294,7 +294,7 @@ class TestGemSecurityPolicy < Gem::TestCase
   end
 
   def test_verify_signatures
-    Gem::Security.add_trusted_cert PUBLIC_CERT
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
     @spec.cert_chain = [PUBLIC_CERT.to_s]
 
@@ -315,7 +315,7 @@ class TestGemSecurityPolicy < Gem::TestCase
   end
 
   def test_verify_signatures_missing
-    Gem::Security.add_trusted_cert PUBLIC_CERT
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
     @spec.cert_chain = [PUBLIC_CERT.to_s]
 
@@ -341,7 +341,7 @@ class TestGemSecurityPolicy < Gem::TestCase
   end
 
   def test_verify_signatures_none
-    Gem::Security.add_trusted_cert PUBLIC_CERT
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
     @spec.cert_chain = [PUBLIC_CERT.to_s]
 

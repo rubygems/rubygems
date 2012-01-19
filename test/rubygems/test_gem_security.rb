@@ -4,6 +4,22 @@ require 'rubygems/fix_openssl_warnings' if RUBY_VERSION < "1.9"
 
 class TestGemSecurity < Gem::TestCase
 
+  def test_class_reset
+    trust_dir = Gem::Security.trust_dir
+
+    Gem::Security.reset
+
+    refute_equal trust_dir, Gem::Security.trust_dir
+  end
+
+  def test_class_trust_dir
+    trust_dir = Gem::Security.trust_dir
+
+    expected = File.join Gem.user_home, '.gem/trust'
+
+    assert_equal expected, trust_dir.dir
+  end
+
   def test_class_build_cert
     name = PUBLIC_CERT.subject
     key = PRIVATE_KEY
@@ -70,38 +86,6 @@ class TestGemSecurity < Gem::TestCase
 
     assert cert.verify key
     assert_equal name.to_s, signed.subject.to_s
-  end
-
-  def test_trusted_cert_path
-    path = Gem::Security.trusted_cert_path PUBLIC_CERT
-
-    digest = OpenSSL::Digest::SHA1.hexdigest PUBLIC_CERT.subject.to_s
-
-    expected = File.join @userhome, ".gem/trust/cert-#{digest}.pem"
-
-    assert_equal expected, path
-  end
-
-  def test_trusted_cert_path_digest
-    path = Gem::Security.trusted_cert_path PUBLIC_CERT
-
-    digest = Gem::Security::DIGEST_ALGORITHM.hexdigest PUBLIC_CERT.subject.to_s
-
-    expected = File.join @userhome, ".gem/trust/cert-#{digest}.pem"
-
-    assert_equal expected, path
-  end
-
-  def test_trusted_cert_path_trust_dir
-    trust_dir = File.join @userhome, 'my_trust'
-
-    path = Gem::Security.trusted_cert_path PUBLIC_CERT, :trust_dir => trust_dir
-
-    digest = OpenSSL::Digest::SHA1.hexdigest PUBLIC_CERT.subject.to_s
-
-    expected = File.join trust_dir, "cert-#{digest}.pem"
-
-    assert_equal expected, path
   end
 
   def test_class_email_to_name

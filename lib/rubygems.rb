@@ -296,6 +296,7 @@ module Gem
     @user_home     = nil
     @searcher      = nil
     Gem::Specification.reset
+    Gem::Security.reset if const_defined? :Security
   end
 
   ##

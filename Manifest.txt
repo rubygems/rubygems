@@ -96,6 +96,7 @@ lib/rubygems/security.rb
 lib/rubygems/security/policies.rb
 lib/rubygems/security/policy.rb
 lib/rubygems/security/signer.rb
+lib/rubygems/security/trust_dir.rb
 lib/rubygems/server.rb
 lib/rubygems/source_index.rb
 lib/rubygems/spec_fetcher.rb
@@ -214,6 +215,7 @@ test/rubygems/test_gem_requirement.rb
 test/rubygems/test_gem_security.rb
 test/rubygems/test_gem_security_policy.rb
 test/rubygems/test_gem_security_signer.rb
+test/rubygems/test_gem_security_trust_dir.rb
 test/rubygems/test_gem_server.rb
 test/rubygems/test_gem_silent_ui.rb
 test/rubygems/test_gem_source_index.rb

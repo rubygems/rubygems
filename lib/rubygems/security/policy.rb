@@ -126,8 +126,7 @@ class Gem::Security::Policy
   def check_trust chain, digester, trust_dir
     root = chain.first
 
-    path = Gem::Security.trusted_cert_path(root, :trust_dir => trust_dir,
-                                           :digester  => digester)
+    path = Gem::Security.trust_dir.cert_path root
 
     unless File.exist? path then
       message = "root cert #{root.subject} is not trusted"

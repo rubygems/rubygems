@@ -170,8 +170,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     end
     Gem.use_paths(@gemhome)
 
-    @orig_trust_dir = Gem::Security::OPT[:trust_dir]
-    Gem::Security::OPT[:trust_dir] = File.join @userhome, '.gem/trust'
+    Gem::Security.reset
 
     Gem.loaded_specs.clear
     Gem::Specification.unresolved_deps.clear
@@ -242,7 +241,6 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     Gem::ConfigMap[:BASERUBY] = @orig_BASERUBY
     Gem::ConfigMap[:arch] = @orig_arch
-    Gem::Security::OPT[:trust_dir] = @orig_trust_dir
 
     if defined? Gem::RemoteFetcher then
       Gem::RemoteFetcher.fetcher = nil

@@ -8,8 +8,9 @@ class Gem::Security::Signer
   attr_reader :digest_algorithm
 
   ##
-  # Creates a new signer with an RSA +key+ or path to a key, and a
-  # +cert_chain+ containing X509 certificates or paths to X509 certificates.
+  # Creates a new signer with an RSA +key+ or path to a key, and a certificate
+  # +chain+ containing X509 certificates, encoding certificates or paths to
+  # certificates.
 
   def initialize key, cert_chain
     @cert_chain = cert_chain
@@ -23,7 +24,9 @@ class Gem::Security::Signer
     @cert_chain = @cert_chain.compact.map do |cert|
       next cert if OpenSSL::X509::Certificate === cert
 
-      OpenSSL::X509::Certificate.new File.read cert
+      cert = File.read cert if File.exist? cert
+
+      OpenSSL::X509::Certificate.new cert
     end if @cert_chain
   end
 
@@ -32,6 +35,8 @@ class Gem::Security::Signer
 
   def sign data
     return unless @key
+
+    Gem::Security::SigningPolicy.verify @cert_chain, @key
 
     @key.sign @digest_algorithm.new, data
   end

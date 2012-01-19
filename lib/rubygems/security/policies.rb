@@ -87,6 +87,19 @@ module Gem::Security
   )
 
   ##
+  # Policy used to verify a certificate and key when signing a gem
+
+  SigningPolicy = Policy.new(
+    'Signing Policy',
+    :verify_data      => false,
+    :verify_signer    => true,
+    :verify_chain     => true,
+    :verify_root      => true,
+    :only_trusted     => false,
+    :only_signed      => false
+  )
+
+  ##
   # Hash of configured security policies
 
   Policies = {
@@ -95,6 +108,7 @@ module Gem::Security
     'LowSecurity'      => LowSecurity,
     'MediumSecurity'   => MediumSecurity,
     'HighSecurity'     => HighSecurity,
+    # SigningPolicy is not intended for use by `gem -P` so do not list it
   }
 
 end

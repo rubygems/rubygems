@@ -94,6 +94,17 @@ class Gem::Security::Policy
   end
 
   ##
+  # Ensures the public key of +key+ matches the public key in +signer+
+
+  def check_key signer, key
+    raise Gem::Security::Exception,
+      "certificate #{signer.subject} does not match the signing key" unless
+        signer.public_key.to_pem == key.public_key.to_pem
+
+    true
+  end
+
+  ##
   # Ensures the root certificate in +chain+ is self-signed and valid for
   # +time+.
 
@@ -150,10 +161,13 @@ class Gem::Security::Policy
   end
 
   ##
-  # Verifies the +digests+ and +signatures+ for the given +spec+ match the
-  # certificate chain from +spec+ according to the policy
+  # Verifies the certificate +chain+ is valid, the +digests+ match the
+  # signatures +signatures+ created by the signer depending on the +policy+
+  # settings.
+  #
+  # If +key+ is given it is used to validate the signing certificate.
 
-  def verify_signatures spec, digests, signatures
+  def verify chain, key = nil, digests = {}, signatures = {}
     if @only_signed and signatures.empty? then
       raise Gem::Security::Exception,
         "unsigned gems are not allowed by the #{name} policy"
@@ -164,8 +178,9 @@ class Gem::Security::Policy
     trust_dir = opt[:trust_dir]
     time      = Time.now
 
-    chain = spec.cert_chain.map { |cert| OpenSSL::X509::Certificate.new cert }
     signer = chain.last
+
+    check_key signer, key if key
 
     check_cert signer, nil, time if @verify_signer
 
@@ -183,6 +198,20 @@ class Gem::Security::Policy
 
       check_data signer.public_key, digester, signature, digest if @verify_data
     end
+
+    true
+  end
+
+  ##
+  # Extracts the certificate chain from the +spec+ and calls #verify to ensure
+  # the signatures and certificate chain is valid according to the policy..
+
+  def verify_signatures spec, digests, signatures
+    chain = spec.cert_chain.map do |cert_pem|
+      OpenSSL::X509::Certificate.new cert_pem
+    end
+
+    verify chain, nil, digests, signatures
 
     true
   end

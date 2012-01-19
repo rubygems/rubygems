@@ -134,6 +134,19 @@ class TestGemSecurityPolicy < Gem::TestCase
     assert @low.check_cert(CHILD_CERT, PUBLIC_CERT, Time.now)
   end
 
+  def test_check_key
+    assert @almost_no.check_key(PUBLIC_CERT, PRIVATE_KEY)
+  end
+
+  def test_check_key_wrong_key
+    e = assert_raises Gem::Security::Exception do
+      @almost_no.check_key(PUBLIC_CERT, ALTERNATE_KEY)
+    end
+
+    assert_equal "certificate #{PUBLIC_CERT.subject} " \
+                 "does not match the signing key", e.message
+  end
+
   def test_check_root
     chain = [PUBLIC_CERT, CHILD_CERT, INVALIDCHILD_CERT]
 
@@ -202,6 +215,30 @@ class TestGemSecurityPolicy < Gem::TestCase
 
     assert_equal "root cert #{PUBLIC_CERT.subject} is not trusted " \
                  "(root of signing cert #{CHILD_CERT.subject})", e.message
+  end
+
+  def test_verify
+    Gem::Security.add_trusted_cert PUBLIC_CERT
+
+    data = @sha1.digest('hello')
+    digest    = { 0 => data }
+    signature = { 0 => sign(data, PRIVATE_KEY) }
+
+    assert @almost_no.verify [PUBLIC_CERT]
+  end
+
+  def test_verify_chain_signatures
+    Gem::Security.add_trusted_cert PUBLIC_CERT
+
+    data = @sha1.digest('hello')
+    digest    = { 0 => data }
+    signature = { 0 => sign(data, PRIVATE_KEY) }
+
+    assert @high.verify [PUBLIC_CERT], nil, digest, signature
+  end
+
+  def test_verify_chain_key
+    assert @almost_no.verify [PUBLIC_CERT], PRIVATE_KEY
   end
 
   def test_verify_signatures_chain

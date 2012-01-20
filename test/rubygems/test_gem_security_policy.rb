@@ -29,7 +29,7 @@ class TestGemSecurityPolicy < Gem::TestCase
     end
 
     @sha1 = OpenSSL::Digest::SHA1
-    @trust_dir = Gem::Security::OPT[:trust_dir]
+    @trust_dir = Gem::Security.trust_dir.dir # HACK use the object
 
     @almost_no = Gem::Security::AlmostNoSecurity
     @low       = Gem::Security::LowSecurity

@@ -11,39 +11,24 @@ class TestGemCommandsCertCommand < Gem::TestCase
   def setup
     super
 
-    @orig_security_trust_dir = Gem::Security::OPT[:trust_dir]
-    Gem::Security::OPT[:trust_dir] = @tempdir
-
     @cmd = Gem::Commands::CertCommand.new
 
-    root = File.expand_path(File.dirname(__FILE__), @@project_dir)
+    root = File.expand_path File.dirname(__FILE__), @@project_dir
 
-    FileUtils.cp File.join(root, 'data', 'gem-private_key.pem'), @tempdir
-    FileUtils.cp File.join(root, 'data', 'gem-public_cert.pem'), @tempdir
-
-    @cert_file_name = File.join @tempdir, 'gem-public_cert.pem'
-    @pkey_file_name = File.join @tempdir, 'gem-private_key.pem'
-  end
-
-  def teardown
-    Gem::Security::OPT[:trust_dir] = @orig_security_trust_dir
-
-    super
+    @pkey_file = File.join(root, 'data', 'gem-private_key.pem')
+    @cert_file = File.join(root, 'data', 'gem-public_cert.pem')
   end
 
   def test_execute_add
     use_ui @ui do
-      @cmd.send :handle_options, %W[--add #{@cert_file_name}]
+      @cmd.send :handle_options, %W[--add #{@cert_file}]
     end
 
     assert_equal "Added '/CN=rubygems/DC=example/DC=com'\n", @ui.output
-    assert_equal '', @ui.error
+    assert_empty @ui.error
   end
 
   def test_execute_build
-    FileUtils.rm @cert_file_name
-    FileUtils.rm @pkey_file_name
-
     use_ui @ui do
       Dir.chdir @tempdir do
         @cmd.send :handle_options, %W[--build nobody@example.com]
@@ -52,66 +37,77 @@ class TestGemCommandsCertCommand < Gem::TestCase
 
     output = @ui.output.split "\n"
 
-    assert_equal 'Public Cert: gem-public_cert.pem', output.shift
-    assert_equal 'Private Key: gem-private_key.pem', output.shift
-    assert_equal 'Don\'t forget to move the key file to somewhere private...',
+    assert_equal "Certificate: #{File.join @tempdir, 'gem-public_cert.pem'}",
                  output.shift
-    assert_equal [], output
+    assert_equal "Private Key: #{File.join @tempdir, 'gem-private_key.pem'}",
+                 output.shift
 
-    assert_equal '', @ui.error
+    assert_equal "Don't forget to move the key file to somewhere private...",
+                 output.shift
 
-    assert File.exist?(File.join(@tempdir, 'gem-private_key.pem'))
-    assert File.exist?(File.join(@tempdir, 'gem-public_cert.pem'))
+    assert_empty output
+    assert_empty @ui.error
+
+    assert_path_exists File.join(@tempdir, 'gem-private_key.pem')
+    assert_path_exists File.join(@tempdir, 'gem-public_cert.pem')
   end
 
   def test_execute_certificate
     use_ui @ui do
-      @cmd.send :handle_options, %W[--certificate #{@cert_file_name}]
+      @cmd.send :handle_options, %W[--certificate #{@cert_file}]
     end
 
     assert_equal '', @ui.output
     assert_equal '', @ui.error
 
-    assert_equal File.read(@cert_file_name),
+    assert_equal File.read(@cert_file),
                  @cmd.options[:issuer_cert].to_s
   end
 
   def test_execute_list
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
+
     use_ui @ui do
       @cmd.send :handle_options, %W[--list]
     end
 
-    assert_equal "/CN=rubygems/DC=example/DC=com\n", @ui.output
+    assert_equal "/CN=nobody/DC=example\n", @ui.output
     assert_equal '', @ui.error
   end
 
   def test_execute_private_key
     use_ui @ui do
-      @cmd.send :handle_options, %W[--private-key #{@pkey_file_name}]
+      @cmd.send :handle_options, %W[--private-key #{@pkey_file}]
     end
 
     assert_equal '', @ui.output
     assert_equal '', @ui.error
 
-    assert_equal File.read(@pkey_file_name),
+    assert_equal File.read(@pkey_file),
                  @cmd.options[:issuer_key].to_s
   end
 
   def test_execute_remove
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
+
+    cert_path = Gem::Security.trust_dir.cert_path(PUBLIC_CERT)
+
+    assert_path_exists cert_path
+
     use_ui @ui do
-      @cmd.send :handle_options, %W[--remove rubygems]
+      @cmd.send :handle_options, %W[--remove nobody]
     end
 
-    assert_equal "Removed '/CN=rubygems/DC=example/DC=com'\n", @ui.output
+    assert_equal "Removed '/CN=nobody/DC=example'\n", @ui.output
     assert_equal '', @ui.error
 
-    refute File.exist?(@cert_file_name)
+    refute_path_exists cert_path
   end
 
   def test_execute_sign
     use_ui @ui do
       @cmd.send :handle_options, %W[
-        -K #{@pkey_file_name} -C #{@cert_file_name} --sign #{@cert_file_name}
+        -K #{@pkey_file} -C #{@cert_file} --sign #{@cert_file}
       ]
     end
 

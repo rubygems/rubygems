@@ -172,7 +172,7 @@ class Gem::Security::Policy
         "unsigned gems are not allowed by the #{name} policy"
     end
 
-    opt       = Gem::Security::OPT.merge @opt
+    opt       = @opt
     digester  = Gem::Security::DIGEST_ALGORITHM
     trust_dir = opt[:trust_dir]
     time      = Time.now

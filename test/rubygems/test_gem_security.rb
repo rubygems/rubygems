@@ -4,28 +4,17 @@ require 'rubygems/fix_openssl_warnings' if RUBY_VERSION < "1.9"
 
 class TestGemSecurity < Gem::TestCase
 
-  def test_class_reset
-    trust_dir = Gem::Security.trust_dir
+  def setup
+    super
 
-    Gem::Security.reset
-
-    refute_equal trust_dir, Gem::Security.trust_dir
+    @SEC = Gem::Security
   end
 
-  def test_class_trust_dir
-    trust_dir = Gem::Security.trust_dir
-
-    expected = File.join Gem.user_home, '.gem/trust'
-
-    assert_equal expected, trust_dir.dir
-  end
-
-  def test_class_build_cert
+  def test_class_create_cert
     name = PUBLIC_CERT.subject
     key = PRIVATE_KEY
-    opt = { :cert_age => 60 }
 
-    cert = Gem::Security.build_cert name, key, opt
+    cert = @SEC.create_cert name, key, 60
 
     assert_kind_of OpenSSL::X509::Certificate, cert
 
@@ -50,31 +39,47 @@ class TestGemSecurity < Gem::TestCase
     assert_equal 'B0:EB:9C:A5:E5:8E:7D:94:BB:4B:3B:D6:80:CB:A5:AD:5D:12:88:90',
                  key_ident.value
 
-    assert_equal name.to_s, cert.issuer.to_s
+    assert_equal '', cert.issuer.to_s
     assert_equal name.to_s, cert.subject.to_s
   end
 
-  def test_class_build_self_signed_cert
-    email = 'nobody@example'
+  def test_class_create_cert_self_signed
+    subject = PUBLIC_CERT.subject
 
-    opt = {
-      :cert_age  => 60,
-      :save_cert => false,
-      :save_key  => false,
-    }
-
-    result = Gem::Security.build_self_signed_cert email, 512, opt
-
-    key = result[:key]
-
-    assert_kind_of OpenSSL::PKey::RSA, key
-
-    cert = result[:cert]
+    cert = @SEC.create_cert_self_signed subject, PRIVATE_KEY, 60
 
     assert_equal '/CN=nobody/DC=example', cert.issuer.to_s
   end
 
-  def test_class_sign_cert
+  def test_class_create_key
+    key = @SEC.create_key 256
+
+    assert_kind_of OpenSSL::PKey::RSA, key
+  end
+
+  def test_class_email_to_name
+    assert_equal '/CN=nobody/DC=example',
+                 @SEC.email_to_name('nobody@example').to_s
+
+    assert_equal '/CN=nobody/DC=example/DC=com',
+                 @SEC.email_to_name('nobody@example.com').to_s
+
+    assert_equal '/CN=no.body/DC=example',
+                 @SEC.email_to_name('no.body@example').to_s
+
+    assert_equal '/CN=no_body/DC=example',
+                 @SEC.email_to_name('no+body@example').to_s
+  end
+
+  def test_class_reset
+    trust_dir = @SEC.trust_dir
+
+    @SEC.reset
+
+    refute_equal trust_dir, @SEC.trust_dir
+  end
+
+  def test_class_sign
     name = PUBLIC_CERT.subject
     key  = PRIVATE_KEY
     cert = OpenSSL::X509::Certificate.new
@@ -82,25 +87,19 @@ class TestGemSecurity < Gem::TestCase
     cert.subject    = name
     cert.public_key = key.public_key
 
-    signed = Gem::Security.sign_cert cert, key, cert
+    signed = @SEC.sign cert, key, cert
 
     assert cert.verify key
     assert_equal name.to_s, signed.subject.to_s
   end
 
-  def test_class_email_to_name
-    assert_equal '/CN=nobody/DC=example',
-                 Gem::Security.email_to_name('nobody@example').to_s
+  def test_class_trust_dir
+    trust_dir = @SEC.trust_dir
 
-    assert_equal '/CN=nobody/DC=example/DC=com',
-                 Gem::Security.email_to_name('nobody@example.com').to_s
+    expected = File.join Gem.user_home, '.gem/trust'
 
-    assert_equal '/CN=no.body/DC=example',
-                 Gem::Security.email_to_name('no.body@example').to_s
-
-    assert_equal '/CN=no_body/DC=example',
-                 Gem::Security.email_to_name('no+body@example').to_s
+    assert_equal expected, trust_dir.dir
   end
 
-end if defined?(OpenSSL)
+end
 

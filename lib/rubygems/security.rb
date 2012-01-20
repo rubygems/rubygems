@@ -340,7 +340,7 @@ require 'fileutils'
 # * Might be better to store the certificate chain as a PKCS#7 or PKCS#12
 #   file, instead of an array embedded in the metadata.  ideas?
 # * Possibly embed signature and key algorithms into metadata (right now
-#   they're assumed to be the same as what's set in Gem::Security::OPT)
+#   they're assumed to be the same as what's set in Gem::Security)
 #
 # == About the Author
 #
@@ -355,42 +355,12 @@ module Gem::Security
   class Exception < Gem::Exception; end
 
   ##
-  # Default options for most of the methods below
-
-  OPT = {
-    # public cert options
-    :cert_age   => 365 * 24 * 3600, # 1 year
-
-    # x509 certificate extensions
-    :cert_exts  => {
-      'basicConstraints'      => 'CA:FALSE',
-      'subjectKeyIdentifier'  => 'hash',
-      'keyUsage'              => 'keyEncipherment,dataEncipherment,digitalSignature',
-    },
-
-    # save the key and cert to a file in build_self_signed_cert()?
-    :save_key   => true,
-    :save_cert  => true,
-
-    # if you define either of these, then they'll be used instead of
-    # the output_fmt macro below
-    :save_key_path => nil,
-    :save_cert_path => nil,
-
-    # output name format for self-signed certs
-    :output_fmt => 'gem-%s.pem',
-
-    # output directory for trusted certificate checksums
-    :trust_dir => File.join(Gem.user_home, '.gem', 'trust'),
-  }
-
-  ##
   # Digest algorithm used to sign gems
 
   DIGEST_ALGORITHM = OpenSSL::Digest::SHA1
 
   ##
-  # Algorithm for creating the keypair used to sign gems
+  # Algorithm for creating the key pair used to sign gems
 
   KEY_ALGORITHM = OpenSSL::PKey::RSA
 
@@ -399,97 +369,70 @@ module Gem::Security
 
   KEY_LENGTH = 2048
 
-  SIGNING_CERT_PERMISSIONS = 0600
+  ##
+  # One year in seconds
 
-  SIGNING_KEY_PERMISSIONS = 0600
-
-  def self.reset
-    @trust_dir = nil
-  end
-
-  reset
-
-  def self.trust_dir
-    return @trust_dir if @trust_dir
-
-    dir = File.join Gem.user_home, '.gem', 'trust'
-
-    @trust_dir ||= Gem::Security::TrustDir.new dir
-  end
+  ONE_YEAR = 86400 * 365
 
   ##
-  # Sign the cert cert with @signing_key and @signing_cert, using the
-  # DIGEST_ALGORITHM.  Returns the newly signed certificate.
+  # The default set of extensions are:
+  #
+  # * The certificate is not a certificate authority
+  # * The key for the certificate may be used for key and data encipherment
+  #   and digital signatures
+  # * The certificate contains a subject key identifier
 
-  def self.sign_cert(cert, signing_key, signing_cert, opt = {})
-    opt = OPT.merge(opt)
-
-    cert.issuer = signing_cert.subject
-    cert.sign signing_key, DIGEST_ALGORITHM.new
-
-    cert
-  end
+  EXTENSIONS = {
+    'basicConstraints'     => 'CA:FALSE',
+    'keyUsage'             =>
+      'keyEncipherment,dataEncipherment,digitalSignature',
+    'subjectKeyIdentifier' => 'hash',
+  }
 
   ##
-  # Build a certificate from the given DN and private key.
+  # Creates an unsigned certificate for +subject+ and +key+.  The lifetime of
+  # the key is from the current time to +age+ which defaults to one year.
+  #
+  # The +extensions+ restrict the key to the indicated uses.
 
-  def self.build_cert(name, key, opt = {})
-    opt = OPT.merge opt
-
+  def self.create_cert subject, key, age = ONE_YEAR, extensions = EXTENSIONS
     cert = OpenSSL::X509::Certificate.new
 
-    cert.not_after  = Time.now + opt[:cert_age]
-    cert.not_before = Time.now
     cert.public_key = key.public_key
-    cert.serial     = 1
-    cert.subject    = name
     cert.version    = 3
+    cert.serial     = 1
+
+    cert.not_before = Time.now
+    cert.not_after  = Time.now + age
+
+    cert.subject    = subject
 
     ef = OpenSSL::X509::ExtensionFactory.new nil, cert
 
-    cert.extensions = opt[:cert_exts].map do |ext_name, value|
+    cert.extensions = extensions.map do |ext_name, value|
       ef.create_extension ext_name, value
     end
-
-    i_key  = opt[:issuer_key]  || key
-    i_cert = opt[:issuer_cert] || cert
-
-    cert = sign_cert cert, i_key, i_cert, opt
 
     cert
   end
 
   ##
-  # Build a self-signed certificate for the given email address.
+  # Creates a self-signed certificate with an issuer and subject of +subject+
+  # and the given +extensions+ from the +key+.
 
-  def self.build_self_signed_cert email_addr, key_length = KEY_LENGTH, opt = {}
-    opt = OPT.merge(opt)
-    path = { :key => nil, :cert => nil }
+  def self.create_cert_self_signed subject, key, age = ONE_YEAR,
+                                   extensions = EXTENSIONS
+    certificate = create_cert subject, key, age, extensions
 
-    name = email_to_name email_addr
+    sign certificate, key, certificate
+  end
 
-    key = KEY_ALGORITHM.new key_length
+  ##
+  # Creates a new key pair of the specified +length+ and +algorithm+.  The
+  # default is a 2048 bit RSA key.
 
-    if opt[:save_key] then
-      path[:key] = opt[:save_key_path] || (opt[:output_fmt] % 'private_key')
-
-      open path[:key], 'wb', SIGNING_KEY_PERMISSIONS do |io|
-        io.write key.to_pem
-      end
-    end
-
-    cert = build_cert name, key, opt
-
-    if opt[:save_cert] then
-      path[:cert] = opt[:save_cert_path] || (opt[:output_fmt] % 'public_cert')
-
-      open path[:cert], 'wb', SIGNING_CERT_PERMISSIONS do |file|
-        file.write cert.to_pem
-      end
-    end
-
-    { :key => key, :cert => cert,
-      :key_path => path[:key], :cert_path => path[:cert] }
+  def self.create_key length = KEY_LENGTH, algorithm = KEY_ALGORITHM
+    key = algorithm.new length
   end
 
   ##
@@ -505,6 +448,62 @@ module Gem::Security
     name = "CN=#{cn}/#{dcs.map { |dc| "DC=#{dc}" }.join '/'}"
 
     OpenSSL::X509::Name.parse name
+  end
+
+  ##
+  # Resets the trust directory for verifying gems.
+
+  def self.reset
+    @trust_dir = nil
+  end
+
+  reset
+
+  ##
+  # Sign the +certificate+ with the +signing_key+ and +signing_cert+, using
+  # the Gem::Security::DIGEST_ALGORITHM.
+  #
+  # Returns the newly signed certificate.
+
+  def self.sign certificate, signing_key, signing_cert
+    certificate.issuer = signing_cert.subject
+
+    certificate.sign signing_key, Gem::Security::DIGEST_ALGORITHM.new
+
+    certificate
+  end
+
+  ##
+  # Returns a Gem::Security::TrustDir which wraps the directory where trusted
+  # certificates live.
+
+  def self.trust_dir
+    return @trust_dir if @trust_dir
+
+    dir = File.join Gem.user_home, '.gem', 'trust'
+
+    @trust_dir ||= Gem::Security::TrustDir.new dir
+  end
+
+  ##
+  # Enumerates the trusted certificates via Gem::Security::TrustDir.
+
+  def self.trusted_certificates &block
+    trust_dir.each_certificate(&block)
+  end
+
+  ##
+  # Writes +pemmable+, which must respond to +to_pem+ to +path+ with the given
+  # +permissions+.
+
+  def self.write pemmable, path, permissions = 0600
+    path = File.expand_path path
+
+    open path, 'wb', permissions do |io|
+      io.write pemmable.to_pem
+    end
+
+    path
   end
 
 end

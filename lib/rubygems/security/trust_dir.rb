@@ -37,6 +37,27 @@ class Gem::Security::TrustDir
   end
 
   ##
+  # Enumerates trusted certificates.
+
+  def each_certificate
+    return enum_for __method__ unless block_given?
+
+    glob = File.join @dir, '*.pem'
+
+    Dir[glob].each do |certificate_file|
+      begin
+        pem = File.read certificate_file
+
+        certificate = OpenSSL::X509::Certificate.new pem
+
+        yield certificate, certificate_file
+      rescue OpenSSL::X509::CertificateError
+        next # HACK warn
+      end
+    end
+  end
+
+  ##
   # Make sure the trust directory exists.  If it does exist, make sure it's
   # actually a directory.  If not, then create it with the appropriate
   # permissions.

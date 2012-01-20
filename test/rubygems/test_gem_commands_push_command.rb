@@ -100,6 +100,34 @@ class TestGemCommandsPushCommand < Gem::TestCase
     send_battery
   end
 
+  def test_send_redirection
+    url = "http://whereever/#{@spec.file_name}"
+
+    @response = "Successfully registered gem: freewill (1.0.0) => #{url}"
+    @fetcher.data["#{Gem.host}/api/v1/gems"]  = [@response, 200, 'OK']
+
+    use_ui @ui do
+      @cmd.invoke "--url", url, @path
+    end
+
+    assert_match %r{Registering gem with #{Gem.host}...}, @ui.output
+
+    assert_equal Net::HTTP::Post, @fetcher.last_request.class
+    spec = @fetcher.last_request.body
+
+    assert_equal @spec.to_yaml, spec
+
+    assert_equal "application/octet-stream", @fetcher.last_request["Content-Type"]
+    assert_equal Gem.configuration.rubygems_api_key, @fetcher.last_request["Authorization"]
+
+    assert_equal url, @fetcher.last_request["Gem-URL"]
+
+    assert_equal Gem::Security.hash_file(@path),
+                 @fetcher.last_request["Gem-Hash"]
+
+    assert_match @response, @ui.output
+  end
+
   def test_sending_gem_default
     @response = "Successfully registered gem: freewill (1.0.0)"
     @fetcher.data["#{@host}/api/v1/gems"]  = [@response, 200, 'OK']

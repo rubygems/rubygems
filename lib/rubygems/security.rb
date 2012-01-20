@@ -418,6 +418,28 @@ module Gem::Security
   end
 
   ##
+  # Hash the file located at +path+ using DIGEST_ALGORITHM
+  # and return the hexdigest of the result.
+
+  def self.hash_file(path)
+    hash = DIGEST_ALGORITHM.new
+
+    # This reads in chunks rather than using File.read
+    # so that it can hash very large files (hundreds of megabytes)
+    # without having to load the whole file into memory.
+
+    buffer = ""
+
+    File.open path do |f|
+      while chunk = f.read(16384, buffer)
+        hash << chunk
+      end
+    end
+
+    return hash.hexdigest
+  end
+
+  ##
   # Sign the cert cert with @signing_key and @signing_cert, using the
   # DIGEST_ALGORITHM.  Returns the newly signed certificate.
 

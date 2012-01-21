@@ -297,7 +297,7 @@ EOM
       args << { :external_encoding => Encoding::UTF_8 } if
         Object.const_defined? :Encoding
 
-      Zlib::GzipReader.wrap *args do |gzio|
+      Zlib::GzipReader.wrap(*args) do |gzio|
         @spec = Gem::Specification.from_yaml gzio.read
       end
     end

@@ -6,10 +6,16 @@ class Gem::Commands::CertCommand < Gem::Command
   def initialize
     super 'cert', 'Manage RubyGems certificates and signing settings'
 
-    add_option('-a', '--add CERT',
-               'Add a trusted certificate.') do |value, options|
-      cert = OpenSSL::X509::Certificate.new File.read value
+    OptionParser.accept OpenSSL::X509::Certificate do |certificate|
+      OpenSSL::X509::Certificate.new File.read certificate
+    end
 
+    OptionParser.accept OpenSSL::PKey::RSA do |key|
+      OpenSSL::PKey::RSA.new File.read key
+    end
+
+    add_option('-a', '--add CERT', OpenSSL::X509::Certificate,
+               'Add a trusted certificate.') do |cert, options|
       Gem::Security.trust_dir.trust_cert cert
 
       say "Added '#{cert.subject}'"
@@ -26,7 +32,7 @@ class Gem::Commands::CertCommand < Gem::Command
     add_option('-r', '--remove STRING',
                'Remove trusted certificates containing',
                'STRING.') do |value, options|
-      Gem::Security.trusted_certificates.each do |certificate, path|
+      Gem::Security.trusted_certificates do |certificate, path|
         if certificate.subject.to_s.downcase.index value then
           FileUtils.rm path
           say "Removed '#{certificate.subject}'"
@@ -51,17 +57,13 @@ class Gem::Commands::CertCommand < Gem::Command
       say "Don't forget to move the key file to somewhere private..."
     end
 
-    add_option('-C', '--certificate CERT',
-               'Certificate for --sign command.') do |value, options|
-      cert = OpenSSL::X509::Certificate.new File.read value
-
+    add_option('-C', '--certificate CERT', OpenSSL::X509::Certificate,
+               'Certificate for --sign command.') do |cert, options|
       options[:issuer_cert] = cert
     end
 
-    add_option('-K', '--private-key KEY',
-               'Private key for --sign command.') do |value, options|
-      key = OpenSSL::PKey::RSA.new File.read value
-
+    add_option('-K', '--private-key KEY', OpenSSL::PKey::RSA,
+               'Private key for --sign command.') do |key, options|
       options[:issuer_key] = key
     end
 

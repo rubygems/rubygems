@@ -370,6 +370,34 @@ gems:
     assert_equal @a2.file_name, File.basename(gem)
   end
 
+  def test_check_hash
+    data = Gem::Security.hash_file @a1_gem
+
+    fetcher = util_fuck_with_fetcher data
+
+    assert fetcher.check_hash(@a1, "http://gems.example.com", @a1_gem)
+  end
+
+  def test_check_hash_returns_true_if_hash_unavailable
+    inst = Gem::RemoteFetcher.fetcher
+
+    def inst.fetch_path(uri)
+      raise Gem::RemoteFetcher::FetchError.new "not available", uri
+    end
+
+    assert inst.check_hash(@a1, "http://gems.example.com", @a1_gem)
+  end
+
+  def test_check_hash_can_fail_if_hash_is_unavailable
+    inst = Gem::RemoteFetcher.fetcher
+
+    def inst.fetch_path(uri)
+      raise Gem::RemoteFetcher::FetchError.new "not available", uri
+    end
+
+    assert !inst.check_hash(@a1, "http://gems.example.com", @a1_gem, true)
+  end
+
   def test_explicit_proxy
     use_ui @ui do
       fetcher = Gem::RemoteFetcher.new @proxy_uri

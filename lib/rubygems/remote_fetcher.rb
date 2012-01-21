@@ -80,6 +80,22 @@ class Gem::RemoteFetcher
   end
 
   ##
+  # Give a +source_uri+ and a +spec+ plus the path to an ondisk gem, query the
+  # source and attempt to verify the contents of the gem.
+
+  def check_hash(spec, source_uri, gem_path, fail_if_unavailable=false)
+    hash_uri = "#{source_uri}/hash/#{spec.file_name}"
+
+    begin
+      remote_hash = fetch_path hash_uri
+    rescue FetchError
+      return !fail_if_unavailable
+    end
+
+    Gem::Security.hash_file(gem_path) == remote_hash
+  end
+
+  ##
   # Given a name and requirement, downloads this gem into cache and returns the
   # filename. Returns nil if the gem cannot be located.
   #--

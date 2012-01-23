@@ -95,10 +95,10 @@ Added '/CN=alternate/DC=example'
   end
 
   def test_execute_build
+    @cmd.handle_options %W[--build nobody@example.com]
+
     use_ui @ui do
-      Dir.chdir @tempdir do
-        @cmd.send :handle_options, %W[--build nobody@example.com]
-      end
+      @cmd.execute
     end
 
     output = @ui.output.split "\n"
@@ -108,7 +108,7 @@ Added '/CN=alternate/DC=example'
     assert_equal "Private Key: #{File.join @tempdir, 'gem-private_key.pem'}",
                  output.shift
 
-    assert_equal "Don't forget to move the key file to somewhere private...",
+    assert_equal "Don't forget to move the key file to somewhere private!",
                  output.shift
 
     assert_empty output

@@ -5,7 +5,7 @@ class Gem::Commands::CertCommand < Gem::Command
 
   def initialize
     super 'cert', 'Manage RubyGems certificates and signing settings',
-          :add => [], :remove => [], :list => []
+          :add => [], :remove => [], :list => [], :build => []
 
     OptionParser.accept OpenSSL::X509::Certificate do |certificate|
       OpenSSL::X509::Certificate.new File.read certificate
@@ -36,34 +36,23 @@ class Gem::Commands::CertCommand < Gem::Command
 
     add_option('-b', '--build EMAIL_ADDR',
                'Build private key and self-signed',
-               'certificate for EMAIL_ADDR.') do |email_address, options|
-      name = Gem::Security.email_to_name email_address
-
-      key = Gem::Security.create_key
-
-      cert = Gem::Security.create_cert_self_signed name, key
-
-      key_path  = Gem::Security.write key, "gem-private_key.pem"
-      cert_path = Gem::Security.write cert, "gem-public_cert.pem"
-
-      say "Certificate: #{cert_path}"
-      say "Private Key: #{key_path}"
-      say "Don't forget to move the key file to somewhere private..."
+               'certificate for EMAIL_ADDR') do |email_address, options|
+      options[:build] << Gem::Security.email_to_name(email_address)
     end
 
     add_option('-C', '--certificate CERT', OpenSSL::X509::Certificate,
-               'Certificate for --sign command.') do |cert, options|
+               'Signing certificate for --sign') do |cert, options|
       options[:issuer_cert] = cert
     end
 
     add_option('-K', '--private-key KEY', OpenSSL::PKey::RSA,
-               'Private key for --sign command.') do |key, options|
+               'Signing key for --sign') do |key, options|
       options[:issuer_key] = key
     end
 
-    add_option('-s', '--sign NEWCERT',
-               'Sign a certificate with my key and',
-               'certificate.') do |cert_file, options|
+    add_option('-s', '--sign CERT',
+               'Signs CERT with the key from -K',
+               'and the certificate from -C') do |cert_file, options|
       cert = OpenSSL::X509::Certificate.new File.read cert_file
 
       permissions = File.stat(cert_file).mode & 0777
@@ -97,6 +86,23 @@ class Gem::Commands::CertCommand < Gem::Command
         say certificate.subject.to_s
       end
     end
+
+    options[:build].each do |name|
+      build name
+    end
+  end
+
+  def build name
+    key = Gem::Security.create_key
+
+    cert = Gem::Security.create_cert_self_signed name, key
+
+    key_path  = Gem::Security.write key, "gem-private_key.pem"
+    cert_path = Gem::Security.write cert, "gem-public_cert.pem"
+
+    say "Certificate: #{cert_path}"
+    say "Private Key: #{key_path}"
+    say "Don't forget to move the key file to somewhere private!"
   end
 
   def certificates_matching filter

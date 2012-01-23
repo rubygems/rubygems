@@ -19,6 +19,43 @@ class TestGemCommandsCertCommand < Gem::TestCase
     super
 
     @cmd = Gem::Commands::CertCommand.new
+
+    @trust_dir = Gem::Security.trust_dir
+  end
+
+  def test_certificates_matching
+    @trust_dir.trust_cert PUBLIC_CERT
+    @trust_dir.trust_cert ALTERNATE_CERT
+
+    matches = @cmd.certificates_matching ''
+
+    # HACK OpenSSL::X509::Certificate#== is Object#==, so do this the hard way
+    match = matches.next
+    assert_equal ALTERNATE_CERT.to_pem, match.first.to_pem
+    assert_equal @trust_dir.cert_path(ALTERNATE_CERT), match.last
+
+    match = matches.next
+    assert_equal PUBLIC_CERT.to_pem, match.first.to_pem
+    assert_equal @trust_dir.cert_path(PUBLIC_CERT), match.last
+
+    assert_raises StopIteration do
+      matches.next
+    end
+  end
+
+  def test_certificates_matching_filter
+    @trust_dir.trust_cert PUBLIC_CERT
+    @trust_dir.trust_cert ALTERNATE_CERT
+
+    matches = @cmd.certificates_matching 'alternate'
+
+    match = matches.next
+    assert_equal ALTERNATE_CERT.to_pem, match.first.to_pem
+    assert_equal @trust_dir.cert_path(ALTERNATE_CERT), match.last
+
+    assert_raises StopIteration do
+      matches.next
+    end
   end
 
   def test_execute_add
@@ -28,7 +65,7 @@ class TestGemCommandsCertCommand < Gem::TestCase
       @cmd.execute
     end
 
-    cert_path = Gem::Security.trust_dir.cert_path PUBLIC_CERT
+    cert_path = @trust_dir.cert_path PUBLIC_CERT
 
     assert_path_exists cert_path
 
@@ -93,8 +130,8 @@ Added '/CN=alternate/DC=example'
   end
 
   def test_execute_list
-    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
-    Gem::Security.trust_dir.trust_cert ALTERNATE_CERT
+    @trust_dir.trust_cert PUBLIC_CERT
+    @trust_dir.trust_cert ALTERNATE_CERT
 
     @cmd.handle_options %W[--list]
 
@@ -102,14 +139,14 @@ Added '/CN=alternate/DC=example'
       @cmd.execute
     end
 
-    assert_equal "/CN=nobody/DC=example\n/CN=alternate/DC=example\n",
+    assert_equal "/CN=alternate/DC=example\n/CN=nobody/DC=example\n",
                  @ui.output
     assert_empty @ui.error
   end
 
   def test_execute_list_filter
-    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
-    Gem::Security.trust_dir.trust_cert ALTERNATE_CERT
+    @trust_dir.trust_cert PUBLIC_CERT
+    @trust_dir.trust_cert ALTERNATE_CERT
 
     @cmd.handle_options %W[--list nobody]
 
@@ -134,9 +171,9 @@ Added '/CN=alternate/DC=example'
   end
 
   def test_execute_remove
-    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
+    @trust_dir.trust_cert PUBLIC_CERT
 
-    cert_path = Gem::Security.trust_dir.cert_path PUBLIC_CERT
+    cert_path = @trust_dir.cert_path PUBLIC_CERT
 
     assert_path_exists cert_path
 
@@ -153,11 +190,11 @@ Added '/CN=alternate/DC=example'
   end
 
   def test_execute_remove_multiple
-    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
-    Gem::Security.trust_dir.trust_cert ALTERNATE_CERT
+    @trust_dir.trust_cert PUBLIC_CERT
+    @trust_dir.trust_cert ALTERNATE_CERT
 
-    public_path = Gem::Security.trust_dir.cert_path PUBLIC_CERT
-    alternate_path = Gem::Security.trust_dir.cert_path ALTERNATE_CERT
+    public_path = @trust_dir.cert_path PUBLIC_CERT
+    alternate_path = @trust_dir.cert_path ALTERNATE_CERT
 
     assert_path_exists public_path
     assert_path_exists alternate_path
@@ -169,8 +206,8 @@ Added '/CN=alternate/DC=example'
     end
 
     expected = <<-EXPECTED
-Removed '/CN=nobody/DC=example'
 Removed '/CN=alternate/DC=example'
+Removed '/CN=nobody/DC=example'
     EXPECTED
 
     assert_equal expected, @ui.output
@@ -181,11 +218,11 @@ Removed '/CN=alternate/DC=example'
   end
 
   def test_execute_remove_twice
-    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
-    Gem::Security.trust_dir.trust_cert ALTERNATE_CERT
+    @trust_dir.trust_cert PUBLIC_CERT
+    @trust_dir.trust_cert ALTERNATE_CERT
 
-    public_path = Gem::Security.trust_dir.cert_path PUBLIC_CERT
-    alternate_path = Gem::Security.trust_dir.cert_path ALTERNATE_CERT
+    public_path = @trust_dir.cert_path PUBLIC_CERT
+    alternate_path = @trust_dir.cert_path ALTERNATE_CERT
 
     assert_path_exists public_path
     assert_path_exists alternate_path

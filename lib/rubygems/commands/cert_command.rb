@@ -5,7 +5,7 @@ class Gem::Commands::CertCommand < Gem::Command
 
   def initialize
     super 'cert', 'Manage RubyGems certificates and signing settings',
-          :add => [], :remove => []
+          :add => [], :remove => [], :list => []
 
     OptionParser.accept OpenSSL::X509::Certificate do |certificate|
       OpenSSL::X509::Certificate.new File.read certificate
@@ -20,18 +20,18 @@ class Gem::Commands::CertCommand < Gem::Command
       options[:add] << cert
     end
 
-    add_option('-l', '--list',
-               'List trusted certificates.') do |value, options|
-      Gem::Security.trusted_certificates do |certificate, _|
-        # this could probably be formatted more gracefully
-        say certificate.subject.to_s
-      end
+    add_option('-l', '--list [FILTER]',
+               'List trusted certificates where the',
+               'subject contains FILTER') do |filter, options|
+      filter ||= ''
+
+      options[:list] << filter
     end
 
-    add_option('-r', '--remove STRING',
+    add_option('-r', '--remove FILTER',
                'Remove trusted certificates where the',
-               'subject contains STRING') do |string, options|
-      options[:remove] << string
+               'subject contains FILTER') do |filter, options|
+      options[:remove] << filter
     end
 
     add_option('-b', '--build EMAIL_ADDR',
@@ -84,14 +84,27 @@ class Gem::Commands::CertCommand < Gem::Command
       say "Added '#{certificate.subject}'"
     end
 
-    options[:remove].each do |string|
-      Gem::Security.trusted_certificates.select do |certificate, _|
-        subject = certificate.subject.to_s
-        subject.downcase.index string
-      end.each do |certificate, path|
+    options[:remove].each do |filter|
+      certificates_matching filter do |certificate, path|
         FileUtils.rm path
         say "Removed '#{certificate.subject}'"
       end
+    end
+
+    options[:list].each do |filter|
+      certificates_matching filter do |certificate, _|
+        # this could probably be formatted more gracefully
+        say certificate.subject.to_s
+      end
+    end
+  end
+
+  def certificates_matching filter
+    Gem::Security.trusted_certificates.select do |certificate, _|
+      subject = certificate.subject.to_s
+      subject.downcase.index filter
+    end.each do |certificate, path|
+      yield certificate, path
     end
   end
 

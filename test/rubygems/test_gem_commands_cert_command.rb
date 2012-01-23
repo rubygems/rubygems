@@ -92,13 +92,31 @@ Added '/CN=alternate/DC=example'
 
   def test_execute_list
     Gem::Security.trust_dir.trust_cert PUBLIC_CERT
+    Gem::Security.trust_dir.trust_cert ALTERNATE_CERT
+
+    @cmd.handle_options %W[--list]
 
     use_ui @ui do
-      @cmd.send :handle_options, %W[--list]
+      @cmd.execute
+    end
+
+    assert_equal "/CN=nobody/DC=example\n/CN=alternate/DC=example\n",
+                 @ui.output
+    assert_empty @ui.error
+  end
+
+  def test_execute_list_filter
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
+    Gem::Security.trust_dir.trust_cert ALTERNATE_CERT
+
+    @cmd.handle_options %W[--list nobody]
+
+    use_ui @ui do
+      @cmd.execute
     end
 
     assert_equal "/CN=nobody/DC=example\n", @ui.output
-    assert_equal '', @ui.error
+    assert_empty @ui.error
   end
 
   def test_execute_private_key

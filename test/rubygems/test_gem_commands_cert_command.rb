@@ -10,19 +10,19 @@ class TestGemCommandsCertCommand < Gem::TestCase
 
   ALTERNATE_CERT = load_cert 'alternate'
 
+  PRIVATE_KEY_FILE = key_path 'private'
+  PUBLIC_CERT_FILE = cert_path 'public'
+
   def setup
     super
 
     @cmd = Gem::Commands::CertCommand.new
 
     root = File.expand_path File.dirname(__FILE__), @@project_dir
-
-    @pkey_file = self.class.key_path 'private'
-    @cert_file = self.class.cert_path 'public'
   end
 
   def test_execute_add
-    @cmd.handle_options %W[--add #{@cert_file}]
+    @cmd.handle_options %W[--add #{PUBLIC_CERT_FILE}]
 
     use_ui @ui do
       @cmd.execute
@@ -39,7 +39,7 @@ class TestGemCommandsCertCommand < Gem::TestCase
   def test_execute_add_twice
     alternate = self.class.cert_path 'alternate'
 
-    @cmd.handle_options %W[--add #{@cert_file} --add #{alternate}]
+    @cmd.handle_options %W[--add #{PUBLIC_CERT_FILE} --add #{alternate}]
 
     use_ui @ui do
       @cmd.execute
@@ -80,14 +80,13 @@ Added '/CN=alternate/DC=example'
 
   def test_execute_certificate
     use_ui @ui do
-      @cmd.send :handle_options, %W[--certificate #{@cert_file}]
+      @cmd.handle_options %W[--certificate #{PUBLIC_CERT_FILE}]
     end
 
     assert_equal '', @ui.output
     assert_equal '', @ui.error
 
-    assert_equal File.read(@cert_file),
-                 @cmd.options[:issuer_cert].to_s
+    assert_equal PUBLIC_CERT.to_pem, @cmd.options[:issuer_cert].to_pem
   end
 
   def test_execute_list
@@ -121,14 +120,14 @@ Added '/CN=alternate/DC=example'
 
   def test_execute_private_key
     use_ui @ui do
-      @cmd.send :handle_options, %W[--private-key #{@pkey_file}]
+      @cmd.send :handle_options, %W[--private-key #{PRIVATE_KEY_FILE}]
     end
 
     assert_equal '', @ui.output
     assert_equal '', @ui.error
 
-    assert_equal File.read(@pkey_file),
-                 @cmd.options[:issuer_key].to_s
+    assert_equal PRIVATE_KEY.to_pem,
+                 @cmd.options[:issuer_key].to_pem
   end
 
   def test_execute_remove
@@ -209,7 +208,7 @@ Removed '/CN=alternate/DC=example'
   def test_execute_sign
     use_ui @ui do
       @cmd.send :handle_options, %W[
-        -K #{@pkey_file} -C #{@cert_file} --sign #{@cert_file}
+        -K #{PRIVATE_KEY_FILE} -C #{PUBLIC_CERT_FILE} --sign #{PUBLIC_CERT_FILE}
       ]
     end
 

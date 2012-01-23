@@ -10,15 +10,15 @@ class TestGemCommandsCertCommand < Gem::TestCase
 
   ALTERNATE_CERT = load_cert 'alternate'
 
-  PRIVATE_KEY_FILE = key_path 'private'
-  PUBLIC_CERT_FILE = cert_path 'public'
+  PRIVATE_KEY_FILE    = key_path 'private'
+
+  ALTERNATE_CERT_FILE = cert_path 'alternate'
+  PUBLIC_CERT_FILE    = cert_path 'public'
 
   def setup
     super
 
     @cmd = Gem::Commands::CertCommand.new
-
-    root = File.expand_path File.dirname(__FILE__), @@project_dir
   end
 
   def test_execute_add
@@ -39,7 +39,10 @@ class TestGemCommandsCertCommand < Gem::TestCase
   def test_execute_add_twice
     alternate = self.class.cert_path 'alternate'
 
-    @cmd.handle_options %W[--add #{PUBLIC_CERT_FILE} --add #{alternate}]
+    @cmd.handle_options %W[
+      --add #{PUBLIC_CERT_FILE}
+      --add #{ALTERNATE_CERT_FILE}
+    ]
 
     use_ui @ui do
       @cmd.execute

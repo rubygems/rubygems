@@ -4,7 +4,8 @@ require 'rubygems/security'
 class Gem::Commands::CertCommand < Gem::Command
 
   def initialize
-    super 'cert', 'Manage RubyGems certificates and signing settings'
+    super 'cert', 'Manage RubyGems certificates and signing settings',
+          :add => [], :remove => []
 
     OptionParser.accept OpenSSL::X509::Certificate do |certificate|
       OpenSSL::X509::Certificate.new File.read certificate
@@ -16,9 +17,7 @@ class Gem::Commands::CertCommand < Gem::Command
 
     add_option('-a', '--add CERT', OpenSSL::X509::Certificate,
                'Add a trusted certificate.') do |cert, options|
-      Gem::Security.trust_dir.trust_cert cert
-
-      say "Added '#{cert.subject}'"
+      options[:add] << cert
     end
 
     add_option('-l', '--list',
@@ -30,14 +29,9 @@ class Gem::Commands::CertCommand < Gem::Command
     end
 
     add_option('-r', '--remove STRING',
-               'Remove trusted certificates containing',
-               'STRING.') do |value, options|
-      Gem::Security.trusted_certificates do |certificate, path|
-        if certificate.subject.to_s.downcase.index value then
-          FileUtils.rm path
-          say "Removed '#{certificate.subject}'"
-        end
-      end
+               'Remove trusted certificates where the',
+               'subject contains STRING') do |string, options|
+      options[:remove] << string
     end
 
     add_option('-b', '--build EMAIL_ADDR',
@@ -84,6 +78,21 @@ class Gem::Commands::CertCommand < Gem::Command
   end
 
   def execute
+    options[:add].each do |certificate|
+      Gem::Security.trust_dir.trust_cert certificate
+
+      say "Added '#{certificate.subject}'"
+    end
+
+    options[:remove].each do |string|
+      Gem::Security.trusted_certificates.select do |certificate, _|
+        subject = certificate.subject.to_s
+        subject.downcase.index string
+      end.each do |certificate, path|
+        FileUtils.rm path
+        say "Removed '#{certificate.subject}'"
+      end
+    end
   end
 
 end

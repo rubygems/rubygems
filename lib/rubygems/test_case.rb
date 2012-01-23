@@ -925,21 +925,10 @@ Also, a list:
   end
 
   ##
-  # Loads certificate name +cert_name+ from <tt>test/rubygems/</tt>.  If
-  # +thirty_two+ is true and this system does not support a 64 bit time_t a
-  # certificate expiring in 2038 when time_t rolls over is returned.
+  # Loads certificate named +cert_name+ from <tt>test/rubygems/</tt>.
 
   def self.load_cert cert_name
-    if 32 == (Time.at(2**32) rescue 32) then
-      cert_file =
-        File.expand_path "../../../test/rubygems/#{cert_name}_cert_32.pem",
-                         __FILE__
-
-      cert_file = nil unless File.exist? cert_file
-    end
-
-    cert_file ||=
-      File.expand_path "../../../test/rubygems/#{cert_name}_cert.pem", __FILE__
+    cert_file = cert_path cert_name
 
     cert = File.read cert_file
 
@@ -947,15 +936,37 @@ Also, a list:
   end
 
   ##
+  # Returns the path to the certificate named +cert_name+ from
+  # <tt>test/rubygems/</tt>.
+
+  def self.cert_path cert_name
+    if 32 == (Time.at(2**32) rescue 32) then
+      cert_file =
+        File.expand_path "../../../test/rubygems/#{cert_name}_cert_32.pem",
+                         __FILE__
+
+      return cert_file if File.exist? cert_file
+    end
+
+    File.expand_path "../../../test/rubygems/#{cert_name}_cert.pem", __FILE__
+  end
+
+  ##
   # Loads an RSA private key named +key_name+ in <tt>test/rubygems/</tt>
 
   def self.load_key key_name
-    key_file =
-      File.expand_path "../../../test/rubygems/#{key_name}_key.pem", __FILE__
+    key_file = key_path key_name
 
     key = File.read key_file
 
     OpenSSL::PKey::RSA.new key
+  end
+
+  ##
+  # Returns the path tot he key named +key_name+ from <tt>test/rubygems</tt>
+
+  def self.key_path key_name
+    File.expand_path "../../../test/rubygems/#{key_name}_key.pem", __FILE__
   end
 
   PRIVATE_KEY = load_key 'private'

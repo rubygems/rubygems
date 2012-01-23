@@ -8,6 +8,8 @@ end
 
 class TestGemCommandsCertCommand < Gem::TestCase
 
+  ALTERNATE_CERT = load_cert 'alternate'
+
   def setup
     super
 
@@ -15,16 +17,40 @@ class TestGemCommandsCertCommand < Gem::TestCase
 
     root = File.expand_path File.dirname(__FILE__), @@project_dir
 
-    @pkey_file = File.join(root, 'data', 'gem-private_key.pem')
-    @cert_file = File.join(root, 'data', 'gem-public_cert.pem')
+    @pkey_file = self.class.key_path 'private'
+    @cert_file = self.class.cert_path 'public'
   end
 
   def test_execute_add
+    @cmd.handle_options %W[--add #{@cert_file}]
+
     use_ui @ui do
-      @cmd.send :handle_options, %W[--add #{@cert_file}]
+      @cmd.execute
     end
 
-    assert_equal "Added '/CN=rubygems/DC=example/DC=com'\n", @ui.output
+    cert_path = Gem::Security.trust_dir.cert_path PUBLIC_CERT
+
+    assert_path_exists cert_path
+
+    assert_equal "Added '/CN=nobody/DC=example'\n", @ui.output
+    assert_empty @ui.error
+  end
+
+  def test_execute_add_twice
+    alternate = self.class.cert_path 'alternate'
+
+    @cmd.handle_options %W[--add #{@cert_file} --add #{alternate}]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = <<-EXPECTED
+Added '/CN=nobody/DC=example'
+Added '/CN=alternate/DC=example'
+    EXPECTED
+
+    assert_equal expected, @ui.output
     assert_empty @ui.error
   end
 
@@ -90,18 +116,76 @@ class TestGemCommandsCertCommand < Gem::TestCase
   def test_execute_remove
     Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
-    cert_path = Gem::Security.trust_dir.cert_path(PUBLIC_CERT)
+    cert_path = Gem::Security.trust_dir.cert_path PUBLIC_CERT
 
     assert_path_exists cert_path
 
+    @cmd.handle_options %W[--remove nobody]
+
     use_ui @ui do
-      @cmd.send :handle_options, %W[--remove nobody]
+      @cmd.execute
     end
 
     assert_equal "Removed '/CN=nobody/DC=example'\n", @ui.output
     assert_equal '', @ui.error
 
     refute_path_exists cert_path
+  end
+
+  def test_execute_remove_multiple
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
+    Gem::Security.trust_dir.trust_cert ALTERNATE_CERT
+
+    public_path = Gem::Security.trust_dir.cert_path PUBLIC_CERT
+    alternate_path = Gem::Security.trust_dir.cert_path ALTERNATE_CERT
+
+    assert_path_exists public_path
+    assert_path_exists alternate_path
+
+    @cmd.handle_options %W[--remove example]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = <<-EXPECTED
+Removed '/CN=nobody/DC=example'
+Removed '/CN=alternate/DC=example'
+    EXPECTED
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+
+    refute_path_exists public_path
+    refute_path_exists alternate_path
+  end
+
+  def test_execute_remove_twice
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
+    Gem::Security.trust_dir.trust_cert ALTERNATE_CERT
+
+    public_path = Gem::Security.trust_dir.cert_path PUBLIC_CERT
+    alternate_path = Gem::Security.trust_dir.cert_path ALTERNATE_CERT
+
+    assert_path_exists public_path
+    assert_path_exists alternate_path
+
+    @cmd.handle_options %W[--remove nobody --remove alternate]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = <<-EXPECTED
+Removed '/CN=nobody/DC=example'
+Removed '/CN=alternate/DC=example'
+    EXPECTED
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+
+    refute_path_exists public_path
+    refute_path_exists alternate_path
   end
 
   def test_execute_sign

@@ -147,6 +147,7 @@ test/rubygems/plugin/standarderror/rubygems_plugin.rb
 test/rubygems/private_key.pem
 test/rubygems/public_cert.pem
 test/rubygems/public_cert_32.pem
+test/rubygems/public_key.pem
 test/rubygems/rubygems/commands/crash_command.rb
 test/rubygems/rubygems_plugin.rb
 test/rubygems/sff/discover.rb

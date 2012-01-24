@@ -10,9 +10,12 @@ class TestGemCommandsCertCommand < Gem::TestCase
 
   ALTERNATE_CERT = load_cert 'alternate'
 
-  PRIVATE_KEY_FILE    = key_path 'private'
+  ALTERNATE_KEY_FILE = key_path 'alternate'
+  PRIVATE_KEY_FILE   = key_path 'private'
+  PUBLIC_KEY_FILE    = key_path 'public'
 
   ALTERNATE_CERT_FILE = cert_path 'alternate'
+  CHILD_CERT_FILE     = cert_path 'child'
   PUBLIC_CERT_FILE    = cert_path 'public'
 
   def setup
@@ -246,16 +249,163 @@ Removed '/CN=alternate/DC=example'
   end
 
   def test_execute_sign
+    path = File.join @tempdir, 'cert.pem'
+    Gem::Security.write ALTERNATE_CERT, path, 0600
+
+    assert_equal '/CN=alternate/DC=example', ALTERNATE_CERT.issuer.to_s
+
+    @cmd.handle_options %W[
+      --private-key #{PRIVATE_KEY_FILE}
+      --certificate #{PUBLIC_CERT_FILE}
+
+      --sign #{path}
+    ]
+
     use_ui @ui do
-      @cmd.send :handle_options, %W[
-        -K #{PRIVATE_KEY_FILE} -C #{PUBLIC_CERT_FILE} --sign #{PUBLIC_CERT_FILE}
-      ]
+      @cmd.execute
     end
 
     assert_equal '', @ui.output
     assert_equal '', @ui.error
 
-    # HACK this test sucks
+    cert = OpenSSL::X509::Certificate.new File.read path
+
+    assert_equal '/CN=nobody/DC=example', cert.issuer.to_s
+
+    mask = 0100600 & (~File.umask)
+
+    assert_equal mask, File.stat(path).mode unless win_platform?
+  end
+
+  def test_handle_options
+    @cmd.handle_options %W[
+      --add #{PUBLIC_CERT_FILE}
+      --add #{ALTERNATE_CERT_FILE}
+
+      --remove nobody
+      --remove example
+
+      --list
+      --list example
+
+      --build nobody@example
+      --build other@example
+    ]
+
+    assert_equal [PUBLIC_CERT.to_pem, ALTERNATE_CERT.to_pem],
+                 @cmd.options[:add].map { |cert| cert.to_pem }
+
+    assert_equal %w[nobody example], @cmd.options[:remove]
+
+    assert_equal %w[/CN=nobody/DC=example /CN=other/DC=example],
+                 @cmd.options[:build].map { |name| name.to_s }
+
+    assert_equal ['', 'example'], @cmd.options[:list]
+  end
+
+  def test_handle_options_add_bad
+    nonexistent = File.join @tempdir, 'nonexistent'
+    e = assert_raises OptionParser::InvalidArgument do
+      @cmd.handle_options %W[--add #{nonexistent}]
+    end
+
+    assert_equal "invalid argument: --add #{nonexistent}: does not exist",
+                 e.message
+
+    bad = File.join @tempdir, 'bad'
+    FileUtils.touch bad
+
+    e = assert_raises OptionParser::InvalidArgument do
+      @cmd.handle_options %W[--add #{bad}]
+    end
+
+    assert_equal "invalid argument: --add #{bad}: invalid X509 certificate",
+                 e.message
+  end
+
+  def test_handle_options_certificate
+    nonexistent = File.join @tempdir, 'nonexistent'
+    e = assert_raises OptionParser::InvalidArgument do
+      @cmd.handle_options %W[--certificate #{nonexistent}]
+    end
+
+    assert_equal "invalid argument: " \
+                 "--certificate #{nonexistent}: does not exist",
+                 e.message
+
+    bad = File.join @tempdir, 'bad'
+    FileUtils.touch bad
+
+    e = assert_raises OptionParser::InvalidArgument do
+      @cmd.handle_options %W[--certificate #{bad}]
+    end
+
+    assert_equal "invalid argument: " \
+                 "--certificate #{bad}: invalid X509 certificate",
+                 e.message
+  end
+
+  def test_handle_options_key_bad
+    nonexistent = File.join @tempdir, 'nonexistent'
+    e = assert_raises OptionParser::InvalidArgument do
+      @cmd.handle_options %W[--private-key #{nonexistent}]
+    end
+
+    assert_equal "invalid argument: " \
+                 "--private-key #{nonexistent}: does not exist",
+                 e.message
+
+    bad = File.join @tempdir, 'bad'
+    FileUtils.touch bad
+
+    e = assert_raises OptionParser::InvalidArgument do
+      @cmd.handle_options %W[--private-key #{bad}]
+    end
+
+    assert_equal "invalid argument: --private-key #{bad}: invalid RSA key",
+                 e.message
+
+    e = assert_raises OptionParser::InvalidArgument do
+      @cmd.handle_options %W[--private-key #{PUBLIC_KEY_FILE}]
+    end
+
+    assert_equal "invalid argument: " \
+                 "--private-key #{PUBLIC_KEY_FILE}: private key not found",
+                 e.message
+  end
+
+  def test_handle_options_sign
+    @cmd.handle_options %W[
+      --private-key #{ALTERNATE_KEY_FILE}
+      --private-key #{PRIVATE_KEY_FILE}
+
+      --certificate #{ALTERNATE_CERT_FILE}
+      --certificate #{PUBLIC_CERT_FILE}
+
+      --sign #{ALTERNATE_CERT_FILE}
+      --sign #{CHILD_CERT_FILE}
+    ]
+
+    assert_equal PRIVATE_KEY.to_pem, @cmd.options[:issuer_key].to_pem
+    assert_equal PUBLIC_CERT.to_pem, @cmd.options[:issuer_cert].to_pem
+
+    assert_equal [ALTERNATE_CERT_FILE, CHILD_CERT_FILE], @cmd.options[:sign]
+  end
+
+  def test_handle_options_sign_nonexistent
+    nonexistent = File.join @tempdir, 'nonexistent'
+    e = assert_raises OptionParser::InvalidArgument do
+      @cmd.handle_options %W[
+        --private-key #{ALTERNATE_KEY_FILE}
+
+        --certificate #{ALTERNATE_CERT_FILE}
+
+        --sign #{nonexistent}
+      ]
+    end
+
+    assert_equal "invalid argument: --sign #{nonexistent}: does not exist",
+                 e.message
   end
 
 end if defined? OpenSSL

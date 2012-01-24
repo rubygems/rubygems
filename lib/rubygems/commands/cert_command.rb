@@ -5,14 +5,33 @@ class Gem::Commands::CertCommand < Gem::Command
 
   def initialize
     super 'cert', 'Manage RubyGems certificates and signing settings',
-          :add => [], :remove => [], :list => [], :build => []
+          :add => [], :remove => [], :list => [], :build => [], :sign => []
 
     OptionParser.accept OpenSSL::X509::Certificate do |certificate|
-      OpenSSL::X509::Certificate.new File.read certificate
+      begin
+        OpenSSL::X509::Certificate.new File.read certificate
+      rescue Errno::ENOENT
+        raise OptionParser::InvalidArgument, "#{certificate}: does not exist"
+      rescue OpenSSL::X509::CertificateError
+        raise OptionParser::InvalidArgument,
+          "#{certificate}: invalid X509 certificate"
+      end
     end
 
-    OptionParser.accept OpenSSL::PKey::RSA do |key|
-      OpenSSL::PKey::RSA.new File.read key
+    OptionParser.accept OpenSSL::PKey::RSA do |key_file|
+      begin
+        key = OpenSSL::PKey::RSA.new File.read key_file
+      rescue Errno::ENOENT
+        raise OptionParser::InvalidArgument, "#{key_file}: does not exist"
+      rescue OpenSSL::PKey::RSAError
+        raise OptionParser::InvalidArgument, "#{key_file}: invalid RSA key"
+      end
+
+      raise OptionParser::InvalidArgument,
+            "#{key_file}: private key not found" unless
+              key.private?
+
+      key
     end
 
     add_option('-a', '--add CERT', OpenSSL::X509::Certificate,
@@ -53,16 +72,10 @@ class Gem::Commands::CertCommand < Gem::Command
     add_option('-s', '--sign CERT',
                'Signs CERT with the key from -K',
                'and the certificate from -C') do |cert_file, options|
-      cert = OpenSSL::X509::Certificate.new File.read cert_file
+      raise OptionParser::InvalidArgument, "#{cert_file}: does not exist" unless
+        File.file? cert_file
 
-      permissions = File.stat(cert_file).mode & 0777
-
-      my_cert = options[:issuer_cert]
-      my_key = options[:issuer_key]
-
-      cert = Gem::Security.sign cert, my_key, my_cert
-
-      Gem::Security.write cert, cert_file, permissions
+      options[:sign] << cert_file
     end
   end
 
@@ -90,6 +103,10 @@ class Gem::Commands::CertCommand < Gem::Command
     options[:build].each do |name|
       build name
     end
+
+    options[:sign].each do |cert_file|
+      sign cert_file
+    end
   end
 
   def build name
@@ -116,6 +133,20 @@ class Gem::Commands::CertCommand < Gem::Command
     end.each do |certificate, path|
       yield certificate, path
     end
+  end
+
+  def sign cert_file
+    cert = File.read cert_file
+    cert = OpenSSL::X509::Certificate.new cert
+
+    permissions = File.stat(cert_file).mode & 0777
+
+    issuer_cert = options[:issuer_cert]
+    issuer_key = options[:issuer_key]
+
+    cert = Gem::Security.sign cert, issuer_key, issuer_cert
+
+    Gem::Security.write cert, cert_file, permissions
   end
 
 end

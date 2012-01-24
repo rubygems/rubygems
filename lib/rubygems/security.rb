@@ -469,8 +469,6 @@ module Gem::Security
     certificate.issuer = signing_cert.subject
 
     certificate.sign signing_key, Gem::Security::DIGEST_ALGORITHM.new
-
-    certificate
   end
 
   ##

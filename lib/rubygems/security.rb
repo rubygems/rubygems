@@ -460,15 +460,17 @@ module Gem::Security
   reset
 
   ##
-  # Sign the +certificate+ with the +signing_key+ and +signing_cert+, using
-  # the Gem::Security::DIGEST_ALGORITHM.
+  # Sign the public key from +certificate+ with the +signing_key+ and
+  # +signing_cert+, using the Gem::Security::DIGEST_ALGORITHM.  Uses the
+  # default certificate validity range and extensions.
   #
   # Returns the newly signed certificate.
 
   def self.sign certificate, signing_key, signing_cert
-    certificate.issuer = signing_cert.subject
+    signed = create_cert certificate.subject, certificate.public_key
+    signed.issuer = signing_cert.subject
 
-    certificate.sign signing_key, Gem::Security::DIGEST_ALGORITHM.new
+    signed.sign signing_key, Gem::Security::DIGEST_ALGORITHM.new
   end
 
   ##

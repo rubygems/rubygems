@@ -80,17 +80,42 @@ class TestGemSecurity < Gem::TestCase
   end
 
   def test_class_sign
-    name = PUBLIC_CERT.subject
+    issuer = PUBLIC_CERT.subject
+    signee = OpenSSL::X509::Name.parse "/CN=signee/DC=example"
+
     key  = PRIVATE_KEY
     cert = OpenSSL::X509::Certificate.new
+    cert.subject = signee
 
-    cert.subject    = name
+    cert.subject    = signee
     cert.public_key = key.public_key
 
-    signed = @SEC.sign cert, key, cert
+    signed = @SEC.sign cert, key, PUBLIC_CERT
 
-    assert cert.verify key
-    assert_equal name.to_s, signed.subject.to_s
+    assert_equal    key.public_key.to_pem, signed.public_key.to_pem
+    assert_equal    signee.to_s,           signed.subject.to_s
+    assert_equal    issuer.to_s,           signed.issuer.to_s
+
+    assert_in_delta Time.now,              signed.not_before, 10
+    assert_in_delta Time.now + Gem::Security::ONE_YEAR,
+                    signed.not_after, 10
+
+    assert_equal 3, signed.extensions.length
+
+    constraints = signed.extensions.find { |ext| ext.oid == 'basicConstraints' }
+    assert_equal 'CA:FALSE', constraints.value
+
+    key_usage = signed.extensions.find { |ext| ext.oid == 'keyUsage' }
+    assert_equal 'Digital Signature, Key Encipherment, Data Encipherment',
+                 key_usage.value
+
+    key_ident =
+      signed.extensions.find { |ext| ext.oid == 'subjectKeyIdentifier' }
+    assert_equal 59, key_ident.value.length
+    assert_equal 'B0:EB:9C:A5:E5:8E:7D:94:BB:4B:3B:D6:80:CB:A5:AD:5D:12:88:90',
+                 key_ident.value
+
+    assert signed.verify key
   end
 
   def test_class_trust_dir

@@ -4,6 +4,12 @@ require 'rubygems/fix_openssl_warnings' if RUBY_VERSION < "1.9"
 
 class TestGemSecurity < Gem::TestCase
 
+  CHILD_KEY = load_key 'child'
+
+  ALTERNATE_CERT = load_cert 'child'
+  CHILD_CERT     = load_cert 'child'
+  EXPIRED_CERT   = load_cert 'expired'
+
   def setup
     super
 
@@ -106,6 +112,35 @@ class TestGemSecurity < Gem::TestCase
 
     assert_equal '/CN=no_body/DC=example',
                  @SEC.email_to_name('no+body@example').to_s
+  end
+
+  def test_class_re_sign
+    re_signed = Gem::Security.re_sign EXPIRED_CERT, PRIVATE_KEY, 60
+
+    assert_in_delta Time.now,      re_signed.not_before, 10
+    assert_in_delta Time.now + 60, re_signed.not_after,  10
+
+    assert re_signed.verify PUBLIC_KEY
+  end
+
+  def test_class_re_sign_not_self_signed
+    e = assert_raises Gem::Security::Exception do
+      Gem::Security.re_sign CHILD_CERT, CHILD_KEY
+    end
+
+    assert_equal "#{ALTERNATE_CERT.subject} is not self-signed, contact " \
+                 "#{ALTERNATE_CERT.issuer} to obtain a valid certificate",
+                 e.message
+  end
+
+  def test_class_re_sign_wrong_key
+    e = assert_raises Gem::Security::Exception do
+      Gem::Security.re_sign ALTERNATE_CERT, PRIVATE_KEY
+    end
+
+    assert_equal "incorrect signing key for re-signing " \
+                 "#{ALTERNATE_CERT.subject}",
+                 e.message
   end
 
   def test_class_reset

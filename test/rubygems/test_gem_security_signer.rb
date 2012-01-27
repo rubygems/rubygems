@@ -65,6 +65,57 @@ LtG89EQMMBHsAyc8NMCd4oWm6Q==
     end
   end
 
+  def test_sign_expired_auto_update
+    FileUtils.mkdir_p Gem.user_home, :mode => 0700
+
+    private_key_path = File.join(Gem.user_home, 'gem-private_key.pem')
+    Gem::Security.write PRIVATE_KEY, private_key_path
+
+    cert_path = File.join Gem.user_home, 'gem-public_cert.pem'
+    Gem::Security.write EXPIRED_CERT, cert_path
+
+    signer = Gem::Security::Signer.new PRIVATE_KEY, [EXPIRED_CERT]
+
+    signer.sign 'hello'
+
+    cert = OpenSSL::X509::Certificate.new File.read cert_path
+
+    refute_equal EXPIRED_CERT.to_pem, cert.to_pem
+    assert_in_delta Time.now,         cert.not_before, 10
+
+    expiry = EXPIRED_CERT.not_after.strftime "%Y%m%d%H%M%S"
+
+    expired_path =
+      File.join Gem.user_home, "gem-public_cert.pem.expired.#{expiry}"
+
+    assert_path_exists expired_path
+    assert_equal EXPIRED_CERT.to_pem, File.read(expired_path)
+  end
+
+  def test_sign_expired_auto_update_exists
+    FileUtils.mkdir_p Gem.user_home, :mode => 0700
+
+    expiry = EXPIRED_CERT.not_after.strftime "%Y%m%d%H%M%S"
+    expired_path =
+      File.join Gem.user_home, "gem-public_cert.pem.expired.#{expiry}"
+
+    Gem::Security.write EXPIRED_CERT, expired_path
+
+    private_key_path = File.join(Gem.user_home, 'gem-private_key.pem')
+    Gem::Security.write PRIVATE_KEY, private_key_path
+
+    cert_path = File.join Gem.user_home, 'gem-public_cert.pem'
+    Gem::Security.write EXPIRED_CERT, cert_path
+
+    signer = Gem::Security::Signer.new PRIVATE_KEY, [EXPIRED_CERT]
+
+    e = assert_raises Gem::Security::Exception do
+      signer.sign 'hello'
+    end
+
+    assert_match %r%certificate /CN=nobody/DC=example not valid%, e.message
+  end
+
   def test_sign_wrong_key
     signer = Gem::Security::Signer.new ALTERNATE_KEY, [PUBLIC_CERT]
 

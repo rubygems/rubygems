@@ -389,6 +389,16 @@ module Gem::Security
     'subjectKeyIdentifier' => 'hash',
   }
 
+  def self.alt_name_or_x509_entry certificate, x509_entry
+    alt_name = certificate.extensions.find do |extension|
+      extension.oid == "#{x509_entry}AltName"
+    end
+
+    return alt_name.value if alt_name
+
+    certificate.send x509_entry
+  end
+
   ##
   # Creates an unsigned certificate for +subject+ and +key+.  The lifetime of
   # the key is from the current time to +age+ which defaults to one year.
@@ -461,6 +471,28 @@ module Gem::Security
     name = "CN=#{cn}/#{dcs.map { |dc| "DC=#{dc}" }.join '/'}"
 
     OpenSSL::X509::Name.parse name
+  end
+
+  def self.re_sign expired_certificate, private_key, age = ONE_YEAR,
+                   extensions = EXTENSIONS
+    raise Gem::Security::Exception,
+          "incorrect signing key for re-signing " \
+          "#{expired_certificate.subject}" unless
+      expired_certificate.public_key.to_pem == private_key.public_key.to_pem
+
+    unless expired_certificate.subject.to_s ==
+           expired_certificate.issuer.to_s then
+      subject = alt_name_or_x509_entry expired_certificate, :subject
+      issuer  = alt_name_or_x509_entry expired_certificate, :issuer
+      raise Gem::Security::Exception,
+            "#{subject} is not self-signed, contact #{issuer} " \
+            "to obtain a valid certificate"
+    end
+
+
+    create_cert_self_signed(expired_certificate.subject, private_key, age,
+                            extensions)
+
   end
 
   ##

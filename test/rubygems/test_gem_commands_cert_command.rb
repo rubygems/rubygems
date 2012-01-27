@@ -121,6 +121,37 @@ Added '/CN=alternate/DC=example'
     assert_path_exists File.join(@tempdir, 'gem-public_cert.pem')
   end
 
+  def test_execute_build_key
+    @cmd.handle_options %W[
+      --build nobody@example.com
+      --private-key #{PRIVATE_KEY_FILE}
+    ]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    output = @ui.output.split "\n"
+
+    assert_equal "Certificate: #{File.join @tempdir, 'gem-public_cert.pem'}",
+                 output.shift
+    assert_equal "Private Key: #{File.join @tempdir, 'gem-private_key.pem'}",
+                 output.shift
+
+    assert_equal "Don't forget to move the key file to somewhere private!",
+                 output.shift
+
+    assert_empty output
+    assert_empty @ui.error
+
+    assert_path_exists File.join(@tempdir, 'gem-public_cert.pem')
+
+    private_key_file = File.join @tempdir, 'gem-private_key.pem'
+    assert_path_exists private_key_file
+
+    assert_equal PRIVATE_KEY.to_pem, File.read(private_key_file)
+  end
+
   def test_execute_certificate
     use_ui @ui do
       @cmd.handle_options %W[--certificate #{PUBLIC_CERT_FILE}]
@@ -169,8 +200,7 @@ Added '/CN=alternate/DC=example'
     assert_equal '', @ui.output
     assert_equal '', @ui.error
 
-    assert_equal PRIVATE_KEY.to_pem,
-                 @cmd.options[:issuer_key].to_pem
+    assert_equal PRIVATE_KEY.to_pem, @cmd.options[:key].to_pem
   end
 
   def test_execute_remove
@@ -275,6 +305,88 @@ Removed '/CN=alternate/DC=example'
     mask = 0100600 & (~File.umask)
 
     assert_equal mask, File.stat(path).mode unless win_platform?
+  end
+
+  def test_execute_sign_default
+    private_key_path = File.join Gem.user_home, 'gem-private_key.pem'
+    Gem::Security.write PRIVATE_KEY, private_key_path
+
+    public_cert_path = File.join Gem.user_home, 'gem-public_cert.pem'
+    Gem::Security.write PUBLIC_CERT, public_cert_path
+
+    path = File.join @tempdir, 'cert.pem'
+    Gem::Security.write ALTERNATE_CERT, path, 0600
+
+    assert_equal '/CN=alternate/DC=example', ALTERNATE_CERT.issuer.to_s
+
+    @cmd.handle_options %W[--sign #{path}]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal '', @ui.output
+    assert_equal '', @ui.error
+
+    cert = OpenSSL::X509::Certificate.new File.read path
+
+    assert_equal '/CN=nobody/DC=example', cert.issuer.to_s
+
+    mask = 0100600 & (~File.umask)
+
+    assert_equal mask, File.stat(path).mode unless win_platform?
+  end
+
+  def test_execute_sign_no_cert
+    private_key_path = File.join Gem.user_home, 'gem-private_key.pem'
+    Gem::Security.write PRIVATE_KEY, private_key_path
+
+    path = File.join @tempdir, 'cert.pem'
+    Gem::Security.write ALTERNATE_CERT, path, 0600
+
+    assert_equal '/CN=alternate/DC=example', ALTERNATE_CERT.issuer.to_s
+
+    @cmd.handle_options %W[--sign #{path}]
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+    end
+
+    assert_equal '', @ui.output
+
+    expected = <<-EXPECTED
+ERROR:  --certificate not specified and ~/.gem/gem-public_cert.pem does not exist
+    EXPECTED
+
+    assert_equal expected, @ui.error
+  end
+
+  def test_execute_sign_no_key
+    public_cert_path = File.join Gem.user_home, 'gem-public_cert.pem'
+    Gem::Security.write PUBLIC_CERT, public_cert_path
+
+    path = File.join @tempdir, 'cert.pem'
+    Gem::Security.write ALTERNATE_CERT, path, 0600
+
+    assert_equal '/CN=alternate/DC=example', ALTERNATE_CERT.issuer.to_s
+
+    @cmd.handle_options %W[--sign #{path}]
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+    end
+
+    assert_equal '', @ui.output
+
+    expected = <<-EXPECTED
+ERROR:  --private-key not specified and ~/.gem/gem-private_key.pem does not exist
+    EXPECTED
+
+    assert_equal expected, @ui.error
   end
 
   def test_handle_options
@@ -386,7 +498,7 @@ Removed '/CN=alternate/DC=example'
       --sign #{CHILD_CERT_FILE}
     ]
 
-    assert_equal PRIVATE_KEY.to_pem, @cmd.options[:issuer_key].to_pem
+    assert_equal PRIVATE_KEY.to_pem, @cmd.options[:key].to_pem
     assert_equal PUBLIC_CERT.to_pem, @cmd.options[:issuer_cert].to_pem
 
     assert_equal [ALTERNATE_CERT_FILE, CHILD_CERT_FILE], @cmd.options[:sign]

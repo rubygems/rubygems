@@ -116,18 +116,18 @@ LtG89EQMMBHsAyc8NMCd4oWm6Q==
     assert_match %r%certificate /CN=nobody/DC=example not valid%, e.message
   end
 
+  def test_sign_no_key
+    signer = Gem::Security::Signer.new nil, []
+
+    assert_nil signer.sign 'stuff'
+  end
+
   def test_sign_wrong_key
     signer = Gem::Security::Signer.new ALTERNATE_KEY, [PUBLIC_CERT]
 
     assert_raises Gem::Security::Exception do
       signer.sign 'hello'
     end
-  end
-
-  def test_sign_no_key
-    signer = Gem::Security::Signer.new nil, []
-
-    assert_nil signer.sign 'stuff'
   end
 
 end

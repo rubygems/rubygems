@@ -28,8 +28,7 @@ class Gem::Commands::CertCommand < Gem::Command
       end
 
       raise OptionParser::InvalidArgument,
-            "#{key_file}: private key not found" unless
-              key.private?
+            "#{key_file}: private key not found" unless key.private?
 
       key
     end
@@ -65,8 +64,8 @@ class Gem::Commands::CertCommand < Gem::Command
     end
 
     add_option('-K', '--private-key KEY', OpenSSL::PKey::RSA,
-               'Signing key for --sign') do |key, options|
-      options[:issuer_key] = key
+               'Key for --sign or --build') do |key, options|
+      options[:key] = key
     end
 
     add_option('-s', '--sign CERT',
@@ -104,13 +103,18 @@ class Gem::Commands::CertCommand < Gem::Command
       build name
     end
 
+    unless options[:sign].empty? then
+      load_default_cert unless options[:issuer_cert]
+      load_default_key  unless options[:key]
+    end
+
     options[:sign].each do |cert_file|
       sign cert_file
     end
   end
 
   def build name
-    key = Gem::Security.create_key
+    key = options[:key] || Gem::Security.create_key
 
     cert = Gem::Security.create_cert_email name, key
 
@@ -135,6 +139,77 @@ class Gem::Commands::CertCommand < Gem::Command
     end
   end
 
+  def description # :nodoc:
+    <<-EOF
+The cert command manages signing keys and certificates for creating signed
+gems.  Your signing certificate and private key are typically stored in
+~/.gem/gem-public_cert.pem and ~/.gem/gem-private_key.pem respectively.
+
+To build a certificate for signing gems:
+
+  gem cert --build you@example
+
+If you already have an RSA key, or are creating a new certificate for an
+existing key:
+
+  gem cert --build you@example --private-key /path/to/key.pem
+
+If you wish to trust a certificate you can add it to the trust list with:
+
+  gem cert --add /path/to/cert.pem
+
+You can list trusted certificates with:
+
+  gem cert --list
+
+or:
+
+  gem cert --list cert_subject_substring
+
+If you wish to remove a previously trusted certificate:
+
+  gem cert --remove cert_subject_substring
+
+To sign another gem author's certificate:
+
+  gem cert --sign /path/to/other_cert.pem
+
+For further reading on signing gems see `ri Gem::Security`.
+    EOF
+  end
+
+  def load_default_cert
+    cert_file = File.join Gem.user_home, 'gem-public_cert.pem'
+    cert = File.read cert_file
+    options[:issuer_cert] = OpenSSL::X509::Certificate.new cert
+  rescue Errno::ENOENT
+    alert_error \
+      "--certificate not specified and ~/.gem/gem-public_cert.pem does not exist"
+
+    terminate_interaction 1
+  rescue OpenSSL::X509::CertificateError
+    alert_error \
+      "--certificate not specified and ~/.gem/gem-public_cert.pem is not valid"
+
+    terminate_interaction 1
+  end
+
+  def load_default_key
+    key_file = File.join Gem.user_home, 'gem-private_key.pem'
+    key = File.read key_file
+    options[:key] = OpenSSL::PKey::RSA.new key
+  rescue Errno::ENOENT
+    alert_error \
+      "--private-key not specified and ~/.gem/gem-private_key.pem does not exist"
+
+    terminate_interaction 1
+  rescue OpenSSL::PKey::RSAError
+    alert_error \
+      "--private-key not specified and ~/.gem/gem-private_key.pem is not valid"
+
+    terminate_interaction 1
+  end
+
   def sign cert_file
     cert = File.read cert_file
     cert = OpenSSL::X509::Certificate.new cert
@@ -142,7 +217,7 @@ class Gem::Commands::CertCommand < Gem::Command
     permissions = File.stat(cert_file).mode & 0777
 
     issuer_cert = options[:issuer_cert]
-    issuer_key = options[:issuer_key]
+    issuer_key = options[:key]
 
     cert = Gem::Security.sign cert, issuer_key, issuer_cert
 

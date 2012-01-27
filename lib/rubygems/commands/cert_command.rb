@@ -56,7 +56,7 @@ class Gem::Commands::CertCommand < Gem::Command
     add_option('-b', '--build EMAIL_ADDR',
                'Build private key and self-signed',
                'certificate for EMAIL_ADDR') do |email_address, options|
-      options[:build] << Gem::Security.email_to_name(email_address)
+      options[:build] << email_address
     end
 
     add_option('-C', '--certificate CERT', OpenSSL::X509::Certificate,
@@ -112,7 +112,7 @@ class Gem::Commands::CertCommand < Gem::Command
   def build name
     key = Gem::Security.create_key
 
-    cert = Gem::Security.create_cert_self_signed name, key
+    cert = Gem::Security.create_cert_email name, key
 
     key_path  = Gem::Security.write key, "gem-private_key.pem"
     cert_path = Gem::Security.write cert, "gem-public_cert.pem"

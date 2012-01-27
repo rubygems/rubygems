@@ -297,7 +297,7 @@ Removed '/CN=alternate/DC=example'
 
     assert_equal %w[nobody example], @cmd.options[:remove]
 
-    assert_equal %w[/CN=nobody/DC=example /CN=other/DC=example],
+    assert_equal %w[nobody@example other@example],
                  @cmd.options[:build].map { |name| name.to_s }
 
     assert_equal ['', 'example'], @cmd.options[:list]

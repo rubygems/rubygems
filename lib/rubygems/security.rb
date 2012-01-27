@@ -417,14 +417,27 @@ module Gem::Security
   end
 
   ##
+  # Creates a self-signed certificate with an issuer and subject from +email+,
+  # a subject alternative name of +email+ and the given +extensions+ for the
+  # +key+.
+
+  def self.create_cert_email email, key, age = ONE_YEAR, extensions = EXTENSIONS
+    subject = email_to_name email
+
+    extensions = extensions.merge "subjectAltName" => "email:#{email}"
+
+    create_cert_self_signed subject, key, age, extensions
+  end
+
+  ##
   # Creates a self-signed certificate with an issuer and subject of +subject+
-  # and the given +extensions+ from the +key+.
+  # and the given +extensions+ for the +key+.
 
   def self.create_cert_self_signed subject, key, age = ONE_YEAR,
                                    extensions = EXTENSIONS
-    certificate = create_cert subject, key, age, extensions
+    certificate = create_cert subject, key
 
-    sign certificate, key, certificate
+    sign certificate, key, certificate, age, extensions
   end
 
   ##
@@ -457,8 +470,6 @@ module Gem::Security
     @trust_dir = nil
   end
 
-  reset
-
   ##
   # Sign the public key from +certificate+ with the +signing_key+ and
   # +signing_cert+, using the Gem::Security::DIGEST_ALGORITHM.  Uses the
@@ -466,8 +477,26 @@ module Gem::Security
   #
   # Returns the newly signed certificate.
 
-  def self.sign certificate, signing_key, signing_cert
-    signed = create_cert certificate.subject, certificate.public_key
+  def self.sign certificate, signing_key, signing_cert,
+                age = ONE_YEAR, extensions = EXTENSIONS
+    signee_subject = certificate.subject
+    signee_key     = certificate.public_key
+
+    alt_name = certificate.extensions.find do |extension|
+      extension.oid == 'subjectAltName'
+    end
+
+    extensions = extensions.merge 'subjectAltName' => alt_name.value if
+      alt_name
+
+    issuer_alt_name = signing_cert.extensions.find do |extension|
+      extension.oid == 'subjectAltName'
+    end
+
+    extensions = extensions.merge 'issuerAltName' => issuer_alt_name.value if
+      issuer_alt_name
+
+    signed = create_cert signee_subject, signee_key, age, extensions
     signed.issuer = signing_cert.subject
 
     signed.sign signing_key, Gem::Security::DIGEST_ALGORITHM.new
@@ -505,6 +534,8 @@ module Gem::Security
 
     path
   end
+
+  reset
 
 end
 

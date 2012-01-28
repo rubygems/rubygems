@@ -2,6 +2,8 @@ require 'rubygems/test_case'
 
 class TestGemSecurityTrustDir < Gem::TestCase
 
+  CHILD_CERT = load_cert 'child'
+
   def setup
     super
 
@@ -16,6 +18,30 @@ class TestGemSecurityTrustDir < Gem::TestCase
     expected = File.join @dest_dir, "cert-#{digest}.pem"
 
     assert_equal expected, @trust_dir.cert_path(PUBLIC_CERT)
+  end
+
+  def test_issuer_of
+    assert_nil @trust_dir.issuer_of(CHILD_CERT)
+
+    @trust_dir.trust_cert PUBLIC_CERT
+
+    assert_equal PUBLIC_CERT.to_pem, @trust_dir.issuer_of(CHILD_CERT).to_pem
+  end
+
+  def test_load_certificate
+    @trust_dir.trust_cert PUBLIC_CERT
+
+    path = @trust_dir.cert_path PUBLIC_CERT
+
+    assert_equal PUBLIC_CERT.to_pem, @trust_dir.load_certificate(path).to_pem
+  end
+
+  def test_name_path
+    digest = OpenSSL::Digest::SHA1.hexdigest PUBLIC_CERT.subject.to_s
+
+    expected = File.join @dest_dir, "cert-#{digest}.pem"
+
+    assert_equal expected, @trust_dir.name_path(PUBLIC_CERT.subject)
   end
 
   def test_trust_cert

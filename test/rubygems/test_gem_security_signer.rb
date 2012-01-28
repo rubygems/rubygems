@@ -2,10 +2,13 @@ require 'rubygems/test_case'
 
 class TestGemSecuritySigner < Gem::TestCase
 
-  ALTERNATE_KEY = load_key 'alternate'
+  ALTERNATE_KEY  = load_key 'alternate'
+  CHILD_KEY      = load_key 'child'
+  GRANDCHILD_KEY = load_key 'grandchild'
 
-  CHILD_CERT   = load_cert 'child'
-  EXPIRED_CERT = load_cert 'expired'
+  CHILD_CERT      = load_cert 'child'
+  GRANDCHILD_CERT = load_cert 'grandchild'
+  EXPIRED_CERT    = load_cert 'expired'
 
   def setup
     super
@@ -16,6 +19,19 @@ class TestGemSecuritySigner < Gem::TestCase
       else
         File.expand_path 'test/rubygems/public_cert.pem', @current_dir
       end
+  end
+
+  def test_initialize
+    signer = Gem::Security::Signer.new nil, nil
+
+    assert_nil signer.key
+    assert_nil signer.cert_chain
+  end
+
+  def test_initialize_cert_chain_empty
+    signer = Gem::Security::Signer.new PUBLIC_KEY, []
+
+    assert_empty signer.cert_chain
   end
 
   def test_initialize_cert_chain_mixed
@@ -36,12 +52,49 @@ class TestGemSecuritySigner < Gem::TestCase
     assert_equal [PUBLIC_CERT].inspect, signer.cert_chain.inspect
   end
 
+  def test_initialize_default
+    private_key_path = File.join Gem.user_home, 'gem-private_key.pem'
+    Gem::Security.write PRIVATE_KEY, private_key_path
+
+    public_cert_path = File.join Gem.user_home, 'gem-public_cert.pem'
+    Gem::Security.write PUBLIC_CERT, public_cert_path
+
+    signer = Gem::Security::Signer.new nil, nil
+
+    assert_equal PRIVATE_KEY.to_pem, signer.key.to_pem
+    assert_equal [PUBLIC_CERT.to_pem], signer.cert_chain.map { |c| c.to_pem }
+  end
+
   def test_initialize_key_path
     key_file = File.expand_path 'test/rubygems/private_key.pem', @current_dir
 
     signer = Gem::Security::Signer.new key_file, nil
 
     assert_equal PRIVATE_KEY.to_s, signer.key.to_s
+  end
+
+  def test_load_cert_chain
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
+
+    signer = Gem::Security::Signer.new nil, []
+    signer.cert_chain.replace [CHILD_CERT]
+
+    signer.load_cert_chain
+
+    assert_equal [PUBLIC_CERT.to_pem, CHILD_CERT.to_pem],
+                 signer.cert_chain.map { |c| c.to_pem }
+  end
+
+  def test_load_cert_chain_broken
+    Gem::Security.trust_dir.trust_cert CHILD_CERT
+
+    signer = Gem::Security::Signer.new nil, []
+    signer.cert_chain.replace [GRANDCHILD_CERT]
+
+    signer.load_cert_chain
+
+    assert_equal [CHILD_CERT.to_pem, GRANDCHILD_CERT.to_pem],
+                 signer.cert_chain.map { |c| c.to_pem }
   end
 
   def test_sign
@@ -117,7 +170,7 @@ LtG89EQMMBHsAyc8NMCd4oWm6Q==
   end
 
   def test_sign_no_key
-    signer = Gem::Security::Signer.new nil, []
+    signer = Gem::Security::Signer.new nil, nil
 
     assert_nil signer.sign 'stuff'
   end

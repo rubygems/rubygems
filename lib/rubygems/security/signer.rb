@@ -16,18 +16,49 @@ class Gem::Security::Signer
     @cert_chain = cert_chain
     @key        = key
 
+    unless @key then
+      default_key  = File.join Gem.user_home, 'gem-private_key.pem'
+      @key = default_key if File.exist? default_key
+    end
+
+    unless @cert_chain then
+      default_cert = File.join Gem.user_home, 'gem-public_cert.pem'
+      @cert_chain = [default_cert] if File.exist? default_cert
+    end
+
     @digest_algorithm = Gem::Security::DIGEST_ALGORITHM
 
     @key = OpenSSL::PKey::RSA.new File.read @key if
       @key and not OpenSSL::PKey::RSA === @key
 
-    @cert_chain = @cert_chain.compact.map do |cert|
-      next cert if OpenSSL::X509::Certificate === cert
+    if @cert_chain then
+      @cert_chain = @cert_chain.compact.map do |cert|
+        next cert if OpenSSL::X509::Certificate === cert
 
-      cert = File.read cert if File.exist? cert
+        cert = File.read cert if File.exist? cert
 
-      OpenSSL::X509::Certificate.new cert
-    end if @cert_chain
+        OpenSSL::X509::Certificate.new cert
+      end
+
+      load_cert_chain
+    end
+  end
+
+  ##
+  # Loads any missing issuers in the cert chain from the trusted certificates.
+  #
+  # If the issuer does not exist it is ignored as it will be checked later.
+
+  def load_cert_chain # :nodoc:
+    return if @cert_chain.empty?
+
+    while @cert_chain.first.issuer.to_s != @cert_chain.first.subject.to_s do
+      issuer = Gem::Security.trust_dir.issuer_of @cert_chain.first
+
+      break unless issuer # cert chain is verified later
+
+      @cert_chain.unshift issuer
+    end
   end
 
   ##
@@ -36,7 +67,7 @@ class Gem::Security::Signer
   def sign data
     return unless @key
 
-    if @cert_chain.length == 1 and @cert_chain.last.not_before < Time.now then
+    if @cert_chain.length == 1 and @cert_chain.last.not_after < Time.now then
       re_sign_key
     end
 

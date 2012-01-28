@@ -147,17 +147,19 @@ class Gem::Package
   # Builds this package based on the specification set by #spec=
 
   def build
+    require 'rubygems/security'
+
     @spec.validate
     @spec.mark_version
 
     if @spec.signing_key then
-      require 'rubygems/security'
-
       @signer = Gem::Security::Signer.new @spec.signing_key, @spec.cert_chain
       @spec.signing_key = nil
       @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_s }
     else
       @signer = Gem::Security::Signer.new nil, nil
+      @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_pem } if
+        @signer.cert_chain
     end
 
     open @gem, 'wb' do |gem_io|

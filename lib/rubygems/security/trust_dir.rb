@@ -18,22 +18,7 @@ class Gem::Security::TrustDir
   # Returns the path to the trusted +certificate+
 
   def cert_path certificate
-    digest = @digester.hexdigest certificate.subject.to_s
-
-    File.join @dir, "cert-#{digest}.pem"
-  end
-
-  ##
-  # Add a certificate to trusted certificate list.
-
-  def trust_cert certificate
-    verify
-
-    destination = cert_path certificate
-
-    open destination, 'wb', @permissions[:trusted_cert] do |io|
-      io.write certificate.to_pem
-    end
+    name_path certificate.subject
   end
 
   ##
@@ -46,14 +31,55 @@ class Gem::Security::TrustDir
 
     Dir[glob].each do |certificate_file|
       begin
-        pem = File.read certificate_file
-
-        certificate = OpenSSL::X509::Certificate.new pem
+        certificate = load_certificate certificate_file
 
         yield certificate, certificate_file
       rescue OpenSSL::X509::CertificateError
         next # HACK warn
       end
+    end
+  end
+
+  ##
+  # Returns the issuer certificate of the given +certificate+ if it exists in
+  # the trust directory.
+
+  def issuer_of certificate
+    path = name_path certificate.issuer
+
+    return unless File.exist? path
+
+    load_certificate path
+  end
+
+  ##
+  # Returns the path to the trusted certificate with the given ASN.1 +name+
+
+  def name_path name
+    digest = @digester.hexdigest name.to_s
+
+    File.join @dir, "cert-#{digest}.pem"
+  end
+
+  ##
+  # Loads the given +certificate_file+
+
+  def load_certificate certificate_file
+    pem = File.read certificate_file
+
+    certificate = OpenSSL::X509::Certificate.new pem
+  end
+
+  ##
+  # Add a certificate to trusted certificate list.
+
+  def trust_cert certificate
+    verify
+
+    destination = cert_path certificate
+
+    open destination, 'wb', @permissions[:trusted_cert] do |io|
+      io.write certificate.to_pem
     end
   end
 

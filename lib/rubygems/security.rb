@@ -384,7 +384,7 @@ module Gem::Security
     cert = OpenSSL::X509::Certificate.new
 
     cert.public_key = key.public_key
-    cert.version    = 3
+    cert.version    = 2
     cert.serial     = 1
 
     cert.not_before = Time.now

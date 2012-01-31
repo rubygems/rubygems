@@ -24,7 +24,7 @@ class TestGemSecurity < Gem::TestCase
 
     assert_kind_of OpenSSL::X509::Certificate, cert
 
-    assert_equal    3,                     cert.version
+    assert_equal    2,                     cert.version
     assert_equal    1,                     cert.serial
     assert_equal    key.public_key.to_pem, cert.public_key.to_pem
     assert_in_delta Time.now,              cert.not_before, 10
@@ -67,7 +67,7 @@ class TestGemSecurity < Gem::TestCase
 
     assert_kind_of OpenSSL::X509::Certificate, cert
 
-    assert_equal    3,                     cert.version
+    assert_equal    2,                     cert.version
     assert_equal    1,                     cert.serial
     assert_equal    key.public_key.to_pem, cert.public_key.to_pem
     assert_in_delta Time.now,              cert.not_before, 10

@@ -64,7 +64,7 @@ class Gem::Security::Policy
 
   def check_data public_key, digest, signature, data
     raise Gem::Security::Exception, "invalid signature" unless
-      public_key.verify digest.new, signature, data
+      public_key.verify digest.new, signature, data.digest
 
     true
   end

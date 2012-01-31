@@ -57,7 +57,7 @@ class TestGemSecurityPolicy < Gem::TestCase
   end
 
   def test_check_data
-    data = @sha1.digest 'hello'
+    data = digest 'hello'
 
     signature = sign data
 
@@ -65,11 +65,11 @@ class TestGemSecurityPolicy < Gem::TestCase
   end
 
   def test_check_data_invalid
-    data = @sha1.digest 'hello'
+    data = digest 'hello'
 
     signature = sign data
 
-    invalid = @sha1.digest 'hello!'
+    invalid = digest 'hello!'
 
     e = assert_raises Gem::Security::Exception do
       @almost_no.check_data PUBLIC_KEY, @sha1, signature, invalid
@@ -220,7 +220,7 @@ class TestGemSecurityPolicy < Gem::TestCase
   def test_verify
     Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
-    data = @sha1.digest('hello')
+    data = digest 'hello'
     digest    = { 0 => data }
     signature = { 0 => sign(data, PRIVATE_KEY) }
 
@@ -230,7 +230,7 @@ class TestGemSecurityPolicy < Gem::TestCase
   def test_verify_chain_signatures
     Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
-    data = @sha1.digest('hello')
+    data = digest 'hello'
     digest    = { 0 => data }
     signature = { 0 => sign(data, PRIVATE_KEY) }
 
@@ -242,7 +242,7 @@ class TestGemSecurityPolicy < Gem::TestCase
   end
 
   def test_verify_signatures_chain
-    data = @sha1.digest 'hello'
+    data = digest 'hello'
     digest    = { 0 => data }
     signature = { 0 => sign(data, CHILD_KEY) }
 
@@ -252,7 +252,7 @@ class TestGemSecurityPolicy < Gem::TestCase
   end
 
   def test_verify_signatures_data
-    data = @sha1.digest 'hello'
+    data = digest 'hello'
     digest    = { 0 => data }
     signature = { 0 => sign(data) }
 
@@ -262,7 +262,7 @@ class TestGemSecurityPolicy < Gem::TestCase
   end
 
   def test_verify_signatures_root
-    data = @sha1.digest 'hello'
+    data = digest 'hello'
     digest    = { 0 => data }
     signature = { 0 => sign(data, CHILD_KEY) }
 
@@ -272,7 +272,7 @@ class TestGemSecurityPolicy < Gem::TestCase
   end
 
   def test_verify_signatures_signer
-    data = @sha1.digest 'hello'
+    data = digest 'hello'
     digest    = { 0 => data }
     signature = { 0 => sign(data) }
 
@@ -284,7 +284,7 @@ class TestGemSecurityPolicy < Gem::TestCase
   def test_verify_signatures_trust
     Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
-    data = @sha1.digest('hello')
+    data = digest 'hello'
     digest    = { 0 => data }
     signature = { 0 => sign(data, PRIVATE_KEY) }
 
@@ -305,7 +305,7 @@ class TestGemSecurityPolicy < Gem::TestCase
     metadata_gz_digest = package.digest StringIO.new metadata_gz
 
     digests = {}
-    digests['metadata.gz'] = metadata_gz_digest.digest
+    digests['metadata.gz'] = metadata_gz_digest
 
     signatures = {}
     signatures['metadata.gz'] =
@@ -326,7 +326,7 @@ class TestGemSecurityPolicy < Gem::TestCase
     metadata_gz_digest = package.digest StringIO.new metadata_gz
 
     digests = {}
-    digests['metadata.gz'] = metadata_gz_digest.digest
+    digests['metadata.gz'] = metadata_gz_digest
     digests['data.tar.gz'] = package.digest StringIO.new 'hello' # fake
 
     signatures = {}
@@ -360,8 +360,14 @@ class TestGemSecurityPolicy < Gem::TestCase
     end
   end
 
+  def digest data
+    digester = @sha1.new
+    digester << data
+    digester
+  end
+
   def sign data, key = PRIVATE_KEY
-    key.sign @sha1.new, data
+    key.sign @sha1.new, data.digest
   end
 
 end

@@ -8,77 +8,86 @@ require 'rubygems/exceptions'
 require 'openssl'
 require 'fileutils'
 
+##
+# = Signing gems
 #
-# = Signed Gems README
-#
-# == Table of Contents
-# * Overview
-# * Walkthrough
-# * Command-Line Options
-# * OpenSSL Reference
-# * Bugs/TODO
-# * About the Author
-#
-# == Overview
-#
-# Gem::Security implements cryptographic signatures in RubyGems.  The section
+# The Gem::Security implements cryptographic signatures for gems.  The section
 # below is a step-by-step guide to using signed gems and generating your own.
 #
 # == Walkthrough
 #
+# === Building your certificate
+#
 # In order to start signing your gems, you'll need to build a private key and
 # a self-signed certificate.  Here's how:
 #
-#   # build a private key and certificate for gemmaster@example.com
-#   $ gem cert --build gemmaster@example.com
+#   # build a private key and certificate for yourself:
+#   $ gem cert --build you@example.com
 #
-# This could take anywhere from 5 seconds to 10 minutes, depending on the
-# speed of your computer (public key algorithms aren't exactly the speediest
-# crypto algorithms in the world).  When it's finished, you'll see the files
-# "gem-private_key.pem" and "gem-public_cert.pem" in the current directory.
+# This could take anywhere from a few seconds to a minute or two, depending on
+# the speed of your computer (public key algorithms aren't exactly the
+# speediest crypto algorithms in the world).  When it's finished, you'll see
+# the files "gem-private_key.pem" and "gem-public_cert.pem" in the current
+# directory.
 #
-# First things first: take the "gem-private_key.pem" file and move it
-# somewhere private, preferably a directory only you have access to, a floppy
-# (yuck!), a CD-ROM, or something comparably secure.  Keep your private key
-# hidden; if it's compromised, someone can sign packages as you (note: PKI has
-# ways of mitigating the risk of stolen keys; more on that later).
+# First things first: Move both files to ~/.gem if you don't already have a
+# key and certificate in that directory.  Ensure the file permissions make the
+# key unreadable by others (by default the file is saved securely).
 #
-# Now, let's sign an existing gem.  I'll be using my Imlib2-Ruby bindings, but
-# you can use whatever gem you'd like.  Open up your existing gemspec file and
-# add the following lines:
+# Keep your private key hidden; if it's compromised, someone can sign packages
+# as you (note: PKI has ways of mitigating the risk of stolen keys; more on
+# that later).
 #
-#   # signing key and certificate chain
-#   s.signing_key = '/mnt/floppy/gem-private_key.pem'
-#   s.cert_chain  = ['gem-public_cert.pem']
+# === Signing Gems
 #
-# (Be sure to replace "/mnt/floppy" with the ultra-secret path to your private
-# key).
+# In RubyGems 2 and newer there is no extra work to sign a gem.  RubyGems will
+# automatically find your key and certificate in your home directory and use
+# them to sign newly packaged gems.
 #
-# After that, go ahead and build your gem as usual.  Congratulations, you've
-# just built your first signed gem!  If you peek inside your gem file, you'll
-# see a couple of new files have been added:
+# If your certificate is not self-signed (signed by a third party) RubyGems
+# will attempt to load the certificate chain from the trusted certificates.
+# Use <code>gem cert --add signing_cert.pem</code> to add your signers as
+# trusted certificates.  See below for further information on certificate
+# chains.
 #
-#   $ tar tf tar tf Imlib2-Ruby-0.5.0.gem
-#   data.tar.gz
-#   data.tar.gz.sig
+# If you build your gem it will automatically be signed.  If you peek inside
+# your gem file, you'll see a couple of new files have been added:
+#
+#   $ tar tf your-gem-1.0.gem
 #   metadata.gz
-#   metadata.gz.sig
+#   metadata.gz.sum
+#   metadata.gz.sig # metadata signature
+#   data.tar.gz
+#   data.tar.gz.sum
+#   data.tar.gz.sig # data signature
+#
+# === Manually signing gems
+#
+# If you wish to store your key in a separate secure location you'll need to
+# set your gems up for signing by hand.  To do this, set the
+# <code>signing_key</code> and <code>cert_chain</code> in the gemspec before
+# packaging your gem:
+#
+#   s.signing_key = '/secure/path/to/gem-private_key.pem'
+#   s.cert_chain = %w[/secure/path/to/gem-public_cert.pem]
+#
+# When you package your gem with these options set RubyGems will automatically
+# load your key and certificate from the secure paths.
+#
+# === Signed gems and security policies
 #
 # Now let's verify the signature.  Go ahead and install the gem, but add the
-# following options: "-P HighSecurity", like this:
+# following options: <code>-P HighSecurity</code>, like this:
 #
 #   # install the gem with using the security policy "HighSecurity"
-#   $ sudo gem install Imlib2-Ruby-0.5.0.gem -P HighSecurity
+#   $ sudo gem install your.gem -P HighSecurity
 #
-# The -P option sets your security policy -- we'll talk about that in just a
-# minute.  Eh, what's this?
+# The <code>-P</code> option sets your security policy -- we'll talk about
+# that in just a minute.  Eh, what's this?
 #
-#   Attempting local installation of 'Imlib2-Ruby-0.5.0.gem'
-#   ERROR:  Error installing gem Imlib2-Ruby-0.5.0.gem[.gem]: Couldn't
-#   verify data signature: Untrusted Signing Chain Root: cert =
-#   '/CN=gemmaster/DC=example/DC=com', error = 'path
-#   "/root/.rubygems/trust/cert-15dbb43a6edf6a70a85d4e784e2e45312cff7030.pem"
-#   does not exist'
+#   $ gem install -P HighSecurity your-gem-1.0.gem
+#   ERROR:  While executing gem ... (Gem::Security::Exception)
+#       root cert /CN=you/DC=example is not trusted
 #
 # The culprit here is the security policy.  RubyGems has several different
 # security policies.  Let's take a short break and go over the security
@@ -111,46 +120,48 @@ require 'fileutils'
 #   RubyGems will simply refuse to install the package.  Oh well, maybe
 #   he'll have better luck causing problems for CPAN users instead :).
 #
-# So, the reason RubyGems refused to install our shiny new signed gem was
-# because it was from an untrusted source.  Well, my code is infallible
-# (hah!), so I'm going to add myself as a trusted source.
+# The reason RubyGems refused to install your shiny new signed gem was because
+# it was from an untrusted source.  Well, your code is infallible (naturally),
+# so you need to add yourself as a trusted source:
 #
-# Here's how:
+#   # add trusted certificate
+#   gem cert --add ~/.gem/gem-public_cert.pem
 #
-#     # add trusted certificate
-#     gem cert --add gem-public_cert.pem
-#
-# I've added my public certificate as a trusted source.  Now I can install
-# packages signed my private key without any hassle.  Let's try the install
-# command above again:
+# You've now added your public certificate as a trusted source.  Now you can
+# install packages signed by your private key without any hassle.  Let's try
+# the install command above again:
 #
 #   # install the gem with using the HighSecurity policy (and this time
 #   # without any shenanigans)
-#   $ sudo gem install Imlib2-Ruby-0.5.0.gem -P HighSecurity
+#   $ gem install -P HighSecurity your-gem-1.0.gem
+#   Successfully installed your-gem-1.0
+#   1 gem installed
 #
-# This time RubyGems should accept your signed package and begin installing.
+# This time RubyGems will accept your signed package and begin installing.
+#
 # While you're waiting for RubyGems to work it's magic, have a look at some of
-# the other security commands:
-#
-#   Usage: gem cert [options]
+# the other security commands by running <code>gem help cert</code>:
 #
 #   Options:
-#     -a, --add CERT          Add a trusted certificate.
-#     -l, --list              List trusted certificates.
-#     -r, --remove STRING     Remove trusted certificates containing STRING.
-#     -b, --build EMAIL_ADDR  Build private key and self-signed certificate
-#                             for EMAIL_ADDR.
-#     -C, --certificate CERT  Certificate for --sign command.
-#     -K, --private-key KEY   Private key for --sign command.
-#     -s, --sign NEWCERT      Sign a certificate with my key and certificate.
+#     -a, --add CERT                   Add a trusted certificate.
+#     -l, --list [FILTER]              List trusted certificates where the
+#                                      subject contains FILTER
+#     -r, --remove FILTER              Remove trusted certificates where the
+#                                      subject contains FILTER
+#     -b, --build EMAIL_ADDR           Build private key and self-signed
+#                                      certificate for EMAIL_ADDR
+#     -C, --certificate CERT           Signing certificate for --sign
+#     -K, --private-key KEY            Key for --sign or --build
+#     -s, --sign CERT                  Signs CERT with the key from -K
+#                                      and the certificate from -C
+#   
+# We've already covered the <code>--build</code> option, and the
+# <code>--add</code>, <code>--list</code>, and <code>--remove</code> commands
+# seem fairly straightforward; they allow you to add, list, and remove the
+# certificates in your trusted certificate list.  But what's with this
+# <code>--sign</code> option?
 #
-# (By the way, you can pull up this list any time you'd like by typing "gem
-# cert --help")
-#
-# Hmm.  We've already covered the "--build" option, and the "--add", "--list",
-# and "--remove" commands seem fairly straightforward; they allow you to add,
-# list, and remove the certificates in your trusted certificate list.  But
-# what's with this "--sign" option?
+# === Certificate chains
 #
 # To answer that question, let's take a look at "certificate chains", a
 # concept I mentioned earlier.  There are a couple of problems with
@@ -172,100 +183,68 @@ require 'fileutils'
 # trust.  Here's a hypothetical example of a trust hierarchy based (roughly)
 # on geography:
 #
-#
 #                         --------------------------
-#                         | rubygems@rubyforge.org |
+#                         | rubygems@rubygems.org |
 #                         --------------------------
 #                                     |
 #                   -----------------------------------
 #                   |                                 |
 #       ----------------------------    -----------------------------
-#       | seattle.rb@zenspider.com |    | dcrubyists@richkilmer.com |
+#       |  seattlerb@seattlerb.org |    | dcrubyists@richkilmer.com |
 #       ----------------------------    -----------------------------
 #            |                |                 |             |
 #     ---------------   ----------------   -----------   --------------
-#     | alf@seattle |   | bob@portland |   | pabs@dc |   | tomcope@dc |
+#     |   drbrain   |   |   zenspider  |   | pabs@dc |   | tomcope@dc |
 #     ---------------   ----------------   -----------   --------------
 #
 #
-# Now, rather than having 4 trusted certificates (one for alf@seattle,
-# bob@portland, pabs@dc, and tomecope@dc), a user could actually get by with 1
-# certificate: the "rubygems@rubyforge.org" certificate.  Here's how it works:
+# Now, rather than having 4 trusted certificates (one for drbrain, zenspider,
+# pabs@dc, and tomecope@dc), a user could actually get by with one
+# certificate, the "rubygems@rubygems.org" certificate.
 #
-# I install "Alf2000-Ruby-0.1.0.gem", a package signed by "alf@seattle".  I've
-# never heard of "alf@seattle", but his certificate has a valid signature from
-# the "seattle.rb@zenspider.com" certificate, which in turn has a valid
-# signature from the "rubygems@rubyforge.org" certificate.  Voila!  At this
-# point, it's much more reasonable for me to trust a package signed by
-# "alf@seattle", because I can establish a chain to "rubygems@rubyforge.org",
-# which I do trust.
+# Here's how it works:
 #
-# And the "--sign" option allows all this to happen.  A developer creates
-# their build certificate with the "--build" option, then has their
-# certificate signed by taking it with them to their next regional Ruby meetup
-# (in our hypothetical example), and it's signed there by the person holding
-# the regional RubyGems signing certificate, which is signed at the next
-# RubyConf by the holder of the top-level RubyGems certificate.  At each point
-# the issuer runs the same command:
+# I install "rdoc-3.12.gem", a package signed by "drbrain".  I've never heard
+# of "drbrain", but his certificate has a valid signature from the
+# "seattle.rb@seattlerb.org" certificate, which in turn has a valid signature
+# from the "rubygems@rubygems.org" certificate.  Voila!  At this point, it's
+# much more reasonable for me to trust a package signed by "drbrain", because
+# I can establish a chain to "rubygems@rubygems.org", which I do trust.
+#
+# === Signing certificates
+#
+# The <code>--sign</code> option allows all this to happen.  A developer
+# creates their build certificate with the <code>--build</code> option, then
+# has their certificate signed by taking it with them to their next regional
+# Ruby meetup (in our hypothetical example), and it's signed there by the
+# person holding the regional RubyGems signing certificate, which is signed at
+# the next RubyConf by the holder of the top-level RubyGems certificate.  At
+# each point the issuer runs the same command:
 #
 #   # sign a certificate with the specified key and certificate
 #   # (note that this modifies client_cert.pem!)
 #   $ gem cert -K /mnt/floppy/issuer-priv_key.pem -C issuer-pub_cert.pem
 #      --sign client_cert.pem
 #
-# Then the holder of issued certificate (in this case, our buddy
-# "alf@seattle"), can start using this signed certificate to sign RubyGems.
-# By the way, in order to let everyone else know about his new fancy signed
-# certificate, "alf@seattle" would change his gemspec file to look like this:
+# Then the holder of issued certificate (in this case, your buddy "drbrain"),
+# can start using this signed certificate to sign RubyGems.  By the way, in
+# order to let everyone else know about his new fancy signed certificate,
+# "drbrain" would save his newly signed certificate as
+# <code>~/.gem/gem-public_cert.pem</code>
 #
-#   # signing key (still kept in an undisclosed location!)
-#   s.signing_key = '/mnt/floppy/alf-private_key.pem'
-#
-#   # certificate chain (includes the issuer certificate now too)
-#   s.cert_chain  = ['/home/alf/doc/seattlerb-public_cert.pem',
-#                    '/home/alf/doc/alf_at_seattle-public_cert.pem']
-#
-# Obviously, this RubyGems trust infrastructure doesn't exist yet.  Also, in
-# the "real world" issuers actually generate the child certificate from a
+# Obviously this RubyGems trust infrastructure doesn't exist yet.  Also, in
+# the "real world", issuers actually generate the child certificate from a
 # certificate request, rather than sign an existing certificate.  And our
 # hypothetical infrastructure is missing a certificate revocation system.
 # These are that can be fixed in the future...
 #
-# I'm sure your new signed gem has finished installing by now (unless you're
-# installing rails and all it's dependencies, that is ;D).  At this point you
-# should know how to do all of these new and interesting things:
+# At this point you should know how to do all of these new and interesting
+# things:
 #
 # * build a gem signing key and certificate
-# * modify your existing gems to support signing
 # * adjust your security policy
 # * modify your trusted certificate list
 # * sign a certificate
-#
-# If you've got any questions, feel free to contact me at the email address
-# below.  The next couple of sections
-#
-#
-# == Command-Line Options
-#
-# Here's a brief summary of the certificate-related command line options:
-#
-#   gem install
-#     -P, --trust-policy POLICY        Specify gem trust policy.
-#
-#   gem cert
-#     -a, --add CERT                   Add a trusted certificate.
-#     -l, --list                       List trusted certificates.
-#     -r, --remove STRING              Remove trusted certificates containing
-#                                      STRING.
-#     -b, --build EMAIL_ADDR           Build private key and self-signed
-#                                      certificate for EMAIL_ADDR.
-#     -C, --certificate CERT           Certificate for --sign command.
-#     -K, --private-key KEY            Private key for --sign command.
-#     -s, --sign NEWCERT               Sign a certificate with my key and
-#                                      certificate.
-#
-# A more detailed description of each options is available in the walkthrough
-# above.
 #
 # == Manually verifying signatures
 #
@@ -273,33 +252,33 @@ require 'fileutils'
 #
 # 1. Fetch and unpack the gem
 #
-#     gem fetch some_signed_gem
-#     tar -xf some_signed_gem-1.0.gem
+#      gem fetch some_signed_gem
+#      tar -xf some_signed_gem-1.0.gem
 #
 # 2. Grab the public key from the gemspec
 #
-#     gem spec some_signed_gem-1.0.gem cert_chain | \
-#       ruby -pe 'sub(/^ +/, "")' > public_key.crt
+#      gem spec some_signed_gem-1.0.gem cert_chain | \
+#        ruby -ryaml -e 'puts YAML.load_documents($stdin)' > public_key.crt
 #
 # 3. Generate a SHA1 hash of the data.tar.gz
 #
-#     openssl dgst -sha1 < data.tar.gz > my.hash
+#      openssl dgst -sha1 < data.tar.gz > my.hash
 #
 # 4. Verify the signature
 #
-#     openssl rsautl -verify -inkey public_key.crt -certin \
-#       -in data.tar.gz.sig > verified.hash
+#      openssl rsautl -verify -inkey public_key.crt -certin \
+#        -in data.tar.gz.sig > verified.hash
 #
 # 5. Compare your hash to the verified hash
 #
-#     diff -s verified.hash my.hash
+#      diff -s verified.hash my.hash
 #
 # 6. Repeat 5 and 6 with metadata.gz
 #
 # == OpenSSL Reference
 #
-# The .pem files generated by --build and --sign are just basic OpenSSL PEM
-# files.  Here's a couple of useful commands for manipulating them:
+# The .pem files generated by --build and --sign are PEM files.  Here's a
+# couple of useful OpenSSL commands for manipulating them:
 #
 #   # convert a PEM format X509 certificate into DER format:
 #   # (note: Windows .cer files are X509 certificates in DER format)
@@ -321,8 +300,8 @@ require 'fileutils'
 # * There's no way to define a system-wide trust list.
 # * custom security policies (from a YAML file, etc)
 # * Simple method to generate a signed certificate request
-# * Support for OCSP, SCVP, CRLs, or some other form of cert
-#   status check (list is in order of preference)
+# * Support for OCSP, SCVP, CRLs, or some other form of cert status check
+#   (list is in order of preference)
 # * Support for encrypted private keys
 # * Some sort of semi-formal trust hierarchy (see long-winded explanation
 #   above)
@@ -332,17 +311,13 @@ require 'fileutils'
 #   MediumSecurity and HighSecurity policies)
 # * Better explanation of X509 naming (ie, we don't have to use email
 #   addresses)
-# * Possible alternate signing mechanisms (eg, via PGP).  this could be done
-#   pretty easily by adding a :signing_type attribute to the gemspec, then add
-#   the necessary support in other places
 # * Honor AIA field (see note about OCSP above)
-# * Maybe honor restriction extensions?
+# * Honor extension restrictions
 # * Might be better to store the certificate chain as a PKCS#7 or PKCS#12
-#   file, instead of an array embedded in the metadata.  ideas?
-# * Possibly embed signature and key algorithms into metadata (right now
-#   they're assumed to be the same as what's set in Gem::Security)
+#   file, instead of an array embedded in the metadata.
+# * Flexible signature and key algorithms, not hard-coded to RSA and SHA1.
 #
-# == About the Author
+# == Original author
 #
 # Paul Duncan <pabs@pablotron.org>
 # http://pablotron.org/
@@ -473,6 +448,12 @@ module Gem::Security
     OpenSSL::X509::Name.parse name
   end
 
+  ##
+  # Signs +expired_certificate+ with +private_key+ if the keys match and the
+  # expired certificate was self-signed.
+  #--
+  # TODO increment serial
+
   def self.re_sign expired_certificate, private_key, age = ONE_YEAR,
                    extensions = EXTENSIONS
     raise Gem::Security::Exception,
@@ -492,7 +473,6 @@ module Gem::Security
 
     create_cert_self_signed(expired_certificate.subject, private_key, age,
                             extensions)
-
   end
 
   ##

@@ -20,6 +20,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 require 'rubygems'
+require 'rubygems/package'
 begin
   gem 'rake'
 rescue Gem::LoadError

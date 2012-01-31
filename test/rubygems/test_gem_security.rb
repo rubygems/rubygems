@@ -20,12 +20,12 @@ class TestGemSecurity < Gem::TestCase
     name = PUBLIC_CERT.subject
     key = PRIVATE_KEY
 
-    cert = @SEC.create_cert name, key, 60
+    cert = @SEC.create_cert name, key, 60, Gem::Security::EXTENSIONS, 5
 
     assert_kind_of OpenSSL::X509::Certificate, cert
 
     assert_equal    2,                     cert.version
-    assert_equal    1,                     cert.serial
+    assert_equal    5,                     cert.serial
     assert_equal    key.public_key.to_pem, cert.public_key.to_pem
     assert_in_delta Time.now,              cert.not_before, 10
     assert_in_delta Time.now + 60,         cert.not_after, 10
@@ -75,7 +75,7 @@ class TestGemSecurity < Gem::TestCase
     assert_equal    name.to_s,             cert.subject.to_s
     assert_equal    name.to_s,             cert.issuer.to_s
 
-    assert_equal 4, cert.extensions.length,
+    assert_equal 5, cert.extensions.length,
                  cert.extensions.map { |e| e.to_a.first }
 
     constraints = cert.extensions.find { |ext| ext.oid == 'subjectAltName' }
@@ -119,6 +119,7 @@ class TestGemSecurity < Gem::TestCase
 
     assert_in_delta Time.now,      re_signed.not_before, 10
     assert_in_delta Time.now + 60, re_signed.not_after,  10
+    assert_equal 2,                re_signed.serial
 
     assert re_signed.verify PUBLIC_KEY
   end

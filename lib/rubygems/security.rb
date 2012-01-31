@@ -380,12 +380,13 @@ module Gem::Security
   #
   # The +extensions+ restrict the key to the indicated uses.
 
-  def self.create_cert subject, key, age = ONE_YEAR, extensions = EXTENSIONS
+  def self.create_cert subject, key, age = ONE_YEAR, extensions = EXTENSIONS,
+                       serial = 1
     cert = OpenSSL::X509::Certificate.new
 
     cert.public_key = key.public_key
     cert.version    = 2
-    cert.serial     = 1
+    cert.serial     = serial
 
     cert.not_before = Time.now
     cert.not_after  = Time.now + age
@@ -419,10 +420,10 @@ module Gem::Security
   # and the given +extensions+ for the +key+.
 
   def self.create_cert_self_signed subject, key, age = ONE_YEAR,
-                                   extensions = EXTENSIONS
-    certificate = create_cert subject, key
+                                   extensions = EXTENSIONS, serial = 1
+    certificate = create_cert subject, key, age, extensions
 
-    sign certificate, key, certificate, age, extensions
+    sign certificate, key, certificate, age, extensions, serial
   end
 
   ##
@@ -465,14 +466,16 @@ module Gem::Security
            expired_certificate.issuer.to_s then
       subject = alt_name_or_x509_entry expired_certificate, :subject
       issuer  = alt_name_or_x509_entry expired_certificate, :issuer
+
       raise Gem::Security::Exception,
             "#{subject} is not self-signed, contact #{issuer} " \
             "to obtain a valid certificate"
     end
 
+    serial = expired_certificate.serial + 1
 
     create_cert_self_signed(expired_certificate.subject, private_key, age,
-                            extensions)
+                            extensions, serial)
   end
 
   ##
@@ -490,7 +493,7 @@ module Gem::Security
   # Returns the newly signed certificate.
 
   def self.sign certificate, signing_key, signing_cert,
-                age = ONE_YEAR, extensions = EXTENSIONS
+                age = ONE_YEAR, extensions = EXTENSIONS, serial = 1
     signee_subject = certificate.subject
     signee_key     = certificate.public_key
 
@@ -508,7 +511,7 @@ module Gem::Security
     extensions = extensions.merge 'issuerAltName' => issuer_alt_name.value if
       issuer_alt_name
 
-    signed = create_cert signee_subject, signee_key, age, extensions
+    signed = create_cert signee_subject, signee_key, age, extensions, serial
     signed.issuer = signing_cert.subject
 
     signed.sign signing_key, Gem::Security::DIGEST_ALGORITHM.new

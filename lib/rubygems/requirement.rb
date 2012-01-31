@@ -4,6 +4,15 @@ require "rubygems/version"
 # A Requirement is a set of one or more version restrictions. It supports a
 # few (<tt>=, !=, >, <, >=, <=, ~></tt>) different restriction operators.
 
+# REFACTOR: The fact that a requirement is singular or plural is kind of
+# awkward. Is Requirement the right name for this? Or should it be one
+# [op, number] pair, and we call the list of requirements something else?
+# Since a Requirement is held by a Dependency, maybe this should be made
+# singular and the list aspect should be pulled up into Dependency?
+
+require "rubygems/version"
+require "rubygems/deprecate"
+
 class Gem::Requirement
   include Comparable
 
@@ -174,6 +183,8 @@ class Gem::Requirement
   private
 
   def fix_syck_default_key_in_requirements
+    Gem.load_yaml
+
     # Fixup the Syck DefaultKey bug
     @requirements.each do |r|
       if r[0].kind_of? Gem::SyckDefaultKey

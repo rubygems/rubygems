@@ -2007,12 +2007,16 @@ class Gem::Specification
   end
 
   ##
-  # Returns an object you can use to sort base_dir by reverse order of Gem.path.
-  class CompareByPathIndex < Struct.new(:base_dir)
+  # String sortable by (reversed) order of paths in Gem.path
+
+  class CompareByPathIndex < String
     def <=>(other)
-      Gem.path.index(other.base_dir) <=> Gem.path.index(base_dir)
+      Gem.path.index(other) <=> Gem.path.index(self)
     end
   end
+
+  ##
+  # Returns an object you can use to sort base_dir by reverse order of Gem.path.
 
   def sort_base_dir
     CompareByPathIndex.new(base_dir)

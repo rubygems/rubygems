@@ -2008,16 +2008,14 @@ class Gem::Specification
 
   ##
   # Returns an object you can use to sort base_dir by reverse order of Gem.path.
+  class CompareByPathIndex < Struct.new(:base_dir)
+    def <=>(other)
+      Gem.path.index(other.base_dir) <=> Gem.path.index(base_dir)
+    end
+  end
 
   def sort_base_dir
-    _base_dir = base_dir.clone
-    _base_dir.instance_eval do
-      def <=>(other)
-        # Reverse sort by path because rubygems uses `.last` for searching latest version
-        Gem.path.index(other) <=> Gem.path.index(self)
-      end
-    end
-    _base_dir
+    CompareByPathIndex.new(base_dir)
   end
 
   ##

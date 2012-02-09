@@ -378,15 +378,6 @@ class Gem::RemoteFetcher
   end
 
   ##
-  # Read the data from the (source based) URI, but if it is a file:// URI,
-  # read from the filesystem instead.
-
-  def open_uri_or_path(uri, last_modified = nil, head = false, depth = 0)
-    raise "NO: Use fetch_path instead"
-    # TODO: deprecate for fetch_path
-  end
-
-  ##
   # Performs a Net::HTTP request of type +request_class+ on +uri+ returning
   # a Net::HTTP response object.  request maintains a table of persistent
   # connections to reduce connect overhead.

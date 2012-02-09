@@ -2003,7 +2003,21 @@ class Gem::Specification
 
   def sort_obj
     # TODO: this is horrible. Deprecate it.
-    [@name, @version, @new_platform == Gem::Platform::RUBY ? -1 : 1]
+    [@name, @version, @new_platform == Gem::Platform::RUBY ? -1 : 1, sort_base_dir]
+  end
+
+  ##
+  # Returns an object you can use to sort base_dir by reverse order of Gem.path.
+
+  def sort_base_dir
+    _base_dir = base_dir.clone
+    _base_dir.instance_eval do
+      def <=>(other)
+        # Reverse sort by path because rubygems uses `.last` for searching latest version
+        Gem.path.index(other) <=> Gem.path.index(self)
+      end
+    end
+    _base_dir
   end
 
   ##

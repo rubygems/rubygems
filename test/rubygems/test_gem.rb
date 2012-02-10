@@ -1223,6 +1223,25 @@ class TestGem < Gem::TestCase
     end
   end
 
+  def test_gem_path_ordering_short
+    write_file File.join(@tempdir, 'lib', "g.rb") { |fp| fp.puts "" }
+    write_file File.join(@tempdir, 'lib', 'm.rb') { |fp| fp.puts "" }
+
+    g = new_spec 'g', '1', nil, "lib/g.rb"
+    m = new_spec 'm', '1', nil, "lib/m.rb"
+
+    install_gem g, :install_dir => Gem.dir
+    install_gem m, :install_dir => Gem.dir
+    install_gem m, :install_dir => Gem.user_dir
+
+    Gem.paths = { 'GEM_HOME' => Gem.dir, 'GEM_PATH' => [ Gem.dir, Gem.user_dir] }
+
+    assert_equal \
+      File.join(Gem.dir, "gems", "m-1"),
+      Gem::Dependency.new('m','1').to_spec.gem_dir,
+      "Wrong spec selected"
+  end
+
   def with_plugin(path)
     test_plugin_path = File.expand_path("test/rubygems/plugin/#{path}",
                                         @@project_dir)

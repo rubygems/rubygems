@@ -642,6 +642,8 @@ class Gem::Specification
 
       @@all = specs
 
+      # Commenting out following line also fixes bug solved by sort_base_dir(~ line 2000) ...
+      # this might be a bug in sort! (order dependent on context) ??
       _resort!
     end
     @@all
@@ -2003,7 +2005,23 @@ class Gem::Specification
 
   def sort_obj
     # TODO: this is horrible. Deprecate it.
-    [@name, @version, @new_platform == Gem::Platform::RUBY ? -1 : 1]
+    [@name, @version, @new_platform == Gem::Platform::RUBY ? -1 : 1, sort_base_dir]
+  end
+
+  ##
+  # String sortable by (reversed) order of paths in Gem.path
+
+  class CompareByPathIndex < String
+    def <=>(other)
+      Gem.path.index(other) <=> Gem.path.index(self)
+    end
+  end
+
+  ##
+  # Returns an object you can use to sort base_dir by reverse order of Gem.path.
+
+  def sort_base_dir
+    CompareByPathIndex.new(base_dir)
   end
 
   ##

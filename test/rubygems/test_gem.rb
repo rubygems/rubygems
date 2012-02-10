@@ -1158,29 +1158,19 @@ class TestGem < Gem::TestCase
 
   def test_gem_path_ordering
     refute_equal Gem.dir, Gem.user_dir
-    m = new_spec 'm', '1', nil, "lib/m.rb"
+
+    write_file File.join(@tempdir, 'lib', "g.rb") { |fp| fp.puts "" }
     write_file File.join(@tempdir, 'lib', 'm.rb') { |fp| fp.puts "" }
 
-    {"r"=>Gem.dir, "x"=>Gem.dir, "l"=>Gem.dir, "y"=>Gem.dir, "s"=>Gem.user_dir, "g"=>Gem.user_dir, "j"=>Gem.user_dir, "p"=>Gem.user_dir}.each do |name,dir|
-      write_file File.join(@tempdir, 'lib', "#{name}.rb") { |fp| fp.puts "" }
-      install_gem( new_spec(name, '1', nil, "lib/#{name}.rb"), :install_dir => dir)
-    end
+    g = new_spec 'g', '1', nil, "lib/g.rb"
+    m = new_spec 'm', '1', nil, "lib/m.rb"
 
+    install_gem g, :install_dir => Gem.dir
     m0 = install_gem m, :install_dir => Gem.dir
-    assert_equal m0.gem_dir, File.join(Gem.dir, "gems", "m-1")
-
-    {"k"=>Gem.dir, "v"=>Gem.dir, "z"=>Gem.dir, "q"=>Gem.dir, "d"=>Gem.user_dir, "a"=>Gem.user_dir, "c"=>Gem.user_dir, "e"=>Gem.user_dir}.each do |name,dir|
-      write_file File.join(@tempdir, 'lib', "#{name}.rb") { |fp| fp.puts "" }
-      install_gem( new_spec(name, '1', nil, "lib/#{name}.rb"), :install_dir => dir)
-    end
-
     m1 = install_gem m, :install_dir => Gem.user_dir
-    assert_equal m1.gem_dir, File.join(Gem.user_dir, "gems", "m-1")
 
-    {"b"=>Gem.dir, "o"=>Gem.dir, "h"=>Gem.dir, "u"=>Gem.dir, "i"=>Gem.user_dir, "n"=>Gem.user_dir, "w"=>Gem.user_dir, "t"=>Gem.user_dir}.each do |name,dir|
-      write_file File.join(@tempdir, 'lib', "#{name}.rb") { |fp| fp.puts "" }
-      install_gem( new_spec(name, '1', nil, "lib/#{name}.rb"), :install_dir => dir)
-    end
+    assert_equal m0.gem_dir, File.join(Gem.dir, "gems", "m-1")
+    assert_equal m1.gem_dir, File.join(Gem.user_dir, "gems", "m-1")
 
     tests = [
       [:dir0, [ Gem.dir, Gem.user_dir]],

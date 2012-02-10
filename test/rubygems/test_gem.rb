@@ -1161,11 +1161,6 @@ class TestGem < Gem::TestCase
     m = new_spec 'm', '1', nil, "lib/m.rb"
     write_file File.join(@tempdir, 'lib', 'm.rb') { |fp| fp.puts "" }
 
-    tests = [
-      [:dir0, [ Gem.dir, Gem.user_dir]],
-      [:dir1, [ Gem.user_dir, Gem.dir]]
-    ]
-
     {"r"=>Gem.dir, "x"=>Gem.dir, "l"=>Gem.dir, "y"=>Gem.dir, "s"=>Gem.user_dir, "g"=>Gem.user_dir, "j"=>Gem.user_dir, "p"=>Gem.user_dir}.each do |name,dir|
       write_file File.join(@tempdir, 'lib', "#{name}.rb") { |fp| fp.puts "" }
       install_gem( new_spec(name, '1', nil, "lib/#{name}.rb"), :install_dir => dir)
@@ -1186,6 +1181,11 @@ class TestGem < Gem::TestCase
       write_file File.join(@tempdir, 'lib', "#{name}.rb") { |fp| fp.puts "" }
       install_gem( new_spec(name, '1', nil, "lib/#{name}.rb"), :install_dir => dir)
     end
+
+    tests = [
+      [:dir0, [ Gem.dir, Gem.user_dir]],
+      [:dir1, [ Gem.user_dir, Gem.dir]]
+    ]
 
     tests.each do |_name, _paths|
       Gem.paths = { 'GEM_HOME' => _paths.first, 'GEM_PATH' => _paths }

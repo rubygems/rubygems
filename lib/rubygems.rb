@@ -98,7 +98,7 @@
 require 'rbconfig'
 
 module Gem
-  VERSION = '1.8.10'
+  VERSION = '2.0.a'
 end
 
 require 'rubygems/defaults'

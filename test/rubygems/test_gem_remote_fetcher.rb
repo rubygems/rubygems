@@ -564,7 +564,7 @@ gems:
     fetcher = Gem::RemoteFetcher.new(nil)
     ENV['HTTP_PROXY'] = 'fakeurl:12345'
 
-    assert_equal('http://fakeurl:12345', fetcher.get_proxy_from_env.to_s)
+    assert_equal 'http://fakeurl:12345', fetcher.send(:get_proxy_from_env).to_s
   end
 
   def test_get_proxy_from_env_empty

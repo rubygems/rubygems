@@ -266,7 +266,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   ##
   # Builds and installs the Gem::Specification +spec+
 
-  def install_gem spec
+  def install_gem spec, options = {}
     require 'rubygems/installer'
 
     use_ui Gem::MockGemUi.new do
@@ -277,7 +277,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     gem = File.join @tempdir, File.basename(spec.cache_file)
 
-    Gem::Installer.new(gem, :wrappers => true).install
+    Gem::Installer.new(gem, options.merge({:wrappers => true})).install
   end
 
   ##
@@ -975,4 +975,3 @@ Also, a list:
   PUBLIC_CERT = load_cert 'public'
 
 end
-

@@ -1156,6 +1156,73 @@ class TestGem < Gem::TestCase
     end
   end
 
+  def test_gem_path_ordering
+    refute_equal Gem.dir, Gem.user_dir
+    m = new_spec 'm', '1', nil, "lib/m.rb"
+    write_file File.join(@tempdir, 'lib', 'm.rb') { |fp| fp.puts "" }
+
+    tests = [
+      [:dir0, [ Gem.dir, Gem.user_dir]],
+      [:dir1, [ Gem.user_dir, Gem.dir]]
+    ]
+
+    {"r"=>Gem.dir, "x"=>Gem.dir, "l"=>Gem.dir, "y"=>Gem.dir, "s"=>Gem.user_dir, "g"=>Gem.user_dir, "j"=>Gem.user_dir, "p"=>Gem.user_dir}.each do |name,dir|
+      write_file File.join(@tempdir, 'lib', "#{name}.rb") { |fp| fp.puts "" }
+      install_gem( new_spec(name, '1', nil, "lib/#{name}.rb"), :install_dir => dir)
+    end
+
+    m0 = install_gem m, :install_dir => Gem.dir
+    assert_equal m0.gem_dir, File.join(Gem.dir, "gems", "m-1")
+
+    {"k"=>Gem.dir, "v"=>Gem.dir, "z"=>Gem.dir, "q"=>Gem.dir, "d"=>Gem.user_dir, "a"=>Gem.user_dir, "c"=>Gem.user_dir, "e"=>Gem.user_dir}.each do |name,dir|
+      write_file File.join(@tempdir, 'lib', "#{name}.rb") { |fp| fp.puts "" }
+      install_gem( new_spec(name, '1', nil, "lib/#{name}.rb"), :install_dir => dir)
+    end
+
+    m1 = install_gem m, :install_dir => Gem.user_dir
+    assert_equal m1.gem_dir, File.join(Gem.user_dir, "gems", "m-1")
+
+    {"b"=>Gem.dir, "o"=>Gem.dir, "h"=>Gem.dir, "u"=>Gem.dir, "i"=>Gem.user_dir, "n"=>Gem.user_dir, "w"=>Gem.user_dir, "t"=>Gem.user_dir}.each do |name,dir|
+      write_file File.join(@tempdir, 'lib', "#{name}.rb") { |fp| fp.puts "" }
+      install_gem( new_spec(name, '1', nil, "lib/#{name}.rb"), :install_dir => dir)
+    end
+
+    tests.each do |_name, _paths|
+      Gem.paths = { 'GEM_HOME' => _paths.first, 'GEM_PATH' => _paths }
+      Gem::Specification.reset
+      Gem.searcher = nil
+
+      assert_equal Gem::Dependency.new('m','1').to_specs, Gem::Dependency.new('m','1').to_specs.sort
+
+      assert_equal \
+        [m0, m1].map(&:gem_dir).sort,
+        Gem::Dependency.new('m','1').to_specs.map(&:gem_dir).sort,
+        "Wrong specs for #{_name}"
+
+      spec = Gem::Dependency.new('m','1').to_spec
+
+      assert_equal \
+        File.join(_paths.first, "gems", "m-1"),
+        spec.gem_dir,
+        "Wrong spec before require for #{_name}"
+      refute spec.activated?, "dependency already activated for #{_name}"
+
+      gem "m"
+
+      spec = Gem::Dependency.new('m','1').to_spec
+      assert spec.activated?, "dependency not activated for #{_name}"
+
+      assert_equal \
+        File.join(_paths.first, "gems", "m-1"),
+        spec.gem_dir,
+        "Wrong spec after require for #{_name}"
+
+      spec.instance_variable_set :@activated, false
+      Gem.loaded_specs.delete(spec.name)
+      $:.delete(File.join(spec.gem_dir, "lib"))
+    end
+  end
+
   def with_plugin(path)
     test_plugin_path = File.expand_path("test/rubygems/plugin/#{path}",
                                         @@project_dir)
@@ -1232,4 +1299,3 @@ class TestGem < Gem::TestCase
     File.join Gem.dir, "cache"
   end
 end
-

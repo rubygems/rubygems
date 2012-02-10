@@ -642,6 +642,8 @@ class Gem::Specification
 
       @@all = specs
 
+      # Commenting out following line also fixes bug solved by sort_base_dir(~ line 2000) ...
+      # this might be a bug in sort! (order dependent on context) ??
       _resort!
     end
     @@all

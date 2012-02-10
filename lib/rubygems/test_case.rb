@@ -243,7 +243,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   ##
   # Builds and installs the Gem::Specification +spec+
 
-  def install_gem spec
+  def install_gem spec, options = {}
     require 'rubygems/installer'
 
     use_ui Gem::MockGemUi.new do
@@ -254,26 +254,14 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     gem = File.join(@tempdir, File.basename(spec.cache_file)).untaint
 
-    Gem::Installer.new(gem, :wrappers => true).install
+    Gem::Installer.new(gem, options.merge({:wrappers => true})).install
   end
 
   ##
   # Builds and installs the Gem::Specification +spec+ into the user dir
 
   def install_gem_user spec
-    require 'rubygems/installer'
-
-    use_ui Gem::MockGemUi.new do
-      Dir.chdir @tempdir do
-        Gem::Builder.new(spec).build
-      end
-    end
-
-    gem = File.join(@tempdir, File.basename(spec.cache_file)).untaint
-
-    i = Gem::Installer.new(gem, :wrappers => true, :user_install => true)
-    i.install
-    i.spec
+    install_gem spec, :user_install => true
   end
 
   ##
@@ -880,4 +868,3 @@ Also, a list:
   end
 
 end
-

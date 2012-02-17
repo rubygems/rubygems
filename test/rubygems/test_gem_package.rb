@@ -186,9 +186,10 @@ class TestGemPackage < Gem::Package::TarTestCase
     extracted = File.join @destination, 'lib/code.rb'
     assert_path_exists extracted
 
-    mask = 0100644 & (~File.umask)
+    mask = 0100666 & (~File.umask)
 
-    assert_equal mask, File.stat(extracted).mode unless win_platform?
+    assert_equal mask.to_s(8), File.stat(extracted).mode.to_s(8) unless
+      win_platform?
   end
 
   def test_extract_files_empty

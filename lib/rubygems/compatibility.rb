@@ -6,7 +6,7 @@
 # support them, so we define some constants to use later.
 module Gem
   QUICKLOADER_SUCKAGE = RUBY_VERSION =~ /^1\.9\.1/
-  GEM_PRELUDE_SUCKAGE = RUBY_VERSION =~ /^1\.9\.2/
+  GEM_PRELUDE_SUCKAGE = RUBY_VERSION =~ /^1\.9\.2/ && !defined(JRUBY_VERSION)
 end
 
 # Gem::QuickLoader exists in the gem prelude code in ruby 1.9.2 itself.

@@ -55,7 +55,8 @@ module Kernel
       return gem_original_require path
     end
   rescue LoadError => load_error
-    if load_error.message.end_with?(path) and Gem.try_activate(path) then
+    if load_error.message.start_with?("Could not find") or
+        (load_error.message.end_with?(path) and Gem.try_activate(path)) then
       return gem_original_require(path)
     end
 

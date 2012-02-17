@@ -442,10 +442,10 @@ module Gem
   # problem, then we will silently continue.
 
   def self.ensure_gem_subdirectories dir = Gem.dir
-    require 'fileutils'
-
     old_umask = File.umask
     File.umask old_umask | 002
+
+    require 'fileutils'
 
     %w[cache doc gems specifications].each do |name|
       subdir = File.join dir, name

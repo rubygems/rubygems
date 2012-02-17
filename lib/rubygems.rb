@@ -9,7 +9,7 @@ module Gem
   QUICKLOADER_SUCKAGE = RUBY_VERSION =~ /^1\.9\.1/
 
   # Only MRI 1.9.2 has the custom prelude.
-  GEM_PRELUDE_SUCKAGE = RUBY_VERSION =~ /^1\.9\.2/ and RUBY_ENGINE == "ruby"
+  GEM_PRELUDE_SUCKAGE = RUBY_VERSION =~ /^1\.9\.2/ && RUBY_ENGINE == "ruby"
 end
 
 if Gem::GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader) then

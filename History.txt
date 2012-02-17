@@ -1,5 +1,20 @@
 # coding: UTF-8
 
+=== 1.8.17 / 2012-02-17
+
+* 2 minor enhancements:
+
+  * Add MacRuby to the list of special cases for platforms (ferrous26)
+  * Add a default for where to install rubygems itself
+
+* 3 bug fixes:
+
+  * Fixed gem loading issue caused by dependencies not resolving.
+  * Fixed umask error when stdlib is required and unresolved dependencies exist.
+  * Shebang munging would only take one arg after the cmd
+  * Define SUCKAGE better, ie only MRI 1.9.2
+  * Propagate env-shebang to the pristine command if set for install.
+
 === 1.8.16 / 2012-02-12
 
 * 3 bug fixes:

@@ -92,12 +92,22 @@ task :package do
   end
 end
 
+desc "Upload release to rubyforge"
 task :upload_to_rubyforge do
   v = hoe.version
   sh "rubyforge add_release rubygems rubygems #{v} pkg/rubygems-update-#{v}.gem"
   sh "rubyforge add_file rubygems rubygems #{v} pkg/rubygems-#{v}.zip"
   sh "rubyforge add_file rubygems rubygems #{v} pkg/rubygems-#{v}.tgz"
 end
+
+desc "Upload release to gemcutter S3"
+task :upload_to_gemcutter do
+  v = hoe.version
+  sh "s3cmd put -P pkg/rubygems-update-#{v}.gem pkg/rubygems-#{v}.zip pkg/rubygems-#{v}.tgz s3://production.s3.rubygems.org/rubygems/"
+end
+
+desc "Upload release to rubyforge and gemcutter"
+task :upload => [:upload_to_rubyforge, :upload_to_gemcutter]
 
 # Misc Tasks ---------------------------------------------------------
 

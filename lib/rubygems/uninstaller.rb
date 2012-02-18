@@ -51,6 +51,8 @@ class Gem::Uninstaller
     @force_ignore      = options[:ignore]
     @bin_dir           = options[:bin_dir]
     @format_executable = options[:format_executable]
+    @confirm_no        = true || options[:confirm_no]
+    @confirm_yes       = options[:confirm_yes]
 
     if options[:force]
       @force_all = true
@@ -265,6 +267,9 @@ class Gem::Uninstaller
     msg = ['']
     msg << 'You have requested to uninstall the gem:'
     msg << "\t#{spec.full_name}"
+
+    return true if @confirm_yes
+    return false if @confirm_no
 
     spec.dependent_gems.each do |dep_spec, dep, satlist|
       msg << "#{dep_spec.name}-#{dep_spec.version} depends on #{dep}"

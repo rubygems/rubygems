@@ -12,6 +12,15 @@ class Gem::Commands::CleanupCommand < Gem::Command
     add_option('-d', '--dryrun', "") do |value, options|
       options[:dryrun] = true
     end
+
+    add_option('-y', '--yes', 'Confirm all questions with yes') do
+      options[:confirm_yes] = true
+    end
+
+    add_option('-n', '--no', 'Confirm all questions with no') do
+      options[:confirm_no] = true
+    end
+
   end
 
   def arguments # :nodoc:
@@ -74,6 +83,8 @@ installed elsewhere in GEM_PATH the cleanup command won't touch it.
         uninstall_options = {
           :executables => false,
           :version => "= #{spec.version}",
+          :confirm_no => options[:confirm_no],
+          :confirm_yes => options[:confirm_yes],
         }
 
         uninstall_options[:user_install] = Gem.user_dir == spec.base_dir
@@ -84,8 +95,12 @@ installed elsewhere in GEM_PATH the cleanup command won't touch it.
           uninstaller.uninstall
         rescue Gem::DependencyRemovalException, Gem::InstallError,
                Gem::GemNotInHomeException, Gem::FilePermissionError => e
-          say "Unable to uninstall #{spec.full_name}:"
-          say "\t#{e.class}: #{e.message}"
+          if options[:confirm_no]
+            say "ignored to uninstall #{spec.full_name}"
+          else
+            say "Unable to uninstall #{spec.full_name}:"
+            say "\t#{e.class}: #{e.message}"
+          end
         end
       end
 

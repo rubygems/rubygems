@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'rubygems/user_interaction'
 require 'uri'
+require 'rubygems/uri_formatter'
 
 ##
 # RemoteFetcher handles the details of fetching gems and gem information from
@@ -178,7 +179,7 @@ class Gem::RemoteFetcher
                       source_uri.path
                     end
 
-      source_path = unescape source_path
+      source_path = Gem::UriFormatter.new(source_path).unescape
 
       begin
         FileUtils.cp source_path, local_gem_path unless
@@ -290,50 +291,6 @@ class Gem::RemoteFetcher
     response = fetch_path(uri, nil, true)
 
     response['content-length'].to_i
-  end
-
-  def escape(str)
-    return unless str
-    @uri_parser ||= uri_escaper
-    @uri_parser.escape str
-  end
-
-  def unescape(str)
-    return unless str
-    @uri_parser ||= uri_escaper
-    @uri_parser.unescape str
-  end
-
-  def uri_escaper
-    URI::Parser.new
-  rescue NameError
-    URI
-  end
-
-  ##
-  # Returns an HTTP proxy URI if one is set in the environment variables.
-
-  def get_proxy_from_env
-    env_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
-
-    return nil if env_proxy.nil? or env_proxy.empty?
-
-    uri = URI.parse(normalize_uri(env_proxy))
-
-    if uri and uri.user.nil? and uri.password.nil? then
-      # Probably we have http_proxy_* variables?
-      uri.user = escape(ENV['http_proxy_user'] || ENV['HTTP_PROXY_USER'])
-      uri.password = escape(ENV['http_proxy_pass'] || ENV['HTTP_PROXY_PASS'])
-    end
-
-    uri
-  end
-
-  ##
-  # Normalize the URI by adding "http://" if it is missing.
-
-  def normalize_uri(uri)
-    (uri =~ /^(https?|ftp|file):/) ? uri : "http://#{uri}"
   end
 
   ##
@@ -500,5 +457,25 @@ class Gem::RemoteFetcher
     ua
   end
 
+  private
+  
+  ##
+  # Returns an HTTP proxy URI if one is set in the environment variables.
+
+  def get_proxy_from_env
+    env_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+
+    return nil if env_proxy.nil? or env_proxy.empty?
+
+    uri = URI.parse(Gem::UriFormatter.new(env_proxy).normalize)
+
+    if uri and uri.user.nil? and uri.password.nil? then
+      # Probably we have http_proxy_* variables?
+      uri.user = Gem::UriFormatter.new(ENV['http_proxy_user'] || ENV['HTTP_PROXY_USER']).escape
+      uri.password = Gem::UriFormatter.new(ENV['http_proxy_pass'] || ENV['HTTP_PROXY_PASS']).escape
+    end
+
+    uri
+  end
 end
 

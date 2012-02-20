@@ -102,6 +102,7 @@ lib/rubygems/psych_additions.rb
 lib/rubygems/psych_tree.rb
 lib/rubygems/rdoc.rb
 lib/rubygems/remote_fetcher.rb
+lib/rubygems/request.rb
 lib/rubygems/request_set.rb
 lib/rubygems/request_set/gem_dependency_api.rb
 lib/rubygems/requirement.rb
@@ -266,6 +267,7 @@ test/rubygems/test_gem_stream_ui.rb
 test/rubygems/test_gem_stub_specification.rb
 test/rubygems/test_gem_text.rb
 test/rubygems/test_gem_uninstaller.rb
+test/rubygems/test_gem_uri_formatter.rb
 test/rubygems/test_gem_validator.rb
 test/rubygems/test_gem_version.rb
 test/rubygems/test_gem_version_option.rb

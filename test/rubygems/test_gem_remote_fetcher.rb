@@ -155,7 +155,7 @@ gems:
 
   def test_fetch_size_socket_error
     fetcher = Gem::RemoteFetcher.new nil
-    def fetcher.connection_for(uri)
+    def fetcher.request(uri, request_class, last_modified = nil)
       raise SocketError, "tarded"
     end
 
@@ -611,9 +611,7 @@ gems:
     fetcher = Gem::RemoteFetcher.new nil
     url = 'http://gems.example.com/redirect'
 
-    conn = Object.new
-    def conn.started?() true end
-    def conn.request(req)
+    def fetcher.request(uri, request_class, last_modified = nil)
       url = 'http://gems.example.com/redirect'
       unless defined? @requested then
         @requested = true
@@ -627,9 +625,6 @@ gems:
       end
     end
 
-    conn = { "#{Thread.current.object_id}:gems.example.com:80" => conn }
-    fetcher.instance_variable_set :@connections, conn
-
     data = fetcher.fetch_http URI.parse(url)
 
     assert_equal 'real_path', data
@@ -639,31 +634,18 @@ gems:
     fetcher = Gem::RemoteFetcher.new nil
     url = 'http://gems.example.com/redirect'
 
-    conn = Object.new
-    def conn.started?() true end
-    def conn.request(req)
+    def fetcher.request(uri, request_class, last_modified = nil)
       url = 'http://gems.example.com/redirect'
       res = Net::HTTPMovedPermanently.new nil, 301, nil
       res.add_field 'Location', url
       res
     end
 
-    conn = { "#{Thread.current.object_id}:gems.example.com:80" => conn }
-    fetcher.instance_variable_set :@connections, conn
-
     e = assert_raises Gem::RemoteFetcher::FetchError do
       fetcher.fetch_http URI.parse(url)
     end
 
     assert_equal "too many redirects (#{url})", e.message
-  end
-
-  def test_normalize_uri
-    assert_equal 'FILE://example/',  @fetcher.normalize_uri('FILE://example/')
-    assert_equal 'FTP://example/',   @fetcher.normalize_uri('FTP://example/')
-    assert_equal 'HTTP://example/',  @fetcher.normalize_uri('HTTP://example/')
-    assert_equal 'HTTPS://example/', @fetcher.normalize_uri('HTTPS://example/')
-    assert_equal 'http://example/',  @fetcher.normalize_uri('example/')
   end
 
   def test_observe_no_proxy_env_single_host
@@ -686,9 +668,10 @@ gems:
 
   def test_request
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil, nil)
     util_stub_connection_for :body => :junk, :code => 200
 
-    response = @fetcher.request uri, Net::HTTP::Get
+    response = @request.fetch
 
     assert_equal 200, response.code
     assert_equal :junk, response.body
@@ -696,8 +679,10 @@ gems:
 
   def test_request_head
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil, nil)
     util_stub_connection_for :body => '', :code => 200
-    response = @fetcher.request uri, Net::HTTP::Head
+
+    response = @request.fetch
 
     assert_equal 200, response.code
     assert_equal '', response.body
@@ -705,10 +690,11 @@ gems:
 
   def test_request_unmodified
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    t = Time.now
+    @request = Gem::Request.new(uri, Net::HTTP::Get, t, nil, nil)
     conn = util_stub_connection_for :body => '', :code => 304
 
-    t = Time.now
-    response = @fetcher.request uri, Net::HTTP::Head, t
+    response = @request.fetch
 
     assert_equal 304, response.code
     assert_equal '', response.body
@@ -851,15 +837,15 @@ gems:
   end
 
   def util_stub_connection_for hash
-    def @fetcher.connection= conn
+    def @request.connection= conn
       @conn = conn
     end
 
-    def @fetcher.connection_for uri
+    def @request.connection_for uri
       @conn
     end
 
-    @fetcher.connection = Conn.new OpenStruct.new(hash)
+    @request.connection = Conn.new OpenStruct.new(hash)
   end
 
   def assert_error(exception_class=Exception)

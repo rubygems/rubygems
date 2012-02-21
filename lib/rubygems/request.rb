@@ -1,6 +1,6 @@
 class Gem::Request
 
-  def initialize(uri, request_class, last_modified, proxy_uri, user_agent)
+  def initialize(uri, request_class, last_modified, proxy_uri)
     @uri = uri
     @request_class = request_class
     @last_modified = last_modified
@@ -196,6 +196,25 @@ class Gem::Request
 
     connection.finish
     connection.start
+  end
+
+  def user_agent
+    ua = "RubyGems/#{Gem::VERSION} #{Gem::Platform.local}"
+
+    ruby_version = RUBY_VERSION
+    ruby_version += 'dev' if RUBY_PATCHLEVEL == -1
+
+    ua << " Ruby/#{ruby_version} (#{RUBY_RELEASE_DATE}"
+    if RUBY_PATCHLEVEL >= 0 then
+      ua << " patchlevel #{RUBY_PATCHLEVEL}"
+    elsif defined?(RUBY_REVISION) then
+      ua << " revision #{RUBY_REVISION}"
+    end
+    ua << ")"
+
+    ua << " #{RUBY_ENGINE}" if defined?(RUBY_ENGINE) and RUBY_ENGINE != 'ruby'
+
+    ua
   end
 
 end

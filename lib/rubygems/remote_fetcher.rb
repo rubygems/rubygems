@@ -68,13 +68,7 @@ class Gem::RemoteFetcher
 
     Socket.do_not_reverse_lookup = true
 
-    @proxy_uri =
-      case proxy
-      when :no_proxy then nil
-      when nil then get_proxy_from_env
-      when URI::HTTP then proxy
-      else URI.parse(proxy)
-      end
+    @proxy = proxy
   end
 
   ##
@@ -290,12 +284,6 @@ class Gem::RemoteFetcher
     response['content-length'].to_i
   end
 
-  def escape(str)
-    return unless str
-    @uri_parser ||= uri_escaper
-    @uri_parser.escape str
-  end
-
   def unescape(str)
     return unless str
     @uri_parser ||= uri_escaper
@@ -306,32 +294,6 @@ class Gem::RemoteFetcher
     URI::Parser.new
   rescue NameError
     URI
-  end
-
-  ##
-  # Returns an HTTP proxy URI if one is set in the environment variables.
-
-  def get_proxy_from_env
-    env_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
-
-    return nil if env_proxy.nil? or env_proxy.empty?
-
-    uri = URI.parse(normalize_uri(env_proxy))
-
-    if uri and uri.user.nil? and uri.password.nil? then
-      # Probably we have http_proxy_* variables?
-      uri.user = escape(ENV['http_proxy_user'] || ENV['HTTP_PROXY_USER'])
-      uri.password = escape(ENV['http_proxy_pass'] || ENV['HTTP_PROXY_PASS'])
-    end
-
-    uri
-  end
-
-  ##
-  # Normalize the URI by adding "http://" if it is missing.
-
-  def normalize_uri(uri)
-    (uri =~ /^(https?|ftp|file):/) ? uri : "http://#{uri}"
   end
 
   def correct_for_windows_path(path)
@@ -348,8 +310,7 @@ class Gem::RemoteFetcher
   # connections to reduce connect overhead.
 
   def request(uri, request_class, last_modified = nil)
-    Gem::Request.new(uri, request_class, last_modified, @proxy_uri).fetch
+    Gem::Request.new(uri, request_class, last_modified, @proxy).fetch
   end
-
 end
 

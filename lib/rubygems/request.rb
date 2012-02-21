@@ -1,12 +1,19 @@
 class Gem::Request
-  def initialize(uri, request_class, last_modified, proxy_uri)
+  def initialize(uri, request_class, last_modified, proxy)
     @uri = uri
     @request_class = request_class
     @last_modified = last_modified
     @requests = Hash.new 0
     @connections = {}
-    @proxy_uri = proxy_uri
     @user_agent = user_agent
+
+    @proxy_uri =
+      case proxy
+      when :no_proxy then nil
+      when nil then get_proxy_from_env
+      when URI::HTTP then proxy
+      else URI.parse(proxy)
+      end
   end
 
   def fetch
@@ -159,4 +166,43 @@ class Gem::Request
 
     ua
   end
+
+  ##
+  # Returns an HTTP proxy URI if one is set in the environment variables.
+
+  def get_proxy_from_env
+    env_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+
+    return nil if env_proxy.nil? or env_proxy.empty?
+
+    uri = URI.parse(normalize_uri(env_proxy))
+
+    if uri and uri.user.nil? and uri.password.nil? then
+      # Probably we have http_proxy_* variables?
+      uri.user = escape(ENV['http_proxy_user'] || ENV['HTTP_PROXY_USER'])
+      uri.password = escape(ENV['http_proxy_pass'] || ENV['HTTP_PROXY_PASS'])
+    end
+
+    uri
+  end
+
+  ##
+  # Normalize the URI by adding "http://" if it is missing.
+
+  def normalize_uri(uri)
+    (uri =~ /^(https?|ftp|file):/) ? uri : "http://#{uri}"
+  end
+
+  def escape(str)
+    return unless str
+    @uri_parser ||= uri_escaper
+    @uri_parser.escape str
+  end
+
+  def uri_escaper
+    URI::Parser.new
+  rescue NameError
+    URI
+  end
+
 end

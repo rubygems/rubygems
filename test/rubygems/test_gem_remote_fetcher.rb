@@ -615,7 +615,7 @@ gems:
 
   def test_request
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
-    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil, nil)
+    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
     util_stub_connection_for :body => :junk, :code => 200
 
     response = @request.fetch
@@ -626,7 +626,7 @@ gems:
 
   def test_request_head
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
-    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil, nil)
+    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
     util_stub_connection_for :body => '', :code => 200
 
     response = @request.fetch
@@ -638,7 +638,7 @@ gems:
   def test_request_unmodified
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
     t = Time.now
-    @request = Gem::Request.new(uri, Net::HTTP::Get, t, nil, nil)
+    @request = Gem::Request.new(uri, Net::HTTP::Get, t, nil)
     conn = util_stub_connection_for :body => '', :code => 304
 
     response = @request.fetch
@@ -650,7 +650,7 @@ gems:
   end
 
   def test_user_agent
-    ua = @fetcher.user_agent
+    ua = Gem::Request.new(nil, nil, nil, nil).user_agent
 
     assert_match %r%^RubyGems/\S+ \S+ Ruby/\S+ \(.*?\)%,          ua
     assert_match %r%RubyGems/#{Regexp.escape Gem::VERSION}%,      ua
@@ -665,7 +665,7 @@ gems:
     Object.send :remove_const, :RUBY_ENGINE if defined?(RUBY_ENGINE)
     Object.send :const_set,    :RUBY_ENGINE, 'vroom'
 
-    ua = @fetcher.user_agent
+    ua = Gem::Request.new(nil, nil, nil, nil).user_agent
 
     assert_match %r%\) vroom%, ua
   ensure
@@ -678,7 +678,7 @@ gems:
     Object.send :remove_const, :RUBY_ENGINE if defined?(RUBY_ENGINE)
     Object.send :const_set,    :RUBY_ENGINE, 'ruby'
 
-    ua = @fetcher.user_agent
+    ua = Gem::Request.new(nil, nil, nil, nil).user_agent
 
     assert_match %r%\)%, ua
   ensure
@@ -691,7 +691,7 @@ gems:
     Object.send :remove_const, :RUBY_PATCHLEVEL
     Object.send :const_set,    :RUBY_PATCHLEVEL, 5
 
-    ua = @fetcher.user_agent
+    ua = Gem::Request.new(nil, nil, nil, nil).user_agent
 
     assert_match %r% patchlevel 5\)%, ua
   ensure
@@ -706,7 +706,7 @@ gems:
     Object.send :remove_const, :RUBY_REVISION if defined?(RUBY_REVISION)
     Object.send :const_set,    :RUBY_REVISION, 6
 
-    ua = @fetcher.user_agent
+    ua = Gem::Request.new(nil, nil, nil, nil).user_agent
 
     assert_match %r% revision 6\)%, ua
     assert_match %r%Ruby/#{Regexp.escape RUBY_VERSION}dev%, ua
@@ -721,7 +721,7 @@ gems:
     Object.send :const_set,    :RUBY_PATCHLEVEL, -1
     Object.send :remove_const, :RUBY_REVISION if defined?(RUBY_REVISION)
 
-    ua = @fetcher.user_agent
+    ua = Gem::Request.new(nil, nil, nil, nil).user_agent
 
     assert_match %r%\(#{Regexp.escape RUBY_RELEASE_DATE}\)%, ua
   ensure

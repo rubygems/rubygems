@@ -258,7 +258,7 @@ module Gem
 
     Gem.path.each do |gemdir|
       each_load_path all_partials(gemdir) do |load_path|
-        result << gemdir.add(load_path).expand_path
+        result << load_path
       end
     end
 

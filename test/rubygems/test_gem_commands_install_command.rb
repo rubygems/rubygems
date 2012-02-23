@@ -3,6 +3,7 @@ require 'rubygems/commands/install_command'
 
 begin
   gem "rdoc"
+  gem "json"
 rescue Gem::LoadError
   # ignore
 end

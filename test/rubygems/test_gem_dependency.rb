@@ -173,5 +173,42 @@ class TestGemDependency < Gem::TestCase
     assert dep('a', '= 1').specific?
   end
 
+  def test_to_specs_suggests_other_versions
+    a = util_spec 'a', '1.0', 'b' => '>= 1.0'
+
+    a_file = File.join a.gem_dir, 'lib', 'a_file.rb'
+
+    write_file a_file do |io|
+      io.puts '# a_file.rb'
+    end
+
+    dep = Gem::Dependency.new "a", "= 2.0"
+
+    e = assert_raises Gem::LoadError do
+      dep.to_specs
+    end
+
+    assert_equal "Could not find 'a' (= 2.0) - did find: [a-1.0]", e.message
+  end
+
+  def test_to_specs_indicates_total_gem_set_size
+    a = util_spec 'a', '1.0', 'b' => '>= 1.0'
+
+    a_file = File.join a.gem_dir, 'lib', 'a_file.rb'
+
+    write_file a_file do |io|
+      io.puts '# a_file.rb'
+    end
+
+    dep = Gem::Dependency.new "b", "= 2.0"
+
+    e = assert_raises Gem::LoadError do
+      dep.to_specs
+    end
+
+    assert_equal "Could not find 'b' (= 2.0) among 1 total gem(s)", e.message
+  end
+
+
 end
 

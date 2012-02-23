@@ -1032,7 +1032,7 @@ class TestGem < Gem::TestCase
       Gem.try_activate 'a_file'
     end
 
-    assert_match %r%Could not find b %, e.message
+    assert_match %r%Could not find 'b' %, e.message
   end
 
   def test_self_use_paths

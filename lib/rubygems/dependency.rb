@@ -254,8 +254,18 @@ class Gem::Dependency
     # TODO: check Gem.activated_spec[self.name] in case matches falls outside
 
     if matches.empty? then
-      specs = Gem::Specification.all_names.join ", "
-      error = Gem::LoadError.new "Could not find #{name} (#{requirement}) amongst [#{specs}]"
+      specs = Gem::Specification.find_all { |s|
+                s.name == name
+              }.map { |x| x.full_name }
+
+      if specs.empty?
+        total = Gem::Specification.to_a.size
+        error = Gem::LoadError.new \
+          "Could not find '#{name}' (#{requirement}) among #{total} total gem(s)"
+      else
+        error = Gem::LoadError.new \
+          "Could not find '#{name}' (#{requirement}) - did find: [#{specs.join ','}]"
+      end
       error.name        = self.name
       error.requirement = self.requirement
       raise error

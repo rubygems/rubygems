@@ -71,3 +71,15 @@ module Gem
     end
   end
 end
+
+#Provide reason when a gem cannot be fetched from a remote source
+class Gem::UnableToFetch < Gem::ErrorReason
+  def initialize(name, reason)
+    @name = name
+    @reason = reason
+  end
+
+  def wordy
+    "Unable to fetch '#@name': #@reason"
+  end
+end

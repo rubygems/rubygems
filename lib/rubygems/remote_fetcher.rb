@@ -281,6 +281,13 @@ class Gem::RemoteFetcher
 
       data
     end
+  rescue FetchError
+    say "Unable to update specs from #{uri}"
+    if File.exists?(path)
+      Gem.read_binary(path)
+    else
+      raise
+    end
   end
 
   ##

@@ -126,7 +126,9 @@ class Gem::DependencyInstaller
       sl = Gem::Source::Local.new
 
       if spec = sl.find_gem(dep.name)
-        gems_and_sources << [spec, sl]
+        if dep.matches_spec? spec
+          gems_and_sources << [spec, sl]
+        end
       end
     end
 

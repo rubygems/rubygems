@@ -180,6 +180,15 @@ class Gem::Command
   end
 
   ##
+  # Get all [gem, version] from the command line.
+  #
+  # An argument in the form gem:ver is pull apart into the gen name and version,
+  # respectively.
+  def get_all_gem_names_and_versions
+    get_all_gem_names.map { |name| name.split(":", 2) }
+  end
+
+  ##
   # Get a single gem name from the command line.  Fail if there is no gem name
   # or if there is more than one gem name given.
 

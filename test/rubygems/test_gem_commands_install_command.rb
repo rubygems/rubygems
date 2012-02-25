@@ -396,5 +396,35 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal "1 gem installed", out.shift
     assert out.empty?, out.inspect
   end
+
+  def test_parses_requirement_from_gemname
+    util_setup_fake_fetcher
+    @cmd.options[:domain] = :local
+
+    FileUtils.mv @a2.cache_file, @tempdir
+
+    FileUtils.mv @b2.cache_file, @tempdir
+
+    req = "#{@a2.name}:10.0"
+
+    @cmd.options[:args] = [req]
+
+    e = nil
+    use_ui @ui do
+      orig_dir = Dir.pwd
+      begin
+        Dir.chdir @tempdir
+        e = assert_raises Gem::SystemExitException do
+          @cmd.execute
+        end
+      ensure
+        Dir.chdir orig_dir
+      end
+    end
+
+    assert_equal 2, e.exit_code
+    assert_match %r!Could not find a valid gem 'a' \(= 10.0\)!, @ui.error
+  end
+
 end
 

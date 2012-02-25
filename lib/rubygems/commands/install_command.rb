@@ -120,13 +120,15 @@ to write the specification by hand.  For example:
 
     exit_code = 0
 
-    get_all_gem_names.each do |gem_name|
+    get_all_gem_names_and_versions.each do |gem_name, gem_version|
+      gem_version ||= options[:version]
+
       begin
         next if options[:conservative] and
-          not Gem::Dependency.new(gem_name, options[:version]).matching_specs.empty?
+          not Gem::Dependency.new(gem_name, gem_version).matching_specs.empty?
 
         inst = Gem::DependencyInstaller.new options
-        inst.install gem_name, options[:version]
+        inst.install gem_name, Gem::Requirement.create(gem_version)
 
         @installed_specs.push(*inst.installed_gems)
       rescue Gem::InstallError => e

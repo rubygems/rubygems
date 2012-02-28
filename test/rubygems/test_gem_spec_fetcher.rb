@@ -36,6 +36,14 @@ class TestGemSpecFetcher < Gem::TestCase
     @fetcher.data["#{@gem_repo}prerelease_specs.#{v}.gz"] = p_zip
 
     @sf = Gem::SpecFetcher.new
+
+    @released = [["a",      Gem::Version.new("1"),   "ruby"],
+                  ["a",      Gem::Version.new("2"),   "ruby"],
+                  ["a_evil", Gem::Version.new("9"),   "ruby"],
+                  ["c",      Gem::Version.new("1.2"), "ruby"],
+                  ['dep_x',  Gem::Version.new(1),     'ruby'],
+                  ["pl",     Gem::Version.new("1"),   "i386-linux"],
+                  ['x',  Gem::Version.new(1),     'ruby']]
   end
 
   def test_spec_for_dependency_all
@@ -173,71 +181,57 @@ class TestGemSpecFetcher < Gem::TestCase
     assert_equal @a1.full_name, spec.full_name
   end
 
-  def test_list
-    specs = @sf.list
+  def test_available_specs_latest
+    specs = @sf.available_specs(:latest)
 
     assert_equal [@uri], specs.keys
     assert_equal @latest_specs, specs[@uri].sort
   end
 
-  def test_list_all
-    specs = @sf.list true
+  def test_available_specs_released
+    specs = @sf.available_specs(:released)
 
     assert_equal [@uri], specs.keys
 
-    assert_equal([["a",      Gem::Version.new("1"),   "ruby"],
-                  ["a",      Gem::Version.new("2"),   "ruby"],
-                  ["a_evil", Gem::Version.new("9"),   "ruby"],
-                  ["c",      Gem::Version.new("1.2"), "ruby"],
-                  ['dep_x',  Gem::Version.new(1),     'ruby'],
-                  ["pl",     Gem::Version.new("1"),   "i386-linux"],
-                  ['x',  Gem::Version.new(1),     'ruby']],
-                 specs[@uri].sort)
+    assert_equal @released, specs[@uri].sort
   end
 
-  def test_list_cache
-    specs = @sf.list
+  def test_available_specs_complete
+    specs = @sf.available_specs(:complete)
+
+    assert_equal [@uri], specs.keys
+
+    comp = @prerelease_specs + @released
+
+    assert_equal comp.sort, specs[@uri].sort
+  end
+
+  def test_available_specs_cache
+    specs = @sf.available_specs(:latest)
 
     refute specs[@uri].empty?
 
     @fetcher.data["#{@gem_repo}/latest_specs.#{Gem.marshal_version}.gz"] = nil
 
-    cached_specs = @sf.list
+    cached_specs = @sf.available_specs(:latest)
 
     assert_equal specs, cached_specs
   end
 
-  def test_list_cache_all
-    specs = @sf.list true
+  def test_available_specs_cache_released
+    specs = @sf.available_specs(:released)
 
     refute specs[@uri].empty?
 
     @fetcher.data["#{@gem_repo}/specs.#{Gem.marshal_version}.gz"] = nil
 
-    cached_specs = @sf.list true
+    cached_specs = @sf.available_specs(:released)
 
     assert_equal specs, cached_specs
   end
 
-  def test_list_latest_all
-    specs = @sf.list false
-
-    assert_equal [@latest_specs], specs.values
-
-    specs = @sf.list true
-
-    assert_equal([[["a", Gem::Version.new("1"), "ruby"],
-                   ["a", Gem::Version.new("2"), "ruby"],
-                   ["a_evil", Gem::Version.new("9"), "ruby"],
-                   ["c", Gem::Version.new("1.2"), "ruby"],
-                   ["dep_x", Gem::Version.new("1"), "ruby"],
-                   ["pl", Gem::Version.new("1"), "i386-linux"],
-                   ["x", Gem::Version.new("1"), "ruby"]]],
-                 specs.values, 'specs file not loaded')
-  end
-
-  def test_list_prerelease
-    specs = @sf.list false, true
+  def test_available_specs_prerelease
+    specs = @sf.available_specs(:prerelease)
 
     assert_equal @prerelease_specs, specs[@uri].sort
   end

@@ -198,10 +198,6 @@ class Gem::SpecFetcher
     return [specs, errors]
   end
 
-  def find_matching(dep, *args)
-    search_for_dependency(dep).first
-  end
-
   ##
   # Suggests a gem based on the supplied +gem_name+. Returns a string
   # of the gem name if an approximate match can be found or nil
@@ -211,7 +207,7 @@ class Gem::SpecFetcher
   def suggest_gems_from_name gem_name
     gem_name        = gem_name.downcase
     max             = gem_name.size / 2
-    specs           = list.values.flatten 1
+    specs           = available_specs(:complete).values.flatten 1
 
     matches = specs.map { |name, version, platform|
       next unless Gem::Platform.match platform
@@ -228,44 +224,6 @@ class Gem::SpecFetcher
     matches = matches.uniq.sort_by { |name, dist| dist }
 
     matches.first(5).map { |name, dist| name }
-  end
-
-  ##
-  # Returns a list of gems available for each source in Gem::sources.  If
-  # +all+ is true, all released versions are returned instead of only latest
-  # versions. If +prerelease+ is true, include prerelease versions.
-
-  def list(all = false, prerelease = false)
-    # TODO: make type the only argument
-    type = if all
-             :all
-           elsif prerelease
-             :prerelease
-           else
-             :latest
-           end
-
-    list  = {}
-    file  = FILES[type]
-    cache = @caches[type]
-
-    Gem.sources.each do |source_uri|
-      source_uri = URI.parse source_uri
-
-      unless cache.include? source_uri
-        cache[source_uri] = load_specs source_uri, file
-      end
-
-      list[source_uri] = cache[source_uri]
-    end
-
-    if type == :all
-      list.values.map do |gems|
-        gems.reject! { |g| !g[1] || g[1].prerelease? }
-      end
-    end
-
-    list
   end
 
   ##

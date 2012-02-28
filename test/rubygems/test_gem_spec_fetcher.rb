@@ -16,19 +16,16 @@ class TestGemSpecFetcher < Gem::TestCase
 
     Gem::Specification.remove_spec @b2
 
-    @specs = Gem::Specification.map { |spec|
+    all = Gem::Specification.map { |spec|
       [spec.name, spec.version, spec.original_platform]
     }.sort
+
+    @prerelease_specs, @specs = all.partition { |n,v,p| v.prerelease? }
 
     # TODO: couldn't all of this come from the fake spec fetcher?
     @latest_specs = Gem::Specification.latest_specs.sort.map { |spec|
       [spec.name, spec.version, spec.original_platform]
     }
-
-    prerelease = Gem::Specification.find_all { |s| s.version.prerelease? }
-    @prerelease_specs = prerelease.map { |spec|
-      [spec.name, spec.version, spec.original_platform]
-    }.sort
 
     v = Gem.marshal_version
     s_zip = util_gzip(Marshal.dump(@specs))
@@ -41,16 +38,16 @@ class TestGemSpecFetcher < Gem::TestCase
     @sf = Gem::SpecFetcher.new
   end
 
-  def test_fetch_all
+  def test_spec_for_dependency_all
     d = "#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}"
     @fetcher.data["#{d}#{@a1.spec_name}.rz"]    = util_zip(Marshal.dump(@a1))
     @fetcher.data["#{d}#{@a2.spec_name}.rz"]    = util_zip(Marshal.dump(@a2))
     @fetcher.data["#{d}#{@a_pre.spec_name}.rz"] = util_zip(Marshal.dump(@a_pre))
     @fetcher.data["#{d}#{@a3a.spec_name}.rz"]   = util_zip(Marshal.dump(@a3a))
 
-    dep = Gem::Dependency.new 'a', 1
+    dep = Gem::Dependency.new 'a', ">= 1"
 
-    specs_and_sources = @sf.fetch dep, true
+    specs_and_sources, e = @sf.spec_for_dependency dep
 
     spec_names = specs_and_sources.map do |spec, source_uri|
       [spec.full_name, source_uri]
@@ -63,14 +60,14 @@ class TestGemSpecFetcher < Gem::TestCase
     assert_same specs_and_sources.first.last, specs_and_sources.last.last
   end
 
-  def test_fetch_latest
+  def test_spec_for_dependency_latest
     d = "#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}"
     @fetcher.data["#{d}#{@a1.spec_name}.rz"]    = util_zip(Marshal.dump(@a1))
     @fetcher.data["#{d}#{@a2.spec_name}.rz"]    = util_zip(Marshal.dump(@a2))
     @fetcher.data["#{d}#{@a_pre.spec_name}.rz"] = util_zip(Marshal.dump(@a_pre))
 
-    dep = Gem::Dependency.new 'a', 1
-    specs_and_sources = @sf.fetch dep
+    dep = Gem::Dependency.new 'a'
+    specs_and_sources, e = @sf.spec_for_dependency dep
 
     spec_names = specs_and_sources.map do |spec, source_uri|
       [spec.full_name, source_uri]
@@ -79,13 +76,13 @@ class TestGemSpecFetcher < Gem::TestCase
     assert_equal [[@a2.full_name, @gem_repo]], spec_names
   end
 
-  def test_fetch_prerelease
+  def test_spec_for_dependency_prerelease
     d = "#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}"
     @fetcher.data["#{d}#{@a1.spec_name}.rz"]    = util_zip(Marshal.dump(@a1))
     @fetcher.data["#{d}#{@a2.spec_name}.rz"]    = util_zip(Marshal.dump(@a2))
     @fetcher.data["#{d}#{@a_pre.spec_name}.rz"] = util_zip(Marshal.dump(@a_pre))
 
-    specs_and_sources = @sf.fetch dep('a', '1.a'), false, true, true
+    specs_and_sources, e = @sf.spec_for_dependency dep('a', '1.a')
 
     spec_names = specs_and_sources.map do |spec, source_uri|
       [spec.full_name, source_uri]
@@ -94,14 +91,14 @@ class TestGemSpecFetcher < Gem::TestCase
     assert_equal [[@a_pre.full_name, @gem_repo]], spec_names
   end
 
-  def test_fetch_platform
+  def test_spec_for_dependency_platform
     util_set_arch 'i386-linux'
 
     @fetcher.data["#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}#{@pl1.original_name}.gemspec.rz"] =
       util_zip(Marshal.dump(@pl1))
 
     dep = Gem::Dependency.new 'pl', 1
-    specs_and_sources = @sf.fetch dep
+    specs_and_sources, e = @sf.spec_for_dependency dep
 
     spec_names = specs_and_sources.map do |spec, source_uri|
       [spec.full_name, source_uri]
@@ -110,14 +107,14 @@ class TestGemSpecFetcher < Gem::TestCase
     assert_equal [[@pl1.full_name, @gem_repo]], spec_names
   end
 
-  def test_fetch_with_errors_mismatched_platform
+  def test_spec_for_dependency_mismatched_platform
     util_set_arch 'hrpa-989'
 
     @fetcher.data["#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}#{@pl1.original_name}.gemspec.rz"] =
       util_zip(Marshal.dump(@pl1))
 
     dep = Gem::Dependency.new 'pl', 1
-    specs_and_sources, errors = @sf.fetch_with_errors dep
+    specs_and_sources, errors = @sf.spec_for_dependency dep
 
     assert_equal 0, specs_and_sources.size
     assert_equal 1, errors.size
@@ -174,100 +171,6 @@ class TestGemSpecFetcher < Gem::TestCase
 
     spec = @sf.fetch_spec ['a', Gem::Version.new(1), ''], @uri
     assert_equal @a1.full_name, spec.full_name
-  end
-
-  def test_find_matching_all
-    dep = Gem::Dependency.new 'a', 1
-    specs = @sf.find_matching dep, true
-
-    expected = [
-      [['a', Gem::Version.new(1), Gem::Platform::RUBY], @gem_repo],
-      [['a', Gem::Version.new(2), Gem::Platform::RUBY], @gem_repo],
-    ]
-
-    assert_equal expected, specs
-  end
-
-  def test_find_matching_latest
-    dep = Gem::Dependency.new 'a', 1
-    specs = @sf.find_matching dep
-
-    expected = [
-      [['a', Gem::Version.new(2), Gem::Platform::RUBY], @gem_repo],
-    ]
-
-    assert_equal expected, specs
-  end
-
-  def test_find_matching_prerelease
-    dep = Gem::Dependency.new 'a', '1.a'
-    specs = @sf.find_matching dep, false, true, true
-
-    expected = [
-      [['a', Gem::Version.new('1.a'), Gem::Platform::RUBY], @gem_repo],
-    ]
-
-    assert_equal expected, specs
-  end
-
-  def test_find_matching_platform
-    util_set_arch 'i386-linux'
-
-    dep = Gem::Dependency.new 'pl', 1
-    specs = @sf.find_matching dep
-
-    expected = [
-      [['pl', Gem::Version.new(1), 'i386-linux'], @gem_repo],
-    ]
-
-    assert_equal expected, specs
-
-    util_set_arch 'i386-freebsd6'
-
-    dep = Gem::Dependency.new 'pl', 1
-    specs = @sf.find_matching dep
-
-    assert_equal [], specs
-  end
-
-  def test_find_matching_with_errors_matched_platform
-    util_set_arch 'i386-linux'
-
-    dep = Gem::Dependency.new 'pl', 1
-    specs, errors = @sf.find_matching_with_errors dep
-
-    expected = [
-      [['pl', Gem::Version.new(1), 'i386-linux'], @gem_repo],
-    ]
-
-    assert_equal expected, specs
-    assert_equal 0, errors.size
-  end
-
-  def test_find_matching_with_errors_invalid_platform
-    util_set_arch 'hrpa-899'
-
-    dep = Gem::Dependency.new 'pl', 1
-    specs, errors = @sf.find_matching_with_errors dep
-
-    assert_equal 0, specs.size
-
-    assert_equal 1, errors.size
-
-    assert_equal "i386-linux", errors[0].platforms.first
-  end
-
-  def test_find_all_platforms
-    util_set_arch 'i386-freebsd6'
-
-    dep = Gem::Dependency.new 'pl', 1
-    specs = @sf.find_matching dep, false, false
-
-    expected = [
-      [['pl', Gem::Version.new(1), 'i386-linux'], @gem_repo],
-    ]
-
-    assert_equal expected, specs
   end
 
   def test_list
@@ -341,10 +244,8 @@ class TestGemSpecFetcher < Gem::TestCase
 
   def test_load_specs
     expected = [
-      ['a',      Gem::Version.new('1.a'), Gem::Platform::RUBY],
       ['a',      Gem::Version.new(1),     Gem::Platform::RUBY],
       ['a',      Gem::Version.new(2),     Gem::Platform::RUBY],
-      ['a',      Gem::Version.new('3.a'), Gem::Platform::RUBY],
       ['a_evil', Gem::Version.new(9),     Gem::Platform::RUBY],
       ['c',      Gem::Version.new('1.2'), Gem::Platform::RUBY],
       ['dep_x',  Gem::Version.new(1),     Gem::Platform::RUBY],

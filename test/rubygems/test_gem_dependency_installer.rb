@@ -50,6 +50,22 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal [@a1], inst.installed_gems
   end
 
+  def test_install_prerelease
+    util_setup_gems
+
+    a1_pre_data = File.read(@a1_pre_gem)
+
+    @fetcher.data['http://gems.example.com/gems/a-1.a.gem'] = a1_pre_data
+    inst = nil
+
+    dep = Gem::Dependency.new "a"
+    inst = Gem::DependencyInstaller.new :prerelease => true
+    inst.install dep
+
+    assert_equal %w[a-1.a], Gem::Specification.map(&:full_name)
+    assert_equal [@a1_pre], inst.installed_gems
+  end
+
   def test_install_all_dependencies
     util_setup_gems
 
@@ -718,7 +734,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     prereleases =
       installer.find_gems_with_sources(dependency).map { |gems, *| gems }
 
-    assert_equal [@a1_pre], prereleases
+    assert_equal [@a1_pre, @a1], prereleases
   end
 
   def assert_resolve expected, *specs

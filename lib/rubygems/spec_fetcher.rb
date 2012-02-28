@@ -60,7 +60,7 @@ class Gem::SpecFetcher
     @caches = {
       :latest => @latest_specs,
       :prerelease => @prerelease_specs,
-      :all => @specs
+      :all => @specs,
     }
 
     @fetcher = Gem::RemoteFetcher.fetcher
@@ -73,33 +73,6 @@ class Gem::SpecFetcher
     # Correct for windows paths
     escaped_path = uri.path.sub(/^\/([a-z]):\//i, '/\\1-/')
     File.join @dir, "#{uri.host}%#{uri.port}", File.dirname(escaped_path)
-  end
-
-  ##
-  # Fetch specs matching +dependency+.  If +all+ is true, all matching
-  # (released) versions are returned.  If +matching_platform+ is
-  # false, all platforms are returned. If +prerelease+ is true,
-  # prerelease versions are included.
-
-  def fetch_with_errors(dependency,
-                        all               = false,
-                        matching_platform = true,
-                        prerelease        = false)
-
-    specs_and_sources, errors = find_matching_with_errors(dependency,
-                                                          all,
-                                                          matching_platform,
-                                                          prerelease)
-
-    ss = specs_and_sources.map do |spec_tuple, source_uri|
-      [fetch_spec(spec_tuple, URI.parse(source_uri)), source_uri]
-    end
-
-    return [ss, errors]
-  end
-
-  def fetch(*args)
-    fetch_with_errors(*args).first
   end
 
   def fetch_spec(spec, source_uri)
@@ -137,23 +110,31 @@ class Gem::SpecFetcher
   end
 
   ##
-  # Find spec names that match +dependency+.  If +all+ is true, all
-  # matching released versions are returned.  If +matching_platform+
-  # is false, gems for all platforms are returned.
+  #
+  # Find and fetch gem name tuples that match +dependency+.
+  #
+  # If +matching_platform+ is false, gems for all platforms are returned.
 
-  def find_matching_with_errors(dependency,
-                                all               = false,
-                                matching_platform = true,
-                                prerelease        = false)
+  def search_for_dependency(dependency, matching_platform=true)
     found = {}
 
     rejected_specs = {}
 
-    list(all, prerelease).each do |source_uri, specs|
+    if dependency.prerelease?
+      type = :complete
+    elsif dependency.latest_version?
+      type = :latest
+    else
+      type = :released
+    end
+
+    available_specs(type).each do |source_uri, specs|
       found[source_uri] = specs.select do |spec_name, version, spec_platform|
         if dependency.match?(spec_name, version)
           if matching_platform and !Gem::Platform.match(spec_platform)
-            pm = (rejected_specs[dependency] ||= Gem::PlatformMismatch.new(spec_name, version))
+            pm = (
+              rejected_specs[dependency] ||= \
+                Gem::PlatformMismatch.new(spec_name, version))
             pm.add_platform spec_platform
             false
           else
@@ -165,18 +146,60 @@ class Gem::SpecFetcher
 
     errors = rejected_specs.values
 
-    specs_and_sources = []
+    tuples = []
 
     found.each do |source_uri, specs|
       uri_str = source_uri.to_s
-      specs_and_sources.concat(specs.map { |spec| [spec, uri_str] })
+
+      specs.each do |s|
+        tuples << [s, uri_str]
+      end
     end
 
-    [specs_and_sources, errors]
+    tuples.sort! do |a,b|
+      name = (a[0][0] <=> b[0][0])
+      name == 0 ? (a[0][1] <=> b[0][1]) : name
+    end
+
+    return [tuples, errors]
   end
 
-  def find_matching(*args)
-    find_matching_with_errors(*args).first
+
+  ##
+  # Return all gem name tuples who's names match +obj+
+
+  def detect(type=:complete)
+    tuples = []
+
+    available_specs(type).each do |uri, specs|
+      specs.each do |name, ver, plat|
+        if yield(name, ver, plat)
+          tuples << [[name, ver, plat], uri.to_s]
+        end
+      end
+    end
+
+    tuples
+  end
+
+
+  ##
+  # Find and fetch specs that match +dependency+.
+  #
+  # If +matching_platform+ is false, gems for all platforms are returned.
+
+  def spec_for_dependency(dependency, matching_platform=true)
+    tuples, errors = search_for_dependency(dependency, matching_platform)
+
+    specs = tuples.map do |tup, source|
+      [fetch_spec(tup, URI.parse(source)), source]
+    end
+
+    return [specs, errors]
+  end
+
+  def find_matching(dep, *args)
+    search_for_dependency(dep).first
   end
 
   ##
@@ -243,6 +266,50 @@ class Gem::SpecFetcher
     end
 
     list
+  end
+
+  ##
+  # Returns a list of gems available for each source in Gem::sources.
+  #
+  # +type+ can be one of 3 values:
+  # :released   => Return the list of all released specs
+  # :complete   => Return the list of all specs
+  # :latest     => Return the list of only the highest version of each gem
+  # :prerelease => Return the list of all prerelease only specs
+  # 
+
+  def available_specs(type)
+    list = {}
+
+    Gem.sources.each do |source_uri|
+      source_uri = URI.parse source_uri
+
+      case type
+      when :latest
+        list[source_uri] = tuples_for source_uri, :latest
+      when :released
+        list[source_uri] = tuples_for source_uri, :all
+      when :complete
+        tuples = tuples_for(source_uri, :prerelease) \
+               + tuples_for(source_uri, :all)
+
+        list[source_uri] = tuples
+      when :prerelease
+        list[source_uri] = tuples_for(source_uri, :prerelease)
+      end
+
+      # p :as => [type, source_uri, list[source_uri]]
+    end
+
+    list
+  end
+
+  def tuples_for(source_uri, type)
+    list  = {}
+    file  = FILES[type]
+    cache = @caches[type]
+
+    cache[source_uri] ||= load_specs(source_uri, file)
   end
 
   ##

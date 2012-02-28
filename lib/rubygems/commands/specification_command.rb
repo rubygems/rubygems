@@ -81,15 +81,8 @@ FIELD         name of gemspec field to show
     end
 
     if remote? then
-      if !options[:version] or options[:version].none?
-        found = Gem::SpecFetcher.fetcher.fetch dep, false, false,
-                                               options[:prerelease]
-      else
-        # .fetch is super weird. The last true is there so that
-        # prerelease gems are included, otherwise the user can never
-        # request them.
-        found = Gem::SpecFetcher.fetcher.fetch dep, false, false, true
-      end
+      dep.prerelease = options[:prerelease]
+      found, err = Gem::SpecFetcher.fetcher.spec_for_dependency dep
 
       specs.push(*found.map { |spec,| spec })
     end

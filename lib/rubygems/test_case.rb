@@ -700,12 +700,12 @@ Also, a list:
 
     spec_fetcher = Gem::SpecFetcher.fetcher
 
-    prerelease, _ = Gem::Specification.partition { |spec|
+    prerelease, all = Gem::Specification.partition { |spec|
       spec.version.prerelease?
     }
 
     spec_fetcher.specs[@uri] = []
-    Gem::Specification.each do |spec|
+    all.each do |spec|
       spec_tuple = [spec.name, spec.version, spec.original_platform]
       spec_fetcher.specs[@uri] << spec_tuple
     end

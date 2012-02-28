@@ -129,8 +129,7 @@ class Gem::FakeFetcher
   end
 
   def download_to_cache dependency
-    found = Gem::SpecFetcher.fetcher.fetch dependency, true, true,
-                                           dependency.prerelease?
+    found, errors = Gem::SpecFetcher.fetcher.spec_for_dependency dependency
 
     return if found.empty?
 

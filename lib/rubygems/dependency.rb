@@ -80,6 +80,14 @@ class Gem::Dependency
     @prerelease || requirement.prerelease?
   end
 
+  ##
+  # Is this dependency simply asking for the latest version
+  # of a gem?
+
+  def latest_version?
+    @requirement.none?
+  end
+
   def pretty_print q # :nodoc:
     q.group 1, 'Gem::Dependency.new(', ')' do
       q.pp name

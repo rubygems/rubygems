@@ -80,6 +80,7 @@ class Gem::Commands::QueryCommand < Gem::Command
     req = Gem::Requirement.default
     # TODO: deprecate for real
     dep = Gem::Deprecate.skip_during { Gem::Dependency.new name, req }
+    dep.prerelease = prerelease
 
     if local? then
       if prerelease and not both? then
@@ -110,13 +111,27 @@ class Gem::Commands::QueryCommand < Gem::Command
         say
       end
 
-      all = options[:all]
-
       fetcher = Gem::SpecFetcher.fetcher
-      spec_tuples = fetcher.find_matching dep, all, false, prerelease
 
-      spec_tuples += fetcher.find_matching dep, false, false, true if
-        prerelease and all
+      type = if options[:all]
+               if options[:prerelease]
+                 :complete
+               else
+                 :released
+               end
+             elsif options[:prerelease]
+               :prerelease
+             else
+               :latest
+             end
+
+      if options[:name].source.empty?
+        spec_tuples = fetcher.detect(type) { true }
+      else
+        spec_tuples = fetcher.detect(type) do |name, ver, plat|
+          options[:name] === name
+        end
+      end
 
       output_query_results spec_tuples
     end

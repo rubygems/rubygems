@@ -42,27 +42,13 @@ class Gem::Commands::FetchCommand < Gem::Command
       dep = Gem::Dependency.new gem_name, version
       dep.prerelease = options[:prerelease]
 
-      # Because of the madness that is SpecFetcher, you can't
-      # set both all and prerelease to true. If you do, prerelease
-      # is ignored.
-
-      if dep.prerelease? and all
-        specs_and_sources, errors =
-          Gem::SpecFetcher.fetcher.fetch_with_errors(dep, false, true,
-                                                     dep.prerelease?)
-      else
-        specs_and_sources, errors =
-          Gem::SpecFetcher.fetcher.fetch_with_errors(dep, all, true,
-                                                     dep.prerelease?)
-      end
-
-
+      specs_and_sources, errors = Gem::SpecFetcher.fetcher.spec_for_dependency dep
       if platform then
         filtered = specs_and_sources.select { |s,| s.platform == platform }
         specs_and_sources = filtered unless filtered.empty?
       end
 
-      spec, source_uri = specs_and_sources.sort_by { |s,| s.version }.last
+      spec, source_uri = specs_and_sources.sort_by { |s,| s.version }.first
 
       if spec.nil? then
         show_lookup_failure gem_name, version, errors, options[:domain]

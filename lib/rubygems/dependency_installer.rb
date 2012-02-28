@@ -92,6 +92,22 @@ class Gem::DependencyInstaller
   end
 
   ##
+  # Indicated, based on the requested domain, if local
+  # gems should be considered.
+
+  def consider_local?
+    @domain == :both or @domain == :local
+  end
+
+  ##
+  # Indicated, based on the requested domain, if remote
+  # gems should be considered.
+
+  def consider_remote?
+    @domain == :both or @domain == :remote
+  end
+
+  ##
   # Returns a list of pairs of gemspecs and source_uris that match
   # Gem::Dependency +dep+ from both local (Dir.pwd) and remote (Gem.sources)
   # sources.  Gems are sorted with newer gems preferred over older gems, and
@@ -104,7 +120,7 @@ class Gem::DependencyInstaller
     @errors = nil
     gems_and_sources = []
 
-    if @domain == :both or @domain == :local then
+    if consider_local?
       # REFACTOR rather than hardcoding using Dir.pwd, delegate to some config
       # that allows knows the directory to look for local gems.
       Dir[File.join(Dir.pwd, "#{dep.name}-[0-9]*.gem")].each do |gem_file|
@@ -113,21 +129,9 @@ class Gem::DependencyInstaller
       end
     end
 
-    if @domain == :both or @domain == :remote then
+    if consider_remote?
       begin
-        # REFACTOR: all = dep.requirement.needs_all?
-        requirements = dep.requirement.requirements.map do |req, ver|
-          req
-        end
-
-        # REFACTOR the API for fetch_with_errors sucks thats why +all+ exists.
-        all = !dep.prerelease? &&
-              # we only need latest if there's one requirement and it is
-              # guaranteed to match the newest specs
-              (requirements.length > 1 or
-                (requirements.first != ">=" and requirements.first != ">"))
-
-        found, @errors = Gem::SpecFetcher.fetcher.fetch_with_errors dep, all, true, dep.prerelease?
+        found, @errors = Gem::SpecFetcher.fetcher.spec_for_dependency dep
 
         gems_and_sources.push(*found)
 
@@ -254,7 +258,7 @@ class Gem::DependencyInstaller
 
     spec_and_source = nil
 
-    if @domain != :remote
+    if consider_local?
       glob = if File::ALT_SEPARATOR then
                gem_name.gsub File::ALT_SEPARATOR, File::SEPARATOR
              else
@@ -280,7 +284,7 @@ class Gem::DependencyInstaller
       # HACK Dependency objects should be immutable
       dep.prerelease = true if prerelease
 
-      spec_and_sources = find_gems_with_sources(dep).reverse
+      spec_and_sources = find_gems_with_sources(dep)
       spec_and_source = spec_and_sources.find { |spec, source|
         Gem::Platform.match spec.platform
       }
@@ -292,7 +296,6 @@ class Gem::DependencyInstaller
         gem_name, version, @errors)
     end
 
-    # REFACTOR just return spec_and_source
     @specs_and_sources = [spec_and_source]
   end
 
@@ -312,11 +315,11 @@ class Gem::DependencyInstaller
 
   def install dep_or_name, version = Gem::Requirement.default
     if String === dep_or_name then
-      # REFACTOR use return value to set @specs_and_source
       find_spec_by_name_and_version dep_or_name, version, @prerelease
     else
-      dep_or_name.prerelease = @prerelease
-      @specs_and_sources = [find_gems_with_sources(dep_or_name).last]
+      dep = dep_or_name.dup
+      dep.prerelease = @prerelease
+      @specs_and_sources = [find_gems_with_sources(dep).first]
     end
 
     @installed_gems = []

@@ -42,18 +42,10 @@ class TestGemIndexer < Gem::TestCase
                  @indexer.directory
 
     indexer = Gem::Indexer.new @tempdir
-    assert indexer.build_legacy
     assert indexer.build_modern
 
-    indexer = Gem::Indexer.new @tempdir, :build_legacy => false,
-                               :build_modern => true
-    refute indexer.build_legacy
+    indexer = Gem::Indexer.new @tempdir, :build_modern => true
     assert indexer.build_modern
-
-    indexer = Gem::Indexer.new @tempdir, :build_legacy => true,
-                               :build_modern => false
-    assert indexer.build_legacy
-    refute indexer.build_modern
   end
 
   def test_build_indicies
@@ -100,9 +92,6 @@ class TestGemIndexer < Gem::TestCase
     use_ui @ui do
       @indexer.generate_index
     end
-
-    assert_indexed @tempdir, "Marshal.#{@marshal_version}"
-    assert_indexed @tempdir, "Marshal.#{@marshal_version}.Z"
 
     quickdir = File.join @tempdir, 'quick'
     marshal_quickdir = File.join quickdir, "Marshal.#{@marshal_version}"
@@ -280,72 +269,8 @@ eighty characters.&lt;/pre&gt;
     assert_equal expected, gems_rss
   end
 
-  def test_generate_index_legacy
-    @indexer.build_modern = false
-    @indexer.build_legacy = true
-
-    use_ui @ui do
-      @indexer.generate_index
-    end
-
-    assert_indexed @tempdir, "Marshal.#{@marshal_version}"
-    assert_indexed @tempdir, "Marshal.#{@marshal_version}.Z"
-
-    quickdir = File.join @tempdir, 'quick'
-    marshal_quickdir = File.join quickdir, "Marshal.#{@marshal_version}"
-
-    assert File.directory?(quickdir)
-    assert File.directory?(marshal_quickdir)
-
-    assert_indexed marshal_quickdir, "#{File.basename(@a1.spec_file)}.rz"
-    assert_indexed marshal_quickdir, "#{File.basename(@a2.spec_file)}.rz"
-
-    refute_indexed marshal_quickdir, "#{File.basename(@c1_2.spec_file)}"
-
-    refute_indexed @tempdir, "specs.#{@marshal_version}"
-    refute_indexed @tempdir, "specs.#{@marshal_version}.gz"
-
-    refute_indexed @tempdir, "latest_specs.#{@marshal_version}"
-    refute_indexed @tempdir, "latest_specs.#{@marshal_version}.gz"
-  end
-
-  def test_generate_index_legacy_back_to_back
-    @indexer.build_modern = true
-    @indexer.build_legacy = true
-
-    use_ui @ui do
-      @indexer.generate_index
-    end
-
-    @indexer = Gem::Indexer.new @tempdir
-    @indexer.build_modern = false
-    @indexer.build_legacy = true
-
-    use_ui @ui do
-      @indexer.generate_index
-    end
-
-    assert_indexed @tempdir, "Marshal.#{@marshal_version}"
-    assert_indexed @tempdir, "Marshal.#{@marshal_version}.Z"
-
-    quickdir = File.join @tempdir, 'quick'
-    marshal_quickdir = File.join quickdir, "Marshal.#{@marshal_version}"
-
-    assert File.directory?(marshal_quickdir)
-
-    assert_indexed marshal_quickdir, "#{File.basename(@a1.spec_file)}.rz"
-    assert_indexed marshal_quickdir, "#{File.basename(@a2.spec_file)}.rz"
-
-    assert_indexed @tempdir, "specs.#{@marshal_version}"
-    assert_indexed @tempdir, "specs.#{@marshal_version}.gz"
-
-    assert_indexed @tempdir, "latest_specs.#{@marshal_version}"
-    assert_indexed @tempdir, "latest_specs.#{@marshal_version}.gz"
-  end
-
   def test_generate_index_modern
     @indexer.build_modern = true
-    @indexer.build_legacy = false
 
     use_ui @ui do
       @indexer.generate_index
@@ -391,7 +316,6 @@ eighty characters.&lt;/pre&gt;
 
   def test_generate_index_modern_back_to_back
     @indexer.build_modern = true
-    @indexer.build_legacy = true
 
     use_ui @ui do
       @indexer.generate_index
@@ -399,15 +323,10 @@ eighty characters.&lt;/pre&gt;
 
     @indexer = Gem::Indexer.new @tempdir
     @indexer.build_modern = true
-    @indexer.build_legacy = false
 
     use_ui @ui do
       @indexer.generate_index
     end
-
-    assert_indexed @tempdir, "Marshal.#{@marshal_version}"
-    assert_indexed @tempdir, "Marshal.#{@marshal_version}.Z"
-
     quickdir = File.join @tempdir, 'quick'
     marshal_quickdir = File.join quickdir, "Marshal.#{@marshal_version}"
 
@@ -436,7 +355,6 @@ eighty characters.&lt;/pre&gt;
     assert_match %r%^Generating specs index$%, @ui.output
     assert_match %r%^Generating latest specs index$%, @ui.output
     assert_match %r%^Generating prerelease specs index$%, @ui.output
-    assert_match %r%^Generating Marshal master index$%, @ui.output
     assert_match %r%^Complete$%, @ui.output
     assert_match %r%^Compressing indicies$%, @ui.output
 

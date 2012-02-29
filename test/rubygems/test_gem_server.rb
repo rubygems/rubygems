@@ -29,46 +29,6 @@ class TestGemServer < Gem::TestCase
                   File.join(Gem.dir, 'specifications')], s.spec_dirs
   end
 
-  def test_Marshal
-    data = StringIO.new "GET /Marshal.#{Gem.marshal_version} HTTP/1.0\r\n\r\n"
-    @req.parse data
-
-    Gem::Deprecate.skip_during do
-      @server.Marshal @req, @res
-    end
-
-    assert_equal 200, @res.status, @res.body
-    assert_match %r| \d\d:\d\d:\d\d |, @res['date']
-    assert_equal 'application/octet-stream', @res['content-type']
-
-    Gem::Deprecate.skip_during do
-      si = Gem::SourceIndex.new
-      si.add_specs @a1, @a2
-
-      assert_equal si, Marshal.load(@res.body)
-    end
-  end
-
-  def test_Marshal_Z
-    data = StringIO.new "GET /Marshal.#{Gem.marshal_version}.Z HTTP/1.0\r\n\r\n"
-    @req.parse data
-
-    Gem::Deprecate.skip_during do
-      @server.Marshal @req, @res
-    end
-
-    assert_equal 200, @res.status, @res.body
-    assert_match %r| \d\d:\d\d:\d\d |, @res['date']
-    assert_equal 'application/x-deflate', @res['content-type']
-
-    Gem::Deprecate.skip_during do
-      si = Gem::SourceIndex.new
-      si.add_specs @a1, @a2
-
-      assert_equal si, Marshal.load(Gem.inflate(@res.body))
-    end
-  end
-
   def test_latest_specs
     data = StringIO.new "GET /latest_specs.#{Gem.marshal_version} HTTP/1.0\r\n\r\n"
     @req.parse data

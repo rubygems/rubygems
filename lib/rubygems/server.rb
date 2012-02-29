@@ -17,9 +17,6 @@ require 'rubygems/rdoc'
 # * "/quick/" - Individual gemspecs
 # * "/gems" - Direct access to download the installable gems
 # * "/rdoc?q=" - Search for installed rdoc documentation
-# * legacy indexes:
-#   * "/Marshal.#{Gem.marshal_version}" - Full SourceIndex dump of metadata
-#     for installed gems
 #
 # == Usage
 #
@@ -457,28 +454,6 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     Gem::Specification.dirs = @gem_dirs
   end
 
-  def Marshal(req, res)
-    Gem::Specification.reset
-
-    add_date res
-
-    index = Gem::Deprecate.skip_during { Marshal.dump Gem.source_index }
-
-    if req.request_method == 'HEAD' then
-      res['content-length'] = index.length
-      return
-    end
-
-    if req.path =~ /Z$/ then
-      res['content-type'] = 'application/x-deflate'
-      index = Gem.deflate index
-    else
-      res['content-type'] = 'application/octet-stream'
-    end
-
-    res.body << index
-  end
-
   def add_date res
     res['date'] = @spec_dirs.map do |spec_dir|
       File.stat(spec_dir).mtime
@@ -755,9 +730,6 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     listen
 
     WEBrick::Daemon.start if @daemon
-
-    @server.mount_proc "/Marshal.#{Gem.marshal_version}", method(:Marshal)
-    @server.mount_proc "/Marshal.#{Gem.marshal_version}.Z", method(:Marshal)
 
     @server.mount_proc "/specs.#{Gem.marshal_version}", method(:specs)
     @server.mount_proc "/specs.#{Gem.marshal_version}.gz", method(:specs)

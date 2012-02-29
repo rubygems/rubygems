@@ -43,16 +43,6 @@ module Gem
   end
 
   ##
-  # Allows setting the default SourceIndex.  This method is available when
-  # requiring 'rubygems/test_case'
-
-  def self.source_index=(si)
-    raise "This method is not supported"
-    Gem::Specification.reset if si # HACK
-    @@source_index = si
-  end
-
-  ##
   # Allows toggling Windows behavior.  This method is available when requiring
   # 'rubygems/test_case'
 
@@ -359,8 +349,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # homepage, summary and description are defaulted.  The specification is
   # yielded for customization.
   #
-  # The gem is added to the installed gems in +@gemhome+ and to the current
-  # source_index.
+  # The gem is added to the installed gems in +@gemhome+ and the runtime.
   #
   # Use this with #write_file to build an installed gem.
 

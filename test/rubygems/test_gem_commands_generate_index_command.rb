@@ -16,11 +16,9 @@ class TestGemCommandsGenerateIndexCommand < Gem::TestCase
       @cmd.execute
     end
 
-    marshal = File.join @gemhome, 'Marshal.4.8'
-    marshal_z = File.join @gemhome, 'Marshal.4.8.Z'
+    specs = File.join @gemhome, "specs.4.8.gz"
 
-    assert File.exist?(marshal), marshal
-    assert File.exist?(marshal_z), marshal_z
+    assert File.exist?(specs), specs
   end
 
   def test_execute_rss_update
@@ -56,51 +54,6 @@ class TestGemCommandsGenerateIndexCommand < Gem::TestCase
     @cmd.handle_options %w[--directory C:/nonexistent]
 
     assert_equal 'C:/nonexistent', @cmd.options[:directory]
-  end
-
-  def test_handle_options_invalid
-    e = assert_raises OptionParser::InvalidOption do
-      @cmd.handle_options %w[--no-modern --no-legacy]
-    end
-
-    assert_equal 'invalid option: --no-legacy no indicies will be built',
-                 e.message
-
-    @cmd = Gem::Commands::GenerateIndexCommand.new
-    e = assert_raises OptionParser::InvalidOption do
-      @cmd.handle_options %w[--no-legacy --no-modern]
-    end
-
-    assert_equal 'invalid option: --no-modern no indicies will be built',
-                 e.message
-  end
-
-  def test_handle_options_legacy
-    @cmd.handle_options %w[--legacy]
-
-    assert @cmd.options[:build_legacy]
-    assert @cmd.options[:build_modern], ':build_modern not set'
-  end
-
-  def test_handle_options_modern
-    @cmd.handle_options %w[--modern]
-
-    assert @cmd.options[:build_legacy]
-    assert @cmd.options[:build_modern], ':build_modern not set'
-  end
-
-  def test_handle_options_no_legacy
-    @cmd.handle_options %w[--no-legacy]
-
-    refute @cmd.options[:build_legacy]
-    assert @cmd.options[:build_modern]
-  end
-
-  def test_handle_options_no_modern
-    @cmd.handle_options %w[--no-modern]
-
-    assert @cmd.options[:build_legacy]
-    refute @cmd.options[:build_modern]
   end
 
   def test_handle_options_rss_gems_host

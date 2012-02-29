@@ -36,17 +36,6 @@ class Gem::DependencyList
   end
 
   ##
-  # Creates a DependencyList from a Gem::SourceIndex +source_index+
-  #--
-  # TODO: delete per deprecation at bottom of file
-
-  def self.from_source_index(ignored=nil)
-    warn "NOTE: DependencyList.from_source_index ignores it's arg" if ignored
-
-    from_specs
-  end
-
-  ##
   # Creates a new DependencyList.  If +development+ is true, development
   # dependencies will be included.
 
@@ -247,11 +236,6 @@ class Gem::DependencyList
 
   def active_count(specs, ignored)
     specs.count { |spec| ignored[spec.full_name].nil? }
-  end
-
-  class << self
-    extend Gem::Deprecate
-    deprecate :from_source_index, "from_specs", 2011, 11
   end
 
 end

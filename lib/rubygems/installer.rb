@@ -321,7 +321,7 @@ class Gem::Installer
   end
 
   ##
-  # True if the gems in the source_index satisfy +dependency+.
+  # True if the gems in the system satisfy +dependency+.
 
   def installation_satisfies_dependency?(dependency)
     return true if installed_specs.detect { |s| dependency.matches_spec? s }
@@ -559,9 +559,6 @@ class Gem::Installer
     # (or use) a new bin dir under the gem_home.
     @bin_dir             = options[:bin_dir] || Gem.bindir(gem_home)
     @development         = options[:development]
-
-    raise "NOTE: Installer option :source_index is dead" if
-      options[:source_index]
   end
 
   # DOC: Missing docs or :nodoc:.

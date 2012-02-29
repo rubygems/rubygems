@@ -16,11 +16,6 @@ class Gem::Indexer
   include Gem::UserInteraction
 
   ##
-  # Build indexes for RubyGems older than 1.2.0 when true
-
-  attr_accessor :build_legacy
-
-  ##
   # Build indexes for RubyGems 1.2.0 and newer when true
 
   attr_accessor :build_modern
@@ -63,9 +58,8 @@ class Gem::Indexer
            "\n\tgem install builder"
     end
 
-    options = { :build_legacy => true, :build_modern => true }.merge options
+    options = { :build_modern => true }.merge options
 
-    @build_legacy = options[:build_legacy]
     @build_modern = options[:build_modern]
 
     @rss_title = options[:rss_title]
@@ -125,35 +119,14 @@ class Gem::Indexer
   # Build various indicies
 
   def build_indicies
-    # Marshal gemspecs are used by both modern and legacy RubyGems
-
     Gem::Specification.dirs = []
     Gem::Specification.add_specs(*map_gems_to_specs(gem_file_list))
 
     build_marshal_gemspecs
-    build_legacy_indicies if @build_legacy
     build_modern_indicies if @build_modern
     build_rss
 
     compress_indicies
-  end
-
-  ##
-  # Builds indicies for RubyGems older than 1.2.x
-
-  def build_legacy_indicies
-    index = collect_specs
-
-    say "Generating Marshal master index"
-
-    Gem.time 'Generated Marshal master index' do
-      open @marshal_index, 'wb' do |io|
-        io.write index.dump
-      end
-    end
-
-    @files << @marshal_index
-    @files << "#{@marshal_index}.Z"
   end
 
   ##
@@ -376,21 +349,6 @@ class Gem::Indexer
   end
 
   ##
-  # Collect specifications from .gem files from the gem directory.
-
-  def collect_specs(gems = gem_file_list)
-    Gem::Deprecate.skip_during do
-      index = Gem::SourceIndex.new
-
-      map_gems_to_specs(gems).each do |spec|
-        index.add_spec spec, spec.original_name
-      end
-
-      index
-    end
-  end
-
-  ##
   # Compresses indicies on disk
   #--
   # All future files should be compressed using gzip, not deflate
@@ -399,11 +357,6 @@ class Gem::Indexer
     say "Compressing indicies"
 
     Gem.time 'Compressed indicies' do
-      if @build_legacy then
-        compress @marshal_index, 'Z'
-        paranoid @marshal_index, 'Z'
-      end
-
       if @build_modern then
         gzip @specs_index
         gzip @latest_specs_index
@@ -561,12 +514,9 @@ class Gem::Indexer
   end
 
   ##
-  # Perform an in-place update of the repository from newly added gems.  Only
-  # works for modern indicies, and sets #build_legacy to false when run.
+  # Perform an in-place update of the repository from newly added gems.
 
   def update_index
-    @build_legacy = false
-
     make_temp_directories
 
     specs_mtime = File.stat(@dest_specs_index).mtime

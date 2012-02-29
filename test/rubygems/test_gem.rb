@@ -1009,12 +1009,6 @@ class TestGem < Gem::TestCase
     assert_equal 2, Gem.pre_uninstall_hooks.length
   end
 
-  def test_self_source_index
-    Gem::Deprecate.skip_during do
-      assert_kind_of Gem::SourceIndex, Gem.source_index
-    end
-  end
-
   def test_self_sources
     assert_equal %w[http://gems.example.com/], Gem.sources
   end

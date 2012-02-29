@@ -121,7 +121,6 @@ module Gem
     /wince/i,
   ]
 
-  @@source_index = nil
   @@win_platform = nil
 
   @configuration = nil
@@ -291,10 +290,8 @@ module Gem
   # mainly used by the unit tests to provide test isolation.
 
   def self.clear_paths
-    @@source_index = nil
     @paths         = nil
     @user_home     = nil
-    @searcher      = nil
     Gem::Specification.reset
     Gem::Security.reset if const_defined? :Security
   end
@@ -796,12 +793,10 @@ module Gem
   end
 
   ##
-  # Refresh source_index from disk and clear searcher.
+  # Refresh available gems from disk.
 
   def self.refresh
     Gem::Specification.reset
-    @source_index = nil
-    @searcher = nil
   end
 
   ##
@@ -918,22 +913,6 @@ module Gem
   def self.rubygems_version
     return @rubygems_version if defined? @rubygems_version
     @rubygems_version = Gem::Version.new Gem::VERSION
-  end
-
-  ##
-  # The GemPathSearcher object used to search for matching installed gems.
-
-  def self.searcher
-    @searcher ||= Gem::GemPathSearcher.new
-  end
-
-  ##
-  # Returns the Gem::SourceIndex of specifications that are in the Gem.path
-
-  def self.source_index
-    @@source_index ||= Gem::Deprecate.skip_during do
-      SourceIndex.new Gem::Specification.dirs
-    end
   end
 
   ##
@@ -1132,10 +1111,6 @@ module Gem
     attr_reader :pre_uninstall_hooks
   end
 
-  def self.cache # :nodoc:
-    source_index
-  end
-
   ##
   # Location of Marshal quick gemspecs on remote repositories
 
@@ -1145,11 +1120,8 @@ module Gem
   autoload :Requirement,     'rubygems/requirement'
   autoload :Dependency,      'rubygems/dependency'
   autoload :DependencyList,  'rubygems/dependency_list'
-  autoload :GemPathSearcher, 'rubygems/gem_path_searcher'
   autoload :SpecFetcher,     'rubygems/spec_fetcher'
   autoload :Specification,   'rubygems/specification'
-  autoload :Cache,           'rubygems/source_index'
-  autoload :SourceIndex,     'rubygems/source_index'
   autoload :PathSupport,     'rubygems/path_support'
   autoload :Platform,        'rubygems/platform'
   autoload :ConfigFile,      'rubygems/config_file'
@@ -1269,7 +1241,6 @@ module Gem
     extend Gem::Deprecate
     deprecate :activate_dep,          "Specification#activate", 2011,  6
     deprecate :activate_spec,         "Specification#activate", 2011,  6
-    deprecate :cache,                 "Gem::source_index",      2011,  8
     deprecate :activate,              "Specification#activate", 2011, 10
     deprecate :all_load_paths,        :none,                    2011, 10
     deprecate :all_partials,          :none,                    2011, 10
@@ -1282,8 +1253,6 @@ module Gem
     deprecate :default_user_source_cache_dir,   :none,          2011, 11
     deprecate :report_activate_error, :none,                    2011, 11
     deprecate :required_location,     :none,                    2011, 11
-    deprecate :searcher,              "Specification",          2011, 11
-    deprecate :source_index,          "Specification",          2011, 11
     deprecate :unresolved_deps, "Specification.unresolved_deps", 2011, 12
   end
 end

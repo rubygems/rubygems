@@ -958,7 +958,7 @@ class Gem::Specification
     latest_specs.each do |local|
       dependency = Gem::Dependency.new local.name, ">= #{local.version}"
       remotes, err = fetcher.search_for_dependency dependency
-      remotes      = remotes.map { |(_, version, _), _| version }
+      remotes      = remotes.map { |n, _| n.version }
       latest       = remotes.sort.last
 
       outdateds << local.name if latest and local.version < latest
@@ -1818,6 +1818,13 @@ class Gem::Specification
     @test_files       = @test_files.uniq if @test_files
     @executables      = @executables.uniq if @executables
     @extra_rdoc_files = @extra_rdoc_files.uniq if @extra_rdoc_files
+  end
+
+  ##
+  # Return a NameTuple that represents this Specification
+
+  def name_tuple
+    Gem::NameTuple.new name, version, original_platform
   end
 
   ##

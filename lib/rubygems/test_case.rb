@@ -706,20 +706,17 @@ Also, a list:
 
     spec_fetcher.specs[@uri] = []
     all.each do |spec|
-      spec_tuple = [spec.name, spec.version, spec.original_platform]
-      spec_fetcher.specs[@uri] << spec_tuple
+      spec_fetcher.specs[@uri] << spec.name_tuple
     end
 
     spec_fetcher.latest_specs[@uri] = []
     Gem::Specification.latest_specs.each do |spec|
-      spec_tuple = [spec.name, spec.version, spec.original_platform]
-      spec_fetcher.latest_specs[@uri] << spec_tuple
+      spec_fetcher.latest_specs[@uri] << spec.name_tuple
     end
 
     spec_fetcher.prerelease_specs[@uri] = []
     prerelease.each do |spec|
-      spec_tuple = [spec.name, spec.version, spec.original_platform]
-      spec_fetcher.prerelease_specs[@uri] << spec_tuple
+      spec_fetcher.prerelease_specs[@uri] << spec.name_tuple
     end
 
     v = Gem.marshal_version

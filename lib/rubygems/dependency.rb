@@ -195,7 +195,14 @@ class Gem::Dependency
 
   # DOC: this method needs either documented or :nodoc'd
 
-  def match? name, version
+  def match? obj, version=nil
+    if !version
+      name = obj.name
+      version = obj.version
+    else
+      name = obj
+    end
+
     return false unless self.name === name
     return true if requirement.none?
 

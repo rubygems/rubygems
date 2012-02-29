@@ -3,6 +3,10 @@ require 'rubygems/spec_fetcher'
 
 class TestGemSpecFetcher < Gem::TestCase
 
+  def tuple(*args)
+    Gem::NameTuple.new(*args)
+  end
+
   def setup
     super
 
@@ -17,27 +21,28 @@ class TestGemSpecFetcher < Gem::TestCase
     Gem::Specification.remove_spec @b2
 
     all = Gem::Specification.map { |spec|
-      [spec.name, spec.version, spec.original_platform]
+      Gem::NameTuple.new(spec.name, spec.version, spec.original_platform)
     }.sort
 
-    @prerelease_specs, @specs = all.partition { |n,v,p| v.prerelease? }
+    @prerelease_specs, @specs = all.partition { |g| g.prerelease? }
 
     # TODO: couldn't all of this come from the fake spec fetcher?
     @latest_specs = Gem::Specification.latest_specs.sort.map { |spec|
-      [spec.name, spec.version, spec.original_platform]
+      Gem::NameTuple.new(spec.name, spec.version, spec.original_platform)
     }
 
     v = Gem.marshal_version
-    s_zip = util_gzip(Marshal.dump(@specs))
-    l_zip = util_gzip(Marshal.dump(@latest_specs))
-    p_zip = util_gzip(Marshal.dump(@prerelease_specs))
+    s_zip = util_gzip(Marshal.dump(Gem::NameTuple.to_basic(@specs)))
+    l_zip = util_gzip(Marshal.dump(Gem::NameTuple.to_basic(@latest_specs)))
+    p_zip = util_gzip(Marshal.dump(Gem::NameTuple.to_basic(@prerelease_specs)))
     @fetcher.data["#{@gem_repo}specs.#{v}.gz"]            = s_zip
     @fetcher.data["#{@gem_repo}latest_specs.#{v}.gz"]     = l_zip
     @fetcher.data["#{@gem_repo}prerelease_specs.#{v}.gz"] = p_zip
 
     @sf = Gem::SpecFetcher.new
 
-    @released = [["a",      Gem::Version.new("1"),   "ruby"],
+    @released = Gem::NameTuple.from_list \
+                 [["a",      Gem::Version.new("1"),   "ruby"],
                   ["a",      Gem::Version.new("2"),   "ruby"],
                   ["a_evil", Gem::Version.new("9"),   "ruby"],
                   ["c",      Gem::Version.new("1.2"), "ruby"],
@@ -134,7 +139,7 @@ class TestGemSpecFetcher < Gem::TestCase
     spec_uri = "#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}#{@a1.spec_name}"
     @fetcher.data["#{spec_uri}.rz"] = util_zip(Marshal.dump(@a1))
 
-    spec = @sf.fetch_spec ['a', Gem::Version.new(1), 'ruby'], @uri
+    spec = @sf.fetch_spec tuple('a', Gem::Version.new(1), 'ruby'), @uri
     assert_equal @a1.full_name, spec.full_name
 
     cache_dir = @sf.cache_dir URI.parse(spec_uri)
@@ -157,7 +162,7 @@ class TestGemSpecFetcher < Gem::TestCase
       Marshal.dump @a1, io
     end
 
-    spec = @sf.fetch_spec ['a', Gem::Version.new(1), 'ruby'], @uri
+    spec = @sf.fetch_spec tuple('a', Gem::Version.new(1), 'ruby'), @uri
     assert_equal @a1.full_name, spec.full_name
   end
 
@@ -165,7 +170,7 @@ class TestGemSpecFetcher < Gem::TestCase
     @fetcher.data["#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}#{@pl1.original_name}.gemspec.rz"] =
       util_zip(Marshal.dump(@pl1))
 
-    spec = @sf.fetch_spec ['pl', Gem::Version.new(1), 'i386-linux'], @uri
+    spec = @sf.fetch_spec tuple('pl', Gem::Version.new(1), 'i386-linux'), @uri
 
     assert_equal @pl1.full_name, spec.full_name
   end
@@ -174,10 +179,10 @@ class TestGemSpecFetcher < Gem::TestCase
     @fetcher.data["#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}#{@a1.spec_name}.rz"] =
       util_zip(Marshal.dump(@a1))
 
-    spec = @sf.fetch_spec ['a', Gem::Version.new(1), nil], @uri
+    spec = @sf.fetch_spec tuple('a', Gem::Version.new(1), nil), @uri
     assert_equal @a1.full_name, spec.full_name
 
-    spec = @sf.fetch_spec ['a', Gem::Version.new(1), ''], @uri
+    spec = @sf.fetch_spec tuple('a', Gem::Version.new(1), ''), @uri
     assert_equal @a1.full_name, spec.full_name
   end
 
@@ -237,16 +242,7 @@ class TestGemSpecFetcher < Gem::TestCase
   end
 
   def test_load_specs
-    expected = [
-      ['a',      Gem::Version.new(1),     Gem::Platform::RUBY],
-      ['a',      Gem::Version.new(2),     Gem::Platform::RUBY],
-      ['a_evil', Gem::Version.new(9),     Gem::Platform::RUBY],
-      ['c',      Gem::Version.new('1.2'), Gem::Platform::RUBY],
-      ['dep_x',  Gem::Version.new(1),     Gem::Platform::RUBY],
-      ['pl',     Gem::Version.new(1),     'i386-linux'],
-      ['x',      Gem::Version.new(1),     Gem::Platform::RUBY]
-    ]
-
+    expected = @released
     assert_equal expected, @sf.load_specs(@uri, 'specs')
 
     cache_dir = File.join Gem.user_home, '.gem', 'specs', 'gems.example.com%80'
@@ -258,7 +254,7 @@ class TestGemSpecFetcher < Gem::TestCase
 
   def test_load_specs_cached
     # Make sure the cached version is actually different:
-    @latest_specs << ['cached', Gem::Version.new('1.0.0'), 'ruby']
+    @latest_specs << Gem::NameTuple.new('cached', Gem::Version.new('1.0.0'), 'ruby')
 
     @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] = nil
     @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}"] =
@@ -281,7 +277,7 @@ class TestGemSpecFetcher < Gem::TestCase
 
   def test_load_specs_cached_empty
     # Make sure the cached version is actually different:
-    @latest_specs << ['fixed', Gem::Version.new('1.0.0'), 'ruby']
+    @latest_specs << Gem::NameTuple.new('fixed', Gem::Version.new('1.0.0'), 'ruby')
     # Setup valid data on the 'remote'
     @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] =
           util_gzip(Marshal.dump(@latest_specs))

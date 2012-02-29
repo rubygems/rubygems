@@ -197,16 +197,14 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
       spec_tuples, errs = fetcher.search_for_dependency dependency
 
-      matching_gems = spec_tuples.select do |(name, _, platform),|
-        name == l_name and Gem::Platform.match platform
+      matching_gems = spec_tuples.select do |g,_|
+        g.name == l_name and g.match_platform?
       end
 
-      highest_remote_gem = matching_gems.sort_by do |(_, version),|
-        version
-      end.last
+      highest_remote_gem = matching_gems.sort_by { |g,_| g.version }.last
 
-      highest_remote_gem ||= [[nil, Gem::Version.new(0), nil]] # "null" object
-      highest_remote_ver = highest_remote_gem.first[1]
+      highest_remote_gem ||= [Gem::NameTuple.null]
+      highest_remote_ver = highest_remote_gem.first.version
 
       if system or (l_spec.version < highest_remote_ver) then
         result << [l_spec.name, [l_spec.version, highest_remote_ver].max]

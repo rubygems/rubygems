@@ -184,8 +184,8 @@ module Gem
         @all = Hash.new { |h,k| h[k] = [] }
 
         @f.available_specs(:released).each do |uri, specs|
-          specs.each do |name, ver, plat|
-            @all[name] << [uri, ver, plat]
+          specs.each do |n|
+            @all[n.name] << [uri, n]
           end
         end
 
@@ -200,9 +200,10 @@ module Gem
 
         name = req.dependency.name
 
-        @all[name].each do |uri, ver, plat|
-          if req.dependency.match? name, ver
-            res << IndexSpecification.new(self, name, ver, uri, plat)
+        @all[name].each do |uri, n|
+          if req.dependency.match? n
+            res << IndexSpecification.new(self, n.name, n.version,
+                                          uri, n.platform)
           end
         end
 
@@ -220,7 +221,7 @@ module Gem
       #
       def load_spec(name, ver, uri)
         key = "#{name}-#{ver}"
-        @specs[key] ||= @f.fetch_spec([name, ver], uri)
+        @specs[key] ||= @f.fetch_spec(Gem::NameTuple.new(name, ver), uri)
       end
     end
 

@@ -2,6 +2,7 @@ require 'rubygems/remote_fetcher'
 require 'rubygems/user_interaction'
 require 'rubygems/errors'
 require 'rubygems/text'
+require 'rubygems/name_tuple'
 
 ##
 # SpecFetcher handles metadata updates from remote gem repositories.
@@ -75,10 +76,14 @@ class Gem::SpecFetcher
     File.join @dir, "#{uri.host}%#{uri.port}", File.dirname(escaped_path)
   end
 
-  def fetch_spec(spec, source_uri)
+  def fetch_spec(name, source_uri)
+    if name.kind_of? Array
+      raise "Using array to fetch_spec"
+      name = Gem::NameTuple.new(*name)
+    end
+
     source_uri = URI.parse source_uri if String === source_uri
-    spec = spec - [nil, 'ruby', '']
-    spec_file_name = "#{spec.join '-'}.gemspec"
+    spec_file_name = name.spec_name
 
     uri = source_uri + "#{Gem::MARSHAL_SPEC_DIR}#{spec_file_name}"
 
@@ -129,13 +134,13 @@ class Gem::SpecFetcher
     end
 
     available_specs(type).each do |source_uri, specs|
-      found[source_uri] = specs.select do |spec_name, version, spec_platform|
-        if dependency.match?(spec_name, version)
-          if matching_platform and !Gem::Platform.match(spec_platform)
+      found[source_uri] = specs.select do |tup|
+        if dependency.match?(tup)
+          if matching_platform and !Gem::Platform.match(tup.platform)
             pm = (
               rejected_specs[dependency] ||= \
-                Gem::PlatformMismatch.new(spec_name, version))
-            pm.add_platform spec_platform
+                Gem::PlatformMismatch.new(tup.name, tup.version))
+            pm.add_platform tup.platform
             false
           else
             true
@@ -156,10 +161,7 @@ class Gem::SpecFetcher
       end
     end
 
-    tuples.sort! do |a,b|
-      name = (a[0][0] <=> b[0][0])
-      name == 0 ? (a[0][1] <=> b[0][1]) : name
-    end
+    tuples = tuples.sort_by { |x| x[0] }
 
     return [tuples, errors]
   end
@@ -172,9 +174,9 @@ class Gem::SpecFetcher
     tuples = []
 
     available_specs(type).each do |uri, specs|
-      specs.each do |name, ver, plat|
-        if yield(name, ver, plat)
-          tuples << [[name, ver, plat], uri.to_s]
+      specs.each do |tup|
+        if yield(tup)
+          tuples << [tup, uri.to_s]
         end
       end
     end
@@ -207,18 +209,18 @@ class Gem::SpecFetcher
   def suggest_gems_from_name gem_name
     gem_name        = gem_name.downcase
     max             = gem_name.size / 2
-    specs           = available_specs(:complete).values.flatten 1
+    names           = available_specs(:complete).values.flatten(1)
 
-    matches = specs.map { |name, version, platform|
-      next unless Gem::Platform.match platform
+    matches = names.map { |n|
+      next unless n.match_platform?
 
-      distance = levenshtein_distance gem_name, name.downcase
+      distance = levenshtein_distance gem_name, n.name.downcase
 
       next if distance >= max
 
-      return [name] if distance == 0
+      return [n.name] if distance == 0
 
-      [name, distance]
+      [n.name, distance]
     }.compact
 
     matches = matches.uniq.sort_by { |name, dist| dist }
@@ -286,7 +288,7 @@ class Gem::SpecFetcher
     spec_dump = @fetcher.cache_update_path(spec_path, local_file)
 
     begin
-      Marshal.load spec_dump
+      Gem::NameTuple.from_list Marshal.load(spec_dump)
     rescue ArgumentError
       if @update_cache && !retried
         FileUtils.rm local_file

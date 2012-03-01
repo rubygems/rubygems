@@ -105,6 +105,7 @@ require 'rubygems/defaults'
 require 'rubygems/deprecate'
 require 'rubygems/compatibility'
 require 'rubygems/errors'
+require 'rubygems/source_list'
 
 module Gem
   RUBYGEMS_DIR = File.dirname File.expand_path(__FILE__)
@@ -921,7 +922,7 @@ module Gem
   # default_sources if it is not installed.
 
   def self.sources
-    @sources ||= default_sources
+    @sources ||= Gem::SourceList.from(default_sources)
   end
 
   ##
@@ -932,7 +933,11 @@ module Gem
   # more of a code comment about the implementation.
 
   def self.sources= new_sources
-    @sources = new_sources
+    if !new_sources
+      @sources = nil
+    else
+      @sources = Gem::SourceList.from(new_sources)
+    end
   end
 
   ##

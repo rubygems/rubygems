@@ -48,14 +48,14 @@ class Gem::Commands::FetchCommand < Gem::Command
         specs_and_sources = filtered unless filtered.empty?
       end
 
-      spec, source_uri = specs_and_sources.sort_by { |s,| s.version }.first
+      spec, source = specs_and_sources.sort_by { |s,| s.version }.first
 
       if spec.nil? then
         show_lookup_failure gem_name, version, errors, options[:domain]
         next
       end
 
-      Gem::RemoteFetcher.fetcher.download spec, source_uri, Dir.pwd
+      source.download spec
 
       say "Downloaded #{spec.full_name}"
     end

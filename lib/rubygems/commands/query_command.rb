@@ -150,8 +150,8 @@ class Gem::Commands::QueryCommand < Gem::Command
     output = []
     versions = Hash.new { |h,name| h[name] = [] }
 
-    spec_tuples.each do |spec_tuple, source_uri|
-      versions[spec_tuple.name] << [spec_tuple, source_uri]
+    spec_tuples.each do |spec_tuple, source|
+      versions[spec_tuple.name] << [spec_tuple, source]
     end
 
     versions = versions.sort_by do |(n,_),_|
@@ -204,8 +204,7 @@ class Gem::Commands::QueryCommand < Gem::Command
         spec = detail_tuple.last
 
         unless spec.kind_of? Gem::Specification
-          uri = URI.parse spec
-          spec = Gem::SpecFetcher.fetcher.fetch_spec detail_tuple.first, uri
+          spec = spec.fetch_spec detail_tuple.first
         end
 
         entry << "\n"

@@ -157,7 +157,7 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     Dir.chdir @tempdir do
       inst = Gem::DependencyInstaller.new
-      inst.install 'a-2'
+      inst.install 'a', Gem::Requirement.create("= 2")
     end
 
     FileUtils.rm File.join(@tempdir, a2.file_name)
@@ -690,7 +690,8 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     Gem::Specification.reset
 
-    assert_equal [[@b1, @gem_repo]], inst.find_gems_with_sources(dep)
+    assert_equal [[@b1, Gem::Source.new(@gem_repo)]],
+                 inst.find_gems_with_sources(dep)
   end
 
   def test_find_gems_with_sources_local
@@ -706,14 +707,15 @@ class TestGemDependencyInstaller < Gem::TestCase
     end
 
     assert_equal 2, gems.length
-    remote = gems.first
-    assert_equal 'a-1', remote.first.full_name, 'remote spec'
-    assert_equal @gem_repo, remote.last, 'remote path'
-
-    local = gems.last
+    local = gems.first
     assert_equal 'a-1', local.first.full_name, 'local spec'
     assert_equal File.join(@tempdir, @a1.file_name),
-                 local.last, 'local path'
+                 local.last.download(local.first), 'local path'
+
+    remote = gems.last
+    assert_equal 'a-1', remote.first.full_name, 'remote spec'
+    assert_equal Gem::Source.new(@gem_repo), remote.last, 'remote path'
+
   end
 
   def test_find_gems_with_sources_prerelease

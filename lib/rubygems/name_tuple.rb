@@ -74,6 +74,10 @@ class Gem::NameTuple
     [@name, @version, @platform]
   end
 
+  def to_s
+    "#<Gem::NameTuple #{@name}, #{@version}, #{@platform}>"
+  end
+
   def <=> other
     to_a <=> other.to_a
   end
@@ -95,6 +99,12 @@ class Gem::NameTuple
     else
       false
     end
+  end
+
+  alias_method :eql?, :==
+
+  def hash
+    to_a.hash
   end
 
 end

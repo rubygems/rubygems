@@ -4,6 +4,8 @@ require 'rubygems/package'
 require 'rubygems/installer'
 require 'rubygems/spec_fetcher'
 require 'rubygems/user_interaction'
+require 'rubygems/source_local'
+require 'rubygems/source_specific_file'
 
 ##
 # Installs a gem along with all its dependencies from local and remote gems.
@@ -121,11 +123,10 @@ class Gem::DependencyInstaller
     gems_and_sources = []
 
     if consider_local?
-      # REFACTOR rather than hardcoding using Dir.pwd, delegate to some config
-      # that allows knows the directory to look for local gems.
-      Dir[File.join(Dir.pwd, "#{dep.name}-[0-9]*.gem")].each do |gem_file|
-        spec = Gem::Package.new(gem_file).spec
-        gems_and_sources << [spec, gem_file] if spec.name == dep.name
+      sl = Gem::Source::Local.new
+
+      if spec = sl.find_gem(dep.name)
+        gems_and_sources << [spec, sl]
       end
     end
 
@@ -147,11 +148,8 @@ class Gem::DependencyInstaller
       end
     end
 
-    # REFACTOR 2 of 3 users of this method call reverse on the results, perhaps
-    # we're sorting them wrong. The other calls last, so perhaps it shuold use
-    # a different API.
     gems_and_sources.sort_by do |gem, source|
-      [gem, source =~ /^http:\/\// ? 0 : 1] # local gems win
+      [gem, source] # local gems win
     end
   end
 
@@ -224,7 +222,7 @@ class Gem::DependencyInstaller
                   end
         end
 
-        results = find_gems_with_sources(dep).reverse
+        results = find_gems_with_sources(dep)
 
         results.reject! do |dep_spec,|
           to_do.push dep_spec
@@ -259,22 +257,14 @@ class Gem::DependencyInstaller
     spec_and_source = nil
 
     if consider_local?
-      glob = if File::ALT_SEPARATOR then
-               gem_name.gsub File::ALT_SEPARATOR, File::SEPARATOR
-             else
-               gem_name
-             end
+      if File.exists? gem_name
+        source = Gem::Source::SpecificFile.new(gem_name)
+        spec_and_source = [source.spec, source]
+      else
+        local = Gem::Source::Local.new
 
-      # REFACTOR Don't assume local gems are in the current directory
-      local_gems = Dir["#{glob}*"].sort.reverse
-
-      local_gems.each do |gem_file|
-        next unless gem_file =~ /gem$/
-        begin
-          spec = Gem::Package.new(gem_file).spec
-          spec_and_source = [spec, gem_file]
-          break
-        rescue SystemCallError, Gem::Package::FormatError
+        if spec = local.find_gem(gem_name, version)
+          spec_and_source = [spec, local]
         end
       end
     end
@@ -337,11 +327,10 @@ class Gem::DependencyInstaller
       # TODO: make this sorta_verbose so other users can benefit from it
       say "Installing gem #{spec.full_name}" if Gem.configuration.really_verbose
 
-      _, source_uri = @specs_and_sources.assoc spec
+      _, source = @specs_and_sources.assoc spec
       begin
         # REFACTOR make the fetcher to use configurable
-        local_gem_path = Gem::RemoteFetcher.fetcher.download(spec, source_uri,
-                                                             @cache_dir)
+        local_gem_path = source.download spec, @cache_dir
       rescue Gem::RemoteFetcher::FetchError
         # TODO I doubt all fetch errors are recoverable, we should at least
         # report the errors probably.

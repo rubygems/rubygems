@@ -12,17 +12,6 @@ class Gem::SpecFetcher
   include Gem::UserInteraction
   include Gem::Text
 
-  FILES = {
-    :all        => 'specs',
-    :latest     => 'latest_specs',
-    :prerelease => 'prerelease_specs',
-  }
-
-  ##
-  # The SpecFetcher cache dir.
-
-  attr_reader :dir # :nodoc:
-
   ##
   # Cache of latest specs
 
@@ -49,8 +38,6 @@ class Gem::SpecFetcher
   end
 
   def initialize
-    require 'fileutils'
-
     @dir = File.join Gem.user_home, '.gem', 'specs'
     @update_cache = File.stat(Gem.user_home).uid == Process.uid
 
@@ -61,57 +48,10 @@ class Gem::SpecFetcher
     @caches = {
       :latest => @latest_specs,
       :prerelease => @prerelease_specs,
-      :all => @specs,
+      :released => @specs,
     }
 
     @fetcher = Gem::RemoteFetcher.fetcher
-  end
-
-  ##
-  # Returns the local directory to write +uri+ to.
-
-  def cache_dir(uri)
-    # Correct for windows paths
-    escaped_path = uri.path.sub(/^\/([a-z]):\//i, '/\\1-/')
-    File.join @dir, "#{uri.host}%#{uri.port}", File.dirname(escaped_path)
-  end
-
-  def fetch_spec(name, source_uri)
-    if name.kind_of? Array
-      raise "Using array to fetch_spec"
-      name = Gem::NameTuple.new(*name)
-    end
-
-    source_uri = URI.parse source_uri if String === source_uri
-    spec_file_name = name.spec_name
-
-    uri = source_uri + "#{Gem::MARSHAL_SPEC_DIR}#{spec_file_name}"
-
-    cache_dir = cache_dir uri
-
-    local_spec = File.join cache_dir, spec_file_name
-
-    if File.exist? local_spec then
-      spec = Gem.read_binary local_spec
-      spec = Marshal.load(spec) rescue nil
-      return spec if spec
-    end
-
-    uri.path << '.rz'
-
-    spec = @fetcher.fetch_path uri
-    spec = Gem.inflate spec
-
-    if @update_cache then
-      FileUtils.mkdir_p cache_dir
-
-      open local_spec, 'wb' do |io|
-        io.write spec
-      end
-    end
-
-    # TODO: Investigate setting Gem::Specification#loaded_from to a URI
-    Marshal.load spec
   end
 
   ##
@@ -133,8 +73,8 @@ class Gem::SpecFetcher
       type = :released
     end
 
-    available_specs(type).each do |source_uri, specs|
-      found[source_uri] = specs.select do |tup|
+    available_specs(type).each do |source, specs|
+      found[source] = specs.select do |tup|
         if dependency.match?(tup)
           if matching_platform and !Gem::Platform.match(tup.platform)
             pm = (
@@ -153,11 +93,9 @@ class Gem::SpecFetcher
 
     tuples = []
 
-    found.each do |source_uri, specs|
-      uri_str = source_uri.to_s
-
+    found.each do |source, specs|
       specs.each do |s|
-        tuples << [s, uri_str]
+        tuples << [s, source]
       end
     end
 
@@ -173,10 +111,10 @@ class Gem::SpecFetcher
   def detect(type=:complete)
     tuples = []
 
-    available_specs(type).each do |uri, specs|
+    available_specs(type).each do |source, specs|
       specs.each do |tup|
         if yield(tup)
-          tuples << [tup, uri.to_s]
+          tuples << [tup, source]
         end
       end
     end
@@ -194,7 +132,7 @@ class Gem::SpecFetcher
     tuples, errors = search_for_dependency(dependency, matching_platform)
 
     specs = tuples.map do |tup, source|
-      [fetch_spec(tup, URI.parse(source)), source]
+      [source.fetch_spec(tup), source]
     end
 
     return [specs, errors]
@@ -241,64 +179,30 @@ class Gem::SpecFetcher
   def available_specs(type)
     list = {}
 
-    Gem.sources.each do |source_uri|
-      source_uri = URI.parse source_uri
-
+    Gem.sources.each_source do |source|
       case type
       when :latest
-        list[source_uri] = tuples_for source_uri, :latest
+        list[source] = tuples_for source, :latest
       when :released
-        list[source_uri] = tuples_for source_uri, :all
+        list[source] = tuples_for source, :released
       when :complete
-        tuples = tuples_for(source_uri, :prerelease) \
-               + tuples_for(source_uri, :all)
+        tuples = tuples_for(source, :prerelease) \
+               + tuples_for(source, :released)
 
-        list[source_uri] = tuples
+        list[source] = tuples
       when :prerelease
-        list[source_uri] = tuples_for(source_uri, :prerelease)
+        list[source] = tuples_for(source, :prerelease)
       end
-
-      # p :as => [type, source_uri, list[source_uri]]
     end
 
     list
   end
 
-  def tuples_for(source_uri, type)
+  def tuples_for(source, type)
     list  = {}
-    file  = FILES[type]
     cache = @caches[type]
 
-    cache[source_uri] ||= load_specs(source_uri, file)
+    cache[source.uri] ||= source.load_specs(type)
   end
-
-  ##
-  # Loads specs in +file+, fetching from +source_uri+ if the on-disk cache is
-  # out of date.
-
-  def load_specs(source_uri, file)
-    file_name  = "#{file}.#{Gem.marshal_version}"
-    spec_path  = source_uri + "#{file_name}.gz"
-    cache_dir  = cache_dir spec_path
-    local_file = File.join(cache_dir, file_name)
-    retried    = false
-
-    FileUtils.mkdir_p cache_dir if @update_cache
-
-    spec_dump = @fetcher.cache_update_path(spec_path, local_file)
-
-    begin
-      Gem::NameTuple.from_list Marshal.load(spec_dump)
-    rescue ArgumentError
-      if @update_cache && !retried
-        FileUtils.rm local_file
-        retried = true
-        retry
-      else
-        raise Gem::Exception.new("Invalid spec cache file in #{local_file}")
-      end
-    end
-  end
-
 end
 

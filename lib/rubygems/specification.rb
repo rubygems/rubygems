@@ -1711,6 +1711,14 @@ class Gem::Specification
     loaded_from && base_dir
   end
 
+  def inspect
+    if $DEBUG
+      super
+    else
+      "#<#{self.class}:0x#{__id__.to_s(16)} #{full_name}>"
+    end
+  end
+
   ##
   # Returns a string usable in Dir.glob to match all requirable paths
   # for this spec.

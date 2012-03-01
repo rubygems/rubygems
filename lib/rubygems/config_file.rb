@@ -346,7 +346,7 @@ class Gem::ConfigFile
                                    DEFAULT_BULK_THRESHOLD
                                  end
 
-    yaml_hash[:sources] = Gem.sources
+    yaml_hash[:sources] = Gem.sources.to_a
 
     yaml_hash[:update_sources] = if @hash.key?(:update_sources)
                                    @hash[:update_sources]

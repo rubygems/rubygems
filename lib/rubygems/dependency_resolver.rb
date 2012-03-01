@@ -219,9 +219,9 @@ module Gem
       # Called from IndexSpecification to get a true Specification
       # object.
       #
-      def load_spec(name, ver, uri)
+      def load_spec(name, ver, source)
         key = "#{name}-#{ver}"
-        @specs[key] ||= @f.fetch_spec(Gem::NameTuple.new(name, ver), uri)
+        @specs[key] ||= source.fetch_spec(Gem::NameTuple.new(name, ver))
       end
     end
 
@@ -380,12 +380,12 @@ module Gem
 
       def download(path)
         if @spec.respond_to? :source
-          source = @spec.source.to_s
+          source = @spec.source
         else
           source = Gem.sources.first
         end
 
-        Gem::RemoteFetcher.fetcher.download full_spec, source, path
+        source.download full_spec, path
       end
 
       def ==(other)

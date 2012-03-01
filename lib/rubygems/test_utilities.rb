@@ -133,9 +133,9 @@ class Gem::FakeFetcher
 
     return if found.empty?
 
-    spec, source_uri = found.first
+    spec, source = found.first
 
-    download spec, source_uri
+    download spec, source.uri.to_s
   end
 
 end

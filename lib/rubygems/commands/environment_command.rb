@@ -76,7 +76,7 @@ lib/rubygems/defaults/operating_system.rb
     when /^gempath/, /^path/, /^GEM_PATH/ then
       out << Gem.path.join(File::PATH_SEPARATOR)
     when /^remotesources/ then
-      out << Gem.sources.join("\n")
+      out << Gem.sources.to_a.join("\n")
     when /^platform/ then
       out << Gem.platforms.join(File::PATH_SEPARATOR)
     when nil then

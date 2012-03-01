@@ -91,9 +91,9 @@ class Gem::RemoteFetcher
 
     return if found.empty?
 
-    spec, source_uri = found.sort_by { |(s,_)| s.version }.last
+    spec, source = found.sort_by { |(s,_)| s.version }.last
 
-    download spec, source_uri
+    download spec, source.uri.to_s
   end
 
   ##

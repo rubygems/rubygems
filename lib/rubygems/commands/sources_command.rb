@@ -48,7 +48,7 @@ class Gem::Commands::SourcesCommand < Gem::Command
                        options[:update])
 
     if options[:clear_all] then
-      path = Gem::SpecFetcher.fetcher.dir
+      path = File.join Gem.user_home, '.gem', 'specs'
       FileUtils.rm_rf path
 
       unless File.exist? path then
@@ -64,13 +64,12 @@ class Gem::Commands::SourcesCommand < Gem::Command
       end
     end
 
-    if options[:add] then
-      source_uri = options[:add]
-      uri = URI.parse source_uri
+    if source_uri = options[:add] then
+      source = Gem::Source.new source_uri
 
       begin
-        Gem::SpecFetcher.fetcher.load_specs uri, 'specs'
-        Gem.sources << source_uri
+        source.load_specs :released
+        Gem.sources << source
         Gem.configuration.write
 
         say "#{source_uri} added to sources"
@@ -99,10 +98,9 @@ class Gem::Commands::SourcesCommand < Gem::Command
     if options[:update] then
       fetcher = Gem::SpecFetcher.fetcher
 
-      Gem.sources.each do |update_uri|
-        update_uri = URI.parse update_uri
-        fetcher.load_specs update_uri, 'specs'
-        fetcher.load_specs update_uri, 'latest_specs'
+      Gem.sources.each_source do |source|
+        source.load_specs :released
+        source.load_specs :latest
       end
 
       say "source cache successfully updated"

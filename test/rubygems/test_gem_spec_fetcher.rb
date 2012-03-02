@@ -136,15 +136,41 @@ class TestGemSpecFetcher < Gem::TestCase
     assert_equal "i386-linux", errors[0].platforms.first
   end
 
+  def test_spec_for_dependency_bad_fetch_spec
+    src = Gem::Source.new(@gem_repo)
+    def src.fetch_spec(name)
+      raise Gem::RemoteFetcher::FetchError.new("bad news from the internet", @uri)
+    end
+
+    Gem.sources.replace [src]
+
+    d = "#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}"
+    @fetcher.data["#{d}#{@a1.spec_name}.rz"]    = util_zip(Marshal.dump(@a1))
+    @fetcher.data["#{d}#{@a2.spec_name}.rz"]    = util_zip(Marshal.dump(@a2))
+    @fetcher.data["#{d}#{@a_pre.spec_name}.rz"] = util_zip(Marshal.dump(@a_pre))
+    @fetcher.data["#{d}#{@a3a.spec_name}.rz"]   = util_zip(Marshal.dump(@a3a))
+
+    dep = Gem::Dependency.new 'a', ">= 1"
+
+    specs_and_sources, errors = @sf.spec_for_dependency dep
+
+    assert_equal [], specs_and_sources
+    sfp = errors.first
+
+    assert_kind_of Gem::SourceFetchProblem, sfp
+    assert_equal src, sfp.source
+    assert_equal "bad news from the internet (#{@gem_repo})", sfp.error.message
+  end
+
   def test_available_specs_latest
-    specs = @sf.available_specs(:latest)
+    specs, _ = @sf.available_specs(:latest)
 
     assert_equal [@source], specs.keys
     assert_equal @latest_specs, specs[@source].sort
   end
 
   def test_available_specs_released
-    specs = @sf.available_specs(:released)
+    specs, _ = @sf.available_specs(:released)
 
     assert_equal [@source], specs.keys
 
@@ -152,7 +178,7 @@ class TestGemSpecFetcher < Gem::TestCase
   end
 
   def test_available_specs_complete
-    specs = @sf.available_specs(:complete)
+    specs, _ = @sf.available_specs(:complete)
 
     assert_equal [@source], specs.keys
 
@@ -162,33 +188,42 @@ class TestGemSpecFetcher < Gem::TestCase
   end
 
   def test_available_specs_cache
-    specs = @sf.available_specs(:latest)
+    specs, _ = @sf.available_specs(:latest)
 
     refute specs[@source].empty?
 
     @fetcher.data["#{@gem_repo}/latest_specs.#{Gem.marshal_version}.gz"] = nil
 
-    cached_specs = @sf.available_specs(:latest)
+    cached_specs, _ = @sf.available_specs(:latest)
 
     assert_equal specs, cached_specs
   end
 
   def test_available_specs_cache_released
-    specs = @sf.available_specs(:released)
+    specs, _ = @sf.available_specs(:released)
 
     refute specs[@source].empty?
 
     @fetcher.data["#{@gem_repo}/specs.#{Gem.marshal_version}.gz"] = nil
 
-    cached_specs = @sf.available_specs(:released)
+    cached_specs, _ = @sf.available_specs(:released)
 
     assert_equal specs, cached_specs
   end
 
   def test_available_specs_prerelease
-    specs = @sf.available_specs(:prerelease)
+    specs, _ = @sf.available_specs(:prerelease)
 
     assert_equal @prerelease_specs, specs[@source].sort
+  end
+
+  def test_available_specs_with_bad_source
+    Gem.sources.replace ["http://not-there.nothing"]
+
+    specs, errors = @sf.available_specs(:latest)
+
+    assert_equal({}, specs)
+    assert_kind_of Gem::SourceFetchProblem, errors.first
   end
 
 end

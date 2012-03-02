@@ -183,7 +183,8 @@ module Gem
 
         @all = Hash.new { |h,k| h[k] = [] }
 
-        @f.available_specs(:released).each do |uri, specs|
+        list, _ = @f.available_specs(:released)
+        list.each do |uri, specs|
           specs.each do |n|
             @all[n.name] << [uri, n]
           end

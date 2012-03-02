@@ -426,5 +426,61 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_match %r!Could not find a valid gem 'a' \(= 10.0\)!, @ui.error
   end
 
+  def test_show_errors_on_failure
+    Gem.sources.replace ["http://not-there.nothing"]
+
+    @cmd.options[:args] = ["blah"]
+
+    e = nil
+    use_ui @ui do
+      orig_dir = Dir.pwd
+      begin
+        Dir.chdir @tempdir
+        e = assert_raises Gem::SystemExitException do
+          @cmd.execute
+        end
+      ensure
+        Dir.chdir orig_dir
+      end
+    end
+
+    assert_equal 2, e.exit_code
+    assert_match %r!Could not find a valid gem 'blah' \(>= 0\)!, @ui.error
+    assert_match %r!Unable to download data from http://not-there\.nothing!, @ui.error
+  end
+
+  def test_show_source_problems_even_on_success
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher
+
+    Gem.sources << "http://not-there.nothing"
+
+    @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
+      read_binary(@a2.cache_file)
+
+    @cmd.options[:args] = [@a2.name]
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        capture_io do
+          @cmd.execute
+        end
+      end
+      assert_equal 0, e.exit_code
+    end
+
+    assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
+
+    out = @ui.output.split "\n"
+    assert_equal "1 gem installed", out.shift
+    assert out.empty?, out.inspect
+
+    e = @ui.error
+
+    x = "WARNING:  Unable to pull data from 'http://not-there.nothing': no data for http://not-there.nothing/latest_specs.4.8.gz (http://not-there.nothing/latest_specs.4.8.gz)\n"
+    assert_equal x, e
+  end
+
+
 end
 

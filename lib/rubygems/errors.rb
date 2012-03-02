@@ -70,4 +70,21 @@ module Gem
          @platforms.join(' ,')]
     end
   end
+
+  ##
+  # An error that indicates we weren't able to fetch some
+  # data from a source
+
+  class SourceFetchProblem < ErrorReason
+    def initialize(source, error)
+      @source = source
+      @error = error
+    end
+
+    attr_reader :source, :error
+
+    def wordy
+      "Unable to download data from #{@source.uri} - #{@error.message}"
+    end
+  end
 end

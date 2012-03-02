@@ -130,6 +130,15 @@ to write the specification by hand.  For example:
         inst = Gem::DependencyInstaller.new options
         inst.install gem_name, Gem::Requirement.create(gem_version)
 
+        if err = inst.errors
+            err.each do |x|
+            if x.kind_of? Gem::SourceFetchProblem
+              msg = "Unable to pull data from '#{x.source.uri}': #{x.error.message}"
+              alert_warning msg
+            end
+          end
+        end
+
         @installed_specs.push(*inst.installed_gems)
       rescue Gem::InstallError => e
         alert_error "Error installing #{gem_name}:\n\t#{e.message}"

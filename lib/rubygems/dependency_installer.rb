@@ -93,6 +93,8 @@ class Gem::DependencyInstaller
     @errors = nil
   end
 
+  attr_reader :errors
+
   ##
   # Indicated, based on the requested domain, if local
   # gems should be considered.

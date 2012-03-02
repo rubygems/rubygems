@@ -164,5 +164,13 @@ class TestGemSource < Gem::TestCase
     assert_equal @latest_specs, latest_specs
   end
 
+  def test_load_specs_from_unavailable_uri
+    src = Gem::Source.new("http://not-there.nothing")
+
+    assert_raises Gem::RemoteFetcher::FetchError do
+      src.load_specs :latest
+    end
+  end
+
 end
 

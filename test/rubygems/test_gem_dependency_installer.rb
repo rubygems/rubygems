@@ -739,6 +739,19 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal [@a1_pre, @a1], prereleases
   end
 
+  def test_find_gems_with_sources_with_bad_source
+    Gem.sources.replace ["http://not-there.nothing"]
+
+    installer = Gem::DependencyInstaller.new
+
+    dep = Gem::Dependency.new('a')
+
+    out = installer.find_gems_with_sources(dep)
+
+    assert_equal [], out
+    assert_kind_of Gem::SourceFetchProblem, installer.errors.first
+  end
+
   def assert_resolve expected, *specs
     util_clear_gems
     util_setup_spec_fetcher(*specs)

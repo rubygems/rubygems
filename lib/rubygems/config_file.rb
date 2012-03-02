@@ -201,14 +201,14 @@ class Gem::ConfigFile
     @hash = @hash.merge environment_config
 
     # HACK these override command-line args, which is bad
-    @backtrace                  = @hash[:backtrace]      if @hash.key? :backtrace
-    @benchmark                  = @hash[:benchmark]      if @hash.key? :benchmark
-    @bulk_threshold             = @hash[:bulk_threshold] if @hash.key? :bulk_threshold
-    @home                       = @hash[:gemhome]        if @hash.key? :gemhome
-    @path                       = @hash[:gempath]        if @hash.key? :gempath
-    @update_sources             = @hash[:update_sources] if @hash.key? :update_sources
-    @verbose                    = @hash[:verbose]        if @hash.key? :verbose
-    @disable_default_gem_server = @hash[:verbose]        if @hash.key? :disable_default_gem_server
+    @backtrace                  = @hash[:backtrace]                  if @hash.key? :backtrace
+    @benchmark                  = @hash[:benchmark]                  if @hash.key? :benchmark
+    @bulk_threshold             = @hash[:bulk_threshold]             if @hash.key? :bulk_threshold
+    @home                       = @hash[:gemhome]                    if @hash.key? :gemhome
+    @path                       = @hash[:gempath]                    if @hash.key? :gempath
+    @update_sources             = @hash[:update_sources]             if @hash.key? :update_sources
+    @verbose                    = @hash[:verbose]                    if @hash.key? :verbose
+    @disable_default_gem_server = @hash[:disable_default_gem_server] if @hash.key? :disable_default_gem_server
 
     load_api_keys
 

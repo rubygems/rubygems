@@ -125,7 +125,7 @@ gems:
 
     refute_nil fetcher
     assert_kind_of Gem::RemoteFetcher, fetcher
-    assert_equal proxy_uri, fetcher.instance_variable_get(:@proxy_uri).to_s
+    assert_equal proxy_uri, Gem::Request.new(nil, nil, nil, proxy_uri).instance_variable_get(:@proxy_uri).to_s
   end
 
   def test_self_fetcher_with_proxy_URI
@@ -137,7 +137,7 @@ gems:
     refute_nil fetcher
 
     assert_kind_of Gem::RemoteFetcher, fetcher
-    assert_equal proxy_uri, fetcher.instance_variable_get(:@proxy_uri)
+    assert_equal proxy_uri, Gem::Request.new(nil, nil, nil, proxy_uri).instance_variable_get(:@proxy_uri)
   end
 
   def test_fetch_size_bad_uri
@@ -152,7 +152,7 @@ gems:
 
   def test_fetch_size_socket_error
     fetcher = Gem::RemoteFetcher.new nil
-    def fetcher.connection_for(uri)
+    def fetcher.request(uri, request_class, last_modified = nil)
       raise SocketError, "tarded"
     end
 
@@ -383,7 +383,7 @@ gems:
       uri = URI.parse @proxy_uri
       uri.user, uri.password = 'foo', 'bar'
       fetcher = Gem::RemoteFetcher.new uri.to_s
-      proxy = fetcher.instance_variable_get("@proxy_uri")
+      proxy = Gem::Request.new(nil, nil, nil, uri).instance_variable_get("@proxy_uri")
       assert_equal 'foo', proxy.user
       assert_equal 'bar', proxy.password
       assert_data_from_proxy fetcher.fetch_path(@server_uri)
@@ -393,8 +393,8 @@ gems:
       uri = URI.parse @proxy_uri
       uri.user, uri.password = 'domain%5Cuser', 'bar'
       fetcher = Gem::RemoteFetcher.new uri.to_s
-      proxy = fetcher.instance_variable_get("@proxy_uri")
-      assert_equal 'domain\user', fetcher.unescape(proxy.user)
+      proxy = Gem::Request.new(nil, nil, nil, uri.to_s).instance_variable_get("@proxy_uri")
+      assert_equal 'domain\user', Gem::UriFormatter.new(proxy.user).unescape
       assert_equal 'bar', proxy.password
       assert_data_from_proxy fetcher.fetch_path(@server_uri)
     end
@@ -403,9 +403,9 @@ gems:
       uri = URI.parse @proxy_uri
       uri.user, uri.password = 'user', 'my%20pass'
       fetcher = Gem::RemoteFetcher.new uri.to_s
-      proxy = fetcher.instance_variable_get("@proxy_uri")
+      proxy = Gem::Request.new(nil, nil, nil, uri.to_s).instance_variable_get("@proxy_uri")
       assert_equal 'user', proxy.user
-      assert_equal 'my pass', fetcher.unescape(proxy.password)
+      assert_equal 'my pass', Gem::UriFormatter.new(proxy.password).unescape
       assert_data_from_proxy fetcher.fetch_path(@server_uri)
     end
   end
@@ -416,7 +416,7 @@ gems:
       ENV['http_proxy_user'] = 'foo'
       ENV['http_proxy_pass'] = 'bar'
       fetcher = Gem::RemoteFetcher.new nil
-      proxy = fetcher.instance_variable_get("@proxy_uri")
+      proxy = Gem::Request.new(nil, nil, nil, nil).instance_variable_get("@proxy_uri")
       assert_equal 'foo', proxy.user
       assert_equal 'bar', proxy.password
       assert_data_from_proxy fetcher.fetch_path(@server_uri)
@@ -427,9 +427,9 @@ gems:
       ENV['http_proxy_user'] = 'foo\user'
       ENV['http_proxy_pass'] = 'my bar'
       fetcher = Gem::RemoteFetcher.new nil
-      proxy = fetcher.instance_variable_get("@proxy_uri")
-      assert_equal 'foo\user', fetcher.unescape(proxy.user)
-      assert_equal 'my bar', fetcher.unescape(proxy.password)
+      proxy = Gem::Request.new(nil, nil, nil, nil).instance_variable_get("@proxy_uri")
+      assert_equal 'foo\user', Gem::UriFormatter.new(proxy.user).unescape
+      assert_equal 'my bar', Gem::UriFormatter.new(proxy.password).unescape
       assert_data_from_proxy fetcher.fetch_path(@server_uri)
     end
   end
@@ -520,7 +520,7 @@ gems:
     fetcher = Gem::RemoteFetcher.new(nil)
     ENV['HTTP_PROXY'] = 'fakeurl:12345'
 
-    assert_equal('http://fakeurl:12345', fetcher.get_proxy_from_env.to_s)
+    assert_equal('http://fakeurl:12345', Gem::Request.new(nil, nil, nil, nil).get_proxy_from_env.to_s)
   end
 
   def test_get_proxy_from_env_empty
@@ -532,7 +532,7 @@ gems:
 
     fetcher = Gem::RemoteFetcher.new nil
 
-    assert_equal nil, fetcher.send(:get_proxy_from_env)
+    assert_equal nil, Gem::Request.new(nil, nil, nil, nil).get_proxy_from_env
 
   ensure
     orig_env_HTTP_PROXY.nil? ? ENV.delete('HTTP_PROXY') :
@@ -576,9 +576,7 @@ gems:
     fetcher = Gem::RemoteFetcher.new nil
     url = 'http://gems.example.com/redirect'
 
-    conn = Object.new
-    def conn.started?() true end
-    def conn.request(req)
+    def fetcher.request(uri, request_class, last_modified = nil)
       url = 'http://gems.example.com/redirect'
       unless defined? @requested then
         @requested = true
@@ -592,9 +590,6 @@ gems:
       end
     end
 
-    conn = { "#{Thread.current.object_id}:gems.example.com:80" => conn }
-    fetcher.instance_variable_set :@connections, conn
-
     data = fetcher.fetch_http URI.parse(url)
 
     assert_equal 'real_path', data
@@ -604,17 +599,12 @@ gems:
     fetcher = Gem::RemoteFetcher.new nil
     url = 'http://gems.example.com/redirect'
 
-    conn = Object.new
-    def conn.started?() true end
-    def conn.request(req)
+    def fetcher.request(uri, request_class, last_modified = nil)
       url = 'http://gems.example.com/redirect'
       res = Net::HTTPMovedPermanently.new nil, 301, nil
       res.add_field 'Location', url
       res
     end
-
-    conn = { "#{Thread.current.object_id}:gems.example.com:80" => conn }
-    fetcher.instance_variable_set :@connections, conn
 
     e = assert_raises Gem::RemoteFetcher::FetchError do
       fetcher.fetch_http URI.parse(url)
@@ -625,9 +615,10 @@ gems:
 
   def test_request
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
     util_stub_connection_for :body => :junk, :code => 200
 
-    response = @fetcher.request uri, Net::HTTP::Get
+    response = @request.fetch
 
     assert_equal 200, response.code
     assert_equal :junk, response.body
@@ -635,8 +626,10 @@ gems:
 
   def test_request_head
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
     util_stub_connection_for :body => '', :code => 200
-    response = @fetcher.request uri, Net::HTTP::Head
+
+    response = @request.fetch
 
     assert_equal 200, response.code
     assert_equal '', response.body
@@ -644,10 +637,11 @@ gems:
 
   def test_request_unmodified
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    t = Time.now
+    @request = Gem::Request.new(uri, Net::HTTP::Get, t, nil)
     conn = util_stub_connection_for :body => '', :code => 304
 
-    t = Time.now
-    response = @fetcher.request uri, Net::HTTP::Head, t
+    response = @request.fetch
 
     assert_equal 304, response.code
     assert_equal '', response.body
@@ -656,7 +650,7 @@ gems:
   end
 
   def test_user_agent
-    ua = @fetcher.user_agent
+    ua = Gem::Request.new(nil, nil, nil, nil).user_agent
 
     assert_match %r%^RubyGems/\S+ \S+ Ruby/\S+ \(.*?\)%,          ua
     assert_match %r%RubyGems/#{Regexp.escape Gem::VERSION}%,      ua
@@ -671,7 +665,7 @@ gems:
     Object.send :remove_const, :RUBY_ENGINE if defined?(RUBY_ENGINE)
     Object.send :const_set,    :RUBY_ENGINE, 'vroom'
 
-    ua = @fetcher.user_agent
+    ua = Gem::Request.new(nil, nil, nil, nil).user_agent
 
     assert_match %r%\) vroom%, ua
   ensure
@@ -684,7 +678,7 @@ gems:
     Object.send :remove_const, :RUBY_ENGINE if defined?(RUBY_ENGINE)
     Object.send :const_set,    :RUBY_ENGINE, 'ruby'
 
-    ua = @fetcher.user_agent
+    ua = Gem::Request.new(nil, nil, nil, nil).user_agent
 
     assert_match %r%\)%, ua
   ensure
@@ -697,7 +691,7 @@ gems:
     Object.send :remove_const, :RUBY_PATCHLEVEL
     Object.send :const_set,    :RUBY_PATCHLEVEL, 5
 
-    ua = @fetcher.user_agent
+    ua = Gem::Request.new(nil, nil, nil, nil).user_agent
 
     assert_match %r% patchlevel 5\)%, ua
   ensure
@@ -712,7 +706,7 @@ gems:
     Object.send :remove_const, :RUBY_REVISION if defined?(RUBY_REVISION)
     Object.send :const_set,    :RUBY_REVISION, 6
 
-    ua = @fetcher.user_agent
+    ua = Gem::Request.new(nil, nil, nil, nil).user_agent
 
     assert_match %r% revision 6\)%, ua
     assert_match %r%Ruby/#{Regexp.escape RUBY_VERSION}dev%, ua
@@ -727,7 +721,7 @@ gems:
     Object.send :const_set,    :RUBY_PATCHLEVEL, -1
     Object.send :remove_const, :RUBY_REVISION if defined?(RUBY_REVISION)
 
-    ua = @fetcher.user_agent
+    ua = Gem::Request.new(nil, nil, nil, nil).user_agent
 
     assert_match %r%\(#{Regexp.escape RUBY_RELEASE_DATE}\)%, ua
   ensure
@@ -743,15 +737,15 @@ gems:
   end
 
   def util_stub_connection_for hash
-    def @fetcher.connection= conn
+    def @request.connection= conn
       @conn = conn
     end
 
-    def @fetcher.connection_for uri
+    def @request.connection_for uri
       @conn
     end
 
-    @fetcher.connection = Conn.new OpenStruct.new(hash)
+    @request.connection = Conn.new OpenStruct.new(hash)
   end
 
   def assert_error(exception_class=Exception)

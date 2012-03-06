@@ -74,7 +74,7 @@ module Gem
       end
     end
 
-    def install_into(dir, force=true)
+    def install_into(dir, force=true, &b)
       existing = force ? [] : specs_in(dir)
 
       dir = File.expand_path dir
@@ -82,19 +82,51 @@ module Gem
       installed = []
 
       sorted_requests.each do |req|
-        unless existing.find { |s| s.full_name == req.spec.full_name }
-          path = req.download(dir)
-
-          inst = Gem::Installer.new path, :install_dir => dir,
-                                          :only_install_dir => true
-
-          inst.install
-
-          installed << req
+        if existing.find { |s| s.full_name == req.spec.full_name }
+          b.call req, nil if b
+          next
         end
+
+        path = req.download(dir)
+
+        inst = Gem::Installer.new path, :install_dir => dir,
+                                        :only_install_dir => true
+
+        b.call req, inst if b
+
+        inst.install
+
+        installed << req
       end
 
       installed
+    end
+
+    def install(options, &b)
+      if dir = options[:install_dir]
+        return install_into(dir, false, &b)
+      end
+
+      cache_dir = options[:cache_dir] || Gem.dir
+
+      specs = []
+
+      sorted_requests.each do |req|
+        if req.installed?
+          b.call req, nil if b
+          next
+        end
+
+        path = req.download cache_dir
+
+        inst = Gem::Installer.new path, options
+
+        b.call req, inst if b
+
+        specs << inst.install
+      end
+
+      specs
     end
 
     # A semi-compatible DSL for Bundler's Gemfile format

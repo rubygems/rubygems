@@ -118,10 +118,6 @@ class Gem::DependencyInstaller
   # local gems preferred over remote gems.
 
   def find_gems_with_sources(dep)
-    # HACK Reset the errors.
-    # REFACTOR this method is called in a loop, we shouldn't wipe out previous
-    # errors.
-    @errors = nil
     gems_and_sources = []
 
     if consider_local?
@@ -136,7 +132,13 @@ class Gem::DependencyInstaller
 
     if consider_remote?
       begin
-        found, @errors = Gem::SpecFetcher.fetcher.spec_for_dependency dep
+        found, errors = Gem::SpecFetcher.fetcher.spec_for_dependency dep
+
+        if @errors
+          @errors += errors
+        else
+          @errors = errors
+        end
 
         gems_and_sources.push(*found)
 

@@ -680,6 +680,15 @@ Also, a list:
   end
 
   ##
+  # Add +spec+ to +@fetcher+ serving the data in the file +path+.
+  # +repo+ indicates which repo to make +spec+ appear to be in.
+
+  def add_to_fetcher(spec, path=nil, repo=@gem_repo)
+    path ||= spec.cache_file
+    @fetcher.data["#{@gem_repo}gems/#{spec.file_name}"] = read_binary(path)
+  end
+
+  ##
   # Sets up Gem::SpecFetcher to return information from the gems in +specs+.
   # Best used with +@all_gems+ from #util_setup_fake_fetcher.
 

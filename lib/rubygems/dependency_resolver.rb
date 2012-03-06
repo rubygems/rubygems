@@ -399,6 +399,17 @@ module Gem
           false
         end
       end
+
+      ##
+      # Indicates if the requested gem has already been installed.
+
+      def installed?
+        this_spec = full_spec
+
+        Gem::Specification.any? do |s|
+          s == this_spec
+        end
+      end
     end
 
     def requests(s, act)

@@ -34,6 +34,11 @@ class Gem::Commands::InstallCommand < Gem::Command
     add_version_option
     add_prerelease_option "to be installed. (Only for listed gems)"
 
+    add_option(:"Install/Update", '-g', '--gemfile FILE',
+               'Read from a Gemfile and install the listed gems') do |v,o|
+      o[:gemfile] = v
+    end
+
     @installed_specs = nil
   end
 
@@ -103,7 +108,34 @@ to write the specification by hand.  For example:
     "#{program_name} GEMNAME [GEMNAME ...] [options] -- --build-flags"
   end
 
+  def install_from_gemfile(gf)
+    require 'rubygems/request_set'
+    rs = Gem::RequestSet.new
+    rs.load_gemfile gf
+
+    rs.resolve
+
+    specs = rs.install options do |req, inst|
+      s = req.full_spec
+
+      if inst
+        say "Installing #{s.name} (#{s.version})"
+      else
+        say "Using #{s.name} (#{s.version})"
+      end
+    end
+
+    @installed_specs = specs
+
+    raise Gem::SystemExitException, 0
+  end
+
   def execute
+    if gf = options[:gemfile] then
+      install_from_gemfile gf
+      return
+    end
+
     if options[:include_dependencies] then
       alert "`gem install -y` is now default and will be removed"
       alert "use --ignore-dependencies to install only the gems you list"

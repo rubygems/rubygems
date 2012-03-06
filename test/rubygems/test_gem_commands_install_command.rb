@@ -8,6 +8,14 @@ class TestGemCommandsInstallCommand < Gem::TestCase
 
     @cmd = Gem::Commands::InstallCommand.new
     @cmd.options[:document] = []
+
+    @gemfile = "tmp_install_gemfile"
+  end
+
+  def teardown
+    super
+
+    File.unlink @gemfile if File.file? @gemfile
   end
 
   def test_execute_exclude_prerelease
@@ -539,6 +547,261 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     out = @ui.output.split "\n"
     assert_equal "2 gems installed", out.shift
+    assert out.empty?, out.inspect
+  end
+
+  def test_execute_uses_from_a_gemfile
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher
+
+    @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
+      read_binary(@a2.cache_file)
+
+    File.open @gemfile, "w" do |f|
+      f << "gem 'a'"
+    end
+
+    @cmd.options[:gemfile] = @gemfile
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        capture_io do
+          @cmd.execute
+        end
+      end
+      assert_equal 0, e.exit_code
+    end
+
+    assert_equal %w[], @cmd.installed_specs.map { |spec| spec.full_name }
+
+    out = @ui.output.split "\n"
+    assert_equal "Using a (2)", out.shift
+    assert out.empty?, out.inspect
+  end
+
+  def test_execute_installs_from_a_gemfile
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher @a2
+    util_clear_gems
+
+    @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
+      read_binary(@a2.cache_file)
+
+    File.open @gemfile, "w" do |f|
+      f << "gem 'a'"
+    end
+
+    @cmd.options[:gemfile] = @gemfile
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        capture_io do
+          @cmd.execute
+        end
+      end
+      assert_equal 0, e.exit_code
+    end
+
+    assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
+
+    out = @ui.output.split "\n"
+    assert_equal "Installing a (2)", out.shift
+    assert out.empty?, out.inspect
+  end
+
+  def test_execute_installs_deps_a_gemfile
+    q, q_gem = util_gem 'q', '1.0'
+    r, r_gem = util_gem 'r', '2.0', 'q' => nil
+
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher q, r
+    util_clear_gems
+
+    add_to_fetcher q, q_gem
+    add_to_fetcher r, r_gem
+
+    File.open @gemfile, "w" do |f|
+      f << "gem 'r'"
+    end
+
+    @cmd.options[:gemfile] = @gemfile
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        capture_io do
+          @cmd.execute
+        end
+      end
+      assert_equal 0, e.exit_code
+    end
+
+    names = @cmd.installed_specs.map { |spec| spec.full_name }
+
+    assert_equal %w[q-1.0 r-2.0], names
+
+    out = @ui.output.split "\n"
+    assert_equal "Installing q (1.0)", out.shift
+    assert_equal "Installing r (2.0)", out.shift
+    assert out.empty?, out.inspect
+  end
+
+  def test_execute_uses_deps_a_gemfile
+    q, q_gem = util_gem 'q', '1.0'
+    r, r_gem = util_gem 'r', '2.0', 'q' => nil
+
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher q, r
+    util_clear_gems
+
+    add_to_fetcher r, r_gem
+
+    Gem::Specification.add_specs q
+
+    File.open @gemfile, "w" do |f|
+      f << "gem 'r'"
+    end
+
+    @cmd.options[:gemfile] = @gemfile
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        capture_io do
+          @cmd.execute
+        end
+      end
+      assert_equal 0, e.exit_code
+    end
+
+    names = @cmd.installed_specs.map { |spec| spec.full_name }
+
+    assert_equal %w[r-2.0], names
+
+    out = @ui.output.split "\n"
+    assert_equal "Using q (1.0)", out.shift
+    assert_equal "Installing r (2.0)", out.shift
+    assert out.empty?, out.inspect
+  end
+
+  def test_execute_installs_deps_a_gemfile_into_a_path
+    q, q_gem = util_gem 'q', '1.0'
+    r, r_gem = util_gem 'r', '2.0', 'q' => nil
+
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher q, r
+    util_clear_gems
+
+    add_to_fetcher q, q_gem
+    add_to_fetcher r, r_gem
+
+    File.open @gemfile, "w" do |f|
+      f << "gem 'r'"
+    end
+
+    @cmd.options[:install_dir] = "gf-path"
+    @cmd.options[:gemfile] = @gemfile
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        capture_io do
+          @cmd.execute
+        end
+      end
+      assert_equal 0, e.exit_code
+    end
+
+    names = @cmd.installed_specs.map { |spec| spec.full_name }
+
+    assert_equal %w[q-1.0 r-2.0], names
+
+    out = @ui.output.split "\n"
+    assert_equal "Installing q (1.0)", out.shift
+    assert_equal "Installing r (2.0)", out.shift
+    assert out.empty?, out.inspect
+
+    assert File.file?("gf-path/specifications/q-1.0.gemspec"), "not installed"
+    assert File.file?("gf-path/specifications/r-2.0.gemspec"), "not installed"
+  end
+
+  def test_execute_with_gemfile_path_ignores_system
+    q, q_gem = util_gem 'q', '1.0'
+    r, r_gem = util_gem 'r', '2.0', 'q' => nil
+
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher q, r
+    util_clear_gems
+
+    add_to_fetcher q, q_gem
+    add_to_fetcher r, r_gem
+
+    Gem::Specification.add_specs q
+
+    File.open @gemfile, "w" do |f|
+      f << "gem 'r'"
+    end
+
+    @cmd.options[:install_dir] = "gf-path"
+    @cmd.options[:gemfile] = @gemfile
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        capture_io do
+          @cmd.execute
+        end
+      end
+      assert_equal 0, e.exit_code
+    end
+
+    names = @cmd.installed_specs.map { |spec| spec.full_name }
+
+    assert_equal %w[q-1.0 r-2.0], names
+
+    out = @ui.output.split "\n"
+    assert_equal "Installing q (1.0)", out.shift
+    assert_equal "Installing r (2.0)", out.shift
+    assert out.empty?, out.inspect
+
+    assert File.file?("gf-path/specifications/q-1.0.gemspec"), "not installed"
+    assert File.file?("gf-path/specifications/r-2.0.gemspec"), "not installed"
+  end
+
+  def test_execute_uses_deps_a_gemfile_with_a_path
+    q, q_gem = util_gem 'q', '1.0'
+    r, r_gem = util_gem 'r', '2.0', 'q' => nil
+
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher q, r
+    util_clear_gems
+
+    add_to_fetcher r, r_gem
+
+    i = Gem::Installer.new q_gem, :install_dir => "gf-path"
+    i.install
+
+    assert File.file?("gf-path/specifications/q-1.0.gemspec"), "not installed"
+
+    File.open @gemfile, "w" do |f|
+      f << "gem 'r'"
+    end
+
+    @cmd.options[:install_dir] = "gf-path"
+    @cmd.options[:gemfile] = @gemfile
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        capture_io do
+          @cmd.execute
+        end
+      end
+      assert_equal 0, e.exit_code
+    end
+
+    names = @cmd.installed_specs.map { |spec| spec.full_name }
+
+    assert_equal %w[r-2.0], names
+
+    out = @ui.output.split "\n"
+    assert_equal "Using q (1.0)", out.shift
+    assert_equal "Installing r (2.0)", out.shift
     assert out.empty?, out.inspect
   end
 

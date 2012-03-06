@@ -133,6 +133,82 @@ class TestGem < Gem::TestCase
     end
   end
 
+  def test_self_finish_resolve
+    save_loaded_features do
+      a1 = new_spec "a", "1", "b" => "> 0"
+      b1 = new_spec "b", "1", "c" => ">= 1"
+      b2 = new_spec "b", "2", "c" => ">= 2"
+      c1 = new_spec "c", "1"
+      c2 = new_spec "c", "2"
+
+      install_specs a1, b1, b2, c1, c2
+
+      a1.activate
+
+      assert_equal %w(a-1), loaded_spec_names
+      assert_equal ["b (> 0)"], unresolved_names
+
+      Gem.finish_resolve
+
+      assert_equal %w(a-1 b-2 c-2), loaded_spec_names
+      assert_equal [], unresolved_names
+    end
+  end
+
+  def test_self_activate_via_require_wtf
+    save_loaded_features do
+      a1 = new_spec "a", "1", "b" => "> 0", "d" => "> 0"    # this
+      b1 = new_spec "b", "1", { "c" => ">= 1" }, "lib/b.rb"
+      b2 = new_spec "b", "2", { "c" => ">= 2" }, "lib/b.rb" # this
+      c1 = new_spec "c", "1"
+      c2 = new_spec "c", "2"                                # this
+      d1 = new_spec "d", "1", { "c" => "< 2" },  "lib/d.rb"
+      d2 = new_spec "d", "2", { "c" => "< 2" },  "lib/d.rb" # this
+
+      install_specs a1, b1, b2, c1, c2, d1, d2
+
+      a1.activate
+
+      assert_equal %w(a-1), loaded_spec_names
+      assert_equal ["b (> 0)", "d (> 0)"], unresolved_names
+
+      require "b"
+
+      e = assert_raises Gem::LoadError do
+        require "d"
+      end
+
+      assert_equal "unable to find a version of 'd' to activate", e.message
+
+      assert_equal %w(a-1 b-2 c-2), loaded_spec_names
+      assert_equal ["d (> 0)"], unresolved_names
+    end
+  end
+
+  def test_self_finish_resolve_wtf
+    save_loaded_features do
+      a1 = new_spec "a", "1", "b" => "> 0", "d" => "> 0"    # this
+      b1 = new_spec "b", "1", { "c" => ">= 1" }, "lib/b.rb" # this
+      b2 = new_spec "b", "2", { "c" => ">= 2" }, "lib/b.rb"
+      c1 = new_spec "c", "1"                                # this
+      c2 = new_spec "c", "2"
+      d1 = new_spec "d", "1", { "c" => "< 2" },  "lib/d.rb"
+      d2 = new_spec "d", "2", { "c" => "< 2" },  "lib/d.rb" # this
+
+      install_specs a1, b1, b2, c1, c2, d1, d2
+
+      a1.activate
+
+      assert_equal %w(a-1), loaded_spec_names
+      assert_equal ["b (> 0)", "d (> 0)"], unresolved_names
+
+      Gem.finish_resolve
+
+      assert_equal %w(a-1 b-1 c-1 d-2), loaded_spec_names
+      assert_equal [], unresolved_names
+    end
+  end
+
   # TODO: move these to specification
   def test_self_activate_ambiguous_unrelated
     save_loaded_features do

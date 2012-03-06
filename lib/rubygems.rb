@@ -198,6 +198,20 @@ module Gem
     Gem::Specification.unresolved_deps
   end
 
+  def self.needs
+    yield
+    finish_resolve
+  end
+
+  def self.finish_resolve
+    deps = Gem::Specification.unresolved_deps.values
+    res = Gem::DependencyResolver.for_current_gems deps
+
+    res.resolve.each do |s|
+      s.full_spec.activate
+    end
+  end
+
   ##
   # An Array of all possible load paths for all versions of all gems in the
   # Gem installation.
@@ -1130,6 +1144,7 @@ module Gem
   autoload :PathSupport,     'rubygems/path_support'
   autoload :Platform,        'rubygems/platform'
   autoload :ConfigFile,      'rubygems/config_file'
+  autoload :DependencyResolver, 'rubygems/dependency_resolver'
 
   require "rubygems/specification"
 end

@@ -285,9 +285,10 @@ module Gem
     # with a spec that would be activated.
     #
     class DependencyConflict
-      def initialize(dependency, activated)
+      def initialize(dependency, activated, failed_dep=dependency)
         @dependency = dependency
         @activated = activated
+        @failed_dep = failed_dep
       end
 
       attr_reader :dependency, :activated
@@ -295,7 +296,7 @@ module Gem
       # Return the Specification that listed the dependency
       #
       def requester
-        @dependency.requester
+        @failed_dep.requester
       end
 
       def for_spec?(spec)
@@ -305,7 +306,7 @@ module Gem
       # Return the 2 dependency objects that conflicted
       #
       def conflicting_dependencies
-        [@dependency.dependency, @activated.request.dependency]
+        [@failed_dep.dependency, @activated.request.dependency]
       end
     end
 
@@ -349,12 +350,20 @@ module Gem
     # activation.
     #
     class ActivationRequest
-      def initialize(spec, req)
+      def initialize(spec, req, others_possible=true)
         @spec = spec
         @request = req
+        @others_possible = others_possible
       end
 
       attr_reader :spec, :request
+
+      # Indicate if this activation is one of a set of possible
+      # requests for the same Dependency request.
+      #
+      def others_possible?
+        @others_possible
+      end
 
       # Return the ActivationRequest that contained the dependency
       # that we were activated for.
@@ -443,7 +452,17 @@ module Gem
           # object which will be seen by the caller and be
           # handled at the right level.
 
-          conflict = DependencyConflict.new(dep, existing)
+          # If the existing activation indicates that there
+          # are other possibles for it, then issue the conflict
+          # on the dep for the activation itself. Otherwise, issue
+          # it on the requester's request itself.
+          #
+          if existing.others_possible?
+            conflict = DependencyConflict.new(dep, existing)
+          else
+            depreq = existing.request.requester.request
+            conflict = DependencyConflict.new(depreq, existing, dep)
+          end
           @conflicts << conflict
 
           return conflict
@@ -462,7 +481,7 @@ module Gem
           # them to needed.
 
           spec = possible.first
-          act =  ActivationRequest.new(spec, dep)
+          act =  ActivationRequest.new(spec, dep, false)
 
           specs << act
 

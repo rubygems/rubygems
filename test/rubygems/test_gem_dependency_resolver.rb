@@ -306,4 +306,22 @@ class TestGemDependencyResolver < Gem::TestCase
 
     assert_set [merch, mail, sup1], r.resolve
   end
+
+  def test_second_level_backout
+    b1 = new_spec "b", "1", { "c" => ">= 1" }, "lib/b.rb"
+    b2 = new_spec "b", "2", { "c" => ">= 2" }, "lib/b.rb"
+    c1 = new_spec "c", "1"
+    c2 = new_spec "c", "2"
+    d1 = new_spec "d", "1", { "c" => "< 2" },  "lib/d.rb"
+    d2 = new_spec "d", "2", { "c" => "< 2" },  "lib/d.rb"
+
+    s = set(b1, b2, c1, c2, d1, d2)
+
+    p1 = make_dep "b", "> 0"
+    p2 = make_dep "d", "> 0"
+
+    r = Gem::DependencyResolver.new([p1, p2], s)
+
+    assert_set [b1, c1, d2], r.resolve
+  end
 end

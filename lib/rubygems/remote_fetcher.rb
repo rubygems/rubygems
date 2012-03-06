@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'rubygems/user_interaction'
 require 'uri'
+require 'resolv'
 
 ##
 # RemoteFetcher handles the details of fetching gems and gem information from
@@ -58,8 +59,11 @@ class Gem::RemoteFetcher
   # * nil: respect environment variables (HTTP_PROXY, HTTP_PROXY_USER,
   #        HTTP_PROXY_PASS)
   # * <tt>:no_proxy</tt>: ignore environment variables and _don't_ use a proxy
+  #
+  # +dns+: An object to use for DNS resolution of the API endpoint.
+  #        By default, use Resolv::DNS.
 
-  def initialize(proxy = nil)
+  def initialize(proxy=nil, dns=Resolv::DNS.new)
     require 'net/http'
     require 'stringio'
     require 'time'
@@ -77,6 +81,26 @@ class Gem::RemoteFetcher
       else URI.parse(proxy)
       end
     @user_agent = user_agent
+
+    @dns = dns
+  end
+
+  ##
+  #
+  # Given a source at +uri+, calculate what hostname to actually
+  # connect to query the data for it.
+
+  def api_endpoint(uri)
+    host = uri.host
+
+    begin
+      res = @dns.getresource "_rubygems._tcp.#{host}",
+                             Resolv::DNS::Resource::IN::SRV
+    rescue Resolv::ResolvError
+      uri
+    else
+      URI.parse "#{res.target}#{uri.path}"
+    end
   end
 
   ##

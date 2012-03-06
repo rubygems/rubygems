@@ -168,13 +168,14 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     Gem.configuration.verbose = true
     Gem.configuration.update_sources = true
 
+    Gem::RemoteFetcher.fetcher = Gem::FakeFetcher.new
+
     @gem_repo = "http://gems.example.com/"
     @uri = URI.parse @gem_repo
     Gem.sources.replace [@gem_repo]
 
     Gem.searcher = nil
     Gem::SpecFetcher.fetcher = nil
-
     @orig_BASERUBY = Gem::ConfigMap[:BASERUBY]
     Gem::ConfigMap[:BASERUBY] = Gem::ConfigMap[:ruby_install_name]
 

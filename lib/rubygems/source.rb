@@ -14,9 +14,10 @@ class Gem::Source
     end
 
     @uri = uri
+    @api_uri = Gem::RemoteFetcher.fetcher.api_endpoint uri
   end
 
-  attr_reader :uri
+  attr_reader :uri, :api_uri
 
   def <=>(other)
     if !@uri

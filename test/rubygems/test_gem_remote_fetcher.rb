@@ -3,6 +3,7 @@ require 'ostruct'
 require 'webrick'
 require 'rubygems/remote_fetcher'
 require 'rubygems/package'
+require 'minitest/mock'
 
 # = Testing Proxy Settings
 #
@@ -169,6 +170,21 @@ gems:
       assert_data_from_server @fetcher.fetch_path(@server_uri)
       assert_equal SERVER_DATA.size, @fetcher.fetch_size(@server_uri)
     end
+  end
+
+  def test_api_endpoint
+    uri = URI.parse "http://gems.example.com/foo"
+    target = MiniTest::Mock.new
+    target.expect :target, "http://blah.com"
+
+    dns = MiniTest::Mock.new
+    dns.expect :getresource, target, [String, Object]
+
+    fetch = Gem::RemoteFetcher.new nil, dns
+    assert_equal URI.parse("http://blah.com/foo"), fetch.api_endpoint(uri)
+
+    target.verify
+    dns.verify
   end
 
   def util_fuck_with_fetcher data, blow = false

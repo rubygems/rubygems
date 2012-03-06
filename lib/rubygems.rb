@@ -199,15 +199,17 @@ module Gem
   end
 
   def self.needs
-    yield
-    finish_resolve
+    rs = Gem::RequestSet.new
+
+    yield rs
+
+    finish_resolve rs
   end
 
-  def self.finish_resolve
-    deps = Gem::Specification.unresolved_deps.values
-    res = Gem::DependencyResolver.for_current_gems deps
+  def self.finish_resolve(request_set=Gem::RequestSet.new)
+    request_set.import Gem::Specification.unresolved_deps.values
 
-    res.resolve.each do |s|
+    request_set.resolve_current.each do |s|
       s.full_spec.activate
     end
   end
@@ -1145,6 +1147,7 @@ module Gem
   autoload :Platform,        'rubygems/platform'
   autoload :ConfigFile,      'rubygems/config_file'
   autoload :DependencyResolver, 'rubygems/dependency_resolver'
+  autoload :RequestSet,      'rubygems/request_set'
 
   require "rubygems/specification"
 end

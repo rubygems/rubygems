@@ -1127,6 +1127,46 @@ class TestGem < Gem::TestCase
     end
   end
 
+  def test_self_needs
+    util_clear_gems
+    a = util_spec "a", "1"
+    b = util_spec "b", "1", "c" => nil
+    c = util_spec "c", "2"
+
+    install_specs a, b, c
+
+    Gem.needs do |r|
+      r.gem "a"
+      r.gem "b", "= 1"
+    end
+
+    activated = Gem::Specification.map { |x| x.full_name }
+
+    assert_equal %w!a-1 b-1 c-2!, activated.sort
+  end
+
+  def test_self_needs_picks_up_unresolved_deps
+    save_loaded_features do
+      util_clear_gems
+      a = util_spec "a", "1"
+      b = util_spec "b", "1", "c" => nil
+      c = util_spec "c", "2"
+      d =  new_spec "d", "1", {'e' => '= 1'}, "lib/d.rb"
+      e = util_spec "e", "1"
+
+      install_specs a, b, c, d, e
+
+      Gem.needs do |r|
+        r.gem "a"
+        r.gem "b", "= 1"
+
+        require 'd'
+      end
+
+      assert_equal %w!a-1 b-1 c-2 d-1 e-1!, loaded_spec_names
+    end
+  end
+
   if Gem.win_platform? && '1.9' > RUBY_VERSION
     # Ruby 1.9 properly handles ~ path expansion, so no need to run such tests.
     def test_self_user_home_userprofile

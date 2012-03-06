@@ -25,12 +25,26 @@ module Gem
       @dependencies << Gem::Dependency.new(name, reqs)
     end
 
+    # Add +deps+ Gem::Depedency objects to the set.
+    #
+    def import(deps)
+      @dependencies += deps
+    end
+
     # Resolve the requested dependencies and return an Array of
     # Specification objects to be activated.
     #
     def resolve(set=nil)
       r = Gem::DependencyResolver.new(@dependencies, set)
       @requests = r.resolve
+    end
+
+    # Resolve the requested dependencies against the gems
+    # available via Gem.path and return an Array of Specification
+    # objects to be activated.
+    #
+    def resolve_current
+      resolve DependencyResolver::CurrentSet.new
     end
 
     # Load a Bundler-style Gemfile as much as possible.

@@ -77,6 +77,7 @@ class Gem::RemoteFetcher
       else URI.parse(proxy)
       end
     @user_agent = user_agent
+    @env_no_proxy = get_no_proxy_from_env
   end
 
   ##
@@ -238,7 +239,6 @@ class Gem::RemoteFetcher
     end
 
     data = send "fetch_#{uri.scheme}", uri, mtime, head
-
     if data and !head and uri.to_s =~ /gz$/
       begin
         data = Gem.gunzip data
@@ -329,10 +329,30 @@ class Gem::RemoteFetcher
   end
 
   ##
+  # Returns list of no_proxy entries (if any) from the environment
+
+  def get_no_proxy_from_env
+    env_no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
+
+    return [] if env_no_proxy.nil?  or env_no_proxy.empty?
+
+    env_no_proxy_list = env_no_proxy.split(/\s*,\s*/)
+  end
+
+  ##
   # Normalize the URI by adding "http://" if it is missing.
 
   def normalize_uri(uri)
     (uri =~ /^(https?|ftp|file):/) ? uri : "http://#{uri}"
+  end
+
+  def no_proxy?(host)
+    host = host.downcase
+    @env_no_proxy.each do |pattern|
+      pattern = pattern.downcase
+      return true if host[-pattern.length, pattern.length ] == pattern
+    end
+    return false
   end
 
   ##
@@ -342,7 +362,7 @@ class Gem::RemoteFetcher
   def connection_for(uri)
     net_http_args = [uri.host, uri.port]
 
-    if @proxy_uri then
+    if @proxy_uri && !no_proxy?(uri.host) then
       net_http_args += [
         @proxy_uri.host,
         @proxy_uri.port,

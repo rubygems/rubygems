@@ -62,7 +62,16 @@ FIELD         name of gemspec field to show
             "Please specify a gem name or file on the command line"
     end
 
-    if !options[:version].none? and options[:all]
+    case options[:version]
+    when String
+      req = Gem::Requirement.parse options[:version]
+    when Gem::Requirement
+      req = options[:version]
+    else
+      raise Gem::CommandLineError, "Unsupported version type: #{options[:version]}"
+    end
+
+    if !req.none? and options[:all]
       alert_error "Specify --all or -v, not both"
       terminate_interaction 1
     end

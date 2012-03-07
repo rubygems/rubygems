@@ -68,7 +68,7 @@ class Gem::ConfigFile
 
         path.strip
       rescue LoadError
-        "/etc"
+        RbConfig::CONFIG["sysconfdir"] || "/etc"
       end
     end
 

@@ -63,7 +63,25 @@ FIELD         name of gemspec field to show
             "Please specify a gem name or file on the command line"
     end
 
-    dep = Gem::Dependency.new gem, options[:version]
+    case v = options[:version]
+    when String
+      req = Gem::Requirement.create v
+    when Gem::Requirement
+      req = v
+    else
+      raise Gem::CommandLineError, "Unsupported version type: '#{v}'"
+    end
+
+    if !req.none? and options[:all]
+      alert_error "Specify --all or -v, not both"
+      terminate_interaction 1
+    end
+
+    if options[:all]
+      dep = Gem::Dependency.new gem
+    else
+      dep = Gem::Dependency.new gem, req
+    end
 
     field = get_one_optional_argument
 

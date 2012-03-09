@@ -7,7 +7,6 @@
 require 'rubygems/exceptions'
 require 'rubygems/package'
 require 'rubygems/ext'
-require 'rubygems/require_paths_builder'
 require 'rubygems/user_interaction'
 
 ##
@@ -37,8 +36,6 @@ class Gem::Installer
   class ExtensionBuildError < Gem::InstallError; end
 
   include Gem::UserInteraction
-
-  include Gem::RequirePathsBuilder if Gem::QUICKLOADER_SUCKAGE
 
   # DOC: Missing docs or :nodoc:.
   attr_reader :gem
@@ -232,9 +229,6 @@ class Gem::Installer
 
     generate_bin
     write_spec
-
-    # TODO document why this is done
-    write_require_paths_file_if_needed if Gem::QUICKLOADER_SUCKAGE
 
     # TODO should be always cache the file? Other classes have options
     # to controls if caching is done.

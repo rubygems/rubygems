@@ -594,15 +594,6 @@ module Gem
   def self.load_path_insert_index
     index = $LOAD_PATH.index ConfigMap[:sitelibdir]
 
-    if QUICKLOADER_SUCKAGE then
-      $LOAD_PATH.each_with_index do |path, i|
-        if path.instance_variable_defined?(:@gem_prelude_index) then
-          index = i
-          break
-        end
-      end
-    end
-
     index
   end
 

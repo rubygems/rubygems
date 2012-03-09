@@ -16,7 +16,6 @@ class Gem::Validator
 
   def initialize
     require 'find'
-    require 'digest'
   end
 
   ##
@@ -26,11 +25,10 @@ class Gem::Validator
   def verify_gem(gem_data)
     raise Gem::VerificationError, 'empty gem file' if gem_data.size == 0
 
-    unless gem_data =~ /MD5SUM/ then
-      return # Don't worry about it...this sucks.  Need to fix MD5 stuff for
-      # new format
-      # FIXME
-    end
+    # verified by Gem::Package for the latest gem format
+    return unless gem_data =~ /MD5SUM/
+
+    require 'digest'
 
     sum_data = gem_data.gsub(/MD5SUM = "([a-z0-9]+)"/,
                              "MD5SUM = \"#{"F" * 32}\"")
@@ -143,10 +141,10 @@ class Gem::Validator
             begin
               next unless data # HACK `gem check -a mkrf`
 
-              open File.join(gem_directory, entry['path']), Gem.binary_mode do |f|
-                # TODO upgrade digest to SHA-family
-                unless Digest::MD5.hexdigest(f.read).to_s ==
-                    Digest::MD5.hexdigest(data).to_s then
+              source = File.join gem_directory, entry['path']
+
+              open source, Gem.binary_mode do |f|
+                unless f.read == data then
                   errors[gem_name][entry['path']] = "Modified from original"
                 end
               end

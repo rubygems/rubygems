@@ -192,23 +192,20 @@ class Gem::CommandManager
   def load_and_instantiate(command_name)
     command_name = command_name.to_s
     const_name = command_name.capitalize.gsub(/_(.)/) { $1.upcase } << "Command"
-    commands = Gem::Commands
-    retried = false
+    load_error = nil
 
     begin
-      commands.const_get(const_name).new
-    rescue NameError
-      raise if retried
-
-      retried = true
       begin
         require "rubygems/commands/#{command_name}_command"
-      rescue Exception => e
-        alert_error "Loading command: #{command_name} (#{e.class})\n    #{e}"
-        ui.errs.puts "\t#{e.backtrace.join "\n\t"}" if
-          Gem.configuration.backtrace
+      rescue LoadError => e
+        load_error = e
       end
-      retry # TODO: ugh. remove the clevar
+      Gem::Commands.const_get(const_name).new
+    rescue Exception => e
+      e = load_error if load_error
+
+      alert_error "Loading command: #{command_name} (#{e.class})\n\t#{e}"
+      ui.errs.puts "\t#{e.backtrace.join "\n\t"}" if Gem.configuration.backtrace
     end
   end
 

@@ -1264,6 +1264,32 @@ class Gem::Specification
   end
 
   ##
+  # Returns the build_args used to install the gem
+
+  def build_args
+    if File.exists? build_info_file
+      File.readlines(build_info_file).map { |x| x.strip }
+    else
+      []
+    end
+  end
+
+  ##
+  # Returns the full path to the build info directory
+
+  def build_info_dir
+    File.join base_dir, "build_info"
+  end
+
+  ##
+  # Returns the full path to the file containing the build
+  # information generated when the gem was installed
+
+  def build_info_file
+    File.join build_info_dir, "#{full_name}.info"
+  end
+
+  ##
   # Returns the full path to the cache directory containing this
   # spec's cached gem.
 

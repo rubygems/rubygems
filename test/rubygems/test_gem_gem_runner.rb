@@ -3,6 +3,18 @@ require 'rubygems/gem_runner'
 
 class TestGemGemRunner < Gem::TestCase
 
+  def setup
+    super
+
+    @orig_args = Gem::Command.build_args
+  end
+
+  def teardown
+    super
+
+    Gem::Command.build_args = @orig_args
+  end
+
   def test_do_configuration
     Gem.clear_paths
 

@@ -230,6 +230,13 @@ class Gem::Installer
     generate_bin
     write_spec
 
+    args = Gem::Command.build_args
+    unless args.empty?
+      File.open spec.build_info_file, "w" do |f|
+        args.each { |a| f.puts a }
+      end
+    end
+
     # TODO should be always cache the file? Other classes have options
     # to controls if caching is done.
     cache_file = File.join(gem_home, "cache", "#{spec.full_name}.gem")
@@ -624,7 +631,15 @@ TEXT
   def build_extensions
     return if spec.extensions.empty?
 
-    say "Building native extensions.  This could take a while..."
+    args = Gem::Command.build_args
+
+    if args.empty?
+      say "Building native extensions.  This could take a while..."
+    else
+      say "Building native extensions with: '#{args.join(' ')}'"
+      say "This could take a while..."
+    end
+
     dest_path = File.join gem_dir, spec.require_paths.first
     ran_rake = false # only run rake once
 

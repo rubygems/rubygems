@@ -440,7 +440,7 @@ module Gem
 
     require 'fileutils'
 
-    %w[cache doc gems specifications].each do |name|
+    %w[cache build_info doc gems specifications].each do |name|
       subdir = File.join dir, name
       next if File.exist? subdir
       FileUtils.mkdir_p subdir rescue nil # in case of perms issues -- lame

@@ -10,11 +10,13 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     @cmd.options[:document] = []
 
     @gemdeps = "tmp_install_gemdeps"
+    @orig_args = Gem::Command.build_args
   end
 
   def teardown
     super
 
+    Gem::Command.build_args = @orig_args
     File.unlink @gemdeps if File.file? @gemdeps
   end
 
@@ -273,6 +275,43 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_path_exists File.join(@a2.doc_dir, 'ri')
     assert_path_exists File.join(@a2.doc_dir, 'rdoc')
   end
+
+  def test_execute_saves_build_args
+    util_setup_fake_fetcher
+
+    args = %w!--with-awesome=true --more-awesome=yes!
+
+    Gem::Command.build_args = args
+
+    @cmd.options[:domain] = :local
+
+    FileUtils.mv @a2.cache_file, @tempdir
+
+    @cmd.options[:args] = [@a2.name]
+
+    use_ui @ui do
+      # Don't use Dir.chdir with a block, it warnings a lot because
+      # of a downstream Dir.chdir with a block
+      old = Dir.getwd
+
+      begin
+        Dir.chdir @tempdir
+        e = assert_raises Gem::SystemExitException do
+          @cmd.execute
+        end
+      ensure
+        Dir.chdir old
+      end
+
+      assert_equal 0, e.exit_code
+    end
+
+    path = @a2.build_info_file
+    assert_path_exists path
+
+    assert_equal args, @a2.build_args
+  end
+
 
   def test_execute_remote
     util_setup_fake_fetcher

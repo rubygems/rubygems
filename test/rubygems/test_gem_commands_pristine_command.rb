@@ -6,6 +6,12 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   def setup
     super
     @cmd = Gem::Commands::PristineCommand.new
+    @orig_args = Gem::Command.build_args
+  end
+
+  def teardown
+    super
+    Gem::Command.build_args = @orig_args
   end
 
   def test_execute
@@ -65,7 +71,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     assert_empty out, out.inspect
   end
 
-  def test_execute_no_exetension
+  def test_execute_no_extension
     a = quick_spec 'a' do |s| s.extensions << 'ext/a/extconf.rb' end
 
     ext_path = File.join @tempdir, 'ext', 'a', 'extconf.rb'
@@ -87,6 +93,40 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     assert_equal 'Restoring gems to pristine condition...', out.shift
     assert_equal "Skipped #{a.full_name}, it needs to compile an extension",
                  out.shift
+    assert_empty out, out.inspect
+  end
+
+  def test_execute_with_extension_with_build_args
+    Gem::Command.build_args = %w!--with-awesome=true --sweet!
+
+    a = quick_spec 'a' do |s| s.extensions << 'ext/a/extconf.rb' end
+
+    ext_path = File.join @tempdir, 'ext', 'a', 'extconf.rb'
+    write_file ext_path do |io|
+      io.write <<-'RUBY'
+      File.open "Makefile", "w" do |f|
+        f.puts "all:\n\techo built\n"
+        f.puts "install:\n\techo built\n"
+      end
+      RUBY
+    end
+
+    install_gem a
+
+    @cmd.options[:args] = %w[a]
+
+    Gem::Command.build_args = @orig_args
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    out = @ui.output.split "\n"
+
+    assert_equal 'Restoring gems to pristine condition...', out.shift
+    assert_equal "Building native extensions with: '--with-awesome=true --sweet'", out.shift
+    assert_equal "This could take a while...", out.shift
+    assert_equal "Restored #{a.full_name}", out.shift
     assert_empty out, out.inspect
   end
 

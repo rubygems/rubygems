@@ -106,6 +106,35 @@ load Gem.bin_path('a', 'executable', version)
     FileUtils.rm_f gem_make_out
   end
 
+  def test_build_extensions_with_build_args
+    args = ["--aa", "--bb"]
+    @installer.build_args = args
+    @installer.spec = @spec
+    @spec.extensions << 'extconf.rb'
+
+    File.open File.join(@spec.gem_dir, "extconf.rb"), "w" do |f|
+      f.write <<-'RUBY'
+        puts "IN EXTCONF"
+        File.open 'extconf_args', 'w' do |f|
+          f.puts ARGV.inspect
+        end
+
+        File.open 'Makefile', 'w' do |f|
+          f.puts "default:\n\techo built"
+          f.puts "install:\n\techo installed"
+        end
+      RUBY
+    end
+
+    use_ui @ui do
+      @installer.build_extensions
+    end
+
+    path = File.join @spec.gem_dir, "extconf_args"
+
+    assert_equal args.inspect, File.read(path).strip
+  end
+
   def test_check_executable_overwrite
     @installer.generate_bin
 

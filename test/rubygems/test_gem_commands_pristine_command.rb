@@ -6,12 +6,6 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   def setup
     super
     @cmd = Gem::Commands::PristineCommand.new
-    @orig_args = Gem::Command.build_args
-  end
-
-  def teardown
-    super
-    Gem::Command.build_args = @orig_args
   end
 
   def test_execute
@@ -97,8 +91,6 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_with_extension_with_build_args
-    Gem::Command.build_args = %w!--with-awesome=true --sweet!
-
     a = quick_spec 'a' do |s| s.extensions << 'ext/a/extconf.rb' end
 
     ext_path = File.join @tempdir, 'ext', 'a', 'extconf.rb'
@@ -111,11 +103,11 @@ class TestGemCommandsPristineCommand < Gem::TestCase
       RUBY
     end
 
-    install_gem a
+    build_args = %w!--with-awesome=true --sweet!
+
+    install_gem a, :build_args => build_args
 
     @cmd.options[:args] = %w[a]
-
-    Gem::Command.build_args = @orig_args
 
     use_ui @ui do
       @cmd.execute

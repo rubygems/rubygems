@@ -94,6 +94,8 @@ class Gem::Installer
   # :only_install_dir:: Only validate dependencies against what is in the
   #                     install_dir
   # :wrappers:: Install wrappers if true, symlinks if false.
+  # :build_args:: An Array of arguments to pass to the extension builder
+  #               process. If not set, then Gem::Command.build_args is used
 
   def initialize(gem, options={})
     require 'fileutils'
@@ -230,10 +232,9 @@ class Gem::Installer
     generate_bin
     write_spec
 
-    args = Gem::Command.build_args
-    unless args.empty?
+    unless @build_args.empty?
       File.open spec.build_info_file, "w" do |f|
-        args.each { |a| f.puts a }
+        @build_args.each { |a| f.puts a }
       end
     end
 
@@ -560,6 +561,8 @@ class Gem::Installer
     # (or use) a new bin dir under the gem_home.
     @bin_dir             = options[:bin_dir] || Gem.bindir(gem_home)
     @development         = options[:development]
+
+    @build_args          = options[:build_args] || Gem::Command.build_args
   end
 
   # DOC: Missing docs or :nodoc:.
@@ -631,12 +634,10 @@ TEXT
   def build_extensions
     return if spec.extensions.empty?
 
-    args = Gem::Command.build_args
-
-    if args.empty?
+    if @build_args.empty?
       say "Building native extensions.  This could take a while..."
     else
-      say "Building native extensions with: '#{args.join(' ')}'"
+      say "Building native extensions with: '#{@build_args.join(' ')}'"
       say "This could take a while..."
     end
 
@@ -665,7 +666,8 @@ TEXT
 
       begin
         Dir.chdir extension_dir do
-          results = builder.build(extension, gem_dir, dest_path, results)
+          results = builder.build(extension, gem_dir, dest_path,
+                                  results, @build_args)
 
           say results.join("\n") if Gem.configuration.really_verbose
         end

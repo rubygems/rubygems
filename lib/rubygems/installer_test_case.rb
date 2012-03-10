@@ -11,6 +11,11 @@ class Gem::Installer
   ##
   # Available through requiring rubygems/installer_test_case
 
+  attr_writer :build_args
+
+  ##
+  # Available through requiring rubygems/installer_test_case
+
   attr_writer :gem_dir
 
   ##

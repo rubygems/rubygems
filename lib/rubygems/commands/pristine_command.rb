@@ -97,13 +97,12 @@ extensions.
       install_defaults = Gem::ConfigFile::PLATFORM_DEFAULTS['install']
       installer_env_shebang = install_defaults.to_s['--env-shebang']
 
-      Gem::Command.build_args = spec.build_args
-      
       installer = Gem::Installer.new(gem,
                                      :wrappers => true,
                                      :force => true,
                                      :install_dir => spec.base_dir,
-                                     :env_shebang => installer_env_shebang)
+                                     :env_shebang => installer_env_shebang,
+                                     :build_args => spec.build_args)
       installer.install
 
       say "Restored #{spec.full_name}"

@@ -47,10 +47,10 @@ module Gem
       resolve DependencyResolver::CurrentSet.new
     end
 
-    # Load a Bundler-style Gemfile as much as possible.
+    # Load a dependency management file.
     #
-    def load_gemfile(path)
-      gf = GemFile.new(self, path)
+    def load_gemdeps(path)
+      gf = GemDepedencyAPI.new(self, path)
       gf.load
     end
 
@@ -145,14 +145,14 @@ module Gem
 
     # A semi-compatible DSL for Bundler's Gemfile format
     #
-    class GemFile
+    class GemDepedencyAPI
       def initialize(set, path)
         @set = set
         @path = path
       end
 
       def load
-        instance_eval File.read(@path), @path, 1
+        instance_eval File.read(@path).untaint, @path, 1
       end
 
       # DSL

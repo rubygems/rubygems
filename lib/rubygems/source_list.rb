@@ -65,6 +65,10 @@ class Gem::SourceList
 
   alias_method :to_ary, :to_a
 
+  def first
+    @sources.first
+  end
+
   def include?(other)
     if other.kind_of? Gem::Source
       @sources.include? other

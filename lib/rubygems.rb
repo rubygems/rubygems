@@ -122,6 +122,8 @@ module Gem
     /wince/i,
   ]
 
+  GEM_DEP_FILES = %w!gem.deps.rb Gemfile Isolate!
+
   @@win_platform = nil
 
   @configuration = nil
@@ -211,6 +213,29 @@ module Gem
 
     request_set.resolve_current.each do |s|
       s.full_spec.activate
+    end
+  end
+
+  def self.detect_gemdeps
+    if path = ENV['RUBYGEMS_GEMDEPS']
+      path = path.dup.untaint
+
+      if path == "-"
+        path = GEM_DEP_FILES.find { |f| File.exists?(f) }
+
+        return unless path
+      end
+
+      return unless File.exists? path
+
+      rs = Gem::RequestSet.new
+      rs.load_gemdeps path
+
+      rs.resolve_current.map do |s|
+        sp = s.full_spec
+        sp.activate
+        sp
+      end
     end
   end
 

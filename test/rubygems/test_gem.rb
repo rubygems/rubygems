@@ -15,6 +15,7 @@ class TestGem < Gem::TestCase
   def setup
     super
 
+    ENV.delete 'RUBYGEMS_GEMDEPS'
     @additional = %w[a b].map { |d| File.join @tempdir, d }
 
     util_remove_interrupt_command
@@ -1344,6 +1345,74 @@ class TestGem < Gem::TestCase
       File.join(Gem.dir, "gems", "m-1"),
       Gem::Dependency.new('m','1').to_spec.gem_dir,
       "Wrong spec selected"
+  end
+
+  def test_auto_activation_of_specific_gemdeps_file
+    util_clear_gems
+
+    a = new_spec "a", "1", nil, "lib/a.rb"
+    b = new_spec "b", "1", nil, "lib/b.rb"
+    c = new_spec "c", "1", nil, "lib/c.rb"
+
+    install_specs a, b, c
+
+    path = File.join @tempdir, "gem.deps.rb"
+
+    File.open path, "w" do |f|
+      f.puts "gem 'a'"
+      f.puts "gem 'b'"
+      f.puts "gem 'c'"
+    end
+
+    ENV['RUBYGEMS_GEMDEPS'] = path
+
+    Gem.detect_gemdeps
+
+    assert_equal %w!a-1 b-1 c-1!, loaded_spec_names
+  end
+
+  def test_auto_activation_of_detected_gemdeps_file
+    util_clear_gems
+
+    a = new_spec "a", "1", nil, "lib/a.rb"
+    b = new_spec "b", "1", nil, "lib/b.rb"
+    c = new_spec "c", "1", nil, "lib/c.rb"
+
+    install_specs a, b, c
+
+    path = File.join @tempdir, "gem.deps.rb"
+
+    File.open path, "w" do |f|
+      f.puts "gem 'a'"
+      f.puts "gem 'b'"
+      f.puts "gem 'c'"
+    end
+
+    ENV['RUBYGEMS_GEMDEPS'] = "-"
+
+    assert_equal [a,b,c], Gem.detect_gemdeps
+  end
+
+  def notest_auto_activation_of_gemdeps
+    a = new_spec "a", "1", nil, "lib/a.rb"
+    b = new_spec "b", "1", nil, "lib/b.rb"
+    c = new_spec "c", "1", nil, "lib/c.rb"
+
+    install_specs a, b, c
+
+    path = File.join(@tempdir, "gd-tmp")
+
+    Gem.ensure_gem_subdirectories path
+
+    install_gem a, :install_dir => path
+    install_gem b, :install_dir => path
+    install_gem c, :install_dir => path
+
+    ENV['RUBYGEMS_GEMDEPS'] = path
+
+    util_clear_gems
+
+    assert_equal [a,b,c], Gem.detect_gemdeps
   end
 
   def with_plugin(path)

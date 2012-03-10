@@ -9,13 +9,13 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     @cmd = Gem::Commands::InstallCommand.new
     @cmd.options[:document] = []
 
-    @gemfile = "tmp_install_gemfile"
+    @gemdeps = "tmp_install_gemdeps"
   end
 
   def teardown
     super
 
-    File.unlink @gemfile if File.file? @gemfile
+    File.unlink @gemdeps if File.file? @gemdeps
   end
 
   def test_execute_exclude_prerelease
@@ -550,18 +550,18 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert out.empty?, out.inspect
   end
 
-  def test_execute_uses_from_a_gemfile
+  def test_execute_uses_from_a_gemdeps
     util_setup_fake_fetcher
     util_setup_spec_fetcher
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
       read_binary(@a2.cache_file)
 
-    File.open @gemfile, "w" do |f|
+    File.open @gemdeps, "w" do |f|
       f << "gem 'a'"
     end
 
-    @cmd.options[:gemfile] = @gemfile
+    @cmd.options[:gemdeps] = @gemdeps
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
@@ -579,7 +579,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert out.empty?, out.inspect
   end
 
-  def test_execute_installs_from_a_gemfile
+  def test_execute_installs_from_a_gemdeps
     util_setup_fake_fetcher
     util_setup_spec_fetcher @a2
     util_clear_gems
@@ -587,11 +587,11 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
       read_binary(@a2.cache_file)
 
-    File.open @gemfile, "w" do |f|
+    File.open @gemdeps, "w" do |f|
       f << "gem 'a'"
     end
 
-    @cmd.options[:gemfile] = @gemfile
+    @cmd.options[:gemdeps] = @gemdeps
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
@@ -609,7 +609,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert out.empty?, out.inspect
   end
 
-  def test_execute_installs_deps_a_gemfile
+  def test_execute_installs_deps_a_gemdeps
     q, q_gem = util_gem 'q', '1.0'
     r, r_gem = util_gem 'r', '2.0', 'q' => nil
 
@@ -620,11 +620,11 @@ ERROR:  Possible alternatives: non_existent_with_hint
     add_to_fetcher q, q_gem
     add_to_fetcher r, r_gem
 
-    File.open @gemfile, "w" do |f|
+    File.open @gemdeps, "w" do |f|
       f << "gem 'r'"
     end
 
-    @cmd.options[:gemfile] = @gemfile
+    @cmd.options[:gemdeps] = @gemdeps
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
@@ -645,7 +645,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert out.empty?, out.inspect
   end
 
-  def test_execute_uses_deps_a_gemfile
+  def test_execute_uses_deps_a_gemdeps
     q, q_gem = util_gem 'q', '1.0'
     r, r_gem = util_gem 'r', '2.0', 'q' => nil
 
@@ -657,11 +657,11 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     Gem::Specification.add_specs q
 
-    File.open @gemfile, "w" do |f|
+    File.open @gemdeps, "w" do |f|
       f << "gem 'r'"
     end
 
-    @cmd.options[:gemfile] = @gemfile
+    @cmd.options[:gemdeps] = @gemdeps
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
@@ -682,7 +682,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert out.empty?, out.inspect
   end
 
-  def test_execute_installs_deps_a_gemfile_into_a_path
+  def test_execute_installs_deps_a_gemdeps_into_a_path
     q, q_gem = util_gem 'q', '1.0'
     r, r_gem = util_gem 'r', '2.0', 'q' => nil
 
@@ -693,12 +693,12 @@ ERROR:  Possible alternatives: non_existent_with_hint
     add_to_fetcher q, q_gem
     add_to_fetcher r, r_gem
 
-    File.open @gemfile, "w" do |f|
+    File.open @gemdeps, "w" do |f|
       f << "gem 'r'"
     end
 
     @cmd.options[:install_dir] = "gf-path"
-    @cmd.options[:gemfile] = @gemfile
+    @cmd.options[:gemdeps] = @gemdeps
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
@@ -722,7 +722,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert File.file?("gf-path/specifications/r-2.0.gemspec"), "not installed"
   end
 
-  def test_execute_with_gemfile_path_ignores_system
+  def test_execute_with_gemdeps_path_ignores_system
     q, q_gem = util_gem 'q', '1.0'
     r, r_gem = util_gem 'r', '2.0', 'q' => nil
 
@@ -735,12 +735,12 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     Gem::Specification.add_specs q
 
-    File.open @gemfile, "w" do |f|
+    File.open @gemdeps, "w" do |f|
       f << "gem 'r'"
     end
 
     @cmd.options[:install_dir] = "gf-path"
-    @cmd.options[:gemfile] = @gemfile
+    @cmd.options[:gemdeps] = @gemdeps
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
@@ -764,7 +764,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert File.file?("gf-path/specifications/r-2.0.gemspec"), "not installed"
   end
 
-  def test_execute_uses_deps_a_gemfile_with_a_path
+  def test_execute_uses_deps_a_gemdeps_with_a_path
     q, q_gem = util_gem 'q', '1.0'
     r, r_gem = util_gem 'r', '2.0', 'q' => nil
 
@@ -779,12 +779,12 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     assert File.file?("gf-path/specifications/q-1.0.gemspec"), "not installed"
 
-    File.open @gemfile, "w" do |f|
+    File.open @gemdeps, "w" do |f|
       f << "gem 'r'"
     end
 
     @cmd.options[:install_dir] = "gf-path"
-    @cmd.options[:gemfile] = @gemfile
+    @cmd.options[:gemdeps] = @gemdeps
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do

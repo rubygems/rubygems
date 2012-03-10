@@ -34,9 +34,10 @@ class Gem::Commands::InstallCommand < Gem::Command
     add_version_option
     add_prerelease_option "to be installed. (Only for listed gems)"
 
-    add_option(:"Install/Update", '-g', '--gemfile FILE',
-               'Read from a Gemfile and install the listed gems') do |v,o|
-      o[:gemfile] = v
+    add_option(:"Install/Update", '-g', '--file FILE',
+               'Read from a gem dependencies API file and',
+               'install the listed gems') do |v,o|
+      o[:gemdeps] = v
     end
 
     @installed_specs = nil
@@ -108,10 +109,10 @@ to write the specification by hand.  For example:
     "#{program_name} GEMNAME [GEMNAME ...] [options] -- --build-flags"
   end
 
-  def install_from_gemfile(gf)
+  def install_from_gemdeps(gf)
     require 'rubygems/request_set'
     rs = Gem::RequestSet.new
-    rs.load_gemfile gf
+    rs.load_gemdeps gf
 
     rs.resolve
 
@@ -131,8 +132,8 @@ to write the specification by hand.  For example:
   end
 
   def execute
-    if gf = options[:gemfile] then
-      install_from_gemfile gf
+    if gf = options[:gemdeps] then
+      install_from_gemdeps gf
       return
     end
 

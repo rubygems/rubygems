@@ -260,13 +260,17 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   def install_gem spec, options = {}
     require 'rubygems/installer'
 
-    use_ui Gem::MockGemUi.new do
-      Dir.chdir @tempdir do
-        Gem::Package.build spec
-      end
-    end
+    gem = File.join @tempdir, "gems", "#{spec.full_name}.gem"
 
-    gem = File.join(@tempdir, File.basename(spec.cache_file)).untaint
+    unless File.exists? gem
+      use_ui Gem::MockGemUi.new do
+        Dir.chdir @tempdir do
+          Gem::Package.build spec
+        end
+      end
+
+      gem = File.join(@tempdir, File.basename(spec.cache_file)).untaint
+    end
 
     Gem::Installer.new(gem, options.merge({:wrappers => true})).install
   end

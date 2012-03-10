@@ -165,11 +165,13 @@ class Gem::CommandManager
 
   def find_command(cmd_name)
     possibilities = find_command_possibilities cmd_name
-    if possibilities.size > 1 then # TODO if there's an exact match, pick it
-      # TODO raise Gem::Exception subclass
-      raise "Ambiguous command #{cmd_name} matches [#{possibilities.join(', ')}]"
-    elsif possibilities.size < 1 then
-      raise "Unknown command #{cmd_name}"
+
+    if possibilities.size > 1 then
+      raise Gem::CommandLineError,
+            "Ambiguous command #{cmd_name} " \
+            "matches [#{possibilities.join(', ')}]"
+    elsif possibilities.empty? then
+      raise Gem::CommandLineError, "Unknown command #{cmd_name}"
     end
 
     self[possibilities.first]
@@ -178,7 +180,11 @@ class Gem::CommandManager
   def find_command_possibilities(cmd_name)
     len = cmd_name.length
 
-    command_names.select { |n| cmd_name == n[0, len] }
+    found = command_names.select { |name| cmd_name == name[0, len] }
+
+    exact = found.find { |name| name == cmd_name }
+
+    exact ? [exact] : found
   end
 
   private

@@ -41,12 +41,23 @@ class TestGemGemRunner < Gem::TestCase
     assert_equal %w[--commands], Gem::Command.extra_args
   end
 
-  def test_build_args__are_handled
+  def test_build_args_are_handled
     Gem.clear_paths
 
-    Gem::GemRunner.new.run(%W[help -- --build_arg1 --build_arg2])
+    cls = Class.new(Gem::Command) do
+      def execute
+      end
+    end
 
-    assert_equal %w[--build_arg1 --build_arg2], Gem::Command.build_args
+    test_obj = cls.new :ba_test
+
+    cmds = Gem::CommandManager.new
+    cmds.register_command :ba_test, test_obj
+
+    runner = Gem::GemRunner.new :command_manager => cmds
+    runner.run(%W[ba_test -- --build_arg1 --build_arg2])
+
+    assert_equal %w[--build_arg1 --build_arg2], test_obj.options[:build_args]
   end
 
 end

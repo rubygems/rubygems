@@ -278,7 +278,17 @@ class Gem::Command
   # Invoke the command with the given list of arguments.
 
   def invoke(*args)
+    invoke_with_build_args args, nil
+  end
+
+  ##
+  # Invoke the command with the given list of normal arguments
+  # and additional build arguments.
+
+  def invoke_with_build_args(args, build_args)
     handle_options args
+
+    options[:build_args] = build_args
 
     if options[:help] then
       show_help

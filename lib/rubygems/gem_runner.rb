@@ -45,8 +45,6 @@ class Gem::GemRunner
       args = args[0...args.index("--")]
     end
 
-    Gem::Command.build_args = build_args if build_args
-
     do_configuration args
     cmd = @command_manager_class.instance
 
@@ -61,7 +59,7 @@ class Gem::GemRunner
       Gem::Command.add_specific_extra_args command_name, config_args
     end
 
-    cmd.run Gem.configuration.args
+    cmd.run Gem.configuration.args, build_args
     end_time = Time.now
 
     # TODO: remove benchmark, time(1) is good enough

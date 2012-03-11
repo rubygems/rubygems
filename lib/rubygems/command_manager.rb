@@ -41,6 +41,14 @@ class Gem::CommandManager
   end
 
   ##
+  # Returns self. Allows a CommandManager instance to stand
+  # in for the class itself.
+
+  def instance
+    self
+  end
+
+  ##
   # Reset the authoritative instance of the command manager.
 
   def self.reset
@@ -87,8 +95,8 @@ class Gem::CommandManager
   ##
   # Register the Symbol +command+ as a gem command.
 
-  def register_command(command)
-    @commands[command] = false
+  def register_command(command, obj=false)
+    @commands[command] = obj
   end
 
   ##
@@ -117,8 +125,8 @@ class Gem::CommandManager
   ##
   # Run the command specified by +args+.
 
-  def run(args)
-    process_args(args)
+  def run(args, build_args=nil)
+    process_args(args, build_args)
   rescue StandardError, Timeout::Error => ex
     alert_error "While executing gem ... (#{ex.class})\n    #{ex.to_s}"
     ui.errs.puts "\t#{ex.backtrace.join "\n\t"}" if
@@ -140,7 +148,7 @@ class Gem::CommandManager
     terminate_interaction(1)
   end
 
-  def process_args(args)
+  def process_args(args, build_args=nil)
     args = args.to_str.split(/\s+/) if args.respond_to?(:to_str)
     if args.size == 0
       say Gem::Command::HELP
@@ -159,7 +167,7 @@ class Gem::CommandManager
     else
       cmd_name = args.shift.downcase
       cmd = find_command(cmd_name)
-      cmd.invoke(*args)
+      cmd.invoke_with_build_args(args, build_args)
     end
   end
 

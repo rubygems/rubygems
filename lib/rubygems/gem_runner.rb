@@ -34,8 +34,6 @@ class Gem::GemRunner
   # Run the gem command with the following arguments.
 
   def run(args)
-    start_time = Time.now
-
     if args.include?('--')
       # We need to preserve the original ARGV to use for passing gem options
       # to source gems.  If there is a -- in the line, strip all options after
@@ -60,14 +58,6 @@ class Gem::GemRunner
     end
 
     cmd.run Gem.configuration.args, build_args
-    end_time = Time.now
-
-    # TODO: remove benchmark, time(1) is good enough
-    if Gem.configuration.benchmark then
-      printf "\nExecution time: %0.2f seconds.\n", end_time - start_time
-      puts "Press Enter to finish"
-      STDIN.gets
-    end
   end
 
   private

@@ -21,7 +21,6 @@
 # RubyGems options use symbol keys.  Valid options are:
 #
 # +:backtrace+:: See #backtrace
-# +:benchmark+:: See #benchmark
 # +:sources+:: Sets Gem::sources
 # +:verbose+:: See #verbose
 #
@@ -35,7 +34,6 @@
 class Gem::ConfigFile
 
   DEFAULT_BACKTRACE = false
-  DEFAULT_BENCHMARK = false
   DEFAULT_BULK_THRESHOLD = 1000
   DEFAULT_VERBOSITY = true
   DEFAULT_UPDATE_SOURCES = true
@@ -100,11 +98,6 @@ class Gem::ConfigFile
   # True if we print backtraces on errors.
 
   attr_writer :backtrace
-
-  ##
-  # True if we are benchmarking this run.
-
-  attr_accessor :benchmark
 
   ##
   # Bulk threshold value.  If the number of missing gems are above this
@@ -181,7 +174,6 @@ class Gem::ConfigFile
     end
 
     @backtrace = DEFAULT_BACKTRACE
-    @benchmark = DEFAULT_BENCHMARK
     @bulk_threshold = DEFAULT_BULK_THRESHOLD
     @verbose = DEFAULT_VERBOSITY
     @update_sources = DEFAULT_UPDATE_SOURCES
@@ -202,7 +194,6 @@ class Gem::ConfigFile
 
     # HACK these override command-line args, which is bad
     @backtrace                  = @hash[:backtrace]                  if @hash.key? :backtrace
-    @benchmark                  = @hash[:benchmark]                  if @hash.key? :benchmark
     @bulk_threshold             = @hash[:bulk_threshold]             if @hash.key? :bulk_threshold
     @home                       = @hash[:gemhome]                    if @hash.key? :gemhome
     @path                       = @hash[:gempath]                    if @hash.key? :gempath
@@ -282,13 +273,11 @@ class Gem::ConfigFile
     hash = @hash.dup
     hash.delete :update_sources
     hash.delete :verbose
-    hash.delete :benchmark
     hash.delete :backtrace
     hash.delete :bulk_threshold
 
     yield :update_sources, @update_sources
     yield :verbose, @verbose
-    yield :benchmark, @benchmark
     yield :backtrace, @backtrace
     yield :bulk_threshold, @bulk_threshold
 
@@ -305,8 +294,6 @@ class Gem::ConfigFile
       case arg
       when /^--(backtrace|traceback)$/ then
         @backtrace = true
-      when /^--bench(mark)?$/ then
-        @benchmark = true
       when /^--debug$/ then
         $DEBUG = true
       else
@@ -332,12 +319,6 @@ class Gem::ConfigFile
                               @hash[:backtrace]
                             else
                               DEFAULT_BACKTRACE
-                            end
-
-    yaml_hash[:benchmark] = if @hash.key?(:benchmark)
-                              @hash[:benchmark]
-                            else
-                              DEFAULT_BENCHMARK
                             end
 
     yaml_hash[:bulk_threshold] = if @hash.key?(:bulk_threshold)
@@ -393,7 +374,6 @@ class Gem::ConfigFile
   def ==(other) # :nodoc:
     self.class === other and
       @backtrace == other.backtrace and
-      @benchmark == other.benchmark and
       @bulk_threshold == other.bulk_threshold and
       @verbose == other.verbose and
       @update_sources == other.update_sources and

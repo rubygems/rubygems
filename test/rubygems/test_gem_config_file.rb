@@ -40,7 +40,6 @@ class TestGemConfigFile < Gem::TestCase
 
     assert_equal false, @cfg.backtrace
     assert_equal true, @cfg.update_sources
-    assert_equal false, @cfg.benchmark
     assert_equal Gem::ConfigFile::DEFAULT_BULK_THRESHOLD, @cfg.bulk_threshold
     assert_equal true, @cfg.verbose
     assert_equal [@gem_repo], Gem.sources
@@ -48,7 +47,6 @@ class TestGemConfigFile < Gem::TestCase
     File.open @temp_conf, 'w' do |fp|
       fp.puts ":backtrace: true"
       fp.puts ":update_sources: false"
-      fp.puts ":benchmark: true"
       fp.puts ":bulk_threshold: 10"
       fp.puts ":verbose: false"
       fp.puts ":sources:"
@@ -62,7 +60,6 @@ class TestGemConfigFile < Gem::TestCase
     util_config_file
 
     assert_equal true, @cfg.backtrace
-    assert_equal true, @cfg.benchmark
     assert_equal 10, @cfg.bulk_threshold
     assert_equal false, @cfg.verbose
     assert_equal false, @cfg.update_sources
@@ -135,7 +132,6 @@ class TestGemConfigFile < Gem::TestCase
   def test_initialize_environment_variable_override
     File.open Gem::ConfigFile::SYSTEM_WIDE_CONFIG_FILE, 'w' do |fp|
       fp.puts ':backtrace: false'
-      fp.puts ':benchmark: false'
       fp.puts ':verbose: false'
       fp.puts ':bulk_threshold: 2048'
     end
@@ -147,7 +143,6 @@ class TestGemConfigFile < Gem::TestCase
 
     conf2 = File.join @tempdir, 'gemrc2'
     File.open conf2, 'w' do |fp|
-      fp.puts ':benchmark: true'
       fp.puts ':verbose: true'
     end
 
@@ -161,7 +156,6 @@ class TestGemConfigFile < Gem::TestCase
     util_config_file
 
     assert_equal true, @cfg.backtrace
-    assert_equal true, @cfg.benchmark
     assert_equal :loud, @cfg.verbose
     assert_equal 2048, @cfg.bulk_threshold
   end
@@ -184,16 +178,6 @@ class TestGemConfigFile < Gem::TestCase
     assert_equal true, @cfg.backtrace
   end
 
-  def test_handle_arguments_benchmark
-    assert_equal false, @cfg.benchmark
-
-    args = %w[--benchmark]
-
-    @cfg.handle_arguments args
-
-    assert_equal true, @cfg.benchmark
-  end
-
   def test_handle_arguments_debug
     old_dollar_DEBUG = $DEBUG
     assert_equal false, $DEBUG
@@ -209,12 +193,12 @@ class TestGemConfigFile < Gem::TestCase
 
   def test_handle_arguments_override
     File.open @temp_conf, 'w' do |fp|
-      fp.puts ":benchmark: false"
+      fp.puts ":backtrace: false"
     end
 
-    util_config_file %W[--benchmark --config-file=#{@temp_conf}]
+    util_config_file %W[--backtrace --config-file=#{@temp_conf}]
 
-    assert_equal true, @cfg.benchmark
+    assert_equal true, @cfg.backtrace
   end
 
   def test_handle_arguments_traceback
@@ -241,7 +225,6 @@ class TestGemConfigFile < Gem::TestCase
 
   def test_write
     @cfg.backtrace = true
-    @cfg.benchmark = true
     @cfg.update_sources = false
     @cfg.bulk_threshold = 10
     @cfg.verbose = false
@@ -254,7 +237,6 @@ class TestGemConfigFile < Gem::TestCase
 
     # These should not be written out to the config file.
     assert_equal false, @cfg.backtrace,     'backtrace'
-    assert_equal false, @cfg.benchmark,     'benchmark'
     assert_equal Gem::ConfigFile::DEFAULT_BULK_THRESHOLD, @cfg.bulk_threshold,
                  'bulk_threshold'
     assert_equal true, @cfg.update_sources, 'update_sources'
@@ -269,7 +251,6 @@ class TestGemConfigFile < Gem::TestCase
   def test_write_from_hash
     File.open @temp_conf, 'w' do |fp|
       fp.puts ":backtrace: true"
-      fp.puts ":benchmark: true"
       fp.puts ":bulk_threshold: 10"
       fp.puts ":update_sources: false"
       fp.puts ":verbose: false"
@@ -281,7 +262,6 @@ class TestGemConfigFile < Gem::TestCase
     util_config_file
 
     @cfg.backtrace = :junk
-    @cfg.benchmark = :junk
     @cfg.update_sources = :junk
     @cfg.bulk_threshold = 20
     @cfg.verbose = :junk
@@ -294,7 +274,6 @@ class TestGemConfigFile < Gem::TestCase
 
     # These should not be written out to the config file
     assert_equal true,  @cfg.backtrace,      'backtrace'
-    assert_equal true,  @cfg.benchmark,      'benchmark'
     assert_equal 10,    @cfg.bulk_threshold, 'bulk_threshold'
     assert_equal false, @cfg.update_sources, 'update_sources'
     assert_equal false, @cfg.verbose,        'verbose'

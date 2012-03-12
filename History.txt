@@ -1,5 +1,15 @@
 # coding: UTF-8
 
+=== 1.8.18 / 2012-03-11
+
+* 4 bug fixes:
+
+  * Use Psych API to emit more compatible YAML
+  * Download and write inside `gem fetch` directly. Fixes #289
+  * Honor sysconfdir on 1.8. Fixes #291
+  * Search everywhere for a spec for `gem spec`. Fixes #288
+  * Fix Gem.all_load_path. Fixes #171
+
 === 1.8.17 / 2012-02-17
 
 * 2 minor enhancements:

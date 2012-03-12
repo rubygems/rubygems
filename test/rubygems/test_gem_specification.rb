@@ -1136,6 +1136,18 @@ end
     assert_match %r|^platform: ruby$|, @a1.to_yaml
   end
 
+  def test_to_yaml_emits_syck_compat_yaml
+    if YAML.const_defined?(:ENGINE) && !YAML::ENGINE.syck?
+      @a1.add_dependency "gx", "1.0.0"
+
+      y = @a1.to_yaml
+
+      refute_match %r!^\s*- - =!, y
+    else
+      skip "Only validates psych yaml"
+    end
+  end
+
   def test_validate
     util_setup_validate
 

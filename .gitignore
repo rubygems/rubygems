@@ -1,6 +1,7 @@
 *.rbc
 *.swp
 .DS_Store
+scratch
 /.rvmrc
 /TAGS
 /doc

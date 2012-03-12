@@ -485,8 +485,8 @@ class Gem::Specification
   #
   # The license must be a short name, no more than 64 characters.
   #
-  # This should just be the name of your license, make to include the full
-  # text of the license inside of the gem when you build it.
+  # This should just be the name of your license. The full
+  # text of the license should be inside of the gem when you build it.
   #
   # Usage:
   #   spec.license = 'MIT'
@@ -500,8 +500,8 @@ class Gem::Specification
   #
   # Each license must be a short name, no more than 64 characters.
   #
-  # This should just be the name of your license, make to include the full
-  # text of the license inside of the gem when you build it.
+  # This should just be the name of your license. The full
+  # text of the license should be inside of the gem when you build it.
   #
   # Usage:
   #   spec.licenses = ['MIT', 'GPL-2']
@@ -2385,6 +2385,8 @@ class Gem::Specification
           "each license must be 64 characters or less"
       end
     }
+
+    alert_warning 'licenses is empty' if licenses.empty?
 
     # reject lazy developers:
 

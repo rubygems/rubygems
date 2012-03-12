@@ -87,7 +87,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     assert_equal "  Version: 2", output.shift
     assert_equal "  File: some_gem-2.gem", output.shift
     assert_equal [], output
-    assert_equal '', @ui.error
+    assert_equal "WARNING:  licenses is empty\n", @ui.error
 
     gem_file = File.join @tempdir, File.basename(gem.cache_file)
     assert File.exist?(gem_file)

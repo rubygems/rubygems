@@ -5,6 +5,8 @@ $:.unshift 'lib'
 require 'rubygems'
 require 'rubygems/package_task'
 
+require 'rubygems/user_interaction'
+
 require 'hoe'
 
 Hoe.plugin :minitest
@@ -68,7 +70,7 @@ task :prerelease => [:clobber, :sanity_check, :test, :test_functional]
 
 task :postrelease => [:tag, :publish_docs]
 
-Rake::Task[:release_to_rubyforge].clear_actions
+# Rake::Task[:release_to_rubyforge].clear_actions
 
 task :release_to_rubyforge do
   files = Dir["pkg/rubygems-update*.gem"]

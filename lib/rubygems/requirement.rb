@@ -247,3 +247,10 @@ class Gem::Requirement
     end
   end
 end
+
+# This is needed for compatibility with older yaml
+# gemspecs.
+
+class Gem::Version
+  Requirement = Gem::Requirement
+end

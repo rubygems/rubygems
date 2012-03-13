@@ -2458,6 +2458,9 @@ class Gem::Specification
       instance_variable_set "@#{ivar}", val.untaint
     end
 
+    # Force Date to go through the extra coerce logic in date=
+    self.date = @date
+
     @original_platform = @platform # for backwards compatibility
     self.platform = Gem::Platform.new @platform
   end

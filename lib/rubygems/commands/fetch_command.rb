@@ -61,9 +61,9 @@ class Gem::Commands::FetchCommand < Gem::Command
       file = "#{spec.full_name}.gem"
       remote_path = source_uri + "gems/#{file}"
 
-      f = Gem::RemoteFetcher.fetcher
+      fetch = Gem::RemoteFetcher.fetcher
 
-      gem = f.fetch_path remote_path
+      gem = fetch.fetch_path remote_path
 
       File.open file, "wb" do |f|
         f.write gem

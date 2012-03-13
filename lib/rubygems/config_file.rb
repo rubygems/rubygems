@@ -133,6 +133,15 @@ class Gem::ConfigFile
 
   attr_accessor :disable_default_gem_server
 
+  # openssl verify mode value, used for remote https connection
+
+  attr_reader :ssl_verify_mode
+
+  ##
+  # Path name of directory or file of openssl CA certificate, used for remote https connection
+
+  attr_reader :ssl_ca_cert
+
   ##
   # Create the config file object.  +args+ is the list of arguments
   # from the command line.
@@ -200,6 +209,9 @@ class Gem::ConfigFile
     @update_sources             = @hash[:update_sources]             if @hash.key? :update_sources
     @verbose                    = @hash[:verbose]                    if @hash.key? :verbose
     @disable_default_gem_server = @hash[:disable_default_gem_server] if @hash.key? :disable_default_gem_server
+
+    @ssl_verify_mode  = @hash[:ssl_verify_mode]  if @hash.key? :ssl_verify_mode
+    @ssl_ca_cert      = @hash[:ssl_ca_cert]      if @hash.key? :ssl_ca_cert
 
     load_api_keys
 

@@ -1614,6 +1614,15 @@ end
     refute_equal orig_cache_file, @a1.cache_file
   end
 
+  def test__load_fixes_Date_objects
+    spec = new_spec "a", 1
+    spec.instance_variable_set :@date, Date.today
+
+    spec = Marshal.load Marshal.dump(spec)
+
+    assert_kind_of Time, spec.date
+  end
+
   def test_load_errors_contain_filename
     specfile = Tempfile.new(self.class.name.downcase)
     specfile.write "raise 'boom'"

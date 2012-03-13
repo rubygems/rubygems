@@ -1045,7 +1045,7 @@ class Gem::Specification
     # spec version
     spec.instance_variable_set :@name,                      array[2]
     spec.instance_variable_set :@version,                   array[3]
-    spec.instance_variable_set :@date,                      array[4]
+    spec.date =                                             array[4]
     spec.instance_variable_set :@summary,                   array[5]
     spec.instance_variable_set :@required_ruby_version,     array[6]
     spec.instance_variable_set :@required_rubygems_version, array[7]

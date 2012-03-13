@@ -2455,11 +2455,14 @@ class Gem::Specification
   # FIX: have this handle the platform/new_platform/original_platform bullshit
   def yaml_initialize(tag, vals) # :nodoc:
     vals.each do |ivar, val|
-      instance_variable_set "@#{ivar}", val.untaint
+      case ivar
+      when "date"
+        # Force Date to go through the extra coerce logic in date=
+        self.date = val.untaint
+      else
+        instance_variable_set "@#{ivar}", val.untaint
+      end
     end
-
-    # Force Date to go through the extra coerce logic in date=
-    self.date = @date
 
     @original_platform = @platform # for backwards compatibility
     self.platform = Gem::Platform.new @platform

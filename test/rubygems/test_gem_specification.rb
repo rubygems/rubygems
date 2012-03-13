@@ -233,6 +233,57 @@ bindir:
     refute_match %r%DefaultKey%, new_spec.to_ruby
   end
 
+  def test_self_from_yaml_cleans_up_Date_objects
+    yaml = <<-YAML
+--- !ruby/object:Gem::Specification
+rubygems_version: 0.8.1
+specification_version: 1
+name: diff-lcs
+version: !ruby/object:Gem::Version
+  version: 1.1.2
+date: 2004-10-20
+summary: Provides a list of changes that represent the difference between two sequenced collections.
+require_paths:
+  - lib
+author: Austin Ziegler
+email: diff-lcs@halostatue.ca
+homepage: http://rubyforge.org/projects/ruwiki/
+rubyforge_project: ruwiki
+description: "Test"
+bindir: bin
+has_rdoc: true
+required_ruby_version: !ruby/object:Gem::Version::Requirement
+  requirements:
+    -
+      - ">="
+      - !ruby/object:Gem::Version
+        version: 1.8.1
+  version:
+platform: ruby
+files:
+  - tests/00test.rb
+rdoc_options:
+  - "--title"
+  - "Diff::LCS -- A Diff Algorithm"
+  - "--main"
+  - README
+  - "--line-numbers"
+extra_rdoc_files:
+  - README
+  - ChangeLog
+  - Install
+executables:
+  - ldiff
+  - htmldiff
+extensions: []
+requirements: []
+dependencies: []
+    YAML
+
+    new_spec = Gem::Specification.from_yaml yaml
+
+    assert_kind_of Time, new_spec.date
+  end
 
   def test_self_load
     full_path = @a2.spec_file
@@ -1489,6 +1540,15 @@ end
 
   def test_version
     assert_equal Gem::Version.new('1'), @a1.version
+  end
+
+  def test__load_fixes_Date_objects
+    spec = new_spec "a", 1
+    spec.instance_variable_set :@date, Date.today
+
+    spec = Marshal.load Marshal.dump(spec)
+
+    assert_kind_of Time, spec.date
   end
 
   def test_load_errors_contain_filename

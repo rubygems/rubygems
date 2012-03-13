@@ -1,5 +1,7 @@
 module Gem
   if defined? ::Psych
+    require 'psych/visitors'
+
     class NoAliasYAMLTree < Psych::Visitors::YAMLTree
       def visit_String(str)
         return super unless str == '=' # or whatever you want

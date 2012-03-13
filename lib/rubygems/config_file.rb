@@ -5,9 +5,9 @@
 #++
 
 ##
-# Gem::ConfigFile RubyGems options and gem command options from ~/.gemrc.
+# Gem::ConfigFile RubyGems options and gem command options from gemrc.
 #
-# ~/.gemrc is a YAML file that uses strings to match gem command arguments and
+# gemrc is a YAML file that uses strings to match gem command arguments and
 # symbols to match RubyGems options.
 #
 # Gem command arguments use a String key that matches the command name and
@@ -21,14 +21,19 @@
 # RubyGems options use symbol keys.  Valid options are:
 #
 # +:backtrace+:: See #backtrace
-# +:benchmark+:: See #benchmark
 # +:sources+:: Sets Gem::sources
 # +:verbose+:: See #verbose
+#
+# gemrc files may exist in various locations and are read and merged in
+# the following order:
+#
+# - system wide (/etc/gemrc)
+# - per user (~/.gemrc)
+# - per environment (gemrc files listed in the GEMRC environment variable)
 
 class Gem::ConfigFile
 
   DEFAULT_BACKTRACE = false
-  DEFAULT_BENCHMARK = false
   DEFAULT_BULK_THRESHOLD = 1000
   DEFAULT_VERBOSITY = true
   DEFAULT_UPDATE_SOURCES = true
@@ -47,23 +52,29 @@ class Gem::ConfigFile
 
   system_config_path =
     begin
-      require 'Win32API'
+      require "etc"
+      Etc.sysconfdir
+    rescue LoadError, NoMethodError
+      begin
+        # TODO: remove after we drop 1.8.7 and 1.9.1
+        require 'Win32API'
 
-      CSIDL_COMMON_APPDATA = 0x0023
-      path = 0.chr * 260
-      if RUBY_VERSION > '1.9' then
-        SHGetFolderPath = Win32API.new 'shell32', 'SHGetFolderPath', 'PLPLP',
-                                       'L', :stdcall
-        SHGetFolderPath.call nil, CSIDL_COMMON_APPDATA, nil, 1, path
-      else
-        SHGetFolderPath = Win32API.new 'shell32', 'SHGetFolderPath', 'LLLLP',
-                                       'L'
-        SHGetFolderPath.call 0, CSIDL_COMMON_APPDATA, 0, 1, path
+        CSIDL_COMMON_APPDATA = 0x0023
+        path = 0.chr * 260
+        if RUBY_VERSION > '1.9' then
+          SHGetFolderPath = Win32API.new 'shell32', 'SHGetFolderPath', 'PLPLP',
+          'L', :stdcall
+          SHGetFolderPath.call nil, CSIDL_COMMON_APPDATA, nil, 1, path
+        else
+          SHGetFolderPath = Win32API.new 'shell32', 'SHGetFolderPath', 'LLLLP',
+          'L'
+          SHGetFolderPath.call 0, CSIDL_COMMON_APPDATA, 0, 1, path
+        end
+
+        path.strip
+      rescue LoadError
+        RbConfig::CONFIG["sysconfdir"] || "/etc"
       end
-
-      path.strip
-    rescue LoadError
-      '/etc'
     end
 
   SYSTEM_WIDE_CONFIG_FILE = File.join system_config_path, 'gemrc'
@@ -87,11 +98,6 @@ class Gem::ConfigFile
   # True if we print backtraces on errors.
 
   attr_writer :backtrace
-
-  ##
-  # True if we are benchmarking this run.
-
-  attr_accessor :benchmark
 
   ##
   # Bulk threshold value.  If the number of missing gems are above this
@@ -118,6 +124,16 @@ class Gem::ConfigFile
   attr_reader :rubygems_api_key
 
   ##
+  # Hash of RubyGems.org and alternate API keys
+
+  attr_reader :api_keys
+
+  ##
+  # True if we want to force specification of gem server when pushing a gem
+
+  attr_accessor :disable_default_gem_server
+
+  ##
   # Create the config file object.  +args+ is the list of arguments
   # from the command line.
   #
@@ -135,29 +151,29 @@ class Gem::ConfigFile
   # <tt>--debug</tt>::
   #   Enable Ruby level debug messages.  Handled early for the same reason as
   #   --backtrace.
+  #--
+  # TODO: parse options upstream, pass in options directly
 
-  def initialize(arg_list)
+  def initialize(args)
     @config_file_name = nil
     need_config_file_name = false
 
-    arg_list = arg_list.map do |arg|
+    arg_list = []
+
+    args.each do |arg|
       if need_config_file_name then
         @config_file_name = arg
         need_config_file_name = false
-        nil
       elsif arg =~ /^--config-file=(.*)/ then
         @config_file_name = $1
-        nil
       elsif arg =~ /^--config-file$/ then
         need_config_file_name = true
-        nil
       else
-        arg
+        arg_list << arg
       end
-    end.compact
+    end
 
     @backtrace = DEFAULT_BACKTRACE
-    @benchmark = DEFAULT_BENCHMARK
     @bulk_threshold = DEFAULT_BULK_THRESHOLD
     @verbose = DEFAULT_VERBOSITY
     @update_sources = DEFAULT_UPDATE_SOURCES
@@ -166,21 +182,26 @@ class Gem::ConfigFile
     platform_config = Marshal.load Marshal.dump(PLATFORM_DEFAULTS)
     system_config = load_file SYSTEM_WIDE_CONFIG_FILE
     user_config = load_file config_file_name.dup.untaint
+    environment_config = (ENV['GEMRC'] || '').split(/[:;]/).inject({}) do |result, file|
+      result.merge load_file file
+    end
+
 
     @hash = operating_system_config.merge platform_config
     @hash = @hash.merge system_config
     @hash = @hash.merge user_config
+    @hash = @hash.merge environment_config
 
     # HACK these override command-line args, which is bad
-    @backtrace        = @hash[:backtrace]        if @hash.key? :backtrace
-    @benchmark        = @hash[:benchmark]        if @hash.key? :benchmark
-    @bulk_threshold   = @hash[:bulk_threshold]   if @hash.key? :bulk_threshold
-    @home             = @hash[:gemhome]          if @hash.key? :gemhome
-    @path             = @hash[:gempath]          if @hash.key? :gempath
-    @update_sources   = @hash[:update_sources]   if @hash.key? :update_sources
-    @verbose          = @hash[:verbose]          if @hash.key? :verbose
+    @backtrace                  = @hash[:backtrace]                  if @hash.key? :backtrace
+    @bulk_threshold             = @hash[:bulk_threshold]             if @hash.key? :bulk_threshold
+    @home                       = @hash[:gemhome]                    if @hash.key? :gemhome
+    @path                       = @hash[:gempath]                    if @hash.key? :gempath
+    @update_sources             = @hash[:update_sources]             if @hash.key? :update_sources
+    @verbose                    = @hash[:verbose]                    if @hash.key? :verbose
+    @disable_default_gem_server = @hash[:disable_default_gem_server] if @hash.key? :disable_default_gem_server
 
-    load_rubygems_api_key
+    load_api_keys
 
     Gem.sources = @hash[:sources] if @hash.key? :sources
     handle_arguments arg_list
@@ -190,22 +211,29 @@ class Gem::ConfigFile
   # Location of RubyGems.org credentials
 
   def credentials_path
-    File.join(Gem.user_home, '.gem', 'credentials')
+    File.join Gem.user_home, '.gem', 'credentials'
   end
 
-  def load_rubygems_api_key
-    api_key_hash = File.exists?(credentials_path) ? load_file(credentials_path) : @hash
+  def load_api_keys
+    @api_keys = if File.exist? credentials_path then
+                  load_file(credentials_path)
+                else
+                  @hash
+                end
 
-    @rubygems_api_key = api_key_hash[:rubygems_api_key] if api_key_hash.key? :rubygems_api_key
+    if @api_keys.key? :rubygems_api_key then
+      @rubygems_api_key = @api_keys[:rubygems_api_key]
+      @api_keys[:rubygems] = @api_keys.delete :rubygems_api_key unless @api_keys.key? :rubygems
+    end
   end
 
   def rubygems_api_key=(api_key)
     config = load_file(credentials_path).merge(:rubygems_api_key => api_key)
 
-    dirname = File.dirname(credentials_path)
-    Dir.mkdir(dirname) unless File.exists?(dirname)
+    dirname = File.dirname credentials_path
+    Dir.mkdir(dirname) unless File.exist? dirname
 
-    require 'yaml'
+    Gem.load_yaml
 
     File.open(credentials_path, 'w') do |f|
       f.write config.to_yaml
@@ -215,15 +243,19 @@ class Gem::ConfigFile
   end
 
   def load_file(filename)
-    return {} unless filename and File.exists?(filename)
+    Gem.load_yaml
+
+    return {} unless filename and File.exist? filename
+
     begin
-      require 'yaml'
-      YAML.load(File.read(filename))
+      return YAML.load(File.read(filename))
     rescue ArgumentError
       warn "Failed to load #{config_file_name}"
     rescue Errno::EACCES
       warn "Failed to load #{config_file_name} due to permissions problem."
-    end or {}
+    end
+
+    {}
   end
 
   # True if the backtrace option has been specified, or debug is on.
@@ -241,13 +273,11 @@ class Gem::ConfigFile
     hash = @hash.dup
     hash.delete :update_sources
     hash.delete :verbose
-    hash.delete :benchmark
     hash.delete :backtrace
     hash.delete :bulk_threshold
 
     yield :update_sources, @update_sources
     yield :verbose, @verbose
-    yield :benchmark, @benchmark
     yield :backtrace, @backtrace
     yield :bulk_threshold, @bulk_threshold
 
@@ -264,8 +294,6 @@ class Gem::ConfigFile
       case arg
       when /^--(backtrace|traceback)$/ then
         @backtrace = true
-      when /^--bench(mark)?$/ then
-        @benchmark = true
       when /^--debug$/ then
         $DEBUG = true
       else
@@ -277,25 +305,41 @@ class Gem::ConfigFile
   # Really verbose mode gives you extra output.
   def really_verbose
     case verbose
-    when true, false, nil then false
-    else true
+    when true, false, nil then
+      false
+    else
+      true
     end
   end
 
   # to_yaml only overwrites things you can't override on the command line.
   def to_yaml # :nodoc:
     yaml_hash = {}
-    yaml_hash[:backtrace] = @hash.key?(:backtrace) ? @hash[:backtrace] :
-      DEFAULT_BACKTRACE
-    yaml_hash[:benchmark] = @hash.key?(:benchmark) ? @hash[:benchmark] :
-      DEFAULT_BENCHMARK
-    yaml_hash[:bulk_threshold] = @hash.key?(:bulk_threshold) ?
-      @hash[:bulk_threshold] : DEFAULT_BULK_THRESHOLD
-    yaml_hash[:sources] = Gem.sources
-    yaml_hash[:update_sources] = @hash.key?(:update_sources) ?
-      @hash[:update_sources] : DEFAULT_UPDATE_SOURCES
-    yaml_hash[:verbose] = @hash.key?(:verbose) ? @hash[:verbose] :
-      DEFAULT_VERBOSITY
+    yaml_hash[:backtrace] = if @hash.key?(:backtrace)
+                              @hash[:backtrace]
+                            else
+                              DEFAULT_BACKTRACE
+                            end
+
+    yaml_hash[:bulk_threshold] = if @hash.key?(:bulk_threshold)
+                                   @hash[:bulk_threshold]
+                                 else
+                                   DEFAULT_BULK_THRESHOLD
+                                 end
+
+    yaml_hash[:sources] = Gem.sources.to_a
+
+    yaml_hash[:update_sources] = if @hash.key?(:update_sources)
+                                   @hash[:update_sources]
+                                 else
+                                   DEFAULT_UPDATE_SOURCES
+                                 end
+
+    yaml_hash[:verbose] = if @hash.key?(:verbose)
+                            @hash[:verbose]
+                          else
+                            DEFAULT_VERBOSITY
+                          end
 
     keys = yaml_hash.keys.map { |key| key.to_s }
     keys << 'debug'
@@ -312,7 +356,6 @@ class Gem::ConfigFile
 
   # Writes out this config file, replacing its source.
   def write
-    require 'yaml'
     open config_file_name, 'w' do |io|
       io.write to_yaml
     end
@@ -330,17 +373,13 @@ class Gem::ConfigFile
 
   def ==(other) # :nodoc:
     self.class === other and
-    @backtrace == other.backtrace and
-    @benchmark == other.benchmark and
-    @bulk_threshold == other.bulk_threshold and
-    @verbose == other.verbose and
-    @update_sources == other.update_sources and
-    @hash == other.hash
+      @backtrace == other.backtrace and
+      @bulk_threshold == other.bulk_threshold and
+      @verbose == other.verbose and
+      @update_sources == other.update_sources and
+      @hash == other.hash
   end
 
-  protected
-
   attr_reader :hash
-
+  protected :hash
 end
-

@@ -66,7 +66,7 @@ module Gem::DefaultUserInteraction
 end
 
 ##
-# Make the default UI accessable without the "ui." prefix.  Classes
+# Make the default UI accessible without the "ui." prefix.  Classes
 # including this module may use the interaction methods on the default UI
 # directly.  Classes may also reference the ui and ui= methods.
 #
@@ -84,44 +84,40 @@ module Gem::UserInteraction
 
   include Gem::DefaultUserInteraction
 
-  ##
-  # :method: alert
+  def alert(*args)
+    ui.alert(*args)
+  end
 
-  ##
-  # :method: alert_error
+  def alert_error(*args)
+    ui.alert_error(*args)
+  end
 
-  ##
-  # :method: alert_warning
+  def alert_warning(*args)
+    ui.alert_warning(*args)
+  end
 
-  ##
-  # :method: ask
+  def ask(*args)
+    ui.ask(*args)
+  end
 
-  ##
-  # :method: ask_yes_no
+  def ask_for_password(*args)
+    ui.ask_for_password(*args)
+  end
 
-  ##
-  # :method: choose_from_list
+  def ask_yes_no(*args)
+    ui.ask_yes_no(*args)
+  end
 
-  ##
-  # :method: say
+  def choose_from_list(*args)
+    ui.choose_from_list(*args)
+  end
 
-  ##
-  # :method: terminate_interaction
+  def say(*args)
+    ui.say(*args)
+  end
 
-  [:alert,
-   :alert_error,
-   :alert_warning,
-   :ask,
-   :ask_for_password,
-   :ask_yes_no,
-   :choose_from_list,
-   :say,
-   :terminate_interaction ].each do |methname|
-    class_eval %{
-      def #{methname}(*args)
-        ui.#{methname}(*args)
-      end
-    }, __FILE__, __LINE__
+  def terminate_interaction(*args)
+    ui.terminate_interaction(*args)
   end
 end
 
@@ -132,10 +128,19 @@ class Gem::StreamUI
 
   attr_reader :ins, :outs, :errs
 
-  def initialize(in_stream, out_stream, err_stream=STDERR)
+  def initialize(in_stream, out_stream, err_stream=STDERR, usetty=true)
     @ins = in_stream
     @outs = out_stream
     @errs = err_stream
+    @usetty = usetty
+  end
+
+  def tty?
+    if RUBY_VERSION < '1.9.3' and RUBY_PLATFORM =~ /mingw|mswin/ then
+      @usetty
+    else
+      @usetty && @ins.tty?
+    end
   end
 
   ##
@@ -167,7 +172,7 @@ class Gem::StreamUI
   # default.
 
   def ask_yes_no(question, default=nil)
-    unless @ins.tty? then
+    unless tty? then
       if default.nil? then
         raise Gem::OperationNotSupportedError,
               "Not connected to a tty and no default specified"
@@ -176,29 +181,24 @@ class Gem::StreamUI
       end
     end
 
-    qstr = case default
-           when nil
-             'yn'
-           when true
-             'Yn'
-           else
-             'yN'
-           end
+    default_answer = case default
+                     when nil
+                       'yn'
+                     when true
+                       'Yn'
+                     else
+                       'yN'
+                     end
 
     result = nil
 
-    while result.nil?
-      result = ask("#{question} [#{qstr}]")
-      result = case result
-      when /^[Yy].*/
-        true
-      when /^[Nn].*/
-        false
-      when /^$/
-        default
-      else
-        nil
-      end
+    while result.nil? do
+      result = case ask "#{question} [#{default_answer}]"
+               when /^y/i then true
+               when /^n/i then false
+               when /^$/  then default
+               else            nil
+               end
     end
 
     return result
@@ -208,7 +208,7 @@ class Gem::StreamUI
   # Ask a question.  Returns an answer if connected to a tty, nil otherwise.
 
   def ask(question)
-    return nil if not @ins.tty?
+    return nil if not tty?
 
     @outs.print(question + "  ")
     @outs.flush
@@ -218,48 +218,70 @@ class Gem::StreamUI
     result
   end
 
-  ##
-  # Ask for a password. Does not echo response to terminal.
+  if RUBY_VERSION > '1.9.2' then
+    ##
+    # Ask for a password. Does not echo response to terminal.
 
-  def ask_for_password(question)
-    return nil if not @ins.tty?
+    def ask_for_password(question)
+      return nil if not tty?
 
-    @outs.print(question + "  ")
-    @outs.flush
+      require 'io/console'
 
-    Gem.win_platform? ? ask_for_password_on_windows : ask_for_password_on_unix
-  end
+      @outs.print(question + "  ")
+      @outs.flush
 
-  ##
-  # Asks for a password that works on windows. Ripped from the Heroku gem.
+      password = @ins.noecho {@ins.gets}
+      password.chomp! if password
+      password
+    end
+  else
+    ##
+    # Ask for a password. Does not echo response to terminal.
 
-  def ask_for_password_on_windows
-    require "Win32API"
-    char = nil
-    password = ''
+    def ask_for_password(question)
+      return nil if not tty?
 
-    while char = Win32API.new("crtdll", "_getch", [ ], "L").Call do
-      break if char == 10 || char == 13 # received carriage return or newline
-      if char == 127 || char == 8 # backspace and delete
-        password.slice!(-1, 1)
-      else
-        password << char.chr
-      end
+      @outs.print(question + "  ")
+      @outs.flush
+
+      Gem.win_platform? ? ask_for_password_on_windows : ask_for_password_on_unix
     end
 
-    puts
-    password
-  end
+    ##
+    # Asks for a password that works on windows. Ripped from the Heroku gem.
 
-  ##
-  # Asks for a password that works on unix
+    def ask_for_password_on_windows
+      return nil if not tty?
 
-  def ask_for_password_on_unix
-    system "stty -echo"
-    password = @ins.gets
-    password.chomp! if password
-    system "stty echo"
-    password
+      require "Win32API"
+      char = nil
+      password = ''
+
+      while char = Win32API.new("crtdll", "_getch", [ ], "L").Call do
+        break if char == 10 || char == 13 # received carriage return or newline
+        if char == 127 || char == 8 # backspace and delete
+          password.slice!(-1, 1)
+        else
+          password << char.chr
+        end
+      end
+
+      puts
+      password
+    end
+
+    ##
+    # Asks for a password that works on unix
+
+    def ask_for_password_on_unix
+      return nil if not tty?
+
+      system "stty -echo"
+      password = @ins.gets
+      password.chomp! if password
+      system "stty echo"
+      password
+    end
   end
 
   ##
@@ -314,6 +336,10 @@ class Gem::StreamUI
   # Return a progress reporter object chosen from the current verbosity.
 
   def progress_reporter(*args)
+    if self.kind_of?(Gem::SilentUI)
+      return SilentProgressReporter.new(@outs, *args)
+    end
+
     case Gem.configuration.verbose
     when nil, false
       SilentProgressReporter.new(@outs, *args)
@@ -416,6 +442,10 @@ class Gem::StreamUI
   # Return a download reporter object chosen from the current verbosity
 
   def download_reporter(*args)
+    if self.kind_of?(Gem::SilentUI)
+      return SilentDownloadReporter.new(@outs, *args)
+    end
+
     case Gem.configuration.verbose
     when nil, false
       SilentDownloadReporter.new(@outs, *args)
@@ -453,12 +483,20 @@ class Gem::StreamUI
     end
 
     def fetch(file_name, total_bytes)
-      @file_name, @total_bytes = file_name, total_bytes
+      @file_name = file_name
+      @total_bytes = total_bytes.to_i
+      @units = @total_bytes.zero? ? 'B' : '%'
+
       update_display(false)
     end
 
     def update(bytes)
-      new_progress = ((bytes.to_f * 100) / total_bytes.to_f).ceil
+      new_progress = if @units == 'B' then
+                       bytes
+                     else
+                       ((bytes.to_f * 100) / total_bytes.to_f).ceil
+                     end
+
       return if new_progress == @progress
 
       @progress = new_progress
@@ -466,7 +504,7 @@ class Gem::StreamUI
     end
 
     def done
-      @progress = 100
+      @progress = 100 if @units == '%'
       update_display(true, true)
     end
 
@@ -474,8 +512,9 @@ class Gem::StreamUI
 
     def update_display(show_progress = true, new_line = false)
       return unless @out.tty?
-      if show_progress
-        @out.print "\rFetching: %s (%3d%%)" % [@file_name, @progress]
+
+      if show_progress then
+        @out.print "\rFetching: %s (%3d%s)" % [@file_name, @progress, @units]
       else
         @out.print "Fetching: %s" % @file_name
       end
@@ -490,16 +529,34 @@ end
 
 class Gem::ConsoleUI < Gem::StreamUI
   def initialize
-    super STDIN, STDOUT, STDERR
+    super STDIN, STDOUT, STDERR, true
   end
 end
 
 ##
 # SilentUI is a UI choice that is absolutely silent.
 
-class Gem::SilentUI
-  def method_missing(sym, *args, &block)
-    self
+class Gem::SilentUI < Gem::StreamUI
+  def initialize
+    reader, writer = nil, nil
+
+    begin
+      reader = File.open('/dev/null', 'r')
+      writer = File.open('/dev/null', 'w')
+    rescue Errno::ENOENT
+      reader = File.open('nul', 'r')
+      writer = File.open('nul', 'w')
+    end
+
+    super reader, writer, writer, false
+  end
+
+  def download_reporter(*args)
+    SilentDownloadReporter.new(@outs, *args)
+  end
+
+  def progress_reporter(*args)
+    SilentProgressReporter.new(@outs, *args)
   end
 end
 

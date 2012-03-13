@@ -1,9 +1,11 @@
 = RubyGems
 
-* http://rubygems.org
-* http://docs.rubygems.org
-* http://help.rubygems.org
-* http://github.com/rubygems
+Homepage:      :: http://rubygems.org
+Announcements: :: http://blog.rubygems.org
+Documentation: :: http://guides.rubygems.org
+Support:       :: http://help.rubygems.org
+Source:        :: http://github.com/rubygems/rubygems
+Bugtracker:    :: http://github.com/rubygems/rubygems/issues
 
 == DESCRIPTION
 
@@ -22,24 +24,7 @@ See UPGRADING.rdoc for more details and alternative instructions.
 
 -----
 
-NOTE: Ruby 1.9 ships with rubygems and contains a very buggy
-"gem-prelude". It is a gem loading system that can interfere with
-updating rubygems itself. We do NOT recommend you update to rubygems
-1.4 if you're running ruby 1.9.x until we get that sorted out in a
-future ruby release.
-
-If you absolutely hate kittens and you _must_ upgrade, you're going to
-have to do something really hokey like:
-
-% alias ruby19="ruby19 --disable-gems"
-% alias gem19="ruby19 --disable-gems -S gem"
-
-Even deleting the stock rubygems in 1.9 doesn't fix this situation.
-
------
-
-If you don't have any RubyGems install, there is still the pre-gem approach to
-getting software, doing it manually:
+If you don't have RubyGems installed, you can still do it manually:
 
 * Download from: https://rubygems.org/pages/download
 * Unpack into a directory and cd there
@@ -49,3 +34,21 @@ For more details and other options, see:
 
   ruby setup.rb --help
 
+== GETTING HELP
+
+=== Support Requests
+
+Are you unsure of how to use RubyGems?  Do you think you've found a bug and
+you're not sure?  If that is the case, the best place for you is to file a
+support request at {help.rubygems.org}[http://help.rubygems.org].
+
+=== Filing Tickets
+
+Got a bug and you're not sure?  You're sure you have a bug, but don't know
+what to do next?  In any case, let us know about it!  The best place
+for letting the RubyGems team know about bugs or problems you're having is
+{on the rubygems issues page at github}[http://github.com/rubygems/rubygems/issues].
+
+=== Bundler Compatibility
+
+See http://gembundler.com/compatibility for known issues.

@@ -16,18 +16,18 @@ class Gem::Commands::OutdatedCommand < Gem::Command
   end
 
   def execute
-    locals = Gem::SourceIndex.from_installed_gems
+    Gem::Specification.outdated.sort.each do |name|
+      local   = Gem::Specification.find_all_by_name(name).max
+      dep     = Gem::Dependency.new local.name, ">= #{local.version}"
+      remotes, e = Gem::SpecFetcher.fetcher.spec_for_dependency dep
 
-    locals.outdated.sort.each do |name|
-      local = locals.find_name(name).last
+      next if remotes.empty?
 
-      dep = Gem::Dependency.new local.name, ">= #{local.version}"
-      remotes = Gem::SpecFetcher.fetcher.fetch dep
-      remote = remotes.last.first
+      remotes.sort! { |a,b| a[0].version <=> b[0].version }
 
-      say "#{local.name} (#{local.version} < #{remote.version})"
+      highest = remotes.last.first
+
+      say "#{local.name} (#{local.version} < #{highest.version})"
     end
   end
-
 end
-

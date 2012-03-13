@@ -1,6 +1,5 @@
 require 'rubygems/command'
 require 'rubygems/remote_fetcher'
-require 'rubygems/source_info_cache'
 require 'rubygems/spec_fetcher'
 require 'rubygems/local_remote_options'
 
@@ -49,54 +48,37 @@ class Gem::Commands::SourcesCommand < Gem::Command
                        options[:update])
 
     if options[:clear_all] then
-      path = Gem::SpecFetcher.fetcher.dir
+      path = File.join Gem.user_home, '.gem', 'specs'
       FileUtils.rm_rf path
 
-      if not File.exist?(path) then
+      unless File.exist? path then
         say "*** Removed specs cache ***"
-      elsif not File.writable?(path) then
-        say "*** Unable to remove source cache (write protected) ***"
       else
-        say "*** Unable to remove source cache ***"
-      end
+        unless File.writable? path then
+          say "*** Unable to remove source cache (write protected) ***"
+        else
+          say "*** Unable to remove source cache ***"
+        end
 
-      sic = Gem::SourceInfoCache
-      remove_cache_file 'user',          sic.user_cache_file
-      remove_cache_file 'latest user',   sic.latest_user_cache_file
-      remove_cache_file 'system',        sic.system_cache_file
-      remove_cache_file 'latest system', sic.latest_system_cache_file
+        terminate_interaction 1
+      end
     end
 
-    if options[:add] then
-      source_uri = options[:add]
-      uri = URI.parse source_uri
+    if source_uri = options[:add] then
+      source = Gem::Source.new source_uri
 
       begin
-        Gem::SpecFetcher.fetcher.load_specs uri, 'specs'
-        Gem.sources << source_uri
+        source.load_specs :released
+        Gem.sources << source
         Gem.configuration.write
 
         say "#{source_uri} added to sources"
       rescue URI::Error, ArgumentError
         say "#{source_uri} is not a URI"
+        terminate_interaction 1
       rescue Gem::RemoteFetcher::FetchError => e
-        yaml_uri = uri + 'yaml'
-        gem_repo = Gem::RemoteFetcher.fetcher.fetch_size yaml_uri rescue false
-
-        if e.uri =~ /specs\.#{Regexp.escape Gem.marshal_version}\.gz$/ and
-           gem_repo then
-
-          alert_warning <<-EOF
-RubyGems 1.2+ index not found for:
-\t#{source_uri}
-
-Will cause RubyGems to revert to legacy indexes, degrading performance.
-          EOF
-
-          say "#{source_uri} added to sources"
-        else
-          say "Error fetching #{source_uri}:\n\t#{e.message}"
-        end
+        say "Error fetching #{source_uri}:\n\t#{e.message}"
+        terminate_interaction 1
       end
     end
 
@@ -116,15 +98,9 @@ Will cause RubyGems to revert to legacy indexes, degrading performance.
     if options[:update] then
       fetcher = Gem::SpecFetcher.fetcher
 
-      if fetcher.legacy_repos.empty? then
-        Gem.sources.each do |update_uri|
-          update_uri = URI.parse update_uri
-          fetcher.load_specs update_uri, 'specs'
-          fetcher.load_specs update_uri, 'latest_specs'
-        end
-      else
-        Gem::SourceInfoCache.cache true
-        Gem::SourceInfoCache.cache.flush
+      Gem.sources.each_source do |source|
+        source.load_specs :released
+        source.load_specs :latest
       end
 
       say "source cache successfully updated"

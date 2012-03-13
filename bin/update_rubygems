@@ -31,6 +31,7 @@ if update_dir.nil?
 else
   update_dir = File.dirname(update_dir)
   Dir.chdir update_dir
+  ENV["GEM_PREV_VER"] = Gem::VERSION
   system(Gem.ruby, 'setup.rb', *ARGV)
 end
 

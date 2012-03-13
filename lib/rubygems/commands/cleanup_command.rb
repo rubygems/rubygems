@@ -1,5 +1,4 @@
 require 'rubygems/command'
-require 'rubygems/source_index'
 require 'rubygems/dependency_list'
 require 'rubygems/uninstaller'
 
@@ -8,7 +7,7 @@ class Gem::Commands::CleanupCommand < Gem::Command
   def initialize
     super 'cleanup',
           'Clean up old versions of installed gems in the local repository',
-          :force => false, :test => false, :install_dir => Gem.dir
+          :force => false, :install_dir => Gem.dir
 
     add_option('-d', '--dryrun', "") do |value, options|
       options[:dryrun] = true
@@ -27,6 +26,9 @@ class Gem::Commands::CleanupCommand < Gem::Command
     <<-EOF
 The cleanup command removes old gems from GEM_HOME.  If an older version is
 installed elsewhere in GEM_PATH the cleanup command won't touch it.
+
+Older gems that are required to satisify the dependencies of gems
+are not removed.
     EOF
   end
 
@@ -38,39 +40,37 @@ installed elsewhere in GEM_PATH the cleanup command won't touch it.
     say "Cleaning up installed gems..."
     primary_gems = {}
 
-    Gem.source_index.each do |name, spec|
+    Gem::Specification.each do |spec|
       if primary_gems[spec.name].nil? or
          primary_gems[spec.name].version < spec.version then
         primary_gems[spec.name] = spec
       end
     end
 
-    gems_to_cleanup = []
-
-    unless options[:args].empty? then
-      options[:args].each do |gem_name|
-        dep = Gem::Dependency.new gem_name, Gem::Requirement.default
-        specs = Gem.source_index.search dep
-        specs.each do |spec|
-          gems_to_cleanup << spec
-        end
-      end
-    else
-      Gem.source_index.each do |name, spec|
-        gems_to_cleanup << spec
-      end
-    end
+    gems_to_cleanup = unless options[:args].empty? then
+                        options[:args].map do |gem_name|
+                          Gem::Specification.find_all_by_name gem_name
+                        end.flatten
+                      else
+                        Gem::Specification.to_a
+                      end
 
     gems_to_cleanup = gems_to_cleanup.select { |spec|
       primary_gems[spec.name].version != spec.version
     }
+
+    full = Gem::DependencyList.from_specs
 
     deplist = Gem::DependencyList.new
     gems_to_cleanup.uniq.each do |spec| deplist.add spec end
 
     deps = deplist.strongly_connected_components.flatten.reverse
 
+    original_path = Gem.path
+
     deps.each do |spec|
+      next unless full.ok_to_remove?(spec.full_name)
+
       if options[:dryrun] then
         say "Dry Run Mode: Would uninstall #{spec.full_name}"
       else
@@ -83,20 +83,21 @@ installed elsewhere in GEM_PATH the cleanup command won't touch it.
           :version => "= #{spec.version}",
         }
 
-        if Gem.user_dir == spec.installation_path then
-          uninstall_options[:install_dir] = spec.installation_path
-        end
+        uninstall_options[:user_install] = Gem.user_dir == spec.base_dir
 
         uninstaller = Gem::Uninstaller.new spec.name, uninstall_options
 
         begin
           uninstaller.uninstall
         rescue Gem::DependencyRemovalException, Gem::InstallError,
-               Gem::GemNotInHomeException => e
+               Gem::GemNotInHomeException, Gem::FilePermissionError => e
           say "Unable to uninstall #{spec.full_name}:"
           say "\t#{e.class}: #{e.message}"
         end
       end
+
+      # Restore path Gem::Uninstaller may have change
+      Gem.use_paths(*original_path)
     end
 
     say "Clean Up Complete"

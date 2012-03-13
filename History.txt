@@ -1,4 +1,470 @@
-﻿=== 1.4.1 / 2010-12-31
+# coding: UTF-8
+
+=== 1.8.14 / 2012-01-05
+
+* 2 bug fixes:
+
+  * Ignore old/bad cache data in Version
+  * Make sure our YAML workarounds are loaded properly. Fixes #250.
+
+=== 1.8.13 / 2011-12-21
+
+* 1 bug fix:
+
+  * Check loaded_specs properly when trying to satisfy a dep
+
+* 2 minor enhancements:
+
+  * Remove using #loaded_path? for performance
+  * Remove Zlib workaround for Windows build.
+
+=== 1.8.12 / 2011-12-02
+
+* Bug fix:
+  * Handle more cases where Syck's DefaultKey showed up in requirements
+    and wasn't cleaned out.
+
+=== 1.8.11 / 2011-10-03
+
+* Bug fix:
+  * Deprecate was moved to Gem::Deprecate to stop polluting the top-level
+    namespace.
+
+=== 1.8.10 / 2011-08-25
+
+RubyGems 1.8.10 contains a security fix that prevents malicious gems from
+executing code when their specification is loaded.  See
+https://github.com/rubygems/rubygems/pull/165 for details.
+
+* 5 bug fixes:
+
+  * RubyGems escapes strings in ruby-format specs using #dump instead of #to_s
+    and %q to prevent code injection.  Issue #165 by Postmodern
+  * RubyGems attempt to activate the psych gem now to obtain bugfixes from
+    psych.
+  * Gem.dir has been restored to the front of Gem.path.  Fixes remaining
+    problem with Issue #115
+  * Fixed Syck DefaultKey infecting ruby-format specifications.
+  * `gem uninstall a b` no longer stops if gem "a" is not installed.
+
+=== 1.8.9 / 2011-08-23
+
+* Bug fixes:
+
+  * Fixed uninstalling multiple gems using `gem uninstall`
+  * Gem.use_paths splatted to take multiple paths!  Issue #148
+
+=== 1.8.8 / 2011-08-11
+
+* Bug fix:
+  * The encoding of a gem's YAML spec is now UTF-8.  Issue #149
+
+=== 1.8.7 / 2011-08-04
+
+* Bug fixes:
+  * Added missing require for `gem uninstall --format-executable`
+  * The correct name of the executable being uninstalled is now displayed with
+    --format-executable
+  * Fixed `gem unpack uninstalled_gem` default version picker
+  * RubyGems no longer claims a nonexistent gem can be uninstalled
+  * `gem which` no longer claims directories are requirable files
+  * `gem cleanup` continues cleaning up gems if one can't be uninstalled due
+    to permissions.  Issue #82
+  * Gem repository directories are no longer created world-writable.  Patch by
+    Sakuro OZAWA.  Ruby Bug #4930
+
+=== 1.8.6 / 2011-07-25
+
+* 1 minor enhancement:
+
+  * Add autorequires and delay startup of RubyGems until require is called.
+    See Ruby bug #4962
+
+* 9 bug fixes:
+
+  * Restore behavior of Gem::Specification#loaded?  Ruby Bug #5032
+  * Clean up SourceIndex.add_specs to not be so damn noisy. (tadman)
+  * Added missing APPLE_GEM_HOME in paths.
+  * Extend YAML::Syck::DefaultKey fixing to `marshal_dump` as well.
+  * Fix #29216: check correct bin_dir in check_that_user_bin_dir_is_in_path.
+  * Revert Gem.latest_load_paths to working order (PathSupport revert).
+  * Restore normalization of GEM_HOME.
+  * Handle the Syck DefaultKey problem once and for all.
+  * Fix SystemStackError occurring with "gem list -r -a" on 1.9.
+
+=== 1.8.5 / 2011-05-31
+
+* 2 minor enhancement:
+
+  * The -u option to 'update local source cache' is official deprecated.
+  * Remove has_rdoc deprecations from Specification.
+
+* 2 bug fixes:
+
+  * Handle bad specs more gracefully.
+  * Reset any Gem paths changed in the installer.
+
+=== 1.8.4 / 2011-05-25
+
+* 1 minor enhancement:
+
+  * Removed default_executable deprecations from Specification.
+
+=== 1.8.3 / 2011-05-19
+
+* 4 bug fixes:
+
+  * Fix independent testing of test_gem_package_tar_output.  Ruby Bug #4686 by
+    Shota Fukumori
+  * Fix test failures for systems with separate ruby versions.  Ruby Bug #3808
+    by Jeremy Evans
+  * Fixed some bad calls left behind after rolling out some refactorings.
+  * Syck has a parse error on (good) times output from Psych. (dazuma, et al)
+
+=== 1.8.2 / 2011-05-11
+
+* 2 minor enhancements:
+
+  * Moved #outdated from OutdatedCommand to Specification (for Isolate).
+  * Print out a warning about missing executables.
+
+* 3 bug fixes:
+
+  * Added missing requires to fix various upgrade issues.
+  * `gem pristine` respects multiple gem repositories.
+  * setup.rb now execs with --disable-gems when possible
+
+=== 1.8.1 / 2011-05-05
+
+* 1 minor enhancement:
+
+  * Added Gem::Requirement#specific? and Gem::Dependency#specific?
+
+* 4 bug fixes:
+
+  * Typo on Indexer rendered it useless on Windows
+  * gem dep can fetch remote dependencies for non-latest gems again.
+  * gem uninstall with multiple versions no longer crashes with ArgumentError
+  * Always use binary mode for File.open to keep Windows happy
+
+=== 1.8.0 / 2011-04-34
+
+This release focused on properly encapsulating functionality.  Most of this
+work focused on moving functionality out of Gem::SourceIndex and
+Gem::GemPathSearcher into Gem::Specification where it belongs.
+
+After installing RubyGems 1.8.0 you will see deprecations when loading your
+exsting gems.  Run `gem pristine --all --no-extensions` to regenerate your
+gem specifications safely.
+
+Currently RubyGems does not save the build arguments used to build gems with
+extensions.  You will need to run `gem pristine gem_with_extension --
+--build-arg` to regenerate a gem with an extension where it requires special
+build arguments.
+
+* 24(+) Deprecations (WOOT!):
+
+  * DependencyList.from_source_index deprecated the source_index argument.
+  * Deprecated Dependency.new(/regex/).
+  * Deprecated Gem.searcher.
+  * Deprecated Gem.source_index and Gem.available?
+  * Deprecated Gem: activate_dep, activate_spec, activate,
+    report_activate_error, and required_location.
+  * Deprecated Gem::all_partials
+  * Deprecated Gem::cache_dir
+  * Deprecated Gem::cache_gem
+  * Deprecated Gem::default_system_source_cache_dir
+  * Deprecated Gem::default_user_source_cache_dir
+  * Deprecated Platform#empty?
+  * Deprecated Specification.cache_gem
+  * Deprecated Specification.installation_path
+  * Deprecated Specification.loaded, loaded?, and loaded=
+  * Deprecated all of Gem::SourceIndex.
+  * Deprecated all of Gem::GemPathSearcher.
+  * Deprecated Gem::Specification#default_executable.
+
+* 2 major enhancements:
+
+  * Gem::SourceIndex functionality has been moved to Gem::Specification.
+    Gem::SourceIndex is completely disconnected from Gem::Specification
+  * Refactored GemPathSearcher entirely out. RIPMF
+
+* 41 minor enhancements:
+
+  * Added CommandManager#unregister_command
+  * Added Dependency#matching_specs + to_specs.
+  * Added Dependency#to_spec
+  * Added Gem.pre_reset_hook/s and post_reset_hook/s.
+  * Added GemCommand.reset to reinitialize the singleton
+  * Added Specification#activate.
+  * Added Specification#activated, activated=, and activated?
+  * Added Specification#base_dir.
+  * Added Specification#bin_dir and bin_file.
+  * Added Specification#cache_dir and cache_file. Aliased cache_gem.
+  * Added Specification#doc_dir and ri_dir.
+  * Added Specification#find(name_or_dep, *requirements).
+  * Added Specification#gem_dir and gems_dir.
+  * Added Specification#spec_dir and spec_file.
+  * Added Specification.add_spec, add_specs, and remove_spec.
+  * Added Specification.all=. If you use this, we will light you on fire.
+  * Added Specification.all_names.
+  * Added Specification.dirs and dirs=. dirs= resets.
+  * Added Specification.find_all_by_name(name, *reqs)
+  * Added Specification.latest_specs. SO TINY!
+  * Added TestCase#all_spec_names to help clean up tests
+  * Added TestCase#assert_path_exists and refute_path_exists. Will move to
+    minitest.
+  * Gem.sources no longer tries to load sources gem. Only uses default_sources.
+  * Installer no longer accepts a source_index option.
+  * More low-level integration.
+  * Removed Gem::FileOperations since it is a dummy class
+  * Removed a comment because I am dumb
+  * Removed pkgs/sources/lib/sources.rb
+  * Revamped indexer to mostly not use SourceIndex (legacy index requires it).
+  * Rewrote our last functional test suite to be happy and fast
+  * RubyGems is now under the Ruby License or the MIT license
+  * Specification#== now only checks name, version, and platform.
+  * Specification#authors= now forcefully flattens contents (bad rspec! no
+    cookie!)
+  * Specification#eql? checks all fields.
+  * Specification#installation_path no longer raises if it hasn't been
+    activated.
+  * Specification#validate now ensures that authors is not empty.
+  * TestCase.util_setup_spec_fetcher no longer returns a SourceIndex.
+  * Uninstaller no longer passes around SourceIndex instances
+  * Warn on loading bad spec array values (ntlm-http gem has nil in its cert
+    chain)
+  * `gem pristine` now accepts --no-executables to skip restoring gems with
+    extensions.
+  * `gem pristine` can now restore multiple gems.
+
+* 6 bug fixes:
+
+  * DependencyInstaller passed around a source_index instance but used
+    Gem.source_index.
+  * Fixed Platform#== and #hash so instances may be used as hash keys.
+  * Fixed broken Specification#original_platform. It should never be nil.
+  * Gem::Text#format_text now strips trailing whitespace
+  * Normalize LOAD_PATH with File.expand_path
+  * `gem build` errors should exit 1.
+  * `gem pristine` can now restore non-latest gems where the cached gem was
+    removed.
+
+=== 1.7.1 / 2011-03-32
+
+* 1 bug fix:
+  * Fixed missing file in Manifest.txt.  (Also a bug in hoe was fixed where
+    `rake check_manifest` showing a diff would not exit with an error.)
+
+=== 1.7.0 / 2011-03-32
+
+* 16 Deprecations (woot!)
+  * Deprecated Gem.all_load_paths, latest_load_paths, promote_load_path, and
+    cache.
+  * Deprecated RemoteFetcher#open_uri_or_path.
+  * Deprecated SourceIndex#all_gems.
+  * Deprecated SourceIndex#initialize(hash_of_specs).
+  * Deprecated SourceIndex.from_installed_gems, from_gems_in, and
+    load_specification.
+  * Deprecated Specification#has_rdoc, default_executable, and
+    test_suite_file(=).
+  * Deprecated Specification#has_rdoc= and default_executable=
+
+* 26 minor enhancements:
+  * Added stupid simple deprecation module.
+  * Added --spec option to `gem unpack` to output a gem's original metadata
+  * Added packaging option to Specification#validate
+  * Gem.bin_path requires the exec_name argument.
+  * Read from cached specs if fetch fails for some reason
+  * Refactored Specification#assign_defaults into #initialize.
+  * RemoteFetcher#fetch_path now dispatches dynamically to 'fetch_<uri.schema>'
+  * Removed Specification @@gather.
+  * Removed Specification.attribute.
+  * Removed Specification.attribute_alias_singular.
+  * Removed Specification.attribute_defaults.
+  * Removed Specification.attributes
+  * Removed Specification.overwrite_accessor.
+  * Removed Specification.read_only.
+  * Removed Specification.required_attribute.
+  * Removed Specification::SPECIFICATION_VERSION_HISTORY and turned into rdoc
+  * Removed blanket rescue in default_executable. Hope it doesn't blow up! :P
+  * Removed nearly all metaprogramming from Specification. Yay for
+    attr_accessor!
+  * SourceIndex#initialize changed to prefer an array of spec dirs, defaulting
+    to none.
+  * SourceIndex.new is now the preferred way to create SourceIndex instances.
+    *gasp*
+  * Specification#validate now checks that array attribs are indeed arrays.
+  * Specification.default_value is now an instance method.
+  * Switched Specification::TODAY to be proper midnight @ UTC
+  * Update Gem::RemoteFetcher\'s User-Agent to handle RUBY_ENGINE and
+    RUBY_REVISION when patchlevel is -1
+  * UpdateCommand#gems_to_update now returns (name, version) pairs.
+  * UpdateCommand#which_to_update now takes an optional system argument.
+
+* 11 bug fixes:
+  * Added missing remote fetcher require to pristine command (aarnell)
+  * Building gems now checks to ensure all required fields are non-nil
+  * Fix option parser when summary is nil.
+  * Fixed `gem contents` to work with the lightweight specifications
+  * Fixed `gem update --system x.y.z` where x.y.z == latest version. (MGPalmer)
+  * Fixed gem contents sorting and tests. (MGPalmer)
+  * Fixed intermittant problem in `gem fetch` with --platform specified (quix)
+  * Fixed lightweight specifications so `gem rdoc` will generate proper
+    documentation
+  * MockGemUI#terminate_interaction should not raise Gem::SystemExitException.
+    (MGPalmer)
+  * RubyGems now raises a better error for broken .gem files.  Bug #29067 by
+    Elias Baixas
+  * `gem update` now uniq's command line arguments.
+
+=== 1.6.2 / 2011-03-08
+
+Bug Fixes:
+
+* require of an activated gem could cause activation conflicts.  Fixes
+  Bug #29056 by Dave Verwer.
+* `gem outdated` now works with up-to-date prerelease gems.
+
+=== 1.6.1 / 2011-03-03
+
+Bug Fixes:
+
+* Installation no longer fails when a dependency from a version that won't be
+  installed is unsatisfied.
+* README.rdoc now shows how to file tickets and get help.  Pull Request #40 by
+  Aaron Patterson.
+* Gem files are cached correctly again.  Patch #29051 by Mamoru Tasaka.
+* Tests now pass with non-022 umask.  Patch #29050 by Mamoru Tasaka.
+
+=== 1.6.0 / 2011-02-29
+
+4 Deprecations:
+
+* RubyGems no longer requires 'thread'.  Rails < 3 will need to add require
+  'thread' to their applications.
+* Gem.cache is deprecated.  Use Gem.source_index.
+* RbConfig.datadir is deprecated.  Use Gem.datadir.
+* Gem::LoadError#version_requirements has been removed.  Use
+  Gem::LoadError#requirement.
+
+2 Major Enhancements:
+
+* Rewrote how Gem::activate (gem and require) resolves dependencies.
+* Gem::LoadError#version_requirement has been removed. Use
+  Gem::LoadError#requirement.
+
+17 Minor Enhancments:
+
+* Added --key to `gem push` for setting alternate API keys.
+* Added --format-executable support to gem uninstall.
+* Added Gem::DependencyList#clear.
+* Added Gem::DependencyList#remove_specs_unsatisfied_by
+* Added Gem.latest_spec_for, latest_version_for, and latest_rubygems_version.
+* Added Gem::Dependency#merge which merges requirements for two
+  dependencies.
+* Added Gem::TestCase#util_spec for faster tests.
+* Added Gem::Specification#dependent_specs.
+* Added Gem::TestCase#new_spec and Gem::TestCase#install_specs.
+* Added flag to include prerelease gems in Gem::SourceIndex#latest_specs.
+* Gem.cache_dir always references the proper cache dir. 
+  Pass true to support a user path.
+* Gem.cache_gem, given a filename always references the cache gem.
+  Pass true to support a user path.
+* Added Gem::Specification#conflicts
+* Removed rdoc gem/require from test_case.rb.
+* Rubygems will no longer let you push if you're using beta or unreleased
+  rubygems.
+* Save RAM / GC churn by removing spec.files and rdoc options from
+  locally cached gem specifications.
+* SpecFetcher.fetch_spec can now take a string source_uri.
+
+10 Bug Fixes:
+
+* Added missing require of Gem::RemoteFetcher to the unpack command.
+* RubyGems now completely removes a previous install when reinstalling.
+* Fixed Gem::Installer#generate_bin to only chmod files that exist.
+* Fixed handling of Windows style file:/// uris.
+* Fixed requires in tests. (shota)
+* Fixed script generation on Windows.
+* Fixed test issues if you have older rubygems installed.
+* Gem::DependencyInstaller tests use Gem::Security, add the missing require.
+* Gem::Security used FileUtils but didn't require it.  Reported by Elia Schito.
+* Gem::Uninstaller now respects --format-executable.
+
+=== 1.5.3 / 2011-02-26
+
+Bug Fixes:
+
+* Fix for a bug in Syck which causes install failures for gems packaged with
+  Psych.  Bug #28965 by Aaron Patterson.
+
+=== 1.5.2 / 2011-02-10
+
+Bug Fixes:
+
+* Fixed <tt>gem update --system</tt>.  RubyGems can now update itself again.
+
+=== 1.5.1 / 2011-02-09
+
+==== NOTE: `gem update --system` is broken. See UPGRADING.rdoc.
+
+Minor Enhancement:
+
+* Added ability to do gem update --system X.Y.Z.
+
+Bug Fixes:
+
+* Scrub !!null YAML from 1.9.2 (install and build).
+* Added missing requires for user_interaction.
+* Wrote option processing tests for gem update.
+* Updated upgrading doco for new gem update --system option.
+* Fixed SilentUI for cygwin; try /dev/null first then fall back to NUL.
+* RubyGems now enforces ruby 1.8.7 or newer.
+
+=== 1.5.0 / 2011-01-31
+
+==== NOTE: `gem update --system` is broken. See UPGRADING.rdoc.
+
+Major Enhancements:
+
+* Finally fixed all known 1.9.x issues. Upgrading is now possible!
+* Merged huge 1.3.7/ruby-core changes to master.
+
+Minor Enhancements:
+
+* Added UPGRADING.rdoc to help deal with 1.9 issues.
+* Gem::Format now gives better errors for corrupt gem files and includes paths
+* Pre-install hooks can now abort gem installation by returning false
+* Move shareable TestCase classes to lib/ to help plugin authors with tests.
+* Add post-build hooks that can cancel the gem install
+* Always require custom_require now that require_gem is gone
+* Added GemInstaller accessors for @options so plugins can reference them.
+* Optimized Gem.find_files. ~10% faster than 1.4.2. ~40% faster than ruby 1.9.
+* Gem::SilentUI now behaves like Gem::StreamUI for asking questions.  Patch by
+  Erik Hollensbe.
+
+Bug Fixes:
+
+* `gem update` was implicitly doing --system.
+* 1.9.3: Fixed encoding errors causing gem installs to die during rdoc phase.
+* Add RubyForge URL to README. Closes #28825
+* 1.9.3: Use chdir {} when building extensions to prevent warnings. Fixes #4337
+* 1.9.2: Fix circular require warning.
+* Make requiring openssl even lazier at request of NaHi
+* `gem unpack` will now download the gem if it is not in the cache. Patch by
+  Erik Hollensbe.
+* rubygems-update lists its development dependencies again
+
+=== 1.4.2 / 2011-01-06
+
+Bug fixes:
+
+* Gem::Versions: "1.b1" != "1.b.1", but "1.b1" eql? "1.b.1". Fixes gem indexing.
+* Fixed Gem.find_files.
+* Removed otherwise unused #find_all_dot_rb. Only 6 days old and hella buggy.
+
+=== 1.4.1 / 2010-12-31
 
 Since apparently nobody reads my emails, blog posts or the README:
 
@@ -826,11 +1292,11 @@ There has been some minor usability enhancements and changes ...
   names.  This was useful for him while testing libs that he had in
   development.
 
-=== 0.8.1 / 2009-09-14
+=== 0.8.1 / 2004-09-17
 
 * Quick release to capture some bug fixes.
 
-=== 0.8.0 / 2009-09-12
+=== 0.8.0 / 2004-09-15
 
 * Remove need for library stubs.  Set the RUBYOPT environment variable to
   include "rrubygems", and a normal require will find gem files.  Continue to
@@ -854,6 +1320,10 @@ There has been some minor usability enhancements and changes ...
 * Added "gem unpack" for "unpacking" a gem to the current directory
 
 === 0.7.0 / 2004-07-09
+
+See ChangeLog
+
+=== 0.6.1 / 2004-06-08
 
 See ChangeLog
 
@@ -893,7 +1363,7 @@ See ChangeLog
   automatically included.
 * Some small bug fixes
 
-=== 0.4.0 / 2004-05-31
+=== 0.4.0 / 2004-05-30
 
 * Minor bug fixes including Windows compatability issues
 

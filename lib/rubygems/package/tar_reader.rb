@@ -9,7 +9,7 @@
 
 class Gem::Package::TarReader
 
-  include Gem::Package
+  include Enumerable
 
   ##
   # Raised if the tar IO is not seekable
@@ -52,9 +52,9 @@ class Gem::Package::TarReader
   # Iterates over files in the tarball yielding each entry
 
   def each
-    loop do
-      return if @io.eof?
+    return enum_for __method__ unless block_given?
 
+    until @io.eof? do
       header = Gem::Package::TarHeader.from @io
       return if header.empty?
 

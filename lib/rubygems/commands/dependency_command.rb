@@ -1,7 +1,6 @@
 require 'rubygems/command'
 require 'rubygems/local_remote_options'
 require 'rubygems/version_option'
-require 'rubygems/source_info_cache'
 
 class Gem::Commands::DependencyCommand < Gem::Command
 
@@ -44,12 +43,12 @@ class Gem::Commands::DependencyCommand < Gem::Command
   end
 
   def execute
-    options[:args] << '' if options[:args].empty?
-    specs = {}
-
-    source_indexes = Hash.new do |h, source_uri|
-      h[source_uri] = Gem::SourceIndex.new
+    if options[:reverse_dependencies] and remote? and not local? then
+      alert_error 'Only reverse dependencies for local gems are supported.'
+      terminate_interaction 1
     end
+
+    options[:args] << '' if options[:args].empty?
 
     pattern = if options[:args].length == 1 and
                  options[:args].first =~ /\A\/(.*)\/(i)?\z/m then
@@ -59,46 +58,25 @@ class Gem::Commands::DependencyCommand < Gem::Command
                 /\A#{Regexp.union(*options[:args])}/
               end
 
-    dependency = Gem::Dependency.new pattern, options[:version]
+    # TODO: deprecate for real damnit
+    dependency = Gem::Deprecate.skip_during {
+      Gem::Dependency.new pattern, options[:version]
+    }
     dependency.prerelease = options[:prerelease]
 
-    if options[:reverse_dependencies] and remote? and not local? then
-      alert_error 'Only reverse dependencies for local gems are supported.'
-      terminate_interaction 1
-    end
+    specs = []
 
-    if local? then
-      Gem.source_index.search(dependency).each do |spec|
-        source_indexes[:local].add_spec spec
-      end
-    end
+    specs.concat dependency.matching_specs if local?
 
     if remote? and not options[:reverse_dependencies] then
       fetcher = Gem::SpecFetcher.fetcher
 
-      begin
-        specs_and_sources = fetcher.find_matching(dependency, false, true,
-                                                  dependency.prerelease?)
+      ss, err = fetcher.spec_for_dependency dependency
 
-        specs_and_sources.each do |spec_tuple, source_uri|
-          spec = fetcher.fetch_spec spec_tuple, URI.parse(source_uri)
-
-          source_indexes[source_uri].add_spec spec
-        end
-      rescue Gem::RemoteFetcher::FetchError => e
-        raise unless fetcher.warn_legacy e do
-          require 'rubygems/source_info_cache'
-
-          specs = Gem::SourceInfoCache.search_with_source dependency, false
-
-          specs.each do |spec, source_uri|
-            source_indexes[source_uri].add_spec spec
-          end
-        end
-      end
+      ss.each { |s,o| specs << s }
     end
 
-    if source_indexes.empty? then
+    if specs.empty? then
       patterns = options[:args].join ','
       say "No gems found matching #{patterns} (#{options[:version]})" if
         Gem.configuration.verbose
@@ -106,24 +84,18 @@ class Gem::Commands::DependencyCommand < Gem::Command
       terminate_interaction 1
     end
 
-    specs = {}
-
-    source_indexes.values.each do |source_index|
-      source_index.gems.each do |name, spec|
-        specs[spec.full_name] = [source_index, spec]
-      end
-    end
+    specs = specs.uniq.sort
 
     reverse = Hash.new { |h, k| h[k] = [] }
 
     if options[:reverse_dependencies] then
-      specs.values.each do |_, spec|
+      specs.each do |spec|
         reverse[spec.full_name] = find_reverse_dependencies spec
       end
     end
 
     if options[:pipe_format] then
-      specs.values.sort_by { |_, spec| spec }.each do |_, spec|
+      specs.each do |spec|
         unless spec.dependencies.empty?
           spec.dependencies.sort_by { |dep| dep.name }.each do |dep|
             say "#{dep.name} --version '#{dep.requirement}'"
@@ -133,7 +105,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
     else
       response = ''
 
-      specs.values.sort_by { |_, spec| spec }.each do |_, spec|
+      specs.each do |spec|
         response << print_dependencies(spec)
         unless reverse[spec.full_name].empty? then
           response << "  Used by\n"
@@ -165,7 +137,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
   def find_reverse_dependencies(spec)
     result = []
 
-    Gem.source_index.each do |name, sp|
+    Gem::Specification.each do |sp|
       sp.dependencies.each do |dep|
         dep = Gem::Dependency.new(*dep) unless Gem::Dependency === dep
 
@@ -177,18 +149,6 @@ class Gem::Commands::DependencyCommand < Gem::Command
     end
 
     result
-  end
-
-  def find_gems(name, source_index)
-    specs = {}
-
-    spec_list = source_index.search name, options[:version]
-
-    spec_list.each do |spec|
-      specs[spec.full_name] = [source_index, spec]
-    end
-
-    specs
   end
 
 end

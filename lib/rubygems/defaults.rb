@@ -1,6 +1,8 @@
 module Gem
+  DEFAULT_HOST = "https://rubygems.org"
 
   @post_install_hooks   ||= []
+  @done_installing_hooks  ||= []
   @post_uninstall_hooks ||= []
   @pre_uninstall_hooks  ||= []
   @pre_install_hooks    ||= []
@@ -17,16 +19,35 @@ module Gem
   # specified in the environment
 
   def self.default_dir
-    if defined? RUBY_FRAMEWORK_VERSION then
-      File.join File.dirname(ConfigMap[:sitedir]), 'Gems',
-                ConfigMap[:ruby_version]
-    elsif ConfigMap[:rubylibprefix] then
-      File.join(ConfigMap[:rubylibprefix], 'gems',
-                ConfigMap[:ruby_version])
-    else
-      File.join(ConfigMap[:libdir], ruby_engine, 'gems',
-                ConfigMap[:ruby_version])
-    end
+    path = if defined? RUBY_FRAMEWORK_VERSION then
+             [
+               File.dirname(ConfigMap[:sitedir]),
+               'Gems',
+               ConfigMap[:ruby_version]
+             ]
+           elsif ConfigMap[:rubylibprefix] then
+             [
+              ConfigMap[:rubylibprefix],
+              'gems',
+              ConfigMap[:ruby_version]
+             ]
+           else
+             [
+               ConfigMap[:libdir],
+               ruby_engine,
+               'gems',
+               ConfigMap[:ruby_version]
+             ]
+           end
+
+    @default_dir ||= File.join(*path)
+  end
+
+  ##
+  # Paths where RubyGems' .rb files and bin files are installed
+
+  def self.default_rubygems_dirs
+    nil # default to standard layout
   end
 
   ##
@@ -76,14 +97,18 @@ module Gem
   # The default system-wide source info cache directory
 
   def self.default_system_source_cache_dir
-    File.join Gem.dir, 'source_cache'
+    File.join(Gem.dir, 'source_cache')
   end
 
   ##
   # The default user-specific source info cache directory
 
   def self.default_user_source_cache_dir
-    File.join Gem.user_home, '.gem', 'source_cache'
+    #
+    # NOTE Probably an argument for moving this to per-ruby supported dirs like
+    # user_dir
+    #
+    File.join(Gem.user_home, '.gem', 'source_cache')
   end
 
   ##
@@ -96,6 +121,4 @@ module Gem
       'ruby'
     end
   end
-
 end
-

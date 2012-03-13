@@ -1,6 +1,7 @@
 require 'rubygems/command'
 require 'rubygems/local_remote_options'
 require 'rubygems/gemcutter_utilities'
+require 'rubygems/package'
 
 class Gem::Commands::PushCommand < Gem::Command
   include Gem::LocalRemoteOptions
@@ -21,7 +22,8 @@ class Gem::Commands::PushCommand < Gem::Command
   def initialize
     super 'push', description
     add_proxy_option
-    
+    add_key_option
+
     add_option(
       '--host HOST',
       'Push to another gemcutter-compatible host'
@@ -36,17 +38,30 @@ class Gem::Commands::PushCommand < Gem::Command
   end
 
   def send_gem name
-    say "Pushing gem to #{options[:host] || Gem.host}..."
-
     args = [:post, "api/v1/gems"]
 
-    args << options[:host] if options[:host]
+
+    if Gem.latest_rubygems_version < Gem::Version.new(Gem::VERSION) then
+      alert_error "Using beta/unreleased version of rubygems. Not pushing."
+      terminate_interaction 1
+    end
+
+    host = options[:host]
+    unless host
+      if gem_data = Gem::Package.new(name) then
+        host = gem_data.spec.metadata['default_gem_server']
+      end
+    end
+
+    args << host if host
+
+    say "Pushing gem to #{host || Gem.host}..."
 
     response = rubygems_api_request(*args) do |request|
       request.body = Gem.read_binary name
       request.add_field "Content-Length", request.body.size
       request.add_field "Content-Type",   "application/octet-stream"
-      request.add_field "Authorization",  Gem.configuration.rubygems_api_key
+      request.add_field "Authorization",  api_key
     end
 
     with_response response

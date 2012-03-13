@@ -1,7 +1,14 @@
+# TODO: the documentation in here is terrible.
+#
+# Each exception needs a brief description and the scenarios where it is
+# likely to be raised
+
 ##
 # Base exception class for RubyGems.  All exception raised by RubyGems are a
 # subclass of this one.
-class Gem::Exception < RuntimeError; end
+class Gem::Exception < RuntimeError
+  attr_accessor :source_exception
+end
 
 class Gem::CommandLineError < Gem::Exception; end
 
@@ -24,11 +31,18 @@ class Gem::EndOfYAMLException < Gem::Exception; end
 
 ##
 # Signals that a file permission error is preventing the user from
-# installing in the requested directories.
+# operating on the given directory.
+
 class Gem::FilePermissionError < Gem::Exception
-  def initialize(path)
-    super("You don't have write permissions into the #{path} directory.")
+
+  attr_reader :directory
+
+  def initialize directory
+    @directory = directory
+
+    super "You don't have write permissions for the #{directory} directory."
   end
+
 end
 
 ##
@@ -89,3 +103,4 @@ class Gem::SystemExitException < SystemExit
   end
 
 end
+

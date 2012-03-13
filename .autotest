@@ -1,34 +1,43 @@
 # -*- ruby -*-
 
+Gem.refresh
+
 require 'autotest/restart'
+require 'autotest/isolate'
 
 Autotest.add_hook :initialize do |at|
-  at.order = :natural # I am a bad person - Eric Hodel
   at.testlib = 'minitest/autorun'
 
   at.add_exception %r%/\.git/%
   at.add_exception %r%/\.svn/%
   at.add_exception %r%\.rbc$%
-  at.add_exception %r%test/rubygems%
+  at.add_exception %r%test/rubygems/rubygems%
 
   at.find_directories.clear
   at.find_directories.push 'lib', 'test'
 
   at.add_mapping %r%^lib/rubygems.rb$% do |_, m|
-    "test/test_gem.rb"
+    "test/rubygems/test_gem.rb"
   end
 
   at.add_mapping %r%^lib/rubygems/(.*).rb$% do |_, m|
-    "test/test_gem_#{m[1].gsub '/', '_'}.rb"
+    "test/rubygems/test_gem_#{m[1].gsub '/', '_'}.rb"
   end
 
   at.add_mapping %r%^test/support/(.*).rb$% do |_, m|
-    at.files_matching %r%^test/test_(.*)\.rb$%
+    at.files_matching %r%^test/rubygems/test_(.*)\.rb$%
   end
 
-  # at.add_mapping %r%^test/support/(.*).rb$% do |_, m|
-  #   files_matching %r%^test/test_(.*)\.rb%%
-  # end
+  args = ARGV.reject { |a| a =~ /^-/ }
+  at.find_directories = args unless args.empty?
+end
 
-  at.find_directories = ARGV unless ARGV.empty?
+class Autotest
+  alias :old_path_to_classname :path_to_classname
+  def path_to_classname s
+    classname = old_path_to_classname(s.sub(/test.rubygems.test_/, ""))
+    classname = classname.gsub('Rdoc', 'RDoc')
+
+    classname
+  end
 end

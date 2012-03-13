@@ -6,7 +6,7 @@
 #++
 
 # Make sure rubygems isn't already loaded.
-if ENV['RUBYOPT'] and defined? Gem then
+if ENV['RUBYOPT'] or defined? Gem then
   ENV.delete 'RUBYOPT'
 
   require 'rbconfig'
@@ -15,7 +15,10 @@ if ENV['RUBYOPT'] and defined? Gem then
   ruby = File.join config::CONFIG['bindir'], config::CONFIG['ruby_install_name']
   ruby << config::CONFIG['EXEEXT']
 
-  exec(ruby, 'setup.rb', *ARGV)
+  cmd = [ruby, 'setup.rb', *ARGV].compact
+  cmd[1,0] = "--disable-gems" if RUBY_VERSION > "1.9"
+
+  exec(*cmd)
 end
 
 Dir.chdir File.dirname(__FILE__)
@@ -28,7 +31,9 @@ require 'rubygems/exceptions'
 Gem::CommandManager.instance.register_command :setup
 
 args = ARGV.clone
-
+if ENV["GEM_PREV_VER"]
+  args = [ '--previous-version', ENV["GEM_PREV_VER"] ] + args
+end
 args.unshift 'setup'
 
 begin

@@ -74,10 +74,13 @@ class Gem::Commands::QueryCommand < Gem::Command
         exit_code |= 1
       end
 
-      raise Gem::SystemExitException, exit_code
+      terminate_interaction exit_code
     end
 
-    dep = Gem::Dependency.new name, Gem::Requirement.default
+    req = Gem::Requirement.default
+    # TODO: deprecate for real
+    dep = Gem::Deprecate.skip_during { Gem::Dependency.new name, req }
+    dep.prerelease = prerelease
 
     if local? then
       if prerelease and not both? then
@@ -90,10 +93,12 @@ class Gem::Commands::QueryCommand < Gem::Command
         say
       end
 
-      specs = Gem.source_index.search dep
+      specs = Gem::Specification.find_all { |s|
+        s.name =~ name and req =~ s.version
+      }
 
       spec_tuples = specs.map do |spec|
-        [[spec.name, spec.version, spec.original_platform, spec], :local]
+        [spec.name_tuple, spec]
       end
 
       output_query_results spec_tuples
@@ -106,31 +111,25 @@ class Gem::Commands::QueryCommand < Gem::Command
         say
       end
 
-      all = options[:all]
+      fetcher = Gem::SpecFetcher.fetcher
 
-      begin
-        fetcher = Gem::SpecFetcher.fetcher
-        spec_tuples = fetcher.find_matching dep, all, false, prerelease
+      type = if options[:all]
+               if options[:prerelease]
+                 :complete
+               else
+                 :released
+               end
+             elsif options[:prerelease]
+               :prerelease
+             else
+               :latest
+             end
 
-        spec_tuples += fetcher.find_matching dep, false, false, true if
-          prerelease and all
-      rescue Gem::RemoteFetcher::FetchError => e
-        if prerelease then
-          raise Gem::OperationNotSupportedError,
-                "Prereleases not supported on legacy repositories"
-        end
-
-        raise unless fetcher.warn_legacy e do
-          require 'rubygems/source_info_cache'
-
-          dep.name = '' if dep.name == //
-
-          specs = Gem::SourceInfoCache.search_with_source dep, false, all
-
-          spec_tuples = specs.map do |spec, source_uri|
-            [[spec.name, spec.version, spec.original_platform, spec],
-             source_uri]
-          end
+      if options[:name].source.empty?
+        spec_tuples = fetcher.detect(type) { true }
+      else
+        spec_tuples = fetcher.detect(type) do |name, ver, plat|
+          options[:name] === name
         end
       end
 
@@ -143,41 +142,38 @@ class Gem::Commands::QueryCommand < Gem::Command
   ##
   # Check if gem +name+ version +version+ is installed.
 
-  def installed?(name, version = Gem::Requirement.default)
-    dep = Gem::Dependency.new name, version
-    !Gem.source_index.search(dep).empty?
+  def installed?(name, req = Gem::Requirement.default)
+    Gem::Specification.any? { |s| s.name =~ name and req =~ s.version }
   end
 
   def output_query_results(spec_tuples)
     output = []
     versions = Hash.new { |h,name| h[name] = [] }
 
-    spec_tuples.each do |spec_tuple, source_uri|
-      versions[spec_tuple.first] << [spec_tuple, source_uri]
+    spec_tuples.each do |spec_tuple, source|
+      versions[spec_tuple.name] << [spec_tuple, source]
     end
 
-    versions = versions.sort_by do |(name,_),_|
-      name.downcase
+    versions = versions.sort_by do |(n,_),_|
+      n.downcase
     end
 
     versions.each do |gem_name, matching_tuples|
-      matching_tuples = matching_tuples.sort_by do |(_, version,_),_|
-        version
-      end.reverse
+      matching_tuples = matching_tuples.sort_by { |n,_| n.version }.reverse
 
       platforms = Hash.new { |h,version| h[version] = [] }
 
-      matching_tuples.map do |(_, version, platform,_),_|
-        platforms[version] << platform if platform
+      matching_tuples.map do |n,_|
+        platforms[n.version] << n.platform if n.platform
       end
 
       seen = {}
 
-      matching_tuples.delete_if do |(_, version,_),_|
-        if seen[version] then
+      matching_tuples.delete_if do |n,_|
+        if seen[n.version] then
           true
         else
-          seen[version] = true
+          seen[n.version] = true
           false
         end
       end
@@ -186,7 +182,7 @@ class Gem::Commands::QueryCommand < Gem::Command
 
       if options[:versions] then
         list = if platforms.empty? or options[:details] then
-                 matching_tuples.map { |(_, version,_),_| version }.uniq
+                 matching_tuples.map { |n,_| n.version }.uniq
                else
                  platforms.sort.reverse.map do |version, pls|
                    if pls == [Gem::Platform::RUBY] then
@@ -205,12 +201,11 @@ class Gem::Commands::QueryCommand < Gem::Command
       if options[:details] then
         detail_tuple = matching_tuples.first
 
-        spec = if detail_tuple.first.length == 4 then
-                 detail_tuple.first.last
-               else
-                 uri = URI.parse detail_tuple.last
-                 Gem::SpecFetcher.fetcher.fetch_spec detail_tuple.first, uri
-               end
+        spec = detail_tuple.last
+
+        unless spec.kind_of? Gem::Specification
+          spec = spec.fetch_spec detail_tuple.first
+        end
 
         entry << "\n"
 
@@ -260,9 +255,9 @@ class Gem::Commands::QueryCommand < Gem::Command
             entry << "\n" << "    Installed at: #{loaded_from}"
           else
             label = 'Installed at'
-            matching_tuples.each do |(_,version,_,s),|
+            matching_tuples.each do |n,s|
               loaded_from = File.dirname File.dirname(s.loaded_from)
-              entry << "\n" << "    #{label} (#{version}): #{loaded_from}"
+              entry << "\n" << "    #{label} (#{n.version}): #{loaded_from}"
               label = ' ' * label.length
             end
           end

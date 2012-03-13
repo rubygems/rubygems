@@ -20,6 +20,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 require 'rubygems'
+require 'rubygems/package'
 begin
   gem 'rake'
 rescue Gem::LoadError
@@ -86,7 +87,7 @@ class Gem::PackageTask < Rake::PackageTask
   # Initialization tasks without the "yield self" or define operations.
 
   def init(gem)
-    super gem.name, gem.version
+    super gem.full_name, :noversion
     @gem_spec = gem
     @package_files += gem_spec.files if gem_spec.files
   end
@@ -100,7 +101,7 @@ class Gem::PackageTask < Rake::PackageTask
 
     task :package => [:gem]
 
-    gem_file = gem_spec.file_name
+    gem_file = File.basename gem_spec.cache_file
     gem_path = File.join package_dir, gem_file
     gem_dir  = File.join package_dir, gem_spec.full_name
 
@@ -113,12 +114,15 @@ class Gem::PackageTask < Rake::PackageTask
     file gem_path => [package_dir, gem_dir] + @gem_spec.files do
       chdir(gem_dir) do
         when_writing "Creating #{gem_spec.file_name}" do
-          Gem::Builder.new(gem_spec).build
-          verbose(true) {
-            mv gem_file, ".."
-          }
+          Gem::Package.build gem_spec
+
+          verbose trace do
+            mv gem_file, '..'
+          end
         end
       end
     end
   end
+
 end
+

@@ -1,7 +1,7 @@
-require "rubygems/requirement"
-
 ##
 # The Dependency class holds a Gem name and a Gem::Requirement.
+
+require "rubygems/requirement"
 
 class Gem::Dependency
 
@@ -10,6 +10,9 @@ class Gem::Dependency
   #--
   # When this list is updated, be sure to change
   # Gem::Specification::CURRENT_SPECIFICATION_VERSION as well.
+
+  # REFACTOR: This type of constant, TYPES, indicates we might want
+  # two classes, used via inheretance or duck typing.
 
   TYPES = [
            :development,
@@ -27,16 +30,17 @@ class Gem::Dependency
   attr_writer :prerelease
 
   ##
-  # Dependency type.
-
-  attr_reader :type
-
-  ##
   # Constructs a dependency with +name+ and +requirements+. The last
   # argument can optionally be the dependency type, which defaults to
   # <tt>:runtime</tt>.
 
   def initialize name, *requirements
+    if Regexp === name then
+      msg = ["NOTE: Dependency.new w/ a regexp is deprecated.",
+             "Dependency.new called from #{Gem.location_of_caller.join(":")}"]
+      warn msg.join("\n") unless Gem::Deprecate.skip
+    end
+
     type         = Symbol === requirements.last ? requirements.pop : :runtime
     requirements = requirements.first if 1 == requirements.length # unpack
 
@@ -50,7 +54,7 @@ class Gem::Dependency
     @type        = type
     @prerelease  = false
 
-    # This is for Marshal backwards compatability. See the comments in
+    # This is for Marshal backwards compatibility. See the comments in
     # +requirement+ for the dirty details.
 
     @version_requirements = @requirement
@@ -66,7 +70,7 @@ class Gem::Dependency
 
   def inspect # :nodoc:
     "<%s type=%p name=%p requirements=%p>" %
-      [self.class, @type, @name, requirement.to_s]
+      [self.class, self.type, self.name, requirement.to_s]
   end
 
   ##
@@ -74,6 +78,14 @@ class Gem::Dependency
 
   def prerelease?
     @prerelease || requirement.prerelease?
+  end
+
+  ##
+  # Is this dependency simply asking for the latest version
+  # of a gem?
+
+  def latest_version?
+    @requirement.none?
   end
 
   def pretty_print q # :nodoc:
@@ -111,6 +123,8 @@ class Gem::Dependency
     #
     # Children, define explicit marshal and unmarshal behavior for
     # public classes. Marshal formats are part of your public API.
+    
+    # REFACTOR: See above
 
     if defined?(@version_requirement) && @version_requirement
       version = @version_requirement.instance_variable_get :@version
@@ -121,12 +135,24 @@ class Gem::Dependency
     @requirement = @version_requirements if defined?(@version_requirements)
   end
 
+  # DOC: this method needs documentation or :nodoc''d
   def requirements_list
     requirement.as_list
   end
 
   def to_s # :nodoc:
-    "#{name} (#{requirement}, #{type})"
+    if type != :runtime then
+      "#{name} (#{requirement}, #{type})"
+    else
+      "#{name} (#{requirement})"
+    end
+  end
+
+  ##
+  # Dependency type.
+
+  def type
+    @type ||= :runtime
   end
 
   def == other # :nodoc:
@@ -140,7 +166,7 @@ class Gem::Dependency
   # Dependencies are ordered by name.
 
   def <=> other
-    @name <=> other.name
+    self.name <=> other.name
   end
 
   ##
@@ -167,12 +193,23 @@ class Gem::Dependency
     requirement.satisfied_by? version
   end
 
-  def match? name, version
+  # DOC: this method needs either documented or :nodoc'd
+
+  def match? obj, version=nil
+    if !version
+      name = obj.name
+      version = obj.version
+    else
+      name = obj
+    end
+
     return false unless self.name === name
     return true if requirement.none?
 
     requirement.satisfied_by? Gem::Version.new(version)
   end
+
+  # DOC: this method needs either documented or :nodoc'd
 
   def matches_spec? spec
     return false unless name === spec.name
@@ -181,5 +218,84 @@ class Gem::Dependency
     requirement.satisfied_by?(spec.version)
   end
 
-end
+  ##
+  # Merges the requirements of +other+ into this dependency
 
+  def merge other
+    unless name == other.name then
+      raise ArgumentError,
+            "#{self} and #{other} have different names"
+    end
+
+    default = Gem::Requirement.default
+    self_req  = self.requirement
+    other_req = other.requirement
+
+    return self.class.new name, self_req  if other_req == default
+    return self.class.new name, other_req if self_req  == default
+
+    self.class.new name, self_req.as_list.concat(other_req.as_list)
+  end
+
+  # DOC: this method needs either documented or :nodoc'd
+
+  def matching_specs platform_only = false
+    matches = Gem::Specification.find_all { |spec|
+      self.name === spec.name and # TODO: == instead of ===
+        requirement.satisfied_by? spec.version
+    }
+
+    if platform_only
+      matches.reject! { |spec|
+        not Gem::Platform.match spec.platform
+      }
+    end
+
+    matches = matches.sort_by { |s| s.sort_obj } # HACK: shouldn't be needed
+  end
+
+  ##
+  # True if the dependency will not always match the latest version.
+
+  def specific?
+    @requirement.specific?
+  end
+
+  # DOC: this method needs either documented or :nodoc'd
+
+  def to_specs
+    matches = matching_specs true
+
+    # TODO: check Gem.activated_spec[self.name] in case matches falls outside
+
+    if matches.empty? then
+      specs = Gem::Specification.find_all { |s|
+                s.name == name
+              }.map { |x| x.full_name }
+
+      if specs.empty?
+        total = Gem::Specification.to_a.size
+        error = Gem::LoadError.new \
+          "Could not find '#{name}' (#{requirement}) among #{total} total gem(s)"
+      else
+        error = Gem::LoadError.new \
+          "Could not find '#{name}' (#{requirement}) - did find: [#{specs.join ','}]"
+      end
+      error.name        = self.name
+      error.requirement = self.requirement
+      raise error
+    end
+
+    # TODO: any other resolver validations should go here
+
+    matches
+  end
+
+  # DOC: this method needs either documented or :nodoc'd
+
+  def to_spec
+    matches = self.to_specs
+
+    matches.find { |spec| spec.activated? } or matches.last
+  end
+end

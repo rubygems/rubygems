@@ -1,5 +1,5 @@
 require 'rubygems/command'
-require 'rubygems/builder'
+require 'rubygems/package'
 
 class Gem::Commands::BuildCommand < Gem::Command
 
@@ -17,32 +17,34 @@ class Gem::Commands::BuildCommand < Gem::Command
 
   def execute
     gemspec = get_one_gem_name
-    if File.exist?(gemspec)
-      specs = load_gemspecs(gemspec)
-      specs.each do |spec|
-        Gem::Builder.new(spec).build
+
+    if File.exist? gemspec
+      spec = load_gemspec gemspec
+
+      if spec then
+        Gem::Package.build spec
+      else
+        alert_error "Error loading gemspec. Aborting."
+        terminate_interaction 1
       end
     else
       alert_error "Gemspec file not found: #{gemspec}"
+      terminate_interaction 1
     end
   end
 
-  def load_gemspecs(filename)
+  def load_gemspec filename
     if yaml?(filename)
-      result = []
       open(filename) do |f|
         begin
-          while not f.eof? and spec = Gem::Specification.from_yaml(f)
-            result << spec
-          end
+          Gem::Specification.from_yaml(f)
         rescue Gem::EndOfYAMLException
-          # OK
+          nil
         end
       end
     else
-      result = [Gem::Specification.load(filename)]
+      Gem::Specification.load(filename) # can return nil
     end
-    result
   end
 
   def yaml?(filename)
@@ -50,4 +52,6 @@ class Gem::Commands::BuildCommand < Gem::Command
     result = line =~ %r{!ruby/object:Gem::Specification}
     result
   end
+
 end
+

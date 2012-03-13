@@ -13,7 +13,7 @@ class Gem::Commands::EnvironmentCommand < Gem::Command
           gempath         display path used to search for gems
           version         display the gem format version
           remotesources   display the remote gem servers
-          platform        display the supporte gem platforms
+          platform        display the supported gem platforms
           <omitted>       display everything
     EOF
     return args.gsub(/^\s+/, '')
@@ -24,29 +24,29 @@ class Gem::Commands::EnvironmentCommand < Gem::Command
 The RubyGems environment can be controlled through command line arguments,
 gemrc files, environment variables and built-in defaults.
 
-Command line argument defaults and some RubyGems defaults can be set in
-~/.gemrc file for individual users and a /etc/gemrc for all users.  A gemrc
-is a YAML file with the following YAML keys:
+Command line argument defaults and some RubyGems defaults can be set in a
+~/.gemrc file for individual users and a /etc/gemrc for all users. These
+files are YAML files with the following YAML keys:
 
   :sources: A YAML array of remote gem repositories to install gems from
-  :verbose: Verbosity of the gem command.  false, true, and :really are the
+  :verbose: Verbosity of the gem command. false, true, and :really are the
             levels
   :update_sources: Enable/disable automatic updating of repository metadata
   :backtrace: Print backtrace when RubyGems encounters an error
-  :bulk_threshold: Switch to a bulk update when this many sources are out of
-                   date (legacy setting)
   :gempath: The paths in which to look for gems
-  gem_command: A string containing arguments for the specified gem command
+  :disable_default_gem_server: Force specification of gem server host on push
+  <gem_command>: A string containing arguments for the specified gem command
 
 Example:
 
   :verbose: false
   install: --no-wrappers
   update: --no-wrappers
+  :disable_default_gem_server: true
 
-RubyGems' default local repository can be overriden with the GEM_PATH and
-GEM_HOME environment variables.  GEM_HOME sets the default repository to
-install into.  GEM_PATH allows multiple local repositories to be searched for
+RubyGems' default local repository can be overridden with the GEM_PATH and
+GEM_HOME environment variables. GEM_HOME sets the default repository to
+install into. GEM_PATH allows multiple local repositories to be searched for
 gems.
 
 If you are behind a proxy server, RubyGems uses the HTTP_PROXY,
@@ -76,7 +76,7 @@ lib/rubygems/defaults/operating_system.rb
     when /^gempath/, /^path/, /^GEM_PATH/ then
       out << Gem.path.join(File::PATH_SEPARATOR)
     when /^remotesources/ then
-      out << Gem.sources.join("\n")
+      out << Gem.sources.to_a.join("\n")
     when /^platform/ then
       out << Gem.platforms.join(File::PATH_SEPARATOR)
     when nil then
@@ -122,7 +122,7 @@ lib/rubygems/defaults/operating_system.rb
       end
 
     else
-      raise Gem::CommandLineError, "Unknown enviroment option [#{arg}]"
+      raise Gem::CommandLineError, "Unknown environment option [#{arg}]"
     end
     say out
     true

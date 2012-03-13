@@ -9,7 +9,7 @@ require 'rubygems/user_interaction'
 
 ##
 # Base class for all Gem commands.  When creating a new gem command, define
-# #new, #execute, #arguments, #defaults_str, #description and #usage
+# #initialize, #execute, #arguments, #defaults_str, #description and #usage
 # (as appropriate).  See the above mentioned methods for details.
 #
 # A very good example to look at is Gem::Commands::ContentsCommand
@@ -150,8 +150,9 @@ class Gem::Command
 
   def show_lookup_failure(gem_name, version, errors, domain)
     if errors and !errors.empty?
-      alert_error "Could not find a valid gem '#{gem_name}' (#{version}), here is why:"
-      errors.each { |x| say "          #{x.wordy}" }
+      msg = "Could not find a valid gem '#{gem_name}' (#{version}), here is why:\n"
+      errors.each { |x| msg << "          #{x.wordy}\n" }
+      alert_error msg
     else
       alert_error "Could not find a valid gem '#{gem_name}' (#{version}) in any repository"
     end
@@ -177,6 +178,15 @@ class Gem::Command
     end
 
     args.select { |arg| arg !~ /^-/ }
+  end
+
+  ##
+  # Get all [gem, version] from the command line.
+  #
+  # An argument in the form gem:ver is pull apart into the gen name and version,
+  # respectively.
+  def get_all_gem_names_and_versions
+    get_all_gem_names.map { |name| name.split(":", 2) }
   end
 
   ##
@@ -268,7 +278,17 @@ class Gem::Command
   # Invoke the command with the given list of arguments.
 
   def invoke(*args)
+    invoke_with_build_args args, nil
+  end
+
+  ##
+  # Invoke the command with the given list of normal arguments
+  # and additional build arguments.
+
+  def invoke_with_build_args(args, build_args)
     handle_options args
+
+    options[:build_args] = build_args
 
     if options[:help] then
       show_help
@@ -344,7 +364,7 @@ class Gem::Command
 
   def handle_options(args)
     args = add_extra_args(args)
-    @options = @defaults.clone
+    @options = Marshal.load Marshal.dump @defaults # deep copy
     parser.parse!(args)
     @options[:args] = args
   end
@@ -404,10 +424,12 @@ class Gem::Command
       end
     end
 
-    @parser.separator nil
-    @parser.separator "  Summary:"
-    wrap(@summary, 80 - 4).split("\n").each do |line|
-      @parser.separator "    #{line.strip}"
+    if @summary then
+      @parser.separator nil
+      @parser.separator "  Summary:"
+      wrap(@summary, 80 - 4).split("\n").each do |line|
+        @parser.separator "    #{line.strip}"
+      end
     end
 
     if description then
@@ -527,7 +549,7 @@ basic help message containing pointers to more information.
 end
 
 ##
-# This is where Commands will be placed in the namespace
+# \Commands will be placed in this namespace
 
 module Gem::Commands
 end

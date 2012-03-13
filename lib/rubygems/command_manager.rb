@@ -18,11 +18,14 @@ require 'rubygems/user_interaction'
 #   # file rubygems_plugin.rb
 #   require 'rubygems/command_manager'
 #
+#   Gem::CommandManager.instance.register_command :edit
+#
+# You should put the implementation of your command in rubygems/commands.
+#
+#   # file rubygems/commands/edit_command.rb
 #   class Gem::Commands::EditCommand < Gem::Command
 #     # ...
 #   end
-#
-#   Gem::CommandManager.instance.register_command :edit
 #
 # See Gem::Command for instructions on writing gem commands.
 
@@ -35,6 +38,21 @@ class Gem::CommandManager
 
   def self.instance
     @command_manager ||= new
+  end
+
+  ##
+  # Returns self. Allows a CommandManager instance to stand
+  # in for the class itself.
+
+  def instance
+    self
+  end
+
+  ##
+  # Reset the authoritative instance of the command manager.
+
+  def self.reset
+    @command_manager = nil
   end
 
   ##
@@ -77,12 +95,19 @@ class Gem::CommandManager
   ##
   # Register the Symbol +command+ as a gem command.
 
-  def register_command(command)
-    @commands[command] = false
+  def register_command(command, obj=false)
+    @commands[command] = obj
   end
 
   ##
-  # Return the registered command from the command name.
+  # Unregister the Symbol +command+ as a gem command.
+
+  def unregister_command(command)
+    @commands.delete command
+  end
+
+  ##
+  # Returns a Command instance for +command_name+
 
   def [](command_name)
     command_name = command_name.intern
@@ -91,28 +116,39 @@ class Gem::CommandManager
   end
 
   ##
-  # Return a sorted list of all command names (as strings).
+  # Return a sorted list of all command names as strings.
 
   def command_names
     @commands.keys.collect {|key| key.to_s}.sort
   end
 
   ##
-  # Run the config specified by +args+.
+  # Run the command specified by +args+.
 
-  def run(args)
-    process_args(args)
+  def run(args, build_args=nil)
+    process_args(args, build_args)
   rescue StandardError, Timeout::Error => ex
     alert_error "While executing gem ... (#{ex.class})\n    #{ex.to_s}"
     ui.errs.puts "\t#{ex.backtrace.join "\n\t"}" if
       Gem.configuration.backtrace
+
+    if Gem.configuration.really_verbose and \
+         ex.kind_of?(Gem::Exception) and ex.source_exception
+      e = ex.source_exception
+
+      ui.errs.puts "Because of: (#{e.class})\n    #{e.to_s}"
+      if Gem.configuration.backtrace
+        ui.errs.puts "\t#{e.backtrace.join "\n\t"}"
+      end
+    end
+
     terminate_interaction(1)
   rescue Interrupt
     alert_error "Interrupted"
     terminate_interaction(1)
   end
 
-  def process_args(args)
+  def process_args(args, build_args=nil)
     args = args.to_str.split(/\s+/) if args.respond_to?(:to_str)
     if args.size == 0
       say Gem::Command::HELP
@@ -131,16 +167,19 @@ class Gem::CommandManager
     else
       cmd_name = args.shift.downcase
       cmd = find_command(cmd_name)
-      cmd.invoke(*args)
+      cmd.invoke_with_build_args(args, build_args)
     end
   end
 
   def find_command(cmd_name)
     possibilities = find_command_possibilities cmd_name
+
     if possibilities.size > 1 then
-      raise "Ambiguous command #{cmd_name} matches [#{possibilities.join(', ')}]"
-    elsif possibilities.size < 1 then
-      raise "Unknown command #{cmd_name}"
+      raise Gem::CommandLineError,
+            "Ambiguous command #{cmd_name} " \
+            "matches [#{possibilities.join(', ')}]"
+    elsif possibilities.empty? then
+      raise Gem::CommandLineError, "Unknown command #{cmd_name}"
     end
 
     self[possibilities.first]
@@ -149,7 +188,11 @@ class Gem::CommandManager
   def find_command_possibilities(cmd_name)
     len = cmd_name.length
 
-    command_names.select { |n| cmd_name == n[0, len] }
+    found = command_names.select { |name| cmd_name == name[0, len] }
+
+    exact = found.find { |name| name == cmd_name }
+
+    exact ? [exact] : found
   end
 
   private
@@ -157,24 +200,21 @@ class Gem::CommandManager
   def load_and_instantiate(command_name)
     command_name = command_name.to_s
     const_name = command_name.capitalize.gsub(/_(.)/) { $1.upcase } << "Command"
-    commands = Gem::Commands
-    retried = false
+    load_error = nil
 
     begin
-      commands.const_get const_name
-    rescue NameError
-      raise if retried
-
-      retried = true
       begin
         require "rubygems/commands/#{command_name}_command"
-      rescue Exception => e
-        alert_error "Loading command: #{command_name} (#{e.class})\n    #{e}"
-        ui.errs.puts "\t#{e.backtrace.join "\n\t"}" if
-          Gem.configuration.backtrace
+      rescue LoadError => e
+        load_error = e
       end
-      retry
-    end.new
+      Gem::Commands.const_get(const_name).new
+    rescue Exception => e
+      e = load_error if load_error
+
+      alert_error "Loading command: #{command_name} (#{e.class})\n\t#{e}"
+      ui.errs.puts "\t#{e.backtrace.join "\n\t"}" if Gem.configuration.backtrace
+    end
   end
 
 end

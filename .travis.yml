@@ -1,0 +1,14 @@
+before_script:
+  - gem install minitest
+  - gem install rdoc
+  - gem install hoe
+  - gem install hoe-seattlerb
+rvm:
+  - 1.8.7
+  - 1.9.2
+  - 1.9.3
+  - ruby-head
+notifications:
+  email:
+    - drbrain@segment7.net
+    - evan+notify@phx.io

@@ -8,6 +8,9 @@ rvm:
   - 1.9.2
   - 1.9.3
   - ruby-head
+env:
+  - "YAML=syck"
+  - "YAML=psych"
 notifications:
   email:
     - drbrain@segment7.net

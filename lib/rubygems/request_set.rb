@@ -162,7 +162,7 @@ module Gem
 
       def gem(name, *reqs)
         # Ignore the opts for now.
-        opts = reqs.pop if reqs.last.kind_of?(Hash)
+        reqs.pop if reqs.last.kind_of?(Hash)
 
         @set.gem name, *reqs
       end

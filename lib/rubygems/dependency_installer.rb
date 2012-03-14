@@ -264,13 +264,13 @@ class Gem::DependencyInstaller
 
     if consider_local?
       if File.exists? gem_name
-        source = Gem::Source::SpecificFile.new(gem_name)
-        spec_and_source = [source.spec, source]
+        src = Gem::Source::SpecificFile.new(gem_name)
+        spec_and_source = [src.spec, src]
       else
         local = Gem::Source::Local.new
 
-        if spec = local.find_gem(gem_name, version)
-          spec_and_source = [spec, local]
+        if s = local.find_gem(gem_name, version)
+          spec_and_source = [s, local]
         end
       end
     end

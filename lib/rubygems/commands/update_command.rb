@@ -195,7 +195,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
       fetcher = Gem::SpecFetcher.fetcher
 
-      spec_tuples, errs = fetcher.search_for_dependency dependency
+      spec_tuples, _ = fetcher.search_for_dependency dependency
 
       matching_gems = spec_tuples.select do |g,_|
         g.name == l_name and g.match_platform?

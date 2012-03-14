@@ -128,8 +128,8 @@ class Gem::Commands::QueryCommand < Gem::Command
       if options[:name].source.empty?
         spec_tuples = fetcher.detect(type) { true }
       else
-        spec_tuples = fetcher.detect(type) do |name, ver, plat|
-          options[:name] === name
+        spec_tuples = fetcher.detect(type) do |gem_name, ver, plat|
+          options[:name] === gem_name
         end
       end
 

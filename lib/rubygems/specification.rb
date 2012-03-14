@@ -957,7 +957,7 @@ class Gem::Specification
 
     latest_specs.each do |local|
       dependency = Gem::Dependency.new local.name, ">= #{local.version}"
-      remotes, err = fetcher.search_for_dependency dependency
+      remotes, _   = fetcher.search_for_dependency dependency
       remotes      = remotes.map { |n, _| n.version }
       latest       = remotes.sort.last
 

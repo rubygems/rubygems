@@ -100,7 +100,7 @@ FIELD         name of gemspec field to show
 
     if remote? then
       dep.prerelease = options[:prerelease]
-      found, err = Gem::SpecFetcher.fetcher.spec_for_dependency dep
+      found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency dep
 
       specs.push(*found.map { |spec,| spec })
     end

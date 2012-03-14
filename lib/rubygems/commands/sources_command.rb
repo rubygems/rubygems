@@ -96,11 +96,9 @@ class Gem::Commands::SourcesCommand < Gem::Command
     end
 
     if options[:update] then
-      fetcher = Gem::SpecFetcher.fetcher
-
-      Gem.sources.each_source do |source|
-        source.load_specs :released
-        source.load_specs :latest
+      Gem.sources.each_source do |src|
+        src.load_specs :released
+        src.load_specs :latest
       end
 
       say "source cache successfully updated"
@@ -110,8 +108,8 @@ class Gem::Commands::SourcesCommand < Gem::Command
       say "*** CURRENT SOURCES ***"
       say
 
-      Gem.sources.each do |source|
-        say source
+      Gem.sources.each do |src|
+        say src
       end
     end
   end

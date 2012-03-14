@@ -220,10 +220,6 @@ class TestGemSecurityPolicy < Gem::TestCase
   def test_verify
     Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
-    data = digest 'hello'
-    digest    = { 0 => data }
-    signature = { 0 => sign(data, PRIVATE_KEY) }
-
     assert @almost_no.verify [PUBLIC_CERT]
   end
 

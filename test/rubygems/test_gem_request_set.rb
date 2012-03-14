@@ -9,7 +9,7 @@ class TestGemRequestSet < Gem::TestCase
   end
 
   def test_gem
-    a = util_spec "a", "2"
+    util_spec "a", "2"
 
     rs = Gem::RequestSet.new
     rs.gem "a", "= 2"
@@ -27,7 +27,7 @@ class TestGemRequestSet < Gem::TestCase
     res = rs.resolve StaticSet.new([a, b])
     assert_equal 2, res.size
 
-    names = res.map { |a| a.full_name }.sort
+    names = res.map { |s| s.full_name }.sort
 
     assert_equal ["a-2", "b-2"], names
   end
@@ -42,7 +42,7 @@ class TestGemRequestSet < Gem::TestCase
 
     rs.resolve StaticSet.new([a, b, c])
 
-    names = rs.sorted_requests.map { |a| a.full_name }
+    names = rs.sorted_requests.map { |s| s.full_name }
     assert_equal %w!c-2 b-2 a-2!, names
   end
 

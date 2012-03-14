@@ -41,14 +41,14 @@ class TestGemSourceLocal < Gem::TestCase
   end
 
   def test_find_gem_highest_version
-    a2, a2_gem = util_gem "a", "2"
+    _, a2_gem = util_gem "a", "2"
     FileUtils.mv a2_gem, @tempdir
 
     assert_equal "a-2", @sl.find_gem("a").full_name
   end
 
   def test_find_gem_specific_version
-    a2, a2_gem = util_gem "a", "2"
+    _, a2_gem = util_gem "a", "2"
     FileUtils.mv a2_gem, @tempdir
 
     req = Gem::Requirement.create("= 1")

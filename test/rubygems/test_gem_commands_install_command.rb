@@ -685,7 +685,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_execute_uses_deps_a_gemdeps
-    q, q_gem = util_gem 'q', '1.0'
+    q, _     = util_gem 'q', '1.0'
     r, r_gem = util_gem 'r', '2.0', 'q' => nil
 
     util_setup_fake_fetcher

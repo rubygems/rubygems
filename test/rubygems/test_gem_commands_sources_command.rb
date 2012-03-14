@@ -125,11 +125,6 @@ beta-gems.example.com is not a URI
 
     util_setup_spec_fetcher
 
-    fetcher = Gem::SpecFetcher.fetcher
-
-    # HACK figure out how to force directory creation via fetcher
-    #assert File.directory?(fetcher.dir), 'cache dir exists'
-
     use_ui @ui do
       @cmd.execute
     end

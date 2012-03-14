@@ -67,7 +67,7 @@ class Gem::Security::TrustDir
   def load_certificate certificate_file
     pem = File.read certificate_file
 
-    certificate = OpenSSL::X509::Certificate.new pem
+    OpenSSL::X509::Certificate.new pem
   end
 
   ##

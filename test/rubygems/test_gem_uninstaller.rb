@@ -249,8 +249,8 @@ class TestGemUninstaller < Gem::InstallerTestCase
   end
 
   def test_uninstall_prompts_about_broken_deps
-    r, r_gem = util_gem 'r', '1', 'q' => '= 1'
-    q, q_gem = util_gem 'q', '1'
+    util_gem 'r', '1', 'q' => '= 1'
+    util_gem 'q', '1'
 
     un = Gem::Uninstaller.new('q')
     ui = Gem::MockGemUi.new("y\n")
@@ -270,11 +270,11 @@ class TestGemUninstaller < Gem::InstallerTestCase
   end
 
   def test_uninstall_prompt_includes_dep_type
-    r, r_gem = util_gem 'r', '1' do |s|
+    util_gem 'r', '1' do |s|
       s.add_development_dependency 'q', '= 1'
     end
 
-    q, q_gem = util_gem 'q', '1'
+    util_gem 'q', '1'
 
     un = Gem::Uninstaller.new('q')
     ui = Gem::MockGemUi.new("y\n")

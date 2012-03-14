@@ -61,8 +61,6 @@ module Gem
     ##
     # A wordy description of the error.
     def wordy
-      prefix = "Found #{@name} (#{@version})"
-
       "Found %s (%), but was for platform%s %s" %
         [@name,
          @version,

@@ -19,7 +19,7 @@ class Gem::Commands::OutdatedCommand < Gem::Command
     Gem::Specification.outdated.sort.each do |name|
       local   = Gem::Specification.find_all_by_name(name).max
       dep     = Gem::Dependency.new local.name, ">= #{local.version}"
-      remotes, e = Gem::SpecFetcher.fetcher.spec_for_dependency dep
+      remotes, _ = Gem::SpecFetcher.fetcher.spec_for_dependency dep
 
       next if remotes.empty?
 

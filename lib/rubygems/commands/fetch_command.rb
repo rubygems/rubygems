@@ -33,7 +33,6 @@ class Gem::Commands::FetchCommand < Gem::Command
 
   def execute
     version = options[:version] || Gem::Requirement.default
-    all = Gem::Requirement.default != version
 
     platform  = Gem.platforms.last
     gem_names = get_all_gem_names

@@ -77,7 +77,7 @@ class TestGemCommandsCertCommand < Gem::TestCase
   end
 
   def test_execute_add_twice
-    alternate = self.class.cert_path 'alternate'
+    self.class.cert_path 'alternate'
 
     @cmd.handle_options %W[
       --add #{PUBLIC_CERT_FILE}

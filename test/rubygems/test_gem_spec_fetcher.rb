@@ -61,7 +61,7 @@ class TestGemSpecFetcher < Gem::TestCase
 
     dep = Gem::Dependency.new 'a', ">= 1"
 
-    specs_and_sources, e = @sf.spec_for_dependency dep
+    specs_and_sources, _ = @sf.spec_for_dependency dep
 
     spec_names = specs_and_sources.map do |spec, source_uri|
       [spec.full_name, source_uri]
@@ -81,7 +81,7 @@ class TestGemSpecFetcher < Gem::TestCase
     @fetcher.data["#{d}#{@a_pre.spec_name}.rz"] = util_zip(Marshal.dump(@a_pre))
 
     dep = Gem::Dependency.new 'a'
-    specs_and_sources, e = @sf.spec_for_dependency dep
+    specs_and_sources, _ = @sf.spec_for_dependency dep
 
     spec_names = specs_and_sources.map do |spec, source_uri|
       [spec.full_name, source_uri]
@@ -96,7 +96,7 @@ class TestGemSpecFetcher < Gem::TestCase
     @fetcher.data["#{d}#{@a2.spec_name}.rz"]    = util_zip(Marshal.dump(@a2))
     @fetcher.data["#{d}#{@a_pre.spec_name}.rz"] = util_zip(Marshal.dump(@a_pre))
 
-    specs_and_sources, e = @sf.spec_for_dependency dep('a', '1.a')
+    specs_and_sources, _ = @sf.spec_for_dependency dep('a', '1.a')
 
     spec_names = specs_and_sources.map do |spec, source_uri|
       [spec.full_name, source_uri]
@@ -112,7 +112,7 @@ class TestGemSpecFetcher < Gem::TestCase
       util_zip(Marshal.dump(@pl1))
 
     dep = Gem::Dependency.new 'pl', 1
-    specs_and_sources, e = @sf.spec_for_dependency dep
+    specs_and_sources, _ = @sf.spec_for_dependency dep
 
     spec_names = specs_and_sources.map do |spec, source_uri|
       [spec.full_name, source_uri]

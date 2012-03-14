@@ -431,7 +431,7 @@ module Gem::Security
   # default is a 2048 bit RSA key.
 
   def self.create_key length = KEY_LENGTH, algorithm = KEY_ALGORITHM
-    key = algorithm.new length
+    algorithm.new length
   end
 
   ##

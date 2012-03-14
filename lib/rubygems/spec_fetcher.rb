@@ -112,7 +112,7 @@ class Gem::SpecFetcher
   def detect(type=:complete)
     tuples = []
 
-    list, errors = available_specs(type)
+    list, _ = available_specs(type)
     list.each do |source, specs|
       specs.each do |tup|
         if yield(tup)

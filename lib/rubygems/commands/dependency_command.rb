@@ -71,7 +71,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
     if remote? and not options[:reverse_dependencies] then
       fetcher = Gem::SpecFetcher.fetcher
 
-      ss, err = fetcher.spec_for_dependency dependency
+      ss, _ = fetcher.spec_for_dependency dependency
 
       ss.each { |s,o| specs << s }
     end

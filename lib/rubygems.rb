@@ -649,22 +649,39 @@ module Gem
   def self.load_yaml
     return if @yaml_loaded
 
-    begin
-      gem 'psych', '~> 1.2', '>= 1.2.1' unless ENV['TEST_SYCK']
-    rescue Gem::LoadError
-      # It's OK if the user does not have the psych gem installed.  We will
-      # attempt to require the stdlib version
+    test_syck = ENV['TEST_SYCK']
+
+    unless test_syck
+      begin
+        gem 'psych', '~> 1.2', '>= 1.2.1'
+      rescue Gem::LoadError
+        # It's OK if the user does not have the psych gem installed.  We will
+        # attempt to require the stdlib version
+      end
+
+      begin
+        # Try requiring the gem version *or* stdlib version of psych.
+        require 'psych'
+      rescue ::LoadError
+        # If we can't load psych, thats fine, go on.
+      else
+        # If 'yaml' has already been required, then we have to
+        # be sure to switch it over to the newly loaded psych.
+        if defined?(YAML::ENGINE) && YAML::ENGINE.yamler != "psych"
+          YAML::ENGINE.yamler = "psych"
+        end
+
+        require 'rubygems/psych_tree'
+      end
     end
 
-    begin
-      # Try requiring the gem version *or* stdlib version of psych.
-      require 'psych' unless ENV['TEST_SYCK']
-    rescue ::LoadError
-    ensure
-      require 'yaml'
-    end
+    require 'yaml'
 
-    require 'rubygems/psych_tree'
+    # If we're supposed to be using syck, then we may have to force
+    # activate it via the YAML::ENGINE API.
+    if test_syck and defined?(YAML::ENGINE)
+      YAML::ENGINE.yamler = "syck" unless YAML::ENGINE.syck?
+    end
 
     # Now that we're sure some kind of yaml library is loaded, pull
     # in our hack to deal with Syck's DefaultKey ugliness.

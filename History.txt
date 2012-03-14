@@ -1,5 +1,13 @@
 # coding: UTF-8
 
+=== 1.8.19 / 2012-03-14
+
+* 3 bug fixes:
+
+  * Handle loading psych vs syck properly. Fixes #298
+  * Make sure Date objects don't leak in via Marshal
+  * Perform Date => Time coercion on yaml loading. Fixes #266
+
 === 1.8.18 / 2012-03-11
 
 * 4 bug fixes:

@@ -21,6 +21,10 @@ class Gem::Commands::QueryCommand < Gem::Command
       options[:installed] = value
     end
 
+    add_option('-I', 'Equivalent to --no-installed') do |value, options|
+      options[:installed] = false
+    end
+
     add_version_option command, "for use with --installed"
 
     add_option('-n', '--name-matches REGEXP',

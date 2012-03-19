@@ -101,9 +101,11 @@ module Gem
   VERSION = '2.0.a'
 end
 
+# Must be first since it unloads the prelude from 1.9.2
+require 'rubygems/compatibility'
+
 require 'rubygems/defaults'
 require 'rubygems/deprecate'
-require 'rubygems/compatibility'
 require 'rubygems/errors'
 require 'rubygems/source_list'
 

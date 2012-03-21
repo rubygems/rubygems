@@ -72,7 +72,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     assert_equal "ERROR:  Gemspec file not found: some_gem\n", @ui.error
   end
 
-  def util_test_build_gem(gem, gemspec_file)
+  def util_test_build_gem(gem, gemspec_file, check_licenses=true)
     @cmd.options[:args] = [gemspec_file]
 
     use_ui @ui do
@@ -87,7 +87,10 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     assert_equal "  Version: 2", output.shift
     assert_equal "  File: some_gem-2.gem", output.shift
     assert_equal [], output
-    assert_equal "WARNING:  licenses is empty\n", @ui.error
+
+    if check_licenses
+      assert_equal "WARNING:  licenses is empty\n", @ui.error
+    end
 
     gem_file = File.join @tempdir, File.basename(gem.cache_file)
     assert File.exist?(gem_file)
@@ -97,6 +100,28 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     assert_equal "some_gem", spec.name
     assert_equal "this is a summary", spec.summary
   end
+
+  def test_execute_force
+    @gem.instance_variable_set :@required_rubygems_version, nil
+
+    gemspec_file = File.join(@tempdir, @gem.spec_name)
+
+    data = @gem.to_yaml
+
+    rrv = data.split("\n").grep(/required_rubygems_version/)
+
+    assert_equal ["required_rubygems_version: "], rrv
+
+    File.open gemspec_file, 'w' do |gs|
+      gs.write data
+    end
+
+    @cmd.options[:args] = [gemspec_file]
+    @cmd.options[:force] = true
+
+    util_test_build_gem @gem, gemspec_file, false
+  end
+
 
 end
 

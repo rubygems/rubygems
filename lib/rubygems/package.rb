@@ -60,12 +60,12 @@ class Gem::Package
 
   attr_writer :spec
 
-  def self.build spec
+  def self.build spec, skip_validation=false
     gem_file = spec.file_name
 
     package = new gem_file
     package.spec = spec
-    package.build
+    package.build skip_validation
 
     gem_file
   end
@@ -146,10 +146,10 @@ class Gem::Package
   ##
   # Builds this package based on the specification set by #spec=
 
-  def build
+  def build(skip_validation=false)
     require 'rubygems/security'
 
-    @spec.validate
+    @spec.validate unless skip_validation
     @spec.mark_version
 
     if @spec.signing_key then

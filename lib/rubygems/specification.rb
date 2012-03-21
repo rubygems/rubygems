@@ -666,6 +666,11 @@ class Gem::Specification
       raise TypeError, "invalid Gem::Specification format #{array.inspect}"
     end
 
+    # Cleanup any YAML::PrivateType. They only show up for an old bug
+    # where nil => null, so just convert them to nil based on the type.
+
+    array.map! { |e| e.kind_of?(YAML::PrivateType) ? nil : e }
+
     spec.instance_variable_set :@rubygems_version,          array[0]
     # spec version
     spec.instance_variable_set :@name,                      array[2]

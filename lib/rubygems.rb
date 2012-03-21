@@ -671,6 +671,7 @@ module Gem
           YAML::ENGINE.yamler = "psych"
         end
 
+        require 'rubygems/psych_additions'
         require 'rubygems/psych_tree'
       end
     end

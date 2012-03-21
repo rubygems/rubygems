@@ -406,6 +406,16 @@ dependencies: []
     assert_equal expected, Gem::Specification.normalize_yaml_input(input)
   end
 
+  DATA_PATH = File.expand_path "../data", __FILE__
+
+  def test_handles_private_null_type
+    path = File.join DATA_PATH, "null-type.gemspec.rz"
+
+    data = Marshal.load Gem.inflate(File.read(path))
+
+    assert_equal nil, data.rubyforge_project
+  end
+
   def test_initialize
     spec = Gem::Specification.new do |s|
       s.name = "blah"

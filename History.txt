@@ -1,5 +1,14 @@
 # coding: UTF-8
 
+=== 1.8.20 / 2012-03-21
+
+* 4 bug fixes:
+
+  * Add --force to `gem build` to skip validation. Fixes #297
+  * Gracefully deal with YAML::PrivateType objects in Marshal'd gemspecs
+  * Treat the source as a proper url base. Fixes #304
+  * Warn when updating the specs cache fails. Fixes #300
+
 === 1.8.19 / 2012-03-14
 
 * 3 bug fixes:

@@ -86,6 +86,7 @@ lib/rubygems/package/tar_writer.rb
 lib/rubygems/package_task.rb
 lib/rubygems/path_support.rb
 lib/rubygems/platform.rb
+lib/rubygems/psych_additions.rb
 lib/rubygems/psych_tree.rb
 lib/rubygems/remote_fetcher.rb
 lib/rubygems/require_paths_builder.rb
@@ -109,6 +110,7 @@ setup.rb
 test/rubygems/bogussources.rb
 test/rubygems/data/gem-private_key.pem
 test/rubygems/data/gem-public_cert.pem
+test/rubygems/data/null-type.gemspec.rz
 test/rubygems/fake_certlib/openssl.rb
 test/rubygems/fix_openssl_warnings.rb
 test/rubygems/foo/discover.rb

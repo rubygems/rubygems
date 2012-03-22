@@ -59,7 +59,7 @@ hoe = Hoe.spec 'rubygems-update' do
     rdoc_options << "--title=RubyGems #{self.version} Documentation"
   end
 
-  self.rsync_args += " --no-p"
+  self.rsync_args += " --no-p -O"
 
   # FIX: this exists because update --system installs the gem and
   # doesn't uninstall it. It should uninstall or better, not install

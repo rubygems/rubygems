@@ -11,6 +11,17 @@ module Gem
       # Noop this out so there are no anchors
       def register(target, obj)
       end
+
+      # This is ported over from the yaml_tree in 1.9.3
+      def format_time time
+        if time.utc?
+          time.strftime("%Y-%m-%d %H:%M:%S.%9N Z")
+        else
+          time.strftime("%Y-%m-%d %H:%M:%S.%9N %:z")
+        end
+      end
+
+      private :format_time
     end
   end
 end

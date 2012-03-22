@@ -432,6 +432,17 @@ dependencies: []
     assert_equal nil, data.rubyforge_project
   end
 
+  def test_emits_zulu_timestamps_properly
+    skip "bug only on 1.9.2" unless RUBY_VERSION =~ /1\.9\.2/
+
+    t = Time.utc(2012, 3, 12)
+    @a2.date = t
+
+    yaml = with_psych { @a2.to_yaml }
+
+    assert_match %r!date: 2012-03-12 00:00:00\.000000000 Z!, yaml
+  end
+
   def test_initialize
     spec = Gem::Specification.new do |s|
       s.name = "blah"
@@ -1857,6 +1868,24 @@ end
       require "yaml"
       old_engine = YAML::ENGINE.yamler
       YAML::ENGINE.yamler = 'syck'
+    rescue NameError
+      # probably on 1.8, ignore
+    end
+
+    yield
+  ensure
+    begin
+      YAML::ENGINE.yamler = old_engine
+    rescue NameError
+      # ignore
+    end
+  end
+
+  def with_psych
+    begin
+      require "yaml"
+      old_engine = YAML::ENGINE.yamler
+      YAML::ENGINE.yamler = 'psych'
     rescue NameError
       # probably on 1.8, ignore
     end

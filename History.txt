@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 1.8.21 / 2012-03-22
+
+* 2 bug fixes:
+
+  * Add workaround for buggy yaml output from 1.9.2
+  * Force 1.9.1 to remove it's prelude code. Fixes #305
+
 === 1.8.20 / 2012-03-21
 
 * 4 bug fixes:

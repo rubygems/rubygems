@@ -25,6 +25,8 @@
 # +:sources+:: Sets Gem::sources
 # +:verbose+:: See #verbose
 
+require 'rbconfig'
+
 class Gem::ConfigFile
 
   DEFAULT_BACKTRACE = false

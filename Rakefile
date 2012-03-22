@@ -56,6 +56,8 @@ hoe = Hoe.spec 'rubygems-update' do
     rdoc_options << "--title=RubyGems #{self.version} Documentation"
   end
 
+  self.rsync_args += " --no-p"
+
   # FIX: this exists because update --system installs the gem and
   # doesn't uninstall it. It should uninstall or better, not install
   # in the first place.
@@ -82,7 +84,7 @@ end
 
 task :prerelease => [:clobber, :check_manifest, :test]
 
-task :postrelease => :publish_docs
+task :postrelease => [:publish_docs, :upload]
 
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
 task :package do

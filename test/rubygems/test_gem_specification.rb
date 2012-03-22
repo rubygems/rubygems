@@ -427,7 +427,7 @@ dependencies: []
   def test_handles_private_null_type
     path = File.join DATA_PATH, "null-type.gemspec.rz"
 
-    data = Marshal.load Gem.inflate(File.read(path))
+    data = Marshal.load Gem.inflate(Gem.read_binary(path))
 
     assert_equal nil, data.rubyforge_project
   end

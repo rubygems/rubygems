@@ -2,26 +2,23 @@ require 'rubygems/installer_test_case'
 
 class TestGemInstaller < Gem::InstallerTestCase
 
-  def setup
-    super
+  def util_setup_install
+    @gemhome = @installer_tmp
+    Gem.use_paths @installer_tmp
 
-    if __name__ !~ /^test_install(_|$)/ then
-      @gemhome = @installer_tmp
-      Gem.use_paths @installer_tmp
+    @spec = Gem::Specification.find_by_name 'a'
+    @user_spec = Gem::Specification.find_by_name 'b'
 
-      @spec = Gem::Specification.find_by_name 'a'
-      @user_spec = Gem::Specification.find_by_name 'b'
-
-      @installer.spec = @spec
-      @installer.gem_home = @installer_tmp
-      @installer.gem_dir = @spec.gem_dir
-      @user_installer.spec = @user_spec
-      @user_installer.gem_home = @installer_tmp
-    end
+    @installer.spec = @spec
+    @installer.gem_home = @installer_tmp
+    @installer.gem_dir = @spec.gem_dir
+    @user_installer.spec = @user_spec
+    @user_installer.gem_home = @installer_tmp
   end
 
-
   def test_app_script_text
+    util_setup_install
+
     @spec.version = 2
     util_make_exec @spec, ''
 
@@ -52,6 +49,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_build_extensions_none
+    util_setup_install
+
     use_ui @ui do
       @installer.build_extensions
     end
@@ -63,6 +62,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_build_extensions_extconf_bad
+    util_setup_install
+
     @spec.extensions << 'extconf.rb'
 
     e = assert_raises Gem::Installer::ExtensionBuildError do
@@ -86,6 +87,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_build_extensions_unsupported
+    util_setup_install
+
     gem_make_out = File.join @gemhome, 'gems', @spec.full_name, 'gem_make.out'
     @spec.extensions << nil
 
@@ -107,6 +110,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_ensure_dependency
+    util_setup_install
+
     dep = Gem::Dependency.new 'a', '>= 2'
     assert @installer.ensure_dependency(@spec, dep)
 
@@ -119,6 +124,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_extract_files
+    util_setup_install
+
     format = Object.new
     def format.file_entries
       [[{'size' => 7, 'mode' => 0400, 'path' => 'thefile'}, 'content']]
@@ -137,6 +144,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_extract_files_bad_dest
+    util_setup_install
+
     @installer.gem_dir = 'somedir'
     @installer.format = nil
     e = assert_raises ArgumentError do
@@ -147,6 +156,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_extract_files_relative
+    util_setup_install
+
     format = Object.new
     def format.file_entries
       [[{'size' => 10, 'mode' => 0644, 'path' => '../thefile'}, '../thefile']]
@@ -166,6 +177,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_extract_files_absolute
+    util_setup_install
+
     format = Object.new
     def format.file_entries
       [[{'size' => 8, 'mode' => 0644, 'path' => '/thefile'}, '/thefile']]
@@ -183,6 +196,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_bindir
+    util_setup_install
+
     @installer.wrappers = true
 
     @spec.executables = %w[executable]
@@ -208,6 +223,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_bindir_with_user_install_warning
+    util_setup_install
+
     bin_dir = Gem.win_platform? ? File.expand_path(ENV["WINDIR"]) : "/usr/bin"
 
     options = {
@@ -227,6 +244,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_script
+    util_setup_install
+
     @installer.wrappers = true
     util_make_exec
     @installer.gem_dir = util_gem_dir
@@ -242,6 +261,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_script_format
+    util_setup_install
+
     @installer.format_executable = true
     @installer.wrappers = true
     util_make_exec
@@ -257,6 +278,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_script_format_disabled
+    util_setup_install
+
     @installer.wrappers = true
     util_make_exec
     @installer.gem_dir = util_gem_dir
@@ -271,6 +294,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_script_install_dir
+    util_setup_install
+
     @installer.wrappers = true
     @spec.executables = %w[executable]
 
@@ -295,6 +320,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_script_no_execs
+    util_setup_install
+
     util_execless
 
     @installer.wrappers = true
@@ -304,6 +331,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_script_no_perms
+    util_setup_install
+
     @installer.wrappers = true
     util_make_exec
 
@@ -323,6 +352,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_script_no_shebang
+    util_setup_install
+
     @installer.wrappers = true
     @spec.executables = %w[executable]
 
@@ -346,6 +377,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_script_wrappers
+    util_setup_install
+
     @installer.wrappers = true
     util_make_exec
     @installer.gem_dir = util_gem_dir
@@ -371,6 +404,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_symlink
+    util_setup_install
+
     return if win_platform? #Windows FS do not support symlinks
 
     @installer.wrappers = false
@@ -386,6 +421,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_symlink_no_execs
+    util_setup_install
+
     util_execless
 
     @installer.wrappers = false
@@ -395,6 +432,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_symlink_no_perms
+    util_setup_install
+
     @installer.wrappers = false
     util_make_exec
     @installer.gem_dir = util_gem_dir
@@ -415,6 +454,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_symlink_update_newer
+    util_setup_install
+
     return if win_platform? #Windows FS do not support symlinks
 
     @installer.wrappers = false
@@ -446,6 +487,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_symlink_update_older
+    util_setup_install
+
     return if win_platform? #Windows FS do not support symlinks
 
     @installer.wrappers = false
@@ -482,6 +525,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_symlink_update_remove_wrapper
+    util_setup_install
+
     return if win_platform? #Windows FS do not support symlinks
 
     @installer.wrappers = true
@@ -513,6 +558,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_symlink_win32
+    util_setup_install
+
     old_win_platform = Gem.win_platform?
     Gem.win_platform = true
     @installer.wrappers = false
@@ -537,6 +584,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_generate_bin_uses_default_shebang
+    util_setup_install
+
     return if win_platform? #Windows FS do not support symlinks
 
     @installer.wrappers = true
@@ -889,6 +938,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_installation_satisfies_dependency_eh
+    util_setup_install
+
     dep = Gem::Dependency.new 'a', '>= 2'
     assert @installer.installation_satisfies_dependency?(dep)
 
@@ -897,6 +948,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_shebang
+    util_setup_install
+
     util_make_exec @spec, "#!/usr/bin/ruby"
 
     shebang = @installer.shebang 'executable'
@@ -905,6 +958,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_shebang_arguments
+    util_setup_install
+
     util_make_exec @spec, "#!/usr/bin/ruby -ws"
 
     shebang = @installer.shebang 'executable'
@@ -913,6 +968,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_shebang_empty
+    util_setup_install
+
     util_make_exec @spec, ''
 
     shebang = @installer.shebang 'executable'
@@ -920,6 +977,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_shebang_env
+    util_setup_install
+
     util_make_exec @spec, "#!/usr/bin/env ruby"
 
     shebang = @installer.shebang 'executable'
@@ -928,6 +987,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_shebang_env_arguments
+    util_setup_install
+
     util_make_exec @spec, "#!/usr/bin/env ruby -ws"
 
     shebang = @installer.shebang 'executable'
@@ -936,6 +997,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_shebang_env_shebang
+    util_setup_install
+
     util_make_exec @spec, ''
     @installer.env_shebang = true
 
@@ -948,6 +1011,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_shebang_nested
+    util_setup_install
+
     util_make_exec @spec, "#!/opt/local/ruby/bin/ruby"
 
     shebang = @installer.shebang 'executable'
@@ -956,6 +1021,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_shebang_nested_arguments
+    util_setup_install
+
     util_make_exec @spec, "#!/opt/local/ruby/bin/ruby -ws"
 
     shebang = @installer.shebang 'executable'
@@ -964,6 +1031,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_shebang_version
+    util_setup_install
+
     util_make_exec @spec, "#!/usr/bin/ruby18"
 
     shebang = @installer.shebang 'executable'
@@ -972,6 +1041,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_shebang_version_arguments
+    util_setup_install
+
     util_make_exec @spec, "#!/usr/bin/ruby18 -ws"
 
     shebang = @installer.shebang 'executable'
@@ -980,6 +1051,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_shebang_version_env
+    util_setup_install
+
     util_make_exec @spec, "#!/usr/bin/env ruby18"
 
     shebang = @installer.shebang 'executable'
@@ -988,6 +1061,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_shebang_version_env_arguments
+    util_setup_install
+
     util_make_exec @spec, "#!/usr/bin/env ruby18 -ws"
 
     shebang = @installer.shebang 'executable'
@@ -996,6 +1071,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_unpack
+    util_setup_install
+
     util_setup_gem
 
     dest = File.join @gemhome, 'gems', @spec.full_name
@@ -1007,6 +1084,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_write_spec
+    util_setup_install
+
     spec_dir = File.join @gemhome, 'specifications'
     spec_file = File.join spec_dir, @spec.spec_name
     FileUtils.rm spec_file
@@ -1022,6 +1101,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_write_spec_writes_cached_spec
+    util_setup_install
+
     spec_dir = File.join @gemhome, 'specifications'
     spec_file = File.join spec_dir, @spec.spec_name
     FileUtils.rm spec_file
@@ -1041,6 +1122,8 @@ load Gem.bin_path('a', 'executable', version)
   end
 
   def test_dir
+    util_setup_install
+
     assert_match @installer.dir, %r!/installer/gems/a-2$!
   end
 

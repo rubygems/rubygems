@@ -22,6 +22,7 @@ Hoe::RUBY_FLAGS << " --disable-gems" if RUBY_VERSION > "1.9"
 
 Hoe.plugin :minitest
 Hoe.plugin :git
+Hoe.plugin :travis
 # Hoe.plugin :isolate
 
 hoe = Hoe.spec 'rubygems-update' do

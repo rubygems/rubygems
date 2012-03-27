@@ -194,7 +194,6 @@ test/rubygems/test_gem_doc_manager.rb
 test/rubygems/test_gem_ext_configure_builder.rb
 test/rubygems/test_gem_ext_ext_conf_builder.rb
 test/rubygems/test_gem_ext_rake_builder.rb
-test/rubygems/test_gem_gem_path_searcher.rb
 test/rubygems/test_gem_gem_runner.rb
 test/rubygems/test_gem_gemcutter_utilities.rb
 test/rubygems/test_gem_indexer.rb

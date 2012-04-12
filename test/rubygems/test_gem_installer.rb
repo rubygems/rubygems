@@ -35,9 +35,13 @@ require 'rubygems'
 
 version = \">= 0\"
 
-if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1 then
-  version = $1
-  ARGV.shift
+if ARGV.first
+  str = ARGV.first
+  str = str.dup.force_encoding("BINARY") if str.respond_to? :force_encoding
+  if str =~ /\\A_(.*)_\\z/
+    version = $1
+    ARGV.shift
+  end
 end
 
 gem 'a', version
@@ -667,6 +671,95 @@ load Gem.bin_path('a', 'executable', version)
     assert_same @installer, @post_build_hook_arg
     assert_same @installer, @post_install_hook_arg
     assert_same @installer, @pre_install_hook_arg
+  end
+
+  def test_install_creates_working_binstub
+    Dir.mkdir util_inst_bindir
+    util_setup_gem
+    util_clear_gems
+
+    @installer.wrappers = true
+
+    gemdir = File.join @gemhome, 'gems', @spec.full_name
+
+    @newspec = nil
+    build_rake_in do
+      use_ui @ui do
+        @newspec = @installer.install
+      end
+    end
+
+    exe = File.join gemdir, 'bin', 'executable'
+
+    e = assert_raises RuntimeError do
+      instance_eval File.read(exe)
+    end
+
+    assert_match(/ran executable/, e.message)
+  end
+
+  def test_install_creates_binstub_that_understand_version
+    Dir.mkdir util_inst_bindir
+    util_setup_gem
+    util_clear_gems
+
+    @installer.wrappers = true
+
+    @newspec = nil
+    build_rake_in do
+      use_ui @ui do
+        @newspec = @installer.install
+      end
+    end
+
+    exe = File.join @gemhome, 'bin', 'executable'
+
+    ARGV.unshift "_3.0_"
+
+    begin
+      Gem::Specification.reset
+
+      e = assert_raises Gem::LoadError do
+        instance_eval File.read(exe)
+      end
+    ensure
+      ARGV.shift if ARGV.first == "_3.0_"
+    end
+
+    assert_match(/\(= 3\.0\)/, e.message)
+  end
+
+  def test_install_creates_binstub_that_dont_trust_encoding
+    skip unless "".respond_to?(:force_encoding)
+
+    Dir.mkdir util_inst_bindir
+    util_setup_gem
+    util_clear_gems
+
+    @installer.wrappers = true
+
+    @newspec = nil
+    build_rake_in do
+      use_ui @ui do
+        @newspec = @installer.install
+      end
+    end
+
+    exe = File.join @gemhome, 'bin', 'executable'
+
+    ARGV.unshift "\xE4pfel".force_encoding("UTF-8")
+
+    begin
+      Gem::Specification.reset
+
+      e = assert_raises RuntimeError do
+        instance_eval File.read(exe)
+      end
+    ensure
+      ARGV.shift if ARGV.first == "\xE4pfel"
+    end
+
+    assert_match(/ran executable/, e.message)
   end
 
   def test_install_with_no_prior_files

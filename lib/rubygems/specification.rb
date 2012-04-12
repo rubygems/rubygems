@@ -1378,7 +1378,7 @@ class Gem::Specification
         val = other_spec.instance_variable_get(name)
         if val then
           instance_variable_set name, val.dup
-        else
+        elsif Gem.configuration.really_verbose
           warn "WARNING: #{full_name} has an invalid nil value for #{name}"
         end
       rescue TypeError

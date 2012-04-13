@@ -226,10 +226,11 @@ task "git:newchangelog" do
   now   = Time.new.strftime "%Y-%m-%d"
 
   changes = `#{cmd}`.split(/\|\|\|/).each_slice(3).map do |msg, author, email|
-    msg.split(/\n/).reject { |s| s.empty? }
+    c = msg.split(/\n/).reject { |s| s.empty? }
+    c.empty? ? nil : c.first
   end
 
-  changes = changes.flatten
+  changes = changes.flatten.compact
 
   next if changes.empty?
 

@@ -112,6 +112,7 @@ require "rubygems/deprecate"
 # * Daniel Berger      -- djberg96(at)gmail.com
 # * Phil Hagelberg     -- technomancy(at)gmail.com
 # * Ryan Davis         -- ryand-ruby(at)zenspider.com
+# * Evan Phoenix       -- evan@phx.io
 #
 # (If your name is missing, PLEASE let us know!)
 #
@@ -120,7 +121,7 @@ require "rubygems/deprecate"
 # -The RubyGems Team
 
 module Gem
-  VERSION = '1.8.21'
+  VERSION = '1.8.22'
 
   ##
   # Raised when RubyGems is unable to load or activate a gem.  Contains the

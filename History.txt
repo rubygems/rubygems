@@ -1,5 +1,14 @@
 # coding: UTF-8
 
+=== 1.8.22 / 2012-04-13
+
+* 4 bug fixes:
+
+  * Workaround for psych/syck YAML date parsing issue
+  * Don't trust the encoding of ARGV. Fixes #307
+  * Quiet default warnings about missing spec variables
+  * Read a binary file properly (windows fix)
+
 === 1.8.21 / 2012-03-22
 
 * 2 bug fixes:

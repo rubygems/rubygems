@@ -13,6 +13,7 @@ class Gem::Commands::FetchCommand < Gem::Command
     add_bulk_threshold_option
     add_proxy_option
     add_source_option
+    add_clear_sources_option
 
     add_version_option
     add_platform_option

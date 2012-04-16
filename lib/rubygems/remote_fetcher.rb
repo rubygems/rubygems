@@ -8,6 +8,8 @@ require 'uri'
 
 class Gem::RemoteFetcher
 
+  BuiltinSSLCerts = File.expand_path("./ssl_certs/*.pem", File.dirname(__FILE__))
+
   include Gem::UserInteraction
 
   ##
@@ -317,7 +319,7 @@ class Gem::RemoteFetcher
     @connections[connection_id] ||= Net::HTTP.new(*net_http_args)
     connection = @connections[connection_id]
 
-    if uri.scheme == 'https' and not connection.started? then
+    if https?(uri) and !connection.started? then
       configure_connection_for_https(connection)
     end
 
@@ -330,10 +332,13 @@ class Gem::RemoteFetcher
 
   def configure_connection_for_https(connection)
     require 'net/https'
+
     connection.use_ssl = true
     connection.verify_mode =
       Gem.configuration.ssl_verify_mode || OpenSSL::SSL::VERIFY_PEER
+
     store = OpenSSL::X509::Store.new
+
     if Gem.configuration.ssl_ca_cert
       if File.directory? Gem.configuration.ssl_ca_cert
         store.add_path Gem.configuration.ssl_ca_cert
@@ -344,12 +349,12 @@ class Gem::RemoteFetcher
       store.set_default_paths
       add_rubygems_trusted_certs(store)
     end
+
     connection.cert_store = store
   end
 
   def add_rubygems_trusted_certs(store)
-    pattern = File.expand_path("./ssl_certs/*.pem", File.dirname(__FILE__))
-    Dir.glob(pattern).each do |ssl_cert_file|
+    Dir.glob(BuiltinSSLCerts).each do |ssl_cert_file|
       store.add_file ssl_cert_file
     end
   end

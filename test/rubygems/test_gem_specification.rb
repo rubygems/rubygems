@@ -61,6 +61,8 @@ end
     end
 
     @current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
+
+    load 'rubygems/syck_hack.rb'
   end
 
   def test_self_attribute_names
@@ -1681,6 +1683,7 @@ end
       require "yaml"
       old_engine = YAML::ENGINE.yamler
       YAML::ENGINE.yamler = 'syck'
+      load 'rubygems/syck_hack.rb'
     rescue NameError
       # probably on 1.8, ignore
     end
@@ -1689,6 +1692,7 @@ end
   ensure
     begin
       YAML::ENGINE.yamler = old_engine
+      load 'rubygems/syck_hack.rb'
     rescue NameError
       # ignore
     end
@@ -1699,6 +1703,7 @@ end
       require "yaml"
       old_engine = YAML::ENGINE.yamler
       YAML::ENGINE.yamler = 'psych'
+      load 'rubygems/syck_hack.rb'
     rescue NameError
       # probably on 1.8, ignore
     end
@@ -1707,6 +1712,7 @@ end
   ensure
     begin
       YAML::ENGINE.yamler = old_engine
+      load 'rubygems/syck_hack.rb'
     rescue NameError
       # ignore
     end

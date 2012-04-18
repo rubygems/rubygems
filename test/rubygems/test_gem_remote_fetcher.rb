@@ -84,6 +84,8 @@ gems:
     ENV.delete 'HTTP_PROXY_USER'
     ENV.delete 'http_proxy_pass'
     ENV.delete 'HTTP_PROXY_PASS'
+    ENV.delete 'no_proxy'
+    ENV.delete 'NO_PROXY'    
 
     base_server_uri = "http://localhost:#{SERVER_PORT}"
     @proxy_uri = "http://localhost:#{PROXY_PORT}"

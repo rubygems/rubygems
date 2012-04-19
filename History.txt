@@ -23,8 +23,9 @@ certificate checks, but this is not recommended.
 * 1 minor feature:
   * Add --clear-sources to fetch
 
-* 1 bug fix:
+* 2 bug fixes:
   * Use File.identical? to check if two files are the same.
+  * Fixed init_with warning when using psych
 
 === 1.8.22 / 2012-04-13
 

@@ -97,6 +97,7 @@ lib/rubygems/server.rb
 lib/rubygems/source_index.rb
 lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
+lib/rubygems/ssl_certs/ca-bundle.pem
 lib/rubygems/syck_hack.rb
 lib/rubygems/test_case.rb
 lib/rubygems/test_utilities.rb
@@ -109,6 +110,7 @@ lib/rubygems/version_option.rb
 lib/ubygems.rb
 setup.rb
 test/rubygems/bogussources.rb
+test/rubygems/ca_cert.pem
 test/rubygems/data/gem-private_key.pem
 test/rubygems/data/gem-public_cert.pem
 test/rubygems/data/null-type.gemspec.rz
@@ -125,6 +127,8 @@ test/rubygems/rubygems/commands/crash_command.rb
 test/rubygems/rubygems_plugin.rb
 test/rubygems/sff/discover.rb
 test/rubygems/simple_gem.rb
+test/rubygems/ssl_cert.pem
+test/rubygems/ssl_key.pem
 test/rubygems/test_config.rb
 test/rubygems/test_gem.rb
 test/rubygems/test_gem_builder.rb

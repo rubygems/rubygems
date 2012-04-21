@@ -14,10 +14,15 @@ class Gem::Source
     end
 
     @uri = uri
-    @api_uri = Gem::RemoteFetcher.fetcher.api_endpoint uri
+    @api_uri = nil
   end
 
-  attr_reader :uri, :api_uri
+  attr_reader :uri
+
+  def api_uri
+    require 'rubygems/remote_fetcher'
+    @api_uri ||= Gem::RemoteFetcher.fetcher.api_endpoint uri
+  end
 
   def <=>(other)
     if !@uri

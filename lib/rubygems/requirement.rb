@@ -41,7 +41,7 @@ class Gem::Requirement
   #
   # If the input is "weird", the default version requirement is
   # returned.
-  
+
   # REFACTOR: There's no reason that this can't be unified with .new.
   # .new is the standard Ruby factory method.
 
@@ -124,7 +124,7 @@ class Gem::Requirement
 
   ##
   # true if this gem has no requirements.
-  
+
   # FIX: maybe this should be using #default ?
   def none?
     if @requirements.size == 1

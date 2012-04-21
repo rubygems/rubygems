@@ -44,13 +44,10 @@ require 'rake/packagetask'
 #   require 'rubygems/package_task'
 #
 #   spec = Gem::Specification.new do |s|
-#     s.platform = Gem::Platform::RUBY
 #     s.summary = "Ruby based make-like utility."
 #     s.name = 'rake'
 #     s.version = PKG_VERSION
 #     s.requirements << 'none'
-#     s.require_path = 'lib'
-#     s.autorequire = 'rake'
 #     s.files = PKG_FILES
 #     s.description = <<-EOF
 #   Rake is a Make-like program implemented in Ruby. Tasks

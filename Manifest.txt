@@ -1,6 +1,5 @@
 .autotest
 .document
-.travis.yml
 History.txt
 LICENSE.txt
 MIT.txt

@@ -165,7 +165,7 @@ By default, this RubyGems will install gem as:
                              end
 
         dest_file = File.join bin_dir, bin_file_formatted
-        bin_tmp_file = File.join Dir.tmpdir, bin_file
+        bin_tmp_file = File.join Dir.tmpdir, "#{bin_file}.#{$$}"
 
         begin
           bin = File.readlines bin_file

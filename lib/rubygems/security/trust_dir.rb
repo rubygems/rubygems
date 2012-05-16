@@ -27,9 +27,7 @@ class Gem::Security::TrustDir
   def each_certificate
     return enum_for __method__ unless block_given?
 
-    glob = File.join @dir, '*.pem'
-
-    Dir[glob].each do |certificate_file|
+    Gem.glob(@dir, '*.pem').each do |certificate_file|
       begin
         certificate = load_certificate certificate_file
 

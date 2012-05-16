@@ -632,8 +632,8 @@ class Gem::Specification
       specs = {}
 
       self.dirs.each { |dir|
-        Dir[File.join(dir, "*.gemspec")].each { |path|
-          spec = Gem::Specification.load path.untaint
+        Gem.glob(dir, "*.gemspec").each { |path|
+          spec = Gem::Specification.load path
           # #load returns nil if the spec is bad, so we just ignore
           # it at this stage
           specs[spec.full_name] ||= spec if spec
@@ -1827,10 +1827,7 @@ class Gem::Specification
   # Return all files in this gem that match for +glob+.
 
   def matches_for_glob glob # TODO: rename?
-    # TODO: do we need these?? Kill it
-    glob = File.join(self.lib_dirs_glob, glob)
-
-    Dir[glob].map { |f| f.untaint } # FIX our tests are broken, run w/ SAFE=1
+    Gem.glob(full_gem_path, "{#{require_paths.join ','}}/#{glob}")
   end
 
   ##

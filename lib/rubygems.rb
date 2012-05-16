@@ -261,7 +261,7 @@ module Gem
   # Return all the partial paths in +gemdir+.
 
   def self.all_partials(gemdir)
-    Dir[File.join(gemdir, "gems/*")]
+    Gem.glob(gemdir, "gems/*")
   end
 
   private_class_method :all_partials
@@ -469,8 +469,8 @@ module Gem
 
     if check_load_path
       files = $LOAD_PATH.map { |load_path|
-        Dir["#{File.expand_path glob, load_path}#{Gem.suffix_pattern}"]
-      }.flatten.select { |file| File.file? file.untaint }
+        Gem.glob(load_path, "#{glob}#{Gem.suffix_pattern}")
+      }.flatten.select { |file| File.file? file }
     end
 
     files.concat Gem::Specification.map { |spec|
@@ -523,6 +523,21 @@ module Gem
   end
 
   private_class_method :find_home
+
+  ##
+  # Dir.glob wrapper that takes a base directory
+
+  def self.glob(dir, pattern)
+    # TODO: move to utils
+    dir = File.expand_path(dir)
+    return [] unless Dir.exists?(dir)
+
+    Dir.chdir dir do
+      Dir.glob(pattern).map do |filename|
+        File.join(dir, filename).untaint
+      end
+    end
+  end
 
   ##
   # Zlib::GzipReader wrapper that unzips +data+.
@@ -1099,11 +1114,9 @@ module Gem
   # Find all 'rubygems_plugin' files in $LOAD_PATH and load them
 
   def self.load_env_plugins
-    path = "rubygems_plugin"
-
     files = []
     $LOAD_PATH.each do |load_path|
-      globbed = Dir["#{File.expand_path path, load_path}#{Gem.suffix_pattern}"]
+      globbed = Gem.glob(load_path, "rubygems_plugin#{Gem.suffix_pattern}")
 
       globbed.each do |load_path_file|
         files << load_path_file if File.file?(load_path_file.untaint)

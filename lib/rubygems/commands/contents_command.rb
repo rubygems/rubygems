@@ -81,9 +81,9 @@ class Gem::Commands::ContentsCommand < Gem::Command
       end
 
       gem_path = spec.full_gem_path
-      extra    = "/{#{spec.require_paths.join ','}}" if options[:lib_only]
-      glob     = "#{gem_path}#{extra}/**/*"
-      files    = Dir[glob]
+      extra    = "{#{spec.require_paths.join ','}}/" if options[:lib_only]
+      glob     = "#{extra}**/*"
+      files    = Gem.glob(gem_path, glob)
 
       gem_path = File.join gem_path, '' # add trailing / if missing
 

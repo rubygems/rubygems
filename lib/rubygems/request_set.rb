@@ -83,7 +83,7 @@ module Gem
     end
 
     def specs_in(dir)
-      Dir["#{dir}/specifications/*.gemspec"].map do |g|
+      Gem.glob(dir, "specifications/*.gemspec").map do |g|
         Gem::Specification.load g
       end
     end

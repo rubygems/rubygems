@@ -530,7 +530,7 @@ module Gem
   def self.glob(dir, pattern)
     # TODO: move to utils
     dir = File.expand_path(dir)
-    return [] unless Dir.exists?(dir)
+    return [] unless File.directory?(dir)
 
     Dir.chdir dir do
       Dir.glob(pattern).map do |filename|

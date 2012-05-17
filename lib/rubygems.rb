@@ -470,7 +470,7 @@ module Gem
     if check_load_path
       files = $LOAD_PATH.map { |load_path|
         Gem.glob(load_path, "#{glob}#{Gem.suffix_pattern}")
-      }.flatten.select { |file| File.file? file }
+      }.flatten.select { |file| File.file? file.untaint }
     end
 
     files.concat Gem::Specification.map { |spec|
@@ -534,7 +534,7 @@ module Gem
 
     Dir.chdir dir do
       Dir.glob(pattern).map do |filename|
-        File.join(dir, filename).untaint
+        File.join(dir, filename)
       end
     end
   end

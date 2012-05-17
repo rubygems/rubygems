@@ -391,7 +391,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     FileUtils.rm_rf a1_gemspec
     FileUtils.rm_rf a2_gemspec
 
-    start = Dir["#{gemdir}/*"]
+    start = Gem.glob(gemdir, "*")
 
     use_ui @ui do
       Dir.chdir @tempdir do
@@ -408,7 +408,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal "1 gem installed", out.shift
     assert out.empty?, out.inspect
 
-    fin = Dir["#{gemdir}/*"]
+    fin = Gem.glob(gemdir, "*")
 
     assert_equal [a1_gemspec], fin - start
   end

@@ -28,7 +28,7 @@ class TestGemIndexer < Gem::TestCase
 
     gems = File.join(@tempdir, 'gems')
     FileUtils.mkdir_p gems
-    FileUtils.mv Dir[File.join(@gemhome, "cache", '*.gem')], gems
+    FileUtils.mv Gem.glob(File.join(@gemhome, "cache"), '*.gem'), gems
 
     @indexer = Gem::Indexer.new(@tempdir,
                                 :rss_title     => 'ExampleForge gems',

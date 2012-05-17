@@ -254,7 +254,7 @@ TEXT
        (not File.exist? rubygems_doc_dir or
         File.writable? rubygems_doc_dir) then
       say "Removing old RubyGems RDoc and ri" if @verbose
-      Dir[File.join(Gem.dir, 'doc', 'rubygems-[0-9]*')].each do |dir|
+      Gem.glob(File.join(Gem.dir, 'doc'), 'rubygems-[0-9]*').each do |dir|
         rm_rf dir
       end
 

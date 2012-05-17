@@ -107,7 +107,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # or <tt>i686-darwin8.10.1</tt> otherwise.
   #
   # If the +KEEP_FILES+ environment variable is set the files will not be
-  # removed from <tt>/tmp/test_rubygems_#{$$}.#{Time.now.to_i}</tt>.
+  # removed from <tt>/tmp/test_rubygems_{#{$$}}.#{Time.now.to_i}</tt>.
 
   def setup
     super
@@ -122,9 +122,9 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     tmpdir = File.expand_path("tmp/test")
 
     if ENV['KEEP_FILES'] then
-      @tempdir = File.join(tmpdir, "test_rubygems_#{$$}.#{Time.now.to_i}")
+      @tempdir = File.join(tmpdir, "test_rubygems_{#{$$}}.#{Time.now.to_i}")
     else
-      @tempdir = File.join(tmpdir, "test_rubygems_#{$$}")
+      @tempdir = File.join(tmpdir, "test_rubygems_{#{$$}}")
     end
     @tempdir.untaint
     @gemhome  = File.join @tempdir, 'gemhome'
@@ -298,7 +298,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   def create_tmpdir
     tmpdir = nil
     Dir.chdir Dir.tmpdir do tmpdir = Dir.pwd end # HACK OSX /private/tmp
-    tmpdir = File.join tmpdir, "test_rubygems_#{$$}"
+    tmpdir = File.join tmpdir, "test_rubygems_{#{$$}}"
     FileUtils.mkdir_p tmpdir
     return tmpdir
   end

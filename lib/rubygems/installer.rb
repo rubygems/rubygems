@@ -299,7 +299,7 @@ class Gem::Installer
     @specs ||= begin
       specs = []
 
-      Dir[File.join(gem_home, "specifications", "*.gemspec")].each do |path|
+      Gem.glob(File.join(gem_home, "specifications"), "*.gemspec").each do |path|
         spec = Gem::Specification.load path.untaint
         specs << spec if spec
       end

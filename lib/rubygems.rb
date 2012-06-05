@@ -560,6 +560,21 @@ module Gem
   end
 
   ##
+  # Top level install helper method. Allows you to install gems interactively:
+  #
+  #   % irb
+  #   >> Gem.install "minitest"
+  #   Fetching: minitest-3.0.1.gem (100%)
+  #   => [#<Gem::Specification:0x1013b4528 @name="minitest", ...>]
+
+  def self.install name, version = Gem::Requirement.default
+    require "rubygems/dependency_installer"
+    inst = Gem::DependencyInstaller.new
+    inst.install name, version
+    inst.installed_gems
+  end
+
+  ##
   # Get the default RubyGems API host. This is normally
   # <tt>https://rubygems.org</tt>.
 

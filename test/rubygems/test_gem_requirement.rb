@@ -37,12 +37,12 @@ class TestGemRequirement < Gem::TestCase
   end
 
   def test_parse
-    assert_equal ['=', Gem::Version.new(1)], Gem::Requirement.parse('  1')
-    assert_equal ['=', Gem::Version.new(1)], Gem::Requirement.parse('= 1')
-    assert_equal ['>', Gem::Version.new(1)], Gem::Requirement.parse('> 1')
-    assert_equal ['=', Gem::Version.new(1)], Gem::Requirement.parse("=\n1")
+    assert_equal [:'=', Gem::Version.new(1)], Gem::Requirement.parse('  1')
+    assert_equal [:'=', Gem::Version.new(1)], Gem::Requirement.parse('= 1')
+    assert_equal [:'>', Gem::Version.new(1)], Gem::Requirement.parse('> 1')
+    assert_equal [:'=', Gem::Version.new(1)], Gem::Requirement.parse("=\n1")
 
-    assert_equal ['=', Gem::Version.new(2)],
+    assert_equal [:'=', Gem::Version.new(2)],
       Gem::Requirement.parse(Gem::Version.new('2'))
   end
 

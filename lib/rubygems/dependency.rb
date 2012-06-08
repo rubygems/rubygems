@@ -186,7 +186,7 @@ class Gem::Dependency
     reqs = other.requirement.requirements
 
     return false unless reqs.length == 1
-    return false unless reqs.first.first == '='
+    return false unless reqs.first.first == :'='
 
     version = reqs.first.last
 

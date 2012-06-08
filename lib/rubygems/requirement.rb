@@ -19,19 +19,19 @@ class Gem::Requirement
   include Comparable
 
   OPS = { #:nodoc:
-    "="  =>  lambda { |v, r| v == r },
-    "!=" =>  lambda { |v, r| v != r },
-    ">"  =>  lambda { |v, r| v >  r },
-    "<"  =>  lambda { |v, r| v <  r },
-    ">=" =>  lambda { |v, r| v >= r },
-    "<=" =>  lambda { |v, r| v <= r },
-    "~>" =>  lambda { |v, r| v >= r && v.release < r.bump }
+    :"="  =>  lambda { |v, r| v == r },
+    :"!=" =>  lambda { |v, r| v != r },
+    :">"  =>  lambda { |v, r| v >  r },
+    :"<"  =>  lambda { |v, r| v <  r },
+    :">=" =>  lambda { |v, r| v >= r },
+    :"<=" =>  lambda { |v, r| v <= r },
+    :"~>" =>  lambda { |v, r| v >= r && v.release < r.bump }
   }
 
   quoted  = OPS.keys.map { |k| Regexp.quote k }.join "|"
   PATTERN = /\A\s*(#{quoted})?\s*(#{Gem::Version::VERSION_PATTERN})\s*\z/
 
-  DefaultRequirement = [">=", Gem::Version.new(0)]
+  DefaultRequirement = [:">=", Gem::Version.new(0)]
 
   class BadRequirementError < ArgumentError; end
 
@@ -85,16 +85,16 @@ class Gem::Requirement
   # and have a Requirement be a list of Constraints.
 
   def self.parse obj
-    return ["=", obj] if Gem::Version === obj
+    return [:"=", obj] if Gem::Version === obj
 
     unless PATTERN =~ obj.to_s
       raise BadRequirementError, "Illformed requirement [#{obj.inspect}]"
     end
 
-    if $1 == ">=" && $2 == "0"
+    if $1 == :">=" && $2 == "0"
       DefaultRequirement
     else
-      [$1 || "=", Gem::Version.new($2)]
+      [($1 ? $1.to_sym : :"="), Gem::Version.new($2)]
     end
   end
 
@@ -196,7 +196,7 @@ class Gem::Requirement
     raise ArgumentError, "Need a Gem::Version: #{version.inspect}" unless
       Gem::Version === version
     # #28965: syck has a bug with unquoted '=' YAML.loading as YAML::DefaultKey
-    requirements.all? { |op, rv| (OPS[op] || OPS["="]).call version, rv }
+    requirements.all? { |op, rv| (OPS[op] || OPS[:"="]).call version, rv }
   end
 
   alias :=== :satisfied_by?
@@ -208,7 +208,7 @@ class Gem::Requirement
   def specific?
     return true if @requirements.length > 1 # GIGO, > 1, > 2 is silly
 
-    not %w[> >=].include? @requirements.first.first # grab the operator
+    not [:">", :">="].include? @requirements.first.first # grab the operator
   end
 
   def to_s # :nodoc:
@@ -242,7 +242,7 @@ class Gem::Requirement
     # Fixup the Syck DefaultKey bug
     @requirements.each do |r|
       if r[0].kind_of? Gem::SyckDefaultKey
-        r[0] = "="
+        r[0] = :"="
       end
     end
   end

@@ -235,7 +235,8 @@ class Gem::ConfigFile
 
     Gem.load_yaml
 
-    File.open(credentials_path, 'w') do |f|
+    permissions = 0600 & (~File.umask)
+    File.open(credentials_path, 'w', permissions) do |f|
       f.write config.to_yaml
     end
 

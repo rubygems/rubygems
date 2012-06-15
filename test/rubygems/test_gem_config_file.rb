@@ -309,6 +309,14 @@ class TestGemConfigFile < Gem::TestCase
                   :other => 'a5fdbb6ba150cbb83aad2bb2fede64c'}, @cfg.api_keys)
   end
 
+  def test_save_credentials_file_with_strict_permissions
+    util_config_file
+    FileUtils.mkdir File.dirname(@cfg.credentials_path)
+    @cfg.rubygems_api_key = '701229f217cdf23b1344c7b4b54ca97'
+    mode = 0100600 & (~File.umask)
+    assert_equal mode, File.stat(@cfg.credentials_path).mode unless win_platform?
+  end
+
   def util_config_file(args = @cfg_args)
     @cfg = Gem::ConfigFile.new args
   end

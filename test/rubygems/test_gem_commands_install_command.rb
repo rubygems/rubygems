@@ -222,11 +222,11 @@ ERROR:  Possible alternatives: non_existent_with_hint
       assert_equal 2, e.exit_code
     end
 
-    expected = "ERROR:  Could not find a valid gem 'non-existent_with-hint' (>= 0) in any repository
-ERROR:  Possible alternatives: nonexistent-with_hint
-"
+    expected = ["ERROR:  Could not find a valid gem 'non-existent_with-hint' (>= 0) in any repository", "ERROR:  Possible alternatives: nonexistent-with_hint"]
 
-    assert_equal expected, @ui.error
+    output = @ui.error.split "\n"
+
+    assert_equal expected, output
   end
 
   def test_execute_conflicting_install_options

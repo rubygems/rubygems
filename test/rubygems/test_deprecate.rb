@@ -68,8 +68,9 @@ class TestDeprecate < Gem::TestCase
       thing = Thing.new
       thing.foo
     end
+
     assert_equal "", out
-    assert_match(err, /Thing#foo is deprecated; use bar instead\./)
-    assert_match(err, /on or after 2099-03-01/)
+    assert_match(/Thing#foo is deprecated; use bar instead\./, err)
+    assert_match(/on or after 2099-03-01/, err)
   end
 end

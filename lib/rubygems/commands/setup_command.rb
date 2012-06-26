@@ -118,7 +118,7 @@ By default, this RubyGems will install gem as:
 
     uninstall_old_gemcutter
 
-    install_rdoc
+    documentation_success = install_rdoc
 
     say
     if @verbose then
@@ -168,6 +168,31 @@ By default, this RubyGems will install gem as:
       say "If `gem` was installed by a previous RubyGems installation, you may need"
       say "to remove it by hand."
       say
+    end
+
+    if documentation_success
+      if options[:rdoc]
+        say "Rdoc documentation was installed. You may now invoke:"
+        say "  gem server"
+        say "and then peruse beautifully formatted documentation for your gems"
+        say "with your web browser."
+        say "If you do not wish to install this documentation in the future, use the"
+        say "--no-rdoc flag, or set it as the default in your ~/.gemrc file. See"
+        say "'gem help env' for details."
+        say
+      end
+
+      if options[:ri]
+        say "Ruby Interactive (ri) documentation was installed. ri is kind of like man "
+        say "pages for ruby libraries. You may access it like this:"
+        say "  ri Classname"
+        say "  ri Classname.class_method"
+        say "  ri Classname#instance_method"
+        say "If you do not wish to install this documentation in the future, use the"
+        say "--no-ri flag, or set it as the default in your ~/.gemrc file. See"
+        say "'gem help env' for details."
+        say
+      end
     end
   end
 
@@ -269,10 +294,12 @@ TEXT
         say "Installing #{rubygems_name} rdoc into #{rdoc_dir}" if @verbose
         run_rdoc '--op', rdoc_dir
       end
+      return true
     elsif @verbose then
       say "Skipping RDoc generation, #{gem_doc_dir} not writable"
       say "Set the GEM_HOME environment variable if you want RDoc generated"
     end
+    return false
   end
 
   def make_destination_dirs(install_destdir)

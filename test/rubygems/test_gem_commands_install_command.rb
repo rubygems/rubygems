@@ -443,6 +443,26 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert out.empty?, out.inspect
   end
 
+  def test_execute_two_version
+    @cmd.options[:args] = %w[a b]
+    @cmd.options[:version] = Gem::Requirement.new("> 1")
+
+    use_ui @ui do
+      e = assert_raises Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+
+      assert_equal 1, e.exit_code
+    end
+
+    assert_empty @cmd.installed_specs
+
+    msg = "ERROR:  Can't use --version w/ multiple gems. Use name:ver instead."
+
+    assert_empty @ui.output
+    assert_equal msg, @ui.error.chomp
+  end
+
   def test_execute_conservative
     util_setup_fake_fetcher
     util_setup_spec_fetcher

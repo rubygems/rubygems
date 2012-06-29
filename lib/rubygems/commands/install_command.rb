@@ -153,6 +153,12 @@ to write the specification by hand.  For example:
 
     exit_code = 0
 
+    if options[:version] != Gem::Requirement.default &&
+        get_all_gem_names.size > 1 then
+      alert_error "Can't use --version w/ multiple gems. Use name:ver instead."
+      terminate_interaction 1
+    end
+
     get_all_gem_names_and_versions.each do |gem_name, gem_version|
       gem_version ||= options[:version]
 

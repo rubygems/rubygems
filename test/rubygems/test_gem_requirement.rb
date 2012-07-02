@@ -225,6 +225,42 @@ class TestGemRequirement < Gem::TestCase
     refute_satisfied_by "2.0.a",   "~> 2.0"
   end
 
+  def test_satisfied_by_boxed_pre
+    refute_satisfied_by "1.3.beta.0",  "~> 1.4.beta"
+    refute_satisfied_by "1.3",         "~> 1.4.beta"
+    refute_satisfied_by "1.3.0",       "~> 1.4.beta"
+    refute_satisfied_by "1.3.alpha.0", "~> 1.4.beta"
+
+    refute_satisfied_by "1.4.alpha",   "~> 1.4.beta"
+    refute_satisfied_by "1.4.alpha.0", "~> 1.4.beta"
+
+    assert_satisfied_by "1.4.beta.0",  "~> 1.4.beta"
+    assert_satisfied_by "1.4",         "~> 1.4.beta"
+    assert_satisfied_by "1.4.0",       "~> 1.4.beta"
+    assert_satisfied_by "1.4.1",       "~> 1.4.beta"
+
+    refute_satisfied_by "1.5.alpha.0", "~> 1.4.beta"
+    refute_satisfied_by "1.5.beta.0",  "~> 1.4.beta"
+    refute_satisfied_by "1.5",         "~> 1.4.beta"
+    refute_satisfied_by "1.5.0",       "~> 1.4.beta"
+    refute_satisfied_by "1.5.1",       "~> 1.4.beta"
+  end
+
+  def test_satisfied_by_boxed_pre_plus
+    assert_satisfied_by "1.4.beta.0",  "~> 1.4.beta.0"
+    assert_satisfied_by "1.4.beta.1",  "~> 1.4.beta.0"
+
+    refute_satisfied_by "1.4",         "~> 1.4.beta.0"
+    retute_satisfied_by "1.4.0",       "~> 1.4.beta.0"
+    refute_satisfied_by "1.4.1",       "~> 1.4.beta.0"
+
+    refute_satisfied_by "1.5.alpha.0", "~> 1.4.beta.0"
+    refute_satisfied_by "1.5.beta.0",  "~> 1.4.beta.0"
+    refute_satisfied_by "1.5",         "~> 1.4.beta.0"
+    refute_satisfied_by "1.5.0",       "~> 1.4.beta.0"
+    refute_satisfied_by "1.5.1",       "~> 1.4.beta.0"
+  end
+
   def test_satisfied_by_eh_multiple
     req = [">= 1.4", "<= 1.6", "!= 1.5"]
 

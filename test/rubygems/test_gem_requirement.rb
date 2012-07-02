@@ -251,7 +251,7 @@ class TestGemRequirement < Gem::TestCase
     assert_satisfied_by "1.4.beta.1",  "~> 1.4.beta.0"
 
     refute_satisfied_by "1.4",         "~> 1.4.beta.0"
-    retute_satisfied_by "1.4.0",       "~> 1.4.beta.0"
+    refute_satisfied_by "1.4.0",       "~> 1.4.beta.0"
     refute_satisfied_by "1.4.1",       "~> 1.4.beta.0"
 
     refute_satisfied_by "1.5.alpha.0", "~> 1.4.beta.0"

@@ -226,7 +226,6 @@ class TestGemRequirement < Gem::TestCase
   end
 
   def test_satisfied_by_spermy_inplace_pre
-    skip "Spermy won't match as expected with inplace prerelease versions"
     req = "~> 1.4.beta"
 
     refute_satisfied_by "1.3.beta.0",  req
@@ -242,9 +241,15 @@ class TestGemRequirement < Gem::TestCase
     assert_satisfied_by "1.4.0",       req
     assert_satisfied_by "1.4.1",       req
 
+    # See more delicate versions compared below
+
     refute_satisfied_by "2.0",         req
     refute_satisfied_by "2.0.0",       req
+  end
 
+  def test_satisfied_by_spermy_inplace_pre_next_minor
+    skip "Spermy won't match as expected with inplace prerelease versions"
+    req = "~> 1.4.beta"
     refute_satisfied_by "1.5.alpha",   req
     refute_satisfied_by "1.5.beta.0",  req
     refute_satisfied_by "1.5",         req

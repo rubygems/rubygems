@@ -128,6 +128,54 @@ end
     assert_equal @a2, spec
   end
 
+  def test_self_load_escape_curly
+    @a2.name = 'a};raise "improper escaping";%q{'
+
+    full_path = File.join @gemhome, 'specifications', @a2.spec_name
+    path      = File.join "specifications", @a2.spec_name
+    write_file path do |io|
+      io.write @a2.to_ruby_for_cache
+    end
+
+    spec = Gem::Specification.load full_path
+
+    @a2.files.clear
+
+    assert_equal @a2, spec
+  end
+
+  def test_self_load_escape_interpolation
+    @a2.name = 'a#{raise %<improper escaping>}'
+
+    full_path = File.join @gemhome, 'specifications', @a2.spec_name
+    path      = File.join "specifications", @a2.spec_name
+    write_file path do |io|
+      io.write @a2.to_ruby_for_cache
+    end
+
+    spec = Gem::Specification.load full_path
+
+    @a2.files.clear
+
+    assert_equal @a2, spec
+  end
+
+  def test_self_load_escape_quote
+    @a2.name = 'a";raise "improper escaping";"'
+
+    full_path = File.join @gemhome, 'specifications', @a2.spec_name
+    path      = File.join "specifications", @a2.spec_name
+    write_file path do |io|
+      io.write @a2.to_ruby_for_cache
+    end
+
+    spec = Gem::Specification.load full_path
+
+    @a2.files.clear
+
+    assert_equal @a2, spec
+  end
+
   def test_self_load_legacy_ruby
     spec = Deprecate.skip_during do
       eval LEGACY_RUBY_SPEC
@@ -763,19 +811,19 @@ end
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{a}
-  s.version = \"2\"
+  s.name = "a"
+  s.version = "2"
 
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\") if s.respond_to? :required_rubygems_version=
-  s.authors = [\"A User\"]
-  s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
-  s.description = %q{This is a test description}
-  s.email = %q{example@example.com}
-  s.files = [\"lib/code.rb\"]
-  s.homepage = %q{http://example.com}
-  s.require_paths = [\"lib\"]
-  s.rubygems_version = %q{#{Gem::VERSION}}
-  s.summary = %q{this is a summary}
+  s.authors = ["A User"]
+  s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
+  s.description = "This is a test description"
+  s.email = "example@example.com"
+  s.files = ["lib/code.rb"]
+  s.homepage = "http://example.com"
+  s.require_paths = ["lib"]
+  s.rubygems_version = "#{Gem::VERSION}"
+  s.summary = "this is a summary"
 
   if s.respond_to? :specification_version then
     s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
@@ -810,18 +858,18 @@ end
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{a}
-  s.version = \"2\"
+  s.name = "a"
+  s.version = "2"
 
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\") if s.respond_to? :required_rubygems_version=
-  s.authors = [\"A User\"]
-  s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
-  s.description = %q{This is a test description}
-  s.email = %q{example@example.com}
-  s.homepage = %q{http://example.com}
-  s.require_paths = [\"lib\"]
-  s.rubygems_version = %q{#{Gem::VERSION}}
-  s.summary = %q{this is a summary}
+  s.authors = ["A User"]
+  s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
+  s.description = "This is a test description"
+  s.email = "example@example.com"
+  s.homepage = "http://example.com"
+  s.require_paths = ["lib"]
+  s.rubygems_version = "#{Gem::VERSION}"
+  s.summary = "this is a summary"
 
   if s.respond_to? :specification_version then
     s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
@@ -857,26 +905,26 @@ end
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{a}
-  s.version = \"1\"
+  s.name = "a"
+  s.version = "1"
   s.platform = Gem::Platform.new(#{expected_platform})
 
   s.required_rubygems_version = Gem::Requirement.new(\">= 0\") if s.respond_to? :required_rubygems_version=
-  s.authors = [\"A User\"]
-  s.date = %q{#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}}
-  s.description = %q{This is a test description}
-  s.email = %q{example@example.com}
-  s.executables = [\"exec\"]
-  s.extensions = [\"ext/a/extconf.rb\"]
-  s.files = [\"lib/code.rb\", \"test/suite.rb\", \"bin/exec\", \"ext/a/extconf.rb\"]
-  s.homepage = %q{http://example.com}
-  s.licenses = [\"MIT\"]
-  s.require_paths = [\"lib\"]
-  s.requirements = [\"A working computer\"]
-  s.rubyforge_project = %q{example}
-  s.rubygems_version = %q{#{Gem::VERSION}}
-  s.summary = %q{this is a summary}
-  s.test_files = [\"test/suite.rb\"]
+  s.authors = ["A User"]
+  s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
+  s.description = "This is a test description"
+  s.email = "example@example.com"
+  s.executables = ["exec"]
+  s.extensions = ["ext/a/extconf.rb"]
+  s.files = ["lib/code.rb", "test/suite.rb", "bin/exec", "ext/a/extconf.rb"]
+  s.homepage = "http://example.com"
+  s.licenses = ["MIT"]
+  s.require_paths = ["lib"]
+  s.requirements = ["A working computer"]
+  s.rubyforge_project = "example"
+  s.rubygems_version = "#{Gem::VERSION}"
+  s.summary = "this is a summary"
+  s.test_files = ["test/suite.rb"]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

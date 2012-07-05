@@ -38,14 +38,8 @@
 require 'rubygems/version'
 require 'rubygems/requirement'
 require 'rubygems/platform'
-require "rubygems/deprecate"
-
-# REFACTOR: This should be pulled out into some sort of 'all the
-# compatibility hacks' file.
-
-# :stopdoc:
-class Date; end # for ruby_code if date.rb wasn't required
-# :startdoc:
+require 'rubygems/deprecate'
+require 'date'
 
 class Gem::Specification
 
@@ -106,8 +100,6 @@ class Gem::Specification
 
   MARSHAL_FIELDS = { -1 => 16, 1 => 16, 2 => 16, 3 => 17, 4 => 18 }
 
-  # FIX: Do we really need a local and a constant? Do we need the
-  # constant? It's only used three times. What about `Date.today`?
   today = Time.now.utc
   TODAY = Time.utc(today.year, today.month, today.day)
 
@@ -1346,15 +1338,15 @@ class Gem::Specification
     @date ||= TODAY
   end
 
-  ##
-  # The date this gem was created
-  #
-  # Do not set this, it is set automatically when the gem is packaged.
-
   DateTimeFormat = /\A
                      (\d{4})-(\d{2})-(\d{2})
                      (\s+ \d{2}:\d{2}:\d{2}\.\d+ \s* (Z | [-+]\d\d:\d\d) )?
                    \Z/x
+
+  ##
+  # The date this gem was created
+  #
+  # DO NOT set this, it is set automatically when the gem is packaged.
 
   def date= date
     # We want to end up with a Time object with one-day resolution.

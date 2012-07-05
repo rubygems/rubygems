@@ -43,10 +43,6 @@ require "rubygems/deprecate"
 # REFACTOR: This should be pulled out into some sort of 'all the
 # compatibility hacks' file.
 
-# :stopdoc:
-class Date; end # for ruby_code if date.rb wasn't required
-# :startdoc:
-
 class Gem::Specification
 
   # REFACTOR: Consider breaking out this version stuff into a separate
@@ -2007,6 +2003,7 @@ class Gem::Specification
   # object.
 
   def ruby_code(obj)
+    return obj.strftime('%Y-%m-%d').dump if defined?(Date) && obj.is_a?(Date)
     case obj
     when String            then obj.dump
     when Array             then '[' + obj.map { |x| ruby_code x }.join(", ") + ']'
@@ -2014,7 +2011,6 @@ class Gem::Specification
       seg = obj.keys.sort.map { |k| "#{k.to_s.dump} => #{obj[k].to_s.dump}" }
       "{ #{seg.join(', ')} }"
     when Gem::Version      then obj.to_s.dump
-    when Date              then obj.strftime('%Y-%m-%d').dump
     when Time              then obj.strftime('%Y-%m-%d').dump
     when Numeric           then obj.inspect
     when true, false, nil  then obj.inspect

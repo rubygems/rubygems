@@ -32,6 +32,7 @@ class Gem::DependencyInstaller
     :prerelease          => false,
     :security_policy     => nil, # HACK NoSecurity requires OpenSSL. AlmostNo? Low?
     :wrappers            => true,
+    :build_docs_in_background => true,
   }.freeze
 
   ##
@@ -77,6 +78,7 @@ class Gem::DependencyInstaller
     @security_policy     = options[:security_policy]
     @user_install        = options[:user_install]
     @wrappers            = options[:wrappers]
+    @build_docs_in_background = options[:build_docs_in_background]
 
     # Indicates that we should not try to update any deps unless
     # we absolutely must.
@@ -369,10 +371,30 @@ class Gem::DependencyInstaller
       @installed_gems << spec
     end
 
-    Gem.done_installing_hooks.each do |hook|
-      hook.call self, @installed_gems
-    end
+    # Since this is currently only called for docs, we can be lazy and just say
+    # it's documentation. Ideally the hook adder could decide whether to be in
+    # the background or not, and what to call it.
+    in_background "Installing documentation" do
+      start = Time.now
+      Gem.done_installing_hooks.each do |hook|
+        hook.call self, @installed_gems
+      end
+      finish = Time.now
+      say "Done installing documentation for #{@installed_gems.map(&:name).join(', ')} (#{(finish-start).to_i} sec)."
+    end unless Gem.done_installing_hooks.empty?
 
     @installed_gems
   end
+
+  def in_background what
+    if @build_docs_in_background and Process.respond_to?(:fork)
+      say "#{what} in a background process."
+      Process.fork do
+        yield
+      end
+    else
+      yield
+    end
+  end
+
 end

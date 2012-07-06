@@ -187,7 +187,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     FileUtils.mv @b1_gem, @tempdir
 
     Dir.chdir @tempdir do
-      inst = Gem::DependencyInstaller.new
+      inst = Gem::DependencyInstaller.new(:build_docs_in_background => false)
       inst.install 'b'
     end
 

@@ -369,10 +369,28 @@ class Gem::DependencyInstaller
       @installed_gems << spec
     end
 
-    Gem.done_installing_hooks.each do |hook|
-      hook.call self, @installed_gems
-    end
+    # Since this is currently only called for docs, we can be lazy and just say
+    # it's documentation. Ideally the hook adder could decide whether to be in
+    # the background or not, and what to call it.
+    in_background "Installing documentation" do
+      Gem.done_installing_hooks.each do |hook|
+        hook.call self, @installed_gems
+      end
+      puts "Done installing documentation for #{@installed_gems.map(&:name).join(', ')}."
+    end unless Gem.done_installing_hooks.empty?
 
     @installed_gems
   end
+
+  def in_background what
+    if Process.respond_to?(:fork)
+      say "#{what} in a background process."
+      Process.fork do
+        yield
+      end
+    else
+      yield
+    end
+  end
+
 end

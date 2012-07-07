@@ -796,6 +796,14 @@ Also, a list:
     system('nmake /? 1>NUL 2>&1')
   end
 
+  # In case we're building docs in a background process, this method waits for
+  # that process to exit (or if it's already been reaped, or never happened,
+  # swallows the Errno::ECHILD error).
+  def wait_for_child_process_to_exit
+    Process.wait if Process.respond_to?(:fork)
+  rescue Errno::ECHILD
+  end
+
   ##
   # Allows tests to use a random (but controlled) port number instead of
   # a hardcoded one. This helps CI tools when running parallels builds on

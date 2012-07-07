@@ -304,7 +304,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
       assert_equal 0, e.exit_code
     end
 
-    Process.wait rescue Errno::ECHILD if Process.respond_to?(:fork)
+    wait_for_child_process_to_exit
 
     assert_path_exists File.join(@a2.doc_dir, 'ri')
     assert_path_exists File.join(@a2.doc_dir, 'rdoc')

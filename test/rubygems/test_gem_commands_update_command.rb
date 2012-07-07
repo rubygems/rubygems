@@ -274,7 +274,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
       @cmd.execute
     end
 
-    Process.wait rescue Errno::ECHILD if Process.respond_to?(:fork)
+    wait_for_child_process_to_exit
 
     assert_path_exists File.join(@a2.doc_dir, 'ri')
     assert_path_exists File.join(@a2.doc_dir, 'rdoc')

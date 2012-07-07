@@ -77,7 +77,7 @@ class Gem::Installer
   ##
   # Constructs an Installer instance that will install the gem located at
   # +gem+.  +options+ is a Hash with the following keys:
-  # 
+  #
   # :bin_dir:: Where to put a bin wrapper if needed.
   # :development:: Whether or not development dependencies should be installed.
   # :env_shebang:: Use /usr/bin/env in bin wrappers.

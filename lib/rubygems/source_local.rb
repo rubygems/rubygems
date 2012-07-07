@@ -22,11 +22,11 @@ class Gem::Source::Local < Gem::Source
         case type
         when :released
           unless pkg.spec.version.prerelease?
-            names << pkg.spec.name_tuple 
+            names << pkg.spec.name_tuple
           end
         when :prerelease
           if pkg.spec.version.prerelease?
-            names << pkg.spec.name_tuple 
+            names << pkg.spec.name_tuple
           end
         when :latest
           tup = pkg.spec.name_tuple

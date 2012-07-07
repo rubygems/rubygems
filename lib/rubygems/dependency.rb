@@ -123,7 +123,7 @@ class Gem::Dependency
     #
     # Children, define explicit marshal and unmarshal behavior for
     # public classes. Marshal formats are part of your public API.
-    
+
     # REFACTOR: See above
 
     if defined?(@version_requirement) && @version_requirement

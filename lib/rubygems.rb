@@ -111,7 +111,7 @@ require 'rubygems/source_list'
 
 module Gem
   RUBYGEMS_DIR = File.dirname File.expand_path(__FILE__)
-  
+
   ##
   # An Array of Regexps that match windows ruby platforms.
 
@@ -1264,7 +1264,7 @@ end
 # the package is loaded as a gem, return the gem specific data directory.
 # Otherwise return a path to the share area as define by
 # "#{ConfigMap[:datadir]}/#{package_name}".
-# 
+#
 # REFACTOR: This should be pulled out into some kind of compatiblity file
 # with all the hacks to other stuff.
 #

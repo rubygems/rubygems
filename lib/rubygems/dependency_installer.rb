@@ -387,14 +387,17 @@ class Gem::DependencyInstaller
   end
 
   def in_background what
+    fork_happened = false
     if @build_docs_in_background and Process.respond_to?(:fork)
-      say "#{what} in a background process."
-      Process.fork do
-        yield
+      begin
+        Process.fork do
+          yield
+        end
+        fork_happened = true
+        say "#{what} in a background process."
+      rescue NotImplementedError
       end
-    else
-      yield
     end
+    yield unless fork_happened
   end
-
 end

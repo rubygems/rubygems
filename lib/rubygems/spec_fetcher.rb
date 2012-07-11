@@ -183,7 +183,7 @@ class Gem::SpecFetcher
   # :complete   => Return the list of all specs
   # :latest     => Return the list of only the highest version of each gem
   # :prerelease => Return the list of all prerelease only specs
-  # 
+  #
 
   def available_specs(type)
     errors = []

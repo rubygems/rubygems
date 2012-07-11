@@ -367,7 +367,7 @@ Bug Fixes:
 * Added Gem::Specification#dependent_specs.
 * Added Gem::TestCase#new_spec and Gem::TestCase#install_specs.
 * Added flag to include prerelease gems in Gem::SourceIndex#latest_specs.
-* Gem.cache_dir always references the proper cache dir. 
+* Gem.cache_dir always references the proper cache dir.
   Pass true to support a user path.
 * Gem.cache_gem, given a filename always references the cache gem.
   Pass true to support a user path.
@@ -1278,9 +1278,9 @@ There has been some minor usability enhancements and changes ...
   have unit tests.
 * Multiple gem names are allowed on the gem install command line.
   This means you can do:
-  
+
     gem install rake rails needle postgres-pr pimki
-  
+
   (Ok, you get the idea)
 * Multiple authors my be specified in a Gem spec.
 * Switched to using setup.rb (rather than a custom install script) for
@@ -1336,7 +1336,7 @@ See ChangeLog
 * new #required_ruby_version attribute added to gem specification for
   specifying a dependency on which version of ruby the gem needs.  Format it
   accepts is the same as the Gem::Version::Requirement format:
-  
+
     spec.required_ruby_version = "> 1.8.0"
 * --install-stub defaults to true, so library stubs are created
 
@@ -1346,7 +1346,7 @@ See ChangeLog
   incompatibilities.  This has been the subject of much debate for the past
   couple of months, with many ideas and code contributed by Eivind Eklund and
   Mauricio Fernandez.  The following set of assertions shows how it works:
-  
+
     assert_inadequate("1.3", "~> 1.4")
     assert_adequate(  "1.4", "~> 1.4")
     assert_adequate(  "1.5", "~> 1.4")
@@ -1354,7 +1354,7 @@ See ChangeLog
 				       # disallows major version number
 				       # differences.
 * Group gem search output when multiple versions exist for a given gem:
-  
+
     activerecord (0.7.8, 0.7.7, 0.7.6, 0.7.5)
       Implements the ActiveRecord pattern for ORM.
 * Add arbitrary RDoc-able files via gemspec (not just Ruby source files) for

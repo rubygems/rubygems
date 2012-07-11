@@ -155,12 +155,12 @@ class TestGemDependencyResolver < Gem::TestCase
 
     deps = [make_dep("c", "= 2"), make_dep("c", "= 1")]
     assert_equal deps, e.conflicting_dependencies
-   
+
     con = e.conflict
 
     act = con.activated
     assert_equal "c-1", act.spec.full_name
-    
+
     parent = act.parent
     assert_equal "a-1", parent.spec.full_name
 

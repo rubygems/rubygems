@@ -244,3 +244,8 @@ task "git:newchangelog" do
   changelog_section :unknown
   puts
 end
+
+desc "Cleanup trailing whitespace"
+task :whitespace do
+  system 'find . -not \( -name .svn -prune -o -name .git -prune \) -type f -print0 | xargs -0 sed -i "" -E "s/[[:space:]]*$//"'
+end

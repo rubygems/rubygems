@@ -91,7 +91,7 @@ class Gem::NameTuple
   def == other
     case other
     when self.class
-      @name == other.name and 
+      @name == other.name and
         @version == other.version and
         @platform == other.platform
     when Array

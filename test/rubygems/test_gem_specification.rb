@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 require 'rubygems/test_case'
 require 'stringio'
 require 'rubygems/specification'
@@ -1173,6 +1175,15 @@ end
     same_spec = Gem::Specification.from_yaml(yaml_str)
 
     assert_equal @a1, same_spec
+  end
+
+  def test_to_yaml_encoding
+    @a1.description = 'π'
+
+    yaml_str = @a1.to_yaml
+    same_spec = Gem::Specification.from_yaml(yaml_str)
+
+    assert_equal @a1.description, same_spec.description
   end
 
   def test_to_yaml_fancy

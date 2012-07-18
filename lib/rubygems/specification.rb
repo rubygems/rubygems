@@ -1946,6 +1946,7 @@ class Gem::Specification
       ast = builder.tree
 
       io = StringIO.new
+      io.set_encoding Encoding::UTF_8 if Object.const_defined? :Encoding
 
       Psych::Visitors::Emitter.new(io).accept(ast)
 

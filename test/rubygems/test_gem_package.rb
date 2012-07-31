@@ -30,6 +30,60 @@ class TestGemPackage < Gem::Package::TarTestCase
     assert package.spec
   end
 
+  def test_add_checksums
+    gem_io = StringIO.new
+
+    spec = Gem::Specification.new 'build', '1'
+    spec.summary = 'build'
+    spec.authors = 'build'
+    spec.files = ['lib/code.rb']
+    spec.date = Time.at 0
+    spec.rubygems_version = Gem::Version.new '0'
+
+    FileUtils.mkdir 'lib'
+
+    open 'lib/code.rb', 'w' do |io|
+      io.write '# lib/code.rb'
+    end
+
+    package = Gem::Package.new spec.file_name
+    package.spec = spec
+    package.build_time = 1 # 0 uses current time
+    package.setup_signer
+
+    Gem::Package::TarWriter.new gem_io do |gem|
+      package.add_metadata gem
+      package.add_contents gem
+      package.add_checksums gem
+    end
+
+    gem_io.rewind
+
+    reader = Gem::Package::TarReader.new gem_io
+
+    checksums = nil
+
+    reader.each_entry do |entry|
+      next unless entry.full_name == 'checksums.yaml.gz'
+
+      Zlib::GzipReader.wrap entry do |io|
+        checksums = io.read
+        break 
+      end
+    end
+
+    checksums = YAML.load checksums
+
+    expected = {
+      'SHA1' => {
+        'metadata.gz' => 'e22e0b3a9f30f2befd3822b6101df0952a0977b7',
+        'data.tar.gz' => '05f3fec98096f5056407960c0a8a5291a9171657',
+      },
+    }
+
+    assert_equal expected, checksums
+  end
+
   def test_add_files
     spec = Gem::Specification.new
     spec.files = 'lib/code.rb'
@@ -81,7 +135,7 @@ class TestGemPackage < Gem::Package::TarTestCase
     reader = Gem::Package.new spec.file_name
     assert_equal spec, reader.spec
 
-    assert_equal %w[metadata.gz metadata.gz.sum data.tar.gz data.tar.gz.sum],
+    assert_equal %w[metadata.gz data.tar.gz checksums.yaml.gz], 
                  reader.files
 
     assert_equal %w[lib/code.rb], reader.contents
@@ -118,8 +172,9 @@ class TestGemPackage < Gem::Package::TarTestCase
 
     assert_equal [PUBLIC_CERT.to_pem], reader.spec.cert_chain
 
-    assert_equal %w[metadata.gz metadata.gz.sum metadata.gz.sig
-                    data.tar.gz data.tar.gz.sum data.tar.gz.sig],
+    assert_equal %w[metadata.gz       metadata.gz.sig
+                    data.tar.gz       data.tar.gz.sig
+                    checksums.yaml.gz checksums.yaml.gz.sig],
                  reader.files
 
     assert_equal %w[lib/code.rb], reader.contents
@@ -165,8 +220,9 @@ class TestGemPackage < Gem::Package::TarTestCase
 
     assert_equal spec, reader.spec
 
-    assert_equal %w[metadata.gz metadata.gz.sum metadata.gz.sig
-                    data.tar.gz data.tar.gz.sum data.tar.gz.sig],
+    assert_equal %w[metadata.gz       metadata.gz.sig
+                    data.tar.gz       data.tar.gz.sig
+                    checksums.yaml.gz checksums.yaml.gz.sig],
                  reader.files
 
     assert_equal %w[lib/code.rb], reader.contents
@@ -286,7 +342,7 @@ class TestGemPackage < Gem::Package::TarTestCase
     package.verify
 
     assert_equal @spec, package.spec
-    assert_equal %w[data.tar.gz data.tar.gz.sum metadata.gz metadata.gz.sum],
+    assert_equal %w[checksums.yaml.gz data.tar.gz metadata.gz],
                  package.files.sort
   end
 
@@ -306,26 +362,20 @@ class TestGemPackage < Gem::Package::TarTestCase
         io.write metadata_gz
       end
 
-      digest = OpenSSL::Digest::SHA1.new
-      digest << metadata_gz
-      digest << 'bogus'
-      checksum = "#{digest.name}\t#{digest.hexdigest}\n"
-
-      tar.add_file 'metadata.gz.sum', 0444 do |io|
-        io.write checksum
-      end
-
       tar.add_file 'data.tar.gz', 0444 do |io|
         io.write data_tgz
       end
 
-      digest = OpenSSL::Digest::SHA1.new
-      digest << data_tgz
-      digest << 'bogus'
-      checksum = "#{digest.name}\t#{digest.hexdigest}\n"
-
-      tar.add_file 'data.tar.gz.sum', 0444 do |io|
-        io.write checksum
+      bogus_checksums = {
+        'SHA1' => {
+          'data.tar.gz' => 'bogus',
+          'metadata.gz' => 'bogus',
+        },
+      }
+      tar.add_file 'checksums.yaml.gz', 0444 do |io|
+        Zlib::GzipWriter.wrap io do |gz_io|
+          gz_io.write YAML.dump bogus_checksums
+        end
       end
     end
 

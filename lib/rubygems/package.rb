@@ -44,6 +44,8 @@ class Gem::Package
 
   class TarInvalidError < Error; end
 
+  attr_accessor :build_time # :nodoc:
+
   ##
   # The files in this package.  This is not the contents of the gem, just the
   # files in the top-level container.
@@ -100,6 +102,25 @@ class Gem::Package
     @security_policy = nil
     @spec = nil
     @signer = nil
+    @checksums = {}
+    @build_time = Time.now
+  end
+
+  ##
+  # Adds a checksum for each entry in the gem to checksums.yaml.gz.
+
+  def add_checksums tar
+    checksums_by_algorithm = Hash.new { |h, algorithm| h[algorithm] = {} }
+
+    @checksums.each do |name, digest|
+      checksums_by_algorithm[digest.name][name] = digest.hexdigest
+    end
+
+    tar.add_file_signed 'checksums.yaml.gz', 0444, @signer do |io|
+      gzip_to io do |gz_io|
+        YAML.dump checksums_by_algorithm, gz_io
+      end
+    end
   end
 
   ##
@@ -107,13 +128,15 @@ class Gem::Package
   # and adds this file to the +tar+.
 
   def add_contents tar # :nodoc:
-    tar.add_file_signed 'data.tar.gz', 0444, @signer do |io|
-      Zlib::GzipWriter.wrap io do |gz_io|
+    digest = tar.add_file_signed 'data.tar.gz', 0444, @signer do |io|
+      gzip_to io do |gz_io|
         Gem::Package::TarWriter.new gz_io do |data_tar|
           add_files data_tar
         end
       end
     end
+
+    @checksums['data.tar.gz'] = digest
   end
 
   ##
@@ -135,37 +158,32 @@ class Gem::Package
   # Adds the package's Gem::Specification to the +tar+ file
 
   def add_metadata tar # :nodoc:
-    metadata = @spec.to_yaml
-    metadata_gz = Gem.gzip metadata
-
-    tar.add_file_signed 'metadata.gz', 0444, @signer do |io|
-      io.write metadata_gz
+    digest = tar.add_file_signed 'metadata.gz', 0444, @signer do |io|
+      gzip_to io do |gz_io|
+        gz_io.mtime = @build_time
+        gz_io.write @spec.to_yaml
+      end
     end
+
+    @checksums['metadata.gz'] = digest
   end
 
   ##
   # Builds this package based on the specification set by #spec=
 
-  def build(skip_validation=false)
+  def build skip_validation = false
     require 'rubygems/security'
 
     @spec.validate unless skip_validation
     @spec.mark_version
 
-    if @spec.signing_key then
-      @signer = Gem::Security::Signer.new @spec.signing_key, @spec.cert_chain
-      @spec.signing_key = nil
-      @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_s }
-    else
-      @signer = Gem::Security::Signer.new nil, nil
-      @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_pem } if
-        @signer.cert_chain
-    end
+    setup_signer
 
     open @gem, 'wb' do |gem_io|
       Gem::Package::TarWriter.new gem_io do |gem|
         add_metadata gem
         add_contents gem
+        add_checksums gem
       end
     end
 
@@ -269,6 +287,21 @@ EOM
   end
 
   ##
+  # Gzips content written to +gz_io+ to +io+.
+  #--
+  # Also sets the gzip modification time to the package build time to ease
+  # testing.
+
+  def gzip_to io # :yields: gz_io
+    gz_io = Zlib::GzipWriter.new io
+    gz_io.mtime = @build_time
+
+    yield gz_io
+  ensure
+    gz_io.close
+  end
+
+  ##
   # Returns the full path for installing +filename+.
   #
   # If +filename+ is not inside +destination_dir+ an exception is raised.
@@ -317,6 +350,22 @@ EOM
   end
 
   ##
+  # Prepares the gem for signing and checksum generation.  If a signing
+  # certificate and key are not present only checksum generation is set up.
+
+  def setup_signer
+    if @spec.signing_key then
+      @signer = Gem::Security::Signer.new @spec.signing_key, @spec.cert_chain
+      @spec.signing_key = nil
+      @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_s }
+    else
+      @signer = Gem::Security::Signer.new nil, nil
+      @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_pem } if
+        @signer.cert_chain
+    end
+  end
+
+  ##
   # The spec for this gem.
   #
   # If this is a package for a built gem the spec is loaded from the
@@ -345,7 +394,7 @@ EOM
 
     digests    = {}
     signatures = {}
-    checksums  = {}
+    checksums  = nil
 
     open @gem, 'rb' do |io|
       reader = Gem::Package::TarReader.new io
@@ -358,8 +407,11 @@ EOM
         when /\.sig$/ then
           signatures[$`] = entry.read if @security_policy
           next
-        when /\.sum$/ then
-          checksums[$`] = entry.read
+        when 'checksums.yaml.gz' then
+          Zlib::GzipReader.wrap entry do |io|
+            checksums = YAML.load io.read
+          end
+
           next
         else
           digests[file_name] = digest entry
@@ -411,11 +463,12 @@ EOM
   # cryptographically secure.  Missing checksums are ignored.
 
   def verify_checksums digests, checksums # :nodoc:
-    checksums.sort.each do |name, checksum|
-      digest = digests[name]
-      checksum =~ /#{digest.name}\t(.*)/
+    return unless checksums
 
-      unless digest.hexdigest == $1 then
+    checksums['SHA1'].sort.each do |name, checksum|
+      digest = digests[name]
+
+      unless digest.hexdigest == checksum then
         raise Gem::Package::FormatError.new("checksum mismatch for #{name}",
                                             @gem)
       end

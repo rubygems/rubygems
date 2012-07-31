@@ -39,12 +39,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     assert_headers_equal(tar_file_header('x', '', 0644, 10),
                          @io.string[0, 512])
     assert_equal "aaaaaaaaaa#{"\0" * 502}", @io.string[512, 512]
-
-    assert_headers_equal(tar_file_header('x.sum', '', 0444, 72),
-                         @io.string[1024, 512])
-    assert_equal "SHA256\t#{digest.hexdigest}\n#{"\0" * 440}",
-                 @io.string[1536, 512]
-    assert_equal 2048, @io.pos
+    assert_equal 1024, @io.pos
   end
 
   def test_add_file_signer
@@ -61,19 +56,14 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     digest = signer.digest_algorithm.new
     digest.update 'a' * 10
 
-    assert_headers_equal(tar_file_header('x.sum', '', 0444, 46),
-                         @io.string[1024, 512])
-    assert_equal "SHA1\t#{digest.hexdigest}\n#{"\0" * 466}",
-                 @io.string[1536, 512]
-
     signature = signer.sign digest.digest
 
     assert_headers_equal(tar_file_header('x.sig', '', 0444, signature.length),
-                         @io.string[2048, 512])
+                         @io.string[1024, 512])
     assert_equal "#{signature}#{"\0" * (512 - signature.length)}",
-                 @io.string[2560, 512]
+                 @io.string[1536, 512]
 
-    assert_equal 3072, @io.pos
+    assert_equal 2048, @io.pos
   end
 
   def test_add_file_signer_empty
@@ -90,11 +80,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     digest = signer.digest_algorithm.new
     digest.update 'a' * 10
 
-    assert_headers_equal(tar_file_header('x.sum', '', 0444, 46),
-                         @io.string[1024, 512])
-    assert_equal "SHA1\t#{digest.hexdigest}\n#{"\0" * 466}",
-                 @io.string[1536, 512]
-    assert_equal 2048, @io.pos
+    assert_equal 1024, @io.pos
   end
 
   def test_add_file_simple

@@ -146,12 +146,6 @@ class Gem::Package::TarWriter
       end
     end
 
-    checksum = "#{digest.name}\t#{digest.hexdigest}\n"
-
-    add_file_simple "#{name}.sum", 0444, checksum.length do |io|
-      io.write checksum
-    end
-
     digest
   end
 
@@ -160,6 +154,8 @@ class Gem::Package::TarWriter
   # the file.  The +signer+ is used to add a digest file using its
   # digest_algorithm per add_file_digest and a cryptographic signature in
   # +name+.sig.  If the signer has no key only the checksum file is added.
+  #
+  # Returns the digest.
 
   def add_file_signed name, mode, signer
     digest = add_file_digest name, mode, signer.digest_algorithm do |io|
@@ -171,6 +167,8 @@ class Gem::Package::TarWriter
     add_file_simple "#{name}.sig", 0444, signature.length do |io|
       io.write signature
     end if signature
+
+    digest
   end
 
   ##

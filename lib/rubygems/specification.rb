@@ -579,9 +579,6 @@ class Gem::Specification
 
   attr_writer :default_executable
 
-  ##
-  # True when this gemspec has been activated. This attribute is not persisted.
-
   attr_accessor :loaded # :nodoc:
 
   alias :loaded? :loaded # :nodoc:

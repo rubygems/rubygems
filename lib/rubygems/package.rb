@@ -292,7 +292,7 @@ EOM
   # testing.
 
   def gzip_to io # :yields: gz_io
-    gz_io = Zlib::GzipWriter.new io
+    gz_io = Zlib::GzipWriter.new io, Zlib::BEST_COMPRESSION
     gz_io.mtime = @build_time
 
     yield gz_io

@@ -64,24 +64,35 @@ class TestGemPackage < Gem::Package::TarTestCase
     checksums = nil
 
     reader.each_entry do |entry|
-      next unless entry.full_name == 'checksums.yaml.gz'
-
-      Zlib::GzipReader.wrap entry do |io|
-        checksums = io.read
-        break 
+      case entry.full_name
+      when 'checksums.yaml.gz'
+        Zlib::GzipReader.wrap entry do |io|
+          checksums = io.read
+        end
       end
     end
 
-    checksums = YAML.load checksums
+    s = StringIO.new
+
+    package.gzip_to s do |io|
+      io.write spec.to_yaml
+    end
+
+    expected_metadata_digest = Digest::SHA1.hexdigest s.string
+
+    expected_data_digest = nil
+    util_tar do |tar|
+      expected_data_digest = package.add_contents tar
+    end
 
     expected = {
       'SHA1' => {
-        'metadata.gz' => 'e22e0b3a9f30f2befd3822b6101df0952a0977b7',
-        'data.tar.gz' => '05f3fec98096f5056407960c0a8a5291a9171657',
+        'metadata.gz' => expected_metadata_digest,
+        'data.tar.gz' => expected_data_digest,
       },
     }
 
-    assert_equal expected, checksums
+    assert_equal expected, YAML.load(checksums)
   end
 
   def test_add_files

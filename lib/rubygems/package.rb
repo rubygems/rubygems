@@ -160,7 +160,6 @@ class Gem::Package
   def add_metadata tar # :nodoc:
     digest = tar.add_file_signed 'metadata.gz', 0444, @signer do |io|
       gzip_to io do |gz_io|
-        gz_io.mtime = @build_time
         gz_io.write @spec.to_yaml
       end
     end

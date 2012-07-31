@@ -62,10 +62,6 @@ class Gem::Indexer
 
     @build_modern = options[:build_modern]
 
-    @rss_title = options[:rss_title]
-    @rss_host = options[:rss_host]
-    @rss_gems_host = options[:rss_gems_host]
-
     @dest_directory = directory
     @directory = File.join(Dir.tmpdir, "gem_generate_index_#{$$}")
 
@@ -92,8 +88,6 @@ class Gem::Indexer
       File.join(@dest_directory, "latest_specs.#{Gem.marshal_version}")
     @dest_prerelease_specs_index =
       File.join(@dest_directory, "prerelease_specs.#{Gem.marshal_version}")
-
-    @rss_index = File.join @directory, 'index.rss'
 
     @files = []
   end
@@ -124,7 +118,6 @@ class Gem::Indexer
 
     build_marshal_gemspecs
     build_modern_indicies if @build_modern
-    build_rss
 
     compress_indicies
   end
@@ -211,104 +204,6 @@ class Gem::Indexer
                "#{@latest_specs_index}.gz",
                @prerelease_specs_index,
                "#{@prerelease_specs_index}.gz"]
-  end
-
-  ##
-  # Builds an RSS feed for past two days gem releases according to the gem's
-  # date.
-
-  def build_rss
-    if @rss_host.nil? or @rss_gems_host.nil? then
-      if Gem.configuration.really_verbose then
-        alert_warning "no --rss-host or --rss-gems-host, RSS generation disabled"
-      end
-      return
-    end
-
-    require 'cgi'
-    require 'rubygems/text'
-
-    extend Gem::Text
-
-    Gem.time 'Generated rss' do
-      open @rss_index, 'wb' do |io|
-        rss_host = CGI.escapeHTML @rss_host
-        rss_title = CGI.escapeHTML(@rss_title || 'gems')
-
-        io.puts <<-HEADER
-<?xml version="1.0"?>
-<rss version="2.0">
-  <channel>
-    <title>#{rss_title}</title>
-    <link>http://#{rss_host}</link>
-    <description>Recently released gems from http://#{rss_host}</description>
-    <generator>RubyGems v#{Gem::VERSION}</generator>
-    <docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
-        HEADER
-
-        today = Gem::Specification::TODAY
-        yesterday = today - 86400
-
-        index = Gem::Specification.select do |spec|
-          spec_date = spec.date
-          # TODO: remove this and make YAML based specs properly normalized
-          spec_date = Time.parse(spec_date.to_s) if Date === spec_date
-
-          spec_date >= yesterday && spec_date <= today
-        end
-
-        index.sort_by { |spec| [-spec.date.to_i, spec] }.each do |spec|
-          file_name = File.basename spec.cache_file
-          gem_path = CGI.escapeHTML "http://#{@rss_gems_host}/gems/#{file_name}"
-          size = File.stat(spec.loaded_from).size # rescue next
-
-          description = spec.description || spec.summary || ''
-          authors = Array spec.authors
-          emails = Array spec.email
-          authors = emails.zip(authors).map do |email, author|
-            email += " (#{author})" if author and not author.empty?
-          end.join ', '
-
-          description = description.split(/\n\n+/).map do |chunk|
-            format_text chunk, 78
-          end
-
-          description = description.join "\n\n"
-
-          item = ''
-
-          item << <<-ITEM
-    <item>
-      <title>#{CGI.escapeHTML spec.full_name}</title>
-      <description>
-&lt;pre&gt;#{CGI.escapeHTML description.chomp}&lt;/pre&gt;
-      </description>
-      <author>#{CGI.escapeHTML authors}</author>
-      <guid>#{CGI.escapeHTML spec.full_name}</guid>
-      <enclosure url=\"#{gem_path}\"
-                 length=\"#{size}\" type=\"application/octet-stream\" />
-      <pubDate>#{spec.date.rfc2822}</pubDate>
-          ITEM
-
-          item << <<-ITEM if spec.homepage
-      <link>#{CGI.escapeHTML spec.homepage}</link>
-          ITEM
-
-          item << <<-ITEM
-    </item>
-          ITEM
-
-          io.puts item
-        end
-
-        io.puts <<-FOOTER
-  </channel>
-</rss>
-        FOOTER
-      end
-    end
-
-    @files << @rss_index
   end
 
   def map_gems_to_specs gems

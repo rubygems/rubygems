@@ -335,6 +335,11 @@ module Gem::Security
   DIGEST_ALGORITHM = OpenSSL::Digest::SHA1
 
   ##
+  # Used internally to select the signing digest from all computed digests
+
+  DIGEST_NAME = DIGEST_ALGORITHM.new.name # :nodoc:
+
+  ##
   # Algorithm for creating the key pair used to sign gems
 
   KEY_ALGORITHM = OpenSSL::PKey::RSA

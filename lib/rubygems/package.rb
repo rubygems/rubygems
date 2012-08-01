@@ -47,6 +47,11 @@ class Gem::Package
   attr_accessor :build_time # :nodoc:
 
   ##
+  # Checksums for the contents of the package
+
+  attr_reader :checksums
+
+  ##
   # The files in this package.  This is not the contents of the gem, just the
   # files in the top-level container.
 
@@ -94,16 +99,16 @@ class Gem::Package
   # Creates a new package that will read or write to the file +gem+.
 
   def initialize gem # :notnew:
-    @gem   = gem
+    @gem = gem
 
-    @contents = nil
-    @digest = Gem::Security::DIGEST_ALGORITHM
-    @files = nil
+    @build_time      = Time.now
+    @checksums       = {}
+    @contents        = nil
+    @digests         = Hash.new { |h, algorithm| h[algorithm] = {} }
+    @files           = nil
     @security_policy = nil
-    @spec = nil
-    @signer = nil
-    @checksums = {}
-    @build_time = Time.now
+    @signer          = nil
+    @spec            = nil
   end
 
   ##
@@ -112,8 +117,10 @@ class Gem::Package
   def add_checksums tar
     checksums_by_algorithm = Hash.new { |h, algorithm| h[algorithm] = {} }
 
-    @checksums.each do |name, digest|
-      checksums_by_algorithm[digest.name][name] = digest.hexdigest
+    @checksums.each do |name, digests|
+      digests.each do |algorithm, digest|
+        checksums_by_algorithm[algorithm][name] = digest.hexdigest
+      end
     end
 
     tar.add_file_signed 'checksums.yaml.gz', 0444, @signer do |io|
@@ -128,7 +135,7 @@ class Gem::Package
   # and adds this file to the +tar+.
 
   def add_contents tar # :nodoc:
-    digest = tar.add_file_signed 'data.tar.gz', 0444, @signer do |io|
+    digests = tar.add_file_signed 'data.tar.gz', 0444, @signer do |io|
       gzip_to io do |gz_io|
         Gem::Package::TarWriter.new gz_io do |data_tar|
           add_files data_tar
@@ -136,7 +143,7 @@ class Gem::Package
       end
     end
 
-    @checksums['data.tar.gz'] = digest
+    @checksums['data.tar.gz'] = digests
   end
 
   ##
@@ -158,13 +165,13 @@ class Gem::Package
   # Adds the package's Gem::Specification to the +tar+ file
 
   def add_metadata tar # :nodoc:
-    digest = tar.add_file_signed 'metadata.gz', 0444, @signer do |io|
+    digests = tar.add_file_signed 'metadata.gz', 0444, @signer do |io|
       gzip_to io do |gz_io|
         gz_io.write @spec.to_yaml
       end
     end
 
-    @checksums['metadata.gz'] = digest
+    @checksums['metadata.gz'] = digests
   end
 
   ##
@@ -228,13 +235,19 @@ EOM
   # the security policy.
 
   def digest entry # :nodoc:
-    digester = @digest.new
+    return unless @checksums
 
-    digester << entry.read(16384) until entry.eof?
+    @checksums.each_key do |algorithm|
+      digester = OpenSSL::Digest.new algorithm
 
-    entry.rewind
+      digester << entry.read(16384) until entry.eof?
 
-    digester
+      entry.rewind
+
+      @digests[algorithm][entry.full_name] = digester
+    end
+
+    @digests
   end
 
   ##
@@ -391,12 +404,16 @@ EOM
     @files     = []
     @spec      = nil
 
-    digests    = {}
     signatures = {}
-    checksums  = nil
 
     open @gem, 'rb' do |io|
       reader = Gem::Package::TarReader.new io
+
+      @checksums = reader.seek 'checksums.yaml.gz' do |entry|
+        Zlib::GzipReader.wrap entry do |gz_io|
+          YAML.load gz_io.read
+        end
+      end
 
       reader.each do |entry|
         file_name = entry.full_name
@@ -407,13 +424,9 @@ EOM
           signatures[$`] = entry.read if @security_policy
           next
         when 'checksums.yaml.gz' then
-          Zlib::GzipReader.wrap entry do |io|
-            checksums = YAML.load io.read
-          end
-
-          next
+          next # already handled
         else
-          digests[file_name] = digest entry
+          digest entry
         end
 
         case file_name
@@ -434,9 +447,9 @@ EOM
               'package content (data.tar.gz) is missing', @gem
     end
 
-    verify_checksums digests, checksums
+    verify_checksums @digests, @checksums
 
-    @security_policy.verify_signatures @spec, digests, signatures if
+    @security_policy.verify_signatures @spec, @digests, signatures if
       @security_policy
 
     true
@@ -464,12 +477,14 @@ EOM
   def verify_checksums digests, checksums # :nodoc:
     return unless checksums
 
-    checksums['SHA1'].sort.each do |name, checksum|
-      digest = digests[name]
+    checksums.sort.each do |algorithm, gem_digests|
+      gem_digests.sort.each do |file_name, gem_hexdigest|
+        computed_digest = digests[algorithm][file_name]
 
-      unless digest.hexdigest == checksum then
-        raise Gem::Package::FormatError.new("checksum mismatch for #{name}",
-                                            @gem)
+        unless computed_digest.hexdigest == gem_hexdigest then
+          raise Gem::Package::FormatError.new \
+            "#{algorithm} checksum mismatch for #{file_name}", @gem
+        end
       end
     end
   end

@@ -177,6 +177,12 @@ class Gem::Security::Policy
     trust_dir = opt[:trust_dir]
     time      = Time.now
 
+    signer_digests = digests.find do |algorithm, file_digests|
+      file_digests.values.first.name == Gem::Security::DIGEST_NAME
+    end
+
+    signer_digests = digests.values.first || {}
+
     signer = chain.last
 
     check_key signer, key if key
@@ -189,7 +195,7 @@ class Gem::Security::Policy
 
     check_trust chain, digester, trust_dir if @only_trusted
 
-    digests.each do |file, digest|
+    signer_digests.each do |file, digest|
       signature = signatures[file]
 
       raise Gem::Security::Exception, "missing signature for #{file}" unless

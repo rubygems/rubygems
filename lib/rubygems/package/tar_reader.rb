@@ -100,6 +100,23 @@ class Gem::Package::TarReader
     end
   end
 
+  ##
+  # Seeks through the tar file until it finds the +entry+ with +name+ and
+  # yields it.  Rewinds the tar file to the beginning when the block
+  # terminates.
+
+  def seek name # :yields: entry
+    found = find do |entry|
+      entry.full_name == name
+    end
+
+    return unless found
+
+    return yield found
+  ensure
+    rewind
+  end
+
 end
 
 require 'rubygems/package/tar_reader/entry'

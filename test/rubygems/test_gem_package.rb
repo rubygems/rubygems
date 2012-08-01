@@ -78,18 +78,23 @@ class TestGemPackage < Gem::Package::TarTestCase
       io.write spec.to_yaml
     end
 
-    expected_metadata_digest = Digest::SHA1.hexdigest s.string
+    metadata_sha1   = Digest::SHA1.hexdigest s.string
+    metadata_sha512 = Digest::SHA512.hexdigest s.string
 
-    expected_data_digest = nil
+    data_digests = nil
     util_tar do |tar|
-      expected_data_digest = package.add_contents tar
+      data_digests = package.add_contents tar
     end
 
     expected = {
       'SHA1' => {
-        'metadata.gz' => expected_metadata_digest,
-        'data.tar.gz' => expected_data_digest,
+        'metadata.gz' => metadata_sha1,
+        'data.tar.gz' => data_digests['SHA1'].hexdigest,
       },
+      'SHA512' => {
+        'metadata.gz' => metadata_sha512,
+        'data.tar.gz' => data_digests['SHA512'].hexdigest,
+      }
     }
 
     assert_equal expected, YAML.load(checksums)
@@ -400,7 +405,8 @@ class TestGemPackage < Gem::Package::TarTestCase
       package.verify
     end
 
-    assert_equal 'checksum mismatch for data.tar.gz in mismatch.gem', e.message
+    assert_equal 'SHA1 checksum mismatch for data.tar.gz in mismatch.gem',
+                 e.message
   end
 
   def test_verify_checksum_missing

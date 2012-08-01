@@ -227,7 +227,7 @@ class TestGemSecurityPolicy < Gem::TestCase
     Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
     data = digest 'hello'
-    digest    = { 0 => data }
+    digest    = { 'SHA1' => { 0 => data } }
     signature = { 0 => sign(data, PRIVATE_KEY) }
 
     assert @high.verify [PUBLIC_CERT], nil, digest, signature
@@ -239,7 +239,7 @@ class TestGemSecurityPolicy < Gem::TestCase
 
   def test_verify_signatures_chain
     data = digest 'hello'
-    digest    = { 0 => data }
+    digest    = { 'SHA1' => { 0 => data } }
     signature = { 0 => sign(data, CHILD_KEY) }
 
     @spec.cert_chain = [PUBLIC_CERT, CHILD_CERT]
@@ -249,7 +249,7 @@ class TestGemSecurityPolicy < Gem::TestCase
 
   def test_verify_signatures_data
     data = digest 'hello'
-    digest    = { 0 => data }
+    digest    = { 'SHA1' => { 0 => data } }
     signature = { 0 => sign(data) }
 
     @spec.cert_chain = [PUBLIC_CERT]
@@ -259,7 +259,7 @@ class TestGemSecurityPolicy < Gem::TestCase
 
   def test_verify_signatures_root
     data = digest 'hello'
-    digest    = { 0 => data }
+    digest    = { 'SHA1' => { 0 => data } }
     signature = { 0 => sign(data, CHILD_KEY) }
 
     @spec.cert_chain = [PUBLIC_CERT, CHILD_CERT]
@@ -269,7 +269,7 @@ class TestGemSecurityPolicy < Gem::TestCase
 
   def test_verify_signatures_signer
     data = digest 'hello'
-    digest    = { 0 => data }
+    digest    = { 'SHA1' => { 0 => data } }
     signature = { 0 => sign(data) }
 
     @spec.cert_chain = [PUBLIC_CERT]
@@ -281,7 +281,7 @@ class TestGemSecurityPolicy < Gem::TestCase
     Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
     data = digest 'hello'
-    digest    = { 0 => data }
+    digest    = { 'SHA1' => { 0 => data } }
     signature = { 0 => sign(data, PRIVATE_KEY) }
 
     @spec.cert_chain = [PUBLIC_CERT]
@@ -297,11 +297,13 @@ class TestGemSecurityPolicy < Gem::TestCase
     metadata_gz = Gem.gzip @spec.to_yaml
 
     package = Gem::Package.new 'nonexistent.gem'
+    package.checksums['SHA1'] = {}
 
-    metadata_gz_digest = package.digest StringIO.new metadata_gz
+    s = StringIO.new metadata_gz
+    def s.full_name() 'metadata.gz' end
 
-    digests = {}
-    digests['metadata.gz'] = metadata_gz_digest
+    digests = package.digest s
+    metadata_gz_digest = digests['SHA1']['metadata.gz']
 
     signatures = {}
     signatures['metadata.gz'] =
@@ -318,12 +320,15 @@ class TestGemSecurityPolicy < Gem::TestCase
     metadata_gz = Gem.gzip @spec.to_yaml
 
     package = Gem::Package.new 'nonexistent.gem'
+    package.checksums['SHA1'] = {}
 
-    metadata_gz_digest = package.digest StringIO.new metadata_gz
+    s = StringIO.new metadata_gz
+    def s.full_name() 'metadata.gz' end
 
-    digests = {}
-    digests['metadata.gz'] = metadata_gz_digest
-    digests['data.tar.gz'] = package.digest StringIO.new 'hello' # fake
+    digests = package.digest s
+    digests['SHA1']['data.tar.gz'] = OpenSSL::Digest.new 'SHA1', 'hello'
+
+    metadata_gz_digest = digests['SHA1']['metadata.gz']
 
     signatures = {}
     signatures['metadata.gz'] =
@@ -344,12 +349,13 @@ class TestGemSecurityPolicy < Gem::TestCase
     metadata_gz = Gem.gzip @spec.to_yaml
 
     package = Gem::Package.new 'nonexistent.gem'
+    package.checksums['SHA1'] = {}
 
-    metadata_gz_digest = package.digest StringIO.new metadata_gz
+    s = StringIO.new metadata_gz
+    def s.full_name() 'metadata.gz' end
 
-    digests = {}
-    digests['metadata.gz'] = metadata_gz_digest
-    digests['data.tar.gz'] = package.digest StringIO.new 'hello' # fake
+    digests = package.digest s
+    digests['SHA1']['data.tar.gz'] = OpenSSL::Digest.new 'SHA1', 'hello'
 
     assert_raises Gem::Security::Exception do
       @almost_no.verify_signatures @spec, digests, {}

@@ -3,9 +3,26 @@
 
 class Gem::Security::Signer
 
+  ##
+  # The chain of certificates for signing including the signing certificate
+
   attr_accessor :cert_chain
+
+  ##
+  # The private key for the signing certificate
+
   attr_accessor :key
+
+  ##
+  # The digest algorithm used to create the signature
+
   attr_reader :digest_algorithm
+
+  ##
+  # The name of the digest algorithm, used to pull digests out of the hash by
+  # name.
+
+  attr_reader :digest_name # :nodoc:
 
   ##
   # Creates a new signer with an RSA +key+ or path to a key, and a certificate
@@ -27,6 +44,7 @@ class Gem::Security::Signer
     end
 
     @digest_algorithm = Gem::Security::DIGEST_ALGORITHM
+    @digest_name      = Gem::Security::DIGEST_NAME
 
     @key = OpenSSL::PKey::RSA.new File.read @key if
       @key and not OpenSSL::PKey::RSA === @key

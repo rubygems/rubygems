@@ -137,16 +137,21 @@ class Gem::Package::TarWriter
   #
   # The created digest object is returned.
 
-  def add_file_digest name, mode, digest_algorithm # :yields: io
-    digest = digest_algorithm.new
+  def add_file_digest name, mode, digest_algorithms # :yields: io
+    digests = digest_algorithms.map do |digest_algorithm|
+      digest = digest_algorithm.new
+      [digest.name, digest]
+    end
+
+    digests = Hash[*digests.flatten]
 
     add_file name, mode do |io|
-      Gem::Package::DigestIO.wrap io, digest do |digest_io|
+      Gem::Package::DigestIO.wrap io, digests do |digest_io|
         yield digest_io
       end
     end
 
-    digest
+    digests
   end
 
   ##
@@ -158,17 +163,26 @@ class Gem::Package::TarWriter
   # Returns the digest.
 
   def add_file_signed name, mode, signer
-    digest = add_file_digest name, mode, signer.digest_algorithm do |io|
+    digest_algorithms = [
+      signer.digest_algorithm,
+      OpenSSL::Digest::SHA512,
+    ].uniq
+
+    digests = add_file_digest name, mode, digest_algorithms do |io|
       yield io
     end
 
-    signature = signer.sign digest.digest
+    signature_digest = digests.values.find do |digest|
+      digest.name == signer.digest_name
+    end
+
+    signature = signer.sign signature_digest.digest
 
     add_file_simple "#{name}.sig", 0444, signature.length do |io|
       io.write signature
     end if signature
 
-    digest
+    digests
   end
 
   ##

@@ -27,14 +27,40 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
   end
 
   def test_add_file_digest
-    digest_algorithm = OpenSSL::Digest::SHA256
+    digest_algorithms = OpenSSL::Digest::SHA1, OpenSSL::Digest::SHA512
 
-    digest = @tar_writer.add_file_digest 'x', 0644, digest_algorithm do |io|
+    digests = @tar_writer.add_file_digest 'x', 0644, digest_algorithms do |io|
       io.write 'a' * 10
     end
 
-    assert_equal 'bf2cb58a68f684d95a3b78ef8f661c9a4e5b09e82cc8f9cc88cce90528caeb27',
-                 digest.hexdigest
+    assert_equal '3495ff69d34671d1e15b33a63c1379fdedd3a32a',
+                 digests['SHA1'].hexdigest
+    assert_equal '4714870aff6c97ca09d135834fdb58a6389a50c1' \
+                 '1fef8ec4afef466fb60a23ac6b7a9c92658f14df' \
+                 '4993d6b40a4e4d8424196afc347e97640d68de61' \
+                 'e1cf14b0',
+                 digests['SHA512'].hexdigest
+
+    assert_headers_equal(tar_file_header('x', '', 0644, 10),
+                         @io.string[0, 512])
+    assert_equal "aaaaaaaaaa#{"\0" * 502}", @io.string[512, 512]
+    assert_equal 1024, @io.pos
+  end
+
+  def test_add_file_digest_multiple
+    digest_algorithms = [OpenSSL::Digest::SHA1, OpenSSL::Digest::SHA512]
+
+    digests = @tar_writer.add_file_digest 'x', 0644, digest_algorithms do |io|
+      io.write 'a' * 10
+    end
+
+    assert_equal '3495ff69d34671d1e15b33a63c1379fdedd3a32a',
+                 digests['SHA1'].hexdigest
+    assert_equal '4714870aff6c97ca09d135834fdb58a6389a50c1' \
+                 '1fef8ec4afef466fb60a23ac6b7a9c92658f14df' \
+                 '4993d6b40a4e4d8424196afc347e97640d68de61' \
+                 'e1cf14b0',
+                 digests['SHA512'].hexdigest
 
     assert_headers_equal(tar_file_header('x', '', 0644, 10),
                          @io.string[0, 512])

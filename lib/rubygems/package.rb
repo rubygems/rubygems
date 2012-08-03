@@ -107,6 +107,7 @@ class Gem::Package
     @digests         = Hash.new { |h, algorithm| h[algorithm] = {} }
     @files           = nil
     @security_policy = nil
+    @signatures      = {}
     @signer          = nil
     @spec            = nil
   end
@@ -362,6 +363,17 @@ EOM
   end
 
   ##
+  # Reads and loads checksums.yaml.gz from the tar file +gem+
+
+  def read_checksums gem
+    @checksums = gem.seek 'checksums.yaml.gz' do |entry|
+      Zlib::GzipReader.wrap entry do |gz_io|
+        YAML.load gz_io.read
+      end
+    end
+  end
+
+  ##
   # Prepares the gem for signing and checksum generation.  If a signing
   # certificate and key are not present only checksum generation is set up.
 
@@ -404,52 +416,17 @@ EOM
     @files     = []
     @spec      = nil
 
-    signatures = {}
-
     open @gem, 'rb' do |io|
-      reader = Gem::Package::TarReader.new io
+      Gem::Package::TarReader.new io do |reader|
+        read_checksums reader
 
-      @checksums = reader.seek 'checksums.yaml.gz' do |entry|
-        Zlib::GzipReader.wrap entry do |gz_io|
-          YAML.load gz_io.read
-        end
+        verify_files reader
       end
-
-      reader.each do |entry|
-        file_name = entry.full_name
-        @files << file_name
-
-        case file_name
-        when /\.sig$/ then
-          signatures[$`] = entry.read if @security_policy
-          next
-        when 'checksums.yaml.gz' then
-          next # already handled
-        else
-          digest entry
-        end
-
-        case file_name
-        when /^metadata(.gz)?$/ then
-          load_spec entry
-        when 'data.tar.gz' then
-          verify_gz entry
-        end
-      end
-    end
-
-    unless @spec then
-      raise Gem::Package::FormatError.new 'package metadata is missing', @gem
-    end
-
-    unless @files.include? 'data.tar.gz' then
-      raise Gem::Package::FormatError.new \
-              'package content (data.tar.gz) is missing', @gem
     end
 
     verify_checksums @digests, @checksums
 
-    @security_policy.verify_signatures @spec, @digests, signatures if
+    @security_policy.verify_signatures @spec, @digests, @signatures if
       @security_policy
 
     true
@@ -457,17 +434,6 @@ EOM
     raise Gem::Package::FormatError.new e.message
   rescue Gem::Package::TarInvalidError => e
     raise Gem::Package::FormatError.new e.message, @gem
-  end
-
-  ##
-  # Verifies that +entry+ is a valid gzipped file.
-
-  def verify_gz entry # :nodoc:
-    Zlib::GzipReader.wrap entry do |gzio|
-      gzio.read 16384 until gzio.eof? # gzip checksum verification
-    end
-  rescue Zlib::GzipFile::Error => e
-    raise Gem::Package::FormatError.new(e.message, entry.full_name)
   end
 
   ##
@@ -487,6 +453,53 @@ EOM
         end
       end
     end
+  end
+
+  ##
+  # Verifies the files of the +gem+
+
+  def verify_files gem
+    gem.each do |entry|
+      file_name = entry.full_name
+      @files << file_name
+
+      case file_name
+      when /\.sig$/ then
+        @signatures[$`] = entry.read if @security_policy
+        next
+      when 'checksums.yaml.gz' then
+        next # already handled
+      else
+        digest entry
+      end
+
+      case file_name
+      when /^metadata(.gz)?$/ then
+        load_spec entry
+      when 'data.tar.gz' then
+        verify_gz entry
+      end
+    end
+
+    unless @spec then
+      raise Gem::Package::FormatError.new 'package metadata is missing', @gem
+    end
+
+    unless @files.include? 'data.tar.gz' then
+      raise Gem::Package::FormatError.new \
+              'package content (data.tar.gz) is missing', @gem
+    end
+  end
+
+  ##
+  # Verifies that +entry+ is a valid gzipped file.
+
+  def verify_gz entry # :nodoc:
+    Zlib::GzipReader.wrap entry do |gzio|
+      gzio.read 16384 until gzio.eof? # gzip checksum verification
+    end
+  rescue Zlib::GzipFile::Error => e
+    raise Gem::Package::FormatError.new(e.message, entry.full_name)
   end
 
 end

@@ -392,26 +392,6 @@ class Gem::Command
 
   private
 
-  def add_parser_arguments # :nodoc:
-    return if arguments.empty?
-
-    @parser.separator nil
-    @parser.separator "  Arguments:"
-    arguments.split(/\n/).each do |arg_desc|
-      @parser.separator "    #{arg_desc}"
-    end
-  end
-
-  def add_parser_defaults # :nodoc:
-    return if defaults_str.empty?
-
-    @parser.separator nil
-    @parser.separator "  Defaults:"
-    defaults_str.split(/\n/).each do |line|
-      @parser.separator "    #{line}"
-    end
-  end
-
   def add_parser_description # :nodoc:
     return unless description
 
@@ -439,6 +419,20 @@ class Gem::Command
     end
   end
 
+  ##
+  # Adds a section with +title+ and +content+ to the parser help view.  Used
+  # for adding command arguments and default arguments.
+
+  def add_parser_run_info title, content
+    return if content.empty?
+
+    @parser.separator nil
+    @parser.separator "  #{title}:"
+    content.split(/\n/).each do |line|
+      @parser.separator "    #{line}"
+    end
+  end
+
   def add_parser_summary # :nodoc:
     return unless @summary
 
@@ -457,6 +451,10 @@ class Gem::Command
     @parser
   end
 
+  ##
+  # Creates an option parser and fills it in with the help info for the
+  # command.
+
   def create_option_parser
     @parser = OptionParser.new
 
@@ -465,10 +463,10 @@ class Gem::Command
     @parser.separator nil
     configure_options "Common", Gem::Command.common_options
 
-    add_parser_arguments
+    add_parser_run_info "Arguments", arguments
     add_parser_summary
     add_parser_description
-    add_parser_defaults
+    add_parser_run_info "Defaults", defaults_str
   end
 
   def configure_options(header, option_list)

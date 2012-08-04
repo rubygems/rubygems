@@ -147,24 +147,26 @@ class Gem::CommandManager
 
   def process_args(args, build_args=nil)
     args = args.to_str.split(/\s+/) if args.respond_to?(:to_str)
-    if args.size == 0
+
+    if args.empty? then
       say Gem::Command::HELP
-      terminate_interaction(1)
+      terminate_interaction 1
     end
-    case args[0]
-    when '-h', '--help'
+
+    case args.first
+    when '-h', '--help' then
       say Gem::Command::HELP
-      terminate_interaction(0)
-    when '-v', '--version'
+      terminate_interaction 0
+    when '-v', '--version' then
       say Gem::VERSION
-      terminate_interaction(0)
-    when /^-/
-      alert_error "Invalid option: #{args[0]}.  See 'gem --help'."
-      terminate_interaction(1)
+      terminate_interaction 0
+    when /^-/ then
+      alert_error "Invalid option: #{args.first}.  See 'gem --help'."
+      terminate_interaction 1
     else
       cmd_name = args.shift.downcase
-      cmd = find_command(cmd_name)
-      cmd.invoke_with_build_args(args, build_args)
+      cmd = find_command cmd_name
+      cmd.invoke_with_build_args args, build_args
     end
   end
 

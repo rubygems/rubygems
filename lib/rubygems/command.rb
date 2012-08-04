@@ -392,6 +392,63 @@ class Gem::Command
 
   private
 
+  def add_parser_arguments # :nodoc:
+    return if arguments.empty?
+
+    @parser.separator nil
+    @parser.separator "  Arguments:"
+    arguments.split(/\n/).each do |arg_desc|
+      @parser.separator "    #{arg_desc}"
+    end
+  end
+
+  def add_parser_defaults # :nodoc:
+    return if defaults_str.empty?
+
+    @parser.separator nil
+    @parser.separator "  Defaults:"
+    defaults_str.split(/\n/).each do |line|
+      @parser.separator "    #{line}"
+    end
+  end
+
+  def add_parser_description # :nodoc:
+    return unless description
+
+    formatted = description.split("\n\n").map do |chunk|
+      wrap chunk, 80 - 4
+    end.join "\n"
+
+    @parser.separator nil
+    @parser.separator "  Description:"
+    formatted.split("\n").each do |line|
+      @parser.separator "    #{line.rstrip}"
+    end
+  end
+
+  def add_parser_options # :nodoc:
+    @parser.separator nil
+
+    regular_options = @option_groups.delete :options
+
+    configure_options "", regular_options
+
+    @option_groups.sort_by { |n,_| n.to_s }.each do |group_name, option_list|
+      @parser.separator nil
+      configure_options group_name, option_list
+    end
+  end
+
+  def add_parser_summary # :nodoc:
+    return unless @summary
+
+    @parser.separator nil
+    @parser.separator "  Summary:"
+    wrap(@summary, 80 - 4).split("\n").each do |line|
+      @parser.separator "    #{line.strip}"
+    end
+  end
+
   ##
   # Create on demand parser.
 
@@ -403,54 +460,15 @@ class Gem::Command
   def create_option_parser
     @parser = OptionParser.new
 
-    @parser.separator nil
-    regular_options = @option_groups.delete :options
-
-    configure_options "", regular_options
-
-    @option_groups.sort_by { |n,_| n.to_s }.each do |group_name, option_list|
-      @parser.separator nil
-      configure_options group_name, option_list
-    end
+    add_parser_options
 
     @parser.separator nil
     configure_options "Common", Gem::Command.common_options
 
-    unless arguments.empty?
-      @parser.separator nil
-      @parser.separator "  Arguments:"
-      arguments.split(/\n/).each do |arg_desc|
-        @parser.separator "    #{arg_desc}"
-      end
-    end
-
-    if @summary then
-      @parser.separator nil
-      @parser.separator "  Summary:"
-      wrap(@summary, 80 - 4).split("\n").each do |line|
-        @parser.separator "    #{line.strip}"
-      end
-    end
-
-    if description then
-      formatted = description.split("\n\n").map do |chunk|
-        wrap chunk, 80 - 4
-      end.join "\n"
-
-      @parser.separator nil
-      @parser.separator "  Description:"
-      formatted.split("\n").each do |line|
-        @parser.separator "    #{line.rstrip}"
-      end
-    end
-
-    unless defaults_str.empty?
-      @parser.separator nil
-      @parser.separator "  Defaults:"
-      defaults_str.split(/\n/).each do |line|
-        @parser.separator "    #{line}"
-      end
-    end
+    add_parser_arguments
+    add_parser_summary
+    add_parser_description
+    add_parser_defaults
   end
 
   def configure_options(header, option_list)

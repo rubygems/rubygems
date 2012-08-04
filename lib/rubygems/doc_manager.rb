@@ -228,8 +228,7 @@ class Gem::DocManager # :nodoc: all
         alert_error "While generating documentation for #{@spec.full_name}"
         ui.errs.puts "... MESSAGE:   #{ex}"
         ui.errs.puts "... RDOC args: #{debug_args.join(' ')}"
-        ui.errs.puts "\t#{ex.backtrace.join "\n\t"}" if
-          Gem.configuration.backtrace
+        ui.backtrace ex
         terminate_interaction 1
       end
     ensure

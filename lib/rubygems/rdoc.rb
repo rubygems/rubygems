@@ -248,8 +248,7 @@ class Gem::RDoc # :nodoc: all
         alert_error "While generating documentation for #{@spec.full_name}"
         ui.errs.puts "... MESSAGE:   #{ex}"
         ui.errs.puts "... RDOC args: #{args.join(' ')}"
-        ui.errs.puts "\t#{ex.backtrace.join "\n\t"}" if
-        Gem.configuration.backtrace
+        ui.backtrace ex
         ui.errs.puts "(continuing with the rest of the installation)"
       ensure
       end

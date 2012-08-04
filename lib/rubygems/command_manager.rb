@@ -129,17 +129,14 @@ class Gem::CommandManager
     process_args(args, build_args)
   rescue StandardError, Timeout::Error => ex
     alert_error "While executing gem ... (#{ex.class})\n    #{ex.to_s}"
-    ui.errs.puts "\t#{ex.backtrace.join "\n\t"}" if
-      Gem.configuration.backtrace
+    ui.backtrace ex
 
     if Gem.configuration.really_verbose and \
          ex.kind_of?(Gem::Exception) and ex.source_exception
       e = ex.source_exception
 
       ui.errs.puts "Because of: (#{e.class})\n    #{e.to_s}"
-      if Gem.configuration.backtrace
-        ui.errs.puts "\t#{e.backtrace.join "\n\t"}"
-      end
+      ui.backtrace e
     end
 
     terminate_interaction(1)
@@ -213,7 +210,7 @@ class Gem::CommandManager
       e = load_error if load_error
 
       alert_error "Loading command: #{command_name} (#{e.class})\n\t#{e}"
-      ui.errs.puts "\t#{e.backtrace.join "\n\t"}" if Gem.configuration.backtrace
+      ui.backtrace e
     end
   end
 

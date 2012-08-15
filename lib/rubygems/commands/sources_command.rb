@@ -68,11 +68,15 @@ class Gem::Commands::SourcesCommand < Gem::Command
       source = Gem::Source.new source_uri
 
       begin
-        source.load_specs :released
-        Gem.sources << source
-        Gem.configuration.write
+        if Gem.sources.include? source_uri then
+          say "source #{source_uri} already present in the cache"
+        else
+          source.load_specs :released
+          Gem.sources << source
+          Gem.configuration.write
 
-        say "#{source_uri} added to sources"
+          say "#{source_uri} added to sources"
+        end
       rescue URI::Error, ArgumentError
         say "#{source_uri} is not a URI"
         terminate_interaction 1

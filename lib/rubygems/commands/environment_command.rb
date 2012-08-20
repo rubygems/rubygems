@@ -53,6 +53,9 @@ If you are behind a proxy server, RubyGems uses the HTTP_PROXY,
 HTTP_PROXY_USER and HTTP_PROXY_PASS environment variables to discover the
 proxy server.
 
+If you would like to push gems to a private gem server the RUBYGEMS_HOST
+environment variable can be set to the URI for that server.
+
 If you are packaging RubyGems all of RubyGems' defaults are in
 lib/rubygems/defaults.rb.  You may override these in
 lib/rubygems/defaults/operating_system.rb

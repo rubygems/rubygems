@@ -427,9 +427,6 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
         options[:launch], options[:addresses]).run
   end
 
-  ##
-  # Only the first directory in gem_dirs is used for serving gems
-
   def initialize(gem_dirs, port, daemon, launch = nil, addresses = nil)
     Socket.do_not_reverse_lookup = true
 
@@ -441,15 +438,8 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     logger = WEBrick::Log.new nil, WEBrick::BasicLog::FATAL
     @server = WEBrick::HTTPServer.new :DoNotListen => true, :Logger => logger
 
-    @spec_dirs = @gem_dirs.map do |gem_dir|
-      spec_dir = File.join gem_dir, 'specifications'
-
-      unless File.directory? spec_dir then
-        raise ArgumentError, "#{gem_dir} does not appear to be a gem repository"
-      end
-
-      spec_dir
-    end
+    @spec_dirs = @gem_dirs.map { |gem_dir| File.join gem_dir, 'specifications' }
+    @spec_dirs.reject! { |spec_dir| !File.directory? spec_dir }
 
     Gem::Specification.dirs = @gem_dirs
   end
@@ -752,9 +742,11 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     @server.mount_proc "/rdoc", method(:rdoc)
 
     paths = { "/gems" => "/cache/", "/doc_root" => "/doc/" }
-    paths.each do |mount_point, mount_dir|
-      @server.mount(mount_point, WEBrick::HTTPServlet::FileHandler,
-                    File.join(@gem_dirs.first, mount_dir), true)
+    @gem_dirs.each do |gem_dir|
+      paths.each do |mount_point, mount_dir|
+        @server.mount(mount_point, WEBrick::HTTPServlet::FileHandler,
+                      File.join(gem_dir, mount_dir), true)
+      end
     end
 
     trap("INT") { @server.shutdown; exit! }

@@ -283,6 +283,20 @@ class TestGemIndexer < Gem::TestCase
                  prerelease_specs
   end
 
+  ##
+  # Emulate the starting state of Gem::Specification in a live environment,
+  # where it will carry the list of system gems
+  def with_system_gems
+    Gem::Specification.reset
+
+    sys_gem = quick_spec 'systemgem', '1.0'
+    util_build_gem sys_gem
+    Gem::Specification.add_spec sys_gem
+    yield
+    util_remove_gem sys_gem
+  end
+
+
   def test_update_index
     use_ui @ui do
       @indexer.generate_index
@@ -307,30 +321,32 @@ class TestGemIndexer < Gem::TestCase
     FileUtils.mv @d2_1.cache_file, gems
     FileUtils.mv @d2_1_a.cache_file, gems
 
-    use_ui @ui do
-      @indexer.update_index
+    with_system_gems do
+      use_ui @ui do
+        @indexer.update_index
+      end
+
+      assert_indexed marshal_quickdir, "#{File.basename(@d2_1.spec_file)}.rz"
+
+      specs_index = Marshal.load Gem.read_binary(@indexer.dest_specs_index)
+
+      assert_includes specs_index, @d2_1_tuple
+      refute_includes specs_index, @d2_1_a_tuple
+
+      latest_specs_index = Marshal.load \
+        Gem.read_binary(@indexer.dest_latest_specs_index)
+
+      assert_includes latest_specs_index, @d2_1_tuple
+      assert_includes latest_specs_index,
+                      [@d2_0.name, @d2_0.version, @d2_0.original_platform]
+      refute_includes latest_specs_index, @d2_1_a_tuple
+
+      pre_specs_index = Marshal.load \
+        Gem.read_binary(@indexer.dest_prerelease_specs_index)
+
+      assert_includes pre_specs_index, @d2_1_a_tuple
+      refute_includes pre_specs_index, @d2_1_tuple
     end
-
-    assert_indexed marshal_quickdir, "#{File.basename(@d2_1.spec_file)}.rz"
-
-    specs_index = Marshal.load Gem.read_binary(@indexer.dest_specs_index)
-
-    assert_includes specs_index, @d2_1_tuple
-    refute_includes specs_index, @d2_1_a_tuple
-
-    latest_specs_index = Marshal.load \
-      Gem.read_binary(@indexer.dest_latest_specs_index)
-
-    assert_includes latest_specs_index, @d2_1_tuple
-    assert_includes latest_specs_index,
-                    [@d2_0.name, @d2_0.version, @d2_0.original_platform]
-    refute_includes latest_specs_index, @d2_1_a_tuple
-
-    pre_specs_index = Marshal.load \
-      Gem.read_binary(@indexer.dest_prerelease_specs_index)
-
-    assert_includes pre_specs_index, @d2_1_a_tuple
-    refute_includes pre_specs_index, @d2_1_tuple
   end
 
   def assert_indexed(dir, name)

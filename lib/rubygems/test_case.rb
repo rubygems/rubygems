@@ -443,6 +443,11 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     end
   end
 
+  def util_remove_gem(spec)
+    FileUtils.rm_rf spec.cache_file
+    FileUtils.rm_rf spec.spec_file
+  end
+
   ##
   # Removes all installed gems from +@gemhome+.
 

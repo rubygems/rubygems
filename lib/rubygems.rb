@@ -142,6 +142,12 @@ module Gem
   @pre_reset_hooks      ||= []
   @post_reset_hooks     ||= []
 
+  def self.install gem
+    require 'rubygems/dependency_installer'
+    inst = Gem::DependencyInstaller.new
+    inst.install(gem).map { |gem| gem.name }
+  end
+
   ##
   # Try to activate a gem containing +path+. Returns true if
   # activation succeeded or wasn't needed because it was already

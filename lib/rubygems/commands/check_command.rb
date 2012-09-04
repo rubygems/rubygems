@@ -8,13 +8,7 @@ class Gem::Commands::CheckCommand < Gem::Command
 
   def initialize
     super 'check', 'Check installed gems',
-          :verify => false, :alien => false
-
-    add_option(      '--verify FILE',
-               'Verify gem file against its internal',
-               'checksum') do |value, options|
-      options[:verify] = value
-    end
+          :alien => false
 
     add_option('-a', '--alien', "Report 'unmanaged' or rogue files in the",
                "gem repository") do |value, options|
@@ -40,24 +34,6 @@ class Gem::Commands::CheckCommand < Gem::Command
           say "#{key} is error-free" if Gem.configuration.verbose
         end
         say
-      end
-    end
-
-    if options[:verify]
-      gem_name = options[:verify]
-      unless gem_name
-        alert_error "Must specify a .gem file with --verify NAME"
-        return
-      end
-      unless File.exist?(gem_name)
-        alert_error "Unknown file: #{gem_name}."
-        return
-      end
-      say "Verifying gem: '#{gem_name}'"
-      begin
-        Gem::Validator.new.verify_gem_file(gem_name)
-      rescue Exception
-        alert_error "#{gem_name} is invalid."
       end
     end
   end

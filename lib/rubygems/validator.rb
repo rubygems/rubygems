@@ -18,40 +18,6 @@ class Gem::Validator
     require 'find'
   end
 
-  ##
-  # Given a gem file's contents, validates against its own MD5 checksum
-  # gem_data:: [String] Contents of the gem file
-
-  def verify_gem(gem_data)
-    raise Gem::VerificationError, 'empty gem file' if gem_data.size == 0
-
-    # verified by Gem::Package for the latest gem format
-    return unless gem_data =~ /MD5SUM/
-
-    require 'digest'
-
-    sum_data = gem_data.gsub(/MD5SUM = "([a-z0-9]+)"/,
-                             "MD5SUM = \"#{"F" * 32}\"")
-
-    unless Digest::MD5.hexdigest(sum_data) == $1.to_s then
-      raise Gem::VerificationError, 'invalid checksum for gem file'
-    end
-  end
-
-  ##
-  # Given the path to a gem file, validates against its own MD5 checksum
-  #
-  # gem_path:: [String] Path to gem file
-
-  def verify_gem_file(gem_path)
-    open gem_path, Gem.binary_mode do |file|
-      gem_data = file.read
-      verify_gem gem_data
-    end
-  rescue Errno::ENOENT, Errno::EINVAL
-    raise Gem::VerificationError, "missing gem file #{gem_path}"
-  end
-
   private
 
   def find_files_for_gem(gem_directory)
@@ -113,8 +79,6 @@ class Gem::Validator
       end
 
       begin
-        verify_gem_file(gem_path)
-
         good, gone, unreadable = nil, nil, nil, nil
 
         open gem_path, Gem.binary_mode do |file|

@@ -9,6 +9,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     @data = 'abcde12345'
     @io = TempIO.new
     @tar_writer = Gem::Package::TarWriter.new @io
+
   end
 
   def teardown
@@ -189,7 +190,8 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     assert_equal 512, @io.pos
   end
 
-  def test_split_name
+  def test_split_name_for_legacy_format
+    Gem::Package::TarHeader.instance_variable_set(:"@default_tar_format", "v7")
     assert_equal ['b' * 100, 'a' * 155],
                  @tar_writer.split_name("#{'a' * 155}/#{'b' * 100}")
 
@@ -197,7 +199,8 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
                  @tar_writer.split_name("#{'a' * 151}/#{'qwer/' * 19}bla")
   end
 
-  def test_split_name_too_long_name
+  def test_split_name_too_long_name_for_legacy_format
+    Gem::Package::TarHeader.instance_variable_set(:"@default_tar_format", "v7")
     name = File.join 'a', 'b' * 100
     assert_equal ['b' * 100, 'a'], @tar_writer.split_name(name)
 
@@ -207,7 +210,8 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     end
   end
 
-  def test_split_name_too_long_prefix
+  def test_split_name_too_long_prefix_for_legacy_format
+    Gem::Package::TarHeader.instance_variable_set(:"@default_tar_format", "v7")
     name = File.join 'a' * 155, 'b'
     assert_equal ['b', 'a' * 155], @tar_writer.split_name(name)
 
@@ -217,10 +221,19 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     end
   end
 
-  def test_split_name_too_long_total
+  def test_split_name_too_long_total_for_legacy_format
+    Gem::Package::TarHeader.instance_variable_set(:"@default_tar_format", "v7")
     assert_raises Gem::Package::TooLongFileName do
       @tar_writer.split_name 'a' * 257
     end
+  end
+
+  def test_accept_long_total
+    Gem::Package::TarHeader.instance_variable_set(:"@default_tar_format", "gnu")
+    Gem::Package::TarHeader.instance_variable_set(:"@sizes_limited", nil)
+    assert_equal "gnu", Gem::Package::TarHeader.send(:default_tar_format)
+    assert !Gem::Package::TarHeader.sizes_limited?
+    assert_equal ['a' * 557, ""], @tar_writer.split_name('a' * 557)
   end
 
 end

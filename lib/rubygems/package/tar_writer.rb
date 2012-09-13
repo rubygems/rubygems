@@ -267,9 +267,9 @@ class Gem::Package::TarWriter
   # Splits +name+ into a name and prefix that can fit in the TarHeader
 
   def split_name(name) # :nodoc:
-    raise Gem::Package::TooLongFileName if name.bytesize > 256
+    raise Gem::Package::TooLongFileName if Gem::Package::TarHeader.sizes_limited? && name.bytesize > 256
 
-    if name.bytesize <= 100 then
+    if !Gem::Package::TarHeader.sizes_limited? || name.bytesize <= 100 then
       prefix = ""
     else
       parts = name.split(/\//)

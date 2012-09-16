@@ -211,15 +211,6 @@ module Gem
   end
 
   ##
-  # Return all the partial paths in +gemdir+.
-
-  def self.all_partials(gemdir)
-    Dir[File.join(gemdir, "gems/*")]
-  end
-
-  private_class_method :all_partials
-
-  ##
   # See if a given gem is available.
 
   def self.available?(dep, *requirements)
@@ -542,27 +533,6 @@ module Gem
     # TODO: move to utils
     @host = host
   end
-
-  ##
-  # Return only the latest partial paths in the given +gemdir+.
-
-  def self.latest_partials(gemdir)
-    latest = {}
-    all_partials(gemdir).each do |gp|
-      base = File.basename gp
-
-      if base.to_s =~ /(.*)-((\d+\.)*\d+)/ then
-        name, version = $1, $2
-        ver = Gem::Version.new(version)
-        if latest[name].nil? || ver > latest[name][0]
-          latest[name] = [ver, gp]
-        end
-      end
-    end
-    latest.collect { |k,v| v[1] }
-  end
-
-  private_class_method :latest_partials
 
   ##
   # The index to insert activated gem paths into the $LOAD_PATH.
@@ -1251,7 +1221,6 @@ require 'rubygems/custom_require'
 module Gem
   class << self
     extend Gem::Deprecate
-    deprecate :all_partials,          :none,                    2011, 10
     deprecate :promote_load_path,     :none,                    2011, 10
     deprecate :available?,       "Specification::find_by_name", 2011, 11
     deprecate :cache_dir,           "Specification#cache_dir",  2011, 11

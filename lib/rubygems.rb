@@ -1055,28 +1055,6 @@ module Kernel
 
 end
 
-##
-# Return the path to the data directory associated with the named package.  If
-# the package is loaded as a gem, return the gem specific data directory.
-# Otherwise return a path to the share area as define by
-# "#{ConfigMap[:datadir]}/#{package_name}".
-#
-# REFACTOR: This should be pulled out into some kind of compatiblity file
-# with all the hacks to other stuff.
-#
-# FIX: This has both a comment and nodoc. Which is right?
-
-def RbConfig.datadir(package_name) # :nodoc:
-  warn "#{Gem.location_of_caller.join ':'}:Warning: " \
-    "RbConfig.datadir is deprecated and will be removed on or after " \
-    "August 2011.  " \
-    "Use Gem::datadir."
-
-  require 'rbconfig/datadir'
-
-  Gem.datadir(package_name) || File.join(Gem::ConfigMap[:datadir], package_name)
-end
-
 require 'rubygems/exceptions'
 
 # REFACTOR: This should be pulled out into some kind of hacks file.

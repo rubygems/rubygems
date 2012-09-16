@@ -94,17 +94,6 @@ module Gem
   end
 
   ##
-  # The default user-specific source info cache directory
-
-  def self.default_user_source_cache_dir
-    #
-    # NOTE Probably an argument for moving this to per-ruby supported dirs like
-    # user_dir
-    #
-    File.join(Gem.user_home, '.gem', 'source_cache')
-  end
-
-  ##
   # A wrapper around RUBY_ENGINE const that may not be defined
 
   def self.ruby_engine

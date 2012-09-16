@@ -2116,11 +2116,6 @@ class Gem::Specification
     end
   end
 
-  def test_suite_file # :nodoc:
-    # TODO: deprecate
-    test_files.first
-  end
-
   def test_suite_file= file # :nodoc:
     # TODO: deprecate
     @test_files = [] unless defined? @test_files
@@ -2480,7 +2475,6 @@ class Gem::Specification
 
   extend Gem::Deprecate
 
-  deprecate :test_suite_file,     :test_file,  2011, 10
   deprecate :test_suite_file=,    :test_file=, 2011, 10
   deprecate :loaded,              :activated,  2011, 10
   deprecate :loaded?,             :activated?, 2011, 10

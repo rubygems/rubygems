@@ -211,22 +211,6 @@ module Gem
   end
 
   ##
-  # An Array of all possible load paths for all versions of all gems in the
-  # Gem installation.
-
-  def self.all_load_paths
-    result = []
-
-    Gem.path.each do |gemdir|
-      each_load_path all_partials(gemdir) do |load_path|
-        result << gemdir.add(load_path).expand_path
-      end
-    end
-
-    result
-  end
-
-  ##
   # Return all the partial paths in +gemdir+.
 
   def self.all_partials(gemdir)
@@ -1283,7 +1267,6 @@ require 'rubygems/custom_require'
 module Gem
   class << self
     extend Gem::Deprecate
-    deprecate :all_load_paths,        :none,                    2011, 10
     deprecate :all_partials,          :none,                    2011, 10
     deprecate :latest_load_paths,     :none,                    2011, 10
     deprecate :promote_load_path,     :none,                    2011, 10

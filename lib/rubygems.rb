@@ -165,12 +165,6 @@ module Gem
     return true
   end
 
-  # DOC: This needs to be documented or nodoc'd.
-
-  def self.unresolved_deps
-    Gem::Specification.unresolved_deps
-  end
-
   def self.needs
     rs = Gem::RequestSet.new
 
@@ -1111,11 +1105,3 @@ end
 # Enables the require hook for RubyGems.
 
 require 'rubygems/custom_require'
-
-# REFACTOR: This should be pulled out into some kind of file.
-module Gem
-  class << self
-    extend Gem::Deprecate
-    deprecate :unresolved_deps, "Specification.unresolved_deps", 2011, 12
-  end
-end

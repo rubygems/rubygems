@@ -604,16 +604,6 @@ module Gem
   end
 
   ##
-  # Given a gem path, find the gem in cache.
-  #
-  # Pass a string as the second argument to use a different base path, or
-  # nil/false (default) for Gem.dir.
-
-  def self.cache_gem(filename, user_dir=false)
-    cache_dir(user_dir).add(filename)
-  end
-
-  ##
   # Set array of platforms this RubyGems supports (primarily for testing).
 
   def self.platforms=(platforms)
@@ -1170,7 +1160,6 @@ require 'rubygems/custom_require'
 module Gem
   class << self
     extend Gem::Deprecate
-    deprecate :cache_gem,           "Specification#cache_file", 2011, 11
     deprecate :default_system_source_cache_dir, :none,          2011, 11
     deprecate :default_user_source_cache_dir,   :none,          2011, 11
     deprecate :report_activate_error, :none,                    2011, 11

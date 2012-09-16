@@ -2116,12 +2116,6 @@ class Gem::Specification
     end
   end
 
-  def test_suite_file= file # :nodoc:
-    # TODO: deprecate
-    @test_files = [] unless defined? @test_files
-    @test_files << file
-  end
-
   ##
   # Returns a Ruby code representation of this specification, such that it can
   # be eval'ed and reconstruct the same specification later.  Attributes that
@@ -2475,7 +2469,6 @@ class Gem::Specification
 
   extend Gem::Deprecate
 
-  deprecate :test_suite_file=,    :test_file=, 2011, 10
   deprecate :loaded,              :activated,  2011, 10
   deprecate :loaded?,             :activated?, 2011, 10
   deprecate :loaded=,             :activated=, 2011, 10

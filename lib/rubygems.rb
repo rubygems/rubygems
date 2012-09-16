@@ -188,10 +188,6 @@ module Gem
     Gem::Specification.find_by_name(dep, *requirements).activate
   end
 
-  def self.activate_dep dep, *requirements # :nodoc:
-    dep.to_spec.activate
-  end
-
   def self.activate_spec spec # :nodoc:
     spec.activate
   end
@@ -1314,7 +1310,6 @@ require 'rubygems/custom_require'
 module Gem
   class << self
     extend Gem::Deprecate
-    deprecate :activate_dep,          "Specification#activate", 2011,  6
     deprecate :activate_spec,         "Specification#activate", 2011,  6
     deprecate :activate,              "Specification#activate", 2011, 10
     deprecate :all_load_paths,        :none,                    2011, 10

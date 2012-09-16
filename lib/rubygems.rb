@@ -1160,7 +1160,6 @@ require 'rubygems/custom_require'
 module Gem
   class << self
     extend Gem::Deprecate
-    deprecate :default_system_source_cache_dir, :none,          2011, 11
     deprecate :default_user_source_cache_dir,   :none,          2011, 11
     deprecate :report_activate_error, :none,                    2011, 11
     deprecate :required_location,     :none,                    2011, 11

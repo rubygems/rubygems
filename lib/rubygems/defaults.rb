@@ -94,13 +94,6 @@ module Gem
   end
 
   ##
-  # The default system-wide source info cache directory
-
-  def self.default_system_source_cache_dir
-    File.join(Gem.dir, 'source_cache')
-  end
-
-  ##
   # The default user-specific source info cache directory
 
   def self.default_user_source_cache_dir

@@ -16,8 +16,6 @@ require "rubygems/deprecate"
 Gem.load_yaml if defined? ::YAML
 
 class Gem::Requirement
-  include Comparable
-
   OPS = { #:nodoc:
     "="  =>  lambda { |v, r| v == r },
     "!=" =>  lambda { |v, r| v != r },
@@ -215,22 +213,9 @@ class Gem::Requirement
     as_list.join ", "
   end
 
-  def <=> other # :nodoc:
-    return unless Gem::Requirement === other
-
-    # TODO: remove this method: comparing requirements doesn't even make sense
-    to_s <=> other.to_s
-  end
-
   # DOC: this should probably be :nodoc'd
   def == other
     Gem::Requirement === other and to_s == other.to_s
-  end
-
-  extend Gem::Deprecate
-
-  %w(<=> < > <= >=).each do |name|
-    deprecate name, :none, 2011, 12
   end
 
   private

@@ -722,26 +722,6 @@ module Gem
   end
 
   ##
-  # Full path to +libfile+ in +gemname+.  Searches for the latest gem unless
-  # +requirements+ is given.
-
-  def self.required_location(gemname, libfile, *requirements)
-    requirements = Gem::Requirement.default if requirements.empty?
-
-    matches = Gem::Specification.find_all_by_name gemname, *requirements
-
-    return nil if matches.empty?
-
-    spec = matches.last
-    spec.require_paths.each do |path|
-      result = Gem::Path.path(spec.full_gem_path).add(path, libfile)
-      return result if result.exist?
-    end
-
-    nil
-  end
-
-  ##
   # The path to the running Ruby interpreter.
 
   def self.ruby
@@ -1136,7 +1116,6 @@ require 'rubygems/custom_require'
 module Gem
   class << self
     extend Gem::Deprecate
-    deprecate :required_location,     :none,                    2011, 11
     deprecate :unresolved_deps, "Specification.unresolved_deps", 2011, 12
   end
 end

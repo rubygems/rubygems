@@ -604,17 +604,6 @@ module Gem
   end
 
   ##
-  # Get the appropriate cache path.
-  #
-  # Pass a string to use a different base path, or nil/false (default) for
-  # Gem.dir.
-  #
-
-  def self.cache_dir(custom_dir=false)
-    File.join(custom_dir || Gem.dir, "cache")
-  end
-
-  ##
   # Given a gem path, find the gem in cache.
   #
   # Pass a string as the second argument to use a different base path, or
@@ -1181,7 +1170,6 @@ require 'rubygems/custom_require'
 module Gem
   class << self
     extend Gem::Deprecate
-    deprecate :cache_dir,           "Specification#cache_dir",  2011, 11
     deprecate :cache_gem,           "Specification#cache_file", 2011, 11
     deprecate :default_system_source_cache_dir, :none,          2011, 11
     deprecate :default_user_source_cache_dir,   :none,          2011, 11

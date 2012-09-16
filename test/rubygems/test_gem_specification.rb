@@ -587,10 +587,6 @@ dependencies: []
     @a2.activate
 
     assert @a2.activated?
-
-    Gem::Deprecate.skip_during do
-      assert @a2.loaded?
-    end
   end
 
   def test_add_dependency_with_explicit_type

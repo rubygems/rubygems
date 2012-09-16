@@ -580,13 +580,6 @@ class Gem::Specification
   attr_writer :default_executable
 
   ##
-  # True when this gemspec has been activated. This attribute is not persisted.
-
-  attr_accessor :loaded # :nodoc:
-
-  alias :loaded? :loaded # :nodoc:
-
-  ##
   # Path this gemspec was loaded from.  This attribute is not persisted.
 
   attr_reader :loaded_from
@@ -2469,9 +2462,6 @@ class Gem::Specification
 
   extend Gem::Deprecate
 
-  deprecate :loaded,              :activated,  2011, 10
-  deprecate :loaded?,             :activated?, 2011, 10
-  deprecate :loaded=,             :activated=, 2011, 10
   deprecate :installation_path,   :base_dir,   2011, 10
   deprecate :cache_gem,           :cache_file, 2011, 10
   # TODO:

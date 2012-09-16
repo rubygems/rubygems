@@ -878,15 +878,12 @@ dependencies: []
     refute_equal @a1.hash, @a2.hash
   end
 
-  def test_installation_path
-    Gem::Deprecate.skip_during do
-      assert_equal @gemhome, @a1.installation_path
+  def test_base_dir
+    assert_equal @gemhome, @a1.base_dir
 
-      @a1.instance_variable_set :@loaded_from, nil
-      @a1.instance_variable_set :@loaded, false
+    @a1.instance_variable_set :@loaded_from, nil
 
-      assert_nil @a1.installation_path
-    end
+    assert_equal Gem.dir, @a1.base_dir
   end
 
   def test_lib_files

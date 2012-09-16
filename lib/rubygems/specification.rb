@@ -1725,14 +1725,6 @@ class Gem::Specification
 
   private :invalidate_memoized_attributes
 
-  ##
-  # The directory that this gem was installed into.
-  # TODO: rename - horrible. this is the base_dir for a gem path
-
-  def installation_path
-    loaded_from && base_dir
-  end
-
   def inspect
     if $DEBUG
       super
@@ -2462,7 +2454,6 @@ class Gem::Specification
 
   extend Gem::Deprecate
 
-  deprecate :installation_path,   :base_dir,   2011, 10
   deprecate :cache_gem,           :cache_file, 2011, 10
   # TODO:
   # deprecate :has_rdoc,            :none,       2011, 10

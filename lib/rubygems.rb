@@ -742,33 +742,6 @@ module Gem
   end
 
   ##
-  # Promotes the load paths of the +gem_name+ over the load paths of
-  # +over_name+.  Useful for allowing one gem to override features in another
-  # using #find_files.
-
-  def self.promote_load_path(gem_name, over_name)
-    gem = Gem.loaded_specs[gem_name]
-    over = Gem.loaded_specs[over_name]
-
-    raise ArgumentError, "gem #{gem_name} is not activated" if gem.nil?
-    raise ArgumentError, "gem #{over_name} is not activated" if over.nil?
-
-    last_gem_path = Gem::Path.path(gem.full_gem_path).add(gem.require_paths.last)
-
-    over_paths = over.require_paths.map do |path|
-      Gem::Path.path(over.full_gem_path).add(path).to_s
-    end
-
-    over_paths.each do |path|
-      $LOAD_PATH.delete path
-    end
-
-    gem = $LOAD_PATH.index(last_gem_path) + 1
-
-    $LOAD_PATH.insert(gem, *over_paths)
-  end
-
-  ##
   # Refresh available gems from disk.
 
   def self.refresh
@@ -1221,7 +1194,6 @@ require 'rubygems/custom_require'
 module Gem
   class << self
     extend Gem::Deprecate
-    deprecate :promote_load_path,     :none,                    2011, 10
     deprecate :available?,       "Specification::find_by_name", 2011, 11
     deprecate :cache_dir,           "Specification#cache_dir",  2011, 11
     deprecate :cache_gem,           "Specification#cache_file", 2011, 11

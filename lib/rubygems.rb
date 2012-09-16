@@ -722,30 +722,6 @@ module Gem
   end
 
   ##
-  # Report a load error during activation.  The message of load error
-  # depends on whether it was a version mismatch or if there are not gems of
-  # any version by the requested name.
-
-  def self.report_activate_error(gem)
-    matches = Gem::Specification.find_by_name(gem.name)
-
-    if matches.empty? then
-      error = Gem::LoadError.new(
-          "Could not find RubyGem #{gem.name} (#{gem.requirement})\n")
-    else
-      error = Gem::LoadError.new(
-          "RubyGem version error: " +
-          "#{gem.name}(#{matches.first.version} not #{gem.requirement})\n")
-    end
-
-    error.name = gem.name
-    error.requirement = gem.requirement
-    raise error
-  end
-
-  private_class_method :report_activate_error
-
-  ##
   # Full path to +libfile+ in +gemname+.  Searches for the latest gem unless
   # +requirements+ is given.
 
@@ -1160,7 +1136,6 @@ require 'rubygems/custom_require'
 module Gem
   class << self
     extend Gem::Deprecate
-    deprecate :report_activate_error, :none,                    2011, 11
     deprecate :required_location,     :none,                    2011, 11
     deprecate :unresolved_deps, "Specification.unresolved_deps", 2011, 12
   end

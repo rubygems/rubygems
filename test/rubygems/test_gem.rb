@@ -1254,19 +1254,6 @@ class TestGem < Gem::TestCase
     assert_equal :loaded, TEST_PLUGIN_EXCEPTION rescue nil
   end
 
-  def test_latest_load_paths
-    spec = quick_spec 'a', '4' do |s|
-      s.require_paths = ["lib"]
-    end
-
-    install_gem spec
-
-    Gem::Deprecate.skip_during do
-      expected = [File.join(@gemhome, "gems", "a-4", "lib")]
-      assert_equal expected, Gem.latest_load_paths
-    end
-  end
-
   def test_gem_path_ordering
     refute_equal Gem.dir, Gem.user_dir
 

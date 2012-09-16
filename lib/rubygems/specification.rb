@@ -1294,8 +1294,6 @@ class Gem::Specification
     @cache_file ||= File.join cache_dir, "#{full_name}.gem"
   end
 
-  alias :cache_gem :cache_file
-
   ##
   # Return any possible conflicts against the currently loaded specs.
 
@@ -2454,7 +2452,6 @@ class Gem::Specification
 
   extend Gem::Deprecate
 
-  deprecate :cache_gem,           :cache_file, 2011, 10
   # TODO:
   # deprecate :has_rdoc,            :none,       2011, 10
   # deprecate :has_rdoc?,           :none,       2011, 10

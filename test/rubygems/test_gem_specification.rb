@@ -1838,6 +1838,16 @@ end
     assert_equal @m1.to_ruby, valid_ruby_spec
   end
 
+  def test_find_by_name
+    util_make_gems
+    assert(Gem::Specification.find_by_name("a"))
+    assert(Gem::Specification.find_by_name("a", "1"))
+    assert(Gem::Specification.find_by_name("a", ">1"))
+    assert_raises(Gem::LoadError) do
+      Gem::Specification.find_by_name("monkeys")
+    end
+  end
+
   def util_setup_deps
     @gem = quick_spec "awesome", "1.0" do |awesome|
       awesome.add_runtime_dependency "bonobo", []

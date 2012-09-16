@@ -211,19 +211,6 @@ module Gem
   end
 
   ##
-  # See if a given gem is available.
-
-  def self.available?(dep, *requirements)
-    requirements = Gem::Requirement.default if requirements.empty?
-
-    unless dep.respond_to?(:name) and dep.respond_to?(:requirement) then
-      dep = Gem::Dependency.new dep, requirements
-    end
-
-    not dep.matching_specs(true).empty?
-  end
-
-  ##
   # Find the full path to the executable for gem +name+.  If the +exec_name+
   # is not given, the gem's default_executable is chosen, otherwise the
   # specified executable's path is returned.  +requirements+ allows
@@ -1194,7 +1181,6 @@ require 'rubygems/custom_require'
 module Gem
   class << self
     extend Gem::Deprecate
-    deprecate :available?,       "Specification::find_by_name", 2011, 11
     deprecate :cache_dir,           "Specification#cache_dir",  2011, 11
     deprecate :cache_gem,           "Specification#cache_file", 2011, 11
     deprecate :default_system_source_cache_dir, :none,          2011, 11

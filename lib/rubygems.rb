@@ -165,29 +165,6 @@ module Gem
     return true
   end
 
-  ##
-  # Activates an installed gem matching +dep+.  The gem must satisfy
-  # +requirements+.
-  #
-  # Returns true if the gem is activated, false if it is already
-  # loaded, or an exception otherwise.
-  #
-  # Gem#activate adds the library paths in +dep+ to $LOAD_PATH.  Before a Gem
-  # is activated its required Gems are activated.  If the version information
-  # is omitted, the highest version Gem of the supplied name is loaded.  If a
-  # Gem is not found that meets the version requirements or a required Gem is
-  # not found, a Gem::LoadError is raised.
-  #
-  # More information on version requirements can be found in the
-  # Gem::Requirement and Gem::Version documentation.
-
-  def self.activate(dep, *requirements)
-    raise ArgumentError, "Deprecated use of Gem.activate(dep)" if
-      Gem::Dependency === dep
-
-    Gem::Specification.find_by_name(dep, *requirements).activate
-  end
-
   # DOC: This needs to be documented or nodoc'd.
 
   def self.unresolved_deps
@@ -1306,7 +1283,6 @@ require 'rubygems/custom_require'
 module Gem
   class << self
     extend Gem::Deprecate
-    deprecate :activate,              "Specification#activate", 2011, 10
     deprecate :all_load_paths,        :none,                    2011, 10
     deprecate :all_partials,          :none,                    2011, 10
     deprecate :latest_load_paths,     :none,                    2011, 10

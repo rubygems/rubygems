@@ -900,9 +900,17 @@ class Gem::Specification
     code.untaint
 
     begin
-      spec = eval code, binding, file
+      if File.exist? "#{file}.cache"
+        spec = Marshal.load File.read "#{file}.cache"
+      else
+        spec = eval code, binding, file
+        needs_cache_write = true
+      end
 
       if Gem::Specification === spec
+        if needs_cache_write
+          File.open("#{file}.cache", "wb") { |f| f.write Marshal.dump spec } rescue nil
+        end
         spec.loaded_from = file.to_s
         return spec
       end

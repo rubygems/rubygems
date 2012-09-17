@@ -901,7 +901,7 @@ class Gem::Specification
 
     begin
       if File.exist? "#{file}.cache"
-        spec = Marshal.load File.read "#{file}.cache"
+        spec = Marshal.load Gem.read_binary "#{file}.cache"
       else
         spec = eval code, binding, file
         needs_cache_write = true

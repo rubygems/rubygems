@@ -281,16 +281,6 @@ class TestGemRequirement < Gem::TestCase
     refute_satisfied_by "2.0",   "~> 1.4.4"
   end
 
-  def test_spaceship
-    Gem::Deprecate.skip_during do
-      assert_equal(-1, req("= 0") <=> req("= 1"))
-      assert_equal  0, req("= 0") <=> req("= 0")
-      assert_equal  1, req("= 1") <=> req("= 0")
-
-      assert_nil req("= 1") <=> v("42")
-    end
-  end
-
   def test_specific
     refute req('> 1') .specific?
     refute req('>= 1').specific?

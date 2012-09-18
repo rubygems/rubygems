@@ -189,6 +189,13 @@ class Gem::Package::TarHeader
     @checksum = oct calculate_checksum(header), 6
   end
 
+  ##
+  # Returns true if the local default tar format has no file/path name length or size limits
+
+  def self.sizes_limited?
+    @sizes_limited ||= !%w(gnu posix oldgnu).include?(default_tar_format)
+  end
+
   private
 
   def calculate_checksum(header)
@@ -223,6 +230,10 @@ class Gem::Package::TarHeader
 
   def oct(num, len)
     "%0#{len}o" % num
+  end
+
+  def self.default_tar_format
+    @default_tar_format ||= `tar --show-defaults`[/--format=(\w*)/,1]
   end
 
 end

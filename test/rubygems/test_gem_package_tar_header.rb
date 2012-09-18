@@ -126,5 +126,15 @@ group\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000
     assert_equal '012467', @tar_header.checksum
   end
 
+  def test_sizes_limited
+    Gem::Package::TarHeader.instance_variable_set(:"@default_tar_format", "gnu")
+    assert_equal "gnu", Gem::Package::TarHeader.send(:default_tar_format)
+    assert !Gem::Package::TarHeader.sizes_limited?
+
+    Gem::Package::TarHeader.instance_variable_set(:"@default_tar_format", "v7")
+    assert_equal "v7", Gem::Package::TarHeader.send(:default_tar_format)
+    assert Gem::Package::TarHeader.sizes_limited?
+  end
+
 end
 

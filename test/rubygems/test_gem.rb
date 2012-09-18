@@ -535,16 +535,6 @@ class TestGem < Gem::TestCase
     assert_activate %w[d-1 e-1], e1, "d"
   end
 
-  def test_self_available?
-    util_make_gems
-    Gem::Deprecate.skip_during do
-      assert(Gem.available?("a"))
-      assert(Gem.available?("a", "1"))
-      assert(Gem.available?("a", ">1"))
-      assert(!Gem.available?("monkeys"))
-    end
-  end
-
   def test_self_bin_path_no_exec_name
     e = assert_raises ArgumentError do
       Gem.bin_path 'a'
@@ -1252,19 +1242,6 @@ class TestGem < Gem::TestCase
     # Should attempt to cause an Exception
     with_plugin('exception') { Gem.load_env_plugins }
     assert_equal :loaded, TEST_PLUGIN_EXCEPTION rescue nil
-  end
-
-  def test_latest_load_paths
-    spec = quick_spec 'a', '4' do |s|
-      s.require_paths = ["lib"]
-    end
-
-    install_gem spec
-
-    Gem::Deprecate.skip_during do
-      expected = [File.join(@gemhome, "gems", "a-4", "lib")]
-      assert_equal expected, Gem.latest_load_paths
-    end
   end
 
   def test_gem_path_ordering

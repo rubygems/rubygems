@@ -109,10 +109,6 @@ class Gem::Platform
     to_a.compact.join '-'
   end
 
-  def empty?
-    to_s.empty?
-  end
-
   ##
   # Is +other+ equal to this platform?  Two platforms are equal if they have
   # the same CPU, OS and version.
@@ -186,9 +182,5 @@ class Gem::Platform
   # This will be replaced with Gem::Platform::local.
 
   CURRENT = 'current'
-
-  extend Gem::Deprecate
-
-  deprecate :empty?, :none, 2011, 11
 end
 

@@ -587,10 +587,6 @@ dependencies: []
     @a2.activate
 
     assert @a2.activated?
-
-    Gem::Deprecate.skip_during do
-      assert @a2.loaded?
-    end
   end
 
   def test_add_dependency_with_explicit_type
@@ -882,15 +878,12 @@ dependencies: []
     refute_equal @a1.hash, @a2.hash
   end
 
-  def test_installation_path
-    Gem::Deprecate.skip_during do
-      assert_equal @gemhome, @a1.installation_path
+  def test_base_dir
+    assert_equal @gemhome, @a1.base_dir
 
-      @a1.instance_variable_set :@loaded_from, nil
-      @a1.instance_variable_set :@loaded, false
+    @a1.instance_variable_set :@loaded_from, nil
 
-      assert_nil @a1.installation_path
-    end
+    assert_equal Gem.dir, @a1.base_dir
   end
 
   def test_lib_files
@@ -1836,6 +1829,16 @@ end
     end
 
     assert_equal @m1.to_ruby, valid_ruby_spec
+  end
+
+  def test_find_by_name
+    util_make_gems
+    assert(Gem::Specification.find_by_name("a"))
+    assert(Gem::Specification.find_by_name("a", "1"))
+    assert(Gem::Specification.find_by_name("a", ">1"))
+    assert_raises(Gem::LoadError) do
+      Gem::Specification.find_by_name("monkeys")
+    end
   end
 
   def util_setup_deps

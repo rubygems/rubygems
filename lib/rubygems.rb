@@ -165,43 +165,6 @@ module Gem
     return true
   end
 
-  ##
-  # Activates an installed gem matching +dep+.  The gem must satisfy
-  # +requirements+.
-  #
-  # Returns true if the gem is activated, false if it is already
-  # loaded, or an exception otherwise.
-  #
-  # Gem#activate adds the library paths in +dep+ to $LOAD_PATH.  Before a Gem
-  # is activated its required Gems are activated.  If the version information
-  # is omitted, the highest version Gem of the supplied name is loaded.  If a
-  # Gem is not found that meets the version requirements or a required Gem is
-  # not found, a Gem::LoadError is raised.
-  #
-  # More information on version requirements can be found in the
-  # Gem::Requirement and Gem::Version documentation.
-
-  def self.activate(dep, *requirements)
-    raise ArgumentError, "Deprecated use of Gem.activate(dep)" if
-      Gem::Dependency === dep
-
-    Gem::Specification.find_by_name(dep, *requirements).activate
-  end
-
-  def self.activate_dep dep, *requirements # :nodoc:
-    dep.to_spec.activate
-  end
-
-  def self.activate_spec spec # :nodoc:
-    spec.activate
-  end
-
-  # DOC: This needs to be documented or nodoc'd.
-
-  def self.unresolved_deps
-    Gem::Specification.unresolved_deps
-  end
-
   def self.needs
     rs = Gem::RequestSet.new
 
@@ -239,44 +202,6 @@ module Gem
         sp
       end
     end
-  end
-
-  ##
-  # An Array of all possible load paths for all versions of all gems in the
-  # Gem installation.
-
-  def self.all_load_paths
-    result = []
-
-    Gem.path.each do |gemdir|
-      each_load_path all_partials(gemdir) do |load_path|
-        result << gemdir.add(load_path).expand_path
-      end
-    end
-
-    result
-  end
-
-  ##
-  # Return all the partial paths in +gemdir+.
-
-  def self.all_partials(gemdir)
-    Dir[File.join(gemdir, "gems/*")]
-  end
-
-  private_class_method :all_partials
-
-  ##
-  # See if a given gem is available.
-
-  def self.available?(dep, *requirements)
-    requirements = Gem::Requirement.default if requirements.empty?
-
-    unless dep.respond_to?(:name) and dep.respond_to?(:requirement) then
-      dep = Gem::Dependency.new dep, requirements
-    end
-
-    not dep.matching_specs(true).empty?
   end
 
   ##
@@ -591,43 +516,6 @@ module Gem
   end
 
   ##
-  # Return a list of all possible load paths for the latest version for all
-  # gems in the Gem installation.
-
-  def self.latest_load_paths
-    result = []
-
-    Gem.path.each do |gemdir|
-      each_load_path(latest_partials(gemdir)) do |load_path|
-        result << load_path
-      end
-    end
-
-    result
-  end
-
-  ##
-  # Return only the latest partial paths in the given +gemdir+.
-
-  def self.latest_partials(gemdir)
-    latest = {}
-    all_partials(gemdir).each do |gp|
-      base = File.basename gp
-
-      if base.to_s =~ /(.*)-((\d+\.)*\d+)/ then
-        name, version = $1, $2
-        ver = Gem::Version.new(version)
-        if latest[name].nil? || ver > latest[name][0]
-          latest[name] = [ver, gp]
-        end
-      end
-    end
-    latest.collect { |k,v| v[1] }
-  end
-
-  private_class_method :latest_partials
-
-  ##
   # The index to insert activated gem paths into the $LOAD_PATH.
   #
   # Defaults to the site lib directory unless gem_prelude.rb has loaded paths,
@@ -707,27 +595,6 @@ module Gem
 
   def self.marshal_version
     "#{Marshal::MAJOR_VERSION}.#{Marshal::MINOR_VERSION}"
-  end
-
-  ##
-  # Get the appropriate cache path.
-  #
-  # Pass a string to use a different base path, or nil/false (default) for
-  # Gem.dir.
-  #
-
-  def self.cache_dir(custom_dir=false)
-    File.join(custom_dir || Gem.dir, "cache")
-  end
-
-  ##
-  # Given a gem path, find the gem in cache.
-  #
-  # Pass a string as the second argument to use a different base path, or
-  # nil/false (default) for Gem.dir.
-
-  def self.cache_gem(filename, user_dir=false)
-    cache_dir(user_dir).add(filename)
   end
 
   ##
@@ -835,33 +702,6 @@ module Gem
   end
 
   ##
-  # Promotes the load paths of the +gem_name+ over the load paths of
-  # +over_name+.  Useful for allowing one gem to override features in another
-  # using #find_files.
-
-  def self.promote_load_path(gem_name, over_name)
-    gem = Gem.loaded_specs[gem_name]
-    over = Gem.loaded_specs[over_name]
-
-    raise ArgumentError, "gem #{gem_name} is not activated" if gem.nil?
-    raise ArgumentError, "gem #{over_name} is not activated" if over.nil?
-
-    last_gem_path = Gem::Path.path(gem.full_gem_path).add(gem.require_paths.last)
-
-    over_paths = over.require_paths.map do |path|
-      Gem::Path.path(over.full_gem_path).add(path).to_s
-    end
-
-    over_paths.each do |path|
-      $LOAD_PATH.delete path
-    end
-
-    gem = $LOAD_PATH.index(last_gem_path) + 1
-
-    $LOAD_PATH.insert(gem, *over_paths)
-  end
-
-  ##
   # Refresh available gems from disk.
 
   def self.refresh
@@ -873,50 +713,6 @@ module Gem
 
   def self.read_binary(path)
     File.open path, binary_mode do |f| f.read end
-  end
-
-  ##
-  # Report a load error during activation.  The message of load error
-  # depends on whether it was a version mismatch or if there are not gems of
-  # any version by the requested name.
-
-  def self.report_activate_error(gem)
-    matches = Gem::Specification.find_by_name(gem.name)
-
-    if matches.empty? then
-      error = Gem::LoadError.new(
-          "Could not find RubyGem #{gem.name} (#{gem.requirement})\n")
-    else
-      error = Gem::LoadError.new(
-          "RubyGem version error: " +
-          "#{gem.name}(#{matches.first.version} not #{gem.requirement})\n")
-    end
-
-    error.name = gem.name
-    error.requirement = gem.requirement
-    raise error
-  end
-
-  private_class_method :report_activate_error
-
-  ##
-  # Full path to +libfile+ in +gemname+.  Searches for the latest gem unless
-  # +requirements+ is given.
-
-  def self.required_location(gemname, libfile, *requirements)
-    requirements = Gem::Requirement.default if requirements.empty?
-
-    matches = Gem::Specification.find_all_by_name gemname, *requirements
-
-    return nil if matches.empty?
-
-    spec = matches.last
-    spec.require_paths.each do |path|
-      result = Gem::Path.path(spec.full_gem_path).add(path, libfile)
-      return result if result.exist?
-    end
-
-    nil
   end
 
   ##
@@ -1259,28 +1055,6 @@ module Kernel
 
 end
 
-##
-# Return the path to the data directory associated with the named package.  If
-# the package is loaded as a gem, return the gem specific data directory.
-# Otherwise return a path to the share area as define by
-# "#{ConfigMap[:datadir]}/#{package_name}".
-#
-# REFACTOR: This should be pulled out into some kind of compatiblity file
-# with all the hacks to other stuff.
-#
-# FIX: This has both a comment and nodoc. Which is right?
-
-def RbConfig.datadir(package_name) # :nodoc:
-  warn "#{Gem.location_of_caller.join ':'}:Warning: " \
-    "RbConfig.datadir is deprecated and will be removed on or after " \
-    "August 2011.  " \
-    "Use Gem::datadir."
-
-  require 'rbconfig/datadir'
-
-  Gem.datadir(package_name) || File.join(Gem::ConfigMap[:datadir], package_name)
-end
-
 require 'rubygems/exceptions'
 
 # REFACTOR: This should be pulled out into some kind of hacks file.
@@ -1309,25 +1083,3 @@ end
 # Enables the require hook for RubyGems.
 
 require 'rubygems/custom_require'
-
-# REFACTOR: This should be pulled out into some kind of file.
-module Gem
-  class << self
-    extend Gem::Deprecate
-    deprecate :activate_dep,          "Specification#activate", 2011,  6
-    deprecate :activate_spec,         "Specification#activate", 2011,  6
-    deprecate :activate,              "Specification#activate", 2011, 10
-    deprecate :all_load_paths,        :none,                    2011, 10
-    deprecate :all_partials,          :none,                    2011, 10
-    deprecate :latest_load_paths,     :none,                    2011, 10
-    deprecate :promote_load_path,     :none,                    2011, 10
-    deprecate :available?,       "Specification::find_by_name", 2011, 11
-    deprecate :cache_dir,           "Specification#cache_dir",  2011, 11
-    deprecate :cache_gem,           "Specification#cache_file", 2011, 11
-    deprecate :default_system_source_cache_dir, :none,          2011, 11
-    deprecate :default_user_source_cache_dir,   :none,          2011, 11
-    deprecate :report_activate_error, :none,                    2011, 11
-    deprecate :required_location,     :none,                    2011, 11
-    deprecate :unresolved_deps, "Specification.unresolved_deps", 2011, 12
-  end
-end

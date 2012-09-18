@@ -580,13 +580,6 @@ class Gem::Specification
   attr_writer :default_executable
 
   ##
-  # True when this gemspec has been activated. This attribute is not persisted.
-
-  attr_accessor :loaded # :nodoc:
-
-  alias :loaded? :loaded # :nodoc:
-
-  ##
   # Path this gemspec was loaded from.  This attribute is not persisted.
 
   attr_reader :loaded_from
@@ -1301,8 +1294,6 @@ class Gem::Specification
     @cache_file ||= File.join cache_dir, "#{full_name}.gem"
   end
 
-  alias :cache_gem :cache_file
-
   ##
   # Return any possible conflicts against the currently loaded specs.
 
@@ -1732,14 +1723,6 @@ class Gem::Specification
 
   private :invalidate_memoized_attributes
 
-  ##
-  # The directory that this gem was installed into.
-  # TODO: rename - horrible. this is the base_dir for a gem path
-
-  def installation_path
-    loaded_from && base_dir
-  end
-
   def inspect
     if $DEBUG
       super
@@ -2116,17 +2099,6 @@ class Gem::Specification
     end
   end
 
-  def test_suite_file # :nodoc:
-    # TODO: deprecate
-    test_files.first
-  end
-
-  def test_suite_file= file # :nodoc:
-    # TODO: deprecate
-    @test_files = [] unless defined? @test_files
-    @test_files << file
-  end
-
   ##
   # Returns a Ruby code representation of this specification, such that it can
   # be eval'ed and reconstruct the same specification later.  Attributes that
@@ -2480,13 +2452,6 @@ class Gem::Specification
 
   extend Gem::Deprecate
 
-  deprecate :test_suite_file,     :test_file,  2011, 10
-  deprecate :test_suite_file=,    :test_file=, 2011, 10
-  deprecate :loaded,              :activated,  2011, 10
-  deprecate :loaded?,             :activated?, 2011, 10
-  deprecate :loaded=,             :activated=, 2011, 10
-  deprecate :installation_path,   :base_dir,   2011, 10
-  deprecate :cache_gem,           :cache_file, 2011, 10
   # TODO:
   # deprecate :has_rdoc,            :none,       2011, 10
   # deprecate :has_rdoc?,           :none,       2011, 10

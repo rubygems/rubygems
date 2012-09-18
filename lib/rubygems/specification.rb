@@ -910,7 +910,7 @@ class Gem::Specification
 
       if Gem::Specification === spec
         if needs_cache_write
-          File.open(cache, "wb") { |f| f.write Marshal.dump spec } rescue nil
+          File.open(cache, "wb") { |f| f.write Marshal.dump spec } if File.writable? cache
         end
         spec.loaded_from = file.to_s
         return spec

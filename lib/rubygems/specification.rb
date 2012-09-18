@@ -900,8 +900,9 @@ class Gem::Specification
     code.untaint
 
     begin
-      if File.exist? "#{file}.cache"
-        spec = Marshal.load Gem.read_binary "#{file}.cache"
+      cache = "#{file}.cache"
+      if File.exist? cache and File.mtime(cache) > File.mtime(file)
+        spec = Marshal.load Gem.read_binary cache
       else
         spec = eval code, binding, file
         needs_cache_write = true
@@ -909,7 +910,7 @@ class Gem::Specification
 
       if Gem::Specification === spec
         if needs_cache_write
-          File.open("#{file}.cache", "wb") { |f| f.write Marshal.dump spec } rescue nil
+          File.open(cache, "wb") { |f| f.write Marshal.dump spec } rescue nil
         end
         spec.loaded_from = file.to_s
         return spec

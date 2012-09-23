@@ -152,12 +152,51 @@ class TestRequire < Gem::TestCase
     end
   end
 
+  def test_default_gem_only
+    save_loaded_features do
+      default_gem_spec = new_default_spec("default", "2.0.0.0",
+                                          nil, "default/gem.rb")
+      Gem.register_default_spec(default_gem_spec)
+      assert_require "default/gem"
+      assert_equal %w(default-2.0.0.0), loaded_spec_names
+    end
+  end
+
+  def test_default_gem_and_normal_gem
+    save_loaded_features do
+      default_gem_spec = new_default_spec("default", "2.0.0.0",
+                                          nil, "default/gem.rb")
+      Gem.register_default_spec(default_gem_spec)
+      normal_gem_spec = new_spec("default", "3.0", nil, "default/gem.rb")
+      install_specs(normal_gem_spec)
+      assert_require "default/gem"
+      assert_equal %w(default-3.0), loaded_spec_names
+    end
+  end
+
   def loaded_spec_names
     Gem.loaded_specs.values.map(&:full_name).sort
   end
 
   def unresolved_names
     Gem::Specification.unresolved_deps.values.map(&:to_s).sort
+  end
+
+  def new_default_spec(name, version, deps = nil, *files)
+    spec = new_spec(name, version, deps)
+    spec.files = files
+
+    lib_dir = File.join(@tempdir, "default_gems", "lib")
+    $LOAD_PATH.unshift(lib_dir)
+    files.each do |file|
+      rb_path = File.join(lib_dir, file)
+      FileUtils.mkdir_p(File.dirname(rb_path))
+      File.open(rb_path, "w") do |rb|
+        rb << "# #{file}"
+      end
+    end
+
+    spec
   end
 
   def save_loaded_features

@@ -163,6 +163,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     Gem::Security.reset
 
     Gem.loaded_specs.clear
+    Gem.clear_default_specs
     Gem::Specification.unresolved_deps.clear
 
     Gem.configuration.verbose = true

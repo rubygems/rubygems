@@ -130,6 +130,7 @@ module Gem
 
   @configuration = nil
   @loaded_specs = {}
+  @path_to_default_spec_map = {}
   @platforms = []
   @ruby = nil
   @sources = nil
@@ -934,6 +935,44 @@ module Gem
     # Hash of loaded Gem::Specification keyed by name
 
     attr_reader :loaded_specs
+
+    ##
+    # Register a Gem::Specification for default gem
+
+    def register_default_spec(spec)
+      Specification.add_spec(spec)
+      spec.files.each do |file|
+        @path_to_default_spec_map[file] = spec
+      end
+    end
+
+    ##
+    # Find a Gem::Specification of default gem from +path+
+
+    def find_unresolved_default_spec(path)
+      Gem.suffixes.each do |suffix|
+        spec = @path_to_default_spec_map["#{path}#{suffix}"]
+        return spec if spec
+      end
+      nil
+    end
+
+    ##
+    # Remove needless Gem::Specification of default gem from
+    # unresolved default gem list
+
+    def remove_unresoleved_default_spec(spec)
+      spec.files.each do |file|
+        @path_to_default_spec_map.delete(file)
+      end
+    end
+
+    ##
+    # Clear default gem related varibles. It is for test
+
+    def clear_default_specs
+      @path_to_default_spec_map.clear
+    end
 
     ##
     # The list of hooks to be run after Gem::Installer#install extracts files

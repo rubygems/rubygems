@@ -851,7 +851,8 @@ class Gem::Specification
     end
 
     spec.instance_eval { @specification_version ||= NONEXISTENT_SPECIFICATION_VERSION }
-
+    spec.reset_nil_attributes_to_default
+    
     spec
   end
 

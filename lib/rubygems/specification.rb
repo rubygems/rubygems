@@ -2450,6 +2450,26 @@ class Gem::Specification
     self.platform = Gem::Platform.new @platform
   end
 
+  ##
+  # Reset nil attributes to their default values to make the spec valid
+  
+  def reset_nil_attributes_to_default
+    nil_attributes = self.class.non_nil_attributes.find_all do |name|
+      instance_variable_get("@#{name}").nil?
+    end
+
+    nil_attributes.each do |attribute|
+      default = self.default_value attribute
+
+      value = case default
+              when Time, Numeric, Symbol, true, false, nil then default
+              else default.dup
+              end
+
+      instance_variable_set "@#{attribute}", default
+    end
+  end
+
   extend Gem::Deprecate
 
   # TODO:

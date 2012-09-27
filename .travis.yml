@@ -22,4 +22,4 @@ script: rake travis
 matrix:
   exclude:
     - rvm: ruby-head
-    - env: "YAML=syck"
+      env: "YAML=syck"

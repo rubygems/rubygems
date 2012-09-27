@@ -37,7 +37,8 @@ class TestGemSecuritySigner < Gem::TestCase
   def test_initialize_cert_chain_mixed
     signer = Gem::Security::Signer.new nil, [@cert_file, CHILD_CERT]
 
-    assert_equal [PUBLIC_CERT, CHILD_CERT].inspect, signer.cert_chain.inspect
+    assert_equal [PUBLIC_CERT, CHILD_CERT].map { |c| c.to_pem },
+                 signer.cert_chain.map { |c| c.to_pem }
   end
 
   def test_initialize_cert_chain_invalid
@@ -49,7 +50,8 @@ class TestGemSecuritySigner < Gem::TestCase
   def test_initialize_cert_chain_path
     signer = Gem::Security::Signer.new nil, [@cert_file]
 
-    assert_equal [PUBLIC_CERT].inspect, signer.cert_chain.inspect
+    assert_equal [PUBLIC_CERT].map { |c| c.to_pem },
+                 signer.cert_chain.map { |c| c.to_pem }
   end
 
   def test_initialize_default

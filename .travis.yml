@@ -19,3 +19,7 @@ env:
   - "YAML=syck"
   - "YAML=psych"
 script: rake travis
+matrix:
+  exclude:
+    - rvm: ruby-head
+    - env: "YAML=syck"

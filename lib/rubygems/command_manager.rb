@@ -77,6 +77,7 @@ class Gem::CommandManager
     register_command :mirror
     register_command :outdated
     register_command :owner
+    register_command :patch
     register_command :pristine
     register_command :push
     register_command :query

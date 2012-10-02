@@ -32,6 +32,7 @@ lib/rubygems/commands/lock_command.rb
 lib/rubygems/commands/mirror_command.rb
 lib/rubygems/commands/outdated_command.rb
 lib/rubygems/commands/owner_command.rb
+lib/rubygems/commands/patch_command.rb
 lib/rubygems/commands/pristine_command.rb
 lib/rubygems/commands/push_command.rb
 lib/rubygems/commands/query_command.rb
@@ -82,6 +83,7 @@ lib/rubygems/package/tar_reader/entry.rb
 lib/rubygems/package/tar_test_case.rb
 lib/rubygems/package/tar_writer.rb
 lib/rubygems/package_task.rb
+lib/rubygems/patcher.rb
 lib/rubygems/path_support.rb
 lib/rubygems/platform.rb
 lib/rubygems/psych_additions.rb
@@ -175,6 +177,7 @@ test/rubygems/test_gem_commands_lock_command.rb
 test/rubygems/test_gem_commands_mirror.rb
 test/rubygems/test_gem_commands_outdated_command.rb
 test/rubygems/test_gem_commands_owner_command.rb
+test/rubygems/test_gem_commands_patch_command.rb
 test/rubygems/test_gem_commands_pristine_command.rb
 test/rubygems/test_gem_commands_push_command.rb
 test/rubygems/test_gem_commands_query_command.rb
@@ -209,6 +212,7 @@ test/rubygems/test_gem_package_tar_reader.rb
 test/rubygems/test_gem_package_tar_reader_entry.rb
 test/rubygems/test_gem_package_tar_writer.rb
 test/rubygems/test_gem_package_task.rb
+test/rubygems/test_gem_patch.rb
 test/rubygems/test_gem_path_support.rb
 test/rubygems/test_gem_platform.rb
 test/rubygems/test_gem_rdoc.rb

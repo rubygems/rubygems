@@ -1397,7 +1397,7 @@ class TestGem < Gem::TestCase
     ENV['GEM_PATH'] = path
     ENV['RUBYGEMS_GEMDEPS'] = "-"
 
-    out = `#{Gem.ruby} -I #{LIB_PATH} -rubygems -e "p Gem.loaded_specs.values.map(&:full_name).sort"`
+    out = `#{Gem.ruby.untaint} -I #{LIB_PATH.untaint} -rubygems -e "p Gem.loaded_specs.values.map(&:full_name).sort"`
 
     assert_equal '["a-1", "b-1", "c-1"]', out.strip
   end

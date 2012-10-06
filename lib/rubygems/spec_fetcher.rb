@@ -148,20 +148,18 @@ class Gem::SpecFetcher
   end
 
   ##
-  # Suggests a gem based on the supplied +gem_name+. Returns a string
-  # of the gem name if an approximate match can be found or nil
-  # otherwise. NOTE: for performance reasons only gems which exactly
-  # match the first character of +gem_name+ are considered.
+  # Suggests gems based on the supplied +gem_name+. Returns an array of
+  # alternative gem names.
 
   def suggest_gems_from_name gem_name
-    gem_name        = gem_name.downcase
+    gem_name        = gem_name.downcase.tr('_-', '')
     max             = gem_name.size / 2
     names           = available_specs(:complete).first.values.flatten(1)
 
     matches = names.map { |n|
       next unless n.match_platform?
 
-      distance = levenshtein_distance gem_name, n.name.downcase
+      distance = levenshtein_distance gem_name, n.name.downcase.tr('_-', '')
 
       next if distance >= max
 

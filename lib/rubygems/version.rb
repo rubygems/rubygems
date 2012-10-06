@@ -187,7 +187,7 @@ class Gem::Version
     raise ArgumentError, "Malformed version number string #{version}" unless
       self.class.correct?(version)
 
-    @version = version.to_s
+    @version = version.to_s.dup
     @version.strip!
   end
 

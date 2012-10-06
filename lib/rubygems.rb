@@ -1083,3 +1083,5 @@ end
 # Enables the require hook for RubyGems.
 
 require 'rubygems/custom_require'
+
+Gem.detect_gemdeps

@@ -237,6 +237,30 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal expected, @ui.error
   end
 
+  def test_execute_nonexistent_with_dashes
+    misspelled = "non-existent_with-hint"
+    correctly_spelled = "nonexistent-with_hint"
+
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher quick_spec(correctly_spelled, '2')
+
+    @cmd.options[:args] = [misspelled]
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        @cmd.execute
+      end
+
+      assert_equal 2, e.exit_code
+    end
+
+    expected = ["ERROR:  Could not find a valid gem 'non-existent_with-hint' (>= 0) in any repository", "ERROR:  Possible alternatives: nonexistent-with_hint"]
+
+    output = @ui.error.split "\n"
+
+    assert_equal expected, output
+  end
+
   def test_execute_conflicting_install_options
     @cmd.options[:user_install] = true
     @cmd.options[:install_dir] = "whatever"

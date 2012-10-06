@@ -3,6 +3,42 @@
 # Copyright (C) 2004 Mauricio Julio Fernández Pradier
 # See LICENSE.txt for additional licensing information.
 #++
+#
+# Example using a Gem::Package
+#
+# Builds a .gem file given a Gem::Specification. A .gem file is a tarball
+# which contains a data.tar.gz and metadata.gz, and possibly signatures.
+#
+#   require 'rubygems'
+#   require 'rubygems/package'
+#
+#   spec = Gem::Specification.new do |s|
+#     s.summary = "Ruby based make-like utility."
+#     s.name = 'rake'
+#     s.version = PKG_VERSION
+#     s.requirements << 'none'
+#     s.files = PKG_FILES
+#     s.description = <<-EOF
+#   Rake is a Make-like program implemented in Ruby. Tasks
+#   and dependencies are specified in standard Ruby syntax.
+#     EOF
+#   end
+#
+#   Gem::Package.build spec
+#
+# Reads a .gem file.
+#
+#   require 'rubygems'
+#   require 'rubygems/package'
+#
+#   the_gem = Gem::Package.new(path_to_dot_gem)
+#   the_gem.contents # get the files in the gem
+#   the_gem.extract_files destination_directory # extract the gem into a directory
+#   the_gem.spec # get the spec out of the gem
+#   the_gem.verify # check the gem is OK (contains valid gem specification, contains a not corrupt contents archive)
+#
+# #files are the files in the .gem tar file, not the ruby files in the gem
+# #extract_files and #contents automatically call #verify
 
 require 'rubygems/security'
 require 'rubygems/specification'

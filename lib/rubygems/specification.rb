@@ -2456,7 +2456,7 @@ class Gem::Specification
   
   def reset_nil_attributes_to_default
     nil_attributes = self.class.non_nil_attributes.find_all do |name|
-      instance_variable_get("@#{name}").nil?
+      !instance_variable_defined?("@#{name}") || instance_variable_get("@#{name}").nil?
     end
 
     nil_attributes.each do |attribute|

@@ -83,6 +83,13 @@ task :rake_sucks do
   end
 end
 
+task :clean_env do
+  ENV.delete "GEM_HOME"
+  ENV.delete "GEM_PATH"
+end
+
+task :test => :clean_env
+
 # --------------------------------------------------------------------
 # Creating a release
 

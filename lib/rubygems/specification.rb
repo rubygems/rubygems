@@ -2467,7 +2467,7 @@ class Gem::Specification
               else default.dup
               end
 
-      instance_variable_set "@#{attribute}", default
+      instance_variable_set "@#{attribute}", value
     end
   end
 

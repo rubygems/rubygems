@@ -99,6 +99,25 @@ Error fetching http://beta-gems.example.com:
     assert_equal '', @ui.error
   end
 
+  def test_execute_add_redundant_source
+    @cmd.handle_options %W[--add #{@gem_repo}]
+
+    util_setup_spec_fetcher
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal [@gem_repo], Gem.sources
+
+    expected = <<-EOF
+source #{@gem_repo} already present in the cache
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+  end
+
   def test_execute_add_bad_uri
     @cmd.handle_options %w[--add beta-gems.example.com]
 

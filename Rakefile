@@ -53,6 +53,7 @@ hoe = Hoe.spec 'rubygems-update' do
   extra_dev_deps << ['session', '~> 2.4']
   extra_dev_deps << ['rdoc', '~> 3.0']
   extra_dev_deps << ['ZenTest', '~> 4.5']
+  extra_dev_deps << ['rake', '~> 0.8.7']
 
   self.extra_rdoc_files = Dir["*.rdoc"]
 

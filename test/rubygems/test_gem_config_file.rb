@@ -317,6 +317,18 @@ class TestGemConfigFile < Gem::TestCase
     assert_equal mode, File.stat(@cfg.credentials_path).mode unless win_platform?
   end
 
+  def test_ignore_invalid_config_file
+    File.open @temp_conf, 'w' do |fp|
+      fp.puts "some-non-yaml-hash-string"
+    end
+
+    # Avoid writing stuff to output when running tests
+    Gem::ConfigFile.class_eval { def warn(args); end } 
+
+    # This should not raise exception
+    util_config_file
+  end
+
   def util_config_file(args = @cfg_args)
     @cfg = Gem::ConfigFile.new args
   end

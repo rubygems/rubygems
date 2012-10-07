@@ -1841,6 +1841,26 @@ end
     end
   end
 
+  def test_find_by_path
+    a = new_spec "foo", "1", nil, "lib/foo.rb"
+
+    install_specs a
+
+    assert_equal a, Gem::Specification.find_by_path('foo')
+    a.activate
+    assert_equal a, Gem::Specification.find_by_path('foo')
+  end
+
+  def test_find_inactive_by_path
+    a = new_spec "foo", "1", nil, "lib/foo.rb"
+
+    install_specs a
+
+    assert_equal a, Gem::Specification.find_inactive_by_path('foo')
+    a.activate
+    assert_equal nil, Gem::Specification.find_inactive_by_path('foo')
+  end
+
   def util_setup_deps
     @gem = quick_spec "awesome", "1.0" do |awesome|
       awesome.add_runtime_dependency "bonobo", []

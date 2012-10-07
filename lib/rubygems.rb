@@ -153,7 +153,7 @@ module Gem
 
     # TODO: use find_all and bork if ambiguous
 
-    spec = Gem::Specification.find_by_path path
+    spec = Gem::Specification.find_inactive_by_path path
     return false unless spec
 
     begin

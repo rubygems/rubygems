@@ -797,6 +797,16 @@ class Gem::Specification
   end
 
   ##
+  # Return the best specification that contains the file matching +path+
+  # amongst the specs that are not activated.
+
+  def self.find_inactive_by_path path
+    self.find { |spec|
+      spec.contains_requirable_file? path unless spec.activated?
+    }
+  end
+
+  ##
   # Return currently unresolved specs that contain the file matching +path+.
 
   def self.find_in_unresolved path

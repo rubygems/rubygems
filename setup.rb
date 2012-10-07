@@ -5,6 +5,11 @@
 # See LICENSE.txt for permissions.
 #++
 
+if RUBY_VERSION < "1.8.7"
+  $stderr.puts "Rubygems now requires Ruby 1.8.7 or later"
+  exit 1
+end
+
 # Make sure rubygems isn't already loaded.
 if ENV['RUBYOPT'] or defined? Gem then
   ENV.delete 'RUBYOPT'

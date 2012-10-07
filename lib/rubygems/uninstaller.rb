@@ -265,12 +265,19 @@ class Gem::Uninstaller
     msg = ['']
     msg << 'You have requested to uninstall the gem:'
     msg << "\t#{spec.full_name}"
+    msg << ''
+
+    siblings = Gem::Specification.select do |s|
+                 s.name == spec.name && s.full_name != spec.full_name
+               end
 
     spec.dependent_gems.each do |dep_spec, dep, satlist|
-      msg << "#{dep_spec.name}-#{dep_spec.version} depends on #{dep}"
+      unless siblings.any? { |s| s.satisfies_requirement? dep }
+        msg << "#{dep_spec.name}-#{dep_spec.version} depends on #{dep}"
+      end
     end
 
-    msg << 'If you remove this gem, one or more dependencies will not be met.'
+    msg << 'If you remove this gem, these dependencies will not be met.'
     msg << 'Continue with Uninstall?'
     return ask_yes_no(msg.join("\n"), true)
   end

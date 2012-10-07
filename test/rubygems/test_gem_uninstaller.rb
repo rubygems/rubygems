@@ -264,9 +264,34 @@ class TestGemUninstaller < Gem::InstallerTestCase
 
     assert_match %r!You have requested to uninstall the gem:!, lines.shift
     lines.shift
+    lines.shift
 
     assert_match %r!r-1 depends on q \(= 1\)!, lines.shift
     assert_match %r!Successfully uninstalled q-1!, lines.last
+  end
+
+  def test_uninstall_only_lists_unsatified_deps
+    util_gem 'r', '1', 'q' => '~> 1.0'
+    util_gem 'x', '1', 'q' => '= 1.0'
+    util_gem 'q', '1.0'
+    util_gem 'q', '1.1'
+
+    un = Gem::Uninstaller.new('q', :version => "1.0")
+    ui = Gem::MockGemUi.new("y\n")
+
+    use_ui ui do
+      un.uninstall
+    end
+
+    lines = ui.output.split("\n")
+    lines.shift
+
+    assert_match %r!You have requested to uninstall the gem:!, lines.shift
+    lines.shift
+    lines.shift
+
+    assert_match %r!x-1 depends on q \(= 1.0\)!, lines.shift
+    assert_match %r!Successfully uninstalled q-1.0!, lines.last
   end
 
   def test_uninstall_doesnt_prompt_when_other_gem_satifies_requirement
@@ -304,6 +329,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
     lines.shift
 
     assert_match %r!You have requested to uninstall the gem:!, lines.shift
+    lines.shift
     lines.shift
 
     assert_match %r!r-1 depends on q \(= 1, development\)!, lines.shift

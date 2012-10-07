@@ -89,7 +89,7 @@ module Gem::GemcutterUtilities
     if Gem.configuration.api_keys.key? key then
       Gem.configuration.api_keys[key]
     else
-      alert_error "No such API key. You can add it with gem keys --add #{key}"
+      alert_error "No such API key. Please add it to your configuration (done automatically on initial `gem push`)."
       terminate_interaction 1 # TODO: question this
     end
   end

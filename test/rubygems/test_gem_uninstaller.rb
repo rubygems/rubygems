@@ -311,6 +311,26 @@ class TestGemUninstaller < Gem::InstallerTestCase
     assert_equal "Successfully uninstalled q-1.0", lines.shift
   end
 
+  def test_uninstall_doesnt_prompt_when_removing_a_dev_dep
+    util_gem('r', '1') do |s|
+      s.add_development_dependency "q", "= 1.0"
+    end
+
+    util_gem 'q', '1.0'
+
+    un = Gem::Uninstaller.new('q', :version => "1.0")
+    ui = Gem::MockGemUi.new("y\n")
+
+    use_ui ui do
+      un.uninstall
+    end
+
+    lines = ui.output.split("\n")
+
+    assert_equal "Successfully uninstalled q-1.0", lines.shift
+  end
+
+
   def test_uninstall_prompt_includes_dep_type
     util_gem 'r', '1' do |s|
       s.add_development_dependency 'q', '= 1'
@@ -318,7 +338,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
 
     util_gem 'q', '1'
 
-    un = Gem::Uninstaller.new('q')
+    un = Gem::Uninstaller.new('q', :check_dev => true)
     ui = Gem::MockGemUi.new("y\n")
 
     use_ui ui do

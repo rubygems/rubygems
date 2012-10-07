@@ -52,6 +52,11 @@ class Gem::Uninstaller
     @bin_dir           = options[:bin_dir]
     @format_executable = options[:format_executable]
 
+    # Indicate if development dependencies should be checked when
+    # uninstalling. (default: false)
+    #
+    @check_dev         = options[:check_dev]
+
     if options[:force]
       @force_all = true
       @force_ignore = true
@@ -258,7 +263,7 @@ class Gem::Uninstaller
     return true if @force_ignore
 
     deplist = Gem::DependencyList.from_specs
-    deplist.ok_to_remove?(spec.full_name)
+    deplist.ok_to_remove?(spec.full_name, @check_dev)
   end
 
   def ask_if_ok(spec)

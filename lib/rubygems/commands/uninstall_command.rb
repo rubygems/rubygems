@@ -13,7 +13,8 @@ class Gem::Commands::UninstallCommand < Gem::Command
 
   def initialize
     super 'uninstall', 'Uninstall gems from the local repository',
-          :version => Gem::Requirement.default, :user_install => true
+          :version => Gem::Requirement.default, :user_install => true,
+          :check_dev => false
 
     add_option('-a', '--[no-]all',
       'Uninstall all matching versions'
@@ -25,6 +26,12 @@ class Gem::Commands::UninstallCommand < Gem::Command
                'Ignore dependency requirements while',
                'uninstalling') do |value, options|
       options[:ignore] = value
+    end
+
+    add_option('-D', '--[no-]-check-development',
+               'Check development dependencies while uninstalling',
+               '(default: false)') do |value, options|
+      options[:check_dev] = value
     end
 
     add_option('-x', '--[no-]executables',
@@ -55,7 +62,8 @@ class Gem::Commands::UninstallCommand < Gem::Command
     end
 
     add_option('--[no-]force',
-               'Uninstall all gems according to name, regardless of dependencies upon it.') do |value, options|
+               'Uninstall all versions of the named gems',
+               'ignoring dependencies') do |value, options|
       options[:force] = value
     end
 

@@ -138,7 +138,7 @@ class Gem::DependencyList
   # If removing the gemspec creates breaks a currently ok dependency, then it
   # is NOT ok to remove the gemspec.
 
-  def ok_to_remove?(full_name)
+  def ok_to_remove?(full_name, check_dev=true)
     gem_to_remove = find_name full_name
 
     siblings = @specs.find_all { |s|
@@ -149,7 +149,9 @@ class Gem::DependencyList
     deps = []
 
     @specs.each do |spec|
-      spec.dependencies.each do |dep|
+      check = check_dev ? spec.dependencies : spec.runtime_dependencies
+
+      check.each do |dep|
         deps << dep if gem_to_remove.satisfies_requirement?(dep)
       end
     end

@@ -23,3 +23,6 @@ matrix:
   exclude:
     - rvm: ruby-head
       env: "YAML=syck"
+  allow_failures:
+    - rvm: ruby-head
+    - rvm: 1.9.2

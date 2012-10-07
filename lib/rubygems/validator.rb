@@ -23,19 +23,8 @@ class Gem::Validator
   # gem_data:: [String] Contents of the gem file
 
   def verify_gem(gem_data)
-    raise Gem::VerificationError, 'empty gem file' if gem_data.size == 0
-
-    # verified by Gem::Package for the latest gem format
-    return unless gem_data =~ /MD5SUM/
-
-    require 'digest'
-
-    sum_data = gem_data.gsub(/MD5SUM = "([a-z0-9]+)"/,
-                             "MD5SUM = \"#{"F" * 32}\"")
-
-    unless Digest::MD5.hexdigest(sum_data) == $1.to_s then
-      raise Gem::VerificationError, 'invalid checksum for gem file'
-    end
+    # TODO remove me? The code here only validate an MD5SUM that was
+    # in some old formatted gems, but hasn't been for a long time.
   end
 
   ##
@@ -169,10 +158,5 @@ class Gem::Validator
 
     errors
   end
-
-  def remove_leading_dot_dir(path)
-    path.sub(/^\.\//, "")
-  end
-
 end
 

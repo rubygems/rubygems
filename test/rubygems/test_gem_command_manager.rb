@@ -176,13 +176,11 @@ class TestGemCommandManager < Gem::TestCase
 
     #check defaults
     @command_manager.process_args("check")
-    assert_equal false, check_options[:verify]
-    assert_equal false, check_options[:alien]
+    assert_equal true, check_options[:alien]
 
     #check settings
     check_options = nil
-    @command_manager.process_args("check --verify foobar --alien")
-    assert_equal "foobar", check_options[:verify]
+    @command_manager.process_args("check foobar --alien")
     assert_equal true, check_options[:alien]
   end
 

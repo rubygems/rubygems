@@ -40,7 +40,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
   def test_remove_executables_force_keep
     uninstaller = Gem::Uninstaller.new nil, :executables => false
 
-    executable = File.join Gem.user_dir, 'bin', 'executable'
+    executable = File.join Gem.bindir(@user_spec.base_dir), 'executable'
     assert File.exist?(executable), 'executable not written'
 
     use_ui @ui do
@@ -55,7 +55,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
   def test_remove_executables_force_remove
     uninstaller = Gem::Uninstaller.new nil, :executables => true
 
-    executable = File.join Gem.user_dir, 'bin', 'executable'
+    executable = File.join Gem.bindir(@user_spec.base_dir), 'executable'
     assert File.exist?(executable), 'executable not written'
 
     use_ui @ui do

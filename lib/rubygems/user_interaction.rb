@@ -150,7 +150,7 @@ class Gem::StreamUI
   def backtrace exception
     return unless Gem.configuration.backtrace
 
-    @errs.puts "\t#{e.backtrace.join "\n\t"}"
+    @errs.puts "\t#{exception.backtrace.join "\n\t"}"
   end
 
   ##

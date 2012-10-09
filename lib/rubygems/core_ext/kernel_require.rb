@@ -13,7 +13,7 @@ module Gem
     def run
       spec = Gem.find_unresolved_default_spec(@path)
       if spec
-        Gem.remove_unresoleved_default_spec(spec)
+        Gem.remove_unresolved_default_spec(spec)
         gem(spec.name)
       end
     end

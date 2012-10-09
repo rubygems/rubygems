@@ -961,7 +961,7 @@ module Gem
     # Remove needless Gem::Specification of default gem from
     # unresolved default gem list
 
-    def remove_unresoleved_default_spec(spec)
+    def remove_unresolved_default_spec(spec)
       spec.files.each do |file|
         @path_to_default_spec_map.delete(file)
       end

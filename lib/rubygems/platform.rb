@@ -21,7 +21,8 @@ class Gem::Platform
 
   def self.match(platform)
     Gem.platforms.any? do |local_platform|
-      platform.nil? or local_platform == platform or
+      platform.nil? or
+        local_platform == platform or
         (local_platform != Gem::Platform::RUBY and local_platform =~ platform)
     end
   end

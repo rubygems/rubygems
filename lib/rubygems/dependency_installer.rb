@@ -6,6 +6,7 @@ require 'rubygems/spec_fetcher'
 require 'rubygems/user_interaction'
 require 'rubygems/source_local'
 require 'rubygems/source_specific_file'
+require 'rubygems/available_set'
 
 ##
 # Installs a gem along with all its dependencies from local and remote gems.
@@ -120,14 +121,14 @@ class Gem::DependencyInstaller
   # local gems preferred over remote gems.
 
   def find_gems_with_sources(dep)
-    gems_and_sources = []
+    set = Gem::AvailableSet.new
 
     if consider_local?
       sl = Gem::Source::Local.new
 
       if spec = sl.find_gem(dep.name)
         if dep.matches_spec? spec
-          gems_and_sources << [spec, sl]
+          set.add spec, sl
         end
       end
     end
@@ -142,7 +143,7 @@ class Gem::DependencyInstaller
           @errors = errors
         end
 
-        gems_and_sources.push(*found)
+        set << found
 
       rescue Gem::RemoteFetcher::FetchError => e
         # FIX if there is a problem talking to the network, we either need to always tell
@@ -156,9 +157,7 @@ class Gem::DependencyInstaller
       end
     end
 
-    gems_and_sources.sort_by do |gem, source|
-      [gem, source] # local gems win
-    end
+    set
   end
 
   ##
@@ -166,7 +165,7 @@ class Gem::DependencyInstaller
   # remote sources unless the ignore_dependencies was given.
 
   def gather_dependencies
-    specs = @specs_and_sources.map { |spec,_| spec }
+    specs = @available.all_specs
 
     # these gems were listed by the user, always install them
     keep_names = specs.map { |spec| spec.full_name }
@@ -232,21 +231,14 @@ class Gem::DependencyInstaller
 
         results = find_gems_with_sources(dep)
 
-        results.reject! do |dep_spec,|
-          to_do.push dep_spec
-
-          # already locally installed
-          Gem::Specification.any? do |installed_spec|
-            dep.name == installed_spec.name and
-              dep.requirement.satisfied_by? installed_spec.version
-          end
+        results.sorted.each do |t|
+          to_do.push t.spec
         end
 
-        results.each do |dep_spec, source_uri|
-          @specs_and_sources << [dep_spec, source_uri]
+        results.remove_installed! dep
 
-          dependency_list.add dep_spec
-        end
+        @available << results
+        results.inject_into_list dependency_list
       end
     end
 
@@ -262,39 +254,37 @@ class Gem::DependencyInstaller
                                     version = Gem::Requirement.default,
                                     prerelease = false)
 
-    spec_and_source = nil
+    set = Gem::AvailableSet.new
 
     if consider_local?
       if File.exists? gem_name
         src = Gem::Source::SpecificFile.new(gem_name)
-        spec_and_source = [src.spec, src]
+        set.add src.spec, src
       else
         local = Gem::Source::Local.new
 
         if s = local.find_gem(gem_name, version)
-          spec_and_source = [s, local]
+          set.add s, local
         end
       end
     end
 
-    unless spec_and_source then
+    if set.empty?
       dep = Gem::Dependency.new gem_name, version
       # HACK Dependency objects should be immutable
       dep.prerelease = true if prerelease
 
-      spec_and_sources = find_gems_with_sources(dep)
-      spec_and_source = spec_and_sources.find { |spec, source|
-        Gem::Platform.match spec.platform
-      }
+      set = find_gems_with_sources(dep)
+      set.match_platform!
     end
 
-    if spec_and_source.nil? then
+    if set.empty?
       raise Gem::GemNotFoundException.new(
         "Could not find a valid gem '#{gem_name}' (#{version}) locally or in a repository",
         gem_name, version, @errors)
     end
 
-    @specs_and_sources = [spec_and_source]
+    @available = set
   end
 
   ##
@@ -317,7 +307,7 @@ class Gem::DependencyInstaller
     else
       dep = dep_or_name.dup
       dep.prerelease = @prerelease
-      @specs_and_sources = [find_gems_with_sources(dep).first]
+      @available = find_gems_with_sources(dep).pick_best!
     end
 
     @installed_gems = []
@@ -335,7 +325,8 @@ class Gem::DependencyInstaller
       # TODO: make this sorta_verbose so other users can benefit from it
       say "Installing gem #{spec.full_name}" if Gem.configuration.really_verbose
 
-      _, source = @specs_and_sources.assoc spec
+      source = @available.source_for spec
+
       begin
         # REFACTOR make the fetcher to use configurable
         local_gem_path = source.download spec, @cache_dir

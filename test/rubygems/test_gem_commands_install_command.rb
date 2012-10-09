@@ -276,7 +276,53 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal expected, @ui.error
   end
 
-  def test_execute_prerelease
+  def test_execute_prerelease_skipped_when_no_flag_set
+    util_setup_fake_fetcher :prerelease
+    util_clear_gems
+    util_setup_spec_fetcher @a1, @a2_pre
+
+    @fetcher.data["#{@gem_repo}gems/#{@a1.file_name}"] =
+      read_binary(@a1.cache_file)
+    @fetcher.data["#{@gem_repo}gems/#{@a2_pre.file_name}"] =
+      read_binary(@a2_pre.cache_file)
+
+    @cmd.options[:prerelease] = false
+    @cmd.options[:args] = [@a2_pre.name]
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        @cmd.execute
+      end
+      assert_equal 0, e.exit_code, @ui.error
+    end
+
+    assert_equal %w[a-1], @cmd.installed_specs.map { |spec| spec.full_name }
+  end
+
+  def test_execute_prerelease_wins_over_previous_ver
+    util_setup_fake_fetcher :prerelease
+    util_clear_gems
+    util_setup_spec_fetcher @a1, @a2_pre
+
+    @fetcher.data["#{@gem_repo}gems/#{@a1.file_name}"] =
+      read_binary(@a1.cache_file)
+    @fetcher.data["#{@gem_repo}gems/#{@a2_pre.file_name}"] =
+      read_binary(@a2_pre.cache_file)
+
+    @cmd.options[:prerelease] = true
+    @cmd.options[:args] = [@a2_pre.name]
+
+    use_ui @ui do
+      e = assert_raises Gem::SystemExitException do
+        @cmd.execute
+      end
+      assert_equal 0, e.exit_code, @ui.error
+    end
+
+    assert_equal %w[a-2.a], @cmd.installed_specs.map { |spec| spec.full_name }
+  end
+
+  def test_execute_prerelease_skipped_when_non_pre_available
     util_setup_fake_fetcher :prerelease
     util_clear_gems
     util_setup_spec_fetcher @a2, @a2_pre
@@ -296,7 +342,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
       assert_equal 0, e.exit_code, @ui.error
     end
 
-    assert_equal %w[a-2.a], @cmd.installed_specs.map { |spec| spec.full_name }
+    assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
   end
 
   def test_execute_rdoc

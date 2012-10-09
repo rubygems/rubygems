@@ -53,17 +53,57 @@ class TestGemDependencyInstaller < Gem::TestCase
   def test_install_prerelease
     util_setup_gems
 
-    a1_pre_data = File.read(@a1_pre_gem)
+    p1a, gem = util_gem 'a', '10.a'
 
-    @fetcher.data['http://gems.example.com/gems/a-1.a.gem'] = a1_pre_data
-    inst = nil
+    util_setup_spec_fetcher(p1a, @a1, @a1_pre)
+    util_clear_gems
+
+    p1a_data = File.read(gem)
+
+    @fetcher.data['http://gems.example.com/gems/a-10.a.gem'] = p1a_data
 
     dep = Gem::Dependency.new "a"
     inst = Gem::DependencyInstaller.new :prerelease => true
     inst.install dep
 
-    assert_equal %w[a-1.a], Gem::Specification.map(&:full_name)
-    assert_equal [@a1_pre], inst.installed_gems
+    assert_equal %w[a-10.a], Gem::Specification.map(&:full_name)
+    assert_equal [p1a], inst.installed_gems
+  end
+
+  def test_install_when_only_prerelease
+    p1a, gem = util_gem 'p', '1.a'
+
+    util_setup_spec_fetcher(p1a)
+    util_clear_gems
+
+    p1a_data = File.read(gem)
+
+    @fetcher.data['http://gems.example.com/gems/p-1.a.gem'] = p1a_data
+
+    dep = Gem::Dependency.new "p"
+    inst = Gem::DependencyInstaller.new
+    inst.install dep
+
+    assert_equal %w[], Gem::Specification.map(&:full_name)
+    assert_equal [], inst.installed_gems
+  end
+
+  def test_install_prerelease_skipped_when_normal_ver
+    util_setup_gems
+
+    util_setup_spec_fetcher(@a1, @a1_pre)
+    util_clear_gems
+
+    p1a_data = File.read(@a1_gem)
+
+    @fetcher.data['http://gems.example.com/gems/a-1.gem'] = p1a_data
+
+    dep = Gem::Dependency.new "a"
+    inst = Gem::DependencyInstaller.new :prerelease => true
+    inst.install dep
+
+    assert_equal %w[a-1], Gem::Specification.map(&:full_name)
+    assert_equal [@a1], inst.installed_gems
   end
 
   def test_install_all_dependencies
@@ -153,6 +193,44 @@ class TestGemDependencyInstaller < Gem::TestCase
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv a2_gem, @tempdir # not in index
     FileUtils.mv @b1_gem, @tempdir
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new
+      inst.install 'a', Gem::Requirement.create("= 2")
+    end
+
+    FileUtils.rm File.join(@tempdir, a2.file_name)
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new
+      inst.install 'b'
+    end
+
+    assert_equal %w[a-2 b-1], Gem::Specification.map(&:full_name)
+    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
+  # This asserts that if a gem's dependency is satisfied by an
+  # already installed gem, RubyGems doesn't installed a newer
+  # version
+  def test_install_doesnt_upgrade_installed_depedencies
+    util_setup_gems
+
+    a2, a2_gem = util_gem 'a', '2'
+    a3, a3_gem = util_gem 'a', '3'
+
+    util_setup_spec_fetcher @a1, a3, @b1
+
+    FileUtils.rm_rf File.join(@gemhome, 'gems')
+
+    Gem::Specification.reset
+
+    FileUtils.mv @a1_gem, @tempdir
+    FileUtils.mv a2_gem, @tempdir # not in index
+    FileUtils.mv @b1_gem, @tempdir
+    FileUtils.mv a3_gem, @tempdir 
+
     inst = nil
 
     Dir.chdir @tempdir do
@@ -690,8 +768,14 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     Gem::Specification.reset
 
-    assert_equal [[@b1, Gem::Source.new(@gem_repo)]],
-                 inst.find_gems_with_sources(dep)
+    set = inst.find_gems_with_sources(dep)
+
+    assert_kind_of Gem::AvailableSet, set
+    
+    s = set.set.first
+
+    assert_equal @b1, s.spec
+    assert_equal Gem::Source.new(@gem_repo), s.source
   end
 
   def test_find_gems_with_sources_local
@@ -700,21 +784,23 @@ class TestGemDependencyInstaller < Gem::TestCase
     FileUtils.mv @a1_gem, @tempdir
     inst = Gem::DependencyInstaller.new
     dep = Gem::Dependency.new 'a', '>= 0'
-    gems = nil
+    set = nil
 
     Dir.chdir @tempdir do
-      gems = inst.find_gems_with_sources dep
+      set = inst.find_gems_with_sources dep
     end
+
+    gems = set.sorted
 
     assert_equal 2, gems.length
     local = gems.first
-    assert_equal 'a-1', local.first.full_name, 'local spec'
+    assert_equal 'a-1', local.spec.full_name, 'local spec'
     assert_equal File.join(@tempdir, @a1.file_name),
-                 local.last.download(local.first), 'local path'
+                 local.source.download(local.spec), 'local path'
 
     remote = gems.last
-    assert_equal 'a-1', remote.first.full_name, 'remote spec'
-    assert_equal Gem::Source.new(@gem_repo), remote.last, 'remote path'
+    assert_equal 'a-1', remote.spec.full_name, 'remote spec'
+    assert_equal Gem::Source.new(@gem_repo), remote.source, 'remote path'
 
   end
 
@@ -726,7 +812,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     dependency = Gem::Dependency.new('a', Gem::Requirement.default)
 
     releases =
-      installer.find_gems_with_sources(dependency).map { |gems, *| gems }
+      installer.find_gems_with_sources(dependency).all_specs
 
     assert releases.any? { |s| s.name == 'a' and s.version.to_s == '1' }
     refute releases.any? { |s| s.name == 'a' and s.version.to_s == '1.a' }
@@ -734,7 +820,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     dependency.prerelease = true
 
     prereleases =
-      installer.find_gems_with_sources(dependency).map { |gems, *| gems }
+      installer.find_gems_with_sources(dependency).all_specs
 
     assert_equal [@a1_pre, @a1], prereleases
   end
@@ -748,7 +834,7 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     out = installer.find_gems_with_sources(dep)
 
-    assert_equal [], out
+    assert out.empty?
     assert_kind_of Gem::SourceFetchProblem, installer.errors.first
   end
 

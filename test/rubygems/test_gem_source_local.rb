@@ -71,4 +71,13 @@ class TestGemSourceLocal < Gem::TestCase
 
     assert_equal File.expand_path(@a.file_name), path
   end
+
+  def test_compare
+    uri = URI.parse "http://gems.example/foo"
+    s = Gem::Source.new uri
+
+    assert_equal -1, (@sl <=> s)
+    assert_equal 1, (s <=> @sl)
+    assert_equal 0, (@sl <=> @sl)
+  end
 end

@@ -69,8 +69,13 @@ class Gem::Dependency
   end
 
   def inspect # :nodoc:
-    "<%s type=%p name=%p requirements=%p>" %
-      [self.class, self.type, self.name, requirement.to_s]
+    if @prerelease
+      "<%s type=%p name=%p requirements=%p prerelease=ok>" %
+        [self.class, self.type, self.name, requirement.to_s]
+    else
+      "<%s type=%p name=%p requirements=%p>" %
+        [self.class, self.type, self.name, requirement.to_s]
+    end
   end
 
   ##

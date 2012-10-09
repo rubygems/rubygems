@@ -32,7 +32,7 @@ class Gem::DependencyInstaller
     :prerelease          => false,
     :security_policy     => nil, # HACK NoSecurity requires OpenSSL. AlmostNo? Low?
     :wrappers            => true,
-    :build_docs_in_background => true,
+    :build_docs_in_background => false,
   }.freeze
 
   ##

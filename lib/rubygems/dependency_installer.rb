@@ -279,9 +279,7 @@ class Gem::DependencyInstaller
     end
 
     if set.empty?
-      raise Gem::GemNotFoundException.new(
-        "Could not find a valid gem '#{gem_name}' (#{version}) locally or in a repository",
-        gem_name, version, @errors)
+      raise Gem::SpecificGemNotFoundException.new(gem_name, version, @errors)
     end
 
     @available = set

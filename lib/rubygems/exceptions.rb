@@ -51,9 +51,12 @@ class Gem::FormatException < Gem::Exception
   attr_accessor :file_path
 end
 
-class Gem::GemNotFoundException < Gem::Exception
-  def initialize(msg, name=nil, version=nil, errors=nil)
-    super msg
+class Gem::GemNotFoundException < Gem::Exception; end
+
+class Gem::SpecificGemNotFoundException < Gem::GemNotFoundException
+  def initialize(name, version, errors=nil)
+    super "Could not find a valid gem '#{name}' (#{version}) locally or in a repository"
+
     @name = name
     @version = version
     @errors = errors

@@ -56,6 +56,11 @@ module Gem::InstallUpdateOptions
                            end
     end
 
+    add_option(:"Install/Update", '-N', '--no-document',
+               'Disable documentation generation') do |value, options|
+      options[:document] = []
+    end
+
     add_option(:Deprecated, '--[no-]rdoc',
                'Generate RDoc for installed gems',
                'Use --document instead') do |value, options|

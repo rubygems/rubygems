@@ -14,6 +14,7 @@ cruise_config.rb
 hide_lib_for_update/note.txt
 lib/gauntlet_rubygems.rb
 lib/rubygems.rb
+lib/rubygems/available_set.rb
 lib/rubygems/command.rb
 lib/rubygems/command_manager.rb
 lib/rubygems/commands/build_command.rb
@@ -157,6 +158,7 @@ test/rubygems/simple_gem.rb
 test/rubygems/test_config.rb
 test/rubygems/test_deprecate.rb
 test/rubygems/test_gem.rb
+test/rubygems/test_gem_available_set.rb
 test/rubygems/test_gem_command.rb
 test/rubygems/test_gem_command_manager.rb
 test/rubygems/test_gem_commands_build_command.rb

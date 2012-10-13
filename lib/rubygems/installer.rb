@@ -478,6 +478,9 @@ class Gem::Installer
     end
 
     if which = Gem.configuration[:custom_shebang]
+      # replace bin_file_name with "ruby" to avoid endless loops
+      which = which.gsub(/ #{bin_file_name}$/," #{Gem::ConfigMap[:ruby_install_name]}")
+
       which = which.gsub(/\$(\w+)/) do
         case $1
         when "env"

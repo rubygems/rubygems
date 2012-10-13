@@ -156,7 +156,7 @@ class TestRequire < Gem::TestCase
     save_loaded_features do
       default_gem_spec = new_default_spec("default", "2.0.0.0",
                                           nil, "default/gem.rb")
-      Gem.register_default_spec(default_gem_spec)
+      install_default_specs(default_gem_spec)
       assert_require "default/gem"
       assert_equal %w(default-2.0.0.0), loaded_spec_names
     end
@@ -166,7 +166,7 @@ class TestRequire < Gem::TestCase
     save_loaded_features do
       default_gem_spec = new_default_spec("default", "2.0.0.0",
                                           nil, "default/gem.rb")
-      Gem.register_default_spec(default_gem_spec)
+      install_default_specs(default_gem_spec)
       normal_gem_spec = new_spec("default", "3.0", nil,
                                  "lib/default/gem.rb")
       install_specs(normal_gem_spec)

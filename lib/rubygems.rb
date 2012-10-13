@@ -940,7 +940,6 @@ module Gem
     # Register a Gem::Specification for default gem
 
     def register_default_spec(spec)
-      Specification.add_spec(spec)
       spec.files.each do |file|
         @path_to_default_spec_map[file] = spec
       end
@@ -1063,6 +1062,10 @@ unless gem_preluded then # TODO: remove guard after 1.9.2 dropped
     end
   end
 end
+
+##
+# Loads the default specs.
+Gem::Specification.load_defaults
 
 require 'rubygems/core_ext/kernel_gem'
 require 'rubygems/core_ext/kernel_require'

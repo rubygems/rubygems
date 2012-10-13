@@ -454,6 +454,16 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   end
 
   ##
+  # Install the provided default specs
+
+  def install_default_specs(*specs)
+    install_specs(*specs)
+    specs.each do |spec|
+      Gem.register_default_spec(spec)
+    end
+  end
+
+  ##
   # Create a new spec (or gem if passed an array of files) and set it
   # up properly. Use this instead of util_spec and util_gem.
 

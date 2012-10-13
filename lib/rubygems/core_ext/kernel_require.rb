@@ -4,22 +4,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-module Gem
-  class CustomRequire
-    def initialize(path)
-      @path = path
-    end
-
-    def run
-      spec = Gem.find_unresolved_default_spec(@path)
-      if spec
-        Gem.remove_unresolved_default_spec(spec)
-        gem(spec.name)
-      end
-    end
-  end
-end
-
 module Kernel
 
   if defined?(gem_original_require) then
@@ -48,7 +32,11 @@ module Kernel
   # that file has already been loaded is preserved.
 
   def require path
-    Gem::CustomRequire.new(path).run
+    spec = Gem.find_unresolved_default_spec(path)
+    if spec
+      Gem.remove_unresolved_default_spec(spec)
+      gem(spec.name)
+    end
 
     # If there are no unresolved deps, then we can use just try
     # normal require handle loading a gem from the rescue below.

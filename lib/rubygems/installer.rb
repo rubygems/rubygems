@@ -484,9 +484,7 @@ class Gem::Installer
       which = which.gsub(/\$(\w+)/) do
         case $1
         when "env"
-          @env_path ||= ENV_PATHS.find do |env_path|
-                          File.executable? env_path
-                        end
+          @env_path ||= ENV_PATHS.find {|env_path| File.executable? env_path }
         when "ruby"
           "#{Gem.ruby}#{opts}"
         when "exec"
@@ -496,10 +494,8 @@ class Gem::Installer
         end
       end
 
-      return "#!#{which}"
-    end
-
-    if not ruby_name then
+      "#!#{which}"
+    elsif not ruby_name then
       "#!#{Gem.ruby}#{opts}"
     elsif opts then
       "#!/bin/sh\n'exec' #{ruby_name.dump} '-x' \"$0\" \"$@\"\n#{shebang}"

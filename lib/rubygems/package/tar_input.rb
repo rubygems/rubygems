@@ -5,7 +5,6 @@
 #--
 
 require 'zlib'
-Gem.load_yaml
 
 class Gem::Package::TarInput
 

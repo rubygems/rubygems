@@ -24,16 +24,6 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     util_test_build_gem @gem, gemspec_file
   end
 
-  def test_execute_yaml
-    gemspec_file = File.join(@tempdir, @gem.spec_name)
-
-    File.open gemspec_file, 'w' do |gs|
-      gs.write @gem.to_yaml
-    end
-
-    util_test_build_gem @gem, gemspec_file
-  end
-
   def test_execute_bad_spec
     @gem.date = "2010-11-08"
 
@@ -102,18 +92,12 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   end
 
   def test_execute_force
-    @gem.instance_variable_set :@required_rubygems_version, nil
-
     gemspec_file = File.join(@tempdir, @gem.spec_name)
 
-    data = @gem.to_yaml
-
-    rrv = data.split("\n").grep(/required_rubygems_version/)
-
-    assert_equal ["required_rubygems_version: "], rrv
+    @gem.send :remove_instance_variable, :@rubygems_version
 
     File.open gemspec_file, 'w' do |gs|
-      gs.write data
+      gs.write @gem.to_ruby
     end
 
     @cmd.options[:args] = [gemspec_file]
@@ -121,7 +105,6 @@ class TestGemCommandsBuildCommand < Gem::TestCase
 
     util_test_build_gem @gem, gemspec_file, false
   end
-
 
 end
 

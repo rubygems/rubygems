@@ -51,6 +51,8 @@ class TestGemPlatform < Gem::TestCase
       'i386-freebsd5'          => ['x86',       'freebsd',   '5'],
       'i386-freebsd6'          => ['x86',       'freebsd',   '6'],
       'i386-freebsd7'          => ['x86',       'freebsd',   '7'],
+      'i386-freebsd'           => ['x86',       'freebsd',   nil],
+      'universal-freebsd'      => ['universal', 'freebsd',   nil],
       'i386-java1.5'           => ['x86',       'java',      '1.5'],
       'x86-java1.6'            => ['x86',       'java',      '1.6'],
       'i386-java1.6'           => ['x86',       'java',      '1.6'],
@@ -75,6 +77,7 @@ class TestGemPlatform < Gem::TestCase
       'x86_64-linux'           => ['x86_64',    'linux',     nil],
       'x86_64-openbsd3.9'      => ['x86_64',    'openbsd',   '3.9'],
       'x86_64-openbsd4.0'      => ['x86_64',    'openbsd',   '4.0'],
+      'x86_64-openbsd'         => ['x86_64',    'openbsd',   nil],
     }
 
     test_cases.each do |arch, expected|

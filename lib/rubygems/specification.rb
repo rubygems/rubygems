@@ -611,33 +611,36 @@ class Gem::Specification
 
   attr_accessor :specification_version
 
-  def self._each_spec(gemspec_glob) # :nodoc:
-    self.dirs.each { |dir|
-      Dir[File.join(dir, gemspec_glob)].each { |path|
-        spec = Gem::Specification.load path.untaint
-        # #load returns nil if the spec is bad, so we just ignore
-        # it at this stage
-        yield(spec) if spec
+  class << self
+    private
+    def each_spec(gemspec_glob) # :nodoc:
+      self.dirs.each { |dir|
+        Dir[File.join(dir, gemspec_glob)].each { |path|
+          spec = Gem::Specification.load path.untaint
+          # #load returns nil if the spec is bad, so we just ignore
+          # it at this stage
+          yield(spec) if spec
+        }
       }
-    }
-  end
+    end
 
-  def self._each_default(&block) # :nodoc:
-    _each_spec(File.join("default", "*.gemspec"), &block)
-  end
+    def each_default(&block) # :nodoc:
+      each_spec(File.join("default", "*.gemspec"), &block)
+    end
 
-  def self._each_normal(&block) # :nodoc:
-    _each_spec("*.gemspec", &block)
+    def each_normal(&block) # :nodoc:
+      each_spec("*.gemspec", &block)
+    end
   end
 
   def self._all # :nodoc:
     unless defined?(@@all) && @@all then
 
       specs = {}
-      _each_default do |spec|
+      each_default do |spec|
         specs[spec.full_name] ||= spec
       end
-      _each_normal do |spec|
+      each_normal do |spec|
         specs[spec.full_name] ||= spec
       end
 
@@ -660,7 +663,7 @@ class Gem::Specification
   # Loads the default specifications. It should be called only once.
 
   def self.load_defaults
-    _each_default do |spec|
+    each_default do |spec|
       Gem.register_default_spec(spec)
     end
   end

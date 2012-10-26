@@ -613,9 +613,9 @@ class Gem::Specification
 
   class << self
     private
-    def each_spec(gemspec_glob) # :nodoc:
-      self.dirs.each { |dir|
-        Dir[File.join(dir, gemspec_glob)].each { |path|
+    def each_spec(search_dirs) # :nodoc:
+      search_dirs.each { |dir|
+        Dir[File.join(dir, "*.gemspec")].each { |path|
           spec = Gem::Specification.load path.untaint
           # #load returns nil if the spec is bad, so we just ignore
           # it at this stage
@@ -625,11 +625,12 @@ class Gem::Specification
     end
 
     def each_default(&block) # :nodoc:
-      each_spec(File.join("default", "*.gemspec"), &block)
+      each_spec([File.join(Gem.default_dir, "specifications", "default")],
+                &block)
     end
 
     def each_normal(&block) # :nodoc:
-      each_spec("*.gemspec", &block)
+      each_spec(dirs, &block)
     end
   end
 

@@ -183,23 +183,6 @@ class TestRequire < Gem::TestCase
     Gem::Specification.unresolved_deps.values.map(&:to_s).sort
   end
 
-  def new_default_spec(name, version, deps = nil, *files)
-    spec = new_spec(name, version, deps)
-    spec.files = files
-
-    lib_dir = File.join(@tempdir, "default_gems", "lib")
-    $LOAD_PATH.unshift(lib_dir)
-    files.each do |file|
-      rb_path = File.join(lib_dir, file)
-      FileUtils.mkdir_p(File.dirname(rb_path))
-      File.open(rb_path, "w") do |rb|
-        rb << "# #{file}"
-      end
-    end
-
-    spec
-  end
-
   def save_loaded_features
     old_loaded_features = $LOADED_FEATURES.dup
     yield

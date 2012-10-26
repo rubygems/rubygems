@@ -627,7 +627,7 @@ class Gem::Specification
   end
 
   def self._each_normal(&block) # :nodoc:
-    _each_spec(File.join("*.gemspec"), &block)
+    _each_spec("*.gemspec", &block)
   end
 
   def self._all # :nodoc:

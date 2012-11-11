@@ -1859,6 +1859,7 @@ end
     assert_equal a, Gem::Specification.find_inactive_by_path('foo')
     a.activate
     assert_equal nil, Gem::Specification.find_inactive_by_path('foo')
+  end
 
   def test_load_default_gem
     Gem::Specification.reset

@@ -2512,6 +2512,7 @@ class Gem::Specification
 
       instance_variable_set "@#{attribute}", value
     end
+  end
 
   def default_gem?
     loaded_from &&

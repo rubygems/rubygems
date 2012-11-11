@@ -612,6 +612,10 @@ class Gem::Specification
   attr_accessor :specification_version
 
   class << self
+    def default_specifications_dir
+      File.join(Gem.default_dir, "specifications", "default")
+    end
+
     private
     def each_spec(search_dirs) # :nodoc:
       search_dirs.each { |dir|
@@ -625,7 +629,7 @@ class Gem::Specification
     end
 
     def each_default(&block) # :nodoc:
-      each_spec([File.join(Gem.default_dir, "specifications", "default")],
+      each_spec([default_specifications_dir],
                 &block)
     end
 
@@ -2508,6 +2512,10 @@ class Gem::Specification
 
       instance_variable_set "@#{attribute}", value
     end
+
+  def default_gem?
+    loaded_from &&
+      File.dirname(loaded_from) == self.class.default_specifications_dir
   end
 
   extend Gem::Deprecate

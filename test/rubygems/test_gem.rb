@@ -6,8 +6,8 @@ require 'tmpdir'
 
 # TODO: push this up to test_case.rb once battle tested
 $SAFE=1
-$LOAD_PATH.each do |path|
-  path.untaint
+$LOAD_PATH = $LOAD_PATH.map do |path|
+  path.dup.untaint
 end
 
 class TestGem < Gem::TestCase

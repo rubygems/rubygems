@@ -6,7 +6,7 @@ require 'tmpdir'
 
 # TODO: push this up to test_case.rb once battle tested
 $SAFE=1
-$LOAD_PATH = $LOAD_PATH.map do |path|
+$LOAD_PATH.map! do |path|
   path.dup.untaint
 end
 

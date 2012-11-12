@@ -49,7 +49,8 @@ lib/rubygems/commands/update_command.rb
 lib/rubygems/commands/which_command.rb
 lib/rubygems/compatibility.rb
 lib/rubygems/config_file.rb
-lib/rubygems/custom_require.rb
+lib/rubygems/core_ext/kernel_gem.rb
+lib/rubygems/core_ext/kernel_require.rb
 lib/rubygems/defaults.rb
 lib/rubygems/dependency.rb
 lib/rubygems/dependency_installer.rb

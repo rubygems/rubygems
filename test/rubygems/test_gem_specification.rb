@@ -1861,6 +1861,17 @@ end
     assert_equal nil, Gem::Specification.find_inactive_by_path('foo')
   end
 
+  def test_extract_basic_info
+    path = "xxx/yyy/a-1.gemspec"
+    assert_equal ["a", Gem::Version.new("1"), path], Gem::Specification.extract_basic_info(path)
+
+    path = "xxx/yyy/foo-1.2.3.gemspec"
+    assert_equal ["foo", Gem::Version.new("1.2.3"), path], Gem::Specification.extract_basic_info(path)
+
+    path = "xxx/yyy/foo-bar-1.2.3.gemspec"
+    assert_equal ["foo-bar", Gem::Version.new("1.2.3"), path], Gem::Specification.extract_basic_info(path)
+  end
+
   def util_setup_deps
     @gem = quick_spec "awesome", "1.0" do |awesome|
       awesome.add_runtime_dependency "bonobo", []

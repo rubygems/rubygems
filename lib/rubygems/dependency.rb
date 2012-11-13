@@ -245,9 +245,10 @@ class Gem::Dependency
   # DOC: this method needs either documented or :nodoc'd
 
   def matching_specs platform_only = false
-    matches = Gem::Specification.find_all { |spec|
-      self.name === spec.name and # TODO: == instead of ===
-        requirement.satisfied_by? spec.version
+    matches = []
+    Gem::Specification.stubs.each { |name, version, file|
+      next unless self.name == name and requirement.satisfied_by? version
+      matches << Gem::Specification.load(file)
     }
 
     if platform_only
@@ -256,7 +257,7 @@ class Gem::Dependency
       }
     end
 
-    matches = matches.sort_by { |s| s.sort_obj } # HACK: shouldn't be needed
+    matches.sort_by { |s| s.sort_obj } # HACK: shouldn't be needed
   end
 
   ##

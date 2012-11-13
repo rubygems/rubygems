@@ -611,18 +611,25 @@ class Gem::Specification
 
   attr_accessor :specification_version
 
+  def self.stubs
+    @@stubs ||= gemspec_files.map { |file| extract_basic_info(file) }
+  end
+
+  def self.extract_basic_info(file)
+    name, version = File.basename(file).sub(".gemspec", "").split(/-([^-]+$)/)
+    return name, Gem::Version.new(version), file
+  end
+
   def self._all # :nodoc:
     unless defined?(@@all) && @@all then
 
       specs = {}
 
-      self.dirs.each { |dir|
-        Dir[File.join(dir, "*.gemspec")].each { |path|
-          spec = Gem::Specification.load path.untaint
-          # #load returns nil if the spec is bad, so we just ignore
-          # it at this stage
-          specs[spec.full_name] ||= spec if spec
-        }
+      gemspec_files.each { |path|
+        spec = Gem::Specification.load path.untaint
+        # #load returns nil if the spec is bad, so we just ignore
+        # it at this stage
+        specs[spec.full_name] ||= spec if spec
       }
 
       @@all = specs.values
@@ -630,6 +637,14 @@ class Gem::Specification
       _resort!
     end
     @@all
+  end
+
+  def self.gemspec_files
+    all = []
+    self.dirs.each { |dir|
+      all.concat Dir[File.join(dir, "*.gemspec")]
+    }
+    all
   end
 
   def self._resort! # :nodoc:
@@ -995,6 +1010,7 @@ class Gem::Specification
     @@dirs = nil
     Gem.pre_reset_hooks.each { |hook| hook.call }
     @@all = nil
+    @@stubs = nil
     unresolved = unresolved_deps
     unless unresolved.empty? then
       w = "W" + "ARN"

@@ -227,5 +227,23 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     assert_match %r|at least one gem name|, e.message
   end
 
+  def test_execute_default_gem
+    default_gem_spec = new_default_spec("default", "2.0.0.0",
+                                        nil, "default/gem.rb")
+    install_default_specs(default_gem_spec)
+
+    @cmd.options[:args] = %w[default]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal([
+                   "Restoring gems to pristine condition...",
+                   "Skipped default-2.0.0.0, it is a default gem",
+                 ],
+                 @ui.output.split("\n"))
+    assert_empty(@ui.error)
+  end
 end
 

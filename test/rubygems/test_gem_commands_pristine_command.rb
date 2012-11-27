@@ -9,17 +9,28 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute
-    a = quick_spec 'a' do |s| s.executables = %w[foo] end
+    a = quick_spec 'a' do |s|
+      s.executables = %w[foo]
+      s.files = %w[bin/foo lib/a.rb]
+    end
 
+    write_file File.join(@tempdir, 'lib', 'a.rb') do |fp|
+      fp.puts "puts __FILE__"
+    end
     write_file File.join(@tempdir, 'bin', 'foo') do |fp|
       fp.puts "#!/usr/bin/ruby"
     end
 
     install_gem a
 
-    foo_path = File.join @gemhome, 'gems', a.full_name, 'bin', 'foo'
+    foo_path  = File.join @gemhome, 'gems', a.full_name, 'bin', 'foo'
+    a_rb_path = File.join @gemhome, 'gems', a.full_name, 'lib', 'a.rb'
 
     write_file foo_path do |io|
+      io.puts 'I changed it!'
+    end
+
+    write_file a_rb_path do |io|
       io.puts 'I changed it!'
     end
 
@@ -30,6 +41,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     end
 
     assert_equal "#!/usr/bin/ruby\n", File.read(foo_path), foo_path
+    assert_equal "puts __FILE__\n", File.read(a_rb_path), a_rb_path
 
     out = @ui.output.split "\n"
 
@@ -46,9 +58,11 @@ class TestGemCommandsPristineCommand < Gem::TestCase
 
     install_gem a
 
-    gem_bin = File.join @gemhome, 'gems', a.full_name, 'bin', 'foo'
+    gem_bin  = File.join @gemhome, 'gems', a.full_name, 'bin', 'foo'
+    gem_stub = File.join @gemhome, 'bin', 'foo'
 
     FileUtils.rm gem_bin
+    FileUtils.rm gem_stub
 
     @cmd.handle_options %w[--all]
 
@@ -57,6 +71,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     end
 
     assert File.exist?(gem_bin)
+    assert File.exist?(gem_stub)
 
     out = @ui.output.split "\n"
 
@@ -225,6 +240,36 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     end
 
     assert_match %r|at least one gem name|, e.message
+  end
+
+  def test_execute_only_executables
+    a = quick_spec 'a' do |s|
+      s.executables = %w[foo]
+      s.files = %w[bin/foo lib/a.rb]
+    end
+    write_file File.join(@tempdir, 'lib', 'a.rb') do |fp|
+      fp.puts "puts __FILE__"
+    end
+    write_file File.join(@tempdir, 'bin', 'foo') do |fp|
+      fp.puts "#!/usr/bin/ruby"
+    end
+
+    install_gem a
+
+    gem_lib  = File.join @gemhome, 'gems', a.full_name, 'lib', 'a.rb'
+    gem_exec = File.join @gemhome, 'bin', 'foo'
+
+    FileUtils.rm gem_exec
+    FileUtils.rm gem_lib
+
+    @cmd.handle_options %w[--all --only-executables]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert File.exist? gem_exec
+    refute File.exist? gem_lib
   end
 
   def test_execute_default_gem

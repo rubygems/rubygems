@@ -24,6 +24,11 @@ class Gem::Commands::PristineCommand < Gem::Command
       options[:extensions] = value
     end
 
+    add_option('--only-executables',
+               'Only restore executables') do |value, options|
+      options[:only_executables] = value
+    end
+
     add_version_option('restore to', 'pristine condition')
   end
 
@@ -108,7 +113,11 @@ extensions.
                                      :install_dir => spec.base_dir,
                                      :env_shebang => installer_env_shebang,
                                      :build_args => spec.build_args)
-      installer.install
+      if options[:only_executables] then
+        installer.generate_bin
+      else
+        installer.install
+      end
 
       say "Restored #{spec.full_name}"
     end

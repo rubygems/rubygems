@@ -385,7 +385,7 @@ class Gem::Installer
 
       unless File.exist? bin_path then
         # TODO change this to a more useful warning
-        warn "Hey?!?! Where did #{bin_path} go??"
+        warn "#{bin_path} maybe `gem pristine #{spec.name}` will fix it?"
         next
       end
 

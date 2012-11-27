@@ -78,6 +78,11 @@ extensions.
     say "Restoring gems to pristine condition..."
 
     specs.each do |spec|
+      if spec.default_gem?
+        say "Skipped #{spec.full_name}, it is a default gem"
+        next
+      end
+
       unless spec.extensions.empty? or options[:extensions] then
         say "Skipped #{spec.full_name}, it needs to compile an extension"
         next

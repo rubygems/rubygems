@@ -1861,6 +1861,20 @@ end
     assert_equal nil, Gem::Specification.find_inactive_by_path('foo')
   end
 
+  def test_load_default_gem
+    Gem::Specification.reset
+    assert_equal [], Gem::Specification.map(&:full_name)
+
+    default_gem_spec = new_default_spec("default", "2.0.0.0",
+                                        nil, "default/gem.rb")
+    spec_path = File.join(@default_spec_dir, default_gem_spec.spec_name)
+    write_file(spec_path) do |file|
+      file.print(default_gem_spec.to_ruby)
+    end
+    Gem::Specification.reset
+    assert_equal ["default-2.0.0.0"], Gem::Specification.map(&:full_name)
+  end
+
   def util_setup_deps
     @gem = quick_spec "awesome", "1.0" do |awesome|
       awesome.add_runtime_dependency "bonobo", []

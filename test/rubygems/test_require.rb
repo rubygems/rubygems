@@ -152,6 +152,29 @@ class TestRequire < Gem::TestCase
     end
   end
 
+  def test_default_gem_only
+    save_loaded_features do
+      default_gem_spec = new_default_spec("default", "2.0.0.0",
+                                          nil, "default/gem.rb")
+      install_default_specs(default_gem_spec)
+      assert_require "default/gem"
+      assert_equal %w(default-2.0.0.0), loaded_spec_names
+    end
+  end
+
+  def test_default_gem_and_normal_gem
+    save_loaded_features do
+      default_gem_spec = new_default_spec("default", "2.0.0.0",
+                                          nil, "default/gem.rb")
+      install_default_specs(default_gem_spec)
+      normal_gem_spec = new_spec("default", "3.0", nil,
+                                 "lib/default/gem.rb")
+      install_specs(normal_gem_spec)
+      assert_require "default/gem"
+      assert_equal %w(default-3.0), loaded_spec_names
+    end
+  end
+
   def loaded_spec_names
     Gem.loaded_specs.values.map(&:full_name).sort
   end

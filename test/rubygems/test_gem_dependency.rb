@@ -9,6 +9,15 @@ class TestGemDependency < Gem::TestCase
     assert_equal req("> 1.0"), d.requirement
   end
 
+  def test_initialize_type_bad
+    e = assert_raises ArgumentError do
+      Gem::Dependency.new 'monkey' => '1.0'
+    end
+
+    assert_equal 'dependency name must be a String, was {"monkey"=>"1.0"}',
+                 e.message
+  end
+
   def test_initialize_double
     d = dep "pkg", "> 1.0", "< 2.0"
     assert_equal req("> 1.0", "< 2.0"), d.requirement

@@ -35,18 +35,23 @@ class Gem::Dependency
   # <tt>:runtime</tt>.
 
   def initialize name, *requirements
-    if Regexp === name then
+    case name
+    when String then # ok
+    when Regexp then
       msg = ["NOTE: Dependency.new w/ a regexp is deprecated.",
              "Dependency.new called from #{Gem.location_of_caller.join(":")}"]
       warn msg.join("\n") unless Gem::Deprecate.skip
+    else
+      raise ArgumentError,
+            "dependency name must be a String, was #{name.inspect}"
     end
 
     type         = Symbol === requirements.last ? requirements.pop : :runtime
     requirements = requirements.first if 1 == requirements.length # unpack
 
     unless TYPES.include? type
-      raise ArgumentError, "Valid types are #{TYPES.inspect}, "
-        + "not #{type.inspect}"
+      raise ArgumentError, "Valid types are #{TYPES.inspect}, " +
+                           "not #{type.inspect}"
     end
 
     @name        = name

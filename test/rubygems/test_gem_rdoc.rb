@@ -20,11 +20,15 @@ class TestGemRDoc < Gem::TestCase
     Gem.configuration[:rdoc] = nil
   end
 
+  ##
+  # RDoc 4 ships with its own Gem::RDoc which overrides this one which is
+  # shipped for backwards compatibility.
+
   def rdoc_3?
-    Gem::Requirement.new('>= 3').satisfied_by? @rdoc.class.rdoc_version
+    Gem::Requirement.new('~> 3.0').satisfied_by? @rdoc.class.rdoc_version
   end
 
-  def rdoc_3_8?
+  def rdoc_3_8_or_better?
     Gem::Requirement.new('>= 3.8').satisfied_by? @rdoc.class.rdoc_version
   end
 
@@ -52,7 +56,7 @@ class TestGemRDoc < Gem::TestCase
   end
 
   def test_document
-    skip 'RDoc 3+ required' unless rdoc_3?
+    skip 'RDoc 3 required' unless rdoc_3?
 
     options = RDoc::Options.new
     options.files = []
@@ -66,7 +70,7 @@ class TestGemRDoc < Gem::TestCase
   end
 
   def test_generate
-    skip 'RDoc 3+ required' unless rdoc_3?
+    skip 'RDoc 3 required' unless rdoc_3?
 
     FileUtils.mkdir_p @a.doc_dir
     FileUtils.mkdir_p File.join(@a.gem_dir, 'lib')
@@ -82,7 +86,7 @@ class TestGemRDoc < Gem::TestCase
   end
 
   def test_generate_configuration_rdoc_array
-    skip 'RDoc 3+ required' unless rdoc_3?
+    skip 'RDoc 3 required' unless rdoc_3?
 
     Gem.configuration[:rdoc] = %w[-A]
 
@@ -97,7 +101,7 @@ class TestGemRDoc < Gem::TestCase
   end
 
   def test_generate_configuration_rdoc_string
-    skip 'RDoc 3+ required' unless rdoc_3?
+    skip 'RDoc 3 required' unless rdoc_3?
 
     Gem.configuration[:rdoc] = '-A'
 
@@ -122,7 +126,7 @@ class TestGemRDoc < Gem::TestCase
   end
 
   def test_generate_force
-    skip 'RDoc 3+ required' unless rdoc_3?
+    skip 'RDoc 3 required' unless rdoc_3?
 
     FileUtils.mkdir_p @a.doc_dir 'ri'
     FileUtils.mkdir_p @a.doc_dir 'rdoc'
@@ -137,7 +141,7 @@ class TestGemRDoc < Gem::TestCase
   end
 
   def test_generate_no_overwrite
-    skip 'RDoc 3+ required' unless rdoc_3?
+    skip 'RDoc 3 required' unless rdoc_3?
 
     FileUtils.mkdir_p @a.doc_dir 'ri'
     FileUtils.mkdir_p @a.doc_dir 'rdoc'
@@ -150,7 +154,7 @@ class TestGemRDoc < Gem::TestCase
   end
 
   def test_generate_legacy
-    skip 'RDoc < 3.8 required' if rdoc_3_8?
+    skip 'RDoc < 3.8 required' if rdoc_3_8_or_better?
 
     FileUtils.mkdir_p @a.doc_dir
     FileUtils.mkdir_p File.join(@a.gem_dir, 'lib')
@@ -162,7 +166,7 @@ class TestGemRDoc < Gem::TestCase
   end
 
   def test_legacy_rdoc
-    skip 'RDoc < 3.8 required' if rdoc_3_8?
+    skip 'RDoc < 3.8 required' if rdoc_3_8_or_better?
 
     FileUtils.mkdir_p @a.doc_dir
     FileUtils.mkdir_p File.join(@a.gem_dir, 'lib')

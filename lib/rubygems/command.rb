@@ -557,7 +557,7 @@ basic help message containing pointers to more information.
                                  http://localhost:8808/
                                  with info about installed gems
   Further information:
-    http://rubygems.rubyforge.org
+    http://guides.rubygems.org
   HELP
 
   # :startdoc:

@@ -368,7 +368,7 @@ class Gem::RemoteFetcher
   # Normalize the URI by adding "http://" if it is missing.
 
   def normalize_uri(uri)
-    (uri =~ /^(https?|ftp|file):/) ? uri : "http://#{uri}"
+    (uri =~ /^(https?|ftp|file):/i) ? uri : "http://#{uri}"
   end
 
   ##
@@ -391,7 +391,7 @@ class Gem::RemoteFetcher
     @connections[connection_id] ||= Net::HTTP.new(*net_http_args)
     connection = @connections[connection_id]
 
-    if uri.scheme == 'https' and not connection.started? then
+    if uri.scheme =~ /https/i and not connection.started? then
       require 'net/https'
       connection.use_ssl = true
       connection.verify_mode = OpenSSL::SSL::VERIFY_NONE

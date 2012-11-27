@@ -641,6 +641,14 @@ gems:
     assert_equal "too many redirects (#{url})", e.message
   end
 
+  def test_normalize_uri
+    assert_equal 'FILE://example/',  @fetcher.normalize_uri('FILE://example/')
+    assert_equal 'FTP://example/',   @fetcher.normalize_uri('FTP://example/')
+    assert_equal 'HTTP://example/',  @fetcher.normalize_uri('HTTP://example/')
+    assert_equal 'HTTPS://example/', @fetcher.normalize_uri('HTTPS://example/')
+    assert_equal 'http://example/',  @fetcher.normalize_uri('example/')
+  end
+
   def test_observe_no_proxy_env_single_host
     use_ui @ui do
       ENV["http_proxy"] = @proxy_uri

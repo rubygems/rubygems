@@ -611,19 +611,43 @@ class Gem::Specification
 
   attr_accessor :specification_version
 
-  def self._all # :nodoc:
-    unless defined?(@@all) && @@all then
+  class << self
+    def default_specifications_dir
+      File.join(Gem.default_dir, "specifications", "default")
+    end
 
-      specs = {}
-
-      self.dirs.each { |dir|
+    private
+    def each_spec(search_dirs) # :nodoc:
+      search_dirs.each { |dir|
         Dir[File.join(dir, "*.gemspec")].each { |path|
           spec = Gem::Specification.load path.untaint
           # #load returns nil if the spec is bad, so we just ignore
           # it at this stage
-          specs[spec.full_name] ||= spec if spec
+          yield(spec) if spec
         }
       }
+    end
+
+    def each_default(&block) # :nodoc:
+      each_spec([default_specifications_dir],
+                &block)
+    end
+
+    def each_normal(&block) # :nodoc:
+      each_spec(dirs, &block)
+    end
+  end
+
+  def self._all # :nodoc:
+    unless defined?(@@all) && @@all then
+
+      specs = {}
+      each_default do |spec|
+        specs[spec.full_name] ||= spec
+      end
+      each_normal do |spec|
+        specs[spec.full_name] ||= spec
+      end
 
       @@all = specs.values
 
@@ -638,6 +662,15 @@ class Gem::Specification
       next names if names.nonzero?
       b.version <=> a.version
     }
+  end
+
+  ##
+  # Loads the default specifications. It should be called only once.
+
+  def self.load_defaults
+    each_default do |spec|
+      Gem.register_default_spec(spec)
+    end
   end
 
   ##
@@ -2479,6 +2512,11 @@ class Gem::Specification
 
       instance_variable_set "@#{attribute}", value
     end
+  end
+
+  def default_gem?
+    loaded_from &&
+      File.dirname(loaded_from) == self.class.default_specifications_dir
   end
 
   extend Gem::Deprecate

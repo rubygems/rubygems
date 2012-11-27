@@ -32,6 +32,12 @@ module Kernel
   # that file has already been loaded is preserved.
 
   def require path
+    spec = Gem.find_unresolved_default_spec(path)
+    if spec
+      Gem.remove_unresolved_default_spec(spec)
+      gem(spec.name)
+    end
+
     # If there are no unresolved deps, then we can use just try
     # normal require handle loading a gem from the rescue below.
 

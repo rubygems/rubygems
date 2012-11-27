@@ -149,6 +149,11 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     FileUtils.mkdir_p @gemhome
     FileUtils.mkdir_p @userhome
 
+    @default_dir = File.join @tempdir, 'default'
+    @default_spec_dir = File.join @default_dir, "specifications", "default"
+    Gem.instance_variable_set :@default_dir, @default_dir
+    FileUtils.mkdir_p @default_spec_dir
+
     # We use Gem::Specification.reset the first time only so that if there
     # are unresolved deps that leak into the whole test suite, they're at least
     # reported once.
@@ -163,6 +168,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     Gem::Security.reset
 
     Gem.loaded_specs.clear
+    Gem.clear_default_specs
     Gem::Specification.unresolved_deps.clear
 
     Gem.configuration.verbose = true
@@ -252,6 +258,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     else
       ENV.delete 'HOME'
     end
+
+    Gem.instance_variable_set :@default_dir, nil
   end
 
   ##
@@ -453,6 +461,16 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   end
 
   ##
+  # Install the provided default specs
+
+  def install_default_specs(*specs)
+    install_specs(*specs)
+    specs.each do |spec|
+      Gem.register_default_spec(spec)
+    end
+  end
+
+  ##
   # Create a new spec (or gem if passed an array of files) and set it
   # up properly. Use this instead of util_spec and util_gem.
 
@@ -491,6 +509,24 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       FileUtils.mkdir_p File.dirname cache_file
       FileUtils.mv spec.cache_file, cache_file
       FileUtils.rm spec.spec_file
+    end
+
+    spec
+  end
+
+  def new_default_spec(name, version, deps = nil, *files)
+    spec = new_spec(name, version, deps)
+    spec.loaded_from = File.join(@default_spec_dir, spec.spec_name)
+    spec.files = files
+
+    lib_dir = File.join(@tempdir, "default_gems", "lib")
+    $LOAD_PATH.unshift(lib_dir)
+    files.each do |file|
+      rb_path = File.join(lib_dir, file)
+      FileUtils.mkdir_p(File.dirname(rb_path))
+      File.open(rb_path, "w") do |rb|
+        rb << "# #{file}"
+      end
     end
 
     spec

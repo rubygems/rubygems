@@ -61,7 +61,7 @@ module Gem
   # Default gem load path
 
   def self.default_path
-    if File.exist? Gem.user_home then
+    if Gem.user_home && File.exist?(Gem.user_home) then
       [user_dir, default_dir]
     else
       [default_dir]

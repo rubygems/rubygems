@@ -298,6 +298,12 @@ TEXT
     rubygems_name = "rubygems-#{Gem::VERSION}"
     rubygems_doc_dir = File.join gem_doc_dir, rubygems_name
 
+    begin
+      Gem.ensure_gem_subdirectories Gem.dir
+    rescue SystemCallError
+      # ignore
+    end
+
     if File.writable? gem_doc_dir and
        (not File.exist? rubygems_doc_dir or
         File.writable? rubygems_doc_dir) then
@@ -306,9 +312,13 @@ TEXT
         rm_rf dir
       end
 
-      require 'gem/rdoc'
+      require 'rubygems/rdoc'
 
       fake_spec = Gem::Specification.new 'rubygems', Gem::VERSION
+      def fake_spec.full_gem_path
+        File.expand_path '../../../..', __FILE__
+      end
+
       generate_ri   = options[:document].include? 'ri'
       generate_rdoc = options[:document].include? 'rdoc'
 

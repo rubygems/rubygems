@@ -90,6 +90,7 @@ class Gem::CommandManager
     register_command :unpack
     register_command :update
     register_command :which
+    register_command :yank
   end
 
   ##

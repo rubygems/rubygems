@@ -783,9 +783,8 @@ module Gem
   end
 
   ##
-  # Returns an Array of sources to fetch remote gems from.  If the sources
-  # list is empty, attempts to load the "sources" gem, then uses
-  # default_sources if it is not installed.
+  # Returns an Array of sources to fetch remote gems from. Uses
+  # default_sources if the sources list is empty.
 
   def self.sources
     @sources ||= Gem::SourceList.from(default_sources)

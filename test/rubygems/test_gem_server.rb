@@ -18,6 +18,41 @@ class TestGemServer < Gem::TestCase
     @res = WEBrick::HTTPResponse.new :HTTPVersion => '1.0'
   end
 
+  def test_doc_root_3
+    orig_rdoc_version = Gem::RDoc.rdoc_version
+    Gem::RDoc.instance_variable_set :@rdoc_version, Gem::Version.new('3.12')
+
+    assert_equal '/doc_root/X-1/rdoc/index.html', @server.doc_root('X-1')
+
+  ensure
+    Gem::RDoc.instance_variable_set :@rdoc_version, orig_rdoc_version
+  end
+
+  def test_doc_root_4
+    orig_rdoc_version = Gem::RDoc.rdoc_version
+    Gem::RDoc.instance_variable_set :@rdoc_version, Gem::Version.new('4.0')
+
+    assert_equal '/doc_root/X-1/', @server.doc_root('X-1')
+
+  ensure
+    Gem::RDoc.instance_variable_set :@rdoc_version, orig_rdoc_version
+  end
+
+  def test_have_rdoc_4_plus_eh
+    orig_rdoc_version = Gem::RDoc.rdoc_version
+    Gem::RDoc.instance_variable_set :@rdoc_version, Gem::Version.new('4.0')
+
+    server = Gem::Server.new Gem.dir, 0, false
+    assert server.have_rdoc_4_plus?
+
+    Gem::RDoc.instance_variable_set :@rdoc_version, Gem::Version.new('3.12')
+
+    server = Gem::Server.new Gem.dir, 0, false
+    refute server.have_rdoc_4_plus?
+  ensure
+    Gem::RDoc.instance_variable_set :@rdoc_version, orig_rdoc_version
+  end
+
   def test_spec_dirs
     s = Gem::Server.new Gem.dir, process_based_port, false
 

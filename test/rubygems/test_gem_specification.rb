@@ -1563,12 +1563,15 @@ end
 
     Dir.chdir @tempdir do
       File.chmod 0640, File.join('lib', 'code.rb')
+      File.chmod 0640, File.join('bin', 'exec')
 
       use_ui @ui do
         @a1.validate
       end
 
-      assert_equal "#{w}:  lib/code.rb is not world-readable\n", @ui.error
+      assert_match "#{w}:  lib/code.rb is not world-readable\n", @ui.error
+      assert_match "#{w}:  bin/exec is not world-readable\n", @ui.error
+      assert_match "#{w}:  bin/exec is not executable\n", @ui.error
     end
   end
 
@@ -1932,7 +1935,7 @@ end
       FileUtils.touch File.join("lib", "code.rb")
       FileUtils.touch File.join("test", "suite.rb")
 
-      File.open "bin/exec", "w" do |fp|
+      File.open "bin/exec", "w", 0755 do |fp|
         fp.puts "#!#{Gem.ruby}"
       end
     end

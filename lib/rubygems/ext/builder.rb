@@ -16,7 +16,7 @@ class Gem::Ext::Builder
       raise Gem::InstallError, "Makefile not found:\n\n#{results.join "\n"}"
     end
 
-    mf = File.read('Makefile')
+    mf = Gem.read_binary 'Makefile'
     mf = mf.gsub(/^RUBYARCHDIR\s*=\s*\$[^$]*/, "RUBYARCHDIR = #{dest_path}")
     mf = mf.gsub(/^RUBYLIBDIR\s*=\s*\$[^$]*/, "RUBYLIBDIR = #{dest_path}")
 

@@ -624,7 +624,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     util_setup_fake_fetcher
     util_setup_spec_fetcher
 
-    Gem.sources << "http://not-there.nothing"
+    Gem.sources << "http://nonexistent.example"
 
     @fetcher.data["#{@gem_repo}gems/#{@a2.file_name}"] =
       read_binary(@a2.cache_file)
@@ -648,7 +648,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     e = @ui.error
 
-    x = "WARNING:  Unable to pull data from 'http://not-there.nothing': no data for http://not-there.nothing/latest_specs.4.8.gz (http://not-there.nothing/latest_specs.4.8.gz)\n"
+    x = "WARNING:  Unable to pull data from 'http://nonexistent.example': no data for http://nonexistent.example/latest_specs.4.8.gz (http://nonexistent.example/latest_specs.4.8.gz)\n"
     assert_equal x, e
   end
 

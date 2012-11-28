@@ -3,6 +3,7 @@ require "rubygems/test_case"
 require "rubygems/commands/help_command"
 require "rubygems/package"
 require "rubygems/command_manager"
+require File.expand_path('../rubygems_plugin', __FILE__)
 
 class TestGemCommandsHelpCommand < Gem::TestCase
   def setup

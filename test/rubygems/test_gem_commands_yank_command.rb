@@ -6,6 +6,7 @@ class TestGemCommandsYankCommand < Gem::TestCase
     super
 
     @cmd = Gem::Commands::YankCommand.new
+    @cmd.host = 'http://example'
 
     @fetcher = Gem::RemoteFetcher.fetcher
 
@@ -31,7 +32,7 @@ class TestGemCommandsYankCommand < Gem::TestCase
   end
 
   def test_execute
-    yank_uri = 'https://rubygems.org/api/v1/gems/yank'
+    yank_uri = 'http://example/api/v1/gems/yank'
     @fetcher.data[yank_uri] = ['Successfully yanked', 200, 'OK']
 
     @cmd.options[:args]           = %w[a]
@@ -42,8 +43,8 @@ class TestGemCommandsYankCommand < Gem::TestCase
       @cmd.execute
     end
 
-    assert_match %r%Yanking gem from RubyGems.org%, @ui.output
-    assert_match %r%Successfully yanked%,           @ui.output
+    assert_match %r%Yanking gem from http://example%, @ui.output
+    assert_match %r%Successfully yanked%,      @ui.output
 
     platform = Gem.platforms[1]
     body = @fetcher.last_request.body.split('&').sort
@@ -55,7 +56,7 @@ class TestGemCommandsYankCommand < Gem::TestCase
   end
 
   def test_execute_key
-    yank_uri = 'https://rubygems.org/api/v1/gems/yank'
+    yank_uri = 'http://example/api/v1/gems/yank'
     @fetcher.data[yank_uri] = ['Successfully yanked', 200, 'OK']
 
     @cmd.options[:args]    = %w[a]
@@ -72,7 +73,7 @@ class TestGemCommandsYankCommand < Gem::TestCase
   end
 
   def test_execute_undo
-    unyank_uri = 'https://rubygems.org/api/v1/gems/unyank'
+    unyank_uri = 'http://example/api/v1/gems/unyank'
     @fetcher.data[unyank_uri] = ['Successfully unyanked', 200, 'OK']
 
     @cmd.options[:args]    = %w[a]
@@ -83,8 +84,8 @@ class TestGemCommandsYankCommand < Gem::TestCase
       @cmd.execute
     end
 
-    assert_match %r%Unyanking gem from RubyGems.org%, @ui.output
-    assert_match %r%Successfully unyanked%,           @ui.output
+    assert_match %r%Unyanking gem from http://example%, @ui.output
+    assert_match %r%Successfully unyanked%,      @ui.output
 
     body = @fetcher.last_request.body.split('&').sort
     assert_equal %w[gem_name=a version=1.0], body

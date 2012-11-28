@@ -57,12 +57,12 @@ class Gem::Commands::YankCommand < Gem::Command
   end
 
   def yank_gem(version, platform, api_key)
-    say "Yanking gem from RubyGems.org..."
+    say "Yanking gem from #{self.host}..."
     yank_api_request(:delete, version, platform, "api/v1/gems/yank", api_key)
   end
 
   def unyank_gem(version, platform, api_key)
-    say "Unyanking gem from RubyGems.org..."
+    say "Unyanking gem from #{host}..."
     yank_api_request(:put, version, platform, "api/v1/gems/unyank", api_key)
   end
 

@@ -47,7 +47,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
   end
 
   def defaults_str # :nodoc:
-    "--rdoc --ri --no-force --install-dir #{Gem.dir}"
+    "--document --no-force --install-dir #{Gem.dir}"
   end
 
   def usage # :nodoc:

@@ -108,7 +108,7 @@ class TestGemCommandManager < Gem::TestCase
 
       #check defaults
       @command_manager.process_args("install")
-      assert_equal %w[rdoc ri], check_options[:document].sort
+      assert_equal %w[ri], check_options[:document].sort
       assert_equal false, check_options[:force]
       assert_equal :both, check_options[:domain]
       assert_equal true, check_options[:wrappers]

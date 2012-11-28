@@ -45,12 +45,12 @@ module Gem::InstallUpdateOptions
       options[:bin_dir] = File.expand_path(value)
     end
 
-    add_option(:"Install/Update", '-d', '--[no-]document [TYPES]', Array,
+    add_option(:"Install/Update",       '--[no-]document [TYPES]', Array,
                'Generate documentation for installed gems',
                'List the documentation types you wish to',
                'generate.  For example: rdoc,ri') do |value, options|
       options[:document] = case value
-                           when nil   then %w[rdoc ri]
+                           when nil   then %w[ri]
                            when false then []
                            else            value
                            end

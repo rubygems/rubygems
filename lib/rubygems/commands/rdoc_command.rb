@@ -8,7 +8,7 @@ class Gem::Commands::RdocCommand < Gem::Command
   def initialize
     super 'rdoc', 'Generates RDoc for pre-installed gems',
           :version => Gem::Requirement.default,
-          :include_rdoc => true, :include_ri => true, :overwrite => false
+          :include_rdoc => false, :include_ri => true, :overwrite => false
 
     add_option('--all',
                'Generate RDoc/RI documentation for all',
@@ -39,7 +39,7 @@ class Gem::Commands::RdocCommand < Gem::Command
   end
 
   def defaults_str # :nodoc:
-    "--version '#{Gem::Requirement.default}' --rdoc --ri --no-overwrite"
+    "--version '#{Gem::Requirement.default}' --ri --no-overwrite"
   end
 
   def description # :nodoc:

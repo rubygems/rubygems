@@ -12,7 +12,7 @@ class Gem::Commands::SetupCommand < Gem::Command
     require 'tmpdir'
 
     super 'setup', 'Install RubyGems',
-          :format_executable => true, :rdoc => true, :ri => true,
+          :format_executable => true, :document => %w[ri],
           :site_or_vendor => :sitelibdir,
           :destdir => '', :prefix => '', :previous_version => ''
 
@@ -45,14 +45,37 @@ class Gem::Commands::SetupCommand < Gem::Command
       options[:format_executable] = value
     end
 
+    add_option '--[no-]document [TYPES]', Array,
+               'Generate documentation for RubyGems.',
+               'List the documentation types you wish to',
+               'generate.  For example: rdoc,ri' do |value, options|
+      options[:document] = case value
+                           when nil   then %w[rdoc ri]
+                           when false then []
+                           else            value
+                           end
+    end
+
     add_option '--[no-]rdoc',
                'Generate RDoc documentation for RubyGems' do |value, options|
-      options[:rdoc] = value
+      if value then
+        options[:document] << 'rdoc'
+      else
+        options[:document].delete 'rdoc'
+      end
+
+      options[:document].uniq!
     end
 
     add_option '--[no-]ri',
                'Generate RI documentation for RubyGems' do |value, options|
-      options[:ri] = value
+      if value then
+        options[:document] << 'ri'
+      else
+        options[:document].delete 'ri'
+      end
+
+      options[:document].uniq!
     end
   end
 
@@ -66,7 +89,7 @@ class Gem::Commands::SetupCommand < Gem::Command
   end
 
   def defaults_str # :nodoc:
-    "--format-executable --rdoc --ri"
+    "--format-executable --document ri"
   end
 
   def description # :nodoc:
@@ -171,25 +194,25 @@ By default, this RubyGems will install gem as:
     end
 
     if documentation_success
-      if options[:rdoc]
+      if options[:document].include? 'rdoc' then
         say "Rdoc documentation was installed. You may now invoke:"
         say "  gem server"
         say "and then peruse beautifully formatted documentation for your gems"
         say "with your web browser."
         say "If you do not wish to install this documentation in the future, use the"
-        say "--no-rdoc flag, or set it as the default in your ~/.gemrc file. See"
+        say "--no-document flag, or set it as the default in your ~/.gemrc file. See"
         say "'gem help env' for details."
         say
       end
 
-      if options[:ri]
+      if options[:document].include? 'ri' then
         say "Ruby Interactive (ri) documentation was installed. ri is kind of like man "
         say "pages for ruby libraries. You may access it like this:"
         say "  ri Classname"
         say "  ri Classname.class_method"
         say "  ri Classname#instance_method"
         say "If you do not wish to install this documentation in the future, use the"
-        say "--no-ri flag, or set it as the default in your ~/.gemrc file. See"
+        say "--no-document flag, or set it as the default in your ~/.gemrc file. See"
         say "'gem help env' for details."
         say
       end
@@ -283,22 +306,21 @@ TEXT
         rm_rf dir
       end
 
-      if options[:ri] then
-        ri_dir = File.join rubygems_doc_dir, 'ri'
-        say "Installing #{rubygems_name} ri into #{ri_dir}" if @verbose
-        run_rdoc '--ri', '--op', ri_dir
-      end
+      require 'gem/rdoc'
 
-      if options[:rdoc] then
-        rdoc_dir = File.join rubygems_doc_dir, 'rdoc'
-        say "Installing #{rubygems_name} rdoc into #{rdoc_dir}" if @verbose
-        run_rdoc '--op', rdoc_dir
-      end
+      fake_spec = Gem::Specification.new 'rubygems', Gem::VERSION
+      generate_ri   = options[:document].include? 'ri'
+      generate_rdoc = options[:document].include? 'rdoc'
+
+      rdoc = Gem::RDoc.new fake_spec, generate_rdoc, generate_ri
+      rdoc.generate
+
       return true
     elsif @verbose then
       say "Skipping RDoc generation, #{gem_doc_dir} not writable"
       say "Set the GEM_HOME environment variable if you want RDoc generated"
     end
+
     return false
   end
 
@@ -377,23 +399,6 @@ abort "#{deprecation_message}"
         fp.puts %{@ECHO.#{deprecation_message}}
       end
     end
-  end
-
-  def run_rdoc(*args)
-    begin
-      gem 'rdoc'
-    rescue Gem::LoadError
-    end
-
-    require 'rdoc/rdoc'
-
-    args << '--main' << 'README.rdoc' << '--quiet'
-    args << '.'
-    args << 'README.rdoc' << 'UPGRADING.rdoc'
-    args << 'LICENSE.txt' << 'MIT.txt' << 'History.txt'
-
-    r = RDoc::RDoc.new
-    r.document args
   end
 
   def uninstall_old_gemcutter

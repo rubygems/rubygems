@@ -102,10 +102,12 @@ class Gem::RDoc # :nodoc: all
 
   ##
   # Creates a new documentation generator for +spec+.  RDoc and ri data
-  # generation can be disabled through +generate_rdoc+ and +generate_ri+
-  # respectively.
+  # generation can be enabled or disabled through +generate_rdoc+ and
+  # +generate_ri+ respectively.
+  #
+  # Only +generate_ri+ is enabled by default.
 
-  def initialize spec, generate_rdoc = true, generate_ri = true
+  def initialize spec, generate_rdoc = false, generate_ri = true
     @doc_dir   = spec.doc_dir
     @file_info = nil
     @force     = false

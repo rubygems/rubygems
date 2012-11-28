@@ -25,7 +25,7 @@ class Gem::DependencyInstaller
 
   DEFAULT_OPTIONS = {
     :env_shebang         => false,
-    :document            => %w[rdoc ri],
+    :document            => %w[ri],
     :domain              => :both, # HACK dup
     :force               => false,
     :format_executable   => false, # HACK dup

@@ -67,7 +67,7 @@ class TestGemCommandsYankCommand < Gem::TestCase
     end
 
     body = @fetcher.last_request.body.split('&').sort
-    assert_equal %w[gem_name=a platform version=1.0], body
+    assert_equal %w[gem_name=a version=1.0], body
     assert_equal 'other', @fetcher.last_request['Authorization']
   end
 
@@ -87,7 +87,7 @@ class TestGemCommandsYankCommand < Gem::TestCase
     assert_match %r%Successfully unyanked%,           @ui.output
 
     body = @fetcher.last_request.body.split('&').sort
-    assert_equal %w[gem_name=a platform version=1.0], body
+    assert_equal %w[gem_name=a version=1.0], body
 
     assert_equal [unyank_uri], @fetcher.paths
   end

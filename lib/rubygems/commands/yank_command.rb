@@ -72,7 +72,14 @@ class Gem::Commands::YankCommand < Gem::Command
     name = get_one_gem_name
     response = rubygems_api_request(method, api) do |request|
       request.add_field("Authorization", api_key)
-      request.set_form_data({'gem_name' => name, 'version' => version, 'platform' => platform})
+
+      data = {
+        'gem_name' => name,
+        'version' => version,
+      }
+      data['platform'] = platform if platform
+
+      request.set_form_data data
     end
     say response.body
   end

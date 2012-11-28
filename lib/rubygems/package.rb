@@ -221,6 +221,7 @@ class Gem::Package
     @spec.mark_version
 
     setup_signer
+    permission_checker
 
     open @gem, 'wb' do |gem_io|
       Gem::Package::TarWriter.new gem_io do |gem|
@@ -407,6 +408,28 @@ EOM
         YAML.load gz_io.read
       end
     end
+  end
+
+  ##
+  # Checks to see if the files about to be packaged have world-readable permissions.
+
+  def permission_checker
+    require 'rubygems/user_interaction'
+    bad_file_found = false
+    bad_file_array = []
+    # scan for files with bad perms
+    @spec.files.each do |file|
+      if ! File.stat(file).world_readable?
+        bad_file_found = true
+        bad_file_array << file
+      end
+    end
+
+    if bad_file_found
+      alert_warning "files found with non-world-readable permissions (#{bad_file_array.join(',')})!"
+    end
+    # TODO: add a fatal error option to this?
+    # TODO: check executables for world-writable?
   end
 
   ##

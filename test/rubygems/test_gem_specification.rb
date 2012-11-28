@@ -1556,6 +1556,22 @@ end
     end
   end
 
+  def test_validate_permissions
+    skip 'chmod not supported' if Gem.win_platform?
+
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      File.chmod 0640, File.join('lib', 'code.rb')
+
+      use_ui @ui do
+        @a1.validate
+      end
+
+      assert_equal "#{w}:  lib/code.rb is not world-readable\n", @ui.error
+    end
+  end
+
   def test_validate_platform_legacy
     util_setup_validate
 

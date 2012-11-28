@@ -196,28 +196,6 @@ class TestGemPackage < Gem::Package::TarTestCase
     assert_equal %w[lib/code.rb], reader.contents
   end
 
-  def test_build_bad_permissions
-    bad_file = "./gemhome/cache/a-2.gem"
-
-    spec = Gem::Specification.new 'build', '1'
-    spec.summary = 'build'
-    spec.authors = 'build'
-    spec.files = [bad_file]
-
-    package = Gem::Package.new spec.file_name
-    package.spec = spec
-
-    # make the file non-world-readable
-    File.chmod(00640, bad_file)
-
-    use_ui @ui do
-      package.build
-    end
-
-    assert_match(
-        "files found with non-world-readable permissions", @ui.error)
-  end
-
   def test_build_invalid
     spec = Gem::Specification.new 'build', '1'
 

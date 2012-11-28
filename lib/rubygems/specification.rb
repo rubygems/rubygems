@@ -2413,6 +2413,8 @@ class Gem::Specification
 
     alert_warning 'licenses is empty' if licenses.empty?
 
+    validate_permissions
+
     # reject lazy developers:
 
     # FIX: Doesn't this just evaluate to "FIXME" or "TODO"?
@@ -2471,6 +2473,16 @@ class Gem::Specification
     end
 
     true
+  end
+
+  ##
+  # Checks to see if the files to be packaged are world-readable.
+
+  def validate_permissions
+    files.each do |file|
+      next if File.stat(file).world_readable?
+      alert_warning "#{file} is not world-readable"
+    end
   end
 
   ##

@@ -2461,6 +2461,15 @@ class Gem::Specification
       alert_warning "#{executable_path} is missing #! line" unless shebang
     end
 
+    dependencies.each do |dep|
+      prerelease_dep = dep.requirements_list.any? do |req|
+        Gem::Requirement.new(req).prerelease?
+      end
+
+      alert_warning "prerelease dependency on #{dep} is not recommended" if
+        prerelease_dep
+    end
+
     true
   end
 

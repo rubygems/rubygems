@@ -1339,6 +1339,26 @@ end
     end
   end
 
+  def test_validate_dependencies
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @a1.add_runtime_dependency     'b', '>= 1.0.rc1'
+      @a1.add_development_dependency 'c', '>= 2.0.rc2'
+
+      use_ui @ui do
+        @a1.validate
+      end
+
+      expected = <<-EXPECTED
+#{w}:  prerelease dependency on b (>= 1.0.rc1) is not recommended
+#{w}:  prerelease dependency on c (>= 2.0.rc2, development) is not recommended
+      EXPECTED
+
+      assert_equal expected, @ui.error, 'warning'
+    end
+  end
+
   def test_validate_description
     util_setup_validate
 

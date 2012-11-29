@@ -1,7 +1,7 @@
 require 'rubygems/test_case'
 require 'rubygems'
 
-class TestRequire < Gem::TestCase
+class TestGemRequire < Gem::TestCase
   def assert_require(path)
     assert require(path), "'#{path}' was already required"
   end

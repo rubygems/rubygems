@@ -152,6 +152,8 @@ class Gem::Package
   # Adds a checksum for each entry in the gem to checksums.yaml.gz.
 
   def add_checksums tar
+    Gem.load_yaml
+
     checksums_by_algorithm = Hash.new { |h, algorithm| h[algorithm] = {} }
 
     @checksums.each do |name, digests|
@@ -402,6 +404,8 @@ EOM
   # Reads and loads checksums.yaml.gz from the tar file +gem+
 
   def read_checksums gem
+    Gem.load_yaml
+
     @checksums = gem.seek 'checksums.yaml.gz' do |entry|
       Zlib::GzipReader.wrap entry do |gz_io|
         YAML.load gz_io.read

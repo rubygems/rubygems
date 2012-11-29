@@ -131,7 +131,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     @userhome = File.join @tempdir, 'userhome'
 
     @orig_ruby = if ruby = ENV['RUBY'] then
-                   Gem.class_eval { ruby, @ruby = @ruby, ruby }
+                   Gem.class_eval { ruby, @ruby = @ruby, ruby.dup }
                    ruby
                  end
 

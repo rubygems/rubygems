@@ -102,6 +102,9 @@ lib/rubygems/source_local.rb
 lib/rubygems/source_specific_file.rb
 lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
+lib/rubygems/ssl_certs/AddTrustExternalCARoot.pem
+lib/rubygems/ssl_certs/Entrust_net-Secure-Server-Certification-Authority.pem
+lib/rubygems/ssl_certs/VerisignClass3PublicPrimaryCertificationAuthority-G2.pem
 lib/rubygems/syck_hack.rb
 lib/rubygems/test_case.rb
 lib/rubygems/test_utilities.rb
@@ -118,6 +121,7 @@ test/rubygems/alternate_cert_32.pem
 test/rubygems/alternate_key.pem
 test/rubygems/bad_rake.rb
 test/rubygems/bogussources.rb
+test/rubygems/ca_cert.pem
 test/rubygems/child_cert.pem
 test/rubygems/child_cert_32.pem
 test/rubygems/child_key.pem
@@ -154,6 +158,8 @@ test/rubygems/rubygems/commands/crash_command.rb
 test/rubygems/rubygems_plugin.rb
 test/rubygems/sff/discover.rb
 test/rubygems/simple_gem.rb
+test/rubygems/ssl_cert.pem
+test/rubygems/ssl_key.pem
 test/rubygems/test_config.rb
 test/rubygems/test_deprecate.rb
 test/rubygems/test_gem.rb

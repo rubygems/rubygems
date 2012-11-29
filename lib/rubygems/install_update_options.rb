@@ -114,12 +114,6 @@ module Gem::InstallUpdateOptions
       options[:ignore_dependencies] = value
     end
 
-    add_option(:"Install/Update", '-y', '--include-dependencies',
-               'Unconditionally install the required',
-               'dependent gems') do |value, options|
-      options[:include_dependencies] = value
-    end
-
     add_option(:"Install/Update",       '--[no-]format-executable',
                'Make installed executable names match ruby.',
                'If ruby is ruby18, foo_exec will be',

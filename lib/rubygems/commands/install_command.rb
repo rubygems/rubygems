@@ -137,11 +137,6 @@ to write the specification by hand.  For example:
       return
     end
 
-    if options[:include_dependencies] then
-      alert "`gem install -y` is now default and will be removed"
-      alert "use --ignore-dependencies to install only the gems you list"
-    end
-
     @installed_specs = []
 
     ENV.delete 'GEM_PATH' if options[:install_dir].nil? and RUBY_VERSION > '1.9'

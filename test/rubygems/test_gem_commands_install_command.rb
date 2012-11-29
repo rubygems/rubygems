@@ -65,26 +65,6 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     assert_equal %w[a-2.a], @cmd.installed_specs.map { |spec| spec.full_name }
   end
 
-  def test_execute_include_dependencies
-    @cmd.options[:include_dependencies] = true
-    @cmd.options[:args] = []
-
-    assert_raises Gem::CommandLineError do
-      use_ui @ui do
-        @cmd.execute
-      end
-    end
-
-    assert_equal %w[], @cmd.installed_specs.map { |spec| spec.full_name }
-
-    output = @ui.output.split "\n"
-    assert_equal "INFO:  `gem install -y` is now default and will be removed",
-                 output.shift
-    assert_equal "INFO:  use --ignore-dependencies to install only the gems you list",
-                 output.shift
-    assert output.empty?, output.inspect
-  end
-
   def test_execute_local
     util_setup_fake_fetcher
     @cmd.options[:domain] = :local

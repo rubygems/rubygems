@@ -19,7 +19,6 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
       --document
       --format-exec
       --ignore-dependencies
-      --include-dependencies
       --rdoc
       --ri
       -E

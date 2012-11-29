@@ -107,7 +107,6 @@ require 'rubygems/compatibility'
 require 'rubygems/defaults'
 require 'rubygems/deprecate'
 require 'rubygems/errors'
-require 'rubygems/source_list'
 
 module Gem
   RUBYGEMS_DIR = File.dirname File.expand_path(__FILE__)
@@ -1027,6 +1026,7 @@ module Gem
   autoload :Requirement,     'rubygems/requirement'
   autoload :Dependency,      'rubygems/dependency'
   autoload :DependencyList,  'rubygems/dependency_list'
+  autoload :SourceList,      'rubygems/source_list'
   autoload :SpecFetcher,     'rubygems/spec_fetcher'
   autoload :Specification,   'rubygems/specification'
   autoload :PathSupport,     'rubygems/path_support'

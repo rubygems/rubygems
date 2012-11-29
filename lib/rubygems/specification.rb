@@ -39,7 +39,12 @@ require 'rubygems/version'
 require 'rubygems/requirement'
 require 'rubygems/platform'
 require 'rubygems/deprecate'
-require 'date'
+
+# :stopdoc:
+# date.rb can't be loaded for `make install` due to miniruby
+# Date is needed for old gems that stored #date as Date instead of Time.
+class Date; end
+# :startdoc:
 
 class Gem::Specification
 

@@ -347,7 +347,7 @@ class Gem::RemoteFetcher
 
     return [] if env_no_proxy.nil?  or env_no_proxy.empty?
 
-    env_no_proxy_list = env_no_proxy.split(/\s*,\s*/)
+    env_no_proxy.split(/\s*,\s*/)
   end
 
   ##

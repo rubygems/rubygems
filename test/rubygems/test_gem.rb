@@ -1402,6 +1402,38 @@ class TestGem < Gem::TestCase
     assert_equal '["a-1", "b-1", "c-1"]', out.strip
   end
 
+  def test_looks_for_gemdeps_files_automatically_on_start_in_parent_dir
+    util_clear_gems
+
+    a = new_spec "a", "1", nil, "lib/a.rb"
+    b = new_spec "b", "1", nil, "lib/b.rb"
+    c = new_spec "c", "1", nil, "lib/c.rb"
+
+    install_specs a, b, c
+
+    path = File.join @tempdir, "gem.deps.rb"
+
+    File.open path, "w" do |f|
+      f.puts "gem 'a'"
+      f.puts "gem 'b'"
+      f.puts "gem 'c'"
+    end
+
+    path = File.join(@tempdir, "gd-tmp")
+    install_gem a, :install_dir => path
+    install_gem b, :install_dir => path
+    install_gem c, :install_dir => path
+
+    ENV['GEM_PATH'] = path
+    ENV['RUBYGEMS_GEMDEPS'] = "-"
+
+    out = `mkdir -p sub1; cd sub1; #{Gem.ruby.untaint} -I #{LIB_PATH.untaint} -rubygems -e "p Gem.loaded_specs.values.map(&:full_name).sort"`
+
+    Dir.rmdir "sub1"
+
+    assert_equal '["a-1", "b-1", "c-1"]', out.strip
+  end
+
   def with_plugin(path)
     test_plugin_path = File.expand_path("test/rubygems/plugin/#{path}",
                                         @@project_dir)

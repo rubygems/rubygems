@@ -1,5 +1,111 @@
 # coding: UTF-8
 
+=== 1.8.24 / 2012-04-27
+
+* 1 bug fix:
+
+  * Install the .pem files properly. Fixes #320
+  * Remove OpenSSL dependency from the http code path
+
+=== 1.8.23 / 2012-04-19
+
+This release increases the security used when RubyGems is talking to
+an https server. If you use a custom RubyGems server over SSL, this
+release will cause RubyGems to no longer connect unless your SSL cert
+is globally valid.
+
+You can configure SSL certificate usage in RubyGems through the
+:ssl_ca_cert and :ssl_verify_mode options in ~/.gemrc and /etc/gemrc.
+The recommended way is to set :ssl_ca_cert to the CA certificate for
+your server or a certificate bundle containing your CA certification.
+
+You may also set :ssl_verify_mode to 0 to completely disable SSL
+certificate checks, but this is not recommended.
+
+
+* 2 security fixes:
+  * Disallow redirects from https to http
+  * Turn on verification of server SSL certs
+
+* 1 minor feature:
+  * Add --clear-sources to fetch
+
+* 2 bug fixes:
+  * Use File.identical? to check if two files are the same.
+  * Fixed init_with warning when using psych
+
+=== 1.8.22 / 2012-04-13
+
+* 4 bug fixes:
+
+  * Workaround for psych/syck YAML date parsing issue
+  * Don't trust the encoding of ARGV. Fixes #307
+  * Quiet default warnings about missing spec variables
+  * Read a binary file properly (windows fix)
+
+=== 1.8.21 / 2012-03-22
+
+* 2 bug fixes:
+
+  * Add workaround for buggy yaml output from 1.9.2
+  * Force 1.9.1 to remove it's prelude code. Fixes #305
+
+=== 1.8.20 / 2012-03-21
+
+* 4 bug fixes:
+
+  * Add --force to `gem build` to skip validation. Fixes #297
+  * Gracefully deal with YAML::PrivateType objects in Marshal'd gemspecs
+  * Treat the source as a proper url base. Fixes #304
+  * Warn when updating the specs cache fails. Fixes #300
+
+=== 1.8.19 / 2012-03-14
+
+* 3 bug fixes:
+
+  * Handle loading psych vs syck properly. Fixes #298
+  * Make sure Date objects don't leak in via Marshal
+  * Perform Date => Time coercion on yaml loading. Fixes #266
+
+=== 1.8.18 / 2012-03-11
+
+* 4 bug fixes:
+
+  * Use Psych API to emit more compatible YAML
+  * Download and write inside `gem fetch` directly. Fixes #289
+  * Honor sysconfdir on 1.8. Fixes #291
+  * Search everywhere for a spec for `gem spec`. Fixes #288
+  * Fix Gem.all_load_path. Fixes #171
+
+=== 1.8.17 / 2012-02-17
+
+* 2 minor enhancements:
+
+  * Add MacRuby to the list of special cases for platforms (ferrous26)
+  * Add a default for where to install rubygems itself
+
+* 3 bug fixes:
+
+  * Fixed gem loading issue caused by dependencies not resolving.
+  * Fixed umask error when stdlib is required and unresolved dependencies exist.
+  * Shebang munging would only take one arg after the cmd
+  * Define SUCKAGE better, ie only MRI 1.9.2
+  * Propagate env-shebang to the pristine command if set for install.
+
+=== 1.8.16 / 2012-02-12
+
+* 3 bug fixes:
+
+  * Fix gem specification loading when encoding is not UTF-8. #146
+  * Allow group writable if umask allows it already.
+  * Uniquify the spec list based on directory order priority
+
+=== 1.8.15 / 2012-01-06
+
+* 1 bug fix:
+
+  * Don't eager load yaml, it creates a bad loop. Fixes #256
+
 === 1.8.14 / 2012-01-05
 
 * 2 bug fixes:

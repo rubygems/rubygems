@@ -195,7 +195,7 @@ class Gem::SpecFetcher
                 when :released
                   tuples_for source, :released
                 when :complete
-                  tuples_for(source, :prerelease, true) + \
+                  tuples_for(source, :prerelease, true) +
                     tuples_for(source, :released)
                 when :prerelease
                   tuples_for(source, :prerelease)

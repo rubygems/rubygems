@@ -2486,17 +2486,17 @@ class Gem::Specification
   # Checks to see if the files to be packaged are world-readable.
 
   def validate_permissions
+    return if Gem.win_platform?
+
     files.each do |file|
-      next if File.stat(file).world_readable?
+      next if File.stat(file).mode & 0444 == 0444
       alert_warning "#{file} is not world-readable"
     end
 
-    unless Gem.win_platform?
-      executables.each do |name|
-        exec = File.join @bindir, name
-        next if File.stat(exec).executable?
-        alert_warning "#{exec} is not executable"
-      end
+    executables.each do |name|
+      exec = File.join @bindir, name
+      next if File.stat(exec).executable?
+      alert_warning "#{exec} is not executable"
     end
   end
 

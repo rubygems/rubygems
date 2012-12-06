@@ -136,8 +136,16 @@ task :upload => [:upload_to_rubyforge, :upload_to_gemcutter]
 # RUBINIUS_PATH.
 
 def rsync_with dir
-  rsync_options = "-avP --exclude '*svn*' --exclude '*swp' --exclude '*rbc'" +
-    " --exclude '*.rej' --exclude '*.orig' --exclude 'lib/rubygems/defaults/*'"
+  rsync_options =
+    "-avP " +
+    "--exclude '*svn*' " +
+    "--exclude '*swp' " +
+    "--exclude '*rbc' " +
+    "--exclude '*.rej' " +
+    "--exclude '*.orig' " +
+    "--exclude 'lib/rubygems/defaults/*' " +
+    "--exclude gauntlet_rubygems.rb"
+
   sh "rsync #{rsync_options} bin/gem             #{dir}/bin/gem"
   sh "rsync #{rsync_options} lib/                #{dir}/lib"
   sh "rsync #{rsync_options} test/               #{dir}/test"

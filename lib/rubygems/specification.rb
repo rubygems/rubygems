@@ -1283,7 +1283,11 @@ class Gem::Specification
 
   def base_dir
     return Gem.dir unless loaded_from
-    @base_dir ||= File.dirname File.dirname loaded_from
+    @base_dir ||= if default_gem? then
+                    File.dirname File.dirname File.dirname loaded_from
+                  else
+                    File.dirname File.dirname loaded_from
+                  end
   end
 
   ##
@@ -2562,7 +2566,6 @@ class Gem::Specification
   # deprecate :has_rdoc=,           :none,       2011, 10
   # deprecate :default_executable,  :none,       2011, 10
   # deprecate :default_executable=, :none,       2011, 10
-  # deprecate :spec_name,           :spec_file,  2011, 10
   # deprecate :file_name,           :cache_file, 2011, 10
   # deprecate :full_gem_path,     :cache_file, 2011, 10
 end

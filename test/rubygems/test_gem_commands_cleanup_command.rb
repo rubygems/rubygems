@@ -113,5 +113,33 @@ class TestGemCommandsCleanupCommand < Gem::TestCase
     assert_path_exists @b_1.gem_dir
   end
 
+  def test_execute_ignore_default_gem
+    @b_1 = quick_spec 'b', 1
+    @b_default = new_default_spec "b", "2"
+    @b_2 = quick_spec 'b', 3
+
+    install_gem @b_1
+    install_default_specs @b_default
+    install_gem @b_2
+
+    ui = Gem::MockGemUi.new
+
+    @cmd.options[:args] = []
+
+    use_ui ui do
+      @cmd.execute
+    end
+
+    expected = [
+     "Cleaning up installed gems...",
+     "Attempting to uninstall b-1",
+     "Successfully uninstalled b-1",
+     "Attempting to uninstall a-1",
+     "Successfully uninstalled a-1",
+     "Clean Up Complete",
+    ].join "\n"
+    assert_equal expected, ui.output.chomp
+    assert_equal "", ui.error
+  end
 end
 

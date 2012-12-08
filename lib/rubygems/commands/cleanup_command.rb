@@ -56,7 +56,8 @@ are not removed.
                       end
 
     gems_to_cleanup = gems_to_cleanup.select { |spec|
-      primary_gems[spec.name].version != spec.version
+      !spec.default_gem? and
+        primary_gems[spec.name].version != spec.version
     }
 
     full = Gem::DependencyList.from_specs

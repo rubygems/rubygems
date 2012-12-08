@@ -247,3 +247,4 @@ test/rubygems/test_require.rb
 test/rubygems/wrong_key_cert.pem
 test/rubygems/wrong_key_cert_32.pem
 util/CL2notes
+util/create_certs.rb

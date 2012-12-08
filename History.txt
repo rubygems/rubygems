@@ -26,6 +26,8 @@ of bundler will not work with RubyGems 2.0.
   * Gem cleanup now skips default gems.  Pull Request #409 by Kouhei Sutou
   * gem list, search and query can now show remote gems again.  Bug #410 by
     Henry Maddocks
+  * gem install now ignores directories that match the gem to install.  Bug
+    #407 by Santiago Pastorino.
 
 === 2.0.0.preview2 / 2012-12-01
 

@@ -794,6 +794,20 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal Gem::Source.new(@gem_repo), s.source
   end
 
+  def test_find_spec_by_name_and_version_directory
+    Dir.mkdir 'rdoc'
+
+    inst = Gem::DependencyInstaller.new
+
+    e = assert_raises Gem::SpecificGemNotFoundException do
+      inst.find_spec_by_name_and_version 'rdoc'
+    end
+
+    assert_equal "Could not find a valid gem 'rdoc' (>= 0) " +
+                 "locally or in a repository",
+                 e.message
+  end
+
   def test_find_gems_with_sources_local
     util_setup_gems
 

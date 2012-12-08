@@ -13,12 +13,17 @@ maintainable and improve APIs for RubyGems users.
 If you are using bundler be sure to install version 1.3.0.pre.  Older versions
 of bundler will not work with RubyGems 2.0.
 
+* Minor enhancements:
+  * Gem::DependencyInstaller now passes build_args down to the installer.
+    Pull Request #412 by Sam Rawlins.
+
 * Bug fixes:
   * RubyGems tests now run in FIPS mode.  Issue #365 by Vít Ondruch
   * Fixed Gem::Specification#base_dir for default gems.  Ruby Bug #7469
   * Only update the spec cache when we have permission.  Ruby Bug #7509
   * Restored order of version marking.  Fixes an issue with bundler.  Thanks
     to Aaron Patterson and Terence Lee.
+  * Gem cleanup now skips default gems.  Pull Request #409 by Kouhei Sutou
 
 === 2.0.0.preview2 / 2012-12-01
 

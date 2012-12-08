@@ -16,6 +16,9 @@ of bundler will not work with RubyGems 2.0.
 * Minor enhancements:
   * Gem::DependencyInstaller now passes build_args down to the installer.
     Pull Request #412 by Sam Rawlins.
+  * RubyGems no longer defaults to uninstalling gems if a dependency would be
+    broken.  Now you must manually say "yes".  Pull Request #406 by Shannon
+    Skipper.
 
 * Bug fixes:
   * RubyGems tests now run in FIPS mode.  Issue #365 by Vít Ondruch

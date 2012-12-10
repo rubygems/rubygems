@@ -14,6 +14,9 @@ maintainable and improve APIs for RubyGems users.
 If you are using bundler be sure to install version 1.3.0.pre.  Older versions
 of bundler will not work with RubyGems 2.0.
 
+* Minor enhancements:
+  * Added a cmake builder.  Pull request #265 by Allan Espinosa.
+
 * Bug fixes:
   * Restored RubyGems 1.8 packaging behavior of omitting directories.  Bug
     #413 by Jeremy Kemper.

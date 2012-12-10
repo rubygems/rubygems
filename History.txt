@@ -1,9 +1,10 @@
 # coding: UTF-8
 
-=== 2.0.0.preview2.1
+=== 2.0.0.preview2.2
 
 As a preview release, please file bugs for any problems you have with RubyGems
-at https://github.com/rubygems/rubygems/issues.
+at https://github.com/rubygems/rubygems/issues.  To update to preview releases
+use gem update --system=2.0.0.preview2.2
 
 RubyGems 2.0 includes several new features and many breaking changes.  Some of
 these changes will cause existing software to break.  These changes are a
@@ -12,6 +13,12 @@ maintainable and improve APIs for RubyGems users.
 
 If you are using bundler be sure to install version 1.3.0.pre.  Older versions
 of bundler will not work with RubyGems 2.0.
+
+* Bug fixes:
+  * Restored RubyGems 1.8 packaging behavior of omitting directories.  Bug
+    #413 by Jeremy Kemper.
+
+=== 2.0.0.preview2.1 / 2012-12-08
 
 * Minor enhancements:
   * Gem::DependencyInstaller now passes build_args down to the installer.

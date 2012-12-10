@@ -6,6 +6,9 @@ class TestGemExtCmakeBuilder < Gem::TestCase
   def setup
     super
 
+    `cmake #{Gem::Ext::Builder.redirector}`
+
+    skip 'cmake not present' unless $?.success?
 
     @ext = File.join @tempdir, 'ext'
     @dest_path = File.join @tempdir, 'prefix'

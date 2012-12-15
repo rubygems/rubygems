@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-=== 2.0.0.preview2.2
+=== 2.0.0.preview2.2 / 2012-12-14
 
 As a preview release, please file bugs for any problems you have with RubyGems
 at https://github.com/rubygems/rubygems/issues.  To update to preview releases

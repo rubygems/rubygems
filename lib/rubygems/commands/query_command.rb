@@ -183,10 +183,8 @@ class Gem::Commands::QueryCommand < Gem::Command
       end
 
       entry = gem_name.dup
-
-      output_versions entry, matching_tuples, platforms
-
-      output_details entry, matching_tuples, platforms
+      entry_versions entry, matching_tuples, platforms
+      entry_details entry, matching_tuples, platforms
 
       output << entry
     end
@@ -194,7 +192,7 @@ class Gem::Commands::QueryCommand < Gem::Command
     say output.join(options[:details] ? "\n\n" : "\n")
   end
 
-  def output_details entry, matching_tuples, platforms
+  def entry_details entry, matching_tuples, platforms
     return unless options[:details]
 
     detail_tuple = matching_tuples.first
@@ -265,7 +263,7 @@ class Gem::Commands::QueryCommand < Gem::Command
     entry << "\n\n" << format_text(spec.summary, 68, 4)
   end
 
-  def output_versions entry, matching_tuples, platforms
+  def entry_versions entry, matching_tuples, platforms
     return unless options[:versions]
 
     list =

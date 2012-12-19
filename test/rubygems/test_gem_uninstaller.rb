@@ -172,6 +172,22 @@ class TestGemUninstaller < Gem::InstallerTestCase
     assert_same uninstaller, @post_uninstall_hook_arg
   end
 
+  def test_uninstall_default_gem
+    spec = new_default_spec 'default', '2'
+
+    install_default_specs spec
+
+    uninstaller = Gem::Uninstaller.new spec.name, :executables => true
+
+    e = assert_raises Gem::InstallError do
+      uninstaller.uninstall
+    end
+
+    assert_equal 'gem "default" cannot be uninstalled ' +
+                 'because it is a default gem',
+                 e.message
+  end
+
   def test_uninstall_nonexistent
     uninstaller = Gem::Uninstaller.new 'bogus', :executables => true
 

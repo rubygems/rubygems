@@ -211,9 +211,7 @@ class Gem::Commands::QueryCommand < Gem::Command
 
     spec_platforms entry, platforms
 
-    authors = "Author#{spec.authors.length > 1 ? 's' : ''}: "
-    authors << spec.authors.join(', ')
-    entry << format_text(authors, 68, 4)
+    spec_authors entry, spec
 
     if spec.rubyforge_project and not spec.rubyforge_project.empty? then
       rubyforge = "Rubyforge: http://rubyforge.org/projects/#{spec.rubyforge_project}"
@@ -254,6 +252,12 @@ class Gem::Commands::QueryCommand < Gem::Command
       end
 
     entry << " (#{list.join ', '})"
+  end
+
+  def spec_authors entry, spec
+    authors = "Author#{spec.authors.length > 1 ? 's' : ''}: "
+    authors << spec.authors.join(', ')
+    entry << format_text(authors, 68, 4)
   end
 
   def spec_loaded_from entry, spec, matching_tuples

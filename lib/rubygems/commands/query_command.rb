@@ -162,6 +162,12 @@ class Gem::Commands::QueryCommand < Gem::Command
       n.downcase
     end
 
+    output_versions output, versions
+
+    say output.join(options[:details] ? "\n\n" : "\n")
+  end
+
+  def output_versions output, versions
     versions.each do |gem_name, matching_tuples|
       matching_tuples = matching_tuples.sort_by { |n,_| n.version }.reverse
 
@@ -188,8 +194,6 @@ class Gem::Commands::QueryCommand < Gem::Command
 
       output << entry
     end
-
-    say output.join(options[:details] ? "\n\n" : "\n")
   end
 
   def entry_details entry, matching_tuples, platforms

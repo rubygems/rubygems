@@ -212,12 +212,7 @@ class Gem::Commands::QueryCommand < Gem::Command
     spec_platforms entry, platforms
     spec_authors   entry, spec
     spec_homepage  entry, spec
-
-    if spec.license and not spec.license.empty? then
-      licenses = "License#{spec.licenses.length > 1 ? 's' : ''}: "
-      licenses << spec.licenses.join(', ')
-      entry << "\n" << format_text(licenses, 68, 4)
-    end
+    spec_license   entry, spec
 
     spec_loaded_from entry, spec, matching_tuples
 
@@ -252,9 +247,17 @@ class Gem::Commands::QueryCommand < Gem::Command
   end
 
   def spec_homepage entry, spec
-    return unless spec.homepage or spec.homepage.empty?
+    return if spec.homepage.nil? or spec.homepage.empty?
 
     entry << "\n" << format_text("Homepage: #{spec.homepage}", 68, 4)
+  end
+
+  def spec_license entry, spec
+    return if spec.license.nil? or spec.license.empty?
+
+    licenses = "License#{spec.licenses.length > 1 ? 's' : ''}: "
+    licenses << spec.licenses.join(', ')
+    entry << "\n" << format_text(licenses, 68, 4)
   end
 
   def spec_loaded_from entry, spec, matching_tuples

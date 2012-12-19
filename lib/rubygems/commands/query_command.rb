@@ -213,11 +213,6 @@ class Gem::Commands::QueryCommand < Gem::Command
 
     spec_authors entry, spec
 
-    if spec.rubyforge_project and not spec.rubyforge_project.empty? then
-      rubyforge = "Rubyforge: http://rubyforge.org/projects/#{spec.rubyforge_project}"
-      entry << "\n" << format_text(rubyforge, 68, 4)
-    end
-
     if spec.homepage and not spec.homepage.empty? then
       entry << "\n" << format_text("Homepage: #{spec.homepage}", 68, 4)
     end

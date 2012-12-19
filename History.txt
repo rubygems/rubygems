@@ -16,6 +16,7 @@ of bundler will not work with RubyGems 2.0.
 
 * Minor enhancements:
   * Added a cmake builder.  Pull request #265 by Allan Espinosa.
+  * Removed rubyforge page from gem list output
 
 * Bug fixes:
   * Restored RubyGems 1.8 packaging behavior of omitting directories.  Bug

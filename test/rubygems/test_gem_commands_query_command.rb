@@ -106,7 +106,6 @@ pl (1 i386-linux)
     @a2.summary = 'This is a lot of text. ' * 4
     @a2.authors = ['Abraham Lincoln', 'Hirohito']
     @a2.homepage = 'http://a.example.com/'
-    @a2.rubyforge_project = 'rubygems'
 
     util_clear_gems
     util_setup_spec_fetcher @a1, @a2, @pl1
@@ -123,7 +122,6 @@ pl (1 i386-linux)
 
 a (2)
     Authors: Abraham Lincoln, Hirohito
-    Rubyforge: http://rubyforge.org/projects/rubygems
     Homepage: http://a.example.com/
 
     This is a lot of text. This is a lot of text. This is a lot of text.
@@ -147,7 +145,6 @@ pl (1)
     @a2.summary = 'This is a lot of text. ' * 4
     @a2.authors = ['Abraham Lincoln', 'Hirohito']
     @a2.homepage = 'http://a.example.com/'
-    @a2.rubyforge_project = 'rubygems'
     @a2.platform = 'universal-darwin'
 
     util_clear_gems
@@ -168,7 +165,6 @@ a (2, 1)
         1: x86-linux
         2: universal-darwin
     Authors: Abraham Lincoln, Hirohito
-    Rubyforge: http://rubyforge.org/projects/rubygems
     Homepage: http://a.example.com/
 
     This is a lot of text. This is a lot of text. This is a lot of text.
@@ -355,7 +351,6 @@ pl (1 i386-linux)
     @a2.summary = 'This is a lot of text. ' * 4
     @a2.authors = ['Abraham Lincoln', 'Hirohito']
     @a2.homepage = 'http://a.example.com/'
-    @a2.rubyforge_project = 'rubygems'
     @a2.platform = 'universal-darwin'
 
     util_clear_gems
@@ -380,7 +375,6 @@ a (2, 1)
         1: x86-linux
         2: universal-darwin
     Authors: Abraham Lincoln, Hirohito
-    Rubyforge: http://rubyforge.org/projects/rubygems
     Homepage: http://a.example.com/
     Installed at -
                  -

@@ -184,23 +184,7 @@ class Gem::Commands::QueryCommand < Gem::Command
 
       entry = gem_name.dup
 
-      if options[:versions] then
-        list = if platforms.empty? or options[:details] then
-                 matching_tuples.map { |n,_| n.version }.uniq
-               else
-                 platforms.sort.reverse.map do |version, pls|
-                   if pls == [Gem::Platform::RUBY] then
-                     version
-                   else
-                     ruby = pls.delete Gem::Platform::RUBY
-                     platform_list = [ruby, *pls.sort].compact
-                     "#{version} #{platform_list.join ' '}"
-                   end
-                 end
-               end.join ', '
-
-        entry << " (#{list})"
-      end
+      output_versions entry, matching_tuples, platforms
 
       output_details entry, matching_tuples, platforms
 
@@ -279,6 +263,27 @@ class Gem::Commands::QueryCommand < Gem::Command
     end
 
     entry << "\n\n" << format_text(spec.summary, 68, 4)
+  end
+
+  def output_versions entry, matching_tuples, platforms
+    return unless options[:versions]
+
+    list =
+      if platforms.empty? or options[:details] then
+        matching_tuples.map { |n,_| n.version }.uniq
+      else
+        platforms.sort.reverse.map do |version, pls|
+          if pls == [Gem::Platform::RUBY] then
+            version
+          else
+            ruby = pls.delete Gem::Platform::RUBY
+            platform_list = [ruby, *pls.sort].compact
+            "#{version} #{platform_list.join ' '}"
+          end
+        end
+      end
+
+    entry << " (#{list.join ', '})"
   end
 
 end

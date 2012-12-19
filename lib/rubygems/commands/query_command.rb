@@ -173,7 +173,7 @@ class Gem::Commands::QueryCommand < Gem::Command
 
       platforms = Hash.new { |h,version| h[version] = [] }
 
-      matching_tuples.map do |n,_|
+      matching_tuples.each do |n, _|
         platforms[n.version] << n.platform if n.platform
       end
 
@@ -188,24 +188,19 @@ class Gem::Commands::QueryCommand < Gem::Command
         end
       end
 
-      entry = gem_name.dup
-      entry_versions entry, matching_tuples, platforms
-      entry_details entry, matching_tuples, platforms
-
-      output << entry
+      output << make_entry(matching_tuples, platforms)
     end
   end
 
-  def entry_details entry, matching_tuples, platforms
+  def entry_details entry, entry_tuples, platforms
     return unless options[:details]
 
-    detail_tuple = matching_tuples.first
+    detail_tuple = entry_tuples.first
 
     spec = detail_tuple.last
 
-    unless spec.kind_of? Gem::Specification
-      spec = spec.fetch_spec detail_tuple.first
-    end
+    spec = spec.fetch_spec detail_tuple.first unless
+      Gem::Specification === spec
 
     entry << "\n"
 
@@ -213,7 +208,7 @@ class Gem::Commands::QueryCommand < Gem::Command
     spec_authors     entry, spec
     spec_homepage    entry, spec
     spec_license     entry, spec
-    spec_loaded_from entry, spec, matching_tuples
+    spec_loaded_from entry, spec, entry_tuples
     spec_summary     entry, spec
   end
 
@@ -238,6 +233,15 @@ class Gem::Commands::QueryCommand < Gem::Command
     entry << " (#{list.join ', '})"
   end
 
+  def make_entry entry_tuples, platforms
+    entry = [entry_tuples.first.first.name]
+
+    entry_versions entry, entry_tuples, platforms
+    entry_details  entry, entry_tuples, platforms
+
+    entry.join
+  end
+
   def spec_authors entry, spec
     authors = "Author#{spec.authors.length > 1 ? 's' : ''}: "
     authors << spec.authors.join(', ')
@@ -258,15 +262,15 @@ class Gem::Commands::QueryCommand < Gem::Command
     entry << "\n" << format_text(licenses, 68, 4)
   end
 
-  def spec_loaded_from entry, spec, matching_tuples
+  def spec_loaded_from entry, spec, entry_tuples
     return unless spec.loaded_from
 
-    if matching_tuples.length == 1 then
+    if entry_tuples.length == 1 then
       default = spec.default_gem? ? ' (default)' : nil
       entry << "\n" << "    Installed at#{default}: #{spec.base_dir}"
     else
       label = 'Installed at'
-      matching_tuples.each do |n,s|
+      entry_tuples.each do |n,s|
         version = n.version.to_s
         version << ', default' if s.default_gem?
         entry << "\n" << "    #{label} (#{version}): #{s.base_dir}"

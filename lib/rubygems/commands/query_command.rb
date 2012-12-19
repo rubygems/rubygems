@@ -255,13 +255,14 @@ class Gem::Commands::QueryCommand < Gem::Command
 
         if spec.loaded_from then
           if matching_tuples.length == 1 then
-            loaded_from = File.dirname File.dirname(spec.loaded_from)
-            entry << "\n" << "    Installed at: #{loaded_from}"
+            default = spec.default_gem? ? ' (default)' : nil
+            entry << "\n" << "    Installed at#{default}: #{spec.base_dir}"
           else
             label = 'Installed at'
             matching_tuples.each do |n,s|
-              loaded_from = File.dirname File.dirname(s.loaded_from)
-              entry << "\n" << "    #{label} (#{n.version}): #{loaded_from}"
+              version = n.version.to_s
+              version << ', default' if s.default_gem?
+              entry << "\n" << "    #{label} (#{version}): #{s.base_dir}"
               label = ' ' * label.length
             end
           end

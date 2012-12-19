@@ -209,26 +209,7 @@ class Gem::Commands::QueryCommand < Gem::Command
 
     entry << "\n"
 
-    non_ruby = platforms.any? do |_, pls|
-      pls.any? { |pl| pl != Gem::Platform::RUBY }
-    end
-
-    if non_ruby then
-      if platforms.length == 1 then
-        title = platforms.values.length == 1 ? 'Platform' : 'Platforms'
-        entry << "    #{title}: #{platforms.values.sort.join ', '}\n"
-      else
-        entry << "    Platforms:\n"
-        platforms.sort_by do |version,|
-          version
-        end.each do |version, pls|
-          label = "        #{version}: "
-          data = format_text pls.sort.join(', '), 68, label.length
-          data[0, label.length] = label
-          entry << data << "\n"
-        end
-      end
-    end
+    spec_platforms entry, platforms
 
     authors = "Author#{spec.authors.length > 1 ? 's' : ''}: "
     authors << spec.authors.join(', ')
@@ -254,23 +235,6 @@ class Gem::Commands::QueryCommand < Gem::Command
     entry << "\n\n" << format_text(spec.summary, 68, 4)
   end
 
-  def spec_loaded_from entry, spec, matching_tuples
-    return unless spec.loaded_from
-
-    if matching_tuples.length == 1 then
-      default = spec.default_gem? ? ' (default)' : nil
-      entry << "\n" << "    Installed at#{default}: #{spec.base_dir}"
-    else
-      label = 'Installed at'
-      matching_tuples.each do |n,s|
-        version = n.version.to_s
-        version << ', default' if s.default_gem?
-        entry << "\n" << "    #{label} (#{version}): #{s.base_dir}"
-        label = ' ' * label.length
-      end
-    end
-  end
-
   def entry_versions entry, matching_tuples, platforms
     return unless options[:versions]
 
@@ -290,6 +254,46 @@ class Gem::Commands::QueryCommand < Gem::Command
       end
 
     entry << " (#{list.join ', '})"
+  end
+
+  def spec_loaded_from entry, spec, matching_tuples
+    return unless spec.loaded_from
+
+    if matching_tuples.length == 1 then
+      default = spec.default_gem? ? ' (default)' : nil
+      entry << "\n" << "    Installed at#{default}: #{spec.base_dir}"
+    else
+      label = 'Installed at'
+      matching_tuples.each do |n,s|
+        version = n.version.to_s
+        version << ', default' if s.default_gem?
+        entry << "\n" << "    #{label} (#{version}): #{s.base_dir}"
+        label = ' ' * label.length
+      end
+    end
+  end
+
+  def spec_platforms entry, platforms
+    non_ruby = platforms.any? do |_, pls|
+      pls.any? { |pl| pl != Gem::Platform::RUBY }
+    end
+
+    return unless non_ruby
+
+    if platforms.length == 1 then
+      title = platforms.values.length == 1 ? 'Platform' : 'Platforms'
+      entry << "    #{title}: #{platforms.values.sort.join ', '}\n"
+    else
+      entry << "    Platforms:\n"
+      platforms.sort_by do |version,|
+        version
+      end.each do |version, pls|
+        label = "        #{version}: "
+        data = format_text pls.sort.join(', '), 68, label.length
+        data[0, label.length] = label
+        entry << data << "\n"
+      end
+    end
   end
 
 end

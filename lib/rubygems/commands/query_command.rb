@@ -209,14 +209,12 @@ class Gem::Commands::QueryCommand < Gem::Command
 
     entry << "\n"
 
-    spec_platforms entry, platforms
-    spec_authors   entry, spec
-    spec_homepage  entry, spec
-    spec_license   entry, spec
-
+    spec_platforms   entry, platforms
+    spec_authors     entry, spec
+    spec_homepage    entry, spec
+    spec_license     entry, spec
     spec_loaded_from entry, spec, matching_tuples
-
-    entry << "\n\n" << format_text(spec.summary, 68, 4)
+    spec_summary     entry, spec
   end
 
   def entry_versions entry, matching_tuples, platforms
@@ -298,6 +296,10 @@ class Gem::Commands::QueryCommand < Gem::Command
         entry << data << "\n"
       end
     end
+  end
+
+  def spec_summary entry, spec
+    entry << "\n\n" << format_text(spec.summary, 68, 4)
   end
 
 end

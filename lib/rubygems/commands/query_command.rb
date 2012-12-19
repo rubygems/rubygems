@@ -249,22 +249,26 @@ class Gem::Commands::QueryCommand < Gem::Command
       entry << "\n" << format_text(licenses, 68, 4)
     end
 
-    if spec.loaded_from then
-      if matching_tuples.length == 1 then
-        default = spec.default_gem? ? ' (default)' : nil
-        entry << "\n" << "    Installed at#{default}: #{spec.base_dir}"
-      else
-        label = 'Installed at'
-        matching_tuples.each do |n,s|
-          version = n.version.to_s
-          version << ', default' if s.default_gem?
-          entry << "\n" << "    #{label} (#{version}): #{s.base_dir}"
-          label = ' ' * label.length
-        end
-      end
-    end
+    spec_loaded_from entry, spec, matching_tuples
 
     entry << "\n\n" << format_text(spec.summary, 68, 4)
+  end
+
+  def spec_loaded_from entry, spec, matching_tuples
+    return unless spec.loaded_from
+
+    if matching_tuples.length == 1 then
+      default = spec.default_gem? ? ' (default)' : nil
+      entry << "\n" << "    Installed at#{default}: #{spec.base_dir}"
+    else
+      label = 'Installed at'
+      matching_tuples.each do |n,s|
+        version = n.version.to_s
+        version << ', default' if s.default_gem?
+        entry << "\n" << "    #{label} (#{version}): #{s.base_dir}"
+        label = ' ' * label.length
+      end
+    end
   end
 
   def entry_versions entry, matching_tuples, platforms

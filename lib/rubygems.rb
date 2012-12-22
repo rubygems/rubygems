@@ -750,19 +750,17 @@ module Gem
     @ruby
   end
 
-  # DOC: needs doc'd or :nodoc'd
+  ##
+  # Returns the latest release-version specification for the gem +name+.
+
   def self.latest_spec_for name
-    dependency  = Gem::Dependency.new name
-    fetcher     = Gem::SpecFetcher.fetcher
-    spec_tuples = fetcher.find_matching dependency
+    dependency   = Gem::Dependency.new name
+    fetcher      = Gem::SpecFetcher.fetcher
+    spec_tuples, = fetcher.spec_for_dependency dependency
 
-    match = spec_tuples.select { |(n, _, p), _|
-      n == name and Gem::Platform.match p
-    }.sort_by { |(_, version, _), _|
-      version
-    }.last
+    spec, = spec_tuples.first
 
-    match and fetcher.fetch_spec(*match)
+    spec
   end
 
   # DOC: needs doc'd or :nodoc'd

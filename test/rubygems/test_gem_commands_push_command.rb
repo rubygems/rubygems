@@ -33,7 +33,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
       alias_method :orig_latest_rubygems_version, :latest_rubygems_version
 
       def latest_rubygems_version
-        Gem::Version.new Gem::VERSION
+        Gem.rubygems_version
       end
     end
   end

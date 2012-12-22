@@ -1190,6 +1190,22 @@ load Gem.bin_path('a', 'executable', version)
     assert File.exist?(File.join(dest, 'bin', 'executable'))
   end
 
+  def test_write_cache_file
+    cache_file = File.join @gemhome, 'cache', @spec.file_name
+    gem = File.join @gemhome, @spec.file_name
+
+    FileUtils.mv cache_file, gem
+    refute_path_exists cache_file
+
+    installer = Gem::Installer.new gem
+    installer.spec = @spec
+    installer.gem_home = @gemhome
+
+    installer.write_cache_file
+
+    assert_path_exists cache_file
+  end
+
   def test_write_build_args
     refute_path_exists @spec.build_info_file
 

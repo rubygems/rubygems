@@ -220,7 +220,7 @@ class Gem::Installer
     Gem.ensure_gem_subdirectories gem_home
 
     # Completely remove any previous gem files
-    FileUtils.rm_rf(gem_dir)
+    FileUtils.rm_rf gem_dir
 
     FileUtils.mkdir_p gem_dir
 
@@ -232,12 +232,7 @@ class Gem::Installer
     generate_bin
     write_build_info_file
     write_spec
-
-    # TODO should be always cache the file? Other classes have options
-    # to controls if caching is done.
-    cache_file = File.join(gem_home, "cache", "#{spec.full_name}.gem")
-
-    FileUtils.cp gem, cache_file unless File.exist? cache_file
+    write_cache_file
 
     say spec.post_install_message unless spec.post_install_message.nil?
 
@@ -730,6 +725,15 @@ EOF
 
   def dir
     gem_dir.to_s
+  end
+
+  ##
+  # Writes the .gem file to the cache directory
+
+  def write_cache_file
+    cache_file = File.join gem_home, 'cache', spec.file_name
+
+    FileUtils.cp @gem, cache_file unless File.exist? cache_file
   end
 
   ##

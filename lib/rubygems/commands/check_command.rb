@@ -79,6 +79,7 @@ class Gem::Commands::CheckCommand < Gem::Command
       if installed_specs.empty? then
         say 'This directory does not appear to be a RubyGems repository, ' +
             'skipping'
+        say
         next
       end
 
@@ -99,6 +100,8 @@ class Gem::Commands::CheckCommand < Gem::Command
           say "Removed #{type} #{sub_directory}/#{child.basename}"
         end
       end
+
+      say
     end
   end
 

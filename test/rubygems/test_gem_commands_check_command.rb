@@ -86,6 +86,7 @@ Checking #{@gemhome}
 Removed directory gems/b-2
 Removed directory gems/c-2
 Removed file specifications/c-2.gemspec
+
     OUTPUT
 
     assert_equal expected, @ui.output
@@ -111,6 +112,7 @@ Checking for files from uninstalled gems...
 
 Checking #{@tempdir}
 This directory does not appear to be a RubyGems repository, skipping
+
     OUTPUT
 
     assert_equal expected, @ui.output

@@ -483,6 +483,21 @@ class Gem::Installer
     end
   end
 
+  ##
+  # Ensures the Gem::Specification written out for this gem is loadable upon
+  # installation.
+
+  def ensure_loadable_spec
+    ruby = spec.to_ruby_for_cache
+
+    begin
+      eval ruby
+    rescue StandardError, SyntaxError => e
+      raise Gem::InstallError,
+            "The specification for #{spec.full_name} is corrupt (#{e.class})"
+    end
+  end
+
   # DOC: Missing docs or :nodoc:.
   def ensure_required_ruby_version_met
     if rrv = spec.required_ruby_version then
@@ -730,6 +745,8 @@ EOF
     # policy says that we only install signed gems.
     @security_policy = nil if
       @force and @security_policy and not @security_policy.only_signed
+
+    ensure_loadable_spec
 
     Gem.ensure_gem_subdirectories gem_home
 

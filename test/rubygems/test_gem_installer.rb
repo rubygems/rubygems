@@ -245,6 +245,34 @@ load Gem.bin_path('a', 'executable', version)
     assert_equal 'a requires b (> 2)', e.message
   end
 
+  def test_ensure_loadable_spec
+    a, a_gem = util_gem 'a', 2 do |s|
+      s.add_dependency 'garbage ~> 5'
+    end
+
+    installer = Gem::Installer.new a_gem
+
+    e = assert_raises Gem::InstallError do
+      installer.ensure_loadable_spec
+    end
+
+    assert_equal "The specification for #{a.full_name} is corrupt " +
+                 "(SyntaxError)", e.message
+  end
+
+  def test_ensure_loadable_spec_security_policy
+    a, a_gem = util_gem 'a', 2 do |s|
+      s.add_dependency 'garbage ~> 5'
+    end
+
+    policy = Gem::Security::HighSecurity
+    installer = Gem::Installer.new a_gem, :security_policy => policy
+
+    assert_raises Gem::Security::Exception do
+      installer.ensure_loadable_spec
+    end
+  end
+
   def test_extract_files
     @installer.extract_files
 

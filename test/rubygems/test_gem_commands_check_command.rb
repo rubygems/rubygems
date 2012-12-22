@@ -91,4 +91,29 @@ Removed file specifications/c-2.gemspec
     assert_equal expected, @ui.output
   end
 
+  def test_doctor_non_gem_home
+    other_dir = File.join @tempdir, 'other', 'dir'
+
+    FileUtils.mkdir_p other_dir
+
+    Gem.use_paths @tempdir
+
+    capture_io do
+      use_ui @ui do
+        @cmd.doctor
+      end
+    end
+
+    assert_path_exists other_dir
+
+    expected = <<-OUTPUT
+Checking for files from uninstalled gems...
+
+Checking #{@tempdir}
+This directory does not appear to be a RubyGems repository, skipping
+    OUTPUT
+
+    assert_equal expected, @ui.output
+  end
+
 end

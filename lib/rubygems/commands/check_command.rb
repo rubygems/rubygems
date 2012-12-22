@@ -76,6 +76,12 @@ class Gem::Commands::CheckCommand < Gem::Command
 
       installed_specs = Gem::Specification.map { |s| s.full_name }
 
+      if installed_specs.empty? then
+        say 'This directory does not appear to be a RubyGems repository, ' +
+            'skipping'
+        next
+      end
+
       REPOSITORY_EXTENSION_MAP.each do |sub_directory, extension|
         directory = gem_repo + sub_directory
 

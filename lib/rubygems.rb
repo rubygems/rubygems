@@ -123,7 +123,22 @@ module Gem
     /wince/i,
   ]
 
-  GEM_DEP_FILES = %w!gem.deps.rb Gemfile Isolate!
+  GEM_DEP_FILES = %w[
+    gem.deps.rb
+    Gemfile
+    Isolate
+  ]
+
+  ##
+  # Subdirectories in a gem repository
+
+  REPOSITORY_SUBDIRECTORIES = %w[
+    build_info
+    cache
+    doc
+    gems
+    specifications
+  ]
 
   @@win_platform = nil
 
@@ -388,7 +403,7 @@ module Gem
 
     require 'fileutils'
 
-    %w[cache build_info doc gems specifications].each do |name|
+    REPOSITORY_SUBDIRECTORIES.each do |name|
       subdir = File.join dir, name
       next if File.exist? subdir
       FileUtils.mkdir_p subdir rescue nil # in case of perms issues -- lame

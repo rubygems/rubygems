@@ -17,6 +17,8 @@ of bundler will not work with RubyGems 2.0.
 * Minor enhancements:
   * This release of RubyGems can push gems to rubygems.org.  Ordinarily
     prerelease versions of RubyGems cannot push gems.
+  * Added `gem check --doctor` to clean up after failed uninstallation.  Bug
+    #419 by Erik Hollensbe
 
 * Bug fixes:
   * Fixed exception raised when attempting to push gems to rubygems.org.  Bug

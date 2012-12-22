@@ -787,6 +787,19 @@ class TestGem < Gem::TestCase
     assert_equal a2, spec
   end
 
+  def test_self_latest_version_for
+    a1  = quick_spec 'a', 1
+    a2  = quick_spec 'a', 2
+    a3a = quick_spec 'a', '3.a'
+
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher a1, a2, a3a
+
+    version = Gem.latest_version_for 'a'
+
+    assert_equal Gem::Version.new(2), version
+  end
+
   def test_self_loaded_specs
     foo = quick_spec 'foo'
     install_gem foo

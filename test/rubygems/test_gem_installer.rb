@@ -818,45 +818,6 @@ load Gem.bin_path('a', 'executable', version)
            "code.rb from prior install of same gem shouldn't remain here")
   end
 
-  def test_install_check_dependencies
-    @spec.add_dependency 'b', '> 5'
-    util_setup_gem
-
-    use_ui @ui do
-      assert_raises Gem::InstallError do
-        @installer.install
-      end
-    end
-  end
-
-  def test_install_check_dependencies_install_dir
-    gemhome2 = "#{@gemhome}2"
-    @spec.add_dependency 'd'
-
-    quick_gem 'd', 2
-
-    FileUtils.mv @gemhome, gemhome2
-
-    # Don't leak any already activated gems into the installer, require
-    # that it work everything out on it's own.
-    Gem::Specification.reset
-
-    util_setup_gem
-
-    @installer = Gem::Installer.new @gem, :install_dir => gemhome2
-
-    gem_home = Gem.dir
-
-    build_rake_in do
-      use_ui @ui do
-        @installer.install
-      end
-    end
-
-    assert File.exist?(File.join(gemhome2, 'gems', @spec.full_name))
-    assert_equal gem_home, Gem.dir
-  end
-
   def test_install_force
     use_ui @ui do
       installer = Gem::Installer.new old_ruby_required, :force => true
@@ -865,30 +826,6 @@ load Gem.bin_path('a', 'executable', version)
 
     gem_dir = File.join(@gemhome, 'gems', 'old_ruby_required-1')
     assert File.exist?(gem_dir)
-  end
-
-  def test_install_ignore_dependencies
-    Dir.mkdir util_inst_bindir
-    @spec.add_dependency 'b', '> 5'
-    util_setup_gem
-    @installer.ignore_dependencies = true
-
-    build_rake_in do
-      use_ui @ui do
-        assert_equal @spec, @installer.install
-      end
-    end
-
-    gemdir = File.join @gemhome, 'gems', @spec.full_name
-    assert File.exist?(gemdir)
-
-    exe = File.join(gemdir, 'bin', 'executable')
-    assert File.exist?(exe)
-    exe_mode = File.stat(exe).mode & 0111
-    assert_equal 0111, exe_mode, "0%o" % exe_mode unless win_platform?
-    assert File.exist?(File.join(gemdir, 'lib', 'code.rb'))
-
-    assert File.exist?(File.join(@gemhome, 'specifications', @spec.spec_name))
   end
 
   def test_install_missing_dirs
@@ -999,18 +936,78 @@ load Gem.bin_path('a', 'executable', version)
     assert_match %r|I am a shiny gem!|, @ui.output
   end
 
-  def test_install_wrong_ruby_version
+  def test_installation_satisfies_dependency_eh
+    quick_spec 'a'
+
+    dep = Gem::Dependency.new 'a', '>= 2'
+    assert @installer.installation_satisfies_dependency?(dep)
+
+    dep = Gem::Dependency.new 'a', '> 2'
+    refute @installer.installation_satisfies_dependency?(dep)
+  end
+
+  def test_pre_install_checks_dependencies
+    @spec.add_dependency 'b', '> 5'
+    util_setup_gem
+
+    use_ui @ui do
+      assert_raises Gem::InstallError do
+        @installer.install
+      end
+    end
+  end
+
+  def test_pre_install_checks_dependencies_ignore
+    @spec.add_dependency 'b', '> 5'
+    @installer.ignore_dependencies = true
+
+    build_rake_in do
+      use_ui @ui do
+        assert @installer.pre_install_checks
+      end
+    end
+  end
+
+  def test_pre_install_checks_dependencies_install_dir
+    gemhome2 = "#{@gemhome}2"
+    @spec.add_dependency 'd'
+
+    quick_gem 'd', 2
+
+    gem = File.join @gemhome, @spec.file_name
+
+    FileUtils.mv @gemhome, gemhome2
+    FileUtils.mkdir @gemhome
+
+    FileUtils.mv File.join(gemhome2, 'cache', @spec.file_name), gem
+
+    # Don't leak any already activated gems into the installer, require
+    # that it work everything out on it's own.
+    Gem::Specification.reset
+
+    installer = Gem::Installer.new gem, :install_dir => gemhome2
+
+    gem_home = Gem.dir
+
+    build_rake_in do
+      use_ui @ui do
+        assert installer.pre_install_checks
+      end
+    end
+  end
+
+  def test_pre_install_checks_ruby_version
     use_ui @ui do
       installer = Gem::Installer.new old_ruby_required
       e = assert_raises Gem::InstallError do
-        installer.install
+        installer.pre_install_checks
       end
       assert_equal 'old_ruby_required requires Ruby version = 1.4.6.',
                    e.message
     end
   end
 
-  def test_install_wrong_rubygems_version
+  def test_pre_install_checks_wrong_rubygems_version
     spec = quick_spec 'old_rubygems_required', '1' do |s|
       s.required_rubygems_version = '< 0'
     end
@@ -1022,21 +1019,11 @@ load Gem.bin_path('a', 'executable', version)
     use_ui @ui do
       @installer = Gem::Installer.new gem
       e = assert_raises Gem::InstallError do
-        @installer.install
+        @installer.pre_install_checks
       end
       assert_equal 'old_rubygems_required requires RubyGems version < 0. ' +
         "Try 'gem update --system' to update RubyGems itself.", e.message
     end
-  end
-
-  def test_installation_satisfies_dependency_eh
-    quick_spec 'a'
-
-    dep = Gem::Dependency.new 'a', '>= 2'
-    assert @installer.installation_satisfies_dependency?(dep)
-
-    dep = Gem::Dependency.new 'a', '> 2'
-    refute @installer.installation_satisfies_dependency?(dep)
   end
 
   def test_shebang
@@ -1190,22 +1177,6 @@ load Gem.bin_path('a', 'executable', version)
     assert File.exist?(File.join(dest, 'bin', 'executable'))
   end
 
-  def test_write_cache_file
-    cache_file = File.join @gemhome, 'cache', @spec.file_name
-    gem = File.join @gemhome, @spec.file_name
-
-    FileUtils.mv cache_file, gem
-    refute_path_exists cache_file
-
-    installer = Gem::Installer.new gem
-    installer.spec = @spec
-    installer.gem_home = @gemhome
-
-    installer.write_cache_file
-
-    assert_path_exists cache_file
-  end
-
   def test_write_build_args
     refute_path_exists @spec.build_info_file
 
@@ -1228,6 +1199,22 @@ load Gem.bin_path('a', 'executable', version)
     @installer.write_build_info_file
 
     refute_path_exists @spec.build_info_file
+  end
+
+  def test_write_cache_file
+    cache_file = File.join @gemhome, 'cache', @spec.file_name
+    gem = File.join @gemhome, @spec.file_name
+
+    FileUtils.mv cache_file, gem
+    refute_path_exists cache_file
+
+    installer = Gem::Installer.new gem
+    installer.spec = @spec
+    installer.gem_home = @gemhome
+
+    installer.write_cache_file
+
+    assert_path_exists cache_file
   end
 
   def test_write_spec

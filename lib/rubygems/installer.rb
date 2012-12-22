@@ -202,22 +202,9 @@ class Gem::Installer
   #     specifications/<gem-version>.gemspec #=> the Gem::Specification
 
   def install
-    verify_gem_home(options[:unpack])
-
-    # If we're forcing the install then disable security unless the security
-    # policy says that we only install signed gems.
-    @security_policy = nil if @force and @security_policy and
-                              not @security_policy.only_signed
-
-    unless @force
-      ensure_required_ruby_version_met
-      ensure_required_rubygems_version_met
-      ensure_dependencies_met unless @ignore_dependencies
-    end
+    pre_install_checks
 
     run_pre_install_hooks
-
-    Gem.ensure_gem_subdirectories gem_home
 
     # Completely remove any previous gem files
     FileUtils.rm_rf gem_dir
@@ -225,12 +212,12 @@ class Gem::Installer
     FileUtils.mkdir_p gem_dir
 
     extract_files
-    build_extensions
 
+    build_extensions
+    write_build_info_file
     run_post_build_hooks
 
     generate_bin
-    write_build_info_file
     write_spec
     write_cache_file
 
@@ -245,7 +232,7 @@ class Gem::Installer
     spec
 
   # TODO This rescue is in the wrong place. What is raising this exception?
-  # move this rescue to arround the code that actually might raise it.
+  # move this rescue to around the code that actually might raise it.
   rescue Zlib::GzipFile::Error
     raise Gem::InstallError, "gzip error installing #{gem}"
   end
@@ -728,12 +715,31 @@ EOF
   end
 
   ##
-  # Writes the .gem file to the cache directory
+  # Performs various checks before installing the gem such as the install
+  # repository is writable and its directories exist, required ruby and
+  # rubygems versions are met and that dependencies are installed.
+  #
+  # Version and dependency checks are skipped if this install is forced.
+  #
+  # The dependent check will be skipped this install is ignoring dependencies.
 
-  def write_cache_file
-    cache_file = File.join gem_home, 'cache', spec.file_name
+  def pre_install_checks
+    verify_gem_home options[:unpack]
 
-    FileUtils.cp @gem, cache_file unless File.exist? cache_file
+    # If we're forcing the install then disable security unless the security
+    # policy says that we only install signed gems.
+    @security_policy = nil if
+      @force and @security_policy and not @security_policy.only_signed
+
+    Gem.ensure_gem_subdirectories gem_home
+
+    return true if @force
+
+    ensure_required_ruby_version_met
+    ensure_required_rubygems_version_met
+    ensure_dependencies_met unless @ignore_dependencies
+
+    true
   end
 
   ##
@@ -748,6 +754,15 @@ EOF
         io.puts arg
       end
     end
+  end
+
+  ##
+  # Writes the .gem file to the cache directory
+
+  def write_cache_file
+    cache_file = File.join gem_home, 'cache', spec.file_name
+
+    FileUtils.cp @gem, cache_file unless File.exist? cache_file
   end
 
 end

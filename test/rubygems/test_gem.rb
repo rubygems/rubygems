@@ -787,6 +787,19 @@ class TestGem < Gem::TestCase
     assert_equal a2, spec
   end
 
+  def test_self_latest_rubygems_version
+    r1 = quick_spec 'rubygems-update', '1.8.23'
+    r2 = quick_spec 'rubygems-update', '1.8.24'
+    r3 = quick_spec 'rubygems-update', '2.0.0.preview3'
+
+    util_setup_fake_fetcher
+    util_setup_spec_fetcher r1, r2, r3
+
+    version = Gem.latest_rubygems_version
+
+    assert_equal Gem::Version.new('1.8.24'), version
+  end
+
   def test_self_latest_version_for
     a1  = quick_spec 'a', 1
     a2  = quick_spec 'a', 2

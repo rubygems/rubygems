@@ -2,11 +2,6 @@ require 'rubygems/test_case'
 require 'rubygems/commands/push_command'
 
 module Gem
-  class << self; remove_method :latest_rubygems_version; end
-
-  def self.latest_rubygems_version
-    Gem::Version.new Gem::VERSION
-  end
 end
 
 class TestGemCommandsPushCommand < Gem::TestCase
@@ -33,6 +28,23 @@ class TestGemCommandsPushCommand < Gem::TestCase
     Gem::RemoteFetcher.fetcher = @fetcher
 
     @cmd = Gem::Commands::PushCommand.new
+
+    class << Gem
+      alias_method :orig_latest_rubygems_version, :latest_rubygems_version
+
+      def latest_rubygems_version
+        Gem::Version.new Gem::VERSION
+      end
+    end
+  end
+
+  def teardown
+    super
+
+    class << Gem
+      remove_method :latest_rubygems_version
+      alias_method :latest_rubygems_version, :orig_latest_rubygems_version
+    end
   end
 
   def send_battery

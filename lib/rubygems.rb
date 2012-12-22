@@ -763,16 +763,20 @@ module Gem
     spec
   end
 
-  # DOC: needs doc'd or :nodoc'd
+  ##
+  # Returns the latest release version of RubyGems.
+
+  def self.latest_rubygems_version
+    latest_version_for('rubygems-update') or
+      raise "Can't find 'rubygems-update' in any repo. Check `gem source list`."
+  end
+
+  ##
+  # Returns the version of the latest release-version of gem +name+
+
   def self.latest_version_for name
     spec = latest_spec_for name
     spec and spec.version
-  end
-
-  # DOC: needs doc'd or :nodoc'd
-  def self.latest_rubygems_version
-    latest_version_for("rubygems-update") or
-      raise "Can't find 'rubygems-update' in any repo. Check `gem source list`."
   end
 
   ##

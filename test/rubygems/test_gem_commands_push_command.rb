@@ -1,9 +1,6 @@
 require 'rubygems/test_case'
 require 'rubygems/commands/push_command'
 
-module Gem
-end
-
 class TestGemCommandsPushCommand < Gem::TestCase
 
   def setup

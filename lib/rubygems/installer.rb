@@ -230,13 +230,8 @@ class Gem::Installer
     run_post_build_hooks
 
     generate_bin
+    write_build_info_file
     write_spec
-
-    unless @build_args.empty?
-      File.open spec.build_info_file, "w" do |f|
-        @build_args.each { |a| f.puts a }
-      end
-    end
 
     # TODO should be always cache the file? Other classes have options
     # to controls if caching is done.
@@ -736,5 +731,20 @@ EOF
   def dir
     gem_dir.to_s
   end
+
+  ##
+  # Writes the file containing the arguments for building this gem's
+  # extensions.
+
+  def write_build_info_file
+    return if @build_args.empty?
+
+    open spec.build_info_file, 'w' do |io|
+      @build_args.each do |arg|
+        io.puts arg
+      end
+    end
+  end
+
 end
 

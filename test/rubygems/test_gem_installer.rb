@@ -1190,6 +1190,30 @@ load Gem.bin_path('a', 'executable', version)
     assert File.exist?(File.join(dest, 'bin', 'executable'))
   end
 
+  def test_write_build_args
+    refute_path_exists @spec.build_info_file
+
+    @installer.build_args = %w[
+      --with-libyaml-dir /usr/local/Cellar/libyaml/0.1.4
+    ]
+
+    @installer.write_build_info_file
+
+    assert_path_exists @spec.build_info_file
+
+    expected = "--with-libyaml-dir\n/usr/local/Cellar/libyaml/0.1.4\n"
+
+    assert_equal expected, File.read(@spec.build_info_file)
+  end
+
+  def test_write_build_args_empty
+    refute_path_exists @spec.build_info_file
+
+    @installer.write_build_info_file
+
+    refute_path_exists @spec.build_info_file
+  end
+
   def test_write_spec
     FileUtils.rm @spec.spec_file
     refute File.exist?(@spec.spec_file)

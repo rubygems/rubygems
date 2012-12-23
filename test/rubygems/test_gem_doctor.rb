@@ -144,6 +144,14 @@ This directory does not appear to be a RubyGems repository, skipping
     assert_equal expected, @ui.output
   end
 
+  def test_doctor_child_missing
+    doctor = Gem::Doctor.new @gemhome
+
+    doctor.doctor_child 'missing', ''
+
+    assert true # count
+  end
+
   def test_gem_repository_eh
     doctor = Gem::Doctor.new @gemhome
 

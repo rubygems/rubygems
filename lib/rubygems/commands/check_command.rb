@@ -1,26 +1,15 @@
 require 'rubygems/command'
 require 'rubygems/version_option'
 require 'rubygems/validator'
-require 'pathname'
+require 'rubygems/doctor'
 
 class Gem::Commands::CheckCommand < Gem::Command
 
   include Gem::VersionOption
 
-  REPOSITORY_EXTENSION_MAP = {
-    'build_info' =>     '.info',
-    'cache'      =>     '.gem',
-    'doc'        =>     '',
-    'gems'       =>     '',
-    'specifications' => '.gemspec'
-  }
-
-  raise 'Update REPOSITORY_EXTENSION_MAP' unless
-    Gem::REPOSITORY_SUBDIRECTORIES == REPOSITORY_EXTENSION_MAP.keys.sort
-
   def initialize
     super 'check', 'Check a gem repository for added or missing files',
-          :alien => true, :doctor => false, :gems => true
+          :alien => true, :doctor => false, :dry_run => false, :gems => true
 
     add_option('-a', '--[no-]alien',
                'Report "unmanaged" or rogue files in the',
@@ -28,10 +17,16 @@ class Gem::Commands::CheckCommand < Gem::Command
       options[:alien] = value
     end
 
-    add_option('--doctor',
+    add_option('--[no-]doctor',
                'Clean up uninstalled gems and broken',
                'specifications') do |value, options|
       options[:doctor] = value
+    end
+
+    add_option('--[no-]dry-run',
+               'Do not remove files, only report what',
+               'would be removed') do |value, options|
+      options[:dry_run] = value
     end
 
     add_option('--[no-]gems',
@@ -65,43 +60,9 @@ class Gem::Commands::CheckCommand < Gem::Command
     say 'Checking for files from uninstalled gems...'
     say
 
-    paths = Gem.path
-
-    paths.each do |gem_repo|
-      say "Checking #{gem_repo}"
-
-      Gem.use_paths gem_repo
-
-      gem_repo = Pathname(gem_repo)
-
-      installed_specs = Gem::Specification.map { |s| s.full_name }
-
-      if installed_specs.empty? then
-        say 'This directory does not appear to be a RubyGems repository, ' +
-            'skipping'
-        say
-        next
-      end
-
-      REPOSITORY_EXTENSION_MAP.each do |sub_directory, extension|
-        directory = gem_repo + sub_directory
-
-        directory.each_child do |child|
-          next unless child.exist?
-
-          basename = child.basename(extension).to_s
-          next if installed_specs.include? basename
-          next if /^rubygems-\d/ =~ basename
-
-          type = child.directory? ? 'directory' : 'file'
-
-          child.rmtree
-
-          say "Removed #{type} #{sub_directory}/#{child.basename}"
-        end
-      end
-
-      say
+    Gem.path.each do |gem_repo|
+      doctor = Gem::Doctor.new gem_repo, options[:dry_run]
+      doctor.doctor
     end
   end
 

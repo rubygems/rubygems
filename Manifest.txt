@@ -56,6 +56,7 @@ lib/rubygems/dependency_installer.rb
 lib/rubygems/dependency_list.rb
 lib/rubygems/dependency_resolver.rb
 lib/rubygems/deprecate.rb
+lib/rubygems/doctor.rb
 lib/rubygems/errors.rb
 lib/rubygems/exceptions.rb
 lib/rubygems/ext.rb
@@ -202,6 +203,7 @@ test/rubygems/test_gem_dependency.rb
 test/rubygems/test_gem_dependency_installer.rb
 test/rubygems/test_gem_dependency_list.rb
 test/rubygems/test_gem_dependency_resolver.rb
+test/rubygems/test_gem_doctor.rb
 test/rubygems/test_gem_ext_cmake_builder.rb
 test/rubygems/test_gem_ext_configure_builder.rb
 test/rubygems/test_gem_ext_ext_conf_builder.rb

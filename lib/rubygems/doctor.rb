@@ -20,16 +20,16 @@ class Gem::Doctor
   # subdirectory.
 
   REPOSITORY_EXTENSION_MAP = [ # :nodoc:
+    ['specifications', '.gemspec'],
     ['build_info',     '.info'],
     ['cache',          '.gem'],
     ['doc',            ''],
     ['gems',           ''],
-    ['specifications', '.gemspec'],
   ]
 
   raise 'Update REPOSITORY_EXTENSION_MAP' unless
-    Gem::REPOSITORY_SUBDIRECTORIES ==
-      REPOSITORY_EXTENSION_MAP.map { |(k,_)| k }
+    Gem::REPOSITORY_SUBDIRECTORIES.sort ==
+      REPOSITORY_EXTENSION_MAP.map { |(k,_)| k }.sort
 
   ##
   # Creates a new Gem::Doctor that will clean up +gem_repository+.  Only one

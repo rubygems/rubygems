@@ -55,9 +55,9 @@ class TestGemDoctor < Gem::TestCase
 
     expected = <<-OUTPUT
 Checking #{@gemhome}
+Removed file specifications/c-2.gemspec
 Removed directory gems/b-2
 Removed directory gems/c-2
-Removed file specifications/c-2.gemspec
 
     OUTPUT
 
@@ -108,9 +108,9 @@ Removed file specifications/c-2.gemspec
 
     expected = <<-OUTPUT
 Checking #{@gemhome}
+Extra file specifications/c-2.gemspec
 Extra directory gems/b-2
 Extra directory gems/c-2
-Extra file specifications/c-2.gemspec
 
     OUTPUT
 

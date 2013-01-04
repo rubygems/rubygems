@@ -14,7 +14,7 @@ class Gem::Commands::CleanupCommand < Gem::Command
     end
 
     @candidate_gems  = nil
-    @default_gems    = nil
+    @default_gems    = []
     @full            = nil
     @gems_to_cleanup = nil
     @original_home   = nil
@@ -47,7 +47,22 @@ are not removed.
   def execute
     say "Cleaning up installed gems..."
 
-    clean_gems
+    if options[:args].empty? then
+      done     = false
+      last_set = nil
+
+      until done do
+        clean_gems
+
+        this_set = @gems_to_cleanup.map { |spec| spec.full_name }.sort
+
+        done = this_set.empty? || last_set == this_set
+
+        last_set = this_set
+      end
+    else
+      clean_gems
+    end
 
     say "Clean Up Complete"
 
@@ -66,16 +81,18 @@ are not removed.
     @full = Gem::DependencyList.from_specs
 
     deplist = Gem::DependencyList.new
-    @gems_to_cleanup.uniq.each do |spec| deplist.add spec end
+    @gems_to_cleanup.each do |spec| deplist.add spec end
 
-    deps = deplist.strongly_connected_components.flatten.reverse
+    deps = deplist.strongly_connected_components.flatten
 
     @original_home = Gem.dir
     @original_path = Gem.path
 
-    deps.each do |spec|
+    deps.reverse_each do |spec|
       uninstall_dep spec
     end
+
+    Gem::Specification.reset
   end
 
   def get_candidate_gems
@@ -93,9 +110,13 @@ are not removed.
       @primary_gems[spec.name].version != spec.version
     }
 
-    @default_gems, @gems_to_cleanup = gems_to_cleanup.partition { |spec|
+    default_gems, gems_to_cleanup = gems_to_cleanup.partition { |spec|
       spec.default_gem?
     }
+
+    @default_gems += default_gems
+    @default_gems.uniq!
+    @gems_to_cleanup = gems_to_cleanup.uniq
   end
 
   def get_primary_gems
@@ -118,8 +139,6 @@ are not removed.
     end
 
     say "Attempting to uninstall #{spec.full_name}"
-
-    options[:args] = [spec.name]
 
     uninstall_options = {
       :executables => false,

@@ -47,6 +47,18 @@ are not removed.
   def execute
     say "Cleaning up installed gems..."
 
+    clean_gems
+
+    say "Clean Up Complete"
+
+    if Gem.configuration.really_verbose then
+      skipped = @default_gems.map { |spec| spec.full_name }
+
+      say "Skipped default gems: #{skipped.join ', '}"
+    end
+  end
+
+  def clean_gems
     get_primary_gems
     get_candidate_gems
     get_gems_to_cleanup
@@ -63,14 +75,6 @@ are not removed.
 
     deps.each do |spec|
       uninstall_dep spec
-    end
-
-    say "Clean Up Complete"
-
-    if Gem.configuration.really_verbose then
-      skipped = @default_gems.map { |spec| spec.full_name }
-
-      say "Skipped default gems: #{skipped.join ', '}"
     end
   end
 

@@ -120,6 +120,7 @@ class Gem::Specification
                            :version,
                            :date,
                            :summary,
+                           :licenses,
                            :require_paths]
 
   ##

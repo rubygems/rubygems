@@ -104,6 +104,7 @@ lib/rubygems/source_local.rb
 lib/rubygems/source_specific_file.rb
 lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
+lib/rubygems/ssl_certs/.document
 lib/rubygems/ssl_certs/AddTrustExternalCARoot.pem
 lib/rubygems/ssl_certs/Entrust_net-Secure-Server-Certification-Authority.pem
 lib/rubygems/ssl_certs/VerisignClass3PublicPrimaryCertificationAuthority-G2.pem

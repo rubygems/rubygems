@@ -2,16 +2,9 @@
 
 === 2.0.0.rc.2
 
-* Bug fix:
-  * Gem.refresh now maintains the active gem list.  Clearing the list would
-    cause double-loads which would cause other bugs.  Pull Request #427 by
-    Jeremy Evans
-
-=== 2.0.0.rc.1 / 2013-01-08
-
 As a preview release, please file bugs for any problems you have with RubyGems
 at https://github.com/rubygems/rubygems/issues.  To update to this preview
-release use gem update --system=2.0.0.preview3
+release use gem update --system=2.0.0.rc.2
 
 RubyGems 2.0 includes several new features and many breaking changes.  Some of
 these changes will cause existing software to break.  These changes are a
@@ -20,6 +13,13 @@ maintainable and improve APIs for RubyGems users.
 
 If you are using bundler be sure to install version 1.3.0.pre.  Older versions
 of bundler will not work with RubyGems 2.0.
+
+* Bug fix:
+  * Gem.refresh now maintains the active gem list.  Clearing the list would
+    cause double-loads which would cause other bugs.  Pull Request #427 by
+    Jeremy Evans
+
+=== 2.0.0.rc.1 / 2013-01-08
 
 * Minor enhancements:
   * This release of RubyGems can push gems to rubygems.org.  Ordinarily

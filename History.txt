@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.0.0.rc.2
+
+* Bug fix:
+  * Gem.refresh now maintains the active gem list.  Clearing the list would
+    cause double-loads which would cause other bugs.  Pull Request #427 by
+    Jeremy Evans
+
 === 2.0.0.rc.1 / 2013-01-08
 
 As a preview release, please file bugs for any problems you have with RubyGems

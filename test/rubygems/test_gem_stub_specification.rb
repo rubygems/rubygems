@@ -10,7 +10,7 @@ class TestStubSpecification < Gem::TestCase
     stub = Gem::StubSpecification.new(FOO)
     assert_equal "foo", stub.name
     assert_equal Gem::Version.new("0.0.1"), stub.version
-    assert_equal "amiga", stub.platform
+    assert_equal Gem::Platform.new("mswin32"), stub.platform
     assert_equal ["lib", "lib/f oo/ext"], stub.require_paths
   end
 
@@ -18,13 +18,13 @@ class TestStubSpecification < Gem::TestCase
     stub = Gem::StubSpecification.new(BAR)
     assert_equal "bar", stub.name
     assert_equal Gem::Version.new("0.0.2"), stub.version
-    assert_equal "ruby", stub.platform
+    assert_equal Gem::Platform.new("ruby"), stub.platform
     assert_equal ["lib"], stub.require_paths
   end
 
-  def test_spec
+  def test_to_spec
     stub = Gem::StubSpecification.new(FOO)
-    assert stub.spec.is_a?(Gem::Specification)
-    assert_equal "foo", stub.spec.name
+    assert stub.to_spec.is_a?(Gem::Specification)
+    assert_equal "foo", stub.to_spec.name
   end
 end

@@ -2,7 +2,7 @@ module Gem
   # Gem::StubSpecification reads the stub: line from the gemspec
   # This prevents us having to eval the entire gemspec in order to
   # find out certain information.
-  class StubSpecification
+  class StubSpecification < BasicSpecification
     # :nodoc:
     PREFIX = "# stub: "
 
@@ -23,7 +23,7 @@ module Gem
       end
 
       def platform
-        @parts[2]
+        Gem::Platform.new @parts[2]
       end
 
       def require_paths
@@ -31,15 +31,10 @@ module Gem
       end
     end
 
-    ##
-    # The filename of the gemspec
-
-    attr_reader :filename
-
     def initialize(filename)
-      @filename = filename
-      @data     = nil
-      @spec     = nil
+      self.filename = filename
+      @data         = nil
+      @spec         = nil
     end
 
     ##
@@ -71,13 +66,25 @@ module Gem
     end
 
     ##
-    # The Gem::Specification for this gem
+    # The full Gem::Specification for this gem, loaded from evalling its gemspec
 
-    def spec
+    def to_spec
       @spec ||= Gem::Specification.load(filename)
     end
 
+    ##
+    # True when this gem has been activated
+
+    def activated?
+      loaded = Gem.loaded_specs[name]
+      loaded && loaded.version == version
+    end
+
     private
+
+    ##
+    # If the gemspec contains a stubline, returns a StubLine instance. Otherwise
+    # returns the full Gem::Specification.
 
     def data
       unless @data
@@ -88,7 +95,7 @@ module Gem
         end
       end
 
-      @data ||= spec
+      @data ||= to_spec
     end
   end
 end

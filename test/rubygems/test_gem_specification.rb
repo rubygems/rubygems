@@ -891,7 +891,7 @@ dependencies: []
   end
 
   def test_base_dir_not_loaded
-    @a1.instance_variable_set :@loaded_from, nil
+    @a1.instance_variable_set :@filename, nil
 
     assert_equal Gem.dir, @a1.base_dir
   end
@@ -900,7 +900,7 @@ dependencies: []
     default_dir =
       File.join Gem::Specification.default_specifications_dir, @a1.spec_name
 
-    @a1.instance_variable_set :@loaded_from, default_dir
+    @a1.instance_variable_set :@filename, default_dir
 
     assert_equal Gem.default_dir, @a1.base_dir
   end

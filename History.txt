@@ -1,5 +1,16 @@
 # coding: UTF-8
 
+=== 1.8.25/ 2013-01-24
+
+* 6 bug fixes:
+
+  * Added 11627 to setup bin_file location to protect against errors. Fixes #328 by ConradIrwin
+  * Specification#ruby_code didn't handle Requirement with multiple
+  * Fix error on creating a Version object with a frozen string.
+  * Fix incremental index updates
+  * Fix missing load_yaml in YAML-related requirement.rb code.
+  * Manually backport encoding-aware YAML gemspec
+
 === 1.8.24 / 2012-04-27
 
 * 1 bug fix:

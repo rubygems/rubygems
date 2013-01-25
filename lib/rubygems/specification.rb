@@ -40,6 +40,7 @@ require 'rubygems/version'
 require 'rubygems/requirement'
 require 'rubygems/platform'
 require 'rubygems/deprecate'
+require 'rubygems/stub_specification'
 
 # :stopdoc:
 # date.rb can't be loaded for `make install` due to miniruby
@@ -2174,6 +2175,7 @@ class Gem::Specification
     mark_version
     result = []
     result << "# -*- encoding: utf-8 -*-"
+    result << "#{Gem::StubSpecification::PREFIX}#{name} #{version} #{platform} #{require_paths.join("\0")}"
     result << nil
     result << "Gem::Specification.new do |s|"
 

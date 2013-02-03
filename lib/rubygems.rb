@@ -370,29 +370,6 @@ module Gem
   end
 
   ##
-  # Expand each partial gem path with each of the required paths specified
-  # in the Gem spec.  Each expanded path is yielded.
-
-  def self.each_load_path(partials)
-    partials.each do |gp|
-      base = File.basename gp
-      specfn = File.join(dir, "specifications", "#{base}.gemspec")
-      if File.exists? specfn
-        spec = eval(File.read(specfn))
-        spec.require_paths.each do |rp|
-          yield File.join(gp,rp)
-        end
-      else
-        filename = File.join(gp, 'lib')
-        yield(filename) if File.exists? filename
-      end
-    end
-  end
-
-  private_class_method :each_load_path
-
-
-  ##
   # Quietly ensure the named Gem directory contains all the proper
   # subdirectories.  If we can't create a directory due to a permission
   # problem, then we will silently continue.

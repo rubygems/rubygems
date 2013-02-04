@@ -227,6 +227,24 @@ class TestGemConfigFile < Gem::TestCase
     assert_equal true, @cfg.really_verbose
   end
 
+  def test_rubygems_api_key_equals
+    @cfg.rubygems_api_key = 'x'
+
+    assert_equal 'x', @cfg.rubygems_api_key
+
+    expected = {
+      :rubygems_api_key => 'x',
+    }
+
+    assert_equal expected, YAML.load_file(@cfg.credentials_path)
+
+    unless win_platform? then
+      stat = File.stat @cfg.credentials_path
+
+      assert_equal 0600, stat.mode & 0600
+    end
+  end
+
   def test_write
     @cfg.backtrace = true
     @cfg.update_sources = false

@@ -164,6 +164,36 @@ class TestGemConfigFile < Gem::TestCase
     assert_equal 2048, @cfg.bulk_threshold
   end
 
+  def test_check_credentials_permissions
+    @cfg.rubygems_api_key = 'x'
+
+    File.chmod 0644, @cfg.credentials_path
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::TermError do
+        @cfg.load_api_keys
+      end
+    end
+
+    assert_empty @ui.output
+
+    expected = <<-EXPECTED
+ERROR:  Your gem push credentials file located at:
+
+\t#{@cfg.credentials_path}
+
+has file permissions of 0644 but 0600 is required.
+
+You should reset your credentials at:
+
+\thttps://rubygems.org/profile/edit
+
+if you believe they were disclosed to a third party.
+    EXPECTED
+
+    assert_equal expected, @ui.error
+  end
+
   def test_handle_arguments
     args = %w[--backtrace --bunch --of --args here]
 
@@ -218,7 +248,7 @@ class TestGemConfigFile < Gem::TestCase
   def test_load_api_keys
     temp_cred = File.join Gem.user_home, '.gem', 'credentials'
     FileUtils.mkdir File.dirname(temp_cred)
-    File.open temp_cred, 'w' do |fp|
+    File.open temp_cred, 'w', 0600 do |fp|
       fp.puts ":rubygems_api_key: 701229f217cdf23b1344c7b4b54ca97"
       fp.puts ":other: a5fdbb6ba150cbb83aad2bb2fede64c"
     end
@@ -227,6 +257,18 @@ class TestGemConfigFile < Gem::TestCase
 
     assert_equal({:rubygems => '701229f217cdf23b1344c7b4b54ca97',
                   :other => 'a5fdbb6ba150cbb83aad2bb2fede64c'}, @cfg.api_keys)
+  end
+
+  def test_load_api_keys_bad_permission
+    skip 'chmod not supported' if win_platform?
+
+    @cfg.rubygems_api_key = 'x'
+
+    File.chmod 0644, @cfg.credentials_path
+
+    assert_raises Gem::MockGemUi::TermError do
+      @cfg.load_api_keys
+    end
   end
 
   def test_really_verbose

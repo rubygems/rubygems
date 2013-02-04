@@ -226,6 +226,34 @@ class Gem::ConfigFile
   end
 
   ##
+  # Checks the permissions of the credentials file.  If they are not 0600 an
+  # error message is displayed and RubyGems aborts.
+
+  def check_credentials_permissions
+    return unless File.exist? credentials_path
+
+    existing_permissions = File.stat(credentials_path).mode & 0777
+
+    return if existing_permissions == 0600
+
+    alert_error <<-ERROR
+Your gem push credentials file located at:
+
+\t#{credentials_path}
+
+has file permissions of 0#{existing_permissions.to_s 8} but 0600 is required.
+
+You should reset your credentials at:
+
+\thttps://rubygems.org/profile/edit
+
+if you believe they were disclosed to a third party.
+    ERROR
+
+    terminate_interaction 1
+  end
+
+  ##
   # Location of RubyGems.org credentials
 
   def credentials_path
@@ -233,6 +261,8 @@ class Gem::ConfigFile
   end
 
   def load_api_keys
+    check_credentials_permissions
+
     @api_keys = if File.exist? credentials_path then
                   load_file(credentials_path)
                 else
@@ -245,27 +275,13 @@ class Gem::ConfigFile
     end
   end
 
-  def rubygems_api_key=(api_key)
+  def rubygems_api_key= api_key
+    check_credentials_permissions
+
     config = load_file(credentials_path).merge(:rubygems_api_key => api_key)
 
     dirname = File.dirname credentials_path
     Dir.mkdir(dirname) unless File.exist? dirname
-
-    if File.exist? credentials_path then
-      existing_permissions = File.stat(credentials_path).mode & 0777
-
-      unless existing_permissions == 0600 then
-        alert_error <<-ERROR
-  Your gem `credentials` file located at #{credentials_path} has file
-  permissions of #{existing_permissions.to_s 8} but 0600 is required.
-
-  You may wish to reset your credentials at https://rubygems.org/profile/edit if
-  you believe they were disclosed to a third party.
-        ERROR
-
-        terminate_interaction 1
-      end
-    end
 
     Gem.load_yaml
 

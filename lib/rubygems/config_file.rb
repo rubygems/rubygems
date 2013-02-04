@@ -33,6 +33,8 @@
 
 class Gem::ConfigFile
 
+  include Gem::UserInteraction
+
   DEFAULT_BACKTRACE = false
   DEFAULT_BULK_THRESHOLD = 1000
   DEFAULT_VERBOSITY = true
@@ -249,6 +251,22 @@ class Gem::ConfigFile
     dirname = File.dirname credentials_path
     Dir.mkdir(dirname) unless File.exist? dirname
 
+    if File.exist? credentials_path then
+      existing_permissions = File.stat(credentials_path).mode & 0777
+
+      unless existing_permissions == 0600 then
+        alert_error <<-ERROR
+  Your gem `credentials` file located at #{credentials_path} has file
+  permissions of #{existing_permissions.to_s 8} but 0600 is required.
+
+  You may wish to reset your credentials at https://rubygems.org/profile/edit if
+  you believe they were disclosed to a third party.
+        ERROR
+
+        terminate_interaction 1
+      end
+    end
+
     Gem.load_yaml
 
     permissions = 0600 & (~File.umask)
@@ -256,11 +274,6 @@ class Gem::ConfigFile
       f.write config.to_yaml
     end
     
-    existing_permissions = File.stat(credentials_path).mode.to_s(8)[2..5]
-    unless existing_permissions == '0600'
-      abort "Your gem `credentials` file located at #{credentials_path} has file permissions of #{existing_permissions} but 0600 is required."
-    end
-
     @rubygems_api_key = api_key
   end
 

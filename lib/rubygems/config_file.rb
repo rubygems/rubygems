@@ -255,6 +255,11 @@ class Gem::ConfigFile
     File.open(credentials_path, 'w', permissions) do |f|
       f.write config.to_yaml
     end
+    
+    existing_permissions = File.stat(credentials_path).mode.to_s(8)[2..5]
+    unless existing_permissions == '0600'
+      abort "Your gem `credentials` file located at #{credentials_path} has file permissions of #{existing_permissions} but 0600 is required."
+    end
 
     @rubygems_api_key = api_key
   end

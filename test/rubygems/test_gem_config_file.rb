@@ -245,6 +245,28 @@ class TestGemConfigFile < Gem::TestCase
     end
   end
 
+  def test_rubygems_api_key_equals_bad_permission
+    skip 'chmod not supported' if win_platform?
+
+    @cfg.rubygems_api_key = 'x'
+
+    File.chmod 0644, @cfg.credentials_path
+
+    assert_raises Gem::MockGemUi::TermError do
+      @cfg.rubygems_api_key = 'y'
+    end
+
+    expected = {
+      :rubygems_api_key => 'x',
+    }
+
+    assert_equal expected, YAML.load_file(@cfg.credentials_path)
+
+    stat = File.stat @cfg.credentials_path
+
+    assert_equal 0644, stat.mode & 0644
+  end
+
   def test_write
     @cfg.backtrace = true
     @cfg.update_sources = false

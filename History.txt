@@ -14,10 +14,12 @@ maintainable and improve APIs for RubyGems users.
 If you are using bundler be sure to install version 1.3.0.pre.  Older versions
 of bundler will not work with RubyGems 2.0.
 
-* Bug fix:
+* Bug fixes:
   * Gem.refresh now maintains the active gem list.  Clearing the list would
     cause double-loads which would cause other bugs.  Pull Request #427 by
     Jeremy Evans
+  * RubyGems now refuses to read the gem push credentials file if it has
+    insecure permissions.  Pull Request #438 by Shannon Skipper
 
 === 2.0.0.rc.1 / 2013-01-08
 

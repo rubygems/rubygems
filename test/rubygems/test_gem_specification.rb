@@ -119,7 +119,7 @@ end
   end
 
   def test_self_from_yaml
-    @a1.remove_instance_variable :@specification_version
+    @a1.send :remove_instance_variable, :@specification_version
 
     spec = Gem::Specification.from_yaml @a1.to_yaml
 

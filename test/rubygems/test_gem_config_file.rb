@@ -215,6 +215,20 @@ class TestGemConfigFile < Gem::TestCase
     assert_equal true, @cfg.backtrace
   end
 
+  def test_load_api_keys
+    temp_cred = File.join Gem.user_home, '.gem', 'credentials'
+    FileUtils.mkdir File.dirname(temp_cred)
+    File.open temp_cred, 'w' do |fp|
+      fp.puts ":rubygems_api_key: 701229f217cdf23b1344c7b4b54ca97"
+      fp.puts ":other: a5fdbb6ba150cbb83aad2bb2fede64c"
+    end
+
+    util_config_file
+
+    assert_equal({:rubygems => '701229f217cdf23b1344c7b4b54ca97',
+                  :other => 'a5fdbb6ba150cbb83aad2bb2fede64c'}, @cfg.api_keys)
+  end
+
   def test_really_verbose
     assert_equal false, @cfg.really_verbose
 
@@ -325,40 +339,6 @@ class TestGemConfigFile < Gem::TestCase
     assert_equal '--wrappers --no-rdoc', @cfg[:install], 'install'
 
     assert_equal %w[http://even-more-gems.example.com], Gem.sources
-  end
-
-  def test_load_rubygems_api_key_from_credentials
-    temp_cred = File.join Gem.user_home, '.gem', 'credentials'
-    FileUtils.mkdir File.dirname(temp_cred)
-    File.open temp_cred, 'w' do |fp|
-      fp.puts ":rubygems_api_key: 701229f217cdf23b1344c7b4b54ca97"
-    end
-
-    util_config_file
-
-    assert_equal "701229f217cdf23b1344c7b4b54ca97", @cfg.rubygems_api_key
-  end
-
-  def test_load_api_keys_from_config
-    temp_cred = File.join Gem.user_home, '.gem', 'credentials'
-    FileUtils.mkdir File.dirname(temp_cred)
-    File.open temp_cred, 'w' do |fp|
-      fp.puts ":rubygems_api_key: 701229f217cdf23b1344c7b4b54ca97"
-      fp.puts ":other: a5fdbb6ba150cbb83aad2bb2fede64c"
-    end
-
-    util_config_file
-
-    assert_equal({:rubygems => '701229f217cdf23b1344c7b4b54ca97',
-                  :other => 'a5fdbb6ba150cbb83aad2bb2fede64c'}, @cfg.api_keys)
-  end
-
-  def test_save_credentials_file_with_strict_permissions
-    util_config_file
-    FileUtils.mkdir File.dirname(@cfg.credentials_path)
-    @cfg.rubygems_api_key = '701229f217cdf23b1344c7b4b54ca97'
-    mode = 0100600 & (~File.umask)
-    assert_equal mode, File.stat(@cfg.credentials_path).mode unless win_platform?
   end
 
   def test_ignore_invalid_config_file

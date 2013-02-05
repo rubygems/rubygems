@@ -226,6 +226,8 @@ module Gem
         end
       end
 
+      path.untaint
+
       return unless File.file? path
 
       rs = Gem::RequestSet.new

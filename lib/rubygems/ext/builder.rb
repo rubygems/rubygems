@@ -44,7 +44,7 @@ class Gem::Ext::Builder
     verbose = Gem.configuration.really_verbose
 
     begin
-      #rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], nil
+      rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], nil
       if verbose
         puts(command)
         system(command)
@@ -53,7 +53,7 @@ class Gem::Ext::Builder
         results << `#{command} #{redirector}`
       end
     ensure
-      #ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
+      ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
     end
 
     unless $?.success? then

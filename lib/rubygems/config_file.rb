@@ -289,7 +289,7 @@ if you believe they were disclosed to a third party.
     File.open(credentials_path, 'w', permissions) do |f|
       f.write config.to_yaml
     end
-    
+
     @rubygems_api_key = api_key
   end
 

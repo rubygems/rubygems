@@ -47,12 +47,17 @@ class Gem::Commands::PushCommand < Gem::Command
 
     if latest_rubygems_version < Gem.rubygems_version and
          Gem.rubygems_version.prerelease? and
-         Gem::Version.new('2.0.0.preview3') != Gem.rubygems_version then
+         Gem::Version.new('2.0.0.rc.2') != Gem.rubygems_version then
       alert_error <<-ERROR
 You are using a beta release of RubyGems (#{Gem::VERSION}) which is not
 allowed to push gems.  Please downgrade or upgrade to a release version.
 
 The latest released RubyGems version is #{latest_rubygems_version}
+
+You can upgrade or downgrade to the latest release version with:
+
+  gem update --system=#{latest_rubygems_version}
+
       ERROR
       terminate_interaction 1
     end

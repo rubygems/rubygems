@@ -24,16 +24,19 @@ class Gem::Commands::PushCommand < Gem::Command
     add_proxy_option
     add_key_option
 
-    add_option(
-      '--host HOST',
-      'Push to another gemcutter-compatible host'
-    ) do |value, options|
+    add_option('--host HOST',
+               'Push to another gemcutter-compatible host') do |value, options|
       options[:host] = value
     end
+
+    @host = nil
   end
 
   def execute
-    sign_in
+    @host = options[:host]
+
+    sign_in @host
+
     send_gem get_one_gem_name
   end
 
@@ -54,16 +57,15 @@ The latest released RubyGems version is #{latest_rubygems_version}
       terminate_interaction 1
     end
 
-    host = options[:host]
-    unless host
+    unless @host then
       if gem_data = Gem::Package.new(name) then
-        host = gem_data.spec.metadata['default_gem_server']
+        @host = gem_data.spec.metadata['default_gem_server']
       end
     end
 
-    args << host if host
+    args << @host if @host
 
-    say "Pushing gem to #{host || Gem.host}..."
+    say "Pushing gem to #{@host || Gem.host}..."
 
     response = rubygems_api_request(*args) do |request|
       request.body = Gem.read_binary name

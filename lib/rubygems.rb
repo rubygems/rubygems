@@ -207,7 +207,7 @@ module Gem
 
         begin
           while true
-            path = GEM_DEP_FILES.find { |f| File.exists?(f) }
+            path = GEM_DEP_FILES.find { |f| File.file?(f) }
 
             if path
               path = File.join here, path
@@ -226,7 +226,7 @@ module Gem
         end
       end
 
-      return unless File.exists? path
+      return unless File.file? path
 
       rs = Gem::RequestSet.new
       rs.load_gemdeps path

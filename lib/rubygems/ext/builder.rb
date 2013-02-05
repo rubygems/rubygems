@@ -43,12 +43,17 @@ class Gem::Ext::Builder
   def self.run(command, results, command_name = nil)
     verbose = Gem.configuration.really_verbose
 
-    if verbose
-      puts(command)
-      system(command)
-    else
-      results << command
-      results << `#{command} #{redirector}`
+    begin
+      #rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], nil
+      if verbose
+        puts(command)
+        system(command)
+      else
+        results << command
+        results << `#{command} #{redirector}`
+      end
+    ensure
+      #ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
     end
 
     unless $?.success? then

@@ -44,6 +44,7 @@ class Gem::Ext::Builder
     verbose = Gem.configuration.really_verbose
 
     begin
+      # TODO use Process.spawn when ruby 1.8 support is dropped.
       rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], nil
       if verbose
         puts(command)

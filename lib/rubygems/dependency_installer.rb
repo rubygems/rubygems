@@ -58,12 +58,7 @@ class Gem::DependencyInstaller
 
   def initialize(options = {})
     if options[:install_dir] then
-      @gem_home = options[:install_dir]
-
-      # HACK shouldn't change the global settings
-      Gem::Specification.dirs = @gem_home
-      Gem.ensure_gem_subdirectories @gem_home
-      options[:install_dir] = @gem_home # FIX: because we suck and reuse below
+      Gem.ensure_gem_subdirectories options[:install_dir]
     end
 
     options = DEFAULT_OPTIONS.merge options

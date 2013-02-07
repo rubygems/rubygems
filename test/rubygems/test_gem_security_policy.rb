@@ -31,6 +31,7 @@ class TestGemSecurityPolicy < Gem::TestCase
     @sha1 = OpenSSL::Digest::SHA1
     @trust_dir = Gem::Security.trust_dir.dir # HACK use the object
 
+    @no        = Gem::Security::NoSecurity
     @almost_no = Gem::Security::AlmostNoSecurity
     @low       = Gem::Security::LowSecurity
     @high      = Gem::Security::HighSecurity
@@ -231,6 +232,65 @@ class TestGemSecurityPolicy < Gem::TestCase
 
   def test_verify_chain_key
     @almost_no.verify [PUBLIC_CERT], PRIVATE_KEY, *dummy_signatures
+  end
+
+  def test_verify_no_digests
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
+
+    _, signatures = dummy_signatures
+
+    e = assert_raises Gem::Security::Exception do
+      @almost_no.verify [PUBLIC_CERT], nil, {}, signatures
+    end
+
+    assert_equal 'no digests provided (probable bug)', e.message
+  end
+
+  def test_verify_no_digests_no_security
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
+
+    _, signatures = dummy_signatures
+
+    e = assert_raises Gem::Security::Exception do
+      @no.verify [PUBLIC_CERT], nil, {}, signatures
+    end
+
+    assert_equal 'missing digest for 0', e.message
+  end
+
+  def test_verify_not_enough_signatures
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
+
+    digests, signatures = dummy_signatures
+
+    data = digest 'goodbye'
+
+    signatures[1] = PRIVATE_KEY.sign @sha1.new, data.digest
+
+    e = assert_raises Gem::Security::Exception do
+      @almost_no.verify [PUBLIC_CERT], nil, digests, signatures
+    end
+
+    assert_equal 'missing digest for 1', e.message
+  end
+
+  def test_verify_wrong_digest_type
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
+
+    sha512 = OpenSSL::Digest::SHA512
+
+    data = sha512.new
+    data << 'hello'
+
+    digests    = { 'SHA512' => { 0 => data } }
+    signature  = PRIVATE_KEY.sign sha512.new, data.digest
+    signatures = { 0 => signature }
+
+    e = assert_raises Gem::Security::Exception do
+      @almost_no.verify [PUBLIC_CERT], nil, digests, signatures
+    end
+
+    assert_equal 'no digests provided (probable bug)', e.message
   end
 
   def test_verify_signatures_chain

@@ -177,11 +177,16 @@ class Gem::Security::Policy
     trust_dir = opt[:trust_dir]
     time      = Time.now
 
-    signer_digests = digests.find do |algorithm, file_digests|
+    _, signer_digests = digests.find do |algorithm, file_digests|
       file_digests.values.first.name == Gem::Security::DIGEST_NAME
     end
 
-    signer_digests = digests.values.first || {}
+    if @verify_data then
+      raise Gem::Security::Exception, 'no digests provided (probable bug)' if
+        signer_digests.nil? or signer_digests.empty?
+    else
+      signer_digests = {}
+    end
 
     signer = chain.last
 
@@ -194,6 +199,13 @@ class Gem::Security::Policy
     check_root chain, time if @verify_root
 
     check_trust chain, digester, trust_dir if @only_trusted
+
+    signatures.each do |file, _|
+      digest = signer_digests[file]
+
+      raise Gem::Security::Exception, "missing digest for #{file}" unless
+        digest
+    end
 
     signer_digests.each do |file, digest|
       signature = signatures[file]

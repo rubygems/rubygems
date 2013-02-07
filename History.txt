@@ -22,6 +22,8 @@ of bundler will not work with RubyGems 2.0.
     insecure permissions.  Pull Request #438 by Shannon Skipper
   * RubyGems now requires a local gem name to end in '.gem'.  Issue #407 by
     Santiago Pastorino.
+  * Fixed signature verification of gems which was broken only on master.
+    Thanks to Brian Buchanan.
 
 === 2.0.0.rc.1 / 2013-01-08
 

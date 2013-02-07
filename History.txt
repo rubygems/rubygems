@@ -24,6 +24,8 @@ of bundler will not work with RubyGems 2.0.
     Santiago Pastorino.
   * Fixed signature verification of gems which was broken only on master.
     Thanks to Brian Buchanan.
+  * Do not allow old-format gems to be installed with a security policy that
+    verifies data.
 
 === 2.0.0.rc.1 / 2013-01-08
 

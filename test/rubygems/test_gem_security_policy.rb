@@ -220,73 +220,49 @@ class TestGemSecurityPolicy < Gem::TestCase
   def test_verify
     Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
-    assert @almost_no.verify [PUBLIC_CERT]
+    assert @almost_no.verify [PUBLIC_CERT], nil, *dummy_signatures
   end
 
   def test_verify_chain_signatures
     Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
-    data = digest 'hello'
-    digest    = { 'SHA1' => { 0 => data } }
-    signature = { 0 => sign(data, PRIVATE_KEY) }
-
-    assert @high.verify [PUBLIC_CERT], nil, digest, signature
+    assert @high.verify [PUBLIC_CERT], nil, *dummy_signatures
   end
 
   def test_verify_chain_key
-    assert @almost_no.verify [PUBLIC_CERT], PRIVATE_KEY
+    @almost_no.verify [PUBLIC_CERT], PRIVATE_KEY, *dummy_signatures
   end
 
   def test_verify_signatures_chain
-    data = digest 'hello'
-    digest    = { 'SHA1' => { 0 => data } }
-    signature = { 0 => sign(data, CHILD_KEY) }
-
     @spec.cert_chain = [PUBLIC_CERT, CHILD_CERT]
 
-    assert @chain.verify_signatures @spec, digest, signature
+    assert @chain.verify_signatures @spec, *dummy_signatures(CHILD_KEY)
   end
 
   def test_verify_signatures_data
-    data = digest 'hello'
-    digest    = { 'SHA1' => { 0 => data } }
-    signature = { 0 => sign(data) }
-
     @spec.cert_chain = [PUBLIC_CERT]
 
-    @almost_no.verify_signatures @spec, digest, signature
+    @almost_no.verify_signatures @spec, *dummy_signatures
   end
 
   def test_verify_signatures_root
-    data = digest 'hello'
-    digest    = { 'SHA1' => { 0 => data } }
-    signature = { 0 => sign(data, CHILD_KEY) }
-
     @spec.cert_chain = [PUBLIC_CERT, CHILD_CERT]
 
-    assert @root.verify_signatures @spec, digest, signature
+    assert @root.verify_signatures @spec, *dummy_signatures(CHILD_KEY)
   end
 
   def test_verify_signatures_signer
-    data = digest 'hello'
-    digest    = { 'SHA1' => { 0 => data } }
-    signature = { 0 => sign(data) }
-
     @spec.cert_chain = [PUBLIC_CERT]
 
-    assert @low.verify_signatures @spec, digest, signature
+    assert @low.verify_signatures @spec, *dummy_signatures
   end
 
   def test_verify_signatures_trust
     Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 
-    data = digest 'hello'
-    digest    = { 'SHA1' => { 0 => data } }
-    signature = { 0 => sign(data, PRIVATE_KEY) }
-
     @spec.cert_chain = [PUBLIC_CERT]
 
-    assert @high.verify_signatures @spec, digest, signature
+    assert @high.verify_signatures @spec, *dummy_signatures
   end
 
   def test_verify_signatures
@@ -370,6 +346,15 @@ class TestGemSecurityPolicy < Gem::TestCase
 
   def sign data, key = PRIVATE_KEY
     key.sign @sha1.new, data.digest
+  end
+
+  def dummy_signatures key = PRIVATE_KEY
+    data = digest 'hello'
+
+    digests    = { 'SHA1' => { 0 => data } }
+    signatures = { 0 => sign(data, key) }
+
+    return digests, signatures
   end
 
 end

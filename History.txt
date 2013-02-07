@@ -20,6 +20,8 @@ of bundler will not work with RubyGems 2.0.
     Jeremy Evans
   * RubyGems now refuses to read the gem push credentials file if it has
     insecure permissions.  Pull Request #438 by Shannon Skipper
+  * RubyGems now requires a local gem name to end in '.gem'.  Issue #407 by
+    Santiago Pastorino.
 
 === 2.0.0.rc.1 / 2013-01-08
 

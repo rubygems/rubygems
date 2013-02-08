@@ -153,7 +153,10 @@ class Gem::Version
   ##
   # A string representation of this Version.
 
-  attr_reader :version
+  def version
+    @version.dup
+  end
+
   alias to_s version
 
   ##
@@ -181,6 +184,12 @@ class Gem::Version
     else
       new input
     end
+  end
+
+  @@all = {}
+
+  def self.new version
+    @@all[version] ||= super
   end
 
   ##

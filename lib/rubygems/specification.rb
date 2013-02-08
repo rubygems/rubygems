@@ -1880,6 +1880,11 @@ class Gem::Specification
     end
   end
 
+  # Prevent ruby hitting spec.method_missing when [[spec]].flatten is called
+  def to_ary # :nodoc:
+    nil
+  end
+
   ##
   # Normalize the list of files so that:
   # * All file lists have redundancies removed.

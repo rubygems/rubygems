@@ -100,7 +100,6 @@ Changes since RubyGems 1.8.25 (including past pre-releases):
     GEM_HOME
   * When building gems with non-world-readable files a warning is shown.
 
-
 * Bug fixes:
   * Gem.refresh now maintains the active gem list.  Clearing the list would
     cause double-loads which would cause other bugs.  Pull Request #427 by

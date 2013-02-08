@@ -1,5 +1,11 @@
 # coding: UTF-8
 
+=== 2.0.0.rc.2.1
+
+* Bug fixes:
+  * Fixed verification of gems at LowSecurity due to missing signature.
+    Thanks to André Arko.
+
 === 2.0.0.rc.2
 
 As a preview release, please file bugs for any problems you have with RubyGems

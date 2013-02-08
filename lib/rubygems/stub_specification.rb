@@ -41,28 +41,28 @@ module Gem
     # Name of the gem
 
     def name
-      data.name
+      @name ||= data.name
     end
 
     ##
     # Version of the gem
 
     def version
-      data.version
+      @version ||= data.version
     end
 
     ##
     # Platform of the gem
 
     def platform
-      data.platform
+      @platform ||= data.platform
     end
 
     ##
     # Require paths of the gem
 
     def require_paths
-      data.require_paths
+      @require_paths ||= data.require_paths
     end
 
     ##

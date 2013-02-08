@@ -614,40 +614,9 @@ class Gem::Specification < Gem::BasicSpecification
 
   attr_accessor :specification_version
 
-  class << self
-    def each_spec(search_dirs) # :nodoc:
-      search_dirs.each { |dir|
-        Dir[File.join(dir, "*.gemspec")].each { |path|
-          spec = Gem::Specification.load path.untaint
-          # #load returns nil if the spec is bad, so we just ignore
-          # it at this stage
-          yield(spec) if spec
-        }
-      }
-    end
-
-    def each_default(&block) # :nodoc:
-      each_spec([default_specifications_dir],
-                &block)
-    end
-
-    def each_normal(&block) # :nodoc:
-      each_spec(dirs, &block)
-    end
-  end
-
   def self._all # :nodoc:
     unless defined?(@@all) && @@all then
-
-      specs = {}
-      each_default do |spec|
-        specs[spec.full_name] ||= spec
-      end
-      each_normal do |spec|
-        specs[spec.full_name] ||= spec
-      end
-
-      @@all = specs.values
+      @@all = stubs.map(&:to_spec)
 
       # After a reset, make sure already loaded specs
       # are still marked as activated.
@@ -655,29 +624,43 @@ class Gem::Specification < Gem::BasicSpecification
       Gem.loaded_specs.each_value{|s| specs[s] = true}
       @@all.each{|s| s.activated = true if specs[s]}
 
-      _resort!
+      _resort!(@@all)
     end
     @@all
   end
 
   # :nodoc:
-  def self.each_stub(dirs)
+  def self.each_gemspec(dirs)
     dirs.each do |dir|
       Dir[File.join(dir, "*.gemspec")].each do |path|
-        yield Gem::StubSpecification.new(path)
+        yield path.untaint
       end
     end
   end
 
-  # TODO: DRY up WRT _all
+  # :nodoc:
+  def self.each_stub(dirs)
+    each_gemspec(dirs) do |path|
+      stub = Gem::StubSpecification.new(path)
+      yield stub if stub.valid?
+    end
+  end
+
+  # :nodoc:
+  def self.each_spec(dirs)
+    each_gemspec(dirs) do |path|
+      spec = self.load path
+      yield spec if spec
+    end
+  end
+
+  ##
+  # Returns a Gem::StubSpecification for every installed gem
+
   def self.stubs
     @@stubs ||= begin
       stubs = {}
-
-      each_stub([default_specifications_dir]) do |stub|
-        stubs[stub.full_name] ||= stub
-      end
-      each_stub(dirs) do |stub|
+      each_stub([default_specifications_dir] + dirs) do |stub|
         stubs[stub.full_name] ||= stub
       end
 
@@ -687,7 +670,7 @@ class Gem::Specification < Gem::BasicSpecification
     end
   end
 
-  def self._resort!(specs = @@all) # :nodoc:
+  def self._resort!(specs) # :nodoc:
     specs.sort! { |a, b|
       names = a.name <=> b.name
       next names if names.nonzero?
@@ -699,7 +682,9 @@ class Gem::Specification < Gem::BasicSpecification
   # Loads the default specifications. It should be called only once.
 
   def self.load_defaults
-    each_default do |spec|
+    each_spec([default_specifications_dir]) do |spec|
+      # #load returns nil if the spec is bad, so we just ignore
+      # it at this stage
       Gem.register_default_spec(spec)
     end
   end
@@ -723,7 +708,7 @@ class Gem::Specification < Gem::BasicSpecification
 
     _all << spec
     stubs << spec
-    _resort!
+    _resort!(_all)
     _resort!(stubs)
   end
 

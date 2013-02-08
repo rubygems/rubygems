@@ -80,6 +80,14 @@ module Gem
       loaded && loaded.version == version
     end
 
+    ##
+    # Is this StubSpecification valid? i.e. have we found a stub line, OR does
+    # the filename contain a valid gemspec?
+
+    def valid?
+      data
+    end
+
     private
 
     ##
@@ -89,9 +97,12 @@ module Gem
     def data
       unless @data
         File.open(filename, "r:UTF-8:-") do |file|
-          file.readline # discard encoding line
-          stubline = file.readline.chomp
-          @data = StubLine.new(stubline) if stubline.start_with?(PREFIX)
+          begin
+            file.readline # discard encoding line
+            stubline = file.readline.chomp
+            @data = StubLine.new(stubline) if stubline.start_with?(PREFIX)
+          rescue EOFError
+          end
         end
       end
 

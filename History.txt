@@ -1,5 +1,11 @@
 # coding: UTF-8
 
+=== 2.0.0.rc.2.2
+
+* Bug fixes:
+  * Gem.gzip and Gem.gunzip now return strings with BINARY encoding.  Issue
+    #450 by Jeremy Kemper
+
 === 2.0.0.rc.2.1
 
 * Bug fixes:

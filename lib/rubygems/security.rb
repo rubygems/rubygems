@@ -350,6 +350,12 @@ module Gem::Security
   KEY_LENGTH = 2048
 
   ##
+  # Cipher used to encrypt the key pair used to sign gems.
+  # Must be in the list returned by OpenSSL::Cipher.ciphers
+
+  KEY_CIPHER = OpenSSL::Cipher.new('des3')
+
+  ##
   # One year in seconds
 
   ONE_YEAR = 86400 * 365
@@ -543,13 +549,18 @@ module Gem::Security
 
   ##
   # Writes +pemmable+, which must respond to +to_pem+ to +path+ with the given
-  # +permissions+.
+  # +permissions+. If passed +cipher+ and +passphrase+ those arguments will be
+  # passed to +to_pem+.
 
-  def self.write pemmable, path, permissions = 0600
+  def self.write pemmable, path, permissions = 0600, cipher = KEY_CIPHER, passphrase = nil
     path = File.expand_path path
 
     open path, 'wb', permissions do |io|
-      io.write pemmable.to_pem
+      if cipher and passphrase
+        io.write pemmable.to_pem cipher, passphrase
+      else
+        io.write pemmable.to_pem
+      end
     end
 
     path

@@ -246,5 +246,36 @@ class TestGemSecurity < Gem::TestCase
     assert_equal expected, trust_dir.dir
   end
 
+  def test_class_write
+    key = @SEC.create_key 256
+
+    path = File.join @tempdir, 'test-private_key.pem'
+
+    @SEC.write key, path
+
+    assert_path_exists path
+
+    key_from_file = File.read path
+
+    assert_equal key.to_pem, key_from_file
+  end
+
+  def test_class_write_encrypted
+    key = @SEC.create_key 256
+
+    path = File.join @tempdir, 'test-private_encrypted_key.pem'
+
+    passphrase = 'It should be long.'
+
+    @SEC.write key, path, 0600, @SEC::KEY_CIPHER, passphrase
+
+    assert_path_exists path
+
+    key_from_file =  OpenSSL::PKey::RSA.new File.read(path), passphrase
+
+    assert_equal key.to_pem, key_from_file.to_pem
+  end
+
+
 end
 

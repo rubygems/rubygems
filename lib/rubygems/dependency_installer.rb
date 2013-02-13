@@ -319,9 +319,6 @@ class Gem::DependencyInstaller
 
     last = @gems_to_install.size - 1
     @gems_to_install.each_with_index do |spec, index|
-      # REFACTOR more current spec set hardcoding, should be abstracted?
-      next if Gem::Specification.include?(spec) and index != last
-
       # TODO: make this sorta_verbose so other users can benefit from it
       say "Installing gem #{spec.full_name}" if Gem.configuration.really_verbose
 

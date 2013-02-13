@@ -20,7 +20,8 @@ class Gem::Commands::CertCommand < Gem::Command
 
     OptionParser.accept OpenSSL::PKey::RSA do |key_file|
       begin
-        key = OpenSSL::PKey::RSA.new File.read key_file
+        passphrase = ENV['GEM_PRIVATE_KEY_PASSPHRASE']
+        key = OpenSSL::PKey::RSA.new File.read(key_file), passphrase
       rescue Errno::ENOENT
         raise OptionParser::InvalidArgument, "#{key_file}: does not exist"
       rescue OpenSSL::PKey::RSAError
@@ -211,7 +212,8 @@ For further reading on signing gems see `ri Gem::Security`.
   def load_default_key
     key_file = File.join Gem.user_home, 'gem-private_key.pem'
     key = File.read key_file
-    options[:key] = OpenSSL::PKey::RSA.new key
+    passphrase = ENV['GEM_PRIVATE_KEY_PASSPHRASE']
+    options[:key] = OpenSSL::PKey::RSA.new key, passphrase
   rescue Errno::ENOENT
     alert_error \
       "--private-key not specified and ~/.gem/gem-private_key.pem does not exist"

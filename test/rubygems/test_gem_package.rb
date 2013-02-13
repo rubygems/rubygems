@@ -198,6 +198,45 @@ class TestGemPackage < Gem::Package::TarTestCase
     assert_equal %w[lib/code.rb], reader.contents
   end
 
+  def test_build_auto_signed_encrypted_key
+    private_key_path = File.join Gem.user_home, 'gem-private_key.pem'
+    Gem::Security.write ENCRYPTED_PRIVATE_KEY, private_key_path, 0600, Gem::Security::KEY_CIPHER, PRIVATE_KEY_PASSPHRASE
+
+    public_cert_path = File.join Gem.user_home, 'gem-public_cert.pem'
+    Gem::Security.write PUBLIC_CERT, public_cert_path
+
+    spec = Gem::Specification.new 'build', '1'
+    spec.summary = 'build'
+    spec.authors = 'build'
+    spec.files = ['lib/code.rb']
+
+    FileUtils.mkdir 'lib'
+
+    open 'lib/code.rb', 'w' do |io|
+      io.write '# lib/code.rb'
+    end
+
+    package = Gem::Package.new spec.file_name
+    package.spec = spec
+
+    package.build
+
+    assert_equal Gem::VERSION, spec.rubygems_version
+    assert_path_exists spec.file_name
+
+    reader = Gem::Package.new spec.file_name
+    assert reader.verify
+
+    assert_equal [PUBLIC_CERT.to_pem], reader.spec.cert_chain
+
+    assert_equal %w[metadata.gz       metadata.gz.sig
+                    data.tar.gz       data.tar.gz.sig
+                    checksums.yaml.gz checksums.yaml.gz.sig],
+                 reader.files
+
+    assert_equal %w[lib/code.rb], reader.contents
+  end
+
   def test_build_invalid
     spec = Gem::Specification.new 'build', '1'
 

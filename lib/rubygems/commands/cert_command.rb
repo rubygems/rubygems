@@ -114,11 +114,25 @@ class Gem::Commands::CertCommand < Gem::Command
   end
 
   def build name
-    key = options[:key] || Gem::Security.create_key
+    key =
+      if options[:key]
+        options[:key]
+      else
+        passphrase = ask_for_password 'Passphrase for your Private Key:'
+        say "\n"
+
+        passphrase_confirmation = ask_for_password 'Please repeat the passphrase for your Private Key:'
+        say "\n"
+
+        raise Gem::CommandLineError,
+              "Passphrase and passphrase confirmation don't match" unless passphrase == passphrase_confirmation
+
+        Gem::Security.create_key
+      end
 
     cert = Gem::Security.create_cert_email name, key
 
-    key_path  = Gem::Security.write key, "gem-private_key.pem"
+    key_path  = Gem::Security.write key, "gem-private_key.pem", 0600, Gem::Security::KEY_CIPHER, passphrase
     cert_path = Gem::Security.write cert, "gem-public_cert.pem"
 
     say "Certificate: #{cert_path}"

@@ -98,14 +98,22 @@ Added '/CN=alternate/DC=example'
   end
 
   def test_execute_build
+    passphrase = 'Foo bar'
+
     @cmd.handle_options %W[--build nobody@example.com]
 
-    use_ui @ui do
+    @build_ui = Gem::MockGemUi.new "#{passphrase}\n#{passphrase}"
+
+    use_ui @build_ui do
       @cmd.execute
     end
 
-    output = @ui.output.split "\n"
+    output = @build_ui.output.split "\n"
 
+    assert_equal "Passphrase for your Private Key:  ",
+                 output.shift
+    assert_equal "Please repeat the passphrase for your Private Key:  ",
+                 output.shift
     assert_equal "Certificate: #{File.join @tempdir, 'gem-public_cert.pem'}",
                  output.shift
     assert_equal "Private Key: #{File.join @tempdir, 'gem-private_key.pem'}",
@@ -115,10 +123,41 @@ Added '/CN=alternate/DC=example'
                  output.shift
 
     assert_empty output
-    assert_empty @ui.error
+    assert_empty @build_ui.error
 
     assert_path_exists File.join(@tempdir, 'gem-private_key.pem')
     assert_path_exists File.join(@tempdir, 'gem-public_cert.pem')
+  end
+
+  def test_execute_build_bad_passphrase_confirmation
+    passphrase = 'Foo bar'
+    passphrase_confirmation = 'Fu bar'
+
+    @cmd.handle_options %W[--build nobody@example.com]
+
+    @build_ui = Gem::MockGemUi.new "#{passphrase}\n#{passphrase_confirmation}"
+
+    use_ui @build_ui do
+      e = assert_raises Gem::CommandLineError do
+        @cmd.execute
+      end
+
+      output = @build_ui.output.split "\n"
+
+      assert_equal "Passphrase for your Private Key:  ",
+                   output.shift
+      assert_equal "Please repeat the passphrase for your Private Key:  ",
+                   output.shift
+
+      assert_empty output
+
+      assert_equal "Passphrase and passphrase confirmation don't match",
+                   e.message
+
+    end
+
+    refute_path_exists File.join(@tempdir, 'gem-private_key.pem')
+    refute_path_exists File.join(@tempdir, 'gem-public_cert.pem')
   end
 
   def test_execute_build_key

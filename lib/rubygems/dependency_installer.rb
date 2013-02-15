@@ -57,17 +57,14 @@ class Gem::DependencyInstaller
   # :build_args:: See Gem::Installer::new
 
   def initialize(options = {})
-    @install_dir = options[:install_dir] || Gem.dir
 
     if options[:install_dir] then
-      # HACK shouldn't change the global settings, needed for -i behavior
-      # maybe move to the install command?  See also github #442
-      Gem::Specification.dirs = @install_dir
-      Gem.ensure_gem_subdirectories @install_dir
+      Gem.ensure_gem_subdirectories options[:install_dir]
     end
 
     options = DEFAULT_OPTIONS.merge options
 
+    @install_dir         = options[:install_dir]
     @bin_dir             = options[:bin_dir]
     @dev_shallow         = options[:dev_shallow]
     @development         = options[:development]
@@ -91,7 +88,7 @@ class Gem::DependencyInstaller
     @installed_gems = []
     @toplevel_specs = nil
 
-    @cache_dir = options[:cache_dir] || @install_dir
+    @cache_dir = options[:cache_dir] || @install_dir || Gem.dir
 
     # Set with any errors that SpecFetcher finds while search through
     # gemspecs for a dep
@@ -185,7 +182,7 @@ class Gem::DependencyInstaller
     # that this isn't dependent only on the currently installed gems
     dependency_list.specs.reject! { |spec|
       not keep_names.include?(spec.full_name) and
-      Gem::Specification.include?(spec)
+      (!@install_dir && Gem::Specification.include?(spec))
     }
 
     unless dependency_list.ok? or @ignore_dependencies or @force then
@@ -237,7 +234,7 @@ class Gem::DependencyInstaller
           to_do.push t.spec
         end
 
-        results.remove_installed! dep
+        results.remove_installed! dep unless @install_dir
 
         @available << results
         results.inject_into_list dependency_list
@@ -319,9 +316,6 @@ class Gem::DependencyInstaller
 
     last = @gems_to_install.size - 1
     @gems_to_install.each_with_index do |spec, index|
-      # REFACTOR more current spec set hardcoding, should be abstracted?
-      next if Gem::Specification.include?(spec) and index != last
-
       # TODO: make this sorta_verbose so other users can benefit from it
       say "Installing gem #{spec.full_name}" if Gem.configuration.really_verbose
 

@@ -161,10 +161,49 @@ class TestGemPackage < Gem::Package::TarTestCase
 
   def test_build_auto_signed
     private_key_path = File.join Gem.user_home, 'gem-private_key.pem'
-    Gem::Security.write PRIVATE_KEY, private_key_path
+    FileUtils.cp PRIVATE_KEY_PATH, private_key_path
 
     public_cert_path = File.join Gem.user_home, 'gem-public_cert.pem'
-    Gem::Security.write PUBLIC_CERT, public_cert_path
+    FileUtils.cp PUBLIC_CERT_PATH, public_cert_path
+
+    spec = Gem::Specification.new 'build', '1'
+    spec.summary = 'build'
+    spec.authors = 'build'
+    spec.files = ['lib/code.rb']
+
+    FileUtils.mkdir 'lib'
+
+    open 'lib/code.rb', 'w' do |io|
+      io.write '# lib/code.rb'
+    end
+
+    package = Gem::Package.new spec.file_name
+    package.spec = spec
+
+    package.build
+
+    assert_equal Gem::VERSION, spec.rubygems_version
+    assert_path_exists spec.file_name
+
+    reader = Gem::Package.new spec.file_name
+    assert reader.verify
+
+    assert_equal [PUBLIC_CERT.to_pem], reader.spec.cert_chain
+
+    assert_equal %w[metadata.gz       metadata.gz.sig
+                    data.tar.gz       data.tar.gz.sig
+                    checksums.yaml.gz checksums.yaml.gz.sig],
+                 reader.files
+
+    assert_equal %w[lib/code.rb], reader.contents
+  end
+
+  def test_build_auto_signed_encrypted_key
+    private_key_path = File.join Gem.user_home, 'gem-private_key.pem'
+    FileUtils.cp ENCRYPTED_PRIVATE_KEY_PATH, private_key_path
+
+    public_cert_path = File.join Gem.user_home, 'gem-public_cert.pem'
+    FileUtils.cp PUBLIC_CERT_PATH, public_cert_path
 
     spec = Gem::Specification.new 'build', '1'
     spec.summary = 'build'
@@ -218,6 +257,41 @@ class TestGemPackage < Gem::Package::TarTestCase
     spec.files = ['lib/code.rb']
     spec.cert_chain = [PUBLIC_CERT.to_pem]
     spec.signing_key = PRIVATE_KEY
+
+    FileUtils.mkdir 'lib'
+
+    open 'lib/code.rb', 'w' do |io|
+      io.write '# lib/code.rb'
+    end
+
+    package = Gem::Package.new spec.file_name
+    package.spec = spec
+
+    package.build
+
+    assert_equal Gem::VERSION, spec.rubygems_version
+    assert_path_exists spec.file_name
+
+    reader = Gem::Package.new spec.file_name
+    assert reader.verify
+
+    assert_equal spec, reader.spec
+
+    assert_equal %w[metadata.gz       metadata.gz.sig
+                    data.tar.gz       data.tar.gz.sig
+                    checksums.yaml.gz checksums.yaml.gz.sig],
+                 reader.files
+
+    assert_equal %w[lib/code.rb], reader.contents
+  end
+
+  def test_build_signed_encryped_key
+    spec = Gem::Specification.new 'build', '1'
+    spec.summary = 'build'
+    spec.authors = 'build'
+    spec.files = ['lib/code.rb']
+    spec.cert_chain = [PUBLIC_CERT.to_pem]
+    spec.signing_key = ENCRYPTED_PRIVATE_KEY
 
     FileUtils.mkdir 'lib'
 

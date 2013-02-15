@@ -70,6 +70,14 @@ class TestGemSecuritySigner < Gem::TestCase
     assert_equal PRIVATE_KEY.to_s, signer.key.to_s
   end
 
+  def test_initialize_encrypted_key_path
+    key_file = ENCRYPTED_PRIVATE_KEY_PATH
+
+    signer = Gem::Security::Signer.new key_file, nil, PRIVATE_KEY_PASSPHRASE
+
+    assert_equal ENCRYPTED_PRIVATE_KEY.to_s, signer.key.to_s
+  end
+
   def test_load_cert_chain
     Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 

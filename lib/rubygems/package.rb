@@ -425,12 +425,13 @@ EOM
   # certificate and key are not present only checksum generation is set up.
 
   def setup_signer
+    passphrase = ENV['GEM_PRIVATE_KEY_PASSPHRASE']
     if @spec.signing_key then
-      @signer = Gem::Security::Signer.new @spec.signing_key, @spec.cert_chain
+      @signer = Gem::Security::Signer.new @spec.signing_key, @spec.cert_chain, passphrase
       @spec.signing_key = nil
       @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_s }
     else
-      @signer = Gem::Security::Signer.new nil, nil
+      @signer = Gem::Security::Signer.new nil, nil, passphrase
       @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_pem } if
         @signer.cert_chain
     end

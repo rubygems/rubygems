@@ -163,6 +163,9 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     FileUtils.mkdir_p @gemhome
     FileUtils.mkdir_p @userhome
 
+    @orig_gem_private_key_passphrase = ENV['GEM_PRIVATE_KEY_PASSPHRASE']
+    ENV['GEM_PRIVATE_KEY_PASSPHRASE'] = PRIVATE_KEY_PASSPHRASE
+
     @default_dir = File.join @tempdir, 'default'
     @default_spec_dir = File.join @default_dir, "specifications", "default"
     Gem.instance_variable_set :@default_dir, @default_dir
@@ -274,6 +277,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     end
 
     Gem.instance_variable_set :@default_dir, nil
+
+    ENV['GEM_PRIVATE_KEY_PASSPHRASE'] = @orig_gem_private_key_passphrase
   end
 
   ##
@@ -1016,18 +1021,18 @@ Also, a list:
   end
 
   ##
-  # Loads an RSA private key named +key_name+ in <tt>test/rubygems/</tt>
+  # Loads an RSA private key named +key_name+ with +passphrase+ in <tt>test/rubygems/</tt>
 
-  def self.load_key key_name
+  def self.load_key key_name, passphrase = nil
     key_file = key_path key_name
 
     key = File.read key_file
 
-    OpenSSL::PKey::RSA.new key
+    OpenSSL::PKey::RSA.new key, passphrase
   end
 
   ##
-  # Returns the path tot he key named +key_name+ from <tt>test/rubygems</tt>
+  # Returns the path to the key named +key_name+ from <tt>test/rubygems</tt>
 
   def self.key_path key_name
     File.expand_path "../../../test/rubygems/#{key_name}_key.pem", __FILE__
@@ -1037,12 +1042,18 @@ Also, a list:
   # only available in RubyGems tests
 
   begin
-    PRIVATE_KEY      = load_key 'private'
-    PRIVATE_KEY_PATH = key_path 'private'
-    PUBLIC_KEY       = PRIVATE_KEY.public_key
+    PRIVATE_KEY                 = load_key 'private'
+    PRIVATE_KEY_PATH            = key_path 'private'
 
-    PUBLIC_CERT      = load_cert 'public'
-    PUBLIC_CERT_PATH = cert_path 'public'
+    PRIVATE_KEY_PASSPHRASE      = 'Foo bar'
+    # ENCRYPTED_PRIVATE_KEY is PRIVATE_KEY encrypted with PRIVATE_KEY_PASSPHRASE
+    ENCRYPTED_PRIVATE_KEY       = load_key 'encrypted_private', PRIVATE_KEY_PASSPHRASE
+    ENCRYPTED_PRIVATE_KEY_PATH  = key_path 'encrypted_private'
+
+    PUBLIC_KEY                  = PRIVATE_KEY.public_key
+
+    PUBLIC_CERT                 = load_cert 'public'
+    PUBLIC_CERT_PATH            = cert_path 'public'
   rescue Errno::ENOENT
     PRIVATE_KEY = nil
     PUBLIC_KEY  = nil

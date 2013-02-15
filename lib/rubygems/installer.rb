@@ -537,13 +537,13 @@ class Gem::Installer
       :bin_dir      => nil,
       :env_shebang  => false,
       :force        => false,
-      :install_dir  => Gem.dir,
       :only_install_dir => false
     }.merge options
 
     @env_shebang         = options[:env_shebang]
     @force               = options[:force]
-    @gem_home            = options[:install_dir]
+    @install_dir         = options[:install_dir]
+    @gem_home            = options[:install_dir] || Gem.dir
     @ignore_dependencies = options[:ignore_dependencies]
     @format_executable   = options[:format_executable]
     @security_policy     = options[:security_policy]

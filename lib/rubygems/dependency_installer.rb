@@ -346,7 +346,7 @@ class Gem::DependencyInstaller
                                 :force               => @force,
                                 :format_executable   => @format_executable,
                                 :ignore_dependencies => @ignore_dependencies,
-                                :install_dir         => (@install_dir || Gem.dir),
+                                :install_dir         => @install_dir,
                                 :security_policy     => @security_policy,
                                 :user_install        => @user_install,
                                 :wrappers            => @wrappers,

@@ -115,31 +115,31 @@ class Gem::Commands::CertCommand < Gem::Command
   end
 
   def build name
-    key =
-      if options[:key]
-        options[:key]
-      else
-        passphrase = ask_for_password 'Passphrase for your Private Key:'
-        say "\n"
+    if options[:key]
+      key = options[:key]
+    else
+      passphrase = ask_for_password 'Passphrase for your Private Key:'
+      say "\n"
 
-        passphrase_confirmation = ask_for_password 'Please repeat the passphrase for your Private Key:'
-        say "\n"
+      passphrase_confirmation = ask_for_password 'Please repeat the passphrase for your Private Key:'
+      say "\n"
 
-        raise Gem::CommandLineError,
-              "Passphrase and passphrase confirmation don't match" unless passphrase == passphrase_confirmation
+      raise Gem::CommandLineError,
+            "Passphrase and passphrase confirmation don't match" unless passphrase == passphrase_confirmation
 
-        Gem::Security.create_key
-      end
+      key      = Gem::Security.create_key
+      key_path = Gem::Security.write key, "gem-private_key.pem", 0600, passphrase
+    end
 
-    cert = Gem::Security.create_cert_email name, key
-
-    key_path = Gem::Security.write key, "gem-private_key.pem", 0600, passphrase
-
+    cert      = Gem::Security.create_cert_email name, key
     cert_path = Gem::Security.write cert, "gem-public_cert.pem"
 
     say "Certificate: #{cert_path}"
-    say "Private Key: #{key_path}"
-    say "Don't forget to move the key file to somewhere private!"
+
+    if key_path
+      say "Private Key: #{key_path}"
+      say "Don't forget to move the key file to somewhere private!"
+    end
   end
 
   def certificates_matching filter

@@ -174,26 +174,14 @@ Added '/CN=alternate/DC=example'
 
     assert_equal "Certificate: #{File.join @tempdir, 'gem-public_cert.pem'}",
                  output.shift
-    assert_equal "Private Key: #{File.join @tempdir, 'gem-private_key.pem'}",
-                 output.shift
-
-    assert_equal "Don't forget to move the key file to somewhere private!",
-                 output.shift
 
     assert_empty output
     assert_empty @ui.error
 
     assert_path_exists File.join(@tempdir, 'gem-public_cert.pem')
-
-    private_key_file = File.join @tempdir, 'gem-private_key.pem'
-    assert_path_exists private_key_file
-
-    assert_equal PRIVATE_KEY.to_pem, File.read(private_key_file)
   end
 
   def test_execute_build_encrypted_key
-    private_key_pem = File.read PRIVATE_KEY_PATH
-
     @cmd.handle_options %W[
       --build nobody@example.com
       --private-key #{ENCRYPTED_PRIVATE_KEY_PATH}
@@ -207,22 +195,11 @@ Added '/CN=alternate/DC=example'
 
     assert_equal "Certificate: #{File.join @tempdir, 'gem-public_cert.pem'}",
                  output.shift
-    assert_equal "Private Key: #{File.join @tempdir, 'gem-private_key.pem'}",
-                 output.shift
-
-    assert_equal "Don't forget to move the key file to somewhere private!",
-                 output.shift
 
     assert_empty output
     assert_empty @ui.error
 
     assert_path_exists File.join(@tempdir, 'gem-public_cert.pem')
-
-    private_key_file = File.join @tempdir, 'gem-private_key.pem'
-
-    assert_path_exists private_key_file
-
-    assert_equal private_key_pem, File.read(private_key_file)
   end
 
   def test_execute_certificate

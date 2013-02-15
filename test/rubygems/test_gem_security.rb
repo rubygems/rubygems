@@ -267,11 +267,33 @@ class TestGemSecurity < Gem::TestCase
 
     passphrase = 'It should be long.'
 
-    @SEC.write key, path, 0600, @SEC::KEY_CIPHER, passphrase
+    @SEC.write key, path, 0600, passphrase
 
     assert_path_exists path
 
     key_from_file =  OpenSSL::PKey::RSA.new File.read(path), passphrase
+
+    assert_equal key.to_pem, key_from_file.to_pem
+  end
+
+  def test_class_write_encrypted_cipher
+    key = @SEC.create_key 256
+
+    path = File.join @tempdir, 'test-private_encrypted__with_non_default_cipher_key.pem'
+
+    passphrase = 'It should be long.'
+
+    cipher = OpenSSL::Cipher.new('aes192')
+
+    @SEC.write key, path, 0600, passphrase, cipher
+
+    assert_path_exists path
+
+    key_file_contents = File.read(path)
+
+    assert key_file_contents.split("\n")[2].match(cipher.name)
+
+    key_from_file = OpenSSL::PKey::RSA.new key_file_contents, passphrase
 
     assert_equal key.to_pem, key_from_file.to_pem
   end

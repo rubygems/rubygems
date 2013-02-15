@@ -353,7 +353,7 @@ module Gem::Security
   # Cipher used to encrypt the key pair used to sign gems.
   # Must be in the list returned by OpenSSL::Cipher.ciphers
 
-  KEY_CIPHER = OpenSSL::Cipher.new('des3')
+  KEY_CIPHER = OpenSSL::Cipher.new('aes256')
 
   ##
   # One year in seconds
@@ -552,11 +552,11 @@ module Gem::Security
   # +permissions+. If passed +cipher+ and +passphrase+ those arguments will be
   # passed to +to_pem+.
 
-  def self.write pemmable, path, permissions = 0600, cipher = KEY_CIPHER, passphrase = nil
+  def self.write pemmable, path, permissions = 0600, passphrase = nil, cipher = KEY_CIPHER
     path = File.expand_path path
 
     open path, 'wb', permissions do |io|
-      if cipher and passphrase
+      if passphrase and cipher
         io.write pemmable.to_pem cipher, passphrase
       else
         io.write pemmable.to_pem

@@ -133,7 +133,8 @@ class Gem::Commands::CertCommand < Gem::Command
 
     cert = Gem::Security.create_cert_email name, key
 
-    key_path  = Gem::Security.write key, "gem-private_key.pem", 0600, Gem::Security::KEY_CIPHER, passphrase
+    key_path = Gem::Security.write key, "gem-private_key.pem", 0600, passphrase
+
     cert_path = Gem::Security.write cert, "gem-public_cert.pem"
 
     say "Certificate: #{cert_path}"

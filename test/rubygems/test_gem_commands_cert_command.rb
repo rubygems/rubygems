@@ -452,7 +452,7 @@ Removed '/CN=alternate/DC=example'
 
   def test_execute_sign_default_encrypted_key
     private_key_path = File.join Gem.user_home, 'gem-private_key.pem'
-    Gem::Security.write ENCRYPTED_PRIVATE_KEY, private_key_path, 0600, Gem::Security::KEY_CIPHER, PRIVATE_KEY_PASSPHRASE
+    Gem::Security.write ENCRYPTED_PRIVATE_KEY, private_key_path, 0600, PRIVATE_KEY_PASSPHRASE
 
     public_cert_path = File.join Gem.user_home, 'gem-public_cert.pem'
     Gem::Security.write PUBLIC_CERT, public_cert_path

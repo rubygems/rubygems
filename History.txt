@@ -5,6 +5,8 @@
 * Bug fixes:
   * Gem.gzip and Gem.gunzip now return strings with BINARY encoding.  Issue
     #450 by Jeremy Kemper
+  * Fixed placement of executables with --user-install.  Ruby bug #7779 by Jon
+    Forums
 
 === 2.0.0.rc.2.1
 

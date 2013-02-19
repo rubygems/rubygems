@@ -7,6 +7,8 @@
     #450 by Jeremy Kemper
   * Fixed placement of executables with --user-install.  Ruby bug #7779 by Jon
     Forums
+  * Fixed test_initialize_user_install for windows.  Ruby bug #7885 by Luis
+    Lavena.
 
 === 2.0.0.rc.2.1
 

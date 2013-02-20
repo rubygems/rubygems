@@ -6,7 +6,8 @@
   * Gem.gzip and Gem.gunzip now return strings with BINARY encoding.  Issue
     #450 by Jeremy Kemper
   * Fixed placement of executables with --user-install.  Ruby bug #7779 by Jon
-    Forums
+    Forums.
+  * Fixed `gem update` with --user-install.  Ruby bug #7779 by Jon Forums.
   * Fixed test_initialize_user_install for windows.  Ruby bug #7885 by Luis
     Lavena.
 

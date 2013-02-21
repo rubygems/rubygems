@@ -10,6 +10,8 @@
   * Fixed `gem update` with --user-install.  Ruby bug #7779 by Jon Forums.
   * Fixed test_initialize_user_install for windows.  Ruby bug #7885 by Luis
     Lavena.
+  * Create extension destination directory before building extensions.  Ruby
+    Bug #7897 and patch by Kenta Murata.
 
 === 2.0.0.rc.2.1
 

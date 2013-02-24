@@ -1,37 +1,14 @@
 # coding: UTF-8
 
-=== 2.0.0.rc.2.2
-
-* Bug fixes:
-  * Gem.gzip and Gem.gunzip now return strings with BINARY encoding.  Issue
-    #450 by Jeremy Kemper
-  * Fixed placement of executables with --user-install.  Ruby bug #7779 by Jon
-    Forums.
-  * Fixed `gem update` with --user-install.  Ruby bug #7779 by Jon Forums.
-  * Fixed test_initialize_user_install for windows.  Ruby bug #7885 by Luis
-    Lavena.
-  * Create extension destination directory before building extensions.  Ruby
-    Bug #7897 and patch by Kenta Murata.
-
-=== 2.0.0.rc.2.1
-
-* Bug fixes:
-  * Fixed verification of gems at LowSecurity due to missing signature.
-    Thanks to André Arko.
-
-=== 2.0.0.rc.2
-
-As a preview release, please file bugs for any problems you have with RubyGems
-at https://github.com/rubygems/rubygems/issues.  To update to this preview
-release use gem update --system=2.0.0.rc.2
+=== 2.0.0 / 2013-02-24
 
 RubyGems 2.0 includes several new features and many breaking changes.  Some of
 these changes will cause existing software to break.  These changes are a
 result of improvements to the internals of RubyGems that make it more
 maintainable and improve APIs for RubyGems users.
 
-If you are using bundler be sure to install version 1.3.0.pre.  Older versions
-of bundler will not work with RubyGems 2.0.
+If you are using bundler be sure to install a 1.3.0.prerelease version or
+newer.  Older versions of bundler will not work with RubyGems 2.0.
 
 Changes since RubyGems 1.8.25 (including past pre-releases):
 
@@ -174,7 +151,22 @@ Changes since RubyGems 1.8.25 (including past pre-releases):
   * URI scheme matching is no longer case-sensitive.  Fixes #322
   * ext/builder now checks $MAKE as well as $make (okkez)
 
-Changes since RubyGems 2.0.0.rc.1:
+Changes since RubyGems 2.0.0.rc.2:
+
+* Bug fixes:
+  * Gem.gzip and Gem.gunzip now return strings with BINARY encoding.  Issue
+    #450 by Jeremy Kemper
+  * Fixed placement of executables with --user-install.  Ruby bug #7779 by Jon
+    Forums.
+  * Fixed `gem update` with --user-install.  Ruby bug #7779 by Jon Forums.
+  * Fixed test_initialize_user_install for windows.  Ruby bug #7885 by Luis
+    Lavena.
+  * Create extension destination directory before building extensions.  Ruby
+    Bug #7897 and patch by Kenta Murata.
+  * Fixed verification of gems at LowSecurity due to missing signature.
+    Thanks to André Arko.
+
+=== 2.0.0.rc.2 / 2013-02-08
 
 * Bug fixes:
   * Fixed signature verification of gems which was broken only on master.

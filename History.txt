@@ -1,5 +1,11 @@
 # coding: UTF-8
 
+=== 2.0.1
+
+* Bug fixes:
+  * Lazily load RubyGems.org API credentials to avoid failure during
+    RubyGems installation.  Bug #465 by Isaac Sanders.
+
 === 2.0.0 / 2013-02-24
 
 RubyGems 2.0 includes several new features and many breaking changes.  Some of

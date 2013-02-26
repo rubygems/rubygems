@@ -88,6 +88,7 @@ class Gem::DependencyInstaller
     # we absolutely must.
     @minimal_deps        = options[:minimal_deps]
 
+    @available      = nil
     @installed_gems = []
     @toplevel_specs = nil
 
@@ -99,6 +100,20 @@ class Gem::DependencyInstaller
   end
 
   attr_reader :errors
+
+  ##
+  # Creates an AvailableSet to install from based on +dep_or_name+ and
+  # +version+
+
+  def available_set_for dep_or_name, version # :nodoc:
+    if String === dep_or_name then
+      find_spec_by_name_and_version dep_or_name, version, @prerelease
+    else
+      dep = dep_or_name.dup
+      dep.prerelease = @prerelease
+      @available = find_gems_with_sources(dep).pick_best!
+    end
+  end
 
   ##
   # Indicated, based on the requested domain, if local
@@ -302,13 +317,7 @@ class Gem::DependencyInstaller
   # separately.
 
   def install dep_or_name, version = Gem::Requirement.default
-    if String === dep_or_name then
-      find_spec_by_name_and_version dep_or_name, version, @prerelease
-    else
-      dep = dep_or_name.dup
-      dep.prerelease = @prerelease
-      @available = find_gems_with_sources(dep).pick_best!
-    end
+    available_set_for dep_or_name, version
 
     @installed_gems = []
 

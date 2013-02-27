@@ -11,6 +11,8 @@
     around JRuby-only bug #472 by Matt Beedle.
   * "Done installing documentation" is no longer displayed when documentation
     generation is disabled.  Fixes bug #469 by Jeff Sandberg
+  * The existing executable check now respects --format-executable.  Pull
+    request #471 by Jeremy Evans.
 
 === 2.0.0 / 2013-02-24
 

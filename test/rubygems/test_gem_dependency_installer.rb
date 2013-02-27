@@ -56,7 +56,7 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     available = inst.available_set_for 'a', Gem::Requirement.default
 
-    assert_equal %w[a-10.a a-1 a-1.a],
+    assert_equal %w[a-10.a],
                  available.sorted.map { |s| s.spec.full_name }
   end
 

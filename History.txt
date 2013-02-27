@@ -9,6 +9,8 @@
     Santiago Pastorino.
   * Improved detection of missing Zlib::GzipReader encoding support.  Works
     around JRuby-only bug #472 by Matt Beedle.
+  * "Done installing documentation" is no longer displayed when documentation
+    generation is disabled.  Fixes bug #469 by Jeff Sandberg
 
 === 2.0.0 / 2013-02-24
 

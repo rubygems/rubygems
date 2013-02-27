@@ -377,12 +377,9 @@ class Gem::DependencyInstaller
     # it's documentation. Ideally the hook adder could decide whether to be in
     # the background or not, and what to call it.
     in_background "Installing documentation" do
-      start = Time.now
       Gem.done_installing_hooks.each do |hook|
         hook.call self, @installed_gems
       end
-      finish = Time.now
-      say "Done installing documentation for #{@installed_gems.map(&:name).join(', ')} (#{(finish-start).to_i} sec)."
     end unless Gem.done_installing_hooks.empty?
 
     @installed_gems

@@ -5,6 +5,8 @@
 * Bug fixes:
   * Lazily load RubyGems.org API credentials to avoid failure during
     RubyGems installation.  Bug #465 by Isaac Sanders.
+  * RubyGems now picks the latest prerelease to install.  Fixes bug #468 by
+    Santiago Pastorino.
 
 === 2.0.0 / 2013-02-24
 

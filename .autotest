@@ -37,6 +37,7 @@ class Autotest
   def path_to_classname s
     classname = old_path_to_classname(s.sub(/test.rubygems.test_/, ""))
     classname = classname.gsub('Rdoc', 'RDoc')
+    classname = classname.gsub('Api', 'API')
 
     classname
   end

@@ -3,6 +3,8 @@
 === 2.0.1
 
 * Bug fixes:
+  * HTTPS URLs are preferred over HTTP URLs.  RubyGems will now attempt to
+    upgrade any HTTP source to HTTPS.  Credit to Alex Gaynor.
   * Lazily load RubyGems.org API credentials to avoid failure during
     RubyGems installation.  Bug #465 by Isaac Sanders.
   * RubyGems now picks the latest prerelease to install.  Fixes bug #468 by

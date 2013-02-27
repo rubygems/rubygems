@@ -107,6 +107,7 @@ lib/rubygems/specification.rb
 lib/rubygems/ssl_certs/.document
 lib/rubygems/ssl_certs/AddTrustExternalCARoot.pem
 lib/rubygems/ssl_certs/Entrust_net-Secure-Server-Certification-Authority.pem
+lib/rubygems/ssl_certs/GeoTrust_Global_CA.pem
 lib/rubygems/ssl_certs/VerisignClass3PublicPrimaryCertificationAuthority-G2.pem
 lib/rubygems/syck_hack.rb
 lib/rubygems/test_case.rb

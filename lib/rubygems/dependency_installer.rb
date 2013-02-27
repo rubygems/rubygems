@@ -111,8 +111,10 @@ class Gem::DependencyInstaller
     else
       dep = dep_or_name.dup
       dep.prerelease = @prerelease
-      @available = find_gems_with_sources(dep).pick_best!
+      @available = find_gems_with_sources dep
     end
+
+    @available.pick_best!
   end
 
   ##

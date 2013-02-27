@@ -205,6 +205,7 @@ test/rubygems/test_gem_dependency.rb
 test/rubygems/test_gem_dependency_installer.rb
 test/rubygems/test_gem_dependency_list.rb
 test/rubygems/test_gem_dependency_resolver.rb
+test/rubygems/test_gem_dependency_resolver_api_set.rb
 test/rubygems/test_gem_doctor.rb
 test/rubygems/test_gem_ext_cmake_builder.rb
 test/rubygems/test_gem_ext_configure_builder.rb

@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-=== 2.0.1
+=== 2.0.1 / 2013-02-28
 
 * Bug fixes:
   * HTTPS URLs are preferred over HTTP URLs.  RubyGems will now attempt to

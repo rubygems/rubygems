@@ -7,37 +7,53 @@
 require 'rubygems/ext/builder'
 require 'rubygems/command'
 require 'fileutils'
-require 'tmpdir'
+require 'tempfile'
 
 class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
 
+  def self.hack_for_obsolete_sytle_gems(directory)
+    return unless directory and File.identical?(directory, ".")
+    mf = Gem.read_binary 'Makefile'
+    changed = false
+    changed |= mf.gsub!(/^(install-rb-default:)(.*)/) {
+      "#$1#{$2.gsub(/(?:^|\s+)\$\(RUBY(?:ARCH|LIB)DIR\)\/\S+(?=\s|$)/, '')}"
+    }
+    changed |= mf.gsub!(/^(install-so:.*DLLIB.*\n)((?:\t.*\n)+)/) {
+      "#$1#{$2.gsub(/.*INSTALL.*DLLIB.*\n/, '')}"
+    }
+    if changed
+      File.open('Makefile', 'wb') {|f| f.print mf}
+    end
+  end
+
   def self.build(extension, directory, dest_path, results, args=[])
-    pwd = Dir.pwd
-    cmd = "#{Gem.ruby} -r./siteconf #{File.join pwd, File.basename(extension)}"
-    cmd << " #{args.join ' '}" unless args.empty?
+    Tempfile.open %w"siteconf .rb", "." do |siteconf|
+      siteconf.puts "require 'rbconfig'"
+      siteconf.puts "dest_path = #{dest_path.dump}"
+      %w[sitearchdir sitelibdir].each do |dir|
+        siteconf.puts "RbConfig::MAKEFILE_CONFIG['#{dir}'] = dest_path"
+        siteconf.puts "RbConfig::CONFIG['#{dir}'] = dest_path"
+      end
 
-    Dir.mktmpdir("gem-install.") do |tmpdir|
-      Dir.chdir(tmpdir) do
-        open("siteconf.rb", "w") do |f|
-          f.puts "require 'rbconfig'"
-          f.puts "dest_path = #{dest_path.dump}"
-          %w[sitearchdir sitelibdir].each do |dir|
-            f.puts "RbConfig::MAKEFILE_CONFIG['#{dir}'] = dest_path"
-            f.puts "RbConfig::CONFIG['#{dir}'] = dest_path"
-          end
-        end
+      siteconf.flush
 
-        begin
-          run cmd, results
+      rubyopt = ENV["RUBYOPT"]
 
-          make dest_path, results
-        ensure
-          FileUtils.mv("mkmf.log", pwd) if $! and File.exist?("mkmf.log")
-        end
+      begin
+        ENV["RUBYOPT"] = ["-r#{siteconf.path}", rubyopt].compact.join(' ')
+        cmd = [Gem.ruby, File.basename(extension), *args].join ' '
+
+        run cmd, results
+
+        hack_for_obsolete_sytle_gems directory
+
+        make dest_path, results
+
+        results
+      ensure
+        ENV["RUBYOPT"] = rubyopt
       end
     end
-
-    results
   end
 
 end

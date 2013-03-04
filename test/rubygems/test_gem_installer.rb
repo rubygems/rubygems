@@ -84,7 +84,7 @@ load Gem.bin_path('a', 'executable', version)
 
     gem_make_out = File.join @gemhome, 'gems', @spec.full_name, 'gem_make.out'
 
-    assert_match %r%#{Regexp.escape Gem.ruby} .*extconf\.rb%,
+    assert_match %r%#{Regexp.escape Gem.ruby} extconf\.rb%,
                  File.read(gem_make_out)
     assert_match %r%#{Regexp.escape Gem.ruby}: No such file%,
                  File.read(gem_make_out)
@@ -1029,6 +1029,46 @@ load Gem.bin_path('a', 'executable', version)
       assert_equal 'old_rubygems_required requires RubyGems version < 0. ' +
         "Try 'gem update --system' to update RubyGems itself.", e.message
     end
+  end
+
+  def test_install_extension_flat
+    skip '1.8 mkmf.rb does not create TOUCH' if RUBY_VERSION < '1.9'
+    @spec.require_paths = ["."]
+
+    @spec.extensions << "extconf.rb"
+
+    write_file File.join(@tempdir, "extconf.rb") do |io|
+      io.write <<-RUBY
+        require "mkmf"
+
+        CONFIG['CC'] = '$(TOUCH) $@ ||'
+        CONFIG['LDSHARED'] = '$(TOUCH) $@ ||'
+
+        create_makefile("#{@spec.name}")
+      RUBY
+    end
+
+    # empty depend file for no auto dependencies
+    @spec.files += %W"depend #{@spec.name}.c".each {|file|
+      write_file File.join(@tempdir, file)
+    }
+
+    so = File.join(@gemhome, 'gems', @spec.full_name, "#{@spec.name}.#{RbConfig::CONFIG["DLEXT"]}")
+    assert !File.exist?(so)
+    use_ui @ui do
+      path = Gem::Builder.new(@spec).build
+
+      @installer = Gem::Installer.new path
+      @installer.install
+    end
+    assert File.exist?(so), so
+  rescue
+    puts '-' * 78
+    puts File.read File.join(@gemhome, 'gems', 'a-2', 'Makefile')
+    puts '-' * 78
+    puts File.read File.join(@gemhome, 'gems', 'a-2', 'gem_make.out')
+    puts '-' * 78
+    raise
   end
 
   def test_installation_satisfies_dependency_eh

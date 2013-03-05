@@ -33,6 +33,9 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
 
         run cmd, results
 
+        destdir = ENV["DESTDIR"]
+        ENV["DESTDIR"] = nil
+
         make dest_path, results
 
         if tmp_dest
@@ -45,6 +48,7 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
         results
       ensure
         ENV["RUBYOPT"] = rubyopt
+        ENV["DESTDIR"] = destdir
       end
     end
   ensure

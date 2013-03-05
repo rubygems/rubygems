@@ -10,26 +10,14 @@ require 'fileutils'
 require 'tempfile'
 
 class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
-
-  def self.hack_for_obsolete_sytle_gems(directory)
-    return unless directory and File.identical?(directory, ".")
-    mf = Gem.read_binary 'Makefile'
-    changed = false
-    changed |= mf.gsub!(/^(install-rb-default:)(.*)/) {
-      "#$1#{$2.gsub(/(?:^|\s+)\$\(RUBY(?:ARCH|LIB)DIR\)\/\S+(?=\s|$)/, '')}"
-    }
-    changed |= mf.gsub!(/^(install-so:.*DLLIB.*\n)((?:\t.*\n)+)/) {
-      "#$1#{$2.gsub(/.*INSTALL.*DLLIB.*\n/, '')}"
-    }
-    if changed
-      File.open('Makefile', 'wb') {|f| f.print mf}
-    end
-  end
+  FileEntry = FileUtils::Entry_ # :nodoc:
 
   def self.build(extension, directory, dest_path, results)
+    tmp_dest = Dir.mktmpdir(".gem.", ".") if File.identical?(dest_path, ".")
+
     Tempfile.open %w"siteconf .rb", "." do |siteconf|
       siteconf.puts "require 'rbconfig'"
-      siteconf.puts "dest_path = #{dest_path.dump}"
+      siteconf.puts "dest_path = #{(tmp_dest || dest_path).dump}"
       %w[sitearchdir sitelibdir].each do |dir|
         siteconf.puts "RbConfig::MAKEFILE_CONFIG['#{dir}'] = dest_path"
         siteconf.puts "RbConfig::CONFIG['#{dir}'] = dest_path"
@@ -45,15 +33,22 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
 
         run cmd, results
 
-        hack_for_obsolete_sytle_gems directory
-
         make dest_path, results
+
+        if tmp_dest
+          FileEntry.new(tmp_dest).traverse do |ent|
+            destent = ent.class.new(dest_path, ent.rel)
+            destent.exist? or File.rename(ent.path, destent.path)
+          end
+        end
 
         results
       ensure
         ENV["RUBYOPT"] = rubyopt
       end
     end
+  ensure
+    FileUtils.rm_rf tmp_dest if tmp_dest
   end
 
 end

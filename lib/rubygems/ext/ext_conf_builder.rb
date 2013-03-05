@@ -26,6 +26,7 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
       siteconf.flush
 
       rubyopt = ENV["RUBYOPT"]
+      destdir = ENV["DESTDIR"]
 
       begin
         ENV["RUBYOPT"] = ["-r#{siteconf.path}", rubyopt].compact.join(' ')
@@ -33,7 +34,6 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
 
         run cmd, results
 
-        destdir = ENV["DESTDIR"]
         ENV["DESTDIR"] = nil
 
         make dest_path, results

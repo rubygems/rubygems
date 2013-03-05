@@ -19,6 +19,9 @@
     #482 by Loren Segal.
   * RubyGems does not require OpenSSL like RubyGems 1.8, but still prefers it.
     Fixes #481 by André Arko.
+  * RubyGems only fetches specs for list, search and query commands when
+    needed like RubyGems 1.x.  Fixes bug #487 bybitbuerster, Ruby bug #8019 by
+    Ike Miller.
 
 === 2.0.0 / 2013-02-24
 

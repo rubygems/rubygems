@@ -15,6 +15,8 @@
     generation is disabled.  Fixes bug #469 by Jeff Sandberg
   * The existing executable check now respects --format-executable.  Pull
     request #471 by Jeremy Evans.
+  * RubyGems no longer creates gem subdirectories when fetching gems.  Fixes
+    #482 by Loren Segal.
 
 === 2.0.0 / 2013-02-24
 

@@ -127,8 +127,6 @@ class Gem::RemoteFetcher
   # always replaced.
 
   def download(spec, source_uri, install_dir = Gem.dir)
-    Gem.ensure_gem_subdirectories(install_dir) rescue nil
-
     cache_dir =
       if Dir.pwd == install_dir then # see fetch_command
         install_dir

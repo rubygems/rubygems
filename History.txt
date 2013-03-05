@@ -17,6 +17,8 @@
     request #471 by Jeremy Evans.
   * RubyGems no longer creates gem subdirectories when fetching gems.  Fixes
     #482 by Loren Segal.
+  * RubyGems does not require OpenSSL like RubyGems 1.8, but still prefers it.
+    Fixes #481 by André Arko.
 
 === 2.0.0 / 2013-02-24
 

@@ -24,6 +24,7 @@
     by Ike Miller.
   * Allow specification of mode for gem subdirectory creation.
     Ruby bug #7713 by nobu
+  * Fix tests when an 'a.rb' exists.  Ruby bug #7749 by nobu.
 
 === 2.0.0 / 2013-02-24
 

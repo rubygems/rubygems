@@ -64,4 +64,12 @@ class TestGemPathSupport < Gem::TestCase
   def util_path
     ENV["GEM_PATH"].split(File::PATH_SEPARATOR)
   end
+
+  def test_initialize_spec
+    ps = Gem::PathSupport.new
+    assert_equal Gem.default_spec_cache_dir, ps.spec_cache_dir
+
+    ps = Gem::PathSupport.new "GEM_SPEC" => "foo"
+    assert_equal "foo", ps.spec_cache_dir
+  end
 end

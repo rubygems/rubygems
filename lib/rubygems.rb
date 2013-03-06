@@ -374,6 +374,10 @@ module Gem
     paths.path
   end
 
+  def self.spec_cache_dir
+    paths.spec_cache_dir
+  end
+
   ##
   # Quietly ensure the Gem directory +dir+ contains all the proper
   # subdirectories.  If we can't create a directory due to a permission

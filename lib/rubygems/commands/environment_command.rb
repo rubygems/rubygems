@@ -104,6 +104,7 @@ lib/rubygems/defaults/operating_system.rb
         out << "    - #{platform}\n"
       end
 
+      out << "  - PATH: #{ENV['PATH']}\n"
       out << "  - GEM PATHS:\n"
       out << "     - #{Gem.dir}\n"
 

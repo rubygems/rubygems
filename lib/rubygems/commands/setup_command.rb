@@ -77,6 +77,8 @@ class Gem::Commands::SetupCommand < Gem::Command
 
       options[:document].uniq!
     end
+
+    @verbose = nil
   end
 
   def check_ruby_version

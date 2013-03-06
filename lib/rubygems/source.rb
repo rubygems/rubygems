@@ -65,8 +65,7 @@ class Gem::Source
   def cache_dir(uri)
     # Correct for windows paths
     escaped_path = uri.path.sub(/^\/([a-z]):\//i, '/\\1-/')
-    root = File.join Gem.user_home, '.gem', 'specs'
-    File.join root, "#{uri.host}%#{uri.port}", File.dirname(escaped_path)
+    File.join Gem.spec_cache_dir, "#{uri.host}%#{uri.port}", File.dirname(escaped_path)
   end
 
   def update_cache?

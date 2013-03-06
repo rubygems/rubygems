@@ -1,9 +1,10 @@
 # coding: UTF-8
 
-=== 2.0.2
+=== 2.0.2 / 2013-03-06
 
 * Bug fixes:
   * SSL Certificates are now installed properly.  Fixes #491 by hemanth.hm
+  * Fixed HTTP to HTTPS upgrade for rubygems.org.
 
 === 2.0.1 / 2013-03-05
 

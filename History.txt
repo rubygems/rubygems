@@ -1,5 +1,10 @@
 # coding: UTF-8
 
+=== 2.0.2
+
+* Bug fixes:
+  * SSL Certificates are now installed properly.  Fixes #491 by hemanth.hm
+
 === 2.0.1 / 2013-03-05
 
 * Bug fixes:

@@ -54,7 +54,7 @@ class Gem::FakeFetcher
     @data[path]
   end
 
-  def fetch_path path, mtime = nil, head = false
+  def fetch_path path, mtime = nil
     data = find_data(path)
 
     if data.respond_to?(:call) then

@@ -1,16 +1,22 @@
 # coding: UTF-8
 
+=== 2.0.3
+
+* Bug fixes
+  * Reverted automatic upgrade to HTTPS as it breaks RubyGems APIs.  Fixes
+    #506 by André Arko
+
 === 2.0.2 / 2013-03-06
 
 * Bug fixes:
+  * HTTPS URLs are preferred over HTTP URLs.  RubyGems will now attempt to
+    upgrade any HTTP source to HTTPS.  Credit to Alex Gaynor.
   * SSL Certificates are now installed properly.  Fixes #491 by hemanth.hm
   * Fixed HTTP to HTTPS upgrade for rubygems.org.
 
 === 2.0.1 / 2013-03-05
 
 * Bug fixes:
-  * HTTPS URLs are preferred over HTTP URLs.  RubyGems will now attempt to
-    upgrade any HTTP source to HTTPS.  Credit to Alex Gaynor.
   * Lazily load RubyGems.org API credentials to avoid failure during
     RubyGems installation.  Bug #465 by Isaac Sanders.
   * RubyGems now picks the latest prerelease to install.  Fixes bug #468 by

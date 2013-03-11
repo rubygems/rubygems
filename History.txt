@@ -6,7 +6,9 @@
   * Reverted automatic upgrade to HTTPS as it breaks RubyGems APIs.  Fixes
     #506 by André Arko
   * Use File.realpath to remove extra / while checking if files are
-    installable.  Fixes #508 by Jacob Evans.
+    installable.  Issue #508 by Jacob Evans.
+  * When installing RubyGems on JRuby, the standard library is no longer
+    deleted.  Fixes #504 by Juan Sanchez, #507 by Charles Oliver Nutter.
 
 === 2.0.2 / 2013-03-06
 

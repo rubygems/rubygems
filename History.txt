@@ -9,8 +9,11 @@
     installable.  Issue #508 by Jacob Evans.
   * When installing RubyGems on JRuby, the standard library is no longer
     deleted.  Fixes #504 by Juan Sanchez, #507 by Charles Oliver Nutter.
-  * When building extconf.rb extensions the intermediate destination
+  * When building extconf.rb extensions use the intermediate destination
     directory.  This addresses further issues with C extension building.
+  * Use the absolute path to the generated siteconf in case the extension
+    changes directories to run extconf.rb (like memcached).  Fixes #498 by
+    Chris Morris.
 
 === 2.0.2 / 2013-03-06
 

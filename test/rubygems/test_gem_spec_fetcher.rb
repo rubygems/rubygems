@@ -245,6 +245,7 @@ class TestGemSpecFetcher < Gem::TestCase
 
     source       = Gem::Source.new URI 'http://example'
     same_source  = nil
+    https_source = nil
 
     use_ui @ui do
       same_source = @sf.upgrade_http_source source

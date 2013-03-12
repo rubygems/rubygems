@@ -150,7 +150,7 @@ c7NM7KZZjj7G++SXjYTEI1PHSA7aFQ/i/+qSUvx+Pg==
     expiry = EXPIRED_CERT.not_after.strftime "%Y%m%d%H%M%S"
 
     expired_path =
-      File.join Gem.user_home, "gem-public_cert.pem.expired.#{expiry}"
+      File.join Gem.user_home, '.gem', "gem-public_cert.pem.expired.#{expiry}"
 
     assert_path_exists expired_path
     assert_equal EXPIRED_CERT.to_pem, File.read(expired_path)

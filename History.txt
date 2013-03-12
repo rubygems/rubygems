@@ -14,6 +14,8 @@
   * Use the absolute path to the generated siteconf in case the extension
     changes directories to run extconf.rb (like memcached).  Fixes #498 by
     Chris Morris.
+  * Fixed default gem key and cert locations.  Pull request #511 by Samuel
+    Cochran.
 
 === 2.0.2 / 2013-03-06
 

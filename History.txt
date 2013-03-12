@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-=== 2.0.3 / 2012-03-1
+=== 2.0.3 / 2012-03-11
 
 * Bug fixes:
   * Reverted automatic upgrade to HTTPS as it breaks RubyGems APIs.  Fixes

@@ -1,8 +1,8 @@
 # coding: UTF-8
 
-=== 2.0.3
+=== 2.0.3 / 2012-03-1
 
-* Bug fixes
+* Bug fixes:
   * Reverted automatic upgrade to HTTPS as it breaks RubyGems APIs.  Fixes
     #506 by André Arko
   * Use File.realpath to remove extra / while checking if files are

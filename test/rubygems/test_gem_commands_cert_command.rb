@@ -398,10 +398,12 @@ Removed '/CN=alternate/DC=example'
   end
 
   def test_execute_sign_default
-    private_key_path = File.join Gem.user_home, 'gem-private_key.pem'
+    FileUtils.mkdir_p File.join Gem.user_home, '.gem'
+
+    private_key_path = File.join Gem.user_home, '.gem', 'gem-private_key.pem'
     Gem::Security.write PRIVATE_KEY, private_key_path
 
-    public_cert_path = File.join Gem.user_home, 'gem-public_cert.pem'
+    public_cert_path = File.join Gem.user_home, '.gem', 'gem-public_cert.pem'
     Gem::Security.write PUBLIC_CERT, public_cert_path
 
     path = File.join @tempdir, 'cert.pem'
@@ -458,7 +460,9 @@ Removed '/CN=alternate/DC=example'
   end
 
   def test_execute_sign_no_cert
-    private_key_path = File.join Gem.user_home, 'gem-private_key.pem'
+    FileUtils.mkdir_p File.join Gem.user_home, '.gem'
+
+    private_key_path = File.join Gem.user_home, '.gem', 'gem-private_key.pem'
     Gem::Security.write PRIVATE_KEY, private_key_path
 
     path = File.join @tempdir, 'cert.pem'
@@ -484,7 +488,9 @@ ERROR:  --certificate not specified and ~/.gem/gem-public_cert.pem does not exis
   end
 
   def test_execute_sign_no_key
-    public_cert_path = File.join Gem.user_home, 'gem-public_cert.pem'
+    FileUtils.mkdir_p File.join Gem.user_home, '.gem'
+
+    public_cert_path = File.join Gem.user_home, '.gem', 'gem-public_cert.pem'
     Gem::Security.write PUBLIC_CERT, public_cert_path
 
     path = File.join @tempdir, 'cert.pem'

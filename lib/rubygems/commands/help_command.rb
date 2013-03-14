@@ -46,6 +46,10 @@ Some examples of 'gem' usage.
 * Update all gems on your system:
 
     gem update
+    
+* Update your local version of RubyGems
+
+    gem update --system
   EOF
 
   PLATFORMS = <<-'EOF'

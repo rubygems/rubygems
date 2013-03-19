@@ -208,39 +208,6 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     end
 
     @marshal_version = "#{Marshal::MAJOR_VERSION}.#{Marshal::MINOR_VERSION}"
-
-    # TODO: move to installer test cases
-    Gem.post_build_hooks.clear
-    Gem.post_install_hooks.clear
-    Gem.done_installing_hooks.clear
-    Gem.post_reset_hooks.clear
-    Gem.post_uninstall_hooks.clear
-    Gem.pre_install_hooks.clear
-    Gem.pre_reset_hooks.clear
-    Gem.pre_uninstall_hooks.clear
-
-    # TODO: move to installer test cases
-    Gem.post_build do |installer|
-      @post_build_hook_arg = installer
-      true
-    end
-
-    Gem.post_install do |installer|
-      @post_install_hook_arg = installer
-    end
-
-    Gem.post_uninstall do |uninstaller|
-      @post_uninstall_hook_arg = uninstaller
-    end
-
-    Gem.pre_install do |installer|
-      @pre_install_hook_arg = installer
-      true
-    end
-
-    Gem.pre_uninstall do |uninstaller|
-      @pre_uninstall_hook_arg = uninstaller
-    end
   end
 
   ##
@@ -274,6 +241,39 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     end
 
     Gem.instance_variable_set :@default_dir, nil
+  end
+
+  def common_installer_setup
+    Gem.post_build_hooks.clear
+    Gem.post_install_hooks.clear
+    Gem.done_installing_hooks.clear
+    Gem.post_reset_hooks.clear
+    Gem.post_uninstall_hooks.clear
+    Gem.pre_install_hooks.clear
+    Gem.pre_reset_hooks.clear
+    Gem.pre_uninstall_hooks.clear
+
+    Gem.post_build do |installer|
+      @post_build_hook_arg = installer
+      true
+    end
+
+    Gem.post_install do |installer|
+      @post_install_hook_arg = installer
+    end
+
+    Gem.post_uninstall do |uninstaller|
+      @post_uninstall_hook_arg = uninstaller
+    end
+
+    Gem.pre_install do |installer|
+      @pre_install_hook_arg = installer
+      true
+    end
+
+    Gem.pre_uninstall do |uninstaller|
+      @pre_uninstall_hook_arg = uninstaller
+    end
   end
 
   ##

@@ -4,6 +4,7 @@ class TestGemInstaller < Gem::InstallerTestCase
 
   def setup
     super
+    common_installer_setup
 
     if __name__ =~ /^test_install(_|$)/ then
       FileUtils.rm_r @spec.gem_dir

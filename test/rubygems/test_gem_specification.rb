@@ -625,6 +625,115 @@ dependencies: []
     assert_equal %w(a-1 b-1 c-1), loaded_spec_names
   end
 
+  def test_self_activate_loaded
+    foo = util_spec 'foo', '1'
+
+    assert foo.activate
+    refute foo.activate
+  end
+
+    ##
+  # [A] depends on
+  #     [B] >= 1.0 (satisfied by 2.0)
+  # [C] depends on nothing
+
+  def test_self_activate_unrelated
+    a = util_spec 'a', '1.0', 'b' => '>= 1.0'
+        util_spec 'b', '1.0'
+    c = util_spec 'c', '1.0'
+
+    assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
+  end
+
+  ##
+  # [A] depends on
+  #     [B] >= 1.0 (satisfied by 2.0)
+  #     [C]  = 1.0 depends on
+  #         [B] ~> 1.0
+  #
+  # and should resolve using b-1.0
+  # TODO: move these to specification
+
+  def test_self_activate_over
+    a = util_spec 'a', '1.0', 'b' => '>= 1.0', 'c' => '= 1.0'
+    util_spec 'b', '1.0'
+    util_spec 'b', '1.1'
+    util_spec 'b', '2.0'
+    util_spec 'c', '1.0', 'b' => '~> 1.0'
+
+    a.activate
+
+    assert_equal %w[a-1.0 c-1.0], loaded_spec_names
+    assert_equal ["b (>= 1.0, ~> 1.0)"], unresolved_names
+  end
+
+  ##
+  # [A] depends on
+  #     [B] ~> 1.0 (satisfied by 1.1)
+  #     [C]  = 1.0 depends on
+  #         [B] = 1.0
+  #
+  # and should resolve using b-1.0
+  #
+  # TODO: this is not under, but over... under would require depth
+  # first resolve through a dependency that is later pruned.
+
+  def test_self_activate_under
+    a,   _ = util_spec 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
+             util_spec 'b', '1.0'
+             util_spec 'b', '1.1'
+    c,   _ = util_spec 'c', '1.0', 'b' => '= 1.0'
+
+    assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
+  end
+
+  ##
+  # [A1] depends on
+  #    [B] > 0 (satisfied by 2.0)
+  # [B1] depends on
+  #    [C] > 0 (satisfied by 1.0)
+  # [B2] depends on nothing!
+  # [C1] depends on nothing
+
+  def test_self_activate_dropped
+    a1, = util_spec 'a', '1', 'b' => nil
+          util_spec 'b', '1', 'c' => nil
+          util_spec 'b', '2'
+          util_spec 'c', '1'
+
+    assert_activate %w[b-2 a-1], a1, "b"
+  end
+
+  ##
+  # [A] depends on
+  #     [B] >= 1.0 (satisfied by 1.1) depends on
+  #         [Z]
+  #     [C] >= 1.0 depends on
+  #         [B] = 1.0
+  #
+  # and should backtrack to resolve using b-1.0, pruning Z from the
+  # resolve.
+
+  def test_self_activate_raggi_the_edgecase_generator
+    a,  _ = util_spec 'a', '1.0', 'b' => '>= 1.0', 'c' => '>= 1.0'
+            util_spec 'b', '1.0'
+            util_spec 'b', '1.1', 'z' => '>= 1.0'
+    c,  _ = util_spec 'c', '1.0', 'b' => '= 1.0'
+
+    assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
+  end
+
+  def test_self_activate_conflict
+    util_spec 'b', '1.0'
+    util_spec 'b', '2.0'
+
+    gem "b", "= 1.0"
+
+    assert_raises Gem::LoadError do
+      gem "b", "= 2.0"
+    end
+  end
+
   def test_add_dependency_with_explicit_type
     gem = quick_spec "awesome", "1.0" do |awesome|
       awesome.add_development_dependency "monkey"

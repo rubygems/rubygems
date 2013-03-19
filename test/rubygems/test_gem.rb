@@ -45,49 +45,8 @@ class TestGem < Gem::TestCase
     assert_activate %w[foo-1], foo
   end
 
-  def loaded_spec_names
-    Gem.loaded_specs.values.map(&:full_name).sort
-  end
-
   def unresolved_names
     Gem::Specification.unresolved_deps.values.map(&:to_s).sort
-  end
-
-  # TODO: move these to specification
-  def test_self_activate_via_require
-    a1 = new_spec "a", "1", "b" => "= 1"
-    b1 = new_spec "b", "1", nil, "lib/b/c.rb"
-    b2 = new_spec "b", "2", nil, "lib/b/c.rb"
-
-    install_specs a1, b1, b2
-
-    a1.activate
-    save_loaded_features do
-      require "b/c"
-    end
-
-    assert_equal %w(a-1 b-1), loaded_spec_names
-  end
-
-  # TODO: move these to specification
-  def test_self_activate_deep_unambiguous
-    a1 = new_spec "a", "1", "b" => "= 1"
-    b1 = new_spec "b", "1", "c" => "= 1"
-    b2 = new_spec "b", "2", "c" => "= 2"
-    c1 = new_spec "c", "1"
-    c2 = new_spec "c", "2"
-
-    install_specs a1, b1, b2, c1, c2
-
-    a1.activate
-    assert_equal %w(a-1 b-1 c-1), loaded_spec_names
-  end
-
-  def save_loaded_features
-    old_loaded_features = $LOADED_FEATURES.dup
-    yield
-  ensure
-    $LOADED_FEATURES.replace old_loaded_features
   end
 
   # TODO: move these to specification
@@ -1632,4 +1591,3 @@ class TestGem < Gem::TestCase
     File.join Gem.dir, "cache"
   end
 end
-

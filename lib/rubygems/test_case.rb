@@ -564,6 +564,17 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     spec
   end
 
+  def loaded_spec_names
+    Gem.loaded_specs.values.map(&:full_name).sort
+  end
+
+  def save_loaded_features
+    old_loaded_features = $LOADED_FEATURES.dup
+    yield
+  ensure
+    $LOADED_FEATURES.replace old_loaded_features
+  end
+
   ##
   # Creates a spec with +name+, +version+ and +deps+.
 

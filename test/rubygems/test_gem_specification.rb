@@ -597,6 +597,34 @@ dependencies: []
     assert @a2.activated?
   end
 
+  def test_self_activate_via_require
+    a1 = new_spec "a", "1", "b" => "= 1"
+    b1 = new_spec "b", "1", nil, "lib/b/c.rb"
+    b2 = new_spec "b", "2", nil, "lib/b/c.rb"
+
+    install_specs a1, b1, b2
+
+    a1.activate
+    save_loaded_features do
+      require "b/c"
+    end
+
+    assert_equal %w(a-1 b-1), loaded_spec_names
+  end
+
+  def test_self_activate_deep_unambiguous
+    a1 = new_spec "a", "1", "b" => "= 1"
+    b1 = new_spec "b", "1", "c" => "= 1"
+    b2 = new_spec "b", "2", "c" => "= 2"
+    c1 = new_spec "c", "1"
+    c2 = new_spec "c", "2"
+
+    install_specs a1, b1, b2, c1, c2
+
+    a1.activate
+    assert_equal %w(a-1 b-1 c-1), loaded_spec_names
+  end
+
   def test_add_dependency_with_explicit_type
     gem = quick_spec "awesome", "1.0" do |awesome|
       awesome.add_development_dependency "monkey"

@@ -77,6 +77,23 @@ end
 
 class Gem::TestCase < Minitest::Test
 
+  def assert_activate expected, *specs
+    specs.each do |spec|
+      case spec
+      when String then
+        Gem::Specification.find_by_name(spec).activate
+      when Gem::Specification then
+        spec.activate
+      else
+        flunk spec.inspect
+      end
+    end
+
+    loaded = Gem.loaded_specs.values.map(&:full_name)
+
+    assert_equal expected.sort, loaded.sort if expected
+  end
+
   # TODO: move to minitest
   def assert_path_exists path, msg = nil
     msg = message(msg) { "Expected path '#{path}' to exist" }
@@ -510,6 +527,10 @@ class Gem::TestCase < Minitest::Test
 
   def loaded_spec_names
     Gem.loaded_specs.values.map(&:full_name).sort
+  end
+
+  def unresolved_names
+    Gem::Specification.unresolved_deps.values.map(&:to_s).sort
   end
 
   def save_loaded_features

@@ -508,6 +508,17 @@ class Gem::TestCase < Minitest::Test
     end
   end
 
+  def loaded_spec_names
+    Gem.loaded_specs.values.map(&:full_name).sort
+  end
+
+  def save_loaded_features
+    old_loaded_features = $LOADED_FEATURES.dup
+    yield
+  ensure
+    $LOADED_FEATURES.replace old_loaded_features
+  end
+
   ##
   # Create a new spec (or gem if passed an array of files) and set it
   # up properly. Use this instead of util_spec and util_gem.

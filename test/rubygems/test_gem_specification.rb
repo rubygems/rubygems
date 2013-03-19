@@ -66,6 +66,55 @@ end
     load 'rubygems/syck_hack.rb'
   end
 
+  def test_self_activate
+    foo = util_spec 'foo', '1'
+
+    assert_activate %w[foo-1], foo
+  end
+
+  def test_self_activate_ambiguous_direct
+    save_loaded_features do
+      a1 = new_spec "a", "1", "b" => "> 0"
+      b1 = new_spec("b", "1", { "c" => ">= 1" }, "lib/d.rb")
+      b2 = new_spec("b", "2", { "c" => ">= 2" }, "lib/d.rb")
+      c1 = new_spec "c", "1"
+      c2 = new_spec "c", "2"
+
+      Gem::Specification.reset
+      install_specs a1, b1, b2, c1, c2
+
+      a1.activate
+      assert_equal %w(a-1), loaded_spec_names
+      assert_equal ["b (> 0)"], unresolved_names
+
+      require "d"
+
+      assert_equal %w(a-1 b-2 c-2), loaded_spec_names
+      assert_equal [], unresolved_names
+    end
+  end
+
+  def test_self_activate_ambiguous_indirect
+    save_loaded_features do
+      a1 = new_spec "a", "1", "b" => "> 0"
+      b1 = new_spec "b", "1", "c" => ">= 1"
+      b2 = new_spec "b", "2", "c" => ">= 2"
+      c1 = new_spec "c", "1", nil, "lib/d.rb"
+      c2 = new_spec "c", "2", nil, "lib/d.rb"
+
+      install_specs a1, b1, b2, c1, c2
+
+      a1.activate
+      assert_equal %w(a-1), loaded_spec_names
+      assert_equal ["b (> 0)"], unresolved_names
+
+      require "d"
+
+      assert_equal %w(a-1 b-2 c-2), loaded_spec_names
+      assert_equal [], unresolved_names
+    end
+  end
+
   def test_self_activate_via_require
     a1 = new_spec "a", "1", "b" => "= 1"
     b1 = new_spec "b", "1", nil, "lib/b/c.rb"

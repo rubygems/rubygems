@@ -38,10 +38,8 @@ Gem::Specification.new do |s|
 end
   EOF
 
-  def setup
-    super
-
-    @a1 = quick_spec 'a', '1' do |s|
+  def make_spec_c1
+    @c1 = quick_spec 'a', '1' do |s|
       s.executable = 'exec'
       s.extensions << 'ext/a/extconf.rb'
       s.test_file = 'test/suite.rb'
@@ -52,6 +50,22 @@ end
       s.add_dependency 'rake', '> 0.4'
       s.add_dependency 'jabber4r', '> 0.0.0'
       s.add_dependency 'pqa', ['> 0.4', '<= 0.6']
+
+      s.mark_version
+      s.files = %w[lib/code.rb]
+    end
+  end
+
+  def setup
+    super
+
+    @a1 = quick_spec 'a', '1' do |s|
+      s.executable = 'exec'
+      s.extensions << 'ext/a/extconf.rb'
+      s.test_file = 'test/suite.rb'
+      s.requirements << 'A working computer'
+      s.rubyforge_project = 'example'
+      s.license = 'MIT'
 
       s.mark_version
       s.files = %w[lib/code.rb]
@@ -1411,14 +1425,15 @@ dependencies: []
   end
 
   def test_runtime_dependencies_legacy
+    make_spec_c1
     # legacy gems don't have a type
-    @a1.runtime_dependencies.each do |dep|
+    @c1.runtime_dependencies.each do |dep|
       dep.instance_variable_set :@type, nil
     end
 
     expected = %w[rake jabber4r pqa]
 
-    assert_equal expected, @a1.runtime_dependencies.map { |d| d.name }
+    assert_equal expected, @c1.runtime_dependencies.map { |d| d.name }
   end
 
   def test_spaceship_name
@@ -1563,8 +1578,10 @@ end
   end
 
   def test_to_ruby_fancy
-    @a1.platform = Gem::Platform.local
-    ruby_code = @a1.to_ruby
+    make_spec_c1
+
+    @c1.platform = Gem::Platform.local
+    ruby_code = @c1.to_ruby
 
     local = Gem::Platform.local
     expected_platform = "[#{local.cpu.inspect}, #{local.os.inspect}, #{local.version.inspect}]"
@@ -1618,7 +1635,7 @@ end
 
     same_spec = eval ruby_code
 
-    assert_equal @a1, same_spec
+    assert_equal @c1, same_spec
   end
 
   def test_to_ruby_legacy

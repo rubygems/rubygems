@@ -564,6 +564,38 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     spec
   end
 
+  def loaded_spec_names
+    Gem.loaded_specs.values.map(&:full_name).sort
+  end
+
+  def save_loaded_features
+    old_loaded_features = $LOADED_FEATURES.dup
+    yield
+  ensure
+    $LOADED_FEATURES.replace old_loaded_features
+  end
+
+  def assert_activate expected, *specs
+    specs.each do |spec|
+      case spec
+      when String then
+        Gem::Specification.find_by_name(spec).activate
+      when Gem::Specification then
+        spec.activate
+      else
+        flunk spec.inspect
+      end
+    end
+
+    loaded = Gem.loaded_specs.values.map(&:full_name)
+
+    assert_equal expected.sort, loaded.sort if expected
+  end
+
+  def unresolved_names
+    Gem::Specification.unresolved_deps.values.map(&:to_s).sort
+  end
+
   ##
   # Creates a spec with +name+, +version+ and +deps+.
 

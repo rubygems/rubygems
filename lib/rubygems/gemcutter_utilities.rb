@@ -79,7 +79,7 @@ module Gem::GemcutterUtilities
     Gem::RemoteFetcher.fetcher.request(uri, request_method, &block)
   end
 
-  def with_response(resp)
+  def with_response resp, error_prefix = nil
     case resp
     when Net::HTTPSuccess then
       if block_given? then
@@ -88,7 +88,10 @@ module Gem::GemcutterUtilities
         say resp.body
       end
     else
-      say resp.body
+      message = resp.body
+      message = "#{error_prefix}: #{message}" if error_prefix
+
+      say message
       terminate_interaction 1 # TODO: question this
     end
   end

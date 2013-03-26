@@ -81,6 +81,7 @@ class Gem::Security::Policy
   # If the +issuer+ is +nil+ no verification is performed.
 
   def check_cert signer, issuer, time
+    puts caller
     raise Gem::Security::Exception, 'missing signing certificate' unless
       signer
 
@@ -243,13 +244,45 @@ class Gem::Security::Policy
     true
   end
 
+  def verify_ssh(id, digests, signatures)
+    ag = Gem::Security.ssh_agent
+
+    k = ag.identities.find { |i| i.fingerprint == id }
+
+    digests = digests["SHA1"]
+
+    signatures.each do |file, raw_sig|
+      d = digests[file]
+      unless k.verify(raw_sig, d.digest)
+        raise Gem::Security::Exception, "invalid signature"
+      end
+    end
+
+    Gem::DefaultUserInteraction.ui.say "Verified signatures against #{id}"
+  end
+
   ##
   # Extracts the certificate chain from the +spec+ and calls #verify to ensure
   # the signatures and certificate chain is valid according to the policy..
 
   def verify_signatures spec, digests, signatures
-    chain = spec.cert_chain.map do |cert_pem|
-      OpenSSL::X509::Certificate.new cert_pem
+    ssh, pem = spec.cert_chain.partition { |a| a[0,4] == "ssh " }
+
+    unless ssh.empty?
+      ssh.each do |s|
+        r = /ssh (.*)/.match(s)
+        verify_ssh r[1], digests, signatures
+      end
+
+      return
+    end
+
+    chain = pem.map do |cert_pem|
+      if cert_pem[0,4] == "ssh "
+        cert_pem
+      else
+        OpenSSL::X509::Certificate.new cert_pem
+      end
     end
 
     verify chain, nil, digests, signatures

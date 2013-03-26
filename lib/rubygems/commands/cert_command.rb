@@ -77,6 +77,11 @@ class Gem::Commands::CertCommand < Gem::Command
 
       options[:sign] << cert_file
     end
+
+    add_option('--ssh-list',
+               'Display identities currently available via ssh-agent') do |k,o|
+      options[:ssh_list] = true
+    end
   end
 
   def execute
@@ -111,6 +116,15 @@ class Gem::Commands::CertCommand < Gem::Command
 
     options[:sign].each do |cert_file|
       sign cert_file
+    end
+
+    if options[:ssh_list]
+      require 'rubygems/vendor/orthrus/ssh/agent'
+      ag = Gem::Orthrus::SSH::Agent.connect
+      ag.identities.each do |i|
+        com = File.basename i.comment
+        puts "#{i.type} #{i.fingerprint} #{com}"
+      end
     end
   end
 

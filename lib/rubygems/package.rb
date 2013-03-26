@@ -435,8 +435,9 @@ EOM
       @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_s }
     else
       @signer = Gem::Security::Signer.new nil, nil
-      @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_pem } if
-        @signer.cert_chain
+      if @signer.cert_chain
+        @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_pem }
+      end
     end
   end
 

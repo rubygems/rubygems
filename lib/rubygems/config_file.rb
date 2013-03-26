@@ -141,6 +141,11 @@ class Gem::ConfigFile
   attr_reader :ssl_ca_cert
 
   ##
+  # The fingerprint of the key held by ssh-agent to sign with
+
+  attr_reader :ssh_agent_identity
+
+  ##
   # Create the config file object.  +args+ is the list of arguments
   # from the command line.
   #
@@ -210,6 +215,8 @@ class Gem::ConfigFile
 
     @ssl_verify_mode  = @hash[:ssl_verify_mode]  if @hash.key? :ssl_verify_mode
     @ssl_ca_cert      = @hash[:ssl_ca_cert]      if @hash.key? :ssl_ca_cert
+
+    @ssh_agent_identity = @hash[:ssh_identity]
 
     @api_keys         = nil
     @rubygems_api_key = nil

@@ -542,6 +542,13 @@ module Gem::Security
     signed.sign signing_key, Gem::Security::DIGEST_ALGORITHM.new
   end
 
+  def self.ssh_agent
+    @ssh_agent ||= begin
+                     require 'rubygems/vendor/orthrus/ssh/agent'
+                     Gem::Orthrus::SSH::Agent.connect
+                   end
+  end
+
   ##
   # Returns a Gem::Security::TrustDir which wraps the directory where trusted
   # certificates live.

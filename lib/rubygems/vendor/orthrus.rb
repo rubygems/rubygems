@@ -1,0 +1,2 @@
+class Gem::Orthrus
+end

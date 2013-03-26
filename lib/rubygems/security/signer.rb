@@ -24,14 +24,45 @@ class Gem::Security::Signer
 
   attr_reader :digest_name # :nodoc:
 
+  class SSHIdentity
+    def initialize(id)
+      @id = id
+    end
+
+    def to_pem
+      "ssh #{@id}"
+    end
+  end
+
   ##
   # Creates a new signer with an RSA +key+ or path to a key, and a certificate
   # +chain+ containing X509 certificates, encoding certificates or paths to
   # certificates.
 
   def initialize key, cert_chain
-    @cert_chain = cert_chain
-    @key        = key
+    @cert_chain    = cert_chain
+    @key           = key
+    @use_ssh_agent = nil
+
+    @digest_algorithm = Gem::Security::DIGEST_ALGORITHM
+    @digest_name      = Gem::Security::DIGEST_NAME
+
+    unless @key
+      if id = Gem.configuration.ssh_agent_identity
+        ag = Gem::Security.ssh_agent
+
+        k = ag.identities.find { |i| i.fingerprint == id }
+
+        if k
+          @key = k
+          @cert_chain = [SSHIdentity.new(id)]
+          @use_ssh_agent = id
+          return
+        else
+          warn "Unable to find SSH key in agent for '#{id}'"
+        end
+      end
+    end
 
     unless @key then
       default_key  = File.join Gem.default_key_path
@@ -43,12 +74,11 @@ class Gem::Security::Signer
       @cert_chain = [default_cert] if File.exist? default_cert
     end
 
-    @digest_algorithm = Gem::Security::DIGEST_ALGORITHM
-    @digest_name      = Gem::Security::DIGEST_NAME
-
-    @key = OpenSSL::PKey::RSA.new File.read @key if
-      @key and not OpenSSL::PKey::RSA === @key
-
+    # Convert from a path to a key object
+    if @key and not OpenSSL::PKey::RSA === @key
+      @key = OpenSSL::PKey::RSA.new File.read(@key)
+    end
+      
     if @cert_chain then
       @cert_chain = @cert_chain.compact.map do |cert|
         next cert if OpenSSL::X509::Certificate === cert
@@ -84,6 +114,11 @@ class Gem::Security::Signer
 
   def sign data
     return unless @key
+
+    if @use_ssh_agent
+      type, sign = Gem::Security.ssh_agent.sign @key, data
+      return sign
+    end
 
     if @cert_chain.length == 1 and @cert_chain.last.not_after < Time.now then
       re_sign_key

@@ -1,5 +1,10 @@
 # coding: UTF-8
 
+=== 2.0.4
+
+* Bug fixes:
+  * Fixed pushing gems with the default host.  Bug #495 by Utkarsh Kukreti
+
 === 2.0.3 / 2012-03-11
 
 * Bug fixes:

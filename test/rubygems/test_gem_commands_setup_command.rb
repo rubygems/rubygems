@@ -76,6 +76,11 @@ class TestGemCommandsSetupCommand < Gem::TestCase
   end
 
   def test_show_release_notes
+    capture_io do
+      @default_external, Encoding.default_external =
+        Encoding.default_external, Encoding::US_ASCII
+    end
+
     @cmd.options[:previous_version] = Gem::Version.new '2.0.2'
 
     open 'History.txt', 'w' do |io|
@@ -113,6 +118,10 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     EXPECTED
 
     assert_equal expected, @ui.output
+  ensure
+    capture_io do
+      Encoding.default_external = @default_external
+    end
   end
 
 end

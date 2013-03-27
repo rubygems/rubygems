@@ -76,10 +76,11 @@ class TestGemCommandsSetupCommand < Gem::TestCase
   end
 
   def test_show_release_notes
+    @default_external = nil
     capture_io do
       @default_external, Encoding.default_external =
         Encoding.default_external, Encoding::US_ASCII
-    end
+    end if Object.const_defined? :Encoding
 
     @cmd.options[:previous_version] = Gem::Version.new '2.0.2'
 
@@ -121,7 +122,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
   ensure
     capture_io do
       Encoding.default_external = @default_external
-    end
+    end if @default_external
   end
 
 end

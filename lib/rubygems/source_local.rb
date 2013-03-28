@@ -5,6 +5,20 @@ class Gem::Source::Local < Gem::Source
     @uri = nil
   end
 
+  ##
+  # Local sources sort before other sources
+
+  def <=> other
+    case other
+    when Gem::Source::Local then
+      0
+    when Gem::Source then
+      1
+    else
+      nil
+    end
+  end
+
   def load_specs(type)
     names = []
 

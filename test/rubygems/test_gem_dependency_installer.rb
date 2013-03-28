@@ -627,7 +627,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     inst = nil
 
     Dir.chdir @tempdir do
-      e = assert_raises Gem::DependencyError do
+      e = assert_raises Gem::UnsatisfiableDependencyError do
         inst = Gem::DependencyInstaller.new :domain => :local
         inst.install 'b'
       end
@@ -910,12 +910,13 @@ class TestGemDependencyInstaller < Gem::TestCase
     gems = set.sorted
 
     assert_equal 2, gems.length
-    local = gems.first
+
+    remote, local = gems
+
     assert_equal 'a-1', local.spec.full_name, 'local spec'
     assert_equal File.join(@tempdir, @a1.file_name),
                  local.source.download(local.spec), 'local path'
 
-    remote = gems.last
     assert_equal 'a-1', remote.spec.full_name, 'remote spec'
     assert_equal Gem::Source.new(@gem_repo), remote.source, 'remote path'
 

@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rubygems/dependency_list'
+require 'rubygems/dependency_resolver'
 require 'rubygems/package'
 require 'rubygems/installer'
 require 'rubygems/spec_fetcher'
@@ -321,58 +322,81 @@ class Gem::DependencyInstaller
   def install dep_or_name, version = Gem::Requirement.default
     available_set_for dep_or_name, version
 
+    request_set = @available.to_request_set
+
+    installer_set = Gem::DependencyResolver::InstallerSet.new @domain
+
+    request_set.resolve installer_set
+
     @installed_gems = []
 
-    gather_dependencies
-
-    # REFACTOR is the last gem always the one that the user requested?
-    # This code assumes that but is that actually validated by the code?
-
-    last = @gems_to_install.size - 1
-    @gems_to_install.each_with_index do |spec, index|
-      # REFACTOR more current spec set hardcoding, should be abstracted?
-      next if Gem::Specification.include?(spec) and index != last
-
-      # TODO: make this sorta_verbose so other users can benefit from it
-      say "Installing gem #{spec.full_name}" if Gem.configuration.really_verbose
-
-      source = @available.source_for spec
-
-      begin
-        # REFACTOR make the fetcher to use configurable
-        local_gem_path = source.download spec, @cache_dir
-      rescue Gem::RemoteFetcher::FetchError
-        # TODO I doubt all fetch errors are recoverable, we should at least
-        # report the errors probably.
-        next if @force
-        raise
-      end
-
-      if @development
-        if @dev_shallow
-          is_dev = @toplevel_specs.include? spec.full_name
-        else
-          is_dev = true
-        end
-      end
-
-      inst = Gem::Installer.new local_gem_path,
-                                :bin_dir             => @bin_dir,
-                                :development         => is_dev,
-                                :env_shebang         => @env_shebang,
-                                :force               => @force,
-                                :format_executable   => @format_executable,
-                                :ignore_dependencies => @ignore_dependencies,
-                                :install_dir         => @install_dir,
-                                :security_policy     => @security_policy,
-                                :user_install        => @user_install,
-                                :wrappers            => @wrappers,
-                                :build_args          => @build_args
-
-      spec = inst.install
-
-      @installed_gems << spec
+    installed = request_set.install \
+        :bin_dir             => @bin_dir,
+        :build_args          => @build_args,
+        #:development         => is_dev,
+        :env_shebang         => @env_shebang,
+        :force               => @force,
+        :format_executable   => @format_executable,
+        :ignore_dependencies => @ignore_dependencies,
+        :install_dir         => @install_dir,
+        :security_policy     => @security_policy,
+        :user_install        => @user_install,
+        :wrappers            => @wrappers do |_, installer|
+      @installed_gems << installer.spec
     end
+
+
+#
+#    gather_dependencies
+#
+#    # REFACTOR is the last gem always the one that the user requested?
+#    # This code assumes that but is that actually validated by the code?
+#
+#    last = @gems_to_install.size - 1
+#    @gems_to_install.each_with_index do |spec, index|
+#      # REFACTOR more current spec set hardcoding, should be abstracted?
+#      next if Gem::Specification.include?(spec) and index != last
+#
+#      # TODO: make this sorta_verbose so other users can benefit from it
+#      say "Installing gem #{spec.full_name}" if Gem.configuration.really_verbose
+#
+#      source = @available.source_for spec
+#
+#      begin
+#        # REFACTOR make the fetcher to use configurable
+#        local_gem_path = source.download spec, @cache_dir
+#      rescue Gem::RemoteFetcher::FetchError
+#        # TODO I doubt all fetch errors are recoverable, we should at least
+#        # report the errors probably.
+#        next if @force
+#        raise
+#      end
+#
+#      if @development
+#        if @dev_shallow
+#          is_dev = @toplevel_specs.include? spec.full_name
+#        else
+#          is_dev = true
+#        end
+#      end
+#
+#      inst = Gem::Installer.new local_gem_path,
+#                                :bin_dir             => @bin_dir,
+#                                :development         => is_dev,
+#                                :env_shebang         => @env_shebang,
+#                                :force               => @force,
+#                                :format_executable   => @format_executable,
+#                                :ignore_dependencies => @ignore_dependencies,
+#                                :install_dir         => @install_dir,
+#                                :security_policy     => @security_policy,
+#                                :user_install        => @user_install,
+#                                :wrappers            => @wrappers,
+#                                :build_args          => @build_args
+#
+#      spec = inst.install
+#
+#      @installed_gems << spec
+#    end
 
     # Since this is currently only called for docs, we can be lazy and just say
     # it's documentation. Ideally the hook adder could decide whether to be in

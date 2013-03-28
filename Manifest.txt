@@ -55,6 +55,7 @@ lib/rubygems/dependency.rb
 lib/rubygems/dependency_installer.rb
 lib/rubygems/dependency_list.rb
 lib/rubygems/dependency_resolver.rb
+lib/rubygems/dependency_resolver/installer_set.rb
 lib/rubygems/deprecate.rb
 lib/rubygems/doctor.rb
 lib/rubygems/errors.rb

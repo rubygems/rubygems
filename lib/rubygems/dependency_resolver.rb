@@ -272,7 +272,15 @@ module Gem
       @needed = needed
 
       @conflicts = nil
+      @soft_missing = false
+      @missing = []
     end
+
+    # When a missing dependency, don't stop. Just go on and record
+    # what was missing.
+    #
+    attr_accessor :soft_missing
+    attr_reader :missing
 
     # Provide a DependencyResolver that queries only against
     # the already installed gems.
@@ -505,8 +513,12 @@ module Gem
 
         case possible.size
         when 0
-          # If there are none, then our work here is done.
-          raise UnsatisfiableDepedencyError.new(dep)
+          @missing << dep
+
+          unless @soft_missing
+            # If there are none, then our work here is done.
+            raise UnsatisfiableDepedencyError.new(dep)
+          end
         when 1
           # If there is one, then we just add it to specs
           # and process the specs dependencies by adding

@@ -12,9 +12,13 @@ module Gem
 
     def initialize(*deps)
       @dependencies = deps
+      @soft_missing = false
 
       yield self if block_given?
     end
+
+    # Treat missing dependencies as silent errors
+    attr_accessor :soft_missing
 
     attr_reader :dependencies
 
@@ -36,6 +40,7 @@ module Gem
     #
     def resolve(set=nil)
       r = Gem::DependencyResolver.new(@dependencies, set)
+      r.soft_missing = @soft_missing
       @requests = r.resolve
     end
 
@@ -73,7 +78,9 @@ module Gem
           rescue TSort::Cyclic
           end
         else
-          raise Gem::DependencyError, "Unresolved depedency found during sorting - #{dep}"
+          unless @soft_missing
+            raise Gem::DependencyError, "Unresolved depedency found during sorting - #{dep}"
+          end
         end
       end
     end
@@ -88,7 +95,7 @@ module Gem
       end
     end
 
-    def install_into(dir, force=true, &b)
+    def install_into(dir, force=true, options={}, &b)
       existing = force ? [] : specs_in(dir)
 
       dir = File.expand_path dir
@@ -103,8 +110,10 @@ module Gem
 
         path = req.download(dir)
 
-        inst = Gem::Installer.new path, :install_dir => dir,
-                                        :only_install_dir => true
+        options[:install_dir] = dir
+        options[:only_install_dir] = true
+
+        inst = Gem::Installer.new path, options
 
         b.call req, inst if b
 
@@ -118,7 +127,7 @@ module Gem
 
     def install(options, &b)
       if dir = options[:install_dir]
-        return install_into(dir, false, &b)
+        return install_into(dir, false, options, &b)
       end
 
       cache_dir = options[:cache_dir] || Gem.dir

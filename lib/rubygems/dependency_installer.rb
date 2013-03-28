@@ -326,6 +326,7 @@ class Gem::DependencyInstaller
 
     installer_set = Gem::DependencyResolver::InstallerSet.new @domain
 
+    request_set.soft_missing = @force
     request_set.resolve installer_set
 
     @installed_gems = []

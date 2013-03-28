@@ -1,4 +1,7 @@
 class Gem::AvailableSet
+
+  include Enumerable
+
   Tuple = Struct.new(:spec, :source)
 
   def initialize
@@ -36,6 +39,28 @@ class Gem::AvailableSet
     self
   end
 
+  ##
+  # Yields each Tuple in this AvailableSet
+
+  def each
+    return enum_for __method__ unless block_given?
+
+    @set.each do |tuple|
+      yield tuple
+    end
+  end
+
+  ##
+  # Yields the Gem::Specification for each Tuple in this AvailableSet
+
+  def each_spec
+    return enum_for __method__ unless block_given?
+
+    each do |tuple|
+      yield tuple.spec
+    end
+  end
+
   def empty?
     @set.empty?
   end
@@ -64,6 +89,16 @@ class Gem::AvailableSet
   def source_for(spec)
     f = @set.find { |t| t.spec == spec }
     f.source
+  end
+
+  def to_request_set
+    request_set = Gem::RequestSet.new
+
+    each_spec do |spec|
+      request_set.gem spec.name, "= #{spec.version}"
+    end
+
+    request_set
   end
 
   def pick_best!

@@ -25,14 +25,21 @@ class Gem::Source
   end
 
   def <=>(other)
-    if !@uri
-      return 0 unless other.uri
-      return -1
+    case other
+    when Gem::Source::Local then
+      -1
+    when Gem::Source then
+      if !@uri
+        return 0 unless other.uri
+        return -1
+      end
+
+      return 1 if !other.uri
+
+      @uri.to_s <=> other.uri.to_s
+    else
+      nil
     end
-
-    return 1 if !other.uri
-
-    @uri.to_s <=> other.uri.to_s
   end
 
   include Comparable

@@ -25,10 +25,11 @@ module Gem
     end
   end
 
+  ##
   # Raised when a dependency requests a gem for which there is
   # no spec.
-  #
-  class UnsatisfiableDepedencyError < Gem::Exception
+
+  class UnsatisfiableDependencyError < Gem::Exception
     def initialize(dep)
       super "unable to find any gem matching dependency '#{dep}'"
 
@@ -37,6 +38,11 @@ module Gem
 
     attr_reader :dependency
   end
+
+  ##
+  # Backwards compatible typo'd exception class for early RubyGems 2.0.x
+
+  UnsatisfiableDepedencyError = UnsatisfiableDependencyError # :nodoc:
 
   # Raised when dependencies conflict and create the inability to
   # find a valid possible spec for a request.
@@ -174,6 +180,10 @@ module Gem
 
       def full_name
         "#{@name}-#{@version}"
+      end
+
+      def inspect # :nodoc:
+        '#<%s %s source %s>' % [ self.class.name, full_name, @source ]
       end
 
       def spec
@@ -369,6 +379,15 @@ module Gem
 
       attr_reader :spec, :request
 
+      def inspect # :nodoc:
+        others_possible = nil
+        others_possible = ' (others possible)' if @others_possible
+
+        '#<%s for %p from %s%s>' % [
+          self.class, @spec, @request, others_possible
+        ]
+      end
+
       # Indicate if this activation is one of a set of possible
       # requests for the same Dependency request.
       #
@@ -510,7 +529,7 @@ module Gem
 
           # Sort them so that we try the highest versions
           # first.
-          possible = possible.sort_by { |s| s.version }
+          possible = possible.sort_by { |s| [s.source, s.version] }
 
           # We track the conflicts seen so that we can report them
           # to help the user figure out how to fix the situation.
@@ -573,3 +592,6 @@ module Gem
     end
   end
 end
+
+require 'rubygems/dependency_resolver/installer_set'
+

@@ -203,6 +203,8 @@ class Gem::Dependency
     requirement.satisfied_by? version
   end
 
+  alias === =~
+
   # DOC: this method needs either documented or :nodoc'd
 
   def match? obj, version=nil

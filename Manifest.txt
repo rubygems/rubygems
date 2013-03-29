@@ -55,6 +55,7 @@ lib/rubygems/dependency.rb
 lib/rubygems/dependency_installer.rb
 lib/rubygems/dependency_list.rb
 lib/rubygems/dependency_resolver.rb
+lib/rubygems/dependency_resolver/installed_specification.rb
 lib/rubygems/dependency_resolver/installer_set.rb
 lib/rubygems/deprecate.rb
 lib/rubygems/doctor.rb
@@ -100,6 +101,7 @@ lib/rubygems/security/signer.rb
 lib/rubygems/security/trust_dir.rb
 lib/rubygems/server.rb
 lib/rubygems/source.rb
+lib/rubygems/source/installed.rb
 lib/rubygems/source_list.rb
 lib/rubygems/source_local.rb
 lib/rubygems/source_specific_file.rb

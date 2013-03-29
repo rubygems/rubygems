@@ -95,7 +95,7 @@ module Gem
       end
     end
 
-    def install_into(dir, force=true, options={}, &b)
+    def install_into dir, force = true, options = {}
       existing = force ? [] : specs_in(dir)
 
       dir = File.expand_path dir
@@ -104,7 +104,7 @@ module Gem
 
       sorted_requests.each do |req|
         if existing.find { |s| s.full_name == req.spec.full_name }
-          b.call req, nil if b
+          yield req, nil if block_given?
           next
         end
 
@@ -115,7 +115,7 @@ module Gem
 
         inst = Gem::Installer.new path, options
 
-        b.call req, inst if b
+        yield req, inst if block_given?
 
         inst.install
 
@@ -125,9 +125,9 @@ module Gem
       installed
     end
 
-    def install(options, &b)
+    def install options, &block
       if dir = options[:install_dir]
-        return install_into(dir, false, options, &b)
+        return install_into dir, false, options, &block
       end
 
       cache_dir = options[:cache_dir] || Gem.dir
@@ -136,7 +136,7 @@ module Gem
 
       sorted_requests.each do |req|
         if req.installed?
-          b.call req, nil if b
+          yield req, nil if block_given?
           next
         end
 
@@ -144,7 +144,7 @@ module Gem
 
         inst = Gem::Installer.new path, options
 
-        b.call req, inst if b
+        yield req, inst if block_given?
 
         specs << inst.install
       end

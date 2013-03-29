@@ -110,6 +110,11 @@ module Gem
 
         path = req.download(dir)
 
+        unless path then # already installed
+          yield req, nil if block_given?
+          next
+        end
+
         options[:install_dir] = dir
         options[:only_install_dir] = true
 

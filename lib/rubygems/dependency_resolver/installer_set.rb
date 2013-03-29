@@ -69,6 +69,10 @@ class Gem::DependencyResolver::InstallerSet
     res
   end
 
+  def inspect # :nodoc:
+    '#<%s domain: %s specs: %p>' % [ self.class, @domain, @specs.keys ]
+  end
+
   ##
   # Called from IndexSpecification to get a true Specification
   # object.

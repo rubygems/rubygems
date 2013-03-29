@@ -91,11 +91,12 @@ class Gem::AvailableSet
     f.source
   end
 
-  def to_request_set
+  def to_request_set development
     request_set = Gem::RequestSet.new
 
     each_spec do |spec|
       request_set.gem spec.name, "= #{spec.version}"
+      request_set.import spec.development_dependencies if development
     end
 
     request_set

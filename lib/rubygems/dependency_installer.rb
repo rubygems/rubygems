@@ -322,7 +322,7 @@ class Gem::DependencyInstaller
   def install dep_or_name, version = Gem::Requirement.default
     available_set_for dep_or_name, version
 
-    request_set = @available.to_request_set
+    request_set = @available.to_request_set @development
 
     installer_set = Gem::DependencyResolver::InstallerSet.new @domain
 
@@ -346,6 +346,7 @@ class Gem::DependencyInstaller
       @installed_gems << installer.spec
     end
 
+    @installed_gems.sort!
 
 #
 #    gather_dependencies

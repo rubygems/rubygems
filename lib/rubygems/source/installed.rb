@@ -17,5 +17,12 @@ class Gem::Source::Installed < Gem::Source
     end
   end
 
+  ##
+  # We don't need to download an installed gem
+
+  def download spec, path
+    nil
+  end
+
 end
 

@@ -31,7 +31,7 @@ module Gem
 
   class UnsatisfiableDependencyError < Gem::Exception
     def initialize(dep)
-      super "unable to find any gem matching dependency '#{dep}'"
+      super "Unable to resolve dependency: '#{dep.requester.request}' requires '#{dep}'"
 
       @dependency = dep
     end
@@ -540,7 +540,7 @@ module Gem
 
           unless @soft_missing
             # If there are none, then our work here is done.
-            raise UnsatisfiableDepedencyError.new(dep)
+            raise UnsatisfiableDependencyError.new(dep)
           end
         when 1
           # If there is one, then we just add it to specs

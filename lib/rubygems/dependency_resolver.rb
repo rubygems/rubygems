@@ -605,5 +605,6 @@ module Gem
   end
 end
 
+require 'rubygems/dependency_resolver/installed_specification'
 require 'rubygems/dependency_resolver/installer_set'
 

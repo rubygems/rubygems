@@ -6,10 +6,12 @@ class Gem::Source::Local < Gem::Source
   end
 
   ##
-  # Local sources sort before other sources
+  # Local sorts before Gem::Source and after Gem::Source::Installed
 
   def <=> other
     case other
+    when Gem::Source::Installed then
+      -1
     when Gem::Source::Local then
       0
     when Gem::Source then

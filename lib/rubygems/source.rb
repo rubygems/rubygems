@@ -26,7 +26,7 @@ class Gem::Source
 
   def <=>(other)
     case other
-    when Gem::Source::Local then
+    when Gem::Source::Installed, Gem::Source::Local then
       -1
     when Gem::Source then
       if !@uri
@@ -149,3 +149,5 @@ class Gem::Source
     fetcher.download spec, @uri.to_s, dir
   end
 end
+
+require 'rubygems/source/installed'

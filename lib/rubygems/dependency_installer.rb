@@ -342,7 +342,7 @@ class Gem::DependencyInstaller
         :security_policy     => @security_policy,
         :user_install        => @user_install,
         :wrappers            => @wrappers do |_, installer|
-      @installed_gems << installer.spec
+      @installed_gems << installer.spec if installer
     end
 
     @installed_gems.sort!

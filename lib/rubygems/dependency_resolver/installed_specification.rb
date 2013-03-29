@@ -25,7 +25,7 @@ class Gem::DependencyResolver::InstalledSpecification
   end
 
   def source
-    @source ||= Gem::Source::Installed.new @spec
+    @source ||= Gem::Source::Installed.new
   end
 
   def version

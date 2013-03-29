@@ -1,7 +1,6 @@
 class Gem::Source::Installed < Gem::Source
 
-  def initialize spec
-    @spec = spec
+  def initialize
   end
 
   ##

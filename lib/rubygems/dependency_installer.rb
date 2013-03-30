@@ -319,14 +319,7 @@ class Gem::DependencyInstaller
   # separately.
 
   def install dep_or_name, version = Gem::Requirement.default
-    available_set_for dep_or_name, version
-
-    request_set = @available.to_request_set install_development_deps
-
-    installer_set = Gem::DependencyResolver::InstallerSet.new @domain
-
-    request_set.soft_missing = @force
-    request_set.resolve installer_set
+    request_set = resolve_dependencies dep_or_name, version
 
     @installed_gems = []
 
@@ -435,4 +428,23 @@ class Gem::DependencyInstaller
     end
     yield unless fork_happened
   end
+
+  def resolve_dependencies dep_or_name, version
+    available_set_for dep_or_name, version
+
+    request_set = @available.to_request_set install_development_deps
+
+    installer_set = Gem::DependencyResolver::InstallerSet.new @domain
+
+    if @ignore_dependencies then
+      request_set.soft_missing = true
+      request_set.resolve_current
+    else
+      request_set.soft_missing = @force
+      request_set.resolve installer_set
+    end
+
+    request_set
+  end
+
 end

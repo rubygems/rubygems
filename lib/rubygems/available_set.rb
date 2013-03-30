@@ -91,12 +91,22 @@ class Gem::AvailableSet
     f.source
   end
 
-  def to_request_set development
+  ##
+  # Converts this AvailableSet into a RequestSet that can be used to install
+  # gems.
+  #
+  # If +development+ is :none then no development dependencies are installed.
+  # Other options are :shallow for only direct development dependencies of the
+  # gems in this set or :all for all development dependencies.
+
+  def to_request_set development = :none
     request_set = Gem::RequestSet.new
+    request_set.development = :all == development
 
     each_spec do |spec|
-      request_set.gem spec.name, "= #{spec.version}"
-      request_set.import spec.development_dependencies if development
+      request_set.gem spec.name, spec.version
+      request_set.import spec.development_dependencies if
+        :shallow == development
     end
 
     request_set

@@ -260,6 +260,8 @@ module Gem
       end
     end
 
+    attr_accessor :development
+
     # Create DependencyResolver object which will resolve
     # the tree starting with +needed+ Depedency objects.
     #
@@ -271,9 +273,10 @@ module Gem
       @set = set || IndexSet.new # Allow nil to mean IndexSet
       @needed = needed
 
-      @conflicts = nil
+      @conflicts    = nil
+      @development  = false
+      @missing      = []
       @soft_missing = false
-      @missing = []
     end
 
     # When a missing dependency, don't stop. Just go on and record
@@ -464,7 +467,7 @@ module Gem
     def requests(s, act)
       reqs = []
       s.dependencies.each do |d|
-        next unless d.type == :runtime
+        next if d.type == :development and not @development
         reqs << DependencyRequest.new(d, act)
       end
 

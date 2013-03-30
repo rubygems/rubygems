@@ -12,6 +12,7 @@ module Gem
 
     def initialize(*deps)
       @dependencies = deps
+      @development  = false
       @soft_missing = false
 
       yield self if block_given?
@@ -21,6 +22,8 @@ module Gem
     attr_accessor :soft_missing
 
     attr_reader :dependencies
+
+    attr_accessor :development
 
     # Declare that a gem of name +name+ with +reqs+ requirements
     # is needed.
@@ -38,10 +41,12 @@ module Gem
     # Resolve the requested dependencies and return an Array of
     # Specification objects to be activated.
     #
-    def resolve(set=nil)
-      r = Gem::DependencyResolver.new(@dependencies, set)
-      r.soft_missing = @soft_missing
-      @requests = r.resolve
+    def resolve set = nil
+      resolver = Gem::DependencyResolver.new @dependencies, set
+      resolver.development  = @development
+      resolver.soft_missing = @soft_missing
+
+      @requests = resolver.resolve
     end
 
     # Resolve the requested dependencies against the gems
@@ -69,7 +74,7 @@ module Gem
 
     def tsort_each_child(node)
       node.spec.dependencies.each do |dep|
-        next if dep.type == :development
+        next if dep.type == :development and not @development
 
         match = @requests.find { |r| dep.match? r.spec.name, r.spec.version }
         if match

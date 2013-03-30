@@ -322,7 +322,7 @@ class Gem::DependencyInstaller
   def install dep_or_name, version = Gem::Requirement.default
     available_set_for dep_or_name, version
 
-    request_set = @available.to_request_set @development
+    request_set = @available.to_request_set install_development_deps
 
     installer_set = Gem::DependencyResolver::InstallerSet.new @domain
 
@@ -410,6 +410,16 @@ class Gem::DependencyInstaller
     end unless Gem.done_installing_hooks.empty?
 
     @installed_gems
+  end
+
+  def install_development_deps
+    if @development and @dev_shallow then
+      :shallow
+    elsif @development then
+      :all
+    else
+      :none
+    end
   end
 
   def in_background what

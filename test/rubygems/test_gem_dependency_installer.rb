@@ -285,18 +285,17 @@ class TestGemDependencyInstaller < Gem::TestCase
     Gem::Specification.reset
 
     FileUtils.mv @a1_gem, @tempdir
-    FileUtils.mv a2_gem, @tempdir # not in index
+    FileUtils.mv  a2_gem, @tempdir # not in index
     FileUtils.mv @b1_gem, @tempdir
-    FileUtils.mv a3_gem, @tempdir
-
-    inst = nil
+    FileUtils.mv  a3_gem, @tempdir
 
     Dir.chdir @tempdir do
-      inst = Gem::DependencyInstaller.new
-      inst.install 'a', Gem::Requirement.create("= 2")
+      Gem::DependencyInstaller.new.install 'a', req("= 2")
     end
 
     FileUtils.rm File.join(@tempdir, a2.file_name)
+
+    inst = nil
 
     Dir.chdir @tempdir do
       inst = Gem::DependencyInstaller.new

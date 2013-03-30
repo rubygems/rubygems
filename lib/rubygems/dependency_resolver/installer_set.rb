@@ -42,7 +42,7 @@ class Gem::DependencyResolver::InstallerSet
     dep  = req.dependency
     name = dep.name
 
-    Gem::Specification.grep dep do |gemspec|
+    dep.matching_specs.each do |gemspec|
       res << Gem::DependencyResolver::InstalledSpecification.new(self, gemspec)
     end
 

@@ -16,17 +16,9 @@ class Gem::DependencyResolver::InstallerSet
     @f = Gem::SpecFetcher.fetcher
 
     @all = Hash.new { |h,k| h[k] = [] }
-
-    list, _ = @f.available_specs(:released)
-
-    list.each do |uri, specs|
-      specs.each do |n|
-        @all[n.name] << [uri, n]
-      end
-    end
-
     @always_install      = []
     @ignore_dependencies = false
+    @loaded_remote_specs = []
     @specs               = {}
   end
 
@@ -74,6 +66,8 @@ class Gem::DependencyResolver::InstallerSet
     end
 
     if consider_remote? then
+      load_remote_specs dep
+
       @all[name].each do |source, n|
         if dep.match? n then
           res << Gem::DependencyResolver::IndexSpecification.new(
@@ -87,6 +81,27 @@ class Gem::DependencyResolver::InstallerSet
 
   def inspect # :nodoc:
     '#<%s domain: %s specs: %p>' % [ self.class, @domain, @specs.keys ]
+  end
+
+  ##
+  # Loads remote prerelease specs if +dep+ is a prerelease dependency
+
+  def load_remote_specs dep
+    types = [:released]
+    types << :prerelease if dep.prerelease?
+
+    types.each do |type|
+      next if @loaded_remote_specs.include? type
+      @loaded_remote_specs << type
+
+      list, = @f.available_specs type
+
+      list.each do |uri, specs|
+        specs.each do |n|
+          @all[n.name] << [uri, n]
+        end
+      end
+    end
   end
 
   ##

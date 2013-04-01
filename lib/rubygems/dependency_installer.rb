@@ -323,7 +323,8 @@ class Gem::DependencyInstaller
 
     @installed_gems = []
 
-    installed = request_set.install \
+    installed =
+      request_set.install \
         :bin_dir             => @bin_dir,
         :build_args          => @build_args,
         #:development         => is_dev,
@@ -433,17 +434,17 @@ class Gem::DependencyInstaller
     available_set_for dep_or_name, version
 
     request_set = @available.to_request_set install_development_deps
+    request_set.soft_missing = @force
+
+    installer_set = Gem::DependencyResolver::InstallerSet.new @domain
+    installer_set.always_install.concat request_set.always_install
 
     if @ignore_dependencies then
+      installer_set.ignore_dependencies = true
       request_set.soft_missing = true
-      request_set.resolve_current
-    else
-      installer_set = Gem::DependencyResolver::InstallerSet.new @domain
-      installer_set.always_install.concat request_set.always_install
-
-      request_set.soft_missing = @force
-      request_set.resolve installer_set
     end
+
+    request_set.resolve installer_set
 
     request_set
   end

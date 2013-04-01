@@ -172,7 +172,8 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv @b1_gem, @tempdir
-    FileUtils.mv e1_gem, @tempdir
+    FileUtils.mv  e1_gem, @tempdir
+
     inst = nil
 
     Dir.chdir @tempdir do
@@ -180,12 +181,15 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b'
     end
 
+    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name },
+                 'sanity check'
+
     Dir.chdir @tempdir do
       inst = Gem::DependencyInstaller.new
       inst.install 'e'
     end
 
-    assert_equal %w[e-1 a-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1 e-1], inst.installed_gems.map { |s| s.full_name }
   end
 
   def test_install_ignore_satified_deps

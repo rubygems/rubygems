@@ -1,9 +1,14 @@
 class Gem::DependencyResolver::InstallerSet
 
   ##
-  # Gem::Specification objects that must always be installed.
+  # List of Gem::Specification objects that must always be installed.
 
   attr_reader :always_install
+
+  ##
+  # Only install gems in the always_install list
+
+  attr_accessor :ignore_dependencies
 
   def initialize domain
     @domain = domain
@@ -20,8 +25,9 @@ class Gem::DependencyResolver::InstallerSet
       end
     end
 
-    @always_install = []
-    @specs          = {}
+    @always_install      = []
+    @ignore_dependencies = false
+    @specs               = {}
   end
 
   ##
@@ -46,6 +52,10 @@ class Gem::DependencyResolver::InstallerSet
     res = []
 
     dep  = req.dependency
+
+    return res if @ignore_dependencies and
+              @always_install.none? { |spec| dep.matches_spec? spec }
+
     name = dep.name
 
     dep.matching_specs.each do |gemspec|

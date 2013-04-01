@@ -1,5 +1,10 @@
 class Gem::DependencyResolver::InstallerSet
 
+  ##
+  # Gem::Specification objects that must always be installed.
+
+  attr_reader :always_install
+
   def initialize domain
     @domain = domain
 
@@ -15,7 +20,8 @@ class Gem::DependencyResolver::InstallerSet
       end
     end
 
-    @specs = {}
+    @always_install = []
+    @specs          = {}
   end
 
   ##
@@ -43,6 +49,8 @@ class Gem::DependencyResolver::InstallerSet
     name = dep.name
 
     dep.matching_specs.each do |gemspec|
+      next if @always_install.include? gemspec
+
       res << Gem::DependencyResolver::InstalledSpecification.new(self, gemspec)
     end
 

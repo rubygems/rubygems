@@ -109,7 +109,6 @@ module Gem
 
     def install_into dir, force = true, options = {}
       existing = force ? [] : specs_in(dir)
-
       existing.delete_if { |s| @always_install.include? s }
 
       dir = File.expand_path dir

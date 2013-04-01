@@ -199,25 +199,33 @@ class TestGemDependencyInstaller < Gem::TestCase
       s.add_dependency 'b'
     end
 
+    _, b2_gem = util_gem 'b', '2' do |s|
+      s.add_dependency 'a'
+    end
+
     util_clear_gems
 
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv @b1_gem, @tempdir
-    FileUtils.mv e1_gem, @tempdir
-
-    Dir.chdir @tempdir do
-      i = Gem::DependencyInstaller.new :ignore_dependencies => true
-      i.install 'b'
-    end
+    FileUtils.mv  b2_gem, @tempdir
+    FileUtils.mv  e1_gem, @tempdir
 
     inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new :ignore_dependencies => true
+      inst.install 'b', req('= 1')
+    end
+
+    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name },
+                 'sanity check'
 
     Dir.chdir @tempdir do
       inst = Gem::DependencyInstaller.new :minimal_deps => true
       inst.install 'e'
     end
 
-    assert_equal %w[e-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1 e-1], inst.installed_gems.map { |s| s.full_name }
   end
 
   def test_install_cache_dir

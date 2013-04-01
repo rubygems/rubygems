@@ -323,19 +323,20 @@ class Gem::DependencyInstaller
 
     @installed_gems = []
 
-    installed =
-      request_set.install \
-        :bin_dir             => @bin_dir,
-        :build_args          => @build_args,
-        #:development         => is_dev,
-        :env_shebang         => @env_shebang,
-        :force               => @force,
-        :format_executable   => @format_executable,
-        :ignore_dependencies => @ignore_dependencies,
-        :install_dir         => @install_dir,
-        :security_policy     => @security_policy,
-        :user_install        => @user_install,
-        :wrappers            => @wrappers do |_, installer|
+    options = {
+      :bin_dir             => @bin_dir,
+      :build_args          => @build_args,
+      :env_shebang         => @env_shebang,
+      :force               => @force,
+      :format_executable   => @format_executable,
+      :ignore_dependencies => @ignore_dependencies,
+      :install_dir         => @install_dir,
+      :security_policy     => @security_policy,
+      :user_install        => @user_install,
+      :wrappers            => @wrappers,
+    }
+
+    installed = request_set.install options do |_, installer|
       @installed_gems << installer.spec if installer
     end
 

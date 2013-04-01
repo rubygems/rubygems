@@ -74,9 +74,11 @@ class Gem::NameTuple
     [@name, @version, @platform]
   end
 
-  def to_s
+  def inspect # :nodoc:
     "#<Gem::NameTuple #{@name}, #{@version}, #{@platform}>"
   end
+
+  alias to_s inspect # :nodoc:
 
   def <=> other
     to_a <=> other.to_a

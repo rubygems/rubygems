@@ -21,6 +21,10 @@ class Gem::Source::Local < Gem::Source
     end
   end
 
+  def inspect # :nodoc:
+    "#<%s specs: %p>" % [self.class, @specs.keys]
+  end
+
   def load_specs(type)
     names = []
 

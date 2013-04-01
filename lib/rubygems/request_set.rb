@@ -10,13 +10,10 @@ module Gem
 
     include TSort
 
-    def initialize(*deps)
-      @dependencies = deps
-      @development  = false
-      @soft_missing = false
+    ##
+    # Array of gems to install even if already installed
 
-      yield self if block_given?
-    end
+    attr_reader :always_install
 
     # Treat missing dependencies as silent errors
     attr_accessor :soft_missing
@@ -24,6 +21,16 @@ module Gem
     attr_reader :dependencies
 
     attr_accessor :development
+
+    def initialize(*deps)
+      @dependencies = deps
+
+      @always_install = []
+      @development    = false
+      @soft_missing   = false
+
+      yield self if block_given?
+    end
 
     # Declare that a gem of name +name+ with +reqs+ requirements
     # is needed.
@@ -102,6 +109,8 @@ module Gem
 
     def install_into dir, force = true, options = {}
       existing = force ? [] : specs_in(dir)
+
+      existing.delete_if { |s| @always_install.include? s }
 
       dir = File.expand_path dir
 

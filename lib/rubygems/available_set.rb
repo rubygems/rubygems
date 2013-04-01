@@ -104,6 +104,8 @@ class Gem::AvailableSet
     request_set.development = :all == development
 
     each_spec do |spec|
+      request_set.always_install << spec
+
       request_set.gem spec.name, spec.version
       request_set.import spec.development_dependencies if
         :shallow == development

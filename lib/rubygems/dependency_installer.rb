@@ -435,12 +435,13 @@ class Gem::DependencyInstaller
 
     request_set = @available.to_request_set install_development_deps
 
-    installer_set = Gem::DependencyResolver::InstallerSet.new @domain
-
     if @ignore_dependencies then
       request_set.soft_missing = true
       request_set.resolve_current
     else
+      installer_set = Gem::DependencyResolver::InstallerSet.new @domain
+      installer_set.always_install.concat request_set.always_install
+
       request_set.soft_missing = @force
       request_set.resolve installer_set
     end

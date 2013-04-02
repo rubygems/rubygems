@@ -338,7 +338,7 @@ class Gem::DependencyInstaller
     }
     options[:install_dir] = @install_dir if @only_install_dir
 
-    installed = request_set.install options do |_, installer|
+    request_set.install options do |_, installer|
       @installed_gems << installer.spec if installer
     end
 

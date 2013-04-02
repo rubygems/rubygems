@@ -57,21 +57,21 @@ class Gem::DependencyResolver::InstallerSet
     end
 
     if consider_local? then
-      source = Gem::Source::Local.new
+      local_source = Gem::Source::Local.new
 
       if spec = source.find_gem(name, dep.requirement) then
         res << Gem::DependencyResolver::IndexSpecification.new(
-          self, spec.name, spec.version, source, spec.platform)
+          self, spec.name, spec.version, local_source, spec.platform)
       end
     end
 
     if consider_remote? then
       load_remote_specs dep
 
-      @all[name].each do |source, n|
+      @all[name].each do |remote_source, n|
         if dep.match? n then
           res << Gem::DependencyResolver::IndexSpecification.new(
-            self, n.name, n.version, source, n.platform)
+            self, n.name, n.version, remote_source, n.platform)
         end
       end
     end

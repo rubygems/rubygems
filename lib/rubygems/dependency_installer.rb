@@ -58,6 +58,7 @@ class Gem::DependencyInstaller
   # :build_args:: See Gem::Installer::new
 
   def initialize(options = {})
+    @only_install_dir = !!options[:install_dir]
     @install_dir = options[:install_dir] || Gem.dir
 
     if options[:install_dir] then
@@ -331,11 +332,11 @@ class Gem::DependencyInstaller
       :force               => @force,
       :format_executable   => @format_executable,
       :ignore_dependencies => @ignore_dependencies,
-      :install_dir         => @install_dir,
       :security_policy     => @security_policy,
       :user_install        => @user_install,
       :wrappers            => @wrappers,
     }
+    options[:install_dir] = @install_dir if @only_install_dir
 
     installed = request_set.install options do |_, installer|
       @installed_gems << installer.spec if installer

@@ -59,7 +59,7 @@ class Gem::DependencyResolver::InstallerSet
     if consider_local? then
       local_source = Gem::Source::Local.new
 
-      if spec = source.find_gem(name, dep.requirement) then
+      if spec = local_source.find_gem(name, dep.requirement) then
         res << Gem::DependencyResolver::IndexSpecification.new(
           self, spec.name, spec.version, local_source, spec.platform)
       end

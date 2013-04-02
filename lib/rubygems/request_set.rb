@@ -153,7 +153,8 @@ module Gem
       specs = []
 
       sorted_requests.each do |req|
-        if req.installed?
+        if req.installed? and
+           @always_install.none? { |spec| spec == req.spec.spec } then
           yield req, nil if block_given?
           next
         end

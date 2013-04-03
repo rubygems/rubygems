@@ -971,7 +971,9 @@ Also, a list:
 
   class StaticSet
     def initialize(specs)
-      @specs = specs.sort_by { |s| s.full_name }
+      @specs = specs.sort_by { |s| s.full_name }.map { |s|
+        Gem::DependencyResolver::InstalledSpecification.new self, s
+      }
     end
 
     def find_spec(dep)

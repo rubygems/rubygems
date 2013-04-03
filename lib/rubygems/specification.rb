@@ -2096,6 +2096,13 @@ class Gem::Specification
   end
 
   ##
+  # Used by Gem::DependencyResolver to order Gem::Specification objects
+
+  def source # :nodoc:
+    self
+  end
+
+  ##
   # Returns the full path to the directory containing this spec's
   # gemspec file. eg: /usr/local/lib/ruby/gems/1.8/specifications
 

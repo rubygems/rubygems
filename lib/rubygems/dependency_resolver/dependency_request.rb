@@ -2,7 +2,7 @@
 # Used Internally. Wraps a Dependency object to also track which spec
 # contained the Dependency.
 
-class DependencyRequest
+class Gem::DependencyResolver::DependencyRequest
 
   attr_reader :dependency
 
@@ -37,5 +37,4 @@ class DependencyRequest
   end
 
 end
-
 

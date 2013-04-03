@@ -1,4 +1,4 @@
-class ComposedSet
+class Gem::DependencyResolver::ComposedSet
 
   def initialize *sets
     @sets = sets

@@ -303,35 +303,6 @@ module Gem
       res
     end
 
-    # Used internally to indicate that a dependency conflicted
-    # with a spec that would be activated.
-    #
-    class DependencyConflict
-      def initialize(dependency, activated, failed_dep=dependency)
-        @dependency = dependency
-        @activated = activated
-        @failed_dep = failed_dep
-      end
-
-      attr_reader :dependency, :activated
-
-      # Return the Specification that listed the dependency
-      #
-      def requester
-        @failed_dep.requester
-      end
-
-      def for_spec?(spec)
-        @dependency.name == spec.name
-      end
-
-      # Return the 2 dependency objects that conflicted
-      #
-      def conflicting_dependencies
-        [@failed_dep.dependency, @activated.request.dependency]
-      end
-    end
-
     # Used Internally. Wraps a Depedency object to also track
     # which spec contained the Dependency.
     #
@@ -599,6 +570,7 @@ module Gem
 end
 
 require 'rubygems/dependency_resolver/api_specification'
+require 'rubygems/dependency_resolver/dependency_conflict'
 require 'rubygems/dependency_resolver/installed_specification'
 require 'rubygems/dependency_resolver/installer_set'
 

@@ -6,7 +6,7 @@ require 'rubygems/installer'
 require 'rubygems/spec_fetcher'
 require 'rubygems/user_interaction'
 require 'rubygems/source/local'
-require 'rubygems/source_specific_file'
+require 'rubygems/source/specific_file'
 require 'rubygems/available_set'
 
 ##

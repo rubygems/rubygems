@@ -58,6 +58,19 @@ class Gem::DependencyResolver
     @soft_missing = false
   end
 
+  def requests s, act
+    reqs = []
+
+    s.dependencies.each do |d|
+      next if d.type == :development and not @development
+      reqs << Gem::DependencyResolver::DependencyRequest.new(d, act)
+    end
+
+    @set.prefetch reqs
+
+    reqs
+  end
+
   ##
   # Proceed with resolution! Returns an array of ActivationRequest objects.
 
@@ -74,19 +87,6 @@ class Gem::DependencyResolver
       res.kind_of? Gem::DependencyResolver::DependencyConflict
 
     res
-  end
-
-  def requests s, act
-    reqs = []
-
-    s.dependencies.each do |d|
-      next if d.type == :development and not @development
-      reqs << Gem::DependencyResolver::DependencyRequest.new(d, act)
-    end
-
-    @set.prefetch reqs
-
-    reqs
   end
 
   ##

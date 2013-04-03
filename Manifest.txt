@@ -55,6 +55,7 @@ lib/rubygems/dependency.rb
 lib/rubygems/dependency_installer.rb
 lib/rubygems/dependency_list.rb
 lib/rubygems/dependency_resolver.rb
+lib/rubygems/dependency_resolver/activation_request.rb
 lib/rubygems/dependency_resolver/api_specification.rb
 lib/rubygems/dependency_resolver/dependency_conflict.rb
 lib/rubygems/dependency_resolver/dependency_request.rb

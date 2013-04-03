@@ -58,6 +58,7 @@ lib/rubygems/dependency_resolver.rb
 lib/rubygems/dependency_resolver/activation_request.rb
 lib/rubygems/dependency_resolver/api_set.rb
 lib/rubygems/dependency_resolver/api_specification.rb
+lib/rubygems/dependency_resolver/current_set.rb
 lib/rubygems/dependency_resolver/dependency_conflict.rb
 lib/rubygems/dependency_resolver/dependency_request.rb
 lib/rubygems/dependency_resolver/index_set.rb

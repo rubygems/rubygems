@@ -103,6 +103,7 @@ lib/rubygems/server.rb
 lib/rubygems/source.rb
 lib/rubygems/source/installed.rb
 lib/rubygems/source/local.rb
+lib/rubygems/source/specific_file.rb
 lib/rubygems/source_list.rb
 lib/rubygems/source_local.rb
 lib/rubygems/source_specific_file.rb

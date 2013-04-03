@@ -170,41 +170,7 @@ module Gem
 
       specs
     end
-
-    # A semi-compatible DSL for Bundler's Gemfile format
-    #
-    class GemDepedencyAPI
-      def initialize(set, path)
-        @set = set
-        @path = path
-      end
-
-      def load
-        instance_eval File.read(@path).untaint, @path, 1
-      end
-
-      # DSL
-
-      def source(url)
-      end
-
-      def gem(name, *reqs)
-        # Ignore the opts for now.
-        reqs.pop if reqs.last.kind_of?(Hash)
-
-        @set.gem name, *reqs
-      end
-
-      def platform(what)
-        if what == :ruby
-          yield
-        end
-      end
-
-      alias_method :platforms, :platform
-
-      def group(*what)
-      end
-    end
   end
 end
+
+require 'rubygems/request_set/gem_dependency_api'

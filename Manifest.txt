@@ -102,6 +102,7 @@ lib/rubygems/psych_tree.rb
 lib/rubygems/rdoc.rb
 lib/rubygems/remote_fetcher.rb
 lib/rubygems/request_set.rb
+lib/rubygems/request_set/gem_dependency_api.rb
 lib/rubygems/requirement.rb
 lib/rubygems/security.rb
 lib/rubygems/security/policies.rb

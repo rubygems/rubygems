@@ -177,7 +177,8 @@ class TestGemDependencyResolver < Gem::TestCase
       r.resolve
     end
 
-    assert_equal "unable to find any gem matching dependency 'a (>= 0)'", e.message
+    assert_equal "Unable to resolve dependency: (unknown) requires a (>= 0)",
+                 e.message
 
     assert_equal "a (>= 0)", e.dependency.to_s
   end
@@ -215,7 +216,7 @@ class TestGemDependencyResolver < Gem::TestCase
       r.resolve
     end
 
-    assert_equal "detected 1 conflict with dependency 'c (>= 2)'", e.message
+    assert_equal "detected 1 conflict with dependency c (>= 2)", e.message
 
     assert_equal "c (>= 2)", e.dependency.to_s
 

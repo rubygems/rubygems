@@ -31,7 +31,9 @@ module Gem
 
   class UnsatisfiableDependencyError < Gem::Exception
     def initialize(dep)
-      super "Unable to resolve dependency: '#{dep.requester.request}' requires '#{dep}'"
+      requester = dep.requester ? dep.requester.request : '(unknown)'
+
+      super "Unable to resolve dependency: #{requester} requires #{dep}"
 
       @dependency = dep
     end
@@ -50,7 +52,7 @@ module Gem
   class ImpossibleDependenciesError < Gem::Exception
     def initialize(request, conflicts)
       s = conflicts.size == 1 ? "" : "s"
-      super "detected #{conflicts.size} conflict#{s} with dependency '#{request.dependency}'"
+      super "detected #{conflicts.size} conflict#{s} with dependency #{request.dependency}"
       @request = request
       @conflicts = conflicts
     end

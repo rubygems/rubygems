@@ -433,9 +433,9 @@ class Gem::DependencyInstaller
   end
 
   def resolve_dependencies dep_or_name, version
-    available_set_for dep_or_name, version
+    as = available_set_for dep_or_name, version
 
-    request_set = @available.to_request_set install_development_deps
+    request_set = as.to_request_set install_development_deps
     request_set.soft_missing = @force
 
     installer_set = Gem::DependencyResolver::InstallerSet.new @domain
@@ -446,7 +446,7 @@ class Gem::DependencyInstaller
       request_set.soft_missing = true
     end
 
-    request_set.resolve installer_set
+    request_set.resolve Gem::DependencyResolver.compose_sets(as, installer_set)
 
     request_set
   end

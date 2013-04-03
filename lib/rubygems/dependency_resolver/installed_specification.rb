@@ -2,9 +2,9 @@ class Gem::DependencyResolver::InstalledSpecification
 
   attr_reader :spec
 
-  def initialize set, spec
+  def initialize set, spec, source=nil
     @set    = set
-    @source = nil
+    @source = source
     @spec   = spec
   end
 

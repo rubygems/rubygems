@@ -114,6 +114,26 @@ class Gem::AvailableSet
     request_set
   end
 
+  ##
+  #
+  # Used by the DependencyResolver, the protocol to use a AvailableSet as a
+  # search Set.
+
+  def find_all(req)
+    dep = req.dependency
+
+    match = @set.find_all do |t|
+      dep.matches_spec? t.spec
+    end
+
+    match.map do |t|
+      Gem::DependencyResolver::InstalledSpecification.new(self, t.spec, t.source)
+    end
+  end
+
+  def prefetch(reqs)
+  end
+
   def pick_best!
     return self if empty?
 

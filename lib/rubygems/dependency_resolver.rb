@@ -71,19 +71,6 @@ module Gem
   #
   class DependencyResolver
 
-    # A set which represents the installed gems. Respects
-    # all the normal settings that control where to look
-    # for installed gems.
-    #
-    class CurrentSet
-      def find_all(req)
-        req.dependency.matching_specs
-      end
-
-      def prefetch(gems)
-      end
-    end
-
     class ComposedSet
       def initialize(*sets)
         @sets = sets
@@ -304,6 +291,7 @@ end
 require 'rubygems/dependency_resolver/api_set'
 require 'rubygems/dependency_resolver/api_specification'
 require 'rubygems/dependency_resolver/activation_request'
+require 'rubygems/dependency_resolver/current_set'
 require 'rubygems/dependency_resolver/dependency_conflict'
 require 'rubygems/dependency_resolver/dependency_request'
 require 'rubygems/dependency_resolver/index_set'

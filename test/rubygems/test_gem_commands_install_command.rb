@@ -632,67 +632,6 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal x, e
   end
 
-  def test_execute_installs_dependencies
-    r, r_gem = util_gem 'r', '1', 'q' => '= 1'
-    q, q_gem = util_gem 'q', '1'
-
-    util_setup_fake_fetcher
-    util_setup_spec_fetcher r, q
-
-    Gem::Specification.reset
-
-    @fetcher.data["#{@gem_repo}gems/#{q.file_name}"] = read_binary(q_gem)
-    @fetcher.data["#{@gem_repo}gems/#{r.file_name}"] = read_binary(r_gem)
-
-    @cmd.options[:args] = ["r"]
-
-    e = nil
-    use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
-        capture_io do
-          @cmd.execute
-        end
-      end
-    end
-
-    out = @ui.output.split "\n"
-    assert_equal "2 gems installed", out.shift
-    assert out.empty?, out.inspect
-
-    assert_equal %w[q-1 r-1], @cmd.installed_specs.map { |spec| spec.full_name }
-
-    assert_equal 0, e.exit_code
-  end
-
-  def test_execute_satisfy_deps_of_local_from_sources
-    r, r_gem = util_gem 'r', '1', 'q' => '= 1'
-    q, q_gem = util_gem 'q', '1'
-
-    util_setup_fake_fetcher
-    util_setup_spec_fetcher r, q
-
-    Gem::Specification.reset
-
-    @fetcher.data["#{@gem_repo}gems/#{q.file_name}"] = read_binary(q_gem)
-
-    @cmd.options[:args] = [r_gem]
-
-    use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
-        capture_io do
-          @cmd.execute
-        end
-      end
-      assert_equal 0, e.exit_code
-    end
-
-    assert_equal %w[q-1 r-1], @cmd.installed_specs.map { |spec| spec.full_name }
-
-    out = @ui.output.split "\n"
-    assert_equal "2 gems installed", out.shift
-    assert out.empty?, out.inspect
-  end
-
   def test_execute_uses_from_a_gemdeps
     util_setup_fake_fetcher
     util_setup_spec_fetcher

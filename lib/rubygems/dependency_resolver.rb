@@ -71,41 +71,6 @@ module Gem
   #
   class DependencyResolver
 
-    # Represents a possible Specification object returned
-    # from IndexSet. Used to delay needed to download full
-    # Specification objects when only the +name+ and +version+
-    # are needed.
-    #
-    class IndexSpecification
-      def initialize(set, name, version, source, plat)
-        @set = set
-        @name = name
-        @version = version
-        @source = source
-        @platform = plat
-
-        @spec = nil
-      end
-
-      attr_reader :name, :version, :source
-
-      def full_name
-        "#{@name}-#{@version}"
-      end
-
-      def inspect # :nodoc:
-        '#<%s %s source %s>' % [ self.class.name, full_name, @source ]
-      end
-
-      def spec
-        @spec ||= @set.load_spec(@name, @version, @source)
-      end
-
-      def dependencies
-        spec.dependencies
-      end
-    end
-
     # The global rubygems pool represented via the traditional
     # source index.
     #
@@ -393,6 +358,7 @@ require 'rubygems/dependency_resolver/api_specification'
 require 'rubygems/dependency_resolver/activation_request'
 require 'rubygems/dependency_resolver/dependency_conflict'
 require 'rubygems/dependency_resolver/dependency_request'
+require 'rubygems/dependency_resolver/index_specification'
 require 'rubygems/dependency_resolver/installed_specification'
 require 'rubygems/dependency_resolver/installer_set'
 

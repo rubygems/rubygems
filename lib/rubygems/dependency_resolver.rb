@@ -303,93 +303,6 @@ module Gem
       res
     end
 
-    # Specifies a Specification object that should be activated.
-    # Also contains a dependency that was used to introduce this
-    # activation.
-    #
-    class ActivationRequest
-      def initialize(spec, req, others_possible=true)
-        @spec = spec
-        @request = req
-        @others_possible = others_possible
-      end
-
-      attr_reader :spec, :request
-
-      def inspect # :nodoc:
-        others_possible = nil
-        others_possible = ' (others possible)' if @others_possible
-
-        '#<%s for %p from %s%s>' % [
-          self.class, @spec, @request, others_possible
-        ]
-      end
-
-      # Indicate if this activation is one of a set of possible
-      # requests for the same Dependency request.
-      #
-      def others_possible?
-        @others_possible
-      end
-
-      # Return the ActivationRequest that contained the dependency
-      # that we were activated for.
-      #
-      def parent
-        @request.requester
-      end
-
-      def name
-        @spec.name
-      end
-
-      def full_name
-        @spec.full_name
-      end
-
-      def version
-        @spec.version
-      end
-
-      def full_spec
-        Gem::Specification === @spec ? @spec : @spec.spec
-      end
-
-      def download(path)
-        if @spec.respond_to? :source
-          source = @spec.source
-        else
-          source = Gem.sources.first
-        end
-
-        Gem.ensure_gem_subdirectories path
-
-        source.download full_spec, path
-      end
-
-      def ==(other)
-        case other
-        when Gem::Specification
-          @spec == other
-        when ActivationRequest
-          @spec == other.spec && @request == other.request
-        else
-          false
-        end
-      end
-
-      ##
-      # Indicates if the requested gem has already been installed.
-
-      def installed?
-        this_spec = full_spec
-
-        Gem::Specification.any? do |s|
-          s == this_spec
-        end
-      end
-    end
-
     def requests(s, act)
       reqs = []
       s.dependencies.each do |d|
@@ -535,6 +448,7 @@ module Gem
 end
 
 require 'rubygems/dependency_resolver/api_specification'
+require 'rubygems/dependency_resolver/activation_request'
 require 'rubygems/dependency_resolver/dependency_conflict'
 require 'rubygems/dependency_resolver/dependency_request'
 require 'rubygems/dependency_resolver/installed_specification'

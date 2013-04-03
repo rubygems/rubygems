@@ -303,41 +303,6 @@ module Gem
       res
     end
 
-    # Used Internally. Wraps a Depedency object to also track
-    # which spec contained the Dependency.
-    #
-    class DependencyRequest
-      def initialize(dep, act)
-        @dependency = dep
-        @requester = act
-      end
-
-      attr_reader :dependency, :requester
-
-      def name
-        @dependency.name
-      end
-
-      def matches_spec?(spec)
-        @dependency.matches_spec? spec
-      end
-
-      def to_s
-        @dependency.to_s
-      end
-
-      def ==(other)
-        case other
-        when Dependency
-          @dependency == other
-        when DependencyRequest
-          @dependency == other.dep && @requester == other.requester
-        else
-          false
-        end
-      end
-    end
-
     # Specifies a Specification object that should be activated.
     # Also contains a dependency that was used to introduce this
     # activation.
@@ -571,6 +536,7 @@ end
 
 require 'rubygems/dependency_resolver/api_specification'
 require 'rubygems/dependency_resolver/dependency_conflict'
+require 'rubygems/dependency_resolver/dependency_request'
 require 'rubygems/dependency_resolver/installed_specification'
 require 'rubygems/dependency_resolver/installer_set'
 

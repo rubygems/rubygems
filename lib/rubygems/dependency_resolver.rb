@@ -8,69 +8,6 @@ require 'net/http'
 module Gem
 
   ##
-  # Raised when a DependencyConflict reaches the toplevel.  Indicates which
-  # dependencies were incompatible.
-
-  class DependencyResolutionError < Gem::Exception
-
-    attr_reader :conflict
-
-    def initialize conflict
-      @conflict = conflict
-      a, b = conflicting_dependencies
-
-      super "unable to resolve conflicting dependencies '#{a}' and '#{b}'"
-    end
-
-    def conflicting_dependencies
-      @conflict.conflicting_dependencies
-    end
-
-  end
-
-  ##
-  # Raised when a dependency requests a gem for which there is no spec.
-
-  class UnsatisfiableDependencyError < Gem::Exception
-
-    attr_reader :dependency
-
-    def initialize dep
-      requester = dep.requester ? dep.requester.request : '(unknown)'
-
-      super "Unable to resolve dependency: #{requester} requires #{dep}"
-
-      @dependency = dep
-    end
-
-  end
-
-  ##
-  # Backwards compatible typo'd exception class for early RubyGems 2.0.x
-
-  UnsatisfiableDepedencyError = UnsatisfiableDependencyError # :nodoc:
-
-  ##
-  # Raised when dependencies conflict and create the inability to find a valid
-  # possible spec for a request.
-
-  class ImpossibleDependenciesError < Gem::Exception
-
-    attr_reader :conflicts
-
-    def initialize request, conflicts
-      s = conflicts.size == 1 ? "" : "s"
-      super "detected #{conflicts.size} conflict#{s} with dependency #{request.dependency}"
-      @request = request
-      @conflicts = conflicts
-    end
-
-    def dependency
-      @request.dependency
-    end
-  end
-
-  ##
   # Given a set of Gem::Dependency objects as +needed+ and a way
   # to query the set of available specs via +set+, calculates
   # a set of ActivationRequest objects which indicate all the specs

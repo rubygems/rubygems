@@ -71,22 +71,6 @@ module Gem
   #
   class DependencyResolver
 
-    class ComposedSet
-      def initialize(*sets)
-        @sets = sets
-      end
-
-      def find_all(req)
-        res = []
-        @sets.each { |s| res += s.find_all(req) }
-        res
-      end
-
-      def prefetch(reqs)
-        @sets.each { |s| s.prefetch(reqs) }
-      end
-    end
-
     def self.compose_sets(*sets)
       ComposedSet.new(*sets)
     end
@@ -291,6 +275,7 @@ end
 require 'rubygems/dependency_resolver/api_set'
 require 'rubygems/dependency_resolver/api_specification'
 require 'rubygems/dependency_resolver/activation_request'
+require 'rubygems/dependency_resolver/composed_set'
 require 'rubygems/dependency_resolver/current_set'
 require 'rubygems/dependency_resolver/dependency_conflict'
 require 'rubygems/dependency_resolver/dependency_request'

@@ -12,8 +12,8 @@ class TestGemDependencyResolver < Gem::TestCase
   end
 
   def assert_set(expected, actual)
-    exp = expected.sort_by { |s| s.full_name }
-    act = actual.map { |a| a.spec }.sort_by { |s| s.full_name }
+    exp = expected.map { |s| s.full_name}.sort
+    act = actual.map { |a| a.spec.full_name }.sort
 
     assert_equal exp, act
   end

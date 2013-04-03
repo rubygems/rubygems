@@ -253,7 +253,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     out = @ui.output.split "\n"
     assert_equal "Updating installed gems", out.shift
     assert_equal "Updating #{@a2.name}", out.shift
-    assert_equal "Gems updated: #{@c2.name} #{@b2.name} #{@a2.name}",
+    assert_equal "Gems updated: #{@a2.name} #{@b2.name} #{@c2.name}",
                  out.shift
 
     assert_empty out

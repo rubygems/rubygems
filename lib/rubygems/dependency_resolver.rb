@@ -260,6 +260,26 @@ module Gem
       end
     end
 
+    class ComposedSet
+      def initialize(*sets)
+        @sets = sets
+      end
+
+      def find_all(req)
+        res = []
+        @sets.each { |s| res += s.find_all(req) }
+        res
+      end
+
+      def prefetch(reqs)
+        @sets.each { |s| s.prefetch(reqs) }
+      end
+    end
+
+    def self.compose_sets(*sets)
+      ComposedSet.new(*sets)
+    end
+
     attr_accessor :development
 
     # Create DependencyResolver object which will resolve

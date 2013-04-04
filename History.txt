@@ -8,6 +8,7 @@ Minor enhancements:
   by Gastón Ramos
 * Added `gem update --system` to `gem help`.  Pull Request #514 by Vince
   Wadhwani
+* Added PATH to `gem env` output.  Pull Request #490 by Michal Papis
 
 === 2.0.4
 

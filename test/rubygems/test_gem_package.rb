@@ -203,6 +203,8 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_build_auto_signed_encrypted_key
+    FileUtils.mkdir_p File.join(Gem.user_home, '.gem')
+
     private_key_path = File.join Gem.user_home, '.gem', 'gem-private_key.pem'
     FileUtils.cp ENCRYPTED_PRIVATE_KEY_PATH, private_key_path
 

@@ -15,6 +15,8 @@ Minor enhancements:
   Gem::DependencyInstaller.  Pull Request #456 by Vít Ondruch
 * RubyGems now works with Ruby built with `--with-ruby-version=''`.  Pull
   Request #455 by Vít Ondruch
+* RubyGems no longer alters Gem::Specification.dirs when installing.  Based on
+  Pull Request #452 by Vít Ondruch
 
 === 2.0.4
 

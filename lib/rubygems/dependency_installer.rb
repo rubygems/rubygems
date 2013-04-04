@@ -440,6 +440,7 @@ class Gem::DependencyInstaller
 
     installer_set = Gem::DependencyResolver::InstallerSet.new @domain
     installer_set.always_install.concat request_set.always_install
+    installer_set.ignore_installed = @only_install_dir
 
     if @ignore_dependencies then
       installer_set.ignore_dependencies = true

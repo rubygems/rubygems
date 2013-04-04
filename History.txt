@@ -10,7 +10,7 @@ Minor enhancements:
   Wadhwani
 * Added PATH to `gem env` output.  Pull Request #490 by Michal Papis
 * Added --host option to `gem owner` to match other commands using the
-  gemcutter API.  Pull Request #461 and issue #461 by Hugo Lopes Tavares
+  gemcutter API.  Pull Request #462 and issue #461 by Hugo Lopes Tavares
 * Removed duplicate creation of gem subdirectories in
   Gem::DependencyInstaller.  Pull Request #456 by Vít Ondruch
 * RubyGems now works with Ruby built with `--with-ruby-version=''`.  Pull

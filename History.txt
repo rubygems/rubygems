@@ -6,6 +6,8 @@ Minor enhancements:
 
 * `gem clean` now allows `-n` as an alias for `--dryrun`.  Pull Request #517
   by Gastón Ramos
+* Added `gem update --system` to `gem help`.  Pull Request #514 by Vince
+  Wadhwani
 
 === 2.0.4
 

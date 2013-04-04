@@ -17,6 +17,8 @@ Minor enhancements:
   Request #455 by Vít Ondruch
 * RubyGems no longer alters Gem::Specification.dirs when installing.  Based on
   Pull Request #452 by Vít Ondruch
+* RubyGems uses ENV['MAKE'] or ENV['make'] over rbconfig.rb's make if present.
+  Pull Request #443 by Erik Hollensbe
 
 === 2.0.4
 

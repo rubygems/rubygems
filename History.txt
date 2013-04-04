@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.1
+
+Minor enhancements:
+
+* `gem clean` now allows `-n` as an alias for `--dryrun`.  Pull Request #517
+  by Gastón Ramos
+
 === 2.0.4
 
 * Bug fixes:

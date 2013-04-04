@@ -2,10 +2,13 @@
 
 === 2.0.4
 
-* Bug fixes:
-  * Fixed pushing gems with the default host.  Bug #495 by Utkarsh Kukreti
-  * Improved unhelpful error message from `gem owner --remove`.  Bug #488 by
-    Steve Klabnik
+Bug fixes:
+
+* Fixed pushing gems with the default host.  Bug #495 by Utkarsh Kukreti
+* Improved unhelpful error message from `gem owner --remove`.  Bug #488 by
+  Steve Klabnik
+* Removed duplicate creation of gem subdirectories in
+  Gem::DependencyInstaller.  Pull Request #456 by Vít Ondruch
 
 === 2.0.3 / 2012-03-11
 

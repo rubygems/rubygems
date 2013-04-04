@@ -33,7 +33,9 @@ class Gem::PathSupport
 
     self.path = env["GEM_PATH"] || ENV["GEM_PATH"]
 
-    @spec_cache_dir =  env["GEM_SPEC"] || ENV["GEM_SPEC"] || Gem.default_spec_cache_dir
+    @spec_cache_dir =
+      env["GEM_SPEC_CACHE"] || ENV["GEM_SPEC_CACHE"] ||
+        Gem.default_spec_cache_dir
   end
 
   private

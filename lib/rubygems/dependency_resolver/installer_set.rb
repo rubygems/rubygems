@@ -10,6 +10,12 @@ class Gem::DependencyResolver::InstallerSet
 
   attr_accessor :ignore_dependencies
 
+  ##
+  # Do not look in the installed set when finding specifications.  This is
+  # used by the --install-dir option to `gem install`
+
+  attr_accessor :ignore_installed
+
   def initialize domain
     @domain = domain
 
@@ -18,6 +24,7 @@ class Gem::DependencyResolver::InstallerSet
     @all = Hash.new { |h,k| h[k] = [] }
     @always_install      = []
     @ignore_dependencies = false
+    @ignore_installed    = false
     @loaded_remote_specs = []
     @specs               = {}
   end
@@ -54,7 +61,7 @@ class Gem::DependencyResolver::InstallerSet
       next if @always_install.include? gemspec
 
       res << Gem::DependencyResolver::InstalledSpecification.new(self, gemspec)
-    end
+    end unless @ignore_installed
 
     if consider_local? then
       local_source = Gem::Source::Local.new

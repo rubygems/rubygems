@@ -16,14 +16,6 @@ class Gem::DependencyInstaller
 
   include Gem::UserInteraction
 
-  attr_reader :gems_to_install
-  attr_reader :installed_gems
-
-  ##
-  # Documentation types.  For use by the Gem.done_installing hook
-
-  attr_reader :document
-
   DEFAULT_OPTIONS = {
     :env_shebang         => false,
     :document            => %w[ri],
@@ -37,6 +29,17 @@ class Gem::DependencyInstaller
     :build_args          => nil,
     :build_docs_in_background => false,
   }.freeze
+
+  ##
+  # Documentation types.  For use by the Gem.done_installing hook
+
+  attr_reader :document
+
+  attr_reader :errors
+
+  attr_reader :gems_to_install
+
+  attr_reader :installed_gems
 
   ##
   # Creates a new installer instance.
@@ -57,7 +60,7 @@ class Gem::DependencyInstaller
   # :wrappers:: See Gem::Installer::new
   # :build_args:: See Gem::Installer::new
 
-  def initialize(options = {})
+  def initialize options = {}
     @only_install_dir = !!options[:install_dir]
     @install_dir = options[:install_dir] || Gem.dir
 
@@ -100,121 +103,6 @@ class Gem::DependencyInstaller
     @errors = nil
   end
 
-  attr_reader :errors
-
-  ##
-  # Creates an AvailableSet to install from based on +dep_or_name+ and
-  # +version+
-
-  def available_set_for dep_or_name, version # :nodoc:
-    if String === dep_or_name then
-      find_spec_by_name_and_version dep_or_name, version, @prerelease
-    else
-      dep = dep_or_name.dup
-      dep.prerelease = @prerelease
-      @available = find_gems_with_sources dep
-    end
-
-    @available.pick_best!
-  end
-
-  ##
-  # Indicated, based on the requested domain, if local
-  # gems should be considered.
-
-  def consider_local?
-    @domain == :both or @domain == :local
-  end
-
-  ##
-  # Indicated, based on the requested domain, if remote
-  # gems should be considered.
-
-  def consider_remote?
-    @domain == :both or @domain == :remote
-  end
-
-  ##
-  # Returns a list of pairs of gemspecs and source_uris that match
-  # Gem::Dependency +dep+ from both local (Dir.pwd) and remote (Gem.sources)
-  # sources.  Gems are sorted with newer gems preferred over older gems, and
-  # local gems preferred over remote gems.
-
-  def find_gems_with_sources(dep)
-    set = Gem::AvailableSet.new
-
-    if consider_local?
-      sl = Gem::Source::Local.new
-
-      if spec = sl.find_gem(dep.name)
-        if dep.matches_spec? spec
-          set.add spec, sl
-        end
-      end
-    end
-
-    if consider_remote?
-      begin
-        found, errors = Gem::SpecFetcher.fetcher.spec_for_dependency dep
-
-        if @errors
-          @errors += errors
-        else
-          @errors = errors
-        end
-
-        set << found
-
-      rescue Gem::RemoteFetcher::FetchError => e
-        # FIX if there is a problem talking to the network, we either need to always tell
-        # the user (no really_verbose) or fail hard, not silently tell them that we just
-        # couldn't find their requested gem.
-        if Gem.configuration.really_verbose then
-          say "Error fetching remote data:\t\t#{e.message}"
-          say "Falling back to local-only install"
-        end
-        @domain = :local
-      end
-    end
-
-    set
-  end
-
-  ##
-  # Gathers all dependencies necessary for the installation from local and
-  # remote sources unless the ignore_dependencies was given.
-
-  def gather_dependencies
-    specs = @available.all_specs
-
-    # these gems were listed by the user, always install them
-    keep_names = specs.map { |spec| spec.full_name }
-
-    if @dev_shallow
-      @toplevel_specs = keep_names
-    end
-
-    dependency_list = Gem::DependencyList.new @development
-    dependency_list.add(*specs)
-    to_do = specs.dup
-    add_found_dependencies to_do, dependency_list unless @ignore_dependencies
-
-    # REFACTOR maybe abstract away using Gem::Specification.include? so
-    # that this isn't dependent only on the currently installed gems
-    dependency_list.specs.reject! { |spec|
-      not keep_names.include?(spec.full_name) and
-      Gem::Specification.include?(spec)
-    }
-
-    unless dependency_list.ok? or @ignore_dependencies or @force then
-      reason = dependency_list.why_not_ok?.map { |k,v|
-        "#{k} requires #{v.join(", ")}"
-      }.join("; ")
-      raise Gem::DependencyError, "Unable to resolve dependencies: #{reason}"
-    end
-
-    @gems_to_install = dependency_list.dependency_order.reverse
-  end
 
   def add_found_dependencies to_do, dependency_list
     seen = {}
@@ -264,15 +152,92 @@ class Gem::DependencyInstaller
 
     dependency_list.remove_specs_unsatisfied_by dependencies
   end
+  ##
+  # Creates an AvailableSet to install from based on +dep_or_name+ and
+  # +version+
+
+  def available_set_for dep_or_name, version # :nodoc:
+    if String === dep_or_name then
+      find_spec_by_name_and_version dep_or_name, version, @prerelease
+    else
+      dep = dep_or_name.dup
+      dep.prerelease = @prerelease
+      @available = find_gems_with_sources dep
+    end
+
+    @available.pick_best!
+  end
+
+  ##
+  # Indicated, based on the requested domain, if local
+  # gems should be considered.
+
+  def consider_local?
+    @domain == :both or @domain == :local
+  end
+
+  ##
+  # Indicated, based on the requested domain, if remote
+  # gems should be considered.
+
+  def consider_remote?
+    @domain == :both or @domain == :remote
+  end
+
+  ##
+  # Returns a list of pairs of gemspecs and source_uris that match
+  # Gem::Dependency +dep+ from both local (Dir.pwd) and remote (Gem.sources)
+  # sources.  Gems are sorted with newer gems preferred over older gems, and
+  # local gems preferred over remote gems.
+
+  def find_gems_with_sources dep
+    set = Gem::AvailableSet.new
+
+    if consider_local?
+      sl = Gem::Source::Local.new
+
+      if spec = sl.find_gem(dep.name)
+        if dep.matches_spec? spec
+          set.add spec, sl
+        end
+      end
+    end
+
+    if consider_remote?
+      begin
+        found, errors = Gem::SpecFetcher.fetcher.spec_for_dependency dep
+
+        if @errors
+          @errors += errors
+        else
+          @errors = errors
+        end
+
+        set << found
+
+      rescue Gem::RemoteFetcher::FetchError => e
+        # FIX if there is a problem talking to the network, we either need to always tell
+        # the user (no really_verbose) or fail hard, not silently tell them that we just
+        # couldn't find their requested gem.
+        if Gem.configuration.really_verbose then
+          say "Error fetching remote data:\t\t#{e.message}"
+          say "Falling back to local-only install"
+        end
+        @domain = :local
+      end
+    end
+
+    set
+  end
 
   ##
   # Finds a spec and the source_uri it came from for gem +gem_name+ and
   # +version+.  Returns an Array of specs and sources required for
   # installation of the gem.
 
-  def find_spec_by_name_and_version(gem_name,
+  def find_spec_by_name_and_version gem_name,
                                     version = Gem::Requirement.default,
-                                    prerelease = false)
+                                    prerelease = false
 
     set = Gem::AvailableSet.new
 
@@ -303,6 +268,57 @@ class Gem::DependencyInstaller
     end
 
     @available = set
+  end
+
+  ##
+  # Gathers all dependencies necessary for the installation from local and
+  # remote sources unless the ignore_dependencies was given.
+
+  def gather_dependencies
+    specs = @available.all_specs
+
+    # these gems were listed by the user, always install them
+    keep_names = specs.map { |spec| spec.full_name }
+
+    if @dev_shallow
+      @toplevel_specs = keep_names
+    end
+
+    dependency_list = Gem::DependencyList.new @development
+    dependency_list.add(*specs)
+    to_do = specs.dup
+    add_found_dependencies to_do, dependency_list unless @ignore_dependencies
+
+    # REFACTOR maybe abstract away using Gem::Specification.include? so
+    # that this isn't dependent only on the currently installed gems
+    dependency_list.specs.reject! { |spec|
+      not keep_names.include?(spec.full_name) and
+      Gem::Specification.include?(spec)
+    }
+
+    unless dependency_list.ok? or @ignore_dependencies or @force then
+      reason = dependency_list.why_not_ok?.map { |k,v|
+        "#{k} requires #{v.join(", ")}"
+      }.join("; ")
+      raise Gem::DependencyError, "Unable to resolve dependencies: #{reason}"
+    end
+
+    @gems_to_install = dependency_list.dependency_order.reverse
+  end
+
+  def in_background what
+    fork_happened = false
+    if @build_docs_in_background and Process.respond_to?(:fork)
+      begin
+        Process.fork do
+          yield
+        end
+        fork_happened = true
+        say "#{what} in a background process."
+      rescue NotImplementedError
+      end
+    end
+    yield unless fork_happened
   end
 
   ##
@@ -365,22 +381,7 @@ class Gem::DependencyInstaller
     end
   end
 
-  def in_background what
-    fork_happened = false
-    if @build_docs_in_background and Process.respond_to?(:fork)
-      begin
-        Process.fork do
-          yield
-        end
-        fork_happened = true
-        say "#{what} in a background process."
-      rescue NotImplementedError
-      end
-    end
-    yield unless fork_happened
-  end
-
-  def resolve_dependencies dep_or_name, version
+  def resolve_dependencies dep_or_name, version # :nodoc:
     as = available_set_for dep_or_name, version
 
     request_set = as.to_request_set install_development_deps

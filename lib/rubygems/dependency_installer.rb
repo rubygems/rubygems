@@ -16,7 +16,7 @@ class Gem::DependencyInstaller
 
   include Gem::UserInteraction
 
-  DEFAULT_OPTIONS = {
+  DEFAULT_OPTIONS = { # :nodoc:
     :env_shebang         => false,
     :document            => %w[ri],
     :domain              => :both, # HACK dup
@@ -35,9 +35,19 @@ class Gem::DependencyInstaller
 
   attr_reader :document
 
+  ##
+  # Errors from SpecFetcher while searching for remote specifications
+
   attr_reader :errors
 
-  attr_reader :gems_to_install
+  ##
+  #--
+  # TODO remove, no longer used
+
+  attr_reader :gems_to_install # :nodoc:
+
+  ##
+  # List of gems installed by #install in alphabetic order
 
   attr_reader :installed_gems
 
@@ -98,13 +108,14 @@ class Gem::DependencyInstaller
 
     @cache_dir = options[:cache_dir] || @install_dir
 
-    # Set with any errors that SpecFetcher finds while search through
-    # gemspecs for a dep
     @errors = nil
   end
 
+  ##
+  #--
+  # TODO remove, no longer used
 
-  def add_found_dependencies to_do, dependency_list
+  def add_found_dependencies to_do, dependency_list # :nodoc:
     seen = {}
     dependencies = Hash.new { |h, name| h[name] = Gem::Dependency.new name }
 
@@ -190,7 +201,7 @@ class Gem::DependencyInstaller
   # sources.  Gems are sorted with newer gems preferred over older gems, and
   # local gems preferred over remote gems.
 
-  def find_gems_with_sources dep
+  def find_gems_with_sources dep # :nodoc:
     set = Gem::AvailableSet.new
 
     if consider_local?
@@ -273,8 +284,10 @@ class Gem::DependencyInstaller
   ##
   # Gathers all dependencies necessary for the installation from local and
   # remote sources unless the ignore_dependencies was given.
+  #--
+  # TODO remove, no longer used
 
-  def gather_dependencies
+  def gather_dependencies # :nodoc:
     specs = @available.all_specs
 
     # these gems were listed by the user, always install them
@@ -306,7 +319,7 @@ class Gem::DependencyInstaller
     @gems_to_install = dependency_list.dependency_order.reverse
   end
 
-  def in_background what
+  def in_background what # :nodoc:
     fork_happened = false
     if @build_docs_in_background and Process.respond_to?(:fork)
       begin
@@ -371,7 +384,7 @@ class Gem::DependencyInstaller
     @installed_gems
   end
 
-  def install_development_deps
+  def install_development_deps # :nodoc:
     if @development and @dev_shallow then
       :shallow
     elsif @development then

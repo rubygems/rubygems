@@ -167,8 +167,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
 
     # This is needed because we need to exercise the cache path
     # within SpecFetcher
-    path = File.join Gem.user_home, '.gem', 'specs', "not-there.nothing%80",
-                                    "latest_specs.4.8"
+    path = File.join Gem.spec_cache_dir, "not-there.nothing%80", "latest_specs.4.8"
 
     FileUtils.mkdir_p File.dirname(path)
 

@@ -9,6 +9,8 @@ Minor enhancements:
 * Added `gem update --system` to `gem help`.  Pull Request #514 by Vince
   Wadhwani
 * Added PATH to `gem env` output.  Pull Request #490 by Michal Papis
+* Added --host option to `gem owner` to match other commands using the
+  gemcutter API.  Pull Request #461 and issue #461 by Hugo Lopes Tavares
 
 === 2.0.4
 

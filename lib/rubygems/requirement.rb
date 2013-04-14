@@ -142,7 +142,7 @@ class Gem::Requirement
   end
 
   def marshal_dump # :nodoc:
-    fix_syck_default_key_in_requirements
+    fix_syck_default_key_in_requirements if defined? YAML
 
     [@requirements]
   end
@@ -150,7 +150,7 @@ class Gem::Requirement
   def marshal_load array # :nodoc:
     @requirements = array[0]
 
-    fix_syck_default_key_in_requirements
+    fix_syck_default_key_in_requirements if defined? YAML
   end
 
   def yaml_initialize(tag, vals) # :nodoc:

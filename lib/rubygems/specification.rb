@@ -948,9 +948,18 @@ class Gem::Specification
     code.untaint
 
     begin
-      spec = eval code, binding, file
+      cache = "#{file}.cache"
+      if File.exist? cache and File.mtime(cache) > File.mtime(file)
+        spec = Marshal.load Gem.read_binary cache
+      else
+        spec = eval code, binding, file
+        needs_cache_write = true
+      end
 
       if Gem::Specification === spec
+        if needs_cache_write
+          File.open(cache, "wb") { |f| f.write Marshal.dump spec } if File.writable? cache
+        end
         spec.loaded_from = file.to_s
         return spec
       end
@@ -1084,7 +1093,7 @@ class Gem::Specification
     # Cleanup any YAML::PrivateType. They only show up for an old bug
     # where nil => null, so just convert them to nil based on the type.
 
-    array.map! { |e| e.kind_of?(YAML::PrivateType) ? nil : e }
+    array.map! { |e| e.kind_of?(YAML::PrivateType) ? nil : e } if defined? YAML
 
     spec.instance_variable_set :@rubygems_version,          array[0]
     # spec version

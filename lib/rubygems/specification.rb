@@ -1705,9 +1705,7 @@ class Gem::Specification
   # :startdoc:
 
   def hash # :nodoc:
-    @@attributes.inject(0) { |hash_code, (name, _)|
-      hash_code ^ self.send(name).hash
-    }
+    name.hash ^ version.hash
   end
 
   def init_with coder # :nodoc:

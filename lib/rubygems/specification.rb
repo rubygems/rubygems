@@ -40,6 +40,8 @@ require 'rubygems/version'
 require 'rubygems/requirement'
 require 'rubygems/platform'
 require 'rubygems/deprecate'
+require 'rubygems/basic_specification'
+require 'rubygems/stub_specification'
 
 # :stopdoc:
 # date.rb can't be loaded for `make install` due to miniruby
@@ -47,7 +49,7 @@ require 'rubygems/deprecate'
 class Date; end
 # :startdoc:
 
-class Gem::Specification
+class Gem::Specification < Gem::BasicSpecification
 
   # REFACTOR: Consider breaking out this version stuff into a separate
   # module. There's enough special stuff around it that it may justify
@@ -586,11 +588,6 @@ class Gem::Specification
   attr_writer :default_executable
 
   ##
-  # Path this gemspec was loaded from.  This attribute is not persisted.
-
-  attr_reader :loaded_from
-
-  ##
   # Allows deinstallation of gems with legacy platforms.
 
   attr_writer :original_platform # :nodoc:
@@ -617,44 +614,9 @@ class Gem::Specification
 
   attr_accessor :specification_version
 
-  class << self
-    def default_specifications_dir
-      File.join(Gem.default_dir, "specifications", "default")
-    end
-
-    def each_spec(search_dirs) # :nodoc:
-      search_dirs.each { |dir|
-        Dir[File.join(dir, "*.gemspec")].each { |path|
-          spec = Gem::Specification.load path.untaint
-          # #load returns nil if the spec is bad, so we just ignore
-          # it at this stage
-          yield(spec) if spec
-        }
-      }
-    end
-
-    def each_default(&block) # :nodoc:
-      each_spec([default_specifications_dir],
-                &block)
-    end
-
-    def each_normal(&block) # :nodoc:
-      each_spec(dirs, &block)
-    end
-  end
-
   def self._all # :nodoc:
     unless defined?(@@all) && @@all then
-
-      specs = {}
-      each_default do |spec|
-        specs[spec.full_name] ||= spec
-      end
-      each_normal do |spec|
-        specs[spec.full_name] ||= spec
-      end
-
-      @@all = specs.values
+      @@all = stubs.map(&:to_spec)
 
       # After a reset, make sure already loaded specs
       # are still marked as activated.
@@ -662,13 +624,54 @@ class Gem::Specification
       Gem.loaded_specs.each_value{|s| specs[s] = true}
       @@all.each{|s| s.activated = true if specs[s]}
 
-      _resort!
+      _resort!(@@all)
     end
     @@all
   end
 
-  def self._resort! # :nodoc:
-    @@all.sort! { |a, b|
+  # :nodoc:
+  def self.each_gemspec(dirs)
+    dirs.each do |dir|
+      Dir[File.join(dir, "*.gemspec")].each do |path|
+        yield path.untaint
+      end
+    end
+  end
+
+  # :nodoc:
+  def self.each_stub(dirs)
+    each_gemspec(dirs) do |path|
+      stub = Gem::StubSpecification.new(path)
+      yield stub if stub.valid?
+    end
+  end
+
+  # :nodoc:
+  def self.each_spec(dirs)
+    each_gemspec(dirs) do |path|
+      spec = self.load path
+      yield spec if spec
+    end
+  end
+
+  ##
+  # Returns a Gem::StubSpecification for every installed gem
+
+  def self.stubs
+    @@stubs ||= begin
+      stubs = {}
+      each_stub([default_specifications_dir] + dirs) do |stub|
+        stubs[stub.full_name] ||= stub
+      end
+
+      stubs = stubs.values
+      _resort!(stubs)
+      stubs
+    end
+  end
+
+  def self._resort!(specs) # :nodoc:
+    specs.sort! { |a, b|
       names = a.name <=> b.name
       next names if names.nonzero?
       b.version <=> a.version
@@ -679,7 +682,9 @@ class Gem::Specification
   # Loads the default specifications. It should be called only once.
 
   def self.load_defaults
-    each_default do |spec|
+    each_spec([default_specifications_dir]) do |spec|
+      # #load returns nil if the spec is bad, so we just ignore
+      # it at this stage
       Gem.register_default_spec(spec)
     end
   end
@@ -702,7 +707,9 @@ class Gem::Specification
     return if _all.include? spec
 
     _all << spec
-    _resort!
+    stubs << spec
+    _resort!(_all)
+    _resort!(stubs)
   end
 
   ##
@@ -845,9 +852,10 @@ class Gem::Specification
   # amongst the specs that are not activated.
 
   def self.find_inactive_by_path path
-    self.find { |spec|
-      spec.contains_requirable_file? path unless spec.activated?
+    stub = stubs.find { |s|
+      s.contains_requirable_file? path unless s.activated?
     }
+    stub && stub.to_spec
   end
 
   ##
@@ -1015,6 +1023,7 @@ class Gem::Specification
     raise "wtf: #{spec.full_name} not in #{all_names.inspect}" unless
       _all.include? spec
     _all.delete spec
+    stubs.delete_if { |s| s.full_name == spec.full_name }
   end
 
   ##
@@ -1039,6 +1048,7 @@ class Gem::Specification
     @@dirs = nil
     Gem.pre_reset_hooks.each { |hook| hook.call }
     @@all = nil
+    @@stubs = nil
     unresolved = unresolved_deps
     unless unresolved.empty? then
       w = "W" + "ARN"
@@ -1283,20 +1293,6 @@ class Gem::Specification
   end
 
   ##
-  # Returns the full path to the base gem directory.
-  #
-  # eg: /usr/local/lib/ruby/gems/1.8
-
-  def base_dir
-    return Gem.dir unless loaded_from
-    @base_dir ||= if default_gem? then
-                    File.dirname File.dirname File.dirname loaded_from
-                  else
-                    File.dirname File.dirname loaded_from
-                  end
-  end
-
-  ##
   # Returns the full path to installed gem's bin directory.
   #
   # NOTE: do not confuse this with +bindir+, which is just 'bin', not
@@ -1367,19 +1363,6 @@ class Gem::Specification
       conflicts[spec] = bad unless bad.empty?
     end
     conflicts
-  end
-
-  ##
-  # Return true if this spec can require +file+.
-
-  def contains_requirable_file? file
-    root     = full_gem_path
-    suffixes = Gem.suffixes
-
-    require_paths.any? do |lib|
-      base = "#{root}/#{lib}/#{file}"
-      suffixes.any? { |suf| File.file? "#{base}#{suf}" }
-    end
   end
 
   ##
@@ -1625,35 +1608,14 @@ class Gem::Specification
     spec
   end
 
-  ##
-  # The full path to the gem (install path + full name).
-
-  def full_gem_path
-    # TODO: This is a heavily used method by gems, so we'll need
-    # to aleast just alias it to #gem_dir rather than remove it.
-
-    # TODO: also, shouldn't it default to full_name if it hasn't been written?
-    return @full_gem_path if defined?(@full_gem_path) && @full_gem_path
-
-    @full_gem_path = File.expand_path File.join(gems_dir, full_name)
-    @full_gem_path.untaint
-
-    return @full_gem_path if File.directory? @full_gem_path
-
-    @full_gem_path = File.expand_path File.join(gems_dir, original_name)
+  # :nodoc:
+  def find_full_gem_path
+    super || File.expand_path(File.join(gems_dir, original_name))
   end
-
-  ##
-  # Returns the full name (name-version) of this Gem.  Platform information
-  # is included (name-version-platform) if it is specified and not the
-  # default Ruby platform.
+  private :find_full_gem_path
 
   def full_name
-    @full_name ||= if platform == Gem::Platform::RUBY or platform.nil? then
-                     "#{@name}-#{@version}".untaint
-                   else
-                     "#{@name}-#{@version}-#{platform}".untaint
-                   end
+    @full_name ||= super
   end
 
   ##
@@ -1662,15 +1624,6 @@ class Gem::Specification
 
   def gem_dir
     @gem_dir ||= File.expand_path File.join(gems_dir, full_name)
-  end
-
-  ##
-  # Returns the full path to the gems directory containing this spec's
-  # gem directory. eg: /usr/local/lib/ruby/1.8/gems
-
-  def gems_dir
-    # TODO: this logic seems terribly broken, but tests fail if just base_dir
-    @gems_dir ||= File.join(loaded_from && base_dir || Gem.dir, "gems")
   end
 
   ##
@@ -1720,7 +1673,7 @@ class Gem::Specification
   def initialize name = nil, version = nil
     @loaded = false
     @activated = false
-    @loaded_from = nil
+    self.loaded_from = nil
     @original_platform = nil
 
     @@nil_attributes.each do |key|
@@ -1828,26 +1781,29 @@ class Gem::Specification
     @licenses ||= []
   end
 
-  ##
-  # Set the location a Specification was loaded from. +obj+ is converted
-  # to a String.
+  def filename= path
+    super
 
-  def loaded_from= path
-    @loaded_from   = path.to_s
-
-    # reset everything @loaded_from depends upon
-    @base_dir      = nil
     @bin_dir       = nil
     @cache_dir     = nil
     @cache_file    = nil
     @doc_dir       = nil
-    @full_gem_path = nil
     @gem_dir       = nil
-    @gems_dir      = nil
     @ri_dir        = nil
     @spec_dir      = nil
     @spec_file     = nil
   end
+
+  ##
+  # Path this gemspec was loaded from.  This attribute is not persisted.
+
+  alias loaded_from filename
+
+  ##
+  # Set the location a Specification was loaded from. +obj+ is converted
+  # to a String.
+
+  alias loaded_from= filename=
 
   ##
   # Sets the rubygems_version to the current RubyGems version.
@@ -2179,6 +2135,7 @@ class Gem::Specification
     mark_version
     result = []
     result << "# -*- encoding: utf-8 -*-"
+    result << "#{Gem::StubSpecification::PREFIX}#{name} #{version} #{platform} #{require_paths.join("\0")}"
     result << nil
     result << "Gem::Specification.new do |s|"
 
@@ -2264,6 +2221,13 @@ class Gem::Specification
 
   def to_s # :nodoc:
     "#<Gem::Specification name=#{@name} version=#{@version}>"
+  end
+
+  ##
+  # Returns self
+
+  def to_spec
+    self
   end
 
   def to_yaml(opts = {}) # :nodoc:
@@ -2564,11 +2528,6 @@ class Gem::Specification
 
       instance_variable_set "@#{attribute}", value
     end
-  end
-
-  def default_gem?
-    loaded_from &&
-      File.dirname(loaded_from) == self.class.default_specifications_dir
   end
 
   extend Gem::Deprecate

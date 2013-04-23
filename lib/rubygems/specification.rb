@@ -160,6 +160,17 @@ class Gem::Specification < Gem::BasicSpecification
     :version                   => nil,
   }
 
+  Dupable = { }
+
+  @@default_value.each do |k,v|
+    case v
+    when Time, Numeric, Symbol, true, false, nil
+      Dupable[k] = false
+    else
+      Dupable[k] = true
+    end
+  end
+
   @@attributes = @@default_value.keys.sort_by { |s| s.to_s }
   @@array_attributes = @@default_value.reject { |k,v| v != [] }.keys
   @@nil_attributes, @@non_nil_attributes = @@default_value.keys.partition { |k|
@@ -1682,11 +1693,7 @@ class Gem::Specification < Gem::BasicSpecification
 
     @@non_nil_attributes.each do |key|
       default = default_value(key)
-      value = case default
-              when Time, Numeric, Symbol, true, false, nil then default
-              else default.dup
-              end
-
+      value = Dupable[key] ? default.dup : default
       instance_variable_set "@#{key}", value
     end
 

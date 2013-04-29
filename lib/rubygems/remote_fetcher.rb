@@ -409,6 +409,7 @@ class Gem::RemoteFetcher
   def configure_connection_for_https(connection)
     require 'net/https'
     connection.use_ssl = true
+    connection.ssl_version = :TLSv1
     connection.verify_mode =
       Gem.configuration.ssl_verify_mode || OpenSSL::SSL::VERIFY_PEER
     store = OpenSSL::X509::Store.new

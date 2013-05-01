@@ -820,7 +820,7 @@ gems:
 
     with_configured_fetcher(
       ":ssl_ca_cert: #{temp_ca_cert}\n" +
-      ":ssl_client_pem: #{temp_client_cert}\n") do |fetcher|
+      ":ssl_client_cert: #{temp_client_cert}\n") do |fetcher|
       fetcher.fetch_path("https://localhost:#{ssl_server.config[:Port]}/yaml")
     end
   end

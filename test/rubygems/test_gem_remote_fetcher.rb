@@ -592,9 +592,9 @@ gems:
   def test_ssl_client_cert_auth_connection
 
     ssl_cert = OpenSSL::X509::Certificate.new(
-      File.read(File.join(DIR,'fixtures/client_cert_auth/root_ca.crt')))
+      File.read(File.join(DIR,'fixtures/client_cert_auth/server.crt')))
     ssl_key = OpenSSL::PKey::RSA.new(
-      File.read(File.join(DIR,'fixtures/client_cert_auth/root_ca.pem')))
+      File.read(File.join(DIR,'fixtures/client_cert_auth/server.pem')))
 
     ssl_server = self.class.start_ssl_server( { 
       :SSLVerifyClient => 

@@ -4,6 +4,8 @@
 
 Minor enhancements:
 
+* Ensure that RUBYGEMS_HOST isn't empty so some displayed messages don't refer
+  to a bad URL
 * `gem clean` now allows `-n` as an alias for `--dryrun`.  Pull Request #517
   by Gastón Ramos
 * Added `gem update --system` to `gem help`.  Pull Request #514 by Vince

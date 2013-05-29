@@ -14,7 +14,7 @@ class Gem::Commands::SearchCommand < Gem::Commands::QueryCommand
   end
 
   def defaults_str # :nodoc:
-    "--local --no-details"
+    "--remote --no-details"
   end
 
   def usage # :nodoc:

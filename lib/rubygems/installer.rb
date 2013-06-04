@@ -212,16 +212,21 @@ class Gem::Installer
     FileUtils.rm_rf gem_dir
 
     FileUtils.mkdir_p gem_dir
-
-    extract_files
-
-    build_extensions
-    write_build_info_file
-    run_post_build_hooks
-
-    generate_bin
-    write_spec
-    write_cache_file
+    
+    if @options[:default]
+      extract_bin
+      write_default_spec
+    else
+      extract_files
+      
+      build_extensions
+      write_build_info_file
+      run_post_build_hooks
+      
+      generate_bin
+      write_spec
+      write_cache_file
+    end
 
     say spec.post_install_message unless spec.post_install_message.nil?
 
@@ -327,12 +332,30 @@ class Gem::Installer
   end
 
   ##
+  # The location of of the default spec file for default gems.
+  #
+
+  def default_spec_file
+    File.join gem_home, "specifications/default", "#{spec.full_name}.gemspec"
+  end
+
+  ##
   # Writes the .gemspec specification (in Ruby) to the gem home's
   # specifications directory.
 
   def write_spec
     File.open(spec_file, "w") do |file|
       file.puts spec.to_ruby_for_cache
+    end
+  end
+  
+  ##
+  # Writes the full .gemspec specification (in Ruby) to the gem home's
+  # specifications/default directory.
+  
+  def write_default_spec
+    File.open(default_spec_file, "w") do |file|
+      file.puts spec.to_ruby
     end
   end
 
@@ -713,6 +736,15 @@ EOF
 
   def extract_files
     @package.extract_files gem_dir
+  end
+  
+  ##
+  # Extracts only the bin/ files from the gem into the gem directory.
+  # This is used by default gems to allow a gem-aware stub to function
+  # without the full gem installed.
+  
+  def extract_bin
+    @package.extract_files gem_dir, "bin/*"
   end
 
   ##

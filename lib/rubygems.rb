@@ -143,6 +143,14 @@ module Gem
     specifications
   ]
 
+  ##
+  # Subdirectories in a gem repository for default gems
+
+  REPOSITORY_DEFAULT_GEM_SUBDIRECTORIES = %w[
+    gems
+    specifications/default
+  ]
+
   @@win_platform = nil
 
   @configuration = nil
@@ -388,6 +396,24 @@ module Gem
   # World-writable directories will never be created.
 
   def self.ensure_gem_subdirectories dir = Gem.dir, mode = nil
+    ensure_subdirectories(dir, mode, REPOSITORY_SUBDIRECTORIES)
+  end
+
+  ##
+  # Quietly ensure the Gem directory +dir+ contains all the proper
+  # subdirectories for handling default gems.  If we can't create a
+  # directory due to a permission problem, then we will silently continue.
+  #
+  # If +mode+ is given, missing directories are created with this mode.
+  #
+  # World-writable directories will never be created.
+
+  def self.ensure_default_gem_subdirectories dir = Gem.dir, mode = nil
+    ensure_subdirectories(dir, mode, REPOSITORY_DEFAULT_GEM_SUBDIRECTORIES)
+  end
+
+  # :nodoc:
+  def self.ensure_subdirectories dir, mode, subdirs
     old_umask = File.umask
     File.umask old_umask | 002
 
@@ -397,7 +423,7 @@ module Gem
 
     options[:mode] = mode if mode
 
-    REPOSITORY_SUBDIRECTORIES.each do |name|
+    subdirs.each do |name|
       subdir = File.join dir, name
       next if File.exist? subdir
       FileUtils.mkdir_p subdir, options rescue nil

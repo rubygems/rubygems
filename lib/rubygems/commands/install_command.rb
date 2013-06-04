@@ -41,7 +41,7 @@ class Gem::Commands::InstallCommand < Gem::Command
     add_option(:"Install/Update", '--default',
                'Add the gem\'s full specification to',
                'specifications/default and extract only its bin') do |v,o|
-      o[:default] = v
+      o[:install_as_default] = v
     end
 
     @installed_specs = nil
@@ -159,7 +159,7 @@ to write the specification by hand.  For example:
     end
     
     # load post-install hooks appropriate to options
-    if options[:default]
+    if options[:install_as_default]
       require 'rubygems/install_default_message'
     else
       require 'rubygems/install_message'

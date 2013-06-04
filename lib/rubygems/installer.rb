@@ -213,7 +213,7 @@ class Gem::Installer
 
     FileUtils.mkdir_p gem_dir
     
-    if @options[:default]
+    if @options[:install_as_default]
       extract_bin
       write_default_spec
     else
@@ -787,7 +787,11 @@ EOF
 
     ensure_loadable_spec
 
-    Gem.ensure_gem_subdirectories gem_home
+    if options[:install_as_default]
+      Gem.ensure_default_gem_subdirectories gem_home
+    else
+      Gem.ensure_gem_subdirectories gem_home
+    end
 
     return true if @force
 

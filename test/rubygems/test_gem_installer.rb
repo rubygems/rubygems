@@ -1414,6 +1414,30 @@ gem 'other', version
     assert_match %r!/gemhome/gems/a-2$!, @installer.dir
   end
 
+  def test_default_gem
+    FileUtils.rm_f File.join(Gem.dir, 'specifications')
+
+    @installer.wrappers = true
+    @installer.options[:install_as_default] = true
+    @installer.gem_dir = util_gem_dir @spec
+    @installer.generate_bin
+
+    use_ui @ui do
+      @installer.install
+    end
+
+    assert File.directory? util_inst_bindir
+    installed_exec = File.join util_inst_bindir, 'executable'
+    assert File.exist? installed_exec
+
+    assert File.directory? File.join(Gem.dir, 'specifications')
+    assert File.directory? File.join(Gem.dir, 'specifications', 'default')
+
+    default_spec = eval File.read File.join(Gem.dir, 'specifications', 'default', 'a-2.gemspec')
+    assert_equal Gem::Version.new("2"), default_spec.version
+    assert_equal ['bin/executable'], default_spec.files
+  end
+
   def old_ruby_required
     spec = quick_spec 'old_ruby_required', '1' do |s|
       s.required_ruby_version = '= 1.4.6'

@@ -996,10 +996,33 @@ module Gem
     attr_reader :loaded_specs
 
     ##
-    # Register a Gem::Specification for default gem
+    # Register a Gem::Specification for default gem.
+    #
+    # Two formats for the specification are supported:
+    #
+    # * MRI 2.0 style, where spec.files contains unprefixed require names.
+    #   The spec's filenames will be registered as-is.
+    # * New style, where spec.files contains files prefixed with paths
+    #   from spec.require_paths. The prefixes are stripped before
+    #   registering the spec's filenames. Unprefixed files are omitted.
+    #
 
     def register_default_spec(spec)
+      new_format, prefix_pattern = nil
+      
       spec.files.each do |file|
+        if new_format == nil
+          new_format = spec.require_paths.any? {|path| file.start_with? path}
+          
+          prefix_group = spec.require_paths.map {|f| f + "/"}.join("|")
+          prefix_pattern = /^(#{prefix_group})/
+        end
+        
+        if new_format
+          file = file.sub(prefix_pattern, "")
+          next unless $~
+        end
+        
         @path_to_default_spec_map[file] = spec
       end
     end

@@ -953,7 +953,14 @@ class Gem::Specification < Gem::BasicSpecification
   ##
   # Loads Ruby format gemspec from +file+.
 
+  LOAD_CACHE = {}
+  private_constant :LOAD_CACHE
+
   def self.load file
+    LOAD_CACHE[file] ||= load_without_cache file
+  end
+
+  def self.load_without_cache file
     return unless file
     file = file.dup.untaint
     return unless File.file?(file)

@@ -960,6 +960,10 @@ class Gem::Specification < Gem::BasicSpecification
     LOAD_CACHE[file] ||= load_without_cache file
   end
 
+  def self._clear_load_cache!
+    LOAD_CACHE.clear
+  end
+
   def self.load_without_cache file
     return unless file
     file = file.dup.untaint

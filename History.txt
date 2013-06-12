@@ -23,6 +23,10 @@ Minor enhancements:
   controlled by `ENV["GEM_SPEC_CACHE"]`.  Pull Request #489 by Michal Papis
 * Generated private keys are now encrypted.  Pull Request #453 by pietro
 
+Bug fixes:
+
+* Fixed typo in `gem spec` help.  Pull request #563 by oooooooo
+
 === 2.0.4
 
 * Bug fixes:

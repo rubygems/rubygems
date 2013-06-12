@@ -428,6 +428,14 @@ if you believe they were disclosed to a third party.
     assert_equal('/home/me/certs', @cfg.ssl_ca_cert)
   end
 
+  def test_load_ssl_client_cert_from_config
+    File.open @temp_conf, 'w' do |fp|
+      fp.puts ":ssl_client_cert: /home/me/mine.pem"
+    end
+    util_config_file
+    assert_equal('/home/me/mine.pem', @cfg.ssl_client_cert)
+  end
+
   def util_config_file(args = @cfg_args)
     @cfg = Gem::ConfigFile.new args
   end

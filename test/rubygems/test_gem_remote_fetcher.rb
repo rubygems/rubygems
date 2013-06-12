@@ -811,6 +811,38 @@ gems:
     end
   end
 
+  def test_ssl_client_cert_auth_connection
+    ssl_server = self.class.start_ssl_server({
+      :SSLVerifyClient => 
+        OpenSSL::SSL::VERIFY_PEER|OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT})
+
+    temp_ca_cert = File.join(DIR, 'ca_cert.pem')
+    temp_client_cert = File.join(DIR, 'client.pem')
+
+    with_configured_fetcher(
+      ":ssl_ca_cert: #{temp_ca_cert}\n" +
+      ":ssl_client_cert: #{temp_client_cert}\n") do |fetcher|
+      fetcher.fetch_path("https://localhost:#{ssl_server.config[:Port]}/yaml")
+    end
+  end
+
+  def test_do_not_allow_invalid_client_cert_auth_connection
+    ssl_server = self.class.start_ssl_server({
+      :SSLVerifyClient => 
+        OpenSSL::SSL::VERIFY_PEER|OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT})
+
+    temp_ca_cert = File.join(DIR, 'ca_cert.pem')
+    temp_client_cert = File.join(DIR, 'invalid_client.pem')
+
+    with_configured_fetcher(
+      ":ssl_ca_cert: #{temp_ca_cert}\n" +
+      ":ssl_client_cert: #{temp_client_cert}\n") do |fetcher|
+        assert_raises Gem::RemoteFetcher::FetchError do
+          fetcher.fetch_path("https://localhost:#{ssl_server.config[:Port]}/yaml")
+        end
+    end
+  end
+
   def test_do_not_allow_insecure_ssl_connection_by_default
     ssl_server = self.class.start_ssl_server
     with_configured_fetcher do |fetcher|

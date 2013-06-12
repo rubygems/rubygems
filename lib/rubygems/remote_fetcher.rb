@@ -412,6 +412,13 @@ class Gem::RemoteFetcher
     connection.verify_mode =
       Gem.configuration.ssl_verify_mode || OpenSSL::SSL::VERIFY_PEER
     store = OpenSSL::X509::Store.new
+
+    if Gem.configuration.ssl_client_cert
+      pem = File.read(Gem.configuration.ssl_client_cert)
+      connection.cert = OpenSSL::X509::Certificate.new(pem)
+      connection.key = OpenSSL::PKey::RSA.new(pem)
+    end
+
     if Gem.configuration.ssl_ca_cert
       if File.directory? Gem.configuration.ssl_ca_cert
         store.add_path Gem.configuration.ssl_ca_cert

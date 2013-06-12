@@ -13,6 +13,7 @@ Bug fixes:
   Request #455 by Vít Ondruch
 * RubyGems uses ENV['MAKE'] or ENV['make'] over rbconfig.rb's make if present.
   Pull Request #443 by Erik Hollensbe
+* Fixed typo in `gem spec` help.  Pull request #563 by oooooooo
 
 === 2.0.3 / 2012-03-11
 

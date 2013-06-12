@@ -60,7 +60,11 @@ module Gem::GemcutterUtilities
     configured_host = Gem.host unless
       Gem.configuration.disable_default_gem_server
 
-    @host ||= ENV['RUBYGEMS_HOST'] || configured_host
+    if ENV['RUBYGEMS_HOST'].empty?
+      ENV['RUBYGEMS_HOST'] = configured_host
+    end
+
+    @host ||=  ENV['RUBYGEMS_HOST']
   end
 
   def rubygems_api_request(method, path, host = nil, &block)

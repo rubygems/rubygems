@@ -10,6 +10,9 @@ class TestGemCommandsHelpCommand < Gem::TestCase
     super
 
     @cmd = Gem::Commands::HelpCommand.new
+
+    load File.expand_path('../rubygems_plugin', __FILE__) unless
+      Gem::Commands.const_defined? :InterruptCommand
   end
 
   def test_gem_help_bad

@@ -34,6 +34,8 @@ class TestGemCommandsHelpCommand < Gem::TestCase
         assert_match(/\s+#{cmd}\s+\S+/, out)
       end
       assert_equal '', err
+
+      refute_match 'No command found for ', out
     end
   end
 

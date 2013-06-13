@@ -21,7 +21,7 @@ env:
 script: rake travis
 matrix:
   exclude:
-    - rvm: ruby-head
+    - rvm: 2.0.0
       env: "YAML=syck"
   allow_failures:
     - rvm: 1.8.7

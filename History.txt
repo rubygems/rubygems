@@ -22,6 +22,8 @@ Minor enhancements:
 * RubyGems can now save remote source cache files in an alternate directory
   controlled by `ENV["GEM_SPEC_CACHE"]`.  Pull Request #489 by Michal Papis
 * Generated private keys are now encrypted.  Pull Request #453 by pietro
+* Separated Gem::Request from Gem::RemoteFetcher.  Pull Request #283 by Steve
+  Klabnik.
 
 Bug fixes:
 

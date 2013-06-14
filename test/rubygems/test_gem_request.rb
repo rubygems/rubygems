@@ -4,56 +4,6 @@ require 'ostruct'
 
 class TestGemRequest < Gem::TestCase
 
-  SERVER_DATA = <<-EOY
---- !ruby/object:Gem::Cache
-gems:
-  rake-0.4.11: !ruby/object:Gem::Specification
-    rubygems_version: "0.7"
-    specification_version: 1
-    name: rake
-    version: !ruby/object:Gem::Version
-      version: 0.4.11
-    date: 2004-11-12
-    summary: Ruby based make-like utility.
-    require_paths:
-      - lib
-    author: Jim Weirich
-    email: jim@weirichhouse.org
-    homepage: http://rake.rubyforge.org
-    rubyforge_project: rake
-    description: Rake is a Make-like program implemented in Ruby. Tasks and dependencies are specified in standard Ruby syntax.
-    autorequire:
-    default_executable: rake
-    bindir: bin
-    has_rdoc: true
-    required_ruby_version: !ruby/object:Gem::Version::Requirement
-      requirements:
-        -
-          - ">"
-          - !ruby/object:Gem::Version
-            version: 0.0.0
-      version:
-    platform: ruby
-    files:
-      - README
-    test_files: []
-    library_stubs:
-    rdoc_options:
-    extra_rdoc_files:
-    executables:
-      - rake
-    extensions: []
-    requirements: []
-    dependencies: []
-  EOY
-
-  PROXY_DATA = SERVER_DATA.gsub(/0.4.11/, '0.4.2')
-
-  # don't let 1.8 and 1.9 autotest collide
-  RUBY_VERSION =~ /(\d+)\.(\d+)\.(\d+)/
-  # don't let parallel runners collide
-  PROXY_PORT = process_based_port + 100 + $1.to_i * 100 + $2.to_i * 10 + $3.to_i
-
   def setup
     @proxies = %w[http_proxy HTTP_PROXY http_proxy_user HTTP_PROXY_USER http_proxy_pass HTTP_PROXY_PASS no_proxy NO_PROXY]
     @old_proxies = @proxies.map {|k| ENV[k] }
@@ -61,7 +11,7 @@ gems:
 
     super
 
-    @proxy_uri = "http://localhost:#{PROXY_PORT}"
+    @proxy_uri = "http://localhost:1234"
 
     @request = Gem::Request.new nil, nil, nil, nil
   end

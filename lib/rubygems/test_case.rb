@@ -75,7 +75,7 @@ end
 #
 # Tests are always run at a safe level of 1.
 
-class Gem::TestCase < MiniTest::Test
+class Gem::TestCase < Minitest::Test
 
   # TODO: move to minitest
   def assert_path_exists path, msg = nil

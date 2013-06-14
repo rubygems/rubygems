@@ -1,4 +1,9 @@
+require 'net/http'
+require 'time'
+
 class Gem::Request
+
+  attr_reader :proxy_uri
 
   def initialize(uri, request_class, last_modified, proxy)
     @uri = uri

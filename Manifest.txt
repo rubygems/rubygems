@@ -249,6 +249,7 @@ test/rubygems/test_gem_path_support.rb
 test/rubygems/test_gem_platform.rb
 test/rubygems/test_gem_rdoc.rb
 test/rubygems/test_gem_remote_fetcher.rb
+test/rubygems/test_gem_request.rb
 test/rubygems/test_gem_request_set.rb
 test/rubygems/test_gem_requirement.rb
 test/rubygems/test_gem_security.rb

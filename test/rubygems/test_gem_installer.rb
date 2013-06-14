@@ -1340,7 +1340,7 @@ gem 'other', version
     assert File.exist?(File.join(dest, 'bin', 'executable'))
   end
 
-  def test_write_build_args
+  def test_write_build_info_file
     refute_path_exists @spec.build_info_file
 
     @installer.build_args = %w[
@@ -1356,7 +1356,7 @@ gem 'other', version
     assert_equal expected, File.read(@spec.build_info_file)
   end
 
-  def test_write_build_args_empty
+  def test_write_build_info_file_empty
     refute_path_exists @spec.build_info_file
 
     @installer.write_build_info_file

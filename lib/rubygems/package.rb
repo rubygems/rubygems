@@ -512,27 +512,34 @@ EOM
   end
 
   ##
+  # Verifies +entry+ in a .gem file.
+
+  def verify_entry entry
+    file_name = entry.full_name
+    @files << file_name
+
+    case file_name
+    when /\.sig$/ then
+      @signatures[$`] = entry.read if @security_policy
+      return
+    else
+      digest entry
+    end
+
+    case file_name
+    when /^metadata(.gz)?$/ then
+      load_spec entry
+    when 'data.tar.gz' then
+      verify_gz entry
+    end
+  end
+
+  ##
   # Verifies the files of the +gem+
 
   def verify_files gem
     gem.each do |entry|
-      file_name = entry.full_name
-      @files << file_name
-
-      case file_name
-      when /\.sig$/ then
-        @signatures[$`] = entry.read if @security_policy
-        next
-      else
-        digest entry
-      end
-
-      case file_name
-      when /^metadata(.gz)?$/ then
-        load_spec entry
-      when 'data.tar.gz' then
-        verify_gz entry
-      end
+      verify_entry entry
     end
 
     unless @spec then

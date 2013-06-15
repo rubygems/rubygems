@@ -679,6 +679,21 @@ class TestGemPackage < Gem::Package::TarTestCase
                  e.message
   end
 
+  # end #verify tests
+
+  def test_verify_entry
+    entry = Object.new
+    def entry.full_name() raise ArgumentError, 'whatever' end
+
+    package = Gem::Package.new @gem
+
+    e = assert_raises Gem::Package::FormatError do
+      package.verify_entry entry
+    end
+
+    assert_equal "package is corrupt, exception while verifying: whatever (ArgumentError) in #{@gem}", e.message
+  end
+
   def test_spec
     package = Gem::Package.new @gem
 

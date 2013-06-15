@@ -532,6 +532,10 @@ EOM
     when 'data.tar.gz' then
       verify_gz entry
     end
+  rescue => e
+    message = "package is corrupt, exception while verifying: " +
+              "#{e.message} (#{e.class})"
+    raise Gem::Package::FormatError.new message, @gem
   end
 
   ##

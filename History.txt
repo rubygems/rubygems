@@ -24,6 +24,8 @@ Minor enhancements:
 * Generated private keys are now encrypted.  Pull Request #453 by pietro
 * Separated Gem::Request from Gem::RemoteFetcher.  Pull Request #283 by Steve
   Klabnik.
+* RubyGems indicates when a .gem's content is corrupt while verifying.  Bug
+  #519 by William T Nelson.
 
 Bug fixes:
 

@@ -1236,7 +1236,7 @@ class Gem::Specification
 
     unless dependency.respond_to?(:name) &&
            dependency.respond_to?(:version_requirements)
-      dependency = Gem::Dependency.new(dependency, requirements, type)
+      dependency = Gem::Dependency.new(dependency.to_s, requirements, type)
     end
 
     dependencies << dependency

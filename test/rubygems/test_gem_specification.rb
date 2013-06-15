@@ -597,7 +597,16 @@ dependencies: []
     assert @a2.activated?
   end
 
-  def test_add_dependency_with_explicit_type
+  def test_add_dependency_with_type
+    gem = quick_spec "awesome", "1.0" do |awesome|
+      awesome.add_dependency true
+      awesome.add_dependency :gem_name
+    end
+
+    assert_equal %w[true gem_name], gem.dependencies.map { |dep| dep.name }
+  end
+
+  def test_add_dependency_with_type_explicit
     gem = quick_spec "awesome", "1.0" do |awesome|
       awesome.add_development_dependency "monkey"
     end

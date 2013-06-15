@@ -11,6 +11,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
   def setup
     super
+    common_installer_setup
 
     @cmd = Gem::Commands::UpdateCommand.new
 

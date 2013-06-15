@@ -15,6 +15,7 @@ class TestGem < Gem::TestCase
 
   def setup
     super
+    common_installer_setup
 
     ENV.delete 'RUBYGEMS_GEMDEPS'
     @additional = %w[a b].map { |d| File.join @tempdir, d }
@@ -1634,4 +1635,3 @@ class TestGem < Gem::TestCase
     File.join Gem.dir, "cache"
   end
 end
-

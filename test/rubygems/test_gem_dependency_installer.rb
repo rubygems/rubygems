@@ -6,6 +6,7 @@ class TestGemDependencyInstaller < Gem::TestCase
 
   def setup
     super
+    common_installer_setup
 
     @gems_dir  = File.join @tempdir, 'gems'
     @cache_dir = File.join @gemhome, 'cache'

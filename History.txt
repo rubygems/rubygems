@@ -27,14 +27,11 @@ Minor enhancements:
 
 Bug fixes:
 
+* Fixed pushing gems with the default host.  Bug #495 by Utkarsh Kukreti
+* Improved unhelpful error message from `gem owner --remove`.  Bug #488 by
+  Steve Klabnik
 * Fixed typo in `gem spec` help.  Pull request #563 by oooooooo
-
-=== 2.0.4
-
-* Bug fixes:
-  * Fixed pushing gems with the default host.  Bug #495 by Utkarsh Kukreti
-  * Improved unhelpful error message from `gem owner --remove`.  Bug #488 by
-    Steve Klabnik
+* Fixed creation of build_info with --install-dir.  Bug #457 by Vít Ondruch.
 
 === 2.0.3 / 2012-03-11
 

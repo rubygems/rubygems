@@ -14,6 +14,7 @@ Bug fixes:
 * RubyGems uses ENV['MAKE'] or ENV['make'] over rbconfig.rb's make if present.
   Pull Request #443 by Erik Hollensbe
 * Fixed typo in `gem spec` help.  Pull request #563 by oooooooo
+* Fixed creation of build_info with --install-dir.  Bug #457 by Vít Ondruch.
 
 === 2.0.3 / 2012-03-11
 

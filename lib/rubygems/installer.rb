@@ -773,7 +773,13 @@ EOF
   def write_build_info_file
     return if @build_args.empty?
 
-    open spec.build_info_file, 'w' do |io|
+    build_info_dir = File.join gem_home, 'build_info'
+
+    FileUtils.mkdir_p build_info_dir
+
+    build_info_file = File.join build_info_dir, "#{spec.full_name}.info"
+
+    open build_info_file, 'w' do |io|
       @build_args.each do |arg|
         io.puts arg
       end

@@ -38,9 +38,8 @@ class Gem::GemRunner
       # We need to preserve the original ARGV to use for passing gem options
       # to source gems.  If there is a -- in the line, strip all options after
       # it...its for the source building process.
-      # TODO use slice!
-      build_args = args[args.index("--") + 1...args.length]
-      args = args[0...args.index("--")]
+      build_args = args.slice(args.index("--") + 1...args.length)
+      args = args.slice(0...args.index("--"))
     end
 
     do_configuration args

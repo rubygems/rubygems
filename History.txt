@@ -32,6 +32,8 @@ Bug fixes:
   Steve Klabnik
 * Fixed typo in `gem spec` help.  Pull request #563 by oooooooo
 * Fixed creation of build_info with --install-dir.  Bug #457 by Vít Ondruch.
+* RubyGems converts non-string dependency names to strings now.  Bug #505 by
+  Terence Lee
 
 === 2.0.3 / 2012-03-11
 

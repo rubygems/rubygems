@@ -26,6 +26,7 @@ Minor enhancements:
   Klabnik.
 * RubyGems indicates when a .gem's content is corrupt while verifying.  Bug
   #519 by William T Nelson.
+* Refactored common installer setup.  Pull request #520 by Gastón Ramos
 
 Bug fixes:
 

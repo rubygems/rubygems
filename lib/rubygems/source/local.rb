@@ -109,4 +109,13 @@ class Gem::Source::Local < Gem::Source
 
     raise Gem::Exception, "Unable to find file for '#{spec.full_name}'"
   end
+
+  def pretty_print q # :nodoc:
+    q.group 2, '[Local gems: ', ']' do
+      q.seplist @specs.keys do |v|
+        q.text v.full_name
+      end
+    end
+  end
+
 end

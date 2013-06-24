@@ -32,6 +32,13 @@ class Gem::DependencyResolver::DependencyRequest
     @dependency.name
   end
 
+  def pretty_print q # :nodoc:
+    q.group 2, "[Dependency #{@dependency}", ']' do
+      q.text ' requested by '
+      q.pp @requester
+    end
+  end
+
   def to_s # :nodoc:
     @dependency.to_s
   end

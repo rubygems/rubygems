@@ -86,6 +86,18 @@ class Gem::DependencyResolver::ActivationRequest
     @request.requester
   end
 
+  def pretty_print q # :nodoc:
+    q.group 2, '[Activation request ', ']' do
+      q.pp @spec
+      q.breakable ''
+      q.text ' for '
+      q.pp @request
+      q.breakable ''
+
+      q.text ' (other possible)' if @others_possible
+    end
+  end
+
   def version
     @spec.version
   end

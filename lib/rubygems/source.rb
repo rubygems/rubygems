@@ -147,6 +147,13 @@ class Gem::Source
     fetcher = Gem::RemoteFetcher.fetcher
     fetcher.download spec, @uri.to_s, dir
   end
+
+  def pretty_print q # :nodoc:
+    q.group 2, '[Remote gems: ', ']' do
+      q.text @uri.to_s
+    end
+  end
+
 end
 
 require 'rubygems/source/installed'

@@ -34,6 +34,15 @@ class Gem::DependencyResolver::IndexSpecification
     '#<%s %s source %s>' % [self.class, full_name, @source]
   end
 
+  def pretty_print q # :nodoc:
+    q.text '[Index specification '
+    q.text full_name
+    q.breakable ''
+    q.text ' source '
+    q.pp @source
+    q.text ']'
+  end
+
   def spec
     @spec ||= @set.load_spec(@name, @version, @source)
   end

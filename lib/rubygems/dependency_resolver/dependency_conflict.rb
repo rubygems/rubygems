@@ -25,6 +25,27 @@ class Gem::DependencyResolver::DependencyConflict
     @dependency.name == spec.name
   end
 
+  def pretty_print q # :nodoc:
+    q.group 2, '[Dependency conflict: ', ']' do
+      q.breakable
+
+      q.text 'activated '
+      q.pp @activated
+
+      q.breakable
+      q.text ' dependency '
+      q.pp @dependency
+
+      q.breakable
+      if @dependency == @failed_dep then
+        q.text ' failed'
+      else
+        q.text ' failed dependency '
+        q.pp @failed_dep
+      end
+    end
+  end
+
   ##
   # Return the Specification that listed the dependency
 

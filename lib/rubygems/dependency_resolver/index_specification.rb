@@ -35,12 +35,14 @@ class Gem::DependencyResolver::IndexSpecification
   end
 
   def pretty_print q # :nodoc:
-    q.text '[Index specification '
-    q.text full_name
-    q.breakable ''
-    q.text ' source '
-    q.pp @source
-    q.text ']'
+    q.group 2, '[Index specification ', ']' do
+      q.breakable
+      q.text full_name
+
+      q.breakable
+      q.text ' source '
+      q.pp @source
+    end
   end
 
   def spec

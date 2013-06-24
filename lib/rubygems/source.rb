@@ -149,7 +149,8 @@ class Gem::Source
   end
 
   def pretty_print q # :nodoc:
-    q.group 2, '[Remote gems: ', ']' do
+    q.group 2, '[Remote:', ']' do
+      q.breakable
       q.text @uri.to_s
     end
   end

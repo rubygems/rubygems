@@ -42,6 +42,7 @@ module Gem::VersionOption
     add_option("--[no-]prerelease",
                "Allow prerelease versions of a gem", *wrap) do |value, options|
       options[:prerelease] = value
+      options[:explicit_prerelease] = true
     end
   end
 
@@ -57,7 +58,12 @@ module Gem::VersionOption
                "Specify version of gem to #{task}", *wrap) do
                  |value, options|
       options[:version] = value
-      options[:prerelease] = true if value.prerelease?
+
+      explicit_prerelease_set = !options[:explicit_prerelease].nil?
+      options[:explicit_prerelease] = false unless explicit_prerelease_set
+
+      options[:prerelease] = value.prerelease? unless
+        options[:explicit_prerelease]
     end
   end
 

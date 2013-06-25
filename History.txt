@@ -36,6 +36,10 @@ Minor enhancements:
 * Refactored common installer setup.  Pull request #520 by Gastón Ramos
 * Moved activation tests to Gem::Specification.  Pull request #521 by Gastón
   Ramos
+* When a --version option with a prerelease version is given RubyGems
+  automatically enables prerelease versions but only the last version is
+  used.  If the first version is a prerelease version this is no longer sticky
+  unless an explicit --[no-]prerelease was also given.  Fixes part of #531.
 
 Bug fixes:
 

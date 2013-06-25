@@ -50,6 +50,8 @@ Minor enhancements:
   automatically enables prerelease versions but only the last version is
   used.  If the first version is a prerelease version this is no longer sticky
   unless an explicit --[no-]prerelease was also given.  Fixes part of #531.
+* RubyGems now supports an SSL client certificate.  Pull request #550 by
+  Robert Kenny.
 
 Bug fixes:
 

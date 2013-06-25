@@ -990,6 +990,24 @@ Also, a list:
   end
 
   ##
+  # Constructs a Gem::DependencyResolver::DependencyRequest from a
+  # Gem::Dependency +dep+, a +from_name+ and +from_version+ requesting the
+  # dependency and a +parent+ DependencyRequest
+
+  def dependency_request dep, from_name, from_version, parent = nil
+    remote = Gem::Source.new @uri
+
+    parent ||= Gem::DependencyResolver::DependencyRequest.new \
+      dep, nil
+
+    spec = Gem::DependencyResolver::IndexSpecification.new \
+      nil, from_name, from_version, remote, Gem::Platform::RUBY
+    activation = Gem::DependencyResolver::ActivationRequest.new spec, parent
+
+    Gem::DependencyResolver::DependencyRequest.new dep, activation
+  end
+
+  ##
   # Constructs a new Gem::Requirement.
 
   def req *requirements

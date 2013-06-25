@@ -21,6 +21,18 @@ class Gem::DependencyResolver::DependencyConflict
     [@failed_dep.dependency, @activated.request.dependency]
   end
 
+  ##
+  # Explanation of the conflict used by exceptions to print useful messages
+
+  def explanation
+    activated   = @activated.spec.full_name
+    requirement = @failed_dep.dependency.requirement
+
+    "  Activated %s instead of (%s) via:\n    %s\n" % [
+      activated, requirement, request_path.join(', ')
+    ]
+  end
+
   def for_spec?(spec)
     @dependency.name == spec.name
   end
@@ -44,6 +56,22 @@ class Gem::DependencyResolver::DependencyConflict
         q.pp @failed_dep
       end
     end
+  end
+
+  ##
+  # Path of specifications that requested this dependency
+
+  def request_path
+    current = requester
+    path    = []
+
+    while current do
+      path << current.spec.full_name
+
+      current = current.request.requester
+    end
+
+    path
   end
 
   ##

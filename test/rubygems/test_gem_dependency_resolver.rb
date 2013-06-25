@@ -216,7 +216,7 @@ class TestGemDependencyResolver < Gem::TestCase
       r.resolve
     end
 
-    assert_equal "detected 1 conflict with dependency c (>= 2)", e.message
+    assert_match "a-1 requires c (>= 2) but it conflicted", e.message
 
     assert_equal "c (>= 2)", e.dependency.to_s
 

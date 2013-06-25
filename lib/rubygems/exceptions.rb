@@ -94,17 +94,33 @@ end
 class Gem::ImpossibleDependenciesError < Gem::Exception
 
   attr_reader :conflicts
+  attr_reader :request
 
   def initialize request, conflicts
-    s = conflicts.size == 1 ? "" : "s"
-    super "detected #{conflicts.size} conflict#{s} with dependency #{request.dependency}"
-    @request = request
+    @request   = request
     @conflicts = conflicts
+
+    super build_message
+  end
+
+  def build_message # :nodoc:
+    requester  = @request.requester
+    requester  = requester ? requester.spec.full_name : 'The user'
+    dependency = @request.dependency
+
+    message = "#{requester} requires #{dependency} but it conflicted:\n"
+
+    @conflicts.each do |_, conflict|
+      message << conflict.explanation
+    end
+
+    message
   end
 
   def dependency
     @request.dependency
   end
+
 end
 
 class Gem::InstallError < Gem::Exception; end

@@ -2,6 +2,13 @@
 
 === 2.1
 
+Major enhancements:
+
+* RubyGems uses a new dependency resolver for gem installation which works
+  similar to the bundler resolver.  The new resolver can resolve conflicts the
+  previous resolver could not and offers improved diagnostics when conflicts
+  are discovered.
+
 Minor enhancements:
 
 * `gem clean` now allows `-n` as an alias for `--dryrun`.  Pull Request #517

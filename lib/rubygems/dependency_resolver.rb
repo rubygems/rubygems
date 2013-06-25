@@ -90,12 +90,40 @@ class Gem::DependencyResolver
     res.to_a
   end
 
+  def handle_conflict(dep, existing)
+    # There is a conflict! We return the conflict
+    # object which will be seen by the caller and be
+    # handled at the right level.
+
+    # If the existing activation indicates that there
+    # are other possibles for it, then issue the conflict
+    # on the dep for the activation itself. Otherwise, issue
+    # it on the requester's request itself.
+    #
+    if existing.others_possible?
+      conflict =
+        Gem::DependencyResolver::DependencyConflict.new dep, existing
+    else
+      depreq = existing.request.requester.request
+      conflict =
+        Gem::DependencyResolver::DependencyConflict.new depreq, existing, dep
+    end
+
+    @conflicts << conflict
+
+    return conflict
+  end
+
+  State = Struct.new(:needed, :specs, :dep, :spec, :possibles, :conflicts)
+
   ##
   # The meat of the algorithm. Given +needed+ DependencyRequest objects and
   # +specs+ being a list to ActivationRequest, calculate a new list of
   # ActivationRequest objects.
 
   def resolve_for needed, specs
+    states = []
+
     while needed
       dep = needed.value
       needed = needed.tail
@@ -107,26 +135,41 @@ class Gem::DependencyResolver
         # existing spec.
         next if dep.matches_spec? existing
 
-        # There is a conflict! We return the conflict
-        # object which will be seen by the caller and be
-        # handled at the right level.
+        conflict = handle_conflict dep, existing
 
-        # If the existing activation indicates that there
-        # are other possibles for it, then issue the conflict
-        # on the dep for the activation itself. Otherwise, issue
-        # it on the requester's request itself.
-        #
-        if existing.others_possible?
-          conflict =
-            Gem::DependencyResolver::DependencyConflict.new dep, existing
-        else
-          depreq = existing.request.requester.request
-          conflict =
-            Gem::DependencyResolver::DependencyConflict.new depreq, existing, dep
+        s = nil
+
+        until states.empty?
+          if conflict.for_spec? states.last.spec
+            s = states.last
+            s.conflicts << [s.spec, conflict]
+            break
+          else
+            states.pop
+          end
         end
-        @conflicts << conflict
 
-        return conflict
+        if s
+          s.conflicts << [s.spec, conflict]
+
+          if s.possibles.empty?
+            raise Gem::ImpossibleDependenciesError.new(s.dep, s.conflicts)
+          end
+
+          spec = s.possibles.pop
+
+          # Recursively call #resolve_for with this spec
+          # and add it's dependencies into the picture...
+
+          act = Gem::DependencyResolver::ActivationRequest.new spec, s.dep
+
+          needed = requests(spec, act, s.needed)
+          specs = Gem::List.prepend(s.specs, act)
+
+          next
+        else
+          return conflict
+        end
       end
 
       # Get a list of all specs that satisfy dep
@@ -164,10 +207,6 @@ class Gem::DependencyResolver
         # first.
         possible = possible.sort_by { |s| [s.source, s.version] }
 
-        # We track the conflicts seen so that we can report them
-        # to help the user figure out how to fix the situation.
-        conflicts = []
-
         # To figure out which to pick, we keep resolving
         # given each one being activated and if there isn't
         # a conflict, we know we've found a full set.
@@ -176,48 +215,17 @@ class Gem::DependencyResolver
         # to keep the stack short since we're using a recursive
         # algorithm.
         #
-        until possible.empty?
-          s = possible.pop
+        spec = possible.pop
 
-          # Recursively call #resolve_for with this spec
-          # and add it's dependencies into the picture...
+        # Recursively call #resolve_for with this spec
+        # and add it's dependencies into the picture...
 
-          act = Gem::DependencyResolver::ActivationRequest.new s, dep
+        act = Gem::DependencyResolver::ActivationRequest.new spec, dep
 
-          try = requests(s, act, needed)
+        states << State.new(needed, specs, dep, spec, possible, [])
 
-          res = resolve_for try, Gem::List.prepend(specs, act)
-
-          # While trying to resolve these dependencies, there may
-          # be a conflict!
-
-          if res.kind_of? Gem::DependencyResolver::DependencyConflict
-            # The conflict might be created not by this invocation
-            # but rather one up the stack, so if we can't attempt
-            # to resolve this conflict (conflict isn't with the spec +s+)
-            # then just return it so the caller can try to sort it out.
-            return res unless res.for_spec? s
-
-            # Otherwise, this is a conflict that we can attempt to fix
-            conflicts << [s, res]
-
-            # Optimization:
-            #
-            # Because the conflict indicates the dependency that trigger
-            # it, we can prune possible based on this new information.
-            #
-            # This cuts down on the number of iterations needed.
-            possible.delete_if { |x| !res.dependency.matches_spec? x }
-          else
-            # No conflict, return the specs
-            return res
-          end
-        end
-
-        # We tried all possibles and nothing worked, so we let the user
-        # know and include as much information about the problem since
-        # the user is going to have to take action to fix this.
-        raise Gem::ImpossibleDependenciesError.new(dep, conflicts)
+        needed = requests(spec, act, needed)
+        specs = Gem::List.prepend(specs, act)
       end
     end
 

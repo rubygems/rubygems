@@ -1,7 +1,10 @@
 require 'net/http'
 require 'time'
+require 'rubygems/user_interaction'
 
 class Gem::Request
+
+  include Gem::UserInteraction
 
   attr_reader :proxy_uri
 

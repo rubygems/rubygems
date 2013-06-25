@@ -292,7 +292,7 @@ class Gem::Uninstaller
   end
 
   def abort_on_dependent?
-    !!@abort_on_dependent
+    @abort_on_dependent
   end
 
   def ask_if_ok(spec)

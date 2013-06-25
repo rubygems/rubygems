@@ -25,6 +25,9 @@ Minor enhancements:
 * Added PATH to `gem env` output.  Pull Request #490 by Michal Papis
 * Added --host option to `gem owner` to match other commands using the
   gemcutter API.  Pull Request #462 and issue #461 by Hugo Lopes Tavares
+* Added --abort-on-dependent to `gem uninstall`.  This will abort instead of
+  asking to uninstall a gem that is depended upon by another gem.  Pull
+  request #549 by Philip Arndt.
 * Removed duplicate creation of gem subdirectories in
   Gem::DependencyInstaller.  Pull Request #456 by Vít Ondruch
 * RubyGems now works with Ruby built with `--with-ruby-version=''`.  Pull

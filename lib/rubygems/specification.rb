@@ -918,7 +918,7 @@ class Gem::Specification
     result = Hash.new { |h,k| h[k] = {} }
     native = {}
 
-    Gem::Specification._all.reverse_each do |spec|
+    Gem::Specification.reverse_each do |spec|
       next if spec.version.prerelease? unless prerelease
 
       native[spec.name] = spec.version if spec.platform == Gem::Platform::RUBY
@@ -995,7 +995,7 @@ class Gem::Specification
     # TODO: maybe we should switch to rubygems' version service?
     fetcher = Gem::SpecFetcher.fetcher
 
-    latest_specs.each do |local|
+    latest_specs(true).each do |local|
       dependency = Gem::Dependency.new local.name, ">= #{local.version}"
       remotes, _   = fetcher.search_for_dependency dependency
       remotes      = remotes.map { |n, _| n.version }

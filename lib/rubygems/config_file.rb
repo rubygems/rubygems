@@ -252,6 +252,10 @@ Your gem push credentials file located at:
 
 has file permissions of 0#{existing_permissions.to_s 8} but 0600 is required.
 
+To fix this error run:
+
+\tchmod 0600 #{credentials_path}
+
 You should reset your credentials at:
 
 \thttps://rubygems.org/profile/edit

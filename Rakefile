@@ -47,11 +47,12 @@ hoe = Hoe.spec 'rubygems-update' do
                    'pkgs/sources/sources*.gem',
                    'scripts/*.hieraki')
 
-  extra_dev_deps << ['builder', '~> 2.1']
-  extra_dev_deps << ['hoe-seattlerb', '~> 1.2']
-  extra_dev_deps << ['rdoc', '~> 3.0']
-  extra_dev_deps << ['ZenTest', '~> 4.5']
-  extra_dev_deps << ['rake', '~> 0.9.3']
+  dependency 'builder',       '~> 2.1',   :dev
+  dependency 'hoe-seattlerb', '~> 1.2',   :dev
+  dependency 'rdoc',          '~> 3.0',   :dev
+  dependency 'ZenTest',       '~> 4.5',   :dev
+  dependency 'rake',          '~> 0.9.3', :dev
+  dependency 'minitest',      '~> 4.0',   :dev
 
   self.extra_rdoc_files = Dir["*.rdoc"]
 

@@ -6,7 +6,7 @@ class TestGemInstaller < Gem::InstallerTestCase
     super
     common_installer_setup
 
-    if name =~ /^test_install(_|$)/ then
+    if __name__ =~ /^test_install(_|$)/ then
       FileUtils.rm_r @spec.gem_dir
       FileUtils.rm_r @user_spec.gem_dir
     end
@@ -15,6 +15,8 @@ class TestGemInstaller < Gem::InstallerTestCase
   end
 
   def teardown
+    common_installer_teardown
+
     super
 
     Gem.configuration = @config

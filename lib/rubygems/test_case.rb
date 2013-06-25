@@ -75,7 +75,7 @@ end
 #
 # Tests are always run at a safe level of 1.
 
-class Gem::TestCase < Minitest::Test
+class Gem::TestCase < MiniTest::Unit::TestCase
 
   def assert_activate expected, *specs
     specs.each do |spec|
@@ -267,14 +267,7 @@ class Gem::TestCase < Minitest::Test
   end
 
   def common_installer_setup
-    Gem.post_build_hooks.clear
-    Gem.post_install_hooks.clear
-    Gem.done_installing_hooks.clear
-    Gem.post_reset_hooks.clear
-    Gem.post_uninstall_hooks.clear
-    Gem.pre_install_hooks.clear
-    Gem.pre_reset_hooks.clear
-    Gem.pre_uninstall_hooks.clear
+    common_installer_teardown
 
     Gem.post_build do |installer|
       @post_build_hook_arg = installer
@@ -297,6 +290,17 @@ class Gem::TestCase < Minitest::Test
     Gem.pre_uninstall do |uninstaller|
       @pre_uninstall_hook_arg = uninstaller
     end
+  end
+
+  def common_installer_teardown
+    Gem.post_build_hooks.clear
+    Gem.post_install_hooks.clear
+    Gem.done_installing_hooks.clear
+    Gem.post_reset_hooks.clear
+    Gem.post_uninstall_hooks.clear
+    Gem.pre_install_hooks.clear
+    Gem.pre_reset_hooks.clear
+    Gem.pre_uninstall_hooks.clear
   end
 
   ##

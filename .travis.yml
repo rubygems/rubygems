@@ -1,5 +1,5 @@
 before_script:
-  - gem install minitest
+  - gem install minitest -v '~> 4.7'
   - gem install rdoc
   - gem install hoe
   - gem install hoe-seattlerb

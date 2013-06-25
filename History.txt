@@ -52,6 +52,8 @@ Minor enhancements:
   unless an explicit --[no-]prerelease was also given.  Fixes part of #531.
 * RubyGems now supports an SSL client certificate.  Pull request #550 by
   Robert Kenny.
+* RubyGems now suggests how to fix permission errors.  Pull request #553 by
+  Odin Dutton.
 
 Bug fixes:
 

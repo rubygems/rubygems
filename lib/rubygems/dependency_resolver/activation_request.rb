@@ -87,7 +87,7 @@ class Gem::DependencyResolver::ActivationRequest
   end
 
   def pretty_print q # :nodoc:
-    q.group 2, '[Activation request ', ']' do
+    q.group 2, '[Activation request', ']' do
       q.breakable
       q.pp @spec
 

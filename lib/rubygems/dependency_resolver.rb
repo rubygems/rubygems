@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'rubygems/dependency'
 require 'rubygems/exceptions'
+require 'rubygems/util/list'
 
 require 'uri'
 require 'net/http'
@@ -58,12 +59,10 @@ class Gem::DependencyResolver
     @soft_missing = false
   end
 
-  def requests s, act
-    reqs = []
-
-    s.dependencies.each do |d|
+  def requests s, act, reqs=nil
+    s.dependencies.reverse_each do |d|
       next if d.type == :development and not @development
-      reqs << Gem::DependencyResolver::DependencyRequest.new(d, act)
+      reqs = Gem::List.new Gem::DependencyResolver::DependencyRequest.new(d, act), reqs
     end
 
     @set.prefetch reqs
@@ -77,16 +76,18 @@ class Gem::DependencyResolver
   def resolve
     @conflicts = []
 
-    needed = @needed.map do |n|
-      Gem::DependencyResolver::DependencyRequest.new n, nil
+    needed = nil
+
+    @needed.reverse_each do |n|
+      needed = Gem::List.new(Gem::DependencyResolver::DependencyRequest.new(n, nil), needed)
     end
 
-    res = resolve_for needed, []
+    res = resolve_for needed, nil
 
     raise Gem::DependencyResolutionError, res if
       res.kind_of? Gem::DependencyResolver::DependencyConflict
 
-    res
+    res.to_a
   end
 
   ##
@@ -95,11 +96,12 @@ class Gem::DependencyResolver
   # ActivationRequest objects.
 
   def resolve_for needed, specs
-    until needed.empty?
-      dep = needed.shift
+    while needed
+      dep = needed.value
+      needed = needed.tail
 
       # If there is already a spec activated for the requested name...
-      if existing = specs.find { |s| dep.name == s.name }
+      if specs && existing = specs.find { |s| dep.name == s.name }
 
         # then we're done since this new dep matches the
         # existing spec.
@@ -146,14 +148,14 @@ class Gem::DependencyResolver
         spec = possible.first
         act = Gem::DependencyResolver::ActivationRequest.new spec, dep, false
 
-        specs << act
+        specs = Gem::List.prepend specs, act
 
         # Put the deps for at the beginning of needed
         # rather than the end to match the depth first
         # searching done by the multiple case code below.
         #
         # This keeps the error messages consistent.
-        needed = requests(spec, act) + needed
+        needed = requests(spec, act, needed)
       else
         # There are multiple specs for this dep. This is
         # the case that this class is built to handle.
@@ -182,9 +184,9 @@ class Gem::DependencyResolver
 
           act = Gem::DependencyResolver::ActivationRequest.new s, dep
 
-          try = requests(s, act) + needed
+          try = requests(s, act, needed)
 
-          res = resolve_for try, specs + [act]
+          res = resolve_for try, Gem::List.prepend(specs, act)
 
           # While trying to resolve these dependencies, there may
           # be a conflict!

@@ -15,7 +15,9 @@ class TestGemDependencyResolver < Gem::TestCase
     exp = expected.sort_by { |s| s.full_name }
     act = actual.map { |a| a.spec }.sort_by { |s| s.full_name }
 
-    assert_equal exp, act
+    msg = "Set of gems was not the same: #{exp.map { |x| x.full_name}.inspect} != #{act.map { |x| x.full_name}.inspect}"
+
+    assert_equal exp, act, msg
   end
 
   def test_no_overlap_specificly

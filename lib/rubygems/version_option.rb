@@ -51,7 +51,7 @@ module Gem::VersionOption
 
   def add_version_option(task = command, *wrap)
     OptionParser.accept Gem::Requirement do |value|
-      Gem::Requirement.new value
+      Gem::Requirement.new(*value.split(/\s*,\s*/))
     end
 
     add_option('-v', '--version VERSION', Gem::Requirement,

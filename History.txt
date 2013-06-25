@@ -11,6 +11,13 @@ Major enhancements:
 
 Minor enhancements:
 
+* The --version option now accepts compound requirements the same as in a gem
+  dependency.  The following invocation will install rails between 4.0.0.beta
+  and 4.2:
+
+    gem install rails -v '>= 4.0.0.beta, < 4.2'
+
+  Fixes #531 by Gary S. Weaver
 * `gem clean` now allows `-n` as an alias for `--dryrun`.  Pull Request #517
   by Gastón Ramos
 * Added `gem update --system` to `gem help`.  Pull Request #514 by Vince

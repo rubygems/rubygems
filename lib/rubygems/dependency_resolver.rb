@@ -114,6 +114,17 @@ class Gem::DependencyResolver
     return conflict
   end
 
+  # Contains the state for attempting activation of a set of possible specs.
+  # +needed+ is a Gem::List of DependencyRequest objects that, well, need
+  # to be satisfied.
+  # +specs+ is the List of ActivationRequest that are being tested.
+  # +dep+ is the DepedencyRequest that was used to generate this state.
+  # +spec+ is the Specification for this state.
+  # +possible+ is List of DependencyRequest objects that can be tried to
+  # find a  complete set.
+  # +conflicts+ is a [DependencyRequest, DependencyConflict] hit tried to
+  # activate the state.
+  #
   State = Struct.new(:needed, :specs, :dep, :spec, :possibles, :conflicts)
 
   ##
@@ -122,6 +133,7 @@ class Gem::DependencyResolver
   # ActivationRequest objects.
 
   def resolve_for needed, specs
+    # The State objects that are used to attempt the activation tree.
     states = []
 
     while needed
@@ -137,34 +149,39 @@ class Gem::DependencyResolver
 
         conflict = handle_conflict dep, existing
 
-        s = nil
+        # Look through the state array and pop State objects
+        # until we get back to the State that matches the conflict
+        # so that we can try other possible sets.
+
+        i = nil
 
         until states.empty?
           if conflict.for_spec? states.last.spec
-            s = states.last
-            s.conflicts << [s.spec, conflict]
+            i = states.last
+            i.conflicts << [i.spec, conflict]
             break
           else
             states.pop
           end
         end
 
-        if s
-          s.conflicts << [s.spec, conflict]
+        if i
+          # We exhausted the possibles so it's definitely not going to
+          # work out, bail out.
 
-          if s.possibles.empty?
-            raise Gem::ImpossibleDependenciesError.new(s.dep, s.conflicts)
+          if i.possibles.empty?
+            raise Gem::ImpossibleDependenciesError.new(i.dep, i.conflicts)
           end
 
-          spec = s.possibles.pop
+          spec = i.possibles.pop
 
           # Recursively call #resolve_for with this spec
           # and add it's dependencies into the picture...
 
-          act = Gem::DependencyResolver::ActivationRequest.new spec, s.dep
+          act = Gem::DependencyResolver::ActivationRequest.new spec, i.dep
 
-          needed = requests(spec, act, s.needed)
-          specs = Gem::List.prepend(s.specs, act)
+          needed = requests(spec, act, i.needed)
+          specs = Gem::List.prepend(i.specs, act)
 
           next
         else
@@ -217,8 +234,10 @@ class Gem::DependencyResolver
         #
         spec = possible.pop
 
-        # Recursively call #resolve_for with this spec
-        # and add it's dependencies into the picture...
+        # We're may need to try all of +possible+, so we setup
+        # state to unwind back to current +needed+ and +specs+
+        # so we can try another. This is code is what makes the above
+        # code in conflict resolution possible.
 
         act = Gem::DependencyResolver::ActivationRequest.new spec, dep
 

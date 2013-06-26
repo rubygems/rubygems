@@ -179,6 +179,19 @@ class Gem::Security::Policy
     true
   end
 
+  ##
+  # Extracts the email or subject from +certificate+
+
+  def subject certificate # :nodoc:
+    certificate.extensions.each do |extension|
+      next unless extension.oid == 'subjectAltName'
+
+      return extension.value
+    end
+
+    certificate.subject.to_s
+  end
+
   def inspect # :nodoc:
     ("[Policy: %s - data: %p signer: %p chain: %p root: %p " +
      "signed-only: %p trusted-only: %p]") % [
@@ -231,7 +244,11 @@ class Gem::Security::Policy
 
     check_root chain, time if @verify_root
 
-    check_trust chain, digester, trust_dir if @only_trusted
+    if @only_trusted then
+      check_trust chain, digester, trust_dir
+    else
+      alert_warning "#{subject signer} is not trusted for #{full_name}"
+    end
 
     signatures.each do |file, _|
       digest = signer_digests[file]

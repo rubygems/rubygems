@@ -264,6 +264,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     Gem.instance_variable_set :@default_dir, nil
 
     ENV['GEM_PRIVATE_KEY_PASSPHRASE'] = @orig_gem_private_key_passphrase
+
+    Gem::Specification._clear_load_cache!
   end
 
   def common_installer_setup

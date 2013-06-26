@@ -25,6 +25,8 @@ Bug fixes:
   Akinori MUSHA
 * Fixed documentation of `gem pristine` defaults (--all is not a default).
   Pull request #577 by Shannon Skipper
+* Fixed a windows extension-building test failure.  Pull request #575 by
+  Hiroshi Shirosaki
 
 === 2.0.3 / 2012-03-11
 

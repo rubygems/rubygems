@@ -38,7 +38,7 @@ module Gem::GemcutterUtilities
 
     say "Enter your #{pretty_host} credentials."
     say "Don't have an account yet? " +
-        "Create one at https://#{sign_in_host}/sign_up"
+        "Create one at #{sign_in_host}/sign_up"
 
     email    =              ask "   Email: "
     password = ask_for_password "Password: "

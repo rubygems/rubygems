@@ -88,6 +88,8 @@ Bug fixes:
   Pull request #577 by Shannon Skipper
 * Fixed a windows extension-building test failure.  Pull request #575 by
   Hiroshi Shirosaki
+* Fixed issue with `gem update` where it would attempt to use a Version
+  instead of a Requirement to find the latest gem.  Fixes #570 by Nick Cox.
 
 === 2.0.3 / 2012-03-11
 

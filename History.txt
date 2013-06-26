@@ -21,6 +21,8 @@ Bug fixes:
 * RubyGems now only calls fsync() on the specification when installing, not
   every file from the gem.  This improves the performance of gem installation
   on some systems.  Pull Request #556 by Grzesiek Kolodziejczyk
+* Fixed handling of DESTDIR when building extensions.  Pull request #573 by
+  Akinori MUSHA
 
 === 2.0.3 / 2012-03-11
 

@@ -11,6 +11,9 @@ Major enhancements:
 
 Minor enhancements:
 
+* RubyGems now has improved platform matching for the ARM architecture.  Gems
+  built with a CPU of "arm" will match any specific ARM CPU.  See `gem help
+  platform` for further details.  Fixes #532 by Kim Burgestrand.
 * The --version option now accepts compound requirements the same as in a gem
   dependency.  The following invocation will install rails between 4.0.0.beta
   and 4.2:

@@ -324,6 +324,8 @@ if you believe they were disclosed to a third party.
 
     return {} unless filename and File.exist? filename
 
+    syntax_errors = [ArgumentError]
+    syntax_errors << Psych::SyntaxError if Kernel.const_defined?('Psych')
     begin
       content = YAML.load(File.read(filename))
       unless content.kind_of? Hash
@@ -331,8 +333,8 @@ if you believe they were disclosed to a third party.
         return {}
       end
       return content
-    rescue ArgumentError
-      warn "Failed to load #{filename}"
+    rescue *syntax_errors => e
+      warn "Failed to load #{filename}, #{e.to_s}"
     rescue Errno::EACCES
       warn "Failed to load #{filename} due to permissions problem."
     end

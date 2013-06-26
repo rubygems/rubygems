@@ -331,8 +331,9 @@ class Gem::Installer
   # specifications directory.
 
   def write_spec
-    File.open(spec_file, "w") do |file|
+    open spec_file, 'w' do |file|
       file.puts spec.to_ruby_for_cache
+      file.fsync rescue nil # for filesystems without fsync(2)
     end
   end
 

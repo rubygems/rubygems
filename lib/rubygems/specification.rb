@@ -111,6 +111,10 @@ class Gem::Specification < Gem::BasicSpecification
   today = Time.now.utc
   TODAY = Time.utc(today.year, today.month, today.day)
 
+  LOAD_CACHE = {}
+
+  private_constant :LOAD_CACHE if defined? private_constant
+
   # :startdoc:
 
   ##
@@ -640,6 +644,10 @@ class Gem::Specification < Gem::BasicSpecification
     @@all
   end
 
+  def self._clear_load_cache # :nodoc:
+    LOAD_CACHE.clear
+  end
+
   # :nodoc:
   def self.each_gemspec(dirs)
     dirs.each do |dir|
@@ -953,21 +961,13 @@ class Gem::Specification < Gem::BasicSpecification
   ##
   # Loads Ruby format gemspec from +file+.
 
-  LOAD_CACHE = {}
-  private_constant :LOAD_CACHE if defined? private_constant
-
   def self.load file
-    LOAD_CACHE[file] ||= load_without_cache file
-  end
-
-  def self._clear_load_cache!
-    LOAD_CACHE.clear
-  end
-
-  def self.load_without_cache file
     return unless file
     file = file.dup.untaint
     return unless File.file?(file)
+
+    spec = LOAD_CACHE[file]
+    return spec if spec
 
     code = if defined? Encoding
              File.read file, :mode => 'r:UTF-8:-'
@@ -982,6 +982,7 @@ class Gem::Specification < Gem::BasicSpecification
 
       if Gem::Specification === spec
         spec.loaded_from = file.to_s
+        LOAD_CACHE[file] = spec
         return spec
       end
 
@@ -1071,6 +1072,7 @@ class Gem::Specification < Gem::BasicSpecification
     Gem.pre_reset_hooks.each { |hook| hook.call }
     @@all = nil
     @@stubs = nil
+    _clear_load_cache
     unresolved = unresolved_deps
     unless unresolved.empty? then
       w = "W" + "ARN"

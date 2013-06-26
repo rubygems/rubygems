@@ -59,6 +59,8 @@ Minor enhancements:
   Odin Dutton.
 * Added support for installing a gem as default gems for alternate ruby
   implementations.  Pull request #566 by Charles Nutter.
+* Improved performance of Gem::Specification#load by caching the loaded
+  gemspec.  Pull request #569 by Charlie Somerville.
 
 Bug fixes:
 

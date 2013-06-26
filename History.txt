@@ -4,6 +4,8 @@
 
 Bug fixes:
 
+* Fixed error caused by gem install not finding the right platform for your
+  platform. Bug #576 by John Anderson
 * Fixed pushing gems with the default host.  Bug #495 by Utkarsh Kukreti
 * Improved unhelpful error message from `gem owner --remove`.  Bug #488 by
   Steve Klabnik

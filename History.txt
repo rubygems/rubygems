@@ -92,6 +92,8 @@ Bug fixes:
   Hiroshi Shirosaki
 * Fixed issue with `gem update` where it would attempt to use a Version
   instead of a Requirement to find the latest gem.  Fixes #570 by Nick Cox.
+* RubyGems now ignores an empty but set RUBYGEMS_HOST environment variable.
+  Based on pull request #558 by Robin Dupret.
 
 === 2.0.3 / 2012-03-11
 

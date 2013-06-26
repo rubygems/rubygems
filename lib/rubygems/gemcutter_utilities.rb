@@ -44,7 +44,14 @@ module Gem::GemcutterUtilities
     configured_host = Gem.host unless
       Gem.configuration.disable_default_gem_server
 
-    @host ||= ENV['RUBYGEMS_HOST'] || configured_host
+    @host ||=
+      begin
+        env_rubygems_host = ENV['RUBYGEMS_HOST']
+        env_rubygems_host = nil if
+          env_rubygems_host and env_rubygems_host.empty?
+
+        env_rubygems_host|| configured_host
+      end
   end
 
   ##

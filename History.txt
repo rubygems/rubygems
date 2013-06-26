@@ -23,6 +23,8 @@ Bug fixes:
   on some systems.  Pull Request #556 by Grzesiek Kolodziejczyk
 * Fixed handling of DESTDIR when building extensions.  Pull request #573 by
   Akinori MUSHA
+* Fixed documentation of `gem pristine` defaults (--all is not a default).
+  Reported by havenwood.
 
 === 2.0.3 / 2012-03-11
 

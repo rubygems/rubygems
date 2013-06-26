@@ -325,6 +325,22 @@ class TestGemSecurityPolicy < Gem::TestCase
     assert_equal 'missing digest for 0', e.message
   end
 
+  def test_verify_no_signatures
+    Gem::Security.trust_dir.trust_cert PUBLIC_CERT
+
+    digests, = dummy_signatures
+
+    use_ui @ui do
+      @no.verify [PUBLIC_CERT], nil, digests, {}, 'some_gem'
+    end
+
+    assert_equal "WARNING:  some_gem is not signed\n", @ui.error
+
+    assert_raises Gem::Security::Exception do
+      @almost_no.verify [PUBLIC_CERT], nil, digests, {}
+    end
+  end
+
   def test_verify_not_enough_signatures
     Gem::Security.trust_dir.trust_cert PUBLIC_CERT
 

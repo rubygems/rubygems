@@ -61,6 +61,9 @@ Minor enhancements:
   implementations.  Pull request #566 by Charles Nutter.
 * Improved performance of Gem::Specification#load by caching the loaded
   gemspec.  Pull request #569 by Charlie Somerville.
+* RubyGems now warns when an unsigned gem is verified if -P was given during
+  installation even if the security policy allows unsigned gems.  Issue #474
+  by Grant Olson
 
 Bug fixes:
 

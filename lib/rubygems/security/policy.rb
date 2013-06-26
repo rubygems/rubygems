@@ -1,3 +1,5 @@
+require 'rubygems/user_interaction'
+
 ##
 # A Gem::Security::Policy object encapsulates the settings for verifying
 # signed gem files.  This is the base class.  You can either declare an
@@ -5,6 +7,8 @@
 # Gem::Security::Policies.
 
 class Gem::Security::Policy
+
+  include Gem::UserInteraction
 
   attr_reader :name
 
@@ -184,16 +188,21 @@ class Gem::Security::Policy
   end
 
   ##
-  # Verifies the certificate +chain+ is valid, the +digests+ match the
-  # signatures +signatures+ created by the signer depending on the +policy+
-  # settings.
+  # For +full_name+, verifies the certificate +chain+ is valid, the +digests+
+  # match the signatures +signatures+ created by the signer depending on the
+  # +policy+ settings.
   #
   # If +key+ is given it is used to validate the signing certificate.
 
-  def verify chain, key = nil, digests = {}, signatures = {}
-    if @only_signed and signatures.empty? then
-      raise Gem::Security::Exception,
-        "unsigned gems are not allowed by the #{name} policy"
+  def verify chain, key = nil, digests = {}, signatures = {},
+             full_name = '(unknown)'
+    if signatures.empty? then
+      if @only_signed then
+        raise Gem::Security::Exception,
+          "unsigned gems are not allowed by the #{name} policy"
+      else
+        alert_warning "#{full_name} is not signed"
+      end
     end
 
     opt       = @opt
@@ -252,7 +261,7 @@ class Gem::Security::Policy
       OpenSSL::X509::Certificate.new cert_pem
     end
 
-    verify chain, nil, digests, signatures
+    verify chain, nil, digests, signatures, spec.full_name
 
     true
   end

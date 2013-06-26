@@ -298,8 +298,11 @@ EOM
 
   ##
   # Extracts the files in this package into +destination_dir+
+  #
+  # If +pattern+ is specified, only entries matching that glob will be
+  # extracted.
 
-  def extract_files destination_dir
+  def extract_files destination_dir, pattern = "*"
     verify unless @spec
 
     FileUtils.mkdir_p destination_dir
@@ -310,7 +313,7 @@ EOM
       reader.each do |entry|
         next unless entry.full_name == 'data.tar.gz'
 
-        extract_tar_gz entry, destination_dir
+        extract_tar_gz entry, destination_dir, pattern
 
         return # ignore further entries
       end
@@ -324,10 +327,15 @@ EOM
   # If an entry in the archive contains a relative path above
   # +destination_dir+ or an absolute path is encountered an exception is
   # raised.
+  #
+  # If +pattern+ is specified, only entries matching that glob will be
+  # extracted.
 
-  def extract_tar_gz io, destination_dir # :nodoc:
+  def extract_tar_gz io, destination_dir, pattern = "*" # :nodoc:
     open_tar_gz io do |tar|
       tar.each do |entry|
+        next unless File.fnmatch pattern, entry.full_name
+        
         destination = install_location entry.full_name, destination_dir
 
         FileUtils.rm_rf destination

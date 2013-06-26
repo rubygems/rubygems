@@ -78,6 +78,8 @@ Bug fixes:
 * Removed surprise search term anchoring in `gem search` to restore 1.8-like
   search behavior while still defaulting to --remote.  Pull request #562 by
   Ben Bleything
+* Fixed handling of DESTDIR when building extensions.  Pull request #573 by
+  Akinori MUSHA
 
 === 2.0.3 / 2012-03-11
 

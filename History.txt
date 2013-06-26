@@ -18,6 +18,9 @@ Bug fixes:
 * RubyGems converts non-string dependency names to strings now.  Bug #505 by
   Terence Lee
 * Outdated prerelease versions are now listed in `gem outdated`.
+* RubyGems now only calls fsync() on the specification when installing, not
+  every file from the gem.  This improves the performance of gem installation
+  on some systems.  Pull Request #556 by Grzesiek Kolodziejczyk
 
 === 2.0.3 / 2012-03-11
 

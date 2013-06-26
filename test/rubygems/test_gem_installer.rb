@@ -1076,6 +1076,7 @@ gem 'other', version
 
         CONFIG['CC'] = '$(TOUCH) $@ ||'
         CONFIG['LDSHARED'] = '$(TOUCH) $@ ||'
+        $ruby = '#{Gem.ruby}'
 
         create_makefile("#{@spec.name}")
       RUBY

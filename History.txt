@@ -17,6 +17,9 @@ Bug fixes:
 * RubyGems now only calls fsync() on the specification when installing, not
   every file from the gem.  This improves the performance of gem installation
   on some systems.  Pull Request #556 by Grzesiek Kolodziejczyk
+* Removed surprise search term anchoring in `gem search` to restore 1.8-like
+  search behavior while still defaulting to --remote.  Pull request #562 by
+  Ben Bleything
 * Fixed handling of DESTDIR when building extensions.  Pull request #573 by
   Akinori MUSHA
 * Fixed documentation of `gem pristine` defaults (--all is not a default).

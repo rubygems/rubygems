@@ -37,7 +37,7 @@ class Gem::Commands::PristineCommand < Gem::Command
   end
 
   def defaults_str # :nodoc:
-    "--all --extensions"
+    "--extensions"
   end
 
   def description # :nodoc:

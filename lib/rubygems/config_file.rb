@@ -319,6 +319,9 @@ if you believe they were disclosed to a third party.
     @rubygems_api_key = api_key
   end
 
+  YAMLErrors = [ArgumentError]
+  YAMLErrors << Psych::SyntaxError if Kernel.const_defined?('Psych')
+
   def load_file(filename)
     Gem.load_yaml
 
@@ -331,8 +334,8 @@ if you believe they were disclosed to a third party.
         return {}
       end
       return content
-    rescue ArgumentError
-      warn "Failed to load #{filename}"
+    rescue *YAMLErrors => e
+      warn "Failed to load #{filename}, #{e.to_s}"
     rescue Errno::EACCES
       warn "Failed to load #{filename} due to permissions problem."
     end

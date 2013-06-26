@@ -412,8 +412,7 @@ module Gem
     ensure_subdirectories(dir, mode, REPOSITORY_DEFAULT_GEM_SUBDIRECTORIES)
   end
 
-  # :nodoc:
-  def self.ensure_subdirectories dir, mode, subdirs
+  def self.ensure_subdirectories dir, mode, subdirs # :nodoc:
     old_umask = File.umask
     File.umask old_umask | 002
 

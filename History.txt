@@ -57,6 +57,8 @@ Minor enhancements:
   Robert Kenny.
 * RubyGems now suggests how to fix permission errors.  Pull request #553 by
   Odin Dutton.
+* Added support for installing a gem as default gems for alternate ruby
+  implementations.  Pull request #566 by Charles Nutter.
 
 Bug fixes:
 

@@ -80,6 +80,7 @@ lib/rubygems/ext/rake_builder.rb
 lib/rubygems/gem_runner.rb
 lib/rubygems/gemcutter_utilities.rb
 lib/rubygems/indexer.rb
+lib/rubygems/install_default_message.rb
 lib/rubygems/install_message.rb
 lib/rubygems/install_update_options.rb
 lib/rubygems/installer.rb
@@ -213,7 +214,6 @@ test/rubygems/test_gem_commands_owner_command.rb
 test/rubygems/test_gem_commands_pristine_command.rb
 test/rubygems/test_gem_commands_push_command.rb
 test/rubygems/test_gem_commands_query_command.rb
-test/rubygems/test_gem_commands_search_command.rb
 test/rubygems/test_gem_commands_server_command.rb
 test/rubygems/test_gem_commands_setup_command.rb
 test/rubygems/test_gem_commands_sources_command.rb

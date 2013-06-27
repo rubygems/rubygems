@@ -9,12 +9,6 @@ Bug fixes:
 * Fixed pushing gems with the default host.  Bug #495 by Utkarsh Kukreti
 * Improved unhelpful error message from `gem owner --remove`.  Bug #488 by
   Steve Klabnik
-* Removed duplicate creation of gem subdirectories in
-  Gem::DependencyInstaller.  Pull Request #456 by Vít Ondruch
-* RubyGems now works with Ruby built with `--with-ruby-version=''`.  Pull
-  Request #455 by Vít Ondruch
-* RubyGems uses ENV['MAKE'] or ENV['make'] over rbconfig.rb's make if present.
-  Pull Request #443 by Erik Hollensbe
 * Fixed typo in `gem spec` help.  Pull request #563 by oooooooo
 * Fixed creation of build_info with --install-dir.  Bug #457 by Vít Ondruch.
 * RubyGems converts non-string dependency names to strings now.  Bug #505 by
@@ -23,6 +17,12 @@ Bug fixes:
 * RubyGems now only calls fsync() on the specification when installing, not
   every file from the gem.  This improves the performance of gem installation
   on some systems.  Pull Request #556 by Grzesiek Kolodziejczyk
+* Removed duplicate creation of gem subdirectories in
+  Gem::DependencyInstaller.  Pull Request #456 by Vít Ondruch
+* RubyGems now works with Ruby built with `--with-ruby-version=''`.  Pull
+  Request #455 by Vít Ondruch
+* RubyGems uses ENV['MAKE'] or ENV['make'] over rbconfig.rb's make if present.
+  Pull Request #443 by Erik Hollensbe
 * Fixed handling of DESTDIR when building extensions.  Pull request #573 by
   Akinori MUSHA
 * Fixed documentation of `gem pristine` defaults (--all is not a default).

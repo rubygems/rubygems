@@ -31,10 +31,6 @@ Minor enhancements:
 * Added --abort-on-dependent to `gem uninstall`.  This will abort instead of
   asking to uninstall a gem that is depended upon by another gem.  Pull
   request #549 by Philip Arndt.
-* Removed duplicate creation of gem subdirectories in
-  Gem::DependencyInstaller.  Pull Request #456 by Vít Ondruch
-* RubyGems now works with Ruby built with `--with-ruby-version=''`.  Pull
-  Request #455 by Vít Ondruch
 * RubyGems no longer alters Gem::Specification.dirs when installing.  Based on
   Pull Request #452 by Vít Ondruch
 * RubyGems uses ENV['MAKE'] or ENV['make'] over rbconfig.rb's make if present.
@@ -94,6 +90,10 @@ Bug fixes:
   instead of a Requirement to find the latest gem.  Fixes #570 by Nick Cox.
 * RubyGems now ignores an empty but set RUBYGEMS_HOST environment variable.
   Based on pull request #558 by Robin Dupret.
+* Removed duplicate creation of gem subdirectories in
+  Gem::DependencyInstaller.  Pull Request #456 by Vít Ondruch
+* RubyGems now works with Ruby built with `--with-ruby-version=''`.  Pull
+  Request #455 by Vít Ondruch
 
 === 2.0.3 / 2013-03-11
 

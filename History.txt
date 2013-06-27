@@ -17,10 +17,6 @@ Bug fixes:
 * RubyGems now only calls fsync() on the specification when installing, not
   every file from the gem.  This improves the performance of gem installation
   on some systems.  Pull Request #556 by Grzesiek Kolodziejczyk
-* Removed duplicate creation of gem subdirectories in
-  Gem::DependencyInstaller.  Pull Request #456 by Vít Ondruch
-* RubyGems now works with Ruby built with `--with-ruby-version=''`.  Pull
-  Request #455 by Vít Ondruch
 * Fixed handling of DESTDIR when building extensions.  Pull request #573 by
   Akinori MUSHA
 * Fixed documentation of `gem pristine` defaults (--all is not a default).
@@ -31,6 +27,10 @@ Bug fixes:
   instead of a Requirement to find the latest gem.  Fixes #570 by Nick Cox.
 * RubyGems now ignores an empty but set RUBYGEMS_HOST environment variable.
   Based on pull request #558 by Robin Dupret.
+* Removed duplicate creation of gem subdirectories in
+  Gem::DependencyInstaller.  Pull Request #456 by Vít Ondruch
+* RubyGems now works with Ruby built with `--with-ruby-version=''`.  Pull
+  Request #455 by Vít Ondruch
 
 === 2.0.3 / 2013-03-11
 

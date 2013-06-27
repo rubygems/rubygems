@@ -26,7 +26,7 @@ class Gem::Commands::ListCommand < Gem::Commands::QueryCommand
   end
 
   def execute
-    string = get_one_optional_argument || ''
+    string = get_only_one_optional_argument || ''
     options[:name] = /^#{string}/i
     super
   end

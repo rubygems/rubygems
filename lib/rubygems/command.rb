@@ -226,6 +226,21 @@ class Gem::Command
   end
 
   ##
+  # Get a single optional argument from the command line.  If more than one
+  # argument is given, return an error. Return nil if none are given.
+
+  def get_only_one_optional_argument
+    args = options[:args] || []
+    
+    if args.size > 1 then
+      raise Gem::CommandLineError,
+            "Too many gem names (#{args.join(', ')}); please specify only one"
+    end
+    
+    args.first
+  end
+
+  ##
   # Override to provide details of the arguments a command takes.  It should
   # return a left-justified string, one argument per line.
   #

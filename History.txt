@@ -21,8 +21,6 @@ Bug fixes:
   Gem::DependencyInstaller.  Pull Request #456 by Vít Ondruch
 * RubyGems now works with Ruby built with `--with-ruby-version=''`.  Pull
   Request #455 by Vít Ondruch
-* RubyGems uses ENV['MAKE'] or ENV['make'] over rbconfig.rb's make if present.
-  Pull Request #443 by Erik Hollensbe
 * Fixed handling of DESTDIR when building extensions.  Pull request #573 by
   Akinori MUSHA
 * Fixed documentation of `gem pristine` defaults (--all is not a default).

@@ -34,7 +34,7 @@ Bug fixes:
 * RubyGems now ignores an empty but set RUBYGEMS_HOST environment variable.
   Based on pull request #558 by Robin Dupret.
 
-=== 2.0.3 / 2012-03-11
+=== 2.0.3 / 2013-03-11
 
 * Bug fixes:
   * Reverted automatic upgrade to HTTPS as it breaks RubyGems APIs.  Fixes

@@ -18,7 +18,7 @@ class Gem::Ext::Builder
 
     # try to find make program from Ruby configure arguments first
     RbConfig::CONFIG['configure_args'] =~ /with-make-prog\=(\w+)/
-    make_program = ENV['MAKE'] || ENV['make'] || $1
+    make_program = $1 || ENV['MAKE'] || ENV['make']
     unless make_program then
       make_program = (/mswin/ =~ RUBY_PLATFORM) ? 'nmake' : 'make'
     end

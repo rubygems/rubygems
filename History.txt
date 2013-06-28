@@ -61,6 +61,9 @@ Minor enhancements:
   installation even if the security policy allows unsigned gems and warns when
   an untrusted certificate is seen even if the security policy allows
   untrusted certificates.  Issue #474 by Grant Olson
+* RubyGems can now rewrite executables with or without a shebang of
+  /usr/bin/env via <code>gem pristine --all --only-executables
+  --env-[no-]shebang</code>.  Issue #579 by Paul Annesley.
 
 Bug fixes:
 

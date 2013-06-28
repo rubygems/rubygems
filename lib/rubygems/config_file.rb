@@ -320,7 +320,7 @@ if you believe they were disclosed to a third party.
   end
 
   YAMLErrors = [ArgumentError]
-  YAMLErrors << Psych::SyntaxError if Kernel.const_defined?('Psych')
+  YAMLErrors << Psych::SyntaxError if defined?(Psych::SyntaxError)
 
   def load_file(filename)
     Gem.load_yaml

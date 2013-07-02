@@ -1,6 +1,7 @@
 require 'rubygems/command'
 require 'rubygems/version_option'
 require 'rubygems/uninstaller'
+require 'fileutils'
 
 ##
 # Gem uninstaller command line tool
@@ -93,22 +94,42 @@ class Gem::Commands::UninstallCommand < Gem::Command
 
   def execute
     # REFACTOR: stolen from cleanup_command
-    deplist = Gem::DependencyList.new
-    get_all_gem_names.uniq.each do |name|
-      Gem::Specification.find_all_by_name(name).each do |spec|
-        deplist.add spec
+    if options[:args].empty? && options[:all] then
+      remove_executables = if options[:executables].nil? then
+        ask_yes_no("Remove executables in addition to gems?",
+                   true)
+      else
+        true
       end
-    end
 
-    deps = deplist.strongly_connected_components.flatten.reverse
+      dirs_to_be_emptied = Dir[File.join(ENV['GEM_HOME'], '*')]
+      unless remove_executables
+        dirs_to_be_emptied.delete_if { |dir| dir.end_with? 'bin' }
+      end
 
-    deps.map(&:name).uniq.each do |gem_name|
-      begin
-        Gem::Uninstaller.new(gem_name, options).uninstall
-      rescue Gem::GemNotInHomeException => e
-        spec = e.spec
-        alert("In order to remove #{spec.name}, please execute:\n" +
-              "\tgem uninstall #{spec.name} --install-dir=#{spec.installation_path}")
+      dirs_to_be_emptied.each do |dir|
+        FileUtils.rm_rf Dir[File.join(dir, '*')]
+      end
+      alert("Successfully uninstalled all gems")
+    else
+      deplist = Gem::DependencyList.new
+
+      get_all_gem_names.uniq.each do |name|
+        Gem::Specification.find_all_by_name(name).each do |spec|
+          deplist.add spec
+        end
+      end
+
+      deps = deplist.strongly_connected_components.flatten.reverse
+
+      deps.map(&:name).uniq.each do |gem_name|
+        begin
+          Gem::Uninstaller.new(gem_name, options).uninstall
+        rescue Gem::GemNotInHomeException => e
+          spec = e.spec
+          alert("In order to remove #{spec.name}, please execute:\n" +
+                "\tgem uninstall #{spec.name} --install-dir=#{spec.installation_path}")
+        end
       end
     end
   end

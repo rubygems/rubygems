@@ -5,6 +5,17 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'rubygems/version'
+require 'rubygems/requirement'
+require 'rubygems/platform'
+require 'rubygems/deprecate'
+
+# :stopdoc:
+# date.rb can't be loaded for `make install` due to miniruby
+# Date is needed for old gems that stored #date as Date instead of Time.
+class Date; end
+# :startdoc:
+
 ##
 # The Specification class contains the information for a Gem.  Typically
 # defined in a .gemspec file or a Rakefile, and looks like this:
@@ -20,32 +31,19 @@
 #     s.homepage    = 'https://rubygems.org/gems/example'
 #   end
 #
-#   Starting in RubyGems 1.9.0, a Specification can hold arbitrary
-#   metadata. This metadata is accessed via Specification#metadata
-#   and has the following restrictions:
+# Starting in RubyGems 1.9.0, a Specification can hold arbitrary
+# metadata. This metadata is accessed via Specification#metadata
+# and has the following restrictions:
 #
-#     * Must be a Hash object
-#     * All keys and values must be Strings
-#     * Keys can be a maximum of 128 bytes and values can be a
-#       maximum of 1024 bytes
-#     * All strings must be UTF8, no binary data is allowed
+# * Must be a Hash object
+# * All keys and values must be Strings
+# * Keys can be a maximum of 128 bytes and values can be a
+#   maximum of 1024 bytes
+# * All strings must be UTF8, no binary data is allowed
 #
-#   For example, to add metadata for the location of a bugtracker:
+# For example, to add metadata for the location of a bugtracker:
 #
 #   s.metadata = { "bugtracker" => "http://somewhere.com/blah" }
-#
-
-
-require 'rubygems/version'
-require 'rubygems/requirement'
-require 'rubygems/platform'
-require 'rubygems/deprecate'
-
-# :stopdoc:
-# date.rb can't be loaded for `make install` due to miniruby
-# Date is needed for old gems that stored #date as Date instead of Time.
-class Date; end
-# :startdoc:
 
 class Gem::Specification
 

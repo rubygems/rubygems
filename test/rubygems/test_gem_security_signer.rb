@@ -1,5 +1,9 @@
 require 'rubygems/test_case'
 
+unless defined?(OpenSSL::SSL) then
+  warn 'Skipping Gem::Security::Signer tests.  openssl not found.'
+end
+
 class TestGemSecuritySigner < Gem::TestCase
 
   ALTERNATE_KEY  = load_key 'alternate'
@@ -194,5 +198,5 @@ c7NM7KZZjj7G++SXjYTEI1PHSA7aFQ/i/+qSUvx+Pg==
     end
   end
 
-end
+end if defined?(OpenSSL::SSL)
 

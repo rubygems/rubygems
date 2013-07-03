@@ -133,7 +133,7 @@ platform.
           if command then
             command.summary
           else
-            "[No command found for #{cmd_name}, bug?]"
+            "[No command found for #{cmd_name}]"
           end
 
         summary = wrap(summary, summary_width).split "\n"

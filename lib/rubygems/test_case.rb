@@ -1156,11 +1156,12 @@ Also, a list:
   # :stopdoc:
   # only available in RubyGems tests
 
+  PRIVATE_KEY_PASSPHRASE      = 'Foo bar'
+
   begin
     PRIVATE_KEY                 = load_key 'private'
     PRIVATE_KEY_PATH            = key_path 'private'
 
-    PRIVATE_KEY_PASSPHRASE      = 'Foo bar'
     # ENCRYPTED_PRIVATE_KEY is PRIVATE_KEY encrypted with PRIVATE_KEY_PASSPHRASE
     ENCRYPTED_PRIVATE_KEY       = load_key 'encrypted_private', PRIVATE_KEY_PASSPHRASE
     ENCRYPTED_PRIVATE_KEY_PATH  = key_path 'encrypted_private'
@@ -1173,6 +1174,6 @@ Also, a list:
     PRIVATE_KEY = nil
     PUBLIC_KEY  = nil
     PUBLIC_CERT = nil
-  end
+  end if defined?(OpenSSL::SSL)
 
 end

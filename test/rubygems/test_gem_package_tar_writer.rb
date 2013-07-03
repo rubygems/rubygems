@@ -27,7 +27,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
   end
 
   def test_add_file_digest
-    digest_algorithms = OpenSSL::Digest::SHA1, OpenSSL::Digest::SHA512
+    digest_algorithms = Digest::SHA1, Digest::SHA512
 
     digests = @tar_writer.add_file_digest 'x', 0644, digest_algorithms do |io|
       io.write 'a' * 10
@@ -48,7 +48,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
   end
 
   def test_add_file_digest_multiple
-    digest_algorithms = [OpenSSL::Digest::SHA1, OpenSSL::Digest::SHA512]
+    digest_algorithms = [Digest::SHA1, Digest::SHA512]
 
     digests = @tar_writer.add_file_digest 'x', 0644, digest_algorithms do |io|
       io.write 'a' * 10
@@ -69,6 +69,8 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
   end
 
   def test_add_file_signer
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+
     signer = Gem::Security::Signer.new PRIVATE_KEY, [PUBLIC_CERT]
 
     @tar_writer.add_file_signed 'x', 0644, signer do |io|
@@ -102,9 +104,6 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     assert_headers_equal(tar_file_header('x', '', 0644, 10),
                          @io.string[0, 512])
     assert_equal "aaaaaaaaaa#{"\0" * 502}", @io.string[512, 512]
-
-    digest = signer.digest_algorithm.new
-    digest.update 'a' * 10
 
     assert_equal 1024, @io.pos
   end

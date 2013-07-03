@@ -64,6 +64,7 @@ Minor enhancements:
 * RubyGems can now rewrite executables with or without a shebang of
   /usr/bin/env via <code>gem pristine --all --only-executables
   --env-[no-]shebang</code>.  Issue #579 by Paul Annesley.
+* RubyGems can now run its tests without OpenSSL.  Ruby Bug #8557 by nobu.
 
 Bug fixes:
 

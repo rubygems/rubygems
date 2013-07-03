@@ -1,6 +1,11 @@
 require 'rubygems/command'
 require 'rubygems/security'
-require 'openssl'
+begin
+  require 'openssl'
+rescue LoadError => e
+  raise unless (e.respond_to?(:path) && e.path == 'openssl') ||
+               e.message =~ / -- openssl$/
+end
 
 class Gem::Commands::CertCommand < Gem::Command
 
@@ -242,5 +247,5 @@ For further reading on signing gems see `ri Gem::Security`.
     Gem::Security.write cert, cert_file, permissions
   end
 
-end
+end if defined?(OpenSSL::SSL)
 

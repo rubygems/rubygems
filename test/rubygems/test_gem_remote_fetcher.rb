@@ -1,6 +1,13 @@
 require 'rubygems/test_case'
+
 require 'webrick'
-require 'webrick/https'
+begin
+  require 'webrick/https'
+rescue LoadError => e
+  raise unless (e.respond_to?(:path) && e.path == 'openssl') ||
+               e.message =~ / -- openssl$/
+end
+
 require 'rubygems/remote_fetcher'
 require 'rubygems/package'
 require 'minitest/mock'
@@ -590,6 +597,8 @@ gems:
   end
 
   def test_ssl_client_cert_auth_connection
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+
     ssl_server = self.class.start_ssl_server({
       :SSLVerifyClient => 
         OpenSSL::SSL::VERIFY_PEER|OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT})
@@ -605,6 +614,8 @@ gems:
   end
 
   def test_do_not_allow_invalid_client_cert_auth_connection
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+
     ssl_server = self.class.start_ssl_server({
       :SSLVerifyClient => 
         OpenSSL::SSL::VERIFY_PEER|OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT})
@@ -697,9 +708,11 @@ gems:
     end
 
     DIR = File.expand_path(File.dirname(__FILE__))
-    DH_PARAM = OpenSSL::PKey::DH.new(128)
 
     def start_ssl_server(config = {})
+      raise MiniTest::Skip, 'openssl not installed' unless
+        defined?(OpenSSL::SSL)
+
       null_logger = NilLog.new
       server = WEBrick::HTTPServer.new({
         :Port => 0,
@@ -718,7 +731,7 @@ gems:
       server.mount_proc("/insecure_redirect") { |req, res|
         res.set_redirect(WEBrick::HTTPStatus::MovedPermanently, req.query['to'])
       }
-      server.ssl_context.tmp_dh_callback = proc { DH_PARAM }
+      server.ssl_context.tmp_dh_callback = proc { OpenSSL::PKey::DH.new 128 }
       t = Thread.new do
         begin
           server.start
@@ -736,8 +749,6 @@ gems:
       end
       server
     end
-
-
 
     private
 

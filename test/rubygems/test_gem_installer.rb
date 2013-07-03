@@ -303,6 +303,8 @@ gem 'other', version
   end
 
   def test_ensure_loadable_spec_security_policy
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+
     _, a_gem = util_gem 'a', 2 do |s|
       s.add_dependency 'garbage ~> 5'
     end

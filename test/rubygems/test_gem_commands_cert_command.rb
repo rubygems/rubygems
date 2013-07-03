@@ -2,8 +2,8 @@ require 'rubygems/test_case'
 require 'rubygems/commands/cert_command'
 require 'rubygems/fix_openssl_warnings' if RUBY_VERSION < "1.9"
 
-unless defined? OpenSSL then
-  warn "`gem cert` tests are being skipped, module OpenSSL not found"
+unless defined?(OpenSSL::SSL) then
+  warn 'Skipping `gem cert` tests.  openssl not found.'
 end
 
 class TestGemCommandsCertCommand < Gem::TestCase
@@ -665,5 +665,5 @@ ERROR:  --private-key not specified and ~/.gem/gem-private_key.pem does not exis
                  e.message
   end
 
-end if defined? OpenSSL
+end if defined?(OpenSSL::SSL)
 

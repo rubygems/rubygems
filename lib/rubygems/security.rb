@@ -12,20 +12,6 @@ begin
 rescue LoadError => e
   raise unless (e.respond_to?(:path) && e.path == 'openssl') ||
                e.message =~ / -- openssl$/
-
-  module OpenSSL # :nodoc:
-    class Digest # :nodoc:
-      class SHA1 # :nodoc:
-        def name
-          'SHA1'
-        end
-      end
-    end
-    module PKey # :nodoc:
-      class RSA # :nodoc:
-      end
-    end
-  end
 end
 
 ##
@@ -352,17 +338,26 @@ module Gem::Security
   ##
   # Digest algorithm used to sign gems
 
-  DIGEST_ALGORITHM = OpenSSL::Digest::SHA1
+  DIGEST_ALGORITHM =
+    if defined?(OpenSSL::Digest) then
+      OpenSSL::Digest::SHA1
+    end
 
   ##
   # Used internally to select the signing digest from all computed digests
 
-  DIGEST_NAME = DIGEST_ALGORITHM.new.name # :nodoc:
+  DIGEST_NAME = # :nodoc:
+    if DIGEST_ALGORITHM then
+      DIGEST_ALGORITHM.new.name
+    end
 
   ##
   # Algorithm for creating the key pair used to sign gems
 
-  KEY_ALGORITHM = OpenSSL::PKey::RSA
+  KEY_ALGORITHM =
+    if defined?(OpenSSL::PKey) then
+      OpenSSL::PKey::RSA
+    end
 
   ##
   # Length of keys created by KEY_ALGORITHM
@@ -373,7 +368,7 @@ module Gem::Security
   # Cipher used to encrypt the key pair used to sign gems.
   # Must be in the list returned by OpenSSL::Cipher.ciphers
 
-  KEY_CIPHER = OpenSSL::Cipher.new('aes256')
+  KEY_CIPHER = OpenSSL::Cipher.new('aes256') if defined?(OpenSSL::Cipher)
 
   ##
   # One year in seconds
@@ -590,8 +585,11 @@ module Gem::Security
 
 end
 
-require 'rubygems/security/policy'
-require 'rubygems/security/policies'
+if defined?(OpenSSL::SSL) then
+  require 'rubygems/security/policy'
+  require 'rubygems/security/policies'
+  require 'rubygems/security/trust_dir'
+end
+
 require 'rubygems/security/signer'
-require 'rubygems/security/trust_dir'
 

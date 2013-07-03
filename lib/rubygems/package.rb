@@ -280,11 +280,16 @@ EOM
     algorithms = if @checksums then
                    @checksums.keys
                  else
-                   [Gem::Security::DIGEST_NAME]
+                   [Gem::Security::DIGEST_NAME].compact
                  end
 
     algorithms.each do |algorithm|
-      digester = OpenSSL::Digest.new algorithm
+      digester =
+        if defined?(OpenSSL::Digest) then
+          OpenSSL::Digest.new algorithm
+        else
+          Digest.const_get(algorithm).new
+        end
 
       digester << entry.read(16384) until entry.eof?
 

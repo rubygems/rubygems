@@ -89,15 +89,18 @@ class TestGemPackage < Gem::Package::TarTestCase
     end
 
     expected = {
-      'SHA1' => {
-        'metadata.gz' => metadata_sha1,
-        'data.tar.gz' => data_digests['SHA1'].hexdigest,
-      },
       'SHA512' => {
         'metadata.gz' => metadata_sha512,
         'data.tar.gz' => data_digests['SHA512'].hexdigest,
       }
     }
+
+    if defined?(OpenSSL::Digest) then
+      expected['SHA1'] = {
+        'metadata.gz' => metadata_sha1,
+        'data.tar.gz' => data_digests['SHA1'].hexdigest,
+      }
+    end
 
     assert_equal expected, YAML.load(checksums)
   end
@@ -162,6 +165,8 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_build_auto_signed
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+
     FileUtils.mkdir_p File.join(Gem.user_home, '.gem')
 
     private_key_path = File.join Gem.user_home, '.gem', 'gem-private_key.pem'
@@ -203,6 +208,8 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_build_auto_signed_encrypted_key
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+
     FileUtils.mkdir_p File.join(Gem.user_home, '.gem')
 
     private_key_path = File.join Gem.user_home, '.gem', 'gem-private_key.pem'
@@ -257,6 +264,8 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_build_signed
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+
     spec = Gem::Specification.new 'build', '1'
     spec.summary = 'build'
     spec.authors = 'build'
@@ -292,6 +301,8 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_build_signed_encryped_key
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+
     spec = Gem::Specification.new 'build', '1'
     spec.summary = 'build'
     spec.authors = 'build'
@@ -521,7 +532,7 @@ class TestGemPackage < Gem::Package::TarTestCase
         io.write metadata_gz
       end
 
-      digest = OpenSSL::Digest::SHA1.new
+      digest = Digest::SHA1.new
       digest << metadata_gz
 
       checksums = {
@@ -591,6 +602,8 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_verify_security_policy
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+
     package = Gem::Package.new @gem
     package.security_policy = Gem::Security::HighSecurity
 
@@ -606,6 +619,8 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_verify_security_policy_low_security
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+
     @spec.cert_chain = [PUBLIC_CERT.to_pem]
     @spec.signing_key = PRIVATE_KEY
 
@@ -624,6 +639,8 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_verify_security_policy_checksum_missing
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+
     @spec.cert_chain = [PUBLIC_CERT.to_pem]
     @spec.signing_key = PRIVATE_KEY
 

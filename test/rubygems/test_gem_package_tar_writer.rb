@@ -22,9 +22,9 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     Time.stub :now, Time.at(1458518157) do
       @tar_writer.add_file 'x', 0644 do |f| f.write 'a' * 10 end
 
-      assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.now.to_i.to_s(8)),
+      assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.now),
                          @io.string[0, 512])
-    end 
+    end
     assert_equal "aaaaaaaaaa#{"\0" * 502}", @io.string[512, 512]
     assert_equal 1024, @io.pos
   end
@@ -45,7 +45,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
                    'e1cf14b0',
                    digests['SHA512'].hexdigest
 
-      assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.now.to_i.to_s(8)),
+      assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.now),
                          @io.string[0, 512])
     end
     assert_equal "aaaaaaaaaa#{"\0" * 502}", @io.string[512, 512]
@@ -68,7 +68,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
                    'e1cf14b0',
                    digests['SHA512'].hexdigest
 
-      assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.now.to_i.to_s(8)),
+      assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.now),
                            @io.string[0, 512])
     end
     assert_equal "aaaaaaaaaa#{"\0" * 502}", @io.string[512, 512]
@@ -84,19 +84,20 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
       @tar_writer.add_file_signed 'x', 0644, signer do |io|
         io.write 'a' * 10
       end
-  
-      assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.now.to_i.to_s(8)),
+
+      assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.now),
                            @io.string[0, 512])
 
-  
+
       assert_equal "aaaaaaaaaa#{"\0" * 502}", @io.string[512, 512]
-  
+
       digest = signer.digest_algorithm.new
       digest.update 'a' * 10
-  
+
       signature = signer.sign digest.digest
-  
-      assert_headers_equal(tar_file_header('x.sig', '', 0444, signature.length, Time.now.to_i.to_s(8)),
+
+      assert_headers_equal(tar_file_header('x.sig', '', 0444, signature.length,
+                                           Time.now),
                            @io.string[1024, 512])
       assert_equal "#{signature}#{"\0" * (512 - signature.length)}",
                    @io.string[1536, 512]
@@ -115,7 +116,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
         io.write 'a' * 10
       end
 
-      assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.now.to_i.to_s(8)),
+      assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.now),
                          @io.string[0, 512])
     end
     assert_equal "aaaaaaaaaa#{"\0" * 502}", @io.string[512, 512]
@@ -127,7 +128,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     Time.stub :now, Time.at(1458518157) do
       @tar_writer.add_file_simple 'x', 0644, 10 do |io| io.write "a" * 10 end
 
-      assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.now.to_i.to_s(8)),
+      assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.now),
                          @io.string[0, 512])
     end
 
@@ -139,7 +140,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     Time.stub :now, Time.at(1458518157) do
       @tar_writer.add_file_simple 'x', 0, 100
 
-      assert_headers_equal tar_file_header('x', '', 0, 100, Time.now.to_i.to_s(8)),
+      assert_headers_equal tar_file_header('x', '', 0, 100, Time.now),
                          @io.string[0, 512]
     end
 
@@ -203,9 +204,9 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     Time.stub :now, Time.at(1458518157) do
       @tar_writer.mkdir 'foo', 0644
 
-      assert_headers_equal tar_dir_header('foo', '', 0644, Time.now.to_i.to_s(8)),
+      assert_headers_equal tar_dir_header('foo', '', 0644, Time.now),
                            @io.string[0, 512]
-      
+
       assert_equal 512, @io.pos
     end
   end

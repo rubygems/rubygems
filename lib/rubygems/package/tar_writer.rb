@@ -124,7 +124,7 @@ class Gem::Package::TarWriter
 
     header = Gem::Package::TarHeader.new :name => name, :mode => mode,
                                          :size => size, :prefix => prefix,
-					 :mtime => Time.now.to_i
+                                         :mtime => Time.now
 
     @io.write header
     @io.pos = final_pos
@@ -216,8 +216,8 @@ class Gem::Package::TarWriter
     name, prefix = split_name name
 
     header = Gem::Package::TarHeader.new(:name => name, :mode => mode,
-                                         :size => size, :prefix => prefix, 
-					 :mtime => Time.now.to_i).to_s
+                                         :size => size, :prefix => prefix,
+                                         :mtime => Time.now).to_s
 
     @io.write header
     os = BoundedStream.new @io, size
@@ -278,7 +278,8 @@ class Gem::Package::TarWriter
 
     header = Gem::Package::TarHeader.new :name => name, :mode => mode,
                                          :typeflag => "5", :size => 0,
-                                         :prefix => prefix, :mtime => Time.now.to_i
+                                         :prefix => prefix,
+                                         :mtime => Time.now
 
     @io.write header
 

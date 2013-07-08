@@ -73,7 +73,6 @@ class Gem::Package::TarTestCase < Gem::TestCase
 
   def header(type, fname, dname, length, mode, mtime, checksum = nil)
     checksum ||= " " * 8
-    mtime[11] = "\0"
 
     arr = [                  # struct tarfile_entry_posix
       ASCIIZ(fname, 100),    # char name[100];     ASCII + (Z unless filled)
@@ -81,7 +80,7 @@ class Gem::Package::TarTestCase < Gem::TestCase
       Z(to_oct(0, 7)),       # char uid[8];        ditto
       Z(to_oct(0, 7)),       # char gid[8];        ditto
       Z(to_oct(length, 11)), # char size[12];      0 padded, octal, null
-      mtime,                 # char mtime[12];     0 padded, octal, null
+      Z(to_oct(mtime, 11)),  # char mtime[12];     0 padded, octal, null
       checksum,              # char checksum[8];   0 padded, octal, null, space
       type,                  # char typeflag[1];   file: "0"  dir: "5"
       "\0" * 100,            # char linkname[100]; ASCII + (Z unless filled)
@@ -131,7 +130,7 @@ class Gem::Package::TarTestCase < Gem::TestCase
   end
 
   def util_dir_entry
-    util_entry tar_dir_header("foo", "bar", 0, Time.now.to_i.to_s(8))
+    util_entry tar_dir_header("foo", "bar", 0, Time.now)
   end
 
 end

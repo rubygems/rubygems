@@ -65,6 +65,8 @@ Minor enhancements:
   /usr/bin/env via <code>gem pristine --all --only-executables
   --env-[no-]shebang</code>.  Issue #579 by Paul Annesley.
 * RubyGems can now run its tests without OpenSSL.  Ruby Bug #8557 by nobu.
+* Improved performance by caching Gem::Version objects and avoiding
+  method_missing in Gem::Specification.  Pull request #447 by Jon Leighton.
 
 Bug fixes:
 

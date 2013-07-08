@@ -598,7 +598,8 @@ class TestGemPackage < Gem::Package::TarTestCase
       package.verify
     end
 
-    assert_equal 'No such file or directory - nonexistent.gem', e.message
+    assert_match %r%^No such file or directory%, e.message
+    assert_match %r%nonexistent.gem$%,           e.message
   end
 
   def test_verify_security_policy

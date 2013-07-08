@@ -34,6 +34,8 @@ Bug fixes:
   Gem::DependencyInstaller.  Pull Request #456 by Vít Ondruch
 * RubyGems now works with Ruby built with `--with-ruby-version=''`.  Pull
   Request #455 by Vít Ondruch
+* Fixed race condition when two threads require the same gem.  Ruby bug report
+  #8374 by Joel VanderWerf
 
 === 2.0.3 / 2013-03-11
 

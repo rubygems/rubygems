@@ -104,6 +104,8 @@ Bug fixes:
   Request #455 by Vít Ondruch
 * Fixed race condition when two threads require the same gem.  Ruby bug report
   #8374 by Joel VanderWerf
+* Cleaned up siteconf between extension build and extension install.  Pull
+  request #587 by Dominic Cleal
 
 === 2.0.3 / 2013-03-11
 

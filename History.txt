@@ -38,6 +38,8 @@ Bug fixes:
   #8374 by Joel VanderWerf
 * Cleaned up siteconf between extension build and extension install.  Pull
   request #587 by Dominic Cleal
+* Fix deprecation warnings when converting gemspecs to yaml.  Ruby commit
+  r41148 by Yui Naruse
 
 === 2.0.3 / 2013-03-11
 
@@ -55,8 +57,6 @@ Bug fixes:
     Chris Morris.
   * Fixed default gem key and cert locations.  Pull request #511 by Samuel
     Cochran.
-  * Fix deprecation warnings when converting gemspecs to yaml.  Ruby commit
-    r41148 by Yui Naruse
 
 === 2.0.2 / 2013-03-06
 

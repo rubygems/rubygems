@@ -70,6 +70,8 @@ Minor enhancements:
 * Files in a .gem now preserve their modification times.  Pull request #582 by
   Jesse Bowes
 
+=== 2.0.4 / 2013-07-09
+
 Bug fixes:
 
 * Fixed error caused by gem install not finding the right platform for your

@@ -123,6 +123,8 @@ Bug fixes:
     Chris Morris.
   * Fixed default gem key and cert locations.  Pull request #511 by Samuel
     Cochran.
+  * Fix deprecation warnings when converting gemspecs to yaml.  Ruby commit
+    r41148 by Yui Naruse
 
 === 2.0.2 / 2013-03-06
 

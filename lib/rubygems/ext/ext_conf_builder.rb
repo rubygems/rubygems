@@ -35,6 +35,7 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
         run cmd, results
 
         ENV["DESTDIR"] = nil
+        ENV["RUBYOPT"] = rubyopt
         siteconf.unlink
 
         make dest_path, results

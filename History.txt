@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.0.5
+
+Bug fixes:
+
+* Files in a .gem now preserve their modification times.  Pull request #582 by
+  Jesse Bowes
+
 === 2.0.4 / 2013-07-09
 
 Bug fixes:

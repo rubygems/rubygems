@@ -4,8 +4,8 @@
 
 Bug fixes:
 
-* Files in a .gem now preserve their modification times.  Pull request #582 by
-  Jesse Bowes
+* Fixed building of extensions that run ruby in their makefiles.  Bug #589 by
+  Zachary Salzbank.
 
 === 2.0.4 / 2013-07-09
 

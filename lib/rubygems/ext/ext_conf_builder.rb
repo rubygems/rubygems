@@ -57,7 +57,7 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
         ENV["DESTDIR"] = destdir
       end
     end
-    t.unlink if t
+    t.unlink if t and t.path
   ensure
     FileUtils.rm_rf tmp_dest if tmp_dest
   end

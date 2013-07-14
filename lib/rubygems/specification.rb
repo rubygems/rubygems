@@ -1359,11 +1359,23 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
+  # True if this gem:
+  # - satisfies the given version
+  # - has platform ruby
+  # - has no extensions
+
+  def can_be_shared?(minimal_required_version)
+    Gem::Requirement.new(required_ruby_version).
+      satisfied_by?(minimal_required_version) &&
+    platform == 'ruby' && extensions.empty?
+  end
+
+  ##
   # Returns the full path to the cache directory containing this
   # spec's cached gem.
 
   def cache_dir
-    @cache_dir ||= File.join base_dir, "cache"
+    @cache_dir ||= Gem.cachedir(base_dir)
   end
 
   ##

@@ -93,7 +93,7 @@ class Gem::Uninstaller
 
     list, other_repo_specs = list.partition do |spec|
       @gem_home == spec.base_dir or
-        (@user_install and spec.base_dir == Gem.user_dir)
+        (@user_install and (spec.base_dir == Gem.user_dir or spec.base_dir == Gem.shared_user_dir))
     end
 
     if list.empty? then
@@ -235,7 +235,9 @@ class Gem::Uninstaller
 
   def remove(spec)
     unless path_ok?(@gem_home, spec) or
-           (@user_install and path_ok?(Gem.user_dir, spec)) then
+           (@user_install and
+             (path_ok?(Gem.user_dir, spec) or path_ok?(Gem.shared_user_dir, spec))
+           ) then
       e = Gem::GemNotInHomeException.new \
             "Gem is not installed in directory #{@gem_home}"
       e.spec = spec

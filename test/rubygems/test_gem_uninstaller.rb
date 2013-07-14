@@ -149,7 +149,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
   def test_path_ok_eh_user
     uninstaller = Gem::Uninstaller.new nil
 
-    assert_equal true, uninstaller.path_ok?(Gem.user_dir, @user_spec)
+    assert_equal true, uninstaller.path_ok?(Gem.shared_user_dir, @user_spec)
   end
 
   def test_uninstall

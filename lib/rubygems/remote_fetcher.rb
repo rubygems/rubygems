@@ -124,7 +124,7 @@ class Gem::RemoteFetcher
       elsif File.writable? install_dir then
         File.join install_dir, "cache"
       else
-        File.join Gem.user_dir, "cache"
+        File.join Gem.shared_user_dir, "cache"
       end
 
     gem_file_name = File.basename spec.cache_file

@@ -68,6 +68,14 @@ module Gem
   end
 
   ##
+  # Path for shared gems in the user's home directory
+
+  def self.shared_user_dir
+    parts = [Gem.user_home, '.gem', 'shared']
+    File.join parts
+  end
+
+  ##
   # How String Gem paths should be split.  Overridable for esoteric platforms.
 
   def self.path_separator
@@ -79,7 +87,7 @@ module Gem
 
   def self.default_path
     if Gem.user_home && File.exist?(Gem.user_home) then
-      [user_dir, default_dir]
+      [user_dir, shared_user_dir, default_dir]
     else
       [default_dir]
     end

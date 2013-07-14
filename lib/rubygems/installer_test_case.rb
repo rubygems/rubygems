@@ -105,7 +105,7 @@ class Gem::InstallerTestCase < Gem::TestCase
     @user_gem = @user_spec.cache_file
 
     @installer      = util_installer @spec, @gemhome
-    @user_installer = util_installer @user_spec, Gem.user_dir, :user
+    @user_installer = util_installer @user_spec, Gem.shared_user_dir, :user
   end
 
   def util_gem_bindir spec = @spec # :nodoc:

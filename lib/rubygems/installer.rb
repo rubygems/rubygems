@@ -112,7 +112,6 @@ class Gem::Installer
     if options[:user_install] and not options[:unpack] then
       @gem_home = Gem.user_dir
       @bin_dir = Gem.bindir gem_home unless options[:bin_dir]
-      check_that_user_bin_dir_is_in_path
     end
   end
 
@@ -779,14 +778,23 @@ EOF
   # The dependent check will be skipped this install is ignoring dependencies.
 
   def pre_install_checks
-    verify_gem_home options[:unpack]
-
     # If we're forcing the install then disable security unless the security
     # policy says that we only install signed gems.
     @security_policy = nil if
       @force and @security_policy and not @security_policy.only_signed
 
     ensure_loadable_spec
+
+    if options[:user_install] and not options[:unpack] then
+      minimal_required_version = Gem::Version.new('1.8.7')
+      if spec.can_be_shared?(minimal_required_version) then
+        @gem_home = Gem.shared_user_dir
+        @bin_dir = Gem.bindir gem_home unless options[:bin_dir]
+      end
+      check_that_user_bin_dir_is_in_path
+    end
+
+    verify_gem_home options[:unpack]
 
     if options[:install_as_default]
       Gem.ensure_default_gem_subdirectories gem_home
@@ -827,7 +835,7 @@ EOF
   # Writes the .gem file to the cache directory
 
   def write_cache_file
-    cache_file = File.join gem_home, 'cache', spec.file_name
+    cache_file = File.join Gem.cachedir(gem_home), spec.file_name
 
     FileUtils.cp @gem, cache_file unless File.exist? cache_file
   end

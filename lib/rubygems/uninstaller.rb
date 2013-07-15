@@ -28,9 +28,20 @@ class Gem::Uninstaller
   attr_reader :bin_dir
 
   ##
-  # The gem repository the gem will be installed into
+  # The user path the gems were installed into,
+  # can be empty - defaults to gem_home
+
+  attr_reader :install_dir
+
+  ##
+  # The gem repository the platform gems were installed into
 
   attr_reader :gem_home
+
+  ##
+  # The gem repository the shared gems were installed into
+
+  attr_reader :gem_home_shared
 
   ##
   # The Gem::Specification for the gem being uninstalled, only set during
@@ -45,7 +56,9 @@ class Gem::Uninstaller
     # TODO document the valid options
     @gem                = gem
     @version            = options[:version] || Gem::Requirement.default
-    @gem_home           = File.expand_path(options[:install_dir] || Gem.dir)
+    @install_dir        = options[:install_dir] ? File.expand_path(options[:install_dir]) : nil
+    @gem_home           = File.expand_path(Gem.dir)
+    @gem_home_shared    = Gem.shareddir ? File.expand_path(Gem.shareddir) : ""
     @force_executables  = options[:executables]
     @force_all          = options[:all]
     @force_ignore       = options[:ignore]
@@ -66,6 +79,14 @@ class Gem::Uninstaller
     # only add user directory if install_dir is not set
     @user_install = false
     @user_install = options[:user_install] unless options[:install_dir]
+  end
+
+  def gem_in_uninstallable_path(base_dir)
+    (
+      install_dir ? install_dir == base_dir : ( @gem_home == base_dir or @gem_home_shared == base_dir )
+    ) or (
+      @user_install and (Gem.user_dir == base_dir or Gem.shared_user_dir == base_dir)
+    )
   end
 
   ##
@@ -92,8 +113,7 @@ class Gem::Uninstaller
     end
 
     list, other_repo_specs = list.partition do |spec|
-      @gem_home == spec.base_dir or
-        (@user_install and (spec.base_dir == Gem.user_dir or spec.base_dir == Gem.shared_user_dir))
+      gem_in_uninstallable_path(spec.base_dir)
     end
 
     if list.empty? then
@@ -234,16 +254,7 @@ class Gem::Uninstaller
   # uninstalled a gem, it is removed from that list.
 
   def remove(spec)
-    unless path_ok?(@gem_home, spec) or
-           (@user_install and
-             (path_ok?(Gem.user_dir, spec) or path_ok?(Gem.shared_user_dir, spec))
-           ) then
-      e = Gem::GemNotInHomeException.new \
-            "Gem is not installed in directory #{@gem_home}"
-      e.spec = spec
-
-      raise e
-    end
+    paths_ok_or_raise(spec)
 
     raise Gem::FilePermissionError, spec.base_dir unless
       File.writable?(spec.base_dir)
@@ -274,6 +285,27 @@ class Gem::Uninstaller
     say "Successfully uninstalled #{spec.full_name}"
 
     Gem::Specification.remove_spec spec
+  end
+
+  ##
+  # Confirm spec is one of paths that it can be uninstalled from
+
+  def paths_ok_or_raise(spec)
+    unless (
+             @install_dir ? path_ok?(@install_dir, spec) : (
+               path_ok?(@gem_home, spec) or path_ok?(@gem_home_shared, spec)
+             )
+           ) or (
+             @user_install and (
+               path_ok?(Gem.user_dir, spec) or path_ok?(Gem.shared_user_dir, spec)
+             )
+           ) then
+      e = Gem::GemNotInHomeException.new \
+            "Gem is not installed in directory #{@install_dir ? @install_dir : "#{@gem_home_shared} or #{@gem_home}"}"
+      e.spec = spec
+
+      raise e
+    end
   end
 
   ##

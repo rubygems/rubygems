@@ -476,7 +476,6 @@ class TestGem < Gem::TestCase
 
   def test_self_path_duplicate
     Gem.clear_paths
-    util_ensure_gem_dirs
     dirs = @additional + [@gemhome] + [File.join(@tempdir, 'a')]
 
     ENV['GEM_HOME'] = @gemhome
@@ -491,7 +490,6 @@ class TestGem < Gem::TestCase
   def test_self_path_overlap
     Gem.clear_paths
 
-    util_ensure_gem_dirs
     ENV['GEM_HOME'] = @gemhome
     ENV['GEM_PATH'] = @additional.join(File::PATH_SEPARATOR)
 

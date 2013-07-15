@@ -87,9 +87,9 @@ module Gem
 
   def self.default_path
     if Gem.user_home && File.exist?(Gem.user_home) then
-      [user_dir, shared_user_dir, default_dir]
+      [ user_dir, shared_user_dir, default_dir ]
     else
-      [default_dir]
+      [ default_dir ]
     end
   end
 

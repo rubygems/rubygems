@@ -109,10 +109,7 @@ class Gem::Installer
 
     @package.security_policy = @security_policy
 
-    if options[:user_install] and not options[:unpack] then
-      @gem_home = Gem.user_dir
-      @bin_dir = Gem.bindir gem_home unless options[:bin_dir]
-    end
+    early_check_user_install
   end
 
   ##
@@ -769,6 +766,42 @@ EOF
   end
 
   ##
+  # For initialization to detect :user_install,
+  # can be changed in try_to_share_gems_location
+
+  def early_check_user_install
+    if options[:user_install] and not options[:unpack] then
+      @gem_home = Gem.user_dir
+      @bin_dir = Gem.bindir gem_home unless options[:bin_dir]
+    end
+  end
+
+  ##
+  # Detect if gems can and should be shared between rubies
+
+  def try_to_share_gems_location
+    if options[:user_install] and not options[:unpack] then
+
+      if spec.can_be_shared?(minimal_shared_gem_version_required) then
+        @gem_home = Gem.shared_user_dir
+        @bin_dir = Gem.bindir gem_home unless options[:bin_dir]
+      end
+      check_that_user_bin_dir_is_in_path
+
+    elsif Gem.shareddir and not options[:unpack] then
+      if spec.can_be_shared?(minimal_shared_gem_version_required) then
+        @gem_home = Gem.shareddir
+        @bin_dir = Gem.bindir gem_home unless options[:bin_dir]
+        check_that_user_bin_dir_is_in_path
+      end
+    end
+  end
+
+  def minimal_shared_gem_version_required
+    @minimal_required_version ||= Gem::Version.new('1.8.7')
+  end
+
+  ##
   # Performs various checks before installing the gem such as the install
   # repository is writable and its directories exist, required ruby and
   # rubygems versions are met and that dependencies are installed.
@@ -785,14 +818,7 @@ EOF
 
     ensure_loadable_spec
 
-    if options[:user_install] and not options[:unpack] then
-      minimal_required_version = Gem::Version.new('1.8.7')
-      if spec.can_be_shared?(minimal_required_version) then
-        @gem_home = Gem.shared_user_dir
-        @bin_dir = Gem.bindir gem_home unless options[:bin_dir]
-      end
-      check_that_user_bin_dir_is_in_path
-    end
+    try_to_share_gems_location
 
     verify_gem_home options[:unpack]
 

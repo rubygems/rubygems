@@ -23,7 +23,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
   def test_initialize_expand_path
     uninstaller = Gem::Uninstaller.new nil, :install_dir => '/foo//bar'
 
-    assert_match %r|/foo/bar$|, uninstaller.instance_variable_get(:@gem_home)
+    assert_match %r|/foo/bar$|, uninstaller.instance_variable_get(:@install_dir)
   end
 
   def test_ask_if_ok

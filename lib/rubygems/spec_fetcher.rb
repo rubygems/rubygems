@@ -74,6 +74,12 @@ class Gem::SpecFetcher
 
     list, errors = available_specs(type)
     list.each do |source, specs|
+      if dependency.name.is_a?(String) && specs.respond_to?(:bsearch)
+        start_index = (0 ... specs.length).bsearch{ |i| specs[i].name >= dependency.name }
+        end_index   = (0 ... specs.length).bsearch{ |i| specs[i].name > dependency.name }
+        specs = specs[start_index ... end_index] if start_index && end_index
+      end
+
       found[source] = specs.select do |tup|
         if dependency.match?(tup)
           if matching_platform and !Gem::Platform.match(tup.platform)
@@ -216,12 +222,12 @@ class Gem::SpecFetcher
 
     if gracefully_ignore
       begin
-        cache[source.uri] ||= source.load_specs(type)
+        cache[source.uri] ||= source.load_specs(type).sort_by{ |tup| tup.name }.freeze
       rescue Gem::RemoteFetcher::FetchError
-        []
+        [].freeze
       end
     else
-      cache[source.uri] ||= source.load_specs(type)
+      cache[source.uri] ||= source.load_specs(type).sort_by{ |tup| tup.name }.freeze
     end
   end
 

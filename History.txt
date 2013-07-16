@@ -70,6 +70,11 @@ Minor enhancements:
 * Files in a .gem now preserve their modification times.  Pull request #582 by
   Jesse Bowes
 
+Bug fixes:
+
+* Fixed the `--no-install` and `-I` options to `gem list` and friends.  Bug
+  #593 by Blargel
+
 === 2.0.5 / 2013-07-11
 
 * Fixed building of extensions that run ruby in their makefiles.  Bug #589 by

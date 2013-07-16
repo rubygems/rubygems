@@ -220,15 +220,18 @@ class Gem::SpecFetcher
   def tuples_for(source, type, gracefully_ignore=false)
     cache = @caches[type]
 
-    if gracefully_ignore
-      begin
-        cache[source.uri] ||= source.load_specs(type).sort_by{ |tup| tup.name }.freeze
-      rescue Gem::RemoteFetcher::FetchError
-        [].freeze
+    tuples =
+      if gracefully_ignore then
+        begin
+          cache[source.uri] ||= source.load_specs(type)
+        rescue Gem::RemoteFetcher::FetchError
+          []
+        end
+      else
+        cache[source.uri] ||= source.load_specs(type)
       end
-    else
-      cache[source.uri] ||= source.load_specs(type).sort_by{ |tup| tup.name }.freeze
-    end
+
+    tuples.sort_by { |tup| tup.name }
   end
 
 end

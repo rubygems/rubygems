@@ -954,7 +954,7 @@ class Gem::Specification < Gem::BasicSpecification
     result.map(&:last).map(&:values).flatten.reject { |spec|
       minimum = native[spec.name]
       minimum && spec.version < minimum
-    }.sort_by{ |tup| tup.name }.freeze
+    }.sort_by{ |tup| tup.name }
   end
 
   ##

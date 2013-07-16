@@ -69,6 +69,8 @@ Minor enhancements:
   method_missing in Gem::Specification.  Pull request #447 by Jon Leighton.
 * Files in a .gem now preserve their modification times.  Pull request #582 by
   Jesse Bowes
+* Improved speed of looking up dependencies in SpecFetcher through
+  Array#bsearch (when present).  Pull request #595 by Andras Suller
 
 Bug fixes:
 

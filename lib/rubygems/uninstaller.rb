@@ -81,12 +81,29 @@ class Gem::Uninstaller
     @user_install = options[:user_install] unless options[:install_dir]
   end
 
-  def gem_in_uninstallable_path(base_dir)
-    (
-      install_dir ? install_dir == base_dir : ( @gem_home == base_dir or @gem_home_shared == base_dir )
-    ) or (
-      @user_install and (Gem.user_dir == base_dir or Gem.shared_user_dir == base_dir)
+  def check_possible_installation_paths_system(&block)
+    if install_dir
+      yield(install_dir)
+    else
+      yield(@gem_home_shared) or yield(@gem_home)
+    end
+  end
+
+  def check_possible_installation_paths_user(&block)
+    yield(Gem.shared_user_dir) or yield(Gem.user_dir)
+  end
+
+  def check_possible_installation_paths(&block)
+    check_possible_installation_paths_system(&block) or (
+      @user_install and
+      check_possible_installation_paths_user(&block)
     )
+  end
+
+  def gem_in_uninstallable_path(base_dir)
+    check_possible_installation_paths do |path|
+      path == base_dir
+    end
   end
 
   ##
@@ -291,15 +308,7 @@ class Gem::Uninstaller
   # Confirm spec is one of paths that it can be uninstalled from
 
   def paths_ok_or_raise(spec)
-    unless (
-             @install_dir ? path_ok?(@install_dir, spec) : (
-               path_ok?(@gem_home, spec) or path_ok?(@gem_home_shared, spec)
-             )
-           ) or (
-             @user_install and (
-               path_ok?(Gem.user_dir, spec) or path_ok?(Gem.shared_user_dir, spec)
-             )
-           ) then
+    unless check_possible_installation_paths{|path| path_ok?(path, spec)} then
       e = Gem::GemNotInHomeException.new \
             "Gem is not installed in directory #{@install_dir ? @install_dir : "#{@gem_home_shared} or #{@gem_home}"}"
       e.spec = spec

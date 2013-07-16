@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.0.6
+
+Bug fixes:
+
+* Fixed the `--no-install` and `-I` options to `gem list` and friends.  Bug
+  #593 by Blargel
+
 === 2.0.5 / 2013-07-11
 
 Bug fixes:

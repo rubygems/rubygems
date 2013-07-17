@@ -93,46 +93,53 @@ class Gem::Commands::UninstallCommand < Gem::Command
   end
 
   def execute
-    # REFACTOR: stolen from cleanup_command
     if options[:args].empty? && options[:all] then
-      install_dir = options[:install_dir]
-
-      remove_executables = if options[:executables].nil? then
-        ask_yes_no("Remove executables in addition to gems?",
-                   true)
-      else
-        true
-      end
-
-      dirs_to_be_emptied = Dir[File.join(install_dir, '*')]
-      dirs_to_be_emptied.delete_if { |dir| dir.end_with? 'build_info' }
-      unless remove_executables
-        dirs_to_be_emptied.delete_if { |dir| dir.end_with? 'bin' }
-      end
-
-      dirs_to_be_emptied.each do |dir|
-        FileUtils.rm_rf Dir[File.join(dir, '*')]
-      end
-      alert("Successfully uninstalled all gems in #{install_dir}")
+      uninstall_all
     else
-      deplist = Gem::DependencyList.new
+      uninstall_specific
+    end
+  end
 
-      get_all_gem_names.uniq.each do |name|
-        Gem::Specification.find_all_by_name(name).each do |spec|
-          deplist.add spec
-        end
+  def uninstall_all
+    install_dir = options[:install_dir]
+
+    remove_executables = if options[:executables].nil? then
+                           ask_yes_no("Remove executables in addition to gems?",
+                                      true)
+                         else
+                           true
+                         end
+
+    dirs_to_be_emptied = Dir[File.join(install_dir, '*')]
+    dirs_to_be_emptied.delete_if { |dir| dir.end_with? 'build_info' }
+    unless remove_executables
+      dirs_to_be_emptied.delete_if { |dir| dir.end_with? 'bin' }
+    end
+
+    dirs_to_be_emptied.each do |dir|
+      FileUtils.rm_rf Dir[File.join(dir, '*')]
+    end
+    alert("Successfully uninstalled all gems in #{install_dir}")
+  end
+
+  def uninstall_specific
+    deplist = Gem::DependencyList.new
+
+    get_all_gem_names.uniq.each do |name|
+      Gem::Specification.find_all_by_name(name).each do |spec|
+        deplist.add spec
       end
+    end
 
-      deps = deplist.strongly_connected_components.flatten.reverse
+    deps = deplist.strongly_connected_components.flatten.reverse
 
-      deps.map(&:name).uniq.each do |gem_name|
-        begin
-          Gem::Uninstaller.new(gem_name, options).uninstall
-        rescue Gem::GemNotInHomeException => e
-          spec = e.spec
-          alert("In order to remove #{spec.name}, please execute:\n" +
-                "\tgem uninstall #{spec.name} --install-dir=#{spec.installation_path}")
-        end
+    deps.map(&:name).uniq.each do |gem_name|
+      begin
+        Gem::Uninstaller.new(gem_name, options).uninstall
+      rescue Gem::GemNotInHomeException => e
+        spec = e.spec
+        alert("In order to remove #{spec.name}, please execute:\n" +
+              "\tgem uninstall #{spec.name} --install-dir=#{spec.installation_path}")
       end
     end
   end

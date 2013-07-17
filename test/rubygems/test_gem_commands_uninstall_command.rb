@@ -184,7 +184,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     @cmd.options[:version] = '1'
     @cmd.options[:all] = true
     @cmd.options[:force] = true
-    @cmd.options[:args] = []
+    @cmd.options[:args] = ['a']
 
     use_ui ui do
       @cmd.execute
@@ -204,7 +204,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
 
     @cmd.options[:all] = true
     @cmd.options[:force] = true
-    @cmd.options[:args] = []
+    @cmd.options[:args] = ['a']
 
     use_ui ui do
       @cmd.execute

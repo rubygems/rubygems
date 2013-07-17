@@ -106,18 +106,8 @@ class Gem::Commands::UninstallCommand < Gem::Command
   def uninstall_all
     install_dir = options[:install_dir]
 
-    remove_executables = if options[:executables].nil? then
-                           ask_yes_no("Remove executables in addition to gems?",
-                                      true)
-                         else
-                           true
-                         end
-
     dirs_to_be_emptied = Dir[File.join(install_dir, '*')]
     dirs_to_be_emptied.delete_if { |dir| dir.end_with? 'build_info' }
-    unless remove_executables
-      dirs_to_be_emptied.delete_if { |dir| dir.end_with? 'bin' }
-    end
 
     dirs_to_be_emptied.each do |dir|
       FileUtils.rm_rf Dir[File.join(dir, '*')]

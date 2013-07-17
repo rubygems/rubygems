@@ -16,15 +16,20 @@
 #
 
 module Gem
-  def self.loaded_or_latest(name, &block)
+  def self.loaded_or_latest(name)
     full_file_path = caller.first.split(/:\d/,2).first
-    called_path, called_version = full_file_path.match(/^(.*\/#{name}-([^\/]+)\/lib).*$/)[1..2]
+    called_path, _, called_version =
+      full_file_path.match(
+        %r<\A((#{Gem.path*'|'})/gems/#{name}-([^/]+))/.*\Z>
+      )[1..3]
 
-    if $:.include?(called_path) || (
-      gem_spec = Gem::Specification.find_by_name(name)
-      gem_spec && gem_spec.version == called_version
-    )
-      block.call
-    end
+    should_be_called =
+      $:.detect?{|path| path.start_with?(called_path) } ||
+      Gem::Specification.find_by_name(name).version == called_version
+
+  rescue NoMethodError, Gem::LoadError # in case match returns nil or find_by_name fails
+    nil
+  else
+    yield if should_be_called
   end
 end

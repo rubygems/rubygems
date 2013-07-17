@@ -95,6 +95,8 @@ class Gem::Commands::UninstallCommand < Gem::Command
   def execute
     # REFACTOR: stolen from cleanup_command
     if options[:args].empty? && options[:all] then
+      install_dir = options[:install_dir]
+
       remove_executables = if options[:executables].nil? then
         ask_yes_no("Remove executables in addition to gems?",
                    true)
@@ -102,7 +104,7 @@ class Gem::Commands::UninstallCommand < Gem::Command
         true
       end
 
-      dirs_to_be_emptied = Dir[File.join(ENV[Gem.dir], '*')]
+      dirs_to_be_emptied = Dir[File.join(install_dir, '*')]
       dirs_to_be_emptied.delete_if { |dir| dir.end_with? 'build_info' }
       unless remove_executables
         dirs_to_be_emptied.delete_if { |dir| dir.end_with? 'bin' }
@@ -111,7 +113,7 @@ class Gem::Commands::UninstallCommand < Gem::Command
       dirs_to_be_emptied.each do |dir|
         FileUtils.rm_rf Dir[File.join(dir, '*')]
       end
-      alert("Successfully uninstalled all gems")
+      alert("Successfully uninstalled all gems in #{install_dir}")
     else
       deplist = Gem::DependencyList.new
 

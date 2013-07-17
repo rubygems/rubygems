@@ -174,6 +174,44 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     assert Gem::Specification.find_all_by_name('dep_x').length > 0
     assert Gem::Specification.find_all_by_name('x').length == 0
   end
+  
+  def test_execute_all_with_force_leaves_executables
+    ui = Gem::MockGemUi.new
+
+    util_make_gems
+    util_setup_gem ui
+
+    @cmd.options[:version] = '1'
+    @cmd.options[:all] = true
+    @cmd.options[:force] = true
+    @cmd.options[:args] = ['a']
+
+    use_ui ui do
+      @cmd.execute
+    end
+
+    assert !Gem::Specification.all_names.include?('a')
+    assert File.exist? File.join(@gemhome, 'bin', 'executable')
+  end
+  
+  def test_execute_all_with_force_uninstalls_all_gems
+    ui = Gem::MockGemUi.new "y\n"
+
+    util_make_gems
+    util_setup_gem ui
+
+    assert Gem::Specification.find_all_by_name('a').length > 1
+
+    @cmd.options[:all] = true
+    @cmd.options[:force] = true
+    @cmd.options[:args] = ['a']
+
+    use_ui ui do
+      @cmd.execute
+    end
+
+    refute_includes Gem::Specification.all_names, 'a'
+  end
 
 end
 

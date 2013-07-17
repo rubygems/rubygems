@@ -102,7 +102,7 @@ class Gem::Commands::UninstallCommand < Gem::Command
         true
       end
 
-      dirs_to_be_emptied = Dir[File.join(ENV[Gem.dir], '*')]
+      dirs_to_be_emptied = Dir[File.join(Gem.dir, '*')]
       dirs_to_be_emptied.delete_if { |dir| dir.end_with? 'build_info' }
       unless remove_executables
         dirs_to_be_emptied.delete_if { |dir| dir.end_with? 'bin' }

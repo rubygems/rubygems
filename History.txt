@@ -71,6 +71,8 @@ Minor enhancements:
   Jesse Bowes
 * Improved speed of looking up dependencies in SpecFetcher through
   Array#bsearch (when present).  Pull request #595 by Andras Suller
+* Added `--all` option to `gem uninstall` which removes all gems in GEM_HOME.
+  Pull request #584 by Shannon Skipper.
 
 Bug fixes:
 

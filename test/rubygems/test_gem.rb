@@ -345,9 +345,7 @@ class TestGem < Gem::TestCase
       spec
     }
 
-    # HACK should be Gem.refresh
-    Gem.searcher = nil
-    Gem::Specification.reset
+    Gem.refresh
 
     expected = [
       File.expand_path('test/rubygems/sff/discover.rb', @@project_dir),
@@ -357,6 +355,37 @@ class TestGem < Gem::TestCase
 
     assert_equal expected, Gem.find_files('sff/discover')
     assert_equal expected, Gem.find_files('sff/**.rb'), '[ruby-core:31730]'
+  ensure
+    assert_equal cwd, $LOAD_PATH.shift
+  end
+
+  def test_self_find_latest_files
+    cwd = File.expand_path("test/rubygems", @@project_dir)
+    $LOAD_PATH.unshift cwd
+
+    discover_path = File.join 'lib', 'sff', 'discover.rb'
+
+    foo1, foo2 = %w(1 2).map { |version|
+      spec = quick_gem 'sff', version do |s|
+        s.files << discover_path
+      end
+
+      write_file(File.join 'gems', spec.full_name, discover_path) do |fp|
+        fp.puts "# #{spec.full_name}"
+      end
+
+      spec
+    }
+
+    Gem.refresh
+
+    expected = [
+      File.expand_path('test/rubygems/sff/discover.rb', @@project_dir),
+      File.join(foo2.full_gem_path, discover_path),
+    ]
+
+    assert_equal expected, Gem.find_latest_files('sff/discover')
+    assert_equal expected, Gem.find_latest_files('sff/**.rb'), '[ruby-core:31730]'
   ensure
     assert_equal cwd, $LOAD_PATH.shift
   end

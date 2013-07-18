@@ -73,6 +73,8 @@ Minor enhancements:
   Array#bsearch (when present).  Pull request #595 by Andras Suller
 * Added `--all` option to `gem uninstall` which removes all gems in GEM_HOME.
   Pull request #584 by Shannon Skipper.
+* Added Gem.find_latest_files which is equivalent to Gem.find_files but only
+  returns matching files from the latest version of each gem.
 
 Bug fixes:
 

@@ -78,6 +78,7 @@ Minor enhancements:
 
 Bug fixes:
 
+* rubygems_plugin.rb files are now only loaded from the latest installed gem.
 * Fixed the `--no-install` and `-I` options to `gem list` and friends.  Bug
   #593 by Blargel
 

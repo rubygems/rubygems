@@ -13,8 +13,13 @@ end
 
 class TestGem < Gem::TestCase
 
+  PLUGINS_LOADED = []
+
   def setup
     super
+
+    PLUGINS_LOADED.clear
+
     common_installer_setup
 
     ENV.delete 'RUBYGEMS_GEMDEPS'
@@ -912,14 +917,20 @@ class TestGem < Gem::TestCase
     Dir.chdir @tempdir do
       FileUtils.mkdir_p 'lib'
       File.open plugin_path, "w" do |fp|
-        fp.puts "class TestGem; TEST_SPEC_PLUGIN_LOAD = :loaded; end"
+        fp.puts "class TestGem; PLUGINS_LOADED << 'plugin'; end"
       end
 
-      foo = quick_spec 'foo', '1' do |s|
+      foo1 = quick_spec 'foo', '1' do |s|
         s.files << plugin_path
       end
 
-      install_gem foo
+      install_gem foo1
+
+      foo2 = quick_spec 'foo', '2' do |s|
+        s.files << plugin_path
+      end
+
+      install_gem foo2
     end
 
     Gem.searcher = nil
@@ -929,7 +940,7 @@ class TestGem < Gem::TestCase
 
     Gem.load_plugins
 
-    assert_equal :loaded, TEST_SPEC_PLUGIN_LOAD
+    assert_equal %w[plugin], PLUGINS_LOADED
   end
 
   def test_load_env_plugins

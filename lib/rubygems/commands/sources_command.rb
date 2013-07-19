@@ -37,7 +37,24 @@ class Gem::Commands::SourcesCommand < Gem::Command
     add_proxy_option
   end
 
-  def defaults_str
+  def clear_all # :nodoc:
+    path = Gem.spec_cache_dir
+    FileUtils.rm_rf path
+
+    unless File.exist? path then
+      say "*** Removed specs cache ***"
+    else
+      unless File.writable? path then
+        say "*** Unable to remove source cache (write protected) ***"
+      else
+        say "*** Unable to remove source cache ***"
+      end
+
+      terminate_interaction 1
+    end
+  end
+
+  def defaults_str # :nodoc:
     '--list'
   end
 
@@ -47,22 +64,7 @@ class Gem::Commands::SourcesCommand < Gem::Command
                        options[:remove] ||
                        options[:update])
 
-    if options[:clear_all] then
-      path = Gem.spec_cache_dir
-      FileUtils.rm_rf path
-
-      unless File.exist? path then
-        say "*** Removed specs cache ***"
-      else
-        unless File.writable? path then
-          say "*** Unable to remove source cache (write protected) ***"
-        else
-          say "*** Unable to remove source cache ***"
-        end
-
-        terminate_interaction 1
-      end
-    end
+    clear_all if options[:clear_all]
 
     if source_uri = options[:add] then
       uri = URI source_uri

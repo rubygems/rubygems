@@ -106,12 +106,15 @@ Do you want to add this insecure source?
     end
   end
 
-  def execute
-    options[:list] = !(options[:add] ||
-                       options[:clear_all] ||
-                       options[:remove] ||
-                       options[:update])
+  def list? # :nodoc:
+    !(options[:list] ||
+      options[:add] ||
+      options[:clear_all] ||
+      options[:remove] ||
+      options[:update])
+  end
 
+  def execute
     clear_all if options[:clear_all]
 
     source_uri = options[:add]
@@ -122,7 +125,7 @@ Do you want to add this insecure source?
 
     update if options[:update]
 
-    list if options[:list]
+    list if list?
   end
 
   def remove_source source_uri # :nodoc:

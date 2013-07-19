@@ -65,23 +65,32 @@ class Gem::Commands::ContentsCommand < Gem::Command
 
   def files_in spec
     if spec.default_gem? then
-      files = spec.files.sort.map do |file|
-        case file
-        when /\A#{spec.bindir}\//
-          [Gem::ConfigMap[:bindir], $POSTMATCH]
-        when /\.so\z/
-          [Gem::ConfigMap[:archdir], file]
-        else
-          [Gem::ConfigMap[:rubylibdir], file]
-        end
-      end
+      files_in_default_gem spec
     else
-      gem_path  = spec.full_gem_path
-      extra     = "/{#{spec.require_paths.join ','}}" if options[:lib_only]
-      glob      = "#{gem_path}#{extra}/**/*"
-      prefix_re = /#{Regexp.escape(gem_path)}\//
-      files     = Dir[glob].map do |file|
-        [gem_path, file.sub(prefix_re, "")]
+      files_in_gem spec
+    end
+  end
+
+  def files_in_gem spec
+    gem_path  = spec.full_gem_path
+    extra     = "/{#{spec.require_paths.join ','}}" if options[:lib_only]
+    glob      = "#{gem_path}#{extra}/**/*"
+    prefix_re = /#{Regexp.escape(gem_path)}\//
+
+    Dir[glob].map do |file|
+      [gem_path, file.sub(prefix_re, "")]
+    end
+  end
+
+  def files_in_default_gem spec
+    spec.files.sort.map do |file|
+      case file
+      when /\A#{spec.bindir}\//
+        [Gem::ConfigMap[:bindir], $POSTMATCH]
+      when /\.so\z/
+        [Gem::ConfigMap[:archdir], file]
+      else
+        [Gem::ConfigMap[:rubylibdir], file]
       end
     end
   end

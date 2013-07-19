@@ -104,18 +104,8 @@ Do you want to add this insecure source?
     source_uri = options[:add]
     add_source source_uri if source_uri
 
-    if options[:remove] then
-      source_uri = options[:remove]
-
-      unless Gem.sources.include? source_uri then
-        say "source #{source_uri} not present in cache"
-      else
-        Gem.sources.delete source_uri
-        Gem.configuration.write
-
-        say "#{source_uri} removed from sources"
-      end
-    end
+    source_uri = options[:remove]
+    remove_source source_uri if source_uri
 
     if options[:update] then
       Gem.sources.each_source do |src|
@@ -133,6 +123,17 @@ Do you want to add this insecure source?
       Gem.sources.each do |src|
         say src
       end
+    end
+  end
+
+  def remove_source source_uri # :nodoc:
+    unless Gem.sources.include? source_uri then
+      say "source #{source_uri} not present in cache"
+    else
+      Gem.sources.delete source_uri
+      Gem.configuration.write
+
+      say "#{source_uri} removed from sources"
     end
   end
 

@@ -94,6 +94,8 @@ platform.
 
   def initialize
     super 'help', "Provide help on the 'gem' command"
+
+    @command_manager = Gem::CommandManager.instance
   end
 
   def arguments # :nodoc:
@@ -110,46 +112,10 @@ platform.
   end
 
   def execute
-    command_manager = Gem::CommandManager.instance
     arg = options[:args][0]
 
     if begins? "commands", arg then
-      out = []
-      out << "GEM commands are:"
-      out << nil
-
-      margin_width = 4
-
-      desc_width = command_manager.command_names.map { |n| n.size }.max + 4
-
-      summary_width = 80 - margin_width - desc_width
-      wrap_indent = ' ' * (margin_width + desc_width)
-      format = "#{' ' * margin_width}%-#{desc_width}s%s"
-
-      command_manager.command_names.each do |cmd_name|
-        command = command_manager[cmd_name]
-
-        summary =
-          if command then
-            command.summary
-          else
-            "[No command found for #{cmd_name}]"
-          end
-
-        summary = wrap(summary, summary_width).split "\n"
-        out << sprintf(format, cmd_name, summary.shift)
-        until summary.empty? do
-          out << "#{wrap_indent}#{summary.shift}"
-        end
-      end
-
-      out << nil
-      out << "For help on a particular command, use 'gem help COMMAND'."
-      out << nil
-      out << "Commands may be abbreviated, so long as they are unambiguous."
-      out << "e.g. 'gem i rake' is short for 'gem install rake'."
-
-      say out.join("\n")
+      show_commands
 
     elsif begins? "options", arg then
       say Gem::Command::HELP
@@ -161,7 +127,7 @@ platform.
       say PLATFORMS
 
     elsif options[:help] then
-      command = command_manager[options[:help]]
+      command = @command_manager[options[:help]]
       if command
         # help with provided command
         command.invoke("--help")
@@ -170,9 +136,9 @@ platform.
       end
 
     elsif arg then
-      possibilities = command_manager.find_command_possibilities(arg.downcase)
+      possibilities = @command_manager.find_command_possibilities(arg.downcase)
       if possibilities.size == 1
-        command = command_manager[possibilities.first]
+        command = @command_manager[possibilities.first]
         command.invoke("--help")
       elsif possibilities.size > 1
         alert_warning "Ambiguous command #{arg} (#{possibilities.join(', ')})"
@@ -183,6 +149,45 @@ platform.
     else
       say Gem::Command::HELP
     end
+  end
+
+  def show_commands # :nodoc:
+    out = []
+    out << "GEM commands are:"
+    out << nil
+
+    margin_width = 4
+
+    desc_width = @command_manager.command_names.map { |n| n.size }.max + 4
+
+    summary_width = 80 - margin_width - desc_width
+    wrap_indent = ' ' * (margin_width + desc_width)
+    format = "#{' ' * margin_width}%-#{desc_width}s%s"
+
+    @command_manager.command_names.each do |cmd_name|
+      command = @command_manager[cmd_name]
+
+      summary =
+        if command then
+          command.summary
+        else
+          "[No command found for #{cmd_name}]"
+        end
+
+      summary = wrap(summary, summary_width).split "\n"
+      out << sprintf(format, cmd_name, summary.shift)
+      until summary.empty? do
+        out << "#{wrap_indent}#{summary.shift}"
+      end
+    end
+
+    out << nil
+    out << "For help on a particular command, use 'gem help COMMAND'."
+    out << nil
+    out << "Commands may be abbreviated, so long as they are unambiguous."
+    out << "e.g. 'gem i rake' is short for 'gem install rake'."
+
+    say out.join("\n")
   end
 
 end

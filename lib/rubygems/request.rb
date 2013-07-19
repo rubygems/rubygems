@@ -85,9 +85,9 @@ class Gem::Request
 
     connection_id = [Thread.current.object_id, *net_http_args].join ':'
 
-    @connections_mutex.synchronize do
+    connection = @connections_mutex.synchronize do
       @connections[connection_id] ||= Net::HTTP.new(*net_http_args)
-      connection = @connections[connection_id]
+      @connections[connection_id]
     end
 
     if https?(uri) and not connection.started? then

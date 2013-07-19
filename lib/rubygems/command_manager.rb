@@ -33,6 +33,39 @@ class Gem::CommandManager
 
   include Gem::UserInteraction
 
+  BUILTIN_COMMANDS = [ # :nodoc:
+    :build,
+    :cert,
+    :check,
+    :cleanup,
+    :contents,
+    :dependency,
+    :environment,
+    :fetch,
+    :generate_index,
+    :help,
+    :install,
+    :list,
+    :lock,
+    :mirror,
+    :outdated,
+    :owner,
+    :pristine,
+    :push,
+    :query,
+    :rdoc,
+    :search,
+    :server,
+    :sources,
+    :specification,
+    :stale,
+    :uninstall,
+    :unpack,
+    :update,
+    :which,
+    :yank,
+  ]
+
   ##
   # Return the authoritative instance of the command manager.
 
@@ -61,36 +94,10 @@ class Gem::CommandManager
   def initialize
     require 'timeout'
     @commands = {}
-    register_command :build
-    register_command :cert
-    register_command :check
-    register_command :cleanup
-    register_command :contents
-    register_command :dependency
-    register_command :environment
-    register_command :fetch
-    register_command :generate_index
-    register_command :help
-    register_command :install
-    register_command :list
-    register_command :lock
-    register_command :mirror
-    register_command :outdated
-    register_command :owner
-    register_command :pristine
-    register_command :push
-    register_command :query
-    register_command :rdoc
-    register_command :search
-    register_command :server
-    register_command :sources
-    register_command :specification
-    register_command :stale
-    register_command :uninstall
-    register_command :unpack
-    register_command :update
-    register_command :which
-    register_command :yank
+
+    BUILTIN_COMMANDS.each do |name|
+      register_command name
+    end
   end
 
   ##

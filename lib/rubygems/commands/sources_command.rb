@@ -37,6 +37,41 @@ class Gem::Commands::SourcesCommand < Gem::Command
     add_proxy_option
   end
 
+  def add_source source_uri
+    uri = URI source_uri
+
+    if uri.scheme and uri.scheme.downcase == 'http' and
+       uri.host.downcase == 'rubygems.org' then
+      question = <<-QUESTION.chomp
+https://rubygems.org is recommended for security over #{uri}
+
+Do you want to add this insecure source?
+      QUESTION
+
+      terminate_interaction 1 unless ask_yes_no question
+    end
+
+    source = Gem::Source.new source_uri
+
+    begin
+      if Gem.sources.include? source_uri then
+        say "source #{source_uri} already present in the cache"
+      else
+        source.load_specs :released
+        Gem.sources << source
+        Gem.configuration.write
+
+        say "#{source_uri} added to sources"
+      end
+    rescue URI::Error, ArgumentError
+      say "#{source_uri} is not a URI"
+      terminate_interaction 1
+    rescue Gem::RemoteFetcher::FetchError => e
+      say "Error fetching #{source_uri}:\n\t#{e.message}"
+      terminate_interaction 1
+    end
+  end
+
   def clear_all # :nodoc:
     path = Gem.spec_cache_dir
     FileUtils.rm_rf path
@@ -66,40 +101,8 @@ class Gem::Commands::SourcesCommand < Gem::Command
 
     clear_all if options[:clear_all]
 
-    if source_uri = options[:add] then
-      uri = URI source_uri
-
-      if uri.scheme and uri.scheme.downcase == 'http' and
-         uri.host.downcase == 'rubygems.org' then
-        question = <<-QUESTION.chomp
-https://rubygems.org is recommended for security over #{uri}
-
-Do you want to add this insecure source?
-        QUESTION
-
-        terminate_interaction 1 unless ask_yes_no question
-      end
-
-      source = Gem::Source.new source_uri
-
-      begin
-        if Gem.sources.include? source_uri then
-          say "source #{source_uri} already present in the cache"
-        else
-          source.load_specs :released
-          Gem.sources << source
-          Gem.configuration.write
-
-          say "#{source_uri} added to sources"
-        end
-      rescue URI::Error, ArgumentError
-        say "#{source_uri} is not a URI"
-        terminate_interaction 1
-      rescue Gem::RemoteFetcher::FetchError => e
-        say "Error fetching #{source_uri}:\n\t#{e.message}"
-        terminate_interaction 1
-      end
-    end
+    source_uri = options[:add]
+    add_source source_uri if source_uri
 
     if options[:remove] then
       source_uri = options[:remove]

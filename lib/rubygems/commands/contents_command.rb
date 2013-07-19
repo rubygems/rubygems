@@ -50,12 +50,7 @@ class Gem::Commands::ContentsCommand < Gem::Command
 
     spec_dirs = specification_directories
 
-    path_kind = if spec_dirs.empty? then
-                  spec_dirs = Gem::Specification.dirs
-                  "default gem paths"
-                else
-                  "specified path"
-                end
+    path_kind = path_description spec_dirs
 
     gem_names = if options[:all] then
                   Gem::Specification.map(&:name)
@@ -110,6 +105,15 @@ class Gem::Commands::ContentsCommand < Gem::Command
           say basename
         end
       end
+    end
+  end
+
+  def path_description spec_dirs # :nodoc:
+    if spec_dirs.empty? then
+      spec_dirs = Gem::Specification.dirs
+      "default gem paths"
+    else
+      "specified path"
     end
   end
 

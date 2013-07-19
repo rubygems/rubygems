@@ -84,13 +84,12 @@ class Gem::Commands::ContentsCommand < Gem::Command
         [gem_path, file.sub(prefix_re, "")]
       end
     end
-
   end
 
   def gem_contents name
     spec = spec_for name
 
-    return unless spec
+    return false unless spec
 
     files = files_in spec
 

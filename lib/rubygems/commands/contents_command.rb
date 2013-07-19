@@ -94,16 +94,7 @@ class Gem::Commands::ContentsCommand < Gem::Command
 
     files = files_in spec
 
-    files.sort.each do |prefix, basename|
-      absolute_path = File.join(prefix, basename)
-      next if File.directory? absolute_path
-
-      if options[:prefix]
-        say absolute_path
-      else
-        say basename
-      end
-    end
+    show_files files
 
     true
   end
@@ -122,6 +113,19 @@ class Gem::Commands::ContentsCommand < Gem::Command
       "default gem paths"
     else
       "specified path"
+    end
+  end
+
+  def show_files files
+    files.sort.each do |prefix, basename|
+      absolute_path = File.join(prefix, basename)
+      next if File.directory? absolute_path
+
+      if options[:prefix] then
+        say absolute_path
+      else
+        say basename
+      end
     end
   end
 

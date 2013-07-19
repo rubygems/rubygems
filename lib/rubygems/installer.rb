@@ -636,6 +636,14 @@ if ARGV.first
   end
 end
 
+begin
+  Gem.load_executable_plugins
+  Gem.executables_hooks.each do |hook|
+    hook.call('#{bin_file_name}')
+  end
+rescue
+end
+
 gem '#{spec.name}', version
 load Gem.bin_path('#{spec.name}', '#{bin_file_name}', version)
 TEXT

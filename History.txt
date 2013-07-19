@@ -8,6 +8,8 @@ Bug fixes:
   #593 by Blargel.
 * Fixed crash when installing gems with extensions under the `-V` flag.  Bug
   #601 by Nick Hoffman.
+* Fixed race condition retrieving HTTP connections in Gem::Request on JRuby.
+  Bug #597 by Hemant Kumar.
 
 === 2.0.5 / 2013-07-11
 

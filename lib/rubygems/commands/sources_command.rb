@@ -38,9 +38,7 @@ class Gem::Commands::SourcesCommand < Gem::Command
   end
 
   def add_source source_uri # :nodoc:
-    uri = URI source_uri
-
-    check_rubygems_https uri
+    check_rubygems_https source_uri
 
     source = Gem::Source.new source_uri
 
@@ -63,7 +61,9 @@ class Gem::Commands::SourcesCommand < Gem::Command
     end
   end
 
-  def check_rubygems_https uri # :nodoc:
+  def check_rubygems_https source_uri # :nodoc:
+    uri = URI source_uri
+
     if uri.scheme and uri.scheme.downcase == 'http' and
        uri.host.downcase == 'rubygems.org' then
       question = <<-QUESTION.chomp

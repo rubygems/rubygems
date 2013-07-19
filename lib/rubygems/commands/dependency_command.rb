@@ -42,31 +42,26 @@ class Gem::Commands::DependencyCommand < Gem::Command
     "#{program_name} GEMNAME"
   end
 
+  def fetch_remote_specs dependency # :nodoc:
+    fetcher = Gem::SpecFetcher.fetcher
+
+    ss, = fetcher.spec_for_dependency dependency
+
+    ss.map { |spec, _| spec }
+  end
+
   def fetch_specs dependency # :nodoc:
     specs = []
 
-    specs.concat dependency.matching_specs if local?
+    specs.concat dependency.matching_specs     if local?
+    specs.concat fetch_remote_specs dependency if remote?
 
-    if remote? and not options[:reverse_dependencies] then
-      fetcher = Gem::SpecFetcher.fetcher
-
-      ss, _ = fetcher.spec_for_dependency dependency
-
-      ss.each { |s,o| specs << s }
-    end
-
-    if specs.empty? then
-      patterns = options[:args].join ','
-      say "No gems found matching #{patterns} (#{options[:version]})" if
-        Gem.configuration.verbose
-
-      terminate_interaction 1
-    end
+    ensure_specs specs
 
     specs.uniq.sort
   end
 
-  def gem_dependency args, version, prerelease
+  def gem_dependency args, version, prerelease # :nodoc:
     args << '' if args.empty?
 
     pattern = if args.length == 1 and args.first =~ /\A\/(.*)\/(i)?\z/m then
@@ -85,6 +80,33 @@ class Gem::Commands::DependencyCommand < Gem::Command
     dependency
   end
 
+  def display_pipe specs # :nodoc:
+    specs.each do |spec|
+      unless spec.dependencies.empty? then
+        spec.dependencies.sort_by { |dep| dep.name }.each do |dep|
+          say "#{dep.name} --version '#{dep.requirement}'"
+        end
+      end
+    end
+  end
+
+  def display_readable specs, reverse # :nodoc:
+    response = ''
+
+    specs.each do |spec|
+      response << print_dependencies(spec)
+      unless reverse[spec.full_name].empty? then
+        response << "  Used by\n"
+        reverse[spec.full_name].each do |sp, dep|
+          response << "    #{sp} (#{dep})\n"
+        end
+      end
+      response << "\n"
+    end
+
+    say response
+  end
+
   def execute
     ensure_local_only_reverse_dependencies
 
@@ -93,37 +115,12 @@ class Gem::Commands::DependencyCommand < Gem::Command
 
     specs = fetch_specs dependency
 
-    reverse = Hash.new { |h, k| h[k] = [] }
-
-    if options[:reverse_dependencies] then
-      specs.each do |spec|
-        reverse[spec.full_name] = find_reverse_dependencies spec
-      end
-    end
+    reverse = reverse_dependencies specs
 
     if options[:pipe_format] then
-      specs.each do |spec|
-        unless spec.dependencies.empty?
-          spec.dependencies.sort_by { |dep| dep.name }.each do |dep|
-            say "#{dep.name} --version '#{dep.requirement}'"
-          end
-        end
-      end
+      display_pipe specs
     else
-      response = ''
-
-      specs.each do |spec|
-        response << print_dependencies(spec)
-        unless reverse[spec.full_name].empty? then
-          response << "  Used by\n"
-          reverse[spec.full_name].each do |sp, dep|
-            response << "    #{sp} (#{dep})\n"
-          end
-        end
-        response << "\n"
-      end
-
-      say response
+      display_readable specs, reverse
     end
   end
 
@@ -132,6 +129,16 @@ class Gem::Commands::DependencyCommand < Gem::Command
       alert_error 'Only reverse dependencies for local gems are supported.'
       terminate_interaction 1
     end
+  end
+
+  def ensure_specs specs # :nodoc:
+    return unless specs.empty?
+
+    patterns = options[:args].join ','
+    say "No gems found matching #{patterns} (#{options[:version]})" if
+      Gem.configuration.verbose
+
+    terminate_interaction 1
   end
 
   def print_dependencies(spec, level = 0) # :nodoc:
@@ -145,12 +152,24 @@ class Gem::Commands::DependencyCommand < Gem::Command
     response
   end
 
-  def remote_specs dependency
+  def remote_specs dependency # :nodoc:
     fetcher = Gem::SpecFetcher.fetcher
 
     ss, _ = fetcher.spec_for_dependency dependency
 
     ss.map { |s,o| s }
+  end
+
+  def reverse_dependencies specs # :nodoc:
+    reverse = Hash.new { |h, k| h[k] = [] }
+
+    return reverse unless options[:reverse_dependencies]
+
+    specs.each do |spec|
+      reverse[spec.full_name] = find_reverse_dependencies spec
+    end
+
+    reverse
   end
 
   ##

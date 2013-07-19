@@ -37,7 +37,7 @@ class Gem::Commands::SourcesCommand < Gem::Command
     add_proxy_option
   end
 
-  def add_source source_uri
+  def add_source source_uri # :nodoc:
     uri = URI source_uri
 
     if uri.scheme and uri.scheme.downcase == 'http' and
@@ -141,9 +141,7 @@ Do you want to add this insecure source?
     say "source cache successfully updated"
   end
 
-  private
-
-  def remove_cache_file(desc, path)
+  def remove_cache_file desc, path # :nodoc:
     FileUtils.rm_rf path
 
     if not File.exist?(path) then

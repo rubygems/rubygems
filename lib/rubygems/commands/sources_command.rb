@@ -107,14 +107,7 @@ Do you want to add this insecure source?
     source_uri = options[:remove]
     remove_source source_uri if source_uri
 
-    if options[:update] then
-      Gem.sources.each_source do |src|
-        src.load_specs :released
-        src.load_specs :latest
-      end
-
-      say "source cache successfully updated"
-    end
+    update if options[:update]
 
     if options[:list] then
       say "*** CURRENT SOURCES ***"
@@ -135,6 +128,15 @@ Do you want to add this insecure source?
 
       say "#{source_uri} removed from sources"
     end
+  end
+
+  def update # :nodoc:
+    Gem.sources.each_source do |src|
+      src.load_specs :released
+      src.load_specs :latest
+    end
+
+    say "source cache successfully updated"
   end
 
   private

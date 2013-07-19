@@ -54,8 +54,12 @@ class Gem::Commands::ContentsCommand < Gem::Command
     @spec_dirs = specification_directories
     @path_kind = path_description @spec_dirs
 
-    gem_names.each do |name|
-      gem_contents name
+    names = gem_names
+
+    names.each do |name|
+      found = gem_contents name
+
+      terminate_interaction 1 unless found or names.length > 1
     end
   end
 
@@ -76,6 +80,21 @@ class Gem::Commands::ContentsCommand < Gem::Command
     end
   end
 
+  def spec_for name
+    spec = Gem::Specification.find_all_by_name(name, @version).last
+
+    return spec if spec
+
+    say "Unable to find gem '#{name}' in #{@path_kind}"
+
+    if Gem.configuration.verbose then
+      say "\nDirectories searched:"
+      @spec_dirs.sort.each { |dir| say dir }
+    end
+
+    return nil
+  end
+
   def specification_directories # :nodoc:
     options[:specdirs].map do |i|
       [i, File.join(i, "specifications")]
@@ -83,19 +102,9 @@ class Gem::Commands::ContentsCommand < Gem::Command
   end
 
   def gem_contents name
-    spec = Gem::Specification.find_all_by_name(name, @version).last
+    spec = spec_for name
 
-    unless spec then
-      say "Unable to find gem '#{name}' in #{@path_kind}"
-
-      if Gem.configuration.verbose then
-        say "\nDirectories searched:"
-        @spec_dirs.sort.each { |dir| say dir }
-      end
-
-      terminate_interaction 1 if gem_names.length == 1
-      return
-    end
+    return unless spec
 
     if spec.default_gem?
       files = spec.files.sort.map do |file|
@@ -128,6 +137,8 @@ class Gem::Commands::ContentsCommand < Gem::Command
         say basename
       end
     end
+
+    true
   end
 
 end

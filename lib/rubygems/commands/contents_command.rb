@@ -48,9 +48,7 @@ class Gem::Commands::ContentsCommand < Gem::Command
   def execute
     version = options[:version] || Gem::Requirement.default
 
-    spec_dirs = options[:specdirs].map do |i|
-      [i, File.join(i, "specifications")]
-    end.flatten
+    spec_dirs = specification_directories
 
     path_kind = if spec_dirs.empty? then
                   spec_dirs = Gem::Specification.dirs
@@ -113,6 +111,12 @@ class Gem::Commands::ContentsCommand < Gem::Command
         end
       end
     end
+  end
+
+  def specification_directories # :nodoc:
+    options[:specdirs].map do |i|
+      [i, File.join(i, "specifications")]
+    end.flatten
   end
 
 end

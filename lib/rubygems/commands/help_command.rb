@@ -127,13 +127,7 @@ platform.
       say PLATFORMS
 
     elsif options[:help] then
-      command = @command_manager[options[:help]]
-      if command
-        # help with provided command
-        command.invoke("--help")
-      else
-        alert_error "Unknown command #{options[:help]}.  Try 'gem help commands'"
-      end
+      show_help
 
     elsif arg then
       possibilities = @command_manager.find_command_possibilities(arg.downcase)
@@ -188,6 +182,16 @@ platform.
     out << "e.g. 'gem i rake' is short for 'gem install rake'."
 
     say out.join("\n")
+  end
+
+  def show_help # :nodoc:
+    command = @command_manager[options[:help]]
+    if command then
+      # help with provided command
+      command.invoke("--help")
+    else
+      alert_error "Unknown command #{options[:help]}.  Try 'gem help commands'"
+    end
   end
 
 end

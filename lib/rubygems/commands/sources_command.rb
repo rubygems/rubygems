@@ -40,16 +40,7 @@ class Gem::Commands::SourcesCommand < Gem::Command
   def add_source source_uri # :nodoc:
     uri = URI source_uri
 
-    if uri.scheme and uri.scheme.downcase == 'http' and
-       uri.host.downcase == 'rubygems.org' then
-      question = <<-QUESTION.chomp
-https://rubygems.org is recommended for security over #{uri}
-
-Do you want to add this insecure source?
-      QUESTION
-
-      terminate_interaction 1 unless ask_yes_no question
-    end
+    check_rubygems_https uri
 
     source = Gem::Source.new source_uri
 
@@ -69,6 +60,19 @@ Do you want to add this insecure source?
     rescue Gem::RemoteFetcher::FetchError => e
       say "Error fetching #{source_uri}:\n\t#{e.message}"
       terminate_interaction 1
+    end
+  end
+
+  def check_rubygems_https uri # :nodoc:
+    if uri.scheme and uri.scheme.downcase == 'http' and
+       uri.host.downcase == 'rubygems.org' then
+      question = <<-QUESTION.chomp
+https://rubygems.org is recommended for security over #{uri}
+
+Do you want to add this insecure source?
+      QUESTION
+
+      terminate_interaction 1 unless ask_yes_no question
     end
   end
 

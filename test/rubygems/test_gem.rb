@@ -370,7 +370,7 @@ class TestGem < Gem::TestCase
 
     discover_path = File.join 'lib', 'sff', 'discover.rb'
 
-    foo1, foo2 = %w(1 2).map { |version|
+    _, foo2 = %w(1 2).map { |version|
       spec = quick_gem 'sff', version do |s|
         s.files << discover_path
       end

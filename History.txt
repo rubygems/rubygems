@@ -80,7 +80,9 @@ Bug fixes:
 
 * rubygems_plugin.rb files are now only loaded from the latest installed gem.
 * Fixed the `--no-install` and `-I` options to `gem list` and friends.  Bug
-  #593 by Blargel
+  #593 by Blargel.
+* Fixed crash when installing gems with extensions under the `-V` flag.  Bug
+  #601 by Nick Hoffman.
 
 === 2.0.5 / 2013-07-11
 

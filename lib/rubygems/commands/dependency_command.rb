@@ -42,27 +42,30 @@ class Gem::Commands::DependencyCommand < Gem::Command
     "#{program_name} GEMNAME"
   end
 
-  def execute
-    if options[:reverse_dependencies] and remote? and not local? then
-      alert_error 'Only reverse dependencies for local gems are supported.'
-      terminate_interaction 1
-    end
+  def gem_dependency args, version, prerelease
+    args << '' if args.empty?
 
-    options[:args] << '' if options[:args].empty?
-
-    pattern = if options[:args].length == 1 and
-                 options[:args].first =~ /\A\/(.*)\/(i)?\z/m then
+    pattern = if args.length == 1 and args.first =~ /\A\/(.*)\/(i)?\z/m then
                 flags = $2 ? Regexp::IGNORECASE : nil
                 Regexp.new $1, flags
               else
-                /\A#{Regexp.union(*options[:args])}/
+                /\A#{Regexp.union(*args)}/
               end
 
-    # TODO: deprecate for real damnit
     dependency = Gem::Deprecate.skip_during {
-      Gem::Dependency.new pattern, options[:version]
+      Gem::Dependency.new pattern, version
     }
-    dependency.prerelease = options[:prerelease]
+
+    dependency.prerelease = prerelease
+
+    dependency
+  end
+
+  def execute
+    ensure_local_only_reverse_dependencies
+
+    dependency =
+      gem_dependency options[:args], options[:version], options[:prerelease]
 
     specs = []
 
@@ -120,7 +123,14 @@ class Gem::Commands::DependencyCommand < Gem::Command
     end
   end
 
-  def print_dependencies(spec, level = 0)
+  def ensure_local_only_reverse_dependencies # :nodoc:
+    if options[:reverse_dependencies] and remote? and not local? then
+      alert_error 'Only reverse dependencies for local gems are supported.'
+      terminate_interaction 1
+    end
+  end
+
+  def print_dependencies(spec, level = 0) # :nodoc:
     response = ''
     response << '  ' * level + "Gem #{spec.full_name}\n"
     unless spec.dependencies.empty? then
@@ -131,10 +141,18 @@ class Gem::Commands::DependencyCommand < Gem::Command
     response
   end
 
+  def remote_specs dependency
+    fetcher = Gem::SpecFetcher.fetcher
+
+    ss, _ = fetcher.spec_for_dependency dependency
+
+    ss.map { |s,o| s }
+  end
+
   ##
   # Returns an Array of [specification, dep] that are satisfied by +spec+.
 
-  def find_reverse_dependencies(spec)
+  def find_reverse_dependencies spec # :nodoc:
     result = []
 
     Gem::Specification.each do |sp|

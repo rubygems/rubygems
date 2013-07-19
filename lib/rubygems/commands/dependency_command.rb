@@ -42,6 +42,30 @@ class Gem::Commands::DependencyCommand < Gem::Command
     "#{program_name} GEMNAME"
   end
 
+  def fetch_specs dependency # :nodoc:
+    specs = []
+
+    specs.concat dependency.matching_specs if local?
+
+    if remote? and not options[:reverse_dependencies] then
+      fetcher = Gem::SpecFetcher.fetcher
+
+      ss, _ = fetcher.spec_for_dependency dependency
+
+      ss.each { |s,o| specs << s }
+    end
+
+    if specs.empty? then
+      patterns = options[:args].join ','
+      say "No gems found matching #{patterns} (#{options[:version]})" if
+        Gem.configuration.verbose
+
+      terminate_interaction 1
+    end
+
+    specs.uniq.sort
+  end
+
   def gem_dependency args, version, prerelease
     args << '' if args.empty?
 
@@ -67,27 +91,7 @@ class Gem::Commands::DependencyCommand < Gem::Command
     dependency =
       gem_dependency options[:args], options[:version], options[:prerelease]
 
-    specs = []
-
-    specs.concat dependency.matching_specs if local?
-
-    if remote? and not options[:reverse_dependencies] then
-      fetcher = Gem::SpecFetcher.fetcher
-
-      ss, _ = fetcher.spec_for_dependency dependency
-
-      ss.each { |s,o| specs << s }
-    end
-
-    if specs.empty? then
-      patterns = options[:args].join ','
-      say "No gems found matching #{patterns} (#{options[:version]})" if
-        Gem.configuration.verbose
-
-      terminate_interaction 1
-    end
-
-    specs = specs.uniq.sort
+    specs = fetch_specs dependency
 
     reverse = Hash.new { |h, k| h[k] = [] }
 

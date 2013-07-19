@@ -63,12 +63,8 @@ class Gem::Commands::ContentsCommand < Gem::Command
     end
   end
 
-  def gem_contents name
-    spec = spec_for name
-
-    return unless spec
-
-    if spec.default_gem?
+  def files_in spec
+    if spec.default_gem? then
       files = spec.files.sort.map do |file|
         case file
         when /\A#{spec.bindir}\//
@@ -88,6 +84,15 @@ class Gem::Commands::ContentsCommand < Gem::Command
         [gem_path, file.sub(prefix_re, "")]
       end
     end
+
+  end
+
+  def gem_contents name
+    spec = spec_for name
+
+    return unless spec
+
+    files = files_in spec
 
     files.sort.each do |prefix, basename|
       absolute_path = File.join(prefix, basename)

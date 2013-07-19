@@ -93,6 +93,15 @@ Do you want to add this insecure source?
     '--list'
   end
 
+  def list # :nodoc:
+    say "*** CURRENT SOURCES ***"
+    say
+
+    Gem.sources.each do |src|
+      say src
+    end
+  end
+
   def execute
     options[:list] = !(options[:add] ||
                        options[:clear_all] ||
@@ -109,14 +118,7 @@ Do you want to add this insecure source?
 
     update if options[:update]
 
-    if options[:list] then
-      say "*** CURRENT SOURCES ***"
-      say
-
-      Gem.sources.each do |src|
-        say src
-      end
-    end
+    list if options[:list]
   end
 
   def remove_source source_uri # :nodoc:

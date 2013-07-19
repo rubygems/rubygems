@@ -451,11 +451,7 @@ module Gem
   def self.find_files(glob, check_load_path=true)
     files = []
 
-    if check_load_path
-      files = $LOAD_PATH.map { |load_path|
-        Dir["#{File.expand_path glob, load_path}#{Gem.suffix_pattern}"]
-      }.flatten.select { |file| File.file? file.untaint }
-    end
+    files = find_files_from_load_path glob if check_load_path
 
     files.concat Gem::Specification.map { |spec|
       spec.matches_for_glob("#{glob}#{Gem.suffix_pattern}")
@@ -466,6 +462,12 @@ module Gem
     files.uniq! if check_load_path
 
     return files
+  end
+
+  def self.find_files_from_load_path glob # :nodoc:
+    $LOAD_PATH.map { |load_path|
+      Dir["#{File.expand_path glob, load_path}#{Gem.suffix_pattern}"]
+    }.flatten.select { |file| File.file? file.untaint }
   end
 
   ##
@@ -483,11 +485,7 @@ module Gem
   def self.find_latest_files(glob, check_load_path=true)
     files = []
 
-    if check_load_path
-      files = $LOAD_PATH.map { |load_path|
-        Dir["#{File.expand_path glob, load_path}#{Gem.suffix_pattern}"]
-      }.flatten.select { |file| File.file? file.untaint }
-    end
+    files = find_files_from_load_path glob if check_load_path
 
     files.concat Gem::Specification.latest_specs(true).map { |spec|
       spec.matches_for_glob("#{glob}#{Gem.suffix_pattern}")

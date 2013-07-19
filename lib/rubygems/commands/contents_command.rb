@@ -49,14 +49,7 @@ class Gem::Commands::ContentsCommand < Gem::Command
     version = options[:version] || Gem::Requirement.default
 
     spec_dirs = specification_directories
-
     path_kind = path_description spec_dirs
-
-    gem_names = if options[:all] then
-                  Gem::Specification.map(&:name)
-                else
-                  get_all_gem_names
-                end
 
     gem_names.each do |name|
       # HACK: find_by_name fails for some reason... ARGH
@@ -105,6 +98,14 @@ class Gem::Commands::ContentsCommand < Gem::Command
           say basename
         end
       end
+    end
+  end
+
+  def gem_names # :nodoc:
+    if options[:all] then
+      Gem::Specification.map(&:name)
+    else
+      get_all_gem_names
     end
   end
 

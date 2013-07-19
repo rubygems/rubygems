@@ -139,14 +139,6 @@ class Gem::CommandManager
     alert_error "While executing gem ... (#{ex.class})\n    #{ex.to_s}"
     ui.backtrace ex
 
-    if Gem.configuration.really_verbose and \
-         ex.kind_of?(Gem::Exception) and ex.source_exception
-      e = ex.source_exception
-
-      ui.errs.puts "Because of: (#{e.class})\n    #{e.to_s}"
-      ui.backtrace e
-    end
-
     terminate_interaction(1)
   rescue Interrupt
     alert_error "Interrupted"

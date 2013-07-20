@@ -108,11 +108,7 @@ class Gem::Commands::CertCommand < Gem::Command
       build name
     end
 
-    load_defaults unless options[:sign].empty?
-
-    options[:sign].each do |cert_file|
-      sign cert_file
-    end
+    sign_certificates unless options[:sign].empty?
   end
 
   def build name
@@ -259,6 +255,14 @@ For further reading on signing gems see `ri Gem::Security`.
     cert = Gem::Security.sign cert, issuer_key, issuer_cert
 
     Gem::Security.write cert, cert_file, permissions
+  end
+
+  def sign_certificates # :nodoc:
+    load_defaults unless options[:sign].empty?
+
+    options[:sign].each do |cert_file|
+      sign cert_file
+    end
   end
 
 end if defined?(OpenSSL::SSL)

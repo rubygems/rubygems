@@ -56,6 +56,22 @@ class Gem::Commands::UpdateCommand < Gem::Command
     "#{program_name} GEMNAME [GEMNAME ...]"
   end
 
+  def check_latest_rubygems version # :nodoc:
+    if Gem.rubygems_version == version then
+      say "Latest version currently installed. Aborting."
+      terminate_interaction
+    end
+
+    options[:user_install] = false
+  end
+
+  def check_update_arguments # :nodoc:
+    unless options[:args].empty? then
+      alert_error "Gem names are not allowed with the --system option"
+      terminate_interaction 1
+    end
+  end
+
   def execute
     hig = {}
 
@@ -175,20 +191,11 @@ class Gem::Commands::UpdateCommand < Gem::Command
   # Update RubyGems software to the latest version.
 
   def update_rubygems
-    unless options[:args].empty? then
-      alert_error "Gem names are not allowed with the --system option"
-      terminate_interaction 1
-    end
-
-    options[:user_install] = false
+    check_update_arguments
 
     version, requirement = rubygems_target_version
 
-    if Gem.rubygems_version == version then
-      # if options[:system] != true and version == current_ver then
-      say "Latest version currently installed. Aborting."
-      terminate_interaction
-    end
+    check_latest_rubygems version
 
     update_gem 'rubygems-update', version
 

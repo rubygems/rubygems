@@ -95,6 +95,17 @@ class Gem::Commands::UpdateCommand < Gem::Command
     end
   end
 
+  def fetch_remote_gems spec # :nodoc:
+    dependency = Gem::Dependency.new spec.name, "> #{spec.version}"
+    dependency.prerelease = options[:prerelease]
+
+    fetcher = Gem::SpecFetcher.fetcher
+
+    spec_tuples, _ = fetcher.search_for_dependency dependency
+
+    spec_tuples
+  end
+
   def highest_installed_gems # :nodoc:
     hig = {} # highest installed gems
 
@@ -108,12 +119,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
   end
 
   def highest_remote_version spec # :nodoc:
-    dependency = Gem::Dependency.new spec.name, "> #{spec.version}"
-    dependency.prerelease = options[:prerelease]
-
-    fetcher = Gem::SpecFetcher.fetcher
-
-    spec_tuples, _ = fetcher.search_for_dependency dependency
+    spec_tuples = fetch_remote_gems spec
 
     matching_gems = spec_tuples.select do |g,_|
       g.name == spec.name and g.match_platform?

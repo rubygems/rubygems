@@ -167,10 +167,7 @@ to write the specification by hand.  For example:
 
     exit_code = install_gems
 
-    unless @installed_specs.empty? then
-      gems = @installed_specs.length == 1 ? 'gem' : 'gems'
-      say "#{@installed_specs.length} #{gems} installed"
-    end
+    show_installed
 
     raise Gem::SystemExitException, exit_code
   end
@@ -222,6 +219,13 @@ to write the specification by hand.  For example:
       require 'rubygems/install_message'
     end
     require 'rubygems/rdoc'
+  end
+
+  def show_installed # :nodoc:
+    return if @installed_specs.empty?
+
+    gems = @installed_specs.length == 1 ? 'gem' : 'gems'
+    say "#{@installed_specs.length} #{gems} installed"
   end
 
 end

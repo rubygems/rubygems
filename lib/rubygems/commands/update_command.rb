@@ -62,17 +62,11 @@ class Gem::Commands::UpdateCommand < Gem::Command
     if options[:system] then
       update_rubygems
       return
-    else
-      say "Updating installed gems"
-
-      hig = {} # highest installed gems
-
-      Gem::Specification.each do |spec|
-        if hig[spec.name].nil? or hig[spec.name].version < spec.version then
-          hig[spec.name] = spec
-        end
-      end
     end
+
+    say "Updating installed gems"
+
+    hig = highest_installed_gems
 
     gems_to_update = which_to_update hig, options[:args].uniq
 
@@ -83,6 +77,18 @@ class Gem::Commands::UpdateCommand < Gem::Command
     else
       say "Gems updated: #{updated.map { |spec| spec.name }.join ' '}"
     end
+  end
+
+  def highest_installed_gems # :nodoc:
+    hig = {} # highest installed gems
+
+    Gem::Specification.each do |spec|
+      if hig[spec.name].nil? or hig[spec.name].version < spec.version then
+        hig[spec.name] = spec
+      end
+    end
+
+    hig
   end
 
   def update_gem name, version = Gem::Requirement.default

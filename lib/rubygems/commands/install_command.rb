@@ -181,15 +181,7 @@ to write the specification by hand.  For example:
 
     @installed_specs.push(*inst.installed_gems)
 
-    return unless errs = inst.errors
-
-    errs.each do |x|
-      return unless Gem::SourceFetchProblem === x
-
-      msg = "Unable to pull data from '#{x.source.uri}': #{x.error.message}"
-
-      alert_warning msg
-    end
+    show_install_errors inst.errors
   end
 
   def install_gems # :nodoc:
@@ -223,6 +215,18 @@ to write the specification by hand.  For example:
       require 'rubygems/install_message'
     end
     require 'rubygems/rdoc'
+  end
+
+  def show_install_errors errors # :nodoc:
+    return unless errors
+
+    errors.each do |x|
+      return unless Gem::SourceFetchProblem === x
+
+      msg = "Unable to pull data from '#{x.source.uri}': #{x.error.message}"
+
+      alert_warning msg
+    end
   end
 
   def show_installed # :nodoc:

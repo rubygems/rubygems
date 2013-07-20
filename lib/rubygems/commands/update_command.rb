@@ -110,6 +110,38 @@ class Gem::Commands::UpdateCommand < Gem::Command
     highest_remote_gem.first.version
   end
 
+  def rubygems_target_version
+    version = options[:system]
+    update_latest = version == true
+
+    if update_latest then
+      version     = Gem::Version.new     Gem::VERSION
+      requirement = Gem::Requirement.new ">= #{Gem::VERSION}"
+    else
+      version     = Gem::Version.new     version
+      requirement = Gem::Requirement.new version
+    end
+
+    rubygems_update         = Gem::Specification.new
+    rubygems_update.name    = 'rubygems-update'
+    rubygems_update.version = version
+
+    hig = {
+      'rubygems-update' => rubygems_update
+    }
+
+    gems_to_update = which_to_update hig, options[:args], :system
+    _, up_ver   = gems_to_update.first
+
+    target = if update_latest then
+               up_ver
+             else
+               version
+             end
+
+    return target, requirement
+  end
+
   def update_gem name, version = Gem::Requirement.default
     return if @updated.any? { |spec| spec.name == name }
 
@@ -150,43 +182,15 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     options[:user_install] = false
 
-    # TODO: rename version and other variable name conflicts
-    # TODO: get rid of all this indirection on name and other BS
+    version, requirement = rubygems_target_version
 
-    version = options[:system]
-    if version == true then
-      version     = Gem::Version.new     Gem::VERSION
-      requirement = Gem::Requirement.new ">= #{Gem::VERSION}"
-    else
-      version     = Gem::Version.new     version
-      requirement = Gem::Requirement.new version
-    end
-
-    rubygems_update         = Gem::Specification.new
-    rubygems_update.name    = 'rubygems-update'
-    rubygems_update.version = version
-
-    hig = {
-      'rubygems-update' => rubygems_update
-    }
-
-    gems_to_update = which_to_update hig, options[:args], :system
-    name, up_ver   = gems_to_update.first
-    current_ver    = Gem.rubygems_version
-
-    target = if options[:system] == true then
-               up_ver
-             else
-               version
-             end
-
-    if current_ver == target then
+    if Gem.rubygems_version == version then
       # if options[:system] != true and version == current_ver then
       say "Latest version currently installed. Aborting."
       terminate_interaction
     end
 
-    update_gem name, target
+    update_gem 'rubygems-update', version
 
     installed_gems = Gem::Specification.find_all_by_name 'rubygems-update', requirement
     version        = installed_gems.last.version

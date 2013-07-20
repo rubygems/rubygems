@@ -146,8 +146,6 @@ class Gem::CommandManager
   end
 
   def process_args(args, build_args=nil)
-    args = args.to_str.split(/\s+/) if args.respond_to?(:to_str)
-
     if args.empty? then
       say Gem::Command::HELP
       terminate_interaction 1

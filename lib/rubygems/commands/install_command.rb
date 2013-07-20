@@ -128,28 +128,6 @@ to write the specification by hand.  For example:
     end
   end
 
-  def install_from_gemdeps(gf)
-    require 'rubygems/request_set'
-    rs = Gem::RequestSet.new
-    rs.load_gemdeps gf
-
-    rs.resolve
-
-    specs = rs.install options do |req, inst|
-      s = req.full_spec
-
-      if inst
-        say "Installing #{s.name} (#{s.version})"
-      else
-        say "Using #{s.name} (#{s.version})"
-      end
-    end
-
-    @installed_specs = specs
-
-    raise Gem::SystemExitException, 0
-  end
-
   def execute
     if gf = options[:gemdeps] then
       install_from_gemdeps gf
@@ -170,6 +148,28 @@ to write the specification by hand.  For example:
     show_installed
 
     raise Gem::SystemExitException, exit_code
+  end
+
+  def install_from_gemdeps gf # :nodoc:
+    require 'rubygems/request_set'
+    rs = Gem::RequestSet.new
+    rs.load_gemdeps gf
+
+    rs.resolve
+
+    specs = rs.install options do |req, inst|
+      s = req.full_spec
+
+      if inst
+        say "Installing #{s.name} (#{s.version})"
+      else
+        say "Using #{s.name} (#{s.version})"
+      end
+    end
+
+    @installed_specs = specs
+
+    raise Gem::SystemExitException, 0
   end
 
   def install_gems # :nodoc:

@@ -113,6 +113,13 @@ to write the specification by hand.  For example:
     "#{program_name} GEMNAME [GEMNAME ...] [options] -- --build-flags"
   end
 
+  def check_install_dir # :nodoc:
+    if options[:install_dir] and options[:user_install] then
+      alert_error "Use --install-dir or --user-install but not both"
+      terminate_interaction 1
+    end
+  end
+
   def check_version # :nodoc:
     if options[:version] != Gem::Requirement.default and
          get_all_gem_names.size > 1 then
@@ -153,11 +160,7 @@ to write the specification by hand.  For example:
 
     ENV.delete 'GEM_PATH' if options[:install_dir].nil? and RUBY_VERSION > '1.9'
 
-    if options[:install_dir] and options[:user_install]
-      alert_error "Use --install-dir or --user-install but not both"
-      terminate_interaction 1
-    end
-
+    check_install_dir
     check_version
 
     load_hooks

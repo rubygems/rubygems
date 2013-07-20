@@ -150,8 +150,6 @@ to write the specification by hand.  For example:
       terminate_interaction 1
     end
 
-    exit_code = 0
-
     if options[:version] != Gem::Requirement.default &&
         get_all_gem_names.size > 1 then
       alert_error "Can't use --version w/ multiple gems. Use name:ver instead."
@@ -165,6 +163,19 @@ to write the specification by hand.  For example:
       require 'rubygems/install_message'
     end
     require 'rubygems/rdoc'
+
+    exit_code = install_gems
+
+    unless @installed_specs.empty? then
+      gems = @installed_specs.length == 1 ? 'gem' : 'gems'
+      say "#{@installed_specs.length} #{gems} installed"
+    end
+
+    raise Gem::SystemExitException, exit_code
+  end
+
+  def install_gems # :nodoc:
+    exit_code = 0
 
     get_all_gem_names_and_versions.each do |gem_name, gem_version|
       gem_version ||= options[:version]
@@ -197,12 +208,7 @@ to write the specification by hand.  For example:
       end
     end
 
-    unless @installed_specs.empty? then
-      gems = @installed_specs.length == 1 ? 'gem' : 'gems'
-      say "#{@installed_specs.length} #{gems} installed"
-    end
-
-    raise Gem::SystemExitException, exit_code
+    exit_code
   end
 
 end

@@ -156,13 +156,7 @@ to write the specification by hand.  For example:
       terminate_interaction 1
     end
 
-    # load post-install hooks appropriate to options
-    if options[:install_as_default]
-      require 'rubygems/install_default_message'
-    else
-      require 'rubygems/install_message'
-    end
-    require 'rubygems/rdoc'
+    load_hooks
 
     exit_code = install_gems
 
@@ -209,6 +203,18 @@ to write the specification by hand.  For example:
     end
 
     exit_code
+  end
+
+  ##
+  # Loads post-install hooks
+
+  def load_hooks # :nodoc:
+    if options[:install_as_default]
+      require 'rubygems/install_default_message'
+    else
+      require 'rubygems/install_message'
+    end
+    require 'rubygems/rdoc'
   end
 
 end

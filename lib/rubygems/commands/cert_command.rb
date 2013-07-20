@@ -85,35 +85,30 @@ class Gem::Commands::CertCommand < Gem::Command
     end
   end
 
+  def add_certificate certificate # :nodoc:
+    Gem::Security.trust_dir.trust_cert certificate
+
+    say "Added '#{certificate.subject}'"
+  end
+
   def execute
     options[:add].each do |certificate|
-      Gem::Security.trust_dir.trust_cert certificate
-
-      say "Added '#{certificate.subject}'"
+      add_certificate certificate
     end
 
     options[:remove].each do |filter|
-      certificates_matching filter do |certificate, path|
-        FileUtils.rm path
-        say "Removed '#{certificate.subject}'"
-      end
+      remove_certificates_matching filter
     end
 
     options[:list].each do |filter|
-      certificates_matching filter do |certificate, _|
-        # this could probably be formatted more gracefully
-        say certificate.subject.to_s
-      end
+      list_certificates_matching filter
     end
 
     options[:build].each do |name|
       build name
     end
 
-    unless options[:sign].empty? then
-      load_default_cert unless options[:issuer_cert]
-      load_default_key  unless options[:key]
-    end
+    load_defaults unless options[:sign].empty?
 
     options[:sign].each do |cert_file|
       sign cert_file
@@ -200,6 +195,13 @@ For further reading on signing gems see `ri Gem::Security`.
     EOF
   end
 
+  def list_certificates_matching filter # :nodoc:
+    certificates_matching filter do |certificate, _|
+      # this could probably be formatted more gracefully
+      say certificate.subject.to_s
+    end
+  end
+
   def load_default_cert
     cert_file = File.join Gem.default_cert_path
     cert = File.read cert_file
@@ -231,6 +233,18 @@ For further reading on signing gems see `ri Gem::Security`.
       "--private-key not specified and ~/.gem/gem-private_key.pem is not valid"
 
     terminate_interaction 1
+  end
+
+  def load_defaults # :nodoc:
+    load_default_cert unless options[:issuer_cert]
+    load_default_key  unless options[:key]
+  end
+
+  def remove_certificates_matching filter # :nodoc:
+    certificates_matching filter do |certificate, path|
+      FileUtils.rm path
+      say "Removed '#{certificate.subject}'"
+    end
   end
 
   def sign cert_file

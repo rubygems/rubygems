@@ -91,6 +91,25 @@ class Gem::Commands::UpdateCommand < Gem::Command
     hig
   end
 
+  def highest_remote_version spec # :nodoc:
+    dependency = Gem::Dependency.new spec.name, "> #{spec.version}"
+    dependency.prerelease = options[:prerelease]
+
+    fetcher = Gem::SpecFetcher.fetcher
+
+    spec_tuples, _ = fetcher.search_for_dependency dependency
+
+    matching_gems = spec_tuples.select do |g,_|
+      g.name == spec.name and g.match_platform?
+    end
+
+    highest_remote_gem = matching_gems.sort_by { |g,_| g.version }.last
+
+    highest_remote_gem ||= [Gem::NameTuple.null]
+
+    highest_remote_gem.first.version
+  end
+
   def update_gem name, version = Gem::Requirement.default
     return if @updated.any? { |spec| spec.name == name }
 
@@ -201,21 +220,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
       next if not gem_names.empty? and
               gem_names.all? { |name| /#{name}/ !~ l_spec.name }
 
-      dependency = Gem::Dependency.new l_spec.name, "> #{l_spec.version}"
-      dependency.prerelease = options[:prerelease]
-
-      fetcher = Gem::SpecFetcher.fetcher
-
-      spec_tuples, _ = fetcher.search_for_dependency dependency
-
-      matching_gems = spec_tuples.select do |g,_|
-        g.name == l_name and g.match_platform?
-      end
-
-      highest_remote_gem = matching_gems.sort_by { |g,_| g.version }.last
-
-      highest_remote_gem ||= [Gem::NameTuple.null]
-      highest_remote_ver = highest_remote_gem.first.version
+      highest_remote_ver = highest_remote_version l_spec
 
       if system or (l_spec.version < highest_remote_ver) then
         result << [l_spec.name, [l_spec.version, highest_remote_ver].max]

@@ -126,6 +126,23 @@ class Gem::Commands::UpdateCommand < Gem::Command
     highest_remote_gem.first.version
   end
 
+  def install_rubygems version # :nodoc:
+    args = update_rubygems_arguments
+
+    update_dir = File.join Gem.dir, 'gems', "rubygems-update-#{version}"
+
+    Dir.chdir update_dir do
+      say "Installing RubyGems #{version}"
+
+      # Make sure old rubygems isn't loaded
+      old = ENV["RUBYOPT"]
+      ENV.delete("RUBYOPT") if old
+      installed = system Gem.ruby, 'setup.rb', *args
+      say "RubyGems system software updated" if installed
+      ENV["RUBYOPT"] = old if old
+    end
+  end
+
   def rubygems_target_version
     version = options[:system]
     update_latest = version == true
@@ -202,21 +219,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
     installed_gems = Gem::Specification.find_all_by_name 'rubygems-update', requirement
     version        = installed_gems.last.version
 
-    args = update_rubygems_arguments
-
-    update_dir = File.join Gem.dir, 'gems', "rubygems-update-#{version}"
-
-    Dir.chdir update_dir do
-      say "Installing RubyGems #{version}"
-      setup_cmd = "#{Gem.ruby} setup.rb #{args.join ' '}"
-
-      # Make sure old rubygems isn't loaded
-      old = ENV["RUBYOPT"]
-      ENV.delete("RUBYOPT") if old
-      installed = system setup_cmd
-      say "RubyGems system software updated" if installed
-      ENV["RUBYOPT"] = old if old
-    end
+    install_rubygems version
   end
 
   def update_rubygems_arguments # :nodoc:

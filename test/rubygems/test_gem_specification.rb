@@ -75,6 +75,10 @@ end
       s.files = %w[lib/code.rb]
     end
 
+    @a3 = quick_spec 'a', '3' do |s|
+      s.metadata['allowed_push_host'] = "https://privategemserver.com"
+    end
+
     @current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
 
     load 'rubygems/syck_hack.rb'
@@ -1443,6 +1447,11 @@ dependencies: []
 
   def test_requirements
     assert_equal ['A working computer'], @a1.requirements
+  end
+
+  def test_allowed_push_host
+    assert_equal nil, @a1.metadata['allowed_push_host']
+    assert_equal 'https://privategemserver.com', @a3.metadata['allowed_push_host']
   end
 
   def test_runtime_dependencies_legacy

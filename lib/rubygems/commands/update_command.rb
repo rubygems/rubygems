@@ -191,12 +191,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
     installed_gems = Gem::Specification.find_all_by_name 'rubygems-update', requirement
     version        = installed_gems.last.version
 
-    args = []
-    args << '--prefix' << Gem.prefix if Gem.prefix
-    # TODO use --document for >= 1.9 , --no-rdoc --no-ri < 1.9
-    args << '--no-rdoc' unless options[:document].include? 'rdoc'
-    args << '--no-ri'   unless options[:document].include? 'ri'
-    args << '--no-format-executable' if options[:no_format_executable]
+    args = update_rubygems_arguments
 
     update_dir = File.join Gem.dir, 'gems', "rubygems-update-#{version}"
 
@@ -211,6 +206,16 @@ class Gem::Commands::UpdateCommand < Gem::Command
       say "RubyGems system software updated" if installed
       ENV["RUBYOPT"] = old if old
     end
+  end
+
+  def update_rubygems_arguments # :nodoc:
+    args = []
+    args << '--prefix' << Gem.prefix if Gem.prefix
+    # TODO use --document for >= 1.9 , --no-rdoc --no-ri < 1.9
+    args << '--no-rdoc' unless options[:document].include? 'rdoc'
+    args << '--no-ri'   unless options[:document].include? 'ri'
+    args << '--no-format-executable' if options[:no_format_executable]
+    args
   end
 
   def which_to_update highest_installed_gems, gem_names, system = false

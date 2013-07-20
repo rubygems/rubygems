@@ -172,6 +172,26 @@ to write the specification by hand.  For example:
     raise Gem::SystemExitException, 0
   end
 
+  def install_gem name, version # :nodoc:
+    return if options[:conservative] and
+      not Gem::Dependency.new(name, version).matching_specs.empty?
+
+    inst = Gem::DependencyInstaller.new options
+    inst.install name, Gem::Requirement.create(version)
+
+    @installed_specs.push(*inst.installed_gems)
+
+    return unless errs = inst.errors
+
+    errs.each do |x|
+      return unless Gem::SourceFetchProblem === x
+
+      msg = "Unable to pull data from '#{x.source.uri}': #{x.error.message}"
+
+      alert_warning msg
+    end
+  end
+
   def install_gems # :nodoc:
     exit_code = 0
 
@@ -179,23 +199,7 @@ to write the specification by hand.  For example:
       gem_version ||= options[:version]
 
       begin
-        next if options[:conservative] and
-          not Gem::Dependency.new(gem_name, gem_version).matching_specs.empty?
-
-        inst = Gem::DependencyInstaller.new options
-        inst.install gem_name, Gem::Requirement.create(gem_version)
-
-        @installed_specs.push(*inst.installed_gems)
-
-        next unless errs = inst.errors
-
-        errs.each do |x|
-          next unless Gem::SourceFetchProblem === x
-
-          msg = "Unable to pull data from '#{x.source.uri}': #{x.error.message}"
-
-          alert_warning msg
-        end
+        install_gem gem_name, gem_version
       rescue Gem::InstallError => e
         alert_error "Error installing #{gem_name}:\n\t#{e.message}"
         exit_code |= 1

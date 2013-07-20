@@ -112,8 +112,25 @@ class Gem::Commands::CertCommand < Gem::Command
   end
 
   def build name
-    if options[:key]
-      key = options[:key]
+    key, key_path = build_key
+    cert_path = build_cert name, key
+
+    say "Certificate: #{cert_path}"
+
+    if key_path
+      say "Private Key: #{key_path}"
+      say "Don't forget to move the key file to somewhere private!"
+    end
+  end
+
+  def build_cert name, key # :nodoc:
+    cert = Gem::Security.create_cert_email name, key
+    Gem::Security.write cert, "gem-public_cert.pem"
+  end
+
+  def build_key # :nodoc:
+    if options[:key] then
+      options[:key]
     else
       passphrase = ask_for_password 'Passphrase for your Private Key:'
       say "\n"
@@ -126,16 +143,8 @@ class Gem::Commands::CertCommand < Gem::Command
 
       key      = Gem::Security.create_key
       key_path = Gem::Security.write key, "gem-private_key.pem", 0600, passphrase
-    end
 
-    cert      = Gem::Security.create_cert_email name, key
-    cert_path = Gem::Security.write cert, "gem-public_cert.pem"
-
-    say "Certificate: #{cert_path}"
-
-    if key_path
-      say "Private Key: #{key_path}"
-      say "Don't forget to move the key file to somewhere private!"
+      return key, key_path
     end
   end
 

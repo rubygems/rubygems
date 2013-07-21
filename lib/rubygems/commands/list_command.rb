@@ -22,13 +22,21 @@ class Gem::Commands::ListCommand < Gem::Commands::QueryCommand
   end
 
   def usage # :nodoc:
-    "#{program_name} [STRING]"
+    "#{program_name} [STRING ...]"
   end
 
   def execute
-    string = get_one_optional_argument || ''
-    options[:name] = /^#{string}/i
-    super
+    if options[:args].empty?
+      super
+    elsif options[:installed] && options[:args].count > 1
+        alert_error "You must specify only ONE gem!"
+        exit_code |= 4
+    else
+      options[:args].each do |string|
+        options[:name] = /^#{string}/i
+        super
+      end
+    end
   end
 
 end

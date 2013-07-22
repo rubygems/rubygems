@@ -12,6 +12,7 @@ Bug fixes:
   Bug #597 by Hemant Kumar.
 * Fixed building extensions on ruby 1.9.3 under mingw.  Bug #594 by jonforums,
   Bug #599 by Chris Riesbeck
+* Restored default of remote search to `gem search`.
 
 === 2.0.5 / 2013-07-11
 

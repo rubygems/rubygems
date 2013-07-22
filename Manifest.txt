@@ -214,6 +214,7 @@ test/rubygems/test_gem_commands_owner_command.rb
 test/rubygems/test_gem_commands_pristine_command.rb
 test/rubygems/test_gem_commands_push_command.rb
 test/rubygems/test_gem_commands_query_command.rb
+test/rubygems/test_gem_commands_search_command.rb
 test/rubygems/test_gem_commands_server_command.rb
 test/rubygems/test_gem_commands_setup_command.rb
 test/rubygems/test_gem_commands_sources_command.rb

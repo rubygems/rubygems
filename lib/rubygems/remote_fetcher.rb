@@ -326,8 +326,8 @@ class Gem::RemoteFetcher
   def request(uri, request_class, last_modified = nil)
     request = Gem::Request.new uri, request_class, last_modified, @proxy
     
-    request.fetch do |request|
-      yield request if block_given?
+    request.fetch do |req|
+      yield req if block_given?
     end
   end
 

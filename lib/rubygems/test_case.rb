@@ -222,8 +222,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     ENV["GEM_SPEC_CACHE"] = File.join @tempdir, 'spec_cache'
 
     @orig_ruby = if ENV['RUBY'] then
-                   ruby = Gem.instance_variable_get :@ruby
-                   Gem.instance_variable_set :@ruby, ENV['RUBY']
+                   ruby = Gem.ruby
+                   Gem.ruby = ENV['RUBY']
                    ruby
                  end
 
@@ -312,8 +312,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     ENV['GEM_HOME'] = @orig_gem_home
     ENV['GEM_PATH'] = @orig_gem_path
 
-    _ = @orig_ruby
-    Gem.instance_variable_set :@ruby, @orig_ruby if @orig_ruby
+    Gem.ruby = @orig_ruby if @orig_ruby
 
     if @orig_ENV_HOME then
       ENV['HOME'] = @orig_ENV_HOME

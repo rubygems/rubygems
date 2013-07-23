@@ -69,6 +69,8 @@ hoe = Hoe.spec 'rubygems-update' do
     ENV['RAKE_SUCKS']
 end
 
+hoe.test_prelude = 'gem "minitest", "~> 4.0"'
+
 task :docs => :rake_sucks
 task :rake_sucks do
   # This exists ENTIRELY because the rake design convention of

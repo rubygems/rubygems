@@ -1,5 +1,7 @@
 # TODO: $SAFE = 1
 
+gem 'minitest', '~> 4.0'
+
 if defined? Gem::QuickLoader
   Gem::QuickLoader.load_full_rubygems_library
 else

@@ -63,16 +63,25 @@ class Gem::Commands::QueryCommand < Gem::Command
 
   def execute
     exit_code = 0
+    
+    if options[:args].to_a.empty?
+      name = options[:name]
+      no_name = true
+    else
+      name = options[:args].to_a.map{|arg| /#{arg}/i }
+    end
 
-    name = options[:name]
     prerelease = options[:prerelease]
 
     unless options[:installed].nil? then
-      if name.source.empty? then
+      if no_name then
         alert_error "You must specify a gem name"
         exit_code |= 4
+      elsif name.count > 1
+        alert_error "You must specify only ONE gem!"
+        exit_code |= 4
       else
-        installed = installed? name, options[:version]
+        installed = installed? name.first, options[:version]
         installed = !installed unless options[:installed]
 
         if installed then
@@ -86,6 +95,18 @@ class Gem::Commands::QueryCommand < Gem::Command
       terminate_interaction exit_code
     end
 
+    if name.is_a? Array
+      name.each {|name| simple_execute(name, prerelease) }
+    else
+      simple_execute(name, prerelease)
+    end
+
+  end
+
+  private
+
+  #Guts of original execute
+  def simple_execute name, prerelease
     req = Gem::Requirement.default
     # TODO: deprecate for real
     dep = Gem::Deprecate.skip_during { Gem::Dependency.new name, req }
@@ -145,8 +166,6 @@ class Gem::Commands::QueryCommand < Gem::Command
       output_query_results spec_tuples
     end
   end
-
-  private
 
   ##
   # Check if gem +name+ version +version+ is installed.

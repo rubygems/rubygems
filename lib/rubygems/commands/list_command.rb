@@ -26,17 +26,7 @@ class Gem::Commands::ListCommand < Gem::Commands::QueryCommand
   end
 
   def execute
-    if options[:args].empty?
-      super
-    elsif options[:installed] && options[:args].count > 1
-        alert_error "You must specify only ONE gem!"
-        exit_code |= 4
-    else
-      options[:args].each do |string|
-        options[:name] = /^#{string}/i
-        super
-      end
-    end
+    super
   end
 
 end

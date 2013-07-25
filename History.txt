@@ -76,6 +76,9 @@ Minor enhancements:
 * Added Gem.find_latest_files which is equivalent to Gem.find_files but only
   returns matching files from the latest version of each gem.  Issue #186 by
   Ryan Davis.
+* Improved performance of `gem outdated` by reducing duplicate work (it is
+  still slow, but I see a near 50% improvement for 250 gems on a fast
+  connection).  See also Gem::Specification::outdated_and_latest_version
 
 Bug fixes:
 

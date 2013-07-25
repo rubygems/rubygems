@@ -83,6 +83,8 @@ Minor enhancements:
 Bug fixes:
 
 * rubygems_plugin.rb files are now only loaded from the latest installed gem.
+* Altered use of cryptography in the test suite to work on JRuby, but some
+  tests still fail on JRuby.  Bug #606 by Hemant Kumar.
 
 === 2.0.6 / 2013-07-24
 

@@ -30,6 +30,9 @@ hoe = Hoe.spec 'rubygems-update' do
   self.email          = %w[rubygems-developers@rubyforge.org]
   self.readme_file    = 'README.rdoc'
 
+  license 'Ruby'
+  license 'MIT'
+
   spec_extras[:required_rubygems_version] = Gem::Requirement.default
   spec_extras[:required_ruby_version]     = Gem::Requirement.new '>= 1.8.7'
   spec_extras[:executables]               = ['update_rubygems']

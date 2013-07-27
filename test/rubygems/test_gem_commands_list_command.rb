@@ -30,14 +30,4 @@ class TestGemCommandsListCommand < Gem::TestCase
     assert_equal '', @ui.error
   end
 
-  def test_execute_multiple_args
-    @cmd.handle_options %w[a b]
-
-    use_ui @ui do
-      @cmd.execute
-    end
-
-    assert_equal '', @ui.error
-  end
-
 end

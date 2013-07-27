@@ -63,10 +63,11 @@ class Gem::Commands::QueryCommand < Gem::Command
 
   def execute
     exit_code = 0
-    
-    if options[:args].to_a.empty?
+    if options[:args].to_a.empty? and options[:name].source.empty?
       name = options[:name]
       no_name = true
+    elsif !options[:name].source.empty?
+      name = Array(options[:name])
     else
       name = options[:args].to_a.map{|arg| /#{arg}/i }
     end
@@ -95,18 +96,15 @@ class Gem::Commands::QueryCommand < Gem::Command
       terminate_interaction exit_code
     end
 
-    if name.is_a? Array
-      name.each {|name| simple_execute(name, prerelease) }
-    else
-      simple_execute(name, prerelease)
-    end
+    names = Array(name)
+    names.each {|name| show_gems(name, prerelease) }
 
   end
 
   private
 
   #Guts of original execute
-  def simple_execute name, prerelease
+  def show_gems name, prerelease
     req = Gem::Requirement.default
     # TODO: deprecate for real
     dep = Gem::Deprecate.skip_during { Gem::Dependency.new name, req }

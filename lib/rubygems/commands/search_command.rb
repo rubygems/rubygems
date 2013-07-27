@@ -21,9 +21,5 @@ class Gem::Commands::SearchCommand < Gem::Commands::QueryCommand
     "#{program_name} [STRING]"
   end
 
-  def execute
-    super
-  end
-
 end
 

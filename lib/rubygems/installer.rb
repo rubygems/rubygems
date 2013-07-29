@@ -680,20 +680,7 @@ TEXT
       extension ||= ""
       extension_dir = File.join gem_dir, File.dirname(extension)
 
-      builder = case extension
-                when /extconf/ then
-                  Gem::Ext::ExtConfBuilder
-                when /configure/ then
-                  Gem::Ext::ConfigureBuilder
-                when /rakefile/i, /mkrf_conf/i then
-                  ran_rake = true
-                  Gem::Ext::RakeBuilder
-                when /CMakeLists.txt/ then
-                  Gem::Ext::CmakeBuilder
-                else
-                  message = "No builder for extension '#{extension}'"
-                  extension_build_error extension_dir, message
-                end
+      builder = extension_builder extension
 
       begin
         FileUtils.mkdir_p dest_path
@@ -728,6 +715,28 @@ Results logged to #{gem_make_out}
 EOF
 
     raise ExtensionBuildError, message, backtrace
+  end
+
+  ##
+  # Chooses the extension builder class for +extension+
+
+  def extension_builder extension # :nodoc:
+    case extension
+    when /extconf/ then
+      Gem::Ext::ExtConfBuilder
+    when /configure/ then
+      Gem::Ext::ConfigureBuilder
+    when /rakefile/i, /mkrf_conf/i then
+      ran_rake = true
+      Gem::Ext::RakeBuilder
+    when /CMakeLists.txt/ then
+      Gem::Ext::CmakeBuilder
+    else
+      extension_dir = File.join gem_dir, File.dirname(extension)
+
+      message = "No builder for extension '#{extension}'"
+      extension_build_error extension_dir, message
+    end
   end
 
   ##

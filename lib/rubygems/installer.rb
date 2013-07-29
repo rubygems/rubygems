@@ -656,6 +656,28 @@ GOTO :EOF
 TEXT
   end
 
+  def build_extension extension, dest_path
+    results = []
+
+    extension ||= ''
+    extension_dir = File.join gem_dir, File.dirname(extension)
+
+    builder = extension_builder extension
+
+    begin
+      FileUtils.mkdir_p dest_path
+
+      Dir.chdir extension_dir do
+        results = builder.build(extension, gem_dir, dest_path,
+                                results, @build_args)
+
+        say results.join("\n") if Gem.configuration.really_verbose
+      end
+    rescue
+      extension_build_error(extension_dir, results.join("\n"), $@)
+    end
+  end
+
   ##
   # Builds extensions.  Valid types of extensions are extconf.rb files,
   # configure scripts and rakefiles or mkrf_conf files.
@@ -675,25 +697,8 @@ TEXT
 
     spec.extensions.each do |extension|
       break if ran_rake
-      results = []
 
-      extension ||= ""
-      extension_dir = File.join gem_dir, File.dirname(extension)
-
-      builder = extension_builder extension
-
-      begin
-        FileUtils.mkdir_p dest_path
-
-        Dir.chdir extension_dir do
-          results = builder.build(extension, gem_dir, dest_path,
-                                  results, @build_args)
-
-          say results.join("\n") if Gem.configuration.really_verbose
-        end
-      rescue
-        extension_build_error(extension_dir, results.join("\n"), $@)
-      end
+      build_extension extension, dest_path
     end
   end
 

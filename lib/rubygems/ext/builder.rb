@@ -10,6 +10,8 @@ class Gem::Ext::Builder
 
   include Gem::UserInteraction
 
+  attr_accessor :build_args # :nodoc:
+
   def self.class_name
     name =~ /Ext::(.*)Builder/
     $1.downcase

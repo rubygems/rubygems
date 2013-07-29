@@ -4,7 +4,11 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'rubygems/user_interaction'
+
 class Gem::Ext::Builder
+
+  include Gem::UserInteraction
 
   def self.class_name
     name =~ /Ext::(.*)Builder/
@@ -60,6 +64,106 @@ class Gem::Ext::Builder
     unless $?.success? then
       results << "Building has failed. See above output for more information on the failure." if verbose
       raise Gem::InstallError, "#{command_name || class_name} failed:\n\n#{results.join "\n"}"
+    end
+  end
+
+  ##
+  # Creates a new extension builder for +spec+ using the given +build_args+.
+  # The gem for +spec+ is unpacked in +gem_dir+.
+
+  def initialize spec, build_args, gem_dir
+    @spec       = spec
+    @build_args = build_args
+    @gem_dir    = gem_dir
+
+    @ran_rake   = nil
+  end
+
+  ##
+  # Chooses the extension builder class for +extension+
+
+  def builder_for extension # :nodoc:
+    case extension
+    when /extconf/ then
+      Gem::Ext::ExtConfBuilder
+    when /configure/ then
+      Gem::Ext::ConfigureBuilder
+    when /rakefile/i, /mkrf_conf/i then
+      @ran_rake = true
+      Gem::Ext::RakeBuilder
+    when /CMakeLists.txt/ then
+      Gem::Ext::CmakeBuilder
+    else
+      extension_dir = File.join @gem_dir, File.dirname(extension)
+
+      message = "No builder for extension '#{extension}'"
+      build_error extension_dir, message
+    end
+  end
+
+  ##
+  # Logs the build +output+ in +build_dir+, then raises ExtensionBuildError.
+
+  def build_error build_dir, output, backtrace = nil # :nodoc:
+    gem_make_out = File.join build_dir, 'gem_make.out'
+
+    open gem_make_out, 'wb' do |io| io.puts output end
+
+    message = <<-EOF
+ERROR: Failed to build gem native extension.
+
+    #{output}
+
+Gem files will remain installed in #{@gem_dir} for inspection.
+Results logged to #{gem_make_out}
+EOF
+
+    raise Gem::Installer::ExtensionBuildError, message, backtrace
+  end
+
+  def build_extension extension, dest_path # :nodoc:
+    results = []
+
+    extension ||= '' # I wish I knew why this line existed
+    extension_dir = File.join @gem_dir, File.dirname(extension)
+
+    builder = builder_for extension
+
+    begin
+      FileUtils.mkdir_p dest_path
+
+      Dir.chdir extension_dir do
+        results = builder.build(extension, @gem_dir, dest_path,
+                                results, @build_args)
+
+        say results.join("\n") if Gem.configuration.really_verbose
+      end
+    rescue
+      build_error extension_dir, results.join("\n"), $@
+    end
+  end
+
+  ##
+  # Builds extensions.  Valid types of extensions are extconf.rb files,
+  # configure scripts and rakefiles or mkrf_conf files.
+
+  def build_extensions
+    return if @spec.extensions.empty?
+
+    if @build_args.empty?
+      say "Building native extensions.  This could take a while..."
+    else
+      say "Building native extensions with: '#{@build_args.join ' '}'"
+      say "This could take a while..."
+    end
+
+    dest_path = File.join @gem_dir, @spec.require_paths.first
+    @ran_rake = false # only run rake once
+
+    @spec.extensions.each do |extension|
+      break if @ran_rake
+
+      build_extension extension, dest_path
     end
   end
 

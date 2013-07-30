@@ -5,10 +5,19 @@
 #++
 
 require 'rubygems/user_interaction'
+require 'thread'
 
 class Gem::Ext::Builder
 
   include Gem::UserInteraction
+
+  ##
+  # The builder shells-out to run various commands after changing the
+  # directory.  This means multiple installations cannot be allowed to build
+  # extensions in parallel as they may change each other's directories leading
+  # to broken extensions or failed installations.
+
+  CHDIR_MUTEX = Mutex.new # :nodoc:
 
   attr_accessor :build_args # :nodoc:
 
@@ -160,12 +169,15 @@ EOF
     end
 
     dest_path = File.join @gem_dir, @spec.require_paths.first
-    @ran_rake = false # only run rake once
 
-    @spec.extensions.each do |extension|
-      break if @ran_rake
+    CHDIR_MUTEX.synchronize do
+      @ran_rake = false # only run rake once
 
-      build_extension extension, dest_path
+      @spec.extensions.each do |extension|
+        break if @ran_rake
+
+        build_extension extension, dest_path
+      end
     end
   end
 

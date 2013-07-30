@@ -143,11 +143,13 @@ EOF
     begin
       FileUtils.mkdir_p dest_path
 
-      Dir.chdir extension_dir do
-        results = builder.build(extension, @gem_dir, dest_path,
-                                results, @build_args)
+      CHDIR_MUTEX.synchronize do
+        Dir.chdir extension_dir do
+          results = builder.build(extension, @gem_dir, dest_path,
+                                  results, @build_args)
 
-        say results.join("\n") if Gem.configuration.really_verbose
+          say results.join("\n") if Gem.configuration.really_verbose
+        end
       end
     rescue
       build_error extension_dir, results.join("\n"), $@
@@ -170,14 +172,12 @@ EOF
 
     dest_path = File.join @gem_dir, @spec.require_paths.first
 
-    CHDIR_MUTEX.synchronize do
-      @ran_rake = false # only run rake once
+    @ran_rake = false # only run rake once
 
-      @spec.extensions.each do |extension|
-        break if @ran_rake
+    @spec.extensions.each do |extension|
+      break if @ran_rake
 
-        build_extension extension, dest_path
-      end
+      build_extension extension, dest_path
     end
   end
 

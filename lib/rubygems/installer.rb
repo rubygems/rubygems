@@ -669,7 +669,7 @@ TEXT
   ##
   # Logs the build +output+ in +build_dir+, then raises ExtensionBuildError.
   #
-  # TODO:  Delete this method for RubyGems 3
+  # TODO:  Delete this for RubyGems 3.  It remains for API compatibility
 
   def extension_build_error(build_dir, output, backtrace = nil) # :nodoc:
     builder = Gem::Ext::Builder.new spec, @build_args

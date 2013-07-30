@@ -538,10 +538,12 @@ TEXT
 
 
       begin
-        Dir.chdir extension_dir do
-          results = builder.build(extension, gem_dir, dest_path, results)
+        Gem::Ext::Builder::CHDIR_MUTEX.synchronize do
+          Dir.chdir extension_dir do
+            results = builder.build(extension, gem_dir, dest_path, results)
 
-          say results.join("\n") if Gem.configuration.really_verbose
+            say results.join("\n") if Gem.configuration.really_verbose
+          end
         end
       rescue
         results = results.join "\n"

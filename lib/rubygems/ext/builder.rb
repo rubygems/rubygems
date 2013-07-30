@@ -6,6 +6,14 @@
 
 class Gem::Ext::Builder
 
+  ##
+  # The builder shells-out to run various commands after changing the
+  # directory.  This means multiple installations cannot be allowed to build
+  # extensions in parallel as they may change each other's directories leading
+  # to broken extensions or failed installations.
+
+  CHDIR_MUTEX = Mutex.new # :nodoc:
+
   def self.class_name
     name =~ /Ext::(.*)Builder/
     $1.downcase

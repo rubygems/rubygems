@@ -661,7 +661,7 @@ TEXT
   # configure scripts and rakefiles or mkrf_conf files.
 
   def build_extensions
-    builder = Gem::Ext::Builder.new spec, @build_args, gem_dir
+    builder = Gem::Ext::Builder.new spec, @build_args
 
     builder.build_extensions
   end
@@ -672,7 +672,7 @@ TEXT
   # TODO:  Delete this method for RubyGems 3
 
   def extension_build_error(build_dir, output, backtrace = nil) # :nodoc:
-    builder = Gem::Ext::Builder.new spec, @build_args, gem_dir
+    builder = Gem::Ext::Builder.new spec, @build_args
 
     builder.build_error build_dir, output, backtrace
   end

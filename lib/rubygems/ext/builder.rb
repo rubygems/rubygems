@@ -73,10 +73,10 @@ class Gem::Ext::Builder
   # Creates a new extension builder for +spec+ using the given +build_args+.
   # The gem for +spec+ is unpacked in +gem_dir+.
 
-  def initialize spec, build_args, gem_dir
+  def initialize spec, build_args
     @spec       = spec
     @build_args = build_args
-    @gem_dir    = gem_dir
+    @gem_dir    = spec.gem_dir
 
     @ran_rake   = nil
   end

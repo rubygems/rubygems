@@ -17,7 +17,7 @@ class TestGemExtBuilder < Gem::TestCase
 
     @spec = quick_spec 'a'
 
-    @builder = Gem::Ext::Builder.new @spec, '', @spec.gem_dir
+    @builder = Gem::Ext::Builder.new @spec, ''
   end
 
   def teardown

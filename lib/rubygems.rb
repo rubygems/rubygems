@@ -36,9 +36,9 @@ require 'rubygems/errors'
 #
 # Further RubyGems documentation can be found at:
 #
+# * {RubyGems Guides}[http://guides.rubygems.org]
 # * {RubyGems API}[http://rubygems.rubyforge.org/rdoc] (also available from
 #   <tt>gem server</tt>)
-# * {RubyGems Bookshelf}[http://docs.rubygems.org]
 #
 # == RubyGems Plugins
 #

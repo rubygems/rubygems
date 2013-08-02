@@ -8,6 +8,8 @@ Bug fixes:
   parallel).  Bug #606 by Hemant Kumar.
 * Changed broken link to RubyGems Bookshelf to point to RubyGems guides.  Ruby
   pull request #369 by 謝致邦.
+* Fixed various test failures due to platform differences or poor tests.
+  Patches by Yui Naruse and Koichi Sasada.
 
 === 2.0.6 / 2013-07-24
 

@@ -59,32 +59,29 @@ hoe = Hoe.spec 'rubygems-update' do
   self.extra_rdoc_files = Dir["*.rdoc"]
 
   spec_extras['rdoc_options'] = proc do |rdoc_options|
-    rdoc_options << "--title=RubyGems #{self.version} Documentation"
+    rdoc_options << "--title=RubyGems Update Documentation"
   end
 
   self.rsync_args += " --no-p -O"
 
-  # FIX: this exists because update --system installs the gem and
-  # doesn't uninstall it. It should uninstall or better, not install
-  # in the first place.
-  spec_extras['require_paths'] = %w[hide_lib_for_update] unless
-    ENV['RAKE_SUCKS']
+  spec_extras['require_paths'] = %w[hide_lib_for_update]
 end
 
 hoe.test_prelude = 'gem "minitest", "~> 4.0"'
 
-task :docs => :rake_sucks
-task :rake_sucks do
-  # This exists ENTIRELY because the rake design convention of
-  # RDocTask.new is broken. Because most of the work is being done
-  # inside initialize(?!?) BEFORE tasks are even running, too much
-  # stuff is set in stone, and we can't deal with the require_paths
-  # issue above.
-  unless ENV['RAKE_SUCKS'] then
-    ENV['RAKE_SUCKS'] = "1"
-    rm_rf "doc"
-    sh "rake docs"
-  end
+Rake::Task['docs'].clear
+Rake::Task['clobber_docs'].clear
+
+RDoc::Task.new rdoc: 'docs', clobber_rdoc: 'clobber_docs' do |doc|
+  doc.main   = hoe.readme_file
+  doc.title  = "RubyGems #{hoe.version} API Documentation"
+
+  rdoc_files = Rake::FileList.new %w[lib History.txt LICENSE.txt MIT.txt]
+  rdoc_files.add hoe.extra_rdoc_files
+
+  doc.rdoc_files = rdoc_files
+
+  doc.rdoc_dir = 'doc'
 end
 
 task :clean_env do

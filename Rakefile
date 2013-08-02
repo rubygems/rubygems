@@ -25,7 +25,6 @@ Hoe.plugin :git
 Hoe.plugin :travis
 
 hoe = Hoe.spec 'rubygems-update' do
-  self.rubyforge_name = 'rubygems'
   self.author         = ['Jim Weirich', 'Chad Fowler', 'Eric Hodel']
   self.email          = %w[rubygems-developers@rubyforge.org]
   self.readme_file    = 'README.rdoc'

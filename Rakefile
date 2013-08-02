@@ -72,16 +72,24 @@ hoe.test_prelude = 'gem "minitest", "~> 4.0"'
 Rake::Task['docs'].clear
 Rake::Task['clobber_docs'].clear
 
-RDoc::Task.new rdoc: 'docs', clobber_rdoc: 'clobber_docs' do |doc|
-  doc.main   = hoe.readme_file
-  doc.title  = "RubyGems #{hoe.version} API Documentation"
+begin
+  require 'rdoc/task'
 
-  rdoc_files = Rake::FileList.new %w[lib History.txt LICENSE.txt MIT.txt]
-  rdoc_files.add hoe.extra_rdoc_files
+  RDoc::Task.new rdoc: 'docs', clobber_rdoc: 'clobber_docs' do |doc|
+    doc.main   = hoe.readme_file
+    doc.title  = "RubyGems #{hoe.version} API Documentation"
 
-  doc.rdoc_files = rdoc_files
+    rdoc_files = Rake::FileList.new %w[lib History.txt LICENSE.txt MIT.txt]
+    rdoc_files.add hoe.extra_rdoc_files
 
-  doc.rdoc_dir = 'doc'
+    doc.rdoc_files = rdoc_files
+
+    doc.rdoc_dir = 'doc'
+  end
+rescue LoadError
+  task 'docs' do
+    abort 'You must install rdoc to build documentation, try `rake newb` again'
+  end
 end
 
 task :clean_env do

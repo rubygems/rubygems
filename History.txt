@@ -6,6 +6,8 @@ Bug fixes:
 
 * Extensions may now be built in parallel (therefore gems may be installed in
   parallel).  Bug #606 by Hemant Kumar.
+* Changed broken link to RubyGems Bookshelf to point to RubyGems guides.  Ruby
+  pull request #369 by 謝致邦.
 
 === 2.0.6 / 2013-07-24
 

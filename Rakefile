@@ -75,7 +75,7 @@ Rake::Task['clobber_docs'].clear
 begin
   require 'rdoc/task'
 
-  RDoc::Task.new rdoc: 'docs', clobber_rdoc: 'clobber_docs' do |doc|
+  RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
     doc.main   = hoe.readme_file
     doc.title  = "RubyGems #{hoe.version} API Documentation"
 

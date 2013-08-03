@@ -86,7 +86,7 @@ begin
 
     doc.rdoc_dir = 'doc'
   end
-rescue LoadError
+rescue LoadError, RuntimeError # rake 10.1 on rdoc from ruby 1.9.2 and earlier
   task 'docs' do
     abort 'You must install rdoc to build documentation, try `rake newb` again'
   end

@@ -22,7 +22,8 @@ class Gem::Source::Local < Gem::Source
   end
 
   def inspect # :nodoc:
-    "#<%s specs: %p>" % [self.class, @specs.keys]
+    keys = @specs ? @specs.keys : 'NOT LOADED'
+    "#<%s specs: %p>" % [self.class, keys]
   end
 
   def load_specs(type)

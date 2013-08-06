@@ -66,6 +66,16 @@ class TestGemSourceLocal < Gem::TestCase
     assert_equal s, @a
   end
 
+  def test_inspect
+    assert_equal '#<Gem::Source::Local specs: "NOT LOADED">', @sl.inspect
+
+    @sl.load_specs :released
+
+    inner = [@a, @ap, @b].map { |t| t.name_tuple }.inspect
+
+    assert_equal "#<Gem::Source::Local specs: #{inner}>", @sl.inspect
+  end
+
   def test_download
     path = @sl.download @a
 

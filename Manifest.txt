@@ -266,6 +266,7 @@ test/rubygems/test_gem_security_trust_dir.rb
 test/rubygems/test_gem_server.rb
 test/rubygems/test_gem_silent_ui.rb
 test/rubygems/test_gem_source.rb
+test/rubygems/test_gem_source_installed.rb
 test/rubygems/test_gem_source_list.rb
 test/rubygems/test_gem_source_local.rb
 test/rubygems/test_gem_source_specific_file.rb

@@ -14,8 +14,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
       'r'
     end
 
-  # :nodoc:
-  class StubLine
+  class StubLine # :nodoc: all
     attr_reader :parts
 
     def initialize(data)

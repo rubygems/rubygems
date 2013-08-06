@@ -32,4 +32,15 @@ class Gem::Source::SpecificFile < Gem::Source
     end
   end
 
+  def <=> other
+    case other
+    when Gem::Source::SpecificFile then
+      return nil if @spec.name != other.spec.name
+
+      @spec.version <=> other.spec.version
+    else
+      super
+    end
+  end
+
 end

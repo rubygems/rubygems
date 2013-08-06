@@ -25,4 +25,11 @@ class Gem::Source::SpecificFile < Gem::Source
     raise Gem::Exception, "Unable to download '#{spec.full_name}'"
   end
 
+  def pretty_print q # :nodoc:
+    q.group 2, '[Local:', ']' do
+      q.breakable
+      q.text @path
+    end
+  end
+
 end

@@ -251,7 +251,6 @@ class Gem::DependencyInstaller
   def find_spec_by_name_and_version gem_name,
                                     version = Gem::Requirement.default,
                                     prerelease = false
-
     set = Gem::AvailableSet.new
 
     if consider_local?
@@ -269,7 +268,6 @@ class Gem::DependencyInstaller
 
     if set.empty?
       dep = Gem::Dependency.new gem_name, version
-      # HACK Dependency objects should be immutable
       dep.prerelease = true if prerelease
 
       set = find_gems_with_sources(dep)

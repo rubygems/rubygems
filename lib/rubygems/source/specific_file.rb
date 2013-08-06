@@ -32,6 +32,16 @@ class Gem::Source::SpecificFile < Gem::Source
     end
   end
 
+  ##
+  # Orders this source against +other+.
+  #
+  # If +other+ is a SpecificFile from a different gem name +nil+ is returned.
+  #
+  # If +other+ is a SpecificFile from the same gem name the versions are
+  # compared using Gem::Version#<=>
+  #
+  # Otherwise Gem::Source#<=> is used.
+
   def <=> other
     case other
     when Gem::Source::SpecificFile then

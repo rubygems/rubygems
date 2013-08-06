@@ -62,7 +62,9 @@ class TestGemSourceSpecificFile < Gem::TestCase
     b1_source = Gem::Source::SpecificFile.new b1.cache_file
 
     assert_nil       a1_source.<=>(b1_source), 'a1_source <=> b1_source'
+
     assert_equal(-1, a1_source.<=>(a2_source), 'a1_source <=> a2_source')
+    assert_equal( 0, a1_source.<=>(a1_source), 'a1_source <=> a1_source')
     assert_equal( 1, a2_source.<=>(a1_source), 'a2_source <=> a1_source')
   end
 

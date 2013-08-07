@@ -10,6 +10,10 @@ class Gem::Commands::ListCommand < Gem::Commands::QueryCommand
   def initialize
     super 'list', 'Display local gems whose name matches REGEXP'
 
+    add_option('-t', '--time', 'Sort gem(s) according to latest version release') do |value, options|
+      options[:time] = value
+    end
+
     remove_option('--name-matches')
   end
 
@@ -37,4 +41,3 @@ To search for remote gems use the search command.
   end
 
 end
-

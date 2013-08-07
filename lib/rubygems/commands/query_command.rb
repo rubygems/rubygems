@@ -194,11 +194,14 @@ is too hard to use.
     spec_tuples.each do |spec_tuple, source|
       versions[spec_tuple.name] << [spec_tuple, source]
     end
-
-    versions = versions.sort_by do |(n,_),_|
-      n.downcase
+    versions = versions.sort_by do |(n,_), tuples|
+      if options[:time]
+        tuples.first.first.date 
+      else
+        n.downcase
+      end
     end
-
+    
     output_versions output, versions
 
     say output.join(options[:details] ? "\n\n" : "\n")
@@ -215,7 +218,7 @@ is too hard to use.
       end
 
       seen = {}
-
+      
       matching_tuples.delete_if do |n,_|
         if seen[n.version] then
           true
@@ -224,7 +227,7 @@ is too hard to use.
           false
         end
       end
-
+      
       output << make_entry(matching_tuples, platforms)
     end
   end
@@ -242,6 +245,7 @@ is too hard to use.
     spec_authors     entry, spec
     spec_homepage    entry, spec
     spec_license     entry, spec
+    spec_date        entry, spec
     spec_loaded_from entry, spec, specs
     spec_summary     entry, spec
   end
@@ -269,7 +273,7 @@ is too hard to use.
 
   def make_entry entry_tuples, platforms
     detail_tuple = entry_tuples.first
-
+    
     name_tuples, specs = entry_tuples.flatten.partition do |item|
       Gem::NameTuple === item
     end
@@ -292,6 +296,12 @@ is too hard to use.
     return if spec.homepage.nil? or spec.homepage.empty?
 
     entry << "\n" << format_text("Homepage: #{spec.homepage}", 68, 4)
+  end
+ 
+  def spec_date entry, spec
+    return if spec.date.nil?
+
+    entry << "\n" << format_text("Date: #{spec.date.strftime('%b %d, %Y')}", 68, 4)
   end
 
   def spec_license entry, spec

@@ -9,6 +9,10 @@ class Gem::Commands::ListCommand < Gem::Commands::QueryCommand
 
   def initialize
     super 'list', 'Display gems whose name starts with STRING'
+    
+    add_option('-t', '--time', 'Sort gem(s) according to latest version release') do |value, options|
+      options[:time] = value
+    end
 
     remove_option('--name-matches')
   end

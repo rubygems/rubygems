@@ -17,7 +17,7 @@ class Gem::NameTuple
     @platform = platform
   end
 
-  attr_reader :name, :version, :platform 
+  attr_reader :name, :version, :platform
 
   ##
   # Turn an array of [name, version, platform] into an array of

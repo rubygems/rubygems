@@ -196,12 +196,12 @@ is too hard to use.
     end
     versions = versions.sort_by do |(n,_), tuples|
       if options[:time]
-        tuples.first.first.date 
+        [tuples.first[1].date, n.downcase]
       else
         n.downcase
       end
     end
-    
+
     output_versions output, versions
 
     say output.join(options[:details] ? "\n\n" : "\n")
@@ -218,7 +218,7 @@ is too hard to use.
       end
 
       seen = {}
-      
+
       matching_tuples.delete_if do |n,_|
         if seen[n.version] then
           true
@@ -227,7 +227,7 @@ is too hard to use.
           false
         end
       end
-      
+
       output << make_entry(matching_tuples, platforms)
     end
   end
@@ -273,7 +273,7 @@ is too hard to use.
 
   def make_entry entry_tuples, platforms
     detail_tuple = entry_tuples.first
-    
+
     name_tuples, specs = entry_tuples.flatten.partition do |item|
       Gem::NameTuple === item
     end

@@ -6,10 +6,9 @@
 require 'rubygems/platform'
 
 class Gem::NameTuple
-  def initialize(name, version, date, platform="ruby")
+  def initialize(name, version, platform="ruby")
     @name = name
     @version = version
-    @date = date
 
     unless platform.kind_of? Gem::Platform
       platform = "ruby" if !platform or platform.empty?
@@ -18,7 +17,7 @@ class Gem::NameTuple
     @platform = platform
   end
 
-  attr_reader :name, :version, :platform, :date
+  attr_reader :name, :version, :platform 
 
   ##
   # Turn an array of [name, version, platform] into an array of

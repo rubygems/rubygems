@@ -91,6 +91,8 @@ Bug fixes:
   pull request #369 by 謝致邦.
 * Fixed various test failures due to platform differences or poor tests.
   Patches by Yui Naruse and Koichi Sasada.
+* Fixed "WARNING:  (unknown) is not signed" for certificates with
+  email in subjectAltName.
 
 === 2.0.6 / 2013-07-24
 

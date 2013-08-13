@@ -93,6 +93,7 @@ Bug fixes:
   Patches by Yui Naruse and Koichi Sasada.
 * Fixed "WARNING:  (unknown) is not signed" for certificates with
   email in subjectAltName.
+* Fixed warnings while signing packages about missing signatures and trust.
 
 === 2.0.6 / 2013-07-24
 

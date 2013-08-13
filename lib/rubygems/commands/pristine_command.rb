@@ -55,13 +55,13 @@ cached .gem file and restores any files that don't match the cached .gem's
 copy.
 
 If you have made modifications to an installed gem, the pristine command
-will revert them.  After all the gem's files have been checked extensions are
-rebuilt and all bin stubs for the gem are regenerated.
+will revert them.  All extensions are rebuilt and all bin stubs for the gem
+are regenerated after checking for modifications.
 
 If the cached gem cannot be found it will be downloaded.
 
-If --no-extensions is provided pristine will not attempt to restore gems
-with extensions.
+If --no-extensions is provided pristine will not attempt to restore a gem
+with an extension.
     EOF
   end
 

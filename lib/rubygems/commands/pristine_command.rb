@@ -50,8 +50,7 @@ If you have made modifications to your installed gems, the pristine command
 will revert them.  After all the gem's files have been checked all bin stubs
 for the gem are regenerated.
 
-If the cached gem cannot be found, you will need to use `gem install` to
-revert the gem.
+If the cached gem cannot be found it will be downloaded.
 
 If --no-extensions is provided pristine will not attempt to restore gems
 with extensions.

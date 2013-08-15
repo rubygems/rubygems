@@ -45,17 +45,39 @@ class Gem::StubSpecification < Gem::BasicSpecification
   end
 
   ##
+  # True when this gem has been activated
+
+  def activated?
+    loaded = Gem.loaded_specs[name]
+    loaded && loaded.version == version
+  end
+
+  ##
+  # If the gemspec contains a stubline, returns a StubLine instance. Otherwise
+  # returns the full Gem::Specification.
+
+  def data
+    unless @data
+      open loaded_from, OPEN_MODE do |file|
+        begin
+          file.readline # discard encoding line
+          stubline = file.readline.chomp
+          @data = StubLine.new(stubline) if stubline.start_with?(PREFIX)
+        rescue EOFError
+        end
+      end
+    end
+
+    @data ||= to_spec
+  end
+
+  private :data
+
+  ##
   # Name of the gem
 
   def name
     @name ||= data.name
-  end
-
-  ##
-  # Version of the gem
-
-  def version
-    @version ||= data.version
   end
 
   ##
@@ -80,14 +102,6 @@ class Gem::StubSpecification < Gem::BasicSpecification
   end
 
   ##
-  # True when this gem has been activated
-
-  def activated?
-    loaded = Gem.loaded_specs[name]
-    loaded && loaded.version == version
-  end
-
-  ##
   # Is this StubSpecification valid? i.e. have we found a stub line, OR does
   # the filename contain a valid gemspec?
 
@@ -95,25 +109,11 @@ class Gem::StubSpecification < Gem::BasicSpecification
     data
   end
 
-  private
-
   ##
-  # If the gemspec contains a stubline, returns a StubLine instance. Otherwise
-  # returns the full Gem::Specification.
+  # Version of the gem
 
-  def data
-    unless @data
-      open loaded_from, OPEN_MODE do |file|
-        begin
-          file.readline # discard encoding line
-          stubline = file.readline.chomp
-          @data = StubLine.new(stubline) if stubline.start_with?(PREFIX)
-        rescue EOFError
-        end
-      end
-    end
-
-    @data ||= to_spec
+  def version
+    @version ||= data.version
   end
 
 end

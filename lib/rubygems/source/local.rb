@@ -1,5 +1,3 @@
-require 'rubygems/source'
-
 class Gem::Source::Local < Gem::Source
   def initialize
     @uri = nil

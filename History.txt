@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-=== 2.0.7
+=== 2.0.7 / 2013-08-15
 
 Bug fixes:
 
@@ -10,6 +10,7 @@ Bug fixes:
   pull request #369 by 謝致邦.
 * Fixed various test failures due to platform differences or poor tests.
   Patches by Yui Naruse and Koichi Sasada.
+* Fixed documentation for Kernel#require.
 
 === 2.0.6 / 2013-07-24
 

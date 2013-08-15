@@ -86,7 +86,7 @@ Bug fixes:
 * Altered use of cryptography in the test suite to work on JRuby, but some
   tests still fail on JRuby.  Bug #606 by Hemant Kumar.
 * Extensions may now be built in parallel (therefore gems may be installed in
-  parallel).  Bug #606 by Hemant Kumar.
+  parallel).  Bug #607 by Hemant Kumar.
 * Changed broken link to RubyGems Bookshelf to point to RubyGems guides.  Ruby
   pull request #369 by 謝致邦.
 * Fixed various test failures due to platform differences or poor tests.

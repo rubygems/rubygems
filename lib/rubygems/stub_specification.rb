@@ -39,9 +39,9 @@ class Gem::StubSpecification < Gem::BasicSpecification
   end
 
   def initialize(filename)
-    self.filename = filename
-    @data         = nil
-    @spec         = nil
+    self.loaded_from = filename
+    @data            = nil
+    @spec            = nil
   end
 
   ##
@@ -76,7 +76,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
   # The full Gem::Specification for this gem, loaded from evalling its gemspec
 
   def to_spec
-    @spec ||= Gem::Specification.load(filename)
+    @spec ||= Gem::Specification.load(loaded_from)
   end
 
   ##
@@ -103,7 +103,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
   def data
     unless @data
-      open filename, OPEN_MODE do |file|
+      open loaded_from, OPEN_MODE do |file|
         begin
           file.readline # discard encoding line
           stubline = file.readline.chomp

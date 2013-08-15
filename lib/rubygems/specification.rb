@@ -1840,7 +1840,7 @@ class Gem::Specification < Gem::BasicSpecification
     @licenses ||= []
   end
 
-  def filename= path
+  def loaded_from= path # :nodoc:
     super
 
     @bin_dir       = nil
@@ -1852,17 +1852,6 @@ class Gem::Specification < Gem::BasicSpecification
     @spec_dir      = nil
     @spec_file     = nil
   end
-
-  ##
-  # Path this gemspec was loaded from.  This attribute is not persisted.
-
-  alias loaded_from filename
-
-  ##
-  # Set the location a Specification was loaded from. +obj+ is converted
-  # to a String.
-
-  alias loaded_from= filename=
 
   ##
   # Sets the rubygems_version to the current RubyGems version.

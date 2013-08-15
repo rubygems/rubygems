@@ -4,6 +4,11 @@
 
 class Gem::BasicSpecification
 
+  ##
+  # The path this gemspec was loaded from.  This attribute is not persisted.
+
+  attr_reader :loaded_from
+
   def self.default_specifications_dir
     File.join(Gem.default_dir, "specifications", "default")
   end
@@ -51,23 +56,6 @@ class Gem::BasicSpecification
   end
 
   ##
-  # The filename of the gem specification
-
-  attr_reader :filename
-
-  ##
-  # Set the filename of the Specification was loaded from. +path+ is converted
-  # to a String.
-
-  def filename= path
-    @filename      = path && path.to_s
-
-    @full_gem_path = nil
-    @gems_dir      = nil
-    @base_dir      = nil
-  end
-
-  ##
   # Return true if this spec can require +file+.
 
   def contains_requirable_file? file
@@ -104,7 +92,7 @@ class Gem::BasicSpecification
 
   def gems_dir
     # TODO: this logic seems terribly broken, but tests fail if just base_dir
-    @gems_dir ||= File.join(filename && base_dir || Gem.dir, "gems")
+    @gems_dir ||= File.join(loaded_from && base_dir || Gem.dir, "gems")
   end
 
   ##
@@ -113,17 +101,17 @@ class Gem::BasicSpecification
   # eg: /usr/local/lib/ruby/gems/1.8
 
   def base_dir
-    return Gem.dir unless filename
+    return Gem.dir unless loaded_from
     @base_dir ||= if default_gem? then
-                    File.dirname File.dirname File.dirname filename
+                    File.dirname File.dirname File.dirname loaded_from
                   else
-                    File.dirname File.dirname filename
+                    File.dirname File.dirname loaded_from
                   end
   end
 
   def default_gem?
-    filename &&
-      File.dirname(filename) == self.class.default_specifications_dir
+    loaded_from &&
+      File.dirname(loaded_from) == self.class.default_specifications_dir
   end
 
   ##
@@ -137,6 +125,18 @@ class Gem::BasicSpecification
     else
       "#{name}-#{version}-#{platform}".untaint
     end
+  end
+
+  ##
+  # Set the path the Specification was loaded from. +path+ is converted to a
+  # String.
+
+  def loaded_from= path
+    @loaded_from   = path && path.to_s
+
+    @full_gem_path = nil
+    @gems_dir      = nil
+    @base_dir      = nil
   end
 
 end

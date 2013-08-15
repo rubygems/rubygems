@@ -786,7 +786,7 @@ class Gem::Specification < Gem::BasicSpecification
   # -- wilsonb
 
   def self.all= specs
-    @@all = specs
+    @@all = @@stubs = specs
   end
 
   ##

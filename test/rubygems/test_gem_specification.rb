@@ -445,6 +445,14 @@ end
     end
   end
 
+  def test_self_all_equals
+    a = new_spec "foo", "1", nil, "lib/foo.rb"
+
+    Gem::Specification.all = [a]
+
+    assert_equal a, Gem::Specification.find_inactive_by_path('foo')
+  end
+
   def test_self_attribute_names
     expected_value = %w[
       authors

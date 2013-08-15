@@ -1,6 +1,8 @@
 class Gem::Source::Local < Gem::Source
   def initialize
-    @uri = nil
+    @specs   = nil
+    @api_uri = nil
+    @uri     = nil
   end
 
   ##

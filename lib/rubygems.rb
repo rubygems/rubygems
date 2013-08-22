@@ -1048,7 +1048,7 @@ module Gem
     #
 
     def register_default_spec(spec)
-      new_format = (RUBY_ENGINE != 'ruby') || spec.require_paths.any? {|path| spec.files.any? {|f| f.start_with? path } }
+      new_format = Gem.default_gems_use_full_paths? || spec.require_paths.any? {|path| spec.files.any? {|f| f.start_with? path } }
 
       if new_format
         prefix_group = spec.require_paths.map {|f| f + "/"}.join("|")

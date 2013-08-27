@@ -315,7 +315,7 @@ module Gem
     @paths         = nil
     @user_home     = nil
     Gem::Specification.reset
-    Gem::Security.reset if const_defined? :Security
+    Gem::Security.reset if defined?(Gem::Security)
   end
 
   ##

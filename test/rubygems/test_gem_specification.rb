@@ -1428,6 +1428,12 @@ dependencies: []
     assert_equal %w[lib], @a1.require_paths
   end
 
+  def test_full_require_paths
+    @a1.require_path = 'lib'
+    assert_equal [File.join(@gemhome, 'gems', @a1.original_name, 'lib')],
+                 @a1.full_require_paths
+  end
+
   def test_require_already_activated
     save_loaded_features do
       a1 = new_spec "a", "1", nil, "lib/d.rb"

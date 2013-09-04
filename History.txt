@@ -1,5 +1,11 @@
 # coding: UTF-8
 
+=== 1.8.26
+
+Bug fixes:
+
+* Fixed editing of a Makefile with 8-bit characters.  Fixes #181
+
 === 1.8.25 / 2013-01-24
 
 * 6 bug fixes:

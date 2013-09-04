@@ -6,7 +6,7 @@ require 'autotest/restart'
 require 'autotest/isolate'
 
 Autotest.add_hook :initialize do |at|
-  at.testlib = 'minitest/autorun'
+  at.testlib = ''
 
   at.add_exception %r%/\.git/%
   at.add_exception %r%/\.svn/%

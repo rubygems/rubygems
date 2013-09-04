@@ -117,6 +117,8 @@ class TestGemIndexer < Gem::TestCase
     assert_indexed @tempdir, "latest_specs.#{@marshal_version}"
     assert_indexed @tempdir, "latest_specs.#{@marshal_version}.gz"
 
+    single_quote = CGI.escapeHTML "'"
+
     expected = <<-EOF
 <?xml version=\"1.0\"?>
 <rss version=\"2.0\">
@@ -227,13 +229,13 @@ class TestGemIndexer < Gem::TestCase
       <description>
 &lt;pre&gt;This line is really, really long.  So long, in fact, that it is more than
 eighty characters long!  The purpose of this line is for testing wrapping
-behavior because sometimes people don't wrap their text to eighty characters.
+behavior because sometimes people don#{single_quote}t wrap their text to eighty characters.
 Without the wrapping, the text might not look good in the RSS feed.
 
 Also, a list:
-  * An entry that's actually kind of sort
-  * an entry that's really long, which will probably get wrapped funny.
-That's ok, somebody wasn't thinking straight when they made it more than
+  * An entry that#{single_quote}s actually kind of sort
+  * an entry that#{single_quote}s really long, which will probably get wrapped funny.
+That#{single_quote}s ok, somebody wasn#{single_quote}t thinking straight when they made it more than
 eighty characters.&lt;/pre&gt;
       </description>
       <author>example@example.com (Example), example2@example.com (Example2)</author>

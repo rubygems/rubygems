@@ -79,7 +79,9 @@ class Gem::DependencyResolver
     needed = nil
 
     @needed.reverse_each do |n|
-      needed = Gem::List.new(Gem::DependencyResolver::DependencyRequest.new(n, nil), needed)
+      request = Gem::DependencyResolver::DependencyRequest.new n, nil
+
+      needed = Gem::List.new request, needed
     end
 
     res = resolve_for needed, nil

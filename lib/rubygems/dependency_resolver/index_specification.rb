@@ -39,8 +39,13 @@ class Gem::DependencyResolver::IndexSpecification
       q.breakable
       q.text full_name
 
+      unless Gem::Platform::RUBY == @platform then
+        q.breakable
+        q.text @platform
+      end
+
       q.breakable
-      q.text ' source '
+      q.text 'source '
       q.pp @source
     end
   end

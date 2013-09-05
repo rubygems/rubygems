@@ -2097,7 +2097,6 @@ class Gem::Specification < Gem::BasicSpecification
   # Returns an object you can use to sort specifications in #sort_by.
 
   def sort_obj
-    # TODO: this is horrible. Deprecate it.
     [@name, @version, @new_platform == Gem::Platform::RUBY ? -1 : 1]
   end
 

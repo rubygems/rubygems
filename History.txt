@@ -4,6 +4,8 @@
 
 * Gem fetch now fetches the newest (not oldest) gem when --version is given.
   Issue #643 by Brian Shirai.
+* Fixed credential creation for `gem push` when `--host` is not given.  Pull
+  request #622 by Arthur Nogueira Neves
 
 === 2.0.8 / 2013-09-09
 

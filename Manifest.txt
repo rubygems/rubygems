@@ -230,7 +230,10 @@ test/rubygems/test_gem_dependency.rb
 test/rubygems/test_gem_dependency_installer.rb
 test/rubygems/test_gem_dependency_list.rb
 test/rubygems/test_gem_dependency_resolver.rb
+test/rubygems/test_gem_dependency_resolver_api_specification.rb
 test/rubygems/test_gem_dependency_resolver_dependency_conflict.rb
+test/rubygems/test_gem_dependency_resolver_index_specification.rb
+test/rubygems/test_gem_dependency_resolver_installed_specification.rb
 test/rubygems/test_gem_doctor.rb
 test/rubygems/test_gem_ext_builder.rb
 test/rubygems/test_gem_ext_cmake_builder.rb

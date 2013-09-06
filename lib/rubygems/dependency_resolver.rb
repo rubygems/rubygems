@@ -164,7 +164,9 @@ class Gem::DependencyResolver
 
         # Sort them so that we try the highest versions
         # first.
-        possible = possible.sort_by { |s| [s.source, s.version] }
+        possible = possible.sort_by do |s|
+          [s.source, s.version, s.platform == Gem::Platform::RUBY ? -1 : 1]
+        end
 
         # We track the conflicts seen so that we can report them
         # to help the user figure out how to fix the situation.

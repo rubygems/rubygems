@@ -8,6 +8,8 @@ class Gem::DependencyResolver::IndexSpecification
 
   attr_reader :name
 
+  attr_reader :platform
+
   attr_reader :source
 
   attr_reader :version

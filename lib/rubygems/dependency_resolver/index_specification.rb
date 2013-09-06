@@ -53,7 +53,7 @@ class Gem::DependencyResolver::IndexSpecification
   end
 
   def spec
-    @spec ||= @set.load_spec(@name, @version, @source)
+    @spec ||= @set.load_spec(@name, @version, @platform, @source)
   end
 
 end

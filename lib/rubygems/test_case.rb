@@ -1114,7 +1114,7 @@ Also, a list:
       @specs.find_all { |s| dep.matches_spec? s }
     end
 
-    def load_spec name, ver, source
+    def load_spec name, ver, platform, source
       dep = Gem::Dependency.new name, ver
       spec = find_spec dep
 

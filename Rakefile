@@ -56,7 +56,9 @@ hoe = Hoe.spec 'rubygems-update' do
   dependency 'rake',          '~> 0.9.3', :dev
   dependency 'minitest',      '~> 4.0',   :dev
 
-  self.extra_rdoc_files = Dir["*.rdoc"]
+  self.extra_rdoc_files = Dir["*.rdoc"] + %w[
+    CVE-2013-4287.txt
+  ]
 
   spec_extras['rdoc_options'] = proc do |rdoc_options|
     rdoc_options << "--title=RubyGems Update Documentation"

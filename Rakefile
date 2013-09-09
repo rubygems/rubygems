@@ -53,7 +53,9 @@ hoe = Hoe.spec 'rubygems-update' do
   extra_dev_deps << ['rcov', '~> 0.9.0']
   extra_dev_deps << ['ZenTest', '~> 4.5']
 
-  self.extra_rdoc_files = Dir["*.rdoc"]
+  self.extra_rdoc_files = Dir["*.rdoc"] + %w[
+    CVE-2013-4287.txt
+  ]
 
   spec_extras['rdoc_options'] = proc do |rdoc_options|
     rdoc_options << "--title=RubyGems #{self.version} Documentation"

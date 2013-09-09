@@ -6,7 +6,6 @@
 #++
 
 require 'rbconfig'
-require 'monitor'
 
 module Gem
   VERSION = '2.1.0.rc.2'
@@ -114,7 +113,6 @@ require 'rubygems/errors'
 
 module Gem
   RUBYGEMS_DIR = File.dirname File.expand_path(__FILE__)
-  RUBYGEMS_ACTIVATION_MONITOR = Monitor.new # :nodoc:
 
   ##
   # An Array of Regexps that match windows Ruby platforms.
@@ -169,101 +167,6 @@ module Gem
   @pre_install_hooks    ||= []
   @pre_reset_hooks      ||= []
   @post_reset_hooks     ||= []
-  
-  ##
-  # Given a require path, produce a fully-resolved path considering gems in
-  # the current system. The resulting path can be required directly and will
-  # reflect gem resolution.
-  #
-  # The process of resolution may cause gems to be activated, so this method
-  # can potentially alter the current load path and the state of RubyGems
-  # internal structures.
-  
-  def self.resolve! path
-    RUBYGEMS_ACTIVATION_MONITOR.enter
-
-    spec = Gem.find_unresolved_default_spec(path)
-    if spec
-      Gem.remove_unresolved_default_spec(spec)
-      gem(spec.name)
-    end
-
-    # If there are no unresolved deps, then we can use just try
-    # normal require handle loading a gem from the rescue below.
-
-    if Gem::Specification.unresolved_deps.empty? then
-      return path
-    end
-
-    # If +path+ is for a gem that has already been loaded, don't
-    # bother trying to find it in an unresolved gem, just go straight
-    # to normal require.
-    #--
-    # TODO request access to the C implementation of this to speed up RubyGems
-
-    spec = Gem::Specification.stubs.find { |s|
-      s.activated? and s.contains_requirable_file? path
-    }
-
-    return path if spec
-
-    # Attempt to find +path+ in any unresolved gems...
-
-    found_specs = Gem::Specification.find_in_unresolved path
-
-    # If there are no directly unresolved gems, then try and find +path+
-    # in any gems that are available via the currently unresolved gems.
-    # For example, given:
-    #
-    #   a => b => c => d
-    #
-    # If a and b are currently active with c being unresolved and d.rb is
-    # requested, then find_in_unresolved_tree will find d.rb in d because
-    # it's a dependency of c.
-    #
-    if found_specs.empty? then
-      found_specs = Gem::Specification.find_in_unresolved_tree path
-
-      found_specs.each do |found_spec|
-        found_spec.activate
-      end
-
-    # We found +path+ directly in an unresolved gem. Now we figure out, of
-    # the possible found specs, which one we should activate.
-    else
-
-      # Check that all the found specs are just different
-      # versions of the same gem
-      names = found_specs.map(&:name).uniq
-
-      if names.size > 1 then
-        raise Gem::LoadError, "#{path} found in multiple gems: #{names.join ', '}"
-      end
-
-      # Ok, now find a gem that has no conflicts, starting
-      # at the highest version.
-      valid = found_specs.select { |s| s.conflicts.empty? }.last
-
-      unless valid then
-        le = Gem::LoadError.new "unable to find a version of '#{names.first}' to activate"
-        le.name = names.first
-        raise le
-      end
-
-      valid.activate
-    end
-
-    return path
-  rescue LoadError => load_error
-    if load_error.message.start_with?("Could not find") or
-        (load_error.message.end_with?(path) and Gem.try_activate(path)) then
-      return path
-    end
-
-    raise load_error
-  ensure
-    RUBYGEMS_ACTIVATION_MONITOR.exit
-  end
 
   ##
   # Try to activate a gem containing +path+. Returns true if

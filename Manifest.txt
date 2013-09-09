@@ -1,6 +1,7 @@
 .autotest
 .document
 .travis.yml
+CVE-2013-4287.txt
 History.txt
 LICENSE.txt
 MIT.txt

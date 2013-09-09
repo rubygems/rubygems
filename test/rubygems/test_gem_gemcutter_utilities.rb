@@ -197,7 +197,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
 
     use_ui @sign_in_ui do
       if args.length > 0 then
-        @cmd.sign_in *args
+        @cmd.sign_in(*args)
       else
         @cmd.sign_in
       end

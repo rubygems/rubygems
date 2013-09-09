@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-=== 2.1.0.rc.2
+=== 2.1.0 / 2013-09-09
 
 Security fixes:
 

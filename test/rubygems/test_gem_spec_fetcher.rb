@@ -184,9 +184,9 @@ class TestGemSpecFetcher < Gem::TestCase
 
     assert_equal [@source], specs.keys
 
-    comp = @prerelease_specs + @released
+    expected = (@prerelease_specs + @released).sort
 
-    assert_equal comp.sort, specs[@source].sort
+    assert_equal expected, specs[@source]
   end
 
   def test_available_specs_complete_handles_no_prerelease

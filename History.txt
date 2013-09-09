@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-=== 1.8.26
+=== 1.8.26 / 2013-09-09
 
 Security fixes:
 

@@ -4,6 +4,8 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'thread'
+
 class Gem::Ext::Builder
 
   ##

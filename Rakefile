@@ -132,45 +132,47 @@ directory '../guides.rubygems.org' do
      '../guides.rubygems.org'
 end
 
-task 'guides:pull' => %w[../guides.rubygems.org] do
-  chdir '../guides.rubygems.org' do
-    sh 'git', 'pull'
-  end
-end
-
-task 'guides:update' => %w[../guides.rubygems.org] do
-  lib_dir = File.join Dir.pwd, 'lib'
-
-  chdir '../guides.rubygems.org' do
-    ruby '-I', lib_dir, '-S', 'rake', 'command_guide'
-    ruby '-I', lib_dir, '-S', 'rake', 'rdoc_spec'
-  end
-end
-
-task 'guides:commit' => %w[../guides.rubygems.org] do
-  chdir '../guides.rubygems.org' do
-    begin
-      sh 'git', 'diff', '--quiet'
-    rescue
-      sh 'git', 'commit', 'command-reference.md', 'specification-reference.md',
-         '-m', "Rebuild for RubyGems #{hoe.version}"
+namespace 'guides' do
+  task 'pull' => %w[../guides.rubygems.org] do
+    chdir '../guides.rubygems.org' do
+      sh 'git', 'pull'
     end
   end
-end
 
-task 'guides:push' => %w[../guides.rubygems.org] do
-  chdir '../guides.rubygems.org' do
-    sh 'git', 'push'
+  task 'update' => %w[../guides.rubygems.org] do
+    lib_dir = File.join Dir.pwd, 'lib'
+
+    chdir '../guides.rubygems.org' do
+      ruby '-I', lib_dir, '-S', 'rake', 'command_guide'
+      ruby '-I', lib_dir, '-S', 'rake', 'rdoc_spec'
+    end
   end
-end
 
-desc 'Updates and publishes the guides for the just-released RubyGems'
-task 'guides:publish' => %w[
-  guides:pull
-  guides:update
-  guides:commit
-  guides:push
-]
+  task 'commit' => %w[../guides.rubygems.org] do
+    chdir '../guides.rubygems.org' do
+      begin
+        sh 'git', 'diff', '--quiet'
+      rescue
+        sh 'git', 'commit', 'command-reference.md', 'specification-reference.md',
+           '-m', "Rebuild for RubyGems #{hoe.version}"
+      end
+    end
+  end
+
+  task 'push' => %w[../guides.rubygems.org] do
+    chdir '../guides.rubygems.org' do
+      sh 'git', 'push'
+    end
+  end
+
+  desc 'Updates and publishes the guides for the just-released RubyGems'
+  task 'publish' => %w[
+    guides:pull
+    guides:update
+    guides:commit
+    guides:push
+  ]
+end
 
 # Misc Tasks ---------------------------------------------------------
 

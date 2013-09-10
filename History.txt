@@ -1,11 +1,11 @@
 # coding: UTF-8
 
-=== 2.1.1
+=== 2.1.1 / 2013-09-10
 
 Bug fixes:
 
 * Only matching gems matching your local platform are considered for
-  installation.  Issue #638 by José M. Prieto, Issue #639 by sawanoboly.
+  installation.  Issue #638 by José M. Prieto, issue #639 by sawanoboly.
 
 === 2.1.0 / 2013-09-09
 

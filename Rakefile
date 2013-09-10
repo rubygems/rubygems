@@ -106,7 +106,7 @@ task :test => :clean_env
 
 task :prerelease => [:clobber, :check_manifest, :test]
 
-task :postrelease => %w[upload publish_docs]
+task :postrelease => %w[upload guides:publish publish_docs]
 
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
 task :package do
@@ -125,6 +125,52 @@ end
 
 desc "Upload release to rubyforge and gemcutter"
 task :upload => %w[upload_to_gemcutter]
+
+directory '../guides.rubygems.org' do
+  sh 'git', 'clone',
+     'git@github.com:rubygems/guides.git',
+     '../guides.rubygems.org'
+end
+
+task 'guides:pull' => %w[../guides.rubygems.org] do
+  chdir '../guides.rubygems.org' do
+    sh 'git', 'pull'
+  end
+end
+
+task 'guides:update' => %w[../guides.rubygems.org] do
+  lib_dir = File.join Dir.pwd, 'lib'
+
+  chdir '../guides.rubygems.org' do
+    ruby '-I', lib_dir, '-S', 'rake', 'command_guide'
+    ruby '-I', lib_dir, '-S', 'rake', 'rdoc_spec'
+  end
+end
+
+task 'guides:commit' => %w[../guides.rubygems.org] do
+  chdir '../guides.rubygems.org' do
+    begin
+      sh 'git', 'diff', '--quiet'
+    rescue
+      sh 'git', 'commit', 'command-reference.md', 'specification-reference.md',
+         '-m', "Rebuild for RubyGems #{hoe.version}"
+    end
+  end
+end
+
+task 'guides:push' => %w[../guides.rubygems.org] do
+  chdir '../guides.rubygems.org' do
+    sh 'git', 'push'
+  end
+end
+
+desc 'Updates and publishes the guides for the just-released RubyGems'
+task 'guides:publish' => %w[
+  guides:pull
+  guides:update
+  guides:commit
+  guides:push
+]
 
 # Misc Tasks ---------------------------------------------------------
 

@@ -8,6 +8,8 @@ Bug fixes:
   request #637 and issue #640 by Charles Nutter.
 * Gems with extensions are now installed correctly when the --install-dir
   option is used.  Issue #642 by Lin Jen-Shin.
+* Gem fetch now fetches the newest (not oldest) gem when --version is given.
+  Issue #643 by Brian Shirai.
 
 === 2.1.1 / 2013-09-10
 

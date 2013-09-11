@@ -52,7 +52,8 @@ then repackaging it.
       dep = Gem::Dependency.new gem_name, version
       dep.prerelease = options[:prerelease]
 
-      specs_and_sources, errors = Gem::SpecFetcher.fetcher.spec_for_dependency dep
+      specs_and_sources, errors =
+        Gem::SpecFetcher.fetcher.spec_for_dependency dep
 
       if platform then
         filtered = specs_and_sources.select { |s,| s.platform == platform }

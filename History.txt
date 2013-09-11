@@ -1,5 +1,10 @@
 # coding: UTF-8
 
+=== 2.0.9
+
+* Gem fetch now fetches the newest (not oldest) gem when --version is given.
+  Issue #643 by Brian Shirai.
+
 === 2.0.8 / 2013-09-09
 
 Security fixes:

@@ -937,6 +937,31 @@ gem 'other', version
     assert_match %r|I am a shiny gem!|, @ui.output
   end
 
+  def test_install_extension_install_dir
+    gemhome2 = "#{@gemhome}2"
+
+    @spec.extensions << "extconf.rb"
+    write_file File.join(@tempdir, "extconf.rb") do |io|
+      io.write <<-RUBY
+        require "mkmf"
+        create_makefile("#{@spec.name}")
+      RUBY
+    end
+
+    @spec.files += %w[extconf.rb]
+
+    use_ui @ui do
+      path = Gem::Package.build @spec
+
+      installer = Gem::Installer.new path, :install_dir => gemhome2
+      installer.install
+    end
+
+    expected_makefile = File.join gemhome2, 'gems', @spec.full_name, 'Makefile'
+
+    assert_path_exists expected_makefile
+  end
+
   def test_install_extension_and_script
     @spec.extensions << "extconf.rb"
     write_file File.join(@tempdir, "extconf.rb") do |io|

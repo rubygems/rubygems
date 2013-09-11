@@ -6,6 +6,8 @@ Bug fixes:
 
 * Restore concurrent requires following the fix for ruby bug #8374.  Pull
   request #637 and issue #640 by Charles Nutter.
+* Gems with extensions are now installed correctly when the --install-dir
+  option is used.  Issue #642 by Lin Jen-Shin.
 
 === 2.1.1 / 2013-09-10
 

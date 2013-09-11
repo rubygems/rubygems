@@ -106,7 +106,7 @@ task :test => :clean_env
 
 task :prerelease => [:clobber, :check_manifest, :test]
 
-task :postrelease => %w[upload guides:publish publish_docs]
+task :postrelease => %w[upload guides:publish blog:publish publish_docs]
 
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
 task :package do
@@ -171,6 +171,134 @@ namespace 'guides' do
     guides:update
     guides:commit
     guides:push
+  ]
+end
+
+directory '../blog.rubygems.org' do
+  sh 'git', 'clone',
+     'git@github.com:rubygems/rubygems.github.com.git',
+     '../blog.rubygems.org'
+end
+
+namespace 'blog' do
+  date = Time.now.strftime '%Y-%m-%d'
+  post_page = "_posts/#{date}-#{hoe.version}-released.md"
+
+  task 'pull' => %w[../blog.rubygems.org] do
+    chdir '../blog.rubygems.org' do
+      sh 'git', 'pull'
+    end
+  end
+
+  path = File.join '../blog.rubygems.org', post_page
+
+  task 'update' => [path]
+
+  file path do
+    name  = `git config --get user.name`.strip
+    email = `git config --get user.email`.strip
+
+    history = File.read 'History.txt'
+
+    history.force_encoding Encoding::UTF_8 if Object.const_defined? :Encoding
+
+    _, change_log, = history.split %r%^===\s*\d.*%, 3
+
+    change_types = []
+
+    lines = change_log.strip.lines
+    change_log = []
+
+    while line = lines.shift do
+      case line
+      when /(^[A-Z].*)/ then
+        change_types << $1
+        change_log << "_#{$1}_\n"
+      when /^\*/ then
+        entry = [line.strip]
+
+        while /^  \S/ =~ lines.first do
+          entry << lines.shift.strip
+        end
+
+        change_log << "#{entry.join ' '}\n"
+      else
+        change_log << line
+      end
+    end
+
+    change_log = change_log.join
+
+    change_types = change_types.map do |change_type|
+      change_type.downcase.tr '^a-z ', ''
+    end
+
+    last_change_type = change_types.pop
+
+    if change_types.empty? then
+      change_types = ''
+    else
+      change_types = change_types.join(', ') << ' and '
+    end
+
+    change_types << last_change_type
+
+    require 'tempfile'
+
+    Tempfile.open 'blog_post' do |io|
+      io.write <<-ANNOUNCEMENT
+---
+title: #{hoe.version} Released
+layout: post
+author: #{name}
+author_email: #{email}
+---
+
+RubyGems #{hoe.version} includes #{change_types}.
+
+To update to the latest RubyGems you can run:
+
+    gem update --system
+
+If you need to upgrade or downgrade please follow the [how to upgrade/downgrade
+RubyGems][upgrading] instructions.  To install RubyGems by hand see the
+[Download RubyGems][download] page.
+
+#{change_log}
+
+[download]: http://rubygems.org/pages/download
+[upgrading]: http://rubygems.rubyforge.org/rubygems-update/UPGRADING_rdoc.html
+
+      ANNOUNCEMENT
+
+      io.flush
+
+      sh ENV['EDITOR'], io.path
+
+      FileUtils.cp io.path, path
+    end
+  end
+
+  task 'commit' => %w[../blog.rubygems.org] do
+    chdir '../blog.rubygems.org' do
+      sh 'git', 'add', post_page
+      sh 'git', 'commit', post_page,
+         '-m', "Added #{hoe.version} release announcement"
+    end
+  end
+
+  task 'push' => %w[../blog.rubygems.org] do
+    chdir '../blog.rubygems.org' do
+      sh 'git', 'push'
+    end
+  end
+
+  desc 'Updates and publishes the blog for the just-released RubyGems'
+  task 'publish' => %w[
+    blog:pull
+    blog:update
+    blog:commit
+    blog:push
   ]
 end
 

@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.1.3
+
+Bug fixes:
+
+* Gems with files entries starting with "./" no longer install 0 files.  Issue
+  #644 by Darragh Curran, #645 by Brandon Turner, #646 by Alex Tambellini
+
 === 2.1.2 / 2013-09-11
 
 Bug fixes:

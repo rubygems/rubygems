@@ -341,7 +341,7 @@ EOM
       tar.each do |entry|
         # Some entries start with "./" which fnmatch does not like, see github
         # issue #644
-        full_name = entry.full_name.sub /\A\.\//, ''
+        full_name = entry.full_name.sub %r%\A\./%, ''
 
         next unless File.fnmatch pattern, full_name
 

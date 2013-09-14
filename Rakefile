@@ -126,6 +126,8 @@ end
 desc "Upload release to rubyforge and gemcutter"
 task :upload => %w[upload_to_gemcutter]
 
+on_master = `git branch --list master`.strip == '* master'
+
 directory '../guides.rubygems.org' do
   sh 'git', 'clone',
      'git@github.com:rubygems/guides.git',
@@ -166,12 +168,14 @@ namespace 'guides' do
   end
 
   desc 'Updates and publishes the guides for the just-released RubyGems'
+  task 'publish'
+
   task 'publish' => %w[
     guides:pull
     guides:update
     guides:commit
     guides:push
-  ]
+  ] if on_master
 end
 
 directory '../blog.rubygems.org' do

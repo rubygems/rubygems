@@ -128,6 +128,8 @@ task :upload => %w[upload_to_gemcutter]
 
 on_master = `git branch --list master`.strip == '* master'
 
+Rake::Task['publish_docs'].clear unless on_master
+
 directory '../guides.rubygems.org' do
   sh 'git', 'clone',
      'git@github.com:rubygems/guides.git',

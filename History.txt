@@ -122,6 +122,8 @@ Bug fixes:
 
 === 2.0.9 / 2013-09-13
 
+Bug fixes:
+
 * Gem fetch now fetches the newest (not oldest) gem when --version is given.
   Issue #643 by Brian Shirai.
 * Fixed credential creation for `gem push` when `--host` is not given.  Pull

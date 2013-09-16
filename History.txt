@@ -8,6 +8,8 @@ Minor enhancements:
   prevent an accidental push to a public repository (such as rubygems.org).
   If you have private gems you should set this value in your gem specification
   metadata.  Pull request #603 by Seamus Abshere.
+* `gem list` now shows results for multiple arguments.  Pull request #604 by
+  Zach Rabinovich.
 
 === 2.1.3 / 2013-09-12
 

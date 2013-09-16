@@ -10,6 +10,8 @@ Minor enhancements:
   metadata.  Pull request #603 by Seamus Abshere.
 * `gem list` now shows results for multiple arguments.  Pull request #604 by
   Zach Rabinovich.
+* `gem pristine --extensions` will restore only gems with extensions.  Issue
+  #619 by Postmodern.
 * Gem::Specification#files is now sorted.  Pull request #612 by Justin George.
 * For `gem list` and friends, "LOCAL" and "REMOTE" headers are omitted if
   only local or remote gem information is requested with --quiet.  Pull

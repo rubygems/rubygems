@@ -950,7 +950,7 @@ dependencies: []
     assert_same spec.summary, new_spec.summary
 
     assert_equal %w[lib/file.rb test/file.rb bin/exec README.txt
-                    ext/extconf.rb],
+                    ext/extconf.rb].sort,
                  spec.files
     refute_same spec.files, new_spec.files, 'files'
 
@@ -1059,7 +1059,7 @@ dependencies: []
     @a2.executable = 'app'
 
     assert_equal nil, @a2.bindir
-    assert_equal %w[lib/code.rb app], @a2.files
+    assert_equal %w[lib/code.rb app].sort, @a2.files
   end
 
   def test_date
@@ -1159,7 +1159,7 @@ dependencies: []
   def test_executable_equals
     @a2.executable = 'app'
     assert_equal 'app', @a2.executable
-    assert_equal %w[lib/code.rb bin/app], @a2.files
+    assert_equal %w[lib/code.rb bin/app].sort, @a2.files
   end
 
   def test_extensions
@@ -1181,7 +1181,7 @@ dependencies: []
       files
       test_files
     ]
-    assert_equal expected, @a1.files.sort
+    assert_equal expected, @a1.files
   end
 
   def test_files_append
@@ -1199,14 +1199,14 @@ dependencies: []
       files
       test_files
     ]
-    assert_equal expected, @a1.files.sort
+    assert_equal expected, @a1.files
 
     @a1.files << "generated_file.c"
 
     expected << "generated_file.c"
     expected.sort!
 
-    assert_equal expected, @a1.files.sort
+    assert_equal expected, @a1.files
   end
 
   def test_files_duplicate
@@ -1232,7 +1232,7 @@ dependencies: []
     @a1.extra_rdoc_files = "ERF"
     @a1.extensions = "E"
 
-    assert_equal %w[E ERF F TF bin/X], @a1.files.sort
+    assert_equal %w[E ERF F TF bin/X], @a1.files
   end
 
   def test_files_non_array_pathological
@@ -1242,7 +1242,7 @@ dependencies: []
     @a1.instance_variable_set :@extensions, "E"
     @a1.instance_variable_set :@executables, "X"
 
-    assert_equal %w[E ERF F TF bin/X], @a1.files.sort
+    assert_equal %w[E ERF F TF bin/X], @a1.files
     assert_kind_of Integer, @a1.hash
   end
 
@@ -1662,7 +1662,7 @@ Gem::Specification.new do |s|
   s.email = "example@example.com"
   s.executables = ["exec"]
   s.extensions = ["ext/a/extconf.rb"]
-  s.files = ["lib/code.rb", "test/suite.rb", "bin/exec", "ext/a/extconf.rb"]
+  s.files = ["bin/exec", "ext/a/extconf.rb", "lib/code.rb", "test/suite.rb"]
   s.homepage = "http://example.com"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
@@ -1994,7 +1994,7 @@ end
       assert_equal '["lib2"] are not files', e.message
     end
 
-    assert_equal %w[lib/code.rb test/suite.rb bin/exec ext/a/extconf.rb lib2],
+    assert_equal %w[lib/code.rb test/suite.rb bin/exec ext/a/extconf.rb lib2].sort,
                  @a1.files
   end
 

@@ -10,6 +10,7 @@ Minor enhancements:
   metadata.  Pull request #603 by Seamus Abshere.
 * `gem list` now shows results for multiple arguments.  Pull request #604 by
   Zach Rabinovich.
+* Gem::Specification#files is now sorted.  Pull request #612 by Justin George.
 
 === 2.1.3 / 2013-09-12
 

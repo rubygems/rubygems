@@ -221,9 +221,11 @@ class Gem::Request
     uri = URI(Gem::UriFormatter.new(env_proxy).normalize)
 
     if uri and uri.user.nil? and uri.password.nil? then
-      # Probably we have http_proxy_* variables?
-      uri.user = Gem::UriFormatter.new(ENV["#{_scheme}_proxy_user"] || ENV["#{_SCHEME}_PROXY_USER"]).escape
-      uri.password = Gem::UriFormatter.new(ENV["#{_scheme}_proxy_pass"] || ENV["#{_SCHEME}_PROXY_PASS"]).escape
+      user     = ENV["#{_scheme}_proxy_user"] || ENV["#{_SCHEME}_PROXY_USER"]
+      password = ENV["#{_scheme}_proxy_pass"] || ENV["#{_SCHEME}_PROXY_PASS"]
+
+      uri.user     = Gem::UriFormatter.new(user).escape
+      uri.password = Gem::UriFormatter.new(password).escape
     end
 
     uri

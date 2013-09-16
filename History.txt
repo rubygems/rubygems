@@ -1,5 +1,14 @@
 # coding: UTF-8
 
+=== 2.2
+
+Minor enhancements:
+
+* RubyGems checks the 'allowed_push_host' metadata value when pushing a gem to
+  prevent an accidental push to a public repository (such as rubygems.org).
+  If you have private gems you should set this value in your gem specification
+  metadata.  Pull request #603 by Seamus Abshere.
+
 === 2.1.3 / 2013-09-12
 
 Bug fixes:

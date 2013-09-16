@@ -1321,9 +1321,7 @@ class Gem::Specification < Gem::BasicSpecification
   def add_self_to_load_path
     return if default_gem?
 
-    paths = require_paths.map do |path|
-      File.join full_gem_path, path
-    end
+    paths = full_require_paths
 
     # gem directories must come after -I and ENV['RUBYLIB']
     insert_index = Gem.load_path_insert_index
@@ -2014,6 +2012,17 @@ class Gem::Specification < Gem::BasicSpecification
 
   def require_path= path
     self.require_paths = [path]
+  end
+
+  ##
+  # Full paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
+  # activated.
+  #
+
+  def full_require_paths
+    require_paths.map do |path|
+      File.join full_gem_path, path
+    end
   end
 
   ##

@@ -11,6 +11,9 @@ Minor enhancements:
 * `gem list` now shows results for multiple arguments.  Pull request #604 by
   Zach Rabinovich.
 * Gem::Specification#files is now sorted.  Pull request #612 by Justin George.
+* For `gem list` and friends, "LOCAL" and "REMOTE" headers are not shown if
+  only local or remote gem information is requested.  Pull request #615 by
+  Michal Papis.
 
 === 2.1.3 / 2013-09-12
 

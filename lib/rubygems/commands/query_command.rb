@@ -112,6 +112,14 @@ is too hard to use.
 
   private
 
+  def display_header type
+    if (ui.outs.tty? and Gem.configuration.verbose) or both? then
+      say
+      say "*** #{type} GEMS ***"
+      say
+    end
+  end
+
   #Guts of original execute
   def show_gems name, prerelease
     req = Gem::Requirement.default
@@ -124,11 +132,7 @@ is too hard to use.
         alert_warning "prereleases are always shown locally"
       end
 
-      if (ui.outs.tty? and Gem.configuration.verbose) or both? then
-        say
-        say "*** LOCAL GEMS ***"
-        say
-      end
+      display_header 'LOCAL'
 
       specs = Gem::Specification.find_all { |s|
         s.name =~ name and req =~ s.version
@@ -142,11 +146,7 @@ is too hard to use.
     end
 
     if remote? then
-      if (ui.outs.tty? and Gem.configuration.verbose) or both? then
-        say
-        say "*** REMOTE GEMS ***"
-        say
-      end
+      display_header 'REMOTE'
 
       fetcher = Gem::SpecFetcher.fetcher
 

@@ -473,6 +473,19 @@ pl \(1\)
 
     assert_equal 'a (2)', entry
   end
+  
+  # Test for multiple args handling!
+  def test_execute_multiple_args
+    @cmd.handle_options %w[a pl]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+    
+    assert_match %r%^a %, @ui.output
+    assert_match %r%^pl %, @ui.output
+    assert_equal '', @ui.error
+  end
 
 end
 

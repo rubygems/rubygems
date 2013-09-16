@@ -72,16 +72,26 @@ is too hard to use.
 
   def execute
     exit_code = 0
+    if options[:args].to_a.empty? and options[:name].source.empty?
+      name = options[:name]
+      no_name = true
+    elsif !options[:name].source.empty?
+      name = Array(options[:name])
+    else
+      name = options[:args].to_a.map{|arg| /#{arg}/i }
+    end
 
-    name = options[:name]
     prerelease = options[:prerelease]
 
     unless options[:installed].nil? then
-      if name.source.empty? then
+      if no_name then
         alert_error "You must specify a gem name"
         exit_code |= 4
+      elsif name.count > 1
+        alert_error "You must specify only ONE gem!"
+        exit_code |= 4
       else
-        installed = installed? name, options[:version]
+        installed = installed? name.first, options[:version]
         installed = !installed unless options[:installed]
 
         if installed then
@@ -95,6 +105,15 @@ is too hard to use.
       terminate_interaction exit_code
     end
 
+    names = Array(name)
+    names.each {|name| show_gems(name, prerelease) }
+
+  end
+
+  private
+
+  #Guts of original execute
+  def show_gems name, prerelease
     req = Gem::Requirement.default
     # TODO: deprecate for real
     dep = Gem::Deprecate.skip_during { Gem::Dependency.new name, req }
@@ -154,8 +173,6 @@ is too hard to use.
       output_query_results spec_tuples
     end
   end
-
-  private
 
   ##
   # Check if gem +name+ version +version+ is installed.

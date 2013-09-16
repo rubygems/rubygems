@@ -124,7 +124,7 @@ is too hard to use.
         alert_warning "prereleases are always shown locally"
       end
 
-      if ui.outs.tty? or both? then
+      if (ui.outs.tty? and Gem.configuration.verbose) or both? then
         say
         say "*** LOCAL GEMS ***"
         say
@@ -142,7 +142,7 @@ is too hard to use.
     end
 
     if remote? then
-      if ui.outs.tty? or both? then
+      if (ui.outs.tty? and Gem.configuration.verbose) or both? then
         say
         say "*** REMOTE GEMS ***"
         say

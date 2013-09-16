@@ -2389,6 +2389,11 @@ class Gem::Specification < Gem::BasicSpecification
             "[\"#{non_files.join "\", \""}\"] are not files"
     end
 
+    if files.include? file_name then
+      raise Gem::InvalidSpecificationException,
+            "#{full_name} contains itself (#{file_name}), check your files list"
+    end
+
     unless specification_version.is_a?(Fixnum)
       raise Gem::InvalidSpecificationException,
             'specification_version must be a Fixnum (did you mean version?)'

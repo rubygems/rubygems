@@ -2004,6 +2004,20 @@ end
                  @a1.files
   end
 
+  def test_validate_files_recursive
+    util_setup_validate
+    FileUtils.touch @a1.file_name
+
+    @a1.files = [@a1.file_name]
+
+    e = assert_raises Gem::InvalidSpecificationException do
+      @a1.validate
+    end
+
+    assert_equal "#{@a1.full_name} contains itself (#{@a1.file_name}), check your files list",
+                 e.message
+  end
+
   def test_validate_homepage
     util_setup_validate
 

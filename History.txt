@@ -26,6 +26,8 @@ Minor enhancements:
 * RubyGems now creates directories in .gem files.  Issue #631 by marksolaris.
 * RubyGems raises an exception when a specification includes its gem.  Issue
   #623 by notEthan.
+* RubyGems now displays relevant release note information when updating
+  RubyGems.  Issue #647 by Trevor Wennblom.
 
 === 2.1.3 / 2013-09-12
 

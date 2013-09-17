@@ -12,6 +12,8 @@ Minor enhancements:
   Zach Rabinovich.
 * `gem pristine --extensions` will restore only gems with extensions.  Issue
   #619 by Postmodern.
+* `gem uninstall foo --all` now force-uninstalls all versions of foo.  Issue
+  #650 by Kyle (remkade).
 * Gem::Specification#files is now sorted.  Pull request #612 by Justin George.
 * For `gem list` and friends, "LOCAL" and "REMOTE" headers are omitted if
   only local or remote gem information is requested with --quiet.  Pull

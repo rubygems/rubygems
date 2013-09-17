@@ -104,8 +104,7 @@ that is a dependency of an existing gem.  You can use the
 
   def execute
     if options[:all] and not options[:args].empty? then
-      alert_error 'Gem names and --all may not be used together'
-      terminate_interaction 1
+      uninstall_specific
     elsif options[:all] then
       uninstall_all
     else

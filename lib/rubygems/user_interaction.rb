@@ -566,6 +566,36 @@ class Gem::StreamUI
     end
   end
 
+  class ThreadedDownloadReporter
+    MUTEX = Mutex.new
+
+    attr_reader :file_name
+
+    def initialize(out_stream)
+      @out = out_stream
+    end
+
+    def fetch(file_name, total_bytes)
+      @file_name = file_name
+      locked_puts "Downloading: #{file_name}"
+    end
+
+    def update(bytes)
+      # nah
+    end
+
+    def done
+      locked_puts "Finished: #{file_name}"
+    end
+
+  private
+    def locked_puts(msg)
+      MUTEX.synchronize do
+        @out.puts msg
+      end
+    end
+  end
+
   ##
   # A progress reporter that prints out messages about the current progress.
 

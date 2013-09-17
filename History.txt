@@ -6,6 +6,8 @@ Bug fixes:
 
 * `gem uninstall foo --all` now force-uninstalls all versions of foo.  Issue
   #650 by Kyle (remkade).
+* Fixed uninstalling gems installed in the home directory (as in
+  `--user-install`).  Issue #653 by Lin Jen-Shin.
 
 === 2.1.3 / 2013-09-12
 

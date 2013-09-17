@@ -15,7 +15,7 @@ class Gem::Commands::UninstallCommand < Gem::Command
   def initialize
     super 'uninstall', 'Uninstall gems from the local repository',
           :version => Gem::Requirement.default, :user_install => true,
-          :install_dir => Gem.dir, :check_dev => false
+          :check_dev => false
 
     add_option('-a', '--[no-]all',
       'Uninstall all matching versions'
@@ -84,7 +84,6 @@ class Gem::Commands::UninstallCommand < Gem::Command
 
   def defaults_str # :nodoc:
     "--version '#{Gem::Requirement.default}' --no-force " +
-    "--install-dir #{Gem.dir}\n" +
     "--user-install"
   end
 

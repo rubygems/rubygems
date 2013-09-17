@@ -232,5 +232,14 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     assert_equal %w[a-4 default-1], Gem::Specification.all_names.sort
   end
 
+  def test_handle_options
+    @cmd.handle_options %w[]
+
+    assert_equal false,                    @cmd.options[:check_dev]
+    assert_equal nil,                      @cmd.options[:install_dir]
+    assert_equal true,                     @cmd.options[:user_install]
+    assert_equal Gem::Requirement.default, @cmd.options[:version]
+  end
+
 end
 

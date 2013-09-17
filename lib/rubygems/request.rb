@@ -18,12 +18,10 @@ class Gem::Request
     @connections_mutex = Mutex.new
     @user_agent = user_agent
 
-    uri_scheme = URI(uri).scheme
-
     @proxy_uri =
       case proxy
       when :no_proxy then nil
-      when nil       then get_proxy_from_env uri_scheme
+      when nil       then get_proxy_from_env uri.scheme
       when URI::HTTP then proxy
       else URI.parse(proxy)
       end

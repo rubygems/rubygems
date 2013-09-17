@@ -12,7 +12,7 @@ class TestGemRequest < Gem::TestCase
     super
 
     @proxy_uri = "http://localhost:1234"
-    @uri = 'http://example'
+    @uri = URI('http://example')
 
     @request = Gem::Request.new @uri, nil, nil, nil
   end
@@ -55,7 +55,7 @@ class TestGemRequest < Gem::TestCase
   def test_initialize_proxy_ENV_https
     ENV['https_proxy'] = @proxy_uri
 
-    request = Gem::Request.new 'https://example', nil, nil, nil
+    request = Gem::Request.new URI('https://example'), nil, nil, nil
 
     proxy = request.proxy_uri
 

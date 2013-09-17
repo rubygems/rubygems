@@ -127,6 +127,7 @@ desc "Upload release to rubyforge and gemcutter"
 task :upload => %w[upload_to_gemcutter]
 
 on_master = `git branch --list master`.strip == '* master'
+on_master = true if ENV['FORCE']
 
 Rake::Task['publish_docs'].clear unless on_master
 

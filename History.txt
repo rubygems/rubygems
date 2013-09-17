@@ -27,6 +27,8 @@ Minor enhancements:
 * RubyGems now displays relevant release note information when updating
   RubyGems.  Issue #647 by Trevor Wennblom.
 
+=== 2.1.4 / 2013-09-17
+
 Bug fixes:
 
 * `gem uninstall foo --all` now force-uninstalls all versions of foo.  Issue

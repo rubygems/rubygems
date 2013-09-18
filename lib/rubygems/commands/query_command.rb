@@ -106,8 +106,7 @@ is too hard to use.
     end
 
     names = Array(name)
-    names.each {|name| show_gems(name, prerelease) }
-
+    names.each { |n| show_gems n, prerelease }
   end
 
   private

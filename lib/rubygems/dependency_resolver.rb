@@ -203,12 +203,7 @@ class Gem::DependencyResolver
 
       case possible.size
       when 0
-        @missing << dep
-
-        unless @soft_missing
-          # If there are none, then our work here is done.
-          raise Gem::UnsatisfiableDependencyError, dep
-        end
+        resolve_for_zero dep
       when 1
         needed, specs = resolve_for_single needed, specs, dep, possible
       else
@@ -266,6 +261,17 @@ class Gem::DependencyResolver
     needed = requests spec, act, needed
 
     return needed, specs
+  end
+
+  ##
+  # When there are no possible specifications for +dep+ our work is done.
+
+  def resolve_for_zero dep # :nodoc:
+    @missing << dep
+
+    unless @soft_missing
+      raise Gem::UnsatisfiableDependencyError, dep
+    end
   end
 
   ##

@@ -210,21 +210,7 @@ class Gem::DependencyResolver
           raise Gem::UnsatisfiableDependencyError, dep
         end
       when 1
-        # If there is one, then we just add it to specs
-        # and process the specs dependencies by adding
-        # them to needed.
-
-        spec = possible.first
-        act = Gem::DependencyResolver::ActivationRequest.new spec, dep, false
-
-        specs = Gem::List.prepend specs, act
-
-        # Put the deps for at the beginning of needed
-        # rather than the end to match the depth first
-        # searching done by the multiple case code below.
-        #
-        # This keeps the error messages consistent.
-        needed = requests(spec, act, needed)
+        needed, specs = resolve_for_single needed, specs, dep, possible
       else
         # There are multiple specs for this dep. This is
         # the case that this class is built to handle.
@@ -260,6 +246,26 @@ class Gem::DependencyResolver
     end
 
     specs
+  end
+
+  ##
+  # Add the spec from the +possible+ list to +specs+ and process the spec's
+  # dependencies by adding them to +needed+.
+
+  def resolve_for_single needed, specs, dep, possible # :nodoc:
+    spec = possible.first
+    act = Gem::DependencyResolver::ActivationRequest.new spec, dep, false
+
+    specs = Gem::List.prepend specs, act
+
+    # Put the deps for at the beginning of needed
+    # rather than the end to match the depth first
+    # searching done by the multiple case code below.
+    #
+    # This keeps the error messages consistent.
+    needed = requests spec, act, needed
+
+    return needed, specs
   end
 
   ##

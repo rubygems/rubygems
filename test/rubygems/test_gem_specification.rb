@@ -1550,13 +1550,13 @@ dependencies: []
     @a2.add_runtime_dependency 'b', '1'
     @a2.dependencies.first.instance_variable_set :@type, nil
     @a2.required_rubygems_version = Gem::Requirement.new '> 0'
-    @a2.require_paths << "lib/a/ext"
+    @a2.require_paths << 'other'
 
     ruby_code = @a2.to_ruby
 
     expected = <<-SPEC
 # -*- encoding: utf-8 -*-
-# stub: a 2 ruby lib\0lib/a/ext
+# stub: a 2 ruby lib\0other
 
 Gem::Specification.new do |s|
   s.name = "a"
@@ -1569,7 +1569,7 @@ Gem::Specification.new do |s|
   s.email = "example@example.com"
   s.files = ["lib/code.rb"]
   s.homepage = "http://example.com"
-  s.require_paths = ["lib", "lib/a/ext"]
+  s.require_paths = ["lib", "other"]
   s.rubygems_version = "#{Gem::VERSION}"
   s.summary = "this is a summary"
 

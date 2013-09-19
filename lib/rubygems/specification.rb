@@ -1934,7 +1934,6 @@ class Gem::Specification < Gem::BasicSpecification
     q.group 2, 'Gem::Specification.new do |s|', 'end' do
       q.breakable
 
-      # REFACTOR: each_attr - use in to_yaml as well
       @@attributes.each do |attr_name|
         current_value = self.send attr_name
         if current_value != default_value(attr_name) or

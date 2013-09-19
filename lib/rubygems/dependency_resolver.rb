@@ -93,6 +93,24 @@ class Gem::DependencyResolver
   end
 
   ##
+  # Finds the State in +states+ that matches the +conflict+ so that we can try
+  # other possible sets.
+
+  def find_conflict_state conflict, states # :nodoc:
+    until states.empty? do
+      if conflict.for_spec? states.last.spec
+        state = states.last
+        state.conflicts << [state.spec, conflict]
+        return state
+      else
+        states.pop
+      end
+    end
+
+    nil
+  end
+
+  ##
   # Extracts the specifications that may be able to fulfill +dependency+
 
   def find_possible dependency # :nodoc:
@@ -159,21 +177,7 @@ class Gem::DependencyResolver
 
         conflict = handle_conflict dep, existing
 
-        # Look through the state array and pop State objects
-        # until we get back to the State that matches the conflict
-        # so that we can try other possible sets.
-
-        i = nil
-
-        until states.empty?
-          if conflict.for_spec? states.last.spec
-            i = states.last
-            i.conflicts << [i.spec, conflict]
-            break
-          else
-            states.pop
-          end
-        end
+        i = find_conflict_state conflict, states
 
         if i
           # We exhausted the possibles so it's definitely not going to

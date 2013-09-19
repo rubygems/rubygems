@@ -92,6 +92,14 @@ class Gem::DependencyResolver
     res.to_a
   end
 
+  ##
+  # Extracts the specifications that may be able to fulfill +dependency+
+
+  def find_possible dependency # :nodoc:
+    possible = @set.find_all dependency
+    select_local_platforms possible
+  end
+
   def handle_conflict(dep, existing)
     # There is a conflict! We return the conflict
     # object which will be seen by the caller and be
@@ -191,9 +199,7 @@ class Gem::DependencyResolver
         end
       end
 
-      # Get a list of all specs that satisfy dep and platform
-      possible = @set.find_all dep
-      possible = select_local_platforms possible
+      possible = find_possible dep
 
       case possible.size
       when 0

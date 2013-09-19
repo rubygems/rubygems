@@ -205,42 +205,47 @@ class Gem::DependencyResolver
       when 0
         resolve_for_zero dep
       when 1
-        needed, specs = resolve_for_single needed, specs, dep, possible
+        needed, specs =
+          resolve_for_single needed, specs, dep, possible
       else
-        # There are multiple specs for this dep. This is
-        # the case that this class is built to handle.
-
-        # Sort them so that we try the highest versions
-        # first.
-        possible = possible.sort_by do |s|
-          [s.source, s.version, s.platform == Gem::Platform::RUBY ? -1 : 1]
-        end
-
-        # To figure out which to pick, we keep resolving
-        # given each one being activated and if there isn't
-        # a conflict, we know we've found a full set.
-        #
-        # We use an until loop rather than #reverse_each
-        # to keep the stack short since we're using a recursive
-        # algorithm.
-        #
-        spec = possible.pop
-
-        # We're may need to try all of +possible+, so we setup
-        # state to unwind back to current +needed+ and +specs+
-        # so we can try another. This is code is what makes the above
-        # code in conflict resolution possible.
-
-        act = Gem::DependencyResolver::ActivationRequest.new spec, dep
-
-        states << State.new(needed, specs, dep, spec, possible, [])
-
-        needed = requests(spec, act, needed)
-        specs = Gem::List.prepend(specs, act)
+        needed, specs =
+          resolve_for_multiple needed, specs, states, dep, possible
       end
     end
 
     specs
+  end
+
+  ##
+  # There are multiple +possible+ specifications for this +dep+.  Updates
+  # +needed+, +specs+ and +states+ for further resolution of the +possible+
+  # choices.
+
+  def resolve_for_multiple needed, specs, states, dep, possible # :nodoc:
+    # Sort them so that we try the highest versions first.
+    possible = possible.sort_by do |s|
+      [s.source, s.version, s.platform == Gem::Platform::RUBY ? -1 : 1]
+    end
+
+    # To figure out which to pick, we keep resolving given each one being
+    # activated and if there isn't a conflict, we know we've found a full set.
+    #
+    # We use an until loop rather than reverse_each to keep the stack short
+    # since we're using a recursive algorithm.
+    spec = possible.pop
+
+    # We may need to try all of +possible+, so we setup state to unwind back
+    # to current +needed+ and +specs+ so we can try another. This is code is
+    # what makes conflict resolution possible.
+
+    act = Gem::DependencyResolver::ActivationRequest.new spec, dep
+
+    states << State.new(needed, specs, dep, spec, possible, [])
+
+    needed = requests spec, act, needed
+    specs = Gem::List.prepend specs, act
+
+    return needed, specs
   end
 
   ##

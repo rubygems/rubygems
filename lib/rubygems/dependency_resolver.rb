@@ -170,9 +170,7 @@ class Gem::DependencyResolver
 
       # If there is already a spec activated for the requested name...
       if specs && existing = specs.find { |s| dep.name == s.name }
-
-        # then we're done since this new dep matches the
-        # existing spec.
+        # then we're done since this new dep matches the existing spec.
         next if dep.matches_spec? existing
 
         conflict = handle_conflict dep, existing
@@ -181,22 +179,7 @@ class Gem::DependencyResolver
 
         return conflict unless state
 
-        # We exhausted the possibles so it's definitely not going to
-        # work out, bail out.
-
-        if state.possibles.empty?
-          raise Gem::ImpossibleDependenciesError.new(state.dep, state.conflicts)
-        end
-
-        spec = state.possibles.pop
-
-        # Recursively call #resolve_for with this spec
-        # and add it's dependencies into the picture...
-
-        act = Gem::DependencyResolver::ActivationRequest.new spec, state.dep
-
-        needed = requests(spec, act, state.needed)
-        specs = Gem::List.prepend(state.specs, act)
+        needed, specs = resolve_for_conflict needed, specs, state
 
         next
       end
@@ -216,6 +199,27 @@ class Gem::DependencyResolver
     end
 
     specs
+  end
+
+  ##
+  # Rewinds +needed+ and +specs+ to a previous state in +state+ for a conflict
+  # between +dep+ and +existing+.
+
+  def resolve_for_conflict needed, specs, state # :nodoc:
+    # We exhausted the possibles so it's definitely not going to work out,
+    # bail out.
+    raise Gem::ImpossibleDependenciesError.new state.dep, state.conflicts if
+      state.possibles.empty?
+
+    spec = state.possibles.pop
+
+    # Retry resolution with this spec and add it's dependencies
+    act = Gem::DependencyResolver::ActivationRequest.new spec, state.dep
+
+    needed = requests spec, act, state.needed
+    specs = Gem::List.prepend state.specs, act
+
+    return needed, specs
   end
 
   ##

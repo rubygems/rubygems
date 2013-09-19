@@ -179,28 +179,26 @@ class Gem::DependencyResolver
 
         i = find_conflict_state conflict, states
 
-        if i
-          # We exhausted the possibles so it's definitely not going to
-          # work out, bail out.
+        return conflict unless i
 
-          if i.possibles.empty?
-            raise Gem::ImpossibleDependenciesError.new(i.dep, i.conflicts)
-          end
+        # We exhausted the possibles so it's definitely not going to
+        # work out, bail out.
 
-          spec = i.possibles.pop
-
-          # Recursively call #resolve_for with this spec
-          # and add it's dependencies into the picture...
-
-          act = Gem::DependencyResolver::ActivationRequest.new spec, i.dep
-
-          needed = requests(spec, act, i.needed)
-          specs = Gem::List.prepend(i.specs, act)
-
-          next
-        else
-          return conflict
+        if i.possibles.empty?
+          raise Gem::ImpossibleDependenciesError.new(i.dep, i.conflicts)
         end
+
+        spec = i.possibles.pop
+
+        # Recursively call #resolve_for with this spec
+        # and add it's dependencies into the picture...
+
+        act = Gem::DependencyResolver::ActivationRequest.new spec, i.dep
+
+        needed = requests(spec, act, i.needed)
+        specs = Gem::List.prepend(i.specs, act)
+
+        next
       end
 
       possible = find_possible dep

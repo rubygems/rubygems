@@ -2183,10 +2183,6 @@ class Gem::Specification < Gem::BasicSpecification
   # Returns a Ruby code representation of this specification, such that it can
   # be eval'ed and reconstruct the same specification later.  Attributes that
   # still have their default values are omitted.
-  #
-  # REFACTOR: This, plus stuff like #ruby_code and #pretty_print, should
-  # probably be extracted out into some sort of separate class. SRP, do you
-  # speak it!??!
 
   def to_ruby
     mark_version

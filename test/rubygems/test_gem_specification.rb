@@ -1180,6 +1180,16 @@ dependencies: []
     assert_equal ['ext/a/extconf.rb'], @a1.extensions
   end
 
+  def test_extension_install_dir
+    refute_empty @a1.extensions
+
+    expected =
+      File.join(@a1.base_dir, 'extensions', @a1.full_name,
+                Gem.ruby_api_version, Gem::Platform.local.to_s)
+
+    assert_equal expected, @a1.extension_install_dir
+  end
+
   def test_files
     @a1.files = %w(files bin/common)
     @a1.test_files = %w(test_files bin/common)

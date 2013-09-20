@@ -487,6 +487,20 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
+  # The directory the named +extension+ was installed into after being built.
+  #
+  # Usage:
+  #
+  #   spec.extensions.each do |ext|
+  #     puts spec.extension_install_dir ext
+  #   end
+
+  def extension_install_dir
+    File.join base_dir, 'extensions', full_name,
+              Gem.ruby_api_version, Gem::Platform.local.to_s
+  end
+
+  ##
   # Extra files to add to RDoc such as README or doc/examples.txt
   #
   # When the user elects to generate the RDoc documentation for a gem (typically

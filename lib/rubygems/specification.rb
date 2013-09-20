@@ -1509,17 +1509,20 @@ class Gem::Specification < Gem::BasicSpecification
   #   [depending_gem, dependency, [list_of_gems_that_satisfy_dependency]]
 
   def dependent_gems
-    Gem::Specification.map do |spec|
+    # REFACTOR: out = []; each; out; ? Really? No #collect love?
+    out = []
+    Gem::Specification.each do |spec|
       spec.dependencies.each do |dep|
         if self.satisfies_requirement?(dep) then
           sats = []
           find_all_satisfiers(dep) do |sat|
             sats << sat
           end
-          [spec, dep, sats]
+          out << [spec, dep, sats]
         end
       end
-    end.compact
+    end
+    out
   end
 
   ##

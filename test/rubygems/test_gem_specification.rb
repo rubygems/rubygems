@@ -1112,6 +1112,20 @@ dependencies: []
     assert_equal [@bonobo, @monkey], @gem.dependencies
   end
 
+  def test_dependent_gems
+    util_setup_deps
+
+    assert_empty @gem.dependent_gems
+
+    bonobo = quick_spec 'bonobo'
+
+    expected = [
+      [@gem, @bonobo, [bonobo]],
+    ]
+
+    assert_equal expected, bonobo.dependent_gems
+  end
+
   def test_doc_dir
     assert_equal File.join(@gemhome, 'doc', 'a-1'), @a1.doc_dir
   end

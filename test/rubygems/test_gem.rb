@@ -644,6 +644,22 @@ class TestGem < Gem::TestCase
     Gem::ConfigMap[:EXEEXT] = orig_exe_ext
   end
 
+  def test_self_ruby_api_version
+    orig_MAJOR, Gem::ConfigMap[:MAJOR] = Gem::ConfigMap[:MAJOR], '1'
+    orig_MINOR, Gem::ConfigMap[:MINOR] = Gem::ConfigMap[:MINOR], '2'
+    orig_TEENY, Gem::ConfigMap[:TEENY] = Gem::ConfigMap[:TEENY], '3'
+
+    Gem.instance_variable_set :@ruby_api_version, nil
+
+    assert_equal '1.2.3', Gem.ruby_api_version
+  ensure
+    Gem.instance_variable_set :@ruby_api_version, nil
+
+    Gem::ConfigMap[:MAJOR] = orig_MAJOR
+    Gem::ConfigMap[:MINOR] = orig_MINOR
+    Gem::ConfigMap[:TEENY] = orig_TEENY
+  end
+
   def test_self_ruby_version_1_8_5
     util_set_RUBY_VERSION '1.8.5'
 

@@ -139,6 +139,7 @@ module Gem
     build_info
     cache
     doc
+    extensions
     gems
     specifications
   ]

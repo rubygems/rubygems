@@ -260,6 +260,7 @@ class TestGem < Gem::TestCase
     assert_path_exists File.join @gemhome, 'build_info'
     assert_path_exists File.join @gemhome, 'cache'
     assert_path_exists File.join @gemhome, 'doc'
+    assert_path_exists File.join @gemhome, 'extensions'
     assert_path_exists File.join @gemhome, 'gems'
     assert_path_exists File.join @gemhome, 'specifications'
   end

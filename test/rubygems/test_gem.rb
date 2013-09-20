@@ -257,7 +257,11 @@ class TestGem < Gem::TestCase
 
     Gem.ensure_gem_subdirectories @gemhome
 
-    assert File.directory? File.join(@gemhome, "cache")
+    assert_path_exists File.join @gemhome, 'build_info'
+    assert_path_exists File.join @gemhome, 'cache'
+    assert_path_exists File.join @gemhome, 'doc'
+    assert_path_exists File.join @gemhome, 'gems'
+    assert_path_exists File.join @gemhome, 'specifications'
   end
 
   def test_self_ensure_gem_directories_permissions

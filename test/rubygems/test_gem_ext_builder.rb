@@ -75,6 +75,8 @@ install:
   def test_build_extensions_extconf_bad
     @spec.extensions << 'extconf.rb'
 
+    FileUtils.mkdir_p @spec.gem_dir
+
     e = assert_raises Gem::Installer::ExtensionBuildError do
       use_ui @ui do
         @builder.build_extensions
@@ -87,7 +89,7 @@ install:
                  @ui.output
     assert_equal '', @ui.error
 
-    gem_make_out = File.join @gemhome, 'gems', @spec.full_name, 'gem_make.out'
+    gem_make_out = File.join @spec.extension_install_dir, 'gem_make.out'
 
     assert_match %r%#{Regexp.escape Gem.ruby} extconf\.rb%,
                  File.read(gem_make_out)
@@ -97,7 +99,7 @@ install:
 
   def test_build_extensions_unsupported
     FileUtils.mkdir_p @spec.gem_dir
-    gem_make_out = File.join @spec.gem_dir, 'gem_make.out'
+    gem_make_out = File.join @spec.extension_install_dir, 'gem_make.out'
     @spec.extensions << nil
 
     e = assert_raises Gem::Installer::ExtensionBuildError do
@@ -146,7 +148,7 @@ install:
     path = File.join @spec.gem_dir, "extconf_args"
 
     assert_equal args.inspect, File.read(path).strip
-    assert File.directory? File.join(@spec.gem_dir, 'lib')
+    assert_path_exists @spec.extension_install_dir
   end
 
 end

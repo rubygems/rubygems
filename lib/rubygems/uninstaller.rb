@@ -247,6 +247,7 @@ class Gem::Uninstaller
       File.writable?(spec.base_dir)
 
     FileUtils.rm_rf spec.full_gem_path
+    FileUtils.rm_rf spec.extension_install_dir
 
     # TODO: should this be moved to spec?... I vote eww (also exists in docmgr)
     old_platform_name = [spec.name,

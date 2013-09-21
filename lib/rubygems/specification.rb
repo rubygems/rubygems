@@ -209,6 +209,8 @@ class Gem::Specification < Gem::BasicSpecification
   # Paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
   # activated.
   #
+  # See also #require_paths
+  #
   # If you have an extension you do not need to add <code>"ext"</code> to the
   # require path, the extension build process will copy the extension files
   # into "lib" for you.
@@ -220,7 +222,7 @@ class Gem::Specification < Gem::BasicSpecification
   #   # If all library files are in the root directory...
   #   spec.require_path = '.'
 
-  attr_accessor :require_paths
+  attr_writer :require_paths
 
   ##
   # The version of RubyGems used to create this gem.
@@ -546,6 +548,33 @@ class Gem::Specification < Gem::BasicSpecification
 
   def licenses= licenses
     @licenses = Array licenses
+  end
+
+  ##
+  # Paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
+  # activated.
+  #
+  # See also #require_paths=
+  #
+  # If you have an extension you do not need to add <code>"ext"</code> to the
+  # require path, the extension build process will copy the extension files
+  # into "lib" for you.
+  #
+  # The default value is <code>"lib"</code>
+  #
+  # Usage:
+  #
+  #   # If all library files are in the root directory...
+  #   spec.require_path = '.'
+
+  def require_paths
+    return @require_paths if @extensions.empty?
+
+    relative_extension_install_dir =
+      File.join '..', '..', '..', 'extensions', full_name,
+                Gem.ruby_api_version, Gem::Platform.local.to_s
+
+    @require_paths + [relative_extension_install_dir]
   end
 
   ##
@@ -2032,9 +2061,13 @@ class Gem::Specification < Gem::BasicSpecification
   #
 
   def full_require_paths
-    require_paths.map do |path|
+    full_paths = @require_paths.map do |path|
       File.join full_gem_path, path
     end
+
+    full_paths << extension_install_dir unless @extensions.empty?
+
+    full_paths
   end
 
   ##
@@ -2218,11 +2251,13 @@ class Gem::Specification < Gem::BasicSpecification
     if metadata and !metadata.empty?
       result << "  s.metadata = #{ruby_code metadata} if s.respond_to? :metadata="
     end
+    result << "  s.require_paths = #{ruby_code @require_paths}"
 
     handled = [
       :dependencies,
       :name,
       :platform,
+      :require_paths,
       :required_rubygems_version,
       :specification_version,
       :version,
@@ -2379,7 +2414,7 @@ class Gem::Specification < Gem::BasicSpecification
             "invalid value for attribute name: \"#{name.inspect}\""
     end
 
-    if require_paths.empty? then
+    if @require_paths.empty? then
       raise Gem::InvalidSpecificationException,
             'specification must have at least one require_path'
     end

@@ -1,5 +1,6 @@
-# -*- coding: us-ascii -*-
+# -*- coding: UTF-8 -*-
 require 'rubygems/test_case'
+require 'pathname'
 require 'stringio'
 require 'rubygems/specification'
 
@@ -1453,13 +1454,24 @@ dependencies: []
 
   def test_require_paths
     @a1.require_path = 'lib'
-    assert_equal %w[lib], @a1.require_paths
+
+    lib = Pathname File.join @a1.gem_dir, 'lib'
+
+    ext_install_dir =
+      Pathname(@a1.extension_install_dir).relative_path_from lib
+
+    assert_equal ['lib', ext_install_dir.to_s], @a1.require_paths
   end
 
   def test_full_require_paths
     @a1.require_path = 'lib'
-    assert_equal [File.join(@gemhome, 'gems', @a1.original_name, 'lib')],
-                 @a1.full_require_paths
+
+    expected = [
+      File.join(@gemhome, 'gems', @a1.original_name, 'lib'),
+      @a1.extension_install_dir,
+    ]
+
+    assert_equal expected, @a1.full_require_paths
   end
 
   def test_require_already_activated
@@ -1587,13 +1599,13 @@ Gem::Specification.new do |s|
   s.version = "2"
 
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\") if s.respond_to? :required_rubygems_version=
+  s.require_paths = ["lib", "other"]
   s.authors = ["A User"]
   s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
   s.description = "This is a test description"
   s.email = "example@example.com"
   s.files = ["lib/code.rb"]
   s.homepage = "http://example.com"
-  s.require_paths = ["lib", "other"]
   s.rubygems_version = "#{Gem::VERSION}"
   s.summary = "this is a summary"
 
@@ -1635,12 +1647,12 @@ Gem::Specification.new do |s|
   s.version = "2"
 
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\") if s.respond_to? :required_rubygems_version=
+  s.require_paths = ["lib"]
   s.authors = ["A User"]
   s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
   s.description = "This is a test description"
   s.email = "example@example.com"
   s.homepage = "http://example.com"
-  s.require_paths = ["lib"]
   s.rubygems_version = "#{Gem::VERSION}"
   s.summary = "this is a summary"
 
@@ -1675,10 +1687,11 @@ end
 
     local = Gem::Platform.local
     expected_platform = "[#{local.cpu.inspect}, #{local.os.inspect}, #{local.version.inspect}]"
+    stub_require_paths = @c1.require_paths.join "\u0000"
 
     expected = <<-SPEC
 # -*- encoding: utf-8 -*-
-# stub: a 1 #{win_platform? ? "x86-mswin32-60" : "x86-darwin-8"} lib
+# stub: a 1 #{win_platform? ? "x86-mswin32-60" : "x86-darwin-8"} #{stub_require_paths}
 
 Gem::Specification.new do |s|
   s.name = "a"
@@ -1686,6 +1699,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform.new(#{expected_platform})
 
   s.required_rubygems_version = Gem::Requirement.new(\">= 0\") if s.respond_to? :required_rubygems_version=
+  s.require_paths = ["lib"]
   s.authors = ["A User"]
   s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
   s.description = "This is a test description"
@@ -1695,7 +1709,6 @@ Gem::Specification.new do |s|
   s.files = ["bin/exec", "ext/a/extconf.rb", "lib/code.rb", "test/suite.rb"]
   s.homepage = "http://example.com"
   s.licenses = ["MIT"]
-  s.require_paths = ["lib"]
   s.requirements = ["A working computer"]
   s.rubyforge_project = "example"
   s.rubygems_version = "#{Gem::VERSION}"
@@ -2400,13 +2413,13 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.metadata = { "one" => "two", "two" => "three" } if s.respond_to? :metadata=
+  s.require_paths = ["lib"]
   s.authors = ["A User"]
   s.date = "#{Gem::Specification::TODAY.strftime("%Y-%m-%d")}"
   s.description = "This is a test description"
   s.email = "example@example.com"
   s.files = ["lib/code.rb"]
   s.homepage = "http://example.com"
-  s.require_paths = ["lib"]
   s.rubygems_version = "#{Gem::VERSION}"
   s.summary = "this is a summary"
 end

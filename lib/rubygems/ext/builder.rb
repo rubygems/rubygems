@@ -116,7 +116,9 @@ class Gem::Ext::Builder
   # Logs the build +output+ in +build_dir+, then raises ExtensionBuildError.
 
   def build_error build_dir, output, backtrace = nil # :nodoc:
-    gem_make_out = File.join build_dir, 'gem_make.out'
+    gem_make_out = File.join @spec.extension_install_dir, 'gem_make.out'
+
+    FileUtils.mkdir_p @spec.extension_install_dir
 
     open gem_make_out, 'wb' do |io| io.puts output end
 
@@ -136,7 +138,8 @@ EOF
     results = []
 
     extension ||= '' # I wish I knew why this line existed
-    extension_dir = File.join @gem_dir, File.dirname(extension)
+    extension_dir =
+      File.expand_path File.join @gem_dir, File.dirname(extension)
 
     builder = builder_for extension
 
@@ -170,7 +173,7 @@ EOF
       say "This could take a while..."
     end
 
-    dest_path = File.join @gem_dir, @spec.require_paths.first
+    dest_path = @spec.extension_install_dir
 
     @ran_rake = false # only run rake once
 

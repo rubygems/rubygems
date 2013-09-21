@@ -79,8 +79,9 @@ class Gem::Ext::Builder
   end
 
   ##
-  # Creates a new extension builder for +spec+ using the given +build_args+.
-  # The gem for +spec+ is unpacked in +gem_dir+.
+  # Creates a new extension builder for +spec+.  If the +spec+ does not yet
+  # have build arguments, saved, set +build_args+ which is an ARGV-style
+  # array.
 
   def initialize spec, build_args
     @spec       = spec

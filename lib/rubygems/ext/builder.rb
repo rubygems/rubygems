@@ -83,7 +83,7 @@ class Gem::Ext::Builder
   # have build arguments, saved, set +build_args+ which is an ARGV-style
   # array.
 
-  def initialize spec, build_args
+  def initialize spec, build_args = spec.build_args
     @spec       = spec
     @build_args = build_args
     @gem_dir    = spec.gem_dir

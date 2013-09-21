@@ -151,5 +151,27 @@ install:
     assert_path_exists @spec.extension_install_dir
   end
 
+  def test_initialize
+    build_info_dir = File.join @gemhome, 'build_info'
+
+    FileUtils.mkdir_p build_info_dir
+
+    build_info_file = File.join build_info_dir, "#{@spec.full_name}.info"
+
+    open build_info_file, 'w' do |io|
+      io.puts '--with-foo-dir=/nonexistent'
+    end
+
+    builder = Gem::Ext::Builder.new @spec
+
+    assert_equal %w[--with-foo-dir=/nonexistent], builder.build_args
+  end
+
+  def test_initialize_build_args
+    builder = Gem::Ext::Builder.new @spec, %w[--with-foo-dir=/nonexistent]
+
+    assert_equal %w[--with-foo-dir=/nonexistent], builder.build_args
+  end
+
 end
 

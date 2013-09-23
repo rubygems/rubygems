@@ -1277,6 +1277,7 @@ class Gem::Specification < Gem::BasicSpecification
     return false if Gem.loaded_specs[self.name]
 
     activate_dependencies
+    build_extensions
     add_self_to_load_path
 
     Gem.loaded_specs[self.name] = self
@@ -1419,6 +1420,23 @@ class Gem::Specification < Gem::BasicSpecification
       File.readlines(build_info_file).map { |x| x.strip }
     else
       []
+    end
+  end
+
+  ##
+  # Builds extensions for this platform if the gem has extensions listed and
+  # the .gem.build_complete file is missing.
+
+  def build_extensions # :nodoc:
+    return if default_gem?
+    return if File.exist? gem_build_complete_path
+
+    require 'rubygems/ext'
+    require 'rubygems/user_interaction'
+
+    Gem::DefaultUserInteraction.use_ui Gem::SilentUI.new do
+      builder = Gem::Ext::Builder.new self
+      builder.build_extensions
     end
   end
 

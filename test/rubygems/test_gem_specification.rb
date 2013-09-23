@@ -1023,6 +1023,25 @@ dependencies: []
     assert @a2.activated?
   end
 
+  def test_activate_extension
+    extconf_rb = File.join @a1.gem_dir, @a1.extensions.first
+    FileUtils.mkdir_p File.dirname extconf_rb
+
+    open extconf_rb, 'w' do |f|
+      f.write <<-'RUBY'
+        open 'Makefile', 'w' do |f|
+          f.puts "default:\n\techo built"
+          f.puts "install:\n\techo installed"
+        end
+      RUBY
+    end
+
+    @a1.activate
+
+    assert @a1.activated?
+    assert_path_exists @a1.extension_install_dir
+  end
+
   def test_add_dependency_with_type
     gem = quick_spec "awesome", "1.0" do |awesome|
       awesome.add_dependency true
@@ -1061,6 +1080,71 @@ dependencies: []
 
     assert_equal nil, @a2.bindir
     assert_equal %w[lib/code.rb app].sort, @a2.files
+  end
+
+  def test_build_extensions
+    refute_path_exists @a1.extension_install_dir, 'sanity check'
+    refute_empty @a1.extensions, 'sanity check'
+
+    extconf_rb = File.join @a1.gem_dir, @a1.extensions.first
+    FileUtils.mkdir_p File.dirname extconf_rb
+
+    open extconf_rb, 'w' do |f|
+      f.write <<-'RUBY'
+        open 'Makefile', 'w' do |f|
+          f.puts "default:\n\techo built"
+          f.puts "install:\n\techo installed"
+        end
+      RUBY
+    end
+
+    @a1.build_extensions
+
+    assert_path_exists @a1.extension_install_dir
+  end
+
+  def test_build_extensions_built
+    refute_empty @a1.extensions, 'sanity check'
+
+    gem_build_complete =
+      File.join @a1.extension_install_dir, '.gem.build_complete'
+
+    FileUtils.mkdir_p @a1.extension_install_dir
+    FileUtils.touch gem_build_complete
+
+    @a1.build_extensions
+
+    gem_make_out = File.join @a1.extension_install_dir, 'gem_make.out'
+    refute_path_exists gem_make_out
+  end
+
+  def test_build_extensions_default_gem
+    spec = new_default_spec 'default', 1
+    spec.extensions << 'extconf.rb'
+
+    extconf_rb = File.join spec.gem_dir, spec.extensions.first
+    FileUtils.mkdir_p File.dirname extconf_rb
+
+    open extconf_rb, 'w' do |f|
+      f.write <<-'RUBY'
+        open 'Makefile', 'w' do |f|
+          f.puts "default:\n\techo built"
+          f.puts "install:\n\techo installed"
+        end
+      RUBY
+    end
+
+    spec.build_extensions
+
+    refute_path_exists spec.extension_install_dir
+  end
+
+  def test_build_extensions_error
+    refute_empty @a1.extensions, 'sanity check'
+
+    assert_raises Gem::Ext::BuildError do
+      @a1.build_extensions
+    end
   end
 
   def test_date

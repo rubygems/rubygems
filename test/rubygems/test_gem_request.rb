@@ -99,7 +99,7 @@ class TestGemRequest < Gem::TestCase
 
   def test_fetch_unmodified
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
-    t = Time.now
+    t = Time.utc(2013, 1, 2, 3, 4, 5)
     @request = Gem::Request.new(uri, Net::HTTP::Get, t, nil)
     conn = util_stub_connection_for :body => '', :code => 304
 
@@ -108,7 +108,9 @@ class TestGemRequest < Gem::TestCase
     assert_equal 304, response.code
     assert_equal '', response.body
 
-    assert_equal t.rfc2822, conn.payload['if-modified-since']
+    modified_header = conn.payload['if-modified-since']
+
+    assert_equal 'Wed, 02 Jan 2013 03:04:05 GMT', modified_header
   end
 
   def test_user_agent

@@ -176,6 +176,10 @@ EOF
 
     dest_path = @spec.extension_install_dir
 
+    gem_build_complete = File.join dest_path, '.gem.build_complete'
+
+    FileUtils.rm_f gem_build_complete
+
     @ran_rake = false # only run rake once
 
     @spec.extensions.each do |extension|
@@ -183,6 +187,8 @@ EOF
 
       build_extension extension, dest_path
     end
+
+    FileUtils.touch gem_build_complete
   end
 
 end

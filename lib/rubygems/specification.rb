@@ -708,8 +708,7 @@ class Gem::Specification < Gem::BasicSpecification
     LOAD_CACHE.clear
   end
 
-  # :nodoc:
-  def self.each_gemspec(dirs)
+  def self.each_gemspec(dirs) # :nodoc:
     dirs.each do |dir|
       Dir[File.join(dir, "*.gemspec")].each do |path|
         yield path.untaint
@@ -717,16 +716,14 @@ class Gem::Specification < Gem::BasicSpecification
     end
   end
 
-  # :nodoc:
-  def self.each_stub(dirs)
+  def self.each_stub(dirs) # :nodoc:
     each_gemspec(dirs) do |path|
       stub = Gem::StubSpecification.new(path)
       yield stub if stub.valid?
     end
   end
 
-  # :nodoc:
-  def self.each_spec(dirs)
+  def self.each_spec(dirs) # :nodoc:
     each_gemspec(dirs) do |path|
       spec = self.load path
       yield spec if spec
@@ -1729,8 +1726,7 @@ class Gem::Specification < Gem::BasicSpecification
     spec
   end
 
-  # :nodoc:
-  def find_full_gem_path
+  def find_full_gem_path # :nodoc:
     super || File.expand_path(File.join(gems_dir, original_name))
   end
   private :find_full_gem_path

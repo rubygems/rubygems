@@ -6,7 +6,7 @@ class TestStubSpecification < Gem::TestCase
   FOO = File.join SPECIFICATIONS, "foo-0.0.1.gemspec"
   BAR = File.join SPECIFICATIONS, "bar-0.0.2.gemspec"
 
-  def test_basic
+  def test_initialize
     stub = Gem::StubSpecification.new(FOO)
     assert_equal "foo", stub.name
     assert_equal Gem::Version.new("0.0.1"), stub.version
@@ -14,7 +14,7 @@ class TestStubSpecification < Gem::TestCase
     assert_equal ["lib", "lib/f oo/ext"], stub.require_paths
   end
 
-  def test_missing_stubline
+  def test_initialize_missing_stubline
     stub = Gem::StubSpecification.new(BAR)
     assert_equal "bar", stub.name
     assert_equal Gem::Version.new("0.0.2"), stub.version

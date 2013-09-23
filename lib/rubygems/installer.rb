@@ -32,9 +32,9 @@ class Gem::Installer
   ENV_PATHS = %w[/usr/bin/env /bin/env]
 
   ##
-  # Raised when there is an error while building extensions.
-  #
-  class ExtensionBuildError < Gem::InstallError; end
+  # Deprecated in favor of Gem::Ext::BuildError
+
+  ExtensionBuildError = Gem::Ext::BuildError # :nodoc:
 
   include Gem::UserInteraction
 

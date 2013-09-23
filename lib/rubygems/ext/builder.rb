@@ -132,7 +132,7 @@ Gem files will remain installed in #{@gem_dir} for inspection.
 Results logged to #{gem_make_out}
 EOF
 
-    raise Gem::Installer::ExtensionBuildError, message, backtrace
+    raise Gem::Ext::BuildError, message, backtrace
   end
 
   def build_extension extension, dest_path # :nodoc:

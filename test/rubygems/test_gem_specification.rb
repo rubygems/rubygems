@@ -1339,6 +1339,11 @@ dependencies: []
     end
   end
 
+  def test_gem_build_complete_path
+    expected = File.join @a1.extension_install_dir, '.gem.build_complete'
+    assert_equal expected, @a1.gem_build_complete_path
+  end
+
   def test_hash
     assert_equal @a1.hash, @a1.hash
     assert_equal @a1.hash, @a1.dup.hash

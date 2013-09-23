@@ -18,9 +18,6 @@ class TestGemExtBuilder < Gem::TestCase
     @spec = quick_spec 'a'
 
     @builder = Gem::Ext::Builder.new @spec, ''
-
-    @gem_build_complete =
-      File.join @spec.extension_install_dir, '.gem.build_complete'
   end
 
   def teardown
@@ -87,7 +84,7 @@ install:
     path = File.join @spec.gem_dir, 'extconf_args'
 
     assert_path_exists @spec.extension_install_dir
-    assert_path_exists @gem_build_complete
+    assert_path_exists @spec.gem_build_complete_path
   end
 
   def test_build_extensions_none
@@ -103,7 +100,7 @@ install:
 
   def test_build_extensions_rebuild_failure
     FileUtils.mkdir_p @spec.extension_install_dir
-    FileUtils.touch @gem_build_complete
+    FileUtils.touch @spec.gem_build_complete_path
 
     @spec.extensions << nil
 
@@ -113,7 +110,7 @@ install:
       end
     end
 
-    refute_path_exists @gem_build_complete
+    refute_path_exists @spec.gem_build_complete_path
   end
 
   def test_build_extensions_extconf_bad
@@ -140,7 +137,7 @@ install:
     assert_match %r%#{Regexp.escape Gem.ruby}: No such file%,
                  File.read(gem_make_out)
 
-    refute_path_exists @gem_build_complete
+    refute_path_exists @spec.gem_build_complete_path
   end
 
   def test_build_extensions_unsupported
@@ -162,7 +159,7 @@ install:
 
     assert_equal "No builder for extension ''\n", File.read(gem_make_out)
 
-    refute_path_exists @gem_build_complete
+    refute_path_exists @spec.gem_build_complete_path
   ensure
     FileUtils.rm_f gem_make_out
   end

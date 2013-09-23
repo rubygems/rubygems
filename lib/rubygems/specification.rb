@@ -1722,6 +1722,14 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
+  # The path to the .gem.build_complete file within the extension install
+  # directory.
+
+  def gem_build_complete_path # :nodoc:
+    File.join extension_install_dir, '.gem.build_complete'
+  end
+
+  ##
   # Returns the full path to this spec's gem directory.
   # eg: /usr/local/lib/ruby/1.8/gems/mygem-1.0
 

@@ -114,7 +114,7 @@ class Gem::Ext::Builder
   end
 
   ##
-  # Logs the build +output+ in +build_dir+, then raises ExtensionBuildError.
+  # Logs the build +output+ in +build_dir+, then raises Gem::Ext::BuildError.
 
   def build_error build_dir, output, backtrace = nil # :nodoc:
     gem_make_out = File.join @spec.extension_install_dir, 'gem_make.out'

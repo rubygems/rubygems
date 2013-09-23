@@ -121,7 +121,7 @@ install:
 
     FileUtils.mkdir_p @spec.gem_dir
 
-    e = assert_raises Gem::Installer::ExtensionBuildError do
+    e = assert_raises Gem::Ext::BuildError do
       use_ui @ui do
         @builder.build_extensions
       end
@@ -148,7 +148,7 @@ install:
     gem_make_out = File.join @spec.extension_install_dir, 'gem_make.out'
     @spec.extensions << nil
 
-    e = assert_raises Gem::Installer::ExtensionBuildError do
+    e = assert_raises Gem::Ext::BuildError do
       use_ui @ui do
         @builder.build_extensions
       end

@@ -667,7 +667,7 @@ TEXT
   end
 
   ##
-  # Logs the build +output+ in +build_dir+, then raises ExtensionBuildError.
+  # Logs the build +output+ in +build_dir+, then raises Gem::Ext::BuildError.
   #
   # TODO:  Delete this for RubyGems 3.  It remains for API compatibility
 

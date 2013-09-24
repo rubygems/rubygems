@@ -38,11 +38,10 @@ class Gem::BasicSpecification
   # Return true if this spec can require +file+.
 
   def contains_requirable_file? file
-    root     = full_gem_path
     suffixes = Gem.suffixes
 
-    require_paths.any? do |lib|
-      base = "#{root}/#{lib}/#{file}"
+    full_require_paths.any? do |dir|
+      base = "#{dir}/#{file}"
       suffixes.any? { |suf| File.file? "#{base}#{suf}" }
     end
   end
@@ -95,6 +94,20 @@ class Gem::BasicSpecification
     else
       "#{name}-#{version}-#{platform}".untaint
     end
+  end
+
+  ##
+  # Full paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
+  # activated.
+
+  def full_require_paths
+    full_paths = @require_paths.map do |path|
+      File.join full_gem_path, path
+    end
+
+    full_paths << extension_install_dir unless @extensions.empty?
+
+    full_paths
   end
 
   ##

@@ -93,6 +93,27 @@ class Gem::StubSpecification < Gem::BasicSpecification
   end
 
   ##
+  # If a gem has a stub specification it doesn't need to bother with
+  # compatibility with original_name gems.  It was installed with the
+  # normalized name.
+
+  def find_full_gem_path # :nodoc:
+    path = File.expand_path File.join gems_dir, full_name
+    path.untaint
+    path
+  end
+
+  ##
+  # Full paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
+  # activated.
+
+  def full_require_paths
+    @require_paths ||= data.require_paths
+
+    super
+  end
+
+  ##
   # Name of the gem
 
   def name

@@ -49,9 +49,36 @@ class TestStubSpecification < Gem::TestCase
     assert_equal ["lib"], stub.require_paths
   end
 
+  def test_full_require_paths
+    stub = stub_with_extension
+
+    expected = [
+      File.join(stub.full_gem_path, 'lib'),
+      stub.extension_install_dir,
+    ]
+
+    assert_equal expected, stub.full_require_paths
+  end
+
   def test_to_spec
     stub = Gem::StubSpecification.new(FOO)
     assert stub.to_spec.is_a?(Gem::Specification)
     assert_equal "foo", stub.to_spec.name
   end
+
+  def stub_with_extension
+    Tempfile.open 'stub' do |io|
+      io.write <<-STUB
+# -*- encoding: utf-8 -*-
+# stub: a 2 ruby lib
+# stub: ext/a/extconf.rb
+      STUB
+
+      io.flush
+
+      return Gem::StubSpecification.new io.path
+    end
+  end
+
 end
+

@@ -2037,21 +2037,6 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # Full paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
-  # activated.
-  #
-
-  def full_require_paths
-    full_paths = @require_paths.map do |path|
-      File.join full_gem_path, path
-    end
-
-    full_paths << extension_install_dir unless @extensions.empty?
-
-    full_paths
-  end
-
-  ##
   # The RubyGems version required by this gem
 
   def required_rubygems_version= req

@@ -27,6 +27,15 @@ Minor enhancements:
 * RubyGems now displays relevant release note information when updating
   RubyGems.  Issue #647 by Trevor Wennblom.
 
+=== 2.1.5 / 2013-09-24
+
+Security fixes:
+
+* RubyGems 2.1.4 and earlier are vulnerable to excessive CPU usage due to a
+  backtracking in Gem::Version validation.  See CVE-2013-4363 for full details
+  including vulnerable APIs.  Fixed versions include 2.1.5, 2.0.10, 1.8.27 and
+  1.8.23.2 (for Ruby 1.9.3).
+
 === 2.1.4 / 2013-09-17
 
 Bug fixes:
@@ -155,6 +164,15 @@ Bug fixes:
   #625 by elarkin
 * Fixed credential creation for `gem push` when `--host` is not given.  Pull
   request #622 by Arthur Nogueira Neves
+
+=== 2.0.10 / 2013-09-24
+
+Security fixes:
+
+* RubyGems 2.1.4 and earlier are vulnerable to excessive CPU usage due to a
+  backtracking in Gem::Version validation.  See CVE-2013-4363 for full details
+  including vulnerable APIs.  Fixed versions include 2.1.5, 2.0.10, 1.8.27 and
+  1.8.23.2 (for Ruby 1.9.3).
 
 === 2.0.9 / 2013-09-13
 
@@ -642,6 +660,15 @@ $SAFE=1.  There is no functional difference compared to Ruby 2.0.0.preview2
   * URI scheme matching is no longer case-sensitive.  Fixes #322
   * ext/builder now checks $MAKE as well as $make (okkez)
 
+=== 1.8.27 / 2013-09-24
+
+Security fixes:
+
+* RubyGems 2.1.4 and earlier are vulnerable to excessive CPU usage due to a
+  backtracking in Gem::Version validation.  See CVE-2013-4363 for full details
+  including vulnerable APIs.  Fixed versions include 2.1.5, 2.0.10, 1.8.27 and
+  1.8.23.2 (for Ruby 1.9.3).
+
 === 1.8.26 / 2013-09-09
 
 Security fixes:
@@ -672,6 +699,15 @@ Bug fixes:
 
   * Install the .pem files properly. Fixes #320
   * Remove OpenSSL dependency from the http code path
+
+=== 1.8.23.2 / 2013-09-24
+
+Security fixes:
+
+* RubyGems 2.1.4 and earlier are vulnerable to excessive CPU usage due to a
+  backtracking in Gem::Version validation.  See CVE-2013-4363 for full details
+  including vulnerable APIs.  Fixed versions include 2.1.5, 2.0.10, 1.8.27 and
+  1.8.23.2 (for Ruby 1.9.3).
 
 === 1.8.23.1 / 2013-09-09
 

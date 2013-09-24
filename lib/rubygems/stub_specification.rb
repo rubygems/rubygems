@@ -41,6 +41,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
   def initialize(filename)
     self.loaded_from = filename
     @data            = nil
+    @extensions      = nil
     @spec            = nil
   end
 
@@ -62,7 +63,15 @@ class Gem::StubSpecification < Gem::BasicSpecification
         begin
           file.readline # discard encoding line
           stubline = file.readline.chomp
-          @data = StubLine.new(stubline) if stubline.start_with?(PREFIX)
+          if stubline.start_with?(PREFIX) then
+            @data = StubLine.new stubline
+
+            if /\A#{PREFIX}/ =~ file.readline.chomp
+              @extensions = $'.split "\0"
+            else
+              @extensions = []
+            end
+          end
         rescue EOFError
         end
       end
@@ -72,6 +81,17 @@ class Gem::StubSpecification < Gem::BasicSpecification
   end
 
   private :data
+
+  ##
+  # Extensions for this gem
+
+  def extensions
+    return @extensions if @extensions
+
+    data # load
+
+    @extensions
+  end
 
   ##
   # Name of the gem

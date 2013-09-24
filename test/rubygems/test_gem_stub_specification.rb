@@ -14,6 +14,26 @@ class TestStubSpecification < Gem::TestCase
     assert_equal ["lib", "lib/f oo/ext"], stub.require_paths
   end
 
+  def test_initialize_extension
+    Tempfile.open 'stub' do |io|
+      io.write <<-STUB
+# -*- encoding: utf-8 -*-
+# stub: a 2 ruby lib
+# stub: ext/a/extconf.rb
+      STUB
+
+      io.flush
+
+      stub = Gem::StubSpecification.new io.path
+
+      assert_equal 'a',                  stub.name
+      assert_equal v(2),                 stub.version
+      assert_equal Gem::Platform::RUBY,  stub.platform
+      assert_equal %w[lib],              stub.require_paths
+      assert_equal %w[ext/a/extconf.rb], stub.extensions
+    end
+  end
+
   def test_initialize_missing_stubline
     stub = Gem::StubSpecification.new(BAR)
     assert_equal "bar", stub.name

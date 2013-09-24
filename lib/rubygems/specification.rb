@@ -2258,7 +2258,9 @@ class Gem::Specification < Gem::BasicSpecification
     mark_version
     result = []
     result << "# -*- encoding: utf-8 -*-"
-    result << "#{Gem::StubSpecification::PREFIX}#{name} #{version} #{platform} #{require_paths.join("\0")}"
+    result << "#{Gem::StubSpecification::PREFIX}#{name} #{version} #{platform} #{@require_paths.join("\0")}"
+    result << "#{Gem::StubSpecification::PREFIX}#{extensions.join "\0"}" unless
+      extensions.empty?
     result << nil
     result << "Gem::Specification.new do |s|"
 

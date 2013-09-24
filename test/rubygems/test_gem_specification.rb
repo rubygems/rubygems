@@ -1776,11 +1776,14 @@ end
 
     local = Gem::Platform.local
     expected_platform = "[#{local.cpu.inspect}, #{local.os.inspect}, #{local.version.inspect}]"
-    stub_require_paths = @c1.require_paths.join "\u0000"
+    stub_require_paths =
+      @c1.instance_variable_get(:@require_paths).join "\u0000"
+    extensions = @c1.extensions.join "\u0000"
 
     expected = <<-SPEC
 # -*- encoding: utf-8 -*-
 # stub: a 1 #{win_platform? ? "x86-mswin32-60" : "x86-darwin-8"} #{stub_require_paths}
+# stub: #{extensions}
 
 Gem::Specification.new do |s|
   s.name = "a"

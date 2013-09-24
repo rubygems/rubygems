@@ -15,30 +15,21 @@ class TestStubSpecification < Gem::TestCase
   end
 
   def test_initialize_extension
-    Tempfile.open 'stub' do |io|
-      io.write <<-STUB
-# -*- encoding: utf-8 -*-
-# stub: a 2 ruby lib
-# stub: ext/a/extconf.rb
-      STUB
+    stub = stub_with_extension
 
-      io.flush
+    gem_dir = File.join stub.gems_dir, stub.full_name
 
-      stub = Gem::StubSpecification.new io.path
-      gem_dir = File.join stub.gems_dir, stub.full_name
+    lib = Pathname File.join gem_dir, 'lib'
 
-      lib = Pathname File.join gem_dir, 'lib'
+    ext_install_dir =
+      Pathname(stub.extension_install_dir).relative_path_from lib
+    ext_install_dir = ext_install_dir.to_s
 
-      ext_install_dir =
-        Pathname(stub.extension_install_dir).relative_path_from lib
-      ext_install_dir = ext_install_dir.to_s
-
-      assert_equal 'a',                      stub.name
-      assert_equal v(2),                     stub.version
-      assert_equal Gem::Platform::RUBY,      stub.platform
-      assert_equal ['lib', ext_install_dir], stub.require_paths
-      assert_equal %w[ext/a/extconf.rb],     stub.extensions
-    end
+    assert_equal 'a',                      stub.name
+    assert_equal v(2),                     stub.version
+    assert_equal Gem::Platform::RUBY,      stub.platform
+    assert_equal ['lib', ext_install_dir], stub.require_paths
+    assert_equal %w[ext/a/extconf.rb],     stub.extensions
   end
 
   def test_initialize_missing_stubline

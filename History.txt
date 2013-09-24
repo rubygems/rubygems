@@ -1,5 +1,14 @@
 # coding: UTF-8
 
+=== 2.1.5 / 2013-09-24
+
+Security fixes:
+
+* RubyGems 2.1.4 and earlier are vulnerable to excessive CPU usage due to a
+  backtracking in Gem::Version validation.  See CVE-2013-4363 for full details
+  including vulnerable APIs.  Fixed versions include 2.1.5, 2.0.10, 1.8.27 and
+  1.8.23.2 (for Ruby 1.9.3).
+
 === 2.1.4 / 2013-09-17
 
 Bug fixes:

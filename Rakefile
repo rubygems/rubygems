@@ -58,6 +58,7 @@ hoe = Hoe.spec 'rubygems-update' do
 
   self.extra_rdoc_files = Dir["*.rdoc"] + %w[
     CVE-2013-4287.txt
+    CVE-2013-4363.txt
   ]
 
   spec_extras['rdoc_options'] = proc do |rdoc_options|

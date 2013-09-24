@@ -52,6 +52,20 @@ class Gem::BasicSpecification
       File.dirname(loaded_from) == self.class.default_specifications_dir
   end
 
+  ##
+  # The directory the named +extension+ was installed into after being built.
+  #
+  # Usage:
+  #
+  #   spec.extensions.each do |ext|
+  #     puts spec.extension_install_dir ext
+  #   end
+
+  def extension_install_dir
+    File.join base_dir, 'extensions', full_name,
+              Gem.ruby_api_version, Gem::Platform.local.to_s
+  end
+
   def find_full_gem_path # :nodoc:
     # TODO: also, shouldn't it default to full_name if it hasn't been written?
     path = File.expand_path File.join(gems_dir, full_name)
@@ -119,10 +133,30 @@ class Gem::BasicSpecification
   end
 
   ##
-  # Require paths of the gem
+  # Paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
+  # activated.
+  #
+  # See also #require_paths=
+  #
+  # If you have an extension you do not need to add <code>"ext"</code> to the
+  # require path, the extension build process will copy the extension files
+  # into "lib" for you.
+  #
+  # The default value is <code>"lib"</code>
+  #
+  # Usage:
+  #
+  #   # If all library files are in the root directory...
+  #   spec.require_path = '.'
 
   def require_paths
-    raise NotImplementedError
+    return @require_paths if @extensions.empty?
+
+    relative_extension_install_dir =
+      File.join '..', '..', '..', 'extensions', full_name,
+                Gem.ruby_api_version, Gem::Platform.local.to_s
+
+    @require_paths + [relative_extension_install_dir]
   end
 
   ##

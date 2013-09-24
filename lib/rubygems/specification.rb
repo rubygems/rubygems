@@ -489,20 +489,6 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # The directory the named +extension+ was installed into after being built.
-  #
-  # Usage:
-  #
-  #   spec.extensions.each do |ext|
-  #     puts spec.extension_install_dir ext
-  #   end
-
-  def extension_install_dir
-    File.join base_dir, 'extensions', full_name,
-              Gem.ruby_api_version, Gem::Platform.local.to_s
-  end
-
-  ##
   # Extra files to add to RDoc such as README or doc/examples.txt
   #
   # When the user elects to generate the RDoc documentation for a gem (typically
@@ -548,33 +534,6 @@ class Gem::Specification < Gem::BasicSpecification
 
   def licenses= licenses
     @licenses = Array licenses
-  end
-
-  ##
-  # Paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
-  # activated.
-  #
-  # See also #require_paths=
-  #
-  # If you have an extension you do not need to add <code>"ext"</code> to the
-  # require path, the extension build process will copy the extension files
-  # into "lib" for you.
-  #
-  # The default value is <code>"lib"</code>
-  #
-  # Usage:
-  #
-  #   # If all library files are in the root directory...
-  #   spec.require_path = '.'
-
-  def require_paths
-    return @require_paths if @extensions.empty?
-
-    relative_extension_install_dir =
-      File.join '..', '..', '..', 'extensions', full_name,
-                Gem.ruby_api_version, Gem::Platform.local.to_s
-
-    @require_paths + [relative_extension_install_dir]
   end
 
   ##

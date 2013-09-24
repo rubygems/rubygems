@@ -25,12 +25,19 @@ class TestStubSpecification < Gem::TestCase
       io.flush
 
       stub = Gem::StubSpecification.new io.path
+      gem_dir = File.join stub.gems_dir, stub.full_name
 
-      assert_equal 'a',                  stub.name
-      assert_equal v(2),                 stub.version
-      assert_equal Gem::Platform::RUBY,  stub.platform
-      assert_equal %w[lib],              stub.require_paths
-      assert_equal %w[ext/a/extconf.rb], stub.extensions
+      lib = Pathname File.join gem_dir, 'lib'
+
+      ext_install_dir =
+        Pathname(stub.extension_install_dir).relative_path_from lib
+      ext_install_dir = ext_install_dir.to_s
+
+      assert_equal 'a',                      stub.name
+      assert_equal v(2),                     stub.version
+      assert_equal Gem::Platform::RUBY,      stub.platform
+      assert_equal ['lib', ext_install_dir], stub.require_paths
+      assert_equal %w[ext/a/extconf.rb],     stub.extensions
     end
   end
 

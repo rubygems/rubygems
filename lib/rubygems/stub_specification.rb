@@ -59,6 +59,8 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
   def data
     unless @data
+      @extensions = []
+
       open loaded_from, OPEN_MODE do |file|
         begin
           file.readline # discard encoding line
@@ -66,11 +68,8 @@ class Gem::StubSpecification < Gem::BasicSpecification
           if stubline.start_with?(PREFIX) then
             @data = StubLine.new stubline
 
-            if /\A#{PREFIX}/ =~ file.readline.chomp
-              @extensions = $'.split "\0"
-            else
-              @extensions = []
-            end
+            @extensions = $'.split "\0" if
+              /\A#{PREFIX}/ =~ file.readline.chomp
           end
         rescue EOFError
         end
@@ -112,6 +111,8 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
   def require_paths
     @require_paths ||= data.require_paths
+
+    super
   end
 
   ##

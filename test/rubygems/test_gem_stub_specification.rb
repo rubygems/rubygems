@@ -6,12 +6,17 @@ class TestStubSpecification < Gem::TestCase
   FOO = File.join SPECIFICATIONS, "foo-0.0.1.gemspec"
   BAR = File.join SPECIFICATIONS, "bar-0.0.2.gemspec"
 
+  def setup
+    super
+
+    @foo = Gem::StubSpecification.new FOO
+  end
+
   def test_initialize
-    stub = Gem::StubSpecification.new(FOO)
-    assert_equal "foo", stub.name
-    assert_equal Gem::Version.new("0.0.1"), stub.version
-    assert_equal Gem::Platform.new("mswin32"), stub.platform
-    assert_equal ["lib", "lib/f oo/ext"], stub.require_paths
+    assert_equal "foo", @foo.name
+    assert_equal Gem::Version.new("0.0.1"), @foo.version
+    assert_equal Gem::Platform.new("mswin32"), @foo.platform
+    assert_equal ["lib", "lib/f oo/ext"], @foo.require_paths
   end
 
   def test_initialize_extension
@@ -52,9 +57,8 @@ class TestStubSpecification < Gem::TestCase
   end
 
   def test_to_spec
-    stub = Gem::StubSpecification.new(FOO)
-    assert stub.to_spec.is_a?(Gem::Specification)
-    assert_equal "foo", stub.to_spec.name
+    assert @foo.to_spec.is_a?(Gem::Specification)
+    assert_equal "foo", @foo.to_spec.name
   end
 
   def stub_with_extension

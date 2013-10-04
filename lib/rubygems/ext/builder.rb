@@ -162,7 +162,7 @@ EOF
       CHDIR_MUTEX.synchronize do
         pwd = Dir.getwd
         Dir.chdir extension_dir
-        results = builder.build(extension, @gem_dir, dest_path,
+        results = builder.build(extension, dest_path,
                                 results, @build_args, lib_dir)
 
         verbose { results.join("\n") }
@@ -223,4 +223,3 @@ EOF
   end
 
 end
-

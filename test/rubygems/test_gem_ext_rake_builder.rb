@@ -27,7 +27,7 @@ class TestGemExtRakeBuilder < Gem::TestCase
     build_rake_in do |rake|
       Dir.chdir @ext do
         realdir = Dir.pwd
-        Gem::Ext::RakeBuilder.build 'mkrf_conf.rb', nil, @dest_path, output
+        Gem::Ext::RakeBuilder.build 'mkrf_conf.rb', @dest_path, output
       end
 
       output = output.join "\n"
@@ -52,7 +52,7 @@ class TestGemExtRakeBuilder < Gem::TestCase
     build_rake_in(false) do |rake|
       error = assert_raises Gem::InstallError do
         Dir.chdir @ext do
-          Gem::Ext::RakeBuilder.build "mkrf_conf.rb", nil, @dest_path, output
+          Gem::Ext::RakeBuilder.build "mkrf_conf.rb", @dest_path, output
         end
       end
 

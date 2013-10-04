@@ -9,7 +9,7 @@ require 'rubygems/command'
 
 class Gem::Ext::RakeBuilder < Gem::Ext::Builder
 
-  def self.build(extension, directory, dest_path, results, args=[])
+  def self.build(extension, dest_path, results, args=[])
     if File.basename(extension) =~ /mkrf_conf/i then
       cmd = "#{Gem.ruby} #{File.basename extension}"
       cmd << " #{args.join " "}" unless args.empty?

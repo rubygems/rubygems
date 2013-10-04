@@ -12,7 +12,7 @@ require 'tempfile'
 class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
   FileEntry = FileUtils::Entry_ # :nodoc:
 
-  def self.build(extension, directory, dest_path, results, args=[])
+  def self.build(extension, dest_path, results, args=[])
     tmp_dest = Dir.mktmpdir(".gem.", ".")
 
     t = nil

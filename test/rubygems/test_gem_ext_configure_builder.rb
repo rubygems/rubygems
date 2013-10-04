@@ -25,7 +25,7 @@ class TestGemExtConfigureBuilder < Gem::TestCase
     output = []
 
     Dir.chdir @ext do
-      Gem::Ext::ConfigureBuilder.build nil, nil, @dest_path, output
+      Gem::Ext::ConfigureBuilder.build nil, @dest_path, output
     end
 
     assert_equal "sh ./configure --prefix=#{@dest_path}", output.shift
@@ -42,7 +42,7 @@ class TestGemExtConfigureBuilder < Gem::TestCase
 
     error = assert_raises Gem::InstallError do
       Dir.chdir @ext do
-        Gem::Ext::ConfigureBuilder.build nil, nil, @dest_path, output
+        Gem::Ext::ConfigureBuilder.build nil, @dest_path, output
       end
     end
 
@@ -73,7 +73,7 @@ class TestGemExtConfigureBuilder < Gem::TestCase
 
     output = []
     Dir.chdir @ext do
-      Gem::Ext::ConfigureBuilder.build nil, nil, @dest_path, output
+      Gem::Ext::ConfigureBuilder.build nil, @dest_path, output
     end
 
     assert_contains_make_command '', output[0]

@@ -28,7 +28,7 @@ class TestGemExtExtConfBuilder < Gem::TestCase
 
     Dir.chdir @ext do
       result =
-        Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
+        Gem::Ext::ExtConfBuilder.build 'extconf.rb', @dest_path, output
 
       assert_same result, output
     end
@@ -50,7 +50,7 @@ class TestGemExtExtConfBuilder < Gem::TestCase
     output = []
 
     Dir.chdir @ext do
-      Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
+      Gem::Ext::ExtConfBuilder.build 'extconf.rb', @dest_path, output
     end
 
     assert_equal "creating Makefile\n", output[1]
@@ -73,7 +73,7 @@ class TestGemExtExtConfBuilder < Gem::TestCase
 
     assert_raises Gem::InstallError do
       Dir.chdir @ext do
-        Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
+        Gem::Ext::ExtConfBuilder.build 'extconf.rb', @dest_path, output
       end
     end
 
@@ -99,7 +99,7 @@ class TestGemExtExtConfBuilder < Gem::TestCase
 
     error = assert_raises Gem::InstallError do
       Dir.chdir @ext do
-        Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
+        Gem::Ext::ExtConfBuilder.build 'extconf.rb', @dest_path, output
       end
     end
 
@@ -144,7 +144,7 @@ end
     output = []
 
     Dir.chdir @ext do
-      Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
+      Gem::Ext::ExtConfBuilder.build 'extconf.rb', @dest_path, output
     end
 
     assert_contains_make_command '', output[2]

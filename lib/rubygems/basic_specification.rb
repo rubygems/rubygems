@@ -38,6 +38,8 @@ class Gem::BasicSpecification
   # Return true if this spec can require +file+.
 
   def contains_requirable_file? file
+    build_extensions
+
     suffixes = Gem.suffixes
 
     full_require_paths.any? do |dir|
@@ -108,6 +110,14 @@ class Gem::BasicSpecification
     full_paths << extension_install_dir unless @extensions.empty?
 
     full_paths
+  end
+
+  ##
+  # Returns the full path to this spec's gem directory.
+  # eg: /usr/local/lib/ruby/1.8/gems/mygem-1.0
+
+  def gem_dir
+    @gem_dir ||= File.expand_path File.join(gems_dir, full_name)
   end
 
   ##

@@ -2,6 +2,7 @@
 require 'rubygems/test_case'
 require 'pathname'
 require 'stringio'
+require 'rubygems/ext'
 require 'rubygems/specification'
 
 class TestGemSpecification < Gem::TestCase
@@ -57,12 +58,23 @@ end
     end
   end
 
+  def ext_spec
+    @ext = quick_spec 'ext', '1' do |s|
+      s.executable = 'exec'
+      s.test_file = 'test/suite.rb'
+      s.extensions = %w[ext/extconf.rb]
+      s.license = 'MIT'
+
+      s.mark_version
+      s.files = %w[lib/code.rb]
+    end
+  end
+
   def setup
     super
 
     @a1 = quick_spec 'a', '1' do |s|
       s.executable = 'exec'
-      s.extensions << 'ext/a/extconf.rb'
       s.test_file = 'test/suite.rb'
       s.requirements << 'A working computer'
       s.rubyforge_project = 'example'
@@ -1023,25 +1035,6 @@ dependencies: []
     assert @a2.activated?
   end
 
-  def test_activate_extension
-    extconf_rb = File.join @a1.gem_dir, @a1.extensions.first
-    FileUtils.mkdir_p File.dirname extconf_rb
-
-    open extconf_rb, 'w' do |f|
-      f.write <<-'RUBY'
-        open 'Makefile', 'w' do |f|
-          f.puts "default:\n\techo built"
-          f.puts "install:\n\techo installed"
-        end
-      RUBY
-    end
-
-    @a1.activate
-
-    assert @a1.activated?
-    assert_path_exists @a1.extension_install_dir
-  end
-
   def test_add_dependency_with_type
     gem = quick_spec "awesome", "1.0" do |awesome|
       awesome.add_dependency true
@@ -1083,10 +1076,12 @@ dependencies: []
   end
 
   def test_build_extensions
-    refute_path_exists @a1.extension_install_dir, 'sanity check'
-    refute_empty @a1.extensions, 'sanity check'
+    ext_spec
 
-    extconf_rb = File.join @a1.gem_dir, @a1.extensions.first
+    refute_path_exists @ext.extension_install_dir, 'sanity check'
+    refute_empty @ext.extensions, 'sanity check'
+
+    extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
     FileUtils.mkdir_p File.dirname extconf_rb
 
     open extconf_rb, 'w' do |f|
@@ -1098,23 +1093,25 @@ dependencies: []
       RUBY
     end
 
-    @a1.build_extensions
+    @ext.build_extensions
 
-    assert_path_exists @a1.extension_install_dir
+    assert_path_exists @ext.extension_install_dir
   end
 
   def test_build_extensions_built
-    refute_empty @a1.extensions, 'sanity check'
+    ext_spec
+
+    refute_empty @ext.extensions, 'sanity check'
 
     gem_build_complete =
-      File.join @a1.extension_install_dir, '.gem.build_complete'
+      File.join @ext.extension_install_dir, '.gem.build_complete'
 
-    FileUtils.mkdir_p @a1.extension_install_dir
+    FileUtils.mkdir_p @ext.extension_install_dir
     FileUtils.touch gem_build_complete
 
-    @a1.build_extensions
+    @ext.build_extensions
 
-    gem_make_out = File.join @a1.extension_install_dir, 'gem_make.out'
+    gem_make_out = File.join @ext.extension_install_dir, 'gem_make.out'
     refute_path_exists gem_make_out
   end
 
@@ -1140,11 +1137,41 @@ dependencies: []
   end
 
   def test_build_extensions_error
-    refute_empty @a1.extensions, 'sanity check'
+    ext_spec
+
+    refute_empty @ext.extensions, 'sanity check'
 
     assert_raises Gem::Ext::BuildError do
-      @a1.build_extensions
+      @ext.build_extensions
     end
+  end
+
+  def test_contains_requirable_file_eh
+    code_rb = File.join @a1.gem_dir, 'lib', 'code.rb'
+    FileUtils.mkdir_p File.dirname code_rb
+    FileUtils.touch code_rb
+
+    assert @a1.contains_requirable_file? 'code'
+  end
+
+  def test_contains_requirable_file_eh_extension
+    ext_spec
+
+    extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
+    FileUtils.mkdir_p File.dirname extconf_rb
+
+    open extconf_rb, 'w' do |f|
+      f.write <<-'RUBY'
+        open 'Makefile', 'w' do |f|
+          f.puts "default:\n\techo built"
+          f.puts "install:\n\techo installed"
+        end
+      RUBY
+    end
+
+    refute @ext.contains_requirable_file? 'nonexistent'
+
+    assert_path_exists @ext.extension_install_dir
   end
 
   def test_date
@@ -1262,17 +1289,19 @@ dependencies: []
   end
 
   def test_extensions
-    assert_equal ['ext/a/extconf.rb'], @a1.extensions
+    assert_equal ['ext/extconf.rb'], ext_spec.extensions
   end
 
   def test_extension_install_dir
-    refute_empty @a1.extensions
+    ext_spec
+
+    refute_empty @ext.extensions
 
     expected =
-      File.join(@a1.base_dir, 'extensions', @a1.full_name,
+      File.join(@ext.base_dir, 'extensions', @ext.full_name,
                 Gem.ruby_api_version, Gem::Platform.local.to_s)
 
-    assert_equal expected, @a1.extension_install_dir
+    assert_equal expected, @ext.extension_install_dir
   end
 
   def test_files
@@ -1542,25 +1571,29 @@ dependencies: []
   end
 
   def test_require_paths
-    @a1.require_path = 'lib'
+    ext_spec
 
-    lib = Pathname File.join @a1.gem_dir, 'lib'
+    @ext.require_path = 'lib'
+
+    lib = Pathname File.join @ext.gem_dir, 'lib'
 
     ext_install_dir =
-      Pathname(@a1.extension_install_dir).relative_path_from lib
+      Pathname(@ext.extension_install_dir).relative_path_from lib
 
-    assert_equal ['lib', ext_install_dir.to_s], @a1.require_paths
+    assert_equal ['lib', ext_install_dir.to_s], @ext.require_paths
   end
 
   def test_full_require_paths
-    @a1.require_path = 'lib'
+    ext_spec
+
+    @ext.require_path = 'lib'
 
     expected = [
-      File.join(@gemhome, 'gems', @a1.original_name, 'lib'),
-      @a1.extension_install_dir,
+      File.join(@gemhome, 'gems', @ext.original_name, 'lib'),
+      @ext.extension_install_dir,
     ]
 
-    assert_equal expected, @a1.full_require_paths
+    assert_equal expected, @ext.full_require_paths
   end
 
   def test_require_already_activated
@@ -2118,6 +2151,7 @@ end
     util_setup_validate
 
     @a1.files += ['lib', 'lib2']
+    @a1.extensions << 'ext/a/extconf.rb'
 
     Dir.chdir @tempdir do
       FileUtils.ln_s '/root/path', 'lib2' unless vc_windows?

@@ -30,11 +30,11 @@ class TestStubSpecification < Gem::TestCase
       Pathname(stub.extension_install_dir).relative_path_from lib
     ext_install_dir = ext_install_dir.to_s
 
-    assert_equal 'a',                      stub.name
-    assert_equal v(2),                     stub.version
-    assert_equal Gem::Platform::RUBY,      stub.platform
-    assert_equal ['lib', ext_install_dir], stub.require_paths
-    assert_equal %w[ext/a/extconf.rb],     stub.extensions
+    assert_equal 'stub_e',                  stub.name
+    assert_equal v(2),                      stub.version
+    assert_equal Gem::Platform::RUBY,       stub.platform
+    assert_equal ['lib', ext_install_dir],  stub.require_paths
+    assert_equal %w[ext/stub_e/extconf.rb], stub.extensions
   end
 
   def test_initialize_missing_stubline
@@ -43,6 +43,35 @@ class TestStubSpecification < Gem::TestCase
     assert_equal Gem::Version.new("0.0.2"), stub.version
     assert_equal Gem::Platform.new("ruby"), stub.platform
     assert_equal ["lib"], stub.require_paths
+  end
+
+  def test_contains_requirable_file_eh
+    stub = stub_without_extension
+    code_rb = File.join stub.gem_dir, 'lib', 'code.rb'
+    FileUtils.mkdir_p File.dirname code_rb
+    FileUtils.touch code_rb
+
+    assert stub.contains_requirable_file? 'code'
+  end
+
+  def test_contains_requirable_file_eh_extension
+    stub_with_extension do |stub|
+      extconf_rb = File.join stub.gem_dir, stub.extensions.first
+      FileUtils.mkdir_p File.dirname extconf_rb
+
+      open extconf_rb, 'w' do |f|
+        f.write <<-'RUBY'
+          open 'Makefile', 'w' do |f|
+            f.puts "default:\n\techo built"
+            f.puts "install:\n\techo installed"
+          end
+        RUBY
+      end
+
+      refute stub.contains_requirable_file? 'nonexistent'
+
+      assert_path_exists stub.extension_install_dir
+    end
   end
 
   def test_full_require_paths
@@ -62,16 +91,48 @@ class TestStubSpecification < Gem::TestCase
   end
 
   def stub_with_extension
-    Tempfile.open 'stub' do |io|
+    Tempfile.open 'stub_e' do |io|
       io.write <<-STUB
 # -*- encoding: utf-8 -*-
-# stub: a 2 ruby lib
-# stub: ext/a/extconf.rb
+# stub: stub_e 2 ruby lib
+# stub: ext/stub_e/extconf.rb
+
+Gem::Specification.new do |s|
+  s.name = 'stub_e'
+  s.version = Gem::Version.new '2'
+  s.extensions = ['ext/stub_e/extconf.rb']
+end
       STUB
 
       io.flush
 
-      return Gem::StubSpecification.new io.path
+      stub = Gem::StubSpecification.new io.path
+
+      yield stub if block_given?
+
+      return stub
+    end
+  end
+
+  def stub_without_extension
+    Tempfile.open 'stub' do |io|
+      io.write <<-STUB
+# -*- encoding: utf-8 -*-
+# stub: stub 2 ruby lib
+
+Gem::Specification.new do |s|
+  s.name = 'stub'
+  s.version = Gem::Version.new '2'
+end
+      STUB
+
+      io.flush
+
+      stub = Gem::StubSpecification.new io.path
+
+      yield stub if block_given?
+
+      return stub
     end
   end
 

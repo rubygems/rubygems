@@ -53,6 +53,13 @@ class Gem::StubSpecification < Gem::BasicSpecification
     loaded && loaded.version == version
   end
 
+  def build_extensions # :nodoc:
+    return if default_gem?
+    return if extensions.empty?
+
+    to_spec.build_extensions
+  end
+
   ##
   # If the gemspec contains a stubline, returns a StubLine instance. Otherwise
   # returns the full Gem::Specification.

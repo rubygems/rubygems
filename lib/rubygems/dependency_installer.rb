@@ -74,12 +74,6 @@ class Gem::DependencyInstaller
     @only_install_dir = !!options[:install_dir]
     @install_dir = options[:install_dir] || Gem.dir
 
-    if options[:install_dir] then
-      # HACK shouldn't change the global settings, needed for -i behavior
-      # maybe move to the install command?  See also github #442
-      Gem::Specification.dirs = @install_dir
-    end
-
     options = DEFAULT_OPTIONS.merge options
 
     @bin_dir             = options[:bin_dir]

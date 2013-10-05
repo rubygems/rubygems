@@ -46,7 +46,6 @@ install:
 
     results = results.join "\n"
 
-
     if RUBY_VERSION > '2.0' then
       assert_match %r%"DESTDIR=#{ENV['DESTDIR']}"$%,         results
       assert_match %r%"DESTDIR=#{ENV['DESTDIR']}" install$%, results
@@ -85,6 +84,7 @@ install:
 
     assert_path_exists @spec.extension_install_dir
     assert_path_exists @spec.gem_build_complete_path
+    assert_path_exists File.join @spec.extension_install_dir, 'gem_make.out'
   end
 
   def test_build_extensions_none
@@ -95,7 +95,7 @@ install:
     assert_equal '', @ui.output
     assert_equal '', @ui.error
 
-    refute File.exist?('gem_make.out')
+    refute_path_exists File.join @spec.extension_install_dir, 'gem_make.out'
   end
 
   def test_build_extensions_rebuild_failure

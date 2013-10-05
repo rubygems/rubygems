@@ -117,11 +117,7 @@ class Gem::Ext::Builder
   # Logs the build +output+ in +build_dir+, then raises Gem::Ext::BuildError.
 
   def build_error build_dir, output, backtrace = nil # :nodoc:
-    gem_make_out = File.join @spec.extension_install_dir, 'gem_make.out'
-
-    FileUtils.mkdir_p @spec.extension_install_dir
-
-    open gem_make_out, 'wb' do |io| io.puts output end
+    gem_make_out = write_gem_make_out output
 
     message = <<-EOF
 ERROR: Failed to build gem native extension.
@@ -155,6 +151,8 @@ EOF
           say results.join("\n") if Gem.configuration.really_verbose
         end
       end
+
+      write_gem_make_out results.join "\n"
     rescue
       build_error extension_dir, results.join("\n"), $@
     end
@@ -187,6 +185,19 @@ EOF
     end
 
     FileUtils.touch @spec.gem_build_complete_path
+  end
+
+  ##
+  # Writes +output+ to gem_make.out in the extension install directory.
+
+  def write_gem_make_out output # :nodoc:
+    destination = File.join @spec.extension_install_dir, 'gem_make.out'
+
+    FileUtils.mkdir_p @spec.extension_install_dir
+
+    open destination, 'wb' do |io| io.puts output end
+
+    destination
   end
 
 end

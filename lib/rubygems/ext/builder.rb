@@ -40,7 +40,7 @@ class Gem::Ext::Builder
 
     destdir = '"DESTDIR=%s"' % ENV['DESTDIR'] if RUBY_VERSION > '2.0'
 
-    ['', 'install'].each do |target|
+    ['clean', '', 'install'].each do |target|
       # Pass DESTDIR via command line to override what's in MAKEFLAGS
       cmd = [
         make_program,
@@ -79,10 +79,11 @@ class Gem::Ext::Builder
   end
 
   ##
-  # Creates a new extension builder for +spec+ using the given +build_args+.
-  # The gem for +spec+ is unpacked in +gem_dir+.
+  # Creates a new extension builder for +spec+.  If the +spec+ does not yet
+  # have build arguments, saved, set +build_args+ which is an ARGV-style
+  # array.
 
-  def initialize spec, build_args
+  def initialize spec, build_args = spec.build_args
     @spec       = spec
     @build_args = build_args
     @gem_dir    = spec.gem_dir
@@ -113,12 +114,10 @@ class Gem::Ext::Builder
   end
 
   ##
-  # Logs the build +output+ in +build_dir+, then raises ExtensionBuildError.
+  # Logs the build +output+ in +build_dir+, then raises Gem::Ext::BuildError.
 
   def build_error build_dir, output, backtrace = nil # :nodoc:
-    gem_make_out = File.join build_dir, 'gem_make.out'
-
-    open gem_make_out, 'wb' do |io| io.puts output end
+    gem_make_out = write_gem_make_out output
 
     message = <<-EOF
 ERROR: Failed to build gem native extension.
@@ -129,14 +128,15 @@ Gem files will remain installed in #{@gem_dir} for inspection.
 Results logged to #{gem_make_out}
 EOF
 
-    raise Gem::Installer::ExtensionBuildError, message, backtrace
+    raise Gem::Ext::BuildError, message, backtrace
   end
 
   def build_extension extension, dest_path # :nodoc:
     results = []
 
     extension ||= '' # I wish I knew why this line existed
-    extension_dir = File.join @gem_dir, File.dirname(extension)
+    extension_dir =
+      File.expand_path File.join @gem_dir, File.dirname(extension)
 
     builder = builder_for extension
 
@@ -151,6 +151,8 @@ EOF
           say results.join("\n") if Gem.configuration.really_verbose
         end
       end
+
+      write_gem_make_out results.join "\n"
     rescue
       build_error extension_dir, results.join("\n"), $@
     end
@@ -170,7 +172,9 @@ EOF
       say "This could take a while..."
     end
 
-    dest_path = File.join @gem_dir, @spec.require_paths.first
+    dest_path = @spec.extension_install_dir
+
+    FileUtils.rm_f @spec.gem_build_complete_path
 
     @ran_rake = false # only run rake once
 
@@ -179,6 +183,21 @@ EOF
 
       build_extension extension, dest_path
     end
+
+    FileUtils.touch @spec.gem_build_complete_path
+  end
+
+  ##
+  # Writes +output+ to gem_make.out in the extension install directory.
+
+  def write_gem_make_out output # :nodoc:
+    destination = File.join @spec.extension_install_dir, 'gem_make.out'
+
+    FileUtils.mkdir_p @spec.extension_install_dir
+
+    open destination, 'wb' do |io| io.puts output end
+
+    destination
   end
 
 end

@@ -139,6 +139,7 @@ module Gem
     build_info
     cache
     doc
+    extensions
     gems
     specifications
   ]
@@ -158,6 +159,7 @@ module Gem
   @path_to_default_spec_map = {}
   @platforms = []
   @ruby = nil
+  @ruby_api_version = nil
   @sources = nil
 
   @post_build_hooks     ||= []
@@ -820,6 +822,14 @@ module Gem
     end
 
     @ruby
+  end
+
+  ##
+  # Returns a String containing the API compatibility version of Ruby
+
+  def self.ruby_api_version
+    @ruby_api_version ||=
+      "#{ConfigMap[:MAJOR]}.#{ConfigMap[:MINOR]}.#{ConfigMap[:TEENY]}"
   end
 
   ##

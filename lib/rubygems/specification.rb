@@ -209,6 +209,8 @@ class Gem::Specification < Gem::BasicSpecification
   # Paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
   # activated.
   #
+  # See also #require_paths
+  #
   # If you have an extension you do not need to add <code>"ext"</code> to the
   # require path, the extension build process will copy the extension files
   # into "lib" for you.
@@ -220,7 +222,7 @@ class Gem::Specification < Gem::BasicSpecification
   #   # If all library files are in the root directory...
   #   spec.require_path = '.'
 
-  attr_accessor :require_paths
+  attr_writer :require_paths
 
   ##
   # The version of RubyGems used to create this gem.
@@ -665,8 +667,7 @@ class Gem::Specification < Gem::BasicSpecification
     LOAD_CACHE.clear
   end
 
-  # :nodoc:
-  def self.each_gemspec(dirs)
+  def self.each_gemspec(dirs) # :nodoc:
     dirs.each do |dir|
       Dir[File.join(dir, "*.gemspec")].each do |path|
         yield path.untaint
@@ -674,16 +675,14 @@ class Gem::Specification < Gem::BasicSpecification
     end
   end
 
-  # :nodoc:
-  def self.each_stub(dirs)
+  def self.each_stub(dirs) # :nodoc:
     each_gemspec(dirs) do |path|
       stub = Gem::StubSpecification.new(path)
       yield stub if stub.valid?
     end
   end
 
-  # :nodoc:
-  def self.each_spec(dirs)
+  def self.each_spec(dirs) # :nodoc:
     each_gemspec(dirs) do |path|
       spec = self.load path
       yield spec if spec
@@ -1380,6 +1379,23 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
+  # Builds extensions for this platform if the gem has extensions listed and
+  # the .gem.build_complete file is missing.
+
+  def build_extensions # :nodoc:
+    return if default_gem?
+    return if File.exist? gem_build_complete_path
+
+    gem_original_require 'rubygems/ext'
+    gem_original_require 'rubygems/user_interaction'
+
+    Gem::DefaultUserInteraction.use_ui Gem::SilentUI.new do
+      builder = Gem::Ext::Builder.new self
+      builder.build_extensions
+    end
+  end
+
+  ##
   # Returns the full path to the build info directory
 
   def build_info_dir
@@ -1668,8 +1684,7 @@ class Gem::Specification < Gem::BasicSpecification
     spec
   end
 
-  # :nodoc:
-  def find_full_gem_path
+  def find_full_gem_path # :nodoc:
     super || File.expand_path(File.join(gems_dir, original_name))
   end
   private :find_full_gem_path
@@ -1679,11 +1694,11 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # Returns the full path to this spec's gem directory.
-  # eg: /usr/local/lib/ruby/1.8/gems/mygem-1.0
+  # The path to the .gem.build_complete file within the extension install
+  # directory.
 
-  def gem_dir
-    @gem_dir ||= File.expand_path File.join(gems_dir, full_name)
+  def gem_build_complete_path # :nodoc:
+    File.join extension_install_dir, '.gem.build_complete'
   end
 
   ##
@@ -2013,17 +2028,6 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # Full paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
-  # activated.
-  #
-
-  def full_require_paths
-    require_paths.map do |path|
-      File.join full_gem_path, path
-    end
-  end
-
-  ##
   # The RubyGems version required by this gem
 
   def required_rubygems_version= req
@@ -2189,7 +2193,9 @@ class Gem::Specification < Gem::BasicSpecification
     mark_version
     result = []
     result << "# -*- encoding: utf-8 -*-"
-    result << "#{Gem::StubSpecification::PREFIX}#{name} #{version} #{platform} #{require_paths.join("\0")}"
+    result << "#{Gem::StubSpecification::PREFIX}#{name} #{version} #{platform} #{@require_paths.join("\0")}"
+    result << "#{Gem::StubSpecification::PREFIX}#{extensions.join "\0"}" unless
+      extensions.empty?
     result << nil
     result << "Gem::Specification.new do |s|"
 
@@ -2204,11 +2210,13 @@ class Gem::Specification < Gem::BasicSpecification
     if metadata and !metadata.empty?
       result << "  s.metadata = #{ruby_code metadata} if s.respond_to? :metadata="
     end
+    result << "  s.require_paths = #{ruby_code @require_paths}"
 
     handled = [
       :dependencies,
       :name,
       :platform,
+      :require_paths,
       :required_rubygems_version,
       :specification_version,
       :version,
@@ -2365,7 +2373,7 @@ class Gem::Specification < Gem::BasicSpecification
             "invalid value for attribute name: \"#{name.inspect}\""
     end
 
-    if require_paths.empty? then
+    if @require_paths.empty? then
       raise Gem::InvalidSpecificationException,
             'specification must have at least one require_path'
     end

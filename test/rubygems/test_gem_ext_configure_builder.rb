@@ -6,7 +6,8 @@ class TestGemExtConfigureBuilder < Gem::TestCase
   def setup
     super
 
-    @makefile_body =  "all:\n\t@echo ok\ninstall:\n\t@echo ok"
+    @makefile_body =
+      "clean:\n\t@echo ok\nall:\n\t@echo ok\ninstall:\n\t@echo ok"
 
     @ext = File.join @tempdir, 'ext'
     @dest_path = File.join @tempdir, 'prefix'
@@ -30,6 +31,8 @@ class TestGemExtConfigureBuilder < Gem::TestCase
 
     assert_equal "sh ./configure --prefix=#{@dest_path}", output.shift
     assert_equal "", output.shift
+    assert_contains_make_command 'clean', output.shift
+    assert_match(/^ok$/m, output.shift)
     assert_contains_make_command '', output.shift
     assert_match(/^ok$/m, output.shift)
     assert_contains_make_command 'install', output.shift
@@ -76,8 +79,9 @@ class TestGemExtConfigureBuilder < Gem::TestCase
       Gem::Ext::ConfigureBuilder.build nil, nil, @dest_path, output
     end
 
-    assert_contains_make_command '', output[0]
-    assert_contains_make_command 'install', output[2]
+    assert_contains_make_command 'clean', output[0]
+    assert_contains_make_command '', output[2]
+    assert_contains_make_command 'install', output[4]
   end
 
 end

@@ -1,6 +1,8 @@
-# -*- coding: us-ascii -*-
+# -*- coding: UTF-8 -*-
 require 'rubygems/test_case'
+require 'pathname'
 require 'stringio'
+require 'rubygems/ext'
 require 'rubygems/specification'
 
 class TestGemSpecification < Gem::TestCase
@@ -56,12 +58,23 @@ end
     end
   end
 
+  def ext_spec
+    @ext = quick_spec 'ext', '1' do |s|
+      s.executable = 'exec'
+      s.test_file = 'test/suite.rb'
+      s.extensions = %w[ext/extconf.rb]
+      s.license = 'MIT'
+
+      s.mark_version
+      s.files = %w[lib/code.rb]
+    end
+  end
+
   def setup
     super
 
     @a1 = quick_spec 'a', '1' do |s|
       s.executable = 'exec'
-      s.extensions << 'ext/a/extconf.rb'
       s.test_file = 'test/suite.rb'
       s.requirements << 'A working computer'
       s.rubyforge_project = 'example'
@@ -1062,6 +1075,107 @@ dependencies: []
     assert_equal %w[lib/code.rb app].sort, @a2.files
   end
 
+  def test_build_extensions
+    ext_spec
+
+    refute_path_exists @ext.extension_install_dir, 'sanity check'
+    refute_empty @ext.extensions, 'sanity check'
+
+    extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
+    FileUtils.mkdir_p File.dirname extconf_rb
+
+    open extconf_rb, 'w' do |f|
+      f.write <<-'RUBY'
+        open 'Makefile', 'w' do |f|
+          f.puts "clean:\n\techo clean"
+          f.puts "default:\n\techo built"
+          f.puts "install:\n\techo installed"
+        end
+      RUBY
+    end
+
+    @ext.build_extensions
+
+    assert_path_exists @ext.extension_install_dir
+  end
+
+  def test_build_extensions_built
+    ext_spec
+
+    refute_empty @ext.extensions, 'sanity check'
+
+    gem_build_complete =
+      File.join @ext.extension_install_dir, '.gem.build_complete'
+
+    FileUtils.mkdir_p @ext.extension_install_dir
+    FileUtils.touch gem_build_complete
+
+    @ext.build_extensions
+
+    gem_make_out = File.join @ext.extension_install_dir, 'gem_make.out'
+    refute_path_exists gem_make_out
+  end
+
+  def test_build_extensions_default_gem
+    spec = new_default_spec 'default', 1
+    spec.extensions << 'extconf.rb'
+
+    extconf_rb = File.join spec.gem_dir, spec.extensions.first
+    FileUtils.mkdir_p File.dirname extconf_rb
+
+    open extconf_rb, 'w' do |f|
+      f.write <<-'RUBY'
+        open 'Makefile', 'w' do |f|
+          f.puts "default:\n\techo built"
+          f.puts "install:\n\techo installed"
+        end
+      RUBY
+    end
+
+    spec.build_extensions
+
+    refute_path_exists spec.extension_install_dir
+  end
+
+  def test_build_extensions_error
+    ext_spec
+
+    refute_empty @ext.extensions, 'sanity check'
+
+    assert_raises Gem::Ext::BuildError do
+      @ext.build_extensions
+    end
+  end
+
+  def test_contains_requirable_file_eh
+    code_rb = File.join @a1.gem_dir, 'lib', 'code.rb'
+    FileUtils.mkdir_p File.dirname code_rb
+    FileUtils.touch code_rb
+
+    assert @a1.contains_requirable_file? 'code'
+  end
+
+  def test_contains_requirable_file_eh_extension
+    ext_spec
+
+    extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
+    FileUtils.mkdir_p File.dirname extconf_rb
+
+    open extconf_rb, 'w' do |f|
+      f.write <<-'RUBY'
+        open 'Makefile', 'w' do |f|
+          f.puts "clean:\n\techo cleaned"
+          f.puts "default:\n\techo built"
+          f.puts "install:\n\techo installed"
+        end
+      RUBY
+    end
+
+    refute @ext.contains_requirable_file? 'nonexistent'
+
+    assert_path_exists @ext.extension_install_dir
+  end
+
   def test_date
     assert_equal Gem::Specification::TODAY, @a1.date
   end
@@ -1177,7 +1291,19 @@ dependencies: []
   end
 
   def test_extensions
-    assert_equal ['ext/a/extconf.rb'], @a1.extensions
+    assert_equal ['ext/extconf.rb'], ext_spec.extensions
+  end
+
+  def test_extension_install_dir
+    ext_spec
+
+    refute_empty @ext.extensions
+
+    expected =
+      File.join(@ext.base_dir, 'extensions', @ext.full_name,
+                Gem.ruby_api_version, Gem::Platform.local.to_s)
+
+    assert_equal expected, @ext.extension_install_dir
   end
 
   def test_files
@@ -1328,6 +1454,11 @@ dependencies: []
     end
   end
 
+  def test_gem_build_complete_path
+    expected = File.join @a1.extension_install_dir, '.gem.build_complete'
+    assert_equal expected, @a1.gem_build_complete_path
+  end
+
   def test_hash
     assert_equal @a1.hash, @a1.hash
     assert_equal @a1.hash, @a1.dup.hash
@@ -1442,14 +1573,29 @@ dependencies: []
   end
 
   def test_require_paths
-    @a1.require_path = 'lib'
-    assert_equal %w[lib], @a1.require_paths
+    ext_spec
+
+    @ext.require_path = 'lib'
+
+    lib = Pathname File.join @ext.gem_dir, 'lib'
+
+    ext_install_dir =
+      Pathname(@ext.extension_install_dir).relative_path_from lib
+
+    assert_equal ['lib', ext_install_dir.to_s], @ext.require_paths
   end
 
   def test_full_require_paths
-    @a1.require_path = 'lib'
-    assert_equal [File.join(@gemhome, 'gems', @a1.original_name, 'lib')],
-                 @a1.full_require_paths
+    ext_spec
+
+    @ext.require_path = 'lib'
+
+    expected = [
+      File.join(@gemhome, 'gems', @ext.original_name, 'lib'),
+      @ext.extension_install_dir,
+    ]
+
+    assert_equal expected, @ext.full_require_paths
   end
 
   def test_require_already_activated
@@ -1577,13 +1723,13 @@ Gem::Specification.new do |s|
   s.version = "2"
 
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\") if s.respond_to? :required_rubygems_version=
+  s.require_paths = ["lib", "other"]
   s.authors = ["A User"]
   s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
   s.description = "This is a test description"
   s.email = "example@example.com"
   s.files = ["lib/code.rb"]
   s.homepage = "http://example.com"
-  s.require_paths = ["lib", "other"]
   s.rubygems_version = "#{Gem::VERSION}"
   s.summary = "this is a summary"
 
@@ -1625,12 +1771,12 @@ Gem::Specification.new do |s|
   s.version = "2"
 
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\") if s.respond_to? :required_rubygems_version=
+  s.require_paths = ["lib"]
   s.authors = ["A User"]
   s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
   s.description = "This is a test description"
   s.email = "example@example.com"
   s.homepage = "http://example.com"
-  s.require_paths = ["lib"]
   s.rubygems_version = "#{Gem::VERSION}"
   s.summary = "this is a summary"
 
@@ -1665,10 +1811,14 @@ end
 
     local = Gem::Platform.local
     expected_platform = "[#{local.cpu.inspect}, #{local.os.inspect}, #{local.version.inspect}]"
+    stub_require_paths =
+      @c1.instance_variable_get(:@require_paths).join "\u0000"
+    extensions = @c1.extensions.join "\u0000"
 
     expected = <<-SPEC
 # -*- encoding: utf-8 -*-
-# stub: a 1 #{win_platform? ? "x86-mswin32-60" : "x86-darwin-8"} lib
+# stub: a 1 #{win_platform? ? "x86-mswin32-60" : "x86-darwin-8"} #{stub_require_paths}
+# stub: #{extensions}
 
 Gem::Specification.new do |s|
   s.name = "a"
@@ -1676,6 +1826,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform.new(#{expected_platform})
 
   s.required_rubygems_version = Gem::Requirement.new(\">= 0\") if s.respond_to? :required_rubygems_version=
+  s.require_paths = ["lib"]
   s.authors = ["A User"]
   s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
   s.description = "This is a test description"
@@ -1685,7 +1836,6 @@ Gem::Specification.new do |s|
   s.files = ["bin/exec", "ext/a/extconf.rb", "lib/code.rb", "test/suite.rb"]
   s.homepage = "http://example.com"
   s.licenses = ["MIT"]
-  s.require_paths = ["lib"]
   s.requirements = ["A working computer"]
   s.rubyforge_project = "example"
   s.rubygems_version = "#{Gem::VERSION}"
@@ -2003,6 +2153,7 @@ end
     util_setup_validate
 
     @a1.files += ['lib', 'lib2']
+    @a1.extensions << 'ext/a/extconf.rb'
 
     Dir.chdir @tempdir do
       FileUtils.ln_s '/root/path', 'lib2' unless vc_windows?
@@ -2390,13 +2541,13 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.metadata = { "one" => "two", "two" => "three" } if s.respond_to? :metadata=
+  s.require_paths = ["lib"]
   s.authors = ["A User"]
   s.date = "#{Gem::Specification::TODAY.strftime("%Y-%m-%d")}"
   s.description = "This is a test description"
   s.email = "example@example.com"
   s.files = ["lib/code.rb"]
   s.homepage = "http://example.com"
-  s.require_paths = ["lib"]
   s.rubygems_version = "#{Gem::VERSION}"
   s.summary = "this is a summary"
 end

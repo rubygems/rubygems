@@ -62,6 +62,7 @@ class TestStubSpecification < Gem::TestCase
       open extconf_rb, 'w' do |f|
         f.write <<-'RUBY'
           open 'Makefile', 'w' do |f|
+            f.puts "clean:\n\techo cleaned"
             f.puts "default:\n\techo built"
             f.puts "install:\n\techo installed"
           end
@@ -91,7 +92,8 @@ class TestStubSpecification < Gem::TestCase
   end
 
   def stub_with_extension
-    Tempfile.open 'stub_e' do |io|
+    spec = File.join @gemhome, 'specifications', 'stub_e-2.gemspec'
+    open spec, 'w' do |io|
       io.write <<-STUB
 # -*- encoding: utf-8 -*-
 # stub: stub_e 2 ruby lib
@@ -115,7 +117,8 @@ end
   end
 
   def stub_without_extension
-    Tempfile.open 'stub' do |io|
+    spec = File.join @gemhome, 'specifications', 'stub-2.gemspec'
+    open spec, 'w' do |io|
       io.write <<-STUB
 # -*- encoding: utf-8 -*-
 # stub: stub 2 ruby lib

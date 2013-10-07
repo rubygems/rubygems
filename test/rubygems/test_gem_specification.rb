@@ -1294,7 +1294,10 @@ dependencies: []
     assert_equal ['ext/extconf.rb'], ext_spec.extensions
   end
 
-  def test_extension_install_dir
+  def test_extension_install_dir_shared
+    enable_shared, RbConfig::CONFIG['ENABLE_SHARED'] =
+      RbConfig::CONFIG['ENABLE_SHARED'], 'yes'
+
     ext_spec
 
     refute_empty @ext.extensions
@@ -1304,6 +1307,25 @@ dependencies: []
                 Gem.ruby_api_version, Gem::Platform.local.to_s)
 
     assert_equal expected, @ext.extension_install_dir
+  ensure
+    RbConfig::CONFIG['ENABLE_SHARED'] = enable_shared
+  end
+
+  def test_extension_install_dir_static
+    enable_shared, RbConfig::CONFIG['ENABLE_SHARED'] =
+      RbConfig::CONFIG['ENABLE_SHARED'], 'no'
+
+    ext_spec
+
+    refute_empty @ext.extensions
+
+    expected =
+      File.join(@ext.base_dir, 'extensions', @ext.full_name,
+                "#{Gem.ruby_api_version}-static", Gem::Platform.local.to_s)
+
+    assert_equal expected, @ext.extension_install_dir
+  ensure
+    RbConfig::CONFIG['ENABLE_SHARED'] = enable_shared
   end
 
   def test_files

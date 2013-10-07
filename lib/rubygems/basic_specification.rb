@@ -63,8 +63,15 @@ class Gem::BasicSpecification
   #   end
 
   def extension_install_dir
+    ruby_api_version =
+      if 'no' == RbConfig::CONFIG['ENABLE_SHARED'] then
+        "#{Gem.ruby_api_version}-static"
+      else
+        Gem.ruby_api_version
+      end
+
     File.join base_dir, 'extensions', full_name,
-              Gem.ruby_api_version, Gem::Platform.local.to_s
+              ruby_api_version, Gem::Platform.local.to_s
   end
 
   def find_full_gem_path # :nodoc:

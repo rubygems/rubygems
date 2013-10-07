@@ -30,6 +30,10 @@ Minor enhancements:
   Gem::Ext::BuildError.  The old constant is an alias for the new constant.
 * When extensions are built the gem_make.out file is always written now, even
   on success.  This will help with debugging bad builds that report success.
+* A RubyGems directory may now be shared amongst multiple ruby versions.  Upon
+  activation RubyGems will automatically compile missing extensions for the
+  current platform when the built objects are missing.  Issue #596 by Michal
+  Papis
 
 === 2.1.4 / 2013-09-17
 

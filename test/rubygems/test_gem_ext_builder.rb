@@ -36,6 +36,9 @@ class TestGemExtBuilder < Gem::TestCase
 all:
 \t@#{Gem.ruby} -e "puts %Q{all: \#{ENV['DESTDIR']}}"
 
+clean:
+\t@#{Gem.ruby} -e "puts %Q{clean: \#{ENV['DESTDIR']}}"
+
 install:
 \t@#{Gem.ruby} -e "puts %Q{install: \#{ENV['DESTDIR']}}"
         MAKEFILE
@@ -47,14 +50,17 @@ install:
     results = results.join "\n"
 
     if RUBY_VERSION > '2.0' then
+      assert_match %r%"DESTDIR=#{ENV['DESTDIR']}" clean$%,   results
       assert_match %r%"DESTDIR=#{ENV['DESTDIR']}"$%,         results
       assert_match %r%"DESTDIR=#{ENV['DESTDIR']}" install$%, results
     else
+      refute_match %r%"DESTDIR=#{ENV['DESTDIR']}" clean$%,   results
       refute_match %r%"DESTDIR=#{ENV['DESTDIR']}"$%,         results
       refute_match %r%"DESTDIR=#{ENV['DESTDIR']}" install$%, results
     end
 
     if /nmake/ !~ results
+      assert_match %r%^clean: destination$%,   results
       assert_match %r%^all: destination$%,     results
       assert_match %r%^install: destination$%, results
     end
@@ -70,6 +76,7 @@ install:
     open extconf_rb, 'w' do |f|
       f.write <<-'RUBY'
         open 'Makefile', 'w' do |f|
+          f.puts "clean:\n\techo cleaned"
           f.puts "default:\n\techo built"
           f.puts "install:\n\techo installed"
         end
@@ -180,6 +187,7 @@ install:
         end
 
         File.open 'Makefile', 'w' do |f|
+          f.puts "clean:\n\techo cleaned"
           f.puts "default:\n\techo built"
           f.puts "install:\n\techo installed"
         end

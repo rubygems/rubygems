@@ -35,8 +35,9 @@ class TestGemExtExtConfBuilder < Gem::TestCase
 
     assert_match(/^#{Gem.ruby} extconf.rb/, output[0])
     assert_equal "creating Makefile\n", output[1]
-    assert_contains_make_command '', output[2]
-    assert_contains_make_command 'install', output[4]
+    assert_contains_make_command 'clean', output[2]
+    assert_contains_make_command '', output[4]
+    assert_contains_make_command 'install', output[6]
     assert_empty Dir.glob(File.join(@ext, 'siteconf*.rb'))
   end
 
@@ -54,8 +55,9 @@ class TestGemExtExtConfBuilder < Gem::TestCase
     end
 
     assert_equal "creating Makefile\n", output[1]
-    assert_contains_make_command '', output[2]
-    assert_contains_make_command 'install', output[4]
+    assert_contains_make_command 'clean', output[2]
+    assert_contains_make_command '', output[4]
+    assert_contains_make_command 'install', output[6]
   ensure
     RbConfig::CONFIG['configure_args'] = configure_args
   end
@@ -77,8 +79,8 @@ class TestGemExtExtConfBuilder < Gem::TestCase
       end
     end
 
-    assert_equal "creating Makefile\n", output[1]
-    assert_contains_make_command '', output[2]
+    assert_equal "creating Makefile\n",   output[1]
+    assert_contains_make_command 'clean', output[2]
   ensure
     RbConfig::CONFIG['configure_args'] = configure_args
     ENV['make'] = env_make
@@ -130,6 +132,7 @@ ruby =
 
 open 'Makefile', 'w' do |io|
   io.write <<-Makefile
+clean: ruby
 all: ruby
 install: ruby
 
@@ -147,8 +150,9 @@ end
       Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
     end
 
-    assert_contains_make_command '', output[2]
-    assert_contains_make_command 'install', output[4]
+    assert_contains_make_command 'clean', output[2]
+    assert_contains_make_command '', output[4]
+    assert_contains_make_command 'install', output[6]
     assert_empty Dir.glob(File.join(@ext, 'siteconf*.rb'))
   end
 
@@ -163,6 +167,7 @@ end
       makefile.puts "# π"
       makefile.puts "RUBYARCHDIR = $(foo)$(target_prefix)"
       makefile.puts "RUBYLIBDIR = $(bar)$(target_prefix)"
+      makefile.puts "clean:"
       makefile.puts "all:"
       makefile.puts "install:"
     end
@@ -171,8 +176,9 @@ end
       Gem::Ext::ExtConfBuilder.make @ext, output
     end
 
-    assert_contains_make_command '', output[0]
-    assert_contains_make_command 'install', output[2]
+    assert_contains_make_command 'clean', output[0]
+    assert_contains_make_command '', output[2]
+    assert_contains_make_command 'install', output[4]
   end
 
   def test_class_make_no_Makefile

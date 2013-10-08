@@ -1,5 +1,13 @@
 # coding: UTF-8
 
+=== 1.8.27
+
+Bug fixes:
+
+* Added the Verisign Class 3 Public Primary Certification Authority G5
+  certificate and its intermediary to follow the s3.amazonaws.com certificate
+  change.  Fixes #665 by emeyekayee.  Fixes #671 by jonforums.
+
 === 1.8.26 / 2013-09-24
 
 Security fixes:

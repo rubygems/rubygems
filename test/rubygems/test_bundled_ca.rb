@@ -1,6 +1,5 @@
 require 'rubygems/test_case'
 require 'net/https'
-require 'rubygems/request'
 
 # = Testing Bundled CA
 #

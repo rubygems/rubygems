@@ -2,6 +2,7 @@
 *.swp
 .DS_Store
 scratch
+/.rdoc
 /.rvmrc
 /TAGS
 /doc

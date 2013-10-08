@@ -44,6 +44,8 @@ Bug fixes:
   Fixes #654 by Vít Ondruch.
 * Added test for missing certificates for https://s3.amazonaws.com or
   https://rubygems.org.  Pull request #673 by Hannes Georg.
+* RubyGems now allows a Pathname for Kernel#require like the built-in
+  Kernel#require.  Pull request #663 by Aaron Patterson.
 
 === 2.1.5 / 2013-09-24
 

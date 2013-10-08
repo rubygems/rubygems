@@ -35,6 +35,12 @@ Minor enhancements:
   current platform when the built objects are missing.  Issue #596 by Michal
   Papis
 
+Bug fixes:
+
+* Added the Verisign Class 3 Public Primary Certification Authority G5
+  certificate and its intermediary to follow the s3.amazonaws.com certificate
+  change.  Fixes #665 by emeyekayee.  Fixes #671 by jonforums.
+
 === 2.1.5 / 2013-09-24
 
 Security fixes:

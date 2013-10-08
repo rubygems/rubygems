@@ -46,6 +46,10 @@ Bug fixes:
   https://rubygems.org.  Pull request #673 by Hannes Georg.
 * RubyGems now allows a Pathname for Kernel#require like the built-in
   Kernel#require.  Pull request #663 by Aaron Patterson.
+* Required rbconfig in Gem::ConfigFile for Ruby 1.9.1 compatibility.  (Ruby
+  1.9.1 is no longer receiving security fixes, so please update to a newer
+  version.)  Issue #676 by Michal Papis.  Issue wayneeseguin/rvm#2262 by
+  Thomas Sänger.
 
 === 2.1.5 / 2013-09-24
 

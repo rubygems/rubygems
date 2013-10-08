@@ -35,6 +35,8 @@ Minor enhancements:
   current platform when the built objects are missing.  Issue #596 by Michal
   Papis
 
+=== 2.1.6 / 2013-10-08
+
 Bug fixes:
 
 * Added certificates to follow the s3.amazonaws.com certificate change.  Fixes
@@ -187,6 +189,23 @@ Bug fixes:
   #625 by elarkin
 * Fixed credential creation for `gem push` when `--host` is not given.  Pull
   request #622 by Arthur Nogueira Neves
+
+=== 2.0.11 / 2013-10-08
+
+Bug fixes:
+
+* Added certificates to follow the s3.amazonaws.com certificate change.  Fixes
+  #665 by emeyekayee.  Fixes #671 by jonforums.
+* Remove redundant built-in certificates not needed for https://rubygems.org
+  Fixes #654 by Vít Ondruch.
+* Added test for missing certificates for https://s3.amazonaws.com or
+  https://rubygems.org.  Pull request #673 by Hannes Georg.
+* RubyGems now allows a Pathname for Kernel#require like the built-in
+  Kernel#require.  Pull request #663 by Aaron Patterson.
+* Required rbconfig in Gem::ConfigFile for Ruby 1.9.1 compatibility.  (Ruby
+  1.9.1 is no longer receiving security fixes, so please update to a newer
+  version.)  Issue #676 by Michal Papis.  Issue wayneeseguin/rvm#2262 by
+  Thomas Sänger.
 
 === 2.0.10 / 2013-09-24
 
@@ -682,6 +701,18 @@ $SAFE=1.  There is no functional difference compared to Ruby 2.0.0.preview2
   * The bindir is now created with mkdir_p during install. (voxik)
   * URI scheme matching is no longer case-sensitive.  Fixes #322
   * ext/builder now checks $MAKE as well as $make (okkez)
+
+=== 1.8.28 / 2013-10-08
+
+Bug fixes:
+
+* Added the Verisign Class 3 Public Primary Certification Authority G5
+  certificate and its intermediary to follow the s3.amazonaws.com certificate
+  change.  Fixes #665 by emeyekayee.  Fixes #671 by jonforums.
+* Remove redundant built-in certificates not needed for https://rubygems.org
+  Fixes #654 by Vít Ondruch.
+* Added test for missing certificates for https://s3.amazonaws.com or
+  https://rubygems.org.  Pull request #673 by Hannes Georg.
 
 === 1.8.27 / 2013-09-24
 

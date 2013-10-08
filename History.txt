@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-=== 1.8.27 / 2013-10-08
+=== 1.8.28 / 2013-10-08
 
 Bug fixes:
 
@@ -12,7 +12,7 @@ Bug fixes:
 * Added test for missing certificates for https://s3.amazonaws.com or
   https://rubygems.org.  Pull request #673 by Hannes Georg.
 
-=== 1.8.26 / 2013-09-24
+=== 1.8.27 / 2013-09-24
 
 Security fixes:
 

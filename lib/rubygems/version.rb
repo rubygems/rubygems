@@ -174,7 +174,7 @@ class Gem::Version
   # REFACTOR: There's no real reason this should be separate from #initialize.
 
   def self.create input
-    if self.class === input then # check yourself before you wreck yourself
+    if self === input then # check yourself before you wreck yourself
       input
     elsif input.nil? then
       nil

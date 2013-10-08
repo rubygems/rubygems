@@ -125,10 +125,9 @@ lib/rubygems/source_specific_file.rb
 lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
 lib/rubygems/ssl_certs/.document
-lib/rubygems/ssl_certs/AddTrustExternalCARoot.pem
-lib/rubygems/ssl_certs/Entrust_net-Secure-Server-Certification-Authority.pem
-lib/rubygems/ssl_certs/GeoTrust_Global_CA.pem
-lib/rubygems/ssl_certs/VerisignClass3PublicPrimaryCertificationAuthority-G2.pem
+lib/rubygems/ssl_certs/Class3PublicPrimaryCertificationAuthority.pem
+lib/rubygems/ssl_certs/EntrustnetSecureServerCertificationAuthority.pem
+lib/rubygems/ssl_certs/GeoTrustGlobalCA.pem
 lib/rubygems/stub_specification.rb
 lib/rubygems/syck_hack.rb
 lib/rubygems/test_case.rb
@@ -191,6 +190,7 @@ test/rubygems/specifications/bar-0.0.2.gemspec
 test/rubygems/specifications/foo-0.0.1.gemspec
 test/rubygems/ssl_cert.pem
 test/rubygems/ssl_key.pem
+test/rubygems/test_bundled_ca.rb
 test/rubygems/test_config.rb
 test/rubygems/test_deprecate.rb
 test/rubygems/test_gem.rb
@@ -294,3 +294,4 @@ test/rubygems/wrong_key_cert_32.pem
 util/CL2notes
 util/create_certs.rb
 util/create_encrypted_key.rb
+util/update_bundled_ca_certificates.rb

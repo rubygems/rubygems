@@ -48,4 +48,5 @@ class TestBundledCA < Gem::TestCase
     assert_https('s3.amazonaws.com')
   end
 
-end
+end if ENV['TRAVIS']
+

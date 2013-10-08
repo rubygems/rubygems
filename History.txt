@@ -37,9 +37,8 @@ Minor enhancements:
 
 Bug fixes:
 
-* Added the Verisign Class 3 Public Primary Certification Authority G5
-  certificate and its intermediary to follow the s3.amazonaws.com certificate
-  change.  Fixes #665 by emeyekayee.  Fixes #671 by jonforums.
+* Added certificates to follow the s3.amazonaws.com certificate change.  Fixes
+  #665 by emeyekayee.  Fixes #671 by jonforums.
 * Remove redundant built-in certificates not needed for https://rubygems.org
   Fixes #654 by Vít Ondruch.
 * Added test for missing certificates for https://s3.amazonaws.com or

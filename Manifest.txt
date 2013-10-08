@@ -98,7 +98,9 @@ lib/rubygems/server.rb
 lib/rubygems/source_index.rb
 lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
-lib/rubygems/ssl_certs/ca-bundle.pem
+lib/rubygems/ssl_certs/Class3PublicPrimaryCertificationAuthority.pem
+lib/rubygems/ssl_certs/EntrustnetSecureServerCertificationAuthority.pem
+lib/rubygems/ssl_certs/GeoTrustGlobalCA.pem
 lib/rubygems/syck_hack.rb
 lib/rubygems/test_case.rb
 lib/rubygems/test_utilities.rb
@@ -130,6 +132,7 @@ test/rubygems/sff/discover.rb
 test/rubygems/simple_gem.rb
 test/rubygems/ssl_cert.pem
 test/rubygems/ssl_key.pem
+test/rubygems/test_bundled_ca.rb
 test/rubygems/test_config.rb
 test/rubygems/test_gem.rb
 test/rubygems/test_gem_builder.rb
@@ -203,3 +206,4 @@ test/rubygems/test_gem_version.rb
 test/rubygems/test_gem_version_option.rb
 test/rubygems/test_kernel.rb
 util/CL2notes
+util/update_bundled_ca_certificates.rb

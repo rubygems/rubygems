@@ -512,6 +512,40 @@ $SAFE=1.  There is no functional difference compared to Ruby 2.0.0.preview2
   * URI scheme matching is no longer case-sensitive.  Fixes #322
   * ext/builder now checks $MAKE as well as $make (okkez)
 
+=== 1.8.28 / 2013-10-08
+
+Bug fixes:
+
+* Added the Verisign Class 3 Public Primary Certification Authority G5
+  certificate and its intermediary to follow the s3.amazonaws.com certificate
+  change.  Fixes #665 by emeyekayee.  Fixes #671 by jonforums.
+* Remove redundant built-in certificates not needed for https://rubygems.org
+  Fixes #654 by Vít Ondruch.
+* Added test for missing certificates for https://s3.amazonaws.com or
+  https://rubygems.org.  Pull request #673 by Hannes Georg.
+
+=== 1.8.27 / 2013-09-24
+
+Security fixes:
+
+* RubyGems 2.1.4 and earlier are vulnerable to excessive CPU usage due to a
+  backtracking in Gem::Version validation.  See CVE-2013-4363 for full details
+  including vulnerable APIs.  Fixed versions include 2.1.5, 2.0.10, 1.8.27 and
+  1.8.23.2 (for Ruby 1.9.3).
+
+=== 1.8.26 / 2013-09-09
+
+Security fixes:
+
+* RubyGems 2.0.7 and earlier are vulnerable to excessive CPU usage due to a
+  backtracking in Gem::Version validation.  See CVE-2013-4287 for full details
+  including vulnerable APIs.  Fixed versions include 2.0.8, 1.8.26 and
+  1.8.23.1 (for Ruby 1.9.3).  Issue #626 by Damir Sharipov.
+
+Bug fixes:
+
+* Fixed editing of a Makefile with 8-bit characters.  Fixes #181
+
 === 1.8.25 / 2013-01-24
 
 * Bug fixes:

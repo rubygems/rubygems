@@ -45,6 +45,8 @@ Bug fixes:
   Nathan Marley.
 * Use RFC 2616-compatible time in HTTP headers.  Pull request #655 by Larry
   Marburger.
+* Expand unpack destination directory.  This fixes problems when File.realpath
+  is missing and $GEM_HOME contains "..".  Issue #679 by Charles Nutter.
 
 === 2.1.6 / 2013-10-08
 

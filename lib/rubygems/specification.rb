@@ -1390,6 +1390,8 @@ class Gem::Specification < Gem::BasicSpecification
   def build_extensions # :nodoc:
     return if default_gem?
     return if File.exist? gem_build_complete_path
+    return if !File.writable?(base_dir) &&
+              !File.exist?(File.join(base_dir, 'extensions'))
 
     gem_original_require 'rubygems/ext'
     gem_original_require 'rubygems/user_interaction'

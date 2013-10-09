@@ -1147,6 +1147,69 @@ dependencies: []
     end
   end
 
+  def test_build_extensions_extensions_dir_unwritable
+    skip 'chmod not supported' if Gem.win_platform?
+
+    ext_spec
+
+    refute_empty @ext.extensions, 'sanity check'
+
+    extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
+    FileUtils.mkdir_p File.dirname extconf_rb
+
+    open extconf_rb, 'w' do |f|
+      f.write <<-'RUBY'
+        open 'Makefile', 'w' do |f|
+          f.puts "clean:\n\techo clean"
+          f.puts "default:\n\techo built"
+          f.puts "install:\n\techo installed"
+        end
+      RUBY
+    end
+
+    FileUtils.mkdir_p File.join @ext.base_dir, 'extensions'
+    FileUtils.chmod 0555, @ext.base_dir
+    FileUtils.chmod 0555, File.join(@ext.base_dir, 'extensions')
+
+    assert_raises Errno::EACCES do
+      @ext.build_extensions
+    end
+  ensure
+    FileUtils.chmod 0755, File.join(@ext.base_dir, 'extensions')
+    FileUtils.chmod 0755, @ext.base_dir
+  end
+
+  def test_build_extensions_no_extensions_dir_unwritable
+    skip 'chmod not supported' if Gem.win_platform?
+
+    ext_spec
+
+    refute_empty @ext.extensions, 'sanity check'
+
+    extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
+    FileUtils.mkdir_p File.dirname extconf_rb
+
+    open extconf_rb, 'w' do |f|
+      f.write <<-'RUBY'
+        open 'Makefile', 'w' do |f|
+          f.puts "clean:\n\techo clean"
+          f.puts "default:\n\techo built"
+          f.puts "install:\n\techo installed"
+        end
+      RUBY
+    end
+
+    FileUtils.rm_r File.join @gemhome, 'extensions'
+    FileUtils.chmod 0555, @gemhome
+
+    @ext.build_extensions
+
+    gem_make_out = File.join @ext.extension_install_dir, 'gem_make.out'
+    refute_path_exists gem_make_out
+  ensure
+    FileUtils.chmod 0755, @gemhome
+  end
+
   def test_contains_requirable_file_eh
     code_rb = File.join @a1.gem_dir, 'lib', 'code.rb'
     FileUtils.mkdir_p File.dirname code_rb

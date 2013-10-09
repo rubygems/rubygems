@@ -386,6 +386,7 @@ EOM
 
     destination_dir = File.realpath destination_dir if
       File.respond_to? :realpath
+    destination_dir = File.expand_path destination_dir
 
     destination = File.join destination_dir, filename
     destination = File.expand_path destination

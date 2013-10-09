@@ -432,6 +432,22 @@ class TestGemPackage < Gem::Package::TarTestCase
                  "#{@destination} is not allowed", e.message)
   end
 
+  def test_install_location_dots
+    package = Gem::Package.new @gem
+
+    file = 'file.rb'
+
+    destination = File.join @destination, 'foo', '..', 'bar'
+
+    FileUtils.mkdir_p File.join @destination, 'foo'
+    FileUtils.mkdir_p File.expand_path destination
+
+    destination = package.install_location file, destination
+
+    # this test only fails on ruby missing File.realpath
+    assert_equal File.join(@destination, 'bar', 'file.rb'), destination
+  end
+
   def test_install_location_extra_slash
     skip 'no File.realpath on 1.8' if RUBY_VERSION < '1.9'
     package = Gem::Package.new @gem

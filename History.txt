@@ -12,6 +12,8 @@ Bug fixes:
   Marburger.
 * RubyGems now gives a more descriptive message for missing licenses on
   validation.  Issue #656 by Markus Heiler.
+* Expand unpack destination directory.  This fixes problems when File.realpath
+  is missing and $GEM_HOME contains "..".  Issue #679 by Charles Nutter.
 
 === 2.1.6 / 2013-10-08
 

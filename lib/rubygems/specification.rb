@@ -2466,7 +2466,10 @@ class Gem::Specification < Gem::BasicSpecification
       end
     }
 
-    alert_warning 'licenses is empty' if licenses.empty?
+    alert_warning <<-warning if licenses.empty?
+licenses is empty.  Use a license abbreviation from:
+  http://opensource.org/licenses/alphabetical
+    warning
 
     validate_permissions
 

@@ -2237,6 +2237,20 @@ end
     end
   end
 
+  def test_validate_license
+    util_setup_validate
+
+    use_ui @ui do
+      @a1.licenses.clear
+      @a1.validate
+    end
+
+    assert_equal <<-warning, @ui.error
+WARNING:  licenses is empty.  Use a license abbreviation from:
+  http://opensource.org/licenses/alphabetical
+    warning
+  end
+
   def test_validate_name
     util_setup_validate
 

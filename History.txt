@@ -36,6 +36,8 @@ Minor enhancements:
   Papis
 * RubyGems no longer alters Gem::Specification.dirs when installing.  Pull
   Request #670 by Vít Ondruch
+* RubyGems now gives a more descriptive message for missing licenses on
+  validation.  Issue #656 by Markus Heiler.
 
 Bug fixes:
 

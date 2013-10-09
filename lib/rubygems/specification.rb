@@ -512,6 +512,9 @@ class Gem::Specification < Gem::BasicSpecification
   # This should just be the name of your license. The full
   # text of the license should be inside of the gem when you build it.
   #
+  # See http://opensource.org/licenses/alphabetical for a list of licenses and
+  # their abbreviations (or short names).
+  #
   # You can set multiple licenses with #licenses=
   #
   # Usage:

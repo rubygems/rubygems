@@ -35,6 +35,8 @@ Minor enhancements:
   current platform when the built objects are missing.  Issue #596 by Michal
   Papis
 
+=== 2.1.7 / 2013-10-09
+
 Bug fixes:
 
 * `gem sources --list` now displays a list of sources.  Pull request #672 by

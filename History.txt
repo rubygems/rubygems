@@ -10,6 +10,8 @@ Bug fixes:
   Request #670 by Vít Ondruch
 * Use RFC 2616-compatible time in HTTP headers.  Pull request #655 by Larry
   Marburger.
+* RubyGems now gives a more descriptive message for missing licenses on
+  validation.  Issue #656 by Markus Heiler.
 
 === 2.1.6 / 2013-10-08
 

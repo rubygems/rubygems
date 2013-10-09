@@ -34,6 +34,8 @@ Minor enhancements:
   activation RubyGems will automatically compile missing extensions for the
   current platform when the built objects are missing.  Issue #596 by Michal
   Papis
+* RubyGems no longer alters Gem::Specification.dirs when installing.  Pull
+  Request #670 by Vít Ondruch
 
 Bug fixes:
 

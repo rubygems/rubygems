@@ -34,17 +34,17 @@ Minor enhancements:
   activation RubyGems will automatically compile missing extensions for the
   current platform when the built objects are missing.  Issue #596 by Michal
   Papis
-* RubyGems no longer alters Gem::Specification.dirs when installing.  Pull
-  Request #670 by Vít Ondruch
-* RubyGems now gives a more descriptive message for missing licenses on
-  validation.  Issue #656 by Markus Heiler.
 
 Bug fixes:
 
 * `gem sources --list` now displays a list of sources.  Pull request #672 by
   Nathan Marley.
+* RubyGems no longer alters Gem::Specification.dirs when installing.  Pull
+  Request #670 by Vít Ondruch
 * Use RFC 2616-compatible time in HTTP headers.  Pull request #655 by Larry
   Marburger.
+* RubyGems now gives a more descriptive message for missing licenses on
+  validation.  Issue #656 by Markus Heiler.
 * Expand unpack destination directory.  This fixes problems when File.realpath
   is missing and $GEM_HOME contains "..".  Issue #679 by Charles Nutter.
 

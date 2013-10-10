@@ -40,6 +40,8 @@ Minor enhancements:
 Bug fixes:
 
 * Fixed local installation of platform gem files.  Issue #664 by Ryan Melton.
+* Files starting with "." in the root directory are installed again.  Issue
+  #680 by Ivo Wever, Pull Request #681 by Jeremy Evans.
 
 === 2.1.7 / 2013-10-09
 

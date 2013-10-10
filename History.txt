@@ -34,6 +34,8 @@ Minor enhancements:
   activation RubyGems will automatically compile missing extensions for the
   current platform when the built objects are missing.  Issue #596 by Michal
   Papis
+* If a specification fails to validate RubyGems shows a link to the
+  specification reference guide.  Issue #656 by Markus Heiler.
 
 === 2.1.7 / 2013-10-09
 

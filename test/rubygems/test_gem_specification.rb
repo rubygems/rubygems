@@ -2054,7 +2054,7 @@ end
         @a1.validate
       end
 
-      assert_equal "#{w}:  no author specified\n", @ui.error, 'error'
+      assert_match "#{w}:  no author specified\n", @ui.error, 'error'
 
       @a1.authors = [Object.new]
 
@@ -2094,7 +2094,7 @@ end
         @a1.validate
       end
 
-      assert_equal "#{w}:  deprecated autorequire specified\n",
+      assert_match "#{w}:  deprecated autorequire specified\n",
                    @ui.error, 'error'
     end
   end
@@ -2115,7 +2115,7 @@ end
 #{w}:  prerelease dependency on c (>= 2.0.rc2, development) is not recommended
       EXPECTED
 
-      assert_equal expected, @ui.error, 'warning'
+      assert_match expected, @ui.error, 'warning'
     end
   end
 
@@ -2129,7 +2129,7 @@ end
         @a1.validate
       end
 
-      assert_equal "#{w}:  no description specified\n", @ui.error, "error"
+      assert_match "#{w}:  no description specified\n", @ui.error, "error"
 
       @ui = Gem::MockGemUi.new
       @a1.summary = "this is my summary"
@@ -2139,7 +2139,7 @@ end
         @a1.validate
       end
 
-      assert_equal "#{w}:  description and summary are identical\n",
+      assert_match "#{w}:  description and summary are identical\n",
                    @ui.error, "error"
 
       @a1.description = "#{f} (describe your package)"
@@ -2170,7 +2170,7 @@ end
         @a1.validate
       end
 
-      assert_equal "#{w}:  no email specified\n", @ui.error, "error"
+      assert_match "#{w}:  no email specified\n", @ui.error, "error"
 
       @a1.email = "FIxxxXME (your e-mail)".sub(/xxx/, "")
 
@@ -2198,6 +2198,16 @@ end
     assert_equal 'missing value for attribute name', e.message
   end
 
+  def test_validate_error
+    assert_raises Gem::InvalidSpecificationException do
+      use_ui @ui do
+        Gem::Specification.new.validate
+      end
+    end
+
+    assert_match 'See http://guides.rubygems.org/specification-reference/ for help', @ui.error
+  end
+
   def test_validate_executables
     util_setup_validate
 
@@ -2214,7 +2224,7 @@ end
     assert_equal %w[exec], @a1.executables
 
     assert_equal '', @ui.output, 'output'
-    assert_equal "#{w}:  bin/exec is missing #! line\n", @ui.error, 'error'
+    assert_match "#{w}:  bin/exec is missing #! line\n", @ui.error, 'error'
   end
 
   def test_validate_empty_require_paths
@@ -2278,7 +2288,7 @@ end
         @a1.validate
       end
 
-      assert_equal "#{w}:  no homepage specified\n", @ui.error, 'error'
+      assert_match "#{w}:  no homepage specified\n", @ui.error, 'error'
 
       @ui = Gem::MockGemUi.new
 
@@ -2288,7 +2298,7 @@ end
         @a1.validate
       end
 
-      assert_equal "#{w}:  no homepage specified\n", @ui.error, 'error'
+      assert_match "#{w}:  no homepage specified\n", @ui.error, 'error'
 
       @a1.homepage = 'over at my cool site'
 
@@ -2308,7 +2318,7 @@ end
       @a1.validate
     end
 
-    assert_equal <<-warning, @ui.error
+    assert_match <<-warning, @ui.error
 WARNING:  licenses is empty.  Use a license abbreviation from:
   http://opensource.org/licenses/alphabetical
     warning
@@ -2418,7 +2428,7 @@ WARNING:  licenses is empty.  Use a license abbreviation from:
         @a1.validate
       end
 
-      assert_equal "#{w}:  no summary specified\n", @ui.error, 'error'
+      assert_match "#{w}:  no summary specified\n", @ui.error, 'error'
 
       @a1.summary = "#{f} (describe your package)"
 
@@ -2436,6 +2446,17 @@ WARNING:  licenses is empty.  Use a license abbreviation from:
 
       assert_equal %{"#{f}" or "#{t}" is not a summary}, e.message
     end
+  end
+
+  def test_validate_warning
+    util_setup_validate
+
+    use_ui @ui do
+      @a1.licenses.clear
+      @a1.validate
+    end
+
+    assert_match 'See http://guides.rubygems.org/specification-reference/ for help', @ui.error
   end
 
   def test_version

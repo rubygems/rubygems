@@ -2352,6 +2352,7 @@ class Gem::Specification < Gem::BasicSpecification
   # checks..
 
   def validate packaging = true
+    @warnings = 0
     require 'rubygems/user_interaction'
     extend Gem::UserInteraction
     normalize
@@ -2475,7 +2476,7 @@ class Gem::Specification < Gem::BasicSpecification
       end
     }
 
-    alert_warning <<-warning if licenses.empty?
+    warning <<-warning if licenses.empty?
 licenses is empty.  Use a license abbreviation from:
   http://opensource.org/licenses/alphabetical
     warning
@@ -2513,21 +2514,21 @@ licenses is empty.  Use a license abbreviation from:
 
     %w[author description email homepage summary].each do |attribute|
       value = self.send attribute
-      alert_warning "no #{attribute} specified" if value.nil? or value.empty?
+      warning "no #{attribute} specified" if value.nil? or value.empty?
     end
 
     if description == summary then
-      alert_warning 'description and summary are identical'
+      warning 'description and summary are identical'
     end
 
     # TODO: raise at some given date
-    alert_warning "deprecated autorequire specified" if autorequire
+    warning "deprecated autorequire specified" if autorequire
 
     executables.each do |executable|
       executable_path = File.join(bindir, executable)
       shebang = File.read(executable_path, 2) == '#!'
 
-      alert_warning "#{executable_path} is missing #! line" unless shebang
+      warning "#{executable_path} is missing #! line" unless shebang
     end
 
     dependencies.each do |dep|
@@ -2535,11 +2536,15 @@ licenses is empty.  Use a license abbreviation from:
         Gem::Requirement.new(req).prerelease?
       end
 
-      alert_warning "prerelease dependency on #{dep} is not recommended" if
+      warning "prerelease dependency on #{dep} is not recommended" if
         prerelease_dep
     end
 
     true
+  ensure
+    if $! or @warnings > 0 then
+      alert_warning "See http://guides.rubygems.org/specification-reference/ for help"
+    end
   end
 
   ##
@@ -2550,13 +2555,13 @@ licenses is empty.  Use a license abbreviation from:
 
     files.each do |file|
       next if File.stat(file).mode & 0444 == 0444
-      alert_warning "#{file} is not world-readable"
+      warning "#{file} is not world-readable"
     end
 
     executables.each do |name|
       exec = File.join @bindir, name
       next if File.stat(exec).executable?
-      alert_warning "#{exec} is not executable"
+      warning "#{exec} is not executable"
     end
   end
 
@@ -2607,6 +2612,12 @@ licenses is empty.  Use a license abbreviation from:
 
       instance_variable_set "@#{attribute}", value
     end
+  end
+
+  def warning statement # :nodoc:
+    @warnings += 1
+
+    alert_warning statement
   end
 
   extend Gem::Deprecate

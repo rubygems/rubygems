@@ -403,7 +403,9 @@ class Gem::DependencyInstaller
       request_set.soft_missing = true
     end
 
-    request_set.resolve Gem::DependencyResolver.compose_sets(as, installer_set)
+    composed_set = Gem::DependencyResolver.compose_sets as, installer_set
+
+    request_set.resolve composed_set
 
     request_set
   end

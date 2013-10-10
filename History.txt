@@ -37,6 +37,11 @@ Minor enhancements:
 * If a specification fails to validate RubyGems shows a link to the
   specification reference guide.  Issue #656 by Markus Heiler.
 
+Bug fixes:
+
+* Use class check instead of :version method check when creating Gem::Version
+  objects.  Fixes #674 by jkanywhere.
+
 === 2.1.8 / 2013-10-10
 
 Bug fixes:

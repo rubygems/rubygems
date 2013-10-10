@@ -53,6 +53,21 @@ class TestGemDependencyResolverIndexSpecification < Gem::TestCase
     assert_equal a_2_p.full_name, spec.full_name
   end
 
+  def test_spec_local
+    a_2_p = quick_spec 'a', 2 do |s| s.platform = Gem::Platform.local end
+    Gem::Package.build a_2_p
+
+    source = Gem::Source::Local.new
+    set = Gem::DependencyResolver::InstallerSet.new :local
+    set.always_install << a_2_p
+
+    i_spec = Gem::DependencyResolver::IndexSpecification.new \
+      set, 'a', v(2), source, Gem::Platform.local
+
+    spec = i_spec.spec
+
+    assert_equal a_2_p.full_name, spec.full_name
+  end
 
 end
 

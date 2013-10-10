@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.0.13
+
+Bug fixes:
+
+* Use class check instead of :version method check when creating Gem::Version
+  objects.  Fixes #674 by jkanywhere.
+
 === 2.0.12 / 2013-10-14
 
 Bug fixes:

@@ -36,6 +36,8 @@ Minor enhancements:
   Papis
 * If a specification fails to validate RubyGems shows a link to the
   specification reference guide.  Issue #656 by Markus Heiler.
+* Reduce sorting when fetching specifications.  This speeds up the update and
+  outdated commands, and others.  Issue #657 by windwiny.
 
 Bug fixes:
 

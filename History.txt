@@ -1,5 +1,11 @@
 # coding: UTF-8
 
+=== 2.1.8
+
+Bug fixes:
+
+* Fixed local installation of platform gem files.  Issue #664 by Ryan Melton.
+
 === 2.1.7 / 2013-10-09
 
 Bug fixes:

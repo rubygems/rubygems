@@ -37,6 +37,10 @@ Minor enhancements:
 * If a specification fails to validate RubyGems shows a link to the
   specification reference guide.  Issue #656 by Markus Heiler.
 
+Bug fixes:
+
+* Fixed local installation of platform gem files.  Issue #664 by Ryan Melton.
+
 === 2.1.7 / 2013-10-09
 
 Bug fixes:

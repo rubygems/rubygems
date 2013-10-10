@@ -1,5 +1,6 @@
 require 'rubygems/test_case'
 require 'rubygems/dependency_resolver'
+require 'rubygems/available_set'
 
 class TestGemDependencyResolverIndexSpecification < Gem::TestCase
 
@@ -16,6 +17,17 @@ class TestGemDependencyResolverIndexSpecification < Gem::TestCase
     assert_equal Gem::Platform::RUBY, spec.platform
 
     assert_equal source, spec.source
+  end
+
+  def test_initialize_platform
+    set     = Gem::DependencyResolver::IndexSet.new
+    source  = Gem::Source::Local.new
+    version = Gem::Version.new '3.0.3'
+
+    spec = Gem::DependencyResolver::IndexSpecification.new(
+      set, 'rails', version, source, Gem::Platform.local)
+
+    assert_equal Gem::Platform.local.to_s, spec.platform
   end
 
   def test_spec

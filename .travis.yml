@@ -26,3 +26,5 @@ matrix:
       env: "YAML=syck"
     - rvm: ruby-head
       env: "YAML=syck"
+  allowed_failures:
+    - rvm: ruby-head

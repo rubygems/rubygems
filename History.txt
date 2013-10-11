@@ -43,6 +43,8 @@ Bug fixes:
   objects.  Fixes #674 by jkanywhere.
 * Reduce sorting when fetching specifications.  This speeds up the update and
   outdated commands, and others.  Issue #657 by windwiny.
+* Proxy usernames and passwords are now escaped properly.  Ruby Bug #8979 by
+  Masahiro Tomita, Issue #668 by Kouhei Sutou.
 
 === 2.1.8 / 2013-10-10
 

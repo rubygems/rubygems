@@ -78,8 +78,8 @@ class Gem::Request
       net_http_args += [
         @proxy_uri.host,
         @proxy_uri.port,
-        @proxy_uri.user,
-        @proxy_uri.password
+        Gem::UriFormatter.new(@proxy_uri.user).unescape,
+        Gem::UriFormatter.new(@proxy_uri.password).unescape,
       ]
     end
 

@@ -1569,12 +1569,6 @@ dependencies: []
     assert_equal Gem.default_dir, @a1.base_dir
   end
 
-  def test_lib_files
-    @a1.files = %w[lib/foo.rb Rakefile]
-
-    assert_equal %w[lib/foo.rb], @a1.lib_files
-  end
-
   def test_license
     assert_equal 'MIT', @a1.license
   end

@@ -81,8 +81,12 @@ prefix or only the files that are requireable.
 
   def files_in_gem spec
     gem_path  = spec.full_gem_path
-    extra     = "/{#{spec.require_paths.join ','}}" if options[:lib_only]
-    glob      = "#{gem_path}#{extra}/**/*"
+    glob = if options[:lib_only]
+      "{#{spec.full_require_paths.join ','}}"
+    else
+      gem_path
+    end
+    glob += '/**/*'
     prefix_re = /#{Regexp.escape(gem_path)}\//
 
     Dir[glob].map do |file|

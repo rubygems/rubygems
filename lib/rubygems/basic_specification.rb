@@ -70,8 +70,8 @@ class Gem::BasicSpecification
         Gem.ruby_api_version
       end
 
-    File.join base_dir, 'extensions', full_name,
-              ruby_api_version, Gem::Platform.local.to_s
+    File.join base_dir, 'extensions', Gem::Platform.local.to_s,
+              ruby_api_version, full_name
   end
 
   def find_full_gem_path # :nodoc:
@@ -183,8 +183,8 @@ class Gem::BasicSpecification
     return @require_paths if @extensions.empty?
 
     relative_extension_install_dir =
-      File.join '..', '..', '..', 'extensions', full_name,
-                Gem.ruby_api_version, Gem::Platform.local.to_s
+      File.join '..', '..', '..', 'extensions', Gem::Platform.local.to_s,
+                Gem.ruby_api_version, full_name
 
     @require_paths + [relative_extension_install_dir]
   end

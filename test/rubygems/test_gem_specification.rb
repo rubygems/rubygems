@@ -1366,8 +1366,8 @@ dependencies: []
     refute_empty @ext.extensions
 
     expected =
-      File.join(@ext.base_dir, 'extensions', @ext.full_name,
-                Gem.ruby_api_version, Gem::Platform.local.to_s)
+      File.join(@ext.base_dir, 'extensions', Gem::Platform.local.to_s,
+                Gem.ruby_api_version,@ext.full_name)
 
     assert_equal expected, @ext.extension_install_dir
   ensure
@@ -1383,8 +1383,8 @@ dependencies: []
     refute_empty @ext.extensions
 
     expected =
-      File.join(@ext.base_dir, 'extensions', @ext.full_name,
-                "#{Gem.ruby_api_version}-static", Gem::Platform.local.to_s)
+      File.join(@ext.base_dir, 'extensions', Gem::Platform.local.to_s,
+                "#{Gem.ruby_api_version}-static", @ext.full_name)
 
     assert_equal expected, @ext.extension_install_dir
   ensure

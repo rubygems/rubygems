@@ -1835,17 +1835,6 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # Files in the Gem under one of the require_paths
-
-  def lib_files
-    @files.select do |file|
-      require_paths.any? do |path|
-        file.start_with? path
-      end
-    end
-  end
-
-  ##
   # Singular accessor for #licenses
 
   def license

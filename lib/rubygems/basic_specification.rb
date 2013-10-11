@@ -163,30 +163,10 @@ class Gem::BasicSpecification
   end
 
   ##
-  # Paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
-  # activated.
-  #
-  # See also #require_paths=
-  #
-  # If you have an extension you do not need to add <code>"ext"</code> to the
-  # require path, the extension build process will copy the extension files
-  # into "lib" for you.
-  #
-  # The default value is <code>"lib"</code>
-  #
-  # Usage:
-  #
-  #   # If all library files are in the root directory...
-  #   spec.require_path = '.'
+  # Require paths of the gem
 
   def require_paths
-    return @require_paths if @extensions.empty?
-
-    relative_extension_install_dir =
-      File.join '..', '..', '..', 'extensions', Gem::Platform.local.to_s,
-                Gem.ruby_api_version, full_name
-
-    @require_paths + [relative_extension_install_dir]
+    raise NotImplementedError
   end
 
   ##

@@ -139,8 +139,6 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
   def require_paths
     @require_paths ||= data.require_paths
-
-    super
   end
 
   ##

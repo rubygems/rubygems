@@ -33,7 +33,7 @@ class TestStubSpecification < Gem::TestCase
     assert_equal 'stub_e',                  stub.name
     assert_equal v(2),                      stub.version
     assert_equal Gem::Platform::RUBY,       stub.platform
-    assert_equal ['lib', ext_install_dir],  stub.require_paths
+    assert_equal %w[lib],                   stub.require_paths
     assert_equal %w[ext/stub_e/extconf.rb], stub.extensions
   end
 

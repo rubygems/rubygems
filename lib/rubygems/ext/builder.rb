@@ -33,7 +33,7 @@ class Gem::Ext::Builder
 
   def self.make(dest_path, results)
     unless File.exist? 'Makefile' then
-      raise Gem::InstallError, "Makefile not found:\n\n#{results.join "\n"}"
+      raise Gem::InstallError, 'Makefile not found'
     end
 
     # try to find make program from Ruby configure arguments first
@@ -79,7 +79,7 @@ class Gem::Ext::Builder
 
     unless $?.success? then
       results << "Building has failed. See above output for more information on the failure." if verbose
-      raise Gem::InstallError, "#{command_name || class_name} failed:\n\n#{results.join "\n"}"
+      raise Gem::InstallError, "#{command_name || class_name} failed"
     end
   end
 
@@ -158,7 +158,8 @@ EOF
       end
 
       write_gem_make_out results.join "\n"
-    rescue
+    rescue => e
+      results << e.message
       build_error extension_dir, results.join("\n"), $@
     end
   end

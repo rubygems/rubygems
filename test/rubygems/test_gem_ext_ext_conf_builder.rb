@@ -105,10 +105,7 @@ class TestGemExtExtConfBuilder < Gem::TestCase
       end
     end
 
-    assert_match(/\Aextconf failed:
-
-#{Gem.ruby} extconf.rb.*
-checking for main\(\) in .*?nonexistent/m, error.message)
+    assert_equal 'extconf failed', error.message
 
     assert_equal("#{Gem.ruby} extconf.rb", output[0])
   end
@@ -188,13 +185,7 @@ end
       end
     end
 
-    expected = <<-EOF.strip
-Makefile not found:
-
-output
-    EOF
-
-    assert_equal expected, error.message
+    assert_equal 'Makefile not found', error.message
   end
 
 end

@@ -52,13 +52,7 @@ class TestGemExtConfigureBuilder < Gem::TestCase
     shell_error_msg = %r{(\./configure: .*)|((?:Can't|cannot) open \./configure(?:: No such file or directory)?)}
     sh_prefix_configure = "sh ./configure --prefix="
 
-    expected = %r(configure failed:
-
-#{Regexp.escape sh_prefix_configure}#{Regexp.escape @dest_path}
-(?:.*?: )?#{shell_error_msg}
-)
-
-    assert_match expected, error.message
+    assert_match 'configure failed', error.message
 
     assert_equal "#{sh_prefix_configure}#{@dest_path}", output.shift
     assert_match %r(#{shell_error_msg}), output.shift

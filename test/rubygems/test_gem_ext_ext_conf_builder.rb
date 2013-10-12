@@ -105,7 +105,7 @@ class TestGemExtExtConfBuilder < Gem::TestCase
       end
     end
 
-    assert_equal 'extconf failed', error.message
+    assert_equal 'extconf failed, exit code 1', error.message
 
     assert_equal("#{Gem.ruby} extconf.rb", output[0])
   end

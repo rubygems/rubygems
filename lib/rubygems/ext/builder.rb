@@ -79,7 +79,15 @@ class Gem::Ext::Builder
 
     unless $?.success? then
       results << "Building has failed. See above output for more information on the failure." if verbose
-      raise Gem::InstallError, "#{command_name || class_name} failed"
+
+      exit_reason =
+        if $?.exited? then
+          ", exit code #{$?.exitstatus}"
+        elsif $?.signaled? then
+          ", uncaught signal #{$?.termsig}"
+        end
+
+      raise Gem::InstallError, "#{command_name || class_name} failed#{exit_reason}"
     end
   end
 

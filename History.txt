@@ -41,6 +41,11 @@ Bug fixes:
 
 * Use class check instead of :version method check when creating Gem::Version
   objects.  Fixes #674 by jkanywhere.
+
+=== 2.1.9 / 2013-10-14
+
+Bug fixes:
+
 * Reduce sorting when fetching specifications.  This speeds up the update and
   outdated commands, and others.  Issue #657 by windwiny.
 * Proxy usernames and passwords are now escaped properly.  Ruby Bug #8979 by
@@ -225,6 +230,13 @@ Bug fixes:
   #625 by elarkin
 * Fixed credential creation for `gem push` when `--host` is not given.  Pull
   request #622 by Arthur Nogueira Neves
+
+=== 2.0.12 / 2013-10-14
+
+Bug fixes:
+
+* Proxy usernames and passwords are now escaped properly.  Ruby Bug #8979 by
+  Masahiro Tomita, Issue #668 by Kouhei Sutou.
 
 === 2.0.11 / 2013-10-08
 

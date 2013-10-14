@@ -189,6 +189,13 @@ Bug fixes:
 * Fixed credential creation for `gem push` when `--host` is not given.  Pull
   request #622 by Arthur Nogueira Neves
 
+=== 2.0.12 / 2013-10-14
+
+Bug fixes:
+
+* Proxy usernames and passwords are now escaped properly.  Ruby Bug #8979 and
+  patch by Masahiro Tomita, Issue #668 by Kouhei Sutou.
+
 === 2.0.11 / 2013-10-08
 
 Bug fixes:

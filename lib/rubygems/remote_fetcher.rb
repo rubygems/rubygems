@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rubygems/user_interaction'
+require 'cgi'
 require 'thread'
 require 'uri'
 require 'resolv'
@@ -322,11 +323,11 @@ class Gem::RemoteFetcher
   end
 
   def escape_auth_info(str)
-    str && URI.encode_www_form_component(str)
+    str && CGI.escape(str)
   end
 
   def unescape_auth_info(str)
-    str && URI.decode_www_form_component(str)
+    str && CGI.unescape(str)
   end
 
   def escape(str)

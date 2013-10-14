@@ -1386,7 +1386,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   ##
   # Builds extensions for this platform if the gem has extensions listed and
-  # the .gem.build_complete file is missing.
+  # the gem.build_complete file is missing.
 
   def build_extensions # :nodoc:
     return if default_gem?
@@ -1702,11 +1702,11 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # The path to the .gem.build_complete file within the extension install
+  # The path to the gem.build_complete file within the extension install
   # directory.
 
   def gem_build_complete_path # :nodoc:
-    File.join extension_install_dir, '.gem.build_complete'
+    File.join extension_install_dir, 'gem.build_complete'
   end
 
   ##

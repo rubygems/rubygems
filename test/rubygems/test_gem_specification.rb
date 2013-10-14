@@ -1105,7 +1105,7 @@ dependencies: []
     refute_empty @ext.extensions, 'sanity check'
 
     gem_build_complete =
-      File.join @ext.extension_install_dir, '.gem.build_complete'
+      File.join @ext.extension_install_dir, 'gem.build_complete'
 
     FileUtils.mkdir_p @ext.extension_install_dir
     FileUtils.touch gem_build_complete
@@ -1540,7 +1540,7 @@ dependencies: []
   end
 
   def test_gem_build_complete_path
-    expected = File.join @a1.extension_install_dir, '.gem.build_complete'
+    expected = File.join @a1.extension_install_dir, 'gem.build_complete'
     assert_equal expected, @a1.gem_build_complete_path
   end
 

@@ -143,6 +143,14 @@ gems:
     assert_equal proxy_uri, fetcher.instance_variable_get(:@proxy_uri)
   end
 
+  def test_escape_auth_info
+    assert_equal 'a%40b%5Cc', @fetcher.escape_auth_info('a@b\c')
+  end
+
+  def test_unescape_auth_info
+    assert_equal 'a@b\c', @fetcher.unescape_auth_info('a%40b%5Cc')
+  end
+
   def test_fetch_size_bad_uri
     fetcher = Gem::RemoteFetcher.new nil
 

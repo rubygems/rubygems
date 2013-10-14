@@ -127,6 +127,8 @@ end
 desc "Upload release to rubyforge and gemcutter"
 task :upload => [:upload_to_gemcutter]
 
+Rake::Task['publish_docs'].clear
+
 # Misc Tasks ---------------------------------------------------------
 
 # These tasks expect to have the following directory structure:

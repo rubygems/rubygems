@@ -438,7 +438,7 @@ gems:
       uri.user, uri.password = 'domain%5Cuser', 'bar'
       fetcher = Gem::RemoteFetcher.new uri.to_s
       proxy = fetcher.instance_variable_get("@proxy_uri")
-      assert_equal 'domain\user', fetcher.unescape(proxy.user)
+      assert_equal 'domain\user', fetcher.unescape_auth_info(proxy.user)
       assert_equal 'bar', proxy.password
       assert_data_from_proxy fetcher.fetch_path(@server_uri)
     end
@@ -449,7 +449,7 @@ gems:
       fetcher = Gem::RemoteFetcher.new uri.to_s
       proxy = fetcher.instance_variable_get("@proxy_uri")
       assert_equal 'user', proxy.user
-      assert_equal 'my pass', fetcher.unescape(proxy.password)
+      assert_equal 'my pass', fetcher.unescape_auth_info(proxy.password)
       assert_data_from_proxy fetcher.fetch_path(@server_uri)
     end
   end
@@ -472,8 +472,19 @@ gems:
       ENV['http_proxy_pass'] = 'my bar'
       fetcher = Gem::RemoteFetcher.new nil
       proxy = fetcher.instance_variable_get("@proxy_uri")
-      assert_equal 'foo\user', fetcher.unescape(proxy.user)
-      assert_equal 'my bar', fetcher.unescape(proxy.password)
+      assert_equal 'foo\user', fetcher.unescape_auth_info(proxy.user)
+      assert_equal 'my bar', fetcher.unescape_auth_info(proxy.password)
+      assert_data_from_proxy fetcher.fetch_path(@server_uri)
+    end
+
+    use_ui @ui do
+      ENV['http_proxy'] = @proxy_uri
+      ENV['http_proxy_user'] = 'foo@user'
+      ENV['http_proxy_pass'] = 'my@bar'
+      fetcher = Gem::RemoteFetcher.new nil
+      proxy = fetcher.instance_variable_get("@proxy_uri")
+      assert_equal 'foo@user', fetcher.unescape_auth_info(proxy.user)
+      assert_equal 'my@bar', fetcher.unescape_auth_info(proxy.password)
       assert_data_from_proxy fetcher.fetch_path(@server_uri)
     end
   end

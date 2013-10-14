@@ -150,7 +150,7 @@ namespace 'guides' do
 
     chdir '../guides.rubygems.org' do
       ruby '-I', lib_dir, '-S', 'rake', 'command_guide'
-      ruby '-I', lib_dir, '-S', 'rake', 'rdoc_spec'
+      ruby '-I', lib_dir, '-S', 'rake', 'spec_guide'
     end
   end
 

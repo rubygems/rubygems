@@ -384,6 +384,14 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_equal expected, @cmd.fetch_remote_gems(@a1)
   end
 
+  def test_fetch_remote_gems_error
+    Gem.sources.replace %w[http://nonexistent.example]
+
+    assert_raises Gem::RemoteFetcher::FetchError do
+      @cmd.fetch_remote_gems @a1
+    end
+  end
+
   def test_fetch_remote_gems_prerelease
     @cmd.options[:prerelease] = true
 

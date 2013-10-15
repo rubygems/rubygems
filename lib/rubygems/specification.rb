@@ -199,8 +199,6 @@ class Gem::Specification < Gem::BasicSpecification
   # Paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
   # activated.
   #
-  # See also #require_paths
-  #
   # If you have an extension you do not need to add <code>"ext"</code> to the
   # require path, the extension build process will copy the extension files
   # into "lib" for you.
@@ -212,7 +210,7 @@ class Gem::Specification < Gem::BasicSpecification
   #   # If all library files are in the root directory...
   #   spec.require_path = '.'
 
-  attr_writer :require_paths
+  attr_accessor :require_paths
 
   ##
   # The version of RubyGems used to create this gem.
@@ -1826,23 +1824,10 @@ class Gem::Specification < Gem::BasicSpecification
   # for this spec.
 
   def lib_dirs_glob
-    dirs = if self.require_paths.size > 1 then
-             "{#{self.require_paths.join(',')}}"
-           else
-             self.require_paths.first
-           end
-
-    "#{self.full_gem_path}/#{dirs}"
-  end
-
-  ##
-  # Files in the Gem under one of the require_paths
-
-  def lib_files
-    @files.select do |file|
-      require_paths.any? do |path|
-        file.start_with? path
-      end
+    if self.full_require_paths.size > 1 then
+      "{#{self.full_require_paths.join(',')}}"
+    else
+      self.full_require_paths.first
     end
   end
 
@@ -2220,13 +2205,11 @@ class Gem::Specification < Gem::BasicSpecification
     if metadata and !metadata.empty?
       result << "  s.metadata = #{ruby_code metadata} if s.respond_to? :metadata="
     end
-    result << "  s.require_paths = #{ruby_code @require_paths}"
 
     handled = [
       :dependencies,
       :name,
       :platform,
-      :require_paths,
       :required_rubygems_version,
       :specification_version,
       :version,
@@ -2384,7 +2367,7 @@ class Gem::Specification < Gem::BasicSpecification
             "invalid value for attribute name: \"#{name.inspect}\""
     end
 
-    if @require_paths.empty? then
+    if require_paths.empty? then
       raise Gem::InvalidSpecificationException,
             'specification must have at least one require_path'
     end

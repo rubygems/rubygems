@@ -4,6 +4,9 @@
 
 * Use class check instead of :version method check when creating Gem::Version
   objects.  Fixes #674 by jkanywhere.
+* Fail during `gem update` when an error occurs checking for newer versions.
+  This means RubyGems no longer reports "nothing to update" when it cannot
+  communicate with the server.  Issue #688 by Jimmy Dee.
 
 === 2.1.9 / 2013-10-14
 

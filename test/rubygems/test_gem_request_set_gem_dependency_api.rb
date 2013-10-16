@@ -78,5 +78,13 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal [dep('a')], @set.dependencies
   end
 
+  def test_platforms
+    @gda.platforms :ruby do
+      @gda.gem 'a'
+    end
+
+    assert_equal [dep('a')], @set.dependencies
+  end
+
 end
 

@@ -87,8 +87,6 @@ install:
       @builder.build_extensions
     end
 
-    path = File.join @spec.gem_dir, 'extconf_args'
-
     assert_path_exists @spec.extension_install_dir
     assert_path_exists @spec.gem_build_complete_path
     assert_path_exists File.join @spec.extension_install_dir, 'gem_make.out'

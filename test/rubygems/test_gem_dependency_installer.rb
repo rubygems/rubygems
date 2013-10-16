@@ -404,7 +404,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     end
     e1_gem = File.join @tempdir, 'gems', "#{e1.full_name}.gem"
 
-    f1, f1_gem = util_gem 'f', '1', 'e' => nil
+    _, f1_gem = util_gem 'f', '1', 'e' => nil
 
     Gem::Installer.new(e1_gem).install
     FileUtils.rm_r e1.extension_install_dir

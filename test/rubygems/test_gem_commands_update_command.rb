@@ -374,8 +374,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
   end
 
   def test_fetch_remote_gems
-    spec = @a1
-
     expected = [
       [Gem::NameTuple.new('a', v(2), Gem::Platform::RUBY),
         Gem::Source.new(@gem_repo)],
@@ -394,8 +392,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
   def test_fetch_remote_gems_prerelease
     @cmd.options[:prerelease] = true
-
-    spec = @a1
 
     expected = [
       [Gem::NameTuple.new('a', v(2), Gem::Platform::RUBY),

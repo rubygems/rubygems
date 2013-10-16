@@ -11,20 +11,40 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     @set = Gem::RequestSet.new
   end
 
+  def test_gem
+    gda = @GDA.new @set, nil
+
+    gda.gem 'a'
+
+    assert_equal [dep('a')], @set.dependencies
+  end
+
+  def test_gem_requirement
+    gda = @GDA.new @set, nil
+
+    gda.gem 'a', '~> 1.0'
+
+    assert_equal [dep('a', '~> 1.0')], @set.dependencies
+  end
+
+  def test_gem_requirements
+    gda = @GDA.new @set, nil
+
+    gda.gem 'b', '~> 1.0', '>= 1.0.2'
+
+    assert_equal [dep('b', '~> 1.0', '>= 1.0.2')], @set.dependencies
+  end
+
   def test_load
     Tempfile.open 'Gemfile' do |io|
-      io.puts 'gem "rake", "~> 10.1"'
+      io.puts 'gem "a"'
       io.flush
 
       gda = @GDA.new @set, io.path
 
       gda.load
 
-      expected = [
-        dep('rake', '~> 10.1')
-      ]
-
-      assert_equal expected, @set.dependencies
+      assert_equal [dep('a')], @set.dependencies
     end
   end
 

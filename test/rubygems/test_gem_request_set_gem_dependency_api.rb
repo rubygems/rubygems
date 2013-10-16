@@ -6,7 +6,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   def setup
     super
 
-    @GDA = Gem::RequestSet::GemDepedencyAPI
+    @GDA = Gem::RequestSet::GemDependencyAPI
 
     @set = Gem::RequestSet.new
   end
@@ -26,6 +26,10 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
       assert_equal expected, @set.dependencies
     end
+  end
+
+  def test_name_typo
+    assert_same @GDA, Gem::RequestSet::DepedencyAPI
   end
 
 end

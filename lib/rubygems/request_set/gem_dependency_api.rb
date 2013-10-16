@@ -1,7 +1,7 @@
 ##
 # A semi-compatible DSL for Bundler's Gemfile format
 
-class Gem::RequestSet::GemDepedencyAPI
+class Gem::RequestSet::GemDependencyAPI
 
   def initialize set, path
     @set = set
@@ -34,6 +34,10 @@ class Gem::RequestSet::GemDepedencyAPI
 
   def source url
   end
+
+  # TODO: remove this typo name at RubyGems 3.0
+
+  Gem::RequestSet::DepedencyAPI = self # :nodoc:
 
 end
 

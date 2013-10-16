@@ -52,7 +52,11 @@ class Gem::Ext::Builder
         destdir,
         target
       ].join(' ').rstrip
-      run(cmd, results, "make #{target}".rstrip)
+      begin
+        run(cmd, results, "make #{target}".rstrip)
+      rescue Gem::InstallError
+        raise unless target == 'clean' # ignore clean failure
+      end
     end
   end
 

@@ -9,36 +9,30 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     @GDA = Gem::RequestSet::GemDependencyAPI
 
     @set = Gem::RequestSet.new
+
+    @gda = @GDA.new @set, nil
   end
 
   def test_gem
-    gda = @GDA.new @set, nil
-
-    gda.gem 'a'
+    @gda.gem 'a'
 
     assert_equal [dep('a')], @set.dependencies
   end
 
   def test_gem_requirement
-    gda = @GDA.new @set, nil
-
-    gda.gem 'a', '~> 1.0'
+    @gda.gem 'a', '~> 1.0'
 
     assert_equal [dep('a', '~> 1.0')], @set.dependencies
   end
 
   def test_gem_requirements
-    gda = @GDA.new @set, nil
-
-    gda.gem 'b', '~> 1.0', '>= 1.0.2'
+    @gda.gem 'b', '~> 1.0', '>= 1.0.2'
 
     assert_equal [dep('b', '~> 1.0', '>= 1.0.2')], @set.dependencies
   end
 
   def test_gem_requirements_options
-    gda = @GDA.new @set, nil
-
-    gda.gem 'c', :git => 'https://example/c.git'
+    @gda.gem 'c', :git => 'https://example/c.git'
 
     assert_equal [dep('c')], @set.dependencies
   end

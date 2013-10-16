@@ -62,5 +62,21 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_same @GDA, Gem::RequestSet::DepedencyAPI
   end
 
+  def test_platform_mswin
+    @gda.platform :mswin do
+      @gda.gem 'a'
+    end
+
+    assert_empty @set.dependencies
+  end
+
+  def test_platform_ruby
+    @gda.platform :ruby do
+      @gda.gem 'a'
+    end
+
+    assert_equal [dep('a')], @set.dependencies
+  end
+
 end
 

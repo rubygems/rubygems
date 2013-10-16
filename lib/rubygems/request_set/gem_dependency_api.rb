@@ -21,6 +21,13 @@ class Gem::RequestSet::GemDependencyAPI
     @set.gem name, *reqs
   end
 
+  ##
+  # Returns the basename of the file the dependencies were loaded from
+
+  def gem_deps_file # :nodoc:
+    File.basename @path
+  end
+
   def group *what
   end
 
@@ -31,6 +38,19 @@ class Gem::RequestSet::GemDependencyAPI
   end
 
   alias :platforms :platform
+
+  ##
+  # Restricts this gem dependencies file to the given ruby +version+.  The
+  # +:engine+ options from Bundler are currently ignored.
+
+  def ruby version, options = {}
+    return true if version == RUBY_VERSION
+
+    message = "Your Ruby version is #{RUBY_VERSION}, " +
+              "but your #{gem_deps_file} specified #{version}"
+
+    raise Gem::RubyVersionMismatch, message
+  end
 
   def source url
   end

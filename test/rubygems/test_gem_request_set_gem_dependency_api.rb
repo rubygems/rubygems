@@ -10,7 +10,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     @set = Gem::RequestSet.new
 
-    @gda = @GDA.new @set, nil
+    @gda = @GDA.new @set, 'gem.deps.rb'
   end
 
   def test_gem
@@ -35,6 +35,14 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     @gda.gem 'c', :git => 'https://example/c.git'
 
     assert_equal [dep('c')], @set.dependencies
+  end
+
+  def test_gem_deps_file
+    assert_equal 'gem.deps.rb', @gda.gem_deps_file
+
+    gda = @GDA.new @set, 'foo/Gemfile'
+
+    assert_equal 'Gemfile', gda.gem_deps_file
   end
 
   def test_group
@@ -84,6 +92,23 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     end
 
     assert_equal [dep('a')], @set.dependencies
+  end
+
+  def test_ruby
+    assert @gda.ruby RUBY_VERSION
+  end
+
+  def test_ruby_engine
+    assert @gda.ruby RUBY_VERSION,
+                     :engine => 'jruby', :engine_version => '1.7.4'
+  end
+
+  def test_ruby_mismatch
+    e = assert_raises Gem::RubyVersionMismatch do
+      @gda.ruby '1.8.0'
+    end
+
+    assert_equal "Your Ruby version is #{RUBY_VERSION}, but your gem.deps.rb specified 1.8.0", e.message
   end
 
 end

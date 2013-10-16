@@ -36,6 +36,8 @@ Minor enhancements:
   Papis
 * If a specification fails to validate RubyGems shows a link to the
   specification reference guide.  Issue #656 by Markus Heiler.
+* When using `gem install -g`, RubyGems now detects the presence of an
+  Isolate, Gemfile or gem.deps.rb file.
 
 Bug fixes:
 

@@ -37,6 +37,14 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal [dep('c')], @set.dependencies
   end
 
+  def test_group
+    @gda.group do
+      @gda.gem 'a'
+    end
+
+    assert_empty @set.dependencies
+  end
+
   def test_load
     Tempfile.open 'Gemfile' do |io|
       io.puts 'gem "a"'

@@ -35,6 +35,14 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal [dep('b', '~> 1.0', '>= 1.0.2')], @set.dependencies
   end
 
+  def test_gem_requirements_options
+    gda = @GDA.new @set, nil
+
+    gda.gem 'c', :git => 'https://example/c.git'
+
+    assert_equal [dep('c')], @set.dependencies
+  end
+
   def test_load
     Tempfile.open 'Gemfile' do |io|
       io.puts 'gem "a"'

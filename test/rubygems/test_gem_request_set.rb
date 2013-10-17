@@ -17,6 +17,15 @@ class TestGemRequestSet < Gem::TestCase
     assert_equal [Gem::Dependency.new("a", "=2")], rs.dependencies
   end
 
+  def test_import
+    rs = Gem::RequestSet.new
+    rs.gem 'a'
+
+    rs.import [dep('b')]
+
+    assert_equal [dep('a'), dep('b')], rs.dependencies
+  end
+
   def test_resolve
     a = util_spec "a", "2", "b" => ">= 2"
     b = util_spec "b", "2"

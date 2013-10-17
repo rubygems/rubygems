@@ -52,9 +52,11 @@ class Gem::RequestSet::GemDependencyAPI
         gem_arguments << options unless options.empty?
         @dependency_groups[group] << gem_arguments
       end
-    else
-      @set.gem name, *requirements
+
+      return
     end
+
+    @set.gem name, *requirements
   end
 
   ##

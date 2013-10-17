@@ -69,11 +69,14 @@ lib/rubygems/dependency_resolver/index_set.rb
 lib/rubygems/dependency_resolver/index_specification.rb
 lib/rubygems/dependency_resolver/installed_specification.rb
 lib/rubygems/dependency_resolver/installer_set.rb
+lib/rubygems/dependency_resolver/vendor_set.rb
+lib/rubygems/dependency_resolver/vendor_specification.rb
 lib/rubygems/deprecate.rb
 lib/rubygems/doctor.rb
 lib/rubygems/errors.rb
 lib/rubygems/exceptions.rb
 lib/rubygems/ext.rb
+lib/rubygems/ext/build_error.rb
 lib/rubygems/ext/builder.rb
 lib/rubygems/ext/cmake_builder.rb
 lib/rubygems/ext/configure_builder.rb
@@ -119,16 +122,16 @@ lib/rubygems/source.rb
 lib/rubygems/source/installed.rb
 lib/rubygems/source/local.rb
 lib/rubygems/source/specific_file.rb
+lib/rubygems/source/vendor.rb
 lib/rubygems/source_list.rb
 lib/rubygems/source_local.rb
 lib/rubygems/source_specific_file.rb
 lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
 lib/rubygems/ssl_certs/.document
-lib/rubygems/ssl_certs/AddTrustExternalCARoot.pem
-lib/rubygems/ssl_certs/Entrust_net-Secure-Server-Certification-Authority.pem
-lib/rubygems/ssl_certs/GeoTrust_Global_CA.pem
-lib/rubygems/ssl_certs/VerisignClass3PublicPrimaryCertificationAuthority-G2.pem
+lib/rubygems/ssl_certs/Class3PublicPrimaryCertificationAuthority.pem
+lib/rubygems/ssl_certs/EntrustnetSecureServerCertificationAuthority.pem
+lib/rubygems/ssl_certs/GeoTrustGlobalCA.pem
 lib/rubygems/stub_specification.rb
 lib/rubygems/syck_hack.rb
 lib/rubygems/test_case.rb
@@ -191,6 +194,7 @@ test/rubygems/specifications/bar-0.0.2.gemspec
 test/rubygems/specifications/foo-0.0.1.gemspec
 test/rubygems/ssl_cert.pem
 test/rubygems/ssl_key.pem
+test/rubygems/test_bundled_ca.rb
 test/rubygems/test_config.rb
 test/rubygems/test_deprecate.rb
 test/rubygems/test_gem.rb
@@ -238,6 +242,8 @@ test/rubygems/test_gem_dependency_resolver_index_set.rb
 test/rubygems/test_gem_dependency_resolver_index_specification.rb
 test/rubygems/test_gem_dependency_resolver_installed_specification.rb
 test/rubygems/test_gem_dependency_resolver_installer_set.rb
+test/rubygems/test_gem_dependency_resolver_vendor_set.rb
+test/rubygems/test_gem_dependency_resolver_vendor_specification.rb
 test/rubygems/test_gem_doctor.rb
 test/rubygems/test_gem_ext_builder.rb
 test/rubygems/test_gem_ext_cmake_builder.rb
@@ -265,6 +271,7 @@ test/rubygems/test_gem_rdoc.rb
 test/rubygems/test_gem_remote_fetcher.rb
 test/rubygems/test_gem_request.rb
 test/rubygems/test_gem_request_set.rb
+test/rubygems/test_gem_request_set_gem_dependency_api.rb
 test/rubygems/test_gem_requirement.rb
 test/rubygems/test_gem_security.rb
 test/rubygems/test_gem_security_policy.rb
@@ -273,6 +280,7 @@ test/rubygems/test_gem_security_trust_dir.rb
 test/rubygems/test_gem_server.rb
 test/rubygems/test_gem_silent_ui.rb
 test/rubygems/test_gem_source.rb
+test/rubygems/test_gem_source_fetch_problem.rb
 test/rubygems/test_gem_source_installed.rb
 test/rubygems/test_gem_source_list.rb
 test/rubygems/test_gem_source_local.rb
@@ -294,3 +302,4 @@ test/rubygems/wrong_key_cert_32.pem
 util/CL2notes
 util/create_certs.rb
 util/create_encrypted_key.rb
+util/update_bundled_ca_certificates.rb

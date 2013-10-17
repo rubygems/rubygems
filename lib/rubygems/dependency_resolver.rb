@@ -304,4 +304,6 @@ require 'rubygems/dependency_resolver/index_set'
 require 'rubygems/dependency_resolver/index_specification'
 require 'rubygems/dependency_resolver/installed_specification'
 require 'rubygems/dependency_resolver/installer_set'
+require 'rubygems/dependency_resolver/vendor_set'
+require 'rubygems/dependency_resolver/vendor_specification'
 

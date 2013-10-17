@@ -69,7 +69,7 @@ class Gem::RequestSet
   # Add +deps+ Gem::Dependency objects to the set.
 
   def import deps
-    @dependencies += deps
+    @dependencies.concat deps
   end
 
   def install options, &block

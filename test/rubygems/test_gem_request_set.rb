@@ -26,6 +26,19 @@ class TestGemRequestSet < Gem::TestCase
     assert_equal [dep('a'), dep('b')], rs.dependencies
   end
 
+  def test_load_gemdeps
+    rs = Gem::RequestSet.new
+
+    Tempfile.open 'gem.deps.rb' do |io|
+      io.puts 'gem "a"'
+      io.flush
+
+      rs.load_gemdeps io.path
+    end
+
+    assert_equal [dep('a')], rs.dependencies
+  end
+
   def test_resolve
     a = util_spec "a", "2", "b" => ">= 2"
     b = util_spec "b", "2"

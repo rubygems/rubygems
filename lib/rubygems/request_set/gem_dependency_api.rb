@@ -3,9 +3,17 @@
 
 class Gem::RequestSet::GemDependencyAPI
 
+  ##
+  # The dependency groups created by #group in the dependency API file.
+
+  attr_reader :dependency_groups
+
   def initialize set, path
     @set = set
     @path = path
+
+    @current_groups    = nil
+    @dependency_groups = Hash.new { |h, group| h[group] = [] }
   end
 
   def load
@@ -16,9 +24,23 @@ class Gem::RequestSet::GemDependencyAPI
 
   def gem name, *reqs
     # Ignore the opts for now.
-    reqs.pop if reqs.last.kind_of?(Hash)
+    options = reqs.pop if reqs.last.kind_of?(Hash)
+    options ||= {}
 
-    @set.gem name, *reqs
+    groups =
+      (group = options.delete(:group) and Array(group)) ||
+      options.delete(:groups) ||
+      @current_groups
+
+    if groups then
+      groups.each do |group|
+        gem_arguments = [name, *reqs]
+        gem_arguments << options unless options.empty?
+        @dependency_groups[group] << gem_arguments
+      end
+    else
+      @set.gem name, *reqs
+    end
   end
 
   ##
@@ -28,7 +50,16 @@ class Gem::RequestSet::GemDependencyAPI
     File.basename @path
   end
 
-  def group *what
+  ##
+  # Block form for placing a dependency in the given +groups+.
+
+  def group *groups
+    @current_groups = groups
+
+    yield
+
+  ensure
+    @current_groups = nil
   end
 
   def platform what

@@ -19,6 +19,31 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal [dep('a')], @set.dependencies
   end
 
+  def test_gem_group
+    @gda.gem 'a', :group => :test
+
+    expected = {
+      :test => [['a']],
+    }
+
+    assert_equal expected, @gda.dependency_groups
+
+    assert_empty @set.dependencies
+  end
+
+  def test_gem_groups
+    @gda.gem 'a', :groups => [:test, :development]
+
+    expected = {
+      :development => [['a']],
+      :test        => [['a']],
+    }
+
+    assert_equal expected, @gda.dependency_groups
+
+    assert_empty @set.dependencies
+  end
+
   def test_gem_requirement
     @gda.gem 'a', '~> 1.0'
 
@@ -46,21 +71,35 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   end
 
   def test_group
-    @gda.group do
+    @gda.group :test do
       @gda.gem 'a'
     end
+
+    assert_equal [['a']], @gda.dependency_groups[:test]
 
     assert_empty @set.dependencies
   end
 
   def test_load
-    Tempfile.open 'Gemfile' do |io|
-      io.puts 'gem "a"'
+    Tempfile.open 'gem.deps.rb' do |io|
+      io.write <<-GEM_DEPS
+gem 'a'
+
+group :test do
+  gem 'b'
+end
+      GEM_DEPS
       io.flush
 
       gda = @GDA.new @set, io.path
 
       gda.load
+
+      expected = {
+        :test => [['b']],
+      }
+
+      assert_equal expected, gda.dependency_groups
 
       assert_equal [dep('a')], @set.dependencies
     end

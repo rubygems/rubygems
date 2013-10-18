@@ -7,6 +7,8 @@
 * Fail during `gem update` when an error occurs checking for newer versions.
   This means RubyGems no longer reports "nothing to update" when it cannot
   communicate with the server.  Issue #688 by Jimmy Dee.
+* Allow installation of gems when the home directory does not exist.  Issue
+  #689 by Laurence Rowe
 
 === 2.1.9 / 2013-10-14
 

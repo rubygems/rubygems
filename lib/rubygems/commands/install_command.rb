@@ -135,7 +135,7 @@ to write the specification by hand.  For example:
   def execute
     if gf = options[:gemdeps] then
       install_from_gemdeps gf
-      return
+      return # not reached
     end
 
     @installed_specs = []

@@ -59,7 +59,7 @@ class Gem::RequestSet::GemDependencyAPI
 
     all_groups |= @current_groups if @current_groups
 
-    if all_groups then
+    unless all_groups.empty? then
       all_groups.each do |group|
         gem_arguments = [name, *requirements]
         gem_arguments << options unless options.empty?

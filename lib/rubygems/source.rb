@@ -47,12 +47,7 @@ class Gem::Source
   include Comparable
 
   def ==(other)
-    case other
-    when self.class
-      @uri == other.uri
-    else
-      false
-    end
+    self.class === other and @uri == other.uri
   end
 
   alias_method :eql?, :==

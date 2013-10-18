@@ -37,6 +37,8 @@ class TestGemRequestSet < Gem::TestCase
     end
 
     assert_equal [dep('a')], rs.dependencies
+
+    assert rs.vendor_set
   end
 
   def test_resolve

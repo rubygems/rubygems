@@ -45,19 +45,5 @@ class TestGemDependencyResolverVendorSet < Gem::TestCase
     end
   end
 
-  def vendor_gem name = 'a', version = 1
-    directory = File.join 'vendor', name
-
-    vendor_spec = Gem::Specification.new name, version
-
-    FileUtils.mkdir_p directory
-
-    open File.join(directory, "#{name}.gemspec"), 'w' do |io|
-      io.write vendor_spec.to_ruby
-    end
-
-    return name, vendor_spec.version, directory
-  end
-
 end
 

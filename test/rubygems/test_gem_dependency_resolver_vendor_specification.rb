@@ -80,7 +80,7 @@ class TestGemDependencyResolverVendorSpecification < Gem::TestCase
 
     v_spec = Gem::DependencyResolver::VendorSpecification.new @set, spec
 
-    assert_equal v(1), spec.version
+    assert_equal v(1), v_spec.version
   end
 
 end

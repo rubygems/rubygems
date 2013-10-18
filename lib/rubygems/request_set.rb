@@ -160,6 +160,10 @@ class Gem::RequestSet
   # objects to be activated.
 
   def resolve set = nil
+    sets = [set, @vendor_set].compact
+
+    set = Gem::DependencyResolver.compose_sets(*sets) unless sets.empty?
+
     resolver = Gem::DependencyResolver.new @dependencies, set
     resolver.development  = @development
     resolver.soft_missing = @soft_missing

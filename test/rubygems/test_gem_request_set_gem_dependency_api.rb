@@ -95,6 +95,17 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_empty @set.dependencies
   end
 
+  def test_group_multiple
+    @gda.group :a do
+      @gda.gem 'a', :group => :b, :groups => [:c, :d]
+    end
+
+    assert_equal [['a']], @gda.dependency_groups[:a]
+    assert_equal [['a']], @gda.dependency_groups[:b]
+    assert_equal [['a']], @gda.dependency_groups[:c]
+    assert_equal [['a']], @gda.dependency_groups[:d]
+  end
+
   def test_load
     Tempfile.open 'gem.deps.rb' do |io|
       io.write <<-GEM_DEPS

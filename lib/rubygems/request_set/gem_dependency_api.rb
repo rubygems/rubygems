@@ -51,13 +51,16 @@ class Gem::RequestSet::GemDependencyAPI
       @vendor_set.add_vendor_gem name, directory
     end
 
-    groups =
-      (group = options.delete(:group) and Array(group)) ||
-      options.delete(:groups) ||
-      @current_groups
+    group = options.delete :group
+    all_groups  = group ? Array(group) : []
 
-    if groups then
-      groups.each do |group|
+    groups = options.delete :groups
+    all_groups |= groups if groups
+
+    all_groups |= @current_groups if @current_groups
+
+    if all_groups then
+      all_groups.each do |group|
         gem_arguments = [name, *requirements]
         gem_arguments << options unless options.empty?
         @dependency_groups[group] << gem_arguments

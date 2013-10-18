@@ -38,10 +38,9 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     @cmd.options[:args] = [@a2.name]
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
         @cmd.execute
       end
-      assert_equal 0, e.exit_code, @ui.error
     end
 
     assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
@@ -62,10 +61,9 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     assert @cmd.options[:version].satisfied_by?(@a2_pre.version)
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
         @cmd.execute
       end
-      assert_equal 0, e.exit_code, @ui.error
     end
 
     assert_equal %w[a-2.a], @cmd.installed_specs.map { |spec| spec.full_name }
@@ -83,10 +81,9 @@ class TestGemCommandsInstallCommand < Gem::TestCase
       orig_dir = Dir.pwd
       begin
         Dir.chdir @tempdir
-        e = assert_raises Gem::SystemExitException do
+        assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
           @cmd.execute
         end
-        assert_equal 0, e.exit_code
       ensure
         Dir.chdir orig_dir
       end
@@ -131,7 +128,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     @cmd.options[:args] = %w[no_such_gem]
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      e = assert_raises Gem::MockGemUi::TermError do
         @cmd.execute
       end
       assert_equal 2, e.exit_code
@@ -156,7 +153,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     @cmd.options[:args] = %w[nonexistent]
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      e = assert_raises Gem::MockGemUi::TermError do
         @cmd.execute
       end
       assert_equal 2, e.exit_code
@@ -184,7 +181,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     @cmd.options[:args] = %w[nonexistent]
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      e = assert_raises Gem::MockGemUi::TermError do
         @cmd.execute
       end
       assert_equal 2, e.exit_code
@@ -206,7 +203,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     @cmd.options[:args] = [misspelled]
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      e = assert_raises Gem::MockGemUi::TermError do
         @cmd.execute
       end
 
@@ -230,7 +227,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:args] = [misspelled]
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      e = assert_raises Gem::MockGemUi::TermError do
         @cmd.execute
       end
 
@@ -273,10 +270,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:args] = [@a2_pre.name]
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
         @cmd.execute
       end
-      assert_equal 0, e.exit_code, @ui.error
     end
 
     assert_equal %w[a-1], @cmd.installed_specs.map { |spec| spec.full_name }
@@ -296,10 +292,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:args] = [@a2_pre.name]
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
         @cmd.execute
       end
-      assert_equal 0, e.exit_code, @ui.error
     end
 
     assert_equal %w[a-2.a], @cmd.installed_specs.map { |spec| spec.full_name }
@@ -319,10 +314,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:args] = [@a2_pre.name]
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
         @cmd.execute
       end
-      assert_equal 0, e.exit_code, @ui.error
     end
 
     assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
@@ -347,14 +341,12 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
       begin
         Dir.chdir @tempdir
-        e = assert_raises Gem::SystemExitException do
+        assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
           @cmd.execute
         end
       ensure
         Dir.chdir old
       end
-
-      assert_equal 0, e.exit_code
     end
 
     wait_for_child_process_to_exit
@@ -383,14 +375,12 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
       begin
         Dir.chdir @tempdir
-        e = assert_raises Gem::SystemExitException do
+        assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
           @cmd.execute
         end
       ensure
         Dir.chdir old
       end
-
-      assert_equal 0, e.exit_code
     end
 
     path = @a2.build_info_file
@@ -410,10 +400,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:args] = [@a2.name]
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
         @cmd.execute
       end
-      assert_equal 0, e.exit_code
     end
 
     assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
@@ -446,10 +435,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     use_ui @ui do
       Dir.chdir @tempdir do
-        e = assert_raises Gem::SystemExitException do
+        assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
           @cmd.execute
         end
-        assert_equal 0, e.exit_code
       end
     end
 
@@ -476,10 +464,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
       orig_dir = Dir.pwd
       begin
         Dir.chdir @tempdir
-        e = assert_raises Gem::SystemExitException do
+        assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
           @cmd.execute
         end
-        assert_equal 0, e.exit_code
       ensure
         Dir.chdir orig_dir
       end
@@ -527,7 +514,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
       orig_dir = Dir.pwd
       begin
         Dir.chdir @tempdir
-        assert_raises Gem::SystemExitException do
+        assert_raises Gem::MockGemUi::SystemExitException do
           @cmd.execute
         end
       ensure
@@ -558,7 +545,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
       orig_dir = Dir.pwd
       begin
         Dir.chdir @tempdir
-        e = assert_raises Gem::SystemExitException do
+        e = assert_raises Gem::MockGemUi::TermError do
           @cmd.execute
         end
       ensure
@@ -580,7 +567,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
       orig_dir = Dir.pwd
       begin
         Dir.chdir @tempdir
-        e = assert_raises Gem::SystemExitException do
+        e = assert_raises Gem::MockGemUi::TermError do
           @cmd.execute
         end
       ensure
@@ -605,10 +592,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:args] = [@a2.name]
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
         @cmd.execute
       end
-      assert_equal 0, e.exit_code
     end
 
     assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
@@ -635,10 +621,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:gemdeps] = @gemdeps
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
         @cmd.execute
       end
-      assert_equal 0, e.exit_code
     end
 
     assert_equal %w[], @cmd.installed_specs.map { |spec| spec.full_name }
@@ -661,10 +646,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:gemdeps] = @gemdeps
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
         @cmd.execute
       end
-      assert_equal 0, e.exit_code
     end
 
     assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
@@ -690,10 +674,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:gemdeps] = @gemdeps
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
         @cmd.execute
       end
-      assert_equal 0, e.exit_code
     end
 
     names = @cmd.installed_specs.map { |spec| spec.full_name }
@@ -723,10 +706,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:gemdeps] = @gemdeps
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
         @cmd.execute
       end
-      assert_equal 0, e.exit_code
     end
 
     names = @cmd.installed_specs.map { |spec| spec.full_name }
@@ -756,10 +738,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:gemdeps] = @gemdeps
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
         @cmd.execute
       end
-      assert_equal 0, e.exit_code
     end
 
     names = @cmd.installed_specs.map { |spec| spec.full_name }
@@ -794,10 +775,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:gemdeps] = @gemdeps
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
         @cmd.execute
       end
-      assert_equal 0, e.exit_code
     end
 
     names = @cmd.installed_specs.map { |spec| spec.full_name }
@@ -834,10 +814,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:gemdeps] = @gemdeps
 
     use_ui @ui do
-      e = assert_raises Gem::SystemExitException do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
         @cmd.execute
       end
-      assert_equal 0, e.exit_code
     end
 
     names = @cmd.installed_specs.map { |spec| spec.full_name }

@@ -9,7 +9,6 @@ Autotest.add_hook :initialize do |at|
   at.testlib = ''
 
   at.add_exception %r%/\.git/%
-  at.add_exception %r%/\.svn/%
   at.add_exception %r%\.rbc$%
   at.add_exception %r%test/rubygems/rubygems%
 
@@ -24,21 +23,42 @@ Autotest.add_hook :initialize do |at|
     "test/rubygems/test_gem_#{m[1].gsub '/', '_'}.rb"
   end
 
-  at.add_mapping %r%^test/support/(.*).rb$% do |_, m|
-    at.files_matching %r%^test/rubygems/test_(.*)\.rb$%
-  end
-
   args = ARGV.reject { |a| a =~ /^-/ }
   at.find_directories = args unless args.empty?
-end
 
-class Autotest
-  alias :old_path_to_classname :path_to_classname
-  def path_to_classname s
-    classname = old_path_to_classname(s.sub(/test.rubygems.test_/, ""))
-    classname = classname.gsub('Rdoc', 'RDoc')
-    classname = classname.gsub('GemDependencyApi', 'GemDependencyAPI')
+  def at.handle_results results
+    results = results.gsub(/\e\[\d+m/, '') # strip ascii color
+    failed = results.scan(self.failed_results_re).map { |m, k|
+      m, k = $1, $2 if m =~ /(\w+)\((\w+)\)/ # minitest 4 output
+      [m, k]
+    }
 
-    classname
+    completed = results[self.completed_re]
+
+    if completed then
+      completed = completed.scan(/(\d+) (\w+)/).map { |v, k| [k, v.to_i] }
+
+      self.latest_results = Hash[*completed.flatten]
+      self.files_to_test  = consolidate_failures failed
+
+      color = failed.empty? ? :green : :red
+      hook color unless $TESTING
+    else
+      self.latest_results = nil
+    end
+
+    self.tainted = true unless self.files_to_test.empty?
+  end
+
+  def at.path_to_classname s
+    sep = File::SEPARATOR
+
+    f = s.sub(/^test#{sep}rubygems#{sep}/, '').sub(/\.rb$/, '').split sep
+
+    f = f.map { |path| path.split(/_|(\d+)/).map { |seg| seg.capitalize }.join }
+
+    f.join('::').
+      gsub('Rdoc', 'RDoc').
+      gsub('GemDependencyApi', 'GemDependencyAPI')
   end
 end

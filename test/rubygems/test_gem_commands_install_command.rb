@@ -411,9 +411,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
-        capture_io do
-          @cmd.execute
-        end
+        @cmd.execute
       end
       assert_equal 0, e.exit_code
     end
@@ -608,9 +606,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
-        capture_io do
-          @cmd.execute
-        end
+        @cmd.execute
       end
       assert_equal 0, e.exit_code
     end
@@ -640,9 +636,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
-        capture_io do
-          @cmd.execute
-        end
+        @cmd.execute
       end
       assert_equal 0, e.exit_code
     end
@@ -668,9 +662,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
-        capture_io do
-          @cmd.execute
-        end
+        @cmd.execute
       end
       assert_equal 0, e.exit_code
     end
@@ -699,9 +691,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
-        capture_io do
-          @cmd.execute
-        end
+        @cmd.execute
       end
       assert_equal 0, e.exit_code
     end
@@ -734,9 +724,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
-        capture_io do
-          @cmd.execute
-        end
+        @cmd.execute
       end
       assert_equal 0, e.exit_code
     end
@@ -769,9 +757,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
-        capture_io do
-          @cmd.execute
-        end
+        @cmd.execute
       end
       assert_equal 0, e.exit_code
     end
@@ -809,9 +795,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
-        capture_io do
-          @cmd.execute
-        end
+        @cmd.execute
       end
       assert_equal 0, e.exit_code
     end
@@ -851,9 +835,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     use_ui @ui do
       e = assert_raises Gem::SystemExitException do
-        capture_io do
-          @cmd.execute
-        end
+        @cmd.execute
       end
       assert_equal 0, e.exit_code
     end

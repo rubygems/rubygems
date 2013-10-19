@@ -1544,6 +1544,14 @@ dependencies: []
     refute_equal @a1.hash, @a2.hash
   end
 
+  def test_installed_by_version
+    assert_equal v(0), @a1.installed_by_version
+
+    @a1.installed_by_version = Gem.rubygems_version
+
+    assert_equal Gem.rubygems_version, @a1.installed_by_version
+  end
+
   def test_base_dir
     assert_equal @gemhome, @a1.base_dir
   end
@@ -1841,6 +1849,7 @@ end
     @a2.add_runtime_dependency 'b', '1'
     @a2.dependencies.first.instance_variable_set :@type, nil
     @a2.required_rubygems_version = Gem::Requirement.new '> 0'
+    @a2.installed_by_version = Gem.rubygems_version
 
     # cached specs do not have spec.files populated:
     ruby_code = @a2.to_ruby_for_cache
@@ -1862,6 +1871,8 @@ Gem::Specification.new do |s|
   s.homepage = "http://example.com"
   s.rubygems_version = "#{Gem::VERSION}"
   s.summary = "this is a summary"
+
+  s.installed_by_version = "#{Gem::VERSION}"
 
   if s.respond_to? :specification_version then
     s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}

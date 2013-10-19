@@ -20,6 +20,8 @@ class TestGemDependencyResolver < Gem::TestCase
     msg = "Set of gems was not the same: #{exp.map { |x| x.full_name}.inspect} != #{act.map { |x| x.full_name}.inspect}"
 
     assert_equal exp, act, msg
+  rescue Gem::DependencyResolutionError => e
+    flunk "#{e.message}\n#{e.conflict.explanation}"
   end
 
   def test_no_overlap_specificly

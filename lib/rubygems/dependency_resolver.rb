@@ -118,7 +118,7 @@ class Gem::DependencyResolver
         # on the dep for the activation itself. Otherwise, issue
         # it on the requester's request itself.
         #
-        if existing.others_possible?
+        if existing.others_possible? or existing.request.requester.nil? then
           conflict =
             Gem::DependencyResolver::DependencyConflict.new dep, existing
         else

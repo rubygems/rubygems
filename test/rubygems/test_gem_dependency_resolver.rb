@@ -313,6 +313,24 @@ class TestGemDependencyResolver < Gem::TestCase
     end
   end
 
+  def test_resolve_conflict
+    a1 = util_spec 'a', 1
+    a2 = util_spec 'a', 2
+
+    b2 = util_spec 'b', 2, 'a' => '~> 2.0'
+
+    s = set a1, a2, b2
+
+    a_dep = dep 'a', '~> 1.0'
+    b_dep = dep 'b'
+
+    r = Gem::DependencyResolver.new [a_dep, b_dep], s
+
+    assert_raises Gem::DependencyResolutionError do
+      r.resolve
+    end
+  end
+
   # actionmailer 2.3.4
   # activemerchant 1.5.0
   # activesupport 2.3.5, 2.3.4

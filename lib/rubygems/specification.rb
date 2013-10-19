@@ -1979,7 +1979,11 @@ class Gem::Specification < Gem::BasicSpecification
     q.group 2, 'Gem::Specification.new do |s|', 'end' do
       q.breakable
 
-      @@attributes.each do |attr_name|
+      attributes = @@attributes - [:name, :version]
+      attributes.unshift :version
+      attributes.unshift :name
+
+      attributes.each do |attr_name|
         current_value = self.send attr_name
         if current_value != default_value(attr_name) or
            self.class.required_attribute? attr_name then

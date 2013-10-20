@@ -338,6 +338,23 @@ class TestGemDependencyResolver < Gem::TestCase
     end
   end
 
+  def test_resolve_rollback
+    a1 = util_spec 'a', 1
+    a2 = util_spec 'a', 2
+
+    b1 = util_spec 'b', 1, 'a' => '~> 1.0'
+    b2 = util_spec 'b', 2, 'a' => '~> 2.0'
+
+    s = set a1, a2, b1, b2
+
+    a_dep = dep 'a', '~> 1.0'
+    b_dep = dep 'b'
+
+    r = Gem::DependencyResolver.new [a_dep, b_dep], s
+
+    assert_resolves_to [a1, b1], r
+  end
+
   # actionmailer 2.3.4
   # activemerchant 1.5.0
   # activesupport 2.3.5, 2.3.4

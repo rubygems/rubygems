@@ -95,8 +95,12 @@ class Gem::DependencyResolver
   ##
   # Finds the State in +states+ that matches the +conflict+ so that we can try
   # other possible sets.
+  #
+  # If no good candidate is found, the first state is tried.
 
   def find_conflict_state conflict, states # :nodoc:
+    rejected = []
+
     until states.empty? do
       state = states.pop
 
@@ -104,9 +108,14 @@ class Gem::DependencyResolver
         state.conflicts << [state.spec, conflict]
         return state
       end
+
+      rejected << state
     end
 
-    nil
+    rejected.shift
+  ensure
+    rejected = rejected.concat states
+    states.replace rejected
   end
 
   ##

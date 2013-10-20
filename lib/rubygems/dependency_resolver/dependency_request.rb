@@ -43,6 +43,10 @@ class Gem::DependencyResolver::DependencyRequest
     end
   end
 
+  def requirement
+    @dependency.requirement
+  end
+
   def to_s # :nodoc:
     @dependency.to_s
   end

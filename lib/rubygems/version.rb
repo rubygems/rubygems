@@ -174,8 +174,6 @@ class Gem::Version
   #   ver2 = Version.create(ver1)       # -> (ver1)
   #   ver3 = Version.create(nil)        # -> nil
 
-  # REFACTOR: There's no real reason this should be separate from #initialize.
-
   def self.create input
     if self === input then # check yourself before you wreck yourself
       input

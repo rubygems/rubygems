@@ -244,18 +244,21 @@ class TestGemDependencyResolver < Gem::TestCase
 
     r = Gem::DependencyResolver.new([ad, bd], s)
 
-    e = assert_raises Gem::ImpossibleDependenciesError do
+    e = assert_raises Gem::DependencyResolutionError do
       r.resolve
     end
 
-    assert_match "a-1 requires c (>= 2) but it conflicted", e.message
+    assert_match "unable to resolve conflicting dependencies", e.message
 
-    assert_equal "c (>= 2)", e.dependency.to_s
+    dependency = e.conflict.dependency
 
-    s, con = e.conflicts[0]
-    assert_equal "c-3", s.full_name
-    assert_equal "c (= 1)", con.dependency.to_s
-    assert_equal "b-1", con.requester.full_name
+    assert_equal 'c', dependency.name
+    assert_equal req('= 1'), dependency.requirement
+
+    activated = e.conflict.activated
+    assert_equal 'c-2', activated.full_name
+
+    assert_equal dep('c', '>= 2'), activated.request.dependency
   end
 
   def test_keeps_resolving_after_seeing_satisfied_dep
@@ -312,7 +315,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     r = Gem::DependencyResolver.new([d1, d2, d3], s)
 
-    assert_raises Gem::ImpossibleDependenciesError do
+    assert_raises Gem::DependencyResolutionError do
       r.resolve
     end
   end

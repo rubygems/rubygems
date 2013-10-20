@@ -98,12 +98,11 @@ class Gem::DependencyResolver
 
   def find_conflict_state conflict, states # :nodoc:
     until states.empty? do
-      if conflict.for_spec? states.last.spec
-        state = states.last
+      state = states.pop
+
+      if conflict.for_spec? state.spec
         state.conflicts << [state.spec, conflict]
         return state
-      else
-        states.pop
       end
     end
 

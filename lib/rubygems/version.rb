@@ -186,7 +186,7 @@ class Gem::Version
 
   @@all = {}
 
-  def self.new version
+  def self.new version # :nodoc:
     @@all[version] ||= super
   end
 
@@ -253,17 +253,17 @@ class Gem::Version
     initialize array[0]
   end
 
-  def yaml_initialize(tag, map)
+  def yaml_initialize(tag, map) # :nodoc:
     @version = map['version']
     @segments = nil
     @hash = nil
   end
 
-  def to_yaml_properties
+  def to_yaml_properties # :nodoc:
     ["@version"]
   end
 
-  def encode_with coder
+  def encode_with coder # :nodoc:
     coder.add 'version', @version
   end
 

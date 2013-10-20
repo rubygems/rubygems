@@ -67,6 +67,7 @@ end
 
       s.mark_version
       s.files = %w[lib/code.rb]
+      s.installed_by_version = v('2.2')
     end
   end
 
@@ -1219,6 +1220,19 @@ dependencies: []
     @a1.build_extensions
 
     refute_path_exists @a1.extension_install_dir
+  end
+
+  def test_build_extensions_old
+    ext_spec
+
+    refute_empty @ext.extensions, 'sanity check'
+
+    @ext.installed_by_version = v(0)
+
+    @ext.build_extensions
+
+    gem_make_out = File.join @ext.extension_install_dir, 'gem_make.out'
+    refute_path_exists gem_make_out
   end
 
   def test_contains_requirable_file_eh

@@ -408,5 +408,21 @@ class TestGemDependencyResolver < Gem::TestCase
     assert_equal [a1, a1_p1], selected
   end
 
+  def test_raises_and_explains_when_platform_prevents_install
+    a1 = util_spec "a", "1" do |s|
+      s.platform = Gem::Platform.new %w[c p 1]
+    end
+
+    ad = make_dep "a", "= 1"
+
+    r = Gem::DependencyResolver.new([ad], set(a1))
+
+    e = assert_raises Gem::UnsatisfiableDepedencyError do
+      r.resolve
+    end
+
+    assert_match /No match for 'a \(= 1\)' on this platform. Found: c-p-1/, e.message
+  end
+
 end
 

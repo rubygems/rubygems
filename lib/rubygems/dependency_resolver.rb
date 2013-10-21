@@ -118,14 +118,6 @@ class Gem::DependencyResolver
     states.replace rejected
   end
 
-  ##
-  # Extracts the specifications that may be able to fulfill +dependency+
-
-  def find_possible dependency # :nodoc:
-    possible = @set.find_all dependency
-    select_local_platforms possible
-  end
-
   def handle_conflict(dep, existing)
     # There is a conflict! We return the conflict object which will be seen by
     # the caller and be handled at the right level.
@@ -189,11 +181,12 @@ class Gem::DependencyResolver
         next
       end
 
-      possible = find_possible dep
+      all_possible = @set.find_all dep
+      possible = select_local_platforms all_possible
 
       case possible.size
       when 0
-        resolve_for_zero dep
+        resolve_for_zero dep, all_possible
       when 1
         needed, specs =
           resolve_for_single needed, specs, dep, possible
@@ -282,11 +275,11 @@ class Gem::DependencyResolver
   ##
   # When there are no possible specifications for +dep+ our work is done.
 
-  def resolve_for_zero dep # :nodoc:
+  def resolve_for_zero dep, platform_mismatch # :nodoc:
     @missing << dep
 
     unless @soft_missing
-      raise Gem::UnsatisfiableDependencyError, dep
+      raise Gem::UnsatisfiableDependencyError.new(dep, platform_mismatch)
     end
   end
 

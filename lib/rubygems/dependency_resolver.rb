@@ -234,7 +234,7 @@ class Gem::DependencyResolver
 
   def select_local_platforms specs # :nodoc:
     specs.select do |spec|
-      Gem::Platform.match spec.platform
+      Gem::Platform.installable? spec
     end
   end
 

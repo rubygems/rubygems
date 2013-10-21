@@ -781,6 +781,17 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
   end
 
+  def test_install_platform_is_ignored_when_a_file_is_specified
+    a, a_gem = util_gem 'a', '1' do |s|
+      s.platform = Gem::Platform.new %w[cpu other_platform 1]
+    end
+
+    inst = Gem::DependencyInstaller.new :domain => :local
+    inst.install a_gem
+
+    assert_equal %w[a-1-cpu-other_platform-1], inst.installed_gems.map { |s| s.full_name }
+  end
+
   if defined? OpenSSL then
     def test_install_security_policy
       util_setup_gems

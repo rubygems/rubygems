@@ -1731,6 +1731,7 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   def init_with coder # :nodoc:
+    @installed_by_version ||= nil
     yaml_initialize coder.tag, coder.map
   end
 
@@ -2590,6 +2591,8 @@ licenses is empty.  Use a license abbreviation from:
 
       instance_variable_set "@#{attribute}", value
     end
+
+    @installed_by_version ||= nil
   end
 
   extend Gem::Deprecate

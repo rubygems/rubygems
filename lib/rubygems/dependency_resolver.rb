@@ -132,8 +132,8 @@ class Gem::DependencyResolver
       end
 
       # Get a list of all specs that satisfy dep and platform
-      possible = @set.find_all dep
-      possible = select_local_platforms possible
+      all_possible = @set.find_all dep
+      possible = select_local_platforms all_possible
 
       case possible.size
       when 0
@@ -141,7 +141,7 @@ class Gem::DependencyResolver
 
         unless @soft_missing
           # If there are none, then our work here is done.
-          raise Gem::UnsatisfiableDependencyError, dep
+          raise Gem::UnsatisfiableDependencyError.new dep, all_possible
         end
       when 1
         # If there is one, then we just add it to specs

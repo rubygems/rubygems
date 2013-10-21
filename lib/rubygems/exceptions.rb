@@ -179,10 +179,15 @@ class Gem::UnsatisfiableDependencyError < Gem::Exception
 
   attr_reader :dependency
 
-  def initialize dep
-    requester = dep.requester ? dep.requester.request : '(unknown)'
+  def initialize dep, platform_mismatch=nil
+    if platform_mismatch and !platform_mismatch.empty?
+      plats = platform_mismatch.map { |x| x.platform.to_s }.sort.uniq
+      super "Unable to resolve dependency: No match for '#{dep}' on this platform. Found: #{plats.join(', ')}"
+    else
+      requester = dep.requester ? dep.requester.request : '(unknown)'
 
-    super "Unable to resolve dependency: #{requester} requires #{dep}"
+      super "Unable to resolve dependency: #{requester} requires #{dep}"
+    end
 
     @dependency = dep
   end

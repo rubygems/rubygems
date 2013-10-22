@@ -184,9 +184,11 @@ class Gem::UnsatisfiableDependencyError < Gem::Exception
       plats = platform_mismatch.map { |x| x.platform.to_s }.sort.uniq
       super "Unable to resolve dependency: No match for '#{dep}' on this platform. Found: #{plats.join(', ')}"
     else
-      requester = dep.requester ? dep.requester.request : '(unknown)'
-
-      super "Unable to resolve dependency: #{requester} requires #{dep}"
+      if dep.explicit?
+        super "Unable to resolve dependency: user requested '#{dep}'"
+      else
+        super "Unable to resolve dependency: '#{dep.request_context}' requires '#{dep}'"
+      end
     end
 
     @dependency = dep

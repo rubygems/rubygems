@@ -205,7 +205,7 @@ class TestGemDependencyResolver < Gem::TestCase
       r.resolve
     end
 
-    assert_equal "Unable to resolve dependency: (unknown) requires a (>= 0)",
+    assert_equal "Unable to resolve dependency: user requested 'a (>= 0)'",
                  e.message
 
     assert_equal "a (>= 0)", e.dependency.to_s
@@ -223,6 +223,37 @@ class TestGemDependencyResolver < Gem::TestCase
     end
 
     assert_equal "a (= 3)", e.dependency.to_s
+  end
+
+  def test_raises_and_reports_a_toplevel_request_properly
+    a1 = util_spec "a", "1"
+    ad = make_dep "a", "= 3"
+
+    r = Gem::DependencyResolver.new([ad], set(a1))
+
+    e = assert_raises Gem::UnsatisfiableDepedencyError do
+      r.resolve
+    end
+
+    assert_equal "Unable to resolve dependency: user requested 'a (= 3)'",
+                 e.message
+  end
+
+  def test_raises_and_reports_an_implicit_request_properly
+    a1 = util_spec "a", "1" do |s|
+      s.add_runtime_dependency 'b', '= 2'
+    end
+
+    ad = make_dep "a", "= 1"
+
+    r = Gem::DependencyResolver.new([ad], set(a1))
+
+    e = assert_raises Gem::UnsatisfiableDepedencyError do
+      r.resolve
+    end
+
+    assert_equal "Unable to resolve dependency: 'a (= 1)' requires 'b (= 2)'",
+                 e.message
   end
 
   def test_raises_when_possibles_are_exhausted

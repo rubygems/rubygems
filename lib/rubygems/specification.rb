@@ -856,12 +856,8 @@ class Gem::Specification < Gem::BasicSpecification
   # this resets the list of known specs.
 
   def self.dirs= dirs
-    # TODO: find extra calls to dir=
-    # warn "NOTE: dirs= called from #{caller.first} for #{dirs.inspect}"
-
     self.reset
 
-    # ugh
     @@dirs = Array(dirs).map { |dir| File.join dir, "specifications" }
   end
 

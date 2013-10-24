@@ -470,7 +470,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def latest_specs(req, res)
-    Gem::Specification.reset
+    Gem::Specification.dirs = @gem_dirs
 
     res['content-type'] = 'application/x-gzip'
 
@@ -531,7 +531,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def quick(req, res)
-    Gem::Specification.reset
+    Gem::Specification.dirs = @gem_dirs
 
     res['content-type'] = 'text/plain'
     add_date res
@@ -567,7 +567,8 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def root(req, res)
-    Gem::Specification.reset
+    Gem::Specification.dirs = @gem_dirs
+
     add_date res
 
     raise WEBrick::HTTPStatus::NotFound, "`#{req.path}' not found." unless
@@ -787,7 +788,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def specs(req, res)
-    Gem::Specification.reset
+    Gem::Specification.dirs = @gem_dirs
 
     add_date res
 

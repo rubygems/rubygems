@@ -8,6 +8,8 @@ Bug fixes:
   objects.  Fixes #674 by jkanywhere.
 * Allow installation of gems when the home directory does not exist.  Issue
   #689 by Laurence Rowe
+* Fix updating gems which have multiple platforms.  Issue #693 by Ookami
+  Kenrou.
 
 === 2.0.12 / 2013-10-14
 

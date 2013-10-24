@@ -15,6 +15,9 @@
   Alvim.
 * Improved resolution of gems when specific versions have conflicting
   dependencies.
+* RubyGems installs local gems regardless of platform again.  Issue #695
+* The --ignore-dependencies option for gem installation works again.  Issue
+  #695
 
 === 2.1.9 / 2013-10-14
 

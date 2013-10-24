@@ -13,6 +13,8 @@
   Kenrou.
 * The gem server now uses user-provided directories.  Issue #696 by Marcelo
   Alvim.
+* Improved resolution of gems when specific versions have conflicting
+  dependencies.
 
 === 2.1.9 / 2013-10-14
 

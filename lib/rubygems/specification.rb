@@ -2594,6 +2594,25 @@ licenses is empty.  Use a license abbreviation from:
 
       warning "prerelease dependency on #{dep} is not recommended" if
         prerelease_dep
+
+      overly_strict = dep.requirement.requirements.length == 1 &&
+        dep.requirement.requirements.any? do |op, version|
+          op == '~>' and
+            not version.prerelease? and
+            version.segments.length > 2
+        end
+
+      if overly_strict then
+        _, version = dep.requirement.requirements.first
+
+        base = version.segments.first 2
+
+        warning <<-WARNING
+pessimistic dependency on #{dep} may be overly strict
+  if #{dep.name} is semantically versioned, use:
+    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}', '>= #{version}'
+        WARNING
+      end
     end
 
     true

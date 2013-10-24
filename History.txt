@@ -40,6 +40,8 @@ Minor enhancements:
   Isolate, Gemfile or gem.deps.rb file.
 * Added Gem::StubSpecification#stubbed? to help determine if a user should run
   `gem pristine` to speed up gem loading.  Pull request #694 by Jon Leighton.
+* RubyGems now warns when a gem has a pessimistic version dependency that may
+  be too strict.
 
 Bug fixes:
 

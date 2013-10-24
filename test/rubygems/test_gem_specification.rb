@@ -2128,6 +2128,10 @@ end
     Dir.chdir @tempdir do
       @a1.add_runtime_dependency     'b', '>= 1.0.rc1'
       @a1.add_development_dependency 'c', '>= 2.0.rc2'
+      @a1.add_runtime_dependency     'd', '~> 1.2.3'
+      @a1.add_runtime_dependency     'e', '~> 1.2.3.4'
+      @a1.add_runtime_dependency     'g', '~> 1.2.3', '>= 1.2.3.4'
+      @a1.add_runtime_dependency     'g', '>= 1.2.3', '<= 2'
 
       use_ui @ui do
         @a1.validate
@@ -2136,9 +2140,16 @@ end
       expected = <<-EXPECTED
 #{w}:  prerelease dependency on b (>= 1.0.rc1) is not recommended
 #{w}:  prerelease dependency on c (>= 2.0.rc2, development) is not recommended
+#{w}:  pessimistic dependency on d (~> 1.2.3) may be overly strict
+  if d is semantically versioned, use:
+    add_runtime_dependency 'd', '~> 1.2', '>= 1.2.3'
+#{w}:  pessimistic dependency on e (~> 1.2.3.4) may be overly strict
+  if e is semantically versioned, use:
+    add_runtime_dependency 'e', '~> 1.2', '>= 1.2.3.4'
+#{w}:  See http://guides.rubygems.org/specification-reference/ for help
       EXPECTED
 
-      assert_match expected, @ui.error, 'warning'
+      assert_equal expected, @ui.error, 'warning'
     end
   end
 

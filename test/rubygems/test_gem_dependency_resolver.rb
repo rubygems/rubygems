@@ -183,8 +183,6 @@ class TestGemDependencyResolver < Gem::TestCase
       r.resolve
     end
 
-    assert_equal "unable to resolve conflicting dependencies 'c (= 2)' and 'c (= 1)'", e.message
-
     deps = [make_dep("c", "= 2"), make_dep("c", "= 1")]
     assert_equal deps, e.conflicting_dependencies
 
@@ -278,8 +276,6 @@ class TestGemDependencyResolver < Gem::TestCase
     e = assert_raises Gem::DependencyResolutionError do
       r.resolve
     end
-
-    assert_match "unable to resolve conflicting dependencies", e.message
 
     dependency = e.conflict.dependency
 

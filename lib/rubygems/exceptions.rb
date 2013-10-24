@@ -35,7 +35,7 @@ class Gem::DependencyResolutionError < Gem::Exception
     @conflict = conflict
     a, b = conflicting_dependencies
 
-    super "unable to resolve conflicting dependencies '#{a}' and '#{b}'"
+    super "conflicting dependencies #{a} and #{b}\n#{@conflict.explanation}"
   end
 
   def conflicting_dependencies

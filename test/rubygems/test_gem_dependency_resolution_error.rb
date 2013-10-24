@@ -20,13 +20,8 @@ class TestGemDependencyResolutionError < Gem::TestCase
   end
 
   def test_message
-    expected = <<-EXPECTED
-conflicting dependencies a (= 1) and a (= 2)
-  Activated a-2 instead of (= 1) via:
-    
-    EXPECTED
-
-    assert_equal expected, @error.message
+    assert_match %r%^conflicting dependencies a \(= 1\) and a \(= 2\)$%,
+                 @error.message
   end
 
 end

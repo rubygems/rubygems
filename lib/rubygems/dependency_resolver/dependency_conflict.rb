@@ -71,6 +71,8 @@ class Gem::DependencyResolver::DependencyConflict
       current = current.request.requester
     end
 
+    path = ['user request (gem command or Gemfile)'] if path.empty?
+
     path
   end
 

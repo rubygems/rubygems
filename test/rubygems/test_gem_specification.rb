@@ -883,6 +883,21 @@ dependencies: []
     refute_includes Gem::Specification.stubs.map { |s| s.full_name }, 'a-1'
   end
 
+  def test_self_remove_spec_removed
+    open @a1.spec_file, 'w' do |io|
+      io.write @a1.to_ruby
+    end
+
+    Gem::Specification.reset
+
+    FileUtils.rm @a1.spec_file # bug #698
+
+    Gem::Specification.remove_spec @a1
+
+    refute_includes Gem::Specification.all_names, 'a-1'
+    refute_includes Gem::Specification.stubs.map { |s| s.full_name }, 'a-1'
+  end
+
   DATA_PATH = File.expand_path "../data", __FILE__
 
   def test_handles_private_null_type

@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.1.11 / 2013-11-2
+
+Bug fixes:
+
+* Gem::Specification::remove_spec no longer checks for existence of the spec
+  to be removed.  Issue #698 by Tiago Macedo.
+
 === 2.1.10 / 2013-10-24
 
 Bug fixes:

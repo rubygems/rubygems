@@ -59,6 +59,21 @@ class Gem::DependencyResolver
     @soft_missing = false
   end
 
+  ##
+  # Creates an ActivationRequest for the given +dep+ and the last +possible+
+  # specification.
+  #
+  # Returns the Specification and the ActivationRequest
+
+  def activation_request dep, possible # :nodoc:
+    spec = possible.pop
+
+    activation_request =
+      Gem::DependencyResolver::ActivationRequest.new spec, dep, possible
+
+    return spec, activation_request
+  end
+
   def requests s, act, reqs=nil
     s.dependencies.reverse_each do |d|
       next if d.type == :development and not @development
@@ -219,10 +234,8 @@ class Gem::DependencyResolver
     raise Gem::ImpossibleDependenciesError.new state.dep, state.conflicts if
       state.possibles.empty?
 
-    spec = state.possibles.pop
-
     # Retry resolution with this spec and add it's dependencies
-    act = Gem::DependencyResolver::ActivationRequest.new spec, state.dep
+    spec, act = activation_request state.dep, state.possibles
 
     needed = requests spec, act, state.needed
     specs = Gem::List.prepend state.specs, act
@@ -241,19 +254,11 @@ class Gem::DependencyResolver
       [s.source, s.version, s.platform == Gem::Platform::RUBY ? -1 : 1]
     end
 
-    # To figure out which to pick, we keep resolving given each one being
-    # activated and if there isn't a conflict, we know we've found a full set.
-    #
-    # We use an until loop rather than reverse_each to keep the stack short
-    # since we're using a recursive algorithm.
-    spec = possible.pop
+    spec, act = activation_request dep, possible
 
     # We may need to try all of +possible+, so we setup state to unwind back
     # to current +needed+ and +specs+ so we can try another. This is code is
     # what makes conflict resolution possible.
-
-    act = Gem::DependencyResolver::ActivationRequest.new spec, dep
-
     states << State.new(needed, specs, dep, spec, possible, [])
 
     needed = requests spec, act, needed
@@ -267,8 +272,7 @@ class Gem::DependencyResolver
   # dependencies by adding them to +needed+.
 
   def resolve_for_single needed, specs, dep, possible # :nodoc:
-    spec = possible.first
-    act = Gem::DependencyResolver::ActivationRequest.new spec, dep, false
+    spec, act = activation_request dep, possible
 
     specs = Gem::List.prepend specs, act
 

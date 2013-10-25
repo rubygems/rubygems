@@ -279,13 +279,16 @@ class TestGemDependencyResolver < Gem::TestCase
 
     dependency = e.conflict.dependency
 
-    assert_equal 'c', dependency.name
-    assert_equal req('= 1'), dependency.requirement
+    assert_equal 'a', dependency.name
+    assert_equal req('>= 0'), dependency.requirement
 
     activated = e.conflict.activated
     assert_equal 'c-2', activated.full_name
 
     assert_equal dep('c', '>= 2'), activated.request.dependency
+
+    assert_equal [dep('c', '= 1'), dep('c', '>= 2')],
+                 e.conflict.conflicting_dependencies
   end
 
   def test_keeps_resolving_after_seeing_satisfied_dep

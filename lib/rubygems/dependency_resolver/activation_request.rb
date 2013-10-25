@@ -47,11 +47,21 @@ class Gem::DependencyResolver::ActivationRequest
   end
 
   def inspect # :nodoc:
-    others_possible = nil
-    others_possible = ' (others possible)' if @others_possible
+    others =
+      case @others_possible
+      when true then # TODO remove at RubyGems 3
+        ' (others possible)'
+      when false then # TODO remove at RubyGems 3
+        nil
+      else
+        unless @others_possible.empty? then
+          others = @others_possible.map { |s| s.full_name }
+          " (others possible: #{others.join ', '})"
+        end
+      end
 
     '#<%s for %p from %s%s>' % [
-      self.class, @spec, @request, others_possible
+      self.class, @spec, @request, others
     ]
   end
 
@@ -75,7 +85,12 @@ class Gem::DependencyResolver::ActivationRequest
   # requests for the same Dependency request.
 
   def others_possible?
-    @others_possible
+    case @others_possible
+    when true, false then
+      @others_possible
+    else
+      not @others_possible.empty?
+    end
   end
 
   ##
@@ -95,9 +110,18 @@ class Gem::DependencyResolver::ActivationRequest
       q.text ' for '
       q.pp @request
 
-
-      q.breakable
-      q.text ' (other possible)' if @others_possible
+      case @others_possible
+      when false then
+      when true then
+        q.breakable
+        q.text 'others possible'
+      else
+        unless @others_possible.empty? then
+          q.breakable
+          q.text 'others '
+          q.pp @others_possible.map { |s| s.full_name }
+        end
+      end
     end
   end
 

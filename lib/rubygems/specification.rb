@@ -1082,9 +1082,6 @@ class Gem::Specification < Gem::BasicSpecification
   # Removes +spec+ from the known specs.
 
   def self.remove_spec spec
-    # TODO: beat on the tests
-    raise "wtf: #{spec.full_name} not in #{all_names.inspect}" unless
-      _all.include? spec
     _all.delete spec
     stubs.delete_if { |s| s.full_name == spec.full_name }
   end

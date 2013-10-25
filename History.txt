@@ -208,6 +208,17 @@ Bug fixes:
 * Fixed credential creation for `gem push` when `--host` is not given.  Pull
   request #622 by Arthur Nogueira Neves
 
+=== 2.0.13 / 2013-10-24
+
+Bug fixes:
+
+* Use class check instead of :version method check when creating Gem::Version
+  objects.  Fixes #674 by jkanywhere.
+* Allow installation of gems when the home directory does not exist.  Issue
+  #689 by Laurence Rowe
+* Fix updating gems which have multiple platforms.  Issue #693 by Ookami
+  Kenrou.
+
 === 2.0.12 / 2013-10-14
 
 Bug fixes:

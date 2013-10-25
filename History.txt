@@ -43,6 +43,11 @@ Minor enhancements:
 * RubyGems now warns when a gem has a pessimistic version dependency that may
   be too strict.
 
+Bug fixes:
+
+* Gem::Specification::remove_spec no longer checks for existence of the spec
+  to be removed.  Issue #698 by Tiago Macedo.
+
 === 2.1.10 / 2013-10-24
 
 Bug fixes:

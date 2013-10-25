@@ -873,6 +873,16 @@ dependencies: []
                  Gem::Specification.outdated_and_latest_version.to_a
   end
 
+  def test_self_remove_spec
+    assert_includes Gem::Specification.all_names, 'a-1'
+    assert_includes Gem::Specification.stubs.map { |s| s.full_name }, 'a-1'
+
+    Gem::Specification.remove_spec @a1
+
+    refute_includes Gem::Specification.all_names, 'a-1'
+    refute_includes Gem::Specification.stubs.map { |s| s.full_name }, 'a-1'
+  end
+
   DATA_PATH = File.expand_path "../data", __FILE__
 
   def test_handles_private_null_type

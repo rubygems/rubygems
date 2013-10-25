@@ -1,5 +1,7 @@
 class Gem::DependencyResolver::InstalledSpecification
 
+  attr_reader :set
+
   attr_reader :spec
 
   def initialize set, spec, source=nil

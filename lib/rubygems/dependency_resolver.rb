@@ -192,17 +192,17 @@ class Gem::DependencyResolver
         next
       end
 
-      possible, all_possible = find_possible dep
+      matching, all = find_possible dep
 
-      case possible.size
+      case matching.size
       when 0
-        resolve_for_zero dep, all_possible
+        resolve_for_zero dep, all
       when 1
         needed, specs =
-          resolve_for_single needed, specs, dep, possible
+          resolve_for_single needed, specs, dep, matching
       else
         needed, specs =
-          resolve_for_multiple needed, specs, states, dep, possible
+          resolve_for_multiple needed, specs, states, dep, matching
       end
     end
 

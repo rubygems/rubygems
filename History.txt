@@ -10,6 +10,8 @@ Bug fixes:
   #689 by Laurence Rowe
 * Fix updating gems which have multiple platforms.  Issue #693 by Ookami
   Kenrou.
+* The gem server now uses user-provided directories.  Issue #696 by Marcelo
+  Alvim.
 
 === 2.0.12 / 2013-10-14
 

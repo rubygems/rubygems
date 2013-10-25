@@ -782,7 +782,7 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def test_install_platform_is_ignored_when_a_file_is_specified
-    a, a_gem = util_gem 'a', '1' do |s|
+    _, a_gem = util_gem 'a', '1' do |s|
       s.platform = Gem::Platform.new %w[cpu other_platform 1]
     end
 

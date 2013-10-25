@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-=== 2.1.10
+=== 2.1.10 / 2013-10-24
 
 * Use class check instead of :version method check when creating Gem::Version
   objects.  Fixes #674 by jkanywhere.

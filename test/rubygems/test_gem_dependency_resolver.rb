@@ -368,6 +368,25 @@ class TestGemDependencyResolver < Gem::TestCase
     end
   end
 
+  def test_resolve_bug_699
+    a1 = util_spec 'a', '1', 'b' => '= 2',
+                             'c' => '~> 1.0.3'
+
+    b1 = util_spec 'b', '2', 'c' => '~> 1.0'
+
+    c1 = util_spec 'c', '1.0.9'
+    c2 = util_spec 'c', '1.1.0'
+    c3 = util_spec 'c', '1.2.0'
+
+    s = set a1, b1, c1, c2, c3
+
+    a_dep = dep 'a', '= 1'
+
+    r = Gem::DependencyResolver.new [a_dep], s
+
+    assert_resolves_to [a1, b1, c1], r
+  end
+
   def test_resolve_rollback
     a1 = util_spec 'a', 1
     a2 = util_spec 'a', 2

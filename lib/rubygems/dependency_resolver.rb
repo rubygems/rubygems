@@ -204,6 +204,8 @@ class Gem::DependencyResolver
 
         needed, specs = resolve_for_conflict needed, specs, state
 
+        states << state unless state.possibles.empty?
+
         next
       end
 

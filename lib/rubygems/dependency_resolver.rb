@@ -127,7 +127,7 @@ class Gem::DependencyResolver
       rejected << state
     end
 
-    rejected.shift
+    return rejected.shift
   ensure
     rejected = rejected.concat states
     states.replace rejected

@@ -21,7 +21,7 @@ class TestGemDependencyResolver < Gem::TestCase
 
     assert_equal exp, act, msg
   rescue Gem::DependencyResolutionError => e
-    flunk "#{e.message}\n#{e.conflict.explanation}"
+    flunk e.message
   end
 
   def test_no_overlap_specificly

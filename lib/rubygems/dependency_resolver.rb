@@ -176,7 +176,29 @@ class Gem::DependencyResolver
   # +conflicts+ is a [DependencyRequest, DependencyConflict] hit tried to
   # activate the state.
   #
-  State = Struct.new(:needed, :specs, :dep, :spec, :possibles, :conflicts)
+  State = Struct.new(:needed, :specs, :dep, :spec, :possibles, :conflicts) do
+    def summary # :nodoc:
+      nd = needed.map { |s| s.to_s }.sort if nd
+
+      if specs then
+        ss = specs.map { |s| s.full_name }.sort
+        ss.unshift ss.length
+      end
+
+      d = dep.to_s
+      d << " from #{dep.requester.full_name}" if dep.requester
+
+      ps = possibles.map { |p| p.full_name }.sort
+      ps.unshift ps.length
+
+      cs = conflicts.map do |(s, c)|
+        [s.full_name, c.conflicting_dependencies.map { |d| d.to_s }]
+      end
+
+      { needed: nd, specs: ss, dep: d, spec: spec.full_name,
+        possibles: ps, conflicts: cs }
+    end
+  end
 
   ##
   # The meat of the algorithm. Given +needed+ DependencyRequest objects and

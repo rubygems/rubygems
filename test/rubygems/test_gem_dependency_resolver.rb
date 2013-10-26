@@ -24,6 +24,24 @@ class TestGemDependencyResolver < Gem::TestCase
     flunk e.message
   end
 
+  def test_handle_conflict
+    a1 = util_spec 'a', 1
+
+    r1 = Gem::DependencyResolver::DependencyRequest.new dep('a', '= 1'), nil
+    r2 = Gem::DependencyResolver::DependencyRequest.new dep('a', '= 2'), nil
+    r3 = Gem::DependencyResolver::DependencyRequest.new dep('a', '= 3'), nil
+
+    existing = Gem::DependencyResolver::ActivationRequest.new a1, r1, false
+
+    res = Gem::DependencyResolver.new [a1]
+
+    res.handle_conflict r2, existing
+    res.handle_conflict r2, existing
+    res.handle_conflict r3, existing
+
+    assert_equal 2, res.conflicts.length
+  end
+
   def test_no_overlap_specificly
     a = util_spec "a", '1'
     b = util_spec "b", "1"

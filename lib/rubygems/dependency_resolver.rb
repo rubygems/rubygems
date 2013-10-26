@@ -53,7 +53,7 @@ class Gem::DependencyResolver
     @set = set || Gem::DependencyResolver::IndexSet.new
     @needed = needed
 
-    @conflicts    = nil
+    @conflicts    = []
     @development  = false
     @missing      = []
     @soft_missing = false
@@ -160,7 +160,7 @@ class Gem::DependencyResolver
         Gem::DependencyResolver::DependencyConflict.new depreq, existing, dep
     end
 
-    @conflicts << conflict
+    @conflicts << conflict unless @conflicts.include? conflict
 
     return conflict
   end

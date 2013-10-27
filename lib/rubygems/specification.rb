@@ -2646,6 +2646,10 @@ pessimistic dependency on #{dep} may be overly strict
     return @version
   end
 
+  def stubbed?
+    false
+  end
+
   # FIX: have this handle the platform/new_platform/original_platform bullshit
   def yaml_initialize(tag, vals) # :nodoc:
     vals.each do |ivar, val|

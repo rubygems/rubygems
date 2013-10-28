@@ -6,6 +6,7 @@ Bug fixes:
 
 * Gem::Specification::remove_spec no longer checks for existence of the spec
   to be removed.  Issue #698 by Tiago Macedo.
+* Restored wildcard handling when installing gems.  Issue #697 by Chuck Remes.
 
 === 2.1.10 / 2013-10-24
 

@@ -1,6 +1,9 @@
 require 'rubygems/source'
 
 class Gem::SourceList
+
+  include Enumerable
+
   def initialize
     @sources = []
   end

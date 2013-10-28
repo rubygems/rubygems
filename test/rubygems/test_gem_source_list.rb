@@ -18,6 +18,10 @@ class TestGemSourceList < Gem::TestCase
     assert_equal [Gem::Source.new(@uri)], sl.sources
   end
 
+  def test_Enumerable
+    assert_includes Gem::SourceList.ancestors, Enumerable
+  end
+
   def test_append
     sl = Gem::SourceList.new
     source = (sl << @uri)

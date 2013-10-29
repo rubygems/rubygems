@@ -60,14 +60,10 @@ class Gem::RequestSet::GemDependencyAPI
 
     all_groups |= @current_groups if @current_groups
 
-    unless all_groups.empty? then
-      all_groups.each do |group|
-        gem_arguments = [name, *requirements]
-        gem_arguments << options unless options.empty?
-        @dependency_groups[group] << gem_arguments
-      end
-
-      return
+    all_groups.each do |group|
+      gem_arguments = [name, *requirements]
+      gem_arguments << options unless options.empty?
+      @dependency_groups[group] << gem_arguments
     end
 
     @set.gem name, *requirements

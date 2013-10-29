@@ -31,7 +31,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     assert_equal expected, @gda.dependency_groups
 
-    assert_empty @set.dependencies
+    assert_equal [dep('a')], @set.dependencies
   end
 
   def test_gem_groups
@@ -44,7 +44,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     assert_equal expected, @gda.dependency_groups
 
-    assert_empty @set.dependencies
+    assert_equal [dep('a')], @set.dependencies
   end
 
   def test_gem_path
@@ -92,7 +92,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     assert_equal [['a']], @gda.dependency_groups[:test]
 
-    assert_empty @set.dependencies
+    assert_equal [dep('a')], @set.dependencies
   end
 
   def test_group_multiple
@@ -104,6 +104,8 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal [['a']], @gda.dependency_groups[:b]
     assert_equal [['a']], @gda.dependency_groups[:c]
     assert_equal [['a']], @gda.dependency_groups[:d]
+
+    assert_equal [dep('a')], @set.dependencies
   end
 
   def test_load
@@ -127,7 +129,7 @@ end
 
       assert_equal expected, gda.dependency_groups
 
-      assert_equal [dep('a')], @set.dependencies
+      assert_equal [dep('a'), dep('b')], @set.dependencies
     end
   end
 

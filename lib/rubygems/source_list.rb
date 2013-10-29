@@ -22,11 +22,7 @@ class Gem::SourceList
   def self.from(ary)
     list = new
 
-    if ary
-      ary.each do |x|
-        list << x
-      end
-    end
+    list.replace ary
 
     return list
   end

@@ -100,6 +100,14 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal "#{name}-#{version}", loaded.full_name
   end
 
+  def test_gem_require
+    @gda.gem 'a', :require => %w[b c]
+
+    assert_equal [dep('a')], @set.dependencies
+
+    assert_equal %w[b c], @gda.requires['a']
+  end
+
   def test_gem_require_false
     @gda.gem 'a', :require => false
 

@@ -65,7 +65,9 @@ class Gem::RequestSet::GemDependencyAPI
     end
 
     if options.include? :require then
-      # ignore
+      if requires = options.delete(:require) then
+        @requires[name].concat requires
+      end
     else
       @requires[name] << name
     end

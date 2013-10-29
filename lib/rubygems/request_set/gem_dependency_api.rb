@@ -80,6 +80,16 @@ class Gem::RequestSet::GemDependencyAPI
 
     return unless (all_groups & @without_groups).empty?
 
+    gem_requires name, options
+
+    @set.gem name, *requirements
+  end
+
+  ##
+  # Handles the require: option from +options+ and adds those files, or the
+  # default file to the require list for +name+.
+
+  def gem_requires name, options # :nodoc:
     if options.include? :require then
       if requires = options.delete(:require) then
         @requires[name].concat requires
@@ -87,9 +97,9 @@ class Gem::RequestSet::GemDependencyAPI
     else
       @requires[name] << name
     end
-
-    @set.gem name, *requirements
   end
+
+  private :gem_requires
 
   ##
   # Returns the basename of the file the dependencies were loaded from

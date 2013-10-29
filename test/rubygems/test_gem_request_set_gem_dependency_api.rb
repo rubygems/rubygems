@@ -34,6 +34,20 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal [dep('a')], @set.dependencies
   end
 
+  def test_gem_group_without
+    @gda.without_groups << :test
+
+    @gda.gem 'a', :group => :test
+
+    expected = {
+      :test => [['a']],
+    }
+
+    assert_equal expected, @gda.dependency_groups
+
+    assert_empty @set.dependencies
+  end
+
   def test_gem_groups
     @gda.gem 'a', :groups => [:test, :development]
 

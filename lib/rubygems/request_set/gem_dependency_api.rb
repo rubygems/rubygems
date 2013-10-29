@@ -14,6 +14,11 @@ class Gem::RequestSet::GemDependencyAPI
   attr_reader :vendor_set # :nodoc:
 
   ##
+  # The groups of gems to exclude from installation
+
+  attr_accessor :without_groups
+
+  ##
   # Creates a new GemDependencyAPI that will add dependencies to the
   # Gem::RequestSet +set+ based on the dependency API description in +path+.
 
@@ -25,6 +30,7 @@ class Gem::RequestSet::GemDependencyAPI
     @default_sources   = true
     @dependency_groups = Hash.new { |h, group| h[group] = [] }
     @vendor_set        = @set.vendor_set
+    @without_groups    = []
   end
 
   ##
@@ -65,6 +71,8 @@ class Gem::RequestSet::GemDependencyAPI
       gem_arguments << options unless options.empty?
       @dependency_groups[group] << gem_arguments
     end
+
+    return unless (all_groups & @without_groups).empty?
 
     @set.gem name, *requirements
   end

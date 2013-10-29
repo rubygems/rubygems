@@ -50,6 +50,13 @@ class Gem::SourceList
     self
   end
 
+  ##
+  # Removes all sources from the SourceList.
+
+  def clear
+    @sources.clear
+  end
+
   def each
     @sources.each { |s| yield s.uri.to_s }
   end

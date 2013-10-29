@@ -34,6 +34,16 @@ class TestGemSourceList < Gem::TestCase
     assert_equal [source], sl.sources
   end
 
+  def test_clear
+    sl = Gem::SourceList.new
+
+    sl << 'http://source.example'
+
+    sl.clear
+
+    assert_empty sl
+  end
+
   def test_replace
     sl = Gem::SourceList.new
     sl.replace [@uri]

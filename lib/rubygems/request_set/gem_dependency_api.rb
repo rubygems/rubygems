@@ -60,9 +60,7 @@ class Gem::RequestSet::GemDependencyAPI
     options = requirements.pop if requirements.last.kind_of?(Hash)
     options ||= {}
 
-    if directory = options.delete(:path) then
-      @vendor_set.add_vendor_gem name, directory
-    end
+    gem_path name, options
 
     g = options.delete :group
     all_groups  = g ? Array(g) : []
@@ -84,6 +82,17 @@ class Gem::RequestSet::GemDependencyAPI
 
     @set.gem name, *requirements
   end
+
+  ##
+  # Handles the path: option from +options+ for gem +name+.
+
+  def gem_path name, options # :nodoc:
+    if directory = options.delete(:path) then
+      @vendor_set.add_vendor_gem name, directory
+    end
+  end
+
+  private :gem_path
 
   ##
   # Handles the require: option from +options+ and adds those files, or the

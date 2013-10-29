@@ -184,6 +184,15 @@ end
                      :engine => 'jruby', :engine_version => '1.7.4'
   end
 
+  def test_ruby_engine
+    e = assert_raises ArgumentError do
+      @gda.ruby RUBY_VERSION, :engine => 'jruby'
+    end
+
+    assert_equal 'you must specify engine_version along with the ruby engine',
+                 e.message
+  end
+
   def test_ruby_mismatch
     e = assert_raises Gem::RubyVersionMismatch do
       @gda.ruby '1.8.0'

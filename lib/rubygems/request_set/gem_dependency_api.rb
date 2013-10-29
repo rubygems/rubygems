@@ -117,6 +117,13 @@ class Gem::RequestSet::GemDependencyAPI
   # +:engine+ options from Bundler are currently ignored.
 
   def ruby version, options = {}
+    engine         = options[:engine]
+    engine_version = options[:engine_version]
+
+    raise ArgumentError,
+          'you must specify engine_version along with the ruby engine' if
+            engine and not engine_version
+
     return true if version == RUBY_VERSION
 
     message = "Your Ruby version is #{RUBY_VERSION}, " +

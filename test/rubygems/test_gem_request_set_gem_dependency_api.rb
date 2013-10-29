@@ -22,16 +22,18 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     engine_version       = Object.const_get engine_version_const if engine
 
     Object.send :remove_const, :RUBY_ENGINE         if engine
-    Object.send :remove_const, engine_version_const if engine_version
+    Object.send :remove_const, engine_version_const if
+      engine == name and engine_version
 
+    new_engine_version_const = "#{name.upcase}_VERSION"
     Object.const_set :RUBY_ENGINE,         name    if name
-    Object.const_set engine_version_const, version if version
+    Object.const_set new_engine_version_const, version if version
 
     yield
 
   ensure
-    Object.send :remove_const, :RUBY_ENGINE         if name
-    Object.send :remove_const, engine_version_const if version
+    Object.send :remove_const, :RUBY_ENGINE             if name
+    Object.send :remove_const, new_engine_version_const if version
 
     Object.const_set :RUBY_ENGINE,         engine         if engine
     Object.const_set engine_version_const, engine_version if engine_version
@@ -248,6 +250,27 @@ end
     @gda.source 'http://second.example'
 
     assert_equal %w[http://first.example http://second.example], Gem.sources
+  end
+
+  def test_with_engine_version
+    version = RUBY_VERSION
+    engine  = RUBY_ENGINE
+
+    engine_version_const = "#{RUBY_ENGINE.upcase}_VERSION" if engine
+    engine_version = Object.const_get engine_version_const if engine
+
+    with_engine_version 'other', '1.2.3' do
+      assert_equal 'other', RUBY_ENGINE
+      assert_equal '1.2.3', OTHER_VERSION
+
+      assert_equal version, RUBY_VERSION if engine
+    end
+
+    assert_equal version, RUBY_VERSION
+    assert_equal engine,  RUBY_ENGINE
+
+    assert_equal engine_version, Object.const_get(engine_version_const) if
+      engine
   end
 
 end

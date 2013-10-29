@@ -9,6 +9,11 @@ class Gem::RequestSet::GemDependencyAPI
   attr_reader :dependency_groups
 
   ##
+  # Sources the user has configured in their gem dependencies file.
+
+  attr_reader :sources
+
+  ##
   # A set of gems that are loaded via the +:path+ option to #gem
 
   attr_reader :vendor_set # :nodoc:
@@ -22,7 +27,9 @@ class Gem::RequestSet::GemDependencyAPI
     @path = path
 
     @current_groups    = nil
+    @default_sources   = true
     @dependency_groups = Hash.new { |h, group| h[group] = [] }
+    @sources           = Gem.sources
     @vendor_set        = @set.vendor_set
   end
 
@@ -124,6 +131,11 @@ class Gem::RequestSet::GemDependencyAPI
   # :category: Gem Dependencies DSL
 
   def source url
+    @sources = Gem::SourceList.new if @default_sources
+
+    @default_sources = false
+
+    @sources << url
   end
 
   # TODO: remove this typo name at RubyGems 3.0

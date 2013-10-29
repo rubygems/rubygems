@@ -176,5 +176,23 @@ end
     assert_equal "Your Ruby version is #{RUBY_VERSION}, but your gem.deps.rb specified 1.8.0", e.message
   end
 
+  def test_source
+    sources = @gda.sources
+
+    @gda.source 'http://first.example'
+
+    assert_equal %w[http://first.example], @gda.sources.to_a
+
+    refute_same sources, @gda.sources
+
+    @gda.source 'http://second.example'
+
+    assert_equal %w[http://first.example http://second.example], @gda.sources
+  end
+
+  def test_sources
+    assert_equal Gem.sources, @gda.sources
+  end
+
 end
 

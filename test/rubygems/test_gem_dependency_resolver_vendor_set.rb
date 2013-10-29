@@ -20,7 +20,7 @@ class TestGemDependencyResolverVendorSet < Gem::TestCase
   end
 
   def test_add_vendor_gem_missing
-    name, version, directory = vendor_gem
+    name, _, directory = vendor_gem
 
     FileUtils.rm_r directory
 

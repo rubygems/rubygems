@@ -488,7 +488,8 @@ class TestGemDependencyResolver < Gem::TestCase
       r.resolve
     end
 
-    assert_match /No match for 'a \(= 1\)' on this platform. Found: c-p-1/, e.message
+    assert_match "No match for 'a (= 1)' on this platform. Found: c-p-1",
+                 e.message
   end
 
 end

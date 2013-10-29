@@ -9,6 +9,11 @@ class Gem::RequestSet::GemDependencyAPI
   attr_reader :dependency_groups
 
   ##
+  # A Hash containing gem names and files to require from those gems.
+
+  attr_reader :requires
+
+  ##
   # A set of gems that are loaded via the +:path+ option to #gem
 
   attr_reader :vendor_set # :nodoc:
@@ -29,6 +34,7 @@ class Gem::RequestSet::GemDependencyAPI
     @current_groups    = nil
     @default_sources   = true
     @dependency_groups = Hash.new { |h, group| h[group] = [] }
+    @requires          = Hash.new { |h, name|  h[name]  = [] }
     @vendor_set        = @set.vendor_set
     @without_groups    = []
   end
@@ -56,6 +62,12 @@ class Gem::RequestSet::GemDependencyAPI
 
     if directory = options.delete(:path) then
       @vendor_set.add_vendor_gem name, directory
+    end
+
+    if options.include? :require then
+      # ignore
+    else
+      @requires[name] << name
     end
 
     g = options.delete :group

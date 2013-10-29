@@ -45,6 +45,8 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     @gda.gem 'a'
 
     assert_equal [dep('a')], @set.dependencies
+
+    assert_equal %w[a], @gda.requires['a']
   end
 
   def test_gem_group
@@ -96,6 +98,14 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     loaded = @vendor_set.load_spec(name, version, Gem::Platform::RUBY, nil)
 
     assert_equal "#{name}-#{version}", loaded.full_name
+  end
+
+  def test_gem_require_false
+    @gda.gem 'a', :require => false
+
+    assert_equal [dep('a')], @set.dependencies
+
+    assert_empty @gda.requires
   end
 
   def test_gem_requirement

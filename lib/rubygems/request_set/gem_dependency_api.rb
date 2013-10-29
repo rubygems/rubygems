@@ -62,6 +62,20 @@ class Gem::RequestSet::GemDependencyAPI
 
     gem_path name, options
 
+    groups = gem_group name, requirements, options
+
+    return unless (groups & @without_groups).empty?
+
+    gem_requires name, options
+
+    @set.gem name, *requirements
+  end
+
+  ##
+  # Handles the :group and :groups +options+ for the gem with the given +name+
+  # and +requirements+.
+
+  def gem_group name, requirements, options # :nodoc:
     g = options.delete :group
     all_groups  = g ? Array(g) : []
 
@@ -76,12 +90,10 @@ class Gem::RequestSet::GemDependencyAPI
       @dependency_groups[group] << gem_arguments
     end
 
-    return unless (all_groups & @without_groups).empty?
-
-    gem_requires name, options
-
-    @set.gem name, *requirements
+    all_groups
   end
+
+  private :gem_group
 
   ##
   # Handles the path: option from +options+ for gem +name+.

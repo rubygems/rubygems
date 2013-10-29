@@ -4,11 +4,20 @@ class Gem::SourceList
 
   include Enumerable
 
+  ##
+  # Creates a new SourceList
+
   def initialize
     @sources = []
   end
 
+  ##
+  # The sources in this list
+
   attr_reader :sources
+
+  ##
+  # Creates a new SourceList from an array of sources.
 
   def self.from(ary)
     list = new
@@ -22,9 +31,13 @@ class Gem::SourceList
     return list
   end
 
-  def initialize_copy(other)
+  def initialize_copy(other) # :nodoc:
     @sources = @sources.dup
   end
+
+  ##
+  # Appends +obj+ to the source list which may be a Gem::Source, URI or URI
+  # String.
 
   def <<(obj)
     src = case obj
@@ -39,6 +52,10 @@ class Gem::SourceList
     @sources << src
     src
   end
+
+  ##
+  # Replaces this SourceList with the sources in +other+  See #<< for
+  # acceptable items in +other+.
 
   def replace(other)
     clear
@@ -57,9 +74,15 @@ class Gem::SourceList
     @sources.clear
   end
 
+  ##
+  # Yields each source URI in the list.
+
   def each
     @sources.each { |s| yield s.uri.to_s }
   end
+
+  ##
+  # Yields each source in the list.
 
   def each_source(&b)
     @sources.each(&b)
@@ -76,15 +99,25 @@ class Gem::SourceList
     to_a == other
   end
 
+  ##
+  # Returns an Array of source URI Strings.
+
   def to_a
     @sources.map { |x| x.uri.to_s }
   end
 
   alias_method :to_ary, :to_a
 
+  ##
+  # Returns the first source in the list.
+
   def first
     @sources.first
   end
+
+  ##
+  # Returns true if this source list includes +other+ which may be a
+  # Gem::Source or a source URI.
 
   def include?(other)
     if other.kind_of? Gem::Source
@@ -94,11 +127,14 @@ class Gem::SourceList
     end
   end
 
-  def delete(uri)
-    if uri.kind_of? Gem::Source
-      @sources.delete uri
+  ##
+  # Deletes +source+ from the source list which may be a Gem::Source or a URI.
+
+  def delete source
+    if source.kind_of? Gem::Source
+      @sources.delete source
     else
-      @sources.delete_if { |x| x.uri.to_s == uri.to_s }
+      @sources.delete_if { |x| x.uri.to_s == source.to_s }
     end
   end
 end

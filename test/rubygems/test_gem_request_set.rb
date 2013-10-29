@@ -41,6 +41,19 @@ class TestGemRequestSet < Gem::TestCase
     assert rs.vendor_set
   end
 
+  def test_load_gemdeps_without_groups
+    rs = Gem::RequestSet.new
+
+    Tempfile.open 'gem.deps.rb' do |io|
+      io.puts 'gem "a", :group => :test'
+      io.flush
+
+      rs.load_gemdeps io.path, [:test]
+    end
+
+    assert_empty rs.dependencies
+  end
+
   def test_resolve
     a = util_spec "a", "2", "b" => ">= 2"
     b = util_spec "b", "2"

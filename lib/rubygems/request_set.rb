@@ -148,10 +148,11 @@ class Gem::RequestSet
   ##
   # Load a dependency management file.
 
-  def load_gemdeps path
+  def load_gemdeps path, without_groups = []
     @vendor_set = Gem::DependencyResolver::VendorSet.new
 
     gf = Gem::RequestSet::GemDependencyAPI.new self, path
+    gf.without_groups = without_groups
     gf.load
   end
 

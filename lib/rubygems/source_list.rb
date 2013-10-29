@@ -58,6 +58,13 @@ class Gem::SourceList
     @sources.each(&b)
   end
 
+  ##
+  # Returns true if there are no sources in this SourceList.
+
+  def empty?
+    @sources.empty?
+  end
+
   def ==(other)
     to_a == other
   end

@@ -53,6 +53,16 @@ class TestGemSourceList < Gem::TestCase
     end
   end
 
+  def test_empty?
+    sl = Gem::SourceList.new
+
+    assert_empty sl
+
+    sl << 'http://source.example'
+
+    refute_empty sl
+  end
+
   def test_equal_to_another_list
     sl2 = Gem::SourceList.new
     sl2 << Gem::Source.new(@uri)

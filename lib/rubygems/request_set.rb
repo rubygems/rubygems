@@ -78,7 +78,14 @@ class Gem::RequestSet
     @dependencies.concat deps
   end
 
-  def install options, &block
+  ##
+  # Installs gems for this RequestSet using the Gem::Installer +options+.
+  #
+  # If a +block+ is given an activation +request+ and +installer+ are yielded.
+  # The +installer+ will be +nil+ if a gem matching the request was already
+  # installed.
+
+  def install options, &block # :yields: request, installer
     if dir = options[:install_dir]
       return install_into dir, false, options, &block
     end

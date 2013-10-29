@@ -177,21 +177,17 @@ end
   end
 
   def test_source
-    sources = @gda.sources
+    sources = Gem.sources
 
     @gda.source 'http://first.example'
 
-    assert_equal %w[http://first.example], @gda.sources.to_a
+    assert_equal %w[http://first.example], Gem.sources
 
-    refute_same sources, @gda.sources
+    assert_same sources, Gem.sources
 
     @gda.source 'http://second.example'
 
-    assert_equal %w[http://first.example http://second.example], @gda.sources
-  end
-
-  def test_sources
-    assert_equal Gem.sources, @gda.sources
+    assert_equal %w[http://first.example http://second.example], Gem.sources
   end
 
 end

@@ -141,8 +141,8 @@ to write the specification by hand.  For example:
   end
 
   def execute
-    if gf = options[:gemdeps] then
-      install_from_gemdeps gf, options[:without_groups]
+    if options.include? :gemdeps then
+      install_from_gemdeps
       return # not reached
     end
 
@@ -162,14 +162,11 @@ to write the specification by hand.  For example:
     terminate_interaction exit_code
   end
 
-  def install_from_gemdeps gf, without_groups # :nodoc:
+  def install_from_gemdeps # :nodoc:
     require 'rubygems/request_set'
     rs = Gem::RequestSet.new
-    rs.load_gemdeps gf, without_groups
 
-    rs.resolve
-
-    specs = rs.install options do |req, inst|
+    specs = rs.install_from_gemdeps options do |req, inst|
       s = req.full_spec
 
       if inst

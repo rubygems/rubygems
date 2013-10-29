@@ -26,6 +26,29 @@ class TestGemRequestSet < Gem::TestCase
     assert_equal [dep('a'), dep('b')], rs.dependencies
   end
 
+  def test_install_from_gemdeps
+    a, ad = util_gem 'a', 2
+
+    util_setup_spec_fetcher a
+
+    @fetcher.data["http://gems.example.com/gems/#{a.file_name}"] =
+      Gem.read_binary(ad)
+
+    rs = Gem::RequestSet.new
+    installed = []
+
+    Tempfile.open 'gem.deps.rb' do |io|
+      io.puts 'gem "a"'
+      io.flush
+
+      rs.install_from_gemdeps :gemdeps => io.path do |req, installer|
+        installed << req.full_name
+      end
+    end
+
+    assert_includes installed, 'a-2'
+  end
+
   def test_load_gemdeps
     rs = Gem::RequestSet.new
 

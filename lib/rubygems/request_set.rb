@@ -109,6 +109,21 @@ class Gem::RequestSet
     specs
   end
 
+  ##
+  # Installs from the gem dependencies files in the +:gemdeps+ option in
+  # +options+, yielding to the +block+ as in #install.
+  #
+  # If +:without_groups+ is given in the +options+, those groups in the gem
+  # dependencies file are not used.  See Gem::Installer for other +options+.
+
+  def install_from_gemdeps options, &block
+    load_gemdeps options[:gemdeps], options[:without_groups]
+
+    resolve
+
+    install options, &block
+  end
+
   def install_into dir, force = true, options = {}
     existing = force ? [] : specs_in(dir)
     existing.delete_if { |s| @always_install.include? s }
@@ -152,7 +167,7 @@ class Gem::RequestSet
     @vendor_set = Gem::DependencyResolver::VendorSet.new
 
     gf = Gem::RequestSet::GemDependencyAPI.new self, path
-    gf.without_groups = without_groups
+    gf.without_groups = without_groups if without_groups
     gf.load
   end
 

@@ -41,7 +41,7 @@ class Gem::SourceList
   end
 
   def replace(other)
-    @sources.clear
+    clear
 
     other.each do |x|
       self << x

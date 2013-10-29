@@ -124,12 +124,21 @@ class Gem::RequestSet::GemDependencyAPI
           'you must specify engine_version along with the ruby engine' if
             engine and not engine_version
 
-    return true if version == RUBY_VERSION
+    unless RUBY_VERSION == version then
+      message = "Your Ruby version is #{RUBY_VERSION}, " +
+                "but your #{gem_deps_file} requires #{version}"
 
-    message = "Your Ruby version is #{RUBY_VERSION}, " +
-              "but your #{gem_deps_file} specified #{version}"
+      raise Gem::RubyVersionMismatch, message
+    end
 
-    raise Gem::RubyVersionMismatch, message
+    if engine and engine != RUBY_ENGINE then
+      message = "Your ruby engine is #{RUBY_ENGINE}, " +
+                "but your #{gem_deps_file} requires #{engine}"
+
+      raise Gem::RubyVersionMismatch, message
+    end
+
+    return true
   end
 
   ##

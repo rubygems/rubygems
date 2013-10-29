@@ -16,6 +16,27 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     @gda.instance_variable_set :@vendor_set, @vendor_set
   end
 
+  def with_engine_version name, version
+    engine               = RUBY_ENGINE if Object.const_defined? :RUBY_ENGINE
+    engine_version_const = "#{engine.upcase}_VERSION" if engine
+    engine_version       = Object.const_get engine_version_const if engine
+
+    Object.send :remove_const, :RUBY_ENGINE         if engine
+    Object.send :remove_const, engine_version_const if engine_version
+
+    Object.const_set :RUBY_ENGINE,         name    if name
+    Object.const_set engine_version_const, version if version
+
+    yield
+
+  ensure
+    Object.send :remove_const, :RUBY_ENGINE         if name
+    Object.send :remove_const, engine_version_const if version
+
+    Object.const_set :RUBY_ENGINE,         engine         if engine
+    Object.const_set engine_version_const, engine_version if engine_version
+  end
+
   def test_gem
     @gda.gem 'a'
 
@@ -180,11 +201,25 @@ end
   end
 
   def test_ruby_engine
-    assert @gda.ruby RUBY_VERSION,
-                     :engine => 'jruby', :engine_version => '1.7.4'
+    with_engine_version 'jruby', '1.7.6' do
+      assert @gda.ruby RUBY_VERSION,
+               :engine => 'jruby', :engine_version => '1.7.6'
+
+    end
   end
 
-  def test_ruby_engine
+  def test_ruby_engine_mismatch_engine
+    with_engine_version 'ruby', '2.0.0' do
+      e = assert_raises Gem::RubyVersionMismatch do
+        @gda.ruby RUBY_VERSION, :engine => 'jruby', :engine_version => '1.7.4'
+      end
+
+      assert_equal 'Your ruby engine is ruby, but your gem.deps.rb requires jruby',
+                   e.message
+    end
+  end
+
+  def test_ruby_engine_no_engine_version
     e = assert_raises ArgumentError do
       @gda.ruby RUBY_VERSION, :engine => 'jruby'
     end
@@ -198,7 +233,7 @@ end
       @gda.ruby '1.8.0'
     end
 
-    assert_equal "Your Ruby version is #{RUBY_VERSION}, but your gem.deps.rb specified 1.8.0", e.message
+    assert_equal "Your Ruby version is #{RUBY_VERSION}, but your gem.deps.rb requires 1.8.0", e.message
   end
 
   def test_source

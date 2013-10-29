@@ -138,6 +138,18 @@ class Gem::RequestSet::GemDependencyAPI
       raise Gem::RubyVersionMismatch, message
     end
 
+    if engine_version then
+      my_engine_version = Object.const_get "#{RUBY_ENGINE.upcase}_VERSION"
+
+      if engine_version != my_engine_version then
+        message =
+          "Your ruby engine version is #{RUBY_ENGINE} #{my_engine_version}, " +
+          "but your #{gem_deps_file} requires #{engine} #{engine_version}"
+
+        raise Gem::RubyVersionMismatch, message
+      end
+    end
+
     return true
   end
 

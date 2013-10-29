@@ -223,6 +223,17 @@ end
     end
   end
 
+  def test_ruby_engine_mismatch_version
+    with_engine_version 'jruby', '1.7.6' do
+      e = assert_raises Gem::RubyVersionMismatch do
+        @gda.ruby RUBY_VERSION, :engine => 'jruby', :engine_version => '1.7.4'
+      end
+
+      assert_equal 'Your ruby engine version is jruby 1.7.6, but your gem.deps.rb requires jruby 1.7.4',
+                   e.message
+    end
+  end
+
   def test_ruby_engine_no_engine_version
     e = assert_raises ArgumentError do
       @gda.ruby RUBY_VERSION, :engine => 'jruby'

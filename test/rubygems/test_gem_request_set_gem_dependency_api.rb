@@ -34,6 +34,8 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   ensure
     Object.send :remove_const, :RUBY_ENGINE             if name
     Object.send :remove_const, new_engine_version_const if version
+    Object.send :remove_const, engine_version_const     if
+      engine_version and Object.const_defined?(engine_version_const)
 
     Object.const_set :RUBY_ENGINE,         engine         if engine
     Object.const_set engine_version_const, engine_version if engine_version

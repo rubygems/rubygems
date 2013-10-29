@@ -116,6 +116,16 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_empty @gda.requires
   end
 
+  def test_gem_require_without_group
+    @gda.without_groups << :test
+
+    @gda.gem 'a', :group => :test
+
+    assert_empty @set.dependencies
+
+    assert_empty @gda.requires['a']
+  end
+
   def test_gem_requirement
     @gda.gem 'a', '~> 1.0'
 

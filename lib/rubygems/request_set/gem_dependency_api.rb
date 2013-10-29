@@ -64,14 +64,6 @@ class Gem::RequestSet::GemDependencyAPI
       @vendor_set.add_vendor_gem name, directory
     end
 
-    if options.include? :require then
-      if requires = options.delete(:require) then
-        @requires[name].concat requires
-      end
-    else
-      @requires[name] << name
-    end
-
     g = options.delete :group
     all_groups  = g ? Array(g) : []
 
@@ -87,6 +79,14 @@ class Gem::RequestSet::GemDependencyAPI
     end
 
     return unless (all_groups & @without_groups).empty?
+
+    if options.include? :require then
+      if requires = options.delete(:require) then
+        @requires[name].concat requires
+      end
+    else
+      @requires[name] << name
+    end
 
     @set.gem name, *requirements
   end

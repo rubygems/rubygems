@@ -35,6 +35,14 @@ class TestGemDependencyResolverActivationRequest < Gem::TestCase
     refute_match '(others possible)', req.inspect
   end
 
+  def test_installed_eh
+    v_spec = Gem::DependencyResolver::VendorSpecification.new nil, @a3
+
+    @req = @DR::ActivationRequest.new v_spec, @dep, [@a1, @a2]
+
+    assert @req.installed?
+  end
+
   def test_others_possible_eh
     assert @req.others_possible?
 

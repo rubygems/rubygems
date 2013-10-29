@@ -69,10 +69,15 @@ class Gem::DependencyResolver::ActivationRequest
   # Indicates if the requested gem has already been installed.
 
   def installed?
-    this_spec = full_spec
+    case @spec
+    when Gem::DependencyResolver::VendorSpecification then
+      true
+    else
+      this_spec = full_spec
 
-    Gem::Specification.any? do |s|
-      s == this_spec
+      Gem::Specification.any? do |s|
+        s == this_spec
+      end
     end
   end
 

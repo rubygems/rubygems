@@ -52,12 +52,6 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   def test_gem_group
     @gda.gem 'a', :group => :test
 
-    expected = {
-      :test => [['a']],
-    }
-
-    assert_equal expected, @gda.dependency_groups
-
     assert_equal [dep('a')], @set.dependencies
   end
 
@@ -66,24 +60,11 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     @gda.gem 'a', :group => :test
 
-    expected = {
-      :test => [['a']],
-    }
-
-    assert_equal expected, @gda.dependency_groups
-
     assert_empty @set.dependencies
   end
 
   def test_gem_groups
     @gda.gem 'a', :groups => [:test, :development]
-
-    expected = {
-      :development => [['a']],
-      :test        => [['a']],
-    }
-
-    assert_equal expected, @gda.dependency_groups
 
     assert_equal [dep('a')], @set.dependencies
   end
@@ -152,25 +133,20 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal 'Gemfile', gda.gem_deps_file
   end
 
+  def test_gem_group_method
+    groups = []
+
+    @gda.group :a do
+      groups = @gda.send :gem_group, 'a', :group => :b, :groups => [:c, :d]
+    end
+
+    assert_equal [:a, :b, :c, :d], groups.sort
+  end
+
   def test_group
     @gda.group :test do
       @gda.gem 'a'
     end
-
-    assert_equal [['a']], @gda.dependency_groups[:test]
-
-    assert_equal [dep('a')], @set.dependencies
-  end
-
-  def test_group_multiple
-    @gda.group :a do
-      @gda.gem 'a', :group => :b, :groups => [:c, :d]
-    end
-
-    assert_equal [['a']], @gda.dependency_groups[:a]
-    assert_equal [['a']], @gda.dependency_groups[:b]
-    assert_equal [['a']], @gda.dependency_groups[:c]
-    assert_equal [['a']], @gda.dependency_groups[:d]
 
     assert_equal [dep('a')], @set.dependencies
   end
@@ -189,12 +165,6 @@ end
       gda = @GDA.new @set, io.path
 
       gda.load
-
-      expected = {
-        :test => [['b']],
-      }
-
-      assert_equal expected, gda.dependency_groups
 
       assert_equal [dep('a'), dep('b')], @set.dependencies
     end

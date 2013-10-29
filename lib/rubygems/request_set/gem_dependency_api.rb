@@ -4,11 +4,6 @@
 class Gem::RequestSet::GemDependencyAPI
 
   ##
-  # The dependency groups created by #group in the dependency API file.
-
-  attr_reader :dependency_groups
-
-  ##
   # A Hash containing gem names and files to require from those gems.
 
   attr_reader :requires
@@ -31,12 +26,11 @@ class Gem::RequestSet::GemDependencyAPI
     @set = set
     @path = path
 
-    @current_groups    = nil
-    @default_sources   = true
-    @dependency_groups = Hash.new { |h, group| h[group] = [] }
-    @requires          = Hash.new { |h, name|  h[name]  = [] }
-    @vendor_set        = @set.vendor_set
-    @without_groups    = []
+    @current_groups  = nil
+    @default_sources = true
+    @requires        = Hash.new { |h, name|  h[name]  = [] }
+    @vendor_set      = @set.vendor_set
+    @without_groups  = []
   end
 
   ##
@@ -62,7 +56,7 @@ class Gem::RequestSet::GemDependencyAPI
 
     gem_path name, options
 
-    groups = gem_group name, requirements, options
+    groups = gem_group name, options
 
     return unless (groups & @without_groups).empty?
 
@@ -72,10 +66,10 @@ class Gem::RequestSet::GemDependencyAPI
   end
 
   ##
-  # Handles the :group and :groups +options+ for the gem with the given +name+
-  # and +requirements+.
+  # Handles the :group and :groups +options+ for the gem with the given
+  # +name+.
 
-  def gem_group name, requirements, options # :nodoc:
+  def gem_group name, options # :nodoc:
     g = options.delete :group
     all_groups  = g ? Array(g) : []
 
@@ -83,12 +77,6 @@ class Gem::RequestSet::GemDependencyAPI
     all_groups |= groups if groups
 
     all_groups |= @current_groups if @current_groups
-
-    all_groups.each do |group|
-      gem_arguments = [name, *requirements]
-      gem_arguments << options unless options.empty?
-      @dependency_groups[group] << gem_arguments
-    end
 
     all_groups
   end

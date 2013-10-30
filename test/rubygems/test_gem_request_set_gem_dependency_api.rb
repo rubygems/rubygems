@@ -29,6 +29,9 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     Object.const_set :RUBY_ENGINE,         name    if name
     Object.const_set new_engine_version_const, version if version
 
+    Gem.remove_instance_variable :@ruby_version if
+      Gem.instance_variables.include? :@ruby_version
+
     yield
 
   ensure
@@ -39,6 +42,9 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     Object.const_set :RUBY_ENGINE,         engine         if engine
     Object.const_set engine_version_const, engine_version if engine_version
+
+    Gem.remove_instance_variable :@ruby_version if
+      Gem.instance_variables.include? :@ruby_version
   end
 
   def test_gem
@@ -83,7 +89,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
   def test_gem_platforms
     with_engine_version 'ruby', '2.0.0' do
-      @gda.gem 'a', :platforms => :ruby_18
+      @gda.gem 'a', :platforms => :ruby
 
       refute_empty @set.dependencies
     end
@@ -91,7 +97,15 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
   def test_gem_platforms_multiple
     with_engine_version 'ruby', '2.0.0' do
-      @gda.gem 'a', :platforms => [:rbx, :java]
+      @gda.gem 'a', :platforms => [:mswin, :jruby]
+
+      assert_empty @set.dependencies
+    end
+  end
+
+  def test_gem_platforms_version
+    with_engine_version 'ruby', '2.0.0' do
+      @gda.gem 'a', :platforms => :ruby_18
 
       assert_empty @set.dependencies
     end

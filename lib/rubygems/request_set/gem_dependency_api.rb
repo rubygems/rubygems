@@ -21,18 +21,54 @@ class Gem::RequestSet::GemDependencyAPI
     :mri_21       => Gem::Platform::RUBY,
     :rbx          => Gem::Platform::RUBY,
     :jruby        => java,
-    :JRUBY_18     => java,
-    :JRUBY_19     => java,
-    :MSWIN        => mswin,
-    :MINGW        => mingw,
-    :MINGW_18     => mingw,
-    :MINGW_19     => mingw,
-    :MINGW_20     => mingw,
-    :MINGW_21     => mingw,
-    :X64_MINGW    => x64_mingw,
-    :X64_MINGW_20 => x64_mingw,
-    :X64_MINGW_21 => x64_mingw
+    :jruby_18     => java,
+    :jruby_19     => java,
+    :mswin        => mswin,
+    :mingw        => mingw,
+    :mingw_18     => mingw,
+    :mingw_19     => mingw,
+    :mingw_20     => mingw,
+    :mingw_21     => mingw,
+    :x64_mingw    => x64_mingw,
+    :x64_mingw_20 => x64_mingw,
+    :x64_mingw_21 => x64_mingw
   }
+
+  gt_eq_0        = Gem::Requirement.new '>= 0'
+  tilde_gt_1_8_0 = Gem::Requirement.new '~> 1.8.0'
+  tilde_gt_1_9_0 = Gem::Requirement.new '~> 1.9.0'
+  tilde_gt_2_0_0 = Gem::Requirement.new '~> 2.0.0'
+  tilde_gt_2_1_0 = Gem::Requirement.new '~> 2.1.0'
+
+  VERSION_MAP = { # :nodoc:
+    :ruby         => gt_eq_0,
+    :ruby_18      => tilde_gt_1_8_0,
+    :ruby_19      => tilde_gt_1_9_0,
+    :ruby_20      => tilde_gt_2_0_0,
+    :ruby_21      => tilde_gt_2_1_0,
+    :mri          => gt_eq_0,
+    :mri_18       => tilde_gt_1_8_0,
+    :mri_19       => tilde_gt_1_9_0,
+    :mri_20       => tilde_gt_2_0_0,
+    :mri_21       => tilde_gt_2_1_0,
+    :rbx          => gt_eq_0,
+    :jruby        => gt_eq_0,
+    :jruby_18     => tilde_gt_1_8_0,
+    :jruby_19     => tilde_gt_1_9_0,
+    :mswin        => gt_eq_0,
+    :mingw        => gt_eq_0,
+    :mingw_18     => tilde_gt_1_8_0,
+    :mingw_19     => tilde_gt_1_9_0,
+    :mingw_20     => tilde_gt_2_0_0,
+    :mingw_21     => tilde_gt_2_1_0,
+    :x64_mingw    => gt_eq_0,
+    :x64_mingw_20 => tilde_gt_2_0_0,
+    :x64_mingw_21 => tilde_gt_2_1_0,
+  }
+
+  VERSION_MAP.default_proc = proc do |_, platform|
+    raise ArgumentError, "unknown platform #{platform.inspect}"
+  end
 
   ##
   # A Hash containing gem names and files to require from those gems.
@@ -132,14 +168,12 @@ class Gem::RequestSet::GemDependencyAPI
   # platform matches the current platform.
 
   def gem_platforms options # :nodoc:
-    return true unless platforms = options.delete(:platforms)
+    return true unless platform_names = options.delete(:platforms)
 
-    platforms = Array(platforms).map { |platform| PLATFORM_MAP[platform] }
+    Array(platform_names).any? do |platform_name|
+      next false unless Gem::Platform.match PLATFORM_MAP[platform_name]
 
-    platforms.any? do |platform|
-      next false unless Gem::Platform.match platform
-
-      true
+      VERSION_MAP[platform_name].satisfied_by? Gem.ruby_version
     end
   end
 

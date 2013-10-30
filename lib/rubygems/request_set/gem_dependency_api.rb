@@ -21,23 +21,8 @@ class Gem::RequestSet::GemDependencyAPI
     :jruby_19     => %w[jruby],
   }
 
-  NO_WINDOWS = { # :nodoc:
-    :ruby    => true,
-    :ruby_18 => true,
-    :ruby_19 => true,
-    :ruby_20 => true,
-    :ruby_21 => true,
-    :mri     => true,
-    :mri_18  => true,
-    :mri_19  => true,
-    :mri_20  => true,
-    :mri_21  => true,
-    :rbx     => true,
-  }
-
   java      = Gem::Platform.new 'java'
-  mswin     = Gem::Platform.new 'mswin32'
-  mingw     = Gem::Platform.new 'x86-mingw32'
+  x86_mingw = Gem::Platform.new 'x86-mingw32'
   x64_mingw = Gem::Platform.new 'x64-mingw32'
 
   PLATFORM_MAP = { # :nodoc:
@@ -53,15 +38,15 @@ class Gem::RequestSet::GemDependencyAPI
     :mri_20       => Gem::Platform::RUBY,
     :mri_21       => Gem::Platform::RUBY,
     :rbx          => Gem::Platform::RUBY,
-    :jruby        => java,
-    :jruby_18     => java,
-    :jruby_19     => java,
-    :mswin        => mswin,
-    :mingw        => mingw,
-    :mingw_18     => mingw,
-    :mingw_19     => mingw,
-    :mingw_20     => mingw,
-    :mingw_21     => mingw,
+    :jruby        => Gem::Platform::RUBY,
+    :jruby_18     => Gem::Platform::RUBY,
+    :jruby_19     => Gem::Platform::RUBY,
+    :mswin        => Gem::Platform::RUBY,
+    :mingw        => x86_mingw,
+    :mingw_18     => x86_mingw,
+    :mingw_19     => x86_mingw,
+    :mingw_20     => x86_mingw,
+    :mingw_21     => x86_mingw,
     :x64_mingw    => x64_mingw,
     :x64_mingw_20 => x64_mingw,
     :x64_mingw_21 => x64_mingw
@@ -105,6 +90,29 @@ class Gem::RequestSet::GemDependencyAPI
   }
 
   VERSION_MAP.default_proc = PLATFORM_MAP.default_proc
+
+  WINDOWS = { # :nodoc:
+    :mingw        => :only,
+    :mingw_18     => :only,
+    :mingw_19     => :only,
+    :mingw_20     => :only,
+    :mingw_21     => :only,
+    :mri          => :never,
+    :mri_18       => :never,
+    :mri_19       => :never,
+    :mri_20       => :never,
+    :mri_21       => :never,
+    :mswin        => :only,
+    :rbx          => :never,
+    :ruby         => :never,
+    :ruby_18      => :never,
+    :ruby_19      => :never,
+    :ruby_20      => :never,
+    :ruby_21      => :never,
+    :x64_mingw    => :only,
+    :x64_mingw_20 => :only,
+    :x64_mingw_21 => :only,
+  }
 
   ##
   # A Hash containing gem names and files to require from those gems.
@@ -213,7 +221,10 @@ class Gem::RequestSet::GemDependencyAPI
         next false unless engines.include? Gem.ruby_engine
       end
 
-      if NO_WINDOWS[platform_name] then
+      case WINDOWS[platform_name]
+      when :only then
+        next false unless Gem.win_platform?
+      when :never then
         next false if Gem.win_platform?
       end
 

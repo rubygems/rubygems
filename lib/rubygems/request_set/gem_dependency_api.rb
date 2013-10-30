@@ -55,7 +55,6 @@ class Gem::RequestSet::GemDependencyAPI
     raise ArgumentError, "unknown platform #{platform.inspect}"
   end
 
-
   gt_eq_0        = Gem::Requirement.new '>= 0'
   tilde_gt_1_8_0 = Gem::Requirement.new '~> 1.8.0'
   tilde_gt_1_9_0 = Gem::Requirement.new '~> 1.9.0'

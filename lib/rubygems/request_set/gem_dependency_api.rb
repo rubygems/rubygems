@@ -38,7 +38,7 @@ class Gem::RequestSet::GemDependencyAPI
   mingw     = Gem::Platform.new 'x86-mingw32'
   x64_mingw = Gem::Platform.new 'x64-mingw32'
 
-  PLATFORM_MAP = {
+  PLATFORM_MAP = { # :nodoc:
     :ruby         => Gem::Platform::RUBY,
     :ruby_18      => Gem::Platform::RUBY,
     :ruby_19      => Gem::Platform::RUBY,

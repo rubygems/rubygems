@@ -16,13 +16,35 @@ class TestGemRequestSetLockfile < Gem::TestCase
     @lockfile = Gem::RequestSet::Lockfile.new @set
   end
 
+  def spec_fetcher
+    gems = {}
+
+    gem_maker = Object.new
+    gem_maker.instance_variable_set :@test,  self
+    gem_maker.instance_variable_set :@gems,  gems
+
+    def gem_maker.gem name, version, dependencies = nil
+      spec, gem = @test.util_gem name, version, dependencies
+
+      @gems[spec] = gem
+
+      spec
+    end
+
+    yield gem_maker
+
+    util_setup_spec_fetcher *gems.keys
+
+    gems.each do |spec, gem|
+      @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
+        Gem.read_binary(gem)
+    end
+  end
+
   def test_gem
-    a, ad = util_gem 'a', 2
-
-    util_setup_spec_fetcher a
-
-    @fetcher.data["http://gems.example.com/gems/#{a.file_name}"] =
-      Gem.read_binary(ad)
+    spec_fetcher do |s|
+      s.gem 'a', 2
+    end
 
     @set.gem 'a'
 
@@ -43,15 +65,10 @@ DEPENDENCIES
   end
 
   def test_gem_dependency
-    a, ad = util_gem 'a', 2, 'b' => '>= 0'
-    b, bd = util_gem 'b', 2
-
-    util_setup_spec_fetcher a, b
-
-    @fetcher.data["http://gems.example.com/gems/#{a.file_name}"] =
-      Gem.read_binary(ad)
-    @fetcher.data["http://gems.example.com/gems/#{b.file_name}"] =
-      Gem.read_binary(bd)
+    spec_fetcher do |s|
+      s.gem 'a', 2, 'b' => '>= 0'
+      s.gem 'b', 2
+    end
 
     @set.gem 'a'
 

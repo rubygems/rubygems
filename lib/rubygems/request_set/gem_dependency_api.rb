@@ -3,6 +3,37 @@
 
 class Gem::RequestSet::GemDependencyAPI
 
+  java      = Gem::Platform.new 'java'
+  mswin     = Gem::Platform.new 'mswin32'
+  mingw     = Gem::Platform.new 'x86-mingw32'
+  x64_mingw = Gem::Platform.new 'x64-mingw32'
+
+  PLATFORM_MAP = {
+    :ruby         => Gem::Platform::RUBY,
+    :ruby_18      => Gem::Platform::RUBY,
+    :ruby_19      => Gem::Platform::RUBY,
+    :ruby_20      => Gem::Platform::RUBY,
+    :ruby_21      => Gem::Platform::RUBY,
+    :mri          => Gem::Platform::RUBY,
+    :mri_18       => Gem::Platform::RUBY,
+    :mri_19       => Gem::Platform::RUBY,
+    :mri_20       => Gem::Platform::RUBY,
+    :mri_21       => Gem::Platform::RUBY,
+    :rbx          => Gem::Platform::RUBY,
+    :jruby        => java,
+    :JRUBY_18     => java,
+    :JRUBY_19     => java,
+    :MSWIN        => mswin,
+    :MINGW        => mingw,
+    :MINGW_18     => mingw,
+    :MINGW_19     => mingw,
+    :MINGW_20     => mingw,
+    :MINGW_21     => mingw,
+    :X64_MINGW    => x64_mingw,
+    :X64_MINGW_20 => x64_mingw,
+    :X64_MINGW_21 => x64_mingw
+  }
+
   ##
   # A Hash containing gem names and files to require from those gems.
 
@@ -56,6 +87,8 @@ class Gem::RequestSet::GemDependencyAPI
 
     gem_path name, options
 
+    return unless gem_platforms options
+
     groups = gem_group name, options
 
     return unless (groups & @without_groups).empty?
@@ -93,6 +126,20 @@ class Gem::RequestSet::GemDependencyAPI
   end
 
   private :gem_path
+
+  ##
+  # Handles the platforms: option from +options+.  Returns true if the
+  # platform matches the current platform.
+
+  def gem_platforms options # :nodoc:
+    return true unless platforms = options.delete(:platforms)
+
+    platforms = PLATFORM_MAP[platforms]
+
+    Gem::Platform.match platforms
+  end
+
+  private :gem_platforms
 
   ##
   # Handles the require: option from +options+ and adds those files, or the

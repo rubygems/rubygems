@@ -81,6 +81,14 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal "#{name}-#{version}", loaded.full_name
   end
 
+  def test_gem_platforms
+    with_engine_version 'ruby', '2.0.0' do
+      @gda.gem 'a', :platforms => :ruby_18
+
+      refute_empty @set.dependencies
+    end
+  end
+
   def test_gem_require
     @gda.gem 'a', :require => %w[b c]
 

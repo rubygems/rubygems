@@ -3,6 +3,36 @@
 
 class Gem::RequestSet::GemDependencyAPI
 
+  ENGINE_MAP = { # :nodoc:
+    :ruby         => nil,
+    :ruby_18      => nil,
+    :ruby_19      => nil,
+    :ruby_20      => nil,
+    :ruby_21      => nil,
+    :mri          => 'ruby',
+    :mri_18       => 'ruby',
+    :mri_19       => 'ruby',
+    :mri_20       => 'ruby',
+    :mri_21       => 'ruby',
+    :rbx          => 'rbx',
+    :jruby        => 'jruby',
+    :jruby_18     => 'jruby',
+    :jruby_19     => 'jruby',
+    :mswin        => nil,
+    :mingw        => nil,
+    :mingw_18     => nil,
+    :mingw_19     => nil,
+    :mingw_20     => nil,
+    :mingw_21     => nil,
+    :x64_mingw    => nil,
+    :x64_mingw_20 => nil,
+    :x64_mingw_21 => nil,
+  }
+
+  ENGINE_MAP.default_proc = proc do |_, platform|
+    raise ArgumentError, "unknown platform #{platform.inspect}"
+  end
+
   java      = Gem::Platform.new 'java'
   mswin     = Gem::Platform.new 'mswin32'
   mingw     = Gem::Platform.new 'x86-mingw32'
@@ -34,9 +64,7 @@ class Gem::RequestSet::GemDependencyAPI
     :x64_mingw_21 => x64_mingw
   }
 
-  PLATFORM_MAP.default_proc = proc do |_, platform|
-    raise ArgumentError, "unknown platform #{platform.inspect}"
-  end
+  PLATFORM_MAP.default_proc = ENGINE_MAP.default_proc
 
   gt_eq_0        = Gem::Requirement.new '>= 0'
   tilde_gt_1_8_0 = Gem::Requirement.new '~> 1.8.0'
@@ -174,6 +202,10 @@ class Gem::RequestSet::GemDependencyAPI
 
     Array(platform_names).any? do |platform_name|
       next false unless Gem::Platform.match PLATFORM_MAP[platform_name]
+
+      if engine = ENGINE_MAP[platform_name] then
+        next false unless Gem.ruby_engine == engine
+      end
 
       VERSION_MAP[platform_name].satisfied_by? Gem.ruby_version
     end

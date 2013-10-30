@@ -95,6 +95,14 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     end
   end
 
+  def test_gem_platforms_engine
+    with_engine_version 'jruby', '1.7.6' do
+      @gda.gem 'a', :platforms => :mri
+
+      assert_empty @set.dependencies
+    end
+  end
+
   def test_gem_platforms_multiple
     with_engine_version 'ruby', '2.0.0' do
       @gda.gem 'a', :platforms => [:mswin, :jruby]

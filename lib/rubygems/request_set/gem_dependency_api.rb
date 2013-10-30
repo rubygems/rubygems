@@ -4,20 +4,20 @@
 class Gem::RequestSet::GemDependencyAPI
 
   ENGINE_MAP = { # :nodoc:
-    :ruby         => nil,
-    :ruby_18      => nil,
-    :ruby_19      => nil,
-    :ruby_20      => nil,
-    :ruby_21      => nil,
-    :mri          => 'ruby',
-    :mri_18       => 'ruby',
-    :mri_19       => 'ruby',
-    :mri_20       => 'ruby',
-    :mri_21       => 'ruby',
-    :rbx          => 'rbx',
-    :jruby        => 'jruby',
-    :jruby_18     => 'jruby',
-    :jruby_19     => 'jruby',
+    :ruby         => %w[ruby rbx],
+    :ruby_18      => %w[ruby rbx],
+    :ruby_19      => %w[ruby rbx],
+    :ruby_20      => %w[ruby rbx],
+    :ruby_21      => %w[ruby rbx],
+    :mri          => %w[ruby],
+    :mri_18       => %w[ruby],
+    :mri_19       => %w[ruby],
+    :mri_20       => %w[ruby],
+    :mri_21       => %w[ruby],
+    :rbx          => %w[rbx],
+    :jruby        => %w[jruby],
+    :jruby_18     => %w[jruby],
+    :jruby_19     => %w[jruby],
     :mswin        => nil,
     :mingw        => nil,
     :mingw_18     => nil,
@@ -203,8 +203,8 @@ class Gem::RequestSet::GemDependencyAPI
     Array(platform_names).any? do |platform_name|
       next false unless Gem::Platform.match PLATFORM_MAP[platform_name]
 
-      if engine = ENGINE_MAP[platform_name] then
-        next false unless Gem.ruby_engine == engine
+      if engines = ENGINE_MAP[platform_name] then
+        next false unless engines.include? Gem.ruby_engine
       end
 
       VERSION_MAP[platform_name].satisfied_by? Gem.ruby_version

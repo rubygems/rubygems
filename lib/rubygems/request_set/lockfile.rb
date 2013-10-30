@@ -21,7 +21,9 @@ class Gem::RequestSet::Lockfile
       requests.each do |request|
         out << "    #{request.name} (#{request.version})"
         request.full_spec.dependencies.each do |dependency|
-          out << "      #{dependency.name}"
+          spec_requirement = " (#{dependency.requirement})" unless
+            Gem::Requirement.default == dependency.requirement
+          out << "      #{dependency.name}#{spec_requirement}"
         end
       end
     end
@@ -35,10 +37,10 @@ class Gem::RequestSet::Lockfile
     out << "DEPENDENCIES"
 
     @set.dependencies.map do |dependency|
-      requirement = " (#{dependency.requirement})" unless
+      dep_requirement = " (#{dependency.requirement})" unless
         Gem::Requirement.default == dependency.requirement
 
-      out << "  #{dependency.name}#{requirement}"
+      out << "  #{dependency.name}#{dep_requirement}"
     end
 
     out << nil

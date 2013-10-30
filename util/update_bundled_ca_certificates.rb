@@ -86,7 +86,14 @@ def write_certificates certificates
   end
 end
 
-certificates = load_certificates ARGF
+io =
+  if ARGV.empty? then
+    open OpenSSL::X509::CERT_FILE
+  else
+    ARGF
+  end
+
+certificates = load_certificates io
 puts "loaded #{certificates.length} certificates"
 
 $needed_combinations = []

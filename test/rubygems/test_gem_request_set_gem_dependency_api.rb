@@ -298,11 +298,30 @@ end
   end
 
   def test_platforms
+    win_platform, Gem.win_platform = Gem.win_platform?, false
+
     @gda.platforms :ruby do
       @gda.gem 'a'
     end
 
     assert_equal [dep('a')], @set.dependencies
+
+    @gda.platforms :mswin do
+      @gda.gem 'b'
+    end
+
+    assert_equal [dep('a')], @set.dependencies
+
+    Gem.win_platform = true
+
+    @gda.platforms :mswin do
+      @gda.gem 'c'
+    end
+
+    assert_equal [dep('a'), dep('c')], @set.dependencies
+
+  ensure
+    Gem.win_platform = win_platform
   end
 
   def test_ruby

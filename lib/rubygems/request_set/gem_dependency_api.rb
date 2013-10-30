@@ -137,11 +137,12 @@ class Gem::RequestSet::GemDependencyAPI
     @set = set
     @path = path
 
-    @current_groups  = nil
-    @default_sources = true
-    @requires        = Hash.new { |h, name|  h[name]  = [] }
-    @vendor_set      = @set.vendor_set
-    @without_groups  = []
+    @current_groups   = nil
+    @current_platform = nil
+    @default_sources  = true
+    @requires         = Hash.new { |h, name|  h[name]  = [] }
+    @vendor_set       = @set.vendor_set
+    @without_groups   = []
   end
 
   ##
@@ -212,9 +213,12 @@ class Gem::RequestSet::GemDependencyAPI
   # platform matches the current platform.
 
   def gem_platforms options # :nodoc:
-    return true unless platform_names = options.delete(:platforms)
+    platform_names = Array(options.delete :platforms)
+    platform_names << @current_platform if @current_platform
 
-    Array(platform_names).any? do |platform_name|
+    return true if platform_names.empty?
+
+    platform_names.any? do |platform_name|
       next false unless Gem::Platform.match PLATFORM_MAP[platform_name]
 
       if engines = ENGINE_MAP[platform_name] then
@@ -274,9 +278,12 @@ class Gem::RequestSet::GemDependencyAPI
   # :category: Gem Dependencies DSL
 
   def platform what
-    if what == :ruby
-      yield
-    end
+    @current_platform = what
+
+    yield
+
+  ensure
+    @current_platform = nil
   end
 
   ##

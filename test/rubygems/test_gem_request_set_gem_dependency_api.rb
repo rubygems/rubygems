@@ -111,6 +111,14 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     end
   end
 
+  def test_gem_platforms_unknown
+    e = assert_raises ArgumentError do
+      @gda.gem 'a', :platforms => :unknown
+    end
+
+    assert_equal 'unknown platform :unknown', e.message
+  end
+
   def test_gem_require
     @gda.gem 'a', :require => %w[b c]
 

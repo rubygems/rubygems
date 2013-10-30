@@ -195,8 +195,8 @@ class Gem::DependencyResolver
         [s.full_name, c.conflicting_dependencies.map { |cd| cd.to_s }]
       end
 
-      { needed: nd, specs: ss, dep: d, spec: spec.full_name,
-        possibles: ps, conflicts: cs }
+      { :needed => nd, :specs => ss, :dep => d, :spec => spec.full_name,
+        :possibles => ps, :conflicts => cs }
     end
   end
 

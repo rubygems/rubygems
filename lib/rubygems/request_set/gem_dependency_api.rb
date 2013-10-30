@@ -134,9 +134,13 @@ class Gem::RequestSet::GemDependencyAPI
   def gem_platforms options # :nodoc:
     return true unless platforms = options.delete(:platforms)
 
-    platforms = PLATFORM_MAP[platforms]
+    platforms = Array(platforms).map { |platform| PLATFORM_MAP[platform] }
 
-    Gem::Platform.match platforms
+    platforms.any? do |platform|
+      next false unless Gem::Platform.match platform
+
+      true
+    end
   end
 
   private :gem_platforms

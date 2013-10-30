@@ -4,11 +4,12 @@
 class Gem::RequestSet::GemDependencyAPI
 
   ENGINE_MAP = { # :nodoc:
-    :ruby         => %w[ruby rbx],
-    :ruby_18      => %w[ruby rbx],
-    :ruby_19      => %w[ruby rbx],
-    :ruby_20      => %w[ruby rbx],
-    :ruby_21      => %w[ruby rbx],
+    :ruby         => %w[ruby rbx maglev],
+    :ruby_18      => %w[ruby rbx maglev],
+    :ruby_19      => %w[ruby rbx maglev],
+    :ruby_20      => %w[ruby rbx maglev],
+    :ruby_21      => %w[ruby rbx maglev],
+    :maglev       => %w[maglev],
     :mri          => %w[ruby],
     :mri_18       => %w[ruby],
     :mri_19       => %w[ruby],
@@ -45,6 +46,7 @@ class Gem::RequestSet::GemDependencyAPI
     :ruby_19      => Gem::Platform::RUBY,
     :ruby_20      => Gem::Platform::RUBY,
     :ruby_21      => Gem::Platform::RUBY,
+    :maglev       => Gem::Platform::RUBY,
     :mri          => Gem::Platform::RUBY,
     :mri_18       => Gem::Platform::RUBY,
     :mri_19       => Gem::Platform::RUBY,
@@ -81,6 +83,7 @@ class Gem::RequestSet::GemDependencyAPI
     :ruby_19      => tilde_gt_1_9_0,
     :ruby_20      => tilde_gt_2_0_0,
     :ruby_21      => tilde_gt_2_1_0,
+    :maglev       => gt_eq_0,
     :mri          => gt_eq_0,
     :mri_18       => tilde_gt_1_8_0,
     :mri_19       => tilde_gt_1_9_0,

@@ -143,6 +143,22 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     end
   end
 
+  def test_gem_platforms_maglev
+    with_engine_version 'maglev', '1.0.0' do
+      set = Gem::RequestSet.new
+      gda = @GDA.new set, 'gem.deps.rb'
+      gda.gem 'a', :platforms => :ruby
+
+      refute_empty set.dependencies
+
+      set = Gem::RequestSet.new
+      gda = @GDA.new set, 'gem.deps.rb'
+      gda.gem 'a', :platforms => :maglev
+
+      refute_empty set.dependencies
+    end
+  end
+
   def test_gem_platforms_multiple
     with_engine_version 'ruby', '2.0.0' do
       @gda.gem 'a', :platforms => [:mswin, :jruby]

@@ -43,7 +43,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     Object.const_set :RUBY_ENGINE,         engine         if engine
     Object.const_set engine_version_const, engine_version if engine_version
 
-    Gem.remove_instance_variable :@ruby_version if
+    Gem.send :remove_instance_variable, :@ruby_version if
       Gem.instance_variables.include? :@ruby_version
   end
 

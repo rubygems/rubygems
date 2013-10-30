@@ -52,10 +52,6 @@ class Gem::RequestSet::GemDependencyAPI
     :x64_mingw_21 => x64_mingw
   }
 
-  PLATFORM_MAP.default_proc = proc do |_, platform|
-    raise ArgumentError, "unknown platform #{platform.inspect}"
-  end
-
   gt_eq_0        = Gem::Requirement.new '>= 0'
   tilde_gt_1_8_0 = Gem::Requirement.new '~> 1.8.0'
   tilde_gt_1_9_0 = Gem::Requirement.new '~> 1.9.0'
@@ -88,8 +84,6 @@ class Gem::RequestSet::GemDependencyAPI
     :x64_mingw_20 => tilde_gt_2_0_0,
     :x64_mingw_21 => tilde_gt_2_1_0,
   }
-
-  VERSION_MAP.default_proc = PLATFORM_MAP.default_proc
 
   WINDOWS = { # :nodoc:
     :mingw        => :only,
@@ -219,7 +213,10 @@ class Gem::RequestSet::GemDependencyAPI
     return true if platform_names.empty?
 
     platform_names.any? do |platform_name|
-      next false unless Gem::Platform.match PLATFORM_MAP[platform_name]
+      raise ArgumentError, "unknown platform #{platform_name.inspect}" unless
+        platform = PLATFORM_MAP[platform_name]
+
+      next false unless Gem::Platform.match platform
 
       if engines = ENGINE_MAP[platform_name] then
         next false unless engines.include? Gem.ruby_engine

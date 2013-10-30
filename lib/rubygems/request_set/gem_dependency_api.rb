@@ -344,7 +344,7 @@ class Gem::RequestSet::GemDependencyAPI
 
   # TODO: remove this typo name at RubyGems 3.0
 
-  Gem::RequestSet::DepedencyAPI = self # :nodoc:
+  Gem::RequestSet::GemDepedencyAPI = self # :nodoc:
 
 end
 

@@ -279,7 +279,7 @@ end
   end
 
   def test_name_typo
-    assert_same @GDA, Gem::RequestSet::DepedencyAPI
+    assert_same @GDA, Gem::RequestSet::GemDepedencyAPI
   end
 
   def test_platform_mswin

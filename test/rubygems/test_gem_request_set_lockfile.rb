@@ -90,5 +90,31 @@ DEPENDENCIES
     assert_equal expected, @lockfile.to_s
   end
 
+  def test_gem_dependency_requirement
+    spec_fetcher do |s|
+      s.gem 'a', 2, 'b' => '>= 0'
+      s.gem 'b', 2
+    end
+
+    @set.gem 'a', '>= 1'
+
+    expected = <<-LOCKFILE
+GEM
+  remote: #{@gem_repo}
+  specs:
+    b (2)
+    a (2)
+      b
+
+PLATFORMS
+  #{Gem::Platform::RUBY}
+
+DEPENDENCIES
+  a (>= 1)
+    LOCKFILE
+
+    assert_equal expected, @lockfile.to_s
+  end
+
 end
 

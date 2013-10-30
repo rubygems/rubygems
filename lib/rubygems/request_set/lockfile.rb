@@ -35,7 +35,10 @@ class Gem::RequestSet::Lockfile
     out << "DEPENDENCIES"
 
     @set.dependencies.map do |dependency|
-      out << "  #{dependency.name}"
+      requirement = " (#{dependency.requirement})" unless
+        Gem::Requirement.default == dependency.requirement
+
+      out << "  #{dependency.name}#{requirement}"
     end
 
     out << nil

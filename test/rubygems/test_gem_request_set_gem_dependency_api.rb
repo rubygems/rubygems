@@ -97,24 +97,27 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
   def test_gem_platforms_bundler_ruby
     with_engine_version 'ruby', '2.0.0' do
-      gda = @GDA.new @set, 'gem.deps.rb'
+      set = Gem::RequestSet.new
+      gda = @GDA.new set, 'gem.deps.rb'
       gda.gem 'a', :platforms => :ruby
 
-      refute_empty @set.dependencies
+      refute_empty set.dependencies
     end
 
     with_engine_version 'rbx', '2.0.0' do
-      gda = @GDA.new @set, 'gem.deps.rb'
+      set = Gem::RequestSet.new
+      gda = @GDA.new set, 'gem.deps.rb'
       gda.gem 'a', :platforms => :ruby
 
-      refute_empty @set.dependencies
+      refute_empty set.dependencies
     end
 
     with_engine_version 'jruby', '1.7.6' do
-      gda = @GDA.new @set, 'gem.deps.rb'
+      set = Gem::RequestSet.new
+      gda = @GDA.new set, 'gem.deps.rb'
       gda.gem 'a', :platforms => :ruby
 
-      assert_empty @set.dependencies
+      assert_empty set.dependencies
     end
   end
 

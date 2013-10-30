@@ -18,20 +18,7 @@ class Gem::RequestSet::GemDependencyAPI
     :jruby        => %w[jruby],
     :jruby_18     => %w[jruby],
     :jruby_19     => %w[jruby],
-    :mswin        => nil,
-    :mingw        => nil,
-    :mingw_18     => nil,
-    :mingw_19     => nil,
-    :mingw_20     => nil,
-    :mingw_21     => nil,
-    :x64_mingw    => nil,
-    :x64_mingw_20 => nil,
-    :x64_mingw_21 => nil,
   }
-
-  ENGINE_MAP.default_proc = proc do |_, platform|
-    raise ArgumentError, "unknown platform #{platform.inspect}"
-  end
 
   java      = Gem::Platform.new 'java'
   mswin     = Gem::Platform.new 'mswin32'
@@ -64,7 +51,10 @@ class Gem::RequestSet::GemDependencyAPI
     :x64_mingw_21 => x64_mingw
   }
 
-  PLATFORM_MAP.default_proc = ENGINE_MAP.default_proc
+  PLATFORM_MAP.default_proc = proc do |_, platform|
+    raise ArgumentError, "unknown platform #{platform.inspect}"
+  end
+
 
   gt_eq_0        = Gem::Requirement.new '>= 0'
   tilde_gt_1_8_0 = Gem::Requirement.new '~> 1.8.0'

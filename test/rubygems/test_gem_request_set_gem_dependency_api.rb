@@ -18,30 +18,31 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
   def with_engine_version name, version
     engine               = RUBY_ENGINE if Object.const_defined? :RUBY_ENGINE
-    engine_version_const = "#{engine.upcase}_VERSION" if engine
-    engine_version       = Object.const_get engine_version_const if engine
+    engine_version_const = "#{Gem.ruby_engine.upcase}_VERSION"
+    engine_version       = Object.const_get engine_version_const
 
     Object.send :remove_const, :RUBY_ENGINE         if engine
-    Object.send :remove_const, engine_version_const if
-      engine == name and engine_version
+    Object.send :remove_const, engine_version_const if name == 'ruby' and
+      Object.const_defined? engine_version_const
 
     new_engine_version_const = "#{name.upcase}_VERSION"
-    Object.const_set :RUBY_ENGINE,         name    if name
+    Object.const_set :RUBY_ENGINE,             name    if name
     Object.const_set new_engine_version_const, version if version
 
-    Gem.remove_instance_variable :@ruby_version if
-      Gem.instance_variables.include? :@ruby_version
+    Gem.instance_variable_set :@ruby_version, Gem::Version.new(version)
 
     yield
 
   ensure
     Object.send :remove_const, :RUBY_ENGINE             if name
     Object.send :remove_const, new_engine_version_const if version
-    Object.send :remove_const, engine_version_const     if
-      engine_version and Object.const_defined?(engine_version_const)
+
+    Object.send :remove_const, engine_version_const     if name == 'ruby' and
+      Object.const_defined? engine_version_const
 
     Object.const_set :RUBY_ENGINE,         engine         if engine
-    Object.const_set engine_version_const, engine_version if engine_version
+    Object.const_set engine_version_const, engine_version unless
+      Object.const_defined? engine_version_const
 
     Gem.send :remove_instance_variable, :@ruby_version if
       Gem.instance_variables.include? :@ruby_version
@@ -247,7 +248,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
       groups = @gda.send :gem_group, 'a', :group => :b, :groups => [:c, :d]
     end
 
-    assert_equal [:a, :b, :c, :d], groups.sort
+    assert_equal [:a, :b, :c, :d], groups.sort_by { |group| group.to_s }
   end
 
   def test_group
@@ -391,20 +392,20 @@ end
 
   def test_with_engine_version
     version = RUBY_VERSION
-    engine  = RUBY_ENGINE
+    engine  = Gem.ruby_engine
 
-    engine_version_const = "#{RUBY_ENGINE.upcase}_VERSION" if engine
-    engine_version = Object.const_get engine_version_const if engine
+    engine_version_const = "#{Gem.ruby_engine.upcase}_VERSION"
+    engine_version       = Object.const_get engine_version_const
 
     with_engine_version 'other', '1.2.3' do
-      assert_equal 'other', RUBY_ENGINE
+      assert_equal 'other', Gem.ruby_engine
       assert_equal '1.2.3', OTHER_VERSION
 
       assert_equal version, RUBY_VERSION if engine
     end
 
     assert_equal version, RUBY_VERSION
-    assert_equal engine,  RUBY_ENGINE
+    assert_equal engine,  Gem.ruby_engine
 
     assert_equal engine_version, Object.const_get(engine_version_const) if
       engine

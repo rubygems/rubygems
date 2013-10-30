@@ -21,7 +21,6 @@ class Gem::RequestSet::GemDependencyAPI
     :jruby_19     => %w[jruby],
   }
 
-  java      = Gem::Platform.new 'java'
   x86_mingw = Gem::Platform.new 'x86-mingw32'
   x64_mingw = Gem::Platform.new 'x64-mingw32'
 

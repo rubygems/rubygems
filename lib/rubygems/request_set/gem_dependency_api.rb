@@ -20,6 +20,20 @@ class Gem::RequestSet::GemDependencyAPI
     :jruby_19     => %w[jruby],
   }
 
+  NO_WINDOWS = { # :nodoc:
+    :ruby    => true,
+    :ruby_18 => true,
+    :ruby_19 => true,
+    :ruby_20 => true,
+    :ruby_21 => true,
+    :mri     => true,
+    :mri_18  => true,
+    :mri_19  => true,
+    :mri_20  => true,
+    :mri_21  => true,
+    :rbx     => true,
+  }
+
   java      = Gem::Platform.new 'java'
   mswin     = Gem::Platform.new 'mswin32'
   mingw     = Gem::Platform.new 'x86-mingw32'
@@ -194,6 +208,10 @@ class Gem::RequestSet::GemDependencyAPI
 
       if engines = ENGINE_MAP[platform_name] then
         next false unless engines.include? Gem.ruby_engine
+      end
+
+      if NO_WINDOWS[platform_name] then
+        next false if Gem.win_platform?
       end
 
       VERSION_MAP[platform_name].satisfied_by? Gem.ruby_version

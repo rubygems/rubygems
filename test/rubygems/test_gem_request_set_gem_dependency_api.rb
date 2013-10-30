@@ -96,6 +96,8 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   end
 
   def test_gem_platforms_bundler_ruby
+    win_platform, Gem.win_platform = Gem.win_platform?, false
+
     with_engine_version 'ruby', '2.0.0' do
       set = Gem::RequestSet.new
       gda = @GDA.new set, 'gem.deps.rb'
@@ -119,6 +121,18 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
       assert_empty set.dependencies
     end
+
+    Gem.win_platform = true
+
+    with_engine_version 'ruby', '2.0.0' do
+      set = Gem::RequestSet.new
+      gda = @GDA.new set, 'gem.deps.rb'
+      gda.gem 'a', :platforms => :ruby
+
+      assert_empty set.dependencies
+    end
+
+    Gem.win_platform = win_platform
   end
 
   def test_gem_platforms_engine

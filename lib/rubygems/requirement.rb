@@ -118,6 +118,18 @@ class Gem::Requirement
   end
 
   ##
+  # Concatenates the +new+ requirements onto this requirement.
+
+  def concat new
+    new = new.flatten
+    new.compact!
+    new.uniq!
+    new = new.map { |r| self.class.parse r }
+
+    @requirements.concat new
+  end
+
+  ##
   # true if this gem has no requirements.
 
   def none?

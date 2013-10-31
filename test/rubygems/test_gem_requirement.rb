@@ -3,6 +3,14 @@ require "rubygems/requirement"
 
 class TestGemRequirement < Gem::TestCase
 
+  def test_concat
+    r = req '>= 1'
+
+    r.concat ['< 2']
+
+    assert_equal [['>=', v(1)], ['<', v(2)]], r.requirements
+  end
+
   def test_equals2
     r = req "= 1.2"
     assert_equal r, r.dup

@@ -2482,7 +2482,6 @@ class Gem::Specification < Gem::BasicSpecification
       end
     end
 
-    # FIX: uhhhh single element array.each?
     [:authors].each do |field|
       val = self.send field
       raise Gem::InvalidSpecificationException, "#{field} may not be empty" if
@@ -2534,7 +2533,6 @@ licenses is empty.  Use a license abbreviation from:
 
     # reject lazy developers:
 
-    # FIX: Doesn't this just evaluate to "FIXME" or "TODO"?
     lazy = '"FIxxxXME" or "TOxxxDO"'.gsub(/xxx/, '')
 
     unless authors.grep(/FI XME|TO DO/x).empty? then
@@ -2650,7 +2648,6 @@ pessimistic dependency on #{dep} may be overly strict
     false
   end
 
-  # FIX: have this handle the platform/new_platform/original_platform bullshit
   def yaml_initialize(tag, vals) # :nodoc:
     vals.each do |ivar, val|
       case ivar

@@ -20,6 +20,8 @@ class Gem::RequestSet::Lockfile
 
       out << "  #{dependency.name}#{source_dep}#{dep_requirement}"
     end
+
+    out << nil
   end
 
   def add_GEM out, spec_groups # :nodoc:
@@ -43,6 +45,8 @@ class Gem::RequestSet::Lockfile
         end
       end
     end
+
+    out << nil
   end
 
   def add_PATH out, spec_groups # :nodoc:
@@ -68,6 +72,8 @@ class Gem::RequestSet::Lockfile
     platforms.each do |platform|
       out << "  #{platform}"
     end
+
+    out << nil
   end
 
   def to_s
@@ -85,15 +91,9 @@ class Gem::RequestSet::Lockfile
 
     add_GEM out, spec_groups
 
-    out << nil
-
     add_PLATFORMS out
 
-    out << nil
-
     add_DEPENDENCIES out
-
-    out << nil
 
     out.join "\n"
   end

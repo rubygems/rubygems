@@ -45,8 +45,10 @@ class TestGemDependencyResolverVendorSet < Gem::TestCase
 
     spec = @set.load_spec name, version, Gem::Platform::RUBY, nil
 
+    source = Gem::Source::Vendor.new directory
+
     expected = [
-      Gem::DependencyResolver::VendorSpecification.new(@set, spec, nil)
+      Gem::DependencyResolver::VendorSpecification.new(@set, spec, source)
     ]
 
     assert_equal expected, found

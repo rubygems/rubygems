@@ -16,7 +16,8 @@
 class Gem::DependencyResolver::VendorSet
 
   def initialize
-    @specs = {}
+    @directories = {}
+    @specs       = {}
   end
 
   ##
@@ -33,7 +34,8 @@ class Gem::DependencyResolver::VendorSet
 
     key = "#{spec.name}-#{spec.version}-#{spec.platform}"
 
-    @specs[key] = spec
+    @specs[key]        = spec
+    @directories[spec] = directory
   end
 
   ##
@@ -44,7 +46,8 @@ class Gem::DependencyResolver::VendorSet
     @specs.values.select do |spec|
       req.matches_spec? spec
     end.map do |spec|
-      Gem::DependencyResolver::VendorSpecification.new self, spec, nil
+      source = Gem::Source::Vendor.new @directories[spec]
+      Gem::DependencyResolver::VendorSpecification.new self, spec, source
     end
   end
 

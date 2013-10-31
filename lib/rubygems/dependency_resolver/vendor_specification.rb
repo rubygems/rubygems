@@ -1,5 +1,7 @@
 class Gem::DependencyResolver::VendorSpecification
 
+  attr_reader :source
+
   attr_reader :spec
 
   attr_reader :set
@@ -13,7 +15,8 @@ class Gem::DependencyResolver::VendorSpecification
   def == other # :nodoc:
     self.class === other and
       @set  == other.set and
-      @spec == other.spec
+      @spec == other.spec and
+      @source == other.source
   end
 
   def dependencies
@@ -30,10 +33,6 @@ class Gem::DependencyResolver::VendorSpecification
 
   def platform
     @spec.platform
-  end
-
-  def source
-    @source ||= Gem::Source::Vendor.new
   end
 
   def version

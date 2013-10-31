@@ -9,13 +9,33 @@ class Gem::RequestSet::Lockfile
 
     out = []
 
+    requests = @set.sorted_requests
+
+    spec_groups = @set.sorted_requests.group_by do |request|
+      request.spec.class
+    end
+
+    path_requests =
+      spec_groups.delete Gem::DependencyResolver::VendorSpecification
+
+    if path_requests then
+      out << "PATH"
+      path_requests.each do |request|
+        out << "  remote: #{request.spec.source.uri}"
+        out << "  specs:"
+        out << "    #{request.name} (#{request.version})"
+      end
+
+      out << nil
+    end
+
     out << "GEM"
 
-    groups = @set.sorted_requests.group_by do |request|
+    source_groups = spec_groups.values.flatten.group_by do |request|
       request.spec.source.uri
     end
 
-    groups.map do |group, requests|
+    source_groups.map do |group, requests|
       out << "  remote: #{group}"
       out << "  specs:"
       requests.each do |request|
@@ -37,10 +57,17 @@ class Gem::RequestSet::Lockfile
     out << "DEPENDENCIES"
 
     @set.dependencies.map do |dependency|
+      source = requests.find do |req|
+        req.name == dependency.name and
+          req.spec.class == Gem::DependencyResolver::VendorSpecification
+      end
+
+      source_dep = '!' if source
+
       dep_requirement = " (#{dependency.requirement})" unless
         Gem::Requirement.default == dependency.requirement
 
-      out << "  #{dependency.name}#{dep_requirement}"
+      out << "  #{dependency.name}#{source_dep}#{dep_requirement}"
     end
 
     out << nil

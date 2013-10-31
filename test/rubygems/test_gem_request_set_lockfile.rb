@@ -13,6 +13,10 @@ class TestGemRequestSetLockfile < Gem::TestCase
 
     @set = Gem::RequestSet.new
 
+    @vendor_set = Gem::DependencyResolver::VendorSet.new
+
+    @set.instance_variable_set :@vendor_set, @vendor_set
+
     @lockfile = Gem::RequestSet::Lockfile.new @set
   end
 
@@ -137,6 +141,31 @@ PLATFORMS
 
 DEPENDENCIES
   a (>= 1)
+    LOCKFILE
+
+    assert_equal expected, @lockfile.to_s
+  end
+
+  def test_gem_path
+    name, version, directory = vendor_gem
+
+    @vendor_set.add_vendor_gem name, directory
+
+    @set.gem 'a'
+
+    expected = <<-LOCKFILE
+PATH
+  remote: #{directory}
+  specs:
+    #{name} (#{version})
+
+GEM
+
+PLATFORMS
+  #{Gem::Platform::RUBY}
+
+DEPENDENCIES
+  a!
     LOCKFILE
 
     assert_equal expected, @lockfile.to_s

@@ -80,9 +80,9 @@ DEPENDENCIES
 GEM
   remote: #{@gem_repo}
   specs:
-    b (2)
     a (2)
       b
+    b (2)
 
 PLATFORMS
   #{Gem::Platform::RUBY}
@@ -100,21 +100,23 @@ DEPENDENCIES
       s.gem 'b', 2
     end
 
+    @set.gem 'b'
     @set.gem 'a'
 
     expected = <<-LOCKFILE
 GEM
   remote: #{@gem_repo}
   specs:
-    b (2)
     a (2)
       b (>= 1)
+    b (2)
 
 PLATFORMS
   #{Gem::Platform::RUBY}
 
 DEPENDENCIES
   a
+  b
     LOCKFILE
 
     assert_equal expected, @lockfile.to_s
@@ -132,9 +134,9 @@ DEPENDENCIES
 GEM
   remote: #{@gem_repo}
   specs:
-    b (2)
     a (2)
       b
+    b (2)
 
 PLATFORMS
   #{Gem::Platform::RUBY}

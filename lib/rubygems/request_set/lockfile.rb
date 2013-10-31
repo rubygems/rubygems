@@ -38,7 +38,7 @@ class Gem::RequestSet::Lockfile
     source_groups.map do |group, requests|
       out << "  remote: #{group}"
       out << "  specs:"
-      requests.each do |request|
+      requests.sort_by { |request| request.name }.each do |request|
         out << "    #{request.name} (#{request.version})"
         request.full_spec.dependencies.each do |dependency|
           spec_requirement = " (#{dependency.requirement})" unless
@@ -56,7 +56,7 @@ class Gem::RequestSet::Lockfile
     out << nil
     out << "DEPENDENCIES"
 
-    @set.dependencies.map do |dependency|
+    @set.dependencies.sort.map do |dependency|
       source = requests.find do |req|
         req.name == dependency.name and
           req.spec.class == Gem::DependencyResolver::VendorSpecification

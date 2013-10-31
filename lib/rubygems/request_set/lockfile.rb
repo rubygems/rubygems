@@ -4,6 +4,29 @@ class Gem::RequestSet::Lockfile
     @set = request_set
   end
 
+  def add_GEM out, spec_groups # :nodoc:
+    out << "GEM"
+
+    source_groups = spec_groups.values.flatten.group_by do |request|
+      request.spec.source.uri
+    end
+
+    source_groups.map do |group, requests|
+      out << "  remote: #{group}"
+      out << "  specs:"
+      requests.sort_by { |request| request.name }.each do |request|
+        platform = "-#{request.spec.platform}" unless
+          Gem::Platform::RUBY == request.spec.platform
+        out << "    #{request.name} (#{request.version}#{platform})"
+        request.full_spec.dependencies.sort.each do |dependency|
+          spec_requirement = " (#{dependency.requirement})" unless
+            Gem::Requirement.default == dependency.requirement
+          out << "      #{dependency.name}#{spec_requirement}"
+        end
+      end
+    end
+  end
+
   def add_PATH out, spec_groups # :nodoc:
     return unless path_requests =
       spec_groups.delete(Gem::DependencyResolver::VendorSpecification)
@@ -31,26 +54,7 @@ class Gem::RequestSet::Lockfile
 
     add_PATH out, spec_groups
 
-    out << "GEM"
-
-    source_groups = spec_groups.values.flatten.group_by do |request|
-      request.spec.source.uri
-    end
-
-    source_groups.map do |group, requests|
-      out << "  remote: #{group}"
-      out << "  specs:"
-      requests.sort_by { |request| request.name }.each do |request|
-        platform = "-#{request.spec.platform}" unless
-          Gem::Platform::RUBY == request.spec.platform
-        out << "    #{request.name} (#{request.version}#{platform})"
-        request.full_spec.dependencies.sort.each do |dependency|
-          spec_requirement = " (#{dependency.requirement})" unless
-            Gem::Requirement.default == dependency.requirement
-          out << "      #{dependency.name}#{spec_requirement}"
-        end
-      end
-    end
+    add_GEM out, spec_groups
 
     out << nil
     out << "PLATFORMS"

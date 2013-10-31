@@ -205,17 +205,17 @@ class Gem::RequestSet::GemDependencyAPI
   # Returns +true+ if the path option was handled.
 
   def gem_path name, options # :nodoc:
-    if directory = options.delete(:path) then
-      raise ArgumentError,
-        "duplicate source path: #{directory} for gem #{name}" if
-          @gem_sources.include? name
+    return unless directory = options.delete(:path)
 
-      @vendor_set.add_vendor_gem name, directory
+    raise ArgumentError,
+      "duplicate source path: #{directory} for gem #{name}" if
+        @gem_sources.include? name
 
-      @gem_sources[name] = directory
+    @vendor_set.add_vendor_gem name, directory
 
-      true
-    end
+    @gem_sources[name] = directory
+
+    true
   end
 
   private :gem_path

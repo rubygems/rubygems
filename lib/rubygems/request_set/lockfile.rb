@@ -4,6 +4,20 @@ class Gem::RequestSet::Lockfile
     @set = request_set
   end
 
+  def add_PATH out, spec_groups # :nodoc:
+    return unless path_requests =
+      spec_groups.delete(Gem::DependencyResolver::VendorSpecification)
+
+    out << "PATH"
+    path_requests.each do |request|
+      out << "  remote: #{request.spec.source.uri}"
+      out << "  specs:"
+      out << "    #{request.name} (#{request.version})"
+    end
+
+    out << nil
+  end
+
   def to_s
     @set.resolve
 
@@ -15,19 +29,7 @@ class Gem::RequestSet::Lockfile
       request.spec.class
     end
 
-    path_requests =
-      spec_groups.delete Gem::DependencyResolver::VendorSpecification
-
-    if path_requests then
-      out << "PATH"
-      path_requests.each do |request|
-        out << "  remote: #{request.spec.source.uri}"
-        out << "  specs:"
-        out << "    #{request.name} (#{request.version})"
-      end
-
-      out << nil
-    end
+    add_PATH out, spec_groups
 
     out << "GEM"
 

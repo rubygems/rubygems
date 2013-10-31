@@ -24,10 +24,10 @@ class Gem::RequestSet::Lockfile
     out << nil
   end
 
-  def add_GEM out, spec_groups # :nodoc:
+  def add_GEM out # :nodoc:
     out << "GEM"
 
-    source_groups = spec_groups.values.flatten.group_by do |request|
+    source_groups = @spec_groups.values.flatten.group_by do |request|
       request.spec.source.uri
     end
 
@@ -49,9 +49,9 @@ class Gem::RequestSet::Lockfile
     out << nil
   end
 
-  def add_PATH out, spec_groups # :nodoc:
+  def add_PATH out # :nodoc:
     return unless path_requests =
-      spec_groups.delete(Gem::DependencyResolver::VendorSpecification)
+      @spec_groups.delete(Gem::DependencyResolver::VendorSpecification)
 
     out << "PATH"
     path_requests.each do |request|
@@ -83,13 +83,13 @@ class Gem::RequestSet::Lockfile
 
     @requests = @set.sorted_requests
 
-    spec_groups = @requests.group_by do |request|
+    @spec_groups = @requests.group_by do |request|
       request.spec.class
     end
 
-    add_PATH out, spec_groups
+    add_PATH out
 
-    add_GEM out, spec_groups
+    add_GEM out
 
     add_PLATFORMS out
 

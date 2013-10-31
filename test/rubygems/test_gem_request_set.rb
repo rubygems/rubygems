@@ -17,6 +17,15 @@ class TestGemRequestSet < Gem::TestCase
     assert_equal [Gem::Dependency.new("a", "=2")], rs.dependencies
   end
 
+  def test_gem_duplicate
+    rs = Gem::RequestSet.new
+
+    rs.gem 'a', '1'
+    rs.gem 'a', '2'
+
+    assert_equal [dep('a', '= 1', '= 2')], rs.dependencies
+  end
+
   def test_import
     rs = Gem::RequestSet.new
     rs.gem 'a'

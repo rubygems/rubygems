@@ -53,13 +53,14 @@ class Gem::RequestSet
   def initialize *deps
     @dependencies = deps
 
-    @always_install = []
-    @development    = false
-    @requests       = []
-    @soft_missing   = false
-    @sorted         = nil
-    @specs          = nil
-    @vendor_set     = nil
+    @always_install   = []
+    @dependency_names = {}
+    @development      = false
+    @requests         = []
+    @soft_missing     = false
+    @sorted           = nil
+    @specs            = nil
+    @vendor_set       = nil
 
     yield self if block_given?
   end
@@ -68,7 +69,13 @@ class Gem::RequestSet
   # Declare that a gem of name +name+ with +reqs+ requirements is needed.
 
   def gem name, *reqs
-    @dependencies << Gem::Dependency.new(name, reqs)
+    if dep = @dependency_names[name] then
+      dep.requirement.concat reqs
+    else
+      dep = Gem::Dependency.new name, reqs
+      @dependency_names[name] = dep
+      @dependencies << dep
+    end
   end
 
   ##

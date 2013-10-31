@@ -40,7 +40,7 @@ class Gem::RequestSet::Lockfile
       out << "  specs:"
       requests.sort_by { |request| request.name }.each do |request|
         out << "    #{request.name} (#{request.version})"
-        request.full_spec.dependencies.each do |dependency|
+        request.full_spec.dependencies.sort.each do |dependency|
           spec_requirement = " (#{dependency.requirement})" unless
             Gem::Requirement.default == dependency.requirement
           out << "      #{dependency.name}#{spec_requirement}"

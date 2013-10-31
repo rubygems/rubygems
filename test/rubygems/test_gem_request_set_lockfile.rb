@@ -70,8 +70,9 @@ DEPENDENCIES
 
   def test_gem_dependency
     spec_fetcher do |s|
-      s.gem 'a', 2, 'b' => '>= 0'
+      s.gem 'a', 2, 'c' => '>= 0', 'b' => '>= 0'
       s.gem 'b', 2
+      s.gem 'c', 2
     end
 
     @set.gem 'a'
@@ -82,7 +83,9 @@ GEM
   specs:
     a (2)
       b
+      c
     b (2)
+    c (2)
 
 PLATFORMS
   #{Gem::Platform::RUBY}

@@ -133,7 +133,7 @@ class Gem::RequestSet::GemDependencyAPI
     @current_groups   = nil
     @current_platform = nil
     @default_sources  = true
-    @requires         = Hash.new { |h, name|  h[name]  = [] }
+    @requires         = Hash.new { |h, name| h[name] = [] }
     @vendor_set       = @set.vendor_set
     @without_groups   = []
   end

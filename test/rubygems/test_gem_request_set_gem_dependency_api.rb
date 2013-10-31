@@ -233,6 +233,31 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal [dep('c')], @set.dependencies
   end
 
+  def test_gem_source_mismatch
+    name, version, directory = vendor_gem
+
+    gda = @GDA.new @set, nil
+    gda.gem name
+
+    e = assert_raises ArgumentError do
+      gda.gem name, :path => directory
+    end
+
+    assert_equal "duplicate source path: #{directory} for gem #{name}",
+                 e.message
+
+    gda = @GDA.new @set, nil
+    gda.instance_variable_set :@vendor_set, @vendor_set
+    gda.gem name, :path => directory
+
+    e = assert_raises ArgumentError do
+      gda.gem name
+    end
+
+    assert_equal "duplicate source (default) for gem #{name}",
+                 e.message
+  end
+
   def test_gem_deps_file
     assert_equal 'gem.deps.rb', @gda.gem_deps_file
 

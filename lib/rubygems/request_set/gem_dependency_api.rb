@@ -135,6 +135,7 @@ class Gem::RequestSet::GemDependencyAPI
     @default_sources  = true
     @requires         = Hash.new { |h, name| h[name] = [] }
     @vendor_set       = @set.vendor_set
+    @gem_sources      = {}
     @without_groups   = []
   end
 
@@ -159,13 +160,21 @@ class Gem::RequestSet::GemDependencyAPI
     options = requirements.pop if requirements.last.kind_of?(Hash)
     options ||= {}
 
-    gem_path name, options
+    source_set = gem_path name, options
 
     return unless gem_platforms options
 
     groups = gem_group name, options
 
     return unless (groups & @without_groups).empty?
+
+    unless source_set then
+      raise ArgumentError,
+        "duplicate source (default) for gem #{name}" if
+          @gem_sources.include? name
+
+      @gem_sources[name] = :default
+    end
 
     gem_requires name, options
 
@@ -192,10 +201,20 @@ class Gem::RequestSet::GemDependencyAPI
 
   ##
   # Handles the path: option from +options+ for gem +name+.
+  #
+  # Returns +true+ if the path option was handled.
 
   def gem_path name, options # :nodoc:
     if directory = options.delete(:path) then
+      raise ArgumentError,
+        "duplicate source path: #{directory} for gem #{name}" if
+          @gem_sources.include? name
+
       @vendor_set.add_vendor_gem name, directory
+
+      @gem_sources[name] = directory
+
+      true
     end
   end
 

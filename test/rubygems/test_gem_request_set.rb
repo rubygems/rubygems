@@ -101,6 +101,21 @@ class TestGemRequestSet < Gem::TestCase
     assert_equal ["a-2", "b-2"], names
   end
 
+  def test_resolve_incompatible
+    a1 = util_spec 'a', 1
+    a2 = util_spec 'a', 2
+
+    rs = Gem::RequestSet.new
+    rs.gem 'a', '= 1'
+    rs.gem 'a', '= 2'
+
+    set = StaticSet.new [a1, a2]
+
+    assert_raises Gem::UnsatisfiableDependencyError do
+      rs.resolve set
+    end
+  end
+
   def test_resolve_vendor
     a_name, _, a_directory = vendor_gem 'a', 1 do |s|
       s.add_dependency 'b', '~> 2.0'

@@ -4,6 +4,24 @@ class Gem::RequestSet::Lockfile
     @set = request_set
   end
 
+  def add_DEPENDENCIES out, requests # :nodoc:
+    out << "DEPENDENCIES"
+
+    @set.dependencies.sort.map do |dependency|
+      source = requests.find do |req|
+        req.name == dependency.name and
+          req.spec.class == Gem::DependencyResolver::VendorSpecification
+      end
+
+      source_dep = '!' if source
+
+      dep_requirement = " (#{dependency.requirement})" unless
+        Gem::Requirement.default == dependency.requirement
+
+      out << "  #{dependency.name}#{source_dep}#{dep_requirement}"
+    end
+  end
+
   def add_GEM out, spec_groups # :nodoc:
     out << "GEM"
 
@@ -72,21 +90,8 @@ class Gem::RequestSet::Lockfile
     add_PLATFORMS out, requests
 
     out << nil
-    out << "DEPENDENCIES"
 
-    @set.dependencies.sort.map do |dependency|
-      source = requests.find do |req|
-        req.name == dependency.name and
-          req.spec.class == Gem::DependencyResolver::VendorSpecification
-      end
-
-      source_dep = '!' if source
-
-      dep_requirement = " (#{dependency.requirement})" unless
-        Gem::Requirement.default == dependency.requirement
-
-      out << "  #{dependency.name}#{source_dep}#{dep_requirement}"
-    end
+    add_DEPENDENCIES out, requests
 
     out << nil
 

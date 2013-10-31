@@ -4,11 +4,11 @@ class Gem::RequestSet::Lockfile
     @set = request_set
   end
 
-  def add_DEPENDENCIES out, requests # :nodoc:
+  def add_DEPENDENCIES out # :nodoc:
     out << "DEPENDENCIES"
 
     @set.dependencies.sort.map do |dependency|
-      source = requests.find do |req|
+      source = @requests.find do |req|
         req.name == dependency.name and
           req.spec.class == Gem::DependencyResolver::VendorSpecification
       end
@@ -59,10 +59,10 @@ class Gem::RequestSet::Lockfile
     out << nil
   end
 
-  def add_PLATFORMS out, requests # :nodoc:
+  def add_PLATFORMS out # :nodoc:
     out << "PLATFORMS"
 
-    platforms = requests.map { |request| request.spec.platform }.uniq
+    platforms = @requests.map { |request| request.spec.platform }.uniq
     platforms.delete Gem::Platform::RUBY if platforms.length > 1
 
     platforms.each do |platform|
@@ -75,9 +75,9 @@ class Gem::RequestSet::Lockfile
 
     out = []
 
-    requests = @set.sorted_requests
+    @requests = @set.sorted_requests
 
-    spec_groups = @set.sorted_requests.group_by do |request|
+    spec_groups = @requests.group_by do |request|
       request.spec.class
     end
 
@@ -87,11 +87,11 @@ class Gem::RequestSet::Lockfile
 
     out << nil
 
-    add_PLATFORMS out, requests
+    add_PLATFORMS out
 
     out << nil
 
-    add_DEPENDENCIES out, requests
+    add_DEPENDENCIES out
 
     out << nil
 

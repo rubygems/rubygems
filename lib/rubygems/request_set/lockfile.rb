@@ -39,7 +39,9 @@ class Gem::RequestSet::Lockfile
       out << "  remote: #{group}"
       out << "  specs:"
       requests.sort_by { |request| request.name }.each do |request|
-        out << "    #{request.name} (#{request.version})"
+        platform = "-#{request.spec.platform}" unless
+          Gem::Platform::RUBY == request.spec.platform
+        out << "    #{request.name} (#{request.version}#{platform})"
         request.full_spec.dependencies.sort.each do |dependency|
           spec_requirement = " (#{dependency.requirement})" unless
             Gem::Requirement.default == dependency.requirement
@@ -51,7 +53,12 @@ class Gem::RequestSet::Lockfile
     out << nil
     out << "PLATFORMS"
 
-    out << "  #{Gem::Platform::RUBY}"
+    platforms = requests.map { |request| request.spec.platform }.uniq
+    platforms.delete Gem::Platform::RUBY if platforms.length > 1
+
+    platforms.each do |platform|
+      out << "  #{platform}"
+    end
 
     out << nil
     out << "DEPENDENCIES"

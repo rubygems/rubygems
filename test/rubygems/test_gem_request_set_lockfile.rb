@@ -27,8 +27,8 @@ class TestGemRequestSetLockfile < Gem::TestCase
     gem_maker.instance_variable_set :@test,  self
     gem_maker.instance_variable_set :@gems,  gems
 
-    def gem_maker.gem name, version, dependencies = nil
-      spec, gem = @test.util_gem name, version, dependencies
+    def gem_maker.gem name, version, dependencies = nil, &block
+      spec, gem = @test.util_gem name, version, dependencies, &block
 
       @gems[spec] = gem
 
@@ -171,6 +171,31 @@ PLATFORMS
 
 DEPENDENCIES
   a!
+    LOCKFILE
+
+    assert_equal expected, @lockfile.to_s
+  end
+
+  def test_gem_platform
+    spec_fetcher do |s|
+      s.gem 'a', 2 do |spec|
+        spec.platform = Gem::Platform.local
+      end
+    end
+
+    @set.gem 'a'
+
+    expected = <<-LOCKFILE
+GEM
+  remote: #{@gem_repo}
+  specs:
+    a (2-#{Gem::Platform.local})
+
+PLATFORMS
+  #{Gem::Platform.local}
+
+DEPENDENCIES
+  a
     LOCKFILE
 
     assert_equal expected, @lockfile.to_s

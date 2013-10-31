@@ -41,6 +41,17 @@ class Gem::RequestSet::Lockfile
     out << nil
   end
 
+  def add_PLATFORMS out, requests # :nodoc:
+    out << "PLATFORMS"
+
+    platforms = requests.map { |request| request.spec.platform }.uniq
+    platforms.delete Gem::Platform::RUBY if platforms.length > 1
+
+    platforms.each do |platform|
+      out << "  #{platform}"
+    end
+  end
+
   def to_s
     @set.resolve
 
@@ -57,14 +68,8 @@ class Gem::RequestSet::Lockfile
     add_GEM out, spec_groups
 
     out << nil
-    out << "PLATFORMS"
 
-    platforms = requests.map { |request| request.spec.platform }.uniq
-    platforms.delete Gem::Platform::RUBY if platforms.length > 1
-
-    platforms.each do |platform|
-      out << "  #{platform}"
-    end
+    add_PLATFORMS out, requests
 
     out << nil
     out << "DEPENDENCIES"

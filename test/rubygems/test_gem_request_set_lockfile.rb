@@ -47,7 +47,7 @@ class TestGemRequestSetLockfile < Gem::TestCase
     end
   end
 
-  def test_gem
+  def test_to_s_gem
     spec_fetcher do |s|
       s.gem 'a', 2
     end
@@ -70,7 +70,7 @@ DEPENDENCIES
     assert_equal expected, @lockfile.to_s
   end
 
-  def test_gem_dependency
+  def test_to_s_gem_dependency
     spec_fetcher do |s|
       s.gem 'a', 2, 'c' => '>= 0', 'b' => '>= 0'
       s.gem 'b', 2
@@ -99,7 +99,7 @@ DEPENDENCIES
     assert_equal expected, @lockfile.to_s
   end
 
-  def test_gem_dependency_non_default
+  def test_to_s_gem_dependency_non_default
     spec_fetcher do |s|
       s.gem 'a', 2, 'b' => '>= 1'
       s.gem 'b', 2
@@ -127,7 +127,7 @@ DEPENDENCIES
     assert_equal expected, @lockfile.to_s
   end
 
-  def test_gem_dependency_requirement
+  def test_to_s_gem_dependency_requirement
     spec_fetcher do |s|
       s.gem 'a', 2, 'b' => '>= 0'
       s.gem 'b', 2
@@ -153,7 +153,7 @@ DEPENDENCIES
     assert_equal expected, @lockfile.to_s
   end
 
-  def test_gem_path
+  def test_to_s_gem_path
     name, version, directory = vendor_gem
 
     @vendor_set.add_vendor_gem name, directory
@@ -178,7 +178,7 @@ DEPENDENCIES
     assert_equal expected, @lockfile.to_s
   end
 
-  def test_gem_path_absolute
+  def test_to_s_gem_path_absolute
     name, version, directory = vendor_gem
 
     @vendor_set.add_vendor_gem name, File.expand_path(directory)
@@ -203,7 +203,7 @@ DEPENDENCIES
     assert_equal expected, @lockfile.to_s
   end
 
-  def test_gem_platform
+  def test_to_s_gem_platform
     spec_fetcher do |s|
       s.gem 'a', 2 do |spec|
         spec.platform = Gem::Platform.local

@@ -33,10 +33,13 @@ class Gem::RequestSet::Lockfile
     source_groups.map do |group, requests|
       out << "  remote: #{group}"
       out << "  specs:"
+
       requests.sort_by { |request| request.name }.each do |request|
         platform = "-#{request.spec.platform}" unless
           Gem::Platform::RUBY == request.spec.platform
+
         out << "    #{request.name} (#{request.version}#{platform})"
+
         request.full_spec.dependencies.sort.each do |dependency|
           requirement = dependency.requirement
           out << "      #{dependency.name}#{requirement.for_lockfile}"

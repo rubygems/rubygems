@@ -1,7 +1,15 @@
+require 'pathname'
+
 class Gem::RequestSet::Lockfile
 
-  def initialize request_set
-    @set = request_set
+  ##
+  # Creates a new Lockfile for the given +request_set+ and +gem_deps_file+
+  # location.
+
+  def initialize request_set, gem_deps_file
+    @set           = request_set
+    @gem_deps_file = Pathname(gem_deps_file).expand_path
+    @gem_deps_dir  = @gem_deps_file.dirname
   end
 
   def add_DEPENDENCIES out # :nodoc:
@@ -56,7 +64,9 @@ class Gem::RequestSet::Lockfile
 
     out << "PATH"
     path_requests.each do |request|
-      out << "  remote: #{request.spec.source.uri}"
+      directory = Pathname(request.spec.source.uri).expand_path
+
+      out << "  remote: #{directory.relative_path_from @gem_deps_dir}"
       out << "  specs:"
       out << "    #{request.name} (#{request.version})"
     end

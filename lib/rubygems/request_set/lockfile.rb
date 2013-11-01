@@ -10,6 +10,9 @@ class Gem::RequestSet::Lockfile
     @set           = request_set
     @gem_deps_file = Pathname(gem_deps_file).expand_path
     @gem_deps_dir  = @gem_deps_file.dirname
+
+    @line           = 0
+    @line_pos       = 0
   end
 
   def add_DEPENDENCIES out # :nodoc:
@@ -107,6 +110,51 @@ class Gem::RequestSet::Lockfile
     add_DEPENDENCIES out
 
     out.join "\n"
+  end
+
+  ##
+  # Calculates the column (by byte) and the line of the current token based on
+  # +byte_offset+.
+
+  def token_pos byte_offset # :nodoc:
+    [byte_offset - @line_pos, @line]
+  end
+
+  def token_stream # :nodoc:
+    return enum_for __method__ unless block_given?
+
+    @line     = 0
+    @line_pos = 0
+    @input    = File.read "#{@gem_deps_file}.lock"
+    s         = StringScanner.new @input
+
+    until s.eos? do
+      pos = s.pos
+
+      # leading whitespace is for the user's convenience
+      next if s.scan(/ +/)
+
+      case
+      when s.scan(/\r?\n/) then
+        token = [:newline, nil, *token_pos(pos)]
+        @line_pos = s.pos
+        @line += 1
+        yield token
+      when s.scan(/[A-Z]+/) then
+        yield [:section, s.matched, *token_pos(pos)]
+      when s.scan(/([a-z]+):\s/) then
+        s.pos -= 1 # rewind for possible newline
+        yield [:entry, s[1], *token_pos(pos)]
+      when s.scan(/\(/) then
+        yield [:l_paren, nil, *token_pos(pos)]
+      when s.scan(/\)/) then
+        yield [:r_paren, nil, *token_pos(pos)]
+      when s.scan(/[^\s)]*/) then
+        yield [:text, s.matched, *token_pos(pos)]
+      else
+        raise "BUG: can't create token for: #{s.string[s.pos..-1].inspect}"
+      end
+    end
   end
 
 end

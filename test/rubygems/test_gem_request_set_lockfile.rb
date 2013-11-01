@@ -47,6 +47,69 @@ class TestGemRequestSetLockfile < Gem::TestCase
     end
   end
 
+  def write_gem_deps gem_deps
+    open @gem_deps_file, 'w' do |io|
+      io.write gem_deps
+    end
+  end
+
+  def write_lockfile lockfile
+    open "#{@gem_deps_file}.lock", 'w' do |io|
+      io.write lockfile
+    end
+  end
+
+  def test_token_pos
+    assert_equal [5, 0], @lockfile.token_pos(5)
+
+    @lockfile.instance_variable_set :@line_pos, 2
+    @lockfile.instance_variable_set :@line, 1
+
+    assert_equal [3, 1], @lockfile.token_pos(5)
+  end
+
+  def test_tokenize
+    write_lockfile <<-LOCKFILE
+GEM
+  remote: #{@gem_repo}
+  specs:
+    a (2)
+
+PLATFORMS
+  #{Gem::Platform::RUBY}
+
+DEPENDENCIES
+  a
+    LOCKFILE
+
+    expected = [
+      [:section, 'GEM',                0, 0],
+      [:newline, nil,                  3, 0],
+      [:entry,   'remote',             2, 1],
+      [:text,    @gem_repo,           10, 1],
+      [:newline, nil,                 34, 1],
+      [:entry,   'specs',              2, 2],
+      [:newline, nil,                  8, 2],
+      [:text,    'a',                  4, 3],
+      [:l_paren, nil,                  6, 3],
+      [:text,    '2',                  7, 3],
+      [:r_paren, nil,                  8, 3],
+      [:newline, nil,                  9, 3],
+      [:newline, nil,                  0, 4],
+      [:section, 'PLATFORMS',          0, 5],
+      [:newline, nil,                  9, 5],
+      [:text,    Gem::Platform::RUBY,  2, 6],
+      [:newline, nil,                  6, 6],
+      [:newline, nil,                  0, 7],
+      [:section, 'DEPENDENCIES',       0, 8],
+      [:newline, nil,                 12, 8],
+      [:text,    'a',                  2, 9],
+      [:newline, nil,                  3, 9],
+    ]
+
+    assert_equal expected, @lockfile.token_stream.to_a
+  end
+
   def test_to_s_gem
     spec_fetcher do |s|
       s.gem 'a', 2

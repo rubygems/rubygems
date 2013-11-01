@@ -130,6 +130,13 @@ class Gem::Requirement
   end
 
   ##
+  # Formats this requirement for use in a Gem::RequestSet::Lockfile.
+
+  def for_lockfile # :nodoc:
+    " (#{to_s})" unless [DefaultRequirement] == @requirements
+  end
+
+  ##
   # true if this gem has no requirements.
 
   def none?

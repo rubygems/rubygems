@@ -15,10 +15,9 @@ class Gem::RequestSet::Lockfile
 
       source_dep = '!' if source
 
-      dep_requirement = " (#{dependency.requirement})" unless
-        Gem::Requirement.default == dependency.requirement
+      requirement = dependency.requirement
 
-      out << "  #{dependency.name}#{source_dep}#{dep_requirement}"
+      out << "  #{dependency.name}#{source_dep}#{requirement.for_lockfile}"
     end
 
     out << nil
@@ -39,9 +38,8 @@ class Gem::RequestSet::Lockfile
           Gem::Platform::RUBY == request.spec.platform
         out << "    #{request.name} (#{request.version}#{platform})"
         request.full_spec.dependencies.sort.each do |dependency|
-          spec_requirement = " (#{dependency.requirement})" unless
-            Gem::Requirement.default == dependency.requirement
-          out << "      #{dependency.name}#{spec_requirement}"
+          requirement = dependency.requirement
+          out << "      #{dependency.name}#{requirement.for_lockfile}"
         end
       end
     end

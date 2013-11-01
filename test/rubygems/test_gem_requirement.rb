@@ -44,6 +44,12 @@ class TestGemRequirement < Gem::TestCase
     assert_equal false, r.none?
   end
 
+  def test_for_lockfile
+    assert_equal ' (~> 1.0)', req('~> 1.0').for_lockfile
+
+    assert_nil Gem::Requirement.default.for_lockfile
+  end
+
   def test_parse
     assert_equal ['=', Gem::Version.new(1)], Gem::Requirement.parse('  1')
     assert_equal ['=', Gem::Version.new(1)], Gem::Requirement.parse('= 1')

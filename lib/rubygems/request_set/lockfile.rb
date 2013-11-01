@@ -117,7 +117,7 @@ class Gem::RequestSet::Lockfile
 
         case data
         when 'DEPENDENCIES' then
-          parse_dependencies
+          parse_DEPENDENCIES
         when 'PLATFORMS' then
           parse_PLATFORMS
         else
@@ -129,7 +129,7 @@ class Gem::RequestSet::Lockfile
     end
   end
 
-  def parse_dependencies # :nodoc:
+  def parse_DEPENDENCIES # :nodoc:
     while not @tokens.empty? and :text == peek.first do
       _, name, = get
 

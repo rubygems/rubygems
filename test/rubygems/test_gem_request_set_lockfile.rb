@@ -59,6 +59,49 @@ class TestGemRequestSetLockfile < Gem::TestCase
     end
   end
 
+  def test_get
+    @lockfile.instance_variable_set :@tokens, [:token]
+
+    assert_equal :token, @lockfile.get
+  end
+
+  def test_parse
+    write_lockfile <<-LOCKFILE
+GEM
+  remote: #{@gem_repo}
+  specs:
+    a (2)
+
+PLATFORMS
+  #{Gem::Platform::RUBY}
+
+DEPENDENCIES
+  a
+    LOCKFILE
+
+    @lockfile.parse
+
+    assert_equal [dep('a')], @set.dependencies
+  end
+
+  def test_peek
+    @lockfile.instance_variable_set :@tokens, [:token]
+
+    assert_equal :token, @lockfile.peek
+
+    assert_equal :token, @lockfile.get
+  end
+
+  def test_skip
+    tokens = [[:token]]
+
+    @lockfile.instance_variable_set :@tokens, tokens
+
+    @lockfile.skip :token
+
+    assert_empty tokens
+  end
+
   def test_token_pos
     assert_equal [5, 0], @lockfile.token_pos(5)
 
@@ -289,6 +332,14 @@ DEPENDENCIES
     LOCKFILE
 
     assert_equal expected, @lockfile.to_s
+  end
+
+  def test_unget
+    @lockfile.instance_variable_set :@current_token, :token
+
+    @lockfile.unget
+
+    assert_equal :token, @lockfile.get
   end
 
 end

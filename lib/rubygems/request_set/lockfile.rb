@@ -11,6 +11,7 @@ class Gem::RequestSet::Lockfile
     @gem_deps_file = Pathname(gem_deps_file).expand_path
     @gem_deps_dir  = @gem_deps_file.dirname
 
+    @current_token  = nil
     @line           = 0
     @line_pos       = 0
     @tokens         = []
@@ -91,6 +92,55 @@ class Gem::RequestSet::Lockfile
     out << nil
   end
 
+  ##
+  # Gets the next token for a Lockfile
+
+  def get # :nodoc:
+    @current_token = @tokens.shift
+  end
+
+  def parse # :nodoc:
+    tokenize
+
+    until @tokens.empty? do
+      type, data, column, line = get
+
+      case type
+      when :section then
+        skip :newline
+
+        if data == 'DEPENDENCIES' then
+          parse_dependencies
+        else
+          type, = get until @tokens.empty? or peek.first == :section
+        end
+      else
+        raise "BUG: unhandled token #{type} (#{data.inspect}) at #{line}:#{column}"
+      end
+    end
+  end
+
+  def parse_dependencies # :nodoc:
+    while not @tokens.empty? and :text == peek.first do
+      _, name, = get
+
+      @set.gem name
+
+      skip :newline
+    end
+  end
+
+  ##
+  # Peeks at the next token for Lockfile
+
+  def peek # :nodoc:
+    @tokens.first
+  end
+
+  def skip type # :nodoc:
+    get while not @tokens.empty? and peek.first == type
+  end
+
   def to_s
     @set.resolve
 
@@ -125,7 +175,8 @@ class Gem::RequestSet::Lockfile
     @line     = 0
     @line_pos = 0
 
-    @tokens = []
+    @tokens        = []
+    @current_token = nil
 
     @input = File.read "#{@gem_deps_file}.lock"
     s      = StringScanner.new @input
@@ -160,6 +211,13 @@ class Gem::RequestSet::Lockfile
     end
 
     @tokens
+  end
+
+  ##
+  # Ungets the last token retrieved by #get
+
+  def unget # :nodoc:
+    @tokens.unshift @current_token
   end
 
 end

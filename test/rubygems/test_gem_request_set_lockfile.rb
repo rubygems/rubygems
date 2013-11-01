@@ -107,7 +107,7 @@ DEPENDENCIES
       [:newline, nil,                  3, 9],
     ]
 
-    assert_equal expected, @lockfile.token_stream.to_a
+    assert_equal expected, @lockfile.tokenize
   end
 
   def test_to_s_gem

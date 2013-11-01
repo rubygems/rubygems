@@ -13,6 +13,7 @@ class Gem::RequestSet::Lockfile
 
     @line           = 0
     @line_pos       = 0
+    @tokens         = []
   end
 
   def add_DEPENDENCIES out # :nodoc:
@@ -120,13 +121,14 @@ class Gem::RequestSet::Lockfile
     [byte_offset - @line_pos, @line]
   end
 
-  def token_stream # :nodoc:
-    return enum_for __method__ unless block_given?
-
+  def tokenize # :nodoc:
     @line     = 0
     @line_pos = 0
-    @input    = File.read "#{@gem_deps_file}.lock"
-    s         = StringScanner.new @input
+
+    @tokens = []
+
+    @input = File.read "#{@gem_deps_file}.lock"
+    s      = StringScanner.new @input
 
     until s.eos? do
       pos = s.pos
@@ -134,27 +136,30 @@ class Gem::RequestSet::Lockfile
       # leading whitespace is for the user's convenience
       next if s.scan(/ +/)
 
-      case
-      when s.scan(/\r?\n/) then
-        token = [:newline, nil, *token_pos(pos)]
-        @line_pos = s.pos
-        @line += 1
-        yield token
-      when s.scan(/[A-Z]+/) then
-        yield [:section, s.matched, *token_pos(pos)]
-      when s.scan(/([a-z]+):\s/) then
-        s.pos -= 1 # rewind for possible newline
-        yield [:entry, s[1], *token_pos(pos)]
-      when s.scan(/\(/) then
-        yield [:l_paren, nil, *token_pos(pos)]
-      when s.scan(/\)/) then
-        yield [:r_paren, nil, *token_pos(pos)]
-      when s.scan(/[^\s)]*/) then
-        yield [:text, s.matched, *token_pos(pos)]
-      else
-        raise "BUG: can't create token for: #{s.string[s.pos..-1].inspect}"
-      end
+      @tokens <<
+        case
+        when s.scan(/\r?\n/) then
+          token = [:newline, nil, *token_pos(pos)]
+          @line_pos = s.pos
+          @line += 1
+          token
+        when s.scan(/[A-Z]+/) then
+          [:section, s.matched, *token_pos(pos)]
+        when s.scan(/([a-z]+):\s/) then
+          s.pos -= 1 # rewind for possible newline
+          [:entry, s[1], *token_pos(pos)]
+        when s.scan(/\(/) then
+          [:l_paren, nil, *token_pos(pos)]
+        when s.scan(/\)/) then
+          [:r_paren, nil, *token_pos(pos)]
+        when s.scan(/[^\s)]*/) then
+          [:text, s.matched, *token_pos(pos)]
+        else
+          raise "BUG: can't create token for: #{s.string[s.pos..-1].inspect}"
+        end
     end
+
+    @tokens
   end
 
 end

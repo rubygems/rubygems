@@ -82,6 +82,8 @@ DEPENDENCIES
     @lockfile.parse
 
     assert_equal [dep('a')], @set.dependencies
+
+    assert_equal [Gem::Platform::RUBY], @lockfile.platforms
   end
 
   def test_peek

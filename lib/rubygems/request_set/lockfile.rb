@@ -3,6 +3,11 @@ require 'pathname'
 class Gem::RequestSet::Lockfile
 
   ##
+  # The platforms for this Lockfile
+
+  attr_reader :platforms
+
+  ##
   # Creates a new Lockfile for the given +request_set+ and +gem_deps_file+
   # location.
 
@@ -14,6 +19,7 @@ class Gem::RequestSet::Lockfile
     @current_token  = nil
     @line           = 0
     @line_pos       = 0
+    @platforms      = []
     @tokens         = []
   end
 
@@ -109,8 +115,11 @@ class Gem::RequestSet::Lockfile
       when :section then
         skip :newline
 
-        if data == 'DEPENDENCIES' then
+        case data
+        when 'DEPENDENCIES' then
           parse_dependencies
+        when 'PLATFORMS' then
+          parse_PLATFORMS
         else
           type, = get until @tokens.empty? or peek.first == :section
         end
@@ -125,6 +134,16 @@ class Gem::RequestSet::Lockfile
       _, name, = get
 
       @set.gem name
+
+      skip :newline
+    end
+  end
+
+  def parse_PLATFORMS # :nodoc:
+    while not @tokens.empty? and :text == peek.first do
+      _, name, = get
+
+      @platforms << name
 
       skip :newline
     end
@@ -175,6 +194,7 @@ class Gem::RequestSet::Lockfile
     @line     = 0
     @line_pos = 0
 
+    @platforms     = []
     @tokens        = []
     @current_token = nil
 

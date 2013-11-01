@@ -32,6 +32,11 @@ class Gem::RequestSet
   attr_accessor :development
 
   ##
+  # Sets used for resolution
+
+  attr_reader :sets # :nodoc:
+
+  ##
   # Treat missing dependencies as silent errors
 
   attr_accessor :soft_missing
@@ -57,6 +62,7 @@ class Gem::RequestSet
     @dependency_names = {}
     @development      = false
     @requests         = []
+    @sets             = []
     @soft_missing     = false
     @sorted           = nil
     @specs            = nil
@@ -190,12 +196,13 @@ class Gem::RequestSet
   # objects to be activated.
 
   def resolve set = Gem::DependencyResolver::IndexSet.new
-    sets = [set, @vendor_set].compact
+    @sets << set         if set
+    @sets << @vendor_set if @vendor_set
 
-    set = if sets.size == 1 then
-            sets.first
+    set = if @sets.size == 1 then
+            @sets.first
           else
-            Gem::DependencyResolver.compose_sets(*sets)
+            Gem::DependencyResolver.compose_sets(*@sets)
           end
 
     resolver = Gem::DependencyResolver.new @dependencies, set

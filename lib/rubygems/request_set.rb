@@ -196,8 +196,8 @@ class Gem::RequestSet
   # objects to be activated.
 
   def resolve set = Gem::DependencyResolver::IndexSet.new
-    @sets << set         if set
-    @sets << @vendor_set if @vendor_set
+    @sets << set
+    @sets << @vendor_set
 
     set = Gem::DependencyResolver.compose_sets(*@sets)
 

@@ -9,6 +9,8 @@ class Gem::DependencyResolver::IndexSpecification
 
   attr_reader :platform
 
+  attr_reader :set # :nodoc:
+
   attr_reader :source
 
   attr_reader :version

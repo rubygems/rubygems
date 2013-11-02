@@ -133,12 +133,6 @@ class Gem::DependencyResolver::InstallerSet < Gem::DependencyResolver::Set
     end
   end
 
-  ##
-  # No prefetching needed since we load the whole index in initially.
-
-  def prefetch(reqs)
-  end
-
   def pretty_print q # :nodoc:
     q.group 2, '[InstallerSet', ']' do
       q.breakable

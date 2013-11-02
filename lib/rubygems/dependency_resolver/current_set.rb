@@ -9,8 +9,5 @@ class Gem::DependencyResolver::CurrentSet < Gem::DependencyResolver::Set
     req.dependency.matching_specs
   end
 
-  def prefetch gems
-  end
-
 end
 

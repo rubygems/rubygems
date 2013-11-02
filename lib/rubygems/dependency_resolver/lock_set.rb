@@ -56,11 +56,5 @@ class Gem::DependencyResolver::LockSet < Gem::DependencyResolver::Set
     found.source.fetch_spec tuple
   end
 
-  ##
-  # No prefetch is needed as the index is loaded externally
-
-  def prefetch gems
-  end
-
 end
 

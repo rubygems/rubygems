@@ -62,11 +62,5 @@ class Gem::DependencyResolver::VendorSet < Gem::DependencyResolver::Set
     @specs.fetch key
   end
 
-  ##
-  # No prefetch is needed as the index is loaded at creation time.
-
-  def prefetch gems
-  end
-
 end
 

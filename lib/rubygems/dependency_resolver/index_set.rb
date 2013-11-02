@@ -53,12 +53,5 @@ class Gem::DependencyResolver::IndexSet < Gem::DependencyResolver::Set
     end
   end
 
-  ##
-  # No prefetching needed since we load the whole index in
-  # initially.
-
-  def prefetch gems
-  end
-
 end
 

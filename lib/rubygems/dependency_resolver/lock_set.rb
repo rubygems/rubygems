@@ -20,7 +20,7 @@ class Gem::DependencyResolver::LockSet < Gem::DependencyResolver::Set
   # The specification's set will be the current set, and the source will be
   # the current set's source.
 
-  def add name, version, platform
+  def add name, version, platform # :nodoc:
     version = Gem::Version.new version
 
     spec =
@@ -44,7 +44,7 @@ class Gem::DependencyResolver::LockSet < Gem::DependencyResolver::Set
   # Loads a Gem::Specification with the given +name+, +version+ and
   # +platform+.  +source+ is ignored.
 
-  def load_spec name, version, platform, source
+  def load_spec name, version, platform, source # :nodoc:
     dep = Gem::Dependency.new name, version
 
     found = @specs.find do |spec|

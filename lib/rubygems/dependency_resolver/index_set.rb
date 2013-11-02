@@ -4,7 +4,7 @@
 
 class Gem::DependencyResolver::IndexSet < Gem::DependencyResolver::Set
 
-  def initialize
+  def initialize # :nodoc:
     @f = Gem::SpecFetcher.fetcher
 
     @all = Hash.new { |h,k| h[k] = [] }
@@ -43,7 +43,7 @@ class Gem::DependencyResolver::IndexSet < Gem::DependencyResolver::Set
   # Called from IndexSpecification to get a true Specification
   # object.
 
-  def load_spec name, ver, platform, source
+  def load_spec name, ver, platform, source # :nodoc:
     key = "#{name}-#{ver}-#{platform}"
 
     @specs.fetch key do

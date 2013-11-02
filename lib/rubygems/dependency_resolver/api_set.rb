@@ -4,7 +4,7 @@
 
 class Gem::DependencyResolver::APISet < Gem::DependencyResolver::Set
 
-  def initialize
+  def initialize # :nodoc:
     @data = Hash.new { |h,k| h[k] = [] }
     @dep_uri = URI 'https://rubygems.org/api/v1/dependencies'
   end
@@ -46,7 +46,7 @@ class Gem::DependencyResolver::APISet < Gem::DependencyResolver::Set
   ##
   # Return data for all versions of the gem +name+.
 
-  def versions name
+  def versions name # :nodoc:
     if @data.key?(name)
       return @data[name]
     end

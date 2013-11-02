@@ -15,7 +15,7 @@
 
 class Gem::DependencyResolver::VendorSet < Gem::DependencyResolver::Set
 
-  def initialize
+  def initialize # :nodoc:
     @directories = {}
     @specs       = {}
   end
@@ -24,7 +24,7 @@ class Gem::DependencyResolver::VendorSet < Gem::DependencyResolver::Set
   # Adds a specification to the set with the given +name+ which has been
   # unpacked into the given +directory+.
 
-  def add_vendor_gem name, directory
+  def add_vendor_gem name, directory # :nodoc:
     gemspec = File.join directory, "#{name}.gemspec"
 
     spec = Gem::Specification.load gemspec
@@ -56,7 +56,7 @@ class Gem::DependencyResolver::VendorSet < Gem::DependencyResolver::Set
   # +source+ is defined when the specification was added to index it is not
   # used.
 
-  def load_spec name, version, platform, source
+  def load_spec name, version, platform, source # :nodoc:
     key = "#{name}-#{version}-#{platform}"
 
     @specs.fetch key

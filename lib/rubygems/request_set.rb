@@ -199,11 +199,7 @@ class Gem::RequestSet
     @sets << set         if set
     @sets << @vendor_set if @vendor_set
 
-    set = if @sets.size == 1 then
-            @sets.first
-          else
-            Gem::DependencyResolver.compose_sets(*@sets)
-          end
+    set = Gem::DependencyResolver.compose_sets(*@sets)
 
     resolver = Gem::DependencyResolver.new @dependencies, set
     resolver.development  = @development

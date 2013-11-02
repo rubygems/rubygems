@@ -2,7 +2,7 @@
 # The global rubygems pool represented via the traditional
 # source index.
 
-class Gem::DependencyResolver::IndexSet
+class Gem::DependencyResolver::IndexSet < Gem::DependencyResolver::Set
 
   def initialize
     @f = Gem::SpecFetcher.fetcher

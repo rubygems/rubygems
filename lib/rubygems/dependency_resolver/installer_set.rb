@@ -2,7 +2,7 @@
 # A set of gems for installation sourced from remote sources and local .gem
 # files
 
-class Gem::DependencyResolver::InstallerSet
+class Gem::DependencyResolver::InstallerSet < Gem::DependencyResolver::Set
 
   ##
   # List of Gem::Specification objects that must always be installed.

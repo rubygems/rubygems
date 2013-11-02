@@ -1,7 +1,7 @@
 ##
 # A set of gems from a gem dependencies lockfile.
 
-class Gem::DependencyResolver::LockSet
+class Gem::DependencyResolver::LockSet < Gem::DependencyResolver::Set
 
   attr_reader :specs # :nodoc:
 

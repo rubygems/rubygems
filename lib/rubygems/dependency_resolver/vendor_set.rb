@@ -13,7 +13,7 @@
 # The directory vendor/rake must contain an unpacked rake gem along with a
 # rake.gemspec (watching the given name).
 
-class Gem::DependencyResolver::VendorSet
+class Gem::DependencyResolver::VendorSet < Gem::DependencyResolver::Set
 
   def initialize
     @directories = {}

@@ -1,4 +1,4 @@
-class Gem::DependencyResolver::ComposedSet
+class Gem::DependencyResolver::ComposedSet < Gem::DependencyResolver::Set
 
   attr_reader :sets # :nodoc:
 

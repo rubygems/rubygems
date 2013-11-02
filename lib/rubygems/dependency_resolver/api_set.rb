@@ -2,7 +2,7 @@
 # The global rubygems pool, available via the rubygems.org API.
 # Returns instances of APISpecification.
 
-class Gem::DependencyResolver::APISet
+class Gem::DependencyResolver::APISet < Gem::DependencyResolver::Set
 
   def initialize
     @data = Hash.new { |h,k| h[k] = [] }

@@ -1,5 +1,7 @@
 class Gem::DependencyResolver::ComposedSet
 
+  attr_reader :sets # :nodoc:
+
   def initialize *sets
     @sets = sets
   end

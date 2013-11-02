@@ -30,7 +30,16 @@ class Gem::DependencyResolver
   attr_accessor :soft_missing
 
   def self.compose_sets *sets
-    Gem::DependencyResolver::ComposedSet.new(*sets)
+    sets.compact!
+
+    case sets.length
+    when 0 then
+      raise ArgumentError, 'one set in the composition must be non-nil'
+    when 1 then
+      sets.first
+    else
+      Gem::DependencyResolver::ComposedSet.new(*sets)
+    end
   end
 
   ##

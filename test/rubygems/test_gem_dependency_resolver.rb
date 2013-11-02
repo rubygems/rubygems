@@ -3,6 +3,12 @@ require 'rubygems/dependency_resolver'
 
 class TestGemDependencyResolver < Gem::TestCase
 
+  def setup
+    super
+
+    @DR = Gem::DependencyResolver
+  end
+
   def make_dep(name, *req)
     Gem::Dependency.new(name, *req)
   end
@@ -22,6 +28,39 @@ class TestGemDependencyResolver < Gem::TestCase
     assert_equal exp, act, msg
   rescue Gem::DependencyResolutionError => e
     flunk e.message
+  end
+
+  def test_self_compose_sets_multiple
+    index_set  = @DR::IndexSet.new
+    vendor_set = @DR::VendorSet.new
+
+    composed = @DR.compose_sets index_set, vendor_set
+
+    assert_kind_of Gem::DependencyResolver::ComposedSet, composed
+
+    assert_equal [index_set, vendor_set], composed.sets
+  end
+
+  def test_self_compose_sets_nil
+    index_set  = @DR::IndexSet.new
+
+    composed = @DR.compose_sets index_set, nil
+
+    assert_same index_set, composed
+
+    e = assert_raises ArgumentError do
+      @DR.compose_sets nil
+    end
+
+    assert_equal 'one set in the composition must be non-nil', e.message
+  end
+
+  def test_self_compose_sets_single
+    index_set  = @DR::IndexSet.new
+
+    composed = @DR.compose_sets index_set
+
+    assert_same index_set, composed
   end
 
   def test_handle_conflict

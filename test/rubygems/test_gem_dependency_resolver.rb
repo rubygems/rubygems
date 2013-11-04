@@ -130,8 +130,14 @@ class TestGemDependencyResolver < Gem::TestCase
   def test_picks_best_platform
     is = Gem::DependencyResolver::IndexSpecification
     unknown = Gem::Platform.new 'unknown'
-    a2_p1 = quick_spec 'a', 2 do |s| s.platform = Gem::Platform.local end
-    a3_p2 = quick_spec 'a', 3 do |s| s.platform = unknown end
+    a2_p1, a2_p1_gem =
+      quick_gem 'a', 2 do |s| s.platform = Gem::Platform.local end
+    a3_p2, a3_p2_gem =
+      quick_gem 'a', 3 do |s| s.platform = unknown end
+
+    Gem::RemoteFetcher.fetcher = @fetcher = Gem::FakeFetcher.new
+    util_setup_spec_fetcher a2_p1, a3_p2
+
     v2 = v(2)
     v3 = v(3)
     source = Gem::Source.new @gem_repo

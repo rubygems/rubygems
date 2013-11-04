@@ -57,7 +57,12 @@ class Gem::DependencyResolver::IndexSpecification < Gem::DependencyResolver::Spe
   # Fetches a Gem::Specification for this IndexSpecification from the #source.
 
   def spec # :nodoc:
-    @spec ||= @set.load_spec(@name, @version, @platform, @source)
+    @spec ||=
+      begin
+        tuple = Gem::NameTuple.new @name, @version, @platform
+
+        @source.fetch_spec tuple
+      end
   end
 
 end

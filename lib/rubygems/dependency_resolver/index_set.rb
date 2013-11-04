@@ -39,19 +39,5 @@ class Gem::DependencyResolver::IndexSet < Gem::DependencyResolver::Set
     res
   end
 
-  ##
-  # Called from IndexSpecification to get a true Specification
-  # object.
-
-  def load_spec name, ver, platform, source # :nodoc:
-    key = "#{name}-#{ver}-#{platform}"
-
-    @specs.fetch key do
-      tuple = Gem::NameTuple.new name, ver, platform
-
-      @specs[key] = source.fetch_spec tuple
-    end
-  end
-
 end
 

@@ -341,21 +341,23 @@ class Gem::DependencyResolver
 
 end
 
-require 'rubygems/dependency_resolver/set'
-require 'rubygems/dependency_resolver/specification'
-require 'rubygems/dependency_resolver/spec_specification'
-require 'rubygems/dependency_resolver/api_set'
-require 'rubygems/dependency_resolver/api_specification'
 require 'rubygems/dependency_resolver/activation_request'
-require 'rubygems/dependency_resolver/composed_set'
-require 'rubygems/dependency_resolver/current_set'
 require 'rubygems/dependency_resolver/dependency_conflict'
 require 'rubygems/dependency_resolver/dependency_request'
+
+require 'rubygems/dependency_resolver/set'
+require 'rubygems/dependency_resolver/api_set'
+require 'rubygems/dependency_resolver/composed_set'
+require 'rubygems/dependency_resolver/current_set'
 require 'rubygems/dependency_resolver/index_set'
-require 'rubygems/dependency_resolver/index_specification'
-require 'rubygems/dependency_resolver/installed_specification'
 require 'rubygems/dependency_resolver/installer_set'
 require 'rubygems/dependency_resolver/lock_set'
 require 'rubygems/dependency_resolver/vendor_set'
+
+require 'rubygems/dependency_resolver/specification'
+require 'rubygems/dependency_resolver/spec_specification'
+require 'rubygems/dependency_resolver/api_specification'
+require 'rubygems/dependency_resolver/index_specification'
+require 'rubygems/dependency_resolver/installed_specification'
 require 'rubygems/dependency_resolver/vendor_specification'
 

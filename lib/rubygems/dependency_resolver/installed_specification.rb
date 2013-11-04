@@ -1,35 +1,9 @@
-class Gem::DependencyResolver::InstalledSpecification < Gem::DependencyResolver::Specification
-
-  attr_reader :spec
-
-  def initialize set, spec, source=nil
-    super()
-
-    @set    = set
-    @source = source
-    @spec   = spec
-  end
+class Gem::DependencyResolver::InstalledSpecification < Gem::DependencyResolver::SpecSpecification
 
   def == other # :nodoc:
     self.class === other and
       @set  == other.set and
       @spec == other.spec
-  end
-
-  def dependencies
-    @spec.dependencies
-  end
-
-  def full_name
-    "#{@spec.name}-#{@spec.version}"
-  end
-
-  def name
-    @spec.name
-  end
-
-  def platform
-    @spec.platform
   end
 
   def installable_platform?
@@ -44,10 +18,6 @@ class Gem::DependencyResolver::InstalledSpecification < Gem::DependencyResolver:
 
   def source
     @source ||= Gem::Source::Installed.new
-  end
-
-  def version
-    @spec.version
   end
 
 end

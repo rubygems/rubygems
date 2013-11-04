@@ -6,6 +6,11 @@
 class Gem::DependencyResolver::Specification
 
   ##
+  # The dependencies of the gem for this specification
+
+  attr_reader :dependencies
+
+  ##
   # The name of the gem for this specification
 
   attr_reader :name
@@ -34,11 +39,12 @@ class Gem::DependencyResolver::Specification
   # Sets default instance variables for the specification.
 
   def initialize
-    @name     = nil
-    @platform = nil
-    @set      = nil
-    @source   = nil
-    @version  = nil
+    @dependencies = nil
+    @name         = nil
+    @platform     = nil
+    @set          = nil
+    @source       = nil
+    @version      = nil
   end
 
   ##

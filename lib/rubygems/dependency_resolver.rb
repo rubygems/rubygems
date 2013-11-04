@@ -343,6 +343,7 @@ end
 
 require 'rubygems/dependency_resolver/set'
 require 'rubygems/dependency_resolver/specification'
+require 'rubygems/dependency_resolver/spec_specification'
 require 'rubygems/dependency_resolver/api_set'
 require 'rubygems/dependency_resolver/api_specification'
 require 'rubygems/dependency_resolver/activation_request'

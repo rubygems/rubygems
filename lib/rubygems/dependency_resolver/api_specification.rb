@@ -4,15 +4,13 @@
 # Specification object when all we need is the name, version,
 # and dependencies.
 
-class Gem::DependencyResolver::APISpecification
+class Gem::DependencyResolver::APISpecification < Gem::DependencyResolver::Specification
 
   attr_reader :dependencies
-  attr_reader :name
-  attr_reader :platform
-  attr_reader :set # :nodoc:
-  attr_reader :version
 
   def initialize(set, api_data)
+    super()
+
     @set = set
     @name = api_data[:name]
     @version = Gem::Version.new api_data[:number]
@@ -29,10 +27,6 @@ class Gem::DependencyResolver::APISpecification
       @version      == other.version and
       @platform     == other.platform and
       @dependencies == other.dependencies
-  end
-
-  def full_name
-    "#{@name}-#{@version}"
   end
 
 end

@@ -1,10 +1,10 @@
-class Gem::DependencyResolver::InstalledSpecification
-
-  attr_reader :set
+class Gem::DependencyResolver::InstalledSpecification < Gem::DependencyResolver::Specification
 
   attr_reader :spec
 
   def initialize set, spec, source=nil
+    super()
+
     @set    = set
     @source = source
     @spec   = spec

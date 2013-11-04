@@ -3,19 +3,13 @@
 # delay needed to download full Specification objects when only the +name+
 # and +version+ are needed.
 
-class Gem::DependencyResolver::IndexSpecification
-
-  attr_reader :name
-
-  attr_reader :platform
-
-  attr_reader :set # :nodoc:
+class Gem::DependencyResolver::IndexSpecification < Gem::DependencyResolver::Specification
 
   attr_reader :source
 
-  attr_reader :version
-
   def initialize set, name, version, source, platform
+    super()
+
     @set = set
     @name = name
     @version = version
@@ -27,10 +21,6 @@ class Gem::DependencyResolver::IndexSpecification
 
   def dependencies
     spec.dependencies
-  end
-
-  def full_name
-    "#{@name}-#{@version}"
   end
 
   def inspect # :nodoc:

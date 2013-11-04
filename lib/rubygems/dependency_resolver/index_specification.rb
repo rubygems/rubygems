@@ -5,8 +5,6 @@
 
 class Gem::DependencyResolver::IndexSpecification < Gem::DependencyResolver::Specification
 
-  attr_reader :source
-
   def initialize set, name, version, source, platform
     super()
 

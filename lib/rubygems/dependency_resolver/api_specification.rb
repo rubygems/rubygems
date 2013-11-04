@@ -6,8 +6,6 @@
 
 class Gem::DependencyResolver::APISpecification < Gem::DependencyResolver::Specification
 
-  attr_reader :dependencies
-
   def initialize(set, api_data)
     super()
 

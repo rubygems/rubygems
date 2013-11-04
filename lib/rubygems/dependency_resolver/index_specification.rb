@@ -5,6 +5,15 @@
 
 class Gem::DependencyResolver::IndexSpecification < Gem::DependencyResolver::Specification
 
+  ##
+  # An IndexSpecification is created from the index format described in `gem
+  # help generate_index`.
+  #
+  # The +set+ contains other specifications for this (URL) +source+.
+  #
+  # The +name+, +version+ and +platform+ are the name, version and platform of
+  # the gem.
+
   def initialize set, name, version, source, platform
     super()
 
@@ -16,6 +25,9 @@ class Gem::DependencyResolver::IndexSpecification < Gem::DependencyResolver::Spe
 
     @spec = nil
   end
+
+  ##
+  # The dependencies of the gem for this specification
 
   def dependencies
     spec.dependencies
@@ -41,7 +53,10 @@ class Gem::DependencyResolver::IndexSpecification < Gem::DependencyResolver::Spe
     end
   end
 
-  def spec
+  ##
+  # Fetches a Gem::Specification for this IndexSpecification from the #source.
+
+  def spec # :nodoc:
     @spec ||= @set.load_spec(@name, @version, @platform, @source)
   end
 

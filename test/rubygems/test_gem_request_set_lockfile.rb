@@ -86,6 +86,14 @@ DEPENDENCIES
     assert_equal [dep('a')], @set.dependencies
 
     assert_equal [Gem::Platform::RUBY], @lockfile.platforms
+
+    lockfile_set = @set.sets.find do |set|
+      Gem::DependencyResolver::LockSet === set
+    end
+
+    assert lockfile_set, 'could not find a LockSet'
+
+    assert_equal %w[a-2], lockfile_set.specs.map { |tuple| tuple.full_name }
   end
 
   def test_peek

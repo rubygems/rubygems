@@ -3,7 +3,7 @@ require 'pathname'
 class Gem::RequestSet::Lockfile
 
   ##
-  # Raised when there are bad tokens in a lock file
+  # Raised when a lockfile cannot be parsed
 
   class ParseError < Gem::Exception
   end
@@ -124,6 +124,8 @@ class Gem::RequestSet::Lockfile
         case data
         when 'DEPENDENCIES' then
           parse_DEPENDENCIES
+        when 'GEM' then
+          parse_GEM
         when 'PLATFORMS' then
           parse_PLATFORMS
         else
@@ -143,6 +145,59 @@ class Gem::RequestSet::Lockfile
 
       skip :newline
     end
+  end
+
+  def parse_GEM # :nodoc:
+    type, data, = get
+
+    raise ParseError, "unknown token [#{type.inspect}, #{data.inspect}]" unless
+      type == :entry and data == 'remote'
+
+    type, data, = get
+
+    raise ParseError, "unknown token [#{type.inspect}, #{data.inspect}]" unless
+      type == :text
+
+    source = Gem::Source.new data
+
+    skip :newline
+
+    type, data, = get
+
+    raise ParseError, "unknown token [#{type.inspect}, #{data.inspect}]" unless
+      type == :entry and data == 'specs'
+
+    skip :newline
+
+    set = Gem::DependencyResolver::LockSet.new source
+
+    while not @tokens.empty? and :text == peek.first do
+      _, name, = get
+
+      case peek[0]
+      when :newline then # ignore
+      when :l_paren then
+        get # l_paren
+
+        type, version, = get # text
+
+        raise ParseError, "unkown token [#{type.inspect}, #{data.inspect}]" unless
+          type == :text
+
+        type, = get # r_paren
+
+        raise ParseError, "unkown token [#{type.inspect}, #{data.inspect}]" unless
+          type == :r_paren
+
+        set.add name, version, Gem::Platform::RUBY
+      else
+        raise "BUG: unknown token #{peek}"
+      end
+
+      skip :newline
+    end
+
+    @set.sets << set
   end
 
   def parse_PLATFORMS # :nodoc:

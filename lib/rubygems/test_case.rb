@@ -1135,6 +1135,7 @@ Also, a list:
 
     yield fetcher
 
+    util_setup_fake_fetcher unless @fetcher
     util_setup_spec_fetcher(*gems.keys)
 
     gems.each do |spec, gem|

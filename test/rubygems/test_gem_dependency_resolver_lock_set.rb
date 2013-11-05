@@ -35,14 +35,9 @@ class TestGemDependencyResolverLockSet < Gem::TestCase
   end
 
   def test_load_spec
-    @fetcher = Gem::FakeFetcher.new
-    Gem::RemoteFetcher.fetcher = @fetcher
-
-    a_2   = quick_spec 'a', 2
-
-    Gem::Specification.add_specs a_2
-
-    util_setup_spec_fetcher a_2
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2
+    end
 
     version = v(2)
     @set.add 'a', version, Gem::Platform::RUBY

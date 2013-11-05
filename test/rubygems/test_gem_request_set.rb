@@ -38,12 +38,9 @@ class TestGemRequestSet < Gem::TestCase
   end
 
   def test_install_from_gemdeps
-    a, ad = util_gem 'a', 2
-
-    util_setup_spec_fetcher a
-
-    @fetcher.data["http://gems.example.com/gems/#{a.file_name}"] =
-      Gem.read_binary(ad)
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 2
+    end
 
     rs = Gem::RequestSet.new
     installed = []
@@ -164,13 +161,10 @@ class TestGemRequestSet < Gem::TestCase
   end
 
   def test_install_into
-    a, ad = util_gem "a", "1", "b" => "= 1"
-    b, bd = util_gem "b", "1"
-
-    util_setup_spec_fetcher a, b
-
-    @fetcher.data["http://gems.example.com/gems/#{a.file_name}"] = Gem.read_binary(ad)
-    @fetcher.data["http://gems.example.com/gems/#{b.file_name}"] = Gem.read_binary(bd)
+    spec_fetcher do |fetcher|
+      fetcher.gem "a", "1", "b" => "= 1"
+      fetcher.gem "b", "1"
+    end
 
     rs = Gem::RequestSet.new
     rs.gem "a"

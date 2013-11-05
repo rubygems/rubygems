@@ -43,6 +43,8 @@ Minor enhancements:
   Leighton.
 * RubyGems now warns when a gem has a pessimistic version dependency that may
   be too strict.
+* RubyGems now raises an exception when a dependency for a gem is defined
+  twice.
 
 Bug fixes:
 

@@ -2593,7 +2593,19 @@ licenses is empty.  Use a license abbreviation from:
   # versioning.
 
   def validate_dependencies # :nodoc:
+    seen = {}
+
     dependencies.each do |dep|
+      if prev = seen[dep.name] then
+
+        raise Gem::InvalidSpecificationException, <<-MESSAGE
+duplicate dependency on #{dep}, (#{prev.requirement}) use:
+    add_runtime_dependency '#{dep.name}', '#{dep.requirement}', '#{prev.requirement}'
+        MESSAGE
+      end
+
+      seen[dep.name] = dep
+
       prerelease_dep = dep.requirements_list.any? do |req|
         Gem::Requirement.new(req).prerelease?
       end

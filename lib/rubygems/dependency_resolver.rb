@@ -77,7 +77,7 @@ class Gem::DependencyResolver
   def requests s, act, reqs=nil
     s.dependencies.reverse_each do |d|
       next if d.type == :development and not @development
-      reqs = Gem::List.new Gem::DependencyResolver::DependencyRequest.new(d, act), reqs
+      reqs.add Gem::DependencyResolver::DependencyRequest.new(d, act)
     end
 
     @set.prefetch reqs
@@ -91,12 +91,12 @@ class Gem::DependencyResolver
   def resolve
     @conflicts = []
 
-    needed = nil
+    needed = RequirementList.new
 
     @needed.reverse_each do |n|
       request = Gem::DependencyResolver::DependencyRequest.new n, nil
 
-      needed = Gem::List.new request, needed
+      needed.add request
     end
 
     res = resolve_for needed, nil
@@ -209,9 +209,8 @@ class Gem::DependencyResolver
     # The State objects that are used to attempt the activation tree.
     states = []
 
-    while needed
-      dep = needed.value
-      needed = needed.tail
+    while !needed.empty?
+      dep = needed.remove
 
       # If there is already a spec activated for the requested name...
       if specs && existing = specs.find { |s| dep.name == s.name }
@@ -283,7 +282,7 @@ class Gem::DependencyResolver
     # We may need to try all of +possible+, so we setup state to unwind back
     # to current +needed+ and +specs+ so we can try another. This is code is
     # what makes conflict resolution possible.
-    states << State.new(needed, specs, dep, spec, possible, [])
+    states << State.new(needed.dup, specs, dep, spec, possible, [])
 
     needed = requests spec, act, needed
     specs = Gem::List.prepend specs, act
@@ -343,6 +342,7 @@ require 'rubygems/dependency_resolver/index_set'
 require 'rubygems/dependency_resolver/index_specification'
 require 'rubygems/dependency_resolver/installed_specification'
 require 'rubygems/dependency_resolver/installer_set'
+require 'rubygems/dependency_resolver/requirement_list'
 require 'rubygems/dependency_resolver/vendor_set'
 require 'rubygems/dependency_resolver/vendor_specification'
 

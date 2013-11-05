@@ -59,6 +59,11 @@ class Gem::DependencyResolver
     @soft_missing = false
   end
 
+  def explain(stage, *data)
+    d = data.map { |x| x.inspect }.join(", ")
+    STDOUT.printf "%20s %s\n", stage.to_s.upcase, d
+  end
+
   ##
   # Creates an ActivationRequest for the given +dep+ and the last +possible+
   # specification.
@@ -67,6 +72,8 @@ class Gem::DependencyResolver
 
   def activation_request dep, possible # :nodoc:
     spec = possible.pop
+
+    explain :activate, [spec.full_name, possible.size]
 
     activation_request =
       Gem::DependencyResolver::ActivationRequest.new spec, dep, possible
@@ -118,6 +125,8 @@ class Gem::DependencyResolver
 
     until states.empty? do
       state = states.pop
+
+      explain :consider, state.dep, conflict.failed_dep
 
       if conflict.for_spec? state.spec
         state.conflicts << [state.spec, conflict]
@@ -211,6 +220,7 @@ class Gem::DependencyResolver
 
     while !needed.empty?
       dep = needed.remove
+      explain :try, [dep, dep.requester ? dep.requester.request : :toplevel]
 
       # If there is already a spec activated for the requested name...
       if specs && existing = specs.find { |s| dep.name == s.name }
@@ -218,6 +228,7 @@ class Gem::DependencyResolver
         next if dep.matches_spec? existing
 
         conflict = handle_conflict dep, existing
+        explain :conflict, conflict.explain
 
         state = find_conflict_state conflict, states
 
@@ -283,6 +294,8 @@ class Gem::DependencyResolver
     # to current +needed+ and +specs+ so we can try another. This is code is
     # what makes conflict resolution possible.
     states << State.new(needed.dup, specs, dep, spec, possible, [])
+
+    explain :states, states.map { |s| s.dep }
 
     needed = requests spec, act, needed
     specs = Gem::List.prepend specs, act

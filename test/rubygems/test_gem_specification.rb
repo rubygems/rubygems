@@ -2156,7 +2156,11 @@ end
       @a1.add_runtime_dependency     'd', '~> 1.2.3'
       @a1.add_runtime_dependency     'e', '~> 1.2.3.4'
       @a1.add_runtime_dependency     'g', '~> 1.2.3', '>= 1.2.3.4'
-      @a1.add_runtime_dependency     'g', '>= 1.2.3', '<= 2'
+      @a1.add_runtime_dependency     'h', '>= 1.2.3', '<= 2'
+      @a1.add_runtime_dependency     'i', '>= 1.2'
+      @a1.add_runtime_dependency     'j', '>= 1.2.3'
+      @a1.add_runtime_dependency     'k', '> 1.2'
+      @a1.add_runtime_dependency     'l', '> 1.2.3'
 
       use_ui @ui do
         @a1.validate
@@ -2171,6 +2175,18 @@ end
 #{w}:  pessimistic dependency on e (~> 1.2.3.4) may be overly strict
   if e is semantically versioned, use:
     add_runtime_dependency 'e', '~> 1.2', '>= 1.2.3.4'
+#{w}:  open-ended dependency on i (>= 1.2) is not recommended
+  if i is semantically versioned, use:
+    add_runtime_dependency 'i', '~> 1.2'
+#{w}:  open-ended dependency on j (>= 1.2.3) is not recommended
+  if j is semantically versioned, use:
+    add_runtime_dependency 'j', '~> 1.2', '>= 1.2.3'
+#{w}:  open-ended dependency on k (> 1.2) is not recommended
+  if k is semantically versioned, use:
+    add_runtime_dependency 'k', '~> 1.2', '> 1.2'
+#{w}:  open-ended dependency on l (> 1.2.3) is not recommended
+  if l is semantically versioned, use:
+    add_runtime_dependency 'l', '~> 1.2', '> 1.2.3'
 #{w}:  See http://guides.rubygems.org/specification-reference/ for help
       EXPECTED
 

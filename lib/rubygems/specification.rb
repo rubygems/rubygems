@@ -2619,6 +2619,28 @@ pessimistic dependency on #{dep} may be overly strict
     add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}', '>= #{version}'
         WARNING
       end
+
+      open_ended = dep.requirement.requirements.all? do |op, version|
+        not version.prerelease? and (op == '>' or op == '>=')
+      end
+
+      if open_ended then
+        op, version = dep.requirement.requirements.first
+
+        base = version.segments.first 2
+
+        bugfix = if op == '>=' then
+                   ", '>= #{version}'" unless base == version.segments
+                 else
+                   ", '> #{version}'"
+                 end
+
+        warning <<-WARNING
+open-ended dependency on #{dep} is not recommended
+  if #{dep.name} is semantically versioned, use:
+    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}'#{bugfix}
+        WARNING
+      end
     end
   end
 

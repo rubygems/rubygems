@@ -7,6 +7,10 @@ Bug fixes:
 * Gem::Specification::remove_spec no longer checks for existence of the spec
   to be removed.  Issue #698 by Tiago Macedo.
 * Restored wildcard handling when installing gems.  Issue #697 by Chuck Remes.
+* Added DigiCert High Assurance EV Root CA certificate for the cloudfront.net
+  certificate change.
+* The Gem::RemoteFetcher tests now choose the test server port more reliably.
+  Pull Request #706 by akr.
 
 === 2.0.13 / 2013-10-24
 

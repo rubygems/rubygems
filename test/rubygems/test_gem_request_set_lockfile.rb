@@ -212,8 +212,8 @@ DEPENDENCIES
   end
 
   def test_to_s_gem
-    spec_fetcher do |s|
-      s.gem 'a', 2
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2
     end
 
     @set.gem 'a'
@@ -235,10 +235,10 @@ DEPENDENCIES
   end
 
   def test_to_s_gem_dependency
-    spec_fetcher do |s|
-      s.gem 'a', 2, 'c' => '>= 0', 'b' => '>= 0'
-      s.gem 'b', 2
-      s.gem 'c', 2
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2, 'c' => '>= 0', 'b' => '>= 0'
+      fetcher.spec 'b', 2
+      fetcher.spec 'c', 2
     end
 
     @set.gem 'a'
@@ -264,9 +264,9 @@ DEPENDENCIES
   end
 
   def test_to_s_gem_dependency_non_default
-    spec_fetcher do |s|
-      s.gem 'a', 2, 'b' => '>= 1'
-      s.gem 'b', 2
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2, 'b' => '>= 1'
+      fetcher.spec 'b', 2
     end
 
     @set.gem 'b'
@@ -292,9 +292,9 @@ DEPENDENCIES
   end
 
   def test_to_s_gem_dependency_requirement
-    spec_fetcher do |s|
-      s.gem 'a', 2, 'b' => '>= 0'
-      s.gem 'b', 2
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2, 'b' => '>= 0'
+      fetcher.spec 'b', 2
     end
 
     @set.gem 'a', '>= 1'
@@ -368,8 +368,8 @@ DEPENDENCIES
   end
 
   def test_to_s_gem_platform
-    spec_fetcher do |s|
-      s.gem 'a', 2 do |spec|
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2 do |spec|
         spec.platform = Gem::Platform.local
       end
     end

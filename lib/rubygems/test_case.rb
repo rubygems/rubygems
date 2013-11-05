@@ -1094,13 +1094,16 @@ Also, a list:
   # Creates a SpecFetcher pre-filled with the gems or specs defined in the
   # block.
   #
-  # Yields a +fetcher+ object that responds to +gem+ which will add a
-  # specification to the SpecFetcher and the gem data to the RemoteFetcher so
-  # the built gem can be downloaded:
+  # Yields a +fetcher+ object that responds to +spec+ and +gem+.  +spec+ adds
+  # a specification to the SpecFetcher while +gem+ adds both a specification
+  # and the gem data to the RemoteFetcher so the built gem can be downloaded.
+  #
+  # If only the a-3 gem is supposed to be downloaded you can save setup
+  # time by creating only specs for the other versions:
   #
   #   spec_fetcher do |fetcher|
-  #     fetcher.gem 'a', 1
-  #     fetcher.gem 'a', 2, 'b' => 3 # dependency on b = 3
+  #     fetcher.spec 'a', 1
+  #     fetcher.spec 'a', 2, 'b' => 3 # dependency on b = 3
   #     fetcher.gem 'a', 3 do |spec|
   #       # spec is a Gem::Specification
   #       # ...
@@ -1122,11 +1125,21 @@ Also, a list:
       spec
     end
 
+    def fetcher.spec name, version, dependencies = nil, &block
+      spec = @test.util_spec name, version, dependencies, &block
+
+      @gems[spec] = nil
+
+      spec
+    end
+
     yield fetcher
 
     util_setup_spec_fetcher(*gems.keys)
 
     gems.each do |spec, gem|
+      next unless gem
+
       @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
         Gem.read_binary(gem)
     end

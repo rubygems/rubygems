@@ -6,6 +6,33 @@ class Gem::RequestSet::Lockfile
   # Raised when a lockfile cannot be parsed
 
   class ParseError < Gem::Exception
+
+    ##
+    # The column where the error was encountered
+
+    attr_reader :column
+
+    ##
+    # The line where the error was encountered
+
+    attr_reader :line
+
+    ##
+    # The location of the lock file
+
+    attr_reader :path
+
+    ##
+    # Raises a ParseError with the given +message+ which was encountered at a
+    # +line+ and +column+ while parsing.
+
+    def initialize message, line, column, path
+      @line   = line
+      @column = column
+      @path   = path
+      super "#{message} (at #{line}:#{column})"
+    end
+
   end
 
   ##
@@ -107,8 +134,30 @@ class Gem::RequestSet::Lockfile
   ##
   # Gets the next token for a Lockfile
 
-  def get # :nodoc:
+  def get expected_type = nil, expected_value = nil # :nodoc:
     @current_token = @tokens.shift
+
+    type, value, line, column = @current_token
+
+    if expected_type and expected_type != type then
+      unget
+
+      message = "unexpected token [#{type.inspect}, #{value.inspect}], " +
+                "expected #{expected_type.inspect}"
+
+      raise ParseError.new message, line, column, "#{@gem_deps_file}.lock"
+    end
+
+    if expected_value and expected_value != value then
+      unget
+
+      message = "unexpected token [#{type.inspect}, #{value.inspect}], " +
+                "expected [#{expected_type.inspect}, #{expected_value.inspect}]"
+
+      raise ParseError.new message, line, column, "#{@gem_deps_file}.lock"
+    end
+
+    @current_token
   end
 
   def parse # :nodoc:
@@ -139,7 +188,7 @@ class Gem::RequestSet::Lockfile
 
   def parse_DEPENDENCIES # :nodoc:
     while not @tokens.empty? and :text == peek.first do
-      _, name, = get
+      _, name, = get :text
 
       @set.gem name
 
@@ -148,46 +197,30 @@ class Gem::RequestSet::Lockfile
   end
 
   def parse_GEM # :nodoc:
-    type, data, = get
-
-    raise ParseError, "unknown token [#{type.inspect}, #{data.inspect}]" unless
-      type == :entry and data == 'remote'
-
-    type, data, = get
-
-    raise ParseError, "unknown token [#{type.inspect}, #{data.inspect}]" unless
-      type == :text
+    get :entry, 'remote'
+    _, data, = get :text
 
     source = Gem::Source.new data
 
     skip :newline
 
-    type, data, = get
-
-    raise ParseError, "unknown token [#{type.inspect}, #{data.inspect}]" unless
-      type == :entry and data == 'specs'
+    get :entry, 'specs'
 
     skip :newline
 
     set = Gem::DependencyResolver::LockSet.new source
 
     while not @tokens.empty? and :text == peek.first do
-      _, name, = get
+      _, name, = get :text
 
       case peek[0]
       when :newline then # ignore
       when :l_paren then
-        get # l_paren
+        get :l_paren
 
-        type, version, = get # text
+        _, version, = get :text
 
-        raise ParseError, "unkown token [#{type.inspect}, #{data.inspect}]" unless
-          type == :text
-
-        type, = get # r_paren
-
-        raise ParseError, "unkown token [#{type.inspect}, #{data.inspect}]" unless
-          type == :r_paren
+        get :r_paren
 
         set.add name, version, Gem::Platform::RUBY
       else
@@ -202,7 +235,7 @@ class Gem::RequestSet::Lockfile
 
   def parse_PLATFORMS # :nodoc:
     while not @tokens.empty? and :text == peek.first do
-      _, name, = get
+      _, name, = get :text
 
       @platforms << name
 
@@ -270,8 +303,12 @@ class Gem::RequestSet::Lockfile
       # leading whitespace is for the user's convenience
       next if s.scan(/ +/)
 
-      raise ParseError, "your #{lock_file} contains merge conflict markers" if
-        s.scan(/[<|=>]{7}/)
+      if s.scan(/[<|=>]{7}/) then
+        message = "your #{lock_file} contains merge conflict markers"
+        line, column = token_pos pos
+
+        raise ParseError.new message, line, column, lock_file
+      end
 
       @tokens <<
         case

@@ -54,6 +54,8 @@ Bug fixes:
 * Restored wildcard handling when installing gems.  Issue #697 by Chuck Remes.
 * Added DigiCert High Assurance EV Root CA certificate for the cloudfront.net
   certificate change.
+* The Gem::RemoteFetcher tests now choose the test server port more reliably.
+  Pull Request #706 by akr.
 
 === 2.1.10 / 2013-10-24
 

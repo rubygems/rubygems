@@ -234,7 +234,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   end
 
   def test_gem_source_mismatch
-    name, version, directory = vendor_gem
+    name, _, directory = vendor_gem
 
     gda = @GDA.new @set, nil
     gda.gem name

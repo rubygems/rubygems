@@ -39,7 +39,7 @@ class TestGemRequestSetLockfile < Gem::TestCase
 
     yield gem_maker
 
-    util_setup_spec_fetcher *gems.keys
+    util_setup_spec_fetcher(*gems.keys)
 
     gems.each do |spec, gem|
       @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =

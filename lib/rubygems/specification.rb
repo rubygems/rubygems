@@ -2620,14 +2620,14 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
         end
 
       if overly_strict then
-        _, version = dep.requirement.requirements.first
+        _, dep_version = dep.requirement.requirements.first
 
-        base = version.segments.first 2
+        base = dep_version.segments.first 2
 
         warning <<-WARNING
 pessimistic dependency on #{dep} may be overly strict
   if #{dep.name} is semantically versioned, use:
-    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}', '>= #{version}'
+    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}', '>= #{dep_version}'
         WARNING
       end
 
@@ -2636,14 +2636,14 @@ pessimistic dependency on #{dep} may be overly strict
       end
 
       if open_ended then
-        op, version = dep.requirement.requirements.first
+        op, dep_version = dep.requirement.requirements.first
 
-        base = version.segments.first 2
+        base = dep_version.segments.first 2
 
         bugfix = if op == '>=' then
-                   ", '>= #{version}'" unless base == version.segments
+                   ", '>= #{dep_version}'" unless base == dep_version.segments
                  else
-                   ", '> #{version}'"
+                   ", '> #{dep_version}'"
                  end
 
         warning <<-WARNING

@@ -2194,7 +2194,7 @@ end
     end
   end
 
-  def test_validate_dependencies
+  def test_validate_dependencies_open_ended
     util_setup_validate
 
     Dir.chdir @tempdir do

@@ -2640,10 +2640,10 @@ pessimistic dependency on #{dep} may be overly strict
 
         base = dep_version.segments.first 2
 
-        bugfix = if op == '>=' then
-                   ", '>= #{dep_version}'" unless base == dep_version.segments
-                 else
+        bugfix = if op == '>' then
                    ", '> #{dep_version}'"
+                 elsif op == '>=' and base != dep_version.segments then
+                   ", '>= #{dep_version}'"
                  end
 
         warning <<-WARNING

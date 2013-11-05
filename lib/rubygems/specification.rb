@@ -2578,6 +2578,21 @@ licenses is empty.  Use a license abbreviation from:
       warning "#{executable_path} is missing #! line" unless shebang
     end
 
+    validate_dependencies
+
+    true
+  ensure
+    if $! or @warnings > 0 then
+      alert_warning "See http://guides.rubygems.org/specification-reference/ for help"
+    end
+  end
+
+  ##
+  # Checks that dependencies use requirements as we recommend.  Warnings are
+  # issued when dependencies are open-ended or overly strict for semantic
+  # versioning.
+
+  def validate_dependencies # :nodoc:
     dependencies.each do |dep|
       prerelease_dep = dep.requirements_list.any? do |req|
         Gem::Requirement.new(req).prerelease?
@@ -2604,12 +2619,6 @@ pessimistic dependency on #{dep} may be overly strict
     add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}', '>= #{version}'
         WARNING
       end
-    end
-
-    true
-  ensure
-    if $! or @warnings > 0 then
-      alert_warning "See http://guides.rubygems.org/specification-reference/ for help"
     end
   end
 

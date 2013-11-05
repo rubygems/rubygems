@@ -2597,7 +2597,6 @@ licenses is empty.  Use a license abbreviation from:
 
     dependencies.each do |dep|
       if prev = seen[dep.name] then
-
         raise Gem::InvalidSpecificationException, <<-MESSAGE
 duplicate dependency on #{dep}, (#{prev.requirement}) use:
     add_runtime_dependency '#{dep.name}', '#{dep.requirement}', '#{prev.requirement}'

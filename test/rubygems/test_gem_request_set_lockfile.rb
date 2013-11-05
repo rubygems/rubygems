@@ -54,7 +54,9 @@ class TestGemRequestSetLockfile < Gem::TestCase
   end
 
   def write_lockfile lockfile
-    open "#{@gem_deps_file}.lock", 'w' do |io|
+    @lock_file = File.expand_path "#{@gem_deps_file}.lock"
+
+    open @lock_file, 'w' do |io|
       io.write lockfile
     end
   end
@@ -153,6 +155,44 @@ DEPENDENCIES
     ]
 
     assert_equal expected, @lockfile.tokenize
+  end
+
+  def test_tokenize_conflict_markers
+    write_lockfile '<<<<<<<'
+
+    e = assert_raises Gem::RequestSet::Lockfile::ParseError do
+      @lockfile.tokenize
+    end
+
+    assert_equal "your #{@lock_file} contains merge conflict markers",
+                 e.message
+
+    write_lockfile '|||||||'
+
+    e = assert_raises Gem::RequestSet::Lockfile::ParseError do
+      @lockfile.tokenize
+    end
+
+    assert_equal "your #{@lock_file} contains merge conflict markers",
+                 e.message
+
+    write_lockfile '======='
+
+    e = assert_raises Gem::RequestSet::Lockfile::ParseError do
+      @lockfile.tokenize
+    end
+
+    assert_equal "your #{@lock_file} contains merge conflict markers",
+                 e.message
+
+    write_lockfile '>>>>>>>'
+
+    e = assert_raises Gem::RequestSet::Lockfile::ParseError do
+      @lockfile.tokenize
+    end
+
+    assert_equal "your #{@lock_file} contains merge conflict markers",
+                 e.message
   end
 
   def test_to_s_gem

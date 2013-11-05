@@ -3,6 +3,12 @@ require 'pathname'
 class Gem::RequestSet::Lockfile
 
   ##
+  # Raised when there are bad tokens in a lock file
+
+  class ParseError < Gem::Exception
+  end
+
+  ##
   # The platforms for this Lockfile
 
   attr_reader :platforms
@@ -198,7 +204,9 @@ class Gem::RequestSet::Lockfile
     @tokens        = []
     @current_token = nil
 
-    @input = File.read "#{@gem_deps_file}.lock"
+    lock_file = "#{@gem_deps_file}.lock"
+
+    @input = File.read lock_file
     s      = StringScanner.new @input
 
     until s.eos? do
@@ -206,6 +214,9 @@ class Gem::RequestSet::Lockfile
 
       # leading whitespace is for the user's convenience
       next if s.scan(/ +/)
+
+      raise ParseError, "your #{lock_file} contains merge conflict markers" if
+        s.scan(/[<|=>]{7}/)
 
       @tokens <<
         case

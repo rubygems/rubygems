@@ -22,31 +22,6 @@ class TestGemRequestSetLockfile < Gem::TestCase
     @lockfile = Gem::RequestSet::Lockfile.new @set, @gem_deps_file
   end
 
-  def spec_fetcher
-    gems = {}
-
-    gem_maker = Object.new
-    gem_maker.instance_variable_set :@test,  self
-    gem_maker.instance_variable_set :@gems,  gems
-
-    def gem_maker.gem name, version, dependencies = nil, &block
-      spec, gem = @test.util_gem name, version, dependencies, &block
-
-      @gems[spec] = gem
-
-      spec
-    end
-
-    yield gem_maker
-
-    util_setup_spec_fetcher(*gems.keys)
-
-    gems.each do |spec, gem|
-      @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
-        Gem.read_binary(gem)
-    end
-  end
-
   def write_gem_deps gem_deps
     open @gem_deps_file, 'w' do |io|
       io.write gem_deps

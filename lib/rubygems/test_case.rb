@@ -1091,6 +1091,48 @@ Also, a list:
   end
 
   ##
+  # Creates a SpecFetcher pre-filled with the gems or specs defined in the
+  # block.
+  #
+  # Yields a +fetcher+ object that responds to +gem+ which will add a
+  # specification to the SpecFetcher and the gem data to the RemoteFetcher so
+  # the built gem can be downloaded:
+  #
+  #   spec_fetcher do |fetcher|
+  #     fetcher.gem 'a', 1
+  #     fetcher.gem 'a', 2, 'b' => 3 # dependency on b = 3
+  #     fetcher.gem 'a', 3 do |spec|
+  #       # spec is a Gem::Specification
+  #       # ...
+  #     end
+  #   end
+
+  def spec_fetcher
+    gems = {}
+
+    fetcher = Object.new
+    fetcher.instance_variable_set :@test,  self
+    fetcher.instance_variable_set :@gems,  gems
+
+    def fetcher.gem name, version, dependencies = nil, &block
+      spec, gem = @test.util_gem name, version, dependencies, &block
+
+      @gems[spec] = gem
+
+      spec
+    end
+
+    yield fetcher
+
+    util_setup_spec_fetcher(*gems.keys)
+
+    gems.each do |spec, gem|
+      @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
+        Gem.read_binary(gem)
+    end
+  end
+
+  ##
   # Construct a new Gem::Version.
 
   def v string

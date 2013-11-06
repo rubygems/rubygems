@@ -205,7 +205,7 @@ class Gem::DependencyResolver
       ps.unshift ps.length
 
       cs = conflicts.map do |(s, c)|
-        [s.full_name, c.conflicting_dependencies.map { |d| d.to_s }]
+        [s.full_name, c.conflicting_dependencies.map { |cd| cd.to_s }]
       end
 
       { needed: nd, specs: ss, dep: d, spec: spec.full_name,

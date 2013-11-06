@@ -164,7 +164,7 @@ class Gem::DependencyResolver
       conflict =
         Gem::DependencyResolver::DependencyConflict.new dep, existing
     else
-      depreq = existing.request.requester.request
+      depreq = dep.requester.request
       conflict =
         Gem::DependencyResolver::DependencyConflict.new depreq, existing, dep
     end

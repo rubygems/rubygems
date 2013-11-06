@@ -59,9 +59,13 @@ class Gem::DependencyResolver
     @soft_missing = false
   end
 
+  DEBUG_RESOLVER = !ENV['DEBUG_RESOLVER'].nil?
+
   def explain(stage, *data)
-    d = data.map { |x| x.inspect }.join(", ")
-    STDOUT.printf "%20s %s\n", stage.to_s.upcase, d
+    if DEBUG_RESOLVER
+      d = data.map { |x| x.inspect }.join(", ")
+      STDOUT.printf "%20s %s\n", stage.to_s.upcase, d
+    end
   end
 
   ##

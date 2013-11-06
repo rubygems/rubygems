@@ -4,9 +4,19 @@
 
 class Gem::DependencyResolver::APISet < Gem::DependencyResolver::Set
 
-  def initialize # :nodoc:
+  ##
+  # The URI for the dependency API this APISet uses.
+
+  attr_reader :dep_uri # :nodoc:
+
+  ##
+  # Creates a new APISet that will retrieve gems from +uri+ using the RubyGems
+  # API described at http://guides.rubygems.org/rubygems-org-api
+
+  def initialize uri = 'https://rubygems.org/api/v1/dependencies'
+    uri = URI uri unless URI === uri # for ruby 1.8
     @data = Hash.new { |h,k| h[k] = [] }
-    @dep_uri = URI 'https://rubygems.org/api/v1/dependencies'
+    @dep_uri = uri
   end
 
   ##

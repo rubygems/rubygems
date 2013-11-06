@@ -4,8 +4,15 @@
 
 class Gem::DependencyResolver::IndexSet < Gem::DependencyResolver::Set
 
-  def initialize # :nodoc:
-    @f = Gem::SpecFetcher.fetcher
+  def initialize source = nil # :nodoc:
+    @f =
+      if source then
+        sources = Gem::SourceList.from [source]
+
+        Gem::SpecFetcher.new sources
+      else
+        Gem::SpecFetcher.fetcher
+      end
 
     @all = Hash.new { |h,k| h[k] = [] }
 

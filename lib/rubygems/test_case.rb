@@ -900,14 +900,35 @@ Also, a list:
       spec_fetcher.prerelease_specs[@uri] << spec.name_tuple
     end
 
-    v = Gem.marshal_version
+    # HACK for test_download_to_cache
+    unless Gem::RemoteFetcher === @fetcher then
+      v = Gem.marshal_version
 
-    Gem::Specification.each do |spec|
-      path = "#{@gem_repo}quick/Marshal.#{v}/#{spec.original_name}.gemspec.rz"
-      data = Marshal.dump spec
-      data_deflate = Zlib::Deflate.deflate data
-      @fetcher.data[path] = data_deflate
-    end unless Gem::RemoteFetcher === @fetcher # HACK for test_download_to_cache
+      specs = all.map { |spec| spec.name_tuple }
+      s_zip = util_gzip Marshal.dump Gem::NameTuple.to_basic specs
+
+      latest_specs = Gem::Specification.latest_specs.map do |spec|
+        spec.name_tuple
+      end
+
+      l_zip = util_gzip Marshal.dump Gem::NameTuple.to_basic latest_specs
+
+      prerelease_specs = prerelease.map { |spec| spec.name_tuple }
+      p_zip = util_gzip Marshal.dump Gem::NameTuple.to_basic prerelease_specs
+
+      @fetcher.data["#{@gem_repo}specs.#{v}.gz"]            = s_zip
+      @fetcher.data["#{@gem_repo}latest_specs.#{v}.gz"]     = l_zip
+      @fetcher.data["#{@gem_repo}prerelease_specs.#{v}.gz"] = p_zip
+
+      v = Gem.marshal_version
+
+      Gem::Specification.each do |spec|
+        path = "#{@gem_repo}quick/Marshal.#{v}/#{spec.original_name}.gemspec.rz"
+        data = Marshal.dump spec
+        data_deflate = Zlib::Deflate.deflate data
+        @fetcher.data[path] = data_deflate
+      end
+    end
 
     nil # force errors
   end

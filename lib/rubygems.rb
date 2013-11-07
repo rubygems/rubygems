@@ -557,9 +557,9 @@ module Gem
 
   def self.gunzip(data)
     # TODO: move to utils
-    require 'stringio'
     require 'zlib'
-    data = StringIO.new data
+    require 'rubygems/util/stringio'
+    data = Gem::StringSource.new data
 
     unzipped = Zlib::GzipReader.new(data).read
     unzipped.force_encoding Encoding::BINARY if Object.const_defined? :Encoding
@@ -571,9 +571,9 @@ module Gem
 
   def self.gzip(data)
     # TODO: move to utils
-    require 'stringio'
+    require 'rubygems/util/stringio'
     require 'zlib'
-    zipped = StringIO.new
+    zipped = Gem::StringSink.new
     zipped.set_encoding Encoding::BINARY if Object.const_defined? :Encoding
 
     Zlib::GzipWriter.wrap zipped do |io| io.write data end

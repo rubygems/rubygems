@@ -23,6 +23,10 @@ class Gem::DependencyResolver::DependencyConflict
       @failed_dep == other.failed_dep
   end
 
+  def explain
+    "<Conflict wanted: #{@failed_dep}, had: #{activated.spec.full_name}>"
+  end
+
   ##
   # Return the 2 dependency objects that conflicted
 

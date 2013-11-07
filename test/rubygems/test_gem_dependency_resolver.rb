@@ -189,14 +189,6 @@ class TestGemDependencyResolver < Gem::TestCase
     res = Gem::DependencyResolver.new([ad, bd], s)
 
     assert_resolves_to [a1, b1, c1], res
-
-    cons = res.conflicts
-
-    assert_equal 1, cons.size
-    con = cons.first
-
-    assert_equal "c (= 1)", con.dependency.to_s
-    assert_equal "c-2", con.activated.full_name
   end
 
   def test_conflict_resolution_only_effects_correct_spec
@@ -245,19 +237,19 @@ class TestGemDependencyResolver < Gem::TestCase
       r.resolve
     end
 
-    deps = [make_dep("c", "= 2"), make_dep("c", "= 1")]
+    deps = [make_dep("c", "= 1"), make_dep("c", "= 2")]
     assert_equal deps, e.conflicting_dependencies
 
     con = e.conflict
 
     act = con.activated
-    assert_equal "c-1", act.spec.full_name
+    assert_equal "c-2", act.spec.full_name
 
     parent = act.parent
-    assert_equal "a-1", parent.spec.full_name
+    assert_equal "b-1", parent.spec.full_name
 
     act = con.requester
-    assert_equal "b-1", act.spec.full_name
+    assert_equal "a-1", act.spec.full_name
   end
 
   def test_raises_when_a_gem_is_missing
@@ -345,11 +337,11 @@ class TestGemDependencyResolver < Gem::TestCase
     assert_equal req('>= 0'), dependency.requirement
 
     activated = e.conflict.activated
-    assert_equal 'c-2', activated.full_name
+    assert_equal 'c-1', activated.full_name
 
-    assert_equal dep('c', '>= 2'), activated.request.dependency
+    assert_equal dep('c', '= 1'), activated.request.dependency
 
-    assert_equal [dep('c', '= 1'), dep('c', '>= 2')],
+    assert_equal [dep('c', '>= 2'), dep('c', '= 1')],
                  e.conflict.conflicting_dependencies
   end
 

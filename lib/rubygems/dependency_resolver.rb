@@ -68,6 +68,15 @@ class Gem::DependencyResolver
     @soft_missing = false
   end
 
+  DEBUG_RESOLVER = !ENV['DEBUG_RESOLVER'].nil?
+
+  def explain(stage, *data)
+    if DEBUG_RESOLVER
+      d = data.map { |x| x.inspect }.join(", ")
+      STDOUT.printf "%20s %s\n", stage.to_s.upcase, d
+    end
+  end
+
   ##
   # Creates an ActivationRequest for the given +dep+ and the last +possible+
   # specification.
@@ -76,6 +85,8 @@ class Gem::DependencyResolver
 
   def activation_request dep, possible # :nodoc:
     spec = possible.pop
+
+    explain :activate, [spec.full_name, possible.size]
 
     activation_request =
       Gem::DependencyResolver::ActivationRequest.new spec, dep, possible
@@ -86,7 +97,7 @@ class Gem::DependencyResolver
   def requests s, act, reqs=nil
     s.dependencies.reverse_each do |d|
       next if d.type == :development and not @development
-      reqs = Gem::List.new Gem::DependencyResolver::DependencyRequest.new(d, act), reqs
+      reqs.add Gem::DependencyResolver::DependencyRequest.new(d, act)
     end
 
     @set.prefetch reqs
@@ -100,12 +111,12 @@ class Gem::DependencyResolver
   def resolve
     @conflicts = []
 
-    needed = nil
+    needed = RequirementList.new
 
     @needed.reverse_each do |n|
       request = Gem::DependencyResolver::DependencyRequest.new n, nil
 
-      needed = Gem::List.new request, needed
+      needed.add request
     end
 
     res = resolve_for needed, nil
@@ -127,6 +138,8 @@ class Gem::DependencyResolver
 
     until states.empty? do
       state = states.pop
+
+      explain :consider, state.dep, conflict.failed_dep
 
       if conflict.for_spec? state.spec
         state.conflicts << [state.spec, conflict]
@@ -164,7 +177,7 @@ class Gem::DependencyResolver
       conflict =
         Gem::DependencyResolver::DependencyConflict.new dep, existing
     else
-      depreq = existing.request.requester.request
+      depreq = dep.requester.request
       conflict =
         Gem::DependencyResolver::DependencyConflict.new depreq, existing, dep
     end
@@ -218,9 +231,9 @@ class Gem::DependencyResolver
     # The State objects that are used to attempt the activation tree.
     states = []
 
-    while needed
-      dep = needed.value
-      needed = needed.tail
+    while !needed.empty?
+      dep = needed.remove
+      explain :try, [dep, dep.requester ? dep.requester.request : :toplevel]
 
       # If there is already a spec activated for the requested name...
       if specs && existing = specs.find { |s| dep.name == s.name }
@@ -228,6 +241,7 @@ class Gem::DependencyResolver
         next if dep.matches_spec? existing
 
         conflict = handle_conflict dep, existing
+        explain :conflict, conflict.explain
 
         state = find_conflict_state conflict, states
 
@@ -292,7 +306,9 @@ class Gem::DependencyResolver
     # We may need to try all of +possible+, so we setup state to unwind back
     # to current +needed+ and +specs+ so we can try another. This is code is
     # what makes conflict resolution possible.
-    states << State.new(needed, specs, dep, spec, possible, [])
+    states << State.new(needed.dup, specs, dep, spec, possible, [])
+
+    explain :states, states.map { |s| s.dep }
 
     needed = requests spec, act, needed
     specs = Gem::List.prepend specs, act
@@ -344,6 +360,7 @@ end
 require 'rubygems/dependency_resolver/activation_request'
 require 'rubygems/dependency_resolver/dependency_conflict'
 require 'rubygems/dependency_resolver/dependency_request'
+require 'rubygems/dependency_resolver/requirement_list'
 
 require 'rubygems/dependency_resolver/set'
 require 'rubygems/dependency_resolver/api_set'

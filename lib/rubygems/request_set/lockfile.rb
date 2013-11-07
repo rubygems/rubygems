@@ -1,5 +1,3 @@
-require 'pathname'
-
 class Gem::RequestSet::Lockfile
 
   ##
@@ -46,8 +44,8 @@ class Gem::RequestSet::Lockfile
 
   def initialize request_set, gem_deps_file
     @set           = request_set
-    @gem_deps_file = Pathname(gem_deps_file).expand_path
-    @gem_deps_dir  = @gem_deps_file.dirname
+    @gem_deps_file = File.expand_path(gem_deps_file)
+    @gem_deps_dir  = File.dirname(@gem_deps_file)
 
     @current_token  = nil
     @line           = 0
@@ -102,15 +100,26 @@ class Gem::RequestSet::Lockfile
     out << nil
   end
 
+  def relative_path_from(dest, base)
+    dest = File.expand_path(dest)
+    base = File.expand_path(base)
+
+    if dest.index(base) == 0
+      return dest[base.size+1..-1]
+    else
+      dest
+    end
+  end
+
   def add_PATH out # :nodoc:
     return unless path_requests =
       @spec_groups.delete(Gem::DependencyResolver::VendorSpecification)
 
     out << "PATH"
     path_requests.each do |request|
-      directory = Pathname(request.spec.source.uri).expand_path
+      directory = File.expand_path(request.spec.source.uri)
 
-      out << "  remote: #{directory.relative_path_from @gem_deps_dir}"
+      out << "  remote: #{relative_path_from directory, @gem_deps_dir}"
       out << "  specs:"
       out << "    #{request.name} (#{request.version})"
     end

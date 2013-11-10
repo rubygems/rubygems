@@ -84,7 +84,11 @@ class Gem::SpecFetcher
     rejected_specs = {}
 
     if dependency.prerelease?
-      type = :complete
+      if dependency.specific?
+        type = :complete
+      else
+        type = :abs_latest
+      end
     elsif dependency.latest_version?
       type = :latest
     else
@@ -222,6 +226,12 @@ class Gem::SpecFetcher
                   names =
                     tuples_for(source, :prerelease, true) +
                     tuples_for(source, :released)
+
+                  names.sort
+                when :abs_latest
+                  names =
+                    tuples_for(source, :prerelease, true) +
+                    tuples_for(source, :latest)
 
                   names.sort
                 when :prerelease

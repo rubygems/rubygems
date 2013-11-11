@@ -505,7 +505,10 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     return spec
   end
 
-  def quick_spec name, version = '2'
+  ##
+  # TODO:  remove in RubyGems 3.0
+
+  def quick_spec name, version = '2' # :nodoc:
     # TODO: deprecate
     require 'rubygems/specification'
 
@@ -683,21 +686,35 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # Creates a spec with +name+, +version+.  +deps+ can specify the dependency
   # or a +block+ can be given for full customization of the specification.
 
-  def util_spec name, version = 2, deps = nil, &block # :yields: specification
-    raise "deps or block, not both" if deps and block
+  def util_spec name, version = 2, deps = nil # :yields: specification
+    raise "deps or block, not both" if deps and block_given?
+
+    spec = Gem::Specification.new do |s|
+      s.platform    = Gem::Platform::RUBY
+      s.name        = name
+      s.version     = version
+      s.author      = 'A User'
+      s.email       = 'example@example.com'
+      s.homepage    = 'http://example.com'
+      s.summary     = "this is a summary"
+      s.description = "This is a test description"
+
+      yield s if block_given?
+    end
 
     if deps then
-      block = proc do |s|
-        # Since Hash#each is unordered in 1.8, sort
-        # the keys and iterate that way so the tests are
-        # deteriminstic on all implementations.
-        deps.keys.sort.each do |n|
-          s.add_dependency n, (deps[n] || '>= 0')
-        end
+      # Since Hash#each is unordered in 1.8, sort the keys and iterate that
+      # way so the tests are deterministic on all implementations.
+      deps.keys.sort.each do |n|
+        spec.add_dependency n, (deps[n] || '>= 0')
       end
     end
 
-    quick_spec(name, version, &block)
+    spec.loaded_from = spec.spec_file
+
+    Gem::Specification.add_spec spec
+
+    return spec
   end
 
   ##

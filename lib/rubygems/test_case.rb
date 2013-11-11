@@ -616,10 +616,11 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   end
 
   ##
-  # Create a new spec (or gem if passed an array of files) and set it
-  # up properly. Use this instead of util_spec and util_gem.
+  # new_spec is deprecated as it is never used.
+  #
+  # TODO:  remove in RubyGems 3.0
 
-  def new_spec name, version, deps = nil, *files
+  def new_spec name, version, deps = nil, *files # :nodoc:
     require 'rubygems/specification'
 
     spec = Gem::Specification.new do |s|
@@ -660,7 +661,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   end
 
   def new_default_spec(name, version, deps = nil, *files)
-    spec = new_spec(name, version, deps)
+    spec = util_spec name, version, deps
+
     spec.loaded_from = File.join(@default_spec_dir, spec.spec_name)
     spec.files = files
 
@@ -678,10 +680,10 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   end
 
   ##
-  # Creates a spec with +name+, +version+ and +deps+.
+  # Creates a spec with +name+, +version+.  +deps+ can specify the dependency
+  # or a +block+ can be given for full customization of the specification.
 
-  def util_spec(name, version, deps = nil, &block)
-    # TODO: deprecate
+  def util_spec(name, version, deps = nil, &block) # :yields: specification
     raise "deps or block, not both" if deps and block
 
     if deps then

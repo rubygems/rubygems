@@ -173,7 +173,17 @@ class TestGemRequestSet < Gem::TestCase
 
     rs.resolve
 
-    installed = rs.install({})
+    reqs       = []
+    installers = []
+
+    installed = rs.install({}) do |req, installer|
+      reqs       << req
+      installers << installer
+    end
+
+    assert_equal %w[b-1 a-1], reqs.map { |req| req.full_name }
+    assert_equal %w[b-1 a-1],
+                 installers.map { |installer| installer.spec.full_name }
 
     assert_path_exists File.join @gemhome, 'specifications', 'a-1.gemspec'
     assert_path_exists File.join @gemhome, 'specifications', 'b-1.gemspec'

@@ -420,17 +420,15 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_latest_spec_for
-    a2 = nil
-
-    spec_fetcher do |fetcher|
+    gems = spec_fetcher do |fetcher|
       fetcher.spec 'a', 1
       fetcher.spec 'a', '3.a'
-      a2 = fetcher.spec 'a', 2
+      fetcher.spec 'a', 2
     end
 
     spec = Gem.latest_spec_for 'a'
 
-    assert_equal a2, spec
+    assert_equal gems['a-2'], spec
   end
 
   def test_self_latest_rubygems_version

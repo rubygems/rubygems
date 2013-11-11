@@ -192,9 +192,10 @@ class Gem::TestCase::SpecFetcherSetup
   def initialize test # :nodoc:
     @test  = test
 
-    @clear   = false
-    @fetcher = @test.fetcher
-    @gems    = {}
+    @fetcher    = @test.fetcher
+    @gems       = {}
+    @installed  = []
+    @operations = []
   end
 
   ##
@@ -202,24 +203,48 @@ class Gem::TestCase::SpecFetcherSetup
   # install location).
 
   def clear
-    @clear = true
+    @operations << [:clear]
+  end
+
+  def created_specs
+    created = {}
+
+    @gems.keys.each do |spec|
+      created[spec.full_name] = spec
+    end
+
+    created
   end
 
   ##
   # Creates any defined gems or specifications
 
   def execute # :nodoc:
-    @test.util_setup_fake_fetcher unless @test.fetcher
-    @test.util_setup_spec_fetcher(*@gems.keys)
+    execute_operations
 
-    @gems.each do |spec, gem|
-      next unless gem
+    setup_fetcher
 
-      @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
-        Gem.read_binary(gem)
+    created_specs
+  end
+
+  def execute_operations # :nodoc:
+    @operations.each do |operation, *arguments|
+      case operation
+      when :clear then
+        @test.util_clear_gems
+        @installed.clear
+      when :gem then
+        spec, gem = @test.util_gem(*arguments, &arguments.pop)
+
+        @gems[spec] = gem
+        @installed << spec
+      when :spec then
+        spec = @test.util_spec(*arguments, &arguments.pop)
+
+        @gems[spec] = nil
+        @installed << spec
+      end
     end
-
-    @test.util_clear_gems if @clear
   end
 
   ##
@@ -230,11 +255,24 @@ class Gem::TestCase::SpecFetcherSetup
   # but only the block or the dependencies may be set, not both.
 
   def gem name, version, dependencies = nil, &block
-    spec, gem = @test.util_gem name, version, dependencies, &block
+    @operations << [:gem, name, version, dependencies, block]
+  end
 
-    @gems[spec] = gem
+  def setup_fetcher # :nodoc;
+    @test.util_setup_fake_fetcher unless @test.fetcher
+    @test.util_setup_spec_fetcher(*@gems.keys)
 
-    spec
+    # This works around util_setup_spec_fetcher adding all created gems to the
+    # installed set.
+    Gem::Specification.reset
+    Gem::Specification.add_specs(*@installed)
+
+    @gems.each do |spec, gem|
+      next unless gem
+
+      @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
+        Gem.read_binary(gem)
+    end
   end
 
   ##
@@ -245,11 +283,7 @@ class Gem::TestCase::SpecFetcherSetup
   # but only the block or the dependencies may be set, not both.
 
   def spec name, version, dependencies = nil, &block
-    spec = @test.util_spec name, version, dependencies, &block
-
-    @gems[spec] = nil
-
-    spec
+    @operations << [:spec, name, version, dependencies, block]
   end
 
 end

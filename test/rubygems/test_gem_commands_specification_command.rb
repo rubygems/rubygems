@@ -188,10 +188,8 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
 
   def test_execute_remote_without_prerelease
     spec_fetcher do |fetcher|
-      foo     = fetcher.spec 'foo', '2.0.0'
-      foo_pre = fetcher.spec 'foo', '2.0.1.pre'
-
-      install_specs foo, foo_pre
+      fetcher.spec 'foo', '2.0.0'
+      fetcher.spec 'foo', '2.0.1.pre'
     end
 
     @cmd.options[:args] = %w[foo]
@@ -210,11 +208,9 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
   end
 
   def test_execute_remote_with_prerelease
-    spec_fetcher do |fetcher|
-      foo     = fetcher.spec 'foo', '2.0.0'
-      foo_pre = fetcher.spec 'foo', '2.0.1.pre'
-
-      install_specs foo, foo_pre
+    specs = spec_fetcher do |fetcher|
+      fetcher.spec 'foo', '2.0.0'
+      fetcher.spec 'foo', '2.0.1.pre'
     end
 
     @cmd.options[:args] = %w[foo]

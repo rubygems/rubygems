@@ -108,7 +108,7 @@ class TestGemSpecFetcher < Gem::TestCase
   def test_spec_for_dependency_platform
     util_set_arch 'i386-linux'
 
-    specs = spec_fetcher do |fetcher|
+    spec_fetcher do |fetcher|
       fetcher.legacy_platform
     end
 
@@ -284,9 +284,17 @@ class TestGemSpecFetcher < Gem::TestCase
   end
 
   def test_available_specs_prerelease
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 1
+      fetcher.spec 'a', '2.a'
+    end
+
     specs, _ = @sf.available_specs(:prerelease)
 
-    assert_equal @prerelease_specs, specs[@source]
+    expected = Gem::NameTuple.from_list \
+      [['a',  v('2.a'), Gem::Platform::RUBY]]
+
+    assert_equal expected, specs[@source]
   end
 
   def test_available_specs_with_bad_source

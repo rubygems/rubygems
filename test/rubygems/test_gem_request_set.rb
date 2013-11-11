@@ -204,8 +204,8 @@ class TestGemRequestSet < Gem::TestCase
 
     installed = rs.install_into @tempdir
 
-    assert File.exists?(File.join(@tempdir, "specifications", "a-1.gemspec"))
-    assert File.exists?(File.join(@tempdir, "specifications", "b-1.gemspec"))
+    assert_path_exists File.join @tempdir, 'specifications', 'a-1.gemspec'
+    assert_path_exists File.join @tempdir, 'specifications', 'b-1.gemspec'
 
     assert_equal %w!b-1 a-1!, installed.map { |s| s.full_name }
   end

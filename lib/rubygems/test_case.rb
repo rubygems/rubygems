@@ -380,7 +380,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     gem = File.join @tempdir, "gems", "#{spec.full_name}.gem"
 
-    unless File.exists? gem
+    unless File.exist? gem then
       use_ui Gem::MockGemUi.new do
         Dir.chdir @tempdir do
           Gem::Package.build spec

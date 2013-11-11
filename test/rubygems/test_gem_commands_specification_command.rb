@@ -208,7 +208,7 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
   end
 
   def test_execute_remote_with_prerelease
-    specs = spec_fetcher do |fetcher|
+    spec_fetcher do |fetcher|
       fetcher.spec 'foo', '2.0.0'
       fetcher.spec 'foo', '2.0.1.pre'
     end

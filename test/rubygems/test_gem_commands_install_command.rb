@@ -27,7 +27,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
   end
 
   def test_execute_exclude_prerelease
-    specs = spec_fetcher do |fetcher|
+    spec_fetcher do |fetcher|
       fetcher.gem 'a', 2
       fetcher.gem 'a', '2.pre'
     end

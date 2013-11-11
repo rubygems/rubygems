@@ -30,7 +30,6 @@ require 'fileutils'
 require 'tmpdir'
 require 'uri'
 require 'rubygems/package'
-require 'rubygems/test_utilities'
 require 'pp'
 require 'zlib'
 require 'pathname'
@@ -83,6 +82,8 @@ end
 # Tests are always run at a safe level of 1.
 
 class Gem::TestCase < MiniTest::Unit::TestCase
+
+  attr_reader :fetcher # :nodoc:
 
   def assert_activate expected, *specs
     specs.each do |spec|
@@ -1132,46 +1133,9 @@ Also, a list:
   #   end
 
   def spec_fetcher
-    gems = {}
-
-    fetcher = Object.new
-    fetcher.instance_variable_set :@test,  self
-    fetcher.instance_variable_set :@gems,  gems
-    fetcher.instance_variable_set :@clear, false
-
-    def fetcher.clear
-      @clear = true
+    Gem::TestCase::SpecFetcherSetup.declare self do |spec_fetcher_setup|
+      yield spec_fetcher_setup
     end
-
-    def fetcher.gem name, version, dependencies = nil, &block
-      spec, gem = @test.util_gem name, version, dependencies, &block
-
-      @gems[spec] = gem
-
-      spec
-    end
-
-    def fetcher.spec name, version, dependencies = nil, &block
-      spec = @test.util_spec name, version, dependencies, &block
-
-      @gems[spec] = nil
-
-      spec
-    end
-
-    yield fetcher
-
-    util_setup_fake_fetcher unless @fetcher
-    util_setup_spec_fetcher(*gems.keys)
-
-    gems.each do |spec, gem|
-      next unless gem
-
-      @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
-        Gem.read_binary(gem)
-    end
-
-    util_clear_gems if fetcher.instance_variable_get :@clear
   end
 
   ##
@@ -1325,3 +1289,6 @@ Also, a list:
   end if defined?(OpenSSL::SSL)
 
 end
+
+require 'rubygems/test_utilities'
+

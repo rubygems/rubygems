@@ -160,6 +160,101 @@ end
 # :startdoc:
 
 ##
+# The SpecFetcherSetup allows easy setup of a remote source in RubyGems tests:
+#
+#   spec_fetcher do |f|
+#     f.gem  'a', 1
+#     f.spec 'a', 2
+#     f.gem  'b', 1' 'a' => '~> 1.0'
+#     f.clear
+#   end
+#
+# The above declaration creates two gems, a-1 and b-1, with a dependency from
+# b to a.  The declaration creates an additional spec a-2, but no gem for it
+# (so it cannot be installed).
+#
+# After the gems are created they are removed from Gem.dir.
+
+class Gem::TestCase::SpecFetcherSetup
+
+  ##
+  # Executes a SpecFetcher setup block.  Yields an instance then creates the
+  # gems and specifications defined in the instance.
+
+  def self.declare test
+    setup = new test
+
+    yield setup
+
+    setup.execute
+  end
+
+  def initialize test # :nodoc:
+    @test  = test
+
+    @clear   = false
+    @fetcher = @test.fetcher
+    @gems    = {}
+  end
+
+  ##
+  # Removes any created gems or specifications from Gem.dir (the default
+  # install location).
+
+  def clear
+    @clear = true
+  end
+
+  ##
+  # Creates any defined gems or specifications
+
+  def execute # :nodoc:
+    @test.util_setup_fake_fetcher unless @test.fetcher
+    @test.util_setup_spec_fetcher(*@gems.keys)
+
+    @gems.each do |spec, gem|
+      next unless gem
+
+      @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
+        Gem.read_binary(gem)
+    end
+
+    @test.util_clear_gems if @clear
+  end
+
+  ##
+  # Creates a gem with +name+, +version+ and +deps+.  The created gem can be
+  # downloaded and installed.
+  #
+  # The specification will be yielded before gem creation for customization,
+  # but only the block or the dependencies may be set, not both.
+
+  def gem name, version, dependencies = nil, &block
+    spec, gem = @test.util_gem name, version, dependencies, &block
+
+    @gems[spec] = gem
+
+    spec
+  end
+
+  ##
+  # Creates a spec with +name+, +version+ and +deps+.  The created gem can be
+  # downloaded and installed.
+  #
+  # The specification will be yielded before creation for customization,
+  # but only the block or the dependencies may be set, not both.
+
+  def spec name, version, dependencies = nil, &block
+    spec = @test.util_spec name, version, dependencies, &block
+
+    @gems[spec] = nil
+
+    spec
+  end
+
+end
+
+##
 # A StringIO duck-typed class that uses Tempfile instead of String as the
 # backing store.
 #

@@ -509,27 +509,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # TODO:  remove in RubyGems 3.0
 
   def quick_spec name, version = '2' # :nodoc:
-    # TODO: deprecate
-    require 'rubygems/specification'
-
-    spec = Gem::Specification.new do |s|
-      s.platform    = Gem::Platform::RUBY
-      s.name        = name
-      s.version     = version
-      s.author      = 'A User'
-      s.email       = 'example@example.com'
-      s.homepage    = 'http://example.com'
-      s.summary     = "this is a summary"
-      s.description = "This is a test description"
-
-      yield(s) if block_given?
-    end
-
-    spec.loaded_from = spec.spec_file
-
-    Gem::Specification.add_spec spec
-
-    return spec
+    util_spec name, version
   end
 
   ##

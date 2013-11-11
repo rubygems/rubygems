@@ -563,7 +563,9 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
   def util_clear_gems
     FileUtils.rm_rf File.join(@gemhome, "gems") # TODO: use Gem::Dirs
+    FileUtils.mkdir File.join(@gemhome, "gems")
     FileUtils.rm_rf File.join(@gemhome, "specifications")
+    FileUtils.mkdir File.join(@gemhome, "specifications")
     Gem::Specification.reset
   end
 
@@ -1135,7 +1137,7 @@ Also, a list:
 
   def spec_fetcher
     Gem::TestCase::SpecFetcherSetup.declare self do |spec_fetcher_setup|
-      yield spec_fetcher_setup
+      yield spec_fetcher_setup if block_given?
     end
   end
 

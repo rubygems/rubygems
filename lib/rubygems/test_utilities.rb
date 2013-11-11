@@ -235,10 +235,14 @@ class Gem::TestCase::SpecFetcherSetup
       when :gem then
         spec, gem = @test.util_gem(*arguments, &arguments.pop)
 
+        write_spec spec
+
         @gems[spec] = gem
         @installed << spec
       when :spec then
         spec = @test.util_spec(*arguments, &arguments.pop)
+
+        write_spec spec
 
         @gems[spec] = nil
         @installed << spec
@@ -255,6 +259,16 @@ class Gem::TestCase::SpecFetcherSetup
 
   def gem name, version, dependencies = nil, &block
     @operations << [:gem, name, version, dependencies, block]
+  end
+
+  ##
+  # Creates a legacy platform spec with the name 'pl' and version 1
+
+  def legacy_platform
+    spec 'pl', 1 do |s|
+      s.platform = Gem::Platform.new 'i386-linux'
+      s.instance_variable_set :@original_platform, 'i386-linux'
+    end
   end
 
   def setup_fetcher # :nodoc;
@@ -279,6 +293,8 @@ class Gem::TestCase::SpecFetcherSetup
 
       @test.fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
         Gem.read_binary(gem)
+
+      FileUtils.cp gem, spec.cache_file
     end
   end
 
@@ -291,6 +307,12 @@ class Gem::TestCase::SpecFetcherSetup
 
   def spec name, version, dependencies = nil, &block
     @operations << [:spec, name, version, dependencies, block]
+  end
+
+  def write_spec spec # :nodoc:
+    open spec.spec_file, 'w' do |io|
+      io.write spec.to_ruby_for_cache
+    end
   end
 
 end

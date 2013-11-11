@@ -256,24 +256,14 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_missing_cache_gem
-    a_2 = quick_spec 'a', 2
-    a_3 = quick_spec 'a', 3
-
-    install_gem a_2
-    install_gem a_3
-
-    a_2_data = nil
-    open File.join(@gemhome, 'cache', a_2.file_name), 'rb' do |fp|
-      a_2_data = fp.read
+    specs = spec_fetcher do |fetcher|
+      fetcher.gem 'a', 1
+      fetcher.gem 'a', 2
+      fetcher.gem 'a', 3
+      fetcher.gem 'a', '3.a'
     end
 
-    util_setup_fake_fetcher
-    util_setup_spec_fetcher a_2
-
-    url = "http://gems.example.com/gems/#{a_2.file_name}"
-    Gem::RemoteFetcher.fetcher.data[url] = a_2_data
-
-    FileUtils.rm a_2.cache_file
+    FileUtils.rm specs['a-2'].cache_file
 
     @cmd.options[:args] = %w[a]
 

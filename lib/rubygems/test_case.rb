@@ -683,7 +683,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # Creates a spec with +name+, +version+.  +deps+ can specify the dependency
   # or a +block+ can be given for full customization of the specification.
 
-  def util_spec(name, version, deps = nil, &block) # :yields: specification
+  def util_spec name, version = 2, deps = nil, &block # :yields: specification
     raise "deps or block, not both" if deps and block
 
     if deps then

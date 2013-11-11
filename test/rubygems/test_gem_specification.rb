@@ -41,7 +41,7 @@ end
   EOF
 
   def make_spec_c1
-    @c1 = quick_spec 'a', '1' do |s|
+    @c1 = util_spec 'a', '1' do |s|
       s.executable = 'exec'
       s.extensions << 'ext/a/extconf.rb'
       s.test_file = 'test/suite.rb'
@@ -59,7 +59,7 @@ end
   end
 
   def ext_spec
-    @ext = quick_spec 'ext', '1' do |s|
+    @ext = util_spec 'ext', '1' do |s|
       s.executable = 'exec'
       s.test_file = 'test/suite.rb'
       s.extensions = %w[ext/extconf.rb]
@@ -74,7 +74,7 @@ end
   def setup
     super
 
-    @a1 = quick_spec 'a', '1' do |s|
+    @a1 = util_spec 'a', '1' do |s|
       s.executable = 'exec'
       s.test_file = 'test/suite.rb'
       s.requirements << 'A working computer'
@@ -85,11 +85,11 @@ end
       s.files = %w[lib/code.rb]
     end
 
-    @a2 = quick_spec 'a', '2' do |s|
+    @a2 = util_spec 'a', '2' do |s|
       s.files = %w[lib/code.rb]
     end
 
-    @a3 = quick_spec 'a', '3' do |s|
+    @a3 = util_spec 'a', '3' do |s|
       s.metadata['allowed_push_host'] = "https://privategemserver.com"
     end
 
@@ -1059,7 +1059,7 @@ dependencies: []
   end
 
   def test_add_dependency_with_type
-    gem = quick_spec "awesome", "1.0" do |awesome|
+    gem = util_spec "awesome", "1.0" do |awesome|
       awesome.add_dependency true
       awesome.add_dependency :gem_name
     end
@@ -1068,7 +1068,7 @@ dependencies: []
   end
 
   def test_add_dependency_with_type_explicit
-    gem = quick_spec "awesome", "1.0" do |awesome|
+    gem = util_spec "awesome", "1.0" do |awesome|
       awesome.add_development_dependency "monkey"
     end
 
@@ -1367,7 +1367,7 @@ dependencies: []
 
     assert_empty @gem.dependent_gems
 
-    bonobo = quick_spec 'bonobo'
+    bonobo = util_spec 'bonobo'
 
     expected = [
       [@gem, @bonobo, [bonobo]],
@@ -1716,7 +1716,7 @@ dependencies: []
   end
 
   def test_prerelease_spec_adds_required_rubygems_version
-    @prerelease = quick_spec('tardis', '2.2.0.a')
+    @prerelease = util_spec('tardis', '2.2.0.a')
     refute @prerelease.required_rubygems_version.satisfied_by?(Gem::Version.new('1.3.1'))
     assert @prerelease.required_rubygems_version.satisfied_by?(Gem::Version.new('1.4.0'))
   end
@@ -2836,7 +2836,7 @@ end
   end
 
   def util_setup_deps
-    @gem = quick_spec "awesome", "1.0" do |awesome|
+    @gem = util_spec "awesome", "1.0" do |awesome|
       awesome.add_runtime_dependency "bonobo", []
       awesome.add_development_dependency "monkey", []
     end

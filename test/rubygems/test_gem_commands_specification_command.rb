@@ -10,7 +10,7 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
   end
 
   def test_execute
-    foo = quick_spec 'foo'
+    foo = util_spec 'foo'
 
     install_specs foo
 
@@ -26,8 +26,8 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
   end
 
   def test_execute_all
-    quick_spec 'foo', '0.0.1'
-    quick_spec 'foo', '0.0.2'
+    util_spec 'foo', '0.0.1'
+    util_spec 'foo', '0.0.2'
 
     @cmd.options[:args] = %w[foo]
     @cmd.options[:all] = true
@@ -44,8 +44,8 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
   end
 
   def test_execute_all_conflicts_with_version
-    quick_spec 'foo', '0.0.1'
-    quick_spec 'foo', '0.0.2'
+    util_spec 'foo', '0.0.1'
+    util_spec 'foo', '0.0.2'
 
     @cmd.options[:args] = %w[foo]
     @cmd.options[:all] = true
@@ -89,8 +89,8 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
   end
 
   def test_execute_exact_match
-    quick_spec 'foo'
-    quick_spec 'foo_bar'
+    util_spec 'foo'
+    util_spec 'foo_bar'
 
     @cmd.options[:args] = %w[foo]
 
@@ -118,7 +118,7 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
   end
 
   def test_execute_file
-    foo = quick_spec 'foo' do |s|
+    foo = util_spec 'foo' do |s|
       s.files = %w[lib/code.rb]
     end
 
@@ -230,7 +230,7 @@ class TestGemCommandsSpecificationCommand < Gem::TestCase
   end
 
   def test_execute_ruby
-    foo = quick_spec 'foo'
+    foo = util_spec 'foo'
 
     install_specs foo
 

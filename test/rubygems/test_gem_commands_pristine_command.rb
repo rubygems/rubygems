@@ -9,7 +9,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute
-    a = quick_spec 'a' do |s|
+    a = util_spec 'a' do |s|
       s.executables = %w[foo]
       s.files = %w[bin/foo lib/a.rb]
     end
@@ -51,7 +51,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_all
-    a = quick_spec 'a' do |s| s.executables = %w[foo] end
+    a = util_spec 'a' do |s| s.executables = %w[foo] end
     write_file File.join(@tempdir, 'bin', 'foo') do |fp|
       fp.puts "#!/usr/bin/ruby"
     end
@@ -81,7 +81,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_env_shebang
-    a = quick_spec 'a' do |s|
+    a = util_spec 'a' do |s|
       s.executables = %w[foo]
       s.files = %w[bin/foo]
     end
@@ -111,7 +111,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_extensions_explicit
-    a = quick_spec 'a' do |s| s.extensions << 'ext/a/extconf.rb' end
+    a = util_spec 'a' do |s| s.extensions << 'ext/a/extconf.rb' end
 
     ext_path = File.join @tempdir, 'ext', 'a', 'extconf.rb'
     write_file ext_path do |io|
@@ -124,7 +124,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
       RUBY
     end
 
-    b = quick_spec 'b'
+    b = util_spec 'b'
 
     install_gem a
     install_gem b
@@ -147,7 +147,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_no_extension
-    a = quick_spec 'a' do |s| s.extensions << 'ext/a/extconf.rb' end
+    a = util_spec 'a' do |s| s.extensions << 'ext/a/extconf.rb' end
 
     ext_path = File.join @tempdir, 'ext', 'a', 'extconf.rb'
     write_file ext_path do |io|
@@ -172,7 +172,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_with_extension_with_build_args
-    a = quick_spec 'a' do |s| s.extensions << 'ext/a/extconf.rb' end
+    a = util_spec 'a' do |s| s.extensions << 'ext/a/extconf.rb' end
 
     ext_path = File.join @tempdir, 'ext', 'a', 'extconf.rb'
     write_file ext_path do |io|
@@ -205,8 +205,8 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_many
-    a = quick_spec 'a'
-    b = quick_spec 'b'
+    a = util_spec 'a'
+    b = util_spec 'b'
 
     install_gem a
     install_gem b
@@ -226,14 +226,14 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_many_multi_repo
-    a = quick_spec 'a'
+    a = util_spec 'a'
     install_gem a
 
     Gem.clear_paths
     gemhome2 = File.join @tempdir, 'gemhome2'
     Gem.paths = { "GEM_PATH" => [gemhome2, @gemhome], "GEM_HOME" => gemhome2 }
 
-    b = quick_spec 'b'
+    b = util_spec 'b'
     install_gem b
 
     @cmd.options[:args] = %w[a b]
@@ -300,7 +300,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_only_executables
-    a = quick_spec 'a' do |s|
+    a = util_spec 'a' do |s|
       s.executables = %w[foo]
       s.files = %w[bin/foo lib/a.rb]
     end

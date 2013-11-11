@@ -71,7 +71,7 @@ Gem pl-1-x86-linux
   end
 
   def test_execute_pipe_format
-    quick_spec 'foo' do |gem|
+    util_spec 'foo' do |gem|
       gem.add_dependency 'bar', '> 1'
     end
 

@@ -49,7 +49,7 @@ class TestGemDependencyResolverIndexSpecification < Gem::TestCase
   end
 
   def test_spec_local
-    a_2_p = quick_spec 'a', 2 do |s| s.platform = Gem::Platform.local end
+    a_2_p = util_spec 'a', 2 do |s| s.platform = Gem::Platform.local end
     Gem::Package.build a_2_p
 
     source = Gem::Source::Local.new

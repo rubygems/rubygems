@@ -160,6 +160,27 @@ class TestGemRequestSet < Gem::TestCase
     assert_equal %w!c-2 b-2 a-2!, names
   end
 
+  def test_install
+    spec_fetcher do |fetcher|
+      fetcher.gem "a", "1", "b" => "= 1"
+      fetcher.gem "b", "1"
+    end
+
+    util_clear_gems
+
+    rs = Gem::RequestSet.new
+    rs.gem 'a'
+
+    rs.resolve
+
+    installed = rs.install({})
+
+    assert_path_exists File.join @gemhome, 'specifications', 'a-1.gemspec'
+    assert_path_exists File.join @gemhome, 'specifications', 'b-1.gemspec'
+
+    assert_equal %w[b-1 a-1], installed.map { |s| s.full_name }
+  end
+
   def test_install_into
     spec_fetcher do |fetcher|
       fetcher.gem "a", "1", "b" => "= 1"

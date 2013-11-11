@@ -164,9 +164,9 @@ class TestGemRequestSet < Gem::TestCase
     spec_fetcher do |fetcher|
       fetcher.gem "a", "1", "b" => "= 1"
       fetcher.gem "b", "1"
-    end
 
-    util_clear_gems
+      fetcher.clear
+    end
 
     rs = Gem::RequestSet.new
     rs.gem 'a'

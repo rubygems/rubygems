@@ -1137,6 +1137,11 @@ Also, a list:
     fetcher = Object.new
     fetcher.instance_variable_set :@test,  self
     fetcher.instance_variable_set :@gems,  gems
+    fetcher.instance_variable_set :@clear, false
+
+    def fetcher.clear
+      @clear = true
+    end
 
     def fetcher.gem name, version, dependencies = nil, &block
       spec, gem = @test.util_gem name, version, dependencies, &block
@@ -1165,6 +1170,8 @@ Also, a list:
       @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
         Gem.read_binary(gem)
     end
+
+    util_clear_gems if fetcher.instance_variable_get :@clear
   end
 
   ##

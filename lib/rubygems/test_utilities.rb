@@ -192,7 +192,6 @@ class Gem::TestCase::SpecFetcherSetup
   def initialize test # :nodoc:
     @test  = test
 
-    @fetcher    = @test.fetcher
     @gems       = {}
     @installed  = []
     @operations = []
@@ -259,7 +258,15 @@ class Gem::TestCase::SpecFetcherSetup
   end
 
   def setup_fetcher # :nodoc;
-    @test.util_setup_fake_fetcher unless @test.fetcher
+    require 'zlib'
+    require 'socket'
+    require 'rubygems/remote_fetcher'
+
+    @test.fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @test.fetcher
+
+    Gem::Specification.reset
+
     @test.util_setup_spec_fetcher(*@gems.keys)
 
     # This works around util_setup_spec_fetcher adding all created gems to the
@@ -270,7 +277,7 @@ class Gem::TestCase::SpecFetcherSetup
     @gems.each do |spec, gem|
       next unless gem
 
-      @fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
+      @test.fetcher.data["http://gems.example.com/gems/#{spec.file_name}"] =
         Gem.read_binary(gem)
     end
   end

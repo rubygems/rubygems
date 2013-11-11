@@ -83,7 +83,7 @@ end
 
 class Gem::TestCase < MiniTest::Unit::TestCase
 
-  attr_reader :fetcher # :nodoc:
+  attr_accessor :fetcher # :nodoc:
 
   def assert_activate expected, *specs
     specs.each do |spec|
@@ -198,7 +198,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     @orig_gem_path = ENV['GEM_PATH']
 
     @current_dir = Dir.pwd
-    @ui = Gem::MockGemUi.new
+    @fetcher     = nil
+    @ui          = Gem::MockGemUi.new
 
     tmpdir = File.expand_path Dir.tmpdir
     tmpdir.untaint

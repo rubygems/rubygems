@@ -316,13 +316,21 @@ end
   end
 
   def test_platform_mswin
-    win_platform, Gem.win_platform = Gem.win_platform?, true
+    win_platform, Gem.win_platform = Gem.win_platform?, false
 
     @gda.platform :mswin do
       @gda.gem 'a'
     end
 
     assert_empty @set.dependencies
+
+    Gem.win_platform = true
+
+    @gda.platform :mswin do
+      @gda.gem 'a'
+    end
+
+    refute_empty @set.dependencies
   ensure
     Gem.win_platform = win_platform
   end

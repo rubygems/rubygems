@@ -61,6 +61,7 @@ lib/rubygems/dependency_resolver.rb
 lib/rubygems/dependency_resolver/activation_request.rb
 lib/rubygems/dependency_resolver/api_set.rb
 lib/rubygems/dependency_resolver/api_specification.rb
+lib/rubygems/dependency_resolver/best_set.rb
 lib/rubygems/dependency_resolver/composed_set.rb
 lib/rubygems/dependency_resolver/current_set.rb
 lib/rubygems/dependency_resolver/dependency_conflict.rb
@@ -69,6 +70,10 @@ lib/rubygems/dependency_resolver/index_set.rb
 lib/rubygems/dependency_resolver/index_specification.rb
 lib/rubygems/dependency_resolver/installed_specification.rb
 lib/rubygems/dependency_resolver/installer_set.rb
+lib/rubygems/dependency_resolver/lock_set.rb
+lib/rubygems/dependency_resolver/set.rb
+lib/rubygems/dependency_resolver/spec_specification.rb
+lib/rubygems/dependency_resolver/specification.rb
 lib/rubygems/dependency_resolver/vendor_set.rb
 lib/rubygems/dependency_resolver/vendor_specification.rb
 lib/rubygems/deprecate.rb
@@ -111,6 +116,7 @@ lib/rubygems/remote_fetcher.rb
 lib/rubygems/request.rb
 lib/rubygems/request_set.rb
 lib/rubygems/request_set/gem_dependency_api.rb
+lib/rubygems/request_set/lockfile.rb
 lib/rubygems/requirement.rb
 lib/rubygems/security.rb
 lib/rubygems/security/policies.rb
@@ -130,6 +136,7 @@ lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
 lib/rubygems/ssl_certs/.document
 lib/rubygems/ssl_certs/Class3PublicPrimaryCertificationAuthority.pem
+lib/rubygems/ssl_certs/DigiCertHighAssuranceEVRootCA.pem
 lib/rubygems/ssl_certs/EntrustnetSecureServerCertificationAuthority.pem
 lib/rubygems/ssl_certs/GeoTrustGlobalCA.pem
 lib/rubygems/stub_specification.rb
@@ -235,13 +242,19 @@ test/rubygems/test_gem_config_file.rb
 test/rubygems/test_gem_dependency.rb
 test/rubygems/test_gem_dependency_installer.rb
 test/rubygems/test_gem_dependency_list.rb
+test/rubygems/test_gem_dependency_resolution_error.rb
 test/rubygems/test_gem_dependency_resolver.rb
+test/rubygems/test_gem_dependency_resolver_activation_request.rb
+test/rubygems/test_gem_dependency_resolver_api_set.rb
 test/rubygems/test_gem_dependency_resolver_api_specification.rb
+test/rubygems/test_gem_dependency_resolver_best_set.rb
 test/rubygems/test_gem_dependency_resolver_dependency_conflict.rb
+test/rubygems/test_gem_dependency_resolver_dependency_request.rb
 test/rubygems/test_gem_dependency_resolver_index_set.rb
 test/rubygems/test_gem_dependency_resolver_index_specification.rb
 test/rubygems/test_gem_dependency_resolver_installed_specification.rb
 test/rubygems/test_gem_dependency_resolver_installer_set.rb
+test/rubygems/test_gem_dependency_resolver_lock_set.rb
 test/rubygems/test_gem_dependency_resolver_vendor_set.rb
 test/rubygems/test_gem_dependency_resolver_vendor_specification.rb
 test/rubygems/test_gem_doctor.rb
@@ -272,6 +285,7 @@ test/rubygems/test_gem_remote_fetcher.rb
 test/rubygems/test_gem_request.rb
 test/rubygems/test_gem_request_set.rb
 test/rubygems/test_gem_request_set_gem_dependency_api.rb
+test/rubygems/test_gem_request_set_lockfile.rb
 test/rubygems/test_gem_requirement.rb
 test/rubygems/test_gem_security.rb
 test/rubygems/test_gem_security_policy.rb
@@ -285,6 +299,7 @@ test/rubygems/test_gem_source_installed.rb
 test/rubygems/test_gem_source_list.rb
 test/rubygems/test_gem_source_local.rb
 test/rubygems/test_gem_source_specific_file.rb
+test/rubygems/test_gem_source_vendor.rb
 test/rubygems/test_gem_spec_fetcher.rb
 test/rubygems/test_gem_specification.rb
 test/rubygems/test_gem_stream_ui.rb

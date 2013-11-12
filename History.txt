@@ -47,6 +47,8 @@ Minor enhancements:
 * RubyGems now raises an exception when a dependency for a gem is defined
   twice.
 
+=== 2.1.11 / 2013-11-12
+
 Bug fixes:
 
 * Gem::Specification::remove_spec no longer checks for existence of the spec

@@ -9,11 +9,7 @@ language: ruby
 notifications:
   email:
   - drbrain@segment7.net
-  - evan+notify@phx.io
-  - kou@cozmixng.org
 rvm:
-- 1.8.7
-- 1.9.2
 - 1.9.3
 - 2.0.0
 env:
@@ -24,5 +20,3 @@ matrix:
   exclude:
     - rvm: 2.0.0
       env: "YAML=syck"
-  allow_failures:
-    - rvm: 1.8.7

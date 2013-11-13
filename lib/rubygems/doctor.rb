@@ -98,7 +98,7 @@ class Gem::Doctor
   def doctor_child sub_directory, extension # :nodoc:
     directory = File.join(@gem_repository, sub_directory)
 
-    Dir.foreach directory do |ent|
+    Dir.entries(directory).sort.each do |ent|
       next if ent == "." || ent == ".."
 
       child = File.join(directory, ent)

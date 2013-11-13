@@ -29,4 +29,6 @@ class Gem::StringSource
       s
     end
   end
+
+  alias_method :readpartial, :read
 end

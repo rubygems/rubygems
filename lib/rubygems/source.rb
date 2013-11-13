@@ -95,7 +95,7 @@ class Gem::Source
 
     spec_file_name = name.spec_name
 
-    uri = @uri + "#{Gem::MARSHAL_SPEC_DIR}#{spec_file_name}"
+    uri = api_uri + "#{Gem::MARSHAL_SPEC_DIR}#{spec_file_name}"
 
     cache_dir = cache_dir uri
 
@@ -139,7 +139,7 @@ class Gem::Source
     file       = FILES[type]
     fetcher    = Gem::RemoteFetcher.fetcher
     file_name  = "#{file}.#{Gem.marshal_version}"
-    spec_path  = @uri + "#{file_name}.gz"
+    spec_path  = api_uri + "#{file_name}.gz"
     cache_dir  = cache_dir spec_path
     local_file = File.join(cache_dir, file_name)
     retried    = false
@@ -163,13 +163,16 @@ class Gem::Source
 
   def download(spec, dir=Dir.pwd)
     fetcher = Gem::RemoteFetcher.fetcher
-    fetcher.download spec, @uri.to_s, dir
+    fetcher.download spec, api_uri.to_s, dir
   end
 
   def pretty_print q # :nodoc:
     q.group 2, '[Remote:', ']' do
       q.breakable
       q.text @uri.to_s
+      if api = api_uri
+        g.text api
+      end
     end
   end
 

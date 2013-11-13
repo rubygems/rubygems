@@ -233,6 +233,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
                    ruby
                  end
 
+    @git = ENV['GIT'] || 'git'
+
     Gem.ensure_gem_subdirectories @gemhome
 
     @orig_LOAD_PATH = $LOAD_PATH.dup
@@ -370,6 +372,41 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     Gem.pre_install_hooks.clear
     Gem.pre_reset_hooks.clear
     Gem.pre_uninstall_hooks.clear
+  end
+
+  ##
+  # A git_gem is used with a gem dependencies file.  The gem created here
+  # has no files, just a gem specification for the given +name+ and +version+.
+  #
+  # Yields the +specification+ to the block, if given
+
+  def git_gem name = 'a', version = 1
+    directory = File.join 'git', name
+
+    git_spec = Gem::Specification.new name, version do |specification|
+      yield specification if block_given?
+    end
+
+    FileUtils.mkdir_p directory
+
+    gemspec = "#{name}.gemspec"
+
+    open File.join(directory, gemspec), 'w' do |io|
+      io.write git_spec.to_ruby
+    end
+
+    head = nil
+
+    Dir.chdir directory do
+      system @git, 'init', '--quiet'
+      system @git, 'config', 'user.name',  'RubyGems Tests'
+      system @git, 'config', 'user.email', 'rubygems@example'
+      system @git, 'add', gemspec
+      system @git, 'commit', '-a', '-m', 'a non-empty commit message', '--quiet'
+      head = Gem::Util.popen('git', 'rev-parse', 'HEAD').strip
+    end
+
+    return name, git_spec.version, directory, head
   end
 
   ##

@@ -178,6 +178,7 @@ class Gem::Source
 
 end
 
+require 'rubygems/source/git'
 require 'rubygems/source/installed'
 require 'rubygems/source/specific_file'
 require 'rubygems/source/local'

@@ -108,6 +108,11 @@ class Gem::RequestSet::GemDependencyAPI
   }
 
   ##
+  # A set of gems that are loaded via the +:git+ option to #gem
+
+  attr_reader :git_set # :nodoc:
+
+  ##
   # A Hash containing gem names and files to require from those gems.
 
   attr_reader :requires
@@ -133,6 +138,7 @@ class Gem::RequestSet::GemDependencyAPI
     @current_groups   = nil
     @current_platform = nil
     @default_sources  = true
+    @git_set          = @set.git_set
     @requires         = Hash.new { |h, name| h[name] = [] }
     @vendor_set       = @set.vendor_set
     @gem_sources      = {}
@@ -160,7 +166,10 @@ class Gem::RequestSet::GemDependencyAPI
     options = requirements.pop if requirements.last.kind_of?(Hash)
     options ||= {}
 
-    source_set = gem_path name, options
+    source_set = false
+
+    source_set ||= gem_path name, options
+    source_set ||= gem_git name, options
 
     return unless gem_platforms options
 
@@ -180,6 +189,27 @@ class Gem::RequestSet::GemDependencyAPI
 
     @set.gem name, *requirements
   end
+
+  ##
+  # Handles the git: option from +options+ for gem +name+.
+  #
+  # Returns +true+ if the path option was handled.
+
+  def gem_git name, options # :nodoc:
+    return unless repository = options.delete(:git)
+
+    raise ArgumentError,
+      "duplicate source git: #{repository} for gem #{name}" if
+        @gem_sources.include? name
+
+    @git_set.add_git_gem name, repository
+
+    @gem_sources[name] = repository
+
+    true
+  end
+
+  private :gem_git
 
   ##
   # Handles the :group and :groups +options+ for the gem with the given

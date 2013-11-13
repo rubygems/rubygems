@@ -32,6 +32,11 @@ class Gem::RequestSet
   attr_accessor :development
 
   ##
+  # The set of git gems imported via load_gemdeps.
+
+  attr_reader :git_set # :nodoc:
+
+  ##
   # Sets used for resolution
 
   attr_reader :sets # :nodoc:
@@ -61,6 +66,7 @@ class Gem::RequestSet
     @always_install   = []
     @dependency_names = {}
     @development      = false
+    @git_set          = nil
     @requests         = []
     @sets             = []
     @soft_missing     = false
@@ -184,6 +190,7 @@ class Gem::RequestSet
   # Load a dependency management file.
 
   def load_gemdeps path, without_groups = []
+    @git_set    = Gem::DependencyResolver::GitSet.new
     @vendor_set = Gem::DependencyResolver::VendorSet.new
 
     gf = Gem::RequestSet::GemDependencyAPI.new self, path

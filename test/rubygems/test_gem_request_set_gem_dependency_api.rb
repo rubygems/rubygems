@@ -10,9 +10,11 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     @set = Gem::RequestSet.new
 
+    @git_set    = Gem::DependencyResolver::GitSet.new
     @vendor_set = Gem::DependencyResolver::VendorSet.new
 
     @gda = @GDA.new @set, 'gem.deps.rb'
+    @gda.instance_variable_set :@git_set,    @git_set
     @gda.instance_variable_set :@vendor_set, @vendor_set
   end
 
@@ -54,6 +56,18 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal [dep('a')], @set.dependencies
 
     assert_equal %w[a], @gda.requires['a']
+  end
+
+  def test_gem_git
+    name, version, repository, = git_gem
+
+    @gda.gem 'a', :git => repository
+
+    assert_equal [dep('a')], @set.dependencies
+
+    loaded = @git_set.load_spec(name, version, Gem::Platform::RUBY, nil)
+
+    assert_equal "#{name}-#{version}", loaded.full_name
   end
 
   def test_gem_group

@@ -33,4 +33,33 @@ module Gem::Util
     require 'zlib'
     Zlib::Inflate.inflate data
   end
+
+  ##
+  # This calls IO.popen where it accepts an array for a +command+ (Ruby 1.9+)
+  # and implements an IO.popen-like behavior where it does not accept an array
+  # for a command.
+
+  def self.popen *command
+    begin
+      r, = IO.popen command
+    rescue TypeError # ruby 1.8 only supports string command
+      r, w = IO.pipe
+
+      pid = fork do
+        STDIN.close
+        STDOUT.reopen w
+
+        exec(*command)
+      end
+
+      w.close
+
+      Process.wait pid
+
+      r
+    end
+
+    r.read
+  end
+
 end

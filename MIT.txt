@@ -1,4 +1,5 @@
 Copyright (c) Chad Fowler, Rich Kilmer, Jim Weirich and others.
+Portions copyright (c) Engine Yard and Andre Arko
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

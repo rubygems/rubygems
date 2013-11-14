@@ -62,6 +62,20 @@ class TestGemSourceGit < Gem::TestCase
     @source.cache
 
     assert_equal @head, @source.rev_parse
+
+    Dir.chdir @repository do
+      system @git, 'checkout', '--quiet', '-b', 'other'
+    end
+
+    master_head = @head
+
+    git_gem 'a', 2
+
+    source = Gem::Source::Git.new @name, @repository, 'other'
+
+    source.cache
+
+    refute_equal master_head, source.rev_parse
   end
 
   def test_update

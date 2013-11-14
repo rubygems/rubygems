@@ -399,12 +399,15 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     head = nil
 
     Dir.chdir directory do
-      system @git, 'init', '--quiet'
-      system @git, 'config', 'user.name',  'RubyGems Tests'
-      system @git, 'config', 'user.email', 'rubygems@example'
+      unless File.exist? '.git' then
+        system @git, 'init', '--quiet'
+        system @git, 'config', 'user.name',  'RubyGems Tests'
+        system @git, 'config', 'user.email', 'rubygems@example'
+      end
+
       system @git, 'add', gemspec
       system @git, 'commit', '-a', '-m', 'a non-empty commit message', '--quiet'
-      head = Gem::Util.popen('git', 'rev-parse', 'HEAD').strip
+      head = Gem::Util.popen('git', 'rev-parse', 'master').strip
     end
 
     return name, git_spec.version, directory, head

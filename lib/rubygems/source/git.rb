@@ -97,7 +97,8 @@ class Gem::Source::Git < Gem::Source
   def uri_hash # :nodoc:
     normalized =
       if @repository =~ %r%^\w+://(\w+@)?% then
-        URI(@repository).normalize.to_s.sub %r%/$%,''
+        uri = URI(@repository).normalize.to_s.sub %r%/$%,''
+        uri.sub(/\A(\w+)/) { $1.downcase }
       else
         @repository
       end

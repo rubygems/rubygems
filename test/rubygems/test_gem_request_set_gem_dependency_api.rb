@@ -63,7 +63,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     assert_equal [dep('a')], @set.dependencies
 
-    assert_equal %w[git/a HEAD], @git_set.repositories['a']
+    assert_equal %w[git/a master], @git_set.repositories['a']
   end
 
   def test_gem_git_branch

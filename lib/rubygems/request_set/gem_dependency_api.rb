@@ -203,7 +203,7 @@ class Gem::RequestSet::GemDependencyAPI
         @gem_sources.include? name
 
     reference = options.delete :branch
-    reference ||= 'HEAD'
+    reference ||= 'master'
 
     @git_set.add_git_gem name, repository, reference
 

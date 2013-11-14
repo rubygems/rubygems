@@ -21,7 +21,7 @@ class Gem::DependencyResolver::GitSet < Gem::DependencyResolver::Set
     @repositories = {}
   end
 
-  def add_git_gem name, repository, reference = 'HEAD' # :nodoc:
+  def add_git_gem name, repository, reference = 'master' # :nodoc:
     @repositories[name] = [repository, reference]
   end
 

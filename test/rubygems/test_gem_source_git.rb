@@ -25,7 +25,7 @@ class TestGemSourceGit < Gem::TestCase
     assert_path_exists @source.repo_cache_dir
 
     Dir.chdir @source.repo_cache_dir do
-      assert_equal @head, Gem::Util.popen(@git, 'rev-parse', 'HEAD').strip
+      assert_equal @head, Gem::Util.popen(@git, 'rev-parse', 'master').strip
     end
   end
 

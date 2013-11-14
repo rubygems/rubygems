@@ -342,6 +342,21 @@ class Gem::RequestSet::GemDependencyAPI
 
   ##
   # :category: Gem Dependencies DSL
+  #
+  # Loads dependencies from a gemspec file.
+
+  def gemspec options = {}
+    spec = Gem::Specification.load 'gemspec'
+
+    spec.dependencies.each do |dep|
+      @set.gem dep.name, *dep.requirement
+    end
+
+    gem_requires spec.name, options
+  end
+
+  ##
+  # :category: Gem Dependencies DSL
   # Block form for placing a dependency in the given +groups+.
 
   def group *groups

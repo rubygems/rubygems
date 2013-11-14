@@ -327,6 +327,19 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal [:a, :b, :c, :d], groups.sort_by { |group| group.to_s }
   end
 
+  def test_gemspec
+    spec = util_spec 'a', 1, 'b' => 2
+    open 'gemspec', 'w' do |io|
+      io.write spec.to_ruby_for_cache
+    end
+
+    @gda.gemspec
+
+    assert_equal [dep('b', '= 2')], @set.dependencies
+
+    assert_equal %w[a], @gda.requires['a']
+  end
+
   def test_git
     @gda.git 'git://example/repo.git' do
       @gda.gem 'a'

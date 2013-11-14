@@ -43,6 +43,27 @@ class TestGemSourceGit < Gem::TestCase
     assert_equal @head[0..11], @source.dir_shortref
   end
 
+  def test_equals2
+    assert_equal @source, @source
+
+    assert_equal @source, @source.dup
+
+    source =
+      Gem::Source::Git.new @source.name, @source.repository, 'other'
+
+    refute_equal @source, source
+
+    source =
+      Gem::Source::Git.new @source.name, 'repo/other', @source.reference
+
+    refute_equal @source, source
+
+    source =
+      Gem::Source::Git.new 'b', @source.repository, @source.reference
+
+    refute_equal @source, source
+  end
+
   def test_install_dir
     @source.cache
 

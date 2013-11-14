@@ -13,6 +13,21 @@ require 'rubygems/util'
 class Gem::Source::Git < Gem::Source
 
   ##
+  # The name of the gem created by this git gem.
+
+  attr_reader :name
+
+  ##
+  # The commit reference used for checking out this git gem.
+
+  attr_reader :reference
+
+  ##
+  # The git repository this gem is sourced from.
+
+  attr_reader :repository
+
+  ##
   # Creates a new git gem source for a gem with the given +name+ that will be
   # loaded from +reference+ in +repository+.
 
@@ -22,6 +37,13 @@ class Gem::Source::Git < Gem::Source
     @reference  = reference
 
     @git = ENV['git'] || 'git'
+  end
+
+  def == other # :nodoc:
+    super and
+      @name       == other.name and
+      @repository == other.repository and
+      @reference  == other.reference
   end
 
   ##

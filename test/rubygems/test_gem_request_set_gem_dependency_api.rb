@@ -90,6 +90,15 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal %w[git/a v1], @git_set.repositories['a']
   end
 
+  def test_gem_github
+    @gda.gem 'a', :github => 'example/repository'
+
+    assert_equal [dep('a')], @set.dependencies
+
+    assert_equal %w[git://github.com/example/repository.git master],
+                 @git_set.repositories['a']
+  end
+
   def test_gem_group
     @gda.gem 'a', :group => :test
 

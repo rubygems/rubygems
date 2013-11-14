@@ -168,8 +168,9 @@ class Gem::RequestSet::GemDependencyAPI
 
     source_set = false
 
-    source_set ||= gem_path name, options
-    source_set ||= gem_git name, options
+    source_set ||= gem_path   name, options
+    source_set ||= gem_git    name, options
+    source_set ||= gem_github name, options
 
     return unless gem_platforms options
 
@@ -216,6 +217,21 @@ class Gem::RequestSet::GemDependencyAPI
   end
 
   private :gem_git
+
+  ##
+  # Handles the github: option from +options+ for gem +name+.
+  #
+  # Returns +true+ if the path option was handled.
+
+  def gem_github name, options # :nodoc:
+    return unless path = options.delete(:github)
+
+    options[:git] = "git://github.com/#{path}.git"
+
+    gem_git name, options
+
+    true
+  end
 
   ##
   # Handles the :group and :groups +options+ for the gem with the given

@@ -135,14 +135,15 @@ class Gem::RequestSet::GemDependencyAPI
     @set = set
     @path = path
 
-    @current_groups   = nil
-    @current_platform = nil
-    @default_sources  = true
-    @git_set          = @set.git_set
-    @requires         = Hash.new { |h, name| h[name] = [] }
-    @vendor_set       = @set.vendor_set
-    @gem_sources      = {}
-    @without_groups   = []
+    @current_groups     = nil
+    @current_platform   = nil
+    @current_repository = nil
+    @default_sources    = true
+    @git_set            = @set.git_set
+    @requires           = Hash.new { |h, name| h[name] = [] }
+    @vendor_set         = @set.vendor_set
+    @gem_sources        = {}
+    @without_groups     = []
   end
 
   ##
@@ -165,6 +166,8 @@ class Gem::RequestSet::GemDependencyAPI
   def gem name, *requirements
     options = requirements.pop if requirements.last.kind_of?(Hash)
     options ||= {}
+
+    options[:git] = @current_repository if @current_repository
 
     source_set = false
 
@@ -320,6 +323,15 @@ class Gem::RequestSet::GemDependencyAPI
   end
 
   private :gem_requires
+
+  def git repository
+    @current_repository = repository
+
+    yield
+
+  ensure
+    @current_repository = nil
+  end
 
   ##
   # Returns the basename of the file the dependencies were loaded from

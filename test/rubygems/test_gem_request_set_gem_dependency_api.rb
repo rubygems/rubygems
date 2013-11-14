@@ -327,6 +327,18 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal [:a, :b, :c, :d], groups.sort_by { |group| group.to_s }
   end
 
+  def test_git
+    @gda.git 'git://example/repo.git' do
+      @gda.gem 'a'
+      @gda.gem 'b'
+    end
+
+    assert_equal [dep('a'), dep('b')], @set.dependencies
+
+    assert_equal %w[git://example/repo.git master], @git_set.repositories['a']
+    assert_equal %w[git://example/repo.git master], @git_set.repositories['b']
+  end
+
   def test_group
     @gda.group :test do
       @gda.gem 'a'

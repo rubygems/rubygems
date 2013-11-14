@@ -111,13 +111,9 @@ class Gem::Source::Git < Gem::Source
   # Updates the files in the git gem install directory.
 
   def update # :nodoc:
-    if File.exist? repo_cache_dir then
-      raise NotImplementedError
-    else
-      cache
+    cache
 
-      checkout
-    end
+    checkout
   end
 
   ##

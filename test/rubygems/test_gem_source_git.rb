@@ -103,6 +103,8 @@ class TestGemSourceGit < Gem::TestCase
     @source.update
 
     assert_path_exists File.join @source.install_dir, 'a.gemspec'
+
+    assert @source.update
   end
 
   def test_uri_hash

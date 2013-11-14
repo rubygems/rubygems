@@ -348,8 +348,20 @@ class Gem::RequestSet::GemDependencyAPI
   def gemspec options = {}
     spec = Gem::Specification.load 'gemspec'
 
-    spec.dependencies.each do |dep|
-      @set.gem dep.name, *dep.requirement
+    groups = gem_group spec.name, {}
+
+    if (groups & @without_groups).empty? then
+      spec.runtime_dependencies.each do |dep|
+        @set.gem dep.name, *dep.requirement
+      end
+    end
+
+    groups << :development
+
+    if (groups & @without_groups).empty? then
+      spec.development_dependencies.each do |dep|
+        @set.gem dep.name, *dep.requirement
+      end
     end
 
     gem_requires spec.name, options

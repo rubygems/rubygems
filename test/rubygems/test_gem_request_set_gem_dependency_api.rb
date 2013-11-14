@@ -329,6 +329,25 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
   def test_gemspec
     spec = util_spec 'a', 1, 'b' => 2
+    spec.add_development_dependency 'c', 3
+
+    open 'gemspec', 'w' do |io|
+      io.write spec.to_ruby_for_cache
+    end
+
+    @gda.gemspec
+
+    assert_equal [dep('b', '= 2'), dep('c', '=3')], @set.dependencies
+
+    assert_equal %w[a], @gda.requires['a']
+  end
+
+  def test_gemspec_without_group
+    @gda.without_groups << :development
+
+    spec = util_spec 'a', 1, 'b' => 2
+    spec.add_development_dependency 'c', 3
+
     open 'gemspec', 'w' do |io|
       io.write spec.to_ruby_for_cache
     end

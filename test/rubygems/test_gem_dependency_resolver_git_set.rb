@@ -7,6 +7,8 @@ class TestGemDependencyResolverGitSet < Gem::TestCase
     super
 
     @set = Gem::DependencyResolver::GitSet.new
+
+    @reqs = Gem::DependencyResolver::RequirementList.new
   end
 
   def test_add_git_gem
@@ -14,9 +16,11 @@ class TestGemDependencyResolverGitSet < Gem::TestCase
 
     @set.add_git_gem name, repository, 'master'
 
-    spec = @set.load_spec name, version, Gem::Platform::RUBY, nil
+    dependency = dep 'a'
 
-    assert_equal "#{name}-#{version}", spec.full_name
+    specs = @set.find_all dependency
+
+    assert_equal "#{name}-#{version}", specs.first.full_name
   end
 
   def test_find_all
@@ -25,14 +29,14 @@ class TestGemDependencyResolverGitSet < Gem::TestCase
     @set.add_git_gem name, repository, 'master'
 
     dependency = dep 'a', '~> 1.0'
+    req = Gem::DependencyResolver::ActivationRequest.new dependency, nil
+    @reqs.add req
+
+    @set.prefetch @reqs
 
     found = @set.find_all dependency
 
-    spec = @set.load_spec name, version, Gem::Platform::RUBY, nil
-
-    source = Gem::Source::Git.new name, repository, 'master'
-
-    assert_equal [spec], found
+    assert_equal [@set.specs['a']], found
   end
 
   def test_prefetch
@@ -42,10 +46,9 @@ class TestGemDependencyResolverGitSet < Gem::TestCase
 
     dependency = dep name
     req = Gem::DependencyResolver::ActivationRequest.new dependency, nil
-    reqs = Gem::DependencyResolver::RequirementList.new
-    reqs.add req
+    @reqs.add req
 
-    @set.prefetch reqs
+    @set.prefetch @reqs
 
     refute_empty @set.specs
   end
@@ -57,10 +60,9 @@ class TestGemDependencyResolverGitSet < Gem::TestCase
 
     dependency = dep 'b'
     req = Gem::DependencyResolver::ActivationRequest.new dependency, nil
-    reqs = Gem::DependencyResolver::RequirementList.new
-    reqs.add req
+    @reqs.add req
 
-    @set.prefetch reqs
+    @set.prefetch @reqs
 
     assert_empty @set.specs
   end

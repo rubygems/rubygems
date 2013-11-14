@@ -35,25 +35,26 @@ class Gem::DependencyResolver::GitSet < Gem::DependencyResolver::Set
   # Finds all git gems matching +req+
 
   def find_all req
-    specs = @repositories.map do |name, _, _|
-      load_spec name, nil, nil, nil
-    end
-
-    specs.select do |spec|
+    @repositories.keys.select do |name|
+      name == req.name
+    end.map do |name|
+      @specs[name] || load_spec(name)
+    end.select do |spec|
       req.matches_spec? spec
     end
   end
 
-  def load_spec name, version, platform, source # :nodoc:
-    source = Gem::Source::Git.new name, *@repositories[name]
+  def load_spec name
+    repository, reference = @repositories[name]
 
-    source.update
+    source = Gem::Source::Git.new name, repository, reference
 
-    gemspec = File.join source.install_dir, "#{name}.gemspec"
+    spec = source.load_spec name
 
-    spec = Gem::Specification.load gemspec
+    git_spec =
+      Gem::DependencyResolver::GitSpecification.new self, spec, source
 
-    Gem::DependencyResolver::GitSpecification.new self, spec, source
+    @specs[name] = git_spec
   end
 
   ##
@@ -62,17 +63,10 @@ class Gem::DependencyResolver::GitSet < Gem::DependencyResolver::Set
   def prefetch reqs
     names = reqs.map { |req| req.name }
 
-    @repositories.each do |name, (repository, reference)|
+    @repositories.each_key do |name|
       next unless names.include? name
 
-      source = Gem::Source::Git.new name, repository, reference
-
-      spec = source.load_spec name
-
-      git_spec =
-        Gem::DependencyResolver::GitSpecification.new self, spec, source
-
-      @specs[name] = git_spec
+      load_spec name
     end
   end
 

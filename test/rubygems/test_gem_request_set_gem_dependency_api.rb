@@ -70,6 +70,16 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal "#{name}-#{version}", loaded.full_name
   end
 
+  def test_gem_git_branch
+    _, _, repository, = git_gem 'a', 1
+
+    @gda.gem 'a', :git => repository, :branch => 'other'
+
+    assert_equal [dep('a')], @set.dependencies
+
+    assert_equal %w[git/a other], @git_set.repositories['a']
+  end
+
   def test_gem_group
     @gda.gem 'a', :group => :test
 

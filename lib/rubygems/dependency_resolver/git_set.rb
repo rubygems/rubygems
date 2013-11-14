@@ -10,6 +10,12 @@
 
 class Gem::DependencyResolver::GitSet < Gem::DependencyResolver::Set
 
+  ##
+  # A Hash containing git gem names for keys and a Hash of repository and
+  # git commit reference as values.
+
+  attr_reader :repositories # :nodoc:
+
   def initialize # :nodoc:
     @git          = ENV['git'] || 'git'
     @repositories = {}

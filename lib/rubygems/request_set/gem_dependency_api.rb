@@ -202,7 +202,10 @@ class Gem::RequestSet::GemDependencyAPI
       "duplicate source git: #{repository} for gem #{name}" if
         @gem_sources.include? name
 
-    @git_set.add_git_gem name, repository
+    reference = options.delete :branch
+    reference ||= 'HEAD'
+
+    @git_set.add_git_gem name, repository, reference
 
     @gem_sources[name] = repository
 

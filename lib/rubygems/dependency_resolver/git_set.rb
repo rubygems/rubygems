@@ -25,6 +25,19 @@ class Gem::DependencyResolver::GitSet < Gem::DependencyResolver::Set
     @repositories[name] = [repository, reference]
   end
 
+  ##
+  # Finds all git gems matching +req+
+
+  def find_all req
+    specs = @repositories.map do |name, _, _|
+      load_spec name, nil, nil, nil
+    end
+
+    specs.select do |spec|
+      req.matches_spec? spec
+    end
+  end
+
   def load_spec name, version, platform, source # :nodoc:
     source = Gem::Source::Git.new name, *@repositories[name]
 

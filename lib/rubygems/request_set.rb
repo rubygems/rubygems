@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'rubygems/dependency'
-require 'rubygems/resolver'
 require 'rubygems/dependency_list'
 require 'rubygems/installer'
 require 'tsort'

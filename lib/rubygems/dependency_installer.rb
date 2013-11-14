@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'rubygems/dependency_list'
-require 'rubygems/resolver'
 require 'rubygems/package'
 require 'rubygems/installer'
 require 'rubygems/spec_fetcher'

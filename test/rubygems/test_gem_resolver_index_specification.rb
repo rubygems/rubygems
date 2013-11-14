@@ -1,5 +1,4 @@
 require 'rubygems/test_case'
-require 'rubygems/resolver'
 require 'rubygems/available_set'
 
 class TestGemResolverIndexSpecification < Gem::TestCase

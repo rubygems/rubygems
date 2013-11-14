@@ -1,5 +1,4 @@
 require 'rubygems/test_case'
-require 'rubygems/resolver'
 
 class TestGemResolverRequirementList < Gem::TestCase
 

@@ -4,6 +4,8 @@
 
 class Gem::DependencyResolver::RequirementList
 
+  include Enumerable
+
   def initialize
     @list = []
   end
@@ -15,6 +17,17 @@ class Gem::DependencyResolver::RequirementList
   def add(req)
     @list.push req
     req
+  end
+
+  ##
+  # Enumerates requirements in the list
+
+  def each # :nodoc:
+    return enum_for __method__ unless block_given?
+
+    @list.each do |requirement|
+      yield requirement
+    end
   end
 
   def empty?

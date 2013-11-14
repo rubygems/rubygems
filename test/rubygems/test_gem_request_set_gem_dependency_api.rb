@@ -67,7 +67,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   end
 
   def test_gem_git_branch
-    @gda.gem 'a', :git => 'git/a', :branch => 'other'
+    @gda.gem 'a', :git => 'git/a', :branch => 'other', :tag => 'v1'
 
     assert_equal [dep('a')], @set.dependencies
 
@@ -75,7 +75,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   end
 
   def test_gem_git_ref
-    @gda.gem 'a', :git => 'git/a', :ref => 'abcd123'
+    @gda.gem 'a', :git => 'git/a', :ref => 'abcd123', :branch => 'other'
 
     assert_equal [dep('a')], @set.dependencies
 

@@ -12,7 +12,7 @@ class TestGemDependencyResolverGitSet < Gem::TestCase
   def test_add_git_gem
     name, version, repository = git_gem
 
-    @set.add_git_gem name, repository
+    @set.add_git_gem name, repository, 'master'
 
     spec = @set.load_spec name, version, Gem::Platform::RUBY, nil
 

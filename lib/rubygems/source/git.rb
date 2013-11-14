@@ -16,7 +16,7 @@ class Gem::Source::Git < Gem::Source
   # Creates a new git gem source for a gem with the given +name+ that will be
   # loaded from +reference+ in +repository+.
 
-  def initialize name, repository, reference = 'master'
+  def initialize name, repository, reference
     @name       = name
     @repository = repository
     @reference  = reference

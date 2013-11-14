@@ -8,7 +8,7 @@ class TestGemSourceGit < Gem::TestCase
 
     @name, @version, @repository, @head = git_gem
 
-    @source = Gem::Source::Git.new @name, @repository
+    @source = Gem::Source::Git.new @name, @repository, 'master'
   end
 
   def test_checkout
@@ -66,12 +66,12 @@ class TestGemSourceGit < Gem::TestCase
     assert_equal '50cd3f67e92f79a9b0a03d450fb0cfbd7195c232',
                  @source.uri_hash
 
-    source = Gem::Source::Git.new 'a', 'http://git@example/repo.git'
+    source = Gem::Source::Git.new 'a', 'http://git@example/repo.git', 'master'
 
     assert_equal '291c4caac7feba8bb64c297987028acb3dde6cfe',
                  source.uri_hash
 
-    source = Gem::Source::Git.new 'a', 'HTTP://git@EXAMPLE/repo.git'
+    source = Gem::Source::Git.new 'a', 'HTTP://git@EXAMPLE/repo.git', 'master'
 
     assert_equal '291c4caac7feba8bb64c297987028acb3dde6cfe',
                  source.uri_hash

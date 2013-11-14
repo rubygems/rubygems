@@ -40,9 +40,29 @@ class TestGemDependencyResolverGitSet < Gem::TestCase
 
     @set.add_git_gem name, repository, 'master'
 
-    @set.prefetch nil
+    dependency = dep name
+    req = Gem::DependencyResolver::ActivationRequest.new dependency, nil
+    reqs = Gem::DependencyResolver::RequirementList.new
+    reqs.add req
+
+    @set.prefetch reqs
 
     refute_empty @set.specs
+  end
+
+  def test_prefetch_filter
+    name, _, repository, = git_gem
+
+    @set.add_git_gem name, repository, 'master'
+
+    dependency = dep 'b'
+    req = Gem::DependencyResolver::ActivationRequest.new dependency, nil
+    reqs = Gem::DependencyResolver::RequirementList.new
+    reqs.add req
+
+    @set.prefetch reqs
+
+    assert_empty @set.specs
   end
 
 end

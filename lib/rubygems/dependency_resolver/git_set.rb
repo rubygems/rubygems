@@ -60,7 +60,11 @@ class Gem::DependencyResolver::GitSet < Gem::DependencyResolver::Set
   # Prefetches specifications from the git repositories in this set.
 
   def prefetch reqs
+    names = reqs.map { |req| req.name }
+
     @repositories.each do |name, (repository, reference)|
+      next unless names.include? name
+
       source = Gem::Source::Git.new name, repository, reference
 
       spec = source.load_spec name

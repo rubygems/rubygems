@@ -35,5 +35,15 @@ class TestGemDependencyResolverGitSet < Gem::TestCase
     assert_equal [spec], found
   end
 
+  def test_prefetch
+    name, _, repository, = git_gem
+
+    @set.add_git_gem name, repository, 'master'
+
+    @set.prefetch nil
+
+    refute_empty @set.specs
+  end
+
 end
 

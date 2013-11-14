@@ -16,9 +16,15 @@ class Gem::DependencyResolver::GitSet < Gem::DependencyResolver::Set
 
   attr_reader :repositories # :nodoc:
 
+  ##
+  # A hash of gem names to Gem::DependencyResolver::GitSpecifications
+
+  attr_reader :specs # :nodoc:
+
   def initialize # :nodoc:
     @git          = ENV['git'] || 'git'
     @repositories = {}
+    @specs        = {}
   end
 
   def add_git_gem name, repository, reference # :nodoc:
@@ -48,6 +54,22 @@ class Gem::DependencyResolver::GitSet < Gem::DependencyResolver::Set
     spec = Gem::Specification.load gemspec
 
     Gem::DependencyResolver::GitSpecification.new self, spec, source
+  end
+
+  ##
+  # Prefetches specifications from the git repositories in this set.
+
+  def prefetch reqs
+    @repositories.each do |name, (repository, reference)|
+      source = Gem::Source::Git.new name, repository, reference
+
+      spec = source.load_spec name
+
+      git_spec =
+        Gem::DependencyResolver::GitSpecification.new self, spec, source
+
+      @specs[name] = git_spec
+    end
   end
 
 end

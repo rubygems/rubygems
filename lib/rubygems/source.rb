@@ -90,10 +90,13 @@ class Gem::Source
       end
   end
 
-  def fetch_spec(name)
+  ##
+  # Fetches a specification for the given +name_tuple+.
+
+  def fetch_spec name_tuple
     fetcher = Gem::RemoteFetcher.fetcher
 
-    spec_file_name = name.spec_name
+    spec_file_name = name_tuple.spec_name
 
     uri = api_uri + "#{Gem::MARSHAL_SPEC_DIR}#{spec_file_name}"
 

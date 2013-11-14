@@ -8,6 +8,8 @@ class TestGemSourceGit < Gem::TestCase
 
     @name, @version, @repository, @head = git_gem
 
+    @hash = Digest::SHA1.hexdigest @repository
+
     @source = Gem::Source::Git.new @name, @repository, 'master'
   end
 
@@ -29,6 +31,12 @@ class TestGemSourceGit < Gem::TestCase
     end
   end
 
+  def test_cache
+    @source.cache
+
+    assert @source.cache
+  end
+
   def test_dir_shortref
     @source.cache
 
@@ -45,8 +53,8 @@ class TestGemSourceGit < Gem::TestCase
 
   def test_repo_cache_dir
     expected =
-      File.join Gem.dir, 'cache', 'bundler', 'git',
-                'a-50cd3f67e92f79a9b0a03d450fb0cfbd7195c232'
+      File.join Gem.dir, 'cache', 'bundler', 'git', "a-#{@hash}"
+
     assert_equal expected, @source.repo_cache_dir
   end
 
@@ -63,8 +71,7 @@ class TestGemSourceGit < Gem::TestCase
   end
 
   def test_uri_hash
-    assert_equal '50cd3f67e92f79a9b0a03d450fb0cfbd7195c232',
-                 @source.uri_hash
+    assert_equal @hash, @source.uri_hash
 
     source = Gem::Source::Git.new 'a', 'http://git@example/repo.git', 'master'
 

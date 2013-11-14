@@ -382,6 +382,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
   def git_gem name = 'a', version = 1
     directory = File.join 'git', name
+    directory = File.expand_path directory
 
     git_spec = Gem::Specification.new name, version do |specification|
       yield specification if block_given?

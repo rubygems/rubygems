@@ -43,8 +43,15 @@ class Gem::Source::Git < Gem::Source
   # Creates a local cache repository for the git gem.
 
   def cache # :nodoc:
-    system @git, 'clone', '--quiet', '--bare', '--no-hardlinks',
-           @repository, repo_cache_dir
+    if File.exist? repo_cache_dir then
+      Dir.chdir repo_cache_dir do
+        system @git, 'fetch', '--quiet', '--force', '--tags',
+               @repository, 'refs/heads/*:refs/heads/*'
+      end
+    else
+      system @git, 'clone', '--quiet', '--bare', '--no-hardlinks',
+             @repository, repo_cache_dir
+    end
   end
 
   ##

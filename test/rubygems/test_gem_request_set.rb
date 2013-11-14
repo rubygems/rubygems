@@ -7,7 +7,7 @@ class TestGemRequestSet < Gem::TestCase
 
     Gem::RemoteFetcher.fetcher = @fetcher = Gem::FakeFetcher.new
 
-    @DR = Gem::DependencyResolver
+    @DR = Gem::Resolver
   end
 
   def test_gem

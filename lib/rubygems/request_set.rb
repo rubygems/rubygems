@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'rubygems/dependency'
-require 'rubygems/dependency_resolver'
+require 'rubygems/resolver'
 require 'rubygems/dependency_list'
 require 'rubygems/installer'
 require 'tsort'
@@ -190,8 +190,8 @@ class Gem::RequestSet
   # Load a dependency management file.
 
   def load_gemdeps path, without_groups = []
-    @git_set    = Gem::DependencyResolver::GitSet.new
-    @vendor_set = Gem::DependencyResolver::VendorSet.new
+    @git_set    = Gem::Resolver::GitSet.new
+    @vendor_set = Gem::Resolver::VendorSet.new
 
     gf = Gem::RequestSet::GemDependencyAPI.new self, path
     gf.without_groups = without_groups if without_groups
@@ -202,14 +202,14 @@ class Gem::RequestSet
   # Resolve the requested dependencies and return an Array of Specification
   # objects to be activated.
 
-  def resolve set = Gem::DependencyResolver::IndexSet.new
+  def resolve set = Gem::Resolver::IndexSet.new
     @sets << set
     @sets << @git_set
     @sets << @vendor_set
 
-    set = Gem::DependencyResolver.compose_sets(*@sets)
+    set = Gem::Resolver.compose_sets(*@sets)
 
-    resolver = Gem::DependencyResolver.new @dependencies, set
+    resolver = Gem::Resolver.new @dependencies, set
     resolver.development  = @development
     resolver.soft_missing = @soft_missing
 
@@ -221,7 +221,7 @@ class Gem::RequestSet
   # and return an Array of Specification objects to be activated.
 
   def resolve_current
-    resolve Gem::DependencyResolver::CurrentSet.new
+    resolve Gem::Resolver::CurrentSet.new
   end
 
   def sorted_requests

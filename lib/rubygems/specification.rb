@@ -2166,7 +2166,7 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # Used by Gem::DependencyResolver to order Gem::Specification objects
+  # Used by Gem::Resolver to order Gem::Specification objects
 
   def source # :nodoc:
     self

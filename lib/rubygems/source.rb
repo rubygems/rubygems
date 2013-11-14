@@ -62,9 +62,9 @@ class Gem::Source
       fetcher = Gem::RemoteFetcher.fetcher
       fetcher.fetch_path bundler_api_uri, nil, true
     rescue Gem::RemoteFetcher::FetchError
-      Gem::DependencyResolver::IndexSet.new self
+      Gem::Resolver::IndexSet.new self
     else
-      Gem::DependencyResolver::APISet.new bundler_api_uri
+      Gem::Resolver::APISet.new bundler_api_uri
     end
   end
 

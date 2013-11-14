@@ -5,7 +5,7 @@ class TestGemDependencyResolutionError < Gem::TestCase
   def setup
     super
 
-    @DR = Gem::DependencyResolver
+    @DR = Gem::Resolver
 
     @spec = util_spec 'a', 2
 

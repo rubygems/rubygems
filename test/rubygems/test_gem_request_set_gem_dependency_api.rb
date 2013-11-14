@@ -10,8 +10,8 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     @set = Gem::RequestSet.new
 
-    @git_set    = Gem::DependencyResolver::GitSet.new
-    @vendor_set = Gem::DependencyResolver::VendorSet.new
+    @git_set    = Gem::Resolver::GitSet.new
+    @vendor_set = Gem::Resolver::VendorSet.new
 
     @gda = @GDA.new @set, 'gem.deps.rb'
     @gda.instance_variable_set :@git_set,    @git_set

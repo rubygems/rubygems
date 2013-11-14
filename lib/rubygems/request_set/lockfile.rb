@@ -60,7 +60,7 @@ class Gem::RequestSet::Lockfile
     @set.dependencies.sort.map do |dependency|
       source = @requests.find do |req|
         req.name == dependency.name and
-          req.spec.class == Gem::DependencyResolver::VendorSpecification
+          req.spec.class == Gem::Resolver::VendorSpecification
       end
 
       source_dep = '!' if source
@@ -113,7 +113,7 @@ class Gem::RequestSet::Lockfile
 
   def add_PATH out # :nodoc:
     return unless path_requests =
-      @spec_groups.delete(Gem::DependencyResolver::VendorSpecification)
+      @spec_groups.delete(Gem::Resolver::VendorSpecification)
 
     out << "PATH"
     path_requests.each do |request|
@@ -217,7 +217,7 @@ class Gem::RequestSet::Lockfile
 
     skip :newline
 
-    set = Gem::DependencyResolver::LockSet.new source
+    set = Gem::Resolver::LockSet.new source
 
     while not @tokens.empty? and :text == peek.first do
       _, name, = get :text

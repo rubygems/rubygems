@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'rubygems/dependency_list'
-require 'rubygems/dependency_resolver'
+require 'rubygems/resolver'
 require 'rubygems/package'
 require 'rubygems/installer'
 require 'rubygems/spec_fetcher'
@@ -421,7 +421,7 @@ class Gem::DependencyInstaller
     request_set = as.to_request_set install_development_deps
     request_set.soft_missing = @force
 
-    installer_set = Gem::DependencyResolver::InstallerSet.new @domain
+    installer_set = Gem::Resolver::InstallerSet.new @domain
     installer_set.always_install.concat request_set.always_install
     installer_set.ignore_installed = @only_install_dir
 
@@ -430,7 +430,7 @@ class Gem::DependencyInstaller
       request_set.soft_missing = true
     end
 
-    composed_set = Gem::DependencyResolver.compose_sets as, installer_set
+    composed_set = Gem::Resolver.compose_sets as, installer_set
 
     request_set.resolve composed_set
 

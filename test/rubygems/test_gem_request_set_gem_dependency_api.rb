@@ -59,21 +59,15 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   end
 
   def test_gem_git
-    name, version, repository, = git_gem
-
-    @gda.gem 'a', :git => repository
+    @gda.gem 'a', :git => 'git/a'
 
     assert_equal [dep('a')], @set.dependencies
 
-    loaded = @git_set.load_spec(name, version, Gem::Platform::RUBY, nil)
-
-    assert_equal "#{name}-#{version}", loaded.full_name
+    assert_equal %w[git/a HEAD], @git_set.repositories['a']
   end
 
   def test_gem_git_branch
-    _, _, repository, = git_gem 'a', 1
-
-    @gda.gem 'a', :git => repository, :branch => 'other'
+    @gda.gem 'a', :git => 'git/a', :branch => 'other'
 
     assert_equal [dep('a')], @set.dependencies
 

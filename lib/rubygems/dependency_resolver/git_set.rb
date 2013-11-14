@@ -45,7 +45,9 @@ class Gem::DependencyResolver::GitSet < Gem::DependencyResolver::Set
 
     gemspec = File.join source.install_dir, "#{name}.gemspec"
 
-    Gem::Specification.load gemspec
+    spec = Gem::Specification.load gemspec
+
+    Gem::DependencyResolver::GitSpecification.new self, spec, source
   end
 
 end

@@ -204,6 +204,7 @@ class Gem::RequestSet
 
   def resolve set = Gem::DependencyResolver::IndexSet.new
     @sets << set
+    @sets << @git_set
     @sets << @vendor_set
 
     set = Gem::DependencyResolver.compose_sets(*@sets)

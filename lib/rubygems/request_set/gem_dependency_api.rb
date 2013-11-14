@@ -203,6 +203,7 @@ class Gem::RequestSet::GemDependencyAPI
         @gem_sources.include? name
 
     reference = nil
+    reference ||= options.delete :ref
     reference ||= options.delete :branch
     reference ||= options.delete :tag
     reference ||= 'master'

@@ -10,7 +10,7 @@ class TestGemDependencyResolverGitSet < Gem::TestCase
   end
 
   def test_add_git_gem
-    name, version, repository = git_gem
+    name, version, repository, = git_gem
 
     @set.add_git_gem name, repository, 'master'
 

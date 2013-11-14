@@ -2,7 +2,7 @@
 # Used internally to indicate that a dependency conflicted
 # with a spec that would be activated.
 
-class Gem::Resolver::DependencyConflict
+class Gem::Resolver::Conflict
 
   attr_reader :activated
 
@@ -97,4 +97,6 @@ class Gem::Resolver::DependencyConflict
   end
 
 end
+
+Gem::Resolver::DependencyConflict = Gem::Resolver::Conflict
 

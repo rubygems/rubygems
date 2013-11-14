@@ -1,7 +1,11 @@
 require 'rubygems/test_case'
 require 'rubygems/resolver'
 
-class TestGemResolverDependencyConflict < Gem::TestCase
+class TestGemResolverConflict < Gem::TestCase
+
+  def test_self_compatibility
+    assert_same Gem::Resolver::Conflict, Gem::Resolver::DependencyConflict
+  end
 
   def test_explanation
     root  =
@@ -10,7 +14,7 @@ class TestGemResolverDependencyConflict < Gem::TestCase
       dependency_request dep('net-ssh', '>= 2.6.5'), 'net-ssh', '2.2.2', root
 
     conflict =
-      Gem::Resolver::DependencyConflict.new child, child.requester
+      Gem::Resolver::Conflict.new child, child.requester
 
     expected = <<-EXPECTED
   Activated net-ssh-2.2.2 instead of (>= 2.6.5) via:
@@ -30,7 +34,7 @@ class TestGemResolverDependencyConflict < Gem::TestCase
 
     activated = @DR::ActivationRequest.new spec, a2_req
 
-    conflict = @DR::DependencyConflict.new a1_req, activated
+    conflict = @DR::Conflict.new a1_req, activated
 
     expected = <<-EXPECTED
   Activated a-2 instead of (= 1) via:
@@ -47,7 +51,7 @@ class TestGemResolverDependencyConflict < Gem::TestCase
       dependency_request dep('net-ssh', '>= 2.6.5'), 'net-ssh', '2.2.2', root
 
     conflict =
-      Gem::Resolver::DependencyConflict.new child, nil
+      Gem::Resolver::Conflict.new child, nil
 
     assert_equal %w[net-ssh-2.2.2 rye-0.9.8], conflict.request_path
   end

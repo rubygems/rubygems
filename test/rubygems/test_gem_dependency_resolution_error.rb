@@ -14,7 +14,7 @@ class TestGemDependencyResolutionError < Gem::TestCase
 
     @activated = @DR::ActivationRequest.new @spec, @a2_req
 
-    @conflict = @DR::DependencyConflict.new @a1_req, @activated
+    @conflict = @DR::Conflict.new @a1_req, @activated
 
     @error = Gem::DependencyResolutionError.new @conflict
   end

@@ -122,7 +122,7 @@ class Gem::Resolver
     res = resolve_for needed, nil
 
     raise Gem::DependencyResolutionError, res if
-      res.kind_of? Gem::Resolver::DependencyConflict
+      res.kind_of? Gem::Resolver::Conflict
 
     res.to_a
   end
@@ -175,11 +175,11 @@ class Gem::Resolver
     # Otherwise, issue it on the requester's request itself.
     if existing.others_possible? or existing.request.requester.nil? then
       conflict =
-        Gem::Resolver::DependencyConflict.new dep, existing
+        Gem::Resolver::Conflict.new dep, existing
     else
       depreq = dep.requester.request
       conflict =
-        Gem::Resolver::DependencyConflict.new depreq, existing, dep
+        Gem::Resolver::Conflict.new depreq, existing, dep
     end
 
     @conflicts << conflict unless @conflicts.include? conflict
@@ -195,7 +195,7 @@ class Gem::Resolver
   # +spec+ is the Specification for this state.
   # +possible+ is List of DependencyRequest objects that can be tried to
   # find a  complete set.
-  # +conflicts+ is a [DependencyRequest, DependencyConflict] hit tried to
+  # +conflicts+ is a [DependencyRequest, Conflict] hit tried to
   # activate the state.
   #
   State = Struct.new(:needed, :specs, :dep, :spec, :possibles, :conflicts) do
@@ -363,7 +363,7 @@ end
 Gem::DependencyResolver = Gem::Resolver # :nodoc:
 
 require 'rubygems/resolver/activation_request'
-require 'rubygems/resolver/dependency_conflict'
+require 'rubygems/resolver/conflict'
 require 'rubygems/resolver/dependency_request'
 require 'rubygems/resolver/requirement_list'
 

@@ -23,7 +23,7 @@ class Gem::DependencyError < Gem::Exception; end
 class Gem::DependencyRemovalException < Gem::Exception; end
 
 ##
-# Raised by Gem::Resolver when a Gem::DependencyConflict reaches the
+# Raised by Gem::Resolver when a Gem::Dependency::Conflict reaches the
 # toplevel.  Indicates which dependencies were incompatible through #conflict
 # and #conflicting_dependencies
 

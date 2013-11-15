@@ -362,9 +362,13 @@ class Gem::RequestSet::GemDependencyAPI
   def gemspec options = {}
     path = options.delete(:path) || '.'
 
-    spec_file = File.join path, 'gemspec'
+    name = '{,*}'
 
-    spec = Gem::Specification.load spec_file
+    glob = File.join path, "#{name}.gemspec"
+
+    spec_files = Dir[glob]
+
+    spec = Gem::Specification.load spec_files.first
 
     groups = gem_group spec.name, {}
 

@@ -343,7 +343,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     spec = util_spec 'a', 1, 'b' => 2
     spec.add_development_dependency 'c', 3
 
-    open 'gemspec', 'w' do |io|
+    open 'a.gemspec', 'w' do |io|
       io.write spec.to_ruby_for_cache
     end
 
@@ -354,12 +354,24 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal %w[a], @gda.requires['a']
   end
 
+  def test_gemspec_named
+    spec = util_spec 'a', 1, 'b' => 2
+
+    open 'other.gemspec', 'w' do |io|
+      io.write spec.to_ruby_for_cache
+    end
+
+    @gda.gemspec
+
+    assert_equal [dep('b', '= 2')], @set.dependencies
+  end
+
   def test_gemspec_path
     spec = util_spec 'a', 1, 'b' => 2
 
     FileUtils.mkdir 'other'
 
-    open 'other/gemspec', 'w' do |io|
+    open 'other/a.gemspec', 'w' do |io|
       io.write spec.to_ruby_for_cache
     end
 

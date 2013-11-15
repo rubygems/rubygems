@@ -103,6 +103,15 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal %w[git/a abcd123], @git_set.repositories['a']
   end
 
+  def test_gem_git_submodules
+    @gda.gem 'a', :git => 'git/a', :submodules => true
+
+    assert_equal [dep('a')], @set.dependencies
+
+    assert_equal %w[git/a master], @git_set.repositories['a']
+    assert_equal %w[git/a], @git_set.need_submodules.keys
+  end
+
   def test_gem_git_tag
     @gda.gem 'a', :git => 'git/a', :tag => 'v1'
 

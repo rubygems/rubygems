@@ -256,7 +256,9 @@ class Gem::RequestSet::GemDependencyAPI
     reference ||= options.delete :tag
     reference ||= 'master'
 
-    @git_set.add_git_gem name, repository, reference
+    submodules = options.delete :submodules
+
+    @git_set.add_git_gem name, repository, reference, submodules
 
     @gem_sources[name] = repository
 

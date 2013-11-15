@@ -367,14 +367,14 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   end
 
   def test_gemspec_development_group
-    @gda.without_groups << :other
-
     spec = util_spec 'a', 1, 'b' => 2
     spec.add_development_dependency 'c', 3
 
     open 'a.gemspec', 'w' do |io|
       io.write spec.to_ruby_for_cache
     end
+
+    @gda.without_groups << :other
 
     @gda.gemspec :development_group => :other
 

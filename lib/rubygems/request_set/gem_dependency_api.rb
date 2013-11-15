@@ -161,6 +161,32 @@ class Gem::RequestSet::GemDependencyAPI
   private :add_dependencies
 
   ##
+  # Finds a gemspec with the given +name+ that lives at +path+.
+
+  def find_gemspec name, path # :nodoc:
+    glob = File.join path, "#{name}.gemspec"
+
+    spec_files = Dir[glob]
+
+    case spec_files.length
+    when 1 then
+      spec_file = spec_files.first
+
+      spec = Gem::Specification.load spec_file
+
+      return spec if spec
+
+      raise ArgumentError, "invalid gemspec #{spec_file}"
+    when 0 then
+      raise ArgumentError, "no gemspecs found at #{Dir.pwd}"
+    else
+      raise ArgumentError,
+        "found multiple gemspecs at #{Dir.pwd}, " +
+        "use the name: option to specify the one you want"
+    end
+  end
+
+  ##
   # Loads the gem dependency file
 
   def load
@@ -364,25 +390,7 @@ class Gem::RequestSet::GemDependencyAPI
     path              = options.delete(:path) || '.'
     development_group = options.delete(:development_group) || :development
 
-    glob = File.join path, "#{name}.gemspec"
-
-    spec_files = Dir[glob]
-
-    case spec_files.length
-    when 1 then
-      spec_file = spec_files.first
-
-      spec = Gem::Specification.load spec_file
-
-      raise ArgumentError, "invalid gemspec #{spec_file}" unless spec
-    when 0 then
-      raise ArgumentError, "no gemspecs found at #{Dir.pwd}"
-    else
-      raise ArgumentError,
-        "found multiple gemspecs at #{Dir.pwd}, " +
-        "use the name: option to specify the one you want"
-    end
-
+    spec = find_gemspec name, path
 
     groups = gem_group spec.name, {}
 

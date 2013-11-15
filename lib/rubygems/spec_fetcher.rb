@@ -34,6 +34,10 @@ class Gem::SpecFetcher
 
   @fetcher = nil
 
+  ##
+  # Default fetcher instance.  Use this instead of ::new to reduce object
+  # allocation.
+
   def self.fetcher
     @fetcher ||= new
   end
@@ -43,8 +47,8 @@ class Gem::SpecFetcher
   end
 
   ##
-  # Creates a new SpecFetcher.  Ordinarily you want to use
-  # Gem::SpecFetcher::fetcher which uses the Gem.sources.
+  # Creates a new SpecFetcher.  Ordinarily you want to use the default fetcher
+  # from Gem::SpecFetcher::fetcher which uses the Gem.sources.
   #
   # If you need to retrieve specifications from a different +source+, you can
   # send it as an argument.
@@ -249,7 +253,11 @@ class Gem::SpecFetcher
     [list, errors]
   end
 
-  def tuples_for(source, type, gracefully_ignore=false)
+  ##
+  # Retrieves NameTuples from +source+ of the given +type+ (:prerelease,
+  # etc.).  If +gracefully_ignore+ is true, errors are ignored.
+
+  def tuples_for(source, type, gracefully_ignore=false) # :nodoc:
     cache = @caches[type]
 
     tuples =

@@ -147,6 +147,20 @@ class Gem::RequestSet::GemDependencyAPI
   end
 
   ##
+  # Adds +dependencies+ to the request set if any of the +groups+ are allowed.
+  # This is used for gemspec dependencies.
+
+  def add_dependencies groups, dependencies # :nodoc:
+    return unless (groups & @without_groups).empty?
+
+    dependencies.each do |dep|
+      @set.gem dep.name, *dep.requirement
+    end
+  end
+
+  private :add_dependencies
+
+  ##
   # Loads the gem dependency file
 
   def load
@@ -350,19 +364,11 @@ class Gem::RequestSet::GemDependencyAPI
 
     groups = gem_group spec.name, {}
 
-    if (groups & @without_groups).empty? then
-      spec.runtime_dependencies.each do |dep|
-        @set.gem dep.name, *dep.requirement
-      end
-    end
+    add_dependencies groups, spec.runtime_dependencies
 
     groups << :development
 
-    if (groups & @without_groups).empty? then
-      spec.development_dependencies.each do |dep|
-        @set.gem dep.name, *dep.requirement
-      end
-    end
+    add_dependencies groups, spec.development_dependencies
 
     gem_requires spec.name, options
   end

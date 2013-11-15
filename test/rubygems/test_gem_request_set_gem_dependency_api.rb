@@ -400,6 +400,14 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal [dep('b', '= 2')], @set.dependencies
   end
 
+  def test_gemspec_none
+    e = assert_raises ArgumentError do
+      @gda.gemspec
+    end
+
+    assert_equal "no gemspecs found at #{@tempdir}", e.message
+  end
+
   def test_gemspec_path
     spec = util_spec 'a', 1, 'b' => 2
 

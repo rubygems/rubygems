@@ -369,6 +369,9 @@ class Gem::RequestSet::GemDependencyAPI
 
     case spec_files.length
     when 1 then
+      # OK
+    when 0 then
+      raise ArgumentError, "no gemspecs found at #{Dir.pwd}"
     else
       raise ArgumentError,
         "found multiple gemspecs at #{Dir.pwd}, " +

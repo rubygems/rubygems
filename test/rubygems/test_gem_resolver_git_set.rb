@@ -13,7 +13,7 @@ class TestGemResolverGitSet < Gem::TestCase
   def test_add_git_gem
     name, version, repository, = git_gem
 
-    @set.add_git_gem name, repository, 'master'
+    @set.add_git_gem name, repository, 'master', false
 
     dependency = dep 'a'
 
@@ -39,7 +39,7 @@ class TestGemResolverGitSet < Gem::TestCase
   def test_find_all
     name, version, repository, = git_gem
 
-    @set.add_git_gem name, repository, 'master'
+    @set.add_git_gem name, repository, 'master', false
 
     dependency = dep 'a', '~> 1.0'
     req = Gem::Resolver::ActivationRequest.new dependency, nil
@@ -55,7 +55,7 @@ class TestGemResolverGitSet < Gem::TestCase
   def test_prefetch
     name, _, repository, = git_gem
 
-    @set.add_git_gem name, repository, 'master'
+    @set.add_git_gem name, repository, 'master', false
 
     dependency = dep name
     req = Gem::Resolver::ActivationRequest.new dependency, nil
@@ -69,7 +69,7 @@ class TestGemResolverGitSet < Gem::TestCase
   def test_prefetch_filter
     name, _, repository, = git_gem
 
-    @set.add_git_gem name, repository, 'master'
+    @set.add_git_gem name, repository, 'master', false
 
     dependency = dep 'b'
     req = Gem::Resolver::ActivationRequest.new dependency, nil

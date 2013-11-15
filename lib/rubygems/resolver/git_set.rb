@@ -33,7 +33,7 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
     @specs           = {}
   end
 
-  def add_git_gem name, repository, reference, submodules = false # :nodoc:
+  def add_git_gem name, repository, reference, submodules # :nodoc:
     @repositories[name] = [repository, reference]
     @need_submodules[repository] = submodules
   end

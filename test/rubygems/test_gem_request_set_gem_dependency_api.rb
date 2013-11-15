@@ -354,6 +354,22 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal %w[a], @gda.requires['a']
   end
 
+  def test_gemspec_name
+    open 'a.gemspec', 'w' do |io|
+      spec = util_spec 'a', 1, 'b' => 2
+      io.write spec.to_ruby_for_cache
+    end
+
+    open 'b.gemspec', 'w' do |io|
+      spec = util_spec 'b', 2, 'c' => 3
+      io.write spec.to_ruby_for_cache
+    end
+
+    @gda.gemspec :name => 'b'
+
+    assert_equal [dep('c', '= 3')], @set.dependencies
+  end
+
   def test_gemspec_named
     spec = util_spec 'a', 1, 'b' => 2
 

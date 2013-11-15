@@ -361,8 +361,7 @@ class Gem::RequestSet::GemDependencyAPI
 
   def gemspec options = {}
     path = options.delete(:path) || '.'
-
-    name = '{,*}'
+    name = options.delete(:name) || '{,*}'
 
     glob = File.join path, "#{name}.gemspec"
 

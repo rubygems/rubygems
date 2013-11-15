@@ -354,6 +354,24 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal %w[a], @gda.requires['a']
   end
 
+  def test_gemspec_multiple
+    open 'a.gemspec', 'w' do |io|
+      spec = util_spec 'a', 1, 'b' => 2
+      io.write spec.to_ruby_for_cache
+    end
+
+    open 'b.gemspec', 'w' do |io|
+      spec = util_spec 'b', 2, 'c' => 3
+      io.write spec.to_ruby_for_cache
+    end
+
+    e = assert_raises ArgumentError do
+      @gda.gemspec
+    end
+
+    assert_equal "found multiple gemspecs at #{@tempdir}, use the name: option to specify the one you want", e.message
+  end
+
   def test_gemspec_name
     open 'a.gemspec', 'w' do |io|
       spec = util_spec 'a', 1, 'b' => 2

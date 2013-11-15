@@ -360,12 +360,20 @@ class Gem::RequestSet::GemDependencyAPI
   # Loads dependencies from a gemspec file.
 
   def gemspec options = {}
-    path = options.delete(:path) || '.'
     name = options.delete(:name) || '{,*}'
+    path = options.delete(:path) || '.'
 
     glob = File.join path, "#{name}.gemspec"
 
     spec_files = Dir[glob]
+
+    case spec_files.length
+    when 1 then
+    else
+      raise ArgumentError,
+        "found multiple gemspecs at #{Dir.pwd}, " +
+        "use the name: option to specify the one you want"
+    end
 
     spec = Gem::Specification.load spec_files.first
 

@@ -369,7 +369,11 @@ class Gem::RequestSet::GemDependencyAPI
 
     case spec_files.length
     when 1 then
-      # OK
+      spec_file = spec_files.first
+
+      spec = Gem::Specification.load spec_file
+
+      raise ArgumentError, "invalid gemspec #{spec_file}" unless spec
     when 0 then
       raise ArgumentError, "no gemspecs found at #{Dir.pwd}"
     else
@@ -378,7 +382,6 @@ class Gem::RequestSet::GemDependencyAPI
         "use the name: option to specify the one you want"
     end
 
-    spec = Gem::Specification.load spec_files.first
 
     groups = gem_group spec.name, {}
 

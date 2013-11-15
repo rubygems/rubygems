@@ -354,6 +354,16 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal %w[a], @gda.requires['a']
   end
 
+  def test_gemspec_bad
+    FileUtils.touch 'a.gemspec'
+
+    e = assert_raises ArgumentError do
+      @gda.gemspec
+    end
+
+    assert_equal 'invalid gemspec ./a.gemspec', e.message
+  end
+
   def test_gemspec_multiple
     open 'a.gemspec', 'w' do |io|
       spec = util_spec 'a', 1, 'b' => 2

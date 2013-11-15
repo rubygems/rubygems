@@ -14,8 +14,6 @@ class TestGemSourceGit < Gem::TestCase
   end
 
   def test_checkout
-    @source.cache
-
     @source.checkout
 
     assert_path_exists File.join @source.install_dir, 'a.gemspec'
@@ -31,7 +29,6 @@ class TestGemSourceGit < Gem::TestCase
       system @git, 'commit', '--quiet', '-m', 'add submodule b'
     end
 
-    source.cache
     source.checkout
 
     assert_path_exists File.join source.install_dir, 'a.gemspec'

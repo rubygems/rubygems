@@ -58,6 +58,8 @@ class Gem::Source::Git < Gem::Source
   # Checks out the files for the repository into the install_dir.
 
   def checkout # :nodoc:
+    cache
+
     unless File.exist? install_dir then
       system @git, 'clone', '--quiet', '--no-checkout',
              repo_cache_dir, install_dir

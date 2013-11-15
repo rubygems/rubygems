@@ -358,7 +358,9 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     FileUtils.touch 'a.gemspec'
 
     e = assert_raises ArgumentError do
-      @gda.gemspec
+      capture_io do
+        @gda.gemspec
+      end
     end
 
     assert_equal 'invalid gemspec ./a.gemspec', e.message

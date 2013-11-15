@@ -240,6 +240,10 @@ class Gem::RequestSet::GemDependencyAPI
   # Returns +true+ if the path option was handled.
 
   def gem_git name, options # :nodoc:
+    if gist = options.delete(:gist) then
+      options[:git] = "https://gist.github.com/#{gist}.git"
+    end
+
     return unless repository = options.delete(:git)
 
     raise ArgumentError,

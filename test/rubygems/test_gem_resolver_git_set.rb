@@ -20,6 +20,20 @@ class TestGemResolverGitSet < Gem::TestCase
     specs = @set.find_all dependency
 
     assert_equal "#{name}-#{version}", specs.first.full_name
+
+    refute @set.need_submodules[repository]
+  end
+
+  def test_add_git_gem_submodules
+    name, version, repository, = git_gem
+
+    @set.add_git_gem name, repository, 'master', true
+
+    dependency = dep 'a'
+
+    refute_empty @set.find_all dependency
+
+    assert @set.need_submodules[repository]
   end
 
   def test_find_all

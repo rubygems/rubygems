@@ -11,6 +11,11 @@
 class Gem::Resolver::GitSet < Gem::Resolver::Set
 
   ##
+  # Contains repositories needing submodules
+
+  attr_reader :need_submodules # :nodoc:
+
+  ##
   # A Hash containing git gem names for keys and a Hash of repository and
   # git commit reference as values.
 
@@ -22,13 +27,15 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
   attr_reader :specs # :nodoc:
 
   def initialize # :nodoc:
-    @git          = ENV['git'] || 'git'
-    @repositories = {}
-    @specs        = {}
+    @git             = ENV['git'] || 'git'
+    @need_submodules = {}
+    @repositories    = {}
+    @specs           = {}
   end
 
-  def add_git_gem name, repository, reference # :nodoc:
+  def add_git_gem name, repository, reference, submodules = false # :nodoc:
     @repositories[name] = [repository, reference]
+    @need_submodules[repository] = submodules
   end
 
   ##

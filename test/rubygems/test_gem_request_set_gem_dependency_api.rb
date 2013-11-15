@@ -354,6 +354,20 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal %w[a], @gda.requires['a']
   end
 
+  def test_gemspec_path
+    spec = util_spec 'a', 1, 'b' => 2
+
+    FileUtils.mkdir 'other'
+
+    open 'other/gemspec', 'w' do |io|
+      io.write spec.to_ruby_for_cache
+    end
+
+    @gda.gemspec :path => 'other'
+
+    assert_equal [dep('b', '= 2')], @set.dependencies
+  end
+
   def test_git
     @gda.git 'git://example/repo.git' do
       @gda.gem 'a'

@@ -360,7 +360,11 @@ class Gem::RequestSet::GemDependencyAPI
   # Loads dependencies from a gemspec file.
 
   def gemspec options = {}
-    spec = Gem::Specification.load 'gemspec'
+    path = options.delete(:path) || '.'
+
+    spec_file = File.join path, 'gemspec'
+
+    spec = Gem::Specification.load spec_file
 
     groups = gem_group spec.name, {}
 

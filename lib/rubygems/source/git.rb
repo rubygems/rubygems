@@ -8,7 +8,9 @@ require 'rubygems/util'
 #
 #   source = Gem::Source::Git.new 'rake', 'git@example:rake.git', 'rake-10.1.0'
 #
-#   source.update
+#   spec = source.load_spec 'rake'
+#
+#   source.checkout
 
 class Gem::Source::Git < Gem::Source
 
@@ -150,15 +152,6 @@ class Gem::Source::Git < Gem::Source
     Dir.chdir repo_cache_dir do
       Gem::Util.popen(@git, 'rev-parse', @reference).strip
     end
-  end
-
-  ##
-  # Updates the files in the git gem install directory.
-
-  def update # :nodoc:
-    cache
-
-    checkout
   end
 
   ##

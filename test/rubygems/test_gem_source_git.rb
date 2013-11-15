@@ -125,14 +125,6 @@ class TestGemSourceGit < Gem::TestCase
     refute_equal master_head, source.rev_parse
   end
 
-  def test_update
-    @source.update
-
-    assert_path_exists File.join @source.install_dir, 'a.gemspec'
-
-    assert @source.update
-  end
-
   def test_uri_hash
     assert_equal @hash, @source.uri_hash
 

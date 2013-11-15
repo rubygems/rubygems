@@ -360,8 +360,9 @@ class Gem::RequestSet::GemDependencyAPI
   # Loads dependencies from a gemspec file.
 
   def gemspec options = {}
-    name = options.delete(:name) || '{,*}'
-    path = options.delete(:path) || '.'
+    name              = options.delete(:name) || '{,*}'
+    path              = options.delete(:path) || '.'
+    development_group = options.delete(:development_group) || :development
 
     glob = File.join path, "#{name}.gemspec"
 
@@ -387,7 +388,7 @@ class Gem::RequestSet::GemDependencyAPI
 
     add_dependencies groups, spec.runtime_dependencies
 
-    groups << :development
+    groups << development_group
 
     add_dependencies groups, spec.development_dependencies
 

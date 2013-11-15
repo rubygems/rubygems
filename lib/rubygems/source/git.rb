@@ -6,7 +6,8 @@ require 'rubygems/util'
 #
 # Example:
 #
-#   source = Gem::Source::Git.new 'rake', 'git@example:rake.git', 'rake-10.1.0'
+#   source =
+#     Gem::Source::Git.new 'rake', 'git@example:rake.git', 'rake-10.1.0', false
 #
 #   spec = source.load_spec 'rake'
 #

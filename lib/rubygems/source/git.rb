@@ -28,22 +28,30 @@ class Gem::Source::Git < Gem::Source
   attr_reader :repository
 
   ##
-  # Creates a new git gem source for a gem with the given +name+ that will be
-  # loaded from +reference+ in +repository+.
+  # Does this repository need submodules checked out too?
 
-  def initialize name, repository, reference
-    @name       = name
-    @repository = repository
-    @reference  = reference
+  attr_reader :need_submodules
+
+  ##
+  # Creates a new git gem source for a gem with the given +name+ that will be
+  # loaded from +reference+ in +repository+.  If +submodules+ is true,
+  # submodules will be checked out when the gem is installed.
+
+  def initialize name, repository, reference, submodules = false
+    @name            = name
+    @repository      = repository
+    @reference       = reference
+    @need_submodules = submodules
 
     @git = ENV['git'] || 'git'
   end
 
   def == other # :nodoc:
     super and
-      @name       == other.name and
-      @repository == other.repository and
-      @reference  == other.reference
+      @name            == other.name and
+      @repository      == other.repository and
+      @reference       == other.reference and
+      @need_submodules == other.need_submodules
   end
 
   ##
@@ -57,7 +65,14 @@ class Gem::Source::Git < Gem::Source
 
     Dir.chdir install_dir do
       system @git, 'fetch', '--quiet', '--force', '--tags', install_dir
-      system @git, 'reset', '--quiet', '--hard', @reference
+
+      success = system @git, 'reset', '--quiet', '--hard', @reference
+
+      success &&=
+        system @git, 'submodule', 'update',
+               '--quiet', '--init', '--recursive' if @need_submodules
+
+      success
     end
   end
 

@@ -10,7 +10,7 @@ class TestGemSourceGit < Gem::TestCase
 
     @hash = Digest::SHA1.hexdigest @repository
 
-    @source = Gem::Source::Git.new @name, @repository, 'master'
+    @source = Gem::Source::Git.new @name, @repository, 'master', false
   end
 
   def test_checkout
@@ -19,6 +19,23 @@ class TestGemSourceGit < Gem::TestCase
     @source.checkout
 
     assert_path_exists File.join @source.install_dir, 'a.gemspec'
+  end
+
+  def test_checkout_submodules
+    source = Gem::Source::Git.new @name, @repository, 'master', true
+
+    git_gem 'b'
+
+    Dir.chdir 'git/a' do
+      system @git, 'submodule', '--quiet', 'add', File.expand_path('../b'), 'b'
+      system @git, 'commit', '--quiet', '-m', 'add submodule b'
+    end
+
+    source.cache
+    source.checkout
+
+    assert_path_exists File.join source.install_dir, 'a.gemspec'
+    assert_path_exists File.join source.install_dir, 'b/b.gemspec'
   end
 
   def test_cache
@@ -49,17 +66,23 @@ class TestGemSourceGit < Gem::TestCase
     assert_equal @source, @source.dup
 
     source =
-      Gem::Source::Git.new @source.name, @source.repository, 'other'
+      Gem::Source::Git.new @source.name, @source.repository, 'other', false
 
     refute_equal @source, source
 
     source =
-      Gem::Source::Git.new @source.name, 'repo/other', @source.reference
+      Gem::Source::Git.new @source.name, 'repo/other', @source.reference, false
 
     refute_equal @source, source
 
     source =
-      Gem::Source::Git.new 'b', @source.repository, @source.reference
+      Gem::Source::Git.new 'b', @source.repository, @source.reference, false
+
+    refute_equal @source, source
+
+    source =
+      Gem::Source::Git.new @source.name, @source.repository, @source.reference,
+                           true
 
     refute_equal @source, source
   end
@@ -98,7 +121,7 @@ class TestGemSourceGit < Gem::TestCase
 
     git_gem 'a', 2
 
-    source = Gem::Source::Git.new @name, @repository, 'other'
+    source = Gem::Source::Git.new @name, @repository, 'other', false
 
     source.cache
 
@@ -116,12 +139,14 @@ class TestGemSourceGit < Gem::TestCase
   def test_uri_hash
     assert_equal @hash, @source.uri_hash
 
-    source = Gem::Source::Git.new 'a', 'http://git@example/repo.git', 'master'
+    source =
+      Gem::Source::Git.new 'a', 'http://git@example/repo.git', 'master', false
 
     assert_equal '291c4caac7feba8bb64c297987028acb3dde6cfe',
                  source.uri_hash
 
-    source = Gem::Source::Git.new 'a', 'HTTP://git@EXAMPLE/repo.git', 'master'
+    source =
+      Gem::Source::Git.new 'a', 'HTTP://git@EXAMPLE/repo.git', 'master', false
 
     assert_equal '291c4caac7feba8bb64c297987028acb3dde6cfe',
                  source.uri_hash

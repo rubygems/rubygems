@@ -125,6 +125,20 @@ class TestGemSourceGit < Gem::TestCase
     refute_equal master_head, source.rev_parse
   end
 
+  def test_spaceship
+    git       = Gem::Source::Git.new 'a', 'git/a', 'master', false
+    remote    = Gem::Source.new @gem_repo
+    installed = Gem::Source::Installed.new
+
+    assert_equal( 0, git.      <=>(git),       'git    <=> git')
+
+    assert_equal( 1, git.      <=>(remote),    'git    <=> remote')
+    assert_equal(-1, remote.   <=>(git),       'remote <=> git')
+
+    assert_equal( 1, installed.<=>(git),       'installed <=> git')
+    assert_equal(-1, git.      <=>(installed), 'git       <=> installed')
+  end
+
   def test_uri_hash
     assert_equal @hash, @source.uri_hash
 

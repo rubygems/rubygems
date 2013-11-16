@@ -28,7 +28,8 @@ class Gem::Source
     case other
     when Gem::Source::Installed,
          Gem::Source::Local,
-         Gem::Source::SpecificFile then
+         Gem::Source::SpecificFile,
+         Gem::Source::Git then
       -1
     when Gem::Source then
       if !@uri

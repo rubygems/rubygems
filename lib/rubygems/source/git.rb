@@ -49,6 +49,19 @@ class Gem::Source::Git < Gem::Source
     @git = ENV['git'] || 'git'
   end
 
+  def <=> other
+    case other
+    when Gem::Source::Git then
+      0
+    when Gem::Source::Installed then
+      -1
+    when Gem::Source then
+      1
+    else
+      nil
+    end
+  end
+
   def == other # :nodoc:
     super and
       @name            == other.name and

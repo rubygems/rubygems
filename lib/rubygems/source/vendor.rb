@@ -10,5 +10,16 @@ class Gem::Source::Vendor < Gem::Source::Installed
     @uri = path
   end
 
+  def <=> other
+    case other
+    when Gem::Source::Vendor then
+      0
+    when Gem::Source then
+      1
+    else
+      nil
+    end
+  end
+
 end
 

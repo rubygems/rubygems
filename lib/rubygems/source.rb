@@ -29,7 +29,8 @@ class Gem::Source
     when Gem::Source::Installed,
          Gem::Source::Local,
          Gem::Source::SpecificFile,
-         Gem::Source::Git then
+         Gem::Source::Git,
+         Gem::Source::Vendor then
       -1
     when Gem::Source then
       if !@uri

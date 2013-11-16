@@ -21,7 +21,7 @@ class Gem::Source::SpecificFile < Gem::Source
 
   attr_reader :spec
 
-  def load_specs * # :nodoc:
+  def load_specs *a # :nodoc:
     [@name]
   end
 

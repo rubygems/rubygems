@@ -1,6 +1,9 @@
+##
+# Represents an installed gem.  This is used for dependency resolution.
+
 class Gem::Source::Installed < Gem::Source
 
-  def initialize
+  def initialize # :nodoc:
     @uri = nil
   end
 

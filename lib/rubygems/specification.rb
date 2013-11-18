@@ -542,7 +542,12 @@ class Gem::Specification < Gem::BasicSpecification
   # text of the license should be inside of the gem when you build it.
   #
   # See http://opensource.org/licenses/alphabetical for a list of licenses and
-  # their abbreviations (or short names).
+  # their abbreviations (or short names).  GitHub also provides a
+  # license picker at http://choosealicense.com/
+  #
+  #  According to copyright law, not having an OSI-approved open source license
+  #  means you have no rights to use the code for any purpose-- in other words,
+  #  "all rights reserved".
   #
   # You can set multiple licenses with #licenses=
   #

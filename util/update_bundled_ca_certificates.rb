@@ -88,7 +88,7 @@ end
 
 io =
   if ARGV.empty? then
-    open OpenSSL::X509::CERT_FILE
+    open OpenSSL::X509::DEFAULT_CERT_FILE
   else
     ARGF
   end

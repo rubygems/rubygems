@@ -107,7 +107,7 @@ class Gem::BasicSpecification
       File.join full_gem_path, path
     end
 
-    full_paths << extension_install_dir unless @extensions.empty?
+    full_paths.unshift extension_install_dir unless @extensions.empty?
 
     full_paths
   end

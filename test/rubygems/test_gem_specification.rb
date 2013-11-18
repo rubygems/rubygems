@@ -1744,8 +1744,8 @@ dependencies: []
     @ext.require_path = 'lib'
 
     expected = [
-      File.join(@gemhome, 'gems', @ext.original_name, 'lib'),
       @ext.extension_install_dir,
+      File.join(@gemhome, 'gems', @ext.original_name, 'lib'),
     ]
 
     assert_equal expected, @ext.full_require_paths

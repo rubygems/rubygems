@@ -78,8 +78,8 @@ class TestStubSpecification < Gem::TestCase
     stub = stub_with_extension
 
     expected = [
-      File.join(stub.full_gem_path, 'lib'),
       stub.extension_install_dir,
+      File.join(stub.full_gem_path, 'lib'),
     ]
 
     assert_equal expected, stub.full_require_paths

@@ -149,6 +149,7 @@ EOF
     extension ||= '' # I wish I knew why this line existed
     extension_dir =
       File.expand_path File.join @gem_dir, File.dirname(extension)
+    lib_dir = File.join @spec.full_gem_path, @spec.raw_require_paths.first
 
     builder = builder_for extension
 
@@ -157,8 +158,6 @@ EOF
 
       CHDIR_MUTEX.synchronize do
         Dir.chdir extension_dir do
-          lib_dir = @spec.full_require_paths.first
-
           results = builder.build(extension, @gem_dir, dest_path,
                                   results, @build_args, lib_dir)
 

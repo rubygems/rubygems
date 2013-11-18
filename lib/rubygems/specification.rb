@@ -27,6 +27,7 @@ class Date; end
 #   Gem::Specification.new do |s|
 #     s.name        = 'example'
 #     s.version     = '0.1.0'
+#     s.licenses    = ['MIT']
 #     s.summary     = "This is an example!"
 #     s.description = "Much longer explanation of the example!"
 #     s.authors     = ["Ruby Coder"]
@@ -179,6 +180,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   ######################################################################
   # :section: Required gemspec attributes
+  # :category:
 
   ##
   # This gem's name.
@@ -331,6 +333,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   ######################################################################
   # :section: Optional gemspec attributes
+  # :category:
 
   ##
   # The path in the gem for executable scripts.  Usually 'bin'
@@ -530,6 +533,7 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
+  # :category: Recommended gemspec attributes
   # The license for this gem.
   #
   # The license must be a short name, no more than 64 characters.
@@ -550,6 +554,7 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
+  # :category: Recommended gemspec attributes
   # The license(s) for the library.
   #
   # Each license must be a short name, no more than 64 characters.

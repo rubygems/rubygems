@@ -126,6 +126,7 @@ install:
     assert_path_exists @spec.gem_build_complete_path
     assert_path_exists File.join @spec.extension_install_dir, 'gem_make.out'
     assert_path_exists File.join @spec.extension_install_dir, 'a.rb'
+    assert_path_exists File.join @spec.gem_dir, 'lib', 'a.rb'
   end
 
   def test_build_extensions_none

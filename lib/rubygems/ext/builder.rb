@@ -157,8 +157,10 @@ EOF
 
       CHDIR_MUTEX.synchronize do
         Dir.chdir extension_dir do
+          lib_dir = @spec.full_require_paths.first
+
           results = builder.build(extension, @gem_dir, dest_path,
-                                  results, @build_args)
+                                  results, @build_args, lib_dir)
 
           say results.join("\n") if Gem.configuration.really_verbose
         end

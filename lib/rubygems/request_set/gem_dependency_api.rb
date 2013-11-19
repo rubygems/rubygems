@@ -282,6 +282,8 @@ class Gem::RequestSet::GemDependencyAPI
     true
   end
 
+  private :gem_github
+
   ##
   # Handles the :group and :groups +options+ for the gem with the given
   # +name+.

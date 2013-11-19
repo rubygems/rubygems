@@ -37,7 +37,7 @@ class TestGemResolverGitSet < Gem::TestCase
   end
 
   def test_find_all
-    name, version, repository, = git_gem
+    name, _, repository, = git_gem
 
     @set.add_git_gem name, repository, 'master', false
 

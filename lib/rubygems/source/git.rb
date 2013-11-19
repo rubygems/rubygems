@@ -41,6 +41,8 @@ class Gem::Source::Git < Gem::Source
   # submodules will be checked out when the gem is installed.
 
   def initialize name, repository, reference, submodules = false
+    super(nil)
+
     @name            = name
     @repository      = repository
     @reference       = reference

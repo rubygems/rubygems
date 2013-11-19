@@ -102,7 +102,7 @@ class TestGemRequestSet < Gem::TestCase
   end
 
   def test_resolve_git
-    name, version, repository, = git_gem
+    name, _, repository, = git_gem
 
     rs = Gem::RequestSet.new
 

@@ -381,6 +381,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # Yields the +specification+ to the block, if given
 
   def git_gem name = 'a', version = 1
+    have_git?
+
     directory = File.join 'git', name
     directory = File.expand_path directory
 
@@ -411,6 +413,23 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     end
 
     return name, git_spec.version, directory, head
+  end
+
+  ##
+  # Skips this test unless you have a git executable
+
+  def have_git?
+    return if in_path? @git
+
+    skip 'cannot find git executable, use GIT environment variable to set'
+  end
+
+  def in_path? executable # :nodoc:
+    return true if %r%\A([A-Z]:|/)% =~ executable and File.exist? executable
+
+    ENV['PATH'].split(File::PATH_SEPARATOR).any? do |directory|
+      File.exist? File.join directory, executable
+    end
   end
 
   ##

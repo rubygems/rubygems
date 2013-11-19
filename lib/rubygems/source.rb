@@ -202,7 +202,7 @@ class Gem::Source
       q.breakable
       q.text @uri.to_s
       if api = api_uri
-        g.text api
+        q.text api.to_s
       end
     end
   end

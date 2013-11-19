@@ -170,6 +170,24 @@ class Gem::Source::Git < Gem::Source
   end
 
   ##
+  # Loads all gemspecs in the repository
+
+  def specs
+    checkout
+
+    Dir.chdir install_dir do
+      Dir['{,*,*/*}.gemspec'].map do |spec_file|
+        directory = File.dirname spec_file
+        file      = File.basename spec_file
+
+        Dir.chdir directory do
+          Gem::Specification.load file
+        end
+      end.compact
+    end
+  end
+
+  ##
   # A hash for the git gem based on the git repository URI.
 
   def uri_hash # :nodoc:

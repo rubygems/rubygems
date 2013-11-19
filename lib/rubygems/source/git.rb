@@ -164,7 +164,6 @@ class Gem::Source::Git < Gem::Source
   # Converts the git reference for the repository into a commit hash.
 
   def rev_parse # :nodoc:
-    # HACK no safe equivalent of ` exists on 1.8.7
     Dir.chdir repo_cache_dir do
       Gem::Util.popen(@git, 'rev-parse', @reference).strip
     end

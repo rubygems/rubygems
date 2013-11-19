@@ -99,6 +99,18 @@ task :install_test_deps => :clean_env do
   sh "gem install minitest -v '~> 4.0'"
 end
 
+task :test => :clean_env
+
+BUNDLER_SPECS = %w[
+  ../bundler/spec/lock/lockfile_spec.rb
+]
+
+task :bundler_specs => BUNDLER_SPECS do
+  BUNDLER_SPECS.each do |spec|
+    system Gem.ruby, '-Ilib:spec', spec
+  end
+end
+
 # --------------------------------------------------------------------
 # Creating a release
 

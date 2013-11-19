@@ -40,24 +40,20 @@ module Gem::Util
   # for a command.
 
   def self.popen *command
-    begin
-      r, = IO.popen command
-    rescue TypeError # ruby 1.8 only supports string command
-      r, w = IO.pipe
+    IO.popen command do |io| io.read end
+  rescue TypeError # ruby 1.8 only supports string command
+    r, w = IO.pipe
 
-      pid = fork do
-        STDIN.close
-        STDOUT.reopen w
+    pid = fork do
+      STDIN.close
+      STDOUT.reopen w
 
-        exec(*command)
-      end
-
-      w.close
-
-      Process.wait pid
-
-      r
+      exec(*command)
     end
+
+    w.close
+
+    Process.wait pid
 
     r.read
   end

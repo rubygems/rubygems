@@ -42,11 +42,9 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
   # Finds all git gems matching +req+
 
   def find_all req
-    @repositories.keys.select do |name|
-      name == req.name
-    end.map do |name|
-      @specs[name] || load_spec(name)
-    end.select do |spec|
+    prefetch nil
+
+    specs.values.select do |spec|
       req.matches_spec? spec
     end
   end

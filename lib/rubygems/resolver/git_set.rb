@@ -51,7 +51,7 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
     end
   end
 
-  def load_spec name
+  def load_spec name # :nodoc:
     repository, reference = @repositories[name]
 
     source = Gem::Source::Git.new name, repository, reference

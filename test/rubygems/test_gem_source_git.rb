@@ -36,19 +36,13 @@ class TestGemSourceGit < Gem::TestCase
   end
 
   def test_cache
-    @source.cache
+    assert @source.cache
 
     assert_path_exists @source.repo_cache_dir
 
     Dir.chdir @source.repo_cache_dir do
       assert_equal @head, Gem::Util.popen(@git, 'rev-parse', 'master').strip
     end
-  end
-
-  def test_cache
-    @source.cache
-
-    assert @source.cache
   end
 
   def test_dir_shortref

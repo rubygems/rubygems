@@ -145,7 +145,7 @@ class Gem::Source::Git < Gem::Source
         warn "git gem specification for #{@repository} #{gemspec_reference} is not a Gem::Specification (#{spec.class} instead)."
       rescue SignalException, SystemExit
         raise
-      rescue SyntaxError, Exception => e
+      rescue SyntaxError, Exception
         warn "invalid git gem specification for #{@repository} #{gemspec_reference}"
       end
     end

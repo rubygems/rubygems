@@ -36,9 +36,11 @@ class Gem::Source::Git < Gem::Source
   attr_reader :need_submodules
 
   ##
-  # Creates a new git gem source for a gem with the given +name+ that will be
-  # loaded from +reference+ in +repository+.  If +submodules+ is true,
-  # submodules will be checked out when the gem is installed.
+  # Creates a new git gem source for a gems from loaded from +repository+ at
+  # the given +reference+.  The +name+ is only used to track the repository
+  # back to a gem dependencies file, it has no real significance as a git
+  # repository may contain multiple gems.  If +submodules+ is true, submodules
+  # will be checked out when the gem is installed.
 
   def initialize name, repository, reference, submodules = false
     super(nil)

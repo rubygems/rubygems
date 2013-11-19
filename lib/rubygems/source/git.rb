@@ -126,34 +126,6 @@ class Gem::Source::Git < Gem::Source
   end
 
   ##
-  # Loads a Gem::Specification for +name+ from this git repository.
-
-  def load_spec name
-    cache
-
-    gemspec_reference = "#{@reference}:#{name}.gemspec"
-
-    Dir.chdir repo_cache_dir do
-      source = Gem::Util.popen @git, 'show', gemspec_reference
-
-      source.force_encoding Encoding::UTF_8 if Object.const_defined? :Encoding
-      source.untaint
-
-      begin
-        spec = eval source, binding, gemspec_reference
-
-        return spec if Gem::Specification === spec
-
-        warn "git gem specification for #{@repository} #{gemspec_reference} is not a Gem::Specification (#{spec.class} instead)."
-      rescue SignalException, SystemExit
-        raise
-      rescue SyntaxError, Exception
-        warn "invalid git gem specification for #{@repository} #{gemspec_reference}"
-      end
-    end
-  end
-
-  ##
   # The directory where the git gem's repository will be cached.
 
   def repo_cache_dir # :nodoc:

@@ -49,19 +49,6 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
     end
   end
 
-  def load_spec name # :nodoc:
-    repository, reference = @repositories[name]
-
-    source = Gem::Source::Git.new name, repository, reference
-
-    spec = source.load_spec name
-
-    git_spec =
-      Gem::Resolver::GitSpecification.new self, spec, source
-
-    @specs[name] = git_spec
-  end
-
   ##
   # Prefetches specifications from the git repositories in this set.
 

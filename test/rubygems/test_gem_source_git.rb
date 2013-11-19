@@ -78,12 +78,6 @@ class TestGemSourceGit < Gem::TestCase
     refute_equal @source, source
   end
 
-  def test_load_spec
-    spec = @source.load_spec @name
-
-    assert_equal "#{@name}-#{@version}", spec.full_name
-  end
-
   def test_install_dir
     @source.cache
 

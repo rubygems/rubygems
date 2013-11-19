@@ -66,6 +66,24 @@ class TestGemResolverGitSet < Gem::TestCase
     refute_empty @set.specs
   end
 
+  def test_prefetch_cache
+    name, _, repository, = git_gem
+
+    @set.add_git_gem name, repository, 'master', false
+
+    dependency = dep name
+    req = Gem::Resolver::ActivationRequest.new dependency, nil
+    @reqs.add req
+
+    @set.prefetch @reqs
+
+    spec = @set.specs[name]
+
+    @set.prefetch @reqs
+
+    assert_same spec, @set.specs[name]
+  end
+
   def test_prefetch_filter
     name, _, repository, = git_gem
 

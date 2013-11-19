@@ -66,6 +66,8 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
   # Prefetches specifications from the git repositories in this set.
 
   def prefetch reqs
+    return unless @specs.empty?
+
     @repositories.each do |name, (repository, reference)|
       source = Gem::Source::Git.new name, repository, reference
 

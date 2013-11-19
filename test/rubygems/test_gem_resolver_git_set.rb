@@ -77,7 +77,7 @@ class TestGemResolverGitSet < Gem::TestCase
 
     @set.prefetch @reqs
 
-    assert_empty @set.specs
+    refute_empty @set.specs, 'the git source does not filter'
   end
 
 end

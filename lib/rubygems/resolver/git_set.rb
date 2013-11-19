@@ -68,12 +68,14 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
   # Prefetches specifications from the git repositories in this set.
 
   def prefetch reqs
-    names = reqs.map { |req| req.name }
+    @repositories.each do |name, (repository, reference)|
+      source = Gem::Source::Git.new name, repository, reference
 
-    @repositories.each_key do |name|
-      next unless names.include? name
+      source.specs.each do |spec|
+        git_spec = Gem::Resolver::GitSpecification.new self, spec, source
 
-      load_spec name
+        @specs[spec.name] = git_spec
+      end
     end
   end
 

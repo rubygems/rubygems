@@ -180,7 +180,6 @@ class Gem::Specification < Gem::BasicSpecification
 
   ######################################################################
   # :section: Required gemspec attributes
-  # :category:
 
   ##
   # This gem's name.
@@ -333,7 +332,6 @@ class Gem::Specification < Gem::BasicSpecification
 
   ######################################################################
   # :section: Optional gemspec attributes
-  # :category:
 
   ##
   # The path in the gem for executable scripts.  Usually 'bin'
@@ -2536,8 +2534,8 @@ class Gem::Specification < Gem::BasicSpecification
     }
 
     warning <<-warning if licenses.empty?
-licenses is empty, but is recommended.  Use a license
-abbreviation from:  http://opensource.org/licenses/alphabetical
+licenses is empty, but is recommended.  Use a license abbreviation from:
+http://opensource.org/licenses/alphabetical
     warning
 
     validate_permissions

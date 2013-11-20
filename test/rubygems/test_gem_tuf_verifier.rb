@@ -9,10 +9,12 @@ class TestGemTUFVerifier < Gem::TestCase
   def setup
     super
 
+    @keyid = "zekey"
     @signable = {
                   "signed" => {
                     "_type"   => "Example",
-                    "version" => 1
+                    "version" => 1,
+                    "expires" => "2038-01-19 03:14:08 UTC"
                   }
                 }
   end
@@ -22,11 +24,22 @@ class TestGemTUFVerifier < Gem::TestCase
   end
 
   def test_verify
-    signed_json = Gem::TUF::Signer.new(PRIVATE_KEY).sign(@signable)
-    verifier = Gem::TUF::Verifier.new([PRIVATE_KEY.public_key], 1)
+    signed_json = Gem::TUF::Signer.new(@keyid, PRIVATE_KEY).sign(@signable)
+    verifier = Gem::TUF::Verifier.new({@keyid => PRIVATE_KEY.public_key}, 1)
     json = verifier.verify(signed_json)
 
     assert_equal "Example", json["_type"]
+  end
+
+  def test_expiry_checking
+    expired_signable = @signable.dup
+    expired_signable['signed']['expires'] = "1970-01-01 00:00:00 UTC"
+
+    signed_json = Gem::TUF::Signer.new(@keyid, PRIVATE_KEY).sign(expired_signable)
+    verifier = Gem::TUF::Verifier.new({@keyid => PRIVATE_KEY.public_key}, 1)
+    assert_raises Gem::TUF::VerificationError do
+      verifier.verify(signed_json)
+    end
   end
 end if defined?(OpenSSL::SSL)
 

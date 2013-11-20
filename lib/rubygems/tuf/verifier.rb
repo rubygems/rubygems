@@ -6,13 +6,16 @@ require 'rubygems/util/canonical_json'
 # Verify signed JSON documents in The Update Framework (TUF) format
 
 class Gem::TUF::Verifier
-  def initialize keys, threshold = 1
+  def initialize keys, threshold = 1, now = Time.now
     @keys, @threshold = keys, threshold
   end
 
-  def verify json
+  def verify json, now = Time.now
     signed = json['signed']
     raise ArgumentError, "no data to sign" unless signed
+
+    expiration = Time.parse(signed['expires'])
+    raise Gem::TUF::VerificationError, "document is expired" if expiration <= now
 
     signatures = json['signatures']
     raise ArgumentError, "no signatures present" unless signatures

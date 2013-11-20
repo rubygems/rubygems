@@ -143,8 +143,6 @@ class Gem::Resolver
   # If no good candidate is found, the first state is tried.
 
   def find_conflict_state conflict, states # :nodoc:
-    rejected = []
-
     until states.empty? do
       state = states.pop
 
@@ -154,14 +152,9 @@ class Gem::Resolver
         state.conflicts << [state.spec, conflict]
         return state
       end
-
-      rejected << state
     end
 
-    return rejected.shift
-  ensure
-    rejected = rejected.concat states
-    states.replace rejected
+    nil
   end
 
   ##
@@ -181,14 +174,23 @@ class Gem::Resolver
 
     # If the existing activation indicates that there are other possibles for
     # it, then issue the conflict on the dependency for the activation itself.
-    # Otherwise, issue it on the requester's request itself.
-    if existing.others_possible? or existing.request.requester.nil? then
+    # Otherwise, if there was a requester, issue it on the requester's
+    # request itself.
+    # Finally, if the existing request has no requester (toplevel) unwind to
+    # it anyway.
+
+    if existing.others_possible?
       conflict =
         Gem::Resolver::Conflict.new dep, existing
-    else
+    elsif dep.requester
       depreq = dep.requester.request
       conflict =
         Gem::Resolver::Conflict.new depreq, existing, dep
+    elsif existing.request.requester.nil?
+      conflict =
+        Gem::Resolver::Conflict.new dep, existing
+    else
+      raise Gem::DependencyError, "Unable to figure out how to unwind conflict"
     end
 
     @conflicts << conflict unless @conflicts.include? conflict

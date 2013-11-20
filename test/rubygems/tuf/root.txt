@@ -1,0 +1,49 @@
+{
+  "signatures": [
+    {
+      "keyid": "cd637d64fc4ee71eb0bbf6a341bdcdecfa7316ce8e9f95778eeeed21caf4ce5b",
+      "method": "RSASSA-PKCS#1-v1.5+SHA512",
+      "sig": "59fe3e4985afdf58c692128cff9055e898accd0b05efa9c6817c4098b622801f63bc41f88e6783d4fff3888da62a4fdf91ade326a253cb4cdfb8a520a053ea4aec35e45b9afbaa5960e688055cd8e3e742a976ceacb2959d1e45eeb5130ec5fe085b137e581e227f216de11b65929871748a7d8e15a340f9a9be3666bf6cf3378bc2ea167400d02b1db5bb9f28e3d70179fcafa9ee3379a127bcaa96f954c6e50b77d668c4cf30155946f26d415290398013debcf6ad813b5d95ee1dea2a12ee968bb46ce3cdfe5b4796769ec46fdec5850a9b9fb4c5a53457d91971e7a64ada40a5dbd6658efe8659d7f1f3b5234123383bbee3797b0b3d66cfa2f79a27c4f2"
+    }
+  ],
+  "signed": {
+    "_type": "Root",
+    "expires": "2013-12-06 18:53:35 UTC",
+    "keys": {
+      "cd637d64fc4ee71eb0bbf6a341bdcdecfa7316ce8e9f95778eeeed21caf4ce5b": {
+        "keytype": "rsa",
+        "keyval": {
+          "private": "",
+          "public": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvHb7oVkAhuk1eZInIo4W\nN2dEVTMxa30BXoi/L2ZfV4NKnmljCnCEG2iF8B2ui1c1Oht1sqCAx4TZGXVzTEXm\nDNwannKBsT+9dN24CCerPy7KSstbvV78nH8/GdNL7eJ8Z7eWeAEwAX+qAq4LckkC\nVTVwSUXu5ildfPlkVcZ+JMfuBls2lgt4yjozFTNu4Sw5nU8/HSJxP+6YO5q8CAr7\n6r19HNUKXHzKqxlHDNaLOpWx5Im+u5OyaF4KOWS10EvkGznSUIgXSGgdf9obdsF4\nTaQG4C+lA/5gwIa9Ul2qeWyJL9lw47TPSkBub4Mdb2rTUVRq1eak59XEY8liQl00\nRwIDAQAB\n-----END PUBLIC KEY-----\n"
+        }
+      }
+    },
+    "roles": {
+      "release": {
+        "keyids": [
+          "4f0308b343b0deb0e4213d39903bbacbfc8d9b9c400782e7e5b0c68948f2b683"
+        ],
+        "threshold": 1
+      },
+      "root": {
+        "keyids": [
+          "cd637d64fc4ee71eb0bbf6a341bdcdecfa7316ce8e9f95778eeeed21caf4ce5b"
+        ],
+        "threshold": 1
+      },
+      "targets": {
+        "keyids": [
+          "4f335fec85379a5ce9feb35dc8341d9f14171f94dbe4a798c5571bf41c22cc96"
+        ],
+        "threshold": 1
+      },
+      "timestamp": {
+        "keyids": [
+          "622eb06e6488fbd976e30604ab9ed0b5016d1eb938444a3f129909daa404798d"
+        ],
+        "threshold": 1
+      }
+    },
+    "version": 1
+  }
+}

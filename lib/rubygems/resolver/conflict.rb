@@ -4,11 +4,21 @@
 
 class Gem::Resolver::Conflict
 
+  ##
+  # The specification that was activated prior to the conflict
+
   attr_reader :activated
+
+  ##
+  # The dependency that is in conflict with the activated gem.
 
   attr_reader :dependency
 
   attr_reader :failed_dep # :nodoc:
+
+  ##
+  # Creates a new resolver conflict when +dependency+ is in conflict with an
+  # already +activated+ specification.
 
   def initialize(dependency, activated, failed_dep=dependency)
     @dependency = dependency
@@ -16,12 +26,15 @@ class Gem::Resolver::Conflict
     @failed_dep = failed_dep
   end
 
-  def == other
+  def == other # :nodoc:
     self.class === other and
       @dependency == other.dependency and
       @activated  == other.activated  and
       @failed_dep == other.failed_dep
   end
+
+  ##
+  # A string explanation of the conflict.
 
   def explain
     "<Conflict wanted: #{@failed_dep}, had: #{activated.spec.full_name}>"
@@ -45,6 +58,9 @@ class Gem::Resolver::Conflict
       activated, requirement, request_path.join(', ')
     ]
   end
+
+  ##
+  # Returns true if the conflicting dependency's name matches +spec+.
 
   def for_spec?(spec)
     @dependency.name == spec.name
@@ -98,5 +114,8 @@ class Gem::Resolver::Conflict
 
 end
 
-Gem::Resolver::DependencyConflict = Gem::Resolver::Conflict
+##
+# TODO: Remove in RubyGems 3
+
+Gem::Resolver::DependencyConflict = Gem::Resolver::Conflict # :nodoc:
 

@@ -27,9 +27,12 @@ module Gem::TUF
   # Length of keys created by KEY_ALGORITHM
 
   KEY_LENGTH = 2048
+
+  class VerificationError < StandardError; end
 end
 
 require 'rubygems/tuf/signer'
 require 'rubygems/tuf/verifier'
 require 'rubygems/tuf/role'
 require 'rubygems/tuf/root'
+require 'rubygems/tuf/release'

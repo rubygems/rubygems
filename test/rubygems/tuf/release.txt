@@ -1,0 +1,28 @@
+{
+  "signatures": [
+    {
+      "keyid": "4f0308b343b0deb0e4213d39903bbacbfc8d9b9c400782e7e5b0c68948f2b683",
+      "method": "RSASSA-PKCS#1-v1.5+SHA512",
+      "sig": "50f9eae9c99f032eedc70c55dc40ddcd741a92f5702786c1c2a16a4c4581efb71993045b7344918f77a732e55c6eec98dfb937970eeb0c42e11ab5e40671f7f1d990da5e40a2194aa3279d76d4b45892251e57642ae9bad368877408d568ca0639539ac033d3e0615beecb5553bd2e579748d80c70a1558f5fc0f11db8d4abdf604b4c02f0a92d5e14243b31eb7d19863963c8a9da69e6e1d5c94f81fc4cb689e23fc61b72be615efa8ff2648aebe98347d8c586914cf85635f66fd257c2bbdf999578ed7522e62131174f1dcbb5c5a67d6ef74700e480ae9e13c7831145cba672009560f86933569ccd17d3ebd7379fff5698e965d600695d01f3022fa0e2f4"
+    }
+  ],
+  "signed": {
+    "_type": "Release",
+    "expires": "2014-12-06 11:59:59 UTC",
+    "meta": {
+      "root.txt": {
+        "hashes": {
+          "sha512": "201c9595abf238966dce6467bca3bb28f592f5b20982bf3c6e96769674ab147ee62bea3b4f4c8fb89d47411f469d82140844acf1f8060232346966af473f16f2"
+        },
+        "length": 2118
+      },
+      "targets.txt": {
+        "hashes": {
+          "sha512": "TODO: make a real targets.txt"
+        },
+        "length": 0
+      }
+    },
+    "version": 2
+  }
+}

@@ -3,7 +3,7 @@ require 'json'
 require 'rubygems/util/canonical_json'
 
 ##
-# Produce signed JSON documents in The Update Framework (TUF) format
+# Verify signed JSON documents in The Update Framework (TUF) format
 
 class Gem::TUF::Verifier
   def initialize keys, threshhold = 1
@@ -37,7 +37,7 @@ class Gem::TUF::Verifier
     if verified_count >= @threshhold
       signed
     else
-      raise "failed to meet threshhold of valid signatures (#{verified_count} of #{@threshhold})"
+      raise Gem::TUF::VerificationError, "failed to meet threshhold of valid signatures (#{verified_count} of #{@threshhold})"
     end
   end
 end

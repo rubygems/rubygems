@@ -5,9 +5,9 @@ require 'json'
 # Produce signed JSON documents in The Update Framework (TUF) format
 
 class Gem::TUF::Signer
-  def initialize key
+  def initialize keyid, key
     raise TypeError, "expecting a #{KEY_ALGORITHM}" unless key.is_a? Gem::TUF::KEY_ALGORITHM
-    @key = key
+    @keyid, @key = keyid, key
   end
 
   def sign json
@@ -21,15 +21,11 @@ class Gem::TUF::Signer
 
     signatures = json['signatures'] ||= []
     signatures << {
-      "keyid"  => keyid,
+      "keyid"  => @keyid,
       "method" => "RSASSA-PKCS#1-v1.5+SHA512",
       "sig"    => signature.unpack("H*").first
     }
 
     json
-  end
-
-  def keyid
-    Digest::SHA256.hexdigest(@key.public_key.to_der)
   end
 end

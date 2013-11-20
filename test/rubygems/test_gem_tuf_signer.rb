@@ -6,19 +6,9 @@ unless defined?(OpenSSL::SSL) then
 end
 
 class TestGemTUFSigner < Gem::TestCase
-
-  ALTERNATE_KEY  = load_key 'alternate'
-  CHILD_KEY      = load_key 'child'
-  GRANDCHILD_KEY = load_key 'grandchild'
-
-  CHILD_CERT      = load_cert 'child'
-  GRANDCHILD_CERT = load_cert 'grandchild'
-  EXPIRED_CERT    = load_cert 'expired'
-
   def setup
     super
 
-    @cert_file = PUBLIC_CERT
     @signable = {
                   "signed" => {
                     "_type"   => "Example",

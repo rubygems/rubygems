@@ -30,3 +30,4 @@ module Gem::TUF
 end
 
 require 'rubygems/tuf/signer'
+require 'rubygems/tuf/verifier'

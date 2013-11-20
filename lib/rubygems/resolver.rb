@@ -29,8 +29,22 @@ class Gem::Resolver
 
   attr_accessor :soft_missing
 
+  ##
+  # Combines +sets+ into a ComposedSet that allows specification lookup in a
+  # uniform manner.  If one of the +sets+ is itself a ComposedSet its sets are
+  # flattened into the result ComposedSet.
+
   def self.compose_sets *sets
     sets.compact!
+
+    sets = sets.map do |set|
+      case set
+      when Gem::Resolver::ComposedSet then
+        set.sets
+      else
+        set
+      end
+    end.flatten
 
     case sets.length
     when 0 then

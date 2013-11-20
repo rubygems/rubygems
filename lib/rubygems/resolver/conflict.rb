@@ -34,6 +34,24 @@ class Gem::Resolver::Conflict
   end
 
   ##
+  # Path of specifications that requested this dependency
+
+  def activated_path
+    current = @activated
+    path    = []
+
+    while current do
+      path << current.spec.full_name
+
+      current = current.request.requester
+    end
+
+    path = ['user request (gem command or Gemfile)'] if path.empty?
+
+    path
+  end
+
+  ##
   # A string explanation of the conflict.
 
   def explain
@@ -54,8 +72,9 @@ class Gem::Resolver::Conflict
     activated   = @activated.spec.full_name
     requirement = @failed_dep.dependency.requirement
 
-    "  Activated %s instead of (%s) via:\n    %s\n" % [
-      activated, requirement, request_path.join(', ')
+    "  Activated %s via:\n    %s\n  instead of (%s) via:\n    %s\n" % [
+      activated,   activated_path.join(', '),
+      requirement, request_path.join(', '),
     ]
   end
 

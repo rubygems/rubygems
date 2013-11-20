@@ -31,5 +31,4 @@ end
 
 require 'rubygems/tuf/signer'
 require 'rubygems/tuf/verifier'
-require 'rubygems/tuf/role'
 require 'rubygems/tuf/root'

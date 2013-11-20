@@ -21,7 +21,7 @@ class Gem::TUF::Root
         role_key_hash[keyid] = keys[keyid]
       end
 
-      roles_threshold[name.to_sym] = role_info['threshold']
+      role_thresholds[name.to_sym] = role_info['threshold']
     end
 
     @root    = verify(:root, root_txt)

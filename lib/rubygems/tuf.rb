@@ -31,3 +31,4 @@ end
 
 require 'rubygems/tuf/signer'
 require 'rubygems/tuf/verifier'
+require 'rubygems/tuf/root'

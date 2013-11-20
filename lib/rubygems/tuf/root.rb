@@ -24,9 +24,14 @@ class Gem::TUF::Root
       roles[name.to_sym] = Gem::TUF::Role.new(role_keys, role_info['threshold'])
     end
 
-    verifier = Gem::TUF::Verifier.new(roles[:root].keys.values, roles[:root].threshold)
-    @root = verifier.verify(root_txt)
-
+    @root = verify(:root, root_txt)
     @expires = Time.parse(@root['expires'])
+  end
+
+  def verify(role_name, document)
+    keys      = roles[role_name.to_sym].keys.values
+    threshold = roles[role_name.to_sym].threshold
+    verifier = Gem::TUF::Verifier.new(keys, threshold)
+    verifier.verify(document)
   end
 end

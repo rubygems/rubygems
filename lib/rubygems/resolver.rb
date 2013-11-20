@@ -32,6 +32,15 @@ class Gem::Resolver
   def self.compose_sets *sets
     sets.compact!
 
+    sets = sets.map do |set|
+      case set
+      when Gem::Resolver::ComposedSet then
+        set.sets
+      else
+        set
+      end
+    end.flatten
+
     case sets.length
     when 0 then
       raise ArgumentError, 'one set in the composition must be non-nil'

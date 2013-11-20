@@ -1,5 +1,6 @@
 # TODO: remove this dependency somehow
 require 'json'
+require 'rubygems/util/canonical_json'
 
 ##
 # Produce signed JSON documents in The Update Framework (TUF) format
@@ -21,9 +22,7 @@ class Gem::TUF::Verifier
     signatures = json['signatures']
     raise ArgumentError, "no signatures present" unless signatures
 
-    # TODO: canonical JSON
-    #to_verify = CanonicalJSON.dump(signed)
-    to_verify = JSON.dump(signed)
+    to_verify = CanonicalJSON.dump(signed)
     verified_count = 0
 
     signatures.each do |signature|

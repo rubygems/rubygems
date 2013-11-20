@@ -15,9 +15,7 @@ class Gem::TUF::Signer
     raise ArgumentError, "no data to sign" unless signed
     raise ArgumentError, "expected 'signed' to contain '_type'" unless signed['_type']
 
-    # TODO: canonical JSON
-    #to_sign = CanonicalJSON.dump(signed)
-    to_sign = JSON.dump(signed)
+    to_sign = CanonicalJSON.dump(signed)
 
     signature = @key.sign(Gem::TUF::DIGEST_ALGORITHM.new, to_sign)
 

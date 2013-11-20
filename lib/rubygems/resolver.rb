@@ -77,6 +77,15 @@ class Gem::Resolver
     end
   end
 
+  def explain_list(stage, data)
+    if DEBUG_RESOLVER
+      STDOUT.printf "%20s (%d entries)\n", stage.to_s.upcase, data.size
+      data.each do |d|
+        STDOUT.printf "%20s %s\n", "", d
+      end
+    end
+  end
+
   ##
   # Creates an ActivationRequest for the given +dep+ and the last +possible+
   # specification.
@@ -234,6 +243,8 @@ class Gem::Resolver
     while !needed.empty?
       dep = needed.remove
       explain :try, [dep, dep.requester ? dep.requester.request : :toplevel]
+      explain_list :next5, needed.next5
+      explain_list :specs, Array(specs).map { |x| x.full_name }.sort
 
       # If there is already a spec activated for the requested name...
       if specs && existing = specs.find { |s| dep.name == s.name }

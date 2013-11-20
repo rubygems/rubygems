@@ -23,9 +23,9 @@ class TestGemResolverConflict < Gem::TestCase
 
     expected = <<-EXPECTED
   Activated net-ssh-2.2.2 via:
-    net-ssh-2.2.2
+    net-ssh-2.2.2 (>= 2.0.13)
   instead of (>= 2.6.5) via:
-    net-ssh-2.2.2, rye-0.9.8
+    net-ssh-2.2.2 (>= 2.0.13), rye-0.9.8 (= 0.9.8)
     EXPECTED
 
     assert_equal expected, conflict.explanation
@@ -45,7 +45,7 @@ class TestGemResolverConflict < Gem::TestCase
 
     expected = <<-EXPECTED
   Activated a-2 via:
-    a-2
+    a-2 (= 2)
   instead of (= 1) via:
     user request (gem command or Gemfile)
     EXPECTED
@@ -56,14 +56,19 @@ class TestGemResolverConflict < Gem::TestCase
   def test_request_path
     root  =
       dependency_request dep('net-ssh', '>= 2.0.13'), 'rye', '0.9.8'
+
     child =
-      dependency_request dep('net-ssh', '>= 2.6.5'), 'net-ssh', '2.2.2', root
+      dependency_request dep('other', '>= 1.0'), 'net-ssh', '2.2.2', root
 
     conflict =
       Gem::Resolver::Conflict.new nil, nil
 
-    assert_equal %w[net-ssh-2.2.2 rye-0.9.8],
-                 conflict.request_path(child.requester)
+    expected = [
+      'net-ssh-2.2.2 (>= 2.0.13)',
+      'rye-0.9.8 (= 0.9.8)'
+    ]
+
+    assert_equal expected, conflict.request_path(child.requester)
   end
 
 end

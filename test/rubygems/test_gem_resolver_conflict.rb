@@ -6,20 +6,6 @@ class TestGemResolverConflict < Gem::TestCase
     assert_same Gem::Resolver::Conflict, Gem::Resolver::DependencyConflict
   end
 
-  def test_activated_path
-    root  =
-      dependency_request dep('net-ssh', '>= 2.0.13'), 'rye', '0.9.8'
-
-    spec = quick_spec 'net-ssh', '2.2.2'
-    active =
-      Gem::Resolver::ActivationRequest.new spec, root
-
-    conflict =
-      Gem::Resolver::Conflict.new nil, active
-
-    assert_equal %w[net-ssh-2.2.2 rye-0.9.8], conflict.activated_path
-  end
-
   def test_explanation
     root  =
       dependency_request dep('net-ssh', '>= 2.0.13'), 'rye', '0.9.8'
@@ -74,9 +60,10 @@ class TestGemResolverConflict < Gem::TestCase
       dependency_request dep('net-ssh', '>= 2.6.5'), 'net-ssh', '2.2.2', root
 
     conflict =
-      Gem::Resolver::Conflict.new child, nil
+      Gem::Resolver::Conflict.new nil, nil
 
-    assert_equal %w[net-ssh-2.2.2 rye-0.9.8], conflict.request_path
+    assert_equal %w[net-ssh-2.2.2 rye-0.9.8],
+                 conflict.request_path(child.requester)
   end
 
 end

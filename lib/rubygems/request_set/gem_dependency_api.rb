@@ -363,7 +363,7 @@ class Gem::RequestSet::GemDependencyAPI
   def gem_requires name, options # :nodoc:
     if options.include? :require then
       if requires = options.delete(:require) then
-        @requires[name].concat requires
+        @requires[name].concat Array requires
       end
     else
       @requires[name] << name

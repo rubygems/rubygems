@@ -201,7 +201,7 @@ class Gem::RequestSet
   # Resolve the requested dependencies and return an Array of Specification
   # objects to be activated.
 
-  def resolve set = Gem::Resolver::IndexSet.new
+  def resolve set = Gem::Resolver::BestSet.new
     @sets << set
     @sets << @git_set
     @sets << @vendor_set

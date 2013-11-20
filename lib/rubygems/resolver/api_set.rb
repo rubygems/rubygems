@@ -53,6 +53,17 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
     end
   end
 
+  def pretty_print q # :nodoc:
+    q.group 2, '[APISet', ']' do
+      q.breakable
+      q.text "URI: #{@dep_uri}"
+
+      q.breakable
+      q.text 'gem names:'
+      q.pp @data.keys
+    end
+  end
+
   ##
   # Return data for all versions of the gem +name+.
 

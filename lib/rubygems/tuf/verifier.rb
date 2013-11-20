@@ -31,7 +31,6 @@ class Gem::TUF::Verifier
 
       signature_bytes = [signature['sig']].pack("H*")
       verified = key.verify(Gem::TUF::DIGEST_ALGORITHM.new, signature_bytes, to_verify)
-      puts "verified is: #{verified}"
       verified_count += 1 if verified
     end
 

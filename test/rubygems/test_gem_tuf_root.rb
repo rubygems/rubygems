@@ -10,7 +10,7 @@ class TestGemTUFRoot < Gem::TestCase
   ROOT_FILE       = File.read(tuf_file("root.txt"))
 
   def test_initialize
-    root = Gem::TUF::Root.new ROOT_FILE
+    Gem::TUF::Root.new ROOT_FILE
   end
 end if defined?(OpenSSL::SSL)
 

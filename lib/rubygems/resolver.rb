@@ -284,7 +284,7 @@ class Gem::Resolver
     # Retry resolution with this spec and add it's dependencies
     spec, act = activation_request state.dep, state.possibles
 
-    needed = requests spec, act, state.needed
+    needed = requests spec, act, state.needed.dup
     specs = Gem::List.prepend state.specs, act
 
     return needed, specs

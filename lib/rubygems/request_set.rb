@@ -253,7 +253,7 @@ class Gem::RequestSet
         end
       else
         unless @soft_missing
-          raise Gem::DependencyError, "Unresolved depedency found during sorting - #{dep}"
+          raise Gem::DependencyError, "Unresolved dependency found during sorting - #{dep}"
         end
       end
     end

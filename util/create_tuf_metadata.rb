@@ -59,7 +59,7 @@ def generate_test_root
     "_type"   => "Root",
     "ts"      =>  Time.now.utc.to_s,
     "expires" => (Time.now.utc + 10000).to_s, # TODO: There is a recommend value in pec
-    "keys" => { key_id(role_keys["root"]) => key_to_hash(role_keys["root"])
+    "keys"    => { key_id(role_keys["root"]) => key_to_hash(role_keys["root"])
     },
     "roles" => metadata,
       # TODO: Once delegated targets are operational, the root
@@ -78,9 +78,10 @@ def generate_test_targets
     "_type"   => "Targets",
     "ts"      =>  Time.now.utc.to_s,
     "expires" => (Time.now.utc + 10000).to_s, # TODO: There is a recommend value in pec
-    "targets" => { "test/rubygems/tuf/test.txt" => { "hashes" => { "sha256" => Digest::SHA256.hexdigest(test_file_contents) },
-                                                     "length" => test_file_contents.length,
-                                                   },
+    "targets" => { "test/rubygems/tuf/test.txt" =>
+                   { "hashes" => { "sha256" => Digest::SHA256.hexdigest(test_file_contents) },
+                     "length" => test_file_contents.length,
+                   },
                  },
     }
 
@@ -93,10 +94,11 @@ def generate_test_timestamp
     "_type"   => "Timestamp",
     "ts"      =>  Time.now.utc.to_s,
     "expires" => (Time.now.utc + 10000).to_s, # TODO: There is a recommend value in pec
-    "meta" => { "release.txt" => { "hashes" => { "sha256" => Digest::SHA256.hexdigest(release_contents) },
-                                                     "length" => release_contents.length,
-                                                   },
-                 },
+    "meta" => { "release.txt" =>
+                { "hashes" => { "sha256" => Digest::SHA256.hexdigest(release_contents) },
+                  "length" => release_contents.length,
+                },
+              },
     }
 
   write_signed_metadata("timestamp", timestamp)
@@ -110,12 +112,15 @@ def generate_test_release
     "_type"   => "Release",
     "ts"      =>  Time.now.utc.to_s,
     "expires" => (Time.now.utc + 10000).to_s, # TODO: There is a recommend value in pec
-    "meta" => { "root.txt" => { "hashes" => { "sha256" => Digest::SHA256.hexdigest(root_contents) },
-                                "length" => root_contents.length,
-                              },
-                "targets.txt" => { "hashes" => { "sha256" => Digest::SHA256.hexdigest(targets_contents) },
-                                   "length" => targets_contents.length,
-                                 },
+    "meta" => { "root.txt" =>
+                { "hashes" => { "sha256" => Digest::SHA256.hexdigest(root_contents) },
+                  "length" => root_contents.length,
+                },
+
+                "targets.txt" =>
+                 { "hashes" => { "sha256" => Digest::SHA256.hexdigest(targets_contents) },
+                   "length" => targets_contents.length,
+                 },
               },
     }
 

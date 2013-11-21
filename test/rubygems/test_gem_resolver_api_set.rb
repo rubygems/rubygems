@@ -77,5 +77,31 @@ class TestGemResolverAPISet < Gem::TestCase
     set.prefetch [a_dep, b_dep]
   end
 
+  def test_prefetch_cache_missing
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 1
+    end
+
+    data = [
+      { :name         => 'a',
+        :number       => '1',
+        :platform     => 'ruby',
+        :dependencies => [], },
+    ]
+
+    @fetcher.data["#{@dep_uri}?gems=a,b"] = Marshal.dump data
+
+    set = @DR::APISet.new @dep_uri
+
+    a_dep = @DR::DependencyRequest.new dep('a'), nil
+    b_dep = @DR::DependencyRequest.new dep('b'), nil
+
+    set.prefetch [a_dep, b_dep]
+
+    @fetcher.data.delete "#{@dep_uri}?gems=a,b"
+
+    set.prefetch [a_dep, b_dep]
+  end
+
 end
 

@@ -63,8 +63,17 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
     uri = @dep_uri + "?gems=#{needed.sort.join ','}"
     str = Gem::RemoteFetcher.fetcher.fetch_path uri
 
+    loaded = []
+
     Marshal.load(str).each do |ver|
-      @data[ver[:name]] << ver
+      name = ver[:name]
+
+      @data[name] << ver
+      loaded << name
+    end
+
+    (needed - loaded).each do |missing|
+      @data[missing] = []
     end
   end
 

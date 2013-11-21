@@ -146,7 +146,15 @@ class Gem::RequestSet
 
     resolve
 
-    install options, &block
+    if options[:explain]
+      puts "Gems to install:"
+
+      specs.map { |s| s.full_name }.sort.each do |s|
+        puts "  #{s}"
+      end
+    else
+      install options, &block
+    end
   end
 
   def install_into dir, force = true, options = {}

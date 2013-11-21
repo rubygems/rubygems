@@ -19,12 +19,12 @@ class Gem::Doctor
   # subdirectory.
 
   REPOSITORY_EXTENSION_MAP = [ # :nodoc:
+    ['specifications', '.gemspec'],
     ['build_info',     '.info'],
     ['cache',          '.gem'],
     ['doc',            ''],
     ['extensions',     ''],
     ['gems',           ''],
-    ['specifications', '.gemspec'],
   ]
 
   missing =

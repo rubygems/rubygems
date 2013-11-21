@@ -28,6 +28,20 @@ class TestGemResolverAPISpecification < Gem::TestCase
     assert_equal expected, spec.dependencies
   end
 
+  def test_source
+    set = Gem::Resolver::APISet.new
+    data = {
+      :name         => 'a',
+      :number       => '1',
+      :platform     => 'ruby',
+      :dependencies => [],
+    }
+
+    api_spec = Gem::Resolver::APISpecification.new set, data
+
+    assert_equal set.source, api_spec.source
+  end
+
   def test_spec
     spec_fetcher do |fetcher|
       fetcher.spec 'a', 1

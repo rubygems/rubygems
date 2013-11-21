@@ -63,8 +63,12 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
       begin
         tuple = Gem::NameTuple.new @name, @version, @platform
 
-        @set.source.fetch_spec tuple
+        source.fetch_spec tuple
       end
+  end
+
+  def source # :nodoc:
+    @set.source
   end
 
 end

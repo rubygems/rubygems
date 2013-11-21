@@ -27,4 +27,18 @@ class TestRelease < Gem::TestCase
     assert release.targets["length"]
   end
 
+  def test_does_not_need_to_update_root
+    root    = Gem::TUF::Root.new File.read(File.join(ENV['PWD'], 'test/rubygems/tuf/root.txt'))
+    release = Gem::TUF::Release.new(root, File.read( File.join(ENV['PWD'], 'test/rubygems/tuf/release.txt')))
+
+    assert_equal false,
+      release.should_update_root?(File.read File.join(ENV['PWD'], 'test/rubygems/tuf/root.txt'))
+  end
+
+  def test_needs_to_update_root
+    root    = Gem::TUF::Root.new File.read(File.join(ENV['PWD'], 'test/rubygems/tuf/root.txt'))
+    release = Gem::TUF::Release.new(root, File.read( File.join(ENV['PWD'], 'test/rubygems/tuf/release.txt')))
+
+    assert release.should_update_root?("")
+  end
 end

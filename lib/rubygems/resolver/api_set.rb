@@ -10,13 +10,28 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
   attr_reader :dep_uri # :nodoc:
 
   ##
-  # Creates a new APISet that will retrieve gems from +uri+ using the RubyGems
-  # API described at http://guides.rubygems.org/rubygems-org-api
+  # The Gem::Source that gems are fetched from
 
-  def initialize uri = 'https://rubygems.org/api/v1/dependencies'
-    uri = URI uri unless URI === uri # for ruby 1.8
-    @data = Hash.new { |h,k| h[k] = [] }
-    @dep_uri = uri
+  attr_reader :source
+
+  ##
+  # The corresponding place to fetch gems.
+
+  attr_reader :uri
+
+  ##
+  # Creates a new APISet that will retrieve gems from +uri+ using the RubyGems
+  # API URL +dep_uri+ which is described at
+  # http://guides.rubygems.org/rubygems-org-api
+
+  def initialize dep_uri = 'https://rubygems.org/api/v1/dependencies'
+    dep_uri = URI dep_uri unless URI === dep_uri # for ruby 1.8
+
+    @dep_uri = dep_uri
+    @uri     = dep_uri + '../../..'
+
+    @data   = Hash.new { |h,k| h[k] = [] }
+    @source = Gem::Source.new @uri
   end
 
   ##

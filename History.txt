@@ -2,6 +2,12 @@
 
 === 2.2
 
+Major enhancements:
+
+* RubyGems now checks for gem dependencies files (gem.deps.rb or Gemfile) when
+  rubygems executables are started and uses the found dependencies.  This
+  means `rake` will work similar to `bundle exec rake`.
+
 Minor enhancements:
 
 * RubyGems checks the 'allowed_push_host' metadata value when pushing a gem to

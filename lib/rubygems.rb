@@ -995,7 +995,9 @@ module Gem
   # Looks for gem dependency files (gem.deps.rb, Gemfile, Isolate) from the
   # current directory up and activates the gems in the first file found.
   #
-  # This is run automatically when rubygems starts.
+  # This is run automatically when rubygems starts.  To disable, set
+  # the <code>RUBYGEMS_GEMDEPS=</code> environment variable to an empty
+  # string.
 
   def self.use_gemdeps
     if path = ENV['RUBYGEMS_GEMDEPS'] || '-'

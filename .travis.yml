@@ -2,12 +2,13 @@
 after_script:
 - rake travis:after -t
 before_script:
-- gem uninstall executable-hooks -x --force -i `gem env home`@global
+- export GEM_PATH=`gem env home`
 - gem install rake --no-doc
 - gem install hoe-travis --no-rdoc --no-ri
 - gem install minitest -v '~> 4.7' --no-rdoc --no-ri
 - rake travis:before -t
 - gem list --details
+- gem env
 language: ruby
 notifications:
   email:

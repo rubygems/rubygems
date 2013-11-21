@@ -7,6 +7,7 @@ before_script:
 - gem install hoe-travis --no-rdoc --no-ri
 - gem install minitest -v '~> 4.7' --no-rdoc --no-ri
 - rake travis:before -t
+- gem list --details
 language: ruby
 notifications:
   email:

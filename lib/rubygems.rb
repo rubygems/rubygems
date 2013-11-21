@@ -1000,46 +1000,45 @@ module Gem
   # string.
 
   def self.use_gemdeps
-    if path = ENV['RUBYGEMS_GEMDEPS'] || '-'
-      path = path.dup.untaint
+    return unless path = ENV['RUBYGEMS_GEMDEPS'] || '-'
+    path = path.dup.untaint
 
-      if path == "-"
-        here = Dir.pwd.untaint
-        start = here
+    if path == "-"
+      here = Dir.pwd.untaint
+      start = here
 
-        begin
-          while true
-            path = GEM_DEP_FILES.find { |f| File.file?(f) }
+      begin
+        while true
+          path = GEM_DEP_FILES.find { |f| File.file?(f) }
 
-            if path
-              path = File.join here, path
-              break
-            end
-
-            Dir.chdir ".."
-
-            # If we're at a toplevel, stop.
-            return if Dir.pwd == here
-
-            here = Dir.pwd
+          if path
+            path = File.join here, path
+            break
           end
-        ensure
-          Dir.chdir start
+
+          Dir.chdir ".."
+
+          # If we're at a toplevel, stop.
+          return if Dir.pwd == here
+
+          here = Dir.pwd
         end
+      ensure
+        Dir.chdir start
       end
+    end
 
-      path.untaint
+    path.untaint
 
-      return unless File.file? path
+    return unless File.file? path
 
-      rs = Gem::RequestSet.new
-      rs.load_gemdeps path
+    rs = Gem::RequestSet.new
+    rs.load_gemdeps path
 
-      rs.resolve_current.map do |s|
-        sp = s.full_spec
-        sp.activate
-        sp
-      end
+    rs.resolve_current.map do |s|
+      sp = s.full_spec
+      sp.activate
+      sp
     end
   end
 

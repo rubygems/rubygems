@@ -162,6 +162,7 @@ module Gem
   @ruby_api_version = nil
   @sources = nil
 
+  @executables_hooks    ||= []
   @post_build_hooks     ||= []
   @post_install_hooks   ||= []
   @post_uninstall_hooks ||= []
@@ -712,6 +713,13 @@ module Gem
   end
 
   ##
+  # Adds a execute hook that will be called before gem executable is ran.
+
+  def self.execute(&hook)
+    @executables_hooks << hook
+  end
+
+  ##
   # Adds a post-build hook that will be passed an Gem::Installer instance
   # when Gem::Installer#install is called.  The hook is called after the gem
   # has been extracted and extensions have been built but before the
@@ -1005,6 +1013,19 @@ module Gem
   end
 
   ##
+  # Find the 'rubygems_executable_plugin' files in the latest installed gems
+  # and load them
+
+  def self.load_executable_plugins
+    # Remove this env var by at least 3.0
+    if ENV['RUBYGEMS_LOAD_ALL_PLUGINS']
+      load_plugin_files find_files('rubygems_executable_plugin', false)
+    else
+      load_plugin_files find_latest_files('rubygems_executable_plugin', false)
+    end
+  end
+
+  ##
   # Find the 'rubygems_plugin' files in the latest installed gems and load
   # them
 
@@ -1102,6 +1123,11 @@ module Gem
     def clear_default_specs
       @path_to_default_spec_map.clear
     end
+
+    ##
+    # The list of hooks to be run before gem executable is ran
+
+    attr_reader :executables_hooks
 
     ##
     # The list of hooks to be run after Gem::Installer#install extracts files

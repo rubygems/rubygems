@@ -47,6 +47,14 @@ if ARGV.first
   end
 end
 
+begin
+  Gem.load_executable_plugins
+  Gem.executables_hooks.each do |hook|
+    hook.call('executable')
+  end
+rescue
+end
+
 gem 'a', version
 load Gem.bin_path('a', 'executable', version)
     EOF

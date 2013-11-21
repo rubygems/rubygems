@@ -12,7 +12,7 @@ class Gem::TUF::Root
     root_txt = JSON.parse(root_txt) if root_txt.is_a? String
 
     root_txt['signed']['keys'].each do |keyid, data|
-      keys[keyid] = OpenSSL::PKey::RSA.new(data['keyval']['public'])
+      keys[keyid] = OpenSSL::PKey::RSA.new data['keyval']['public']
     end
 
     root_txt['signed']['roles'].each do |name, role_info|
@@ -24,15 +24,15 @@ class Gem::TUF::Root
       role_thresholds[name.to_sym] = role_info['threshold']
     end
 
-    @root    = verify(:root, root_txt)
-    @expires = Time.parse(@root['expires'])
+    @root    = verify :root, root_txt
+    @expires = Time.parse @root['expires']
   end
 
-  def verify(role_name, document, now = Time.now)
+  def verify role_name, document, now = Time.now
     keys      = role_keys[role_name.to_sym]
     threshold = role_thresholds[role_name.to_sym]
-    verifier  = Gem::TUF::Verifier.new(keys, threshold)
+    verifier  = Gem::TUF::Verifier.new keys, threshold
 
-    verifier.verify(document)
+    verifier.verify document
   end
 end

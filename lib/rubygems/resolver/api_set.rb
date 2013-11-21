@@ -56,7 +56,7 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
 
   def prefetch reqs
     names = reqs.map { |r| r.dependency.name }
-    needed = names.find_all { |d| !@data.key?(d) }
+    needed = names - @data.keys
 
     return if needed.empty?
 

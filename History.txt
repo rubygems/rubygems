@@ -46,6 +46,8 @@ Minor enhancements:
 * RubyGems now warns when a gem has an open-ended dependency.
 * RubyGems now raises an exception when a dependency for a gem is defined
   twice.
+* Marked the license specification attribute as recommended.  Pull request
+  #713 by Benjamin Fleischer.
 
 Bug fixes:
 

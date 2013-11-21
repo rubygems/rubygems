@@ -25,9 +25,7 @@ class TestGemResolverAPISet < Gem::TestCase
   end
 
   def test_prefetch
-    spec_fetcher do |fetcher|
-      fetcher.spec 'a', 1
-    end
+    spec_fetcher
 
     data = [
       { :name         => 'a',
@@ -51,9 +49,7 @@ class TestGemResolverAPISet < Gem::TestCase
   end
 
   def test_prefetch_cache
-    spec_fetcher do |fetcher|
-      fetcher.spec 'a', 1
-    end
+    spec_fetcher
 
     data = [
       { :name         => 'a',
@@ -78,9 +74,7 @@ class TestGemResolverAPISet < Gem::TestCase
   end
 
   def test_prefetch_cache_missing
-    spec_fetcher do |fetcher|
-      fetcher.spec 'a', 1
-    end
+    spec_fetcher
 
     data = [
       { :name         => 'a',

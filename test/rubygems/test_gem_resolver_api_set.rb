@@ -47,6 +47,33 @@ class TestGemResolverAPISet < Gem::TestCase
     assert_equal expected, set.find_all(a_dep)
   end
 
+  def test_find_all_cache
+    spec_fetcher
+
+    data = [
+      { :name         => 'a',
+        :number       => '1',
+        :platform     => 'ruby',
+        :dependencies => [], },
+    ]
+
+    @fetcher.data["#{@dep_uri}?gems=a"] = Marshal.dump data
+
+    set = @DR::APISet.new @dep_uri
+
+    a_dep = @DR::DependencyRequest.new dep('a'), nil
+
+    set.prefetch [a_dep]
+
+    @fetcher.data.delete "#{@dep_uri}?gems=a"
+
+    expected = [
+      @DR::APISpecification.new(set, data.first)
+    ]
+
+    assert_equal expected, set.find_all(a_dep)
+  end
+
   def test_prefetch
     spec_fetcher
 

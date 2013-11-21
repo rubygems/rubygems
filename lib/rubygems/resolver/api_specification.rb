@@ -55,5 +55,17 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
     end
   end
 
+  ##
+  # Fetches a Gem::Specification for this APISpecification.
+
+  def spec # :nodoc:
+    @spec ||=
+      begin
+        tuple = Gem::NameTuple.new @name, @version, @platform
+
+        @set.source.fetch_spec tuple
+      end
+  end
+
 end
 

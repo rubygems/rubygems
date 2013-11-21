@@ -2,7 +2,8 @@
 after_script:
 - rake travis:after -t
 before_script:
-- export GEM_PATH=`gem env home`
+- export GEM_HOME=`ruby -Ilib -e "puts Gem.dir"`
+- export GEM_PATH=`ruby -Ilib -e "puts Gem.path.join File::PATH_SEPARATOR"`
 - gem install rake --no-doc
 - gem install hoe-travis --no-rdoc --no-ri
 - gem install minitest -v '~> 4.7' --no-rdoc --no-ri

@@ -21,13 +21,8 @@ def deserialize_role_key role_name
   OpenSSL::PKey::RSA.new File.read "test/rubygems/tuf/#{role_name.gsub('/', '-')}-private.pem"
 end
 
-def key_to_hash key
-  key_hash = {}
-  key_hash["keytype"] = "rsa"
-  key_hash["keyval"] = {}
-  key_hash["keyval"]["private"] = ""
-  key_hash["keyval"]["public"] = key.public_key.to_pem
-  key_hash
+def role_metadata key
+  { "keyids" => [key.keyid], "threshold" => 1 }
 end
 
 def key_id key
@@ -53,7 +48,7 @@ end
 
 def write_signed_metadata(role, metadata)
   key = deserialize_role_key(role)
-  signer = Gem::TUF::Signer.new(key_id(key), key)
+  signer = Gem::TUF::Signer.new(key)
   signed_content = signer.sign("signed" => metadata)
   File.write("test/rubygems/tuf/#{role}.txt", JSON.pretty_generate(signed_content))
 end

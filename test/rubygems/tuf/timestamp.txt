@@ -1,0 +1,22 @@
+{
+  "signed": {
+    "_type": "Timestamp",
+    "ts": "2013-11-22 02:58:29 UTC",
+    "expires": "2013-11-22 05:45:09 UTC",
+    "meta": {
+      "release.txt": {
+        "hashes": {
+          "sha256": "8c4acff5d2a1da57d07c10cb59cf5da57f86fb51b5faa59508444eb0b627b40a"
+        },
+        "length": 1177
+      }
+    }
+  },
+  "signatures": [
+    {
+      "keyid": "98f4de284913f6b26f70a726e773b0390ef98060472fabd145c7a5ccc79d62de",
+      "method": "RSASSA-PKCS#1-v1.5+SHA512",
+      "sig": "48970283417bd81e6fd1f13c222b55971a6d5668810e2ae267f6a5d8abeb037076c16998850346f46fcd09bb117dc58b1395cdb7afa32ede02d1ed1cea277b5c1070e64331e5d98d2d05e164c9a51e76855f7e2685a7a4e8b333122f59dee84a0439242a360b7d8e34eb30296a1d55df424517ceefe4e2b51af41bf5434cb4f43401060030e0dd07ed33b7a54c5a089d33ae11ef428fc02e3c3dd94db82f65f5a5d93814d5ea2d089bbff08950dd5ed3a6955aa36df33542eae24238e997cb1e0c38fed10fba3320907dadbe96f4f6a1c8dce85a0456378ee612c856938a755c5ea2484de10cec2f5fd0d4e92a34fe2100835f35d5e67b6e99a8c0cfb95cc559"
+    }
+  ]
+}

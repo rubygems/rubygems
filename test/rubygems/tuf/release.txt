@@ -1,28 +1,28 @@
 {
-  "signatures": [
-    {
-      "keyid": "4f0308b343b0deb0e4213d39903bbacbfc8d9b9c400782e7e5b0c68948f2b683",
-      "method": "RSASSA-PKCS#1-v1.5+SHA512",
-      "sig": "26a7a3ef0d9a629d97cb9e831ba87eeeb4a46e15a7da2ad1add1e2f8190091289e23daa1e8194283ae9eebdc889d79f73cef4fca8f16e119d55ec27b3a4c30dcec887250550eb7ee216f40f540dd17db90d0daa5016a05a7ddb1c9dfcedf8ee4156dd04370c28367c7323558f9b253f4c91c1815e81d9471c48edc68a7ad27d46f56e97cc2479d5ae6eb76645d1f7a85ee84ef6763d8cacdae53ec53d4f9ee4259529d678dd83c5dad107bad3b157ea5b303c21c0c0bb8155e6f4905eb096ee8dfc0f8c4a6dbb404b2d2a223e3cdb0d3feb7286836d815049efb77a607d6b11be88cc792f539baaa3de6660c43b96cd17a9af7a535bf76f97837ebc0ec011b7b"
-    }
-  ],
   "signed": {
     "_type": "Release",
-    "expires": "2014-12-06 11:59:59 UTC",
+    "ts": "2013-11-22 02:58:29 UTC",
+    "expires": "2013-11-22 05:45:09 UTC",
     "meta": {
       "root.txt": {
         "hashes": {
-          "sha512": "d9229387c96c6bbde01d42887868a11fef593f7d09922af8460b5ec8bf9047061efe49bfa3c4e1917fee5da139e599aa83301fca2275309fb6382cb0e43446fb"
+          "sha256": "d007ca9db61a514ba248c6a5e0c820b8334de651f9a2ec20bd46c978e88f1243"
         },
-        "length": 2118
+        "length": 4891
       },
       "targets.txt": {
         "hashes": {
-          "sha512": "TODO: make a real targets.txt"
+          "sha256": "f65afce19bc29266dca0afbe77175fabffbd114d14d0c25ee4e4e13ecb4d36fa"
         },
-        "length": 0
+        "length": 1022
       }
-    },
-    "version": 2
-  }
+    }
+  },
+  "signatures": [
+    {
+      "keyid": "41e29a40cf855334fb205302fe2d0919917bda694ff5cfcd7249a99ab989caed",
+      "method": "RSASSA-PKCS#1-v1.5+SHA512",
+      "sig": "b378783dd1352b18f9cf5bdc74ea6d1bcd0ad7ee9b0d1065f5cc256c91946a6423b4d6af85baf1ddd2b779fabcac985062c188b144dea3137a1c542f8a25363bd6fdb441d9d516e0e2189c9930f9471142028b895c45303473049a4d93734745e1469d04fdffff9db082d2638567e0674fb661d67d7d5129ef61b2c372ba705e515fdcf0943df8d423771a05729c2663d4edf0b88dc1e8d70ebb306dbc2d24e9ea73e0ee1cbebf250660f2580b7f9cf08d37b54039848e426fdc53496d30ed39129496bb3c93f1e5d06dcf3a95fda29b9b5f438754ba0b53a8ecf8625717ab60dd28925d5009ce4fb8122108236f400450bc3389554997ff48faef0b386f72ea"
+    }
+  ]
 }

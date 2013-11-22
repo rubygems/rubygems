@@ -31,6 +31,7 @@ module Gem::TUF
   class VerificationError < StandardError; end
 end
 
+require 'rubygems/tuf/public_key'
 require 'rubygems/tuf/signer'
 require 'rubygems/tuf/verifier'
 require 'rubygems/tuf/root'

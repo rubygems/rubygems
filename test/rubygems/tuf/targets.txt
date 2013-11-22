@@ -1,0 +1,22 @@
+{
+  "signed": {
+    "_type": "Targets",
+    "ts": "2013-11-22 02:58:29 UTC",
+    "expires": "2013-11-22 05:45:09 UTC",
+    "targets": {
+      "test/rubygems/tuf/test.txt": {
+        "hashes": {
+          "sha256": "59a6f8a560dc8a7f99f470570bcc100f50e415922fbf71a27af34c5630cf233a"
+        },
+        "length": 5
+      }
+    }
+  },
+  "signatures": [
+    {
+      "keyid": "fc0e72ad49491010ad3db318d10e3ddacf2d99399e693dfe4de5b3500f63dc39",
+      "method": "RSASSA-PKCS#1-v1.5+SHA512",
+      "sig": "dd8f5d329eb4f0541b39e956714e471f8220f17d096ff5de1a89b9f6e6f5eb5b1805de974340522359b5205540816a6ad59acc666bf89debc6dd42e4012d92e75a85920ba5f8366b642434e4b2e0b3c952ec95e8e8c2f4a91c1d320ee8ccdba00af9bd57a701f00c0be5f10d89d200f7b2c7c8e30213fe878baf6a19db0ce4338707a1b41e6141ac6a9386da3da4e649ffacd266d4db9d2a344b5aafb3d2edeb88fc473f31d940a693a9c70c8c76b36c88b404eeada935596fcc7bcaa4c9bddc401c80989000e86841d27e9553edcddbbf9a07d8b6d579b986ec747adb31bfe86db57c445fa46112408b978b6876c1cda2c9bcc1c513fa48df2ecdf615b78bf0"
+    }
+  ]
+}

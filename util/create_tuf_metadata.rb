@@ -22,46 +22,37 @@ def deserialize_role_key role
   OpenSSL::PKey::RSA.new File.read "test/rubygems/tuf/#{role}-private.pem"
 end
 
-def key_to_hash key
-  key_hash = {}
-  key_hash["keytype"] = "rsa"
-  key_hash["keyval"] = {}
-  key_hash["keyval"]["private"] = ""
-  key_hash["keyval"]["public"] = key.public_key.to_pem
-  key_hash
+def role_metadata key
+  { "keyids" => [key.keyid], "threshold" => 1 }
 end
 
-def key_id key
-  Digest::SHA256.hexdigest CanonicalJSON.dump(key_to_hash(key).to_json)
-end
-
-def role_metadata role
-  key = deserialize_role_key role
-  { "keyids" => [key_id(key)], "threshold" => 1 }
-end
-
-def write_signed_metadata(role, metadata)
+def write_signed_metadata role, metadata
   key = deserialize_role_key(role)
-  signer = Gem::TUF::Signer.new(key_id(key), key)
+  signer = Gem::TUF::Signer.new(key)
   signed_content = signer.sign("signed" => metadata)
   File.write("test/rubygems/tuf/#{role}.txt", JSON.pretty_generate(signed_content))
 end
 
 def generate_test_root
-  role_keys = {}
-  metadata = {}
+  role_keys   = {}
+  metadata    = {}
+  public_keys = {}
+
   ROLE_NAMES.each do |role|
-    role_keys[role] = make_key_pair role
-    metadata[role] = role_metadata(role)
+    private_role_key = make_key_pair role
+    public_role_key  = Gem::TUF::PublicKey.new(private_role_key.public_key)
+
+    role_keys[role] = private_role_key
+    metadata[role]  = role_metadata public_role_key
+    public_keys[public_role_key.keyid] = public_role_key.as_json
   end
 
   root = {
     "_type"   => "Root",
     "ts"      =>  Time.now.utc.to_s,
     "expires" => (Time.now.utc + 10000).to_s, # TODO: There is a recommend value in pec
-    "keys"    => { key_id(role_keys["root"]) => key_to_hash(role_keys["root"])
-    },
-    "roles" => metadata,
+    "keys"    => public_keys,
+    "roles"   => metadata,
       # TODO: Once delegated targets are operational, the root
       # targets.txt should use an offline key.
   }

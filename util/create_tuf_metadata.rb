@@ -7,19 +7,18 @@ require 'rubygems/util/canonical_json'
 require 'rubygems/tuf'
 require 'time'
 
-
-
 ROLE_NAMES = %w[root targets timestamp release mirrors]
+TARGET_ROLES = %w[targets/claimed targets/recently-claimed targets/unclaimed]
 
 def make_key_pair role_name
   key = OpenSSL::PKey::RSA.new(2048,65537)
-  File.write "test/rubygems/tuf/#{role_name}-private.pem", key.to_pem
-  File.write "test/rubygems/tuf/#{role_name}-public.pem", key.public_key.to_pem
+  File.write "test/rubygems/tuf/#{role_name.gsub('/', '-')}-private.pem", key.to_pem
+  File.write "test/rubygems/tuf/#{role_name.gsub('/', '-')}-public.pem", key.public_key.to_pem
   key
 end
 
-def deserialize_role_key role
-  OpenSSL::PKey::RSA.new File.read "test/rubygems/tuf/#{role}-private.pem"
+def deserialize_role_key role_name
+  OpenSSL::PKey::RSA.new File.read "test/rubygems/tuf/#{role_name.gsub('/', '-')}-private.pem"
 end
 
 def key_to_hash key
@@ -35,9 +34,21 @@ def key_id key
   Digest::SHA256.hexdigest CanonicalJSON.dump(key_to_hash(key).to_json)
 end
 
-def role_metadata role
-  key = deserialize_role_key role
-  { "keyids" => [key_id(key)], "threshold" => 1 }
+class Role
+
+  def initialize(keyids, name=nil, paths=nil, threshold=1)
+    @name = name
+    @keyids = keyids
+    @paths = paths
+    @threshold = threshold
+  end
+
+  def metadata
+    result = { "keyids" => @keyids, "threshold" => @threshold }
+    result["paths"] = @paths unless @paths.nil?
+    result["name"] = @name unless @name.nil?
+    result
+  end
 end
 
 def write_signed_metadata(role, metadata)
@@ -49,19 +60,21 @@ end
 
 def generate_test_root
   role_keys = {}
-  metadata = {}
+  role_metadata = {}
+  keys = {}
   ROLE_NAMES.each do |role|
-    role_keys[role] = make_key_pair role
-    metadata[role] = role_metadata(role)
+    key = make_key_pair role
+    key_digest = key_id key
+    keys[key_digest] = key_to_hash key
+    role_metadata[role] = Role.new([key_digest]).metadata
   end
 
   root = {
     "_type"   => "Root",
     "ts"      =>  Time.now.utc.to_s,
     "expires" => (Time.now.utc + 10000).to_s, # TODO: There is a recommend value in pec
-    "keys"    => { key_id(role_keys["root"]) => key_to_hash(role_keys["root"])
-    },
-    "roles" => metadata,
+    "keys"    => keys,
+    "roles" => role_metadata,
       # TODO: Once delegated targets are operational, the root
       # targets.txt should use an offline key.
   }
@@ -71,18 +84,23 @@ end
 
 def generate_test_targets
   # TODO: multiple target files
-  # TODO: delegation
-  test_file_contents = File.read("test/rubygems/tuf/test.txt")
+
+  roles = {}
+  keys = {}
+
+  TARGET_ROLES.each do |role|
+    key = make_key_pair role
+    key_digest = key_id key
+    keys[key_digest] = key_to_hash(key)
+    roles[role] = Role.new([key_digest], role, [], 1).metadata
+  end
 
   targets = {
     "_type"   => "Targets",
     "ts"      =>  Time.now.utc.to_s,
     "expires" => (Time.now.utc + 10000).to_s, # TODO: There is a recommend value in pec
-    "targets" => { "test/rubygems/tuf/test.txt" =>
-                   { "hashes" => { "sha256" => Digest::SHA256.hexdigest(test_file_contents) },
-                     "length" => test_file_contents.length,
-                   },
-                 },
+    "delegations" => {"roles" => roles.values, "keys" => keys},
+    "targets" => {}
     }
 
   write_signed_metadata("targets", targets)

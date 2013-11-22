@@ -37,6 +37,26 @@ class Gem::Resolver::IndexSpecification < Gem::Resolver::Specification
     '#<%s %s source %s>' % [self.class, full_name, @source]
   end
 
+  ##
+  # Installs this gem using +options+.  Yields the installer instance before
+  # installation begins.
+
+  def install options
+    require 'rubygems/installer'
+
+    destination = options[:install_dir] || Gem.dir
+
+    Gem.ensure_gem_subdirectories destination
+
+    gem = source.download spec, destination
+
+    installer = Gem::Installer.new gem, options
+
+    yield installer if block_given?
+
+    installer.install
+  end
+
   def pretty_print q # :nodoc:
     q.group 2, '[Index specification', ']' do
       q.breakable

@@ -57,6 +57,16 @@ class Gem::Resolver::Specification
   end
 
   ##
+  # Installs this specification using the Gem::Installer +options+.  The
+  # install method must yield a Gem::Installer instance which indicates the
+  # gem will be installed, or +nil+ which indicates the gem is already
+  # installed.
+
+  def install options
+    raise NotImplementedError, "#{self.class}#install"
+  end
+
+  ##
   # Returns true if this specification is installable on this platform.
 
   def installable_platform?

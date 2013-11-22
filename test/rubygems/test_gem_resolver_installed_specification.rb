@@ -18,6 +18,20 @@ class TestGemResolverInstalledSpecification < Gem::TestCase
     assert_equal Gem::Platform::RUBY, spec.platform
   end
 
+  def test_install
+    a = util_spec 'a'
+
+    spec = Gem::Resolver::InstalledSpecification.new @set, a
+
+    called = :junk
+
+    spec.install({}) do |installer|
+      called = installer
+    end
+
+    assert_nil called
+  end
+
   def test_installable_platform_eh
     b, b_gem = util_gem 'a', 1 do |s|
       s.platform = Gem::Platform.new %w[cpu other_platform 1]

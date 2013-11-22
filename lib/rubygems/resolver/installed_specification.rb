@@ -11,6 +11,14 @@ class Gem::Resolver::InstalledSpecification < Gem::Resolver::SpecSpecification
   end
 
   ##
+  # This is a null install as this specification is already installed.
+  # +options+ are ignored.
+
+  def install options
+    yield nil
+  end
+
+  ##
   # Returns +true+ if this gem is installable for the current platform.
 
   def installable_platform?

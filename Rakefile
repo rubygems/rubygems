@@ -95,17 +95,10 @@ rescue LoadError, RuntimeError # rake 10.1 on rdoc from ruby 1.9.2 and earlier
   end
 end
 
-task :clean_env do
-  ENV.delete "GEM_HOME"
-  ENV.delete "GEM_PATH"
-end
-
 desc "Install gems needed to run the tests"
 task :install_test_deps => :clean_env do
   sh "gem install minitest -v '~> 4.0'"
 end
-
-task :test => :clean_env
 
 # --------------------------------------------------------------------
 # Creating a release

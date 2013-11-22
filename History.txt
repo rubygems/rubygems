@@ -4,9 +4,13 @@
 
 Major enhancements:
 
-* RubyGems now checks for gem dependencies files (gem.deps.rb or Gemfile) when
+* RubyGems can check for gem dependencies files (gem.deps.rb or Gemfile) when
   rubygems executables are started and uses the found dependencies.  This
-  means `rake` will work similar to `bundle exec rake`.
+  means `rake` will work similar to `bundle exec rake`.  To enable this set
+  the `RUBYGEMS_GEMDEPS` environment variable to the location of your
+  dependencies file.
+
+  See Gem::use_gemdeps for further details.
 
 Minor enhancements:
 

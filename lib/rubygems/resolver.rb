@@ -411,5 +411,6 @@ require 'rubygems/resolver/api_specification'
 require 'rubygems/resolver/git_specification'
 require 'rubygems/resolver/index_specification'
 require 'rubygems/resolver/installed_specification'
+require 'rubygems/resolver/local_specification'
 require 'rubygems/resolver/vendor_specification'
 

@@ -29,6 +29,15 @@ def key_id key
   Digest::SHA256.hexdigest CanonicalJSON.dump(key_to_hash(key).to_json)
 end
 
+def key_to_hash key
+  key_hash = {}
+  key_hash["keytype"] = "rsa"
+  key_hash["keyval"] = {}
+  key_hash["keyval"]["private"] = ""
+  key_hash["keyval"]["public"] = key.public_key.to_pem
+  key_hash
+end
+
 class Role
 
   def initialize(keyids, name=nil, paths=nil, threshold=1)
@@ -54,7 +63,6 @@ def write_signed_metadata(role, metadata)
 end
 
 def generate_test_root
-  role_keys = {}
   role_metadata = {}
   keys = {}
   ROLE_NAMES.each do |role|

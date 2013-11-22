@@ -56,5 +56,12 @@ class Gem::Resolver::Specification
     "#{@name}-#{@version}"
   end
 
+  ##
+  # Returns true if this specification is installable on this platform.
+
+  def installable_platform?
+    Gem::Platform.match spec.platform
+  end
+
 end
 

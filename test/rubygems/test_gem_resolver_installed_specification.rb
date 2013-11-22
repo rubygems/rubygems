@@ -14,5 +14,20 @@ class TestGemResolverInstalledSpecification < Gem::TestCase
     assert_equal Gem::Platform::RUBY, spec.platform
   end
 
+  def test_installable_platform_eh
+    set     = Gem::Resolver::CurrentSet.new
+
+    b, b_gem = util_gem 'a', 1 do |s|
+      s.platform = Gem::Platform.new %w[cpu other_platform 1]
+    end
+
+    source = Gem::Source::SpecificFile.new b_gem
+
+    b_spec = Gem::Resolver::InstalledSpecification.new set, b, source
+
+    assert b_spec.installable_platform?
+  end
+
+
 end
 

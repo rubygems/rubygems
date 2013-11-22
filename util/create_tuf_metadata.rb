@@ -21,10 +21,6 @@ def deserialize_role_key role_name
   OpenSSL::PKey::RSA.new File.read "test/rubygems/tuf/#{role_name.gsub('/', '-')}-private.pem"
 end
 
-def role_metadata key
-  { "keyids" => [key.keyid], "threshold" => 1 }
-end
-
 def key_id key
   Digest::SHA256.hexdigest CanonicalJSON.dump(key_to_hash(key).to_json)
 end
@@ -62,22 +58,29 @@ def write_signed_metadata(role, metadata)
   File.write("test/rubygems/tuf/#{role}.txt", JSON.pretty_generate(signed_content))
 end
 
+def role_metadata key
+  { "keyids" => [key.keyid], "threshold" => 1}
+end
+
 def generate_test_root
-  role_metadata = {}
-  keys = {}
+  metadata = {}
+  role_keys = {}
+  public_keys = {}
   ROLE_NAMES.each do |role|
-    key = make_key_pair role
-    key_digest = key_id key
-    keys[key_digest] = key_to_hash key
-    role_metadata[role] = Role.new([key_digest]).metadata
+    private_role_key = make_key_pair role
+    public_role_key = Gem::TUF::PublicKey.new(private_role_key.public_key)
+
+    role_keys[role] = private_role_key
+    metadata[role] = role_metadata public_role_key
+    public_keys[public_role_key.keyid] = public_role_key.as_json
   end
 
   root = {
     "_type"   => "Root",
     "ts"      =>  Time.now.utc.to_s,
     "expires" => (Time.now.utc + 10000).to_s, # TODO: There is a recommend value in pec
-    "keys"    => keys,
-    "roles" => role_metadata,
+    "keys"    => public_keys,
+    "roles"   => metadata,
       # TODO: Once delegated targets are operational, the root
       # targets.txt should use an offline key.
   }

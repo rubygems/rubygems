@@ -25,7 +25,8 @@ class TestGemSourceGit < Gem::TestCase
     git_gem 'b'
 
     Dir.chdir 'git/a' do
-      system @git, 'submodule', '--quiet', 'add', File.expand_path('../b'), 'b', out: IO::NULL
+      Gem::Util.silent_system @git, 'submodule', '--quiet',
+                              'add', File.expand_path('../b'), 'b'
       system @git, 'commit', '--quiet', '-m', 'add submodule b'
     end
 

@@ -11,5 +11,11 @@ class TestGemUtil < Gem::TestCase
     end
   end
 
+  def test_silent_system
+    assert_silent do
+      Gem::Util.silent_system Gem.ruby, '-e', 'puts "hello"; warn "hello"'
+    end
+  end
+
 end
 

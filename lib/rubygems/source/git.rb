@@ -91,8 +91,8 @@ class Gem::Source::Git < Gem::Source
       success = system @git, 'reset', '--quiet', '--hard', @reference
 
       success &&=
-        system @git, 'submodule', 'update',
-               '--quiet', '--init', '--recursive', out: IO::NULL if @need_submodules
+        Gem::Util.silent_system @git, 'submodule', 'update',
+               '--quiet', '--init', '--recursive' if @need_submodules
 
       success
     end

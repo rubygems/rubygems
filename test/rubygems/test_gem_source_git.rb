@@ -162,6 +162,14 @@ class TestGemSourceGit < Gem::TestCase
     end
 
     assert_equal %w[a-1 b-1], specs.map { |spec| spec.full_name }
+
+    a_spec = specs.shift
+
+    assert_equal source.install_dir, a_spec.full_gem_path
+
+    b_spec = specs.shift
+
+    assert_equal File.join(source.install_dir, 'b'), b_spec.full_gem_path
   end
 
   def test_uri_hash

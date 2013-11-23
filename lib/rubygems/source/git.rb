@@ -161,7 +161,9 @@ class Gem::Source::Git < Gem::Source
         file      = File.basename spec_file
 
         Dir.chdir directory do
-          Gem::Specification.load file
+          spec = Gem::Specification.load file
+          spec.full_gem_path = File.expand_path '.' if spec
+          spec
         end
       end.compact
     end

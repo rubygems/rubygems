@@ -1,22 +1,73 @@
 {
   "signed": {
     "_type": "Targets",
-    "ts": "2013-11-22 02:58:29 UTC",
-    "expires": "2013-11-22 05:45:09 UTC",
-    "targets": {
-      "test/rubygems/tuf/test.txt": {
-        "hashes": {
-          "sha256": "59a6f8a560dc8a7f99f470570bcc100f50e415922fbf71a27af34c5630cf233a"
+    "ts": "2013-11-23 19:36:41 UTC",
+    "expires": "2014-11-23 19:36:41 UTC",
+    "delegations": {
+      "roles": [
+        {
+          "keyids": [
+            "5cfb5465770c37a6959e1509f09f05fe487ca51528776ab29b1e2a2208997d4b"
+          ],
+          "threshold": 1,
+          "paths": [
+
+          ],
+          "name": "targets/claimed"
         },
-        "length": 5
+        {
+          "keyids": [
+            "78d8fb821fe117a96511f2472bbba335b0c231b4bf87a86a541226e5fce634a2"
+          ],
+          "threshold": 1,
+          "paths": [
+
+          ],
+          "name": "targets/recently-claimed"
+        },
+        {
+          "keyids": [
+            "a12f489d3fe3e6d5c18756c185a1f98d223036ba80b1887a433fff179f142eb2"
+          ],
+          "threshold": 1,
+          "paths": [
+
+          ],
+          "name": "targets/unclaimed"
+        }
+      ],
+      "keys": {
+        "5cfb5465770c37a6959e1509f09f05fe487ca51528776ab29b1e2a2208997d4b": {
+          "keytype": "rsa",
+          "keyval": {
+            "private": "",
+            "public": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4XZweElVXer5Iwx00ZuB\neyGqtMctzZLz7S1kHJampLqlDyi2b2w3mnvADXt+5FILZBkKH8wsbWZ7ZwiJGwBw\nLU3HbIwo7sT4Hube2tglouXcdWyTrE/7tNys+kE8JCfPThyDUs4AjgcYM3e32o6n\nVblp2zH+0lNhThSVQLL2iI2BD3GdzZNEzfAc0w9B8nca1ROnxJQcm05j0wOujtLk\nuqdEBIXLXIeUa5/p9sqcj11pt0wLl4b6ihNxKmBQQPkgORMdee95he4kOQxUi4M/\nhkiT1Z2Dzb2PCGC6Iy/vF9JYqB79Ajg3BYo7vqK1liLEG+O8fPQn3/Ki3yQJKiRI\n/wIDAQAB\n-----END PUBLIC KEY-----\n"
+          }
+        },
+        "78d8fb821fe117a96511f2472bbba335b0c231b4bf87a86a541226e5fce634a2": {
+          "keytype": "rsa",
+          "keyval": {
+            "private": "",
+            "public": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnfVz/YPdCCUsI2SFnuDs\n55hhogeqpmTEyPu1nENkulGKwzGu2XufP/muVQpHpHIMtvRzbv9iqP3cF/Dsxprd\naTtAZV5N/ztpGRkWRfCypJGZXsSAc09OxGMuGqtOIxYzsgiOdD4hZO9nJbzhPbjd\nxmQ+CCH63JJBHWDF2aZ+TvgSnQ3sdJQ7ZvOMVN6PvjnZplY1qxAMFfAltPKmoFSG\nn+6Jp3OkCbQZ7OJ0MUXMyRoR68qg7BhduvEniqTWLodsfHnsxByg7FDXzsYcJLlp\nzWwA3YaBH4gwJQoB6KqGDB1b88N5gYgsGfZNAqQ5HR42AGw+B0xsSYEVE49uu853\ngwIDAQAB\n-----END PUBLIC KEY-----\n"
+          }
+        },
+        "a12f489d3fe3e6d5c18756c185a1f98d223036ba80b1887a433fff179f142eb2": {
+          "keytype": "rsa",
+          "keyval": {
+            "private": "",
+            "public": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm9yBHiNQK0zca7nrH+80\njtf29+cnlDrbFcQFopYb0hfIoorwLA8EEoYfbJcu9Dj+MZSGGo/m8Yb2IxLxFJUd\nuLjnRAPvmoZBnB5SQmCMcajAedvGi+2Qfv9UqbTNacV2lijBKM7upXwVML5VfczB\nokaajIwxIkP1u9JXxggFuSZTf2SsBGCt9gJmU//GtqlZP3pquzuOmz06V+boQhSU\n8dr5HkP4pbuczpLZWs6xcQoA55/x2QDLq45orZsg9nxNCZxyaF6Z5rNty3ADLTcq\n5KkPev9NfOP/NZPIkdyNqmR0w6VF6UM+h3JF611tXILA1c1/8DHe/Ut5LuIfzWah\ntwIDAQAB\n-----END PUBLIC KEY-----\n"
+          }
+        }
       }
+    },
+    "targets": {
     }
   },
   "signatures": [
     {
-      "keyid": "fc0e72ad49491010ad3db318d10e3ddacf2d99399e693dfe4de5b3500f63dc39",
+      "keyid": "478c6730d466e936548d7fb1879925a501a064656ff05b2e53faf403f100c9c7",
       "method": "RSASSA-PKCS#1-v1.5+SHA512",
-      "sig": "dd8f5d329eb4f0541b39e956714e471f8220f17d096ff5de1a89b9f6e6f5eb5b1805de974340522359b5205540816a6ad59acc666bf89debc6dd42e4012d92e75a85920ba5f8366b642434e4b2e0b3c952ec95e8e8c2f4a91c1d320ee8ccdba00af9bd57a701f00c0be5f10d89d200f7b2c7c8e30213fe878baf6a19db0ce4338707a1b41e6141ac6a9386da3da4e649ffacd266d4db9d2a344b5aafb3d2edeb88fc473f31d940a693a9c70c8c76b36c88b404eeada935596fcc7bcaa4c9bddc401c80989000e86841d27e9553edcddbbf9a07d8b6d579b986ec747adb31bfe86db57c445fa46112408b978b6876c1cda2c9bcc1c513fa48df2ecdf615b78bf0"
+      "sig": "5a6eb5cdae9a802af6a8c89401a86448f5ad650526f7264726c117666b4f4a0684533c33a30626131c9fe181eeb24ef92d25c9f9e8c0be33b5fd53860f116d34aec3dc672824ef2ba3ac65391c0d836b9dddf0a9f64eb3e455b65e67258b4aba8c6c4afa14b9155ab1acf32cf6b81b83f8377b19ae245edba27963c07c8652463fbbcf3db0656a70ea01ae876fe66ff04b5e216614ed7a06c314ec113852d3030dec27be7144ff7c1c9d4326068c0c5eb5d5f9be4030023c1f894593618096e9a3889780a07069cef618d0fddf864be7aa455fdc00545f54254b730ca229bc871e7f00d99855de2f82ab526adae96927b59f95b44d14fc6263886d3aed10d19e"
     }
   ]
 }

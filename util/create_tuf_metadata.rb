@@ -9,6 +9,7 @@ require 'time'
 
 ROLE_NAMES = %w[root targets timestamp release mirrors]
 TARGET_ROLES = %w[targets/claimed targets/recently-claimed targets/unclaimed]
+EXPIRATION_OFFSET = 86400 * 365 # 1 year
 
 def make_key_pair role_name
   key = OpenSSL::PKey::RSA.new(2048,65537)
@@ -78,7 +79,7 @@ def generate_test_root
   root = {
     "_type"   => "Root",
     "ts"      =>  Time.now.utc.to_s,
-    "expires" => (Time.now.utc + 10000).to_s, # TODO: There is a recommend value in pec
+    "expires" => (Time.now.utc + EXPIRATION_OFFSET).to_s, # TODO: There is a recommend value in pec
     "keys"    => public_keys,
     "roles"   => metadata,
       # TODO: Once delegated targets are operational, the root
@@ -104,7 +105,7 @@ def generate_test_targets
   targets = {
     "_type"   => "Targets",
     "ts"      =>  Time.now.utc.to_s,
-    "expires" => (Time.now.utc + 10000).to_s, # TODO: There is a recommend value in pec
+    "expires" => (Time.now.utc + EXPIRATION_OFFSET).to_s, # TODO: There is a recommend value in pec
     "delegations" => {"roles" => roles.values, "keys" => keys},
     "targets" => {}
     }
@@ -117,7 +118,7 @@ def generate_test_timestamp
   timestamp = {
     "_type"   => "Timestamp",
     "ts"      =>  Time.now.utc.to_s,
-    "expires" => (Time.now.utc + 10000).to_s, # TODO: There is a recommend value in pec
+    "expires" => (Time.now.utc + EXPIRATION_OFFSET).to_s, # TODO: There is a recommend value in pec
     "meta" => { "release.txt" =>
                 { "hashes" => { "sha256" => Digest::SHA256.hexdigest(release_contents) },
                   "length" => release_contents.length,
@@ -135,7 +136,7 @@ def generate_test_release
   release = {
     "_type"   => "Release",
     "ts"      =>  Time.now.utc.to_s,
-    "expires" => (Time.now.utc + 10000).to_s, # TODO: There is a recommend value in pec
+    "expires" => (Time.now.utc + EXPIRATION_OFFSET).to_s, # TODO: There is a recommend value in pec
     "meta" => { "root.txt" =>
                 { "hashes" => { "sha256" => Digest::SHA256.hexdigest(root_contents) },
                   "length" => root_contents.length,

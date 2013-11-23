@@ -169,7 +169,7 @@ class Gem::RequestSet
     options[:install_dir] = dir
     options[:only_install_dir] = true
 
-    sorted_requests.each do |request, installer|
+    sorted_requests.each do |request|
       spec = request.spec
 
       if existing.find { |s| s.full_name == spec.full_name } then

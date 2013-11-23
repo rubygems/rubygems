@@ -5,6 +5,10 @@ Gem.refresh
 require 'autotest/restart'
 require 'autotest/isolate'
 
+Autotest.add_hook :run_command do |_, cmd|
+  cmd.sub! ' -e ', ' -we '
+end
+
 Autotest.add_hook :initialize do |at|
   at.testlib = ''
 

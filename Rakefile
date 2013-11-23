@@ -70,7 +70,7 @@ hoe = Hoe.spec 'rubygems-update' do
   spec_extras['require_paths'] = %w[hide_lib_for_update]
 end
 
-hoe.test_prelude = 'p Gem.path; gem "minitest", "~> 4.0"'
+hoe.test_prelude = 'gem "minitest", "~> 4.0"'
 
 Rake::Task['docs'].clear
 Rake::Task['clobber_docs'].clear

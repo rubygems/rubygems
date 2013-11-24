@@ -544,6 +544,14 @@ $SAFE=1.  There is no functional difference compared to Ruby 2.0.0.preview2
   * URI scheme matching is no longer case-sensitive.  Fixes #322
   * ext/builder now checks $MAKE as well as $make (okkez)
 
+=== 1.8.29 / 2013-11-23
+
+Bug fixes:
+
+* Fixed installation when the LANG environment variable is empty.
+* Added DigiCert High Assurance EV Root CA to the default SSL certificates for
+  cloudfront.
+
 === 1.8.28 / 2013-10-08
 
 Bug fixes:

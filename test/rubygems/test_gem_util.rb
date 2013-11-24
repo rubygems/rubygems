@@ -17,5 +17,15 @@ class TestGemUtil < Gem::TestCase
     end
   end
 
+  def test_traverse_parents
+    FileUtils.mkdir_p 'a/b/c'
+
+    enum = Gem::Util.traverse_parents 'a/b/c'
+
+    assert_equal File.join(@tempdir, 'a/b/c'), enum.next
+    assert_equal File.join(@tempdir, 'a/b'),   enum.next
+    assert_equal File.join(@tempdir, 'a'),     enum.next
+  end
+
 end
 

@@ -92,7 +92,7 @@ end
 
 task :prerelease => [:clobber, :check_manifest, :test]
 
-task :postrelease => [:upload, :publish_docs]
+task :postrelease => [:upload]
 
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
 task :package do

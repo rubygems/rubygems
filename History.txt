@@ -5,6 +5,8 @@
 Bug fixes:
 
 * Fixed installation when the LANG environment variable is empty.
+* Added DigiCert High Assurance EV Root CA to the default SSL certificates for
+  cloudfront.
 
 === 1.8.28 / 2013-10-08
 

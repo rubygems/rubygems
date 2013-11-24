@@ -1,5 +1,11 @@
 # coding: UTF-8
 
+=== 1.8.29 / 2013-11-23
+
+Bug fixes:
+
+* Fixed installation when the LANG environment variable is empty.
+
 === 1.8.28 / 2013-10-08
 
 Bug fixes:

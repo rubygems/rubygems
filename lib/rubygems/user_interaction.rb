@@ -666,6 +666,11 @@ end
 # STDOUT, and STDERR.
 
 class Gem::ConsoleUI < Gem::StreamUI
+
+  ##
+  # The Console UI has no arguments as it defaults to reading input from
+  # stdin, output to stdout and warnings or errors to stderr.
+
   def initialize
     super STDIN, STDOUT, STDERR, true
   end

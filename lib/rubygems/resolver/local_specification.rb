@@ -1,3 +1,6 @@
+##
+# A LocalSpecification comes from a .gem file on the local filesystem.
+
 class Gem::Resolver::LocalSpecification < Gem::Resolver::SpecSpecification
 
   ##

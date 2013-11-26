@@ -146,7 +146,7 @@ If no gems are named all gems in GEM_HOME are cleaned.
       :version => "= #{spec.version}",
     }
 
-    uninstall_options[:user_install] = Gem.user_dir == spec.base_dir
+    uninstall_options[:user_install] = ((Gem.user_dir == spec.base_dir) or (Gem.shared_user_dir == spec.base_dir))
 
     uninstaller = Gem::Uninstaller.new spec.name, uninstall_options
 

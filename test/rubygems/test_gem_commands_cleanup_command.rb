@@ -81,7 +81,7 @@ class TestGemCommandsCleanupCommand < Gem::TestCase
     @a_1_1 = util_spec 'a', '1.1'
     @a_1_1 = install_gem_user @a_1_1 # pick up user install path
 
-    Gem::Specification.dirs = [Gem.dir, Gem.user_dir]
+    Gem::Specification.dirs = [Gem.dir, Gem.shared_user_dir]
 
     assert_path_exists @a_1.gem_dir
     assert_path_exists @a_1_1.gem_dir
@@ -100,7 +100,7 @@ class TestGemCommandsCleanupCommand < Gem::TestCase
     @a_1_1 = util_spec 'a', '1.1'
     @a_1_1 = install_gem_user @a_1_1 # pick up user install path
 
-    Gem::Specification.dirs = [Gem.dir, Gem.user_dir]
+    Gem::Specification.dirs = [Gem.dir, Gem.shared_user_dir]
 
     assert_path_exists @a_1.gem_dir
     assert_path_exists @a_1_1.gem_dir

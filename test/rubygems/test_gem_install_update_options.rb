@@ -123,8 +123,8 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
 
     @installer = Gem::Installer.new @gem, @cmd.options
     @installer.install
-    assert_path_exists File.join(Gem.user_dir, 'gems')
-    assert_path_exists File.join(Gem.user_dir, 'gems', @spec.full_name)
+    assert_path_exists File.join(Gem.shared_user_dir, 'gems')
+    assert_path_exists File.join(Gem.shared_user_dir, 'gems', @spec.full_name)
   end
 
   def test_user_install_disabled_read_only
@@ -136,7 +136,7 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
       refute @cmd.options[:user_install]
 
       FileUtils.chmod 0755, @userhome
-      FileUtils.chmod 0000, @gemhome
+      FileUtils.chmod 0555, @gemhome
 
       Gem.use_paths @gemhome, @userhome
 

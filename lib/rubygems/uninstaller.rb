@@ -28,9 +28,20 @@ class Gem::Uninstaller
   attr_reader :bin_dir
 
   ##
-  # The gem repository the gem will be installed into
+  # The user path the gems were installed into,
+  # can be empty - defaults to gem_home
+
+  attr_reader :install_dir
+
+  ##
+  # The gem repository the platform gems were installed into
 
   attr_reader :gem_home
+
+  ##
+  # The gem repository the shared gems were installed into
+
+  attr_reader :gem_home_shared
 
   ##
   # The Gem::Specification for the gem being uninstalled, only set during
@@ -45,7 +56,9 @@ class Gem::Uninstaller
     # TODO document the valid options
     @gem                = gem
     @version            = options[:version] || Gem::Requirement.default
-    @gem_home           = File.expand_path(options[:install_dir] || Gem.dir)
+    @install_dir        = options[:install_dir] ? File.expand_path(options[:install_dir]) : nil
+    @gem_home           = File.expand_path(Gem.dir)
+    @gem_home_shared    = Gem.shareddir ? File.expand_path(Gem.shareddir) : ""
     @force_executables  = options[:executables]
     @force_all          = options[:all]
     @force_ignore       = options[:ignore]
@@ -66,6 +79,31 @@ class Gem::Uninstaller
     # only add user directory if install_dir is not set
     @user_install = false
     @user_install = options[:user_install] unless options[:install_dir]
+  end
+
+  def check_possible_installation_paths_system(&block)
+    if install_dir
+      yield(install_dir)
+    else
+      yield(@gem_home_shared) or yield(@gem_home)
+    end
+  end
+
+  def check_possible_installation_paths_user(&block)
+    yield(Gem.shared_user_dir) or yield(Gem.user_dir)
+  end
+
+  def check_possible_installation_paths(&block)
+    check_possible_installation_paths_system(&block) or (
+      @user_install and
+      check_possible_installation_paths_user(&block)
+    )
+  end
+
+  def gem_in_uninstallable_path(base_dir)
+    check_possible_installation_paths do |path|
+      path == base_dir
+    end
   end
 
   ##
@@ -92,8 +130,7 @@ class Gem::Uninstaller
     end
 
     list, other_repo_specs = list.partition do |spec|
-      @gem_home == spec.base_dir or
-        (@user_install and spec.base_dir == Gem.user_dir)
+      gem_in_uninstallable_path(spec.base_dir)
     end
 
     if list.empty? then
@@ -234,14 +271,7 @@ class Gem::Uninstaller
   # uninstalled a gem, it is removed from that list.
 
   def remove(spec)
-    unless path_ok?(@gem_home, spec) or
-           (@user_install and path_ok?(Gem.user_dir, spec)) then
-      e = Gem::GemNotInHomeException.new \
-            "Gem is not installed in directory #{@gem_home}"
-      e.spec = spec
-
-      raise e
-    end
+    paths_ok_or_raise(spec)
 
     raise Gem::FilePermissionError, spec.base_dir unless
       File.writable?(spec.base_dir)
@@ -269,6 +299,19 @@ class Gem::Uninstaller
     say "Successfully uninstalled #{spec.full_name}"
 
     Gem::Specification.remove_spec spec
+  end
+
+  ##
+  # Confirm spec is one of paths that it can be uninstalled from
+
+  def paths_ok_or_raise(spec)
+    unless check_possible_installation_paths{|path| path_ok?(path, spec)} then
+      e = Gem::GemNotInHomeException.new \
+            "Gem is not installed in directory #{@install_dir ? @install_dir : "#{@gem_home_shared} or #{@gem_home}"}"
+      e.spec = spec
+
+      raise e
+    end
   end
 
   ##

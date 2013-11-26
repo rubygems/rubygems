@@ -264,6 +264,20 @@ module Gem
   end
 
   ##
+  # The path where gem cache is hold.
+
+  def self.cachedir(install_dir=Gem.dir)
+    # TODO: move to Gem::Dirs
+    if install_dir.to_s == Gem.user_dir.to_s
+      File.join Gem.shared_user_dir, 'cache'
+    elsif Gem.shareddir
+      File.join Gem.shareddir, 'cache'
+    else
+      File.join install_dir, 'cache'
+    end
+  end
+
+  ##
   # Reset the +dir+ and +path+ values.  The next time +dir+ or +path+
   # is requested, the values will be calculated from scratch.  This is
   # mainly used by the unit tests to provide test isolation.
@@ -343,6 +357,11 @@ module Gem
     paths.home
   end
 
+  def self.shareddir
+    # TODO: raise "no"
+    paths.home_shared
+  end
+
   def self.path
     paths.path
   end
@@ -362,6 +381,8 @@ module Gem
 
   def self.ensure_gem_subdirectories dir = Gem.dir, mode = nil
     ensure_subdirectories(dir, mode, REPOSITORY_SUBDIRECTORIES)
+    ensure_subdirectories(Gem.shared_user_dir, mode, %w[cache]) if dir == Gem.user_dir # :user_install
+    ensure_subdirectories(Gem.shareddir,       mode, %w[cache]) if Gem.shareddir       # GEM_HOME_SHARED
   end
 
   ##

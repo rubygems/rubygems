@@ -9,6 +9,10 @@ class Gem::PathSupport
   attr_reader :home
 
   ##
+  # The shared Gems path, only works together with GEM_HOME.
+  attr_reader :home_shared
+
+  ##
   # Array of paths to search for Gems.
   attr_reader :path
 
@@ -31,6 +35,10 @@ class Gem::PathSupport
       @home   = @home.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
     end
 
+    if env["GEM_HOME"] || ENV["GEM_HOME"]
+      @home_shared = env["GEM_HOME_SHARED"] || ENV["GEM_HOME_SHARED"]
+    end
+
     self.path = env["GEM_PATH"] || ENV["GEM_PATH"]
 
     @spec_cache_dir =
@@ -47,6 +55,13 @@ class Gem::PathSupport
 
   def home=(home)
     @home = home.to_s
+  end
+
+  ##
+  # Set the Gem home shared directory (as reported by Gem.shareddir).
+
+  def home_shared=(home_shared)
+    @home_shared = home_shared.nil? ? nil : home_shared.to_s
   end
 
   ##
@@ -74,6 +89,7 @@ class Gem::PathSupport
       end
 
       gem_path << @home
+      gem_path << @home_shared if @home_shared
     else
       gem_path = Gem.default_path + [@home]
 

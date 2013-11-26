@@ -320,7 +320,7 @@ gems:
 
       fetcher = util_fuck_with_fetcher File.read(@a1_gem)
       fetcher.download(@a1, 'http://gems.example.com')
-      a1_cache_gem = File.join Gem.user_dir, "cache", @a1.file_name
+      a1_cache_gem = File.join Gem.shared_user_dir, "cache", @a1.file_name
       assert File.exist? a1_cache_gem
     ensure
       FileUtils.chmod 0755, @gemhome

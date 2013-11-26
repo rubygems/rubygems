@@ -120,10 +120,12 @@ class Gem::RemoteFetcher
     cache_dir =
       if Dir.pwd == install_dir then # see fetch_command
         install_dir
+      elsif Gem.shareddir then
+        File.join Gem.shareddir, "cache"
       elsif File.writable? install_dir then
         File.join install_dir, "cache"
       else
-        File.join Gem.user_dir, "cache"
+        File.join Gem.shared_user_dir, "cache"
       end
 
     gem_file_name = File.basename spec.cache_file

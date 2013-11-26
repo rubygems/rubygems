@@ -5,6 +5,11 @@
 class Gem::BasicSpecification
 
   ##
+  # Allows installation of extensions for git: gems.
+
+  attr_writer :base_dir # :nodoc:
+
+  ##
   # The path this gemspec was loaded from.  This attribute is not persisted.
 
   attr_reader :loaded_from

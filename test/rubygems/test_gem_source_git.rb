@@ -169,11 +169,18 @@ class TestGemSourceGit < Gem::TestCase
 
     a_spec = specs.shift
 
+    base_dir = File.dirname File.dirname source.install_dir
+
     assert_equal source.install_dir, a_spec.full_gem_path
+    assert_equal File.join(source.install_dir, 'a.gemspec'), a_spec.loaded_from
+    assert_equal base_dir, a_spec.base_dir
 
     b_spec = specs.shift
 
     assert_equal File.join(source.install_dir, 'b'), b_spec.full_gem_path
+    assert_equal File.join(source.install_dir, 'b', 'b.gemspec'),
+                 b_spec.loaded_from
+    assert_equal base_dir, b_spec.base_dir
   end
 
   def test_uri_hash

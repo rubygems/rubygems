@@ -169,7 +169,12 @@ class Gem::Source::Git < Gem::Source
 
         Dir.chdir directory do
           spec = Gem::Specification.load file
-          spec.full_gem_path = File.expand_path '.' if spec
+          if spec then
+            loaded_from = File.expand_path file
+            spec.loaded_from = loaded_from
+            spec.full_gem_path = File.dirname loaded_from if spec
+            spec.base_dir = base_dir
+          end
           spec
         end
       end.compact

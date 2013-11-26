@@ -31,6 +31,11 @@ class Gem::Source::Git < Gem::Source
   attr_reader :repository
 
   ##
+  # The directory for cache and git gem installation
+
+  attr_accessor :root_dir
+
+  ##
   # Does this repository need submodules checked out too?
 
   attr_reader :need_submodules
@@ -50,7 +55,8 @@ class Gem::Source::Git < Gem::Source
     @reference       = reference
     @need_submodules = submodules
 
-    @git = ENV['git'] || 'git'
+    @root_dir = Gem.dir
+    @git      = ENV['git'] || 'git'
   end
 
   def <=> other
@@ -117,7 +123,7 @@ class Gem::Source::Git < Gem::Source
   # Directory where git gems get unpacked and so-forth.
 
   def base_dir # :nodoc:
-    File.join Gem.dir, 'bundler'
+    File.join @root_dir, 'bundler'
   end
 
   ##
@@ -144,7 +150,7 @@ class Gem::Source::Git < Gem::Source
   # The directory where the git gem's repository will be cached.
 
   def repo_cache_dir # :nodoc:
-    File.join Gem.dir, 'cache', 'bundler', 'git', "#{@name}-#{uri_hash}"
+    File.join @root_dir, 'cache', 'bundler', 'git', "#{@name}-#{uri_hash}"
   end
 
   ##

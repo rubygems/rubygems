@@ -15,6 +15,10 @@ class TestGemSourceGit < Gem::TestCase
 
   def test_base_dir
     assert_equal File.join(Gem.dir, 'bundler'), @source.base_dir
+
+    @source.root_dir = "#{@gemhome}2"
+
+    assert_equal File.join("#{@gemhome}2", 'bundler'), @source.base_dir
   end
 
   def test_checkout
@@ -100,6 +104,13 @@ class TestGemSourceGit < Gem::TestCase
       File.join Gem.dir, 'cache', 'bundler', 'git', "a-#{@hash}"
 
     assert_equal expected, @source.repo_cache_dir
+
+    @source.root_dir = "#{@gemhome}2"
+
+    expected =
+      File.join "#{@gemhome}2", 'cache', 'bundler', 'git', "a-#{@hash}"
+
+    assert_equal expected, @source.repo_cache_dir
   end
 
   def test_rev_parse
@@ -120,6 +131,14 @@ class TestGemSourceGit < Gem::TestCase
     source.cache
 
     refute_equal master_head, source.rev_parse
+  end
+
+  def test_root_dir
+    assert_equal Gem.dir, @source.root_dir
+
+    @source.root_dir = "#{@gemhome}2"
+
+    assert_equal "#{@gemhome}2", @source.root_dir
   end
 
   def test_spaceship

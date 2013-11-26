@@ -63,6 +63,8 @@ Bug fixes:
 
 * RubyGems now returns an error status when any file given to `gem which`
   cannot be found.  Ruby bug #9004 by Eugene Vilensky.
+* Fixed command escaping when building rake extensions.  Pull request #721 by
+  Dmitry Ratnikov.
 
 === 2.1.11 / 2013-11-12
 

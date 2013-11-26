@@ -67,6 +67,7 @@ class Gem::RequestSet
     @dependency_names = {}
     @development      = false
     @git_set          = nil
+    @install_dir      = Gem.dir
     @requests         = []
     @sets             = []
     @soft_missing     = false
@@ -143,6 +144,8 @@ class Gem::RequestSet
   # dependencies file are not used.  See Gem::Installer for other +options+.
 
   def install_from_gemdeps options, &block
+    @install_dir = options[:install_dir] || Gem.dir
+
     load_gemdeps options[:gemdeps], options[:without_groups]
 
     resolve
@@ -193,6 +196,8 @@ class Gem::RequestSet
   def load_gemdeps path, without_groups = []
     @git_set    = Gem::Resolver::GitSet.new
     @vendor_set = Gem::Resolver::VendorSet.new
+
+    @git_set.root_dir = @install_dir
 
     gf = Gem::RequestSet::GemDependencyAPI.new self, path
     gf.without_groups = without_groups if without_groups

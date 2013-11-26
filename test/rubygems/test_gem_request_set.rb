@@ -55,6 +55,36 @@ class TestGemRequestSet < Gem::TestCase
     end
 
     assert_includes installed, 'a-2'
+    assert_path_exists File.join @gemhome, 'gems', 'a-2'
+  end
+
+  def test_install_from_gemdeps_install_dir
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 2
+    end
+
+    util_clear_gems
+    refute_path_exists File.join Gem.dir, 'gems', 'a-2'
+
+    rs = Gem::RequestSet.new
+    installed = []
+
+    Tempfile.open 'gem.deps.rb' do |io|
+      io.puts 'gem "a"'
+      io.flush
+
+      options = {
+        :gemdeps     => io.path,
+        :install_dir => "#{@gemhome}2",
+      }
+
+      rs.install_from_gemdeps options do |req, installer|
+        installed << req.full_name
+      end
+    end
+
+    assert_includes installed, 'a-2'
+    refute_path_exists File.join Gem.dir, 'gems', 'a-2'
   end
 
   def test_load_gemdeps

@@ -13,6 +13,10 @@ class TestGemSourceGit < Gem::TestCase
     @source = Gem::Source::Git.new @name, @repository, 'master', false
   end
 
+  def test_base_dir
+    assert_equal File.join(Gem.dir, 'bundler'), @source.base_dir
+  end
+
   def test_checkout
     @source.checkout
 

@@ -114,6 +114,13 @@ class Gem::Source::Git < Gem::Source
   end
 
   ##
+  # Directory where git gems get unpacked and so-forth.
+
+  def base_dir # :nodoc:
+    File.join Gem.dir, 'bundler'
+  end
+
+  ##
   # A short reference for use in git gem directories
 
   def dir_shortref # :nodoc:
@@ -130,7 +137,7 @@ class Gem::Source::Git < Gem::Source
   # The directory where the git gem will be installed.
 
   def install_dir # :nodoc:
-    File.join Gem.dir, 'bundler', 'gems', "#{@name}-#{dir_shortref}"
+    File.join base_dir, 'gems', "#{@name}-#{dir_shortref}"
   end
 
   ##

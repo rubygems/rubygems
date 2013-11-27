@@ -56,5 +56,21 @@ class Gem::Resolver::LockSet < Gem::Resolver::Set
     found.source.fetch_spec tuple
   end
 
+  def pretty_print q # :nodoc:
+    q.group 2, '[LockSet', ']' do
+      q.breakable
+      q.text 'source:'
+
+      q.breakable
+      q.pp @source
+
+      q.breakable
+      q.text 'specs:'
+
+      q.breakable
+      q.pp @specs.map { |spec| spec.full_name }
+    end
+  end
+
 end
 

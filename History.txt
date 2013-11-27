@@ -67,6 +67,8 @@ Bug fixes:
   Dmitry Ratnikov.
 * Fixed uninstallation of gems when GEM_HOME is a relative directory.  Issue
   #708 by Ryan Davis.
+* Default gems are now ignored by Gem::Validator#alien.  Issue #717 by David
+  Bahar.
 
 === 2.1.11 / 2013-11-12
 

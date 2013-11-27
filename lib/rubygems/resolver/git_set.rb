@@ -76,7 +76,7 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
 
   def pretty_print q # :nodoc:
     q.group 2, '[GitSet', ']' do
-      break if @repositories.empty?
+      next if @repositories.empty?
       q.breakable
 
       repos = @repositories.map do |name, (repository, reference)|

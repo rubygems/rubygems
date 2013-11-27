@@ -66,7 +66,7 @@ class Gem::Resolver::VendorSet < Gem::Resolver::Set
 
   def pretty_print q # :nodoc:
     q.group 2, '[VendorSet', ']' do
-      break if @directories.empty?
+      next if @directories.empty?
       q.breakable
 
       dirs = @directories.map do |spec, directory|

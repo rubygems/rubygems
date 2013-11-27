@@ -65,6 +65,8 @@ Bug fixes:
   cannot be found.  Ruby bug #9004 by Eugene Vilensky.
 * Fixed command escaping when building rake extensions.  Pull request #721 by
   Dmitry Ratnikov.
+* Fixed uninstallation of gems when GEM_HOME is a relative directory.  Issue
+  #708 by Ryan Davis.
 
 === 2.1.11 / 2013-11-12
 

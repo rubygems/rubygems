@@ -178,8 +178,13 @@ class Gem::Source::Git < Gem::Source
           if spec then
             loaded_from = File.expand_path file
             spec.loaded_from = loaded_from
-            spec.full_gem_path = File.dirname loaded_from if spec
             spec.base_dir = base_dir
+
+            spec.extension_install_dir =
+              File.join base_dir, 'extensions', Gem::Platform.local.to_s,
+                Gem.extension_api_version, "#{name}-#{dir_shortref}"
+
+            spec.full_gem_path = File.dirname loaded_from if spec
           end
           spec
         end

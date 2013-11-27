@@ -194,12 +194,21 @@ class TestGemSourceGit < Gem::TestCase
     assert_equal File.join(source.install_dir, 'a.gemspec'), a_spec.loaded_from
     assert_equal base_dir, a_spec.base_dir
 
+    extension_install_dir =
+      File.join Gem.dir, 'bundler', 'extensions',
+        Gem::Platform.local.to_s, Gem.extension_api_version,
+        "a-#{source.dir_shortref}"
+
+    assert_equal extension_install_dir, a_spec.extension_install_dir
+
     b_spec = specs.shift
 
     assert_equal File.join(source.install_dir, 'b'), b_spec.full_gem_path
     assert_equal File.join(source.install_dir, 'b', 'b.gemspec'),
                  b_spec.loaded_from
     assert_equal base_dir, b_spec.base_dir
+
+    assert_equal extension_install_dir, b_spec.extension_install_dir
   end
 
   def test_uri_hash

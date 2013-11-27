@@ -74,5 +74,20 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
     end
   end
 
+  def pretty_print q # :nodoc:
+    q.group 2, '[GitSet', ']' do
+      break if @repositories.empty?
+      q.breakable
+
+      repos = @repositories.map do |name, (repository, reference)|
+        "#{name}: #{repository}@#{reference}"
+      end
+
+      q.seplist repos do |repo|
+        q.text repo
+      end
+    end
+  end
+
 end
 

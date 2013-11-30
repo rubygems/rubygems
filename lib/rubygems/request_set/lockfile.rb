@@ -1,3 +1,8 @@
+##
+# Parses a gem.deps.rb.lock file and constructs a LockSet containing the
+# dependencies found inside.  If the lock file is missing no LockSet is
+# constructed.
+
 class Gem::RequestSet::Lockfile
 
   ##
@@ -100,7 +105,7 @@ class Gem::RequestSet::Lockfile
     out << nil
   end
 
-  def relative_path_from(dest, base)
+  def relative_path_from dest, base # :nodoc:
     dest = File.expand_path(dest)
     base = File.expand_path(base)
 
@@ -263,6 +268,9 @@ class Gem::RequestSet::Lockfile
     get while not @tokens.empty? and peek.first == type
   end
 
+  ##
+  # The contents of the lock file.
+
   def to_s
     @set.resolve
 
@@ -292,6 +300,10 @@ class Gem::RequestSet::Lockfile
   def token_pos byte_offset # :nodoc:
     [byte_offset - @line_pos, @line]
   end
+
+  ##
+  # Converts a lock file into an Array of tokens.  If the lock file is missing
+  # an empty Array is returned.
 
   def tokenize # :nodoc:
     @line     = 0

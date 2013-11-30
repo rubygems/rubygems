@@ -2,6 +2,21 @@ require 'rubygems/test_case'
 
 class TestGemSourceLock < Gem::TestCase
 
+  def test_fetch_spec
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 1
+    end
+
+    name_tuple = Gem::NameTuple.new 'a', v(1), 'ruby'
+
+    remote = Gem::Source.new @gem_repo
+    lock   = Gem::Source::Lock.new remote
+
+    spec = lock.fetch_spec name_tuple
+
+    assert_equal 'a-1', spec.full_name
+  end
+
   def test_spaceship
     git    = Gem::Source::Git.new 'a', 'git/a', 'master', false
     g_lock = Gem::Source::Lock.new git
@@ -52,7 +67,7 @@ class TestGemSourceLock < Gem::TestCase
 
   def test_spaceship_remote
     remote = Gem::Source.new @gem_repo
-    lock   = Gem::Source::Lock.new remote # nonsense
+    lock   = Gem::Source::Lock.new remote
 
     assert_equal( 1, lock.  <=>(remote), 'lock   <=> remote')
     assert_equal(-1, remote.<=>(lock),   'remote <=> lock')

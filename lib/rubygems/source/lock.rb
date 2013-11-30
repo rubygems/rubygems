@@ -29,5 +29,12 @@ class Gem::Source::Lock < Gem::Source
     end
   end
 
+  ##
+  # Delegates to the wrapped source's fetch_spec method.
+
+  def fetch_spec name_tuple
+    @wrapped.fetch_spec name_tuple
+  end
+
 end
 

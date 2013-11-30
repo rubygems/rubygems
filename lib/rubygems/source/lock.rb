@@ -29,6 +29,10 @@ class Gem::Source::Lock < Gem::Source
     end
   end
 
+  def == other # :nodoc:
+    0 == (self <=> other)
+  end
+
   ##
   # Delegates to the wrapped source's fetch_spec method.
 

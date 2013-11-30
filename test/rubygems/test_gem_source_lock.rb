@@ -17,6 +17,18 @@ class TestGemSourceLock < Gem::TestCase
     assert_equal 'a-1', spec.full_name
   end
 
+  def test_equals2
+    git    = Gem::Source::Git.new 'a', 'git/a', 'master', false
+    g_lock = Gem::Source::Lock.new git
+
+    installed = Gem::Source::Installed.new
+    i_lock    = Gem::Source::Lock.new installed
+
+    assert_equal g_lock, g_lock
+    refute_equal g_lock, i_lock
+    refute_equal g_lock, Object.new
+  end
+
   def test_spaceship
     git    = Gem::Source::Git.new 'a', 'git/a', 'master', false
     g_lock = Gem::Source::Lock.new git

@@ -343,6 +343,8 @@ class Gem::RequestSet::Lockfile
     end
 
     @tokens
+  rescue Errno::ENOENT
+    @tokens
   end
 
   ##

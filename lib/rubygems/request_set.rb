@@ -144,9 +144,11 @@ class Gem::RequestSet
   # dependencies file are not used.  See Gem::Installer for other +options+.
 
   def install_from_gemdeps options, &block
+    gemdeps = options[:gemdeps]
+
     @install_dir = options[:install_dir] || Gem.dir
 
-    load_gemdeps options[:gemdeps], options[:without_groups]
+    load_gemdeps gemdeps, options[:without_groups]
 
     resolve
 
@@ -157,7 +159,12 @@ class Gem::RequestSet
         puts "  #{s}"
       end
     else
-      install options, &block
+      installed = install options, &block
+
+      lockfile = Gem::RequestSet::Lockfile.new self, gemdeps
+      lockfile.write
+
+      installed
     end
   end
 

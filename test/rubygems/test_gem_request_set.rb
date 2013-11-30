@@ -45,17 +45,20 @@ class TestGemRequestSet < Gem::TestCase
     rs = Gem::RequestSet.new
     installed = []
 
-    Tempfile.open 'gem.deps.rb' do |io|
+    open 'gem.deps.rb', 'w' do |io|
       io.puts 'gem "a"'
       io.flush
 
-      rs.install_from_gemdeps :gemdeps => io.path do |req, installer|
+      result = rs.install_from_gemdeps :gemdeps => io.path do |req, installer|
         installed << req.full_name
       end
+
+      assert_kind_of Array, result # what is supposed to be in here?
     end
 
     assert_includes installed, 'a-2'
     assert_path_exists File.join @gemhome, 'gems', 'a-2'
+    assert_path_exists 'gem.deps.rb.lock'
   end
 
   def test_install_from_gemdeps_install_dir

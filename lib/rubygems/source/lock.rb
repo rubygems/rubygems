@@ -18,7 +18,7 @@ class Gem::Source::Lock < Gem::Source
     @wrapped = source
   end
 
-  def <=> other
+  def <=> other # :nodoc:
     case other
     when Gem::Source::Lock then
       @wrapped <=> other.wrapped

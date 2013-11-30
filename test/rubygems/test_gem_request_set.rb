@@ -87,6 +87,45 @@ class TestGemRequestSet < Gem::TestCase
     refute_path_exists File.join Gem.dir, 'gems', 'a-2'
   end
 
+  def test_install_from_gemdeps_lockfile
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 1
+      fetcher.gem 'a', 2
+      fetcher.gem 'b', 1, 'a' => '>= 0'
+    end
+
+    rs = Gem::RequestSet.new
+    installed = []
+
+    open 'gem.deps.rb.lock', 'w' do |io|
+      io.puts <<-LOCKFILE
+GEM
+  remote: #{@gem_repo}
+  specs:
+    a (1)
+    b (1)
+      a
+
+PLATFORMS
+  #{Gem::Platform::RUBY}
+
+DEPENDENCIES
+  b
+      LOCKFILE
+    end
+
+    open 'gem.deps.rb', 'w' do |io|
+      io.puts 'gem "b"'
+    end
+
+    rs.install_from_gemdeps :gemdeps => 'gem.deps.rb' do |req, installer|
+      installed << req.full_name
+    end
+
+    assert_includes installed, 'b-1'
+    assert_includes installed, 'a-1'
+  end
+
   def test_load_gemdeps
     rs = Gem::RequestSet.new
 

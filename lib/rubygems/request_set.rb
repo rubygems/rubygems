@@ -199,6 +199,9 @@ class Gem::RequestSet
 
     @git_set.root_dir = @install_dir
 
+    lockfile = Gem::RequestSet::Lockfile.new self, path
+    lockfile.parse
+
     gf = Gem::RequestSet::GemDependencyAPI.new self, path
     gf.without_groups = without_groups if without_groups
     gf.load
@@ -269,3 +272,4 @@ class Gem::RequestSet
 end
 
 require 'rubygems/request_set/gem_dependency_api'
+require 'rubygems/request_set/lockfile'

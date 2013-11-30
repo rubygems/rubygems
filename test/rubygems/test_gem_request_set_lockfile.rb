@@ -416,5 +416,15 @@ DEPENDENCIES
     assert_equal :token, @lockfile.get
   end
 
+  def test_write
+    @lockfile.write
+
+    gem_deps_lock_file = "#{@gem_deps_file}.lock"
+
+    assert_path_exists gem_deps_lock_file
+
+    refute_empty File.read gem_deps_lock_file
+  end
+
 end
 

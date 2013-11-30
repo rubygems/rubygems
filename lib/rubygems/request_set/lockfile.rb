@@ -366,5 +366,14 @@ class Gem::RequestSet::Lockfile
     @tokens.unshift @current_token
   end
 
+  ##
+  # Writes the lock file alongside the gem dependencies file
+
+  def write
+    open "#{@gem_deps_file}.lock", 'w' do |io|
+      io.write to_s
+    end
+  end
+
 end
 

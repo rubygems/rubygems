@@ -69,6 +69,7 @@ Bug fixes:
   #708 by Ryan Davis.
 * Default gems are now ignored by Gem::Validator#alien.  Issue #717 by David
   Bahar.
+* Fixed typos in RubyGems.  Pull request #723, #725 by Akira Matsuda.
 
 === 2.1.11 / 2013-11-12
 

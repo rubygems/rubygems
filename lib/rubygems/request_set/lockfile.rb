@@ -323,8 +323,7 @@ class Gem::RequestSet::Lockfile
     until s.eos? do
       pos = s.pos
 
-      # leading whitespace is for the user's convenience
-      next if s.scan(/ +/)
+      pos = s.pos if leading_whitespace = s.scan(/ +/)
 
       if s.scan(/[<|=>]{7}/) then
         message = "your #{lock_file} contains merge conflict markers"
@@ -341,7 +340,13 @@ class Gem::RequestSet::Lockfile
           @line += 1
           token
         when s.scan(/[A-Z]+/) then
-          [:section, s.matched, *token_pos(pos)]
+          if leading_whitespace then
+            text = s.matched
+            text += s.scan(/[^\s)]*/).to_s # in case of no match
+            [:text, text, *token_pos(pos)]
+          else
+            [:section, s.matched, *token_pos(pos)]
+          end
         when s.scan(/([a-z]+):\s/) then
           s.pos -= 1 # rewind for possible newline
           [:entry, s[1], *token_pos(pos)]

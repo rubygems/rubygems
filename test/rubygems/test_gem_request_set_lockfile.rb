@@ -183,6 +183,48 @@ DEPENDENCIES
     assert_equal expected, @lockfile.tokenize
   end
 
+  def test_tokenize_capitals
+    write_lockfile <<-LOCKFILE
+GEM
+  remote: #{@gem_repo}
+  specs:
+    Ab (2)
+
+PLATFORMS
+  #{Gem::Platform::RUBY}
+
+DEPENDENCIES
+  Ab
+    LOCKFILE
+
+    expected = [
+      [:section, 'GEM',                0, 0],
+      [:newline, nil,                  3, 0],
+      [:entry,   'remote',             2, 1],
+      [:text,    @gem_repo,           10, 1],
+      [:newline, nil,                 34, 1],
+      [:entry,   'specs',              2, 2],
+      [:newline, nil,                  8, 2],
+      [:text,    'Ab',                 4, 3],
+      [:l_paren, nil,                  7, 3],
+      [:text,    '2',                  8, 3],
+      [:r_paren, nil,                  9, 3],
+      [:newline, nil,                 10, 3],
+      [:newline, nil,                  0, 4],
+      [:section, 'PLATFORMS',          0, 5],
+      [:newline, nil,                  9, 5],
+      [:text,    Gem::Platform::RUBY,  2, 6],
+      [:newline, nil,                  6, 6],
+      [:newline, nil,                  0, 7],
+      [:section, 'DEPENDENCIES',       0, 8],
+      [:newline, nil,                 12, 8],
+      [:text,    'Ab',                 2, 9],
+      [:newline, nil,                  4, 9],
+    ]
+
+    assert_equal expected, @lockfile.tokenize
+  end
+
   def test_tokenize_conflict_markers
     write_lockfile '<<<<<<<'
 

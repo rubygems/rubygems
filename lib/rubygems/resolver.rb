@@ -297,8 +297,6 @@ class Gem::Resolver
 
         depreq = dep.requester.request
 
-        @conflicts << conflict unless @conflicts.include?(conflict)
-
         state = nil
         until states.empty?
           x = states.pop

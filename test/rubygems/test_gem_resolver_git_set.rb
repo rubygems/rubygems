@@ -42,7 +42,7 @@ class TestGemResolverGitSet < Gem::TestCase
     @set.add_git_gem name, repository, 'master', false
 
     dependency = dep 'a', '~> 1.0'
-    req = Gem::Resolver::ActivationRequest.new dependency, nil
+    req = Gem::Resolver::DependencyRequest.new dependency, nil
     @reqs.add req
 
     @set.prefetch @reqs
@@ -66,7 +66,7 @@ class TestGemResolverGitSet < Gem::TestCase
     @set.add_git_gem name, repository, 'master', false
 
     dependency = dep name
-    req = Gem::Resolver::ActivationRequest.new dependency, nil
+    req = Gem::Resolver::DependencyRequest.new dependency, nil
     @reqs.add req
 
     @set.prefetch @reqs
@@ -80,7 +80,7 @@ class TestGemResolverGitSet < Gem::TestCase
     @set.add_git_gem name, repository, 'master', false
 
     dependency = dep name
-    req = Gem::Resolver::ActivationRequest.new dependency, nil
+    req = Gem::Resolver::DependencyRequest.new dependency, nil
     @reqs.add req
 
     @set.prefetch @reqs
@@ -98,7 +98,7 @@ class TestGemResolverGitSet < Gem::TestCase
     @set.add_git_gem name, repository, 'master', false
 
     dependency = dep 'b'
-    req = Gem::Resolver::ActivationRequest.new dependency, nil
+    req = Gem::Resolver::DependencyRequest.new dependency, nil
     @reqs.add req
 
     @set.prefetch @reqs
@@ -112,7 +112,7 @@ class TestGemResolverGitSet < Gem::TestCase
     @set.add_git_gem name, repository, 'master', false
 
     dependency = dep name
-    req = Gem::Resolver::ActivationRequest.new dependency, nil
+    req = Gem::Resolver::DependencyRequest.new dependency, nil
     @reqs.add req
 
     @set.root_dir = "#{@gemhome}2"

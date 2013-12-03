@@ -228,14 +228,6 @@ class TestGemResolver < Gem::TestCase
     res = Gem::Resolver.new([ad, bd], s)
 
     assert_resolves_to [a1, b1, c1, d4], res
-
-    cons = res.conflicts
-
-    assert_equal 1, cons.size
-    con = cons.first
-
-    assert_equal "c (= 1)", con.dependency.to_s
-    assert_equal "c-2", con.activated.full_name
   end
 
   def test_backoff_higher_version_to_satisfy_dep

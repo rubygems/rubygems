@@ -268,9 +268,30 @@ class Gem::Resolver
         next if dep.matches_spec? existing
 
         conflict = handle_conflict dep, existing
-        explain :conflict, conflict.explain
 
-        state = find_conflict_state conflict, states
+        return conflict unless dep.requester
+
+        explain :conflict, dep, :existing, existing.full_name
+
+        depreq = dep.requester.request
+
+        @conflicts << conflict unless @conflicts.include?(conflict)
+
+        state = nil
+        until states.empty?
+          x = states.pop
+
+          i = existing.request.requester
+          explain :consider, x.spec.full_name, [depreq.name, dep.name, i ? i.name : :top]
+
+          if x.spec.name == depreq.name or
+              x.spec.name == dep.name or
+              (i && (i.name == x.spec.name))
+            explain :found, x.spec.full_name
+            state = x
+            break
+          end
+        end
 
         return conflict unless state
 

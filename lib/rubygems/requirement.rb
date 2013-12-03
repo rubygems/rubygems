@@ -147,6 +147,14 @@ class Gem::Requirement
     end
   end
 
+  ##
+  # true if the requirement is for only an exact version
+
+  def exact?
+    return false unless @requirements.size == 1
+    @requirements[0][0] == "="
+  end
+
   def as_list # :nodoc:
     requirements.map { |op, version| "#{op} #{version}" }.sort
   end

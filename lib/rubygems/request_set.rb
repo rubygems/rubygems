@@ -152,6 +152,10 @@ class Gem::RequestSet
       specs.map { |s| s.full_name }.sort.each do |s|
         puts "  #{s}"
       end
+
+      if Gem.configuration.really_verbose
+        @resolver.stats.display
+      end
     else
       install options, &block
     end
@@ -219,6 +223,8 @@ class Gem::RequestSet
     resolver = Gem::Resolver.new @dependencies, set
     resolver.development  = @development
     resolver.soft_missing = @soft_missing
+
+    @resolver = resolver
 
     @requests = resolver.resolve
   end

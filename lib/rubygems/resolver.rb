@@ -23,6 +23,8 @@ class Gem::Resolver
 
   attr_reader :missing
 
+  attr_reader :stats
+
   ##
   # When a missing dependency, don't stop. Just go on and record what was
   # missing.
@@ -80,6 +82,7 @@ class Gem::Resolver
     @development  = false
     @missing      = []
     @soft_missing = false
+    @stats        = Gem::Resolver::Stats.new
   end
 
   DEBUG_RESOLVER = !ENV['DEBUG_RESOLVER'].nil?
@@ -121,9 +124,12 @@ class Gem::Resolver
     s.dependencies.reverse_each do |d|
       next if d.type == :development and not @development
       reqs.add Gem::Resolver::DependencyRequest.new(d, act)
+      @stats.requirement!
     end
 
     @set.prefetch reqs
+
+    @stats.record_requirements reqs
 
     reqs
   end
@@ -140,7 +146,10 @@ class Gem::Resolver
       request = Gem::Resolver::DependencyRequest.new n, nil
 
       needed.add request
+      @stats.requirement!
     end
+
+    @stats.record_requirements needed
 
     res = resolve_for needed, nil
 
@@ -257,6 +266,8 @@ class Gem::Resolver
     states = []
 
     while !needed.empty?
+      @stats.iteration!
+
       dep = needed.remove
       explain :try, [dep, dep.requester ? dep.requester.request : :toplevel]
       explain_list :next5, needed.next5
@@ -294,6 +305,8 @@ class Gem::Resolver
         end
 
         return conflict unless state
+
+        @stats.backtracking!
 
         needed, specs = resolve_for_conflict needed, specs, state
 
@@ -356,6 +369,8 @@ class Gem::Resolver
     # what makes conflict resolution possible.
     states << State.new(needed.dup, specs, dep, spec, possible, [])
 
+    @stats.record_depth states
+
     explain :states, states.map { |s| s.dep }
 
     needed = requests spec, act, needed
@@ -414,6 +429,7 @@ require 'rubygems/resolver/activation_request'
 require 'rubygems/resolver/conflict'
 require 'rubygems/resolver/dependency_request'
 require 'rubygems/resolver/requirement_list'
+require 'rubygems/resolver/stats'
 
 require 'rubygems/resolver/set'
 require 'rubygems/resolver/api_set'

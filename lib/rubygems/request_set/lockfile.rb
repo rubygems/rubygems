@@ -31,11 +31,11 @@ class Gem::RequestSet::Lockfile
     # Raises a ParseError with the given +message+ which was encountered at a
     # +line+ and +column+ while parsing.
 
-    def initialize message, line, column, path
+    def initialize message, column, line, path
       @line   = line
       @column = column
       @path   = path
-      super "#{message} (at #{line}:#{column})"
+      super "#{message} (at line #{line} column #{column})"
     end
 
   end
@@ -153,7 +153,7 @@ class Gem::RequestSet::Lockfile
   def get expected_type = nil, expected_value = nil # :nodoc:
     @current_token = @tokens.shift
 
-    type, value, line, column = @current_token
+    type, value, column, line = @current_token
 
     if expected_type and expected_type != type then
       unget
@@ -161,7 +161,7 @@ class Gem::RequestSet::Lockfile
       message = "unexpected token [#{type.inspect}, #{value.inspect}], " +
                 "expected #{expected_type.inspect}"
 
-      raise ParseError.new message, line, column, "#{@gem_deps_file}.lock"
+      raise ParseError.new message, column, line, "#{@gem_deps_file}.lock"
     end
 
     if expected_value and expected_value != value then
@@ -170,7 +170,7 @@ class Gem::RequestSet::Lockfile
       message = "unexpected token [#{type.inspect}, #{value.inspect}], " +
                 "expected [#{expected_type.inspect}, #{expected_value.inspect}]"
 
-      raise ParseError.new message, line, column, "#{@gem_deps_file}.lock"
+      raise ParseError.new message, column, line, "#{@gem_deps_file}.lock"
     end
 
     @current_token
@@ -327,9 +327,9 @@ class Gem::RequestSet::Lockfile
 
       if s.scan(/[<|=>]{7}/) then
         message = "your #{lock_file} contains merge conflict markers"
-        line, column = token_pos pos
+        column, line = token_pos pos
 
-        raise ParseError.new message, line, column, lock_file
+        raise ParseError.new message, column, line, lock_file
       end
 
       @tokens <<

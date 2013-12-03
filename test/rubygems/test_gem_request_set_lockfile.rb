@@ -49,12 +49,13 @@ class TestGemRequestSetLockfile < Gem::TestCase
       @lockfile.get :text
     end
 
-    expected = 'unexpected token [:section, "x"], expected :text (at 5:1)'
+    expected =
+      'unexpected token [:section, "x"], expected :text (at line 1 column 5)'
 
     assert_equal expected, e.message
 
-    assert_equal 5, e.line
-    assert_equal 1, e.column
+    assert_equal 1, e.line
+    assert_equal 5, e.column
     assert_equal File.expand_path("#{@gem_deps_file}.lock"), e.path
   end
 
@@ -66,12 +67,12 @@ class TestGemRequestSetLockfile < Gem::TestCase
     end
 
     expected =
-      'unexpected token [:section, "x"], expected [:section, "y"] (at 5:1)'
+      'unexpected token [:section, "x"], expected [:section, "y"] (at line 1 column 5)'
 
     assert_equal expected, e.message
 
-    assert_equal 5, e.line
-    assert_equal 1, e.column
+    assert_equal 1, e.line
+    assert_equal 5, e.column
     assert_equal File.expand_path("#{@gem_deps_file}.lock"), e.path
   end
 
@@ -232,7 +233,7 @@ DEPENDENCIES
       @lockfile.tokenize
     end
 
-    assert_equal "your #{@lock_file} contains merge conflict markers (at 0:0)",
+    assert_equal "your #{@lock_file} contains merge conflict markers (at line 0 column 0)",
                  e.message
 
     write_lockfile '|||||||'
@@ -241,7 +242,7 @@ DEPENDENCIES
       @lockfile.tokenize
     end
 
-    assert_equal "your #{@lock_file} contains merge conflict markers (at 0:0)",
+    assert_equal "your #{@lock_file} contains merge conflict markers (at line 0 column 0)",
                  e.message
 
     write_lockfile '======='
@@ -250,7 +251,7 @@ DEPENDENCIES
       @lockfile.tokenize
     end
 
-    assert_equal "your #{@lock_file} contains merge conflict markers (at 0:0)",
+    assert_equal "your #{@lock_file} contains merge conflict markers (at line 0 column 0)",
                  e.message
 
     write_lockfile '>>>>>>>'
@@ -259,7 +260,7 @@ DEPENDENCIES
       @lockfile.tokenize
     end
 
-    assert_equal "your #{@lock_file} contains merge conflict markers (at 0:0)",
+    assert_equal "your #{@lock_file} contains merge conflict markers (at line 0 column 0)",
                  e.message
   end
 

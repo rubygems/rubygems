@@ -55,25 +55,27 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
   # data for DependencyRequests +reqs+.
 
   def prefetch reqs
-    names = reqs.map { |r| r.dependency.name }
+    names = reqs.map { |r| r.dependency.name }.sort
     needed = names - @data.keys
 
     return if needed.empty?
 
-    uri = @dep_uri + "?gems=#{needed.sort.join ','}"
-    str = Gem::RemoteFetcher.fetcher.fetch_path uri
+    Gem::Tracer.span :prefetch, names do
+      uri = @dep_uri + "?gems=#{needed.join ','}"
+      str = Gem::RemoteFetcher.fetcher.fetch_path uri
 
-    loaded = []
+      loaded = []
 
-    Marshal.load(str).each do |ver|
-      name = ver[:name]
+      Marshal.load(str).each do |ver|
+        name = ver[:name]
 
-      @data[name] << ver
-      loaded << name
-    end
+        @data[name] << ver
+        loaded << name
+      end
 
-    (needed - loaded).each do |missing|
-      @data[missing] = []
+      (needed - loaded).each do |missing|
+        @data[missing] = []
+      end
     end
   end
 
@@ -96,14 +98,16 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
       return @data[name]
     end
 
-    uri = @dep_uri + "?gems=#{name}"
-    str = Gem::RemoteFetcher.fetcher.fetch_path uri
+    Gem::Tracer.span :versions, name do
+      uri = @dep_uri + "?gems=#{name}"
+      str = Gem::RemoteFetcher.fetcher.fetch_path uri
 
-    Marshal.load(str).each do |ver|
-      @data[ver[:name]] << ver
+      Marshal.load(str).each do |ver|
+        @data[ver[:name]] << ver
+      end
+
+      @data[name]
     end
-
-    @data[name]
   end
 
 end

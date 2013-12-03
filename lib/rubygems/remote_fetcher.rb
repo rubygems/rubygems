@@ -2,6 +2,7 @@ require 'rubygems'
 require 'rubygems/request'
 require 'rubygems/uri_formatter'
 require 'rubygems/user_interaction'
+require 'rubygems/tracer'
 require 'resolv'
 
 ##
@@ -255,11 +256,15 @@ class Gem::RemoteFetcher
       raise ArgumentError, "uri scheme is invalid: #{uri.scheme.inspect}"
     end
 
-    data = send "fetch_#{uri.scheme}", uri, mtime, head
+    data = Gem::Tracer.span :fetch, uri do
+      send "fetch_#{uri.scheme}", uri, mtime, head
+    end
 
     if data and !head and uri.to_s =~ /gz$/
       begin
-        data = Gem.gunzip data
+        data = Gem::Tracer.span :gunzp, uri do
+          Gem.gunzip data
+        end
       rescue Zlib::GzipFile::Error
         raise FetchError.new("server did not return a valid file", uri.to_s)
       end
@@ -291,8 +296,10 @@ class Gem::RemoteFetcher
       data = fetch_path(uri)
 
       if update and path then
-        open(path, 'wb') do |io|
-          io.write data
+        Gem::Tracer.new :cache, path do
+          open(path, 'wb') do |io|
+            io.write data
+          end
         end
       end
 

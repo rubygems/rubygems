@@ -41,6 +41,7 @@ class Gem::ConfigFile
   DEFAULT_BACKTRACE = false
   DEFAULT_BULK_THRESHOLD = 1000
   DEFAULT_VERBOSITY = true
+  DEFAULT_TRACE = false
   DEFAULT_UPDATE_SOURCES = true
 
   ##
@@ -123,6 +124,11 @@ class Gem::ConfigFile
   attr_accessor :verbose
 
   ##
+  # Print out traces of operations as they occur
+
+  attr_accessor :watch_trace
+
+  ##
   # True if we want to update the SourceInfoCache every time, false otherwise
 
   attr_accessor :update_sources
@@ -189,6 +195,7 @@ class Gem::ConfigFile
     @backtrace = DEFAULT_BACKTRACE
     @bulk_threshold = DEFAULT_BULK_THRESHOLD
     @verbose = DEFAULT_VERBOSITY
+    @watch_trace = DEFAULT_TRACE
     @update_sources = DEFAULT_UPDATE_SOURCES
 
     operating_system_config = Marshal.load Marshal.dump(OPERATING_SYSTEM_DEFAULTS)

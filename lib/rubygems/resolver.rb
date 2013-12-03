@@ -151,23 +151,25 @@ class Gem::Resolver
   def resolve
     @conflicts = []
 
-    needed = RequirementList.new
+    Gem::Tracer.span :resolve do
+      needed = RequirementList.new
 
-    @needed.reverse_each do |n|
-      request = Gem::Resolver::DependencyRequest.new n, nil
+      @needed.reverse_each do |n|
+        request = Gem::Resolver::DependencyRequest.new n, nil
 
-      needed.add request
-      @stats.requirement!
+        needed.add request
+        @stats.requirement!
+      end
+
+      @stats.record_requirements needed
+
+      res = resolve_for needed, nil
+
+      raise Gem::DependencyResolutionError, res if
+        res.kind_of? Gem::Resolver::Conflict
+
+      res.to_a
     end
-
-    @stats.record_requirements needed
-
-    res = resolve_for needed, nil
-
-    raise Gem::DependencyResolutionError, res if
-      res.kind_of? Gem::Resolver::Conflict
-
-    res.to_a
   end
 
   ##

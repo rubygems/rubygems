@@ -537,6 +537,11 @@ class Gem::Command
                     'Turn on Ruby debugging') do
   end
 
+  add_common_option('--trace',
+                    'Watch a trace of operations') do
+    Gem.configuration.watch_trace = true
+  end
+
   # :stopdoc:
 
   HELP = <<-HELP

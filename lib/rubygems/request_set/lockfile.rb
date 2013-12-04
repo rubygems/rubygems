@@ -226,6 +226,7 @@ class Gem::RequestSet::Lockfile
     skip :newline
 
     set = Gem::Resolver::LockSet.new source
+    last_spec = nil
 
     while not @tokens.empty? and :text == peek.first do
       _, name, = get :text
@@ -235,11 +236,20 @@ class Gem::RequestSet::Lockfile
       when :l_paren then
         get :l_paren
 
-        _, version, = get :text
+        type, data, = get [:text, :requirement]
+
+        case type
+        when :text then
+          last_spec = set.add name, data, Gem::Platform::RUBY
+        when :requirement then
+          _, version = get :text
+
+          dependency = Gem::Dependency.new name, "#{data} #{version}"
+
+          last_spec.add_dependency dependency
+        end
 
         get :r_paren
-
-        set.add name, version, Gem::Platform::RUBY
       else
         raise "BUG: unknown token #{peek}"
       end
@@ -355,6 +365,8 @@ class Gem::RequestSet::Lockfile
           [:l_paren, nil, *token_pos(pos)]
         when s.scan(/\)/) then
           [:r_paren, nil, *token_pos(pos)]
+        when s.scan(/<=|>=|=|~>|<|>|!=/) then
+          [:requirement, s.matched, *token_pos(pos)]
         when s.scan(/[^\s)]*/) then
           [:text, s.matched, *token_pos(pos)]
         else

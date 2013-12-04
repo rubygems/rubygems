@@ -111,6 +111,46 @@ DEPENDENCIES
     assert_equal %w[a-2], lockfile_set.specs.map { |tuple| tuple.full_name }
   end
 
+  def test_parse_gem_dependency
+    write_lockfile <<-LOCKFILE
+GEM
+  remote: #{@gem_repo}
+  specs:
+    a (2)
+      b (= 3)
+      c (~> 4)
+
+PLATFORMS
+  #{Gem::Platform::RUBY}
+
+DEPENDENCIES
+  a
+    LOCKFILE
+
+    @lockfile.parse
+
+    assert_equal [dep('a')], @set.dependencies
+
+    assert_equal [Gem::Platform::RUBY], @lockfile.platforms
+
+    lockfile_set = @set.sets.find do |set|
+      Gem::Resolver::LockSet === set
+    end
+
+    assert lockfile_set, 'could not find a LockSet'
+
+    assert_equal %w[a-2], lockfile_set.specs.map { |tuple| tuple.full_name }
+
+    spec = lockfile_set.specs.first
+
+    expected = [
+      dep('b', '= 3'),
+      dep('c', '~> 4'),
+    ]
+
+    assert_equal expected, spec.dependencies
+  end
+
   def test_parse_missing
     @lockfile.parse
 
@@ -154,6 +194,13 @@ GEM
   remote: #{@gem_repo}
   specs:
     a (2)
+      b (= 2)
+      c (!= 3)
+      d (> 4)
+      e (< 5)
+      f (>= 6)
+      g (<= 7)
+      h (~> 8)
 
 PLATFORMS
   #{Gem::Platform::RUBY}
@@ -163,28 +210,86 @@ DEPENDENCIES
     LOCKFILE
 
     expected = [
-      [:section, 'GEM',                0, 0],
-      [:newline, nil,                  3, 0],
-      [:entry,   'remote',             2, 1],
-      [:text,    @gem_repo,           10, 1],
-      [:newline, nil,                 34, 1],
-      [:entry,   'specs',              2, 2],
-      [:newline, nil,                  8, 2],
-      [:text,    'a',                  4, 3],
-      [:l_paren, nil,                  6, 3],
-      [:text,    '2',                  7, 3],
-      [:r_paren, nil,                  8, 3],
-      [:newline, nil,                  9, 3],
-      [:newline, nil,                  0, 4],
-      [:section, 'PLATFORMS',          0, 5],
-      [:newline, nil,                  9, 5],
-      [:text,    Gem::Platform::RUBY,  2, 6],
-      [:newline, nil,                  6, 6],
-      [:newline, nil,                  0, 7],
-      [:section, 'DEPENDENCIES',       0, 8],
-      [:newline, nil,                 12, 8],
-      [:text,    'a',                  2, 9],
-      [:newline, nil,                  3, 9],
+      [:section,     'GEM',                0,  0],
+      [:newline,     nil,                  3,  0],
+
+      [:entry,       'remote',             2,  1],
+      [:text,        @gem_repo,           10,  1],
+      [:newline,     nil,                 34,  1],
+
+      [:entry,       'specs',              2,  2],
+      [:newline,     nil,                  8,  2],
+
+      [:text,        'a',                  4,  3],
+      [:l_paren,     nil,                  6,  3],
+      [:text,        '2',                  7,  3],
+      [:r_paren,     nil,                  8,  3],
+      [:newline,     nil,                  9,  3],
+
+      [:text,        'b',                  6,  4],
+      [:l_paren,     nil,                  8,  4],
+      [:requirement, '=',                  9,  4],
+      [:text,        '2',                 11,  4],
+      [:r_paren,     nil,                 12,  4],
+      [:newline,     nil,                 13,  4],
+
+      [:text,        'c',                  6,  5],
+      [:l_paren,     nil,                  8,  5],
+      [:requirement, '!=',                 9,  5],
+      [:text,        '3',                 12,  5],
+      [:r_paren,     nil,                 13,  5],
+      [:newline,     nil,                 14,  5],
+
+      [:text,        'd',                  6,  6],
+      [:l_paren,     nil,                  8,  6],
+      [:requirement, '>',                  9,  6],
+      [:text,        '4',                 11,  6],
+      [:r_paren,     nil,                 12,  6],
+      [:newline,     nil,                 13,  6],
+
+      [:text,        'e',                  6,  7],
+      [:l_paren,     nil,                  8,  7],
+      [:requirement, '<',                  9,  7],
+      [:text,        '5',                 11,  7],
+      [:r_paren,     nil,                 12,  7],
+      [:newline,     nil,                 13,  7],
+
+      [:text,        'f',                  6,  8],
+      [:l_paren,     nil,                  8,  8],
+      [:requirement, '>=',                 9,  8],
+      [:text,        '6',                 12,  8],
+      [:r_paren,     nil,                 13,  8],
+      [:newline,     nil,                 14,  8],
+
+      [:text,        'g',                  6,  9],
+      [:l_paren,     nil,                  8,  9],
+      [:requirement, '<=',                 9,  9],
+      [:text,        '7',                 12,  9],
+      [:r_paren,     nil,                 13,  9],
+      [:newline,     nil,                 14,  9],
+
+      [:text,        'h',                  6, 10],
+      [:l_paren,     nil,                  8, 10],
+      [:requirement, '~>',                 9, 10],
+      [:text,        '8',                 12, 10],
+      [:r_paren,     nil,                 13, 10],
+      [:newline,     nil,                 14, 10],
+
+      [:newline,     nil,                  0, 11],
+
+      [:section,     'PLATFORMS',          0, 12],
+      [:newline,     nil,                  9, 12],
+
+      [:text,        Gem::Platform::RUBY,  2, 13],
+      [:newline,     nil,                  6, 13],
+
+      [:newline,     nil,                  0, 14],
+
+      [:section,     'DEPENDENCIES',       0, 15],
+      [:newline,     nil,                 12, 15],
+
+      [:text,        'a',                  2, 16],
+      [:newline,     nil,                  3, 16],
     ]
 
     assert_equal expected, @lockfile.tokenize

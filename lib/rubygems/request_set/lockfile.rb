@@ -198,7 +198,7 @@ class Gem::RequestSet::Lockfile
           type, = get until @tokens.empty? or peek.first == :section
         end
       else
-        raise "BUG: unhandled token #{type} (#{data.inspect}) at #{line}:#{column}"
+        raise "BUG: unhandled token #{type} (#{data.inspect}) at line #{line} column #{column}"
       end
     end
   end

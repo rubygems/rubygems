@@ -229,22 +229,27 @@ class Gem::RequestSet::Lockfile
     last_spec = nil
 
     while not @tokens.empty? and :text == peek.first do
-      _, name, = get :text
+      _, name, column, = get :text
 
       case peek[0]
-      when :newline then # ignore
+      when :newline then
+        last_spec.add_dependency Gem::Dependency.new name if column == 6
       when :l_paren then
         get :l_paren
 
         type, data, = get [:text, :requirement]
 
-        case type
-        when :text then
+        if type == :text and column == 4 then
           last_spec = set.add name, data, Gem::Platform::RUBY
-        when :requirement then
-          _, version = get :text
+        else
+          dependency =
+            if peek[0] == :text then
+              _, version = get :text
 
-          dependency = Gem::Dependency.new name, "#{data} #{version}"
+              Gem::Dependency.new name, "#{data} #{version}"
+            else
+              Gem::Dependency.new name
+            end
 
           last_spec.add_dependency dependency
         end

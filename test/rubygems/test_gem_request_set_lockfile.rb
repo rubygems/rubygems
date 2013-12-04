@@ -119,6 +119,7 @@ GEM
     a (2)
       b (= 3)
       c (~> 4)
+      d
 
 PLATFORMS
   #{Gem::Platform::RUBY}
@@ -146,6 +147,7 @@ DEPENDENCIES
     expected = [
       dep('b', '= 3'),
       dep('c', '~> 4'),
+      dep('d'),
     ]
 
     assert_equal expected, spec.dependencies

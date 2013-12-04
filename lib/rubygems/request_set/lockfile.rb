@@ -244,9 +244,19 @@ class Gem::RequestSet::Lockfile
         else
           dependency =
             if peek[0] == :text then
-              _, version = get :text
+              _, version, = get :text
 
-              Gem::Dependency.new name, "#{data} #{version}"
+              requirements = ["#{data} #{version}"]
+
+              while peek[0] == :comma do
+                get :comma
+                _, op,      = get :requirement
+                _, version, = get :text
+
+                requirements << "#{op} #{version}"
+              end
+
+              Gem::Dependency.new name, requirements
             else
               Gem::Dependency.new name
             end
@@ -372,7 +382,9 @@ class Gem::RequestSet::Lockfile
           [:r_paren, nil, *token_pos(pos)]
         when s.scan(/<=|>=|=|~>|<|>|!=/) then
           [:requirement, s.matched, *token_pos(pos)]
-        when s.scan(/[^\s)]*/) then
+        when s.scan(/,/) then
+          [:comma, nil, *token_pos(pos)]
+        when s.scan(/[^\s),]*/) then
           [:text, s.matched, *token_pos(pos)]
         else
           raise "BUG: can't create token for: #{s.string[s.pos..-1].inspect}"

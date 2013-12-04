@@ -120,6 +120,7 @@ GEM
       b (= 3)
       c (~> 4)
       d
+      e (~> 5.0, >= 5.0.1)
 
 PLATFORMS
   #{Gem::Platform::RUBY}
@@ -148,6 +149,7 @@ DEPENDENCIES
       dep('b', '= 3'),
       dep('c', '~> 4'),
       dep('d'),
+      dep('e', '~> 5.0', '>= 5.0.1'),
     ]
 
     assert_equal expected, spec.dependencies
@@ -381,6 +383,46 @@ DEPENDENCIES
     tokens = @lockfile.tokenize
 
     assert_empty tokens
+  end
+
+  def test_tokenize_multiple
+    write_lockfile <<-LOCKFILE
+GEM
+  remote: #{@gem_repo}
+  specs:
+    a (2)
+      b (~> 3.0, >= 3.0.1)
+    LOCKFILE
+
+    expected = [
+      [:section,     'GEM',      0,  0],
+      [:newline,     nil,        3,  0],
+
+      [:entry,       'remote',   2,  1],
+      [:text,        @gem_repo, 10,  1],
+      [:newline,     nil,       34,  1],
+
+      [:entry,       'specs',    2,  2],
+      [:newline,     nil,        8,  2],
+
+      [:text,        'a',        4,  3],
+      [:l_paren,     nil,        6,  3],
+      [:text,        '2',        7,  3],
+      [:r_paren,     nil,        8,  3],
+      [:newline,     nil,        9,  3],
+
+      [:text,        'b',        6,  4],
+      [:l_paren,     nil,        8,  4],
+      [:requirement, '~>',       9,  4],
+      [:text,        '3.0',     12,  4],
+      [:comma,       nil,       15,  4],
+      [:requirement, '>=',      17,  4],
+      [:text,        '3.0.1',   20,  4],
+      [:r_paren,     nil,       25,  4],
+      [:newline,     nil,       26,  4],
+    ]
+
+    assert_equal expected, @lockfile.tokenize
   end
 
   def test_to_s_gem

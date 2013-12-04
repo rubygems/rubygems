@@ -60,7 +60,7 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
 
     return if needed.empty?
 
-    Gem::Tracer.span :prefetch, names do
+    Gem::Tracer.span :prefetch, needed do
       uri = @dep_uri + "?gems=#{needed.join ','}"
       str = Gem::RemoteFetcher.fetcher.fetch_path uri
 

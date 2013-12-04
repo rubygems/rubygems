@@ -1,4 +1,4 @@
-class Gem::Tracer
+class Gem::Tracer #:nodoc:
   class << self
     attr_accessor :current_tracer
 
@@ -14,7 +14,7 @@ class Gem::Tracer
 
   attr_reader :toplevel
 
-  class Span
+  class Span #:nodoc:
     class << self
       def next_id
         @span_id ||= 0

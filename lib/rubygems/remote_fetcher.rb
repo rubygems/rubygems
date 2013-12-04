@@ -296,7 +296,7 @@ class Gem::RemoteFetcher
       data = fetch_path(uri)
 
       if update and path then
-        Gem::Tracer.new :cache, path do
+        Gem::Tracer.span :cache, path do
           open(path, 'wb') do |io|
             io.write data
           end

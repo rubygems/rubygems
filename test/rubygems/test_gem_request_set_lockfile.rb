@@ -111,7 +111,7 @@ DEPENDENCIES
     assert_equal %w[a-2], lockfile_set.specs.map { |tuple| tuple.full_name }
   end
 
-  def test_parse_gem_dependency
+  def test_parse_gem_specs_dependency
     write_lockfile <<-LOCKFILE
 GEM
   remote: #{@gem_repo}

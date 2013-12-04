@@ -59,6 +59,12 @@ class TestGemRequestSetLockfile < Gem::TestCase
     assert_equal File.expand_path("#{@gem_deps_file}.lock"), e.path
   end
 
+  def test_get_type_multiple
+    @lockfile.instance_variable_set :@tokens, [[:section, 'x', 5, 1]]
+
+    assert @lockfile.get [:text, :section]
+  end
+
   def test_get_type_value_mismatch
     @lockfile.instance_variable_set :@tokens, [[:section, 'x', 5, 1]]
 

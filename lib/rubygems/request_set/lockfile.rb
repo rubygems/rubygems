@@ -150,16 +150,16 @@ class Gem::RequestSet::Lockfile
   ##
   # Gets the next token for a Lockfile
 
-  def get expected_type = nil, expected_value = nil # :nodoc:
+  def get expected_types = nil, expected_value = nil # :nodoc:
     @current_token = @tokens.shift
 
     type, value, column, line = @current_token
 
-    if expected_type and expected_type != type then
+    if expected_types and not Array(expected_types).include? type then
       unget
 
       message = "unexpected token [#{type.inspect}, #{value.inspect}], " +
-                "expected #{expected_type.inspect}"
+                "expected #{expected_types.inspect}"
 
       raise ParseError.new message, column, line, "#{@gem_deps_file}.lock"
     end
@@ -168,7 +168,8 @@ class Gem::RequestSet::Lockfile
       unget
 
       message = "unexpected token [#{type.inspect}, #{value.inspect}], " +
-                "expected [#{expected_type.inspect}, #{expected_value.inspect}]"
+                "expected [#{expected_types.inspect}, " +
+                "#{expected_value.inspect}]"
 
       raise ParseError.new message, column, line, "#{@gem_deps_file}.lock"
     end

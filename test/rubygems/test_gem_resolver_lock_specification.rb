@@ -22,20 +22,14 @@ class TestGemResolverLockSpecification < Gem::TestCase
     assert_equal @source, spec.source
   end
 
-  def test_dependencies_equals
+  def test_add_dependency
     l_spec = @LS.new @set, 'a', v(2), @source, Gem::Platform::RUBY
 
-    l_spec.dependencies = [
-      dep('b', '>= 0'),
-      dep('c', '~> 1'),
-    ]
+    b_dep = dep('b', '>= 0')
 
-    expected = [
-      dep('b', '>= 0'),
-      dep('c', '~> 1'),
-    ]
+    l_spec.add_dependency b_dep
 
-    assert_equal expected, l_spec.dependencies
+    assert_equal [b_dep], l_spec.dependencies
   end
 
   def test_install
@@ -55,10 +49,11 @@ class TestGemResolverLockSpecification < Gem::TestCase
 
     l_spec = @LS.new @set, 'a', version, @source, Gem::Platform::RUBY
 
-    l_spec.dependencies = [
-      dep('b', '>= 0'),
-      dep('c', '~> 1'),
-    ]
+    b_dep = dep 'b', '>= 0'
+    c_dep = dep 'c', '~> 1'
+
+    l_spec.add_dependency b_dep
+    l_spec.add_dependency c_dep
 
     spec = l_spec.spec
 
@@ -66,12 +61,7 @@ class TestGemResolverLockSpecification < Gem::TestCase
     assert_equal version,             spec.version
     assert_equal Gem::Platform::RUBY, spec.platform
 
-    expected = [
-      dep('b', '>= 0'),
-      dep('c', '~> 1'),
-    ]
-
-    assert_equal expected, l_spec.spec.dependencies
+    assert_equal [b_dep, c_dep], l_spec.spec.dependencies
   end
 
 end

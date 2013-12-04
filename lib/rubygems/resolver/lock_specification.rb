@@ -27,8 +27,11 @@ class Gem::Resolver::LockSpecification < Gem::Resolver::Specification
     yield nil
   end
 
-  def dependencies= dependencies # :nodoc:
-    @dependencies.concat dependencies
+  ##
+  # Adds +dependency+ from the lockfile to this specification
+
+  def add_dependency dependency # :nodoc:
+    @dependencies << dependency
   end
 
   ##

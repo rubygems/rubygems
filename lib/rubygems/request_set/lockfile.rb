@@ -207,7 +207,26 @@ class Gem::RequestSet::Lockfile
     while not @tokens.empty? and :text == peek.first do
       _, name, = get :text
 
-      @set.gem name
+      requirements = []
+
+      if peek[0] == :l_paren then
+        get :l_paren
+
+        loop do
+          _, op,      = get :requirement
+          _, version, = get :text
+
+          requirements << "#{op} #{version}"
+
+          break unless peek[0] == :comma
+
+          get :comma
+        end
+
+        get :r_paren
+      end
+
+      @set.gem name, *requirements
 
       skip :newline
     end

@@ -111,6 +111,35 @@ DEPENDENCIES
     assert_equal %w[a-2], lockfile_set.specs.map { |tuple| tuple.full_name }
   end
 
+  def test_parse_dependencies
+    write_lockfile <<-LOCKFILE
+GEM
+  remote: #{@gem_repo}
+  specs:
+    a (2)
+
+PLATFORMS
+  #{Gem::Platform::RUBY}
+
+DEPENDENCIES
+  a (>= 1, <= 2)
+    LOCKFILE
+
+    @lockfile.parse
+
+    assert_equal [dep('a', '>= 1', '<= 2')], @set.dependencies
+
+    assert_equal [Gem::Platform::RUBY], @lockfile.platforms
+
+    lockfile_set = @set.sets.find do |set|
+      Gem::Resolver::LockSet === set
+    end
+
+    assert lockfile_set, 'could not find a LockSet'
+
+    assert_equal %w[a-2], lockfile_set.specs.map { |tuple| tuple.full_name }
+  end
+
   def test_parse_gem_specs_dependency
     write_lockfile <<-LOCKFILE
 GEM

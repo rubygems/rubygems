@@ -81,6 +81,8 @@ class Gem::RequestSet::Lockfile
   end
 
   def add_GEM out # :nodoc:
+    return if @spec_groups.empty?
+
     out << "GEM"
 
     source_groups = @spec_groups.values.flatten.group_by do |request|
@@ -102,6 +104,24 @@ class Gem::RequestSet::Lockfile
           out << "      #{dependency.name}#{requirement.for_lockfile}"
         end
       end
+    end
+
+    out << nil
+  end
+
+  def add_GIT out
+    return unless git_requests =
+      @spec_groups.delete(Gem::Resolver::GitSpecification)
+
+    out << "GIT"
+    git_requests.each do |request|
+      source = request.spec.source
+      remote = source.repository
+
+      out << "  remote: #{source.repository}"
+      out << "  revision: #{source.rev_parse}"
+      out << "  specs:"
+      out << "    #{request.name} (#{request.version})"
     end
 
     out << nil
@@ -396,6 +416,8 @@ class Gem::RequestSet::Lockfile
     end
 
     add_PATH out
+
+    add_GIT out
 
     add_GEM out
 

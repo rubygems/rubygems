@@ -13,8 +13,10 @@ class TestGemRequestSetLockfile < Gem::TestCase
 
     @set = Gem::RequestSet.new
 
+    @git_set    = Gem::Resolver::GitSet.new
     @vendor_set = Gem::Resolver::VendorSet.new
 
+    @set.instance_variable_set :@git_set,    @git_set
     @set.instance_variable_set :@vendor_set, @vendor_set
 
     @gem_deps_file = 'gem.deps.rb'
@@ -625,8 +627,6 @@ PATH
   specs:
     #{name} (#{version})
 
-GEM
-
 PLATFORMS
   #{Gem::Platform::RUBY}
 
@@ -649,8 +649,6 @@ PATH
   remote: #{directory}
   specs:
     #{name} (#{version})
-
-GEM
 
 PLATFORMS
   #{Gem::Platform::RUBY}
@@ -679,6 +677,33 @@ GEM
 
 PLATFORMS
   #{Gem::Platform.local}
+
+DEPENDENCIES
+  a
+    LOCKFILE
+
+    assert_equal expected, @lockfile.to_s
+  end
+
+  def test_to_s_git
+    name, version, repository, head = git_gem
+
+    git_set = Gem::Resolver::GitSet.new
+    git_set.add_git_gem name, repository, head, true
+
+    @set.sets << git_set
+
+    @set.gem 'a'
+
+    expected = <<-LOCKFILE
+GIT
+  remote: #{repository}
+  revision: #{head}
+  specs:
+    a (1)
+
+PLATFORMS
+  ruby
 
 DEPENDENCIES
   a

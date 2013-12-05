@@ -274,24 +274,7 @@ class Gem::RequestSet::Lockfile
         if type == :text and column == 4 then
           last_spec = set.add name, data, Gem::Platform::RUBY
         else
-          dependency =
-            if peek[0] == :text then
-              _, version, = get :text
-
-              requirements = ["#{data} #{version}"]
-
-              while peek[0] == :comma do
-                get :comma
-                _, op,      = get :requirement
-                _, version, = get :text
-
-                requirements << "#{op} #{version}"
-              end
-
-              Gem::Dependency.new name, requirements
-            else
-              Gem::Dependency.new name
-            end
+          dependency = parse_dependency name, data
 
           last_spec.add_dependency dependency
         end
@@ -339,24 +322,7 @@ class Gem::RequestSet::Lockfile
         if type == :text and column == 4 then
           last_spec = set.add_git_spec name, data, repository, revision, true
         else
-          dependency =
-            if peek[0] == :text then
-              _, version, = get :text
-
-              requirements = ["#{data} #{version}"]
-
-              while peek[0] == :comma do
-                get :comma
-                _, op,      = get :requirement
-                _, version, = get :text
-
-                requirements << "#{op} #{version}"
-              end
-
-              Gem::Dependency.new name, requirements
-            else
-              Gem::Dependency.new name
-            end
+          dependency = parse_dependency name, data
 
           last_spec.spec.dependencies << dependency
         end
@@ -380,6 +346,28 @@ class Gem::RequestSet::Lockfile
 
       skip :newline
     end
+  end
+
+  ##
+  # Parses the requirements following the dependency +name+ and the +op+ for
+  # the first token of the requirements and returns a Gem::Dependency object.
+
+  def parse_dependency name, op # :nodoc:
+    return Gem::Dependency.new name unless peek[0] == :text
+
+    _, version, = get :text
+
+    requirements = ["#{op} #{version}"]
+
+    while peek[0] == :comma do
+      get :comma
+      _, op,      = get :requirement
+      _, version, = get :text
+
+      requirements << "#{op} #{version}"
+    end
+
+    Gem::Dependency.new name, requirements
   end
 
   ##

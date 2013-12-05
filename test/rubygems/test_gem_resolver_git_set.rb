@@ -36,6 +36,24 @@ class TestGemResolverGitSet < Gem::TestCase
     assert @set.need_submodules[repository]
   end
 
+  def test_add_git_spec
+    name, version, repository, revision = git_gem
+
+    @set.add_git_spec name, version, repository, revision, true
+
+    dependency = dep 'a'
+
+    specs = @set.find_all dependency
+
+    spec = specs.first
+
+    assert_equal "#{name}-#{version}", spec.full_name
+
+    assert @set.need_submodules[repository]
+
+    refute_path_exists spec.source.repo_cache_dir
+  end
+
   def test_find_all
     name, _, repository, = git_gem
 

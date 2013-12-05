@@ -190,6 +190,8 @@ class Gem::RequestSet::Lockfile
         case data
         when 'DEPENDENCIES' then
           parse_DEPENDENCIES
+        when 'GIT' then
+          parse_GIT
         when 'GEM' then
           parse_GEM
         when 'PLATFORMS' then
@@ -209,7 +211,18 @@ class Gem::RequestSet::Lockfile
 
       requirements = []
 
-      if peek[0] == :l_paren then
+      case peek[0]
+      when :bang then
+        get :bang
+
+        git_spec = @set.sets.select { |set|
+          Gem::Resolver::GitSet === set
+        }.map { |set|
+          set.specs[name]
+        }.first
+
+        requirements << git_spec.version
+      when :l_paren then
         get :l_paren
 
         loop do
@@ -281,6 +294,71 @@ class Gem::RequestSet::Lockfile
             end
 
           last_spec.add_dependency dependency
+        end
+
+        get :r_paren
+      else
+        raise "BUG: unknown token #{peek}"
+      end
+
+      skip :newline
+    end
+
+    @set.sets << set
+  end
+
+  def parse_GIT # :nodoc:
+    get :entry, 'remote'
+    _, repository, = get :text
+
+    skip :newline
+
+    get :entry, 'revision'
+    _, revision, = get :text
+
+    skip :newline
+
+    get :entry, 'specs'
+
+    skip :newline
+
+    set = Gem::Resolver::GitSet.new
+    last_spec = nil
+
+    while not @tokens.empty? and :text == peek.first do
+      _, name, column, = get :text
+
+      case peek[0]
+      when :newline then
+        last_spec.add_dependency Gem::Dependency.new name if column == 6
+      when :l_paren then
+        get :l_paren
+
+        type, data, = get [:text, :requirement]
+
+        if type == :text and column == 4 then
+          last_spec = set.add_git_spec name, data, repository, revision, true
+        else
+          dependency =
+            if peek[0] == :text then
+              _, version, = get :text
+
+              requirements = ["#{data} #{version}"]
+
+              while peek[0] == :comma do
+                get :comma
+                _, op,      = get :requirement
+                _, version, = get :text
+
+                requirements << "#{op} #{version}"
+              end
+
+              Gem::Dependency.new name, requirements
+            else
+              Gem::Dependency.new name
+            end
+
+          last_spec.spec.dependencies << dependency
         end
 
         get :r_paren
@@ -403,7 +481,9 @@ class Gem::RequestSet::Lockfile
           [:requirement, s.matched, *token_pos(pos)]
         when s.scan(/,/) then
           [:comma, nil, *token_pos(pos)]
-        when s.scan(/[^\s),]*/) then
+        when s.scan(/!/) then
+          [:bang, nil, *token_pos(pos)]
+        when s.scan(/[^\s),!]*/) then
           [:text, s.matched, *token_pos(pos)]
         else
           raise "BUG: can't create token for: #{s.string[s.pos..-1].inspect}"

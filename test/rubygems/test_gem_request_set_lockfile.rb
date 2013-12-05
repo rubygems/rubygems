@@ -140,6 +140,40 @@ DEPENDENCIES
     assert_equal %w[a-2], lockfile_set.specs.map { |tuple| tuple.full_name }
   end
 
+  def test_parse_GIT
+    write_lockfile <<-LOCKFILE
+GIT
+  remote: git://example/a.git
+  revision: master
+  specs:
+    a (2)
+      b (>= 3)
+
+DEPENDENCIES
+  a!
+    LOCKFILE
+
+    @lockfile.parse
+
+    assert_equal [dep('a', '= 2')], @set.dependencies
+
+    lockfile_set = @set.sets.find do |set|
+      Gem::Resolver::LockSet === set
+    end
+
+    refute lockfile_set, 'fount a LockSet'
+
+    git_set = @set.sets.find do |set|
+      Gem::Resolver::GitSet === set
+    end
+
+    assert git_set, 'could not find a GitSet'
+
+    assert_equal %w[a-2], git_set.specs.values.map { |s| s.full_name }
+
+    assert_equal [dep('b', '>= 3')], git_set.specs.values.first.dependencies
+  end
+
   def test_parse_gem_specs_dependency
     write_lockfile <<-LOCKFILE
 GEM
@@ -406,6 +440,24 @@ DEPENDENCIES
 
     assert_equal "your #{@lock_file} contains merge conflict markers (at line 0 column 0)",
                  e.message
+  end
+
+  def test_tokenize_git
+    write_lockfile <<-LOCKFILE
+DEPENDENCIES
+  a!
+    LOCKFILE
+
+    expected = [
+      [:section, 'DEPENDENCIES',  0,  0],
+      [:newline, nil,            12,  0],
+
+      [:text,    'a',             2,  1],
+      [:bang,    nil,             3,  1],
+      [:newline, nil,             4,  1],
+    ]
+
+    assert_equal expected, @lockfile.tokenize
   end
 
   def test_tokenize_missing

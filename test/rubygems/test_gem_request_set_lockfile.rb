@@ -686,14 +686,37 @@ DEPENDENCIES
   end
 
   def test_to_s_git
-    name, version, repository, head = git_gem
+    _, version, repository, = git_gem
+
+    head = nil
+
+    Dir.chdir repository do
+      FileUtils.mkdir 'b'
+
+      Dir.chdir 'b' do
+        b = Gem::Specification.new 'b', 1 do |s|
+          s.add_dependency 'a', '~> 1.0'
+        end
+
+        open 'b.gemspec', 'w' do |io|
+          io.write b.to_ruby
+        end
+
+        system @git, 'add', 'b.gemspec'
+        system @git, 'commit', '--quiet', '-m', 'add b/b.gemspec'
+      end
+
+      head = `#{@git} rev-parse head`.strip
+    end
 
     git_set = Gem::Resolver::GitSet.new
-    git_set.add_git_gem name, repository, head, true
+    git_set.add_git_gem 'a', repository, 'head', true
+    git_set.add_git_gem 'b', repository, 'head', true
 
     @set.sets << git_set
 
     @set.gem 'a'
+    @set.gem 'b'
 
     expected = <<-LOCKFILE
 GIT
@@ -701,12 +724,15 @@ GIT
   revision: #{head}
   specs:
     a (1)
+    b (1)
+      a (~> 1.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   a
+  b
     LOCKFILE
 
     assert_equal expected, @lockfile.to_s

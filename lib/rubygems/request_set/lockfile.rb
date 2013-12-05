@@ -113,15 +113,22 @@ class Gem::RequestSet::Lockfile
     return unless git_requests =
       @spec_groups.delete(Gem::Resolver::GitSpecification)
 
-    out << "GIT"
-    git_requests.each do |request|
+    by_repository_revision = git_requests.group_by do |request|
       source = request.spec.source
-      remote = source.repository
+      [source.repository, source.rev_parse]
+    end
 
-      out << "  remote: #{source.repository}"
-      out << "  revision: #{source.rev_parse}"
+    out << "GIT"
+    by_repository_revision.each do |(repository, revision), requests|
+      out << "  remote: #{repository}"
+      out << "  revision: #{revision}"
       out << "  specs:"
-      out << "    #{request.name} (#{request.version})"
+      requests.each do |request|
+        out << "    #{request.name} (#{request.version})"
+        request.spec.dependencies.each do |dep|
+          out << "      #{dep.name}#{dep.requirement.for_lockfile}"
+        end
+      end
     end
 
     out << nil

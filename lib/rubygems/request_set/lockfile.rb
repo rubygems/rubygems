@@ -123,9 +123,12 @@ class Gem::RequestSet::Lockfile
       out << "  remote: #{repository}"
       out << "  revision: #{revision}"
       out << "  specs:"
-      requests.each do |request|
+
+      requests.sort_by { |request| request.name }.each do |request|
         out << "    #{request.name} (#{request.version})"
-        request.spec.dependencies.each do |dep|
+
+        dependencies = request.spec.dependencies.sort_by { |dep| dep.name }
+        dependencies.each do |dep|
           out << "      #{dep.name}#{dep.requirement.for_lockfile}"
         end
       end

@@ -696,6 +696,7 @@ DEPENDENCIES
       Dir.chdir 'b' do
         b = Gem::Specification.new 'b', 1 do |s|
           s.add_dependency 'a', '~> 1.0'
+          s.add_dependency 'c', '~> 1.0'
         end
 
         open 'b.gemspec', 'w' do |io|
@@ -704,6 +705,19 @@ DEPENDENCIES
 
         system @git, 'add', 'b.gemspec'
         system @git, 'commit', '--quiet', '-m', 'add b/b.gemspec'
+      end
+
+      FileUtils.mkdir 'c'
+
+      Dir.chdir 'c' do
+        c = Gem::Specification.new 'c', 1
+
+        open 'c.gemspec', 'w' do |io|
+          io.write c.to_ruby
+        end
+
+        system @git, 'add', 'c.gemspec'
+        system @git, 'commit', '--quiet', '-m', 'add c/c.gemspec'
       end
 
       head = `#{@git} rev-parse head`.strip
@@ -726,6 +740,8 @@ GIT
     a (1)
     b (1)
       a (~> 1.0)
+      c (~> 1.0)
+    c (1)
 
 PLATFORMS
   ruby

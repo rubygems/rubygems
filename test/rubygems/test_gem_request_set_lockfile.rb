@@ -85,7 +85,7 @@ class TestGemRequestSetLockfile < Gem::TestCase
   end
 
   def test_parse
-    write_lockfile <<-LOCKFILE
+    write_lockfile <<-LOCKFILE.strip
 GEM
   remote: #{@gem_repo}
   specs:
@@ -236,6 +236,8 @@ DEPENDENCIES
     assert_equal :token, @lockfile.peek
 
     assert_equal :token, @lockfile.get
+
+    assert_equal :EOF, @lockfile.peek
   end
 
   def test_skip

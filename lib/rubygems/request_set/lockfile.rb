@@ -402,7 +402,7 @@ class Gem::RequestSet::Lockfile
   # Peeks at the next token for Lockfile
 
   def peek # :nodoc:
-    @tokens.first
+    @tokens.first || :EOF
   end
 
   def skip type # :nodoc:

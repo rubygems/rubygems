@@ -727,7 +727,7 @@ DEPENDENCIES
   end
 
   def test_to_s_git
-    _, version, repository, = git_gem
+    _, _, repository, = git_gem
 
     head = nil
 

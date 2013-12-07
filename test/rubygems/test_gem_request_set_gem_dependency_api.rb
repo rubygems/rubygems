@@ -527,8 +527,6 @@ end
     assert_equal "duplicate source path: vendor/a for gem a",
                  e.message
 
-    repository = 'repository'
-
     e = assert_raises ArgumentError do
       gda.send :pin_gem_source, 'a', :git, 'git://example/repo.git'
     end

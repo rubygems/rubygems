@@ -83,13 +83,12 @@ class Gem::RequestSet::Lockfile
   def add_GEM out # :nodoc:
     return if @spec_groups.empty?
 
-    out << "GEM"
-
     source_groups = @spec_groups.values.flatten.group_by do |request|
       request.spec.source.uri
     end
 
-    source_groups.map do |group, requests|
+    source_groups.sort_by { |group,| group.to_s }.map do |group, requests|
+      out << "GEM"
       out << "  remote: #{group}"
       out << "  specs:"
 
@@ -104,9 +103,8 @@ class Gem::RequestSet::Lockfile
           out << "      #{dependency.name}#{requirement.for_lockfile}"
         end
       end
+      out << nil
     end
-
-    out << nil
   end
 
   def add_GIT out

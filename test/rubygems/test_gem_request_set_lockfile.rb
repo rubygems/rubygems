@@ -685,6 +685,44 @@ DEPENDENCIES
     assert_equal expected, @lockfile.to_s
   end
 
+  def test_to_s_gem_source
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2
+      fetcher.clear
+    end
+
+    spec_fetcher 'http://other.example/' do |fetcher|
+      fetcher.spec 'b', 2
+      fetcher.clear
+    end
+
+    Gem.sources << 'http://other.example/'
+
+    @set.gem 'a'
+    @set.gem 'b'
+
+    expected = <<-LOCKFILE
+GEM
+  remote: #{@gem_repo}
+  specs:
+    a (2)
+
+GEM
+  remote: http://other.example/
+  specs:
+    b (2)
+
+PLATFORMS
+  #{Gem::Platform::RUBY}
+
+DEPENDENCIES
+  a
+  b
+    LOCKFILE
+
+    assert_equal expected, @lockfile.to_s
+  end
+
   def test_to_s_git
     _, version, repository, = git_gem
 

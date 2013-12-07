@@ -555,6 +555,8 @@ PLATFORMS
 
 DEPENDENCIES
   a
+  b
+  c
     LOCKFILE
 
     assert_equal expected, @lockfile.to_s
@@ -609,6 +611,7 @@ PLATFORMS
 
 DEPENDENCIES
   a (>= 1)
+  b
     LOCKFILE
 
     assert_equal expected, @lockfile.to_s
@@ -761,13 +764,10 @@ DEPENDENCIES
       head = `#{@git} rev-parse head`.strip
     end
 
-    git_set = Gem::Resolver::GitSet.new
-    git_set.add_git_gem 'a', repository, 'head', true
-    git_set.add_git_gem 'b', repository, 'head', true
+    @git_set.add_git_gem 'a', repository, 'head', true
+    @git_set.add_git_gem 'b', repository, 'head', true
+    @git_set.add_git_gem 'c', repository, 'head', true
 
-    @set.sets << git_set
-
-    @set.gem 'a'
     @set.gem 'b'
 
     expected = <<-LOCKFILE
@@ -785,8 +785,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  a
-  b
+  a!
+  b!
+  c!
     LOCKFILE
 
     assert_equal expected, @lockfile.to_s

@@ -64,17 +64,17 @@ class Gem::RequestSet::Lockfile
   def add_DEPENDENCIES out # :nodoc:
     out << "DEPENDENCIES"
 
-    @set.dependencies.sort.map do |dependency|
-      source = @requests.find do |req|
-        req.name == dependency.name and
-          req.spec.class == Gem::Resolver::VendorSpecification
+    @requests.sort_by { |r| r.name }.each do |request|
+      spec = request.spec
+
+      if [Gem::Resolver::VendorSpecification,
+          Gem::Resolver::GitSpecification].include? spec.class then
+        out << "  #{request.name}!"
+      else
+        requirement = request.request.dependency.requirement
+
+        out << "  #{request.name}#{requirement.for_lockfile}"
       end
-
-      source_dep = '!' if source
-
-      requirement = dependency.requirement
-
-      out << "  #{dependency.name}#{source_dep}#{requirement.for_lockfile}"
     end
 
     out << nil

@@ -24,7 +24,14 @@ class Gem::Resolver::LockSpecification < Gem::Resolver::Specification
   # +options+ are ignored.
 
   def install options
-    yield nil
+    destination = options[:install_dir] || Gem.dir
+
+    if File.exist? File.join(destination, 'specifications', spec.spec_name) then
+      yield nil
+      return
+    end
+
+    super
   end
 
   ##

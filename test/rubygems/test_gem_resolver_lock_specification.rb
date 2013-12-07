@@ -33,7 +33,26 @@ class TestGemResolverLockSpecification < Gem::TestCase
   end
 
   def test_install
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 2
+      fetcher.clear
+    end
+
     spec = @LS.new @set, 'a', v(2), @source, Gem::Platform::RUBY
+
+    called = false
+
+    spec.install({}) do |installer|
+      called = installer
+    end
+
+    refute_nil called
+  end
+
+  def test_install_installed
+    spec = @LS.new @set, 'a', v(2), @source, Gem::Platform::RUBY
+
+    FileUtils.touch File.join(@gemhome, 'specifications', spec.spec.spec_name)
 
     called = false
 

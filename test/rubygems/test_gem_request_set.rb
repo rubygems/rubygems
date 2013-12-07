@@ -95,6 +95,7 @@ class TestGemRequestSet < Gem::TestCase
       fetcher.gem 'a', 1
       fetcher.gem 'a', 2
       fetcher.gem 'b', 1, 'a' => '>= 0'
+      fetcher.clear
     end
 
     rs = Gem::RequestSet.new
@@ -127,6 +128,9 @@ DEPENDENCIES
 
     assert_includes installed, 'b-1'
     assert_includes installed, 'a-1'
+
+    assert_path_exists File.join @gemhome, 'specifications', 'a-1.gemspec'
+    assert_path_exists File.join @gemhome, 'specifications', 'b-1.gemspec'
   end
 
   def test_load_gemdeps

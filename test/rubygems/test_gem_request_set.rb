@@ -305,7 +305,9 @@ DEPENDENCIES
 
     rs.resolve
 
-    installed = rs.install_into @tempdir
+    installed = rs.install_into @tempdir do
+      assert_equal @tempdir, ENV['GEM_HOME']
+    end
 
     assert_path_exists File.join @tempdir, 'specifications', 'a-1.gemspec'
     assert_path_exists File.join @tempdir, 'specifications', 'b-1.gemspec'

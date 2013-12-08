@@ -173,6 +173,8 @@ class Gem::RequestSet
   end
 
   def install_into dir, force = true, options = {}
+    gem_home, ENV['GEM_HOME'] = ENV['GEM_HOME'], dir
+
     existing = force ? [] : specs_in(dir)
     existing.delete_if { |s| @always_install.include? s }
 
@@ -199,6 +201,8 @@ class Gem::RequestSet
     end
 
     installed
+  ensure
+    ENV['GEM_HOME'] = gem_home
   end
 
   ##

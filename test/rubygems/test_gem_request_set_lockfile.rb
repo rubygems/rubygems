@@ -763,12 +763,12 @@ DEPENDENCIES
         system @git, 'commit', '--quiet', '-m', 'add c/c.gemspec'
       end
 
-      head = `#{@git} rev-parse head`.strip
+      head = `#{@git} rev-parse HEAD`.strip
     end
 
-    @git_set.add_git_gem 'a', repository, 'head', true
-    @git_set.add_git_gem 'b', repository, 'head', true
-    @git_set.add_git_gem 'c', repository, 'head', true
+    @git_set.add_git_gem 'a', repository, 'HEAD', true
+    @git_set.add_git_gem 'b', repository, 'HEAD', true
+    @git_set.add_git_gem 'c', repository, 'HEAD', true
 
     @set.gem 'b'
 

@@ -69,13 +69,7 @@ class Gem::BasicSpecification
   end
 
   ##
-  # The directory the named +extension+ was installed into after being built.
-  #
-  # Usage:
-  #
-  #   spec.extensions.each do |ext|
-  #     puts spec.extension_install_dir ext
-  #   end
+  # Returns full path to the directory where gem's extensions are installed.
 
   def extension_install_dir
     @extension_install_dir ||=

@@ -9,9 +9,7 @@ require 'rubygems/util'
 #   source =
 #     Gem::Source::Git.new 'rake', 'git@example:rake.git', 'rake-10.1.0', false
 #
-#   spec = source.load_spec 'rake'
-#
-#   source.checkout
+#   source.specs
 
 class Gem::Source::Git < Gem::Source
 

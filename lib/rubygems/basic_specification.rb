@@ -148,6 +148,7 @@ class Gem::BasicSpecification
 
     @extension_dir = nil
     @full_gem_path         = nil
+    @gem_dir               = nil
     @gems_dir              = nil
     @base_dir              = nil
   end

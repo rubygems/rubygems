@@ -12,6 +12,19 @@ Major enhancements:
 
   See Gem::use_gemdeps for further details.
 
+* A RubyGems directory may now be shared amongst multiple ruby versions.  Upon
+  activation RubyGems will automatically compile missing extensions for the
+  current platform when the built objects are missing.  Issue #596 by Michal
+  Papis
+
+  By default different platforms do not share gem install locations so this
+  must be configured by setting GEM_HOME to a common directory.  Some gems use
+  fixed paths for requiring extensions and are not compatible with sharing gem
+  directories.
+
+  The default sharing location may be configured by RubyGems packagers through
+  Gem.default_ext_dir_for.  Pull Request #744 by Vít Ondruch.
+
 Minor enhancements:
 
 * RubyGems checks the 'allowed_push_host' metadata value when pushing a gem to
@@ -40,10 +53,6 @@ Minor enhancements:
   Gem::Ext::BuildError.  The old constant is an alias for the new constant.
 * When extensions are built the gem_make.out file is always written now, even
   on success.  This will help with debugging bad builds that report success.
-* A RubyGems directory may now be shared amongst multiple ruby versions.  Upon
-  activation RubyGems will automatically compile missing extensions for the
-  current platform when the built objects are missing.  Issue #596 by Michal
-  Papis
 * If a specification fails to validate RubyGems shows a link to the
   specification reference guide.  Issue #656 by Markus Heiler.
 * When using `gem install -g`, RubyGems now detects the presence of an

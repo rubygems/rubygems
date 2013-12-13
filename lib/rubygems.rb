@@ -1166,17 +1166,17 @@ module Gem
   autoload :ConfigFile,         'rubygems/config_file'
   autoload :Dependency,         'rubygems/dependency'
   autoload :DependencyList,     'rubygems/dependency_list'
-  autoload :Resolver,           'rubygems/resolver'
   autoload :DependencyResolver, 'rubygems/resolver'
   autoload :PathSupport,        'rubygems/path_support'
   autoload :Platform,           'rubygems/platform'
   autoload :RequestSet,         'rubygems/request_set'
   autoload :Requirement,        'rubygems/requirement'
+  autoload :Resolver,           'rubygems/resolver'
+  autoload :Source,             'rubygems/source'
   autoload :SourceList,         'rubygems/source_list'
   autoload :SpecFetcher,        'rubygems/spec_fetcher'
   autoload :Specification,      'rubygems/specification'
   autoload :Version,            'rubygems/version'
-  autoload :Source,             'rubygems/source'
 
   require "rubygems/specification"
 end

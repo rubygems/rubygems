@@ -71,6 +71,8 @@ Bug fixes:
   Bahar.
 * Fixed typos in RubyGems.  Pull requests #723, #725, #731 by Akira Matsuda,
   pull request #736 by Leo Gallucci.
+* RubyGems now holds exclusive locks on cached gem files to prevent incorrect
+  updates.  Pull Request #737 by Smit Shah
 
 === 2.1.11 / 2013-11-12
 

@@ -29,7 +29,6 @@ require 'minitest/autorun'
 require 'rubygems/deprecate'
 
 require 'fileutils'
-require 'io/console'
 require 'pathname'
 require 'pp'
 require 'rubygems/package'

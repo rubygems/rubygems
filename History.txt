@@ -58,6 +58,8 @@ Minor enhancements:
   twice.
 * Marked the license specification attribute as recommended.  Pull request
   #713 by Benjamin Fleischer.
+* RubyGems uses io/console instead of `stty` when available.  Pull request
+  #740 by Nobuyoshi Nakada
 
 Bug fixes:
 

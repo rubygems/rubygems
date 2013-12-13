@@ -4,14 +4,14 @@
 # See LICENSE.txt for permissions.
 #++
 
-##
-# Module that defines the default UserInteraction.  Any class including this
-# module will have access to the +ui+ method that returns the default UI.
-
 begin
   require 'io/console'
 rescue LoadError
 end
+
+##
+# Module that defines the default UserInteraction.  Any class including this
+# module will have access to the +ui+ method that returns the default UI.
 
 module Gem::DefaultUserInteraction
 

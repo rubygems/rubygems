@@ -1167,6 +1167,7 @@ module Gem
   autoload :Dependency,         'rubygems/dependency'
   autoload :DependencyList,     'rubygems/dependency_list'
   autoload :DependencyResolver, 'rubygems/resolver'
+  autoload :Installer,          'rubygems/installer'
   autoload :PathSupport,        'rubygems/path_support'
   autoload :Platform,           'rubygems/platform'
   autoload :RequestSet,         'rubygems/request_set'

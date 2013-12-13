@@ -34,6 +34,7 @@ require 'pp'
 require 'zlib'
 require 'pathname'
 require 'shellwords'
+require 'io/console'
 Gem.load_yaml
 
 require 'rubygems/mock_gem_ui'

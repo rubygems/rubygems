@@ -1227,6 +1227,8 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     requests = request_set.sorted_requests.map { |req| req.full_name }
 
+    assert request_set.ignore_dependencies
+
     assert_equal %w[b-1], requests
   end
 

@@ -83,7 +83,7 @@ Bug fixes:
 * Default gems are now ignored by Gem::Validator#alien.  Issue #717 by David
   Bahar.
 * Fixed typos in RubyGems.  Pull requests #723, #725, #731 by Akira Matsuda,
-  pull request #736 by Leo Gallucci.
+  pull request #736 by Leo Gallucci, pull request #746 by DV Suresh.
 * RubyGems now holds exclusive locks on cached gem files to prevent incorrect
   updates.  Pull Request #737 by Smit Shah
 * Improved speed of `gem install --ignore-dependencies`.  Patch by Terence

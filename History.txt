@@ -69,6 +69,8 @@ Minor enhancements:
   #713 by Benjamin Fleischer.
 * RubyGems uses io/console instead of `stty` when available.  Pull request
   #740 by Nobuyoshi Nakada
+* Relaxed Gem.ruby tests for platforms that override where ruby lives.  Pull
+  Request #755 by strzibny.
 
 Bug fixes:
 

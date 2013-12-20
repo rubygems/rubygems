@@ -113,6 +113,32 @@ class TestGemRequest < Gem::TestCase
     assert_nil @request.get_proxy_from_env
   end
 
+  def test_fetch_with_authorization_prompt
+    @ui = Gem::MockGemUi.new
+    uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
+    util_stub_connection_for :body => :junk, :code => 401
+
+    def @request.sign_in
+      @conn.instance_variable_get( '@response'.to_sym ).code = 200
+    end
+
+    response = @request.fetch
+
+    assert_equal 200, response.code
+    assert_equal :junk, response.body
+  end
+
+  def test_fetch_with_basic_authentication
+    uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    Gem.configuration.basic_authentication_set( uri, 'user', 'password' )
+    request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
+
+    request.fetch do |req|
+      assert_equal 'Basic dXNlcjpwYXNzd29yZA==', req.get_fields( 'Authorization' ).first
+    end
+  end
+
   def test_fetch
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
     @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
@@ -255,8 +281,14 @@ class TestGemRequest < Gem::TestCase
     end
 
     def @request.connection_for uri
+      @uri = uri
       @conn
     end
+
+    def @request.uri uri
+      @uri
+    end
+
 
     @request.connection = Conn.new OpenStruct.new(hash)
   end
@@ -272,6 +304,12 @@ class TestGemRequest < Gem::TestCase
     def request(req)
       self.payload = req
       @response
+    end
+
+    def start
+    end
+
+    def finish
     end
   end
 

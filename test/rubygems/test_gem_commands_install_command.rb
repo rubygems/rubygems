@@ -544,7 +544,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     @cmd.install_gem 'a', '>= 0'
 
-    assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
+    assert_equal %w[a-2], @cmd.installed_specs.map { |s| s.full_name }
   end
 
   def test_install_gem_ignore_dependencies_remote

@@ -200,10 +200,8 @@ to write the specification by hand.  For example:
 
     req = Gem::Requirement.create(version)
 
-    if options[:ignore_dependencies]
-      inst = Gem::Installer.new name, options
-      inst.install
-      @installed_specs.push(inst.spec)
+    if options[:ignore_dependencies] then
+      install_gem_without_dependencies name, req
     else
       inst = Gem::DependencyInstaller.new options
 
@@ -225,6 +223,12 @@ to write the specification by hand.  For example:
 
       show_install_errors inst.errors
     end
+  end
+
+  def install_gem_without_dependencies name, req # :nodoc:
+    inst = Gem::Installer.new name, options
+    inst.install
+    @installed_specs.push(inst.spec)
   end
 
   def install_gems # :nodoc:

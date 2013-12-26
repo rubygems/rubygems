@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-=== 2.2.0.rc.1 / 2013-12-20
+=== 2.2.0 / 2013-12-26
 
 Special thanks to Vít Ondruch and Michal Papis for testing and finding bugs in
 RubyGems as it was prepared for the 2.2.0 release.

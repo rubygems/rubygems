@@ -584,6 +584,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_refresh
+    skip 'Insecure operation - mkdir' if RUBY_VERSION <= "1.8.7"
     util_make_gems
 
     a1_spec = @a1.spec_file
@@ -603,6 +604,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_refresh_keeps_loaded_specs_activated
+    skip 'Insecure operation - mkdir' if RUBY_VERSION <= "1.8.7"
     util_make_gems
 
     a1_spec = @a1.spec_file

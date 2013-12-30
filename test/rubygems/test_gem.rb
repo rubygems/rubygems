@@ -230,6 +230,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_detect_gemdeps
+    skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], '-'
 
     FileUtils.mkdir_p 'detect/a/b'
@@ -857,6 +858,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_needs_picks_up_unresolved_deps
+    skip 'loading from unsafe file' if RUBY_VERSION <= "1.8.7"
     save_loaded_features do
       util_clear_gems
       a = util_spec "a", "1"
@@ -949,6 +951,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_load_plugins
+    skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
     plugin_path = File.join "lib", "rubygems_plugin.rb"
 
     Dir.chdir @tempdir do
@@ -1102,6 +1105,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_auto_activation_of_detected_gemdeps_file
+    skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
     util_clear_gems
 
     a = new_spec "a", "1", nil, "lib/a.rb"
@@ -1264,6 +1268,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps_automatic
+    skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], '-'
 
     spec = util_spec 'a', 1
@@ -1300,6 +1305,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps_specific
+    skip 'Insecure operation - read' if RUBY_VERSION <= "1.8.7"
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'
 
     spec = util_spec 'a', 1

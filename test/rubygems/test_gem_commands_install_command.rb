@@ -316,6 +316,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_execute_rdoc
+    skip if RUBY_VERSION <= "1.8.7"
     specs = spec_fetcher do |fetcher|
       fetcher.gem 'a', 2
     end

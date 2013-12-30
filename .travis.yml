@@ -32,6 +32,8 @@ matrix:
       env: "YAML=psych"
     - rvm: 2.0.0
       env: "YAML=syck"
+    - rvm: 2.1.0
+      env: "YAML=syck"
     - rvm: ruby-head
       env: "YAML=syck"
   allow_failures:

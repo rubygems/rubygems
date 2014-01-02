@@ -6,6 +6,8 @@ Bug fixes:
 
 * RubyGems now displays which gem couldn't be uninstalled from the home
   directory.  Pull request #757 by Michal Papis.
+* Removed unused method Gem::Resolver#find_conflict_state.  Pull request #759
+  by Smit Shah.
 
 === 2.2.0 / 2013-12-26
 

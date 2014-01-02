@@ -4,6 +4,8 @@
 
 Bug fixes:
 
+* Platforms in the Gemfile.lock GEM section are now handled correctly.  Bug
+  #767 by Diego Viola.
 * RubyGems now displays which gem couldn't be uninstalled from the home
   directory.  Pull request #757 by Michal Papis.
 * Removed unused method Gem::Resolver#find_conflict_state.  Pull request #759

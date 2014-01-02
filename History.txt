@@ -8,6 +8,8 @@ Bug fixes:
   directory.  Pull request #757 by Michal Papis.
 * Removed unused method Gem::Resolver#find_conflict_state.  Pull request #759
   by Smit Shah.
+* Fixed installing gems from local files without dependencies.  Issue #760 by
+  Arash Mousavi, pull request #764 by Tim Moore.
 
 === 2.2.0 / 2013-12-26
 

@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.2.1
+
+Bug fixes:
+
+* RubyGems now displays which gem couldn't be uninstalled from the home
+  directory.  Pull request #757 by Michal Papis.
+
 === 2.2.0 / 2013-12-26
 
 Special thanks to Vít Ondruch and Michal Papis for testing and finding bugs in

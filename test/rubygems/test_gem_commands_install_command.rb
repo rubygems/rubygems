@@ -571,7 +571,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     @cmd.install_gem File.join(@tempdir, spec.file_name), nil
 
-    assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
+    assert_equal %w[a-2], @cmd.installed_specs.map { |s| s.full_name }
   end
 
   def test_parses_requirement_from_gemname

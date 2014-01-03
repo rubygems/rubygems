@@ -664,9 +664,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_ruby_api_version
-    orig_MAJOR, RbConfig::CONFIG['MAJOR'] = RbConfig::CONFIG['MAJOR'], '1'
-    orig_MINOR, RbConfig::CONFIG['MINOR'] = RbConfig::CONFIG['MINOR'], '2'
-    orig_TEENY, RbConfig::CONFIG['TEENY'] = RbConfig::CONFIG['TEENY'], '3'
+    orig_ruby_version, RbConfig::CONFIG['ruby_version'] = RbConfig::CONFIG['ruby_version'], '1.2.3'
 
     Gem.instance_variable_set :@ruby_api_version, nil
 
@@ -674,9 +672,7 @@ class TestGem < Gem::TestCase
   ensure
     Gem.instance_variable_set :@ruby_api_version, nil
 
-    RbConfig::CONFIG['MAJOR'] = orig_MAJOR
-    RbConfig::CONFIG['MINOR'] = orig_MINOR
-    RbConfig::CONFIG['TEENY'] = orig_TEENY
+    RbConfig::CONFIG['ruby_version'] = orig_ruby_version
   end
 
   def test_self_ruby_version_1_8_5

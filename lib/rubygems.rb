@@ -785,8 +785,7 @@ module Gem
   # Returns a String containing the API compatibility version of Ruby
 
   def self.ruby_api_version
-    @ruby_api_version ||=
-      "#{RbConfig::CONFIG['MAJOR']}.#{RbConfig::CONFIG['MINOR']}.#{RbConfig::CONFIG['TEENY']}"
+    @ruby_api_version ||= RbConfig::CONFIG['ruby_version'].dup
   end
 
   ##

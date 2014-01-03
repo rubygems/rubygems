@@ -14,6 +14,9 @@ Bug fixes:
   Arash Mousavi, pull request #764 by Tim Moore.
 * Removed TODO about syntax that works in Ruby 1.8.7.  Pull request #765 by
   Benjamin Fleischer.
+* Switched Gem.ruby_api_version to use RbConfig::CONFIG['ruby_version'] which
+  has the same value but is overridable by packagers through
+  --with-ruby-version= when configuring ruby.  Bug #770 by Jeremy Evans.
 
 === 2.2.0 / 2013-12-26
 

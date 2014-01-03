@@ -173,7 +173,7 @@ class TestGemStreamUI < Gem::TestCase
   def test_download_reporter_anything
     @cfg.verbose = 0
     reporter = @sui.download_reporter
-    assert_kind_of Gem::StreamUI::VerboseDownloadReporter, reporter
+    assert_kind_of Gem::StreamUI::ThreadedDownloadReporter, reporter
   end
 
   def test_verbose_download_reporter

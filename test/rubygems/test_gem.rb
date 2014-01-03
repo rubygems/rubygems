@@ -199,30 +199,30 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_default_exec_format
-    orig_RUBY_INSTALL_NAME = Gem::ConfigMap[:ruby_install_name]
-    Gem::ConfigMap[:ruby_install_name] = 'ruby'
+    orig_RUBY_INSTALL_NAME = RbConfig::CONFIG['ruby_install_name']
+    RbConfig::CONFIG['ruby_install_name'] = 'ruby'
 
     assert_equal '%s', Gem.default_exec_format
   ensure
-    Gem::ConfigMap[:ruby_install_name] = orig_RUBY_INSTALL_NAME
+    RbConfig::CONFIG['ruby_install_name'] = orig_RUBY_INSTALL_NAME
   end
 
   def test_self_default_exec_format_18
-    orig_RUBY_INSTALL_NAME = Gem::ConfigMap[:ruby_install_name]
-    Gem::ConfigMap[:ruby_install_name] = 'ruby18'
+    orig_RUBY_INSTALL_NAME = RbConfig::CONFIG['ruby_install_name']
+    RbConfig::CONFIG['ruby_install_name'] = 'ruby18'
 
     assert_equal '%s18', Gem.default_exec_format
   ensure
-    Gem::ConfigMap[:ruby_install_name] = orig_RUBY_INSTALL_NAME
+    RbConfig::CONFIG['ruby_install_name'] = orig_RUBY_INSTALL_NAME
   end
 
   def test_self_default_exec_format_jruby
-    orig_RUBY_INSTALL_NAME = Gem::ConfigMap[:ruby_install_name]
-    Gem::ConfigMap[:ruby_install_name] = 'jruby'
+    orig_RUBY_INSTALL_NAME = RbConfig::CONFIG['ruby_install_name']
+    RbConfig::CONFIG['ruby_install_name'] = 'jruby'
 
     assert_equal 'j%s', Gem.default_exec_format
   ensure
-    Gem::ConfigMap[:ruby_install_name] = orig_RUBY_INSTALL_NAME
+    RbConfig::CONFIG['ruby_install_name'] = orig_RUBY_INSTALL_NAME
   end
 
   def test_self_default_sources
@@ -566,21 +566,21 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_prefix_libdir
-    orig_libdir = Gem::ConfigMap[:libdir]
-    Gem::ConfigMap[:libdir] = @@project_dir
+    orig_libdir = RbConfig::CONFIG['libdir']
+    RbConfig::CONFIG['libdir'] = @@project_dir
 
     assert_nil Gem.prefix
   ensure
-    Gem::ConfigMap[:libdir] = orig_libdir
+    RbConfig::CONFIG['libdir'] = orig_libdir
   end
 
   def test_self_prefix_sitelibdir
-    orig_sitelibdir = Gem::ConfigMap[:sitelibdir]
-    Gem::ConfigMap[:sitelibdir] = @@project_dir
+    orig_sitelibdir = RbConfig::CONFIG['sitelibdir']
+    RbConfig::CONFIG['sitelibdir'] = @@project_dir
 
     assert_nil Gem.prefix
   ensure
-    Gem::ConfigMap[:sitelibdir] = orig_sitelibdir
+    RbConfig::CONFIG['sitelibdir'] = orig_sitelibdir
   end
 
   def test_self_refresh
@@ -627,46 +627,46 @@ class TestGem < Gem::TestCase
 
   def test_self_ruby_escaping_spaces_in_path
     orig_ruby = Gem.ruby
-    orig_bindir = Gem::ConfigMap[:bindir]
-    orig_ruby_install_name = Gem::ConfigMap[:ruby_install_name]
-    orig_exe_ext = Gem::ConfigMap[:EXEEXT]
+    orig_bindir = RbConfig::CONFIG['bindir']
+    orig_ruby_install_name = RbConfig::CONFIG['ruby_install_name']
+    orig_exe_ext = RbConfig::CONFIG['EXEEXT']
 
-    Gem::ConfigMap[:bindir] = "C:/Ruby 1.8/bin"
-    Gem::ConfigMap[:ruby_install_name] = "ruby"
-    Gem::ConfigMap[:EXEEXT] = ".exe"
+    RbConfig::CONFIG['bindir'] = "C:/Ruby 1.8/bin"
+    RbConfig::CONFIG['ruby_install_name'] = "ruby"
+    RbConfig::CONFIG['EXEEXT'] = ".exe"
     Gem.instance_variable_set("@ruby", nil)
 
     assert_equal "\"C:/Ruby 1.8/bin/ruby.exe\"", Gem.ruby
   ensure
     Gem.instance_variable_set("@ruby", orig_ruby)
-    Gem::ConfigMap[:bindir] = orig_bindir
-    Gem::ConfigMap[:ruby_install_name] = orig_ruby_install_name
-    Gem::ConfigMap[:EXEEXT] = orig_exe_ext
+    RbConfig::CONFIG['bindir'] = orig_bindir
+    RbConfig::CONFIG['ruby_install_name'] = orig_ruby_install_name
+    RbConfig::CONFIG['EXEEXT'] = orig_exe_ext
   end
 
   def test_self_ruby_path_without_spaces
     orig_ruby = Gem.ruby
-    orig_bindir = Gem::ConfigMap[:bindir]
-    orig_ruby_install_name = Gem::ConfigMap[:ruby_install_name]
-    orig_exe_ext = Gem::ConfigMap[:EXEEXT]
+    orig_bindir = RbConfig::CONFIG['bindir']
+    orig_ruby_install_name = RbConfig::CONFIG['ruby_install_name']
+    orig_exe_ext = RbConfig::CONFIG['EXEEXT']
 
-    Gem::ConfigMap[:bindir] = "C:/Ruby18/bin"
-    Gem::ConfigMap[:ruby_install_name] = "ruby"
-    Gem::ConfigMap[:EXEEXT] = ".exe"
+    RbConfig::CONFIG['bindir'] = "C:/Ruby18/bin"
+    RbConfig::CONFIG['ruby_install_name'] = "ruby"
+    RbConfig::CONFIG['EXEEXT'] = ".exe"
     Gem.instance_variable_set("@ruby", nil)
 
     assert_equal "C:/Ruby18/bin/ruby.exe", Gem.ruby
   ensure
     Gem.instance_variable_set("@ruby", orig_ruby)
-    Gem::ConfigMap[:bindir] = orig_bindir
-    Gem::ConfigMap[:ruby_install_name] = orig_ruby_install_name
-    Gem::ConfigMap[:EXEEXT] = orig_exe_ext
+    RbConfig::CONFIG['bindir'] = orig_bindir
+    RbConfig::CONFIG['ruby_install_name'] = orig_ruby_install_name
+    RbConfig::CONFIG['EXEEXT'] = orig_exe_ext
   end
 
   def test_self_ruby_api_version
-    orig_MAJOR, Gem::ConfigMap[:MAJOR] = Gem::ConfigMap[:MAJOR], '1'
-    orig_MINOR, Gem::ConfigMap[:MINOR] = Gem::ConfigMap[:MINOR], '2'
-    orig_TEENY, Gem::ConfigMap[:TEENY] = Gem::ConfigMap[:TEENY], '3'
+    orig_MAJOR, RbConfig::CONFIG['MAJOR'] = RbConfig::CONFIG['MAJOR'], '1'
+    orig_MINOR, RbConfig::CONFIG['MINOR'] = RbConfig::CONFIG['MINOR'], '2'
+    orig_TEENY, RbConfig::CONFIG['TEENY'] = RbConfig::CONFIG['TEENY'], '3'
 
     Gem.instance_variable_set :@ruby_api_version, nil
 
@@ -674,9 +674,9 @@ class TestGem < Gem::TestCase
   ensure
     Gem.instance_variable_set :@ruby_api_version, nil
 
-    Gem::ConfigMap[:MAJOR] = orig_MAJOR
-    Gem::ConfigMap[:MINOR] = orig_MINOR
-    Gem::ConfigMap[:TEENY] = orig_TEENY
+    RbConfig::CONFIG['MAJOR'] = orig_MAJOR
+    RbConfig::CONFIG['MINOR'] = orig_MINOR
+    RbConfig::CONFIG['TEENY'] = orig_TEENY
   end
 
   def test_self_ruby_version_1_8_5
@@ -828,7 +828,7 @@ class TestGem < Gem::TestCase
 
   def test_self_user_dir
     parts = [@userhome, '.gem', Gem.ruby_engine]
-    parts << Gem::ConfigMap[:ruby_version] unless Gem::ConfigMap[:ruby_version].empty?
+    parts << RbConfig::CONFIG['ruby_version'] unless RbConfig::CONFIG['ruby_version'].empty?
 
     assert_equal File.join(parts), Gem.user_dir
   end

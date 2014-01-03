@@ -117,6 +117,11 @@ class Gem::RequestSet
 
     specs = []
 
+    queue = Queue.new
+    Gem.configuration.concurrent_downloads.times do
+      queue << :ticket
+    end
+
     threads = sorted_requests.map { |req|
       if req.installed? then
         req.spec.spec.build_extensions
@@ -127,7 +132,12 @@ class Gem::RequestSet
         end
       end
 
-      Thread.start { [req, req.download(cache_dir)] }
+      Thread.start {
+        ticket = queue.deq
+        path = req.download(cache_dir)
+        queue << ticket
+        [req, path]
+      }
     }
 
     threads.compact.map(&:value).each do |req, path|

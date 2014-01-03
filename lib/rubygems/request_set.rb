@@ -117,7 +117,7 @@ class Gem::RequestSet
 
     specs = []
 
-    sorted_requests.each do |req|
+    threads = sorted_requests.map { |req|
       if req.installed? then
         req.spec.spec.build_extensions
 
@@ -127,6 +127,10 @@ class Gem::RequestSet
         end
       end
 
+      Thread.start { [req, req.download(cache_dir)] }
+    }
+
+    threads.compact.map(&:value).each do |req, path|
       path = req.download cache_dir
 
       inst = Gem::Installer.new path, options

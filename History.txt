@@ -17,6 +17,9 @@ Bug fixes:
 * Switched Gem.ruby_api_version to use RbConfig::CONFIG['ruby_version'] which
   has the same value but is overridable by packagers through
   --with-ruby-version= when configuring ruby.  Bug #770 by Jeremy Evans.
+* RubyGems now prefers the bundler API for `gem install` to reduce HTTP
+* requests.  (This change was intended for RubyGems 2.2.0 but was missed.)
+  This should address bug #762 by Dan Peterson.
 
 === 2.2.0 / 2013-12-26
 

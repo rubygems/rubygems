@@ -1809,6 +1809,22 @@ dependencies: []
     assert_kind_of Gem::Source::Installed, @a1.source
   end
 
+  def test_source_paths
+    ext_spec
+
+    @ext.require_paths = %w[lib ext foo]
+    @ext.extensions << 'bar/baz'
+
+    expected = %w[
+      lib
+      ext
+      foo
+      bar
+    ]
+
+    assert_equal expected, @ext.source_paths
+  end
+
   def test_full_require_paths
     ext_spec
 

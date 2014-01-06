@@ -19,7 +19,7 @@ Bug fixes:
   --with-ruby-version= when configuring ruby.  Bug #770 by Jeremy Evans.
 * RubyGems now prefers the bundler API for `gem install` to reduce HTTP
   requests.  (This change was intended for RubyGems 2.2.0 but was missed.)
-  This should address bug #762 by Dan Peterson.
+  This should address bug #762 by Dan Peterson and bug #766 by mipearson.
 * Added Gem::BasicSpecification#source_paths so documentation or analysis
   tools can work properly as require_paths no longer returns extension source
   directories.  Bug #758 Vít Ondruch.

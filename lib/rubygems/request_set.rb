@@ -168,8 +168,10 @@ class Gem::RequestSet
     else
       installed = install options, &block
 
-      lockfile = Gem::RequestSet::Lockfile.new self, gemdeps
-      lockfile.write
+      unless options[:without_lock]
+        lockfile = Gem::RequestSet::Lockfile.new self, gemdeps
+        lockfile.write
+      end
 
       installed
     end

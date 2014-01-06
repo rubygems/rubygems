@@ -24,6 +24,7 @@ class TestGemCommandsInstallCommand < Gem::TestCase
 
     Gem::Command.build_args = @orig_args
     File.unlink @gemdeps if File.file? @gemdeps
+    File.unlink "#{@gemdeps}.lock" if File.file? "#{@gemdeps}.lock"
   end
 
   def test_execute_exclude_prerelease
@@ -672,6 +673,31 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal %w[], @cmd.installed_specs.map { |spec| spec.full_name }
 
     assert_match "Using a (2)", @ui.output
+    assert File.exist?("#{@gemdeps}.lock")
+  end
+
+  def test_execute_uses_from_a_gemdeps_with_no_lock
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 2
+    end
+
+    File.open @gemdeps, "w" do |f|
+      f << "gem 'a'"
+    end
+
+    @cmd.handle_options %w[--no-lock]
+    @cmd.options[:gemdeps] = @gemdeps
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+        @cmd.execute
+      end
+    end
+
+    assert_equal %w[], @cmd.installed_specs.map { |spec| spec.full_name }
+
+    assert_match "Using a (2)", @ui.output
+    assert !File.exist?("#{@gemdeps}.lock")
   end
 
   def test_execute_installs_from_a_gemdeps

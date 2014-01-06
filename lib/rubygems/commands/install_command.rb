@@ -69,6 +69,11 @@ class Gem::Commands::InstallCommand < Gem::Command
       o[:explain] = v
     end
 
+    add_option(:"Install/Update", '--no-lock',
+               'Do not create a lock file (when used with -g/--file)') do |v,o|
+      o[:without_lock] = true
+    end
+
     @installed_specs = []
   end
 

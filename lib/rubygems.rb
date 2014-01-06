@@ -765,6 +765,10 @@ module Gem
       f.flock(File::LOCK_EX)
       f.read
     end
+  rescue Errno::EACCES
+    open path, 'rb' do |f|
+      f.read
+    end
   end
 
   ##

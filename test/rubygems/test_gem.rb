@@ -583,6 +583,24 @@ class TestGem < Gem::TestCase
     RbConfig::CONFIG['sitelibdir'] = orig_sitelibdir
   end
 
+  def test_self_read_binary
+    open 'test', 'w' do |io|
+      io.write "\xCF\x80"
+    end
+
+    assert_equal ["\xCF", "\x80"], Gem.read_binary('test').chars.to_a
+
+    skip 'chmod not supported' if Gem.win_platform?
+
+    begin
+      File.chmod 0444, 'test'
+
+      assert_equal ["\xCF", "\x80"], Gem.read_binary('test').chars.to_a
+    ensure
+      File.chmod 0644, 'test'
+    end
+  end
+
   def test_self_refresh
     skip 'Insecure operation - mkdir' if RUBY_VERSION <= "1.8.7"
     util_make_gems

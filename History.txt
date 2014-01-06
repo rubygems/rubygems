@@ -23,6 +23,8 @@ Bug fixes:
 * Added Gem::BasicSpecification#source_paths so documentation or analysis
   tools can work properly as require_paths no longer returns extension source
   directories.  Bug #758 Vít Ondruch.
+* Gem.read_binary can read read-only files again.  This caused file://
+  repositories to stop working.  Bug #761 by John Anderson.
 
 === 2.2.0 / 2013-12-26
 

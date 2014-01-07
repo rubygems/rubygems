@@ -25,6 +25,8 @@ Bug fixes:
   directories.  Bug #758 Vít Ondruch.
 * Gem.read_binary can read read-only files again.  This caused file://
   repositories to stop working.  Bug #761 by John Anderson.
+* Fixed specification file sorting for Ruby 1.8.7 compatibility.  Pull
+  request #763 by James Mead
 
 === 2.2.0 / 2013-12-26
 

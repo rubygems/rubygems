@@ -97,10 +97,14 @@ command to remove old versions.
 
     updated = update_gems gems_to_update
 
+    updated_names = updated.map { |spec| spec.name }
+    not_updated_names = options[:args].uniq - updated_names
+
     if updated.empty? then
       say "Nothing to update"
     else
-      say "Gems updated: #{updated.map { |spec| spec.name }.join ' '}"
+      say "Gems updated: #{updated_names.join(' ')}"
+      say "Gems already up-to-date: #{not_updated_names.join(' ')}" unless not_updated_names.empty?
     end
   end
 
@@ -272,4 +276,3 @@ command to remove old versions.
   end
 
 end
-

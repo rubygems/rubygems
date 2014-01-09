@@ -6,6 +6,8 @@ Bug fixes:
 
 * Fixed ruby tests when BASERUBY is not set.  Patch for #778 by Nobuyoshi
   Nakada.
+* Removed double requests in RemoteFetcher#cache_update_path to improve remote
+  install speed.  Pull request #772 by Charlie Somerville.
 
 === 2.2.1 / 2014-01-06
 

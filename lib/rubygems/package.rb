@@ -54,10 +54,12 @@ class Gem::Package
   class FormatError < Error
     attr_reader :path
 
-    def initialize message, path = nil
-      @path = path
+    def initialize message, source = nil
+      if source
+        @path = source.path
 
-      message << " in #{path}" if path
+        message << " in #{path}" if path
+      end
 
       super message
     end
@@ -79,6 +81,70 @@ class Gem::Package
   # Raised when a tar file is corrupt
 
   class TarInvalidError < Error; end
+
+
+  ##
+  # Abstract base class for different types of gem sources
+
+  class GemSource; end
+
+  class IOSource < GemSource
+    def initialize io
+      @io = io
+    end
+
+    def start
+      @start ||= begin
+        raise "Cannot read start unless IO is at start" unless io.pos == 0
+        value = io.read 20
+        io.rewind
+        value
+      end
+    end
+
+    def present?
+      true
+    end
+
+    def with_read_io
+      yield io
+    end
+
+    def with_write_io
+      yield io
+    end
+
+    def path
+    end
+
+    private
+
+    attr_reader :io
+  end
+
+  class FileSource < GemSource
+    def initialize path
+      @path = path
+    end
+
+    def start
+      @start ||= File.read path, 20
+    end
+
+    def present?
+      File.exists? path
+    end
+
+    def with_write_io(&block)
+      open path, 'wb', &block
+    end
+
+    def with_read_io(&block)
+      open path, 'rb', &block
+    end
+
+    attr_reader :path
+  end
 
   attr_accessor :build_time # :nodoc:
 
@@ -114,19 +180,26 @@ class Gem::Package
   end
 
   ##
-  # Creates a new Gem::Package for the file at +gem+.
+  # Creates a new Gem::Package for the file at +gem+. +gem+ can also be
+  # provided as an IO object.
   #
   # If +gem+ is an existing file in the old format a Gem::Package::Old will be
   # returned.
 
   def self.new gem
-    return super unless Gem::Package == self
-    return super unless File.exist? gem
+    gem = if gem.is_a?(GemSource)
+            gem
+          elsif gem.respond_to? :read
+            IOSource.new(gem)
+          else
+            FileSource.new(gem)
+          end
 
-    start = File.read gem, 20
+    return super(gem) unless Gem::Package == self
+    return super unless gem.present?
 
-    return super unless start
-    return super unless start.include? 'MD5SUM ='
+    return super unless gem.start
+    return super unless gem.start.include? 'MD5SUM ='
 
     Gem::Package::Old.new gem
   end
@@ -227,7 +300,7 @@ class Gem::Package
 
     setup_signer
 
-    open @gem, 'wb' do |gem_io|
+    @gem.with_write_io do |gem_io|
       Gem::Package::TarWriter.new gem_io do |gem|
         add_metadata gem
         add_contents gem
@@ -255,7 +328,7 @@ EOM
 
     @contents = []
 
-    open @gem, 'rb' do |io|
+    @gem.with_read_io do |io|
       gem_tar = Gem::Package::TarReader.new io
 
       gem_tar.each do |entry|
@@ -312,7 +385,7 @@ EOM
 
     FileUtils.mkdir_p destination_dir
 
-    open @gem, 'rb' do |io|
+    @gem.with_read_io do |io|
       reader = Gem::Package::TarReader.new io
 
       reader.each do |entry|
@@ -490,7 +563,7 @@ EOM
     @files     = []
     @spec      = nil
 
-    open @gem, 'rb' do |io|
+    @gem.with_read_io do |io|
       Gem::Package::TarReader.new io do |reader|
         read_checksums reader
 

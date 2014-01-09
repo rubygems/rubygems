@@ -1340,6 +1340,20 @@ Also, a list:
     File.expand_path "../../../test/rubygems/#{key_name}_key.pem", __FILE__
   end
 
+  ##
+  # Returns a TUF metadata fixture +filename+ from <tt>test/rubygems/tuf</tt>
+
+  def self.tuf_file(filename)
+    File.expand_path "../../../test/rubygems/tuf/#{filename}", __FILE__
+  end
+
+  ##
+  # Returns a TUF certificate fixture +filename+ from <tt>test/rubygems/tuf</tt>
+
+  def self.tuf_cert(role)
+    OpenSSL::PKey::RSA.new File.read(tuf_file("#{role}.pem"))
+  end
+
   # :stopdoc:
   # only available in RubyGems tests
 

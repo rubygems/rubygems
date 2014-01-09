@@ -1,0 +1,28 @@
+{
+  "signatures": [
+    {
+      "keyid": "4f0308b343b0deb0e4213d39903bbacbfc8d9b9c400782e7e5b0c68948f2b683",
+      "method": "RSASSA-PKCS#1-v1.5+SHA512",
+      "sig": "lulz"
+    }
+  ],
+  "signed": {
+    "_type": "Release",
+    "expires": "2014-12-06 11:59:59 UTC",
+    "meta": {
+      "root.txt": {
+        "hashes": {
+          "sha512": "201c9595abf238966dce6467bca3bb28f592f5b20982bf3c6e96769674ab147ee62bea3b4f4c8fb89d47411f469d82140844acf1f8060232346966af473f16f2"
+        },
+        "length": 2118
+      },
+      "targets.txt": {
+        "hashes": {
+          "sha512": "TODO: make a real targets.txt"
+        },
+        "length": 0
+      }
+    },
+    "version": 2
+  }
+}

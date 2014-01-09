@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.2.2
+
+Bug fixes:
+
+* Fixed ruby tests when BASERUBY is not set.  Patch for #778 by Nobuyoshi
+  Nakada.
+
 === 2.2.1 / 2014-01-06
 
 Bug fixes:

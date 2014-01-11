@@ -146,19 +146,19 @@ class Gem::CommandManager
   end
 
   def process_args(args, build_args=nil)
-    if args.empty? then
+    if args.empty?
       say Gem::Command::HELP
       terminate_interaction 1
     end
 
     case args.first
-    when '-h', '--help' then
+    when '-h', '--help'
       say Gem::Command::HELP
       terminate_interaction 0
-    when '-v', '--version' then
+    when '-v', '--version'
       say Gem::VERSION
       terminate_interaction 0
-    when /^-/ then
+    when /^-/
       alert_error "Invalid option: #{args.first}.  See 'gem --help'."
       terminate_interaction 1
     else
@@ -171,10 +171,10 @@ class Gem::CommandManager
   def find_command(cmd_name)
     possibilities = find_command_possibilities cmd_name
 
-    if possibilities.size > 1 then
+    if possibilities.size > 1
       raise Gem::CommandLineError,
             "Ambiguous command #{cmd_name} matches [#{possibilities.join(', ')}]"
-    elsif possibilities.empty? then
+    elsif possibilities.empty?
       raise Gem::CommandLineError, "Unknown command #{cmd_name}"
     end
 

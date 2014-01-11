@@ -41,10 +41,10 @@ with gem spec:
   def execute
     gemspec = get_one_gem_name
 
-    if File.exist? gemspec then
+    if File.exist? gemspec
       spec = Gem::Specification.load gemspec
 
-      if spec then
+      if spec
         Gem::Package.build spec, options[:force]
       else
         alert_error "Error loading gemspec. Aborting."

@@ -339,7 +339,7 @@ module Gem::Security
   # Digest algorithm used to sign gems
 
   DIGEST_ALGORITHM =
-    if defined?(OpenSSL::Digest) then
+    if defined?(OpenSSL::Digest)
       OpenSSL::Digest::SHA1
     end
 
@@ -347,7 +347,7 @@ module Gem::Security
   # Used internally to select the signing digest from all computed digests
 
   DIGEST_NAME = # :nodoc:
-    if DIGEST_ALGORITHM then
+    if DIGEST_ALGORITHM
       DIGEST_ALGORITHM.new.name
     end
 
@@ -355,7 +355,7 @@ module Gem::Security
   # Algorithm for creating the key pair used to sign gems
 
   KEY_ALGORITHM =
-    if defined?(OpenSSL::PKey) then
+    if defined?(OpenSSL::PKey)
       OpenSSL::PKey::RSA
     end
 
@@ -489,7 +489,7 @@ module Gem::Security
       expired_certificate.public_key.to_pem == private_key.public_key.to_pem
 
     unless expired_certificate.subject.to_s ==
-           expired_certificate.issuer.to_s then
+           expired_certificate.issuer.to_s
       subject = alt_name_or_x509_entry expired_certificate, :subject
       issuer  = alt_name_or_x509_entry expired_certificate, :issuer
 
@@ -585,7 +585,7 @@ module Gem::Security
 
 end
 
-if defined?(OpenSSL::SSL) then
+if defined?(OpenSSL::SSL)
   require 'rubygems/security/policy'
   require 'rubygems/security/policies'
   require 'rubygems/security/trust_dir'

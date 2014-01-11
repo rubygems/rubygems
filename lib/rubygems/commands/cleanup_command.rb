@@ -48,7 +48,7 @@ If no gems are named all gems in GEM_HOME are cleaned.
   def execute
     say "Cleaning up installed gems..."
 
-    if options[:args].empty? then
+    if options[:args].empty?
       done     = false
       last_set = nil
 
@@ -67,7 +67,7 @@ If no gems are named all gems in GEM_HOME are cleaned.
 
     say "Clean Up Complete"
 
-    if Gem.configuration.really_verbose then
+    if Gem.configuration.really_verbose
       skipped = @default_gems.map { |spec| spec.full_name }
 
       say "Skipped default gems: #{skipped.join ', '}"
@@ -97,7 +97,7 @@ If no gems are named all gems in GEM_HOME are cleaned.
   end
 
   def get_candidate_gems
-    @candidate_gems = unless options[:args].empty? then
+    @candidate_gems = unless options[:args].empty?
                         options[:args].map do |gem_name|
                           Gem::Specification.find_all_by_name gem_name
                         end.flatten
@@ -125,7 +125,7 @@ If no gems are named all gems in GEM_HOME are cleaned.
 
     Gem::Specification.each do |spec|
       if @primary_gems[spec.name].nil? or
-         @primary_gems[spec.name].version < spec.version then
+         @primary_gems[spec.name].version < spec.version
         @primary_gems[spec.name] = spec
       end
     end
@@ -134,7 +134,7 @@ If no gems are named all gems in GEM_HOME are cleaned.
   def uninstall_dep spec
     return unless @full.ok_to_remove?(spec.full_name)
 
-    if options[:dryrun] then
+    if options[:dryrun]
       say "Dry Run Mode: Would uninstall #{spec.full_name}"
       return
     end

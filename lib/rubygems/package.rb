@@ -277,7 +277,7 @@ EOM
   # the security policy.
 
   def digest entry # :nodoc:
-    algorithms = if @checksums then
+    algorithms = if @checksums
                    @checksums.keys
                  else
                    [Gem::Security::DIGEST_NAME].compact
@@ -285,7 +285,7 @@ EOM
 
     algorithms.each do |algorithm|
       digester =
-        if defined?(OpenSSL::Digest) then
+        if defined?(OpenSSL::Digest)
           OpenSSL::Digest.new algorithm
         else
           Digest.const_get(algorithm).new
@@ -348,7 +348,7 @@ EOM
         mkdir_options = {}
         mkdir_options[:mode] = entry.header.mode if entry.directory?
         mkdir =
-          if entry.directory? then
+          if entry.directory?
             destination
           else
             File.dirname destination
@@ -408,9 +408,9 @@ EOM
 
   def load_spec entry # :nodoc:
     case entry.full_name
-    when 'metadata' then
+    when 'metadata'
       @spec = Gem::Specification.from_yaml entry.read
-    when 'metadata.gz' then
+    when 'metadata.gz'
       args = [entry]
       args << { :external_encoding => Encoding::UTF_8 } if
         Object.const_defined?(:Encoding) &&
@@ -452,7 +452,7 @@ EOM
 
   def setup_signer
     passphrase = ENV['GEM_PRIVATE_KEY_PASSPHRASE']
-    if @spec.signing_key then
+    if @spec.signing_key
       @signer = Gem::Security::Signer.new @spec.signing_key, @spec.cert_chain, passphrase
       @spec.signing_key = nil
       @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_s }
@@ -525,7 +525,7 @@ EOM
       gem_digests.sort.each do |file_name, gem_hexdigest|
         computed_digest = digests[algorithm][file_name]
 
-        unless computed_digest.hexdigest == gem_hexdigest then
+        unless computed_digest.hexdigest == gem_hexdigest
           raise Gem::Package::FormatError.new \
             "#{algorithm} checksum mismatch for #{file_name}", @gem
         end
@@ -541,7 +541,7 @@ EOM
     @files << file_name
 
     case file_name
-    when /\.sig$/ then
+    when /\.sig$/
       @signatures[$`] = entry.read if @security_policy
       return
     else
@@ -549,9 +549,9 @@ EOM
     end
 
     case file_name
-    when /^metadata(.gz)?$/ then
+    when /^metadata(.gz)?$/
       load_spec entry
-    when 'data.tar.gz' then
+    when 'data.tar.gz'
       verify_gz entry
     end
   rescue => e
@@ -568,11 +568,11 @@ EOM
       verify_entry entry
     end
 
-    unless @spec then
+    unless @spec
       raise Gem::Package::FormatError.new 'package metadata is missing', @gem
     end
 
-    unless @files.include? 'data.tar.gz' then
+    unless @files.include? 'data.tar.gz'
       raise Gem::Package::FormatError.new \
               'package content (data.tar.gz) is missing', @gem
     end

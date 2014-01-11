@@ -9,7 +9,7 @@ def format_text(text, wrap, indent=0)
   work = text.dup
 
   while work.length > wrap
-    if work =~ /^(.{0,#{wrap}})[ \n]/o then
+    if work =~ /^(.{0,#{wrap}})[ \n]/o
       result << $1
       work.slice!(0, $&.length)
     else
@@ -31,16 +31,16 @@ IO.foreach 'ChangeLog' do |line|
   case line
   when /^\s*$/,
        /^#/,
-       /^\d{4}-\d{2}-\d{2}/ then
+       /^\d{4}-\d{2}-\d{2}/
     next
-  when /^\s+\*\s+([^:]+?):\s+#{version}/ then
+  when /^\s+\*\s+([^:]+?):\s+#{version}/
     entries[file] << entry.join(' ') unless entry.empty?
     break
-  when /^\s+\*\s+([^:]+?):\s+/ then
+  when /^\s+\*\s+([^:]+?):\s+/
     entries[file] << entry.join(' ') unless entry.empty?
     file = $1
     entry = [$'.strip]
-  when /^\s+/ then
+  when /^\s+/
     entry << $'.strip
   end
 end

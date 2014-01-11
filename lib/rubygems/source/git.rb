@@ -59,12 +59,12 @@ class Gem::Source::Git < Gem::Source
 
   def <=> other
     case other
-    when Gem::Source::Git then
+    when Gem::Source::Git
       0
     when Gem::Source::Installed,
-         Gem::Source::Lock then
+         Gem::Source::Lock
       -1
-    when Gem::Source then
+    when Gem::Source
       1
     else
       nil
@@ -85,7 +85,7 @@ class Gem::Source::Git < Gem::Source
   def checkout # :nodoc:
     cache
 
-    unless File.exist? install_dir then
+    unless File.exist? install_dir
       system @git, 'clone', '--quiet', '--no-checkout',
              repo_cache_dir, install_dir
     end
@@ -107,7 +107,7 @@ class Gem::Source::Git < Gem::Source
   # Creates a local cache repository for the git gem.
 
   def cache # :nodoc:
-    if File.exist? repo_cache_dir then
+    if File.exist? repo_cache_dir
       Dir.chdir repo_cache_dir do
         system @git, 'fetch', '--quiet', '--force', '--tags',
                @repository, 'refs/heads/*:refs/heads/*'
@@ -184,7 +184,7 @@ class Gem::Source::Git < Gem::Source
 
         Dir.chdir directory do
           spec = Gem::Specification.load file
-          if spec then
+          if spec
             spec.base_dir = base_dir
 
             spec.extension_dir =
@@ -204,7 +204,7 @@ class Gem::Source::Git < Gem::Source
 
   def uri_hash # :nodoc:
     normalized =
-      if @repository =~ %r%^\w+://(\w+@)?% then
+      if @repository =~ %r%^\w+://(\w+@)?%
         uri = URI(@repository).normalize.to_s.sub %r%/$%,''
         uri.sub(/\A(\w+)/) { $1.downcase }
       else

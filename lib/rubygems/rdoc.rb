@@ -97,7 +97,7 @@ class Gem::RDoc # :nodoc: all
 
     require 'rdoc/rdoc'
 
-    @rdoc_version = if ::RDoc.const_defined? :VERSION then
+    @rdoc_version = if ::RDoc.const_defined? :VERSION
                       Gem::Version.new ::RDoc::VERSION
                     else
                       Gem::Version.new '1.0.1'
@@ -184,7 +184,7 @@ class Gem::RDoc # :nodoc: all
 
     options = nil
 
-    if Gem::Requirement.new('< 3').satisfied_by? self.class.rdoc_version then
+    if Gem::Requirement.new('< 3').satisfied_by? self.class.rdoc_version
       generate_legacy
       return
     end
@@ -197,9 +197,9 @@ class Gem::RDoc # :nodoc: all
     args.concat @spec.extra_rdoc_files
 
     case config_args = Gem.configuration[:rdoc]
-    when String then
+    when String
       args = args.concat config_args.split
-    when Array then
+    when Array
       args = args.concat config_args
     end
 
@@ -234,13 +234,13 @@ class Gem::RDoc # :nodoc: all
   # exist in future versions.
 
   def generate_legacy
-    if @generate_rdoc then
+    if @generate_rdoc
       FileUtils.rm_rf @rdoc_dir
       say "Installing RDoc documentation for #{@spec.full_name}"
       legacy_rdoc '--op', @rdoc_dir
     end
 
-    if @generate_ri then
+    if @generate_ri
       FileUtils.rm_rf @ri_dir
       say "Installing ri documentation for #{@spec.full_name}"
       legacy_rdoc '--ri', '--op', @ri_dir

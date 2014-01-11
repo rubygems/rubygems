@@ -118,9 +118,9 @@ class Gem::RemoteFetcher
 
   def download(spec, source_uri, install_dir = Gem.dir)
     cache_dir =
-      if Dir.pwd == install_dir then # see fetch_command
+      if Dir.pwd == install_dir # see fetch_command
         install_dir
-      elsif File.writable? install_dir then
+      elsif File.writable? install_dir
         File.join install_dir, "cache"
       else
         File.join Gem.user_dir, "cache"
@@ -146,8 +146,8 @@ class Gem::RemoteFetcher
     # REFACTOR: split this up and dispatch on scheme (eg download_http)
     # REFACTOR: be sure to clean up fake fetcher when you do this... cleaner
     case scheme
-    when 'http', 'https' then
-      unless File.exist? local_gem_path then
+    when 'http', 'https'
+      unless File.exist? local_gem_path
         begin
           say "Downloading gem #{gem_file_name}" if
             Gem.configuration.really_verbose
@@ -168,7 +168,7 @@ class Gem::RemoteFetcher
           self.cache_update_path remote_gem_path, local_gem_path
         end
       end
-    when 'file' then
+    when 'file'
       begin
         path = source_uri.path
         path = File.dirname(path) if File.extname(path) == '.gem'
@@ -182,9 +182,9 @@ class Gem::RemoteFetcher
 
       say "Using local gem #{local_gem_path}" if
         Gem.configuration.really_verbose
-    when nil then # TODO test for local overriding cache
+    when nil # TODO test for local overriding cache
       source_path = if Gem.win_platform? && source_uri.scheme &&
-                       !source_uri.path.include?(':') then
+                       !source_uri.path.include?(':')
                       "#{source_uri.scheme}:#{source_uri.path}"
                     else
                       source_uri.path
@@ -223,10 +223,10 @@ class Gem::RemoteFetcher
     response   = request uri, fetch_type, last_modified
 
     case response
-    when Net::HTTPOK, Net::HTTPNotModified then
+    when Net::HTTPOK, Net::HTTPNotModified
       head ? response : response.body
     when Net::HTTPMovedPermanently, Net::HTTPFound, Net::HTTPSeeOther,
-         Net::HTTPTemporaryRedirect then
+         Net::HTTPTemporaryRedirect
       raise FetchError.new('too many redirects', uri) if depth > 10
 
       location = URI.parse response['Location']

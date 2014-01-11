@@ -8,7 +8,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
   PREFIX = "# stub: "
 
   OPEN_MODE = # :nodoc:
-    if Object.const_defined? :Encoding then
+    if Object.const_defined? :Encoding
       'r:UTF-8:-'
     else
       'r'
@@ -72,7 +72,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
         begin
           file.readline # discard encoding line
           stubline = file.readline.chomp
-          if stubline.start_with?(PREFIX) then
+          if stubline.start_with?(PREFIX)
             @data = StubLine.new stubline
 
             @extensions = $'.split "\0" if

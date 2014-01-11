@@ -66,15 +66,15 @@ command help for an example.
       dependency = Gem::Dependency.new name, options[:version]
       path = get_path dependency
 
-      unless path then
+      unless path
         alert_error "Gem '#{name}' not installed nor fetchable."
         next
       end
 
-      if @options[:spec] then
+      if @options[:spec]
         spec, metadata = get_metadata path
 
-        if metadata.nil? then
+        if metadata.nil?
           alert_error "--spec is unsupported on '#{name}' (old format gem)"
           next
         end
@@ -167,9 +167,9 @@ command help for an example.
       tar = Gem::Package::TarReader.new io
       tar.each_entry do |entry|
         case entry.full_name
-        when 'metadata' then
+        when 'metadata'
           metadata = entry.read
-        when 'metadata.gz' then
+        when 'metadata.gz'
           metadata = Gem.gunzip entry.read
         end
       end

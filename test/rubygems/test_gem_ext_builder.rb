@@ -49,7 +49,7 @@ install:
 
     results = results.join "\n"
 
-    if RUBY_VERSION > '2.0' then
+    if RUBY_VERSION > '2.0'
       assert_match %r%"DESTDIR=#{ENV['DESTDIR']}" clean$%,   results
       assert_match %r%"DESTDIR=#{ENV['DESTDIR']}"$%,         results
       assert_match %r%"DESTDIR=#{ENV['DESTDIR']}" install$%, results
@@ -86,7 +86,7 @@ install:
 
     results = results.join "\n"
 
-    if RUBY_VERSION > '2.0' then
+    if RUBY_VERSION > '2.0'
       assert_match %r%"DESTDIR=#{ENV['DESTDIR']}" clean$%,   results
       assert_match %r%"DESTDIR=#{ENV['DESTDIR']}"$%,         results
       assert_match %r%"DESTDIR=#{ENV['DESTDIR']}" install$%, results

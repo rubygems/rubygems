@@ -73,37 +73,37 @@ class Gem::Server
   <dl>
   <% values["specs"].each do |spec| %>
     <dt>
-    <% if spec["first_name_entry"] then %>
+    <% if spec["first_name_entry"] %>
       <a name="<%=spec["name"]%>"></a>
     <% end %>
 
     <b><%=spec["name"]%> <%=spec["version"]%></b>
 
-    <% if spec["ri_installed"] then %>
+    <% if spec["ri_installed"] %>
       <a href="<%=spec["doc_path"]%>">[rdoc]</a>
-    <% elsif spec["rdoc_installed"] then %>
+    <% elsif spec["rdoc_installed"] %>
       <a href="<%=spec["doc_path"]%>">[rdoc]</a>
     <% else %>
       <span title="rdoc not installed">[rdoc]</span>
     <% end %>
 
-    <% if spec["homepage"] then %>
+    <% if spec["homepage"] %>
       <a href="<%=spec["homepage"]%>" title="<%=spec["homepage"]%>">[www]</a>
     <% else %>
       <span title="no homepage available">[www]</span>
     <% end %>
 
-    <% if spec["has_deps"] then %>
+    <% if spec["has_deps"] %>
      - depends on
       <%= spec["dependencies"].map { |v| "<a href=\"##{v["name"]}\">#{v["name"]}</a>" }.join ', ' %>.
     <% end %>
     </dt>
     <dd>
     <%=spec["summary"]%>
-    <% if spec["executables"] then %>
+    <% if spec["executables"] %>
       <br/>
 
-      <% if spec["only_one_executable"] then %>
+      <% if spec["only_one_executable"] %>
           Executable is
       <% else %>
           Executables are
@@ -457,7 +457,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def doc_root gem_name
-    if have_rdoc_4_plus? then
+    if have_rdoc_4_plus?
       "/doc_root/#{gem_name}/"
     else
       "/doc_root/#{gem_name}/rdoc/index.html"
@@ -485,14 +485,14 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     specs = Marshal.dump specs
 
-    if req.path =~ /\.gz$/ then
+    if req.path =~ /\.gz$/
       specs = Gem.gzip specs
       res['content-type'] = 'application/x-gzip'
     else
       res['content-type'] = 'application/octet-stream'
     end
 
-    if req.request_method == 'HEAD' then
+    if req.request_method == 'HEAD'
       res['content-length'] = specs.length
     else
       res.body << specs
@@ -523,7 +523,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       end
     end
 
-    if @server.listeners.empty? then
+    if @server.listeners.empty?
       say "Unable to start a server."
       say "Check for running servers or your --bind and --port arguments"
       terminate_interaction 1
@@ -537,13 +537,13 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     add_date res
 
     case req.request_uri.path
-    when %r|^/quick/(Marshal.#{Regexp.escape Gem.marshal_version}/)?(.*?)-([0-9.]+)(-.*?)?\.gemspec\.rz$| then
+    when %r|^/quick/(Marshal.#{Regexp.escape Gem.marshal_version}/)?(.*?)-([0-9.]+)(-.*?)?\.gemspec\.rz$|
       marshal_format, name, version, platform = $1, $2, $3, $4
       specs = Gem::Specification.find_all_by_name name, version
 
       selector = [name, version, platform].map(&:inspect).join ' '
 
-      platform = if platform then
+      platform = if platform
                    Gem::Platform.new platform.sub(/^-/, '')
                  else
                    Gem::Platform::RUBY
@@ -551,13 +551,13 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
       specs = specs.select { |s| s.platform == platform }
 
-      if specs.empty? then
+      if specs.empty?
         res.status = 404
         res.body = "No gems found matching #{selector}"
-      elsif specs.length > 1 then
+      elsif specs.length > 1
         res.status = 500
         res.body = "Multiple gems found matching #{selector}"
-      elsif marshal_format then
+      elsif marshal_format
         res['content-type'] = 'application/x-deflate'
         res.body << Gem.deflate(Marshal.dump(specs.first))
       end
@@ -773,7 +773,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       '/gems' => '/cache/',
     }
 
-    if have_rdoc_4_plus? then
+    if have_rdoc_4_plus?
       @server.mount '/doc_root', RDoc::Servlet, '/doc_root'
     else
       file_handlers['/doc_root'] = '/doc/'
@@ -806,14 +806,14 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     specs = Marshal.dump specs
 
-    if req.path =~ /\.gz$/ then
+    if req.path =~ /\.gz$/
       specs = Gem.gzip specs
       res['content-type'] = 'application/x-gzip'
     else
       res['content-type'] = 'application/octet-stream'
     end
 
-    if req.request_method == 'HEAD' then
+    if req.request_method == 'HEAD'
       res['content-length'] = specs.length
     else
       res.body << specs

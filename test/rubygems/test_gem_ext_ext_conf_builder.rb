@@ -120,7 +120,7 @@ class TestGemExtExtConfBuilder < Gem::TestCase
 include RbConfig
 
 ruby =
-  if ENV['RUBY'] then
+  if ENV['RUBY']
     ENV['RUBY']
   else
     ruby_exe = "#{CONFIG['RUBY_INSTALL_NAME']}#{CONFIG['EXEEXT']}"

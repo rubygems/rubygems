@@ -27,14 +27,14 @@ class Gem::Ext::Builder
   end
 
   def self.make(dest_path, results)
-    unless File.exist? 'Makefile' then
+    unless File.exist? 'Makefile'
       raise Gem::InstallError, 'Makefile not found'
     end
 
     # try to find make program from Ruby configure arguments first
     RbConfig::CONFIG['configure_args'] =~ /with-make-prog\=(\w+)/
     make_program = ENV['MAKE'] || ENV['make'] || $1
-    unless make_program then
+    unless make_program
       make_program = (/mswin/ =~ RUBY_PLATFORM) ? 'nmake' : 'make'
     end
 
@@ -76,13 +76,13 @@ class Gem::Ext::Builder
       ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
     end
 
-    unless $?.success? then
+    unless $?.success?
       results << "Building has failed. See above output for more information on the failure." if verbose
 
       exit_reason =
-        if $?.exited? then
+        if $?.exited?
           ", exit code #{$?.exitstatus}"
-        elsif $?.signaled? then
+        elsif $?.signaled?
           ", uncaught signal #{$?.termsig}"
         end
 
@@ -108,14 +108,14 @@ class Gem::Ext::Builder
 
   def builder_for extension # :nodoc:
     case extension
-    when /extconf/ then
+    when /extconf/
       Gem::Ext::ExtConfBuilder
-    when /configure/ then
+    when /configure/
       Gem::Ext::ConfigureBuilder
-    when /rakefile/i, /mkrf_conf/i then
+    when /rakefile/i, /mkrf_conf/i
       @ran_rake = true
       Gem::Ext::RakeBuilder
-    when /CMakeLists.txt/ then
+    when /CMakeLists.txt/
       Gem::Ext::CmakeBuilder
     else
       extension_dir = File.join @gem_dir, File.dirname(extension)

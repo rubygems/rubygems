@@ -27,7 +27,7 @@ module Gem::GemcutterUtilities
   # The API key from the command options or from the user's configuration.
 
   def api_key
-    if options[:key] then
+    if options[:key]
       verify_api_key options[:key]
     elsif Gem.configuration.api_keys.key?(host)
       Gem.configuration.api_keys[host]
@@ -88,7 +88,7 @@ module Gem::GemcutterUtilities
     sign_in_host ||= self.host
     return if Gem.configuration.rubygems_api_key
 
-    pretty_host = if Gem::DEFAULT_HOST == sign_in_host then
+    pretty_host = if Gem::DEFAULT_HOST == sign_in_host
                     'RubyGems.org'
                   else
                     sign_in_host
@@ -118,7 +118,7 @@ module Gem::GemcutterUtilities
   # an error.
 
   def verify_api_key(key)
-    if Gem.configuration.api_keys.key? key then
+    if Gem.configuration.api_keys.key? key
       Gem.configuration.api_keys[key]
     else
       alert_error "No such API key. Please add it to your configuration (done automatically on initial `gem push`)."
@@ -135,8 +135,8 @@ module Gem::GemcutterUtilities
 
   def with_response response, error_prefix = nil
     case response
-    when Net::HTTPSuccess then
-      if block_given? then
+    when Net::HTTPSuccess
+      if block_given?
         yield response
       else
         say response.body

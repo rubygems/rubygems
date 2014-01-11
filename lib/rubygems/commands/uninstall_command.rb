@@ -102,9 +102,9 @@ that is a dependency of an existing gem.  You can use the
   end
 
   def execute
-    if options[:all] and not options[:args].empty? then
+    if options[:all] and not options[:args].empty?
       uninstall_specific
-    elsif options[:all] then
+    elsif options[:all]
       uninstall_all
     else
       uninstall_specific

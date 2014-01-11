@@ -42,7 +42,7 @@ class Gem::BasicSpecification
 
   def base_dir
     return Gem.dir unless loaded_from
-    @base_dir ||= if default_gem? then
+    @base_dir ||= if default_gem?
                     File.dirname File.dirname File.dirname loaded_from
                   else
                     File.dirname File.dirname loaded_from
@@ -108,7 +108,7 @@ class Gem::BasicSpecification
   # default Ruby platform.
 
   def full_name
-    if platform == Gem::Platform::RUBY or platform.nil? then
+    if platform == Gem::Platform::RUBY or platform.nil?
       "#{name}-#{version}".untaint
     else
       "#{name}-#{version}-#{platform}".untaint
@@ -213,7 +213,7 @@ class Gem::BasicSpecification
   def source_paths
     paths = raw_require_paths.dup
 
-    if @extensions then
+    if @extensions
       ext_dirs = @extensions.map do |extension|
         extension.split(File::SEPARATOR, 2).first
       end.uniq

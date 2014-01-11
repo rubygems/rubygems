@@ -196,7 +196,7 @@ class Gem::StreamUI
   # Returns true if TTY methods should be used on this StreamUI.
 
   def tty?
-    if RUBY_VERSION < '1.9.3' and RUBY_PLATFORM =~ /mingw|mswin/ then
+    if RUBY_VERSION < '1.9.3' and RUBY_PLATFORM =~ /mingw|mswin/
       @usetty
     else
       @usetty && @ins.tty?
@@ -242,8 +242,8 @@ class Gem::StreamUI
   # default.
 
   def ask_yes_no(question, default=nil)
-    unless tty? then
-      if default.nil? then
+    unless tty?
+      if default.nil?
         raise Gem::OperationNotSupportedError,
               "Not connected to a tty and no default specified"
       else
@@ -303,7 +303,7 @@ class Gem::StreamUI
     password
   end
 
-  if IO.method_defined?(:noecho) then
+  if IO.method_defined?(:noecho)
     def _gets_noecho
       @ins.noecho {@ins.gets}
     end
@@ -611,7 +611,7 @@ class Gem::StreamUI
     # Updates the verbose download reporter for the given number of +bytes+.
 
     def update(bytes)
-      new_progress = if @units == 'B' then
+      new_progress = if @units == 'B'
                        bytes
                      else
                        ((bytes.to_f * 100) / total_bytes.to_f).ceil
@@ -636,7 +636,7 @@ class Gem::StreamUI
     def update_display(show_progress = true, new_line = false) # :nodoc:
       return unless @out.tty?
 
-      if show_progress then
+      if show_progress
         @out.print "\rFetching: %s (%3d%s)" % [@file_name, @progress, @units]
       else
         @out.print "Fetching: %s" % @file_name

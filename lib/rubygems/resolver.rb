@@ -59,7 +59,7 @@ class Gem::Resolver
 
     sets = sets.map do |set|
       case set
-      when Gem::Resolver::ComposedSet then
+      when Gem::Resolver::ComposedSet
         set.sets
       else
         set
@@ -67,9 +67,9 @@ class Gem::Resolver
     end.flatten
 
     case sets.length
-    when 0 then
+    when 0
       raise ArgumentError, 'one set in the composition must be non-nil'
-    when 1 then
+    when 1
       sets.first
     else
       Gem::Resolver::ComposedSet.new(*sets)
@@ -234,7 +234,7 @@ class Gem::Resolver
     def summary # :nodoc:
       nd = needed.map { |s| s.to_s }.sort if nd
 
-      if specs then
+      if specs
         ss = specs.map { |s| s.full_name }.sort
         ss.unshift ss.length
       end

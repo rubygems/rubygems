@@ -58,8 +58,8 @@ as the reason for the removal request.
     api_key   = Gem.configuration.rubygems_api_key
     api_key   = Gem.configuration.api_keys[options[:key].to_sym] if options[:key]
 
-    if version then
-      if options[:undo] then
+    if version
+      if options[:undo]
         unyank_gem(version, platform, api_key)
       else
         yank_gem(version, platform, api_key)

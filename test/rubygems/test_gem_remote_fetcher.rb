@@ -207,7 +207,7 @@ gems:
     fetcher = Gem::RemoteFetcher.fetcher
     fetcher.instance_variable_set :@test_data, data
 
-    unless blow then
+    unless blow
       def fetcher.fetch_path arg, *rest
         @test_arg = arg
         @test_data
@@ -388,9 +388,9 @@ gems:
     @fetcher.instance_variable_set :@a2, @a2
     def @fetcher.fetch_path uri, mtime = nil, head = false
       case uri.request_uri
-      when /#{@a1.spec_name}/ then
+      when /#{@a1.spec_name}/
         Gem.deflate Marshal.dump @a1
-      when /#{@a2.spec_name}/ then
+      when /#{@a2.spec_name}/
         Gem.deflate Marshal.dump @a2
       else
         uri.to_s
@@ -521,7 +521,7 @@ gems:
 
     def fetcher.request(uri, request_class, last_modified = nil)
       url = 'http://gems.example.com/redirect'
-      unless defined? @requested then
+      unless defined? @requested
         @requested = true
         res = Net::HTTPMovedPermanently.new nil, 301, nil
         res.add_field 'Location', url

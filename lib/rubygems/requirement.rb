@@ -47,12 +47,12 @@ class Gem::Requirement
 
   def self.create input
     case input
-    when Gem::Requirement then
+    when Gem::Requirement
       input
-    when Gem::Version, Array then
+    when Gem::Version, Array
       new input
     else
-      if input.respond_to? :to_str then
+      if input.respond_to? :to_str
         new [input.to_str]
       else
         default

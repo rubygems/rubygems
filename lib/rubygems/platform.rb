@@ -39,9 +39,9 @@ class Gem::Platform
 
   def self.new(arch) # :nodoc:
     case arch
-    when Gem::Platform::CURRENT then
+    when Gem::Platform::CURRENT
       Gem::Platform.local
-    when Gem::Platform::RUBY, nil, '' then
+    when Gem::Platform::RUBY, nil, ''
       Gem::Platform::RUBY
     else
       super
@@ -50,12 +50,12 @@ class Gem::Platform
 
   def initialize(arch)
     case arch
-    when Array then
+    when Array
       @cpu, @os, @version = arch
-    when String then
+    when String
       arch = arch.split '-'
 
-      if arch.length > 2 and arch.last !~ /\d/ then # reassemble x86-linux-gnu
+      if arch.length > 2 and arch.last !~ /\d/ # reassemble x86-linux-gnu
         extra = arch.pop
         arch.last << "-#{extra}"
       end
@@ -67,7 +67,7 @@ class Gem::Platform
              else cpu
              end
 
-      if arch.length == 2 and arch.last =~ /^\d+(\.\d+)?$/ then # for command-line
+      if arch.length == 2 and arch.last =~ /^\d+(\.\d+)?$/ # for command-line
         @os, @version = arch
         return
       end
@@ -163,8 +163,8 @@ class Gem::Platform
 
   def =~(other)
     case other
-    when Gem::Platform then # nop
-    when String then
+    when Gem::Platform # nop
+    when String
       # This data is from http://gems.rubyforge.org/gems/yaml on 19 Aug 2007
       other = case other
               when /^i686-darwin(\d)/     then ['x86',       'darwin',  $1    ]

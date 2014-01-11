@@ -13,11 +13,11 @@ class Gem::Source::Installed < Gem::Source
   def <=> other
     case other
     when Gem::Source::Lock,
-         Gem::Source::Vendor then
+         Gem::Source::Vendor
       -1
-    when Gem::Source::Installed then
+    when Gem::Source::Installed
       0
-    when Gem::Source then
+    when Gem::Source
       1
     else
       nil

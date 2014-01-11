@@ -36,8 +36,8 @@ class Gem::Dependency
 
   def initialize name, *requirements
     case name
-    when String then # ok
-    when Regexp then
+    when String # ok
+    when Regexp
       msg = ["NOTE: Dependency.new w/ a regexp is deprecated.",
              "Dependency.new called from #{Gem.location_of_caller.join(":")}"]
       warn msg.join("\n") unless Gem::Deprecate.skip
@@ -151,7 +151,7 @@ class Gem::Dependency
   end
 
   def to_s # :nodoc:
-    if type != :runtime then
+    if type != :runtime
       "#{name} (#{requirement}, #{type})"
     else
       "#{name} (#{requirement})"
@@ -234,7 +234,7 @@ class Gem::Dependency
   # Merges the requirements of +other+ into this dependency
 
   def merge other
-    unless name == other.name then
+    unless name == other.name
       raise ArgumentError,
             "#{self} and #{other} have different names"
     end
@@ -280,7 +280,7 @@ class Gem::Dependency
 
     # TODO: check Gem.activated_spec[self.name] in case matches falls outside
 
-    if matches.empty? then
+    if matches.empty?
       specs = Gem::Specification.find_all { |s|
                 s.name == name
               }.map { |x| x.full_name }

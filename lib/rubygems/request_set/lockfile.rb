@@ -68,7 +68,7 @@ class Gem::RequestSet::Lockfile
       spec = request.spec
 
       if [Gem::Resolver::VendorSpecification,
-          Gem::Resolver::GitSpecification].include? spec.class then
+          Gem::Resolver::GitSpecification].include? spec.class
         out << "  #{request.name}!"
       else
         requirement = request.request.dependency.requirement
@@ -183,7 +183,7 @@ class Gem::RequestSet::Lockfile
 
     type, value, column, line = @current_token
 
-    if expected_types and not Array(expected_types).include? type then
+    if expected_types and not Array(expected_types).include? type
       unget
 
       message = "unexpected token [#{type.inspect}, #{value.inspect}], " +
@@ -192,7 +192,7 @@ class Gem::RequestSet::Lockfile
       raise ParseError.new message, column, line, "#{@gem_deps_file}.lock"
     end
 
-    if expected_value and expected_value != value then
+    if expected_value and expected_value != value
       unget
 
       message = "unexpected token [#{type.inspect}, #{value.inspect}], " +
@@ -212,19 +212,19 @@ class Gem::RequestSet::Lockfile
       type, data, column, line = get
 
       case type
-      when :section then
+      when :section
         skip :newline
 
         case data
-        when 'DEPENDENCIES' then
+        when 'DEPENDENCIES'
           parse_DEPENDENCIES
-        when 'GIT' then
+        when 'GIT'
           parse_GIT
-        when 'GEM' then
+        when 'GEM'
           parse_GEM
-        when 'PATH' then
+        when 'PATH'
           parse_PATH
-        when 'PLATFORMS' then
+        when 'PLATFORMS'
           parse_PLATFORMS
         else
           type, = get until @tokens.empty? or peek.first == :section
@@ -242,7 +242,7 @@ class Gem::RequestSet::Lockfile
       requirements = []
 
       case peek[0]
-      when :bang then
+      when :bang
         get :bang
 
         spec = @set.sets.select { |set|
@@ -253,7 +253,7 @@ class Gem::RequestSet::Lockfile
         }.first
 
         requirements << spec.version
-      when :l_paren then
+      when :l_paren
         get :l_paren
 
         loop do
@@ -295,14 +295,14 @@ class Gem::RequestSet::Lockfile
       _, name, column, = get :text
 
       case peek[0]
-      when :newline then
+      when :newline
         last_spec.add_dependency Gem::Dependency.new name if column == 6
-      when :l_paren then
+      when :l_paren
         get :l_paren
 
         type, data, = get [:text, :requirement]
 
-        if type == :text and column == 4 then
+        if type == :text and column == 4
           version, platform = data.split '-', 2
 
           platform =
@@ -348,14 +348,14 @@ class Gem::RequestSet::Lockfile
       _, name, column, = get :text
 
       case peek[0]
-      when :newline then
+      when :newline
         last_spec.add_dependency Gem::Dependency.new name if column == 6
-      when :l_paren then
+      when :l_paren
         get :l_paren
 
         type, data, = get [:text, :requirement]
 
-        if type == :text and column == 4 then
+        if type == :text and column == 4
           last_spec = set.add_git_spec name, data, repository, revision, true
         else
           dependency = parse_dependency name, data
@@ -391,14 +391,14 @@ class Gem::RequestSet::Lockfile
       _, name, column, = get :text
 
       case peek[0]
-      when :newline then
+      when :newline
         last_spec.add_dependency Gem::Dependency.new name if column == 6
-      when :l_paren then
+      when :l_paren
         get :l_paren
 
         type, data, = get [:text, :requirement]
 
-        if type == :text and column == 4 then
+        if type == :text and column == 4
           last_spec = set.add_vendor_gem name, directory
         else
           dependency = parse_dependency name, data
@@ -517,7 +517,7 @@ class Gem::RequestSet::Lockfile
 
       pos = s.pos if leading_whitespace = s.scan(/ +/)
 
-      if s.scan(/[<|=>]{7}/) then
+      if s.scan(/[<|=>]{7}/)
         message = "your #{lock_file} contains merge conflict markers"
         column, line = token_pos pos
 
@@ -526,33 +526,33 @@ class Gem::RequestSet::Lockfile
 
       @tokens <<
         case
-        when s.scan(/\r?\n/) then
+        when s.scan(/\r?\n/)
           token = [:newline, nil, *token_pos(pos)]
           @line_pos = s.pos
           @line += 1
           token
-        when s.scan(/[A-Z]+/) then
-          if leading_whitespace then
+        when s.scan(/[A-Z]+/)
+          if leading_whitespace
             text = s.matched
             text += s.scan(/[^\s)]*/).to_s # in case of no match
             [:text, text, *token_pos(pos)]
           else
             [:section, s.matched, *token_pos(pos)]
           end
-        when s.scan(/([a-z]+):\s/) then
+        when s.scan(/([a-z]+):\s/)
           s.pos -= 1 # rewind for possible newline
           [:entry, s[1], *token_pos(pos)]
-        when s.scan(/\(/) then
+        when s.scan(/\(/)
           [:l_paren, nil, *token_pos(pos)]
-        when s.scan(/\)/) then
+        when s.scan(/\)/)
           [:r_paren, nil, *token_pos(pos)]
-        when s.scan(/<=|>=|=|~>|<|>|!=/) then
+        when s.scan(/<=|>=|=|~>|<|>|!=/)
           [:requirement, s.matched, *token_pos(pos)]
-        when s.scan(/,/) then
+        when s.scan(/,/)
           [:comma, nil, *token_pos(pos)]
-        when s.scan(/!/) then
+        when s.scan(/!/)
           [:bang, nil, *token_pos(pos)]
-        when s.scan(/[^\s),!]*/) then
+        when s.scan(/[^\s),!]*/)
           [:text, s.matched, *token_pos(pos)]
         else
           raise "BUG: can't create token for: #{s.string[s.pos..-1].inspect}"

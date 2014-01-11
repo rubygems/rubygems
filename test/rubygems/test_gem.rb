@@ -305,7 +305,7 @@ class TestGem < Gem::TestCase
     assert File.directory?(util_cache_dir)
   end
 
-  unless win_platform? then # only for FS that support write protection
+  unless win_platform? # only for FS that support write protection
     def test_self_ensure_gem_directories_write_protected
       gemdir = File.join @tempdir, "egd"
       FileUtils.rm_r gemdir rescue nil
@@ -848,7 +848,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_user_home
-    if ENV['HOME'] then
+    if ENV['HOME']
       assert_equal ENV['HOME'], Gem.user_home
     else
       assert true, 'count this test'
@@ -1240,7 +1240,7 @@ class TestGem < Gem::TestCase
 
   def test_default_gems_use_full_paths
     begin
-      if defined?(RUBY_ENGINE) then
+      if defined?(RUBY_ENGINE)
         engine = RUBY_ENGINE
         Object.send :remove_const, :RUBY_ENGINE
       end
@@ -1253,7 +1253,7 @@ class TestGem < Gem::TestCase
     end
 
     begin
-      if defined?(RUBY_ENGINE) then
+      if defined?(RUBY_ENGINE)
         engine = RUBY_ENGINE
         Object.send :remove_const, :RUBY_ENGINE
       end
@@ -1377,7 +1377,7 @@ class TestGem < Gem::TestCase
 
   def util_set_RUBY_VERSION(version, patchlevel = nil, revision = nil)
     if Gem.instance_variables.include? :@ruby_version or
-       Gem.instance_variables.include? '@ruby_version' then
+       Gem.instance_variables.include? '@ruby_version'
       Gem.send :remove_instance_variable, :@ruby_version
     end
 

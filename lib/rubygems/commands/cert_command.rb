@@ -129,7 +129,7 @@ class Gem::Commands::CertCommand < Gem::Command
   end
 
   def build_key # :nodoc:
-    if options[:key] then
+    if options[:key]
       options[:key]
     else
       passphrase = ask_for_password 'Passphrase for your Private Key:'

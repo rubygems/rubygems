@@ -20,9 +20,9 @@ class Gem::Source::Lock < Gem::Source
 
   def <=> other # :nodoc:
     case other
-    when Gem::Source::Lock then
+    when Gem::Source::Lock
       @wrapped <=> other.wrapped
-    when Gem::Source then
+    when Gem::Source
       1
     else
       nil

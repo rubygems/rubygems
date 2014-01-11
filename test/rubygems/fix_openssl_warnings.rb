@@ -1,7 +1,7 @@
 ##
 # HACK: this drives me BONKERS
 
-if defined? OpenSSL then
+if defined? OpenSSL
   class OpenSSL::X509::ExtensionFactory
     alias :old_create_ext :create_ext
     def create_ext(*args)

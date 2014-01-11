@@ -143,9 +143,9 @@ class Gem::Package::Old < Gem::Package
       end
     end
 
-    yaml_error = if RUBY_VERSION < '1.9' then
+    yaml_error = if RUBY_VERSION < '1.9'
                    YAML::ParseError
-                 elsif YAML::ENGINE.yamler == 'syck' then
+                 elsif YAML::ENGINE.yamler == 'syck'
                    YAML::ParseError
                  else
                    YAML::SyntaxError

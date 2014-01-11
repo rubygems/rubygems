@@ -68,11 +68,11 @@ class TestGemPackage < Gem::Package::TarTestCase
 
     reader.each_entry do |entry|
       case entry.full_name
-      when 'checksums.yaml.gz' then
+      when 'checksums.yaml.gz'
         Zlib::GzipReader.wrap entry do |io|
           checksums = io.read
         end
-      when 'data.tar.gz' then
+      when 'data.tar.gz'
         tar = entry.read
       end
     end
@@ -93,7 +93,7 @@ class TestGemPackage < Gem::Package::TarTestCase
       }
     }
 
-    if defined?(OpenSSL::Digest) then
+    if defined?(OpenSSL::Digest)
       expected['SHA1'] = {
         'metadata.gz' => metadata_sha1,
         'data.tar.gz' => Digest::SHA1.hexdigest(tar),

@@ -14,7 +14,7 @@ module Gem::Text
     work = text.dup
 
     while work.length > wrap do
-      if work =~ /^(.{0,#{wrap}})[ \n]/ then
+      if work =~ /^(.{0,#{wrap}})[ \n]/
         result << $1.rstrip
         work.slice!(0, $&.length)
       else

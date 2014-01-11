@@ -33,12 +33,12 @@ class Gem::Security::Signer
     @cert_chain = cert_chain
     @key        = key
 
-    unless @key then
+    unless @key
       default_key  = File.join Gem.default_key_path
       @key = default_key if File.exist? default_key
     end
 
-    unless @cert_chain then
+    unless @cert_chain
       default_cert = File.join Gem.default_cert_path
       @cert_chain = [default_cert] if File.exist? default_cert
     end
@@ -49,7 +49,7 @@ class Gem::Security::Signer
     @key = OpenSSL::PKey::RSA.new File.read(@key), passphrase if
       @key and not OpenSSL::PKey::RSA === @key
 
-    if @cert_chain then
+    if @cert_chain
       @cert_chain = @cert_chain.compact.map do |cert|
         next cert if OpenSSL::X509::Certificate === cert
 
@@ -69,7 +69,7 @@ class Gem::Security::Signer
   def extract_name cert # :nodoc:
     subject_alt_name = cert.extensions.find { |e| 'subjectAltName' == e.oid }
 
-    if subject_alt_name then
+    if subject_alt_name
       /\Aemail:/ =~ subject_alt_name.value
 
       $' || subject_alt_name.value
@@ -101,7 +101,7 @@ class Gem::Security::Signer
   def sign data
     return unless @key
 
-    if @cert_chain.length == 1 and @cert_chain.last.not_after < Time.now then
+    if @cert_chain.length == 1 and @cert_chain.last.not_after < Time.now
       re_sign_key
     end
 
@@ -133,12 +133,12 @@ class Gem::Security::Signer
     disk_key  =
       File.read File.join(Gem.default_key_path) rescue nil
 
-    if disk_key == @key.to_pem and disk_cert == old_cert.to_pem then
+    if disk_key == @key.to_pem and disk_cert == old_cert.to_pem
       expiry = old_cert.not_after.strftime '%Y%m%d%H%M%S'
       old_cert_file = "gem-public_cert.pem.expired.#{expiry}"
       old_cert_path = File.join Gem.user_home, ".gem", old_cert_file
 
-      unless File.exist? old_cert_path then
+      unless File.exist? old_cert_path
         Gem::Security.write old_cert, old_cert_path
 
         cert = Gem::Security.re_sign old_cert, @key

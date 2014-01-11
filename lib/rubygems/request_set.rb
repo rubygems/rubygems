@@ -85,7 +85,7 @@ class Gem::RequestSet
   # Declare that a gem of name +name+ with +reqs+ requirements is needed.
 
   def gem name, *reqs
-    if dep = @dependency_names[name] then
+    if dep = @dependency_names[name]
       dep.requirement.concat reqs
     else
       dep = Gem::Dependency.new name, reqs
@@ -118,10 +118,10 @@ class Gem::RequestSet
     specs = []
 
     sorted_requests.each do |req|
-      if req.installed? then
+      if req.installed?
         req.spec.spec.build_extensions
 
-        if @always_install.none? { |spec| spec == req.spec.spec } then
+        if @always_install.none? { |spec| spec == req.spec.spec }
           yield req, nil if block_given?
           next
         end
@@ -191,7 +191,7 @@ class Gem::RequestSet
     sorted_requests.each do |request|
       spec = request.spec
 
-      if existing.find { |s| s.full_name == spec.full_name } then
+      if existing.find { |s| s.full_name == spec.full_name }
         yield request, nil if block_given?
         next
       end

@@ -70,12 +70,12 @@ class Gem::Resolver::ActivationRequest
   def inspect # :nodoc:
     others =
       case @others_possible
-      when true then # TODO remove at RubyGems 3
+      when true # TODO remove at RubyGems 3
         ' (others possible)'
-      when false then # TODO remove at RubyGems 3
+      when false # TODO remove at RubyGems 3
         nil
       else
-        unless @others_possible.empty? then
+        unless @others_possible.empty?
           others = @others_possible.map { |s| s.full_name }
           " (others possible: #{others.join ', '})"
         end
@@ -91,7 +91,7 @@ class Gem::Resolver::ActivationRequest
 
   def installed?
     case @spec
-    when Gem::Resolver::VendorSpecification then
+    when Gem::Resolver::VendorSpecification
       true
     else
       this_spec = full_spec
@@ -115,7 +115,7 @@ class Gem::Resolver::ActivationRequest
 
   def others_possible?
     case @others_possible
-    when true, false then
+    when true, false
       @others_possible
     else
       not @others_possible.empty?
@@ -140,12 +140,12 @@ class Gem::Resolver::ActivationRequest
       q.pp @request
 
       case @others_possible
-      when false then
-      when true then
+      when false
+      when true
         q.breakable
         q.text 'others possible'
       else
-        unless @others_possible.empty? then
+        unless @others_possible.empty?
           q.breakable
           q.text 'others '
           q.pp @others_possible.map { |s| s.full_name }

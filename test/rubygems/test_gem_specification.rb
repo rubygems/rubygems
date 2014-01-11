@@ -1236,7 +1236,7 @@ dependencies: []
       @ext.build_extensions
     end
   ensure
-    unless Gem.win_platform? then
+    unless Gem.win_platform?
       FileUtils.chmod 0755, File.join(@ext.base_dir, 'extensions')
       FileUtils.chmod 0755, @ext.base_dir
     end
@@ -1973,10 +1973,10 @@ Gem::Specification.new do |s|
   s.rubygems_version = "#{Gem::VERSION}"
   s.summary = "this is a summary"
 
-  if s.respond_to? :specification_version then
+  if s.respond_to? :specification_version
     s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0')
       s.add_runtime_dependency(%q<b>, [\"= 1\"])
     else
       s.add_dependency(%q<b>, [\"= 1\"])
@@ -2023,10 +2023,10 @@ Gem::Specification.new do |s|
 
   s.installed_by_version = "#{Gem::VERSION}" if s.respond_to? :installed_by_version
 
-  if s.respond_to? :specification_version then
+  if s.respond_to? :specification_version
     s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0')
       s.add_runtime_dependency(%q<b>, [\"= 1\"])
     else
       s.add_dependency(%q<b>, [\"= 1\"])
@@ -2085,10 +2085,10 @@ Gem::Specification.new do |s|
   s.summary = "this is a summary"
   s.test_files = ["test/suite.rb"]
 
-  if s.respond_to? :specification_version then
+  if s.respond_to? :specification_version
     s.specification_version = 4
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0')
       s.add_runtime_dependency(%q<rake>, [\"> 0.4\"])
       s.add_runtime_dependency(%q<jabber4r>, [\"> 0.0.0\"])
       s.add_runtime_dependency(%q<pqa>, [\"<= 0.6\", \"> 0.4\"])
@@ -2443,7 +2443,7 @@ duplicate dependency on b (>= 1.2.3), (~> 1.2) use:
   end
 
   def test_validate_empty_require_paths
-    if win_platform? then
+    if win_platform?
       skip 'test_validate_empty_require_paths skipped on MS Windows (symlink)'
     else
       util_setup_validate

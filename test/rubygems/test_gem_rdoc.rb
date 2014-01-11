@@ -48,7 +48,7 @@ class TestGemRDoc < Gem::TestCase
   end
 
   def test_initialize
-    if rdoc_4? then
+    if rdoc_4?
       refute @hook.generate_rdoc
     else
       assert @hook.generate_rdoc

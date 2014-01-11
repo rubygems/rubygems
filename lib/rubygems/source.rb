@@ -52,9 +52,9 @@ class Gem::Source
          Gem::Source::Lock,
          Gem::Source::SpecificFile,
          Gem::Source::Git,
-         Gem::Source::Vendor then
+         Gem::Source::Vendor
       -1
-    when Gem::Source then
+    when Gem::Source
       if !@uri
         return 0 unless other.uri
         return 1
@@ -129,7 +129,7 @@ class Gem::Source
 
     local_spec = File.join cache_dir, spec_file_name
 
-    if File.exist? local_spec then
+    if File.exist? local_spec
       spec = Gem.read_binary local_spec
       spec = Marshal.load(spec) rescue nil
       return spec if spec
@@ -140,7 +140,7 @@ class Gem::Source
     spec = fetcher.fetch_path uri
     spec = Gem.inflate spec
 
-    if update_cache? then
+    if update_cache?
       FileUtils.mkdir_p cache_dir
 
       open local_spec, 'wb' do |io|

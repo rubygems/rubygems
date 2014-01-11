@@ -95,9 +95,9 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   def assert_activate expected, *specs
     specs.each do |spec|
       case spec
-      when String then
+      when String
         Gem::Specification.find_by_name(spec).activate
-      when Gem::Specification then
+      when Gem::Specification
         spec.activate
       else
         flunk spec.inspect
@@ -211,7 +211,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     tmpdir = File.expand_path Dir.tmpdir
     tmpdir.untaint
 
-    if ENV['KEEP_FILES'] then
+    if ENV['KEEP_FILES']
       @tempdir = File.join(tmpdir, "test_rubygems_#{$$}.#{Time.now.to_i}")
     else
       @tempdir = File.join(tmpdir, "test_rubygems_#{$$}")
@@ -234,7 +234,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     @userhome = File.join @tempdir, 'userhome'
     ENV["GEM_SPEC_CACHE"] = File.join @tempdir, 'spec_cache'
 
-    @orig_ruby = if ENV['RUBY'] then
+    @orig_ruby = if ENV['RUBY']
                    ruby = Gem.ruby
                    Gem.ruby = ENV['RUBY']
                    ruby
@@ -322,7 +322,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     end
     RbConfig::CONFIG['arch'] = @orig_arch
 
-    if defined? Gem::RemoteFetcher then
+    if defined? Gem::RemoteFetcher
       Gem::RemoteFetcher.fetcher = nil
     end
 
@@ -335,7 +335,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     Gem.ruby = @orig_ruby if @orig_ruby
 
-    if @orig_ENV_HOME then
+    if @orig_ENV_HOME
       ENV['HOME'] = @orig_ENV_HOME
     else
       ENV.delete 'HOME'
@@ -412,7 +412,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     head = nil
 
     Dir.chdir directory do
-      unless File.exist? '.git' then
+      unless File.exist? '.git'
         system @git, 'init', '--quiet'
         system @git, 'config', 'user.name',  'RubyGems Tests'
         system @git, 'config', 'user.email', 'rubygems@example'
@@ -451,7 +451,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     gem = File.join @tempdir, "gems", "#{spec.full_name}.gem"
 
-    unless File.exist? gem then
+    unless File.exist? gem
       use_ui Gem::MockGemUi.new do
         Dir.chdir @tempdir do
           Gem::Package.build spec
@@ -698,7 +698,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     spec.loaded_from = spec.spec_file
 
-    unless files.empty? then
+    unless files.empty?
       write_file spec.spec_file do |io|
         io.write spec.to_ruby_for_cache
       end
@@ -753,7 +753,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       yield s if block_given?
     end
 
-    if deps then
+    if deps
       # Since Hash#each is unordered in 1.8, sort the keys and iterate that
       # way so the tests are deterministic on all implementations.
       deps.keys.sort.each do |n|
@@ -778,7 +778,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     # TODO: deprecate
     raise "deps or block, not both" if deps and block
 
-    if deps then
+    if deps
       block = proc do |s|
         # Since Hash#each is unordered in 1.8, sort
         # the keys and iterate that way so the tests are
@@ -975,7 +975,7 @@ Also, a list:
     end
 
     # HACK for test_download_to_cache
-    unless Gem::RemoteFetcher === @fetcher then
+    unless Gem::RemoteFetcher === @fetcher
       v = Gem.marshal_version
 
       specs = all.map { |spec| spec.name_tuple }
@@ -1160,7 +1160,7 @@ Also, a list:
   def dependency_request dep, from_name, from_version, parent = nil
     remote = Gem::Source.new @uri
 
-    unless parent then
+    unless parent
       parent_dep = dep from_name, from_version
       parent = Gem::Resolver::DependencyRequest.new parent_dep, nil
     end
@@ -1311,7 +1311,7 @@ Also, a list:
   # <tt>test/rubygems/</tt>.
 
   def self.cert_path cert_name
-    if 32 == (Time.at(2**32) rescue 32) then
+    if 32 == (Time.at(2**32) rescue 32)
       cert_file =
         File.expand_path "../../../test/rubygems/#{cert_name}_cert_32.pem",
                          __FILE__

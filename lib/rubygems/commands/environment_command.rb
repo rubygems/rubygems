@@ -74,19 +74,19 @@ lib/rubygems/defaults/operating_system.rb
     arg = options[:args][0]
     out <<
       case arg
-      when /^packageversion/ then
+      when /^packageversion/
         Gem::RubyGemsPackageVersion
-      when /^version/ then
+      when /^version/
         Gem::VERSION
-      when /^gemdir/, /^gemhome/, /^home/, /^GEM_HOME/ then
+      when /^gemdir/, /^gemhome/, /^home/, /^GEM_HOME/
         Gem.dir
-      when /^gempath/, /^path/, /^GEM_PATH/ then
+      when /^gempath/, /^path/, /^GEM_PATH/
         Gem.path.join(File::PATH_SEPARATOR)
-      when /^remotesources/ then
+      when /^remotesources/
         Gem.sources.to_a.join("\n")
-      when /^platform/ then
+      when /^platform/
         Gem.platforms.join(File::PATH_SEPARATOR)
-      when nil then
+      when nil
         show_environment
       else
         raise Gem::CommandLineError, "Unknown environment option [#{arg}]"

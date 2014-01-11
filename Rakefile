@@ -217,10 +217,10 @@ namespace 'blog' do
 
     while line = lines.shift do
       case line
-      when /(^[A-Z].*)/ then
+      when /(^[A-Z].*)/
         change_types << $1
         change_log << "_#{$1}_\n"
-      when /^\*/ then
+      when /^\*/
         entry = [line.strip]
 
         while /^  \S/ =~ lines.first do
@@ -241,7 +241,7 @@ namespace 'blog' do
 
     last_change_type = change_types.pop
 
-    if change_types.empty? then
+    if change_types.empty?
       change_types = ''
     else
       change_types = change_types.join(', ') << ' and '
@@ -427,7 +427,7 @@ task "git:newchangelog" do
   codes_re = Regexp.escape codes.keys.join
 
   changes.each do |change|
-    if change =~ /^\s*([#{codes_re}])\s*(.*)/ then
+    if change =~ /^\s*([#{codes_re}])\s*(.*)/
       code, line = codes[$1], $2
     else
       code, line = codes["?"], change.chomp

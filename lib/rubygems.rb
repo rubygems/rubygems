@@ -401,7 +401,7 @@ module Gem
   # distinction as extensions cannot be shared between the two.
 
   def self.extension_api_version # :nodoc:
-    if 'no' == RbConfig::CONFIG['ENABLE_SHARED'] then
+    if 'no' == RbConfig::CONFIG['ENABLE_SHARED']
       "#{ruby_api_version}-static"
     else
       ruby_api_version
@@ -489,19 +489,19 @@ module Gem
 
   def self.find_home
     windows = File::ALT_SEPARATOR
-    if not windows or RUBY_VERSION >= '1.9' then
+    if not windows or RUBY_VERSION >= '1.9'
       File.expand_path "~"
     else
       ['HOME', 'USERPROFILE'].each do |key|
         return File.expand_path ENV[key] if ENV[key]
       end
 
-      if ENV['HOMEDRIVE'] && ENV['HOMEPATH'] then
+      if ENV['HOMEDRIVE'] && ENV['HOMEPATH']
         File.expand_path "#{ENV['HOMEDRIVE']}#{ENV['HOMEPATH']}"
       end
     end
   rescue
-    if windows then
+    if windows
       File.expand_path File.join(ENV['HOMEDRIVE'] || ENV['SystemDrive'], '/')
     else
       File.expand_path "/"
@@ -745,7 +745,7 @@ module Gem
 
     if prefix != File.expand_path(RbConfig::CONFIG['sitelibdir']) and
        prefix != File.expand_path(RbConfig::CONFIG['libdir']) and
-       'lib' == File.basename(RUBYGEMS_DIR) then
+       'lib' == File.basename(RUBYGEMS_DIR)
       prefix
     end
   end
@@ -775,7 +775,7 @@ module Gem
   # The path to the running Ruby interpreter.
 
   def self.ruby
-    if @ruby.nil? then
+    if @ruby.nil?
       @ruby = File.join(RbConfig::CONFIG['bindir'],
                         "#{RbConfig::CONFIG['ruby_install_name']}#{RbConfig::CONFIG['EXEEXT']}")
 
@@ -828,9 +828,9 @@ module Gem
     return @ruby_version if defined? @ruby_version
     version = RUBY_VERSION.dup
 
-    if defined?(RUBY_PATCHLEVEL) && RUBY_PATCHLEVEL != -1 then
+    if defined?(RUBY_PATCHLEVEL) && RUBY_PATCHLEVEL != -1
       version << ".#{RUBY_PATCHLEVEL}"
-    elsif defined?(RUBY_REVISION) then
+    elsif defined?(RUBY_REVISION)
       version << ".dev.#{RUBY_REVISION}"
     end
 
@@ -935,7 +935,7 @@ module Gem
   # Is this a windows platform?
 
   def self.win_platform?
-    if @@win_platform.nil? then
+    if @@win_platform.nil?
       ruby_platform = RbConfig::CONFIG['host_os']
       @@win_platform = !!WIN_PATTERNS.find { |r| ruby_platform =~ r }
     end
@@ -1010,7 +1010,7 @@ module Gem
     return unless path = ENV['RUBYGEMS_GEMDEPS']
     path = path.dup
 
-    if path == "-" then
+    if path == "-"
       require 'rubygems/util'
 
       Gem::Util.traverse_parents Dir.pwd do |directory|
@@ -1186,7 +1186,7 @@ require 'rubygems/exceptions'
 
 # REFACTOR: This should be pulled out into some kind of hacks file.
 gem_preluded = Gem::GEM_PRELUDE_SUCKAGE and defined? Gem
-unless gem_preluded then # TODO: remove guard after 1.9.2 dropped
+unless gem_preluded # TODO: remove guard after 1.9.2 dropped
   begin
     ##
     # Defaults the operating system (or packager) wants to provide for RubyGems.
@@ -1195,7 +1195,7 @@ unless gem_preluded then # TODO: remove guard after 1.9.2 dropped
   rescue LoadError
   end
 
-  if defined?(RUBY_ENGINE) then
+  if defined?(RUBY_ENGINE)
     begin
       ##
       # Defaults the Ruby implementation wants to provide for RubyGems

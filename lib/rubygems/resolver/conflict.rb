@@ -79,7 +79,7 @@ class Gem::Resolver::Conflict
       q.pp @dependency
 
       q.breakable
-      if @dependency == @failed_dep then
+      if @dependency == @failed_dep
         q.text ' failed'
       else
         q.text ' failed dependency '

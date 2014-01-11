@@ -1,6 +1,6 @@
 require 'rubygems/test_case'
 
-unless defined?(OpenSSL::SSL) then
+unless defined?(OpenSSL::SSL)
   warn 'Skipping Gem::Security::TrustDir tests.  openssl not found.'
 end
 

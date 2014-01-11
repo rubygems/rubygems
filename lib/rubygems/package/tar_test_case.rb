@@ -51,7 +51,7 @@ class Gem::Package::TarTestCase < Gem::TestCase
       name = fields.shift
       length = fields.shift.to_i
 
-      if name == "checksum" then
+      if name == "checksum"
         chksum_off = offset
         offset += length
         next
@@ -94,7 +94,7 @@ class Gem::Package::TarTestCase < Gem::TestCase
     ]
 
     format = "C100C8C8C8C12C12C8CC100C6C2C32C32C8C8C155"
-    h = if RUBY_VERSION >= "1.9" then
+    h = if RUBY_VERSION >= "1.9"
           arr.join
         else
           arr = arr.join("").split(//).map{|x| x[0]}

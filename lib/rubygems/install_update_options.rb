@@ -67,7 +67,7 @@ module Gem::InstallUpdateOptions
     add_option(:Deprecated, '--[no-]rdoc',
                'Generate RDoc for installed gems',
                'Use --document instead') do |value, options|
-      if value then
+      if value
         options[:document] << 'rdoc'
       else
         options[:document].delete 'rdoc'
@@ -79,7 +79,7 @@ module Gem::InstallUpdateOptions
     add_option(:Deprecated, '--[no-]ri',
                'Generate ri data for installed gems.',
                'Use --document instead') do |value, options|
-      if value then
+      if value
         options[:document] << 'ri'
       else
         options[:document].delete 'ri'

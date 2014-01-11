@@ -83,8 +83,8 @@ is too hard to use.
 
     prerelease = options[:prerelease]
 
-    unless options[:installed].nil? then
-      if no_name then
+    unless options[:installed].nil?
+      if no_name
         alert_error "You must specify a gem name"
         exit_code |= 4
       elsif name.count > 1
@@ -94,7 +94,7 @@ is too hard to use.
         installed = installed? name.first, options[:version]
         installed = !installed unless options[:installed]
 
-        if installed then
+        if installed
           say "true"
         else
           say "false"
@@ -112,7 +112,7 @@ is too hard to use.
   private
 
   def display_header type
-    if (ui.outs.tty? and Gem.configuration.verbose) or both? then
+    if (ui.outs.tty? and Gem.configuration.verbose) or both?
       say
       say "*** #{type} GEMS ***"
       say
@@ -126,8 +126,8 @@ is too hard to use.
     dep = Gem::Deprecate.skip_during { Gem::Dependency.new name, req }
     dep.prerelease = prerelease
 
-    if local? then
-      if prerelease and not both? then
+    if local?
+      if prerelease and not both?
         alert_warning "prereleases are always shown locally"
       end
 
@@ -144,7 +144,7 @@ is too hard to use.
       output_query_results spec_tuples
     end
 
-    if remote? then
+    if remote?
       display_header 'REMOTE'
 
       fetcher = Gem::SpecFetcher.fetcher
@@ -210,7 +210,7 @@ is too hard to use.
       seen = {}
 
       matching_tuples.delete_if do |n,_|
-        if seen[n.version] then
+        if seen[n.version]
           true
         else
           seen[n.version] = true
@@ -243,11 +243,11 @@ is too hard to use.
     return unless options[:versions]
 
     list =
-      if platforms.empty? or options[:details] then
+      if platforms.empty? or options[:details]
         name_tuples.map { |n| n.version }.uniq
       else
         platforms.sort.reverse.map do |version, pls|
-          if pls == [Gem::Platform::RUBY] then
+          if pls == [Gem::Platform::RUBY]
             version
           else
             ruby = pls.delete Gem::Platform::RUBY
@@ -298,7 +298,7 @@ is too hard to use.
   def spec_loaded_from entry, spec, specs
     return unless spec.loaded_from
 
-    if specs.length == 1 then
+    if specs.length == 1
       default = spec.default_gem? ? ' (default)' : nil
       entry << "\n" << "    Installed at#{default}: #{spec.base_dir}"
     else
@@ -319,7 +319,7 @@ is too hard to use.
 
     return unless non_ruby
 
-    if platforms.length == 1 then
+    if platforms.length == 1
       title = platforms.values.length == 1 ? 'Platform' : 'Platforms'
       entry << "    #{title}: #{platforms.values.sort.join ', '}\n"
     else

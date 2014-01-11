@@ -15,12 +15,12 @@ end
 
 # Gem::QuickLoader exists in the gem prelude code in ruby 1.9.2 itself.
 # We gotta get rid of it if it's there, before we do anything else.
-if Gem::GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader) then
+if Gem::GEM_PRELUDE_SUCKAGE and defined?(Gem::QuickLoader)
   Gem::QuickLoader.remove
 
   $LOADED_FEATURES.delete Gem::QuickLoader.path_to_full_rubygems_library
 
-  if $LOADED_FEATURES.any? do |path| path.end_with? '/rubygems.rb' end then
+  if $LOADED_FEATURES.any? { |path| path.end_with? '/rubygems.rb' }
     # TODO path does not exist here
     raise LoadError, "another rubygems is already loaded from #{path}"
   end

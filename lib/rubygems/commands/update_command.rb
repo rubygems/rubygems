@@ -66,7 +66,7 @@ command to remove old versions.
   end
 
   def check_latest_rubygems version # :nodoc:
-    if Gem.rubygems_version == version then
+    if Gem.rubygems_version == version
       say "Latest version currently installed. Aborting."
       terminate_interaction
     end
@@ -75,7 +75,7 @@ command to remove old versions.
   end
 
   def check_update_arguments # :nodoc:
-    unless options[:args].empty? then
+    unless options[:args].empty?
       alert_error "Gem names are not allowed with the --system option"
       terminate_interaction 1
     end
@@ -84,7 +84,7 @@ command to remove old versions.
   def execute
     hig = {}
 
-    if options[:system] then
+    if options[:system]
       update_rubygems
       return
     end
@@ -97,7 +97,7 @@ command to remove old versions.
 
     updated = update_gems gems_to_update
 
-    if updated.empty? then
+    if updated.empty?
       say "Nothing to update"
     else
       say "Gems updated: #{updated.map { |spec| spec.name }.join ' '}"
@@ -123,7 +123,7 @@ command to remove old versions.
     hig = {} # highest installed gems
 
     Gem::Specification.each do |spec|
-      if hig[spec.name].nil? or hig[spec.name].version < spec.version then
+      if hig[spec.name].nil? or hig[spec.name].version < spec.version
         hig[spec.name] = spec
       end
     end
@@ -166,7 +166,7 @@ command to remove old versions.
     version = options[:system]
     update_latest = version == true
 
-    if update_latest then
+    if update_latest
       version     = Gem::Version.new     Gem::VERSION
       requirement = Gem::Requirement.new ">= #{Gem::VERSION}"
     else
@@ -185,7 +185,7 @@ command to remove old versions.
     gems_to_update = which_to_update hig, options[:args], :system
     _, up_ver   = gems_to_update.first
 
-    target = if update_latest then
+    target = if update_latest
                up_ver
              else
                version
@@ -263,7 +263,7 @@ command to remove old versions.
 
       highest_remote_ver = highest_remote_version l_spec
 
-      if system or (l_spec.version < highest_remote_ver) then
+      if system or (l_spec.version < highest_remote_ver)
         result << [l_spec.name, [l_spec.version, highest_remote_ver].max]
       end
     end

@@ -16,11 +16,11 @@ class Gem::Source::Local < Gem::Source
   def <=> other
     case other
     when Gem::Source::Installed,
-         Gem::Source::Lock then
+         Gem::Source::Lock
       -1
-    when Gem::Source::Local then
+    when Gem::Source::Local
       0
-    when Gem::Source then
+    when Gem::Source
       1
     else
       nil

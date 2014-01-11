@@ -39,7 +39,7 @@ Autotest.add_hook :initialize do |at|
 
     completed = results[self.completed_re]
 
-    if completed then
+    if completed
       completed = completed.scan(/(\d+) (\w+)/).map { |v, k| [k, v.to_i] }
 
       self.latest_results = Hash[*completed.flatten]

@@ -68,7 +68,7 @@ class Gem::ConfigFile
 
         CSIDL_COMMON_APPDATA = 0x0023
         path = 0.chr * 260
-        if RUBY_VERSION > '1.9' then
+        if RUBY_VERSION > '1.9'
           SHGetFolderPath = Win32API.new 'shell32', 'SHGetFolderPath', 'PLPLP',
           'L', :stdcall
           SHGetFolderPath.call nil, CSIDL_COMMON_APPDATA, nil, 1, path
@@ -174,12 +174,12 @@ class Gem::ConfigFile
     arg_list = []
 
     args.each do |arg|
-      if need_config_file_name then
+      if need_config_file_name
         @config_file_name = arg
         need_config_file_name = false
-      elsif arg =~ /^--config-file=(.*)/ then
+      elsif arg =~ /^--config-file=(.*)/
         @config_file_name = $1
-      elsif arg =~ /^--config-file$/ then
+      elsif arg =~ /^--config-file$/
         need_config_file_name = true
       else
         arg_list << arg
@@ -277,13 +277,13 @@ if you believe they were disclosed to a third party.
   def load_api_keys
     check_credentials_permissions
 
-    @api_keys = if File.exist? credentials_path then
+    @api_keys = if File.exist? credentials_path
                   load_file(credentials_path)
                 else
                   @hash
                 end
 
-    if @api_keys.key? :rubygems_api_key then
+    if @api_keys.key? :rubygems_api_key
       @rubygems_api_key    = @api_keys[:rubygems_api_key]
       @api_keys[:rubygems] = @api_keys.delete :rubygems_api_key unless
         @api_keys.key? :rubygems
@@ -378,9 +378,9 @@ if you believe they were disclosed to a third party.
 
     arg_list.each do |arg|
       case arg
-      when /^--(backtrace|traceback)$/ then
+      when /^--(backtrace|traceback)$/
         @backtrace = true
-      when /^--debug$/ then
+      when /^--debug$/
         $DEBUG = true
       else
         @args << arg
@@ -391,7 +391,7 @@ if you believe they were disclosed to a third party.
   # Really verbose mode gives you extra output.
   def really_verbose
     case verbose
-    when true, false, nil then
+    when true, false, nil
       false
     else
       true

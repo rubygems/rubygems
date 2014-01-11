@@ -82,7 +82,7 @@ class CertificateBuilder
   end
 
   def validity_for time
-    if time == :end_of_time then
+    if time == :end_of_time
       validity    = @end_of_time
       validity_32 = @end_of_time_32
     else

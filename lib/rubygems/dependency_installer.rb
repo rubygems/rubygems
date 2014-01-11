@@ -162,7 +162,7 @@ class Gem::DependencyInstaller
   # +version+
 
   def available_set_for dep_or_name, version # :nodoc:
-    if String === dep_or_name then
+    if String === dep_or_name
       find_spec_by_name_and_version dep_or_name, version, @prerelease
     else
       dep = dep_or_name.dup
@@ -243,7 +243,7 @@ class Gem::DependencyInstaller
         # FIX if there is a problem talking to the network, we either need to always tell
         # the user (no really_verbose) or fail hard, not silently tell them that we just
         # couldn't find their requested gem.
-        if Gem.configuration.really_verbose then
+        if Gem.configuration.really_verbose
           say "Error fetching remote data:\t\t#{e.message}"
           say "Falling back to local-only install"
         end
@@ -265,10 +265,10 @@ class Gem::DependencyInstaller
     set = Gem::AvailableSet.new
 
     if consider_local?
-      if gem_name =~ /\.gem$/ and File.file? gem_name then
+      if gem_name =~ /\.gem$/ and File.file? gem_name
         src = Gem::Source::SpecificFile.new(gem_name)
         set.add src.spec, src
-      elsif gem_name =~ /\.gem$/ then
+      elsif gem_name =~ /\.gem$/
         Dir[gem_name].each do |name|
           begin
             src = Gem::Source::SpecificFile.new name
@@ -328,7 +328,7 @@ class Gem::DependencyInstaller
       Gem::Specification.include?(spec)
     }
 
-    unless dependency_list.ok? or @ignore_dependencies or @force then
+    unless dependency_list.ok? or @ignore_dependencies or @force
       reason = dependency_list.why_not_ok?.map { |k,v|
         "#{k} requires #{v.join(", ")}"
       }.join("; ")
@@ -405,9 +405,9 @@ class Gem::DependencyInstaller
   end
 
   def install_development_deps # :nodoc:
-    if @development and @dev_shallow then
+    if @development and @dev_shallow
       :shallow
-    elsif @development then
+    elsif @development
       :all
     else
       :none
@@ -424,7 +424,7 @@ class Gem::DependencyInstaller
     installer_set.always_install.concat request_set.always_install
     installer_set.ignore_installed = @only_install_dir
 
-    if @ignore_dependencies then
+    if @ignore_dependencies
       installer_set.ignore_dependencies = true
       request_set.ignore_dependencies   = true
       request_set.soft_missing          = true

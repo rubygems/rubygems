@@ -69,10 +69,10 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
       res << Gem::Resolver::InstalledSpecification.new(self, gemspec)
     end unless @ignore_installed
 
-    if consider_local? then
+    if consider_local?
       local_source = Gem::Source::Local.new
 
-      if spec = local_source.find_gem(name, dep.requirement) then
+      if spec = local_source.find_gem(name, dep.requirement)
         res << Gem::Resolver::IndexSpecification.new(
           self, spec.name, spec.version, local_source, spec.platform)
       end

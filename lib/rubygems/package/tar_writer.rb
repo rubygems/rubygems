@@ -144,7 +144,7 @@ class Gem::Package::TarWriter
     digests = digest_algorithms.map do |digest_algorithm|
       digest = digest_algorithm.new
       digest_name =
-        if digest.respond_to? :name then
+        if digest.respond_to? :name
           digest.name
         else
           /::([^:]+)$/ =~ digest_algorithm.name
@@ -185,7 +185,7 @@ class Gem::Package::TarWriter
 
     signature_digest = digests.values.compact.find do |digest|
       digest_name =
-        if digest.respond_to? :name then
+        if digest.respond_to? :name
           digest.name
         else
           /::([^:]+)$/ =~ digest.class.name
@@ -195,7 +195,7 @@ class Gem::Package::TarWriter
       digest_name == signer.digest_name
     end
 
-    if signer.key then
+    if signer.key
       signature = signer.sign signature_digest.digest
 
       add_file_simple "#{name}.sig", 0444, signature.length do |io|
@@ -292,7 +292,7 @@ class Gem::Package::TarWriter
   def split_name(name) # :nodoc:
     raise Gem::Package::TooLongFileName if name.bytesize > 256
 
-    if name.bytesize <= 100 then
+    if name.bytesize <= 100
       prefix = ""
     else
       parts = name.split(/\//)
@@ -308,7 +308,7 @@ class Gem::Package::TarWriter
       prefix = (parts + [nxt]).join "/"
       name = newname
 
-      if name.bytesize > 100 or prefix.bytesize > 155 then
+      if name.bytesize > 100 or prefix.bytesize > 155
         raise Gem::Package::TooLongFileName
       end
     end

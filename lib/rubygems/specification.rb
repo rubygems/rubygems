@@ -417,12 +417,12 @@ class Gem::Specification < Gem::BasicSpecification
   attr_accessor :metadata
 
   ##
-  # Adds a development dependency named +gem+ with +requirements+ to this
-  # gem.
+  # Adds a development dependency named +gem+ with version +requirements+ 
+  # of '~> 1.1' and '>= 1.1.4'to this gem.
   #
   # Usage:
   #
-  #   spec.add_development_dependency 'example', '~> 1.1', '>= 1.1.4'
+  #   spec.add_development_dependency 'gem', '~> 1.1', '>= 1.1.4'
   #
   # Development dependencies aren't installed by default and aren't
   # activated when a gem is required.
@@ -432,11 +432,12 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # Adds a runtime dependency named +gem+ with +requirements+ to this gem.
+  # Adds a runtime dependency named +gem+ with version +requirements+ 
+  # of '~> 1.1' and '>= 1.1.4'to this gem.
   #
   # Usage:
   #
-  #   spec.add_runtime_dependency 'example', '~> 1.1', '>= 1.1.4'
+  #   spec.add_runtime_dependency 'gem', '~> 1.1', '>= 1.1.4'
 
   def add_runtime_dependency(gem, *requirements)
     add_dependency_with_type(gem, :runtime, *requirements)

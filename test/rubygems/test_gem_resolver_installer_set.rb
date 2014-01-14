@@ -2,6 +2,20 @@ require 'rubygems/test_case'
 
 class TestGemResolverInstallerSet < Gem::TestCase
 
+  def test_consider_local_eh
+    set = Gem::Resolver::InstallerSet.new :remote
+
+    refute set.consider_local?
+
+    set = Gem::Resolver::InstallerSet.new :both
+
+    assert set.consider_local?
+
+    set = Gem::Resolver::InstallerSet.new :local
+
+    assert set.consider_local?
+  end
+
   def test_load_spec
     specs = spec_fetcher do |fetcher|
       fetcher.spec 'a', 2

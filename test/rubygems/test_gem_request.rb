@@ -1,6 +1,7 @@
 require 'rubygems/test_case'
 require 'rubygems/request'
 require 'ostruct'
+require 'base64'
 
 class TestGemRequest < Gem::TestCase
 
@@ -122,6 +123,30 @@ class TestGemRequest < Gem::TestCase
 
     assert_equal 200, response.code
     assert_equal :junk, response.body
+  end
+
+  def test_fetch_basic_auth
+    uri = URI.parse "https://user:pass@example.rubygems/specs.#{Gem.marshal_version}"
+    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
+    conn = util_stub_connection_for :body => :junk, :code => 200
+
+    response = @request.fetch
+
+    auth_header = conn.payload['Authorization']
+
+    assert_equal "Basic #{Base64.encode64('user:pass')}".strip, auth_header
+  end
+
+  def test_fetch_basic_auth_encoded
+    uri = URI.parse "https://user:%7BDEScede%7Dpass@example.rubygems/specs.#{Gem.marshal_version}"
+    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
+    conn = util_stub_connection_for :body => :junk, :code => 200
+
+    response = @request.fetch
+
+    auth_header = conn.payload['Authorization']
+
+    assert_equal "Basic #{Base64.encode64('user:{DEScede}pass')}".strip, auth_header
   end
 
   def test_fetch_head

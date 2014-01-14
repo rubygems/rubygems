@@ -33,6 +33,8 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
   attr_reader :specs # :nodoc:
 
   def initialize # :nodoc:
+    super()
+
     @git             = ENV['git'] || 'git'
     @need_submodules = {}
     @repositories    = {}

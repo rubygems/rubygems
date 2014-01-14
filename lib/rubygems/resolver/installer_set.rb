@@ -24,7 +24,10 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
   # Creates a new InstallerSet that will look for gems in +domain+.
 
   def initialize domain
+    super()
+
     @domain = domain
+    @remote = consider_remote?
 
     @f = Gem::SpecFetcher.fetcher
 

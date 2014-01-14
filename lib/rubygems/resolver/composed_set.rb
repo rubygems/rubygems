@@ -20,6 +20,13 @@ class Gem::Resolver::ComposedSet < Gem::Resolver::Set
   end
 
   ##
+  # Sets the remote network access for all composed sets.
+
+  def remote= remote
+    @sets.each { |set| set.remote = remote }
+  end
+
+  ##
   # Finds all specs matching +req+ in all sets.
 
   def find_all req

@@ -5,6 +5,8 @@
 class Gem::Resolver::IndexSet < Gem::Resolver::Set
 
   def initialize source = nil # :nodoc:
+    super()
+
     @f =
       if source then
         sources = Gem::SourceList.from [source]

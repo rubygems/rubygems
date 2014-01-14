@@ -25,6 +25,8 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
   # http://guides.rubygems.org/rubygems-org-api
 
   def initialize dep_uri = 'https://rubygems.org/api/v1/dependencies'
+    super()
+
     dep_uri = URI dep_uri unless URI === dep_uri # for ruby 1.8
 
     @dep_uri = dep_uri

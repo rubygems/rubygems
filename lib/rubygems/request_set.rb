@@ -39,6 +39,11 @@ class Gem::RequestSet
   attr_accessor :ignore_dependencies
 
   ##
+  # When true no remote sets are used for resolving gems.
+
+  attr_accessor :local
+
+  ##
   # Sets used for resolution
 
   attr_reader :sets # :nodoc:
@@ -71,6 +76,7 @@ class Gem::RequestSet
     @git_set             = nil
     @ignore_dependencies = false
     @install_dir         = Gem.dir
+    @local               = false
     @requests            = []
     @sets                = []
     @soft_missing        = false
@@ -150,6 +156,7 @@ class Gem::RequestSet
     gemdeps = options[:gemdeps]
 
     @install_dir = options[:install_dir] || Gem.dir
+    @local       = options[:domain] == :local
 
     load_gemdeps gemdeps, options[:without_groups]
 

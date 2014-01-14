@@ -8,6 +8,7 @@ Bug fixes:
   Nakada.
 * Removed double requests in RemoteFetcher#cache_update_path to improve remote
   install speed.  Pull request #772 by Charlie Somerville.
+* The mkmf.log is now placed next to gem_make.out when building extensions.
 
 === 2.2.1 / 2014-01-06
 

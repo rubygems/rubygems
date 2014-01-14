@@ -16,6 +16,20 @@ class TestGemResolverInstallerSet < Gem::TestCase
     assert set.consider_local?
   end
 
+  def test_consider_remote_eh
+    set = Gem::Resolver::InstallerSet.new :remote
+
+    assert set.consider_remote?
+
+    set = Gem::Resolver::InstallerSet.new :both
+
+    assert set.consider_remote?
+
+    set = Gem::Resolver::InstallerSet.new :local
+
+    refute set.consider_remote?
+  end
+
   def test_load_spec
     specs = spec_fetcher do |fetcher|
       fetcher.spec 'a', 2

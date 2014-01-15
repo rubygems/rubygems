@@ -13,6 +13,8 @@ Bug fixes:
   Evans.
 * RubyGems now correctly handles URL passwords with encoded characters.  Bug
   #781 by Brian Fletcher.
+* RubyGems now correctly escapes URL characters.  Pull request #788 by Brian
+  Fletcher.
 
 === 2.2.1 / 2014-01-06
 

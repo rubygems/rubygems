@@ -131,11 +131,19 @@ class Gem::RemoteFetcher
 
     FileUtils.mkdir_p cache_dir rescue nil unless File.exist? cache_dir
 
-   # Always escape URI's to deal with potential spaces and such
-    unless URI::Generic === source_uri
-      source_uri = URI.parse(URI.const_defined?(:DEFAULT_PARSER) ?
-                             URI::DEFAULT_PARSER.escape(source_uri.to_s) :
-                             URI.escape(source_uri.to_s))
+    # Always escape URI's to deal with potential spaces and such
+    # It should also be considered that source_uri may already be
+    # a valid URI with escaped characters. e.g. "{DESede}" is encoded
+    # as "%7BDESede%7D". If this is escaped again the percentage
+    # symbols will be escaped.
+    unless source_uri.is_a?(URI::Generic)
+      begin
+        source_uri = URI.parse(source_uri)
+      rescue
+        source_uri = URI.parse(URI.const_defined?(:DEFAULT_PARSER) ?
+                               URI::DEFAULT_PARSER.escape(source_uri.to_s) :
+                               URI.escape(source_uri.to_s))
+      end
     end
 
     scheme = source_uri.scheme

@@ -34,7 +34,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     @always_install      = []
     @ignore_dependencies = false
     @ignore_installed    = false
-    @remote_set          = Gem::Resolver::BestSet.new if consider_remote?
+    @remote_set          = Gem::Resolver::BestSet.new
     @specs               = {}
   end
 

@@ -102,7 +102,9 @@ class TestGemRequestSet < Gem::TestCase
       io.puts 'gem "a"'
       io.flush
 
-      rs.install_from_gemdeps :gemdeps => io.path, :domain => :local
+      assert_raises Gem::UnsatisfiableDependencyError do
+        rs.install_from_gemdeps :gemdeps => io.path, :domain => :local
+      end
     end
 
     refute rs.remote

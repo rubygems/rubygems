@@ -242,6 +242,7 @@ class Gem::RequestSet
     @sets << @vendor_set
 
     set = Gem::Resolver.compose_sets(*@sets)
+    set.remote = @remote
 
     resolver = Gem::Resolver.new @dependencies, set
     resolver.development         = @development

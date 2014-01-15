@@ -1249,10 +1249,17 @@ Also, a list:
   class StaticSet
 
     ##
+    # A StaticSet ignores remote because it has a fixed set of gems.
+
+    attr_accessor :remote
+
+    ##
     # Creates a new StaticSet for the given +specs+
 
     def initialize(specs)
       @specs = specs
+
+      @remote = true
     end
 
     ##

@@ -258,18 +258,11 @@ class Gem::SpecFetcher
   # etc.).  If +gracefully_ignore+ is true, errors are ignored.
 
   def tuples_for(source, type, gracefully_ignore=false) # :nodoc:
-    cache = @caches[type]
-
-    tuples =
-      begin
-        cache[source.uri] ||=
-          source.load_specs(type).sort_by { |tup| tup.name }
-      rescue Gem::RemoteFetcher::FetchError
-        raise unless gracefully_ignore
-        []
-      end
-
-    tuples
+    @caches[type][source.uri] ||=
+      source.load_specs(type).sort_by { |tup| tup.name }
+  rescue Gem::RemoteFetcher::FetchError
+    raise unless gracefully_ignore
+    []
   end
 
 end

@@ -11,6 +11,8 @@ Bug fixes:
 * The mkmf.log is now placed next to gem_make.out when building extensions.
 * `gem install -g --local` no longer accesses the network.  Bug #776 by Jeremy
   Evans.
+* RubyGems now correctly handles URL passwords with encoded characters.  Bug
+  #781 by Brian Fletcher.
 
 === 2.2.1 / 2014-01-06
 

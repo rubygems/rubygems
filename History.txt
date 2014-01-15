@@ -9,6 +9,8 @@ Bug fixes:
 * Removed double requests in RemoteFetcher#cache_update_path to improve remote
   install speed.  Pull request #772 by Charlie Somerville.
 * The mkmf.log is now placed next to gem_make.out when building extensions.
+* `gem install -g --local` no longer accesses the network.  Bug #776 by Jeremy
+  Evans.
 
 === 2.2.1 / 2014-01-06
 

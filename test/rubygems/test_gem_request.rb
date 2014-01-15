@@ -130,7 +130,7 @@ class TestGemRequest < Gem::TestCase
     @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
     conn = util_stub_connection_for :body => :junk, :code => 200
 
-    response = @request.fetch
+    @request.fetch
 
     auth_header = conn.payload['Authorization']
 
@@ -142,7 +142,7 @@ class TestGemRequest < Gem::TestCase
     @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
     conn = util_stub_connection_for :body => :junk, :code => 200
 
-    response = @request.fetch
+    @request.fetch
 
     auth_header = conn.payload['Authorization']
 

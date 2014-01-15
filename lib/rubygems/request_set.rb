@@ -39,9 +39,9 @@ class Gem::RequestSet
   attr_accessor :ignore_dependencies
 
   ##
-  # When true no remote sets are used for resolving gems.
+  # When false no remote sets are used for resolving gems.
 
-  attr_accessor :local
+  attr_accessor :remote
 
   ##
   # Sets used for resolution
@@ -76,7 +76,7 @@ class Gem::RequestSet
     @git_set             = nil
     @ignore_dependencies = false
     @install_dir         = Gem.dir
-    @local               = false
+    @remote              = true
     @requests            = []
     @sets                = []
     @soft_missing        = false
@@ -156,7 +156,7 @@ class Gem::RequestSet
     gemdeps = options[:gemdeps]
 
     @install_dir = options[:install_dir] || Gem.dir
-    @local       = options[:domain] == :local
+    @remote      = options[:domain] != :local
 
     load_gemdeps gemdeps, options[:without_groups]
 

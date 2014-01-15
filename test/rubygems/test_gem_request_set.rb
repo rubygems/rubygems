@@ -60,7 +60,7 @@ class TestGemRequestSet < Gem::TestCase
     assert_path_exists File.join @gemhome, 'gems', 'a-2'
     assert_path_exists 'gem.deps.rb.lock'
 
-    refute rs.local
+    assert rs.remote
   end
 
   def test_install_from_gemdeps_install_dir
@@ -105,7 +105,7 @@ class TestGemRequestSet < Gem::TestCase
       rs.install_from_gemdeps :gemdeps => io.path, :domain => :local
     end
 
-    assert rs.local
+    refute rs.remote
   end
 
   def test_install_from_gemdeps_lockfile

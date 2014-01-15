@@ -74,6 +74,15 @@ class TestGemResolverAPISet < Gem::TestCase
     assert_equal expected, set.find_all(a_dep)
   end
 
+  def test_find_all_local
+    set = @DR::APISet.new @dep_uri
+    set.remote = false
+
+    a_dep = @DR::DependencyRequest.new dep('a'), nil
+
+    assert_empty set.find_all(a_dep)
+  end
+
   def test_find_all_missing
     spec_fetcher
 
@@ -161,6 +170,30 @@ class TestGemResolverAPISet < Gem::TestCase
     @fetcher.data.delete "#{@dep_uri}?gems=a,b"
 
     set.prefetch [a_dep, b_dep]
+  end
+
+  def test_prefetch_local
+    spec_fetcher
+
+    data = [
+      { :name         => 'a',
+        :number       => '1',
+        :platform     => 'ruby',
+        :dependencies => [], },
+    ]
+
+    @fetcher.data["#{@dep_uri}?gems=a,b"] = Marshal.dump data
+    @fetcher.data["#{@dep_uri}?gems=b"]   = Marshal.dump []
+
+    set = @DR::APISet.new @dep_uri
+    set.remote = false
+
+    a_dep = @DR::DependencyRequest.new dep('a'), nil
+    b_dep = @DR::DependencyRequest.new dep('b'), nil
+
+    set.prefetch [a_dep, b_dep]
+
+    assert_empty set.instance_variable_get :@data
   end
 
 end

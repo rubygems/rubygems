@@ -123,5 +123,16 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     end
   end
 
+  def remote= remote # :nodoc:
+    case @domain
+    when :local then
+      @domain = :both if remote
+    when :remote then
+      @domain = nil unless remote
+    when :both then
+      @domain = :local unless remote
+    end
+  end
+
 end
 

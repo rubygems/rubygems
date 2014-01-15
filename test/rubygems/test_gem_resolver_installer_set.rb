@@ -46,5 +46,47 @@ class TestGemResolverInstallerSet < Gem::TestCase
     assert_equal specs["a-2-#{Gem::Platform.local}"].full_name, spec.full_name
   end
 
+  def test_remote_equals_both
+    set = Gem::Resolver::InstallerSet.new :both
+    set.remote = true
+
+    assert set.consider_local?
+    assert set.consider_remote?
+
+    set = Gem::Resolver::InstallerSet.new :both
+    set.remote = false
+
+    assert set.consider_local?
+    refute set.consider_remote?
+  end
+
+  def test_remote_equals_local
+    set = Gem::Resolver::InstallerSet.new :local
+    set.remote = true
+
+    assert set.consider_local?
+    assert set.consider_remote?
+
+    set = Gem::Resolver::InstallerSet.new :local
+    set.remote = false
+
+    assert set.consider_local?
+    refute set.consider_remote?
+  end
+
+  def test_remote_equals_remote
+    set = Gem::Resolver::InstallerSet.new :remote
+    set.remote = true
+
+    refute set.consider_local?
+    assert set.consider_remote?
+
+    set = Gem::Resolver::InstallerSet.new :remote
+    set.remote = false
+
+    refute set.consider_local?
+    refute set.consider_remote?
+  end
+
 end
 

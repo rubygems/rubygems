@@ -43,6 +43,8 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
   def find_all req
     res = []
 
+    return res unless @remote
+
     versions(req.name).each do |ver|
       if req.dependency.match? req.name, ver[:number]
         res << Gem::Resolver::APISpecification.new(self, ver)
@@ -57,6 +59,7 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
   # data for DependencyRequests +reqs+.
 
   def prefetch reqs
+    return unless @remote
     names = reqs.map { |r| r.dependency.name }
     needed = names - @data.keys
 

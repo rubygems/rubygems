@@ -36,6 +36,8 @@ class Gem::Resolver::IndexSet < Gem::Resolver::Set
   def find_all req
     res = []
 
+    return res unless @remote
+
     name = req.dependency.name
 
     @all[name].each do |uri, n|

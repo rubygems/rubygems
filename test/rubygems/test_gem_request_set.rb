@@ -97,7 +97,6 @@ class TestGemRequestSet < Gem::TestCase
     end
 
     rs = Gem::RequestSet.new
-    installed = []
 
     open 'gem.deps.rb', 'w' do |io|
       io.puts 'gem "a"'

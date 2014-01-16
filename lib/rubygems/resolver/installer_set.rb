@@ -39,6 +39,18 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
   end
 
   ##
+  # Looks up the latest specification for +dependency+ and adds it to the
+  # always_install list.
+
+  def add_always_install dependency
+    request = Gem::Resolver::DependencyRequest.new dependency, nil
+
+    found = find_all request
+
+    @always_install << found.first.spec
+  end
+
+  ##
   # Should local gems should be considered?
 
   def consider_local? # :nodoc:

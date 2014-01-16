@@ -2,6 +2,20 @@ require 'rubygems/test_case'
 
 class TestGemResolverInstallerSet < Gem::TestCase
 
+  def test_add_always_install
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 1
+      fetcher.spec 'a', 2
+      fetcher.clear
+    end
+
+    set = Gem::Resolver::InstallerSet.new :both
+
+    set.add_always_install dep('a')
+
+    assert_equal %w[a-2], set.always_install.map { |s| s.full_name }
+  end
+
   def test_consider_local_eh
     set = Gem::Resolver::InstallerSet.new :remote
 

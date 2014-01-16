@@ -22,6 +22,25 @@ class TestGemResolverInstallerSet < Gem::TestCase
     assert_equal dep('b'), e.dependency.dependency
   end
 
+  def test_add_local
+    a_1, a_1_gem = util_gem 'a', 1
+
+    a_1_source = Gem::Source::SpecificFile.new a_1_gem
+
+    set = Gem::Resolver::InstallerSet.new :both
+
+    set.add_local File.basename(a_1_gem), a_1, a_1_source
+
+    assert set.local? File.basename(a_1_gem)
+
+    FileUtils.rm a_1_gem
+    util_clear_gems
+
+    req = Gem::Resolver::DependencyRequest.new dep('a'), nil
+
+    assert_equal %w[a-1], set.find_all(req).map { |spec| spec.full_name }
+  end
+
   def test_consider_local_eh
     set = Gem::Resolver::InstallerSet.new :remote
 

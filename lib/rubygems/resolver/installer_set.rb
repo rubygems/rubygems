@@ -34,6 +34,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     @always_install      = []
     @ignore_dependencies = false
     @ignore_installed    = false
+    @local               = {}
     @remote_set          = Gem::Resolver::BestSet.new
     @specs               = {}
   end
@@ -52,6 +53,14 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     end
 
     @always_install << found.first.spec
+  end
+
+  ##
+  # Adds a local gem requested using +dep_name+ with the given +spec+ that can
+  # be loaded and installed using the +source+.
+
+  def add_local dep_name, spec, source
+    @local[dep_name] = [spec, source]
   end
 
   ##
@@ -89,6 +98,14 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     end unless @ignore_installed
 
     if consider_local? then
+      matching_local = @local.values.select do |spec, _|
+        req.matches_spec? spec
+      end.map do |spec, source|
+        Gem::Resolver::LocalSpecification.new self, spec, source
+      end
+
+      res.concat matching_local
+
       local_source = Gem::Source::Local.new
 
       if spec = local_source.find_gem(name, dep.requirement) then
@@ -122,6 +139,15 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
 
       @specs[key] = source.fetch_spec tuple
     end
+  end
+
+  ##
+  # Has a local gem for +dep_name+ been added to this set?
+
+  def local? dep_name # :nodoc:
+    spec, = @local[dep_name]
+
+    spec
   end
 
   def pretty_print q # :nodoc:

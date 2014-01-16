@@ -31,5 +31,9 @@ class Gem::Source::Installed < Gem::Source
     nil
   end
 
+  def pretty_print q # :nodoc:
+    q.text '[Installed]'
+  end
+
 end
 

@@ -243,6 +243,36 @@ gems:
     assert File.exist?(a1_cache_gem)
   end
 
+  def test_download_with_auth
+    a1_data = nil
+    File.open @a1_gem, 'rb' do |fp|
+      a1_data = fp.read
+    end
+
+    fetcher = util_fuck_with_fetcher a1_data
+
+    a1_cache_gem = @a1.cache_file
+    assert_equal a1_cache_gem, fetcher.download(@a1, 'http://user:password@gems.example.com')
+    assert_equal("http://user:password@gems.example.com/gems/a-1.gem",
+                 fetcher.instance_variable_get(:@test_arg).to_s)
+    assert File.exist?(a1_cache_gem)
+  end
+
+  def test_download_with_encoded_auth
+    a1_data = nil
+    File.open @a1_gem, 'rb' do |fp|
+      a1_data = fp.read
+    end
+
+    fetcher = util_fuck_with_fetcher a1_data
+
+    a1_cache_gem = @a1.cache_file
+    assert_equal a1_cache_gem, fetcher.download(@a1, 'http://user:%25pas%25sword@gems.example.com')
+    assert_equal("http://user:%25pas%25sword@gems.example.com/gems/a-1.gem",
+                 fetcher.instance_variable_get(:@test_arg).to_s)
+    assert File.exist?(a1_cache_gem)
+  end
+
   def test_download_cached
     FileUtils.mv @a1_gem, @cache_dir
 

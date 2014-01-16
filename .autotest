@@ -12,6 +12,8 @@ end
 Autotest.add_hook :initialize do |at|
   at.testlib = ''
 
+  at.failed_results_re = /^\s+\d+\) (?:Failure|Error):\n(.*?)\((.*?)\)/
+
   at.add_exception %r%/\.git/%
   at.add_exception %r%\.rbc$%
   at.add_exception %r%test/rubygems/rubygems%

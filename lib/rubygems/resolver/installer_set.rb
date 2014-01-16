@@ -47,6 +47,10 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
 
     found = find_all request
 
+    if found.empty? then
+      raise Gem::UnsatisfiableDependencyError, request
+    end
+
     @always_install << found.first.spec
   end
 

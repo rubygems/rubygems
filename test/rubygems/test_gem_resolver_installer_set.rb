@@ -14,6 +14,12 @@ class TestGemResolverInstallerSet < Gem::TestCase
     set.add_always_install dep('a')
 
     assert_equal %w[a-2], set.always_install.map { |s| s.full_name }
+
+    e = assert_raises Gem::UnsatisfiableDependencyError do
+      set.add_always_install dep('b')
+    end
+
+    assert_equal dep('b'), e.dependency.dependency
   end
 
   def test_consider_local_eh

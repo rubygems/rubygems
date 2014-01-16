@@ -21,7 +21,7 @@ class Gem::RequestSet
   ##
   # Array of gems to install even if already installed
 
-  attr_reader :always_install
+  attr_accessor :always_install
 
   attr_reader :dependencies
 

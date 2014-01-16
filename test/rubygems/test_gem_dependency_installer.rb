@@ -682,7 +682,7 @@ class TestGemDependencyInstaller < Gem::TestCase
         inst.install 'b'
       end
 
-      expected = "Unable to resolve dependency: 'b (= 1)' requires 'a (>= 0)'"
+      expected = "Unable to resolve dependency: 'b (>= 0)' requires 'a (>= 0)'"
       assert_equal expected, e.message
     end
 

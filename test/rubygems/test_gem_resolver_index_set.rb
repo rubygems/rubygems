@@ -59,5 +59,19 @@ class TestGemResolverIndexSet < Gem::TestCase
     assert_empty set.find_all req
   end
 
+  def test_find_all_prerelease
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', '1.a'
+    end
+
+    set = @DR::BestSet.new
+
+    req = @DR::DependencyRequest.new dep('a'), nil
+
+    found = set.find_all req
+
+    assert_equal %w[a-1.a], found.map { |s| s.full_name }
+  end
+
 end
 

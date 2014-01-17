@@ -96,7 +96,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     name = dep.name
 
     dep.matching_specs.each do |gemspec|
-      next if @always_install.include? gemspec
+      next if @always_install.any? { |spec| spec.name == gemspec.name }
 
       res << Gem::Resolver::InstalledSpecification.new(self, gemspec)
     end unless @ignore_installed

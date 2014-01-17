@@ -115,6 +115,21 @@ class TestGemDependency < Gem::TestCase
     refute_equal dep("pkg", :development), dep("pkg", :runtime), "type"
   end
 
+  def test_match_eh
+    a_dep = dep 'a'
+
+    a_spec = util_spec 'a', 1
+    b_spec = util_spec 'b', 2
+    c_spec = util_spec 'c', '2.a'
+
+    assert a_dep.match? a_spec
+    refute a_dep.match? b_spec
+
+    b_dep = dep 'b', '>= 3'
+
+    refute b_dep.match? b_spec
+  end
+
   def test_merge
     a1 = dep 'a', '~> 1.0'
     a2 = dep 'a', '= 1.0'

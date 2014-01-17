@@ -9,6 +9,8 @@ class TestGemResolverInstallerSet < Gem::TestCase
       fetcher.clear
     end
 
+    util_gem 'a', 1
+
     set = Gem::Resolver::InstallerSet.new :both
 
     set.add_always_install dep('a')

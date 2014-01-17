@@ -52,7 +52,11 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
       raise Gem::UnsatisfiableDependencyError, request
     end
 
-    @always_install << found.first.spec
+    newest = found.max_by do |s|
+      [s.version, s.platform == Gem::Platform::RUBY ? -1 : 1]
+    end
+
+    @always_install << newest.spec
   end
 
   ##

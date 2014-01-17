@@ -218,7 +218,11 @@ class Gem::Dependency
     return false unless self.name === name
     return true if requirement.none?
 
-    requirement.satisfied_by? Gem::Version.new(version)
+    version = Gem::Version.new version
+
+    return false if version.prerelease? and not @prerelease
+
+    requirement.satisfied_by? version
   end
 
   # DOC: this method needs either documented or :nodoc'd

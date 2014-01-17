@@ -128,6 +128,10 @@ class TestGemDependency < Gem::TestCase
     b_dep = dep 'b', '>= 3'
 
     refute b_dep.match? b_spec
+
+    c_dep = dep 'c', '>= 1'
+
+    refute c_dep.match? c_spec
   end
 
   def test_merge

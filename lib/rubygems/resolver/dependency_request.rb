@@ -35,6 +35,13 @@ class Gem::Resolver::DependencyRequest
   end
 
   ##
+  # Is this dependency a development dependency?
+
+  def development?
+    @dependency.type == :development
+  end
+
+  ##
   # Does this dependency request match +spec+
 
   def matches_spec?(spec)

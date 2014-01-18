@@ -28,6 +28,11 @@ class Gem::RequestSet
   attr_accessor :development
 
   ##
+  # Set to true if you want to install only direct development dependencies.
+
+  attr_accessor :development_shallow
+
+  ##
   # The set of git gems imported via load_gemdeps.
 
   attr_reader :git_set # :nodoc:
@@ -42,6 +47,8 @@ class Gem::RequestSet
   # When false no remote sets are used for resolving gems.
 
   attr_accessor :remote
+
+  attr_reader :resolver # :nodoc:
 
   ##
   # Sets used for resolution
@@ -73,6 +80,7 @@ class Gem::RequestSet
     @always_install      = []
     @dependency_names    = {}
     @development         = false
+    @development_shallow = false
     @git_set             = nil
     @ignore_dependencies = false
     @install_dir         = Gem.dir
@@ -246,6 +254,7 @@ class Gem::RequestSet
 
     resolver = Gem::Resolver.new @dependencies, set
     resolver.development         = @development
+    resolver.development_shallow = @development_shallow
     resolver.ignore_dependencies = @ignore_dependencies
     resolver.soft_missing        = @soft_missing
 

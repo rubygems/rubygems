@@ -197,6 +197,35 @@ DEPENDENCIES
     assert_equal ["a-2", "b-2"], names
   end
 
+  def test_resolve_development
+    a = util_spec 'a', 1
+
+    rs = Gem::RequestSet.new
+    rs.gem 'a'
+    rs.development = true
+
+    res = rs.resolve StaticSet.new [a]
+    assert_equal 1, res.size
+
+    assert rs.resolver.development
+    refute rs.resolver.development_shallow
+  end
+
+  def test_resolve_development_shallow
+    a = util_spec 'a', 1
+
+    rs = Gem::RequestSet.new
+    rs.gem 'a'
+    rs.development = true
+    rs.development_shallow = true
+
+    res = rs.resolve StaticSet.new [a]
+    assert_equal 1, res.size
+
+    assert rs.resolver.development
+    assert rs.resolver.development_shallow
+  end
+
   def test_resolve_git
     name, _, repository, = git_gem
 

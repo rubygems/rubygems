@@ -140,6 +140,43 @@ class TestGemResolver < Gem::TestCase
     assert_empty reqs
   end
 
+  def test_resolve_development
+    a_spec = util_spec 'a', 1 do |s| s.add_development_dependency 'b' end
+    b_spec = util_spec 'b', 1 do |s| s.add_development_dependency 'c' end
+    c_spec = util_spec 'c', 1
+
+    a_dep = make_dep 'a', '= 1'
+
+    deps = [a_dep]
+
+    s = set a_spec, b_spec, c_spec
+
+    res = Gem::Resolver.new deps, s
+
+    res.development = true
+
+    assert_resolves_to [a_spec, b_spec, c_spec], res
+  end
+
+  def test_resolve_development_shallow
+    a_spec = util_spec 'a', 1 do |s| s.add_development_dependency 'b' end
+    b_spec = util_spec 'b', 1 do |s| s.add_development_dependency 'c' end
+    c_spec = util_spec 'c', 1
+
+    a_dep = make_dep 'a', '= 1'
+
+    deps = [a_dep]
+
+    s = set a_spec, b_spec, c_spec
+
+    res = Gem::Resolver.new deps, s
+
+    res.development = true
+    res.development_shallow = true
+
+    assert_resolves_to [a_spec, b_spec], res
+  end
+
   def test_no_overlap_specificly
     a = util_spec "a", '1'
     b = util_spec "b", "1"

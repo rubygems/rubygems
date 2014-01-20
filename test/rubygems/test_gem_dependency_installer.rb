@@ -138,7 +138,9 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     dep = Gem::Dependency.new "p"
     inst = Gem::DependencyInstaller.new
-    inst.install dep
+    assert_raises Gem::UnsatisfiableDependencyError do
+      inst.install dep
+    end
 
     assert_equal %w[], Gem::Specification.map(&:full_name)
     assert_equal [], inst.installed_gems
@@ -796,9 +798,9 @@ class TestGemDependencyInstaller < Gem::TestCase
       s.platform = Gem::Platform.new %w[cpu other_platform 1]
     end
 
-    util_clear_gems
-
     si = util_setup_spec_fetcher @a1, a2_o
+
+    util_clear_gems
 
     @fetcher.data['http://gems.example.com/gems/yaml'] = si.to_yaml
 

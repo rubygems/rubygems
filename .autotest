@@ -12,7 +12,8 @@ end
 Autotest.add_hook :initialize do |at|
   at.testlib = ''
 
-  at.failed_results_re = /^\s+\d+\) (?:Failure|Error):\n(.*?)\((.*?)\)/
+  at.failed_results_re = /^\s+\d+\) (?:Failure|Error):\n(.*?):/
+  at.completed_re = /\d+ tests, \d+ assertions, \d+ failures, \d+ errors/
 
   at.add_exception %r%/\.git/%
   at.add_exception %r%\.rbc$%
@@ -35,7 +36,7 @@ Autotest.add_hook :initialize do |at|
   def at.handle_results results
     results = results.gsub(/\e\[\d+m/, '') # strip ascii color
     failed = results.scan(self.failed_results_re).map { |m, k|
-      m, k = $1, $2 if m =~ /(\w+)\((\w+)\)/ # minitest 4 output
+      /(?<k>\w+)#(?<m>\w+)/ =~ m
       [m, k]
     }
 

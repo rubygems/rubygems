@@ -220,7 +220,7 @@ class Gem::Dependency
     version = Gem::Version.new version
 
     return true if requirement.none? and not version.prerelease?
-    return false if version.prerelease? and not @prerelease
+    return false if version.prerelease? and not prerelease?
 
     requirement.satisfied_by? version
   end

@@ -31,7 +31,7 @@ class TestGemResolverIndexSet < Gem::TestCase
       fetcher.spec 'b', 1
     end
 
-    set = @DR::BestSet.new
+    set = @DR::IndexSet.new
 
     dependency = dep 'a', '~> 1'
 
@@ -49,7 +49,7 @@ class TestGemResolverIndexSet < Gem::TestCase
       fetcher.spec 'b', 1
     end
 
-    set = @DR::BestSet.new
+    set = @DR::IndexSet.new
     set.remote = false
 
     dependency = dep 'a', '~> 1'
@@ -64,7 +64,7 @@ class TestGemResolverIndexSet < Gem::TestCase
       fetcher.spec 'a', '1.a'
     end
 
-    set = @DR::BestSet.new
+    set = @DR::IndexSet.new
 
     req = @DR::DependencyRequest.new dep('a'), nil
 

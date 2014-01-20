@@ -292,6 +292,7 @@ class Gem::RequestSet
   def tsort_each_child node # :nodoc:
     node.spec.dependencies.each do |dep|
       next if dep.type == :development and not @development
+      next if dep.type == :development and @development_shallow
 
       match = @requests.find { |r| dep.match? r.spec.name, r.spec.version }
       if match

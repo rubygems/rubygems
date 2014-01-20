@@ -66,7 +66,17 @@ class TestGemResolverIndexSet < Gem::TestCase
 
     set = @DR::IndexSet.new
 
-    req = @DR::DependencyRequest.new dep('a'), nil
+    dependency = dep 'a'
+
+    req = @DR::DependencyRequest.new dependency, nil
+
+    found = set.find_all req
+
+    assert_empty found
+
+    dependency.prerelease = true
+
+    req = @DR::DependencyRequest.new dependency, nil
 
     found = set.find_all req
 

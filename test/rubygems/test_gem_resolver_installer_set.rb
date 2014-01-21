@@ -24,6 +24,19 @@ class TestGemResolverInstallerSet < Gem::TestCase
     assert_equal dep('b'), e.dependency.dependency
   end
 
+  def test_add_always_install_errors
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
+
+    set = Gem::Resolver::InstallerSet.new :both
+
+    e = assert_raises Gem::UnsatisfiableDependencyError do
+      set.add_always_install dep 'a'
+    end
+
+    refute_empty e.errors
+  end
+
   def test_add_local
     a_1, a_1_gem = util_gem 'a', 1
 

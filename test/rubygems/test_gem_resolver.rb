@@ -177,6 +177,21 @@ class TestGemResolver < Gem::TestCase
     assert_resolves_to [a_spec, b_spec], res
   end
 
+  def test_resolve_remote_missing_dependency
+    @fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @fetcher
+
+    a_dep = make_dep 'a', '= 1'
+
+    res = Gem::Resolver.new [a_dep], Gem::Resolver::IndexSet.new
+
+    e = assert_raises Gem::UnsatisfiableDepedencyError do
+      res.resolve
+    end
+
+    refute_empty e.errors
+  end
+
   def test_no_overlap_specificly
     a = util_spec "a", '1'
     b = util_spec "b", "1"

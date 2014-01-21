@@ -411,7 +411,10 @@ class Gem::Resolver
     @missing << dep
 
     unless @soft_missing
-      raise Gem::UnsatisfiableDependencyError.new(dep, platform_mismatch)
+      exc = Gem::UnsatisfiableDependencyError.new dep, platform_mismatch
+      exc.errors = @set.errors
+
+      raise exc
     end
   end
 

@@ -54,7 +54,10 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     found = find_all request
 
     if found.empty? then
-      raise Gem::UnsatisfiableDependencyError, request
+      exc = Gem::UnsatisfiableDependencyError.new request
+      exc.errors = errors
+
+      raise exc
     end
 
     newest = found.max_by do |s|

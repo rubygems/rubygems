@@ -14,6 +14,10 @@ class TestGemUnsatisfiableDependencyError < Gem::TestCase
 
   def test_errors
     assert_equal [], @e.errors
+
+    @e.errors << :a
+
+    assert_equal [:a], @e.errors
   end
 
   def test_name

@@ -223,6 +223,11 @@ class Gem::UnsatisfiableDependencyError < Gem::Exception
   attr_reader :dependency
 
   ##
+  # Errors encountered which may have contributed to this exception
+
+  attr_accessor :errors
+
+  ##
   # Creates a new UnsatisfiableDependencyError for the unsatisfiable
   # Gem::Resolver::DependencyRequest +dep+
 
@@ -239,10 +244,7 @@ class Gem::UnsatisfiableDependencyError < Gem::Exception
     end
 
     @dependency = dep
-  end
-
-  def errors # :nodoc:
-    []
+    @errors     = []
   end
 
   ##

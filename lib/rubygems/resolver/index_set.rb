@@ -18,7 +18,9 @@ class Gem::Resolver::IndexSet < Gem::Resolver::Set
 
     @all = Hash.new { |h,k| h[k] = [] }
 
-    list, = @f.available_specs :complete
+    list, errors = @f.available_specs :complete
+
+    @errors.concat errors
 
     list.each do |uri, specs|
       specs.each do |n|

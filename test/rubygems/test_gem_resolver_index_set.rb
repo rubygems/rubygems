@@ -22,6 +22,8 @@ class TestGemResolverIndexSet < Gem::TestCase
     fetcher = set.instance_variable_get :@f
 
     refute_same Gem::SpecFetcher.fetcher, fetcher
+
+    refute_empty set.errors
   end
 
   def test_find_all

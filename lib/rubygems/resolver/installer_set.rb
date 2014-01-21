@@ -21,6 +21,11 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
   attr_accessor :ignore_installed # :nodoc:
 
   ##
+  # The remote_set looks up remote gems for installation.
+
+  attr_reader :remote_set # :nodoc:
+
+  ##
   # Creates a new InstallerSet that will look for gems in +domain+.
 
   def initialize domain
@@ -79,6 +84,13 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
 
   def consider_remote? # :nodoc:
     @domain == :both or @domain == :remote
+  end
+
+  ##
+  # Errors encountered while resolving gems
+
+  def errors
+    @errors + @remote_set.errors
   end
 
   ##

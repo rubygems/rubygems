@@ -71,6 +71,18 @@ class TestGemResolverInstallerSet < Gem::TestCase
     refute set.consider_remote?
   end
 
+  def test_errors
+    set = Gem::Resolver::InstallerSet.new :both
+
+    set.instance_variable_get(:@errors) << :a
+
+    req = Gem::Resolver::DependencyRequest.new dep('a'), nil
+
+    set.find_all req
+
+    assert_equal [:a, set.remote_set.errors.first], set.errors
+  end
+
   def test_find_all_always_install
     spec_fetcher do |fetcher|
       fetcher.spec 'a', 2

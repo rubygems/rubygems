@@ -30,6 +30,10 @@ class Gem::Resolver::ComposedSet < Gem::Resolver::Set
     @sets.each { |set| set.remote = remote }
   end
 
+  def errors
+    @errors + @sets.map { |set| set.errors }.flatten
+  end
+
   ##
   # Finds all specs matching +req+ in all sets.
 

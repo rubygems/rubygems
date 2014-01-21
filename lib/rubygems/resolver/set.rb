@@ -9,8 +9,14 @@ class Gem::Resolver::Set
 
   attr_accessor :remote
 
+  ##
+  # Errors encountered when resolving gems
+
+  attr_accessor :errors
+
   def initialize # :nodoc:
     @remote = true
+    @errors = []
   end
 
   ##

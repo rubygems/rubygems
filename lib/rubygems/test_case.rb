@@ -1246,7 +1246,7 @@ Also, a list:
   # The StaticSet is a static set of gem specifications used for testing only.
   # It is available by requiring Gem::TestCase.
 
-  class StaticSet
+  class StaticSet < Gem::Resolver::Set
 
     ##
     # A StaticSet ignores remote because it has a fixed set of gems.
@@ -1257,6 +1257,8 @@ Also, a list:
     # Creates a new StaticSet for the given +specs+
 
     def initialize(specs)
+      super()
+
       @specs = specs
 
       @remote = true

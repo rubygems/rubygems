@@ -102,7 +102,7 @@ class Gem::DependencyInstaller
 
     @cache_dir = options[:cache_dir] || @install_dir
 
-    @errors = nil
+    @errors = []
   end
 
   ##
@@ -464,6 +464,8 @@ class Gem::DependencyInstaller
     end
 
     request_set.resolve installer_set
+
+    @errors.concat request_set.errors
 
     request_set
   end

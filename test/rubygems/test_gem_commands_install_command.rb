@@ -238,7 +238,10 @@ ERROR:  Possible alternatives: non_existent_with_hint
       assert_equal 2, e.exit_code
     end
 
-    expected = ["ERROR:  Could not find a valid gem 'non-existent_with-hint' (>= 0) in any repository", "ERROR:  Possible alternatives: nonexistent-with_hint"]
+    expected = [
+      "ERROR:  Could not find a valid gem 'non-existent_with-hint' (>= 0) in any repository",
+      "ERROR:  Possible alternatives: nonexistent-with_hint"
+    ]
 
     output = @ui.error.split "\n"
 
@@ -622,8 +625,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
     end
 
     assert_equal 2, e.exit_code
-    assert_match %r!Could not find a valid gem 'blah' \(>= 0\)!, @ui.error
-    assert_match %r!Unable to download data from http://not-there\.nothing!, @ui.error
+
+    assert_match 'Unable to download data', @ui.error
   end
 
   def test_show_source_problems_even_on_success
@@ -648,7 +651,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     e = @ui.error
 
-    x = "WARNING:  Unable to pull data from 'http://nonexistent.example': no data for http://nonexistent.example/latest_specs.4.8.gz (http://nonexistent.example/latest_specs.4.8.gz)\n"
+    x = "WARNING:  Unable to pull data from 'http://nonexistent.example': no data for http://nonexistent.example/specs.4.8.gz (http://nonexistent.example/specs.4.8.gz)\n"
     assert_equal x, e
   end
 

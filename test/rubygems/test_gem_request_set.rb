@@ -189,12 +189,16 @@ DEPENDENCIES
     rs = Gem::RequestSet.new
     rs.gem "a"
 
+    orig_errors = rs.errors
+
     res = rs.resolve StaticSet.new([a, b])
     assert_equal 2, res.size
 
     names = res.map { |s| s.full_name }.sort
 
     assert_equal ["a-2", "b-2"], names
+
+    refute_same orig_errors, rs.errors
   end
 
   def test_resolve_development

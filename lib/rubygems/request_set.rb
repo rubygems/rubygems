@@ -28,6 +28,11 @@ class Gem::RequestSet
   attr_accessor :development
 
   ##
+  # Errors fetching gems during resolution.
+
+  attr_reader :errors
+
+  ##
   # Set to true if you want to install only direct development dependencies.
 
   attr_accessor :development_shallow
@@ -81,6 +86,7 @@ class Gem::RequestSet
     @dependency_names    = {}
     @development         = false
     @development_shallow = false
+    @errors              = []
     @git_set             = nil
     @ignore_dependencies = false
     @install_dir         = Gem.dir
@@ -261,6 +267,10 @@ class Gem::RequestSet
     @resolver = resolver
 
     @requests = resolver.resolve
+
+    @errors = set.errors
+
+    @requests
   end
 
   ##

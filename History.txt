@@ -17,6 +17,7 @@ Bug fixes:
   Fletcher.
 * RubyGems can now unpack tar files where the type flag is not given.  Pull
   request #790 by Cody Russell.
+* Typo corrections.  Pull request ruby/ruby#506 by windwiny.
 
 === 2.2.1 / 2014-01-06
 

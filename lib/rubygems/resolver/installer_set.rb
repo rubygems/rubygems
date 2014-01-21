@@ -60,6 +60,8 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
       raise exc
     end
 
+    found.delete_if { |s| s.version.prerelease? } unless dependency.prerelease?
+
     newest = found.max_by do |s|
       [s.version, s.platform == Gem::Platform::RUBY ? -1 : 1]
     end

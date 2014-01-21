@@ -37,6 +37,19 @@ class TestGemResolverInstallerSet < Gem::TestCase
     refute_empty e.errors
   end
 
+  def test_add_always_install_prerelease
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 1
+      fetcher.gem 'a', '3.a'
+    end
+
+    set = Gem::Resolver::InstallerSet.new :both
+
+    set.add_always_install dep('a')
+
+    assert_equal %w[a-1], set.always_install.map { |s| s.full_name }
+  end
+
   def test_add_local
     a_1, a_1_gem = util_gem 'a', 1
 

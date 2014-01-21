@@ -241,6 +241,24 @@ class Gem::UnsatisfiableDependencyError < Gem::Exception
     @dependency = dep
   end
 
+  def errors # :nodoc:
+    []
+  end
+
+  ##
+  # The name of the unresolved dependency
+
+  def name
+    @dependency.name
+  end
+
+  ##
+  # The Requirement of the unresolved dependency (not Version).
+
+  def version
+    @dependency.requirement
+  end
+
 end
 
 ##

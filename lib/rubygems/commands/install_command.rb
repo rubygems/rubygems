@@ -264,7 +264,7 @@ to write the specification by hand.  For example:
       rescue Gem::InstallError => e
         alert_error "Error installing #{gem_name}:\n\t#{e.message}"
         exit_code |= 1
-      rescue Gem::GemNotFoundException => e
+      rescue Gem::GemNotFoundException, Gem::UnsatisfiableDependencyError => e
         show_lookup_failure e.name, e.version, e.errors, options[:domain]
 
         exit_code |= 2

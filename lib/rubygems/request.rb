@@ -48,15 +48,14 @@ class Gem::Request
       connection.key = OpenSSL::PKey::RSA.new pem
     end
 
+    store.set_default_paths
+    add_rubygems_trusted_certs(store)
     if Gem.configuration.ssl_ca_cert
       if File.directory? Gem.configuration.ssl_ca_cert
         store.add_path Gem.configuration.ssl_ca_cert
       else
         store.add_file Gem.configuration.ssl_ca_cert
       end
-    else
-      store.set_default_paths
-      add_rubygems_trusted_certs(store)
     end
     connection.cert_store = store
   rescue LoadError => e

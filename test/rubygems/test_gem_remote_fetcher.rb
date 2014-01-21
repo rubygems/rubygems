@@ -601,6 +601,13 @@ gems:
     end
   end
 
+  def test_ssl_ca_cert_addition
+    temp_ca_cert = File.join(DIR, 'ca_cert.pem')
+    with_configured_fetcher(":ssl_ca_cert: #{temp_ca_cert}") do |fetcher|
+      fetcher.fetch_path("https://rubygems.org/yaml")
+    end
+  end
+
   def test_ssl_client_cert_auth_connection
     skip 'openssl is missing' unless defined?(OpenSSL::SSL)
 

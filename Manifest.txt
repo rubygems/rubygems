@@ -84,6 +84,7 @@ lib/rubygems/package/digest_io.rb
 lib/rubygems/package/file_source.rb
 lib/rubygems/package/io_source.rb
 lib/rubygems/package/old.rb
+lib/rubygems/package/source.rb
 lib/rubygems/package/tar_header.rb
 lib/rubygems/package/tar_reader.rb
 lib/rubygems/package/tar_reader/entry.rb

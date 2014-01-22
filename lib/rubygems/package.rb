@@ -83,8 +83,6 @@ class Gem::Package
   class TarInvalidError < Error; end
 
 
-  class Source; end # :nodoc:
-
   attr_accessor :build_time # :nodoc:
 
   ##
@@ -604,6 +602,7 @@ EOM
 end
 
 require 'rubygems/package/digest_io'
+require 'rubygems/package/source'
 require 'rubygems/package/file_source'
 require 'rubygems/package/io_source'
 require 'rubygems/package/old'

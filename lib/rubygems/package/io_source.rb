@@ -6,7 +6,7 @@
 # This is a private class, do not depend on it directly. Instead, pass an IO
 # object to `Gem::Package.new`.
 
-class IOSource < Gem::Package::Source # :nodoc: all
+class Gem::Package::IOSource < Gem::Package::Source # :nodoc: all
 
   attr_reader :io
 

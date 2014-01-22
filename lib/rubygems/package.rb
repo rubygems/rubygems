@@ -127,9 +127,9 @@ class Gem::Package
     gem = if gem.is_a?(Gem::Package::Source)
             gem
           elsif gem.respond_to? :read
-            IOSource.new(gem)
+            Gem::Package::IOSource.new gem
           else
-            FileSource.new(gem)
+            Gem::Package::FileSource.new gem
           end
 
     return super(gem) unless Gem::Package == self

@@ -5,7 +5,7 @@
 # This is a private class, do not depend on it directly. Instead, pass a path
 # object to `Gem::Package.new`.
 
-class FileSource < Gem::Package::Source # :nodoc: all
+class Gem::Package::FileSource < Gem::Package::Source # :nodoc: all
 
   attr_reader :path
 

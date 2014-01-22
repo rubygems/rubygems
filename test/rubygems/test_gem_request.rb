@@ -5,6 +5,10 @@ require 'base64'
 
 class TestGemRequest < Gem::TestCase
 
+  PUBLIC_CERT_FILE = cert_path 'public'
+  PUBLIC_CERT      = load_cert 'public'
+  CHILD_CERT       = load_cert 'child'
+
   def setup
     @proxies = %w[http_proxy HTTP_PROXY http_proxy_user HTTP_PROXY_USER http_proxy_pass HTTP_PROXY_PASS no_proxy NO_PROXY]
     @old_proxies = @proxies.map {|k| ENV[k] }
@@ -61,6 +65,39 @@ class TestGemRequest < Gem::TestCase
     proxy = request.proxy_uri
 
     assert_equal URI(@proxy_uri), proxy
+  end
+
+  def test_configure_connection_for_https
+    connection = Net::HTTP.new 'localhost', 443
+
+    request = Gem::Request.new URI('https://example'), nil, nil, nil
+
+    def request.add_rubygems_trusted_certs store
+      store.add_cert TestGemRequest::PUBLIC_CERT
+    end
+
+    request.configure_connection_for_https connection
+
+    cert_store = connection.cert_store
+
+    assert cert_store.verify CHILD_CERT
+  end
+
+  def test_configure_connection_for_https_ssl_ca_cert
+    ssl_ca_cert, Gem.configuration.ssl_ca_cert =
+      Gem.configuration.ssl_ca_cert, PUBLIC_CERT_FILE
+
+    connection = Net::HTTP.new 'localhost', 443
+
+    request = Gem::Request.new URI('https://example'), nil, nil, nil
+
+    request.configure_connection_for_https connection
+
+    cert_store = connection.cert_store
+
+    assert cert_store.verify CHILD_CERT
+  ensure
+    Gem.configuration.ssl_ca_cert = ssl_ca_cert
   end
 
   def test_get_proxy_from_env_fallback

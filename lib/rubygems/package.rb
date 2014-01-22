@@ -94,6 +94,8 @@ class Gem::Package
   # object to `Gem::Package.new`.
   class IOSource < Gem::Package::Source # :nodoc: all
 
+    attr_reader :io
+
     def initialize io
       @io = io
     end
@@ -125,9 +127,6 @@ class Gem::Package
     def path
     end
 
-    private
-
-    attr_reader :io
   end
 
   attr_accessor :build_time # :nodoc:

@@ -102,7 +102,7 @@ class Gem::Package
     end
 
     def present?
-      File.exists? path
+      File.exist? path
     end
 
     def with_write_io(&block)

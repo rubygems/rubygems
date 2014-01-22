@@ -5,9 +5,11 @@ require 'base64'
 
 class TestGemRequest < Gem::TestCase
 
-  PUBLIC_CERT_FILE = cert_path 'public'
-  PUBLIC_CERT      = load_cert 'public'
+  CA_CERT_FILE     = cert_path 'ca'
   CHILD_CERT       = load_cert 'child'
+  PUBLIC_CERT      = load_cert 'public'
+  PUBLIC_CERT_FILE = cert_path 'public'
+  SSL_CERT         = load_cert 'ssl'
 
   def setup
     @proxies = %w[http_proxy HTTP_PROXY http_proxy_user HTTP_PROXY_USER http_proxy_pass HTTP_PROXY_PASS no_proxy NO_PROXY]
@@ -85,17 +87,22 @@ class TestGemRequest < Gem::TestCase
 
   def test_configure_connection_for_https_ssl_ca_cert
     ssl_ca_cert, Gem.configuration.ssl_ca_cert =
-      Gem.configuration.ssl_ca_cert, PUBLIC_CERT_FILE
+      Gem.configuration.ssl_ca_cert, CA_CERT_FILE
 
     connection = Net::HTTP.new 'localhost', 443
 
     request = Gem::Request.new URI('https://example'), nil, nil, nil
+
+    def request.add_rubygems_trusted_certs store
+      store.add_cert TestGemRequest::PUBLIC_CERT
+    end
 
     request.configure_connection_for_https connection
 
     cert_store = connection.cert_store
 
     assert cert_store.verify CHILD_CERT
+    assert cert_store.verify SSL_CERT
   ensure
     Gem.configuration.ssl_ca_cert = ssl_ca_cert
   end

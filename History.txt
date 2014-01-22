@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.3
+
+Minor enhancements:
+
+* A gem is installable from an IO again (as in RubyGems 1.8.x and older).
+  Pull request #716 by Xavier Shay.
+
 === 2.2.2
 
 Bug fixes:

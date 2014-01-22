@@ -83,7 +83,7 @@ class Gem::Package
   class TarInvalidError < Error; end
 
 
-  class GemSource; end # :nodoc:
+  class Source; end # :nodoc:
 
   ##
   # The primary source of gems is a file on disk, including all usages
@@ -91,7 +91,7 @@ class Gem::Package
   #
   # This is a private class, do not depend on it directly. Instead, pass a path
   # object to `Gem::Package.new`.
-  class FileSource < GemSource # :nodoc: all
+  class FileSource < Gem::Package::Source # :nodoc: all
 
     def initialize path
       @path = path
@@ -123,7 +123,7 @@ class Gem::Package
   #
   # This is a private class, do not depend on it directly. Instead, pass an IO
   # object to `Gem::Package.new`.
-  class IOSource < GemSource # :nodoc: all
+  class IOSource < Gem::Package::Source # :nodoc: all
 
     def initialize io
       @io = io
@@ -202,7 +202,7 @@ class Gem::Package
   # returned.
 
   def self.new gem
-    gem = if gem.is_a?(GemSource)
+    gem = if gem.is_a?(Gem::Package::Source)
             gem
           elsif gem.respond_to? :read
             IOSource.new(gem)

@@ -86,37 +86,6 @@ class Gem::Package
   class Source; end # :nodoc:
 
   ##
-  # The primary source of gems is a file on disk, including all usages
-  # internal to rubygems.
-  #
-  # This is a private class, do not depend on it directly. Instead, pass a path
-  # object to `Gem::Package.new`.
-  class FileSource < Gem::Package::Source # :nodoc: all
-
-    def initialize path
-      @path = path
-    end
-
-    def start
-      @start ||= File.read path, 20
-    end
-
-    def present?
-      File.exist? path
-    end
-
-    def with_write_io(&block)
-      open path, 'wb', &block
-    end
-
-    def with_read_io(&block)
-      open path, 'rb', &block
-    end
-
-    attr_reader :path
-  end
-
-  ##
   # Supports reading and writing gems from/to a generic IO object.  This is
   # useful for other applications built on top of rubygems, such as
   # rubygems.org.
@@ -680,6 +649,7 @@ EOM
 end
 
 require 'rubygems/package/digest_io'
+require 'rubygems/package/file_source'
 require 'rubygems/package/old'
 require 'rubygems/package/tar_header'
 require 'rubygems/package/tar_reader'

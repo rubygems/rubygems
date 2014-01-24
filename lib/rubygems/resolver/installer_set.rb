@@ -55,6 +55,12 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
 
     found.delete_if { |s| s.version.prerelease? } unless dependency.prerelease?
 
+    found = found.select do |s|
+      Gem::Source::SpecificFile === s.source or
+        Gem::Platform::RUBY == s.platform or
+        Gem::Platform.local === s.platform
+    end
+
     if found.empty? then
       exc = Gem::UnsatisfiableDependencyError.new request
       exc.errors = errors

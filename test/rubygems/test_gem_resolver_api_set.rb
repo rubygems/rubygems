@@ -21,7 +21,7 @@ class TestGemResolverAPISet < Gem::TestCase
     set = @DR::APISet.new 'https://rubygemsserver.com/mygems/api/v1/dependencies'
 
     assert_equal URI('https://rubygemsserver.com/mygems/api/v1/dependencies'), set.dep_uri
-    assert_equal URI('https://rubygemsserver.com/mygems'),                     set.uri
+    assert_equal URI('https://rubygemsserver.com/mygems/'),                    set.uri
     assert_equal Gem::Source.new(URI('https://rubygemsserver.com/mygems')),    set.source
   end
 

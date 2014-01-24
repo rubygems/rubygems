@@ -27,6 +27,8 @@ Bug fixes:
 * Typo corrections.  Pull request ruby/ruby#506 by windwiny.
 * RubyGems now uses both the default certificates and ssl_ca_cert instead of
   one or the other.  Pull request #795 by zebardy.
+* RubyGems can now use the bundler API against hosted gem servers in a
+  directory.  Pull request #801 by Brian Fletcher.
 
 === 2.2.1 / 2014-01-06
 

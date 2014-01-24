@@ -53,14 +53,14 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
 
     found = find_all request
 
+    found.delete_if { |s| s.version.prerelease? } unless dependency.prerelease?
+
     if found.empty? then
       exc = Gem::UnsatisfiableDependencyError.new request
       exc.errors = errors
 
       raise exc
     end
-
-    found.delete_if { |s| s.version.prerelease? } unless dependency.prerelease?
 
     newest = found.max_by do |s|
       [s.version, s.platform == Gem::Platform::RUBY ? -1 : 1]

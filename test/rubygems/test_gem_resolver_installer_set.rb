@@ -50,6 +50,18 @@ class TestGemResolverInstallerSet < Gem::TestCase
     assert_equal %w[a-1], set.always_install.map { |s| s.full_name }
   end
 
+  def test_add_always_install_prerelease_only
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', '3.a'
+    end
+
+    set = Gem::Resolver::InstallerSet.new :both
+
+    assert_raises Gem::UnsatisfiableDependencyError do
+      set.add_always_install dep('a')
+    end
+  end
+
   def test_add_local
     a_1, a_1_gem = util_gem 'a', 1
 

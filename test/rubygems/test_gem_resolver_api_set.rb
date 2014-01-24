@@ -22,7 +22,7 @@ class TestGemResolverAPISet < Gem::TestCase
 
     assert_equal URI('https://rubygemsserver.com/mygems/api/v1/dependencies'), set.dep_uri
     assert_equal URI('https://rubygemsserver.com/mygems/'),                    set.uri
-    assert_equal Gem::Source.new(URI('https://rubygemsserver.com/mygems')),    set.source
+    assert_equal Gem::Source.new(URI('https://rubygemsserver.com/mygems/')),    set.source
   end
 
   def test_initialize_uri

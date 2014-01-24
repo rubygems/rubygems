@@ -30,7 +30,7 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
     dep_uri = URI dep_uri unless URI === dep_uri # for ruby 1.8
 
     @dep_uri = dep_uri
-    @uri     = dep_uri + '../../..'
+    @uri     = dep_uri + '../..'
 
     @data   = Hash.new { |h,k| h[k] = [] }
     @source = Gem::Source.new @uri

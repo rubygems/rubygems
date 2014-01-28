@@ -1951,6 +1951,19 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
+  # Is this specification missing its extensions?  When this returns true you
+  # probably want to build_extensions
+
+  def missing_extensions?
+    return false if default_gem?
+    return false if extensions.empty?
+    return false if installed_by_version < Gem::Version.new('2.2.0.preview.2')
+    return false if File.exist? gem_build_complete_path
+
+    true
+  end
+
+  ##
   # Normalize the list of files so that:
   # * All file lists have redundancies removed.
   # * Files referenced in the extra_rdoc_files are included in the package

@@ -120,6 +120,13 @@ class Gem::StubSpecification < Gem::BasicSpecification
     super
   end
 
+  def missing_extensions?
+    return false if default_gem?
+    return false if extensions.empty?
+
+    to_spec.missing_extensions?
+  end
+
   ##
   # Name of the gem
 

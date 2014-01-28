@@ -2878,6 +2878,52 @@ end
     assert_equal @m1.to_ruby, valid_ruby_spec
   end
 
+  def test_missing_extensions_eh
+    ext_spec
+
+    assert @ext.missing_extensions?
+
+    extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
+    FileUtils.mkdir_p File.dirname extconf_rb
+
+    open extconf_rb, 'w' do |f|
+      f.write <<-'RUBY'
+        open 'Makefile', 'w' do |f|
+          f.puts "clean:\n\techo clean"
+          f.puts "default:\n\techo built"
+          f.puts "install:\n\techo installed"
+        end
+      RUBY
+    end
+
+    @ext.build_extensions
+
+    refute @ext.missing_extensions?
+  end
+
+  def test_missing_extensions_eh_default_gem
+    spec = new_default_spec 'default', 1
+    spec.extensions << 'extconf.rb'
+
+    refute spec.missing_extensions?
+  end
+
+  def test_missing_extensions_eh_legacy
+    ext_spec
+
+    @ext.installed_by_version = v '2.2.0.preview.2'
+
+    assert @ext.missing_extensions?
+
+    @ext.installed_by_version = v '2.2.0.preview.1'
+
+    refute @ext.missing_extensions?
+  end
+
+  def test_missing_extensions_eh_none
+    refute @a1.missing_extensions?
+  end
+
   def test_find_by_name
     util_make_gems
     assert(Gem::Specification.find_by_name("a"))

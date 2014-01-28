@@ -85,6 +85,46 @@ class TestStubSpecification < Gem::TestCase
     assert_equal expected, stub.full_require_paths
   end
 
+  def test_missing_extensions_eh
+    stub = stub_with_extension do |stub|
+      extconf_rb = File.join stub.gem_dir, stub.extensions.first
+      FileUtils.mkdir_p File.dirname extconf_rb
+
+      open extconf_rb, 'w' do |f|
+        f.write <<-'RUBY'
+        open 'Makefile', 'w' do |f|
+          f.puts "clean:\n\techo clean"
+          f.puts "default:\n\techo built"
+          f.puts "install:\n\techo installed"
+        end
+        RUBY
+      end
+    end
+
+    assert stub.missing_extensions?
+
+    stub.build_extensions
+
+    refute stub.missing_extensions?
+  end
+
+  def test_missing_extensions_eh_default_gem
+    spec = new_default_spec 'default', 1
+    spec.extensions << 'extconf.rb'
+
+    open spec.loaded_from, 'w' do |io|
+      io.write spec.to_ruby_for_cache
+    end
+
+    default_spec = Gem::StubSpecification.new spec.loaded_from
+
+    refute default_spec.missing_extensions?
+  end
+
+  def test_missing_extensions_eh_none
+    refute @foo.missing_extensions?
+  end
+
   def test_to_spec
     assert @foo.to_spec.is_a?(Gem::Specification)
     assert_equal "foo", @foo.to_spec.name

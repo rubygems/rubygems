@@ -22,6 +22,8 @@ Bug fixes:
   one or the other.  Pull request #795 by zebardy.
 * RubyGems can now use the bundler API against hosted gem servers in a
   directory.  Pull request #801 by Brian Fletcher.
+* RubyGems bin stubs now ignore non-versions.  This allows RubyGems bin stubs
+  to list file names like "_foo_".  Issue #799 by Postmodern.
 
 === 2.2.1 / 2014-01-06
 

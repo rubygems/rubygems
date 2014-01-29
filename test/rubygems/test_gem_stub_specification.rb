@@ -120,7 +120,7 @@ class TestStubSpecification < Gem::TestCase
   def test_to_spec
     assert @foo.to_spec.is_a?(Gem::Specification)
     assert_equal "foo", @foo.to_spec.name
-    refute @foo.to_spec.instance_variable_get :@ignored
+    refute @foo.to_spec.instance_variable_defined? :@ignored
   end
 
   def test_to_spec_missing_extensions

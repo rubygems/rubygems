@@ -78,8 +78,8 @@ class TestStubSpecification < Gem::TestCase
   end
 
   def test_missing_extensions_eh
-    stub = stub_with_extension do |stub|
-      extconf_rb = File.join stub.gem_dir, stub.extensions.first
+    stub = stub_with_extension do |s|
+      extconf_rb = File.join s.gem_dir, s.extensions.first
       FileUtils.mkdir_p File.dirname extconf_rb
 
       open extconf_rb, 'w' do |f|

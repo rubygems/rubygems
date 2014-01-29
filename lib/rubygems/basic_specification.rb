@@ -58,7 +58,8 @@ class Gem::BasicSpecification
   # Return true if this spec can require +file+.
 
   def contains_requirable_file? file
-    if instance_variable_defined? :@ignored then
+    if instance_variable_defined?(:@ignored) or
+       instance_variable_defined?('@ignored') then
       return false
     elsif missing_extensions? then
       @ignored = true

@@ -31,6 +31,9 @@ Bug fixes:
   directory.  Pull request #801 by Brian Fletcher.
 * RubyGems bin stubs now ignore non-versions.  This allows RubyGems bin stubs
   to list file names like "_foo_".  Issue #799 by Postmodern.
+* RubyGems no longer attempts to build extensions during activation.  Instead
+  a warning is issued instructing you to run `gem pristine` which will build
+  the extensions for the current platform.  Issue #796 by dunric.
 
 === 2.2.1 / 2014-01-06
 

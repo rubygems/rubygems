@@ -831,6 +831,23 @@ class TestGem < Gem::TestCase
     assert_match %r%Could not find 'b' %, e.message
   end
 
+  def test_self_try_activate_missing_extensions
+    util_spec 'ext', '1' do |s|
+      s.extensions = %w[ext/extconf.rb]
+      s.mark_version
+      s.installed_by_version = v('2.2')
+    end
+
+    _, err = capture_io do
+      refute Gem.try_activate 'nonexistent'
+    end
+
+    expected = "Ignoring ext-1 because its extensions are not built.  " +
+               "Try: gem pristine ext-1\n"
+
+    assert_equal expected, err
+  end
+
   def test_self_use_paths
     util_ensure_gem_dirs
 

@@ -55,22 +55,14 @@ class TestStubSpecification < Gem::TestCase
 
   def test_contains_requirable_file_eh_extension
     stub_with_extension do |stub|
-      extconf_rb = File.join stub.gem_dir, stub.extensions.first
-      FileUtils.mkdir_p File.dirname extconf_rb
-
-      open extconf_rb, 'w' do |f|
-        f.write <<-'RUBY'
-          open 'Makefile', 'w' do |f|
-            f.puts "clean:\n\techo cleaned"
-            f.puts "default:\n\techo built"
-            f.puts "install:\n\techo installed"
-          end
-        RUBY
+      _, err = capture_io do
+        refute stub.contains_requirable_file? 'nonexistent'
       end
 
-      refute stub.contains_requirable_file? 'nonexistent'
+      expected = "Ignoring stub_e-2 because its extensions are not built.  " +
+                 "Try: gem pristine stub_e-2\n"
 
-      assert_path_exists stub.extension_dir
+      assert_equal expected, err
     end
   end
 
@@ -128,6 +120,17 @@ class TestStubSpecification < Gem::TestCase
   def test_to_spec
     assert @foo.to_spec.is_a?(Gem::Specification)
     assert_equal "foo", @foo.to_spec.name
+    refute @foo.to_spec.instance_variable_get :@ignored
+  end
+
+  def test_to_spec_missing_extensions
+    stub = stub_with_extension
+
+    capture_io do
+      stub.contains_requirable_file? 'nonexistent'
+    end
+
+    assert stub.to_spec.instance_variable_get :@ignored
   end
 
   def stub_with_extension

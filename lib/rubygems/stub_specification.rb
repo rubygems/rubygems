@@ -155,6 +155,8 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
   def to_spec
     @spec ||= Gem::Specification.load(loaded_from)
+    @spec.ignored = instance_variable_defined? :@ignored
+    @spec
   end
 
   ##

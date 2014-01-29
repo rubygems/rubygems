@@ -1332,22 +1332,14 @@ dependencies: []
   def test_contains_requirable_file_eh_extension
     ext_spec
 
-    extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
-    FileUtils.mkdir_p File.dirname extconf_rb
-
-    open extconf_rb, 'w' do |f|
-      f.write <<-'RUBY'
-        open 'Makefile', 'w' do |f|
-          f.puts "clean:\n\techo cleaned"
-          f.puts "default:\n\techo built"
-          f.puts "install:\n\techo installed"
-        end
-      RUBY
+    _, err = capture_io do
+      refute @ext.contains_requirable_file? 'nonexistent'
     end
 
-    refute @ext.contains_requirable_file? 'nonexistent'
+    expected = "Ignoring ext-1 because its extensions are not built.  " +
+               "Try: gem pristine ext-1\n"
 
-    assert_path_exists @ext.extension_dir
+    assert_equal expected, err
   end
 
   def test_date

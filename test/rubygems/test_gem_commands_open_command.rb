@@ -18,7 +18,7 @@ class TestGemCommandsOpenCommand < Gem::TestCase
     end
 
     def test_execute
-        @cmd.options[:editor] = 'notepad'
+  #      @cmd.options[:editor] = 'notepad'
         @cmd.options[:args] = %w[foo]
 
         gem 'foo'

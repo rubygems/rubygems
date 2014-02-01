@@ -12,11 +12,7 @@ class Gem::Commands::OpenCommand < Gem::Command
 
         add_option('-e', '--editor EDITOR', String,
                    "Opens gem sources in EDITOR") do |editor, options|
-            options[:editor] = editor ||
-                                ENV['GEM_EDITOR'] ||
-                                ENV['VISUAL'] ||
-                                ENV['EDITOR'] ||
-                                'vi'
+            options[:editor] = editor || get_env_editor
         end
     end
 
@@ -25,7 +21,7 @@ class Gem::Commands::OpenCommand < Gem::Command
     end
 
     def defaults_str # :nodoc:
-        "-e $EDITOR"
+        "-e #{get_env_editor}"
     end
 
     def description # :nodoc:
@@ -40,9 +36,16 @@ class Gem::Commands::OpenCommand < Gem::Command
         "#{program_name} GEMNAME [-e EDITOR]"
     end
 
+    def get_env_editor
+        ENV['GEM_EDITOR'] ||
+            ENV['VISUAL'] ||
+            ENV['EDITOR'] ||
+            'vi'
+    end
+
     def execute
         @version = options[:version] || Gem::Requirement.default
-        @editor  = options[:editor]
+        @editor  = options[:editor] || get_env_editor
 
         found = open_gem(get_one_gem_name)
 

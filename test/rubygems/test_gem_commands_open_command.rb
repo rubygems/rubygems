@@ -18,7 +18,6 @@ class TestGemCommandsOpenCommand < Gem::TestCase
     end
 
     def test_execute
-  #      @cmd.options[:editor] = 'notepad'
         @cmd.options[:args] = %w[foo]
 
         gem 'foo'
@@ -30,5 +29,17 @@ class TestGemCommandsOpenCommand < Gem::TestCase
         assert_equal "", @ui.error
     end
 
+ def test_execute_bad_gem
+    @cmd.options[:args] = %w[foo]
+
+    assert_raises Gem::MockGemUi::TermError do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    assert_match %r|Unable to find gem 'foo'|, @ui.output
+    assert_equal "", @ui.error
+  end
 
 end

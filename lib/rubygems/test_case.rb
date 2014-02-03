@@ -115,6 +115,23 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     assert File.exist?(path), msg
   end
 
+  ##
+  # Sets the ENABLE_SHARED entry in RbConfig::CONFIG to +value+ and restores
+  # the original value when the block ends
+
+  def enable_shared value
+    enable_shared = RbConfig::CONFIG['ENABLE_SHARED']
+    RbConfig::CONFIG['ENABLE_SHARED'] = value
+
+    yield
+  ensure
+    if enable_shared then
+      RbConfig::CONFIG['enable_shared'] = enable_shared
+    else
+      RbConfig::CONFIG.delete 'enable_shared'
+    end
+  end
+
   # TODO: move to minitest
   def refute_path_exists path, msg = nil
     msg = message(msg) { "Expected path '#{path}' to not exist" }

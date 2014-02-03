@@ -331,21 +331,15 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_extension_dir_shared
-    enable_shared, RbConfig::CONFIG['ENABLE_SHARED'] =
-      RbConfig::CONFIG['ENABLE_SHARED'], 'yes'
-
-    assert_equal Gem.ruby_api_version, Gem.extension_api_version
-  ensure
-    RbConfig::CONFIG['ENABLE_SHARED'] = enable_shared
+    enable_shared 'yes' do
+      assert_equal Gem.ruby_api_version, Gem.extension_api_version
+    end
   end
 
   def test_self_extension_dir_static
-    enable_shared, RbConfig::CONFIG['ENABLE_SHARED'] =
-      RbConfig::CONFIG['ENABLE_SHARED'], 'no'
-
-    assert_equal "#{Gem.ruby_api_version}-static", Gem.extension_api_version
-  ensure
-    RbConfig::CONFIG['ENABLE_SHARED'] = enable_shared
+    enable_shared 'no' do
+      assert_equal "#{Gem.ruby_api_version}-static", Gem.extension_api_version
+    end
   end
 
   def test_self_find_files
@@ -1345,6 +1339,19 @@ class TestGem < Gem::TestCase
     assert spec.activated?
   ensure
     ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
+  end
+
+  def enable_shared value
+    enable_shared = RbConfig::CONFIG['ENABLE_SHARED']
+    RbConfig::CONFIG['ENABLE_SHARED'] = value
+
+    yield
+  ensure
+    if enable_shared then
+      RbConfig::CONFIG['enable_shared'] = enable_shared
+    else
+      RbConfig::CONFIG.delete 'enable_shared'
+    end
   end
 
   def ruby_install_name name

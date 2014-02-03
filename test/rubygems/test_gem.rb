@@ -1324,19 +1324,6 @@ class TestGem < Gem::TestCase
     ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
   end
 
-  def enable_shared value
-    enable_shared = RbConfig::CONFIG['ENABLE_SHARED']
-    RbConfig::CONFIG['ENABLE_SHARED'] = value
-
-    yield
-  ensure
-    if enable_shared then
-      RbConfig::CONFIG['enable_shared'] = enable_shared
-    else
-      RbConfig::CONFIG.delete 'enable_shared'
-    end
-  end
-
   def ruby_install_name name
     orig_RUBY_INSTALL_NAME = RbConfig::CONFIG['ruby_install_name']
     RbConfig::CONFIG['ruby_install_name'] = name

@@ -199,30 +199,21 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_default_exec_format
-    orig_RUBY_INSTALL_NAME = RbConfig::CONFIG['ruby_install_name']
-    RbConfig::CONFIG['ruby_install_name'] = 'ruby'
-
-    assert_equal '%s', Gem.default_exec_format
-  ensure
-    RbConfig::CONFIG['ruby_install_name'] = orig_RUBY_INSTALL_NAME
+    ruby_install_name 'ruby' do
+      assert_equal '%s', Gem.default_exec_format
+    end
   end
 
   def test_self_default_exec_format_18
-    orig_RUBY_INSTALL_NAME = RbConfig::CONFIG['ruby_install_name']
-    RbConfig::CONFIG['ruby_install_name'] = 'ruby18'
-
-    assert_equal '%s18', Gem.default_exec_format
-  ensure
-    RbConfig::CONFIG['ruby_install_name'] = orig_RUBY_INSTALL_NAME
+    ruby_install_name 'ruby18' do
+      assert_equal '%s18', Gem.default_exec_format
+    end
   end
 
   def test_self_default_exec_format_jruby
-    orig_RUBY_INSTALL_NAME = RbConfig::CONFIG['ruby_install_name']
-    RbConfig::CONFIG['ruby_install_name'] = 'jruby'
-
-    assert_equal 'j%s', Gem.default_exec_format
-  ensure
-    RbConfig::CONFIG['ruby_install_name'] = orig_RUBY_INSTALL_NAME
+    ruby_install_name 'jruby' do
+      assert_equal 'j%s', Gem.default_exec_format
+    end
   end
 
   def test_self_default_sources
@@ -1354,6 +1345,19 @@ class TestGem < Gem::TestCase
     assert spec.activated?
   ensure
     ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
+  end
+
+  def ruby_install_name name
+    orig_RUBY_INSTALL_NAME = RbConfig::CONFIG['ruby_install_name']
+    RbConfig::CONFIG['ruby_install_name'] = name
+
+    yield
+  ensure
+    if orig_RUBY_INSTALL_NAME then
+      RbConfig::CONFIG['ruby_install_name'] = orig_RUBY_INSTALL_NAME
+    else
+      RbConfig::CONFIG.delete 'ruby_install_name'
+    end
   end
 
   def with_plugin(path)

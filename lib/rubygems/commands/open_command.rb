@@ -60,10 +60,11 @@ class Gem::Commands::OpenCommand < Gem::Command
     open_editor(spec.full_gem_path)
   end
 
-  def open_editor *args
-    Dir.chdir(args) do
+  def open_editor path
+    Dir.chdir(path) do
       pid = fork do
-        exec(*editor.split(/\s+/) + args)
+        args = *path
+        exec(*editor.split(/\s+/) + path)
       end
     end
   end

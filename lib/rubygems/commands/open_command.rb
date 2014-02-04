@@ -27,8 +27,9 @@ class Gem::Commands::OpenCommand < Gem::Command
   def description # :nodoc:
     <<-EOF
         The open command opens gem in editor and changes current path
-        to gem's source directory. Editor can be specified, otherwise
-        $EDITOR would be invoked.
+        to gem's source directory. Editor can be specified with -e option,
+        otherwise rubygems will look for editor in $EDITOR, $VISUAL and
+        $GEM_EDITOR variables.
     EOF
   end
 

@@ -34,6 +34,8 @@ Bug fixes:
   directory.  Pull request #801 by Brian Fletcher.
 * RubyGems bin stubs now ignore non-versions.  This allows RubyGems bin stubs
   to list file names like "_foo_".  Issue #799 by Postmodern.
+* Restored behavior of Gem::Version::new when subclassed.  Issue #805 by
+  Sergio Rubio.
 
 === 2.2.1 / 2014-01-06
 

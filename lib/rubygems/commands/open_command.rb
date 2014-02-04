@@ -64,7 +64,7 @@ class Gem::Commands::OpenCommand < Gem::Command
     Dir.chdir(path) do
       pid = fork do
         args = *path
-        exec(*@editor.split(/\s+/) + path)
+        exec(*@editor.split(/\s+/) + args)
       end
     end
   end

@@ -59,15 +59,12 @@ class Gem::Commands::OpenCommand < Gem::Command
     open_editor(spec.full_gem_path)
   end
 
-  def open_editor path
+  def open_editor *args
     Dir.chdir(path) do
-      pid = spawn(@editor, path)
-      Process.detach(pid)
+      pid = fork do
+        exec(*editor.split(/\s+/) + args)
+      end
     end
-    #unless Gem::Util.silent_system(@editor, path)
-    #    say "Unable to open #{@editor}"
-    #    terminate_interaction 1
-    #end
   end
 
   def spec_for name

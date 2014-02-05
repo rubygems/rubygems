@@ -26,6 +26,16 @@ module Gem::Text
     result.join("\n").gsub(/^/, " " * indent)
   end
 
+  def min3 a, b, c # :nodoc:
+    if a < b && a < c
+      a
+    elsif b < a && b < c
+      b
+    else
+      c
+    end
+  end
+
   # This code is based directly on the Text gem implementation
   # Returns a value representing the "cost" of transforming str1 into str2
   def levenshtein_distance str1, str2
@@ -47,11 +57,11 @@ module Gem::Text
 
       m.times do |j|
         cost = (s[i] == t[j]) ? 0 : 1
-        x = [
+        x = min3(
              d[j+1] + 1, # insertion
              e + 1,      # deletion
              d[j] + cost # substitution
-            ].min
+            )
         d[j] = e
         e = x
       end

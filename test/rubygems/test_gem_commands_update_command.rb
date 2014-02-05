@@ -266,6 +266,30 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_empty out
   end
 
+  def test_execute_named_some_up_to_date
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 2
+      fetcher.clear
+      fetcher.spec 'a', 1
+
+      fetcher.spec 'b', 2
+    end
+
+    @cmd.options[:args] = %w[a b]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    out = @ui.output.split "\n"
+    assert_equal "Updating installed gems",    out.shift
+    assert_equal "Updating a",                 out.shift
+    assert_equal "Gems updated: a",            out.shift
+    assert_equal "Gems already up-to-date: b", out.shift
+
+    assert_empty out
+  end
+
   def test_execute_named_up_to_date
     spec_fetcher do |fetcher|
       fetcher.spec 'a', 2

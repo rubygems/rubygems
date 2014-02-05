@@ -16,6 +16,11 @@ Minor enhancements:
   a warning is issued instructing you to run `gem pristine` which will build
   the extensions for the current platform.  Issue #796 by dunric.
 
+Bug fixes:
+
+* RubyGems now only fetches the latest specs to find misspellings which speeds
+  up gem suggestions.  Pull request #808 by Aaron Patterson.
+
 === 2.2.2
 
 Bug fixes:

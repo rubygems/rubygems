@@ -186,7 +186,7 @@ class Gem::SpecFetcher
   def suggest_gems_from_name gem_name
     gem_name        = gem_name.downcase.tr('_-', '')
     max             = gem_name.size / 2
-    names           = available_specs(:complete).first.values.flatten(1)
+    names           = available_specs(:latest).first.values.flatten(1)
 
     matches = names.map { |n|
       next unless n.match_platform?

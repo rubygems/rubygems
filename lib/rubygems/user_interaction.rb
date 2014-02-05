@@ -530,7 +530,7 @@ class Gem::StreamUI
     when nil, false
       SilentDownloadReporter.new(@outs, *args)
     else
-      VerboseDownloadReporter.new(@outs, *args)
+      ThreadedDownloadReporter.new(@outs, *args)
     end
   end
 
@@ -566,82 +566,33 @@ class Gem::StreamUI
     end
   end
 
-  ##
-  # A progress reporter that prints out messages about the current progress.
-
-  class VerboseDownloadReporter
-
-    ##
-    # The current file name being displayed
+  class ThreadedDownloadReporter
+    MUTEX = Mutex.new
 
     attr_reader :file_name
 
-    ##
-    # The total bytes in the file
-
-    attr_reader :total_bytes
-
-    ##
-    # The current progress (0 to 100)
-
-    attr_reader :progress
-
-    ##
-    # Creates a new verbose download reporter that will display on
-    # +out_stream+.  The other arguments are ignored.
-
-    def initialize(out_stream, *args)
+    def initialize(out_stream)
       @out = out_stream
-      @progress = 0
     end
-
-    ##
-    # Tells the download reporter that the +file_name+ is being fetched and
-    # contains +total_bytes+.
 
     def fetch(file_name, total_bytes)
       @file_name = file_name
-      @total_bytes = total_bytes.to_i
-      @units = @total_bytes.zero? ? 'B' : '%'
-
-      update_display(false)
+      locked_puts "Downloading: #{file_name}"
     end
-
-    ##
-    # Updates the verbose download reporter for the given number of +bytes+.
 
     def update(bytes)
-      new_progress = if @units == 'B' then
-                       bytes
-                     else
-                       ((bytes.to_f * 100) / total_bytes.to_f).ceil
-                     end
-
-      return if new_progress == @progress
-
-      @progress = new_progress
-      update_display
+      # nah
     end
-
-    ##
-    # Indicates the download is complete.
 
     def done
-      @progress = 100 if @units == '%'
-      update_display(true, true)
+      locked_puts "Finished: #{file_name}"
     end
 
-    private
-
-    def update_display(show_progress = true, new_line = false) # :nodoc:
-      return unless @out.tty?
-
-      if show_progress then
-        @out.print "\rFetching: %s (%3d%s)" % [@file_name, @progress, @units]
-      else
-        @out.print "Fetching: %s" % @file_name
+  private
+    def locked_puts(msg)
+      MUTEX.synchronize do
+        @out.puts msg
       end
-      @out.puts if new_line
     end
   end
 end

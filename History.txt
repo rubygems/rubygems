@@ -7,6 +7,9 @@ Minor enhancements:
 * Added the `open` command which allows you to inspect the source of a gem
   using your editor.
   Issue #789 by Mike Perham. Pull request #804 by Vitali F.
+* The `update` command shows a summary of which gems were and were not
+  updated.  Issue #544 by Mark D. Blackwell.
+  Pull request #777 by Tejas Bubane.
 * A gem is installable from an IO again (as in RubyGems 1.8.x and older).
   Pull request #716 by Xavier Shay.
 * RubyGems no longer attempts to build extensions during activation.  Instead

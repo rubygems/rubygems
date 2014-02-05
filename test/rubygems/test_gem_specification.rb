@@ -2986,9 +2986,9 @@ end
 
   def with_syck
     begin
+      verbose, $VERBOSE = $VERBOSE, nil
       require "yaml"
       old_engine = YAML::ENGINE.yamler
-      verbose, $VERBOSE = $VERBOSE, nil
       YAML::ENGINE.yamler = 'syck'
       load 'rubygems/syck_hack.rb'
     rescue NameError

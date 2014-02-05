@@ -234,7 +234,6 @@ if you believe they were disclosed to a third party.
   end
 
   def test_handle_arguments_debug
-    old_dollar_DEBUG = $DEBUG
     assert_equal false, $DEBUG
 
     args = %w[--debug]
@@ -243,7 +242,7 @@ if you believe they were disclosed to a third party.
 
     assert_equal true, $DEBUG
   ensure
-    $DEBUG = old_dollar_DEBUG
+    $DEBUG = false
   end
 
   def test_handle_arguments_override

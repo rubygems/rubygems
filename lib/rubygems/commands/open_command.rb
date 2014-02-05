@@ -66,6 +66,8 @@ class Gem::Commands::OpenCommand < Gem::Command
         args = (@editor.split(/\s+/) + [path]).join(' ')
         exec(args)
       end
+
+      Process.detach pid
     end
   end
 

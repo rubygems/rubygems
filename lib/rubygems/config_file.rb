@@ -383,6 +383,8 @@ if you believe they were disclosed to a third party.
         @backtrace = true
       when /^--debug$/ then
         $DEBUG = true
+
+        warn 'NOTE:  Debugging mode prints all exceptions even when rescued'
       else
         @args << arg
       end

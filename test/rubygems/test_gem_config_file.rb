@@ -238,7 +238,11 @@ if you believe they were disclosed to a third party.
 
     args = %w[--debug]
 
-    @cfg.handle_arguments args
+    _, err = capture_io do
+      @cfg.handle_arguments args
+    end
+
+    assert_match 'NOTE', err
 
     assert_equal true, $DEBUG
   ensure

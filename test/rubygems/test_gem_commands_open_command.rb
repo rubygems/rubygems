@@ -19,7 +19,7 @@ class TestGemCommandsOpenCommand < Gem::TestCase
 
   def test_execute
     @cmd.options[:args] = %w[foo]
-    @cmd.options[:editor] = 'echo'
+    @cmd.options[:editor] = "#{Gem.ruby} -e0 --"
 
     gem 'foo'
 

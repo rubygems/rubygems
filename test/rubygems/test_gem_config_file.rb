@@ -408,11 +408,13 @@ if you believe they were disclosed to a third party.
       fp.puts "some-non-yaml-hash-string"
     end
 
-    # Avoid writing stuff to output when running tests
-    Gem::ConfigFile.class_eval { def warn(args); end }
+    begin
+      verbose, $VERBOSE = $VERBOSE, nil
 
-    # This should not raise exception
-    util_config_file
+      util_config_file
+    ensure
+      $VERBOSE = verbose
+    end
   end
 
   def test_load_ssl_verify_mode_from_config

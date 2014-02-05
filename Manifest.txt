@@ -288,6 +288,7 @@ test/rubygems/test_gem_resolver_activation_request.rb
 test/rubygems/test_gem_resolver_api_set.rb
 test/rubygems/test_gem_resolver_api_specification.rb
 test/rubygems/test_gem_resolver_best_set.rb
+test/rubygems/test_gem_resolver_composed_set.rb
 test/rubygems/test_gem_resolver_conflict.rb
 test/rubygems/test_gem_resolver_dependency_request.rb
 test/rubygems/test_gem_resolver_git_set.rb

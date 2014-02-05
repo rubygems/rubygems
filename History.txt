@@ -23,7 +23,7 @@ Bug fixes:
 * Improved speed of levenshtein distance for gem suggestion misspellings.
   Pull request #809 by Aaron Patterson.
 
-=== 2.2.2
+=== 2.2.2 / 2014-02-05
 
 Bug fixes:
 

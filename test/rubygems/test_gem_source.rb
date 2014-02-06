@@ -41,7 +41,7 @@ class TestGemSource < Gem::TestCase
 
   def test_dependency_resolver_set_bundler_api
     response = Net::HTTPResponse.new '1.1', 200, 'OK'
-    response.uri = URI('http://example')
+    response.uri = URI('http://example') if response.respond_to? :uri
 
     @fetcher.data["#{@gem_repo}api/v1/dependencies"] = response
 

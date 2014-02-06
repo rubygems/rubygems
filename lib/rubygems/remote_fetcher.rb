@@ -232,7 +232,7 @@ class Gem::RemoteFetcher
 
     case response
     when Net::HTTPOK, Net::HTTPNotModified then
-      response.uri = uri
+      response.uri = uri if response.respond_to? :uri
       head ? response : response.body
     when Net::HTTPMovedPermanently, Net::HTTPFound, Net::HTTPSeeOther,
          Net::HTTPTemporaryRedirect then

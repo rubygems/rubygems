@@ -83,7 +83,7 @@ class Gem::Package::Old < Gem::Package
           out.write file_data
         end
 
-        say destination if Gem.configuration.really_verbose
+        verbose destination
       end
     end
   rescue Zlib::DataError

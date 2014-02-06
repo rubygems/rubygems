@@ -243,9 +243,9 @@ class Gem::DependencyInstaller
         # FIX if there is a problem talking to the network, we either need to always tell
         # the user (no really_verbose) or fail hard, not silently tell them that we just
         # couldn't find their requested gem.
-        if Gem.configuration.really_verbose then
-          say "Error fetching remote data:\t\t#{e.message}"
-          say "Falling back to local-only install"
+        verbose do
+          "Error fetching remote data:\t\t#{e.message}\n" \
+            "Falling back to local-only install"
         end
         @domain = :local
       end

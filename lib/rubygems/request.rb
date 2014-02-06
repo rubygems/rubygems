@@ -127,8 +127,7 @@ class Gem::Request
     begin
       @requests[connection.object_id] += 1
 
-      say "#{request.method} #{@uri}" if
-        Gem.configuration.really_verbose
+      verbose "#{request.method} #{@uri}"
 
       file_name = File.basename(@uri.path)
       # perform download progress reporter only for gems
@@ -157,11 +156,10 @@ class Gem::Request
         response = connection.request request
       end
 
-      say "#{response.code} #{response.message}" if
-        Gem.configuration.really_verbose
+      verbose "#{response.code} #{response.message}"
 
     rescue Net::HTTPBadResponse
-      say "bad response" if Gem.configuration.really_verbose
+      verbose "bad response"
 
       reset connection
 
@@ -176,8 +174,7 @@ class Gem::Request
            Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE
 
       requests = @requests[connection.object_id]
-      say "connection reset after #{requests} requests, retrying" if
-        Gem.configuration.really_verbose
+      verbose "connection reset after #{requests} requests, retrying"
 
       raise Gem::RemoteFetcher::FetchError.new('too many connection resets', @uri) if retried
 

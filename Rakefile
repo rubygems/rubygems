@@ -3,9 +3,6 @@
 require 'rubygems'
 require 'rubygems/package_task'
 
-# HACK bootstrap load_yaml, remove after 1.5 release
-def Gem.load_yaml; end unless Gem.respond_to? :load_yaml
-
 if ENV['YAML'] == "syck"
   ENV['TEST_SYCK'] = "1"
 end

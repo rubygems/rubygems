@@ -157,8 +157,7 @@ class Gem::RemoteFetcher
     when 'http', 'https' then
       unless File.exist? local_gem_path then
         begin
-          say "Downloading gem #{gem_file_name}" if
-            Gem.configuration.really_verbose
+          verbose "Downloading gem #{gem_file_name}"
 
           remote_gem_path = source_uri + "gems/#{gem_file_name}"
 
@@ -168,8 +167,7 @@ class Gem::RemoteFetcher
 
           alternate_name = "#{spec.original_name}.gem"
 
-          say "Failed, downloading gem #{alternate_name}" if
-            Gem.configuration.really_verbose
+          verbose "Failed, downloading gem #{alternate_name}"
 
           remote_gem_path = source_uri + "gems/#{alternate_name}"
 
@@ -188,8 +186,7 @@ class Gem::RemoteFetcher
         local_gem_path = source_uri.to_s
       end
 
-      say "Using local gem #{local_gem_path}" if
-        Gem.configuration.really_verbose
+      verbose "Using local gem #{local_gem_path}"
     when nil then # TODO test for local overriding cache
       source_path = if Gem.win_platform? && source_uri.scheme &&
                        !source_uri.path.include?(':') then
@@ -207,8 +204,7 @@ class Gem::RemoteFetcher
         local_gem_path = source_uri.to_s
       end
 
-      say "Using local gem #{local_gem_path}" if
-        Gem.configuration.really_verbose
+      verbose "Using local gem #{local_gem_path}"
     else
       raise ArgumentError, "unsupported URI scheme #{source_uri.scheme}"
     end

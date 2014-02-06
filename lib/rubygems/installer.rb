@@ -382,7 +382,7 @@ class Gem::Installer
         file.puts windows_stub_script(bindir, filename)
       end
 
-      say script_path if Gem.configuration.really_verbose
+      verbose script_path
     end
   end
 
@@ -433,7 +433,7 @@ class Gem::Installer
       file.print app_script_text(filename)
     end
 
-    say bin_script_path if Gem.configuration.really_verbose
+    verbose bin_script_path
 
     generate_windows_script filename, bindir
   end

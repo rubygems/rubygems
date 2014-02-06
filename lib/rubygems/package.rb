@@ -370,7 +370,7 @@ EOM
           out.write entry.read
         end if entry.file?
 
-        say destination if Gem.configuration.really_verbose
+        verbose destination
       end
     end
   end

@@ -52,11 +52,11 @@ module Gem::Text
     d = (0..m).to_a
     x = nil
 
-    n.times do |i|
+    str1.each_char.each_with_index do |char1,i|
       e = i+1
 
-      m.times do |j|
-        cost = (s[i] == t[j]) ? 0 : 1
+      str2.each_char.each_with_index do |char2,j|
+        cost = (char1 == char2) ? 0 : 1
         x = min3(
              d[j+1] + 1, # insertion
              e + 1,      # deletion

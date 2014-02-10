@@ -5,6 +5,8 @@ require 'rubygems/user_interaction'
 
 class Gem::Request
 
+  class Retry < StandardError; end
+
   include Gem::UserInteraction
 
   attr_reader :proxy_uri
@@ -101,12 +103,25 @@ class Gem::Request
     raise Gem::RemoteFetcher::FetchError.new(e.message, uri)
   end
 
+  def sign_in
+    say "Authorization required for #{@uri}"
+
+    username = ask("Username: ")
+    password = ask_for_password("Password: ")
+
+    Gem.configuration.basic_authentication_set( @uri, username, password )
+  end
+
   def fetch
     request = @request_class.new @uri.request_uri
 
     unless @uri.nil? || @uri.user.nil? || @uri.user.empty? then
       request.basic_auth Gem::UriFormatter.new(@uri.user).unescape,
                          Gem::UriFormatter.new(@uri.password).unescape
+    end
+
+    if auth = Gem.configuration.basic_authentication( @uri )
+      request.add_field "Authorization", auth
     end
 
     request.add_field 'User-Agent', @user_agent
@@ -154,10 +169,22 @@ class Gem::Request
         end
       else
         response = connection.request request
+
+        if response.code.to_s == '401'
+
+          sign_in
+          request.add_field "Authorization", Gem.configuration.basic_authentication( @uri )
+
+          raise Retry.new
+        end
       end
 
       verbose "#{response.code} #{response.message}"
 
+    rescue Retry
+      reset connection
+
+      retry
     rescue Net::HTTPBadResponse
       verbose "bad response"
 

@@ -6,6 +6,7 @@
 
 require 'rubygems/user_interaction'
 require 'rbconfig'
+require 'base64'
 
 ##
 # Gem::ConfigFile RubyGems options and gem command options from gemrc.
@@ -275,19 +276,64 @@ if you believe they were disclosed to a third party.
     File.join Gem.user_home, '.gem', 'credentials'
   end
 
-  def load_api_keys
+  def key_for( uri )
+    "#{uri.host}:#{uri.port}"
+  end
+  private :key_for
+
+  ##
+  # Loads basic authentication for given uri from the credentials file
+
+  def basic_authentication uri
+    @credentials ||= load_credentials || {}
+
+    ( @credentials[ :basic_auth ] || {} )[ key_for( uri ) ]
+  end
+
+  ##
+  # Stores basic authentication for given uri to the credentials file
+
+  def basic_authentication_set uri, username, password
+    @credentials ||= load_credentials || {}
+
+    data = ( @credentials[ :basic_auth ] ||= {} )
+    token = "#{username}:#{password}"
+    if token == ':'
+      # delete credentials
+      data.delete(key_for(uri))
+    else
+      # mimic strict_encode64 which is not there on ruby1.8
+      data[key_for(uri)] = "Basic #{Base64.encode64( token ).gsub( /\s+/, '' )}"
+    end
+    save_credentials(@credentials)
+  end
+
+  def load_credentials
     check_credentials_permissions
 
-    @api_keys = if File.exist? credentials_path then
-                  load_file(credentials_path)
-                else
-                  @hash
-                end
+    if File.exist? credentials_path
+      load_file(credentials_path)
+    end
+  end
+
+  def save_credentials data
+    Gem.load_yaml
+
+    dirname = File.dirname credentials_path
+    Dir.mkdir(dirname) unless File.exist? dirname
+
+    permissions = 0600 & (~File.umask)
+    File.open(credentials_path, 'w', permissions) do |f|
+      f.write data.to_yaml
+    end
+  end
+
+  def load_api_keys
+    @api_keys = (load_credentials || @hash).dup
 
     if @api_keys.key? :rubygems_api_key then
       @rubygems_api_key    = @api_keys[:rubygems_api_key]
-      @api_keys[:rubygems] = @api_keys.delete :rubygems_api_key unless
-        @api_keys.key? :rubygems
+      @api_keys[:rubygems] = @api_keys.delete(:rubygems_api_key) unless @api_keys.key? :rubygems
     end
   end
 
@@ -304,19 +350,9 @@ if you believe they were disclosed to a third party.
   # Sets the RubyGems.org API key to +api_key+
 
   def rubygems_api_key= api_key
-    check_credentials_permissions
+    config = (load_credentials || {}).merge(:rubygems_api_key => api_key)
 
-    config = load_file(credentials_path).merge(:rubygems_api_key => api_key)
-
-    dirname = File.dirname credentials_path
-    Dir.mkdir(dirname) unless File.exist? dirname
-
-    Gem.load_yaml
-
-    permissions = 0600 & (~File.umask)
-    File.open(credentials_path, 'w', permissions) do |f|
-      f.write config.to_yaml
-    end
+    save_credentials(config)
 
     @rubygems_api_key = api_key
   end

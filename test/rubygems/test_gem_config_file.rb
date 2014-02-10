@@ -164,6 +164,59 @@ class TestGemConfigFile < Gem::TestCase
     assert_equal 2048, @cfg.bulk_threshold
   end
 
+  def test_load_credentials
+    util_config_file
+
+    assert_nil @cfg.load_credentials
+
+    temp_cred = File.join Gem.user_home, '.gem', 'credentials'
+    FileUtils.mkdir File.dirname(temp_cred)
+    File.open temp_cred, 'w', 0600
+
+    assert_equal({}, @cfg.load_credentials)
+  end
+
+  def test_save_credentials
+    util_config_file
+
+    assert_nil @cfg.load_credentials
+
+    @cfg.save_credentials( :key => 'data' )
+
+    temp_cred = File.join Gem.user_home, '.gem', 'credentials'
+    assert_equal({:key=>"data"}, YAML.load(File.read(temp_cred)))
+  end
+
+  def test_basic_authentication
+    assert_nil @cfg.instance_variable_get :@credentials
+
+    temp_cred = File.join Gem.user_home, '.gem', 'credentials'
+    FileUtils.mkdir File.dirname(temp_cred)
+    File.open temp_cred, 'w', 0600 do |fp|
+      fp.puts ':basic_auth:'
+      fp.puts '  localhost:8181: Basic dXNlcjpiZWhhcHB5'
+    end
+
+    util_config_file
+
+    assert_equal('Basic dXNlcjpiZWhhcHB5',
+                 @cfg.basic_authentication(URI.parse('http://localhost:8181' )))
+  end
+
+  def test_basic_authentication_set
+    assert_nil @cfg.instance_variable_get :@credentials
+
+    @cfg.basic_authentication_set(URI.parse('http://localhost:8181'),
+                                  'user', 'pwd')
+
+    util_config_file
+
+    temp_cred = File.join Gem.user_home, '.gem', 'credentials'
+
+    assert_equal({:basic_auth=>{"localhost:8181"=>"Basic dXNlcjpwd2Q="}},
+                 YAML.load(File.read(temp_cred)))
+  end
+
   def test_api_keys
     assert_nil @cfg.instance_variable_get :@api_keys
 

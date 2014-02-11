@@ -17,6 +17,8 @@ Minor enhancements:
   the extensions for the current platform.  Issue #796 by dunric.
 * Added Gem::UserInteraction#verbose which prints when the --verbose option is
   given.  Pull request #811 by Aaron Patterson.
+* Cleaned up unneeded load_yaml bootstrapping in Rakefile.  Pull request #815
+  by Zachary Scott.
 
 Bug fixes:
 

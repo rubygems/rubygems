@@ -107,7 +107,7 @@ module Gem
             Gem::UriFormatter.new(proxy_uri.password).unescape,
           ]
         else
-          net_http_args
+          net_http_args + [nil, nil]
         end
       end
     end

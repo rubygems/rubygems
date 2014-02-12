@@ -28,6 +28,8 @@ Bug fixes:
   Pull requests #809, #812 by Aaron Patterson.
 * Reduced requests when fetching gems with the bundler API.  Pull request #773
   by Charlie Somerville.
+* RubyGems now prints release notes from the current release.  Bug #814 by
+  André Arko.
 
 === 2.2.2 / 2014-02-05
 

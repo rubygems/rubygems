@@ -111,6 +111,12 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     end
 
     expected = <<-EXPECTED
+=== #{Gem::VERSION} / 2013-03-26
+
+* Bug fixes:
+  * Fixed release note display for LANG=C when installing rubygems
+  * π is tasty
+
 === 2.0.2 / 2013-03-06
 
 * Bug fixes:

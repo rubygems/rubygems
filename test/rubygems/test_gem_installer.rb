@@ -1053,7 +1053,7 @@ gem 'other', version
 
     path = File.join(@gemhome, 'gems', 'a-2', 'gem_make.out')
 
-    if File.exists?(path)
+    if File.exist?(path)
       puts File.read(path)
       puts '-' * 78
     end

@@ -80,7 +80,7 @@ class Gem::Request
         Gem::UriFormatter.new(@proxy_uri.user).unescape,
         Gem::UriFormatter.new(@proxy_uri.password).unescape,
       ]
-    else
+    elsif no_proxy?(uri.host) then
       net_http_args += [nil, nil]
     end
 

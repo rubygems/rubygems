@@ -99,15 +99,19 @@ module Gem
       def net_http_args uri, proxy_uri
         net_http_args = [uri.host, uri.port]
 
-        if proxy_uri and not no_proxy?(uri.host, get_no_proxy_from_env) then
+        no_proxy = get_no_proxy_from_env
+
+        if proxy_uri and not no_proxy?(uri.host, no_proxy) then
           net_http_args + [
             proxy_uri.host,
             proxy_uri.port,
             Gem::UriFormatter.new(proxy_uri.user).unescape,
             Gem::UriFormatter.new(proxy_uri.password).unescape,
           ]
+        elsif no_proxy? uri.host, no_proxy then
+          net_http_args += [nil, nil]
         else
-          net_http_args + [nil, nil]
+          net_http_args
         end
       end
     end

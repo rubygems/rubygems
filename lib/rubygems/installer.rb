@@ -648,7 +648,7 @@ if ARGV.first
 end
 
 gem '#{spec.name}', version
-load Gem.bin_path('#{spec.name}', '#{bin_file_name}', version)
+exec Gem.bin_path('#{spec.name}', '#{bin_file_name}', version), *ARGV
 TEXT
   end
 

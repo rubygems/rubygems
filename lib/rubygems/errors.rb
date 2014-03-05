@@ -19,6 +19,20 @@ module Gem
     attr_accessor :requirement
   end
 
+  # Raised when there are conflicting gem specs loaded
+
+  class ConflictError < LoadError
+    def initialize target, conf
+      y = conf.map { |act,con|
+        "#{act.full_name} conflicts with #{con.join(", ")}"
+      }.join ", "
+
+      # TODO: improve message by saying who activated `con`
+
+      super("Unable to activate #{target.full_name}, because #{y}")
+    end
+  end
+
   class ErrorReason; end
 
   # Generated when trying to lookup a gem to indicate that the gem

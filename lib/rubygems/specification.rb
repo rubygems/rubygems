@@ -2068,13 +2068,7 @@ class Gem::Specification < Gem::BasicSpecification
     conf = self.conflicts
 
     unless conf.empty? then
-      y = conf.map { |act,con|
-        "#{act.full_name} conflicts with #{con.join(", ")}"
-      }.join ", "
-
-      # TODO: improve message by saying who activated `con`
-
-      raise Gem::LoadError, "Unable to activate #{self.full_name}, because #{y}"
+      raise Gem::ConflictError.new self, conf
     end
   end
 

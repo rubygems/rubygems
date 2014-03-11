@@ -1,0 +1,17 @@
+= How to contribute
+
+Community involvement is essential to RubyGems. We want to keep it easy as
+possible to contribute changes. There are a few guidelines that we need
+contributors to follow to reduce the time it takes to get changes merged in.
+
+== Guidelines
+
+1. New features should be coupled with tests.
+
+2. Ensure that your code blends well with ours (eg, no trailing whitespace,
+   match indentation and coding style).
+
+3. Don't modify the history file or version number.
+
+4. If you have any questions, just ask on IRC in #rubygems on Freenode or file
+   an issue here: http://github.com/rubygems/rubygems/issues

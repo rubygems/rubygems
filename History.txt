@@ -19,6 +19,7 @@ Minor enhancements:
   given.  Pull request #811 by Aaron Patterson.
 * Cleaned up unneeded load_yaml bootstrapping in Rakefile.  Pull request #815
   by Zachary Scott.
+* Added CONTRIBUTING file.  Pull request #849 by Mark Turner.
 
 Bug fixes:
 

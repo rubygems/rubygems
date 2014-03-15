@@ -4,6 +4,8 @@
 
 Bug fixes:
 
+* Restore concurrent requires following the fix for ruby bug #8374.  Pull
+  request #637 and issue #640 by Charles Nutter.
 * Gem::Specification::remove_spec no longer checks for existence of the spec
   to be removed.  Issue #698 by Tiago Macedo.
 * Restored wildcard handling when installing gems.  Issue #697 by Chuck Remes.

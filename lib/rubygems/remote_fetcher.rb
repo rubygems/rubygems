@@ -154,7 +154,7 @@ class Gem::RemoteFetcher
     # REFACTOR: split this up and dispatch on scheme (eg download_http)
     # REFACTOR: be sure to clean up fake fetcher when you do this... cleaner
     case scheme
-    when 'http', 'https' then
+    when 'http', 'https', 's3' then
       unless File.exist? local_gem_path then
         begin
           verbose "Downloading gem #{gem_file_name}"
@@ -281,6 +281,23 @@ class Gem::RemoteFetcher
     else
       raise FetchError.new("#{e.class}: #{e}", uri.to_s)
     end
+  end
+
+  def fetch_s3(uri, mtime = nil, head = false)
+    begin
+      require 'aws-sdk'
+    rescue LoadError
+      raise FetchError.new("You must gem install aws-sdk to use s3:// gem source URLs", uri.to_s)
+    end
+
+    s3_opts = {}
+    if uri.user && uri.password
+      s3_opts.merge!({ :access_key_id => uri.user, :secret_access_key => uri.password })
+    end
+
+    s3 = AWS::S3.new(s3_opts)
+    public_uri = s3.buckets[uri.host].objects[uri.path.sub(%r{^/}, '')].url_for(:get)
+    fetch_https URI.parse(public_uri.to_s), mtime, head
   end
 
   ##

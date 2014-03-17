@@ -586,6 +586,40 @@ gems:
     assert_equal "too many redirects (#{url})", e.message
   end
 
+  def test_fetch_s3
+    fetcher = Gem::RemoteFetcher.new nil
+    url = 's3://testuser:testpass@my-bucket/gems/specs.4.8.gz'
+    $fetched_uri = nil
+
+    def fetcher.request(uri, request_class, last_modified = nil)
+      $fetched_uri = uri
+      res = Net::HTTPOK.new nil, 200, nil
+      def res.body() 'success' end
+      res
+    end
+
+    def fetcher.s3_expiration
+      1395098371
+    end
+
+    data = fetcher.fetch_s3 URI.parse(url)
+
+    assert_equal 'https://my-bucket.s3.amazonaws.com/gems/specs.4.8.gz?AWSAccessKeyId=testuser&Expires=1395098371&Signature=eUTr7NkpZEet%2BJySE%2BfH6qukroI%3D', $fetched_uri.to_s
+    assert_equal 'success', data
+  ensure
+    $fetched_uri = nil
+  end
+
+  def test_fetch_s3_no_creds
+    fetcher = Gem::RemoteFetcher.new nil
+    url = 's3://my-bucket/gems/specs.4.8.gz'
+    e = assert_raises Gem::RemoteFetcher::FetchError do
+      fetcher.fetch_s3 URI.parse(url)
+    end
+
+    assert_match "credentials needed", e.message
+  end
+
   def test_observe_no_proxy_env_single_host
     use_ui @ui do
       ENV["http_proxy"] = @proxy_uri

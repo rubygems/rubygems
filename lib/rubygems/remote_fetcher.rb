@@ -362,7 +362,7 @@ class Gem::RemoteFetcher
     payload = "GET\n\n\n#{expiration}\n#{canonical_path}"
     digest = OpenSSL::HMAC.digest('sha1', uri.password, payload)
     # URI.escape is deprecated, and there isn't yet a replacement that does quite what we want
-    signature = Base64.strict_encode64(digest).gsub(/[\+\/=]/) { |c| BASE64_URI_TRANSLATE[c] }
+    signature = Base64.encode64(digest).gsub("\n", '').gsub(/[\+\/=]/) { |c| BASE64_URI_TRANSLATE[c] }
     URI.parse("https://#{uri.host}.s3.amazonaws.com#{uri.path}?AWSAccessKeyId=#{uri.user}&Expires=#{expiration}&Signature=#{signature}")
   end
 

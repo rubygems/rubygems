@@ -2073,7 +2073,7 @@ class Gem::Specification < Gem::BasicSpecification
   ##
   # Check the spec for possible conflicts and freak out if there are any.
 
-  def raise_if_conflicts
+  def raise_if_conflicts # :nodoc:
     conf = self.conflicts
 
     unless conf.empty? then

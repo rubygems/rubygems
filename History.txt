@@ -17,6 +17,8 @@ Minor enhancements:
   the extensions for the current platform.  Issue #796 by dunric.
 * Added Gem::UserInteraction#verbose which prints when the --verbose option is
   given.  Pull request #811 by Aaron Patterson.
+* RubyGems can now fetch gems from private repositories using S3.  Pull
+  request #856 by Brian Palmer.
 * Cleaned up unneeded load_yaml bootstrapping in Rakefile.  Pull request #815
   by Zachary Scott.
 * Improved performance of conflict resolution.  Pull request #842 by Aaron

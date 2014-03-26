@@ -124,6 +124,9 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     EXPECTED
 
+    output = @ui.output
+    output.force_encoding Encoding::UTF_8 if Object.const_defined? :Encoding
+
     assert_equal expected, @ui.output
   ensure
     capture_io do

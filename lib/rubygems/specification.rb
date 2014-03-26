@@ -1260,7 +1260,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   def activate
     other = Gem.loaded_specs[self.name]
-    if other
+    if other then
       check_version_conflict other
       return false
     end

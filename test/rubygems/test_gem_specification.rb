@@ -226,7 +226,7 @@ end
             util_spec 'b', '2.0'
     c,  _ = util_spec 'c', '1.0', 'b' => '= 2.0'
 
-    e = assert_raises Gem::LoadError do
+    e = assert_raises Gem::ConflictError do
       assert_activate nil, a, c, "b"
     end
 

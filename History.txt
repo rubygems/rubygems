@@ -19,6 +19,8 @@ Minor enhancements:
   given.  Pull request #811 by Aaron Patterson.
 * RubyGems can now fetch gems from private repositories using S3.  Pull
   request #856 by Brian Palmer.
+* Added Gem::ConflictError subclass of Gem::LoadError so you can distinguish
+  conflicts from other problems.  Pull request #841 by Aaron Patterson.
 * Cleaned up unneeded load_yaml bootstrapping in Rakefile.  Pull request #815
   by Zachary Scott.
 * Improved performance of conflict resolution.  Pull request #842 by Aaron

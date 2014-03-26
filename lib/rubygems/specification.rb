@@ -1259,9 +1259,13 @@ class Gem::Specification < Gem::BasicSpecification
   # there are conflicts upon activation.
 
   def activate
-    raise_if_conflicts
+    other = Gem.loaded_specs[self.name]
+    if other
+      conflicting_version_check! other
+      return false
+    end
 
-    return false if Gem.loaded_specs[self.name]
+    raise_if_conflicts
 
     activate_dependencies
     add_self_to_load_path
@@ -2046,12 +2050,11 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # Check the spec for possible conflicts and freak out if there are any.
+  # Raise an exception if the version of this spec conflicts with the one
+  # that is already loaded (+other+)
 
-  def raise_if_conflicts
-    other = Gem.loaded_specs[self.name]
-
-    if other and self.version != other.version then
+  def conflicting_version_check! other
+    if self.version != other.version then
       # This gem is already loaded.  If the currently loaded gem is not in the
       # list of candidate gems, then we have a version conflict.
 
@@ -2063,7 +2066,14 @@ class Gem::Specification < Gem::BasicSpecification
 
       raise e
     end
+  end
 
+  private :conflicting_version_check!
+
+  ##
+  # Check the spec for possible conflicts and freak out if there are any.
+
+  def raise_if_conflicts
     conf = self.conflicts
 
     unless conf.empty? then

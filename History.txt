@@ -34,6 +34,7 @@ Bug fixes:
 * RubyGems now prints release notes from the current release.  Bug #814 by
   André Arko.
 * Fixed typo in Jim Weirich's name.  Ruby pull request #577 by Mo Khan.
+* Fixed File.exists? warnings.  Pull request #829 by SHIBATA Hiroshi.
 
 === 2.2.2 / 2014-02-05
 

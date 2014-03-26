@@ -2054,18 +2054,18 @@ class Gem::Specification < Gem::BasicSpecification
   # that is already loaded (+other+)
 
   def check_version_conflict other # :nodoc:
-    if self.version != other.version then
-      # This gem is already loaded.  If the currently loaded gem is not in the
-      # list of candidate gems, then we have a version conflict.
+    return if self.version == other.version
 
-      msg = "can't activate #{full_name}, already activated #{other.full_name}"
+    # This gem is already loaded.  If the currently loaded gem is not in the
+    # list of candidate gems, then we have a version conflict.
 
-      e = Gem::LoadError.new msg
-      e.name = self.name
-      # TODO: e.requirement = dep.requirement
+    msg = "can't activate #{full_name}, already activated #{other.full_name}"
 
-      raise e
-    end
+    e = Gem::LoadError.new msg
+    e.name = self.name
+    # TODO: e.requirement = dep.requirement
+
+    raise e
   end
 
   private :check_version_conflict

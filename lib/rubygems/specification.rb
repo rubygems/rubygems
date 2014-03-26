@@ -1261,7 +1261,7 @@ class Gem::Specification < Gem::BasicSpecification
   def activate
     other = Gem.loaded_specs[self.name]
     if other
-      conflicting_version_check! other
+      check_version_conflict other
       return false
     end
 
@@ -2053,7 +2053,7 @@ class Gem::Specification < Gem::BasicSpecification
   # Raise an exception if the version of this spec conflicts with the one
   # that is already loaded (+other+)
 
-  def conflicting_version_check! other
+  def check_version_conflict other # :nodoc:
     if self.version != other.version then
       # This gem is already loaded.  If the currently loaded gem is not in the
       # list of candidate gems, then we have a version conflict.
@@ -2068,7 +2068,7 @@ class Gem::Specification < Gem::BasicSpecification
     end
   end
 
-  private :conflicting_version_check!
+  private :check_version_conflict
 
   ##
   # Check the spec for possible conflicts and freak out if there are any.

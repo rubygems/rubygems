@@ -457,6 +457,20 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
   end
 
+  def test_install_local_prerelease
+    util_setup_gems
+
+    FileUtils.mv @a1_pre_gem, @tempdir
+    inst = nil
+
+    Dir.chdir @tempdir do
+      inst = Gem::DependencyInstaller.new :domain => :local
+      inst.install 'a-1.a.gem'
+    end
+
+    assert_equal %w[a-1.a], inst.installed_gems.map { |s| s.full_name }
+  end
+
   def test_install_local_dependency
     util_setup_gems
 

@@ -154,7 +154,7 @@ class Gem::RemoteFetcher
     # REFACTOR: split this up and dispatch on scheme (eg download_http)
     # REFACTOR: be sure to clean up fake fetcher when you do this... cleaner
     case scheme
-    when 'http', 'https' then
+    when 'http', 'https', 's3' then
       unless File.exist? local_gem_path then
         begin
           verbose "Downloading gem #{gem_file_name}"
@@ -283,6 +283,11 @@ class Gem::RemoteFetcher
     end
   end
 
+  def fetch_s3(uri, mtime = nil, head = false)
+    public_uri = sign_s3_url(uri)
+    fetch_https public_uri, mtime, head
+  end
+
   ##
   # Downloads +uri+ to +path+ if necessary. If no path is given, it just
   # passes the data.
@@ -340,5 +345,31 @@ class Gem::RemoteFetcher
     uri.scheme.downcase == 'https'
   end
 
+  protected
+
+  # we have our own signing code here to avoid a dependency on the aws-sdk gem
+  # fortunately, a simple GET request isn't too complex to sign properly
+  def sign_s3_url(uri, expiration = nil)
+    require 'base64'
+    require 'openssl'
+
+    unless uri.user && uri.password
+      raise FetchError.new("credentials needed in s3 source, like s3://key:secret@bucket-name/", uri.to_s)
+    end
+
+    expiration ||= s3_expiration
+    canonical_path = "/#{uri.host}#{uri.path}"
+    payload = "GET\n\n\n#{expiration}\n#{canonical_path}"
+    digest = OpenSSL::HMAC.digest('sha1', uri.password, payload)
+    # URI.escape is deprecated, and there isn't yet a replacement that does quite what we want
+    signature = Base64.encode64(digest).gsub("\n", '').gsub(/[\+\/=]/) { |c| BASE64_URI_TRANSLATE[c] }
+    URI.parse("https://#{uri.host}.s3.amazonaws.com#{uri.path}?AWSAccessKeyId=#{uri.user}&Expires=#{expiration}&Signature=#{signature}")
+  end
+
+  def s3_expiration
+    (Time.now + 3600).to_i # one hour from now
+  end
+
+  BASE64_URI_TRANSLATE = { '+' => '%2B', '/' => '%2F', '=' => '%3D' }.freeze
 end
 

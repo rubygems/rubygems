@@ -12,5 +12,9 @@ class Gem::Resolver::LocalSpecification < Gem::Resolver::SpecSpecification
     super
   end
 
+  def local? # :nodoc:
+    true
+  end
+
 end
 

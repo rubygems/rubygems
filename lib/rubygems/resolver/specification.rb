@@ -85,5 +85,8 @@ class Gem::Resolver::Specification
     Gem::Platform.match spec.platform
   end
 
+  def local? # :nodoc:
+    false
+  end
 end
 

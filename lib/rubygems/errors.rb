@@ -22,14 +22,30 @@ module Gem
   # Raised when there are conflicting gem specs loaded
 
   class ConflictError < LoadError
-    def initialize target, conf
-      y = conf.map { |act,con|
-        "#{act.full_name} conflicts with #{con.join(", ")}"
+
+    ##
+    # A Hash mapping conflicting specifications to the dependencies that
+    # caused the conflict
+
+    attr_reader :conflicts
+
+    ##
+    # The specification that had the conflict
+
+    attr_reader :target
+
+    def initialize target, conflicts
+      @target    = target
+      @conflicts = conflicts
+      @name      = target.name
+
+      reason = conflicts.map { |act, conflicts|
+        "#{act.full_name} conflicts with #{conflicts.join(", ")}"
       }.join ", "
 
       # TODO: improve message by saying who activated `con`
 
-      super("Unable to activate #{target.full_name}, because #{y}")
+      super("Unable to activate #{target.full_name}, because #{reason}")
     end
   end
 

@@ -88,7 +88,7 @@ class Gem::Request
       @connections[connection_id]
     end
 
-    if https?(uri) and not connection.started? then
+    if self.class.https?(uri) and not connection.started? then
       configure_connection_for_https(connection)
     end
 
@@ -224,7 +224,7 @@ class Gem::Request
     uri
   end
 
-  def https?(uri)
+  def self.https? uri
     uri.scheme.downcase == 'https'
   end
 

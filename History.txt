@@ -44,6 +44,8 @@ Bug fixes:
 * Fixed typo in Jim Weirich's name.  Ruby pull request #577 by Mo Khan.
 * Fixed File.exists? warnings.  Pull request #829 by SHIBATA Hiroshi.
 * Fixed show_release_notes test for LANG=C.  Issue #862 by Luis Lavena.
+* Fixed Gem::Package from IO tests on windows.  Patch from issue #861 by Luis
+  Lavena.
 
 === 2.2.2 / 2014-02-05
 

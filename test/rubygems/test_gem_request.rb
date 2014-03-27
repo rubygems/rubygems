@@ -75,7 +75,7 @@ class TestGemRequest < Gem::TestCase
     request = Gem::Request.new URI('https://example'), nil, nil, nil
 
     def request.add_rubygems_trusted_certs store
-      store.add_cert TestGemRequest::PUBLIC_CERT
+      store.add_file TestGemRequest::PUBLIC_CERT_FILE
     end
 
     request.configure_connection_for_https connection
@@ -94,7 +94,7 @@ class TestGemRequest < Gem::TestCase
     request = Gem::Request.new URI('https://example'), nil, nil, nil
 
     def request.add_rubygems_trusted_certs store
-      store.add_cert TestGemRequest::PUBLIC_CERT
+      store.add_file TestGemRequest::PUBLIC_CERT_FILE
     end
 
     request.configure_connection_for_https connection

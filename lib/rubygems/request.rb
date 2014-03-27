@@ -7,7 +7,7 @@ class Gem::Request
 
   include Gem::UserInteraction
 
-  attr_reader :proxy_uri
+  attr_reader :proxy_uri, :cert_files
 
   def initialize(uri, request_class, last_modified, proxy)
     @uri = uri
@@ -23,21 +23,17 @@ class Gem::Request
       when URI::HTTP then proxy
       else URI.parse(proxy)
       end
+
+    @cert_files = get_cert_files
   end
 
-  def cert_files
+  def get_cert_files
     pattern = File.expand_path("./ssl_certs/*.pem", File.dirname(__FILE__))
     Dir.glob(pattern)
   end
-  private :cert_files
+  private :get_cert_files
 
-  def add_rubygems_trusted_certs store, files
-    files.each do |ssl_cert_file|
-      store.add_file ssl_cert_file
-    end
-  end
-
-  def configure_connection_for_https(connection)
+  def configure_connection_for_https(connection, cert_files)
     require 'net/https'
     connection.use_ssl = true
     connection.verify_mode =
@@ -51,7 +47,9 @@ class Gem::Request
     end
 
     store.set_default_paths
-    add_rubygems_trusted_certs(store, cert_files)
+    cert_files.each do |ssl_cert_file|
+      store.add_file ssl_cert_file
+    end
     if Gem.configuration.ssl_ca_cert
       if File.directory? Gem.configuration.ssl_ca_cert
         store.add_path Gem.configuration.ssl_ca_cert
@@ -91,7 +89,7 @@ class Gem::Request
     connection = Net::HTTP.new(*net_http_args(uri, @proxy_uri))
 
     if self.class.https?(uri) then
-      configure_connection_for_https(connection)
+      configure_connection_for_https(connection, @cert_files)
     end
 
     connection.start

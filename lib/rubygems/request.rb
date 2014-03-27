@@ -2,6 +2,7 @@ require 'net/http'
 require 'thread'
 require 'time'
 require 'rubygems/user_interaction'
+require 'monitor'
 
 class Gem::Request
 
@@ -45,17 +46,39 @@ class Gem::Request
       pool_for(uri).checkin connection
     end
 
-    class HTTPPool
+    ###
+    # A connection "pool" that only manages one connection for now.
+    # Provides thread safe `checkout` and `checkin` methods.  The
+    # pool consists of one connection that corresponds to `http_args`.
+    # This class is private, do not use it.
+    class HTTPPool # :nodoc:
       def initialize http_args, cert_files
         @http_args  = http_args
         @cert_files = cert_files
+        @conn       = false
+        @lock       = Monitor.new
+        @cv         = @lock.new_cond
       end
 
       def checkout
-        make_connection
+        @lock.synchronize do
+          if @conn.nil?
+            @cv.wait_while { @conn.nil? }
+            conn, @conn = @conn, nil
+            conn
+          else
+            conn = @conn || make_connection
+            @conn = nil
+            conn
+          end
+        end
       end
 
       def checkin connection
+        @lock.synchronize do
+          @conn = connection
+          @cv.broadcast
+        end
       end
 
       private
@@ -70,7 +93,7 @@ class Gem::Request
       end
     end
 
-    class HTTPSPool < HTTPPool
+    class HTTPSPool < HTTPPool # :nodoc:
       private
 
       def setup_connection connection

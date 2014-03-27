@@ -8,7 +8,7 @@ class Gem::Request
 
   include Gem::UserInteraction
 
-  attr_reader :proxy_uri, :cert_files
+  attr_reader :cert_files
 
   def initialize(uri, request_class, last_modified, proxy)
     @uri = uri
@@ -17,12 +17,14 @@ class Gem::Request
     @requests = Hash.new 0
     @user_agent = user_agent
 
-    @proxy_uri = self.class.proxy_uri(proxy || self.class.get_proxy_from_env(uri.scheme))
+    proxy_uri = self.class.proxy_uri(proxy || self.class.get_proxy_from_env(uri.scheme))
 
     @cert_files = get_cert_files
 
-    @connection_pool = ConnectionPools.new @proxy_uri, @cert_files
+    @connection_pool = ConnectionPools.new proxy_uri, @cert_files
   end
+
+  def proxy_uri; @connection_pool.proxy_uri; end
 
   def self.proxy_uri proxy
     case proxy
@@ -36,6 +38,8 @@ class Gem::Request
     @client = Net::HTTP
 
     class << self; attr_accessor :client; end
+
+    attr_reader :proxy_uri
 
     def initialize proxy_uri, cert_files
       @proxy_uri  = proxy_uri

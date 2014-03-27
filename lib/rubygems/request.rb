@@ -81,11 +81,11 @@ class Gem::Request
 
     connection = Net::HTTP.new(*net_http_args)
 
-    if self.class.https?(uri) and not connection.started? then
+    if self.class.https?(uri) then
       configure_connection_for_https(connection)
     end
 
-    connection.start unless connection.started?
+    connection.start
 
     connection
   rescue defined?(OpenSSL::SSL) ? OpenSSL::SSL::SSLError : Errno::EHOSTDOWN,

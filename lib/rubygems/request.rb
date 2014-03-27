@@ -42,32 +42,40 @@ class Gem::Request
     end
 
     def checkin_connection_for uri, connection
+      pool_for(uri).checkin connection
     end
 
     class HTTPPool
       def initialize http_args, cert_files
-        @http_args = http_args
+        @http_args  = http_args
         @cert_files = cert_files
       end
 
       def checkout
-        connection = make_connection
-        connection.start
-        connection
+        make_connection
+      end
+
+      def checkin connection
       end
 
       private
 
       def make_connection
-        Net::HTTP.new(*@http_args)
+        setup_connection Net::HTTP.new(*@http_args)
+      end
+
+      def setup_connection connection
+        connection.start
+        connection
       end
     end
 
     class HTTPSPool < HTTPPool
       private
 
-      def make_connection
-        Gem::Request.configure_connection_for_https(super, @cert_files)
+      def setup_connection connection
+        Gem::Request.configure_connection_for_https(connection, @cert_files)
+        super
       end
     end
 

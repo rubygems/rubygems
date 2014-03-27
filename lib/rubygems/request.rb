@@ -63,23 +63,27 @@ class Gem::Request
             'Unable to require openssl, install OpenSSL and rebuild ruby (preferred) or use non-HTTPS sources')
   end
 
+  def net_http_args uri, proxy_uri
+    net_http_args = [uri.host, uri.port]
+
+    if proxy_uri and not self.class.no_proxy?(uri.host, self.class.get_no_proxy_from_env) then
+      net_http_args + [
+        proxy_uri.host,
+        proxy_uri.port,
+        Gem::UriFormatter.new(proxy_uri.user).unescape,
+        Gem::UriFormatter.new(proxy_uri.password).unescape,
+      ]
+    else
+      net_http_args
+    end
+  end
+
   ##
   # Creates or an HTTP connection based on +uri+, or retrieves an existing
   # connection, using a proxy if needed.
 
   def connection_for(uri)
-    net_http_args = [uri.host, uri.port]
-
-    if @proxy_uri and not self.class.no_proxy?(uri.host, self.class.get_no_proxy_from_env) then
-      net_http_args += [
-        @proxy_uri.host,
-        @proxy_uri.port,
-        Gem::UriFormatter.new(@proxy_uri.user).unescape,
-        Gem::UriFormatter.new(@proxy_uri.password).unescape,
-      ]
-    end
-
-    connection = Net::HTTP.new(*net_http_args)
+    connection = Net::HTTP.new(*net_http_args(uri, @proxy_uri))
 
     if self.class.https?(uri) then
       configure_connection_for_https(connection)

@@ -15,29 +15,32 @@ class Gem::Request
     @requests = Hash.new 0
     @user_agent = user_agent
 
-    proxy_uri = self.class.proxy_uri(proxy || self.class.get_proxy_from_env(uri.scheme))
-
     cert_files = get_cert_files
+    proxy ||= self.class.get_proxy_from_env(uri.scheme)
 
-    @connection_pool = ConnectionPools.new proxy_uri, cert_files
+    @connection_pool = ConnectionPools.create proxy, cert_files
   end
 
   def proxy_uri; @connection_pool.proxy_uri; end
   def cert_files; @connection_pool.cert_files; end
-
-  def self.proxy_uri proxy
-    case proxy
-    when :no_proxy then nil
-    when URI::HTTP then proxy
-    else URI.parse(proxy)
-    end
-  end
 
   class ConnectionPools # :nodoc:
     @client = Net::HTTP
     class << self; attr_accessor :client; end
 
     attr_reader :proxy_uri, :cert_files
+
+    def self.create proxy, cert_files
+      new proxy_uri(proxy), cert_files
+    end
+
+    def self.proxy_uri proxy
+      case proxy
+      when :no_proxy then nil
+      when URI::HTTP then proxy
+      else URI.parse(proxy)
+      end
+    end
 
     def initialize proxy_uri, cert_files
       @proxy_uri  = proxy_uri

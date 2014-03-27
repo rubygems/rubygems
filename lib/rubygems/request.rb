@@ -72,7 +72,7 @@ class Gem::Request
   def connection_for(uri)
     net_http_args = [uri.host, uri.port]
 
-    if @proxy_uri and not no_proxy?(uri.host, get_no_proxy_from_env) then
+    if @proxy_uri and not self.class.no_proxy?(uri.host, self.class.get_no_proxy_from_env) then
       net_http_args += [
         @proxy_uri.host,
         @proxy_uri.port,
@@ -189,7 +189,7 @@ class Gem::Request
   ##
   # Returns list of no_proxy entries (if any) from the environment
 
-  def get_no_proxy_from_env
+  def self.get_no_proxy_from_env
     env_no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
 
     return [] if env_no_proxy.nil?  or env_no_proxy.empty?
@@ -228,7 +228,7 @@ class Gem::Request
     uri.scheme.downcase == 'https'
   end
 
-  def no_proxy? host, env_no_proxy
+  def self.no_proxy? host, env_no_proxy
     host = host.downcase
     env_no_proxy.each do |pattern|
       pattern = pattern.downcase

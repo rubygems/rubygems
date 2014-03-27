@@ -17,17 +17,20 @@ class Gem::Request
     @requests = Hash.new 0
     @user_agent = user_agent
 
-    @proxy_uri =
-      case proxy
-      when :no_proxy then nil
-      when nil       then get_proxy_from_env uri.scheme
-      when URI::HTTP then proxy
-      else URI.parse(proxy)
-      end
+    @proxy_uri = self.class.proxy_uri proxy, uri
 
     @cert_files = get_cert_files
 
     @connection_pool = ConnectionPools.new @proxy_uri, @cert_files
+  end
+
+  def self.proxy_uri proxy, uri
+    case proxy
+    when :no_proxy then nil
+    when nil       then get_proxy_from_env uri.scheme
+    when URI::HTTP then proxy
+    else URI.parse(proxy)
+    end
   end
 
   class ConnectionPools # :nodoc:
@@ -303,7 +306,7 @@ class Gem::Request
   # Returns a proxy URI for the given +scheme+ if one is set in the
   # environment variables.
 
-  def get_proxy_from_env scheme = 'http'
+  def self.get_proxy_from_env scheme = 'http'
     _scheme = scheme.downcase
     _SCHEME = scheme.upcase
     env_proxy = ENV["#{_scheme}_proxy"] || ENV["#{_SCHEME}_PROXY"]

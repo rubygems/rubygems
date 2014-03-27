@@ -109,16 +109,18 @@ class TestGemRequest < Gem::TestCase
 
   def test_get_proxy_from_env_fallback
     ENV['http_proxy'] = @proxy_uri
-
-    proxy = @request.get_proxy_from_env 'https'
+    request = Gem::Request.new @uri, nil, nil, nil
+    proxy = request.proxy_uri
 
     assert_equal URI(@proxy_uri), proxy
   end
 
   def test_get_proxy_from_env_https
     ENV['https_proxy'] = @proxy_uri
+    uri = URI('https://example')
+    request = Gem::Request.new uri, nil, nil, nil
 
-    proxy = @request.get_proxy_from_env 'https'
+    proxy = request.proxy_uri
 
     assert_equal URI(@proxy_uri), proxy
   end
@@ -127,8 +129,9 @@ class TestGemRequest < Gem::TestCase
     ENV['http_proxy'] = @proxy_uri
     ENV['http_proxy_user'] = 'foo\user'
     ENV['http_proxy_pass'] = 'my bar'
+    request = Gem::Request.new @uri, nil, nil, nil
 
-    proxy = @request.get_proxy_from_env
+    proxy = request.proxy_uri
 
     assert_equal 'foo\user', Gem::UriFormatter.new(proxy.user).unescape
     assert_equal 'my bar', Gem::UriFormatter.new(proxy.password).unescape
@@ -138,8 +141,9 @@ class TestGemRequest < Gem::TestCase
     ENV['http_proxy'] = @proxy_uri
     ENV['http_proxy_user'] = 'foo@user'
     ENV['http_proxy_pass'] = 'my@bar'
+    request = Gem::Request.new @uri, nil, nil, nil
 
-    proxy = @request.get_proxy_from_env
+    proxy = request.proxy_uri
 
     assert_equal 'foo%40user', proxy.user
     assert_equal 'my%40bar',   proxy.password
@@ -147,15 +151,17 @@ class TestGemRequest < Gem::TestCase
 
   def test_get_proxy_from_env_normalize
     ENV['HTTP_PROXY'] = 'fakeurl:12345'
+    request = Gem::Request.new @uri, nil, nil, nil
 
-    assert_equal 'http://fakeurl:12345', @request.get_proxy_from_env.to_s
+    assert_equal 'http://fakeurl:12345', request.proxy_uri.to_s
   end
 
   def test_get_proxy_from_env_empty
     ENV['HTTP_PROXY'] = ''
     ENV.delete 'http_proxy'
+    request = Gem::Request.new @uri, nil, nil, nil
 
-    assert_nil @request.get_proxy_from_env
+    assert_nil request.proxy_uri
   end
 
   def test_fetch

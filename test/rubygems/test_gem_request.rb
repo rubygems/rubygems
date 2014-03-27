@@ -72,11 +72,11 @@ class TestGemRequest < Gem::TestCase
   def test_configure_connection_for_https
     connection = Net::HTTP.new 'localhost', 443
 
-    request = Gem::Request.new URI('https://example'), nil, nil, nil
-
-    def request.add_rubygems_trusted_certs store
-      store.add_file TestGemRequest::PUBLIC_CERT_FILE
-    end
+    request = Class.new(Gem::Request) {
+      def cert_files
+        [TestGemRequest::PUBLIC_CERT_FILE]
+      end
+    }.new URI('https://example'), nil, nil, nil
 
     request.configure_connection_for_https connection
 
@@ -91,11 +91,11 @@ class TestGemRequest < Gem::TestCase
 
     connection = Net::HTTP.new 'localhost', 443
 
-    request = Gem::Request.new URI('https://example'), nil, nil, nil
-
-    def request.add_rubygems_trusted_certs store
-      store.add_file TestGemRequest::PUBLIC_CERT_FILE
-    end
+    request = Class.new(Gem::Request) {
+      def cert_files
+        [TestGemRequest::PUBLIC_CERT_FILE]
+      end
+    }.new URI('https://example'), nil, nil, nil
 
     request.configure_connection_for_https connection
 

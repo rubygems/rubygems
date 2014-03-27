@@ -25,9 +25,14 @@ class Gem::Request
       end
   end
 
-  def add_rubygems_trusted_certs(store)
+  def cert_files
     pattern = File.expand_path("./ssl_certs/*.pem", File.dirname(__FILE__))
-    Dir.glob(pattern).each do |ssl_cert_file|
+    Dir.glob(pattern)
+  end
+  private :cert_files
+
+  def add_rubygems_trusted_certs store, files
+    files.each do |ssl_cert_file|
       store.add_file ssl_cert_file
     end
   end
@@ -46,7 +51,7 @@ class Gem::Request
     end
 
     store.set_default_paths
-    add_rubygems_trusted_certs(store)
+    add_rubygems_trusted_certs(store, cert_files)
     if Gem.configuration.ssl_ca_cert
       if File.directory? Gem.configuration.ssl_ca_cert
         store.add_path Gem.configuration.ssl_ca_cert

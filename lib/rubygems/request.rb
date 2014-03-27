@@ -26,26 +26,64 @@ class Gem::Request
 
     @cert_files = get_cert_files
 
-    @connection_pool = ConnectionPool.new @proxy_uri, @cert_files
+    @connection_pool = ConnectionPools.new @proxy_uri, @cert_files
   end
 
-  class ConnectionPool # :nodoc:
+  class ConnectionPools # :nodoc:
     def initialize proxy_uri, cert_files
-      @proxy_uri = proxy_uri
+      @proxy_uri  = proxy_uri
       @cert_files = cert_files
+      @pools      = {}
+      @pool_mutex = Mutex.new
     end
 
     def checkout_connection_for uri
-      connection = Net::HTTP.new(*net_http_args(uri, @proxy_uri))
+      pool_for(uri).checkout
+    end
 
-      if https?(uri) then
-        Gem::Request.configure_connection_for_https(connection, @cert_files)
+    def checkin_connection_for uri, connection
+    end
+
+    class HTTPPool
+      def initialize http_args, cert_files
+        @http_args = http_args
+        @cert_files = cert_files
       end
 
-      connection.start
+      def checkout
+        connection = make_connection
+        connection.start
+        connection
+      end
+
+      private
+
+      def make_connection
+        Net::HTTP.new(*@http_args)
+      end
+    end
+
+    class HTTPSPool < HTTPPool
+      private
+
+      def make_connection
+        Gem::Request.configure_connection_for_https(super, @cert_files)
+      end
     end
 
     private
+
+    def pool_for uri
+      http_args = net_http_args(uri, @proxy_uri)
+      key       = http_args + [https?(uri)]
+      @pool_mutex.synchronize do
+        @pools[key] ||= if https?(uri)
+                          HTTPSPool.new(http_args, @cert_files)
+                        else
+                          HTTPPool.new(http_args, @cert_files)
+                        end
+      end
+    end
 
     ##
     # Returns list of no_proxy entries (if any) from the environment
@@ -118,6 +156,7 @@ class Gem::Request
       end
     end
     connection.cert_store = store
+    connection
   rescue LoadError => e
     raise unless (e.respond_to?(:path) && e.path == 'openssl') ||
                  e.message =~ / -- openssl$/
@@ -218,6 +257,8 @@ class Gem::Request
 
       retried = true
       retry
+    ensure
+      @connection_pool.checkin_connection_for @uri, connection
     end
 
     response

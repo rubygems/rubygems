@@ -33,7 +33,7 @@ class Gem::Request
   end
   private :get_cert_files
 
-  def configure_connection_for_https(connection, cert_files)
+  def self.configure_connection_for_https(connection, cert_files)
     require 'net/https'
     connection.use_ssl = true
     connection.verify_mode =
@@ -89,7 +89,7 @@ class Gem::Request
     connection = Net::HTTP.new(*net_http_args(uri, @proxy_uri))
 
     if self.class.https?(uri) then
-      configure_connection_for_https(connection, @cert_files)
+      self.class.configure_connection_for_https(connection, @cert_files)
     end
 
     connection.start

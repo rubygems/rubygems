@@ -78,7 +78,7 @@ class TestGemRequest < Gem::TestCase
       end
     }.new URI('https://example'), nil, nil, nil
 
-    request.configure_connection_for_https connection, request.cert_files
+    Gem::Request.configure_connection_for_https connection, request.cert_files
 
     cert_store = connection.cert_store
 
@@ -97,7 +97,7 @@ class TestGemRequest < Gem::TestCase
       end
     }.new URI('https://example'), nil, nil, nil
 
-    request.configure_connection_for_https connection, request.cert_files
+    Gem::Request.configure_connection_for_https connection, request.cert_files
 
     cert_store = connection.cert_store
 

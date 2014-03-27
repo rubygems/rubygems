@@ -25,6 +25,66 @@ class Gem::Request
       end
 
     @cert_files = get_cert_files
+
+    @connection_pool = ConnectionPool.new @proxy_uri, @cert_files
+  end
+
+  class ConnectionPool # :nodoc:
+    def initialize proxy_uri, cert_files
+      @proxy_uri = proxy_uri
+      @cert_files = cert_files
+    end
+
+    def checkout_connection_for uri
+      connection = Net::HTTP.new(*net_http_args(uri, @proxy_uri))
+
+      if https?(uri) then
+        Gem::Request.configure_connection_for_https(connection, @cert_files)
+      end
+
+      connection.start
+    end
+
+    private
+
+    ##
+    # Returns list of no_proxy entries (if any) from the environment
+
+    def get_no_proxy_from_env
+      env_no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
+
+      return [] if env_no_proxy.nil?  or env_no_proxy.empty?
+
+      env_no_proxy.split(/\s*,\s*/)
+    end
+
+    def https? uri
+      uri.scheme.downcase == 'https'
+    end
+
+    def no_proxy? host, env_no_proxy
+      host = host.downcase
+      env_no_proxy.each do |pattern|
+        pattern = pattern.downcase
+        return true if host[-pattern.length, pattern.length ] == pattern
+      end
+      return false
+    end
+
+    def net_http_args uri, proxy_uri
+      net_http_args = [uri.host, uri.port]
+
+      if proxy_uri and not no_proxy?(uri.host, get_no_proxy_from_env) then
+        net_http_args + [
+          proxy_uri.host,
+          proxy_uri.port,
+          Gem::UriFormatter.new(proxy_uri.user).unescape,
+          Gem::UriFormatter.new(proxy_uri.password).unescape,
+        ]
+      else
+        net_http_args
+      end
+    end
   end
 
   def get_cert_files
@@ -66,35 +126,12 @@ class Gem::Request
             'Unable to require openssl, install OpenSSL and rebuild ruby (preferred) or use non-HTTPS sources')
   end
 
-  def net_http_args uri, proxy_uri
-    net_http_args = [uri.host, uri.port]
-
-    if proxy_uri and not self.class.no_proxy?(uri.host, self.class.get_no_proxy_from_env) then
-      net_http_args + [
-        proxy_uri.host,
-        proxy_uri.port,
-        Gem::UriFormatter.new(proxy_uri.user).unescape,
-        Gem::UriFormatter.new(proxy_uri.password).unescape,
-      ]
-    else
-      net_http_args
-    end
-  end
-
   ##
   # Creates or an HTTP connection based on +uri+, or retrieves an existing
   # connection, using a proxy if needed.
 
   def connection_for(uri)
-    connection = Net::HTTP.new(*net_http_args(uri, @proxy_uri))
-
-    if self.class.https?(uri) then
-      self.class.configure_connection_for_https(connection, @cert_files)
-    end
-
-    connection.start
-
-    connection
+    @connection_pool.checkout_connection_for uri
   rescue defined?(OpenSSL::SSL) ? OpenSSL::SSL::SSLError : Errno::EHOSTDOWN,
          Errno::EHOSTDOWN => e
     raise Gem::RemoteFetcher::FetchError.new(e.message, uri)
@@ -187,17 +224,6 @@ class Gem::Request
   end
 
   ##
-  # Returns list of no_proxy entries (if any) from the environment
-
-  def self.get_no_proxy_from_env
-    env_no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
-
-    return [] if env_no_proxy.nil?  or env_no_proxy.empty?
-
-    env_no_proxy.split(/\s*,\s*/)
-  end
-
-  ##
   # Returns a proxy URI for the given +scheme+ if one is set in the
   # environment variables.
 
@@ -222,19 +248,6 @@ class Gem::Request
     end
 
     uri
-  end
-
-  def self.https? uri
-    uri.scheme.downcase == 'https'
-  end
-
-  def self.no_proxy? host, env_no_proxy
-    host = host.downcase
-    env_no_proxy.each do |pattern|
-      pattern = pattern.downcase
-      return true if host[-pattern.length, pattern.length ] == pattern
-    end
-    return false
   end
 
   ##

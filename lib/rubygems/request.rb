@@ -8,17 +8,32 @@ class Gem::Request
 
   include Gem::UserInteraction
 
-  def initialize(uri, request_class, last_modified, proxy)
+  ###
+  # Legacy.  This is used in tests.
+  def self.create_with_proxy uri, request_class, last_modified, proxy # :nodoc:
+    cert_files = get_cert_files
+    proxy ||= get_proxy_from_env(uri.scheme)
+    pool       = ConnectionPools.new proxy_uri(proxy), cert_files
+
+    new(uri, request_class, last_modified, pool)
+  end
+
+  def self.proxy_uri proxy # :nodoc:
+    case proxy
+    when :no_proxy then nil
+    when URI::HTTP then proxy
+    else URI.parse(proxy)
+    end
+  end
+
+  def initialize(uri, request_class, last_modified, pool)
     @uri = uri
     @request_class = request_class
     @last_modified = last_modified
     @requests = Hash.new 0
     @user_agent = user_agent
 
-    cert_files = self.class.get_cert_files
-    proxy ||= self.class.get_proxy_from_env(uri.scheme)
-
-    @connection_pool = ConnectionPools.create proxy, cert_files
+    @connection_pool = pool
   end
 
   def proxy_uri; @connection_pool.proxy_uri; end
@@ -29,18 +44,6 @@ class Gem::Request
     class << self; attr_accessor :client; end
 
     attr_reader :proxy_uri, :cert_files
-
-    def self.create proxy, cert_files
-      new proxy_uri(proxy), cert_files
-    end
-
-    def self.proxy_uri proxy
-      case proxy
-      when :no_proxy then nil
-      when URI::HTTP then proxy
-      else URI.parse(proxy)
-      end
-    end
 
     def initialize proxy_uri, cert_files
       @proxy_uri  = proxy_uri

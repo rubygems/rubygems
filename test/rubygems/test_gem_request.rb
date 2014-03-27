@@ -11,6 +11,10 @@ class TestGemRequest < Gem::TestCase
   PUBLIC_CERT_FILE = cert_path 'public'
   SSL_CERT         = load_cert 'ssl'
 
+  def make_request uri, request_class, last_modified, proxy
+    Gem::Request.create_with_proxy uri, request_class, last_modified, proxy
+  end
+
   def setup
     @proxies = %w[http_proxy HTTP_PROXY http_proxy_user HTTP_PROXY_USER http_proxy_pass HTTP_PROXY_PASS no_proxy NO_PROXY]
     @old_proxies = @proxies.map {|k| ENV[k] }
@@ -21,7 +25,7 @@ class TestGemRequest < Gem::TestCase
     @proxy_uri = "http://localhost:1234"
     @uri = URI('http://example')
 
-    @request = Gem::Request.new @uri, nil, nil, nil
+    @request = make_request @uri, nil, nil, nil
   end
 
   def teardown
@@ -33,7 +37,7 @@ class TestGemRequest < Gem::TestCase
   def test_initialize_proxy
     proxy_uri = 'http://proxy.example.com'
 
-    request = Gem::Request.new @uri, nil, nil, proxy_uri
+    request = make_request @uri, nil, nil, proxy_uri
 
     assert_equal proxy_uri, request.proxy_uri.to_s
   end
@@ -41,7 +45,7 @@ class TestGemRequest < Gem::TestCase
   def test_initialize_proxy_URI
     proxy_uri = 'http://proxy.example.com'
 
-    request = Gem::Request.new @uri, nil, nil, URI(proxy_uri)
+    request = make_request @uri, nil, nil, URI(proxy_uri)
 
     assert_equal proxy_uri, request.proxy_uri.to_s
   end
@@ -51,7 +55,7 @@ class TestGemRequest < Gem::TestCase
     ENV['http_proxy_user'] = 'foo'
     ENV['http_proxy_pass'] = 'bar'
 
-    request = Gem::Request.new @uri, nil, nil, nil
+    request = make_request @uri, nil, nil, nil
 
     proxy = request.proxy_uri
 
@@ -62,7 +66,7 @@ class TestGemRequest < Gem::TestCase
   def test_initialize_proxy_ENV_https
     ENV['https_proxy'] = @proxy_uri
 
-    request = Gem::Request.new URI('https://example'), nil, nil, nil
+    request = make_request URI('https://example'), nil, nil, nil
 
     proxy = request.proxy_uri
 
@@ -76,7 +80,7 @@ class TestGemRequest < Gem::TestCase
       def self.get_cert_files
         [TestGemRequest::PUBLIC_CERT_FILE]
       end
-    }.new URI('https://example'), nil, nil, nil
+    }.create_with_proxy URI('https://example'), nil, nil, nil
 
     Gem::Request.configure_connection_for_https connection, request.cert_files
 
@@ -95,7 +99,7 @@ class TestGemRequest < Gem::TestCase
       def self.get_cert_files
         [TestGemRequest::PUBLIC_CERT_FILE]
       end
-    }.new URI('https://example'), nil, nil, nil
+    }.create_with_proxy URI('https://example'), nil, nil, nil
 
     Gem::Request.configure_connection_for_https connection, request.cert_files
 
@@ -109,7 +113,7 @@ class TestGemRequest < Gem::TestCase
 
   def test_get_proxy_from_env_fallback
     ENV['http_proxy'] = @proxy_uri
-    request = Gem::Request.new @uri, nil, nil, nil
+    request = make_request @uri, nil, nil, nil
     proxy = request.proxy_uri
 
     assert_equal URI(@proxy_uri), proxy
@@ -118,7 +122,7 @@ class TestGemRequest < Gem::TestCase
   def test_get_proxy_from_env_https
     ENV['https_proxy'] = @proxy_uri
     uri = URI('https://example')
-    request = Gem::Request.new uri, nil, nil, nil
+    request = make_request uri, nil, nil, nil
 
     proxy = request.proxy_uri
 
@@ -129,7 +133,7 @@ class TestGemRequest < Gem::TestCase
     ENV['http_proxy'] = @proxy_uri
     ENV['http_proxy_user'] = 'foo\user'
     ENV['http_proxy_pass'] = 'my bar'
-    request = Gem::Request.new @uri, nil, nil, nil
+    request = make_request @uri, nil, nil, nil
 
     proxy = request.proxy_uri
 
@@ -141,7 +145,7 @@ class TestGemRequest < Gem::TestCase
     ENV['http_proxy'] = @proxy_uri
     ENV['http_proxy_user'] = 'foo@user'
     ENV['http_proxy_pass'] = 'my@bar'
-    request = Gem::Request.new @uri, nil, nil, nil
+    request = make_request @uri, nil, nil, nil
 
     proxy = request.proxy_uri
 
@@ -151,7 +155,7 @@ class TestGemRequest < Gem::TestCase
 
   def test_get_proxy_from_env_normalize
     ENV['HTTP_PROXY'] = 'fakeurl:12345'
-    request = Gem::Request.new @uri, nil, nil, nil
+    request = make_request @uri, nil, nil, nil
 
     assert_equal 'http://fakeurl:12345', request.proxy_uri.to_s
   end
@@ -159,14 +163,14 @@ class TestGemRequest < Gem::TestCase
   def test_get_proxy_from_env_empty
     ENV['HTTP_PROXY'] = ''
     ENV.delete 'http_proxy'
-    request = Gem::Request.new @uri, nil, nil, nil
+    request = make_request @uri, nil, nil, nil
 
     assert_nil request.proxy_uri
   end
 
   def test_fetch
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
-    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
+    @request = make_request(uri, Net::HTTP::Get, nil, nil)
     util_stub_connection_for :body => :junk, :code => 200
 
     response = @request.fetch
@@ -177,7 +181,7 @@ class TestGemRequest < Gem::TestCase
 
   def test_fetch_basic_auth
     uri = URI.parse "https://user:pass@example.rubygems/specs.#{Gem.marshal_version}"
-    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
+    @request = make_request(uri, Net::HTTP::Get, nil, nil)
     conn = util_stub_connection_for :body => :junk, :code => 200
 
     @request.fetch
@@ -189,7 +193,7 @@ class TestGemRequest < Gem::TestCase
 
   def test_fetch_basic_auth_encoded
     uri = URI.parse "https://user:%7BDEScede%7Dpass@example.rubygems/specs.#{Gem.marshal_version}"
-    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
+    @request = make_request(uri, Net::HTTP::Get, nil, nil)
     conn = util_stub_connection_for :body => :junk, :code => 200
 
     @request.fetch
@@ -201,7 +205,7 @@ class TestGemRequest < Gem::TestCase
 
   def test_fetch_head
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
-    @request = Gem::Request.new(uri, Net::HTTP::Get, nil, nil)
+    @request = make_request(uri, Net::HTTP::Get, nil, nil)
     util_stub_connection_for :body => '', :code => 200
 
     response = @request.fetch
@@ -213,7 +217,7 @@ class TestGemRequest < Gem::TestCase
   def test_fetch_unmodified
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
     t = Time.utc(2013, 1, 2, 3, 4, 5)
-    @request = Gem::Request.new(uri, Net::HTTP::Get, t, nil)
+    @request = make_request(uri, Net::HTTP::Get, t, nil)
     conn = util_stub_connection_for :body => '', :code => 304
 
     response = @request.fetch
@@ -227,7 +231,7 @@ class TestGemRequest < Gem::TestCase
   end
 
   def test_user_agent
-    ua = Gem::Request.new(@uri, nil, nil, nil).user_agent
+    ua = make_request(@uri, nil, nil, nil).user_agent
 
     assert_match %r%^RubyGems/\S+ \S+ Ruby/\S+ \(.*?\)%,          ua
     assert_match %r%RubyGems/#{Regexp.escape Gem::VERSION}%,      ua
@@ -242,7 +246,7 @@ class TestGemRequest < Gem::TestCase
     Object.send :remove_const, :RUBY_ENGINE if defined?(RUBY_ENGINE)
     Object.send :const_set,    :RUBY_ENGINE, 'vroom'
 
-    ua = Gem::Request.new(@uri, nil, nil, nil).user_agent
+    ua = make_request(@uri, nil, nil, nil).user_agent
 
     assert_match %r%\) vroom%, ua
   ensure
@@ -255,7 +259,7 @@ class TestGemRequest < Gem::TestCase
     Object.send :remove_const, :RUBY_ENGINE if defined?(RUBY_ENGINE)
     Object.send :const_set,    :RUBY_ENGINE, 'ruby'
 
-    ua = Gem::Request.new(@uri, nil, nil, nil).user_agent
+    ua = make_request(@uri, nil, nil, nil).user_agent
 
     assert_match %r%\)%, ua
   ensure
@@ -268,7 +272,7 @@ class TestGemRequest < Gem::TestCase
     Object.send :remove_const, :RUBY_PATCHLEVEL
     Object.send :const_set,    :RUBY_PATCHLEVEL, 5
 
-    ua = Gem::Request.new(@uri, nil, nil, nil).user_agent
+    ua = make_request(@uri, nil, nil, nil).user_agent
 
     assert_match %r% patchlevel 5\)%, ua
   ensure
@@ -283,7 +287,7 @@ class TestGemRequest < Gem::TestCase
     Object.send :remove_const, :RUBY_REVISION if defined?(RUBY_REVISION)
     Object.send :const_set,    :RUBY_REVISION, 6
 
-    ua = Gem::Request.new(@uri, nil, nil, nil).user_agent
+    ua = make_request(@uri, nil, nil, nil).user_agent
 
     assert_match %r% revision 6\)%, ua
     assert_match %r%Ruby/#{Regexp.escape RUBY_VERSION}dev%, ua
@@ -298,7 +302,7 @@ class TestGemRequest < Gem::TestCase
     Object.send :const_set,    :RUBY_PATCHLEVEL, -1
     Object.send :remove_const, :RUBY_REVISION if defined?(RUBY_REVISION)
 
-    ua = Gem::Request.new(@uri, nil, nil, nil).user_agent
+    ua = make_request(@uri, nil, nil, nil).user_agent
 
     assert_match %r%\(#{Regexp.escape RUBY_RELEASE_DATE}\)%, ua
   ensure

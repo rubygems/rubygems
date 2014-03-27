@@ -25,7 +25,6 @@ class Gem::Request
       when URI::HTTP then proxy
       else URI.parse(proxy)
       end
-    @env_no_proxy = get_no_proxy_from_env
   end
 
   def add_rubygems_trusted_certs(store)
@@ -73,7 +72,7 @@ class Gem::Request
   def connection_for(uri)
     net_http_args = [uri.host, uri.port]
 
-    if @proxy_uri and not no_proxy?(uri.host) then
+    if @proxy_uri and not no_proxy?(uri.host, get_no_proxy_from_env) then
       net_http_args += [
         @proxy_uri.host,
         @proxy_uri.port,
@@ -229,9 +228,9 @@ class Gem::Request
     uri.scheme.downcase == 'https'
   end
 
-  def no_proxy? host
+  def no_proxy? host, env_no_proxy
     host = host.downcase
-    @env_no_proxy.each do |pattern|
+    env_no_proxy.each do |pattern|
       pattern = pattern.downcase
       return true if host[-pattern.length, pattern.length ] == pattern
     end

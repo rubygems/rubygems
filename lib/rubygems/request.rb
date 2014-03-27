@@ -14,8 +14,6 @@ class Gem::Request
     @request_class = request_class
     @last_modified = last_modified
     @requests = Hash.new 0
-    @connections = {}
-    @connections_mutex = Mutex.new
     @user_agent = user_agent
 
     @proxy_uri =
@@ -81,12 +79,7 @@ class Gem::Request
       ]
     end
 
-    connection_id = [Thread.current.object_id, *net_http_args].join ':'
-
-    connection = @connections_mutex.synchronize do
-      @connections[connection_id] ||= Net::HTTP.new(*net_http_args)
-      @connections[connection_id]
-    end
+    connection = Net::HTTP.new(*net_http_args)
 
     if self.class.https?(uri) and not connection.started? then
       configure_connection_for_https(connection)

@@ -31,6 +31,10 @@ class Gem::Request
   end
 
   class ConnectionPools # :nodoc:
+    @client = Net::HTTP
+
+    class << self; attr_accessor :client; end
+
     def initialize proxy_uri, cert_files
       @proxy_uri  = proxy_uri
       @cert_files = cert_files
@@ -84,7 +88,7 @@ class Gem::Request
       private
 
       def make_connection
-        setup_connection Net::HTTP.new(*@http_args)
+        setup_connection ConnectionPools.client.new(*@http_args)
       end
 
       def setup_connection connection

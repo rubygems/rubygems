@@ -17,17 +17,16 @@ class Gem::Request
     @requests = Hash.new 0
     @user_agent = user_agent
 
-    @proxy_uri = self.class.proxy_uri proxy, uri
+    @proxy_uri = self.class.proxy_uri(proxy || self.class.get_proxy_from_env(uri.scheme))
 
     @cert_files = get_cert_files
 
     @connection_pool = ConnectionPools.new @proxy_uri, @cert_files
   end
 
-  def self.proxy_uri proxy, uri
+  def self.proxy_uri proxy
     case proxy
     when :no_proxy then nil
-    when nil       then get_proxy_from_env uri.scheme
     when URI::HTTP then proxy
     else URI.parse(proxy)
     end
@@ -314,7 +313,7 @@ class Gem::Request
     no_env_proxy = env_proxy.nil? || env_proxy.empty?
 
     return get_proxy_from_env 'http' if no_env_proxy and _scheme != 'http'
-    return nil                       if no_env_proxy
+    return :no_proxy                 if no_env_proxy
 
     uri = URI(Gem::UriFormatter.new(env_proxy).normalize)
 

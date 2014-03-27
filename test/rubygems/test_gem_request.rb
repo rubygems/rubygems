@@ -73,7 +73,7 @@ class TestGemRequest < Gem::TestCase
     connection = Net::HTTP.new 'localhost', 443
 
     request = Class.new(Gem::Request) {
-      def get_cert_files
+      def self.get_cert_files
         [TestGemRequest::PUBLIC_CERT_FILE]
       end
     }.new URI('https://example'), nil, nil, nil
@@ -92,7 +92,7 @@ class TestGemRequest < Gem::TestCase
     connection = Net::HTTP.new 'localhost', 443
 
     request = Class.new(Gem::Request) {
-      def get_cert_files
+      def self.get_cert_files
         [TestGemRequest::PUBLIC_CERT_FILE]
       end
     }.new URI('https://example'), nil, nil, nil

@@ -15,7 +15,7 @@ class Gem::Request
     @requests = Hash.new 0
     @user_agent = user_agent
 
-    cert_files = get_cert_files
+    cert_files = self.class.get_cert_files
     proxy ||= self.class.get_proxy_from_env(uri.scheme)
 
     @connection_pool = ConnectionPools.create proxy, cert_files
@@ -167,11 +167,10 @@ class Gem::Request
     end
   end
 
-  def get_cert_files
+  def self.get_cert_files
     pattern = File.expand_path("./ssl_certs/*.pem", File.dirname(__FILE__))
     Dir.glob(pattern)
   end
-  private :get_cert_files
 
   def self.configure_connection_for_https(connection, cert_files)
     require 'net/https'

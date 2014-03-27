@@ -2,6 +2,7 @@ require 'rubygems'
 require 'rubygems/request'
 require 'rubygems/uri_formatter'
 require 'rubygems/user_interaction'
+require 'rubygems/request/connection_pools'
 require 'resolv'
 
 ##

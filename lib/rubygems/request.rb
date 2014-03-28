@@ -3,7 +3,6 @@ require 'thread'
 require 'time'
 require 'rubygems/user_interaction'
 require 'rubygems/request/connection_pools'
-require 'monitor'
 
 class Gem::Request
 

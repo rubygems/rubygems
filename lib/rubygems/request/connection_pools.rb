@@ -1,3 +1,5 @@
+require 'thread'
+
 module Gem
   class Request
     class ConnectionPools # :nodoc:
@@ -30,30 +32,16 @@ module Gem
         def initialize http_args, cert_files
           @http_args  = http_args
           @cert_files = cert_files
-          @conn       = false
-          @lock       = Monitor.new
-          @cv         = @lock.new_cond
+          @queue      = Queue.new
+          @queue << nil
         end
 
         def checkout
-          @lock.synchronize do
-            if @conn.nil?
-              @cv.wait_while { @conn.nil? }
-              conn, @conn = @conn, nil
-              conn
-            else
-              conn = @conn || make_connection
-              @conn = nil
-              conn
-            end
-          end
+          @queue.pop || make_connection
         end
 
         def checkin connection
-          @lock.synchronize do
-            @conn = connection
-            @cv.broadcast
-          end
+          @queue.push connection
         end
 
         private

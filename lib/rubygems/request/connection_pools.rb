@@ -37,7 +37,7 @@ module Gem
           @http_args  = http_args
           @cert_files = cert_files
           @proxy_uri  = proxy_uri
-          @queue      = Queue.new
+          @queue      = SizedQueue.new 1
           @queue << nil
         end
 

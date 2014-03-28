@@ -170,10 +170,11 @@ class TestGemRequest < Gem::TestCase
 
   def test_fetch
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
-    @request = make_request(uri, Net::HTTP::Get, nil, nil)
-    util_stub_connection_for :body => :junk, :code => 200
+    response = util_stub_net_http(:body => :junk, :code => 200) do
+      @request = make_request(uri, Net::HTTP::Get, nil, nil)
 
-    response = @request.fetch
+      @request.fetch
+    end
 
     assert_equal 200, response.code
     assert_equal :junk, response.body
@@ -181,34 +182,34 @@ class TestGemRequest < Gem::TestCase
 
   def test_fetch_basic_auth
     uri = URI.parse "https://user:pass@example.rubygems/specs.#{Gem.marshal_version}"
-    @request = make_request(uri, Net::HTTP::Get, nil, nil)
-    conn = util_stub_connection_for :body => :junk, :code => 200
-
-    @request.fetch
+    conn = util_stub_net_http(:body => :junk, :code => 200) do |c|
+      @request = make_request(uri, Net::HTTP::Get, nil, nil)
+      @request.fetch
+      c
+    end
 
     auth_header = conn.payload['Authorization']
-
     assert_equal "Basic #{Base64.encode64('user:pass')}".strip, auth_header
   end
 
   def test_fetch_basic_auth_encoded
     uri = URI.parse "https://user:%7BDEScede%7Dpass@example.rubygems/specs.#{Gem.marshal_version}"
-    @request = make_request(uri, Net::HTTP::Get, nil, nil)
-    conn = util_stub_connection_for :body => :junk, :code => 200
-
-    @request.fetch
+    conn = util_stub_net_http(:body => :junk, :code => 200) do |c|
+      @request = make_request(uri, Net::HTTP::Get, nil, nil)
+      @request.fetch
+      c
+    end
 
     auth_header = conn.payload['Authorization']
-
     assert_equal "Basic #{Base64.encode64('user:{DEScede}pass')}".strip, auth_header
   end
 
   def test_fetch_head
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
-    @request = make_request(uri, Net::HTTP::Get, nil, nil)
-    util_stub_connection_for :body => '', :code => 200
-
-    response = @request.fetch
+    response = util_stub_net_http(:body => '', :code => 200) do |conn|
+      @request = make_request(uri, Net::HTTP::Get, nil, nil)
+      @request.fetch
+    end
 
     assert_equal 200, response.code
     assert_equal '', response.body
@@ -217,10 +218,10 @@ class TestGemRequest < Gem::TestCase
   def test_fetch_unmodified
     uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
     t = Time.utc(2013, 1, 2, 3, 4, 5)
-    @request = make_request(uri, Net::HTTP::Get, t, nil)
-    conn = util_stub_connection_for :body => '', :code => 304
-
-    response = @request.fetch
+    conn, response = util_stub_net_http(:body => '', :code => 304) do |c|
+      @request = make_request(uri, Net::HTTP::Get, t, nil)
+      [c, @request.fetch]
+    end
 
     assert_equal 304, response.code
     assert_equal '', response.body
@@ -328,20 +329,23 @@ class TestGemRequest < Gem::TestCase
     @orig_RUBY_REVISION   = RUBY_REVISION if defined? RUBY_REVISION
   end
 
-  def util_stub_connection_for hash
-    def @request.connection= conn
-      @conn = conn
-    end
-
-    def @request.connection_for uri
-      @conn
-    end
-
-    @request.connection = Conn.new OpenStruct.new(hash)
+  def util_stub_net_http hash
+    old_client = Gem::Request::ConnectionPools.client
+    conn = Conn.new OpenStruct.new(hash)
+    Gem::Request::ConnectionPools.client = conn
+    yield conn
+  ensure
+    Gem::Request::ConnectionPools.client = old_client
   end
 
   class Conn
     attr_accessor :payload
+
+    def new *args; self; end
+    def use_ssl=(bool); end
+    def verify_mode=(setting); end
+    def cert_store=(setting); end
+    def start; end
 
     def initialize(response)
       @response = response

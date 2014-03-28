@@ -39,8 +39,8 @@ module Gem
       @conflicts = conflicts
       @name      = target.name
 
-      reason = conflicts.map { |act, conflicts|
-        "#{act.full_name} conflicts with #{conflicts.join(", ")}"
+      reason = conflicts.map { |act, dependencies|
+        "#{act.full_name} conflicts with #{dependencies.join(", ")}"
       }.join ", "
 
       # TODO: improve message by saying who activated `con`

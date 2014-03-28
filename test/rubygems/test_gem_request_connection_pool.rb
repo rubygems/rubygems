@@ -23,7 +23,7 @@ class TestGemRequestConnectionPool < Gem::TestCase
   end
 
   def test_checkout_same_connection
-    uri = URI.parse('http://localhost/some_endpoint')
+    uri = URI.parse('http://example/some_endpoint')
 
     pools = Gem::Request::ConnectionPools.new nil, []
     conn = pools.checkout_connection_for uri
@@ -33,7 +33,7 @@ class TestGemRequestConnectionPool < Gem::TestCase
   end
 
   def test_thread_waits_for_connection
-    uri = URI.parse('http://localhost/some_endpoint')
+    uri = URI.parse('http://example/some_endpoint')
     pools = Gem::Request::ConnectionPools.new nil, []
     dummy = Object.new
 

@@ -339,7 +339,7 @@ class Gem::RemoteFetcher
 
   def request(uri, request_class, last_modified = nil)
     proxy = proxy_for @proxy, uri
-    pool  = pool_for proxy
+    pool  = pools_for(proxy).pool_for uri
 
     request = Gem::Request.new uri, request_class, last_modified, pool
 
@@ -385,7 +385,7 @@ class Gem::RemoteFetcher
     Gem::Request.proxy_uri(proxy || Gem::Request.get_proxy_from_env(uri.scheme))
   end
 
-  def pool_for proxy
+  def pools_for proxy
     @pool_lock.synchronize do
       @pools[proxy] ||= Gem::Request::ConnectionPools.new proxy, @cert_files
     end

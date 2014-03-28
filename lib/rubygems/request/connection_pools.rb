@@ -6,8 +6,6 @@ module Gem
       @client = Net::HTTP
       class << self; attr_accessor :client; end
 
-      attr_reader :proxy_uri, :cert_files
-
       def initialize proxy_uri, cert_files
         @proxy_uri  = proxy_uri
         @cert_files = cert_files
@@ -15,12 +13,16 @@ module Gem
         @pool_mutex = Mutex.new
       end
 
-      def checkout_connection_for uri
-        pool_for(uri).checkout
-      end
-
-      def checkin_connection_for uri, connection
-        pool_for(uri).checkin connection
+      def pool_for uri
+        http_args = net_http_args(uri, @proxy_uri)
+        key       = http_args + [https?(uri)]
+        @pool_mutex.synchronize do
+          @pools[key] ||= if https?(uri)
+                            HTTPSPool.new(http_args, @cert_files, @proxy_uri)
+                          else
+                            HTTPPool.new(http_args, @cert_files, @proxy_uri)
+                          end
+        end
       end
 
       ###
@@ -29,9 +31,12 @@ module Gem
       # pool consists of one connection that corresponds to `http_args`.
       # This class is private, do not use it.
       class HTTPPool # :nodoc:
-        def initialize http_args, cert_files
+        attr_reader :cert_files, :proxy_uri
+
+        def initialize http_args, cert_files, proxy_uri
           @http_args  = http_args
           @cert_files = cert_files
+          @proxy_uri  = proxy_uri
           @queue      = Queue.new
           @queue << nil
         end
@@ -66,18 +71,6 @@ module Gem
       end
 
       private
-
-      def pool_for uri
-        http_args = net_http_args(uri, @proxy_uri)
-        key       = http_args + [https?(uri)]
-        @pool_mutex.synchronize do
-          @pools[key] ||= if https?(uri)
-                            HTTPSPool.new(http_args, @cert_files)
-                          else
-                            HTTPPool.new(http_args, @cert_files)
-                          end
-        end
-      end
 
       ##
       # Returns list of no_proxy entries (if any) from the environment

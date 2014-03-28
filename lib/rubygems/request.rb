@@ -15,7 +15,7 @@ class Gem::Request
     proxy ||= get_proxy_from_env(uri.scheme)
     pool       = ConnectionPools.new proxy_uri(proxy), cert_files
 
-    new(uri, request_class, last_modified, pool)
+    new(uri, request_class, last_modified, pool.pool_for(uri))
   end
 
   def self.proxy_uri proxy # :nodoc:
@@ -83,7 +83,7 @@ class Gem::Request
   # connection, using a proxy if needed.
 
   def connection_for(uri)
-    @connection_pool.checkout_connection_for uri
+    @connection_pool.checkout
   rescue defined?(OpenSSL::SSL) ? OpenSSL::SSL::SSLError : Errno::EHOSTDOWN,
          Errno::EHOSTDOWN => e
     raise Gem::RemoteFetcher::FetchError.new(e.message, uri)
@@ -171,7 +171,7 @@ class Gem::Request
       retried = true
       retry
     ensure
-      @connection_pool.checkin_connection_for @uri, connection
+      @connection_pool.checkin connection
     end
 
     response

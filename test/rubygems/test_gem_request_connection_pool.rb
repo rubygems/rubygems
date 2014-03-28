@@ -26,22 +26,24 @@ class TestGemRequestConnectionPool < Gem::TestCase
     uri = URI.parse('http://example/some_endpoint')
 
     pools = Gem::Request::ConnectionPools.new nil, []
-    conn = pools.checkout_connection_for uri
-    pools.checkin_connection_for uri, conn
+    pool = pools.pool_for uri
+    conn = pool.checkout
+    pool.checkin conn
 
-    assert_equal conn, pools.checkout_connection_for(uri)
+    assert_equal conn, pool.checkout
   end
 
   def test_thread_waits_for_connection
     uri = URI.parse('http://example/some_endpoint')
     pools = Gem::Request::ConnectionPools.new nil, []
+    pool  = pools.pool_for uri
     dummy = Object.new
 
-    conn = pools.checkout_connection_for uri
+    conn = pool.checkout
 
     t1 = Thread.new {
       timeout(1) do
-        pools.checkout_connection_for uri
+        pool.checkout
       end
     }
     assert_raises(Timeout::Error) do

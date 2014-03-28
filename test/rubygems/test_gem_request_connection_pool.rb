@@ -37,9 +37,8 @@ class TestGemRequestConnectionPool < Gem::TestCase
     uri = URI.parse('http://example/some_endpoint')
     pools = Gem::Request::ConnectionPools.new nil, []
     pool  = pools.pool_for uri
-    dummy = Object.new
 
-    conn = pool.checkout
+    pool.checkout
 
     t1 = Thread.new {
       timeout(1) do

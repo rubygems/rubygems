@@ -80,6 +80,8 @@ class Gem::Request
         Gem::UriFormatter.new(@proxy_uri.user).unescape,
         Gem::UriFormatter.new(@proxy_uri.password).unescape,
       ]
+    elsif no_proxy?(uri.host) then
+      net_http_args += [nil, nil]
     end
 
     connection_id = [Thread.current.object_id, *net_http_args].join ':'

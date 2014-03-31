@@ -33,6 +33,8 @@ Bug fixes:
   up gem suggestions.  Pull request #808 by Aaron Patterson.
 * RubyGems can install local prerelease gems again.  Pull request #866 by
   Aaron Patterson.
+* Commands using the rubygems.org API no longer try to sign-in when a
+  non-rubygems API key has been chosen.  Bug #826 by Ben Sedat.
 * Improved speed of conflict checking when activating gems.  Pull request #843
   by Aaron Patterson.
 * Improved speed of levenshtein distance for gem suggestion misspellings.

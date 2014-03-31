@@ -170,11 +170,11 @@ class Gem::Request
 
       retried = true
       retry
-    ensure
-      @connection_pool.checkin connection
     end
 
     response
+  ensure
+    @connection_pool.checkin connection
   end
 
   ##

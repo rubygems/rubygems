@@ -39,6 +39,8 @@ Bug fixes:
   Pull requests #809, #812 by Aaron Patterson.
 * Reduced requests when fetching gems with the bundler API.  Pull request #773
   by Charlie Somerville.
+* Reduced dependency prefetching to improve install speed.  Pull requests
+  #871, #872 by Matthew Draper.
 * RubyGems now prints release notes from the current release.  Bug #814 by
   André Arko.
 * RubyGems allows installation of unsigned gems again with -P MediumSecurity

@@ -2,6 +2,7 @@ require 'rubygems'
 require 'rubygems/request'
 require 'rubygems/uri_formatter'
 require 'rubygems/user_interaction'
+require 'rubygems/request/connection_pools'
 require 'resolv'
 
 ##
@@ -73,6 +74,9 @@ class Gem::RemoteFetcher
     Socket.do_not_reverse_lookup = true
 
     @proxy = proxy
+    @pools = {}
+    @pool_lock = Mutex.new
+    @cert_files = Gem::Request.get_cert_files
 
     @dns = dns
   end
@@ -334,7 +338,10 @@ class Gem::RemoteFetcher
   # connections to reduce connect overhead.
 
   def request(uri, request_class, last_modified = nil)
-    request = Gem::Request.new uri, request_class, last_modified, @proxy
+    proxy = proxy_for @proxy, uri
+    pool  = pools_for(proxy).pool_for uri
+
+    request = Gem::Request.new uri, request_class, last_modified, pool
 
     request.fetch do |req|
       yield req if block_given?
@@ -371,5 +378,17 @@ class Gem::RemoteFetcher
   end
 
   BASE64_URI_TRANSLATE = { '+' => '%2B', '/' => '%2F', '=' => '%3D' }.freeze
+
+  private
+
+  def proxy_for proxy, uri
+    Gem::Request.proxy_uri(proxy || Gem::Request.get_proxy_from_env(uri.scheme))
+  end
+
+  def pools_for proxy
+    @pool_lock.synchronize do
+      @pools[proxy] ||= Gem::Request::ConnectionPools.new proxy, @cert_files
+    end
+  end
 end
 

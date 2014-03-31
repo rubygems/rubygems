@@ -119,8 +119,9 @@ class Gem::Resolver
     end
   end
 
-  def explain_list stage, data # :nodoc:
+  def explain_list stage # :nodoc:
     if DEBUG_RESOLVER
+      data = yield
       STDOUT.printf "%20s (%d entries)\n", stage.to_s.upcase, data.size
       data.each do |d|
         STDOUT.printf "%20s %s\n", "", d
@@ -278,8 +279,8 @@ class Gem::Resolver
 
       dep = needed.remove
       explain :try, [dep, dep.requester ? dep.requester.request : :toplevel]
-      explain_list :next5, needed.next5
-      explain_list :specs, Array(specs).map { |x| x.full_name }.sort
+      explain_list(:next5) { needed.next5 }
+      explain_list(:specs) { Array(specs).map { |x| x.full_name }.sort }
 
       # If there is already a spec activated for the requested name...
       if specs && existing = specs.find { |s| dep.name == s.name }

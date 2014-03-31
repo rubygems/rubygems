@@ -41,6 +41,8 @@ Bug fixes:
   by Charlie Somerville.
 * RubyGems now prints release notes from the current release.  Bug #814 by
   André Arko.
+* RubyGems allows installation of unsigned gems again with -P MediumSecurity
+  and lower.  Bug #859 by Justin S. Collins.
 * Fixed typo in Jim Weirich's name.  Ruby pull request #577 by Mo Khan.
 * Fixed typo in Gem.datadir documentation.  Pull request #868 by Patrick
   Jones.

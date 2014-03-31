@@ -39,6 +39,7 @@ Bug fixes:
   by Aaron Patterson.
 * Improved speed of levenshtein distance for gem suggestion misspellings.
   Pull requests #809, #812 by Aaron Patterson.
+* Restored persistent connections.  Pull request #869 by Aaron Patterson.
 * Reduced requests when fetching gems with the bundler API.  Pull request #773
   by Charlie Somerville.
 * Reduced dependency prefetching to improve install speed.  Pull requests

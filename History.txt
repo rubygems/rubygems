@@ -44,6 +44,8 @@ Bug fixes:
   by Charlie Somerville.
 * Reduced dependency prefetching to improve install speed.  Pull requests
   #871, #872 by Matthew Draper.
+* RubyGems now avoids net/http auto-proxy detection.  Issue #824 by HINOHARA
+  Hiroshi.
 * Removed conversion of Gem::List (used for debugging installs) to unless
   necessary.  Pull request #870 by Aaron Patterson.
 * RubyGems now prints release notes from the current release.  Bug #814 by

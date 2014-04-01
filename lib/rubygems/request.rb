@@ -2,7 +2,6 @@ require 'net/http'
 require 'thread'
 require 'time'
 require 'rubygems/user_interaction'
-require 'rubygems/request/connection_pools'
 
 class Gem::Request
 
@@ -238,4 +237,6 @@ class Gem::Request
   end
 
 end
+
+require 'rubygems/request/connection_pools'
 

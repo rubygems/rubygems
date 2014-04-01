@@ -15,6 +15,8 @@ class TestGemRequestConnectionPool < Gem::TestCase
     super
     @old_client = Gem::Request::ConnectionPools.client
     Gem::Request::ConnectionPools.client = FakeHttp
+
+    @proxy = URI 'http://proxy.example'
   end
 
   def teardown
@@ -31,6 +33,35 @@ class TestGemRequestConnectionPool < Gem::TestCase
     pool.checkin conn
 
     assert_equal conn, pool.checkout
+  end
+
+  def test_net_http_args
+    pools = Gem::Request::ConnectionPools.new nil, []
+
+    net_http_args = pools.send :net_http_args, URI('http://example'), nil
+
+    assert_equal ['example', 80], net_http_args
+  end
+
+  def test_net_http_args_proxy
+    pools = Gem::Request::ConnectionPools.new nil, []
+
+    net_http_args = pools.send :net_http_args, URI('http://example'), @proxy
+
+    assert_equal ['example', 80, 'proxy.example', 80, nil, nil], net_http_args
+  end
+
+  def test_net_http_args_no_proxy
+    orig_no_proxy, ENV['no_proxy'] = ENV['no_proxy'], 'example'
+
+    pools = Gem::Request::ConnectionPools.new nil, []
+
+    net_http_args = pools.send :net_http_args, URI('http://example'), @proxy
+
+    assert_equal ['example', 80, nil, nil], net_http_args
+
+  ensure
+    ENV['no_proxy'] = orig_no_proxy
   end
 
   def test_thread_waits_for_connection

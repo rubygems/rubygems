@@ -107,6 +107,37 @@ class Gem::Request
 
     yield request if block_given?
 
+    perform_request request
+  end
+
+  ##
+  # Returns a proxy URI for the given +scheme+ if one is set in the
+  # environment variables.
+
+  def self.get_proxy_from_env scheme = 'http'
+    _scheme = scheme.downcase
+    _SCHEME = scheme.upcase
+    env_proxy = ENV["#{_scheme}_proxy"] || ENV["#{_SCHEME}_PROXY"]
+
+    no_env_proxy = env_proxy.nil? || env_proxy.empty?
+
+    return get_proxy_from_env 'http' if no_env_proxy and _scheme != 'http'
+    return :no_proxy                 if no_env_proxy
+
+    uri = URI(Gem::UriFormatter.new(env_proxy).normalize)
+
+    if uri and uri.user.nil? and uri.password.nil? then
+      user     = ENV["#{_scheme}_proxy_user"] || ENV["#{_SCHEME}_PROXY_USER"]
+      password = ENV["#{_scheme}_proxy_pass"] || ENV["#{_SCHEME}_PROXY_PASS"]
+
+      uri.user     = Gem::UriFormatter.new(user).escape
+      uri.password = Gem::UriFormatter.new(password).escape
+    end
+
+    uri
+  end
+
+  def perform_request request # :nodoc:
     connection = connection_for @uri
 
     retried = false
@@ -175,33 +206,6 @@ class Gem::Request
     response
   ensure
     @connection_pool.checkin connection
-  end
-
-  ##
-  # Returns a proxy URI for the given +scheme+ if one is set in the
-  # environment variables.
-
-  def self.get_proxy_from_env scheme = 'http'
-    _scheme = scheme.downcase
-    _SCHEME = scheme.upcase
-    env_proxy = ENV["#{_scheme}_proxy"] || ENV["#{_SCHEME}_PROXY"]
-
-    no_env_proxy = env_proxy.nil? || env_proxy.empty?
-
-    return get_proxy_from_env 'http' if no_env_proxy and _scheme != 'http'
-    return :no_proxy                 if no_env_proxy
-
-    uri = URI(Gem::UriFormatter.new(env_proxy).normalize)
-
-    if uri and uri.user.nil? and uri.password.nil? then
-      user     = ENV["#{_scheme}_proxy_user"] || ENV["#{_SCHEME}_PROXY_USER"]
-      password = ENV["#{_scheme}_proxy_pass"] || ENV["#{_SCHEME}_PROXY_PASS"]
-
-      uri.user     = Gem::UriFormatter.new(user).escape
-      uri.password = Gem::UriFormatter.new(password).escape
-    end
-
-    uri
   end
 
   ##

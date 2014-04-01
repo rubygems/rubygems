@@ -289,7 +289,7 @@ test/rubygems/test_gem_platform.rb
 test/rubygems/test_gem_rdoc.rb
 test/rubygems/test_gem_remote_fetcher.rb
 test/rubygems/test_gem_request.rb
-test/rubygems/test_gem_request_connection_pool.rb
+test/rubygems/test_gem_request_connection_pools.rb
 test/rubygems/test_gem_request_set.rb
 test/rubygems/test_gem_request_set_gem_dependency_api.rb
 test/rubygems/test_gem_request_set_lockfile.rb

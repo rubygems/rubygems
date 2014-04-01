@@ -23,49 +23,12 @@ class Gem::Request::ConnectionPools # :nodoc:
         if https? uri then
           Gem::Request::ConnectionPools::HTTPSPool.new(http_args, @cert_files, @proxy_uri)
         else
-          Gem::Request::ConnectionPools::HTTPPool.new(http_args, @cert_files, @proxy_uri)
+          Gem::Request::HTTPPool.new(http_args, @cert_files, @proxy_uri)
         end
     end
   end
 
-  ###
-  # A connection "pool" that only manages one connection for now.  Provides
-  # thread safe `checkout` and `checkin` methods.  The pool consists of one
-  # connection that corresponds to `http_args`.  This class is private, do not
-  # use it.
-
-  class HTTPPool # :nodoc:
-    attr_reader :cert_files, :proxy_uri
-
-    def initialize http_args, cert_files, proxy_uri
-      @http_args  = http_args
-      @cert_files = cert_files
-      @proxy_uri  = proxy_uri
-      @queue      = SizedQueue.new 1
-      @queue << nil
-    end
-
-    def checkout
-      @queue.pop || make_connection
-    end
-
-    def checkin connection
-      @queue.push connection
-    end
-
-    private
-
-    def make_connection
-      setup_connection Gem::Request::ConnectionPools.client.new(*@http_args)
-    end
-
-    def setup_connection connection
-      connection.start
-      connection
-    end
-  end
-
-  class HTTPSPool < HTTPPool # :nodoc:
+  class HTTPSPool < Gem::Request::HTTPPool # :nodoc:
     private
 
     def setup_connection connection

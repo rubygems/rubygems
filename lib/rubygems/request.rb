@@ -239,5 +239,6 @@ class Gem::Request
 end
 
 require 'rubygems/request/http_pool'
+require 'rubygems/request/https_pool'
 require 'rubygems/request/connection_pools'
 

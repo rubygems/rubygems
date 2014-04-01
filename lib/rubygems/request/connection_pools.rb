@@ -21,19 +21,10 @@ class Gem::Request::ConnectionPools # :nodoc:
     @pool_mutex.synchronize do
       @pools[key] ||=
         if https? uri then
-          Gem::Request::ConnectionPools::HTTPSPool.new(http_args, @cert_files, @proxy_uri)
+          Gem::Request::HTTPSPool.new(http_args, @cert_files, @proxy_uri)
         else
           Gem::Request::HTTPPool.new(http_args, @cert_files, @proxy_uri)
         end
-    end
-  end
-
-  class HTTPSPool < Gem::Request::HTTPPool # :nodoc:
-    private
-
-    def setup_connection connection
-      Gem::Request.configure_connection_for_https(connection, @cert_files)
-      super
     end
   end
 

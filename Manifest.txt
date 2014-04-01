@@ -103,6 +103,7 @@ lib/rubygems/remote_fetcher.rb
 lib/rubygems/request.rb
 lib/rubygems/request/connection_pools.rb
 lib/rubygems/request/http_pool.rb
+lib/rubygems/request/https_pool.rb
 lib/rubygems/request_set.rb
 lib/rubygems/request_set/gem_dependency_api.rb
 lib/rubygems/request_set/lockfile.rb

@@ -413,6 +413,16 @@ class Gem::Specification < Gem::BasicSpecification
   attr_accessor :post_install_message
 
   ##
+  # The version of Ruby required by this gem
+
+  attr_reader :required_ruby_version
+
+  ##
+  # The RubyGems version required by this gem
+
+  attr_reader :required_rubygems_version
+
+  ##
   # The key used to sign this gem.  See Gem::Security for details.
 
   attr_accessor :signing_key
@@ -608,6 +618,13 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
+  # The RubyGems version required by this gem
+
+  def required_rubygems_version= req
+    @required_rubygems_version = Gem::Requirement.create req
+  end
+
+  ##
   # Lists the external (to RubyGems) requirements that must be met for this gem
   # to work.  It's simply information for the user.
   #
@@ -660,16 +677,6 @@ class Gem::Specification < Gem::BasicSpecification
   # Allows deinstallation of gems with legacy platforms.
 
   attr_writer :original_platform # :nodoc:
-
-  ##
-  # The version of Ruby required by this gem
-
-  attr_reader :required_ruby_version
-
-  ##
-  # The RubyGems version required by this gem
-
-  attr_reader :required_rubygems_version
 
   ##
   # The rubyforge project this gem lives under.  i.e. RubyGems'
@@ -2102,13 +2109,6 @@ class Gem::Specification < Gem::BasicSpecification
 
   def require_path= path
     self.require_paths = [path]
-  end
-
-  ##
-  # The RubyGems version required by this gem
-
-  def required_rubygems_version= req
-    @required_rubygems_version = Gem::Requirement.create req
   end
 
   ##

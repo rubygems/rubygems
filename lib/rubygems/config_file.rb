@@ -57,7 +57,7 @@ class Gem::ConfigFile
 
   # :stopdoc:
 
-  system_config_path =
+  SYSTEM_CONFIG_PATH =
     begin
       require "etc"
       Etc.sysconfdir
@@ -86,7 +86,7 @@ class Gem::ConfigFile
 
   # :startdoc:
 
-  SYSTEM_WIDE_CONFIG_FILE = File.join system_config_path, 'gemrc'
+  SYSTEM_WIDE_CONFIG_FILE = File.join SYSTEM_CONFIG_PATH, 'gemrc'
 
   ##
   # List of arguments supplied to the config file object.

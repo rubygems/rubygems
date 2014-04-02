@@ -35,6 +35,8 @@ Bug fixes:
   Aaron Patterson.
 * Commands using the rubygems.org API no longer try to sign-in when a
   non-rubygems API key has been chosen.  Bug #826 by Ben Sedat.
+* The environment command now shows the system configuration directory where
+  the all-users gemrc lives.  Bug #827 by Ben Langfeld.
 * Improved speed of conflict checking when activating gems.  Pull request #843
   by Aaron Patterson.
 * Improved speed of levenshtein distance for gem suggestion misspellings.

@@ -555,6 +555,28 @@ end
     Gem.win_platform = win_platform
   end
 
+  def test_platform_multiple
+    win_platform, Gem.win_platform = Gem.win_platform?, false
+
+    with_engine_version 'ruby', '1.8.7' do
+      @gda.platform :mri_19, :mri_20 do
+        @gda.gem 'a'
+      end
+    end
+
+    assert_empty @set.dependencies
+
+    with_engine_version 'ruby', '2.0.0' do
+      @gda.platform :mri_19, :mri_20 do
+        @gda.gem 'a'
+      end
+    end
+
+    refute_empty @set.dependencies
+  ensure
+    Gem.win_platform = win_platform
+  end
+
   def test_platform_ruby
     win_platform, Gem.win_platform = Gem.win_platform?, false
 

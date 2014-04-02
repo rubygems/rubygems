@@ -136,7 +136,7 @@ class Gem::RequestSet::GemDependencyAPI
     @path = path
 
     @current_groups     = nil
-    @current_platform   = nil
+    @current_platforms  = nil
     @current_repository = nil
     @default_sources    = true
     @git_set            = @set.git_set
@@ -315,7 +315,7 @@ class Gem::RequestSet::GemDependencyAPI
 
   def gem_platforms options # :nodoc:
     platform_names = Array(options.delete :platforms)
-    platform_names << @current_platform if @current_platform
+    platform_names.concat @current_platforms if @current_platforms
 
     return true if platform_names.empty?
 
@@ -442,13 +442,13 @@ class Gem::RequestSet::GemDependencyAPI
   #
   # Block form for restricting gems to a particular platform.
 
-  def platform what
-    @current_platform = what
+  def platform *platforms
+    @current_platforms = platforms
 
     yield
 
   ensure
-    @current_platform = nil
+    @current_platforms = nil
   end
 
   ##

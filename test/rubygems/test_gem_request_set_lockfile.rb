@@ -142,6 +142,32 @@ DEPENDENCIES
     assert_equal %w[a-2], lockfile_set.specs.map { |tuple| tuple.full_name }
   end
 
+  def test_parse_GEM
+    write_lockfile <<-LOCKFILE
+GEM
+  specs:
+    a (2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  a
+    LOCKFILE
+
+    @lockfile.parse
+
+    assert_equal [dep('a', '>= 0')], @set.dependencies
+
+    lockfile_set = @set.sets.find do |set|
+      Gem::Resolver::LockSet === set
+    end
+
+    assert lockfile_set, 'found a LockSet'
+
+    assert_equal %w[a-2], lockfile_set.specs.map { |s| s.full_name }
+  end
+
   def test_parse_GIT
     write_lockfile <<-LOCKFILE
 GIT

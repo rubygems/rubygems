@@ -277,8 +277,12 @@ class Gem::RequestSet::Lockfile
   end
 
   def parse_GEM # :nodoc:
-    get :entry, 'remote'
-    _, data, = get :text
+    if [:entry, 'remote'] == peek.first(2) then
+      get :entry, 'remote'
+      _, data, = get :text
+    else
+      data = Gem::DEFAULT_HOST
+    end
 
     source = Gem::Source.new data
 

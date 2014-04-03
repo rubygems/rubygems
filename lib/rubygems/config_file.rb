@@ -430,6 +430,15 @@ if you believe they were disclosed to a third party.
                             DEFAULT_VERBOSITY
                           end
 
+    yaml_hash[:ssl_verify_mode] =
+      @hash[:ssl_verify_mode] if @hash.key? :ssl_verify_mode
+
+    yaml_hash[:ssl_ca_cert] =
+      @hash[:ssl_ca_cert] if @hash.key? :ssl_ca_cert
+
+    yaml_hash[:ssl_client_cert] =
+      @hash[:ssl_client_cert] if @hash.key? :ssl_client_cert
+
     keys = yaml_hash.keys.map { |key| key.to_s }
     keys << 'debug'
     re = Regexp.union(*keys)

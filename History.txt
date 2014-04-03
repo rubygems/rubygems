@@ -39,6 +39,8 @@ Bug fixes:
   now.  Bug #821 by johnny5-.
 * Gem dependency API supports lockfiles without explicit sources.  Bug #820 by
   johnny5-.
+* SSL configuration entries in ~/.gemrc are properly round-tripped.  Bug #837
+  by Noah Luck Easterly.
 * The environment command now shows the system configuration directory where
   the all-users gemrc lives.  Bug #827 by Ben Langfeld.
 * Improved speed of conflict checking when activating gems.  Pull request #843

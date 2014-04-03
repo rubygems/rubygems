@@ -380,6 +380,9 @@ if you believe they were disclosed to a third party.
       fp.puts ":verbose: false"
       fp.puts ":sources:"
       fp.puts "  - http://more-gems.example.com"
+      fp.puts ":ssl_verify_mode: 2"
+      fp.puts ":ssl_ca_cert: /nonexistent/ca_cert.pem"
+      fp.puts ":ssl_client_cert: /nonexistent/client_cert.pem"
       fp.puts "install: --wrappers"
     end
 
@@ -401,6 +404,10 @@ if you believe they were disclosed to a third party.
     assert_equal 10,    @cfg.bulk_threshold, 'bulk_threshold'
     assert_equal false, @cfg.update_sources, 'update_sources'
     assert_equal false, @cfg.verbose,        'verbose'
+
+    assert_equal 2,                              @cfg.ssl_verify_mode
+    assert_equal '/nonexistent/ca_cert.pem',     @cfg.ssl_ca_cert
+    assert_equal '/nonexistent/client_cert.pem', @cfg.ssl_client_cert
 
     assert_equal '--wrappers --no-rdoc', @cfg[:install], 'install'
 

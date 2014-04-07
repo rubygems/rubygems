@@ -342,7 +342,7 @@ class Gem::RequestSet::Lockfile
     skip :newline
 
     type, value = peek.first 2
-    if type == :entry and %w[ref branch].include? value then
+    if type == :entry and %w[branch ref tag].include? value then
       get
       get :text
 

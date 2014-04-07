@@ -208,6 +208,43 @@ DEPENDENCIES
     assert_equal expected, git_set.repositories
   end
 
+  def test_parse_GIT_branch
+    write_lockfile <<-LOCKFILE
+GIT
+  remote: git://example/a.git
+  revision: 1234abc
+  branch: 0-9-12-stable
+  specs:
+    a (2)
+      b (>= 3)
+
+DEPENDENCIES
+  a!
+    LOCKFILE
+
+    @lockfile.parse
+
+    assert_equal [dep('a', '= 2')], @set.dependencies
+
+    lockfile_set = @set.sets.find do |set|
+      Gem::Resolver::LockSet === set
+    end
+
+    refute lockfile_set, 'fount a LockSet'
+
+    git_set = @set.sets.find do |set|
+      Gem::Resolver::GitSet === set
+    end
+
+    assert git_set, 'could not find a GitSet'
+
+    expected = {
+      'a' => %w[git://example/a.git 1234abc],
+    }
+
+    assert_equal expected, git_set.repositories
+  end
+
   def test_parse_GIT_ref
     write_lockfile <<-LOCKFILE
 GIT

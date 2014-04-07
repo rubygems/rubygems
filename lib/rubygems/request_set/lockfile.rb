@@ -341,7 +341,8 @@ class Gem::RequestSet::Lockfile
 
     skip :newline
 
-    if [:entry, 'ref'] == peek.first(2) then
+    type, value = peek.first 2
+    if type == :entry and %w[ref branch].include? value then
       get
       get :text
 

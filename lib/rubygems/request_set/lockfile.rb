@@ -341,6 +341,13 @@ class Gem::RequestSet::Lockfile
 
     skip :newline
 
+    if [:entry, 'ref'] == peek.first(2) then
+      get
+      get :text
+
+      skip :newline
+    end
+
     get :entry, 'specs'
 
     skip :newline

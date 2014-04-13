@@ -138,7 +138,7 @@ class Gem::BasicSpecification
       File.join full_gem_path, path
     end
 
-    full_paths.unshift extension_dir unless @extensions.empty?
+    full_paths.unshift extension_dir unless @extensions.nil? || @extensions.empty?
 
     full_paths
   end
@@ -211,7 +211,7 @@ class Gem::BasicSpecification
   #   spec.require_path = '.'
 
   def require_paths
-    return @require_paths if @extensions.empty?
+    return @require_paths if @extensions.nil? || @extensions.empty?
 
     relative_extension_dir =
       File.join '..', '..', 'extensions', Gem::Platform.local.to_s,

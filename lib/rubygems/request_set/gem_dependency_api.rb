@@ -21,6 +21,8 @@ class Gem::RequestSet::GemDependencyAPI
     :ruby_21      => %w[ruby rbx maglev],
   }
 
+  mswin     = Gem::Platform.new 'x86-mswin32'
+  mswin64   = Gem::Platform.new 'x64-mswin64'
   x86_mingw = Gem::Platform.new 'x86-mingw32'
   x64_mingw = Gem::Platform.new 'x64-mingw32'
 
@@ -39,7 +41,15 @@ class Gem::RequestSet::GemDependencyAPI
     :mri_19       => Gem::Platform::RUBY,
     :mri_20       => Gem::Platform::RUBY,
     :mri_21       => Gem::Platform::RUBY,
-    :mswin        => Gem::Platform::RUBY,
+    :mswin        => mswin,
+    :mswin_18     => mswin,
+    :mswin_19     => mswin,
+    :mswin_20     => mswin,
+    :mswin_21     => mswin,
+    :mswin64      => mswin64,
+    :mswin64_19   => mswin64,
+    :mswin64_20   => mswin64,
+    :mswin64_21   => mswin64,
     :rbx          => Gem::Platform::RUBY,
     :ruby         => Gem::Platform::RUBY,
     :ruby_18      => Gem::Platform::RUBY,
@@ -73,6 +83,14 @@ class Gem::RequestSet::GemDependencyAPI
     :mri_20       => tilde_gt_2_0_0,
     :mri_21       => tilde_gt_2_1_0,
     :mswin        => gt_eq_0,
+    :mswin_18     => tilde_gt_1_8_0,
+    :mswin_19     => tilde_gt_1_9_0,
+    :mswin_20     => tilde_gt_2_0_0,
+    :mswin_21     => tilde_gt_2_1_0,
+    :mswin64      => gt_eq_0,
+    :mswin64_19   => tilde_gt_1_9_0,
+    :mswin64_20   => tilde_gt_2_0_0,
+    :mswin64_21   => tilde_gt_2_1_0,
     :rbx          => gt_eq_0,
     :ruby         => gt_eq_0,
     :ruby_18      => tilde_gt_1_8_0,
@@ -96,6 +114,14 @@ class Gem::RequestSet::GemDependencyAPI
     :mri_20       => :never,
     :mri_21       => :never,
     :mswin        => :only,
+    :mswin_18     => :only,
+    :mswin_19     => :only,
+    :mswin_20     => :only,
+    :mswin_21     => :only,
+    :mswin64      => :only,
+    :mswin64_19   => :only,
+    :mswin64_20   => :only,
+    :mswin64_21   => :only,
     :rbx          => :never,
     :ruby         => :never,
     :ruby_18      => :never,

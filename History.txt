@@ -69,6 +69,8 @@ Bug fixes:
 * Fixed show_release_notes test for LANG=C.  Issue #862 by Luis Lavena.
 * Fixed Gem::Package from IO tests on windows.  Patch from issue #861 by Luis
   Lavena.
+* Check for nil extensions as BasicSpecification does not initialize them.
+  Pull request #882 by André Arko.
 
 === 2.2.2 / 2014-02-05
 

@@ -536,23 +536,21 @@ end
   end
 
   def test_platform_mswin
-    win_platform, Gem.win_platform = Gem.win_platform?, false
+    util_set_arch 'i686-darwin8.10.1' do
+      @gda.platform :mswin do
+        @gda.gem 'a'
+      end
 
-    @gda.platform :mswin do
-      @gda.gem 'a'
+      assert_empty @set.dependencies
     end
 
-    assert_empty @set.dependencies
+    util_set_arch 'x86-mswin32-60' do
+      @gda.platform :mswin do
+        @gda.gem 'a'
+      end
 
-    Gem.win_platform = true
-
-    @gda.platform :mswin do
-      @gda.gem 'a'
+      refute_empty @set.dependencies
     end
-
-    refute_empty @set.dependencies
-  ensure
-    Gem.win_platform = win_platform
   end
 
   def test_platform_multiple
@@ -590,30 +588,27 @@ end
   end
 
   def test_platforms
-    win_platform, Gem.win_platform = Gem.win_platform?, false
+    util_set_arch 'i686-darwin8.10.1' do
+      @gda.platforms :ruby do
+        @gda.gem 'a'
+      end
 
-    @gda.platforms :ruby do
-      @gda.gem 'a'
+      assert_equal [dep('a')], @set.dependencies
+
+      @gda.platforms :mswin do
+        @gda.gem 'b'
+      end
+
+      assert_equal [dep('a')], @set.dependencies
     end
 
-    assert_equal [dep('a')], @set.dependencies
+    util_set_arch 'x86-mswin32-60' do
+      @gda.platforms :mswin do
+        @gda.gem 'c'
+      end
 
-    @gda.platforms :mswin do
-      @gda.gem 'b'
+      assert_equal [dep('a'), dep('c')], @set.dependencies
     end
-
-    assert_equal [dep('a')], @set.dependencies
-
-    Gem.win_platform = true
-
-    @gda.platforms :mswin do
-      @gda.gem 'c'
-    end
-
-    assert_equal [dep('a'), dep('c')], @set.dependencies
-
-  ensure
-    Gem.win_platform = win_platform
   end
 
   def test_ruby

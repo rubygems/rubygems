@@ -10,6 +10,7 @@ Minor enhancements:
 * The `update` command shows a summary of which gems were and were not
   updated.  Issue #544 by Mark D. Blackwell.
   Pull request #777 by Tejas Bubane.
+* Added mswin64 support.  Pull request #881 by U. Nakamura.
 * A gem is installable from an IO again (as in RubyGems 1.8.x and older).
   Pull request #716 by Xavier Shay.
 * RubyGems no longer attempts to build extensions during activation.  Instead

@@ -62,7 +62,7 @@ class Gem::Resolver::Specification
   # gem will be installed, or +nil+, which indicates the gem is already
   # installed.
 
-  def install options
+  def install options = {}
     require 'rubygems/installer'
 
     destination = options[:install_dir] || Gem.dir

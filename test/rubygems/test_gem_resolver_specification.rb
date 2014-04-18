@@ -39,7 +39,7 @@ class TestGemResolverSpecification < Gem::TestCase
     a_spec = TestSpec.new a
     a_spec.source = Gem::Source.new @gem_repo
 
-    a_spec.install({})
+    a_spec.install
 
     assert_path_exists File.join @gemhome, 'gems', a.full_name
   end

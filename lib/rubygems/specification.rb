@@ -464,6 +464,21 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
+  # Adds a test dependency named +gem+ with +requirements+ to this
+  # gem.
+  #
+  # Usage:
+  #
+  #   spec.add_test_dependency 'example', '~> 1.1', '>= 1.1.4'
+  #
+  # Test dependencies aren't installed by default and aren't
+  # activated when a gem is required.
+
+  def add_test_dependency(gem, *requirements)
+    add_dependency_with_type(gem, :test, *requirements)
+  end
+
+  ##
   # Adds a runtime dependency named +gem+ with +requirements+ to this gem.
   #
   # Usage:

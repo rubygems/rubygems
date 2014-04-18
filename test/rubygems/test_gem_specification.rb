@@ -1081,13 +1081,22 @@ dependencies: []
     assert_equal %w[true gem_name], gem.dependencies.map { |dep| dep.name }
   end
 
-  def test_add_dependency_with_type_explicit
+  def test_add_development_dependency
     gem = util_spec "awesome", "1.0" do |awesome|
       awesome.add_development_dependency "monkey"
     end
 
     monkey = gem.dependencies.detect { |d| d.name == "monkey" }
     assert_equal(:development, monkey.type)
+  end
+
+  def test_add_test_dependency
+    gem = util_spec "awesome", "1.0" do |awesome|
+      awesome.add_test_dependency "monkey"
+    end
+
+    monkey = gem.dependencies.detect { |d| d.name == "monkey" }
+    assert_equal(:test, monkey.type)
   end
 
   def test_author

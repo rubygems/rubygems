@@ -647,6 +647,10 @@ if ARGV.first
   end
 end
 
+if ENV['GEM_VERSION']
+  version = ENV.delete('GEM_VERSION')
+end
+
 gem '#{spec.name}', version
 load Gem.bin_path('#{spec.name}', '#{bin_file_name}', version)
 TEXT

@@ -47,6 +47,10 @@ if ARGV.first
   end
 end
 
+if ENV['GEM_VERSION']
+  version = ENV.delete('GEM_VERSION')
+end
+
 gem 'a', version
 load Gem.bin_path('a', 'executable', version)
     EOF

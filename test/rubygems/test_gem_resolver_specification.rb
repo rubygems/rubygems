@@ -44,5 +44,16 @@ class TestGemResolverSpecification < Gem::TestCase
     refute b_spec.installable_platform?
   end
 
+  def test_source
+    a = util_spec 'a', 1
+
+    source = Gem::Source.new @gem_repo
+
+    a_spec = TestSpec.new a
+    a_spec.source = source
+
+    assert_equal source, a_spec.source
+  end
+
 end
 

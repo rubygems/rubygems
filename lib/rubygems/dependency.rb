@@ -16,6 +16,7 @@ class Gem::Dependency
 
   TYPES = [
     :development,
+    :test,
     :runtime,
   ]
 

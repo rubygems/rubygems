@@ -5,14 +5,15 @@ class TestGemResolverLockSet < Gem::TestCase
   def setup
     super
 
-    @source      = Gem::Source.new @gem_repo
-    @lock_source = Gem::Source::Lock.new @source
+    @sources     = [Gem::Source.new(@gem_repo)]
+    @lock_source = Gem::Source::Lock.new @sources.first
 
-    @set = Gem::Resolver::LockSet.new @source
+    @set = Gem::Resolver::LockSet.new @sources
   end
 
   def test_add
-    spec = @set.add 'a', '2', Gem::Platform::RUBY
+    specs = @set.add 'a', '2', Gem::Platform::RUBY
+    spec = specs.first
 
     assert_equal %w[a-2], @set.specs.map { |t| t.full_name }
 

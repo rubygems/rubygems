@@ -9,7 +9,7 @@ class TestGemResolverLockSpecification < Gem::TestCase
     @LS = Gem::Resolver::LockSpecification
 
     @source = Gem::Source.new @gem_repo
-    @set    = Gem::Resolver::LockSet.new @source
+    @set    = Gem::Resolver::LockSet.new [@source]
   end
 
   def test_initialize

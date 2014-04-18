@@ -277,30 +277,33 @@ class Gem::RequestSet::Lockfile
   end
 
   def parse_GEM # :nodoc:
-    if [:entry, 'remote'] == peek.first(2) then
+    sources = []
+
+    while [:entry, 'remote'] == peek.first(2) do
       get :entry, 'remote'
       _, data, = get :text
-    else
-      data = Gem::DEFAULT_HOST
+      skip :newline
+
+      sources << Gem::Source.new(data)
     end
 
-    source = Gem::Source.new data
-
-    skip :newline
+    sources << Gem::Source.new(Gem::DEFAULT_HOST) if sources.empty?
 
     get :entry, 'specs'
 
     skip :newline
 
-    set = Gem::Resolver::LockSet.new source
-    last_spec = nil
+    set = Gem::Resolver::LockSet.new sources
+    last_specs = nil
 
     while not @tokens.empty? and :text == peek.first do
       _, name, column, = get :text
 
       case peek[0]
       when :newline then
-        last_spec.add_dependency Gem::Dependency.new name if column == 6
+        last_specs.each do |spec|
+          spec.add_dependency Gem::Dependency.new name if column == 6
+        end
       when :l_paren then
         get :l_paren
 
@@ -312,11 +315,13 @@ class Gem::RequestSet::Lockfile
           platform =
             platform ? Gem::Platform.new(platform) : Gem::Platform::RUBY
 
-          last_spec = set.add name, version, platform
+          last_specs = set.add name, version, platform
         else
           dependency = parse_dependency name, data
 
-          last_spec.add_dependency dependency
+          last_specs.each do |spec|
+            spec.add_dependency dependency
+          end
         end
 
         get :r_paren

@@ -13,6 +13,21 @@ class TestGemResolverSpecification < Gem::TestCase
     end
   end
 
+  def test_install
+    spec_fetcher do |fetcher|
+      a = fetcher.gem 'a', 1
+    end
+
+    a = util_spec 'a', 1
+
+    a_spec = TestSpec.new a
+    a_spec.source = Gem::Source.new @gem_repo
+
+    a_spec.install
+
+    assert_path_exists File.join @gemhome, 'gems', a.full_name
+  end
+
   def test_installable_platform_eh
     a = util_spec 'a', 1
 
@@ -27,21 +42,6 @@ class TestGemResolverSpecification < Gem::TestCase
     b_spec = TestSpec.new b
 
     refute b_spec.installable_platform?
-  end
-
-  def test_install
-    spec_fetcher do |fetcher|
-      a = fetcher.gem 'a', 1
-    end
-
-    a = util_spec 'a', 1
-
-    a_spec = TestSpec.new a
-    a_spec.source = Gem::Source.new @gem_repo
-
-    a_spec.install
-
-    assert_path_exists File.join @gemhome, 'gems', a.full_name
   end
 
 end

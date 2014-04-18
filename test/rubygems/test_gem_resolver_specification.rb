@@ -15,7 +15,7 @@ class TestGemResolverSpecification < Gem::TestCase
 
   def test_install
     spec_fetcher do |fetcher|
-      a = fetcher.gem 'a', 1
+      fetcher.gem 'a', 1
     end
 
     a = util_spec 'a', 1

@@ -1323,6 +1323,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps_missing_gem
+    skip 'Insecure operation - read' if RUBY_VERSION <= "1.8.7"
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'
 
     open 'x', 'w' do |io|

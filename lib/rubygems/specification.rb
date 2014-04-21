@@ -482,6 +482,9 @@ class Gem::Specification < Gem::BasicSpecification
   # found in bindir.  These files must be executable Ruby files.  Files that
   # use bash or other interpreters will not work.
   #
+  # Executables included may only be ruby scripts, not scripts for other
+  # languages or compiled binaries.
+  #
   # Usage:
   #
   #   spec.executables << 'rake'

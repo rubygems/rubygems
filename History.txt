@@ -39,6 +39,8 @@ Bug fixes:
   Kaiser-Nyman.
 * Commands using the rubygems.org API no longer try to sign-in when a
   non-rubygems API key has been chosen.  Bug #826 by Ben Sedat.
+* Updated documentation of Gem::Specification#executables to indicate that
+  only ruby scripts are allowed.  Bug #830 by Geoff Nixon.
 * Gem dependency API supports multiple platforms for #platform and #platforms
   now.  Bug #821 by johnny5-.
 * Gem dependency API supports lockfiles without explicit sources.  Bug #820 by

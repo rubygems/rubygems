@@ -148,6 +148,8 @@ class Gem::Command
 
   ##
   # Display to the user that a gem couldn't be found and reasons why
+  #--
+  # TODO: replace +domain+ with a parameter to suppress suggestions
 
   def show_lookup_failure(gem_name, version, errors, domain)
     if errors and !errors.empty?

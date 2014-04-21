@@ -22,6 +22,7 @@ class Gem::Commands::InstallCommand < Gem::Command
     defaults = Gem::DependencyInstaller::DEFAULT_OPTIONS.merge({
       :format_executable => false,
       :lock              => true,
+      :suggest_alternate => true,
       :version           => Gem::Requirement.default,
       :without_groups    => [],
     })
@@ -73,6 +74,11 @@ class Gem::Commands::InstallCommand < Gem::Command
     add_option(:"Install/Update", '--[no-]lock',
                'Create a lock file (when used with -g/--file)') do |v,o|
       o[:lock] = v
+    end
+
+    add_option(:"Install/Update", '--[no-]suggestions',
+               'Suggest alternates when gems are not found') do |v,o|
+      o[:suggest_alternate] = v
     end
 
     @installed_specs = []
@@ -271,7 +277,9 @@ to write the specification by hand.  For example:
         alert_error "Error installing #{gem_name}:\n\t#{e.message}"
         exit_code |= 1
       rescue Gem::GemNotFoundException, Gem::UnsatisfiableDependencyError => e
-        show_lookup_failure e.name, e.version, e.errors, options[:domain]
+        domain = options[:domain]
+        domain = :local unless options[:suggest_alternate]
+        show_lookup_failure e.name, e.version, e.errors, domain
 
         exit_code |= 2
       end

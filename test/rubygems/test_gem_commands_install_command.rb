@@ -195,6 +195,32 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     assert_match(%r!Unable to download data from http://not-there.nothing!, errs.shift)
   end
 
+  def test_execute_nonexistent_hint_disabled
+    misspelled = "nonexistent_with_hint"
+    correctly_spelled = "non_existent_with_hint"
+
+    spec_fetcher do |fetcher|
+      fetcher.spec correctly_spelled, 2
+    end
+
+    @cmd.options[:args] = [misspelled]
+    @cmd.options[:suggest_alternate] = false
+
+    use_ui @ui do
+      e = assert_raises Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+
+      assert_equal 2, e.exit_code
+    end
+
+    expected = <<-EXPECTED
+ERROR:  Could not find a valid gem 'nonexistent_with_hint' (>= 0) in any repository
+    EXPECTED
+
+    assert_equal expected, @ui.error
+  end
+
   def test_execute_nonexistent_with_hint
     misspelled = "nonexistent_with_hint"
     correctly_spelled = "non_existent_with_hint"
@@ -912,6 +938,18 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.handle_options %w[-g]
 
     assert_equal 'gem.deps.rb', @cmd.options[:gemdeps]
+  end
+
+  def test_handle_options_suggest
+    assert @cmd.options[:suggest_alternate]
+
+    @cmd.handle_options %w[--no-suggestions]
+
+    refute @cmd.options[:suggest_alternate]
+
+    @cmd.handle_options %w[--suggestions]
+
+    assert @cmd.options[:suggest_alternate]
   end
 
   def test_handle_options_without

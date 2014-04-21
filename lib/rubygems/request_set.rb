@@ -189,7 +189,7 @@ class Gem::RequestSet
     else
       installed = install options, &block
 
-      unless options[:without_lock]
+      if options.fetch :lock, true then
         lockfile = Gem::RequestSet::Lockfile.new self, gemdeps
         lockfile.write
       end

@@ -21,6 +21,7 @@ class Gem::Commands::InstallCommand < Gem::Command
   def initialize
     defaults = Gem::DependencyInstaller::DEFAULT_OPTIONS.merge({
       :format_executable => false,
+      :lock              => true,
       :version           => Gem::Requirement.default,
       :without_groups    => [],
     })
@@ -69,9 +70,9 @@ class Gem::Commands::InstallCommand < Gem::Command
       o[:explain] = v
     end
 
-    add_option(:"Install/Update", '--no-lock',
-               'Do not create a lock file (when used with -g/--file)') do |v,o|
-      o[:without_lock] = true
+    add_option(:"Install/Update", '--[no-]lock',
+               'Create a lock file (when used with -g/--file)') do |v,o|
+      o[:lock] = v
     end
 
     @installed_specs = []
@@ -83,7 +84,7 @@ class Gem::Commands::InstallCommand < Gem::Command
 
   def defaults_str # :nodoc:
     "--both --version '#{Gem::Requirement.default}' --document --no-force\n" +
-    "--install-dir #{Gem.dir}"
+    "--install-dir #{Gem.dir} --lock"
   end
 
   def description # :nodoc:

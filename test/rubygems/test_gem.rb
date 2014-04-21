@@ -1322,6 +1322,26 @@ class TestGem < Gem::TestCase
     ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
   end
 
+  def test_use_gemdeps_missing_gem
+    rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'
+
+    open 'x', 'w' do |io|
+      io.write 'gem "a"'
+    end
+
+    expected = <<-EXPECTED
+Unable to resolve dependency: user requested 'a (>= 0)'
+You may need to `gem install -g` to install missing gems
+
+    EXPECTED
+
+    assert_output nil, expected do
+      Gem.use_gemdeps
+    end
+  ensure
+    ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
+  end
+
   def test_use_gemdeps_specific
     skip 'Insecure operation - read' if RUBY_VERSION <= "1.8.7"
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'

@@ -1035,6 +1035,10 @@ module Gem
       sp.activate
       sp
     end
+  rescue Gem::LoadError, Gem::UnsatisfiableDependencyError => e
+    warn e.message
+    warn "You may need to `gem install -g` to install missing gems"
+    warn ""
   end
 
   class << self

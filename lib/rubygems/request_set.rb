@@ -179,8 +179,8 @@ class Gem::RequestSet
     if options[:explain]
       puts "Gems to install:"
 
-      specs.map { |s| s.full_name }.sort.each do |s|
-        puts "  #{s}"
+      specs.sorted_requests.each do |spec|
+        puts "  #{spec.full_name}"
       end
 
       if Gem.configuration.really_verbose

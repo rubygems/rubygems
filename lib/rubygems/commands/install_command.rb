@@ -222,8 +222,8 @@ to write the specification by hand.  For example:
 
         puts "Gems to install:"
 
-        request_set.specs.map { |s| s.full_name }.sort.each do |s|
-          puts "  #{s}"
+        request_set.sorted_requests.each do |s|
+          puts "  #{s.full_name}"
         end
 
         return

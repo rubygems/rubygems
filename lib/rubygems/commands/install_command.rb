@@ -216,10 +216,9 @@ to write the specification by hand.  For example:
       install_gem_without_dependencies name, req
     else
       inst = Gem::DependencyInstaller.new options
+      request_set = inst.resolve_dependencies name, req
 
       if options[:explain]
-        request_set = inst.resolve_dependencies name, req
-
         puts "Gems to install:"
 
         request_set.sorted_requests.each do |s|
@@ -228,10 +227,8 @@ to write the specification by hand.  For example:
 
         return
       else
-        inst.install name, req
+        @installed_specs.concat request_set.install options
       end
-
-      @installed_specs.push(*inst.installed_gems)
 
       show_install_errors inst.errors
     end

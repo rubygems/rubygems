@@ -130,7 +130,8 @@ class Gem::RequestSet
 
   def install options, &block # :yields: request, installer
     if dir = options[:install_dir]
-      return install_into dir, false, options, &block
+      specs = install_into dir, false, options, &block
+      return specs
     end
 
     cache_dir = options[:cache_dir] || Gem.dir
@@ -157,6 +158,17 @@ class Gem::RequestSet
     end
 
     specs
+  ensure
+    raise if $!
+    return specs if options[:gemdeps]
+
+    require 'rubygems/dependency_installer'
+    inst = Gem::DependencyInstaller.new options
+    inst.installed_gems.replace specs
+
+    Gem.done_installing_hooks.each do |hook|
+      hook.call inst, specs
+    end unless Gem.done_installing_hooks.empty?
   end
 
   ##

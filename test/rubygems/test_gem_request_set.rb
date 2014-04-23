@@ -42,6 +42,12 @@ class TestGemRequestSet < Gem::TestCase
       fetcher.gem 'a', 2
     end
 
+    done_installing_ran = false
+
+    Gem.done_installing do |installer, specs|
+      done_installing_ran = true
+    end
+
     rs = Gem::RequestSet.new
     installed = []
 
@@ -61,6 +67,7 @@ class TestGemRequestSet < Gem::TestCase
     assert_path_exists 'gem.deps.rb.lock'
 
     assert rs.remote
+    refute done_installing_ran
   end
 
   def test_install_from_gemdeps_install_dir
@@ -335,6 +342,12 @@ DEPENDENCIES
   end
 
   def test_install
+    done_installing_ran = false
+
+    Gem.done_installing do
+      done_installing_ran = true
+    end
+
     spec_fetcher do |fetcher|
       fetcher.gem "a", "1", "b" => "= 1"
       fetcher.gem "b", "1"
@@ -363,6 +376,8 @@ DEPENDENCIES
     assert_path_exists File.join @gemhome, 'specifications', 'b-1.gemspec'
 
     assert_equal %w[b-1 a-1], installed.map { |s| s.full_name }
+
+    assert done_installing_ran
   end
 
   def test_install_into

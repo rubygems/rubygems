@@ -130,13 +130,13 @@ class Gem::RequestSet
 
   def install options, &block # :yields: request, installer
     if dir = options[:install_dir]
-      specs = install_into dir, false, options, &block
-      return specs
+      requests = install_into dir, false, options, &block
+      return requests
     end
 
     cache_dir = options[:cache_dir] || Gem.dir
 
-    specs = []
+    requests = []
 
     sorted_requests.each do |req|
       if req.installed? then
@@ -154,13 +154,15 @@ class Gem::RequestSet
 
       yield req, inst if block_given?
 
-      specs << inst.install
+      requests << inst.install
     end
 
-    specs
+    requests
   ensure
     raise if $!
-    return specs if options[:gemdeps]
+    return requests if options[:gemdeps]
+
+    specs = requests.map { |request| request.spec.spec }
 
     require 'rubygems/dependency_installer'
     inst = Gem::DependencyInstaller.new options

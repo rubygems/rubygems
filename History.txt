@@ -37,7 +37,7 @@ Bug fixes:
 * RubyGems now only fetches the latest specs to find misspellings which speeds
   up gem suggestions.  Pull request #808 by Aaron Patterson.
 * RubyGems can install local prerelease gems again.  Pull request #866 by
-  Aaron Patterson.
+  Aaron Patterson.  Issue #813 by André Arko.
 * RubyGems only installs prerelease versions when they are requested again.
   Issue #853 by Seth Vargo.
 * RubyGems no longer raises an exception immediately when gems are missing

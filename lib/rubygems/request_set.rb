@@ -162,7 +162,14 @@ class Gem::RequestSet
     raise if $!
     return requests if options[:gemdeps]
 
-    specs = requests.map { |request| request.spec.spec }
+    specs = requests.map do |request|
+      case request
+      when Gem::Resolver::ActivationRequest then
+        request.spec.spec
+      else
+        request
+      end
+    end
 
     require 'rubygems/dependency_installer'
     inst = Gem::DependencyInstaller.new options

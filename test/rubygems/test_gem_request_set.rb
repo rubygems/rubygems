@@ -210,12 +210,13 @@ DEPENDENCIES
 
   def test_resolve_development
     a = util_spec 'a', 1
+    spec = Gem::Resolver::SpecSpecification.new nil, a
 
     rs = Gem::RequestSet.new
     rs.gem 'a'
     rs.development = true
 
-    res = rs.resolve StaticSet.new [a]
+    res = rs.resolve StaticSet.new [spec]
     assert_equal 1, res.size
 
     assert rs.resolver.development
@@ -227,12 +228,16 @@ DEPENDENCIES
     b = util_spec 'b', 1 do |s| s.add_development_dependency 'c' end
     c = util_spec 'c', 1
 
+    a_spec = Gem::Resolver::SpecSpecification.new nil, a
+    b_spec = Gem::Resolver::SpecSpecification.new nil, b
+    c_spec = Gem::Resolver::SpecSpecification.new nil, c
+
     rs = Gem::RequestSet.new
     rs.gem 'a'
     rs.development = true
     rs.development_shallow = true
 
-    res = rs.resolve StaticSet.new [a, b, c]
+    res = rs.resolve StaticSet.new [a_spec, b_spec, c_spec]
     assert_equal 2, res.size
 
     assert rs.resolver.development
@@ -411,7 +416,11 @@ DEPENDENCIES
     rs.development = true
     rs.development_shallow = true
 
-    rs.resolve StaticSet.new [a, b, c]
+    a_spec = Gem::Resolver::SpecSpecification.new nil, a
+    b_spec = Gem::Resolver::SpecSpecification.new nil, b
+    c_spec = Gem::Resolver::SpecSpecification.new nil, c
+
+    rs.resolve StaticSet.new [a_spec, b_spec, c_spec]
 
     assert_equal %w[a-1 b-1], rs.sorted_requests.map { |req| req.full_name }
   end

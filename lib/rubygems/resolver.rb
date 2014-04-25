@@ -149,10 +149,15 @@ class Gem::Resolver
   def requests s, act, reqs=nil # :nodoc:
     return reqs if @ignore_dependencies
 
+    s.fetch_development_dependencies if @development
+
     s.dependencies.reverse_each do |d|
       next if d.type == :development and not @development
       next if d.type == :development and @development_shallow and
               act.development?
+      next if d.type == :development and @development_shallow and
+              act.parent
+
       reqs.add Gem::Resolver::DependencyRequest.new(d, act)
       @stats.requirement!
     end

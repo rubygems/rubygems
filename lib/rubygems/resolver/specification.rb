@@ -48,6 +48,13 @@ class Gem::Resolver::Specification
   end
 
   ##
+  # Fetches development dependencies if the source does not provide them by
+  # default (see APISpecification).
+
+  def fetch_development_dependencies # :nodoc:
+  end
+
+  ##
   # The name and version of the specification.
   #
   # Unlike Gem::Specification#full_name, the platform is not included.

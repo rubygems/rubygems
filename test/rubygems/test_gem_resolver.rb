@@ -13,6 +13,7 @@ class TestGemResolver < Gem::TestCase
   end
 
   def set(*specs)
+    specs = specs.map { |spec| Gem::Resolver::SpecSpecification.new nil, spec }
     StaticSet.new(specs)
   end
 
@@ -20,7 +21,7 @@ class TestGemResolver < Gem::TestCase
     actual = resolver.resolve
 
     exp = expected.sort_by { |s| s.full_name }
-    act = actual.map { |a| a.spec }.sort_by { |s| s.full_name }
+    act = actual.map { |a| a.spec.spec }.sort_by { |s| s.full_name }
 
     msg = "Set of gems was not the same: #{exp.map { |x| x.full_name}.inspect} != #{act.map { |x| x.full_name}.inspect}"
 
@@ -123,6 +124,30 @@ class TestGemResolver < Gem::TestCase
     assert_equal ['b (= 2)'], reqs.to_a.map { |req| req.to_s }
   end
 
+  def test_requests_development
+    a1 = util_spec 'a', 1, 'b' => 2
+
+    spec = Gem::Resolver::SpecSpecification.new nil, a1
+    def spec.fetch_development_dependencies
+      @called = true
+    end
+
+    r1 = Gem::Resolver::DependencyRequest.new dep('a', '= 1'), nil
+
+    act = Gem::Resolver::ActivationRequest.new spec, r1, false
+
+    res = Gem::Resolver.new [act]
+    res.development = true
+
+    reqs = Gem::Resolver::RequirementList.new
+
+    res.requests spec, act, reqs
+
+    assert_equal ['b (= 2)'], reqs.to_a.map { |req| req.to_s }
+
+    assert spec.instance_variable_defined? :@called
+  end
+
   def test_requests_ignore_dependencies
     a1 = util_spec 'a', 1, 'b' => 2
 
@@ -159,22 +184,29 @@ class TestGemResolver < Gem::TestCase
   end
 
   def test_resolve_development_shallow
-    a_spec = util_spec 'a', 1 do |s| s.add_development_dependency 'b' end
+    a_spec = util_spec 'a', 1 do |s|
+      s.add_development_dependency 'b'
+      s.add_runtime_dependency 'd'
+    end
+
     b_spec = util_spec 'b', 1 do |s| s.add_development_dependency 'c' end
     c_spec = util_spec 'c', 1
+
+    d_spec = util_spec 'd', 1 do |s| s.add_development_dependency 'e' end
+    e_spec = util_spec 'e', 1
 
     a_dep = make_dep 'a', '= 1'
 
     deps = [a_dep]
 
-    s = set a_spec, b_spec, c_spec
+    s = set a_spec, b_spec, c_spec, d_spec, e_spec
 
     res = Gem::Resolver.new deps, s
 
     res.development = true
     res.development_shallow = true
 
-    assert_resolves_to [a_spec, b_spec], res
+    assert_resolves_to [a_spec, b_spec, d_spec], res
   end
 
   def test_resolve_remote_missing_dependency
@@ -267,7 +299,7 @@ class TestGemResolver < Gem::TestCase
 
     res = Gem::Resolver.new([ad], s)
 
-    assert_resolves_to [a2_p1], res
+    assert_resolves_to [a2_p1.spec], res
   end
 
   def test_only_returns_spec_once

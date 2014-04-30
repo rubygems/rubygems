@@ -106,6 +106,13 @@ module Gem::InstallUpdateOptions
       options[:wrappers] = value
     end
 
+    add_option(:"Install/Update",     '--wrapper-template TEMPLATE',
+               'Use this file as a template to generate',
+               'the binstub.') do |value, options|
+      options[:wrapper_template] = File.expand_path(value)
+    end
+
+
     add_option(:"Install/Update", '-P', '--trust-policy POLICY',
                Gem::Security::Policy,
                'Specify gem trust policy') do |value, options|

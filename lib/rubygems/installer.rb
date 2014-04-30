@@ -101,6 +101,8 @@ class Gem::Installer
   # :only_install_dir:: Only validate dependencies against what is in the
   #                     install_dir
   # :wrappers:: Install wrappers if true, symlinks if false.
+  # :wrapper_template:: Use this template to generate the wrapper. Uses
+  #                     default if none provided.
   # :build_args:: An Array of arguments to pass to the extension builder
   #               process. If not set, then Gem::Command.build_args is used
 
@@ -430,7 +432,11 @@ class Gem::Installer
     FileUtils.rm_f bin_script_path # prior install may have been --no-wrappers
 
     File.open bin_script_path, 'wb', 0755 do |file|
-      file.print app_script_text(filename)
+      if @wrapper_template
+        file.print app_script_templated(@wrapper_template, filename)
+      else
+        file.print app_script_text(filename)
+      end
     end
 
     verbose bin_script_path
@@ -584,6 +590,7 @@ class Gem::Installer
     @security_policy     = options[:security_policy]
     @wrappers            = options[:wrappers]
     @only_install_dir    = options[:only_install_dir]
+    @wrapper_template    = options[:wrapper_template]
 
     # If the user has asked for the gem to be installed in a directory that is
     # the system gem directory, then use the system bin directory, else create
@@ -619,6 +626,22 @@ class Gem::Installer
     FileUtils.mkdir_p gem_home
     raise Gem::FilePermissionError, gem_home unless
       unpack or File.writable?(gem_home)
+  end
+
+
+  ##
+  # Return the templated text for an application file.
+
+  def app_script_templated(template, bin_file_name)
+    unless File.exists?(template)
+      raise Gem::InstallError, "The provided template file '#{template}'" +
+        " does not exist."
+    else
+      require 'erb'
+      erb = ERB.new(File.read(template), nil, '-')
+      erb.filename = template
+      return erb.result(binding)
+    end
   end
 
   ##

@@ -229,6 +229,7 @@ class Gem::RequestSet
 
     installed = []
 
+    options[:development] = false
     options[:install_dir] = dir
     options[:only_install_dir] = true
 

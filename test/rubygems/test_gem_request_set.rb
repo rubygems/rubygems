@@ -406,6 +406,38 @@ DEPENDENCIES
     assert_equal %w!b-1 a-1!, installed.map { |s| s.full_name }
   end
 
+  def test_install_into_development_shallow
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', '1' do |s|
+        s.add_development_dependency 'b', '= 1'
+      end
+
+      fetcher.gem 'b', '1' do |s|
+        s.add_development_dependency 'c', '= 1'
+      end
+
+      fetcher.spec 'c', '1'
+    end
+
+    rs = Gem::RequestSet.new
+    rs.development         = true
+    rs.development_shallow = true
+    rs.gem 'a'
+
+    rs.resolve
+
+    options = {
+      :development         => true,
+      :development_shallow => true,
+    }
+
+    installed = rs.install_into @tempdir, true, options do
+      assert_equal @tempdir, ENV['GEM_HOME']
+    end
+
+    assert_equal %w[a-1 b-1], installed.map { |s| s.full_name }.sort
+  end
+
   def test_sorted_requests_development_shallow
     a = util_spec 'a', 1 do |s| s.add_development_dependency 'b' end
     b = util_spec 'b', 1 do |s| s.add_development_dependency 'c' end

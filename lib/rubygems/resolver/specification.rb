@@ -68,6 +68,9 @@ class Gem::Resolver::Specification
   # install method yields a Gem::Installer instance, which indicates the
   # gem will be installed, or +nil+, which indicates the gem is already
   # installed.
+  #
+  # After installation #spec is updated to point to the just-installed
+  # specification.
 
   def install options = {}
     require 'rubygems/installer'
@@ -82,7 +85,7 @@ class Gem::Resolver::Specification
 
     yield installer if block_given?
 
-    installer.install
+    @spec = installer.install
   end
 
   ##

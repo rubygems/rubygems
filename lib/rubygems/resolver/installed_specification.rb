@@ -14,7 +14,7 @@ class Gem::Resolver::InstalledSpecification < Gem::Resolver::SpecSpecification
   # This is a null install as this specification is already installed.
   # +options+ are ignored.
 
-  def install options
+  def install options = {}
     yield nil
   end
 

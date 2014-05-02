@@ -16,7 +16,7 @@ class Gem::Resolver::GitSpecification < Gem::Resolver::SpecSpecification
   # Installing a git gem only involves building the extensions and generating
   # the executables.
 
-  def install options
+  def install options = {}
     require 'rubygems/installer'
 
     installer = Gem::Installer.new '', options

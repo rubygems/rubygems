@@ -23,7 +23,7 @@ class Gem::Resolver::LockSpecification < Gem::Resolver::Specification
   # This is a null install as a locked specification is considered installed.
   # +options+ are ignored.
 
-  def install options
+  def install options = {}
     destination = options[:install_dir] || Gem.dir
 
     if File.exist? File.join(destination, 'specifications', spec.spec_name) then

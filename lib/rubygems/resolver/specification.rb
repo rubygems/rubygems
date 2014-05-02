@@ -31,6 +31,14 @@ class Gem::Resolver::Specification
   attr_reader :source
 
   ##
+  # The Gem::Specification for this Resolver::Specification.
+  #
+  # Implementers, note that #install updates @spec, so be sure to cache the
+  # Gem::Specification in @spec when overriding.
+
+  attr_reader :spec
+
+  ##
   # The version of the gem for this specification.
 
   attr_reader :version

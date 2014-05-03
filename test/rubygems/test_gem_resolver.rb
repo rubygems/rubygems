@@ -13,7 +13,12 @@ class TestGemResolver < Gem::TestCase
   end
 
   def set(*specs)
-    specs = specs.map { |spec| Gem::Resolver::SpecSpecification.new nil, spec }
+    source = Gem::Source.new URI @gem_repo
+
+    specs = specs.map do |spec|
+      Gem::Resolver::SpecSpecification.new nil, spec, source
+    end
+
     StaticSet.new(specs)
   end
 

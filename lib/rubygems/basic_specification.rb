@@ -134,7 +134,7 @@ class Gem::BasicSpecification
   # activated.
 
   def full_require_paths
-    full_paths = @require_paths.map do |path|
+    full_paths = [@require_paths].flatten.map do |path|
       File.join full_gem_path, path
     end
 

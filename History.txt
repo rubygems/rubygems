@@ -40,6 +40,8 @@ Bug fixes:
   Aaron Patterson.  Issue #813 by André Arko.
 * RubyGems only installs prerelease versions when they are requested again.
   Issue #853 by Seth Vargo.
+* Fixed RubyGems list and search command help.  Pull request #905 by Gabriel
+  Gilder.
 * RubyGems no longer raises an exception immediately when gems are missing
   with RUBYGEMS_GEMDEPS.  A warning is printed instead.  Issue #886 by Michael
   Kaiser-Nyman.

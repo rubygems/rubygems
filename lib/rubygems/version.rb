@@ -143,6 +143,10 @@
 #   "~> 3.0.0"    3.0.0 ... 3.1
 #   "~> 3.5"      3.5   ... 4.0
 #   "~> 3.5.0"    3.5.0 ... 3.6
+#   "~> 3"        3.0   ... 4.0
+#
+# For the last example, single-digit versions are automatically extended with
+# a zero to give a sensible result.
 
 class Gem::Version
   autoload :Requirement, 'rubygems/requirement'

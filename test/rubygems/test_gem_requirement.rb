@@ -277,6 +277,11 @@ class TestGemRequirement < Gem::TestCase
     refute_satisfied_by "1.1.pre", "~> 1.1"
     refute_satisfied_by "2.0.a",   "~> 1.0"
     refute_satisfied_by "2.0.a",   "~> 2.0"
+
+    refute_satisfied_by "0.9",     "~> 1"
+    assert_satisfied_by "1.0",     "~> 1"
+    assert_satisfied_by "1.1",     "~> 1"
+    refute_satisfied_by "2.0",     "~> 1"
   end
 
   def test_satisfied_by_eh_multiple

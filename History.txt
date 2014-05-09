@@ -30,6 +30,7 @@ Minor enhancements:
   by Zachary Scott.
 * Improved performance of conflict resolution.  Pull request #842 by Aaron
   Patterson.
+* Add documentation of "~> 0" to Gem::Version.  Issue #896 by Aaron Suggs.
 * Added CONTRIBUTING file.  Pull request #849 by Mark Turner.
 * Allow use of bindir in windows_stub_script in .bat
   Pull request #818 by @unak and @nobu

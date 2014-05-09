@@ -250,7 +250,7 @@ class Gem::RequestSet::Lockfile
           Gem::Resolver::VendorSet === set
         }.map { |set|
           set.specs[name]
-        }.first
+        }.compact.first
 
         requirements << spec.version
       when :l_paren then

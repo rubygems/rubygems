@@ -142,6 +142,46 @@ DEPENDENCIES
     assert_equal %w[a-2], lockfile_set.specs.map { |tuple| tuple.full_name }
   end
 
+  def test_parse_DEPENDENCIES_git
+    write_lockfile <<-LOCKFILE
+GIT
+  remote: git://git.example/josevalim/rails-footnotes.git
+  revision: 3a6ac1971e91d822f057650cc5916ebfcbd6ee37
+  specs:
+    rails-footnotes (3.7.9)
+      rails (>= 3.0.0)
+
+GIT
+  remote: git://git.example/svenfuchs/i18n-active_record.git
+  revision: 55507cf59f8f2173d38e07e18df0e90d25b1f0f6
+  specs:
+    i18n-active_record (0.0.2)
+      i18n (>= 0.5.0)
+
+GEM
+  remote: http://gems.example/
+  specs:
+    i18n (0.6.9)
+    rails (4.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  i18n-active_record!
+  rails-footnotes!
+    LOCKFILE
+
+    @lockfile.parse
+
+    expected = [
+      dep('i18n-active_record', '= 0.0.2'),
+      dep('rails-footnotes',    '= 3.7.9'),
+    ]
+
+    assert_equal expected, @set.dependencies
+  end
+
   def test_parse_GEM
     write_lockfile <<-LOCKFILE
 GEM

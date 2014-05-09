@@ -31,6 +31,8 @@ Minor enhancements:
 * Improved performance of conflict resolution.  Pull request #842 by Aaron
   Patterson.
 * Added CONTRIBUTING file.  Pull request #849 by Mark Turner.
+* Allow use of bindir in windows_stub_script in .bat
+  Pull request #818 by @unak and @nobu
 
 Bug fixes:
 
@@ -38,8 +40,12 @@ Bug fixes:
   up gem suggestions.  Pull request #808 by Aaron Patterson.
 * RubyGems can install local prerelease gems again.  Pull request #866 by
   Aaron Patterson.  Issue #813 by André Arko.
+* RubyGems installs development dependencies correctly again.  Issue #893 by
+  Jens Wille.
 * RubyGems only installs prerelease versions when they are requested again.
   Issue #853 by Seth Vargo.
+* Fixed RubyGems list and search command help.  Pull request #905 by Gabriel
+  Gilder.
 * RubyGems no longer raises an exception immediately when gems are missing
   with RUBYGEMS_GEMDEPS.  A warning is printed instead.  Issue #886 by Michael
   Kaiser-Nyman.
@@ -85,6 +91,8 @@ Bug fixes:
   Lavena.
 * Check for nil extensions as BasicSpecification does not initialize them.
   Pull request #882 by André Arko.
+* Fixed Gem::BasicSpecification#require_paths receives a String for
+  @require_paths. Pull requrest #904 by @danielpclark
 
 === 2.2.2 / 2014-02-05
 

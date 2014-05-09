@@ -31,6 +31,8 @@ Minor enhancements:
 * Improved performance of conflict resolution.  Pull request #842 by Aaron
   Patterson.
 * Added CONTRIBUTING file.  Pull request #849 by Mark Turner.
+* Allow use of bindir in windows_stub_script in .bat
+  Pull request #818 by @unak and @nobu
 
 Bug fixes:
 

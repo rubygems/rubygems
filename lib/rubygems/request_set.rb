@@ -328,17 +328,17 @@ class Gem::RequestSet
       next if dep.type == :development and not @development
 
       match = @requests.find { |r| dep.match? r.spec.name, r.spec.version }
-      if match
-        begin
-          yield match
-        rescue TSort::Cyclic
-        end
-      else
-        next if dep.type == :development and @development_shallow
 
-        unless @soft_missing
-          raise Gem::DependencyError, "Unresolved dependency found during sorting - #{dep} (requested by #{node.spec.full_name})"
-        end
+      unless match then
+        next if dep.type == :development and @development_shallow
+        next if @soft_missing
+        raise Gem::DependencyError,
+              "Unresolved dependency found during sorting - #{dep} (requested by #{node.spec.full_name})"
+      end
+
+      begin
+        yield match
+      rescue TSort::Cyclic
       end
     end
   end

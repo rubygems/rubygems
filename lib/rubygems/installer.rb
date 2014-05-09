@@ -660,10 +660,10 @@ TEXT
     return <<-TEXT
 @ECHO OFF
 IF NOT "%~f0" == "~f0" GOTO :WinNT
-@"#{ruby}" "#{File.join(bindir, bin_file_name)}" %1 %2 %3 %4 %5 %6 %7 %8 %9
+@"#{bindir.tr(File::SEPARATOR, File::ALT_SEPARATOR)}\\#{ruby}" "#{File.join(bindir, bin_file_name)}" %1 %2 %3 %4 %5 %6 %7 %8 %9
 GOTO :EOF
 :WinNT
-@"#{ruby}" "%~dpn0" %*
+@"%~dp0#{ruby}" "%~dpn0" %*
 TEXT
   end
 

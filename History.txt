@@ -89,6 +89,8 @@ Bug fixes:
   Lavena.
 * Check for nil extensions as BasicSpecification does not initialize them.
   Pull request #882 by André Arko.
+* Fixed Gem::BasicSpecification#require_paths receives a String for
+  @require_paths. Pull requrest #904 by @danielpclark
 
 === 2.2.2 / 2014-02-05
 

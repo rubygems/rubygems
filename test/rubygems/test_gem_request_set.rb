@@ -454,7 +454,53 @@ DEPENDENCIES
 
     rs.resolve StaticSet.new [a_spec, b_spec, c_spec]
 
-    assert_equal %w[a-1 b-1], rs.sorted_requests.map { |req| req.full_name }
+    assert_equal %w[b-1 a-1], rs.sorted_requests.map { |req| req.full_name }
+  end
+
+  def test_tsort_each_child_development
+    a = util_spec 'a', 1 do |s| s.add_development_dependency 'b' end
+    b = util_spec 'b', 1 do |s| s.add_development_dependency 'c' end
+    c = util_spec 'c', 1
+
+    rs = Gem::RequestSet.new
+    rs.gem 'a'
+    rs.development = true
+    rs.development_shallow = true
+
+    a_spec = Gem::Resolver::SpecSpecification.new nil, a
+    b_spec = Gem::Resolver::SpecSpecification.new nil, b
+    c_spec = Gem::Resolver::SpecSpecification.new nil, c
+
+    rs.resolve StaticSet.new [a_spec, b_spec, c_spec]
+
+    a_req = Gem::Resolver::ActivationRequest.new a_spec, nil
+
+    deps = rs.enum_for(:tsort_each_child, a_req).to_a
+
+    assert_equal %w[b], deps.map { |dep| dep.name }
+  end
+
+  def test_tsort_each_child_development_shallow
+    a = util_spec 'a', 1 do |s| s.add_development_dependency 'b' end
+    b = util_spec 'b', 1 do |s| s.add_development_dependency 'c' end
+    c = util_spec 'c', 1
+
+    rs = Gem::RequestSet.new
+    rs.gem 'a'
+    rs.development = true
+    rs.development_shallow = true
+
+    a_spec = Gem::Resolver::SpecSpecification.new nil, a
+    b_spec = Gem::Resolver::SpecSpecification.new nil, b
+    c_spec = Gem::Resolver::SpecSpecification.new nil, c
+
+    rs.resolve StaticSet.new [a_spec, b_spec, c_spec]
+
+    b_req = Gem::Resolver::ActivationRequest.new b_spec, nil
+
+    deps = rs.enum_for(:tsort_each_child, b_req).to_a
+
+    assert_empty deps
   end
 
 end

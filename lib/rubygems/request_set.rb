@@ -326,7 +326,6 @@ class Gem::RequestSet
   def tsort_each_child node # :nodoc:
     node.spec.dependencies.each do |dep|
       next if dep.type == :development and not @development
-      next if dep.type == :development and @development_shallow
 
       match = @requests.find { |r| dep.match? r.spec.name, r.spec.version }
       if match
@@ -335,6 +334,8 @@ class Gem::RequestSet
         rescue TSort::Cyclic
         end
       else
+        next if dep.type == :development and @development_shallow
+
         unless @soft_missing
           raise Gem::DependencyError, "Unresolved dependency found during sorting - #{dep} (requested by #{node.spec.full_name})"
         end

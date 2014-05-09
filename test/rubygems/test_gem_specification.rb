@@ -1784,7 +1784,7 @@ dependencies: []
     enable_shared 'no' do
       ext_spec
 
-      @ext.require_path = 'lib'
+      @ext.require_paths = 'lib'
 
       ext_install_dir = Pathname(@ext.extension_dir)
       full_gem_path = Pathname(@ext.full_gem_path)
@@ -1817,7 +1817,7 @@ dependencies: []
   def test_full_require_paths
     ext_spec
 
-    @ext.require_path = 'lib'
+    @ext.require_paths = 'lib'
 
     expected = [
       @ext.extension_dir,

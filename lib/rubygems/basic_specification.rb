@@ -134,7 +134,7 @@ class Gem::BasicSpecification
   # activated.
 
   def full_require_paths
-    full_paths = @require_paths.map do |path|
+    full_paths = Array(@require_paths).map do |path|
       File.join full_gem_path, path
     end
 
@@ -211,13 +211,13 @@ class Gem::BasicSpecification
   #   spec.require_path = '.'
 
   def require_paths
-    return @require_paths if @extensions.nil? || @extensions.empty?
+    return Array(@require_paths) if @extensions.nil? || @extensions.empty?
 
     relative_extension_dir =
       File.join '..', '..', 'extensions', Gem::Platform.local.to_s,
                 Gem.extension_api_version, full_name
 
-    [relative_extension_dir].concat @require_paths
+    [relative_extension_dir].concat Array(@require_paths)
   end
 
   ##

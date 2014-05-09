@@ -218,9 +218,11 @@ class Gem::Specification < Gem::BasicSpecification
   # Usage:
   #
   #   # If all library files are in the root directory...
-  #   spec.require_path = '.'
+  #   spec.require_paths = ['.']
 
-  attr_writer :require_paths
+  def require_paths=(val)
+    @require_paths = Array(val)
+  end
 
   ##
   # The version of RubyGems used to create this gem.
@@ -2111,7 +2113,7 @@ class Gem::Specification < Gem::BasicSpecification
   # Singular accessor for #require_paths
 
   def require_path= path
-    self.require_paths = [path]
+    self.require_paths = Array(path)
   end
 
   ##

@@ -61,6 +61,8 @@ Bug fixes:
   johnny5-, bug #851 by sumit shah.
 * Gem dependency API supports lockfiles with git sources using branch, tag and
   ref.  Bug #822 by johnny5-.
+* Gem dependency API no longer raises an exception when a gem does not exist
+  in one of the configured sources.  Bug #897 by Michael Kaiser-Nyman.
 * SSL configuration entries in ~/.gemrc are properly round-tripped.  Bug #837
   by Noah Luck Easterly.
 * The environment command now shows the system configuration directory where

@@ -1440,7 +1440,7 @@ class Gem::Specification < Gem::BasicSpecification
     return if extensions.empty?
     return if installed_by_version < Gem::Version.new('2.2.0.preview.2')
     return if File.exist? gem_build_complete_path
-    return if !File.writable?(base_dir) &&
+    return if !File.writable?(base_dir) ||
               !File.exist?(File.join(base_dir, 'extensions'))
 
     begin

@@ -98,6 +98,7 @@ Bug fixes:
   Pull request #882 by André Arko.
 * Fixed Gem::BasicSpecification#require_paths receives a String for
   @require_paths. Pull requrest #904 by @danielpclark
+* Fixed circular require warnings.  Bug #908 by Zachary Scott.
 
 === 2.2.2 / 2014-02-05
 

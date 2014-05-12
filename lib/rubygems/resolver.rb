@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'rubygems/dependency'
 require 'rubygems/exceptions'
 require 'rubygems/util/list'

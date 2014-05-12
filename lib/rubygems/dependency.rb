@@ -282,12 +282,13 @@ class Gem::Dependency
 
       if specs.empty?
         total = Gem::Specification.to_a.size
-        error = Gem::LoadError.new \
-          "Could not find '#{name}' (#{requirement}) among #{total} total gem(s)"
+        msg   = "Could not find '#{name}' (#{requirement}) among #{total} total gem(s)\n"
       else
-        error = Gem::LoadError.new \
-          "Could not find '#{name}' (#{requirement}) - did find: [#{specs.join ','}]"
+        msg   = "Could not find '#{name}' (#{requirement}) - did find: [#{specs.join ','}]\n"
       end
+      msg << "Checked in 'GEM_PATH=#{Gem.path.join(":")}', execute `$ gem env` for more information"
+
+      error = Gem::LoadError.new(msg)
       error.name        = self.name
       error.requirement = self.requirement
       raise error

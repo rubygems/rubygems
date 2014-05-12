@@ -261,7 +261,7 @@ class TestGemDependency < Gem::TestCase
       dep.to_specs
     end
 
-    assert_equal "Could not find 'a' (= 2.0) - did find: [a-1.0]", e.message
+    assert_match "Could not find 'a' (= 2.0) - did find: [a-1.0]", e.message
   end
 
   def test_to_specs_indicates_total_gem_set_size
@@ -279,7 +279,7 @@ class TestGemDependency < Gem::TestCase
       dep.to_specs
     end
 
-    assert_equal "Could not find 'b' (= 2.0) among 1 total gem(s)", e.message
+    assert_match "Could not find 'b' (= 2.0) among 1 total gem(s)", e.message
   end
 
 

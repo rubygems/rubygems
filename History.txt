@@ -10,6 +10,8 @@ Minor enhancements:
 * The `update` command shows a summary of which gems were and were not
   updated.  Issue #544 by Mark D. Blackwell.
   Pull request #777 by Tejas Bubane.
+* Improved "could not find 'gem'" error reporting.  Pull request #913 by
+  Richard Schneeman.
 * Writing a .lock file for a gem dependencies file is now controlled by the
   --[no-]lock option.  Pull reuqest #774 by Jeremy Evans.
 * Suggestion of alternate names and spelling corrections during install can be

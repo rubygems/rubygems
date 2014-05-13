@@ -99,6 +99,8 @@ Bug fixes:
 * Fixed Gem::BasicSpecification#require_paths receives a String for
   @require_paths. Pull requrest #904 by @danielpclark
 * Fixed circular require warnings.  Bug #908 by Zachary Scott.
+* Gem::Specification#require_paths can no longer accidentally be an Array.
+  Pull requests #904, #909 by Daniel P. Clark.
 
 === 2.2.2 / 2014-02-05
 

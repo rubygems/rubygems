@@ -286,7 +286,7 @@ class Gem::Dependency
       else
         msg   = "Could not find '#{name}' (#{requirement}) - did find: [#{specs.join ','}]\n"
       end
-      msg << "Checked in 'GEM_PATH=#{Gem.path.join(":")}', execute `$ gem env` for more information"
+      msg << "Checked in 'GEM_PATH=#{Gem.path.join(File::PATH_SEPARATOR)}', execute `gem env` for more information"
 
       error = Gem::LoadError.new(msg)
       error.name        = self.name

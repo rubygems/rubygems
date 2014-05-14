@@ -254,6 +254,38 @@ class TestGemServer < Gem::TestCase
     assert_equal Gem::Platform.local, spec.platform
   end
 
+  def test_quick_marshal_a_3_a_gemspec_rz
+    data = StringIO.new "GET /quick/Marshal.#{Gem.marshal_version}/a-3.a.gemspec.rz HTTP/1.0\r\n\r\n"
+    @req.parse data
+
+    @server.quick @req, @res
+
+    assert_equal 200, @res.status, @res.body
+    assert @res['date']
+    assert_equal 'application/x-deflate', @res['content-type']
+
+    spec = Marshal.load Gem.inflate(@res.body)
+    assert_equal 'a', spec.name
+    assert_equal v('3.a'), spec.version
+  end
+
+  def test_quick_marshal_a_b_3_a_gemspec_rz
+    quick_gem 'a-b', '3.a'
+
+    data = StringIO.new "GET /quick/Marshal.#{Gem.marshal_version}/a-b-3.a.gemspec.rz HTTP/1.0\r\n\r\n"
+    @req.parse data
+
+    @server.quick @req, @res
+
+    assert_equal 200, @res.status, @res.body
+    assert @res['date']
+    assert_equal 'application/x-deflate', @res['content-type']
+
+    spec = Marshal.load Gem.inflate(@res.body)
+    assert_equal 'a-b', spec.name
+    assert_equal v('3.a'), spec.version
+  end
+
   def test_rdoc
     data = StringIO.new "GET /rdoc?q=a HTTP/1.0\r\n\r\n"
     @req.parse data

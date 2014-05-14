@@ -567,7 +567,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     add_date res
 
     case req.request_uri.path
-    when %r|^/quick/(Marshal.#{Regexp.escape Gem.marshal_version}/)?(.*?)-([0-9.]+)(-.*?)?\.gemspec\.rz$| then
+    when %r|^/quick/(Marshal.#{Regexp.escape Gem.marshal_version}/)?(.*?)-([0-9.]+[^-]*?)(-.*?)?\.gemspec\.rz$| then
       marshal_format, name, version, platform = $1, $2, $3, $4
       specs = Gem::Specification.find_all_by_name name, version
 

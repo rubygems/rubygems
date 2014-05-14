@@ -38,6 +38,67 @@ class TestGemRequestSetLockfile < Gem::TestCase
     end
   end
 
+  def test_add_DEPENDENCIES
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2 do |s|
+        s.add_development_dependency 'b'
+      end
+    end
+
+    @set.gem 'a'
+    @set.resolve
+    @lockfile.instance_variable_set :@requests, @set.sorted_requests
+
+    out = []
+
+    @lockfile.add_DEPENDENCIES out
+
+    expected = [
+      'DEPENDENCIES',
+      '  a',
+      nil
+    ]
+
+    assert_equal expected, out
+  end
+
+  def test_add_GEM
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2 do |s|
+        s.add_dependency 'b'
+        s.add_development_dependency 'c'
+      end
+
+      fetcher.spec 'b', 2
+    end
+
+    @set.gem 'a'
+    @set.resolve
+    @lockfile.instance_variable_set :@requests, @set.sorted_requests
+
+    spec_groups = @set.sorted_requests.group_by do |request|
+      request.spec.class
+    end
+    @lockfile.instance_variable_set :@spec_groups, spec_groups
+
+
+    out = []
+
+    @lockfile.add_GEM out
+
+    expected = [
+      'GEM',
+      '  remote: http://gems.example.com/',
+      '  specs:',
+      '    a (2)',
+      '      b',
+      '    b (2)',
+      nil
+    ]
+
+    assert_equal expected, out
+  end
+
   def test_get
     @lockfile.instance_variable_set :@tokens, [:token]
 

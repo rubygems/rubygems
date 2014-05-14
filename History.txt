@@ -69,6 +69,8 @@ Bug fixes:
   ref.  Bug #822 by johnny5-.
 * Gem dependency API no longer raises an exception when a gem does not exist
   in one of the configured sources.  Bug #897 by Michael Kaiser-Nyman.
+* Gem dependency API no longer lists development dependencies in the lockfile.
+  Bug #768 by Diego Viola.
 * SSL configuration entries in ~/.gemrc are properly round-tripped.  Bug #837
   by Noah Luck Easterly.
 * The environment command now shows the system configuration directory where

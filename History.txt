@@ -38,6 +38,8 @@ Minor enhancements:
   Pull request #818 by @unak and @nobu
 * Use native File::PATH_SEPARATOR and remove $ before gem env on
   Gem::Dependency#to_specs. Pull request #915 by @parkr
+* RubyGems recommends SPDX IDs for licenses now.  Pull request #917 by
+  Benjamin Fleischer.
 
 Bug fixes:
 

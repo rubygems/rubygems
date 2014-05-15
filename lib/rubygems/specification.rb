@@ -549,18 +549,24 @@ class Gem::Specification < Gem::BasicSpecification
   # :category: Recommended gemspec attributes
   # The license for this gem.
   #
-  # The license must be a short name, no more than 64 characters.
+  # The license must be no more than 64 characters.
   #
   # This should just be the name of your license. The full
-  # text of the license should be inside of the gem when you build it.
+  # text of the license should be inside of the gem (at the top level)
+  # when you build it.
   #
-  # See http://opensource.org/licenses/alphabetical for a list of licenses and
-  # their abbreviations (or short names).  GitHub also provides a
-  # license picker at http://choosealicense.com/
+  # The simplest way, is to specify the standard SPDX ID
+  # https://spdx.org/licenses/ for the license.
+  # Ideally you should pick one that is OSI (Open Source Initiative)
+  # http://opensource.org/licenses/alphabetical approved.
   #
-  #  According to copyright law, not having an OSI-approved open source license
-  #  means you have no rights to use the code for any purpose-- in other words,
-  #  "all rights reserved".
+  # The most commonly used OSI approved licenses are BSD-3-Clause and MIT.
+  # GitHub also provides a license picker at http://choosealicense.com/.
+  #
+  # You should specify a license for your package so that people know
+  # how they are permitted to use it, and any restrictions you're placing on it.
+  # Not specifying a license means all rights are reserved;
+  # others have no rights to use the code for any purpose.
   #
   # You can set multiple licenses with #licenses=
   #

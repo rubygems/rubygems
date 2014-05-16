@@ -563,7 +563,7 @@ class Gem::Specification < Gem::BasicSpecification
   # The most commonly used OSI approved licenses are BSD-3-Clause and MIT.
   # GitHub also provides a license picker at http://choosealicense.com/.
   #
-  # You should specify a license for your package so that people know
+  # You should specify a license for your gem so that people know
   # how they are permitted to use it, and any restrictions you're placing on it.
   # Not specifying a license means all rights are reserved;
   # others have no rights to use the code for any purpose.

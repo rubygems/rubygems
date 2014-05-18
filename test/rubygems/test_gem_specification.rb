@@ -1235,10 +1235,8 @@ dependencies: []
     @ext.build_extensions
     refute_path_exists @ext.extension_dir
   ensure
-    unless Gem.win_platform? then
-      FileUtils.chmod 0755, File.join(@ext.base_dir, 'extensions')
-      FileUtils.chmod 0755, @ext.base_dir
-    end
+    FileUtils.chmod 0755, File.join(@ext.base_dir, 'extensions')
+    FileUtils.chmod 0755, @ext.base_dir
   end
 
   def test_build_extensions_no_extensions_dir_unwritable

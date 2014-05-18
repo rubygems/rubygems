@@ -1232,9 +1232,8 @@ dependencies: []
     FileUtils.chmod 0555, @ext.base_dir
     FileUtils.chmod 0555, File.join(@ext.base_dir, 'extensions')
 
-    assert_raises Errno::EACCES do
-      @ext.build_extensions
-    end
+    @ext.build_extensions
+    refute_path_exists @ext.extension_dir
   ensure
     unless Gem.win_platform? then
       FileUtils.chmod 0755, File.join(@ext.base_dir, 'extensions')

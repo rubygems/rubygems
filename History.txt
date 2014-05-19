@@ -47,6 +47,8 @@ Bug fixes:
   up gem suggestions.  Pull request #808 by Aaron Patterson.
 * The given .gem is installed again when multiple versions of the same gem
   exist in the current directory.  Bug #875 by Prem Sichanugrist.
+* Local gems are preferred by name over remote gems again.  Bug #834 by
+  jonforums.
 * RubyGems can install local prerelease gems again.  Pull request #866 by
   Aaron Patterson.  Issue #813 by André Arko.
 * RubyGems installs development dependencies correctly again.  Issue #893 by

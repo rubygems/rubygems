@@ -120,7 +120,8 @@ class Gem::Uninstaller
       remove_all list
 
     elsif list.size > 1 then
-      gem_names = list.collect {|gem| gem.full_name} + ["All versions"]
+      gem_names = list.sort.map { |gem| gem.full_name }
+      gem_names << "All versions"
 
       say
       _, index = choose_from_list "Select gem to uninstall:", gem_names

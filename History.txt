@@ -58,6 +58,8 @@ Bug fixes:
 * Fixed RubyGems list and search command help.  Pull request #905 by Gabriel
   Gilder.
 * The list of gems to uninstall is always sorted now.  Bug #918 by postmodern.
+* The update command only updates exactly matching gem names now.  Bug #919 by
+  postmodern.
 * Gem::Server now supports prerelease versions.  Bug #857 by Marcelo Alvim.
 * RubyGems no longer raises an exception immediately when gems are missing
   with RUBYGEMS_GEMDEPS.  A warning is printed instead.  Issue #886 by Michael

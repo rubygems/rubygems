@@ -96,6 +96,8 @@ class Gem::Uninstaller
         (@user_install and spec.base_dir == Gem.user_dir)
     end
 
+    list.sort!
+
     if list.empty? then
       if other_repo_specs.empty?
         if default_specs.empty?
@@ -120,12 +122,11 @@ class Gem::Uninstaller
       remove_all list
 
     elsif list.size > 1 then
-      gem_names = list.sort.map { |gem| gem.full_name }
+      gem_names = list.map { |gem| gem.full_name }
       gem_names << "All versions"
 
       say
       _, index = choose_from_list "Select gem to uninstall:", gem_names
-      say "chose #{index} #{list[index]}"
 
       if index == list.size then
         remove_all list

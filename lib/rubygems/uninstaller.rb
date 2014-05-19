@@ -125,6 +125,7 @@ class Gem::Uninstaller
 
       say
       _, index = choose_from_list "Select gem to uninstall:", gem_names
+      say "chose #{index} #{list[index]}"
 
       if index == list.size then
         remove_all list

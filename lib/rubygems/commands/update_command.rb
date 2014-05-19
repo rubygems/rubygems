@@ -263,7 +263,7 @@ command to remove old versions.
 
     highest_installed_gems.each do |l_name, l_spec|
       next if not gem_names.empty? and
-              gem_names.all? { |name| /#{name}/ !~ l_spec.name }
+              gem_names.none? { |name| name == l_spec.name }
 
       highest_remote_ver = highest_remote_version l_spec
 

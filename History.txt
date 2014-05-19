@@ -45,6 +45,8 @@ Bug fixes:
 
 * RubyGems now only fetches the latest specs to find misspellings which speeds
   up gem suggestions.  Pull request #808 by Aaron Patterson.
+* The given .gem is installed again when multiple versions of the same gem
+  exist in the current directory.  Bug #875 by Prem Sichanugrist.
 * RubyGems can install local prerelease gems again.  Pull request #866 by
   Aaron Patterson.  Issue #813 by André Arko.
 * RubyGems installs development dependencies correctly again.  Issue #893 by

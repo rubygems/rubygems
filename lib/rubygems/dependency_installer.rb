@@ -428,6 +428,7 @@ class Gem::DependencyInstaller
       if dep_or_name =~ /\.gem$/ and File.file? dep_or_name then
         src = Gem::Source::SpecificFile.new dep_or_name
         installer_set.add_local dep_or_name, src.spec, src
+        version = src.spec.version if version == Gem::Requirement.default
       elsif dep_or_name =~ /\.gem$/ then
         Dir[dep_or_name].each do |name|
           begin

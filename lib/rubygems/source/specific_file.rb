@@ -5,6 +5,11 @@
 class Gem::Source::SpecificFile < Gem::Source
 
   ##
+  # The path to the gem for this specific file.
+
+  attr_reader :path
+
+  ##
   # Creates a new SpecificFile for the gem in +file+
 
   def initialize(file)

@@ -16,5 +16,26 @@ class Gem::Resolver::LocalSpecification < Gem::Resolver::SpecSpecification
     true
   end
 
+  def pretty_print q # :nodoc:
+    q.group 2, '[LocalSpecification', ']' do
+      q.breakable
+      q.text "name: #{name}"
+
+      q.breakable
+      q.text "version: #{version}"
+
+      q.breakable
+      q.text "platform: #{platform}"
+
+      q.breakable
+      q.text 'dependencies:'
+      q.breakable
+      q.pp dependencies
+
+      q.breakable
+      q.text "source: #{@source.path}"
+    end
+  end
+
 end
 

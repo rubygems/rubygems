@@ -56,8 +56,8 @@ require 'rubygems/errors'
 # RubyGems defaults are stored in rubygems/defaults.rb.  If you're packaging
 # RubyGems or implementing Ruby you can change RubyGems' defaults.
 #
-# For RubyGems packagers, provide lib/rubygems/operating_system.rb and
-# override any defaults from lib/rubygems/defaults.rb.
+# For RubyGems packagers, provide lib/rubygems/defaults/operating_system.rb
+# and override any defaults from lib/rubygems/defaults.rb.
 #
 # For Ruby implementers, provide lib/rubygems/defaults/#{RUBY_ENGINE}.rb and
 # override any defaults from lib/rubygems/defaults.rb.

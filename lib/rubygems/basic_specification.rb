@@ -213,11 +213,7 @@ class Gem::BasicSpecification
   def require_paths
     return raw_require_paths if @extensions.nil? || @extensions.empty?
 
-    relative_extension_dir =
-      File.join '..', '..', 'extensions', Gem::Platform.local.to_s,
-                Gem.extension_api_version, full_name
-
-    [relative_extension_dir].concat raw_require_paths
+    [extension_dir].concat raw_require_paths
   end
 
   ##

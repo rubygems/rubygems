@@ -117,6 +117,8 @@ Bug fixes:
   Pull requests #904, #909 by Daniel P. Clark.
 * Don't build extensions if `build_dir/extensions` isn't writable.
   Pull request #912 by @dunric
+* Gem::BasicSpecification#require_paths respects default_ext_dir_for now.  Bug
+  #852 by Vít Ondruch.
 
 === 2.2.2 / 2014-02-05
 

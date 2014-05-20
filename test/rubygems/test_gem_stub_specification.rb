@@ -23,16 +23,11 @@ class TestStubSpecification < Gem::TestCase
   def test_initialize_extension
     stub = stub_with_extension
 
-    ext_install_dir = Pathname(stub.extension_dir)
-    full_gem_path = Pathname(stub.full_gem_path)
-    relative_install_dir = ext_install_dir.relative_path_from full_gem_path
-    relative_install_dir = relative_install_dir.to_s
-
-    assert_equal 'stub_e',                      stub.name
-    assert_equal v(2),                          stub.version
-    assert_equal Gem::Platform::RUBY,           stub.platform
-    assert_equal [relative_install_dir, 'lib'], stub.require_paths
-    assert_equal %w[ext/stub_e/extconf.rb],     stub.extensions
+    assert_equal 'stub_e',                    stub.name
+    assert_equal v(2),                        stub.version
+    assert_equal Gem::Platform::RUBY,         stub.platform
+    assert_equal [stub.extension_dir, 'lib'], stub.require_paths
+    assert_equal %w[ext/stub_e/extconf.rb],   stub.extensions
   end
 
   def test_initialize_missing_stubline

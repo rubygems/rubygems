@@ -1783,11 +1783,31 @@ dependencies: []
 
       @ext.require_paths = 'lib'
 
-      ext_install_dir = Pathname(@ext.extension_dir)
-      full_gem_path = Pathname(@ext.full_gem_path)
-      relative_install_dir = ext_install_dir.relative_path_from full_gem_path
+      assert_equal [@ext.extension_dir, 'lib'], @ext.require_paths
+    end
+  end
 
-      assert_equal [relative_install_dir.to_s, 'lib'], @ext.require_paths
+  def test_require_paths_default_ext_dir_for
+    class << Gem
+      send :alias_method, :orig_default_ext_dir_for, :default_ext_dir_for
+    end
+
+    def Gem.default_ext_dir_for base_dir
+      '/foo'
+    end
+
+    enable_shared 'no' do
+      ext_spec
+
+      @ext.require_paths = 'lib'
+
+      assert_equal ['/foo/ext-1', 'lib'], @ext.require_paths
+    end
+  ensure
+    class << Gem
+      send :remove_method, :default_ext_dir_for
+      send :alias_method,  :default_ext_dir_for, :orig_default_ext_dir_for
+      send :remove_method, :orig_default_ext_dir_for
     end
   end
 

@@ -20,6 +20,8 @@ class Gem::Resolver
 
   DEBUG_RESOLVER = !ENV['DEBUG_RESOLVER'].nil?
 
+  require 'pp' if DEBUG_RESOLVER
+
   ##
   # Contains all the conflicts encountered while doing resolution
 
@@ -112,20 +114,18 @@ class Gem::Resolver
   end
 
   def explain stage, *data # :nodoc:
-    if DEBUG_RESOLVER
-      d = data.map { |x| x.inspect }.join(", ")
-      STDOUT.printf "%20s %s\n", stage.to_s.upcase, d
-    end
+    return unless DEBUG_RESOLVER
+
+    d = data.map { |x| x.pretty_inspect }.join(", ")
+    $stderr.printf "%10s %s\n", stage.to_s.upcase, d
   end
 
   def explain_list stage # :nodoc:
-    if DEBUG_RESOLVER
-      data = yield
-      STDOUT.printf "%20s (%d entries)\n", stage.to_s.upcase, data.size
-      data.each do |d|
-        STDOUT.printf "%20s %s\n", "", d
-      end
-    end
+    return unless DEBUG_RESOLVER
+
+    data = yield
+    $stderr.printf "%10s (%d entries)\n", stage.to_s.upcase, data.size
+    PP.pp data, $stderr unless data.empty?
   end
 
   ##
@@ -138,6 +138,7 @@ class Gem::Resolver
     spec = possible.pop
 
     explain :activate, [spec.full_name, possible.size]
+    explain :possible, possible
 
     activation_request =
       Gem::Resolver::ActivationRequest.new spec, dep, possible

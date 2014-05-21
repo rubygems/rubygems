@@ -189,6 +189,16 @@ class TestGemDependency < Gem::TestCase
     assert dep('b', '~> 2').matches_spec?(spec), 'requirement match'
   end
 
+  def test_matches_spec_eh_prerelease
+    spec = util_spec 'b', '2.1.a'
+
+    refute dep('a')          .matches_spec?(spec), 'name mismatch'
+    assert dep('b')          .matches_spec?(spec), 'name match'
+    refute dep('b', '= 1')   .matches_spec?(spec), 'requirement mismatch'
+    assert dep('b', '~> 2')  .matches_spec?(spec), 'requirement match'
+    assert dep('b', '~> 2.a').matches_spec?(spec), 'prerelease requirement'
+  end
+
   def test_merge
     a1 = dep 'a', '~> 1.0'
     a2 = dep 'a', '= 1.0'

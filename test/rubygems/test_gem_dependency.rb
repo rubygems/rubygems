@@ -183,8 +183,10 @@ class TestGemDependency < Gem::TestCase
   def test_matches_spec_eh
     spec = util_spec 'b', 2
 
-    refute dep('a').matches_spec?(spec), 'name mismatch'
-    assert dep('b').matches_spec?(spec), 'name match'
+    refute dep('a')        .matches_spec?(spec), 'name mismatch'
+    assert dep('b')        .matches_spec?(spec), 'name match'
+    refute dep('b', '= 1') .matches_spec?(spec), 'requirement mismatch'
+    assert dep('b', '~> 2').matches_spec?(spec), 'requirement match'
   end
 
   def test_merge

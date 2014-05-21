@@ -3,6 +3,7 @@ require 'rubygems/available_set'
 require 'rubygems/security'
 
 class TestGemAvailableSet < Gem::TestCase
+
   def setup
     super
 

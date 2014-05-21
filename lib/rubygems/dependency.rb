@@ -204,6 +204,18 @@ class Gem::Dependency
 
   alias === =~
 
+  ##
+  # :call-seq:
+  #   dep.match? name          => true or false
+  #   dep.match? name, version => true or false
+  #   dep.match? spec          => true or false
+  #
+  # Does this dependency match the specification described by +name+ and
+  # +version+ or match +spec+?
+  #
+  # NOTE:  Unlike #matches_spec? this method does not return true when the
+  # version is a prerelease version unless this is a prerelease dependency.
+
   def match? obj, version=nil
     if !version
       name = obj.name
@@ -221,6 +233,13 @@ class Gem::Dependency
 
     requirement.satisfied_by? version
   end
+
+  ##
+  # Does this dependency match +spec+?
+  #
+  # NOTE:  This is not a convenience method.  Unlike #match? this method
+  # returns true when +spec+ is a prerelease version even if this dependency
+  # is not a prerelease dependency.
 
   def matches_spec? spec
     return false unless name === spec.name

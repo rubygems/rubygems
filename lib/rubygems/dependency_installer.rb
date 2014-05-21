@@ -157,6 +157,7 @@ class Gem::DependencyInstaller
 
     dependency_list.remove_specs_unsatisfied_by dependencies
   end
+
   ##
   # Creates an AvailableSet to install from based on +dep_or_name+ and
   # +version+

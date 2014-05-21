@@ -29,6 +29,24 @@ class Gem::Resolver::InstalledSpecification < Gem::Resolver::SpecSpecification
     super
   end
 
+  def pretty_print q # :nodoc:
+    q.group 2, '[InstalledSpecification', ']' do
+      q.breakable
+      q.text "name: #{name}"
+
+      q.breakable
+      q.text "version: #{version}"
+
+      q.breakable
+      q.text "platform: #{platform}"
+
+      q.breakable
+      q.text 'dependencies:'
+      q.breakable
+      q.pp spec.dependencies
+    end
+  end
+
   ##
   # The source for this specification
 

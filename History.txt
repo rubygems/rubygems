@@ -54,7 +54,7 @@ Bug fixes:
 * RubyGems installs development dependencies correctly again.  Issue #893 by
   Jens Wille.
 * RubyGems only installs prerelease versions when they are requested again.
-  Issue #853 by Seth Vargo.
+  Issue #853 by Seth Vargo, special thanks to Zachary Scott and Ben Moss.
 * Fixed RubyGems list and search command help.  Pull request #905 by Gabriel
   Gilder.
 * The list of gems to uninstall is always sorted now.  Bug #918 by postmodern.

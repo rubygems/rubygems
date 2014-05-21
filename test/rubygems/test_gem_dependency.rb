@@ -2,6 +2,7 @@ require 'rubygems/test_case'
 require 'rubygems/dependency'
 
 class TestGemDependency < Gem::TestCase
+
   def test_initialize
     d = dep "pkg", "> 1.0"
 

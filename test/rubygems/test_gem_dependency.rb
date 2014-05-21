@@ -180,6 +180,13 @@ class TestGemDependency < Gem::TestCase
     assert c_dep.match? c_spec
   end
 
+  def test_matches_spec_eh
+    spec = util_spec 'b', 2
+
+    refute dep('a').matches_spec?(spec), 'name mismatch'
+    assert dep('b').matches_spec?(spec), 'name match'
+  end
+
   def test_merge
     a1 = dep 'a', '~> 1.0'
     a2 = dep 'a', '= 1.0'

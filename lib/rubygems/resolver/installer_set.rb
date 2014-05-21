@@ -116,7 +116,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     dep  = req.dependency
 
     return res if @ignore_dependencies and
-              @always_install.none? { |spec| dep.matches_spec? spec }
+              @always_install.none? { |spec| dep.match? spec }
 
     name = dep.name
 
@@ -128,7 +128,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
 
     if consider_local? then
       matching_local = @local.values.select do |spec, _|
-        req.matches_spec? spec
+        req.match? spec
       end.map do |spec, source|
         Gem::Resolver::LocalSpecification.new self, spec, source
       end
@@ -137,10 +137,15 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
 
       local_source = Gem::Source::Local.new
 
-      if spec = local_source.find_gem(name, dep.requirement) then
+      if local_spec = local_source.find_gem(name, dep.requirement) then
         res << Gem::Resolver::IndexSpecification.new(
-          self, spec.name, spec.version, local_source, spec.platform)
+          self, local_spec.name, local_spec.version,
+          local_source, local_spec.platform)
       end
+    end
+
+    res.delete_if do |spec|
+      spec.version.prerelease? and not dep.prerelease?
     end
 
     res.concat @remote_set.find_all req if consider_remote?

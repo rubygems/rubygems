@@ -55,6 +55,20 @@ class TestGemResolverVendorSet < Gem::TestCase
     assert_equal expected, found
   end
 
+  def test_find_all_prerelease
+    name, version, directory = vendor_gem 'a', '1.a'
+
+    @set.add_vendor_gem name, directory
+
+    req = Gem::Resolver::DependencyRequest.new dep('a'), nil
+
+    assert_empty @set.find_all req
+
+    req = Gem::Resolver::DependencyRequest.new dep('a', '>= 0.a'), nil
+
+    refute_empty @set.find_all req
+  end
+
   def test_load_spec
     error = Object.const_defined?(:KeyError) ? KeyError : IndexError
 

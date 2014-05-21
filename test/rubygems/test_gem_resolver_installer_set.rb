@@ -154,6 +154,25 @@ class TestGemResolverInstallerSet < Gem::TestCase
     assert_equal %w[a-2], set.find_all(req).map { |spec| spec.full_name }
   end
 
+  def test_find_all_prerelease
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', '1'
+      fetcher.spec 'a', '1.a'
+      fetcher.clear
+    end
+
+    set = Gem::Resolver::InstallerSet.new :both
+
+    req = Gem::Resolver::DependencyRequest.new dep('a'), nil
+
+    assert_equal %w[a-1], set.find_all(req).map { |spec| spec.full_name }
+
+    req = Gem::Resolver::DependencyRequest.new dep('a', '>= 0.a'), nil
+
+    assert_equal %w[a-1 a-1.a],
+                 set.find_all(req).map { |spec| spec.full_name }.sort
+  end
+
   def test_load_spec
     specs = spec_fetcher do |fetcher|
       fetcher.spec 'a', 2

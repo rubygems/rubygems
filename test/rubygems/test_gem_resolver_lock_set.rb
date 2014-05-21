@@ -27,12 +27,17 @@ class TestGemResolverLockSet < Gem::TestCase
   end
 
   def test_find_all
-    @set.add 'a', '2', Gem::Platform::RUBY
-    @set.add 'b', '2', Gem::Platform::RUBY
+    @set.add 'a', '1.a', Gem::Platform::RUBY
+    @set.add 'a', '2',   Gem::Platform::RUBY
+    @set.add 'b', '2',   Gem::Platform::RUBY
 
     found = @set.find_all dep 'a'
 
     assert_equal %w[a-2], found.map { |s| s.full_name }
+
+    found = @set.find_all dep 'a', '>= 0.a'
+
+    assert_equal %w[a-1.a a-2], found.map { |s| s.full_name }
   end
 
   def test_load_spec

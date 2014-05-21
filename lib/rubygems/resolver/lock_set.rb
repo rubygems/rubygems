@@ -44,7 +44,7 @@ class Gem::Resolver::LockSet < Gem::Resolver::Set
 
   def find_all req
     @specs.select do |spec|
-      req.matches_spec? spec
+      req.match? spec
     end
   end
 

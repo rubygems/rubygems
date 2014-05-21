@@ -42,7 +42,19 @@ class Gem::Resolver::DependencyRequest
   end
 
   ##
-  # Does this dependency request match +spec+
+  # Does this dependency request match +spec+?
+  #
+  # NOTE:  #match? only matches prerelease versions when #dependency is a
+  # prerelease dependency.
+
+  def match? spec
+    @dependency.match? spec
+  end
+
+  ##
+  # Does this dependency request match +spec+?
+  #
+  # NOTE:  #matches_spec? matches prerelease versions.  See also #match?
 
   def matches_spec?(spec)
     @dependency.matches_spec? spec

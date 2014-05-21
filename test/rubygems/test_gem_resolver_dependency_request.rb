@@ -22,6 +22,29 @@ class TestGemResolverDependencyRequest < Gem::TestCase
     assert b_dep_req.development?
   end
 
+  def test_match_eh
+    spec = util_spec 'a', 1
+    dependency = dep 'a', '>= 1'
+
+    dr = @DR.new dependency, nil
+
+    assert dr.match? spec
+  end
+
+  def test_match_eh_prerelease
+    spec = util_spec 'a', '1.a'
+
+    a_dep = dep 'a', '>= 1'
+    a_dr = @DR.new a_dep, nil
+
+    refute a_dr.match? spec
+
+    a_pre_dep = dep 'a', '>= 1.a'
+    a_pre_dr = @DR.new a_pre_dep, nil
+
+    assert a_pre_dr.match? spec
+  end
+
   def test_requirement
     dependency = dep 'a', '>= 1'
 

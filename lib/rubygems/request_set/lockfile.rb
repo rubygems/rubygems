@@ -65,16 +65,19 @@ class Gem::RequestSet::Lockfile
     out << "DEPENDENCIES"
 
     @requests.sort_by { |r| r.name }.each do |request|
-      spec = request.spec
+      spec        = request.spec
+      name        = request.name
+      requirement = request.request.dependency.requirement
 
-      if [Gem::Resolver::VendorSpecification,
-          Gem::Resolver::GitSpecification].include? spec.class then
-        out << "  #{request.name}!"
-      else
-        requirement = request.request.dependency.requirement
+      requirement_string =
+        if [Gem::Resolver::VendorSpecification,
+            Gem::Resolver::GitSpecification].include? spec.class then
+          "!"
+        else
+          requirement.for_lockfile
+        end
 
-        out << "  #{request.name}#{requirement.for_lockfile}"
-      end
+      out << "  #{name}#{requirement_string}"
     end
 
     out << nil

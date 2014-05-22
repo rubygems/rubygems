@@ -504,7 +504,7 @@ end
 
       gda = @GDA.new @set, io.path
 
-      gda.load
+      assert_equal gda, gda.load
 
       assert_equal [dep('a'), dep('b')], @set.dependencies
     end

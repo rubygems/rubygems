@@ -167,7 +167,9 @@ DEPENDENCIES
       io.puts 'gem "a"'
       io.flush
 
-      rs.load_gemdeps io.path
+      gem_deps = rs.load_gemdeps io.path
+
+      assert_kind_of Gem::RequestSet::GemDependencyAPI, gem_deps
     end
 
     assert_equal [dep('a')], rs.dependencies

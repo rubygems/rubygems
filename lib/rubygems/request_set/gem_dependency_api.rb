@@ -213,10 +213,12 @@ class Gem::RequestSet::GemDependencyAPI
   end
 
   ##
-  # Loads the gem dependency file
+  # Loads the gem dependency file and returns self.
 
   def load
     instance_eval File.read(@path).untaint, @path, 1
+
+    self
   end
 
   ##

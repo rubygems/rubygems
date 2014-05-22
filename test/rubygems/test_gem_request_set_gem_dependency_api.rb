@@ -68,6 +68,10 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal [dep('a')], @set.dependencies
 
     assert_equal %w[a], @gda.requires['a']
+
+    expected = { 'a' => nil }
+
+    assert_equal expected, @gda.dependencies
   end
 
   def test_gem_git
@@ -76,6 +80,10 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal [dep('a')], @set.dependencies
 
     assert_equal %w[git/a master], @git_set.repositories['a']
+
+    expected = { 'a' => nil }
+
+    assert_equal expected, @gda.dependencies
   end
 
   def test_gem_git_branch
@@ -127,6 +135,10 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     assert_equal %w[git://github.com/example/repository.git master],
                  @git_set.repositories['a']
+
+    expected = { 'a' => nil }
+
+    assert_equal expected, @gda.dependencies
   end
 
   def test_gem_group
@@ -141,6 +153,10 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     @gda.gem 'a', :group => :test
 
     assert_empty @set.dependencies
+
+    expected = { 'a' => nil }
+
+    assert_equal expected, @gda.dependencies
   end
 
   def test_gem_groups
@@ -302,12 +318,20 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     @gda.gem 'a', '~> 1.0'
 
     assert_equal [dep('a', '~> 1.0')], @set.dependencies
+
+    expected = { 'a' => ['~> 1.0'] }
+
+    assert_equal expected, @gda.dependencies
   end
 
   def test_gem_requirements
     @gda.gem 'b', '~> 1.0', '>= 1.0.2'
 
     assert_equal [dep('b', '~> 1.0', '>= 1.0.2')], @set.dependencies
+
+    expected = { 'b' => ['~> 1.0', '>= 1.0.2'] }
+
+    assert_equal expected, @gda.dependencies
   end
 
   def test_gem_requirements_options

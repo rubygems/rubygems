@@ -134,6 +134,11 @@ class Gem::RequestSet::GemDependencyAPI
   }
 
   ##
+  # The gems required by #gem statements in the gem.deps.rb file
+
+  attr_reader :dependencies
+
+  ##
   # A set of gems that are loaded via the +:git+ option to #gem
 
   attr_reader :git_set # :nodoc:
@@ -164,6 +169,7 @@ class Gem::RequestSet::GemDependencyAPI
     @current_groups     = nil
     @current_platforms  = nil
     @current_repository = nil
+    @dependencies       = {}
     @default_sources    = true
     @git_set            = @set.git_set
     @requires           = Hash.new { |h, name| h[name] = [] }
@@ -234,6 +240,8 @@ class Gem::RequestSet::GemDependencyAPI
   def gem name, *requirements
     options = requirements.pop if requirements.last.kind_of?(Hash)
     options ||= {}
+
+    @dependencies[name] = requirements.empty? ? nil : requirements
 
     options[:git] = @current_repository if @current_repository
 

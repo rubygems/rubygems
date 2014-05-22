@@ -270,7 +270,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal 'unknown platform :unknown', e.message
   end
 
-  def test_gem_require
+  def test_gem_requires
     @gda.gem 'a', :require => %w[b c]
     @gda.gem 'd', :require => 'e'
 
@@ -280,7 +280,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal %w[e],   @gda.requires['d']
   end
 
-  def test_gem_require_false
+  def test_gem_requires_false
     @gda.gem 'a', :require => false
 
     assert_equal [dep('a')], @set.dependencies
@@ -288,7 +288,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_empty @gda.requires
   end
 
-  def test_gem_require_without_group
+  def test_gem_requires_without_group
     @gda.without_groups << :test
 
     @gda.gem 'a', :group => :test

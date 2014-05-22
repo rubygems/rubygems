@@ -1,7 +1,6 @@
 *.rbc
 *.swp
 .DS_Store
-/*.gemspec
 /.idea
 /.rdoc
 /.rvmrc

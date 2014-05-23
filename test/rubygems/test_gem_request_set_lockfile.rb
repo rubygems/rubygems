@@ -62,6 +62,34 @@ class TestGemRequestSetLockfile < Gem::TestCase
     assert_equal expected, out
   end
 
+  def test_add_DEPENDENCIES_from_gem_deps
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2 do |s|
+        s.add_development_dependency 'b'
+      end
+    end
+
+    dependencies = { 'a' => '~> 2.0' }
+
+    @set.gem 'a'
+    @set.resolve
+    @lockfile =
+      Gem::RequestSet::Lockfile.new @set, @gem_deps_file, dependencies
+    @lockfile.instance_variable_set :@requests, @set.sorted_requests
+
+    out = []
+
+    @lockfile.add_DEPENDENCIES out
+
+    expected = [
+      'DEPENDENCIES',
+      '  a (~> 2.0)',
+      nil
+    ]
+
+    assert_equal expected, out
+  end
+
   def test_add_GEM
     spec_fetcher do |fetcher|
       fetcher.spec 'a', 2 do |s|

@@ -49,8 +49,9 @@ class Gem::RequestSet::Lockfile
   # Creates a new Lockfile for the given +request_set+ and +gem_deps_file+
   # location.
 
-  def initialize request_set, gem_deps_file
+  def initialize request_set, gem_deps_file, dependencies = nil
     @set           = request_set
+    @dependencies  = dependencies
     @gem_deps_file = File.expand_path(gem_deps_file)
     @gem_deps_dir  = File.dirname(@gem_deps_file)
 
@@ -64,21 +65,41 @@ class Gem::RequestSet::Lockfile
   def add_DEPENDENCIES out # :nodoc:
     out << "DEPENDENCIES"
 
-    @requests.sort_by { |r| r.name }.each do |request|
-      spec        = request.spec
-      name        = request.name
-      requirement = request.request.dependency.requirement
+    dependencies =
+      if @dependencies then
+        @dependencies.sort_by { |name,| name }.map do |name, requirement|
+          requirement_string =
+            if '!' == requirement then
+              requirement
+            else
+              Gem::Requirement.new(requirement).for_lockfile
+            end
 
-      requirement_string =
-        if [Gem::Resolver::VendorSpecification,
-            Gem::Resolver::GitSpecification].include? spec.class then
-          "!"
-        else
-          requirement.for_lockfile
+          [name, requirement_string]
         end
+      else
+        @requests.sort_by { |r| r.name }.map do |request|
+          spec        = request.spec
+          name        = request.name
+          requirement = request.request.dependency.requirement
 
-      out << "  #{name}#{requirement_string}"
+          requirement_string =
+            if [Gem::Resolver::VendorSpecification,
+                Gem::Resolver::GitSpecification].include? spec.class then
+              "!"
+            else
+              requirement.for_lockfile
+            end
+
+          [name, requirement_string]
+        end
+      end
+
+    dependencies = dependencies.map do |name, requirement_string|
+      "  #{name}#{requirement_string}"
     end
+
+    out.concat dependencies
 
     out << nil
   end

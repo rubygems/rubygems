@@ -192,7 +192,7 @@ class Gem::RequestSet
     @install_dir = options[:install_dir] || Gem.dir
     @remote      = options[:domain] != :local
 
-    load_gemdeps gemdeps, options[:without_groups]
+    gem_deps_api = load_gemdeps gemdeps, options[:without_groups]
 
     resolve
 
@@ -210,7 +210,8 @@ class Gem::RequestSet
       installed = install options, &block
 
       if options.fetch :lock, true then
-        lockfile = Gem::RequestSet::Lockfile.new self, gemdeps
+        lockfile =
+          Gem::RequestSet::Lockfile.new self, gemdeps, gem_deps_api.dependencies
         lockfile.write
       end
 

@@ -127,6 +127,34 @@ class TestGemRequestSetLockfile < Gem::TestCase
     assert_equal expected, out
   end
 
+  def test_add_PLATFORMS
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2 do |s|
+        s.add_dependency 'b'
+      end
+
+      fetcher.spec 'b', 2 do |s|
+        s.platform = Gem::Platform::CURRENT
+      end
+    end
+
+    @set.gem 'a'
+    @set.resolve
+    @lockfile.instance_variable_set :@requests, @set.sorted_requests
+
+    out = []
+
+    @lockfile.add_PLATFORMS out
+
+    expected = [
+      'PLATFORMS',
+      '  x86-darwin-8',
+      nil
+    ]
+
+    assert_equal expected, out
+  end
+
   def test_get
     @lockfile.instance_variable_set :@tokens, [:token]
 

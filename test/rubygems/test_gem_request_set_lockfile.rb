@@ -148,6 +148,7 @@ class TestGemRequestSetLockfile < Gem::TestCase
 
     expected = [
       'PLATFORMS',
+      '  ruby',
       '  x86-darwin-8',
       nil
     ]

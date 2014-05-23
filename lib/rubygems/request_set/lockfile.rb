@@ -192,9 +192,8 @@ class Gem::RequestSet::Lockfile
     out << "PLATFORMS"
 
     platforms = @requests.map { |request| request.spec.platform }.uniq
-    platforms.delete Gem::Platform::RUBY if platforms.length > 1
 
-    platforms.each do |platform|
+    platforms.sort.each do |platform|
       out << "  #{platform}"
     end
 

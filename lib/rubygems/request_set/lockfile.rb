@@ -117,6 +117,7 @@ class Gem::RequestSet::Lockfile
       out << "  specs:"
 
       requests.sort_by { |request| request.name }.each do |request|
+        next if request.spec.name == 'bundler'
         platform = "-#{request.spec.platform}" unless
           Gem::Platform::RUBY == request.spec.platform
 

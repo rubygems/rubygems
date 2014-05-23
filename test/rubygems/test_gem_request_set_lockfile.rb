@@ -98,9 +98,12 @@ class TestGemRequestSetLockfile < Gem::TestCase
       end
 
       fetcher.spec 'b', 2
+
+      fetcher.spec 'bundler', 1
     end
 
     @set.gem 'a'
+    @set.gem 'bundler'
     @set.resolve
     @lockfile.instance_variable_set :@requests, @set.sorted_requests
 

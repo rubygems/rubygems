@@ -109,13 +109,17 @@ class Gem::Ext::Builder
   def builder_for extension # :nodoc:
     case extension
     when /extconf/ then
+      require 'rubygems/ext/ext_conf_builder'
       Gem::Ext::ExtConfBuilder
     when /configure/ then
+      require 'rubygems/ext/configure_builder'
       Gem::Ext::ConfigureBuilder
     when /rakefile/i, /mkrf_conf/i then
+      require 'rubygems/ext/rake_builder'
       @ran_rake = true
       Gem::Ext::RakeBuilder
     when /CMakeLists.txt/ then
+      require 'rubygems/ext/cmake_builder'
       Gem::Ext::CmakeBuilder
     else
       extension_dir = File.join @gem_dir, File.dirname(extension)

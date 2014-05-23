@@ -1,5 +1,6 @@
 require 'rubygems/test_case'
 require 'rubygems/ext'
+require 'rubygems/ext/configure_builder'
 
 class TestGemExtConfigureBuilder < Gem::TestCase
 

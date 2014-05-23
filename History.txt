@@ -40,6 +40,7 @@ Minor enhancements:
   Gem::Dependency#to_specs. Pull request #915 by @parkr
 * RubyGems recommends SPDX IDs for licenses now.  Pull request #917 by
   Benjamin Fleischer.
+* Lazily load Gem::Ext::Builder classes.
 
 Bug fixes:
 

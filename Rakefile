@@ -92,7 +92,7 @@ rescue LoadError, RuntimeError # rake 10.1 on rdoc from ruby 1.9.2 and earlier
   end
 end
 
-desc "Install gems needed to run the tests"
+# desc "Install gems needed to run the tests"
 task :install_test_deps => :clean_env do
   sh "gem install minitest -v '~> 4.0'"
 end
@@ -113,19 +113,27 @@ task :package do
   end
 end
 
-desc "Upload release to gemcutter S3"
+# desc "Upload release to gemcutter S3"
 task :upload_to_gemcutter do
   v = hoe.version
   sh "s3cmd put -P pkg/rubygems-update-#{v}.gem pkg/rubygems-#{v}.zip pkg/rubygems-#{v}.tgz s3://production.s3.rubygems.org/rubygems/"
 end
 
-desc "Upload release to rubyforge and gemcutter"
+# desc "Upload release to rubyforge and gemcutter"
 task :upload => %w[upload_to_gemcutter]
 
 on_master = `git branch --list master`.strip == '* master'
 on_master = true if ENV['FORCE']
 
 Rake::Task['publish_docs'].clear unless on_master
+# Hide release related tasks from `rake -T`
+Rake::Task['publish_docs'].clear_comments
+Rake::Task['announce'].clear_comments
+Rake::Task['release'].clear_comments
+Rake::Task['release_sanity'].clear_comments
+Rake::Task['release_to_gemcutter'].clear_comments
+Rake::Task['generate_key'].clear_comments
+Rake::Task['post_blog'].clear_comments
 
 directory '../guides.rubygems.org' do
   sh 'git', 'clone',
@@ -166,7 +174,7 @@ namespace 'guides' do
     end
   end
 
-  desc 'Updates and publishes the guides for the just-released RubyGems'
+  # desc 'Updates and publishes the guides for the just-released RubyGems'
   task 'publish'
 
   task 'publish' => %w[
@@ -296,7 +304,7 @@ RubyGems][upgrading] instructions.  To install RubyGems by hand see the
     end
   end
 
-  desc 'Updates and publishes the blog for the just-released RubyGems'
+  # desc 'Updates and publishes the blog for the just-released RubyGems'
   task 'publish' => %w[
     blog:pull
     blog:update
@@ -345,22 +353,22 @@ end
 rubinius_dir = ENV['RUBINIUS_PATH'] || '../git.rubini.us/code'
 ruby_dir     = ENV['RUBY_PATH']     || '../../svn/ruby/trunk'
 
-desc "Updates Ruby HEAD with the currently checked-out copy of RubyGems."
+# desc "Updates Ruby HEAD with the currently checked-out copy of RubyGems."
 task :update_ruby do
   rsync_with ruby_dir
 end
 
-desc "Updates Rubinius HEAD with the currently checked-out copy of RubyGems."
+# desc "Updates Rubinius HEAD with the currently checked-out copy of RubyGems."
 task :update_rubinius do
   rsync_with rubinius_dir
 end
 
-desc "Diffs Ruby HEAD with the currently checked-out copy of RubyGems."
+# desc "Diffs Ruby HEAD with the currently checked-out copy of RubyGems."
 task :diff_ruby do
   diff_with ruby_dir
 end
 
-desc "Diffs Rubinius HEAD with the currently checked-out copy of RubyGems."
+# desc "Diffs Rubinius HEAD with the currently checked-out copy of RubyGems."
 task :diff_rubinius do
   diff_with rubinius_dir
 end
@@ -442,7 +450,7 @@ task "git:newchangelog" do
   puts
 end
 
-desc "Cleanup trailing whitespace"
+# desc "Cleanup trailing whitespace"
 task :whitespace do
   system 'find . -not \( -name .svn -prune -o -name .git -prune \) -type f -print0 | xargs -0 sed -i "" -E "s/[[:space:]]*$//"'
 end

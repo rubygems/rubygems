@@ -81,7 +81,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     assert_equal %w[git/a master], @git_set.repositories['a']
 
-    expected = { 'a' => nil }
+    expected = { 'a' => '!' }
 
     assert_equal expected, @gda.dependencies
   end
@@ -136,7 +136,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal %w[git://github.com/example/repository.git master],
                  @git_set.repositories['a']
 
-    expected = { 'a' => nil }
+    expected = { 'a' => '!' }
 
     assert_equal expected, @gda.dependencies
   end
@@ -175,6 +175,10 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     loaded = @vendor_set.load_spec(name, version, Gem::Platform::RUBY, nil)
 
     assert_equal "#{name}-#{version}", loaded.full_name
+
+    expected = { name => '!' }
+
+    assert_equal expected, @gda.dependencies
   end
 
   def test_gem_platforms

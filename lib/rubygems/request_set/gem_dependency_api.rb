@@ -241,8 +241,6 @@ class Gem::RequestSet::GemDependencyAPI
     options = requirements.pop if requirements.last.kind_of?(Hash)
     options ||= {}
 
-    @dependencies[name] = requirements.empty? ? nil : requirements
-
     options[:git] = @current_repository if @current_repository
 
     source_set = false
@@ -250,6 +248,15 @@ class Gem::RequestSet::GemDependencyAPI
     source_set ||= gem_path   name, options
     source_set ||= gem_git    name, options
     source_set ||= gem_github name, options
+
+    @dependencies[name] =
+      if requirements.empty? and not source_set then
+        nil
+      elsif source_set then
+        '!'
+      else
+        requirements
+      end
 
     return unless gem_platforms options
 

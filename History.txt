@@ -119,7 +119,6 @@ Bug fixes:
   Pull request #912 by @dunric
 * Gem::BasicSpecification#require_paths respects default_ext_dir_for now.  Bug
   #852 by Vít Ondruch.
-* Fixed yaml related tests due to YAML::ENGINE being removed from Ruby 2.2
 
 === 2.2.2 / 2014-02-05
 

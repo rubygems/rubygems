@@ -2386,7 +2386,7 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   def to_yaml(opts = {}) # :nodoc:
-    if YAML.const_defined?(:ENGINE) && !YAML::ENGINE.syck? then
+    if Object.const_defined?(:Psych) || YAML.const_defined?(:ENGINE) && !YAML::ENGINE.syck? then
       # Because the user can switch the YAML engine behind our
       # back, we have to check again here to make sure that our
       # psych code was properly loaded, and load it if not.

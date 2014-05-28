@@ -45,7 +45,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
   end
 
   def arguments # :nodoc:
-    "GEMNAME       name of gem to update"
+    "REGEXP        regexp to search for in gem name"
   end
 
   def defaults_str # :nodoc:
@@ -62,7 +62,7 @@ command to remove old versions.
   end
 
   def usage # :nodoc:
-    "#{program_name} GEMNAME [GEMNAME ...]"
+    "#{program_name} REGEXP [REGEXP ...]"
   end
 
   def check_latest_rubygems version # :nodoc:

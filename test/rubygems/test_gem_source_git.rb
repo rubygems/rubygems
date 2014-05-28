@@ -27,6 +27,21 @@ class TestGemSourceGit < Gem::TestCase
     assert_path_exists File.join @source.install_dir, 'a.gemspec'
   end
 
+  def test_checkout_master
+    Dir.chdir @repository do
+      system @git, 'checkout', '-q', '-b', 'other'
+      system @git, 'mv',             'a.gemspec', 'b.gemspec'
+      system @git, 'commit',   '-q', '-a', '-m', 'rename gemspec'
+      system @git, 'checkout', '-q', 'master'
+    end
+
+    @source = Gem::Source::Git.new @name, @repository, 'other', false
+
+    @source.checkout
+
+    assert_path_exists File.join @source.install_dir, 'b.gemspec'
+  end
+
   def test_checkout_local
     @source.remote = false
 

@@ -101,7 +101,7 @@ class Gem::Source::Git < Gem::Source
     Dir.chdir install_dir do
       system @git, 'fetch', '--quiet', '--force', '--tags', install_dir
 
-      success = system @git, 'reset', '--quiet', '--hard', @reference
+      success = system @git, 'reset', '--quiet', '--hard', rev_parse
 
       success &&=
         Gem::Util.silent_system @git, 'submodule', 'update',

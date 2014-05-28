@@ -75,7 +75,7 @@ Bug fixes:
 * Gem dependency API supports lockfiles with multiple sources.  Bug #822 by
   johnny5-, bug #851 by sumit shah.
 * Gem dependency API supports lockfiles with git sources using branch, tag and
-  ref.  Bug #822 by johnny5-.
+  ref.  Bug #822 by johnny5-, #931 by Christoph Blank.
 * Gem dependency API no longer raises an exception when a gem does not exist
   in one of the configured sources.  Bug #897 by Michael Kaiser-Nyman.
 * Gem dependency API no longer lists development dependencies in the lockfile.

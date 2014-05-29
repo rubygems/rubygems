@@ -55,6 +55,7 @@ Bug fixes:
   Jens Wille.
 * RubyGems only installs prerelease versions when they are requested again.
   Issue #853 by Seth Vargo, special thanks to Zachary Scott and Ben Moss.
+  Issue #884 by Nathaniel Bibler.
 * Fixed RubyGems list and search command help.  Pull request #905 and #928 by
   Gabriel Gilder.
 * The list of gems to uninstall is always sorted now.  Bug #918 by postmodern.

@@ -104,6 +104,25 @@ The wrapper allows you to choose among alternate gem versions using _version_.
 For example `rake _0.7.3_ --version` will run rake version 0.7.3 if a newer
 version is also installed.
 
+Gem Dependency Files
+====================
+
+RubyGems can install a consistent set of gems across multiple environments
+using `gem install -g` when a gem dependencies file (gem.deps.rb, Gemfile or
+Isolate) is present.  If no explicit file is given RubyGems attempts to find
+one in the current directory.
+
+When the RUBYGEMS_GEMDEPS environment variable is set to a gem dependencies
+file the gems from that file will be activated at startup time.  Set it to a
+specific filename or to "-" to have RubyGems automatically discover the gem
+dependencies file by walking up from the current directory.
+
+NOTE: Enabling automatic discovery on multiuser systems can lead to execution
+of arbitrary code when used from directories outside your control.
+
+Extension Install Failures
+==========================
+
 If an extension fails to compile during gem installation the gem
 specification is not written out, but the gem remains unpacked in the
 repository.  You may need to specify the path to the library's headers and

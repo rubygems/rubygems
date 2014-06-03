@@ -51,4 +51,4 @@ for letting the RubyGems team know about bugs or problems you're having is
 
 === Bundler Compatibility
 
-See http://gembundler.com/compatibility for known issues.
+See http://bundler.io/compatibility for known issues.

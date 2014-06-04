@@ -678,7 +678,16 @@ class Gem::RequestSet::GemDependencyAPI
   ##
   # :category: Gem Dependencies DSL
   #
-  # Sets +url+ as a source for gems for this dependency API.
+  # Sets +url+ as a source for gems for this dependency API.  RubyGems uses
+  # the default configured sources if no source was given.  If a source is set
+  # only that source is used.
+  #
+  # This method differs in behavior from Bundler:
+  #
+  # * The +:gemcutter+, # +:rubygems+ and +:rubyforge+ sources are not
+  #   supported as they are deprecated in bundler.
+  # * The +prepend:+ option is not supported.  If you wish to order sources
+  #   then list them in your preferred order.
 
   def source url
     Gem.sources.clear if @default_sources

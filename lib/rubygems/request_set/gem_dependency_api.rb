@@ -623,7 +623,8 @@ class Gem::RequestSet::GemDependencyAPI
   ##
   # :category: Gem Dependencies DSL
   #
-  # Block form for restricting gems to a particular platform.
+  # Block form for restricting gems to a particular set of platforms.  See
+  # #platform.
 
   alias :platforms :platform
 

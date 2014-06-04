@@ -1299,6 +1299,15 @@ class TestGem < Gem::TestCase
     ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
   end
 
+  def test_use_gemdeps_argument_missing
+    e = assert_raises ArgumentError do
+      Gem.use_gemdeps 'gem.deps.rb'
+    end
+
+    assert_equal 'Unable to find gem dependencies file at gem.deps.rb',
+                 e.message
+  end
+
   def test_use_gemdeps_automatic
     skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], '-'
@@ -1314,6 +1323,17 @@ class TestGem < Gem::TestCase
     Gem.use_gemdeps
 
     assert spec.activated?
+  ensure
+    ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
+  end
+
+  def test_use_gemdeps_automatic_missing
+    skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
+    rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], '-'
+
+    Gem.use_gemdeps
+
+    assert true # count
   ensure
     ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
   end

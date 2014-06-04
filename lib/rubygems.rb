@@ -1003,6 +1003,9 @@ module Gem
   # directory for gem dependency files (gem.deps.rb, Gemfile, Isolate) and
   # activates the gems in the first one found.
   #
+  # If a gem dependencies file was not found and +path+ does not match the
+  # RUBYGEMS_GEMDEPS environment variable an ArgumentError is raised.
+  #
   # You can run this automatically when rubygems starts.  To enable, set
   # the <code>RUBYGEMS_GEMDEPS</code> environment variable to either the path
   # of your gem dependencies file or "-" to auto-discover in parent
@@ -1031,7 +1034,11 @@ module Gem
 
     path.untaint
 
-    return unless File.file? path
+    unless File.file? path then
+      return if path == ENV['RUBYGEMS_GEMDEPS']
+
+      raise ArgumentError, "Unable to find gem dependencies file at #{path}"
+    end
 
     rs = Gem::RequestSet.new
     rs.load_gemdeps path

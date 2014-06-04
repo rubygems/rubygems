@@ -996,7 +996,8 @@ module Gem
 
   ##
   # Looks for a gem dependency file at +path+ and activates the gems in the
-  # file if found.
+  # file if found.  If +path+ is not given the RUBYGEMS_GEMDEPS environment
+  # variable is used.
   #
   # If '-' is given for +path+ RubyGems searches up from the current working
   # directory for gem dependency files (gem.deps.rb, Gemfile, Isolate) and

@@ -463,9 +463,9 @@ class Gem::RequestSet::GemDependencyAPI
   #
   # Block form for specifying gems from a git +repository+.
   #
-  #   git 'git@my.company.example:company_gems' do
-  #     gem 'internal_db_driver'
-  #     gem '…'
+  #   git 'https://github.com/rails/rails.git' do
+  #     gem 'activesupport'
+  #     gem 'activerecord'
   #   end
 
   def git repository
@@ -488,6 +488,23 @@ class Gem::RequestSet::GemDependencyAPI
   # :category: Gem Dependencies DSL
   #
   # Loads dependencies from a gemspec file.
+  #
+  # +options+ include:
+  #
+  # name: ::
+  #   The name portion of the gemspec file.  Defaults to searching for any
+  #   gemspec file in the current directory.
+  #
+  #     gemspec name: 'my_gem'
+  #
+  # path: ::
+  #   The path the gemspec lives in.  Defaults to the current directory:
+  #
+  #     gemspec 'my_gem', path: 'gemspecs', name: 'my_gem'
+  #
+  # development_group: ::
+  #   The group to add development dependencies to.  By default this is
+  #   :development.  Only one group may be specified.
 
   def gemspec options = {}
     name              = options.delete(:name) || '{,*}'

@@ -108,7 +108,6 @@ To look in a different directory use the path: option:
 
   gemspec name: 'specific_gem', path: 'gemspecs'
 
-
 To depend on a gem unpacked into a local directory:
 
   gem 'modified_gem', path: 'vendor/modified_gem'
@@ -123,10 +122,13 @@ To depend on a gem from github:
 
 To depend on a gem from a github gist:
 
-  gem 'my_gem', gist: '1232884'
+  gem 'bang', gist: '1232884'
 
-Git, github and gist support the ref, branch and tag options to specify a
+Git, github and gist support the ref:, branch: and tag: options to specify a
 commit reference or hash, branch or tag respectively to use for the gem.
+
+Setting the submodules: option to true for git, github and gist dependencies
+causes fetching of submodules when fetching the repository.
 
 You can depend on multiple gems from a single repository with the git method:
 

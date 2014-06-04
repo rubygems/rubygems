@@ -236,6 +236,63 @@ class Gem::RequestSet::GemDependencyAPI
   #
   # Specifies a gem dependency with the given +name+ and +requirements+.  You
   # may also supply +options+ following the +requirements+
+  #
+  # +options+ include:
+  #
+  # require: ::
+  #   Overrides file to require when the dependency is activated.  By default
+  #   the name of the dependency is required at activation time.  A single
+  #   file or an Array of files may be given.
+  #
+  #   To disable requiring any file give +false+:
+  #
+  #     gem 'rake', require: false
+  #
+  # group: ::
+  #   Place the dependencies in the given dependency group.  A single group or
+  #   an Array of groups may be given.
+  #
+  #   See also #group
+  #
+  # platform: ::
+  #   Only install the dependency on the given platform.  A single platform or
+  #   an Array of platforms may be given.
+  #
+  #   See #platform for a list of platforms available.
+  #
+  # path: ::
+  #   Install this dependency from an unpacked gem in the given directory.
+  #
+  #     gem 'modified_gem', path: 'vendor/modified_gem'
+  #
+  # git: ::
+  #   Install this dependency from a git repository:
+  #
+  #     gem 'private_gem', git: git@my.company.example:private_gem.git'
+  #
+  # gist: ::
+  #   Install this dependency from the gist ID:
+  #
+  #     gem 'bang', gist: '1232884'
+  #
+  # github: ::
+  #   Install this dependency from a github git repository:
+  #
+  #     gem 'private_gem', github: 'my_company/private_gem'
+  #
+  # submodules: ::
+  #   Set to +true+ to include submodules when fetching the git repository for
+  #   git:, gist: and github: dependencies.
+  #
+  # ref: ::
+  #   Use the given commit name or SHA for git:, gist: and github:
+  #   dependencies.
+  #
+  # branch: ::
+  #   Use the given branch for git:, gist: and github: dependencies.
+  #
+  # tag: ::
+  #   Use the given tag for git:, gist: and github: dependencies.
 
   def gem name, *requirements
     options = requirements.pop if requirements.last.kind_of?(Hash)

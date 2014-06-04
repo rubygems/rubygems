@@ -1268,6 +1268,20 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps
+    spec = util_spec 'a', 1
+
+    refute spec.activated?
+
+    open 'Gemfile', 'w' do |io|
+      io.write 'gem "a"'
+    end
+
+    Gem.use_gemdeps 'Gemfile'
+
+    assert spec.activated?
+  end
+
+  def test_use_gemdeps_ENV
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], nil
 
     spec = util_spec 'a', 1

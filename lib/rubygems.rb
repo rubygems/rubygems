@@ -995,19 +995,24 @@ module Gem
   end
 
   ##
-  # Looks for gem dependency files (gem.deps.rb, Gemfile, Isolate) from the
-  # current directory up and activates the gems in the first file found.
+  # Looks for a gem dependency file at +path+ and activates the gems in the
+  # file if found.
+  #
+  # If '-' is given for +path+ RubyGems searches up from the current working
+  # directory for gem dependency files (gem.deps.rb, Gemfile, Isolate) and
+  # activates the gems in the first one found.
   #
   # You can run this automatically when rubygems starts.  To enable, set
   # the <code>RUBYGEMS_GEMDEPS</code> environment variable to either the path
-  # of your Gemfile or "-" to auto-discover in parent directories.
+  # of your gem dependencies file or "-" to auto-discover in parent
+  # directories.
   #
   # NOTE: Enabling automatic discovery on multiuser systems can lead to
   # execution of arbitrary code when used from directories outside your
   # control.
 
-  def self.use_gemdeps
-    return unless path = ENV['RUBYGEMS_GEMDEPS']
+  def self.use_gemdeps path = ENV['RUBYGEMS_GEMDEPS']
+    return unless path
     path = path.dup
 
     if path == "-" then

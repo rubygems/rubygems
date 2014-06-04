@@ -571,7 +571,45 @@ class Gem::RequestSet::GemDependencyAPI
   ##
   # :category: Gem Dependencies DSL
   #
-  # Block form for restricting gems to a particular platform.
+  # Block form for restricting gems to a set of platforms.
+  #
+  # The gem dependencies platform is different from Gem::Platform.  A platform
+  # gem.deps.rb platform matches on the ruby engine, the ruby version and
+  # whether or not windows is allowed.
+  #
+  # :ruby, :ruby_XY ::
+  #   Matches non-windows, non-jruby implementations where X and Y can be used
+  #   to match releases in the 1.8, 1.9, 2.0 or 2.1 series.
+  #
+  # :mri, :mri_XY ::
+  #   Matches non-windows C Ruby (Matz Ruby) or only the 1.8, 1.9, 2.0 or
+  #   2.1 series.
+  #
+  # :mingw, :mingw_XY ::
+  #   Matches 32 bit C Ruby on MinGW or only the 1.8, 1.9, 2.0 or 2.1 series.
+  #
+  # :x64_mingw, :x64_mingw_XY ::
+  #   Matches 64 bit C Ruby on MinGW or only the 1.8, 1.9, 2.0 or 2.1 series.
+  #
+  # :mswin, :mswin_XY ::
+  #   Matches 32 bit C Ruby on Microsoft Windows or only the 1.8, 1.9, 2.0 or
+  #   2.1 series.
+  #
+  # :mswin64, :mswin64_XY ::
+  #   Matches 64 bit C Ruby on Microsoft Windows or only the 1.8, 1.9, 2.0 or
+  #   2.1 series.
+  #
+  # :jruby, :jruby_XY ::
+  #   Matches JRuby or JRuby in 1.8 or 1.9 mode.
+  #
+  # :maglev ::
+  #   Matches Maglev
+  #
+  # :rbx ::
+  #   Matches non-windows Rubinius
+  #
+  # NOTE:  There is inconsistency in what environment a platform matches.  You
+  # may need to read the source to know the exact details.
 
   def platform *platforms
     @current_platforms = platforms

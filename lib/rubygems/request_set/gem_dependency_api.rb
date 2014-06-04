@@ -526,7 +526,16 @@ class Gem::RequestSet::GemDependencyAPI
 
   ##
   # :category: Gem Dependencies DSL
+  #
   # Block form for placing a dependency in the given +groups+.
+  #
+  #   group :development do
+  #     gem 'debugger'
+  #   end
+  #
+  #   group :development, :test do
+  #     gem 'minitest'
+  #   end
 
   def group *groups
     @current_groups = groups

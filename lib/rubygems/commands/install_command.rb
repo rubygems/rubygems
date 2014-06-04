@@ -117,8 +117,8 @@ file the gems from that file will be activated at startup time.  Set it to a
 specific filename or to "-" to have RubyGems automatically discover the gem
 dependencies file by walking up from the current directory.
 
-NOTE: Enabling automatic discovery on multiuser systems can lead to execution
-of arbitrary code when used from directories outside your control.
+NOTE: Enabling automatic discovery on multiuser systems can lead to
+execution of arbitrary code when used from directories outside your control.
 
 Extension Install Failures
 ==========================

@@ -70,6 +70,9 @@ file the gems from that file will be activated at startup time.  Set it to a
 specific filename or to "-" to have RubyGems automatically discover the gem
 dependencies file by walking up from the current directory.
 
+You can also activate gem dependencies at program startup using
+Gem.use_gemdeps.
+
 NOTE: Enabling automatic discovery on multiuser systems can lead to execution
 of arbitrary code when used from directories outside your control.
 

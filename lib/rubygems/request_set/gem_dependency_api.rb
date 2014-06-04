@@ -630,8 +630,13 @@ class Gem::RequestSet::GemDependencyAPI
 
   ##
   # :category: Gem Dependencies DSL
-  # Restricts this gem dependencies file to the given ruby +version+.  The
-  # +:engine+ options from Bundler are currently ignored.
+  #
+  # Restricts this gem dependencies file to the given ruby +version+.
+  #
+  # You may also provide +engine:+ and +engine_version:+ options to restrict
+  # this gem dependencies file to a particular ruby engine and its engine
+  # version.  This matching is performed by using the RUBY_ENGINE and
+  # engine_specific VERSION constants.  (For JRuby, JRUBY_VERSION).
 
   def ruby version, options = {}
     engine         = options[:engine]

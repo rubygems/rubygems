@@ -462,6 +462,11 @@ class Gem::RequestSet::GemDependencyAPI
   # :category: Gem Dependencies DSL
   #
   # Block form for specifying gems from a git +repository+.
+  #
+  #   git 'git@my.company.example:company_gems' do
+  #     gem 'internal_db_driver'
+  #     gem '…'
+  #   end
 
   def git repository
     @current_repository = repository

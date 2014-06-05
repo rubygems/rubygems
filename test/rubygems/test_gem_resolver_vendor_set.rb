@@ -56,7 +56,7 @@ class TestGemResolverVendorSet < Gem::TestCase
   end
 
   def test_find_all_prerelease
-    name, version, directory = vendor_gem 'a', '1.a'
+    name, _, directory = vendor_gem 'a', '1.a'
 
     @set.add_vendor_gem name, directory
 

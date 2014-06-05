@@ -88,9 +88,9 @@ To depend on a specific set of versions:
   gem 'rake', '~> 10.3', '>= 10.3.2'
 
 RubyGems will require the gem name when activating the gem using
-Gem::use_gemdeps.  Use the require: option to override this behavior if the
-gem does not have a file of that name or you don't want to require those
-files:
+the RUBYGEMS_GEMDEPS environment variable or Gem::use_gemdeps.  Use the
+require: option to override this behavior if the gem does not have a file of
+that name or you don't want to require those files:
 
   gem 'my_gem', require: 'other_file'
 
@@ -150,7 +150,9 @@ You can override the sources used for downloading gems with:
 
   source 'https://gem_server.example'
 
-You may specify multiple sources.
+You may specify multiple sources.  Unlike bundler the prepend: option is not
+supported. Sources are used in-order, to prepend a source place it at the
+front of the list.
 
 Gem Platform
 ============
@@ -162,8 +164,8 @@ and #platforms methods:
     gem 'debugger'
   end
 
-The platforms are difficult to describe due to inconsitencies.  See the
-bundler Gemfile manual page for a list:
+See the bundler Gemfile manual page for a list of platforms supported in a gem
+dependencies file.:
 
   http://bundler.io/v1.6/man/gemfile.5.html
 

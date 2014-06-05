@@ -54,7 +54,11 @@ Some examples of 'gem' usage.
 
   GEM_DEPENDENCIES = <<-EOF
 A gem dependencies file allows installation of a consistent set of gems across
-multiple environments.
+multiple environments.  The RubyGems implementation is designed to be
+compatible with Bundler's Gemfile format.  You can see additional
+documentation on the format at:
+
+  http://bundler.io
 
 RubyGems automatically looks for these gem dependencies files:
 

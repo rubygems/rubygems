@@ -3,7 +3,7 @@
 # files.
 #
 # To work with both the Bundler Gemfile and Isolate formats this
-# implementation makes some liberties to allow compatibility with each, most
+# implementation takes some liberties to allow compatibility with each, most
 # notably in #source.
 #
 # A basic gem dependencies file will look like the following:
@@ -257,6 +257,7 @@ class Gem::RequestSet::GemDependencyAPI
 
   ##
   # :category: Gem Dependencies DSL
+  #
   # :call-seq:
   #   gem(name)
   #   gem(name, *requirements)

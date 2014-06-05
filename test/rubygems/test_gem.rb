@@ -1272,11 +1272,11 @@ class TestGem < Gem::TestCase
 
     refute spec.activated?
 
-    open 'Gemfile', 'w' do |io|
+    open 'gem.deps.rb', 'w' do |io|
       io.write 'gem "a"'
     end
 
-    Gem.use_gemdeps 'Gemfile'
+    Gem.use_gemdeps 'gem.deps.rb'
 
     assert spec.activated?
   end
@@ -1288,7 +1288,7 @@ class TestGem < Gem::TestCase
 
     refute spec.activated?
 
-    open 'Gemfile', 'w' do |io|
+    open 'gem.deps.rb', 'w' do |io|
       io.write 'gem "a"'
     end
 
@@ -1359,7 +1359,7 @@ class TestGem < Gem::TestCase
 
     refute spec.activated?
 
-    open 'Gemfile', 'w' do |io|
+    open 'gem.deps.rb', 'w' do |io|
       io.write 'gem "a"'
     end
 

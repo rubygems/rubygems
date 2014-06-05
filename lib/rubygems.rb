@@ -999,7 +999,7 @@ module Gem
   # file if found.  If the file is not found an ArgumentError is raised.
   #
   # If +path+ is not given the RUBYGEMS_GEMDEPS environment variable is used,
-  # but if the file is not found no exception is raised.
+  # but if no file is found no exception is raised.
   #
   # If '-' is given for +path+ RubyGems searches up from the current working
   # directory for gem dependency files (gem.deps.rb, Gemfile, Isolate) and

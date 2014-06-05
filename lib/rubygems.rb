@@ -996,15 +996,14 @@ module Gem
 
   ##
   # Looks for a gem dependency file at +path+ and activates the gems in the
-  # file if found.  If +path+ is not given the RUBYGEMS_GEMDEPS environment
-  # variable is used.
+  # file if found.  If the file is not found an ArgumentError is raised.
+  #
+  # If +path+ is not given the RUBYGEMS_GEMDEPS environment variable is used,
+  # but if the file is not found no exception is raised.
   #
   # If '-' is given for +path+ RubyGems searches up from the current working
   # directory for gem dependency files (gem.deps.rb, Gemfile, Isolate) and
   # activates the gems in the first one found.
-  #
-  # If a gem dependencies file was not found and +path+ does not match the
-  # RUBYGEMS_GEMDEPS environment variable an ArgumentError is raised.
   #
   # You can run this automatically when rubygems starts.  To enable, set
   # the <code>RUBYGEMS_GEMDEPS</code> environment variable to either the path
@@ -1015,8 +1014,12 @@ module Gem
   # execution of arbitrary code when used from directories outside your
   # control.
 
-  def self.use_gemdeps path = ENV['RUBYGEMS_GEMDEPS']
+  def self.use_gemdeps path = nil
+    raise_exception = path
+
+    path ||= ENV['RUBYGEMS_GEMDEPS']
     return unless path
+
     path = path.dup
 
     if path == "-" then
@@ -1035,7 +1038,7 @@ module Gem
     path.untaint
 
     unless File.file? path then
-      return if path == ENV['RUBYGEMS_GEMDEPS']
+      return unless raise_exception
 
       raise ArgumentError, "Unable to find gem dependencies file at #{path}"
     end

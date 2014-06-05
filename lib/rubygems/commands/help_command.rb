@@ -254,21 +254,22 @@ When building platform gems, set the platform in the gem specification to
 Gem::Platform::CURRENT.  This will correctly mark the gem with your ruby's
 platform.
   EOF
+
+  # NOTE when updating also update Gem::Command::HELP
+
+  SUBCOMMANDS = [
+    ["commands",         :show_commands],
+    ["options",          Gem::Command::HELP],
+    ["examples",         EXAMPLES],
+    ["gem_dependencies", GEM_DEPENDENCIES],
+    ["platforms",        PLATFORMS],
+  ]
   # :startdoc:
 
   def initialize
     super 'help', "Provide help on the 'gem' command"
 
     @command_manager = Gem::CommandManager.instance
-  end
-
-  def arguments # :nodoc:
-    args = <<-EOF
-      commands      List all 'gem' commands
-      examples      Show examples of 'gem' usage
-      <command>     Show specific help for <command>
-    EOF
-    return args.gsub(/^\s+/, '')
   end
 
   def usage # :nodoc:
@@ -278,22 +279,20 @@ platform.
   def execute
     arg = options[:args][0]
 
-    if begins? "commands", arg then
-      show_commands
+    _, help = SUBCOMMANDS.find do |command,|
+      begins? command, arg
+    end
 
-    elsif begins? "options", arg then
-      say Gem::Command::HELP
+    if help then
+      if Symbol === help then
+        send help
+      else
+        say help
+      end
+      return
+    end
 
-    elsif begins? "examples", arg then
-      say EXAMPLES
-
-    elsif begins? "gem_dependencies", arg then
-      say GEM_DEPENDENCIES
-
-    elsif begins? "platforms", arg then
-      say PLATFORMS
-
-    elsif options[:help] then
+    if options[:help] then
       show_help
 
     elsif arg then

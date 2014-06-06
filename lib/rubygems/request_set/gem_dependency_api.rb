@@ -269,9 +269,12 @@ class Gem::RequestSet::GemDependencyAPI
   # +options+ include:
   #
   # require: ::
-  #   Overrides file to require when the dependency is activated.  By default
-  #   the name of the dependency is required at activation time.  A single
-  #   file or an Array of files may be given.
+  #   RubyGems does not provide any autorequire features so requires in a gem
+  #   dependencies file are recorded but ignored.
+  #
+  #   In bundler the require: option overrides the file to require during
+  #   Bundler.require.  By default the name of the dependency is required in
+  #   Bundler.  A single file or an Array of files may be given.
   #
   #   To disable requiring any file give +false+:
   #
@@ -472,7 +475,7 @@ class Gem::RequestSet::GemDependencyAPI
   private :gem_platforms
 
   ##
-  # Handles the require: option from +options+ and adds those files, or the
+  # Records the require: option from +options+ and adds those files, or the
   # default file to the require list for +name+.
 
   def gem_requires name, options # :nodoc:

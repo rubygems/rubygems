@@ -565,6 +565,10 @@ class Gem::RequestSet::GemDependencyAPI
   #   group :development, :test do
   #     gem 'minitest'
   #   end
+  #
+  # Groups can be excluded at install time using `gem install -g --without
+  # development`.  See `gem help install` and `gem help gem_dependencies` for
+  # further details.
 
   def group *groups
     @current_groups = groups

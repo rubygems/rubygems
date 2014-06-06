@@ -203,8 +203,15 @@ A #gem dependency may be placed in a group using the group: option:
 
   gem 'minitest', group: :test
 
+To install dependencies from a gemfile without specific groups use the
+`--without` option for `gem install -g`:
+
+  $ gem install -g --without test
+
 The group: option also accepts multiple groups if the gem fits in multiple
 categories.
+
+Multiple groups may be excluded during install by comma-separating the groups for `--without` or by specifying `--without` multiple times.
 
 The #group method can also be used to place gems in groups:
 

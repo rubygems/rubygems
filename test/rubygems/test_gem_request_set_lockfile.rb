@@ -368,6 +368,7 @@ GIT
   specs:
     a (2)
       b (>= 3)
+      c
 
 DEPENDENCIES
   a!
@@ -391,7 +392,8 @@ DEPENDENCIES
 
     assert_equal %w[a-2], git_set.specs.values.map { |s| s.full_name }
 
-    assert_equal [dep('b', '>= 3')], git_set.specs.values.first.dependencies
+    assert_equal [dep('b', '>= 3'), dep('c')],
+                 git_set.specs.values.first.dependencies
 
     expected = {
       'a' => %w[git://example/a.git master],

@@ -12,6 +12,10 @@ class Gem::Resolver::GitSpecification < Gem::Resolver::SpecSpecification
       @source == other.source
   end
 
+  def add_dependency dependency # :nodoc:
+    spec.dependencies << dependency
+  end
+
   ##
   # Installing a git gem only involves building the extensions and generating
   # the executables.

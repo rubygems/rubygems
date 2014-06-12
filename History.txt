@@ -7,6 +7,8 @@ Bug fixes:
 * Kernel#gem now respects the prerelease flag when activating gems.
   Previously this behavior was undefined which could lead to bugs when a
   prerelease version was unintentionally activated.  Bug #938 by Joe Ferris.
+* Fixed handling of git gems in a lockfile with unversioned dependencies.  Bug
+  #940 by Michael Kaiser-Nyman.
 
 === 2.3.0 / 2014-06-10
 

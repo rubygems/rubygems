@@ -67,6 +67,8 @@ hoe = Hoe.spec 'rubygems-update' do
   spec_extras['require_paths'] = %w[hide_lib_for_update]
 end
 
+v = hoe.version
+
 hoe.test_prelude = 'gem "minitest", "~> 4.0"'
 
 Rake::Task['docs'].clear
@@ -77,7 +79,7 @@ begin
 
   RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
     doc.main   = hoe.readme_file
-    doc.title  = "RubyGems #{hoe.version} API Documentation"
+    doc.title  = "RubyGems #{v} API Documentation"
 
     rdoc_files = Rake::FileList.new %w[lib History.txt LICENSE.txt MIT.txt]
     rdoc_files.add hoe.extra_rdoc_files
@@ -104,20 +106,49 @@ task :prerelease => [:clobber, :check_manifest, :test]
 
 task :postrelease => %w[upload guides:publish blog:publish publish_docs]
 
-pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
-task :package do
-  dest = "pkg/rubygems-#{hoe.version}"
-  rm_rf dest
-  mv pkg_dir_path, dest
-  Dir.chdir 'pkg' do
-    sh "tar -czf rubygems-#{hoe.version}.tgz rubygems-#{hoe.version}"
-    sh "zip -q -r rubygems-#{hoe.version}.zip rubygems-#{hoe.version}"
+file "pkg/rubygems-#{v}" => "pkg/rubygems-update-#{v}" do |t|
+  require 'find'
+
+  dest_root = File.expand_path t.name
+
+  cd t.source do
+    Find.find '.' do |file|
+      dest = File.expand_path file, dest_root
+
+      if File.directory? file then
+        mkdir_p dest
+      else
+        rm_f dest
+        safe_ln file, dest
+      end
+    end
   end
 end
 
+source_pkg_dir = "pkg/rubygems-#{v}"
+
+file "pkg/rubygems-#{v}.tgz" => source_pkg_dir do
+  cd 'pkg' do
+    sh "tar -czf rubygems-#{v}.tgz rubygems-#{v}"
+  end
+end
+
+file "pkg/rubygems-#{v}.zip" => source_pkg_dir do
+  cd 'pkg' do
+    sh "zip -q -r rubygems-#{v}.zip rubygems-#{v}"
+  end
+end
+
+file "pkg/rubygems-update-#{v}.gem"
+
+task :package => %W[
+       pkg/rubygems-update-#{v}.gem
+       pkg/rubygems-#{v}.tgz
+       pkg/rubygems-#{v}.zip
+     ]
+
 desc "Upload release to gemcutter S3"
 task :upload_to_gemcutter do
-  v = hoe.version
   sh "s3cmd put -P pkg/rubygems-update-#{v}.gem pkg/rubygems-#{v}.zip pkg/rubygems-#{v}.tgz s3://production.s3.rubygems.org/rubygems/"
 end
 
@@ -157,7 +188,7 @@ namespace 'guides' do
         sh 'git', 'diff', '--quiet'
       rescue
         sh 'git', 'commit', 'command-reference.md', 'specification-reference.md',
-           '-m', "Rebuild for RubyGems #{hoe.version}"
+           '-m', "Rebuild for RubyGems #{v}"
       end
     end
   end
@@ -187,7 +218,7 @@ end
 
 namespace 'blog' do
   date = Time.now.strftime '%Y-%m-%d'
-  post_page = "_posts/#{date}-#{hoe.version}-released.md"
+  post_page = "_posts/#{date}-#{v}-released.md"
   checksums = ''
 
   task 'checksums' => 'package' do
@@ -270,13 +301,13 @@ namespace 'blog' do
     Tempfile.open 'blog_post' do |io|
       io.write <<-ANNOUNCEMENT
 ---
-title: #{hoe.version} Released
+title: #{v} Released
 layout: post
 author: #{name}
 author_email: #{email}
 ---
 
-RubyGems #{hoe.version} includes #{change_types}.
+RubyGems #{v} includes #{change_types}.
 
 To update to the latest RubyGems you can run:
 
@@ -309,7 +340,7 @@ SHA256 Checksums:
     chdir '../blog.rubygems.org' do
       sh 'git', 'add', post_page
       sh 'git', 'commit', post_page,
-         '-m', "Added #{hoe.version} release announcement"
+         '-m', "Added #{v} release announcement"
     end
   end
 

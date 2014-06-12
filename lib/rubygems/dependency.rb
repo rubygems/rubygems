@@ -321,6 +321,12 @@ class Gem::Dependency
   def to_spec
     matches = self.to_specs
 
-    matches.find { |spec| spec.activated? } or matches.last
+    active = matches.find { |spec| spec.activated? }
+
+    return active if active
+
+    matches.delete_if { |spec| spec.version.prerelease? } unless prerelease?
+
+    matches.last
   end
 end

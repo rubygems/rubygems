@@ -1,5 +1,13 @@
 # coding: UTF-8
 
+=== 2.3.1
+
+Bug fixes:
+
+* Kernel#gem now respects the prerelease flag when activating gems.
+  Previously this behavior was undefined which could lead to bugs when a
+  prerelease version was unintentionally activated.  Bug #938 by Joe Ferris.
+
 === 2.3.0 / 2014-06-10
 
 Minor enhancements:

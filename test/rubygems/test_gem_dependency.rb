@@ -266,6 +266,29 @@ class TestGemDependency < Gem::TestCase
     assert dep('a', '= 1').specific?
   end
 
+  def test_to_spec
+          util_spec 'a', '1'
+    a_2 = util_spec 'a', '2'
+
+    a_dep = dep 'a', '>= 0'
+
+    assert_equal a_2, a_dep.to_spec
+  end
+
+  def test_to_spec_prerelease
+    a_1     = util_spec 'a', '1'
+    a_1_1_a = util_spec 'a', '1.1.a'
+
+    a_dep = dep 'a', '>= 0'
+
+    assert_equal a_1, a_dep.to_spec
+
+    a_pre_dep = dep 'a', '>= 0'
+    a_pre_dep.prerelease = true
+
+    assert_equal a_1_1_a, a_pre_dep.to_spec
+  end
+
   def test_to_specs_suggests_other_versions
     a = util_spec 'a', '1.0', 'b' => '>= 1.0'
 

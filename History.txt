@@ -9,6 +9,8 @@ Bug fixes:
   prerelease version was unintentionally activated.  Bug #938 by Joe Ferris.
 * Fixed handling of git gems in a lockfile with unversioned dependencies.  Bug
   #940 by Michael Kaiser-Nyman.
+* The ruby directive in a gem dependencies file is ignored when installing.
+  Bug #941 by Michael Kaiser-Nyman.
 * Added open to list of builtin commands (`gem open` now works).  Reported by
   Espen Antonsen.
 

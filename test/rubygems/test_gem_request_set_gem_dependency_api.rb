@@ -690,6 +690,12 @@ end
     assert_equal "Your Ruby version is #{RUBY_VERSION}, but your gem.deps.rb requires 1.8.0", e.message
   end
 
+  def test_ruby_mismatch_installing
+    @gda.installing = true
+
+    assert @gda.ruby '1.8.0'
+  end
+
   def test_source
     sources = Gem.sources
 

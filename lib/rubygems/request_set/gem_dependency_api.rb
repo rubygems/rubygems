@@ -200,6 +200,7 @@ class Gem::RequestSet::GemDependencyAPI
     @dependencies       = {}
     @default_sources    = true
     @git_set            = @set.git_set
+    @installing         = false
     @requires           = Hash.new { |h, name| h[name] = [] }
     @vendor_set         = @set.vendor_set
     @gem_sources        = {}
@@ -244,6 +245,15 @@ class Gem::RequestSet::GemDependencyAPI
         "found multiple gemspecs at #{Dir.pwd}, " +
         "use the name: option to specify the one you want"
     end
+  end
+
+  ##
+  # Changes the behavior of gem dependency file loading to installing mode.
+  # In installing mode certain restrictions are ignored such as ruby version
+  # mismatch checks.
+
+  def installing= installing # :nodoc:
+    @installing = installing
   end
 
   ##
@@ -681,6 +691,8 @@ class Gem::RequestSet::GemDependencyAPI
     raise ArgumentError,
           'you must specify engine_version along with the ruby engine' if
             engine and not engine_version
+
+    return true if @installing
 
     unless RUBY_VERSION == version then
       message = "Your Ruby version is #{RUBY_VERSION}, " +

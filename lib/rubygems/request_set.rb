@@ -192,7 +192,7 @@ class Gem::RequestSet
     @install_dir = options[:install_dir] || Gem.dir
     @remote      = options[:domain] != :local
 
-    gem_deps_api = load_gemdeps gemdeps, options[:without_groups]
+    gem_deps_api = load_gemdeps gemdeps, options[:without_groups], true
 
     resolve
 
@@ -256,7 +256,7 @@ class Gem::RequestSet
   ##
   # Load a dependency management file.
 
-  def load_gemdeps path, without_groups = []
+  def load_gemdeps path, without_groups = [], installing = false
     @git_set    = Gem::Resolver::GitSet.new
     @vendor_set = Gem::Resolver::VendorSet.new
 
@@ -266,6 +266,7 @@ class Gem::RequestSet
     lockfile.parse
 
     gf = Gem::RequestSet::GemDependencyAPI.new self, path
+    gf.installing = installing
     gf.without_groups = without_groups if without_groups
     gf.load
   end

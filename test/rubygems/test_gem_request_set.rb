@@ -160,6 +160,30 @@ DEPENDENCIES
     assert_path_exists File.join @gemhome, 'specifications', 'b-1.gemspec'
   end
 
+  def test_install_from_gemdeps_version_mismatch
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 2
+    end
+
+    rs = Gem::RequestSet.new
+    installed = []
+
+    open 'gem.deps.rb', 'w' do |io|
+      io.puts <<-GEM_DEPS
+gem "a"
+ruby "0"
+      GEM_DEPS
+
+      io.flush
+
+      rs.install_from_gemdeps :gemdeps => io.path do |req, installer|
+        installed << req.full_name
+      end
+    end
+
+    assert_includes installed, 'a-2'
+  end
+
   def test_load_gemdeps
     rs = Gem::RequestSet.new
 
@@ -176,6 +200,22 @@ DEPENDENCIES
 
     assert rs.git_set
     assert rs.vendor_set
+  end
+
+  def test_load_gemdeps_installing
+    rs = Gem::RequestSet.new
+
+    Tempfile.open 'gem.deps.rb' do |io|
+      io.puts 'ruby "0"'
+      io.puts 'gem "a"'
+      io.flush
+
+      gem_deps = rs.load_gemdeps io.path, [], true
+
+      assert_kind_of Gem::RequestSet::GemDependencyAPI, gem_deps
+    end
+
+    assert_equal [dep('a')], rs.dependencies
   end
 
   def test_load_gemdeps_without_groups

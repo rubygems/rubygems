@@ -403,7 +403,7 @@ class Gem::RequestSet::Lockfile
         else
           dependency = parse_dependency name, data
 
-          last_spec.spec.dependencies << dependency
+          last_spec.add_dependency dependency
         end
 
         get :r_paren

@@ -106,7 +106,9 @@ task :postrelease => %w[upload guides:publish blog:publish publish_docs]
 
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
 task :package do
-  mv pkg_dir_path, "pkg/rubygems-#{hoe.version}"
+  dest = "pkg/rubygems-#{hoe.version}"
+  rm_rf dest
+  mv pkg_dir_path, dest
   Dir.chdir 'pkg' do
     sh "tar -czf rubygems-#{hoe.version}.tgz rubygems-#{hoe.version}"
     sh "zip -q -r rubygems-#{hoe.version}.zip rubygems-#{hoe.version}"
@@ -186,6 +188,23 @@ end
 namespace 'blog' do
   date = Time.now.strftime '%Y-%m-%d'
   post_page = "_posts/#{date}-#{hoe.version}-released.md"
+  checksums = ''
+
+  task 'checksums' => 'package' do
+    require 'digest'
+    Dir['pkg/*{tgz,zip,gem}'].map do |file|
+      digest = Digest::SHA256.new
+
+      open file, 'rb' do |io|
+        while chunk = io.read(65536) do
+          digest.update chunk
+        end
+      end
+
+      checksums << "* #{File.basename(file)}  \n"
+      checksums << "  #{digest.hexdigest}\n"
+    end
+  end
 
   task 'pull' => %w[../blog.rubygems.org] do
     chdir '../blog.rubygems.org' do
@@ -197,7 +216,7 @@ namespace 'blog' do
 
   task 'update' => [path]
 
-  file path do
+  file path => 'checksums' do
     name  = `git config --get user.name`.strip
     email = `git config --get user.email`.strip
 
@@ -268,6 +287,10 @@ RubyGems][upgrading] instructions.  To install RubyGems by hand see the
 [Download RubyGems][download] page.
 
 #{change_log}
+
+SHA256 Checksums:
+
+#{checksums}
 
 [download]: http://rubygems.org/pages/download
 [upgrading]: http://rubygems.rubyforge.org/rubygems-update/UPGRADING_rdoc.html

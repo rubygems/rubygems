@@ -13,6 +13,8 @@ Bug fixes:
   Bug #941 by Michael Kaiser-Nyman.
 * Added open to list of builtin commands (`gem open` now works).  Reported by
   Espen Antonsen.
+* RubyGems releases announcements now now include checksums.  Bug #939 by
+  Alexander E. Fischer.
 
 === 2.3.0 / 2014-06-10
 

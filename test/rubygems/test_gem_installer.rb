@@ -201,6 +201,21 @@ gem 'other', version
     ENV['PATH'] = orig_PATH
   end
 
+  def test_check_that_user_bin_dir_is_in_path_tilde
+    orig_PATH, ENV['PATH'] =
+      ENV['PATH'], [ENV['PATH'], '~/bin'].join(File::PATH_SEPARATOR)
+
+    @installer.bin_dir.replace File.join @userhome, 'bin'
+
+    use_ui @ui do
+      @installer.check_that_user_bin_dir_is_in_path
+    end
+
+    assert_empty @ui.error
+  ensure
+    ENV['PATH'] = orig_PATH
+  end
+
   def test_check_that_user_bin_dir_is_in_path_not_in_path
     use_ui @ui do
       @installer.check_that_user_bin_dir_is_in_path

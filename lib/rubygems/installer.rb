@@ -39,7 +39,9 @@ class Gem::Installer
 
   include Gem::UserInteraction
 
-  # DOC: Missing docs or :nodoc:.
+  ##
+  # Filename of the gem being installed.
+
   attr_reader :gem
 
   ##
@@ -71,7 +73,13 @@ class Gem::Installer
 
     attr_accessor :path_warning
 
-    # DOC: Missing docs or :nodoc:.
+    ##
+    # Overrides the executable format.
+    #
+    # This is a sprintf format with a "%s" which will be replaced with the
+    # executable name.  It is based off the ruby executable name's difference
+    # from "ruby".
+
     attr_writer :exec_format
 
     # Defaults to use Ruby's program prefix and suffix.
@@ -386,8 +394,7 @@ class Gem::Installer
     end
   end
 
-  # DOC: Missing docs or :nodoc:.
-  def generate_bin
+  def generate_bin # :nodoc:
     return if spec.executables.nil? or spec.executables.empty?
 
     Dir.mkdir @bin_dir unless File.exist? @bin_dir
@@ -536,8 +543,7 @@ class Gem::Installer
     end
   end
 
-  # DOC: Missing docs or :nodoc:.
-  def ensure_required_ruby_version_met
+  def ensure_required_ruby_version_met # :nodoc:
     if rrv = spec.required_ruby_version then
       unless rrv.satisfied_by? Gem.ruby_version then
         raise Gem::InstallError, "#{spec.name} requires Ruby version #{rrv}."
@@ -545,8 +551,7 @@ class Gem::Installer
     end
   end
 
-  # DOC: Missing docs or :nodoc:.
-  def ensure_required_rubygems_version_met
+  def ensure_required_rubygems_version_met # :nodoc:
     if rrgv = spec.required_rubygems_version then
       unless rrgv.satisfied_by? Gem.rubygems_version then
         raise Gem::InstallError,
@@ -556,8 +561,7 @@ class Gem::Installer
     end
   end
 
-  # DOC: Missing docs or :nodoc:.
-  def ensure_dependencies_met
+  def ensure_dependencies_met # :nodoc:
     deps = spec.runtime_dependencies
     deps |= spec.development_dependencies if @development
 
@@ -566,8 +570,7 @@ class Gem::Installer
     end
   end
 
-  # DOC: Missing docs or :nodoc:.
-  def process_options
+  def process_options # :nodoc:
     @options = {
       :bin_dir      => nil,
       :env_shebang  => false,
@@ -594,8 +597,7 @@ class Gem::Installer
     @build_args          = options[:build_args] || Gem::Command.build_args
   end
 
-  # DOC: Missing docs or :nodoc:.
-  def check_that_user_bin_dir_is_in_path
+  def check_that_user_bin_dir_is_in_path # :nodoc:
     user_bin_dir = @bin_dir || Gem.bindir(gem_home)
     user_bin_dir = user_bin_dir.gsub(File::SEPARATOR, File::ALT_SEPARATOR) if
       File::ALT_SEPARATOR
@@ -618,8 +620,7 @@ class Gem::Installer
     end
   end
 
-  # DOC: Missing docs or :nodoc:.
-  def verify_gem_home(unpack = false)
+  def verify_gem_home(unpack = false) # :nodoc:
     FileUtils.mkdir_p gem_home
     raise Gem::FilePermissionError, gem_home unless
       unpack or File.writable?(gem_home)

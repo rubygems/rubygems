@@ -15,6 +15,8 @@ Bug fixes:
   Espen Antonsen.
 * RubyGems releases announcements now now include checksums.  Bug #939 by
   Alexander E. Fischer.
+* RubyGems now expands ~ in $PATH when checking if installed executables will
+  be runnable.  Pull request #945 by Alex Talker.
 
 === 2.3.0 / 2014-06-10
 

@@ -19,6 +19,8 @@ Bug fixes:
   be runnable.  Pull request #945 by Alex Talker.
 * Fixed `gem install -g --explain`.  Issue #947 by Luis Lavena.  Patch by
   Hsing-Hui Hsu.
+* RubyGems no longer defines an empty Date class.  Pull Request #948 by Benoit
+  Daloze.
 
 === 2.3.0 / 2014-06-10
 

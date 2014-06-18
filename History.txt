@@ -17,6 +17,8 @@ Bug fixes:
   Alexander E. Fischer.
 * RubyGems now expands ~ in $PATH when checking if installed executables will
   be runnable.  Pull request #945 by Alex Talker.
+* Fixed `gem install -g --explain`.  Issue #947 by Luis Lavena.  Patch by
+  Hsing-Hui Hsu.
 
 === 2.3.0 / 2014-06-10
 

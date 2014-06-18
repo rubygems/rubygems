@@ -199,7 +199,7 @@ class Gem::RequestSet
     if options[:explain]
       puts "Gems to install:"
 
-      specs.sorted_requests.each do |spec|
+      sorted_requests.each do |spec|
         puts "  #{spec.full_name}"
       end
 

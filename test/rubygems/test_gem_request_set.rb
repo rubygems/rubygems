@@ -70,6 +70,28 @@ class TestGemRequestSet < Gem::TestCase
     refute done_installing_ran
   end
 
+  def test_install_from_gemdeps_explain
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 2
+    end
+
+    rs = Gem::RequestSet.new
+
+    open 'gem.deps.rb', 'w' do |io|
+      io.puts 'gem "a"'
+      io.flush
+
+      expected = <<-EXPECTED
+Gems to install:
+  a-2
+      EXPECTED
+
+      assert_output expected do
+        rs.install_from_gemdeps :gemdeps => io.path, :explain => true
+      end
+    end
+  end
+
   def test_install_from_gemdeps_install_dir
     spec_fetcher do |fetcher|
       fetcher.gem 'a', 2

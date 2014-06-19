@@ -20,3 +20,13 @@ contributors to follow to reduce the time it takes to get changes merged in.
 
 For more information and ideas on how to contribute to RubyGems ecosystem, see
 here: http://guides.rubygems.org/contributing/
+
+== Getting Started
+
+Run:
+
+    $ gem install hoe
+    $ rake newb
+
+After `rake newb` finishes you can run `rake` to run the tests.
+

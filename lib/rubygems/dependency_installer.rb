@@ -376,6 +376,7 @@ class Gem::DependencyInstaller
     options = {
       :bin_dir             => @bin_dir,
       :build_args          => @build_args,
+      :document            => @document,
       :env_shebang         => @env_shebang,
       :force               => @force,
       :format_executable   => @format_executable,

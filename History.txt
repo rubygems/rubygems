@@ -21,6 +21,8 @@ Bug fixes:
   Hsing-Hui Hsu.
 * RubyGems no longer defines an empty Date class.  Pull Request #948 by Benoit
   Daloze.
+* RubyGems respects --document options for `gem update` again.  Bug 946 by
+  jonforums.  Patch by Hsing-Hui Hsu.
 
 === 2.3.0 / 2014-06-10
 

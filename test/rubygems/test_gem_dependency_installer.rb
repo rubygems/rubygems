@@ -554,6 +554,23 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal %w[a-1 e-1], inst.installed_gems.map { |s| s.full_name }
   end
 
+  def test_install_no_document
+    util_setup_gems
+
+    done_installing_called = false
+
+    Gem.done_installing do |dep_installer, specs|
+      done_installing_called = true
+      assert_empty dep_installer.document
+    end
+
+    inst = Gem::DependencyInstaller.new :domain => :local, :document => []
+
+    inst.install @a1_gem
+
+    assert done_installing_called
+  end
+
   def test_install_env_shebang
     util_setup_gems
 

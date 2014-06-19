@@ -11,7 +11,9 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
   FileEntry = FileUtils::Entry_ # :nodoc:
 
   def self.build(extension, directory, dest_path, results, args=[], lib_dir=nil)
-    tmp_dest = Dir.mktmpdir(".gem.", ".")
+    # relative path required as some versions of mktmpdir return an absolute
+    # path which breaks make if it includes a space in the name
+    tmp_dest = get_relative_path(Dir.mktmpdir(".gem.", "."))
 
     t = nil
     Tempfile.open %w"siteconf .rb", "." do |siteconf|
@@ -25,14 +27,10 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
 
       siteconf.flush
 
-      siteconf_path = File.expand_path siteconf.path
-
-      rubyopt = ENV["RUBYOPT"]
       destdir = ENV["DESTDIR"]
 
       begin
-        ENV["RUBYOPT"] = ["-r#{siteconf_path}", rubyopt].compact.join(' ')
-        cmd = [Gem.ruby, File.basename(extension), *args].join ' '
+        cmd = [Gem.ruby, "-r", get_relative_path(siteconf.path), File.basename(extension), *args].join ' '
 
         begin
           run cmd, results
@@ -42,7 +40,6 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
         end
 
         ENV["DESTDIR"] = nil
-        ENV["RUBYOPT"] = rubyopt
 
         make dest_path, results
 
@@ -61,7 +58,6 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
           end
         end
       ensure
-        ENV["RUBYOPT"] = rubyopt
         ENV["DESTDIR"] = destdir
       end
     end
@@ -70,6 +66,12 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
     results
   ensure
     FileUtils.rm_rf tmp_dest if tmp_dest
+  end
+
+  private
+  def self.get_relative_path(path)
+    path[0..Dir.pwd.length-1] = '.' if path.start_with?(Dir.pwd)
+    path
   end
 
 end

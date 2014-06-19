@@ -8,8 +8,10 @@ contributors to follow to reduce the time it takes to get changes merged in.
 
 1. New features should be coupled with tests.
 
-2. Ensure that your code blends well with ours (eg, no trailing whitespace,
-   match indentation and coding style).
+2. Ensure that your code blends well with ours:
+   * No trailing whitespace
+   * Match indentation (two spaces)
+   * Match coding style (`if`, `elsif`, `when` need trailing `then`)
 
 3. Don't modify the history file or version number.
 

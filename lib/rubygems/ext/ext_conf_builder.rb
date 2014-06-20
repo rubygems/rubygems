@@ -19,7 +19,7 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
     Tempfile.open %w"siteconf .rb", "." do |siteconf|
       t = siteconf
       siteconf.puts "require 'rbconfig'"
-      siteconf.puts "dest_path = #{(tmp_dest || dest_path).dump}"
+      siteconf.puts "dest_path = #{tmp_dest.dump}"
       %w[sitearchdir sitelibdir].each do |dir|
         siteconf.puts "RbConfig::MAKEFILE_CONFIG['#{dir}'] = dest_path"
         siteconf.puts "RbConfig::CONFIG['#{dir}'] = dest_path"

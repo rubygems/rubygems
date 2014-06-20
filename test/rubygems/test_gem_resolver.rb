@@ -170,6 +170,45 @@ class TestGemResolver < Gem::TestCase
     assert_empty reqs
   end
 
+  def test_resolve_conservative
+    a1_spec = util_spec 'a', 1
+    a2_spec = util_spec 'a', 2 do |s|
+      s.add_dependency 'b', 2
+      s.add_dependency 'c'
+    end
+    b1_spec = util_spec 'b', 1
+    b2_spec = util_spec 'b', 2
+    c1_spec = util_spec 'c', 1 do |s| s.add_dependency 'd', 2 end
+    c2_spec = util_spec 'c', 2 do |s| s.add_dependency 'd', 2 end
+    d1_spec = util_spec 'd', 1 do |s| s.add_dependency 'e' end
+    d2_spec = util_spec 'd', 2 do |s| s.add_dependency 'e' end
+    e1_spec = util_spec 'e', 1
+    e2_spec = util_spec 'e', 2
+
+    a_dep = make_dep 'a', '= 2'
+    e_dep = make_dep 'e'
+
+    # When requesting to install:
+    # a-2, e
+    deps = [a_dep, e_dep]
+
+    s = set a1_spec, a2_spec, b1_spec, b2_spec, c1_spec, c2_spec, d1_spec, d2_spec, e1_spec, e2_spec
+
+    res = Gem::Resolver.new deps, s
+
+    # With the following gems already installed:
+    # a-1, b-1, c-1, e-1
+    res.skip_gems = {'a'=>[a1_spec], 'b'=>[b1_spec], 'c'=>[c1_spec], 'e'=>[e1_spec]}
+
+    # Make sure the following gems end up getting used/installed/upgraded:
+    # a-2 (upgraded)
+    # b-2 (upgraded), specific dependency from a-2
+    # c-1 (used, not upgraded), open dependency from a-2
+    # d-2 (installed), specific dependency from c-2
+    # e-1 (used, not upgraded), open dependency from request
+    assert_resolves_to [a2_spec, b2_spec, c1_spec, d2_spec, e1_spec], res
+  end
+
   def test_resolve_development
     a_spec = util_spec 'a', 1 do |s| s.add_development_dependency 'b' end
     b_spec = util_spec 'b', 1 do |s| s.add_development_dependency 'c' end

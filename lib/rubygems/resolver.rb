@@ -50,6 +50,12 @@ class Gem::Resolver
   attr_reader :stats
 
   ##
+  # Hash of gems to skip resolution.  Keyed by gem name, with arrays of
+  # gem specifications as values.
+
+  attr_accessor :skip_gems
+
+  ##
   # When a missing dependency, don't stop. Just go on and record what was
   # missing.
 
@@ -109,6 +115,7 @@ class Gem::Resolver
     @development_shallow = false
     @ignore_dependencies = false
     @missing             = []
+    @skip_gems           = {}
     @soft_missing        = false
     @stats               = Gem::Resolver::Stats.new
   end
@@ -200,6 +207,14 @@ class Gem::Resolver
 
   def find_possible dependency # :nodoc:
     all = @set.find_all dependency
+
+    if (skip_dep_gems = skip_gems[dependency.name]) && !skip_dep_gems.empty?
+      matching = all.select do |api_spec|
+        skip_dep_gems.any?{|s| api_spec.version == s.version}
+      end
+      all = matching unless matching.empty?
+    end
+
     matching_platform = select_local_platforms all
 
     return matching_platform, all

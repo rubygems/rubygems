@@ -729,6 +729,31 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert !File.exist?("#{@gemdeps}.lock")
   end
 
+  def test_execute_installs_from_a_gemdeps_with_conservative
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 2
+      fetcher.clear
+      fetcher.gem 'a', 1
+    end
+
+    File.open @gemdeps, "w" do |f|
+      f << "gem 'a'"
+    end
+
+    @cmd.handle_options %w[--conservative]
+    @cmd.options[:gemdeps] = @gemdeps
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+        @cmd.execute
+      end
+    end
+
+    assert_equal %w[], @cmd.installed_specs.map { |spec| spec.full_name }
+
+    assert_match "Using a (1)", @ui.output
+  end
+
   def test_execute_installs_from_a_gemdeps
     spec_fetcher do |fetcher|
       fetcher.gem 'a', 2

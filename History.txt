@@ -23,6 +23,7 @@ Bug fixes:
   Daloze.
 * RubyGems respects --document options for `gem update` again.  Bug 946 by
   jonforums.  Patch by Hsing-Hui Hsu.
+* Fixed typo in gem updated help.  Pull request #952 by Per Modin.
 
 === 2.3.0 / 2014-06-10
 

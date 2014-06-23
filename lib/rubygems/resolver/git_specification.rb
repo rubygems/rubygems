@@ -35,5 +35,25 @@ class Gem::Resolver::GitSpecification < Gem::Resolver::SpecSpecification
     installer.run_post_install_hooks
   end
 
+  def pretty_print q # :nodoc:
+    q.group 2, '[GitSpecification', ']' do
+      q.breakable
+      q.text "name: #{name}"
+
+      q.breakable
+      q.text "version: #{version}"
+
+      q.breakable
+      q.text 'dependencies:'
+      q.breakable
+      q.pp dependencies
+
+      q.breakable
+      q.text "source:"
+      q.breakable
+      q.pp @source
+    end
+  end
+
 end
 

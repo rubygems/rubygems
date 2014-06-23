@@ -100,7 +100,7 @@ module Gem::LocalRemoteOptions
   def add_source_option
     accept_uri_http
 
-    add_option(:"Local/Remote", '--source URL', URI::HTTP,
+    add_option(:"Local/Remote", '-s', '--source URL', URI::HTTP,
                'Add URL as a remote source for gems') do |source, options|
 
       source << '/' if source !~ /\/\z/

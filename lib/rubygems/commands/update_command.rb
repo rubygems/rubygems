@@ -56,7 +56,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
     <<-EOF
 The update command will update your gems to the latest version.
 
-The update comamnd does not remove the previous version.  Use the cleanup
+The update command does not remove the previous version. Use the cleanup
 command to remove old versions.
     EOF
   end

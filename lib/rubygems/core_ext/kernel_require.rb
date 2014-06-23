@@ -99,6 +99,7 @@ module Kernel
       names = found_specs.map(&:name).uniq
 
       if names.size > 1 then
+        RUBYGEMS_ACTIVATION_MONITOR.exit
         raise Gem::LoadError, "#{path} found in multiple gems: #{names.join ', '}"
       end
 
@@ -109,6 +110,7 @@ module Kernel
       unless valid then
         le = Gem::LoadError.new "unable to find a version of '#{names.first}' to activate"
         le.name = names.first
+        RUBYGEMS_ACTIVATION_MONITOR.exit
         raise le
       end
 

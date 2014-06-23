@@ -61,7 +61,6 @@ class TestGemRequire < Gem::TestCase
     append_latch a1
     append_latch b1
 
-    Thread.abort_on_exception = true
     t1 = Thread.new { assert_require 'a' }
     t2 = Thread.new { assert_require 'b' }
 

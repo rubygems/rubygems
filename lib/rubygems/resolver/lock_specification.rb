@@ -41,6 +41,28 @@ class Gem::Resolver::LockSpecification < Gem::Resolver::Specification
     @dependencies << dependency
   end
 
+  def pretty_print q # :nodoc:
+    q.group 2, '[LockSpecification', ']' do
+      q.breakable
+      q.text "name: #{@name}"
+
+      q.breakable
+      q.text "version: #{@version}"
+
+      unless @platform == Gem::Platform::RUBY then
+        q.breakable
+        q.text "platform: #{@platform}"
+      end
+
+      unless @dependencies.empty? then
+        q.breakable
+        q.text 'dependencies:'
+        q.breakable
+        q.pp @dependencies
+      end
+    end
+  end
+
   ##
   # A specification constructed from the lockfile is returned
 

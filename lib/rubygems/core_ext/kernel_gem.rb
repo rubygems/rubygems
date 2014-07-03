@@ -56,7 +56,9 @@ module Kernel
     end
 
     spec = Gem::Dependency.new(gem_name, *requirements).to_spec
-    spec.activate if spec
+    Gem::LOADED_SPECS_MUTEX.synchronize {
+      spec.activate
+    } if spec
   end
 
   private :gem

@@ -201,8 +201,8 @@ class TestGemSourceGit < Gem::TestCase
     assert_equal( 1, git.      <=>(remote),    'git    <=> remote')
     assert_equal(-1, remote.   <=>(git),       'remote <=> git')
 
-    assert_equal(-1, git.      <=>(installed), 'git       <=> installed')
-    assert_equal( 1, installed.<=>(git),       'installed <=> git')
+    assert_equal( 1, git.      <=>(installed), 'git       <=> installed')
+    assert_equal(-1, installed.<=>(git),       'installed <=> git')
 
     assert_equal(-1, git.      <=>(vendor),    'git       <=> vendor')
     assert_equal( 1, vendor.   <=>(git),       'vendor    <=> git')

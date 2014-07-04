@@ -67,7 +67,7 @@ class Gem::Source::Git < Gem::Source
     case other
     when Gem::Source::Git then
       0
-    when Gem::Source::Installed,
+    when Gem::Source::Vendor,
          Gem::Source::Lock then
       -1
     when Gem::Source then

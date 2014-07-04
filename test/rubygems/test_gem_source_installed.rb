@@ -25,8 +25,8 @@ class TestGemSourceInstalled < Gem::TestCase
     assert_equal(-1, specific. <=>(installed), 'specific  <=> installed')
     assert_equal( 1, installed.<=>(specific),  'installed <=> specific')
 
-    assert_equal(-1, git.      <=>(installed), 'git       <=> installed')
-    assert_equal( 1, installed.<=>(git),       'installed <=> git')
+    assert_equal( 1, git.      <=>(installed), 'git       <=> installed')
+    assert_equal(-1, installed.<=>(git),       'installed <=> git')
 
     assert_equal( 1, vendor.   <=>(installed), 'vendor    <=> installed')
     assert_equal(-1, installed.<=>(vendor),    'installed <=> vendor')

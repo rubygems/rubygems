@@ -12,7 +12,8 @@ class Gem::Source::Installed < Gem::Source
 
   def <=> other
     case other
-    when Gem::Source::Lock,
+    when Gem::Source::Git,
+         Gem::Source::Lock,
          Gem::Source::Vendor then
       -1
     when Gem::Source::Installed then

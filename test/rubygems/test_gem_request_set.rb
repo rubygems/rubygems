@@ -209,7 +209,7 @@ ruby "0"
   def test_load_gemdeps
     rs = Gem::RequestSet.new
 
-    Tempfile.create 'gem.deps.rb' do |io|
+    Tempfile.open 'gem.deps.rb' do |io|
       io.puts 'gem "a"'
       io.flush
 
@@ -243,7 +243,7 @@ ruby "0"
   def test_load_gemdeps_without_groups
     rs = Gem::RequestSet.new
 
-    Tempfile.create 'gem.deps.rb' do |io|
+    Tempfile.open 'gem.deps.rb' do |io|
       io.puts 'gem "a", :group => :test'
       io.flush
 
@@ -313,7 +313,7 @@ ruby "0"
 
     rs = Gem::RequestSet.new
 
-    Tempfile.create 'gem.deps.rb' do |io|
+    Tempfile.open 'gem.deps.rb' do |io|
       io.puts <<-gems_deps_rb
         gem "#{name}", :git => "#{repository}"
       gems_deps_rb
@@ -374,7 +374,7 @@ ruby "0"
 
     rs = Gem::RequestSet.new
 
-    Tempfile.create 'gem.deps.rb' do |io|
+    Tempfile.open 'gem.deps.rb' do |io|
       io.puts <<-gems_deps_rb
         gem "#{a_name}", :path => "#{a_directory}"
         gem "#{b_name}", :path => "#{b_directory}"

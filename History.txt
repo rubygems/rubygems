@@ -7,6 +7,9 @@ Bug fixes:
 * Kernel#gem now respects the prerelease flag when activating gems.
   Previously this behavior was undefined which could lead to bugs when a
   prerelease version was unintentionally activated.  Bug #938 by Joe Ferris.
+* RubyGems now prefers gems from git over installed gems.  This allows gems
+  from git to override an installed gem with the same name and version.  Bug
+  #944 by Thomas Kriechbaumer.
 * Fixed handling of git gems in a lockfile with unversioned dependencies.  Bug
   #940 by Michael Kaiser-Nyman.
 * The ruby directive in a gem dependencies file is ignored when installing.

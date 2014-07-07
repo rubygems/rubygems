@@ -207,6 +207,14 @@ class TestGemRequirement < Gem::TestCase
     end
   end
 
+  def test_satisfied_by_eh_tilde_gt_v0
+    r = req "~> 0.0.1"
+
+    refute_satisfied_by "0.1.1", r
+    assert_satisfied_by "0.0.2", r
+    assert_satisfied_by "0.0.1", r
+  end
+
   def test_satisfied_by_eh_good
     assert_satisfied_by "0.2.33",      "= 0.2.33"
     assert_satisfied_by "0.2.34",      "> 0.2.33"

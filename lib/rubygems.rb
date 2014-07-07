@@ -156,6 +156,7 @@ module Gem
 
   @configuration = nil
   @loaded_specs = {}
+  LOADED_SPECS_MUTEX = Mutex.new
   @path_to_default_spec_map = {}
   @platforms = []
   @ruby = nil

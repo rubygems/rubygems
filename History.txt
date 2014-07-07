@@ -31,6 +31,8 @@ Bug fixes:
   jonforums.  Patch by Hsing-Hui Hsu.
 * `-s` is now short for `--source` which resolves an ambiguity with
   --no-suggestions.  Pull request #955 by Alexander Kahn.
+* Added extra test for ~> for 0.0.X versions.  Pull request #958 by Mark
+  Lorenz.
 * Fixed typo in gem updated help.  Pull request #952 by Per Modin.
 
 === 2.3.0 / 2014-06-10

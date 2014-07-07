@@ -775,6 +775,8 @@ gems:
       @proxy_server  ||= start_server(PROXY_DATA)
       @enable_yaml = true
       @enable_zip = false
+      @ssl_server = nil
+      @ssl_server_thread = nil
     end
 
     def stop_servers

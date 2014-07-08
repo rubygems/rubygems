@@ -18,6 +18,8 @@ Bug fixes:
   Espen Antonsen.
 * `gem open` now works with command-line editors.  Pull request #962 by Tim
   Pope.
+* `gem install -g` now respects `--conservative`.  Pull request #950 by Jeremy
+  Evans.
 * RubyGems releases announcements now now include checksums.  Bug #939 by
   Alexander E. Fischer.
 * RubyGems now expands ~ in $PATH when checking if installed executables will

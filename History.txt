@@ -27,7 +27,7 @@ Bug fixes:
 * Fixed `gem install -g --explain`.  Issue #947 by Luis Lavena.  Patch by
   Hsing-Hui Hsu.
 * RubyGems locks less during gem activation.  Pull request #951 by Aaron
-  Patterson.
+  Patterson and Justin Searls, #969 by Jeremy Tryba.
 * Kernel#gem is now thread-safe.  Pull request #967 by Aaron Patterson.
 * RubyGems no longer defines an empty Date class.  Pull Request #948 by Benoit
   Daloze.

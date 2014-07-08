@@ -61,14 +61,7 @@ class Gem::Commands::OpenCommand < Gem::Command
   end
 
   def open_editor path
-    Dir.chdir(path) do
-      pid = fork do
-        args = (@editor.split(/\s+/) + [path]).join(' ')
-        exec(args)
-      end
-
-      Process.detach pid
-    end
+    system(*@editor.split(/\s+/) + [path])
   end
 
   def spec_for name

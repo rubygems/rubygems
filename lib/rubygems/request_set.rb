@@ -82,6 +82,7 @@ class Gem::RequestSet
     @dependencies = deps
 
     @always_install      = []
+    @conservative        = false
     @dependency_names    = {}
     @development         = false
     @development_shallow = false
@@ -191,6 +192,7 @@ class Gem::RequestSet
 
     @install_dir = options[:install_dir] || Gem.dir
     @remote      = options[:domain] != :local
+    @conservative = true if options[:conservative]
 
     gem_deps_api = load_gemdeps gemdeps, options[:without_groups], true
 
@@ -288,6 +290,14 @@ class Gem::RequestSet
     resolver.development_shallow = @development_shallow
     resolver.ignore_dependencies = @ignore_dependencies
     resolver.soft_missing        = @soft_missing
+
+    if @conservative
+      installed_gems = {}
+      Gem::Specification.find_all do |spec|
+        (installed_gems[spec.name] ||= []) << spec
+      end
+      resolver.skip_gems = installed_gems
+    end
 
     @resolver = resolver
 

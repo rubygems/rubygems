@@ -638,7 +638,7 @@ class TestGemPackage < Gem::Package::TarTestCase
                    e.message
       io
     end
-    tf.close!
+    tf.close! if tf.respond_to? :close!
   end
 
   def test_verify_empty

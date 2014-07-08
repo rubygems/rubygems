@@ -55,6 +55,8 @@ class Gem::RequestSet::Lockfile
     @gem_deps_file = File.expand_path(gem_deps_file)
     @gem_deps_dir  = File.dirname(@gem_deps_file)
 
+    @gem_deps_file.untaint unless gem_deps_file.tainted?
+
     @current_token  = nil
     @line           = 0
     @line_pos       = 0

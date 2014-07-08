@@ -537,7 +537,7 @@ end
       assert_equal [dep('a'), dep('b')], @set.dependencies
       io
     end
-    tf.close!
+    tf.close! if tf.respond_to? :close!
   end
 
   def test_name_typo

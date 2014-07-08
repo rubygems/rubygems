@@ -1268,15 +1268,16 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps
+    gem_deps_file = 'gem.deps.rb'.untaint
     spec = util_spec 'a', 1
 
     refute spec.activated?
 
-    open 'gem.deps.rb', 'w' do |io|
+    open gem_deps_file, 'w' do |io|
       io.write 'gem "a"'
     end
 
-    Gem.use_gemdeps 'gem.deps.rb'
+    Gem.use_gemdeps gem_deps_file
 
     assert spec.activated?
   end

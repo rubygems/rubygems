@@ -57,7 +57,7 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
 
           FileEntry.new(tmp_dest).traverse do |ent|
             destent = ent.class.new(dest_path, ent.rel)
-            destent.exist? or File.rename(ent.path, destent.path)
+            destent.exist? or FileUtils.mv(ent.path, destent.path)
           end
         end
       ensure

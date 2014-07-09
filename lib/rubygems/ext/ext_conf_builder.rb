@@ -31,7 +31,7 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
       destdir = ENV["DESTDIR"]
 
       begin
-        ENV["RUBYOPT"] = ["-r#{siteconf_path}", rubyopt].compact.join(' ')
+        ENV["RUBYOPT"] = ["\"-r#{siteconf_path}\"", rubyopt].compact.join(' ')
         cmd = [Gem.ruby, File.basename(extension), *args].join ' '
 
         begin

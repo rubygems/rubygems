@@ -565,6 +565,11 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_install_gem_ignore_dependencies_both
+    done_installing = false
+    Gem.done_installing do
+      done_installing = true
+    end
+
     spec = quick_spec 'a', 2
 
     util_build_gem spec
@@ -576,6 +581,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.install_gem 'a', '>= 0'
 
     assert_equal %w[a-2], @cmd.installed_specs.map { |s| s.full_name }
+
+    assert done_installing, 'documentation was not generated'
   end
 
   def test_install_gem_ignore_dependencies_remote

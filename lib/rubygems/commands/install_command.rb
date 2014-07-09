@@ -278,6 +278,14 @@ to write the specification by hand.  For example:
     inst = Gem::Installer.new gem, options
     inst.install
 
+    require 'rubygems/dependency_installer'
+    dinst = Gem::DependencyInstaller.new options
+    dinst.installed_gems.replace [inst.spec]
+
+    Gem.done_installing_hooks.each do |hook|
+      hook.call dinst, [inst.spec]
+    end unless Gem.done_installing_hooks.empty?
+
     @installed_specs.push(inst.spec)
   end
 

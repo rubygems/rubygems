@@ -35,6 +35,8 @@ Bug fixes:
   Daloze.
 * RubyGems respects --document options for `gem update` again.  Bug 946 by
   jonforums.  Patch by Hsing-Hui Hsu.
+* RubyGems generates documentation again with --ignore-dependencies.  Bug #961
+  by Pulfer.
 * `-s` is now short for `--source` which resolves an ambiguity with
   --no-suggestions.  Pull request #955 by Alexander Kahn.
 * Added extra test for ~> for 0.0.X versions.  Pull request #958 by Mark

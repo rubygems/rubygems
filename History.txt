@@ -29,6 +29,8 @@ Bug fixes:
 * RubyGems locks less during gem activation.  Pull request #951 by Aaron
   Patterson and Justin Searls, #969 by Jeremy Tryba.
 * Kernel#gem is now thread-safe.  Pull request #967 by Aaron Patterson.
+* RubyGems now handles spaces in directory names for some parts of extension
+  building.  Pull request #949 by Tristan Hill.
 * RubyGems no longer defines an empty Date class.  Pull Request #948 by Benoit
   Daloze.
 * RubyGems respects --document options for `gem update` again.  Bug 946 by

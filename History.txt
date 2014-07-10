@@ -37,6 +37,8 @@ Bug fixes:
   jonforums.  Patch by Hsing-Hui Hsu.
 * RubyGems generates documentation again with --ignore-dependencies.  Bug #961
   by Pulfer.
+* RubyGems can install extensions across partitions now.  Pull request #970 by
+  Michael Scherer.
 * `-s` is now short for `--source` which resolves an ambiguity with
   --no-suggestions.  Pull request #955 by Alexander Kahn.
 * Added extra test for ~> for 0.0.X versions.  Pull request #958 by Mark

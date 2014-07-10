@@ -44,6 +44,8 @@ Bug fixes:
 * Added extra test for ~> for 0.0.X versions.  Pull request #958 by Mark
   Lorenz.
 * Fixed typo in gem updated help.  Pull request #952 by Per Modin.
+* Clarified that the gem description should not be excessively long.  Part of
+  bug #956 by Renier Morales.
 
 === 2.3.0 / 2014-06-10
 

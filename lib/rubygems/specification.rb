@@ -369,7 +369,9 @@ class Gem::Specification < Gem::BasicSpecification
   ##
   # A long description of this gem
   #
-  # The description should be more detailed than the summary.
+  # The description should be more detailed than the summary but not
+  # excessively long.  A few paragraphs is a recommended length with no
+  # examples or formatting.
   #
   # Usage:
   #

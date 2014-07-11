@@ -17,6 +17,7 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
   def test_add_install_update_options
     args = %w[
       --document
+      --build-root build_root
       --format-exec
       --ignore-dependencies
       --rdoc
@@ -30,6 +31,12 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
     args.concat %w[-P HighSecurity] if defined?(OpenSSL::SSL)
 
     assert @cmd.handles?(args)
+  end
+
+  def test_build_root
+    @cmd.handle_options %w[--build-root build_root]
+
+    assert_equal File.expand_path('build_root'), @cmd.options[:build_root]
   end
 
   def test_doc

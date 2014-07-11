@@ -72,6 +72,7 @@ class Gem::DependencyInstaller
   def initialize options = {}
     @only_install_dir = !!options[:install_dir]
     @install_dir = options[:install_dir] || Gem.dir
+    @build_root = options[:build_root]
 
     options = DEFAULT_OPTIONS.merge options
 
@@ -384,6 +385,7 @@ class Gem::DependencyInstaller
       :security_policy     => @security_policy,
       :user_install        => @user_install,
       :wrappers            => @wrappers,
+      :build_root          => @build_root,
       :install_as_default  => @install_as_default
     }
     options[:install_dir] = @install_dir if @only_install_dir

@@ -439,8 +439,11 @@ module Gem
   end
 
   def self.find_files_from_load_path glob # :nodoc:
+    search = glob + Gem.suffix_pattern
     $LOAD_PATH.map { |load_path|
-      Dir["#{File.expand_path glob, load_path}#{Gem.suffix_pattern}"]
+      Dir.chdir(load_path) {
+        Dir[search].map! { |f| File.join load_path, f }
+      }
     }.flatten.select { |file| File.file? file.untaint }
   end
 

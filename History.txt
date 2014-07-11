@@ -8,7 +8,7 @@ Minor enhancements:
   only the directory the gem is installed in.  Feature request #966 by Akinori
   MUSHA.
 * Added a --build-root option to the install command for packagers.  Pull
-  request #965 by Vít Ondruch.
+* request #965 by Marcus Rückert.
 
 Bug fixes:
 

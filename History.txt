@@ -7,6 +7,8 @@ Minor enhancements:
 * The contents command now supports a --show-install-dir option that shows
   only the directory the gem is installed in.  Feature request #966 by Akinori
   MUSHA.
+* Added a --build-root option to the install command for packagers.  Pull
+  request #965 by Vít Ondruch.
 
 Bug fixes:
 

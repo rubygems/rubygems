@@ -603,7 +603,7 @@ class Gem::Installer
       require 'pathname'
       @build_root = Pathname.new(@build_root).expand_path
       @bin_dir = File.join(@build_root, options[:bin_dir] || Gem.bindir(@gem_home))
-      @gem_home = File.join(@build_root,@gem_home)
+      @gem_home = File.join(@build_root, @gem_home)
       alert_warning "You build with buildroot.\n  Build root: #{@build_root}\n  Bin dir: #{@bin_dir}\n  Gem home: #{@gem_home}"
     end
   end

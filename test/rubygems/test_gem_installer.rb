@@ -1198,6 +1198,22 @@ gem 'other', version
     assert_equal "#!#{Gem.ruby}", shebang
   end
 
+  def test_process_options
+    assert_nil @installer.build_root
+    assert_equal File.join(@gemhome, 'bin'), @installer.bin_dir
+    assert_equal @gemhome, @installer.gem_home
+  end
+
+  def test_process_options_build_root
+    build_root = File.join @tempdir, 'build_root'
+
+    @installer = Gem::Installer.new @gem, :build_root => build_root
+
+    assert_equal Pathname(build_root), @installer.build_root
+    assert_equal File.join(build_root, @gemhome, 'bin'), @installer.bin_dir
+    assert_equal File.join(build_root, @gemhome), @installer.gem_home
+  end
+
   def test_shebang_arguments
     util_make_exec @spec, "#!/usr/bin/ruby -ws"
 

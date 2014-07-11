@@ -49,6 +49,8 @@ class Gem::Installer
 
   attr_reader :bin_dir
 
+  attr_reader :build_root # :nodoc:
+
   ##
   # The gem repository the gem will be installed into
 

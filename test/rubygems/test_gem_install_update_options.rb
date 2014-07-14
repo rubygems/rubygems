@@ -26,6 +26,7 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
       -f
       -i /install_to
       -w
+      --vendor
     ]
 
     args.concat %w[-P HighSecurity] if defined?(OpenSSL::SSL)
@@ -154,4 +155,12 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
   ensure
     FileUtils.chmod 0755, @gemhome
   end
+
+  def test_vendor
+    @cmd.handle_options %w[--vendor]
+
+    assert @cmd.options[:vendor]
+    assert_equal Gem.vendor_dir, @cmd.options[:install_dir]
+  end
+
 end

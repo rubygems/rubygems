@@ -968,6 +968,14 @@ class TestGem < Gem::TestCase
     end
   end
 
+  def test_self_vendor_dir
+    expected =
+      File.join RbConfig::CONFIG['vendordir'], 'gems',
+                RbConfig::CONFIG['ruby_version']
+
+    assert_equal expected, Gem.vendor_dir
+  end
+
   def test_load_plugins
     skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
     plugin_path = File.join "lib", "rubygems_plugin.rb"

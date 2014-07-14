@@ -160,4 +160,12 @@ module Gem
     true
   end
 
+  ##
+  # Directory where vendor gems are installed.
+
+  def self.vendor_dir # :nodoc:
+    File.join RbConfig::CONFIG['vendordir'], 'gems',
+              RbConfig::CONFIG['ruby_version']
+  end
+
 end

@@ -218,8 +218,11 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   def setup
     super
 
-    @orig_gem_home = ENV['GEM_HOME']
-    @orig_gem_path = ENV['GEM_PATH']
+    @orig_gem_home   = ENV['GEM_HOME']
+    @orig_gem_path   = ENV['GEM_PATH']
+    @orig_gem_vendor = ENV['GEM_VENDOR']
+
+    ENV['GEM_VENDOR'] = nil
 
     @current_dir = Dir.pwd
     @fetcher     = nil
@@ -347,8 +350,9 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     FileUtils.rm_rf @tempdir unless ENV['KEEP_FILES']
 
-    ENV['GEM_HOME'] = @orig_gem_home
-    ENV['GEM_PATH'] = @orig_gem_path
+    ENV['GEM_HOME']   = @orig_gem_home
+    ENV['GEM_PATH']   = @orig_gem_path
+    ENV['GEM_VENDOR'] = @orig_gem_vendor
 
     Gem.ruby = @orig_ruby if @orig_ruby
 

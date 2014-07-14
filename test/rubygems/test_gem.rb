@@ -1015,6 +1015,13 @@ class TestGem < Gem::TestCase
     assert_equal expected, Gem.vendor_dir
   end
 
+  def test_self_vendor_dir_ENV_GEM_VENDOR
+    ENV['GEM_VENDOR'] = File.join @tempdir, 'vendor', 'gems'
+
+    assert_equal ENV['GEM_VENDOR'], Gem.vendor_dir
+    refute Gem.vendor_dir.frozen?
+  end
+
   def test_load_plugins
     skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
     plugin_path = File.join "lib", "rubygems_plugin.rb"

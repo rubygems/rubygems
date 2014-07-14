@@ -164,6 +164,10 @@ module Gem
   # Directory where vendor gems are installed.
 
   def self.vendor_dir # :nodoc:
+    if vendor_dir = ENV['GEM_VENDOR'] then
+      return vendor_dir.dup
+    end
+
     File.join RbConfig::CONFIG['vendordir'], 'gems',
               RbConfig::CONFIG['ruby_version']
   end

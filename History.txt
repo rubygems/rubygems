@@ -9,6 +9,9 @@ Minor enhancements:
   MUSHA.
 * Added a --build-root option to the install command for packagers.  Pull
 * request #965 by Marcus Rückert.
+* Added vendor gem support to RubyGems.  Package managers may now install gems
+  in Gem.vendor_dir with the --vendor option to gem install.  Issue #943 by
+  Marcus Rückert.
 
 Bug fixes:
 

@@ -89,11 +89,11 @@ module Gem
   # Default gem load path
 
   def self.default_path
-    if Gem.user_home && File.exist?(Gem.user_home) then
-      [user_dir, default_dir]
-    else
-      [default_dir]
-    end
+    path = []
+    path << user_dir if user_home && File.exist?(user_home)
+    path << default_dir
+    path << vendor_dir if File.directory? vendor_dir
+    path
   end
 
   ##

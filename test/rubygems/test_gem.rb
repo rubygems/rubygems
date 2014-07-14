@@ -217,17 +217,42 @@ class TestGem < Gem::TestCase
   end
 
   def test_default_path
+    orig_vendordir = RbConfig::CONFIG['vendordir']
+    RbConfig::CONFIG['vendordir'] = File.join @tempdir, 'vendor'
+
     FileUtils.rm_rf Gem.user_home
 
     expected = [Gem.default_dir]
 
     assert_equal expected, Gem.default_path
+  ensure
+    RbConfig::CONFIG['vendordir'] = orig_vendordir
   end
 
   def test_default_path_user_home
+    orig_vendordir = RbConfig::CONFIG['vendordir']
+    RbConfig::CONFIG['vendordir'] = File.join @tempdir, 'vendor'
+
     expected = [Gem.user_dir, Gem.default_dir]
 
     assert_equal expected, Gem.default_path
+  ensure
+    RbConfig::CONFIG['vendordir'] = orig_vendordir
+  end
+
+  def test_default_path_vendor_dir
+    orig_vendordir = RbConfig::CONFIG['vendordir']
+    RbConfig::CONFIG['vendordir'] = File.join @tempdir, 'vendor'
+
+    FileUtils.mkdir_p Gem.vendor_dir
+
+    FileUtils.rm_rf Gem.user_home
+
+    expected = [Gem.default_dir, Gem.vendor_dir]
+
+    assert_equal expected, Gem.default_path
+  ensure
+    RbConfig::CONFIG['vendordir'] = orig_vendordir
   end
 
   def test_self_default_sources

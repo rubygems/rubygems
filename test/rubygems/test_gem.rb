@@ -216,6 +216,20 @@ class TestGem < Gem::TestCase
     end
   end
 
+  def test_default_path
+    FileUtils.rm_rf Gem.user_home
+
+    expected = [Gem.default_dir]
+
+    assert_equal expected, Gem.default_path
+  end
+
+  def test_default_path_user_home
+    expected = [Gem.user_dir, Gem.default_dir]
+
+    assert_equal expected, Gem.default_path
+  end
+
   def test_self_default_sources
     assert_equal %w[https://rubygems.org/], Gem.default_sources
   end

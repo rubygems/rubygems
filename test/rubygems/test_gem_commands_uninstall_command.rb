@@ -239,6 +239,24 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     assert_equal nil,                      @cmd.options[:install_dir]
     assert_equal true,                     @cmd.options[:user_install]
     assert_equal Gem::Requirement.default, @cmd.options[:version]
+    assert_equal false,                    @cmd.options[:vendor]
+  end
+
+  def test_handle_options_vendor
+    use_ui @ui do
+      @cmd.handle_options %w[--vendor]
+    end
+
+    assert @cmd.options[:vendor]
+    assert_equal Gem.vendor_dir, @cmd.options[:install_dir]
+
+    assert_empty @ui.output
+
+    expected = <<-EXPECTED
+WARNING:  Use your OS package manager to uninstall vendor gems
+    EXPECTED
+
+    assert_equal expected, @ui.error
   end
 
 end

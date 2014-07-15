@@ -58,7 +58,8 @@ class Gem::Resolver::BestSet < Gem::Resolver::ComposedSet
   # The calling method must retry the exception to repeat the lookup.
 
   def replace_failed_api_set error # :nodoc:
-    uri = URI error.uri
+    uri = error.uri
+    uri = URI uri unless URI === uri
     uri.query = nil
 
     raise error unless api_set = @sets.find { |set|

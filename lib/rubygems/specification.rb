@@ -652,7 +652,7 @@ class Gem::Specification < Gem::BasicSpecification
   #   spec.test_files = Dir.glob('test/tc_*.rb')
   #   spec.test_files = ['tests/test-suite.rb']
 
-  def test_files= files
+  def test_files= files # :nodoc:
     @test_files = Array files
   end
 
@@ -1799,7 +1799,7 @@ class Gem::Specification < Gem::BasicSpecification
   ##
   # True if this gem has files in test_files
 
-  def has_unit_tests?
+  def has_unit_tests? # :nodoc:
     not test_files.empty?
   end
 
@@ -2243,14 +2243,14 @@ class Gem::Specification < Gem::BasicSpecification
   ##
   # Singular accessor for #test_files
 
-  def test_file
+  def test_file # :nodoc:
     val = test_files and val.first
   end
 
   ##
   # Singular mutator for #test_files
 
-  def test_file= file
+  def test_file= file # :nodoc:
     self.test_files = [file]
   end
 
@@ -2258,7 +2258,7 @@ class Gem::Specification < Gem::BasicSpecification
   # Test files included in this gem.  You cannot append to this accessor, you
   # must assign to it.
 
-  def test_files
+  def test_files # :nodoc:
     # Handle the possibility that we have @test_suite_file but not
     # @test_files.  This will happen when an old gem is loaded via
     # YAML.

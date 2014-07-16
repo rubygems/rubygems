@@ -57,6 +57,8 @@ Bug fixes:
 * Fixed typo in gem updated help.  Pull request #952 by Per Modin.
 * Clarified that the gem description should not be excessively long.  Part of
   bug #956 by Renier Morales.
+* Hid documentation of outdated test_files related methods in Specification.
+  Guides issue #90 by Emil Soman.
 * RubyGems now falls back to the old index if the rubygems.org API fails
   during gem resolution.
 

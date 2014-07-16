@@ -75,6 +75,21 @@ class TestGem < Gem::TestCase
     end
   end
 
+  def test_self_install
+    spec_fetcher do |f|
+      f.gem  'a', 1
+      f.spec 'a', 2
+    end
+
+    gemhome2 = "#{@gemhome}2"
+
+    installed = Gem.install 'a', '= 1', :install_dir => gemhome2
+
+    assert_equal %w[a-1], installed.map { |spec| spec.full_name }
+
+    assert_path_exists File.join(gemhome2, 'gems', 'a-1')
+  end
+
   def test_require_missing
     save_loaded_features do
       assert_raises ::LoadError do

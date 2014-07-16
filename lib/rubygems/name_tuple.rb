@@ -53,7 +53,7 @@ class Gem::NameTuple
       "#{@name}-#{@version}"
     else
       "#{@name}-#{@version}-#{@platform}"
-    end
+    end.untaint
   end
 
   ##

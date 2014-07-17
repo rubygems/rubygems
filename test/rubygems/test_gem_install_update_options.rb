@@ -163,4 +163,22 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
     assert_equal Gem.vendor_dir, @cmd.options[:install_dir]
   end
 
+  def test_vendor_missing
+    orig_vendordir = RbConfig::CONFIG['vendordir']
+    RbConfig::CONFIG.delete 'vendordir'
+
+    e = assert_raises OptionParser::InvalidOption do
+      @cmd.handle_options %w[--vendor]
+    end
+
+    assert_equal 'invalid option: --vendor your platform is not supported',
+                 e.message
+
+    refute @cmd.options[:vendor]
+    refute @cmd.options[:install_dir]
+
+  ensure
+    RbConfig::CONFIG['vendordir'] = orig_vendordir
+  end
+
 end

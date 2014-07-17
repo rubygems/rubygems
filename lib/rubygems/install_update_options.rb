@@ -68,6 +68,10 @@ module Gem::InstallUpdateOptions
     add_option(:"Install/Update", '--vendor',
                'Install gem into the vendor directory.',
                'Only for use by gem repackagers.') do |value, options|
+      unless Gem.vendor_dir then
+        raise OptionParser::InvalidOption.new 'your platform is not supported'
+      end
+
       options[:vendor] = true
       options[:install_dir] = Gem.vendor_dir
     end

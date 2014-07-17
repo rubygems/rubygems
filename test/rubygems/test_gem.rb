@@ -1037,6 +1037,15 @@ class TestGem < Gem::TestCase
     refute Gem.vendor_dir.frozen?
   end
 
+  def test_self_vendor_dir_missing
+    orig_vendordir = RbConfig::CONFIG['vendordir']
+    RbConfig::CONFIG.delete 'vendordir'
+
+    assert_nil Gem.vendor_dir
+  ensure
+    RbConfig::CONFIG['vendordir'] = orig_vendordir
+  end
+
   def test_load_plugins
     skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
     plugin_path = File.join "lib", "rubygems_plugin.rb"

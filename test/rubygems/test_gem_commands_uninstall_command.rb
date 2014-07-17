@@ -259,5 +259,23 @@ WARNING:  Use your OS package manager to uninstall vendor gems
     assert_equal expected, @ui.error
   end
 
+  def test_handle_options_vendor_missing
+    orig_vendordir = RbConfig::CONFIG['vendordir']
+    RbConfig::CONFIG.delete 'vendordir'
+
+    e = assert_raises OptionParser::InvalidOption do
+      @cmd.handle_options %w[--vendor]
+    end
+
+    assert_equal 'invalid option: --vendor your platform is not supported',
+                 e.message
+
+    refute @cmd.options[:vendor]
+    refute @cmd.options[:install_dir]
+
+  ensure
+    RbConfig::CONFIG['vendordir'] = orig_vendordir
+  end
+
 end
 

@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.4.1
+
+Bug fixes:
+
+* RubyGems can now be updated on Ruby implementations that do not support
+  vendordir in RbConfig::CONFIG.  Issue #974 by net1957.
+
 === 2.4.0 / 2014-07-16
 
 Minor enhancements:

@@ -244,6 +244,19 @@ class TestGem < Gem::TestCase
     RbConfig::CONFIG['vendordir'] = orig_vendordir
   end
 
+  def test_default_path_missing_vendor
+    orig_vendordir = RbConfig::CONFIG['vendordir']
+    RbConfig::CONFIG.delete 'vendordir'
+
+    FileUtils.rm_rf Gem.user_home
+
+    expected = [Gem.default_dir]
+
+    assert_equal expected, Gem.default_path
+  ensure
+    RbConfig::CONFIG['vendordir'] = orig_vendordir
+  end
+
   def test_default_path_user_home
     orig_vendordir = RbConfig::CONFIG['vendordir']
     RbConfig::CONFIG['vendordir'] = File.join @tempdir, 'vendor'

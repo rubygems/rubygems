@@ -92,7 +92,7 @@ module Gem
     path = []
     path << user_dir if user_home && File.exist?(user_home)
     path << default_dir
-    path << vendor_dir if File.directory? vendor_dir
+    path << vendor_dir if vendor_dir and File.directory? vendor_dir
     path
   end
 

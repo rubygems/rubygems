@@ -105,13 +105,21 @@ module Bundler::GemHelpers
   end
 
   def out
+    @out
   end
 
   def revision_for a
   end
 
-  def run a
-    return super if MiniTest::Unit === a
+  def run cmd
+    return super if MiniTest::Unit === cmd
+
+    r, w = IO.pipe
+
+    Process.spawn Gem.ruby, '-e', cmd, out: w
+    w.close
+
+    @out = r.read.strip
   end
 
   def should_be_installed a, b = nil
@@ -142,7 +150,7 @@ class String
   end
 end
 
-class NilClass
+class Object
   def to a
   end
 end

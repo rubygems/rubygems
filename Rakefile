@@ -107,7 +107,7 @@ BUNDLER_SPECS = %w[
 
 task :bundler_specs => BUNDLER_SPECS do
   BUNDLER_SPECS.each do |spec|
-    system Gem.ruby, '-Ilib:spec', spec
+    system Gem.ruby, '-Ilib:spec', spec, ENV['TESTOPTS'] || ''
   end
 end
 

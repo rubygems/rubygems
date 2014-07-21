@@ -17,6 +17,8 @@ module Bundler::GemHelpers
   def setup
     super
 
+    @expect = nil
+
     @tmpdir = Dir.mktmpdir 'rubygems-bundler'
 
     @pwd = Dir.pwd
@@ -46,13 +48,15 @@ module Bundler::GemHelpers
   def bundled_app a
   end
 
-  def eq a
+  def eq actual
+    assert_equal actual, @expect
   end
 
   def exist
   end
 
-  def expect a
+  def expect object
+    @expect = object
   end
 
   def generic a

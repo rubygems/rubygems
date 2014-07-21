@@ -102,7 +102,7 @@ end
 task :test => :clean_env
 
 BUNDLER_SPECS = %w[
-  ../bundler/spec/lock/lockfile_spec.rb
+  ../bundler/spec/install/bundler_spec.rb
 ]
 
 task :bundler_specs => BUNDLER_SPECS do

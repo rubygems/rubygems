@@ -16,6 +16,8 @@ end
 
 module Bundler::GemHelpers
 
+  include Gem::DefaultUserInteraction
+
   attr_accessor :fetcher
   attr_accessor :gem_repo
   attr_accessor :uri
@@ -23,12 +25,28 @@ module Bundler::GemHelpers
   def setup
     super
 
+    @orig_gem_home   = ENV['GEM_HOME']
+    @orig_gem_path   = ENV['GEM_PATH']
+    @orig_gem_vendor = ENV['GEM_VENDOR']
+    @orig_ENV_HOME = ENV['HOME']
+
+    ENV['GEM_VENDOR'] = nil
+
     @expect   = nil
     @fetcher  = nil
     @gem_repo = 'http://gems.example'
-    @uri      = nil
+    @uri      = URI.parse @gem_repo
+    Gem.sources.replace [@gem_repo]
 
-    @tmpdir = Dir.mktmpdir 'rubygems-bundler'
+    @tmpdir   = Dir.mktmpdir 'rubygems-bundler'
+    @gemhome  = File.join @tmpdir, 'gemhome'
+    @userhome = File.join @tmpdir, 'userhome'
+
+    Gem.instance_variable_set :@user_home, nil
+    Gem.use_paths @gemhome
+
+    FileUtils.mkdir_p @gemhome
+    FileUtils.mkdir_p @userhome
 
     @pwd = Dir.pwd
     Dir.chdir @tmpdir
@@ -39,7 +57,11 @@ module Bundler::GemHelpers
     FileUtils.rm_f @tmpdir
   end
 
-  def build_gem a, b, c = nil
+  def build_gem name, version, c = nil
+    version = 1 if version.empty?
+    @spec_fetcher_setup.gem name, version do |spec|
+      yield spec if block_given?
+    end
   end
 
   def build_git a, b = nil
@@ -152,6 +174,108 @@ module Bundler::GemHelpers
   def update_git a, b
   end
 
+  ############################################################################
+  # Gem::TestCase copy and paste
+  ############################################################################
+
+  ##
+  # Creates a Gem::Specification with a minimum of extra work.  +name+ and
+  # +version+ are the gem's name and version,  platform, author, email,
+  # homepage, summary and description are defaulted.  The specification is
+  # yielded for customization.
+  #
+  # The gem is added to the installed gems in +@gemhome+ and the runtime.
+  #
+  # Use this with #write_file to build an installed gem.
+
+  def quick_gem(name, version='2')
+    require 'rubygems/specification'
+
+    spec = Gem::Specification.new do |s|
+      s.platform    = Gem::Platform::RUBY
+      s.name        = name
+      s.version     = version
+      s.author      = 'A User'
+      s.email       = 'example@example.com'
+      s.homepage    = 'http://example.com'
+      s.summary     = "this is a summary"
+      s.description = "This is a test description"
+
+      yield(s) if block_given?
+    end
+
+    Gem::Specification.map # HACK: force specs to (re-)load before we write
+
+    written_path = write_file spec.spec_file do |io|
+      io.write spec.to_ruby_for_cache
+    end
+
+    spec.loaded_from = spec.loaded_from = written_path
+
+    Gem::Specification.add_spec spec.for_cache
+
+    return spec
+  end
+
+  ##
+  # Builds a gem from +spec+ and places it in <tt>File.join @gemhome,
+  # 'cache'</tt>.  Automatically creates files based on +spec.files+
+
+  def util_build_gem spec
+    dir = spec.gem_dir
+    FileUtils.mkdir_p dir
+
+    Dir.chdir dir do
+      spec.files.each do |file|
+        next if File.exist? file
+        FileUtils.mkdir_p File.dirname(file)
+        File.open file, 'w' do |fp| fp.puts "# #{file}" end
+      end
+
+      use_ui Gem::MockGemUi.new do
+        Gem::Package.build spec
+      end
+
+      cache = spec.cache_file
+      FileUtils.mkdir_p File.dirname cache
+      FileUtils.mv File.basename(cache), cache
+    end
+  end
+
+  ##
+  # Creates a gem with +name+, +version+ and +deps+.  The specification will
+  # be yielded before gem creation for customization.  The gem will be placed
+  # in <tt>File.join @tmpdir, 'gems'</tt>.  The specification and .gem file
+  # location are returned.
+
+  def util_gem name, version, deps = nil, &block
+    raise "deps or block, not both" if deps and block
+
+    if deps then
+      block = proc do |s|
+        # Since Hash#each is unordered in 1.8, sort
+        # the keys and iterate that way so the tests are
+        # deterministic on all implementations.
+        deps.keys.sort.each do |n|
+          s.add_dependency n, (deps[n] || '>= 0')
+        end
+      end
+    end
+
+    spec = quick_gem(name, version, &block)
+
+    util_build_gem spec
+
+    cache_file = File.join @tmpdir, 'gems', "#{spec.original_name}.gem"
+    FileUtils.mkdir_p File.dirname cache_file
+    FileUtils.mv spec.cache_file, cache_file
+    FileUtils.rm spec.spec_file
+
+    spec.loaded_from = nil
+
+    [spec, cache_file]
+  end
+
   ##
   # Gzips +data+.
 
@@ -225,6 +349,21 @@ module Bundler::GemHelpers
     end
 
     nil # force errors
+  end
+
+  ##
+  # Writes a binary file to +path+ which is relative to +@gemhome+
+
+  def write_file path
+    path = File.join @gemhome, path unless Pathname.new(path).absolute?
+    dir = File.dirname path
+    FileUtils.mkdir_p dir
+
+    open path, 'wb' do |io|
+      yield io if block_given?
+    end
+
+    path
   end
 
 end

@@ -38,3 +38,6 @@ matrix:
       env: "YAML=syck"
   allow_failures:
     - rvm: ruby-head
+branches:
+  only:
+    - master

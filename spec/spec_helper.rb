@@ -5,6 +5,7 @@ require 'minitest/spec'
 require 'tmpdir'
 
 require 'rubygems/test_case'
+require 'rubygems/indexer'
 
 module Kernel
   alias context describe
@@ -75,6 +76,14 @@ module Bundler::GemHelpers
       yield if block_given?
       @spec_fetcher_setup = nil
     end
+
+    cache = File.join @gemhome, 'cache'
+    repo  = File.join @tmpdir, 'repo'
+    repo_gems = File.join repo, 'gems'
+    FileUtils.mkdir_p repo
+    FileUtils.cp_r cache, repo_gems
+
+    Gem::Indexer.new(repo).generate_index
   end
 
   def bundle a

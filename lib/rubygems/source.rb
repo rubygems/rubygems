@@ -78,6 +78,8 @@ class Gem::Source
   # Returns a Set that can fetch specifications from this source.
 
   def dependency_resolver_set # :nodoc:
+    return Gem::Resolver::IndexSet.new self if 'file' == api_uri.scheme
+
     bundler_api_uri = api_uri + './api/v1/dependencies'
 
     begin

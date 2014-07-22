@@ -70,7 +70,7 @@ module Bundler::GemHelpers
   end
 
   def build_repo2
-    Gem::TestCase::SpecFetcherSetup.declare self, 'remote2' do |spec_fetcher_setup|
+    Gem::TestCase::SpecFetcherSetup.declare self, @gem_repo do |spec_fetcher_setup|
       @spec_fetcher_setup = spec_fetcher_setup
       yield if block_given?
       @spec_fetcher_setup = nil

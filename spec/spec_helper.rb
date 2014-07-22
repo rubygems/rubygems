@@ -11,7 +11,7 @@ module Kernel
 end
 
 module Bundler
-  VERSION = ''
+  VERSION = '1.6.4'
 end
 
 module Bundler::GemHelpers
@@ -58,7 +58,6 @@ module Bundler::GemHelpers
   end
 
   def build_gem name, version, c = nil
-    version = 1 if version.empty?
     @spec_fetcher_setup.gem name, version do |spec|
       yield spec if block_given?
     end

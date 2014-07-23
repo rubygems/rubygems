@@ -112,6 +112,7 @@ module Bundler::GemHelpers
   end
 
   def gem_repo1
+    File.join @tmpdir, 'repo', ''
   end
 
   def gem_repo2

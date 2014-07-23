@@ -51,6 +51,11 @@ module Bundler::GemHelpers
 
     @pwd = Dir.pwd
     Dir.chdir @tmpdir
+
+    spec_fetcher do |fetcher|
+      fetcher.gem 'rack', '0.9.1'
+      fetcher.gem 'rack', '1.0.0'
+    end
   end
 
   def teardown
@@ -237,6 +242,32 @@ module Bundler::GemHelpers
     Gem::Specification.add_spec spec.for_cache
 
     return spec
+  end
+
+  ##
+  # Creates a SpecFetcher pre-filled with the gems or specs defined in the
+  # block.
+  #
+  # Yields a +fetcher+ object that responds to +spec+ and +gem+.  +spec+ adds
+  # a specification to the SpecFetcher while +gem+ adds both a specification
+  # and the gem data to the RemoteFetcher so the built gem can be downloaded.
+  #
+  # If only the a-3 gem is supposed to be downloaded you can save setup
+  # time by creating only specs for the other versions:
+  #
+  #   spec_fetcher do |fetcher|
+  #     fetcher.spec 'a', 1
+  #     fetcher.spec 'a', 2, 'b' => 3 # dependency on b = 3
+  #     fetcher.gem 'a', 3 do |spec|
+  #       # spec is a Gem::Specification
+  #       # ...
+  #     end
+  #   end
+
+  def spec_fetcher repository = @gem_repo
+    Gem::TestCase::SpecFetcherSetup.declare self, repository do |spec_fetcher_setup|
+      yield spec_fetcher_setup if block_given?
+    end
   end
 
   ##

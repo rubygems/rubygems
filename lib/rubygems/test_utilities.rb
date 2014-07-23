@@ -151,7 +151,9 @@ class Gem::FakeFetcher
         f.write fetch_path(File.join(source_uri, "gems", name))
       end
     else
-      FileUtils.cp source_uri, path
+      source_uri = URI(source_uri).path
+      source = File.join source_uri, 'gems', "#{spec.full_name}.gem"
+      FileUtils.cp source, path
     end
 
     path

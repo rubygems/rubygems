@@ -77,13 +77,18 @@ module Bundler::GemHelpers
       @spec_fetcher_setup = nil
     end
 
-    cache = File.join @gemhome, 'cache'
-    repo  = File.join @tmpdir, 'repo'
+    gems      = File.join @tmpdir, 'gems'
+    repo      = gem_repo2
     repo_gems = File.join repo, 'gems'
+
     FileUtils.mkdir_p repo
-    FileUtils.cp_r cache, repo_gems
+    FileUtils.mv gems, repo_gems
 
     Gem::Indexer.new(repo).generate_index
+
+    FileUtils.rm_r @gemhome
+
+    Gem::Specification.reset
   end
 
   def bundle a
@@ -110,6 +115,7 @@ module Bundler::GemHelpers
   end
 
   def gem_repo2
+    File.join @tmpdir, 'repo', ''
   end
 
   def gemfile a
@@ -120,6 +126,9 @@ module Bundler::GemHelpers
 
   def install_gemfile content, b = nil
     File.write 'Gemfile', content
+
+    request_set = Gem::RequestSet.new
+    request_set.install_from_gemdeps gemdeps: 'Gemfile'
   end
 
   def lib_path a

@@ -173,7 +173,11 @@ module Bundler::GemHelpers
     @out = r.read.strip
   end
 
-  def should_be_installed a, b = nil
+  def should_be_installed specifier, b = nil
+    name, version = specifier.split ' ', 2
+    version = Gem::Version.new version
+
+    assert Gem::Specification.find_by_name name, version
   end
 
   def should_not_be_installed a

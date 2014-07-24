@@ -74,6 +74,16 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal expected, @gda.dependencies
   end
 
+  def test_gem_duplicate
+    @gda.gem 'a'
+
+    expected = "Gem dependencies file gem.deps.rb requires a more than once.\n"
+
+    assert_output nil, expected do
+      @gda.gem 'a'
+    end
+  end
+
   def test_gem_git
     @gda.gem 'a', :git => 'git/a'
 
@@ -586,17 +596,21 @@ end
   def test_platform_multiple
     win_platform, Gem.win_platform = Gem.win_platform?, false
 
+    gda = @GDA.new @set, nil
+
     with_engine_version 'ruby', '1.8.7' do
-      @gda.platform :mri_19, :mri_20 do
-        @gda.gem 'a'
+      gda.platform :mri_19, :mri_20 do
+        gda.gem 'a'
       end
     end
 
     assert_empty @set.dependencies
 
+    gda = @GDA.new @set, nil
+
     with_engine_version 'ruby', '2.0.0' do
-      @gda.platform :mri_19, :mri_20 do
-        @gda.gem 'a'
+      gda.platform :mri_19, :mri_20 do
+        gda.gem 'a'
       end
     end
 

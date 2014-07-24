@@ -53,8 +53,9 @@ module Bundler::GemHelpers
     Dir.chdir @tmpdir
 
     spec_fetcher do |fetcher|
-      fetcher.gem 'rack', '0.9.1'
-      fetcher.gem 'rack', '1.0.0'
+      fetcher.gem 'bundler', '0.9.2'
+      fetcher.gem 'rack',    '0.9.1'
+      fetcher.gem 'rack',    '1.0.0'
     end
   end
 

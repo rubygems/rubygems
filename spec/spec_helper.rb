@@ -157,7 +157,8 @@ module Bundler::GemHelpers
   def gemfile a
   end
 
-  def include a
+  def include object
+    assert_includes @expected, object
   end
 
   def install_gemfile content, b = nil

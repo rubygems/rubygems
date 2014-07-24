@@ -53,12 +53,25 @@ module Bundler::GemHelpers
     Dir.chdir @tmpdir
 
     spec_fetcher do |fetcher|
+      fetcher.gem 'activemerchant', '1.0' do |s|
+        s.add_dependency 'activesupport', '>= 2.0.0'
+      end
+
+      fetcher.gem 'activesupport', '1.2.3'
+      fetcher.gem 'activesupport', '2.3.2'
+      fetcher.gem 'activesupport', '2.3.5'
       fetcher.gem 'bundler', '0.9.2'
       fetcher.gem 'rack',    '0.9.1'
       fetcher.gem 'rack',    '1.0.0'
+
+      fetcher.gem 'rails_fail', '1.0' do |s|
+        s.add_dependency 'activesupport', '= 1.2.3'
+      end
+
       fetcher.gem 'multiple_versioned_deps', '1.0' do |s|
         s.add_dependency 'weakling', '>= 0.0.1', '< 0.1'
       end
+
       fetcher.gem 'weakling', '0.0.3'
     end
   end

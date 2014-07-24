@@ -56,6 +56,10 @@ module Bundler::GemHelpers
       fetcher.gem 'bundler', '0.9.2'
       fetcher.gem 'rack',    '0.9.1'
       fetcher.gem 'rack',    '1.0.0'
+      fetcher.gem 'multiple_versioned_deps', '1.0' do |s|
+        s.add_dependency 'weakling', '>= 0.0.1', '< 0.1'
+      end
+      fetcher.gem 'weakling', '0.0.3'
     end
   end
 

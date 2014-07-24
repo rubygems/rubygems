@@ -63,6 +63,7 @@ module Bundler::GemHelpers
       fetcher.gem 'bundler', '0.9.2'
       fetcher.gem 'rack',    '0.9.1'
       fetcher.gem 'rack',    '1.0.0'
+      fetcher.gem 'rails',   '4.0.0'
 
       fetcher.gem 'rails_fail', '1.0' do |s|
         s.add_dependency 'activesupport', '= 1.2.3'

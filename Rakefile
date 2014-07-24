@@ -34,7 +34,7 @@ hoe = Hoe.spec 'rubygems-update' do
   spec_extras[:executables]               = ['update_rubygems']
 
   rdoc_locations <<
-    'rubyforge.org:/var/www/gforge-projects/rubygems/rubygems-update/'
+    'docs.seattlerb.org:/data/www/docs.seattlerb.org/rubygems/'
 
   clean_globs.push('**/debug.log',
                    '*.out',
@@ -152,7 +152,7 @@ task :upload_to_gemcutter do
   sh "s3cmd put -P pkg/rubygems-update-#{v}.gem pkg/rubygems-#{v}.zip pkg/rubygems-#{v}.tgz s3://production.s3.rubygems.org/rubygems/"
 end
 
-desc "Upload release to rubyforge and gemcutter"
+desc "Upload release to rubygems.org"
 task :upload => %w[upload_to_gemcutter]
 
 on_master = `git branch --list master`.strip == '* master'
@@ -324,7 +324,7 @@ SHA256 Checksums:
 #{checksums}
 
 [download]: http://rubygems.org/pages/download
-[upgrading]: http://rubygems.rubyforge.org/rubygems-update/UPGRADING_rdoc.html
+[upgrading]: http://docs.seattlerb.org/rubygems/UPGRADING_rdoc.html
 
       ANNOUNCEMENT
 

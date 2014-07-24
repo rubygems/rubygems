@@ -114,7 +114,18 @@ module Bundler::GemHelpers
     Gem::Specification.reset
   end
 
-  def bundle a
+  def bundle command
+    case command
+    when 'check' then
+      rs = Gem::RequestSet.new
+      rs.load_gemdeps 'Gemfile'
+
+      rs.resolve_current
+
+      @out = "The Gemfile's dependencies are satisfied"
+    else
+      raise "unsupported command stub #{command}"
+    end
   end
 
   def bundled_app a

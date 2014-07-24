@@ -348,6 +348,8 @@ class Gem::RequestSet::GemDependencyAPI
     source_set ||= gem_git    name, options
     source_set ||= gem_github name, options
 
+    duplicate = @dependencies.include? name
+
     @dependencies[name] =
       if requirements.empty? and not source_set then
         nil
@@ -366,6 +368,12 @@ class Gem::RequestSet::GemDependencyAPI
     pin_gem_source name, :default unless source_set
 
     gem_requires name, options
+
+    if duplicate then
+      warn <<-WARNING
+Gem dependencies file #{@path} requires #{name} more than once.
+      WARNING
+    end
 
     @set.gem name, *requirements
   end

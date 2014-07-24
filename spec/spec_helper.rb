@@ -75,6 +75,8 @@ module Bundler::GemHelpers
 
       fetcher.gem 'weakling', '0.0.3'
     end
+
+    build_repo gem_repo1
   end
 
   def teardown
@@ -94,15 +96,8 @@ module Bundler::GemHelpers
   def build_lib a, b = nil
   end
 
-  def build_repo2
-    Gem::TestCase::SpecFetcherSetup.declare self, @gem_repo do |spec_fetcher_setup|
-      @spec_fetcher_setup = spec_fetcher_setup
-      yield if block_given?
-      @spec_fetcher_setup = nil
-    end
-
+  def build_repo repo
     gems      = File.join @tmpdir, 'gems'
-    repo      = gem_repo2
     repo_gems = File.join repo, 'gems'
 
     FileUtils.mkdir_p repo
@@ -115,7 +110,17 @@ module Bundler::GemHelpers
     Gem::Specification.reset
   end
 
-  def bundle command
+  def build_repo2
+    Gem::TestCase::SpecFetcherSetup.declare self, @gem_repo do |spec_fetcher_setup|
+      @spec_fetcher_setup = spec_fetcher_setup
+      yield if block_given?
+      @spec_fetcher_setup = nil
+    end
+
+    build_repo gem_repo2
+  end
+
+  def bundle command, options = {}
     case command
     when 'check' then
       rs = Gem::RequestSet.new
@@ -124,12 +129,18 @@ module Bundler::GemHelpers
       rs.resolve_current
 
       @out = "The Gemfile's dependencies are satisfied"
+    when :install then
+      request_set = Gem::RequestSet.new
+      request_set.install_from_gemdeps gemdeps: options[:gemfile]
     else
       raise "unsupported command stub #{command}"
     end
   end
 
-  def bundled_app a
+  def bundled_app *file
+    bundled_app = File.join @tmpdir, 'bundled_app'
+    FileUtils.mkdir_p bundled_app
+    File.join bundled_app, *file
   end
 
   def eq actual
@@ -154,7 +165,8 @@ module Bundler::GemHelpers
     File.join @tmpdir, 'repo', ''
   end
 
-  def gemfile a
+  def gemfile file, contents
+    File.write file, contents
   end
 
   def include object

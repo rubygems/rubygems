@@ -103,6 +103,7 @@ task :test => :clean_env
 
 BUNDLER_SPECS = %w[
   ../bundler/spec/install/bundler_spec.rb
+  ../bundler/spec/install/gemfile_spec.rb
 ]
 
 task :bundler_specs => BUNDLER_SPECS do

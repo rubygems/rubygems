@@ -83,8 +83,8 @@ class Gem::Resolver::Conflict
 
     explanation % [
       activated, requirement,
-      request_path(@activated).reverse.join(" depends on\n    "),
-      request_path(@failed_dep).reverse.join(" depends on\n    "),
+      request_path(@activated).reverse.join(", depends on\n    "),
+      request_path(@failed_dep).reverse.join(", depends on\n    "),
       matching,
     ]
   end

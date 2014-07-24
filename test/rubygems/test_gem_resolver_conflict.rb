@@ -29,8 +29,8 @@ class TestGemResolverConflict < Gem::TestCase
     net-ssh (>= 2.0.13), 2.2.2 activated
 
   versus:
-    rye (= 0.9.8), 0.9.8 activated depends on
-    net-ssh (>= 2.0.13), 2.2.2 activated depends on
+    rye (= 0.9.8), 0.9.8 activated, depends on
+    net-ssh (>= 2.0.13), 2.2.2 activated, depends on
     net-ssh (>= 2.6.5)
 
     EXPECTED

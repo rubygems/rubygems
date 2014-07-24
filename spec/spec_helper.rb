@@ -35,7 +35,7 @@ module Bundler::GemHelpers
 
     @expect   = nil
     @fetcher  = nil
-    @gem_repo = 'http://gems.example'
+    @gem_repo = 'http://gems.example/'
     @uri      = URI.parse @gem_repo
     Gem.sources.replace [@gem_repo]
 

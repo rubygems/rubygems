@@ -173,6 +173,10 @@ module Bundler::GemHelpers
     File.write file, contents
   end
 
+  def in_app_root &block
+    Dir.chdir bundled_app, &block
+  end
+
   def include object
     assert_includes @expected, object
   end

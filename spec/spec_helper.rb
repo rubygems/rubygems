@@ -186,9 +186,17 @@ module Bundler::GemHelpers
 
     request_set = Gem::RequestSet.new
 
+    e = nil
+
     @out, @err = capture_io do
-      request_set.install_from_gemdeps gemdeps: 'Gemfile'
+      begin
+        request_set.install_from_gemdeps gemdeps: 'Gemfile'
+      rescue => e
+      end
     end
+
+    @out << "\n#{e.message}" if e
+    @out << "\n#{@err}" unless @err.empty?
   end
 
   def lib_path a

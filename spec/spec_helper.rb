@@ -199,7 +199,8 @@ module Bundler::GemHelpers
     assert_equal content, lockfile_content
   end
 
-  def match a
+  def match pattern
+    assert_match pattern, @expect
   end
 
   def not_local

@@ -130,8 +130,12 @@ module Bundler::GemHelpers
 
       @out = "The Gemfile's dependencies are satisfied"
     when :install then
+      gemfile = options[:gemfile] || 'Gemfile'
+
       request_set = Gem::RequestSet.new
-      request_set.install_from_gemdeps gemdeps: options[:gemfile]
+      request_set.install_from_gemdeps gemdeps: gemfile
+
+      @out = ''
     else
       raise "unsupported command stub #{command}"
     end

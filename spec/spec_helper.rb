@@ -185,7 +185,10 @@ module Bundler::GemHelpers
     File.write 'Gemfile', content
 
     request_set = Gem::RequestSet.new
-    request_set.install_from_gemdeps gemdeps: 'Gemfile'
+
+    @out, @err = capture_io do
+      request_set.install_from_gemdeps gemdeps: 'Gemfile'
+    end
   end
 
   def lib_path a

@@ -61,6 +61,7 @@ module Bundler::GemHelpers
       fetcher.gem 'activesupport', '2.3.2'
       fetcher.gem 'activesupport', '2.3.5'
       fetcher.gem 'bundler', '0.9.2'
+      fetcher.gem 'bundler', Bundler::VERSION
       fetcher.gem 'rack',    '0.9.1'
       fetcher.gem 'rack',    '1.0.0'
       fetcher.gem 'rails',   '3.0.0'

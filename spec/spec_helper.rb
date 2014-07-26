@@ -169,7 +169,7 @@ module Bundler::GemHelpers
     File.join @tmpdir, 'repo', ''
   end
 
-  def gemfile file, contents
+  def gemfile file = 'Gemfile', contents
     File.write file, contents
   end
 

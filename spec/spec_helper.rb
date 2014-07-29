@@ -15,7 +15,7 @@ end
 module Bundler
   VERSION = '1.6.4'
 
-  class Bundler::GemfileError
+  class Bundler::GemfileError < RuntimeError
   end
 
   class Dsl < DelegateClass(Gem::RequestSet::GemDependencyAPI)
@@ -26,6 +26,20 @@ module Bundler
       @api = Gem::RequestSet::GemDependencyAPI.new @request_set, @path
 
       super @api
+    end
+
+    def gem *a
+      super
+    rescue ArgumentError => e
+      message =
+        case e.message
+        when /unknown platform / then
+          "#{$'} is not a valid platform"
+        else
+          e.message
+        end
+
+      raise Bundler::GemfileError, message
     end
   end
 
@@ -295,7 +309,7 @@ module Bundler::GemHelpers
   def raise_error exception_class, message
     e = assert_raises exception_class, &@expect
 
-    assert_match message, e
+    assert_match message, e.message
   end
 
   def receive a

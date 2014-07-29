@@ -19,6 +19,14 @@ module Bundler
   end
 
   class Dsl < DelegateClass(Gem::RequestSet::GemDependencyAPI)
+    def self.evaluate path, b, c
+      request_set = Gem::RequestSet.new
+
+      api = new
+      api.__getobj__.instance_variable_set :@path, path
+      api.load
+    end
+
     def initialize
       @request_set = Gem::RequestSet.new
       @path        = 'Gemfile'
@@ -40,6 +48,12 @@ module Bundler
         end
 
       raise Bundler::GemfileError, message
+    end
+
+    def load
+      super
+    rescue SyntaxError
+      raise Bundler::GemfileError, 'Gemfile syntax error'
     end
   end
 
@@ -247,7 +261,7 @@ module Bundler::GemHelpers
     File.join @tmpdir, 'repo', ''
   end
 
-  def gemfile file = 'Gemfile', contents
+  def gemfile file = bundled_app('Gemfile'), contents
     File.write file, contents
   end
 

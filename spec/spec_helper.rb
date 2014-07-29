@@ -2,6 +2,7 @@ gem 'minitest', '~> 4.0'
 
 require 'minitest/autorun'
 require 'minitest/spec'
+require 'delegate'
 require 'tmpdir'
 
 require 'rubygems/test_case'
@@ -14,7 +15,18 @@ end
 module Bundler
   VERSION = '1.6.4'
 
-  module Dsl
+  class Bundler::GemfileError
+  end
+
+  class Dsl < DelegateClass(Gem::RequestSet::GemDependencyAPI)
+    def initialize
+      @request_set = Gem::RequestSet.new
+      @path        = 'Gemfile'
+
+      @api = Gem::RequestSet::GemDependencyAPI.new @request_set, @path
+
+      super @api
+    end
   end
 
   module Source
@@ -206,13 +218,8 @@ module Bundler::GemHelpers
   def exist
   end
 
-  def expect object = nil
-    @expect =
-      if block_given? then
-        yield
-      else
-        object
-      end
+  def expect object = nil, &block
+    @expect = block || object
   end
 
   def generic a
@@ -285,6 +292,12 @@ module Bundler::GemHelpers
     @out
   end
 
+  def raise_error exception_class, message
+    e = assert_raises exception_class, &@expect
+
+    assert_match message, e
+  end
+
   def receive a
   end
 
@@ -316,6 +329,14 @@ module Bundler::GemHelpers
   end
 
   def simulate_platform a
+  end
+
+  def subject
+    @subject ||= subject_class.new
+  end
+
+  def subject_class
+    self.class.instance_variable_get :@subject_class
   end
 
   def tmp
@@ -553,7 +574,27 @@ class String
   end
 end
 
+module SpecOverrides
+  def describe subject_class
+    spec = super
+
+    unless Class === subject_class then
+      subject_class = MiniTest::Spec.describe_stack.each { |klass|
+        if desc = klass.instance_variable_get(:@desc) then
+          break desc
+        end
+      }
+    end
+
+    spec.instance_variable_set :@subject_class, subject_class
+
+    spec
+  end
+end
+
 class Object
+  include SpecOverrides
+
   def to a
   end
 end

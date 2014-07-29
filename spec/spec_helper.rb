@@ -162,6 +162,10 @@ module Bundler::GemHelpers
     assert_equal actual, @expect
   end
 
+  def err
+    @err
+  end
+
   def exist
   end
 

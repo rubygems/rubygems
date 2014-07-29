@@ -13,6 +13,15 @@ end
 
 module Bundler
   VERSION = '1.6.4'
+
+  module Dsl
+  end
+
+  module Source
+    module Rubygems
+    end
+  end
+
 end
 
 module Bundler::GemHelpers
@@ -84,6 +93,9 @@ module Bundler::GemHelpers
   def teardown
     Dir.chdir @pwd
     FileUtils.rm_f @tmpdir
+  end
+
+  def allow a
   end
 
   def build_gem name, version = '1.0', **options
@@ -179,6 +191,10 @@ module Bundler::GemHelpers
     File.join bundled_app, *file
   end
 
+  def double obj
+    obj
+  end
+
   def eq actual
     assert_equal actual, @expect
   end
@@ -190,8 +206,13 @@ module Bundler::GemHelpers
   def exist
   end
 
-  def expect object
-    @expect = object
+  def expect object = nil
+    @expect =
+      if block_given? then
+        yield
+      else
+        object
+      end
   end
 
   def generic a
@@ -262,6 +283,9 @@ module Bundler::GemHelpers
 
   def out
     @out
+  end
+
+  def receive a
   end
 
   def revision_for a

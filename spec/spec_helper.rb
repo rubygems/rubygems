@@ -123,6 +123,15 @@ module Bundler::GemHelpers
   end
 
   def bundle command, options = {}
+    if artifice = options.delete(:artifice) then
+      case artifice
+      when 'endpoint_marshal_fail' then
+        @fetcher.data["#{@gem_repo}api/v1/dependencies"] = 'f0283y01hasf'
+      else
+        raise "unknown artifice #{artifice}"
+      end
+    end
+
     case command
     when 'check' then
       rs = Gem::RequestSet.new
@@ -261,6 +270,7 @@ module Bundler::GemHelpers
   end
 
   def tmp
+    @tmpdir
   end
 
   def update_git a, b

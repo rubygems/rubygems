@@ -86,9 +86,30 @@ module Bundler::GemHelpers
     FileUtils.rm_f @tmpdir
   end
 
-  def build_gem name, version, c = nil
+  def build_gem name, version = '1.0', **options
     @spec_fetcher_setup.gem name, version do |spec|
       yield spec if block_given?
+    end
+
+    if options[:gemspec] then
+      spec = Gem::Specification.new do |s|
+        s.platform    = Gem::Platform::RUBY
+        s.name        = name
+        s.version     = version
+        s.author      = 'A User'
+        s.email       = 'example@example.com'
+        s.homepage    = 'http://example.com'
+        s.summary     = 'this is a summary'
+        s.description = 'This is a test description'
+
+        yield s if block_given?
+      end
+
+      File.write spec.spec_name, spec.to_yaml
+    else
+      @spec_fetcher_setup.gem name, version do |spec|
+        yield spec if block_given?
+      end
     end
   end
 

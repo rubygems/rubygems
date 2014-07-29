@@ -284,6 +284,18 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     Gem.win_platform = win_platform
   end
 
+  def test_gem_platforms_platform
+    win_platform, Gem.win_platform = Gem.win_platform?, false
+
+    with_engine_version 'ruby', '2.0.0' do
+      @gda.gem 'a', :platforms => :jruby, :platform => :ruby
+
+      refute_empty @set.dependencies
+    end
+  ensure
+    Gem.win_platform = win_platform
+  end
+
   def test_gem_platforms_version
     with_engine_version 'ruby', '2.0.0' do
       @gda.gem 'a', :platforms => :ruby_18

@@ -59,6 +59,14 @@ module Bundler
 
     def load
       super
+    rescue NameError => e
+      path = __getobj__.instance_variable_get :@path
+
+      message = e.message.capitalize
+      message.sub!(/#.*/, path)
+      message << "\nfrom #{e.backtrace[0]}"
+
+      raise Bundler::GemfileError, message
     rescue SyntaxError
       raise Bundler::GemfileError, 'Gemfile syntax error'
     end

@@ -1,6 +1,7 @@
 gem 'minitest', '~> 4.0'
 
 require 'minitest/autorun'
+require 'minitest/mock'
 require 'minitest/spec'
 require 'delegate'
 require 'tmpdir'
@@ -36,6 +37,12 @@ module Bundler
       super @api
     end
 
+    def eval_gemfile path
+      __getobj__.instance_variable_set :@path, path
+
+      load
+    end
+
     def gem *a
       super
     rescue ArgumentError => e
@@ -62,6 +69,10 @@ module Bundler
     end
   end
 
+  def self.read_file name
+    File.read name
+  end
+
 end
 
 module Bundler::GemHelpers
@@ -74,6 +85,8 @@ module Bundler::GemHelpers
 
   def setup
     super
+
+    @stubs = []
 
     @orig_gem_home   = ENV['GEM_HOME']
     @orig_gem_path   = ENV['GEM_PATH']
@@ -131,11 +144,39 @@ module Bundler::GemHelpers
   end
 
   def teardown
+    @stubs.each do |klass, name, stub_name|
+      klass.send :undef_method, name
+      klass.send :alias_method, name, stub_name
+      klass.send :undef_method, stub_name
+    end
+
     Dir.chdir @pwd
     FileUtils.rm_f @tmpdir
   end
 
   def allow a
+  end
+
+  def and_return result
+    name = @receive
+
+    if @expect == Bundler and :read_file == name then
+      @expect = File
+      name  = :read
+    end
+
+    # from minitest/mock
+    stub_name = "__stub__#{name}"
+
+    sclass = @expect.singleton_class
+
+    sclass.send :alias_method, stub_name, name
+
+    sclass.send :define_method, name do |*args|
+      result
+    end
+
+    @stubs << [sclass, name, stub_name]
   end
 
   def build_gem name, version = '1.0', **options
@@ -326,7 +367,10 @@ module Bundler::GemHelpers
     assert_match message, e.message
   end
 
-  def receive a
+  def receive method
+    @receive = method
+
+    self
   end
 
   def revision_for a
@@ -372,6 +416,10 @@ module Bundler::GemHelpers
   end
 
   def update_git a, b
+  end
+
+  def with a
+    self
   end
 
   ############################################################################

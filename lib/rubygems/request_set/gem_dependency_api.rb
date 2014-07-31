@@ -457,7 +457,7 @@ Gem dependencies file #{@path} requires #{name} more than once.
   ##
   # Handles the github: option from +options+ for gem +name+.
   #
-  # Returns +true+ if the path option was handled.
+  # Returns +true+ if the github option was handled.
 
   def gem_github name, options # :nodoc:
     return unless path = options.delete(:github)

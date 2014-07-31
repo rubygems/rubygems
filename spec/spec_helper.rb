@@ -15,6 +15,23 @@ module Bundler
   class Bundler::GemfileError < RuntimeError
   end
 
+  class Dependency < DelegateClass(Gem::Dependency)
+
+    attr_accessor :source
+
+    def self.from dep
+      new dep.name, dep.requirement
+    end
+
+    def initialize name, requirement, options = {}
+      dep = Gem::Dependency.new name, requirement
+
+      super dep
+
+      @source = options['source']
+    end
+  end
+
   class Dsl < DelegateClass(Gem::RequestSet::GemDependencyAPI)
     def self.evaluate path, b, c
       request_set = Gem::RequestSet.new
@@ -27,10 +44,29 @@ module Bundler
     def initialize
       @request_set = Gem::RequestSet.new
       @path        = 'Gemfile'
+      @git_set     = Gem::Resolver::GitSet.new
+
+      @request_set.instance_variable_set :@git_set, @git_set
 
       @api = Gem::RequestSet::GemDependencyAPI.new @request_set, @path
 
       super @api
+    end
+
+    def dependencies
+      @request_set.dependencies.map do |dep|
+        b_dep = Bundler::Dependency.from dep
+
+        repository, reference = @git_set.repositories[dep.name]
+
+        if repository then
+          b_dep.source = Gem::Source::Git.new dep.name, repository, reference
+        end
+
+        p b_dep.source
+
+        b_dep
+      end
     end
 
     def eval_gemfile path

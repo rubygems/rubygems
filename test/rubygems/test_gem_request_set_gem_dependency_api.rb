@@ -151,6 +151,19 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal expected, @gda.dependencies
   end
 
+  def test_gem_github_expand_path
+    @gda.gem 'a', :github => 'example'
+
+    assert_equal [dep('a')], @set.dependencies
+
+    assert_equal %w[git://github.com/example/example.git master],
+                 @git_set.repositories['a']
+
+    expected = { 'a' => '!' }
+
+    assert_equal expected, @gda.dependencies
+  end
+
   def test_gem_group
     @gda.gem 'a', :group => :test
 

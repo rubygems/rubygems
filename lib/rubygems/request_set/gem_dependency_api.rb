@@ -415,6 +415,8 @@ Gem dependencies file #{@path} requires #{name} more than once.
   def gem_github name, options # :nodoc:
     return unless path = options.delete(:github)
 
+    path = "#{path}/#{path}" unless path.include? "/"
+
     options[:git] = "git://github.com/#{path}.git"
 
     gem_git name, options

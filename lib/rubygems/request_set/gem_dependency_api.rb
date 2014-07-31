@@ -200,6 +200,7 @@ class Gem::RequestSet::GemDependencyAPI
     @dependencies       = {}
     @default_sources    = true
     @git_set            = @set.git_set
+    @git_sources        = {}
     @installing         = false
     @requires           = Hash.new { |h, name| h[name] = [] }
     @vendor_set         = @set.vendor_set
@@ -344,10 +345,11 @@ class Gem::RequestSet::GemDependencyAPI
 
     source_set = false
 
-    source_set ||= gem_path      name, options
-    source_set ||= gem_git       name, options
-    source_set ||= gem_github    name, options
-    source_set ||= gem_bitbucket name, options
+    source_set ||= gem_path       name, options
+    source_set ||= gem_git        name, options
+    source_set ||= gem_github     name, options
+    source_set ||= gem_bitbucket  name, options
+    source_set ||= gem_git_source name, options
 
     duplicate = @dependencies.include? name
 
@@ -428,6 +430,29 @@ Gem dependencies file #{@path} requires #{name} more than once.
   end
 
   private :gem_git
+
+  ##
+  # Handles a git gem option from +options+ for gem +name+ for a git source
+  # registered through git_source.
+  #
+  # Returns +true+ if the custom source option was handled.
+
+  def gem_git_source name, options # :nodoc:
+    return unless git_source = (@git_sources.keys & options.keys).last
+
+    source_callback = @git_sources[git_source]
+    source_param = options[git_source]
+
+    git_url = source_callback.call source_param
+
+    options[:git] = git_url
+
+    gem_git name, options
+
+    true
+  end
+
+  private :gem_git_source
 
   ##
   # Handles the github: option from +options+ for gem +name+.
@@ -550,6 +575,15 @@ Gem dependencies file #{@path} requires #{name} more than once.
 
   ensure
     @current_repository = nil
+  end
+
+  ##
+  # Defines a custom git source that uses +name+ to expand git repositories
+  # for use in gems built from git repositories.  You must provide a block
+  # that accepts a git repository name for expansion.
+
+  def git_source name, &callback
+    @git_sources[name] = callback
   end
 
   ##

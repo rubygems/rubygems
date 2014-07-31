@@ -9,10 +9,6 @@ require 'tmpdir'
 require 'rubygems/test_case'
 require 'rubygems/indexer'
 
-module Kernel
-  alias context describe
-end
-
 module Bundler
   VERSION = '1.6.4'
 
@@ -674,6 +670,8 @@ module SpecOverrides
 
     spec
   end
+
+  alias context describe
 end
 
 class Object

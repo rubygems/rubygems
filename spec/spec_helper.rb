@@ -57,13 +57,9 @@ module Bundler
       @request_set.dependencies.map do |dep|
         b_dep = Bundler::Dependency.from dep
 
-        repository, reference = @git_set.repositories[dep.name]
+        repository, = @git_set.repositories[dep.name]
 
-        if repository then
-          b_dep.source = Gem::Source::Git.new dep.name, repository, reference
-        end
-
-        p b_dep.source
+        b_dep.source = Bundler::Source::Git.new repository if repository
 
         b_dep
       end
@@ -106,6 +102,14 @@ module Bundler
 
   module Source
     module Rubygems
+    end
+
+    class Git
+      attr_reader :uri
+
+      def initialize uri
+        @uri = uri
+      end
     end
   end
 

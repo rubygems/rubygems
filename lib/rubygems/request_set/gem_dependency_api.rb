@@ -206,6 +206,12 @@ class Gem::RequestSet::GemDependencyAPI
     @vendor_set         = @set.vendor_set
     @gem_sources        = {}
     @without_groups     = []
+
+    git_source :github do |repo_name|
+      repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include? "/"
+
+      "git://github.com/#{repo_name}.git"
+    end
   end
 
   ##
@@ -347,7 +353,6 @@ class Gem::RequestSet::GemDependencyAPI
 
     source_set ||= gem_path       name, options
     source_set ||= gem_git        name, options
-    source_set ||= gem_github     name, options
     source_set ||= gem_bitbucket  name, options
     source_set ||= gem_git_source name, options
 
@@ -453,25 +458,6 @@ Gem dependencies file #{@path} requires #{name} more than once.
   end
 
   private :gem_git_source
-
-  ##
-  # Handles the github: option from +options+ for gem +name+.
-  #
-  # Returns +true+ if the github option was handled.
-
-  def gem_github name, options # :nodoc:
-    return unless path = options.delete(:github)
-
-    path = "#{path}/#{path}" unless path.include? "/"
-
-    options[:git] = "git://github.com/#{path}.git"
-
-    gem_git name, options
-
-    true
-  end
-
-  private :gem_github
 
   ##
   # Handles the :group and :groups +options+ for the gem with the given

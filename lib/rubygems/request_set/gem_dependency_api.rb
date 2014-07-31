@@ -344,9 +344,10 @@ class Gem::RequestSet::GemDependencyAPI
 
     source_set = false
 
-    source_set ||= gem_path   name, options
-    source_set ||= gem_git    name, options
-    source_set ||= gem_github name, options
+    source_set ||= gem_path      name, options
+    source_set ||= gem_git       name, options
+    source_set ||= gem_github    name, options
+    source_set ||= gem_bitbucket name, options
 
     duplicate = @dependencies.include? name
 
@@ -377,6 +378,27 @@ Gem dependencies file #{@path} requires #{name} more than once.
 
     @set.gem name, *requirements
   end
+
+  ##
+  # Handles the bitbucket: option from +options+ for gem +name+.
+  #
+  # Returns +true+ if the path option was handled.
+
+  def gem_bitbucket name, options # :nodoc:
+    return unless path = options.delete(:bitbucket)
+
+    path = "#{path}/#{path}" unless path.include? "/"
+
+    user, = path.split "/", 2
+
+    options[:git] = "https://#{user}@bitbucket.org/#{path}.git"
+
+    gem_git name, options
+
+    true
+  end
+
+  private :gem_bitbucket
 
   ##
   # Handles the git: option from +options+ for gem +name+.

@@ -96,6 +96,32 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     assert_equal expected, @gda.dependencies
   end
 
+  def test_gem_bitbucket
+    @gda.gem 'a', :bitbucket => 'example/repository'
+
+    assert_equal [dep('a')], @set.dependencies
+
+    assert_equal %w[https://example@bitbucket.org/example/repository.git master],
+                 @git_set.repositories['a']
+
+    expected = { 'a' => '!' }
+
+    assert_equal expected, @gda.dependencies
+  end
+
+  def test_gem_bitbucket_expand_path
+    @gda.gem 'a', :bitbucket => 'example'
+
+    assert_equal [dep('a')], @set.dependencies
+
+    assert_equal %w[https://example@bitbucket.org/example/example.git master],
+                 @git_set.repositories['a']
+
+    expected = { 'a' => '!' }
+
+    assert_equal expected, @gda.dependencies
+  end
+
   def test_gem_git_branch
     @gda.gem 'a', :git => 'git/a', :branch => 'other', :tag => 'v1'
 

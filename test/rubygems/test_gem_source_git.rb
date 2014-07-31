@@ -273,6 +273,10 @@ class TestGemSourceGit < Gem::TestCase
     end
   end
 
+  def test_uri
+    assert_equal URI(@repository), @source.uri
+  end
+
   def test_uri_hash
     assert_equal @hash, @source.uri_hash
 

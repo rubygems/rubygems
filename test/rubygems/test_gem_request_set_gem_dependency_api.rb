@@ -77,11 +77,13 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   def test_gem_duplicate
     @gda.gem 'a'
 
-    expected = "Gem dependencies file gem.deps.rb requires a more than once.\n"
-
-    assert_output nil, expected do
+    _, err = capture_io do
       @gda.gem 'a'
     end
+
+    expected = "Gem dependencies file gem.deps.rb requires a more than once."
+
+    assert_match expected, err
   end
 
   def test_gem_git

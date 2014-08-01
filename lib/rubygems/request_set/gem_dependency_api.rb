@@ -432,7 +432,7 @@ Gem dependencies file #{@path} requires #{name} more than once.
     return unless git_source = (@git_sources.keys & options.keys).last
 
     source_callback = @git_sources[git_source]
-    source_param = options[git_source]
+    source_param = options.delete git_source
 
     git_url = source_callback.call source_param
 

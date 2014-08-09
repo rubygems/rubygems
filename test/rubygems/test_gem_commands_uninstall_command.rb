@@ -256,7 +256,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
 WARNING:  Use your OS package manager to uninstall vendor gems
     EXPECTED
 
-    assert_equal expected, @ui.error
+    assert_match expected, @ui.error
   end
 
   def test_handle_options_vendor_missing

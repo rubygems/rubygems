@@ -189,8 +189,14 @@ gem 'other', version
   end unless Gem.win_platform?
 
   def test_check_that_user_bin_dir_is_in_path
+    bin_dir = @installer.bin_dir
+
+    if Gem.win_platform?
+      bin_dir = bin_dir.downcase.gsub(File::SEPARATOR, File::ALT_SEPARATOR)
+    end
+
     orig_PATH, ENV['PATH'] =
-      ENV['PATH'], [ENV['PATH'], @installer.bin_dir].join(File::PATH_SEPARATOR)
+      ENV['PATH'], [ENV['PATH'], bin_dir].join(File::PATH_SEPARATOR)
 
     use_ui @ui do
       @installer.check_that_user_bin_dir_is_in_path

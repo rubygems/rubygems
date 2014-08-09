@@ -202,6 +202,8 @@ gem 'other', version
   end
 
   def test_check_that_user_bin_dir_is_in_path_tilde
+    skip "Tilde is PATH is not supported under MS Windows" if win_platform?
+
     orig_PATH, ENV['PATH'] =
       ENV['PATH'], [ENV['PATH'], '~/bin'].join(File::PATH_SEPARATOR)
 
@@ -213,7 +215,7 @@ gem 'other', version
 
     assert_empty @ui.error
   ensure
-    ENV['PATH'] = orig_PATH
+    ENV['PATH'] = orig_PATH unless win_platform?
   end
 
   def test_check_that_user_bin_dir_is_in_path_not_in_path

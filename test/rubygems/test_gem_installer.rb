@@ -221,7 +221,13 @@ gem 'other', version
       @installer.check_that_user_bin_dir_is_in_path
     end
 
-    assert_match @installer.bin_dir, @ui.error
+    expected = @installer.bin_dir
+
+    if Gem.win_platform? then
+      expected = expected.downcase.gsub(File::SEPARATOR, File::ALT_SEPARATOR)
+    end
+
+    assert_match expected, @ui.error
   end
 
   def test_ensure_dependency

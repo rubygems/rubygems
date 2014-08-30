@@ -203,15 +203,11 @@ command to remove old versions.
 
     @installer ||= Gem::DependencyInstaller.new options
 
-    success = false
-
     say "Updating #{name}"
     begin
       @installer.install name, Gem::Requirement.new(version)
-      success = true
     rescue Gem::InstallError => e
       alert_error "Error installing #{name}:\n\t#{e.message}"
-      success = false
     end
 
     @installer.installed_gems.each do |spec|

@@ -279,7 +279,6 @@ class Gem::RDoc # :nodoc: all
         ui.errs.puts "... RDOC args: #{args.join(' ')}"
         ui.backtrace ex
         ui.errs.puts "(continuing with the rest of the installation)"
-      ensure
       end
     end
   end

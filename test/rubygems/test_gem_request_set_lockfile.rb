@@ -1193,5 +1193,23 @@ DEPENDENCIES
     refute_empty File.read gem_deps_lock_file
   end
 
+  def test_write_error
+    @set.gem 'nonexistent'
+
+    gem_deps_lock_file = "#{@gem_deps_file}.lock"
+
+    open gem_deps_lock_file, 'w' do |io|
+      io.write 'hello'
+    end
+
+    assert_raises Gem::UnsatisfiableDependencyError do
+      @lockfile.write
+    end
+
+    assert_path_exists gem_deps_lock_file
+
+    assert_equal 'hello', File.read(gem_deps_lock_file)
+  end
+
 end
 

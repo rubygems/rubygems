@@ -622,8 +622,10 @@ class Gem::RequestSet::Lockfile
   # Writes the lock file alongside the gem dependencies file
 
   def write
+    content = to_s
+
     open "#{@gem_deps_file}.lock", 'w' do |io|
-      io.write to_s
+      io.write content
     end
   end
 

@@ -387,6 +387,8 @@ class Gem::RequestSet::Lockfile
     skip :newline
 
     set = Gem::Resolver::GitSet.new
+    set.root_dir = @set.install_dir
+
     last_spec = nil
 
     while not @tokens.empty? and :text == peek.first do

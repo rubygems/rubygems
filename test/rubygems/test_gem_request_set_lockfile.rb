@@ -361,6 +361,8 @@ DEPENDENCIES
   end
 
   def test_parse_GIT
+    @set.instance_variable_set :@install_dir, 'install_dir'
+
     write_lockfile <<-LOCKFILE
 GIT
   remote: git://example/a.git
@@ -400,6 +402,7 @@ DEPENDENCIES
     }
 
     assert_equal expected, git_set.repositories
+    assert_equal 'install_dir', git_set.root_dir
   end
 
   def test_parse_GIT_branch

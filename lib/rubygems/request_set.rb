@@ -47,6 +47,8 @@ class Gem::RequestSet
 
   attr_accessor :ignore_dependencies
 
+  attr_reader :install_dir # :nodoc:
+
   ##
   # When false no remote sets are used for resolving gems.
 

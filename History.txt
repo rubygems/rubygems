@@ -14,6 +14,7 @@ Bug fixes:
 * Fixed messaging for `gem owner -a`.  Issue #1004 by Aaron Patterson, Ryan
   Davis.
 * Removed meaningless ensure.  Pull request #1003 by gogotanaka.
+* Improved wording of --source option help.  Pull request #989 by Jason Clark.
 
 === 2.4.0 / 2014-07-16
 

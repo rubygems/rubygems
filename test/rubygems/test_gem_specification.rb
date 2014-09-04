@@ -1135,6 +1135,24 @@ dependencies: []
     assert_equal %w[lib/code.rb], @a2.files
   end
 
+  def test_build_args
+    ext_spec
+
+    assert_empty @ext.build_args
+
+    open @ext.build_info_file, 'w' do |io|
+      io.puts
+    end
+
+    assert_empty @ext.build_args
+
+    open @ext.build_info_file, 'w' do |io|
+      io.puts '--with-foo-dir=wherever'
+    end
+
+    assert_equal %w[--with-foo-dir=wherever], @ext.build_args
+  end
+
   def test_build_extensions
     ext_spec
 

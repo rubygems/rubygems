@@ -1421,7 +1421,10 @@ class Gem::Specification < Gem::BasicSpecification
 
   def build_args
     if File.exist? build_info_file
-      File.readlines(build_info_file).map { |x| x.strip }
+      build_info = File.readlines build_info_file
+      build_info = build_info.map { |x| x.strip }
+      build_info.delete ""
+      build_info
     else
       []
     end

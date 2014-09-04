@@ -47,10 +47,12 @@ class Gem::Request::ConnectionPools # :nodoc:
 
   def no_proxy? host, env_no_proxy
     host = host.downcase
+
     env_no_proxy.each do |pattern|
       pattern = pattern.downcase
-      return true if host[-pattern.length, pattern.length ] == pattern
+      return true if host[-pattern.length, pattern.length] == pattern
     end
+
     return false
   end
 

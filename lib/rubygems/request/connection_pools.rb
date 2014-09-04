@@ -48,13 +48,12 @@ class Gem::Request::ConnectionPools # :nodoc:
   def no_proxy? host, env_no_proxy
     host = host.downcase
 
-    env_no_proxy.each do |pattern|
+    env_no_proxy.any? do |pattern|
       pattern = pattern.downcase
-      return true if host[-pattern.length, pattern.length] == pattern
-      return true if pattern.start_with? '.' and pattern[1..-1] == host
-    end
 
-    return false
+      host[-pattern.length, pattern.length] == pattern or
+        (pattern.start_with? '.' and pattern[1..-1] == host)
+    end
   end
 
   def net_http_args uri, proxy_uri

@@ -35,6 +35,19 @@ class TestGemRequestConnectionPool < Gem::TestCase
     assert_equal conn, pool.checkout
   end
 
+  def test_to_proxy_eh
+    pools = Gem::Request::ConnectionPools.new nil, []
+
+    env_no_proxy = %w[
+      1.no-proxy.example
+      2.no-proxy.example
+    ]
+
+    no_proxy = pools.send :no_proxy?, '2.no-proxy.example', env_no_proxy
+
+    assert no_proxy
+  end
+
   def test_net_http_args
     pools = Gem::Request::ConnectionPools.new nil, []
 

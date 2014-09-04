@@ -13,6 +13,7 @@ Bug fixes:
 * Lockfiles will no longer be truncated upon resolution errors.
 * Fixed messaging for `gem owner -a`.  Issue #1004 by Aaron Patterson, Ryan
   Davis.
+* Removed meaningless ensure.  Pull request #1003 by gogotanaka.
 
 === 2.4.0 / 2014-07-16
 

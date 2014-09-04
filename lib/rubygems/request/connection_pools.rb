@@ -51,6 +51,7 @@ class Gem::Request::ConnectionPools # :nodoc:
     env_no_proxy.each do |pattern|
       pattern = pattern.downcase
       return true if host[-pattern.length, pattern.length] == pattern
+      return true if pattern.start_with? '.' and pattern[1..-1] == host
     end
 
     return false

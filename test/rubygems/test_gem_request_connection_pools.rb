@@ -45,7 +45,31 @@ class TestGemRequestConnectionPool < Gem::TestCase
 
     no_proxy = pools.send :no_proxy?, '2.no-proxy.example', env_no_proxy
 
-    assert no_proxy
+    assert no_proxy, 'match'
+
+    no_proxy = pools.send :no_proxy?, 'proxy.example', env_no_proxy
+
+    refute no_proxy, 'mismatch'
+  end
+
+  def test_to_proxy_eh_wildcard
+    pools = Gem::Request::ConnectionPools.new nil, []
+
+    env_no_proxy = %w[
+      .no-proxy.example
+    ]
+
+    no_proxy = pools.send :no_proxy?, '2.no-proxy.example', env_no_proxy
+
+    assert no_proxy, 'wildcard matching subdomain'
+
+    no_proxy = pools.send :no_proxy?, 'no-proxy.example', env_no_proxy
+
+    assert no_proxy, 'wildcard matching dotless domain'
+
+    no_proxy = pools.send :no_proxy?, 'proxy.example', env_no_proxy
+
+    refute no_proxy, 'wildcard mismatch'
   end
 
   def test_net_http_args

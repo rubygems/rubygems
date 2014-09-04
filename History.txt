@@ -11,6 +11,8 @@ Bug fixes:
 * Added support for missing git_source method in the gem dependencies API.
 * Fixed handling of git gems with an alternate install directory.
 * Lockfiles will no longer be truncated upon resolution errors.
+* Fixed messaging for `gem owner -a`.  Issue #1004 by Aaron Patterson, Ryan
+  Davis.
 
 === 2.4.0 / 2014-07-16
 

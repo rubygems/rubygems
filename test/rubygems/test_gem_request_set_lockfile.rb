@@ -546,6 +546,28 @@ DEPENDENCIES
     assert vendor_set, 'could not find a VendorSet'
 
     assert_equal %w[a-1], vendor_set.specs.values.map { |s| s.full_name }
+
+    spec = vendor_set.load_spec 'a', nil, nil, nil
+
+    assert_equal [dep('b', '= 2')], spec.dependencies
+  end
+
+  def test_parse_dependency
+    write_lockfile ' 1)'
+
+    @lockfile.tokenize
+
+    parsed = @lockfile.parse_dependency 'a', '='
+
+    assert_equal dep('a', '= 1'), parsed
+
+    write_lockfile ')'
+
+    @lockfile.tokenize
+
+    parsed = @lockfile.parse_dependency 'a', '2'
+
+    assert_equal dep('a', '= 2'), parsed
   end
 
   def test_parse_gem_specs_dependency

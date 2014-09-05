@@ -479,7 +479,7 @@ class Gem::RequestSet::Lockfile
   # the first token of the requirements and returns a Gem::Dependency object.
 
   def parse_dependency name, op # :nodoc:
-    return Gem::Dependency.new name unless peek[0] == :text
+    return Gem::Dependency.new name, op unless peek[0] == :text
 
     _, version, = get :text
 

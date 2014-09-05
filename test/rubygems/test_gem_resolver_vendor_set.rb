@@ -11,9 +11,11 @@ class TestGemResolverVendorSet < Gem::TestCase
   def test_add_vendor_gem
     name, version, directory = vendor_gem
 
-    @set.add_vendor_gem name, directory
+    added = @set.add_vendor_gem name, directory
 
     spec = @set.load_spec name, version, Gem::Platform::RUBY, nil
+
+    assert_equal spec, added
 
     assert_equal "#{name}-#{version}", spec.full_name
 

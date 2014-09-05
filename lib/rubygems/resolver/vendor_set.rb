@@ -43,6 +43,8 @@ class Gem::Resolver::VendorSet < Gem::Resolver::Set
 
     @specs[spec.name]  = spec
     @directories[spec] = directory
+
+    spec
   end
 
   ##

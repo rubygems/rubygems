@@ -524,6 +524,7 @@ PATH
   remote: #{directory}
   specs:
     a (1)
+      b (2)
 
 DEPENDENCIES
   a!

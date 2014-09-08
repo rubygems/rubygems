@@ -16,6 +16,8 @@ Bug fixes:
 * Removed meaningless ensure.  Pull request #1003 by gogotanaka.
 * Improved wording of --source option help.  Pull request #989 by Jason Clark.
 * Empty build_info files are now ignored.  Issue #903 by Adan Alvarado.
+* Gem::Installer ignores dependency checks when installing development
+  dependencies.  Issue #994 by Jens Willie.
 
 === 2.4.0 / 2014-07-16
 

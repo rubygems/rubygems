@@ -1126,6 +1126,16 @@ gem 'other', version
     refute @installer.installation_satisfies_dependency?(dep)
   end
 
+  def test_installation_satisfies_dependency_eh_development
+    @installer.options[:development] = true
+    @installer.options[:dev_shallow] = true
+
+    util_spec 'a'
+
+    dep = Gem::Dependency.new 'a', :development
+    assert @installer.installation_satisfies_dependency?(dep)
+  end
+
   def test_pre_install_checks_dependencies
     @spec.add_dependency 'b', '> 5'
     util_setup_gem

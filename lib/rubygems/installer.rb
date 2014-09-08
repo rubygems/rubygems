@@ -68,12 +68,20 @@ class Gem::Installer
 
   @path_warning = false
 
+  @install_lock = Mutex.new
+
   class << self
 
     ##
     # True if we've warned about PATH not including Gem.bindir
 
     attr_accessor :path_warning
+
+    ##
+    # Certain aspects of the install process are not thread-safe. This lock is
+    # used to allow multiple threads to install Gems at the same time.
+
+    attr_reader :install_lock
 
     ##
     # Overrides the executable format.
@@ -250,7 +258,7 @@ class Gem::Installer
 
     say spec.post_install_message unless spec.post_install_message.nil?
 
-    Gem::Specification.add_spec spec unless Gem::Specification.include? spec
+    self.class.install_lock.synchronize { Gem::Specification.add_spec spec }
 
     run_post_install_hooks
 

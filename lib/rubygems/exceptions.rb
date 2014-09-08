@@ -27,7 +27,7 @@ class Gem::DependencyRemovalException < Gem::Exception; end
 # toplevel.  Indicates which dependencies were incompatible through #conflict
 # and #conflicting_dependencies
 
-class Gem::DependencyResolutionError < Gem::Exception
+class Gem::DependencyResolutionError < Gem::DependencyError
 
   attr_reader :conflict
 
@@ -214,7 +214,7 @@ end
 # Raised by Resolver when a dependency requests a gem for which
 # there is no spec.
 
-class Gem::UnsatisfiableDependencyError < Gem::Exception
+class Gem::UnsatisfiableDependencyError < Gem::DependencyError
 
   ##
   # The unsatisfiable dependency.  This is a

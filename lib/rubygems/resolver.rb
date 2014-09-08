@@ -210,8 +210,9 @@ class Gem::Resolver
 
     if (skip_dep_gems = skip_gems[dependency.name]) && !skip_dep_gems.empty?
       matching = all.select do |api_spec|
-        skip_dep_gems.any?{|s| api_spec.version == s.version}
+        skip_dep_gems.any? { |s| api_spec.version == s.version }
       end
+
       all = matching unless matching.empty?
     end
 

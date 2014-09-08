@@ -485,6 +485,21 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_equal expected, @cmd.options
   end
 
+  def test_update_gem_unresolved_dependency
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 1
+      fetcher.gem  'a', 2 do |s|
+        s.add_dependency 'b', '>= 2'
+      end
+
+      fetcher.spec 'b', 1
+    end
+
+    @cmd.update_gem 'a'
+
+    assert_empty @cmd.updated
+  end
+
   def test_update_rubygems_arguments
     @cmd.options[:system] = true
 

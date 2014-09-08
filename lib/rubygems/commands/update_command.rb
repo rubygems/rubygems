@@ -16,6 +16,8 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
   attr_reader :installer # :nodoc:
 
+  attr_reader :updated # :nodoc:
+
   def initialize
     super 'update', 'Update installed gems to the latest version',
       :document => %w[rdoc ri],
@@ -206,7 +208,7 @@ command to remove old versions.
     say "Updating #{name}"
     begin
       @installer.install name, Gem::Requirement.new(version)
-    rescue Gem::InstallError => e
+    rescue Gem::InstallError, Gem::DependencyError => e
       alert_error "Error installing #{name}:\n\t#{e.message}"
     end
 

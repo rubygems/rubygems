@@ -20,7 +20,7 @@ Bug fixes:
   dependencies.  Issue #994 by Jens Willie.
 * `gem update` now continues after dependency errors.  Issue #993 by aaronchi.
 * RubyGems no longer warns about semantic version dependencies for the 0.x
-* range.  Issue #987 by Jeff Felchner, pull request #1006 by Hsing-Hui Hsu.
+  range.  Issue #987 by Jeff Felchner, pull request #1006 by Hsing-Hui Hsu.
 
 === 2.4.0 / 2014-07-16
 

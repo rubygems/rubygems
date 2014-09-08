@@ -2297,6 +2297,7 @@ end
       @a1.add_runtime_dependency     'k', '> 1.2'
       @a1.add_runtime_dependency     'l', '> 1.2.3'
       @a1.add_runtime_dependency     'm', '~> 2.1.0'
+      @a1.add_runtime_dependency     'n', '~> 0.1.0'
 
       use_ui @ui do
         @a1.validate

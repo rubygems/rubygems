@@ -21,6 +21,8 @@ Bug fixes:
 * `gem update` now continues after dependency errors.  Issue #993 by aaronchi.
 * RubyGems no longer warns about semantic version dependencies for the 0.x
   range.  Issue #987 by Jeff Felchner, pull request #1006 by Hsing-Hui Hsu.
+* Added minimal lock to allow multithread installation of gems.  Issue #982
+  and pull request #1005 by Yorick Peterse
 
 === 2.4.0 / 2014-07-16
 

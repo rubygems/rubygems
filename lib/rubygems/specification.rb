@@ -2658,7 +2658,8 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
         dep.requirement.requirements.any? do |op, version|
           op == '~>' and
             not version.prerelease? and
-            version.segments.length > 2
+            version.segments.length > 2 and
+            version.segments.first != 0
         end
 
       if overly_strict then

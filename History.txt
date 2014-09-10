@@ -23,6 +23,8 @@ Bug fixes:
   range.  Issue #987 by Jeff Felchner, pull request #1006 by Hsing-Hui Hsu.
 * Added minimal lock to allow multithread installation of gems.  Issue #982
   and pull request #1005 by Yorick Peterse
+* RubyGems now considers prerelease dependencies as it did in earlier versions
+  when --prerelease is given.  Issue #990 by Jeremy Tryba.
 
 === 2.4.0 / 2014-07-16
 

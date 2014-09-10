@@ -382,6 +382,7 @@ class Gem::DependencyInstaller
       :force               => @force,
       :format_executable   => @format_executable,
       :ignore_dependencies => @ignore_dependencies,
+      :prerelease          => @prerelease,
       :security_policy     => @security_policy,
       :user_install        => @user_install,
       :wrappers            => @wrappers,
@@ -423,6 +424,7 @@ class Gem::DependencyInstaller
     request_set.development         = @development
     request_set.development_shallow = @dev_shallow
     request_set.soft_missing = @force
+    request_set.prerelease = @prerelease
     request_set.remote = false unless consider_remote?
 
     installer_set = Gem::Resolver::InstallerSet.new @domain

@@ -126,6 +126,27 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal [p1a], inst.installed_gems
   end
 
+  def test_install_prerelease_bug_990
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', '1.b' do |s|
+        s.add_dependency 'b', '~> 1.a'
+      end
+
+      fetcher.gem 'b', '1.b' do |s|
+        s.add_dependency 'c', '>= 1'
+      end
+
+      fetcher.gem 'c', '1.1.b'
+    end
+
+    dep = Gem::Dependency.new 'a'
+
+    inst = Gem::DependencyInstaller.new :prerelease => true
+    inst.install dep
+
+    assert_equal %w[a-1.b b-1.b c-1.1.b], Gem::Specification.map(&:full_name)
+  end
+
   def test_install_when_only_prerelease
     p1a, gem = util_gem 'p', '1.a'
 

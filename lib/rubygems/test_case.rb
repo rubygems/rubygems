@@ -1305,7 +1305,7 @@ Also, a list:
     # Finds all gems matching +dep+ in this set.
 
     def find_all(dep)
-      @specs.find_all { |s| dep.match? s }
+      @specs.find_all { |s| dep.match? s, @prerelease }
     end
 
     ##

@@ -276,6 +276,23 @@ ruby "0"
     refute_same orig_errors, rs.errors
   end
 
+  def test_bug_bug_990
+    a = util_spec 'a', '1.b',  'b' => '~> 1.a'
+    b = util_spec 'b', '1.b',  'c' => '>= 1'
+    c = util_spec 'c', '1.1.b'
+
+    rs = Gem::RequestSet.new
+    rs.gem 'a'
+    rs.prerelease = true
+
+    res = rs.resolve StaticSet.new([a, b, c])
+    assert_equal 3, res.size
+
+    names = res.map { |s| s.full_name }.sort
+
+    assert_equal %w[a-1.b b-1.b c-1.1.b], names
+  end
+
   def test_resolve_development
     a = util_spec 'a', 1
     spec = Gem::Resolver::SpecSpecification.new nil, a

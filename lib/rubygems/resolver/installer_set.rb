@@ -157,6 +157,12 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     @remote_set.prefetch(reqs)
   end
 
+  def prerelease= allow_prerelease
+    super
+
+    @remote_set.prerelease = allow_prerelease
+  end
+
   def inspect # :nodoc:
     always_install = @always_install.map { |s| s.full_name }
 

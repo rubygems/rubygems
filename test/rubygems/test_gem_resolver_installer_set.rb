@@ -189,6 +189,18 @@ class TestGemResolverInstallerSet < Gem::TestCase
     assert_equal specs["a-2-#{Gem::Platform.local}"].full_name, spec.full_name
   end
 
+  def test_prerelease_equals
+    set = Gem::Resolver::InstallerSet.new :remote
+
+    refute set.prerelease
+    refute set.remote_set.prerelease
+
+    set.prerelease = true
+
+    assert set.prerelease
+    assert set.remote_set.prerelease
+  end
+
   def test_remote_equals_both
     set = Gem::Resolver::InstallerSet.new :both
     set.remote = true

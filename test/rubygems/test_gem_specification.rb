@@ -2951,12 +2951,14 @@ end
   end
 
   def test_find_by_name
-    util_make_gems
-    assert(Gem::Specification.find_by_name("a"))
-    assert(Gem::Specification.find_by_name("a", "1"))
-    assert(Gem::Specification.find_by_name("a", ">1"))
-    assert_raises(Gem::LoadError) do
-      Gem::Specification.find_by_name("monkeys")
+    util_spec "a"
+
+    assert Gem::Specification.find_by_name "a"
+    assert Gem::Specification.find_by_name "a", "1"
+    assert Gem::Specification.find_by_name "a", ">1"
+
+    assert_raises Gem::LoadError do
+      Gem::Specification.find_by_name "monkeys"
     end
   end
 

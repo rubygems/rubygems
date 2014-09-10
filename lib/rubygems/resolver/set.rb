@@ -14,9 +14,15 @@ class Gem::Resolver::Set
 
   attr_accessor :errors
 
+  ##
+  # When true, allows matching of requests to prerelease gems.
+
+  attr_accessor :prerelease
+
   def initialize # :nodoc:
-    @remote = true
-    @errors = []
+    @prerelease = false
+    @remote     = true
+    @errors     = []
   end
 
   ##

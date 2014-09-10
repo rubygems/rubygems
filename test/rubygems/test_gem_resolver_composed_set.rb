@@ -16,6 +16,19 @@ class TestGemResolverComposedSet < Gem::TestCase
     assert_includes set.errors, index_set.errors.first
   end
 
+  def test_prerelease_equals
+    best_set    = Gem::Resolver::BestSet.new
+    current_set = Gem::Resolver::CurrentSet.new
+
+    set = Gem::Resolver::ComposedSet.new best_set, current_set
+
+    set.prerelease = true
+
+    assert set.prerelease
+    assert best_set.prerelease
+    assert current_set.prerelease
+  end
+
   def test_remote_equals
     best_set    = Gem::Resolver::BestSet.new
     current_set = Gem::Resolver::CurrentSet.new

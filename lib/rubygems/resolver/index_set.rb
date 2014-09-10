@@ -43,7 +43,7 @@ class Gem::Resolver::IndexSet < Gem::Resolver::Set
     name = req.dependency.name
 
     @all[name].each do |uri, n|
-      if req.match? n then
+      if req.match? n, @prerelease then
         res << Gem::Resolver::IndexSpecification.new(
           self, n.name, n.version, uri, n.platform)
       end

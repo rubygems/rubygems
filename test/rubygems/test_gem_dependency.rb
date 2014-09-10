@@ -153,6 +153,33 @@ class TestGemDependency < Gem::TestCase
     assert c_dep.match? c_tup
   end
 
+  def test_match_eh_allow_prerelease
+    a_dep = dep 'a'
+
+    a_tup = Gem::NameTuple.new 'a', 1
+    b_tup = Gem::NameTuple.new 'b', 2
+    c_tup = Gem::NameTuple.new 'c', '2.a'
+
+    assert a_dep.match? a_tup, nil, true
+    refute a_dep.match? b_tup, nil, true
+
+    b_dep = dep 'b', '>= 3'
+
+    refute b_dep.match? b_tup, nil, true
+
+    c_dep = dep 'c', '>= 1'
+
+    assert c_dep.match? c_tup, nil, true
+
+    c_dep = dep 'c'
+
+    assert c_dep.match? c_tup, nil, true
+
+    c_dep = dep 'c', '2.a'
+
+    assert c_dep.match? c_tup, nil, true
+  end
+
   def test_match_eh_specification
     a_dep = dep 'a'
 

@@ -47,8 +47,8 @@ class Gem::Resolver::DependencyRequest
   # NOTE:  #match? only matches prerelease versions when #dependency is a
   # prerelease dependency.
 
-  def match? spec
-    @dependency.match? spec
+  def match? spec, allow_prerelease = false
+    @dependency.match? spec, nil, allow_prerelease
   end
 
   ##

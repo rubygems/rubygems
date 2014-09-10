@@ -25,6 +25,7 @@ Bug fixes:
   and pull request #1005 by Yorick Peterse
 * RubyGems now considers prerelease dependencies as it did in earlier versions
   when --prerelease is given.  Issue #990 by Jeremy Tryba.
+* Updated capitalization in README.  Issue #1010 by Ben Bodenmiller.
 
 === 2.4.0 / 2014-07-16
 

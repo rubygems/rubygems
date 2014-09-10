@@ -2962,6 +2962,20 @@ end
     end
   end
 
+  def test_find_by_name_prerelease
+    b = util_spec "b", "2.a"
+
+    b.activate
+
+    assert Gem::Specification.find_by_name "b"
+
+    assert_raises Gem::LoadError do
+      Gem::Specification.find_by_name "b", "1"
+    end
+
+    assert Gem::Specification.find_by_name "b", ">1"
+  end
+
   def test_find_by_path
     a = new_spec "foo", "1", nil, "lib/foo.rb"
 

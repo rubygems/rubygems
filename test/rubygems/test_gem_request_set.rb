@@ -229,7 +229,7 @@ ruby "0"
   def test_load_gemdeps_installing
     rs = Gem::RequestSet.new
 
-    Tempfile.open 'gem.deps.rb' do |io|
+    tf = Tempfile.open 'gem.deps.rb' do |io|
       io.puts 'ruby "0"'
       io.puts 'gem "a"'
       io.flush
@@ -237,7 +237,9 @@ ruby "0"
       gem_deps = rs.load_gemdeps io.path, [], true
 
       assert_kind_of Gem::RequestSet::GemDependencyAPI, gem_deps
+      io
     end
+    tf.close! if tf.respond_to? :close!
 
     assert_equal [dep('a')], rs.dependencies
   end

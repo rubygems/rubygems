@@ -26,6 +26,7 @@ Bug fixes:
 * RubyGems now considers prerelease dependencies as it did in earlier versions
   when --prerelease is given.  Issue #990 by Jeremy Tryba.
 * Updated capitalization in README.  Issue #1010 by Ben Bodenmiller.
+* Fixed activating gems from a Gemfile for default gems.  Issue #991 by khoan.
 
 === 2.4.0 / 2014-07-16
 

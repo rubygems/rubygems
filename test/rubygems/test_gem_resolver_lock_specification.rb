@@ -83,5 +83,16 @@ class TestGemResolverLockSpecification < Gem::TestCase
     assert_equal [b_dep, c_dep], l_spec.spec.dependencies
   end
 
+  def test_spec_loaded
+    real_spec = util_spec 'a', 2
+    real_spec.activate
+
+    version = v(2)
+
+    l_spec = @LS.new @set, 'a', version, @source, Gem::Platform::RUBY
+
+    assert_same real_spec, l_spec.spec
+  end
+
 end
 

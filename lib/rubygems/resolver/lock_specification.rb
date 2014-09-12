@@ -67,6 +67,10 @@ class Gem::Resolver::LockSpecification < Gem::Resolver::Specification
   # A specification constructed from the lockfile is returned
 
   def spec
+    @spec ||= Gem::Specification.find { |spec|
+      spec.name == @name and spec.version == @version
+    }
+
     @spec ||= Gem::Specification.new do |s|
       s.name     = @name
       s.version  = @version

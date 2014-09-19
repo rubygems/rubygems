@@ -682,10 +682,11 @@ TEXT
 
   def windows_stub_script(bindir, bin_file_name)
     ruby = File.basename(Gem.ruby).chomp('"')
+    alt_separator = File::ALT_SEPARATOR || File::SEPARATOR
     return <<-TEXT
 @ECHO OFF
 IF NOT "%~f0" == "~f0" GOTO :WinNT
-@"#{bindir.tr(File::SEPARATOR, File::ALT_SEPARATOR)}\\#{ruby}" "#{File.join(bindir, bin_file_name)}" %1 %2 %3 %4 %5 %6 %7 %8 %9
+@"#{bindir.tr(File::SEPARATOR, alt_separator)}\\#{ruby}" "#{File.join(bindir, bin_file_name)}" %1 %2 %3 %4 %5 %6 %7 %8 %9
 GOTO :EOF
 :WinNT
 @"%~dp0#{ruby}" "%~dpn0" %*

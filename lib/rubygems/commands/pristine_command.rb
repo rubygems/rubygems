@@ -21,6 +21,11 @@ class Gem::Commands::PristineCommand < Gem::Command
       options[:all] = value
     end
 
+    add_option('--skip=gem_name',
+               'used on --all, skip if name < gem_name') do |value, options|
+      options[:skip] = value
+    end
+
     add_option('--[no-]extensions',
                'Restore gems with extensions',
                'in addition to regular gems') do |value, options|
@@ -94,6 +99,10 @@ extensions will be restored.
     if specs.to_a.empty? then
       raise Gem::Exception,
             "Failed to find gems #{options[:args]} #{options[:version]}"
+    end
+
+    if options[:skip]
+      specs = specs.to_a.delete_if { |g| g.name < options[:skip] }
     end
 
     install_dir = Gem.dir # TODO use installer option

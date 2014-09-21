@@ -42,6 +42,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
     self.loaded_from = filename
     @data            = nil
     @extensions      = nil
+    @name            = nil
     @spec            = nil
   end
 

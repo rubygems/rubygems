@@ -27,6 +27,8 @@ Bug fixes:
   when --prerelease is given.  Issue #990 by Jeremy Tryba.
 * Updated capitalization in README.  Issue #1010 by Ben Bodenmiller.
 * Fixed activating gems from a Gemfile for default gems.  Issue #991 by khoan.
+* Fixed windows stub script generation for Cygwin.  Pull Request #942 by Ian
+  Flynn.
 
 === 2.4.0 / 2014-07-16
 

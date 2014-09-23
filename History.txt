@@ -29,6 +29,8 @@ Bug fixes:
 * Fixed activating gems from a Gemfile for default gems.  Issue #991 by khoan.
 * Fixed windows stub script generation for Cygwin.  Issue #1000 by Brett
   DiFrischia.
+* Allow gem bindir and ruby.exe to live in separate diretories.  Pull request
+  #942 by Ian Flynn.
 
 === 2.4.0 / 2014-07-16
 

@@ -169,7 +169,11 @@ class Gem::RequestSet::Lockfile
     base = File.expand_path(base)
 
     if dest.index(base) == 0
-      return dest[base.size+1..-1]
+      offset = dest[base.size+1..-1]
+
+      return '.' unless offset
+
+      offset
     else
       dest
     end

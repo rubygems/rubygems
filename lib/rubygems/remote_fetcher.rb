@@ -91,7 +91,8 @@ class Gem::RemoteFetcher
     begin
       res = @dns.getresource "_rubygems._tcp.#{host}",
                              Resolv::DNS::Resource::IN::SRV
-    rescue Resolv::ResolvError
+    rescue Resolv::ResolvError => e
+      verbose "Getting SRV record failed: #{e}"
       uri
     else
       URI.parse "#{uri.scheme}://#{res.target}#{uri.path}"

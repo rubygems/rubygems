@@ -601,6 +601,12 @@ Gem dependencies file #{@path} requires #{name} more than once.
     add_dependencies groups, [self_dep]
     add_dependencies groups, spec.runtime_dependencies
 
+    @dependencies[spec.name] = '!'
+
+    spec.dependencies.each do |dep|
+      @dependencies[dep.name] = dep.requirement
+    end
+
     groups << development_group
 
     add_dependencies groups, spec.development_dependencies

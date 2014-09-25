@@ -464,6 +464,14 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
                  @set.dependencies
 
     assert_equal %w[a], @gda.requires['a']
+
+    expected = {
+      'a' => '!',
+      'b' => req('= 2'),
+      'c' => req('= 3'),
+    }
+
+    assert_equal expected, @gda.dependencies
   end
 
   def test_gemspec_bad

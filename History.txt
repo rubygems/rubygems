@@ -31,6 +31,8 @@ Bug fixes:
   DiFrischia.
 * Allow gem bindir and ruby.exe to live in separate diretories.  Pull request
   #942 by Ian Flynn.
+* Fixed handling of gemspec in gem dependencies files to match Bundler
+  behavior.  Fixes #1020 by Michal Papis.
 
 === 2.4.0 / 2014-07-16
 

@@ -29,7 +29,7 @@ module Gem::Text
   def min3 a, b, c # :nodoc:
     if a < b && a < c
       a
-    elsif b < a && b < c
+    elsif b < c
       b
     else
       c

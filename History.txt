@@ -35,6 +35,8 @@ Bug fixes:
   behavior.  Fixes #1020 by Michal Papis.
 * Fixed `gem update` when updating to prereleases.  Issue #1028 by Santiago
   Pastorino.
+* RubyGems now fails immediately when a git reference cannot be found instead
+  of spewing git errors.  Issue #1031 by Michal Papis
 
 === 2.4.0 / 2014-07-16
 

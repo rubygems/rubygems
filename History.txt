@@ -33,6 +33,9 @@ Bug fixes:
   #942 by Ian Flynn.
 * Fixed handling of gemspec in gem dependencies files to match Bundler
   behavior.  Fixes #1020 by Michal Papis.
+* Fixed `gem update` when updating to prereleases.  Issue #1028 by Santiago
+  Pastorino.
+* updating is a prereleas.
 
 === 2.4.0 / 2014-07-16
 

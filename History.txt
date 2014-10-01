@@ -32,7 +32,7 @@ Bug fixes:
 * Allow gem bindir and ruby.exe to live in separate diretories.  Pull request
   #942 by Ian Flynn.
 * Fixed handling of gemspec in gem dependencies files to match Bundler
-  behavior.  Fixes #1020 by Michal Papis.
+  behavior.  Issue #1020 by Michal Papis.
 * Fixed `gem update` when updating to prereleases.  Issue #1028 by Santiago
   Pastorino.
 * RubyGems now fails immediately when a git reference cannot be found instead

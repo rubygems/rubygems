@@ -1,11 +1,9 @@
 # coding: UTF-8
 
-=== 2.4.1 / 2014-07-17
+=== 2.4.2 / 2014-10-01
 
 Bug fixes:
 
-* RubyGems can now be updated on Ruby implementations that do not support
-  vendordir in RbConfig::CONFIG.  Issue #974 by net1957.
 * RubyGems now correctly matches wildcard no_proxy hosts.  Issue #997 by
   voelzemo.
 * Added support for missing git_source method in the gem dependencies API.
@@ -37,6 +35,13 @@ Bug fixes:
   Pastorino.
 * RubyGems now fails immediately when a git reference cannot be found instead
   of spewing git errors.  Issue #1031 by Michal Papis
+
+=== 2.4.1 / 2014-07-17
+
+Bug fixes:
+
+* RubyGems can now be updated on Ruby implementations that do not support
+  vendordir in RbConfig::CONFIG.  Issue #974 by net1957.
 
 === 2.4.0 / 2014-07-16
 

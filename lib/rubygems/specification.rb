@@ -2635,23 +2635,26 @@ http://opensource.org/licenses/alphabetical
   # versioning.
 
   def validate_dependencies # :nodoc:
-    seen = {}
+    # NOTE: see REFACTOR note in Gem::Dependency about types - this might be brittle
+    seen = Gem::Dependency::TYPES.inject({}) { |types, type| types.merge({ type => {}}) }
 
+    error_messages = []
+    warning_messages = []
     dependencies.each do |dep|
-      if prev = seen[dep.name] then
-        raise Gem::InvalidSpecificationException, <<-MESSAGE
+      if prev = seen[dep.type][dep.name] then
+        error_messages << <<-MESSAGE
 duplicate dependency on #{dep}, (#{prev.requirement}) use:
-    add_runtime_dependency '#{dep.name}', '#{dep.requirement}', '#{prev.requirement}'
+    add_#{dep.type}_dependency '#{dep.name}', '#{dep.requirement}', '#{prev.requirement}'
         MESSAGE
       end
 
-      seen[dep.name] = dep
+      seen[dep.type][dep.name] = dep
 
       prerelease_dep = dep.requirements_list.any? do |req|
         Gem::Requirement.new(req).prerelease?
       end
 
-      warning "prerelease dependency on #{dep} is not recommended" if
+      warning_messages << "prerelease dependency on #{dep} is not recommended" if
         prerelease_dep
 
       overly_strict = dep.requirement.requirements.length == 1 &&
@@ -2667,7 +2670,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
 
         base = dep_version.segments.first 2
 
-        warning <<-WARNING
+        warning_messages << <<-WARNING
 pessimistic dependency on #{dep} may be overly strict
   if #{dep.name} is semantically versioned, use:
     add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}', '>= #{dep_version}'
@@ -2689,12 +2692,18 @@ pessimistic dependency on #{dep} may be overly strict
                    ", '>= #{dep_version}'"
                  end
 
-        warning <<-WARNING
+        warning_messages << <<-WARNING
 open-ended dependency on #{dep} is not recommended
   if #{dep.name} is semantically versioned, use:
     add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}'#{bugfix}
         WARNING
       end
+    end
+    if error_messages.any?
+      raise Gem::InvalidSpecificationException, error_messages.join
+    end
+    if warning_messages.any?
+      warning_messages.each { |warning_message| warning warning_message }
     end
   end
 

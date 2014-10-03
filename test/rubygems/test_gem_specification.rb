@@ -2334,12 +2334,14 @@ end
     end
   end
 
-  def test_validate_dependencies_open_ended
+  def test_validate_dependencies_duplicates
     util_setup_validate
 
     Dir.chdir @tempdir do
       @a1.add_runtime_dependency 'b', '~> 1.2'
       @a1.add_runtime_dependency 'b', '>= 1.2.3'
+      @a1.add_development_dependency 'c', '~> 1.2'
+      @a1.add_development_dependency 'c', '>= 1.2.3'
 
       use_ui @ui do
         e = assert_raises Gem::InvalidSpecificationException do
@@ -2349,6 +2351,8 @@ end
         expected = <<-EXPECTED
 duplicate dependency on b (>= 1.2.3), (~> 1.2) use:
     add_runtime_dependency 'b', '>= 1.2.3', '~> 1.2'
+duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
+    add_development_dependency 'c', '>= 1.2.3', '~> 1.2'
         EXPECTED
 
         assert_equal expected, e.message
@@ -2357,6 +2361,21 @@ duplicate dependency on b (>= 1.2.3), (~> 1.2) use:
       assert_equal <<-EXPECTED, @ui.error
 #{w}:  See http://guides.rubygems.org/specification-reference/ for help
       EXPECTED
+    end
+  end
+
+  def test_validate_dependencies_allowed_duplicates
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @a1.add_runtime_dependency 'b', '~> 1.2'
+      @a1.add_development_dependency 'b', '= 1.2.3'
+
+      use_ui @ui do
+        @a1.validate
+      end
+
+      assert_equal '', @ui.error, 'warning'
     end
   end
 

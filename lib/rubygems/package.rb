@@ -380,11 +380,12 @@ EOM
 
         FileUtils.mkdir_p mkdir, mkdir_options
 
-        target_mode = entry.header.mode & 0111 > 0 ? 0775 : 0664
-        File.open destination, 'wb', target_mode do |out|
-          out.write entry.read
-          FileUtils.chmod entry.header.mode, destination
-        end if entry.file?
+        if entry.file?
+          target_mode = install_mode entry.full_name, entry.header.mode
+          File.open destination, 'wb', target_mode do |out|
+            out.write entry.read
+          end
+        end
 
         File.symlink(entry.header.linkname, destination) if entry.symlink?
 
@@ -406,6 +407,20 @@ EOM
     yield gz_io
   ensure
     gz_io.close
+  end
+
+  ##
+  # Returns file mode for installating +filename+
+
+  def install_mode filename, mode
+    if
+      mode & 0111 > 0 ||
+      ( @spec && @spec.executables && @spec.executables.include?(filename) )
+    then
+      0775
+    else
+      0664
+    end
   end
 
   ##

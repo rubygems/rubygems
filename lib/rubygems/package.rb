@@ -370,7 +370,7 @@ EOM
         FileUtils.rm_rf destination
 
         mkdir_options = {}
-        mkdir_options[:mode] = entry.header.mode if entry.directory?
+        mkdir_options[:mode] = 0775
         mkdir =
           if entry.directory? then
             destination
@@ -380,7 +380,8 @@ EOM
 
         FileUtils.mkdir_p mkdir, mkdir_options
 
-        File.open destination, 'wb' do |out|
+        target_mode = entry.header.mode & 0111 > 0 ? 0775 : 0664
+        File.open destination, 'wb', target_mode do |out|
           out.write entry.read
           FileUtils.chmod entry.header.mode, destination
         end if entry.file?

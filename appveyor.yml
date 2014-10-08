@@ -1,0 +1,31 @@
+---
+version: "{build}"
+branches:
+  only:
+    - master
+clone_depth: 10
+install:
+  - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
+  - ruby --version
+  - gem --version
+  - gem install rake --no-rdoc --no-ri
+  - gem install hoe-travis --no-rdoc --no-ri
+  - gem install minitest -v "~> 4.7" --no-rdoc --no-ri
+  - rake travis:before --trace
+  - gem list --details
+  - gem env
+
+build: off
+test_script:
+  - rake -rdevkit travis
+after_test:
+  # FIXME: missing `diff` to check manifest differences
+  #- rake -rdevkit travis:after --trace
+
+environment:
+  matrix:
+    - ruby_version: "193"
+    - ruby_version: "200"
+    - ruby_version: "200-x64"
+    - ruby_version: "21"
+    - ruby_version: "21-x64"

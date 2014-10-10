@@ -548,6 +548,112 @@ ruby "0"
     assert_equal %w[b-1 a-1], rs.sorted_requests.map { |req| req.full_name }
   end
 
+  #  ,-R->.
+  # a      b
+  #  `<-R-´
+  def test_sorted_requests_cyclic
+    a = util_spec 'a', 1 do |s| s.add_dependency 'b' end
+    b = util_spec 'b', 1 do |s| s.add_dependency 'a' end
+
+    rs = Gem::RequestSet.new
+    rs.gem 'a'
+
+    a_spec = Gem::Resolver::SpecSpecification.new nil, a
+    b_spec = Gem::Resolver::SpecSpecification.new nil, b
+
+    rs.resolve StaticSet.new [a_spec, b_spec]
+
+    assert_raises Gem::DependencyError do
+      rs.sorted_requests
+    end
+  end
+
+  #  ,-D->.
+  # a      b
+  #  `<-R-´
+  def test_sorted_requests_development_pseudo_cyclic_a
+    a = util_spec 'a', 1 do |s| s.add_development_dependency 'b' end
+    b = util_spec 'b', 1 do |s| s.add_dependency 'a' end
+
+    rs = Gem::RequestSet.new
+    rs.gem 'a'
+    rs.development = true
+
+    a_spec = Gem::Resolver::SpecSpecification.new nil, a
+    b_spec = Gem::Resolver::SpecSpecification.new nil, b
+
+    rs.resolve StaticSet.new [a_spec, b_spec]
+
+    assert_equal %w[a-1 b-1], rs.sorted_requests.map { |req| req.full_name }
+  end
+
+  #  ,-R->.
+  # b      a
+  #  `<-D-´
+  def test_sorted_requests_development_pseudo_cyclic_b
+    skip 'Not working yet'
+    a = util_spec 'a', 1 do |s| s.add_development_dependency 'b' end
+    b = util_spec 'b', 1 do |s| s.add_dependency 'a' end
+
+    rs = Gem::RequestSet.new
+    rs.gem 'b'
+    rs.development = true
+
+    a_spec = Gem::Resolver::SpecSpecification.new nil, a
+    b_spec = Gem::Resolver::SpecSpecification.new nil, b
+
+    rs.resolve StaticSet.new [a_spec, b_spec]
+
+    assert_equal %w[a-1 b-1], rs.sorted_requests.map { |req| req.full_name }
+  end
+
+  #         ,-R->.
+  # c -D-> b      a
+  #         `<-D-´
+  def test_sorted_requests_development_pseudo_cyclic_c
+    a = util_spec 'a', 1 do |s| s.add_development_dependency 'b' end
+    b = util_spec 'b', 1 do |s| s.add_dependency 'a' end
+    c = util_spec 'c', 1 do |s| s.add_development_dependency 'b' end
+
+    rs = Gem::RequestSet.new
+    rs.gem 'c'
+    rs.development = true
+    rs.development_shallow = false
+
+    a_spec = Gem::Resolver::SpecSpecification.new nil, a
+    b_spec = Gem::Resolver::SpecSpecification.new nil, b
+    c_spec = Gem::Resolver::SpecSpecification.new nil, c
+
+    rs.resolve StaticSet.new [a_spec, b_spec, c_spec]
+
+    assert_equal %w[a-1 b-1 c-1], rs.sorted_requests.map { |req| req.full_name }
+  end
+
+  #  ,-D-> c -D->.
+  # d             b
+  #  `<-D- a <-R-´
+  def test_sorted_requests_development_pseudo_cyclic_d
+    skip 'Not working yet'
+    a = util_spec 'a', 1 do |s| s.add_development_dependency 'd' end
+    b = util_spec 'b', 1 do |s| s.add_dependency 'a' end
+    c = util_spec 'c', 1 do |s| s.add_development_dependency 'b' end
+    d = util_spec 'd', 1 do |s| s.add_development_dependency 'c' end
+
+    rs = Gem::RequestSet.new
+    rs.gem 'd'
+    rs.development = true
+    rs.development_shallow = false
+
+    a_spec = Gem::Resolver::SpecSpecification.new nil, a
+    b_spec = Gem::Resolver::SpecSpecification.new nil, b
+    c_spec = Gem::Resolver::SpecSpecification.new nil, c
+    d_spec = Gem::Resolver::SpecSpecification.new nil, d
+
+    rs.resolve StaticSet.new [a_spec, b_spec, c_spec, d_spec]
+
+    assert_equal %w[a-1 b-1 c-1 d-1], rs.sorted_requests.map { |req| req.full_name }
+  end
+
   def test_tsort_each_child_development
     a = util_spec 'a', 1 do |s| s.add_development_dependency 'b' end
     b = util_spec 'b', 1 do |s| s.add_development_dependency 'c' end

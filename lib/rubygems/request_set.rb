@@ -371,7 +371,26 @@ class Gem::RequestSet
   end
 
   def sorted_requests
-    @sorted ||= strongly_connected_components.flatten
+    @sorted ||= begin
+      sorted = []
+
+      each_strongly_connected_component { |component|
+        if component.size > 1
+          soft_dependencies, hard_dependencies = component.partition(&:development?)
+
+          if hard_dependencies.size > 1
+            raise Gem::DependencyError,
+                  "Circular dependencies: #{hard_dependencies.inspect}"
+          end
+
+          sorted.concat(hard_dependencies).concat(soft_dependencies)
+        else
+          sorted.concat(component)
+        end
+      }
+
+      sorted
+    end
   end
 
   def specs

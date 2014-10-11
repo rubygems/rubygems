@@ -482,9 +482,6 @@ class Gem::Installer
         next
       end
 
-      mode = File.stat(bin_path).mode
-      FileUtils.chmod mode | 0111, bin_path unless (mode | 0111) == mode
-
       check_executable_overwrite filename
 
       if @wrappers then

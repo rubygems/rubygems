@@ -383,6 +383,8 @@ class Gem::Specification < Gem::BasicSpecification
   attr_reader :description
 
   ##
+  # :category: Recommended gemspec attributes
+  #
   # A contact email address (or addresses) for this gem
   #
   # Usage:
@@ -393,6 +395,8 @@ class Gem::Specification < Gem::BasicSpecification
   attr_accessor :email
 
   ##
+  # :category: Recommended gemspec attributes
+  #
   # The URL of this gem's home page
   #
   # Usage:

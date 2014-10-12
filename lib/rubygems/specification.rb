@@ -2601,7 +2601,7 @@ http://opensource.org/licenses/alphabetical
 
     # Warnings
 
-    %w[author description email homepage summary].each do |attribute|
+    %w[author email homepage summary].each do |attribute|
       value = self.send attribute
       warning "no #{attribute} specified" if value.nil? or value.empty?
     end

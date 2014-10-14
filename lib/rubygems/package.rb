@@ -410,7 +410,7 @@ EOM
   end
 
   ##
-  # Returns file mode for installating +filename+
+  # Returns file mode for installing +filename+
 
   def install_mode filename, mode
     if

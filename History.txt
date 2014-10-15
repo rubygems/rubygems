@@ -1,5 +1,11 @@
 # coding: UTF-8
 
+=== 2.5
+
+Bug fixes:
+
+* Fix typo in platform= docs.  Pull request #1048 by @jasonrclark
+
 === 2.4.2 / 2014-10-01
 
 This release was sponsored by Ruby Central.

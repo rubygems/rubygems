@@ -1353,7 +1353,7 @@ dependencies: []
     end
 
     expected = "Ignoring ext-1 because its extensions are not built.  " +
-               "Try: gem pristine ext-1\n"
+               "Try: gem pristine ext --version 1\n"
 
     assert_equal expected, err
   end

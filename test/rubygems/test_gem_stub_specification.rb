@@ -55,7 +55,7 @@ class TestStubSpecification < Gem::TestCase
       end
 
       expected = "Ignoring stub_e-2 because its extensions are not built.  " +
-                 "Try: gem pristine stub_e-2\n"
+                 "Try: gem pristine stub_e --version 2\n"
 
       assert_equal expected, err
     end

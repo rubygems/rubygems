@@ -4,6 +4,7 @@
 
 Bug fixes:
 
+* Fix redefine MirrorCommand issue. Pull request #1044 by @akr.
 * Fix typo in platform= docs.  Pull request #1048 by @jasonrclark
 
 === 2.4.2 / 2014-10-01

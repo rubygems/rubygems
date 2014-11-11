@@ -98,6 +98,8 @@ lib/rubygems/server.rb
 lib/rubygems/source_index.rb
 lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
+lib/rubygems/ssl_certs/AddTrustExternalCARoot-2048.pem
+lib/rubygems/ssl_certs/AddTrustExternalCARoot.pem
 lib/rubygems/ssl_certs/Class3PublicPrimaryCertificationAuthority.pem
 lib/rubygems/ssl_certs/DigiCertHighAssuranceEVRootCA.pem
 lib/rubygems/ssl_certs/EntrustnetSecureServerCertificationAuthority.pem

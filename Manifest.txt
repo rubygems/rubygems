@@ -10,6 +10,7 @@ Manifest.txt
 README.rdoc
 Rakefile
 UPGRADING.rdoc
+appveyor.yml
 bin/gem
 bin/update_rubygems
 hide_lib_for_update/note.txt
@@ -151,6 +152,9 @@ lib/rubygems/source_specific_file.rb
 lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
 lib/rubygems/ssl_certs/.document
+lib/rubygems/ssl_certs/AddTrustExternalCARoot.pem
+lib/rubygems/ssl_certs/COMODORSACertificationAuthority.pem
+lib/rubygems/ssl_certs/COMODORSADomainValidationSecureServer.pem
 lib/rubygems/ssl_certs/Class3PublicPrimaryCertificationAuthority.pem
 lib/rubygems/ssl_certs/DigiCertHighAssuranceEVRootCA.pem
 lib/rubygems/ssl_certs/EntrustnetSecureServerCertificationAuthority.pem

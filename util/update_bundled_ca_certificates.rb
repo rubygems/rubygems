@@ -3,6 +3,7 @@ require 'openssl'
 
 URIS = [
   URI('https://rubygems.org'),
+  URI('https://staging.rubygems.org'),
   URI('https://s3.amazonaws.com'),
   URI('https://d2chzxaqi4y7f8.cloudfront.net'),
   URI('https://rubygems.global.ssl.fastly.net'),
@@ -12,6 +13,7 @@ def connect_to uri, store
   http = Net::HTTP.new uri.hostname, uri.port
 
   http.use_ssl = uri.scheme.downcase == 'https'
+  http.ssl_version = :TLSv1_2
   http.verify_mode = OpenSSL::SSL::VERIFY_PEER
   http.cert_store = store
 
@@ -55,6 +57,7 @@ def test_certificates certificates, uri
       if match then
         $needed_combinations << match
         puts
+        puts match.map { |certificate| certificate.subject }
         return
       else
         print '.'
@@ -80,7 +83,11 @@ def write_certificates certificates
     name = (subject.assoc('CN') || subject.assoc('OU'))[1]
     name = name.delete ' .-'
 
-    open "lib/rubygems/ssl_certs/#{name}.pem", 'w' do |io|
+    destination = "lib/rubygems/ssl_certs/#{name}.pem"
+
+    warn "overwriting certificate #{name}" if File.exist? destination
+
+    open destination, 'w' do |io|
       io.write certificate.to_pem
     end
   end

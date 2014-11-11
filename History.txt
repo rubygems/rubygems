@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== Next
+
+Bug fixes:
+
+* Add alternate Root CA for upcoming certificate change. Fixes #1050 by
+  Protosac
+
 === 2.4.3 / 2014-11-10
 
 Bug fixes:

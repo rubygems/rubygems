@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-=== Next
+=== 2.4.4 / 2014-11-12
 
 Bug fixes:
 

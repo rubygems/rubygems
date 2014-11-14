@@ -352,6 +352,10 @@ class Gem::RemoteFetcher
     uri.scheme.downcase == 'https'
   end
 
+  def close_all
+    @pools.each_value {|pool| pool.close_all}
+  end
+
   protected
 
   # we have our own signing code here to avoid a dependency on the aws-sdk gem

@@ -28,6 +28,10 @@ class Gem::Request::ConnectionPools # :nodoc:
     end
   end
 
+  def close_all
+    @pools.each_value {|pool| pool.close_all}
+  end
+
   private
 
   ##

@@ -139,13 +139,34 @@ class Gem::BasicSpecification
   # activated.
 
   def full_require_paths
-    full_paths = raw_require_paths.map do |path|
-      File.join full_gem_path, path
+    @full_require_paths ||=
+    begin
+      full_paths = raw_require_paths.map do |path|
+        File.join full_gem_path, path
+      end
+
+      full_paths.unshift extension_dir unless @extensions.nil? || @extensions.empty?
+
+      full_paths
     end
+  end
 
-    full_paths.unshift extension_dir unless @extensions.nil? || @extensions.empty?
+  ##
+  # Full path of the target library file.
+  # If the file is not in this gem, return nil.
 
-    full_paths
+  def to_fullpath path
+    @paths_map ||= {}
+    @paths_map[path] ||=
+    begin
+      fullpath = nil
+      suffixes = Gem.suffixes
+      full_require_paths.find do |dir|
+        suffixes.find do |suf|
+          File.file? (fullpath = "#{dir}/#{path}#{suf}")
+        end
+      end ? fullpath : nil
+    end
   end
 
   ##

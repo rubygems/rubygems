@@ -1863,6 +1863,30 @@ dependencies: []
     assert_equal expected, @ext.full_require_paths
   end
 
+  def test_to_fullpath
+    ext_spec
+
+    @ext.require_paths = 'lib'
+
+    dir = File.join(@gemhome, 'gems', @ext.original_name, 'lib')
+    expected = File.join(dir, 'code.rb')
+    FileUtils.mkdir_p dir
+    FileUtils.touch expected
+    assert_equal expected, @ext.to_fullpath('code')
+    assert_equal expected, @ext.to_fullpath('code.rb')
+    assert_nil @ext.to_fullpath('code.so')
+
+    dir = @ext.extension_dir
+    FileUtils.mkdir_p dir
+    expected = File.join(dir, 'ext-1.so')
+    FileUtils.touch expected
+    assert_equal expected, @ext.to_fullpath('ext-1')
+    assert_equal expected, @ext.to_fullpath('ext-1.so')
+    assert_nil @ext.to_fullpath('ext-1.rb')
+
+    assert_nil @ext.to_fullpath('notexist')
+  end
+
   def test_require_already_activated
     save_loaded_features do
       a1 = new_spec "a", "1", nil, "lib/d.rb"

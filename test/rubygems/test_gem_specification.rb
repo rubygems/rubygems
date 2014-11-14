@@ -1869,20 +1869,32 @@ dependencies: []
     @ext.require_paths = 'lib'
 
     dir = File.join(@gemhome, 'gems', @ext.original_name, 'lib')
-    expected = File.join(dir, 'code.rb')
+    expected_rb = File.join(dir, 'code.rb')
     FileUtils.mkdir_p dir
-    FileUtils.touch expected
-    assert_equal expected, @ext.to_fullpath('code')
-    assert_equal expected, @ext.to_fullpath('code.rb')
-    assert_nil @ext.to_fullpath('code.so')
+    FileUtils.touch expected_rb
 
     dir = @ext.extension_dir
+    expected_so = File.join(dir, 'ext.so')
     FileUtils.mkdir_p dir
-    expected = File.join(dir, 'ext-1.so')
-    FileUtils.touch expected
-    assert_equal expected, @ext.to_fullpath('ext-1')
-    assert_equal expected, @ext.to_fullpath('ext-1.so')
-    assert_nil @ext.to_fullpath('ext-1.rb')
+    FileUtils.touch expected_so
+
+    assert_nil @ext.to_fullpath('code')
+    assert_nil @ext.to_fullpath('code.rb')
+    assert_nil @ext.to_fullpath('code.so')
+
+    assert_nil @ext.to_fullpath('ext')
+    assert_nil @ext.to_fullpath('ext.rb')
+    assert_nil @ext.to_fullpath('ext.so')
+
+    @ext.activate
+
+    assert_equal expected_rb, @ext.to_fullpath('code')
+    assert_equal expected_rb, @ext.to_fullpath('code.rb')
+    assert_nil @ext.to_fullpath('code.so')
+
+    assert_equal expected_so, @ext.to_fullpath('ext')
+    assert_nil @ext.to_fullpath('ext.rb')
+    assert_equal expected_so, @ext.to_fullpath('ext.so')
 
     assert_nil @ext.to_fullpath('notexist')
   end

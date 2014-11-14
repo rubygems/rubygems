@@ -156,16 +156,20 @@ class Gem::BasicSpecification
   # If the file is not in this gem, return nil.
 
   def to_fullpath path
-    @paths_map ||= {}
-    @paths_map[path] ||=
-    begin
-      fullpath = nil
-      suffixes = Gem.suffixes
-      full_require_paths.find do |dir|
-        suffixes.find do |suf|
-          File.file? (fullpath = "#{dir}/#{path}#{suf}")
-        end
-      end ? fullpath : nil
+    if activated? then
+      @paths_map ||= {}
+      @paths_map[path] ||=
+      begin
+        fullpath = nil
+        suffixes = Gem.suffixes
+        full_require_paths.find do |dir|
+          suffixes.find do |suf|
+            File.file? (fullpath = "#{dir}/#{path}#{suf}")
+          end
+        end ? fullpath : nil
+      end
+    else
+      nil
     end
   end
 

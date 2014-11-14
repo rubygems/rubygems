@@ -58,23 +58,28 @@ class Gem::BasicSpecification
   # Return true if this spec can require +file+.
 
   def contains_requirable_file? file
-    if instance_variable_defined?(:@ignored) or
-       instance_variable_defined?('@ignored') then
-      return false
-    elsif missing_extensions? then
-      @ignored = true
+    @contains_requirable_file ||= {}
+    @contains_requirable_file[file] ||=
+    begin
+      if instance_variable_defined?(:@ignored) or
+         instance_variable_defined?('@ignored') then
+        return false
+      elsif missing_extensions? then
+        @ignored = true
 
-      warn "Ignoring #{full_name} because its extensions are not built.  " +
-           "Try: gem pristine #{full_name}"
-      return false
-    end
+        warn "Ignoring #{full_name} because its extensions are not built.  " +
+             "Try: gem pristine #{full_name}"
+        return false
+      end
 
-    suffixes = Gem.suffixes
+      suffixes = Gem.suffixes
 
-    full_require_paths.any? do |dir|
-      base = "#{dir}/#{file}"
-      suffixes.any? { |suf| File.file? "#{base}#{suf}" }
-    end
+      full_require_paths.any? do |dir|
+        base = "#{dir}/#{file}"
+        suffixes.any? { |suf| File.file? "#{base}#{suf}" }
+      end
+    end ? :yes : :no
+    @contains_requirable_file[file] == :yes
   end
 
   def default_gem?

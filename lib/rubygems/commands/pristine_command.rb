@@ -120,8 +120,17 @@ extensions will be restored.
         require 'rubygems/remote_fetcher'
 
         say "Cached gem for #{spec.full_name} not found, attempting to fetch..."
+
         dep = Gem::Dependency.new spec.name, spec.version
-        Gem::RemoteFetcher.fetcher.download_to_cache dep
+        found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency dep
+
+        if found.empty?
+          say "Skipped #{spec.full_name}, it was not found from cache and remote sources"
+          next
+        end
+
+        spec_candidate, source = found.first
+        Gem::RemoteFetcher.fetcher.download spec_candidate, source.uri.to_s
       end
 
       env_shebang =

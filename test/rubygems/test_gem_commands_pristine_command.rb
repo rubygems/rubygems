@@ -329,6 +329,24 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     refute File.exist? gem_lib
   end
 
+  def test_execute_unknown_gem_at_remote_source
+    util_spec 'a'
+
+    @cmd.options[:args] = %w[a]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal([
+      "Restoring gems to pristine condition...",
+      "Cached gem for a-2 not found, attempting to fetch...",
+      "Skipped a-2, it was not found from cache and remote sources"
+    ], @ui.output.split("\n"))
+
+    assert_empty @ui.error
+  end
+
   def test_execute_default_gem
     default_gem_spec = new_default_spec("default", "2.0.0.0",
                                         nil, "default/gem.rb")

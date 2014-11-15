@@ -130,7 +130,7 @@ extensions will be restored.
         end
 
         spec_candidate, source = found.first
-        Gem::RemoteFetcher.fetcher.download spec_candidate, source.uri.to_s
+        Gem::RemoteFetcher.fetcher.download spec_candidate, source.uri.to_s, spec.base_dir
       end
 
       env_shebang =

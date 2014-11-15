@@ -287,6 +287,57 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     assert_empty out, out.inspect
   end
 
+  def test_execute_missing_cache_gem_when_multi_repo
+    specs = spec_fetcher do |fetcher|
+      fetcher.gem 'a', 1
+      fetcher.gem 'b', 1
+    end
+
+    FileUtils.rm_rf File.join(@gemhome, 'gems', 'a-1')
+    FileUtils.rm_rf File.join(@gemhome, 'gems', 'b-1')
+
+    install_gem specs["a-1"]
+    FileUtils.rm File.join(@gemhome, 'cache', 'a-1.gem')
+
+    Gem.clear_paths
+    gemhome2 = File.join(@tempdir, 'gemhome2')
+    Gem.paths = { "GEM_PATH" => [gemhome2, @gemhome], "GEM_HOME" => gemhome2 }
+
+    install_gem specs["b-1"]
+    FileUtils.rm File.join(gemhome2, 'cache', 'b-1.gem')
+
+    @cmd.options[:args] = %w[a b]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    out = @ui.output.split "\n"
+
+    [
+      "Restoring gems to pristine condition...",
+      "Cached gem for a-1 not found, attempting to fetch...",
+      "Restored a-1",
+      "Cached gem for b-1 not found, attempting to fetch...",
+      "Restored b-1",
+    ].each do |line|
+      assert_equal line, out.shift
+    end
+
+    assert_empty out, out.inspect
+    assert_empty @ui.error
+
+    assert_path_exists File.join(@gemhome, "cache", 'a-1.gem')
+    refute_path_exists File.join(gemhome2, "cache", 'a-2.gem')
+    assert_path_exists File.join(@gemhome, "gems", 'a-1')
+    refute_path_exists File.join(gemhome2, "gems", 'a-1')
+
+    assert_path_exists File.join(gemhome2, "cache", 'b-1.gem')
+    refute_path_exists File.join(@gemhome, "cache", 'b-2.gem')
+    assert_path_exists File.join(gemhome2, "gems", 'b-1')
+    refute_path_exists File.join(@gemhome, "gems", 'b-1')
+  end
+
   def test_execute_no_gem
     @cmd.options[:args] = %w[]
 

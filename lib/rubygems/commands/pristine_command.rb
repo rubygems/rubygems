@@ -109,6 +109,11 @@ extensions will be restored.
         next
       end
 
+      if spec.bundled_gem_in_old_ruby?
+        say "Skipped #{spec.full_name}, it is bundled with old Ruby"
+        next
+      end
+
       unless spec.extensions.empty? or options[:extensions] then
         say "Skipped #{spec.full_name}, it needs to compile an extension"
         next

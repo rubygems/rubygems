@@ -413,16 +413,23 @@ EOM
   def install_mode filename, mode
     if
       mode & 0111 > 0 ||
-      (
-        @spec &&
-        @spec.executables &&
-        @spec.executables.include?(filename.sub(/^#{@spec.bindir}\//,""))
-      )
+      file_is_executable(filename)
     then
       0775
     else
       0664
     end
+  end
+
+  ##
+  # Check if the given file is listed in specification executables list
+
+  def file_is_executable filename
+    @spec &&
+    @spec.bindir &&
+    @spec.executables &&
+    filename.start_with?(@spec.bindir) &&
+    @spec.executables.map { |exe| File.join(@spec.bindir, exe) }.include?(filename)
   end
 
   ##

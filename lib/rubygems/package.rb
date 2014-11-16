@@ -369,8 +369,6 @@ EOM
 
         FileUtils.rm_rf destination
 
-        mkdir_options = {}
-        mkdir_options[:mode] = 0775
         mkdir =
           if entry.directory? then
             destination
@@ -378,7 +376,7 @@ EOM
             File.dirname destination
           end
 
-        FileUtils.mkdir_p mkdir, mkdir_options
+        FileUtils.mkdir_p mkdir, :mode => 0775
 
         if entry.file?
           target_mode = install_mode entry.full_name, entry.header.mode

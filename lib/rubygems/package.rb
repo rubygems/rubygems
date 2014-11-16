@@ -413,7 +413,11 @@ EOM
   def install_mode filename, mode
     if
       mode & 0111 > 0 ||
-      ( @spec && @spec.executables && @spec.executables.include?(filename) )
+      (
+        @spec &&
+        @spec.executables &&
+        @spec.executables.include?(filename.sub(/^#{@spec.bindir}\//,""))
+      )
     then
       0775
     else

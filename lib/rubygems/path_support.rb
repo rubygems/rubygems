@@ -31,6 +31,11 @@ class Gem::PathSupport
       @home   = @home.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
     end
 
+    if @home.include? ' ' then
+      warn "RubyGems does not support GEM_HOME with spaces " \
+           "and some gems may fail to install"
+    end
+
     self.path = env["GEM_PATH"] || ENV["GEM_PATH"]
 
     @spec_cache_dir =

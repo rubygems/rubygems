@@ -38,6 +38,7 @@ class TestGemCommandsEnvironmentCommand < Gem::TestCase
     assert_match %r|"gemcutter_key" => "\*\*\*\*"|, @ui.output
     assert_match %r|:verbose => |, @ui.output
     assert_match %r|REMOTE SOURCES:|, @ui.output
+    assert_match %r|SPEC CACHE DIRECTORY:|, @ui.output
 
     assert_match %r|- SHELL PATH:|,     @ui.output
     assert_match %r|- /usr/local/bin$|, @ui.output

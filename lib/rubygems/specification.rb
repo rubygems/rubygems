@@ -709,8 +709,6 @@ class Gem::Specification < Gem::BasicSpecification
       specs = {}
       Gem.loaded_specs.each_value{|s| specs[s] = true}
       @@all.each{|s| s.activated = true if specs[s]}
-
-      _resort!(@@all)
     end
     @@all
   end

@@ -328,7 +328,8 @@ module Gem
 
   # Initialize the filesystem paths to use from +env+.
   # +env+ is a hash-like object (typically ENV) that
-  # is queried for 'GEM_HOME', 'GEM_PATH', and 'GEM_SPEC_CACHE'
+  # is queried for 'GEM_HOME', 'GEM_PATH', 'GEM_SPEC_CACHE', and
+  # 'GEM_FETCH_CACHE'
 
   def self.paths=(env)
     clear_paths
@@ -351,6 +352,10 @@ module Gem
 
   def self.spec_cache_dir
     paths.spec_cache_dir
+  end
+
+  def self.fetch_cache_dir
+    paths.fetch_cache_dir
   end
 
   ##

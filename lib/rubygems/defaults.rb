@@ -19,7 +19,15 @@ module Gem
   # specified in the environment
 
   def self.default_spec_cache_dir
-    File.join Gem.user_home, '.gem', 'specs'
+    default_fetch_cache_dir
+  end
+
+  ##
+  # Default fetch cache directory path to be used if an alternate value is not
+  # specified in the environment
+
+  def self.default_fetch_cache_dir
+    File.join Gem.user_home, 'gem', 'fetch_cache'
   end
 
   ##

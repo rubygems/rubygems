@@ -121,6 +121,8 @@ lib/rubygems/defaults/operating_system.rb
 
     out << "  - SPEC CACHE DIRECTORY: #{Gem.spec_cache_dir}\n"
 
+    out << "  - FETCH CACHE DIRECTORY: #{Gem.fetch_cache_dir}\n"
+
     out << "  - SYSTEM CONFIGURATION DIRECTORY: #{Gem::ConfigFile::SYSTEM_CONFIG_PATH}\n"
 
     out << "  - RUBYGEMS PLATFORMS:\n"

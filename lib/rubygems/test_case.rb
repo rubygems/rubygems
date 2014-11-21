@@ -252,7 +252,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     @gemhome  = File.join @tempdir, 'gemhome'
     @userhome = File.join @tempdir, 'userhome'
-    ENV["GEM_SPEC_CACHE"] = File.join @tempdir, 'spec_cache'
+    ENV["GEM_FETCH_CACHE"] = File.join @tempdir, 'fetch_cache'
 
     @orig_ruby = if ENV['RUBY'] then
                    ruby = Gem.ruby

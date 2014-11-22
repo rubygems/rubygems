@@ -20,6 +20,7 @@ class Gem::PathSupport
   ##
   # Directory with fetch cache
   attr_reader :fetch_cache_dir # :nodoc:
+  alias spec_cache_dir fetch_cache_dir # :nodoc:
 
   ##
   #
@@ -35,13 +36,12 @@ class Gem::PathSupport
     if File::ALT_SEPARATOR then
       @home   = @home.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
     end
-    @fetch_cache_dir = compute_fetch_cache_dir( @env, @home )
+    @fetch_cache_dir = env["GEM_FETCH_CACHE"] || ENV["GEM_FETCH_CACHE"] ||
+                env["GEM_SPEC_CACHE"] || ENV["GEM_SPEC_CACHE"] ||
+                Gem.default_fetch_cache_dir
+    @fetch_cache_dir = @fetch_cache_dir.dup.untaint
 
     self.path = env["GEM_PATH"] || ENV["GEM_PATH"]
-  end
-
-  def spec_cache_dir
-    @fetch_cache_dir
   end
 
   private
@@ -51,7 +51,6 @@ class Gem::PathSupport
 
   def home=(home)
     @home = home.to_s
-    @fetch_cache_dir = compute_fetch_cache_dir( @env, @home )
   end
 
   ##
@@ -88,20 +87,5 @@ class Gem::PathSupport
     end
 
     @path = gem_path.uniq
-  end
-
-  ##
-  # Update the Gem Fetcher cache directory (as reported by Gem.fetch_cache_dir)
-  def compute_fetch_cache_dir( env = @env, home = @home )
-    cache_dir = env["GEM_FETCH_CACHE"] || ENV["GEM_FETCH_CACHE"] ||
-                env["GEM_SPEC_CACHE"] || ENV["GEM_SPEC_CACHE"]
-    unless cache_dir then
-      cache_dir = if File.writable? home then
-        File.join home, 'fetch_cache'
-      else
-        File.join Gem.user_dir, 'fetch_cache'
-      end
-    end
-    cache_dir = cache_dir.dup.untaint
   end
 end

@@ -27,7 +27,7 @@ module Gem
   # specified in the environment
 
   def self.default_fetch_cache_dir
-    File.join Gem.user_home, 'gem', 'fetch_cache'
+    File.join Gem.user_home, '.gem', 'fetch_cache'
   end
 
   ##

@@ -3,6 +3,7 @@ require 'rubygems/request'
 require 'rubygems/uri_formatter'
 require 'rubygems/user_interaction'
 require 'rubygems/request/connection_pools'
+require 'rubygems/remote_fetcher_cache'
 require 'resolv'
 
 ##
@@ -77,6 +78,7 @@ class Gem::RemoteFetcher
     @pools = {}
     @pool_lock = Mutex.new
     @cert_files = Gem::Request.get_cert_files
+    @cache = Gem::RemoteFetcherCache.new
 
     @dns = dns
   end
@@ -264,7 +266,9 @@ class Gem::RemoteFetcher
       raise ArgumentError, "uri scheme is invalid: #{uri.scheme.inspect}"
     end
 
-    data = send "fetch_#{uri.scheme}", uri, mtime, head
+    data = @cache.fetch(uri, mtime) {
+        send "fetch_#{uri.scheme}", uri, mtime, head
+    }
 
     if data and !head and uri.to_s =~ /\.gz$/
       begin
@@ -301,10 +305,6 @@ class Gem::RemoteFetcher
 
     data = fetch_path(uri, mtime)
 
-    if data == nil # indicates the server returned 304 Not Modified
-      return Gem.read_binary(path)
-    end
-
     if update and path
       open(path, 'wb') do |io|
         io.flock(File::LOCK_EX)
@@ -319,9 +319,9 @@ class Gem::RemoteFetcher
   # Returns the size of +uri+ in bytes.
 
   def fetch_size(uri) # TODO: phase this out
-    response = fetch_path(uri, nil, true)
+    data = fetch_path(uri, nil, true)
 
-    response['content-length'].to_i
+    data.length
   end
 
   def correct_for_windows_path(path)

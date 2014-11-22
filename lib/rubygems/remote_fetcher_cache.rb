@@ -9,30 +9,62 @@ require 'rubygems/path_support'
 class Gem::RemoteFetcherCache
   def initialize(paths = Gem.paths)
     @paths = paths
-    @update_cache = nil
-    FileUtils.mkdir_p @paths.fetch_cache_dir unless update_cache?
+    init_cache_dir(fetch_cache_dir)
   end
 
   def fetch_cache_dir
     @paths.fetch_cache_dir
   end
 
-  def fetch(uri, mtime = Time.now.to_i)
-    cache_path = cache_path_for uri
-    return nil unless File.exist? cache_path
-    Gem.read_binary cache_path
+  ##
+  # Fetch the data from the given uri key.
+  # If the data does not exist, and the block is given, the execute the block
+  # and store the data returned from the block at the given uri key.
+
+  def fetch(uri, mtime = Time.now, &block)
+    data = nil
+
+    if stale?(uri,mtime) && block_given? then
+      data = block.call
+      store(uri, data, mtime)
+    else
+      data = Gem.read_binary(cache_path_for(uri))
+    end
+
+    data
   end
 
-  def store(uri, data, mtime = Time.now.to_i)
-    return nil unless update_cache?
+  ##
+  # Return whether or not the cache entry for the given uri is stale based upon
+  # the given mtime.
+  #
+  # If the uri does not exist in the cache, then return true
+
+  def stale?(uri, mtime = Time.now)
+    mtime ||= Time.now
+    stat = File.stat( cache_path_for(uri) )
+    stat.mtime.to_i < mtime.to_i
+  rescue Errno::ENOENT
+    true
+  end
+
+  ##
+  # Store the given data in the cache. Return true or false if the data was
+  # stored or not.
+  #
+  # If the uri ends with a '/' we ignore it as that would be storing a directory
+
+  def store(uri, data, mtime = Time.now)
+    return false if uri.to_s.end_with?("/")
     cache_path = cache_path_for(uri)
-    dirname = File.basename(cache_path)
-    File.mkdir_p(dirname) unless File.directory? dirname
-    File.open(cache_path, 'wb') do |io|
+    dirname = File.dirname(cache_path)
+    FileUtils.mkdir_p(dirname) unless File.directory? dirname
+    File.open(cache_path, 'wb+') do |io|
       io.flock(File::LOCK_EX)
       io.write data
     end
     File.utime(mtime,mtime,cache_path)
+    true
   end
 
   def include?(uri)
@@ -60,16 +92,21 @@ class Gem::RemoteFetcherCache
     escaped_path.untaint
   end
 
-  ##
-  # Returns true when it is possible and safe to update the cache directory.
+  private
 
-  def update_cache?
-    @update_cache ||=
-      begin
-        File.stat(fetch_cache_dir).uid == Process.uid
-      rescue Errno::ENOENT
-        false
-      end
+  ##
+  # Creates the cache dir if it doesn't exist.
+  # Raises an error if the cache cannot be created.
+
+  def init_cache_dir(dir)
+    if File.exist?(dir) then
+      raise Gem::Exception, "Cache dir (#{dir}) is not owned by current uid (#{Process.uid})" unless
+        File.owned?(dir)
+    else
+      FileUtils.mkdir_p(dir)
+    end
+  rescue Errno::EACCES
+    raise Gem::Exception, "Unable to create cache dir (#{dir})"
   end
 
 end

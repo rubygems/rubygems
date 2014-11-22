@@ -16,14 +16,4 @@ class TestGemRemoteFetcherCache < Gem::TestCase
     assert cache_path !~ /:/, "#{cache_path} should not contain a :"
   end
 
-  def test_update_cache_eh
-    assert @fetcher.update_cache?, "#{@fetcher.fetch_cache_dir} does not exist"
-  end
-
-  def test_update_cache_eh_home_nonexistent
-    FileUtils.rmdir Gem.fetch_cache_dir
-
-    refute @fetcher.update_cache?
-  end
-
 end

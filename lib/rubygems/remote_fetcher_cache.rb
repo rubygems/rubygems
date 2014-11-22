@@ -10,6 +10,7 @@ class Gem::RemoteFetcherCache
   def initialize(paths = Gem.paths)
     @paths = paths
     @update_cache = nil
+    FileUtils.mkdir_p @paths.fetch_cache_dir unless update_cache?
   end
 
   def fetch_cache_dir

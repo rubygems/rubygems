@@ -17,7 +17,7 @@ class TestGemRemoteFetcherCache < Gem::TestCase
   end
 
   def test_update_cache_eh
-    assert @fetcher.update_cache?
+    assert @fetcher.update_cache?, "#{@fetcher.fetch_cache_dir} does not exist"
   end
 
   def test_update_cache_eh_home_nonexistent

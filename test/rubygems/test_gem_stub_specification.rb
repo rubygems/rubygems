@@ -122,6 +122,14 @@ class TestStubSpecification < Gem::TestCase
     assert_same real_foo, @foo.to_spec
   end
 
+  def test_to_spec_with_other_specs_loaded_does_not_warn
+    real_foo = util_spec @foo.name, @foo.version
+    real_foo.activate
+    bar = Gem::StubSpecification.new BAR
+    refute_predicate Gem.loaded_specs, :empty?
+    assert bar.to_spec
+  end
+
   def test_to_spec_activated
     assert @foo.to_spec.is_a?(Gem::Specification)
     assert_equal "foo", @foo.to_spec.name

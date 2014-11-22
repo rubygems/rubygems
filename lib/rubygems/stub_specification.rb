@@ -154,9 +154,11 @@ class Gem::StubSpecification < Gem::BasicSpecification
   # The full Gem::Specification for this gem, loaded from evalling its gemspec
 
   def to_spec
-    @spec ||= Gem.loaded_specs.values.find { |spec|
-      spec.name == @name and spec.version == @version
-    }
+    @spec ||= if @data then
+                Gem.loaded_specs.values.find { |spec|
+                  spec.name == name and spec.version == version
+                }
+              end
 
     @spec ||= Gem::Specification.load(loaded_from)
     @spec.ignored = @ignored if instance_variable_defined? :@ignored

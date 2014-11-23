@@ -75,14 +75,11 @@ class Gem::RemoteFetcherCache
   # Returns the local path to write +uri+ to.
 
   def cache_path_for(uri)
+    uri = URI.parse uri unless URI::Generic === uri
     File.join fetch_cache_dir, "#{uri.host}%#{uri.port}", escape_path(uri)
   end
 
-  ##
-  # Returns the local directory to write +uri+ to.
-  def cache_dir(uri)
-    File.dirname cache_path_for( uri )
-  end
+  private
 
   ##
   # escape_path
@@ -92,7 +89,6 @@ class Gem::RemoteFetcherCache
     escaped_path.untaint
   end
 
-  private
 
   ##
   # Creates the cache dir if it doesn't exist.

@@ -31,6 +31,7 @@ class Gem::FakeFetcher
     @data = {}
     @paths = []
     @api_endpoints = {}
+    @cache = Gem::RemoteFetcherCache.new
   end
 
   def api_endpoint(uri)
@@ -57,7 +58,9 @@ class Gem::FakeFetcher
   end
 
   def fetch_path path, mtime = nil, head = false
-    data = find_data(path)
+    data = @cache.fetch(path, mtime) {
+      find_data(path)
+    }
 
     if data.respond_to?(:call) then
       data.call

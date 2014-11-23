@@ -19,6 +19,7 @@ class TestGemSource < Gem::TestCase
     end
 
     @source = Gem::Source.new(@gem_repo)
+    @cache = Gem::RemoteFetcherCache.new
   end
 
   def test_api_uri
@@ -31,13 +32,6 @@ class TestGemSource < Gem::TestCase
 
     src = Gem::Source.new uri
     assert_equal URI.parse("http://api.blah"), src.api_uri
-  end
-
-  def test_cache_dir_escapes_windows_paths
-    uri = URI.parse("file:///C:/WINDOWS/Temp/gem_repo")
-    root = Gem.spec_cache_dir
-    cache_dir = @source.cache_dir(uri).gsub(root, '')
-    assert cache_dir !~ /:/, "#{cache_dir} should not contain a :"
   end
 
   def test_dependency_resolver_set_bundler_api
@@ -72,32 +66,18 @@ class TestGemSource < Gem::TestCase
   def test_fetch_spec
     a1 = @specs['a-1']
 
-    spec_uri = "#{@gem_repo}#{Gem::MARSHAL_SPEC_DIR}#{a1.spec_name}"
-
     spec = @source.fetch_spec tuple('a', Gem::Version.new(1), 'ruby')
     assert_equal a1.full_name, spec.full_name
-
-    cache_dir = @source.cache_dir URI.parse(spec_uri)
-
-    cache_file = File.join cache_dir, a1.spec_name
-
-    assert File.exist?(cache_file)
   end
 
   def test_fetch_spec_cached
     a1 = @specs['a-1']
 
     spec_uri = "#{@gem_repo}/#{Gem::MARSHAL_SPEC_DIR}#{a1.spec_name}"
-    @fetcher.data["#{spec_uri}.rz"] = nil
+    spec_rz_uri = "#{spec_uri}.rz"
+    @fetcher.data[spec_rz_uri] = nil
 
-    cache_dir = @source.cache_dir URI.parse(spec_uri)
-    FileUtils.mkdir_p cache_dir
-
-    cache_file = File.join cache_dir, a1.spec_name
-
-    open cache_file, 'wb' do |io|
-      Marshal.dump a1, io
-    end
+    @cache.store( spec_rz_uri, Gem.deflate(Marshal.dump(a1)) )
 
     spec = @source.fetch_spec tuple('a', Gem::Version.new(1), 'ruby')
     assert_equal a1.full_name, spec.full_name
@@ -125,11 +105,8 @@ class TestGemSource < Gem::TestCase
     released = @source.load_specs(:released).map { |spec| spec.full_name }
     assert_equal %W[a-2 a-1 b-2], released
 
-    cache_dir = File.join Gem.spec_cache_dir, 'gems.example.com%80'
-    assert File.exist?(cache_dir), "#{cache_dir} does not exist"
-
-    cache_file = File.join cache_dir, "specs.#{Gem.marshal_version}"
-    assert File.exist?(cache_file)
+    uri = "http://gems.example.com:80/specs.#{Gem.marshal_version}.gz"
+    assert @cache.include?(uri)
   end
 
   def test_load_specs_cached
@@ -137,20 +114,13 @@ class TestGemSource < Gem::TestCase
 
     # Make sure the cached version is actually different:
     latest_specs << Gem::NameTuple.new('cached', Gem::Version.new('1.0.0'), 'ruby')
+    gz_uri = "#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"
 
-    @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] = nil
+    @fetcher.data[gz_uri] = nil
     @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}"] =
       ' ' * Marshal.dump(latest_specs).length
 
-    cache_dir = File.join Gem.spec_cache_dir, 'gems.example.com%80'
-
-    FileUtils.mkdir_p cache_dir
-
-    cache_file = File.join cache_dir, "latest_specs.#{Gem.marshal_version}"
-
-    open cache_file, 'wb' do |io|
-      Marshal.dump latest_specs, io
-    end
+    @cache.store(gz_uri, util_gzip(Marshal.dump(latest_specs)))
 
     cached_specs = @source.load_specs :latest
 
@@ -160,22 +130,16 @@ class TestGemSource < Gem::TestCase
   def test_load_specs_cached_empty
     latest_specs = @source.load_specs :latest
 
-    # Make sure the cached version is actually different:
+    uri = "#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"
+
+    # Make sure the cached version is actually different, and old
+    latest_snapshot = Marshal.dump(latest_specs)
+    @cache.store(uri, util_gzip(latest_snapshot), Time.now - 15)
+
+    # Make the upstream have newer data
     latest_specs << Gem::NameTuple.new('fixed', Gem::Version.new('1.0.0'), 'ruby')
     # Setup valid data on the 'remote'
-    @fetcher.data["#{@gem_repo}latest_specs.#{Gem.marshal_version}.gz"] =
-          util_gzip(Marshal.dump(latest_specs))
-
-    cache_dir = File.join Gem.spec_cache_dir, 'gems.example.com%80'
-
-    FileUtils.mkdir_p cache_dir
-
-    cache_file = File.join cache_dir, "latest_specs.#{Gem.marshal_version}"
-
-    open cache_file, 'wb' do |io|
-      # Setup invalid data in the cache:
-      io.write Marshal.dump(latest_specs)[0, 10]
-    end
+    @fetcher.data[uri] = util_gzip(Marshal.dump(latest_specs))
 
     fixed_specs = @source.load_specs :latest
 
@@ -211,16 +175,6 @@ class TestGemSource < Gem::TestCase
     no_uri.instance_variable_set :@uri, nil
 
     assert_equal(-1, remote.   <=>(no_uri),    'remote <=> no_uri')
-  end
-
-  def test_update_cache_eh
-    assert @source.update_cache?
-  end
-
-  def test_update_cache_eh_home_nonexistent
-    FileUtils.rmdir Gem.user_home
-
-    refute @source.update_cache?
   end
 
 end

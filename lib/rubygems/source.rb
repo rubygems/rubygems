@@ -101,29 +101,6 @@ class Gem::Source
   end
 
   ##
-  # Returns the local directory to write +uri+ to.
-
-  def cache_dir(uri)
-    # Correct for windows paths
-    escaped_path = uri.path.sub(/^\/([a-z]):\//i, '/\\1-/')
-    escaped_path.untaint
-
-    File.join Gem.spec_cache_dir, "#{uri.host}%#{uri.port}", File.dirname(escaped_path)
-  end
-
-  ##
-  # Returns true when it is possible and safe to update the cache directory.
-
-  def update_cache?
-    @update_cache ||=
-      begin
-        File.stat(Gem.user_home).uid == Process.uid
-      rescue Errno::ENOENT
-        false
-      end
-  end
-
-  ##
   # Fetches a specification for the given +name_tuple+.
 
   def fetch_spec name_tuple
@@ -133,28 +110,10 @@ class Gem::Source
 
     uri = api_uri + "#{Gem::MARSHAL_SPEC_DIR}#{spec_file_name}"
 
-    cache_dir = cache_dir uri
-
-    local_spec = File.join cache_dir, spec_file_name
-
-    if File.exist? local_spec then
-      spec = Gem.read_binary local_spec
-      spec = Marshal.load(spec) rescue nil
-      return spec if spec
-    end
-
     uri.path << '.rz'
 
     spec = fetcher.fetch_path uri
     spec = Gem.inflate spec
-
-    if update_cache? then
-      FileUtils.mkdir_p cache_dir
-
-      open local_spec, 'wb' do |io|
-        io.write spec
-      end
-    end
 
     # TODO: Investigate setting Gem::Specification#loaded_from to a URI
     Marshal.load spec
@@ -176,24 +135,13 @@ class Gem::Source
     fetcher    = Gem::RemoteFetcher.fetcher
     file_name  = "#{file}.#{Gem.marshal_version}"
     spec_path  = api_uri + "#{file_name}.gz"
-    cache_dir  = cache_dir spec_path
-    local_file = File.join(cache_dir, file_name)
-    retried    = false
 
-    FileUtils.mkdir_p cache_dir if update_cache?
-
-    spec_dump = fetcher.cache_update_path spec_path, local_file, update_cache?
+    spec_dump = fetcher.fetch_path spec_path
 
     begin
       Gem::NameTuple.from_list Marshal.load(spec_dump)
     rescue ArgumentError
-      if update_cache? && !retried
-        FileUtils.rm local_file
-        retried = true
-        retry
-      else
-        raise Gem::Exception.new("Invalid spec cache file in #{local_file}")
-      end
+      raise Gem::Exception.new("Invalid spec cache file for #{spec_path}")
     end
   end
 

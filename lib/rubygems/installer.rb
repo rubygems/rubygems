@@ -421,8 +421,15 @@ class Gem::Installer
         next
       end
 
-      mode = File.stat(bin_path).mode | 0111
-      FileUtils.chmod mode, bin_path
+      mode = File.stat(bin_path).mode
+      new_mode = mode | 0111
+      if mode != new_mode
+        # We can't assume we own the file, only that it will be writeable
+        tmp_path = bin_path + '.tmp'
+        FileUtils.cp bin_path, tmp_path
+        FileUtils.chmod new_mode, tmp_path
+        FileUtils.mv tmp_path, bin_path
+      end
 
       check_executable_overwrite filename
 

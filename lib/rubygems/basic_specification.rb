@@ -65,7 +65,7 @@ class Gem::BasicSpecification
       @ignored = true
 
       warn "Ignoring #{full_name} because its extensions are not built.  " +
-           "Try: gem pristine #{full_name}"
+           "Try: gem pristine #{name} --version #{version}"
       return false
     end
 

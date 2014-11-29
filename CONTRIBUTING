@@ -30,3 +30,29 @@ Run:
 
 After `rake newb` finishes you can run `rake` to run the tests.
 
+== Issues
+
+RubyGems uses milestones and labels to track issues and pull requests.
+
+A new milestone is created for each feature release.  New features will be
+merged (for a pull request) or implemented when "enough" have accumulated.
+Upon release the milestone will be closed.  Bug fixes are added to the next
+feature release milestone and merged or fixed and released as-needed.  Bug fix
+releases use the previous feature release minor version number.
+
+Issues in the "Unfulfilled Promises and Broken Dreams" milestone are looking
+for implementors.  It is highly unlikely they will be implemented by RubyGems
+committers.  They may be closed after one year.
+
+Issues in the "Future" milestone are more likely to be implemented by RubyGems
+committers.  They are triaged with each new feature release and either move to
+the new version numbered milestone, left in "Future" or moved to "Unfulfilled
+Promises and Broken Dreams".  They may be closed after one year.
+
+Issues with accepted status in a feature release milestone have been reviewed
+and triaged and are scheduled for a fix or implementation.
+
+Issues with the feedback status may be closed one week after a request for more
+information from a collaborator.  They will be reopened when more information
+becomes available.
+

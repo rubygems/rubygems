@@ -23,6 +23,8 @@ Bug fixes:
   Tuomas Kareinen.
 * Improved interoperability of Vagrant with RubyGems.  Pull request #1057 by
   Vít Ondruch.
+* Fixed installation of gems on systems using memory-mapped files.  Pull
+  request #1038 by Justin Li.
 * Removed unneeded exception handling for cyclic dependencies.  Pull request
   #1043 by Jens Wille.
 * Fixed handling of platforms when writing lockfiles.

@@ -49,8 +49,11 @@ class Gem::StubSpecification < Gem::BasicSpecification
   # True when this gem has been activated
 
   def activated?
-    loaded = Gem.loaded_specs[name]
-    loaded && loaded.version == version
+    @activated ||=
+    begin
+      loaded = Gem.loaded_specs[name]
+      loaded && loaded.version == version
+    end
   end
 
   def build_extensions # :nodoc:

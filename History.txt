@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.4.5
+
+Bug fixes:
+
+* Executable stubs use the correct gem version when RUBYGEMS_GEMDEPS is
+  active.  Issue #1072 by Michael Kaiser-Nyman.
+
 === 2.4.4 / 2014-11-12
 
 Bug fixes:

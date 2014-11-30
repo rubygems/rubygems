@@ -112,6 +112,20 @@ class TestGem < Gem::TestCase
     end
   end
 
+  def test_self_bin_path_active
+    a1 = util_spec 'a', '1' do |s|
+      s.executables = ['exec']
+    end
+
+    util_spec 'a', '2' do |s|
+      s.executables = ['exec']
+    end
+
+    a1.activate
+
+    assert_match 'a-1/bin/exec', Gem.bin_path('a', 'exec', '>= 0')
+  end
+
   def test_self_bin_path_no_exec_name
     e = assert_raises ArgumentError do
       Gem.bin_path 'a'

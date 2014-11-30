@@ -232,7 +232,13 @@ module Gem
     requirements = Gem::Requirement.default if
       requirements.empty?
 
-    specs = Gem::Dependency.new(name, requirements).matching_specs(true)
+    dep = Gem::Dependency.new name, requirements
+
+    loaded = Gem.loaded_specs[name]
+
+    return loaded.bin_file exec_name if loaded && dep.matches_spec?(loaded)
+
+    specs = dep.matching_specs(true)
 
     raise Gem::GemNotFoundException,
           "can't find gem #{name} (#{requirements})" if specs.empty?

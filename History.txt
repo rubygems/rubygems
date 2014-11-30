@@ -10,7 +10,7 @@ Bug fixes:
   Mogutan Mogu.
 * Fixed handling of git@example:gem.git URIs.  Issue #1054 by Mogutan Mogu.
 * Fixed handling of platforms retrieved from the dependencies API.  Issue
-  #1058 by tux-mind.
+  #1058 and patch suggestion by tux-mind.
 * Fixed handling of platforms when writing lockfiles.
 
 === 2.4.4 / 2014-11-12

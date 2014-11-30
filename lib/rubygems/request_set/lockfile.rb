@@ -200,6 +200,8 @@ class Gem::RequestSet::Lockfile
 
     platforms = @requests.map { |request| request.spec.platform }.uniq
 
+    platforms = platforms.sort_by { |platform| platform.to_s }
+
     platforms.sort.each do |platform|
       out << "  #{platform}"
     end

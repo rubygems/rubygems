@@ -8,6 +8,7 @@ Bug fixes:
   active.  Issue #1072 by Michael Kaiser-Nyman.
 * Fixed handling of pinned gems in lockfiles with versions.  Issue #1054 by
   Mogutan Mogu.
+* Fixed handling of platforms when writing lockfiles.
 
 === 2.4.4 / 2014-11-12
 

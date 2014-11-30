@@ -1874,29 +1874,30 @@ dependencies: []
     FileUtils.touch expected_rb
 
     dir = @ext.extension_dir
-    expected_so = File.join(dir, 'ext.so')
+    ext = RbConfig::CONFIG["DLEXT"]
+    expected_so = File.join(dir, "ext.#{ext}")
     FileUtils.mkdir_p dir
     FileUtils.touch expected_so
 
-    assert_nil @ext.to_fullpath('code')
-    assert_nil @ext.to_fullpath('code.rb')
-    assert_nil @ext.to_fullpath('code.so')
+    assert_nil @ext.to_fullpath("code")
+    assert_nil @ext.to_fullpath("code.rb")
+    assert_nil @ext.to_fullpath("code.#{ext}")
 
-    assert_nil @ext.to_fullpath('ext')
-    assert_nil @ext.to_fullpath('ext.rb')
-    assert_nil @ext.to_fullpath('ext.so')
+    assert_nil @ext.to_fullpath("ext")
+    assert_nil @ext.to_fullpath("ext.rb")
+    assert_nil @ext.to_fullpath("ext.#{ext}")
 
     @ext.activate
 
-    assert_equal expected_rb, @ext.to_fullpath('code')
-    assert_equal expected_rb, @ext.to_fullpath('code.rb')
-    assert_nil @ext.to_fullpath('code.so')
+    assert_equal expected_rb, @ext.to_fullpath("code")
+    assert_equal expected_rb, @ext.to_fullpath("code.rb")
+    assert_nil @ext.to_fullpath("code.#{ext}")
 
-    assert_equal expected_so, @ext.to_fullpath('ext')
-    assert_nil @ext.to_fullpath('ext.rb')
-    assert_equal expected_so, @ext.to_fullpath('ext.so')
+    assert_equal expected_so, @ext.to_fullpath("ext")
+    assert_nil @ext.to_fullpath("ext.rb")
+    assert_equal expected_so, @ext.to_fullpath("ext.#{ext}")
 
-    assert_nil @ext.to_fullpath('notexist')
+    assert_nil @ext.to_fullpath("notexist")
   end
 
   def test_require_already_activated

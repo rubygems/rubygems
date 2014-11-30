@@ -19,6 +19,8 @@ Bug fixes:
   by Tuomas Kareinen.
 * `gem pristine` now skips bundled gems properly.  Pull request #1064 by
   Tuomas Kareinen.
+* Improved interoperability of Vagrant with RubyGems.  Pull request #1057 by
+  Vít Ondruch.
 * Fixed handling of platforms when writing lockfiles.
 
 === 2.4.4 / 2014-11-12

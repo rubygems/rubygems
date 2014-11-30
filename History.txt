@@ -13,6 +13,8 @@ Bug fixes:
 * Fixed handling of git@example:gem.git URIs.  Issue #1054 by Mogutan Mogu.
 * Fixed handling of platforms retrieved from the dependencies API.  Issue
   #1058 and patch suggestion by tux-mind.
+* RubyGems now suggests a copy-pasteable `gem pristine` command when
+  extensions are missing.  Pull request #1057 by Shannon Skipper.
 * `gem pristine` now skips gems cannot be found remotely.  Pull request #1064
   by Tuomas Kareinen.
 * `gem pristine` now caches gems to the proper directory.  Pull request #1064

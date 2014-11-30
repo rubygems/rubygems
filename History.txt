@@ -27,6 +27,8 @@ Bug fixes:
   request #1038 by Justin Li.
 * Fixed bug in Gem::Text#min3 where `a == b < c`.  Pull request #1026 by
   fortissimo1997.
+* Fixed uninitialized variable warning in BasicSpecification.  Pull request
+  #1019 by Piotr Szotkowski.
 * Removed unneeded exception handling for cyclic dependencies.  Pull request
   #1043 by Jens Wille.
 * Fixed handling of platforms when writing lockfiles.

@@ -25,6 +25,8 @@ Bug fixes:
   Vít Ondruch.
 * Fixed installation of gems on systems using memory-mapped files.  Pull
   request #1038 by Justin Li.
+* Fixed bug in Gem::Text#min3 where `a == b < c`.  Pull request #1026 by
+  fortissimo1997.
 * Removed unneeded exception handling for cyclic dependencies.  Pull request
   #1043 by Jens Wille.
 * Fixed handling of platforms when writing lockfiles.

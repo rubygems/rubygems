@@ -15,6 +15,8 @@ Bug fixes:
   #1058 and patch suggestion by tux-mind.
 * RubyGems now suggests a copy-pasteable `gem pristine` command when
   extensions are missing.  Pull request #1057 by Shannon Skipper.
+* Improved errors for long file names when packaging.  Pull request #1016 by
+  Piotrek Bator.
 * `gem pristine` now skips gems cannot be found remotely.  Pull request #1064
   by Tuomas Kareinen.
 * `gem pristine` now caches gems to the proper directory.  Pull request #1064

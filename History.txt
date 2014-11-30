@@ -6,6 +6,8 @@ Bug fixes:
 
 * Executable stubs use the correct gem version when RUBYGEMS_GEMDEPS is
   active.  Issue #1072 by Michael Kaiser-Nyman.
+* Fixed handling of pinned gems in lockfiles with versions.  Issue #1054 by
+  Mogutan Mogu.
 
 === 2.4.4 / 2014-11-12
 

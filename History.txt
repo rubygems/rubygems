@@ -6,6 +6,8 @@ Bug fixes:
 
 * Improved speed of requiring gems.  (Around 25% for a 60 gem test).  Pull
   request #1060 by unak.
+* RubyGems no longer attempts to look up gems remotely with the --local flag.
+  Pull request #1084 by Jeremy Evans.
 * Executable stubs use the correct gem version when RUBYGEMS_GEMDEPS is
   active.  Issue #1072 by Michael Kaiser-Nyman.
 * Fixed handling of pinned gems in lockfiles with versions.  Issue #1078 by

@@ -35,6 +35,7 @@ Bug fixes:
   #1019 by Piotr Szotkowski.
 * Removed unneeded exception handling for cyclic dependencies.  Pull request
   #1043 by Jens Wille.
+* Fixed grouped expression warning.  Pull request #1081 by André Arko.
 * Fixed handling of platforms when writing lockfiles.
 
 === 2.4.4 / 2014-11-12

@@ -1,6 +1,6 @@
 .autotest
 .document
-CONTRIBUTING
+CONTRIBUTING.rdoc
 CVE-2013-4287.txt
 CVE-2013-4363.txt
 History.txt

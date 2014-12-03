@@ -27,6 +27,8 @@ Bug fixes:
   Tuomas Kareinen.
 * Improved interoperability of Vagrant with RubyGems.  Pull request #1057 by
   Vít Ondruch.
+* Renamed CONTRIBUTING to CONTRIBUTING.rdoc to allow markup.  Pull request
+  #1090 by Roberto Miranda.
 * Fixed installation of gems on systems using memory-mapped files.  Pull
   request #1038 by Justin Li.
 * Fixed bug in Gem::Text#min3 where `a == b < c`.  Pull request #1026 by

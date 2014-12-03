@@ -14,6 +14,14 @@ class TestGemDependencyInstaller < Gem::TestCase
     FileUtils.mkdir @gems_dir
 
     Gem::RemoteFetcher.fetcher = @fetcher = Gem::FakeFetcher.new
+
+    @original_platforms = Gem.platforms
+    Gem.platforms = []
+  end
+
+  def teardown
+    Gem.platforms = @original_platforms
+    super
   end
 
   def util_setup_gems
@@ -1082,6 +1090,24 @@ class TestGemDependencyInstaller < Gem::TestCase
       installer.find_gems_with_sources(dependency).all_specs
 
     assert_equal [@a1_pre, @a1], prereleases
+  end
+
+  def test_find_gems_with_sources_with_best_only_and_platform
+    util_setup_gems
+    a1_x86_mingw32, = util_gem 'a', '1' do |s|
+      s.platform = 'x86-mingw32'
+    end
+    util_setup_spec_fetcher @a1, a1_x86_mingw32
+    Gem.platforms << Gem::Platform.new('x86-mingw32')
+
+    installer = Gem::DependencyInstaller.new
+
+    dependency = Gem::Dependency.new('a', Gem::Requirement.default)
+
+    releases =
+      installer.find_gems_with_sources(dependency, true).all_specs
+
+    assert_equal [a1_x86_mingw32], releases
   end
 
   def test_find_gems_with_sources_with_bad_source

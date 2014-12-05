@@ -21,7 +21,7 @@ class TestGemPathSupport < Gem::TestCase
   end
 
   def test_initialize_home
-    ps = Gem::PathSupport.new "GEM_HOME" => "#{@tempdir}/foo"
+    ps = Gem::PathSupport.new ENV.to_hash.merge("GEM_HOME" => "#{@tempdir}/foo")
 
     assert_equal File.join(@tempdir, "foo"), ps.home
 

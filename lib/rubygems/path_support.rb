@@ -25,7 +25,6 @@ class Gem::PathSupport
   def initialize(env)
     @env = env
 
-    # note 'env' vs 'ENV'...
     @home     = env["GEM_HOME"] || Gem.default_dir
 
     if File::ALT_SEPARATOR then
@@ -52,7 +51,7 @@ class Gem::PathSupport
     gem_path = []
 
     # FIX: I can't tell wtf this is doing.
-    gpaths ||= (ENV['GEM_PATH'] || "").empty? ? nil : ENV["GEM_PATH"]
+    gpaths ||= (gpaths || "").empty? ? nil : gpaths
 
     if gpaths
       gem_path = gpaths.split(Gem.path_separator)

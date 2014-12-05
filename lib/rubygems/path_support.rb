@@ -55,15 +55,11 @@ class Gem::PathSupport
     gpaths ||= (ENV['GEM_PATH'] || "").empty? ? nil : ENV["GEM_PATH"]
 
     if gpaths
-      if gpaths.kind_of?(Array)
-        gem_path = gpaths.dup
-      else
-        gem_path = gpaths.split(Gem.path_separator)
-        # Handle the path_separator being set to a regexp, which will cause
-        # end_with? to error
-        if gpaths =~ /#{Gem.path_separator}\z/
-          gem_path += default_path
-        end
+      gem_path = gpaths.split(Gem.path_separator)
+      # Handle the path_separator being set to a regexp, which will cause
+      # end_with? to error
+      if gpaths =~ /#{Gem.path_separator}\z/
+        gem_path += default_path
       end
 
       if File::ALT_SEPARATOR then

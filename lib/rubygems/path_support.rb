@@ -50,9 +50,6 @@ class Gem::PathSupport
 
     gem_path = []
 
-    # FIX: I can't tell wtf this is doing.
-    gpaths ||= (gpaths || "").empty? ? nil : gpaths
-
     if gpaths
       gem_path = gpaths.split(Gem.path_separator)
       # Handle the path_separator being set to a regexp, which will cause

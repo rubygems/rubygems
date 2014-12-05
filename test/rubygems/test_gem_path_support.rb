@@ -12,7 +12,7 @@ class TestGemPathSupport < Gem::TestCase
   end
 
   def test_initialize
-    ps = Gem::PathSupport.new
+    ps = Gem::PathSupport.new ENV
 
     assert_equal ENV["GEM_HOME"], ps.home
 
@@ -39,7 +39,7 @@ class TestGemPathSupport < Gem::TestCase
   end
 
   def test_initialize_path
-    ps = Gem::PathSupport.new "GEM_PATH" => %W[#{@tempdir}/foo #{@tempdir}/bar]
+    ps = Gem::PathSupport.new ENV.to_hash.merge("GEM_PATH" => %W[#{@tempdir}/foo #{@tempdir}/bar])
 
     assert_equal ENV["GEM_HOME"], ps.home
 
@@ -105,12 +105,12 @@ class TestGemPathSupport < Gem::TestCase
   def test_initialize_spec
     ENV["GEM_SPEC_CACHE"] = nil
 
-    ps = Gem::PathSupport.new
+    ps = Gem::PathSupport.new ENV
     assert_equal Gem.default_spec_cache_dir, ps.spec_cache_dir
 
     ENV["GEM_SPEC_CACHE"] = 'bar'
 
-    ps = Gem::PathSupport.new
+    ps = Gem::PathSupport.new ENV
     assert_equal ENV["GEM_SPEC_CACHE"], ps.spec_cache_dir
 
     ENV["GEM_SPEC_CACHE"] = File.join @tempdir, 'spec_cache'

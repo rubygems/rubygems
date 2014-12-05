@@ -22,20 +22,20 @@ class Gem::PathSupport
   # Constructor. Takes a single argument which is to be treated like a
   # hashtable, or defaults to ENV, the system environment.
   #
-  def initialize(env=ENV)
+  def initialize(env)
     @env = env
 
     # note 'env' vs 'ENV'...
-    @home     = env["GEM_HOME"] || ENV["GEM_HOME"] || Gem.default_dir
+    @home     = env["GEM_HOME"] || Gem.default_dir
 
     if File::ALT_SEPARATOR then
       @home   = @home.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
     end
 
-    self.path = env["GEM_PATH"] || ENV["GEM_PATH"]
+    self.path = env["GEM_PATH"]
 
     @spec_cache_dir =
-      env["GEM_SPEC_CACHE"] || ENV["GEM_SPEC_CACHE"] ||
+      env["GEM_SPEC_CACHE"] ||
         Gem.default_spec_cache_dir
 
     @spec_cache_dir = @spec_cache_dir.dup.untaint

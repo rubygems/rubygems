@@ -326,7 +326,7 @@ module Gem
   # lookup files.
 
   def self.paths
-    @paths ||= Gem::PathSupport.new
+    @paths ||= Gem::PathSupport.new(ENV)
   end
 
   # Initialize the filesystem paths to use from +env+.
@@ -335,7 +335,7 @@ module Gem
 
   def self.paths=(env)
     clear_paths
-    @paths = Gem::PathSupport.new env
+    @paths = Gem::PathSupport.new ENV.to_hash.merge(env)
     Gem::Specification.dirs = @paths.path
   end
 

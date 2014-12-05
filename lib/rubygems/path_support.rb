@@ -31,11 +31,9 @@ class Gem::PathSupport
       @home   = @home.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
     end
 
-    self.path = env["GEM_PATH"]
+    @path = split_gem_path env["GEM_PATH"]
 
-    @spec_cache_dir =
-      env["GEM_SPEC_CACHE"] ||
-        Gem.default_spec_cache_dir
+    @spec_cache_dir = env["GEM_SPEC_CACHE"] || Gem.default_spec_cache_dir
 
     @spec_cache_dir = @spec_cache_dir.dup.untaint
   end
@@ -43,9 +41,9 @@ class Gem::PathSupport
   private
 
   ##
-  # Set the Gem search path (as reported by Gem.path).
+  # Split the Gem search path (as reported by Gem.path).
 
-  def path=(gpaths)
+  def split_gem_path gpaths
     # FIX: it should be [home, *path], not [*path, home]
 
     gem_path = []
@@ -69,7 +67,7 @@ class Gem::PathSupport
       gem_path = default_path
     end
 
-    @path = gem_path.uniq
+    gem_path.uniq
   end
 
   # Return the default Gem path

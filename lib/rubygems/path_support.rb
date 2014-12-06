@@ -29,7 +29,7 @@ class Gem::PathSupport
       @home   = @home.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
     end
 
-    @path = split_gem_path env["GEM_PATH"]
+    @path = split_gem_path env["GEM_PATH"], @home
 
     @spec_cache_dir = env["GEM_SPEC_CACHE"] || Gem.default_spec_cache_dir
 
@@ -41,7 +41,7 @@ class Gem::PathSupport
   ##
   # Split the Gem search path (as reported by Gem.path).
 
-  def split_gem_path gpaths
+  def split_gem_path gpaths, home
     # FIX: it should be [home, *path], not [*path, home]
 
     gem_path = []
@@ -60,7 +60,7 @@ class Gem::PathSupport
         end
       end
 
-      gem_path << @home
+      gem_path << home
     else
       gem_path = default_path
     end

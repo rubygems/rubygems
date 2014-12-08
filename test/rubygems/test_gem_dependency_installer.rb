@@ -280,7 +280,7 @@ class TestGemDependencyInstaller < Gem::TestCase
   # This asserts that if a gem's dependency is satisfied by an
   # already installed gem, RubyGems doesn't installed a newer
   # version
-  def test_install_doesnt_upgrade_installed_depedencies
+  def test_install_doesnt_upgrade_installed_dependencies
     util_setup_gems
 
     a2, a2_gem = util_gem 'a', '2'

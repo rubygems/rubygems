@@ -227,6 +227,205 @@ class TestGemRequirement < Gem::TestCase
     refute_satisfied_by "2.0.a",   "~> 2.0"
   end
 
+  def test_satisfied_by_spermy_inplace_pre
+    req = "~> 1.4.beta"
+
+    refute_satisfied_by "1.3.beta.0",  req
+    refute_satisfied_by "1.3",         req
+    refute_satisfied_by "1.3.0",       req
+
+    refute_satisfied_by "1.4.alpha",   req
+    refute_satisfied_by "1.4.alpha.0", req
+
+    assert_satisfied_by "1.4.beta",    req
+    assert_satisfied_by "1.4.beta.0",  req
+    assert_satisfied_by "1.4",         req
+    assert_satisfied_by "1.4.0",       req
+    assert_satisfied_by "1.4.1",       req
+
+    # See more delicate versions compared below
+
+    refute_satisfied_by "2.0",         req
+    refute_satisfied_by "2.0.0",       req
+  end
+
+  def test_satisfied_by_spermy_inplace_pre_next_minor
+    skip "Spermy won't match as expected with inplace prerelease versions"
+    req = "~> 1.4.beta"
+    refute_satisfied_by "1.5.alpha",   req
+    refute_satisfied_by "1.5.beta.0",  req
+    refute_satisfied_by "1.5",         req
+    refute_satisfied_by "1.5.0",       req
+    refute_satisfied_by "1.5.1",       req
+  end
+
+  def test_satisfied_by_spermy_postfix_pre
+    req = "~> 1.4.0.beta"
+
+    refute_satisfied_by "1.3.0.beta.0",  req
+    refute_satisfied_by "1.3",           req
+    refute_satisfied_by "1.3.0",         req
+
+    refute_satisfied_by "1.4.alpha",     req
+    refute_satisfied_by "1.4.alpha.0",   req
+    refute_satisfied_by "1.4.0.alpha",   req
+    refute_satisfied_by "1.4.0.alpha.0", req
+
+    assert_satisfied_by "1.4.0.beta",    req
+    assert_satisfied_by "1.4.0.beta.0",  req
+    assert_satisfied_by "1.4",           req
+    assert_satisfied_by "1.4.0",         req
+    assert_satisfied_by "1.4.1",         req
+
+    refute_satisfied_by "2.0",           req
+    refute_satisfied_by "2.0.0",         req
+
+    refute_satisfied_by "1.5",           req
+    refute_satisfied_by "1.5.0.alpha",   req
+    refute_satisfied_by "1.5.0.beta.0",  req
+    refute_satisfied_by "1.5.0",         req
+    refute_satisfied_by "1.5.1",         req
+  end
+
+  def test_satisfied_by_spermy_postfix_pre_sub
+    req = "~> 1.4.0.beta.1"
+
+    refute_satisfied_by "1.3.0.beta.0",  req
+    refute_satisfied_by "1.3",           req
+    refute_satisfied_by "1.3.0",         req
+
+    refute_satisfied_by "1.4.alpha",     req
+    refute_satisfied_by "1.4.alpha.0",   req
+    refute_satisfied_by "1.4.0.alpha",   req
+    refute_satisfied_by "1.4.0.alpha.0", req
+
+    refute_satisfied_by "1.4.0.beta",    req
+    refute_satisfied_by "1.4.0.beta.0",  req
+
+    assert_satisfied_by "1.4.0.beta.1",  req
+    assert_satisfied_by "1.4",           req
+    assert_satisfied_by "1.4.0",         req
+    assert_satisfied_by "1.4.1",         req
+
+    refute_satisfied_by "2.0",           req
+    refute_satisfied_by "2.0.0",         req
+
+    refute_satisfied_by "1.5",           req
+    refute_satisfied_by "1.5.0.alpha",   req
+    refute_satisfied_by "1.5.0.beta.0",  req
+    refute_satisfied_by "1.5.0",         req
+    refute_satisfied_by "1.5.1",         req
+  end
+
+  def test_satisfied_by_spermy_release
+    req = "~> 1.4.0"
+
+    refute_satisfied_by "1.3.beta.0",  req
+    refute_satisfied_by "1.3",         req
+    refute_satisfied_by "1.3.0",       req
+    refute_satisfied_by "1.3.alpha.0", req
+
+    refute_satisfied_by "1.4.beta.0",  req
+    assert_satisfied_by "1.4",         req
+    assert_satisfied_by "1.4.0",       req
+    assert_satisfied_by "1.4.1",       req
+
+    refute_satisfied_by "1.5.alpha.0", req
+    refute_satisfied_by "1.5.beta.0",  req
+    refute_satisfied_by "1.5",         req
+    refute_satisfied_by "1.5.0",       req
+    refute_satisfied_by "1.5.1",       req
+  end
+
+  def test_satisfied_by_range_pre_inplace
+    req = [ ">= 1.4.beta", "< 1.5" ]
+
+    refute_satisfied_by "1.3.alpha.0", req
+    refute_satisfied_by "1.4.alpha.0", req
+
+    assert_satisfied_by "1.4.beta.0",  req
+    assert_satisfied_by "1.4.beta.1",  req
+
+    assert_satisfied_by "1.4",         req
+    assert_satisfied_by "1.4.0",       req
+    assert_satisfied_by "1.4.1",       req
+
+    refute_satisfied_by "1.5.alpha.0", req
+    refute_satisfied_by "1.5.beta.0",  req
+    refute_satisfied_by "1.5",         req
+    refute_satisfied_by "1.5.0",       req
+    refute_satisfied_by "1.5.1",       req
+  end
+
+  def test_satisfied_by_range_inplace
+    req = [ ">= 1.4", "< 1.5" ]
+
+    refute_satisfied_by "1.3.alpha.0", req
+    refute_satisfied_by "1.4.alpha.0", req
+
+    refute_satisfied_by "1.4.beta.0",  req
+    refute_satisfied_by "1.4.beta.1",  req
+
+    assert_satisfied_by "1.4",         req
+    assert_satisfied_by "1.4.0",       req
+    assert_satisfied_by "1.4.1",       req
+
+    refute_satisfied_by "1.5.alpha.0", req
+    refute_satisfied_by "1.5.beta.0",  req
+    refute_satisfied_by "1.5",         req
+    refute_satisfied_by "1.5.0",       req
+    refute_satisfied_by "1.5.1",       req
+  end
+
+  def test_satisfied_by_range_postfix
+    req = [ ">= 1.4", "< 1.5" ]
+
+    refute_satisfied_by "1.4.0.beta.0",  req
+
+    assert_satisfied_by "1.4",           req
+    assert_satisfied_by "1.4.0",         req
+    assert_satisfied_by "1.4.1",         req
+
+    refute_satisfied_by "1.5.0.beta.0",  req
+    refute_satisfied_by "1.5",           req
+    refute_satisfied_by "1.5.0",         req
+    refute_satisfied_by "1.5.1",         req
+  end
+
+  def test_satisfied_by_range_3_postfix
+    req = [ ">= 1.4.0", "< 1.5.0" ]
+
+    refute_satisfied_by "1.4.0.beta.0",  req
+
+    assert_satisfied_by "1.4",           req
+    assert_satisfied_by "1.4.0",         req
+    assert_satisfied_by "1.4.1",         req
+
+    refute_satisfied_by "1.5.0.beta.0",  req
+    refute_satisfied_by "1.5",           req
+    refute_satisfied_by "1.5.0",         req
+    refute_satisfied_by "1.5.1",         req
+  end
+
+  def test_satisfied_by_range_with_pre_postfix
+    req = [ ">= 1.4.0.beta", "< 1.5" ]
+
+    refute_satisfied_by "1.3.0.alpha.0", req
+    refute_satisfied_by "1.4.0.alpha.0", req
+
+    assert_satisfied_by "1.4.0.beta.0",  req
+    assert_satisfied_by "1.4.0.beta.1",  req
+
+    assert_satisfied_by "1.4.0",         req
+    assert_satisfied_by "1.4.1",         req
+
+    refute_satisfied_by "1.5.0.alpha.0", req
+    refute_satisfied_by "1.5.0.beta.0",  req
+    refute_satisfied_by "1.5",           req
+    refute_satisfied_by "1.5.0",         req
+    refute_satisfied_by "1.5.1",         req
+  end
+
   def test_satisfied_by_eh_multiple
     req = [">= 1.4", "<= 1.6", "!= 1.5"]
 
@@ -293,7 +492,7 @@ class TestGemRequirement < Gem::TestCase
 
   def assert_satisfied_by version, requirement
     assert req(requirement).satisfied_by?(v(version)),
-      "#{requirement} is satisfied by #{version}"
+      "#{requirement} should be satisfied by #{version}"
   end
 
   # Refute the assumption that two requirements are equal.
@@ -306,6 +505,6 @@ class TestGemRequirement < Gem::TestCase
 
   def refute_satisfied_by version, requirement
     refute req(requirement).satisfied_by?(v(version)),
-      "#{requirement} is not satisfied by #{version}"
+      "#{requirement} should not be satisfied by #{version}"
   end
 end

@@ -1900,6 +1900,27 @@ dependencies: []
     assert_nil @ext.to_fullpath("notexist")
   end
 
+  def test_fullpath_return_rb_extension_file_when_exist_the_same_name_file
+    ext_spec
+
+    @ext.require_paths = 'lib'
+
+    dir = File.join(@gemhome, 'gems', @ext.original_name, 'lib')
+    expected_rb = File.join(dir, 'code.rb')
+    FileUtils.mkdir_p dir
+    FileUtils.touch expected_rb
+
+    dir = @ext.extension_dir
+    ext = RbConfig::CONFIG["DLEXT"]
+    expected_so = File.join(dir, "code.#{ext}")
+    FileUtils.mkdir_p dir
+    FileUtils.touch expected_so
+
+    @ext.activate
+
+    assert_equal expected_rb, @ext.to_fullpath("code")
+  end
+
   def test_require_already_activated
     save_loaded_features do
       a1 = new_spec "a", "1", nil, "lib/d.rb"

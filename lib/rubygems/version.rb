@@ -160,10 +160,12 @@ class Gem::Version
   # A string representation of this Version.
 
   def version
-    @version.dup
+    @version
   end
 
-  alias to_s version
+  def to_s
+    @version.dup
+  end
 
   ##
   # True if the +version+ string matches RubyGems' requirements.
@@ -206,7 +208,7 @@ class Gem::Version
     raise ArgumentError, "Malformed version number string #{version}" unless
       self.class.correct?(version)
 
-    @version = version.to_s.strip.gsub("-",".pre.")
+    @version = version.to_s.strip.gsub("-",".pre.").freeze
     @segments = nil
   end
 

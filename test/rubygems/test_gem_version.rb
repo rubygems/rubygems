@@ -145,6 +145,19 @@ class TestGemVersion < Gem::TestCase
     assert_less_than "1.0.0-1", "1"
   end
 
+  def test_invalid_versions
+    assert Gem::Version.correct? '1.4'
+    assert Gem::Version.correct? '1.a'
+    assert Gem::Version.correct? '1.4-b-a'
+    assert Gem::Version.correct? '1.4-b.a'
+    assert Gem::Version.correct? '1-4-b.a'
+
+    refute Gem::Version.correct? 'a.4'
+    refute Gem::Version.correct? '1.4-.a'
+    refute Gem::Version.correct? '1.4-a.-'
+    refute Gem::Version.correct? '1.4-b.a--b'
+  end
+
   # Asserts that +version+ is a prerelease.
 
   def assert_prerelease version

@@ -598,7 +598,7 @@ module Gem
 
     unless test_syck
       begin
-        gem 'psych', '~> 1.2', '>= 1.2.1'
+        gem 'psych', '>= 1.2.1'
       rescue Gem::LoadError
         # It's OK if the user does not have the psych gem installed.  We will
         # attempt to require the stdlib version

@@ -160,12 +160,10 @@ class Gem::Version
   # A string representation of this Version.
 
   def version
-    @version
-  end
-
-  def to_s
     @version.dup
   end
+
+  alias to_s version
 
   ##
   # True if the +version+ string matches RubyGems' requirements.
@@ -331,7 +329,7 @@ class Gem::Version
 
   def <=> other
     return unless Gem::Version === other
-    return 0 if @version == other.version
+    return 0 if @version == other.version_string
 
     lhsegments = segments
     rhsegments = other.segments
@@ -354,5 +352,11 @@ class Gem::Version
     end
 
     return 0
+  end
+
+  protected
+
+  def version_string
+    @version
   end
 end

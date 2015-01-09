@@ -293,11 +293,13 @@ class Gem::Version
   # Non-prerelease versions return themselves.
 
   def release
-    return self unless prerelease?
-
-    segments = self.segments.dup
-    segments.pop while segments.any? { |s| String === s }
-    self.class.new segments.join('.')
+    @release ||= if prerelease?
+                   segments = self.segments.dup
+                   segments.pop while segments.any? { |s| String === s }
+                   self.class.new segments.join('.')
+                 else
+                   self
+                 end
   end
 
   def segments # :nodoc:

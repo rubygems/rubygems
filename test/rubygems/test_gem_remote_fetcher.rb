@@ -730,8 +730,12 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
   def test_fetch_s3
     fetcher = Gem::RemoteFetcher.new nil
     @fetcher = fetcher
-    url = 's3://testuser:testpass@my-bucket/gems/specs.4.8.gz'
+    url = 's3://my-bucket/gems/specs.4.8.gz'
     $fetched_uri = nil
+
+    Gem.configuration[:s3_source] = {
+      'my-bucket' => {id: 'testuser', secret: 'testpass' }
+    }
 
     def fetcher.request(uri, request_class, last_modified = nil)
       $fetched_uri = uri
@@ -749,6 +753,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     assert_equal 'https://my-bucket.s3.amazonaws.com/gems/specs.4.8.gz?AWSAccessKeyId=testuser&Expires=1395098371&Signature=eUTr7NkpZEet%2BJySE%2BfH6qukroI%3D', $fetched_uri.to_s
     assert_equal 'success', data
   ensure
+    Gem.configuration[:s3_source] = nil
     $fetched_uri = nil
   end
 
@@ -760,7 +765,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
       fetcher.fetch_s3 URI.parse(url)
     end
 
-    assert_match "credentials needed", e.message
+    assert_match 'no s3_source key exists in .gemrc', e.message
   end
 
   def test_observe_no_proxy_env_single_host

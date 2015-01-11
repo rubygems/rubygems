@@ -377,12 +377,12 @@ class Gem::RemoteFetcher
 
   def s3_source_auth(host)
     s3_source = Gem.configuration[:s3_source] || Gem.configuration['s3_source']
-    raise FetchError.new('no s3_source key exists in .gemrc') unless s3_source
+    raise FetchError.new('no s3_source key exists in .gemrc', "s3://#{host}") unless s3_source
     auth = s3_source[host] || s3_source[host.to_sym]
-    raise FetchError.new("no key for host #{host} in s3_source in .gemrc") unless auth
+    raise FetchError.new("no key for host #{host} in s3_source in .gemrc", "s3://#{host}") unless auth
     id = auth[:id] || auth['id']
     secret = auth[:secret] || auth['secret']
-    raise FetchError.new("s3_source for #{host} missing id or secret") unless id and secret
+    raise FetchError.new("s3_source for #{host} missing id or secret", "s3://#{host}") unless id and secret
     [id, secret]
   end
 

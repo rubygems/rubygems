@@ -734,7 +734,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     $fetched_uri = nil
 
     Gem.configuration[:s3_source] = {
-      'my-bucket' => {id: 'testuser', secret: 'testpass' }
+      'my-bucket' => {:id => 'testuser', :secret => 'testpass'}
     }
 
     def fetcher.request(uri, request_class, last_modified = nil)

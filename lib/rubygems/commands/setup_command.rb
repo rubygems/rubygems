@@ -216,6 +216,8 @@ By default, this RubyGems will install gem as:
   def install_executables(bin_dir)
     @bin_file_names = []
 
+    prog_mode = options[:prog_mode] || 0755
+
     executables = { 'gem' => 'bin' }
     executables['bundler'] = 'bundler/exe' if Gem::USE_BUNDLER_FOR_GEMDEPS
     executables.each do |tool, path|
@@ -244,7 +246,7 @@ By default, this RubyGems will install gem as:
               fp.puts bin.join
             end
 
-            install bin_tmp_file, dest_file, :mode => 0755
+            install bin_tmp_file, dest_file, :mode => prog_mode
             @bin_file_names << dest_file
           ensure
             rm bin_tmp_file
@@ -266,7 +268,7 @@ By default, this RubyGems will install gem as:
   TEXT
             end
 
-            install bin_cmd_file, "#{dest_file}.bat", :mode => 0755
+            install bin_cmd_file, "#{dest_file}.bat", :mode => prog_mode
           ensure
             rm bin_cmd_file
           end
@@ -278,9 +280,11 @@ By default, this RubyGems will install gem as:
   def install_file file, dest_dir
     dest_file = File.join dest_dir, file
     dest_dir = File.dirname dest_file
-    mkdir_p dest_dir unless File.directory? dest_dir
+    unless File.directory? dest_dir
+      mkdir_p dest_dir, :mode => options[:dir_mode]
+    end
 
-    install file, dest_file, :mode => 0644
+    install file, dest_file, :mode => options[:data_mode] || 0644
   end
 
   def install_lib(lib_dir)
@@ -411,8 +415,8 @@ By default, this RubyGems will install gem as:
       lib_dir, bin_dir = generate_default_dirs(install_destdir)
     end
 
-    mkdir_p lib_dir
-    mkdir_p bin_dir
+    mkdir_p lib_dir, :mode => options[:dir_mode]
+    mkdir_p bin_dir, :mode => options[:dir_mode]
 
     return lib_dir, bin_dir
   end

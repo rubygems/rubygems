@@ -142,6 +142,10 @@ By default, this RubyGems will install gem as:
 
     remove_old_lib_files lib_dir
 
+    if mode = options[:dir_mode]
+      File.chmod(mode, *Dir.glob(install_destdir+"/**/"))
+    end
+
     say "RubyGems #{Gem::VERSION} installed"
 
     uninstall_old_gemcutter
@@ -266,7 +270,7 @@ TEXT
     dest_file = File.join dest_dir, file
     dest_dir = File.dirname dest_file
     unless File.directory? dest_dir
-      mkdir_p dest_dir, :mode => options[:dir_mode]
+      mkdir_p dest_dir, :mode => 0700
     end
 
     install file, dest_file, :mode => options[:data_mode] || 0644
@@ -337,8 +341,8 @@ TEXT
       lib_dir, bin_dir = generate_default_dirs(install_destdir)
     end
 
-    mkdir_p lib_dir, :mode => options[:dir_mode]
-    mkdir_p bin_dir, :mode => options[:dir_mode]
+    mkdir_p lib_dir, :mode => 0700
+    mkdir_p bin_dir, :mode => 0700
 
     return lib_dir, bin_dir
   end

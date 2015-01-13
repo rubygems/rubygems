@@ -288,7 +288,8 @@ class Gem::Installer
     # Completely remove any previous gem files
     FileUtils.rm_rf gem_dir
 
-    FileUtils.mkdir_p gem_dir, :mode => options[:dir_mode]
+    dir_mode = options[:dir_mode]
+    FileUtils.mkdir_p gem_dir, :mode => dir_mode && 0700
 
     if @options[:install_as_default]
       spec.loaded_from = default_spec_file
@@ -306,6 +307,8 @@ class Gem::Installer
       write_spec
       write_cache_file
     end
+
+    File.chmod(dir_mode, *Dir.glob(gem_dir+"/**/")) if dir_mode
 
     say spec.post_install_message if options[:post_install_message] && !spec.post_install_message.nil?
 
@@ -459,7 +462,7 @@ class Gem::Installer
   def generate_bin # :nodoc:
     return if spec.executables.nil? or spec.executables.empty?
 
-    FileUtils.mkdir_p @bin_dir, :mode => options[:dir_mode]
+    FileUtils.mkdir_p @bin_dir, :mode => options[:dir_mode] && 0700
     raise Gem::FilePermissionError.new(@bin_dir) unless File.writable? @bin_dir
 
     spec.executables.each do |filename|
@@ -693,7 +696,7 @@ class Gem::Installer
   end
 
   def verify_gem_home(unpack = false) # :nodoc:
-    FileUtils.mkdir_p gem_home, :mode => options[:dir_mode]
+    FileUtils.mkdir_p gem_home, :mode => options[:dir_mode] && 0700
     raise Gem::FilePermissionError, gem_home unless
       unpack or File.writable?(gem_home)
   end
@@ -841,7 +844,7 @@ TEXT
 
     build_info_dir = File.join gem_home, 'build_info'
 
-    FileUtils.mkdir_p build_info_dir, :mode => options[:dir_mode]
+    FileUtils.mkdir_p build_info_dir, :mode => options[:dir_mode] && 0700
 
     build_info_file = File.join build_info_dir, "#{spec.full_name}.info"
 

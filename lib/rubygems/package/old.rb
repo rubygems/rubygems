@@ -78,9 +78,9 @@ class Gem::Package::Old < Gem::Package
 
         FileUtils.rm_rf destination
 
-        FileUtils.mkdir_p File.dirname destination
+        FileUtils.mkdir_p File.dirname(destination), :mode => dir_mode
 
-        open destination, 'wb', entry['mode'] do |out|
+        open destination, 'wb', file_mode(entry['mode']) do |out|
           out.write file_data
         end
 

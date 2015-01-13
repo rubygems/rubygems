@@ -346,7 +346,7 @@ EOM
   def extract_files destination_dir, pattern = "*"
     verify unless @spec
 
-    FileUtils.mkdir_p destination_dir, :mode => dir_mode
+    FileUtils.mkdir_p destination_dir, :mode => dir_mode && 0700
 
     @gem.with_read_io do |io|
       reader = Gem::Package::TarReader.new io
@@ -382,7 +382,7 @@ EOM
         FileUtils.rm_rf destination
 
         mkdir_options = {}
-        mkdir_options[:mode] = dir_mode || (entry.header.mode if entry.directory?)
+        mkdir_options[:mode] = dir_mode ? 0700 : (entry.header.mode if entry.directory?)
         mkdir =
           if entry.directory? then
             destination
@@ -402,6 +402,8 @@ EOM
         verbose destination
       end
     end
+
+    File.chmod(dir_mode, *Dir.glob(destination_dir+"/**/")) if dir_mode
   end
 
   def file_mode(mode) # :nodoc:

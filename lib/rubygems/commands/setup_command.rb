@@ -150,6 +150,10 @@ By default, this RubyGems will install gem as:
 
     install_default_bundler_gem
 
+    if mode = options[:dir_mode]
+      File.chmod(mode, *Dir.glob(install_destdir+"/**/"))
+    end
+
     say "RubyGems #{Gem::VERSION} installed"
 
     regenerate_binstubs if options[:regenerate_binstubs]
@@ -281,7 +285,7 @@ By default, this RubyGems will install gem as:
     dest_file = File.join dest_dir, file
     dest_dir = File.dirname dest_file
     unless File.directory? dest_dir
-      mkdir_p dest_dir, :mode => options[:dir_mode]
+      mkdir_p dest_dir, :mode => 0700
     end
 
     install file, dest_file, :mode => options[:data_mode] || 0644
@@ -356,7 +360,7 @@ By default, this RubyGems will install gem as:
 
     specs_dir = Gem::Specification.default_specifications_dir
     specs_dir = File.join(options[:destdir], specs_dir) unless Gem.win_platform?
-    mkdir_p specs_dir
+    mkdir_p specs_dir, :mode => 0700
 
     # Workaround for non-git environment.
     gemspec = File.open('bundler/bundler.gemspec', 'rb'){|f| f.read.gsub(/`git ls-files -z`/, "''") }
@@ -391,7 +395,7 @@ By default, this RubyGems will install gem as:
 
     bundler_bin_dir = bundler_spec.bin_dir
     bundler_bin_dir = File.join(options[:destdir], bundler_bin_dir) unless Gem.win_platform?
-    mkdir_p bundler_bin_dir
+    mkdir_p bundler_bin_dir, :mode => 0700
     bundler_spec.executables.each do |e|
       cp File.join("bundler", bundler_spec.bindir, e), File.join(bundler_bin_dir, e)
     end
@@ -415,8 +419,8 @@ By default, this RubyGems will install gem as:
       lib_dir, bin_dir = generate_default_dirs(install_destdir)
     end
 
-    mkdir_p lib_dir, :mode => options[:dir_mode]
-    mkdir_p bin_dir, :mode => options[:dir_mode]
+    mkdir_p lib_dir, :mode => 0700
+    mkdir_p bin_dir, :mode => 0700
 
     return lib_dir, bin_dir
   end

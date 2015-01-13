@@ -130,6 +130,51 @@ class TestGem < Gem::TestCase
     assert_equal %w[a-1], installed.map { |spec| spec.full_name }
   end
 
+  def test_self_install_permissions
+    options = {
+      :dir_mode => 0500,
+      :prog_mode => 0510,
+      :data_mode => 0640,
+    }
+    Dir.chdir @tempdir do
+      Dir.mkdir 'bin'
+      File.open 'bin/foo.rb', 'w' do |fp|
+        fp.chmod(0755)
+        fp.puts 'p'
+      end
+
+      Dir.mkdir 'data'
+      File.open 'data/foo.txt', 'w' do |fp|
+        fp.puts 'blah'
+      end
+
+      spec_fetcher do |f|
+        f.gem 'foo', 1 do |s|
+          s.executables = ['foo.rb']
+          s.files = %w[bin/foo.rb data/foo.txt]
+        end
+      end
+      Gem.install 'foo', Gem::Requirement.default, options
+    end
+
+    expected = {
+      '.' => options[:dir_mode].to_s(8),
+      'bin' => options[:dir_mode].to_s(8),
+      'data' => options[:dir_mode].to_s(8),
+      'bin/foo.rb' => options[:prog_mode].to_s(8),
+      'data/foo.txt' => options[:data_mode].to_s(8),
+    }
+    result = {}
+    Dir.chdir File.join(@gemhome, 'gems/foo-1') do
+      expected.each_key do |n|
+        result[n] = (File.stat(n).mode & 0777).to_s(8)
+      end
+    end
+    assert_equal(expected, result)
+  ensure
+    File.chmod(0700, *Dir.glob(@gemhome+'/gems/**/'))
+  end
+
   def test_require_missing
     save_loaded_features do
       assert_raises ::LoadError do

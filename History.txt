@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.4.6
+
+Bug fixes:
+
+* Moved extension directory after require_paths to fix missing constant bugs
+  in some gems with C extensions.  Pull request #1137 by Barry Allard.
+
 === 2.4.5 / 2014-12-03
 
 Bug fixes:

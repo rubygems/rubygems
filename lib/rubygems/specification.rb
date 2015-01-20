@@ -1322,6 +1322,50 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
+  # Abbreviate the spec for downloading.  Abbreviated specs are only used for
+  # searching, downloading and related activities and do not need deployment
+  # specific information (e.g. list of files).  So we abbreviate the spec,
+  # making it much smaller for quicker downloads.
+
+  def abbreviate
+    self.files = []
+    self.test_files = []
+    self.rdoc_options = []
+    self.extra_rdoc_files = []
+    self.cert_chain = []
+  end
+
+  ##
+  # Sanitize the descriptive fields in the spec.  Sometimes non-ASCII
+  # characters will garble the site index.  Non-ASCII characters will
+  # be replaced by their XML entity equivalent.
+
+  def sanitize
+    self.summary              = sanitize_string(summary)
+    self.description          = sanitize_string(description)
+    self.post_install_message = sanitize_string(post_install_message)
+    self.authors              = authors.collect { |a| sanitize_string(a) }
+  end
+
+  ##
+  # Sanitize a single string.
+
+  def sanitize_string(string)
+    return string unless string
+
+    # HACK the #to_s is in here because RSpec has an Array of Arrays of
+    # Strings for authors.  Need a way to disallow bad values on gemspec
+    # generation.  (Probably won't happen.)
+    string = string.to_s
+
+    begin
+      Builder::XChar.encode string
+    rescue NameError, NoMethodError
+      string.to_xs
+    end
+  end
+
+  ##
   # Returns an array with bindir attached to each executable in the
   # +executables+ list
 

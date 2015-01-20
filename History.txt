@@ -10,6 +10,8 @@ Bug fixes:
   dependency instance.  Pull request #1101 by Josh Cheek.
 * Fixed warning of shadowed local variable in Gem::Specification.  Pull request
   #1109 by Rohit Arondekar
+* Gem::Requirement should always sort requirements before coercion to Hash.
+  Pull request #1139 by Eito Katagiri.
 
 === 2.4.5 / 2014-12-03
 

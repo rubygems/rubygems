@@ -165,7 +165,7 @@ EOF
         verbose { results.join("\n") }
         begin
           Dir.chdir pwd
-        rescue
+        rescue SystemCallError
           Dir.chdir dest_path
         end
       end

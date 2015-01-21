@@ -14,6 +14,8 @@ Bug fixes:
   Pull request #1139 by Eito Katagiri.
 * The `gem open` command should change the current working directory before
   opening the editor.  Pull request #1142 by Alex Wood.
+* Ensure quotes are stripped from the Windows launcher script used to install
+  gems.  Pull request #1115 by Youngjun Song.
 
 === 2.4.5 / 2014-12-03
 

@@ -116,7 +116,7 @@ class Gem::RequestSet
     if dep = @dependency_names[name] then
       dep.requirement.concat reqs
     else
-      dep = Gem::Dependency.new name, reqs
+      dep = Gem::Dependency.new name, *reqs
       @dependency_names[name] = dep
       @dependencies << dep
     end

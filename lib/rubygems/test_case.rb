@@ -1429,5 +1429,4 @@ end
 require 'rubygems/test_utilities'
 ENV['GEM_HOME'] = Dir.mktmpdir "home"
 ENV['GEM_PATH'] = Dir.mktmpdir "path"
-Gem::Specification.reset
 Gem.clear_paths

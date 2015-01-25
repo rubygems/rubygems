@@ -47,7 +47,6 @@ class TestGemRequestSetLockfile < Gem::TestCase
 
     @set.gem 'a'
     @set.resolve
-    @lockfile.instance_variable_set :@requests, @set.sorted_requests
 
     out = []
 
@@ -75,7 +74,6 @@ class TestGemRequestSetLockfile < Gem::TestCase
     @set.resolve
     @lockfile =
       Gem::RequestSet::Lockfile.new @set, @gem_deps_file, dependencies
-    @lockfile.instance_variable_set :@requests, @set.sorted_requests
 
     out = []
 
@@ -105,7 +103,6 @@ class TestGemRequestSetLockfile < Gem::TestCase
     @set.gem 'a'
     @set.gem 'bundler'
     @set.resolve
-    @lockfile.instance_variable_set :@requests, @set.sorted_requests
 
     spec_groups = @set.sorted_requests.group_by do |request|
       request.spec.class
@@ -143,7 +140,6 @@ class TestGemRequestSetLockfile < Gem::TestCase
 
     @set.gem 'a'
     @set.resolve
-    @lockfile.instance_variable_set :@requests, @set.sorted_requests
 
     out = []
 

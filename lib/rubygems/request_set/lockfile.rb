@@ -80,7 +80,7 @@ class Gem::RequestSet::Lockfile
           [name, requirement_string]
         end
       else
-        @requests.sort_by { |r| r.name }.map do |request|
+        requests.sort_by { |r| r.name }.map do |request|
           spec        = request.spec
           name        = request.name
           requirement = request.request.dependency.requirement
@@ -198,7 +198,7 @@ class Gem::RequestSet::Lockfile
   def add_PLATFORMS out # :nodoc:
     out << "PLATFORMS"
 
-    platforms = @requests.map { |request| request.spec.platform }.uniq
+    platforms = requests.map { |request| request.spec.platform }.uniq
 
     platforms = platforms.sort_by { |platform| platform.to_s }
 
@@ -532,9 +532,7 @@ class Gem::RequestSet::Lockfile
 
     out = []
 
-    @requests = @set.sorted_requests
-
-    @spec_groups = @requests.group_by do |request|
+    @spec_groups = requests.group_by do |request|
       request.spec.class
     end
 
@@ -646,5 +644,10 @@ class Gem::RequestSet::Lockfile
     end
   end
 
+  private
+
+  def requests
+    @set.sorted_requests
+  end
 end
 

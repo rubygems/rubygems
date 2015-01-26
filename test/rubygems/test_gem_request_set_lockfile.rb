@@ -1227,9 +1227,7 @@ DEPENDENCIES
   end
 
   def test_unget
-    @lockfile.instance_variable_set :@current_token, :token
-
-    @lockfile.unget
+    @lockfile.unget :token
 
     assert_equal :token, @lockfile.get
   end

@@ -57,7 +57,6 @@ class Gem::RequestSet::Lockfile
 
     @gem_deps_file.untaint unless gem_deps_file.tainted?
 
-    @current_token  = nil
     @line           = 0
     @line_pos       = 0
     @platforms      = []
@@ -215,12 +214,12 @@ class Gem::RequestSet::Lockfile
   # Gets the next token for a Lockfile
 
   def get expected_types = nil, expected_value = nil # :nodoc:
-    @current_token = @tokens.shift
+    current_token = @tokens.shift
 
-    type, value, column, line = @current_token
+    type, value, column, line = current_token
 
     if expected_types and not Array(expected_types).include? type then
-      unget
+      unget current_token
 
       message = "unexpected token [#{type.inspect}, #{value.inspect}], " +
                 "expected #{expected_types.inspect}"
@@ -229,7 +228,7 @@ class Gem::RequestSet::Lockfile
     end
 
     if expected_value and expected_value != value then
-      unget
+      unget current_token
 
       message = "unexpected token [#{type.inspect}, #{value.inspect}], " +
                 "expected [#{expected_types.inspect}, " +
@@ -238,7 +237,7 @@ class Gem::RequestSet::Lockfile
       raise ParseError.new message, column, line, "#{@gem_deps_file}.lock"
     end
 
-    @current_token
+    current_token
   end
 
   def parse # :nodoc:
@@ -567,7 +566,6 @@ class Gem::RequestSet::Lockfile
 
     @platforms     = []
     @tokens        = []
-    @current_token = nil
 
     lock_file = "#{@gem_deps_file}.lock"
 
@@ -629,8 +627,8 @@ class Gem::RequestSet::Lockfile
   ##
   # Ungets the last token retrieved by #get
 
-  def unget # :nodoc:
-    @tokens.unshift @current_token
+  def unget token # :nodoc:
+    @tokens.unshift token
   end
 
   ##

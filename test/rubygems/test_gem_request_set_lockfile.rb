@@ -104,15 +104,9 @@ class TestGemRequestSetLockfile < Gem::TestCase
     @set.gem 'bundler'
     @set.resolve
 
-    spec_groups = @set.sorted_requests.group_by do |request|
-      request.spec.class
-    end
-    @lockfile.instance_variable_set :@spec_groups, spec_groups
-
-
     out = []
 
-    @lockfile.add_GEM out
+    @lockfile.add_GEM out, @lockfile.spec_groups
 
     expected = [
       'GEM',

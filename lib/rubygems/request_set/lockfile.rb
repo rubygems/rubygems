@@ -106,10 +106,10 @@ class Gem::RequestSet::Lockfile
     out << nil
   end
 
-  def add_GEM out # :nodoc:
-    return if @spec_groups.empty?
+  def add_GEM out, spec_groups # :nodoc:
+    return if spec_groups.empty?
 
-    source_groups = @spec_groups.values.flatten.group_by do |request|
+    source_groups = spec_groups.values.flatten.group_by do |request|
       request.spec.source.uri
     end
 
@@ -136,9 +136,8 @@ class Gem::RequestSet::Lockfile
     end
   end
 
-  def add_GIT out
-    return unless git_requests =
-      @spec_groups.delete(Gem::Resolver::GitSpecification)
+  def add_GIT out, git_requests
+    return if git_requests.empty?
 
     by_repository_revision = git_requests.group_by do |request|
       source = request.spec.source
@@ -179,9 +178,8 @@ class Gem::RequestSet::Lockfile
     end
   end
 
-  def add_PATH out # :nodoc:
-    return unless path_requests =
-      @spec_groups.delete(Gem::Resolver::VendorSpecification)
+  def add_PATH out, path_requests # :nodoc:
+    return if path_requests.empty?
 
     out << "PATH"
     path_requests.each do |request|
@@ -207,6 +205,10 @@ class Gem::RequestSet::Lockfile
     end
 
     out << nil
+  end
+
+  def spec_groups
+    requests.group_by { |request| request.spec.class }
   end
 
   ##
@@ -532,15 +534,13 @@ class Gem::RequestSet::Lockfile
 
     out = []
 
-    @spec_groups = requests.group_by do |request|
-      request.spec.class
-    end
+    groups = spec_groups
 
-    add_PATH out
+    add_PATH out, groups.delete(Gem::Resolver::VendorSpecification) { [] }
 
-    add_GIT out
+    add_GIT out, groups.delete(Gem::Resolver::GitSpecification) { [] }
 
-    add_GEM out
+    add_GEM out, groups
 
     add_PLATFORMS out
 

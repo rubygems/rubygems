@@ -150,48 +150,55 @@ class TestGemRequestSetLockfile < Gem::TestCase
   end
 
   def test_get
-    @lockfile.instance_variable_set :@tokens, [:token]
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new "\n"
+    parser = tokenizer.make_parser nil, nil
 
-    assert_equal :token, @lockfile.get
+    assert_equal :newline, parser.get.first
   end
 
   def test_get_type_mismatch
-    @lockfile.instance_variable_set :@tokens, [[:section, 'x', 5, 1]]
+    filename = File.expand_path("#{@gem_deps_file}.lock")
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new "foo", filename, 1, 0
+    parser = tokenizer.make_parser nil, nil
 
     e = assert_raises Gem::RequestSet::Lockfile::ParseError do
-      @lockfile.get :text
+      parser.get :section
     end
 
     expected =
-      'unexpected token [:section, "x"], expected :text (at line 1 column 5)'
+      'unexpected token [:text, "foo"], expected :section (at line 1 column 0)'
 
     assert_equal expected, e.message
 
     assert_equal 1, e.line
-    assert_equal 5, e.column
-    assert_equal File.expand_path("#{@gem_deps_file}.lock"), e.path
+    assert_equal 0, e.column
+    assert_equal filename, e.path
   end
 
   def test_get_type_multiple
-    @lockfile.instance_variable_set :@tokens, [[:section, 'x', 5, 1]]
+    filename = File.expand_path("#{@gem_deps_file}.lock")
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new "x", filename, 1
+    parser = tokenizer.make_parser nil, nil
 
-    assert @lockfile.get [:text, :section]
+    assert parser.get [:text, :section]
   end
 
   def test_get_type_value_mismatch
-    @lockfile.instance_variable_set :@tokens, [[:section, 'x', 5, 1]]
+    filename = File.expand_path("#{@gem_deps_file}.lock")
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new "x", filename, 1
+    parser = tokenizer.make_parser nil, nil
 
     e = assert_raises Gem::RequestSet::Lockfile::ParseError do
-      @lockfile.get :section, 'y'
+      parser.get :text, 'y'
     end
 
     expected =
-      'unexpected token [:section, "x"], expected [:section, "y"] (at line 1 column 5)'
+      'unexpected token [:text, "x"], expected [:text, "y"] (at line 1 column 0)'
 
     assert_equal expected, e.message
 
     assert_equal 1, e.line
-    assert_equal 5, e.column
+    assert_equal 0, e.column
     assert_equal File.expand_path("#{@gem_deps_file}.lock"), e.path
   end
 
@@ -574,17 +581,19 @@ DEPENDENCIES
   def test_parse_dependency
     write_lockfile ' 1)'
 
-    @lockfile.tokenize
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.from_file @lock_file
+    parser = tokenizer.make_parser nil, nil
 
-    parsed = @lockfile.parse_dependency 'a', '='
+    parsed = parser.parse_dependency 'a', '='
 
     assert_equal dep('a', '= 1'), parsed
 
     write_lockfile ')'
 
-    @lockfile.tokenize
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.from_file @lock_file
+    parser = tokenizer.make_parser nil, nil
 
-    parsed = @lockfile.parse_dependency 'a', '2'
+    parsed = parser.parse_dependency 'a', '2'
 
     assert_equal dep('a', '= 2'), parsed
   end
@@ -895,7 +904,7 @@ DEPENDENCIES
   end
 
   def test_tokenize_missing
-    tokens = @lockfile.tokenize
+    tokens = @lockfile.parse
 
     assert_empty tokens
   end
@@ -1226,9 +1235,11 @@ DEPENDENCIES
   end
 
   def test_unget
-    @lockfile.unget :token
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new "\n"
+    tokenizer.unshift :token
+    parser = tokenizer.make_parser nil, nil
 
-    assert_equal :token, @lockfile.get
+    assert_equal :token, parser.get
   end
 
   def test_write

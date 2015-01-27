@@ -57,10 +57,7 @@ class Gem::RequestSet::Lockfile
 
     @gem_deps_file.untaint unless gem_deps_file.tainted?
 
-    @line           = 0
-    @line_pos       = 0
     @platforms      = []
-    @tokens         = []
   end
 
   def add_DEPENDENCIES out # :nodoc:
@@ -676,8 +673,6 @@ class Gem::RequestSet::Lockfile
           end
       end
 
-      @tokens
-    rescue Errno::ENOENT
       @tokens
     end
   end

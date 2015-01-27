@@ -652,13 +652,13 @@ DEPENDENCIES
   end
 
   def test_peek
-    @lockfile.instance_variable_set :@tokens, [:token]
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new "\n"
 
-    assert_equal :token, @lockfile.peek
+    assert_equal :newline, tokenizer.peek.first
 
-    assert_equal :token, @lockfile.get
+    assert_equal :newline, tokenizer.next_token.first
 
-    assert_equal [:EOF], @lockfile.peek
+    assert_equal [:EOF], tokenizer.peek
   end
 
   def test_relative_path_from
@@ -672,22 +672,21 @@ DEPENDENCIES
   end
 
   def test_skip
-    tokens = [[:token]]
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new "\n"
 
-    @lockfile.instance_variable_set :@tokens, tokens
+    refute_predicate tokenizer, :empty?
 
-    @lockfile.skip :token
+    tokenizer.skip :newline
 
-    assert_empty tokens
+    assert_empty tokenizer
   end
 
   def test_token_pos
-    assert_equal [5, 0], @lockfile.token_pos(5)
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new ''
+    assert_equal [5, 0], tokenizer.token_pos(5)
 
-    @lockfile.instance_variable_set :@line_pos, 2
-    @lockfile.instance_variable_set :@line, 1
-
-    assert_equal [3, 1], @lockfile.token_pos(5)
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new '', nil, 1, 2
+    assert_equal [3, 1], tokenizer.token_pos(5)
   end
 
   def test_tokenize
@@ -794,7 +793,7 @@ DEPENDENCIES
       [:newline,     nil,                  3, 16],
     ]
 
-    assert_equal expected, @lockfile.tokenize
+    assert_equal expected, @lockfile.tokenize.to_a
   end
 
   def test_tokenize_capitals
@@ -836,7 +835,7 @@ DEPENDENCIES
       [:newline, nil,                  4, 9],
     ]
 
-    assert_equal expected, @lockfile.tokenize
+    assert_equal expected, @lockfile.tokenize.to_a
   end
 
   def test_tokenize_conflict_markers
@@ -892,7 +891,7 @@ DEPENDENCIES
       [:newline, nil,             4,  1],
     ]
 
-    assert_equal expected, @lockfile.tokenize
+    assert_equal expected, @lockfile.tokenize.to_a
   end
 
   def test_tokenize_missing
@@ -938,7 +937,7 @@ GEM
       [:newline,     nil,       26,  4],
     ]
 
-    assert_equal expected, @lockfile.tokenize
+    assert_equal expected, @lockfile.tokenize.to_a
   end
 
   def test_to_s_gem

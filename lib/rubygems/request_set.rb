@@ -416,3 +416,4 @@ end
 
 require 'rubygems/request_set/gem_dependency_api'
 require 'rubygems/request_set/lockfile'
+require 'rubygems/request_set/lockfile/tokenizer'

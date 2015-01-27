@@ -204,6 +204,7 @@ class Gem::RequestSet::Lockfile
   end
 
   def parse # :nodoc:
+    raise
     parser = tokenize.make_parser @set, @platforms
     parser.parse
   rescue Errno::ENOENT

@@ -12,6 +12,60 @@ class TestGemRequestSetLockfileParser < Gem::TestCase
     @set = Gem::RequestSet.new
   end
 
+  def test_get
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new "\n"
+    parser = tokenizer.make_parser nil, nil
+
+    assert_equal :newline, parser.get.first
+  end
+
+  def test_get_type_mismatch
+    filename = File.expand_path("#{@gem_deps_file}.lock")
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new "foo", filename, 1, 0
+    parser = tokenizer.make_parser nil, nil
+
+    e = assert_raises Gem::RequestSet::Lockfile::ParseError do
+      parser.get :section
+    end
+
+    expected =
+      'unexpected token [:text, "foo"], expected :section (at line 1 column 0)'
+
+    assert_equal expected, e.message
+
+    assert_equal 1, e.line
+    assert_equal 0, e.column
+    assert_equal filename, e.path
+  end
+
+  def test_get_type_multiple
+    filename = File.expand_path("#{@gem_deps_file}.lock")
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new "x", filename, 1
+    parser = tokenizer.make_parser nil, nil
+
+    assert parser.get [:text, :section]
+  end
+
+  def test_get_type_value_mismatch
+    filename = File.expand_path("#{@gem_deps_file}.lock")
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new "x", filename, 1
+    parser = tokenizer.make_parser nil, nil
+
+    e = assert_raises Gem::RequestSet::Lockfile::ParseError do
+      parser.get :text, 'y'
+    end
+
+    expected =
+      'unexpected token [:text, "x"], expected [:text, "y"] (at line 1 column 0)'
+
+    assert_equal expected, e.message
+
+    assert_equal 1, e.line
+    assert_equal 0, e.column
+    assert_equal File.expand_path("#{@gem_deps_file}.lock"), e.path
+  end
+
+
   def test_parse
     write_lockfile <<-LOCKFILE.strip
 GEM

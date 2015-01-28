@@ -227,15 +227,6 @@ class Gem::RequestSet::Lockfile
   end
 
   ##
-  # Converts a lock file into an Array of tokens.  If the lock file is missing
-  # an empty Array is returned.
-
-  def tokenize # :nodoc:
-    lock_file = "#{@gem_deps_file}.lock"
-    Tokenizer.from_file lock_file
-  end
-
-  ##
   # Writes the lock file alongside the gem dependencies file
 
   def write

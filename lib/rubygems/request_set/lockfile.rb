@@ -203,14 +203,6 @@ class Gem::RequestSet::Lockfile
     requests.group_by { |request| request.spec.class }
   end
 
-  def parse # :nodoc:
-    raise
-    parser = tokenize.make_parser @set, @platforms
-    parser.parse
-  rescue Errno::ENOENT
-    []
-  end
-
   ##
   # The contents of the lock file.
 

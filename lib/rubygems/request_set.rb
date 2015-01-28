@@ -275,8 +275,13 @@ class Gem::RequestSet
 
     @git_set.root_dir = @install_dir
 
-    lockfile = Gem::RequestSet::Lockfile.new self, path
-    lockfile.parse
+    lock_file = "#{File.expand_path(path)}.lock"
+    begin
+      tokenizer = Gem::RequestSet::Lockfile::Tokenizer.from_file lock_file
+      parser = tokenizer.make_parser self, []
+      parser.parse
+    rescue Errno::ENOENT
+    end
 
     gf = Gem::RequestSet::GemDependencyAPI.new self, path
     gf.installing = installing
@@ -411,3 +416,4 @@ end
 
 require 'rubygems/request_set/gem_dependency_api'
 require 'rubygems/request_set/lockfile'
+require 'rubygems/request_set/lockfile/tokenizer'

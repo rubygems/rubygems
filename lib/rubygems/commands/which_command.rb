@@ -38,23 +38,10 @@ requiring to see why it does not behave as you expect.
     found = true
 
     options[:args].each do |arg|
-      arg = arg.sub(/#{Regexp.union(*Gem.suffixes)}$/, '')
-      dirs = $LOAD_PATH
-
-      spec = Gem::Specification.find_by_path arg
-
-      if spec then
-        if options[:search_gems_first] then
-          dirs = spec.full_require_paths + $LOAD_PATH
-        else
-          dirs = $LOAD_PATH + spec.full_require_paths
-        end
-      end
-
       # TODO: this is totally redundant and stupid
-      paths = find_paths arg, dirs
-
-      if paths.empty? then
+      paths = find_paths *dirs(arg)
+      paths = find_paths *dirs(arg.gsub('-', '/')) if paths.empty? && arg.include?('-')
+      if paths.empty?
         alert_error "Can't find ruby library file or shared library #{arg}"
 
         found &&= false
@@ -80,6 +67,23 @@ requiring to see why it does not behave as you expect.
     end
 
     result
+  end
+
+  def dirs(arg)
+    arg = arg.sub(/#{Regexp.union(*Gem.suffixes)}$/, '')
+    dirs = $LOAD_PATH
+
+    spec = Gem::Specification.find_by_path arg
+
+    if spec then
+      if options[:search_gems_first] then
+        dirs = spec.full_require_paths + $LOAD_PATH
+      else
+        dirs = $LOAD_PATH + spec.full_require_paths
+      end
+    end
+
+    [arg, dirs]
   end
 
   def usage # :nodoc:

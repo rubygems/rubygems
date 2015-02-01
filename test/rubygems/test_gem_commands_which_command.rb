@@ -22,6 +22,19 @@ class TestGemCommandsWhichCommand < Gem::TestCase
     assert_equal '', @ui.error
   end
 
+  def test_execute_slash
+    util_foo_slash
+
+    @cmd.handle_options %w[foo-slash]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal "#{@foo_slash.full_gem_path}/lib/foo/slash.rb\n", @ui.output
+    assert_equal '', @ui.error
+  end
+
   def test_execute_directory
     @cmd.handle_options %w[directory]
 
@@ -76,6 +89,19 @@ class TestGemCommandsWhichCommand < Gem::TestCase
 
     files.each do |file|
       filename = File.join(@foo_bar.full_gem_path, file)
+      FileUtils.mkdir_p File.dirname filename
+      FileUtils.touch filename
+    end
+  end
+
+  def util_foo_slash
+    files = %w[lib/foo/slash.rb lib/directory/baz.rb Rakefile]
+    @foo_slash = util_spec 'foo-slash' do |gem|
+      gem.files = files
+    end
+
+    files.each do |file|
+      filename = File.join(@foo_slash.full_gem_path, file)
       FileUtils.mkdir_p File.dirname filename
       FileUtils.touch filename
     end

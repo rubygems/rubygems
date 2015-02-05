@@ -999,6 +999,19 @@ gem 'other', version
     assert_match %r|I am a shiny gem!|, @ui.output
   end
 
+  def test_install_with_skipped_message
+    @spec.post_install_message = 'I am a shiny gem!'
+
+    use_ui @ui do
+      path = Gem::Package.build @spec
+
+      @installer = Gem::Installer.new path, :post_install_message => false
+      @installer.install
+    end
+
+    refute_match %r|I am a shiny gem!|, @ui.output
+  end
+
   def test_install_extension_dir
     gemhome2 = "#{@gemhome}2"
 

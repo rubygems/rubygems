@@ -27,6 +27,7 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
       -i /install_to
       -w
       --vendor
+      --post-install-message
     ]
 
     args.concat %w[-P HighSecurity] if defined?(OpenSSL::SSL)
@@ -181,4 +182,15 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
     RbConfig::CONFIG['vendordir'] = orig_vendordir
   end
 
+  def test_post_install_message_no
+    @cmd.handle_options %w[--no-post-install-message]
+
+    assert_equal false, @cmd.options[:post_install_message]
+  end
+
+  def test_post_install_message
+    @cmd.handle_options %w[--post-install-message]
+
+    assert_equal true, @cmd.options[:post_install_message]
+  end
 end

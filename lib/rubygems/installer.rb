@@ -302,7 +302,7 @@ class Gem::Installer
       write_cache_file
     end
 
-    say spec.post_install_message unless spec.post_install_message.nil?
+    say spec.post_install_message if options[:post_install_message] && !spec.post_install_message.nil?
 
     Gem::Installer.install_lock.synchronize { Gem::Specification.reset }
 
@@ -632,7 +632,8 @@ class Gem::Installer
       :bin_dir      => nil,
       :env_shebang  => false,
       :force        => false,
-      :only_install_dir => false
+      :only_install_dir => false,
+      :post_install_message => true
     }.merge options
 
     @env_shebang         = options[:env_shebang]

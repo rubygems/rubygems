@@ -240,11 +240,7 @@ class Gem::RequestSet::Lockfile
         if '!' == requirement then
           requirement
         else
-          if Gem::Requirement === requirement
-            requirement.for_lockfile
-          else
-            Gem::Requirement.new(requirement).for_lockfile
-          end
+          requirement.for_lockfile
         end
 
       [name, requirement_string]

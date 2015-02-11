@@ -88,7 +88,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     assert_equal %w[a], @gda.requires['a']
 
-    expected = { 'a' => nil }
+    expected = { 'a' => Gem::Requirement.default }
 
     assert_equal expected, @gda.dependencies
   end
@@ -224,7 +224,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     assert_empty @set.dependencies
 
-    expected = { 'a' => nil }
+    expected = { 'a' => Gem::Requirement.default }
 
     assert_equal expected, @gda.dependencies
   end
@@ -405,7 +405,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     assert_equal [dep('a', '~> 1.0')], @set.dependencies
 
-    expected = { 'a' => ['~> 1.0'] }
+    expected = { 'a' => Gem::Requirement.create(['~> 1.0']) }
 
     assert_equal expected, @gda.dependencies
   end
@@ -415,7 +415,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
 
     assert_equal [dep('b', '~> 1.0', '>= 1.0.2')], @set.dependencies
 
-    expected = { 'b' => ['~> 1.0', '>= 1.0.2'] }
+    expected = { 'b' => Gem::Requirement.create(['~> 1.0', '>= 1.0.2']) }
 
     assert_equal expected, @gda.dependencies
   end

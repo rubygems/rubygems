@@ -65,7 +65,7 @@ class TestGemRequestSetLockfile < Gem::TestCase
       end
     end
 
-    dependencies = { 'a' => '~> 2.0' }
+    dependencies = { 'a' => Gem::Requirement.new('~> 2.0') }
 
     @set.gem 'a'
     @set.resolve

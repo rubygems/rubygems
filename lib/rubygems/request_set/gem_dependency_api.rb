@@ -367,11 +367,11 @@ class Gem::RequestSet::GemDependencyAPI
 
     @dependencies[name] =
       if requirements.empty? and not source_set then
-        nil
+        Gem::Requirement.default
       elsif source_set then
         '!'
       else
-        requirements
+        Gem::Requirement.create requirements
       end
 
     return unless gem_platforms options

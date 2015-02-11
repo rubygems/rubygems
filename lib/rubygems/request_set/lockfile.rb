@@ -46,7 +46,7 @@ class Gem::RequestSet::Lockfile
     new request_set, gem_deps_file, dependencies
   end
 
-  def self.requests_to_deps requests
+  def self.requests_to_deps requests # :nodoc:
     requests.each_with_object({}) do |request, hash|
       spec        = request.spec
       name        = request.name
@@ -80,13 +80,9 @@ class Gem::RequestSet::Lockfile
   def add_DEPENDENCIES out # :nodoc:
     out << "DEPENDENCIES"
 
-    dependencies = deps_for_lockfile @dependencies
-
-    dependencies = dependencies.map do |name, requirement_string|
-      "  #{name}#{requirement_string}"
-    end
-
-    out.concat dependencies
+    out.concat @dependencies.sort_by { |name,| name }.map { |name, requirement|
+      "  #{name}#{requirement.for_lockfile}"
+    }
 
     out << nil
   end
@@ -232,12 +228,6 @@ class Gem::RequestSet::Lockfile
 
   def requests
     @set.sorted_requests
-  end
-
-  def deps_for_lockfile dependencies
-    dependencies.sort_by { |name,| name }.map do |name, requirement|
-      [name, requirement.for_lockfile]
-    end
   end
 end
 

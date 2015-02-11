@@ -54,7 +54,7 @@ class Gem::RequestSet::Lockfile
 
       hash[name] = if [Gem::Resolver::VendorSpecification,
                        Gem::Resolver::GitSpecification].include? spec.class then
-                    "!"
+                     Gem::Requirement.source_set
                    else
                      requirement
                    end
@@ -236,14 +236,7 @@ class Gem::RequestSet::Lockfile
 
   def deps_for_lockfile dependencies
     dependencies.sort_by { |name,| name }.map do |name, requirement|
-      requirement_string =
-        if '!' == requirement then
-          requirement
-        else
-          requirement.for_lockfile
-        end
-
-      [name, requirement_string]
+      [name, requirement.for_lockfile]
     end
   end
 end

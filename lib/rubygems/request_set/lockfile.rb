@@ -66,32 +66,9 @@ class Gem::RequestSet::Lockfile
 
     dependencies =
       if @dependencies then
-        @dependencies.sort_by { |name,| name }.map do |name, requirement|
-          requirement_string =
-            if '!' == requirement then
-              requirement
-            else
-              Gem::Requirement.new(requirement).for_lockfile
-            end
-
-          [name, requirement_string]
-        end
+        deps_for_lockfile @dependencies
       else
-        requests.sort_by { |r| r.name }.map do |request|
-          spec        = request.spec
-          name        = request.name
-          requirement = request.request.dependency.requirement
-
-          requirement_string =
-            if [Gem::Resolver::VendorSpecification,
-                Gem::Resolver::GitSpecification].include? spec.class then
-              "!"
-            else
-              requirement.for_lockfile
-            end
-
-          [name, requirement_string]
-        end
+        deps_for_lockfile requests_to_deps requests
       end
 
     dependencies = dependencies.map do |name, requirement_string|
@@ -244,6 +221,38 @@ class Gem::RequestSet::Lockfile
 
   def requests
     @set.sorted_requests
+  end
+
+  def requests_to_deps requests
+    requests.each_with_object({}) do |request, hash|
+      spec        = request.spec
+      name        = request.name
+      requirement = request.request.dependency.requirement
+
+      hash[name] = if [Gem::Resolver::VendorSpecification,
+                       Gem::Resolver::GitSpecification].include? spec.class then
+                    "!"
+                   else
+                     requirement
+                   end
+    end
+  end
+
+  def deps_for_lockfile dependencies
+    dependencies.sort_by { |name,| name }.map do |name, requirement|
+      requirement_string =
+        if '!' == requirement then
+          requirement
+        else
+          if Gem::Requirement === requirement
+            requirement.for_lockfile
+          else
+            Gem::Requirement.new(requirement).for_lockfile
+          end
+        end
+
+      [name, requirement_string]
+    end
   end
 end
 

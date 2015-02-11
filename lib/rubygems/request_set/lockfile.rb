@@ -42,7 +42,23 @@ class Gem::RequestSet::Lockfile
 
   def self.build request_set, gem_deps_file, dependencies = nil
     request_set.resolve
+    dependencies ||= requests_to_deps request_set.sorted_requests
     new request_set, gem_deps_file, dependencies
+  end
+
+  def self.requests_to_deps requests
+    requests.each_with_object({}) do |request, hash|
+      spec        = request.spec
+      name        = request.name
+      requirement = request.request.dependency.requirement
+
+      hash[name] = if [Gem::Resolver::VendorSpecification,
+                       Gem::Resolver::GitSpecification].include? spec.class then
+                    "!"
+                   else
+                     requirement
+                   end
+    end
   end
 
   ##
@@ -50,7 +66,7 @@ class Gem::RequestSet::Lockfile
 
   attr_reader :platforms
 
-  def initialize request_set, gem_deps_file, dependencies = nil
+  def initialize request_set, gem_deps_file, dependencies
     @set           = request_set
     @dependencies  = dependencies
     @gem_deps_file = File.expand_path(gem_deps_file)
@@ -64,12 +80,7 @@ class Gem::RequestSet::Lockfile
   def add_DEPENDENCIES out # :nodoc:
     out << "DEPENDENCIES"
 
-    dependencies =
-      if @dependencies then
-        deps_for_lockfile @dependencies
-      else
-        deps_for_lockfile requests_to_deps requests
-      end
+    dependencies = deps_for_lockfile @dependencies
 
     dependencies = dependencies.map do |name, requirement_string|
       "  #{name}#{requirement_string}"
@@ -221,21 +232,6 @@ class Gem::RequestSet::Lockfile
 
   def requests
     @set.sorted_requests
-  end
-
-  def requests_to_deps requests
-    requests.each_with_object({}) do |request, hash|
-      spec        = request.spec
-      name        = request.name
-      requirement = request.request.dependency.requirement
-
-      hash[name] = if [Gem::Resolver::VendorSpecification,
-                       Gem::Resolver::GitSpecification].include? spec.class then
-                    "!"
-                   else
-                     requirement
-                   end
-    end
   end
 
   def deps_for_lockfile dependencies

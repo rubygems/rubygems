@@ -37,13 +37,18 @@ class Gem::RequestSet::Lockfile
   end
 
   ##
+  # Creates a new Lockfile for the given +request_set+ and +gem_deps_file+
+  # location.
+
+  def self.build request_set, gem_deps_file, dependencies = nil
+    request_set.resolve
+    new request_set, gem_deps_file, dependencies
+  end
+
+  ##
   # The platforms for this Lockfile
 
   attr_reader :platforms
-
-  ##
-  # Creates a new Lockfile for the given +request_set+ and +gem_deps_file+
-  # location.
 
   def initialize request_set, gem_deps_file, dependencies = nil
     @set           = request_set
@@ -207,8 +212,6 @@ class Gem::RequestSet::Lockfile
   # The contents of the lock file.
 
   def to_s
-    @set.resolve
-
     out = []
 
     groups = spec_groups

@@ -223,7 +223,7 @@ class Gem::RequestSet
 
       if options.fetch :lock, true then
         lockfile =
-          Gem::RequestSet::Lockfile.new self, gemdeps, gem_deps_api.dependencies
+          Gem::RequestSet::Lockfile.build self, gemdeps, gem_deps_api.dependencies
         lockfile.write
       end
 

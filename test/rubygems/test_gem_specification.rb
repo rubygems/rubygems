@@ -125,6 +125,31 @@ end
     end
   end
 
+  def test_find_in_unresolved_tree_is_not_exponentiental
+    save_loaded_features do
+      num_of_pkg = 7
+      num_of_version_per_pkg = 3
+      packages = (0..num_of_pkg).map do |pkgi|
+        (0..num_of_version_per_pkg).map do |pkg_version|
+          deps = Hash[(pkgi..num_of_pkg).map { |deppkgi| ["pkg#{deppkgi}", ">= 0"] }]
+          new_spec "pkg#{pkgi}", pkg_version.to_s, deps
+        end
+      end
+      base = new_spec "pkg_base", "1", {"pkg0" => ">= 0"}
+
+      Gem::Specification.reset
+      install_specs base,*packages.flatten
+      base.activate
+
+      require 'benchmark'
+      tms = Benchmark.measure {
+        assert_raises(LoadError) { require 'no_such_file_foo' }
+      }
+      puts tms
+      assert_operator tms.total, :<=, 10
+    end
+  end
+
   def test_self_activate_ambiguous_indirect
     save_loaded_features do
       a1 = new_spec "a", "1", "b" => "> 0"

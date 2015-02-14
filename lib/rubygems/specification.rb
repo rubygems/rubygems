@@ -956,11 +956,16 @@ class Gem::Specification < Gem::BasicSpecification
   def self.find_in_unresolved_tree path
     specs = unresolved_deps.values.map { |dep| dep.to_specs }.flatten
 
+    visited = {}
     specs.reverse_each do |spec|
       trails = []
       spec.traverse do |from_spec, dep, to_spec, trail|
-        next unless to_spec.conflicts.empty?
-        trails << trail if to_spec.contains_requirable_file? path
+        if to_spec.conflicts.empty? && !visited[to_spec]
+          trails << trail if to_spec.contains_requirable_file? path
+          visited[to_spec] = true
+        else
+          :next
+        end
       end
 
       next if trails.empty?
@@ -2436,7 +2441,7 @@ class Gem::Specification < Gem::BasicSpecification
     trail = trail + [self]
     runtime_dependencies.each do |dep|
       dep.to_specs.each do |dep_spec|
-        block[self, dep, dep_spec, trail + [dep_spec]]
+        next if block[self, dep, dep_spec, trail + [dep_spec]] == :next
         dep_spec.traverse(trail, &block) unless
           trail.map(&:name).include? dep_spec.name
       end

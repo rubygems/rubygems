@@ -5,7 +5,8 @@
 Bug fixes:
 
 * Moved extension directory after require_paths to fix missing constant bugs
-  in some gems with C extensions.  Pull request #1137 by Barry Allard.
+  in some gems with C extensions.  Issue #784 by André Arko, pull request
+  #1137 by Barry Allard.
 * Use Gem::Dependency#requirement when adding a dependency to an existing
   dependency instance.  Pull request #1101 by Josh Cheek.
 * Fixed warning of shadowed local variable in Gem::Specification.  Pull request

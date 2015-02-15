@@ -19,6 +19,7 @@ Bug fixes:
 * Fixed errors when writing to NFS to to 0444 files.  Issue #1161 by Emmanuel
   Hadoux.
 * Removed dead code in Gem::StreamUI.  Pull request #1117 by mediaslave24.
+* Fixed typos.  Pull request #1096 by hakeda.
 
 === 2.4.5 / 2014-12-03
 

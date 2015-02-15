@@ -4,6 +4,8 @@
 
 Bug fixes:
 
+* Fixed resolving gems with both upper and lower requirement boundaries.
+  Issue #1141 by Jakub Jirutka.
 * Moved extension directory after require_paths to fix missing constant bugs
   in some gems with C extensions.  Issue #784 by André Arko, pull request
   #1137 by Barry Allard.

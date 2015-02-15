@@ -47,18 +47,22 @@ class Gem::RequestSet::Lockfile
   end
 
   def self.requests_to_deps requests # :nodoc:
-    requests.each_with_object({}) do |request, hash|
+    deps = {}
+
+    requests.each do |request|
       spec        = request.spec
       name        = request.name
       requirement = request.request.dependency.requirement
 
-      hash[name] = if [Gem::Resolver::VendorSpecification,
+      deps[name] = if [Gem::Resolver::VendorSpecification,
                        Gem::Resolver::GitSpecification].include? spec.class then
                      Gem::Requirement.source_set
                    else
                      requirement
                    end
     end
+
+    deps
   end
 
   ##

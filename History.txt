@@ -16,6 +16,8 @@ Bug fixes:
   opening the editor.  Pull request #1142 by Alex Wood.
 * Ensure quotes are stripped from the Windows launcher script used to install
   gems.  Pull request #1115 by Youngjun Song.
+* Fixed errors when writing to NFS to to 0444 files.  Issue #1161 by Emmanuel
+  Hadoux.
 
 === 2.4.5 / 2014-12-03
 

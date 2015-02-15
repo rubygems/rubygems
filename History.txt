@@ -20,6 +20,8 @@ Bug fixes:
   Hadoux.
 * Removed dead code in Gem::StreamUI.  Pull request #1117 by mediaslave24.
 * Fixed typos.  Pull request #1096 by hakeda.
+* Relaxed CMake dependency for RHEL 6 and CentOS 6.  Pull request #1124 by Vít
+  Ondruch.
 
 === 2.4.5 / 2014-12-03
 

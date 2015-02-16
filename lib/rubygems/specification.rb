@@ -397,7 +397,7 @@ class Gem::Specification < Gem::BasicSpecification
   #
   # Usage:
   #
-  #   spec.homepage = 'http://rake.rubyforge.org'
+  #   spec.homepage = 'https://github.com/ruby/rake'
 
   attr_accessor :homepage
 

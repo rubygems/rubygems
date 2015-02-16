@@ -6,10 +6,10 @@ Major enhancements:
 
 Minor enhancements:
 
+Bug fixes:
+
 * Fixed Rake homepage url in example for Gem::Specification#homepage.
   Pull request #1171 by Arthur Nogueira Neves
-
-Bug fixes:
 
 === 2.4.6 / 2014-02-05
 

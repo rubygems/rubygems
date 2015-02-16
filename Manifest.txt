@@ -107,6 +107,8 @@ lib/rubygems/request/https_pool.rb
 lib/rubygems/request_set.rb
 lib/rubygems/request_set/gem_dependency_api.rb
 lib/rubygems/request_set/lockfile.rb
+lib/rubygems/request_set/lockfile/parser.rb
+lib/rubygems/request_set/lockfile/tokenizer.rb
 lib/rubygems/requirement.rb
 lib/rubygems/resolver.rb
 lib/rubygems/resolver/activation_request.rb
@@ -295,6 +297,8 @@ test/rubygems/test_gem_request_connection_pools.rb
 test/rubygems/test_gem_request_set.rb
 test/rubygems/test_gem_request_set_gem_dependency_api.rb
 test/rubygems/test_gem_request_set_lockfile.rb
+test/rubygems/test_gem_request_set_lockfile_parser.rb
+test/rubygems/test_gem_request_set_lockfile_tokenizer.rb
 test/rubygems/test_gem_requirement.rb
 test/rubygems/test_gem_resolver.rb
 test/rubygems/test_gem_resolver_activation_request.rb

@@ -34,7 +34,7 @@ hoe = Hoe.spec 'rubygems-update' do
   spec_extras[:executables]               = ['update_rubygems']
 
   rdoc_locations <<
-    'docs.seattlerb.org:/data/www/docs.seattlerb.org/rubygems/'
+    'docs-push.seattlerb.org:/data/www/docs.seattlerb.org/rubygems/'
 
   clean_globs.push('**/debug.log',
                    '*.out',

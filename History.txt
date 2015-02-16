@@ -1,5 +1,13 @@
 # coding: UTF-8
 
+=== 2.5.0
+
+Major enhancements:
+
+Minor enhancements:
+
+Bug fixes:
+
 === 2.4.6 / 2014-02-05
 
 Bug fixes:

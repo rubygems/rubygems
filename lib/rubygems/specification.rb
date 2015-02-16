@@ -383,6 +383,8 @@ class Gem::Specification < Gem::BasicSpecification
   attr_reader :description
 
   ##
+  # :category: Recommended gemspec attributes
+  #
   # A contact email address (or addresses) for this gem
   #
   # Usage:
@@ -393,6 +395,8 @@ class Gem::Specification < Gem::BasicSpecification
   attr_accessor :email
 
   ##
+  # :category: Recommended gemspec attributes
+  #
   # The URL of this gem's home page
   #
   # Usage:
@@ -2609,7 +2613,7 @@ http://opensource.org/licenses/alphabetical
 
     # Warnings
 
-    %w[author description email homepage summary].each do |attribute|
+    %w[author email homepage summary].each do |attribute|
       value = self.send attribute
       warning "no #{attribute} specified" if value.nil? or value.empty?
     end

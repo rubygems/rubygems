@@ -6,6 +6,9 @@ Major enhancements:
 
 Minor enhancements:
 
+* Moved description attribute to recommended for Gem::Specification.
+  Pull request #1046 by Michal Papis
+
 Bug fixes:
 
 * Fixed Rake homepage url in example for Gem::Specification#homepage.

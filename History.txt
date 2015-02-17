@@ -6,6 +6,7 @@ Major enhancements:
 
 Minor enhancements:
 
+* Add `--skip=gem_name` to Pristine command.  Pull request #1018 by windwiny.
 * Moved description attribute to recommended for Gem::Specification.
   Pull request #1046 by Michal Papis
 

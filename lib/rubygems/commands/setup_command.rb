@@ -143,7 +143,7 @@ By default, this RubyGems will install gem as:
     remove_old_lib_files lib_dir
 
     if mode = options[:dir_mode]
-      File.chmod(mode, *Dir.glob(install_destdir+"/**/"))
+      File.chmod(mode, *Dir.glob(install_destdir+"/**/").map {|path| path.untaint})
     end
 
     say "RubyGems #{Gem::VERSION} installed"

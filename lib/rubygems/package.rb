@@ -401,7 +401,7 @@ EOM
       end
     end
 
-    File.chmod(dir_mode, *Dir.glob(destination_dir+"/**/")) if dir_mode
+    File.chmod(dir_mode, *Dir.glob(destination_dir+"/**/").map {|path| path.untaint}) if dir_mode
   end
 
   def file_mode(mode) # :nodoc:

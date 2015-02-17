@@ -308,7 +308,7 @@ class Gem::Installer
       write_cache_file
     end
 
-    File.chmod(dir_mode, *Dir.glob(gem_dir+"/**/")) if dir_mode
+    File.chmod(dir_mode, *Dir.glob(gem_dir+"/**/").map {|path| path.untaint}) if dir_mode
 
     say spec.post_install_message if options[:post_install_message] && !spec.post_install_message.nil?
 

@@ -172,7 +172,7 @@ class TestGem < Gem::TestCase
     end
     assert_equal(expected, result)
   ensure
-    File.chmod(0700, *Dir.glob(@gemhome+'/gems/**/'))
+    File.chmod(0700, *Dir.glob(@gemhome+'/gems/**/').map {|path| path.untaint})
   end
 
   def test_require_missing

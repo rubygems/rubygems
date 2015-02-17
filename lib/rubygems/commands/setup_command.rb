@@ -151,7 +151,7 @@ By default, this RubyGems will install gem as:
     install_default_bundler_gem
 
     if mode = options[:dir_mode]
-      File.chmod(mode, *Dir.glob(install_destdir+"/**/"))
+      File.chmod(mode, *Dir.glob(install_destdir+"/**/").map {|path| path.untaint})
     end
 
     say "RubyGems #{Gem::VERSION} installed"

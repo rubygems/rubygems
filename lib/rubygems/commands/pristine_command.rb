@@ -22,7 +22,7 @@ class Gem::Commands::PristineCommand < Gem::Command
     end
 
     add_option('--skip=gem_name',
-               'used on --all, skip if name < gem_name') do |value, options|
+               'used on --all, skip if name == gem_name') do |value, options|
       options[:skip] = value
     end
 
@@ -101,10 +101,6 @@ extensions will be restored.
             "Failed to find gems #{options[:args]} #{options[:version]}"
     end
 
-    if options[:skip]
-      specs = specs.to_a.delete_if { |g| g.name < options[:skip] }
-    end
-
     install_dir = Gem.dir # TODO use installer option
 
     raise Gem::FilePermissionError.new(install_dir) unless
@@ -115,6 +111,11 @@ extensions will be restored.
     specs.each do |spec|
       if spec.default_gem?
         say "Skipped #{spec.full_name}, it is a default gem"
+        next
+      end
+
+      if spec.name == options[:skip]
+        say "Skipped #{spec.full_name}, it was given through options"
         next
       end
 

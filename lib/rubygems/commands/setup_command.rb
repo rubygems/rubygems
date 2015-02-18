@@ -119,6 +119,13 @@ By default, this RubyGems will install gem as:
     EOF
   end
 
+  module MakeDirs
+    def mkdir_p(path, *opts)
+      super
+      (@mkdirs ||= []) << path
+    end
+  end
+
   def execute
     @verbose = Gem.configuration.really_verbose
 
@@ -137,6 +144,7 @@ By default, this RubyGems will install gem as:
     else
       extend FileUtils
     end
+    extend MakeDirs
 
     lib_dir, bin_dir = make_destination_dirs install_destdir
 
@@ -151,7 +159,8 @@ By default, this RubyGems will install gem as:
     install_default_bundler_gem
 
     if mode = options[:dir_mode]
-      File.chmod(mode, *Dir.glob(install_destdir+"/**/").map {|path| path.untaint})
+      @mkdirs.uniq!
+      File.chmod(mode, @mkdirs)
     end
 
     say "RubyGems #{Gem::VERSION} installed"

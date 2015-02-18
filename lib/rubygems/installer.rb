@@ -308,7 +308,7 @@ class Gem::Installer
       write_cache_file
     end
 
-    File.chmod(dir_mode, *Dir.glob(gem_dir+"/**/").map {|path| path.untaint}) if dir_mode
+    File.chmod(dir_mode, gem_dir) if dir_mode
 
     say spec.post_install_message if options[:post_install_message] && !spec.post_install_message.nil?
 
@@ -844,7 +844,8 @@ TEXT
 
     build_info_dir = File.join gem_home, 'build_info'
 
-    FileUtils.mkdir_p build_info_dir, :mode => options[:dir_mode] && 0700
+    dir_mode = options[:dir_mode]
+    FileUtils.mkdir_p build_info_dir, :mode => dir_mode && 0700
 
     build_info_file = File.join build_info_dir, "#{spec.full_name}.info"
 
@@ -853,6 +854,8 @@ TEXT
         io.puts arg
       end
     end
+
+    File.chmod(dir_mode, build_info_dir) if dir_mode
   end
 
   ##

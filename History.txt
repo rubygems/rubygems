@@ -13,6 +13,8 @@ Minor enhancements:
   Pull request #1145 by Arthur Nogueira Neves
 * Cache Gem::Version segments for `#bump` and `#release`.
   Pull request #1131 by Matijs van Zuijlen
+* Fix edge case in `levenshtein_distance` for comparing longer strings.
+  Pull request #1173 by Richard Schneeman
 
 Bug fixes:
 

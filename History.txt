@@ -11,6 +11,8 @@ Minor enhancements:
   Pull request #1046 by Michal Papis
 * Moved `Gem::Indexer#abbreviate` and `#sanitize` to `Gem::Specification`.
   Pull request #1145 by Arthur Nogueira Neves
+* Cache Gem::Version segments for `#bump` and `#release`.
+  Pull request #1131 by Matijs van Zuijlen
 
 Bug fixes:
 

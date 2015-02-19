@@ -71,4 +71,9 @@ Without the wrapping, the text might not look good in the RSS feed.
     assert_equal 7, levenshtein_distance("xxxxxxx", "ZenTest")
     assert_equal 7, levenshtein_distance("zentest", "xxxxxxx")
   end
+
+  def test_levenshtein_distance_long
+    assert_equal 13, levenshtein_distance("cat", "thundercatsarego")
+    assert_equal 13, levenshtein_distance("thundercatsarego", "cat")
+  end
 end

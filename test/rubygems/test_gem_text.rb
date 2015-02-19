@@ -64,16 +64,13 @@ Without the wrapping, the text might not look good in the RSS feed.
   def test_levenshtein_distance_remove
     assert_equal 3, levenshtein_distance("zentest", "zentestxxx")
     assert_equal 3, levenshtein_distance("zentestxxx", "zentest")
+    assert_equal 13, levenshtein_distance("cat", "thundercatsarego")
+    assert_equal 13, levenshtein_distance("thundercatsarego", "cat")
   end
 
   def test_levenshtein_distance_replace
     assert_equal 2, levenshtein_distance("zentest", "ZenTest")
     assert_equal 7, levenshtein_distance("xxxxxxx", "ZenTest")
     assert_equal 7, levenshtein_distance("zentest", "xxxxxxx")
-  end
-
-  def test_levenshtein_distance_long
-    assert_equal 13, levenshtein_distance("cat", "thundercatsarego")
-    assert_equal 13, levenshtein_distance("thundercatsarego", "cat")
   end
 end

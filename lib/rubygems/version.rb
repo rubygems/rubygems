@@ -206,7 +206,7 @@ class Gem::Version
     raise ArgumentError, "Malformed version number string #{version}" unless
       self.class.correct?(version)
 
-    @version = version.to_s.strip.gsub("-",".pre.")
+    @version = version.to_s.strip.gsub("-",".pre.").freeze
     @segments = nil
   end
 
@@ -333,7 +333,7 @@ class Gem::Version
 
   def <=> other
     return unless Gem::Version === other
-    return 0 if @version == other.version
+    return 0 if @version == other.version_string
 
     lhsegments = segments
     rhsegments = other.segments
@@ -356,5 +356,11 @@ class Gem::Version
     end
 
     return 0
+  end
+
+  protected
+
+  def version_string
+    @version
   end
 end

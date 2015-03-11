@@ -333,7 +333,7 @@ class Gem::Version
 
   def <=> other
     return unless Gem::Version === other
-    return 0 if @version == other.version
+    return 0 if @version == other._version
 
     lhsegments = segments
     rhsegments = other.segments
@@ -356,5 +356,11 @@ class Gem::Version
     end
 
     return 0
+  end
+
+  protected
+
+  def _version
+    @version
   end
 end

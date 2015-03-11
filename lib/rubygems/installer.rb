@@ -661,7 +661,7 @@ class Gem::Installer
 
 require 'rubygems'
 
-version = "#{Gem::Requirement.default}"
+version = "#{Gem::Requirement.default}.a"
 
 if ARGV.first
   str = ARGV.first

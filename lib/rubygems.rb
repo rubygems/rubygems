@@ -26,12 +26,12 @@ require 'rubygems/errors'
 # For user documentation, see:
 #
 # * <tt>gem help</tt> and <tt>gem help [command]</tt>
-# * {RubyGems User Guide}[http://docs.rubygems.org/read/book/1]
-# * {Frequently Asked Questions}[http://docs.rubygems.org/read/book/3]
+# * {RubyGems User Guide}[http://guides.rubygems.org/]
+# * {Frequently Asked Questions}[http://guides.rubygems.org/faqs]
 #
 # For gem developer documentation see:
 #
-# * {Creating Gems}[http://docs.rubygems.org/read/chapter/5]
+# * {Creating Gems}[http://guides.rubygems.org/make-your-own-gem]
 # * Gem::Specification
 # * Gem::Version for version dependency notes
 #

@@ -963,7 +963,7 @@ class Gem::Specification < Gem::BasicSpecification
     specs.reverse_each do |spec|
       trails = []
       spec.traverse do |from_spec, dep, to_spec, trail|
-        next unless to_spec.conflicts.empty?
+        next if to_spec.has_conflicts?
         trails << trail if to_spec.contains_requirable_file? path
       end
 
@@ -1564,6 +1564,16 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
+  # Return true if there are possible conflicts against the currently loaded specs.
+
+  def has_conflicts?
+    self.runtime_dependencies.any? { |dep|
+      spec = Gem.loaded_specs[dep.name]
+      spec and not spec.satisfies_requirement? dep
+    }
+  end
+
+  ##
   # The date this gem was created.  Lazily defaults to the current UTC date.
   #
   # There is no need to set this in your gem specification.
@@ -2154,10 +2164,8 @@ class Gem::Specification < Gem::BasicSpecification
   # Check the spec for possible conflicts and freak out if there are any.
 
   def raise_if_conflicts # :nodoc:
-    conf = self.conflicts
-
-    unless conf.empty? then
-      raise Gem::ConflictError.new self, conf
+    if has_conflicts? then
+      raise Gem::ConflictError.new self, conflicts
     end
   end
 

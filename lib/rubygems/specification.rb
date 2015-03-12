@@ -2485,8 +2485,9 @@ class Gem::Specification < Gem::BasicSpecification
     runtime_dependencies.each do |dep|
       dep.to_specs.each do |dep_spec|
         block[self, dep, dep_spec, trail + [dep_spec]]
+        spec_name = dep_spec.name
         dep_spec.traverse(trail, &block) unless
-          trail.map(&:name).include? dep_spec.name
+          trail.any? { |s| s.name == spec_name }
       end
     end
   end

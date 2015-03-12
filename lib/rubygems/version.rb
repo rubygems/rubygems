@@ -236,7 +236,7 @@ class Gem::Version
   end
 
   def hash # :nodoc:
-    @hash ||= segments.hash
+    @version.hash
   end
 
   def init_with coder # :nodoc:

@@ -125,6 +125,52 @@ end
     end
   end
 
+  def test_self_activate_conflicting_in_direct
+    save_loaded_features do
+      a1 = new_spec "A", "1", "c" => ">= 2", "b" => "> 0"
+      b1 = new_spec "b", "1", {"c" => "= 2"}, "lib/d.rb"
+      b2 = new_spec "b", "2", {"c" => "= 1"}, "lib/d.rb"
+      c1 = new_spec "c", "1"
+      c2 = new_spec "c", "2"
+      c3 = new_spec "c", "3"
+
+      install_specs a1, b1, b2, c1, c2, c3
+
+      a1.activate
+      assert_equal %w(A-1), loaded_spec_names
+      assert_equal ["b (> 0)","c (>= 2)"], unresolved_names
+
+      require "d"
+
+      assert_equal %w(A-1 b-1 c-2), loaded_spec_names
+      assert_equal ["c (> 1)"], unresolved_names
+    end
+  end
+
+  def test_self_activate_conflicting_in_indirect
+    save_loaded_features do
+      base = new_spec "0", "1", "A" => ">= 1"
+      a1 = new_spec "A", "1", {"c" => ">= 2", "b" => "> 0"}, "lib/a.rb"
+      a2 = new_spec "A", "2", {"c" => ">= 2", "b" => "> 0"}, "lib/a.rb"
+      b1 = new_spec "b", "1", {"c" => "= 1"}, "lib/d.rb"
+      b2 = new_spec "b", "2", {"c" => "= 2"}, "lib/d.rb"
+      c1 = new_spec "c", "1", {}, "lib/c.rb"
+      c2 = new_spec "c", "2", {}, "lib/c.rb"
+      c3 = new_spec "c", "3", {}, "lib/c.rb"
+
+      install_specs base, a1, a2, b1, b2, c1, c2, c3
+
+      base.activate
+      assert_equal %w(0-1), loaded_spec_names
+      assert_equal ["A (>= 1)"], unresolved_names
+
+      require "d"
+
+      assert_equal %w(0-1 A-2 b-2 c-2), loaded_spec_names
+      assert_equal [], unresolved_names
+    end
+  end
+
   def test_self_activate_ambiguous_indirect
     save_loaded_features do
       a1 = new_spec "a", "1", "b" => "> 0"

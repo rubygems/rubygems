@@ -969,7 +969,7 @@ class Gem::Specification < Gem::BasicSpecification
 
       next if trails.empty?
 
-      return trails.map(&:reverse).sort.first.reverse
+      return trails.sort.first.reverse
     end
 
     []
@@ -2493,11 +2493,11 @@ class Gem::Specification < Gem::BasicSpecification
   # hop.
 
   def traverse trail = [], &block
-    trail = trail + [self]
+    trail = [self] + trail
     dependencies.each do |dep|
       next unless dep.runtime?
       dep.to_specs.each do |dep_spec|
-        block[self, dep, dep_spec, trail + [dep_spec]]
+        block[self, dep, dep_spec, [dep_spec] + trail]
         spec_name = dep_spec.name
         dep_spec.traverse(trail, &block) unless
           trail.any? { |s| s.name == spec_name }

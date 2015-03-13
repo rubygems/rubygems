@@ -13,6 +13,7 @@ require 'rubygems/deprecate'
 require 'rubygems/basic_specification'
 require 'rubygems/stub_specification'
 require 'rubygems/util/stringio'
+require 'rubygems/util/list'
 
 ##
 # The Specification class contains the information for a Gem.  Typically
@@ -962,14 +963,14 @@ class Gem::Specification < Gem::BasicSpecification
 
     specs.reverse_each do |spec|
       trails = []
-      spec.traverse do |from_spec, dep, to_spec, trail|
+      Gem::Specification.traverse(spec) do |to_spec, trail|
         next if to_spec.has_conflicts?
         trails << trail if to_spec.contains_requirable_file? path
       end
 
       next if trails.empty?
 
-      return trails.sort.first.reverse
+      return trails.map(&:to_a).sort.first
     end
 
     []
@@ -2504,6 +2505,28 @@ class Gem::Specification < Gem::BasicSpecification
       end
     end
   end
+
+  def self.traverse spec, &block # :nodoc:
+    _traverse spec, Gem::List.new(spec), &block
+  end
+
+  ##
+  # This method is for traversing spec dependencies.  Don't use this, it is
+  # super private. I am super serious!
+
+  def self._traverse spec, trail, &block # :nodoc:
+    spec.dependencies.each do |dep|
+      next unless dep.runtime?
+      dep.to_specs.each do |dep_spec|
+        stack = Gem::List.new(dep_spec, trail)
+        block[dep_spec, stack]
+        spec_name = dep_spec.name
+        _traverse(dep_spec, stack, &block) unless
+          stack.any? { |s| s.name == spec_name }
+      end
+    end
+  end
+  private_class_method :_traverse
 
   ##
   # Checks that the specification contains all required fields, and does a

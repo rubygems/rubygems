@@ -145,7 +145,6 @@ end
       tms = Benchmark.measure {
         assert_raises(LoadError) { require 'no_such_file_foo' }
       }
-      puts tms
       assert_operator tms.total, :<=, 10
     end
   end

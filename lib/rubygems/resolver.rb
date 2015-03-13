@@ -238,8 +238,8 @@ class Gem::Resolver
       exc.errors = @set.errors
       raise exc
     end
-    possibles.sort_by! { |s| [s.source, s.version, s.platform == Gem::Platform.local.to_s ? 1 : 0] }
-    possibles.map { |s| ActivationRequest.new s, dependency, [] }
+    possibles.sort_by { |s| [s.source, s.version, s.platform == Gem::Platform.local.to_s ? 1 : 0] }.
+      map { |s| ActivationRequest.new s, dependency, [] }
   end
 
   def dependencies_for(specification, activated)

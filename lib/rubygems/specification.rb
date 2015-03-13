@@ -1567,9 +1567,13 @@ class Gem::Specification < Gem::BasicSpecification
   # Return true if there are possible conflicts against the currently loaded specs.
 
   def has_conflicts?
-    self.runtime_dependencies.any? { |dep|
-      spec = Gem.loaded_specs[dep.name]
-      spec and not spec.satisfies_requirement? dep
+    self.dependencies.any? { |dep|
+      if dep.runtime? then
+        spec = Gem.loaded_specs[dep.name]
+        spec and not spec.satisfies_requirement? dep
+      else
+        false
+      end
     }
   end
 
@@ -2242,7 +2246,7 @@ class Gem::Specification < Gem::BasicSpecification
   # List of dependencies that will automatically be activated at runtime.
 
   def runtime_dependencies
-    dependencies.select { |d| d.type == :runtime }
+    dependencies.select(&:runtime?)
   end
 
   ##
@@ -2490,7 +2494,8 @@ class Gem::Specification < Gem::BasicSpecification
 
   def traverse trail = [], &block
     trail = trail + [self]
-    runtime_dependencies.each do |dep|
+    dependencies.each do |dep|
+      next unless dep.runtime?
       dep.to_specs.each do |dep_spec|
         block[self, dep, dep_spec, trail + [dep_spec]]
         spec_name = dep_spec.name

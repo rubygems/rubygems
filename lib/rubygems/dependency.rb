@@ -164,6 +164,10 @@ class Gem::Dependency
     @type ||= :runtime
   end
 
+  def runtime?
+    @type == :runtime || !@type
+  end
+
   def == other # :nodoc:
     Gem::Dependency === other &&
       self.name        == other.name &&

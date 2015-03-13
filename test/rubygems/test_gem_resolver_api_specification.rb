@@ -31,13 +31,14 @@ class TestGemResolverAPISpecification < Gem::TestCase
   def test_fetch_development_dependencies
     specs = spec_fetcher do |fetcher|
       fetcher.spec 'rails', '3.0.3' do |s|
+        s.platform = 'i386-mingw32'
         s.add_runtime_dependency 'bundler',  '~> 1.0'
         s.add_runtime_dependency 'railties', '= 3.0.3'
         s.add_development_dependency 'a',    '= 1'
       end
     end
 
-    rails = specs['rails-3.0.3']
+    rails = specs['rails-3.0.3-x86-mingw32']
 
     repo = @gem_repo + 'api/v1/dependencies'
 
@@ -46,7 +47,7 @@ class TestGemResolverAPISpecification < Gem::TestCase
     data = {
       :name     => 'rails',
       :number   => '3.0.3',
-      :platform => 'ruby',
+      :platform => 'i386-mingw32',
       :dependencies => [
         ['bundler',  '~> 1.0'],
         ['railties', '= 3.0.3'],

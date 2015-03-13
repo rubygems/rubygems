@@ -2014,6 +2014,19 @@ dependencies: []
     assert_equal ['test/suite.rb'], @a1.test_files
   end
 
+  def test_runtime_predicate_true
+    @a2.add_runtime_dependency 'b', '1'
+    assert_predicate @a2.dependencies.first, :runtime?
+
+    @a2.dependencies.first.instance_variable_set :@type, nil
+    assert_predicate @a2.dependencies.first, :runtime?
+  end
+
+  def test_runtime_predicate_false
+    @a2.add_development_dependency 'b', '1'
+    refute_predicate @a2.dependencies.first, :runtime?
+  end
+
   def test_to_ruby
     @a2.add_runtime_dependency 'b', '1'
     @a2.dependencies.first.instance_variable_set :@type, nil

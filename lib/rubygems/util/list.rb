@@ -23,17 +23,6 @@ module Gem
       ary
     end
 
-    def find
-      n = self
-      while n
-        v = n.value
-        return v if yield(v)
-        n = n.tail
-      end
-
-      nil
-    end
-
     def prepend(value)
       List.new value, self
     end

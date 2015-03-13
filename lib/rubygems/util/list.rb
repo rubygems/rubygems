@@ -2,6 +2,8 @@ module Gem
   List = Struct.new(:value, :tail)
 
   class List
+    include Enumerable
+
     def each
       n = self
       while n

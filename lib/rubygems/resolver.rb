@@ -21,13 +21,6 @@ class Gem::Resolver
 
   DEBUG_RESOLVER = !ENV['DEBUG_RESOLVER'].nil?
 
-  require 'pp' if DEBUG_RESOLVER
-
-  ##
-  # Contains all the conflicts encountered while doing resolution
-
-  attr_reader :conflicts
-
   ##
   # Set to true if all development dependencies should be considered.
 
@@ -180,6 +173,10 @@ class Gem::Resolver
 
   def output
     @output ||= debug? ? $stdout : File.open('/dev/null', 'w')
+  end
+
+  def debug?
+    DEBUG_RESOLVER
   end
 
   include Molinillo::SpecificationProvider

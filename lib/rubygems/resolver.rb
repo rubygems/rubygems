@@ -186,12 +186,6 @@ class Gem::Resolver
 
   def resolve
     locking_dg = Molinillo::DependencyGraph.new
-    if @set.respond_to? :sets
-      sets = @set.sets
-      if locking_set = sets.grep(LockSet).first
-        locking_set.specs.each { |s| locking_dg.add_root_vertex s.name, Gem::Dependency.new(s.name, s.version)}
-      end
-    end
     Molinillo::Resolver.new(self, self).resolve(@needed.map { |d| DependencyRequest.new d, nil }, locking_dg).tsort.map(&:payload)
   rescue Molinillo::VersionConflict => e
     conflict = e.conflicts.values.first

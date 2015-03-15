@@ -21,7 +21,7 @@ Bug fixes:
 * Fixed Rake homepage url in example for Gem::Specification#homepage.
   Pull request #1171 by Arthur Nogueira Neves
 
-=== 2.4.6 / 2014-02-05
+=== 2.4.6 / 2015-02-05
 
 Bug fixes:
 

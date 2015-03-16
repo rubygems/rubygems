@@ -383,7 +383,7 @@ module Gem::Resolver::Molinillo
       #   activated
       # @return [void]
       def require_nested_dependencies_for(activated_spec)
-        nested_dependencies = dependencies_for(activated_spec, activated)
+        nested_dependencies = dependencies_for(activated_spec)
         debug(depth) { "Requiring nested dependencies (#{nested_dependencies.map(&:to_s).join(', ')})" }
         nested_dependencies.each { |d|  activated.add_child_vertex name_for(d), nil, [name_for(activated_spec)], d }
 
@@ -405,10 +405,18 @@ module Gem::Resolver::Molinillo
         )
       end
 
+      # Pushes a new {DependencyState}.
+      # If the {#specification_provider} says to
+      # {SpecificationProvider#allow_missing?} that particular requirement, and
+      # there are no possibilities for that requirement, then `state` is not
+      # pushed, and the node in {#activated} is removed, and we continue
+      # resolving the remaining requirements.
+      # @param [DependencyState] state
+      # @return [void]
       def handle_missing_or_push_dependency_state(state)
         if state.requirement && state.possibilities.empty? && allow_missing?(state.requirement)
           state.activated.detach_vertex_named(state.name)
-          return push_state_for_requirements(state.requirements, state.activated)
+          push_state_for_requirements(state.requirements, state.activated)
         else
           states.push state
         end

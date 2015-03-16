@@ -26,7 +26,7 @@ module Gem::Resolver::Molinillo
     # @param [Object] specification
     # @return [Array<Object>] the dependencies that are required by the given
     #   `specification`.
-    def dependencies_for(specification, activated)
+    def dependencies_for(specification)
       []
     end
 
@@ -87,6 +87,11 @@ module Gem::Resolver::Molinillo
       end
     end
 
+    # Returns whether this dependency, which has no possible matching
+    # specifications, can safely be ignored.
+    #
+    # @param [Object] dependency
+    # @return [Boolean] whether this dependency can safely be skipped.
     def allow_missing?(dependency)
       false
     end

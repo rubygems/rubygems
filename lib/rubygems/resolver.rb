@@ -233,7 +233,7 @@ class Gem::Resolver
       map { |s| ActivationRequest.new s, dependency, [] }
   end
 
-  def dependencies_for(specification, activated)
+  def dependencies_for(specification)
     return [] if @ignore_dependencies
     spec = specification.spec
     requests(spec, specification)

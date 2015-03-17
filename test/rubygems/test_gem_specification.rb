@@ -149,6 +149,28 @@ end
     end
   end
 
+  def test_find_in_unresolved_finds_in_2nd_level_indirect
+    save_loaded_features do
+      a1 = new_spec "a", "1", "b" => "> 0"
+      b1 = new_spec "b", "1", "c" => ">= 0" # unresolved
+      b2 = new_spec "b", "2", "c" => ">= 0"
+      c1 = new_spec "c", "1", "d" => "<= 2" # 1st level
+      c2 = new_spec "c", "2", "d" => "<= 2"
+      d1 = new_spec "d", "1", nil, "lib/d.rb" # 2nd level
+      d2 = new_spec "d", "2", nil, "lib/d.rb"
+      d3 = new_spec "d", "3", nil, "lib/d.rb"
+
+      install_specs a1, b1, b2, c1, c2, d1, d2, d3
+
+      a1.activate
+
+      require "d"
+
+      assert_equal %w(a-1 b-2 c-1 d-1), loaded_spec_names
+      #assert_equal %w(a-1 b-2 c-2 d-2), loaded_spec_names
+    end
+  end
+
   def test_self_activate_ambiguous_indirect
     save_loaded_features do
       a1 = new_spec "a", "1", "b" => "> 0"

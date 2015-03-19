@@ -1,8 +1,12 @@
 module Gem
-  List = Struct.new(:value, :tail)
-
   class List
     include Enumerable
+    attr_accessor :value, :tail
+
+    def initialize(value = nil, tail = nil)
+      @value = value
+      @tail = tail
+    end
 
     def each
       n = self
@@ -13,14 +17,7 @@ module Gem
     end
 
     def to_a
-      ary = []
-      n = self
-      while n
-        ary.unshift n.value
-        n = n.tail
-      end
-
-      ary
+      super.reverse
     end
 
     def prepend(value)

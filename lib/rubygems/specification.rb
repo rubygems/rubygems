@@ -962,15 +962,13 @@ class Gem::Specification < Gem::BasicSpecification
     specs = unresolved_deps.values.map { |dep| dep.to_specs }.flatten
 
     specs.reverse_each do |spec|
-      trails = []
-      Gem::Specification.traverse(spec) do |to_spec, trail|
-        next if to_spec.has_conflicts?
-        trails << trail if to_spec.contains_requirable_file? path
+      spec.traverse do |from_spec, dep, to_spec, trail|
+        if to_spec.has_conflicts? || to_spec.conficts_when_loaded_with?(trail)
+          :next
+        else
+          return trail.reverse if to_spec.contains_requirable_file? path
+        end
       end
-
-      next if trails.empty?
-
-      return trails.map(&:to_a).sort.first
     end
 
     []
@@ -1562,6 +1560,16 @@ class Gem::Specification < Gem::BasicSpecification
       end
     }
     conflicts
+  end
+
+  ##
+  # return true if there will be conflict when spec if loaded together with the list of specs.
+
+  def conficts_when_loaded_with?(list_of_specs) # :nodoc:
+    result = list_of_specs.any? { |spec|
+      spec.dependencies.any? { |dep| dep.runtime? && (dep.name == name) && !satisfies_requirement?(dep) }
+    }
+    result
   end
 
   ##
@@ -2493,40 +2501,30 @@ class Gem::Specification < Gem::BasicSpecification
   # Recursively walk dependencies of this spec, executing the +block+ for each
   # hop.
 
-  def traverse trail = [], &block
-    trail = [self] + trail
-    dependencies.each do |dep|
-      next unless dep.runtime?
-      dep.to_specs.each do |dep_spec|
-        block[self, dep, dep_spec, [dep_spec] + trail]
-        spec_name = dep_spec.name
-        dep_spec.traverse(trail, &block) unless
-          trail.any? { |s| s.name == spec_name }
+  def traverse trail = [], visited = {}, &block
+    trail.push(self)
+    begin
+      dependencies.each do |dep|
+        dep.to_specs.reverse_each do |dep_spec|
+          next if visited.has_key?(dep_spec)
+          visited[dep_spec] = true
+          trail.push(dep_spec)
+          begin
+            result = block[self, dep, dep_spec, trail]
+          ensure
+            trail.pop
+          end
+          unless result == :next
+            spec_name = dep_spec.name
+            dep_spec.traverse(trail, visited, &block) unless
+              trail.any? { |s| s.name == spec_name }
+          end
+        end
       end
+    ensure
+      trail.pop
     end
   end
-
-  def self.traverse spec, &block # :nodoc:
-    _traverse spec, Gem::List.new(spec), &block
-  end
-
-  ##
-  # This method is for traversing spec dependencies.  Don't use this, it is
-  # super private. I am super serious!
-
-  def self._traverse spec, trail, &block # :nodoc:
-    spec.dependencies.each do |dep|
-      next unless dep.runtime?
-      dep.to_specs.each do |dep_spec|
-        stack = Gem::List.new(dep_spec, trail)
-        block[dep_spec, stack]
-        spec_name = dep_spec.name
-        _traverse(dep_spec, stack, &block) unless
-          stack.any? { |s| s.name == spec_name }
-      end
-    end
-  end
-  private_class_method :_traverse
 
   ##
   # Checks that the specification contains all required fields, and does a

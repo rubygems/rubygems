@@ -131,6 +131,42 @@ class Gem::Package::TarWriter
 
     self
   end
+  
+   ##
+  # Adds file +name+ with permissions +mode+, +hvals+ are fields that can be set for the file, e.g mtime, uid ect'.
+  #and yields an IO for writing the file to
+
+  def add_file_header(name,mode,hvals) # :yields: io
+    check_closed
+
+    raise Gem::Package::NonSeekableIO unless @io.respond_to? :pos=
+
+    name, prefix = split_name name
+
+    init_pos = @io.pos
+    @io.write "\0" * 512 # placeholder for the header
+
+    yield RestrictedStream.new(@io) if block_given?
+
+    size = @io.pos - init_pos - 512
+
+    remainder = (512 - (size % 512)) % 512
+    @io.write "\0" * remainder
+
+    final_pos = @io.pos
+    @io.pos = init_pos
+
+    hvals[:name] = name
+    hvals[:size] = size
+    hvals[:prefix] = prefix
+    hvals[:mode] = mode
+    header = Gem::Package::TarHeader.new(hvals)
+
+    @io.write header
+    @io.pos = final_pos
+
+    self
+  end
 
   ##
   # Adds +name+ with permissions +mode+ to the tar, yielding +io+ for writing

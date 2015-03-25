@@ -132,7 +132,7 @@ class Gem::Package::TarWriter
     self
   end
   
-   ##
+  ##
   # Adds file +name+ with permissions +mode+, +hvals+ are fields that can be set for the file, e.g mtime, uid ect'.
   #and yields an IO for writing the file to
 

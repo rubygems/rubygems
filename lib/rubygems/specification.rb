@@ -2572,13 +2572,13 @@ class Gem::Specification < Gem::BasicSpecification
             'specification must have at least one require_path'
     end
 
-    @files.delete_if            { |x| File.directory?(x) }
-    @test_files.delete_if       { |x| File.directory?(x) }
+    @files.delete_if            { |x| File.directory?(x) && !File.symlink?(x) }
+    @test_files.delete_if       { |x| File.directory?(x) && !File.symlink?(x) }
     @executables.delete_if      { |x| File.directory?(File.join(@bindir, x)) }
-    @extra_rdoc_files.delete_if { |x| File.directory?(x) }
-    @extensions.delete_if       { |x| File.directory?(x) }
+    @extra_rdoc_files.delete_if { |x| File.directory?(x) && !File.symlink?(x) }
+    @extensions.delete_if       { |x| File.directory?(x) && !File.symlink?(x) }
 
-    non_files = files.reject { |x| File.file?(x) }
+    non_files = files.reject { |x| File.file?(x) || File.symlink?(x) }
 
     unless not packaging or non_files.empty? then
       raise Gem::InvalidSpecificationException,
@@ -2711,6 +2711,11 @@ http://opensource.org/licenses/alphabetical
       shebang = File.read(executable_path, 2) == '#!'
 
       warning "#{executable_path} is missing #! line" unless shebang
+    end
+
+    files.each do |file|
+      next unless File.symlink?(file)
+      warning "#{file} is a symlink, which is not supported on all platforms"
     end
 
     validate_dependencies

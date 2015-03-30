@@ -195,7 +195,10 @@ class Gem::BasicSpecification
 
   def loaded_from= path
     @loaded_from   = path && path.to_s
+    internal_init
+  end
 
+  def internal_init # :nodoc:
     @extension_dir = nil
     @extensions_dir = nil
     @full_gem_path         = nil

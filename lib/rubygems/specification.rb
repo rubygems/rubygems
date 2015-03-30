@@ -1909,6 +1909,8 @@ class Gem::Specification < Gem::BasicSpecification
     @loaded = false
     @activated = false
     self.loaded_from = nil
+    @loaded_from = nil
+    internal_init
     @original_platform = nil
     @installed_by_version = nil
 
@@ -2015,9 +2017,8 @@ class Gem::Specification < Gem::BasicSpecification
     @licenses ||= []
   end
 
-  def loaded_from= path # :nodoc:
+  def internal_init # :nodoc:
     super
-
     @bin_dir       = nil
     @cache_dir     = nil
     @cache_file    = nil

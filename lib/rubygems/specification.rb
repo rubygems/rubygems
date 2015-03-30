@@ -1906,11 +1906,10 @@ class Gem::Specification < Gem::BasicSpecification
   # +version+.
 
   def initialize name = nil, version = nil
+    super()
     @loaded = false
     @activated = false
-    self.loaded_from = nil
     @loaded_from = nil
-    internal_init
     @original_platform = nil
     @installed_by_version = nil
 

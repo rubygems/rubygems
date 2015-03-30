@@ -158,6 +158,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
     uninstaller = Gem::Uninstaller.new nil
 
     @spec.loaded_from = @spec.loaded_from.gsub @spec.full_name, '\&-legacy'
+    @spec.internal_init # blow out cache. but why did ^^ depend on cache?
     @spec.platform = 'legacy'
 
     assert_equal true, uninstaller.path_ok?(@gemhome, @spec)

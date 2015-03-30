@@ -22,12 +22,16 @@ class Gem::BasicSpecification
   ##
   # The path this gemspec was loaded from.  This attribute is not persisted.
 
-  attr_reader :loaded_from
+  attr_accessor :loaded_from
 
   ##
   # Allows correct activation of git: and path: gems.
 
   attr_writer :full_gem_path # :nodoc:
+
+  def initialize
+    internal_init
+  end
 
   def self.default_specifications_dir
     File.join(Gem.default_dir, "specifications", "default")
@@ -187,15 +191,6 @@ class Gem::BasicSpecification
   def gems_dir
     # TODO: this logic seems terribly broken, but tests fail if just base_dir
     @gems_dir ||= File.join(loaded_from && base_dir || Gem.dir, "gems")
-  end
-
-  ##
-  # Set the path the Specification was loaded from. +path+ is converted to a
-  # String.
-
-  def loaded_from= path
-    @loaded_from   = path && path.to_s
-    internal_init
   end
 
   def internal_init # :nodoc:

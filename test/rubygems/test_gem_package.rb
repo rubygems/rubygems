@@ -396,6 +396,21 @@ class TestGemPackage < Gem::Package::TarTestCase
                  "#{@destination} is not allowed", e.message)
   end
 
+  def test_extract_tar_gz_symlink_absolute
+    package = Gem::Package.new @gem
+
+    tgz_io = util_tar_gz do |tar|
+      tar.add_symlink 'code.rb', '/absolute.rb', 0644
+    end
+
+    e = assert_raises Gem::Package::PathError do
+      package.extract_tar_gz tgz_io, @destination
+    end
+
+    assert_equal("installing into parent path /absolute.rb of " +
+                 "#{@destination} is not allowed", e.message)
+  end
+
   def test_extract_tar_gz_directory
     package = Gem::Package.new @gem
 

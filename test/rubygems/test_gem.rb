@@ -131,10 +131,29 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_install_permissions
+    assert_self_install_permissions
+  end
+
+  def test_self_install_permissions_umask_0
+    umask = File.umask(0)
+    assert_self_install_permissions
+  ensure
+    File.umask(umask)
+  end
+
+  def test_self_install_permissions_umask_077
+    umask = File.umask(077)
+    assert_self_install_permissions
+  ensure
+    File.umask(umask)
+  end
+
+  def assert_self_install_permissions
     options = {
       :dir_mode => 0500,
       :prog_mode => 0510,
       :data_mode => 0640,
+      :wrappers => true,
     }
     Dir.chdir @tempdir do
       Dir.mkdir 'bin'
@@ -158,14 +177,15 @@ class TestGem < Gem::TestCase
     end
 
     expected = {
-      '.' => options[:dir_mode].to_s(8),
-      'bin' => options[:dir_mode].to_s(8),
-      'data' => options[:dir_mode].to_s(8),
       'bin/foo.rb' => options[:prog_mode].to_s(8),
-      'data/foo.txt' => options[:data_mode].to_s(8),
+      'gems/foo-1' => options[:dir_mode].to_s(8),
+      'gems/foo-1/bin' => options[:dir_mode].to_s(8),
+      'gems/foo-1/data' => options[:dir_mode].to_s(8),
+      'gems/foo-1/bin/foo.rb' => options[:prog_mode].to_s(8),
+      'gems/foo-1/data/foo.txt' => options[:data_mode].to_s(8),
     }
     result = {}
-    Dir.chdir File.join(@gemhome, 'gems/foo-1') do
+    Dir.chdir @gemhome do
       expected.each_key do |n|
         result[n] = (File.stat(n).mode & 0777).to_s(8)
       end

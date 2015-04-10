@@ -125,9 +125,8 @@ class Gem::Installer
   def initialize(gem, options={})
     require 'fileutils'
 
-    @gem = gem
     @options = options
-    @package = Gem::Package.new @gem
+    @package = Gem::Package.new gem
 
     process_options
 
@@ -811,8 +810,7 @@ TEXT
 
   def write_cache_file
     cache_file = File.join gem_home, 'cache', spec.file_name
-
-    FileUtils.cp @gem, cache_file unless File.exist? cache_file
+    @package.copy_to cache_file
   end
 
 end

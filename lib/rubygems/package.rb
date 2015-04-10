@@ -159,6 +159,13 @@ class Gem::Package
   end
 
   ##
+  # Copies this package to +path+ (if possible)
+
+  def copy_to path
+    FileUtils.cp @gem.path, path unless File.exist? path
+  end
+
+  ##
   # Adds a checksum for each entry in the gem to checksums.yaml.gz.
 
   def add_checksums tar

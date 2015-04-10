@@ -184,8 +184,8 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
 
     foo_path = File.join(@tempdir, "#{foo_spec.full_name}.gem")
     foo_bar_path = File.join(@tempdir, "#{foo_bar_spec.full_name}.gem")
-    Gem::Installer.new(foo_path).install
-    Gem::Installer.new(foo_bar_path).install
+    Gem::Installer.at(foo_path).install
+    Gem::Installer.at(foo_bar_path).install
 
     @cmd.options[:args] = %w[foo]
 

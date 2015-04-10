@@ -488,7 +488,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       gem = File.join(@tempdir, File.basename(spec.cache_file)).untaint
     end
 
-    Gem::Installer.new(gem, options.merge({:wrappers => true})).install
+    Gem::Installer.at(gem, options.merge({:wrappers => true})).install
   end
 
   ##

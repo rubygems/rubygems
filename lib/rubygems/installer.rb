@@ -100,6 +100,14 @@ class Gem::Installer
   end
 
   ##
+  # Construct an installer object for the gem file located at +path+
+
+  def self.at path, options = {}
+    package = Gem::Package.new path
+    new package, options
+  end
+
+  ##
   # Constructs an Installer instance that will install the gem located at
   # +gem+.  +options+ is a Hash with the following keys:
   #
@@ -122,11 +130,18 @@ class Gem::Installer
   # :build_args:: An Array of arguments to pass to the extension builder
   #               process. If not set, then Gem::Command.build_args is used
 
-  def initialize(gem, options={})
+  def initialize(package, options={})
     require 'fileutils'
 
     @options = options
-    @package = Gem::Package.new gem
+    if package.is_a? String
+      @package = Gem::Package.new package
+      if $VERBOSE
+        warn "constructing an Installer object with a string is deprecated. Please use Gem::Installer.at (called from: #{caller.first})"
+      end
+    else
+      @package = package
+    end
 
     process_options
 

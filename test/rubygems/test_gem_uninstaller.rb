@@ -237,7 +237,7 @@ create_makefile '#{@spec.name}'
     use_ui @ui do
       path = Gem::Package.build @spec
 
-      installer = Gem::Installer.new path
+      installer = Gem::Installer.at path
       installer.install
     end
 

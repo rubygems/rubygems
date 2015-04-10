@@ -136,7 +136,8 @@ class Gem::Installer
 
     @options = options
     if package.is_a? String
-      @package = Gem::Package.new package
+      security_policy = options[:security_policy]
+      @package = Gem::Package.new package, security_policy
       if $VERBOSE
         warn "constructing an Installer object with a string is deprecated. Please use Gem::Installer.at (called from: #{caller.first})"
       end

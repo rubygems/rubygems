@@ -575,8 +575,8 @@ gem 'other', version
     util_make_exec
     one = @spec.dup
     one.version = 1
+    @installer = Gem::Installer.for_spec spec
     @installer.gem_dir = util_gem_dir one
-    @installer.spec = spec
 
     @installer.generate_bin
 
@@ -1427,7 +1427,6 @@ gem 'other', version
     refute_path_exists cache_file
 
     installer = Gem::Installer.at gem
-    installer.spec = @spec
     installer.gem_home = @gemhome
 
     installer.write_cache_file
@@ -1439,7 +1438,7 @@ gem 'other', version
     FileUtils.rm @spec.spec_file
     refute_path_exists @spec.spec_file
 
-    @installer.spec = @spec
+    @installer = Gem::Installer.for_spec @spec
     @installer.gem_home = @gemhome
 
     @installer.write_spec
@@ -1459,7 +1458,7 @@ gem 'other', version
 
     @spec.files = %w[a.rb b.rb c.rb]
 
-    @installer.spec = @spec
+    @installer = Gem::Installer.for_spec @spec
     @installer.gem_home = @gemhome
 
     @installer.write_spec

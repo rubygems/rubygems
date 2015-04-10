@@ -61,11 +61,6 @@ class Gem::Installer
 
   attr_reader :options
 
-  ##
-  # Sets the specification for .gem-less installs.
-
-  attr_writer :spec
-
   @path_warning = false
 
   @install_lock = Mutex.new
@@ -106,6 +101,15 @@ class Gem::Installer
     security_policy = options[:security_policy]
     package = Gem::Package.new path, security_policy
     new package, options
+  end
+
+  ##
+  # Construct an installer object for an ephemeral gem (one where we don't
+  # actually have a .gem file, just a spec)
+
+  def self.for_spec spec, options = {}
+    # FIXME: we should have a real Package class for this
+    new Struct.new(:spec).new(spec), options
   end
 
   ##
@@ -225,7 +229,7 @@ class Gem::Installer
   # Lazy accessor for the installer's spec.
 
   def spec
-    @spec ||= @package.spec
+    @package.spec
   rescue Gem::Package::Error => e
     raise Gem::InstallError, "invalid gem: #{e.message}"
   end
@@ -244,7 +248,7 @@ class Gem::Installer
   def install
     pre_install_checks
 
-    FileUtils.rm_f File.join gem_home, 'specifications', @spec.spec_name
+    FileUtils.rm_f File.join gem_home, 'specifications', spec.spec_name
 
     run_pre_install_hooks
 

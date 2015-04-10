@@ -103,7 +103,8 @@ class Gem::Installer
   # Construct an installer object for the gem file located at +path+
 
   def self.at path, options = {}
-    package = Gem::Package.new path
+    security_policy = options[:security_policy]
+    package = Gem::Package.new path, security_policy
     new package, options
   end
 
@@ -144,8 +145,6 @@ class Gem::Installer
     end
 
     process_options
-
-    @package.security_policy = @security_policy
 
     if options[:user_install] and not options[:unpack] then
       @gem_home = Gem.user_dir
@@ -609,7 +608,6 @@ class Gem::Installer
     @gem_home            = options[:install_dir] || Gem.dir
     @ignore_dependencies = options[:ignore_dependencies]
     @format_executable   = options[:format_executable]
-    @security_policy     = options[:security_policy]
     @wrappers            = options[:wrappers]
     @only_install_dir    = options[:only_install_dir]
 
@@ -777,11 +775,6 @@ TEXT
 
   def pre_install_checks
     verify_gem_home options[:unpack]
-
-    # If we're forcing the install then disable security unless the security
-    # policy says that we only install signed gems.
-    @security_policy = nil if
-      @force and @security_policy and not @security_policy.only_signed
 
     ensure_loadable_spec
 

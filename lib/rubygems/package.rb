@@ -123,7 +123,7 @@ class Gem::Package
   # If +gem+ is an existing file in the old format a Gem::Package::Old will be
   # returned.
 
-  def self.new gem
+  def self.new gem, security_policy = nil
     gem = if gem.is_a?(Gem::Package::Source)
             gem
           elsif gem.respond_to? :read
@@ -132,7 +132,7 @@ class Gem::Package
             Gem::Package::FileSource.new gem
           end
 
-    return super(gem) unless Gem::Package == self
+    return super unless Gem::Package == self
     return super unless gem.present?
 
     return super unless gem.start
@@ -144,7 +144,7 @@ class Gem::Package
   ##
   # Creates a new package that will read or write to the file +gem+.
 
-  def initialize gem # :notnew:
+  def initialize gem, security_policy # :notnew:
     @gem = gem
 
     @build_time      = Time.now
@@ -152,7 +152,7 @@ class Gem::Package
     @contents        = nil
     @digests         = Hash.new { |h, algorithm| h[algorithm] = {} }
     @files           = nil
-    @security_policy = nil
+    @security_policy = security_policy
     @signatures      = {}
     @signer          = nil
     @spec            = nil

@@ -229,7 +229,7 @@ class Gem::Installer
   # Lazy accessor for the installer's spec.
 
   def spec
-    @package.spec
+    @spec || @package.spec
   rescue Gem::Package::Error => e
     raise Gem::InstallError, "invalid gem: #{e.message}"
   end

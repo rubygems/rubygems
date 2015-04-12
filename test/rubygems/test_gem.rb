@@ -1379,9 +1379,12 @@ class TestGem < Gem::TestCase
       io.write 'gem "a"'
     end
 
+    assert_nil Gem.gemdeps
+
     Gem.use_gemdeps gem_deps_file
 
     assert spec.activated?
+    refute_nil Gem.gemdeps
   end
 
   def test_use_gemdeps_ENV

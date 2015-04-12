@@ -156,6 +156,7 @@ module Gem
   @@win_platform = nil
 
   @configuration = nil
+  @gemdeps = nil
   @loaded_specs = {}
   LOADED_SPECS_MUTEX = Mutex.new
   @path_to_default_spec_map = {}
@@ -1052,7 +1053,7 @@ module Gem
     end
 
     rs = Gem::RequestSet.new
-    rs.load_gemdeps path
+    @gemdeps = rs.load_gemdeps path
 
     rs.resolve_current.map do |s|
       sp = s.full_spec
@@ -1081,6 +1082,12 @@ module Gem
     # Hash of loaded Gem::Specification keyed by name
 
     attr_reader :loaded_specs
+
+    ##
+    # GemDependencyAPI object, which is set when .use_gemdeps is called.
+    # This contains all the information from the Gemfile.
+
+    attr_reader :gemdeps
 
     ##
     # Register a Gem::Specification for default gem.

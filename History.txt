@@ -7,6 +7,9 @@ Major enhancements:
 Minor enhancements:
 
 * Add `--skip=gem_name` to Pristine command.  Pull request #1018 by windwiny.
+* The parsed gem dependencies file is now available via Gem.gemdeps following
+  Gem.use_gemdeps.  Pull request #1224 by Hsing-Hui Hsu, issue #1213 by
+  Michal Papis.
 * Moved description attribute to recommended for Gem::Specification.
   Pull request #1046 by Michal Papis
 * Moved `Gem::Indexer#abbreviate` and `#sanitize` to `Gem::Specification`.

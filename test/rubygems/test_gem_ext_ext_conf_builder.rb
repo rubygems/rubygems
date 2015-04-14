@@ -35,10 +35,9 @@ class TestGemExtExtConfBuilder < Gem::TestCase
 
     assert_match(/^#{Gem.ruby}.* extconf.rb/, output[0])
     assert_equal "creating Makefile\n", output[1]
-    assert_match 'mkmf.log', output[2]
-    assert_contains_make_command 'clean', output[4]
-    assert_contains_make_command '', output[6]
-    assert_contains_make_command 'install', output[8]
+    assert_contains_make_command 'clean', output[2]
+    assert_contains_make_command '', output[4]
+    assert_contains_make_command 'install', output[6]
     assert_empty Dir.glob(File.join(@ext, 'siteconf*.rb'))
   end
 
@@ -56,10 +55,9 @@ class TestGemExtExtConfBuilder < Gem::TestCase
       end
 
       assert_equal "creating Makefile\n", output[1]
-      assert_match 'mkmf.log', output[2]
-      assert_contains_make_command 'clean', output[4]
-      assert_contains_make_command '', output[6]
-      assert_contains_make_command 'install', output[8]
+      assert_contains_make_command 'clean', output[2]
+      assert_contains_make_command '', output[4]
+      assert_contains_make_command 'install', output[6]
     end
   end
 
@@ -81,8 +79,7 @@ class TestGemExtExtConfBuilder < Gem::TestCase
       end
 
       assert_equal "creating Makefile\n",   output[1]
-      assert_match 'mkmf.log', output[2]
-      assert_contains_make_command 'clean', output[4]
+      assert_contains_make_command 'clean', output[2]
     end
   ensure
     ENV['make'] = env_make
@@ -110,6 +107,8 @@ class TestGemExtExtConfBuilder < Gem::TestCase
     assert_equal 'extconf failed, exit code 1', error.message
 
     assert_match(/^#{Gem.ruby}.* extconf.rb/, output[0])
+    assert_match(File.join(@dest_path, 'mkmf.log'), output[3])
+
     assert_path_exists File.join @dest_path, 'mkmf.log'
   end
 
@@ -150,10 +149,9 @@ end
       Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
     end
 
-    assert_match 'mkmf.log', output[2]
-    assert_contains_make_command 'clean', output[4]
-    assert_contains_make_command '', output[6]
-    assert_contains_make_command 'install', output[8]
+    assert_contains_make_command 'clean', output[2]
+    assert_contains_make_command '', output[4]
+    assert_contains_make_command 'install', output[6]
     assert_empty Dir.glob(File.join(@ext, 'siteconf*.rb'))
   end
 

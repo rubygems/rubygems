@@ -1489,10 +1489,10 @@ gem 'other', version
     installed_exec = File.join util_inst_bindir, 'executable'
     assert_path_exists installed_exec
 
-    assert File.directory? File.join(Gem.dir, 'specifications')
-    assert File.directory? File.join(Gem.dir, 'specifications', 'default')
+    assert File.directory? File.join(Gem.default_dir, 'specifications')
+    assert File.directory? File.join(Gem.default_dir, 'specifications', 'default')
 
-    default_spec = eval File.read File.join(Gem.dir, 'specifications', 'default', 'a-2.gemspec')
+    default_spec = eval File.read File.join(Gem.default_dir, 'specifications', 'default', 'a-2.gemspec')
     assert_equal Gem::Version.new("2"), default_spec.version
     assert_equal ['bin/executable'], default_spec.files
   end

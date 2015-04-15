@@ -724,17 +724,27 @@ class Gem::Specification < Gem::BasicSpecification
 
   def self.each_gemspec(dirs) # :nodoc:
     dirs.each do |dir|
-      Dir[File.join(dir, "*.gemspec")].each do |path|
+      gemspecs_in(dir).each do |path|
         yield path.untaint
       end
     end
   end
 
+  def self.gemspecs_in dir
+    Dir[File.join(dir, "*.gemspec")]
+  end
+
   def self.each_stub(dirs) # :nodoc:
     each_gemspec(dirs) do |path|
-      stub = Gem::StubSpecification.new(path)
+      stub = Gem::StubSpecification.gemspec_stub(path)
       yield stub if stub.valid?
     end
+  end
+
+  def self.default_stubs
+    gemspecs_in(default_specifications_dir).map { |path|
+      Gem::StubSpecification.default_gemspec_stub path
+    }.find_all(&:valid?)
   end
 
   def self.each_spec(dirs) # :nodoc:
@@ -750,7 +760,8 @@ class Gem::Specification < Gem::BasicSpecification
   def self.stubs
     @@stubs ||= begin
       stubs = {}
-      each_stub([default_specifications_dir] + dirs) do |stub|
+      default_stubs.each { |stub| stubs[stub.full_name] ||= stub }
+      each_stub(dirs) do |stub|
         stubs[stub.full_name] ||= stub
       end
 

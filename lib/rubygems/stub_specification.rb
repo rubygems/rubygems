@@ -38,12 +38,21 @@ class Gem::StubSpecification < Gem::BasicSpecification
     end
   end
 
-  def initialize(filename)
+  def self.default_gemspec_stub filename
+    new filename, true
+  end
+
+  def self.gemspec_stub filename
+    new filename, false
+  end
+
+  def initialize filename, default_gem
     self.loaded_from = filename
     @data            = nil
     @extensions      = nil
     @name            = nil
     @spec            = nil
+    @default_gem     = default_gem
   end
 
   ##
@@ -55,6 +64,10 @@ class Gem::StubSpecification < Gem::BasicSpecification
       loaded = Gem.loaded_specs[name]
       loaded && loaded.version == version
     end
+  end
+
+  def default_gem?
+    @default_gem
   end
 
   def build_extensions # :nodoc:

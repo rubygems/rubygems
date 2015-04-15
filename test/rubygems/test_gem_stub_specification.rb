@@ -9,7 +9,7 @@ class TestStubSpecification < Gem::TestCase
   def setup
     super
 
-    @foo = Gem::StubSpecification.new FOO
+    @foo = Gem::StubSpecification.gemspec_stub FOO
   end
 
   def test_initialize
@@ -31,7 +31,7 @@ class TestStubSpecification < Gem::TestCase
   end
 
   def test_initialize_missing_stubline
-    stub = Gem::StubSpecification.new(BAR)
+    stub = Gem::StubSpecification.gemspec_stub(BAR)
     assert_equal "bar", stub.name
     assert_equal Gem::Version.new("0.0.2"), stub.version
     assert_equal Gem::Platform.new("ruby"), stub.platform
@@ -103,7 +103,7 @@ class TestStubSpecification < Gem::TestCase
       io.write spec.to_ruby_for_cache
     end
 
-    default_spec = Gem::StubSpecification.new spec.loaded_from
+    default_spec = Gem::StubSpecification.gemspec_stub spec.loaded_from
 
     refute default_spec.missing_extensions?
   end
@@ -125,7 +125,7 @@ class TestStubSpecification < Gem::TestCase
   def test_to_spec_with_other_specs_loaded_does_not_warn
     real_foo = util_spec @foo.name, @foo.version
     real_foo.activate
-    bar = Gem::StubSpecification.new BAR
+    bar = Gem::StubSpecification.gemspec_stub BAR
     refute_predicate Gem.loaded_specs, :empty?
     assert bar.to_spec
   end
@@ -164,7 +164,7 @@ end
 
       io.flush
 
-      stub = Gem::StubSpecification.new io.path
+      stub = Gem::StubSpecification.gemspec_stub io.path
 
       yield stub if block_given?
 
@@ -187,7 +187,7 @@ end
 
       io.flush
 
-      stub = Gem::StubSpecification.new io.path
+      stub = Gem::StubSpecification.gemspec_stub io.path
 
       yield stub if block_given?
 

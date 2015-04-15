@@ -1473,6 +1473,13 @@ gem 'other', version
     assert_match %r!/gemhome/gems/a-2$!, @installer.dir
   end
 
+  def test_default_gem_loaded_from
+    spec = util_spec 'a'
+    installer = Gem::Installer.for_spec spec, :install_as_default => true
+    installer.install
+    assert_predicate spec, :default_gem?
+  end
+
   def test_default_gem
     FileUtils.rm_f File.join(Gem.dir, 'specifications')
 

@@ -103,13 +103,29 @@ class Gem::Installer
     new package, options
   end
 
+  class FakePackage < Struct.new :spec
+    def extract_files destination_dir, pattern = '*'
+      FileUtils.mkdir_p destination_dir
+
+      spec.files.each do |file|
+        file = File.join destination_dir, file
+        next if File.exist? file
+        FileUtils.mkdir_p File.dirname(file)
+        File.open file, 'w' do |fp| fp.puts "# #{file}" end
+      end
+    end
+
+    def copy_to path
+    end
+  end
+
   ##
   # Construct an installer object for an ephemeral gem (one where we don't
   # actually have a .gem file, just a spec)
 
   def self.for_spec spec, options = {}
     # FIXME: we should have a real Package class for this
-    new Struct.new(:spec).new(spec), options
+    new FakePackage.new(spec), options
   end
 
   ##
@@ -257,12 +273,12 @@ class Gem::Installer
 
     FileUtils.mkdir_p gem_dir
 
-    spec.loaded_from = spec_file
-
     if @options[:install_as_default]
+      spec.loaded_from = default_spec_file
       extract_bin
       write_default_spec
     else
+      spec.loaded_from = spec_file
       extract_files
 
       build_extensions

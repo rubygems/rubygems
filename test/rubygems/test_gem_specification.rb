@@ -113,7 +113,7 @@ end
       c2 = new_spec "c", "2"
 
       Gem::Specification.reset
-      install_specs a1, b1, b2, c1, c2
+      install_specs c1, c2, b1, b2, a1
 
       a1.activate
       assert_equal %w(a-1), loaded_spec_names
@@ -132,14 +132,17 @@ end
       num_of_version_per_pkg = 3
       packages = (0..num_of_pkg).map do |pkgi|
         (0..num_of_version_per_pkg).map do |pkg_version|
-          deps = Hash[(pkgi..num_of_pkg).map { |deppkgi| ["pkg#{deppkgi}", ">= 0"] }]
+          deps = Hash[((pkgi + 1)..num_of_pkg).map { |deppkgi|
+            ["pkg#{deppkgi}", ">= 0"]
+          }]
           new_spec "pkg#{pkgi}", pkg_version.to_s, deps
         end
       end
       base = new_spec "pkg_base", "1", {"pkg0" => ">= 0"}
 
       Gem::Specification.reset
-      install_specs base,*packages.flatten
+      install_specs(*packages.flatten.reverse)
+      install_specs base
       base.activate
 
       tms = Benchmark.measure {
@@ -157,7 +160,7 @@ end
       c1 = new_spec "c", "1", nil, "lib/d.rb"
       c2 = new_spec "c", "2", nil, "lib/d.rb"
 
-      install_specs a1, b1, b2, c1, c2
+      install_specs c1, c2, b1, b2, a1
 
       a1.activate
       assert_equal %w(a-1), loaded_spec_names
@@ -179,7 +182,7 @@ end
       c1 = new_spec "c", "1", nil, "lib/d.rb"
       c2 = new_spec("c", "2", { "a" => "1" }, "lib/d.rb") # conflicts with a-2
 
-      install_specs a1, a2, b1, b2, c1, c2
+      install_specs c1, b1, a1, a2, c2, b2
 
       a2.activate
       assert_equal %w(a-2), loaded_spec_names
@@ -201,7 +204,7 @@ end
       c2 = new_spec "c", "2"
       d1 = new_spec "d", "1", nil, "lib/d.rb"
 
-      install_specs a1, b1, b2, c1, c2, d1
+      install_specs d1, c1, c2, b1, b2, a1
 
       a1.activate
       assert_equal %w(a-1), loaded_spec_names
@@ -222,7 +225,7 @@ end
       c1 = new_spec "c", "1", nil, "lib/c.rb"  # 1st level
       c2 = new_spec "c", "2", nil, "lib/c.rb"
 
-      install_specs a1, b1, b2, c1, c2
+      install_specs c1, c2, b1, b2, a1
 
       a1.activate
 
@@ -242,7 +245,7 @@ end
       d1 = new_spec "d", "1", nil, "lib/d.rb" # 2nd level
       d2 = new_spec "d", "2", nil, "lib/d.rb"
 
-      install_specs a1, b1, b2, c1, c2, d1, d2
+      install_specs d1, d2, c1, c2, b1, b2, a1
 
       a1.activate
 
@@ -263,7 +266,7 @@ end
       d2 = new_spec "d", "2", nil, "lib/d.rb"
       d3 = new_spec "d", "3", nil, "lib/d.rb"
 
-      install_specs a1, b1, b2, c1, c2, d1, d2, d3
+      install_specs d1, d2, d3, c1, c2, b1, b2, a1
 
       a1.activate
 
@@ -285,7 +288,7 @@ end
       d3 = new_spec "d", "3", nil, "lib/d.rb"
       e  = new_spec "anti_d", "1", nil, "lib/d.rb"
 
-      install_specs a1, b1, b2, c1, c2, d1, d2, d3, e
+      install_specs d1, d2, d3, e, c1, c2, b1, b2, a1
 
       a1.activate
 
@@ -306,7 +309,7 @@ end
       c2 = new_spec "c", "2", {}, "lib/c.rb"
       c3 = new_spec "c", "3", {}, "lib/c.rb"
 
-      install_specs base, a1, a2, b1, b2, c1, c2, c3
+      install_specs c1, c2, c3, b1, b2, a1, a2, base
 
       base.activate
       assert_equal %w(0-1), loaded_spec_names
@@ -331,7 +334,7 @@ end
       d2 = new_spec "d", "2", nil, "lib/d.rb"
       d3 = new_spec "d", "3", nil, "lib/d.rb"
 
-      install_specs a1, b1, b2, c1, c2, c3, d1, d2, d3
+      install_specs d1, d2, d3, c1, c2, c3, b1, b2, a1
 
       a1.activate
 
@@ -353,7 +356,7 @@ end
       d2 = new_spec "d", "2", nil, "lib/d.rb"
       d3 = new_spec "d", "3", nil, "lib/d.rb"
 
-      install_specs a1, b1, b2, c1, c2, c3, d1, d2, d3
+      install_specs d1, d2, d3, c1, c2, c3, b1, b2, a1
 
       a1.activate
 
@@ -370,13 +373,14 @@ end
   #     [B] ~> 1.0 (satisfied by 1.0)
 
   def test_self_activate_checks_dependencies
-    a, _  = util_spec 'a', '1.0'
+    a  = util_spec 'a', '1.0'
             a.add_dependency 'c', '= 1.0'
             a.add_dependency 'b', '~> 1.0'
 
-            util_spec 'b', '1.0'
-            util_spec 'b', '2.0'
-    c,  _ = util_spec 'c', '1.0', 'b' => '= 2.0'
+    b1 = util_spec 'b', '1.0'
+    b2 = util_spec 'b', '2.0'
+    c  = util_spec 'c', '1.0', 'b' => '= 2.0'
+    install_specs b1, b2, c, a
 
     e = assert_raises Gem::LoadError do
       assert_activate nil, a, c, "b"
@@ -393,10 +397,12 @@ end
   #         [B] = 2.0
 
   def test_self_activate_divergent
-    a, _  = util_spec 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
-            util_spec 'b', '1.0'
-            util_spec 'b', '2.0'
-    c,  _ = util_spec 'c', '1.0', 'b' => '= 2.0'
+    a  = util_spec 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
+    b1 = util_spec 'b', '1.0'
+    b2 = util_spec 'b', '2.0'
+    c  = util_spec 'c', '1.0', 'b' => '= 2.0'
+
+    install_specs b1, b2, c, a
 
     e = assert_raises Gem::ConflictError do
       assert_activate nil, a, c, "b"
@@ -413,6 +419,8 @@ end
     e1, = util_spec 'e', '1', 'd' => '= 1'
     @d1 = util_spec 'd', '1'
     @d2 = util_spec 'd', '2'
+
+    install_specs @d1, @d2, e1
 
     assert_activate %w[d-1 e-1], e1, "d"
   end
@@ -432,6 +440,7 @@ end
     @w1 = util_spec 'w', '1', 'x' => nil
 
     util_set_arch 'cpu-my_platform1'
+    install_specs @x1_m, @x1_o, @w1
 
     assert_activate %w[x-1-cpu-my_platform-1 w-1], @w1, @x1_m
   end
@@ -447,6 +456,7 @@ end
     end
 
     @z1 = util_spec 'z', '1', 'y' => nil
+    install_specs @y1, @y1_1_p, @z1
 
     assert_activate %w[y-1 z-1], @z1, @y1
   end
@@ -464,6 +474,7 @@ end
       s.add_dependency 'a'
       s.add_development_dependency 'aa'
     end
+    install_specs @a1_pre, @b1, @c1_pre
 
     assert_activate %w[a-1.a b-1 c-1.a], @c1_pre, @a1_pre, @b1
   end
@@ -473,7 +484,7 @@ end
     b1 = new_spec "b", "1", nil, "lib/b/c.rb"
     b2 = new_spec "b", "2", nil, "lib/b/c.rb"
 
-    install_specs a1, b1, b2
+    install_specs b1, b2, a1
 
     a1.activate
     save_loaded_features do
@@ -493,7 +504,7 @@ end
       d1 = new_spec "d", "1", { "c" => "< 2" },  "lib/d.rb"
       d2 = new_spec "d", "2", { "c" => "< 2" },  "lib/d.rb" # this
 
-      install_specs a1, b1, b2, c1, c2, d1, d2
+      install_specs c1, c2, b1, b2, d1, d2, a1
 
       a1.activate
 
@@ -520,7 +531,7 @@ end
     c1 = new_spec "c", "1"
     c2 = new_spec "c", "2"
 
-    install_specs a1, b1, b2, c1, c2
+    install_specs c1, c2, b1, b2, a1
 
     a1.activate
     assert_equal %w(a-1 b-1 c-1), loaded_spec_names
@@ -540,8 +551,9 @@ end
 
   def test_self_activate_unrelated
     a = util_spec 'a', '1.0', 'b' => '>= 1.0'
-        util_spec 'b', '1.0'
+    b = util_spec 'b', '1.0'
     c = util_spec 'c', '1.0'
+    install_specs b, c, a
 
     assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
   end
@@ -557,10 +569,11 @@ end
 
   def test_self_activate_over
     a = util_spec 'a', '1.0', 'b' => '>= 1.0', 'c' => '= 1.0'
-    util_spec 'b', '1.0'
-    util_spec 'b', '1.1'
-    util_spec 'b', '2.0'
-    util_spec 'c', '1.0', 'b' => '~> 1.0'
+    install_specs util_spec 'b', '1.0'
+    install_specs util_spec 'b', '1.1'
+    install_specs util_spec 'b', '2.0'
+    install_specs util_spec 'c', '1.0', 'b' => '~> 1.0'
+    install_specs a
 
     a.activate
 
@@ -580,10 +593,12 @@ end
   # first resolve through a dependency that is later pruned.
 
   def test_self_activate_under
-    a,   _ = util_spec 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
-             util_spec 'b', '1.0'
-             util_spec 'b', '1.1'
-    c,   _ = util_spec 'c', '1.0', 'b' => '= 1.0'
+    a    = util_spec 'a', '1.0', 'b' => '~> 1.0', 'c' => '= 1.0'
+    b1   = util_spec 'b', '1.0'
+    b1_1 = util_spec 'b', '1.1'
+    c    = util_spec 'c', '1.0', 'b' => '= 1.0'
+
+    install_specs b1, b1_1, c, a
 
     assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
   end
@@ -597,10 +612,11 @@ end
   # [C1] depends on nothing
 
   def test_self_activate_dropped
-    a1, = util_spec 'a', '1', 'b' => nil
-          util_spec 'b', '1', 'c' => nil
-          util_spec 'b', '2'
-          util_spec 'c', '1'
+    a1 = util_spec 'a', '1', 'b' => nil
+    b1 = util_spec 'b', '1', 'c' => nil
+    b2 = util_spec 'b', '2'
+    c1 = util_spec 'c', '1'
+    install_specs c1, b1, b2, a1
 
     assert_activate %w[b-2 a-1], a1, "b"
   end
@@ -616,17 +632,20 @@ end
   # resolve.
 
   def test_self_activate_raggi_the_edgecase_generator
-    a,  _ = util_spec 'a', '1.0', 'b' => '>= 1.0', 'c' => '>= 1.0'
-            util_spec 'b', '1.0'
-            util_spec 'b', '1.1', 'z' => '>= 1.0'
-    c,  _ = util_spec 'c', '1.0', 'b' => '= 1.0'
+    a    = util_spec 'a', '1.0', 'b' => '>= 1.0', 'c' => '>= 1.0'
+    b1   = util_spec 'b', '1.0'
+    b1_0 = util_spec 'b', '1.1', 'z' => '>= 1.0'
+    c    = util_spec 'c', '1.0', 'b' => '= 1.0'
+    z    = util_spec 'z', '1'
+
+    install_specs z, b1, b1_0, c, z
 
     assert_activate %w[b-1.0 c-1.0 a-1.0], a, c, "b"
   end
 
   def test_self_activate_conflict
-    util_spec 'b', '1.0'
-    util_spec 'b', '2.0'
+    install_specs util_spec 'b', '1.0'
+    install_specs util_spec 'b', '2.0'
 
     gem "b", "= 1.0"
 
@@ -638,6 +657,7 @@ end
   def test_self_all_equals
     a = new_spec "foo", "1", nil, "lib/foo.rb"
 
+    install_specs a
     Gem::Specification.all = [a]
 
     assert_equal a, Gem::Specification.find_inactive_by_path('foo')
@@ -1057,9 +1077,12 @@ dependencies: []
   end
 
   def test_self_remove_spec
+    install_specs @a1
+
     assert_includes Gem::Specification.all_names, 'a-1'
     assert_includes Gem::Specification.stubs.map { |s| s.full_name }, 'a-1'
 
+    uninstall_gem @a1
     Gem::Specification.remove_spec @a1
 
     refute_includes Gem::Specification.all_names, 'a-1'
@@ -2105,7 +2128,7 @@ dependencies: []
       c1 = new_spec "c", "1", nil, "lib/d.rb"
       c2 = new_spec("c", "2", { "a" => "1" }, "lib/d.rb") # conflicts with a-2
 
-      install_specs a1, a2, b1, b2, c1, c2
+      install_specs c1, b1, a1, a2, c2, b2
 
       a1.activate
       c1.activate
@@ -3178,7 +3201,8 @@ end
   end
 
   def test_find_by_name
-    util_spec "a"
+    install_specs util_spec "a"
+    install_specs util_spec "a", 1
 
     assert Gem::Specification.find_by_name "a"
     assert Gem::Specification.find_by_name "a", "1"
@@ -3193,6 +3217,8 @@ end
     b = util_spec "b", "2.a"
 
     b.activate
+
+    install_specs b
 
     assert Gem::Specification.find_by_name "b"
 

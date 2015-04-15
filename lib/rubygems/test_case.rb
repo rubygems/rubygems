@@ -504,8 +504,11 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   def uninstall_gem spec
     require 'rubygems/uninstaller'
 
-    Gem::Uninstaller.new(spec.name,
-                         :executables => true, :user_install => true).uninstall
+    Class.new(Gem::Uninstaller) {
+      def ask_if_ok spec
+        true
+      end
+    }.new(spec.name, :executables => true, :user_install => true).uninstall
   end
 
   ##
@@ -655,7 +658,10 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # Install the provided specs
 
   def install_specs(*specs)
-    Gem::Specification.add_specs(*specs)
+    specs.each do |spec|
+      Gem::Installer.for_spec(spec).install
+    end
+
     Gem.searcher = nil
   end
 
@@ -676,8 +682,9 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   # Install the provided default specs
 
   def install_default_specs(*specs)
-    install_specs(*specs)
     specs.each do |spec|
+      installer = Gem::Installer.for_spec(spec, :install_as_default => true)
+      installer.install
       Gem.register_default_spec(spec)
     end
   end

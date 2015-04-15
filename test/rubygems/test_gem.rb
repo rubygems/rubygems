@@ -37,7 +37,7 @@ class TestGem < Gem::TestCase
       c1 = new_spec "c", "1"
       c2 = new_spec "c", "2"
 
-      install_specs a1, b1, b2, c1, c2
+      install_specs c1, c2, b1, b2, a1
 
       a1.activate
 
@@ -61,7 +61,7 @@ class TestGem < Gem::TestCase
       d1 = new_spec "d", "1", { "c" => "< 2" },  "lib/d.rb"
       d2 = new_spec "d", "2", { "c" => "< 2" },  "lib/d.rb" # this
 
-      install_specs a1, b1, b2, c1, c2, d1, d2
+      install_specs c1, c2, b1, b2, d1, d2, a1
 
       a1.activate
 
@@ -135,12 +135,12 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_bin_path_bin_name
-    util_exec_gem
+    install_specs util_exec_gem
     assert_equal @abin_path, Gem.bin_path('a', 'abin')
   end
 
   def test_self_bin_path_bin_name_version
-    util_exec_gem
+    install_specs util_exec_gem
     assert_equal @abin_path, Gem.bin_path('a', 'abin', '4')
   end
 
@@ -167,10 +167,11 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_bin_path_bin_file_gone_in_latest
-    util_exec_gem
-    util_spec 'a', '10' do |s|
+    install_specs util_exec_gem
+    spec = util_spec 'a', '10' do |s|
       s.executables = []
     end
+    install_specs spec
     # Should not find a-10's non-abin (bug)
     assert_equal @abin_path, Gem.bin_path('a', 'abin')
   end
@@ -882,7 +883,11 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_try_activate_missing_dep
+    b = util_spec 'b', '1.0'
     a = util_spec 'a', '1.0', 'b' => '>= 1.0'
+
+    install_specs b, a
+    uninstall_gem b
 
     a_file = File.join a.gem_dir, 'lib', 'a_file.rb'
 
@@ -944,7 +949,7 @@ class TestGem < Gem::TestCase
     b = util_spec "b", "1", "c" => nil
     c = util_spec "c", "2"
 
-    install_specs a, b, c
+    install_specs a, c, b
 
     Gem.needs do |r|
       r.gem "a"
@@ -966,7 +971,7 @@ class TestGem < Gem::TestCase
       d =  new_spec "d", "1", {'e' => '= 1'}, "lib/d.rb"
       e = util_spec "e", "1"
 
-      install_specs a, b, c, d, e
+      install_specs a, c, b, e, d
 
       Gem.needs do |r|
         r.gem "a"
@@ -1563,6 +1568,7 @@ You may need to `gem install -g` to install missing gems
 
     @exec_path = File.join spec.full_gem_path, spec.bindir, 'exec'
     @abin_path = File.join spec.full_gem_path, spec.bindir, 'abin'
+    spec
   end
 
   def util_remove_interrupt_command

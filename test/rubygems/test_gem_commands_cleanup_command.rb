@@ -132,9 +132,9 @@ class TestGemCommandsCleanupCommand < Gem::TestCase
       s.add_dependency 'b', '1'
     end
 
-    install_gem @c
     install_gem @b_1
     install_gem @b_2
+    install_gem @c
 
     @cmd.options[:args] = []
 

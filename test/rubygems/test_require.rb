@@ -82,7 +82,7 @@ class TestGemRequire < Gem::TestCase
     b1 = new_spec "b", "1", nil, "lib/b/c.rb"
     b2 = new_spec "b", "2", nil, "lib/b/c.rb"
 
-    install_specs a1, b1, b2
+    install_specs b1, b2, a1
 
     save_loaded_features do
       assert_require 'test_gem_require_a'
@@ -99,7 +99,7 @@ class TestGemRequire < Gem::TestCase
     b1 = new_spec "b", "1", nil, "lib/b/c.rb"
     b2 = new_spec "b", "2", nil, "lib/b/c.rb"
 
-    install_specs a1, b1, b2
+    install_specs b1, b2, a1
 
     save_loaded_features do
       assert_require 'test_gem_require_a'
@@ -115,7 +115,7 @@ class TestGemRequire < Gem::TestCase
     a1 = new_spec "a", "1", {"b" => ">= 1"}, "lib/test_gem_require_a.rb"
     b1 = new_spec "b", "1", nil, "lib/b/c.rb"
 
-    install_specs a1, b1
+    install_specs b1, a1
 
     save_loaded_features do
       assert_require 'test_gem_require_a'
@@ -146,7 +146,7 @@ class TestGemRequire < Gem::TestCase
       b1 = new_spec "b", "1", nil, "lib/benchmark.rb"
       b2 = new_spec "b", "2", nil, "lib/benchmark.rb"
 
-      install_specs a1, b1, b2
+      install_specs b1, b2, a1
 
       require 'test_gem_require_a'
       assert_equal unresolved_names, ["b (>= 1)"]
@@ -170,7 +170,7 @@ class TestGemRequire < Gem::TestCase
       c1 = new_spec "c", "1", nil, "lib/d.rb"
       c2 = new_spec("c", "2", nil, "lib/d.rb")
 
-      install_specs a1, b1, b2, c1, c2
+      install_specs c1, c2, b1, b2, a1
 
       a1.activate
       c1.activate
@@ -194,7 +194,7 @@ class TestGemRequire < Gem::TestCase
       c1 = new_spec "c", "1", nil, "lib/d.rb"
       c2 = new_spec("c", "2", nil, "lib/d.rb")
 
-      install_specs a1, b1, b2, c1, c2, x1, x2
+      install_specs c1, c2, x1, x2, b1, b2, a1
 
       a1.activate
       c1.activate
@@ -219,7 +219,7 @@ class TestGemRequire < Gem::TestCase
       c2 = new_spec "c", "2", nil, "lib/d.rb"
       c3 = new_spec "c", "3", nil, "lib/d.rb"
 
-      install_specs a1, b1, b2, c1, c2, c3
+      install_specs c1, c2, c3, b1, b2, a1
 
       a1.activate
       c1.activate

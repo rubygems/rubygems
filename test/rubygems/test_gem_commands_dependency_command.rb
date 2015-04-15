@@ -71,9 +71,11 @@ Gem pl-1-x86-linux
   end
 
   def test_execute_pipe_format
-    util_spec 'foo' do |gem|
+    spec = util_spec 'foo' do |gem|
       gem.add_dependency 'bar', '> 1'
     end
+    install_specs util_spec 'bar', 2
+    install_specs spec
 
     @cmd.options[:args] = %w[foo]
     @cmd.options[:pipe_format] = true

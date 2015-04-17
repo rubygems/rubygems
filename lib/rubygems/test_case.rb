@@ -36,6 +36,7 @@ require 'shellwords'
 require 'tmpdir'
 require 'uri'
 require 'zlib'
+require 'benchmark' # stdlib
 
 Gem.load_yaml
 

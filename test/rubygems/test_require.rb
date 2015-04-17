@@ -140,7 +140,6 @@ class TestGemRequire < Gem::TestCase
   end
 
   def test_activate_via_require_respects_loaded_files
-    require 'benchmark' # stdlib
     save_loaded_features do
       a1 = new_spec "a", "1", {"b" => ">= 1"}, "lib/test_gem_require_a.rb"
       b1 = new_spec "b", "1", nil, "lib/benchmark.rb"

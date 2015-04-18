@@ -1018,10 +1018,14 @@ class Gem::Specification < Gem::BasicSpecification
   # +prerelease+ is true.
 
   def self.latest_specs prerelease = false
+    _latest_specs Gem::Specification._all, prerelease
+  end
+
+  def self._latest_specs specs, prerelease = false # :nodoc:
     result = Hash.new { |h,k| h[k] = {} }
     native = {}
 
-    Gem::Specification.reverse_each do |spec|
+    specs.reverse_each do |spec|
       next if spec.version.prerelease? unless prerelease
 
       native[spec.name] = spec.version if spec.platform == Gem::Platform::RUBY

@@ -331,6 +331,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     end
 
     @marshal_version = "#{Marshal::MAJOR_VERSION}.#{Marshal::MINOR_VERSION}"
+    @orig_LOADED_FEATURES = $LOADED_FEATURES.dup
   end
 
   ##
@@ -339,6 +340,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
   def teardown
     $LOAD_PATH.replace @orig_LOAD_PATH if @orig_LOAD_PATH
+    $LOADED_FEATURES.replace @orig_LOADED_FEATURES if @orig_LOADED_FEATURES
 
     if @orig_BASERUBY
       RbConfig::CONFIG['BASERUBY'] = @orig_BASERUBY

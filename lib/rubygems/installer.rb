@@ -292,7 +292,7 @@ class Gem::Installer
 
     say spec.post_install_message unless spec.post_install_message.nil?
 
-    Gem::Installer.install_lock.synchronize { Gem::Specification.add_spec spec }
+    Gem::Installer.install_lock.synchronize { Gem::Specification.reset }
 
     run_post_install_hooks
 

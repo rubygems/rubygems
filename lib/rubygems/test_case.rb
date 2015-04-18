@@ -377,6 +377,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     ENV['GEM_PRIVATE_KEY_PASSPHRASE'] = @orig_gem_private_key_passphrase
 
     Gem::Specification._clear_load_cache
+    Gem::Specification.unresolved_deps.clear
   end
 
   def common_installer_setup

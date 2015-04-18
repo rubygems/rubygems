@@ -372,10 +372,7 @@ class Gem::Indexer
     specs = map_gems_to_specs updated_gems
     prerelease, released = specs.partition { |s| s.version.prerelease? }
 
-    Gem::Specification.dirs = []
-    Gem::Specification.add_specs(*specs)
-
-    files = build_marshal_gemspecs
+    files = build_marshal_gemspecs specs
 
     Gem.time 'Updated indexes' do
       update_specs_index released, @dest_specs_index, @specs_index

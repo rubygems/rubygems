@@ -878,7 +878,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
       fetcher.clear
     end
 
-    Gem::Specification.add_specs specs['q-1.0']
+    install_specs specs['q-1.0']
 
     File.open @gemdeps, "w" do |f|
       f << "gem 'r'"

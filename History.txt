@@ -18,6 +18,8 @@ Minor enhancements:
   Pull request #1131 by Matijs van Zuijlen
 * Fix edge case in `levenshtein_distance` for comparing longer strings.
   Pull request #1173 by Richard Schneeman
+* Remove duplication from List#to_a as it now includes Enumberable.
+  Pull request #1200 by Marc Siegel.
 
 Bug fixes:
 

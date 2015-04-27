@@ -606,7 +606,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     spec.loaded_from = spec.loaded_from = written_path
 
-    Gem::Specification.add_spec spec.for_cache
+    Gem::Specification.reset
 
     return spec
   end

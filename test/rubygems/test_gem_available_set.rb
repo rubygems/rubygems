@@ -79,7 +79,7 @@ class TestGemAvailableSet < Gem::TestCase
   end
 
   def test_remove_installed_bang
-    a1, _ = util_gem 'a', '1'
+    a1, _ = util_spec 'a', '1'
 
     a1.activate
 

@@ -1047,9 +1047,7 @@ dependencies: []
 
   def test_self_outdated
     spec_fetcher do |fetcher|
-      fetcher.spec 'a', 4
-
-      fetcher.clear
+      fetcher.download 'a', 4
 
       fetcher.spec 'a', 3
     end
@@ -1059,10 +1057,8 @@ dependencies: []
 
   def test_self_outdated_and_latest_remotes
     specs = spec_fetcher do |fetcher|
-      fetcher.spec 'a', 4
-      fetcher.spec 'b', 3
-
-      fetcher.clear
+      fetcher.download 'a', 4
+      fetcher.download 'b', 3
 
       fetcher.spec 'a', '3.a'
       fetcher.spec 'b', 2

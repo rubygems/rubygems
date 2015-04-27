@@ -186,7 +186,6 @@ end
 #     f.gem  'a', 1
 #     f.spec 'a', 2
 #     f.gem  'b', 1' 'a' => '~> 1.0'
-#     f.clear
 #   end
 #
 # The above declaration creates two gems, a-1 and b-1, with a dependency from
@@ -219,14 +218,6 @@ class Gem::TestCase::SpecFetcherSetup
   end
 
   ##
-  # Removes any created gems or specifications from Gem.dir (the default
-  # install location).
-
-  def clear
-    @operations << [:clear]
-  end
-
-  ##
   # Returns a Hash of created Specification full names and the corresponding
   # Specification.
 
@@ -254,9 +245,6 @@ class Gem::TestCase::SpecFetcherSetup
   def execute_operations # :nodoc:
     @operations.each do |operation, *arguments|
       case operation
-      when :clear then
-        @test.util_clear_gems
-        @installed.clear
       when :gem then
         spec, gem = @test.util_gem(*arguments, &arguments.pop)
 
@@ -264,6 +252,10 @@ class Gem::TestCase::SpecFetcherSetup
 
         @gems[spec] = gem
         @installed << spec
+      when :download then
+        spec, gem = @test.util_gem(*arguments, &arguments.pop)
+
+        @gems[spec] = gem
       when :spec then
         spec = @test.util_spec(*arguments, &arguments.pop)
 
@@ -284,6 +276,17 @@ class Gem::TestCase::SpecFetcherSetup
 
   def gem name, version, dependencies = nil, &block
     @operations << [:gem, name, version, dependencies, block]
+  end
+
+  ##
+  # Creates a gem with +name+, +version+ and +deps+.  The created gem is
+  # downloaded in to the cache directory but is not installed
+  #
+  # The specification will be yielded before gem creation for customization,
+  # but only the block or the dependencies may be set, not both.
+
+  def download name, version, dependencies = nil, &block
+    @operations << [:download, name, version, dependencies, block]
   end
 
   ##

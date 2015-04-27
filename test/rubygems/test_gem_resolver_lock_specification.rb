@@ -34,8 +34,7 @@ class TestGemResolverLockSpecification < Gem::TestCase
 
   def test_install
     spec_fetcher do |fetcher|
-      fetcher.gem 'a', 2
-      fetcher.clear
+      fetcher.download 'a', 2
     end
 
     spec = @LS.new @set, 'a', v(2), @source, Gem::Platform::RUBY

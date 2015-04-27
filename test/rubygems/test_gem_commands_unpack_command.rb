@@ -102,7 +102,7 @@ class TestGemCommandsUnpackCommand < Gem::TestCase
   def test_execute_remote
     spec_fetcher do |fetcher|
       fetcher.download 'a', 1
-      fetcher.download  'a', 2
+      fetcher.download 'a', 2
     end
 
     Gem.configuration.verbose = :really

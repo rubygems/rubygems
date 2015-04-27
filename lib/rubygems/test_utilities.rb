@@ -213,6 +213,7 @@ class Gem::TestCase::SpecFetcherSetup
     @repository = repository
 
     @gems       = {}
+    @downloaded = []
     @installed  = []
     @operations = []
   end
@@ -256,6 +257,7 @@ class Gem::TestCase::SpecFetcherSetup
         spec, gem = @test.util_gem(*arguments, &arguments.pop)
 
         @gems[spec] = gem
+        @downloaded << spec
       when :spec then
         spec = @test.util_spec(*arguments, &arguments.pop)
 
@@ -315,7 +317,7 @@ class Gem::TestCase::SpecFetcherSetup
       gem_repo, @test.gem_repo = @test.gem_repo, @repository
       @test.uri = URI @repository
 
-      @test.util_setup_spec_fetcher(*@gems.keys)
+      @test.util_setup_spec_fetcher(*@downloaded)
     ensure
       @test.gem_repo = gem_repo
       @test.uri = URI gem_repo

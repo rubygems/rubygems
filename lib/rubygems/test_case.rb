@@ -989,14 +989,13 @@ Also, a list:
   # Best used with +@all_gems+ from #util_setup_fake_fetcher.
 
   def util_setup_spec_fetcher(*specs)
-    specs -= Gem::Specification._all
-    Gem::Specification.add_specs(*specs)
+    all_specs = Gem::Specification.to_a + specs
+    Gem::Specification._resort! all_specs
 
     spec_fetcher = Gem::SpecFetcher.fetcher
 
-    prerelease, all = Gem::Specification.partition { |spec|
-      spec.version.prerelease?
-    }
+    prerelease, all = all_specs.partition { |spec| spec.version.prerelease?  }
+    latest = Gem::Specification._latest_specs all_specs
 
     spec_fetcher.specs[@uri] = []
     all.each do |spec|
@@ -1004,7 +1003,7 @@ Also, a list:
     end
 
     spec_fetcher.latest_specs[@uri] = []
-    Gem::Specification.latest_specs.each do |spec|
+    latest.each do |spec|
       spec_fetcher.latest_specs[@uri] << spec.name_tuple
     end
 
@@ -1020,7 +1019,7 @@ Also, a list:
       specs = all.map { |spec| spec.name_tuple }
       s_zip = util_gzip Marshal.dump Gem::NameTuple.to_basic specs
 
-      latest_specs = Gem::Specification.latest_specs.map do |spec|
+      latest_specs = latest.map do |spec|
         spec.name_tuple
       end
 
@@ -1035,7 +1034,7 @@ Also, a list:
 
       v = Gem.marshal_version
 
-      Gem::Specification.each do |spec|
+      all_specs.each do |spec|
         path = "#{@gem_repo}quick/Marshal.#{v}/#{spec.original_name}.gemspec.rz"
         data = Marshal.dump spec
         data_deflate = Zlib::Deflate.deflate data

@@ -2742,13 +2742,13 @@ duplicate dependency on b (>= 1.2.3), (~> 1.2) use:
     @a1.extensions << 'ext/a/extconf.rb'
 
     Dir.chdir @tempdir do
-      FileUtils.ln_s '/root/path', 'lib2' unless vc_windows?
+      FileUtils.ln_s 'lib/code.rb', 'lib2' unless vc_windows?
 
-      e = assert_raises Gem::InvalidSpecificationException do
+      use_ui @ui do
         @a1.validate
       end
 
-      assert_equal '["lib2"] are not files', e.message
+      assert_match 'WARNING:  lib2 is a symlink, which is not supported on all platforms', @ui.error
     end
 
     assert_equal %w[bin/exec ext/a/extconf.rb lib/code.rb lib2 test/suite.rb].sort,

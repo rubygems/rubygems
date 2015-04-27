@@ -207,7 +207,11 @@ class Gem::Package
 
   def add_files tar # :nodoc:
     @spec.files.each do |file|
-      stat = File.stat file
+      stat = File.lstat file
+
+      if stat.symlink?
+        tar.add_symlink file, File.readlink(file), stat.mode
+      end
 
       next unless stat.file?
 
@@ -377,6 +381,8 @@ EOM
           out.write entry.read
           FileUtils.chmod entry.header.mode, destination
         end if entry.file?
+
+        File.symlink(install_location(entry.header.linkname, destination_dir), destination) if entry.symlink?
 
         verbose destination
       end
@@ -618,4 +624,3 @@ require 'rubygems/package/tar_header'
 require 'rubygems/package/tar_reader'
 require 'rubygems/package/tar_reader/entry'
 require 'rubygems/package/tar_writer'
-

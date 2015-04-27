@@ -323,11 +323,6 @@ class Gem::TestCase::SpecFetcherSetup
       @test.uri = URI gem_repo
     end
 
-    # This works around util_setup_spec_fetcher adding all created gems to the
-    # installed set.
-    Gem::Specification.reset
-    Gem::Specification.add_specs(*@installed)
-
     @gems.each do |spec, gem|
       next unless gem
 

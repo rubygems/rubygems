@@ -117,7 +117,6 @@ class Gem::Indexer
 
     Gem.time 'Generated Marshal quick index gemspecs' do
       specs.each do |spec|
-        next if spec.default_gem?
         spec_file_name = "#{spec.original_name}.gemspec.rz"
         marshal_name = File.join @quick_marshal_dir, spec_file_name
 

@@ -173,6 +173,8 @@ class Gem::Specification < Gem::BasicSpecification
     @@default_value[k].nil?
   }
 
+  @@stubs_by_name = {}
+
   ######################################################################
   # :section: Required gemspec attributes
 
@@ -724,30 +726,26 @@ class Gem::Specification < Gem::BasicSpecification
 
   def self.each_gemspec(dirs) # :nodoc:
     dirs.each do |dir|
-      gemspecs_in(dir).each do |path|
+      Dir[File.join(dir, "*.gemspec")].each do |path|
         yield path.untaint
       end
     end
   end
 
-  def self.gemspecs_in dir
-    Dir[File.join(dir, "*.gemspec")]
-  end
-
-  def self.gemspec_stubs_in dir
-    Dir[File.join(dir, "*.gemspec")].map { |path|
+  def self.gemspec_stubs_in dir, pattern
+    Dir[File.join(dir, pattern)].map { |path|
       Gem::StubSpecification.gemspec_stub(path)
     }.select(&:valid?)
   end
   private_class_method :gemspec_stubs_in
 
   if [].respond_to? :flat_map
-    def self.map_stubs(dirs) # :nodoc:
-      dirs.flat_map { |dir| gemspec_stubs_in(dir) }
+    def self.map_stubs(dirs, pattern) # :nodoc:
+      dirs.flat_map { |dir| gemspec_stubs_in(dir, pattern) }
     end
   else # FIXME: remove when 1.8 is dropped
-    def self.map_stubs(dirs) # :nodoc:
-      dirs.map { |dir| gemspec_stubs_in(dir) }.flatten 1
+    def self.map_stubs(dirs, pattern) # :nodoc:
+      dirs.map { |dir| gemspec_stubs_in(dir, pattern) }.flatten 1
     end
   end
   private_class_method :map_stubs
@@ -783,11 +781,30 @@ class Gem::Specification < Gem::BasicSpecification
 
   def self.stubs
     @@stubs ||= begin
-      stubs = map_stubs([default_specifications_dir] + dirs)
+      stubs = map_stubs([default_specifications_dir] + dirs, "*.gemspec")
       stubs = uniq_by(stubs) { |stub| stub.full_name }
 
       _resort!(stubs)
+      @@stubs_by_name = stubs.group_by(&:name)
       stubs
+    end
+  end
+
+  EMPTY = [].freeze # :nodoc:
+
+  ##
+  # Returns a Gem::StubSpecification for installed gem named +name+
+
+  def self.stubs_for name
+    if @@stubs_by_name[name]
+      @@stubs_by_name[name]
+    else
+      stubs = map_stubs([default_specifications_dir] + dirs, "#{name}-*.gemspec")
+      stubs = uniq_by(stubs) { |stub| stub.full_name }.group_by(&:name)
+      stubs.each_value { |v| v.sort_by!(&:version) }
+
+      @@stubs_by_name.merge! stubs
+      @@stubs_by_name[name] ||= EMPTY
     end
   end
 
@@ -830,6 +847,8 @@ class Gem::Specification < Gem::BasicSpecification
 
     _all << spec
     stubs << spec
+    (@@stubs_by_name[spec.name] ||= []) << spec
+    _resort!(@@stubs_by_name[spec.name])
     _resort!(_all)
     _resort!(stubs)
   end
@@ -1168,6 +1187,7 @@ class Gem::Specification < Gem::BasicSpecification
     warn "Gem::Specification.remove_spec is deprecated and will be removed in Rubygems 3.0" unless Gem::Deprecate.skip
     _all.delete spec
     stubs.delete_if { |s| s.full_name == spec.full_name }
+    (@@stubs_by_name[spec.name] || []).delete_if { |s| s.full_name == spec.full_name }
     reset
   end
 
@@ -1194,6 +1214,7 @@ class Gem::Specification < Gem::BasicSpecification
     Gem.pre_reset_hooks.each { |hook| hook.call }
     @@all = nil
     @@stubs = nil
+    @@stubs_by_name = {}
     _clear_load_cache
     unresolved = unresolved_deps
     unless unresolved.empty? then

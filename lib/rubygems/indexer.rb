@@ -97,6 +97,7 @@ class Gem::Indexer
 
   def build_indicies
     specs = map_gems_to_specs gem_file_list
+    Gem::Specification._resort! specs
     build_marshal_gemspecs specs
     build_modern_indicies specs if @build_modern
 

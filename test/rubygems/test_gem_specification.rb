@@ -1080,7 +1080,7 @@ dependencies: []
     assert_includes Gem::Specification.stubs.map { |s| s.full_name }, 'a-1'
 
     uninstall_gem @a1
-    Gem::Specification.remove_spec @a1
+    Gem::Specification.reset
 
     refute_includes Gem::Specification.all_names, 'a-1'
     refute_includes Gem::Specification.stubs.map { |s| s.full_name }, 'a-1'
@@ -1095,7 +1095,7 @@ dependencies: []
 
     FileUtils.rm @a1.spec_file # bug #698
 
-    Gem::Specification.remove_spec @a1
+    Gem::Specification.reset
 
     refute_includes Gem::Specification.all_names, 'a-1'
     refute_includes Gem::Specification.stubs.map { |s| s.full_name }, 'a-1'

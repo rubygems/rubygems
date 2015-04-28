@@ -26,6 +26,9 @@ Minor enhancements:
 * Gem::Specification.add_spec is deprecated and will be removed from version
   3.0 with no replacement.  To add specs, install the gem, then reset the
   cache.
+* Gem::Specification.remove_spec is deprecated and will be removed from version
+  3.0 with no replacement.  To remove specs, uninstall the gem, then reset the
+  cache by calling Gem::Specification.reset.
 
 Bug fixes:
 

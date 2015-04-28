@@ -1145,8 +1145,10 @@ class Gem::Specification < Gem::BasicSpecification
   # Removes +spec+ from the known specs.
 
   def self.remove_spec spec
+    warn "Gem::Specification.remove_spec is deprecated and will be removed in Rubygems 3.0" unless Gem::Deprecate.skip
     _all.delete spec
     stubs.delete_if { |s| s.full_name == spec.full_name }
+    reset
   end
 
   ##

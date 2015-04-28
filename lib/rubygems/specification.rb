@@ -739,14 +739,37 @@ class Gem::Specification < Gem::BasicSpecification
       Gem::StubSpecification.gemspec_stub(path)
     }.select(&:valid?)
   end
+  private_class_method :gemspec_stubs_in
 
-  def self.each_stub(dirs) # :nodoc:
-    dirs.each do |dir|
-      gemspec_stubs_in(dir).each do |stub|
-        yield stub
-      end
+  if [].respond_to? :flat_map
+    def self.map_stubs(dirs) # :nodoc:
+      dirs.flat_map { |dir| gemspec_stubs_in(dir) }
+    end
+  else # FIXME: remove when 1.8 is dropped
+    def self.map_stubs(dirs) # :nodoc:
+      dirs.map { |dir| gemspec_stubs_in(dir) }.flatten 1
     end
   end
+  private_class_method :map_stubs
+
+  uniq_takes_a_block = false
+  [1,2].uniq { uniq_takes_a_block = true }
+
+  if uniq_takes_a_block
+    def self.uniq_by(list, &block) # :nodoc:
+      list.uniq(&block)
+    end
+  else # FIXME: remove when 1.8 is dropped
+    def self.uniq_by(list) # :nodoc:
+      values = {}
+      list.each { |item|
+        value = yield item
+        values[value] ||= item
+      }
+      values.values
+    end
+  end
+  private_class_method :uniq_by
 
   def self.each_spec(dirs) # :nodoc:
     each_gemspec(dirs) do |path|
@@ -760,12 +783,9 @@ class Gem::Specification < Gem::BasicSpecification
 
   def self.stubs
     @@stubs ||= begin
-      stubs = {}
-      each_stub(dirs.reverse << default_specifications_dir) do |stub|
-        stubs[stub.full_name] = stub
-      end
+      stubs = map_stubs([default_specifications_dir] + dirs)
+      stubs = uniq_by(stubs) { |stub| stub.full_name }
 
-      stubs = stubs.values
       _resort!(stubs)
       stubs
     end

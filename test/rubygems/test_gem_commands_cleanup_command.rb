@@ -1,5 +1,6 @@
 require 'rubygems/test_case'
 require 'rubygems/commands/cleanup_command'
+require 'rubygems/installer'
 
 class TestGemCommandsCleanupCommand < Gem::TestCase
 

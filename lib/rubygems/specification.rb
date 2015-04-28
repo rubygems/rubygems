@@ -795,6 +795,7 @@ class Gem::Specification < Gem::BasicSpecification
   # properly sorted.
 
   def self.add_spec spec
+    warn "Gem::Specification.add_spec is deprecated and will be removed in Rubygems 3.0" unless Gem::Deprecate.skip
     # TODO: find all extraneous adds
     # puts
     # p :add_spec => [spec.full_name, caller.reject { |s| s =~ /minitest/ }]
@@ -817,14 +818,18 @@ class Gem::Specification < Gem::BasicSpecification
   # Adds multiple specs to the known specifications.
 
   def self.add_specs *specs
+    warn "Gem::Specification.add_specs is deprecated and will be removed in Rubygems 3.0" unless Gem::Deprecate.skip
+
     raise "nil spec!" if specs.any?(&:nil?) # TODO: remove once we're happy
 
     # TODO: this is much more efficient, but we need the extra checks for now
     # _all.concat specs
     # _resort!
 
-    specs.each do |spec| # TODO: slow
-      add_spec spec
+    Gem::Deprecate.skip_during do
+      specs.each do |spec| # TODO: slow
+        add_spec spec
+      end
     end
   end
 

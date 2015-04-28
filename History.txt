@@ -20,6 +20,12 @@ Minor enhancements:
   Pull request #1173 by Richard Schneeman
 * Remove duplication from List#to_a, improving from O(n^2) to O(n) time.
   Pull request #1200 by Marc Siegel.
+* Gem::Specification.add_specs is deprecated and will be removed from version
+  3.0 with no replacement.  To add specs, install the gem, then reset the
+  cache.
+* Gem::Specification.add_spec is deprecated and will be removed from version
+  3.0 with no replacement.  To add specs, install the gem, then reset the
+  cache.
 
 Bug fixes:
 

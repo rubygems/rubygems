@@ -903,10 +903,15 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_try_activate_missing_extensions
-    util_spec 'ext', '1' do |s|
+    spec = util_spec 'ext', '1' do |s|
       s.extensions = %w[ext/extconf.rb]
       s.mark_version
       s.installed_by_version = v('2.2')
+    end
+
+    # write the spec without install to simulate a failed install
+    write_file spec.spec_file do |io|
+      io.write spec.to_ruby_for_cache
     end
 
     _, err = capture_io do
@@ -1377,7 +1382,9 @@ class TestGem < Gem::TestCase
   def test_use_gemdeps
     gem_deps_file = 'gem.deps.rb'.untaint
     spec = util_spec 'a', 1
+    install_specs spec
 
+    spec = Gem::Specification.find { |s| s == spec }
     refute spec.activated?
 
     open gem_deps_file, 'w' do |io|
@@ -1438,6 +1445,8 @@ class TestGem < Gem::TestCase
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], '-'
 
     spec = util_spec 'a', 1
+    install_specs spec
+    spec = Gem::Specification.find { |s| s == spec }
 
     refute spec.activated?
 
@@ -1507,7 +1516,9 @@ You may need to `gem install -g` to install missing gems
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'
 
     spec = util_spec 'a', 1
+    install_specs spec
 
+    spec = Gem::Specification.find { |s| s == spec }
     refute spec.activated?
 
     open 'x', 'w' do |io|

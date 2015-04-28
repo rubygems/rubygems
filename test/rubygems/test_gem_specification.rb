@@ -4,6 +4,7 @@ require 'pathname'
 require 'stringio'
 require 'rubygems/ext'
 require 'rubygems/specification'
+require 'rubygems/installer'
 
 class TestGemSpecification < Gem::TestCase
 
@@ -1611,7 +1612,9 @@ dependencies: []
 
     assert_empty @gem.dependent_gems
 
-    bonobo = util_spec 'bonobo'
+    bonobo = util_spec 'bonobo', 1
+    install_gem bonobo
+    install_gem @gem
 
     expected = [
       [@gem, @bonobo, [bonobo]],

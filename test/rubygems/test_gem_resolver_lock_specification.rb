@@ -84,6 +84,7 @@ class TestGemResolverLockSpecification < Gem::TestCase
 
   def test_spec_loaded
     real_spec = util_spec 'a', 2
+    install_specs real_spec
     real_spec.activate
 
     version = v(2)

@@ -800,9 +800,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
       end
     end
 
-    spec.loaded_from = spec.spec_file
-
-    Gem::Specification.add_spec spec
+    Gem::Specification.reset
 
     return spec
   end

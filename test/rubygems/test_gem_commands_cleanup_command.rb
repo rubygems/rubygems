@@ -79,8 +79,8 @@ class TestGemCommandsCleanupCommand < Gem::TestCase
   end
 
   def test_execute_all_user
-    @a_1_1 = util_spec 'a', '1.1'
-    @a_1_1 = install_gem_user @a_1_1 # pick up user install path
+    @a_1_1, = util_gem 'a', '1.1'
+    @a_1_1 = install_gem @a_1_1 # pick up user install path
 
     Gem::Specification.dirs = [Gem.dir, Gem.user_dir]
 
@@ -98,8 +98,8 @@ class TestGemCommandsCleanupCommand < Gem::TestCase
   def test_execute_all_user_no_sudo
     FileUtils.chmod 0555, @gemhome
 
-    @a_1_1 = util_spec 'a', '1.1'
-    @a_1_1 = install_gem_user @a_1_1 # pick up user install path
+    @a_1_1, = util_gem 'a', '1.1'
+    @a_1_1 = install_gem @a_1_1, :user_install => true # pick up user install path
 
     Gem::Specification.dirs = [Gem.dir, Gem.user_dir]
 

@@ -24,7 +24,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
 
     gemhome2 = "#{@gemhome}2"
 
-    a_4 = util_spec 'a', 4
+    a_4, = util_gem 'a', 4
     install_gem a_4, :install_dir => gemhome2
 
     Gem::Specification.dirs = [@gemhome, gemhome2]
@@ -213,7 +213,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
 
     gemhome2 = "#{@gemhome}2"
 
-    a_4 = util_spec 'a', 4
+    a_4, = util_gem 'a', 4
     install_gem a_4, :install_dir => gemhome2
 
     Gem::Specification.dirs = [@gemhome, gemhome2]

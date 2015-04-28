@@ -319,7 +319,8 @@ class TestGemDependency < Gem::TestCase
   end
 
   def test_to_specs_suggests_other_versions
-    a = util_spec 'a', '1.0', 'b' => '>= 1.0'
+    a = util_spec 'a', '1.0'
+    install_specs a
 
     a_file = File.join a.gem_dir, 'lib', 'a_file.rb'
 
@@ -337,7 +338,8 @@ class TestGemDependency < Gem::TestCase
   end
 
   def test_to_specs_indicates_total_gem_set_size
-    a = util_spec 'a', '1.0', 'b' => '>= 1.0'
+    a = util_spec 'a', '1.0'
+    install_specs a
 
     a_file = File.join a.gem_dir, 'lib', 'a_file.rb'
 

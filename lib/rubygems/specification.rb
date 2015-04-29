@@ -769,6 +769,17 @@ class Gem::Specification < Gem::BasicSpecification
   end
   private_class_method :uniq_by
 
+  if [].respond_to? :sort_by!
+    def self.sort_by! list, &block
+      list.sort_by!(&block)
+    end
+  else # FIXME: remove when 1.8 is dropped
+    def self.sort_by! list, &block
+      list.replace list.sort_by(&block)
+    end
+  end
+  private_class_method :sort_by!
+
   def self.each_spec(dirs) # :nodoc:
     each_gemspec(dirs) do |path|
       spec = self.load path
@@ -801,7 +812,7 @@ class Gem::Specification < Gem::BasicSpecification
     else
       stubs = map_stubs([default_specifications_dir] + dirs, "#{name}-*.gemspec")
       stubs = uniq_by(stubs) { |stub| stub.full_name }.group_by(&:name)
-      stubs.each_value { |v| v.sort_by!(&:version) }
+      stubs.each_value { |v| sort_by!(v) { |i| i.version } }
 
       @@stubs_by_name.merge! stubs
       @@stubs_by_name[name] ||= EMPTY

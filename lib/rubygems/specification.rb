@@ -734,7 +734,11 @@ class Gem::Specification < Gem::BasicSpecification
 
   def self.gemspec_stubs_in dir, pattern
     Dir[File.join(dir, pattern)].map { |path|
-      Gem::StubSpecification.gemspec_stub(path)
+      if dir == default_specifications_dir
+        Gem::StubSpecification.default_gemspec_stub(path)
+      else
+        Gem::StubSpecification.gemspec_stub(path)
+      end
     }.select(&:valid?)
   end
   private_class_method :gemspec_stubs_in

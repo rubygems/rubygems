@@ -1376,6 +1376,17 @@ dependencies: []
     assert_path_exists @ext.extension_dir
   end
 
+  def test_default_spec_stub_is_marked_default
+    default = new_default_spec 'default', 2
+    install_default_gems default
+
+    stub = Gem::Specification.stubs.find { |s| s.name == 'default' }
+    assert_predicate stub, :default_gem?
+
+    stub = Gem::Specification.find_all_by_name('default').first
+    assert_predicate stub, :default_gem?
+  end
+
   def test_build_extensions_built
     ext_spec
 

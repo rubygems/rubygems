@@ -11,7 +11,6 @@ require 'rubygems/requirement'
 require 'rubygems/platform'
 require 'rubygems/deprecate'
 require 'rubygems/basic_specification'
-require 'rubygems/stub_specification'
 require 'rubygems/util/stringio'
 require 'rubygems/util/list'
 
@@ -1310,13 +1309,6 @@ class Gem::Specification
 
   def <=>(other) # :nodoc:
     sort_obj <=> other.sort_obj
-  end
-
-  def == other # :nodoc:
-    self.class === other &&
-      name == other.name &&
-      version == other.version &&
-      platform == other.platform
   end
 
   ##
@@ -2965,6 +2957,8 @@ open-ended dependency on #{dep} is not recommended
   # deprecate :file_name,           :cache_file, 2011, 10
   # deprecate :full_gem_path,     :cache_file, 2011, 10
 end
+
+require 'rubygems/stub_specification'
 
 # DOC: What is this and why is it here, randomly, at the end of this file?
 Gem.clear_paths

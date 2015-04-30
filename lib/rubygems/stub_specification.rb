@@ -1,9 +1,11 @@
+require 'delegate'
+
 ##
 # Gem::StubSpecification reads the stub: line from the gemspec.  This prevents
 # us having to eval the entire gemspec in order to find out certain
 # information.
 
-class Gem::StubSpecification
+class Gem::StubSpecification < DelegateClass(Gem::Specification)
   include Gem::BasicSpecification
   extend Gem::BasicSpecification::ClassMethods
 
@@ -37,8 +39,10 @@ class Gem::StubSpecification
     new filename, false
   end
 
+  attr_reader :loaded_from
+
   def initialize filename, default_gem
-    self.loaded_from = filename
+    @loaded_from     = filename
     @data            = nil
     @extensions      = nil
     @name            = nil
@@ -65,7 +69,8 @@ class Gem::StubSpecification
     return if default_gem?
     return if extensions.empty?
 
-    to_spec.build_extensions
+    to_spec
+    __getobj__.build_extensions
   end
 
   ##
@@ -91,7 +96,11 @@ class Gem::StubSpecification
       end
     end
 
-    @data ||= to_spec
+    unless @data
+      to_spec
+      @data = __getobj__
+    end
+    @data
   end
 
   private :data
@@ -132,7 +141,8 @@ class Gem::StubSpecification
     return false if default_gem?
     return false if extensions.empty?
 
-    to_spec.missing_extensions?
+    to_spec
+    __getobj__.missing_extensions?
   end
 
   ##
@@ -162,16 +172,8 @@ class Gem::StubSpecification
   # The full Gem::Specification for this gem, loaded from evalling its gemspec
 
   def to_spec
-    @spec ||= if @data then
-                Gem.loaded_specs.values.find { |spec|
-                  spec.name == name and spec.version == version
-                }
-              end
-
-    @spec ||= Gem::Specification.load(loaded_from)
-    @spec.ignored = @ignored if instance_variable_defined? :@ignored
-
-    @spec
+    load_gemspec!
+    __getobj__
   end
 
   ##
@@ -196,5 +198,17 @@ class Gem::StubSpecification
     data.is_a? StubLine
   end
 
-end
+  private
 
+  def load_gemspec!
+    @spec ||= if @data then
+                Gem.loaded_specs.values.find { |spec|
+                  spec.name == name and spec.version == version
+                }
+              end
+
+    @spec ||= Gem::Specification.load(loaded_from)
+    @spec.ignored = @ignored if instance_variable_defined? :@ignored
+    __setobj__ @spec
+  end
+end

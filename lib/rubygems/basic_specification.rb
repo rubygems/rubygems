@@ -269,11 +269,19 @@ module Gem::BasicSpecification
     raise NotImplementedError
   end
 
+  def spec; self; end
+
   ##
   # Version of the gem
 
   def version
     raise NotImplementedError
+  end
+
+  def == other # :nodoc:
+    name == other.name &&
+      version == other.version &&
+      platform == other.platform
   end
 
   ##

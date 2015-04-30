@@ -113,7 +113,9 @@ class TestStubSpecification < Gem::TestCase
   end
 
   def test_to_spec
-    real_foo = util_spec @foo.name, @foo.version
+    real_foo = util_spec @foo.name, @foo.version do |spec|
+      spec.platform = @foo.platform
+    end
     real_foo.activate
 
     assert_equal @foo.version, Gem.loaded_specs[@foo.name].version,
@@ -131,7 +133,6 @@ class TestStubSpecification < Gem::TestCase
   end
 
   def test_to_spec_activated
-    assert @foo.to_spec.is_a?(Gem::Specification)
     assert_equal "foo", @foo.to_spec.name
     refute @foo.to_spec.instance_variable_defined? :@ignored
   end

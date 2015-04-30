@@ -71,7 +71,7 @@ class Gem::Resolver::ActivationRequest
   # The Gem::Specification for this activation request.
 
   def full_spec
-    Gem::Specification === @spec ? @spec : @spec.spec
+    @spec.spec
   end
 
   def inspect # :nodoc:

@@ -3,7 +3,10 @@
 # us having to eval the entire gemspec in order to find out certain
 # information.
 
-class Gem::StubSpecification < Gem::BasicSpecification
+class Gem::StubSpecification
+  include Gem::BasicSpecification
+  extend Gem::BasicSpecification::ClassMethods
+
   # :nodoc:
   PREFIX = "# stub: "
 

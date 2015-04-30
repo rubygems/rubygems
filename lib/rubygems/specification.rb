@@ -35,7 +35,9 @@ require 'rubygems/util/list'
 # metadata.  See #metadata for restrictions on the format and size of metadata
 # items you may add to a specification.
 
-class Gem::Specification < Gem::BasicSpecification
+class Gem::Specification
+  include Gem::BasicSpecification
+  extend Gem::BasicSpecification::ClassMethods
 
   # REFACTOR: Consider breaking out this version stuff into a separate
   # module. There's enough special stuff around it that it may justify

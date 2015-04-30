@@ -2,7 +2,12 @@
 # BasicSpecification is an abstract class which implements some common code
 # used by both Specification and StubSpecification.
 
-class Gem::BasicSpecification
+module Gem::BasicSpecification
+  module ClassMethods
+    def default_specifications_dir
+      File.join(Gem.default_dir, "specifications", "default")
+    end
+  end
 
   ##
   # Allows installation of extensions for git: gems.
@@ -31,10 +36,6 @@ class Gem::BasicSpecification
 
   def initialize
     internal_init
-  end
-
-  def self.default_specifications_dir
-    File.join(Gem.default_dir, "specifications", "default")
   end
 
   ##

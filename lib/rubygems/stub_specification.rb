@@ -15,26 +15,14 @@ class Gem::StubSpecification < Gem::BasicSpecification
     end
 
   class StubLine # :nodoc: all
-    attr_reader :parts
+    attr_reader :name, :version, :platform, :require_paths
 
     def initialize(data)
-      @parts = data[PREFIX.length..-1].split(" ")
-    end
-
-    def name
-      @parts[0]
-    end
-
-    def version
-      Gem::Version.new @parts[1]
-    end
-
-    def platform
-      Gem::Platform.new @parts[2]
-    end
-
-    def require_paths
-      @parts[3..-1].join(" ").split("\0")
+      parts          = data[PREFIX.length..-1].split(" ")
+      @name          = parts[0]
+      @version       = Gem::Version.new parts[1]
+      @platform      = Gem::Platform.new parts[2]
+      @require_paths = parts.drop(3).join(" ").split("\0")
     end
   end
 
@@ -148,14 +136,14 @@ class Gem::StubSpecification < Gem::BasicSpecification
   # Name of the gem
 
   def name
-    @name ||= data.name
+    data.name
   end
 
   ##
   # Platform of the gem
 
   def platform
-    @platform ||= data.platform
+    data.platform
   end
 
   ##

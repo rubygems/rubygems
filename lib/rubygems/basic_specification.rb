@@ -39,13 +39,6 @@ module Gem::BasicSpecification
   end
 
   ##
-  # True when the gem has been activated
-
-  def activated?
-    raise NotImplementedError
-  end
-
-  ##
   # Returns the full path to the base gem directory.
   #
   # eg: /usr/local/lib/ruby/gems/1.8
@@ -201,6 +194,7 @@ module Gem::BasicSpecification
     @gem_dir               = nil
     @gems_dir              = nil
     @base_dir              = nil
+    @activated             = false
   end
 
   ##

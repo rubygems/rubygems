@@ -95,10 +95,7 @@ class Gem::StubSpecification < DelegateClass(Gem::Specification)
       end
     end
 
-    unless @data
-      @data = __getobj__
-    end
-    @data
+    @data ||= __getobj__
   end
 
   private :data

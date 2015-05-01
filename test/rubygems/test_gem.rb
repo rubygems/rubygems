@@ -194,7 +194,7 @@ class TestGem < Gem::TestCase
 
     Gem.clear_paths
 
-    assert_nil Gem::Specification.send(:class_variable_get, :@@all)
+    assert_nil Gem::Specification.send(:class_variable_get, :@@stubs)
   end
 
   def test_self_configuration

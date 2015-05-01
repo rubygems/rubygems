@@ -709,16 +709,20 @@ class Gem::Specification
   attr_accessor :specification_version
 
   def self._all # :nodoc:
-    unless defined?(@@all) && @@all then
-      @@all = stubs
+    @@stubs ||= begin
+      stubs = map_stubs([default_specifications_dir] + dirs, "*.gemspec")
+      stubs = uniq_by(stubs) { |stub| stub.full_name }
 
       # After a reset, make sure already loaded specs
       # are still marked as activated.
       specs = {}
-      Gem.loaded_specs.each_value{|s| specs[s] = true}
-      @@all.each{|s| s.activated = true if specs[s]}
+      Gem.loaded_specs.each_value { |s| specs[s] = true}
+      stubs.each{|s| s.activated = true if specs[s]}
+
+      _resort!(stubs)
+      @@stubs_by_name = stubs.group_by(&:name)
+      stubs
     end
-    @@all
   end
 
   def self._clear_load_cache # :nodoc:
@@ -795,16 +799,7 @@ class Gem::Specification
   ##
   # Returns a Gem::StubSpecification for every installed gem
 
-  def self.stubs
-    @@stubs ||= begin
-      stubs = map_stubs([default_specifications_dir] + dirs, "*.gemspec")
-      stubs = uniq_by(stubs) { |stub| stub.full_name }
-
-      _resort!(stubs)
-      @@stubs_by_name = stubs.group_by(&:name)
-      stubs
-    end
-  end
+  def self.stubs; _all; end
 
   EMPTY = [].freeze # :nodoc:
 
@@ -912,7 +907,7 @@ class Gem::Specification
 
   def self.all= specs
     @@stubs_by_name = specs.group_by(&:name)
-    @@all = @@stubs = specs
+    @@stubs = specs
   end
 
   ##
@@ -1229,7 +1224,6 @@ class Gem::Specification
   def self.reset
     @@dirs = nil
     Gem.pre_reset_hooks.each { |hook| hook.call }
-    @@all = nil
     @@stubs = nil
     @@stubs_by_name = {}
     _clear_load_cache

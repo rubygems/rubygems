@@ -811,8 +811,8 @@ class Gem::Specification < Gem::BasicSpecification
   # Returns a Gem::StubSpecification for installed gem named +name+
 
   def self.stubs_for name
-    if @@stubs_by_name[name]
-      @@stubs_by_name[name]
+    if @@stubs || @@stubs_by_name[name]
+      @@stubs_by_name[name] || []
     else
       stubs = map_stubs([default_specifications_dir] + dirs, "#{name}-*.gemspec")
       stubs = uniq_by(stubs) { |stub| stub.full_name }.group_by(&:name)
@@ -910,6 +910,7 @@ class Gem::Specification < Gem::BasicSpecification
   # -- wilsonb
 
   def self.all= specs
+    @@stubs_by_name = specs.group_by(&:name)
     @@all = @@stubs = specs
   end
 

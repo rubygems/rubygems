@@ -69,8 +69,7 @@ class Gem::StubSpecification < DelegateClass(Gem::Specification)
     return if default_gem?
     return if extensions.empty?
 
-    to_spec
-    __getobj__.build_extensions
+    super
   end
 
   ##
@@ -81,7 +80,7 @@ class Gem::StubSpecification < DelegateClass(Gem::Specification)
     unless @data
       @extensions = []
 
-      open loaded_from, OPEN_MODE do |file|
+      Kernel.open loaded_from, OPEN_MODE do |file|
         begin
           file.readline # discard encoding line
           stubline = file.readline.chomp
@@ -97,7 +96,6 @@ class Gem::StubSpecification < DelegateClass(Gem::Specification)
     end
 
     unless @data
-      to_spec
       @data = __getobj__
     end
     @data
@@ -141,8 +139,7 @@ class Gem::StubSpecification < DelegateClass(Gem::Specification)
     return false if default_gem?
     return false if extensions.empty?
 
-    to_spec
-    __getobj__.missing_extensions?
+    super
   end
 
   ##
@@ -172,8 +169,16 @@ class Gem::StubSpecification < DelegateClass(Gem::Specification)
   # The full Gem::Specification for this gem, loaded from evalling its gemspec
 
   def to_spec
-    load_gemspec!
     __getobj__
+  end
+
+  def __getobj__
+    spec = super { load_gemspec! }
+    # FIXME: apparently the stub specification can be mutated, then mutate
+    # the real specification after it's loaded.  We should stop doing that
+    # so that we can remove this check.
+    spec.ignored = @ignored if instance_variable_defined? :@ignored
+    spec
   end
 
   ##
@@ -208,7 +213,6 @@ class Gem::StubSpecification < DelegateClass(Gem::Specification)
               end
 
     @spec ||= Gem::Specification.load(loaded_from)
-    @spec.ignored = @ignored if instance_variable_defined? :@ignored
     __setobj__ @spec
   end
 end

@@ -791,6 +791,8 @@ class Gem::Specification < Gem::BasicSpecification
     end
   end
 
+  EMPTY = [].freeze # :nodoc:
+
   ##
   # Returns a Gem::StubSpecification for every installed gem
 
@@ -801,11 +803,10 @@ class Gem::Specification < Gem::BasicSpecification
 
       _resort!(stubs)
       @@stubs_by_name = stubs.group_by(&:name)
+      @@stubs_by_name.default = EMPTY
       stubs
     end
   end
-
-  EMPTY = [].freeze # :nodoc:
 
   ##
   # Returns a Gem::StubSpecification for installed gem named +name+
@@ -818,7 +819,7 @@ class Gem::Specification < Gem::BasicSpecification
       stubs = uniq_by(stubs) { |stub| stub.full_name }.group_by(&:name)
       stubs.each_value { |v| sort_by!(v) { |i| i.version } }
 
-      @@stubs_by_name.merge! stubs
+      @@stubs_by_name.merge!(stubs)
       @@stubs_by_name[name] ||= EMPTY
     end
   end
@@ -911,6 +912,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   def self.all= specs
     @@stubs_by_name = specs.group_by(&:name)
+    @@stubs_by_name.default = EMPTY
     @@all = @@stubs = specs
   end
 

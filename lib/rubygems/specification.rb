@@ -863,7 +863,7 @@ class Gem::Specification < Gem::BasicSpecification
     _all << spec
     stubs << spec
     (@@stubs_by_name[spec.name] ||= []) << spec
-    _resort!(@@stubs_by_name[spec.name])
+    sort_by!(@@stubs_by_name[spec.name]) { |spec| spec.version }
     _resort!(_all)
     _resort!(stubs)
   end

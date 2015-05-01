@@ -710,7 +710,7 @@ class Gem::Specification
 
   def self._all # :nodoc:
     unless defined?(@@all) && @@all then
-      @@all = stubs.map(&:to_spec)
+      @@all = stubs
 
       # After a reset, make sure already loaded specs
       # are still marked as activated.
@@ -1011,10 +1011,9 @@ class Gem::Specification
   # amongst the specs that are not activated.
 
   def self.find_inactive_by_path path
-    stub = stubs.find { |s|
+    stubs.find { |s|
       s.contains_requirable_file? path unless s.activated?
     }
-    stub && stub.to_spec
   end
 
   ##

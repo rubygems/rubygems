@@ -276,7 +276,7 @@ class Gem::Dependency
   def matching_specs platform_only = false
     matches = Gem::Specification.stubs_for(name).find_all { |spec|
       requirement.satisfied_by? spec.version
-    }.map(&:to_spec)
+    }
 
     if platform_only
       matches.reject! { |spec|

@@ -92,7 +92,7 @@ class TestGemResolverLockSpecification < Gem::TestCase
 
     l_spec = @LS.new @set, 'a', version, @source, Gem::Platform::RUBY
 
-    assert_same real_spec, l_spec.spec
+    assert_same real_spec, l_spec.spec.to_spec
   end
 
 end

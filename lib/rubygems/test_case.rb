@@ -987,7 +987,7 @@ Also, a list:
   # Best used with +@all_gems+ from #util_setup_fake_fetcher.
 
   def util_setup_spec_fetcher(*specs)
-    all_specs = Gem::Specification.to_a + specs
+    all_specs = Gem::Specification.to_a.map(&:to_spec) + specs
     Gem::Specification._resort! all_specs
 
     spec_fetcher = Gem::SpecFetcher.fetcher

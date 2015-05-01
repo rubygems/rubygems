@@ -910,6 +910,7 @@ class Gem::Specification < Gem::BasicSpecification
   # -- wilsonb
 
   def self.all= specs
+    @@stubs_by_name = specs.group_by(&:name)
     @@all = @@stubs = specs
   end
 

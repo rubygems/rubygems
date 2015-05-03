@@ -13,7 +13,11 @@ rescue ::LoadError
   require 'yaml'
 end
 
-require 'hoe'
+begin
+  require 'hoe'
+rescue ::LoadError
+  abort "Install the hoe gem to be able to use this Rakefile"
+end
 
 Hoe::RUBY_FLAGS << " --disable-gems" if RUBY_VERSION > "1.9"
 

@@ -16,7 +16,12 @@ end
 begin
   require 'hoe'
 rescue ::LoadError
-  abort "Install the hoe gem to be able to use this Rakefile"
+  abort <<-ERR
+Error while loading the hoe gem.
+Please install it by running the following:
+
+$ [sudo] gem install hoe
+  ERR
 end
 
 Hoe::RUBY_FLAGS << " --disable-gems" if RUBY_VERSION > "1.9"

@@ -999,9 +999,10 @@ class Gem::Specification < Gem::BasicSpecification
   # Return the best specification that contains the file matching +path+.
 
   def self.find_by_path path
-    self.find { |spec|
+    stub = stubs.find { |spec|
       spec.contains_requirable_file? path
     }
+    stub && stub.to_spec
   end
 
   ##

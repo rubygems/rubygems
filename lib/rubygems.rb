@@ -185,13 +185,9 @@ module Gem
     # or if it was ambiguous (and thus unresolved) the code in our custom
     # require will try to activate the more specific version.
 
-    spec = Gem::Specification.find_inactive_by_path path
-
-    unless spec
-      spec = Gem::Specification.find_by_path path
-      return true if spec && spec.activated?
-      return false
-    end
+    spec = Gem::Specification.find_by_path path
+    return false unless spec
+    return true if spec.activated?
 
     begin
       spec.activate

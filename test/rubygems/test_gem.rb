@@ -882,6 +882,16 @@ class TestGem < Gem::TestCase
     assert_equal %w[http://gems.example.com/], Gem.sources
   end
 
+  def test_try_activate_returns_true_for_activated_specs
+    b = util_spec 'b', '1.0' do |spec|
+      spec.files << 'lib/b.rb'
+    end
+    install_specs b
+
+    assert Gem.try_activate('b'), 'try_activate should return true'
+    assert Gem.try_activate('b'), 'try_activate should still return true'
+  end
+
   def test_self_try_activate_missing_dep
     b = util_spec 'b', '1.0'
     a = util_spec 'a', '1.0', 'b' => '>= 1.0'

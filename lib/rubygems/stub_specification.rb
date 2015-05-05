@@ -170,7 +170,7 @@ class Gem::StubSpecification < DelegateClass(Gem::Specification)
   end
 
   def __getobj__
-    spec = super { load_gemspec! }
+    spec = super { __setobj__ load_gemspec! }
     # FIXME: apparently the stub specification can be mutated, then mutate
     # the real specification after it's loaded.  We should stop doing that
     # so that we can remove this check.
@@ -203,13 +203,12 @@ class Gem::StubSpecification < DelegateClass(Gem::Specification)
   private
 
   def load_gemspec!
-    @spec ||= if @data then
-                Gem.loaded_specs.values.find { |spec|
-                  spec.name == name and spec.version == version
-                }
-              end
-
-    @spec ||= Gem::Specification.load(loaded_from)
-    __setobj__ @spec
+    if @data then
+      Gem.loaded_specs.values.find { |spec|
+        spec.name == name and spec.version == version
+      } || Gem::Specification.load(loaded_from)
+    else
+      Gem::Specification.load(loaded_from)
+    end
   end
 end

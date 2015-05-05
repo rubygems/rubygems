@@ -1967,7 +1967,6 @@ class Gem::Specification
   def initialize name = nil, version = nil
     super()
     @loaded = false
-    @activated = false
     @loaded_from = nil
     @original_platform = nil
     @installed_by_version = nil

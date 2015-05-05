@@ -857,11 +857,9 @@ class Gem::Specification
     return if _all.include? spec
 
     _all << spec
-    stubs << spec
     (@@stubs_by_name[spec.name] ||= []) << spec
     sort_by!(@@stubs_by_name[spec.name]) { |s| s.version }
     _resort!(_all)
-    _resort!(stubs)
   end
 
   ##
@@ -995,7 +993,7 @@ class Gem::Specification
   # Return the best specification that contains the file matching +path+.
 
   def self.find_by_path path
-    stubs.find { |spec| spec.contains_requirable_file? path }
+    find { |spec| spec.contains_requirable_file? path }
   end
 
   ##
@@ -1003,9 +1001,7 @@ class Gem::Specification
   # amongst the specs that are not activated.
 
   def self.find_inactive_by_path path
-    stubs.find { |s|
-      s.contains_requirable_file? path unless s.activated?
-    }
+    find { |s| s.contains_requirable_file? path unless s.activated?  }
   end
 
   ##
@@ -1194,8 +1190,7 @@ class Gem::Specification
 
   def self.remove_spec spec
     warn "Gem::Specification.remove_spec is deprecated and will be removed in Rubygems 3.0" unless Gem::Deprecate.skip
-    _all.delete spec
-    stubs.delete_if { |s| s.full_name == spec.full_name }
+    _all.delete_if { |s| s.full_name == spec.full_name }
     (@@stubs_by_name[spec.name] || []).delete_if { |s| s.full_name == spec.full_name }
     reset
   end

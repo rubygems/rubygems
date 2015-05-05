@@ -65,7 +65,7 @@ use with other commands.
     specs = []
 
     if local?
-      specs.concat Gem::Specification.stubs.find_all { |spec|
+      specs.concat Gem::Specification.find_all { |spec|
         name_pattern =~ spec.name and
           dependency.requirement.satisfied_by? spec.version
       }.map(&:to_spec)

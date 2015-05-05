@@ -169,6 +169,19 @@ class Gem::StubSpecification < DelegateClass(Gem::Specification)
     __getobj__
   end
 
+  if RUBY_VERSION <= '2.0.0'
+    module DelegateComat
+      def __getobj__  # :nodoc:
+        unless defined?(@delegate_dc_obj)
+          return yield if block_given?
+          __raise__ ::ArgumentError, "not delegated"
+        end
+        @delegate_dc_obj
+      end
+    end
+    include DelegateComat
+  end
+
   def __getobj__
     spec = super { __setobj__ load_gemspec! }
     # FIXME: apparently the stub specification can be mutated, then mutate

@@ -2056,20 +2056,6 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # Returns a string usable in Dir.glob to match all requirable paths
-  # for this spec.
-
-  def lib_dirs_glob
-    dirs = if self.require_paths.size > 1 then
-             "{#{self.require_paths.join(',')}}"
-           else
-             self.require_paths.first
-           end
-
-    "#{self.full_gem_path}/#{dirs}"
-  end
-
-  ##
   # Files in the Gem under one of the require_paths
 
   def lib_files

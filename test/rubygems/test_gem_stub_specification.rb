@@ -72,6 +72,12 @@ class TestStubSpecification < Gem::TestCase
     assert_equal expected, stub.full_require_paths
   end
 
+  def test_lib_dirs_glob
+    stub = stub_without_extension
+
+    assert_equal File.join(stub.full_gem_path, 'lib'), stub.lib_dirs_glob
+  end
+
   def test_missing_extensions_eh
     stub = stub_with_extension do |s|
       extconf_rb = File.join s.gem_dir, s.extensions.first

@@ -262,6 +262,16 @@ class Gem::BasicSpecification
   end
 
   ##
+  # Return all files in this gem that match for +glob+.
+
+  def matches_for_glob glob # TODO: rename?
+    # TODO: do we need these?? Kill it
+    glob = File.join(self.lib_dirs_glob, glob)
+
+    Dir[glob].map { |f| f.untaint } # FIX our tests are broken, run w/ SAFE=1
+  end
+
+  ##
   # Returns a string usable in Dir.glob to match all requirable paths
   # for this spec.
 

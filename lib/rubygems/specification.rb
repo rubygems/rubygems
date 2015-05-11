@@ -2101,16 +2101,6 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # Return all files in this gem that match for +glob+.
-
-  def matches_for_glob glob # TODO: rename?
-    # TODO: do we need these?? Kill it
-    glob = File.join(self.lib_dirs_glob, glob)
-
-    Dir[glob].map { |f| f.untaint } # FIX our tests are broken, run w/ SAFE=1
-  end
-
-  ##
   # Warn about unknown attributes while loading a spec.
 
   def method_missing(sym, *a, &b) # :nodoc:

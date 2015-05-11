@@ -430,7 +430,7 @@ module Gem
 
     files = find_files_from_load_path glob if check_load_path
 
-    files.concat Gem::Specification.map { |spec|
+    files.concat Gem::Specification.stubs.map { |spec|
       spec.matches_for_glob("#{glob}#{Gem.suffix_pattern}")
     }.flatten
 

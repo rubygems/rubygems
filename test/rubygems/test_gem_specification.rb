@@ -1166,7 +1166,7 @@ dependencies: []
       s.summary = 'summary'
       s.description = 'description'
       s.authors = 'author a', 'author b'
-      s.licenses = 'BSD'
+      s.licenses = 'BSD-2-Clause'
       s.files = 'lib/file.rb'
       s.test_files = 'test/file.rb'
       s.rdoc_options = '--foo'
@@ -2820,8 +2820,22 @@ duplicate dependency on b (>= 1.2.3), (~> 1.2) use:
     end
 
     assert_match <<-warning, @ui.error
-WARNING:  licenses is empty, but is recommended.  Use a license abbreviation from:
-http://opensource.org/licenses/alphabetical
+WARNING:  licenses is empty, but is recommended.  Use a license identifier from
+http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
+    warning
+  end
+
+  def test_validate_license_values
+    util_setup_validate
+
+    use_ui @ui do
+      @a1.licenses = ['BSD']
+      @a1.validate
+    end
+
+    assert_match <<-warning, @ui.error
+WARNING: license value 'BSD' is invalid.  Use a license identifier from
+http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
     warning
   end
 

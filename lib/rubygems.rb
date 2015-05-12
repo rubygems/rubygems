@@ -1206,6 +1206,7 @@ module Gem
   autoload :Resolver,           'rubygems/resolver'
   autoload :Source,             'rubygems/source'
   autoload :SourceList,         'rubygems/source_list'
+  autoload :SPDX,               'rubygems/util/spdx'
   autoload :SpecFetcher,        'rubygems/spec_fetcher'
   autoload :Specification,      'rubygems/specification'
   autoload :Version,            'rubygems/version'

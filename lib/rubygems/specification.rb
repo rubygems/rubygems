@@ -563,7 +563,7 @@ class Gem::Specification < Gem::BasicSpecification
   # Ideally you should pick one that is OSI (Open Source Initiative)
   # http://opensource.org/licenses/alphabetical approved.
   #
-  # The most commonly used OSI approved licenses are BSD-3-Clause and MIT.
+  # The most commonly used OSI approved licenses are MIT and Apache-2.0.
   # GitHub also provides a license picker at http://choosealicense.com/.
   #
   # You should specify a license for your gem so that people know how they are
@@ -592,7 +592,7 @@ class Gem::Specification < Gem::BasicSpecification
   # See #license= for more discussion
   #
   # Usage:
-  #   spec.licenses = ['MIT', 'GPL-2']
+  #   spec.licenses = ['MIT', 'GPL-2.0']
 
   def licenses= licenses
     @licenses = Array licenses
@@ -2711,11 +2711,18 @@ class Gem::Specification < Gem::BasicSpecification
         raise Gem::InvalidSpecificationException,
           "each license must be 64 characters or less"
       end
+
+      if !Gem::SPDX::IDENTIFIERS.include?(license) && !license.eql?(Gem::SPDX::NONSTANDARD)
+        warning <<-warning
+WARNING: license value '#{license}' is invalid.  Use a license identifier from
+http://spdx.org/licenses or '#{Gem::SPDX::NONSTANDARD}' for a nonstandard license.
+        warning
+      end
     }
 
     warning <<-warning if licenses.empty?
-licenses is empty, but is recommended.  Use a license abbreviation from:
-http://opensource.org/licenses/alphabetical
+licenses is empty, but is recommended.  Use a license identifier from
+http://spdx.org/licenses or '#{Gem::SPDX::NONSTANDARD}' for a nonstandard license.
     warning
 
     validate_permissions

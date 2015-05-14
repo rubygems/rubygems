@@ -40,6 +40,10 @@ Bug fixes:
 * Fixed Rake homepage url in example for Gem::Specification#homepage.
   Pull request #1171 by Arthur Nogueira Neves
 
+=== 2.4.7 / 2015-05-14
+
+Bug fixes:
+
 * Limit API endpoint to original security domain.
   Fix by claudijd
 

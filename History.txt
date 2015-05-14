@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.4.7 / 2015-05-14
+
+Bug fixes:
+
+* Backport: Limit API endpoint to original security domain.
+  Fix by claudijd
+
 === 2.4.6 / 2014-02-05
 
 Bug fixes:

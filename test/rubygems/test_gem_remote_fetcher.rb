@@ -167,6 +167,21 @@ gems:
   end
 
   def test_api_endpoint
+    uri = URI.parse "http://example.com/foo"
+    target = MiniTest::Mock.new
+    target.expect :target, "gems.example.com"
+
+    dns = MiniTest::Mock.new
+    dns.expect :getresource, target, [String, Object]
+
+    fetch = Gem::RemoteFetcher.new nil, dns
+    assert_equal URI.parse("http://gems.example.com/foo"), fetch.api_endpoint(uri)
+
+    target.verify
+    dns.verify
+  end
+
+  def test_api_endpoint_ignores_trans_domain_values
     uri = URI.parse "http://gems.example.com/foo"
     target = MiniTest::Mock.new
     target.expect :target, "blah.com"
@@ -175,8 +190,7 @@ gems:
     dns.expect :getresource, target, [String, Object]
 
     fetch = Gem::RemoteFetcher.new nil, dns
-    @fetcher = fetcher
-    assert_equal URI.parse("http://blah.com/foo"), fetch.api_endpoint(uri)
+    assert_equal URI.parse("http://gems.example.com/foo"), fetch.api_endpoint(uri)
 
     target.verify
     dns.verify

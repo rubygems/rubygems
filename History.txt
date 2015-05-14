@@ -44,7 +44,7 @@ Bug fixes:
 
 Bug fixes:
 
-* Limit API endpoint to original security domain.
+* Limit API endpoint to original security domain for CVE-2015-3900.
   Fix by claudijd
 
 === 2.4.6 / 2015-02-05

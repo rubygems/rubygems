@@ -93,15 +93,15 @@ class Gem::Indexer
   end
 
   ##
-  # Build various indicies
+  # Build various indices
 
-  def build_indicies
+  def build_indices
     specs = map_gems_to_specs gem_file_list
     Gem::Specification._resort! specs
     build_marshal_gemspecs specs
-    build_modern_indicies specs if @build_modern
+    build_modern_indices specs if @build_modern
 
-    compress_indicies
+    compress_indices
   end
 
   ##
@@ -168,9 +168,9 @@ class Gem::Indexer
   end
 
   ##
-  # Builds indicies for RubyGems 1.2 and newer. Handles full, latest, prerelease
+  # Builds indices for RubyGems 1.2 and newer. Handles full, latest, prerelease
 
-  def build_modern_indicies specs
+  def build_modern_indices specs
     prerelease, released = specs.partition { |s|
       s.version.prerelease?
     }

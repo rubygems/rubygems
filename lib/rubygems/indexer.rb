@@ -218,14 +218,14 @@ class Gem::Indexer
   end
 
   ##
-  # Compresses indicies on disk
+  # Compresses indices on disk
   #--
   # All future files should be compressed using gzip, not deflate
 
-  def compress_indicies
-    say "Compressing indicies"
+  def compress_indices
+    say "Compressing indices"
 
-    Gem.time 'Compressed indicies' do
+    Gem.time 'Compressed indices' do
       if @build_modern then
         gzip @specs_index
         gzip @latest_specs_index
@@ -273,12 +273,12 @@ class Gem::Indexer
   end
 
   ##
-  # Builds and installs indicies.
+  # Builds and installs indices.
 
   def generate_index
     make_temp_directories
-    build_indicies
-    install_indicies
+    build_indices
+    install_indices
   rescue SignalException
   ensure
     FileUtils.rm_rf @directory
@@ -294,9 +294,9 @@ class Gem::Indexer
   end
 
   ##
-  # Install generated indicies into the destination directory.
+  # Install generated indices into the destination directory.
 
-  def install_indicies
+  def install_indices
     verbose = Gem.configuration.really_verbose
 
     say "Moving index into production dir #{@dest_directory}" if verbose
@@ -383,7 +383,7 @@ class Gem::Indexer
                          @prerelease_specs_index)
     end
 
-    compress_indicies
+    compress_indices
 
     verbose = Gem.configuration.really_verbose
 

@@ -1,9 +1,10 @@
-module Gem
-  class SPDX
-    NONSTANDARD = 'Nonstandard'.freeze
+class Gem::Licenses
+  NONSTANDARD = 'Nonstandard'.freeze
 
-    IDENTIFIERS = %w(
-      AAL
+  # Software Package Data Exchange (SPDX) standard open-source software
+  # license identifiers
+  IDENTIFIERS = %w(
+    AAL
       ADSL
       AFL-1.1
       AFL-1.2
@@ -90,6 +91,7 @@ module Gem
       CECILL-2.0
       CECILL-B
       CECILL-C
+      CNRI-Jython
       CNRI-Python
       CNRI-Python-GPL-Compatible
       CPAL-1.0
@@ -149,6 +151,7 @@ module Gem
       LGPL-2.0
       LGPL-2.1
       LGPL-3.0
+      LGPLLR
       LPL-1.0
       LPL-1.02
       LPPL-1.0
@@ -235,6 +238,7 @@ module Gem
       RPL-1.1
       RPL-1.5
       RPSL-1.0
+      RSA-MD
       RSCPL
       Rdisc
       Ruby
@@ -252,11 +256,15 @@ module Gem
       Saxpath
       SimPL-2.0
       Sleepycat
+      Spencer-86
+      Spencer-94
+      Spencer-99
       SugarCRM-1.1.3
       TCL
       TMate
       TORQUE-1.1
       TOSL
+      UPL-1.0
       Unicode-TOU
       Unlicense
       VOSTROM
@@ -297,6 +305,5 @@ module Gem
       xinetd
       xpp
       zlib-acknowledgement
-    ).freeze
-  end
+  ).freeze
 end

@@ -8,14 +8,14 @@ end
 
 open 'lib/rubygems/util/spdx.rb', 'w' do |io|
   io.write <<-HERE
-module Gem
-  class SPDX
-    NONSTANDARD = 'Nonstandard'.freeze
+class Gem::Licenses
+  NONSTANDARD = 'Nonstandard'.freeze
 
-    IDENTIFIERS = %w(
-      #{licenses.sort.join "\n      "}
-    ).freeze
-  end
+  # Software Package Data Exchange (SPDX) standard open-source software
+  # license identifiers
+  IDENTIFIERS = %w(
+    #{licenses.sort.join "\n      "}
+  ).freeze
 end
   HERE
 end

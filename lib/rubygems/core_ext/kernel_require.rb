@@ -49,9 +49,12 @@ module Kernel
     # If there are no unresolved deps, then we can use just try
     # normal require handle loading a gem from the rescue below.
 
-    if Gem::Specification.unresolved_deps.empty? then
+    begin
       RUBYGEMS_ACTIVATION_MONITOR.exit
-      return gem_original_require(path)
+      original = gem_original_require(path)
+      return original
+    rescue LoadError
+      RUBYGEMS_ACTIVATION_MONITOR.enter
     end
 
     # If +path+ is for a gem that has already been loaded, don't
@@ -136,4 +139,3 @@ module Kernel
   private :require
 
 end
-

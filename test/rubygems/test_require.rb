@@ -143,12 +143,12 @@ class TestGemRequire < Gem::TestCase
 
     refute require('benchmark'), "benchmark should have already been loaded"
 
-    # We detected that we should activate b-2, so we did so, but
-    # then original_require decided "I've already got benchmark.rb" loaded.
-    # This case is fine because our lazy loading is provided exactly
-    # the same behavior as eager loading would have.
+    # We dont activate any version of `b` yet, since we found a `benchmark` to
+    # require in the load path (or already required, as is the case here)
+    # before we got to checking the unresolved specs
 
-    assert_equal %w(a-1 b-2), loaded_spec_names
+    assert_equal %w(a-1), loaded_spec_names
+    assert_equal unresolved_names, ["b (>= 1)"]
   end
 
   def test_already_activated_direct_conflict

@@ -96,7 +96,7 @@ class Gem::RemoteFetcher
     else
       target = res.target.to_s.strip
 
-      if /#{host}\z/ =~ target
+      if /\.#{Regexp.quote(host)}\z/ =~ target
         return URI.parse "#{uri.scheme}://#{target}#{uri.path}"
       end
 

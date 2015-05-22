@@ -32,6 +32,8 @@ Minor enhancements:
 * Call Array#compact before calling Array#uniq for minor speed improvement in
   the Gem::Specification#files method.
   Pull request #1253 by Marat Amerov.
+* Use stringio instead of custom String classes.
+  Pull request #1250 by Petr Skocik.
 
 Bug fixes:
 

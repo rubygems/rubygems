@@ -29,6 +29,9 @@ Minor enhancements:
 * Gem::Specification.remove_spec is deprecated and will be removed from version
   3.0 with no replacement.  To remove specs, uninstall the gem, then reset the
   cache by calling Gem::Specification.reset.
+* Call Array#compact before calling Array#uniq for minor speed improvement in
+  the Gem::Specification#files method.
+  Pull request #1253 by Marat Amerov.
 
 Bug fixes:
 

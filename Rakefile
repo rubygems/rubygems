@@ -13,7 +13,16 @@ rescue ::LoadError
   require 'yaml'
 end
 
-require 'hoe'
+begin
+  require 'hoe'
+rescue ::LoadError
+  abort <<-ERR
+Error while loading the hoe gem.
+Please install it by running the following:
+
+$ [sudo] gem install hoe
+  ERR
+end
 
 Hoe::RUBY_FLAGS << " --disable-gems" if RUBY_VERSION > "1.9"
 

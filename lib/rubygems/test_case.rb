@@ -1296,11 +1296,21 @@ Also, a list:
   def vendor_gem name = 'a', version = 1
     directory = File.join 'vendor', name
 
+    FileUtils.mkdir_p directory
+
+    save_gemspec name, version, directory
+  end
+
+  ##
+  # create_gemspec creates gem specification in given +direcotry+ or '.'
+  # for the given +name+ and +version+.
+  #
+  # Yields the +specification+ to the block, if given
+
+  def save_gemspec name = 'a', version = 1, directory = '.'
     vendor_spec = Gem::Specification.new name, version do |specification|
       yield specification if block_given?
     end
-
-    FileUtils.mkdir_p directory
 
     open File.join(directory, "#{name}.gemspec"), 'w' do |io|
       io.write vendor_spec.to_ruby

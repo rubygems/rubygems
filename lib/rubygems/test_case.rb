@@ -569,7 +569,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
   def write_file(path)
     path = File.join @gemhome, path unless Pathname.new(path).absolute?
     dir = File.dirname path
-    FileUtils.mkdir_p dir
+    FileUtils.mkdir_p dir unless File.directory? dir
 
     open path, 'wb' do |io|
       yield io if block_given?

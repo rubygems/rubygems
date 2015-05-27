@@ -32,10 +32,13 @@ class TestGemExtConfigureBuilder < Gem::TestCase
     assert_match /^current directory:/, output.shift
     assert_equal "sh ./configure --prefix=#{@dest_path}", output.shift
     assert_equal "", output.shift
+    assert_match /^current directory:/, output.shift
     assert_contains_make_command 'clean', output.shift
     assert_match(/^ok$/m, output.shift)
+    assert_match /^current directory:/, output.shift
     assert_contains_make_command '', output.shift
     assert_match(/^ok$/m, output.shift)
+    assert_match /^current directory:/, output.shift
     assert_contains_make_command 'install', output.shift
     assert_match(/^ok$/m, output.shift)
   end

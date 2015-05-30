@@ -170,7 +170,6 @@ lib/rubygems/uri_formatter.rb
 lib/rubygems/user_interaction.rb
 lib/rubygems/util.rb
 lib/rubygems/util/list.rb
-lib/rubygems/util/stringio.rb
 lib/rubygems/validator.rb
 lib/rubygems/version.rb
 lib/rubygems/version_option.rb

@@ -3,9 +3,9 @@ after_script:
 - rake travis:after -t
 before_script:
 - gem uninstall executable-hooks gem-wrappers -x --force -i `gem env home`@global
-- gem install rake --no-doc
-- gem install hoe-travis --no-rdoc --no-ri
-- gem install minitest -v '~> 4.7' --no-rdoc --no-ri
+- gem install rake --no-document
+- gem install hoe-travis --no-document
+- gem install minitest -v '~> 4.7' --no-document
 - rake travis:before -t
 - gem list --details
 - gem env

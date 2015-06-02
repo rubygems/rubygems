@@ -2857,12 +2857,14 @@ open-ended dependency on #{dep} is not recommended
     return if Gem.win_platform?
 
     files.each do |file|
+      next unless File.file?(file)
       next if File.stat(file).mode & 0444 == 0444
       warning "#{file} is not world-readable"
     end
 
     executables.each do |name|
       exec = File.join @bindir, name
+      next unless File.file?(exec)
       next if File.stat(exec).executable?
       warning "#{exec} is not executable"
     end

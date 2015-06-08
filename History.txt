@@ -40,6 +40,12 @@ Bug fixes:
 * Fixed Rake homepage url in example for Gem::Specification#homepage.
   Pull request #1171 by Arthur Nogueira Neves
 
+=== 2.4.8 / 2015-06-08
+
+Bug fixes:
+
+* Tightened API endpoint checks for CVE-2015-3900
+
 === 2.4.7 / 2015-05-14
 
 Bug fixes:

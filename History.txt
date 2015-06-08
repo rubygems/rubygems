@@ -1,5 +1,11 @@
 # coding: UTF-8
 
+=== 2.0.17 / 2015-06-08
+
+Bug fixes:
+
+* Tightened API endpoint checks for CVE-2015-3900
+
 === 2.0.16 / 2015-05-14
 
 Bug fixes:

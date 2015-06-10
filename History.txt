@@ -758,6 +758,26 @@ Bug fixes:
 * Fixed credential creation for `gem push` when `--host` is not given.  Pull
   request #622 by Arthur Nogueira Neves
 
+=== 2.0.17 / 2015-06-08
+
+Bug fixes:
+
+* Tightened API endpoint checks for CVE-2015-3900
+
+=== 2.0.16 / 2015-05-14
+
+Bug fixes:
+
+* Backport: Limit API endpoint to original security domain for CVE-2015-3900.
+  Fix by claudijd
+
+=== 2.0.15 / 2014-12-21
+
+Bug fixes:
+
+* Backport: Add alternate Root CA for upcoming certificate change.
+  Fixes #1050 by Protosac
+
 === 2.0.14 / 2013-11-12
 
 Bug fixes:

@@ -34,6 +34,8 @@ Minor enhancements:
   Pull request #1253 by Marat Amerov.
 * Use stringio instead of custom String classes.
   Pull request #1250 by Petr Skocik.
+* Don't crash if partially uninstalled gem can't be found.
+  Pull request #1283 by Cezary Baginski.
 
 Bug fixes:
 

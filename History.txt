@@ -36,6 +36,9 @@ Minor enhancements:
   Pull request #1250 by Petr Skocik.
 * Don't crash if partially uninstalled gem can't be found.
   Pull request #1283 by Cezary Baginski.
+* Use URI#host instead of URI#hostname to retain backwards compatibility with
+  Ruby 1.9.2 and earlier in util library.
+  Pull request #1288 by Joe Rafaniello.
 
 Bug fixes:
 

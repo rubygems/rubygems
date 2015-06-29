@@ -1104,11 +1104,12 @@ class Gem::Specification < Gem::BasicSpecification
 
   def self.load file
     return unless file
-    file = file.dup.untaint
-    return unless File.file?(file)
 
     _spec = LOAD_CACHE[file]
     return _spec if _spec
+
+    file = file.dup.untaint
+    return unless File.file?(file)
 
     code = if defined? Encoding
              File.read file, :mode => 'r:UTF-8:-'

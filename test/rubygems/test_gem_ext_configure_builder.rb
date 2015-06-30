@@ -29,16 +29,16 @@ class TestGemExtConfigureBuilder < Gem::TestCase
       Gem::Ext::ConfigureBuilder.build nil, nil, @dest_path, output
     end
 
-    assert_match /^current directory:/, output.shift
+    assert_match(/^current directory:/, output.shift)
     assert_equal "sh ./configure --prefix=#{@dest_path}", output.shift
     assert_equal "", output.shift
-    assert_match /^current directory:/, output.shift
+    assert_match(/^current directory:/, output.shift)
     assert_contains_make_command 'clean', output.shift
     assert_match(/^ok$/m, output.shift)
-    assert_match /^current directory:/, output.shift
+    assert_match(/^current directory:/, output.shift)
     assert_contains_make_command '', output.shift
     assert_match(/^ok$/m, output.shift)
-    assert_match /^current directory:/, output.shift
+    assert_match(/^current directory:/, output.shift)
     assert_contains_make_command 'install', output.shift
     assert_match(/^ok$/m, output.shift)
   end
@@ -58,7 +58,7 @@ class TestGemExtConfigureBuilder < Gem::TestCase
 
     assert_match 'configure failed', error.message
 
-    assert_match /^current directory:/, output.shift
+    assert_match(/^current directory:/, output.shift)
     assert_equal "#{sh_prefix_configure}#{@dest_path}", output.shift
     assert_match %r(#{shell_error_msg}), output.shift
     assert_equal true, output.empty?
@@ -84,4 +84,3 @@ class TestGemExtConfigureBuilder < Gem::TestCase
   end
 
 end
-

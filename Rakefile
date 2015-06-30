@@ -108,6 +108,32 @@ task :install_test_deps => :clean_env do
   sh "gem install minitest -v '~> 4.0'"
 end
 
+namespace :molinillo do
+  task :namespace do
+    files = Dir.glob('lib/rubygems/resolver/molinillo/**/*.rb')
+    sh "sed -i.bak 's/Molinillo/Gem::Resolver::Molinillo/g' #{files.join(' ')}"
+    sh "sed -i.bak \"s/require 'molinillo/require 'rubygems\\/resolver\\/molinillo\\/lib\\/molinillo/g\" #{files.join(' ')}"
+    sh "rm #{files.join('.bak ')}.bak"
+  end
+
+  task :clean do
+    files = Dir.glob('lib/rubygems/resolver/molinillo*/*', File::FNM_DOTMATCH).reject { |f| %(. .. lib).include? f.split('/').last }
+    puts files
+    sh "rm -r #{files.join(' ')}"
+  end
+
+  task :update, [:tag] => [] do |t, args|
+    tag = args[:tag]
+    Dir.chdir 'lib/rubygems/resolver' do
+      sh "rm -rf molinillo"
+      sh "curl -L https://github.com/CocoaPods/molinillo/archive/#{tag}.tar.gz | tar -xz"
+      sh "mv Molinillo-* molinillo"
+    end
+    Rake::Task['molinillo:namespace'].invoke
+    Rake::Task['molinillo:clean'].invoke
+  end
+end
+
 # --------------------------------------------------------------------
 # Creating a release
 

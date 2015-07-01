@@ -9,7 +9,7 @@ require 'rbconfig'
 require 'thread'
 
 module Gem
-  VERSION = '2.4.6'
+  VERSION = '2.5.0'
 end
 
 # Must be first since it unloads the prelude from 1.9.2
@@ -1245,4 +1245,3 @@ require 'rubygems/core_ext/kernel_gem'
 require 'rubygems/core_ext/kernel_require'
 
 Gem.use_gemdeps
-

@@ -461,12 +461,12 @@ if you believe they were disclosed to a third party.
 
   # Return the configuration information for +key+.
   def [](key)
-    @hash[key.to_s]
+    @hash[key.to_sym]
   end
 
   # Set configuration option +key+ to +value+.
   def []=(key, value)
-    @hash[key.to_s] = value
+    @hash[key.to_sym] = value
   end
 
   def ==(other) # :nodoc:

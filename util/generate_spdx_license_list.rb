@@ -6,7 +6,7 @@ licenses = JSON.parse(json)['licenses'].map do |licenseObject|
   licenseObject['licenseId']
 end
 
-open 'lib/rubygems/util/spdx.rb', 'w' do |io|
+open 'lib/rubygems/util/licenses.rb', 'w' do |io|
   io.write <<-HERE
 class Gem::Licenses
   NONSTANDARD = 'Nonstandard'.freeze

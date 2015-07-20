@@ -2712,17 +2712,17 @@ class Gem::Specification < Gem::BasicSpecification
           "each license must be 64 characters or less"
       end
 
-      if !Gem::SPDX::IDENTIFIERS.include?(license) && !license.eql?(Gem::SPDX::NONSTANDARD)
+      if !Gem::Licenses::IDENTIFIERS.include?(license) && !license.eql?(Gem::Licenses::NONSTANDARD)
         warning <<-warning
 WARNING: license value '#{license}' is invalid.  Use a license identifier from
-http://spdx.org/licenses or '#{Gem::SPDX::NONSTANDARD}' for a nonstandard license.
+http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
         warning
       end
     }
 
     warning <<-warning if licenses.empty?
 licenses is empty, but is recommended.  Use a license identifier from
-http://spdx.org/licenses or '#{Gem::SPDX::NONSTANDARD}' for a nonstandard license.
+http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
     warning
 
     validate_permissions

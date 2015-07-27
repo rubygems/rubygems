@@ -4,6 +4,13 @@
 
 Major enhancements:
 
+* Added the Gem::License class which provides a set of standard license
+  identifiers as set by spdx.org. This is now used by the
+  Gem::Specification#license attribute to try to standardize (though not
+  enforce) licenses set by gem authors.
+
+  Pull request #1249 by Kyle Mitchell.
+
 Minor enhancements:
 
 * Add `--skip=gem_name` to Pristine command.  Pull request #1018 by windwiny.

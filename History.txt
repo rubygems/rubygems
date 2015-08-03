@@ -4,7 +4,7 @@
 
 Major enhancements:
 
-* Added the Gem::License class which provides a set of standard license
+* Added the Gem::Licenses class which provides a set of standard license
   identifiers as set by spdx.org. This is now used by the
   Gem::Specification#license attribute to try to standardize (though not
   enforce) licenses set by gem authors.
@@ -46,6 +46,8 @@ Minor enhancements:
 * Use URI#host instead of URI#hostname to retain backwards compatibility with
   Ruby 1.9.2 and earlier in util library.
   Pull request #1288 by Joe Rafaniello.
+* Documentation update for gem sources.
+  Pull request #1324 from Ilya Vassilevsky.
 
 Bug fixes:
 

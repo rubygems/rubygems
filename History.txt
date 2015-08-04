@@ -50,6 +50,8 @@ Minor enhancements:
   Pull request #1324 by Ilya Vassilevsky.
 * Documentation update for required_ruby_version.
   Pull request #1321 by Matt Patterson.
+* Documentation update for gem update.
+  Pull request #1306 by Tim Blair.
 
 Bug fixes:
 

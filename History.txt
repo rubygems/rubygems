@@ -47,7 +47,9 @@ Minor enhancements:
   Ruby 1.9.2 and earlier in util library.
   Pull request #1288 by Joe Rafaniello.
 * Documentation update for gem sources.
-  Pull request #1324 from Ilya Vassilevsky.
+  Pull request #1324 by Ilya Vassilevsky.
+* Documentation update for required_ruby_version.
+  Pull request #1321 by Matt Patterson.
 
 Bug fixes:
 

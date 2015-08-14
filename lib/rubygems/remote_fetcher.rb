@@ -312,9 +312,19 @@ class Gem::RemoteFetcher
     end
 
     if update and path
-      open(path, 'wb') do |io|
-        io.flock(File::LOCK_EX)
-        io.write data
+      begin
+        open(path, 'wb') do |io|
+          io.flock(File::LOCK_EX)
+          io.write data
+        end
+      rescue Errno::ENOLCK # NFS
+        if Thread.main != Thread.current
+          raise
+        else
+          open(path, 'wb') do |io|
+            io.write data
+          end
+        end
       end
     end
 

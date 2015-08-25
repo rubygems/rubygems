@@ -52,6 +52,10 @@ Minor enhancements:
   Pull request #1321 by Matt Patterson.
 * Documentation update for gem update.
   Pull request #1306 by Tim Blair.
+* Fix some path quoting issues in the test suite.
+  Pull request #1328 by Gavin Miller.
+* Fix NoMethodError in running ruby processes when gems are uninstalled.
+  Pull request #1332 by Peter Drake.
 
 Bug fixes:
 

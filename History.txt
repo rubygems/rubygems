@@ -56,6 +56,10 @@ Minor enhancements:
   Pull request #1328 by Gavin Miller.
 * Fix NoMethodError in running ruby processes when gems are uninstalled.
   Pull request #1332 by Peter Drake.
+* Emit a warning on SRV resolve failure.
+  Pull request #1023 by Ivan Kuchin.
+* Allow duplicate dependencies between runtime and development.
+  Pull request #1032 by Murray Steele.
 
 Bug fixes:
 

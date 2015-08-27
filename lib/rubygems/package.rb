@@ -106,12 +106,12 @@ class Gem::Package
 
   attr_writer :spec
 
-  def self.build spec, skip_validation=false
+  def self.build spec, skip_validation=false, allow_warnings = true
     gem_file = spec.file_name
 
     package = new gem_file
     package.spec = spec
-    package.build skip_validation
+    package.build skip_validation, allow_warnings
 
     gem_file
   end
@@ -239,12 +239,14 @@ class Gem::Package
   ##
   # Builds this package based on the specification set by #spec=
 
-  def build skip_validation = false
+  def build skip_validation = false, allow_warnings = true
     Gem.load_yaml
     require 'rubygems/security'
 
     @spec.mark_version
-    @spec.validate unless skip_validation
+    unless skip_validation || !@spec.validate(true, allow_warnings)
+      raise Gem::InvalidSpecificationException, "Spec failed to validate"
+    end
 
     setup_signer
 

@@ -2597,7 +2597,7 @@ class Gem::Specification < Gem::BasicSpecification
   # Raises InvalidSpecificationException if the spec does not pass the
   # checks..
 
-  def validate packaging = true
+  def validate packaging = true, allow_warnings = true
     @warnings = 0
     require 'rubygems/user_interaction'
     extend Gem::UserInteraction
@@ -2789,7 +2789,7 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
 
     validate_dependencies
 
-    true
+    allow_warnings || @warnings.zero?
   ensure
     if $! or @warnings > 0 then
       alert_warning "See http://guides.rubygems.org/specification-reference/ for help"

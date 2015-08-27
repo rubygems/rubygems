@@ -9,6 +9,10 @@ class Gem::Commands::BuildCommand < Gem::Command
     add_option '--force', 'skip validation of the spec' do |value, options|
       options[:force] = true
     end
+
+    add_option '--[no-]allow-warnings', 'allow warnings when validating the spec' do |value, options|
+      options[:allow_warnings] = !value
+    end
   end
 
   def arguments # :nodoc:
@@ -45,7 +49,7 @@ with gem spec:
       spec = Gem::Specification.load gemspec
 
       if spec then
-        Gem::Package.build spec, options[:force]
+        Gem::Package.build spec, options[:force], options[:allow_warnings]
       else
         alert_error "Error loading gemspec. Aborting."
         terminate_interaction 1
@@ -57,4 +61,3 @@ with gem spec:
   end
 
 end
-

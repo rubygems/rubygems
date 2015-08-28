@@ -144,7 +144,11 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   end
 
   def test_gem_git_branch
-    @gda.gem 'a', :git => 'git/a', :branch => 'other', :tag => 'v1'
+    _, err = capture_io do
+      @gda.gem 'a', :git => 'git/a', :branch => 'other', :tag => 'v1'
+    end
+    expected = "Gem dependencies file gem.deps.rb includes git reference for both ref/branch and tag but only ref/branch is used."
+    assert_match expected, err
 
     assert_equal [dep('a')], @set.dependencies
 
@@ -161,7 +165,11 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   end
 
   def test_gem_git_ref
-    @gda.gem 'a', :git => 'git/a', :ref => 'abcd123', :branch => 'other'
+    _, err = capture_io do
+      @gda.gem 'a', :git => 'git/a', :ref => 'abcd123', :branch => 'other'
+    end
+    expected = "Gem dependencies file gem.deps.rb includes git reference for both ref and branch but only ref is used."
+    assert_match expected, err
 
     assert_equal [dep('a')], @set.dependencies
 

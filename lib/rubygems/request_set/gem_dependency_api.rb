@@ -407,17 +407,43 @@ Gem dependencies file #{@path} requires #{name} more than once.
 
     pin_gem_source name, :git, repository
 
-    reference = nil
-    reference ||= options.delete :ref
-    reference ||= options.delete :branch
-    reference ||= options.delete :tag
-    reference ||= 'master'
+    reference = gem_git_reference options
 
     submodules = options.delete :submodules
 
     @git_set.add_git_gem name, repository, reference, submodules
 
     true
+  end
+
+  ##
+  # Handles the git options from +options+ for git gem.
+  #
+  # Returns reference for the git gem.
+
+  def gem_git_reference options # :nodoc:
+    ref    = options.delete :ref
+    branch = options.delete :branch
+    tag    = options.delete :tag
+
+    reference = nil
+    reference ||= ref
+    reference ||= branch
+    reference ||= tag
+    reference ||= 'master'
+
+    if ref && branch
+      warn <<-WARNING
+Gem dependencies file #{@path} includes git reference for both ref and branch but only ref is used.
+      WARNING
+    end
+    if (ref||branch) && tag
+      warn <<-WARNING
+Gem dependencies file #{@path} includes git reference for both ref/branch and tag but only ref/branch is used.
+      WARNING
+    end
+
+    reference
   end
 
   private :gem_git
@@ -526,6 +552,7 @@ Gem dependencies file #{@path} requires #{name} more than once.
     else
       @requires[name] << name
     end
+    raise "Unhandled gem options #{options.inspect}" unless options.empty?
   end
 
   private :gem_requires

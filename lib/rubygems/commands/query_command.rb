@@ -49,6 +49,12 @@ class Gem::Commands::QueryCommand < Gem::Command
       options[:all] = value
     end
 
+    add_option('-e', '--exact',
+               'Name of gem(s) to query on matches the',
+               'provided STRING') do |value, options|
+      options[:exact] = value
+    end
+
     add_option(      '--[no-]prerelease',
                'Display prerelease versions') do |value, options|
       options[:prerelease] = value
@@ -78,7 +84,8 @@ is too hard to use.
     elsif !options[:name].source.empty?
       name = Array(options[:name])
     else
-      name = options[:args].to_a.map{|arg| /#{arg}/i }
+      args = options[:args].to_a
+      name = options[:exact] ? args : args.map{|arg| /#{arg}/i }
     end
 
     prerelease = options[:prerelease]
@@ -161,7 +168,7 @@ is too hard to use.
                :latest
              end
 
-      if name.source.empty?
+      if name.respond_to?(:source) && name.source.empty?
         spec_tuples = fetcher.detect(type) { true }
       else
         spec_tuples = fetcher.detect(type) do |name_tuple|

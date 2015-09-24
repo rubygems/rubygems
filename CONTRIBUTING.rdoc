@@ -23,22 +23,12 @@ here: http://guides.rubygems.org/contributing/
 
 == Getting Started
 
-==== To Run Tests:
-
     $ gem install hoe
     $ rake newb
 
-After `rake newb` finishes you can run `rake` to run the tests.
+To run commands like `gem install` from the repo:
 
-==== To Edit Source:
-
-It would make sense to install another Ruby specifically for RubyGems so you
-don't break your other apps.
-
-With the other Ruby installed dedicated to RubyGems, run `ruby setup.rb`.
-This will push your local RubyGems changes to that Ruby version.
-You can either re-run setup.rb everytime you make changes or can update
-the code in the target location and move the changes back to repo when it works.
+    $ ruby -Ilib bin/gem install
 
 == Issues
 

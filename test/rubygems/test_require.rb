@@ -247,6 +247,32 @@ class TestGemRequire < Gem::TestCase
     assert_equal "unable to find a version of 'b' to activate", e.message
   end
 
+  def test_require_works_after_cleanup
+    a1 = new_default_spec "a", "1.0", nil, "a/b.rb"
+    b1 = new_default_spec "b", "1.0", nil, "b/c.rb"
+    b2 = new_default_spec "b", "2.0", nil, "b/d.rb"
+
+    install_default_gems a1
+    install_default_gems b1
+    install_default_gems b2
+
+    # Load default ruby gems fresh as if we've just started a ruby script.
+    Gem::Specification.reset
+    require 'rubygems'
+    Gem::Specification.stubs
+
+    # Remove an old default gem version directly from disk as if someone ran
+    # gem cleanup.
+    FileUtils.rm_rf(File.join @default_dir, "#{b1.full_name}")
+    FileUtils.rm_rf(File.join @default_spec_dir, "#{b1.full_name}.gemspec")
+
+    # Require gems that have not been removed.
+    assert_require 'a/b'
+    assert_equal %w(a-1.0), loaded_spec_names
+    assert_require 'b/d'
+    assert_equal %w(a-1.0 b-2.0), loaded_spec_names
+  end
+
   def test_default_gem_only
     default_gem_spec = new_default_spec("default", "2.0.0.0",
                                         nil, "default/gem.rb")

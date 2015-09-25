@@ -326,9 +326,9 @@ class Gem::RequestSet::Lockfile::Parser
 
   def pinned_requirement name # :nodoc:
     requirement = Gem::Dependency.new name
-    specification = @set.sets.map { |set|
+    specification = @set.sets.flat_map { |set|
       set.find_all(requirement)
-    }.flatten.compact.first
+    }.compact.first
 
     specification.version
   end

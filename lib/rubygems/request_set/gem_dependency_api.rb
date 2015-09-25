@@ -362,6 +362,7 @@ class Gem::RequestSet::GemDependencyAPI
     source_set ||= gem_path       name, options
     source_set ||= gem_git        name, options
     source_set ||= gem_git_source name, options
+    source_set ||= gem_source     name, options
 
     duplicate = @dependencies.include? name
 
@@ -505,6 +506,23 @@ Gem dependencies file #{@path} includes git reference for both ref/branch and ta
   end
 
   private :gem_path
+
+  ##
+  # Handles the source: option from +options+ for gem +name+.
+  #
+  # Returns +true+ if the source option was handled.
+
+  def gem_source name, options # :nodoc:
+    return unless source = options.delete(:source)
+
+    pin_gem_source name, :source, source
+
+    Gem.sources << source
+
+    true
+  end
+
+  private :gem_source
 
   ##
   # Handles the platforms: option from +options+.  Returns true if the
@@ -678,6 +696,7 @@ Gem dependencies file #{@path} includes git reference for both ref/branch and ta
       when :default then '(default)'
       when :path    then "path: #{source}"
       when :git     then "git: #{source}"
+      when :source  then "source: #{source}"
       else               '(unknown)'
       end
 

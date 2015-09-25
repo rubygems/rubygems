@@ -325,14 +325,12 @@ class Gem::RequestSet::Lockfile::Parser
   end
 
   def pinned_requirement name # :nodoc:
-    spec = @set.sets.select { |set|
-      Gem::Resolver::GitSet    === set or
-        Gem::Resolver::VendorSet === set
-    }.map { |set|
-      set.specs[name]
-    }.compact.first
+    requirement = Gem::Dependency.new name
+    specification = @set.sets.map { |set|
+      set.find_all(requirement)
+    }.flatten.compact.first
 
-    spec.version
+    specification.version
   end
 
   ##

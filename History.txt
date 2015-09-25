@@ -60,6 +60,8 @@ Minor enhancements:
   Pull request #1023 by Ivan Kuchin.
 * Allow duplicate dependencies between runtime and development.
   Pull request #1032 by Murray Steele.
+* Fixed a potential NoMethodError for gem cleanup.
+  Pull request #1333 by Peter Drake.
 
 Bug fixes:
 

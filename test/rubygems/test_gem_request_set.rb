@@ -354,7 +354,7 @@ ruby "0"
 
     assert_equal %w[a-1], names
 
-    assert_equal [@DR::BestSet, @DR::GitSet, @DR::VendorSet],
+    assert_equal [@DR::BestSet, @DR::GitSet, @DR::VendorSet, @DR::SourceSet],
                  rs.sets.map { |set| set.class }
   end
 
@@ -418,7 +418,7 @@ ruby "0"
 
     assert_equal ["a-1", "b-2"], names
 
-    assert_equal [@DR::BestSet, @DR::GitSet, @DR::VendorSet],
+    assert_equal [@DR::BestSet, @DR::GitSet, @DR::VendorSet, @DR::SourceSet],
                  rs.sets.map { |set| set.class }
   end
 

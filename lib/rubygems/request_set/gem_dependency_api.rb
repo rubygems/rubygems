@@ -204,6 +204,7 @@ class Gem::RequestSet::GemDependencyAPI
     @installing         = false
     @requires           = Hash.new { |h, name| h[name] = [] }
     @vendor_set         = @set.vendor_set
+    @source_set         = @set.source_set
     @gem_sources        = {}
     @without_groups     = []
 
@@ -517,7 +518,7 @@ Gem dependencies file #{@path} includes git reference for both ref/branch and ta
 
     pin_gem_source name, :source, source
 
-    Gem.sources << source
+    @source_set.add_source_gem name, source
 
     true
   end

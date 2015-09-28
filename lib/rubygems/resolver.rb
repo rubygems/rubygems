@@ -278,6 +278,7 @@ require 'rubygems/resolver/index_set'
 require 'rubygems/resolver/installer_set'
 require 'rubygems/resolver/lock_set'
 require 'rubygems/resolver/vendor_set'
+require 'rubygems/resolver/source_set'
 
 require 'rubygems/resolver/specification'
 require 'rubygems/resolver/spec_specification'

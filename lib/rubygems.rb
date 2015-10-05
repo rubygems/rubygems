@@ -778,6 +778,14 @@ module Gem
     open path, 'rb' do |f|
       f.read
     end
+  rescue Errno::ENOLCK # NFS
+    if Thread.main != Thread.current
+      raise
+    else
+      open path, 'rb' do |f|
+        f.read
+      end
+    end
   end
 
   ##

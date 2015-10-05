@@ -67,6 +67,10 @@ Bug fixes:
 
 * Fixed Rake homepage url in example for Gem::Specification#homepage.
   Pull request #1171 by Arthur Nogueira Neves
+* Fetcher now ignores ENOLCK errors in single threaded environments. This
+  handles an issue with gem installation on NFS as best as we can. Addresses
+  issue #1176 by Ryan Moore.
+  Pull request #1327 by Daniel Berger.
 
 === 2.4.8 / 2015-06-08
 

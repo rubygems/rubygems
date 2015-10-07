@@ -41,8 +41,6 @@ Minor enhancements:
   Pull request #1253 by Marat Amerov.
 * Use stringio instead of custom String classes.
   Pull request #1250 by Petr Skocik.
-* Don't crash if partially uninstalled gem can't be found.
-  Pull request #1283 by Cezary Baginski.
 * Use URI#host instead of URI#hostname to retain backwards compatibility with
   Ruby 1.9.2 and earlier in util library.
   Pull request #1288 by Joe Rafaniello.
@@ -52,25 +50,27 @@ Minor enhancements:
   Pull request #1321 by Matt Patterson.
 * Documentation update for gem update.
   Pull request #1306 by Tim Blair.
-* Fix some path quoting issues in the test suite.
-  Pull request #1328 by Gavin Miller.
-* Fix NoMethodError in running ruby processes when gems are uninstalled.
-  Pull request #1332 by Peter Drake.
 * Emit a warning on SRV resolve failure.
   Pull request #1023 by Ivan Kuchin.
 * Allow duplicate dependencies between runtime and development.
   Pull request #1032 by Murray Steele.
-* Fixed a potential NoMethodError for gem cleanup.
-  Pull request #1333 by Peter Drake.
 
 Bug fixes:
 
 * Fixed Rake homepage url in example for Gem::Specification#homepage.
   Pull request #1171 by Arthur Nogueira Neves
+* Don't crash if partially uninstalled gem can't be found.
+  Pull request #1283 by Cezary Baginski.
 * Fetcher now ignores ENOLCK errors in single threaded environments. This
   handles an issue with gem installation on NFS as best as we can. Addresses
   issue #1176 by Ryan Moore.
   Pull request #1327 by Daniel Berger.
+* Fix some path quoting issues in the test suite.
+  Pull request #1328 by Gavin Miller.
+* Fix NoMethodError in running ruby processes when gems are uninstalled.
+  Pull request #1332 by Peter Drake.
+* Fixed a potential NoMethodError for gem cleanup.
+  Pull request #1333 by Peter Drake.
 
 === 2.4.8 / 2015-06-08
 

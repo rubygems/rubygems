@@ -61,6 +61,10 @@ Bug fixes:
   Pull request #1171 by Arthur Nogueira Neves
 * Don't crash if partially uninstalled gem can't be found.
   Pull request #1283 by Cezary Baginski.
+* Test warning cleanup.
+  Pull request #1298 by Samuel E. Giddins.
+* Documentation fix for GemDependencyAPI.
+  Pull request #1308 by Michael Papis.
 * Fetcher now ignores ENOLCK errors in single threaded environments. This
   handles an issue with gem installation on NFS as best as we can. Addresses
   issue #1176 by Ryan Moore.

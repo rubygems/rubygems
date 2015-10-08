@@ -111,7 +111,7 @@ class TestGemCommandsCleanupCommand < Gem::TestCase
     @cmd.execute
 
     assert_path_exists @a_1.gem_dir
-    refute_path_exists @a_1_1.gem_dir
+    assert_path_exists @a_1_1.gem_dir
   ensure
     FileUtils.chmod 0755, @gemhome
   end unless win_platform?

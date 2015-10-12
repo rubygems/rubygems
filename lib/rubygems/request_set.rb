@@ -148,7 +148,6 @@ class Gem::RequestSet
       return requests
     end
 
-    cache_dir = options[:cache_dir] || Gem.dir
     @prerelease = options[:prerelease]
 
     requests = []
@@ -163,13 +162,11 @@ class Gem::RequestSet
         end
       end
 
-      path = req.download cache_dir
+      spec = req.spec.install options do |installer|
+        yield req, installer if block_given?
+      end
 
-      inst = Gem::Installer.at path, options
-
-      yield req, inst if block_given?
-
-      requests << inst.install
+      requests << spec
     end
 
     return requests if options[:gemdeps]

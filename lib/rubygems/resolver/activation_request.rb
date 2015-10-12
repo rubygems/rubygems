@@ -49,15 +49,28 @@ class Gem::Resolver::ActivationRequest
   # Downloads a gem at +path+ and returns the file path.
 
   def download path
-    if @spec.respond_to? :source
-      source = @spec.source
-    else
-      source = Gem.sources.first
-    end
-
     Gem.ensure_gem_subdirectories path
 
-    source.download full_spec, path
+    if @spec.respond_to? :sources
+      exception = nil
+      path = nil
+      @spec.sources.each{ |source|
+        begin
+          path = source.download full_spec, path
+        rescue exception
+          nil
+        end
+      }
+      raise exception if exception
+      path
+    elsif @spec.respond_to? :source
+      source = @spec.source
+      source.download full_spec, path
+    else
+      source = Gem.sources.first
+      source.download full_spec, path
+    end
+
   end
 
   ##

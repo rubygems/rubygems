@@ -54,6 +54,8 @@ Minor enhancements:
   Pull request #1023 by Ivan Kuchin.
 * Allow duplicate dependencies between runtime and development.
   Pull request #1032 by Murray Steele.
+* The gem env command now shows the user installation directory.
+  Pull request #1343 by Luis Sagastume.
 
 Bug fixes:
 
@@ -66,7 +68,7 @@ Bug fixes:
 * Documentation fix for GemDependencyAPI.
   Pull request #1308 by Michael Papis.
 * Fetcher now ignores ENOLCK errors in single threaded environments. This
-  handles an issue with gem installation on NFS as best as we can. Addresses
+  handles an issue with gem installation on NFS as best we can. Addresses
   issue #1176 by Ryan Moore.
   Pull request #1327 by Daniel Berger.
 * Fix some path quoting issues in the test suite.
@@ -75,6 +77,8 @@ Bug fixes:
   Pull request #1332 by Peter Drake.
 * Fixed a potential NoMethodError for gem cleanup.
   Pull request #1333 by Peter Drake.
+* Fixed gem help bug.
+  Issue #1352 reported by bogem, pull request #1357 by Luis Sagastume.
 
 === 2.4.8 / 2015-06-08
 

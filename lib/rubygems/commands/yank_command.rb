@@ -31,7 +31,7 @@ as the reason for the removal request.
   end
 
   def usage # :nodoc:
-    "#{program_name} GEM -v VERSION [-p PLATFORM] [--key KEY_NAME]"
+    "#{program_name} GEM -v VERSION [-p PLATFORM] [--key KEY_NAME] [--host HOST]"
   end
 
   def initialize
@@ -40,11 +40,19 @@ as the reason for the removal request.
     add_version_option("remove")
     add_platform_option("remove")
 
+    add_option('--host HOST',
+               'Yank from another gemcutter-compatible host') do |value, options|
+      options[:host] = value
+    end
+
     add_key_option
+    @host = nil
   end
 
   def execute
-    sign_in
+    @host = options[:host]
+
+    sign_in @host
 
     version   = get_version_from_requirements(options[:version])
     platform  = get_platform_from_requirements(options)

@@ -74,7 +74,7 @@ as the reason for the removal request.
 
   def yank_api_request(method, version, platform, api)
     name = get_one_gem_name
-    response = rubygems_api_request(method, api) do |request|
+    response = rubygems_api_request(method, api, host) do |request|
       request.add_field("Authorization", api_key)
 
       data = {

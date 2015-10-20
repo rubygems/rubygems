@@ -5,20 +5,13 @@ class TestGemCommandsYankCommand < Gem::TestCase
   def setup
     super
 
-    ENV["RUBYGEMS_HOST"] = nil
-    Gem.host = 'http://example'
     @cmd = Gem::Commands::YankCommand.new
+    @cmd.options[:host] = 'http://example'
 
     @fetcher = Gem::RemoteFetcher.fetcher
 
     Gem.configuration.rubygems_api_key = 'key'
     Gem.configuration.api_keys[:KEY]  = 'other'
-  end
-
-  def teardown
-    super
-
-    Gem.host = Gem::DEFAULT_HOST
   end
 
   def test_handle_options

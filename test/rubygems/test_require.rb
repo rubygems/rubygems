@@ -80,6 +80,8 @@ class TestGemRequire < Gem::TestCase
   end
 
   def test_concurrent_require
+    skip 'deadlock' if /^1\.8\./ =~ RUBY_VERSION
+
     Object.const_set :FILE_ENTERED_LATCH, Latch.new(2)
     Object.const_set :FILE_EXIT_LATCH, Latch.new(1)
 
@@ -103,6 +105,8 @@ class TestGemRequire < Gem::TestCase
     assert t1.join, "thread 1 should exit"
     assert t2.join, "thread 2 should exit"
   ensure
+    return if $! # skipping
+
     Object.send :remove_const, :FILE_ENTERED_LATCH
     Object.send :remove_const, :FILE_EXIT_LATCH
   end

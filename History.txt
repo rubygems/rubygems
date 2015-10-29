@@ -60,6 +60,19 @@ Minor enhancements:
   Pull request #1343 by Luis Sagastume.
 * The Gem::Platform#=== method now treats a nil cpu arch the same as 'universal'.
   Pull request #1356 by Daniel Berger.
+* Improved memory performance in Gem::Specification.traverse.  Pull request
+  #1188 by Aaron Patterson.
+* RubyGems packages now support symlinks.  Pull request #1209 by Samuel E.
+  Giddins.
+* RubyGems no longer outputs mkmf.log if it does not exist.  Pull request
+  #1222 by Andrew Hooker.
+* Added Bitrig platform.  Pull request #1233 by John C. Vernaleo.
+* Improved error message for first-time RubyGems developers.  Pull request
+  #1241 by André Arko
+* Improved performance of Gem::Specification#load with cached specs.  Pull
+  request #1297 by Samuel E. Giddins.
+* Gem::RemoteFetcher allows users to set HTTP headers.  Pull request #1363 by
+  Agis Anastasopoulos.
 
 Bug fixes:
 
@@ -83,6 +96,38 @@ Bug fixes:
   Pull request #1333 by Peter Drake.
 * Fixed gem help bug.
   Issue #1352 reported by bogem, pull request #1357 by Luis Sagastume.
+* Remove temporary directories after tests finish.  Pull request #1181 by
+  Nobuyoshi Nokada.
+* Update links in RubyGems documentation.  Pull request #1185 by Darío Hereñú.
+* Prerelease gem executables can now be run.  Pull request #1186 by Samuel E.
+  Giddins.
+* Updated RubyGems travis-ci ruby versions.  Pull request #1187 by Samuel E.
+  Giddins.
+* Fixed release date of RubyGems 2.4.6.  Pull request #1190 by Frieder
+  Bluemle.
+* Fixed bugs in gem activation.  Pull request #1202 by Miklós Fazekas.
+* Fixed documentation for `gem list`.  Pull request #1228 by Godfrey Chan.
+* Fixed #1200 history entry.  Pull request #1234 by Marc Siegel.
+* Fixed synchronization issue when resetting the Gem::Specification gem list.
+  Pull request #1239 by Samuel E. Giddins.
+* Fixed running tests in parallel.  Pull request #1257 by SHIBATA Hiroshi.
+* Fixed running tests with `--program-prefix` or `--program-suffix` for ruby.
+  Pull request #1258 by Shane Gibbs.
+* Fixed Gem::Specification#to_yaml.  Pull request #1262 by Hiroaki Izu.
+* Fixed taintedness of Gem::Specification#raw_require_paths.  Pull request
+  #1268 by Sam Ruby.
+* Fixed sorting of platforms when installing gems.  Pull request #1271 by
+  nonsequitur.
+* Use `--no-document` over deprecated documentation options when installing
+  dependencies on travis.  Pull request #1272 by takiy33.
+* Improved support for IPv6 addresses in URIs.  Pull request #1275 by Joe
+  Rafaniello.
+* Spec validation no longer crashes if a file does not exist.  Pull request
+  #1278 by Samuel E. Giddins.
+* Gems can now be installed within `rescue`.  Pull request #1282 by Samuel E.
+  Giddins.
+* Increased Diffie-Hellman key size for tests for modern OpenSSL.  Pull
+  request #1290 by Vít Ondruch.
 
 === 2.4.8 / 2015-06-08
 

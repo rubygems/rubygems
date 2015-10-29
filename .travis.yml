@@ -41,3 +41,4 @@ matrix:
       env: "YAML=syck"
   allow_failures:
     - rvm: ruby-head
+sudo: false

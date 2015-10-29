@@ -59,7 +59,7 @@ Minor enhancements:
 * The gem env command now shows the user installation directory.
   Pull request #1343 by Luis Sagastume.
 * The Gem::Platform#=== method now treats a nil cpu arch the same as 'universal'.
-  Pull request #1356 by Daniel Berger. 
+  Pull request #1356 by Daniel Berger.
 
 Bug fixes:
 

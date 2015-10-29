@@ -33,9 +33,9 @@ matrix:
       env: "YAML=psych"
     - rvm: 2.0.0
       env: "YAML=syck"
-    - rvm: 2.1.5
+    - rvm: 2.1.7
       env: "YAML=syck"
-    - rvm: 2.2.1
+    - rvm: 2.2.3
       env: "YAML=syck"
     - rvm: ruby-head
       env: "YAML=syck"

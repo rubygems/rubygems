@@ -597,6 +597,9 @@ module Gem
 
     test_syck = ENV['TEST_SYCK']
 
+    # Only Ruby 1.8 and 1.9 have syck
+    test_syck = false unless /^1\./ =~ RUBY_VERSION
+
     unless test_syck
       begin
         gem 'psych', '>= 1.2.1'

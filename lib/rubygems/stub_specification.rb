@@ -35,6 +35,8 @@ class Gem::StubSpecification < Gem::BasicSpecification
   end
 
   def initialize filename, default_gem
+    filename.untaint
+
     self.loaded_from = filename
     @data            = nil
     @extensions      = nil

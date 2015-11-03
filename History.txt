@@ -128,6 +128,8 @@ Bug fixes:
   Giddins.
 * Increased Diffie-Hellman key size for tests for modern OpenSSL.  Pull
   request #1290 by Vít Ondruch.
+* RubyGems handles invalid config files better.  Pull request #1367 by Agis
+  Anastasopoulos.
 
 === 2.4.8 / 2015-06-08
 

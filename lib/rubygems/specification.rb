@@ -2295,7 +2295,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   def ruby_code(obj)
     case obj
-    when String            then obj.dump
+    when String            then obj.dump + ".freeze"
     when Array             then '[' + obj.map { |x| ruby_code x }.join(", ") + ']'
     when Hash              then
       seg = obj.keys.sort.map { |k| "#{k.to_s.dump} => #{obj[k].to_s.dump}" }
@@ -2485,14 +2485,14 @@ class Gem::Specification < Gem::BasicSpecification
       dependencies.each do |dep|
         req = dep.requirements_list.inspect
         dep.instance_variable_set :@type, :runtime if dep.type.nil? # HACK
-        result << "      s.add_#{dep.type}_dependency(%q<#{dep.name}>, #{req})"
+        result << "      s.add_#{dep.type}_dependency(%q<#{dep.name}>.freeze, #{req})"
       end
 
       result << "    else"
 
       dependencies.each do |dep|
         version_reqs_param = dep.requirements_list.inspect
-        result << "      s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
+        result << "      s.add_dependency(%q<#{dep.name}>.freeze, #{version_reqs_param})"
       end
 
       result << '    end'
@@ -2500,7 +2500,7 @@ class Gem::Specification < Gem::BasicSpecification
       result << "  else"
       dependencies.each do |dep|
         version_reqs_param = dep.requirements_list.inspect
-        result << "    s.add_dependency(%q<#{dep.name}>, #{version_reqs_param})"
+        result << "    s.add_dependency(%q<#{dep.name}>.freeze, #{version_reqs_param})"
       end
       result << "  end"
     end

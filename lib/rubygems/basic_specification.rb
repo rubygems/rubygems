@@ -38,6 +38,14 @@ class Gem::BasicSpecification
   end
 
   ##
+  # The path to the gem.build_complete file within the extension install
+  # directory.
+
+  def gem_build_complete_path # :nodoc:
+    File.join extension_dir, 'gem.build_complete'
+  end
+
+  ##
   # True when the gem has been activated
 
   def activated?

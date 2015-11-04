@@ -135,6 +135,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
   def missing_extensions?
     return false if default_gem?
     return false if extensions.empty?
+    return false if File.exist? gem_build_complete_path
 
     to_spec.missing_extensions?
   end

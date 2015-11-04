@@ -1934,14 +1934,6 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # The path to the gem.build_complete file within the extension install
-  # directory.
-
-  def gem_build_complete_path # :nodoc:
-    File.join extension_dir, 'gem.build_complete'
-  end
-
-  ##
   # Work around bundler removing my methods
 
   def gem_dir # :nodoc:

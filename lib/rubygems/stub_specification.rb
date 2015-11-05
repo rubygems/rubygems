@@ -15,7 +15,9 @@ class Gem::StubSpecification < Gem::BasicSpecification
     end
 
   class StubLine # :nodoc: all
-    attr_reader :name, :version, :platform, :require_paths
+    attr_reader :name, :version, :platform, :require_paths, :extensions
+
+    NO_EXTENSIONS = [].freeze
 
     # These are common require paths.
     REQUIRE_PATHS = { # :nodoc:
@@ -24,11 +26,12 @@ class Gem::StubSpecification < Gem::BasicSpecification
       'ext'  => 'ext'.freeze,
     }
 
-    def initialize(data)
+    def initialize data, extensions
       parts          = data[PREFIX.length..-1].split(" ".freeze)
       @name          = parts[0].freeze
       @version       = Gem::Version.new parts[1]
       @platform      = Gem::Platform.new(parts[2])
+      @extensions    = extensions
       @require_paths = parts.drop(3).join(" ".freeze).split("\0".freeze).map! { |x|
         REQUIRE_PATHS[x] || x
       }
@@ -48,7 +51,6 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
     self.loaded_from = filename
     @data            = nil
-    @extensions      = nil
     @name            = nil
     @spec            = nil
     @default_gem     = default_gem
@@ -82,8 +84,6 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
   def data
     unless @data
-      @extensions = []
-
       begin
         saved_lineno = $.
         open loaded_from, OPEN_MODE do |file|
@@ -91,10 +91,13 @@ class Gem::StubSpecification < Gem::BasicSpecification
             file.readline # discard encoding line
             stubline = file.readline.chomp
             if stubline.start_with?(PREFIX) then
-              @data = StubLine.new stubline
+              extensions = if /\A#{PREFIX}/ =~ file.readline.chomp
+                             $'.split "\0"
+                           else
+                             StubLine::NO_EXTENSIONS
+                           end
 
-              @extensions = $'.split "\0" if
-                /\A#{PREFIX}/ =~ file.readline.chomp
+              @data = StubLine.new stubline, extensions
             end
           rescue EOFError
           end
@@ -108,17 +111,6 @@ class Gem::StubSpecification < Gem::BasicSpecification
   end
 
   private :data
-
-  ##
-  # Extensions for this gem
-
-  def extensions
-    return @extensions if @extensions
-
-    data # load
-
-    @extensions
-  end
 
   ##
   # If a gem has a stub specification it doesn't need to bother with
@@ -155,6 +147,13 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
   def platform
     data.platform
+  end
+
+  ##
+  # Extensions for this gem
+
+  def extensions
+    data.extensions
   end
 
   ##

@@ -317,6 +317,6 @@ class Gem::BasicSpecification
 
   private
 
-  def have_extensions?; @extensions && !@extensions.empty?; end
+  def have_extensions?; !extensions.empty?; end
 end
 

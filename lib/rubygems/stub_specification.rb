@@ -17,12 +17,21 @@ class Gem::StubSpecification < Gem::BasicSpecification
   class StubLine # :nodoc: all
     attr_reader :name, :version, :platform, :require_paths
 
+    # These are common require paths.
+    REQUIRE_PATHS = { # :nodoc:
+      'lib'  => 'lib'.freeze,
+      'test' => 'test'.freeze,
+      'ext'  => 'ext'.freeze,
+    }
+
     def initialize(data)
-      parts          = data[PREFIX.length..-1].split(" ")
+      parts          = data[PREFIX.length..-1].split(" ".freeze)
       @name          = parts[0].freeze
       @version       = Gem::Version.new parts[1]
-      @platform      = Gem::Platform.new parts[2]
-      @require_paths = parts.drop(3).join(" ").split("\0")
+      @platform      = Gem::Platform.new(parts[2])
+      @require_paths = parts.drop(3).join(" ".freeze).split("\0".freeze).map! { |x|
+        REQUIRE_PATHS[x] || x
+      }
     end
   end
 

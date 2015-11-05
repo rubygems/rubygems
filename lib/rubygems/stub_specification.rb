@@ -157,6 +157,13 @@ class Gem::StubSpecification < Gem::BasicSpecification
   end
 
   ##
+  # Version of the gem
+
+  def version
+    data.version
+  end
+
+  ##
   # The full Gem::Specification for this gem, loaded from evalling its gemspec
 
   def to_spec
@@ -178,13 +185,6 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
   def valid?
     data
-  end
-
-  ##
-  # Version of the gem
-
-  def version
-    @version ||= data.version
   end
 
   ##

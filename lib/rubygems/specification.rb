@@ -1955,6 +1955,11 @@ class Gem::Specification < Gem::BasicSpecification
     super
   end
 
+  def gems_dir
+    # TODO: this logic seems terribly broken, but tests fail if just base_dir
+    @gems_dir ||= File.join(loaded_from && base_dir || Gem.dir, "gems")
+  end
+
   ##
   # Deprecated and ignored, defaults to true.
   #
@@ -2002,6 +2007,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   def initialize name = nil, version = nil
     super()
+    @gems_dir              = nil
     @base_dir              = nil
     @loaded = false
     @activated = false

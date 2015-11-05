@@ -192,8 +192,7 @@ class Gem::BasicSpecification
   # gem directory. eg: /usr/local/lib/ruby/1.8/gems
 
   def gems_dir
-    # TODO: this logic seems terribly broken, but tests fail if just base_dir
-    @gems_dir ||= File.join(loaded_from && base_dir || Gem.dir, "gems")
+    raise NotImplementedError
   end
 
   def internal_init # :nodoc:
@@ -201,7 +200,6 @@ class Gem::BasicSpecification
     @extensions_dir = nil
     @full_gem_path         = nil
     @gem_dir               = nil
-    @gems_dir              = nil
   end
 
   ##

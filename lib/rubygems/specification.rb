@@ -1006,6 +1006,7 @@ class Gem::Specification < Gem::BasicSpecification
   # Return the best specification that contains the file matching +path+.
 
   def self.find_by_path path
+    path = path.dup.freeze
     stub = stubs.find { |spec|
       spec.contains_requirable_file? path if spec
     }

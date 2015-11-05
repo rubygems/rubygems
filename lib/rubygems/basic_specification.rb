@@ -86,7 +86,7 @@ class Gem::BasicSpecification
       suffixes = Gem.suffixes
 
       full_require_paths.any? do |dir|
-        base = "#{dir}/#{file}"
+        base = File.join dir, file
         suffixes.any? { |suf| File.file? "#{base}#{suf}" }
       end
     end ? :yes : :no

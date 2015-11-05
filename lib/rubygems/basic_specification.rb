@@ -156,7 +156,7 @@ class Gem::BasicSpecification
         File.join full_gem_path, path.untaint
       end
 
-      full_paths << extension_dir unless @extensions.nil? || @extensions.empty?
+      full_paths << extension_dir if have_extensions?
 
       full_paths
     end
@@ -246,7 +246,7 @@ class Gem::BasicSpecification
   #   spec.require_path = '.'
 
   def require_paths
-    return raw_require_paths if @extensions.nil? || @extensions.empty?
+    return raw_require_paths unless have_extensions?
 
     [extension_dir].concat raw_require_paths
   end
@@ -258,8 +258,8 @@ class Gem::BasicSpecification
   def source_paths
     paths = raw_require_paths.dup
 
-    if @extensions then
-      ext_dirs = @extensions.map do |extension|
+    if have_extensions? then
+      ext_dirs = extensions.map do |extension|
         extension.split(File::SEPARATOR, 2).first
       end.uniq
 
@@ -315,5 +315,8 @@ class Gem::BasicSpecification
     raise NotImplementedError
   end
 
+  private
+
+  def have_extensions?; @extensions && !@extensions.empty?; end
 end
 

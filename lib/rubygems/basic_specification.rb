@@ -78,12 +78,7 @@ class Gem::BasicSpecification
         return false
       end
 
-      suffixes = Gem.suffixes
-
-      full_require_paths.any? do |dir|
-        base = File.join dir, file
-        suffixes.any? { |suf| File.file? "#{base}#{suf}" }
-      end
+      have_file? file, Gem.suffixes
     end ? :yes : :no
     @contains_requirable_file[file] == :yes
   end
@@ -310,5 +305,20 @@ class Gem::BasicSpecification
   private
 
   def have_extensions?; !extensions.empty?; end
+
+  def have_file? file, suffixes
+    return true if raw_require_paths.any? do |path|
+      base = File.join gems_dir, full_name, path.untaint, file
+      suffixes.any? { |suf| File.file? base + suf }
+    end
+
+    if have_extensions?
+      base = File.join extension_dir, file
+      suffixes.any? { |suf| File.file? base + suf }
+    else
+      false
+    end
+  end
+
 end
 

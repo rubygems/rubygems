@@ -15,7 +15,8 @@ class Gem::StubSpecification < Gem::BasicSpecification
     end
 
   class StubLine # :nodoc: all
-    attr_reader :name, :version, :platform, :require_paths, :extensions
+    attr_reader :name, :version, :platform, :require_paths, :extensions,
+                :full_name
 
     NO_EXTENSIONS = [].freeze
 
@@ -30,8 +31,14 @@ class Gem::StubSpecification < Gem::BasicSpecification
       parts          = data[PREFIX.length..-1].split(" ".freeze)
       @name          = parts[0].freeze
       @version       = Gem::Version.new parts[1]
-      @platform      = Gem::Platform.new(parts[2])
+      @platform      = Gem::Platform.new parts[2]
       @extensions    = extensions
+      @full_name     = if platform == Gem::Platform::RUBY
+                         "#{name}-#{version}"
+                       else
+                         "#{name}-#{version}-#{platform}"
+                       end
+
       @require_paths = parts.drop(3).join(" ".freeze).split("\0".freeze).map! { |x|
         REQUIRE_PATHS[x] || x
       }
@@ -154,6 +161,10 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
   def version
     data.version
+  end
+
+  def full_name
+    data.full_name
   end
 
   ##

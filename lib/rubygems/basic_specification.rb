@@ -118,7 +118,7 @@ class Gem::BasicSpecification
     # TODO: also, shouldn't it default to full_name if it hasn't been written?
     path = File.expand_path File.join(gems_dir, full_name)
     path.untaint
-    path if File.directory? path
+    path
   end
 
   private :find_full_gem_path

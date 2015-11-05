@@ -1925,11 +1925,6 @@ class Gem::Specification < Gem::BasicSpecification
     spec
   end
 
-  def find_full_gem_path # :nodoc:
-    super || File.expand_path(File.join(gems_dir, original_name))
-  end
-  private :find_full_gem_path
-
   def full_name
     @full_name ||= super
   end

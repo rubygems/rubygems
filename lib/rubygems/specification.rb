@@ -740,24 +740,37 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   def self.gemspec_stubs_in dir, pattern
-    base_dir = File.dirname dir
-    Dir[File.join(dir, pattern)].map { |path|
-      if dir == default_specifications_dir
-        Gem::StubSpecification.default_gemspec_stub(path, Gem.default_dir)
-      else
-        Gem::StubSpecification.gemspec_stub(path, base_dir)
-      end
-    }.select(&:valid?)
+    Dir[File.join(dir, pattern)].map { |path| yield path }.select(&:valid?)
   end
   private_class_method :gemspec_stubs_in
 
+  def self.default_stubs pattern
+    gemspec_stubs_in(default_specifications_dir, pattern) do |path|
+      Gem::StubSpecification.default_gemspec_stub(path, Gem.default_dir)
+    end
+  end
+  private_class_method :default_stubs
+
+  def self.installed_stubs dirs, pattern
+    map_stubs(dirs, pattern) do |path, base_dir|
+      Gem::StubSpecification.gemspec_stub(path, base_dir)
+    end
+  end
+  private_class_method :installed_stubs
+
   if [].respond_to? :flat_map
     def self.map_stubs(dirs, pattern) # :nodoc:
-      dirs.flat_map { |dir| gemspec_stubs_in(dir, pattern) }
+      dirs.flat_map { |dir|
+        base_dir = File.dirname dir
+        gemspec_stubs_in(dir, pattern) { |path| yield path, base_dir }
+      }
     end
   else # FIXME: remove when 1.8 is dropped
     def self.map_stubs(dirs, pattern) # :nodoc:
-      dirs.map { |dir| gemspec_stubs_in(dir, pattern) }.flatten 1
+      dirs.map { |dir|
+        base_dir = File.dirname dir
+        gemspec_stubs_in(dir, pattern) { |path| yield path, base_dir }
+      }.flatten 1
     end
   end
   private_class_method :map_stubs
@@ -804,7 +817,8 @@ class Gem::Specification < Gem::BasicSpecification
 
   def self.stubs
     @@stubs ||= begin
-      stubs = map_stubs([default_specifications_dir] + dirs, "*.gemspec")
+      pattern = "*.gemspec"
+      stubs = default_stubs(pattern) + installed_stubs(dirs, pattern)
       stubs = uniq_by(stubs) { |stub| stub.full_name }
 
       _resort!(stubs)
@@ -822,7 +836,8 @@ class Gem::Specification < Gem::BasicSpecification
     if @@stubs || @@stubs_by_name[name]
       @@stubs_by_name[name] || []
     else
-      stubs = map_stubs([default_specifications_dir] + dirs, "#{name}-*.gemspec")
+      pattern = "#{name}-*.gemspec"
+      stubs = default_stubs(pattern) + installed_stubs(dirs, pattern)
       stubs = uniq_by(stubs) { |stub| stub.full_name }.group_by(&:name)
       stubs.each_value { |v| sort_by!(v) { |i| i.version } }
 

@@ -740,11 +740,12 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   def self.gemspec_stubs_in dir, pattern
+    base_dir = File.dirname dir
     Dir[File.join(dir, pattern)].map { |path|
       if dir == default_specifications_dir
-        Gem::StubSpecification.default_gemspec_stub(path)
+        Gem::StubSpecification.default_gemspec_stub(path, Gem.default_dir)
       else
-        Gem::StubSpecification.gemspec_stub(path)
+        Gem::StubSpecification.gemspec_stub(path, base_dir)
       end
     }.select(&:valid?)
   end
@@ -1983,6 +1984,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   def initialize name = nil, version = nil
     super()
+    @base_dir              = nil
     @loaded = false
     @activated = false
     @loaded_from = nil
@@ -2030,6 +2032,15 @@ class Gem::Specification < Gem::BasicSpecification
         raise e
       end
     end
+  end
+
+  def base_dir
+    return Gem.dir unless loaded_from
+    @base_dir ||= if default_gem? then
+                    File.dirname File.dirname File.dirname loaded_from
+                  else
+                    File.dirname File.dirname loaded_from
+                  end
   end
 
   ##

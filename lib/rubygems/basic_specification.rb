@@ -58,12 +58,7 @@ class Gem::BasicSpecification
   # eg: /usr/local/lib/ruby/gems/1.8
 
   def base_dir
-    return Gem.dir unless loaded_from
-    @base_dir ||= if default_gem? then
-                    File.dirname File.dirname File.dirname loaded_from
-                  else
-                    File.dirname File.dirname loaded_from
-                  end
+    raise NotImplementedError
   end
 
   ##
@@ -207,7 +202,6 @@ class Gem::BasicSpecification
     @full_gem_path         = nil
     @gem_dir               = nil
     @gems_dir              = nil
-    @base_dir              = nil
   end
 
   ##

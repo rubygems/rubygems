@@ -38,17 +38,17 @@ class Gem::StubSpecification < Gem::BasicSpecification
     end
   end
 
-  def self.default_gemspec_stub filename, base_dir
-    new filename, base_dir, true
+  def self.default_gemspec_stub filename, base_dir, gems_dir
+    new filename, base_dir, gems_dir, true
   end
 
-  def self.gemspec_stub filename, base_dir
-    new filename, base_dir, false
+  def self.gemspec_stub filename, base_dir, gems_dir
+    new filename, base_dir, gems_dir, false
   end
 
-  attr_reader :base_dir
+  attr_reader :base_dir, :gems_dir
 
-  def initialize filename, base_dir, default_gem
+  def initialize filename, base_dir, gems_dir, default_gem
     filename.untaint
 
     self.loaded_from = filename
@@ -56,6 +56,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
     @name            = nil
     @spec            = nil
     @base_dir        = base_dir
+    @gems_dir        = gems_dir
     @default_gem     = default_gem
   end
 

@@ -745,15 +745,17 @@ class Gem::Specification < Gem::BasicSpecification
   private_class_method :gemspec_stubs_in
 
   def self.default_stubs pattern
+    base_dir = Gem.default_dir
+    gems_dir = File.join base_dir, "gems"
     gemspec_stubs_in(default_specifications_dir, pattern) do |path|
-      Gem::StubSpecification.default_gemspec_stub(path, Gem.default_dir)
+      Gem::StubSpecification.default_gemspec_stub(path, base_dir, gems_dir)
     end
   end
   private_class_method :default_stubs
 
   def self.installed_stubs dirs, pattern
-    map_stubs(dirs, pattern) do |path, base_dir|
-      Gem::StubSpecification.gemspec_stub(path, base_dir)
+    map_stubs(dirs, pattern) do |path, base_dir, gems_dir|
+      Gem::StubSpecification.gemspec_stub(path, base_dir, gems_dir)
     end
   end
   private_class_method :installed_stubs
@@ -762,7 +764,8 @@ class Gem::Specification < Gem::BasicSpecification
     def self.map_stubs(dirs, pattern) # :nodoc:
       dirs.flat_map { |dir|
         base_dir = File.dirname dir
-        gemspec_stubs_in(dir, pattern) { |path| yield path, base_dir }
+        gems_dir = File.join base_dir, "gems"
+        gemspec_stubs_in(dir, pattern) { |path| yield path, base_dir, gems_dir }
       }
     end
   else # FIXME: remove when 1.8 is dropped

@@ -2947,6 +2947,10 @@ open-ended dependency on #{dep} is not recommended
     alert_warning statement
   end
 
+  def raw_require_paths # :nodoc:
+    @require_paths
+  end
+
   extend Gem::Deprecate
 
   # TODO:

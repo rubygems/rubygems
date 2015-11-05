@@ -131,14 +131,8 @@ class Gem::StubSpecification < Gem::BasicSpecification
     path
   end
 
-  ##
-  # Full paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
-  # activated.
-
-  def full_require_paths
-    @require_paths ||= data.require_paths
-
-    super
+  def raw_require_paths # :nodoc:
+    data.require_paths
   end
 
   def missing_extensions?
@@ -161,15 +155,6 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
   def platform
     data.platform
-  end
-
-  ##
-  # Require paths of the gem
-
-  def require_paths
-    @require_paths ||= data.require_paths
-
-    super
   end
 
   ##

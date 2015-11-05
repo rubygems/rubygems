@@ -225,7 +225,7 @@ class Gem::BasicSpecification
   end
 
   def raw_require_paths # :nodoc:
-    Array(@require_paths)
+    raise NotImplementedError
   end
 
   ##

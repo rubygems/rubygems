@@ -772,7 +772,8 @@ class Gem::Specification < Gem::BasicSpecification
     def self.map_stubs(dirs, pattern) # :nodoc:
       dirs.map { |dir|
         base_dir = File.dirname dir
-        gemspec_stubs_in(dir, pattern) { |path| yield path, base_dir }
+        gems_dir = File.join base_dir, "gems"
+        gemspec_stubs_in(dir, pattern) { |path| yield path, base_dir, gems_dir }
       }.flatten 1
     end
   end

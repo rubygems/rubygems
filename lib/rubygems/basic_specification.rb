@@ -92,7 +92,7 @@ class Gem::BasicSpecification
   # Returns full path to the directory where gem's extensions are installed.
 
   def extension_dir
-    @extension_dir ||= File.expand_path File.join(extensions_dir, full_name)
+    @extension_dir ||= File.expand_path(File.join(extensions_dir, full_name)).untaint
   end
 
   ##
@@ -316,7 +316,7 @@ class Gem::BasicSpecification
 
   def have_file? file, suffixes
     return true if raw_require_paths.any? do |path|
-      base = File.join gems_dir, full_name, path.untaint, file
+      base = File.join(gems_dir, full_name, path.untaint, file).untaint
       suffixes.any? { |suf| File.file? base + suf }
     end
 

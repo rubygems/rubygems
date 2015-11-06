@@ -28,7 +28,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
     }
 
     def initialize data, extensions
-      parts          = data[PREFIX.length..-1].split(" ".freeze)
+      parts          = data[PREFIX.length..-1].split(" ".freeze, 4)
       @name          = parts[0].freeze
       @version       = Gem::Version.new parts[1]
       @platform      = Gem::Platform.new parts[2]
@@ -39,7 +39,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
                          "#{name}-#{version}-#{platform}"
                        end
 
-      @require_paths = parts.drop(3).join(" ".freeze).split("\0".freeze).map! { |x|
+      @require_paths = parts.last.split("\0".freeze).map! { |x|
         REQUIRE_PATHS[x] || x
       }
     end

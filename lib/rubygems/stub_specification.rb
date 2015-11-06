@@ -27,6 +27,14 @@ class Gem::StubSpecification < Gem::BasicSpecification
       'ext'  => 'ext'.freeze,
     }
 
+    # These are common require path lists.  This hash is used to optimize
+    # and consolidate require_path objects.  Most specs just specify "lib"
+    # in their require paths, so lets take advantage of that by pre-allocating
+    # a require path list for that case.
+    REQUIRE_PATH_LIST = { # :nodoc:
+      'lib' => ['lib'].freeze
+    }
+
     def initialize data, extensions
       parts          = data[PREFIX.length..-1].split(" ".freeze, 4)
       @name          = parts[0].freeze
@@ -39,7 +47,8 @@ class Gem::StubSpecification < Gem::BasicSpecification
                          "#{name}-#{version}-#{platform}"
                        end
 
-      @require_paths = parts.last.split("\0".freeze).map! { |x|
+      path_list = parts.last
+      @require_paths = REQUIRE_PATH_LIST[path_list] || path_list.split("\0".freeze).map! { |x|
         REQUIRE_PATHS[x] || x
       }
     end

@@ -822,7 +822,7 @@ class Gem::Specification < Gem::BasicSpecification
   def self.stubs
     @@stubs ||= begin
       pattern = "*.gemspec"
-      stubs = default_stubs(pattern) + installed_stubs(dirs, pattern)
+      stubs = default_stubs(pattern).concat installed_stubs(dirs, pattern)
       stubs = uniq_by(stubs) { |stub| stub.full_name }
 
       _resort!(stubs)

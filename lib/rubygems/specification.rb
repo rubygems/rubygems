@@ -837,7 +837,7 @@ class Gem::Specification < Gem::BasicSpecification
   # Returns a Gem::StubSpecification for installed gem named +name+
 
   def self.stubs_for name
-    if @@stubs || @@stubs_by_name[name]
+    if @@stubs
       @@stubs_by_name[name] || []
     else
       pattern = "#{name}-*.gemspec"

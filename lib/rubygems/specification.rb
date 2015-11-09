@@ -1028,7 +1028,7 @@ class Gem::Specification < Gem::BasicSpecification
   def self.find_by_path path
     path = path.dup.freeze
     stub = stubs.find { |spec|
-      spec.contains_requirable_file? path if spec
+      spec.contains_requirable_file? path
     }
     stub && stub.to_spec
   end
@@ -1039,7 +1039,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   def self.find_inactive_by_path path
     stub = stubs.find { |s|
-      s.contains_requirable_file? path unless s.nil? || s.activated?
+      s.contains_requirable_file? path unless s.activated?
     }
     stub && stub.to_spec
   end
@@ -1051,7 +1051,7 @@ class Gem::Specification < Gem::BasicSpecification
     # TODO: do we need these?? Kill it
     specs = unresolved_deps.values.map { |dep| dep.to_specs }.flatten
 
-    specs.find_all { |spec| spec.contains_requirable_file? path if spec }
+    specs.find_all { |spec| spec.contains_requirable_file? path }
   end
 
   ##

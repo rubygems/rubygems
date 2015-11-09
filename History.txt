@@ -1,6 +1,17 @@
 # coding: UTF-8
 
-=== 2.5.0
+=== 2.5.1 / ???
+
+* Minor enhancements:
+  Remove a useless conditional in Gem::Specification class. Fixed by
+  Aaron Patterson.
+
+* Bug fixes:
+  Ensure platform sorting only uses strings. Affected binary installs on Windows.
+  Issue #1369 reported by Ryan Atball (and others).
+  Pull request #1375 by Sam Giddens.
+
+=== 2.5.0 / 2015-11-03
 
 Major enhancements:
 

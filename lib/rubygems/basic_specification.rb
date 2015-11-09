@@ -68,7 +68,7 @@ class Gem::BasicSpecification
     @contains_requirable_file ||= {}
     @contains_requirable_file[file] ||=
     begin
-      if instance_variable_defined?(:@ignored) then
+      if @ignored then
         return false
       elsif missing_extensions? then
         @ignored = true
@@ -203,6 +203,7 @@ class Gem::BasicSpecification
     @extensions_dir = nil
     @full_gem_path         = nil
     @gem_dir               = nil
+    @ignored = nil
   end
 
   ##

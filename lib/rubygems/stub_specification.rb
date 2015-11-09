@@ -65,6 +65,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
   attr_reader :base_dir, :gems_dir
 
   def initialize filename, base_dir, gems_dir, default_gem
+    super()
     filename.untaint
 
     self.loaded_from = filename
@@ -187,7 +188,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
               end
 
     @spec ||= Gem::Specification.load(loaded_from)
-    @spec.ignored = @ignored if instance_variable_defined? :@ignored
+    @spec.ignored = @ignored if @spec
 
     @spec
   end

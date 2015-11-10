@@ -175,6 +175,11 @@ class Gem::Specification < Gem::BasicSpecification
 
   @@stubs_by_name = {}
 
+  # Sentinel object to represent "not found" stubs
+  NOT_FOUND = Struct.new(:to_spec, :this).new # :nodoc:
+  @@spec_with_requirable_file          = {}
+  @@active_stub_with_requirable_file   = {}
+
   ######################################################################
   # :section: Required gemspec attributes
 
@@ -1027,10 +1032,10 @@ class Gem::Specification < Gem::BasicSpecification
 
   def self.find_by_path path
     path = path.dup.freeze
-    stub = stubs.find { |spec|
-      spec.contains_requirable_file? path
-    }
-    stub && stub.to_spec
+    spec = @@spec_with_requirable_file[path] ||= (stubs.find { |s|
+      s.contains_requirable_file? path
+    } || NOT_FOUND)
+    spec.to_spec
   end
 
   ##
@@ -1042,6 +1047,13 @@ class Gem::Specification < Gem::BasicSpecification
       s.contains_requirable_file? path unless s.activated?
     }
     stub && stub.to_spec
+  end
+
+  def self.find_active_stub_by_path path
+    stub = @@active_stub_with_requirable_file[path] ||= (stubs.find { |s|
+      s.activated? and s.contains_requirable_file? path
+    } || NOT_FOUND)
+    stub.this
   end
 
   ##
@@ -1261,6 +1273,8 @@ class Gem::Specification < Gem::BasicSpecification
     @@all = nil
     @@stubs = nil
     @@stubs_by_name = {}
+    @@spec_with_requirable_file          = {}
+    @@active_stub_with_requirable_file   = {}
     _clear_load_cache
     unresolved = unresolved_deps
     unless unresolved.empty? then

@@ -2,14 +2,19 @@
 
 === 2.5.1 / ???
 
-* Minor enhancements:
-  Remove a useless conditional in Gem::Specification class. Fixed by
-  Aaron Patterson.
+Minor enhancements:
 
-* Bug fixes:
-  Ensure platform sorting only uses strings. Affected binary installs on Windows.
-  Issue #1369 reported by Ryan Atball (and others).
-  Pull request #1375 by Sam Giddens.
+* Remove a useless conditional in Gem::Specification class. Fixed by
+  Aaron Patterson.
+* Consistently define some variables so we don't have to check to see
+  if they're defind. Update by Aaron Patterson.
+
+Bug fixes:
+
+* Ensure platform sorting only uses strings. Affected binary installs on Windows.
+  Issue #1369 reported by Ryan Atball (among others).
+  Pull request #1375 by Samuel E. Giddens.
+* Revert PR #1332. Unable to reproduce, and nil should be impossible.
 
 === 2.5.0 / 2015-11-03
 

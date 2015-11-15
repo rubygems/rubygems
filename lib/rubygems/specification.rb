@@ -2592,7 +2592,7 @@ class Gem::Specification < Gem::BasicSpecification
   def traverse trail = [], visited = {}, &block
     trail.push(self)
     begin
-      dependencies.each do |dep|
+      runtime_dependencies.each do |dep|
         dep.to_specs.reverse_each do |dep_spec|
           next if visited.has_key?(dep_spec)
           visited[dep_spec] = true

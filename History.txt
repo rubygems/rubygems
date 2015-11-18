@@ -13,7 +13,7 @@ Bug fixes:
 
 * Ensure platform sorting only uses strings. Affected binary installs on Windows.
   Issue #1369 reported by Ryan Atball (among others).
-  Pull request #1375 by Samuel E. Giddens.
+  Pull request #1375 by Samuel E. Giddins.
 * Revert PR #1332. Unable to reproduce, and nil should be impossible.
 
 === 2.5.0 / 2015-11-03
@@ -2995,4 +2995,3 @@ See ChangeLog
 === 0.2.0 / 2004-03-14
 
 * Initial public release
-

@@ -14,7 +14,7 @@ class Gem::Licenses
   # Software Package Data Exchange (SPDX) standard open-source software
   # license identifiers
   IDENTIFIERS = %w(
-    #{licenses.sort.join "\n      "}
+      #{licenses.sort.join "\n      "}
   ).freeze
 end
   HERE

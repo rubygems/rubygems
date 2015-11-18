@@ -7,7 +7,7 @@ licenses = JSON.parse(json)['licenses'].map do |licenseObject|
 end
 
 open 'lib/rubygems/util/licenses.rb', 'w' do |io|
-  io.write <<-HERE
+  io.write <<-RUBY
 class Gem::Licenses
   NONSTANDARD = 'Nonstandard'.freeze
 
@@ -32,5 +32,5 @@ class Gem::Licenses
     !REGEXP.match(license).nil?
   end
 end
-  HERE
+  RUBY
 end

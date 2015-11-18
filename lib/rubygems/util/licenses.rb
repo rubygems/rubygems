@@ -311,4 +311,19 @@ class Gem::Licenses
       xpp
       zlib-acknowledgement
   ).freeze
+
+  REGEXP = %r{
+    \A
+    (
+      #{Regexp.union(IDENTIFIERS)}
+      \+?
+      (\s WITH \s .+)?
+      | #{NONSTANDARD}
+    )
+    \Z
+  }ox.freeze
+
+  def self.match?(license)
+    !REGEXP.match(license).nil?
+  end
 end

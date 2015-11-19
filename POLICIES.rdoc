@@ -1,0 +1,61 @@
+== Long-Term Support
+
+RubyGems long-term support policy will be similar to and follow the Ruby
+long-term support policy.
+
+When a Ruby version reaches end-of-life, the RubyGems version included in that
+release will also reach end-of-life.  After that date no security releases will
+be made for RubyGems releases up to the version shipped in the next release of
+Ruby.
+
+For example, Ruby 1.9.3 reached end-of-life on 23 February 2015.  RubyGems
+version 2.0.0 shipped with Ruby 2.0.0, so no RubyGems versions earlier than
+2.0.0 will receive any updates.  Ruby 2.1.0 shipped with RubyGems 2.2.0.  When
+Ruby 2.0.0 reaches end-of-life no RubyGems versions earlier than 2.2.0 will
+receive any updates.
+
+=== Security Fixes
+
+Security releases will be made for RubyGems version series that were included
+in a Ruby release.
+
+For example, RubyGems 2.0.x will recieve security fixes until Ruby 2.0.0
+reaches end-of-life.
+
+== Release Policies
+
+RubyGems primarily makes bug fix releases off of the master branch.  We may mix
+bug fixes and new features in the same release.  RubyGems does not guarantee
+it will make bug fix releases for earlier versions.
+
+For example, RubyGems 2.5.0 was recently released.  RubyGems does not
+guarantee any non-security bugfix releases will be made upon the 2.4.x series,
+or any earlier series, of releases.
+
+Additionally, when a Ruby version reaches end-of-life the following release of
+RubyGems will no longer be required to maintain backwards compatibility with
+that Ruby version.  This may result in a major version change.
+
+For example, since Ruby 1.9.3 has reached end-of-life, RubyGems may use
+features of ruby that only exist in Ruby 2.0 and later.  As of this writing
+RubyGems is 2.5.x, so the RubyGems version would become 3.x if it used
+features only available in Ruby 2.0 and later.
+
+== Committer Access
+
+RubyGems committers may lose their commit privileges if they are inactive for
+longer than 12 months.  Committer permission may be restored upon request by
+having a pull request merged.
+
+This is designed to improve the maintainability of RubyGems by requiring
+committers to maintain familiarity with RubyGems activity and to improve the
+security of RubyGems by preventing idle committers from having their commit
+permissions compromised or exposed.
+
+== Changing These Policies
+
+These policies were set in order to reduce the burden of maintenance and to
+keep committers current with existing development and policies.  RubyGems work
+is primarily volunteer-driven which limits the ability to provide long-term
+support.  By funding RubyTogether you can help extend support for older
+RubyGems versions.

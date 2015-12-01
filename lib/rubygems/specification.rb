@@ -2861,7 +2861,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
       end
 
       warning_messages << "prerelease dependency on #{dep} is not recommended" if
-        prerelease_dep
+        prerelease_dep && !version.prerelease?
 
       overly_strict = dep.requirement.requirements.length == 1 &&
         dep.requirement.requirements.any? do |op, version|

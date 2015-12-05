@@ -720,7 +720,10 @@ TEXT
   # return the stub script text used to launch the true Ruby script
 
   def windows_stub_script(bindir, bin_file_name)
-    ruby = Gem.ruby.gsub(/^\"|\"$/, "").tr(File::SEPARATOR, "\\")
+    ruby = Gem.ruby.chomp('"').tr(File::SEPARATOR, File::ALT_SEPARATOR)
+    ENV.select {|k,v| k.end_with?('RUBY_HOME') && ruby.downcase.start_with?(v.tr(File::SEPARATOR, File::ALT_SEPARATOR).downcase)}.each do |k, v|
+      ruby = "%#{k}%#{ruby[v.length..-1]}"
+    end
     return <<-TEXT
 @ECHO OFF
 IF NOT "%~f0" == "~f0" GOTO :WinNT

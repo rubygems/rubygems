@@ -1,11 +1,11 @@
 = RubyGems
 
-Homepage:      :: http://rubygems.org
+Homepage:      :: https://rubygems.org
 Announcements: :: http://blog.rubygems.org
 Documentation: :: http://guides.rubygems.org
 Support:       :: http://help.rubygems.org
-Source:        :: http://github.com/rubygems/rubygems
-Bugtracker:    :: http://github.com/rubygems/rubygems/issues
+Source:        :: https://github.com/rubygems/rubygems
+Bugtracker:    :: https://github.com/rubygems/rubygems/issues
 
 == DESCRIPTION
 

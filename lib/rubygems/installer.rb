@@ -718,11 +718,12 @@ TEXT
 
   ##
   # return the stub script text used to launch the true Ruby script
-
   def windows_stub_script(bindir, bin_file_name)
-    ruby = Gem.ruby.chomp('"').tr(File::SEPARATOR, File::ALT_SEPARATOR)
-    ENV.select {|k,v| k.end_with?('RUBY_HOME') && ruby.downcase.start_with?(v.tr(File::SEPARATOR, File::ALT_SEPARATOR).downcase)}.each do |k, v|
-      ruby = "%#{k}%#{ruby[v.length..-1]}"
+    ruby = Gem.ruby.gsub(/^\"|\"$/, "").tr(File::SEPARATOR, "\\")
+    # Use the ruby_home environment variable if set and matching to the current 
+    # runtime to be more flexibility when changing the ruby runtime
+    ENV.select {|k, v| k.end_with?('RUBY_HOME') && ruby.downcase.start_with?(v.tr(File::SEPARATOR, "\\").downcase)}.each do |k, v|
+      ruby = "%#{k}%\\#{ruby[v.length..-1]}"
     end
     return <<-TEXT
 @ECHO OFF

@@ -279,7 +279,7 @@ class Gem::Version
   # A version is considered a prerelease if it contains a letter.
 
   def prerelease?
-    unless defined?(@prerelease)
+    unless instance_variable_defined? :@prerelease
       @prerelease = !!(@version =~ /[a-zA-Z]/)
     end
     @prerelease

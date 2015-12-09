@@ -47,7 +47,6 @@ if ARGV.first
   end
 end
 
-gem 'a', version
 load Gem.bin_path('a', 'executable', version)
     EOF
 
@@ -802,14 +801,14 @@ gem 'other', version
     begin
       Gem::Specification.reset
 
-      e = assert_raises Gem::LoadError do
+      e = assert_raises Gem::GemNotFoundException do
         instance_eval File.read(exe)
       end
     ensure
       ARGV.shift if ARGV.first == "_3.0_"
     end
 
-    assert_match(/\(= 3\.0\)/, e.message)
+    assert_includes(e.message, "can't find gem a (= 3.0)")
   end
 
   def test_install_creates_binstub_that_dont_trust_encoding

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Gem::Resolver::Molinillo
   # Conveys information about the resolution process to a user.
   module UI

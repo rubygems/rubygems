@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ##
 # A semi-compatible DSL for the Bundler Gemfile and Isolate gem dependencies
 # files.

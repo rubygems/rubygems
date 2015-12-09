@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #--
 # Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
 # All rights reserved.
@@ -63,7 +64,7 @@ class Gem::Package::Old < Gem::Package
 
         destination = install_location full_name, destination_dir
 
-        file_data = ''
+        file_data = String.new
 
         read_until_dashes io do |line|
           file_data << line
@@ -94,7 +95,7 @@ class Gem::Package::Old < Gem::Package
   # Reads the file list section from the old-format gem +io+
 
   def file_list io # :nodoc:
-    header = ''
+    header = String.new
 
     read_until_dashes io do |line|
       header << line
@@ -134,7 +135,7 @@ class Gem::Package::Old < Gem::Package
 
     return @spec if @spec
 
-    yaml = ''
+    yaml = String.new
 
     @gem.with_read_io do |io|
       skip_ruby io
@@ -175,4 +176,3 @@ class Gem::Package::Old < Gem::Package
   end
 
 end
-

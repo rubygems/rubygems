@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'openssl'
 
 private_key_path = '../../test/rubygems/private_key.pem'

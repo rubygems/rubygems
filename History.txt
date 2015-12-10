@@ -15,6 +15,27 @@ Bug fixes:
   Issue #1369 reported by Ryan Atball (among others).
   Pull request #1375 by Samuel E. Giddins.
 * Revert PR #1332. Unable to reproduce, and nil should be impossible.
+* Gem::Specification#to_fullpath now returns .rb extensions when such a file
+  exists.  Pull request #1114 by y-yagi.
+* RubyGems now handles Net::HTTPFatalError instead of crashing.  Pull
+  request #1314 by Samuel E. Giddins.
+* Updated bundled Molinillo to 0.4.0.  Pull request #1322, #1396 by Samuel E.
+  Giddins.
+* Improved performance of spec loading by reducing likelihood of loading he
+  complete specification.  Pull request #1373 by Aaron Patterson.
+* Improved caching of requirable files  Pull request #1377 by Aaron Patterson.
+* Fixed activation of gems with development dependencies.  Pull request #1388
+  by Samuel E. Giddins.
+* RubyGems now uses the same Molinillo vendoring strategy as Bundler.  Pull
+  request #1397 by Samuel E. Giddins.
+* Fixed documentation of Gem::Requirement.parse.  Pull request #1398 by
+  Juanito Fatas.
+* RubyGems no longer warns when a prerelease gem has prerelease dependencies.
+  Pull request #1399 by Samuel E. Giddins.
+* Fixed Gem::Version documentation example.  Pull request #1401 by Guilherme
+  Goettems Schneider.
+* Updated documentation links to https://.  Pull request #1404 by Suriyaa
+  Kudo.
 
 === 2.5.0 / 2015-11-03
 

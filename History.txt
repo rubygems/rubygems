@@ -2,13 +2,6 @@
 
 === 2.5.1 / ???
 
-Minor enhancements:
-
-* Remove a useless conditional in Gem::Specification class. Fixed by
-  Aaron Patterson.
-* Consistently define some variables so we don't have to check to see
-  if they're defind. Update by Aaron Patterson.
-
 Bug fixes:
 
 * Ensure platform sorting only uses strings. Affected binary installs on Windows.

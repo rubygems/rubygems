@@ -29,6 +29,7 @@ Bug fixes:
   Goettems Schneider.
 * Updated documentation links to https://.  Pull request #1404 by Suriyaa
   Kudo.
+* Fixed double word typo.  Pull request #1411 by Jake Worth.
 
 === 2.5.0 / 2015-11-03
 

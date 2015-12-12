@@ -2761,7 +2761,7 @@ class Gem::Specification < Gem::BasicSpecification
 
       if !Gem::Licenses.match?(license)
         warning <<-warning
-WARNING: license value '#{license}' is invalid.  Use a license identifier from
+license value '#{license}' is invalid.  Use a license identifier from
 http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
         warning
       end

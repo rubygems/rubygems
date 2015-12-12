@@ -2905,7 +2905,7 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
     end
 
     assert_match <<-warning, @ui.error
-WARNING: license value 'BSD' is invalid.  Use a license identifier from
+WARNING:  license value 'BSD' is invalid.  Use a license identifier from
 http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
     warning
   end
@@ -2941,11 +2941,11 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
     end
 
     assert_match <<-warning, @ui.error
-WARNING: license value 'GPL-2.0+ FOO' is invalid.  Use a license identifier from
+WARNING:  license value 'GPL-2.0+ FOO' is invalid.  Use a license identifier from
 http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
     warning
     assert_match <<-warning, @ui.error
-WARNING: license value 'GPL-2.0 FOO' is invalid.  Use a license identifier from
+WARNING:  license value 'GPL-2.0 FOO' is invalid.  Use a license identifier from
 http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
     warning
   end

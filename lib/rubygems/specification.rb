@@ -1053,7 +1053,7 @@ class Gem::Specification < Gem::BasicSpecification
     stub = @@active_stub_with_requirable_file[path] ||= (stubs.find { |s|
       s.activated? and s.contains_requirable_file? path
     } || NOT_FOUND)
-    stub.this
+    stub && stub.to_spec
   end
 
   ##

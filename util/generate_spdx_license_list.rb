@@ -9,6 +9,8 @@ end
 open 'lib/rubygems/util/licenses.rb', 'w' do |io|
   io.write <<-RUBY
 class Gem::Licenses
+  extend Gem::Text
+
   NONSTANDARD = 'Nonstandard'.freeze
 
   # Software Package Data Exchange (SPDX) standard open-source software
@@ -30,6 +32,15 @@ class Gem::Licenses
 
   def self.match?(license)
     !REGEXP.match(license).nil?
+  end
+
+  def self.suggestions(license)
+    by_distance = IDENTIFIERS.group_by do |identifier|
+      levenshtein_distance(identifier, license)
+    end
+    lowest = by_distance.keys.min
+    return unless lowest < license.size
+    by_distance[lowest]
   end
 end
   RUBY

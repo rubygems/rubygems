@@ -1389,13 +1389,14 @@ gem 'other', version
     begin
       env_with_ruby_home = ENV.to_hash.delete_if {|key, value| key.end_with?('RUBY_HOME') }
       env_with_ruby_home['RUBY_HOME'] = File.expand_path('../..', Gem.ruby)
+      executable = File.basename(Gem.ruby)
       expected =<<-TEXT
 @ECHO OFF
 IF NOT "%~f0" == "~f0" GOTO :WinNT
-@"%RUBY_HOME%\\\\bin\\ruby.exe" "#{@installer.gem_home}/bin/bar" %1 %2 %3 %4 %5 %6 %7 %8 %9
+@"%RUBY_HOME%\\\\bin\\#{executable}" "#{@installer.gem_home}/bin/bar" %1 %2 %3 %4 %5 %6 %7 %8 %9
 GOTO :EOF
 :WinNT
-@"%RUBY_HOME%\\\\bin\\ruby.exe" "%~dpn0" %*
+@"%RUBY_HOME%\\\\bin\\#{executable}" "%~dpn0" %*
       TEXT
 
       if (defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby') || RUBY_PLATFORM == "java"
@@ -1404,10 +1405,10 @@ GOTO :EOF
         expected =<<-TEXT
 @ECHO OFF
 IF NOT "%~f0" == "~f0" GOTO :WinNT
-@"%JRUBY_HOME%\\\\bin\\jruby.exe" "#{@installer.gem_home}/bin/bar" %1 %2 %3 %4 %5 %6 %7 %8 %9
+@"%JRUBY_HOME%\\\\bin\\#{executable}" "#{@installer.gem_home}/bin/bar" %1 %2 %3 %4 %5 %6 %7 %8 %9
 GOTO :EOF
 :WinNT
-@"%JRUBY_HOME%\\\\bin\\jruby.exe" "%~dpn0" %*
+@"%JRUBY_HOME%\\\\bin\\#{executable}" "%~dpn0" %*
         TEXT
       end
       ENV.clear

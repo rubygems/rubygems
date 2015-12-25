@@ -1381,6 +1381,94 @@ gem 'other', version
     assert_path_exists File.join dest, 'bin', 'executable'
   end
 
+  def test_windows_stub_script
+    # Backup copy of env
+    env_copy = ENV.to_hash
+
+    # Redefine the environment to something we have under control
+    begin
+      env_with_ruby_home = ENV.to_hash.delete_if {|key, value| key.end_with?('RUBY_HOME') }
+      env_with_ruby_home['RUBY_HOME'] = File.expand_path('../..', Gem.ruby)
+      expected =<<-TEXT
+@ECHO OFF
+IF NOT "%~f0" == "~f0" GOTO :WinNT
+@"%RUBY_HOME%\\\\bin\\ruby.exe" "#{@installer.gem_home}/bin/bar" %1 %2 %3 %4 %5 %6 %7 %8 %9
+GOTO :EOF
+:WinNT
+@"%RUBY_HOME%\\\\bin\\ruby.exe" "%~dpn0" %*
+      TEXT
+
+      if (defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby') || RUBY_PLATFORM == "java"
+        # In case this is executed using JRuby
+        env_with_ruby_home['JRUBY_HOME'] = File.expand_path('../..', Gem.ruby)
+        expected =<<-TEXT
+@ECHO OFF
+IF NOT "%~f0" == "~f0" GOTO :WinNT
+@"%JRUBY_HOME%\\\\bin\\jruby.exe" "#{@installer.gem_home}/bin/bar" %1 %2 %3 %4 %5 %6 %7 %8 %9
+GOTO :EOF
+:WinNT
+@"%JRUBY_HOME%\\\\bin\\jruby.exe" "%~dpn0" %*
+        TEXT
+      end
+      ENV.clear
+      ENV.update(env_with_ruby_home)
+      assert_equal expected, @installer.windows_stub_script(File.join(@installer.gem_home, 'bin'), 'bar')
+    rescue => e
+      raise e
+    ensure
+      ENV.clear
+      ENV.update env_copy
+    end
+
+    # Remove all occurrences of RUBY_HOME to enable simulation of fallback behavior
+    begin
+      env_no_ruby_home = ENV.to_hash.delete_if {|key, value| key.end_with?('RUBY_HOME') }
+      ENV.clear
+      ENV.update(env_no_ruby_home)
+      expected =<<-TEXT
+@ECHO OFF
+IF NOT "%~f0" == "~f0" GOTO :WinNT
+@"#{Gem.ruby.tr(File::SEPARATOR, "\\")}" "#{@installer.gem_home}/bin/bar" %1 %2 %3 %4 %5 %6 %7 %8 %9
+GOTO :EOF
+:WinNT
+@"#{Gem.ruby.tr(File::SEPARATOR, "\\")}" "%~dpn0" %*
+      TEXT
+      assert_equal expected, @installer.windows_stub_script(File.join(@installer.gem_home, 'bin'), 'bar')
+    rescue => e
+      raise e
+    ensure
+      ENV.clear
+      ENV.update env_copy
+    end
+
+    # Redefine nonsense for RUBY_HOME. Result shall still be functional
+    begin
+      env_with_wrong_ruby_home = ENV.to_hash.delete_if {|key, value| key.end_with?('RUBY_HOME') }
+      env_with_wrong_ruby_home['RUBY_HOME'] = 'X:/foo/bar/baz'
+      if (defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby') || RUBY_PLATFORM == "java"
+        # In case this is executed using JRuby
+        env_with_wrong_ruby_home['JRUBY_HOME'] = 'X:/foo/bar/baz'
+      end
+      expected =<<-TEXT
+@ECHO OFF
+IF NOT "%~f0" == "~f0" GOTO :WinNT
+@"#{Gem.ruby.tr(File::SEPARATOR, "\\")}" "#{@installer.gem_home}/bin/bar" %1 %2 %3 %4 %5 %6 %7 %8 %9
+GOTO :EOF
+:WinNT
+@"#{Gem.ruby.tr(File::SEPARATOR, "\\")}" "%~dpn0" %*
+      TEXT
+
+      ENV.clear
+      ENV.update(env_with_wrong_ruby_home)
+      assert_equal expected, @installer.windows_stub_script(File.join(@installer.gem_home, 'bin'), 'bar')
+    rescue => e
+      raise e
+    ensure
+      ENV.clear
+      ENV.update env_copy
+    end
+  end
+
   def test_write_build_info_file
     refute_path_exists @spec.build_info_file
 

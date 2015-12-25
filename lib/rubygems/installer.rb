@@ -724,6 +724,7 @@ TEXT
     # runtime to be more flexibility when changing the ruby runtime
     ENV.select {|k, v| k.end_with?('RUBY_HOME') && ruby.downcase.start_with?(v.tr(File::SEPARATOR, "\\").downcase)}.each do |k, v|
       ruby = "%#{k}%\\#{ruby[v.length..-1]}"
+      break
     end
     return <<-TEXT
 @ECHO OFF

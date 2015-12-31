@@ -31,7 +31,7 @@ as the reason for the removal request.
   end
 
   def usage # :nodoc:
-    "#{program_name} GEM -v VERSION [-p PLATFORM] [--undo] [--key KEY_NAME]"
+    "#{program_name} GEM -v VERSION [-p PLATFORM] [--key KEY_NAME]"
   end
 
   def initialize
@@ -39,10 +39,6 @@ as the reason for the removal request.
 
     add_version_option("remove")
     add_platform_option("remove")
-
-    add_option('--undo') do |value, options|
-      options[:undo] = true
-    end
 
     add_key_option
   end
@@ -54,11 +50,7 @@ as the reason for the removal request.
     platform  = get_platform_from_requirements(options)
 
     if version then
-      if options[:undo] then
-        unyank_gem(version, platform)
-      else
-        yank_gem(version, platform)
-      end
+      yank_gem(version, platform)
     else
       say "A version argument is required: #{usage}"
       terminate_interaction
@@ -68,11 +60,6 @@ as the reason for the removal request.
   def yank_gem(version, platform)
     say "Yanking gem from #{self.host}..."
     yank_api_request(:delete, version, platform, "api/v1/gems/yank")
-  end
-
-  def unyank_gem(version, platform)
-    say "Unyanking gem from #{host}..."
-    yank_api_request(:put, version, platform, "api/v1/gems/unyank")
   end
 
   private

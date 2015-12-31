@@ -72,26 +72,5 @@ class TestGemCommandsYankCommand < Gem::TestCase
     assert_equal 'other', @fetcher.last_request['Authorization']
   end
 
-  def test_execute_undo
-    unyank_uri = 'http://example/api/v1/gems/unyank'
-    @fetcher.data[unyank_uri] = ['Successfully unyanked', 200, 'OK']
-
-    @cmd.options[:args]    = %w[a]
-    @cmd.options[:version] = req('= 1.0')
-    @cmd.options[:undo]    = true
-
-    use_ui @ui do
-      @cmd.execute
-    end
-
-    assert_match %r%Unyanking gem from http://example%, @ui.output
-    assert_match %r%Successfully unyanked%,      @ui.output
-
-    body = @fetcher.last_request.body.split('&').sort
-    assert_equal %w[gem_name=a version=1.0], body
-
-    assert_equal [unyank_uri], @fetcher.paths
-  end
-
 end
 

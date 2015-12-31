@@ -238,7 +238,7 @@ module Gem
     specs = dep.matching_specs(true)
 
     raise Gem::GemNotFoundException,
-          "can't find gem #{name} (#{requirements})" if specs.empty?
+          "can't find gem #{dep}" if specs.empty?
 
     specs = specs.find_all { |spec|
       spec.executables.include? exec_name

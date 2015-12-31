@@ -14,7 +14,7 @@ Bug fixes:
   request #1314 by Samuel E. Giddins.
 * Updated bundled Molinillo to 0.4.0.  Pull request #1322, #1396 by Samuel E.
   Giddins.
-* Improved performance of spec loading by reducing likelihood of loading he
+* Improved performance of spec loading by reducing likelihood of loading the
   complete specification.  Pull request #1373 by Aaron Patterson.
 * Improved caching of requirable files  Pull request #1377 by Aaron Patterson.
 * Fixed activation of gems with development dependencies.  Pull request #1388

@@ -23,12 +23,12 @@ here: http://guides.rubygems.org/contributing/
 
 == Getting Started
 
-Run:
-
     $ gem install hoe
     $ rake newb
 
-After `rake newb` finishes you can run `rake` to run the tests.
+To run commands like `gem install` from the repo:
+
+    $ ruby -Ilib bin/gem install
 
 == Issues
 

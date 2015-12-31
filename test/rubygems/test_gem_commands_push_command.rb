@@ -177,6 +177,33 @@ class TestGemCommandsPushCommand < Gem::TestCase
     send_battery
   end
 
+  def test_sending_gem_to_allowed_push_host_with_basic_credentials
+    @sanitized_host = "http://privategemserver.com"
+    @host           = "http://user:password@privategemserver.com"
+
+    @spec, @path = util_gem "freebird", "1.0.1" do |spec|
+      spec.metadata['allowed_push_host'] = @sanitized_host
+    end
+
+    @api_key = "DOESNTMATTER"
+
+    keys = {
+      :rubygems_api_key => @api_key,
+    }
+
+    FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path
+    open Gem.configuration.credentials_path, 'w' do |f|
+      f.write keys.to_yaml
+    end
+    Gem.configuration.load_api_keys
+
+    FileUtils.rm Gem.configuration.credentials_path
+
+    @response = "Successfully registered gem: freebird (1.0.1)"
+    @fetcher.data["#{@host}/api/v1/gems"]  = [@response, 200, 'OK']
+    send_battery
+  end
+
   def test_sending_gem_to_disallowed_default_host
     @spec, @path = util_gem "freebird", "1.0.1" do |spec|
       spec.metadata['allowed_push_host'] = "https://privategemserver.com"

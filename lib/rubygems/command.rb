@@ -539,6 +539,11 @@ class Gem::Command
                     'Turn on Ruby debugging') do
   end
 
+  add_common_option('--norc',
+                    'Avoid loading any .gemrc file') do
+  end
+
+
   # :stopdoc:
 
   HELP = <<-HELP

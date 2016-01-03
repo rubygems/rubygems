@@ -339,7 +339,7 @@ module Gem::Security
   # Digest algorithm used to sign gems
 
   DIGEST_ALGORITHM =
-    if defined?(OpenSSL::Digest) then
+    if defined?(OpenSSL::Digest::SHA1) then
       OpenSSL::Digest::SHA1
     end
 
@@ -355,7 +355,7 @@ module Gem::Security
   # Algorithm for creating the key pair used to sign gems
 
   KEY_ALGORITHM =
-    if defined?(OpenSSL::PKey) then
+    if defined?(OpenSSL::PKey::RSA) then
       OpenSSL::PKey::RSA
     end
 

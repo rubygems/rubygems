@@ -2950,6 +2950,21 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
     warning
   end
 
+  def test_validate_license_gives_suggestions
+    util_setup_validate
+
+    use_ui @ui do
+      @a1.licenses = ['ruby']
+      @a1.validate
+    end
+
+    assert_match <<-warning, @ui.error
+WARNING:  license value 'ruby' is invalid.  Use a license identifier from
+http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
+Did you mean 'Ruby'?
+    warning
+  end
+
   def test_validate_name
     util_setup_validate
 

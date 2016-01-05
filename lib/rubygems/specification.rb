@@ -2760,10 +2760,13 @@ class Gem::Specification < Gem::BasicSpecification
       end
 
       if !Gem::Licenses.match?(license)
-        warning <<-warning
+        suggestions = Gem::Licenses.suggestions(license)
+        message = <<-warning
 license value '#{license}' is invalid.  Use a license identifier from
 http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
         warning
+        message << "Did you mean #{suggestions.map { |s| "'#{s}'"}.join(', ')}?\n" unless suggestions.nil?
+        warning(message)
       end
     }
 

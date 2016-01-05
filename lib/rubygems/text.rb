@@ -70,4 +70,3 @@ module Gem::Text
     return x
   end
 end
-

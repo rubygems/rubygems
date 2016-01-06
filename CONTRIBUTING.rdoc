@@ -32,10 +32,9 @@ To run commands like `gem install` from the repo:
 
 == Issues
 
-RubyGems uses labels to track all issues and pull requests. The notes about what
-each label means are below. The color of a label also has significance. Like
-items are give the same color.
-
+RubyGems uses labels to track all issues and pull requests. In order to provide
+guidance to the community this is documentation of how labels are used in the
+rubygems repository.
 
 === Type
 

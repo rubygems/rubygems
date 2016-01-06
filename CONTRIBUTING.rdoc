@@ -32,27 +32,87 @@ To run commands like `gem install` from the repo:
 
 == Issues
 
-RubyGems uses milestones and labels to track issues and pull requests.
+RubyGems uses labels to track all issues and pull requests. The notes about what
+each label means are below. The color of a label also has significance. Like
+items are give the same color.
 
-A new milestone is created for each feature release.  New features will be
-merged (for a pull request) or implemented when "enough" have accumulated.
-Upon release the milestone will be closed.  Bug fixes are added to the next
-feature release milestone and merged or fixed and released as-needed.  Bug fix
-releases use the previous feature release minor version number.
 
-Issues in the "Unfulfilled Promises and Broken Dreams" milestone are looking
-for implementors.  It is highly unlikely they will be implemented by RubyGems
-committers.  They may be closed after one year.
+=== Type
 
-Issues in the "Future" milestone are more likely to be implemented by RubyGems
-committers.  They are triaged with each new feature release and either move to
-the new version numbered milestone, left in "Future" or moved to "Unfulfilled
-Promises and Broken Dreams".  They may be closed after one year.
+Most Issues or pull requests will have one of these labels, which describes the
+type of the issue or pull request.
 
-Issues with accepted status in a feature release milestone have been reviewed
-and triaged and are scheduled for a fix or implementation.
+* <b>bug report</b> - An issue describing a bug in rubygems. This would be something
+  that is broken, confusing, unexpected behavior etc.
+* <b>bugfix</b> - A pull request that fixes a bug report.
+* <b>feature request</b> - An issue describing a request for a new feature or enhancement
+* <b>feature implementation</b> - A pull request implementing a feature request, or
+  in the case of a pull request that is also the feature request, it should also be labelled
+  <b>feature request</b>
+* <b>question</b> - An issue that is a more of a question than a call for specific
+  changes in the codebase.
+* <b>cleanup</b> - Generally for a pull request that improves the code base without
+  fixing a bug or implementing a feature.
+* <b>confirmed</b> - This is an additional label to apply to bug reports that have been
+  confirmed by a maintainer.
 
-Issues with the feedback status may be closed one week after a request for more
-information from a collaborator.  They will be reopened when more information
-becomes available.
+=== Pending
+
+These are labels that are awaiting something, either feedback, someone to work on
+the issue, or a solution.
+
+* <b>ready for work</b> - An issue that is available for collaboration. This issue
+  should have existing discussion on the problem, and a description of how to go
+  about solving it. This label should be removed once someone has said they are
+  going to work on it.
+* <b>claimed</b> - An issue that is claimed by a member of the community and is
+  working on it. If the member can be assigned to the issue, they should be.
+* <b>maintainer feedback</b>- This issue/pull request is waiting on feedback from
+  one of the rubygems maintainers, in this case, it should also be assigned to
+  that maintainer.
+* <b>collaborator feedback</b> - This issue/pull request is waiting on feedback from
+  the originator or someone in the community.
+* <b>blocked</b> - the issue/pull request is currently unable to move forward because
+  of some specific reason, generally this will be a reason that is outside
+  RubyGems or needs feedback from some specific individual or group.
+* <b>triage</b> - This is an issue or pull request that needs to be properly
+  labeled by by a maintainer.
+
+=== Reasons
+
+Reasons are why an issue / pull request was closed without being worked on or
+accepted. All the reason labels are the same color. There should also be more
+detailed information in the comments.
+
+* *duplicate* - This is a duplicate of an existing bug. The comments must
+  reference the existing issue.
+* *abandonded* - This is an issue/pull request that has aged off, is no longer
+  applicable or similar.
+* *declined* - An issue that won't be fixed/implemented or a pull request that 
+  is not accepted.
+* *deprecated* - An issue/pull request that no longer applies to the actively
+  maintained codebase.
+
+=== Categories
+
+These are aspects of the codebase, or what general area the issue or pull
+request pertains too. Not all issues will have a category.
+
+* *gemspec* - related to the gem specification itself
+* *API* - related to the public supported rubygems API. This is the code api,
+  not a network related API.
+* *command* - related to something in <tt>Gem::Commands</tt>
+* *install* - related to gem installations
+* *documentation* - related to updating / fixing / clarifiying documentation or
+  guides
+
+=== Platforms
+
+If an issue or pull request pertains to only one platform, then it should have
+an appropriate platform tag. All platform tags are the same color
+
+* *windows*
+* *java*
+* *osx*
+* *linux*
 

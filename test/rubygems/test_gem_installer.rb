@@ -1005,7 +1005,7 @@ gem 'other', version
     use_ui @ui do
       path = Gem::Package.build @spec
 
-      @installer = Gem::Installer.new path, :post_install_message => false
+      @installer = Gem::Installer.at path, :post_install_message => false
       @installer.install
     end
 

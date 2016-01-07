@@ -44,22 +44,30 @@ type of the issue or pull request.
 * <b>bug report</b> - An issue describing a bug in rubygems. This would be something
   that is broken, confusing, unexpected behavior etc.
 * <b>bugfix</b> - A pull request that fixes a bug report.
-* <b>feature request</b> - An issue describing a request for a new feature or enhancement
-* <b>feature implementation</b> - A pull request implementing a feature request, or
-  in the case of a pull request that is also the feature request, it should also be labelled
-  <b>feature request</b>
+* <b>feature request</b> - An issue describing a request for a new feature or
+  enhancement.
+* <b>feature implementation</b> - A pull request implementing a feature request.
 * <b>question</b> - An issue that is a more of a question than a call for specific
   changes in the codebase.
 * <b>cleanup</b> - Generally for a pull request that improves the code base without
   fixing a bug or implementing a feature.
-* <b>confirmed</b> - This is an additional label to apply to bug reports that have been
-  confirmed by a maintainer.
+* <b>major bump</b> - This issue or pull request requires a major version bump
+* <b>administrative</b> - This issue relates to adminstrative tasks that need to
+  take place as it relates to rubygems
 
-=== Pending
+Bug report and Bugfix have the same color. And Feature implementation and
+feature request have the same color since they are related labels.
 
-These are labels that are awaiting something, either feedback, someone to work on
-the issue, or a solution.
+=== Workflow
 
+These are labels that indicate the state of an issue, where it is in the process
+from being submitted to being closed. These are listed in rough progression
+order from submitted to closed.
+
+* <b>triage</b> - This is an issue or pull request that needs to be properly
+  labeled by by a maintainer.
+* <b>accepted</b> - This issue / pull request has been accepted as valid and
+  will be worked on by someone.
 * <b>ready for work</b> - An issue that is available for collaboration. This issue
   should have existing discussion on the problem, and a description of how to go
   about solving it. This label should be removed once someone has said they are
@@ -74,14 +82,14 @@ the issue, or a solution.
 * <b>blocked</b> - the issue/pull request is currently unable to move forward because
   of some specific reason, generally this will be a reason that is outside
   RubyGems or needs feedback from some specific individual or group.
-* <b>triage</b> - This is an issue or pull request that needs to be properly
-  labeled by by a maintainer.
 
-=== Reasons
+Maintainer feedback, collaborator feedback and block all have the same color
+since they are all waiting on someone in particular to do something.
+
+=== Inactive Reason
 
 Reasons are why an issue / pull request was closed without being worked on or
-accepted. All the reason labels are the same color. There should also be more
-detailed information in the comments.
+accepted. There should also be more detailed information in the comments.
 
 * *duplicate* - This is a duplicate of an existing bug. The comments must
   reference the existing issue.
@@ -92,26 +100,31 @@ detailed information in the comments.
 * *deprecated* - An issue/pull request that no longer applies to the actively
   maintained codebase.
 
+All the reason labels are the same maroon color.
+
 === Categories
 
 These are aspects of the codebase, or what general area the issue or pull
 request pertains too. Not all issues will have a category.
 
-* *gemspec* - related to the gem specification itself
-* *API* - related to the public supported rubygems API. This is the code api,
+* <b>gemspec</b> - related to the gem specification itself
+* <b>API</b> - related to the public supported rubygems API. This is the code api,
   not a network related API.
-* *command* - related to something in <tt>Gem::Commands</tt>
-* *install* - related to gem installations
-* *documentation* - related to updating / fixing / clarifiying documentation or
+* <b>command</b> - related to something in <tt>Gem::Commands</tt>
+* <b>install</b> - related to gem installations
+* <b>documentation</b> - related to updating / fixing / clarifiying documentation or
   guides
+
+All category labels are the same blue color.
 
 === Platforms
 
 If an issue or pull request pertains to only one platform, then it should have
-an appropriate platform tag. All platform tags are the same color
+an appropriate platform tag.
 
 * *windows*
 * *java*
 * *osx*
 * *linux*
 
+All platform tags are the same purple color.

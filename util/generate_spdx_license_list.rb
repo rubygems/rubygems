@@ -8,6 +8,8 @@ end
 
 open 'lib/rubygems/util/licenses.rb', 'w' do |io|
   io.write <<-RUBY
+require 'rubygems/text'
+
 class Gem::Licenses
   extend Gem::Text
 

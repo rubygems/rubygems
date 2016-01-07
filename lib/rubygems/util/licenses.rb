@@ -1,3 +1,5 @@
+require 'rubygems/text'
+
 class Gem::Licenses
   extend Gem::Text
 

@@ -83,7 +83,7 @@ class Gem::Package::TarReader::Entry
     return nil if @read >= @header.size
 
     ret = @io.getc
-    @read += 1 if ret
+    @read += char_bytesize(ret) if ret
 
     ret
   end
@@ -131,7 +131,7 @@ class Gem::Package::TarReader::Entry
     max_read = [len, @header.size - @read].min
 
     ret = @io.read max_read
-    @read += ret.size
+    @read += string_bytesize(ret)
 
     ret
   end
@@ -148,6 +148,30 @@ class Gem::Package::TarReader::Entry
 
     @io.pos = @orig_pos
     @read = 0
+  end
+
+private
+
+  ##
+  # Returns the number of bytes in +str+
+  def string_bytesize( str )
+    if str.respond_to? :bytesize then
+      str.bytesize
+    else
+      str.size
+    end
+  end
+
+  ##
+  # Returns the number of bytes in +char+
+  def char_bytesize( char )
+    if char.kind_of? Fixnum
+      # Ruby < 1.9 uses a Fixnum to represent a single char
+      1
+    else
+      # Ruby >= 1.9 uses a String
+      string_bytesize( char )
+    end
   end
 
 end

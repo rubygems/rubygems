@@ -55,7 +55,7 @@ type of the issue or pull request.
 * <b>administrative</b> - This issue relates to adminstrative tasks that need to
   take place as it relates to rubygems
 
-Bug report and Bugfix have the same color. And Feature implementation and
+Bug report and Bugfix have the same color. And feature implementation and
 feature request have the same color since they are related labels.
 
 === Workflow
@@ -74,17 +74,16 @@ order from submitted to closed.
   going to work on it.
 * <b>claimed</b> - An issue that is claimed by a member of the community and is
   working on it. If the member can be assigned to the issue, they should be.
-* <b>maintainer feedback</b>- This issue/pull request is waiting on feedback from
-  one of the rubygems maintainers, in this case, it should also be assigned to
-  that maintainer.
-* <b>collaborator feedback</b> - This issue/pull request is waiting on feedback from
-  the originator or someone in the community.
+* <b>feedback</b>- This issue/pull request is waiting on feedback from
+  one ore more of the folks involved in the issue. Generally their should be an
+  <tt>@username/team</tt> in the issue indicating who should respond.
 * <b>blocked</b> - the issue/pull request is currently unable to move forward because
   of some specific reason, generally this will be a reason that is outside
-  RubyGems or needs feedback from some specific individual or group.
+  RubyGems or needs feedback from some specific individual or group, and it may
+  be a while before something it is resolved.
 
-Maintainer feedback, collaborator feedback and block all have the same color
-since they are all waiting on someone in particular to do something.
+Feedback and blocked all have the same color since they are all waiting on
+someone in particular to do something.
 
 === Inactive Reason
 

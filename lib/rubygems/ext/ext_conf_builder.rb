@@ -6,6 +6,7 @@
 
 require 'fileutils'
 require 'tempfile'
+require 'shellwords'
 
 class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
   FileEntry = FileUtils::Entry_ # :nodoc:
@@ -28,7 +29,7 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
       destdir = ENV["DESTDIR"]
 
       begin
-        cmd = [Gem.ruby, "-r", siteconf.path, File.basename(extension), *args].join ' '
+        cmd = [Gem.ruby, "-r", Shellwords.escape(siteconf.path), File.basename(extension), *args].join ' '
 
         begin
           run cmd, results

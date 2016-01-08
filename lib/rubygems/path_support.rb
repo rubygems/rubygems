@@ -1,7 +1,12 @@
 ##
 #
-# Gem::PathSupport facilitates the GEM_HOME and GEM_PATH environment settings
+# Gem::PathSupport facilitates the GEM_* environment environment settings
 # to the rest of RubyGems.
+#
+# * GEM_HOME - path for managing gems
+# * GEM_PATH - search path for finding gems
+# * GEM_SPEC_CACHE - local file cache for /latest_specs.4.8
+# * GEM_FETCH_CACHE - local file cache for remote .gem files
 #
 class Gem::PathSupport
   ##
@@ -13,8 +18,9 @@ class Gem::PathSupport
   attr_reader :path
 
   ##
-  # Directory with spec cache
-  attr_reader :spec_cache_dir # :nodoc:
+  # Directory with fetch cache
+  attr_reader :fetch_cache_dir # :nodoc:
+  alias spec_cache_dir fetch_cache_dir # :nodoc:
 
   ##
   #
@@ -30,14 +36,12 @@ class Gem::PathSupport
     if File::ALT_SEPARATOR then
       @home   = @home.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
     end
+    @fetch_cache_dir = env["GEM_FETCH_CACHE"] || ENV["GEM_FETCH_CACHE"] ||
+                env["GEM_SPEC_CACHE"] || ENV["GEM_SPEC_CACHE"] ||
+                Gem.default_fetch_cache_dir
+    @fetch_cache_dir = @fetch_cache_dir.dup.untaint
 
     self.path = env["GEM_PATH"] || ENV["GEM_PATH"]
-
-    @spec_cache_dir =
-      env["GEM_SPEC_CACHE"] || ENV["GEM_SPEC_CACHE"] ||
-        Gem.default_spec_cache_dir
-
-    @spec_cache_dir = @spec_cache_dir.dup.untaint
   end
 
   private

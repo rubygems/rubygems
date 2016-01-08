@@ -122,6 +122,8 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     # REFACTOR: copied from test_gem_dependency_installer.rb
     @gems_dir = File.join @tempdir, 'gems'
     @cache_dir = File.join @gemhome, "cache"
+    @fetch_cache_dir = File.join @tempdir, 'fetch_cache'
+    ENV["GEM_FETCH_CACHE"] = @fetch_cache_dir
     FileUtils.mkdir @gems_dir
 
     # TODO: why does the remote fetcher need it written to disk?

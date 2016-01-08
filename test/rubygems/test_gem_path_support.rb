@@ -65,8 +65,9 @@ class TestGemPathSupport < Gem::TestCase
     ENV["GEM_PATH"].split(File::PATH_SEPARATOR)
   end
 
-  def test_initialize_spec
+  def test_initialize_spec_cache
     ENV["GEM_SPEC_CACHE"] = nil
+    ENV["GEM_FETCH_CACHE"] = nil
 
     ps = Gem::PathSupport.new
     assert_equal Gem.default_spec_cache_dir, ps.spec_cache_dir
@@ -81,4 +82,23 @@ class TestGemPathSupport < Gem::TestCase
     ps = Gem::PathSupport.new "GEM_SPEC_CACHE" => "foo"
     assert_equal "foo", ps.spec_cache_dir
   end
+
+  def test_initialize_fetch_cache
+    ENV["GEM_SPEC_CACHE"] = nil
+    ENV["GEM_FETCH_CACHE"] = nil
+
+    ps = Gem::PathSupport.new
+    assert_equal Gem.default_fetch_cache_dir, ps.fetch_cache_dir
+
+    ENV["GEM_FETCH_CACHE"] = 'bar'
+
+    ps = Gem::PathSupport.new
+    assert_equal ENV["GEM_FETCH_CACHE"], ps.fetch_cache_dir
+
+    ENV["GEM_FETCH_CACHE"] = File.join @tempdir, 'fetch_cache'
+
+    ps = Gem::PathSupport.new "GEM_FETCH_CACHE" => "foo"
+    assert_equal "foo", ps.fetch_cache_dir
+  end
+
 end

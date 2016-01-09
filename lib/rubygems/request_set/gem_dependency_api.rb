@@ -611,6 +611,7 @@ Gem dependencies file #{@path} requires #{name} more than once.
 
     add_dependencies groups, spec.development_dependencies
 
+    @vendor_set.add_vendor_gem spec.name, path
     gem_requires spec.name, options
   end
 

@@ -18,7 +18,9 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
     Tempfile.open %w"siteconf .rb", "." do |siteconf|
       t = siteconf
       siteconf.puts "require 'rbconfig'"
-      siteconf.puts "dest_path = #{tmp_dest.dump}"
+      siteconf.puts "# Calling .dump twice quotes it in the Makefile,"
+      siteconf.puts "# allowing paths with spaces in them."
+      siteconf.puts "dest_path = #{tmp_dest.dump.dump}"
       %w[sitearchdir sitelibdir].each do |dir|
         siteconf.puts "RbConfig::MAKEFILE_CONFIG['#{dir}'] = dest_path"
         siteconf.puts "RbConfig::CONFIG['#{dir}'] = dest_path"

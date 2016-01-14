@@ -38,6 +38,7 @@ module Gem::Resolver::Molinillo
       # @return [Array] the dependencies that were explicitly required
       attr_reader :original_requested
 
+      # Initializes a new resolution.
       # @param [SpecificationProvider] specification_provider
       #   see {#specification_provider}
       # @param [UI] resolver_ui see {#resolver_ui}

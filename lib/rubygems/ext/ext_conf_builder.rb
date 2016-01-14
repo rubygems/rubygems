@@ -24,8 +24,7 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
     # Details: https://github.com/rubygems/rubygems/issues/977#issuecomment-171544940
     #
     # TODO: Make this unconditional when rubygems no longer supports Ruby 1.9.x.
-    windows = !!File::ALT_SEPARATOR
-    tmp_dest = get_relative_path(tmp_dest) unless windows && RUBY_VERSION <= '2.0'
+    tmp_dest = get_relative_path(tmp_dest) unless Gem.win_platform? && RUBY_VERSION <= '2.0'
 
     t = nil
     Tempfile.open %w"siteconf .rb", "." do |siteconf|

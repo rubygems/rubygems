@@ -3,3 +3,7 @@ require 'rubygems/resolver/molinillo/lib/molinillo/errors'
 require 'rubygems/resolver/molinillo/lib/molinillo/resolver'
 require 'rubygems/resolver/molinillo/lib/molinillo/modules/ui'
 require 'rubygems/resolver/molinillo/lib/molinillo/modules/specification_provider'
+
+# Gem::Resolver::Molinillo is a generic dependency resolution algorithm.
+module Gem::Resolver::Molinillo
+end

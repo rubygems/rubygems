@@ -84,6 +84,8 @@ command to remove old versions.
   end
 
   def execute
+    self.ui = Gem::SilentUI.new if options.include? :silent
+
     if options[:system] then
       update_rubygems
       return

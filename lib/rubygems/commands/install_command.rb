@@ -185,6 +185,8 @@ to write the specification by hand.  For example:
   end
 
   def execute
+    self.ui = Gem::SilentUI.new if options.include? :silent
+
     if options.include? :gemdeps then
       install_from_gemdeps
       return # not reached

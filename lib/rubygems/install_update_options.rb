@@ -178,6 +178,11 @@ module Gem::InstallUpdateOptions
                 "Print post install message") do |value, options|
       options[:post_install_message] = value
     end
+
+    add_option(:"Install/Update", "--silent",
+               "Silence rubygems output") do |value, options|
+      options[:silent] = value
+    end
   end
 
   ##

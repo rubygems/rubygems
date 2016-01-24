@@ -6,6 +6,7 @@ branches:
 clone_depth: 10
 install:
   - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
+  - SET GEM_HOME=%APPDATA%\.gem
   - ruby --version
   - gem --version
   - gem install rake --no-rdoc --no-ri

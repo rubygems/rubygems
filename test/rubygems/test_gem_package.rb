@@ -427,19 +427,25 @@ class TestGemPackage < Gem::Package::TarTestCase
                  "#{@destination} is not allowed", e.message)
   end
 
-  def test_extract_tar_gz_symlink_absolute
+  def test_extract_tar_gz_symlink_relative_path
+    skip 'symlink not supported' if Gem.win_platform?
+
     package = Gem::Package.new @gem
 
     tgz_io = util_tar_gz do |tar|
-      tar.add_symlink 'code.rb', '/absolute.rb', 0644
+      tar.add_file    'relative.rb', 0644 do |io| io.write 'hi' end
+      tar.mkdir       'lib',         0755
+      tar.add_symlink 'lib/foo.rb', '../relative.rb', 0644
     end
 
-    e = assert_raises Gem::Package::PathError do
-      package.extract_tar_gz tgz_io, @destination
-    end
+    package.extract_tar_gz tgz_io, @destination
 
-    assert_equal("installing into parent path /absolute.rb of " +
-                 "#{@destination} is not allowed", e.message)
+    extracted = File.join @destination, 'lib/foo.rb'
+    assert_path_exists extracted
+    assert_equal '../relative.rb',
+                 File.readlink(extracted)
+    assert_equal 'hi',
+                 File.read(extracted)
   end
 
   def test_extract_tar_gz_directory

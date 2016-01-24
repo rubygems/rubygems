@@ -382,7 +382,7 @@ EOM
           FileUtils.chmod entry.header.mode, destination
         end if entry.file?
 
-        File.symlink(install_location(entry.header.linkname, destination_dir), destination) if entry.symlink?
+        File.symlink(entry.header.linkname, destination) if entry.symlink?
 
         verbose destination
       end

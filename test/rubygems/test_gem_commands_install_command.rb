@@ -108,19 +108,15 @@ class TestGemCommandsInstallCommand < Gem::TestCase
 
     use_ui @ui do
       orig_dir = Dir.pwd
-      begin
-        Dir.chdir @tempdir
+      Dir.chdir(@tempdir) do
         assert_raises Gem::SystemExitException, @ui.error do
           @cmd.execute
         end
-      ensure
-        Dir.chdir orig_dir
       end
     end
 
     assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
     assert_match "", @ui.output
-
   end
 
   def test_execute_no_user_install

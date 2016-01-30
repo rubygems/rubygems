@@ -6,13 +6,16 @@
 
 class Gem::Resolver::LockSpecification < Gem::Resolver::Specification
 
-  def initialize set, name, version, source, platform
+  attr_reader :sources
+
+  def initialize set, name, version, sources, platform
     super()
 
     @name     = name
     @platform = platform
     @set      = set
-    @source   = source
+    @source   = sources.first
+    @sources  = sources
     @version  = version
 
     @dependencies = []

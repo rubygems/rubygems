@@ -245,10 +245,15 @@ DEPENDENCIES
 
     assert lockfile_set, 'found a LockSet'
 
-    assert_equal %w[a-2 a-2], lockfile_set.specs.map { |s| s.full_name }
+    assert_equal %w[a-2], lockfile_set.specs.map { |s| s.full_name }
 
-    assert_equal %w[https://gems.example/ https://other.example/],
-                 lockfile_set.specs.map { |s| s.source.uri.to_s }
+    if [].respond_to? :flat_map
+      assert_equal %w[https://gems.example/ https://other.example/],
+                   lockfile_set.specs.flat_map { |s| s.sources.map{ |src| src.uri.to_s } }
+    else # FIXME: remove when 1.8 is dropped
+      assert_equal %w[https://gems.example/ https://other.example/],
+                   lockfile_set.specs.map { |s| s.sources.map{ |src| src.uri.to_s } }.flatten(1)
+    end
   end
 
   def test_parse_GIT

@@ -330,7 +330,7 @@ class Gem::RequestSet::Lockfile::Parser
       set.find_all(requirement)
     }.compact.first
 
-    specification.version
+    specification && specification.version
   end
 
   ##
@@ -340,4 +340,3 @@ class Gem::RequestSet::Lockfile::Parser
     @tokens.unshift token
   end
 end
-

@@ -53,24 +53,23 @@ class Gem::Resolver::ActivationRequest
 
     if @spec.respond_to? :sources
       exception = nil
-      path = nil
-      @spec.sources.each{ |source|
+      path = @spec.sources.find{ |source|
         begin
-          path = source.download full_spec, path
+          source.download full_spec, path
         rescue exception
-          nil
         end
       }
-      raise exception if exception
-      path
+      return path      if path
+      raise  exception if exception
+
     elsif @spec.respond_to? :source
       source = @spec.source
       source.download full_spec, path
+
     else
       source = Gem.sources.first
       source.download full_spec, path
     end
-
   end
 
   ##

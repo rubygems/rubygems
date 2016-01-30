@@ -571,7 +571,7 @@ Gem dependencies file #{@path} includes git reference for both ref/branch and ta
     else
       @requires[name] << name
     end
-    raise "Unhandled gem options #{options.inspect}" unless options.empty?
+    raise ArgumentError, "Unhandled gem options #{options.inspect}" unless options.empty?
   end
 
   private :gem_requires
@@ -846,4 +846,3 @@ Gem dependencies file #{@path} includes git reference for both ref/branch and ta
   Gem::RequestSet::GemDepedencyAPI = self # :nodoc:
 
 end
-

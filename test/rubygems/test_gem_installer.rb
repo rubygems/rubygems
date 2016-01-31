@@ -1637,8 +1637,12 @@ gem 'other', version
 
     @installer.unpack dest
 
-    assert_path_exists File.join dest, 'lib', 'code.rb'
-    assert_path_exists File.join dest, 'bin', 'executable'
+    lib_file = File.join dest, 'lib', 'code.rb'
+    bin_file = File.join dest, 'bin', 'executable'
+    assert_path_exists lib_file
+    assert_path_exists bin_file
+    refute File.executable?(lib_file), "Expected path '#{lib_file}' not to be executable"
+    assert File.executable?(bin_file), "Expected path '#{bin_file}' to be executable"
   end
 
   def test_write_build_info_file

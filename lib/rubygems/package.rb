@@ -428,8 +428,8 @@ EOM
     @spec &&
     @spec.bindir &&
     @spec.executables &&
-    filename.start_with?(@spec.bindir) &&
-    @spec.executables.map { |exe| File.join(@spec.bindir, exe) }.include?(filename)
+    filename.start_with?("#{@spec.bindir}\/") &&
+    @spec.executables.include?(filename.sub("#{@spec.bindir}\/",""))
   end
 
   ##

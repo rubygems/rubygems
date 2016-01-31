@@ -158,6 +158,7 @@ class Gem::InstallerTestCase < Gem::TestCase
   def util_setup_gem(ui = @ui) # HACK fix use_ui to make this automatic
     @spec.files << File.join('lib', 'code.rb')
     @spec.extensions << File.join('ext', 'a', 'mkrf_conf.rb')
+    @spec.executables << File.join('executable')
 
     Dir.chdir @tempdir do
       FileUtils.mkdir_p 'bin'
@@ -196,4 +197,3 @@ class Gem::InstallerTestCase < Gem::TestCase
   end
 
 end
-

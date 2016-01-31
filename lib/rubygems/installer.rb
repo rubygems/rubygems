@@ -610,6 +610,16 @@ class Gem::Installer
     end
   end
 
+  def ensure_required_engine_version_met # :nodoc:
+    rev = spec.required_engine_version
+
+    rev.each do |engine, requirement|
+      unless requirement.satisfied_by? Gem.ruby_engine then
+        raise Gem::InstallError, "#{engine} requires Ruby version #{requirement}."
+      end
+    end
+  end
+
   def ensure_required_rubygems_version_met # :nodoc:
     if rrgv = spec.required_rubygems_version then
       unless rrgv.satisfied_by? Gem.rubygems_version then

@@ -147,6 +147,7 @@ class Gem::Specification < Gem::BasicSpecification
     :require_paths             => ['lib'],
     :required_ruby_version     => Gem::Requirement.default,
     :required_rubygems_version => Gem::Requirement.default,
+    :required_engine_version   => {},
     :requirements              => [],
     :rubyforge_project         => nil,
     :rubygems_version          => Gem::VERSION,
@@ -429,6 +430,11 @@ class Gem::Specification < Gem::BasicSpecification
   attr_reader :required_ruby_version
 
   ##
+  # The Ruby engine required by this gem
+
+  attr_reader :required_engine_version
+
+  ##
   # The RubyGems version required by this gem
 
   attr_reader :required_rubygems_version
@@ -649,6 +655,28 @@ class Gem::Specification < Gem::BasicSpecification
 
   def required_rubygems_version= req
     @required_rubygems_version = Gem::Requirement.create req
+  end
+
+  ##
+  # The Ruby engine required by this gem, e.g. 'ruby', 'jruby', 'rubinius', and
+  # the version required for that engine.
+  #
+  # Usage:
+  #
+  #  spec.required_engine_version = {
+  #    :ruby     => '>= 1.9.3',
+  #    :jruby    => '>= 1.7.24',
+  #    :rubinius => '~> 3.0'
+  #  }
+  #
+  def required_engine_version= req
+    @required_engine_version = {}
+
+    req.each do |engine, value|
+      @required_engine_version[engine] = Gem::Requirement.create value
+    end
+
+    @required_engine_version
   end
 
   ##
@@ -1333,18 +1361,19 @@ class Gem::Specification < Gem::BasicSpecification
     spec.instance_variable_set :@summary,                   array[5]
     spec.instance_variable_set :@required_ruby_version,     array[6]
     spec.instance_variable_set :@required_rubygems_version, array[7]
-    spec.instance_variable_set :@original_platform,         array[8]
-    spec.instance_variable_set :@dependencies,              array[9]
-    spec.instance_variable_set :@rubyforge_project,         array[10]
-    spec.instance_variable_set :@email,                     array[11]
-    spec.instance_variable_set :@authors,                   array[12]
-    spec.instance_variable_set :@description,               array[13]
-    spec.instance_variable_set :@homepage,                  array[14]
-    spec.instance_variable_set :@has_rdoc,                  array[15]
-    spec.instance_variable_set :@new_platform,              array[16]
-    spec.instance_variable_set :@platform,                  array[16].to_s
-    spec.instance_variable_set :@license,                   array[17]
-    spec.instance_variable_set :@metadata,                  array[18]
+    spec.instance_variable_set :@required_engine_version,   array[8]
+    spec.instance_variable_set :@original_platform,         array[9]
+    spec.instance_variable_set :@dependencies,              array[10]
+    spec.instance_variable_set :@rubyforge_project,         array[11]
+    spec.instance_variable_set :@email,                     array[12]
+    spec.instance_variable_set :@authors,                   array[13]
+    spec.instance_variable_set :@description,               array[14]
+    spec.instance_variable_set :@homepage,                  array[15]
+    spec.instance_variable_set :@has_rdoc,                  array[16]
+    spec.instance_variable_set :@new_platform,              array[17]
+    spec.instance_variable_set :@platform,                  array[18].to_s
+    spec.instance_variable_set :@license,                   array[19]
+    spec.instance_variable_set :@metadata,                  array[20]
     spec.instance_variable_set :@loaded,                    false
     spec.instance_variable_set :@activated,                 false
 
@@ -1378,6 +1407,7 @@ class Gem::Specification < Gem::BasicSpecification
       @summary,
       @required_ruby_version,
       @required_rubygems_version,
+      @required_engine_version,
       @original_platform,
       @dependencies,
       @rubyforge_project,

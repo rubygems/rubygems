@@ -698,6 +698,7 @@ end
       post_install_message
       rdoc_options
       require_paths
+      required_engine_version
       required_ruby_version
       required_rubygems_version
       requirements
@@ -1166,6 +1167,7 @@ dependencies: []
     assert_equal 'bin', spec.bindir
     assert_equal '>= 0', spec.required_ruby_version.to_s
     assert_equal '>= 0', spec.required_rubygems_version.to_s
+    assert_equal({}, spec.required_engine_version)
   end
 
   def test_initialize_future
@@ -1199,6 +1201,7 @@ dependencies: []
       s.extensions = 'ext/extconf.rb'
       s.requirements = 'requirement'
       s.add_dependency 'some_gem'
+      s.required_engine_version = {:ruby => '>= 1.9.3', :jruby => '>= 1.7.24'}
     end
 
     new_spec = spec.dup
@@ -1252,6 +1255,10 @@ dependencies: []
     assert_equal '>= 0', spec.required_rubygems_version.to_s
     assert_same spec.required_rubygems_version,
                 new_spec.required_rubygems_version
+
+    engines = [Gem::Requirement.new('>= 1.9.3'), Gem::Requirement.new('>= 1.7.24')]
+    assert_equal({:ruby => engines[0], :jruby => engines[1]}, spec.required_engine_version)
+    assert_same spec.required_engine_version, new_spec.required_engine_version
   end
 
   def test_initialize_copy_broken

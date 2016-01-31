@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #--
 # Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
 # All rights reserved.
@@ -226,7 +227,7 @@ class Gem::Installer
     # somebody has written to RubyGems' directory, overwrite, too bad
     return if Gem.default_bindir != @bin_dir and not ruby_executable
 
-    question = "#{spec.name}'s executable \"#{filename}\" conflicts with "
+    question = "#{spec.name}'s executable \"#{filename}\" conflicts with ".dup
 
     if ruby_executable then
       question << existing

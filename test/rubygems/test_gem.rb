@@ -1284,7 +1284,7 @@ class TestGem < Gem::TestCase
     assert_equal [a,b,c], Gem.detect_gemdeps.sort_by { |s| s.name }
   end
 
-  LIB_PATH = File.expand_path "../../../lib".untaint, __FILE__.untaint
+  LIB_PATH = File.expand_path "../../../lib".dup.untaint, __FILE__.dup.untaint
 
   def test_looks_for_gemdeps_files_automatically_on_start
     util_clear_gems

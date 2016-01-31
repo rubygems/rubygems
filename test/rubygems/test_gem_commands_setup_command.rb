@@ -1,4 +1,5 @@
 # coding: UTF-8
+# frozen_string_literal: true
 
 require 'rubygems/test_case'
 require 'rubygems/commands/setup_command'
@@ -133,4 +134,3 @@ class TestGemCommandsSetupCommand < Gem::TestCase
   end
 
 end
-

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Gem::Resolver::Molinillo
   class Resolver
     # A specific resolution from a given {Resolver}

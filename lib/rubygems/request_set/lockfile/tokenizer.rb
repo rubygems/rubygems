@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'strscan'
 require 'rubygems/request_set/lockfile/parser'
 

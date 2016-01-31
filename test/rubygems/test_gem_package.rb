@@ -1,4 +1,5 @@
 # coding: UTF-8
+# frozen_string_literal: true
 
 require 'rubygems/package/tar_test_case'
 require 'rubygems/simple_gem'
@@ -495,7 +496,7 @@ class TestGemPackage < Gem::Package::TarTestCase
   def test_install_location
     package = Gem::Package.new @gem
 
-    file = 'file.rb'
+    file = 'file.rb'.dup
     file.taint
 
     destination = package.install_location file, @destination
@@ -535,7 +536,7 @@ class TestGemPackage < Gem::Package::TarTestCase
     skip 'no File.realpath on 1.8' if RUBY_VERSION < '1.9'
     package = Gem::Package.new @gem
 
-    file = 'foo//file.rb'
+    file = 'foo//file.rb'.dup
     file.taint
 
     destination = @destination.sub '/', '//'

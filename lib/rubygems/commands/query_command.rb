@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rubygems/command'
 require 'rubygems/local_remote_options'
 require 'rubygems/spec_fetcher'
@@ -283,7 +284,7 @@ is too hard to use.
   end
 
   def spec_authors entry, spec
-    authors = "Author#{spec.authors.length > 1 ? 's' : ''}: "
+    authors = "Author#{spec.authors.length > 1 ? 's' : ''}: ".dup
     authors << spec.authors.join(', ')
     entry << format_text(authors, 68, 4)
   end
@@ -297,7 +298,7 @@ is too hard to use.
   def spec_license entry, spec
     return if spec.license.nil? or spec.license.empty?
 
-    licenses = "License#{spec.licenses.length > 1 ? 's' : ''}: "
+    licenses = "License#{spec.licenses.length > 1 ? 's' : ''}: ".dup
     licenses << spec.licenses.join(', ')
     entry << "\n" << format_text(licenses, 68, 4)
   end
@@ -347,4 +348,3 @@ is too hard to use.
   end
 
 end
-

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rubygems/text'
 
 class Gem::Licenses

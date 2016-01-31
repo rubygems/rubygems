@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rubygems/installer_test_case'
 
 class TestGemInstaller < Gem::InstallerTestCase
@@ -829,7 +830,7 @@ gem 'other', version
 
     exe = File.join @gemhome, 'bin', 'executable'
 
-    extra_arg = "\xE4pfel".force_encoding("UTF-8")
+    extra_arg = "\xE4pfel".dup.force_encoding("UTF-8")
     ARGV.unshift extra_arg
 
     begin

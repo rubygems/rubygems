@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # -*- coding: utf-8 -*-
 #--
 # Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
@@ -1191,6 +1192,7 @@ class Gem::Specification < Gem::BasicSpecification
   def self.normalize_yaml_input(input)
     result = input.respond_to?(:read) ? input.read : input
     result = "--- " + result unless result =~ /\A--- /
+    result = result.dup
     result.gsub!(/ !!null \n/, " \n")
     # date: 2011-04-26 00:00:00.000000000Z
     # date: 2011-04-26 00:00:00.000000000 Z
@@ -2765,7 +2767,7 @@ class Gem::Specification < Gem::BasicSpecification
 license value '#{license}' is invalid.  Use a license identifier from
 http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
         warning
-        message << "Did you mean #{suggestions.map { |s| "'#{s}'"}.join(', ')}?\n" unless suggestions.nil?
+        message += "Did you mean #{suggestions.map { |s| "'#{s}'"}.join(', ')}?\n" unless suggestions.nil?
         warning(message)
       end
     }

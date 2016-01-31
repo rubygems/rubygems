@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ##
 # A set of gems for installation sourced from remote sources and local .gem
 # files

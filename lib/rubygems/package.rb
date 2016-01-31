@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # -*- coding: utf-8 -*-
 #--
 # Copyright (C) 2004 Mauricio Julio Fernández Pradier
@@ -58,7 +59,7 @@ class Gem::Package
       if source
         @path = source.path
 
-        message << " in #{path}" if path
+        message = message + " in #{path}" if path
       end
 
       super message

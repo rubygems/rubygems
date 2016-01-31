@@ -614,8 +614,10 @@ class Gem::Installer
     rev = spec.required_engine_version
 
     rev.each do |engine, requirement|
-      unless requirement.satisfied_by? Gem.ruby_engine then
-        raise Gem::InstallError, "#{engine} requires Ruby version #{requirement}."
+      if engine.downcase.to_s == Gem.ruby_engine then
+        unless requirement.satisfied_by?(Gem.ruby_engine_version) then
+          raise Gem::InstallError, "#{engine} requires Ruby engine version #{requirement}."
+        end
       end
     end
   end
@@ -833,6 +835,7 @@ TEXT
 
     ensure_required_ruby_version_met
     ensure_required_rubygems_version_met
+    ensure_required_engine_version_met
     ensure_dependencies_met unless @ignore_dependencies
 
     true

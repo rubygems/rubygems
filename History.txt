@@ -1,5 +1,48 @@
 # coding: UTF-8
 
+=== 2.5.2 / 2016-01-31
+
+Bug fixes:
+
+* Fix memoization of Gem::Version#prerelease? Pull request #1125 by Matijs van
+  Zuijlen.
+* Handle trailing colons in GEM_PATH, by Damien Robert.
+* Improve the Gemfile `gemspec` method, fixing #1204 and #1033. Pull request
+  #1276 by Michael Papis.
+* Warn only once when a gemspec license is invalid. Pull request #1414 by Samuel
+  E. Giddins.
+* Check for exact constants before using them, fixing Ruby bug #11940. Pull
+  request #1438 by Nobuyoshi Nakada.
+* Fix building C extensions on Ruby 1.9.x on Windows. Pull request #1453 by Marie
+  Markwell.
+* Handle symlinks containing ".." correctly. Pull request #1457 by Samuel E.
+  Giddins.
+
+Minor enhancements:
+
+* Add `--no-rc` flag, which skips loading `.gemrc`. Pull request #1329 by Luis
+  Sagastume.
+* Allow basic auth to be excluded from `allowed_push_host`. By Josh Lane.
+* Add `gem list --exact`, which finds gems by string match instead of regex. Pull
+  request #1344 by Luis Sagastume.
+* Suggest alternatives when gem license is unknown. Pull request #1443 by Samuel
+  E. Giddins.
+* Print a useful error if a binstub expects a newer version of a gem than is
+  installed. Pull request #1407 by Samuel E. Giddins.
+* Allow the (supported) s3:// scheme to be used with `--source`. Pull request
+  #1416 by Dave Adams.
+* Add `--[no-]post-install-message` to `install` and `update`. Pull request #1162
+  by Josef Šimánek.
+* Add `--host` option to `yank`, providing symmetry with `pull`. Pull request
+  #1361 by Mike Virata-Stone.
+* Update bundled Molinillo to 0.4.1. Pull request #1452 by Samuel E. Giddins.
+* Allow calling `build` without '.gemspec'. Pull request #1454 by Stephen
+  Blackstone.
+* Add support for `source` option on gems in Gemfile. Pull request #1355 by
+  Michael Papis.
+* Function correctly when string literals are frozen on Ruby 2.3. Pull request
+  #1408 by Samuel E. Giddins.
+
 === 2.5.1 / 2015-12-10
 
 Bug fixes:

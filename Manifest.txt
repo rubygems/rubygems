@@ -1,5 +1,6 @@
 .autotest
 .document
+.travis.yml
 CODE_OF_CONDUCT.md
 CONTRIBUTING.rdoc
 CVE-2013-4287.txt
@@ -7,8 +8,10 @@ CVE-2013-4363.txt
 CVE-2015-3900.txt
 History.txt
 LICENSE.txt
+MAINTAINERS.md
 MIT.txt
 Manifest.txt
+POLICIES.rdoc
 README.rdoc
 Rakefile
 UPGRADING.rdoc
@@ -142,6 +145,7 @@ lib/rubygems/resolver/molinillo/lib/molinillo/resolver.rb
 lib/rubygems/resolver/molinillo/lib/molinillo/state.rb
 lib/rubygems/resolver/requirement_list.rb
 lib/rubygems/resolver/set.rb
+lib/rubygems/resolver/source_set.rb
 lib/rubygems/resolver/spec_specification.rb
 lib/rubygems/resolver/specification.rb
 lib/rubygems/resolver/stats.rb

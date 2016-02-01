@@ -59,7 +59,9 @@ class Gem::PathSupport
         gem_path = gpaths.dup
       else
         gem_path = gpaths.split(Gem.path_separator)
-        if gpaths.end_with?(Gem.path_separator)
+        # Handle the path_separator being set to a regexp, which will cause
+        # end_with? to error
+        if gpaths =~ /#{Gem.path_separator}\z/
           gem_path += default_path
         end
       end

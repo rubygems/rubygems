@@ -52,6 +52,42 @@ class TestGemPathSupport < Gem::TestCase
     assert_equal expected, ps.path
   end
 
+  def test_initialize_regexp_path_separator
+    Gem.stub(:path_separator, /:/) do
+      path = %W[#{@tempdir}/foo
+                #{File::PATH_SEPARATOR}
+                #{@tempdir}/bar
+                #{File::PATH_SEPARATOR}].join
+      ps = Gem::PathSupport.new "GEM_PATH" => path
+
+      assert_equal ENV["GEM_HOME"], ps.home
+
+      expected = [
+                  File.join(@tempdir, 'foo'),
+                  File.join(@tempdir, 'bar'),
+                  ] + Gem.default_path << ENV["GEM_HOME"]
+
+      assert_equal expected, ps.path
+    end
+  end
+
+  def test_initialize_path_with_defaults
+    path = %W[#{@tempdir}/foo
+              #{File::PATH_SEPARATOR}
+              #{@tempdir}/bar
+              #{File::PATH_SEPARATOR}].join
+    ps = Gem::PathSupport.new "GEM_PATH" => path
+
+    assert_equal ENV["GEM_HOME"], ps.home
+
+    expected = [
+                File.join(@tempdir, 'foo'),
+                File.join(@tempdir, 'bar'),
+                ] + Gem.default_path << ENV["GEM_HOME"]
+
+    assert_equal expected, ps.path
+  end
+
   def test_initialize_home_path
     ps = Gem::PathSupport.new("GEM_HOME" => "#{@tempdir}/foo",
                               "GEM_PATH" => %W[#{@tempdir}/foo #{@tempdir}/bar])

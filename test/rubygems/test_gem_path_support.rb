@@ -58,7 +58,7 @@ class TestGemPathSupport < Gem::TestCase
                 #{File::PATH_SEPARATOR}
                 #{@tempdir}/bar
                 #{File::PATH_SEPARATOR}].join
-      ps = Gem::PathSupport.new "GEM_PATH" => path
+      ps = Gem::PathSupport.new "GEM_PATH" => path, "GEM_HOME" => ENV["GEM_HOME"]
 
       assert_equal ENV["GEM_HOME"], ps.home
 
@@ -76,7 +76,7 @@ class TestGemPathSupport < Gem::TestCase
               #{File::PATH_SEPARATOR}
               #{@tempdir}/bar
               #{File::PATH_SEPARATOR}].join
-    ps = Gem::PathSupport.new "GEM_PATH" => path
+    ps = Gem::PathSupport.new "GEM_PATH" => path, "GEM_HOME" => ENV["GEM_HOME"]
 
     assert_equal ENV["GEM_HOME"], ps.home
 

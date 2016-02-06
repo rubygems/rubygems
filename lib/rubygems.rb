@@ -941,7 +941,7 @@ module Gem
   def self.use_paths(home, *paths)
     paths = nil if paths == [nil]
     paths = paths.first if Array === Array(paths).first
-    self.paths = { "GEM_HOME" => home, "GEM_PATH" => paths.join(Gem.path_separator) }
+    self.paths = { "GEM_HOME" => home, "GEM_PATH" => paths.join(File::PATH_SEPARATOR) }
   end
 
   ##

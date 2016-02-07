@@ -941,7 +941,9 @@ module Gem
   def self.use_paths(home, *paths)
     paths.flatten!
     paths.compact!
-    self.paths = { "GEM_HOME" => home, "GEM_PATH" => paths.join(File::PATH_SEPARATOR) }
+    hash = { "GEM_HOME" => home, "GEM_PATH" => paths.join(File::PATH_SEPARATOR) }
+    hash.delete_if { |_, v| v.nil? }
+    self.paths = hash
   end
 
   ##

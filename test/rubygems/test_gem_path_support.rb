@@ -53,7 +53,7 @@ class TestGemPathSupport < Gem::TestCase
   end
 
   def test_initialize_regexp_path_separator
-    Gem.stub(:path_separator, /:/) do
+    Gem.stub(:path_separator, /#{File::PATH_SEPARATOR}/) do
       path = %W[#{@tempdir}/foo
                 #{File::PATH_SEPARATOR}
                 #{@tempdir}/bar

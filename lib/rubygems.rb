@@ -939,8 +939,8 @@ module Gem
   # by the unit tests to provide environment isolation.
 
   def self.use_paths(home, *paths)
-    paths = nil if paths == [nil]
-    paths = paths.first if Array === Array(paths).first
+    paths.flatten!
+    paths.compact!
     self.paths = { "GEM_HOME" => home, "GEM_PATH" => paths.join(File::PATH_SEPARATOR) }
   end
 

@@ -95,30 +95,6 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     assert_match "1 gem installed", @ui.output
   end
 
-  def test_execute_local_silent
-    specs = spec_fetcher do |fetcher|
-      fetcher.gem 'a', 2
-    end
-
-    @cmd.options[:domain] = :local
-
-    FileUtils.mv specs['a-2'].cache_file, @tempdir
-
-    @cmd.handle_options %w[a --silent]
-
-    use_ui @ui do
-      orig_dir = Dir.pwd
-      Dir.chdir(@tempdir) do
-        assert_raises Gem::SystemExitException, @ui.error do
-          @cmd.execute
-        end
-      end
-    end
-
-    assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
-    assert_match "", @ui.output
-  end
-
   def test_execute_no_user_install
     skip 'skipped on MS Windows (chmod has no effect)' if win_platform?
 
@@ -459,23 +435,6 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
 
     assert_match "1 gem installed", @ui.output
-  end
-
-  def test_execute_remote_silent
-    spec_fetcher do |fetcher|
-      fetcher.gem 'a', 2
-    end
-
-    @cmd.handle_options %w[a --silent]
-
-    use_ui @ui do
-      assert_raises Gem::SystemExitException, @ui.error do
-        @cmd.execute
-      end
-    end
-
-    assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
-    assert_match "", @ui.output
   end
 
   def test_execute_remote_ignores_files

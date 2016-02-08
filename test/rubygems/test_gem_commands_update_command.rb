@@ -47,22 +47,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_empty out
   end
 
-  def test_execute_silent
-    spec_fetcher do |fetcher|
-      fetcher.download 'a', 2
-      fetcher.spec 'a', 1
-    end
-
-    @cmd.handle_options %w[a --silent]
-
-    use_ui @ui do
-     @cmd.execute
-    end
-
-    expected = ""
-    assert_equal expected, @ui.output
-  end
-
   def test_execute_multiple
     spec_fetcher do |fetcher|
       fetcher.download 'a',  2

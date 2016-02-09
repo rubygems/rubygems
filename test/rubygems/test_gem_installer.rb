@@ -1038,6 +1038,35 @@ gem 'other', version
     assert_path_exists expected_makefile
   end
 
+  def test_find_shared_object_after_install
+    @spec.extensions << "extconf.rb"
+    write_file File.join(@tempdir, "extconf.rb") do |io|
+      io.write <<-RUBY
+        require "mkmf"
+        create_makefile("#{@spec.name}")
+      RUBY
+    end
+
+    write_file File.join(@tempdir, "a.c") do |io|
+      io.write <<-C
+      #include <ruby.h>
+      void Init_a() { }
+      C
+    end
+
+    @spec.files += %w[extconf.rb a.c]
+
+    use_ui @ui do
+      path = Gem::Package.build @spec
+
+      installer = Gem::Installer.at path
+      installer.install
+    end
+    shared_object = "a.#{RbConfig::CONFIG["DLEXT"]}"
+    expected = File.join @spec.extension_dir, shared_object
+    assert_equal expected, @spec.matches_for_glob(shared_object).first
+  end
+
   def test_install_extension_and_script
     @spec.extensions << "extconf.rb"
     write_file File.join(@tempdir, "extconf.rb") do |io|

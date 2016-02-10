@@ -118,7 +118,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
   end
 
   def test_sending_gem_to_metadata_host
-    @host = "http://rubygems.engineyard.com"
+    @host = "http://privategemserver.example"
 
     @spec, @path = util_gem "freebird", "1.0.1" do |spec|
       spec.metadata['default_gem_server'] = @host
@@ -152,7 +152,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
   end
 
   def test_sending_gem_to_allowed_push_host
-    @host = "http://privategemserver.com"
+    @host = "http://privategemserver.example"
 
     @spec, @path = util_gem "freebird", "1.0.1" do |spec|
       spec.metadata['allowed_push_host'] = @host
@@ -179,8 +179,8 @@ class TestGemCommandsPushCommand < Gem::TestCase
   end
 
   def test_sending_gem_to_allowed_push_host_with_basic_credentials
-    @sanitized_host = "http://privategemserver.com"
-    @host           = "http://user:password@privategemserver.com"
+    @sanitized_host = "http://privategemserver.example"
+    @host           = "http://user:password@privategemserver.example"
 
     @spec, @path = util_gem "freebird", "1.0.1" do |spec|
       spec.metadata['allowed_push_host'] = @sanitized_host
@@ -207,10 +207,10 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
   def test_sending_gem_to_disallowed_default_host
     @spec, @path = util_gem "freebird", "1.0.1" do |spec|
-      spec.metadata['allowed_push_host'] = "https://privategemserver.com"
+      spec.metadata['allowed_push_host'] = "https://privategemserver.example"
     end
 
-    response = %{ERROR:  "#{@host}" is not allowed by the gemspec, which only allows "https://privategemserver.com"}
+    response = %{ERROR:  "#{@host}" is not allowed by the gemspec, which only allows "https://privategemserver.example"}
 
     assert_raises Gem::MockGemUi::TermError do
       send_battery
@@ -220,10 +220,11 @@ class TestGemCommandsPushCommand < Gem::TestCase
   end
 
   def test_sending_gem_to_disallowed_push_host
-    @host = "https://somebodyelse.com"
+    @host = "https://anotherprivategemserver.example"
+    push_host = "https://privategemserver.example"
 
     @spec, @path = util_gem "freebird", "1.0.1" do |spec|
-      spec.metadata['allowed_push_host'] = "https://privategemserver.com"
+      spec.metadata['allowed_push_host'] = push_host
     end
 
     @api_key = "PRIVKEY"
@@ -241,7 +242,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
     FileUtils.rm Gem.configuration.credentials_path
 
-    response = 'ERROR:  "https://somebodyelse.com" is not allowed by the gemspec, which only allows "https://privategemserver.com"'
+    response = "ERROR:  \"#{@host}\" is not allowed by the gemspec, which only allows \"#{push_host}\""
 
     assert_raises Gem::MockGemUi::TermError do
       send_battery
@@ -251,7 +252,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
   end
 
   def test_sending_gem_defaulting_to_allowed_push_host
-    host = "http://privategemserver.com"
+    host = "http://privategemserver.example"
 
     @spec, @path = util_gem "freebird", "1.0.1" do |spec|
       spec.metadata.delete('default_gem_server')

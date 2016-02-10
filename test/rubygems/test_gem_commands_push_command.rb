@@ -250,6 +250,45 @@ class TestGemCommandsPushCommand < Gem::TestCase
     assert_match response, @ui.error
   end
 
+  def test_sending_gem_defaulting_to_allowed_push_host
+    host = "http://privategemserver.com"
+
+    @spec, @path = util_gem "freebird", "1.0.1" do |spec|
+      spec.metadata.delete('default_gem_server')
+      spec.metadata['allowed_push_host'] = host
+    end
+
+    api_key = "PRIVKEY"
+
+    keys = {
+      host => api_key
+    }
+
+    FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path
+    open Gem.configuration.credentials_path, 'w' do |f|
+      f.write keys.to_yaml
+    end
+    Gem.configuration.load_api_keys
+
+    FileUtils.rm Gem.configuration.credentials_path
+
+    @response = "Successfully registered gem: freebird (1.0.1)"
+    @fetcher.data["#{host}/api/v1/gems"]  = [@response, 200, 'OK']
+
+    # do not set @host
+    use_ui(@ui) { @cmd.send_gem(@path) }
+
+    assert_match %r{Pushing gem to #{host}...}, @ui.output
+
+    assert_equal Net::HTTP::Post, @fetcher.last_request.class
+    assert_equal Gem.read_binary(@path), @fetcher.last_request.body
+    assert_equal File.size(@path), @fetcher.last_request["Content-Length"].to_i
+    assert_equal "application/octet-stream", @fetcher.last_request["Content-Type"]
+    assert_equal api_key, @fetcher.last_request["Authorization"]
+
+    assert_match @response, @ui.output
+  end
+
   def test_raises_error_with_no_arguments
     def @cmd.sign_in(*); end
     assert_raises Gem::CommandLineError do

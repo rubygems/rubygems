@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.6
+
+Minor enhancements:
+
+* RubyGems now defaults the `gem push` to the gem's "allowed_push_host"
+  metadata setting.  Pull request #1486 by Josh Lane.
+
 === 2.5.2 / 2016-01-31
 
 Bug fixes:

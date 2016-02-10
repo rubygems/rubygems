@@ -7,6 +7,11 @@ Minor enhancements:
 * RubyGems now defaults the `gem push` to the gem's "allowed_push_host"
   metadata setting.  Pull request #1486 by Josh Lane.
 
+Bug fixes:
+
+* RubyGems now stores `gem push` credentials under the host you signed-in for.
+  Pull request #1485 by Josh Lane.
+
 === 2.5.2 / 2016-01-31
 
 Bug fixes:

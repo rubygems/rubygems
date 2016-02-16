@@ -522,7 +522,7 @@ class Gem::Command
     end
   end
 
-  add_common_option('-q', '--quiet', 'Silence commands') do |value, options|
+  add_common_option('-q', '--quiet', 'Silence command progress meter') do |value, options|
     Gem.configuration.verbose = false
   end
 

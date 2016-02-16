@@ -174,6 +174,14 @@ module Gem
   @pre_reset_hooks      ||= []
   @post_reset_hooks     ||= []
 
+  def self.env_requirement(gem_name)
+    @env_requirements_by_name ||= {}
+    @env_requirements_by_name[gem_name] ||= begin
+      req = ENV["GEM_REQUIREMENT_#{gem_name.upcase}"] || '>= 0'.freeze
+      Gem::Requirement.create(req)
+    end
+  end
+
   ##
   # Try to activate a gem containing +path+. Returns true if
   # activation succeeded or wasn't needed because it was already

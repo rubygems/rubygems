@@ -13,4 +13,4 @@ This issue is related to:
   - [ ] The command line `gem`
   - [ ] Other
 
-By the way, before contributing, please read our [code of conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md).
+Please abide by our [code of conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md).

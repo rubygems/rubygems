@@ -277,6 +277,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     ENV['HOME'] = @userhome
     Gem.instance_variable_set :@user_home, nil
     Gem.instance_variable_set :@gemdeps, nil
+    Gem.instance_variable_set :@env_requirements_by_name, nil
     Gem.send :remove_instance_variable, :@ruby_version if
       Gem.instance_variables.include? :@ruby_version
 
@@ -1493,4 +1494,3 @@ tmpdirs << (ENV['GEM_PATH'] = Dir.mktmpdir("path"))
 pid = $$
 END {tmpdirs.each {|dir| Dir.rmdir(dir)} if $$ == pid}
 Gem.clear_paths
-

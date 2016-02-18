@@ -816,6 +816,22 @@ class TestGem < Gem::TestCase
     RbConfig::CONFIG['ruby_version'] = orig_ruby_version
   end
 
+  def test_self_env_requirement
+    old_env = ENV.to_hash
+
+    ENV.clear
+    ENV["GEM_REQUIREMENT_FOO"] = '>= 1.2.3'
+    ENV["GEM_REQUIREMENT_BAR"] = '1.2.3'
+    ENV["GEM_REQUIREMENT_BAZ"] = 'abcd'
+
+    assert_equal Gem::Requirement.create('>= 1.2.3'), Gem.env_requirement('foo')
+    assert_equal Gem::Requirement.create('1.2.3'), Gem.env_requirement('bAr')
+    assert_raises(Gem::Requirement::BadRequirementError) { Gem.env_requirement('baz') }
+    assert_equal Gem::Requirement.default, Gem.env_requirement('qux')
+  ensure
+    ENV.replace(old_env)
+  end
+
   def test_self_ruby_version_1_8_5
     util_set_RUBY_VERSION '1.8.5'
 

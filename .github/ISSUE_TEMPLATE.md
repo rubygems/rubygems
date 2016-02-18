@@ -1,9 +1,11 @@
-Please fill out this information before submitting a bug:
+I'm having a problem or would like to suggest a feature.
 
-  - `ruby --version`: ...
-  - `gem --version`: ...
-  - Operating System: ...
+Here are my current envrionment details:
 
+```
+$ gem env
+PASTE HERE
+```
 
 This issue is related to:
 
@@ -13,4 +15,4 @@ This issue is related to:
   - [ ] The command line `gem`
   - [ ] Other
 
-Please abide by our [code of conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md).
+I will abide by the [code of conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md).

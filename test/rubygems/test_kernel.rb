@@ -64,6 +64,15 @@ class TestKernel < Gem::TestCase
     assert gem('d', '>= 1.a'), 'prerelease requirement may load prerelease'
   end
 
+  def test_gem_env_req
+    ENV["GEM_REQUIREMENT_A"] = '~> 2.0'
+    assert_raises(Gem::LoadError) { gem('a', '= 1') }
+    assert gem('a', '> 1')
+    assert_equal @a2, Gem.loaded_specs['a']
+  ensure
+    ENV.delete("GEM_REQUIREMENT_A")
+  end
+
   def test_gem_conflicting
     assert gem('a', '= 1'), "Should load"
 

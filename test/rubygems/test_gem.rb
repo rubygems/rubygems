@@ -929,6 +929,26 @@ class TestGem < Gem::TestCase
     assert_match %r%Could not find 'b' %, e.message
   end
 
+  def test_self_try_activate_missing_prerelease
+    b = util_spec 'b', '1.0rc1'
+    a = util_spec 'a', '1.0rc1', 'b' => '1.0rc1'
+
+    install_specs b, a
+    uninstall_gem b
+
+    a_file = File.join a.gem_dir, 'lib', 'a_file.rb'
+
+    write_file a_file do |io|
+      io.puts '# a_file.rb'
+    end
+
+    e = assert_raises Gem::LoadError do
+      Gem.try_activate 'a_file'
+    end
+
+    assert_match %r%Could not find 'b' \(= 1.0rc1\)%, e.message
+  end
+
   def test_self_try_activate_missing_extensions
     spec = util_spec 'ext', '1' do |s|
       s.extensions = %w[ext/extconf.rb]

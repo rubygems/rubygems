@@ -223,6 +223,7 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     @orig_gem_spec_cache = ENV['GEM_SPEC_CACHE']
     @orig_rubygems_gemdeps = ENV['RUBYGEMS_GEMDEPS']
     @orig_rubygems_host = ENV['RUBYGEMS_HOST']
+    @orig_gem_env_requirements = ENV.delete_if { |k, _v| k.start_with?('GEM_REQUIREMENT_') }
 
     ENV['GEM_VENDOR'] = nil
 
@@ -375,6 +376,9 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     ENV['GEM_SPEC_CACHE'] = @orig_gem_spec_cache
     ENV['RUBYGEMS_GEMDEPS'] = @orig_rubygems_gemdeps
     ENV['RUBYGEMS_HOST'] = @orig_rubygems_host
+
+    ENV.delete_if { |k, _v| k.start_with?('GEM_REQUIREMENT_') }
+    ENV.update(@orig_gem_env_requirements)
 
     Gem.ruby = @orig_ruby if @orig_ruby
 

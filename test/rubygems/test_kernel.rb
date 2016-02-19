@@ -69,8 +69,6 @@ class TestKernel < Gem::TestCase
     assert_raises(Gem::LoadError) { gem('a', '= 1') }
     assert gem('a', '> 1')
     assert_equal @a2, Gem.loaded_specs['a']
-  ensure
-    ENV.delete("GEM_REQUIREMENT_A")
   end
 
   def test_gem_conflicting

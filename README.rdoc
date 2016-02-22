@@ -26,8 +26,8 @@ See UPGRADING.rdoc for more details and alternative instructions.
 
 If you don't have RubyGems installed, you can still do it manually:
 
-* Download from: https://rubygems.org/pages/download
-* Unpack into a directory and cd there
+* Download from: https://rubygems.org/pages/download, unpack, and cd there
+* OR clone this repository and cd there
 * Install with: ruby setup.rb  # you may need admin/root privilege
 
 For more details and other options, see:

@@ -1,11 +1,6 @@
 I'm having a problem or would like to suggest a feature.
 
-Here are my current envrionment details:
-
-```
-$ gem env version
-PASTE HERE
-```
+My current problem is _________
 
 This issue is related to:
 
@@ -14,5 +9,12 @@ This issue is related to:
   - [ ] Publishing a library
   - [ ] The command line `gem`
   - [ ] Other
+
+Here are my current envrionment details:
+
+```
+$ gem env version
+PASTE HERE
+```
 
 I will abide by the [code of conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md).

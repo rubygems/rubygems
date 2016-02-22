@@ -6,6 +6,7 @@ Minor enhancements:
 
 * RubyGems now defaults the `gem push` to the gem's "allowed_push_host"
   metadata setting.  Pull request #1486 by Josh Lane.
+* Update bundled Molinillo to 0.4.3. Pull request #1493 by Samuel E. Giddins.
 
 Bug fixes:
 

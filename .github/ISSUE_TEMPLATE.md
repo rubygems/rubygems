@@ -3,7 +3,7 @@ I'm having a problem or would like to suggest a feature.
 Here are my current envrionment details:
 
 ```
-$ gem env
+$ gem env version
 PASTE HERE
 ```
 

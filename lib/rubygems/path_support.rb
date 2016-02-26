@@ -29,7 +29,7 @@ class Gem::PathSupport
       @home   = @home.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
     end
 
-    @path = split_gem_path env["GEM_PATH"], @home
+    @path = split_gem_path env["GEM_PATH"] || '', @home
 
     @spec_cache_dir = env["GEM_SPEC_CACHE"] || Gem.default_spec_cache_dir
 
@@ -46,7 +46,9 @@ class Gem::PathSupport
 
     gem_path = []
 
-    if gpaths
+    if gpaths.empty?
+      gem_path = default_path
+    else
       gem_path = gpaths.split(Gem.path_separator)
       # Handle the path_separator being set to a regexp, which will cause
       # end_with? to error
@@ -61,8 +63,6 @@ class Gem::PathSupport
       end
 
       gem_path << home
-    else
-      gem_path = default_path
     end
 
     gem_path.uniq

@@ -1,17 +1,43 @@
 # coding: UTF-8
 
-=== 2.6
+=== 2.6.0 / 2016-02-26
 
 Minor enhancements:
 
 * RubyGems now defaults the `gem push` to the gem's "allowed_push_host"
   metadata setting.  Pull request #1486 by Josh Lane.
 * Update bundled Molinillo to 0.4.3. Pull request #1493 by Samuel E. Giddins.
+* Add version option to gem open command. Pull request #1483 by Hrvoje
+  Šimić.
+* Feature/add silent flag. Pull request #1455 by Luis Sagastume.
+* Allow specifying gem requirements via env variables. Pull request #1472
+  by Samuel E. Giddins.
 
 Bug fixes:
 
 * RubyGems now stores `gem push` credentials under the host you signed-in for.
   Pull request #1485 by Josh Lane.
+* Move `coding` location to first line. Pull request #1471 by SHIBATA
+  Hiroshi.
+* [PathSupport] Handle a regexp path separator. Pull request #1469 by
+  Samuel E. Giddins.
+* Clean up the PathSupport object. Pull request #1094 by Aaron Patterson.
+* Join with File::PATH_SEPARATOR in Gem.use_paths. Pull request #1476 by
+  Samuel E. Giddins.
+* Handle when the gem home and gem path arent set in the config file. Pull
+  request #1478 by Samuel E. Giddins.
+* Terminate TimeoutHandler. Pull request #1479 by Nobuyoshi Nakada.
+* Remove redundant cache. Pull request #1482 by Eileen M. Uchitelle.
+* Freeze `Gem::Version@segments` instance variable. Pull request #1487 by
+  Ben Dean.
+* Gem cleanup is trying to uninstall gems outside GEM_HOME and reporting
+  an error after it tries. Pull request #1353 by Luis Sagastume.
+* Avoid duplicated sources. Pull request #1489 by Luis Sagastume.
+* Better description for quiet flag. Pull request #1491 by Luis Sagastume.
+* Raise error if find_by_name returns with nil. Pull request #1494 by
+  Zoltán Hegedüs.
+* Find_files only from loaded_gems when using gemdeps. Pull request #1277
+  by Michal Papis.
 
 === 2.5.2 / 2016-01-31
 

@@ -1021,6 +1021,34 @@ class TestGem < Gem::TestCase
     ENV['GEM_PATH'] = orig_path
   end
 
+  def test_setting_paths_does_not_warn_about_unknown_keys
+    stdout, stderr = capture_io do
+      Gem.paths = { 'foo'      => [],
+                    'bar'      => Object.new,
+                    'GEM_HOME' => Gem.paths.home,
+                    'GEM_PATH' => 'foo' }
+    end
+    assert_equal ['foo', Gem.paths.home], Gem.paths.path
+    assert_equal '', stderr
+    assert_equal '', stdout
+  end
+
+  def test_setting_paths_does_not_mutate_parameter_object
+    Gem.paths = { 'GEM_HOME' => Gem.paths.home,
+                  'GEM_PATH' => 'foo' }.freeze
+    assert_equal ['foo', Gem.paths.home], Gem.paths.path
+  end
+
+  def test_deprecated_paths=
+    stdout, stderr = capture_io do
+      Gem.paths = { 'GEM_HOME' => Gem.paths.home,
+                    'GEM_PATH' => [Gem.paths.home, 'foo'] }
+    end
+    assert_equal [Gem.paths.home, 'foo'], Gem.paths.path
+    assert_match(/Array values in the parameter are deprecated. Please use a String or nil/, stderr)
+    assert_equal '', stdout
+  end
+
   def test_self_use_paths
     util_ensure_gem_dirs
 

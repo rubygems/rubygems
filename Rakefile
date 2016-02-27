@@ -354,7 +354,7 @@ SHA256 Checksums:
 
       io.flush
 
-      sh ENV['EDITOR'], io.path
+      sh(ENV['EDITOR'] || 'vim', io.path)
 
       FileUtils.cp io.path, path
     end

@@ -94,7 +94,7 @@ accepted. There should also be more detailed information in the comments.
   reference the existing issue.
 * *abandonded* - This is an issue/pull request that has aged off, is no longer
   applicable or similar.
-* *declined* - An issue that won't be fixed/implemented or a pull request that 
+* *declined* - An issue that won't be fixed/implemented or a pull request that
   is not accepted.
 * *deprecated* - An issue/pull request that no longer applies to the actively
   maintained codebase.

@@ -1,5 +1,16 @@
 # coding: UTF-8
 
+=== 2.6.1 / 2016-02-28
+
+Bug fixes:
+
+* Ensure `default_path` and `home` are set for paths. Pull request #1513
+  by Aaron Patterson.
+* Restore but deprecate support for Array values on `Gem.paths=`. Pull
+  request #1514 by Aaron Patterson.
+* Fix invalid gem file preventing gem install from working. Pull request
+  #1499 by Luis Sagastume.
+
 === 2.6.0 / 2016-02-26
 
 Minor enhancements:

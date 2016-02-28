@@ -52,6 +52,12 @@ committers to maintain familiarity with RubyGems activity and to improve the
 security of RubyGems by preventing idle committers from having their commit
 permissions compromised or exposed.
 
+All contributions to RubyGems, both by committers and non-commiters, are made
+via GitHub pull requests. In particular, no commits should be pushed directly
+to master or stable branches. Pull requests are merged using Homu by one of the
+maintainers listed in MAINTAINERS.md to ensure that master is always passing on
+continuous integration.
+
 == Changing These Policies
 
 These policies were set in order to reduce the burden of maintenance and to

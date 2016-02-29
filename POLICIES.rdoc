@@ -1,3 +1,16 @@
+== Pull Requests
+
+Contributions to RubyGems are made via GitHub pull requests, which must be
+approved by a project committer other than the author. To approve a PR, a
+maintainer can leave a comment including the text "@homu r+", indicating that
+they have reviewed the PR and approve it. [Homu](http://homu.io) will then
+automatically create a merge commit, test the merge, and land the PR if the
+merge commit passes the tests.
+
+This process guarantees that our release branches are always be green, and
+reduces siloing of information to a single contributor. For a full list of
+possible commands, see [the Homu documentation](http://homu.io).
+
 == Long-Term Support
 
 RubyGems long-term support policy will be similar to and follow the Ruby
@@ -51,12 +64,6 @@ This is designed to improve the maintainability of RubyGems by requiring
 committers to maintain familiarity with RubyGems activity and to improve the
 security of RubyGems by preventing idle committers from having their commit
 permissions compromised or exposed.
-
-All contributions to RubyGems, both by committers and non-commiters, are made
-via GitHub pull requests. In particular, no commits should be pushed directly
-to master or stable branches. Pull requests are merged using Homu by one of the
-maintainers listed in MAINTAINERS.md to ensure that master is always passing on
-continuous integration.
 
 == Changing These Policies
 

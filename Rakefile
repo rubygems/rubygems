@@ -173,7 +173,7 @@ task :package => %W[
 
 desc "Upload release to gemcutter S3"
 task :upload_to_gemcutter do
-  sh "s3cmd put -P pkg/rubygems-update-#{v}.gem pkg/rubygems-#{v}.zip pkg/rubygems-#{v}.tgz s3://production.s3.rubygems.org/rubygems/"
+  sh "s3cmd put -P pkg/rubygems-update-#{v}.gem pkg/rubygems-#{v}.zip pkg/rubygems-#{v}.tgz s3://oregon.production.s3.rubygems.org/rubygems/"
 end
 
 desc "Upload release to rubygems.org"

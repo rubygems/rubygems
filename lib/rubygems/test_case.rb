@@ -223,7 +223,10 @@ class Gem::TestCase < MiniTest::Unit::TestCase
     @orig_gem_spec_cache = ENV['GEM_SPEC_CACHE']
     @orig_rubygems_gemdeps = ENV['RUBYGEMS_GEMDEPS']
     @orig_rubygems_host = ENV['RUBYGEMS_HOST']
-    @orig_gem_env_requirements = ENV.delete_if { |k, _v| k.start_with?('GEM_REQUIREMENT_') }
+    ENV.keys.find_all { |k| k.start_with?('GEM_REQUIREMENT_') }.each do |k|
+      ENV.delete k
+    end
+    @orig_gem_env_requirements = ENV.to_hash
 
     ENV['GEM_VENDOR'] = nil
 
@@ -370,15 +373,17 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     FileUtils.rm_rf @tempdir unless ENV['KEEP_FILES']
 
+    ENV.clear
+    @orig_gem_env_requirements.each do |k,v|
+      ENV[k] = v
+    end
+
     ENV['GEM_HOME']   = @orig_gem_home
     ENV['GEM_PATH']   = @orig_gem_path
     ENV['GEM_VENDOR'] = @orig_gem_vendor
     ENV['GEM_SPEC_CACHE'] = @orig_gem_spec_cache
     ENV['RUBYGEMS_GEMDEPS'] = @orig_rubygems_gemdeps
     ENV['RUBYGEMS_HOST'] = @orig_rubygems_host
-
-    ENV.delete_if { |k, _v| k.start_with?('GEM_REQUIREMENT_') }
-    ENV.update(@orig_gem_env_requirements)
 
     Gem.ruby = @orig_ruby if @orig_ruby
 

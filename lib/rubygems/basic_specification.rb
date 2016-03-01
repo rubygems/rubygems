@@ -320,6 +320,7 @@ class Gem::BasicSpecification
   def have_extensions?; !extensions.empty?; end
 
   def have_file?(file, suffixes)
+    file = sub_ext(file, RbConfig::CONFIG['DLEXT']) if File.extname(file) == '.so'
     return true if raw_require_paths.any? do |path|
       base = File.join(gems_dir, full_name, path.untaint, file).untaint
       suffixes.any? { |suf| File.file? base + suf }
@@ -330,6 +331,16 @@ class Gem::BasicSpecification
       suffixes.any? { |suf| File.file? base + suf }
     else
       false
+    end
+  end
+
+  def sub_ext(file, extension)
+    basename = file.chomp(File.extname(file))
+    if extension && extension.length > 0
+      extension = ".#{extension}" unless extension.start_with?('.')
+      "#{basename}#{extension}"
+    else
+      basename
     end
   end
 

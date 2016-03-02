@@ -243,11 +243,15 @@ module Gem
     requirements = Gem::Requirement.default if
       requirements.empty?
 
+    find_spec_for_exe(name, exec_name, requirements).bin_file exec_name
+  end
+
+  def self.find_spec_for_exe name, exec_name, requirements
     dep = Gem::Dependency.new name, requirements
 
     loaded = Gem.loaded_specs[name]
 
-    return loaded.bin_file exec_name if loaded && dep.matches_spec?(loaded)
+    return loaded if loaded && dep.matches_spec?(loaded)
 
     specs = dep.matching_specs(true)
 
@@ -263,6 +267,24 @@ module Gem
       raise Gem::GemNotFoundException, msg
     end
 
+    spec
+  end
+  private_class_method :find_spec_for_exe
+
+  ##
+  # Find the full path to the executable for gem +name+.  If the +exec_name+
+  # is not given, the gem's default_executable is chosen, otherwise the
+  # specified executable's path is returned.  +requirements+ allows
+  # you to specify specific gem versions.
+  #
+  # A side effect of this method is that it will activate the gem that
+  # contains the executable.
+  #
+  # This method should *only* be used in bin stub files.
+
+  def self.activate_bin_path name, exec_name, requirement # :nodoc:
+    spec = find_spec_for_exe name, exec_name, [requirement]
+    Gem::LOADED_SPECS_MUTEX.synchronize { spec.activate }
     spec.bin_file exec_name
   end
 

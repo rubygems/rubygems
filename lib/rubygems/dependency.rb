@@ -286,7 +286,9 @@ class Gem::Dependency
       }
     end
 
-    matches.sort_by { |s| s.sort_obj } # HACK: shouldn't be needed
+    # `stubs_for` returns oldest first, but `matching_specs` is supposed to
+    # return newest first, so just reverse the list
+    matches.reverse
   end
 
   ##
@@ -334,6 +336,6 @@ class Gem::Dependency
 
     matches.delete_if { |spec| spec.nil? || spec.version.prerelease? } unless prerelease?
 
-    matches.last
+    matches.first
   end
 end

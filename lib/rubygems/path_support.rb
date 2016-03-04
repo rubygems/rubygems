@@ -47,7 +47,7 @@ class Gem::PathSupport
     gem_path = []
 
     if gpaths
-      gem_path = gpaths.split(Gem.path_separator)
+      gem_path = gpaths.split(Gem.path_separator).map { |p| CGI.unescape(p) }
       # Handle the path_separator being set to a regexp, which will cause
       # end_with? to error
       if gpaths =~ /#{Gem.path_separator}\z/

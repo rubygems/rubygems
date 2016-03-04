@@ -1033,6 +1033,21 @@ class TestGem < Gem::TestCase
     assert_equal '', stdout
   end
 
+  def test_url_support_for_paths
+    Gem.use_paths Gem.paths.home, 'http://example.com'
+    assert_equal ['http://example.com', Gem.paths.home], Gem.paths.path
+  end
+
+  def test_url_support_for_paths_via_deprecated_interface
+    stdout, stderr = capture_io do
+      Gem.paths = { 'GEM_HOME' => Gem.paths.home,
+                    'GEM_PATH' => [Gem.paths.home, 'http://example.com'] }
+    end
+    assert_equal [Gem.paths.home, 'http://example.com'], Gem.paths.path
+    assert_match(/Array values in the parameter are deprecated. Please use a String or nil/, stderr)
+    assert_equal '', stdout
+  end
+
   def test_setting_paths_does_not_mutate_parameter_object
     Gem.paths = { 'GEM_HOME' => Gem.paths.home,
                   'GEM_PATH' => 'foo' }.freeze

@@ -9,6 +9,12 @@
 require 'rbconfig'
 require 'thread'
 
+begin
+  require 'cgi/util'
+rescue LoadError
+  require 'cgi' # 1.8 support
+end
+
 module Gem
   VERSION = '2.6.1'
 end
@@ -386,7 +392,7 @@ Array values in the parameter are deprecated. Please use a String or nil.
 An Array was passed in from #{caller[3]}
             eowarn
           end
-          target[k] = v.join File::PATH_SEPARATOR
+          target[k] = v.map { |path| CGI.escape path }.join File::PATH_SEPARATOR
         end
       else
         target[k] = v
@@ -1000,7 +1006,12 @@ An Array was passed in from #{caller[3]}
   def self.use_paths(home, *paths)
     paths.flatten!
     paths.compact!
-    hash = { "GEM_HOME" => home, "GEM_PATH" => paths.empty? ? home : paths.join(File::PATH_SEPARATOR) }
+    path = if paths.empty?
+             home
+           else
+             paths.map { |p| CGI.escape p }.join File::PATH_SEPARATOR
+           end
+    hash = { "GEM_HOME" => home, "GEM_PATH" => path }
     hash.delete_if { |_, v| v.nil? }
     self.paths = hash
   end

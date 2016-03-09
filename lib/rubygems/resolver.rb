@@ -193,7 +193,7 @@ class Gem::Resolver
     conflict = e.conflicts.values.first
     raise Gem::DependencyResolutionError, Conflict.new(conflict.requirement_trees.first.first, conflict.existing, conflict.requirement)
   ensure
-    @output.close if @output and !debug?
+    @output.close if defined?(@output) and !debug?
   end
 
   ##

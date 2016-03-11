@@ -26,7 +26,6 @@ end
 
 Hoe::RUBY_FLAGS << " --disable-gems" if RUBY_VERSION > "1.9"
 
-Hoe.plugin :minitest
 Hoe.plugin :git
 Hoe.plugin :travis
 
@@ -78,6 +77,7 @@ end
 
 v = hoe.version
 
+hoe.testlib      = :minitest
 hoe.test_prelude = 'gem "minitest", "~> 4.0"'
 
 Rake::Task['docs'].clear

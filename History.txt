@@ -1,5 +1,18 @@
 # coding: UTF-8
 
+=== 2.6.2 / 2016-03-12
+
+Bug fixes:
+
+* Fix wrong version of gem activation for bin stub. Pull request #1527 by
+  Aaron Patterson.
+* Speed up gem activation failures. Pull request #1539 by Aaron Patterson.
+* Fix platform sorting in the resolver. Pull request #1542 by Samuel E.
+  Giddins.
+* Ensure we unlock the monitor even if try_activate throws. Pull request
+  #1538 by Charles Oliver Nutter.
+
+
 === 2.6.1 / 2016-02-28
 
 Bug fixes:

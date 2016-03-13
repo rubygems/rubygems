@@ -6,6 +6,7 @@ URIS = [
   URI('https://rubygems.org'),
   URI('https://staging.rubygems.org'),
   URI('https://s3.amazonaws.com'),
+  URI('https://fastly.rubygems.org'),
   URI('https://rubygems.global.ssl.fastly.net'),
 ]
 

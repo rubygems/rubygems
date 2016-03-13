@@ -55,5 +55,9 @@ if ENV["TRAVIS"] || ENV["TEST_SSL"]
       assert_https('rubygems.global.ssl.fastly.net')
     end
 
+    def test_accessing_new_index
+      assert_https('fastly.rubygems.org')
+    end
+
   end
 end

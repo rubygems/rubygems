@@ -171,13 +171,13 @@ task :package => %W[
        pkg/rubygems-#{v}.zip
      ]
 
-desc "Upload release to gemcutter S3"
-task :upload_to_gemcutter do
-  sh "s3cmd put -P pkg/rubygems-update-#{v}.gem pkg/rubygems-#{v}.zip pkg/rubygems-#{v}.tgz s3://oregon.production.s3.rubygems.org/rubygems/"
+desc "Upload release to S3"
+task :upload_to_s3 do
+  sh "s3cmd put -P pkg/rubygems-#{v}.zip pkg/rubygems-#{v}.tgz s3://oregon.production.s3.rubygems.org/rubygems/"
 end
 
 desc "Upload release to rubygems.org"
-task :upload => %w[upload_to_gemcutter]
+task :upload => %w[upload_to_s3]
 
 on_master = `git branch --list master`.strip == '* master'
 on_master = true if ENV['FORCE']

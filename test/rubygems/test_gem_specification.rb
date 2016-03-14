@@ -3373,7 +3373,7 @@ end
     assert Gem::Specification.find_by_name "a", "1"
     assert Gem::Specification.find_by_name "a", ">1"
 
-    assert_raises Gem::LoadError do
+    assert_raises Gem::MissingSpecError do
       Gem::Specification.find_by_name "monkeys"
     end
   end
@@ -3387,7 +3387,7 @@ end
 
     assert Gem::Specification.find_by_name "b"
 
-    assert_raises Gem::LoadError do
+    assert_raises Gem::MissingSpecVersionError do
       Gem::Specification.find_by_name "b", "1"
     end
 

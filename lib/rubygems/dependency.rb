@@ -307,18 +307,10 @@ class Gem::Dependency
       specs = Gem::Specification.stubs_for name
 
       if specs.empty?
-        total = Gem::Specification.stubs.size
-        msg   = "Could not find '#{name}' (#{requirement}) among #{total} total gem(s)\n".dup
+        raise Gem::MissingSpecError.new name, requirement
       else
-        specs = specs.map(&:full_name)
-        msg   = "Could not find '#{name}' (#{requirement}) - did find: [#{specs.join ','}]\n".dup
+        raise Gem::MissingSpecVersionError.new name, requirement, specs
       end
-      msg << "Checked in 'GEM_PATH=#{Gem.path.join(File::PATH_SEPARATOR)}', execute `gem env` for more information"
-
-      error = Gem::LoadError.new(msg)
-      error.name        = self.name
-      error.requirement = self.requirement
-      raise error
     end
 
     # TODO: any other resolver validations should go here

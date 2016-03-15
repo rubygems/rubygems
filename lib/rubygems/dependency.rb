@@ -286,9 +286,7 @@ class Gem::Dependency
       }
     end
 
-    # `stubs_for` returns oldest first, but `matching_specs` is supposed to
-    # return newest first, so just reverse the list
-    matches.reverse
+    matches
   end
 
   ##

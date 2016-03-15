@@ -959,6 +959,19 @@ class TestGem < Gem::TestCase
     assert Gem.try_activate('b'), 'try_activate should still return true'
   end
 
+  def test_spec_order_is_consistent
+    b1 = util_spec 'b', '1.0'
+    b2 = util_spec 'b', '2.0'
+    b3 = util_spec 'b', '3.0'
+
+    install_specs b1, b2, b3
+
+    specs1 = Gem::Specification.stubs.find_all { |s| s.name == 'b' }
+    Gem::Specification.reset
+    specs2 = Gem::Specification.stubs_for('b')
+    assert_equal specs1.map(&:version), specs2.map(&:version)
+  end
+
   def test_self_try_activate_missing_dep
     b = util_spec 'b', '1.0'
     a = util_spec 'a', '1.0', 'b' => '>= 1.0'

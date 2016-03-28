@@ -309,6 +309,14 @@ module Gem
   end
 
   ##
+  # Configure Gem.paths with the user installation directory
+
+  def self.use_user_dir
+    ENV["GEM_HOME"] = user_dir
+    Gem.paths = ENV
+  end
+
+  ##
   # The path to standard location of the user's .gemrc file.
 
   def self.config_file

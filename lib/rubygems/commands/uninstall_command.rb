@@ -15,7 +15,7 @@ class Gem::Commands::UninstallCommand < Gem::Command
 
   def initialize
     super 'uninstall', 'Uninstall gems from the local repository',
-          :version => Gem::Requirement.default, :user_install => true,
+          :version => Gem::Requirement.default,
           :check_dev => false, :vendor => false
 
     add_option('-a', '--[no-]all',

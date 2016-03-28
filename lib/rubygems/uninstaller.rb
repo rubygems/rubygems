@@ -53,6 +53,7 @@ class Gem::Uninstaller
     @bin_dir            = options[:bin_dir]
     @format_executable  = options[:format_executable]
     @abort_on_dependent = options[:abort_on_dependent]
+    @user_install       = options[:user_install] ? true : false
 
     # Indicate if development dependencies should be checked when
     # uninstalling. (default: false)
@@ -65,8 +66,8 @@ class Gem::Uninstaller
     end
 
     # only add user directory if install_dir is not set
-    @user_install = false
-    @user_install = options[:user_install] unless options[:install_dir]
+    # @user_install = false
+    #@user_install = options[:user_install] unless options[:install_dir]
   end
 
   ##
@@ -93,8 +94,7 @@ class Gem::Uninstaller
     end
 
     list, other_repo_specs = list.partition do |spec|
-      @gem_home == spec.base_dir or
-        (@user_install and spec.base_dir == Gem.user_dir)
+      @gem_home == spec.base_dir
     end
 
     list.sort!
@@ -238,8 +238,7 @@ class Gem::Uninstaller
   # uninstalled a gem, it is removed from that list.
 
   def remove(spec)
-    unless path_ok?(@gem_home, spec) or
-           (@user_install and path_ok?(Gem.user_dir, spec)) then
+    unless path_ok?(@gem_home, spec)
       e = Gem::GemNotInHomeException.new \
             "Gem '#{spec.full_name}' is not installed in directory #{@gem_home}"
       e.spec = spec

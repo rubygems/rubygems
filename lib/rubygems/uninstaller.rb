@@ -64,10 +64,6 @@ class Gem::Uninstaller
       @force_all = true
       @force_ignore = true
     end
-
-    # only add user directory if install_dir is not set
-    # @user_install = false
-    #@user_install = options[:user_install] unless options[:install_dir]
   end
 
   ##

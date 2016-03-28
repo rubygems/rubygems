@@ -115,6 +115,8 @@ that is a dependency of an existing gem.  You can use the
   end
 
   def execute
+    Gem.use_user_dir if options[:user_install]
+
     if options[:all] and not options[:args].empty? then
       uninstall_specific
     elsif options[:all] then

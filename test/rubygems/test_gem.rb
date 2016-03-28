@@ -228,6 +228,14 @@ class TestGem < Gem::TestCase
     assert_nil Gem::Specification.send(:class_variable_get, :@@all)
   end
 
+  def test_self_use_user_dir
+    refute_match(@userhome, Gem.dir)
+
+    Gem.use_user_dir
+
+    assert_match(@userhome, Gem.dir)
+  end
+
   def test_self_configuration
     expected = Gem::ConfigFile.new []
     Gem.configuration = nil

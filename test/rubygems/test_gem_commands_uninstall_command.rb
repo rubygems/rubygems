@@ -139,7 +139,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
 
     expected = "ERROR:  Use --install-dir or --user-install but not both\n"
 
-    assert_equal expected, @ui.error
+    assert_match expected, @ui.error
   end
 
   def test_execute_prerelease

@@ -374,8 +374,9 @@ module Gem
         when Array
           unless Gem::Deprecate.skip
             warn <<-eowarn
-Array values in the parameter are deprecated. Please use a String or nil.
-An Array was passed in from #{caller[3]}
+Array values in the parameter to `Gem.paths=` are deprecated.
+Please use a String or nil.
+An Array (#{env.inspect}) was passed in from #{caller[3]}
             eowarn
           end
           target[k] = v.join File::PATH_SEPARATOR

@@ -1083,7 +1083,7 @@ class TestGem < Gem::TestCase
                     'GEM_PATH' => [Gem.paths.home, 'foo'] }
     end
     assert_equal [Gem.paths.home, 'foo'], Gem.paths.path
-    assert_match(/Array values in the parameter are deprecated. Please use a String or nil/, stderr)
+    assert_match(/Array values in the parameter to `Gem.paths=` are deprecated.\nPlease use a String or nil/m, stderr)
     assert_equal '', stdout
   end
 

@@ -8,7 +8,7 @@ CVE-2013-4363.txt
 CVE-2015-3900.txt
 History.txt
 LICENSE.txt
-MAINTAINERS.md
+MAINTAINERS.txt
 MIT.txt
 Manifest.txt
 POLICIES.rdoc

@@ -1,5 +1,34 @@
 # coding: UTF-8
 
+=== 2.6.3 / 2016-04-05
+
+Minor enhancements:
+
+* Lazily calculate Gem::LoadError exception messages. Pull request #1550
+  by Aaron Patterson.
+* New fastly cert. Pull request #1548 by David Radcliffe.
+* Organize and cleanup SSL certs. Pull request #1555 by James Wen.
+* [RubyGems] Make deprecation message for paths= more helpful. Pull
+  request #1562 by Samuel Giddins.
+* Show default gems when using "gem list". Pull request #1570 by Luis
+  Sagastume.
+
+Bug fixes:
+
+* Stub ordering should be consistent regardless of how cache is populated.
+  Pull request #1552 by Aaron Patterson.
+* Handle cases when the @@stubs variable contains non-stubs. Pull request
+  #1558 by Per Lundberg.
+* Fix test on Windows for inconsistent temp path. Pull request #1554 by
+  Hiroshi Shirosaki.
+* Fix `Gem.find_spec_for_exe` picks oldest gem. Pull request #1566 by
+  Shinichi Maeshima.
+* [Owner] Fallback to email and userid when owner email is missing. Pull
+  request #1569 by Samuel Giddins.
+* [Installer] Handle nil existing executable. Pull request #1561 by Samuel
+  Giddins.
+* Allow two digit version numbers in the tests. Pull request #1575 by unak.
+
 === 2.6.2 / 2016-03-12
 
 Bug fixes:

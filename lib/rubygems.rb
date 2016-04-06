@@ -829,7 +829,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
       f.flock(File::LOCK_EX)
       f.read
     end
-  rescue Errno::EACCES
+  rescue Errno::EACCES, Errno::ENOTSUP
     open path, 'rb' do |f|
       f.read
     end

@@ -34,4 +34,3 @@ else
   ENV["GEM_PREV_VER"] = Gem::VERSION
   system(Gem.ruby, 'setup.rb', *ARGV)
 end
-

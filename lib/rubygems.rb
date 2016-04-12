@@ -154,6 +154,15 @@ module Gem
     specifications/default
   ]
 
+  ##
+  # Exception classes used in a Gem.read_binary +rescue+ statement. Not all of
+  # these are defined in Ruby 1.8.7, hence the need for this convoluted setup.
+
+  READ_BINARY_ERRORS = begin
+    read_binary_errors = [Errno::EACCES]
+    read_binary_errors << Errno::ENOTSUP if Errno.const_defined?(:ENOTSUP)
+  end.freeze
+
   @@win_platform = nil
 
   @configuration = nil
@@ -829,7 +838,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
       f.flock(File::LOCK_EX)
       f.read
     end
-  rescue Errno::EACCES, Errno::ENOTSUP
+  rescue *READ_BINARY_ERRORS
     open path, 'rb' do |f|
       f.read
     end

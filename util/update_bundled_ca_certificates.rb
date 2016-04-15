@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'net/http'
 require 'openssl'
+require 'fileutils'
 
 URIS = [
   URI('https://rubygems.org'),
@@ -8,6 +9,12 @@ URIS = [
   URI('https://staging.rubygems.org'),
   URI('https://fastly.rubygems.org'),
   URI('https://rubygems.global.ssl.fastly.net'),
+]
+
+HOSTNAMES_TO_MAP = [
+  'rubygems.global.ssl.fastly.net',
+  'rubygems.org',
+  'index.rubygems.org'
 ]
 
 def connect_to uri, store
@@ -79,13 +86,27 @@ def test_uri uri, certificates
   nil
 end
 
+def hostname_certificate_mapping certificates
+  mapping = {}
+  HOSTNAMES_TO_MAP.each do |hostname|
+    uri = URI("https://#{hostname}")
+    certificates.each do |cert|
+      match = test_uri uri, [cert]
+      mapping[hostname] = cert if match && !mapping.values.include?(cert)
+    end
+  end
+  mapping
+end
+
 def write_certificates certificates
-  certificates.each do |certificate|
+  mapping = hostname_certificate_mapping(certificates)
+  mapping.each do |hostname, certificate|
     subject = certificate.subject.to_a
     name = (subject.assoc('CN') || subject.assoc('OU'))[1]
     name = name.delete ' .-'
 
-    destination = "lib/rubygems/ssl_certs/#{name}.pem"
+    FileUtils.mkdir_p("lib/rubygems/ssl_certs/#{hostname}")
+    destination = "lib/rubygems/ssl_certs/#{hostname}/#{name}.pem"
 
     warn "overwriting certificate #{name}" if File.exist? destination
 

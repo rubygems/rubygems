@@ -161,6 +161,7 @@ module Gem
   READ_BINARY_ERRORS = begin
     read_binary_errors = [Errno::EACCES]
     read_binary_errors << Errno::ENOTSUP if Errno.const_defined?(:ENOTSUP)
+    read_binary_errors
   end.freeze
 
   @@win_platform = nil

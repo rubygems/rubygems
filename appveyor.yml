@@ -27,8 +27,8 @@ after_test:
 
 environment:
   matrix:
-    # FIXME: Tests don't even run on Ruby 1.9.3 on Windows on Appveyor.
-    # See: https://github.com/rubygems/rubygems/issues/1270
+    # FIXME: Tests don't even run on Ruby 1.9.3 on Appveyor.
+    # See: https://github.com/xaxadmin/rubygems/issues/1270
     #- ruby_version: "193"
     - ruby_version: "200"
     - ruby_version: "200-x64"

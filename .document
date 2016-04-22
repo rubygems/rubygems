@@ -1,5 +1,6 @@
-README
-LICENSE.txt
-GPL.txt
+index.html
+README.markdown
+!LICENSE
+!GPL
 lib
-release_notes
+!release_notes

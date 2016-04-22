@@ -1,38 +1,42 @@
----
-version: "{build}"
+version: '{build}'
 branches:
   only:
-    - master
-    - auto
-    - /[\d.]+/
+  - master
+  - auto
+  - /[\d.]+/
+skip_tags: true
 clone_depth: 10
-install:
-  - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
-  - SET GEM_HOME=%APPDATA%\.gem
-  - ruby --version
-  - gem --version
-  - gem install rake -v "~> 10.5" --no-rdoc --no-ri
-  - gem install hoe-travis --no-rdoc --no-ri
-  - gem install minitest -v "~> 4.7" --no-rdoc --no-ri
-  - rake travis:before --trace
-  - gem list --details
-  - gem env
-
-build: off
-test_script:
-  - rake -rdevkit travis
-after_test:
-  # FIXME: missing `diff` to check manifest differences
-  #- rake -rdevkit travis:after --trace
-
 environment:
   matrix:
-    # FIXME: Tests don't even run on Ruby 1.9.3 on Windows on Appveyor.
-    # See: https://github.com/rubygems/rubygems/issues/1270
-    #- ruby_version: "193"
-    - ruby_version: "200"
-    - ruby_version: "200-x64"
-    - ruby_version: "21"
-    - ruby_version: "21-x64"
-    - ruby_version: "22"
-    - ruby_version: "22-x64"
+  - ruby_version: 193
+  - ruby_version: 200
+  - ruby_version: 200-x64
+  - ruby_version: 21
+  - ruby_version: 21-x64
+  - ruby_version: 22
+  - ruby_version: 22-x64
+install:
+- ps: >-
+    $env:path = 'C:\Ruby' + $env:ruby_version + '\bin;' + $env:path
+
+    $env:TRAVIS = $TRUE
+
+    if ((gem query -i rake) -eq $False){ gem install rake --no-document }
+
+    if ((gem query -i hoe) -eq $False){ gem install hoe --no-document }
+
+    gem install minitest -v "~> 4.7" --no-document
+
+    ruby -v
+cache:
+- C:\Ruby193\lib\ruby\gems\1.9.1
+- C:\Ruby200\lib\ruby\gems\2.0.0
+- C:\Ruby200-x64\lib\ruby\gems\2.0.0
+- C:\Ruby21\lib\ruby\gems\2.1.0
+- C:\Ruby21-x64\lib\ruby\gems\2.1.0
+- C:\Ruby22\lib\ruby\gems\2.2.0
+- C:\Ruby22-x64\lib\ruby\gems\2.2.0
+build: off
+test_script:
+- cmd: rake -rdevkit test
+deploy: off

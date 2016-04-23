@@ -29,8 +29,11 @@ rvm:
 - 2.3.0
 - ruby-head
 env:
-  - "YAML=syck"
-  - "YAML=psych"
+  global:
+    - "TEST_SSL=true"
+  matrix:
+    - "YAML=syck"
+    - "YAML=psych"
 script: rake travis
 matrix:
   exclude:

@@ -19,7 +19,7 @@ install:
 - ps: >-
     $env:path = 'C:\Ruby' + $env:ruby_version + '\bin;' + $env:path
 
-    $env:TRAVIS = $TRUE
+    $env:TEST_SSL = $TRUE
 
     if ((gem query -i rake) -eq $False){ gem install rake --no-document }
 

@@ -676,13 +676,8 @@ class Gem::SilentUI < Gem::StreamUI
   def initialize
     reader, writer = nil, nil
 
-    begin
-      reader = File.open('/dev/null', 'r')
-      writer = File.open('/dev/null', 'w')
-    rescue Errno::ENOENT
-      reader = File.open('nul', 'r')
-      writer = File.open('nul', 'w')
-    end
+    reader = File.open(Gem::Util::NULL_DEVICE, 'r')
+    writer = File.open(Gem::Util::NULL_DEVICE, 'w')
 
     super reader, writer, writer, false
   end

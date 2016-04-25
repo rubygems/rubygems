@@ -1,5 +1,14 @@
 # coding: UTF-8
 
+=== 2.6.4 / ---
+
+Minor enhancements:
+
+* Use Gem::Util::NULL_DEVICE instead of hard coded strings. Pull request #1588
+  by Chris Charabaruk.
+* Use File.symlink on MS Windows if supported. Pull request #1418
+  by Nobuyoshi Nakada.
+
 === 2.6.3 / 2016-04-05
 
 Minor enhancements:

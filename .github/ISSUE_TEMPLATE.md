@@ -10,7 +10,7 @@ This issue is related to:
   - [ ] The command line `gem`
   - [ ] Other
 
-Here are my current envrionment details:
+Here are my current environment details:
 
 ```
 $ gem env version

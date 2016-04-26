@@ -5,6 +5,8 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'rubygems/util'
+
 begin
   require 'io/console'
 rescue LoadError
@@ -696,4 +698,3 @@ class Gem::SilentUI < Gem::StreamUI
     SilentProgressReporter.new(@outs, *args)
   end
 end
-

@@ -9,6 +9,14 @@ Minor enhancements:
 * Use File.symlink on MS Windows if supported. Pull request #1418
   by Nobuyoshi Nakada.
 
+Bug fixes:
+
+* Redact uri password from error output when gem fetch fails. Pull request
+  #1565 by Brian Fletcher.
+* Suppress warnings. Pull request #1594 by Nobuyoshi Nakada.
+* Escape user-supplied content served on web pages by `gem server` to avoid
+  potential XSS vulnerabilities. Samuel Giddins.
+
 === 2.6.3 / 2016-04-05
 
 Minor enhancements:

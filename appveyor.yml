@@ -19,8 +19,6 @@ install:
 - ps: >-
     $env:path = 'C:\Ruby' + $env:ruby_version + '\bin;' + $env:path
 
-    $env:TRAVIS = $TRUE
-
     if ((gem query -i rake) -eq $False){ gem install rake --no-document }
 
     if ((gem query -i hoe) -eq $False){ gem install hoe --no-document }

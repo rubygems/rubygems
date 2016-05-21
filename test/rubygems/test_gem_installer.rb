@@ -1106,6 +1106,41 @@ gem 'other', version
     assert_path_exists expected_makefile
   end
 
+  def test_install_extension_dir_is_removed_on_reinstall
+    @spec.extensions << "extconf.rb"
+    write_file File.join(@tempdir, "extconf.rb") do |io|
+      io.write <<-RUBY
+        require "mkmf"
+        create_makefile("#{@spec.name}")
+      RUBY
+    end
+
+    @spec.files += %w[extconf.rb]
+
+    path = Gem::Package.build @spec
+
+    # Install a gem with an extension
+    use_ui @ui do
+      installer = Gem::Installer.at path
+      installer.install
+    end
+
+    # pretend that a binary file was created as part of the build
+    should_be_removed = File.join(@spec.extension_dir, "#{@spec.name}.so")
+    write_file should_be_removed do |io|
+      io.write "DELETE ME ON REINSTALL"
+    end
+    assert_path_exists should_be_removed
+
+    # reinstall the gem, this is also the same as pristine
+    use_ui @ui do
+      installer = Gem::Installer.at path
+      installer.install
+    end
+
+    refute_path_exists should_be_removed
+  end
+
   def test_install_extension_and_script
     @spec.extensions << "extconf.rb"
     write_file File.join(@tempdir, "extconf.rb") do |io|

@@ -1669,6 +1669,21 @@ dependencies: []
     assert @a1.contains_requirable_file? 'code'
   end
 
+  def test_contains_requirable_file_so_extension
+    original_dlext = RbConfig::CONFIG['DLEXT']
+    RbConfig::CONFIG['DLEXT'] = 'dlext'
+    Gem.instance_variable_set(:@suffixes, nil)
+
+    code_dlext = File.join @a1.gem_dir, 'lib', 'code.dlext'
+    FileUtils.mkdir_p File.dirname code_dlext
+    FileUtils.touch code_dlext
+
+    assert @a1.contains_requirable_file?('code.so')
+    assert @a1.contains_requirable_file?('code')
+  ensure
+    RbConfig::CONFIG['DLEXT'] = original_dlext
+  end
+
   def test_contains_requirable_file_eh_extension
     skip "extensions don't quite work on jruby" if Gem.java_platform?
     ext_spec

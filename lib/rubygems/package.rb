@@ -385,7 +385,13 @@ EOM
           FileUtils.chmod entry.header.mode, destination
         end if entry.file?
 
-        File.symlink(entry.header.linkname, destination) if entry.symlink?
+        if entry.symlink?
+          begin 
+            File.symlink(entry.header.linkname, destination)
+          rescue NotImplementedError
+            # Not all Rubies support symlinks
+          end
+        end
 
         verbose destination
       end

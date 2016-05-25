@@ -4,37 +4,41 @@ require 'time'
 
 class CertificateBuilder
 
-  attr_reader :today
+  attr_reader :start
 
   def initialize key_size = 2048
-    today           = Time.now.utc
-    @today          = Time.utc today.year, today.month, today.day
+    @start          = Time.utc 2012, 01, 01, 00, 00, 00
     @end_of_time    = Time.utc 9999, 12, 31, 23, 59, 59
     @end_of_time_32 = Time.utc 2038, 01, 19, 03, 14, 07
 
+    @key_size = key_size
     @serial = 0
   end
 
-  def create_certificates(key, subject, issuer_key = key, issuer = subject,
-                          not_before: @today, not_after: :end_of_time)
+  def create_certificates(key, subject, issuer_key = key, issuer_cert = nil,
+                          not_before: @start, not_after: :end_of_time,
+                          is_ca: false)
     certificates = []
 
     not_before, not_before_32 = validity_for not_before
     not_after,  not_after_32  = validity_for not_after
+    issuer_cert, issuer_cert_32 = issuer_cert
 
     certificates <<
-      create_certificate(key, subject, issuer_key, issuer,
-                         not_before, not_after)
+      create_certificate(key, subject, issuer_key, issuer_cert,
+                         not_before, not_after, is_ca)
     certificates <<
-      create_certificate(key, subject, issuer_key, issuer,
-                         not_before_32, not_after_32)
+      create_certificate(key, subject, issuer_key, issuer_cert_32,
+                         not_before_32, not_after_32, is_ca)
 
     certificates
   end
 
-  def create_certificate key, subject, issuer_key, issuer, not_before, not_after
-    puts "creating cert - subject: #{subject}, issuer: #{issuer}"
+  def create_certificate(key, subject, issuer_key, issuer_cert,
+                         not_before, not_after, is_ca)
     cert = OpenSSL::X509::Certificate.new
+    issuer_cert ||= cert # if not specified, create self signing cert
+
     cert.version    = 2
     cert.serial     = 0
 
@@ -45,25 +49,34 @@ class CertificateBuilder
 
     cert.public_key = key.public_key
 
-    cert.subject =
-      OpenSSL::X509::Name.new [%W[CN #{subject}], %w[DC example]]
-    cert.issuer  =
-      OpenSSL::X509::Name.new [%W[CN #{issuer}],  %w[DC example]]
+    cert.subject = OpenSSL::X509::Name.new [%W[CN #{subject}], %w[DC example]]
+    cert.issuer  = issuer_cert.subject
 
-    ef = OpenSSL::X509::ExtensionFactory.new nil, cert
+    ef = OpenSSL::X509::ExtensionFactory.new issuer_cert, cert
 
     cert.extensions = [
-      ef.create_extension('subjectAltName', "email:#{subject}@example")
+      ef.create_extension('subjectAltName', "email:#{subject}@example"),
+      ef.create_extension('subjectKeyIdentifier', 'hash')
     ]
+
+    if cert != issuer_cert then # not self-signed cert
+      cert.add_extension ef.create_extension('authorityKeyIdentifier', 'keyid:always')
+    end
+
+    if is_ca then
+      cert.add_extension ef.create_extension('basicConstraints', 'CA:TRUE', true)
+      cert.add_extension ef.create_extension('keyUsage', 'keyCertSign', true)
+    end
 
     cert.sign issuer_key, OpenSSL::Digest::SHA1.new
 
+    puts "created cert - subject: #{cert.subject}, issuer: #{cert.issuer}"
     cert
   end
 
   def create_key
     puts "creating key"
-    OpenSSL::PKey::RSA.new 2048
+    OpenSSL::PKey::RSA.new @key_size
   end
 
   def create_keys names
@@ -108,37 +121,39 @@ keys = cb.create_keys [
 
 keys[:public] = keys[:private].public_key
 
-certs = {
-  alternate:
-    cb.create_certificates(keys[:alternate], 'alternate'),
-  child:
-    cb.create_certificates(keys[:child], 'child',
-                           keys[:private], 'nobody'),
-  expired:
-    cb.create_certificates(keys[:private], 'nobody',
-                           not_before: Time.at(0),
-                           not_after: Time.at(0)),
-  future:
-    cb.create_certificates(keys[:private], 'nobody',
-                           not_before: :end_of_time,
-                           not_after: :end_of_time),
-  grandchild:
-    cb.create_certificates(keys[:grandchild], 'grandchild',
-                           keys[:child], 'child'),
-  invalid_issuer:
-    cb.create_certificates(keys[:invalid], 'invalid',
-                           keys[:invalid], 'nobody'),
-  invalid_signer:
-    cb.create_certificates(keys[:invalid], 'invalid',
-                           keys[:private], 'invalid'),
-  invalidchild:
-    cb.create_certificates(keys[:invalidchild], 'invalidchild',
-                           keys[:invalid], 'child'),
-  public:
-    cb.create_certificates(keys[:private], 'nobody'),
-  wrong_key:
-    cb.create_certificates(keys[:alternate], 'nobody'),
-}
+certs = {}
+certs[:public] =
+  cb.create_certificates(keys[:private], 'nobody',
+                         is_ca: true)
+certs[:child] =
+  cb.create_certificates(keys[:child], 'child',
+                         keys[:private], certs[:public],
+                         is_ca: true)
+certs[:alternate] =
+  cb.create_certificates(keys[:alternate], 'alternate')
+certs[:expired] =
+  cb.create_certificates(keys[:private], 'nobody',
+                         not_before: Time.at(0),
+                         not_after: Time.at(0))
+certs[:future] =
+  cb.create_certificates(keys[:private], 'nobody',
+                         not_before: :end_of_time,
+                         not_after: :end_of_time)
+certs[:invalid_issuer] =
+  cb.create_certificates(keys[:invalid], 'invalid',
+                         keys[:invalid], certs[:public],
+                         is_ca: true)
+certs[:grandchild] =
+  cb.create_certificates(keys[:grandchild], 'grandchild',
+                         keys[:child], certs[:child])
+certs[:invalid_signer] =
+  cb.create_certificates(keys[:invalid], 'invalid',
+                         keys[:private], certs[:invalid])
+certs[:invalidchild] =
+  cb.create_certificates(keys[:invalidchild], 'invalidchild',
+                         keys[:invalid], certs[:child])
+certs[:wrong_key] =
+  cb.create_certificates(keys[:alternate], 'nobody')
 
 base_dir = 'test/rubygems'
 

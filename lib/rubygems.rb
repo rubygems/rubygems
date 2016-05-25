@@ -164,6 +164,16 @@ module Gem
     read_binary_errors
   end.freeze
 
+  ##
+  # Exception classes used in Gem.write_binary +rescue+ statement. Not all of
+  # these are defined in Ruby 1.8.7.
+
+  WRITE_BINARY_ERRORS = begin
+    write_binary_errors = []
+    write_binary_errors << Errno::ENOTSUP if Errno.const_defined(:ENOTSUP)
+    write_binary_errors
+  end.freeze
+
   @@win_platform = nil
 
   @configuration = nil
@@ -859,7 +869,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     open(path, 'wb') do |io|
       begin
         io.flock(File::LOCK_EX)
-      rescue Errno::ENOTSUP
+      rescue *WRITE_BINARY_ERRORS
       end
       io.write data
     end

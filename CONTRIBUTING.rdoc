@@ -113,7 +113,7 @@ request pertains too. Not all issues will have a category.
   not a network related API.
 * <b>command</b> - related to something in <tt>Gem::Commands</tt>
 * <b>install</b> - related to gem installations
-* <b>documentation</b> - related to updating / fixing / clarifiying documentation or
+* <b>documentation</b> - related to updating / fixing / clarifying documentation or
   guides
 
 All category labels are the same blue color.

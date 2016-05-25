@@ -170,7 +170,7 @@ module Gem
 
   WRITE_BINARY_ERRORS = begin
     write_binary_errors = []
-    write_binary_errors << Errno::ENOTSUP if Errno.const_defined(:ENOTSUP)
+    write_binary_errors << Errno::ENOTSUP if Errno.const_defined?(:ENOTSUP)
     write_binary_errors
   end.freeze
 

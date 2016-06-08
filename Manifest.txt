@@ -49,6 +49,7 @@ lib/rubygems/commands/rdoc_command.rb
 lib/rubygems/commands/search_command.rb
 lib/rubygems/commands/server_command.rb
 lib/rubygems/commands/setup_command.rb
+lib/rubygems/commands/signin_command.rb
 lib/rubygems/commands/sources_command.rb
 lib/rubygems/commands/specification_command.rb
 lib/rubygems/commands/stale_command.rb
@@ -267,6 +268,7 @@ test/rubygems/test_gem_commands_query_command.rb
 test/rubygems/test_gem_commands_search_command.rb
 test/rubygems/test_gem_commands_server_command.rb
 test/rubygems/test_gem_commands_setup_command.rb
+test/rubygems/test_gem_commands_signin_command.rb
 test/rubygems/test_gem_commands_sources_command.rb
 test/rubygems/test_gem_commands_specification_command.rb
 test/rubygems/test_gem_commands_stale_command.rb

@@ -1,24 +1,15 @@
 ---
 after_script:
-- rake travis:after -t
+- util/ci after_script
 before_script:
-- gem uninstall executable-hooks gem-wrappers -x --force -i `gem env home`@global
-- gem install rake -v '~> 10.5' --no-document
-- gem install hoe-travis --no-document
-- gem install minitest -v '~> 4.7' --no-document
-- rake travis:before -t
-- gem list --details
-- gem env
+- util/ci before_script
 language: ruby
-notifications:
-  email:
-  - drbrain@segment7.net
-  - evan+notify@phx.io
 branches:
   only:
     - master
     - auto
     - /[\d.]+/
+    - /.+-stable$/
 rvm:
 - 1.8.7
 - 1.9.2
@@ -26,26 +17,29 @@ rvm:
 - 2.0.0
 - 2.1.7
 - 2.2.3
-- 2.3.0
+- 2.3.1
 - ruby-head
 env:
-  - "YAML=syck"
-  - "YAML=psych"
-script: rake travis
+  - "TEST_TOOL=rubygems YAML=syck"
+  - "TEST_TOOL=rubygems YAML=psych"
+  - "TEST_TOOL=bundler RGV=master"
+script:
+- util/ci script
 matrix:
   exclude:
     - rvm: 1.8.7
-      env: "YAML=psych"
+      env: "TEST_TOOL=rubygems YAML=psych"
+    - rvm: 1.9.2
+      env: "TEST_TOOL=bundler RGV=master"
     - rvm: 2.0.0
-      env: "YAML=syck"
+      env: "TEST_TOOL=rubygems YAML=syck"
     - rvm: 2.1.7
-      env: "YAML=syck"
+      env: "TEST_TOOL=rubygems YAML=syck"
     - rvm: 2.2.3
-      env: "YAML=syck"
-    - rvm: 2.3.0
-      env: "YAML=syck"
+      env: "TEST_TOOL=rubygems YAML=syck"
+    - rvm: 2.3.1
+      env: "TEST_TOOL=rubygems YAML=syck"
     - rvm: ruby-head
-      env: "YAML=syck"
+      env: "TEST_TOOL=rubygems YAML=syck"
   allow_failures:
     - rvm: ruby-head
-sudo: false

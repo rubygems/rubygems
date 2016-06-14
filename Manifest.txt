@@ -135,7 +135,17 @@ lib/rubygems/resolver/lock_set.rb
 lib/rubygems/resolver/lock_specification.rb
 lib/rubygems/resolver/molinillo.rb
 lib/rubygems/resolver/molinillo/lib/molinillo.rb
+lib/rubygems/resolver/molinillo/lib/molinillo/delegates/resolution_state.rb
+lib/rubygems/resolver/molinillo/lib/molinillo/delegates/specification_provider.rb
 lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph.rb
+lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/action.rb
+lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/add_edge_no_circular.rb
+lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/add_vertex.rb
+lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/detach_vertex_named.rb
+lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/log.rb
+lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/set_payload.rb
+lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/tag.rb
+lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/vertex.rb
 lib/rubygems/resolver/molinillo/lib/molinillo/errors.rb
 lib/rubygems/resolver/molinillo/lib/molinillo/gem_metadata.rb
 lib/rubygems/resolver/molinillo/lib/molinillo/modules/specification_provider.rb

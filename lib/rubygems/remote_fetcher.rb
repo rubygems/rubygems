@@ -107,6 +107,9 @@ class Gem::RemoteFetcher
     rescue Resolv::ResolvError => e
       verbose "Getting SRV record failed: #{e}"
       uri
+    rescue SocketError => e
+      verbose "Getting SRV record failed: #{e}"
+      uri
     else
       target = res.target.to_s.strip
 

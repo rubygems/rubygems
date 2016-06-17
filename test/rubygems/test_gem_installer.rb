@@ -1150,6 +1150,8 @@ gem 'other', version
       RUBY
     end
 
+    write_file File.join(@tempdir, "depend")
+
     write_file File.join(@tempdir, "a.c") do |io|
       io.write <<-C
       #include <ruby.h>
@@ -1162,7 +1164,7 @@ gem 'other', version
       io.write "# b.rb"
     end
 
-    @spec.files += %w[extconf.rb lib/b.rb a.c]
+    @spec.files += %w[extconf.rb lib/b.rb depend a.c]
 
     use_ui @ui do
       path = Gem::Package.build @spec

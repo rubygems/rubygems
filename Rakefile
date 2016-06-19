@@ -54,11 +54,13 @@ hoe = Hoe.spec 'rubygems-update' do
                    'pkgs/sources/sources*.gem',
                    'scripts/*.hieraki')
 
+  extra_dev_deps.clear
+
   dependency 'builder',       '~> 2.1',   :dev
   dependency 'hoe-seattlerb', '~> 1.2',   :dev
   dependency 'rdoc',          '~> 3.0',   :dev
   dependency 'ZenTest',       '~> 4.5',   :dev
-  dependency 'rake',          '~> 0.9.3', :dev
+  dependency 'rake',          '~> 10.5',  :dev
   dependency 'minitest',      '~> 4.0',   :dev
 
   self.extra_rdoc_files = Dir["*.rdoc"] + %w[
@@ -75,6 +77,13 @@ hoe = Hoe.spec 'rubygems-update' do
   spec_extras['require_paths'] = %w[hide_lib_for_update]
 end
 
+# Monkey-patch to ensure newly-installed gems are visible
+Hoe::Package.instance_method(:install_gem).tap do |existing_install_gem|
+  Hoe::Package.send(:define_method, :install_gem) do |*args|
+    existing_install_gem.bind(self).call(*args).tap { Gem::Specification.reset }
+  end
+end
+
 v = hoe.version
 
 hoe.testlib      = :minitest
@@ -84,6 +93,7 @@ Rake::Task['docs'].clear
 Rake::Task['clobber_docs'].clear
 
 begin
+  gem 'rdoc', '~> 3.0'
   require 'rdoc/task'
 
   RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|

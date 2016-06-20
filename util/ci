@@ -1,0 +1,73 @@
+#!/usr/bin/env ruby
+
+class Tool
+  def initialize(name)
+    @name = name
+  end
+
+  def bundler?
+    @name == 'bundler'
+  end
+
+  def rubygems?
+    @name == 'rubygems'
+  end
+
+  def dir
+    if rubygems?
+      File.expand_path('../..', __FILE__)
+    else
+      File.expand_path('../../bundler', __FILE__)
+    end
+  end
+end
+
+TOOL = Tool.new(ENV.fetch("TEST_TOOL") { abort "must specify a TEST_TOOL" })
+
+def run(command, args = [])
+  Dir.chdir(TOOL.dir) do
+    unless system(command, *args)
+      abort "running `#{command} #{args.join(" ")}` failed"
+    end
+  end
+end
+
+def with_retries(attempts = 3)
+  yield
+rescue
+  attempts -= 1
+  if attempts > 0
+    warn "Command failed. Retrying #{attempts -= 1} more times."
+    retry
+  else
+    raise
+  end
+end
+
+case ARGV
+when %w(before_script)
+  if TOOL.rubygems?
+    run('gem', %W(uninstall executable-hooks gem-wrappers -x --force -i #{`gem env home`.strip}@global))
+    run('gem', %W(install rake -v #{'~> 10.5'} --no-document))
+    run('gem', %W(install hoe -v #{'3.15.0'} --no-document))
+    run('gem', %w(install hoe-travis --no-document))
+    run('gem', %W(install minitest -v #{'~> 4.7'} --no-document))
+    run('rake', %w(travis:before -t))
+    run('gem', %w(list --details))
+    run('gem', %w(env))
+  else
+    with_retries { run('rake', %w(spec:travis:deps)) }
+  end
+when %w(after_script)
+  if TOOL.rubygems?
+    run('rake', %w(travis:after -t))
+  end
+when %w(script)
+  if TOOL.rubygems?
+    run('rake', %w(travis))
+  else
+    run('rake', %w(spec:travis -t))
+  end
+else
+  abort "unknown args #{ARGV.inspect}"
+end

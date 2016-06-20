@@ -84,6 +84,8 @@ Hoe::Package.instance_method(:install_gem).tap do |existing_install_gem|
   end
 end
 
+Hoe::DEFAULT_CONFIG["exclude"] = %r[#{Hoe::DEFAULT_CONFIG["exclude"]}|\./bundler/(?!lib|man|exe|[^/]+\.md)]ox
+
 v = hoe.version
 
 hoe.testlib      = :minitest
@@ -456,4 +458,17 @@ end
 desc "Cleanup trailing whitespace"
 task :whitespace do
   system 'find . -not \( -name .svn -prune -o -name .git -prune \) -type f -print0 | xargs -0 sed -i "" -E "s/[[:space:]]*$//"'
+end
+
+desc "Update the manifest to reflect what's on disk"
+task :update_manifest do
+  files = []
+  require 'find'
+  exclude = Hoe::DEFAULT_CONFIG["exclude"]
+  Find.find(".") do |path|
+    next unless File.file?(path)
+    next if path =~ exclude
+    files << path[2..-1]
+  end
+  File.open('Manifest.txt', 'w') {|f| f.puts(files.sort) }
 end

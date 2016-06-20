@@ -1142,6 +1142,9 @@ gem 'other', version
   end
 
   def test_find_lib_file_after_install
+    skip '1.9.2 and earlier mkmf.rb does not create TOUCH' if
+      RUBY_VERSION < '1.9.3'
+
     @spec.extensions << "extconf.rb"
     write_file File.join(@tempdir, "extconf.rb") do |io|
       io.write <<-RUBY

@@ -1156,8 +1156,8 @@ gem 'other', version
 
       write_file File.join(@tempdir, "a.c") do |io|
         io.write <<-C
-        #include <ruby.h>
-        void Init_a() { }
+          #include <ruby.h>
+          void Init_a() { }
         C
       end
 
@@ -1182,17 +1182,16 @@ gem 'other', version
     end
   else
     def test_find_lib_file_after_install
-
       @spec.extensions << "extconf.rb"
       write_file File.join(@tempdir, "extconf.rb") do |io|
         io.write <<-RUBY
-        require "mkmf"
+          require "mkmf"
 
-        CONFIG['CC'] = '$(TOUCH) $@ ||'
-        CONFIG['LDSHARED'] = '$(TOUCH) $@ ||'
-        $ruby = '#{Gem.ruby}'
+          CONFIG['CC'] = '$(TOUCH) $@ ||'
+          CONFIG['LDSHARED'] = '$(TOUCH) $@ ||'
+          $ruby = '#{Gem.ruby}'
 
-        create_makefile("#{@spec.name}")
+          create_makefile("#{@spec.name}")
         RUBY
       end
 
@@ -1200,8 +1199,8 @@ gem 'other', version
 
       write_file File.join(@tempdir, "a.c") do |io|
         io.write <<-C
-        #include <ruby.h>
-        void Init_a() { }
+          #include <ruby.h>
+          void Init_a() { }
         C
       end
 
@@ -1221,9 +1220,8 @@ gem 'other', version
 
       expected = File.join @spec.full_require_paths.find { |path|
         File.exist? File.join path, 'b.rb'
-        }, 'b.rb'
-        assert_equal expected, @spec.matches_for_glob('b.rb').first
-      end
+      }, 'b.rb'
+      assert_equal expected, @spec.matches_for_glob('b.rb').first
     end
   end
 

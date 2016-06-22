@@ -74,6 +74,10 @@ hoe = Hoe.spec 'rubygems-update' do
 
   self.rsync_args += " --no-p -O"
 
+  self.version = File.open('lib/rubygems.rb', 'r:utf-8') do |f|
+    f.read[/VERSION\s+=\s+(['"])(#{Gem::Version::VERSION_PATTERN})\1/, 2]
+  end
+
   spec_extras['require_paths'] = %w[hide_lib_for_update]
 end
 

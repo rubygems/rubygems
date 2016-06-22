@@ -1,5 +1,13 @@
 # coding: UTF-8
 
+=== 2.6.6 / 2016-06-22
+
+Bug fixes:
+
+* Sort installed versions to make sure we install the latest version when
+  running `gem update --system`. As a one-time fix, run
+  `gem update --system=2.6.6`. Pull request #1601 by David Radcliffe.
+
 === 2.6.5 / 2016-06-21
 
 Minor enhancements:

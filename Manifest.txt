@@ -239,7 +239,6 @@ bundler/man/bundle.ronn
 bundler/man/gemfile.5.ronn
 bundler/man/index.txt
 hide_lib_for_update/note.txt
-lib/gauntlet_rubygems.rb
 lib/rubygems.rb
 lib/rubygems/available_set.rb
 lib/rubygems/basic_specification.rb

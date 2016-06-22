@@ -1,6 +1,35 @@
 # coding: UTF-8
 
-=== 2.6.4 / ---
+=== 2.6.5 / 2016-06-21
+
+Minor enhancements:
+
+* Support for unified Integer in Ruby 2.4. Pull request #1618
+  by SHIBATA Hiroshi.
+* Update vendored Molinillo to 0.5.0 for performance improvements.
+  Pull request #1638 by Samuel Giddins.
+
+Bug fixes:
+
+* Raise an explicit error if Signer#sign is called with no certs. Pull
+  request #1605 by Daniel Berger.
+* Update `update_bundled_ca_certificates` utility script for directory
+  nesting. Pull request #1583 by James Wen.
+* Fix broken symlink support in tar writer (+ fix broken test). Pull
+  request #1578 by Cezary Baginski.
+* Remove extension directory before (re-)installing. Pull request #1576
+  by Jeremy Hinegardner.
+* Regenerate test CA certificates with appropriate extensions. Pull
+  request #1611 by rhenium.
+* Rubygems does not terminate on failed file lock when not superuser. Pull
+  request #1582 by Ellen Marie Dash.
+* Fix tar headers with a 101 character name. Pull request #1612 by Paweł
+  Tomulik.
+* Add Gem.platform_defaults to allow implementations to override defaults.
+  Pull request #1644 by Charles Oliver Nutter.
+* Run Bundler tests on TravisCI. Pull request #1650 by Samuel Giddins.
+
+=== 2.6.4 / 2016-04-26
 
 Minor enhancements:
 

@@ -64,12 +64,13 @@ class Gem::Specification < Gem::BasicSpecification
   #                          Now forward-compatible with future versions
   #      3  1.3.2 2009-01-03 Added Fixnum validation to specification_version
   #      4  1.9.0 2011-06-07 Added metadata
+  #      5  2.3.0 2016-02-10 Added required_engine_version
   #--
   # When updating this number, be sure to also update #to_ruby.
   #
   # NOTE RubyGems < 1.2 cannot load specification versions > 2.
 
-  CURRENT_SPECIFICATION_VERSION = 4 # :nodoc:
+  CURRENT_SPECIFICATION_VERSION = 5 # :nodoc:
 
   ##
   # An informal list of changes to the specification.  The highest-valued
@@ -90,6 +91,9 @@ class Gem::Specification < Gem::BasicSpecification
     ],
     4 => [
       'Added sandboxed freeform metadata to the specification version.'
+    ],
+    5 => [
+      'Added required_engine_version to the specification version.'
     ]
   }
 
@@ -99,6 +103,7 @@ class Gem::Specification < Gem::BasicSpecification
      2 => 16,
      3 => 17,
      4 => 18,
+     5 => 19
   }
 
   today = Time.now.utc
@@ -155,6 +160,7 @@ class Gem::Specification < Gem::BasicSpecification
     :summary                   => nil,
     :test_files                => [],
     :version                   => nil,
+    :required_engine_version   => {},
   }
 
   Dupable = { } # :nodoc:
@@ -429,6 +435,11 @@ class Gem::Specification < Gem::BasicSpecification
   attr_reader :required_ruby_version
 
   ##
+  # The Ruby engine required by this gem
+
+  attr_reader :required_engine_version
+
+  ##
   # The RubyGems version required by this gem
 
   attr_reader :required_rubygems_version
@@ -649,6 +660,28 @@ class Gem::Specification < Gem::BasicSpecification
 
   def required_rubygems_version= req
     @required_rubygems_version = Gem::Requirement.create req
+  end
+
+  ##
+  # The Ruby engine required by this gem, e.g. 'ruby', 'jruby', 'rubinius', and
+  # the version required for that engine.
+  #
+  # Usage:
+  #
+  #  spec.required_engine_version = {
+  #    :ruby     => '>= 1.9.3',
+  #    :jruby    => '>= 1.7.24',
+  #    :rubinius => '~> 3.0'
+  #  }
+  #
+  def required_engine_version= req
+    @required_engine_version = {}
+
+    req.each do |engine, value|
+      @required_engine_version[engine] = Gem::Requirement.create value
+    end
+
+    @required_engine_version
   end
 
   ##
@@ -1342,11 +1375,12 @@ class Gem::Specification < Gem::BasicSpecification
     spec.instance_variable_set :@homepage,                  array[14]
     spec.instance_variable_set :@has_rdoc,                  array[15]
     spec.instance_variable_set :@new_platform,              array[16]
-    spec.instance_variable_set :@platform,                  array[16].to_s
-    spec.instance_variable_set :@license,                   array[17]
-    spec.instance_variable_set :@metadata,                  array[18]
+    spec.instance_variable_set :@platform,                  array[17].to_s
+    spec.instance_variable_set :@license,                   array[18]
+    spec.instance_variable_set :@metadata,                  array[19]
     spec.instance_variable_set :@loaded,                    false
     spec.instance_variable_set :@activated,                 false
+    spec.instance_variable_set :@required_engine_version,   array[20]
 
     spec
   end
@@ -1388,7 +1422,8 @@ class Gem::Specification < Gem::BasicSpecification
       true, # has_rdoc
       @new_platform,
       @licenses,
-      @metadata
+      @metadata,
+      @required_engine_version
     ]
   end
 

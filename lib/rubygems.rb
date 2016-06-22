@@ -959,6 +959,12 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   end
 
   ##
+  # A Gem::Version for the current Ruby engine.
+  def self.ruby_engine_version
+    @engine_version ||= Gem::Version.new RUBY_ENGINE_VERSION
+  end
+
+  ##
   # A Gem::Version for the currently running RubyGems
 
   def self.rubygems_version

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 require 'rubygems/command'
-require 'rubygems/gemcutter_utilities'
+require 'rubygems/authorization_utilities'
 require 'rubygems/package'
 
 class Gem::Commands::SigninCommand < Gem::Command
-  include Gem::GemcutterUtilities
+  include Gem::AuthorizationUtilities
 
   def description # :nodoc:
     <<-EOF

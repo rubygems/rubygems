@@ -4,7 +4,7 @@ require 'rubygems/remote_fetcher'
 ##
 # Utility methods for using the RubyGems API.
 
-module Gem::GemcutterUtilities
+module Gem::AuthorizationUtilities
 
   # TODO: move to Gem::Command
   OptionParser.accept Symbol do |value|

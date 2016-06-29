@@ -2,12 +2,12 @@
 require 'rubygems/command'
 require 'rubygems/local_remote_options'
 require 'rubygems/version_option'
-require 'rubygems/gemcutter_utilities'
+require 'rubygems/authorization_utilities'
 
 class Gem::Commands::YankCommand < Gem::Command
   include Gem::LocalRemoteOptions
   include Gem::VersionOption
-  include Gem::GemcutterUtilities
+  include Gem::AuthorizationUtilities
 
   def description # :nodoc:
     <<-EOF

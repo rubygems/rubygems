@@ -70,6 +70,7 @@ class Gem::ConfigFile
 
         path.strip
       rescue LoadError
+        require 'rbconfig'
         RbConfig::CONFIG["sysconfdir"] || "/etc"
       end
     end

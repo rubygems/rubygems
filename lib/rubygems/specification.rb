@@ -1009,8 +1009,6 @@ class Gem::Specification < Gem::BasicSpecification
   # Returns every spec that matches +name+ and optional +requirements+.
 
   def self.find_all_by_name name, *requirements
-    requirements = Gem::Requirement.default if requirements.empty?
-
     # TODO: maybe try: find_all { |s| spec === dep }
 
     Gem::Dependency.new(name, *requirements).matching_specs
@@ -1021,8 +1019,6 @@ class Gem::Specification < Gem::BasicSpecification
   # if the dependency doesn't resolve to a valid specification.
 
   def self.find_by_name name, *requirements
-    requirements = Gem::Requirement.default if requirements.empty?
-
     # TODO: maybe try: find { |s| spec === dep }
 
     Gem::Dependency.new(name, *requirements).to_spec
@@ -1515,11 +1511,7 @@ class Gem::Specification < Gem::BasicSpecification
   # <tt>:development</tt>.
 
   def add_dependency_with_type(dependency, type, *requirements)
-    requirements = if requirements.empty? then
-                     Gem::Requirement.default
-                   else
-                     requirements.flatten
-                   end
+    requirements = requirements.flatten
 
     unless dependency.respond_to?(:name) &&
            dependency.respond_to?(:requirement)

@@ -2,7 +2,7 @@
 # TODO: $SAFE = 1
 
 begin
-  gem 'minitest', '~> 4.0'
+  gem 'minitest', '~> 5.0'
 rescue NoMethodError, Gem::LoadError
   # for ruby tests
 end
@@ -83,7 +83,7 @@ end
 #
 # Tests are always run at a safe level of 1.
 
-class Gem::TestCase < MiniTest::Unit::TestCase
+class Gem::TestCase < MiniTest::Test
 
   attr_accessor :fetcher # :nodoc:
 

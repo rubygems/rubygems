@@ -61,7 +61,7 @@ hoe = Hoe.spec 'rubygems-update' do
   dependency 'rdoc',          '~> 3.0',   :dev
   dependency 'ZenTest',       '~> 4.5',   :dev
   dependency 'rake',          '~> 10.5',  :dev
-  dependency 'minitest',      '~> 4.0',   :dev
+  dependency 'minitest',      '~> 5.0',   :dev
 
   self.extra_rdoc_files = Dir["*.rdoc"] + %w[
     CVE-2013-4287.txt
@@ -93,7 +93,7 @@ Hoe::DEFAULT_CONFIG["exclude"] = %r[#{Hoe::DEFAULT_CONFIG["exclude"]}|\./bundler
 v = hoe.version
 
 hoe.testlib      = :minitest
-hoe.test_prelude = 'gem "minitest", "~> 4.0"'
+hoe.test_prelude = 'gem "minitest", "~> 5.0"'
 
 Rake::Task['docs'].clear
 Rake::Task['clobber_docs'].clear

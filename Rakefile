@@ -93,7 +93,10 @@ Hoe::DEFAULT_CONFIG["exclude"] = %r[#{Hoe::DEFAULT_CONFIG["exclude"]}|\./bundler
 v = hoe.version
 
 hoe.testlib      = :minitest
-hoe.test_prelude = 'gem "minitest", "~> 4.0"'
+hoe.test_prelude = <<-RUBY.gsub("\n", ";")
+  gem "minitest", "~> 4.0"
+  $:.unshift #{File.expand_path("../bundler/lib", __FILE__).dump}
+RUBY
 
 Rake::Task['docs'].clear
 Rake::Task['clobber_docs'].clear

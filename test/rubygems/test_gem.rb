@@ -1450,7 +1450,7 @@ class TestGem < Gem::TestCase
   end
 
   LIB_PATH = File.expand_path "../../../lib".dup.untaint, __FILE__.dup.untaint
-  BUNDLER_LIB_PATH = File.expand_path("..".dup.untaint, $LOADED_FEATURES.find {|f| f.end_with? "lib/bundler.rb" }.dup.untaint)
+  BUNDLER_LIB_PATH = File.expand_path $LOAD_PATH.find {|lp| File.file?(File.join(lp, "bundler.rb")) }.dup.untaint
   BUNDLER_FULL_NAME = "bundler-#{Bundler::VERSION}"
 
   def test_looks_for_gemdeps_files_automatically_on_start

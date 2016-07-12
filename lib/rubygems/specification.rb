@@ -2079,7 +2079,7 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   def base_dir
-    return Gem.dir unless loaded_from
+    return Gem.path.first unless loaded_from
     @base_dir ||= if default_gem? then
                     File.dirname File.dirname File.dirname loaded_from
                   else

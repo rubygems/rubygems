@@ -249,15 +249,10 @@ class Gem::Resolver
     activation_requests = []
 
     sources.sort.each do |source|
-      specs = groups[source]
-
-      specs.sort_by! { |spec| [spec.version, Gem::Platform.local =~ spec.platform ? 1 : 0] }
-
-      specs.each do |spec|
-        activation_request = ActivationRequest.new spec, dependency, []
-
-        activation_requests << activation_request
-      end
+      groups[source].
+        sort_by { |spec| [spec.version, Gem::Platform.local =~ spec.platform ? 1 : 0] }.
+        map { |spec| ActivationRequest.new spec, dependency, [] }.
+        each { |activation_request| activation_requests << activation_request }
     end
 
     activation_requests

@@ -245,23 +245,17 @@ class Gem::Resolver
       groups[source] << spec
     end
 
-    output = []
-
-    sources.sort.each do |source|
+    sources.sort.each_with_object [] do |source, activation_requests|
       specs = groups[source]
 
-      specs.sort_by! do |spec|
-        [spec.version, Gem::Platform.local =~ spec.platform ? 1 : 0]
-      end
+      specs.sort_by! { |spec| [spec.version, Gem::Platform.local =~ spec.platform ? 1 : 0] }
 
       specs.each do |spec|
         activation_request = ActivationRequest.new spec, dependency, []
 
-        output << activation_request
+        activation_requests << activation_request
       end
     end
-
-    output
   end
 
   def dependencies_for(specification)

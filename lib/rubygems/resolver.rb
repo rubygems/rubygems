@@ -233,8 +233,35 @@ class Gem::Resolver
       exc.errors = @set.errors
       raise exc
     end
-    possibles.sort_by { |s| [s.source, s.version, Gem::Platform.local =~ s.platform ? 1 : 0] }.
-      map { |s| ActivationRequest.new s, dependency, [] }
+
+    sources = []
+    groups = Hash.new { |hash, key| hash[key] = [] }
+
+    possibles.each do |spec|
+      source = spec.source
+
+      sources << source unless sources.include? source
+
+      groups[source] << spec
+    end
+
+    output = []
+
+    sources.sort.each do |source|
+      specs = groups[source]
+
+      specs.sort_by! do |spec|
+        [spec.version, Gem::Platform.local =~ spec.platform ? 1 : 0]
+      end
+
+      specs.each do |spec|
+        activation_request = ActivationRequest.new spec, dependency, []
+
+        output << activation_request
+      end
+    end
+
+    output
   end
 
   def dependencies_for(specification)

@@ -235,6 +235,7 @@ class Gem::Resolver
     end
 
     sources = []
+
     groups = Hash.new { |hash, key| hash[key] = [] }
 
     possibles.each do |spec|

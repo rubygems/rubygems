@@ -296,7 +296,10 @@ module Gem
 
   def self.activate_bin_path name, exec_name, requirement # :nodoc:
     spec = find_spec_for_exe name, exec_name, [requirement]
-    Gem::LOADED_SPECS_MUTEX.synchronize { spec.activate }
+    Gem::LOADED_SPECS_MUTEX.synchronize do
+      spec.activate
+      finish_resolve
+    end
     spec.bin_file exec_name
   end
 

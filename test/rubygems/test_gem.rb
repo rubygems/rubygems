@@ -157,6 +157,35 @@ class TestGem < Gem::TestCase
     assert_match 'a-2/bin/exec', Gem.bin_path('a', 'exec', '>= 0')
   end
 
+  def test_activate_bin_path_resolves_eagerly
+    a1 = util_spec 'a', '1' do |s|
+      s.executables = ['exec']
+      s.add_dependency 'b'
+    end
+
+    b1 = util_spec 'b', '1' do |s|
+      s.add_dependency 'c', '2'
+    end
+
+    b2 = util_spec 'b', '2' do |s|
+      s.add_dependency 'c', '1'
+    end
+
+    c1 = util_spec 'c', '1'
+    c2 = util_spec 'c', '2'
+
+    install_specs c1, c2, b1, b2, a1
+
+    Gem.activate_bin_path("a", "exec", ">= 0")
+
+    # If we didn't eagerly resolve, this would activate c-2 and then the
+    # finish_resolve would cause a conflict
+    gem 'c'
+    Gem.finish_resolve
+
+    assert_equal %w(a-1 b-2 c-1), loaded_spec_names
+  end
+
   def test_self_bin_path_no_exec_name
     e = assert_raises ArgumentError do
       Gem.bin_path 'a'

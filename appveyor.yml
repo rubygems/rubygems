@@ -17,6 +17,8 @@ environment:
   - ruby_version: 22-x64
 install:
 - ps: >-
+    git submodule update --init --recursive
+
     $env:path = 'C:\Ruby' + $env:ruby_version + '\bin;' + $env:path
 
     if ((gem query -i rake) -eq $False){ gem install rake --no-document }

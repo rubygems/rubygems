@@ -107,6 +107,71 @@ class TestGem < Gem::TestCase
     assert_equal %w[a-1], installed.map { |spec| spec.full_name }
   end
 
+  def test_self_install_permissions
+    assert_self_install_permissions
+  end
+
+  def test_self_install_permissions_umask_0
+    umask = File.umask(0)
+    assert_self_install_permissions
+  ensure
+    File.umask(umask)
+  end
+
+  def test_self_install_permissions_umask_077
+    umask = File.umask(077)
+    assert_self_install_permissions
+  ensure
+    File.umask(umask)
+  end
+
+  def assert_self_install_permissions
+    options = {
+      :dir_mode => 0500,
+      :prog_mode => 0510,
+      :data_mode => 0640,
+      :wrappers => true,
+    }
+    Dir.chdir @tempdir do
+      Dir.mkdir 'bin'
+      File.open 'bin/foo.rb', 'w' do |fp|
+        fp.chmod(0755)
+        fp.puts 'p'
+      end
+
+      Dir.mkdir 'data'
+      File.open 'data/foo.txt', 'w' do |fp|
+        fp.puts 'blah'
+      end
+
+      spec_fetcher do |f|
+        f.gem 'foo', 1 do |s|
+          s.executables = ['foo.rb']
+          s.files = %w[bin/foo.rb data/foo.txt]
+        end
+      end
+      Gem.install 'foo', Gem::Requirement.default, options
+    end
+
+    expected = {
+      'bin/foo.rb' => options[:prog_mode].to_s(8),
+      'gems/foo-1' => options[:dir_mode].to_s(8),
+      'gems/foo-1/bin' => options[:dir_mode].to_s(8),
+      'gems/foo-1/data' => options[:dir_mode].to_s(8),
+      'gems/foo-1/bin/foo.rb' => options[:prog_mode].to_s(8),
+      'gems/foo-1/data/foo.txt' => options[:data_mode].to_s(8),
+    }
+    result = {}
+    Dir.chdir @gemhome do
+      expected.each_key do |n|
+        result[n] = (File.stat(n).mode & 0777).to_s(8)
+      end
+    end
+    assert_equal(expected, result)
+  ensure
+    File.chmod(0700, *Dir.glob(@gemhome+'/gems/**/').map {|path| path.untaint})
+  end
+
   def test_require_missing
     save_loaded_features do
       assert_raises ::LoadError do

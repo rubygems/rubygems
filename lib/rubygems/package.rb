@@ -107,6 +107,18 @@ class Gem::Package
 
   attr_writer :spec
 
+  ##
+  # Permission for directories
+  attr_accessor :dir_mode
+
+  ##
+  # Permission for program files
+  attr_accessor :prog_mode
+
+  ##
+  # Permission for other files
+  attr_accessor :data_mode
+
   def self.build spec, skip_validation=false
     gem_file = spec.file_name
 
@@ -334,7 +346,7 @@ EOM
   def extract_files destination_dir, pattern = "*"
     verify unless @spec
 
-    FileUtils.mkdir_p destination_dir
+    FileUtils.mkdir_p destination_dir, :mode => dir_mode && 0700
 
     @gem.with_read_io do |io|
       reader = Gem::Package::TarReader.new io
@@ -361,6 +373,7 @@ EOM
   # extracted.
 
   def extract_tar_gz io, destination_dir, pattern = "*" # :nodoc:
+    directories = [] if dir_mode
     open_tar_gz io do |tar|
       tar.each do |entry|
         next unless File.fnmatch pattern, entry.full_name, File::FNM_DOTMATCH
@@ -370,19 +383,20 @@ EOM
         FileUtils.rm_rf destination
 
         mkdir_options = {}
-        mkdir_options[:mode] = entry.header.mode if entry.directory?
+        mkdir_options[:mode] = dir_mode ? 0700 : (entry.header.mode if entry.directory?)
         mkdir =
           if entry.directory? then
             destination
           else
             File.dirname destination
           end
+        directories << mkdir if directories
 
         FileUtils.mkdir_p mkdir, mkdir_options
 
         open destination, 'wb' do |out|
           out.write entry.read
-          FileUtils.chmod entry.header.mode, destination
+          FileUtils.chmod file_mode(entry.header.mode), destination
         end if entry.file?
 
         File.symlink(entry.header.linkname, destination) if entry.symlink?
@@ -390,6 +404,15 @@ EOM
         verbose destination
       end
     end
+
+    if directories
+      directories.uniq!
+      File.chmod(dir_mode, *directories)
+    end
+  end
+
+  def file_mode(mode) # :nodoc:
+    ((mode & 0111).zero? ? data_mode : prog_mode) || mode
   end
 
   ##

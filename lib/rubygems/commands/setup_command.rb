@@ -113,6 +113,13 @@ By default, this RubyGems will install gem as:
     EOF
   end
 
+  module MakeDirs
+    def mkdir_p(path, *opts)
+      super
+      (@mkdirs ||= []) << path
+    end
+  end
+
   def execute
     @verbose = Gem.configuration.really_verbose
 
@@ -131,6 +138,7 @@ By default, this RubyGems will install gem as:
     else
       extend FileUtils
     end
+    extend MakeDirs
 
     lib_dir, bin_dir = make_destination_dirs install_destdir
 
@@ -141,6 +149,11 @@ By default, this RubyGems will install gem as:
     remove_old_bin_files bin_dir
 
     remove_old_lib_files lib_dir
+
+    if mode = options[:dir_mode]
+      @mkdirs.uniq!
+      File.chmod(mode, @mkdirs)
+    end
 
     say "RubyGems #{Gem::VERSION} installed"
 
@@ -207,6 +220,8 @@ By default, this RubyGems will install gem as:
 
     @bin_file_names = []
 
+    prog_mode = options[:prog_mode] || 0755
+
     Dir.chdir 'bin' do
       bin_files = Dir['*']
 
@@ -230,7 +245,7 @@ By default, this RubyGems will install gem as:
             fp.puts bin.join
           end
 
-          install bin_tmp_file, dest_file, :mode => 0755
+          install bin_tmp_file, dest_file, :mode => prog_mode
           @bin_file_names << dest_file
         ensure
           rm bin_tmp_file
@@ -252,7 +267,7 @@ GOTO :EOF
 TEXT
           end
 
-          install bin_cmd_file, "#{dest_file}.bat", :mode => 0755
+          install bin_cmd_file, "#{dest_file}.bat", :mode => prog_mode
         ensure
           rm bin_cmd_file
         end
@@ -263,9 +278,11 @@ TEXT
   def install_file file, dest_dir
     dest_file = File.join dest_dir, file
     dest_dir = File.dirname dest_file
-    mkdir_p dest_dir unless File.directory? dest_dir
+    unless File.directory? dest_dir
+      mkdir_p dest_dir, :mode => 0700
+    end
 
-    install file, dest_file, :mode => 0644
+    install file, dest_file, :mode => options[:data_mode] || 0644
   end
 
   def install_lib(lib_dir)
@@ -333,8 +350,8 @@ TEXT
       lib_dir, bin_dir = generate_default_dirs(install_destdir)
     end
 
-    mkdir_p lib_dir
-    mkdir_p bin_dir
+    mkdir_p lib_dir, :mode => 0700
+    mkdir_p bin_dir, :mode => 0700
 
     return lib_dir, bin_dir
   end

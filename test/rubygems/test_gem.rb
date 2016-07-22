@@ -29,6 +29,14 @@ class TestGem < Gem::TestCase
     util_remove_interrupt_command
   end
 
+  def before_teardown
+    change_version Gem::Version.new(Gem::VERSION)
+  end
+
+  def change_version new_version
+    Gem.instance_variable_set :@rubygems_version, new_version
+  end
+
   def test_self_finish_resolve
     save_loaded_features do
       a1 = new_spec "a", "1", "b" => "> 0"
@@ -579,6 +587,18 @@ class TestGem < Gem::TestCase
     version = Gem.latest_rubygems_version
 
     assert_equal Gem::Version.new('1.8.24'), version
+  end
+
+  def test_self_beta_version
+    change_version Gem::Version.new '2.6.4.beta'
+    spec_fetcher do |fetcher|
+      fetcher.spec 'rubygems-update', '2.6.3'
+    end
+
+    assert_equal Gem::Version.new('2.6.4.beta'), Gem.rubygems_version
+    assert_equal Gem::Version.new('2.6.3'), Gem.latest_rubygems_version
+    assert Gem.rubygems_version.prerelease?
+    assert Gem.beta_version?
   end
 
   def test_self_latest_version_for

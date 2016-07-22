@@ -8,12 +8,12 @@ class Gem::Commands::SigninCommand < Gem::Command
 
   def description # :nodoc:
     <<-EOF
-        The signin command executes host sign in.
+        The signin command executes host sign in for a push server (the default is https://rubygems.org). The host can be provided with the host flag or can be inferred from the provided gem. Host resolution matches the resolution strategy for the push command.
     EOF
   end
 
   def arguments # :nodoc:
-    "GEM        gem that you are logging in to push"
+    "GEM        built gem that you would like to use for resolving host. This is the qualified gem name to match the push command. example: pkg/foo-bar-1.0.0.gem"
   end
 
   def usage # :nodoc:

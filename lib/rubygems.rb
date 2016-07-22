@@ -967,6 +967,14 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   end
 
   ##
+  # Is the current rubygems version a beta?
+
+  def self.beta_version?
+    self.latest_rubygems_version < self.rubygems_version and
+      self.rubygems_version.prerelease?
+  end
+
+  ##
   # Returns an Array of sources to fetch remote gems from. Uses
   # default_sources if the sources list is empty.
 

@@ -374,7 +374,7 @@ class TestGem < Gem::TestCase
     begin
       Dir.chdir 'detect/a/b'
 
-      assert_empty Gem.detect_gemdeps
+      assert_equal [BUNDLER_FULL_NAME], Gem.detect_gemdeps.map(&:full_name)
     ensure
       Dir.chdir @tempdir
     end
@@ -1423,7 +1423,7 @@ class TestGem < Gem::TestCase
 
     Gem.detect_gemdeps
 
-    assert_equal %w!a-1 b-1 c-1!, loaded_spec_names
+    assert_equal %W(a-1 b-1 #{BUNDLER_FULL_NAME} c-1), loaded_spec_names
   end
 
   def test_auto_activation_of_detected_gemdeps_file
@@ -1446,10 +1446,40 @@ class TestGem < Gem::TestCase
 
     ENV['RUBYGEMS_GEMDEPS'] = "-"
 
-    assert_equal [a,b,c], Gem.detect_gemdeps.sort_by { |s| s.name }
+    assert_equal [a, b, util_spec("bundler", Bundler::VERSION), c], Gem.detect_gemdeps.sort_by { |s| s.name }
   end
 
   LIB_PATH = File.expand_path "../../../lib".dup.untaint, __FILE__.dup.untaint
+  BUNDLER_LIB_PATH = File.expand_path $LOAD_PATH.find {|lp| File.file?(File.join(lp, "bundler.rb")) }.dup.untaint
+  BUNDLER_FULL_NAME = "bundler-#{Bundler::VERSION}"
+
+  def test_use_gemdeps_uses_bundler_postit_trampoline
+    refute_includes $LOADED_FEATURES, File.join(BUNDLER_LIB_PATH, "bundler/postit_trampoline.rb".dup.untaint)
+    ENV.delete("BUNDLE_DISABLE_POSTIT")
+
+    a = new_spec "a", "1", nil, "lib/a.rb"
+    b = new_spec "b", "1", nil, "lib/b.rb"
+    c = new_spec "c", "1", nil, "lib/c.rb"
+
+    install_specs a, b, c
+
+    path = File.join @tempdir, "gem.deps.rb"
+
+    File.open path, "w" do |f|
+      f.puts "gem 'a'"
+      f.puts "gem 'b'"
+      f.puts "gem 'c'"
+    end
+
+    ENV['RUBYGEMS_GEMDEPS'] = path
+
+    Gem.detect_gemdeps
+
+    assert_equal %W(a-1 b-1 #{BUNDLER_FULL_NAME} c-1), loaded_spec_names
+
+    trampoline_path = RUBY_VERSION > "1.9" ? File.join(BUNDLER_LIB_PATH, "bundler/postit_trampoline.rb".dup.untaint) : "bundler/postit_trampoline.rb"
+    assert_includes $LOADED_FEATURES, trampoline_path
+  end
 
   def test_looks_for_gemdeps_files_automatically_on_start
     util_clear_gems
@@ -1476,9 +1506,9 @@ class TestGem < Gem::TestCase
     ENV['GEM_PATH'] = path
     ENV['RUBYGEMS_GEMDEPS'] = "-"
 
-    out = `#{Gem.ruby.dup.untaint} -I "#{LIB_PATH.untaint}" -rubygems -e "p Gem.loaded_specs.values.map(&:full_name).sort"`
+    out = `#{Gem.ruby.dup.untaint} -I "#{LIB_PATH.untaint}" -I "#{BUNDLER_LIB_PATH.untaint}" -rubygems -e "p Gem.loaded_specs.values.map(&:full_name).sort"`
 
-    assert_equal '["a-1", "b-1", "c-1"]', out.strip
+    assert_equal %W(a-1 b-1 #{BUNDLER_FULL_NAME} c-1).inspect, out.strip
   end
 
   def test_looks_for_gemdeps_files_automatically_on_start_in_parent_dir
@@ -1508,12 +1538,12 @@ class TestGem < Gem::TestCase
 
     Dir.mkdir "sub1"
     out = Dir.chdir "sub1" do
-      `#{Gem.ruby.dup.untaint} -I "#{LIB_PATH.untaint}" -rubygems -e "p Gem.loaded_specs.values.map(&:full_name).sort"`
+      `#{Gem.ruby.dup.untaint} -I "#{LIB_PATH.untaint}" -I "#{BUNDLER_LIB_PATH.untaint}" -rubygems -e "p Gem.loaded_specs.values.map(&:full_name).sort"`
     end
 
     Dir.rmdir "sub1"
 
-    assert_equal '["a-1", "b-1", "c-1"]', out.strip
+    assert_equal %W(a-1 b-1 #{BUNDLER_FULL_NAME} c-1).inspect, out.strip
   end
 
   def test_register_default_spec
@@ -1587,7 +1617,7 @@ class TestGem < Gem::TestCase
 
     Gem.use_gemdeps gem_deps_file
 
-    assert spec.activated?
+    assert_equal %W(a-1 #{BUNDLER_FULL_NAME}), loaded_spec_names
     refute_nil Gem.gemdeps
   end
 
@@ -1648,7 +1678,7 @@ class TestGem < Gem::TestCase
 
     Gem.use_gemdeps
 
-    assert spec.activated?
+    assert_equal %W(a-1 #{BUNDLER_FULL_NAME}), loaded_spec_names
   ensure
     ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
   end
@@ -1690,8 +1720,14 @@ class TestGem < Gem::TestCase
       io.write 'gem "a"'
     end
 
+    platform = Bundler::GemHelpers.generic_local_platform
+    if platform == Gem::Platform::RUBY
+      platform = ''
+    else
+      platform = " #{platform}"
+    end
     expected = <<-EXPECTED
-Unable to resolve dependency: user requested 'a (>= 0)'
+Could not find gem 'a#{platform}' in any of the gem sources listed in your Gemfile or available on this machine.
 You may need to `gem install -g` to install missing gems
 
     EXPECTED
@@ -1719,7 +1755,7 @@ You may need to `gem install -g` to install missing gems
 
     Gem.use_gemdeps
 
-    assert spec.activated?
+    assert_equal %W(a-1 #{BUNDLER_FULL_NAME}), loaded_spec_names
   ensure
     ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
   end

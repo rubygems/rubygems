@@ -1169,18 +1169,24 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
       raise ArgumentError, "Unable to find gem dependencies file at #{path}"
     end
 
-    rs = Gem::RequestSet.new
-    @gemdeps = rs.load_gemdeps path
-
-    rs.resolve_current.map do |s|
-      sp = s.full_spec
-      sp.activate
-      sp
+    ENV["BUNDLE_GEMFILE"] ||= File.expand_path(path)
+    require 'rubygems/user_interaction'
+    Gem::DefaultUserInteraction.use_ui(ui) do
+      require "bundler/postit_trampoline" unless ENV["BUNDLE_DISABLE_POSTIT"]
+      require "bundler"
+      @gemdeps = Bundler.setup
+      Bundler.ui = nil
+      @gemdeps.requested_specs.map(&:to_spec).sort_by(&:name)
     end
-  rescue Gem::LoadError, Gem::UnsatisfiableDependencyError => e
-    warn e.message
-    warn "You may need to `gem install -g` to install missing gems"
-    warn ""
+  rescue => e
+    case e
+    when Gem::LoadError, Gem::UnsatisfiableDependencyError, (defined?(Bundler::GemNotFound) ? Bundler::GemNotFound : Gem::LoadError)
+      warn e.message
+      warn "You may need to `gem install -g` to install missing gems"
+      warn ""
+    else
+      raise
+    end
   end
 
   class << self

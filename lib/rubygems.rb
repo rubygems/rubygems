@@ -1227,6 +1227,8 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
         prefix_pattern = /^(#{prefix_group})/
       end
 
+      suffix_pattern = /#{Regexp.union(Gem.suffixes)}\z/
+
       spec.files.each do |file|
         if new_format
           file = file.sub(prefix_pattern, "")
@@ -1234,6 +1236,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
         end
 
         @path_to_default_spec_map[file] = spec
+        @path_to_default_spec_map[file.sub(suffix_pattern, "")] = spec
       end
     end
 
@@ -1241,11 +1244,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     # Find a Gem::Specification of default gem from +path+
 
     def find_unresolved_default_spec(path)
-      Gem.suffixes.each do |suffix|
-        spec = @path_to_default_spec_map["#{path}#{suffix}"]
-        return spec if spec
-      end
-      nil
+      @path_to_default_spec_map[path]
     end
 
     ##

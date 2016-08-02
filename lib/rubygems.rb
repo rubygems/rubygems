@@ -596,7 +596,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # Zlib::GzipReader wrapper that unzips +data+.
 
   def self.gunzip(data)
-    require 'rubygems/util'
     Gem::Util.gunzip data
   end
 
@@ -604,7 +603,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # Zlib::GzipWriter wrapper that zips +data+.
 
   def self.gzip(data)
-    require 'rubygems/util'
     Gem::Util.gzip data
   end
 
@@ -612,7 +610,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # A Zlib::Inflate#inflate wrapper
 
   def self.inflate(data)
-    require 'rubygems/util'
     Gem::Util.inflate data
   end
 
@@ -1149,8 +1146,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     path = path.dup
 
     if path == "-" then
-      require 'rubygems/util'
-
       Gem::Util.traverse_parents Dir.pwd do |directory|
         dep_file = GEM_DEP_FILES.find { |f| File.file?(f) }
 
@@ -1232,6 +1227,8 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
         prefix_pattern = /^(#{prefix_group})/
       end
 
+      suffix_pattern = /#{Regexp.union(Gem.suffixes)}\z/
+
       spec.files.each do |file|
         if new_format
           file = file.sub(prefix_pattern, "")
@@ -1239,6 +1236,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
         end
 
         @path_to_default_spec_map[file] = spec
+        @path_to_default_spec_map[file.sub(suffix_pattern, "")] = spec
       end
     end
 
@@ -1246,11 +1244,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     # Find a Gem::Specification of default gem from +path+
 
     def find_unresolved_default_spec(path)
-      Gem.suffixes.each do |suffix|
-        spec = @path_to_default_spec_map["#{path}#{suffix}"]
-        return spec if spec
-      end
-      nil
+      @path_to_default_spec_map[path]
     end
 
     ##
@@ -1336,6 +1330,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   autoload :SourceList,         'rubygems/source_list'
   autoload :SpecFetcher,        'rubygems/spec_fetcher'
   autoload :Specification,      'rubygems/specification'
+  autoload :Util,               'rubygems/util'
   autoload :Version,            'rubygems/version'
 
   require "rubygems/specification"

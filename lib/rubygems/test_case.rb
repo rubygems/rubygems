@@ -24,7 +24,6 @@ unless Gem::Dependency.new('rdoc', '>= 3.10').matching_specs.empty?
   gem 'rdoc'
   gem 'json'
 end
-Gem.ui
 
 require 'bundler'
 require 'minitest/autorun'
@@ -240,6 +239,8 @@ class Gem::TestCase < MiniTest::Unit::TestCase
 
     Bundler.ui                     = Bundler::UI::Silent.new
     @ui                            = Gem::MockGemUi.new
+    # This needs to be a new instance since we call use_ui(@ui) when we want to
+    # capture output
     Gem::DefaultUserInteraction.ui = Gem::MockGemUi.new
 
     tmpdir = File.expand_path Dir.tmpdir

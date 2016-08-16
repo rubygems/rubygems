@@ -38,6 +38,7 @@ bundler/lib/bundler/cli/clean.rb
 bundler/lib/bundler/cli/common.rb
 bundler/lib/bundler/cli/config.rb
 bundler/lib/bundler/cli/console.rb
+bundler/lib/bundler/cli/doctor.rb
 bundler/lib/bundler/cli/exec.rb
 bundler/lib/bundler/cli/gem.rb
 bundler/lib/bundler/cli/init.rb
@@ -62,7 +63,6 @@ bundler/lib/bundler/deprecate.rb
 bundler/lib/bundler/dsl.rb
 bundler/lib/bundler/endpoint_specification.rb
 bundler/lib/bundler/env.rb
-bundler/lib/bundler/environment.rb
 bundler/lib/bundler/environment_preserver.rb
 bundler/lib/bundler/errors.rb
 bundler/lib/bundler/fetcher.rb
@@ -229,6 +229,7 @@ bundler/lib/bundler/version.rb
 bundler/lib/bundler/vlad.rb
 bundler/lib/bundler/worker.rb
 bundler/lib/bundler/yaml_serializer.rb
+bundler/man/bundle-binstubs.ronn
 bundler/man/bundle-config.ronn
 bundler/man/bundle-exec.ronn
 bundler/man/bundle-gem.ronn

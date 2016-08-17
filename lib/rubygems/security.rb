@@ -340,7 +340,9 @@ module Gem::Security
   # Digest algorithm used to sign gems
 
   DIGEST_ALGORITHM =
-    if defined?(OpenSSL::Digest::SHA1) then
+    if defined?(OpenSSL::Digest::SHA256) then
+      OpenSSL::Digest::SHA256
+    elsif defined?(OpenSSL::Digest::SHA1) then
       OpenSSL::Digest::SHA1
     end
 

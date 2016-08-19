@@ -117,5 +117,29 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     util_test_build_gem @gem, gemspec_file, false
   end
 
+  def test_build_signed_gem
+    cert_file = File.join(File.dirname(__FILE__), 'public_cert3072.pem')
+    trust_dir = Gem::Security.trust_dir
+
+    spec = util_spec 'some_gem' do |s|
+      s.signing_key = File.join(File.dirname(__FILE__), 'private_key3072.pem')
+      s.cert_chain = [cert_file]
+    end
+
+    gemspec_file = File.join(@tempdir, spec.spec_name)
+
+    File.open gemspec_file, 'w' do |gs|
+      gs.write spec.to_ruby
+    end
+
+    util_test_build_gem spec, gemspec_file
+
+    trust_dir.trust_cert OpenSSL::X509::Certificate.new(File.read(cert_file))
+
+    gem = Gem::Package.new(File.join(@tempdir, spec.file_name),
+                           Gem::Security::HighSecurity)
+    assert gem.verify
+  end
+
 end
 

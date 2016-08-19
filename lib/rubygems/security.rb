@@ -365,7 +365,7 @@ module Gem::Security
   ##
   # Length of keys created by KEY_ALGORITHM
 
-  KEY_LENGTH = 2048
+  KEY_LENGTH = 3072
 
   ##
   # Cipher used to encrypt the key pair used to sign gems.

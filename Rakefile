@@ -58,7 +58,7 @@ hoe = Hoe.spec 'rubygems-update' do
 
   dependency 'builder',       '~> 2.1',   :dev
   dependency 'hoe-seattlerb', '~> 1.2',   :dev
-  dependency 'rdoc',          '~> 3.0',   :dev
+  dependency 'rdoc',          '~> 4.0',   :dev
   dependency 'ZenTest',       '~> 4.5',   :dev
   dependency 'rake',          '~> 10.5',  :dev
   dependency 'minitest',      '~> 4.0',   :dev
@@ -102,7 +102,7 @@ Rake::Task['docs'].clear
 Rake::Task['clobber_docs'].clear
 
 begin
-  gem 'rdoc', '~> 3.0'
+  gem 'rdoc', '~> 4.0'
   require 'rdoc/task'
 
   RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|

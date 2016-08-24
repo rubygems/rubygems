@@ -127,6 +127,8 @@ task :install_test_deps => :clean_env do
   sh "gem install minitest -v '~> 4.0'"
 end
 
+task(:newb).prerequisites.unshift "bundler:checkout"
+
 begin
   require "automatiek"
 
@@ -478,4 +480,10 @@ task :update_manifest do
     files << path[2..-1]
   end
   File.open('Manifest.txt', 'w') {|f| f.puts(files.sort) }
+end
+
+namespace :bundler do
+  task :checkout do
+    sh "git submodule update --init"
+  end
 end

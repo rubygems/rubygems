@@ -766,15 +766,49 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     assert_fetch_s3 url
   end
 
-  def test_fetch_s3_no_creds
+  def refute_fetch_s3(url, expected_message)
     fetcher = Gem::RemoteFetcher.new nil
     @fetcher = fetcher
-    url = 's3://my-bucket/gems/specs.4.8.gz'
+
     e = assert_raises Gem::RemoteFetcher::FetchError do
       fetcher.fetch_s3 URI.parse(url)
     end
 
-    assert_match 'no s3_source key exists in .gemrc', e.message
+    assert_match expected_message, e.message
+  end
+
+  def test_fetch_s3_no_source_key
+    url = 's3://my-bucket/gems/specs.4.8.gz'
+    refute_fetch_s3 url, 'no s3_source key exists in .gemrc'
+  end
+
+  def test_fetch_s3_no_host
+    Gem.configuration[:s3_source] = {
+      'my-bucket' => {:id => 'testuser', :secret => 'testpass'}
+    }
+
+    url = 's3://other-bucket/gems/specs.4.8.gz'
+    refute_fetch_s3 url, 'no key for host other-bucket in s3_source in .gemrc'
+  ensure
+    Gem.configuration[:s3_source] = nil
+  end
+
+  def test_fetch_s3_no_id
+    Gem.configuration[:s3_source] = { 'my-bucket' => {:secret => 'testpass'} }
+
+    url = 's3://my-bucket/gems/specs.4.8.gz'
+    refute_fetch_s3 url, 's3_source for my-bucket missing id or secret'
+  ensure
+    Gem.configuration[:s3_source] = nil
+  end
+
+  def test_fetch_s3_no_secret
+    Gem.configuration[:s3_source] = { 'my-bucket' => {:id => 'testuser'} }
+
+    url = 's3://my-bucket/gems/specs.4.8.gz'
+    refute_fetch_s3 url, 's3_source for my-bucket missing id or secret'
+  ensure
+    Gem.configuration[:s3_source] = nil
   end
 
   def test_observe_no_proxy_env_single_host

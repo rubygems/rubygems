@@ -971,7 +971,8 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # default_sources if the sources list is empty.
 
   def self.sources
-    @sources ||= Gem::SourceList.from(default_sources)
+    source_list = configuration.sources || default_sources
+    @sources ||= Gem::SourceList.from(source_list)
   end
 
   ##

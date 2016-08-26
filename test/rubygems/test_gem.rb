@@ -961,6 +961,9 @@ class TestGem < Gem::TestCase
 
   def test_self_sources
     assert_equal %w[http://gems.example.com/], Gem.sources
+    Gem.sources = nil
+    Gem.configuration.sources = %w[http://test.example.com/]
+    assert_equal %w[http://test.example.com/], Gem.sources
   end
 
   def test_try_activate_returns_true_for_activated_specs

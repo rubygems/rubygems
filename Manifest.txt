@@ -65,6 +65,7 @@ bundler/lib/bundler/endpoint_specification.rb
 bundler/lib/bundler/env.rb
 bundler/lib/bundler/environment_preserver.rb
 bundler/lib/bundler/errors.rb
+bundler/lib/bundler/feature_flag.rb
 bundler/lib/bundler/fetcher.rb
 bundler/lib/bundler/fetcher/base.rb
 bundler/lib/bundler/fetcher/compact_index.rb

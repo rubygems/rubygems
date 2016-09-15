@@ -11,9 +11,9 @@ contributors to follow to reduce the time it takes to get changes merged in.
 2. Ensure that your code blends well with ours:
    * No trailing whitespace
    * Match indentation (two spaces)
-   * Match coding style (`if`, `elsif`, `when` need trailing `then`)
+   * Match coding style (+if+, +elsif+, +when+ need trailing +then+)
 
-3. If any new files are added or existing files removed in a commit or PR, please update the `Manifest.txt` accordingly.
+3. If any new files are added or existing files removed in a commit or PR, please update the +Manifest.txt+ accordingly.
 
 4. Don't modify the history file or version number.
 
@@ -28,7 +28,7 @@ here: http://guides.rubygems.org/contributing/
     $ gem install hoe
     $ rake newb
 
-To run commands like `gem install` from the repo:
+To run commands like +gem install+ from the repo:
 
     $ ruby -Ilib bin/gem install
 
@@ -40,31 +40,31 @@ rubygems repository.
 
 === Type
 
-Most Issues or pull requests will have a `type: *` label, which describes the
+Most Issues or pull requests will have a +type: *+ label, which describes the
 type of the issue or pull request.
 
-* *bug report* - An issue describing a bug in rubygems. This would be something
+* <b>bug report</b> - An issue describing a bug in rubygems. This would be something
   that is broken, confusing, unexpected behavior etc.
-* *bug fix* - A pull request that fixes a bug report.
-* *feature request* - An issue describing a request for a new feature or
+* <b>bug fix</b> - A pull request that fixes a bug report.
+* <b>feature request</b> - An issue describing a request for a new feature or
   enhancement.
-* *feature implementation* - A pull request implementing a feature request.
+* <b>feature implementation</b> - A pull request implementing a feature request.
 * *question* - An issue that is a more of a question than a call for specific
   changes in the codebase.
 * *cleanup* - Generally for a pull request that improves the code base without
   fixing a bug or implementing a feature.
-* *major bump* - This issue or pull request requires a major version bump
+* <b>major bump</b> - This issue or pull request requires a major version bump
 * *administrative* - This issue relates to adminstrative tasks that need to
   take place as it relates to rubygems
 * *documentation* - This issue relates to improving the documenation for
   in this repo. Note that much of the rubygems documentation is here:
   https://github.com/rubygems/guides
 
-All the `type: *` reason labels are the same light green color.
+All the +type: *+ reason labels are the same light green color.
 
 === Workflow / Status
 
-The `status: *` labels that indicate the state of an issue, where it is in the
+The +status: *+ labels that indicate the state of an issue, where it is in the
 process from being submitted to being closed. These are listed in rough 
 progression order from submitted to closed.
 
@@ -72,20 +72,20 @@ progression order from submitted to closed.
   labeled by by a maintainer.
 * *confirmed* - This issue/pull request has been accepted as valid, but
   is not yet immediately ready for work.
-* *working / ready* - An issue that is available for collaboration. This issue
+* <b>working / ready</b> - An issue that is available for collaboration. This issue
   should have existing discussion on the problem, and a description of how to go
   about solving it.
 * *unclaimed* - An issue that needs someone to volunteer to work on it
-* *user feedback required* - The issue/pull request is blocked pending more
+* <b>user feedback required</b> - The issue/pull request is blocked pending more
   feedback from an end user
-* *blocked / backlog* - the issue/pull request is currently unable to move forward
+* <b>blocked / backlog</b> - the issue/pull request is currently unable to move forward
   because of some specific reason, generally this will be a reason that is outside
   RubyGems or needs feedback from some specific individual or group, and it may
   be a while before something it is resolved.
 
-All the workflow `status: *` reason labels are the same light yellow color.
+All the workflow +status: *+ reason labels are the same light yellow color.
 Most of these labels represent a particular state in a linear progression,
-with the exception of `satus: unclaimed`.
+with the exception of +satus: unclaimed+.
 
 === Closed Reason
 
@@ -103,7 +103,7 @@ accepted. There should also be more detailed information in the comments.
 * *discussion* - An issue/pull that is no longer about a concrete change, and
   is instead being used for discussion.
 
-All the `closed: *` reason labels are the same maroon color.
+All the +closed: *+ reason labels are the same maroon color.
 
 === Categories
 
@@ -118,7 +118,7 @@ request pertains too. Not all issues will have a category.
 * *documentation* - related to updating / fixing / clarifying documentation or
   guides
 
-All `category: *` labels are the same blue color.
+All +category: *+ labels are the same blue color.
 
 === Platforms
 
@@ -130,4 +130,4 @@ an appropriate platform tag.
 * *osx*
 * *linux*
 
-All `platform: *` tags are the same purple color.
+All +platform: *+ tags are the same purple color.

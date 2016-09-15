@@ -38,6 +38,18 @@ RubyGems uses labels to track all issues and pull requests. In order to provide
 guidance to the community this is documentation of how labels are used in the
 rubygems repository.
 
+=== Contribution
+
+These labels are made to guide contributors to issue/pull requests that they
+can help with. That are marked with <tt>contribution: *</tt>
+
+* *small* - The issue described here will take a small amount of work to resolve,
+  and is a good option for a new contributor
+* *unclaimed* - The issue has not been claimed for work, and is awaiting willing
+  volunteers!
+
+All the contribution labels are in the same light gray color.
+
 === Type
 
 Most Issues or pull requests will have a <tt>type: *</tt> label, which describes the
@@ -75,7 +87,6 @@ progression order from submitted to closed.
 * <b>working / ready</b> - An issue that is available for collaboration. This issue
   should have existing discussion on the problem, and a description of how to go
   about solving it.
-* *unclaimed* - An issue that needs someone to volunteer to work on it
 * <b>user feedback required</b> - The issue/pull request is blocked pending more
   feedback from an end user
 * <b>blocked / backlog</b> - the issue/pull request is currently unable to move forward
@@ -84,8 +95,6 @@ progression order from submitted to closed.
   be a while before something it is resolved.
 
 All the workflow <tt>status: *</tt> reason labels are the same light yellow color.
-Most of these labels represent a particular state in a linear progression,
-with the exception of <tt>satus: unclaimed</tt>.
 
 === Closed Reason
 

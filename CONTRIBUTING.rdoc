@@ -124,9 +124,5 @@ issues have a blue <tt>category: *</tt> label.
 === Platforms
 
 If an issue or pull request pertains to only one platform, then it should have
-an appropriate purle <tt>platform: *</tt> label.
-
-* *windows*
-* *java*
-* *osx*
-* *linux*
+an appropriate purle <tt>platform: *</tt> label. Current platform labels:
+*windows*, *java*, *osx*, *linux*

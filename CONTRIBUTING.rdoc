@@ -25,8 +25,8 @@ here: http://guides.rubygems.org/contributing/
 
 == Getting Started
 
-    $ gem install hoe
-    $ rake newb
+    $ gem install farkle-bot
+    $ rake party
 
 To run commands like `gem install` from the repo:
 

@@ -40,12 +40,12 @@ rubygems repository.
 
 === Type
 
-Most Issues or pull requests will have one of these labels, which describes the
+Most Issues or pull requests will have a `type: *` label, which describes the
 type of the issue or pull request.
 
 * <b>bug report</b> - An issue describing a bug in rubygems. This would be something
   that is broken, confusing, unexpected behavior etc.
-* <b>bugfix</b> - A pull request that fixes a bug report.
+* <b>bug fix</b> - A pull request that fixes a bug report.
 * <b>feature request</b> - An issue describing a request for a new feature or
   enhancement.
 * <b>feature implementation</b> - A pull request implementing a feature request.
@@ -56,15 +56,17 @@ type of the issue or pull request.
 * <b>major bump</b> - This issue or pull request requires a major version bump
 * <b>administrative</b> - This issue relates to adminstrative tasks that need to
   take place as it relates to rubygems
+* <b>documentation</b> - This issue relates to improving the documenation for
+  in this repo. Note that much of the rubygems documentation is here:
+  https://github.com/rubygems/guides
 
-Bug report and Bugfix have the same color. And feature implementation and
-feature request have the same color since they are related labels.
+All the `type: *` reason labels are the same light green color.
 
-=== Workflow
+=== Workflow / Status
 
-These are labels that indicate the state of an issue, where it is in the process
-from being submitted to being closed. These are listed in rough progression
-order from submitted to closed.
+The `status: *` labels that indicate the state of an issue, where it is in the
+process from being submitted to being closed. These are listed in rough 
+progression order from submitted to closed.
 
 * <b>triage</b> - This is an issue or pull request that needs to be properly
   labeled by by a maintainer.
@@ -84,10 +86,9 @@ order from submitted to closed.
   RubyGems or needs feedback from some specific individual or group, and it may
   be a while before something it is resolved.
 
-Feedback and blocked all have the same color since they are all waiting on
-someone in particular to do something.
+All the workflow `status: *` reason labels are the same light yellow color.
 
-=== Inactive Reason
+=== Closed Reason
 
 Reasons are why an issue / pull request was closed without being worked on or
 accepted. There should also be more detailed information in the comments.
@@ -100,8 +101,10 @@ accepted. There should also be more detailed information in the comments.
   is not accepted.
 * *deprecated* - An issue/pull request that no longer applies to the actively
   maintained codebase.
+* *discussion* - An issue/pull that is no longer about a concrete change, and
+  is instead being used for discussion.
 
-All the reason labels are the same maroon color.
+All the `closed: *` reason labels are the same maroon color.
 
 === Categories
 
@@ -116,7 +119,7 @@ request pertains too. Not all issues will have a category.
 * <b>documentation</b> - related to updating / fixing / clarifying documentation or
   guides
 
-All category labels are the same blue color.
+All `category - *` labels are the same blue color.
 
 === Platforms
 
@@ -128,4 +131,4 @@ an appropriate platform tag.
 * *osx*
 * *linux*
 
-All platform tags are the same purple color.
+All `platform: *` tags are the same purple color.

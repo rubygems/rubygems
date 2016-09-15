@@ -41,19 +41,17 @@ rubygems repository.
 === Contribution
 
 These labels are made to guide contributors to issue/pull requests that they
-can help with. That are marked with <tt>contribution: *</tt>
+can help with. That are marked with a light gray <tt>contribution: *</tt>
 
 * *small* - The issue described here will take a small amount of work to resolve,
   and is a good option for a new contributor
 * *unclaimed* - The issue has not been claimed for work, and is awaiting willing
   volunteers!
 
-All the contribution labels are in the same light gray color.
-
 === Type
 
-Most Issues or pull requests will have a <tt>type: *</tt> label, which describes the
-type of the issue or pull request.
+Most Issues or pull requests will have a light green <tt>type: *</tt> label, 
+which describes the type of the issue or pull request.
 
 * <b>bug report</b> - An issue describing a bug in rubygems. This would be something
   that is broken, confusing, unexpected behavior etc.
@@ -72,13 +70,11 @@ type of the issue or pull request.
   in this repo. Note that much of the rubygems documentation is here:
   https://github.com/rubygems/guides
 
-All the <tt>type: *</tt> reason labels are the same light green color.
-
 === Workflow / Status
 
-The <tt>status: *</tt> labels that indicate the state of an issue, where it is in the
-process from being submitted to being closed. These are listed in rough 
-progression order from submitted to closed.
+The light yellow <tt>status: *</tt> labels that indicate the state of an 
+issue, where it is in the process from being submitted to being closed. 
+These are listed in rough  progression order from submitted to closed.
 
 * *triage* - This is an issue or pull request that needs to be properly
   labeled by by a maintainer.
@@ -94,12 +90,11 @@ progression order from submitted to closed.
   RubyGems or needs feedback from some specific individual or group, and it may
   be a while before something it is resolved.
 
-All the workflow <tt>status: *</tt> reason labels are the same light yellow color.
-
 === Closed Reason
 
 Reasons are why an issue / pull request was closed without being worked on or
-accepted. There should also be more detailed information in the comments.
+accepted. There should also be more detailed information in the comments. The
+closed reason labels are maroon <tt>closed: *</tt>.
 
 * *duplicate* - This is a duplicate of an existing bug. The comments must
   reference the existing issue.
@@ -112,12 +107,11 @@ accepted. There should also be more detailed information in the comments.
 * *discussion* - An issue/pull that is no longer about a concrete change, and
   is instead being used for discussion.
 
-All the <tt>closed: *</tt> reason labels are the same maroon color.
-
 === Categories
 
 These are aspects of the codebase, or what general area the issue or pull
-request pertains too. Not all issues will have a category.
+request pertains too. Not all issues will have a category. All categorized
+issues have a blue <tt>category: *</tt> label.
 
 * *gemspec* - related to the gem specification itself
 * *API* - related to the public supported rubygems API. This is the code api,
@@ -127,16 +121,12 @@ request pertains too. Not all issues will have a category.
 * *documentation* - related to updating / fixing / clarifying documentation or
   guides
 
-All <tt>category: *</tt> labels are the same blue color.
-
 === Platforms
 
 If an issue or pull request pertains to only one platform, then it should have
-an appropriate platform tag.
+an appropriate purle <tt>platform: *</tt> label.
 
 * *windows*
 * *java*
 * *osx*
 * *linux*
-
-All <tt>platform: *</tt> tags are the same purple color.

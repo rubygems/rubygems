@@ -6,38 +6,18 @@
 #++
 
 require 'rubygems'
-
-# forward-declare
-
-module Gem::Security # :nodoc:
-  class Policy # :nodoc:
-  end
-end
+require 'rubygems/security_option'
 
 ##
 # Mixin methods for install and update options for Gem::Commands
 
 module Gem::InstallUpdateOptions
+  include Gem::SecurityOption
 
   ##
   # Add the install/update options to the option parser.
 
   def add_install_update_options
-    # TODO: use @parser.accept
-    OptionParser.accept Gem::Security::Policy do |value|
-      require 'rubygems/security'
-
-      raise OptionParser::InvalidArgument, 'OpenSSL not installed' unless
-        defined?(Gem::Security::HighSecurity)
-
-      policy = Gem::Security::Policies[value]
-      unless policy
-        valid = Gem::Security::Policies.keys.sort
-        raise OptionParser::InvalidArgument, "#{value} (#{valid.join ', '} are valid)"
-      end
-      policy
-    end
-
     add_option(:"Install/Update", '-i', '--install-dir DIR',
                'Gem repository directory to get installed',
                'gems') do |value, options|
@@ -125,11 +105,7 @@ module Gem::InstallUpdateOptions
       options[:wrappers] = value
     end
 
-    add_option(:"Install/Update", '-P', '--trust-policy POLICY',
-               Gem::Security::Policy,
-               'Specify gem trust policy') do |value, options|
-      options[:security_policy] = value
-    end
+    add_security_option
 
     add_option(:"Install/Update", '--ignore-dependencies',
                'Do not install any required dependent gems') do |value, options|

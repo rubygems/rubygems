@@ -80,9 +80,11 @@ These are listed in rough  progression order from submitted to closed.
   labeled by by a maintainer.
 * *confirmed* - This issue/pull request has been accepted as valid, but
   is not yet immediately ready for work.
-* <b>working / ready</b> - An issue that is available for collaboration. This issue
+* <b>ready</b> - An issue that is available for collaboration. This issue
   should have existing discussion on the problem, and a description of how to go
   about solving it.
+* <b>working</b> - An issue that has a specific invidual assigned to and planning
+  to do work on it.
 * <b>user feedback required</b> - The issue/pull request is blocked pending more
   feedback from an end user
 * <b>blocked / backlog</b> - the issue/pull request is currently unable to move forward

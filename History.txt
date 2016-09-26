@@ -1,5 +1,19 @@
 # coding: UTF-8
 
+=== 2.6.7 / 2016-09-26
+
+Bug fixes:
+
+* Install native extensions in the correct location when using the
+  `--user-install` flag. Pull request #1683 by Noah Kantrowitz.
+* When calling `Gem.sources`, load sources from `configuration`
+  if present, else use the default sources. Pull request #1699
+  by Luis Sagastume.
+* Fail gracefully when attempting to redirect without a Location.
+  Pull request #1711 by Samuel Giddins.
+* Update vendored Molinillo to 0.5.1. Pull request #1714 by
+  Samuel Giddins.
+
 === 2.6.6 / 2016-06-22
 
 Bug fixes:

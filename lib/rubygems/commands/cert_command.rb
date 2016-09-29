@@ -84,6 +84,11 @@ class Gem::Commands::CertCommand < Gem::Command
 
       options[:sign] << cert_file
     end
+
+    add_option('-d', '--days NUMBER_OF_DAYS',
+               'Days before the certificate expires') do |days, options|
+                options[:expiration_length_days] = days.to_i
+    end
   end
 
   def add_certificate certificate # :nodoc:
@@ -125,7 +130,15 @@ class Gem::Commands::CertCommand < Gem::Command
   end
 
   def build_cert name, key # :nodoc:
-    cert = Gem::Security.create_cert_email name, key
+    expiration_length_days = options[:expiration_length_days]
+    age =
+      if expiration_length_days.nil? || expiration_length_days == 0
+        Gem::Security::ONE_YEAR
+      else
+        Gem::Security::ONE_DAY * expiration_length_days
+      end
+
+    cert = Gem::Security.create_cert_email name, key, age
     Gem::Security.write cert, "gem-public_cert.pem"
   end
 

@@ -372,9 +372,14 @@ module Gem::Security
   KEY_CIPHER = OpenSSL::Cipher.new('AES-256-CBC') if defined?(OpenSSL::Cipher)
 
   ##
+  # One day in seconds
+
+  ONE_DAY = 86400
+
+  ##
   # One year in seconds
 
-  ONE_YEAR = 86400 * 365
+  ONE_YEAR = ONE_DAY * 365
 
   ##
   # The default set of extensions are:

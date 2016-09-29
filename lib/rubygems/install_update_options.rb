@@ -30,11 +30,12 @@ module Gem::InstallUpdateOptions
       raise OptionParser::InvalidArgument, 'OpenSSL not installed' unless
         defined?(Gem::Security::HighSecurity)
 
-      value = Gem::Security::Policies[value]
-      valid = Gem::Security::Policies.keys.sort
-      message = "#{value} (#{valid.join ', '} are valid)"
-      raise OptionParser::InvalidArgument, message if value.nil?
-      value
+      policy = Gem::Security::Policies[value]
+      unless policy
+        valid = Gem::Security::Policies.keys.sort
+        raise OptionParser::InvalidArgument, "#{value} (#{valid.join ', '} are valid)"
+      end
+      policy
     end
 
     add_option(:"Install/Update", '-i', '--install-dir DIR',

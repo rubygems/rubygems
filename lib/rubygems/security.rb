@@ -377,6 +377,11 @@ module Gem::Security
   ONE_YEAR = 86400 * 365
 
   ##
+  # One day in seconds
+
+  ONE_DAY = 86400
+
+  ##
   # The default set of extensions are:
   #
   # * The certificate is not a certificate authority

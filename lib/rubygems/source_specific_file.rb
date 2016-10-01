@@ -1,5 +1,4 @@
 # frozen_string_literal: true
 require 'rubygems/source/specific_file'
 
-# TODO warn upon require, this file is deprecated.
-
+Kernel.warn "Requiring rubygems/source_specific_file is deprecated; please use rubygems/source/specific_file instead."

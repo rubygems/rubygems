@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'rubygems/test_case'
 require 'rubygems/installer'
+require 'rubygems/deprecate'
 
 class Gem::Installer
 
@@ -107,14 +108,16 @@ class Gem::InstallerTestCase < Gem::TestCase
   end
 
   def util_gem_bindir spec = @spec # :nodoc:
-    # TODO: deprecate
     spec.bin_dir
   end
 
   def util_gem_dir spec = @spec # :nodoc:
-    # TODO: deprecate
     spec.gem_dir
   end
+
+  extend Gem::Deprecate
+  deprecate :util_gem_bindir, "@spec.bin_dir", 2016, 10
+  deprecate :util_gem_dir, "@spec.gem_dir", 2016, 10
 
   ##
   # The path where installed executables live

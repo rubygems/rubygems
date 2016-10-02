@@ -510,5 +510,26 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_empty arguments
   end
 
-end
+  def test_process_args_update
+    require 'rubygems/command_manager'
+    @command_manager = Gem::CommandManager.new
 
+    #capture all update options
+    check_options = nil
+    @command_manager['update'].when_invoked do |options|
+      check_options = options
+      true
+    end
+
+    #check defaults
+    @command_manager.process_args %w[update]
+    assert_includes check_options[:document], 'rdoc'
+
+    #check settings
+    check_options = nil
+    @command_manager.process_args %w[update --force --rdoc --install-dir .]
+    assert_includes check_options[:document], 'ri'
+    assert_equal true, check_options[:force]
+    assert_equal Dir.pwd, check_options[:install_dir]
+  end
+end

@@ -66,4 +66,24 @@ class TestGemCommandsCheckCommand < Gem::TestCase
     refute_path_exists b.spec_file
   end
 
+  def test_process_args_check
+    require 'rubygems/command_manager'
+    @command_manager = Gem::CommandManager.new
+
+    #capture all check options
+    check_options = nil
+    @command_manager['check'].when_invoked do |options|
+      check_options = options
+      true
+    end
+
+    #check defaults
+    @command_manager.process_args %w[check]
+    assert_equal true, check_options[:alien]
+
+    #check settings
+    check_options = nil
+    @command_manager.process_args %w[check foobar --alien]
+    assert_equal true, check_options[:alien]
+  end
 end

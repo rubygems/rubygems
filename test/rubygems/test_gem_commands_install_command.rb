@@ -1004,4 +1004,56 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal [:test, :development], @cmd.options[:without_groups]
   end
 
+  def test_process_args_install
+    require 'rubygems/command_manager'
+    @command_manager = Gem::CommandManager.new
+
+    #capture all install options
+    use_ui @ui do
+      check_options = nil
+      @command_manager['install'].when_invoked do |options|
+        check_options = options
+        true
+      end
+
+      #check defaults
+      @command_manager.process_args %w[install]
+      assert_equal %w[ri], check_options[:document].sort
+      assert_equal false, check_options[:force]
+      assert_equal :both, check_options[:domain]
+      assert_equal true, check_options[:wrappers]
+      assert_equal Gem::Requirement.default, check_options[:version]
+      assert_equal nil, check_options[:install_dir]
+      assert_equal nil, check_options[:bin_dir]
+
+      #check settings
+      check_options = nil
+      @command_manager.process_args %w[
+        install --force --local --rdoc --install-dir .
+                --version 3.0 --no-wrapper --bindir .
+      ]
+      assert_equal %w[rdoc ri], check_options[:document].sort
+      assert_equal true, check_options[:force]
+      assert_equal :local, check_options[:domain]
+      assert_equal false, check_options[:wrappers]
+      assert_equal Gem::Requirement.new('3.0'), check_options[:version]
+      assert_equal Dir.pwd, check_options[:install_dir]
+      assert_equal Dir.pwd, check_options[:bin_dir]
+
+      #check remote domain
+      check_options = nil
+      @command_manager.process_args %w[install --remote]
+      assert_equal :remote, check_options[:domain]
+
+      #check both domain
+      check_options = nil
+      @command_manager.process_args %w[install --both]
+      assert_equal :both, check_options[:domain]
+
+      #check both domain
+      check_options = nil
+      @command_manager.process_args %w[install --both]
+      assert_equal :both, check_options[:domain]
+    end
+  end
 end

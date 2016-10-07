@@ -155,16 +155,20 @@ class Gem::Specification < Gem::BasicSpecification
     :summary                   => nil,
     :test_files                => [],
     :version                   => nil,
-  }
+  }.freeze
 
-  Dupable = { } # :nodoc:
+  INITIALIZE_CODE_FOR_DEFAULTS = { } # :nodoc:
 
   @@default_value.each do |k,v|
-    case v
-    when Time, Numeric, Symbol, true, false, nil
-      Dupable[k] = false
+    INITIALIZE_CODE_FOR_DEFAULTS[k] = case v
+    when [], {}, true, false, nil, Numeric, Symbol
+      v.inspect
+    when String
+      v.dump
+    when Numeric
+       "default_value(:#{k})"
     else
-      Dupable[k] = true
+       "default_value(:#{k}).dup"
     end
   end
 
@@ -2029,12 +2033,7 @@ class Gem::Specification < Gem::BasicSpecification
     private :set_nil_attributes_to_nil
 
     def set_not_nil_attributes_to_default_values
-      #{@@non_nil_attributes.map do |key|
-        dupable = Dupable[key]
-        k = "@#{key} = default_value(:#{key})"
-        k += ".dup" if dupable
-        k
-      end.join ";"}
+      #{@@non_nil_attributes.map {|key| "@#{key} = #{INITIALIZE_CODE_FOR_DEFAULTS[key]}" }.join ";"}
     end
     private :set_not_nil_attributes_to_default_values
   RB

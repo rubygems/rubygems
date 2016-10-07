@@ -73,7 +73,7 @@ class Gem::InstallerTestCase < Gem::TestCase
   #   a spec named 'a', intended for regular installs
   # @user_spec::
   #   a spec named 'b', intended for user installs
-
+  #
   # @gem::
   #   the path to a built gem from @spec
   # @user_spec::

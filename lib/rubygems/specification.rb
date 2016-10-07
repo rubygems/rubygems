@@ -155,16 +155,20 @@ class Gem::Specification < Gem::BasicSpecification
     :summary                   => nil,
     :test_files                => [],
     :version                   => nil,
-  }
+  }.freeze
 
-  Dupable = { } # :nodoc:
+  INITIALIZE_CODE_FOR_DEFAULTS = { } # :nodoc:
 
   @@default_value.each do |k,v|
-    case v
-    when Time, Numeric, Symbol, true, false, nil
-      Dupable[k] = false
+    INITIALIZE_CODE_FOR_DEFAULTS[k] = case v
+    when [], {}, true, false, nil, Numeric, Symbol
+      v.inspect
+    when String
+      v.dump
+    when Numeric
+       "default_value(:#{k})"
     else
-      Dupable[k] = true
+       "default_value(:#{k}).dup"
     end
   end
 
@@ -471,7 +475,7 @@ class Gem::Specification < Gem::BasicSpecification
   # activated when a gem is required.
 
   def add_development_dependency(gem, *requirements)
-    add_dependency_with_type(gem, :development, *requirements)
+    add_dependency_with_type(gem, :development, requirements)
   end
 
   ##
@@ -482,7 +486,7 @@ class Gem::Specification < Gem::BasicSpecification
   #   spec.add_runtime_dependency 'example', '~> 1.1', '>= 1.1.4'
 
   def add_runtime_dependency(gem, *requirements)
-    add_dependency_with_type(gem, :runtime, *requirements)
+    add_dependency_with_type(gem, :runtime, requirements)
   end
 
   ##
@@ -1514,7 +1518,7 @@ class Gem::Specification < Gem::BasicSpecification
   # +requirements+.  Valid types are currently <tt>:runtime</tt> and
   # <tt>:development</tt>.
 
-  def add_dependency_with_type(dependency, type, *requirements)
+  def add_dependency_with_type(dependency, type, requirements)
     requirements = if requirements.empty? then
                      Gem::Requirement.default
                    else
@@ -2020,6 +2024,20 @@ class Gem::Specification < Gem::BasicSpecification
     yaml_initialize coder.tag, coder.map
   end
 
+
+
+  eval <<-RB, binding, __FILE__, __LINE__ + 1
+    def set_nil_attributes_to_nil
+      #{@@nil_attributes.map {|key| "@#{key} = nil" }.join "; "}
+    end
+    private :set_nil_attributes_to_nil
+
+    def set_not_nil_attributes_to_default_values
+      #{@@non_nil_attributes.map {|key| "@#{key} = #{INITIALIZE_CODE_FOR_DEFAULTS[key]}" }.join ";"}
+    end
+    private :set_not_nil_attributes_to_default_values
+  RB
+
   ##
   # Specification constructor. Assigns the default values to the attributes
   # and yields itself for further initialization.  Optionally takes +name+ and
@@ -2035,15 +2053,8 @@ class Gem::Specification < Gem::BasicSpecification
     @original_platform = nil
     @installed_by_version = nil
 
-    @@nil_attributes.each do |key|
-      instance_variable_set "@#{key}", nil
-    end
-
-    @@non_nil_attributes.each do |key|
-      default = default_value(key)
-      value = Dupable[key] ? default.dup : default
-      instance_variable_set "@#{key}", value
-    end
+    set_nil_attributes_to_nil
+    set_not_nil_attributes_to_default_values
 
     @new_platform = Gem::Platform::RUBY
 

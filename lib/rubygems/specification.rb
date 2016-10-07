@@ -2020,6 +2020,25 @@ class Gem::Specification < Gem::BasicSpecification
     yaml_initialize coder.tag, coder.map
   end
 
+
+
+  eval <<-RB, binding, __FILE__, __LINE__ + 1
+    def set_nil_attributes_to_nil
+      #{@@nil_attributes.map {|key| "@#{key} = nil" }.join "; "}
+    end
+    private :set_nil_attributes_to_nil
+
+    def set_not_nil_attributes_to_default_values
+      #{@@non_nil_attributes.map do |key|
+        dupable = Dupable[key]
+        k = "@#{key} = default_value(:#{key})"
+        k += ".dup" if dupable
+        k
+      end.join ";"}
+    end
+    private :set_not_nil_attributes_to_default_values
+  RB
+
   ##
   # Specification constructor. Assigns the default values to the attributes
   # and yields itself for further initialization.  Optionally takes +name+ and
@@ -2035,15 +2054,8 @@ class Gem::Specification < Gem::BasicSpecification
     @original_platform = nil
     @installed_by_version = nil
 
-    @@nil_attributes.each do |key|
-      instance_variable_set "@#{key}", nil
-    end
-
-    @@non_nil_attributes.each do |key|
-      default = default_value(key)
-      value = Dupable[key] ? default.dup : default
-      instance_variable_set "@#{key}", value
-    end
+    set_nil_attributes_to_nil
+    set_not_nil_attributes_to_default_values
 
     @new_platform = Gem::Platform::RUBY
 

@@ -175,10 +175,10 @@ class Gem::RequestSet
           end
           if recent_match
             suggestion = "The last version of #{req.request} to support your ruby & rubygems was #{recent_match.version}. Try installing it with `gem install #{recent_match.name} -v #{recent_match.version}`"
-            suggestion += " and then running the current command again" unless @always_install.any? { |spec| spec == req.spec.spec }
+            suggestion += " and then running the current command again" unless @always_install.include?(req.spec.spec)
           else
             suggestion = "There are no versions of #{req.request} compatible with your ruby & rubygems"
-            suggestion += ". Maybe try installing an older version of the gem you're looking for?" unless @always_install.any? { |spec| spec == req.spec.spec }
+            suggestion += ". Maybe try installing an older version of the gem you're looking for?" unless @always_install.include?(req.spec.spec)
           end
           e.suggestion = suggestion
           raise

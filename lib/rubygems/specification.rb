@@ -471,7 +471,7 @@ class Gem::Specification < Gem::BasicSpecification
   # activated when a gem is required.
 
   def add_development_dependency(gem, *requirements)
-    add_dependency_with_type(gem, :development, *requirements)
+    add_dependency_with_type(gem, :development, requirements)
   end
 
   ##
@@ -482,7 +482,7 @@ class Gem::Specification < Gem::BasicSpecification
   #   spec.add_runtime_dependency 'example', '~> 1.1', '>= 1.1.4'
 
   def add_runtime_dependency(gem, *requirements)
-    add_dependency_with_type(gem, :runtime, *requirements)
+    add_dependency_with_type(gem, :runtime, requirements)
   end
 
   ##
@@ -1514,7 +1514,7 @@ class Gem::Specification < Gem::BasicSpecification
   # +requirements+.  Valid types are currently <tt>:runtime</tt> and
   # <tt>:development</tt>.
 
-  def add_dependency_with_type(dependency, type, *requirements)
+  def add_dependency_with_type(dependency, type, requirements)
     requirements = if requirements.empty? then
                      Gem::Requirement.default
                    else

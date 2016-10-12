@@ -306,7 +306,9 @@ class Gem::BasicSpecification
     raise NotImplementedError
   end
 
-  def this; self; end
+  def this
+    self || Proc.new { }
+  end
 
   private
 

@@ -2769,6 +2769,11 @@ class Gem::Specification < Gem::BasicSpecification
       end
     end
 
+    if licenses.empty? then
+      raise Gem::InvalidSpecificationException,
+            'specification must define at least one license'
+    end
+
     licenses.each { |license|
       if license.length > 64
         raise Gem::InvalidSpecificationException,

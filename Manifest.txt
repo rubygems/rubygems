@@ -52,6 +52,9 @@ bundler/lib/bundler/cli/plugin.rb
 bundler/lib/bundler/cli/show.rb
 bundler/lib/bundler/cli/update.rb
 bundler/lib/bundler/cli/viz.rb
+bundler/lib/bundler/compact_index_client.rb
+bundler/lib/bundler/compact_index_client/cache.rb
+bundler/lib/bundler/compact_index_client/updater.rb
 bundler/lib/bundler/constants.rb
 bundler/lib/bundler/current_ruby.rb
 bundler/lib/bundler/definition.rb
@@ -156,10 +159,6 @@ bundler/lib/bundler/ui/rg_proxy.rb
 bundler/lib/bundler/ui/shell.rb
 bundler/lib/bundler/ui/silent.rb
 bundler/lib/bundler/uri_credentials_filter.rb
-bundler/lib/bundler/vendor/compact_index_client/lib/compact_index_client.rb
-bundler/lib/bundler/vendor/compact_index_client/lib/compact_index_client/cache.rb
-bundler/lib/bundler/vendor/compact_index_client/lib/compact_index_client/updater.rb
-bundler/lib/bundler/vendor/compact_index_client/lib/compact_index_client/version.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/delegates/resolution_state.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/delegates/specification_provider.rb

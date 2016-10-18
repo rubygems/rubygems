@@ -358,10 +358,14 @@ module Gem
   # package is not available as a gem, return nil.
 
   def self.datadir(gem_name)
-# TODO: deprecate
     spec = @loaded_specs[gem_name]
     return nil if spec.nil?
     spec.datadir
+  end
+
+  class << self
+    extend Gem::Deprecate
+    deprecate :datadir, "spec.datadir", 2016, 10
   end
 
   ##

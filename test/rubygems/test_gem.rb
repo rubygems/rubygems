@@ -281,11 +281,13 @@ class TestGem < Gem::TestCase
 
     expected = File.join @gemhome, 'gems', foo.full_name, 'data', 'foo'
 
-    assert_equal expected, Gem.datadir('foo')
+    assert_equal expected, Gem::Specification.find_by_name("foo").datadir
   end
 
   def test_self_datadir_nonexistent_package
-    assert_nil Gem.datadir('xyzzy')
+    assert_raises(Gem::MissingSpecError) do
+      Gem::Specification.find_by_name("xyzzy").datadir
+    end
   end
 
   def test_self_default_exec_format

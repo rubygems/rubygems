@@ -41,12 +41,6 @@ class Gem::DependencyInstaller
   attr_reader :errors
 
   ##
-  #--
-  # TODO remove, no longer used
-
-  attr_reader :gems_to_install # :nodoc:
-
-  ##
   # List of gems installed by #install in alphabetic order
 
   attr_reader :installed_gems
@@ -105,59 +99,6 @@ class Gem::DependencyInstaller
     @cache_dir = options[:cache_dir] || @install_dir
 
     @errors = []
-  end
-
-  ##
-  #--
-  # TODO remove, no longer used
-
-  def add_found_dependencies to_do, dependency_list # :nodoc:
-    seen = {}
-    dependencies = Hash.new { |h, name| h[name] = Gem::Dependency.new name }
-
-    until to_do.empty? do
-      spec = to_do.shift
-
-      # HACK why is spec nil?
-      next if spec.nil? or seen[spec.name]
-      seen[spec.name] = true
-
-      deps = spec.runtime_dependencies
-
-      if @development
-        if @dev_shallow
-          if @toplevel_specs.include? spec.full_name
-            deps |= spec.development_dependencies
-          end
-        else
-          deps |= spec.development_dependencies
-        end
-      end
-
-      deps.each do |dep|
-        dependencies[dep.name] = dependencies[dep.name].merge dep
-
-        if @minimal_deps
-          next if Gem::Specification.any? do |installed_spec|
-                    dep.name == installed_spec.name and
-                      dep.requirement.satisfied_by? installed_spec.version
-                  end
-        end
-
-        results = find_gems_with_sources(dep)
-
-        results.sorted.each do |t|
-          to_do.push t.spec
-        end
-
-        results.remove_installed! dep
-
-        @available << results
-        results.inject_into_list dependency_list
-      end
-    end
-
-    dependency_list.remove_specs_unsatisfied_by dependencies
   end
 
   ##
@@ -311,44 +252,6 @@ class Gem::DependencyInstaller
     end
 
     @available = set
-  end
-
-  ##
-  # Gathers all dependencies necessary for the installation from local and
-  # remote sources unless the ignore_dependencies was given.
-  #--
-  # TODO remove at RubyGems 3
-
-  def gather_dependencies # :nodoc:
-    specs = @available.all_specs
-
-    # these gems were listed by the user, always install them
-    keep_names = specs.map { |spec| spec.full_name }
-
-    if @dev_shallow
-      @toplevel_specs = keep_names
-    end
-
-    dependency_list = Gem::DependencyList.new @development
-    dependency_list.add(*specs)
-    to_do = specs.dup
-    add_found_dependencies to_do, dependency_list unless @ignore_dependencies
-
-    # REFACTOR maybe abstract away using Gem::Specification.include? so
-    # that this isn't dependent only on the currently installed gems
-    dependency_list.specs.reject! { |spec|
-      not keep_names.include?(spec.full_name) and
-      Gem::Specification.include?(spec)
-    }
-
-    unless dependency_list.ok? or @ignore_dependencies or @force then
-      reason = dependency_list.why_not_ok?.map { |k,v|
-        "#{k} requires #{v.join(", ")}"
-      }.join("; ")
-      raise Gem::DependencyError, "Unable to resolve dependencies: #{reason}"
-    end
-
-    @gems_to_install = dependency_list.dependency_order.reverse
   end
 
   def in_background what # :nodoc:

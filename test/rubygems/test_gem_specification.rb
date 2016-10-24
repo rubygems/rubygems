@@ -2748,14 +2748,6 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
     util_setup_validate
 
     Dir.chdir @tempdir do
-      @a1.email = ""
-
-      use_ui @ui do
-        @a1.validate
-      end
-
-      assert_match "#{w}:  no email specified\n", @ui.error, "error"
-
       @a1.email = "FIxxxXME (your e-mail)".sub(/xxx/, "")
 
       e = assert_raises Gem::InvalidSpecificationException do

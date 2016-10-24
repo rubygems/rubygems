@@ -396,8 +396,6 @@ class Gem::Specification < Gem::BasicSpecification
   attr_reader :description
 
   ##
-  # :category: Recommended gemspec attributes
-  #
   # A contact email address (or addresses) for this gem
   #
   # Usage:
@@ -2821,7 +2819,7 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
 
     # Warnings
 
-    %w[author email homepage summary].each do |attribute|
+    %w[author homepage summary].each do |attribute|
       value = self.send attribute
       warning "no #{attribute} specified" if value.nil? or value.empty?
     end

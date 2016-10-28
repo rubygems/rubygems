@@ -81,6 +81,7 @@ bundler/lib/bundler/gem_helpers.rb
 bundler/lib/bundler/gem_remote_fetcher.rb
 bundler/lib/bundler/gem_tasks.rb
 bundler/lib/bundler/gem_version_promoter.rb
+bundler/lib/bundler/gemdeps.rb
 bundler/lib/bundler/graph.rb
 bundler/lib/bundler/index.rb
 bundler/lib/bundler/injector.rb
@@ -363,6 +364,7 @@ lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph.rb
 lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/action.rb
 lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/add_edge_no_circular.rb
 lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/add_vertex.rb
+lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/delete_edge.rb
 lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/detach_vertex_named.rb
 lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/log.rb
 lib/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/set_payload.rb

@@ -1,5 +1,16 @@
 # coding: UTF-8
 
+=== 2.6.8 / 2016-10-29
+
+Bug fixes:
+
+* Improve SSL verification failure message. Pull request #1751
+  by Eric Hodel.
+* Ensure `to_spec` falls back on prerelease specs. Pull request
+  #1755 by André Arko.
+* Update vendored Molinillo to 0.5.3. Pull request #1763 by
+  Samuel Giddins.
+
 === 2.6.7 / 2016-09-26
 
 Bug fixes:

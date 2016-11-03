@@ -7,7 +7,7 @@
 #++
 
 if RUBY_VERSION < "1.8.7"
-  $stderr.puts "Rubygems now requires Ruby 1.8.7 or later"
+  $stderr.puts "RubyGems now requires Ruby 1.8.7 or later"
   exit 1
 end
 

@@ -124,7 +124,7 @@ class Gem::Commands::CertCommand < Gem::Command
     say "Certificate: #{cert_path}"
 
     if key_path
-      say "Private Key: #{key_path}"
+      say "Private key: #{key_path}"
       say "Don't forget to move the key file to somewhere private!"
     end
   end

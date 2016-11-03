@@ -12,7 +12,7 @@ if ARGV.include? '-h' or ARGV.include? '--help' then
   $stderr.puts
   $stderr.puts "This will install the latest version of RubyGems."
   $stderr.puts
-  $stderr.puts "\t--version=X.Y\tUpdate rubygems from the X.Y version."
+  $stderr.puts "\t--version=X.Y\tUpdate RubyGems from the X.Y version."
   exit
 end
 
@@ -23,7 +23,7 @@ end
 update_dir = $LOAD_PATH.find { |dir| dir =~ /rubygems-update/ }
 
 if update_dir.nil?
-  puts "Error: Cannot find RubyGems Update Path!"
+  puts "Error: Cannot find RubyGems update path!"
   puts
   puts "RubyGems has already been updated."
   puts "The rubygems-update gem may now be uninstalled."

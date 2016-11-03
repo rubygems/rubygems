@@ -137,8 +137,8 @@ module Gem::InstallUpdateOptions
     end
 
     add_option(:"Install/Update",       '--[no-]format-executable',
-               'Make installed executable names match ruby.',
-               'If ruby is ruby18, foo_exec will be',
+               'Make installed executable names match Ruby.',
+               'If Ruby is ruby18, foo_exec will be',
                'foo_exec18') do |value, options|
       options[:format_executable] = value
     end

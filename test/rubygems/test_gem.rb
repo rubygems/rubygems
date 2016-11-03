@@ -1076,7 +1076,7 @@ class TestGem < Gem::TestCase
       refute Gem.try_activate 'nonexistent'
     end
 
-    expected = "Ignoring ext-1 because its extensions are not built.  " +
+    expected = "Ignoring ext-1 because its extensions are not built. " +
                "Try: gem pristine ext --version 1\n"
 
     assert_equal expected, err

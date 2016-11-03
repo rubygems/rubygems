@@ -18,7 +18,7 @@ class Gem::Commands::SetupCommand < Gem::Command
           :destdir => '', :prefix => '', :previous_version => ''
 
     add_option '--previous-version=VERSION',
-               'Previous version of rubygems',
+               'Previous version of RubyGems',
                'Used for changelog processing' do |version, options|
       options[:previous_version] = version
     end
@@ -42,7 +42,7 @@ class Gem::Commands::SetupCommand < Gem::Command
 
     add_option '--[no-]format-executable',
                'Makes `gem` match ruby',
-               'If ruby is ruby18, gem will be gem18' do |value, options|
+               'If Ruby is ruby18, gem will be gem18' do |value, options|
       options[:format_executable] = value
     end
 
@@ -192,7 +192,7 @@ By default, this RubyGems will install gem as:
 
       if options[:document].include? 'ri' then
         say "Ruby Interactive (ri) documentation was installed. ri is kind of like man "
-        say "pages for ruby libraries. You may access it like this:"
+        say "pages for Ruby libraries. You may access it like this:"
         say "  ri Classname"
         say "  ri Classname.class_method"
         say "  ri Classname#instance_method"
@@ -423,7 +423,7 @@ By default, this RubyGems will install gem as:
       old_bin_path = File.join bin_dir, old_bin_file
       next unless File.exist? old_bin_path
 
-      deprecation_message = "`#{old_bin_file}` has been deprecated.  Use `#{new_name}` instead."
+      deprecation_message = "`#{old_bin_file}` has been deprecated. Use `#{new_name}` instead."
 
       File.open old_bin_path, 'w' do |fp|
         fp.write <<-EOF

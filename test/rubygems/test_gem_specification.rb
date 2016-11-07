@@ -2969,6 +2969,43 @@ Did you mean 'Ruby'?
     warning
   end
 
+  def test_validate_empty_files
+    util_setup_validate
+
+    use_ui @ui do
+      # we have to set all of these for #files to be empty
+      @a1.files = []
+      @a1.test_files = []
+      @a1.executables = []
+
+      @a1.validate
+    end
+
+    assert_match "no files specified", @ui.error
+  end
+
+  def test_validate_empty_homepage
+    util_setup_validate
+
+    use_ui @ui do
+      @a1.homepage = nil
+      @a1.validate
+    end
+
+    assert_match "no homepage specified", @ui.error
+  end
+
+  def test_validate_empty_summary
+    util_setup_validate
+
+    use_ui @ui do
+      @a1.summary = nil
+      @a1.validate
+    end
+
+    assert_match "no summary specified", @ui.error
+  end
+
   def test_validate_name
     util_setup_validate
 

@@ -170,6 +170,7 @@ bundler/lib/bundler/vendor/molinillo/lib/molinillo/dependency_graph.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/dependency_graph/action.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/dependency_graph/add_edge_no_circular.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/dependency_graph/add_vertex.rb
+bundler/lib/bundler/vendor/molinillo/lib/molinillo/dependency_graph/delete_edge.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/dependency_graph/detach_vertex_named.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/dependency_graph/log.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/dependency_graph/set_payload.rb
@@ -236,6 +237,7 @@ bundler/man/bundle-exec.ronn
 bundler/man/bundle-gem.ronn
 bundler/man/bundle-install.ronn
 bundler/man/bundle-lock.ronn
+bundler/man/bundle-outdated.ronn
 bundler/man/bundle-package.ronn
 bundler/man/bundle-platform.ronn
 bundler/man/bundle-update.ronn

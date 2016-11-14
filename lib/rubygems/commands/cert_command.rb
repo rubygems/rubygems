@@ -110,16 +110,20 @@ class Gem::Commands::CertCommand < Gem::Command
       list_certificates_matching filter
     end
 
-    options[:build].each do |name|
-      build name
+    options[:build].each do |email|
+      build email
     end
 
     sign_certificates unless options[:sign].empty?
   end
 
-  def build name
+  def build email
+    if !valid_email?(email)
+      raise Gem::CommandLineError, "Invalid email address #{email}"
+    end
+
     key, key_path = build_key
-    cert_path = build_cert name, key
+    cert_path = build_cert email, key
 
     say "Certificate: #{cert_path}"
 
@@ -129,7 +133,7 @@ class Gem::Commands::CertCommand < Gem::Command
     end
   end
 
-  def build_cert name, key # :nodoc:
+  def build_cert email, key # :nodoc:
     expiration_length_days = options[:expiration_length_days]
     age =
       if expiration_length_days.nil? || expiration_length_days == 0
@@ -138,7 +142,7 @@ class Gem::Commands::CertCommand < Gem::Command
         Gem::Security::ONE_DAY * expiration_length_days
       end
 
-    cert = Gem::Security.create_cert_email name, key, age
+    cert = Gem::Security.create_cert_email email, key, age
     Gem::Security.write cert, "gem-public_cert.pem"
   end
 
@@ -285,6 +289,14 @@ For further reading on signing gems see `ri Gem::Security`.
       sign cert_file
     end
   end
+
+  private
+
+  def valid_email? email
+    # It's simple, but is all we need
+    email =~ /\A.+@.+\z/
+  end
+
 
 end if defined?(OpenSSL::SSL)
 

@@ -130,6 +130,28 @@ Added '/CN=alternate/DC=example'
     assert_path_exists File.join(@tempdir, 'gem-public_cert.pem')
   end
 
+  def test_execute_build_bad_email_address
+    passphrase = 'Foo bar'
+    email = "nobody@"
+
+    @cmd.handle_options %W[--build #{email}]
+
+    @build_ui = Gem::MockGemUi.new "#{passphrase}\n#{passphrase}"
+
+    use_ui @build_ui do
+
+      e = assert_raises Gem::CommandLineError do
+        @cmd.execute
+      end
+
+      assert_equal "Invalid email address #{email}",
+        e.message
+
+      refute_path_exists File.join(@tempdir, 'gem-private_key.pem')
+      refute_path_exists File.join(@tempdir, 'gem-public_cert.pem')
+    end
+  end
+
   def test_execute_build_expiration_days
     passphrase = 'Foo bar'
 

@@ -12,7 +12,7 @@ MAINTAINERS.txt
 MIT.txt
 Manifest.txt
 POLICIES.rdoc
-README.rdoc
+README.md
 Rakefile
 UPGRADING.rdoc
 appveyor.yml

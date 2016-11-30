@@ -13,7 +13,7 @@ To upgrade to the latest RubyGems, run:
   $ gem update --system  # you might need to be an administrator or root
 ```
 
-See [UPGRADING.rdoc] for more details and alternative instructions.
+See [UPGRADING](UPGRADING.rdoc) for more details and alternative instructions.
 
 -----
 

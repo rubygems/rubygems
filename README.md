@@ -13,7 +13,7 @@ To upgrade to the latest RubyGems, run:
   $ gem update --system  # you might need to be an administrator or root
 ```
 
-See UPGRADING.rdoc for more details and alternative instructions.
+See [UPGRADING](UPGRADING.rdoc) for more details and alternative instructions.
 
 -----
 
@@ -31,8 +31,9 @@ For more details and other options, see:
 
 ## SUPPORTING
 
-<a href="https://rubytogether.org/"><img src="https://rubytogether.org/images/rubies.svg" width=200></a><br/>
-  RubyGems is maintained by <a href="https://rubytogether.org/">Ruby Together</a>, a grassroots initiative committed to supporting the critical Ruby infrastructure you rely on. Contribute today <a href="https://rubytogether.org/developers">as an individual</a> or even better, <a href="https://rubytogether.org/companies">as a company</a>, and ensure that Bundler, RubyGems, and other shared tooling is around for years to come.
+<a href="https://rubytogether.org/"><img src="https://rubytogether.org/images/rubies.svg" width=200></a>
+
+RubyGems is maintained by [Ruby Together](https://rubytogether.org), a grassroots initiative committed to supporting the critical Ruby infrastructure you rely on. Contribute today [as an individual](https://rubytogether.org/developers) or even better, [as a company](https://rubytogether.org/companies), and ensure that Bundler, RubyGems, and other shared tooling is around for years to come.
 
 ## GETTING HELP
 
@@ -40,14 +41,14 @@ For more details and other options, see:
 
 Are you unsure of how to use RubyGems?  Do you think you've found a bug and
 you're not sure?  If that is the case, the best place for you is to file a
-support request at {help.rubygems.org}[http://help.rubygems.org].
+support request at [help.rubygems.org](http://help.rubygems.org).
 
 ### Filing Tickets
 
 Got a bug and you're not sure?  You're sure you have a bug, but don't know
 what to do next?  In any case, let us know about it!  The best place
 for letting the RubyGems team know about bugs or problems you're having is
-{on the RubyGems issues page at GitHub}[http://github.com/rubygems/rubygems/issues].
+[on the RubyGems issues page at GitHub](http://github.com/rubygems/rubygems/issues).
 
 ### Bundler Compatibility
 

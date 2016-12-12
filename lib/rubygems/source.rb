@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'uri'
+autoload :URI, 'uri'
 require 'fileutils'
 
 ##
@@ -236,4 +236,3 @@ require 'rubygems/source/specific_file'
 require 'rubygems/source/local'
 require 'rubygems/source/lock'
 require 'rubygems/source/vendor'
-

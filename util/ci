@@ -48,6 +48,7 @@ case ARGV
 when %w(before_script)
   if TOOL.rubygems?
     run('gem', %W(uninstall executable-hooks gem-wrappers -x --force -i #{`gem env home`.strip}@global))
+    run('gem', %W(uninstall rake -x -a)) # ensure our preferred version gets used
     run('gem', %W(install rake -v #{'~> 10.5'} --no-document))
     run('gem', %W(install hoe -v #{'3.15.0'} --no-document))
     run('gem', %w(install hoe-travis --no-document))

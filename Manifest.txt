@@ -183,9 +183,9 @@ bundler/lib/bundler/vendor/molinillo/lib/molinillo/modules/ui.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/resolution.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/resolver.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/state.rb
-bundler/lib/bundler/vendor/net/http/faster.rb
-bundler/lib/bundler/vendor/net/http/persistent.rb
-bundler/lib/bundler/vendor/net/http/persistent/ssl_reuse.rb
+bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/faster.rb
+bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
+bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent/ssl_reuse.rb
 bundler/lib/bundler/vendor/postit/lib/postit.rb
 bundler/lib/bundler/vendor/postit/lib/postit/environment.rb
 bundler/lib/bundler/vendor/postit/lib/postit/installer.rb

@@ -15,6 +15,11 @@ end
 
 begin
   require 'hoe'
+rescue Gem::ConflictError => e
+  abort <<-ERR
+Error while loading the hoe gem.
+#{e}
+  ERR
 rescue ::LoadError
   abort <<-ERR
 Error while loading the hoe gem.

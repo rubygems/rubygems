@@ -1512,6 +1512,7 @@ class TestGem < Gem::TestCase
     ENV['RUBYGEMS_GEMDEPS'] = "-"
 
     out = `#{Gem.ruby.dup.untaint} -I "#{LIB_PATH.untaint}" -I "#{BUNDLER_LIB_PATH.untaint}" -rubygems -e "p Gem.loaded_specs.values.map(&:full_name).sort"`
+    out.sub!(/, "openssl-#{Gem::Version::VERSION_PATTERN}"/, "")
 
     assert_equal %W(a-1 b-1 #{BUNDLER_FULL_NAME} c-1).inspect, out.strip
   end
@@ -1545,6 +1546,7 @@ class TestGem < Gem::TestCase
     out = Dir.chdir "sub1" do
       `#{Gem.ruby.dup.untaint} -I "#{LIB_PATH.untaint}" -I "#{BUNDLER_LIB_PATH.untaint}" -rubygems -e "p Gem.loaded_specs.values.map(&:full_name).sort"`
     end
+    out.sub!(/, "openssl-#{Gem::Version::VERSION_PATTERN}"/, "")
 
     Dir.rmdir "sub1"
 
@@ -1732,7 +1734,7 @@ class TestGem < Gem::TestCase
       platform = " #{platform}"
     end
     expected = <<-EXPECTED
-Could not find gem 'a#{platform}' in any of the gem sources listed in your Gemfile or available on this machine.
+Could not find gem 'a#{platform}' in any of the gem sources listed in your Gemfile.
 You may need to `gem install -g` to install missing gems
 
     EXPECTED

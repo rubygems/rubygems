@@ -52,7 +52,7 @@ when %w(before_script)
     run('gem', %W(install hoe -v #{'3.15.0'} --no-document))
     run('gem', %w(install hoe-travis --no-document))
     run('gem', %W(install minitest -v #{'~> 4.7'} --no-document))
-    run('rake', %w(travis:before -t))
+    run('rake', %w(_10.5.0_ travis:before -t))
     run('gem', %w(list --details))
     run('gem', %w(env))
   else
@@ -60,11 +60,11 @@ when %w(before_script)
   end
 when %w(after_script)
   if TOOL.rubygems?
-    run('rake', %w(travis:after -t))
+    run('rake', %w(_10.5.0_ travis:after -t))
   end
 when %w(script)
   if TOOL.rubygems?
-    run('rake', %w(travis))
+    run('rake', %w(_10.5.0_ travis))
   else
     run('rake', %w(spec:travis -t))
   end

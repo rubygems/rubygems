@@ -141,6 +141,10 @@ class Gem::Requirement
     new.uniq!
     new = new.map { |r| self.class.parse r }
 
+    @hash = nil
+    @as_list = nil
+    @to_s = nil
+
     @requirements.concat new
   end
 
@@ -179,11 +183,11 @@ class Gem::Requirement
   end
 
   def as_list # :nodoc:
-    requirements.map { |op, version| "#{op} #{version}" }.sort
+    @as_list ||= requirements.map { |op, version| "#{op} #{version}" }.sort
   end
 
   def hash # :nodoc:
-    requirements.sort.hash
+    @hash ||= requirements.sort.hash
   end
 
   def marshal_dump # :nodoc:
@@ -256,7 +260,7 @@ class Gem::Requirement
   end
 
   def to_s # :nodoc:
-    as_list.join ", "
+    @to_s ||= as_list.join ", "
   end
 
   def == other # :nodoc:

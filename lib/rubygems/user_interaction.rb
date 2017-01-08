@@ -594,14 +594,13 @@ class Gem::StreamUI
       # Do nothing.
     end
 
-  private
+    private
     def locked_puts(message)
       MUTEX.synchronize do
         @out.puts message
       end
     end
   end
-end
 
 
   ##

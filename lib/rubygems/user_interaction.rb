@@ -553,6 +553,58 @@ class Gem::StreamUI
   end
 
   ##
+  # A progress reporter that behaves nicely with threaded downloading.
+
+  class ThreadedDownloadReporter
+
+    MUTEX = Mutex.new
+
+    ##
+    # The current file name being displayed
+
+    attr_reader :file_name
+
+    ##
+    # Creates a new threaded download reporter that will display on
+    # +out_stream+.  The other arguments are ignored.
+
+    def initialize(out_stream, *args)
+      @out = out_stream
+    end
+
+    ##
+    # Tells the download reporter that the +file_name+ is being fetched.
+    # The other arguments are ignored.
+
+    def fetch(file_name, *args)
+      puts "Fetching: #{file_name}"
+    end
+
+    ##
+    # Updates the threaded download reporter for the given number of +bytes+.
+
+    def update(bytes)
+      # Do nothing.
+    end
+
+    ##
+    # Indicates the download is complete.
+
+    def done
+      # Do nothing.
+    end
+
+  private
+    def locked_puts(message)
+      MUTEX.synchronize do
+        @out.puts message
+      end
+    end
+  end
+end
+
+
+  ##
   # A progress reporter that prints out messages about the current progress.
 
   class VerboseDownloadReporter

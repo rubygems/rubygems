@@ -110,6 +110,8 @@ class TestGemCommandsPristineCommand < Gem::TestCase
 
     if win_platform?
       assert_match %r%\A#!\s*#{ruby_exec}%, File.read(gem_exec)
+    elsif RbConfig::CONFIG['LIBRUBY_RELATIVE'] == 'yes'
+      assert_match %r%\A#!\s*/bin/sh\n.*/#{ruby_exec}%, File.read(gem_exec)
     else
       assert_match %r%\A#!\s*/usr/bin/env #{ruby_exec}%, File.read(gem_exec)
     end

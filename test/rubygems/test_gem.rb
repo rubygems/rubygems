@@ -1460,7 +1460,7 @@ class TestGem < Gem::TestCase
 
   def test_use_gemdeps_uses_bundler_postit_trampoline
     refute_includes $LOADED_FEATURES, File.join(BUNDLER_LIB_PATH, "bundler/postit_trampoline.rb".dup.untaint)
-    ENV.delete("BUNDLE_DISABLE_POSTIT")
+    ENV.delete("BUNDLE_TRAMPOLINE_DISABLE")
 
     a = new_spec "a", "1", nil, "lib/a.rb"
     b = new_spec "b", "1", nil, "lib/b.rb"

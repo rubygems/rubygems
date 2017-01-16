@@ -12,9 +12,9 @@ class TestGemExtRakeBuilder < Gem::TestCase
     FileUtils.mkdir_p @ext
     FileUtils.mkdir_p @dest_path
   end
-  
+
   def test_class_build
-    create_temp_mkrf_file!('task :default')
+    create_temp_mkrf_file('task :default')
     output = []
     realdir = nil # HACK /tmp vs. /private/tmp
 
@@ -36,7 +36,7 @@ class TestGemExtRakeBuilder < Gem::TestCase
   #
   # It should not fail with a non-empty args list either
   def test_class_build_with_args
-    create_temp_mkrf_file!('task :default')
+    create_temp_mkrf_file('task :default')
     output = []
     realdir = nil # HACK /tmp vs. /private/tmp
 
@@ -56,7 +56,7 @@ class TestGemExtRakeBuilder < Gem::TestCase
   end  
 
   def test_class_build_fail
-    create_temp_mkrf_file!("task :default do abort 'fail' end")
+    create_temp_mkrf_file("task :default do abort 'fail' end")
     output = []
 
     build_rake_in(false) do |rake|
@@ -70,7 +70,7 @@ class TestGemExtRakeBuilder < Gem::TestCase
     end
   end
   
-  def create_temp_mkrf_file!(rakefile_content)
+  def create_temp_mkrf_file(rakefile_content)
     File.open File.join(@ext, 'mkrf_conf.rb'), 'w' do |mkrf_conf|
       mkrf_conf.puts <<-EO_MKRF
         File.open("Rakefile","w") do |f|

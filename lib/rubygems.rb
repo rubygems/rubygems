@@ -1172,7 +1172,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     ENV["BUNDLE_GEMFILE"] ||= File.expand_path(path)
     require 'rubygems/user_interaction'
     Gem::DefaultUserInteraction.use_ui(ui) do
-      require "bundler/postit_trampoline" unless ENV["BUNDLE_DISABLE_POSTIT"]
+      require "bundler/postit_trampoline" unless ENV["BUNDLE_TRAMPOLINE_DISABLE"]
       require "bundler"
       @gemdeps = Bundler.setup
       Bundler.ui = nil

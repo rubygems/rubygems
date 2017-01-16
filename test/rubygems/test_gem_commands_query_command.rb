@@ -494,6 +494,41 @@ pl (1 i386-linux)
     assert_empty @ui.error
   end
 
+  def test_process_args_query
+    require 'rubygems/command_manager'
+    @command_manager = Gem::CommandManager.new
+
+    #capture all query options
+    check_options = nil
+    @command_manager['query'].when_invoked do |options|
+      check_options = options
+      true
+    end
+
+    #check defaults
+    @command_manager.process_args %w[query]
+    assert_equal(//, check_options[:name])
+    assert_equal :local, check_options[:domain]
+    assert_equal false, check_options[:details]
+
+    #check settings
+    check_options = nil
+    @command_manager.process_args %w[query --name foobar --local --details]
+    assert_equal(/foobar/i, check_options[:name])
+    assert_equal :local, check_options[:domain]
+    assert_equal true, check_options[:details]
+
+    #remote domain
+    check_options = nil
+    @command_manager.process_args %w[query --remote]
+    assert_equal :remote, check_options[:domain]
+
+    #both (local/remote) domains
+    check_options = nil
+    @command_manager.process_args %w[query --both]
+    assert_equal :both, check_options[:domain]
+  end
+
   private
 
   def add_gems_to_fetcher

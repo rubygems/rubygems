@@ -117,5 +117,24 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     util_test_build_gem @gem, gemspec_file, false
   end
 
-end
+  def test_process_args_build
+    require 'rubygems/command_manager'
+    @command_manager = Gem::CommandManager.new
 
+    #capture all build options
+    check_options = nil
+    @command_manager['build'].when_invoked do |options|
+      check_options = options
+      true
+    end
+
+    #check defaults
+    @command_manager.process_args %w[build]
+    #NOTE: Currently no defaults
+
+    #check settings
+    check_options = nil
+    @command_manager.process_args %w[build foobar.rb]
+    assert_equal 'foobar.rb', check_options[:args].first
+  end
+end

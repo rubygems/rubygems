@@ -279,5 +279,25 @@ WARNING:  Use your OS package manager to uninstall vendor gems
     RbConfig::CONFIG['vendordir'] = orig_vendordir
   end
 
-end
+  def test_process_args_uninstall
+    require 'rubygems/command_manager'
+    @command_manager = Gem::CommandManager.new
 
+    #capture all uninstall options
+    check_options = nil
+    @command_manager['uninstall'].when_invoked do |options|
+      check_options = options
+      true
+    end
+
+    #check defaults
+    @command_manager.process_args %w[uninstall]
+    assert_equal Gem::Requirement.default, check_options[:version]
+
+    #check settings
+    check_options = nil
+    @command_manager.process_args %w[uninstall foobar --version 3.0]
+    assert_equal "foobar", check_options[:args].first
+    assert_equal Gem::Requirement.new('3.0'), check_options[:version]
+  end
+end

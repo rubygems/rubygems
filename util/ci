@@ -34,10 +34,10 @@ end
 
 def with_retries(attempts = 3)
   yield
-rescue
+rescue StandardError, SystemExit => e
   attempts -= 1
   if attempts > 0
-    warn "Command failed. Retrying #{attempts -= 1} more times."
+    warn "Command failed (#{e}). Retrying #{attempts -= 1} more times."
     retry
   else
     raise

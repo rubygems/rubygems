@@ -1,5 +1,21 @@
 # coding: UTF-8
 
+=== 2.6.9 / 2017-01-20
+
+Bug fixes:
+
+* Allow initializing versions with empty strings. Pull request #1767 by
+  Luis Sagastume.
+* Fix TypeError on 2.4. Pull request #1788 by Nobuyoshi Nakada.
+* Don't output mkmf.log message if compilation didn't fail. Pull request
+  #1808 by Jeremy Evans.
+* Fixed broken links and overzealous URL encoding in gem server. Pull
+  request #1809 by Nicole Orchard.
+* Update vendored Molinillo to 0.5.5. Pull request #1812 by Samuel
+  Giddins.
+* RakeBuilder: avoid frozen string issue. Pull request #1819 by Olle
+  Jonsson.
+
 === 2.6.8 / 2016-10-29
 
 Bug fixes:

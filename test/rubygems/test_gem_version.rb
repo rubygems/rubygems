@@ -82,18 +82,23 @@ class TestGemVersion < Gem::TestCase
     assert_version_equal "1", 1
   end
 
-  def test_initialize_bad
-    %W[
+  def test_initialize_invalid
+    invalid_versions = %W[
       junk
       1.0\n2.0
       1..2
       1.2\ 3.4
-    ].each do |bad|
-      e = assert_raises ArgumentError, bad do
-        Gem::Version.new bad
+    ]
+
+    # DON'T TOUCH THIS WITHOUT CHECKING CVE-2013-4287
+    invalid_versions << "2.3422222.222.222222222.22222.ads0as.dasd0.ddd2222.2.qd3e."
+
+    invalid_versions.each do |invalid|
+      e = assert_raises ArgumentError, invalid do
+        Gem::Version.new invalid
       end
 
-      assert_equal "Malformed version number string #{bad}", e.message, bad
+      assert_equal "Malformed version number string #{invalid}", e.message, invalid
     end
   end
 

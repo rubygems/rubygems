@@ -43,7 +43,7 @@ module Kernel
 
     if spec = Gem.find_unresolved_default_spec(path)
       Gem.remove_unresolved_default_spec(spec)
-      gem(spec.name)
+      Kernel.send(:gem, spec.name)
     end
 
     # If there are no unresolved deps, then we can use just try

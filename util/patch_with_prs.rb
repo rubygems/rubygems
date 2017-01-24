@@ -68,6 +68,7 @@ File.open(version_file, "w") {|f| f.write(version_contents) }
 confirm "Update changelog"
 sh("git", "commit", "-am", "Version #{version} with changelog")
 sh("rake", "release", "VERSION=#{version}")
+sh("git", "push")
 sh("git", "checkout", "master")
 sh("git", "pull")
 unless system("git", "merge", "v#{version}", "--no-edit")

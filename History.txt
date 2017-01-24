@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.6.10 / 2017-01-23
+
+Bug fixes:
+
+* Fix `require` calling the wrong `gem` method when it is overridden.
+  Pull request #1822 by Samuel Giddins.
+
 === 2.6.9 / 2017-01-20
 
 Bug fixes:

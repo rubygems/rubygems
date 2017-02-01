@@ -52,7 +52,7 @@ class Gem::Requirement
   # returned.
 
   def self.create *inputs
-    return create inputs if inputs.length > 1
+    return new inputs if inputs.length > 1
 
     input = inputs.shift
 

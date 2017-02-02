@@ -4,6 +4,7 @@ require 'rubygems/local_remote_options'
 require 'rubygems/spec_fetcher'
 require 'rubygems/version_option'
 require 'rubygems/text'
+require 'json'
 
 class Gem::Commands::QueryCommand < Gem::Command
 
@@ -59,6 +60,11 @@ class Gem::Commands::QueryCommand < Gem::Command
     add_option(      '--[no-]prerelease',
                'Display prerelease versions') do |value, options|
       options[:prerelease] = value
+    end
+
+    add_option('--json-output',
+               'Display output in json') do |value, options|
+      options[:json] = value
     end
 
     add_local_remote_options
@@ -120,7 +126,7 @@ is too hard to use.
   private
 
   def display_header type
-    if (ui.outs.tty? and Gem.configuration.verbose) or both? then
+    if (ui.outs.tty? and Gem.configuration.verbose and !options[:json]) or both? then
       say
       say "*** #{type} GEMS ***"
       say
@@ -135,7 +141,7 @@ is too hard to use.
     dep.prerelease = prerelease
 
     if local? then
-      if prerelease and not both? then
+      if prerelease and not both? and !options[:json] then
         alert_warning "prereleases are always shown locally"
       end
 
@@ -202,7 +208,7 @@ is too hard to use.
 
     output_versions output, versions
 
-    say output.join(options[:details] ? "\n\n" : "\n")
+    say options[:json] ? JSON.generate(output) : output.join(options[:details] ? "\n\n" : "\n")
   end
 
   def output_versions output, versions
@@ -237,14 +243,24 @@ is too hard to use.
 
     spec = spec.fetch_spec name_tuple if spec.respond_to? :fetch_spec
 
-    entry << "\n"
+    if !options[:json]
+      entry << "\n"
+    end
 
-    spec_platforms   entry, platforms
-    spec_authors     entry, spec
-    spec_homepage    entry, spec
-    spec_license     entry, spec
-    spec_loaded_from entry, spec, specs
-    spec_summary     entry, spec
+    if options[:json]
+      entry[:platforms] = platforms.values.uniq.sort
+      entry[:authors] = spec.authors
+      entry[:homepage] = spec.homepage
+      entry[:licenses] = spec.licenses
+      entry[:summary] = spec.summary
+    else
+      spec_platforms   entry, platforms
+      spec_authors     entry, spec
+      spec_homepage    entry, spec
+      spec_license     entry, spec
+      spec_loaded_from entry, spec, specs
+      spec_summary     entry, spec
+    end
   end
 
   def entry_versions entry, name_tuples, platforms, specs
@@ -273,7 +289,7 @@ is too hard to use.
         end
       end
 
-    entry << " (#{list.join ', '})"
+    options[:json] ? entry[:versions] = list : entry << " (#{list.join ', '})"
   end
 
   def make_entry entry_tuples, platforms
@@ -283,12 +299,12 @@ is too hard to use.
       Gem::NameTuple === item
     end
 
-    entry = [name_tuples.first.name]
+    options[:json] ? entry = {:name => name_tuples.first.name} : entry = [name_tuples.first.name]
 
     entry_versions entry, name_tuples, platforms, specs
     entry_details  entry, detail_tuple, specs, platforms
 
-    entry.join
+    options[:json] ? entry : entry.join
   end
 
   def spec_authors entry, spec

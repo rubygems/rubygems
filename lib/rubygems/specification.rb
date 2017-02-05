@@ -455,9 +455,22 @@ class Gem::Specification < Gem::BasicSpecification
   #   bytes
   # * All strings must be UTF-8, no binary data is allowed
   #
-  # To add metadata for the location of a issue tracker:
+  # You can use metadata to specify links to your gem's homepage, codebase,
+  # documentation, wiki, mailing list and issue tracker.
   #
-  #   s.metadata = { "issue_tracker" => "https://example/issues" }
+  #   s.metadata = {
+  #     "home" => "https://bestgemever.example.io",
+  #     "code" => "https://example.com/user/bestgemever",
+  #     "docs" => "https://www.example.info/gems/bestgemever/0.0.1",
+  #     "wiki" => "https://example.com/user/bestgemever/wiki",
+  #     "mail" => "https://groups.example.com/bestgemever",
+  #     "bugs" => "https://example.com/user/bestgemever/issues"
+  #   }
+  #
+  # These links will be used on your gem's page on rubygems.org and must pass
+  # validation against following regex.
+  #
+  #   %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}
 
   attr_accessor :metadata
 

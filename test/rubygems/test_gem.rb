@@ -1522,7 +1522,7 @@ class TestGem < Gem::TestCase
                     "-eputs Gem.loaded_specs.values.map(&:full_name).sort"],
                    &:read).split(/\n/)
 
-    assert_equal ["b-1", BUNDLER_FULL_NAME, "c-1"], out - out0
+    assert_equal ["b-1", "c-1"], out - out0
   end
 
   def test_looks_for_gemdeps_files_automatically_on_start_in_parent_dir
@@ -1565,7 +1565,7 @@ class TestGem < Gem::TestCase
 
     Dir.rmdir "sub1"
 
-    assert_equal ["b-1", BUNDLER_FULL_NAME, "c-1"], out - out0
+    assert_equal ["b-1", "c-1"], out - out0
   end
 
   def test_register_default_spec

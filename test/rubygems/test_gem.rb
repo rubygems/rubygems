@@ -1508,7 +1508,8 @@ class TestGem < Gem::TestCase
     File.open path, "w" do |f|
       f.puts "gem 'a'"
     end
-    out0 = IO.popen([Gem.ruby.dup.untaint, "-I#{LIB_PATH}", "-rubygems",
+    out0 = IO.popen([Gem.ruby.dup.untaint, "-I#{LIB_PATH}",
+                     "-I#{BUNDLER_LIB_PATH.untaint}", "-rubygems",
                      "-eputs Gem.loaded_specs.values.map(&:full_name).sort"],
                     &:read).split(/\n/)
 
@@ -1516,7 +1517,8 @@ class TestGem < Gem::TestCase
       f.puts "gem 'b'"
       f.puts "gem 'c'"
     end
-    out = IO.popen([Gem.ruby.dup.untaint, "-I#{LIB_PATH}", "-rubygems",
+    out = IO.popen([Gem.ruby.dup.untaint, "-I#{LIB_PATH}",
+                    "-I#{BUNDLER_LIB_PATH.untaint}", "-rubygems",
                     "-eputs Gem.loaded_specs.values.map(&:full_name).sort"],
                    &:read).split(/\n/)
 
@@ -1547,7 +1549,8 @@ class TestGem < Gem::TestCase
     File.open path, "w" do |f|
       f.puts "gem 'a'"
     end
-    out0 = IO.popen([Gem.ruby.dup.untaint, "-Csub1", "-I#{LIB_PATH}", "-rubygems",
+    out0 = IO.popen([Gem.ruby.dup.untaint, "-Csub1", "-I#{LIB_PATH}",
+                     "-I#{BUNDLER_LIB_PATH.untaint}", "-rubygems",
                      "-eputs Gem.loaded_specs.values.map(&:full_name).sort"],
                     &:read).split(/\n/)
 
@@ -1555,7 +1558,8 @@ class TestGem < Gem::TestCase
       f.puts "gem 'b'"
       f.puts "gem 'c'"
     end
-    out = IO.popen([Gem.ruby.dup.untaint, "-Csub1", "-I#{LIB_PATH}", "-rubygems",
+    out = IO.popen([Gem.ruby.dup.untaint, "-Csub1", "-I#{LIB_PATH}",
+                    "-I#{BUNDLER_LIB_PATH.untaint}", "-rubygems",
                     "-eputs Gem.loaded_specs.values.map(&:full_name).sort"],
                    &:read).split(/\n/)
 

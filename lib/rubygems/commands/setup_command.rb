@@ -142,7 +142,7 @@ By default, this RubyGems will install gem as:
 
     remove_old_lib_files lib_dir
 
-    install_default_gemspec
+    install_default_bundler_gem
 
     say "RubyGems #{Gem::VERSION} installed"
 
@@ -339,7 +339,7 @@ By default, this RubyGems will install gem as:
     return false
   end
 
-  def install_default_gemspec
+  def install_default_bundler_gem
     Dir.chdir("bundler") do
       bundler_spec = Gem::Specification.load("bundler.gemspec")
       bundler_spec.files = Dir["{*.md,{lib,exe,man}/**/*}"]
@@ -347,8 +347,18 @@ By default, this RubyGems will install gem as:
       Dir.entries(Gem::Specification.default_specifications_dir).
         select {|gs| gs.start_with?("bundler-") }.
         each {|gs| File.delete(File.join(Gem::Specification.default_specifications_dir, gs)) }
+
       default_spec_path = File.join(Gem::Specification.default_specifications_dir, "#{bundler_spec.full_name}.gemspec")
       Gem.write_binary(default_spec_path, bundler_spec.to_ruby)
+
+      bundler_spec = Gem::Specification.load(default_spec_path)
+
+      Dir.entries(bundler_spec.gems_dir).
+        select {|default_gem| default_gem.start_with?("bundler-") }.
+        each {|default_gem| rm_r File.join(bundler_spec.gems_dir, default_gem) }
+
+      mkdir_p bundler_spec.bin_dir
+      bundler_spec.executables.each {|e| cp File.join(bundler_spec.bindir, e), File.join(bundler_spec.bin_dir, e) }
     end
   end
 

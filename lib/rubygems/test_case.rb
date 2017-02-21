@@ -1346,7 +1346,7 @@ Also, a list:
   end
 
   ##
-  # create_gemspec creates gem specification in given +direcotry+ or '.'
+  # create_gemspec creates gem specification in given +directory+ or '.'
   # for the given +name+ and +version+.
   #
   # Yields the +specification+ to the block, if given

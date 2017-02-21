@@ -64,9 +64,9 @@ which describes the type of the issue or pull request.
 * *cleanup* - Generally for a pull request that improves the code base without
   fixing a bug or implementing a feature.
 * <b>major bump</b> - This issue or pull request requires a major version bump
-* *administrative* - This issue relates to adminstrative tasks that need to
+* *administrative* - This issue relates to administrative tasks that need to
   take place as it relates to rubygems
-* *documentation* - This issue relates to improving the documenation for
+* *documentation* - This issue relates to improving the documentation for
   in this repo. Note that much of the rubygems documentation is here:
   https://github.com/rubygems/guides
 

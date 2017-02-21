@@ -32,7 +32,7 @@ receive any updates.
 Security releases will be made for RubyGems version series that were included
 in a Ruby release.
 
-For example, RubyGems 2.0.x will recieve security fixes until Ruby 2.0.0
+For example, RubyGems 2.0.x will receive security fixes until Ruby 2.0.0
 reaches end-of-life.
 
 == Release Policies

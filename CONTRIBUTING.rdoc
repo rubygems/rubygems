@@ -54,7 +54,7 @@ type of the issue or pull request.
 * <b>cleanup</b> - Generally for a pull request that improves the code base without
   fixing a bug or implementing a feature.
 * <b>major bump</b> - This issue or pull request requires a major version bump
-* <b>administrative</b> - This issue relates to adminstrative tasks that need to
+* <b>administrative</b> - This issue relates to administrative tasks that need to
   take place as it relates to rubygems
 
 Bug report and Bugfix have the same color. And feature implementation and

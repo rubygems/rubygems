@@ -3251,7 +3251,7 @@ Did you mean 'Ruby'?
     Dir.chdir @tempdir do
       @m1 = quick_gem 'm', '1' do |s|
         s.files = %w[lib/code.rb]
-        s.metadata = { 'one' => "two", 'two' => "three" }
+        s.metadata = { "one" => "two", "home" => "https://example.com/user/repo"  }
       end
 
       use_ui @ui do
@@ -3325,6 +3325,23 @@ Did you mean 'Ruby'?
       end
 
       assert_equal "metadata value too large (1025 > 1024)", e.message
+    end
+  end
+
+  def test_metadata_link_validation_fails
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @m2 = quick_gem 'm', '2' do |s|
+        s.files = %w[lib/code.rb]
+        s.metadata = { 'home' => 'http:/example.com' }
+      end
+
+      e = assert_raises Gem::InvalidSpecificationException do
+        @m2.validate
+      end
+
+      assert_equal "metadata['home'] has invalid link: \"http:/example.com\"", e.message
     end
   end
 

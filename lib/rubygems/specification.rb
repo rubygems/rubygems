@@ -2756,29 +2756,7 @@ class Gem::Specification < Gem::BasicSpecification
               'metadata must be a hash'
     end
 
-    metadata.keys.each do |k|
-      if !k.kind_of?(String)
-        raise Gem::InvalidSpecificationException,
-                'metadata keys must be a String'
-      end
-
-      if k.size > 128
-        raise Gem::InvalidSpecificationException,
-                "metadata key too large (#{k.size} > 128)"
-      end
-    end
-
-    metadata.values.each do |k|
-      if !k.kind_of?(String)
-        raise Gem::InvalidSpecificationException,
-                'metadata values must be a String'
-      end
-
-      if k.size > 1024
-        raise Gem::InvalidSpecificationException,
-                "metadata value too large (#{k.size} > 1024)"
-      end
-    end
+    validate_metadata
 
     licenses.each { |license|
       if license.length > 64
@@ -2862,6 +2840,40 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
   ensure
     if $! or @warnings > 0 then
       alert_warning "See http://guides.rubygems.org/specification-reference/ for help"
+    end
+  end
+
+  def validate_metadata
+    url_validation_regex = %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}
+    link_keys = ["home", "code", "docs", "wiki", "mail", "bugs"]
+
+    metadata.each do|key, value|
+      if !key.kind_of?(String)
+        raise Gem::InvalidSpecificationException,
+                "metadata keys must be a String"
+      end
+
+      if key.size > 128
+        raise Gem::InvalidSpecificationException,
+                "metadata key too large (#{key.size} > 128)"
+      end
+
+      if !value.kind_of?(String)
+        raise Gem::InvalidSpecificationException,
+                "metadata values must be a String"
+      end
+
+      if value.size > 1024
+        raise Gem::InvalidSpecificationException,
+                "metadata value too large (#{value.size} > 1024)"
+      end
+
+      if link_keys.include? key
+        if value !~ url_validation_regex
+          raise Gem::InvalidSpecificationException,
+                 "metadata['#{key}'] has invalid link: #{value.inspect}"
+        end
+      end
     end
   end
 

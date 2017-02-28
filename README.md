@@ -59,3 +59,7 @@ Ongoing maintenance work on RubyGems is funded by [Ruby Together](https://rubyto
 If you'd like to contribute to RubyGems, that's awesome, and we <3 you. Check out our [guide to contributing](https://github.com/rubygems/rubygems/blob/master/CONTRIBUTING.rdoc#how-to-contribute) for more information.
 
 We are glad to receive contributions from anyone, whether or not they help fund our work through Ruby Together. We will never reject contributions because they come from non-members.
+
+### Code of Conduct
+
+Everyone interacting in the RubyGems project’s codebases, issue trackers, chat rooms, and mailing lists is expected to follow the [contributor code of conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md).

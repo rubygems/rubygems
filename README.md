@@ -29,12 +29,6 @@ For more details and other options, see:
   ruby setup.rb --help
 ```
 
-## SUPPORTING
-
-<a href="https://rubytogether.org/"><img src="https://rubytogether.org/images/rubies.svg" width=200></a>
-
-RubyGems is maintained by [Ruby Together](https://rubytogether.org), a grassroots initiative committed to supporting the critical Ruby infrastructure you rely on. Contribute today [as an individual](https://rubytogether.org/developers) or even better, [as a company](https://rubytogether.org/companies), and ensure that Bundler, RubyGems, and other shared tooling is around for years to come.
-
 ## GETTING HELP
 
 ### Support Requests
@@ -53,3 +47,9 @@ for letting the RubyGems team know about bugs or problems you're having is
 ### Bundler Compatibility
 
 See http://bundler.io/compatibility for known issues.
+
+### Supporting
+
+<a href="https://rubytogether.org/"><img src="https://rubytogether.org/images/rubies.svg" width=200></a>
+
+Ongoing maintenance work on RubyGems is funded by [Ruby Together](https://rubytogether.org), a grassroots initiative committed to supporting the critical Ruby infrastructure you rely on. Contribute today [as an individual](https://rubytogether.org/developers) or even better, [as a company](https://rubytogether.org/companies), and ensure that Bundler, RubyGems, and other shared tooling is around for years to come.

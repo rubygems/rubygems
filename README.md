@@ -53,3 +53,9 @@ See http://bundler.io/compatibility for known issues.
 <a href="https://rubytogether.org/"><img src="https://rubytogether.org/images/rubies.svg" width=200></a>
 
 Ongoing maintenance work on RubyGems is funded by [Ruby Together](https://rubytogether.org), a grassroots initiative committed to supporting the critical Ruby infrastructure you rely on. Contribute today [as an individual](https://rubytogether.org/developers) or even better, [as a company](https://rubytogether.org/companies), and ensure that Bundler, RubyGems, and other shared tooling is around for years to come.
+
+### Contributing
+
+If you'd like to contribute to RubyGems, that's awesome, and we <3 you. Check out our [guide to contributing](https://github.com/rubygems/rubygems/blob/master/CONTRIBUTING.rdoc#how-to-contribute) for more information.
+
+We are glad to receive contributions from anyone, whether or not they help fund our work through Ruby Together. We will never reject contributions because they come from non-members.

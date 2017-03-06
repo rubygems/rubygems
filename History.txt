@@ -2370,7 +2370,7 @@ http://rubygems.org is now the default source for downloading gems.
 You may have sources set via ~/.gemrc, so you should replace
 http://gems.rubyforge.org with http://rubygems.org
 
-http://gems.rubyforge.org will continue to work for the forseeable future.
+http://gems.rubyforge.org will continue to work for the foreseeable future.
 
 New features:
 
@@ -2415,12 +2415,12 @@ New features:
   * `gem server` now supports --bind.  Patch #27357 by Bruno Michel.
   * `gem rdoc` no longer overwrites built documentation.  Use --overwrite
     force rebuilding.  Patch #25982 by Akinori MUSHA.
-* Captial letters are now allowed in prerelease versions.
+* Capital letters are now allowed in prerelease versions.
 
 Bug fixes:
 
 * Development deps are no longer added to rubygems-update gem so older
-  versions can update sucessfully.
+  versions can update successfully.
 * Installer bugs:
   * Prerelease gems can now depend on non-prerelease gems.
   * Development dependencies are ignored unless explicitly needed.  Bug #27608
@@ -2840,7 +2840,7 @@ Major New Features Include:
 * Bulk update threshold can be specified (-B, --bulk-threshold)
 * New `gem fetch` command
 * `gem` now has "really verbose" output when you specify -v
-* Improved stubs and `gem.bat` on mswin, including better compatiblity
+* Improved stubs and `gem.bat` on mswin, including better compatibility
   with the One-Click Installer.
 
 Other Changes Include:
@@ -2903,7 +2903,7 @@ Bug Fixes Include:
 * The source cache files may now be dropped with the "gem sources
   --clear-all" command.  (This command may require root is the system
   source cache is in a root protected area).
-* Several sub-commands were accidently dropped from the "gem" command.
+* Several sub-commands were accidentally dropped from the "gem" command.
   These commands have been restored.
 
 === 0.9.3 / 2007-05-10
@@ -2913,7 +2913,7 @@ Bug Fixes Include:
 The ZLib library on Windows will occasionally complains about a buffer error
 when unpacking gems.  The Gems software has a workaround for that problem, but
 the workaround was only enabled for versions of ZLib 1.2.1 or earlier.  We
-have received several reports of the error occuring with ZLib 1.2.3, so we
+have received several reports of the error occurring with ZLib 1.2.3, so we
 have permanently enabled the work around on all versions.
 
 === 0.9.2 / 2007-02-05
@@ -2954,7 +2954,7 @@ Major Enhancments include:
 
 Minor enhancements include:
 
-* Verison 0.0.0 is now a valid gem version.
+* Version 0.0.0 is now a valid gem version.
 * Better detection of missing SSL functionality.
 * SSL is not required if the security policy does not require
   signature checking.
@@ -2973,7 +2973,7 @@ Bug Fixes:
 * Fixed bug where the wrong executables could be uninstalled (Eric
   Hodel).
 * Fixed bug where gem unpack occasionally unpacked the wrong gem.
-* Fixed bug where a fatal error occured when permissions on .gemrc
+* Fixed bug where a fatal error occurred when permissions on .gemrc
   were too restrictive (reported by Luca Pireddu).
 * Fixed prefix handling for native expressions (patch by Aaron Patterson).
 * Fixed several Upgrade => Update typos.
@@ -2999,7 +2999,7 @@ Bug Fixes:
 
 === 0.8.10 / 2005-03-27
 
-* In multi-user environments, it is common to supply mulitple versions of gems
+* In multi-user environments, it is common to supply multiple versions of gems
   (for example Rails), allowing individual users to select the version of the
   gem they desire.  This allows a user to be insulated from updates to that
   gem.  RubyGems 0.8.10 fixes a problem where gems could occasionally become
@@ -3221,7 +3221,7 @@ See ChangeLog
 
 === 0.4.0 / 2004-05-30
 
-* Minor bug fixes including Windows compatability issues
+* Minor bug fixes including Windows compatibility issues
 
 === 0.3.0 / 2004-04-30
 

@@ -4,9 +4,6 @@ require 'rubygems/exceptions'
 require 'rubygems/util'
 require 'rubygems/util/list'
 
-require 'uri'
-require 'net/http'
-
 ##
 # Given a set of Gem::Dependency objects as +needed+ and a way to query the
 # set of available specs via +set+, calculates a set of ActivationRequest

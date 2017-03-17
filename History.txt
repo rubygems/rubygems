@@ -1,5 +1,18 @@
 # coding: UTF-8
 
+=== 2.6.11 / 2017-03-16
+
+Bug fixes:
+
+* Fixed broken tests on ruby-head. Pull request #1841 by
+  SHIBATA Hiroshi.
+* Update vendored Molinillo to 0.5.7. Pull request #1859 by Samuel
+  Giddins.
+* Avoid activating Ruby 2.5 default gems when possible. Pull request #1843
+  by Samuel Giddins.
+* Use improved resolver sorting algorithm. Pull request #1856 by
+  Samuel Giddins.
+
 === 2.6.10 / 2017-01-23
 
 Bug fixes:

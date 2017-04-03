@@ -456,15 +456,16 @@ class Gem::Specification < Gem::BasicSpecification
   # * All strings must be UTF-8, no binary data is allowed
   #
   # You can use metadata to specify links to your gem's homepage, codebase,
-  # documentation, wiki, mailing list and issue tracker.
+  # documentation, wiki, mailing list, issue tracker and changelog.
   #
   #   s.metadata = {
-  #     "home" => "https://bestgemever.example.io",
-  #     "code" => "https://example.com/user/bestgemever",
-  #     "docs" => "https://www.example.info/gems/bestgemever/0.0.1",
-  #     "wiki" => "https://example.com/user/bestgemever/wiki",
-  #     "mail" => "https://groups.example.com/bestgemever",
-  #     "bugs" => "https://example.com/user/bestgemever/issues"
+  #     "home"      => "https://bestgemever.example.io",
+  #     "code"      => "https://example.com/user/bestgemever",
+  #     "docs"      => "https://www.example.info/gems/bestgemever/0.0.1",
+  #     "wiki"      => "https://example.com/user/bestgemever/wiki",
+  #     "mail"      => "https://groups.example.com/bestgemever",
+  #     "bugs"      => "https://example.com/user/bestgemever/issues",
+  #     "changelog" => "https://example.com/user/bestgemever/CHANGELOG.md"
   #   }
   #
   # These links will be used on your gem's page on rubygems.org and must pass
@@ -2845,7 +2846,7 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
 
   def validate_metadata
     url_validation_regex = %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}
-    link_keys = ["home", "code", "docs", "wiki", "mail", "bugs"]
+    link_keys = ["home", "code", "docs", "wiki", "mail", "bugs", "changelog"]
 
     metadata.each do|key, value|
       if !key.kind_of?(String)

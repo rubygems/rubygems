@@ -684,6 +684,20 @@ coolgem (4.2.1)
     assert_equal expected, @ui.output
   end
 
+  def test_execute_json
+    require 'json'
+
+    @cmd.handle_options %w[--remote --exact --json-output cocoapods]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    json_output = JSON.parse @ui.output
+
+    assert_equal json_output[:name], "cocoapods"
+  end
+
   private
 
   def add_gems_to_fetcher

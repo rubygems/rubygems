@@ -15,13 +15,13 @@ Gem.load_yaml if defined? ::YAML
 
 class Gem::Requirement
   OPS = { #:nodoc:
-    "="  =>  lambda { |v, r| v == r },
-    "!=" =>  lambda { |v, r| v != r },
-    ">"  =>  lambda { |v, r| v >  r },
-    "<"  =>  lambda { |v, r| v <  r },
-    ">=" =>  lambda { |v, r| v >= r },
-    "<=" =>  lambda { |v, r| v <= r },
-    "~>" =>  lambda { |v, r| v >= r && v.release < r.bump }
+    :"="  =>  lambda { |v, r| v == r },
+    :"!=" =>  lambda { |v, r| v != r },
+    :">"  =>  lambda { |v, r| v >  r },
+    :"<"  =>  lambda { |v, r| v <  r },
+    :">=" =>  lambda { |v, r| v >= r },
+    :"<=" =>  lambda { |v, r| v <= r },
+    :"~>" =>  lambda { |v, r| v >= r && v.release < r.bump }
   }
 
   SOURCE_SET_REQUIREMENT = Struct.new(:for_lockfile).new "!" # :nodoc:
@@ -37,7 +37,7 @@ class Gem::Requirement
   ##
   # The default requirement matches any version
 
-  DefaultRequirement = [">=", Gem::Version.new(0)]
+  DefaultRequirement = [:">=", Gem::Version.new(0)]
 
   ##
   # Raised when a bad requirement is encountered
@@ -99,16 +99,16 @@ class Gem::Requirement
   #     parse(Gem::Version.new("1.0")) # => ["=,  Gem::Version.new("1.0")]
 
   def self.parse obj
-    return ["=", obj] if Gem::Version === obj
+    return [:"=", obj] if Gem::Version === obj
 
     unless PATTERN =~ obj.to_s
       raise BadRequirementError, "Illformed requirement [#{obj.inspect}]"
     end
 
-    if $1 == ">=" && $2 == "0"
+    if $1 == :">=" && $2 == "0"
       DefaultRequirement
     else
-      [$1 || "=", Gem::Version.new($2)]
+      [($1 ? $1.to_sym : :"="), Gem::Version.new($2)]
     end
   end
 
@@ -244,7 +244,7 @@ class Gem::Requirement
     raise ArgumentError, "Need a Gem::Version: #{version.inspect}" unless
       Gem::Version === version
     # #28965: syck has a bug with unquoted '=' YAML.loading as YAML::DefaultKey
-    requirements.all? { |op, rv| (OPS[op] || OPS["="]).call version, rv }
+    requirements.all? { |op, rv| (OPS[op] || OPS[:"="]).call version, rv }
   end
 
   alias :=== :satisfied_by?
@@ -256,7 +256,7 @@ class Gem::Requirement
   def specific?
     return true if @requirements.length > 1 # GIGO, > 1, > 2 is silly
 
-    not %w[> >=].include? @requirements.first.first # grab the operator
+    not [:">", :">="].include? @requirements.first.first # grab the operator
   end
 
   def to_s # :nodoc:
@@ -275,7 +275,7 @@ class Gem::Requirement
     # Fixup the Syck DefaultKey bug
     @requirements.each do |r|
       if r[0].kind_of? Gem::SyckDefaultKey
-        r[0] = "="
+        r[0] = :"="
       end
     end
   end

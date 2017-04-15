@@ -119,6 +119,7 @@ class Gem::Specification < Gem::BasicSpecification
                            :version,
                            :date,
                            :summary,
+                           :licenses,
                            :require_paths]
 
   ##

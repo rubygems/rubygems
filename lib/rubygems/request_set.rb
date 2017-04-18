@@ -156,7 +156,7 @@ class Gem::RequestSet
 
     # Create a thread-safe list of gems to download
     sorted_requests.each do |req|
-      download_queue << req.spec
+      download_queue << req
     end
 
     # Create N threads in a pool, have them download all the gems
@@ -169,9 +169,9 @@ class Gem::RequestSet
         # The pop method will block waiting for items, so the only way
         # to stop a thread from running is to provide a final item that
         # means the thread should stop.
-        while spec = download_queue.pop
-          break if spec == :stop
-          spec.download options
+        while req = download_queue.pop
+          break if req == :stop
+          req.spec.download options unless req.installed?
         end
       end
     end

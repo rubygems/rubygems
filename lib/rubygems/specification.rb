@@ -459,13 +459,13 @@ class Gem::Specification < Gem::BasicSpecification
   # documentation, wiki, mailing list, issue tracker and changelog.
   #
   #   s.metadata = {
-  #     "home"      => "https://bestgemever.example.io",
-  #     "code"      => "https://example.com/user/bestgemever",
-  #     "docs"      => "https://www.example.info/gems/bestgemever/0.0.1",
-  #     "wiki"      => "https://example.com/user/bestgemever/wiki",
-  #     "mail"      => "https://groups.example.com/bestgemever",
-  #     "bugs"      => "https://example.com/user/bestgemever/issues",
-  #     "changelog" => "https://example.com/user/bestgemever/CHANGELOG.md"
+  #     "bug_tracker_uri"   => "https://example.com/user/bestgemever/issues",
+  #     "changelog_uri"     => "https://example.com/user/bestgemever/CHANGELOG.md",
+  #     "documentation_uri" => "https://www.example.info/gems/bestgemever/0.0.1",
+  #     "homepage_uri"      => "https://bestgemever.example.io",
+  #     "mailing_list_uri"  => "https://groups.example.com/bestgemever",
+  #     "source_code_uri"   => "https://example.com/user/bestgemever",
+  #     "wiki_uri"          => "https://example.com/user/bestgemever/wiki"
   #   }
   #
   # These links will be used on your gem's page on rubygems.org and must pass
@@ -2846,7 +2846,15 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
 
   def validate_metadata
     url_validation_regex = %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}
-    link_keys = ["home", "code", "docs", "wiki", "mail", "bugs", "changelog"]
+    link_keys = %w(
+      bug_tracker_uri
+      changelog_uri
+      documentation_uri
+      homepage_uri
+      mailing_list_uri
+      source_code_uri
+      wiki_uri
+    )
 
     metadata.each do|key, value|
       if !key.kind_of?(String)

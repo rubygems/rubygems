@@ -3251,7 +3251,11 @@ Did you mean 'Ruby'?
     Dir.chdir @tempdir do
       @m1 = quick_gem 'm', '1' do |s|
         s.files = %w[lib/code.rb]
-        s.metadata = { "one" => "two", "home" => "https://example.com/user/repo"  }
+        s.metadata = {
+          "one"          => "two",
+          "home"         => "three",
+          "homepage_uri" => "https://example.com/user/repo"
+        }
       end
 
       use_ui @ui do
@@ -3334,14 +3338,14 @@ Did you mean 'Ruby'?
     Dir.chdir @tempdir do
       @m2 = quick_gem 'm', '2' do |s|
         s.files = %w[lib/code.rb]
-        s.metadata = { 'home' => 'http:/example.com' }
+        s.metadata = { 'homepage_uri' => 'http:/example.com' }
       end
 
       e = assert_raises Gem::InvalidSpecificationException do
         @m2.validate
       end
 
-      assert_equal "metadata['home'] has invalid link: \"http:/example.com\"", e.message
+      assert_equal "metadata['homepage_uri'] has invalid link: \"http:/example.com\"", e.message
     end
   end
 

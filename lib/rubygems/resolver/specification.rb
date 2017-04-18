@@ -84,7 +84,7 @@ class Gem::Resolver::Specification
   def install options = {}
     require 'rubygems/installer'
 
-    gem = download(options[:install_dir] || Gem.dir)
+    gem = download options
 
     installer = Gem::Installer.at gem, options
 
@@ -93,10 +93,12 @@ class Gem::Resolver::Specification
     @spec = installer.install
   end
 
-  def download destination
-    Gem.ensure_gem_subdirectories destination
+  def download options
+    dir = options[:install_dir] || Gem.dir
 
-    source.download spec, destination
+    Gem.ensure_gem_subdirectories dir
+
+    source.download spec, dir
   end
 
   ##

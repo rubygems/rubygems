@@ -152,11 +152,32 @@ class Gem::RequestSet
     @prerelease = options[:prerelease]
 
     requests = []
+    download_queue = Queue.new
 
-    # Download requested gems into local cache
+    # Create a thread-safe list of gems to download
     sorted_requests.each do |req|
-      req.spec.download options
+      download_queue << req.spec
     end
+
+    # Create N threads in a pool, have them download all the gems
+    threads = Gem.configuration.concurrent_downloads.times.map do
+      # When a thread pops this item, it knows to stop running. The symbol
+      # is queued here so that there will be one symbol per thread.
+      download_queue << :stop
+
+      Thread.new do
+        # The pop method will block waiting for items, so the only way
+        # to stop a thread from running is to provide a final item that
+        # means the thread should stop.
+        while spec = download_queue.pop
+          break if spec == :stop
+          spec.download options
+        end
+      end
+    end
+
+    # Wait for all the downloads to finish before continuing
+    threads.map(&:value)
 
     # Install requested gems after they have been downloaded
     sorted_requests.each do |req|

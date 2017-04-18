@@ -153,6 +153,12 @@ class Gem::RequestSet
 
     requests = []
 
+    # Download requested gems into local cache
+    sorted_requests.each do |req|
+      req.spec.download options
+    end
+
+    # Install requested gems after they have been downloaded
     sorted_requests.each do |req|
       if req.installed? then
         req.spec.spec.build_extensions

@@ -25,6 +25,7 @@ here: http://guides.rubygems.org/contributing/
 
 == Getting Started
 
+    $ git submodule update —-init
     $ gem install hoe
     $ rake newb
 

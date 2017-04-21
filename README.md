@@ -29,12 +29,6 @@ For more details and other options, see:
   ruby setup.rb --help
 ```
 
-## SUPPORTING
-
-<a href="https://rubytogether.org/"><img src="https://rubytogether.org/images/rubies.svg" width=200></a>
-
-RubyGems is maintained by [Ruby Together](https://rubytogether.org), a grassroots initiative committed to supporting the critical Ruby infrastructure you rely on. Contribute today [as an individual](https://rubytogether.org/developers) or even better, [as a company](https://rubytogether.org/companies), and ensure that Bundler, RubyGems, and other shared tooling is around for years to come.
-
 ## GETTING HELP
 
 ### Support Requests
@@ -53,3 +47,18 @@ for letting the RubyGems team know about bugs or problems you're having is
 ### Bundler Compatibility
 
 See http://bundler.io/compatibility for known issues.
+
+### Supporting
+
+<a href="https://rubytogether.org/"><img src="https://rubytogether.org/images/rubies.svg" width=200></a><br/>
+<a href="https://rubytogether.org/">Ruby Together</a> pays some RubyGems maintainers for their ongoing work. As a grassroots initiative committed to supporting the critical Ruby infrastructure you rely on, Ruby Together is funded entirely by the Ruby community. Contribute today <a href="https://rubytogether.org/developers">as an individual</a> or even better, <a href="https://rubytogether.org/companies">as a company</a>, and ensure that RubyGems, Bundler, and other shared tooling is around for years to come.
+
+### Contributing
+
+If you'd like to contribute to RubyGems, that's awesome, and we <3 you. Check out our [guide to contributing](https://github.com/rubygems/rubygems/blob/master/CONTRIBUTING.rdoc#how-to-contribute) for more information.
+
+While some RubyGems contributors are compensated by Ruby Together, the project maintainers make decisions independent of Ruby Together. As a project, we welcome contributions regardless of the author’s affiliation with Ruby Together.
+
+### Code of Conduct
+
+Everyone interacting in the RubyGems project’s codebases, issue trackers, chat rooms, and mailing lists is expected to follow the [contributor code of conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md).

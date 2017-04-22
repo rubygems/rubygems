@@ -602,6 +602,8 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def test_install_env_shebang
+    return if RbConfig::CONFIG['LIBRUBY_RELATIVE'] == 'yes'
+
     util_setup_gems
 
     FileUtils.mv @a1_gem, @tempdir

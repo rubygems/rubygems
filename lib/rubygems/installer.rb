@@ -205,7 +205,11 @@ class Gem::Installer
     existing = nil
 
     open generated_bin, 'rb' do |io|
-      next unless io.gets =~ /^#!/ # shebang
+      line = io.gets
+      next unless line =~ /^#!/ # shebang
+      if /^#!\/bin\/sh/ =~ line
+        nil while line = io.gets and /^#!/ !~ line
+      end
       io.gets # blankline
 
       # TODO detect a specially formatted comment instead of trying
@@ -550,14 +554,18 @@ class Gem::Installer
 
   def shebang(bin_file_name)
     ruby_name = RbConfig::CONFIG['ruby_install_name'] if @env_shebang
+    relative = RbConfig::CONFIG["LIBRUBY_RELATIVE"] == 'yes'
     path = File.join gem_dir, spec.bindir, bin_file_name
     first_line = File.open(path, "rb") {|file| file.gets}
 
     if /\A#!/ =~ first_line then
       # Preserve extra words on shebang line, like "-w".  Thanks RPA.
-      shebang = first_line.sub(/\A\#!.*?ruby\S*((\s+\S+)+)/, "#!#{Gem.ruby}")
+      first_line.rstrip! # Avoid nasty ^M issues.
+      shebang = first_line.sub(/\A\#!.*?ruby\S*(?=((\s+\S+)+))/, "#!#{Gem.ruby}")
       opts = $1
-      shebang.strip! # Avoid nasty ^M issues.
+      first_line = shebang unless relative
+    elsif relative
+      first_line = "#!#{Gem.ruby}"
     end
 
     if which = Gem.configuration[:custom_shebang]
@@ -578,10 +586,10 @@ class Gem::Installer
       end
 
       "#!#{which}"
-    elsif not ruby_name then
-      "#!#{Gem.ruby}#{opts}"
-    elsif opts then
-      "#!/bin/sh\n'exec' #{ruby_name.dump} '-x' \"$0\" \"$@\"\n#{shebang}"
+    elsif opts or relative then
+      ruby_name ||= Gem.ruby
+      ruby_name = '${0%/*}/' + File.basename(ruby_name) if relative
+      "#!/bin/sh\n'exec' #{ruby_name.dump} '-x' \"$0\" \"$@\"\n#{first_line}"
     else
       # Create a plain shebang line.
       @env_path ||= ENV_PATHS.find {|env_path| File.executable? env_path }

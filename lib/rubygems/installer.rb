@@ -214,7 +214,7 @@ class Gem::Installer
 
       ruby_executable = true
       existing = io.read.slice(%r{
-          ^(
+          ^\s*(
             gem \s |
             load \s Gem\.bin_path\( |
             load \s Gem\.activate_bin_path\(
@@ -704,6 +704,8 @@ class Gem::Installer
   # Return the text for an application file.
 
   def app_script_text(bin_file_name)
+    # note that the `load` lines cannot be indented, as old RG versions match
+    # against the beginning of the line
     return <<-TEXT
 #{shebang bin_file_name}
 #
@@ -726,7 +728,12 @@ if ARGV.first
   end
 end
 
+if Gem.respond_to?(:activate_bin_path)
 load Gem.activate_bin_path('#{spec.name}', '#{bin_file_name}', version)
+else
+gem #{spec.name.dump}, version
+load Gem.bin_path(#{spec.name.dump}, #{bin_file_name.dump}, version)
+end
 TEXT
   end
 

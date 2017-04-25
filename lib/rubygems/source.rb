@@ -1,6 +1,6 @@
 # frozen_string_literal: true
+autoload :FileUtils, 'fileutils'
 autoload :URI, 'uri'
-require 'fileutils'
 
 ##
 # A Source knows how to list and fetch gems from a RubyGems marshal index.

@@ -108,6 +108,59 @@ source #{@gem_repo} already present in the cache
     assert_equal '', @ui.error
   end
 
+  def test_execute_add_redundant_source_trailing_slash
+    # Remove pre-existing gem source
+    gem_repo1 = "http://gems.example.com/"
+    @cmd.handle_options %W[--remove #{gem_repo1}]
+    use_ui @ui do
+      @cmd.execute
+    end
+    source = Gem::Source.new gem_repo1
+    assert_equal false, Gem.sources.include?(source)
+
+    expected = <<-EOF
+#{gem_repo1} removed from sources
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+
+    # Re-add pre-existing gem source (w/o slash)
+    gem_repo1 = "http://gems.example.com"
+    @cmd.handle_options %W[--add #{gem_repo1}]
+    use_ui @ui do
+      @cmd.execute
+    end
+    source = Gem::Source.new gem_repo1
+    assert_equal true, Gem.sources.include?(source)
+
+    expected = <<-EOF
+http://gems.example.com/ removed from sources
+http://gems.example.com added to sources
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+
+    # Re-add pre-existing gem source (w/ slash)
+    gem_repo1 = "http://gems.example.com/"
+    @cmd.handle_options %W[--add #{gem_repo1}]
+    use_ui @ui do
+      @cmd.execute
+    end
+    source = Gem::Source.new gem_repo1
+    assert_equal true, Gem.sources.include?(source)
+
+    expected = <<-EOF
+http://gems.example.com/ removed from sources
+http://gems.example.com added to sources
+source http://gems.example.com/ already present in the cache
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error 
+  end
+
   def test_execute_add_http_rubygems_org
     http_rubygems_org = 'http://rubygems.org'
 

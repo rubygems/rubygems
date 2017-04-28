@@ -1,7 +1,7 @@
 = How to contribute
 
-Community involvement is essential to RubyGems. We want to keep it easy as
-possible to contribute changes. There are a few guidelines that we need
+Community involvement is essential to RubyGems. We want to keep it as easy
+as possible to contribute changes. There are a few guidelines that we need
 contributors to follow to reduce the time it takes to get changes merged in.
 
 == Guidelines
@@ -116,7 +116,7 @@ request pertains too. Not all issues will have a category. All categorized
 issues have a blue <tt>category: *</tt> label.
 
 * *gemspec* - related to the gem specification itself
-* *API* - related to the public supported rubygems API. This is the code api,
+* *API* - related to the public supported rubygems API. This is the code API,
   not a network related API.
 * *command* - related to something in <tt>Gem::Commands</tt>
 * *install* - related to gem installations
@@ -126,5 +126,5 @@ issues have a blue <tt>category: *</tt> label.
 === Platforms
 
 If an issue or pull request pertains to only one platform, then it should have
-an appropriate purle <tt>platform: *</tt> label. Current platform labels:
+an appropriate purple <tt>platform: *</tt> label. Current platform labels:
 *windows*, *java*, *osx*, *linux*

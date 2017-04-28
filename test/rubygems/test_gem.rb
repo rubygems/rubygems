@@ -75,6 +75,29 @@ class TestGem < Gem::TestCase
     end
   end
 
+  def test_self_finish_resolve_respects_loaded_specs
+    save_loaded_features do
+      a1 = new_spec "a", "1", "b" => "> 0"
+      b1 = new_spec "b", "1", "c" => ">= 1"
+      b2 = new_spec "b", "2", "c" => ">= 2"
+      c1 = new_spec "c", "1"
+      c2 = new_spec "c", "2"
+
+      install_specs c1, c2, b1, b2, a1
+
+      a1.activate
+      c1.activate
+
+      assert_equal %w(a-1 c-1), loaded_spec_names
+      assert_equal ["b (> 0)"], unresolved_names
+
+      Gem.finish_resolve
+
+      assert_equal %w(a-1 b-1 c-1), loaded_spec_names
+      assert_equal [], unresolved_names
+    end
+  end
+
   def test_self_install
     spec_fetcher do |f|
       f.gem  'a', 1

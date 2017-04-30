@@ -1498,6 +1498,8 @@ end
 begin
   gem 'rdoc'
   require 'rdoc'
+
+  require 'rubygems/rdoc'
 rescue LoadError, Gem::LoadError
 end
 
@@ -1514,3 +1516,4 @@ tmpdirs << (ENV['GEM_PATH'] = Dir.mktmpdir("path"))
 pid = $$
 END {tmpdirs.each {|dir| Dir.rmdir(dir)} if $$ == pid}
 Gem.clear_paths
+Gem.loaded_specs.clear

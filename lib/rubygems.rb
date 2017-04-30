@@ -234,6 +234,7 @@ module Gem
 
   def self.finish_resolve(request_set=Gem::RequestSet.new)
     request_set.import Gem::Specification.unresolved_deps.values
+    request_set.import Gem.loaded_specs.values.map {|s| Gem::Dependency.new(s.name, s.version) }
 
     request_set.resolve_current.each do |s|
       s.full_spec.activate

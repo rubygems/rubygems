@@ -1,5 +1,28 @@
 # coding: UTF-8
 
+=== 2.6.12 / 2017-04-30
+
+Bug fixes:
+
+* Fix test_self_find_files_with_gemfile to sort expected files. Pull
+  request #1880 by Kazuaki Matsuo.
+* Fix issue for MinGW / MSYS2 builds and testing. Pull request #1879 by
+  MSP-Greg.
+* Fix gem open to open highest version number rather than lowest. Pull
+  request #1877 by Tim Pope.
+* Add a test for requiring a default spec as installed by the ruby
+  installer. Pull request #1899 by Samuel Giddins.
+* Fix broken --exact parameter to gem command. Pull request #1873 by Jason
+  Frey.
+* [Installer] Generate backwards-compatible binstubs. Pull request #1904
+  by Samuel Giddins.
+* Fix pre-existing source recognition on add action. Pull request #1883 by
+  Jonathan Claudius.
+* Prevent negative IDs in output of #inspect. Pull request #1908 by Vít
+  Ondruch.
+* Allow Gem.finish_resolve to respect already-activated specs. Pull
+  request #1910 by Samuel Giddins.
+
 === 2.6.11 / 2017-03-16
 
 Bug fixes:

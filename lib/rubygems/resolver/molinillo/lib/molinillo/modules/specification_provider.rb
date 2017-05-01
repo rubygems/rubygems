@@ -79,11 +79,12 @@ module Gem::Resolver::Molinillo
     # @param [{String => Array<Conflict>}] conflicts
     # @return [Array<Object>] a sorted copy of `dependencies`.
     def sort_dependencies(dependencies, activated, conflicts)
-      dependencies.sort_by do |dependency|
+      dependencies.sort_by.with_index do |dependency, index|
         name = name_for(dependency)
         [
           activated.vertex_named(name).payload ? 0 : 1,
           conflicts[name] ? 0 : 1,
+          index,
         ]
       end
     end

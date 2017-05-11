@@ -4,6 +4,8 @@ after_script:
 before_script:
 - util/ci before_script
 language: ruby
+dist: trusty
+sudo: required
 branches:
   only:
     - master

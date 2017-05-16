@@ -3048,6 +3048,8 @@ open-ended dependency on #{dep} is not recommended
     @require_paths
   end
 
+  def this; self; end
+
   extend Gem::Deprecate
 
   # TODO:

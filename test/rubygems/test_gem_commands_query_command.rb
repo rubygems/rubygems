@@ -128,6 +128,46 @@ pl (1)
     assert_equal '', @ui.error
   end
 
+  def test_execute_details_cleans_text
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2 do |s|
+        s.summary = 'This is a lot of text. ' * 4
+        s.authors = ["Abraham Lincoln \u0001", "\u0002 Hirohito"]
+        s.homepage = "http://a.example.com/\u0003"
+      end
+
+      fetcher.legacy_platform
+    end
+
+    @cmd.handle_options %w[-r -d]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = <<-EOF
+
+*** REMOTE GEMS ***
+
+a (2)
+    Authors: Abraham Lincoln ., . Hirohito
+    Homepage: http://a.example.com/.
+
+    This is a lot of text. This is a lot of text. This is a lot of text.
+    This is a lot of text.
+
+pl (1)
+    Platform: i386-linux
+    Author: A User
+    Homepage: http://example.com
+
+    this is a summary
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+  end
+
   def test_execute_installed
     @cmd.handle_options %w[-n a --installed]
 

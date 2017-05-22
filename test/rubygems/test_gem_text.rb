@@ -36,6 +36,10 @@ Without the wrapping, the text might not look good in the RSS feed.
     assert_equal expected, format_text(text, 78)
   end
 
+  def test_format_removes_nonprintable_characters
+    assert_equal "text with weird .. stuff", format_text("text with weird \u001b\u0002 stuff", 40)
+  end
+
   def test_min3
     assert_equal 1, min3(1, 1, 1)
     assert_equal 1, min3(1, 1, 2)

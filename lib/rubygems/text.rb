@@ -7,12 +7,19 @@ require 'rubygems'
 module Gem::Text
 
   ##
+  # Remove any non-printable characters and make the text suitable for
+  # printing.
+  def clean_text(text)
+    text.gsub(/[\u0000-\u0008\u000b-\u000c\u000e-\u001F\u007f]/, ".".freeze)
+  end
+
+  ##
   # Wraps +text+ to +wrap+ characters and optionally indents by +indent+
   # characters
 
   def format_text(text, wrap, indent=0)
     result = []
-    work = text.dup
+    work = clean_text(text)
 
     while work.length > wrap do
       if work =~ /^(.{0,#{wrap}})[ \n]/ then

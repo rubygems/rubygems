@@ -2,5 +2,4 @@
 require 'rubygems/source'
 require 'rubygems/source_local'
 
-# TODO warn upon require, this file is deprecated.
-
+Kernel.warn "Requiring rubygems/source_local is deprecated; please use rubygems/source/local instead."

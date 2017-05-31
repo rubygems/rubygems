@@ -2,9 +2,9 @@
 require 'rubygems/test_case'
 require 'rubygems'
 require 'rubygems/command'
-require 'rubygems/gemcutter_utilities'
+require 'rubygems/authorization_utilities'
 
-class TestGemGemcutterUtilities < Gem::TestCase
+class TestAuthorizationUtilities < Gem::TestCase
 
   def setup
     super
@@ -13,7 +13,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
     Gem.configuration.rubygems_api_key = nil
 
     @cmd = Gem::Command.new '', 'summary'
-    @cmd.extend Gem::GemcutterUtilities
+    @cmd.extend Gem::AuthorizationUtilities
   end
 
   def teardown

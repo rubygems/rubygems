@@ -246,6 +246,7 @@ bundler/man/gemfile.5.ronn
 bundler/man/index.txt
 hide_lib_for_update/note.txt
 lib/rubygems.rb
+lib/rubygems/authorization_utilities.rb
 lib/rubygems/available_set.rb
 lib/rubygems/basic_specification.rb
 lib/rubygems/command.rb
@@ -274,6 +275,7 @@ lib/rubygems/commands/rdoc_command.rb
 lib/rubygems/commands/search_command.rb
 lib/rubygems/commands/server_command.rb
 lib/rubygems/commands/setup_command.rb
+lib/rubygems/commands/signin_command.rb
 lib/rubygems/commands/sources_command.rb
 lib/rubygems/commands/specification_command.rb
 lib/rubygems/commands/stale_command.rb
@@ -302,7 +304,6 @@ lib/rubygems/ext/configure_builder.rb
 lib/rubygems/ext/ext_conf_builder.rb
 lib/rubygems/ext/rake_builder.rb
 lib/rubygems/gem_runner.rb
-lib/rubygems/gemcutter_utilities.rb
 lib/rubygems/indexer.rb
 lib/rubygems/install_default_message.rb
 lib/rubygems/install_message.rb
@@ -480,6 +481,7 @@ test/rubygems/test_bundled_ca.rb
 test/rubygems/test_config.rb
 test/rubygems/test_deprecate.rb
 test/rubygems/test_gem.rb
+test/rubygems/test_gem_authorization_utilities.rb
 test/rubygems/test_gem_available_set.rb
 test/rubygems/test_gem_command.rb
 test/rubygems/test_gem_command_manager.rb
@@ -506,6 +508,7 @@ test/rubygems/test_gem_commands_query_command.rb
 test/rubygems/test_gem_commands_search_command.rb
 test/rubygems/test_gem_commands_server_command.rb
 test/rubygems/test_gem_commands_setup_command.rb
+test/rubygems/test_gem_commands_signin_command.rb
 test/rubygems/test_gem_commands_sources_command.rb
 test/rubygems/test_gem_commands_specification_command.rb
 test/rubygems/test_gem_commands_stale_command.rb
@@ -526,7 +529,6 @@ test/rubygems/test_gem_ext_configure_builder.rb
 test/rubygems/test_gem_ext_ext_conf_builder.rb
 test/rubygems/test_gem_ext_rake_builder.rb
 test/rubygems/test_gem_gem_runner.rb
-test/rubygems/test_gem_gemcutter_utilities.rb
 test/rubygems/test_gem_impossible_dependencies_error.rb
 test/rubygems/test_gem_indexer.rb
 test/rubygems/test_gem_install_update_options.rb

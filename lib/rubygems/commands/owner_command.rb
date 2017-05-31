@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 require 'rubygems/command'
 require 'rubygems/local_remote_options'
-require 'rubygems/gemcutter_utilities'
+require 'rubygems/authorization_utilities'
 
 class Gem::Commands::OwnerCommand < Gem::Command
   include Gem::LocalRemoteOptions
-  include Gem::GemcutterUtilities
+  include Gem::AuthorizationUtilities
 
   def description # :nodoc:
     <<-EOF

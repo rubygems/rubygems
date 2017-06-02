@@ -48,6 +48,7 @@ class Gem::CommandManager
     :install,
     :list,
     :lock,
+    :signout,
     :mirror,
     :open,
     :outdated,

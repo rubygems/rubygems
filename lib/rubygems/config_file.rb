@@ -336,6 +336,10 @@ if you believe they were disclosed to a third party.
     load_api_keys # reload
   end
 
+  def unset_api_key!
+    File.exist?(credentials_path) ? File.delete(credentials_path) : false
+  end
+
   def load_file(filename)
     Gem.load_yaml
 

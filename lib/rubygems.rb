@@ -719,9 +719,20 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   ##
   # The file name and line number of the caller of the caller of this method.
+  #
+  # +depth+ is how many layers up the call stack it should go.
+  #
+  # e.g.,
+  #
+  # def a; Gem.location_of_caller; end
+  # a #=> ["x.rb", 2]  # (it'll vary depending on file name and line number)
+  #
+  # def b; c; end
+  # def c; Gem.location_of_caller(2); end
+  # b #=> ["x.rb", 6]  # (it'll vary depending on file name and line number)
 
-  def self.location_of_caller
-    caller[1] =~ /(.*?):(\d+).*?$/i
+  def self.location_of_caller(depth = 1)
+    caller[depth] =~ /(.*?):(\d+).*?$/i
     file = $1
     lineno = $2.to_i
 

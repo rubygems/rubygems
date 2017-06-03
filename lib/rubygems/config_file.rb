@@ -336,6 +336,15 @@ if you believe they were disclosed to a third party.
     load_api_keys # reload
   end
 
+  ##
+  # Remove the +~/.gem/credentials+ file to clear all the current sessions.
+
+  def unset_api_key!
+    return false unless File.exist?(credentials_path)
+
+    File.delete(credentials_path)
+  end
+
   def load_file(filename)
     Gem.load_yaml
 

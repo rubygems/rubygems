@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rubygems/test_case'
 require 'rubygems/commands/signout_command'
 require 'rubygems/installer'
@@ -16,15 +17,21 @@ class TestGemCommandsSignoutCommand < Gem::TestCase
   end
 
   def test_execute_when_user_is_signed_in
-    FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path
+    FileUtils.mkdir_p File.dirname(Gem.configuration.credentials_path)
     FileUtils::touch Gem.configuration.credentials_path
 
-    assert_output(%r{You have successfully signed out}) {@cmd.execute }
-    assert_equal File.exist?(Gem.configuration.credentials_path), false
+    @sign_out_ui = Gem::MockGemUi.new
+    use_ui(@sign_out_ui) { @cmd.execute }
+
+    assert_match %r{You have successfully signed out}, @sign_out_ui.output
+    assert_equal false, File.exist?(Gem.configuration.credentials_path)
   end
 
   def test_execute_when_not_signed_in # i.e. no credential file created
-    assert_output(%r{You are not currently signed in}) {@cmd.execute }
+    @sign_out_ui = Gem::MockGemUi.new
+    use_ui(@sign_out_ui) { @cmd.execute }
+
+    assert_match %r{You are not currently signed in}, @sign_out_ui.error
   end
 
 end

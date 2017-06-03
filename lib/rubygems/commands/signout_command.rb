@@ -5,14 +5,14 @@ require 'rubygems/commands/query_command'
 class Gem::Commands::SignoutCommand < Gem::Commands::QueryCommand
 
   def initialize
-    super 'signout', 'Signout from all the current sessions.'
+    super 'signout', 'Sign out from all the current sessions.'
 
     remove_option('--name-matches')
   end
 
   def description # :nodoc:
-    'This `signout` command is used to sign out from all the current sessions to be'\
-    'able to signin using different set of credentials.'
+    'The `signout` command is used to sign out from all current sessions,'\
+    ' allowing you to sign in using a different set of credentials.'
   end
 
   def usage # :nodoc:
@@ -20,14 +20,17 @@ class Gem::Commands::SignoutCommand < Gem::Commands::QueryCommand
   end
 
   def execute
-    if Gem.configuration.unset_api_key! then
-      $stdout.puts "You have successfully signed out out from 'RubyGems.org'."
+    credentials_path = Gem.configuration.credentials_path
+
+    if !File.exist?(credentials_path) then
+      alert_error 'You are not currently signed in.'
+    elsif !File.writable?(credentials_path) then
+      alert_error "File '#{Gem.configuration.credentials_path}' is read-only."\
+                  ' Please make sure it is writable.'
     else
-      $stdout.puts 'You are not currently signed in.'
+      Gem.configuration.unset_api_key!
+      say 'You have successfully signed out from all sessions.'
     end
-  rescue StandardError
-    $stderr.puts "File '#{Gem.configuration.credentials_path}' must have readonly permission."\
-                 " Please make sure its writeable."
   end
 
 end

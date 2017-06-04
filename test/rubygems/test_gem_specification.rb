@@ -3426,6 +3426,31 @@ end
     refute @a1.missing_extensions?
   end
 
+  def test_find_all_by_full_name
+    pl = Gem::Platform.new 'i386-linux'
+
+    a1 = util_spec "a", "1"
+    a1_pre = util_spec "a", "1.0.0.pre.1"
+    a_1_platform = util_spec("a", "1") {|s| s.platform = pl }
+    a_b_1 = util_spec "a-b", "1"
+    a_b_1_platform = util_spec("a-b", "1") {|s| s.platform = pl }
+
+    a_b_1_1 = util_spec "a-b-1", "1"
+    a_b_1_1_platform = util_spec("a-b-1", "1") {|s| s.platform = pl }
+
+    install_specs(a1, a1_pre, a_1_platform, a_b_1, a_b_1_platform,
+                  a_b_1_1, a_b_1_1_platform)
+
+    assert_equal [a1], Gem::Specification.find_all_by_full_name("a-1")
+    assert_equal [a1_pre], Gem::Specification.find_all_by_full_name("a-1.0.0.pre.1")
+    assert_equal [a_1_platform], Gem::Specification.find_all_by_full_name("a-1-x86-linux")
+    assert_equal [a_b_1_1], Gem::Specification.find_all_by_full_name("a-b-1-1")
+    assert_equal [a_b_1_1_platform], Gem::Specification.find_all_by_full_name("a-b-1-1-x86-linux")
+
+    assert_equal [], Gem::Specification.find_all_by_full_name("monkeys")
+    assert_equal [], Gem::Specification.find_all_by_full_name("a-1-foo")
+  end
+
   def test_find_by_name
     install_specs util_spec "a"
     install_specs util_spec "a", 1

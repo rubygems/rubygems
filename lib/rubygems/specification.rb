@@ -1033,6 +1033,13 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
+  # Returns every spec that has the given +full_name+
+
+  def self.find_all_by_full_name(full_name)
+    stubs.select {|s| s.full_name == full_name }.map(&:to_spec)
+  end
+
+  ##
   # Find the best specification matching a +name+ and +requirements+. Raises
   # if the dependency doesn't resolve to a valid specification.
 

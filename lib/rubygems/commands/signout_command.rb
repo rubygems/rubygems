@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 require 'rubygems/command'
-require 'rubygems/commands/query_command'
 
-class Gem::Commands::SignoutCommand < Gem::Commands::QueryCommand
+class Gem::Commands::SignoutCommand < Gem::Command
 
   def initialize
     super 'signout', 'Sign out from all the current sessions.'
-
-    remove_option('--name-matches')
   end
 
   def description # :nodoc:

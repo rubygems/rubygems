@@ -1,17 +1,13 @@
 # frozen_string_literal: true
 require 'rubygems/command'
-require 'rubygems/commands/query_command'
-require 'rubygems/config_file'
 require 'rubygems/gemcutter_utilities'
 
-class Gem::Commands::SigninCommand < Gem::Commands::QueryCommand
+class Gem::Commands::SigninCommand < Gem::Command
   include Gem::GemcutterUtilities
 
   def initialize
     super 'signin', 'Sign in to any gemcutter-compatible host. '\
           'It defaults to https://rubygems.org'
-
-    remove_option('--name-matches')
 
     add_option('--host HOST', 'Push to another gemcutter-compatible host') do |value, options|
        options[:host] = value
@@ -31,12 +27,7 @@ class Gem::Commands::SigninCommand < Gem::Commands::QueryCommand
   end
 
   def execute
-    if File.exist?(Gem.configuration.credentials_path) then
-      alert_error 'You are already logged in. If you wish to login using different'\
-                  ' credentials or host, then using `signout` command try again.'
-    else
-      sign_in options[:host]
-    end
+    sign_in options[:host]
   end
 
 end

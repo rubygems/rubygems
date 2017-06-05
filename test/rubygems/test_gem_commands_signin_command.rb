@@ -16,14 +16,6 @@ class TestGemCommandsSigninCommand < Gem::TestCase
     super
   end
 
-  def test_execute_when_already_signed_in
-    util_capture { @cmd.send(:sign_in) } # to pre-signin
-
-    @after_sign_in_ui = Gem::MockGemUi.new
-    util_capture(@after_sign_in_ui) { @cmd.execute }
-    assert_match %r{You are already logged in}, @after_sign_in_ui.error
-  end
-
   def test_execute_when_not_already_signed_in
     sign_in_ui = util_capture { @cmd.execute }
     assert_match %r{Signed in.}, sign_in_ui.output

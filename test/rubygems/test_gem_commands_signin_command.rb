@@ -62,8 +62,10 @@ class TestGemCommandsSigninCommand < Gem::TestCase
   
   def test_execute_with_valid_creds_set_for_default_host
     util_capture {@cmd.execute}
-    api_key  = 'a5fdbb6ba150cbb83aad2bb2fede64cf040453903'
+    
+    api_key     = 'a5fdbb6ba150cbb83aad2bb2fede64cf040453903'
     credentials = YAML.load_file Gem.configuration.credentials_path
+    
     assert_equal api_key, credentials[:rubygems_api_key]
   end
 
@@ -74,15 +76,15 @@ class TestGemCommandsSigninCommand < Gem::TestCase
     response  = [api_key, 200, 'OK']
     email     = 'you@example.com'
     password  = 'secret'
+    fetcher   = Gem::FakeFetcher.new
 
-    ENV['RUBYGEMS_HOST'] = host || Gem::DEFAULT_HOST
-
-    fetcher = Gem::FakeFetcher.new
     # Set the expected response for the Web-API supplied
-    fetcher.data["#{ENV['RUBYGEMS_HOST']}/api/v1/api_key"] = response
+    ENV['RUBYGEMS_HOST']       = host || Gem::DEFAULT_HOST
+    data_key                   = "#{ENV['RUBYGEMS_HOST']}/api/v1/api_key"
+    fetcher.data[data_key]     = response
     Gem::RemoteFetcher.fetcher = fetcher
 
-    sign_in_ui = ui_stub || Gem::MockGemUi.new("#{email}\n#{password}\n")
+    sign_in_ui                 = ui_stub || Gem::MockGemUi.new("#{email}\n#{password}\n")
 
     use_ui sign_in_ui do
       yield

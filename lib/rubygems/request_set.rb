@@ -177,7 +177,7 @@ class Gem::RequestSet
     end
 
     # Wait for all the downloads to finish before continuing
-    threads.map(&:value)
+    threads.each(&:value)
 
     # Install requested gems after they have been downloaded
     sorted_requests.each do |req|

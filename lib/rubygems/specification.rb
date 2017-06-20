@@ -1057,6 +1057,7 @@ class Gem::Specification < Gem::BasicSpecification
   def self.find_by_path path
     path = path.dup.freeze
     spec = @@spec_with_requirable_file[path] ||= (stubs.find { |s|
+      next unless Gem::BundlerVersionFinder.compatible?(s)
       s.contains_requirable_file? path
     } || NOT_FOUND)
     spec.to_spec
@@ -1068,7 +1069,9 @@ class Gem::Specification < Gem::BasicSpecification
 
   def self.find_inactive_by_path path
     stub = stubs.find { |s|
-      s.contains_requirable_file? path unless s.activated?
+      next if s.activated?
+      next unless Gem::BundlerVersionFinder.compatible?(s)
+      s.contains_requirable_file? path
     }
     stub && stub.to_spec
   end

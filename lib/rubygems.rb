@@ -271,15 +271,15 @@ module Gem
 
     specs = dep.matching_specs(true)
 
-    raise Gem::GemNotFoundException,
-          "can't find gem #{dep}" if specs.empty?
-
     specs = specs.find_all { |spec|
       spec.executables.include? exec_name
     } if exec_name
 
     unless spec = specs.first
-      msg = "can't find gem #{name} (#{requirements}) with executable #{exec_name}"
+      msg = "can't find gem #{dep} with executable #{exec_name}"
+      if name == "bundler" && bundler_message = Gem::BundlerVersionFinder.missing_version_message
+        msg = bundler_message
+      end
       raise Gem::GemNotFoundException, msg
     end
 
@@ -1334,6 +1334,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   MARSHAL_SPEC_DIR = "quick/Marshal.#{Gem.marshal_version}/"
 
+  autoload :BundlerVersionFinder, 'rubygems/bundler_version_finder'
   autoload :ConfigFile,         'rubygems/config_file'
   autoload :Dependency,         'rubygems/dependency'
   autoload :DependencyList,     'rubygems/dependency_list'

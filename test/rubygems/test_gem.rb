@@ -1481,34 +1481,6 @@ class TestGem < Gem::TestCase
   BUNDLER_LIB_PATH = File.expand_path $LOAD_PATH.find {|lp| File.file?(File.join(lp, "bundler.rb")) }.dup.untaint
   BUNDLER_FULL_NAME = "bundler-#{Bundler::VERSION}"
 
-  def test_use_gemdeps_uses_bundler_postit_trampoline
-    refute_includes $LOADED_FEATURES, File.join(BUNDLER_LIB_PATH, "bundler/postit_trampoline.rb".dup.untaint)
-    ENV.delete("BUNDLE_TRAMPOLINE_DISABLE")
-
-    a = new_spec "a", "1", nil, "lib/a.rb"
-    b = new_spec "b", "1", nil, "lib/b.rb"
-    c = new_spec "c", "1", nil, "lib/c.rb"
-
-    install_specs a, b, c
-
-    path = File.join @tempdir, "gem.deps.rb"
-
-    File.open path, "w" do |f|
-      f.puts "gem 'a'"
-      f.puts "gem 'b'"
-      f.puts "gem 'c'"
-    end
-
-    ENV['RUBYGEMS_GEMDEPS'] = path
-
-    Gem.detect_gemdeps
-
-    assert_equal %W(a-1 b-1 #{BUNDLER_FULL_NAME} c-1), loaded_spec_names
-
-    trampoline_path = RUBY_VERSION > "1.9" ? File.join(BUNDLER_LIB_PATH, "bundler/postit_trampoline.rb".dup.untaint) : "bundler/postit_trampoline.rb"
-    assert_includes $LOADED_FEATURES, trampoline_path
-  end
-
   def test_looks_for_gemdeps_files_automatically_on_start
     util_clear_gems
 

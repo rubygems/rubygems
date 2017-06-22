@@ -30,6 +30,7 @@ require 'stringio'
 #     s.email       = 'rubycoder@example.com'
 #     s.files       = ["lib/example.rb"]
 #     s.homepage    = 'https://rubygems.org/gems/example'
+#     s.metadata    = { "source_code_uri" => "https://github.com/example/example" }
 #   end
 #
 # Starting in RubyGems 2.0, a Specification can hold arbitrary
@@ -211,34 +212,6 @@ class Gem::Specification < Gem::BasicSpecification
   attr_reader :version
 
   ##
-  # Paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
-  # activated.
-  #--
-  # See also #require_paths
-  #++
-  # If you have an extension you do not need to add <code>"ext"</code> to the
-  # require path, the extension build process will copy the extension files
-  # into "lib" for you.
-  #
-  # The default value is <code>"lib"</code>
-  #
-  # Usage:
-  #
-  #   # If all library files are in the root directory...
-  #   spec.require_paths = ['.']
-
-  def require_paths=(val)
-    @require_paths = Array(val)
-  end
-
-  ##
-  # The version of RubyGems used to create this gem.
-  #
-  # Do not set this, it is set automatically when the gem is packaged.
-
-  attr_accessor :rubygems_version
-
-  ##
   # A short summary of this gem's description.  Displayed in `gem list -d`.
   #
   # The #description should be more detailed than the summary.
@@ -248,6 +221,42 @@ class Gem::Specification < Gem::BasicSpecification
   #   spec.summary = "This is a small summary of my gem"
 
   attr_reader :summary
+
+  ##
+  # Files included in this gem.  You cannot append to this accessor, you must
+  # assign to it.
+  #
+  # Only add files you can require to this list, not directories, etc.
+  #
+  # Directories are automatically stripped from this list when building a gem,
+  # other non-files cause an error.
+  #
+  # Usage:
+  #
+  #   require 'rake'
+  #   spec.files = FileList['lib/**/*.rb',
+  #                         'bin/*',
+  #                         '[A-Z]*',
+  #                         'test/**/*'].to_a
+  #
+  #   # or without Rake...
+  #   spec.files = Dir['lib/**/*.rb'] + Dir['bin/*']
+  #   spec.files += Dir['[A-Z]*'] + Dir['test/**/*']
+  #   spec.files.reject! { |fn| fn.include? "CVS" }
+
+  def files
+    # DO NOT CHANGE TO ||= ! This is not a normal accessor. (yes, it sucks)
+    # DOC: Why isn't it normal? Why does it suck? How can we fix this?
+    @files = [@files,
+              @test_files,
+              add_bindir(@executables),
+              @extra_rdoc_files,
+              @extensions,
+             ].flatten.compact.uniq.sort
+  end
+
+  ######################################################################
+  # :section: Recommended gemspec attributes
 
   ##
   # Singular writer for #authors
@@ -270,6 +279,148 @@ class Gem::Specification < Gem::BasicSpecification
   def authors= value
     @authors = Array(value).flatten.grep(String)
   end
+
+  ##
+  # A long description of this gem
+  #
+  # The description should be more detailed than the summary but not
+  # excessively long.  A few paragraphs is a recommended length with no
+  # examples or formatting.
+  #
+  # Usage:
+  #
+  #   spec.description = <<-EOF
+  #     Rake is a Make-like program implemented in Ruby. Tasks and
+  #     dependencies are specified in standard Ruby syntax.
+  #   EOF
+
+  attr_reader :description
+
+  ##
+  # A contact email address (or addresses) for this gem
+  #
+  # Usage:
+  #
+  #   spec.email = 'john.jones@example.com'
+  #   spec.email = ['jack@example.com', 'jill@example.com']
+
+  attr_accessor :email
+
+  ##
+  # The URL of this gem's home page
+  #
+  # Usage:
+  #
+  #   spec.homepage = 'https://github.com/ruby/rake'
+
+  attr_accessor :homepage
+
+  ##
+  # The license for this gem.
+  #
+  # The license must be no more than 64 characters.
+  #
+  # This should just be the name of your license. The full text of the license
+  # should be inside of the gem (at the top level) when you build it.
+  #
+  # The simplest way, is to specify the standard SPDX ID
+  # https://spdx.org/licenses/ for the license.
+  # Ideally you should pick one that is OSI (Open Source Initiative)
+  # http://opensource.org/licenses/alphabetical approved.
+  #
+  # The most commonly used OSI approved licenses are MIT and Apache-2.0.
+  # GitHub also provides a license picker at http://choosealicense.com/.
+  #
+  # You should specify a license for your gem so that people know how they are
+  # permitted to use it, and any restrictions you're placing on it.  Not
+  # specifying a license means all rights are reserved; others have no rights
+  # to use the code for any purpose.
+  #
+  # You can set multiple licenses with #licenses=
+  #
+  # Usage:
+  #   spec.license = 'MIT'
+
+  def license=o
+    self.licenses = [o]
+  end
+
+  ##
+  # The license(s) for the library.
+  #
+  # Each license must be a short name, no more than 64 characters.
+  #
+  # This should just be the name of your license. The full
+  # text of the license should be inside of the gem when you build it.
+  #
+  # See #license= for more discussion
+  #
+  # Usage:
+  #   spec.licenses = ['MIT', 'GPL-2.0']
+
+  def licenses= licenses
+    @licenses = Array licenses
+  end
+
+  ##
+  # The metadata holds extra data for this gem that may be useful to other
+  # consumers and is settable by gem authors without requiring an update to
+  # the rubygems software.
+  #
+  # Metadata items have the following restrictions:
+  #
+  # * The metadata must be a Hash object
+  # * All keys and values must be Strings
+  # * Keys can be a maximum of 128 bytes and values can be a maximum of 1024
+  #   bytes
+  # * All strings must be UTF-8, no binary data is allowed
+  #
+  # You can use metadata to specify links to your gem's homepage, codebase,
+  # documentation, wiki, mailing list, issue tracker and changelog.
+  #
+  #   s.metadata = {
+  #     "bug_tracker_uri"   => "https://example.com/user/bestgemever/issues",
+  #     "changelog_uri"     => "https://example.com/user/bestgemever/CHANGELOG.md",
+  #     "documentation_uri" => "https://www.example.info/gems/bestgemever/0.0.1",
+  #     "homepage_uri"      => "https://bestgemever.example.io",
+  #     "mailing_list_uri"  => "https://groups.example.com/bestgemever",
+  #     "source_code_uri"   => "https://example.com/user/bestgemever",
+  #     "wiki_uri"          => "https://example.com/user/bestgemever/wiki"
+  #   }
+  #
+  # These links will be used on your gem's page on rubygems.org and must pass
+  # validation against following regex.
+  #
+  #   %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}
+
+  attr_accessor :metadata
+
+  ######################################################################
+  # :section: Optional gemspec attributes
+
+  ##
+  # The path in the gem for executable scripts.  Usually 'bin'
+  #
+  # Usage:
+  #
+  #   spec.bindir = 'bin'
+
+  attr_accessor :bindir
+
+  ##
+  # The certificate chain used to sign this gem.  See Gem::Security for
+  # details.
+
+  attr_accessor :cert_chain
+
+  ##
+  # A message that gets displayed after the gem is installed.
+  #
+  # Usage:
+  #
+  #   spec.post_install_message = "Thanks for installing!"
+
+  attr_accessor :post_install_message
 
   ##
   # The platform this gem runs on.
@@ -329,101 +480,25 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # Files included in this gem.  You cannot append to this accessor, you must
-  # assign to it.
+  # Paths in the gem to add to <code>$LOAD_PATH</code> when this gem is
+  # activated.
+  #--
+  # See also #require_paths
+  #++
+  # If you have an extension you do not need to add <code>"ext"</code> to the
+  # require path, the extension build process will copy the extension files
+  # into "lib" for you.
   #
-  # Only add files you can require to this list, not directories, etc.
-  #
-  # Directories are automatically stripped from this list when building a gem,
-  # other non-files cause an error.
+  # The default value is <code>"lib"</code>
   #
   # Usage:
   #
-  #   require 'rake'
-  #   spec.files = FileList['lib/**/*.rb',
-  #                         'bin/*',
-  #                         '[A-Z]*',
-  #                         'test/**/*'].to_a
-  #
-  #   # or without Rake...
-  #   spec.files = Dir['lib/**/*.rb'] + Dir['bin/*']
-  #   spec.files += Dir['[A-Z]*'] + Dir['test/**/*']
-  #   spec.files.reject! { |fn| fn.include? "CVS" }
+  #   # If all library files are in the root directory...
+  #   spec.require_paths = ['.']
 
-  def files
-    # DO NOT CHANGE TO ||= ! This is not a normal accessor. (yes, it sucks)
-    # DOC: Why isn't it normal? Why does it suck? How can we fix this?
-    @files = [@files,
-              @test_files,
-              add_bindir(@executables),
-              @extra_rdoc_files,
-              @extensions,
-             ].flatten.compact.uniq.sort
+  def require_paths=(val)
+    @require_paths = Array(val)
   end
-
-  ######################################################################
-  # :section: Optional gemspec attributes
-
-  ##
-  # The path in the gem for executable scripts.  Usually 'bin'
-  #
-  # Usage:
-  #
-  #   spec.bindir = 'bin'
-
-  attr_accessor :bindir
-
-  ##
-  # The certificate chain used to sign this gem.  See Gem::Security for
-  # details.
-
-  attr_accessor :cert_chain
-
-  ##
-  # A long description of this gem
-  #
-  # The description should be more detailed than the summary but not
-  # excessively long.  A few paragraphs is a recommended length with no
-  # examples or formatting.
-  #
-  # Usage:
-  #
-  #   spec.description = <<-EOF
-  #     Rake is a Make-like program implemented in Ruby. Tasks and
-  #     dependencies are specified in standard Ruby syntax.
-  #   EOF
-
-  attr_reader :description
-
-  ##
-  # A contact email address (or addresses) for this gem
-  #
-  # Usage:
-  #
-  #   spec.email = 'john.jones@example.com'
-  #   spec.email = ['jack@example.com', 'jill@example.com']
-
-  attr_accessor :email
-
-  ##
-  # :category: Recommended gemspec attributes
-  #
-  # The URL of this gem's home page
-  #
-  # Usage:
-  #
-  #   spec.homepage = 'https://github.com/ruby/rake'
-
-  attr_accessor :homepage
-
-  ##
-  # A message that gets displayed after the gem is installed.
-  #
-  # Usage:
-  #
-  #   spec.post_install_message = "Thanks for installing!"
-
-  attr_accessor :post_install_message
 
   ##
   # The version of Ruby required by this gem
@@ -436,44 +511,16 @@ class Gem::Specification < Gem::BasicSpecification
   attr_reader :required_rubygems_version
 
   ##
+  # The version of RubyGems used to create this gem.
+  #
+  # Do not set this, it is set automatically when the gem is packaged.
+
+  attr_accessor :rubygems_version
+
+  ##
   # The key used to sign this gem.  See Gem::Security for details.
 
   attr_accessor :signing_key
-
-  ##
-  # :attr_accessor: metadata
-  #
-  # The metadata holds extra data for this gem that may be useful to other
-  # consumers and is settable by gem authors without requiring an update to
-  # the rubygems software.
-  #
-  # Metadata items have the following restrictions:
-  #
-  # * The metadata must be a Hash object
-  # * All keys and values must be Strings
-  # * Keys can be a maximum of 128 bytes and values can be a maximum of 1024
-  #   bytes
-  # * All strings must be UTF-8, no binary data is allowed
-  #
-  # You can use metadata to specify links to your gem's homepage, codebase,
-  # documentation, wiki, mailing list, issue tracker and changelog.
-  #
-  #   s.metadata = {
-  #     "bug_tracker_uri"   => "https://example.com/user/bestgemever/issues",
-  #     "changelog_uri"     => "https://example.com/user/bestgemever/CHANGELOG.md",
-  #     "documentation_uri" => "https://www.example.info/gems/bestgemever/0.0.1",
-  #     "homepage_uri"      => "https://bestgemever.example.io",
-  #     "mailing_list_uri"  => "https://groups.example.com/bestgemever",
-  #     "source_code_uri"   => "https://example.com/user/bestgemever",
-  #     "wiki_uri"          => "https://example.com/user/bestgemever/wiki"
-  #   }
-  #
-  # These links will be used on your gem's page on rubygems.org and must pass
-  # validation against following regex.
-  #
-  #   %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}
-
-  attr_accessor :metadata
 
   ##
   # Adds a development dependency named +gem+ with +requirements+ to this
@@ -568,56 +615,6 @@ class Gem::Specification < Gem::BasicSpecification
 
   def installed_by_version= version # :nodoc:
     @installed_by_version = Gem::Version.new version
-  end
-
-  ##
-  # :category: Recommended gemspec attributes
-  #
-  # The license for this gem.
-  #
-  # The license must be no more than 64 characters.
-  #
-  # This should just be the name of your license. The full text of the license
-  # should be inside of the gem (at the top level) when you build it.
-  #
-  # The simplest way, is to specify the standard SPDX ID
-  # https://spdx.org/licenses/ for the license.
-  # Ideally you should pick one that is OSI (Open Source Initiative)
-  # http://opensource.org/licenses/alphabetical approved.
-  #
-  # The most commonly used OSI approved licenses are MIT and Apache-2.0.
-  # GitHub also provides a license picker at http://choosealicense.com/.
-  #
-  # You should specify a license for your gem so that people know how they are
-  # permitted to use it, and any restrictions you're placing on it.  Not
-  # specifying a license means all rights are reserved; others have no rights
-  # to use the code for any purpose.
-  #
-  # You can set multiple licenses with #licenses=
-  #
-  # Usage:
-  #   spec.license = 'MIT'
-
-  def license=o
-    self.licenses = [o]
-  end
-
-  ##
-  # :category: Recommended gemspec attributes
-  # The license(s) for the library.
-  #
-  # Each license must be a short name, no more than 64 characters.
-  #
-  # This should just be the name of your license. The full
-  # text of the license should be inside of the gem when you build it.
-  #
-  # See #license= for more discussion
-  #
-  # Usage:
-  #   spec.licenses = ['MIT', 'GPL-2.0']
-
-  def licenses= licenses
-    @licenses = Array licenses
   end
 
   ##

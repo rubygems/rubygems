@@ -136,8 +136,9 @@ class Gem::Installer
   end
 
   ##
-  # Constructs an Installer instance that will install the gem located at
-  # +gem+.  +options+ is a Hash with the following keys:
+  # Constructs an Installer instance that will install the gem at +package+ which
+  # can either be a path or an instance of Gem::Package.  +options+ is a Hash
+  # with the following keys:
   #
   # :bin_dir:: Where to put a bin wrapper if needed.
   # :development:: Whether or not development dependencies should be installed.
@@ -157,6 +158,7 @@ class Gem::Installer
   # :wrappers:: Install wrappers if true, symlinks if false.
   # :build_args:: An Array of arguments to pass to the extension builder
   #               process. If not set, then Gem::Command.build_args is used
+  # :post_install_message:: Print gem post install message if true
 
   def initialize(package, options={})
     require 'fileutils'
@@ -819,7 +821,7 @@ TEXT
   #
   # Version and dependency checks are skipped if this install is forced.
   #
-  # The dependent check will be skipped this install is ignoring dependencies.
+  # The dependent check will be skipped if the install is ignoring dependencies.
 
   def pre_install_checks
     verify_gem_home options[:unpack]

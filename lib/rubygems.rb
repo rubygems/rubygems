@@ -133,6 +133,7 @@ module Gem
 
   GEM_DEP_FILES = %w[
     gem.deps.rb
+    gems.rb
     Gemfile
     Isolate
   ]

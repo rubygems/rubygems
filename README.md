@@ -29,6 +29,14 @@ For more details and other options, see:
   ruby setup.rb --help
 ```
 
+## Documentation
+
+RubyGems uses [rdoc](https://github.com/rdoc/rdoc) for documentation. A compiled set of the docs
+can be viewed online at http://www.rubydoc.info/github/rubygems/rubygems
+
+RubyGems also provides a comprehensive set of guides which covers numerous topics such as
+creating a new gem, security practices and other resources at http://guides.rubygems.org
+
 ## GETTING HELP
 
 ### Support Requests

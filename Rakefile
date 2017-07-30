@@ -46,6 +46,7 @@ hoe = Hoe.spec 'rubygems-update' do
   spec_extras[:required_rubygems_version] = Gem::Requirement.default
   spec_extras[:required_ruby_version]     = Gem::Requirement.new '>= 1.8.7'
   spec_extras[:executables]               = ['update_rubygems']
+  spec_extras[:homepage]                  = 'https://rubygems.org'
 
   rdoc_locations <<
     'docs-push.seattlerb.org:/data/www/docs.seattlerb.org/rubygems/'

@@ -24,8 +24,10 @@ module Gem::LocalRemoteOptions
         raise OptionParser::InvalidArgument, value
       end
 
-      unless ['http', 'https', 'file', 's3'].include?(uri.scheme)
-         raise OptionParser::InvalidArgument, value
+      allowed_schemes = ['http', 'https', 'file', 's3']
+      unless allowed_schemes.include?(uri.scheme)
+        msg =  "#{value}\nPreface URLs with one of #{allowed_schemes}"
+        raise OptionParser::InvalidArgument, msg
       end
 
       value

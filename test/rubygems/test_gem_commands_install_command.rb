@@ -1004,4 +1004,13 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal [:test, :development], @cmd.options[:without_groups]
   end
 
+  def test_handle_proxy_with_no_scheme
+    err = assert_raises OptionParser::InvalidArgument do
+      @cmd.handle_options %w[-p=foo.bar.com]
+    end
+
+    assert_match /invalid argument: -p=foo.bar.com/ , err.message
+    assert_match /Preface URLs with one of \["http", "https", "file", "s3"\]/ , err.message
+  end
+
 end

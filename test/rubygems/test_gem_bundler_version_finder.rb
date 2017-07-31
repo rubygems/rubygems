@@ -33,7 +33,13 @@ class TestGemBundlerVersionFinder < Gem::TestCase
     assert_nil bvf.bundler_version
     $0 = "/foo/bar/bundle"
     assert_nil bvf.bundler_version
-    ARGV.replace %w[update --bundler=1.1.1.1]
+    ARGV.replace %w[update --bundler=1.1.1.1 gem_name]
+    assert_equal v("1.1.1.1"), bvf.bundler_version
+    ARGV.replace %w[update --bundler 1.1.1.1 gem_name]
+    assert_equal v("1.1.1.1"), bvf.bundler_version
+    ARGV.replace %w[update --bundler\ 1.1.1.1 gem_name]
+    assert_equal v("1.1.1.1"), bvf.bundler_version
+    ARGV.replace %w[update --bundler\ 1.1.1.2 --bundler --bundler 1.1.1.1 gem_name]
     assert_equal v("1.1.1.1"), bvf.bundler_version
     $0 = "other"
     assert_nil bvf.bundler_version

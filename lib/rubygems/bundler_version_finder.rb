@@ -44,11 +44,17 @@ To install the missing version, run `gem install bundler:#{vr.first}`
   def self.bundle_update_bundler_version
     return unless File.basename($0) == "bundle".freeze
     return unless "update".start_with?(ARGV.first || " ")
-    ARGV.each do |a|
-      next unless a =~ /\A--bundler(?:=(#{Gem::Version::VERSION_PATTERN}))?\z/
-      return $1 || true
+    bundler_version = nil
+    update_index = nil
+    ARGV.each_with_index do |a, i|
+      if update_index && update_index.succ == i && a =~ Gem::Version::ANCHORED_VERSION_PATTERN
+        bundler_version = a
+      end
+      next unless a =~ /\A--bundler(?:[= ](#{Gem::Version::VERSION_PATTERN}))?\z/
+      bundler_version = $1 || true
+      update_index = i
     end
-    nil
+    bundler_version
   end
   private_class_method :bundle_update_bundler_version
 

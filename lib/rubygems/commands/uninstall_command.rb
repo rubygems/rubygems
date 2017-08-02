@@ -143,7 +143,9 @@ that is a dependency of an existing gem.  You can use the
     deplist = Gem::DependencyList.new
 
     get_all_gem_names.uniq.each do |name|
-      Gem::Specification.find_all_by_name(name).each do |spec|
+      gem_specs = Gem::Specification.find_all_by_name(name)
+      say("Gem '#{name}' is not installed") if gem_specs.empty?
+      gem_specs.each do |spec|
         deplist.add spec
       end
     end
@@ -162,4 +164,3 @@ that is a dependency of an existing gem.  You can use the
   end
 
 end
-

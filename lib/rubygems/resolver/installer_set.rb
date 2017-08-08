@@ -193,7 +193,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
   # Has a local gem for +dep_name+ been added to this set?
 
   def local? dep_name # :nodoc:
-    spec, = @local[dep_name]
+    spec, _ = @local[dep_name]
 
     spec
   end

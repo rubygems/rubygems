@@ -303,6 +303,12 @@ class TestGemRequire < Gem::TestCase
 
   def test_realworld_default_gem
     skip "no default gems on ruby < 2.0" unless RUBY_VERSION >= "2"
+    begin
+      gem 'json'
+    rescue Gem::MissingSpecError
+      skip "default gems is only available after ruby installation"
+    end
+
     cmd = <<-RUBY
       $stderr = $stdout
       require "json"

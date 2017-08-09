@@ -306,7 +306,7 @@ class TestGemRequire < Gem::TestCase
     begin
       gem 'json'
     rescue Gem::MissingSpecError
-      skip "default gems is only available after ruby installation"
+      skip "default gems are only available after ruby installation"
     end
 
     cmd = <<-RUBY

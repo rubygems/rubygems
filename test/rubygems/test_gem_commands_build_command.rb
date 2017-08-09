@@ -119,13 +119,11 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   end
 
   def test_build_signed_gem
-    cert_file = File.join(@current_dir, 'test', 'rubygems',
-                          'public_cert3072.pem')
+    cert_file = File.expand_path('../public_cert3072.pem', __FILE__)
     trust_dir = Gem::Security.trust_dir
 
     spec = util_spec 'some_gem' do |s|
-      s.signing_key = File.join(@current_dir, 'test', 'rubygems',
-                                'private_key3072.pem')
+      s.signing_key = File.expand_path('../private_key3072.pem', __FILE__)
       s.cert_chain = [cert_file]
     end
 
@@ -145,4 +143,3 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   end
 
 end
-

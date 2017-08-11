@@ -33,6 +33,7 @@ Hoe::RUBY_FLAGS << " --disable-gems" if RUBY_VERSION > "1.9"
 
 Hoe.plugin :git
 Hoe.plugin :travis
+Hoe.plugin :newb
 
 hoe = Hoe.spec 'rubygems-update' do
   self.author         = ['Jim Weirich', 'Chad Fowler', 'Eric Hodel']
@@ -127,12 +128,24 @@ rescue LoadError, RuntimeError # rake 10.1 on rdoc from ruby 1.9.2 and earlier
   end
 end
 
+class Hoe
+  module Deps
+    alias_method :default_check_extra_task, :check_extra_deps_task
+    def check_extra_deps_task
+      default_check_extra_task
+    rescue Gem::LoadError => e
+      raise unless e.name == 'rake'
+      details = "#{e.class}: #{e}"
+      abort "To override your default rake version, run: `rake _x.y.z_ task_name`:\n\t#{details}"
+    end
+  end
+end
+task(:newb).prerequisites.unshift "bundler:checkout"
+
 desc "Install gems needed to run the tests"
 task :install_test_deps => :clean_env do
   sh "gem install minitest -v '~> 4.0'"
 end
-
-task(:newb).prerequisites.unshift "bundler:checkout"
 
 begin
   require "automatiek"

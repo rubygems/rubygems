@@ -91,7 +91,7 @@ class Gem::Source::Local < Gem::Source
         if version.satisfied_by?(s.version)
           if prerelease
             found << s
-          elsif !s.version.prerelease?
+          elsif !s.version.prerelease? || version.prerelease?
             found << s
           end
         end

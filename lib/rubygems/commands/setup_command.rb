@@ -15,7 +15,8 @@ class Gem::Commands::SetupCommand < Gem::Command
     super 'setup', 'Install RubyGems',
           :format_executable => true, :document => %w[ri],
           :site_or_vendor => 'sitelibdir',
-          :destdir => '', :prefix => '', :previous_version => ''
+          :destdir => '', :prefix => '', :previous_version => '',
+          :regenerate_binstubs => true
 
     add_option '--previous-version=VERSION',
                'Previous version of RubyGems',
@@ -79,6 +80,15 @@ class Gem::Commands::SetupCommand < Gem::Command
       options[:document].uniq!
     end
 
+    add_option '--[no-]regenerate-binstubs',
+               'Regenerate gem binstubs' do |value, options|
+      if value then
+        options[:regenerate_binstubs] = true
+      else
+        options.delete(:regenerate_binstubs)
+      end
+   end
+
     @verbose = nil
   end
 
@@ -92,7 +102,7 @@ class Gem::Commands::SetupCommand < Gem::Command
   end
 
   def defaults_str # :nodoc:
-    "--format-executable --document ri"
+    "--format-executable --document ri --regenerate-binstubs"
   end
 
   def description # :nodoc:
@@ -145,6 +155,8 @@ By default, this RubyGems will install gem as:
     install_default_bundler_gem
 
     say "RubyGems #{Gem::VERSION} installed"
+
+    regenerate_binstubs
 
     uninstall_old_gemcutter
 
@@ -518,6 +530,12 @@ abort "#{deprecation_message}"
                               :version => '< 0.4')
     ui.uninstall
   rescue Gem::InstallError
+  end
+
+  def regenerate_binstubs
+    command = Gem::Commands::PristineCommand.new
+    command.handle_options %w[--all --only-executables]
+    command.execute
   end
 
 end

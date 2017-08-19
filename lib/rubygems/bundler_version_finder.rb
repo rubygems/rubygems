@@ -33,12 +33,20 @@ To install the missing version, run `gem install bundler:#{vr.first}`
   def self.compatible?(spec)
     return true unless spec.name == "bundler".freeze
     return true unless bundler_version = self.bundler_version
-    spec.version == bundler_version
+    if bundler_version.segments.first >= 2
+      spec.version == bundler_version
+    else # 1.x
+      spec.version.segments.first < 2
+    end
   end
 
   def self.filter!(specs)
     return unless bundler_version = self.bundler_version
-    specs.reject! { |spec| spec.version != bundler_version }
+    if bundler_version.segments.first >= 2
+      specs.reject! { |spec| spec.version != bundler_version }
+    else # 1.x
+      specs.reject! { |spec| spec.version.segments.first >= 2}
+    end
   end
 
   def self.bundle_update_bundler_version

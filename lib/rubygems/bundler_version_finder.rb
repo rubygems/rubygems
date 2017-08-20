@@ -1,4 +1,6 @@
 module Gem::BundlerVersionFinder
+  @without_filtering = false
+
   def self.without_filtering
     without_filtering, @without_filtering = true, @without_filtering
     yield

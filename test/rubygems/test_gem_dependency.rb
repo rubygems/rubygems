@@ -353,16 +353,16 @@ class TestGemDependency < Gem::TestCase
 
     assert_equal [b, b_1], dep.to_specs
 
-    Gem::BundlerVersionFinder.stub(:bundler_version_with_reason, ["1.5", "reason"]) do
+    Gem::BundlerVersionFinder.stub(:bundler_version_with_reason, ["3.5", "reason"]) do
       e = assert_raises Gem::MissingSpecVersionError do
         dep.to_specs
       end
 
-      assert_match "Could not find 'bundler' (1.5) required by reason.\nTo update to the lastest version installed on your system, run `bundle update --bundler`.\nTo install the missing version, run `gem install bundler:1.5`\n", e.message
+      assert_match "Could not find 'bundler' (3.5) required by reason.\nTo update to the lastest version installed on your system, run `bundle update --bundler`.\nTo install the missing version, run `gem install bundler:3.5`\n", e.message
     end
 
-    Gem::BundlerVersionFinder.stub(:bundler_version_with_reason, ["1.0", "reason"]) do
-      assert_equal [b_1], dep.to_specs
+    Gem::BundlerVersionFinder.stub(:bundler_version_with_reason, ["2.0.0.pre.1", "reason"]) do
+      assert_equal [b], dep.to_specs
     end
   end
 

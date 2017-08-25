@@ -9,7 +9,7 @@ module Gem::BundlerVersionFinder
   end
 
   def self.bundler_version
-    version, _reason = bundler_version_with_reason
+    version, _ = bundler_version_with_reason
 
     return unless version
 

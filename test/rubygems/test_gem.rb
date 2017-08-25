@@ -1110,7 +1110,8 @@ class TestGem < Gem::TestCase
     orig_path = ENV.delete 'GEM_PATH'
     Gem.use_paths nil, nil
     assert_equal Gem.default_dir, Gem.paths.home
-    assert_equal (Gem.default_path + [Gem.paths.home]).uniq, Gem.paths.path
+    path = (Gem.default_path + [Gem.paths.home]).uniq
+    assert_equal path, Gem.paths.path
   ensure
     ENV['GEM_HOME'] = orig_home
     ENV['GEM_PATH'] = orig_path

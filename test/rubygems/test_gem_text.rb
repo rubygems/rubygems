@@ -37,7 +37,7 @@ Without the wrapping, the text might not look good in the RSS feed.
   end
 
   def test_format_removes_nonprintable_characters
-    assert_equal "text with weird .. stuff", format_text("text with weird \u001b\u0002 stuff", 40)
+    assert_equal "text with weird .. stuff .", format_text("text with weird \x1b\x02 stuff \x7f", 40)
   end
 
   def test_min3

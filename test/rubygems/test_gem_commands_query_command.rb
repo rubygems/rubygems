@@ -132,8 +132,8 @@ pl (1)
     spec_fetcher do |fetcher|
       fetcher.spec 'a', 2 do |s|
         s.summary = 'This is a lot of text. ' * 4
-        s.authors = ["Abraham Lincoln \u0001", "\u0002 Hirohito"]
-        s.homepage = "http://a.example.com/\u0003"
+        s.authors = ["Abraham Lincoln \x01", "\x02 Hirohito"]
+        s.homepage = "http://a.example.com/\x03"
       end
 
       fetcher.legacy_platform

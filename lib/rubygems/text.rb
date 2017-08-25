@@ -13,6 +13,12 @@ module Gem::Text
     text.gsub(/[\000-\b\v-\f\016-\037\177]/, ".".freeze)
   end
 
+  def truncate_text(text, description, max_length = 100_000)
+    raise ArgumentError, "max_length must be positive" unless max_length > 0
+    return text if text.size <= max_length
+    "Truncating #{description} to #{max_length.to_s.reverse.gsub(/...(?=.)/,'\&,').reverse} characters:\n" + text[0, max_length]
+  end
+
   ##
   # Wraps +text+ to +wrap+ characters and optionally indents by +indent+
   # characters

@@ -78,4 +78,11 @@ Without the wrapping, the text might not look good in the RSS feed.
     assert_equal 7, levenshtein_distance("xxxxxxx", "ZenTest")
     assert_equal 7, levenshtein_distance("zentest", "xxxxxxx")
   end
+
+  def test_truncate_text
+    assert_equal "abc", truncate_text("abc", "desc")
+    assert_equal "Truncating desc to 2 characters:\nab", truncate_text("abc", "desc", 2)
+    s = "ab" * 500_001
+    assert_equal "Truncating desc to 1,000,000 characters:\n#{s[0, 1_000_000]}", truncate_text(s, "desc", 1_000_000)
+  end
 end

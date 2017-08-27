@@ -383,6 +383,44 @@ class TestGemRequire < Gem::TestCase
     assert_equal %w(a-1), loaded_spec_names
   end
 
+
+  def test_require_bundler
+    $:.reject! {|lp| File.expand_path(lp).end_with?("bundler/lib") }
+    b1 = new_spec('bundler', '1', nil, "lib/bundler/setup.rb")
+    b2a = new_spec('bundler', '2.a', nil, "lib/bundler/setup.rb")
+    install_specs b1, b2a
+
+    assert_require 'bundler/setup'
+    assert_equal %w[bundler-2.a], loaded_spec_names
+    assert_empty unresolved_names
+  end
+
+  def test_require_bundler_missing_bundler_version
+    $:.reject! {|lp| File.expand_path(lp).end_with?("bundler/lib") }
+    Gem::BundlerVersionFinder.stub(:bundler_version_with_reason, ["55", "reason"]) do
+      b1 = new_spec('bundler', '1', nil, "lib/bundler/setup.rb")
+      b2a = new_spec('bundler', '2.a', nil, "lib/bundler/setup.rb")
+      install_specs b1, b2a
+
+      e = assert_raises Gem::MissingSpecVersionError do
+        gem('bundler')
+      end
+      assert_match "Could not find 'bundler' (55) required by reason.", e.message
+    end
+  end
+
+  def test_require_bundler_with_bundler_version
+    $:.reject! {|lp| File.expand_path(lp).end_with?("bundler/lib") }
+    Gem::BundlerVersionFinder.stub(:bundler_version_with_reason, ["1", "reason"]) do
+      b1 = new_spec('bundler', '1', nil, "lib/bundler/setup.rb")
+      b2 = new_spec('bundler', '2', nil, "lib/bundler/setup.rb")
+      install_specs b1, b2
+
+      assert_require 'bundler/setup'
+      assert_equal %w[bundler-1], loaded_spec_names
+    end
+  end
+
   def silence_warnings
     old_verbose, $VERBOSE = $VERBOSE, false
     yield

@@ -133,6 +133,7 @@ module Gem
 
   GEM_DEP_FILES = %w[
     gem.deps.rb
+    gems.rb
     Gemfile
     Isolate
   ]
@@ -269,17 +270,22 @@ module Gem
 
     return loaded if loaded && dep.matches_spec?(loaded)
 
-    specs = dep.matching_specs(true)
-
-    raise Gem::GemNotFoundException,
-          "can't find gem #{dep}" if specs.empty?
+    find_specs = proc { dep.matching_specs(true) }
+    if dep.to_s == "bundler (>= 0.a)"
+      specs = Gem::BundlerVersionFinder.without_filtering(&find_specs)
+    else
+      specs = find_specs.call
+    end
 
     specs = specs.find_all { |spec|
       spec.executables.include? exec_name
     } if exec_name
 
     unless spec = specs.first
-      msg = "can't find gem #{name} (#{requirements}) with executable #{exec_name}"
+      msg = "can't find gem #{dep} with executable #{exec_name}"
+      if name == "bundler" && bundler_message = Gem::BundlerVersionFinder.missing_version_message
+        msg = bundler_message
+      end
       raise Gem::GemNotFoundException, msg
     end
 
@@ -1334,6 +1340,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   MARSHAL_SPEC_DIR = "quick/Marshal.#{Gem.marshal_version}/"
 
+  autoload :BundlerVersionFinder, 'rubygems/bundler_version_finder'
   autoload :ConfigFile,         'rubygems/config_file'
   autoload :Dependency,         'rubygems/dependency'
   autoload :DependencyList,     'rubygems/dependency_list'

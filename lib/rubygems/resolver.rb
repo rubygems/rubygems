@@ -235,17 +235,16 @@ class Gem::Resolver
 
     groups = Hash.new { |hash, key| hash[key] = [] }
 
-    possibles.each do |spec|
+    # create groups & sources in the same loop
+    sources = possibles.map { |spec|
       source = spec.source
-
-      sources << source unless sources.include? source
-
       groups[source] << spec
-    end
+      source
+    }.uniq.reverse
 
     activation_requests = []
 
-    sources.sort.each do |source|
+    sources.each do |source|
       groups[source].
         sort_by { |spec| [spec.version, Gem::Platform.local =~ spec.platform ? 1 : 0] }.
         map { |spec| ActivationRequest.new spec, dependency, [] }.

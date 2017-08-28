@@ -6,7 +6,16 @@ branches:
   - /[\d.]+/
 skip_tags: true
 clone_depth: 10
+
+init:
+  - mklink /d C:\git "C:\Program Files\Git"
+  - if %ruby_version%==_trunk (
+      appveyor DownloadFile https://dl.bintray.com/msp-greg/ruby_windows/ruby_trunk.7z -FileName C:\ruby_trunk.7z &
+      7z x C:\ruby_trunk.7z -oC:\ruby_trunk & C:\ruby_trunk\trunk_install.cmd )
+
 environment:
+  PATH: C:/ruby%ruby_version%/bin;C:/Program Files/7-Zip;C:/Program Files/AppVeyor/BuildAgent;C:/git/cmd;C:/Program Files (x86)/GNU/GnuPG/pub;C:/Windows/system32;C:\Windows;
+  WINDIR: C:\Windows
   matrix:
   - ruby_version: 193
   - ruby_version: 200
@@ -15,6 +24,13 @@ environment:
   - ruby_version: 21-x64
   - ruby_version: 22
   - ruby_version: 22-x64
+  - ruby_version: 23-x64
+    GIT:  C:/git/cmd/git.exe
+  - ruby_version: 24-x64
+    GIT:  C:/git/cmd/git.exe
+  - ruby_version: _trunk
+    GIT:  C:/git/cmd/git.exe
+
 install:
 - ps: >-
     git submodule update --init --recursive
@@ -28,6 +44,7 @@ install:
     gem install minitest -v "~> 4.7" --no-document
 
     ruby -v
+
 cache:
 - C:\Ruby193\lib\ruby\gems\1.9.1
 - C:\Ruby200\lib\ruby\gems\2.0.0
@@ -36,7 +53,12 @@ cache:
 - C:\Ruby21-x64\lib\ruby\gems\2.1.0
 - C:\Ruby22\lib\ruby\gems\2.2.0
 - C:\Ruby22-x64\lib\ruby\gems\2.2.0
+- C:\Ruby23-x64\lib\ruby\gems\2.3.0
+- C:\Ruby24-x64\lib\ruby\gems\2.4.0
+
 build: off
 test_script:
-- cmd: rake -rdevkit test
+- rake -rdevkit test
+on_finish:
+- ruby -v
 deploy: off

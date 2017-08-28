@@ -1,5 +1,19 @@
 # coding: UTF-8
 
+=== 2.6.13 / 2017-08-27
+
+Security fixes:
+
+* Fix a DNS request hijacking vulnerability.
+  Fix by Samuel Giddins.
+* Fix an ANSI escape sequence vulnerability.
+  Fix by Evan Phoenix.
+* Fix a DOS vulernerability in the `query` command.
+  Fix by Samuel Giddins.
+* Fix a vulnerability in the gem installer that allowed
+  a malicious gem to overwrite arbitrary files.
+  Fix by Samuel Giddins.
+
 === 2.6.12 / 2017-04-30
 
 Bug fixes:

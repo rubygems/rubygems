@@ -34,6 +34,7 @@ module Gem::Resolver::Molinillo
     #   {#specification_provider} can understand
     # @param [DependencyGraph,nil] base the base dependency graph to which
     #   dependencies should be 'locked'
+    # @return [DependencyGraph]
     def resolve(requested, base = DependencyGraph.new)
       Resolution.new(specification_provider,
                      resolver_ui,

@@ -56,7 +56,7 @@ module Gem::Resolver::Molinillo
       end
 
       # Resolves the {#original_requested} dependencies into a full dependency
-      #   graph
+      # graph
       # @raise [ResolverError] if successful resolution is impossible
       # @return [DependencyGraph] the dependency graph of successfully resolved
       #   dependencies

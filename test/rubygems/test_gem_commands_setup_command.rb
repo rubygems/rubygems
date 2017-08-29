@@ -48,8 +48,10 @@ class TestGemCommandsSetupCommand < Gem::TestCase
       assert_path_exists File.join(dir, 'rubygems.rb')
       assert_path_exists File.join(dir, 'rubygems/ssl_certs/rubygems.org/foo.pem')
 
-      assert_path_exists File.join(dir, 'bundler.rb')
-      assert_path_exists File.join(dir, 'bundler/b.rb')
+      if Gem::USE_BUNDLER_FOR_GEMDEPS
+        assert_path_exists File.join(dir, 'bundler.rb')
+        assert_path_exists File.join(dir, 'bundler/b.rb')
+      end
     end
   end
 
@@ -84,7 +86,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     refute_path_exists old_builder_rb
     refute_path_exists old_format_rb
-    refute_path_exists old_bundler_c_rb
+    refute_path_exists old_bundler_c_rb if Gem::USE_BUNDLER_FOR_GEMDEPS
 
     assert_path_exists securerandom_rb
     assert_path_exists engine_defaults_rb

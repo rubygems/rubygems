@@ -220,10 +220,9 @@ By default, this RubyGems will install gem as:
   def install_executables(bin_dir)
     @bin_file_names = []
 
-    {
-      'gem' => 'bin',
-      'bundler' => 'bundler/exe',
-    }.each do |tool, path|
+    executables = { 'gem' => 'bin' }
+    executables['bundler'] = 'bundler/exe' if Gem::USE_BUNDLER_FOR_GEMDEPS
+    executables.each do |tool, path|
       say "Installing #{tool} executable" if @verbose
 
       Dir.chdir path do
@@ -289,10 +288,9 @@ By default, this RubyGems will install gem as:
   end
 
   def install_lib(lib_dir)
-    {
-      'RubyGems' => 'lib',
-      'Bundler' => 'bundler/lib'
-    }.each do |tool, path|
+    libs = { 'RubyGems' => 'lib' }
+    libs['Bundler'] = 'bundler/lib' if Gem::USE_BUNDLER_FOR_GEMDEPS
+    libs.each do |tool, path|
       say "Installing #{tool}" if @verbose
 
       lib_files = rb_files_in path
@@ -352,26 +350,26 @@ By default, this RubyGems will install gem as:
   end
 
   def install_default_bundler_gem
-    Dir.chdir("bundler") do
-      bundler_spec = Gem::Specification.load("bundler.gemspec")
-      bundler_spec.files = Dir["{*.md,{lib,exe,man}/**/*}"]
-      bundler_spec.executables -= %w[bundler bundle_ruby]
-      Dir.entries(Gem::Specification.default_specifications_dir).
-        select {|gs| gs.start_with?("bundler-") }.
-        each {|gs| File.delete(File.join(Gem::Specification.default_specifications_dir, gs)) }
+    return unless Gem::USE_BUNDLER_FOR_GEMDEPS
 
-      default_spec_path = File.join(Gem::Specification.default_specifications_dir, "#{bundler_spec.full_name}.gemspec")
-      Gem.write_binary(default_spec_path, bundler_spec.to_ruby)
+    bundler_spec = Gem::Specification.load("bundler/bundler.gemspec")
+    bundler_spec.files = Dir["bundler/{*.md,{lib,exe,man}/**/*}"]
+    bundler_spec.executables -= %w[bundler bundle_ruby]
+    Dir.entries(Gem::Specification.default_specifications_dir).
+      select {|gs| gs.start_with?("bundler-") }.
+      each {|gs| File.delete(File.join(Gem::Specification.default_specifications_dir, gs)) }
 
-      bundler_spec = Gem::Specification.load(default_spec_path)
+    default_spec_path = File.join(Gem::Specification.default_specifications_dir, "#{bundler_spec.full_name}.gemspec")
+    Gem.write_binary(default_spec_path, bundler_spec.to_ruby)
 
-      Dir.entries(bundler_spec.gems_dir).
-        select {|default_gem| default_gem.start_with?("bundler-") }.
-        each {|default_gem| rm_r File.join(bundler_spec.gems_dir, default_gem) }
+    bundler_spec = Gem::Specification.load(default_spec_path)
 
-      mkdir_p bundler_spec.bin_dir
-      bundler_spec.executables.each {|e| cp File.join(bundler_spec.bindir, e), File.join(bundler_spec.bin_dir, e) }
-    end
+    Dir.entries(bundler_spec.gems_dir).
+      select {|default_gem| default_gem.start_with?("bundler-") }.
+      each {|default_gem| rm_r File.join(bundler_spec.gems_dir, default_gem) }
+
+    mkdir_p bundler_spec.bin_dir
+    bundler_spec.executables.each {|e| cp File.join("bundler", bundler_spec.bindir, e), File.join(bundler_spec.bin_dir, e) }
   end
 
   def make_destination_dirs(install_destdir)
@@ -464,10 +462,9 @@ abort "#{deprecation_message}"
   end
 
   def remove_old_lib_files lib_dir
-    {
-      File.join(lib_dir, 'rubygems') => 'lib/rubygems',
-      File.join(lib_dir, 'bundler') => 'bundler/lib/bundler',
-    }.each do |old_lib_dir, new_lib_dir|
+    lib_dirs = { File.join(lib_dir, 'rubygems') => 'lib/rubygems' }
+    lib_dirs[File.join(lib_dir, 'bundler')] = 'bundler/lib/bundler' if Gem::USE_BUNDLER_FOR_GEMDEPS
+    lib_dirs.each do |old_lib_dir, new_lib_dir|
       lib_files = rb_files_in(new_lib_dir)
 
       old_lib_files = rb_files_in(old_lib_dir)

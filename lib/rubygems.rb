@@ -115,7 +115,6 @@ require 'rubygems/errors'
 #
 # -The RubyGems Team
 
-
 module Gem
   RUBYGEMS_DIR = File.dirname File.expand_path(__FILE__)
 

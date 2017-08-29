@@ -68,10 +68,10 @@ module Gem::Resolver::Molinillo
 
     # Sort dependencies so that the ones that are easiest to resolve are first.
     # Easiest to resolve is (usually) defined by:
-    #   1) Is this dependency already activated?
-    #   2) How relaxed are the requirements?
-    #   3) Are there any conflicts for this dependency?
-    #   4) How many possibilities are there to satisfy this dependency?
+    # 1. Is this dependency already activated?
+    # 2. How relaxed are the requirements?
+    # 3. Are there any conflicts for this dependency?
+    # 4. How many possibilities are there to satisfy this dependency?
     #
     # @param [Array<Object>] dependencies
     # @param [DependencyGraph] activated the current dependency graph in the

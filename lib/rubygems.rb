@@ -178,6 +178,8 @@ module Gem
     write_binary_errors
   end.freeze
 
+  USE_BUNDLER_FOR_GEMDEPS = false # :nodoc:
+
   @@win_platform = nil
 
   @configuration = nil
@@ -1190,13 +1192,26 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
       raise ArgumentError, "Unable to find gem dependencies file at #{path}"
     end
 
-    ENV["BUNDLE_GEMFILE"] ||= File.expand_path(path)
-    require 'rubygems/user_interaction'
-    Gem::DefaultUserInteraction.use_ui(ui) do
-      require "bundler"
-      @gemdeps = Bundler.setup
-      Bundler.ui = nil
-      @gemdeps.requested_specs.map(&:to_spec).sort_by(&:name)
+    if USE_BUNDLER_FOR_GEMDEPS
+
+      ENV["BUNDLE_GEMFILE"] ||= File.expand_path(path)
+      require 'rubygems/user_interaction'
+      Gem::DefaultUserInteraction.use_ui(ui) do
+        require "bundler"
+        @gemdeps = Bundler.setup
+        Bundler.ui = nil
+        @gemdeps.requested_specs.map(&:to_spec).sort_by(&:name)
+      end
+
+    else
+
+      rs = Gem::RequestSet.new
+      @gemdeps = rs.load_gemdeps path
+
+      rs.resolve_current.map do |s|
+        s.full_spec.tap(&:activate)
+      end
+
     end
   rescue => e
     case e

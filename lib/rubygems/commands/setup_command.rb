@@ -533,9 +533,10 @@ abort "#{deprecation_message}"
   end
 
   def regenerate_binstubs
+    require "rubygems/commands/pristine_command"
+    say "Regenerating binstubs"
     command = Gem::Commands::PristineCommand.new
-    command.handle_options %w[--all --only-executables]
-    command.execute
+    command.invoke(*%w[--all --only-executables --silent])
   end
 
 end

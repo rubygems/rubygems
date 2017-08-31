@@ -4,14 +4,14 @@
 
 Security fixes:
 
-* Fix a DNS request hijacking vulnerability.
+* Fix a DNS request hijacking vulnerability. (CVE-2017-0902)
   Discovered by Jonathan Claudius, fix by Samuel Giddins.
-* Fix an ANSI escape sequence vulnerability.
+* Fix an ANSI escape sequence vulnerability. (CVE-2017-0899)
   Discovered by Yusuke Endoh, fix by Evan Phoenix.
-* Fix a DOS vulernerability in the `query` command.
+* Fix a DOS vulernerability in the `query` command. (CVE-2017-0900)
   Discovered by Yusuke Endoh, fix by Samuel Giddins.
-* Fix a vulnerability in the gem installer that allowed
-  a malicious gem to overwrite arbitrary files.
+* Fix a vulnerability in the gem installer that allowed a malicious gem
+  to overwrite arbitrary files. (CVE-2017-0901)
   Discovered by Yusuke Endoh, fix by Samuel Giddins.
 
 === 2.6.12 / 2017-04-30

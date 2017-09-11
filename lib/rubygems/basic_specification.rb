@@ -275,10 +275,10 @@ class Gem::BasicSpecification
   # for this spec.
 
   def lib_dirs_glob
-    dirs = if self.require_paths.size > 1 then
-             "{#{self.require_paths.join(',')}}"
+    dirs = if self.raw_require_paths.size > 1 then
+             "{#{self.raw_require_paths.join(',')}}"
            else
-             self.require_paths.first
+             self.raw_require_paths.first
            end
 
     "#{self.full_gem_path}/#{dirs}".dup.untaint

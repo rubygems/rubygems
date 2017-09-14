@@ -386,11 +386,11 @@ class TestGemRequire < Gem::TestCase
 
   def test_require_bundler
     $:.reject! {|lp| File.expand_path(lp).end_with?("bundler/lib") }
-    b1 = new_spec('bundler', '1', nil, "lib/bundler/setup.rb")
-    b2a = new_spec('bundler', '2.a', nil, "lib/bundler/setup.rb")
+    b1 = new_spec('bundler', '1', nil, "lib/bundler/a.rb")
+    b2a = new_spec('bundler', '2.a', nil, "lib/bundler/a.rb")
     install_specs b1, b2a
 
-    assert_require 'bundler/setup'
+    assert_require 'bundler/a'
     assert_equal %w[bundler-2.a], loaded_spec_names
     assert_empty unresolved_names
   end
@@ -398,8 +398,8 @@ class TestGemRequire < Gem::TestCase
   def test_require_bundler_missing_bundler_version
     $:.reject! {|lp| File.expand_path(lp).end_with?("bundler/lib") }
     Gem::BundlerVersionFinder.stub(:bundler_version_with_reason, ["55", "reason"]) do
-      b1 = new_spec('bundler', '1', nil, "lib/bundler/setup.rb")
-      b2a = new_spec('bundler', '2.a', nil, "lib/bundler/setup.rb")
+      b1 = new_spec('bundler', '1', nil, "lib/bundler/a.rb")
+      b2a = new_spec('bundler', '2.a', nil, "lib/bundler/a.rb")
       install_specs b1, b2a
 
       e = assert_raises Gem::MissingSpecVersionError do
@@ -412,11 +412,11 @@ class TestGemRequire < Gem::TestCase
   def test_require_bundler_with_bundler_version
     $:.reject! {|lp| File.expand_path(lp).end_with?("bundler/lib") }
     Gem::BundlerVersionFinder.stub(:bundler_version_with_reason, ["1", "reason"]) do
-      b1 = new_spec('bundler', '1', nil, "lib/bundler/setup.rb")
-      b2 = new_spec('bundler', '2', nil, "lib/bundler/setup.rb")
+      b1 = new_spec('bundler', '1', nil, "lib/bundler/a.rb")
+      b2 = new_spec('bundler', '2', nil, "lib/bundler/a.rb")
       install_specs b1, b2
 
-      assert_require 'bundler/setup'
+      assert_require 'bundler/a'
       assert_equal %w[bundler-1], loaded_spec_names
     end
   end

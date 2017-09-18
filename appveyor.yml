@@ -31,6 +31,10 @@ environment:
   - ruby_version: _trunk
     GIT:  C:/git/cmd/git.exe
 
+matrix:
+  allow_failures:
+    - ruby_version: _trunk
+
 install:
 - ps: >-
     git submodule update --init --recursive

@@ -19,9 +19,9 @@ See [UPGRADING](UPGRADING.rdoc) for more details and alternative instructions.
 
 If you don't have RubyGems installed, you can still do it manually:
 
-* Download from: https://rubygems.org/pages/download, unpack, and cd there
-* OR clone this repository and cd there (make sure to run `git submodule update -\-init`)
-* Install with: ruby setup.rb  # you may need admin/root privilege
+* Download from https://rubygems.org/pages/download, unpack, and `cd` there
+* OR clone this repository and `cd` there (make sure to run `git submodule update --init`)
+* Install with `ruby setup.rb` (you may need admin/root privilege)
 
 For more details and other options, see:
 

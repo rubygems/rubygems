@@ -8,7 +8,7 @@ Security fixes:
   Discovered by Jonathan Claudius, fix by Samuel Giddins.
 * Fix an ANSI escape sequence vulnerability. (CVE-2017-0899)
   Discovered by Yusuke Endoh, fix by Evan Phoenix.
-* Fix a DOS vulernerability in the `query` command. (CVE-2017-0900)
+* Fix a DOS vulnerability in the `query` command. (CVE-2017-0900)
   Discovered by Yusuke Endoh, fix by Samuel Giddins.
 * Fix a vulnerability in the gem installer that allowed a malicious gem
   to overwrite arbitrary files. (CVE-2017-0901)

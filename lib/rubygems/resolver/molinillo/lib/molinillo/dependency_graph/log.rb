@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rubygems/resolver/molinillo/lib/molinillo/dependency_graph/add_edge_no_circular'
 require 'rubygems/resolver/molinillo/lib/molinillo/dependency_graph/add_vertex'
 require 'rubygems/resolver/molinillo/lib/molinillo/dependency_graph/delete_edge'

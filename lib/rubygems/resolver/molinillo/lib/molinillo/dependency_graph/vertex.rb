@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Gem::Resolver::Molinillo
   class DependencyGraph
     # A vertex in a {DependencyGraph} that encapsulates a {#name} and a
@@ -53,7 +54,7 @@ module Gem::Resolver::Molinillo
       #   {#descendent?}
       def recursive_predecessors
         vertices = predecessors
-        vertices += vertices.map(&:recursive_predecessors).flatten(1)
+        vertices += Compatibility.flat_map(vertices, &:recursive_predecessors)
         vertices.uniq!
         vertices
       end
@@ -68,7 +69,7 @@ module Gem::Resolver::Molinillo
       #   {#ancestor?}
       def recursive_successors
         vertices = successors
-        vertices += vertices.map(&:recursive_successors).flatten(1)
+        vertices += Compatibility.flat_map(vertices, &:recursive_successors)
         vertices.uniq!
         vertices
       end

@@ -10,8 +10,8 @@ clone_depth: 10
 init:
   - mklink /d C:\git "C:\Program Files\Git"
   - if %ruby_version%==_trunk (
-      appveyor DownloadFile https://dl.bintray.com/msp-greg/ruby_windows/ruby_trunk.7z -FileName C:\ruby_trunk.7z &
-      7z x C:\ruby_trunk.7z -oC:\ruby_trunk & C:\ruby_trunk\trunk_install.cmd )
+      appveyor DownloadFile https://ci.appveyor.com/api/projects/MSP-Greg/ruby-loco/artifacts/ruby_trunk.7z -FileName C:\ruby_trunk.7z &
+      7z x C:\ruby_trunk.7z -oC:\ruby_trunk )
 
 environment:
   PATH: C:/ruby%ruby_version%/bin;C:/Program Files/7-Zip;C:/Program Files/AppVeyor/BuildAgent;C:/git/cmd;C:/Program Files (x86)/GNU/GnuPG/pub;C:/Windows/system32;C:\Windows;

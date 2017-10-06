@@ -95,6 +95,12 @@ class TestStubSpecification < Gem::TestCase
     assert_equal File.join(stub.full_gem_path, 'lib'), stub.lib_dirs_glob
   end
 
+  def test_lib_dirs_glob_with_extension
+    stub = stub_with_extension
+
+    assert_equal File.join(stub.full_gem_path, 'lib'), stub.lib_dirs_glob
+  end
+
   def test_matches_for_glob
     stub = stub_without_extension
     code_rb = File.join stub.gem_dir, 'lib', 'code.rb'

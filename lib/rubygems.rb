@@ -163,7 +163,7 @@ module Gem
   # these are defined in Ruby 1.8.7, hence the need for this convoluted setup.
 
   READ_BINARY_ERRORS = begin
-    read_binary_errors = [Errno::EACCES]
+    read_binary_errors = [Errno::EACCES, Errno::EROFS]
     read_binary_errors << Errno::ENOTSUP if Errno.const_defined?(:ENOTSUP)
     read_binary_errors
   end.freeze

@@ -1552,7 +1552,7 @@ class TestGem < Gem::TestCase
 
     path = File.join @tempdir, "gem.deps.rb"
     cmd = [Gem.ruby.dup.untaint, "-Csub1", "-I#{LIB_PATH.untaint}",
-           "-I#{BUNDLER_LIB_PATH.untaint}", "-rubygems"]
+           "-I#{BUNDLER_LIB_PATH.untaint}", "-rrubygems"]
     if RUBY_VERSION < '1.9'
       cmd << "-e 'puts Gem.loaded_specs.values.map(&:full_name).sort'"
       cmd = cmd.join(' ')

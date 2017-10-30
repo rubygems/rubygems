@@ -1,5 +1,168 @@
 # coding: UTF-8
 
+=== 2.7.0
+
+Major enhancements:
+
+* Update vendored bundler-1.15.4. Pull request #2001 by SHIBATA Hiroshi.
+* Use Bundler for Gem.use_gemdeps. Pull request #1674 by Samuel Giddins.
+* Add command `signin` to `gem` CLI. Pull request #1944 by Shiva Bhusal.
+* Add Logout feature to CLI. Pull request #1938 by Shiva Bhusal.
+
+Minor enhancements:
+
+* Added message to uninstall command for gem that is not installed. Pull
+  request #1979 by anant anil kolvankar.
+* Add --trust-policy option to unpack command. Pull request #1718 by
+  Nobuyoshi Nakada.
+* Show default gems for all platforms. Pull request #1685 by Konstantin
+  Shabanov.
+* Add Travis and Appveyor build status to README. Pull request #1918 by
+  Jun Aruga.
+* Remove warning `no email specified` when no email. Pull request #1675 by
+  Leigh McCulloch.
+* Improve -rubygems performance. Pull request #1801 by Samuel Giddins.
+* Improve the performance of Kernel#require. Pull request #1678 by Samuel
+  Giddins.
+* Improve user-facing messages by consistent casing of Ruby/RubyGems. Pull
+  request #1771 by John Labovitz.
+* Improve error message when Gem::RuntimeRequirementNotMetError is raised.
+  Pull request #1789 by Luis Sagastume.
+* Code Improvement: Inheritance corrected. Pull request #1942 by Shiva
+  Bhusal.
+* [Source] Autoload fileutils. Pull request #1906 by Samuel Giddins.
+* Use Hash#fetch instead of if/else in Gem::ConfigFile. Pull request #1824
+  by Daniel Berger.
+* Require digest when it is used. Pull request #2006 by Samuel Giddins.
+* Do not index the doc folder in the `update_manifest` task. Pull request
+  #2031 by Colby Swandale.
+* Don't use two postfix conditionals on one line. Pull request #2038 by
+  Ellen Marie Dash.
+* [SafeYAML] Avoid warning when Gem::Deprecate.skip is set. Pull request
+  #2034 by Samuel Giddins.
+* Update gem yank description. Pull request #2009 by David Radcliffe.
+* Fix formatting of installation instructions in README. Pull request
+  #2018 by Jordan Danford.
+* Do not use #quick_spec internally. Pull request #1733 by Jon Moss.
+* Switch from docs to guides reference. Pull request #1886 by Jonathan
+  Claudius.
+* Happier message when latest version is already installed. Pull request
+  #1956 by Jared Beck.
+* Update specification reference docs. Pull request #1960 by Grey Baker.
+* Allow Gem.finish_resolve to respect already-activated specs. Pull
+  request #1910 by Samuel Giddins.
+* Update cryptography for Gem::Security. Pull request #1691 by Sylvain
+  Daubert.
+* Don't output mkmf.log message if compilation didn't fail. Pull request
+  #1808 by Jeremy Evans.
+* Matches_for_glob - remove root path. Pull request #2010 by ahorek.
+* Gem::Resolver#search_for update for reliable searching/sorting. Pull
+  request #1993 by MSP-Greg.
+* Allow local installs with transitive prerelease requirements. Pull
+  request #1990 by Samuel Giddins.
+* Small style fixes to Installer Set. Pull request #1985 by Arthur
+  Marzinkovskiy.
+* Setup cmd: Avoid terminating option string w/ dot. Pull request #1825 by
+  Olle Jonsson.
+* Warn when no files are set. Pull request #1773 by Aidan Coyle.
+* Ensure `to_spec` falls back on prerelease specs. Pull request #1755 by
+  André Arko.
+* [Specification] Eval setting default attributes in #initialize. Pull
+  request #1739 by Samuel Giddins.
+* Sort ordering of sources is preserved. Pull request #1633 by Nathan
+  Ladd.
+* Retry with :prerelease when no suggestions are found. Pull request #1696
+  by Aditya Prakash.
+* [Rakefile] Run `git submodule update --init` in `rake newb`. Pull
+  request #1694 by Samuel Giddins.
+* [TestCase] Address comments around ui changes. Pull request #1677 by
+  Samuel Giddins.
+* Eagerly resolve in activate_bin_path. Pull request #1666 by Samuel
+  Giddins.
+* [Version] Make hash based upon canonical segments. Pull request #1659 by
+  Samuel Giddins.
+
+Compatibility changes:
+
+* ubygems.rb is unavailable on Ruby 2.5. Pull request #2028 #2027 #2029
+  by SHIBATA Hiroshi.
+* Deprecate Gem::InstallerTestCase#util_gem_bindir and
+  Gem::InstallerTestCase#util_gem_dir. Pull request #1729 by Jon Moss.
+* Deprecate passing options to Gem::GemRunner. Pull request #1730 by Jon
+  Moss.
+* Add deprecation for Gem#datadir. Pull request #1732 by Jon Moss.
+* Add deprecation warning for Gem::DependencyInstaller#gems_to_install.
+  Pull request #1731 by Jon Moss.
+* Update Code of Conduct to Contributor Covenant v1.4.0. Pull request
+  #1796 by Matej.
+* Add Ruby Together CTA, rearrange README a bit. Pull request #1775 by
+  Michael Bernstein.
+* Update Contributing.rdoc with new label usage. Pull request #1716 by
+  Lynn Cyrin.
+* Add --host sample to help. Pull request #1709 by Code Ahss.
+* Add a helpful suggestion when `gem install` fails due to required_rub….
+  Pull request #1697 by Samuel Giddins.
+* Add cert expiration length flag. Pull request #1725 by Luis Sagastume.
+* Add submodule instructions to manual install. Pull request #1727 by
+  Joseph Frazier.
+* Allow usage of multiple `--version` operators. Pull request #1546 by
+  James Wen.
+* Warn when requiring deprecated files. Pull request #1939 by Ellen Marie
+  Dash.
+
+Bug fixes:
+
+* Fix issue for MinGW / MSYS2 builds and testing. Pull request #1876 by
+  MSP-Greg.
+* Fixed broken links and overzealous URL encoding in gem server. Pull
+  request #1809 by Nicole Orchard.
+* Fix a typo. Pull request #1722 by Koichi ITO.
+* Fix error message Gem::Security::Policy. Pull request #1724 by Nobuyoshi
+  Nakada.
+* Fixing links markdown formatting in README. Pull request #1791 by Piotr
+  Kuczynski.
+* Fix failing Bundler 1.8.7 CI builds. Pull request #1820 by Samuel
+  Giddins.
+* Fixed test broken on ruby-head . Pull request #1842 by SHIBATA Hiroshi.
+* Fix typos with misspell. Pull request #1846 by SHIBATA Hiroshi.
+* Fix gem open to open highest version number rather than lowest. Pull
+  request #1877 by Tim Pope.
+* Fix test_self_find_files_with_gemfile to sort expected files. Pull
+  request #1878 by Kazuaki Matsuo.
+* Fix typos in CONTRIBUTING.rdoc. Pull request #1909 by Mark Sayson.
+* Fix some small documentation issues in installer. Pull request #1972 by
+  Colby Swandale.
+* Fix links in Policies document. Pull request #1964 by Alyssa Ross.
+* Fix NoMethodError on bundler/inline environment. Pull request #2042 by
+  SHIBATA Hiroshi.
+* Correct comments for Gem::InstallerTestCase#setup. Pull request #1741 by
+  MSP-Greg.
+* Use File.expand_path for certification and key location. Pull request
+  #1987 by SHIBATA Hiroshi.
+* Rescue EROFS. Pull request #1417 by Nobuyoshi Nakada.
+* Fix spelling of 'vulnerability'. Pull request #2022 by Philip Arndt.
+* Fix metadata link key names. Pull request #1896 by Aditya Prakash.
+* Fix a typo in uninstall_command.rb. Pull request #1934 by Yasuhiro
+  Horimoto.
+* Gem::Requirement.create treat arguments as variable-length. Pull request
+  #1830 by Toru YAGI.
+* Display an explanation when rake encounters an ontological problem. Pull
+  request #1982 by Wilson Bilkovich.
+* [Server] Handle gems with names ending in `-\d`. Pull request #1926 by
+  Samuel Giddins.
+* [InstallerSet] Avoid reloading _all_ local gems multiple times during
+  dependency resolution. Pull request #1925 by Samuel Giddins.
+* Modify the return value of Gem::Version.correct?. Pull request #1916 by
+  Tsukuru Tanimichi.
+* Validate metadata link keys. Pull request #1834 by Aditya Prakash.
+* Add changelog to metadata validation. Pull request #1885 by Aditya
+  Prakash.
+* Replace socket error text message. Pull request #1823 by Daniel Berger.
+* Raise error if the email is invalid when building cert. Pull request
+  #1779 by Luis Sagastume.
+* [StubSpecification] Don’t iterate through all loaded specs in #to_spec.
+  Pull request #1738 by Samuel Giddins.
+
 === 2.6.14 / 2017-10-09
 
 Security fixes:

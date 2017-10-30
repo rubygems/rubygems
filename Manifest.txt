@@ -387,6 +387,7 @@ lib/rubygems/resolver/specification.rb
 lib/rubygems/resolver/stats.rb
 lib/rubygems/resolver/vendor_set.rb
 lib/rubygems/resolver/vendor_specification.rb
+lib/rubygems/safe_yaml.rb
 lib/rubygems/security.rb
 lib/rubygems/security/policies.rb
 lib/rubygems/security/policy.rb

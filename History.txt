@@ -4,7 +4,7 @@
 
 Major enhancements:
 
-* Update vendored bundler-1.15.4. Pull request #2001 by SHIBATA Hiroshi.
+* Update vendored bundler-1.16.0. Pull request #2051 by Samuel Giddins.
 * Use Bundler for Gem.use_gemdeps. Pull request #1674 by Samuel Giddins.
 * Add command `signin` to `gem` CLI. Pull request #1944 by Shiva Bhusal.
 * Add Logout feature to CLI. Pull request #1938 by Shiva Bhusal.

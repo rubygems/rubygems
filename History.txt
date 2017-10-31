@@ -84,7 +84,8 @@ Minor enhancements:
 
 Compatibility changes:
 
-* ubygems.rb is unavailable on Ruby 2.5. Pull request #2028 #2027 #2029
+* Use `-rrubygems` instead of `-rubygems.rb`. Because ubygems.rb is
+  unavailable on Ruby 2.5. Pull request #2028 #2027 #2029
   by SHIBATA Hiroshi.
 * Deprecate Gem::InstallerTestCase#util_gem_bindir and
   Gem::InstallerTestCase#util_gem_dir. Pull request #1729 by Jon Moss.

@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-=== 2.7.0
+=== 2.7.0 (2017-11-02)
 
 Major enhancements:
 

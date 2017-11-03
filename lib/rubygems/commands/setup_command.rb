@@ -352,7 +352,7 @@ By default, this RubyGems will install gem as:
   def install_default_bundler_gem
     return unless Gem::USE_BUNDLER_FOR_GEMDEPS
 
-    return unless File.directory?(Gem::Specification.default_specifications_dir)
+    mkdir_p Gem::Specification.default_specifications_dir
 
     bundler_spec = Gem::Specification.load("bundler/bundler.gemspec")
     bundler_spec.files = Dir["bundler/{*.md,{lib,exe,man}/**/*}"]

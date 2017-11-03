@@ -95,7 +95,7 @@ Hoe::Package.instance_method(:install_gem).tap do |existing_install_gem|
   end
 end
 
-Hoe::DEFAULT_CONFIG["exclude"] = %r[#{Hoe::DEFAULT_CONFIG["exclude"]}|\./bundler/(?!lib|man|exe|[^/]+\.md)|doc/]ox
+Hoe::DEFAULT_CONFIG["exclude"] = %r[#{Hoe::DEFAULT_CONFIG["exclude"]}|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)|doc/]ox
 
 v = hoe.version
 

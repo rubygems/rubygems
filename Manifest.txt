@@ -23,6 +23,7 @@ bundler/CODE_OF_CONDUCT.md
 bundler/CONTRIBUTING.md
 bundler/LICENSE.md
 bundler/README.md
+bundler/bundler.gemspec
 bundler/exe/bundle
 bundler/exe/bundle_ruby
 bundler/exe/bundler

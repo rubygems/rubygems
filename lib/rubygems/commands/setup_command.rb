@@ -370,6 +370,8 @@ By default, this RubyGems will install gem as:
 
     mkdir_p bundler_spec.bin_dir
     bundler_spec.executables.each {|e| cp File.join("bundler", bundler_spec.bindir, e), File.join(bundler_spec.bin_dir, e) }
+
+    say "Bundler #{bundler_spec.version} installed"
   end
 
   def make_destination_dirs(install_destdir)

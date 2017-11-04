@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 2.7.1 (2017-11-03)
+
+Bug fixes:
+
+* Fix `gem update --system` with RubyGems 2.7+. Pull request #2054 by
+  Samuel Giddins.
+
 === 2.7.0 (2017-11-02)
 
 Major enhancements:

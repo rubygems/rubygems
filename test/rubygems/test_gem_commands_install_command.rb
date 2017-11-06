@@ -691,6 +691,29 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_match %r!Could not find a valid gem 'a' \(= 10.0\)!, @ui.error
   end
 
+  def test_show_dependent_gem
+    spec_fetcher do |fetcher|
+      fetcher.spec 'foo', 2, 'bar' => '0.5'
+    end
+
+    @cmd.options[:args] = ['foo']
+    @cmd.options[:suggest_alternate] = false
+
+    use_ui @ui do
+      e = assert_raises Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+
+      assert_equal 2, e.exit_code
+    end
+
+    expected = <<-EXPECTED
+ERROR:  Could not find a valid gem 'bar' (= 0.5) (required by 'foo' (>= 0)) in any repository
+    EXPECTED
+
+    assert_equal expected, @ui.error
+  end
+
   def test_show_errors_on_failure
     Gem.sources.replace ["http://not-there.nothing"]
 

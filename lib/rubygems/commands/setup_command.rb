@@ -294,6 +294,8 @@ By default, this RubyGems will install gem as:
       say "Installing #{tool}" if @verbose
 
       lib_files = rb_files_in path
+      lib_files.concat(template_files) if tool == 'Bundler'
+
       pem_files = pem_files_in path
 
       Dir.chdir path do
@@ -433,6 +435,12 @@ By default, this RubyGems will install gem as:
     end
   end
 
+  def template_files
+    Dir.chdir "bundler/lib" do
+      Dir[File.join('bundler', 'templates', '**', '*')].select{|f| !File.directory?(f)}
+    end
+  end
+
   def remove_old_bin_files(bin_dir)
     old_bin_files = {
       'gem_mirror' => 'gem mirror',
@@ -470,8 +478,10 @@ abort "#{deprecation_message}"
     lib_dirs[File.join(lib_dir, 'bundler')] = 'bundler/lib/bundler' if Gem::USE_BUNDLER_FOR_GEMDEPS
     lib_dirs.each do |old_lib_dir, new_lib_dir|
       lib_files = rb_files_in(new_lib_dir)
+      lib_files.concat(template_files) if new_lib_dir =~ /bundler/
 
       old_lib_files = rb_files_in(old_lib_dir)
+      old_lib_files.concat(template_files) if old_lib_dir =~ /bundler/
 
       to_remove = old_lib_files - lib_files
 

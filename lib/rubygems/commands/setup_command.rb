@@ -439,9 +439,19 @@ By default, this RubyGems will install gem as:
     end
   end
 
+  # for installation of bundler as default gems
   def template_files
     Dir.chdir "bundler/lib" do
-      Dir[File.join('bundler', 'templates', '**', '*')].select{|f| !File.directory?(f)}
+      Dir[File.join('bundler', 'templates', '**', '*')].select{|f| !File.directory?(f)} +
+        ["bundler/templates/newgem/.travis.yml.tt"] # Dir#[] don't match dotfile.
+    end
+  end
+
+  # for cleanup old bundler files
+  def template_files_in dir
+    Dir.chdir dir do
+      Dir[File.join('templates', '**', '*')].select{|f| !File.directory?(f)} +
+        ["templates/newgem/.travis.yml.tt"] # Dir#[] don't match dotfile.
     end
   end
 
@@ -482,10 +492,10 @@ abort "#{deprecation_message}"
     lib_dirs[File.join(lib_dir, 'bundler')] = 'bundler/lib/bundler' if Gem::USE_BUNDLER_FOR_GEMDEPS
     lib_dirs.each do |old_lib_dir, new_lib_dir|
       lib_files = rb_files_in(new_lib_dir)
-      lib_files.concat(template_files) if new_lib_dir =~ /bundler/
+      lib_files.concat(template_files_in(new_lib_dir)) if new_lib_dir =~ /bundler/
 
       old_lib_files = rb_files_in(old_lib_dir)
-      old_lib_files.concat(template_files) if old_lib_dir =~ /bundler/
+      old_lib_files.concat(template_files_in(old_lib_dir)) if old_lib_dir =~ /bundler/
 
       to_remove = old_lib_files - lib_files
 

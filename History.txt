@@ -1,5 +1,14 @@
 # coding: UTF-8
 
+=== 2.7.2
+
+Bug fixes:
+
+* Added template files to vendoerd bundler. Pull request #2065 by SHIBATA
+  Hiroshi.
+* Added workaround for non-git environment. Pull request #2066 by SHIBATA
+  Hiroshi.
+
 === 2.7.1 (2017-11-03)
 
 Bug fixes:

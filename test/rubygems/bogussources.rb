@@ -6,4 +6,4 @@
 #++
 
 require 'rubygems'
-Gem.use_paths("test/mock/gems")
+Gem.use_paths('test/mock/gems')

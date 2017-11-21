@@ -27,12 +27,12 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   end
 
   def test_execute_bad_spec
-    @gem.date = "2010-11-08"
+    @gem.date = '2010-11-08'
 
     gemspec_file = File.join(@tempdir, @gem.spec_name)
 
     File.open gemspec_file, 'w' do |gs|
-      gs.write @gem.to_ruby.sub(/11-08/, "11-8")
+      gs.write @gem.to_ruby.sub(/11-08/, '11-8')
     end
 
     @cmd.options[:args] = [gemspec_file]
@@ -45,7 +45,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
       end
     end
 
-    assert_equal "", out
+    assert_equal '', out
     assert_match(/invalid date format in specification/, err)
 
     assert_equal '', @ui.output
@@ -67,7 +67,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   def test_can_find_gemspecs_without_dot_gemspec
     gemspec_file = File.join(@tempdir, @gem.spec_name)
 
-    File.open gemspec_file + ".gemspec", 'w' do |gs|
+    File.open gemspec_file + '.gemspec', 'w' do |gs|
       gs.write @gem.to_ruby
     end
 
@@ -84,14 +84,14 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     end
 
     output = @ui.output.split "\n"
-    assert_equal "  Successfully built RubyGem", output.shift
-    assert_equal "  Name: some_gem", output.shift
-    assert_equal "  Version: 2", output.shift
-    assert_equal "  File: some_gem-2.gem", output.shift
+    assert_equal '  Successfully built RubyGem', output.shift
+    assert_equal '  Name: some_gem', output.shift
+    assert_equal '  Version: 2', output.shift
+    assert_equal '  File: some_gem-2.gem', output.shift
     assert_equal [], output
 
     if check_licenses
-      assert_match "WARNING:  licenses is empty", @ui.error
+      assert_match 'WARNING:  licenses is empty', @ui.error
     end
 
     gem_file = File.join @tempdir, File.basename(gem.cache_file)
@@ -99,8 +99,8 @@ class TestGemCommandsBuildCommand < Gem::TestCase
 
     spec = Gem::Package.new(gem_file).spec
 
-    assert_equal "some_gem", spec.name
-    assert_equal "this is a summary", spec.summary
+    assert_equal 'some_gem', spec.name
+    assert_equal 'this is a summary', spec.summary
   end
 
   def test_execute_force

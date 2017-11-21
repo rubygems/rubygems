@@ -52,7 +52,7 @@ class TestGemCommandManager < Gem::TestCase
 
   def test_run_interrupt
     old_load_path = $:.dup
-    $: << File.expand_path("test/rubygems", @@project_dir)
+    $: << File.expand_path('test/rubygems', @@project_dir)
     Gem.load_env_plugins
 
     @command_manager.register_command :interrupt
@@ -71,7 +71,7 @@ class TestGemCommandManager < Gem::TestCase
 
   def test_run_crash_command
     old_load_path = $:.dup
-    $: << File.expand_path("test/rubygems", @@project_dir)
+    $: << File.expand_path('test/rubygems', @@project_dir)
 
     @command_manager.register_command :crash
     use_ui @ui do
@@ -80,7 +80,7 @@ class TestGemCommandManager < Gem::TestCase
       end
       assert_equal '', ui.output
       err = ui.error.split("\n").first
-      assert_equal "ERROR:  Loading command: crash (RuntimeError)", err
+      assert_equal 'ERROR:  Loading command: crash (RuntimeError)', err
     end
   ensure
     $:.replace old_load_path
@@ -164,7 +164,7 @@ class TestGemCommandManager < Gem::TestCase
     #check settings
     check_options = nil
     @command_manager.process_args %w[uninstall foobar --version 3.0]
-    assert_equal "foobar", check_options[:args].first
+    assert_equal 'foobar', check_options[:args].first
     assert_equal Gem::Requirement.new('3.0'), check_options[:version]
   end
 

@@ -48,10 +48,10 @@ class TestDeprecate < Gem::TestCase
     extend Gem::Deprecate
     attr_accessor :message
     def foo
-      @message = "foo"
+      @message = 'foo'
     end
     def bar
-      @message = "bar"
+      @message = 'bar'
     end
     deprecate :foo, :bar, 2099, 3
   end
@@ -60,7 +60,7 @@ class TestDeprecate < Gem::TestCase
     capture_io do
       thing = Thing.new
       thing.foo
-      assert_equal "foo", thing.message
+      assert_equal 'foo', thing.message
     end
   end
 
@@ -70,7 +70,7 @@ class TestDeprecate < Gem::TestCase
       thing.foo
     end
 
-    assert_equal "", out
+    assert_equal '', out
     assert_match(/Thing#foo is deprecated; use bar instead\./, err)
     assert_match(/on or after 2099-03-01/, err)
   end

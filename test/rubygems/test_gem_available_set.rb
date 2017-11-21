@@ -47,7 +47,7 @@ class TestGemAvailableSet < Gem::TestCase
 
   def test_match_platform
     a1, _ = util_gem 'a', '1' do |g|
-      g.platform = "something-weird-yep"
+      g.platform = 'something-weird-yep'
     end
 
     a1c, _ = util_gem 'a', '2' do |g|
@@ -88,7 +88,7 @@ class TestGemAvailableSet < Gem::TestCase
     set = Gem::AvailableSet.new
     set.add a1, @source
 
-    dep = Gem::Dependency.new "a", ">= 0"
+    dep = Gem::Dependency.new 'a', '>= 0'
 
     set.remove_installed! dep
 

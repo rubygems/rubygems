@@ -10,4 +10,4 @@ if defined? OpenSSL then
       old_create_ext(*args)
     end
   end
-end if RUBY_VERSION < "1.9"
+end if RUBY_VERSION < '1.9'

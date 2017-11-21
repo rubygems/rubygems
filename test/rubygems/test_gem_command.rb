@@ -50,9 +50,9 @@ class TestGemCommand < Gem::TestCase
   end
 
   def test_basic_accessors
-    assert_equal "doit", @cmd.command
-    assert_equal "gem doit", @cmd.program_name
-    assert_equal "summary", @cmd.summary
+    assert_equal 'doit', @cmd.command
+    assert_equal 'gem doit', @cmd.program_name
+    assert_equal 'summary', @cmd.summary
   end
 
   def test_common_option_in_class
@@ -67,7 +67,7 @@ class TestGemCommand < Gem::TestCase
     @cmd.defaults = { :help => true }
 
     @cmd.when_invoked do |options|
-      assert options[:help], "Help options should default true"
+      assert options[:help], 'Help options should default true'
     end
 
     use_ui @ui do
@@ -104,20 +104,20 @@ class TestGemCommand < Gem::TestCase
     @cmd.when_invoked do true end
 
     use_ui @ui do
-      @cmd.invoke "-x"
+      @cmd.invoke '-x'
     end
 
-    assert @xopt, "Should have done xopt"
+    assert @xopt, 'Should have done xopt'
   end
 
   def test_invoke_with_build_args
     @cmd.when_invoked { true }
 
     use_ui @ui do
-      @cmd.invoke_with_build_args ["-x"], ["--awesome=true"]
+      @cmd.invoke_with_build_args ['-x'], ['--awesome=true']
     end
 
-    assert_equal ["--awesome=true"], @cmd.options[:build_args]
+    assert_equal ['--awesome=true'], @cmd.options[:build_args]
   end
 
   # Returning false from the command handler invokes the usage output.
@@ -190,8 +190,8 @@ class TestGemCommand < Gem::TestCase
   end
 
   def test_show_lookup_failure_suggestions_local
-    correct    = "non_existent_with_hint"
-    misspelled = "nonexistent_with_hint"
+    correct    = 'non_existent_with_hint'
+    misspelled = 'nonexistent_with_hint'
 
     spec_fetcher do |fetcher|
       fetcher.spec correct, 2
@@ -225,8 +225,8 @@ ERROR:  Could not find a valid gem 'other' (>= 0) in any repository
   end
 
   def test_show_lookup_failure_suggestions_remote
-    correct    = "non_existent_with_hint"
-    misspelled = "nonexistent_with_hint"
+    correct    = 'non_existent_with_hint'
+    misspelled = 'nonexistent_with_hint'
 
     spec_fetcher do |fetcher|
       fetcher.spec correct, 2

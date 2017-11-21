@@ -17,7 +17,7 @@ class Gem::Commands::InterruptCommand < Gem::Command
   end
 
   def execute
-    raise Interrupt, "Interrupt exception"
+    raise Interrupt, 'Interrupt exception'
   end
 
 end

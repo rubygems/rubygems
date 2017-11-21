@@ -3,8 +3,8 @@
 require 'rubygems'
 require 'rubygems/package_task'
 
-if ENV['YAML'] == "syck"
-  ENV['TEST_SYCK'] = "1"
+if ENV['YAML'] == 'syck'
+  ENV['TEST_SYCK'] = '1'
 end
 
 begin
@@ -29,7 +29,7 @@ $ [sudo] gem install hoe
   ERR
 end
 
-Hoe::RUBY_FLAGS << " --disable-gems" if RUBY_VERSION > "1.9"
+Hoe::RUBY_FLAGS << ' --disable-gems' if RUBY_VERSION > '1.9'
 
 Hoe.plugin :git
 Hoe.plugin :travis
@@ -76,10 +76,10 @@ hoe = Hoe.spec 'rubygems-update' do
   ]
 
   spec_extras['rdoc_options'] = proc do |rdoc_options|
-    rdoc_options << "--title=RubyGems Update Documentation"
+    rdoc_options << '--title=RubyGems Update Documentation'
   end
 
-  self.rsync_args += " --no-p -O"
+  self.rsync_args += ' --no-p -O'
 
   self.version = File.open('lib/rubygems.rb', 'r:utf-8') do |f|
     f.read[/VERSION\s+=\s+(['"])(#{Gem::Version::VERSION_PATTERN})\1/, 2]
@@ -95,14 +95,14 @@ Hoe::Package.instance_method(:install_gem).tap do |existing_install_gem|
   end
 end
 
-Hoe::DEFAULT_CONFIG["exclude"] = %r[#{Hoe::DEFAULT_CONFIG["exclude"]}|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)|doc/]ox
+Hoe::DEFAULT_CONFIG['exclude'] = %r[#{Hoe::DEFAULT_CONFIG['exclude']}|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)|doc/]ox
 
 v = hoe.version
 
 hoe.testlib      = :minitest
-hoe.test_prelude = <<-RUBY.gsub("\n", ";")
+hoe.test_prelude = <<-RUBY.gsub("\n", ';')
   gem "minitest", "~> 4.0"
-  $:.unshift #{File.expand_path("../bundler/lib", __FILE__).dump}
+  $:.unshift #{File.expand_path('../bundler/lib', __FILE__).dump}
 RUBY
 
 Rake::Task['docs'].clear
@@ -141,25 +141,25 @@ class Hoe
     end
   end
 end
-task(:newb).prerequisites.unshift "bundler:checkout"
+task(:newb).prerequisites.unshift 'bundler:checkout'
 
-desc "Install gems needed to run the tests"
+desc 'Install gems needed to run the tests'
 task :install_test_deps => :clean_env do
   sh "gem install minitest -v '~> 4.0'"
 end
 
 begin
-  require "automatiek"
+  require 'automatiek'
 
-  Automatiek::RakeTask.new("molinillo") do |lib|
+  Automatiek::RakeTask.new('molinillo') do |lib|
     lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
-    lib.namespace = "Molinillo"
-    lib.prefix = "Gem::Resolver"
-    lib.vendor_lib = "lib/rubygems/resolver/molinillo"
+    lib.namespace = 'Molinillo'
+    lib.prefix = 'Gem::Resolver'
+    lib.vendor_lib = 'lib/rubygems/resolver/molinillo'
   end
 rescue LoadError
   namespace :vendor do
-    task(:molinillo) { abort "Install the automatiek gem to be able to vendor gems." }
+    task(:molinillo) { abort 'Install the automatiek gem to be able to vendor gems.' }
   end
 end
 
@@ -211,12 +211,12 @@ task :package => %W[
        pkg/rubygems-#{v}.zip
      ]
 
-desc "Upload release to S3"
+desc 'Upload release to S3'
 task :upload_to_s3 do
   sh "s3cmd put -P pkg/rubygems-#{v}.zip pkg/rubygems-#{v}.tgz s3://oregon.production.s3.rubygems.org/rubygems/"
 end
 
-desc "Upload release to rubygems.org"
+desc 'Upload release to rubygems.org'
 task :upload => %w[upload_to_s3]
 
 on_master = `git branch --list master`.strip == '* master'
@@ -463,27 +463,27 @@ end
 rubinius_dir = ENV['RUBINIUS_PATH'] || '../git.rubini.us/code'
 ruby_dir     = ENV['RUBY_PATH']     || '../../svn/ruby/trunk'
 
-desc "Updates Ruby HEAD with the currently checked-out copy of RubyGems."
+desc 'Updates Ruby HEAD with the currently checked-out copy of RubyGems.'
 task :update_ruby do
   rsync_with ruby_dir
 end
 
-desc "Updates Rubinius HEAD with the currently checked-out copy of RubyGems."
+desc 'Updates Rubinius HEAD with the currently checked-out copy of RubyGems.'
 task :update_rubinius do
   rsync_with rubinius_dir
 end
 
-desc "Diffs Ruby HEAD with the currently checked-out copy of RubyGems."
+desc 'Diffs Ruby HEAD with the currently checked-out copy of RubyGems.'
 task :diff_ruby do
   diff_with ruby_dir
 end
 
-desc "Diffs Rubinius HEAD with the currently checked-out copy of RubyGems."
+desc 'Diffs Rubinius HEAD with the currently checked-out copy of RubyGems.'
 task :diff_rubinius do
   diff_with rubinius_dir
 end
 
-desc "Cleanup trailing whitespace"
+desc 'Cleanup trailing whitespace'
 task :whitespace do
   system 'find . -not \( -name .svn -prune -o -name .git -prune \) -type f -print0 | xargs -0 sed -i "" -E "s/[[:space:]]*$//"'
 end
@@ -492,8 +492,8 @@ desc "Update the manifest to reflect what's on disk"
 task :update_manifest do
   files = []
   require 'find'
-  exclude = Hoe::DEFAULT_CONFIG["exclude"]
-  Find.find(".") do |path|
+  exclude = Hoe::DEFAULT_CONFIG['exclude']
+  Find.find('.') do |path|
     next unless File.file?(path)
     next if path =~ exclude
     files << path[2..-1]
@@ -503,6 +503,6 @@ end
 
 namespace :bundler do
   task :checkout do
-    sh "git submodule update --init"
+    sh 'git submodule update --init'
   end
 end

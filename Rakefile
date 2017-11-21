@@ -144,7 +144,7 @@ end
 task(:newb).prerequisites.unshift "bundler:checkout"
 
 desc "Install gems needed to run the tests"
-task :install_test_deps => :clean_env do
+task :install_test_deps => :clean do
   sh "gem install minitest -v '~> 4.0'"
 end
 

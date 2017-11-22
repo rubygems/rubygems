@@ -379,6 +379,15 @@ By default, this RubyGems will install gem as:
     mkdir_p bundler_spec.bin_dir
     bundler_spec.executables.each {|e| cp File.join("bundler", bundler_spec.bindir, e), File.join(bundler_spec.bin_dir, e) }
 
+    if Gem.win_platform?
+      require 'rubygems/installer'
+
+      installer = Gem::Installer.for_spec bundler_spec
+      bundler_spec.executables.each do |e|
+        installer.generate_windows_script e, bundler_spec.bin_dir
+      end
+    end
+
     say "Bundler #{bundler_spec.version} installed"
   end
 

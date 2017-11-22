@@ -27,6 +27,28 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     open 'bundler/exe/bundle',        'w' do |io| io.puts '# bundle'       end
     open 'bundler/lib/bundler.rb',    'w' do |io| io.puts '# bundler.rb'   end
     open 'bundler/lib/bundler/b.rb',  'w' do |io| io.puts '# b.rb'         end
+
+    FileUtils.mkdir_p 'default/gems'
+
+    gemspec = Gem::Specification.new
+    gemspec.name = "bundler"
+    gemspec.version = "1.16.0"
+
+    open 'bundler/bundler.gemspec',   'w' do |io|
+      io.puts gemspec.to_ruby
+    end
+
+    open(File.join(Gem::Specification.default_specifications_dir, "bundler-1.15.4.gemspec"), 'w') do |io|
+      io.puts '# bundler'
+    end
+
+    FileUtils.mkdir_p File.join(Gem.default_dir, "specification")
+    open(File.join(Gem.default_dir, "specification", "bundler-audit-1.0.0.gemspec"), 'w') do |io|
+      io.puts '# bundler-audit'
+    end
+
+    FileUtils.mkdir_p 'default/gems/bundler-1.15.4'
+    FileUtils.mkdir_p 'default/gems/bundler-audit-1.0.0'
   end
 
   def test_pem_files_in
@@ -54,6 +76,23 @@ class TestGemCommandsSetupCommand < Gem::TestCase
       end
     end
   end
+
+  def test_install_default_bundler_gem
+    @cmd.extend FileUtils
+
+    @cmd.install_default_bundler_gem
+
+    default_dir = Gem::Specification.default_specifications_dir
+
+    refute_path_exists File.join(default_dir, "bundler-1.15.4.gemspec")
+    refute_path_exists 'default/gems/bundler-1.15.4'
+
+    assert_path_exists File.join(default_dir, "bundler-1.16.0.gemspec")
+    assert_path_exists 'default/gems/bundler-1.16.0'
+
+    assert_path_exists File.join(Gem.default_dir, "specification", "bundler-audit-1.0.0.gemspec")
+    assert_path_exists 'default/gems/bundler-audit-1.0.0'
+  end if Gem::USE_BUNDLER_FOR_GEMDEPS
 
   def test_remove_old_lib_files
     lib                   = File.join @install_dir, 'lib'

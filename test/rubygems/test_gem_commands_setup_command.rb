@@ -44,8 +44,8 @@ class TestGemCommandsSetupCommand < Gem::TestCase
       io.puts '# bundler'
     end
 
-    FileUtils.mkdir_p File.join(Gem.default_dir, "specification")
-    open(File.join(Gem.default_dir, "specification", "bundler-audit-1.0.0.gemspec"), 'w') do |io|
+    FileUtils.mkdir_p File.join(Gem.default_dir, "specifications")
+    open(File.join(Gem.default_dir, "specifications", "bundler-audit-1.0.0.gemspec"), 'w') do |io|
       io.puts '# bundler-audit'
     end
 
@@ -102,7 +102,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     assert_path_exists File.join(default_dir, "bundler-1.16.0.gemspec")
     assert_path_exists 'default/gems/bundler-1.16.0'
 
-    assert_path_exists File.join(Gem.default_dir, "specification", "bundler-audit-1.0.0.gemspec")
+    assert_path_exists File.join(Gem.default_dir, "specifications", "bundler-audit-1.0.0.gemspec")
     assert_path_exists 'default/gems/bundler-audit-1.0.0'
   end if Gem::USE_BUNDLER_FOR_GEMDEPS
 

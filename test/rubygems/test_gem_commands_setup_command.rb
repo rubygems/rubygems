@@ -33,6 +33,8 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     gemspec = Gem::Specification.new
     gemspec.name = "bundler"
     gemspec.version = "1.16.0"
+    gemspec.bindir = "exe"
+    gemspec.executables = ["bundle"]
 
     open 'bundler/bundler.gemspec',   'w' do |io|
       io.puts gemspec.to_ruby
@@ -93,6 +95,18 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     assert_path_exists File.join(Gem.default_dir, "specification", "bundler-audit-1.0.0.gemspec")
     assert_path_exists 'default/gems/bundler-audit-1.0.0'
   end if Gem::USE_BUNDLER_FOR_GEMDEPS
+
+  def test_install_default_bundler_gem_windows
+    @cmd.extend FileUtils
+
+    @cmd.install_default_bundler_gem
+
+    spec = Gem::Specification.load("bundler/bundler.gemspec")
+
+    spec.executables.each do |e|
+      assert_path_exists File.join(spec.bin_dir, "#{e}.bat")
+    end
+  end if Gem::USE_BUNDLER_FOR_GEMDEPS && Gem.win_platform?
 
   def test_remove_old_lib_files
     lib                   = File.join @install_dir, 'lib'

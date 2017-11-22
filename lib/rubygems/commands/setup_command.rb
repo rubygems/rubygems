@@ -357,7 +357,7 @@ By default, this RubyGems will install gem as:
     mkdir_p Gem::Specification.default_specifications_dir
 
     # Workaround for non-git environment.
-    gemspec = File.binread('bundler/bundler.gemspec').gsub(/`git ls-files -z`/, "''")
+    gemspec = File.open('bundler/bundler.gemspec', 'rb'){|f| f.read.gsub(/`git ls-files -z`/, "''") }
     File.open('bundler/bundler.gemspec', 'w'){|f| f.write gemspec }
 
     bundler_spec = Gem::Specification.load("bundler/bundler.gemspec")

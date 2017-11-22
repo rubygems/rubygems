@@ -384,7 +384,7 @@ By default, this RubyGems will install gem as:
 
       installer = Gem::Installer.for_spec bundler_spec
       bundler_spec.executables.each do |e|
-        instaler.generate_windows_script e, bundler_spec.bin_dir
+        installer.generate_windows_script e, bundler_spec.bin_dir
       end
     end
 

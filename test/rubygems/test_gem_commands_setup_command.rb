@@ -53,6 +53,30 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     FileUtils.mkdir_p 'default/gems/bundler-audit-1.0.0'
   end
 
+  def gem_install name
+    gem = util_spec name do |s|
+      s.executables = [name]
+      s.files = %W[bin/#{name}]
+    end
+    write_file File.join @tempdir, 'bin', name do |f|
+      f.puts '#!/usr/bin/ruby'
+    end
+    install_gem gem
+    File.join @gemhome, 'bin', name
+  end
+
+  def test_execute_regenerate_binstubs
+    gem_bin_path = gem_install 'a'
+    write_file gem_bin_path do |io|
+      io.puts 'I changed it!'
+    end
+
+    @cmd.options[:document] = []
+    @cmd.execute
+
+    assert_match %r{\A#!}, File.read(gem_bin_path)
+  end
+
   def test_pem_files_in
     assert_equal %w[rubygems/ssl_certs/rubygems.org/foo.pem],
                  @cmd.pem_files_in('lib').sort

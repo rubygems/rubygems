@@ -77,6 +77,19 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     assert_match %r{\A#!}, File.read(gem_bin_path)
   end
 
+  def test_execute_no_regenerate_binstubs
+    gem_bin_path = gem_install 'a'
+    write_file gem_bin_path do |io|
+      io.puts 'I changed it!'
+    end
+
+    @cmd.options[:document] = []
+    @cmd.options[:regenerate_binstubs] = false
+    @cmd.execute
+
+    assert_equal "I changed it!\n", File.read(gem_bin_path)
+  end
+
   def test_pem_files_in
     assert_equal %w[rubygems/ssl_certs/rubygems.org/foo.pem],
                  @cmd.pem_files_in('lib').sort

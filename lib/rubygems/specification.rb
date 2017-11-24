@@ -2774,81 +2774,13 @@ class Gem::Specification < Gem::BasicSpecification
 
     validate_metadata
 
-    licenses.each { |license|
-      if license.length > 64
-        raise Gem::InvalidSpecificationException,
-          "each license must be 64 characters or less"
-      end
-
-      if !Gem::Licenses.match?(license)
-        suggestions = Gem::Licenses.suggestions(license)
-        message = <<-warning
-license value '#{license}' is invalid.  Use a license identifier from
-http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
-        warning
-        message += "Did you mean #{suggestions.map { |s| "'#{s}'"}.join(', ')}?\n" unless suggestions.nil?
-        warning(message)
-      end
-    }
-
-    warning <<-warning if licenses.empty?
-licenses is empty, but is recommended.  Use a license identifier from
-http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
-    warning
+    validate_licenses
 
     validate_permissions
 
-    # reject lazy developers:
+    validate_lazy_metadata
 
-    lazy = '"FIxxxXME" or "TOxxxDO"'.gsub(/xxx/, '')
-
-    unless authors.grep(/FI XME|TO DO/x).empty? then
-      raise Gem::InvalidSpecificationException, "#{lazy} is not an author"
-    end
-
-    unless Array(email).grep(/FI XME|TO DO/x).empty? then
-      raise Gem::InvalidSpecificationException, "#{lazy} is not an email"
-    end
-
-    if description =~ /FI XME|TO DO/x then
-      raise Gem::InvalidSpecificationException, "#{lazy} is not a description"
-    end
-
-    if summary =~ /FI XME|TO DO/x then
-      raise Gem::InvalidSpecificationException, "#{lazy} is not a summary"
-    end
-
-    if homepage and not homepage.empty? and
-       homepage !~ /\A[a-z][a-z\d+.-]*:/i then
-      raise Gem::InvalidSpecificationException,
-            "\"#{homepage}\" is not a URI"
-    end
-
-    # Warnings
-
-    %w[author homepage summary files].each do |attribute|
-      value = self.send attribute
-      warning "no #{attribute} specified" if value.nil? or value.empty?
-    end
-
-    if description == summary then
-      warning 'description and summary are identical'
-    end
-
-    # TODO: raise at some given date
-    warning "deprecated autorequire specified" if autorequire
-
-    executables.each do |executable|
-      executable_path = File.join(bindir, executable)
-      shebang = File.read(executable_path, 2) == '#!'
-
-      warning "#{executable_path} is missing #! line" unless shebang
-    end
-
-    files.each do |file|
-      next unless File.symlink?(file)
-      warning "#{file} is a symlink, which is not supported on all platforms"
-    end
+    validate_values
 
     validate_dependencies
 
@@ -3064,6 +2996,85 @@ open-ended dependency on #{dep} is not recommended
   end
 
   extend Gem::Deprecate
+
+  private
+
+  def validate_values
+    %w[author homepage summary files].each do |attribute|
+      value = self.send attribute
+      warning("no #{attribute} specified") if value.nil? || value.empty?
+    end
+
+    if description == summary
+      warning "description and summary are identical"
+    end
+
+    # TODO: raise at some given date
+    warning "deprecated autorequire specified" if autorequire
+
+    executables.each do |executable|
+      executable_path = File.join(bindir, executable)
+      shebang = File.read(executable_path, 2) == '#!'
+
+      warning "#{executable_path} is missing #! line" unless shebang
+    end
+
+    files.each do |file|
+      next unless File.symlink?(file)
+      warning "#{file} is a symlink, which is not supported on all platforms"
+    end
+  end
+
+  def validate_licenses
+    licenses.each { |license|
+      if license.length > 64
+        raise Gem::InvalidSpecificationException,
+              "each license must be 64 characters or less"
+      end
+
+      if !Gem::Licenses.match?(license)
+        suggestions = Gem::Licenses.suggestions(license)
+        message = <<-warning
+license value '#{license}' is invalid.  Use a license identifier from
+http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
+        warning
+        message += "Did you mean #{suggestions.map { |s| "'#{s}'"}.join(', ')}?\n" unless suggestions.nil?
+        warning(message)
+      end
+    }
+
+    warning <<-warning if licenses.empty?
+licenses is empty, but is recommended.  Use a license identifier from
+http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
+    warning
+  end
+
+  def validate_lazy_metadata
+    lazy = '"FIxxxXME" or "TOxxxDO"'.gsub(/xxx/, '')
+    lazy_pattern = /FI XME|TO DO/x
+
+    unless authors.grep(lazy_pattern).empty?
+      raise Gem::InvalidSpecificationException, "#{lazy} is not an author"
+    end
+
+    unless Array(email).grep(lazy_pattern).empty?
+      raise Gem::InvalidSpecificationException, "#{lazy} is not an email"
+    end
+
+    if description =~ lazy_pattern
+      raise Gem::InvalidSpecificationException, "#{lazy} is not a description"
+    end
+
+    if summary =~ lazy_pattern
+      raise Gem::InvalidSpecificationException, "#{lazy} is not a summary"
+    end
+
+    if homepage and not homepage.empty? and
+        homepage !~ /\A[a-z][a-z\d+.-]*:/i
+      raise Gem::InvalidSpecificationException,
+            "\"#{homepage}\" is not a URI"
+    end
+  end
 
   # TODO:
   # deprecate :has_rdoc,            :none,       2011, 10

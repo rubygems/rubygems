@@ -2774,27 +2774,11 @@ class Gem::Specification < Gem::BasicSpecification
 
     validate_metadata
 
-    licenses.each { |license|
-      if license.length > 64
-        raise Gem::InvalidSpecificationException,
-          "each license must be 64 characters or less"
-      end
-
-      if !Gem::Licenses.match?(license)
-        suggestions = Gem::Licenses.suggestions(license)
-        message = <<-warning
-license value '#{license}' is invalid.  Use a license identifier from
-http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
-        warning
-        message += "Did you mean #{suggestions.map { |s| "'#{s}'"}.join(', ')}?\n" unless suggestions.nil?
-        warning(message)
-      end
+    licenses.reject { |l| Gem::Licenses.valid?(l) }.each { |invalid_license|
+      warning(Gem::Licenses.warning_for(invalid_license))
     }
 
-    warning <<-warning if licenses.empty?
-licenses is empty, but is recommended.  Use a license identifier from
-http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
-    warning
+    warning(Gem::Licenses.warning_about_empty_licenses) if licenses.empty?
 
     validate_permissions
 

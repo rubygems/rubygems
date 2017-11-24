@@ -43,6 +43,149 @@ class Gem::SpecificationPolicy < SimpleDelegator
     true
   end
 
+  def validate_metadata
+    unless Hash === metadata
+      raise Gem::InvalidSpecificationException,
+            'metadata must be a hash'
+    end
+
+    url_validation_regex = %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}
+    link_keys = %w[
+      bug_tracker_uri
+      changelog_uri
+      documentation_uri
+      homepage_uri
+      mailing_list_uri
+      source_code_uri
+      wiki_uri
+    ]
+
+    metadata.each do|key, value|
+      if !key.kind_of?(String)
+        raise Gem::InvalidSpecificationException,
+              "metadata keys must be a String"
+      end
+
+      if key.size > 128
+        raise Gem::InvalidSpecificationException,
+              "metadata key too large (#{key.size} > 128)"
+      end
+
+      if !value.kind_of?(String)
+        raise Gem::InvalidSpecificationException,
+              "metadata values must be a String"
+      end
+
+      if value.size > 1024
+        raise Gem::InvalidSpecificationException,
+              "metadata value too large (#{value.size} > 1024)"
+      end
+
+      if link_keys.include? key
+        if value !~ url_validation_regex
+          raise Gem::InvalidSpecificationException,
+                "metadata['#{key}'] has invalid link: #{value.inspect}"
+        end
+      end
+    end
+  end
+
+  ##
+  # Checks that dependencies use requirements as we recommend.  Warnings are
+  # issued when dependencies are open-ended or overly strict for semantic
+  # versioning.
+  def validate_dependencies # :nodoc:
+    # NOTE: see REFACTOR note in Gem::Dependency about types - this might be brittle
+    seen = Gem::Dependency::TYPES.inject({}) { |types, type| types.merge({ type => {}}) }
+
+    error_messages = []
+    warning_messages = []
+    dependencies.each do |dep|
+      if prev = seen[dep.type][dep.name] then
+        error_messages << <<-MESSAGE
+duplicate dependency on #{dep}, (#{prev.requirement}) use:
+    add_#{dep.type}_dependency '#{dep.name}', '#{dep.requirement}', '#{prev.requirement}'
+        MESSAGE
+      end
+
+      seen[dep.type][dep.name] = dep
+
+      prerelease_dep = dep.requirements_list.any? do |req|
+        Gem::Requirement.new(req).prerelease?
+      end
+
+      warning_messages << "prerelease dependency on #{dep} is not recommended" if
+          prerelease_dep && !version.prerelease?
+
+      overly_strict = dep.requirement.requirements.length == 1 &&
+          dep.requirement.requirements.any? do |op, version|
+            op == '~>' and
+                not version.prerelease? and
+                version.segments.length > 2 and
+                version.segments.first != 0
+          end
+
+      if overly_strict then
+        _, dep_version = dep.requirement.requirements.first
+
+        base = dep_version.segments.first 2
+
+        warning_messages << <<-WARNING
+pessimistic dependency on #{dep} may be overly strict
+  if #{dep.name} is semantically versioned, use:
+    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}', '>= #{dep_version}'
+        WARNING
+      end
+
+      open_ended = dep.requirement.requirements.all? do |op, version|
+        not version.prerelease? and (op == '>' or op == '>=')
+      end
+
+      if open_ended then
+        op, dep_version = dep.requirement.requirements.first
+
+        base = dep_version.segments.first 2
+
+        bugfix = if op == '>' then
+                   ", '> #{dep_version}'"
+                 elsif op == '>=' and base != dep_version.segments then
+                   ", '>= #{dep_version}'"
+                 end
+
+        warning_messages << <<-WARNING
+open-ended dependency on #{dep} is not recommended
+  if #{dep.name} is semantically versioned, use:
+    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}'#{bugfix}
+        WARNING
+      end
+    end
+    if error_messages.any?
+      raise Gem::InvalidSpecificationException, error_messages.join
+    end
+    if warning_messages.any?
+      warning_messages.each { |warning_message| warning warning_message }
+    end
+  end
+
+  ##
+  # Checks to see if the files to be packaged are world-readable.
+  def validate_permissions
+    return if Gem.win_platform?
+
+    files.each do |file|
+      next unless File.file?(file)
+      next if File.stat(file).mode & 0444 == 0444
+      warning "#{file} is not world-readable"
+    end
+
+    executables.each do |name|
+      exec = File.join bindir, name
+      next unless File.file?(exec)
+      next if File.stat(exec).executable?
+      warning "#{exec} is not executable"
+    end
+  end
+
   private
 
   def validate_nil_attributes
@@ -146,54 +289,6 @@ class Gem::SpecificationPolicy < SimpleDelegator
     end
   end
 
-  def validate_metadata
-    unless Hash === metadata
-      raise Gem::InvalidSpecificationException,
-            'metadata must be a hash'
-    end
-
-    url_validation_regex = %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}
-    link_keys = %w[
-      bug_tracker_uri
-      changelog_uri
-      documentation_uri
-      homepage_uri
-      mailing_list_uri
-      source_code_uri
-      wiki_uri
-    ]
-
-    metadata.each do|key, value|
-      if !key.kind_of?(String)
-        raise Gem::InvalidSpecificationException,
-              "metadata keys must be a String"
-      end
-
-      if key.size > 128
-        raise Gem::InvalidSpecificationException,
-              "metadata key too large (#{key.size} > 128)"
-      end
-
-      if !value.kind_of?(String)
-        raise Gem::InvalidSpecificationException,
-              "metadata values must be a String"
-      end
-
-      if value.size > 1024
-        raise Gem::InvalidSpecificationException,
-              "metadata value too large (#{value.size} > 1024)"
-      end
-
-      if link_keys.include? key
-        if value !~ url_validation_regex
-          raise Gem::InvalidSpecificationException,
-                "metadata['#{key}'] has invalid link: #{value.inspect}"
-        end
-      end
-    end
-  end
-
-
   def validate_licenses
     licenses.each { |license|
       if license.length > 64
@@ -216,25 +311,6 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
 licenses is empty, but is recommended.  Use a license identifier from
 http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
     warning
-  end
-
-  ##
-  # Checks to see if the files to be packaged are world-readable.
-  def validate_permissions
-    return if Gem.win_platform?
-
-    files.each do |file|
-      next unless File.file?(file)
-      next if File.stat(file).mode & 0444 == 0444
-      warning "#{file} is not world-readable"
-    end
-
-    executables.each do |name|
-      exec = File.join bindir, name
-      next unless File.file?(exec)
-      next if File.stat(exec).executable?
-      warning "#{exec} is not executable"
-    end
   end
 
   def validate_lazy_metadata
@@ -287,83 +363,6 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
     files.each do |file|
       next unless File.symlink?(file)
       warning "#{file} is a symlink, which is not supported on all platforms"
-    end
-  end
-
-  ##
-  # Checks that dependencies use requirements as we recommend.  Warnings are
-  # issued when dependencies are open-ended or overly strict for semantic
-  # versioning.
-  def validate_dependencies # :nodoc:
-    # NOTE: see REFACTOR note in Gem::Dependency about types - this might be brittle
-    seen = Gem::Dependency::TYPES.inject({}) { |types, type| types.merge({ type => {}}) }
-
-    error_messages = []
-    warning_messages = []
-    dependencies.each do |dep|
-      if prev = seen[dep.type][dep.name] then
-        error_messages << <<-MESSAGE
-duplicate dependency on #{dep}, (#{prev.requirement}) use:
-    add_#{dep.type}_dependency '#{dep.name}', '#{dep.requirement}', '#{prev.requirement}'
-        MESSAGE
-      end
-
-      seen[dep.type][dep.name] = dep
-
-      prerelease_dep = dep.requirements_list.any? do |req|
-        Gem::Requirement.new(req).prerelease?
-      end
-
-      warning_messages << "prerelease dependency on #{dep} is not recommended" if
-          prerelease_dep && !version.prerelease?
-
-      overly_strict = dep.requirement.requirements.length == 1 &&
-          dep.requirement.requirements.any? do |op, version|
-            op == '~>' and
-                not version.prerelease? and
-                version.segments.length > 2 and
-                version.segments.first != 0
-          end
-
-      if overly_strict then
-        _, dep_version = dep.requirement.requirements.first
-
-        base = dep_version.segments.first 2
-
-        warning_messages << <<-WARNING
-pessimistic dependency on #{dep} may be overly strict
-  if #{dep.name} is semantically versioned, use:
-    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}', '>= #{dep_version}'
-        WARNING
-      end
-
-      open_ended = dep.requirement.requirements.all? do |op, version|
-        not version.prerelease? and (op == '>' or op == '>=')
-      end
-
-      if open_ended then
-        op, dep_version = dep.requirement.requirements.first
-
-        base = dep_version.segments.first 2
-
-        bugfix = if op == '>' then
-                   ", '> #{dep_version}'"
-                 elsif op == '>=' and base != dep_version.segments then
-                   ", '>= #{dep_version}'"
-                 end
-
-        warning_messages << <<-WARNING
-open-ended dependency on #{dep} is not recommended
-  if #{dep.name} is semantically versioned, use:
-    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}'#{bugfix}
-        WARNING
-      end
-    end
-    if error_messages.any?
-      raise Gem::InvalidSpecificationException, error_messages.join
-    end
-    if warning_messages.any?
-      warning_messages.each { |warning_message| warning warning_message }
     end
   end
 end

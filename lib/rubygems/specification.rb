@@ -2695,6 +2695,24 @@ class Gem::Specification < Gem::BasicSpecification
     @extensions.delete_if       { |x| File.directory?(x) && !File.symlink?(x) }
   end
 
+  def validate_metadata
+    Gem::SpecificationPolicy.new(self).validate_metadata
+  end
+
+  ##
+  # Checks that dependencies use requirements as we recommend.  Warnings are
+  # issued when dependencies are open-ended or overly strict for semantic
+  # versioning.
+  def validate_dependencies
+    Gem::SpecificationPolicy.new(self).validate_dependencies
+  end
+
+  ##
+  # Checks to see if the files to be packaged are world-readable.
+  def validate_permissions
+    Gem::SpecificationPolicy.new(self).validate_permissions
+  end
+
   ##
   # Set the version to +version+, potentially also setting
   # required_rubygems_version if +version+ indicates it is a

@@ -703,7 +703,7 @@ class Gem::Installer
   end
 
   def verify_spec_name
-    return if spec.name =~ Gem::SpecificationPolicy::VALID_NAME_PATTERN
+    return if spec.name =~ Gem::Specification::VALID_NAME_PATTERN
     raise Gem::InstallError, "#{spec} has an invalid name"
   end
 

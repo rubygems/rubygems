@@ -110,6 +110,8 @@ class Gem::Specification < Gem::BasicSpecification
 
   private_constant :LOAD_CACHE if defined? private_constant
 
+  VALID_NAME_PATTERN = /\A[a-zA-Z0-9\.\-\_]+\z/ # :nodoc:
+
   # :startdoc:
 
   ##

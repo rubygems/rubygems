@@ -348,8 +348,7 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
 
   def validate_values
     %w[author homepage summary files].each do |attribute|
-      value = self.send attribute
-      warning("no #{attribute} specified") if value.nil? || value.empty?
+      validate_attribute_present(attribute)
     end
 
     if description == summary then
@@ -360,14 +359,23 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
     warning "deprecated autorequire specified" if autorequire
 
     executables.each do |executable|
-      executable_path = File.join(bindir, executable)
-      shebang = File.read(executable_path, 2) == '#!'
-
-      warning "#{executable_path} is missing #! line" unless shebang
+      validate_shebang_line_in(executable)
     end
 
     files.select { |f| File.symlink?(f) }.each do |file|
       warning "#{file} is a symlink, which is not supported on all platforms"
     end
+  end
+
+  def validate_attribute_present(attribute)
+    value = self.send attribute
+    warning("no #{attribute} specified") if value.nil? || value.empty?
+  end
+
+  def validate_shebang_line_in(executable)
+    executable_path = File.join(bindir, executable)
+    shebang = File.read(executable_path, 2) == '#!'
+    return if shebang
+    warning "#{executable_path} is missing #! line"
   end
 end

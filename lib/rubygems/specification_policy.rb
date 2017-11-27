@@ -198,10 +198,11 @@ open-ended dependency on #{dep} is not recommended
   end
 
   def validate_rubygems_version
-    if packaging && rubygems_version != Gem::VERSION then
-      raise Gem::InvalidSpecificationException,
-            "expected RubyGems version #{Gem::VERSION}, was #{rubygems_version}"
-    end
+    return unless packaging
+    return if rubygems_version == Gem::VERSION
+
+    raise Gem::InvalidSpecificationException,
+          "expected RubyGems version #{Gem::VERSION}, was #{rubygems_version}"
   end
 
   def validate_required_attributes
@@ -227,16 +228,17 @@ open-ended dependency on #{dep} is not recommended
   end
 
   def validate_require_paths
-    if raw_require_paths.empty? then
-      raise Gem::InvalidSpecificationException,
-            'specification must have at least one require_path'
-    end
+    return unless raw_require_paths.empty?
+
+    raise Gem::InvalidSpecificationException,
+          'specification must have at least one require_path'
   end
 
   def validate_non_files
+    return unless packaging
     non_files = files.reject {|x| File.file?(x) || File.symlink?(x)}
 
-    unless not packaging or non_files.empty? then
+    unless non_files.empty? then
       raise Gem::InvalidSpecificationException,
             "[\"#{non_files.join "\", \""}\"] are not files"
     end
@@ -267,18 +269,22 @@ open-ended dependency on #{dep} is not recommended
 
   def validate_array_attributes
     Gem::Specification.array_attributes.each do |field|
-      val = self.send(field)
-      klass = case field
-                when :dependencies then
-                  Gem::Dependency
-                else
-                  String
-              end
+      validate_array_attribute(field)
+    end
+  end
 
-      unless Array === val and val.all? {|x| x.kind_of?(klass)} then
-        raise(Gem::InvalidSpecificationException,
-              "#{field} must be an Array of #{klass}")
-      end
+  def validate_array_attribute(field)
+    val = self.send(field)
+    klass = case field
+              when :dependencies then
+                Gem::Dependency
+              else
+                String
+            end
+
+    unless Array === val and val.all? {|x| x.kind_of?(klass)} then
+      raise(Gem::InvalidSpecificationException,
+            "#{field} must be an Array of #{klass}")
     end
   end
 
@@ -365,4 +371,3 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
     end
   end
 end
-

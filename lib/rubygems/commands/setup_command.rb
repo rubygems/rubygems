@@ -372,9 +372,11 @@ By default, this RubyGems will install gem as:
 
     bundler_spec = Gem::Specification.load(default_spec_path)
 
-    Dir.entries(bundler_spec.gems_dir).
-      select {|default_gem| File.basename(default_gem).match(/^bundler-#{Gem::Version::VERSION_PATTERN}$/) }.
-      each {|default_gem| rm_r File.join(bundler_spec.gems_dir, default_gem) }
+    if File.directory? bundler_spec.gems_dir
+      Dir.entries(bundler_spec.gems_dir).
+        select {|default_gem| File.basename(default_gem).match(/^bundler-#{Gem::Version::VERSION_PATTERN}$/) }.
+        each {|default_gem| rm_r File.join(bundler_spec.gems_dir, default_gem) }
+    end
 
     mkdir_p bundler_spec.bin_dir
     bundler_spec.executables.each {|e| cp File.join("bundler", bundler_spec.bindir, e), File.join(bundler_spec.bin_dir, e) }

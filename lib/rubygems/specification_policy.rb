@@ -319,28 +319,29 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
     warning
   end
 
+  LAZY = '"FIxxxXME" or "TOxxxDO"'.gsub(/xxx/, '')
+  LAZY_PATTERN = /FI XME|TO DO/x
+  HOMEPAGE_URI_PATTERN = /\A[a-z][a-z\d+.-]*:/i
+
   def validate_lazy_metadata
-    lazy = '"FIxxxXME" or "TOxxxDO"'.gsub(/xxx/, '')
-    lazy_pattern = /FI XME|TO DO/x
-
-    unless authors.grep(lazy_pattern).empty? then
-      raise Gem::InvalidSpecificationException, "#{lazy} is not an author"
+    unless authors.grep(LAZY_PATTERN).empty? then
+      raise Gem::InvalidSpecificationException, "#{LAZY} is not an author"
     end
 
-    unless Array(email).grep(lazy_pattern).empty? then
-      raise Gem::InvalidSpecificationException, "#{lazy} is not an email"
+    unless Array(email).grep(LAZY_PATTERN).empty? then
+      raise Gem::InvalidSpecificationException, "#{LAZY} is not an email"
     end
 
-    if description =~ lazy_pattern then
-      raise Gem::InvalidSpecificationException, "#{lazy} is not a description"
+    if description =~ LAZY_PATTERN then
+      raise Gem::InvalidSpecificationException, "#{LAZY} is not a description"
     end
 
-    if summary =~ lazy_pattern then
-      raise Gem::InvalidSpecificationException, "#{lazy} is not a summary"
+    if summary =~ LAZY_PATTERN then
+      raise Gem::InvalidSpecificationException, "#{LAZY} is not a summary"
     end
 
     if homepage and not homepage.empty? and
-        homepage !~ /\A[a-z][a-z\d+.-]*:/i then
+        homepage !~ HOMEPAGE_URI_PATTERN then
       raise Gem::InvalidSpecificationException,
             "\"#{homepage}\" is not a URI"
     end

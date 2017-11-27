@@ -82,11 +82,7 @@ class Gem::Commands::SetupCommand < Gem::Command
 
     add_option '--[no-]regenerate-binstubs',
                'Regenerate gem binstubs' do |value, options|
-      if value then
-        options[:regenerate_binstubs] = true
-      else
-        options.delete(:regenerate_binstubs)
-      end
+      options[:regenerate_binstubs] = value
    end
 
     @verbose = nil
@@ -156,7 +152,7 @@ By default, this RubyGems will install gem as:
 
     say "RubyGems #{Gem::VERSION} installed"
 
-    regenerate_binstubs
+    regenerate_binstubs if options[:regenerate_binstubs]
 
     uninstall_old_gemcutter
 

@@ -375,8 +375,8 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
 
   def validate_shebang_line_in(executable)
     executable_path = File.join(bindir, executable)
-    shebang = File.read(executable_path, 2) == '#!'
-    return if shebang
+    return if File.read(executable_path, 2) == '#!'
+
     warning "#{executable_path} is missing #! line"
   end
 end

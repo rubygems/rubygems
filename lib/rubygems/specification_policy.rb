@@ -44,7 +44,7 @@ class Gem::SpecificationPolicy < SimpleDelegator
   end
 
   def validate_metadata
-    unless Hash === metadata
+    unless Hash === metadata then
       raise Gem::InvalidSpecificationException,
             'metadata must be a hash'
     end
@@ -61,28 +61,28 @@ class Gem::SpecificationPolicy < SimpleDelegator
     ]
 
     metadata.each do|key, value|
-      if !key.kind_of?(String)
+      if !key.kind_of?(String) then
         raise Gem::InvalidSpecificationException,
               "metadata keys must be a String"
       end
 
-      if key.size > 128
+      if key.size > 128 then
         raise Gem::InvalidSpecificationException,
               "metadata key too large (#{key.size} > 128)"
       end
 
-      if !value.kind_of?(String)
+      if !value.kind_of?(String) then
         raise Gem::InvalidSpecificationException,
               "metadata values must be a String"
       end
 
-      if value.size > 1024
+      if value.size > 1024 then
         raise Gem::InvalidSpecificationException,
               "metadata value too large (#{value.size} > 1024)"
       end
 
-      if link_keys.include? key
-        if value !~ url_validation_regex
+      if link_keys.include? key then
+        if value !~ url_validation_regex then
           raise Gem::InvalidSpecificationException,
                 "metadata['#{key}'] has invalid link: #{value.inspect}"
         end
@@ -159,10 +159,10 @@ open-ended dependency on #{dep} is not recommended
         WARNING
       end
     end
-    if error_messages.any?
+    if error_messages.any? then
       raise Gem::InvalidSpecificationException, error_messages.join
     end
-    if warning_messages.any?
+    if warning_messages.any? then
       warning_messages.each { |warning_message| warning warning_message }
     end
   end
@@ -198,7 +198,7 @@ open-ended dependency on #{dep} is not recommended
   end
 
   def validate_rubygems_version
-    if packaging && rubygems_version != Gem::VERSION
+    if packaging && rubygems_version != Gem::VERSION then
       raise Gem::InvalidSpecificationException,
             "expected RubyGems version #{Gem::VERSION}, was #{rubygems_version}"
     end
@@ -206,7 +206,7 @@ open-ended dependency on #{dep} is not recommended
 
   def validate_required_attributes
     __getobj__.class.required_attributes.each do |symbol|
-      unless send symbol
+      unless send symbol then
         raise Gem::InvalidSpecificationException,
               "missing value for attribute #{symbol}"
       end
@@ -214,20 +214,20 @@ open-ended dependency on #{dep} is not recommended
   end
 
   def validate_name
-    if !name.is_a?(String)
+    if !name.is_a?(String) then
       raise Gem::InvalidSpecificationException,
             "invalid value for attribute name: \"#{name.inspect}\" must be a string"
-    elsif name !~ /[a-zA-Z]/
+    elsif name !~ /[a-zA-Z]/ then
       raise Gem::InvalidSpecificationException,
             "invalid value for attribute name: #{name.dump} must include at least one letter"
-    elsif name !~ VALID_NAME_PATTERN
+    elsif name !~ VALID_NAME_PATTERN then
       raise Gem::InvalidSpecificationException,
             "invalid value for attribute name: #{name.dump} can only include letters, numbers, dashes, and underscores"
     end
   end
 
   def validate_require_paths
-    if raw_require_paths.empty?
+    if raw_require_paths.empty? then
       raise Gem::InvalidSpecificationException,
             'specification must have at least one require_path'
     end
@@ -236,24 +236,24 @@ open-ended dependency on #{dep} is not recommended
   def validate_non_files
     non_files = files.reject {|x| File.file?(x) || File.symlink?(x)}
 
-    unless not packaging or non_files.empty?
+    unless not packaging or non_files.empty? then
       raise Gem::InvalidSpecificationException,
             "[\"#{non_files.join "\", \""}\"] are not files"
     end
   end
 
   def validate_self_inclusion_in_files_list
-    if files.include?(file_name)
-      raise Gem::InvalidSpecificationException,
-            "#{full_name} contains itself (#{file_name}), check your files list"
-    end
+    return unless files.include?(file_name)
+    
+    raise Gem::InvalidSpecificationException,
+          "#{full_name} contains itself (#{file_name}), check your files list"
   end
 
   def validate_specification_version
-    unless specification_version.is_a?(Integer)
-      raise Gem::InvalidSpecificationException,
-            'specification_version must be an Integer (did you mean version?)'
-    end
+    return if specification_version.is_a?(Integer)
+    
+    raise Gem::InvalidSpecificationException,
+          'specification_version must be an Integer (did you mean version?)'
   end
 
   def validate_platform
@@ -269,13 +269,13 @@ open-ended dependency on #{dep} is not recommended
     __getobj__.class.array_attributes.each do |field|
       val = self.send(field)
       klass = case field
-                when :dependencies
+                when :dependencies then
                   Gem::Dependency
                 else
                   String
               end
 
-      unless Array === val and val.all? {|x| x.kind_of?(klass)}
+      unless Array === val and val.all? {|x| x.kind_of?(klass)} then
         raise(Gem::InvalidSpecificationException,
               "#{field} must be an Array of #{klass}")
       end
@@ -283,20 +283,20 @@ open-ended dependency on #{dep} is not recommended
   end
 
   def validate_authors_field
-    [:authors].each do |field|
-      val = self.send(field)
-      raise Gem::InvalidSpecificationException, "#{field} may not be empty" if val.empty?
-    end
+    return unless authors.empty?
+
+    raise Gem::InvalidSpecificationException,
+          "authors may not be empty"
   end
 
   def validate_licenses
     licenses.each { |license|
-      if license.length > 64
+      if license.length > 64 then
         raise Gem::InvalidSpecificationException,
               "each license must be 64 characters or less"
       end
 
-      if !Gem::Licenses.match?(license)
+      if !Gem::Licenses.match?(license) then
         suggestions = Gem::Licenses.suggestions(license)
         message = <<-warning
 license value '#{license}' is invalid.  Use a license identifier from
@@ -317,24 +317,24 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
     lazy = '"FIxxxXME" or "TOxxxDO"'.gsub(/xxx/, '')
     lazy_pattern = /FI XME|TO DO/x
 
-    unless authors.grep(lazy_pattern).empty?
+    unless authors.grep(lazy_pattern).empty? then
       raise Gem::InvalidSpecificationException, "#{lazy} is not an author"
     end
 
-    unless Array(email).grep(lazy_pattern).empty?
+    unless Array(email).grep(lazy_pattern).empty? then
       raise Gem::InvalidSpecificationException, "#{lazy} is not an email"
     end
 
-    if description =~ lazy_pattern
+    if description =~ lazy_pattern then
       raise Gem::InvalidSpecificationException, "#{lazy} is not a description"
     end
 
-    if summary =~ lazy_pattern
+    if summary =~ lazy_pattern then
       raise Gem::InvalidSpecificationException, "#{lazy} is not a summary"
     end
 
     if homepage and not homepage.empty? and
-        homepage !~ /\A[a-z][a-z\d+.-]*:/i
+        homepage !~ /\A[a-z][a-z\d+.-]*:/i then
       raise Gem::InvalidSpecificationException,
             "\"#{homepage}\" is not a URI"
     end
@@ -346,7 +346,7 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
       warning("no #{attribute} specified") if value.nil? || value.empty?
     end
 
-    if description == summary
+    if description == summary then
       warning "description and summary are identical"
     end
 
@@ -360,8 +360,7 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
       warning "#{executable_path} is missing #! line" unless shebang
     end
 
-    files.each do |file|
-      next unless File.symlink?(file)
+    files.select { |f| File.symlink?(f) }.each do |file|
       warning "#{file} is a symlink, which is not supported on all platforms"
     end
   end

@@ -189,7 +189,7 @@ open-ended dependency on #{dep} is not recommended
   private
 
   def validate_nil_attributes
-    nil_attributes = __getobj__.class.non_nil_attributes.select do |attrname|
+    nil_attributes = Gem::Specification.non_nil_attributes.select do |attrname|
       __getobj__.instance_variable_get("@#{attrname}").nil?
     end
     return if nil_attributes.empty?
@@ -205,7 +205,7 @@ open-ended dependency on #{dep} is not recommended
   end
 
   def validate_required_attributes
-    __getobj__.class.required_attributes.each do |symbol|
+    Gem::Specification.required_attributes.each do |symbol|
       unless send symbol then
         raise Gem::InvalidSpecificationException,
               "missing value for attribute #{symbol}"
@@ -266,7 +266,7 @@ open-ended dependency on #{dep} is not recommended
   end
 
   def validate_array_attributes
-    __getobj__.class.array_attributes.each do |field|
+    Gem::Specification.array_attributes.each do |field|
       val = self.send(field)
       klass = case field
                 when :dependencies then

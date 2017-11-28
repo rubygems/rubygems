@@ -1,5 +1,39 @@
 # coding: UTF-8
 
+=== 2.7.3
+
+Minor enhancements:
+
+* Removed needless version lock. Pull request #2074 by SHIBATA Hiroshi.
+* Add --[no-]check-development option to cleanup command. Pull request
+  #2061 by Lin Jen-Shin (godfat).
+* Merge glob pattern using braces. Pull request #2072 by Kazuhiro
+  NISHIYAMA.
+* Removed warnings of unused variables. Pull request #2084 by SHIBATA
+  Hiroshi.
+* Call SPDX.org using HTTPS. Pull request #2102 by Olle Jonsson.
+* Remove multi load warning from plugins documentation. Pull request #2103
+  by Thibault Jouan.
+
+Bug fixes:
+
+* Fix test failure on Alpine Linux. Pull request #2079 by Ellen Marie
+  Dash.
+* Avoid encoding issues by using binread in setup. Pull request #2089 by
+  Mauro Morales.
+* Fix rake install_test_deps once the rake clean_env does not exist. Pull
+  request #2090 by Lucas Oliveira.
+* Prevent to delete to "bundler-" prefix gem like bundler-audit. Pull
+  request #2086 by SHIBATA Hiroshi.
+* Generate .bat files on Windows platform. Pull request #2094 by SHIBATA
+  Hiroshi.
+* Workaround common options mutation in Gem::Command test. Pull request
+  #2098 by Thibault Jouan.
+* Check gems dir existence before removing bundler. Pull request #2104 by
+  Thibault Jouan.
+* Use setup command --regenerate-binstubs option flag. Pull request #2099
+  by Thibault Jouan.
+
 === 2.7.2
 
 Bug fixes:
@@ -97,6 +131,20 @@ Minor enhancements:
   Giddins.
 * [Version] Make hash based upon canonical segments. Pull request #1659 by
   Samuel Giddins.
+* Add Ruby Together CTA, rearrange README a bit. Pull request #1775 by
+  Michael Bernstein.
+* Update Contributing.rdoc with new label usage. Pull request #1716 by
+  Lynn Cyrin.
+* Add --host sample to help. Pull request #1709 by Code Ahss.
+* Add a helpful suggestion when `gem install` fails due to required_rub….
+  Pull request #1697 by Samuel Giddins.
+* Add cert expiration length flag. Pull request #1725 by Luis Sagastume.
+* Add submodule instructions to manual install. Pull request #1727 by
+  Joseph Frazier.
+* Allow usage of multiple `--version` operators. Pull request #1546 by
+  James Wen.
+* Warn when requiring deprecated files. Pull request #1939 by Ellen Marie
+  Dash.
 
 Compatibility changes:
 
@@ -112,20 +160,6 @@ Compatibility changes:
   Pull request #1731 by Jon Moss.
 * Update Code of Conduct to Contributor Covenant v1.4.0. Pull request
   #1796 by Matej.
-* Add Ruby Together CTA, rearrange README a bit. Pull request #1775 by
-  Michael Bernstein.
-* Update Contributing.rdoc with new label usage. Pull request #1716 by
-  Lynn Cyrin.
-* Add --host sample to help. Pull request #1709 by Code Ahss.
-* Add a helpful suggestion when `gem install` fails due to required_rub….
-  Pull request #1697 by Samuel Giddins.
-* Add cert expiration length flag. Pull request #1725 by Luis Sagastume.
-* Add submodule instructions to manual install. Pull request #1727 by
-  Joseph Frazier.
-* Allow usage of multiple `--version` operators. Pull request #1546 by
-  James Wen.
-* Warn when requiring deprecated files. Pull request #1939 by Ellen Marie
-  Dash.
 
 Bug fixes:
 

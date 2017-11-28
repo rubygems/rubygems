@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 require 'json'
 require 'net/http'
+require 'uri'
 
-json = Net::HTTP.get('spdx.org', '/licenses/licenses.json')
+json = Net::HTTP.get(URI('https://spdx.org/licenses/licenses.json'))
 licenses = JSON.parse(json)['licenses'].map do |licenseObject|
   licenseObject['licenseId']
 end

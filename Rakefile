@@ -264,6 +264,9 @@ namespace 'guides' do
   desc 'Updates and publishes the guides for the just-released RubyGems'
   task 'publish'
 
+  on_master = `git branch --list master`.strip == '* master'
+  on_master = true if ENV['FORCE']
+
   task 'publish' => %w[
     guides:pull
     guides:update

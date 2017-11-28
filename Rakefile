@@ -168,7 +168,7 @@ end
 
 task :prerelease => [:clobber, :check_manifest, :test]
 
-task :postrelease => %w[upload guides:publish blog:publish publish_docs]
+task :postrelease => %w[upload guides:publish blog:publish]
 
 file "pkg/rubygems-#{v}" => "pkg/rubygems-update-#{v}" do |t|
   require 'find'
@@ -219,10 +219,8 @@ end
 desc "Upload release to rubygems.org"
 task :upload => %w[upload_to_s3]
 
-on_master = `git branch --list master`.strip == '* master'
-on_master = true if ENV['FORCE']
-
-Rake::Task['publish_docs'].clear unless on_master
+# Ignonre to publish rdoc to docs.seattlerb.org
+Rake::Task['publish_docs'].clear
 
 directory '../guides.rubygems.org' do
   sh 'git', 'clone',

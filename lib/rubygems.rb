@@ -161,7 +161,7 @@ module Gem
   # these are defined in Ruby 1.8.7, hence the need for this convoluted setup.
 
   READ_BINARY_ERRORS = begin
-    read_binary_errors = [Errno::EACCES, Errno::EROFS]
+    read_binary_errors = [Errno::EACCES, Errno::EROFS, Errno::ENOSYS]
     read_binary_errors << Errno::ENOTSUP if Errno.const_defined?(:ENOTSUP)
     read_binary_errors
   end.freeze
@@ -171,7 +171,7 @@ module Gem
   # these are defined in Ruby 1.8.7.
 
   WRITE_BINARY_ERRORS = begin
-    write_binary_errors = []
+    write_binary_errors = [Errno::ENOSYS]
     write_binary_errors << Errno::ENOTSUP if Errno.const_defined?(:ENOTSUP)
     write_binary_errors
   end.freeze

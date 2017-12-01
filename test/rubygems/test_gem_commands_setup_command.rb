@@ -143,6 +143,22 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     assert_path_exists 'default/gems/bundler-audit-1.0.0'
   end if Gem::USE_BUNDLER_FOR_GEMDEPS
 
+  def test_install_default_bundler_gem_with_destdir
+    Gem.instance_variable_set :@default_dir, nil
+    destdir = File.join @tempdir, 'destdir'
+    @cmd.options[:destdir] = destdir
+    @cmd.extend FileUtils
+
+    @cmd.install_default_bundler_gem
+
+    specs_dir = File.join destdir,
+      Gem::Specification.default_specifications_dir
+    bin_dir = File.join destdir, Gem.default_dir, *%w[gems bundler-1.16.0 exe]
+
+    assert_path_exists File.join(specs_dir, 'bundler-1.16.0.gemspec')
+    assert_path_exists File.join(bin_dir, 'bundle')
+  end if Gem::USE_BUNDLER_FOR_GEMDEPS
+
   def test_remove_old_lib_files
     lib                   = File.join @install_dir, 'lib'
     lib_rubygems          = File.join lib, 'rubygems'

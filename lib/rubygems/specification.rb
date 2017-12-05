@@ -2689,12 +2689,12 @@ class Gem::Specification < Gem::BasicSpecification
     end
   end
 
-  def normalize_files
+  def keep_only_files_and_directories
+    @executables.delete_if      { |x| File.directory?(File.join(@bindir, x)) }
+    @extensions.delete_if       { |x| File.directory?(x) && !File.symlink?(x) }
+    @extra_rdoc_files.delete_if { |x| File.directory?(x) && !File.symlink?(x) }
     @files.delete_if            { |x| File.directory?(x) && !File.symlink?(x) }
     @test_files.delete_if       { |x| File.directory?(x) && !File.symlink?(x) }
-    @executables.delete_if      { |x| File.directory?(File.join(@bindir, x)) }
-    @extra_rdoc_files.delete_if { |x| File.directory?(x) && !File.symlink?(x) }
-    @extensions.delete_if       { |x| File.directory?(x) && !File.symlink?(x) }
   end
 
   def validate_metadata

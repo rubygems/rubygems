@@ -15,7 +15,7 @@ class Gem::SpecificationPolicy < SimpleDelegator
 
     validate_require_paths
 
-    normalize_files
+    keep_only_files_and_directories
 
     validate_non_files
 

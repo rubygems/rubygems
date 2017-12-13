@@ -1,10 +1,33 @@
 require 'delegate'
+
 class Gem::SpecificationPolicy < SimpleDelegator
   VALID_NAME_PATTERN = /\A[a-zA-Z0-9\.\-\_]+\z/ # :nodoc:
 
+  VALID_URI_PATTERN = %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}  # :nodoc:
+
+  METADATA_LINK_KEYS = %w[
+    bug_tracker_uri
+    changelog_uri
+    documentation_uri
+    homepage_uri
+    mailing_list_uri
+    source_code_uri
+    wiki_uri
+  ] # :nodoc:
+
+  ##
+  # If set to true, run packaging-specific checks, as well.
+
   attr_accessor :packaging
 
-  def call
+  ##
+  # Checks that the specification contains all required fields, and does a
+  # very basic sanity check.
+  #
+  # Raises InvalidSpecificationException if the spec does not pass the
+  # checks.
+
+  def validate
     validate_nil_attributes
 
     validate_rubygems_version
@@ -43,24 +66,16 @@ class Gem::SpecificationPolicy < SimpleDelegator
     true
   end
 
+  ##
+  # Implementation for Specification#validate_metadata
+
   def validate_metadata
     unless Hash === metadata then
       raise Gem::InvalidSpecificationException,
             'metadata must be a hash'
     end
 
-    url_validation_regex = %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}
-    link_keys = %w[
-      bug_tracker_uri
-      changelog_uri
-      documentation_uri
-      homepage_uri
-      mailing_list_uri
-      source_code_uri
-      wiki_uri
-    ]
-
-    metadata.each do|key, value|
+    metadata.each do |key, value|
       if !key.kind_of?(String) then
         raise Gem::InvalidSpecificationException,
               "metadata keys must be a String"
@@ -81,8 +96,8 @@ class Gem::SpecificationPolicy < SimpleDelegator
               "metadata value too large (#{value.size} > 1024)"
       end
 
-      if link_keys.include? key then
-        if value !~ url_validation_regex then
+      if METADATA_LINK_KEYS.include? key then
+        if value !~ VALID_URI_PATTERN then
           raise Gem::InvalidSpecificationException,
                 "metadata['#{key}'] has invalid link: #{value.inspect}"
         end
@@ -91,9 +106,8 @@ class Gem::SpecificationPolicy < SimpleDelegator
   end
 
   ##
-  # Checks that dependencies use requirements as we recommend.  Warnings are
-  # issued when dependencies are open-ended or overly strict for semantic
-  # versioning.
+  # Implementation for Specification#validate_dependencies
+
   def validate_dependencies # :nodoc:
     # NOTE: see REFACTOR note in Gem::Dependency about types - this might be brittle
     seen = Gem::Dependency::TYPES.inject({}) { |types, type| types.merge({ type => {}}) }
@@ -168,7 +182,10 @@ open-ended dependency on #{dep} is not recommended
   end
 
   ##
-  # Checks to see if the files to be packaged are world-readable.
+  # Issues a warning for each file to be packaged which is world-readable.
+  #
+  # Implementation for Specification#validate_permissions
+
   def validate_permissions
     return if Gem.win_platform?
 

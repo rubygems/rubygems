@@ -2682,7 +2682,7 @@ class Gem::Specification < Gem::BasicSpecification
 
     validation_policy = Gem::SpecificationPolicy.new(self)
     validation_policy.packaging = packaging
-    validation_policy.call
+    validation_policy.validate
   ensure
     if $! or @warnings > 0 then
       alert_warning "See http://guides.rubygems.org/specification-reference/ for help"

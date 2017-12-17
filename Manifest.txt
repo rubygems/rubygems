@@ -430,6 +430,7 @@ lib/rubygems/source_local.rb
 lib/rubygems/source_specific_file.rb
 lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
+lib/rubygems/specification_policy.rb
 lib/rubygems/ssl_certs/.document
 lib/rubygems/ssl_certs/index.rubygems.org/GlobalSignRootCA.pem
 lib/rubygems/ssl_certs/rubygems.global.ssl.fastly.net/DigiCertHighAssuranceEVRootCA.pem

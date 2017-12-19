@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gem::BundlerVersionFinder
   @without_filtering = false
 
@@ -102,7 +104,7 @@ To install the missing version, run `gem install bundler:#{vr.first}`
     lockfile = case gemfile
     when "gems.rb" then "gems.locked"
     else "#{gemfile}.lock"
-    end.untaint
+    end.dup.untaint
 
     return unless File.file?(lockfile)
 

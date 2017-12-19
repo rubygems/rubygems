@@ -48,7 +48,7 @@ class Gem::ConfigFile
   # For Ruby packagers to set configuration defaults.  Set in
   # rubygems/defaults/operating_system.rb
 
-  OPERATING_SYSTEM_DEFAULTS = {}
+  OPERATING_SYSTEM_DEFAULTS = Gem.operating_system_defaults
 
   ##
   # For Ruby implementers to set configuration defaults.  Set in

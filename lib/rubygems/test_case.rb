@@ -84,7 +84,7 @@ end
 #
 # Tests are always run at a safe level of 1.
 
-class Gem::TestCase < MiniTest::Unit::TestCase
+class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Unit::TestCase)
 
   attr_accessor :fetcher # :nodoc:
 

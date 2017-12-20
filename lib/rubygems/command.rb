@@ -154,23 +154,20 @@ class Gem::Command
 
   def show_lookup_failure(gem_name, version, errors, domain, required_by = nil)
     gem = "'#{gem_name}' (#{version})"
-
-    msg = StringIO.new "Could not find a valid gem #{gem}".dup, "a+"
+    msg = String.new "Could not find a valid gem #{gem}"
 
     if errors and !errors.empty?
       msg << ", here is why:\n"
       errors.each { |x| msg << "          #{x.wordy}\n" }
     else
-      if required_by && gem != required_by then
+      if required_by and gem != required_by then
         msg << " (required by #{required_by}) in any repository"
       else
         msg << " in any repository"
       end
     end
 
-    msg.close
-
-    alert_error msg.string
+    alert_error msg
 
     unless domain == :local then # HACK
       suggestions = Gem::SpecFetcher.fetcher.suggest_gems_from_name gem_name

@@ -197,7 +197,7 @@ class TestGemResolverInstallerSet < Gem::TestCase
     def (set.remote_set).prefetch(_)
       raise "called"
     end
-    assert_equal nil, set.prefetch(nil)
+    assert_nil set.prefetch(nil)
   end
 
   def test_prerelease_equals

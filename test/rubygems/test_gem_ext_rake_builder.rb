@@ -16,11 +16,9 @@ class TestGemExtRakeBuilder < Gem::TestCase
   def test_class_build
     create_temp_mkrf_file('task :default')
     output = []
-    realdir = nil # HACK /tmp vs. /private/tmp
 
     build_rake_in do |rake|
       Dir.chdir @ext do
-        realdir = Dir.pwd
         Gem::Ext::RakeBuilder.build 'mkrf_conf.rb', nil, @dest_path, output
       end
 
@@ -38,11 +36,9 @@ class TestGemExtRakeBuilder < Gem::TestCase
   def test_class_build_with_args
     create_temp_mkrf_file('task :default')
     output = []
-    realdir = nil # HACK /tmp vs. /private/tmp
 
     build_rake_in do |rake|
       Dir.chdir @ext do
-        realdir = Dir.pwd
         non_empty_args_list = ['']
         Gem::Ext::RakeBuilder.build 'mkrf_conf.rb', nil, @dest_path, output, non_empty_args_list
       end

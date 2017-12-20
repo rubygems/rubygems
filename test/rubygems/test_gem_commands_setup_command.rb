@@ -6,6 +6,8 @@ require 'rubygems/commands/setup_command'
 
 class TestGemCommandsSetupCommand < Gem::TestCase
 
+  BUNDLER_VERS = `gem list -e bundler`[/([^() ]+)\)\Z/, 1] || "1.16.0"
+
   def setup
     super
 
@@ -32,7 +34,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     gemspec = Gem::Specification.new
     gemspec.name = "bundler"
-    gemspec.version = "1.16.0"
+    gemspec.version = BUNDLER_VERS
     gemspec.bindir = "exe"
     gemspec.executables = ["bundle"]
 
@@ -136,8 +138,8 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     refute_path_exists File.join(default_dir, "bundler-1.15.4.gemspec")
     refute_path_exists 'default/gems/bundler-1.15.4'
 
-    assert_path_exists File.join(default_dir, "bundler-1.16.0.gemspec")
-    assert_path_exists 'default/gems/bundler-1.16.0'
+    assert_path_exists File.join(default_dir, "bundler-#{BUNDLER_VERS}.gemspec")
+    assert_path_exists "default/gems/bundler-#{BUNDLER_VERS}"
 
     assert_path_exists File.join(Gem.default_dir, "specifications", "bundler-audit-1.0.0.gemspec")
     assert_path_exists 'default/gems/bundler-audit-1.0.0'

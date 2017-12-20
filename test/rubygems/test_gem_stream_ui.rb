@@ -55,7 +55,7 @@ class TestGemStreamUI < Gem::TestCase
 
     Timeout.timeout(0.1) do
       answer = @sui.ask("what is your favorite color?")
-      assert_equal nil, answer
+      assert_nil answer
     end
   end
 
@@ -79,7 +79,7 @@ class TestGemStreamUI < Gem::TestCase
 
     Timeout.timeout(0.1) do
       answer = @sui.ask_for_password("what is the airspeed velocity of an unladen swallow?")
-      assert_equal nil, answer
+      assert_nil answer
     end
   end
 

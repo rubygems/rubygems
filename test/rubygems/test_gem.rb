@@ -1625,7 +1625,7 @@ class TestGem < Gem::TestCase
 
     assert_equal old_style, Gem.find_unresolved_default_spec("foo.rb")
     assert_equal old_style, Gem.find_unresolved_default_spec("bar.rb")
-    assert_equal nil, Gem.find_unresolved_default_spec("baz.rb")
+    assert_nil              Gem.find_unresolved_default_spec("baz.rb")
 
     Gem.clear_default_specs
 
@@ -1638,8 +1638,8 @@ class TestGem < Gem::TestCase
 
     assert_equal new_style, Gem.find_unresolved_default_spec("foo.rb")
     assert_equal new_style, Gem.find_unresolved_default_spec("bar.rb")
-    assert_equal nil, Gem.find_unresolved_default_spec("exec")
-    assert_equal nil, Gem.find_unresolved_default_spec("README")
+    assert_nil              Gem.find_unresolved_default_spec("exec")
+    assert_nil              Gem.find_unresolved_default_spec("README")
   end
 
   def test_default_gems_use_full_paths

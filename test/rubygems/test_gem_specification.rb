@@ -1135,7 +1135,7 @@ dependencies: []
 
     data = Marshal.load Gem::Util.inflate(Gem.read_binary(path))
 
-    assert_equal nil, data.rubyforge_project
+    assert_nil data.rubyforge_project
   end
 
   def test_emits_zulu_timestamps_properly
@@ -1156,7 +1156,7 @@ dependencies: []
     assert_equal "blah", spec.name
     assert_equal "1.3.5", spec.version.to_s
     assert_equal Gem::Platform::RUBY, spec.platform
-    assert_equal nil, spec.summary
+    assert_nil       spec.summary
     assert_equal [], spec.files
 
     assert_equal [], spec.test_files
@@ -1333,31 +1333,31 @@ dependencies: []
     @a2.bindir = nil
     @a2.executable = 'app'
 
-    assert_equal nil, @a2.bindir
+    assert_nil                             @a2.bindir
     assert_equal %w[app lib/code.rb].sort, @a2.files
   end
 
   def test_extensions_equals_nil
     @a2.instance_variable_set(:@extensions, nil)
-    assert_equal nil, @a2.instance_variable_get(:@extensions)
+    assert_nil                    @a2.instance_variable_get(:@extensions)
     assert_equal %w[lib/code.rb], @a2.files
   end
 
   def test_test_files_equals_nil
     @a2.instance_variable_set(:@test_files, nil)
-    assert_equal nil, @a2.instance_variable_get(:@test_files)
+    assert_nil                    @a2.instance_variable_get(:@test_files)
     assert_equal %w[lib/code.rb], @a2.files
   end
 
   def test_executables_equals_nil
     @a2.instance_variable_set(:@executables, nil)
-    assert_equal nil, @a2.instance_variable_get(:@executables)
+    assert_nil                    @a2.instance_variable_get(:@executables)
     assert_equal %w[lib/code.rb], @a2.files
   end
 
   def test_extra_rdoc_files_equals_nil
     @a2.instance_variable_set(:@extra_rdoc_files, nil)
-    assert_equal nil, @a2.instance_variable_get(:@extra_rdoc_files)
+    assert_nil                    @a2.instance_variable_get(:@extra_rdoc_files)
     assert_equal %w[lib/code.rb], @a2.files
   end
 
@@ -2210,7 +2210,7 @@ dependencies: []
   end
 
   def test_allowed_push_host
-    assert_equal nil, @a1.metadata['allowed_push_host']
+    assert_nil                                   @a1.metadata['allowed_push_host']
     assert_equal 'https://privategemserver.com', @a3.metadata['allowed_push_host']
   end
 
@@ -3567,7 +3567,7 @@ end
 
     assert_equal a, Gem::Specification.find_inactive_by_path('foo')
     a.activate
-    assert_equal nil, Gem::Specification.find_inactive_by_path('foo')
+    assert_nil Gem::Specification.find_inactive_by_path('foo')
   end
 
   def test_load_default_gem

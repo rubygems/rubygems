@@ -238,7 +238,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     @cmd.handle_options %w[]
 
     assert_equal false,                    @cmd.options[:check_dev]
-    assert_equal nil,                      @cmd.options[:install_dir]
+    assert_nil                             @cmd.options[:install_dir]
     assert_equal true,                     @cmd.options[:user_install]
     assert_equal Gem::Requirement.default, @cmd.options[:version]
     assert_equal false,                    @cmd.options[:vendor]

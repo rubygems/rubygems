@@ -21,7 +21,7 @@ class TestGemInstaller < Gem::InstallerTestCase
     super
     common_installer_setup
 
-    if __name__ =~ /^test_install(_|$)/ then
+    if (self.class.method_defined?(:__name__) ? __name__ : name) =~ /\Atest_install(_|\Z)/
       FileUtils.rm_r @spec.gem_dir
       FileUtils.rm_r @user_spec.gem_dir
     end
@@ -34,7 +34,7 @@ class TestGemInstaller < Gem::InstallerTestCase
 
     super
 
-    Gem.configuration = @config
+    Gem.configuration = instance_variable_defined?(:@config) ? @config : nil
   end
 
   def test_app_script_text
@@ -663,7 +663,7 @@ gem 'other', version
     assert_path_exists installed_exec
 
     if symlink_supported?
-      assert_send([File, :symlink?, installed_exec])
+      assert File.symlink?(installed_exec)
       return
     end
 

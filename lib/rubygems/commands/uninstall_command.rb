@@ -15,7 +15,7 @@ class Gem::Commands::UninstallCommand < Gem::Command
 
   def initialize
     super 'uninstall', 'Uninstall gems from the local repository',
-          :version => Gem::Requirement.default, :user_install => true,
+          :version => Gem::Requirement.default,
           :check_dev => false, :vendor => false
 
     add_option('-a', '--[no-]all',
@@ -114,7 +114,18 @@ that is a dependency of an existing gem.  You can use the
     "#{program_name} GEMNAME [GEMNAME ...]"
   end
 
+  def check_uninstall_dir # :nodoc:
+    if options[:install_dir] and options[:user_install] then
+      alert_error "Use --install-dir or --user-install but not both"
+      terminate_interaction 1
+    end
+  end
+
   def execute
+    check_uninstall_dir
+
+    Gem.use_user_dir if options[:user_install]
+
     if options[:all] and not options[:args].empty? then
       uninstall_specific
     elsif options[:all] then

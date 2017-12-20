@@ -127,6 +127,21 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     Gem::Installer.exec_format = nil
   end
 
+  def test_execute_conflicting_uninstall_options
+    @cmd.options[:user_install] = true
+    @cmd.options[:install_dir] = "whatever"
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+    end
+
+    expected = "ERROR:  Use --install-dir or --user-install but not both\n"
+
+    assert_match expected, @ui.error
+  end
+
   def test_execute_prerelease
     @spec = util_spec "pre", "2.b"
     @gem = File.join @tempdir, @spec.file_name
@@ -239,7 +254,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
 
     assert_equal false,                    @cmd.options[:check_dev]
     assert_equal nil,                      @cmd.options[:install_dir]
-    assert_equal true,                     @cmd.options[:user_install]
+    assert_equal nil,                      @cmd.options[:user_install]
     assert_equal Gem::Requirement.default, @cmd.options[:version]
     assert_equal false,                    @cmd.options[:vendor]
   end

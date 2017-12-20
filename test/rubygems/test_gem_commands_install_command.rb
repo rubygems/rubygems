@@ -200,6 +200,28 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     assert_match(/ould not find a valid gem 'nonexistent'/, @ui.error)
   end
 
+  def test_execute_dependency_nonexistent
+    spec_fetcher do |fetcher|
+      fetcher.spec 'foo', 2, 'bar' => '0.5'
+    end
+
+    @cmd.options[:args] = ['foo']
+
+    use_ui @ui do
+      e = assert_raises Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+
+      assert_equal 2, e.exit_code
+    end
+
+    expected = <<-EXPECTED
+ERROR:  Could not find a valid gem 'bar' (= 0.5) (required by 'foo' (>= 0)) in any repository
+    EXPECTED
+
+    assert_equal expected, @ui.error
+  end
+
   def test_execute_bad_source
     spec_fetcher
 

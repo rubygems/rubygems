@@ -250,16 +250,21 @@ to write the specification by hand.  For example:
 
     get_all_gem_names_and_versions.each do |gem_name, gem_version|
       gem_version ||= options[:version]
+      domain = options[:domain]
+      domain = :local unless options[:suggest_alternate]
 
       begin
         install_gem gem_name, gem_version
       rescue Gem::InstallError => e
         alert_error "Error installing #{gem_name}:\n\t#{e.message}"
         exit_code |= 1
-      rescue Gem::GemNotFoundException, Gem::UnsatisfiableDependencyError => e
-        domain = options[:domain]
-        domain = :local unless options[:suggest_alternate]
+      rescue Gem::GemNotFoundException => e
         show_lookup_failure e.name, e.version, e.errors, domain
+
+        exit_code |= 2
+      rescue Gem::UnsatisfiableDependencyError => e
+        show_lookup_failure e.name, e.version, e.errors, domain,
+                            "'#{gem_name}' (#{gem_version})"
 
         exit_code |= 2
       end
@@ -300,4 +305,3 @@ to write the specification by hand.  For example:
   end
 
 end
-

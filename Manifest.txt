@@ -281,6 +281,7 @@ lib/rubygems/commands/environment_command.rb
 lib/rubygems/commands/fetch_command.rb
 lib/rubygems/commands/generate_index_command.rb
 lib/rubygems/commands/help_command.rb
+lib/rubygems/commands/info_command.rb
 lib/rubygems/commands/install_command.rb
 lib/rubygems/commands/list_command.rb
 lib/rubygems/commands/lock_command.rb
@@ -519,6 +520,7 @@ test/rubygems/test_gem_commands_environment_command.rb
 test/rubygems/test_gem_commands_fetch_command.rb
 test/rubygems/test_gem_commands_generate_index_command.rb
 test/rubygems/test_gem_commands_help_command.rb
+test/rubygems/test_gem_commands_info_command.rb
 test/rubygems/test_gem_commands_install_command.rb
 test/rubygems/test_gem_commands_list_command.rb
 test/rubygems/test_gem_commands_lock_command.rb

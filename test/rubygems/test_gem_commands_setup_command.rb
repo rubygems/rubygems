@@ -6,7 +6,7 @@ require 'rubygems/commands/setup_command'
 
 class TestGemCommandsSetupCommand < Gem::TestCase
 
-  BUNDLER_VERS = `gem list -e bundler`[/([^() ]+)\)\Z/, 1] || "1.16.0"
+  BUNDLER_VERS = `gem list -e bundler`[/([^() ]+)\)\Z/, 1] || "1.16.1"
 
   def setup
     super

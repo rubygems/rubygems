@@ -370,7 +370,7 @@ By default, this RubyGems will install gem as:
 
     if File.directory? bundler_spec.gems_dir
       Dir.entries(bundler_spec.gems_dir).
-        select {|default_gem| File.basename(default_gem).match(/^bundler-#{Gem::Version::VERSION_PATTERN}$/) }.
+        select {|default_gem| File.basename(default_gem).match(/^bundler-#{bundler_spec.version}$/) }.
         each {|default_gem| rm_r File.join(bundler_spec.gems_dir, default_gem) }
     end
 

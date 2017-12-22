@@ -103,6 +103,13 @@ hoe.testlib      = :minitest
 hoe.test_prelude = <<-RUBY.gsub("\n", ";")
   gem "minitest", "~> 4.0"
   $:.unshift #{File.expand_path("../bundler/lib", __FILE__).dump}
+  if "1.8" < RUBY_VERSION && RUBY_VERSION < "2.2"
+    module Gem
+      @path_to_default_spec_map.delete_if do |_path, spec|
+        spec.name == "bundler"
+      end
+    end
+  end
 RUBY
 
 Rake::Task['docs'].clear

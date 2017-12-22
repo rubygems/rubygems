@@ -68,6 +68,16 @@ module Gem
   end
 
   ##
+  # Remove bundler gemspec from default gems. Ruby 1.9.2-2.1 couldn't activate
+  # vendored bundler.
+
+  if defined?(@path_to_default_spec_map) && ("1.8" < RUBY_VERSION && RUBY_VERSION < "2.2")
+    @path_to_default_spec_map.delete_if do |_path, spec|
+      spec.name == "bundler"
+    end
+  end
+
+  ##
   # When rubygems/test_case is required the default user interaction is a
   # MockGemUi.
 

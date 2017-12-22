@@ -371,7 +371,7 @@ By default, this RubyGems will install gem as:
     bundler_spec = Gem::Specification.load(default_spec_path)
 
     # Remove gemspec that was same version of vendored bundler.
-    normal_gemspec = File.join(Gem.default_dir, "specifications", "#{bundler_spec.version}.gemspec")
+    normal_gemspec = File.join(Gem.default_dir, "specifications", "bundler-#{bundler_spec.version}.gemspec")
     if File.file? normal_gemspec
       File.delete normal_gemspec
     end

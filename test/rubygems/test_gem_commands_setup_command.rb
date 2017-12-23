@@ -6,6 +6,8 @@ require 'rubygems/commands/setup_command'
 
 class TestGemCommandsSetupCommand < Gem::TestCase
 
+  BUNDLER_VERS = `gem list -e bundler`[/([^() ]+)\)\Z/, 1] || "1.16.0"
+
   def setup
     super
 
@@ -46,6 +48,11 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     end
 
     FileUtils.mkdir_p File.join(Gem.default_dir, "specifications")
+
+    open(File.join(Gem.default_dir, "specifications", "bundler-#{BUNDLER_VERS}.gemspec"), 'w') do |io|
+      io.puts '# bundler-1.16.1'
+    end
+
     open(File.join(Gem.default_dir, "specifications", "bundler-audit-1.0.0.gemspec"), 'w') do |io|
       io.puts '# bundler-audit'
     end
@@ -134,13 +141,25 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     default_dir = Gem::Specification.default_specifications_dir
 
+    # expect to remove other versions of bundler gemspecs on default specification directory.
     refute_path_exists File.join(default_dir, "bundler-1.15.4.gemspec")
-    refute_path_exists 'default/gems/bundler-1.15.4'
+    assert_path_exists File.join(default_dir, "bundler-#{BUNDLER_VERS}.gemspec")
 
-    assert_path_exists File.join(default_dir, "bundler-1.16.0.gemspec")
-    assert_path_exists 'default/gems/bundler-1.16.0'
-
+    # expect to not remove bundler-* gemspecs.
     assert_path_exists File.join(Gem.default_dir, "specifications", "bundler-audit-1.0.0.gemspec")
+
+    # expect to remove normal gem that was same version. because it's promoted default gems.
+    refute_path_exists File.join(Gem.default_dir, "specifications", "bundler-#{BUNDLER_VERS}.gemspec")
+
+    # expect to install default gems. It location was `site_ruby` direcotry on real world.
+    assert_path_exists "default/gems/bundler-#{BUNDLER_VERS}"
+
+    # expect to not remove other versions of bundler on `site_ruby`
+    assert_path_exists 'default/gems/bundler-1.15.4'
+
+    # TODO: We need to assert to remove same version of bundler on gem_dir direcotry(It's not site_ruby dir)
+
+    # expect to not remove bundler-* direcotyr.
     assert_path_exists 'default/gems/bundler-audit-1.0.0'
   end if Gem::USE_BUNDLER_FOR_GEMDEPS
 

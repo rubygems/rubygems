@@ -1,5 +1,16 @@
 # coding: UTF-8
 
+=== 2.7.4
+
+Bug fixes:
+
+* Fixed leaked FDs. Pull request #2127 by Nobuyoshi Nakada.
+* Avoid to warnings about gemspec loadings in rubygems tests. Pull request
+  #2125 by SHIBATA Hiroshi.
+* Fix updater with rubygems-2.7.3 Pull request #2124 by SHIBATA Hiroshi.
+* Handle environment that does not have `flock` system call. Pull request
+  #2107 by SHIBATA Hiroshi.
+
 === 2.7.3
 
 Minor enhancements:

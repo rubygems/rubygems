@@ -67,7 +67,7 @@ hoe = Hoe.spec 'rubygems-update' do
   dependency 'hoe-seattlerb', '~> 1.2',   :dev
   dependency 'rdoc',          '~> 4.0',   :dev
   dependency 'rake',          '~> 10.5',  :dev
-  dependency 'minitest',      '~> 4.0',   :dev
+  dependency 'minitest',      '~> 5.0',   :dev
 
   self.extra_rdoc_files = Dir["*.rdoc"] + %w[
     CVE-2013-4287.txt
@@ -100,7 +100,7 @@ v = hoe.version
 
 hoe.testlib      = :minitest
 hoe.test_prelude = <<-RUBY.gsub("\n", ";")
-  gem "minitest", "~> 4.0"
+  gem "minitest", "~> 5.0"
   $:.unshift #{File.expand_path("../bundler/lib", __FILE__).dump}
   if "1.8" < RUBY_VERSION && RUBY_VERSION < "2.2"
     module Gem
@@ -151,7 +151,7 @@ task(:newb).prerequisites.unshift "bundler:checkout"
 
 desc "Install gems needed to run the tests"
 task :install_test_deps => :clean do
-  sh "gem install minitest -v '~> 4.0'"
+  sh "gem install minitest -v '~> 5.0'"
 end
 
 begin

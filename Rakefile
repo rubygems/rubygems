@@ -66,7 +66,6 @@ hoe = Hoe.spec 'rubygems-update' do
   dependency 'builder',       '~> 2.1',   :dev
   dependency 'hoe-seattlerb', '~> 1.2',   :dev
   dependency 'rdoc',          '~> 4.0',   :dev
-  dependency 'ZenTest',       '~> 4.5',   :dev
   dependency 'rake',          '~> 10.5',  :dev
   dependency 'minitest',      '~> 4.0',   :dev
 

@@ -775,7 +775,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_read_binary
-    open 'test', 'w' do |io|
+    File.open 'test', 'w' do |io|
       io.write "\xCF\x80"
     end
 
@@ -1650,7 +1650,7 @@ class TestGem < Gem::TestCase
     spec = Gem::Specification.find { |s| s == spec }
     refute spec.activated?
 
-    open gem_deps_file, 'w' do |io|
+    File.open gem_deps_file, 'w' do |io|
       io.write 'gem "a"'
     end
 
@@ -1669,7 +1669,7 @@ class TestGem < Gem::TestCase
 
     refute spec.activated?
 
-    open 'gem.deps.rb', 'w' do |io|
+    File.open 'gem.deps.rb', 'w' do |io|
       io.write 'gem "a"'
     end
 
@@ -1713,7 +1713,7 @@ class TestGem < Gem::TestCase
 
     refute spec.activated?
 
-    open 'Gemfile', 'w' do |io|
+    File.open 'Gemfile', 'w' do |io|
       io.write 'gem "a"'
     end
 
@@ -1742,7 +1742,7 @@ class TestGem < Gem::TestCase
 
     refute spec.activated?
 
-    open 'gem.deps.rb', 'w' do |io|
+    File.open 'gem.deps.rb', 'w' do |io|
       io.write 'gem "a"'
     end
 
@@ -1757,7 +1757,7 @@ class TestGem < Gem::TestCase
     skip 'Insecure operation - read' if RUBY_VERSION <= "1.8.7"
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'
 
-    open 'x', 'w' do |io|
+    File.open 'x', 'w' do |io|
       io.write 'gem "a"'
     end
 
@@ -1798,7 +1798,7 @@ You may need to `gem install -g` to install missing gems
     spec = Gem::Specification.find { |s| s == spec }
     refute spec.activated?
 
-    open 'x', 'w' do |io|
+    File.open 'x', 'w' do |io|
       io.write 'gem "a"'
     end
 

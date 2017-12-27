@@ -140,7 +140,7 @@ end
       s.require_path = 'lib'
     end
 
-    open File.join(util_inst_bindir, 'executable'), 'w' do |io|
+    File.open File.join(util_inst_bindir, 'executable'), 'w' do |io|
      io.write <<-EXEC
 #!/usr/local/bin/ruby
 #
@@ -683,7 +683,7 @@ gem 'other', version
     @installer.generate_bin
 
     default_shebang = Gem.ruby
-    shebang_line = open("#{@gemhome}/bin/executable") { |f| f.readlines.first }
+    shebang_line = File.open("#{@gemhome}/bin/executable") { |f| f.readlines.first }
     assert_match(/\A#!/, shebang_line)
     assert_match(/#{default_shebang}/, shebang_line)
   end

@@ -13,6 +13,28 @@ rescue ::LoadError
   require 'yaml'
 end
 
+if Gem.win_platform?
+  # For ruby < 2.0, minitest files need to copied into repo lib folder
+  if RUBY_VERSION <= '1.9.3'
+    dest = File.dirname(__FILE__).gsub(/\//, "\\")
+    src_dir = Dir.glob("#{Gem.default_dir}/gems/minitest-*").sort
+    if src_dir.last
+      src = src_dir.last.gsub(/\//, "\\")
+      `md #{dest}\\lib\\minitest`
+      `copy #{src}\\lib\\minitest.rb #{dest}\\lib`
+      `copy #{src}\\lib\\minitest\\*.* #{dest}\\lib\\minitest`
+    end
+  end
+
+  require "rake/testtask"
+
+  desc "Runs tests without hoe, typically used with windows"
+  Rake::TestTask.new(:test_no_hoe) do |t|
+    t.libs << "test"
+    t.test_files = FileList['test/**/test_*.rb']
+  end
+end
+
 begin
   require 'hoe'
 rescue Gem::ConflictError => e

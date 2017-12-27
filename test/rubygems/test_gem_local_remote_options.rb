@@ -44,8 +44,9 @@ class TestGemLocalRemoteOptions < Gem::TestCase
     spec_fetcher
 
     @cmd.add_local_remote_options
+    Gem.configuration.sources = nil
     @cmd.handle_options %W[--clear-sources]
-    assert_equal Gem.default_sources, Gem.sources
+    assert_equal Gem.default_sources, Gem.sources.to_a
   end
 
   def test_local_eh

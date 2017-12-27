@@ -7,15 +7,7 @@ branches:
 skip_tags: true
 clone_depth: 10
 
-init:
-  - mklink /d C:\git "C:\Program Files\Git"
-  - if %ruby_version%==_trunk (
-      appveyor DownloadFile https://ci.appveyor.com/api/projects/MSP-Greg/ruby-loco/artifacts/ruby_trunk.7z -FileName C:\ruby_trunk.7z &
-      7z x C:\ruby_trunk.7z -oC:\ruby_trunk )
-
 environment:
-  PATH: C:/ruby%ruby_version%/bin;C:/Program Files/7-Zip;C:/Program Files/AppVeyor/BuildAgent;C:/git/cmd;C:/Program Files (x86)/GNU/GnuPG/pub;C:/Windows/system32;C:\Windows;
-  WINDIR: C:\Windows
   matrix:
   - ruby_version: 193
   - ruby_version: 200
@@ -24,6 +16,7 @@ environment:
   - ruby_version: 21-x64
   - ruby_version: 22
   - ruby_version: 22-x64
+    GIT:  C:/git/cmd/git.exe
   - ruby_version: 23-x64
     GIT:  C:/git/cmd/git.exe
   - ruby_version: 24-x64
@@ -31,38 +24,34 @@ environment:
   - ruby_version: _trunk
     GIT:  C:/git/cmd/git.exe
 
+init:
+  - set PATH=C:/ruby%ruby_version%/bin;C:/Program Files/7-Zip;C:/Program Files/AppVeyor/BuildAgent;C:/git/cmd;C:/Program Files (x86)/GNU/GnuPG/pub;C:/Windows/system32;C:\Windows;
+  - set RUBYOPT=--disable-gems
+  - mklink /d C:\git "C:\Program Files\Git"
+  - if %ruby_version%==_trunk (
+      appveyor DownloadFile https://ci.appveyor.com/api/projects/MSP-Greg/ruby-loco/artifacts/ruby_trunk.7z -FileName C:\ruby_trunk.7z &
+      7z x C:\ruby_trunk.7z -oC:\ruby_trunk )
+
+install:
+- if %ruby_version%==193 ( gem update minitest --no-document )
+- ps: >-
+    git submodule update --init --recursive
+
+    if ((gem query -i minitest) -eq $False){ gem install minitest --no-document }
+
+    if ((gem query -i rake)     -eq $False){ gem install rake     --no-document }
+
+    if ((gem query -i hoe)      -eq $False){ gem install hoe      --no-document }
+
+test_script:
+  - rake -rdevkit test_no_hoe
+
+on_finish:
+  - ruby -v
+
 matrix:
   allow_failures:
     - ruby_version: _trunk
 
-install:
-- ps: >-
-    git submodule update --init --recursive
-
-    $env:path = 'C:\Ruby' + $env:ruby_version + '\bin;' + $env:path
-
-    if ((gem query -i rake) -eq $False){ gem install rake --no-document }
-
-    if ((gem query -i hoe) -eq $False){ gem install hoe --no-document }
-
-    gem install minitest -v "~> 4.7" --no-document
-
-    ruby -v
-
-cache:
-- C:\Ruby193\lib\ruby\gems\1.9.1
-- C:\Ruby200\lib\ruby\gems\2.0.0
-- C:\Ruby200-x64\lib\ruby\gems\2.0.0
-- C:\Ruby21\lib\ruby\gems\2.1.0
-- C:\Ruby21-x64\lib\ruby\gems\2.1.0
-- C:\Ruby22\lib\ruby\gems\2.2.0
-- C:\Ruby22-x64\lib\ruby\gems\2.2.0
-- C:\Ruby23-x64\lib\ruby\gems\2.3.0
-- C:\Ruby24-x64\lib\ruby\gems\2.4.0
-
 build: off
-test_script:
-- rake -rdevkit test
-on_finish:
-- ruby -v
 deploy: off

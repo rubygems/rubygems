@@ -52,7 +52,7 @@ class TestGemRequestSet < Gem::TestCase
     rs = Gem::RequestSet.new
     installed = []
 
-    open 'gem.deps.rb', 'w' do |io|
+    File.open 'gem.deps.rb', 'w' do |io|
       io.puts 'gem "a"'
       io.flush
 
@@ -69,6 +69,7 @@ class TestGemRequestSet < Gem::TestCase
 
     assert rs.remote
     refute done_installing_ran
+    Gem.done_installing_hooks.pop
   end
 
   def test_install_from_gemdeps_explain
@@ -78,7 +79,7 @@ class TestGemRequestSet < Gem::TestCase
 
     rs = Gem::RequestSet.new
 
-    open 'gem.deps.rb', 'w' do |io|
+    File.open 'gem.deps.rb', 'w' do |io|
       io.puts 'gem "a"'
       io.flush
 
@@ -104,7 +105,7 @@ Gems to install:
     rs = Gem::RequestSet.new
     installed = []
 
-    open 'gem.deps.rb', 'w' do |io|
+    File.open 'gem.deps.rb', 'w' do |io|
       io.puts 'gem "a"'
     end
 
@@ -128,7 +129,7 @@ Gems to install:
 
     rs = Gem::RequestSet.new
 
-    open 'gem.deps.rb', 'w' do |io|
+    File.open 'gem.deps.rb', 'w' do |io|
       io.puts 'gem "a"'
       io.flush
 
@@ -150,7 +151,7 @@ Gems to install:
     rs = Gem::RequestSet.new
     installed = []
 
-    open 'gem.deps.rb.lock', 'w' do |io|
+    File.open 'gem.deps.rb.lock', 'w' do |io|
       io.puts <<-LOCKFILE
 GEM
   remote: #{@gem_repo}
@@ -167,7 +168,7 @@ DEPENDENCIES
       LOCKFILE
     end
 
-    open 'gem.deps.rb', 'w' do |io|
+    File.open 'gem.deps.rb', 'w' do |io|
       io.puts 'gem "b"'
     end
 
@@ -190,7 +191,7 @@ DEPENDENCIES
     rs = Gem::RequestSet.new
     installed = []
 
-    open 'gem.deps.rb', 'w' do |io|
+    File.open 'gem.deps.rb', 'w' do |io|
       io.puts <<-GEM_DEPS
 gem "a"
 ruby "0"
@@ -472,6 +473,7 @@ ruby "0"
     assert_equal %w[b-1 a-1], installed.map { |s| s.full_name }
 
     assert done_installing_ran
+    Gem.done_installing_hooks.pop
   end
 
   def test_install_into

@@ -140,7 +140,7 @@ end
       s.require_path = 'lib'
     end
 
-    open File.join(util_inst_bindir, 'executable'), 'w' do |io|
+    File.open File.join(util_inst_bindir, 'executable'), 'w' do |io|
      io.write <<-EXEC
 #!/usr/local/bin/ruby
 #
@@ -683,7 +683,7 @@ gem 'other', version
     @installer.generate_bin
 
     default_shebang = Gem.ruby
-    shebang_line = open("#{@gemhome}/bin/executable") { |f| f.readlines.first }
+    shebang_line = File.open("#{@gemhome}/bin/executable") { |f| f.readlines.first }
     assert_match(/\A#!/, shebang_line)
     assert_match(/#{default_shebang}/, shebang_line)
   end
@@ -778,6 +778,10 @@ gem 'other', version
     assert_same @installer, @post_build_hook_arg
     assert_same @installer, @post_install_hook_arg
     assert_same @installer, @pre_install_hook_arg
+
+    Gem.pre_install_hooks.pop
+    Gem.post_build_hooks.pop
+    Gem.post_install_hooks.pop
   end
 
   def test_install_creates_working_binstub
@@ -1004,6 +1008,7 @@ gem 'other', version
 
     gem_dir = File.join @gemhome, 'gems', @spec.full_name
     refute_path_exists gem_dir
+    Gem.post_build_hooks.pop
   end
 
   def test_install_post_build_nil
@@ -1022,6 +1027,7 @@ gem 'other', version
 
     gem_dir = File.join @gemhome, 'gems', @spec.full_name
     assert_path_exists gem_dir
+    Gem.post_build_hooks.pop
   end
 
   def test_install_pre_install_false
@@ -1043,6 +1049,7 @@ gem 'other', version
 
     spec_file = File.join @gemhome, 'specifications', @spec.spec_name
     refute_path_exists spec_file
+    Gem.pre_install_hooks.pop
   end
 
   def test_install_pre_install_nil
@@ -1058,6 +1065,7 @@ gem 'other', version
 
     spec_file = File.join @gemhome, 'specifications', @spec.spec_name
     assert_path_exists spec_file
+    Gem.pre_install_hooks.pop
   end
 
   def test_install_with_message

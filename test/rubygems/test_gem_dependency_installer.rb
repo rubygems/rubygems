@@ -338,6 +338,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
 
     assert done_installing_ran, 'post installs hook was not run'
+    Gem.done_installing_hooks.pop
   end
 
   def test_install_dependency_development
@@ -599,6 +600,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     inst.install @a1_gem
 
     assert done_installing_called
+    Gem.done_installing_hooks.pop
   end
 
   def test_install_env_shebang

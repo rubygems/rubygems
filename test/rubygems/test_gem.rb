@@ -7,7 +7,7 @@ require 'pathname'
 require 'tmpdir'
 
 # TODO: push this up to test_case.rb once battle tested
-$SAFE=1
+# $SAFE=1
 $LOAD_PATH.map! do |path|
   path.dup.untaint
 end
@@ -775,7 +775,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_read_binary
-    open 'test', 'w' do |io|
+    File.open 'test', 'w' do |io|
       io.write "\xCF\x80"
     end
 
@@ -955,6 +955,7 @@ class TestGem < Gem::TestCase
     Gem.post_build do |installer| end
 
     assert_equal 2, Gem.post_build_hooks.length
+    Gem.post_build_hooks.pop 2
   end
 
   def test_self_post_install
@@ -963,6 +964,7 @@ class TestGem < Gem::TestCase
     Gem.post_install do |installer| end
 
     assert_equal 2, Gem.post_install_hooks.length
+    Gem.post_build_hooks.pop 2
   end
 
   def test_self_done_installing
@@ -971,6 +973,7 @@ class TestGem < Gem::TestCase
     Gem.done_installing do |gems| end
 
     assert_equal 1, Gem.done_installing_hooks.length
+    Gem.done_installing_hooks.pop
   end
 
   def test_self_post_reset
@@ -979,6 +982,7 @@ class TestGem < Gem::TestCase
     Gem.post_reset { }
 
     assert_equal 1, Gem.post_reset_hooks.length
+    Gem.post_reset_hooks.pop
   end
 
   def test_self_post_uninstall
@@ -987,6 +991,7 @@ class TestGem < Gem::TestCase
     Gem.post_uninstall do |installer| end
 
     assert_equal 2, Gem.post_uninstall_hooks.length
+    Gem.post_uninstall_hooks.pop 2
   end
 
   def test_self_pre_install
@@ -995,6 +1000,7 @@ class TestGem < Gem::TestCase
     Gem.pre_install do |installer| end
 
     assert_equal 2, Gem.pre_install_hooks.length
+    Gem.pre_install_hooks.pop 2
   end
 
   def test_self_pre_reset
@@ -1003,6 +1009,7 @@ class TestGem < Gem::TestCase
     Gem.pre_reset { }
 
     assert_equal 1, Gem.pre_reset_hooks.length
+    Gem.pre_reset_hooks.pop
   end
 
   def test_self_pre_uninstall
@@ -1011,6 +1018,7 @@ class TestGem < Gem::TestCase
     Gem.pre_uninstall do |installer| end
 
     assert_equal 2, Gem.pre_uninstall_hooks.length
+    Gem.pre_uninstall_hooks.pop 2
   end
 
   def test_self_sources
@@ -1642,7 +1650,7 @@ class TestGem < Gem::TestCase
     spec = Gem::Specification.find { |s| s == spec }
     refute spec.activated?
 
-    open gem_deps_file, 'w' do |io|
+    File.open gem_deps_file, 'w' do |io|
       io.write 'gem "a"'
     end
 
@@ -1661,7 +1669,7 @@ class TestGem < Gem::TestCase
 
     refute spec.activated?
 
-    open 'gem.deps.rb', 'w' do |io|
+    File.open 'gem.deps.rb', 'w' do |io|
       io.write 'gem "a"'
     end
 
@@ -1705,7 +1713,7 @@ class TestGem < Gem::TestCase
 
     refute spec.activated?
 
-    open 'Gemfile', 'w' do |io|
+    File.open 'Gemfile', 'w' do |io|
       io.write 'gem "a"'
     end
 
@@ -1734,7 +1742,7 @@ class TestGem < Gem::TestCase
 
     refute spec.activated?
 
-    open 'gem.deps.rb', 'w' do |io|
+    File.open 'gem.deps.rb', 'w' do |io|
       io.write 'gem "a"'
     end
 
@@ -1749,7 +1757,7 @@ class TestGem < Gem::TestCase
     skip 'Insecure operation - read' if RUBY_VERSION <= "1.8.7"
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'
 
-    open 'x', 'w' do |io|
+    File.open 'x', 'w' do |io|
       io.write 'gem "a"'
     end
 
@@ -1772,6 +1780,7 @@ You may need to `gem install -g` to install missing gems
 
       EXPECTED
     end
+    expected = /#{Regexp.escape(expected)}/
 
     assert_output nil, expected do
       Gem.use_gemdeps
@@ -1790,7 +1799,7 @@ You may need to `gem install -g` to install missing gems
     spec = Gem::Specification.find { |s| s == spec }
     refute spec.activated?
 
-    open 'x', 'w' do |io|
+    File.open 'x', 'w' do |io|
       io.write 'gem "a"'
     end
 

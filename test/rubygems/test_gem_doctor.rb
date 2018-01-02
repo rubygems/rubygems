@@ -16,6 +16,8 @@ class TestGemDoctor < Gem::TestCase
   end
 
   def test_doctor
+    util_clear_gems
+
     a = gem 'a'
     b = gem 'b'
     c = gem 'c'
@@ -24,7 +26,7 @@ class TestGemDoctor < Gem::TestCase
 
     FileUtils.rm b.spec_file
 
-    open c.spec_file, 'w' do |io|
+    File.open c.spec_file, 'w' do |io|
       io.write 'this will raise an exception when evaluated.'
     end
 
@@ -77,7 +79,7 @@ Removed directory gems/c-2
 
     FileUtils.rm b.spec_file
 
-    open c.spec_file, 'w' do |io|
+    File.open c.spec_file, 'w' do |io|
       io.write 'this will raise an exception when evaluated.'
     end
 
@@ -154,6 +156,10 @@ This directory does not appear to be a RubyGems repository, skipping
   end
 
   def test_gem_repository_eh
+    unless (t = Dir.glob(File.join(@gemhome, "**/*.gemspec"))).empty?
+      File.delete(*t)
+    end
+    
     doctor = Gem::Doctor.new @gemhome
 
     refute doctor.gem_repository?, 'no gems installed'

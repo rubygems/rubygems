@@ -7,11 +7,11 @@ class TestGemSourceGit < Gem::TestCase
   def setup
     super
 
-    @name, @version, @repository, @head = git_gem
+    @r_name, @version, @repository, @head = git_gem
 
     @hash = Digest::SHA1.hexdigest @repository
 
-    @source = Gem::Source::Git.new @name, @repository, 'master', false
+    @source = Gem::Source::Git.new @r_name, @repository, 'master', false
   end
 
   def test_base_dir
@@ -36,7 +36,7 @@ class TestGemSourceGit < Gem::TestCase
       system @git, 'checkout', '-q', 'master'
     end
 
-    @source = Gem::Source::Git.new @name, @repository, 'other', false
+    @source = Gem::Source::Git.new @r_name, @repository, 'other', false
 
     @source.checkout
 
@@ -64,7 +64,7 @@ class TestGemSourceGit < Gem::TestCase
   end
 
   def test_checkout_submodules
-    source = Gem::Source::Git.new @name, @repository, 'master', true
+    source = Gem::Source::Git.new @r_name, @repository, 'master', true
 
     git_gem 'b'
 
@@ -176,13 +176,13 @@ class TestGemSourceGit < Gem::TestCase
 
     git_gem 'a', 2
 
-    source = Gem::Source::Git.new @name, @repository, 'other', false
+    source = Gem::Source::Git.new @r_name, @repository, 'other', false
 
     source.cache
 
     refute_equal master_head, source.rev_parse
 
-    source = Gem::Source::Git.new @name, @repository, 'nonexistent', false
+    source = Gem::Source::Git.new @r_name, @repository, 'nonexistent', false
 
     source.cache
 
@@ -221,7 +221,7 @@ class TestGemSourceGit < Gem::TestCase
   end
 
   def test_specs
-    source = Gem::Source::Git.new @name, @repository, 'master', true
+    source = Gem::Source::Git.new @r_name, @repository, 'master', true
 
     Dir.chdir 'git/a' do
       FileUtils.mkdir 'b'
@@ -277,7 +277,7 @@ class TestGemSourceGit < Gem::TestCase
   end
 
   def test_specs_local
-    source = Gem::Source::Git.new @name, @repository, 'master', true
+    source = Gem::Source::Git.new @r_name, @repository, 'master', true
     source.remote = false
 
     capture_io do

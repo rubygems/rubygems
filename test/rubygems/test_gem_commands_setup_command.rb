@@ -10,7 +10,8 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
   def setup
     super
-
+    util_clear_gems
+    
     @install_dir = File.join @tempdir, 'install'
     @cmd = Gem::Commands::SetupCommand.new
     @cmd.options[:prefix] = @install_dir
@@ -18,17 +19,17 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     FileUtils.mkdir_p 'bin'
     FileUtils.mkdir_p 'lib/rubygems/ssl_certs/rubygems.org'
 
-    open 'bin/gem',                   'w' do |io| io.puts '# gem'          end
-    open 'lib/rubygems.rb',           'w' do |io| io.puts '# rubygems.rb'  end
-    open 'lib/rubygems/test_case.rb', 'w' do |io| io.puts '# test_case.rb' end
-    open 'lib/rubygems/ssl_certs/rubygems.org/foo.pem', 'w' do |io| io.puts 'PEM'       end
+    File.open 'bin/gem',                   'w' do |io| io.puts '# gem'          end
+    File.open 'lib/rubygems.rb',           'w' do |io| io.puts '# rubygems.rb'  end
+    File.open 'lib/rubygems/test_case.rb', 'w' do |io| io.puts '# test_case.rb' end
+    File.open 'lib/rubygems/ssl_certs/rubygems.org/foo.pem', 'w' do |io| io.puts 'PEM'       end
 
     FileUtils.mkdir_p 'bundler/exe'
     FileUtils.mkdir_p 'bundler/lib/bundler'
 
-    open 'bundler/exe/bundle',        'w' do |io| io.puts '# bundle'       end
-    open 'bundler/lib/bundler.rb',    'w' do |io| io.puts '# bundler.rb'   end
-    open 'bundler/lib/bundler/b.rb',  'w' do |io| io.puts '# b.rb'         end
+    File.open 'bundler/exe/bundle',        'w' do |io| io.puts '# bundle'       end
+    File.open 'bundler/lib/bundler.rb',    'w' do |io| io.puts '# bundler.rb'   end
+    File.open 'bundler/lib/bundler/b.rb',  'w' do |io| io.puts '# b.rb'         end
 
     FileUtils.mkdir_p 'default/gems'
 
@@ -38,22 +39,22 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     gemspec.bindir = "exe"
     gemspec.executables = ["bundle"]
 
-    open 'bundler/bundler.gemspec',   'w' do |io|
+    File.open 'bundler/bundler.gemspec',   'w' do |io|
       io.puts gemspec.to_ruby
     end
 
-    open(File.join(Gem::Specification.default_specifications_dir, "bundler-1.15.4.gemspec"), 'w') do |io|
+    File.open(File.join(Gem::Specification.default_specifications_dir, "bundler-1.15.4.gemspec"), 'w') do |io|
       gemspec.version = "1.15.4"
       io.puts gemspec.to_ruby
     end
 
     FileUtils.mkdir_p File.join(Gem.default_dir, "specifications")
 
-    open(File.join(Gem.default_dir, "specifications", "bundler-#{BUNDLER_VERS}.gemspec"), 'w') do |io|
+    File.open(File.join(Gem.default_dir, "specifications", "bundler-#{BUNDLER_VERS}.gemspec"), 'w') do |io|
       io.puts '# bundler-1.16.1'
     end
 
-    open(File.join(Gem.default_dir, "specifications", "bundler-audit-1.0.0.gemspec"), 'w') do |io|
+    File.open(File.join(Gem.default_dir, "specifications", "bundler-audit-1.0.0.gemspec"), 'w') do |io|
       io.puts '# bundler-audit'
     end
 
@@ -74,6 +75,13 @@ class TestGemCommandsSetupCommand < Gem::TestCase
   end
 
   def test_execute_regenerate_binstubs
+    # Gem.ruby_version needs to be correct for passing test
+    if Gem.instance_variable_defined? :@ruby_version
+      unless Gem.ruby_version.to_s.start_with?(RUBY_VERSION)
+        Gem.send :remove_instance_variable, :@ruby_version
+      end
+    end
+
     gem_bin_path = gem_install 'a'
     write_file gem_bin_path do |io|
       io.puts 'I changed it!'
@@ -86,6 +94,13 @@ class TestGemCommandsSetupCommand < Gem::TestCase
   end
 
   def test_execute_no_regenerate_binstubs
+    # Gem.ruby_version needs to be correct for passing test
+    if Gem.instance_variable_defined? :@ruby_version
+      unless Gem.ruby_version.to_s.start_with?(RUBY_VERSION)
+        Gem.send :remove_instance_variable, :@ruby_version
+      end
+    end
+
     gem_bin_path = gem_install 'a'
     write_file gem_bin_path do |io|
       io.puts 'I changed it!'
@@ -181,14 +196,14 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     FileUtils.mkdir_p lib_rubygems_defaults
     FileUtils.mkdir_p lib_bundler
 
-    open securerandom_rb,    'w' do |io| io.puts '# securerandom.rb'     end
+    File.open securerandom_rb,    'w' do |io| io.puts '# securerandom.rb'     end
 
-    open old_builder_rb,     'w' do |io| io.puts '# builder.rb'          end
-    open old_format_rb,      'w' do |io| io.puts '# format.rb'           end
-    open old_bundler_c_rb,   'w' do |io| io.puts '# c.rb'                end
+    File.open old_builder_rb,     'w' do |io| io.puts '# builder.rb'          end
+    File.open old_format_rb,      'w' do |io| io.puts '# format.rb'           end
+    File.open old_bundler_c_rb,   'w' do |io| io.puts '# c.rb'                end
 
-    open engine_defaults_rb, 'w' do |io| io.puts '# jruby.rb'            end
-    open os_defaults_rb,     'w' do |io| io.puts '# operating_system.rb' end
+    File.open engine_defaults_rb, 'w' do |io| io.puts '# jruby.rb'            end
+    File.open os_defaults_rb,     'w' do |io| io.puts '# operating_system.rb' end
 
     @cmd.remove_old_lib_files lib
 
@@ -210,7 +225,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     @cmd.options[:previous_version] = Gem::Version.new '2.0.2'
 
-    open 'History.txt', 'w' do |io|
+    File.open 'History.txt', 'w' do |io|
       io.puts <<-History_txt
 # coding: UTF-8
 

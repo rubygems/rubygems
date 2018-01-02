@@ -279,6 +279,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_many_multi_repo
+    util_clear_gems
     a = util_spec 'a'
     install_gem a
 
@@ -341,6 +342,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   end
 
   def test_execute_missing_cache_gem_when_multi_repo
+    util_clear_gems
     specs = spec_fetcher do |fetcher|
       fetcher.gem 'a', 1
       fetcher.gem 'b', 1

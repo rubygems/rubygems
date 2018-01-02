@@ -948,6 +948,9 @@ dependencies: []
     @a2.files.clear
 
     assert_equal @a2, spec
+
+  ensure
+    $SAFE = 0
   end
 
   def test_self_load_escape_curly
@@ -1409,6 +1412,7 @@ dependencies: []
 
     stub = Gem::Specification.find_all_by_name('default').first
     assert_predicate stub, :default_gem?
+    util_remove_gem default
   end
 
   def test_build_extensions_built

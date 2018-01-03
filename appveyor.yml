@@ -26,7 +26,6 @@ environment:
 
 init:
   - set PATH=C:/ruby%ruby_version%/bin;C:/Program Files/7-Zip;C:/Program Files/AppVeyor/BuildAgent;C:/git/cmd;C:/Program Files (x86)/GNU/GnuPG/pub;C:/Windows/system32;C:\Windows;
-  - set RUBYOPT=--disable-gems
   - mklink /d C:\git "C:\Program Files\Git"
   - if %ruby_version%==_trunk (
       appveyor DownloadFile https://ci.appveyor.com/api/projects/MSP-Greg/ruby-loco/artifacts/ruby_trunk.7z -FileName C:\ruby_trunk.7z &
@@ -44,7 +43,7 @@ install:
     if ((gem query -i hoe)      -eq $False){ gem install hoe      --no-document }
 
 test_script:
-  - rake -rdevkit test_no_hoe
+  - rake test_no_hoe
 
 on_finish:
   - ruby -v

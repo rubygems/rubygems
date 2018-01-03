@@ -10,7 +10,8 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
   def setup
     super
-
+    util_clear_gems
+    
     @install_dir = File.join @tempdir, 'install'
     @cmd = Gem::Commands::SetupCommand.new
     @cmd.options[:prefix] = @install_dir
@@ -74,6 +75,13 @@ class TestGemCommandsSetupCommand < Gem::TestCase
   end
 
   def test_execute_regenerate_binstubs
+    # Gem.ruby_version needs to be correct for passing test
+    if Gem.instance_variable_defined? :@ruby_version
+      unless Gem.ruby_version.to_s.start_with?(RUBY_VERSION)
+        Gem.send :remove_instance_variable, :@ruby_version
+      end
+    end
+
     gem_bin_path = gem_install 'a'
     write_file gem_bin_path do |io|
       io.puts 'I changed it!'
@@ -86,6 +94,13 @@ class TestGemCommandsSetupCommand < Gem::TestCase
   end
 
   def test_execute_no_regenerate_binstubs
+    # Gem.ruby_version needs to be correct for passing test
+    if Gem.instance_variable_defined? :@ruby_version
+      unless Gem.ruby_version.to_s.start_with?(RUBY_VERSION)
+        Gem.send :remove_instance_variable, :@ruby_version
+      end
+    end
+
     gem_bin_path = gem_install 'a'
     write_file gem_bin_path do |io|
       io.puts 'I changed it!'

@@ -238,6 +238,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     a2 = @specs['a-2']
 
     assert_path_exists File.join(a2.doc_dir, 'rdoc')
+    Gem.done_installing_hooks.pop
   end
 
   def test_execute_named

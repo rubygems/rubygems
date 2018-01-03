@@ -11,7 +11,7 @@ class TestGemIndexer < Gem::TestCase
   def setup
     super
 
-    util_clear_gems
+    util_clear_gemspecs
     util_make_gems
 
     @d2_0 = util_spec 'd', '2.0' do |s|
@@ -35,6 +35,12 @@ class TestGemIndexer < Gem::TestCase
     FileUtils.mv Dir[File.join(@gemhome, "cache", '*.gem')], gems
 
     @indexer = Gem::Indexer.new(@tempdir)
+  end
+
+  def teardown
+    util_remove_gem @default
+    util_clear_gemspecs
+    super
   end
 
   def test_initialize

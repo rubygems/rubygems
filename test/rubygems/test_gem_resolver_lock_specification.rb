@@ -7,7 +7,7 @@ class TestGemResolverLockSpecification < Gem::TestCase
 
   def setup
     super
-
+    util_clear_gems
     @LS = Gem::Resolver::LockSpecification
 
     @source = Gem::Source.new @gem_repo

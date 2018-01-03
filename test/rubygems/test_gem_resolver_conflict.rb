@@ -40,6 +40,7 @@ class TestGemResolverConflict < Gem::TestCase
   end
 
   def test_explanation_user_request
+    util_clear_gems
     @DR = Gem::Resolver
 
     spec = util_spec 'a', 2

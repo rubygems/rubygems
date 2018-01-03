@@ -69,6 +69,7 @@ class TestGemRequestSet < Gem::TestCase
 
     assert rs.remote
     refute done_installing_ran
+    Gem.done_installing_hooks.pop
   end
 
   def test_install_from_gemdeps_explain
@@ -472,6 +473,7 @@ ruby "0"
     assert_equal %w[b-1 a-1], installed.map { |s| s.full_name }
 
     assert done_installing_ran
+    Gem.done_installing_hooks.pop
   end
 
   def test_install_into

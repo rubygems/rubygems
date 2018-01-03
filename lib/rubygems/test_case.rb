@@ -234,11 +234,11 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     ENV['GEM_VENDOR'] = nil
 
-    @current_dir = Dir.pwd
+    @current_dir = Dir.pwd.untaint
     @fetcher     = nil
 
     if Gem::USE_BUNDLER_FOR_GEMDEPS
-      Bundler.ui                     = Bundler::UI::Silent.new
+      Bundler.ui                   = Bundler::UI::Silent.new
     end
     @back_ui                       = Gem::DefaultUserInteraction.ui
     @ui                            = Gem::MockGemUi.new
@@ -706,9 +706,25 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     FileUtils.mkdir File.join(@gemhome, "gems")
     FileUtils.rm_rf File.join(@gemhome, "specifications")
     FileUtils.mkdir File.join(@gemhome, "specifications")
+    unless (t = Dir["#{@default_spec_dir}/*.gemspec"]).empty?
+      File.delete(*t)
+    end
     Gem::Specification.reset
   end
 
+  ##
+  # Removes all installed gemspecs from +@gemhome+.
+
+  def util_clear_gemspecs
+    unless (t = Dir["#{@gemhome}/specifications/*.gemspec"]).empty?
+      File.delete(*t)
+    end
+    unless (t = Dir["#{@default_spec_dir}/*.gemspec"]).empty?
+      File.delete(*t)
+    end
+  end
+  
+  
   ##
   # Install the provided specs
 
@@ -1102,8 +1118,7 @@ Also, a list:
   end
 
   def util_set_RUBY_VERSION(version, patchlevel = nil, revision = nil)
-    if Gem.instance_variables.include? :@ruby_version or
-       Gem.instance_variables.include? '@ruby_version' then
+    if Gem.instance_variable_defined? :@ruby_version
       Gem.send :remove_instance_variable, :@ruby_version
     end
 
@@ -1121,6 +1136,10 @@ Also, a list:
   end
 
   def util_restore_RUBY_VERSION
+    if Gem.instance_variable_defined? :@ruby_version
+      Gem.send :remove_instance_variable, :@ruby_version
+    end
+
     Object.send :remove_const, :RUBY_VERSION
     Object.send :remove_const, :RUBY_PATCHLEVEL if defined?(RUBY_PATCHLEVEL)
     Object.send :remove_const, :RUBY_REVISION   if defined?(RUBY_REVISION)

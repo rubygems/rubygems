@@ -922,7 +922,7 @@ dependencies: []
   end
 
   def test_self_load_relative
-    open 'a-2.gemspec', 'w' do |io|
+    File.open 'a-2.gemspec', 'w' do |io|
       io.write @a2.to_ruby_for_cache
     end
 
@@ -1111,7 +1111,7 @@ dependencies: []
   end
 
   def test_self_remove_spec_removed
-    open @a1.spec_file, 'w' do |io|
+    File.open @a1.spec_file, 'w' do |io|
       io.write @a1.to_ruby
     end
 
@@ -1363,13 +1363,13 @@ dependencies: []
 
     assert_empty @ext.build_args
 
-    open @ext.build_info_file, 'w' do |io|
+    File.open @ext.build_info_file, 'w' do |io|
       io.puts
     end
 
     assert_empty @ext.build_args
 
-    open @ext.build_info_file, 'w' do |io|
+    File.open @ext.build_info_file, 'w' do |io|
       io.puts '--with-foo-dir=wherever'
     end
 
@@ -1385,9 +1385,9 @@ dependencies: []
     extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
     FileUtils.mkdir_p File.dirname extconf_rb
 
-    open extconf_rb, 'w' do |f|
+    File.open extconf_rb, 'w' do |f|
       f.write <<-'RUBY'
-        open 'Makefile', 'w' do |f|
+        File.open 'Makefile', 'w' do |f|
           f.puts "clean:\n\techo clean"
           f.puts "default:\n\techo built"
           f.puts "install:\n\techo installed"
@@ -1435,9 +1435,9 @@ dependencies: []
     extconf_rb = File.join spec.gem_dir, spec.extensions.first
     FileUtils.mkdir_p File.dirname extconf_rb
 
-    open extconf_rb, 'w' do |f|
+    File.open extconf_rb, 'w' do |f|
       f.write <<-'RUBY'
-        open 'Makefile', 'w' do |f|
+        File.open 'Makefile', 'w' do |f|
           f.puts "default:\n\techo built"
           f.puts "install:\n\techo installed"
         end
@@ -1469,9 +1469,9 @@ dependencies: []
     extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
     FileUtils.mkdir_p File.dirname extconf_rb
 
-    open extconf_rb, 'w' do |f|
+    File.open extconf_rb, 'w' do |f|
       f.write <<-'RUBY'
-        open 'Makefile', 'w' do |f|
+        File.open 'Makefile', 'w' do |f|
           f.puts "clean:\n\techo clean"
           f.puts "default:\n\techo built"
           f.puts "install:\n\techo installed"
@@ -1502,9 +1502,9 @@ dependencies: []
     extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
     FileUtils.mkdir_p File.dirname extconf_rb
 
-    open extconf_rb, 'w' do |f|
+    File.open extconf_rb, 'w' do |f|
       f.write <<-'RUBY'
-        open 'Makefile', 'w' do |f|
+        File.open 'Makefile', 'w' do |f|
           f.puts "clean:\n\techo clean"
           f.puts "default:\n\techo built"
           f.puts "install:\n\techo installed"
@@ -1551,9 +1551,9 @@ dependencies: []
     extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
     FileUtils.mkdir_p File.dirname extconf_rb
 
-    open extconf_rb, 'w' do |f|
+    File.open extconf_rb, 'w' do |f|
       f.write <<-'RUBY'
-        open 'Makefile', 'w' do |f|
+        File.open 'Makefile', 'w' do |f|
           f.puts "clean:\n\techo clean"
           f.puts "default:\n\techo built"
           f.puts "install:\n\techo installed"
@@ -3418,9 +3418,9 @@ end
     extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
     FileUtils.mkdir_p File.dirname extconf_rb
 
-    open extconf_rb, 'w' do |f|
+    File.open extconf_rb, 'w' do |f|
       f.write <<-'RUBY'
-        open 'Makefile', 'w' do |f|
+        File.open 'Makefile', 'w' do |f|
           f.puts "clean:\n\techo clean"
           f.puts "default:\n\techo built"
           f.puts "install:\n\techo installed"

@@ -140,7 +140,7 @@ end
       s.require_path = 'lib'
     end
 
-    open File.join(util_inst_bindir, 'executable'), 'w' do |io|
+    File.open File.join(util_inst_bindir, 'executable'), 'w' do |io|
      io.write <<-EXEC
 #!/usr/local/bin/ruby
 #

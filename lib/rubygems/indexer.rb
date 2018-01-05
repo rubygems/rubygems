@@ -123,7 +123,7 @@ class Gem::Indexer
         marshal_name = File.join @quick_marshal_dir, spec_file_name
 
         marshal_zipped = Gem.deflate Marshal.dump(spec)
-        open marshal_name, 'wb' do |io| io.write marshal_zipped end
+        File.open marshal_name, 'wb' do |io| io.write marshal_zipped end
 
         files << marshal_name
 
@@ -261,7 +261,7 @@ class Gem::Indexer
 
     zipped = Gem.deflate data
 
-    open "#{filename}.#{extension}", 'wb' do |io|
+    File.open "#{filename}.#{extension}", 'wb' do |io|
       io.write zipped
     end
   end
@@ -427,7 +427,7 @@ class Gem::Indexer
 
     specs_index = compact_specs specs_index.uniq.sort
 
-    open dest, 'wb' do |io|
+    File.open dest, 'wb' do |io|
       Marshal.dump specs_index, io
     end
   end

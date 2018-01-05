@@ -37,7 +37,7 @@ can be viewed online at http://www.rubydoc.info/github/rubygems/rubygems
 RubyGems also provides a comprehensive set of guides which covers numerous topics such as
 creating a new gem, security practices and other resources at http://guides.rubygems.org
 
-## GETTING HELP
+## Getting Help
 
 ### Support Requests
 

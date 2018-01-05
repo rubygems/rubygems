@@ -102,8 +102,8 @@ class TestGemRequire < Gem::TestCase
     assert t1.join, "thread 1 should exit"
     assert t2.join, "thread 2 should exit"
   ensure
-    Object.send :remove_const, :FILE_ENTERED_LATCH
-    Object.send :remove_const, :FILE_EXIT_LATCH
+    Object.send :remove_const, :FILE_ENTERED_LATCH if Object.const_defined? :FILE_ENTERED_LATCH
+    Object.send :remove_const, :FILE_EXIT_LATCH if Object.const_defined? :FILE_EXIT_LATCH
   end
 
   def test_require_is_not_lazy_with_exact_req

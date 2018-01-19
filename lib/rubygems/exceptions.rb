@@ -52,6 +52,11 @@ class Gem::GemNotInHomeException < Gem::Exception
   attr_accessor :spec
 end
 
+###
+# Raised when removing a gem with the uninstall command fails
+
+class Gem::UninstallError < Gem::Exception; end
+
 class Gem::DocumentError < Gem::Exception; end
 
 ##

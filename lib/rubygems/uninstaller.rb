@@ -213,8 +213,8 @@ class Gem::Uninstaller
 
         exe_file = File.join bin_dir, exe_name
 
-        FileUtils.rm_f exe_file
-        FileUtils.rm_f "#{exe_file}.bat"
+        safe_delete { FileUtils.rm exe_file }
+        safe_delete { FileUtils.rm "#{exe_file}.bat" }
       end
     else
       say "Executables and scripts will remain installed."
@@ -250,8 +250,8 @@ class Gem::Uninstaller
     raise Gem::FilePermissionError, spec.base_dir unless
       File.writable?(spec.base_dir)
 
-    FileUtils.rm_rf spec.full_gem_path
-    FileUtils.rm_rf spec.extension_dir
+    safe_delete { FileUtils.rm_r spec.full_gem_path }
+    safe_delete { FileUtils.rm_r spec.extension_dir }
 
     old_platform_name = spec.original_name
     gemspec           = spec.spec_file
@@ -260,13 +260,13 @@ class Gem::Uninstaller
       gemspec = File.join(File.dirname(gemspec), "#{old_platform_name}.gemspec")
     end
 
-    FileUtils.rm_rf gemspec
+    safe_delete { FileUtils.rm_r gemspec }
 
     gem = spec.cache_file
     gem = File.join(spec.cache_dir, "#{old_platform_name}.gem") unless
       File.exist? gem
 
-    FileUtils.rm_rf gem
+    safe_delete { FileUtils.rm_r gem }
 
     Gem::RDoc.new(spec).remove
 
@@ -342,5 +342,13 @@ class Gem::Uninstaller
     else
       filename
     end
+  end
+
+  def safe_delete(&block)
+    block.call
+  rescue Errno::ENOENT
+    nil
+  rescue Errno::EPERM
+    raise Gem::UninstallError
   end
 end

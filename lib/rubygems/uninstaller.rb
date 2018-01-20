@@ -349,6 +349,9 @@ class Gem::Uninstaller
   rescue Errno::ENOENT
     nil
   rescue Errno::EPERM
-    raise Gem::UninstallError
+    e = Gem::UninstallError.new
+    e.spec = @spec
+
+    raise e
   end
 end

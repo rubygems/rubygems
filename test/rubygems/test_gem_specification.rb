@@ -2928,6 +2928,17 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
     assert_empty @ui.error
   end
 
+  def test_validate_license_values_or_later
+    util_setup_validate
+
+    use_ui @ui do
+      @a1.licenses = ['GPL-2.0-or-later']
+      @a1.validate
+    end
+
+    assert_empty @ui.error
+  end
+
   def test_validate_license_values_with
     util_setup_validate
 

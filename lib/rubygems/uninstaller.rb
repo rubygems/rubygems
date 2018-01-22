@@ -253,6 +253,8 @@ class Gem::Uninstaller
     safe_delete { FileUtils.rm_r spec.full_gem_path }
     safe_delete { FileUtils.rm_r spec.extension_dir }
 
+    old_platform_name = spec.original_name
+
     gem = spec.cache_file
     gem = File.join(spec.cache_dir, "#{old_platform_name}.gem") unless
       File.exist? gem
@@ -261,8 +263,7 @@ class Gem::Uninstaller
 
     Gem::RDoc.new(spec).remove
 
-    old_platform_name = spec.original_name
-    gemspec           = spec.spec_file
+    gemspec = spec.spec_file
 
     unless File.exist? gemspec then
       gemspec = File.join(File.dirname(gemspec), "#{old_platform_name}.gemspec")

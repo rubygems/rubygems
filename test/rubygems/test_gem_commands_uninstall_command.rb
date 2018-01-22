@@ -296,7 +296,7 @@ WARNING:  Use your OS package manager to uninstall vendor gems
 
     @cmd.options[:args] = %w[a]
 
-    uninstall_exception =  ->(_a) do
+    uninstall_exception = lambda do |_a|
       ex = Gem::UninstallError.new
       ex.spec = @spec
 

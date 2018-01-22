@@ -488,7 +488,9 @@ create_makefile '#{@spec.name}'
   def test_uninstall_no_permission
     uninstaller = Gem::Uninstaller.new @spec.name, :executables => true
 
-    stub_rm_r = -> (_a, options = {}) do
+    stub_rm_r = lambda do |*args|
+      _path = args.shift
+      options = args.shift || Hash.new
       # Uninstaller calls a method in RDoc which also calls FileUtils.rm_rf which
       # is an alias for FileUtils#rm_r, so skip if we're using the force option
       raise Errno::EPERM unless options[:force]
@@ -499,10 +501,5 @@ create_makefile '#{@spec.name}'
         uninstaller.uninstall
       end
     end
-
-    # lines = ui.output.split("\n")
-    # lines.shift
-
-    # assert_match %r!Error: unable to succesfully uninstall '#{@spec.name}'!, lines.shift
   end
 end

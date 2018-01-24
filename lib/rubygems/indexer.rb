@@ -2,6 +2,7 @@
 require 'rubygems'
 require 'rubygems/package'
 require 'time'
+require 'tmpdir'
 
 begin
   gem 'builder'
@@ -64,7 +65,7 @@ class Gem::Indexer
     @build_modern = options[:build_modern]
 
     @dest_directory = directory
-    @directory = File.join(Dir.tmpdir, "gem_generate_index_#{$$}")
+    @directory = Dir.mktmpdir 'gem_generate_index'
 
     marshal_name = "Marshal.#{Gem.marshal_version}"
 

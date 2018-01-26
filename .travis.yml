@@ -51,4 +51,5 @@ matrix:
       env: "TEST_TOOL=rubygems YAML=syck"
   allow_failures:
     - rvm: ruby-head
-
+    - rvm: 2.5.0
+      env: "TEST_TOOL=rubygems YAML=psych"

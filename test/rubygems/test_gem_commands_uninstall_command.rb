@@ -93,7 +93,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     # Evil hack to prevent false removal success
     FileUtils.rm_f @executable
 
-    open @executable, "wb+" do |f| f.puts "binary" end
+    File.open @executable, "wb+" do |f| f.puts "binary" end
 
     @cmd.options[:executables] = true
     @cmd.options[:args] = [@spec.name]

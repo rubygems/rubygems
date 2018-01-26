@@ -871,19 +871,19 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # Safely read a file in binary mode on all platforms.
 
   def self.read_binary(path)
-    open path, 'rb+' do |f|
+    File.open path, 'rb+' do |f|
       f.flock(File::LOCK_EX)
       f.read
     end
   rescue *READ_BINARY_ERRORS
-    open path, 'rb' do |f|
+    File.open path, 'rb' do |f|
       f.read
     end
   rescue Errno::ENOLCK # NFS
     if Thread.main != Thread.current
       raise
     else
-      open path, 'rb' do |f|
+      File.open path, 'rb' do |f|
         f.read
       end
     end

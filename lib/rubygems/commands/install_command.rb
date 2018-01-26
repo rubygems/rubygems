@@ -134,7 +134,8 @@ to write the specification by hand.  For example:
   def check_version # :nodoc:
     if options[:version] != Gem::Requirement.default and
          get_all_gem_names.size > 1 then
-      alert_error "Can't use --version w/ multiple gems. Use name:ver instead."
+      alert_error "Can't use --version with multiple gems. You can specify multiple gems with" \
+                  " version requirments using `gem install 'my_gem:1.0.0' 'my_other_gem:~>2.0.0'`"
       terminate_interaction 1
     end
   end

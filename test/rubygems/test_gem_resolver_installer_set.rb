@@ -25,8 +25,8 @@ class TestGemResolverInstallerSet < Gem::TestCase
   end
 
   def test_add_always_install_errors
-    @fetcher = Gem::FakeFetcher.new
-    Gem::RemoteFetcher.fetcher = @fetcher
+    @stub_fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @stub_fetcher
 
     set = Gem::Resolver::InstallerSet.new :both
 

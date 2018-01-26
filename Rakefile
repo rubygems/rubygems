@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'rubygems/package_task'
+require "rake/testtask"
 
 if ENV['YAML'] == "syck"
   ENV['TEST_SYCK'] = "1"
@@ -13,26 +14,31 @@ rescue ::LoadError
   require 'yaml'
 end
 
-if Gem.win_platform?
+desc "Runs tests without hoe"
+Rake::TestTask.new(:test_no_hoe) do |t|
   # For ruby < 2.0, minitest files need to copied into repo lib folder
-  if RUBY_VERSION <= '1.9.3'
-    dest = File.dirname(__FILE__).gsub(/\//, "\\")
+  if RUBY_VERSION < '2.0'
+    require 'fileutils'
+    dest = File.dirname(__FILE__)
     src_dir = Dir.glob("#{Gem.default_dir}/gems/minitest-*").sort
-    if src_dir.last
-      src = src_dir.last.gsub(/\//, "\\")
-      `md #{dest}\\lib\\minitest`
-      `copy #{src}\\lib\\minitest.rb #{dest}\\lib`
-      `copy #{src}\\lib\\minitest\\*.* #{dest}\\lib\\minitest`
+    if (src = src_dir.last)
+      Dir.mkdir "#{dest}/lib/minitest" unless Dir.exist? "#{dest}/lib/minitest"
+      IO.copy_stream "#{src}/lib/minitest.rb", "#{dest}/lib/minitest.rb"
+      FileUtils.cp_r "#{src}/lib/minitest/.", "#{dest}/lib/minitest/"
     end
   end
 
-  require "rake/testtask"
-
-  desc "Runs tests without hoe, typically used with windows"
-  Rake::TestTask.new(:test_no_hoe) do |t|
-    t.libs << "test"
-    t.test_files = FileList['test/**/test_*.rb']
+  # no --disable-gems option
+  if RUBY_VERSION < "1.9"
+    t.ruby_opts = %w[-I"bundler/lib" -r./lib/rubygems]
+  else
+    t.ruby_opts = %w[--disable-gems]
   end
+  t.ruby_opts << '-rdevkit' if Gem.win_platform?
+
+  t.libs << "test"
+  t.libs << "bundler/lib" if RUBY_VERSION >= "2.5"
+  t.test_files = FileList['test/**/test_*.rb']
 end
 
 begin

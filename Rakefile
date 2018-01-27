@@ -28,7 +28,8 @@ Rake::TestTask.new(:test_no_hoe) do |t|
     end
   end
 
-  if RUBY_VERSION < "1.9"                             # no --disable-gems option
+  # no --disable-gems option
+  if RUBY_VERSION < "1.9"
     t.ruby_opts = %w[-I"bundler/lib" -r./lib/rubygems]
   else
     t.ruby_opts = %w[--disable-gems]

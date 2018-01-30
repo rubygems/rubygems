@@ -49,30 +49,6 @@ Rake::TestTask.new do |t|
   t.test_files = FileList['test/**/test_*.rb']
 end
 
-begin
-  require 'hoe'
-rescue Gem::ConflictError => e
-  abort <<-ERR
-Error while loading the hoe gem.
-#{e}
-  ERR
-rescue ::LoadError
-  abort <<-ERR
-Error while loading the hoe gem.
-Please install it by running the following:
-
-$ [sudo] gem install hoe
-  ERR
-end
-
-Hoe::RUBY_FLAGS << " --disable-gems" if RUBY_VERSION > "1.9"
-
-Hoe.plugin :git
-Hoe.plugin :travis
-Hoe.plugin :newb
-
-Hoe::DEFAULT_CONFIG["exclude"] = %r[#{Hoe::DEFAULT_CONFIG["exclude"]}|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)|doc/]ox
-
 v = "2.7.4"
 
 begin
@@ -396,7 +372,7 @@ desc "Update the manifest to reflect what's on disk"
 task :update_manifest do
   files = []
   require 'find'
-  exclude = Hoe::DEFAULT_CONFIG["exclude"]
+  exclude = %r[/\/tmp\/|pkg|CVS|\.svn|\.git|TAGS|extconf.h|\.bundle$|\.o$|\.log$/|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)|doc/]ox
   Find.find(".") do |path|
     next unless File.file?(path)
     next if path =~ exclude

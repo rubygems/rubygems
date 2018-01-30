@@ -125,6 +125,15 @@ task :prerelease => [:clobber, :check_manifest, :test]
 
 task :postrelease => %w[upload guides:publish blog:publish]
 
+file "pkg/rubygems-update-#{v}" do
+  require 'fileutils'
+  `gem build rubygems-update.gemspec`
+  `gem unpack rubygems-update-#{v}.gem`
+  FileUtils.mv "rubygems-update-#{v}.gem", "pkg"
+  FileUtils.rm_rf "pkg/rubygems-update-#{v}"
+  FileUtils.mv "rubygems-update-#{v}", "pkg"
+end
+
 file "pkg/rubygems-#{v}" => "pkg/rubygems-update-#{v}" do |t|
   require 'find'
 

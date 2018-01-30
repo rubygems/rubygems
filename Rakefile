@@ -14,8 +14,16 @@ rescue ::LoadError
   require 'yaml'
 end
 
-desc "Runs tests without hoe"
-Rake::TestTask.new(:test_no_hoe) do |t|
+Rake::TestTask.new do |t|
+  # For old rubygems with default bundler gemspec
+  if "1.8" < RUBY_VERSION && RUBY_VERSION < "2.2"
+    module Gem
+      @path_to_default_spec_map.delete_if do |_path, spec|
+        spec.name == "bundler"
+      end
+    end
+  end
+
   # For ruby < 2.0, minitest files need to copied into repo lib folder
   if RUBY_VERSION < '2.0'
     require 'fileutils'

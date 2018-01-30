@@ -26,25 +26,19 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<builder>.freeze, ["~> 2.1"])
-      s.add_development_dependency(%q<hoe-seattlerb>.freeze, ["~> 1.2"])
       s.add_development_dependency(%q<rdoc>.freeze, ["~> 4.0"])
       s.add_development_dependency(%q<rake>.freeze, ["~> 10.5"])
       s.add_development_dependency(%q<minitest>.freeze, ["~> 5.0"])
-      s.add_development_dependency(%q<hoe>.freeze, ["~> 3.16"])
     else
       s.add_dependency(%q<builder>.freeze, ["~> 2.1"])
-      s.add_dependency(%q<hoe-seattlerb>.freeze, ["~> 1.2"])
       s.add_dependency(%q<rdoc>.freeze, ["~> 4.0"])
       s.add_dependency(%q<rake>.freeze, ["~> 10.5"])
       s.add_dependency(%q<minitest>.freeze, ["~> 5.0"])
-      s.add_dependency(%q<hoe>.freeze, ["~> 3.16"])
     end
   else
     s.add_dependency(%q<builder>.freeze, ["~> 2.1"])
-    s.add_dependency(%q<hoe-seattlerb>.freeze, ["~> 1.2"])
     s.add_dependency(%q<rdoc>.freeze, ["~> 4.0"])
     s.add_dependency(%q<rake>.freeze, ["~> 10.5"])
     s.add_dependency(%q<minitest>.freeze, ["~> 5.0"])
-    s.add_dependency(%q<hoe>.freeze, ["~> 3.16"])
   end
 end

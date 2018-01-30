@@ -460,64 +460,6 @@ end
 
 # Misc Tasks ---------------------------------------------------------
 
-# These tasks expect to have the following directory structure:
-#
-#   git/git.rubini.us/code # Rubinius git HEAD checkout
-#   svn/ruby/trunk         # ruby subversion HEAD checkout
-#   svn/rubygems/trunk     # RubyGems subversion HEAD checkout
-#
-# If you don't have this directory structure, set RUBY_PATH and/or
-# RUBINIUS_PATH.
-
-def rsync_with dir
-  rsync_options =
-    "-avP " +
-    "--exclude '*svn*' " +
-    "--exclude '*swp' " +
-    "--exclude '*rbc' " +
-    "--exclude '*.rej' " +
-    "--exclude '*.orig' " +
-    "--exclude 'lib/rubygems/defaults/*' " +
-    "--exclude gauntlet_rubygems.rb"
-
-  sh "rsync #{rsync_options} bin/gem             #{dir}/bin/gem"
-  sh "rsync #{rsync_options} lib/                #{dir}/lib"
-  sh "rsync #{rsync_options} test/               #{dir}/test"
-end
-
-def diff_with dir
-  diff_options = "-urpN --exclude '*svn*' --exclude '*swp' --exclude '*rbc'"
-  sh "diff #{diff_options} bin/gem             #{dir}/bin/gem;         true"
-  sh "diff #{diff_options} lib/ubygems.rb      #{dir}/lib/ubygems.rb;  true"
-  sh "diff #{diff_options} lib/rubygems.rb     #{dir}/lib/rubygems.rb; true"
-  sh "diff #{diff_options} lib/rubygems        #{dir}/lib/rubygems;    true"
-  sh "diff #{diff_options} lib/rbconfig        #{dir}/lib/rbconfig;    true"
-  sh "diff #{diff_options} test/rubygems       #{dir}/test/rubygems;   true"
-end
-
-rubinius_dir = ENV['RUBINIUS_PATH'] || '../git.rubini.us/code'
-ruby_dir     = ENV['RUBY_PATH']     || '../../svn/ruby/trunk'
-
-desc "Updates Ruby HEAD with the currently checked-out copy of RubyGems."
-task :update_ruby do
-  rsync_with ruby_dir
-end
-
-desc "Updates Rubinius HEAD with the currently checked-out copy of RubyGems."
-task :update_rubinius do
-  rsync_with rubinius_dir
-end
-
-desc "Diffs Ruby HEAD with the currently checked-out copy of RubyGems."
-task :diff_ruby do
-  diff_with ruby_dir
-end
-
-desc "Diffs Rubinius HEAD with the currently checked-out copy of RubyGems."
-task :diff_rubinius do
-  diff_with rubinius_dir
-end
-
 desc "Cleanup trailing whitespace"
 task :whitespace do
   system 'find . -not \( -name .svn -prune -o -name .git -prune \) -type f -print0 | xargs -0 sed -i "" -E "s/[[:space:]]*$//"'

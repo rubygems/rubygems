@@ -62,7 +62,7 @@ when %w(after_script)
   end
 when %w(script)
   if TOOL.rubygems?
-    run('rake test_no_hoe')
+    run('rake test')
   else
     run('rake', %w(spec:travis -t))
   end

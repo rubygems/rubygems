@@ -72,8 +72,6 @@ rescue LoadError, RuntimeError # rake 10.1 on rdoc from ruby 1.9.2 and earlier
   end
 end
 
-task(:newb).prerequisites.unshift "bundler:checkout"
-
 desc "Install gems needed to run the tests"
 task :install_test_deps => :clean do
   sh "gem install minitest -v '~> 5.0'"

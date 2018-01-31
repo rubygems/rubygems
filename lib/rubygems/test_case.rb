@@ -2,7 +2,7 @@
 # TODO: $SAFE = 1
 
 begin
-  gem 'minitest', '~> 4.0'
+  gem 'minitest', '~> 5.0'
 rescue NoMethodError, Gem::LoadError
   # for ruby tests
 end

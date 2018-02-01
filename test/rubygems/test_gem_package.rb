@@ -566,6 +566,21 @@ class TestGemPackage < Gem::Package::TarTestCase
                  "#{@destination} is not allowed", e.message)
   end
 
+  def test_install_location_suffix
+    package = Gem::Package.new @gem
+
+    filename = "../#{File.basename(@destination)}suffix.rb"
+
+    e = assert_raises Gem::Package::PathError do
+      package.install_location filename, @destination
+    end
+
+    parent = File.expand_path File.join @destination, filename
+
+    assert_equal("installing into parent path #{parent} of " +
+                 "#{@destination} is not allowed", e.message)
+  end
+
   def test_load_spec
     entry = StringIO.new Gem.gzip @spec.to_yaml
     def entry.full_name() 'metadata.gz' end

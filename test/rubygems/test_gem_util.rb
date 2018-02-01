@@ -41,8 +41,11 @@ class TestGemUtil < Gem::TestCase
 
     assert_equal File.join(@tempdir, 'd'), paths[0]
     assert_equal @tempdir, paths[1]
-    assert_equal Dir.tmpdir, paths[2]
-    assert_equal '/', paths[3]
+    # Dir.tmpdir macOS returns `/private` prefix.
+    if RUBY_PLATFORM !~ /darwin/
+      assert_equal Dir.tmpdir, paths[2]
+      assert_equal '/', paths[3]
+    end
   ensure
     # restore default permissions, allow the directory to be removed
     FileUtils.chmod(0775, 'd/e') unless win_platform?

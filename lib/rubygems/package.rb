@@ -424,7 +424,7 @@ EOM
     destination = File.expand_path destination
 
     raise Gem::Package::PathError.new(destination, destination_dir) unless
-      destination.start_with? destination_dir
+      destination.start_with? destination_dir + '/'
 
     destination.untaint
     destination

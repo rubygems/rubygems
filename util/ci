@@ -49,22 +49,15 @@ when %w(before_script)
   if TOOL.rubygems?
     run('gem', %W(uninstall executable-hooks gem-wrappers -x --force -i #{`gem env home`.strip}@global))
     run('gem', %W(install rake -v #{'~> 10.5'} --no-document))
-    run('gem', %W(install hoe --no-document))
-    run('gem', %w(install hoe-travis --no-document))
     run('gem', %W(install minitest -v #{'~> 5.0'} --no-document))
-    run('rake', %w(_10.5.0_ travis:before -t))
     run('gem', %w(list --details))
     run('gem', %w(env))
   else
     with_retries { run('rake', %w(spec:travis:deps)) }
   end
-when %w(after_script)
-  if TOOL.rubygems?
-    run('rake', %w(_10.5.0_ travis:after -t))
-  end
 when %w(script)
   if TOOL.rubygems?
-    run('rake test_no_hoe')
+    run('rake test')
   else
     run('rake', %w(spec:travis -t))
   end

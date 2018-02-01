@@ -63,6 +63,11 @@ class Gem::Command
   end
 end
 
+class Gem::Specification < Gem::BasicSpecification
+  remove_const :DEFAULT_GEMS_LIST
+  DEFAULT_GEMS_LIST = %w[systemgem default a b]
+end
+
 ##
 # RubyGemTestCase provides a variety of methods for testing rubygems and
 # gem-related behavior in a sandbox.  Through RubyGemTestCase you can install

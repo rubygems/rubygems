@@ -760,6 +760,12 @@ class Gem::Installer
     end
   end
 
+  def verify_default_gems
+    return unless options[:install_as_default]
+    return if Gem::Specification::DEFAULT_GEMS_LIST.include?(spec.name)
+    raise Gem::InstallError, "#{spec} is not a default gems"
+  end
+
   ##
   # Return the text for an application file.
 
@@ -924,6 +930,10 @@ TEXT
     verify_spec
 
     ensure_loadable_spec
+
+    verify_spec
+
+    verify_default_gems
 
     if options[:install_as_default]
       Gem.ensure_default_gem_subdirectories gem_home

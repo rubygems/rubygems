@@ -464,7 +464,12 @@ class Gem::Installer
   def generate_bin # :nodoc:
     return if spec.executables.nil? or spec.executables.empty?
 
-    Dir.mkdir @bin_dir unless File.exist? @bin_dir
+    begin
+      Dir.mkdir @bin_dir
+    rescue SystemCallError
+      raise unless File.directory? @bin_dir
+    end
+
     raise Gem::FilePermissionError.new(@bin_dir) unless File.writable? @bin_dir
 
     spec.executables.each do |filename|

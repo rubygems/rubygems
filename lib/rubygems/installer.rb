@@ -321,14 +321,15 @@ class Gem::Installer
     dir_mode = options[:dir_mode]
     FileUtils.mkdir_p gem_dir, :mode => dir_mode && 0o755
 
+    extract_files
+
+    build_extensions
+    write_build_info_file
+
     if @options[:install_as_default]
       extract_bin
       write_default_spec
     else
-      extract_files
-
-      build_extensions
-      write_build_info_file
       run_post_build_hooks
     end
 

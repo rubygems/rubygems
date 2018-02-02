@@ -632,7 +632,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
         "only_one_executable" => (executables && executables.size == 1),
         "full_name"           => spec.full_name,
         "has_deps"            => !deps.empty?,
-        "homepage"            => spec.homepage,
+        "homepage"            => (URI.parse(spec.homepage).is_a?(URI::HTTP) || URI.parse(spec.homepage).is_a?(URI::HTTPS)) ? spec.homepage : ".",
         "name"                => spec.name,
         "rdoc_installed"      => Gem::RDoc.new(spec).rdoc_installed?,
         "ri_installed"        => Gem::RDoc.new(spec).ri_installed?,

@@ -34,7 +34,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     gemspec = Gem::Specification.new
     gemspec.name = "bundler"
-    gemspec.version = "1.16.0"
+    gemspec.version = BUNDLER_VERS
     gemspec.bindir = "exe"
     gemspec.executables = ["bundle"]
 

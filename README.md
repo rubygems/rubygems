@@ -2,48 +2,69 @@
 
 RubyGems is a package management framework for Ruby.
 
-This gem is an update for the RubyGems software. You must have an
-installation of RubyGems before this update can be applied.
+A package (also known as a library) contains a set of functionality that can be invoked by a Ruby program such as reading and parsing an XML file.
+We call these packages "gems" and RubyGems is a tool to install, create, manage and load these packages in your Ruby environment.
 
-See Gem for information on RubyGems (or `ri Gem`)
+RubyGems is also a client for [RubyGems.org](https://rubygems.org), a public repository of Gems that allows you to publish a Gem
+that can be shared and used by other developers. See our guide on publishing a Gem at [guides.rubygems.org](http://guides.rubygems.org/publishing/)
 
-To upgrade to the latest RubyGems, run:
+## Getting Started
 
-```
-  $ gem update --system  # you might need to be an administrator or root
-```
+Installing and managing a Gem is done through the `gem` command. To install a Gem such as [Nokigiri](https://github.com/sparklemotion/nokogiri) which lets
+you read and parse XML in Ruby:
 
-See [UPGRADING](UPGRADING.rdoc) for more details and alternative instructions.
+    $ gem install nokogiri
 
------
+RubyGems will download the Nokogiri Gem from RubyGems.org and install it into your Ruby environment.
 
-If you don't have RubyGems installed, you can still do it manually:
+Finally, inside your Ruby program, load the Nokogiri gem and start parsing your XML:
 
-* Download from https://rubygems.org/pages/download, unpack, and `cd` there
-* OR clone this repository and `cd` there (make sure to run `git submodule update --init`)
-* Install with `ruby setup.rb` (you may need admin/root privilege)
+    require 'nokogiri'
+
+    Nokogiri.XML('<h1>Hello World</h1>')
+
+For more information about how to use RubyGems, see our RubyGems basics guide at [guides.rubygems.org](http://guides.rubygems.org/rubygems-basics/)
+
+## Installation
+
+RubyGems is likely already installed in your Ruby environment, you can check by running `gem --version` in your terminal emulator.
+In some cases your OS's pacakge manager may install RubyGems as a separte packege from Ruby. It's recommended to check
+with your OS's package manager before installing RubyGems manually.
+
+If you would like to manually install RubyGems:
+
+* Download from https://rubygems.org/pages/download, unpack, and `cd` into RubyGems' src
+* OR clone this repository and `cd` into the repository (make sure to run `git submodule update --init`)
+
+Install RubyGems by running:
+
+    $ ruby setup.rb
+
+Note: You may need to run the install script with admin/root privileges.
 
 For more details and other options, see:
 
-```
-  ruby setup.rb --help
-```
+    $ ruby setup.rb --help
+
+## Upgrading RubyGems
+
+To upgrade to the latest RubyGems, run:
+
+    $ gem update --system
+
+Note: You might need to run the command as an administrator or root user.
+
+See [UPGRADING](UPGRADING.rdoc) for more details and alternative instructions.
 
 ## Documentation
 
 RubyGems uses [rdoc](https://github.com/rdoc/rdoc) for documentation. A compiled set of the docs
-can be viewed online at http://www.rubydoc.info/github/rubygems/rubygems
+can be viewed online at [rubydoc](http://www.rubydoc.info/github/rubygems/rubygems).
 
 RubyGems also provides a comprehensive set of guides which covers numerous topics such as
 creating a new gem, security practices and other resources at http://guides.rubygems.org
 
 ## Getting Help
-
-### Support Requests
-
-Are you unsure of how to use RubyGems?  Do you think you've found a bug and
-you're not sure?  If that is the case, the best place for you is to file a
-support request at [help.rubygems.org](http://help.rubygems.org).
 
 ### Filing Tickets
 

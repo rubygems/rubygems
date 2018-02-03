@@ -14,6 +14,16 @@ rescue ::LoadError
   require 'yaml'
 end
 
+task :setup do
+  # TODO: I am sorry for this abomination, and it needs to be replaced. -@duckinator
+  gemspec = eval(File.read(File.expand_path("../rubygems-update.gemspec", __FILE__)))
+  deps = gemspec.dependencies.map { |dep| [dep.name, dep.requirement.to_s] }
+
+  deps.each do |(name, version)|
+    sh "gem install #{name} -v '#{version}'"
+  end
+end
+
 Rake::TestTask.new do |t|
   # For old rubygems with default bundler gemspec
   if "1.8" < RUBY_VERSION && RUBY_VERSION < "2.2"

@@ -19,7 +19,6 @@ task :setup do
 
   gemspec.dependencies.each do |dep|
     sh "gem install '#{dep.name}:#{dep.requirement.to_s}'"
-    #Gem.install(dep.name, dep.requirement)
   end
 end
 

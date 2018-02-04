@@ -15,13 +15,12 @@ rescue ::LoadError
 end
 
 task :setup do
-  # TODO: I am sorry for this abomination, and it needs to be replaced. -@duckinator
-  gemspec = eval(File.read(File.expand_path("../rubygems-update.gemspec", __FILE__)))
-  deps = gemspec.dependencies.map { |dep|
-    "'#{dep.name}:#{dep.requirement.to_s}'"
-  }
+  gemspec = Gem::Specification.load(File.expand_path("../rubygems-update.gemspec", __FILE__))
 
-  sh "gem install #{deps.join(" ")}"
+  gemspec.dependencies.each do |dep|
+    sh "gem install '#{dep.name}:#{dep.requirement.to_s}'"
+    #Gem.install(dep.name, dep.requirement)
+  end
 end
 
 Rake::TestTask.new do |t|

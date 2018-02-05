@@ -2897,7 +2897,9 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
       assert_equal '"ftp://rubygems.org" is not a URI', e.message
 
       @a1.homepage = 'http://rubygems.org'
+      assert_equal true, @a1.validate
 
+      @a1.homepage = 'https://rubygems.org'
       assert_equal true, @a1.validate
 
     end

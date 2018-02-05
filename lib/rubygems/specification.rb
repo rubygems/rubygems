@@ -2828,10 +2828,10 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
       begin
         homepage_uri = URI.parse(homepage)
         unless [URI::HTTP, URI::HTTPS].member? homepage_uri.class
-          raise Gem::InvalidSpecificationException, "\"#{homepage}\" is not a URI"
+          raise Gem::InvalidSpecificationException, "\"#{homepage}\" is not a valid HTTP URI"
         end
       rescue URI::InvalidURIError
-        raise Gem::InvalidSpecificationException, "\"#{homepage}\" is not a URI"
+        raise Gem::InvalidSpecificationException, "\"#{homepage}\" is not a valid HTTP URI"
       end
     end
 

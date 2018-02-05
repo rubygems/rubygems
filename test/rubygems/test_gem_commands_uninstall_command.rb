@@ -204,7 +204,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     end
 
     assert Gem::Specification.find_all_by_name('dep_x').length > 0
-    assert Gem::Specification.find_all_by_name('x').length == 0
+    assert Gem::Specification.find_all_by_name('x').length.zero?
   end
 
   def test_execute_all

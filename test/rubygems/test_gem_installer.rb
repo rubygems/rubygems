@@ -437,7 +437,7 @@ gem 'other', version
 
     if win_platform?
       skip('test_generate_bin_script_no_perms skipped on MS Windows')
-    elsif Process.uid == 0
+    elsif Process.uid.zero?
       skip('test_generate_bin_script_no_perms skipped in root privilege')
     else
       FileUtils.chmod 0000, util_inst_bindir
@@ -531,7 +531,7 @@ gem 'other', version
 
     if win_platform?
       skip('test_generate_bin_symlink_no_perms skipped on MS Windows')
-    elsif Process.uid == 0
+    elsif Process.uid.zero?
       skip('test_user_install_disabled_read_only test skipped in root privilege')
     else
       FileUtils.chmod 0000, util_inst_bindir

@@ -350,8 +350,8 @@ By default, this RubyGems will install gem as:
   def install_default_bundler_gem
     return unless Gem::USE_BUNDLER_FOR_GEMDEPS
 
-    specs_dir = File.join options[:destdir],
-      Gem::Specification.default_specifications_dir
+    specs_dir = Gem::Specification.default_specifications_dir
+    File.join(options[:destdir], specs_dir) unless Gem.win_platform?
     mkdir_p specs_dir
 
     # Workaround for non-git environment.
@@ -385,10 +385,8 @@ By default, this RubyGems will install gem as:
         each {|default_gem| rm_r File.join(bundler_spec.gems_dir, default_gem) }
     end
 
-    bundler_bin_dir = File.join(
-      options[:destdir], Gem.default_dir, 'gems',
-      bundler_spec.full_name, bundler_spec.bindir
-    )
+    bundler_bin_dir = File.join(Gem.default_dir, 'gems', bundler_spec.full_name, bundler_spec.bindir)
+    File.join(options[:destdir], bundler_bin_dir) unless Gem.win_platform?
     mkdir_p bundler_bin_dir
     bundler_spec.executables.each do |e|
       cp File.join("bundler", bundler_spec.bindir, e), File.join(bundler_bin_dir, e)

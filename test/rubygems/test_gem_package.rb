@@ -455,6 +455,31 @@ class TestGemPackage < Gem::Package::TarTestCase
                  File.read(extracted)
   end
 
+  def test_extract_symlink_parent
+   skip 'symlink not supported' if Gem.win_platform?
+
+   package = Gem::Package.new @gem
+
+   tgz_io = util_tar_gz do |tar|
+     tar.mkdir       'lib',               0755
+     tar.add_symlink 'lib/link', '../..', 0644
+     tar.add_file    'lib/link/outside.txt', 0644 do |io| io.write 'hi' end
+   end
+
+   # Extract into a subdirectory of @destination; if this test fails it writes
+   # a file outside destination_subdir, but we want the file to remain inside
+   # @destination so it will be cleaned up.
+   destination_subdir = File.join @destination, 'subdir'
+   FileUtils.mkdir_p destination_subdir
+
+   e = assert_raises Gem::Package::PathError do
+     package.extract_tar_gz tgz_io, destination_subdir
+   end
+
+   assert_equal("installing into parent path ../outside.txt of " +
+                 "#{destination_subdir} is not allowed", e.message)
+  end
+
   def test_extract_tar_gz_directory
     package = Gem::Package.new @gem
 

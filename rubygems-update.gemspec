@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.homepage = "https://rubygems.org".freeze
   s.licenses = ["Ruby".freeze, "MIT".freeze]
   s.rdoc_options = ["--main".freeze, "README.md".freeze, "--title=RubyGems Update Documentation".freeze]
-  s.required_ruby_version = Gem::Requirement.new(">= 1.8.7".freeze)
+  s.required_ruby_version = Gem::Requirement.new(">= 2.0.0".freeze)
   s.rubygems_version = "2.7.3".freeze
   s.summary = "".freeze
 

@@ -603,6 +603,10 @@ EOM
       raise Gem::Package::FormatError.new \
               'package content (data.tar.gz) is missing', @gem
     end
+
+    if duplicates = @files.group_by {|f| f }.select {|k,v| v.size > 1 }.map(&:first) and duplicates.any?
+      raise Gem::Security::Exception, "duplicate files in the package: (#{duplicates.map(&:inspect).join(', ')})"
+    end
   end
 
   ##

@@ -476,7 +476,7 @@ class TestGemPackage < Gem::Package::TarTestCase
      package.extract_tar_gz tgz_io, destination_subdir
    end
 
-   assert_equal("installing into parent path ../outside.txt of " +
+   assert_equal("installing into parent path lib/link/outside.txt of " +
                  "#{destination_subdir} is not allowed", e.message)
   end
 

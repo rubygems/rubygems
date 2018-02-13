@@ -9,11 +9,6 @@ clone_depth: 10
 
 environment:
   matrix:
-  - ruby_version: 193
-  - ruby_version: 200
-  - ruby_version: 200-x64
-  - ruby_version: 21
-  - ruby_version: 21-x64
   - ruby_version: 22
   - ruby_version: 22-x64
     GIT:  C:/git/cmd/git.exe
@@ -32,7 +27,6 @@ init:
       7z x C:\ruby_trunk.7z -oC:\ruby_trunk )
 
 install:
-- if %ruby_version%==193 ( gem update minitest --no-document )
 - ps: >-
     git submodule update --init --recursive
 

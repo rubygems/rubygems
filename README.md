@@ -28,7 +28,7 @@ For more information about how to use RubyGems, see our RubyGems basics guide at
 ## Installation
 
 RubyGems is likely already installed in your Ruby environment, you can check by running `gem --version` in your terminal emulator.
-In some cases your OS's pacakge manager may install RubyGems as a separte packege from Ruby. It's recommended to check
+In some cases your OS's package manager may install RubyGems as a separate package from Ruby. It's recommended to check
 with your OS's package manager before installing RubyGems manually.
 
 If you would like to manually install RubyGems:

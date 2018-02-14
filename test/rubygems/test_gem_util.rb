@@ -42,8 +42,10 @@ class TestGemUtil < Gem::TestCase
 
     assert_equal File.join(@tempdir, 'd'), paths[0]
     assert_equal @tempdir, paths[1]
-    # File.expand_path with macOS returns `/private` prefix.
-    if RUBY_PLATFORM !~ /darwin/
+    if File.respond_to?(:realpath)
+      assert_equal File.realpath(Dir.tmpdir), paths[2]
+      assert_equal File.realpath("..", Dir.tmpdir), paths[3]
+    elsif RUBY_PLATFORM !~ /darwin/
       assert_equal Dir.tmpdir, paths[2]
       assert_equal '/', paths[3]
     end

@@ -1,8 +1,3 @@
----
-after_script:
-- util/ci after_script
-before_script:
-- util/ci before_script
 language: ruby
 dist: trusty
 sudo: required
@@ -13,16 +8,18 @@ branches:
     - /^[\d.]+$/
     - /.+-stable$/
 rvm:
-- 2.2.9
-- 2.3.6
-- 2.4.3
-- 2.5.0
-- ruby-head
+  - 2.2.9
+  - 2.3.6
+  - 2.4.3
+  - 2.5.0
+  - ruby-head
 env:
   - "TEST_TOOL=rubygems YAML=psych"
   - "TEST_TOOL=bundler RGV=master"
+before_script:
+  - util/ci before_script
 script:
-- util/ci script
+  - util/ci script
 matrix:
   allow_failures:
     - rvm: 2.5.0

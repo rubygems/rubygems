@@ -5,7 +5,6 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze)
   s.require_paths = ["hide_lib_for_update".freeze]
   s.authors = ["Jim Weirich".freeze, "Chad Fowler".freeze, "Eric Hodel".freeze]
-  s.date = "2018-01-30"
   s.description = "".freeze
   s.email = ["rubygems-developers@rubyforge.org".freeze]
   s.executables = ["update_rubygems".freeze]

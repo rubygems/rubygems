@@ -13,42 +13,17 @@ branches:
     - /^[\d.]+$/
     - /.+-stable$/
 rvm:
-- 1.8.7
-- 1.9.2
-- 1.9.3
-- 2.0.0
-- 2.1.10
 - 2.2.9
 - 2.3.6
 - 2.4.3
 - 2.5.0
 - ruby-head
 env:
-  - "TEST_TOOL=rubygems YAML=syck"
   - "TEST_TOOL=rubygems YAML=psych"
   - "TEST_TOOL=bundler RGV=master"
 script:
 - util/ci script
 matrix:
-  exclude:
-    - rvm: 1.8.7
-      env: "TEST_TOOL=rubygems YAML=psych"
-    - rvm: 1.9.2
-      env: "TEST_TOOL=bundler RGV=master"
-    - rvm: 2.0.0
-      env: "TEST_TOOL=rubygems YAML=syck"
-    - rvm: 2.1.10
-      env: "TEST_TOOL=rubygems YAML=syck"
-    - rvm: 2.2.9
-      env: "TEST_TOOL=rubygems YAML=syck"
-    - rvm: 2.3.6
-      env: "TEST_TOOL=rubygems YAML=syck"
-    - rvm: 2.4.3
-      env: "TEST_TOOL=rubygems YAML=syck"
-    - rvm: 2.5.0
-      env: "TEST_TOOL=rubygems YAML=syck"
-    - rvm: ruby-head
-      env: "TEST_TOOL=rubygems YAML=syck"
   allow_failures:
     # TODO: Remove 1.8.7-2.1.10 jobs after releasing bundler 1.16.2
     - rvm: 1.8.7

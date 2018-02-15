@@ -1,6 +1,3 @@
-# -*- encoding: utf-8 -*-
-# stub: rubygems-update 2.7.4 ruby hide_lib_for_update
-
 Gem::Specification.new do |s|
   s.name = "rubygems-update".freeze
   s.version = "2.7.4"

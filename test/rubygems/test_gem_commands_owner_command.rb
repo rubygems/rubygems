@@ -2,9 +2,6 @@
 require 'rubygems/test_case'
 require 'rubygems/commands/owner_command'
 
-class Foo
-end
-
 class TestGemCommandsOwnerCommand < Gem::TestCase
 
   def setup
@@ -51,7 +48,7 @@ EOF
 
     response = <<EOF
 ---
-- email: !ruby/object:Foo {}
+- email: !ruby/object:Object {}
   id: 1
   handle: user1
 - email: user2@example.com

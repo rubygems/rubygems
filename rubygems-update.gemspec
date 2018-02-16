@@ -29,8 +29,8 @@ Gem::Specification.new do |s|
 
   s.specification_version = 4
 
-  s.add_development_dependency(%q<builder>.freeze, ["~> 2.1"])
-  s.add_development_dependency(%q<rdoc>.freeze, ["~> 4.0"])
-  s.add_development_dependency(%q<rake>.freeze, ["~> 10.5"])
+  s.add_development_dependency(%q<builder>.freeze, ["~> 3.0"])
+  s.add_development_dependency(%q<rdoc>.freeze, ["~> 6.0"])
+  s.add_development_dependency(%q<rake>.freeze, ["~> 12.0"])
   s.add_development_dependency(%q<minitest>.freeze, ["~> 5.0"])
 end

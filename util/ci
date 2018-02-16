@@ -48,8 +48,6 @@ case ARGV
 when %w(before_script)
   if TOOL.rubygems?
     run('gem', %W(uninstall executable-hooks gem-wrappers -x --force -i #{`gem env home`.strip}@global))
-    run('gem', %W(install rake -v #{'~> 10.5'} --no-document))
-    run('gem', %W(install minitest -v #{'~> 5.0'} --no-document))
     run('gem', %w(list --details))
     run('gem', %w(env))
   else

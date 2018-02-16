@@ -20,8 +20,3 @@ before_script:
   - util/ci before_script
 script:
   - util/ci script
-matrix:
-  allow_failures:
-    - rvm: 2.5.0
-      env: "TEST_TOOL=rubygems YAML=psych"
-    - rvm: ruby-head

@@ -1,4 +1,5 @@
 require 'delegate'
+require 'uri'
 
 class Gem::SpecificationPolicy < SimpleDelegator
   VALID_NAME_PATTERN = /\A[a-zA-Z0-9\.\-\_]+\z/ # :nodoc:
@@ -357,10 +358,16 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
       raise Gem::InvalidSpecificationException, "#{LAZY} is not a summary"
     end
 
-    if homepage and not homepage.empty? and
-        homepage !~ HOMEPAGE_URI_PATTERN then
-      raise Gem::InvalidSpecificationException,
-            "\"#{homepage}\" is not a URI"
+    # Make sure a homepage is valid HTTP/HTTPS URI
+    if homepage and not homepage.empty?
+      begin
+        homepage_uri = URI.parse(homepage)
+        unless [URI::HTTP, URI::HTTPS].member? homepage_uri.class
+          raise Gem::InvalidSpecificationException, "\"#{homepage}\" is not a valid HTTP URI"
+        end
+      rescue URI::InvalidURIError
+        raise Gem::InvalidSpecificationException, "\"#{homepage}\" is not a valid HTTP URI"
+      end
     end
   end
 

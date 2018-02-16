@@ -19,6 +19,20 @@ Security fixes:
 * Prevent Path Traversal issue during gem installation.
   Discovered by nmalkin.
 
+=== 2.7.5
+
+Bug fixes:
+
+* To use bundler-1.16.1 #2121 by SHIBATA Hiroshi.
+* Fixed leaked FDs. Pull request #2127 by Nobuyoshi Nakada.
+* Support option for `--destdir` with upgrade installer. #2169 by Thibault Jouan.
+* Remove PID from gem index directory. #2155 by SHIBATA Hiroshi.
+* Avoid a #mkdir race condition #2148 by Samuel Giddins.
+* Gem::Util.traverse_parents should not crash on permissions error #2147 by Robert Ulejczyk.
+* Use `File.open` instead of `open`. #2142 by SHIBATA Hiroshi.
+* Set whether bundler is used for gemdeps with an environmental variable #2126 by SHIBATA Hiroshi.
+* Fix undefined method error when printing alert #1884 by Robert Ross.
+
 === 2.7.4
 
 Bug fixes:

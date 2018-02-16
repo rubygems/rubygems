@@ -1,5 +1,24 @@
 # coding: UTF-8
 
+=== 2.7.6 / 2018-02-16
+
+Security fixes:
+
+* Prevent path traversal when writing to a symlinked basedir outside of the root.
+  Discovered by nmalkin, fixed by Jonathan Claudius and Samuel Giddins.
+* Fix possible Unsafe Object Deserialization Vulnerability in gem owner.
+  Fixed by Jonathan Claudius.
+* Strictly interpret octal fields in tar headers.
+  Discoved by plover, fixed by Samuel Giddins.
+* Raise a security error when there are duplicate files in a package.
+  Discovered by plover, fixed by Samuel Giddins.
+* Enforce URL validation on spec homepage attribute.
+  Discovered by Yasin Soliman, fixed by Jonathan Claudius.
+* Mitigate XSS vulnerability in homepage attribute when displayed via `gem server`.
+  Discovered by Yasin Soliman, fixed by Jonathan Claudius.
+* Prevent Path Traversal issue during gem installation.
+  Discovered by nmalkin.
+
 === 2.7.4
 
 Bug fixes:

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "rubygems/util"
+
 module Gem::BundlerVersionFinder
   @without_filtering = false
 

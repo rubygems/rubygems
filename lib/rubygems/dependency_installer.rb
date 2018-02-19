@@ -163,6 +163,7 @@ class Gem::DependencyInstaller
 
     dependency_list.remove_specs_unsatisfied_by dependencies
   end
+  deprecate :add_found_dependencies, :none, 2018, 12
 
   ##
   # Creates an AvailableSet to install from based on +dep_or_name+ and
@@ -354,6 +355,7 @@ class Gem::DependencyInstaller
 
     @gems_to_install = dependency_list.dependency_order.reverse
   end
+  deprecate :gather_dependencies, :none, 2018, 12
 
   def in_background what # :nodoc:
     fork_happened = false

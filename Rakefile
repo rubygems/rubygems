@@ -14,7 +14,8 @@ rescue ::LoadError
   require 'yaml'
 end
 
-task :setup do
+desc "Setup Rubygems dev environment"
+task :setup => ["bundler:checkout"] do
   gemspec = Gem::Specification.load(File.expand_path("../rubygems-update.gemspec", __FILE__))
 
   gemspec.dependencies.each do |dep|
@@ -388,6 +389,7 @@ task :update_manifest do
 end
 
 namespace :bundler do
+  desc "Initialize bundler submodule"
   task :checkout do
     sh "git submodule update --init"
   end

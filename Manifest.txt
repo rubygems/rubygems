@@ -2,9 +2,6 @@
 .travis.yml
 CODE_OF_CONDUCT.md
 CONTRIBUTING.rdoc
-CVE-2013-4287.txt
-CVE-2013-4363.txt
-CVE-2015-3900.txt
 History.txt
 LICENSE.txt
 MAINTAINERS.txt

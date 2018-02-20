@@ -14,7 +14,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["hide_lib_for_update".freeze]
   s.rdoc_options = ["--main".freeze, "README.md".freeze, "--title=RubyGems Update Documentation".freeze]
   s.extra_rdoc_files = [
-    "CVE-2013-4287.txt".freeze, "CVE-2013-4363.txt".freeze, "CVE-2015-3900.txt".freeze,
     "History.txt".freeze, "LICENSE.txt".freeze, "MAINTAINERS.txt".freeze,
     "MIT.txt".freeze, "Manifest.txt".freeze, "README.md".freeze,
     "UPGRADING.rdoc".freeze, "POLICIES.rdoc".freeze, "CODE_OF_CONDUCT.md".freeze,

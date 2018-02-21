@@ -51,10 +51,13 @@ Rake::TestTask.new do |t|
   else
     t.ruby_opts = %w[--disable-gems]
   end
+
   t.ruby_opts << '-rdevkit' if Gem.win_platform?
 
   t.libs << "test"
-  t.libs << "bundler/lib" if RUBY_VERSION >= "2.5"
+
+  t.libs << "bundler/lib"
+
   t.test_files = FileList['test/**/test_*.rb']
 end
 
@@ -75,6 +78,7 @@ begin
 
     doc.rdoc_dir = 'doc'
   end
+
 rescue LoadError, RuntimeError # rake 10.1 on rdoc from ruby 1.9.2 and earlier
   task 'docs' do
     abort 'You must install rdoc to build documentation, try `rake newb` again'

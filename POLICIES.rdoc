@@ -45,14 +45,31 @@ For example, RubyGems 2.5.0 was recently released.  RubyGems does not
 guarantee any non-security bugfix releases will be made upon the 2.4.x series,
 or any earlier series, of releases.
 
-Additionally, when a Ruby version reaches end-of-life the following release of
-RubyGems will no longer be required to maintain backwards compatibility with
-that Ruby version.  This may result in a major version change.
+Additionally, when a Ruby version reaches end-of-life the following minor
+release of RubyGems will drop backwards compatibility with that Ruby version.
 
-For example, since Ruby 1.9.3 has reached end-of-life, RubyGems may use
-features of ruby that only exist in Ruby 2.0 and later.  As of this writing
-RubyGems is 2.5.x, so the RubyGems version would become 3.x if it used
-features only available in Ruby 2.0 and later.
+For example, since Ruby 2.2 has reached end-of-life, RubyGems may use require
+Ruby 2.3 or later.  As of this writing RubyGems is at versino 3.0, so the
+RubyGems version would become 3.1 if it used features only available in Ruby
+2.3 and later.
+
+=== Security Release Process
+
+- Obtain CVE numbers as needed from HackerOne or RedHat.
+- Agree on a release date with ruby-core, so patches can be backported to older
+  Ruby versions as needed.
+- Avoid releasing security updates on Fridays, so platform services don't have
+  to work on weekends.
+- Continue with the regular release process below.
+
+=== Release Process
+
+- Confirm milestone on GitHub is complete
+- Update History.txt
+- Update Manifest.txt
+- Create and push git tag
+- Create and push `rubygems-update` gem and tgz
+- Publish blog post
 
 == Committer Access
 
@@ -70,5 +87,5 @@ permissions compromised or exposed.
 These policies were set in order to reduce the burden of maintenance and to
 keep committers current with existing development and policies.  RubyGems work
 is primarily volunteer-driven which limits the ability to provide long-term
-support.  By funding RubyTogether you can help extend support for older
+support. By funding RubyTogether you can help extend support for older
 RubyGems versions.

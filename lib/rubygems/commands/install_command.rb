@@ -149,7 +149,7 @@ to write the specification by hand.  For example:
 
     @installed_specs = []
 
-    ENV.delete 'GEM_PATH' if options[:install_dir].nil? and RUBY_VERSION > '1.9'
+    ENV.delete 'GEM_PATH' if options[:install_dir].nil?
 
     check_install_dir
     check_version

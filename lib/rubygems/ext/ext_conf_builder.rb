@@ -23,9 +23,7 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
     # spaces do not work.
     #
     # Details: https://github.com/rubygems/rubygems/issues/977#issuecomment-171544940
-    #
-    # TODO: Make this unconditional when rubygems no longer supports Ruby 1.9.x.
-    tmp_dest = get_relative_path(tmp_dest) unless Gem.win_platform? && RUBY_VERSION <= '2.0'
+    tmp_dest = get_relative_path(tmp_dest)
 
     Tempfile.open %w"siteconf .rb", "." do |siteconf|
       siteconf.puts "require 'rbconfig'"

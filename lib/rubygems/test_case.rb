@@ -24,7 +24,7 @@ begin
     add_filter "/test/"
     add_filter "/bundler/"
   end
-rescue Gem::LoadError
+rescue LoadError
 end
 
 # We have to load these up front because otherwise we'll try to load

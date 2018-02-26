@@ -14,7 +14,8 @@ rescue ::LoadError
   require 'yaml'
 end
 
-task :setup do
+desc "Setup Rubygems dev environment"
+task :setup => ["bundler:checkout"] do
   gemspec = Gem::Specification.load(File.expand_path("../rubygems-update.gemspec", __FILE__))
 
   gemspec.dependencies.each do |dep|
@@ -50,10 +51,13 @@ Rake::TestTask.new do |t|
   else
     t.ruby_opts = %w[--disable-gems]
   end
+
   t.ruby_opts << '-rdevkit' if Gem.win_platform?
 
   t.libs << "test"
-  t.libs << "bundler/lib" if RUBY_VERSION >= "2.5"
+
+  t.libs << "bundler/lib"
+
   t.test_files = FileList['test/**/test_*.rb']
 end
 
@@ -74,6 +78,7 @@ begin
 
     doc.rdoc_dir = 'doc'
   end
+
 rescue LoadError, RuntimeError # rake 10.1 on rdoc from ruby 1.9.2 and earlier
   task 'docs' do
     abort 'You must install rdoc to build documentation, try `rake newb` again'
@@ -388,6 +393,7 @@ task :update_manifest do
 end
 
 namespace :bundler do
+  desc "Initialize bundler submodule"
   task :checkout do
     sh "git submodule update --init"
   end

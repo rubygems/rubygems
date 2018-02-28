@@ -28,6 +28,8 @@ require 'fileutils'
 
 class Gem::Installer
 
+  extend Gem::Deprecate
+
   ##
   # Paths where env(1) might live.  Some systems are broken and have it in
   # /bin

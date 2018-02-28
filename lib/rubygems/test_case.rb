@@ -97,6 +97,8 @@ end
 
 class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Unit::TestCase)
 
+  extend Gem::Deprecate
+
   attr_accessor :fetcher # :nodoc:
 
   attr_accessor :gem_repo # :nodoc:

@@ -16,6 +16,8 @@ class Gem::Exception < RuntimeError
   # TODO: remove in RubyGems 4, nobody sets this
 
   attr_accessor :source_exception # :nodoc:
+
+  extend Gem::Deprecate
   deprecate :source_exception, :none, 2018, 12
 end
 

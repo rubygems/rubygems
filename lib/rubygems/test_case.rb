@@ -672,11 +672,13 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   end
 
   ##
-  # TODO:  remove in RubyGems 3.0
+  # TODO:  remove in RubyGems 4.0
 
   def quick_spec name, version = '2' # :nodoc:
     util_spec name, version
   end
+  deprecate :quick_spec, :util_spec, 2018, 12
+
 
   ##
   # Builds a gem from +spec+ and places it in <tt>File.join @gemhome,
@@ -771,7 +773,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   ##
   # new_spec is deprecated as it is never used.
   #
-  # TODO:  remove in RubyGems 3.0
+  # TODO:  remove in RubyGems 4.0
 
   def new_spec name, version, deps = nil, *files # :nodoc:
     require 'rubygems/specification'
@@ -812,6 +814,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     spec
   end
+  deprecate :new_spec, :none, 2018, 12
 
   def new_default_spec(name, version, deps = nil, *files)
     spec = util_spec name, version, deps

@@ -314,11 +314,6 @@ class Gem::Resolver
 
 end
 
-##
-# TODO remove in RubyGems 3
-
-Gem::DependencyResolver = Gem::Resolver # :nodoc:
-
 require 'rubygems/resolver/activation_request'
 require 'rubygems/resolver/conflict'
 require 'rubygems/resolver/dependency_request'

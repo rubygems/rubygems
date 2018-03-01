@@ -14,8 +14,6 @@ require 'rubygems/deprecate'
 
 module Gem::DefaultUserInteraction
 
-  extend Gem::Deprecate
-
   ##
   # The default UI is a class variable of the singleton class for this
   # module.
@@ -172,6 +170,8 @@ end
 # Gem::StreamUI implements a simple stream based user interface.
 
 class Gem::StreamUI
+
+  extend Gem::Deprecate
 
   ##
   # The input stream

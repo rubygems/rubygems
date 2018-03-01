@@ -162,7 +162,7 @@ module Gem::UserInteraction
   # is true.
 
   def verbose(msg = nil)
-    say(clean_text(msg || yield) if Gem.configuration.really_verbose
+    say(clean_text(msg || yield)) if Gem.configuration.really_verbose
   end
 end
 

@@ -202,11 +202,7 @@ class Gem::StreamUI
   # Returns true if TTY methods should be used on this StreamUI.
 
   def tty?
-    if RUBY_VERSION < '1.9.3' and RUBY_PLATFORM =~ /mingw|mswin/ then
-      @usetty
-    else
-      @usetty && @ins.tty?
-    end
+    @usetty && @ins.tty?
   end
 
   ##

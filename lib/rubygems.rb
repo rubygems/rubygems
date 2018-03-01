@@ -583,17 +583,8 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   def self.find_home
     windows = File::ALT_SEPARATOR
-    if not windows or RUBY_VERSION >= '1.9' then
-      File.expand_path "~"
-    else
-      ['HOME', 'USERPROFILE'].each do |key|
-        return File.expand_path ENV[key] if ENV[key]
-      end
 
-      if ENV['HOMEDRIVE'] && ENV['HOMEPATH'] then
-        File.expand_path "#{ENV['HOMEDRIVE']}#{ENV['HOMEPATH']}"
-      end
-    end
+    File.expand_path "~"
   rescue
     if windows then
       File.expand_path File.join(ENV['HOMEDRIVE'] || ENV['SystemDrive'], '/')

@@ -615,7 +615,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   class << self
     extend Gem::Deprecate
-    deprecate :gunzip, :none, 2018, 12
+    deprecate :gunzip, "Gem::Util.gunzip", 2018, 12
   end
 
   ##
@@ -627,7 +627,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   class << self
     extend Gem::Deprecate
-    deprecate :gzip, :none, 2018, 12
+    deprecate :gzip, "Gem::Util.gzip", 2018, 12
   end
 
   ##
@@ -639,7 +639,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   class << self
     extend Gem::Deprecate
-    deprecate :inflate, :none, 2018, 12
+    deprecate :inflate, "Gem::Util.inflate", 2018, 12
   end
 
   ##

@@ -816,7 +816,8 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     spec
   end
-  deprecate :new_spec, :none, 2018, 12
+  # TODO: mark deprecate after replacing util_spec from new_spec
+  # deprecate :new_spec, :none, 2018, 12
 
   def new_default_spec(name, version, deps = nil, *files)
     spec = util_spec name, version, deps

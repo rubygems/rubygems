@@ -903,6 +903,40 @@ class TestGemPackage < Gem::Package::TarTestCase
     end
 
     assert_equal "package is corrupt, exception while verifying: whatever (ArgumentError) in #{@gem}", e.message
+
+    valid_metadata = ["metadata", "metadata.gz"]
+    valid_metadata.each do |vm|
+      $spec_loaded = false
+      $good_name = vm
+
+      entry = Object.new
+      def entry.full_name() $good_name end
+
+      package = Gem::Package.new(@gem)
+      package.instance_variable_set(:@files, [])
+      def package.load_spec(entry) $spec_loaded = true end
+
+      package.verify_entry(entry)
+
+      assert $spec_loaded
+    end
+
+    invalid_metadata = ["metadataxgz", "foobar\nmetadata", "metadata\nfoobar"]
+    invalid_metadata.each do |vm|
+      $spec_loaded = false
+      $bad_name = vm
+
+      entry = Object.new
+      def entry.full_name() $bad_name  end
+
+      package = Gem::Package.new(@gem)
+      package.instance_variable_set(:@files, [])
+      def package.load_spec(entry) $spec_loaded = true end
+
+      package.verify_entry(entry)
+
+      refute $spec_loaded
+    end
   end
 
   def test_spec

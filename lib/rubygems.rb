@@ -373,11 +373,6 @@ module Gem
     spec.datadir
   end
 
-  class << self
-    extend Gem::Deprecate
-    deprecate :datadir, "spec.datadir", 2016, 10
-  end
-
   ##
   # A Zlib::Deflate.deflate wrapper
 

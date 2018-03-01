@@ -145,12 +145,12 @@ class Gem::CommandManager
   def run(args, build_args=nil)
     process_args(args, build_args)
   rescue StandardError, Timeout::Error => ex
-    alert_error "While executing gem ... (#{ex.class})\n    #{ex}"
+    alert_error clean_text("While executing gem ... (#{ex.class})\n    #{ex}")
     ui.backtrace ex
 
     terminate_interaction(1)
   rescue Interrupt
-    alert_error "Interrupted"
+    alert_error clean_text("Interrupted")
     terminate_interaction(1)
   end
 
@@ -168,7 +168,7 @@ class Gem::CommandManager
       say Gem::VERSION
       terminate_interaction 0
     when /^-/ then
-      alert_error "Invalid option: #{args.first}. See 'gem --help'."
+      alert_error clean_text("Invalid option: #{args.first}. See 'gem --help'.")
       terminate_interaction 1
     else
       cmd_name = args.shift.downcase
@@ -224,7 +224,7 @@ class Gem::CommandManager
     rescue Exception => e
       e = load_error if load_error
 
-      alert_error "Loading command: #{command_name} (#{e.class})\n\t#{e}"
+      alert_error clean_text("Loading command: #{command_name} (#{e.class})\n\t#{e}")
       ui.backtrace e
     end
   end

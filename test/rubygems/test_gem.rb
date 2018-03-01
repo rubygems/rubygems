@@ -1214,7 +1214,7 @@ class TestGem < Gem::TestCase
     input = "\x1F\x8B\b\0\xED\xA3\x1AQ\0\x03\xCBH" +
             "\xCD\xC9\xC9\a\0\x86\xA6\x106\x05\0\0\0"
 
-    output = Gem.gunzip input
+    output = Gem::Util.gunzip input
 
     assert_equal 'hello', output
 
@@ -1226,7 +1226,7 @@ class TestGem < Gem::TestCase
   def test_self_gzip
     input = 'hello'
 
-    output = Gem.gzip input
+    output = Gem::Util.gzip input
 
     zipped = StringIO.new output
 

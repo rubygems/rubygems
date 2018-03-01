@@ -591,7 +591,7 @@ EOM
     end
 
     case file_name
-    when /^metadata(.gz)?$/ then
+    when "metadata", "metadata.gz" then
       load_spec entry
     when 'data.tar.gz' then
       verify_gz entry

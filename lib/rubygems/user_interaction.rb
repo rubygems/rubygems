@@ -6,12 +6,15 @@
 #++
 
 require 'rubygems/util'
+require 'rubygems/deprecate'
 
 ##
 # Module that defines the default UserInteraction.  Any class including this
 # module will have access to the +ui+ method that returns the default UI.
 
 module Gem::DefaultUserInteraction
+
+  extend Gem::Deprecate
 
   ##
   # The default UI is a class variable of the singleton class for this
@@ -384,6 +387,7 @@ class Gem::StreamUI
   def debug(statement)
     @errs.puts statement
   end
+  deprecate :debug, :none, 2018, 12
 
   ##
   # Terminate the application with exit code +status+, running any exit

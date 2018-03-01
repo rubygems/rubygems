@@ -36,10 +36,6 @@ class TestGemResolver < Gem::TestCase
     flunk e.message
   end
 
-  def test_self_compatibility
-    assert_same Gem::Resolver, Gem::DependencyResolver
-  end
-
   def test_self_compose_sets_best_set
     best_set = @DR::BestSet.new
 

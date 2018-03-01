@@ -630,10 +630,6 @@ end
     tf.close! if tf.respond_to? :close!
   end
 
-  def test_name_typo
-    assert_same @GDA, Gem::RequestSet::GemDepedencyAPI
-  end
-
   def test_pin_gem_source
     gda = @GDA.new @set, nil
 

@@ -15,6 +15,7 @@ require 'rubygems/deprecate'
 class Gem::DependencyInstaller
 
   include Gem::UserInteraction
+  extend Gem::Deprecate
 
   DEFAULT_OPTIONS = { # :nodoc:
     :env_shebang         => false,
@@ -40,15 +41,6 @@ class Gem::DependencyInstaller
   # Errors from SpecFetcher while searching for remote specifications
 
   attr_reader :errors
-
-  ##
-  #--
-  # TODO remove, no longer used
-
-  attr_reader :gems_to_install # :nodoc:
-
-  extend Gem::Deprecate
-  deprecate :gems_to_install, :none, 2016, 10
 
   ##
   # List of gems installed by #install in alphabetic order

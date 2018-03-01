@@ -16,6 +16,8 @@ class TestGemDoctor < Gem::TestCase
   end
 
   def test_doctor
+    util_clear_gems
+
     a = gem 'a'
     b = gem 'b'
     c = gem 'c'
@@ -154,6 +156,10 @@ This directory does not appear to be a RubyGems repository, skipping
   end
 
   def test_gem_repository_eh
+    unless (t = Dir.glob(File.join(@gemhome, "**/*.gemspec"))).empty?
+      File.delete(*t)
+    end
+    
     doctor = Gem::Doctor.new @gemhome
 
     refute doctor.gem_repository?, 'no gems installed'

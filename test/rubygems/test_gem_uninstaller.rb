@@ -192,6 +192,9 @@ class TestGemUninstaller < Gem::InstallerTestCase
 
     assert_same uninstaller, @pre_uninstall_hook_arg
     assert_same uninstaller, @post_uninstall_hook_arg
+
+    Gem.pre_uninstall_hooks.pop
+    Gem.post_uninstall_hooks.pop
   end
 
   def test_uninstall_default_gem
@@ -310,6 +313,9 @@ create_makefile '#{@spec.name}'
 
     assert_same uninstaller, @pre_uninstall_hook_arg
     assert_same uninstaller, @post_uninstall_hook_arg
+
+    Gem.pre_uninstall_hooks.pop
+    Gem.post_uninstall_hooks.pop
   end
 
   def test_uninstall_wrong_repo

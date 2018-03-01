@@ -5,6 +5,7 @@ require 'rubygems/commands/query_command'
 module TestGemCommandsQueryCommandSetup
   def setup
     super
+    util_clear_gems
 
     @cmd = Gem::Commands::QueryCommand.new
 

@@ -436,6 +436,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     assert_path_exists File.join(a2.doc_dir, 'ri')
     assert_path_exists File.join(a2.doc_dir, 'rdoc')
+    
+    Gem.done_installing_hooks.pop
   end
 
   def test_execute_saves_build_args
@@ -658,6 +660,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal %w[a-2], @cmd.installed_specs.map { |s| s.full_name }
 
     assert done_installing, 'documentation was not generated'
+    Gem.done_installing_hooks.pop
   end
 
   def test_install_gem_ignore_dependencies_remote

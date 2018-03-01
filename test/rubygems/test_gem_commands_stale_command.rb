@@ -6,6 +6,7 @@ class TestGemCommandsStaleCommand < Gem::TestCase
 
   def setup
     super
+    util_clear_gems
     @stub_ui = Gem::MockGemUi.new
     @cmd = Gem::Commands::StaleCommand.new
   end

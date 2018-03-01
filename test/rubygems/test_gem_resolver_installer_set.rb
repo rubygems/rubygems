@@ -4,6 +4,7 @@ require 'rubygems/test_case'
 class TestGemResolverInstallerSet < Gem::TestCase
 
   def test_add_always_install
+    util_clear_gems
     spec_fetcher do |fetcher|
       fetcher.download 'a', 1
       fetcher.download 'a', 2

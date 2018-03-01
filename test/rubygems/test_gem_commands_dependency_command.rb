@@ -6,6 +6,7 @@ class TestGemCommandsDependencyCommand < Gem::TestCase
 
   def setup
     super
+    util_clear_gems
     @stub_ui = Gem::MockGemUi.new
     @cmd = Gem::Commands::DependencyCommand.new
     @cmd.options[:domain] = :local

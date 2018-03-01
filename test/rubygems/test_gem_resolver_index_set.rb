@@ -5,7 +5,7 @@ class TestGemResolverIndexSet < Gem::TestCase
 
   def setup
     super
-
+    util_clear_gems
     @DR = Gem::Resolver
   end
 

@@ -7,9 +7,14 @@ class TestGemValidator < Gem::TestCase
 
   def setup
     super
-
+    util_clear_gems
     @simple_gem = SIMPLE_GEM
     @validator = Gem::Validator.new
+  end
+
+  def teardown
+    util_clear_gems
+    super
   end
 
   def test_alien

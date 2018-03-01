@@ -955,6 +955,7 @@ class TestGem < Gem::TestCase
     Gem.post_build do |installer| end
 
     assert_equal 2, Gem.post_build_hooks.length
+    Gem.post_build_hooks.pop 2
   end
 
   def test_self_post_install
@@ -963,6 +964,7 @@ class TestGem < Gem::TestCase
     Gem.post_install do |installer| end
 
     assert_equal 2, Gem.post_install_hooks.length
+    Gem.post_build_hooks.pop 2
   end
 
   def test_self_done_installing
@@ -971,6 +973,7 @@ class TestGem < Gem::TestCase
     Gem.done_installing do |gems| end
 
     assert_equal 1, Gem.done_installing_hooks.length
+    Gem.done_installing_hooks.pop
   end
 
   def test_self_post_reset
@@ -979,6 +982,7 @@ class TestGem < Gem::TestCase
     Gem.post_reset { }
 
     assert_equal 1, Gem.post_reset_hooks.length
+    Gem.post_reset_hooks.pop
   end
 
   def test_self_post_uninstall
@@ -987,6 +991,7 @@ class TestGem < Gem::TestCase
     Gem.post_uninstall do |installer| end
 
     assert_equal 2, Gem.post_uninstall_hooks.length
+    Gem.post_uninstall_hooks.pop 2
   end
 
   def test_self_pre_install
@@ -995,6 +1000,7 @@ class TestGem < Gem::TestCase
     Gem.pre_install do |installer| end
 
     assert_equal 2, Gem.pre_install_hooks.length
+    Gem.pre_install_hooks.pop 2
   end
 
   def test_self_pre_reset
@@ -1003,6 +1009,7 @@ class TestGem < Gem::TestCase
     Gem.pre_reset { }
 
     assert_equal 1, Gem.pre_reset_hooks.length
+    Gem.pre_reset_hooks.pop
   end
 
   def test_self_pre_uninstall
@@ -1011,6 +1018,7 @@ class TestGem < Gem::TestCase
     Gem.pre_uninstall do |installer| end
 
     assert_equal 2, Gem.pre_uninstall_hooks.length
+    Gem.pre_uninstall_hooks.pop 2
   end
 
   def test_self_sources
@@ -1772,6 +1780,7 @@ You may need to `gem install -g` to install missing gems
 
       EXPECTED
     end
+    expected = /#{Regexp.escape(expected)}/
 
     assert_output nil, expected do
       Gem.use_gemdeps

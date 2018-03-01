@@ -1412,6 +1412,7 @@ dependencies: []
 
     stub = Gem::Specification.find_all_by_name('default').first
     assert_predicate stub, :default_gem?
+    util_remove_gem default
   end
 
   def test_build_extensions_built

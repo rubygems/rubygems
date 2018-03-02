@@ -20,3 +20,6 @@ before_script:
   - util/ci before_script
 script:
   - util/ci script
+matrix:
+  allow_failures:
+    - env: "TEST_TOOL=bundler RGV=master"

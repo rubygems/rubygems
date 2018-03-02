@@ -105,7 +105,7 @@ class Gem::DependencyInstaller
 
   ##
   #--
-  # TODO remove, no longer used
+  # TODO remove at RubyGems 4, no longer used
 
   def add_found_dependencies to_do, dependency_list # :nodoc:
     seen = {}
@@ -314,7 +314,7 @@ class Gem::DependencyInstaller
   # Gathers all dependencies necessary for the installation from local and
   # remote sources unless the ignore_dependencies was given.
   #--
-  # TODO remove at RubyGems 3
+  # TODO remove at RubyGems 4
 
   def gather_dependencies # :nodoc:
     specs = @available.all_specs

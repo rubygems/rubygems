@@ -160,11 +160,16 @@ EOF
       FileUtils.mkdir_p dest_path
 
       CHDIR_MUTEX.synchronize do
-        Dir.chdir extension_dir do
-          results = builder.build(extension, @gem_dir, dest_path,
-                                  results, @build_args, lib_dir)
+        pwd = Dir.getwd
+        Dir.chdir extension_dir
+        results = builder.build(extension, @gem_dir, dest_path,
+                                results, @build_args, lib_dir)
 
-          verbose { results.join("\n") }
+        verbose { results.join("\n") }
+        begin
+          Dir.chdir pwd
+        rescue SystemCallError
+          Dir.chdir dest_path
         end
       end
 

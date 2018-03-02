@@ -622,7 +622,7 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_load_spec
-    entry = StringIO.new Gem.gzip @spec.to_yaml
+    entry = StringIO.new Gem::Util.gzip @spec.to_yaml
     def entry.full_name() 'metadata.gz' end
 
     package = Gem::Package.new 'nonexistent.gem'
@@ -652,7 +652,7 @@ class TestGemPackage < Gem::Package::TarTestCase
     data_tgz = data_tgz.string
 
     gem = util_tar do |tar|
-      metadata_gz = Gem.gzip @spec.to_yaml
+      metadata_gz = Gem::Util.gzip @spec.to_yaml
 
       tar.add_file 'metadata.gz', 0444 do |io|
         io.write metadata_gz
@@ -699,7 +699,7 @@ class TestGemPackage < Gem::Package::TarTestCase
     data_tgz = data_tgz.string
 
     gem = util_tar do |tar|
-      metadata_gz = Gem.gzip @spec.to_yaml
+      metadata_gz = Gem::Util.gzip @spec.to_yaml
 
       tar.add_file 'metadata.gz', 0444 do |io|
         io.write metadata_gz
@@ -736,7 +736,7 @@ class TestGemPackage < Gem::Package::TarTestCase
 
   def test_verify_corrupt
     tf = Tempfile.open 'corrupt' do |io|
-      data = Gem.gzip 'a' * 10
+      data = Gem::Util.gzip 'a' * 10
       io.write \
         tar_file_header('metadata.gz', "\000x", 0644, data.length, Time.now)
       io.write data
@@ -860,7 +860,7 @@ class TestGemPackage < Gem::Package::TarTestCase
         build.add_contents gem
 
         # write bogus data.tar.gz to foil signature
-        bogus_data = Gem.gzip 'hello'
+        bogus_data = Gem::Util.gzip 'hello'
         fake_signer = Class.new do
           def digest_name; 'SHA512'; end
           def digest_algorithm; Digest(:SHA512); end

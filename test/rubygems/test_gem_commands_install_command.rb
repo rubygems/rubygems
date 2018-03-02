@@ -223,6 +223,17 @@ ERROR:  Could not find a valid gem 'bar' (= 0.5) (required by 'foo' (>= 0)) in a
     assert_equal expected, @ui.error
   end
 
+  def test_execute_http_proxy
+    use_ui @ui do
+      e = assert_raises OptionParser::InvalidArgument, @ui.error do
+        @cmd.handle_options %w[-p=foo.bar.com]
+      end
+
+      assert_match 'Preface URLs with one of ["http://", "https://", "file://", "s3://"]' , @ui.output
+      assert_match "invalid argument: -p=foo.bar.com", e.message
+    end
+  end
+
   def test_execute_bad_source
     spec_fetcher
 

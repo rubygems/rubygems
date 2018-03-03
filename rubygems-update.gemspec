@@ -1,4 +1,4 @@
-require_relative './lib/rubygems/version'
+load './lib/rubygems/version'
 
 Gem::Specification.new do |s|
   s.name = "rubygems-update".freeze

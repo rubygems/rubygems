@@ -7,7 +7,6 @@
 
 require 'uri'
 require 'rubygems'
-require 'rubygems/user_interaction'
 
 ##
 # Mixin methods for local and remote Gem::Command options.

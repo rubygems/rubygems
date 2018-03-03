@@ -577,11 +577,9 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   #++
 
   def self.find_home
-    windows = File::ALT_SEPARATOR
-
-    File.expand_path "~"
+    Dir.home
   rescue
-    if windows then
+    if Gem.win_platform? then
       File.expand_path File.join(ENV['HOMEDRIVE'] || ENV['SystemDrive'], '/')
     else
       File.expand_path "/"

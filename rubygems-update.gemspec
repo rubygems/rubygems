@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.name = "rubygems-update".freeze
   s.version = Gem::VERSION
   s.authors = ["Jim Weirich".freeze, "Chad Fowler".freeze, "Eric Hodel".freeze]
-  s.email = ["rubygems-developers@rubyforge.org".freeze]
+  s.email = ["", "", "drbrain@segment7.net".freeze]
 
   s.summary = "RubyGems is a package management framework for Ruby.".freeze
   s.description = "A package (also known as a library) contains a set of functionality

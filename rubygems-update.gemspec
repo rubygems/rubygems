@@ -1,6 +1,8 @@
+require_relative './lib/rubygems/version'
+
 Gem::Specification.new do |s|
   s.name = "rubygems-update".freeze
-  s.version = "2.7.4"
+  s.version = Gem::VERSION
   s.authors = ["Jim Weirich".freeze, "Chad Fowler".freeze, "Eric Hodel".freeze]
   s.email = ["rubygems-developers@rubyforge.org".freeze]
 
@@ -19,11 +21,10 @@ Gem::Specification.new do |s|
     "UPGRADING.rdoc".freeze, "POLICIES.rdoc".freeze, "CODE_OF_CONDUCT.md".freeze,
     "CONTRIBUTING.rdoc".freeze, "bundler/CHANGELOG.md".freeze, "bundler/CODE_OF_CONDUCT.md".freeze,
     "bundler/CONTRIBUTING.md".freeze, "bundler/LICENSE.md".freeze, "bundler/README.md".freeze,
-    "hide_lib_for_update/note.txt".freeze,
+    "hide_lib_for_update/note.txt".freeze, *Dir["bundler/man/*.1"]
   ]
 
   s.required_ruby_version = Gem::Requirement.new(">= 2.2.2".freeze)
-  s.rubygems_version = "2.7.3".freeze
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze)
 
   s.specification_version = 4

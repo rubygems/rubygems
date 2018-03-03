@@ -764,7 +764,7 @@ class Gem::Installer
   def verify_default_gems
     return unless options[:install_as_default]
     return if Gem::Specification::DEFAULT_GEMS_LIST.include?(spec.name)
-    raise Gem::InstallError, "#{spec} is not a default gems"
+    raise Gem::InstallError, "#{spec} is not a default gem."
   end
 
   ##

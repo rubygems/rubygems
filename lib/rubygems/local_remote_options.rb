@@ -28,10 +28,7 @@ module Gem::LocalRemoteOptions
       valid_uri_schemes = ["http", "https", "file", "s3"]
       unless valid_uri_schemes.include?(uri.scheme)
         msg =  "Invalid uri scheme for #{value}\nPreface URLs with one of #{valid_uri_schemes.map{|s| "#{s}://"}}"
-
-        ui.say(msg)
-
-        raise OptionParser::InvalidArgument, value
+        raise ArgumentError, msg
       end
 
       value

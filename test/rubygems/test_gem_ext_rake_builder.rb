@@ -40,7 +40,7 @@ class TestGemExtRakeBuilder < Gem::TestCase
     build_rake_in do |rake|
       Dir.chdir @ext do
         non_empty_args_list = ['']
-        Gem::Ext::RakeBuilder.build 'mkrf_conf.rb', nil, @dest_path, output, non_empty_args_list
+        Gem::Ext::RakeBuilder.build 'mkrf_conf.rb', @dest_path, output, non_empty_args_list
       end
 
       output = output.join "\n"

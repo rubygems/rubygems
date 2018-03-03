@@ -130,7 +130,7 @@ class TestGemExtExtConfBuilder < Gem::TestCase
     output = []
 
     Dir.chdir @ext do
-      Gem::Ext::ExtConfBuilder.build 'extconf.rb', nil, @dest_path, output
+      Gem::Ext::ExtConfBuilder.build 'extconf.rb', @dest_path, output
     end
 
     refute_includes(output, "To see why this extension failed to compile, please check the mkmf.log which can be found here:\n")

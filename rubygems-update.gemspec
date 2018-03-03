@@ -33,5 +33,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency(%q<rdoc>.freeze, ["~> 6.0"])
   s.add_development_dependency(%q<rake>.freeze, ["~> 12.0"])
   s.add_development_dependency(%q<minitest>.freeze, ["~> 5.0"])
-  s.add_development_dependency(%q<simplecov>.freeze)
+  s.add_development_dependency(%q<simplecov>.freeze, ["~> 0"])
 end

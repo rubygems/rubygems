@@ -110,6 +110,10 @@ class Gem::Installer
   class FakePackage
     attr_accessor :spec
 
+    attr_accessor :dir_mode
+    attr_accessor :prog_mode
+    attr_accessor :data_mode
+
     def initialize(spec)
       @spec = spec
     end

@@ -130,6 +130,75 @@ class TestGem < Gem::TestCase
     assert_equal %w[a-1], installed.map { |spec| spec.full_name }
   end
 
+  def test_self_install_permissions
+    assert_self_install_permissions
+  end
+
+  def test_self_install_permissions_umask_0
+    umask = File.umask(0)
+    assert_self_install_permissions
+  ensure
+    File.umask(umask)
+  end
+
+  def test_self_install_permissions_umask_077
+    umask = File.umask(077)
+    assert_self_install_permissions
+  ensure
+    File.umask(umask)
+  end
+
+  def assert_self_install_permissions
+    mask = /mingw|mswin/ =~ RUBY_PLATFORM ? 0700 : 0777
+    options = {
+      :dir_mode => 0500,
+      :prog_mode => 0510,
+      :data_mode => 0640,
+      :wrappers => true,
+    }
+    Dir.chdir @tempdir do
+      Dir.mkdir 'bin'
+      File.open 'bin/foo.cmd', 'w' do |fp|
+        fp.chmod(0755)
+        fp.puts 'p'
+      end
+
+      Dir.mkdir 'data'
+      File.open 'data/foo.txt', 'w' do |fp|
+        fp.puts 'blah'
+      end
+
+      spec_fetcher do |f|
+        f.gem 'foo', 1 do |s|
+          s.executables = ['foo.cmd']
+          s.files = %w[bin/foo.cmd data/foo.txt]
+        end
+      end
+      Gem.install 'foo', Gem::Requirement.default, options
+    end
+
+    prog_mode = (options[:prog_mode] & mask).to_s(8)
+    dir_mode = (options[:dir_mode] & mask).to_s(8)
+    data_mode = (options[:data_mode] & mask).to_s(8)
+    expected = {
+      'bin/foo.cmd' => prog_mode,
+      'gems/foo-1' => dir_mode,
+      'gems/foo-1/bin' => dir_mode,
+      'gems/foo-1/data' => dir_mode,
+      'gems/foo-1/bin/foo.cmd' => prog_mode,
+      'gems/foo-1/data/foo.txt' => data_mode,
+    }
+    result = {}
+    Dir.chdir @gemhome do
+      expected.each_key do |n|
+        result[n] = (File.stat(n).mode & mask).to_s(8)
+      end
+    end
+    assert_equal(expected, result)
+  ensure
+    File.chmod(0700, *Dir.glob(@gemhome+'/gems/**/').map {|path| path.untaint})
+  end
+
   def test_require_missing
     save_loaded_features do
       assert_raises ::LoadError do

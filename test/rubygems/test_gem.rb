@@ -149,6 +149,7 @@ class TestGem < Gem::TestCase
   end
 
   def assert_self_install_permissions
+    mask = /mingw|mswin/ =~ RUBY_PLATFORM ? 0700 : 0777
     options = {
       :dir_mode => 0500,
       :prog_mode => 0510,
@@ -157,7 +158,7 @@ class TestGem < Gem::TestCase
     }
     Dir.chdir @tempdir do
       Dir.mkdir 'bin'
-      File.open 'bin/foo.rb', 'w' do |fp|
+      File.open 'bin/foo.cmd', 'w' do |fp|
         fp.chmod(0755)
         fp.puts 'p'
       end
@@ -169,25 +170,28 @@ class TestGem < Gem::TestCase
 
       spec_fetcher do |f|
         f.gem 'foo', 1 do |s|
-          s.executables = ['foo.rb']
-          s.files = %w[bin/foo.rb data/foo.txt]
+          s.executables = ['foo.cmd']
+          s.files = %w[bin/foo.cmd data/foo.txt]
         end
       end
       Gem.install 'foo', Gem::Requirement.default, options
     end
 
+    prog_mode = (options[:prog_mode] & mask).to_s(8)
+    dir_mode = (options[:dir_mode] & mask).to_s(8)
+    data_mode = (options[:data_mode] & mask).to_s(8)
     expected = {
-      'bin/foo.rb' => options[:prog_mode].to_s(8),
-      'gems/foo-1' => options[:dir_mode].to_s(8),
-      'gems/foo-1/bin' => options[:dir_mode].to_s(8),
-      'gems/foo-1/data' => options[:dir_mode].to_s(8),
-      'gems/foo-1/bin/foo.rb' => options[:prog_mode].to_s(8),
-      'gems/foo-1/data/foo.txt' => options[:data_mode].to_s(8),
+      'bin/foo.cmd' => prog_mode,
+      'gems/foo-1' => dir_mode,
+      'gems/foo-1/bin' => dir_mode,
+      'gems/foo-1/data' => dir_mode,
+      'gems/foo-1/bin/foo.cmd' => prog_mode,
+      'gems/foo-1/data/foo.txt' => data_mode,
     }
     result = {}
     Dir.chdir @gemhome do
       expected.each_key do |n|
-        result[n] = (File.stat(n).mode & 0777).to_s(8)
+        result[n] = (File.stat(n).mode & mask).to_s(8)
       end
     end
     assert_equal(expected, result)

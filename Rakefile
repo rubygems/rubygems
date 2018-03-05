@@ -61,7 +61,8 @@ Rake::TestTask.new do |t|
   t.test_files = FileList['test/**/test_*.rb']
 end
 
-v = "2.7.4"
+spec = Gem::Specification.load('rubygems-update.gemspec')
+v = spec.version
 
 begin
   gem 'rdoc', '~> 4.0'
@@ -112,14 +113,9 @@ task :prerelease => [:clobber, :check_manifest, :test]
 
 task :postrelease => %w[upload guides:publish blog:publish]
 
-file "pkg/rubygems-update-#{v}" do
-  require 'fileutils'
-  `gem build rubygems-update.gemspec`
-  `gem unpack rubygems-update-#{v}.gem`
-  FileUtils.mv "rubygems-update-#{v}.gem", "pkg"
-  FileUtils.rm_rf "pkg/rubygems-update-#{v}"
-  FileUtils.mv "rubygems-update-#{v}", "pkg"
-end
+Gem::PackageTask.new(spec) {}
+
+Rake::Task["package"].enhance ["pkg/rubygems-#{v}.tgz", "pkg/rubygems-#{v}.zip"]
 
 file "pkg/rubygems-#{v}" => "pkg/rubygems-update-#{v}" do |t|
   require 'find'
@@ -140,27 +136,17 @@ file "pkg/rubygems-#{v}" => "pkg/rubygems-update-#{v}" do |t|
   end
 end
 
-source_pkg_dir = "pkg/rubygems-#{v}"
-
-file "pkg/rubygems-#{v}.tgz" => source_pkg_dir do
-  cd 'pkg' do
-    sh "tar -czf rubygems-#{v}.tgz rubygems-#{v}"
-  end
-end
-
-file "pkg/rubygems-#{v}.zip" => source_pkg_dir do
+file "pkg/rubygems-#{v}.zip" => "pkg/rubygems-#{v}" do
   cd 'pkg' do
     sh "zip -q -r rubygems-#{v}.zip rubygems-#{v}"
   end
 end
 
-file "pkg/rubygems-update-#{v}.gem"
-
-task :package => %W[
-       pkg/rubygems-update-#{v}.gem
-       pkg/rubygems-#{v}.tgz
-       pkg/rubygems-#{v}.zip
-     ]
+file "pkg/rubygems-#{v}.tgz" => "pkg/rubygems-#{v}" do
+  cd 'pkg' do
+    sh "tar -czf rubygems-#{v}.tgz rubygems-#{v}"
+  end
+end
 
 desc "Upload release to S3"
 task :upload_to_s3 do

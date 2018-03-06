@@ -124,7 +124,7 @@ class TestGemLocalRemoteOptions < Gem::TestCase
 
     s1 = 'htp://more-gems.example.com'
 
-    assert_raises OptionParser::InvalidArgument do
+    assert_raises ArgumentError do
       @cmd.handle_options %W[--source #{s1}]
     end
 

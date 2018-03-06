@@ -2620,32 +2620,23 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   def to_yaml(opts = {}) # :nodoc:
-    if (YAML.const_defined?(:ENGINE) && !YAML::ENGINE.syck?) ||
-        (defined?(Psych) && YAML == Psych) then
-      # Because the user can switch the YAML engine behind our
-      # back, we have to check again here to make sure that our
-      # psych code was properly loaded, and load it if not.
-      unless Gem.const_defined?(:NoAliasYAMLTree)
-        require 'rubygems/psych_tree'
-      end
-
-      builder = Gem::NoAliasYAMLTree.create
-      builder << self
-      ast = builder.tree
-
-      io = StringIO.new
-      io.set_encoding Encoding::UTF_8 if Object.const_defined? :Encoding
-
-      Psych::Visitors::Emitter.new(io).accept(ast)
-
-      io.string.gsub(/ !!null \n/, " \n")
-    else
-      YAML.quick_emit object_id, opts do |out|
-        out.map taguri, to_yaml_style do |map|
-          encode_with map
-        end
-      end
+    # Because the user can switch the YAML engine behind our
+    # back, we have to check again here to make sure that our
+    # psych code was properly loaded, and load it if not.
+    unless Gem.const_defined?(:NoAliasYAMLTree)
+      require 'rubygems/psych_tree'
     end
+
+    builder = Gem::NoAliasYAMLTree.create
+    builder << self
+    ast = builder.tree
+
+    io = StringIO.new
+    io.set_encoding Encoding::UTF_8 if Object.const_defined? :Encoding
+
+    Psych::Visitors::Emitter.new(io).accept(ast)
+
+    io.string.gsub(/ !!null \n/, " \n")
   end
 
   ##

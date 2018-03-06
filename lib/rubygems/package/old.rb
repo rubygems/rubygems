@@ -144,15 +144,9 @@ class Gem::Package::Old < Gem::Package
       end
     end
 
-    yaml_error = if YAML.const_defined?(:ENGINE) && YAML::ENGINE.yamler == 'syck' then
-                   YAML::ParseError
-                 else
-                   YAML::SyntaxError
-                 end
-
     begin
       @spec = Gem::Specification.from_yaml yaml
-    rescue yaml_error
+    rescue YAML::SyntaxError
       raise Gem::Exception, "Failed to parse gem specification out of gem file"
     end
   rescue ArgumentError

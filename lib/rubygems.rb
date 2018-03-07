@@ -680,44 +680,31 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     return if @yaml_loaded
     return unless defined?(gem)
 
-    test_syck = ENV['TEST_SYCK']
+    begin
+      gem 'psych', '>= 2.0.0'
+    rescue Gem::LoadError
+      # It's OK if the user does not have the psych gem installed.  We will
+      # attempt to require the stdlib version
+    end
 
-    # Only Ruby 1.8 and 1.9 have syck
-    test_syck = false unless /^1\./ =~ RUBY_VERSION
-
-    unless test_syck
-      begin
-        gem 'psych', '>= 2.0.0'
-      rescue Gem::LoadError
-        # It's OK if the user does not have the psych gem installed.  We will
-        # attempt to require the stdlib version
+    begin
+      # Try requiring the gem version *or* stdlib version of psych.
+      require 'psych'
+    rescue ::LoadError
+      # If we can't load psych, thats fine, go on.
+    else
+      # If 'yaml' has already been required, then we have to
+      # be sure to switch it over to the newly loaded psych.
+      if defined?(YAML::ENGINE) && YAML::ENGINE.yamler != "psych"
+        YAML::ENGINE.yamler = "psych"
       end
 
-      begin
-        # Try requiring the gem version *or* stdlib version of psych.
-        require 'psych'
-      rescue ::LoadError
-        # If we can't load psych, thats fine, go on.
-      else
-        # If 'yaml' has already been required, then we have to
-        # be sure to switch it over to the newly loaded psych.
-        if defined?(YAML::ENGINE) && YAML::ENGINE.yamler != "psych"
-          YAML::ENGINE.yamler = "psych"
-        end
-
-        require 'rubygems/psych_additions'
-        require 'rubygems/psych_tree'
-      end
+      require 'rubygems/psych_additions'
+      require 'rubygems/psych_tree'
     end
 
     require 'yaml'
     require 'rubygems/safe_yaml'
-
-    # If we're supposed to be using syck, then we may have to force
-    # activate it via the YAML::ENGINE API.
-    if test_syck and defined?(YAML::ENGINE)
-      YAML::ENGINE.yamler = "syck" unless YAML::ENGINE.syck?
-    end
 
     # Now that we're sure some kind of yaml library is loaded, pull
     # in our hack to deal with Syck's DefaultKey ugliness.

@@ -4,10 +4,6 @@ require 'rubygems'
 require 'rubygems/package_task'
 require "rake/testtask"
 
-if ENV['YAML'] == "syck"
-  ENV['TEST_SYCK'] = "1"
-end
-
 begin
   require 'psych'
 rescue ::LoadError

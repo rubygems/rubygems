@@ -560,8 +560,7 @@ abort "#{deprecation_message}"
       if File.exist? release_notes then
         history = File.read release_notes
 
-        history.force_encoding Encoding::UTF_8 if
-          Object.const_defined? :Encoding
+        history.force_encoding Encoding::UTF_8
 
         history = history.sub(/^# coding:.*?(?=^=)/m, '')
 

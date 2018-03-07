@@ -1185,11 +1185,7 @@ class Gem::Specification < Gem::BasicSpecification
     file = file.dup.untaint
     return unless File.file?(file)
 
-    code = if defined? Encoding
-             File.read file, :mode => 'r:UTF-8:-'
-           else
-             File.read file
-           end
+    code = File.read file, :mode => 'r:UTF-8:-'
 
     code.untaint
 
@@ -2634,7 +2630,7 @@ class Gem::Specification < Gem::BasicSpecification
       ast = builder.tree
 
       io = StringIO.new
-      io.set_encoding Encoding::UTF_8 if Object.const_defined? :Encoding
+      io.set_encoding Encoding::UTF_8
 
       Psych::Visitors::Emitter.new(io).accept(ast)
 

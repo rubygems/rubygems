@@ -1010,7 +1010,6 @@ dependencies: []
     assert_equal @a2, spec
   end
 
-  if defined?(Encoding)
   def test_self_load_utf8_with_ascii_encoding
     int_enc = Encoding.default_internal
     silence_warnings { Encoding.default_internal = 'US-ASCII' }
@@ -1030,7 +1029,6 @@ dependencies: []
     assert_equal spec2, spec
   ensure
     silence_warnings { Encoding.default_internal = int_enc }
-  end
   end
 
   def test_self_load_legacy_ruby

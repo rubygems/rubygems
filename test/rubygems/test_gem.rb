@@ -1286,9 +1286,6 @@ class TestGem < Gem::TestCase
     output = Gem::Util.gunzip input
 
     assert_equal 'hello', output
-
-    return unless Object.const_defined? :Encoding
-
     assert_equal Encoding::BINARY, output.encoding
   end
 
@@ -1300,9 +1297,6 @@ class TestGem < Gem::TestCase
     zipped = StringIO.new output
 
     assert_equal 'hello', Zlib::GzipReader.new(zipped).read
-
-    return unless Object.const_defined? :Encoding
-
     assert_equal Encoding::BINARY, output.encoding
   end
 

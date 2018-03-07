@@ -15,7 +15,7 @@ module Gem::Util
     data = StringIO.new(data, 'r')
 
     unzipped = Zlib::GzipReader.new(data).read
-    unzipped.force_encoding Encoding::BINARY if Object.const_defined? :Encoding
+    unzipped.force_encoding Encoding::BINARY
     unzipped
   end
 
@@ -26,7 +26,7 @@ module Gem::Util
     require 'zlib'
     require 'stringio'
     zipped = StringIO.new(String.new, 'w')
-    zipped.set_encoding Encoding::BINARY if Object.const_defined? :Encoding
+    zipped.set_encoding Encoding::BINARY
 
     Zlib::GzipWriter.wrap zipped do |io| io.write data end
 

@@ -595,7 +595,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   def mu_pp(obj)
     s = String.new
     s = PP.pp obj, s
-    s = s.force_encoding(Encoding.default_external) if defined? Encoding
+    s = s.force_encoding(Encoding.default_external)
     s.chomp
   end
 

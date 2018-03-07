@@ -207,11 +207,8 @@ class TestGemCommandsSetupCommand < Gem::TestCase
   end
 
   def test_show_release_notes
-    @default_external = nil
-    if Object.const_defined? :Encoding
-      @default_external = @ui.outs.external_encoding
-      @ui.outs.set_encoding Encoding::US_ASCII
-    end
+    @default_external = @ui.outs.external_encoding
+    @ui.outs.set_encoding Encoding::US_ASCII
 
     @cmd.options[:previous_version] = Gem::Version.new '2.0.2'
 
@@ -256,7 +253,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     EXPECTED
 
     output = @ui.output
-    output.force_encoding Encoding::UTF_8 if Object.const_defined? :Encoding
+    output.force_encoding Encoding::UTF_8
 
     assert_equal expected, output
   ensure

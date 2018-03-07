@@ -1185,11 +1185,7 @@ class Gem::Specification < Gem::BasicSpecification
     file = file.dup.untaint
     return unless File.file?(file)
 
-    code = if defined? Encoding
-             File.read file, :mode => 'r:UTF-8:-'
-           else
-             File.read file
-           end
+    code = File.read file, :mode => 'r:UTF-8:-'
 
     code.untaint
 
@@ -2632,7 +2628,7 @@ class Gem::Specification < Gem::BasicSpecification
     ast = builder.tree
 
     io = StringIO.new
-    io.set_encoding Encoding::UTF_8 if Object.const_defined? :Encoding
+    io.set_encoding Encoding::UTF_8
 
     Psych::Visitors::Emitter.new(io).accept(ast)
 
@@ -2724,7 +2720,11 @@ class Gem::Specification < Gem::BasicSpecification
 
   def version= version
     @version = Gem::Version.create(version)
-    self.required_rubygems_version = '> 1.3.1' if @version.prerelease?
+    # skip to set required_ruby_version when pre-released rubygems.
+    # It caused to raise CircularDependencyError
+    if @version.prerelease? && @name.strip != "rubygems"
+      self.required_rubygems_version = '> 1.3.1'
+    end
     invalidate_memoized_attributes
 
     return @version

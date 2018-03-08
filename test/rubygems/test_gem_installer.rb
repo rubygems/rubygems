@@ -55,7 +55,7 @@ version = \">= 0.a\"
 
 if ARGV.first
   str = ARGV.first
-  str = str.dup.force_encoding("BINARY") if str.respond_to? :force_encoding
+  str = str.dup.force_encoding("BINARY")
   if str =~ /\\A_(.*)_\\z/ and Gem::Version.correct?($1) then
     version = $1
     ARGV.shift
@@ -890,8 +890,6 @@ gem 'other', version
   end
 
   def test_install_creates_binstub_that_dont_trust_encoding
-    skip unless "".respond_to?(:force_encoding)
-
     Dir.mkdir util_inst_bindir
     util_setup_gem
     util_clear_gems

@@ -721,11 +721,11 @@ end
     spec.version = '1'
     spec.specification_version = @current_version + 1
 
-    util_spec = Marshal.load Marshal.dump(spec)
+    load_spec = Marshal.load Marshal.dump(spec)
 
-    assert_equal 'a', util_spec.name
-    assert_equal Gem::Version.new(1), util_spec.version
-    assert_equal @current_version, util_spec.specification_version
+    assert_equal 'a', load_spec.name
+    assert_equal Gem::Version.new(1), load_spec.version
+    assert_equal @current_version, load_spec.specification_version
   end
 
   def test_self_from_yaml
@@ -743,12 +743,12 @@ end
     yaml = @a1.to_yaml
     yaml.sub!(/^date:.*/, "date: 2011-04-26 00:00:00.000000000Z")
 
-    util_spec = with_syck do
+    spec = with_syck do
       Gem::Specification.from_yaml yaml
     end
 
     assert_kind_of Time, @a1.date
-    assert_kind_of Time, util_spec.date
+    assert_kind_of Time, spec.date
   end
 
   def test_self_from_yaml_syck_default_key_bug
@@ -778,14 +778,14 @@ test_files: []
 bindir:
     YAML
 
-    util_spec = with_syck do
+    spec = with_syck do
       Gem::Specification.from_yaml yaml
     end
 
-    op = util_spec.dependencies.first.requirement.requirements.first.first
+    op = spec.dependencies.first.requirement.requirements.first.first
     refute_kind_of YAML::Syck::DefaultKey, op
 
-    refute_match %r%DefaultKey%, util_spec.to_ruby
+    refute_match %r%DefaultKey%, spec.to_ruby
   end
 
   def test_self_from_yaml_cleans_up_defaultkey
@@ -814,12 +814,12 @@ test_files: []
 bindir:
     YAML
 
-    util_spec = Gem::Specification.from_yaml yaml
+    spec = Gem::Specification.from_yaml yaml
 
-    op = util_spec.dependencies.first.requirement.requirements.first.first
+    op = spec.dependencies.first.requirement.requirements.first.first
     refute_kind_of YAML::Syck::DefaultKey, op
 
-    refute_match %r%DefaultKey%, util_spec.to_ruby
+    refute_match %r%DefaultKey%, spec.to_ruby
   end
 
   def test_self_from_yaml_cleans_up_defaultkey_from_newer_192
@@ -848,12 +848,12 @@ test_files: []
 bindir:
     YAML
 
-    util_spec = Gem::Specification.from_yaml yaml
+    spec = Gem::Specification.from_yaml yaml
 
-    op = util_spec.dependencies.first.requirement.requirements.first.first
+    op = spec.dependencies.first.requirement.requirements.first.first
     refute_kind_of YAML::Syck::DefaultKey, op
 
-    refute_match %r%DefaultKey%, util_spec.to_ruby
+    refute_match %r%DefaultKey%, spec.to_ruby
   end
 
   def test_self_from_yaml_cleans_up_Date_objects
@@ -903,9 +903,9 @@ requirements: []
 dependencies: []
     YAML
 
-    util_spec = Gem::Specification.from_yaml yaml
+    spec = Gem::Specification.from_yaml yaml
 
-    assert_kind_of Time, util_spec.date
+    assert_kind_of Time, spec.date
   end
 
   def test_self_load
@@ -1202,57 +1202,57 @@ dependencies: []
       s.add_dependency 'some_gem'
     end
 
-    util_spec = spec.dup
+    dup_spec = spec.dup
 
     assert_equal "blah", spec.name
-    assert_same  spec.name, util_spec.name
+    assert_same  spec.name, dup_spec.name
 
     assert_equal "1.3.5", spec.version.to_s
-    assert_same spec.version, util_spec.version
+    assert_same spec.version, dup_spec.version
 
     assert_equal Gem::Platform::RUBY, spec.platform
-    assert_same spec.platform, util_spec.platform
+    assert_same spec.platform, dup_spec.platform
 
     assert_equal 'summary', spec.summary
-    assert_same spec.summary, util_spec.summary
+    assert_same spec.summary, dup_spec.summary
 
     assert_equal %w[README.txt bin/exec ext/extconf.rb lib/file.rb
                     test/file.rb].sort,
                  spec.files
-    refute_same spec.files, util_spec.files, 'files'
+    refute_same spec.files, dup_spec.files, 'files'
 
     assert_equal %w[test/file.rb], spec.test_files
-    refute_same spec.test_files, util_spec.test_files, 'test_files'
+    refute_same spec.test_files, dup_spec.test_files, 'test_files'
 
     assert_equal %w[--foo], spec.rdoc_options
-    refute_same spec.rdoc_options, util_spec.rdoc_options, 'rdoc_options'
+    refute_same spec.rdoc_options, dup_spec.rdoc_options, 'rdoc_options'
 
     assert_equal %w[README.txt], spec.extra_rdoc_files
-    refute_same spec.extra_rdoc_files, util_spec.extra_rdoc_files,
+    refute_same spec.extra_rdoc_files, dup_spec.extra_rdoc_files,
                 'extra_rdoc_files'
 
     assert_equal %w[exec], spec.executables
-    refute_same spec.executables, util_spec.executables, 'executables'
+    refute_same spec.executables, dup_spec.executables, 'executables'
 
     assert_equal %w[ext/extconf.rb], spec.extensions
-    refute_same spec.extensions, util_spec.extensions, 'extensions'
+    refute_same spec.extensions, dup_spec.extensions, 'extensions'
 
     assert_equal %w[requirement], spec.requirements
-    refute_same spec.requirements, util_spec.requirements, 'requirements'
+    refute_same spec.requirements, dup_spec.requirements, 'requirements'
 
     assert_equal [Gem::Dependency.new('some_gem', Gem::Requirement.default)],
                  spec.dependencies
-    refute_same spec.dependencies, util_spec.dependencies, 'dependencies'
+    refute_same spec.dependencies, dup_spec.dependencies, 'dependencies'
 
     assert_equal 'bin', spec.bindir
-    assert_same spec.bindir, util_spec.bindir
+    assert_same spec.bindir, dup_spec.bindir
 
     assert_equal '>= 0', spec.required_ruby_version.to_s
-    assert_same spec.required_ruby_version, util_spec.required_ruby_version
+    assert_same spec.required_ruby_version, dup_spec.required_ruby_version
 
     assert_equal '>= 0', spec.required_rubygems_version.to_s
     assert_same spec.required_rubygems_version,
-                util_spec.required_rubygems_version
+                dup_spec.required_rubygems_version
   end
 
   def test_initialize_copy_broken

@@ -29,7 +29,7 @@ class TestGemCommandsDependencyCommand < Gem::TestCase
   end
 
   def test_execute_no_args
-    install_specs new_spec 'x', '2'
+    install_specs util_spec 'x', '2'
 
     spec_fetcher do |fetcher|
       fetcher.spec 'a', 1
@@ -171,7 +171,7 @@ ERROR:  Only reverse dependencies for local gems are supported.
   end
 
   def test_execute_remote
-    install_specs new_spec 'bar', '2'
+    install_specs util_spec 'bar', '2'
 
     spec_fetcher do |fetcher|
       fetcher.spec 'foo', 2, 'bar' => '> 1'

@@ -214,7 +214,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
     default_spec = new_default_spec 'default', '2'
     install_default_gems default_spec
 
-    spec = new_spec 'default', '2'
+    spec = util_spec 'default', '2'
     install_gem spec
 
     Gem::Specification.reset

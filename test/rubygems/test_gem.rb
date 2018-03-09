@@ -31,11 +31,11 @@ class TestGem < Gem::TestCase
 
   def test_self_finish_resolve
     save_loaded_features do
-      a1 = new_spec "a", "1", "b" => "> 0"
-      b1 = new_spec "b", "1", "c" => ">= 1"
-      b2 = new_spec "b", "2", "c" => ">= 2"
-      c1 = new_spec "c", "1"
-      c2 = new_spec "c", "2"
+      a1 = util_spec "a", "1", "b" => "> 0"
+      b1 = util_spec "b", "1", "c" => ">= 1"
+      b2 = util_spec "b", "2", "c" => ">= 2"
+      c1 = util_spec "c", "1"
+      c2 = util_spec "c", "2"
 
       install_specs c1, c2, b1, b2, a1
 
@@ -53,13 +53,13 @@ class TestGem < Gem::TestCase
 
   def test_self_finish_resolve_wtf
     save_loaded_features do
-      a1 = new_spec "a", "1", "b" => "> 0", "d" => "> 0"    # this
-      b1 = new_spec "b", "1", { "c" => ">= 1" }, "lib/b.rb" # this
-      b2 = new_spec "b", "2", { "c" => ">= 2" }, "lib/b.rb"
-      c1 = new_spec "c", "1"                                # this
-      c2 = new_spec "c", "2"
-      d1 = new_spec "d", "1", { "c" => "< 2" },  "lib/d.rb"
-      d2 = new_spec "d", "2", { "c" => "< 2" },  "lib/d.rb" # this
+      a1 = util_spec "a", "1", "b" => "> 0", "d" => "> 0"    # this
+      b1 = util_spec "b", "1", { "c" => ">= 1" }, "lib/b.rb" # this
+      b2 = util_spec "b", "2", { "c" => ">= 2" }, "lib/b.rb"
+      c1 = util_spec "c", "1"                                # this
+      c2 = util_spec "c", "2"
+      d1 = util_spec "d", "1", { "c" => "< 2" },  "lib/d.rb"
+      d2 = util_spec "d", "2", { "c" => "< 2" },  "lib/d.rb" # this
 
       install_specs c1, c2, b1, b2, d1, d2, a1
 
@@ -77,11 +77,11 @@ class TestGem < Gem::TestCase
 
   def test_self_finish_resolve_respects_loaded_specs
     save_loaded_features do
-      a1 = new_spec "a", "1", "b" => "> 0"
-      b1 = new_spec "b", "1", "c" => ">= 1"
-      b2 = new_spec "b", "2", "c" => ">= 2"
-      c1 = new_spec "c", "1"
-      c2 = new_spec "c", "2"
+      a1 = util_spec "a", "1", "b" => "> 0"
+      b1 = util_spec "b", "1", "c" => ">= 1"
+      b2 = util_spec "b", "2", "c" => ">= 2"
+      c1 = util_spec "c", "1"
+      c2 = util_spec "c", "2"
 
       install_specs c1, c2, b1, b2, a1
 
@@ -209,7 +209,7 @@ class TestGem < Gem::TestCase
 
   def test_require_does_not_glob
     save_loaded_features do
-      a1 = new_spec "a", "1", nil, "lib/a1.rb"
+      a1 = util_spec "a", "1", nil, "lib/a1.rb"
 
       install_specs a1
 
@@ -1263,7 +1263,7 @@ class TestGem < Gem::TestCase
       a = util_spec "a", "1"
       b = util_spec "b", "1", "c" => nil
       c = util_spec "c", "2"
-      d =  new_spec "d", "1", {'e' => '= 1'}, "lib/d.rb"
+      d =  util_spec "d", "1", {'e' => '= 1'}, "lib/d.rb"
       e = util_spec "e", "1"
 
       install_specs a, c, b, e, d
@@ -1423,8 +1423,8 @@ class TestGem < Gem::TestCase
     write_file File.join(@tempdir, 'lib', "g.rb") { |fp| fp.puts "" }
     write_file File.join(@tempdir, 'lib', 'm.rb') { |fp| fp.puts "" }
 
-    g = new_spec 'g', '1', nil, "lib/g.rb"
-    m = new_spec 'm', '1', nil, "lib/m.rb"
+    g = util_spec 'g', '1', nil, "lib/g.rb"
+    m = util_spec 'm', '1', nil, "lib/m.rb"
 
     install_gem g, :install_dir => Gem.dir
     m0 = install_gem m, :install_dir => Gem.dir
@@ -1479,8 +1479,8 @@ class TestGem < Gem::TestCase
     write_file File.join(@tempdir, 'lib', "g.rb") { |fp| fp.puts "" }
     write_file File.join(@tempdir, 'lib', 'm.rb') { |fp| fp.puts "" }
 
-    g = new_spec 'g', '1', nil, "lib/g.rb"
-    m = new_spec 'm', '1', nil, "lib/m.rb"
+    g = util_spec 'g', '1', nil, "lib/g.rb"
+    m = util_spec 'm', '1', nil, "lib/m.rb"
 
     install_gem g, :install_dir => Gem.dir
     install_gem m, :install_dir => Gem.dir
@@ -1497,9 +1497,9 @@ class TestGem < Gem::TestCase
   def test_auto_activation_of_specific_gemdeps_file
     util_clear_gems
 
-    a = new_spec "a", "1", nil, "lib/a.rb"
-    b = new_spec "b", "1", nil, "lib/b.rb"
-    c = new_spec "c", "1", nil, "lib/c.rb"
+    a = util_spec "a", "1", nil, "lib/a.rb"
+    b = util_spec "b", "1", nil, "lib/b.rb"
+    c = util_spec "c", "1", nil, "lib/c.rb"
 
     install_specs a, b, c
 
@@ -1522,9 +1522,9 @@ class TestGem < Gem::TestCase
     skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
     util_clear_gems
 
-    a = new_spec "a", "1", nil, "lib/a.rb"
-    b = new_spec "b", "1", nil, "lib/b.rb"
-    c = new_spec "c", "1", nil, "lib/c.rb"
+    a = util_spec "a", "1", nil, "lib/a.rb"
+    b = util_spec "b", "1", nil, "lib/b.rb"
+    c = util_spec "c", "1", nil, "lib/c.rb"
 
     install_specs a, b, c
 
@@ -1559,9 +1559,9 @@ class TestGem < Gem::TestCase
   def test_looks_for_gemdeps_files_automatically_on_start
     util_clear_gems
 
-    a = new_spec "a", "1", nil, "lib/a.rb"
-    b = new_spec "b", "1", nil, "lib/b.rb"
-    c = new_spec "c", "1", nil, "lib/c.rb"
+    a = util_spec "a", "1", nil, "lib/a.rb"
+    b = util_spec "b", "1", nil, "lib/b.rb"
+    c = util_spec "c", "1", nil, "lib/c.rb"
 
     install_specs a, b, c
 
@@ -1600,9 +1600,9 @@ class TestGem < Gem::TestCase
   def test_looks_for_gemdeps_files_automatically_on_start_in_parent_dir
     util_clear_gems
 
-    a = new_spec "a", "1", nil, "lib/a.rb"
-    b = new_spec "b", "1", nil, "lib/b.rb"
-    c = new_spec "c", "1", nil, "lib/c.rb"
+    a = util_spec "a", "1", nil, "lib/a.rb"
+    b = util_spec "b", "1", nil, "lib/b.rb"
+    c = util_spec "c", "1", nil, "lib/c.rb"
 
     install_specs a, b, c
 

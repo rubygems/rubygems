@@ -261,7 +261,7 @@ class Gem::RequestSet
         next
       end
 
-      a = spec.install options do |installer|
+      spec.install options do |installer|
         yield request, installer if block_given?
       end
 

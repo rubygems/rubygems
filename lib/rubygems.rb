@@ -247,7 +247,7 @@ module Gem
 
   ##
   # Find the full path to the executable for gem +name+.  If the +exec_name+
-  # is not given, the gem's default_executable is chosen, otherwise the
+  # is not given, an exception will be raised, otherwise the
   # specified executable's path is returned.  +requirements+ allows
   # you to specify specific gem versions.
 
@@ -295,7 +295,7 @@ module Gem
 
   ##
   # Find the full path to the executable for gem +name+.  If the +exec_name+
-  # is not given, the gem's default_executable is chosen, otherwise the
+  # is not given, an exception will be raised, otherwise the
   # specified executable's path is returned.  +requirements+ allows
   # you to specify specific gem versions.
   #

@@ -320,9 +320,7 @@ class Gem::StreamUI
 
   def _gets_noecho
     require_io_console
-    if IO.method_defined?(:noecho) then
-      @ins.noecho {@ins.gets}
-    elsif Gem.win_platform?
+    if Gem.win_platform?
       require "Win32API"
       password = ''
 
@@ -336,12 +334,7 @@ class Gem::StreamUI
       end
       password
     else
-      system "stty -echo"
-      begin
-        @ins.gets
-      ensure
-        system "stty echo"
-      end
+      @ins.noecho {@ins.gets}
     end
   end
 

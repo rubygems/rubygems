@@ -288,7 +288,7 @@ class Gem::RequestSet
       end
     end
 
-    require 'rubygems/dependency_installer'
+    require "rubygems/dependency_installer"
     inst = Gem::DependencyInstaller.new options
     inst.installed_gems.replace specs
 

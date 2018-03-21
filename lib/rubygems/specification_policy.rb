@@ -144,11 +144,15 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
         _, dep_version = dep.requirement.requirements.first
 
         base = dep_version.segments.first 2
+        upper_bound = dep_version.segments.first(dep_version.segments.length - 1)
+        upper_bound[-1] += 1
 
         warning_messages << <<-WARNING
 pessimistic dependency on #{dep} may be overly strict
   if #{dep.name} is semantically versioned, use:
     add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}', '>= #{dep_version}'
+  if #{dep.name} is not semantically versioned, you can bypass this warning with:
+    add_#{dep.type}_dependency '#{dep.name}', '>= #{dep_version}', '< #{upper_bound.join '.'}'
         WARNING
       end
 

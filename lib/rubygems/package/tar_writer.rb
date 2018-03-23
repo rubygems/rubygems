@@ -106,8 +106,6 @@ class Gem::Package::TarWriter
   def add_file(name, mode) # :yields: io
     check_closed
 
-    raise Gem::Package::NonSeekableIO unless @io.respond_to? :pos=
-
     name, prefix = split_name name
 
     init_pos = @io.pos

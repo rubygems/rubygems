@@ -426,6 +426,43 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_path_exists File.join(a2.doc_dir, 'rdoc')
   end
 
+  def test_execute_rdoc_with_path
+    skip if RUBY_VERSION <= "1.8.7"
+    specs = spec_fetcher do |fetcher|
+      fetcher.gem 'a', 2
+    end
+  
+    Gem.done_installing(&Gem::RDoc.method(:generation_hook))
+  
+    @cmd.options[:document] = %w[rdoc ri]
+    @cmd.options[:domain] = :local
+    @cmd.options[:install_dir] = 'whatever'
+  
+    a2 = specs['a-2']
+    FileUtils.mv a2.cache_file, @tempdir
+  
+    @cmd.options[:args] = %w[a]
+  
+    use_ui @ui do
+      # Don't use Dir.chdir with a block, it warnings a lot because
+      # of a downstream Dir.chdir with a block
+      old = Dir.getwd
+  
+      begin
+        Dir.chdir @tempdir
+        assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+          @cmd.execute
+        end
+      ensure
+        Dir.chdir old
+      end
+    end
+  
+    wait_for_child_process_to_exit
+  
+    assert_path_exists 'whatever/doc/a-2', 'documentation not installed'
+  end
+
   def test_execute_saves_build_args
     specs = spec_fetcher do |fetcher|
       fetcher.gem 'a', 2

@@ -665,14 +665,8 @@ EOM
     raise Gem::Package::FormatError.new(e.message, entry.full_name)
   end
 
-  if File.respond_to? :realpath
-    def realpath file
-      File.realpath file
-    end
-  else
-    def realpath file
-      file
-    end
+  def realpath file
+    File.realpath file
   end
 
 end

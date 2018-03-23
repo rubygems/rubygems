@@ -797,33 +797,13 @@ class Gem::Specification < Gem::BasicSpecification
   end
   private_class_method :map_stubs
 
-  uniq_takes_a_block = false
-  [1,2].uniq { uniq_takes_a_block = true }
-
-  if uniq_takes_a_block
-    def self.uniq_by(list, &block) # :nodoc:
-      list.uniq(&block)
-    end
-  else # FIXME: remove when 1.8 is dropped
-    def self.uniq_by(list) # :nodoc:
-      values = {}
-      list.each { |item|
-        value = yield item
-        values[value] ||= item
-      }
-      values.values
-    end
+  def self.uniq_by(list, &block) # :nodoc:
+    list.uniq(&block)
   end
   private_class_method :uniq_by
 
-  if [].respond_to? :sort_by!
-    def self.sort_by! list, &block
-      list.sort_by!(&block)
-    end
-  else # FIXME: remove when 1.8 is dropped
-    def self.sort_by! list, &block
-      list.replace list.sort_by(&block)
-    end
+  def self.sort_by! list, &block
+    list.sort_by!(&block)
   end
   private_class_method :sort_by!
 

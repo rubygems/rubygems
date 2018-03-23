@@ -2622,9 +2622,13 @@ end
 #{w}:  pessimistic dependency on d (~> 1.2.3) may be overly strict
   if d is semantically versioned, use:
     add_runtime_dependency 'd', '~> 1.2', '>= 1.2.3'
+  if d is not semantically versioned, you can bypass this warning with:
+    add_runtime_dependency 'd', '>= 1.2.3', '< 1.3'
 #{w}:  pessimistic dependency on e (~> 1.2.3.4) may be overly strict
   if e is semantically versioned, use:
     add_runtime_dependency 'e', '~> 1.2', '>= 1.2.3.4'
+  if e is not semantically versioned, you can bypass this warning with:
+    add_runtime_dependency 'e', '>= 1.2.3.4', '< 1.2.4'
 #{w}:  open-ended dependency on i (>= 1.2) is not recommended
   if i is semantically versioned, use:
     add_runtime_dependency 'i', '~> 1.2'
@@ -2640,6 +2644,8 @@ end
 #{w}:  pessimistic dependency on m (~> 2.1.0) may be overly strict
   if m is semantically versioned, use:
     add_runtime_dependency 'm', '~> 2.1', '>= 2.1.0'
+  if m is not semantically versioned, you can bypass this warning with:
+    add_runtime_dependency 'm', '>= 2.1.0', '< 2.2'
 #{w}:  See http://guides.rubygems.org/specification-reference/ for help
       EXPECTED
 

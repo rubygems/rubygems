@@ -880,9 +880,11 @@ TEXT
   def pre_install_checks
     verify_gem_home options[:unpack]
 
-    ensure_loadable_spec
-
+    # The name must be verified first, since it could contain ruby code that
+    # would be eval'ed in #ensure_loadable_spec
     verify_spec_name
+
+    ensure_loadable_spec
 
     if options[:install_as_default]
       Gem.ensure_default_gem_subdirectories gem_home

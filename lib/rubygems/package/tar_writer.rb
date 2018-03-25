@@ -111,7 +111,7 @@ class Gem::Package::TarWriter
     name, prefix = split_name name
 
     init_pos = @io.pos
-    @io.write "\0" * 512 # placeholder for the header
+    @io.write Gem::Package::TarHeader::EMPTY_HEADER # placeholder for the header
 
     yield RestrictedStream.new(@io) if block_given?
 

@@ -1367,24 +1367,21 @@ end
 require 'rubygems/exceptions'
 
 # REFACTOR: This should be pulled out into some kind of hacks file.
-gem_preluded = Gem::GEM_PRELUDE_SUCKAGE and defined? Gem
-unless gem_preluded then # TODO: remove guard after 1.9.2 dropped
+begin
+  ##
+  # Defaults the operating system (or packager) wants to provide for RubyGems.
+
+  require 'rubygems/defaults/operating_system'
+rescue LoadError
+end
+
+if defined?(RUBY_ENGINE) then
   begin
     ##
-    # Defaults the operating system (or packager) wants to provide for RubyGems.
+    # Defaults the Ruby implementation wants to provide for RubyGems
 
-    require 'rubygems/defaults/operating_system'
+    require "rubygems/defaults/#{RUBY_ENGINE}"
   rescue LoadError
-  end
-
-  if defined?(RUBY_ENGINE) then
-    begin
-      ##
-      # Defaults the Ruby implementation wants to provide for RubyGems
-
-      require "rubygems/defaults/#{RUBY_ENGINE}"
-    rescue LoadError
-    end
   end
 end
 

@@ -217,7 +217,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
   end
 
   def test_execute_rdoc
-    skip if RUBY_VERSION <= "1.8.7"
     spec_fetcher do |fetcher|
       fetcher.download 'a', 2
       fetcher.spec 'a', 1

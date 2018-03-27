@@ -80,8 +80,6 @@ class TestGemRequire < Gem::TestCase
   end
 
   def test_concurrent_require
-    skip 'deadlock' if /^1\.8\./ =~ RUBY_VERSION
-
     Object.const_set :FILE_ENTERED_LATCH, Latch.new(2)
     Object.const_set :FILE_EXIT_LATCH, Latch.new(1)
 
@@ -296,7 +294,6 @@ class TestGemRequire < Gem::TestCase
   end
 
   def test_realworld_default_gem
-    skip "no default gems on ruby < 2.0" unless RUBY_VERSION >= "2"
     begin
       gem 'json'
     rescue Gem::MissingSpecError

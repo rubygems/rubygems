@@ -457,7 +457,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_use_gemdeps
-    skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], '-'
 
     FileUtils.mkdir_p 'detect/a/b'
@@ -611,9 +610,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_find_files_with_gemfile
-    # write_file(File.join Dir.pwd, 'Gemfile') fails on travis 1.8.7 with $SAFE=1
-    skip if RUBY_VERSION <= "1.8.7"
-
     cwd = File.expand_path("test/rubygems", @@project_dir)
     actual_load_path = $LOAD_PATH.unshift(cwd).dup
 
@@ -646,7 +642,7 @@ class TestGem < Gem::TestCase
     assert_equal expected, Gem.find_files('sff/discover').sort
     assert_equal expected, Gem.find_files('sff/**.rb').sort, '[ruby-core:31730]'
   ensure
-    assert_equal cwd, actual_load_path.shift unless RUBY_VERSION <= "1.8.7"
+    assert_equal cwd, actual_load_path.shift
   end
 
   def test_self_find_latest_files
@@ -862,7 +858,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_refresh
-    skip 'Insecure operation - mkdir' if RUBY_VERSION <= "1.8.7"
     util_make_gems
 
     a1_spec = @a1.spec_file
@@ -882,7 +877,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_refresh_keeps_loaded_specs_activated
-    skip 'Insecure operation - mkdir' if RUBY_VERSION <= "1.8.7"
     util_make_gems
 
     a1_spec = @a1.spec_file
@@ -1257,7 +1251,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_needs_picks_up_unresolved_deps
-    skip 'loading from unsafe file' if RUBY_VERSION <= "1.8.7"
     save_loaded_features do
       util_clear_gems
       a = util_spec "a", "1"
@@ -1300,49 +1293,6 @@ class TestGem < Gem::TestCase
     assert_equal Encoding::BINARY, output.encoding
   end
 
-  if Gem.win_platform? && '1.9' > RUBY_VERSION
-    # Ruby 1.9 properly handles ~ path expansion, so no need to run such tests.
-    def test_self_user_home_userprofile
-
-      Gem.clear_paths
-
-      # safe-keep env variables
-      orig_home, orig_user_profile = ENV['HOME'], ENV['USERPROFILE']
-
-      # prepare for the test
-      ENV.delete('HOME')
-      ENV['USERPROFILE'] = "W:\\Users\\RubyUser"
-
-      assert_equal 'W:/Users/RubyUser', Gem.user_home
-
-    ensure
-      ENV['HOME'] = orig_home
-      ENV['USERPROFILE'] = orig_user_profile
-    end
-
-    def test_self_user_home_user_drive_and_path
-      Gem.clear_paths
-
-      # safe-keep env variables
-      orig_home, orig_user_profile = ENV['HOME'], ENV['USERPROFILE']
-      orig_home_drive, orig_home_path = ENV['HOMEDRIVE'], ENV['HOMEPATH']
-
-      # prepare the environment
-      ENV.delete('HOME')
-      ENV.delete('USERPROFILE')
-      ENV['HOMEDRIVE'] = 'Z:'
-      ENV['HOMEPATH'] = "\\Users\\RubyUser"
-
-      assert_equal 'Z:/Users/RubyUser', Gem.user_home
-
-    ensure
-      ENV['HOME'] = orig_home
-      ENV['USERPROFILE'] = orig_user_profile
-      ENV['HOMEDRIVE'] = orig_home_drive
-      ENV['HOMEPATH'] = orig_home_path
-    end
-  end
-
   def test_self_vendor_dir
     expected =
       File.join RbConfig::CONFIG['vendordir'], 'gems',
@@ -1368,7 +1318,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_load_plugins
-    skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
     plugin_path = File.join "lib", "rubygems_plugin.rb"
 
     Dir.chdir @tempdir do
@@ -1519,7 +1468,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_auto_activation_of_used_gemdeps_file
-    skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
     util_clear_gems
 
     a = util_spec "a", "1", nil, "lib/a.rb"
@@ -1576,12 +1524,7 @@ class TestGem < Gem::TestCase
     path = File.join @tempdir, "gem.deps.rb"
     cmd = [Gem.ruby.dup.untaint, "-I#{LIB_PATH.untaint}",
            "-I#{BUNDLER_LIB_PATH.untaint}", "-rrubygems"]
-    if RUBY_VERSION < '1.9'
-      cmd << "-e 'puts Gem.loaded_specs.values.map(&:full_name).sort'"
-      cmd = cmd.join(' ')
-    else
-      cmd << "-eputs Gem.loaded_specs.values.map(&:full_name).sort"
-    end
+    cmd << "-eputs Gem.loaded_specs.values.map(&:full_name).sort"
 
     File.open path, "w" do |f|
       f.puts "gem 'a'"
@@ -1619,12 +1562,7 @@ class TestGem < Gem::TestCase
     path = File.join @tempdir, "gem.deps.rb"
     cmd = [Gem.ruby.dup.untaint, "-Csub1", "-I#{LIB_PATH.untaint}",
            "-I#{BUNDLER_LIB_PATH.untaint}", "-rrubygems"]
-    if RUBY_VERSION < '1.9'
-      cmd << "-e 'puts Gem.loaded_specs.values.map(&:full_name).sort'"
-      cmd = cmd.join(' ')
-    else
-      cmd << "-eputs Gem.loaded_specs.values.map(&:full_name).sort"
-    end
+    cmd << "-eputs Gem.loaded_specs.values.map(&:full_name).sort"
 
     File.open path, "w" do |f|
       f.puts "gem 'a'"
@@ -1759,7 +1697,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps_automatic
-    skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], '-'
 
     spec = util_spec 'a', 1
@@ -1780,7 +1717,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps_automatic_missing
-    skip 'Insecure operation - chdir' if RUBY_VERSION <= "1.8.7"
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], '-'
 
     Gem.use_gemdeps
@@ -1809,7 +1745,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps_missing_gem
-    skip 'Insecure operation - read' if RUBY_VERSION <= "1.8.7"
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'
 
     File.open 'x', 'w' do |io|
@@ -1844,7 +1779,6 @@ You may need to `gem install -g` to install missing gems
   end if Gem::USE_BUNDLER_FOR_GEMDEPS
 
   def test_use_gemdeps_specific
-    skip 'Insecure operation - read' if RUBY_VERSION <= "1.8.7"
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'
 
     spec = util_spec 'a', 1

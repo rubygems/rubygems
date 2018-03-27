@@ -1177,88 +1177,47 @@ gem 'other', version
     refute_path_exists File.join expected_extension_dir, 'gem_make.out'
   end
 
-  # ruby core repository needs to `depend` file for extension build.
-  # but 1.9.2 and earlier mkmf.rb does not create TOUCH file like depend.
-  if RUBY_VERSION < '1.9.3'
-    def test_find_lib_file_after_install
+  def test_find_lib_file_after_install
+    @spec.extensions << "extconf.rb"
+    write_file File.join(@tempdir, "extconf.rb") do |io|
+      io.write <<-RUBY
+        require "mkmf"
 
-      @spec.extensions << "extconf.rb"
-      write_file File.join(@tempdir, "extconf.rb") do |io|
-        io.write <<-RUBY
-          require "mkmf"
-          create_makefile("#{@spec.name}")
-        RUBY
-      end
+        CONFIG['CC'] = '$(TOUCH) $@ ||'
+        CONFIG['LDSHARED'] = '$(TOUCH) $@ ||'
+        $ruby = '#{Gem.ruby}'
 
-      write_file File.join(@tempdir, "a.c") do |io|
-        io.write <<-C
-          #include <ruby.h>
-          void Init_a() { }
-        C
-      end
-
-      Dir.mkdir File.join(@tempdir, "lib")
-      write_file File.join(@tempdir, 'lib', "b.rb") do |io|
-        io.write "# b.rb"
-      end
-
-      @spec.files += %w[extconf.rb lib/b.rb a.c]
-
-      use_ui @ui do
-        path = Gem::Package.build @spec
-
-        installer = Gem::Installer.at path
-        installer.install
-      end
-
-      expected = File.join @spec.full_require_paths.find { |path|
-        File.exist? File.join path, 'b.rb'
-      }, 'b.rb'
-      assert_equal expected, @spec.matches_for_glob('b.rb').first
+        create_makefile("#{@spec.name}")
+      RUBY
     end
-  else
-    def test_find_lib_file_after_install
-      @spec.extensions << "extconf.rb"
-      write_file File.join(@tempdir, "extconf.rb") do |io|
-        io.write <<-RUBY
-          require "mkmf"
 
-          CONFIG['CC'] = '$(TOUCH) $@ ||'
-          CONFIG['LDSHARED'] = '$(TOUCH) $@ ||'
-          $ruby = '#{Gem.ruby}'
+    write_file File.join(@tempdir, "depend")
 
-          create_makefile("#{@spec.name}")
-        RUBY
-      end
-
-      write_file File.join(@tempdir, "depend")
-
-      write_file File.join(@tempdir, "a.c") do |io|
-        io.write <<-C
-          #include <ruby.h>
-          void Init_a() { }
-        C
-      end
-
-      Dir.mkdir File.join(@tempdir, "lib")
-      write_file File.join(@tempdir, 'lib', "b.rb") do |io|
-        io.write "# b.rb"
-      end
-
-      @spec.files += %w[extconf.rb lib/b.rb depend a.c]
-
-      use_ui @ui do
-        path = Gem::Package.build @spec
-
-        installer = Gem::Installer.at path
-        installer.install
-      end
-
-      expected = File.join @spec.full_require_paths.find { |path|
-        File.exist? File.join path, 'b.rb'
-      }, 'b.rb'
-      assert_equal expected, @spec.matches_for_glob('b.rb').first
+    write_file File.join(@tempdir, "a.c") do |io|
+      io.write <<-C
+        #include <ruby.h>
+        void Init_a() { }
+      C
     end
+
+    Dir.mkdir File.join(@tempdir, "lib")
+    write_file File.join(@tempdir, 'lib', "b.rb") do |io|
+      io.write "# b.rb"
+    end
+
+    @spec.files += %w[extconf.rb lib/b.rb depend a.c]
+
+    use_ui @ui do
+      path = Gem::Package.build @spec
+
+      installer = Gem::Installer.at path
+      installer.install
+    end
+
+    expected = File.join @spec.full_require_paths.find { |path|
+      File.exist? File.join path, 'b.rb'
+    }, 'b.rb'
+    assert_equal expected, @spec.matches_for_glob('b.rb').first
   end
 
   def test_install_extension_and_script
@@ -1300,13 +1259,6 @@ gem 'other', version
   end
 
   def test_install_extension_flat
-    skip '1.9.2 and earlier mkmf.rb does not create TOUCH' if
-      RUBY_VERSION < '1.9.3'
-
-    if RUBY_VERSION == "1.9.3" and RUBY_PATCHLEVEL <= 194
-      skip "TOUCH was introduced into 1.9.3 after p194"
-    end
-
     @spec.require_paths = ["."]
 
     @spec.extensions << "extconf.rb"

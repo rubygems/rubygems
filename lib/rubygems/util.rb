@@ -67,13 +67,11 @@ module Gem::Util
     end
   end
 
-  NULL_DEVICE = defined?(IO::NULL) ? IO::NULL : Gem.win_platform? ? 'NUL' : '/dev/null'
-
   ##
   # Invokes system, but silences all output.
 
   def self.silent_system *command
-    opt = {:out => NULL_DEVICE, :err => [:child, :out]}
+    opt = {:out => IO::NULL, :err => [:child, :out]}
     if Hash === command.last
       opt.update(command.last)
       cmds = command[0...-1]
@@ -86,15 +84,13 @@ module Gem::Util
 
     @silent_mutex ||= Mutex.new
 
-    null_device = NULL_DEVICE
-
     @silent_mutex.synchronize do
       begin
         stdout = STDOUT.dup
         stderr = STDERR.dup
 
-        STDOUT.reopen null_device, 'w'
-        STDERR.reopen null_device, 'w'
+        STDOUT.reopen IO::NULL, 'w'
+        STDERR.reopen IO::NULL, 'w'
 
         return system(*command)
       ensure

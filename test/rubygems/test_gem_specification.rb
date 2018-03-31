@@ -2431,16 +2431,16 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rake>.freeze, [\"> 0.4\"])
       s.add_runtime_dependency(%q<jabber4r>.freeze, [\"> 0.0.0\"])
-      s.add_runtime_dependency(%q<pqa>.freeze, [\"<= 0.6\", \"> 0.4\"])
+      s.add_runtime_dependency(%q<pqa>.freeze, [\"> 0.4\", \"<= 0.6\"])
     else
       s.add_dependency(%q<rake>.freeze, [\"> 0.4\"])
       s.add_dependency(%q<jabber4r>.freeze, [\"> 0.0.0\"])
-      s.add_dependency(%q<pqa>.freeze, [\"<= 0.6\", \"> 0.4\"])
+      s.add_dependency(%q<pqa>.freeze, [\"> 0.4\", \"<= 0.6\"])
     end
   else
     s.add_dependency(%q<rake>.freeze, [\"> 0.4\"])
     s.add_dependency(%q<jabber4r>.freeze, [\"> 0.0.0\"])
-    s.add_dependency(%q<pqa>.freeze, [\"<= 0.6\", \"> 0.4\"])
+    s.add_dependency(%q<pqa>.freeze, [\"> 0.4\", \"<= 0.6\"])
   end
 end
     SPEC

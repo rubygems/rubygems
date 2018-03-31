@@ -8,7 +8,7 @@ class Gem::Licenses
 
   # Software Package Data Exchange (SPDX) standard open-source software
   # license identifiers
-  IDENTIFIERS = %w(
+  LICENSE_IDENTIFIERS = %w(
       0BSD
       AAL
       ADSL
@@ -354,12 +354,43 @@ class Gem::Licenses
       zlib-acknowledgement
   ).freeze
 
+  # exception identifiers
+  EXCEPTION_IDENTIFIERS = %w(
+      389-exception
+      Autoconf-exception-2.0
+      Autoconf-exception-3.0
+      Bison-exception-2.2
+      Bootloader-exception
+      CLISP-exception-2.0
+      Classpath-exception-2.0
+      DigiRule-FOSS-exception
+      FLTK-exception
+      Fawkes-Runtime-exception
+      Font-exception-2.0
+      GCC-exception-2.0
+      GCC-exception-3.1
+      LZMA-exception
+      Libtool-exception
+      Linux-syscall-note
+      Nokia-Qt-exception-1.1
+      OCCT-exception-1.0
+      Qwt-exception-1.0
+      WxWindows-exception-3.1
+      eCos-exception-2.0
+      freertos-exception-2.0
+      gnu-javamail-exception
+      i2p-gpl-java-exception
+      mif-exception
+      openvpn-openssl-exception
+      u-boot-exception-2.0
+  ).freeze
+
   REGEXP = %r{
     \A
     (
-      #{Regexp.union(IDENTIFIERS)}
+      #{Regexp.union(LICENSE_IDENTIFIERS)}
       \+?
-      (\s WITH \s .+)?
+      (\s WITH \s #{Regexp.union(EXCEPTION_IDENTIFIERS)})?
       | #{NONSTANDARD}
     )
     \Z
@@ -370,7 +401,7 @@ class Gem::Licenses
   end
 
   def self.suggestions(license)
-    by_distance = IDENTIFIERS.group_by do |identifier|
+    by_distance = LICENSE_IDENTIFIERS.group_by do |identifier|
       levenshtein_distance(identifier, license)
     end
     lowest = by_distance.keys.min

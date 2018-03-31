@@ -2973,6 +2973,20 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
     warning
   end
 
+  def test_validate_license_with_invalid_exception
+    util_setup_validate
+
+    use_ui @ui do
+      @a1.licenses = ['GPL-2.0+ WITH Autocofn-exception-2.0']
+      @a1.validate
+    end
+
+    assert_match <<-warning, @ui.error
+WARNING:  license value 'GPL-2.0+ WITH Autocofn-exception-2.0' is invalid.  Use a license identifier from
+http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
+    warning
+  end
+
   def test_validate_license_gives_suggestions
     util_setup_validate
 

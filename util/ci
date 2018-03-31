@@ -56,12 +56,16 @@ when %w(before_script)
     if RUBY_VERSION >= "2.5.0" && RUBY_VERSION < "2.6.0"
       run('gem', %w(install bundler -v 1.16.1))
     end
+
+    run('gem', %w(install rubocop -v 0.54.0))
+
     run('gem', %w(list --details))
     run('gem', %w(env))
   else
     with_retries { run('rake', %w(spec:travis:deps)) }
   end
 when %w(script)
+  run('rake rubocop')
   if TOOL.rubygems?
     run('rake test')
   else

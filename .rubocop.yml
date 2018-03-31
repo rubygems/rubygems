@@ -1,0 +1,4 @@
+AllCops:
+  DisabledByDefault: true
+  Exclude:
+    - 'bundler/**/*'

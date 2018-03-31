@@ -11,7 +11,7 @@ contributors to follow to reduce the time it takes to get changes merged in.
 2. Ensure that your code blends well with ours:
    * No trailing whitespace
    * Match indentation (two spaces)
-   * Match coding style (+if+, +elsif+, +when+ need trailing +then+)
+   * Match coding style (run <tt>rake rubocop</tt>)
 
 3. If any new files are added or existing files removed in a commit or PR, please update the +Manifest.txt+ accordingly.
    This can be done by running <tt>rake update_manifest</tt>

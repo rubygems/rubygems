@@ -673,8 +673,8 @@ class Gem::SilentUI < Gem::StreamUI
   def initialize
     reader, writer = nil, nil
 
-    reader = File.open(Gem::Util::NULL_DEVICE, 'r')
-    writer = File.open(Gem::Util::NULL_DEVICE, 'w')
+    reader = File.open(IO::NULL, 'r')
+    writer = File.open(IO::NULL, 'w')
 
     super reader, writer, writer, false
   end

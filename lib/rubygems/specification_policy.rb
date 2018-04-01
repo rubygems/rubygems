@@ -332,6 +332,10 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
         warning
         message += "Did you mean #{suggestions.map { |s| "'#{s}'"}.join(', ')}?\n" unless suggestions.nil?
         warning(message)
+      elsif Gem::Licenses.deprecated?(license) then
+        warning <<-warning
+license value '#{license}' is deprecated.  See http://spdx.org/licenses.
+        warning
       end
     }
 

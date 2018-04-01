@@ -5,11 +5,11 @@ require 'uri'
 
 licenses_json = Net::HTTP.get(URI('https://spdx.org/licenses/licenses.json'))
 licenses = JSON.parse(licenses_json)['licenses'].map do |licenseObject|
-  licenseObject['licenseId']
+  "\n      '#{licenseObject['licenseId']}' => #{licenseObject['isDeprecatedLicenseId']},"
 end
 exceptions_json = Net::HTTP.get(URI('https://spdx.org/licenses/exceptions.json'))
 exceptions = JSON.parse(exceptions_json)['exceptions'].map do |exceptionObject|
-  exceptionObject['licenseExceptionId']
+  "\n      '#{exceptionObject['licenseExceptionId']}' => #{exceptionObject['isDeprecatedLicenseId']},"
 end
 
 open 'lib/rubygems/util/licenses.rb', 'w' do |io|
@@ -24,22 +24,26 @@ class Gem::Licenses
 
   # Software Package Data Exchange (SPDX) standard open-source software
   # license identifiers
-  LICENSE_IDENTIFIERS = %w(
-      #{licenses.sort.join "\n      "}
-  ).freeze
+  # values in this hash mean deprecation status(deprecated if true).
+  LICENSE_IDENTIFIERS = {#{licenses.sort.join}
+  }.freeze
 
   # exception identifiers
-  EXCEPTION_IDENTIFIERS = %w(
-      #{exceptions.sort.join "\n      "}
-  ).freeze
+  # values in this hash mean deprecation status(deprecated if true).
+  EXCEPTION_IDENTIFIERS = {#{exceptions.sort.join}
+  }.freeze
 
   REGEXP = %r{
     \\A
-    (
-      \#{Regexp.union(LICENSE_IDENTIFIERS)}
-      \\+?
-      (\\s WITH \\s \#{Regexp.union(EXCEPTION_IDENTIFIERS)})?
-      | \#{NONSTANDARD}
+    (?:
+      (?<license>
+        \#{Regexp.union(LICENSE_IDENTIFIERS.keys)}
+      )\\+?
+      (?:\\s WITH \\s 
+        (?<exception>
+          \#{Regexp.union(EXCEPTION_IDENTIFIERS.keys)}
+        )
+      )? | \#{NONSTANDARD}
     )
     \\Z
   }ox.freeze
@@ -48,8 +52,16 @@ class Gem::Licenses
     !REGEXP.match(license).nil?
   end
 
+  def self.deprecated?(license)
+    match = REGEXP.match(license)
+    return unless match
+    cap = match.names.map {|n| [n, match[n]]}.to_h
+    (cap['license'] && LICENSE_IDENTIFIERS[cap['license']])\\
+    || (cap['exception'] && EXCEPTION_IDENTIFIERS[cap['exception']])
+  end
+
   def self.suggestions(license)
-    by_distance = LICENSE_IDENTIFIERS.group_by do |identifier|
+    by_distance = LICENSE_IDENTIFIERS.reject { |_, v| v }.keys.group_by do |identifier|
       levenshtein_distance(identifier, license)
     end
     lowest = by_distance.keys.min

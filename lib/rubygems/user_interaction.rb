@@ -320,22 +320,7 @@ class Gem::StreamUI
 
   def _gets_noecho
     require_io_console
-    if Gem.win_platform?
-      require "Win32API"
-      password = ''
-
-      while char = Win32API.new("crtdll", "_getch", [ ], "L").Call do
-        break if char == 10 || char == 13 # received carriage return or newline
-        if char == 127 || char == 8 # backspace and delete
-          password.slice!(-1, 1)
-        else
-          password << char.chr
-        end
-      end
-      password
-    else
-      @ins.noecho {@ins.gets}
-    end
+    @ins.noecho {@ins.gets}
   end
 
   ##

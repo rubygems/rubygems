@@ -769,6 +769,9 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     old_loaded_features = $LOADED_FEATURES.dup
     yield
   ensure
+    prefix = File.dirname(__FILE__) + "/"
+    new_features = ($LOADED_FEATURES - old_loaded_features)
+    old_loaded_features.concat(new_features.select {|f| f.rindex(prefix, 0)})
     $LOADED_FEATURES.replace old_loaded_features
   end
 

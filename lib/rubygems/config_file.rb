@@ -63,21 +63,7 @@ class Gem::ConfigFile
       require "etc"
       Etc.sysconfdir
     rescue LoadError, NoMethodError
-      begin
-        # TODO: remove after we drop 1.8.7 and 1.9.1
-        require 'Win32API'
-
-        CSIDL_COMMON_APPDATA = 0x0023
-        path = 0.chr * 260
-
-        SHGetFolderPath = Win32API.new 'shell32', 'SHGetFolderPath', 'PLPLP',
-        'L', :stdcall
-        SHGetFolderPath.call nil, CSIDL_COMMON_APPDATA, nil, 1, path
-
-        path.strip
-      rescue LoadError
-        RbConfig::CONFIG["sysconfdir"] || "/etc"
-      end
+      RbConfig::CONFIG["sysconfdir"] || "/etc"
     end
 
   # :startdoc:

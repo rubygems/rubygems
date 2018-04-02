@@ -171,7 +171,7 @@ class Gem::Resolver
   include Molinillo::UI
 
   def output
-    @output ||= debug? ? $stdout : File.open(Gem::Util::NULL_DEVICE, 'w')
+    @output ||= debug? ? $stdout : File.open(IO::NULL, 'w')
   end
 
   def debug?

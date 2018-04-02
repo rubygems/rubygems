@@ -175,12 +175,6 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     end
   end
 
-  def test_add_file_unseekable
-    assert_raises Gem::Package::NonSeekableIO do
-      Gem::Package::TarWriter.new(Object.new).add_file 'x', 0
-    end
-  end
-
   def test_close
     @tar_writer.close
 

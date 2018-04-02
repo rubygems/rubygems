@@ -788,52 +788,22 @@ class Gem::Specification < Gem::BasicSpecification
   end
   private_class_method :installed_stubs
 
-  if [].respond_to? :flat_map
-    def self.map_stubs(dirs, pattern) # :nodoc:
-      dirs.flat_map { |dir|
-        base_dir = File.dirname dir
-        gems_dir = File.join base_dir, "gems"
-        gemspec_stubs_in(dir, pattern) { |path| yield path, base_dir, gems_dir }
-      }
-    end
-  else # FIXME: remove when 1.8 is dropped
-    def self.map_stubs(dirs, pattern) # :nodoc:
-      dirs.map { |dir|
-        base_dir = File.dirname dir
-        gems_dir = File.join base_dir, "gems"
-        gemspec_stubs_in(dir, pattern) { |path| yield path, base_dir, gems_dir }
-      }.flatten 1
-    end
+  def self.map_stubs(dirs, pattern) # :nodoc:
+    dirs.flat_map { |dir|
+      base_dir = File.dirname dir
+      gems_dir = File.join base_dir, "gems"
+      gemspec_stubs_in(dir, pattern) { |path| yield path, base_dir, gems_dir }
+    }
   end
   private_class_method :map_stubs
 
-  uniq_takes_a_block = false
-  [1,2].uniq { uniq_takes_a_block = true }
-
-  if uniq_takes_a_block
-    def self.uniq_by(list, &block) # :nodoc:
-      list.uniq(&block)
-    end
-  else # FIXME: remove when 1.8 is dropped
-    def self.uniq_by(list) # :nodoc:
-      values = {}
-      list.each { |item|
-        value = yield item
-        values[value] ||= item
-      }
-      values.values
-    end
+  def self.uniq_by(list, &block) # :nodoc:
+    list.uniq(&block)
   end
   private_class_method :uniq_by
 
-  if [].respond_to? :sort_by!
-    def self.sort_by! list, &block
-      list.sort_by!(&block)
-    end
-  else # FIXME: remove when 1.8 is dropped
-    def self.sort_by! list, &block
-      list.replace list.sort_by(&block)
-    end
+  def self.sort_by! list, &block
+    list.sort_by!(&block)
   end
   private_class_method :sort_by!
 

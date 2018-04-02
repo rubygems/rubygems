@@ -627,7 +627,7 @@ end
       assert_equal [dep('a'), dep('b')], @set.dependencies
       io
     end
-    tf.close! if tf.respond_to? :close!
+    tf.close!
   end
 
   def test_pin_gem_source

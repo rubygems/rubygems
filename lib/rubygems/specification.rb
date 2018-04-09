@@ -796,14 +796,6 @@ class Gem::Specification < Gem::BasicSpecification
         gemspec_stubs_in(dir, pattern) { |path| yield path, base_dir, gems_dir }
       }
     end
-  else # FIXME: remove when 1.8 is dropped
-    def self.map_stubs(dirs, pattern) # :nodoc:
-      dirs.map { |dir|
-        base_dir = File.dirname dir
-        gems_dir = File.join base_dir, "gems"
-        gemspec_stubs_in(dir, pattern) { |path| yield path, base_dir, gems_dir }
-      }.flatten 1
-    end
   end
   private_class_method :map_stubs
 
@@ -814,25 +806,12 @@ class Gem::Specification < Gem::BasicSpecification
     def self.uniq_by(list, &block) # :nodoc:
       list.uniq(&block)
     end
-  else # FIXME: remove when 1.8 is dropped
-    def self.uniq_by(list) # :nodoc:
-      values = {}
-      list.each { |item|
-        value = yield item
-        values[value] ||= item
-      }
-      values.values
-    end
   end
   private_class_method :uniq_by
 
   if [].respond_to? :sort_by!
     def self.sort_by! list, &block
       list.sort_by!(&block)
-    end
-  else # FIXME: remove when 1.8 is dropped
-    def self.sort_by! list, &block
-      list.replace list.sort_by(&block)
     end
   end
   private_class_method :sort_by!

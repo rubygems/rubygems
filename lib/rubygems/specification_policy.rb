@@ -152,7 +152,7 @@ pessimistic dependency on #{dep} may be overly strict
   if #{dep.name} is semantically versioned, use:
     add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}', '>= #{dep_version}'
   if #{dep.name} is not semantically versioned, you can bypass this warning with:
-    add_#{dep.type}_dependency '#{dep.name}', '>= #{dep_version}', '< #{upper_bound.join '.'}'
+    add_#{dep.type}_dependency '#{dep.name}', '>= #{dep_version}', '< #{upper_bound.join '.'}.x'
         WARNING
       end
 

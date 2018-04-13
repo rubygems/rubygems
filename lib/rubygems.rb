@@ -847,6 +847,21 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   end
 
   ##
+  # Git binary path
+
+  def self.git_path
+    exts = ENV["PATHEXT"] ? ENV["PATHEXT"].split(";") : [""]
+    ENV["PATH"].split(File::PATH_SEPARATOR).each do |path|
+      exts.each do |ext|
+        exe = File.join(path, "git#{ext}")
+        return exe if File.executable?(exe) && !File.directory?(exe)
+      end
+    end
+
+    return nil
+  end
+
+  ##
   # Refresh available gems from disk.
 
   def self.refresh

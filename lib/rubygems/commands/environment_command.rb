@@ -120,6 +120,8 @@ lib/rubygems/defaults/operating_system.rb
 
     out << "  - RUBY EXECUTABLE: #{Gem.ruby}\n"
 
+    out << "  - GIT EXECUTABLE: #{Gem.git_path}\n"
+
     out << "  - EXECUTABLE DIRECTORY: #{Gem.bindir}\n"
 
     out << "  - SPEC CACHE DIRECTORY: #{Gem.spec_cache_dir}\n"

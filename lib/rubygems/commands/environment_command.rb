@@ -120,7 +120,7 @@ lib/rubygems/defaults/operating_system.rb
 
     out << "  - RUBY EXECUTABLE: #{Gem.ruby}\n"
 
-    out << "  - GIT EXECUTABLE: #{Gem.git_path}\n"
+    out << "  - GIT EXECUTABLE: #{git_path}\n"
 
     out << "  - EXECUTABLE DIRECTORY: #{Gem.bindir}\n"
 
@@ -157,6 +157,23 @@ lib/rubygems/defaults/operating_system.rb
     add_path out, shell_path
 
     out
+  end
+
+  private
+
+  ##
+  # Git binary path
+
+  def git_path
+    exts = ENV["PATHEXT"] ? ENV["PATHEXT"].split(";") : [""]
+    ENV["PATH"].split(File::PATH_SEPARATOR).each do |path|
+      exts.each do |ext|
+        exe = File.join(path, "git#{ext}")
+        return exe if File.executable?(exe) && !File.directory?(exe)
+      end
+    end
+
+    return nil
   end
 
 end

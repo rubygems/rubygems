@@ -9,6 +9,8 @@ class Gem::Commands::SetupCommand < Gem::Command
   HISTORY_HEADER = /^===\s*[\d.a-zA-Z]+\s*\/\s*\d{4}-\d{2}-\d{2}\s*$/
   VERSION_MATCHER = /^===\s*([\d.a-zA-Z]+)\s*\/\s*\d{4}-\d{2}-\d{2}\s*$/
 
+  ENV_PATHS = %w[/usr/bin/env /bin/env]
+
   def initialize
     require 'tmpdir'
 
@@ -84,6 +86,12 @@ class Gem::Commands::SetupCommand < Gem::Command
                'Regenerate gem binstubs' do |value, options|
       options[:regenerate_binstubs] = value
    end
+
+    add_option('-E', '--[no-]env-shebang',
+               'Rewrite executables with a shebang',
+               'of /usr/bin/env') do |value, options|
+      options[:env_shebang] = value
+    end
 
     @verbose = nil
   end
@@ -253,7 +261,7 @@ By default, this RubyGems will install gem as:
 
           begin
             bin = File.readlines bin_file
-            bin[0] = "#!#{Gem.ruby}\n"
+            bin[0] = shebang
 
             File.open bin_tmp_file, 'w' do |fp|
               fp.puts bin.join
@@ -287,6 +295,16 @@ By default, this RubyGems will install gem as:
           end
         end
       end
+    end
+  end
+
+  def shebang
+    if options[:env_shebang]
+      ruby_name = RbConfig::CONFIG['ruby_install_name']
+      @env_path ||= ENV_PATHS.find {|env_path| File.executable? env_path }
+      "#!#{@env_path} #{ruby_name}\n"
+    else
+      "#!#{Gem.ruby}\n"
     end
   end
 
@@ -598,8 +616,14 @@ abort "#{deprecation_message}"
   def regenerate_binstubs
     require "rubygems/commands/pristine_command"
     say "Regenerating binstubs"
+
+    args = %w[--all --only-executables --silent]
+    if options[:env_shebang]
+      args << "--env-shebang"
+    end
+
     command = Gem::Commands::PristineCommand.new
-    command.invoke(*%w[--all --only-executables --silent])
+    command.invoke(*args)
   end
 
 end

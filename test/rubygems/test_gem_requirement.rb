@@ -330,6 +330,20 @@ class TestGemRequirement < Gem::TestCase
     refute_satisfied_by "2.0",   "~> 1.4.4"
   end
 
+  def test_satisfied_by_explicitly_bounded
+    req = [">= 1.4.4", "< 1.5"]
+
+    assert_satisfied_by "1.4.5",     req
+    assert_satisfied_by "1.5.0.rc1", req
+    refute_satisfied_by "1.5.0",     req
+
+    req = [">= 1.4.4", "< 1.5.a"]
+
+    assert_satisfied_by "1.4.5",     req
+    refute_satisfied_by "1.5.0.rc1", req
+    refute_satisfied_by "1.5.0",     req
+  end
+
   def test_specific
     refute req('> 1') .specific?
     refute req('>= 1').specific?

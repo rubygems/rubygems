@@ -615,7 +615,8 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   class << self
     extend Gem::Deprecate
-    deprecate :gunzip, "Gem::Util.gunzip", 2018, 12
+    # TODO: enable this after bundler-1.16.2 was released.
+    # deprecate :gunzip, "Gem::Util.gunzip", 2018, 12
   end
 
   ##
@@ -627,7 +628,8 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   class << self
     extend Gem::Deprecate
-    deprecate :gzip, "Gem::Util.gzip", 2018, 12
+    # TODO: enable this after bundler-1.16.2 was released.
+    # deprecate :gzip, "Gem::Util.gzip", 2018, 12
   end
 
   ##
@@ -639,7 +641,8 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   class << self
     extend Gem::Deprecate
-    deprecate :inflate, "Gem::Util.inflate", 2018, 12
+    # TODO: enable this after bundler-1.16.2 was released.
+    # deprecate :inflate, "Gem::Util.inflate", 2018, 12
   end
 
   ##

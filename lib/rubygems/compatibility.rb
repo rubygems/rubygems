@@ -38,3 +38,23 @@ module Gem
 
   RubyGemsPackageVersion = VERSION
 end
+
+# https://github.com/ruby/csv/pull/30
+unless String.method_defined?(:match?)
+  module Gem
+    module MatchP
+      refine String do
+        def match?(pattern)
+          pattern === self
+        end
+      end
+    end
+
+    refine Regexp do
+      def match?(string)
+        self === string
+      end
+    end
+  end
+
+end

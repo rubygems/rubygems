@@ -439,11 +439,8 @@ EOM
     raise Gem::Package::PathError.new(filename, destination_dir) if
       filename.start_with? '/'
 
-    destination_dir = realpath destination_dir
-    destination_dir = File.expand_path destination_dir
-
-    destination = File.join destination_dir, filename
-    destination = File.expand_path destination
+    destination_dir = File.expand_path(File.realpath(destination_dir))
+    destination = File.expand_path(File.join(destination_dir, filename))
 
     raise Gem::Package::PathError.new(destination, destination_dir) unless
       destination.start_with? destination_dir + '/'
@@ -461,10 +458,10 @@ EOM
   end
 
   def mkdir_p_safe mkdir, mkdir_options, destination_dir, file_name
-    destination_dir = realpath File.expand_path(destination_dir)
+    destination_dir = File.realpath(File.expand_path(destination_dir))
     parts = mkdir.split(File::SEPARATOR)
     parts.reduce do |path, basename|
-      path = realpath path  unless path == ""
+      path = File.realpath(path) unless path == ""
       path = File.expand_path(path + File::SEPARATOR + basename)
       lstat = File.lstat path rescue nil
       if !lstat || !lstat.directory?
@@ -663,10 +660,6 @@ EOM
     end
   rescue Zlib::GzipFile::Error => e
     raise Gem::Package::FormatError.new(e.message, entry.full_name)
-  end
-
-  def realpath file
-    File.realpath file
   end
 
 end

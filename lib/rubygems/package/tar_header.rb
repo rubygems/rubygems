@@ -30,6 +30,8 @@
 
 class Gem::Package::TarHeader
 
+  using Gem::MatchP
+
   ##
   # Fields in the tar header
 
@@ -126,7 +128,7 @@ class Gem::Package::TarHeader
   end
 
   def self.strict_oct(str)
-    return str.oct if str =~ /\A[0-7]*\z/
+    return str.oct if str.match?(/\A[0-7]*\z/)
     raise ArgumentError, "#{str.inspect} is not an octal string"
   end
 

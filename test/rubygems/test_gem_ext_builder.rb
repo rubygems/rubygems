@@ -210,6 +210,8 @@ install:
   end
 
   def test_build_extensions_extconf_bad
+    cwd = Dir.pwd
+
     @spec.extensions << 'extconf.rb'
 
     FileUtils.mkdir_p @spec.gem_dir
@@ -240,6 +242,8 @@ install:
 
     assert_match %r%#{Regexp.escape Gem.ruby}: No such file%,
                  File.read(gem_make_out)
+
+    assert_equal cwd, Dir.pwd
   end
 
   def test_build_extensions_unsupported

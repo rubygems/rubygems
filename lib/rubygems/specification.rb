@@ -135,7 +135,7 @@ class Gem::Specification < Gem::BasicSpecification
     :autorequire               => nil,
     :bindir                    => 'bin',
     :cert_chain                => [],
-    :date                      => TODAY,
+    :date                      => nil,
     :dependencies              => [],
     :description               => nil,
     :email                     => nil,
@@ -1713,13 +1713,16 @@ class Gem::Specification < Gem::BasicSpecification
     }
   end
 
-  ##
-  # The date this gem was created.  Lazily defaults to the current UTC date.
+  # The date this gem was created.
   #
-  # There is no need to set this in your gem specification.
+  # If SOURCE_DATE_EPOCH is set as an environment variable, use that to support
+  # reproducible builds; otherwise, default to the current UTC date.
+  #
+  # Details on SOURCE_DATE_EPOCH:
+  # https://reproducible-builds.org/specs/source-date-epoch/
 
   def date
-    @date ||= TODAY
+    @date ||= ENV["SOURCE_DATE_EPOCH"] ? Time.utc(*Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc.to_a[3..5].reverse) : TODAY
   end
 
   DateLike = Object.new # :nodoc:

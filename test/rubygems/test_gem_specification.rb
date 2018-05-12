@@ -1630,6 +1630,11 @@ dependencies: []
     assert_equal Time.utc(2012,01,12,0,0,0), @a1.date
   end
 
+  def test_date_use_env_source_date_epoch
+    ENV["SOURCE_DATE_EPOCH"] = "123456789"
+    assert_equal Time.utc(1973,11,29,0,0,0), @a1.date
+  end
+
   def test_dependencies
     util_setup_deps
     assert_equal [@bonobo, @monkey], @gem.dependencies

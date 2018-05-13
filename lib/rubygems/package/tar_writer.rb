@@ -123,7 +123,7 @@ class Gem::Package::TarWriter
 
     header = Gem::Package::TarHeader.new :name => name, :mode => mode,
                                          :size => size, :prefix => prefix,
-                                         :mtime => Time.now
+                                         :mtime => ENV["SOURCE_DATE_EPOCH"] ? Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc : Time.now
 
     @io.write header
     @io.pos = final_pos
@@ -218,7 +218,7 @@ class Gem::Package::TarWriter
 
     header = Gem::Package::TarHeader.new(:name => name, :mode => mode,
                                          :size => size, :prefix => prefix,
-                                         :mtime => Time.now).to_s
+                                         :mtime => ENV["SOURCE_DATE_EPOCH"] ? Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc : Time.now).to_s
 
     @io.write header
     os = BoundedStream.new @io, size
@@ -246,7 +246,7 @@ class Gem::Package::TarWriter
                                          :size => 0, :typeflag => "2",
                                          :linkname => target,
                                          :prefix => prefix,
-                                         :mtime => Time.now).to_s
+                                         :mtime => ENV["SOURCE_DATE_EPOCH"] ? Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc : Time.now).to_s
 
     @io.write header
 
@@ -299,7 +299,7 @@ class Gem::Package::TarWriter
     header = Gem::Package::TarHeader.new :name => name, :mode => mode,
                                          :typeflag => "5", :size => 0,
                                          :prefix => prefix,
-                                         :mtime => Time.now
+                                         :mtime => ENV["SOURCE_DATE_EPOCH"] ? Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc : Time.now
 
     @io.write header
 

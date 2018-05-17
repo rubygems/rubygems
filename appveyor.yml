@@ -16,6 +16,8 @@ environment:
     GIT:  C:/git/cmd/git.exe
   - ruby_version: 24-x64
     GIT:  C:/git/cmd/git.exe
+  - ruby_version: 25-x64
+    GIT:  C:/git/cmd/git.exe
   - ruby_version: _trunk
     GIT:  C:/git/cmd/git.exe
 

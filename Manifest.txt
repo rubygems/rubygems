@@ -247,6 +247,7 @@ bundler/man/bundle-binstubs.ronn
 bundler/man/bundle-check.ronn
 bundler/man/bundle-clean.ronn
 bundler/man/bundle-config.ronn
+bundler/man/bundle-doctor.ronn
 bundler/man/bundle-exec.ronn
 bundler/man/bundle-gem.ronn
 bundler/man/bundle-info.ronn

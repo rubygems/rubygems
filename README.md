@@ -10,7 +10,7 @@ that can be shared and used by other developers. See our guide on publishing a G
 
 ## Getting Started
 
-Installing and managing a Gem is done through the `gem` command. To install a Gem such as [Nokigiri](https://github.com/sparklemotion/nokogiri) which lets
+Installing and managing a Gem is done through the `gem` command. To install a Gem such as [Nokogiri](https://github.com/sparklemotion/nokogiri) which lets
 you read and parse XML in Ruby:
 
     $ gem install nokogiri

@@ -703,9 +703,10 @@ class Gem::Installer
     if Gem.win_platform? then
       path = path.downcase
       user_bin_dir = user_bin_dir.downcase
+      path = path.split(File::PATH_SEPARATOR).map(&:downcase)
+    else
+      path = path.split(File::PATH_SEPARATOR)
     end
-
-    path = path.split(File::PATH_SEPARATOR)
 
     unless path.include? user_bin_dir then
       unless !Gem.win_platform? && (path.include? user_bin_dir.sub(ENV['HOME'], '~'))

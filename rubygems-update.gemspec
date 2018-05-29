@@ -1,8 +1,6 @@
-load './lib/rubygems/version'
-
 Gem::Specification.new do |s|
   s.name = "rubygems-update".freeze
-  s.version = Gem::VERSION
+  s.version = "3.0.0.beta1"
   s.authors = ["Jim Weirich".freeze, "Chad Fowler".freeze, "Eric Hodel".freeze]
   s.email = ["", "", "drbrain@segment7.net".freeze]
 

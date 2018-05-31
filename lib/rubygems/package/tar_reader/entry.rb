@@ -151,7 +151,6 @@ class Gem::Package::TarReader::Entry
     maxlen ||= @header.size - @read
     max_read = [maxlen, @header.size - @read].min
 
-    _size = outbuf.size
     @io.readpartial(max_read, outbuf)
     @read += max_read
 

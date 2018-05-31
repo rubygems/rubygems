@@ -144,13 +144,13 @@ class Gem::Package::TarReader::Entry
     outbuf
   end
 
-  def readpartial(maxlen, outbuf = "".b)
+  def readpartial(maxlen = nil, outbuf = "".b)
     check_closed
 
     raise EOFError if @read >= @header.size
 
-    len ||= @header.size - @read
-    max_read = [len, @header.size - @read].min
+    maxlen ||= @header.size - @read
+    max_read = [maxlen, @header.size - @read].min
 
     _size = outbuf.size
     @io.read(max_read, outbuf)

@@ -129,7 +129,7 @@ class Gem::Package::TarReader::Entry
   # Reads +len+ bytes from the tar file entry, or the rest of the entry if
   # nil
 
-  def read(len = nil, outbuf = "".b)
+  def read(len = nil)
     check_closed
 
     return nil if @read >= @header.size
@@ -137,11 +137,10 @@ class Gem::Package::TarReader::Entry
     len ||= @header.size - @read
     max_read = [len, @header.size - @read].min
 
-    _size = outbuf.size
-    @io.read(max_read, outbuf)
-    @read += max_read
+    ret = @io.read max_read
+    @read += ret.size
 
-    outbuf
+    ret
   end
 
   def readpartial(maxlen = nil, outbuf = "".b)

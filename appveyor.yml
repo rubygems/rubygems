@@ -11,24 +11,35 @@ environment:
   matrix:
   - ruby_version: 22
   - ruby_version: 22-x64
-    GIT:  C:/git/cmd/git.exe
   - ruby_version: 23-x64
-    GIT:  C:/git/cmd/git.exe
   - ruby_version: 24-x64
-    GIT:  C:/git/cmd/git.exe
   - ruby_version: 25-x64
-    GIT:  C:/git/cmd/git.exe
   - ruby_version: _trunk
-    GIT:  C:/git/cmd/git.exe
 
 init:
-  - set PATH=C:/ruby%ruby_version%/bin;C:/Program Files/7-Zip;C:/Program Files/AppVeyor/BuildAgent;C:/git/cmd;C:/Program Files (x86)/GNU/GnuPG/pub;C:/Windows/system32;C:\Windows;
+  - set PATH=C:/Ruby%ruby_version%/bin;C:/Program Files/7-Zip;C:/Program Files/AppVeyor/BuildAgent;C:/git/cmd;C:/Program Files (x86)/GNU/GnuPG/pub;C:/Windows/system32;C:\Windows;
   - mklink /d C:\git "C:\Program Files\Git"
-  - if %ruby_version%==_trunk (
-      appveyor DownloadFile https://ci.appveyor.com/api/projects/MSP-Greg/ruby-loco/artifacts/ruby_trunk.7z -FileName C:\ruby_trunk.7z &
-      7z x C:\ruby_trunk.7z -oC:\ruby_trunk )
+  - set GIT=C:/git/cmd/git.exe
+  - ps: >-
+      if ($env:ruby_version -eq '_trunk') {
+        $trunk_uri = 'https://ci.appveyor.com/api/projects/MSP-Greg/ruby-loco/artifacts/ruby_trunk.7z'
+        (New-Object Net.WebClient).DownloadFile($trunk_uri, 'C:\ruby_trunk.7z')
+        7z.exe x C:\ruby_trunk.7z -oC:\Ruby_trunk
+      }
 
 install:
+# Temporary fix until Appveyor installs RubyGems 2.7.7
+- ps: >-
+    if ($env:ruby_version -lt '25') {
+      gem uninstall bundler -x
+      Push-Location C:\
+      gem fetch  rubygems-update -v 2.7.7
+      gem unpack rubygems-update-2.7.7.gem
+      Push-Location C:\rubygems-update-2.7.7
+      ruby setup.rb
+      Pop-Location
+      Pop-Location
+    }
 - ps: >-
     git submodule update --init --recursive
 

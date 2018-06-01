@@ -71,7 +71,7 @@ class Gem::CommandManager
     :yank,
   ]
 
-  ARIAS_COMMANDS = {
+  ALIAS_COMMANDS = {
     'i' => 'install'
   }
 
@@ -193,7 +193,7 @@ class Gem::CommandManager
   end
 
   def find_alias_command(cmd_name)
-    alias_name = ARIAS_COMMANDS[cmd_name]
+    alias_name = ALIAS_COMMANDS[cmd_name]
     alias_name ? alias_name : cmd_name
   end
 

@@ -28,18 +28,6 @@ init:
       }
 
 install:
-# Temporary fix until Appveyor installs RubyGems 2.7.7
-- ps: >-
-    if ($env:ruby_version -lt '25') {
-      gem uninstall bundler -x
-      Push-Location C:\
-      gem fetch  rubygems-update -v 2.7.7
-      gem unpack rubygems-update-2.7.7.gem
-      Push-Location C:\rubygems-update-2.7.7
-      ruby setup.rb
-      Pop-Location
-      Pop-Location
-    }
 - ps: >-
     git submodule update --init --recursive
 

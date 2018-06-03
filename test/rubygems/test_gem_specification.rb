@@ -108,7 +108,7 @@ end
     # objects are present in the @stubs collection. This test verifies that
     # this scenario works correctly.
     Gem::Specification.all = [spec]
-    Gem::Specification.find_active_stub_by_path('foo')
+    assert_equal spec, Gem::Specification.find_active_stub_by_path('foo')
   end
 
   def test_self_activate
@@ -1124,6 +1124,49 @@ dependencies: []
 
     refute_includes Gem::Specification.all_names, 'a-1'
     refute_includes Gem::Specification.stubs.map { |s| s.full_name }, 'a-1'
+  end
+
+  def test_self_stubs
+    Gem.loaded_specs.clear
+    Gem::Specification.class_variable_set(:@@stubs, nil)
+
+    dir_standard_specs = File.join Gem.dir, 'specifications'
+    dir_default_specs = Gem::BasicSpecification.default_specifications_dir
+
+    # Create gemspecs in three locations used in stubs
+    loaded_spec = Gem::Specification.new 'a', '3'
+    Gem.loaded_specs['a'] = loaded_spec
+    save_gemspec 'a', '2', dir_default_specs
+    save_gemspec 'a', '1', dir_standard_specs
+
+    full_names = ['a-3', 'a-2', 'a-1']
+    assert_equal full_names, Gem::Specification.stubs.map { |s| s.full_name }
+
+    Gem.loaded_specs.delete 'a'
+    Gem::Specification.class_variable_set(:@@stubs, nil)
+  end
+  
+  def test_self_stubs_for
+    Gem.loaded_specs.clear
+    Gem::Specification.class_variable_set(:@@stubs, nil)
+
+    dir_standard_specs = File.join Gem.dir, 'specifications'
+    dir_default_specs = Gem::BasicSpecification.default_specifications_dir
+
+    # Create gemspecs in three locations used in stubs
+    loaded_spec = Gem::Specification.new 'a', '3'
+    Gem.loaded_specs['a'] = loaded_spec
+    save_gemspec 'a', '2', dir_default_specs
+    save_gemspec 'a', '1', dir_standard_specs
+
+    full_names = ['a-3', 'a-2', 'a-1']
+
+    full_names = Gem::Specification.stubs_for('a').map { |s| s.full_name }
+    assert_equal full_names, Gem::Specification.stubs_for('a').map { |s| s.full_name }
+    assert_equal 1, Gem::Specification.class_variable_get(:@@stubs_by_name).length
+    
+    Gem.loaded_specs.delete 'a'
+    Gem::Specification.class_variable_set(:@@stubs, nil)
   end
 
   DATA_PATH = File.expand_path "../data", __FILE__

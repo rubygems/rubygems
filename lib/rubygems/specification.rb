@@ -782,8 +782,18 @@ class Gem::Specification < Gem::BasicSpecification
   private_class_method :default_stubs
 
   def self.installed_stubs dirs, pattern
-    map_stubs(dirs, pattern) do |path, base_dir, gems_dir|
-      Gem::StubSpecification.gemspec_stub(path, base_dir, gems_dir)
+    # if mingw, derive platform from file name (loaded_from)
+    if RUBY_PLATFORM.match('mingw')
+      map_stubs(dirs, pattern) do |path, base_dir, gems_dir|
+        Gem::StubSpecification.gemspec_stub(path, base_dir, gems_dir)
+      end.select do |s|
+        (plat = s.loaded_from[/(x\d{2}-mingw32)\.gemspec/,1]) ?
+          Gem::Platform.match(plat) : true
+      end
+    else
+      map_stubs(dirs, pattern) do |path, base_dir, gems_dir|
+        Gem::StubSpecification.gemspec_stub(path, base_dir, gems_dir)
+      end
     end
   end
   private_class_method :installed_stubs

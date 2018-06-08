@@ -1,5 +1,44 @@
 # coding: UTF-8
 
+=== 2.7.7 / 2018-05-08
+
+Minor enhancements:
+
+* [RequestSet] Only suggest a gem version with an installable platform.
+  Pull request #2175 by Samuel Giddins.
+* Fixed no assignment variables about default gems installation. Pull
+  request #2181 by SHIBATA Hiroshi.
+* Backport improvements for test-case from Ruby core. Pull request #2189
+  by SHIBATA Hiroshi.
+* Fix ruby warnings in test suite. Pull request #2205 by Colby Swandale.
+* To use Gem::Specification#bindir of bundler instead of hard coded path.
+  Pull request #2208 by SHIBATA Hiroshi.
+* Update gem push --help description. Pull request #2215 by Luis
+  Sagastume.
+* Backport ruby core commits. Pull request #2264 by SHIBATA Hiroshi.
+
+Bug fixes:
+
+* Frozen string fix - lib/rubygems/bundler_version_finder.rb. Pull request
+  #2115 by MSP-Greg.
+* Fixed tempfile leak for RubyGems 2.7.6. Pull request #2194 by SHIBATA
+  Hiroshi.
+* Add missing requires. Pull request #2196 by David Rodríguez.
+* Fix Gem::Version.correct?. Pull request #2203 by Masato Nakamura.
+* Fix verify_entry regex for metadata. Pull request #2212 by Luis
+  Sagastume.
+* Fix path checks for case insensitive filesystem. Pull request #2211 by
+  Lars Kanis.
+
+Compatibility changes:
+
+* Deprecate unused code before removing them at #1524. Pull request #2197
+  by SHIBATA Hiroshi.
+* Deprecate for rubygems 3. Pull request #2214 by SHIBATA Hiroshi.
+* Mark deprecation to `ubygems.rb` for RubyGems 4. Pull request #2269 by
+  SHIBATA Hiroshi.
+* Update bundler-1.16.2. Pull request #2291 by SHIBATA Hiroshi.
+
 === 2.7.6 / 2018-02-16
 
 Security fixes:

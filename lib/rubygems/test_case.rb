@@ -382,6 +382,11 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
       util_set_arch 'i686-darwin8.10.1'
     end
 
+    @orig_hooks = {}
+    %w[post_install_hooks done_installing_hooks post_uninstall_hooks pre_uninstall_hooks pre_install_hooks pre_reset_hooks post_reset_hooks post_build_hooks].each do |name|
+      @orig_hooks[name] = Gem.send(name).dup
+    end
+
     @marshal_version = "#{Marshal::MAJOR_VERSION}.#{Marshal::MINOR_VERSION}"
     @orig_LOADED_FEATURES = $LOADED_FEATURES.dup
   end
@@ -448,6 +453,10 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     Gem::Specification._clear_load_cache
     Gem::Specification.unresolved_deps.clear
     Gem::refresh
+
+    @orig_hooks.each do |name, hooks|
+      Gem.send(name).replace hooks
+    end
 
     @back_ui.close
   end

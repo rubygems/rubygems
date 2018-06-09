@@ -820,7 +820,7 @@ class Gem::Specification < Gem::BasicSpecification
   def self.stubs
     @@stubs ||= begin
       pattern = "*.gemspec"
-      stubs = default_stubs(pattern).concat installed_stubs(dirs, pattern)
+      stubs = Gem.loaded_specs.values + default_stubs(pattern) + installed_stubs(dirs, pattern)
       stubs = uniq_by(stubs) { |stub| stub.full_name }
 
       _resort!(stubs)
@@ -839,7 +839,7 @@ class Gem::Specification < Gem::BasicSpecification
       @@stubs_by_name[name] || []
     else
       pattern = "#{name}-*.gemspec"
-      stubs = default_stubs(pattern) + installed_stubs(dirs, pattern)
+      stubs = Gem.loaded_specs.values + default_stubs(pattern) + installed_stubs(dirs, pattern)
       stubs = uniq_by(stubs) { |stub| stub.full_name }.group_by(&:name)
       stubs.each_value { |v| _resort!(v) }
 

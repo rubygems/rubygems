@@ -42,7 +42,7 @@ RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
 
   rdoc_files = Rake::FileList.new %w[lib History.txt LICENSE.txt MIT.txt]
   rdoc_files.add ["CODE_OF_CONDUCT.md".freeze, "CONTRIBUTING.rdoc".freeze,
-  "MAINTAINERS.txt".freeze, "Manifest.txt".freeze, "POLICIES.rdoc".freeze
+  "MAINTAINERS.txt".freeze, "Manifest.txt".freeze, "POLICIES.rdoc".freeze,
   "README.md".freeze, "UPGRADING.rdoc".freeze, "bundler/CHANGELOG.md".freeze,
   "bundler/CODE_OF_CONDUCT.md".freeze, "bundler/CONTRIBUTING.md".freeze, "bundler/LICENSE.md".freeze,
   "bundler/README.md".freeze, "hide_lib_for_update/note.txt".freeze]

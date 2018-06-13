@@ -368,6 +368,10 @@ class Gem::Version
       end.reduce(&:concat)
   end
 
+  def is_vulnerable?
+    
+  end
+
   protected
 
   def _version

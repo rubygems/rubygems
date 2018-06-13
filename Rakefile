@@ -34,26 +34,21 @@ task :default => :test
 spec = Gem::Specification.load('rubygems-update.gemspec')
 v = spec.version
 
-begin
-  gem 'rdoc', '~> 4.0'
-  require 'rdoc/task'
+require 'rdoc/task'
 
-  RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
-    doc.main   = 'README.md'
-    doc.title  = "RubyGems #{v} API Documentation"
+RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
+  doc.main   = 'README.md'
+  doc.title  = "RubyGems #{v} API Documentation"
 
-    rdoc_files = Rake::FileList.new %w[lib History.txt LICENSE.txt MIT.txt]
-    rdoc_files.add ["CODE_OF_CONDUCT.md".freeze, "CONTRIBUTING.rdoc".freeze, "CVE-2013-4287.txt".freeze, "CVE-2013-4363.txt".freeze, "CVE-2015-3900.txt".freeze, "History.txt".freeze, "LICENSE.txt".freeze, "MAINTAINERS.txt".freeze, "MIT.txt".freeze, "Manifest.txt".freeze, "POLICIES.rdoc".freeze, "README.md".freeze, "UPGRADING.rdoc".freeze, "bundler/CHANGELOG.md".freeze, "bundler/CODE_OF_CONDUCT.md".freeze, "bundler/CONTRIBUTING.md".freeze, "bundler/LICENSE.md".freeze, "bundler/README.md".freeze, "hide_lib_for_update/note.txt".freeze, "CONTRIBUTING.rdoc".freeze, "POLICIES.rdoc".freeze, "UPGRADING.rdoc".freeze, "CVE-2013-4287.txt".freeze, "CVE-2013-4363.txt".freeze]
+  rdoc_files = Rake::FileList.new %w[lib bundler/lib]
+  rdoc_files.add %w[History.txt LICENSE.txt MIT.txt CODE_OF_CONDUCT.md CONTRIBUTING.rdoc
+  MAINTAINERS.txt Manifest.txt POLICIES.rdoc README.md UPGRADING.rdoc bundler/CHANGELOG.md
+  bundler/CODE_OF_CONDUCT.md bundler/CONTRIBUTING.md bundler/LICENSE.md bundler/README.md
+  hide_lib_for_update/note.txt].map(&:freeze)
 
-    doc.rdoc_files = rdoc_files
+  doc.rdoc_files = rdoc_files
 
-    doc.rdoc_dir = 'doc'
-  end
-
-rescue LoadError, RuntimeError # rake 10.1 on rdoc from ruby 1.9.2 and earlier
-  task 'docs' do
-    abort 'You must install rdoc to build documentation, try `rake newb` again'
-  end
+  doc.rdoc_dir = 'doc'
 end
 
 desc "Install gems needed to run the tests"

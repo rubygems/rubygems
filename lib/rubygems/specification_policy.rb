@@ -125,6 +125,8 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
 
       seen[dep.type][dep.name] = dep
 
+      dep_requirements = dep.requirement.requirements
+
       prerelease_dep = dep.requirements_list.any? do |req|
         Gem::Requirement.new(req).prerelease?
       end
@@ -132,8 +134,8 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
       warning_messages << "prerelease dependency on #{dep} is not recommended" if
           prerelease_dep && !version.prerelease?
 
-      overly_strict = dep.requirement.requirements.length == 1 &&
-          dep.requirement.requirements.any? do |op, version|
+      overly_strict = dep_requirements.length == 1 &&
+          dep_requirements.any? do |op, version|
             op == '~>' and
                 not version.prerelease? and
                 version.segments.length > 2 and
@@ -141,7 +143,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
           end
 
       if overly_strict then
-        _, dep_version = dep.requirement.requirements.first
+        _, dep_version = dep_requirements.first
 
         base = dep_version.segments.first 2
         upper_bound = dep_version.segments.first(dep_version.segments.length - 1)
@@ -156,12 +158,12 @@ pessimistic dependency on #{dep} may be overly strict
         WARNING
       end
 
-      open_ended = dep.requirement.requirements.all? do |op, version|
+      open_ended = dep_requirements.all? do |op, version|
         not version.prerelease? and (op == '>' or op == '>=')
       end
 
       if open_ended then
-        op, dep_version = dep.requirement.requirements.first
+        op, dep_version = dep_requirements.first
 
         base = dep_version.segments.first 2
 

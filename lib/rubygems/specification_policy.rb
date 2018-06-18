@@ -127,8 +127,8 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
 
       dep_requirements = dep.requirement.requirements
 
-      prerelease_dep = dep.requirements_list.any? do |req|
-        Gem::Requirement.new(req).prerelease?
+      prerelease_dep = dep_requirements.any? do |op, version|
+        version.prerelease? and op != '<'
       end
 
       warning_messages << "prerelease dependency on #{dep} is not recommended" if

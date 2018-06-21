@@ -365,6 +365,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     Gem.loaded_specs.clear
     Gem.clear_default_specs
     Gem::Specification.unresolved_deps.clear
+    util_clear_gems
     if Gem::USE_BUNDLER_FOR_GEMDEPS
       Bundler.reset!
     end
@@ -740,14 +741,26 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   end
 
   ##
-  # Removes all installed gems from +@gemhome+.
+  # Removes all installed gems from +Gem.path+.
 
   def util_clear_gems
-    FileUtils.rm_rf File.join(@gemhome, "gems") # TODO: use Gem::Dirs
-    FileUtils.mkdir File.join(@gemhome, "gems")
-    FileUtils.rm_rf File.join(@gemhome, "specifications")
-    FileUtils.mkdir File.join(@gemhome, "specifications")
-    Gem::Specification.reset
+    gem_dirs = Gem.path.map { |d| File.join d, 'gems' }
+    gem_dirs.each { |d|
+      FileUtils.rm_rf d
+      FileUtils.mkdir d
+    }
+    util_clear_specs
+  end
+
+  def util_clear_specs
+    spec_dirs = Gem.path.map { |d| File.join d, 'specifications' } +
+      [Gem::BasicSpecification.default_specifications_dir]
+    spec_dirs.each { |d|
+      FileUtils.rm_rf d
+      FileUtils.mkdir d
+    }
+    # Gem.loaded_specs.clear done in setup
+    Gem::Specification.class_variable_set(:@@stubs, nil)
   end
 
   ##

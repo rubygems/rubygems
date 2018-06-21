@@ -73,11 +73,14 @@ class Gem::Ext::Builder
       results << (command.respond_to?(:shelljoin) ? command.shelljoin : command)
 
       redirections = verbose ? {} : {err: [:child, :out]}
-      IO.popen(command, "r", redirections) do |io|
-        if verbose
-          IO.copy_stream(io, $stdout)
-        else
-          results << io.read
+      original_env_wrapper = defined?(::Bundler) ? ::Bundler.method(:with_original_env) : proc { |&block| block.call }
+      original_env_wrapper.call do
+        IO.popen(command, "r", redirections) do |io|
+          if verbose
+            IO.copy_stream(io, $stdout)
+          else
+            results << io.read
+          end
         end
       end
     rescue => error

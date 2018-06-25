@@ -45,7 +45,9 @@ class TestGemCommandsBuildCommand < Gem::TestCase
       gs.write @gem.to_ruby
     end
 
-    util_test_build_gem @gem, gemspec_file
+    @cmd.options[:args] = [gemspec_file]
+
+    util_test_build_gem @gem
   end
 
   def test_execute_strict_without_warnings
@@ -56,8 +58,9 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     end
 
     @cmd.options[:strict] = true
+    @cmd.options[:args] = [gemspec_file]
 
-    util_test_build_gem @gem, gemspec_file
+    util_test_build_gem @gem
   end
 
   def test_execute_strict_with_warnings
@@ -174,12 +177,12 @@ class TestGemCommandsBuildCommand < Gem::TestCase
       gs.write @gem.to_ruby
     end
 
-    util_test_build_gem @gem, gemspec_file
-  end
-
-  def util_test_build_gem(gem, gemspec_file)
     @cmd.options[:args] = [gemspec_file]
 
+    util_test_build_gem @gem
+  end
+
+  def util_test_build_gem(gem)
     use_ui @ui do
       Dir.chdir @tempdir do
         @cmd.execute
@@ -214,7 +217,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     @cmd.options[:args] = [gemspec_file]
     @cmd.options[:force] = true
 
-    util_test_build_gem @gem, gemspec_file
+    util_test_build_gem @gem
   end
 
   CERT_FILE = cert_path 'public3072'
@@ -236,7 +239,9 @@ class TestGemCommandsBuildCommand < Gem::TestCase
       gs.write spec.to_ruby
     end
 
-    util_test_build_gem spec, gemspec_file
+    @cmd.options[:args] = [gemspec_file]
+
+    util_test_build_gem spec
 
     trust_dir.trust_cert OpenSSL::X509::Certificate.new(File.read(CERT_FILE))
 

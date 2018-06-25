@@ -72,7 +72,7 @@ class Gem::SpecificationPolicy < SimpleDelegator
     validate_dependencies
 
     if @warnings > 0
-      alert_warning "See http://guides.rubygems.org/specification-reference/ for help"
+      alert_warning help_text
     end
 
     true
@@ -409,6 +409,10 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
   def error statement # :nodoc:
     raise Gem::InvalidSpecificationException, statement
   ensure
-    alert_warning "See http://guides.rubygems.org/specification-reference/ for help"
+    alert_warning help_text
+  end
+
+  def help_text # :nodoc:
+    "See http://guides.rubygems.org/specification-reference/ for help"
   end
 end

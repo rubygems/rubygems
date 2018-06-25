@@ -16,6 +16,12 @@ class Gem::SpecificationPolicy < SimpleDelegator
     wiki_uri
   ] # :nodoc:
 
+  def initialize(specification)
+    @warnings = 0
+
+    super(specification)
+  end
+
   ##
   # If set to true, run packaging-specific checks, as well.
 
@@ -64,6 +70,11 @@ class Gem::SpecificationPolicy < SimpleDelegator
     validate_values
 
     validate_dependencies
+
+    if @warnings > 0
+      alert_warning "See http://guides.rubygems.org/specification-reference/ for help"
+    end
+
     true
   end
 
@@ -406,5 +417,11 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
     return if File.read(executable_path, 2) == '#!'
 
     warning "#{executable_path} is missing #! line"
+  end
+
+  def warning statement # :nodoc:
+    @warnings += 1
+
+    alert_warning statement
   end
 end

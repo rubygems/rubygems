@@ -2654,7 +2654,6 @@ class Gem::Specification < Gem::BasicSpecification
   # checks..
 
   def validate packaging = true
-    @warnings = 0
     require 'rubygems/user_interaction'
     extend Gem::UserInteraction
     normalize
@@ -2663,7 +2662,7 @@ class Gem::Specification < Gem::BasicSpecification
     validation_policy.packaging = packaging
     validation_policy.validate
   ensure
-    if $! or @warnings > 0 then
+    if $! then
       alert_warning "See http://guides.rubygems.org/specification-reference/ for help"
     end
   end
@@ -2750,12 +2749,6 @@ class Gem::Specification < Gem::BasicSpecification
     end
 
     @installed_by_version ||= nil
-  end
-
-  def warning statement # :nodoc:
-    @warnings += 1
-
-    alert_warning statement
   end
 
   def raw_require_paths # :nodoc:

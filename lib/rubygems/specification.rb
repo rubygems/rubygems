@@ -2661,10 +2661,6 @@ class Gem::Specification < Gem::BasicSpecification
     validation_policy = Gem::SpecificationPolicy.new(self)
     validation_policy.packaging = packaging
     validation_policy.validate
-  ensure
-    if $! then
-      alert_warning "See http://guides.rubygems.org/specification-reference/ for help"
-    end
   end
 
   def keep_only_files_and_directories

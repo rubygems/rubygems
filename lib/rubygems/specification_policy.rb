@@ -408,5 +408,7 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
 
   def error statement # :nodoc:
     raise Gem::InvalidSpecificationException, statement
+  ensure
+    alert_warning "See http://guides.rubygems.org/specification-reference/ for help"
   end
 end

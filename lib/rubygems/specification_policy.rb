@@ -83,35 +83,29 @@ class Gem::SpecificationPolicy < SimpleDelegator
 
   def validate_metadata
     unless Hash === metadata then
-      raise Gem::InvalidSpecificationException,
-            'metadata must be a hash'
+      error 'metadata must be a hash'
     end
 
     metadata.each do |key, value|
       if !key.kind_of?(String) then
-        raise Gem::InvalidSpecificationException,
-              "metadata keys must be a String"
+        error "metadata keys must be a String"
       end
 
       if key.size > 128 then
-        raise Gem::InvalidSpecificationException,
-              "metadata key too large (#{key.size} > 128)"
+        error "metadata key too large (#{key.size} > 128)"
       end
 
       if !value.kind_of?(String) then
-        raise Gem::InvalidSpecificationException,
-              "metadata values must be a String"
+        error "metadata values must be a String"
       end
 
       if value.size > 1024 then
-        raise Gem::InvalidSpecificationException,
-              "metadata value too large (#{value.size} > 1024)"
+        error "metadata value too large (#{value.size} > 1024)"
       end
 
       if METADATA_LINK_KEYS.include? key then
         if value !~ VALID_URI_PATTERN then
-          raise Gem::InvalidSpecificationException,
-                "metadata['#{key}'] has invalid link: #{value.inspect}"
+          error "metadata['#{key}'] has invalid link: #{value.inspect}"
         end
       end
     end
@@ -190,7 +184,7 @@ open-ended dependency on #{dep} is not recommended
       end
     end
     if error_messages.any? then
-      raise Gem::InvalidSpecificationException, error_messages.join
+      error error_messages.join
     end
     if warning_messages.any? then
       warning_messages.each { |warning_message| warning warning_message }
@@ -226,45 +220,38 @@ open-ended dependency on #{dep} is not recommended
       __getobj__.instance_variable_get("@#{attrname}").nil?
     end
     return if nil_attributes.empty?
-    raise Gem::InvalidSpecificationException,
-          "#{nil_attributes.join ', '} must not be nil"
+    error "#{nil_attributes.join ', '} must not be nil"
   end
 
   def validate_rubygems_version
     return unless packaging
     return if rubygems_version == Gem::VERSION
 
-    raise Gem::InvalidSpecificationException,
-          "expected RubyGems version #{Gem::VERSION}, was #{rubygems_version}"
+    error "expected RubyGems version #{Gem::VERSION}, was #{rubygems_version}"
   end
 
   def validate_required_attributes
     Gem::Specification.required_attributes.each do |symbol|
       unless send symbol then
-        raise Gem::InvalidSpecificationException,
-              "missing value for attribute #{symbol}"
+        error "missing value for attribute #{symbol}"
       end
     end
   end
 
   def validate_name
     if !name.is_a?(String) then
-      raise Gem::InvalidSpecificationException,
-            "invalid value for attribute name: \"#{name.inspect}\" must be a string"
+      error "invalid value for attribute name: \"#{name.inspect}\" must be a string"
     elsif name !~ /[a-zA-Z]/ then
-      raise Gem::InvalidSpecificationException,
-            "invalid value for attribute name: #{name.dump} must include at least one letter"
+      error "invalid value for attribute name: #{name.dump} must include at least one letter"
     elsif name !~ VALID_NAME_PATTERN then
-      raise Gem::InvalidSpecificationException,
-            "invalid value for attribute name: #{name.dump} can only include letters, numbers, dashes, and underscores"
+      error "invalid value for attribute name: #{name.dump} can only include letters, numbers, dashes, and underscores"
     end
   end
 
   def validate_require_paths
     return unless raw_require_paths.empty?
 
-    raise Gem::InvalidSpecificationException,
-          'specification must have at least one require_path'
+    error 'specification must have at least one require_path'
   end
 
   def validate_non_files
@@ -272,31 +259,27 @@ open-ended dependency on #{dep} is not recommended
     non_files = files.reject {|x| File.file?(x) || File.symlink?(x)}
 
     unless non_files.empty? then
-      raise Gem::InvalidSpecificationException,
-            "[\"#{non_files.join "\", \""}\"] are not files"
+      error "[\"#{non_files.join "\", \""}\"] are not files"
     end
   end
 
   def validate_self_inclusion_in_files_list
     return unless files.include?(file_name)
     
-    raise Gem::InvalidSpecificationException,
-          "#{full_name} contains itself (#{file_name}), check your files list"
+    error "#{full_name} contains itself (#{file_name}), check your files list"
   end
 
   def validate_specification_version
     return if specification_version.is_a?(Integer)
     
-    raise Gem::InvalidSpecificationException,
-          'specification_version must be an Integer (did you mean version?)'
+    error 'specification_version must be an Integer (did you mean version?)'
   end
 
   def validate_platform
     case platform
       when Gem::Platform, Gem::Platform::RUBY then # ok
       else
-        raise Gem::InvalidSpecificationException,
-              "invalid platform #{platform.inspect}, see Gem::Platform"
+        error "invalid platform #{platform.inspect}, see Gem::Platform"
     end
   end
 
@@ -324,15 +307,13 @@ open-ended dependency on #{dep} is not recommended
   def validate_authors_field
     return unless authors.empty?
 
-    raise Gem::InvalidSpecificationException,
-          "authors may not be empty"
+    error "authors may not be empty"
   end
 
   def validate_licenses
     licenses.each { |license|
       if license.length > 64 then
-        raise Gem::InvalidSpecificationException,
-              "each license must be 64 characters or less"
+        error "each license must be 64 characters or less"
       end
 
       if !Gem::Licenses.match?(license) then
@@ -358,19 +339,19 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
 
   def validate_lazy_metadata
     unless authors.grep(LAZY_PATTERN).empty? then
-      raise Gem::InvalidSpecificationException, "#{LAZY} is not an author"
+      error "#{LAZY} is not an author"
     end
 
     unless Array(email).grep(LAZY_PATTERN).empty? then
-      raise Gem::InvalidSpecificationException, "#{LAZY} is not an email"
+      error "#{LAZY} is not an email"
     end
 
     if description =~ LAZY_PATTERN then
-      raise Gem::InvalidSpecificationException, "#{LAZY} is not a description"
+      error "#{LAZY} is not a description"
     end
 
     if summary =~ LAZY_PATTERN then
-      raise Gem::InvalidSpecificationException, "#{LAZY} is not a summary"
+      error "#{LAZY} is not a summary"
     end
 
     # Make sure a homepage is valid HTTP/HTTPS URI
@@ -378,10 +359,10 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
       begin
         homepage_uri = URI.parse(homepage)
         unless [URI::HTTP, URI::HTTPS].member? homepage_uri.class
-          raise Gem::InvalidSpecificationException, "\"#{homepage}\" is not a valid HTTP URI"
+          error "\"#{homepage}\" is not a valid HTTP URI"
         end
       rescue URI::InvalidURIError
-        raise Gem::InvalidSpecificationException, "\"#{homepage}\" is not a valid HTTP URI"
+        error "\"#{homepage}\" is not a valid HTTP URI"
       end
     end
   end
@@ -423,5 +404,9 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
     @warnings += 1
 
     alert_warning statement
+  end
+
+  def error statement # :nodoc:
+    raise Gem::InvalidSpecificationException, statement
   end
 end

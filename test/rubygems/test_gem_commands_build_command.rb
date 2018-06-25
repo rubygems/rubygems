@@ -24,6 +24,20 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     @cmd = Gem::Commands::BuildCommand.new
   end
 
+  def test_handle_options
+    @cmd.handle_options %w[--force --strict]
+
+    assert @cmd.options[:force]
+    assert @cmd.options[:strict]
+  end
+
+  def test_handle_options_defaults
+    @cmd.handle_options []
+
+    refute @cmd.options[:force]
+    refute @cmd.options[:strict]
+  end
+
   def test_execute
     gemspec_file = File.join(@tempdir, @gem.spec_name)
 
@@ -32,6 +46,50 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     end
 
     util_test_build_gem @gem, gemspec_file
+  end
+
+  def test_execute_strict_without_warnings
+    gemspec_file = File.join(@tempdir, @gem.spec_name)
+
+    File.open gemspec_file, 'w' do |gs|
+      gs.write @gem.to_ruby
+    end
+
+    @cmd.options[:strict] = true
+
+    util_test_build_gem @gem, gemspec_file
+  end
+
+  def test_execute_strict_with_warnings
+    bad_gem = util_spec 'some_bad_gem' do |s|
+      s.rubyforge_project = 'example'
+      s.files = ['README.md']
+    end
+
+    gemspec_file = File.join(@tempdir, bad_gem.spec_name)
+
+    File.open gemspec_file, 'w' do |gs|
+      gs.write bad_gem.to_ruby
+    end
+
+    @cmd.options[:args] = [gemspec_file]
+    @cmd.options[:strict] = true
+
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        assert_raises Gem::InvalidSpecificationException do
+          @cmd.execute
+        end
+      end
+    end
+
+    error = @ui.error.split "\n"
+    assert_match "WARNING:  licenses is empty, but is recommended.", error.shift
+    assert_equal "WARNING:  See http://guides.rubygems.org/specification-reference/ for help", error.shift
+    assert_equal [], error
+
+    gem_file = File.join @tempdir, File.basename(@gem.cache_file)
+    refute File.exist?(gem_file)
   end
 
   def test_execute_bad_spec

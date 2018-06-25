@@ -1409,7 +1409,7 @@ gem 'other', version
     def spec.full_name # so the spec is buildable
       "malicious-1"
     end
-    def spec.validate; end
+    def spec.validate packaging, strict; end
 
     util_build_gem spec
 

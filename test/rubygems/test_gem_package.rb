@@ -323,6 +323,19 @@ class TestGemPackage < Gem::Package::TarTestCase
     assert_equal 'missing value for attribute summary', e.message
   end
 
+  def test_build_invalid_arguments
+    spec = Gem::Specification.new 'build', '1'
+
+    package = Gem::Package.new spec.file_name
+    package.spec = spec
+
+    e = assert_raises ArgumentError do
+      package.build true, true
+    end
+
+    assert_equal "skip_validation = true and strict_validation = true are incompatible", e.message
+  end
+
   def test_build_signed
     skip 'openssl is missing' unless defined?(OpenSSL::SSL)
 

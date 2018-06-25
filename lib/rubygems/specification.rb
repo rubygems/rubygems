@@ -2653,14 +2653,14 @@ class Gem::Specification < Gem::BasicSpecification
   # Raises InvalidSpecificationException if the spec does not pass the
   # checks..
 
-  def validate packaging = true
+  def validate packaging = true, strict = false
     require 'rubygems/user_interaction'
     extend Gem::UserInteraction
     normalize
 
     validation_policy = Gem::SpecificationPolicy.new(self)
     validation_policy.packaging = packaging
-    validation_policy.validate
+    validation_policy.validate(strict)
   end
 
   def keep_only_files_and_directories

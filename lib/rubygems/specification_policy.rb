@@ -34,7 +34,7 @@ class Gem::SpecificationPolicy < SimpleDelegator
   # Raises InvalidSpecificationException if the spec does not pass the
   # checks.
 
-  def validate
+  def validate(strict = false)
     validate_nil_attributes
 
     validate_rubygems_version
@@ -72,7 +72,11 @@ class Gem::SpecificationPolicy < SimpleDelegator
     validate_dependencies
 
     if @warnings > 0
-      alert_warning help_text
+      if strict
+        error "specification has warnings"
+      else
+        alert_warning help_text
+      end
     end
 
     true

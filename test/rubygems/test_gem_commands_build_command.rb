@@ -9,8 +9,16 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   def setup
     super
 
+    readme_file = File.join(@tempdir, 'README.md')
+
+    File.open readme_file, 'w' do |f|
+      f.write 'My awesome gem'
+    end
+
     @gem = util_spec 'some_gem' do |s|
       s.rubyforge_project = 'example'
+      s.license = 'AGPL-3.0'
+      s.files = ['README.md']
     end
 
     @cmd = Gem::Commands::BuildCommand.new
@@ -67,8 +75,13 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   def test_execute_outside_dir
     gemspec_dir = File.join @tempdir, 'build_command_gem'
     gemspec_file = File.join gemspec_dir, @gem.spec_name
+    readme_file = File.join gemspec_dir, 'README.md'
 
     FileUtils.mkdir_p gemspec_dir
+
+    File.open readme_file, 'w' do |f|
+      f.write "My awesome gem"
+    end
 
     File.open gemspec_file, 'w' do |gs|
       gs.write @gem.to_ruby
@@ -106,7 +119,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     util_test_build_gem @gem, gemspec_file
   end
 
-  def util_test_build_gem(gem, gemspec_file, check_licenses=true)
+  def util_test_build_gem(gem, gemspec_file)
     @cmd.options[:args] = [gemspec_file]
 
     use_ui @ui do
@@ -121,10 +134,6 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     assert_equal "  Version: 2", output.shift
     assert_equal "  File: some_gem-2.gem", output.shift
     assert_equal [], output
-
-    if check_licenses
-      assert_match "WARNING:  licenses is empty", @ui.error
-    end
 
     gem_file = File.join @tempdir, File.basename(gem.cache_file)
     assert File.exist?(gem_file)
@@ -147,7 +156,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     @cmd.options[:args] = [gemspec_file]
     @cmd.options[:force] = true
 
-    util_test_build_gem @gem, gemspec_file, false
+    util_test_build_gem @gem, gemspec_file
   end
 
   CERT_FILE = cert_path 'public3072'

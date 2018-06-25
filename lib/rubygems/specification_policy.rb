@@ -319,8 +319,7 @@ open-ended dependency on #{dep} is not recommended
       if !Gem::Licenses.match?(license) then
         suggestions = Gem::Licenses.suggestions(license)
         message = <<-warning
-license value '#{license}' is invalid.  Use a license identifier from
-http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
+license value '#{license}' is invalid.  Use a license identifier from http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
         warning
         message += "Did you mean #{suggestions.map { |s| "'#{s}'"}.join(', ')}?\n" unless suggestions.nil?
         warning(message)
@@ -328,8 +327,7 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
     }
 
     warning <<-warning if licenses.empty?
-licenses is empty, but is recommended.  Use a license identifier from
-http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
+licenses is empty, but is recommended.  Use a license identifier from http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
     warning
   end
 

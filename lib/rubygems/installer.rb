@@ -241,6 +241,11 @@ class Gem::Installer
     # somebody has written to RubyGems' directory, overwrite, too bad
     return if Gem.default_bindir != @bin_dir and not ruby_executable
 
+    if options[:overwrite_exec]
+      say "Overwriting executable"
+      return true
+    end
+
     question = "#{spec.name}'s executable \"#{filename}\" conflicts with ".dup
 
     if ruby_executable then

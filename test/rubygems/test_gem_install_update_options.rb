@@ -29,6 +29,7 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
       -w
       --vendor
       --post-install-message
+      --overwrite-exec
     ]
 
     args.concat %w[-P HighSecurity] if defined?(OpenSSL::SSL)
@@ -196,5 +197,11 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
     @cmd.handle_options %w[--post-install-message]
 
     assert_equal true, @cmd.options[:post_install_message]
+  end
+
+  def test_overwrite_exec
+    @cmd.handle_options %w[--overwrite-exec]
+
+    assert_equal true, @cmd.options[:overwrite_exec]
   end
 end

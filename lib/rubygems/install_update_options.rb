@@ -203,6 +203,11 @@ module Gem::InstallUpdateOptions
       options[:suggest_alternate] = v
     end
 
+    add_option(:"Install/Update", '--overwrite-exec',
+               'Overwrite execs without prompt, use only in scripting') do |v,o|
+      options[:overwrite_exec] = true
+    end
+
   end
 
   ##

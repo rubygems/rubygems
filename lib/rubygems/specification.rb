@@ -1283,8 +1283,8 @@ class Gem::Specification < Gem::BasicSpecification
       warn "#{w}: Unresolved or ambigious specs during Gem::Specification.reset:"
       unresolved.values.each do |dep|
         warn "      #{dep}"
-        
-        versions = Gem::Specification.find_all_by_name(dep.name)
+
+        versions = find_all_by_name(dep.name)
         unless versions.empty?
           warn "      Available/installed versions of this gem:"
           versions.each { |s| warn "      - #{s.version}" }

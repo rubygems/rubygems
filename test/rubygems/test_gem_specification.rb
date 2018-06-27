@@ -2887,7 +2887,7 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
                  @a1.files
   end
 
-  def test_unresolved_specs_warinings
+  def test_unresolved_specs_warnings
     specification = Gem::Specification.clone
 
     specification.define_singleton_method(:unresolved_deps) do

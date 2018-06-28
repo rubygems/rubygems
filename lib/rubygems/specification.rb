@@ -824,7 +824,7 @@ class Gem::Specification < Gem::BasicSpecification
       stubs = uniq_by(stubs) { |stub| stub.full_name }
 
       _resort!(stubs)
-      @@stubs_by_name = stubs.group_by(&:name)
+      @@stubs_by_name = stubs.select { |s| Gem::Platform.match s.platform }.group_by(&:name)
       stubs
     end
   end
@@ -833,13 +833,15 @@ class Gem::Specification < Gem::BasicSpecification
 
   ##
   # Returns a Gem::StubSpecification for installed gem named +name+
+  # only returns stubs that match Gem.platforms
 
   def self.stubs_for name
     if @@stubs
       @@stubs_by_name[name] || []
     else
       pattern = "#{name}-*.gemspec"
-      stubs = Gem.loaded_specs.values + default_stubs(pattern) + installed_stubs(dirs, pattern)
+      stubs = Gem.loaded_specs.values + default_stubs(pattern) +
+        installed_stubs(dirs, pattern).select { |s| Gem::Platform.match s.platform }
       stubs = uniq_by(stubs) { |stub| stub.full_name }.group_by(&:name)
       stubs.each_value { |v| _resort!(v) }
 

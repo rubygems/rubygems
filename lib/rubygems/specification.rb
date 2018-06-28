@@ -1314,11 +1314,17 @@ class Gem::Specification < Gem::BasicSpecification
     unresolved = unresolved_deps
     unless unresolved.empty? then
       w = "W" + "ARN"
-      warn "#{w}: Unresolved specs during Gem::Specification.reset:"
+      warn "#{w}: Unresolved or ambigious specs during Gem::Specification.reset:"
       unresolved.values.each do |dep|
         warn "      #{dep}"
+
+        versions = find_all_by_name(dep.name)
+        unless versions.empty?
+          warn "      Available/installed versions of this gem:"
+          versions.each { |s| warn "      - #{s.version}" }
+        end
       end
-      warn "#{w}: Clearing out unresolved specs."
+      warn "#{w}: Clearing out unresolved specs. Try 'gem cleanup <gem>'"
       warn "Please report a bug if this causes problems."
       unresolved.clear
     end

@@ -2844,6 +2844,58 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
                  @a1.files
   end
 
+  def test_unresolved_specs
+    specification = Gem::Specification.clone
+
+    specification.define_singleton_method(:unresolved_deps) do
+      { b: Gem::Dependency.new("x","1") }
+    end
+
+    specification.define_singleton_method(:find_all_by_name) do |dep_name|
+      []
+    end
+
+    expected = <<-EXPECTED
+WARN: Unresolved or ambigious specs during Gem::Specification.reset:
+      x (= 1)
+WARN: Clearing out unresolved specs. Try 'gem cleanup <gem>'
+Please report a bug if this causes problems.
+    EXPECTED
+
+    assert_output nil, expected do
+     specification.reset
+    end
+  end
+
+  def test_unresolved_specs_with_versions
+    specification = Gem::Specification.clone
+
+    specification.define_singleton_method(:unresolved_deps) do
+      { b: Gem::Dependency.new("x","1") }
+    end
+
+    specification.define_singleton_method(:find_all_by_name) do |dep_name|
+      [
+        specification.new { |s| s.name = "z", s.version = Gem::Version.new("1") },
+        specification.new { |s| s.name = "z", s.version = Gem::Version.new("2") }
+      ]
+    end
+
+    expected = <<-EXPECTED
+WARN: Unresolved or ambigious specs during Gem::Specification.reset:
+      x (= 1)
+      Available/installed versions of this gem:
+      - 1
+      - 2
+WARN: Clearing out unresolved specs. Try 'gem cleanup <gem>'
+Please report a bug if this causes problems.
+    EXPECTED
+
+    assert_output nil, expected do
+     specification.reset
+    end
+  end
+
   def test_validate_files_recursive
     util_setup_validate
     FileUtils.touch @a1.file_name

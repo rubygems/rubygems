@@ -173,9 +173,9 @@ end
 # --------------------------------------------------------------------
 # Creating a release
 
-task :prerelease => [:clobber, :check_manifest, :test]
+task :prerelease => %w[clobber check_manifest test bundler:build_metadata]
 
-task :postrelease => %w[upload guides:publish blog:publish]
+task :postrelease => %w[bundler:build_metadata:clean upload guides:publish blog:publish]
 
 file "pkg/rubygems-#{v}" => "pkg/rubygems-update-#{v}" do |t|
   require 'find'
@@ -512,5 +512,15 @@ end
 namespace :bundler do
   task :checkout do
     sh "git submodule update --init"
+  end
+
+  task :build_metadata do
+    chdir('bundler') { sh "rake build_metadata" }
+  end
+
+  namespace :build_metadata do
+    task :clean do
+      chdir('bundler') { sh "rake build_metadata:clean" }
+    end
   end
 end

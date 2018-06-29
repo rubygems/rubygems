@@ -1169,6 +1169,45 @@ dependencies: []
     Gem::Specification.class_variable_set(:@@stubs, nil)
   end
 
+  def test_self_stubs_for_mult_platforms
+    # gems for two different platforms are installed with --user-install
+    # the correct one should be returned in the array
+
+    orig_platform = Gem.platforms.dup
+
+    # create user spec
+    user_spec_dir = File.join Gem.user_dir, 'specifications'
+    FileUtils.mkdir_p(user_spec_dir)  unless Dir.exist? user_spec_dir
+    # dirs doesn't include user ?
+    Gem::Specification.dirs << user_spec_dir
+
+    gem = 'mingw'
+    v   = '1.1.1'
+    platforms = ['x86-mingw32', 'x64-mingw32']
+    
+    #create specs
+    platforms.each do |plat|
+      spec = Gem::Specification.new(gem, v) { |s| s.platform = plat }
+      File.open File.join(user_spec_dir, "#{gem}-#{v}-#{plat}.gemspec"), 'w' do |io|
+        io.write spec.to_ruby
+      end
+    end
+
+    platforms.each do |plat|
+      cur_plat = Gem::Platform.new plat
+      Gem.platforms = ['ruby', cur_plat]
+
+      Gem::Specification.class_variable_set :@@stubs, nil
+      Gem::Specification.stubs if plat == platforms.last # test loading via stubs
+      t = Gem::Specification.stubs_for 'mingw'
+
+      assert_equal 1, t.length
+      assert_equal cur_plat, t.first.platform
+    end
+
+    Gem.platforms = orig_platform
+  end
+
   DATA_PATH = File.expand_path "../data", __FILE__
 
   def test_handles_private_null_type

@@ -761,14 +761,14 @@ class Gem::Specification < Gem::BasicSpecification
 
   def self.each_gemspec(dirs) # :nodoc:
     dirs.each do |dir|
-      Dir[File.join(dir, "*.gemspec")].each do |path|
+      Gem::Util.glob_files_in_dir("*.gemspec", dir).each do |path|
         yield path.untaint
       end
     end
   end
 
   def self.gemspec_stubs_in dir, pattern
-    Dir[File.join(dir, pattern)].map { |path| yield path }.select(&:valid?)
+    Gem::Util.glob_files_in_dir(pattern, dir).map { |path| yield path }.select(&:valid?)
   end
   private_class_method :gemspec_stubs_in
 

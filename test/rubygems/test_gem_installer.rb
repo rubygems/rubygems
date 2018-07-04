@@ -1384,7 +1384,7 @@ gem 'other', version
       e = assert_raises Gem::RuntimeRequirementNotMetError do
         installer.pre_install_checks
       end
-      rv = Gem.ruby_api_version
+      rv = Gem.ruby_version
       assert_equal "old_ruby_required requires Ruby version = 1.4.6. The current ruby version is #{rv}.",
                    e.message
     end

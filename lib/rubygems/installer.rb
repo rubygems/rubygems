@@ -632,8 +632,8 @@ class Gem::Installer
 
   def ensure_required_ruby_version_met # :nodoc:
     if rrv = spec.required_ruby_version then
-      unless rrv.satisfied_by? Gem.ruby_version then
-        ruby_version = Gem.ruby_api_version
+      ruby_version = Gem.ruby_version
+      unless rrv.satisfied_by? ruby_version then
         raise Gem::RuntimeRequirementNotMetError,
           "#{spec.name} requires Ruby version #{rrv}. The current ruby version is #{ruby_version}."
       end

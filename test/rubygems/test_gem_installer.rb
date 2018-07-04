@@ -965,7 +965,7 @@ gem 'other', version
 
   def test_install_force
     use_ui @ui do
-      installer = Gem::Installer.at old_ruby_required, :force => true
+      installer = Gem::Installer.at old_ruby_required('= 1.4.6'), :force => true
       installer.install
     end
 
@@ -1380,7 +1380,7 @@ gem 'other', version
 
   def test_pre_install_checks_ruby_version
     use_ui @ui do
-      installer = Gem::Installer.at old_ruby_required
+      installer = Gem::Installer.at old_ruby_required('= 1.4.6')
       e = assert_raises Gem::RuntimeRequirementNotMetError do
         installer.pre_install_checks
       end
@@ -1388,6 +1388,16 @@ gem 'other', version
       assert_equal "old_ruby_required requires Ruby version = 1.4.6. The current ruby version is #{rv}.",
                    e.message
     end
+  end
+
+  def test_pre_install_checks_ruby_version_with_prereleases
+    util_set_RUBY_VERSION '2.6.0', -1, '63539', 'ruby 2.6.0preview2 (2018-05-31 trunk 63539) [x86_64-linux]'
+
+    installer = Gem::Installer.at old_ruby_required('>= 2.6.0.preview2')
+
+    assert installer.pre_install_checks
+  ensure
+    util_restore_RUBY_VERSION
   end
 
   def test_pre_install_checks_wrong_rubygems_version
@@ -1720,9 +1730,9 @@ gem 'other', version
     assert_equal ['bin/executable'], default_spec.files
   end
 
-  def old_ruby_required
+  def old_ruby_required(requirement)
     spec = util_spec 'old_ruby_required', '1' do |s|
-      s.required_ruby_version = '= 1.4.6'
+      s.required_ruby_version = requirement
     end
 
     util_build_gem spec

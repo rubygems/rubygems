@@ -158,11 +158,25 @@ class TestGemVersion < Gem::TestCase
 
   def test_approximate_recommendation
     assert_approximate_equal "~> 1.0", "1"
+    assert_approximate_satisfies_itself "1"
+
     assert_approximate_equal "~> 1.0", "1.0"
+    assert_approximate_satisfies_itself "1.0"
+
     assert_approximate_equal "~> 1.2", "1.2"
+    assert_approximate_satisfies_itself "1.2"
+
     assert_approximate_equal "~> 1.2", "1.2.0"
+    assert_approximate_satisfies_itself "1.2.0"
+
     assert_approximate_equal "~> 1.2", "1.2.3"
-    assert_approximate_equal "~> 1.2", "1.2.3.a.4"
+    assert_approximate_satisfies_itself "1.2.3"
+
+    assert_approximate_equal "~> 1.2.a", "1.2.3.a.4"
+    assert_approximate_satisfies_itself "1.2.3.a.4"
+
+    assert_approximate_equal "~> 1.9.a", "1.9.0.dev"
+    assert_approximate_satisfies_itself "1.9.0.dev"
   end
 
   def test_to_s
@@ -202,6 +216,14 @@ class TestGemVersion < Gem::TestCase
 
   def assert_approximate_equal expected, version
     assert_equal expected, v(version).approximate_recommendation
+  end
+
+  # Assert that the "approximate" recommendation for +version+ satifies +version+.
+
+  def assert_approximate_satisfies_itself version
+    gem_version = v(version)
+
+    assert Gem::Requirement.new(gem_version.approximate_recommendation).satisfied_by?(gem_version)
   end
 
   # Assert that bumping the +unbumped+ version yields the +expected+.

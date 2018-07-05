@@ -198,7 +198,7 @@ class TestGemVersion < Gem::TestCase
     assert v(version).prerelease?, "#{version} is a prerelease"
   end
 
-  # Assert that +expected+ is the "approximate" recommendation for +version".
+  # Assert that +expected+ is the "approximate" recommendation for +version+.
 
   def assert_approximate_equal expected, version
     assert_equal expected, v(version).approximate_recommendation

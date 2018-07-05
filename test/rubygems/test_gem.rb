@@ -1012,7 +1012,7 @@ class TestGem < Gem::TestCase
   def test_self_ruby_version_with_prerelease
     util_set_RUBY_VERSION '2.6.0', -1, 63539, 'ruby 2.6.0preview2 (2018-05-31 trunk 63539) [x86_64-linux]'
 
-    assert_equal Gem::Version.new('2.6.0.preview2.63539'), Gem.ruby_version
+    assert_equal Gem::Version.new('2.6.0.preview2'), Gem.ruby_version
   ensure
     util_restore_RUBY_VERSION
   end
@@ -1020,7 +1020,7 @@ class TestGem < Gem::TestCase
   def test_self_ruby_version_with_trunk
     util_set_RUBY_VERSION '1.9.2', -1, 23493, 'ruby 1.9.2dev (2009-05-20 trunk 23493) [x86_64-linux]'
 
-    assert_equal Gem::Version.new('1.9.2.dev.23493'), Gem.ruby_version
+    assert_equal Gem::Version.new('1.9.2.dev'), Gem.ruby_version
   ensure
     util_restore_RUBY_VERSION
   end

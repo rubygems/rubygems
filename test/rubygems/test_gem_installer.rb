@@ -1394,8 +1394,14 @@ gem 'other', version
     util_set_RUBY_VERSION '2.6.0', -1, '63539', 'ruby 2.6.0preview2 (2018-05-31 trunk 63539) [x86_64-linux]'
 
     installer = Gem::Installer.at old_ruby_required('>= 2.6.0.preview2')
-
     assert installer.pre_install_checks
+
+    installer = Gem::Installer.at old_ruby_required('> 2.6.0.preview2')
+    e = assert_raises Gem::RuntimeRequirementNotMetError do
+      assert installer.pre_install_checks
+    end
+    assert_equal "old_ruby_required requires Ruby version > 2.6.0.preview2. The current ruby version is 2.6.0.preview2.",
+                 e.message
   ensure
     util_restore_RUBY_VERSION
   end

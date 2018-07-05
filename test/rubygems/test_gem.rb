@@ -1025,6 +1025,14 @@ class TestGem < Gem::TestCase
     util_restore_RUBY_VERSION
   end
 
+  def test_self_ruby_version_with_non_mri_implementations_with_mri_prerelase_compatibility
+    util_set_RUBY_VERSION '2.6.0', -1, 63539, 'weirdjruby 9.2.0.0 (2.6.0preview2) 2018-05-24 81156a8 OpenJDK 64-Bit Server VM 25.171-b11 on 1.8.0_171-8u171-b11-0ubuntu0.16.04.1-b11 [linux-x86_64]', 'weirdjruby', '9.2.0.0'
+
+    assert_equal Gem::Version.new('2.6.0.preview2'), Gem.ruby_version
+  ensure
+    util_restore_RUBY_VERSION
+  end
+
   def test_self_ruby_version_with_trunk
     util_set_RUBY_VERSION '1.9.2', -1, 23493, 'ruby 1.9.2dev (2009-05-20 trunk 23493) [x86_64-linux]'
 

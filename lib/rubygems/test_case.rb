@@ -1161,42 +1161,51 @@ Also, a list:
     Zlib::Deflate.deflate data
   end
 
-  def util_set_RUBY_VERSION(version, patchlevel = nil, revision = nil, description = nil)
+  def util_set_RUBY_VERSION(version, patchlevel = nil, revision = nil, description = nil, engine = "ruby", engine_version = nil)
     if Gem.instance_variables.include? :@ruby_version or
        Gem.instance_variables.include? '@ruby_version' then
       Gem.send :remove_instance_variable, :@ruby_version
     end
 
-    @RUBY_VERSION     = RUBY_VERSION
-    @RUBY_PATCHLEVEL  = RUBY_PATCHLEVEL  if defined?(RUBY_PATCHLEVEL)
-    @RUBY_REVISION    = RUBY_REVISION    if defined?(RUBY_REVISION)
-    @RUBY_DESCRIPTION = RUBY_DESCRIPTION if defined?(RUBY_DESCRIPTION)
+    @RUBY_VERSION        = RUBY_VERSION
+    @RUBY_PATCHLEVEL     = RUBY_PATCHLEVEL     if defined?(RUBY_PATCHLEVEL)
+    @RUBY_REVISION       = RUBY_REVISION       if defined?(RUBY_REVISION)
+    @RUBY_DESCRIPTION    = RUBY_DESCRIPTION    if defined?(RUBY_DESCRIPTION)
+    @RUBY_ENGINE         = RUBY_ENGINE
+    @RUBY_ENGINE_VERSION = RUBY_ENGINE_VERSION if defined?(RUBY_ENGINE_VERSION)
 
     util_clear_RUBY_VERSION
 
-    Object.const_set :RUBY_VERSION,     version
-    Object.const_set :RUBY_PATCHLEVEL,  patchlevel  if patchlevel
-    Object.const_set :RUBY_REVISION,    revision    if revision
-    Object.const_set :RUBY_DESCRIPTION, description if description
+    Object.const_set :RUBY_VERSION,        version
+    Object.const_set :RUBY_PATCHLEVEL,     patchlevel     if patchlevel
+    Object.const_set :RUBY_REVISION,       revision       if revision
+    Object.const_set :RUBY_DESCRIPTION,    description    if description
+    Object.const_set :RUBY_ENGINE,         engine
+    Object.const_set :RUBY_ENGINE_VERSION, engine_version if engine_version
   end
 
   def util_restore_RUBY_VERSION
     util_clear_RUBY_VERSION
 
-    Object.const_set :RUBY_VERSION,     @RUBY_VERSION
-    Object.const_set :RUBY_PATCHLEVEL,  @RUBY_PATCHLEVEL  if
+    Object.const_set :RUBY_VERSION,        @RUBY_VERSION
+    Object.const_set :RUBY_PATCHLEVEL,     @RUBY_PATCHLEVEL  if
       defined?(@RUBY_PATCHLEVEL)
-    Object.const_set :RUBY_REVISION,    @RUBY_REVISION    if
+    Object.const_set :RUBY_REVISION,       @RUBY_REVISION    if
       defined?(@RUBY_REVISION)
-    Object.const_set :RUBY_DESCRIPTION, @RUBY_DESCRIPTION if
+    Object.const_set :RUBY_DESCRIPTION,    @RUBY_DESCRIPTION if
       defined?(@RUBY_DESCRIPTION)
+    Object.const_set :RUBY_ENGINE,         @RUBY_ENGINE
+    Object.const_set :RUBY_ENGINE_VERSION, @RUBY_ENGINE_VERSION if
+      defined?(@RUBY_ENGINE_VERSION)
   end
 
   def util_clear_RUBY_VERSION
     Object.send :remove_const, :RUBY_VERSION
-    Object.send :remove_const, :RUBY_PATCHLEVEL  if defined?(RUBY_PATCHLEVEL)
-    Object.send :remove_const, :RUBY_REVISION    if defined?(RUBY_REVISION)
-    Object.send :remove_const, :RUBY_DESCRIPTION if defined?(RUBY_DESCRIPTION)
+    Object.send :remove_const, :RUBY_PATCHLEVEL     if defined?(RUBY_PATCHLEVEL)
+    Object.send :remove_const, :RUBY_REVISION       if defined?(RUBY_REVISION)
+    Object.send :remove_const, :RUBY_DESCRIPTION    if defined?(RUBY_DESCRIPTION)
+    Object.send :remove_const, :RUBY_ENGINE
+    Object.send :remove_const, :RUBY_ENGINE_VERSION if defined?(RUBY_ENGINE_VERSION)
   end
 
   ##

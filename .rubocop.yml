@@ -2,3 +2,6 @@ AllCops:
   DisabledByDefault: true
   Exclude:
     - 'bundler/**/*'
+
+Layout/IndentationConsistency:
+  Enabled: true

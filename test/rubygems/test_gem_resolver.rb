@@ -300,8 +300,8 @@ class TestGemResolver < Gem::TestCase
 
     spec_fetcher do |fetcher|
               fetcher.spec 'a', 2
-      a2_p1 = fetcher.spec 'a', 2 do |s| s.platform = Gem::Platform.local end
-      a3_p2 = fetcher.spec 'a', 3 do |s| s.platform = unknown end
+              a2_p1 = fetcher.spec 'a', 2 do |s| s.platform = Gem::Platform.local end
+              a3_p2 = fetcher.spec 'a', 3 do |s| s.platform = unknown end
     end
 
     v2 = v(2)

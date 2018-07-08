@@ -387,8 +387,8 @@ end
 
   def test_self_activate_checks_dependencies
     a  = util_spec 'a', '1.0'
-            a.add_dependency 'c', '= 1.0'
-            a.add_dependency 'b', '~> 1.0'
+    a.add_dependency 'c', '= 1.0'
+    a.add_dependency 'b', '~> 1.0'
 
     b1 = util_spec 'b', '1.0'
     b2 = util_spec 'b', '2.0'

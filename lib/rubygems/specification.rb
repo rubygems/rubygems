@@ -172,9 +172,9 @@ class Gem::Specification < Gem::BasicSpecification
     when String
       v.dump
     when Numeric
-       "default_value(:#{k})"
+      "default_value(:#{k})"
     else
-       "default_value(:#{k}).dup"
+      "default_value(:#{k}).dup"
     end
   end
 

@@ -5,3 +5,6 @@ AllCops:
 
 Layout/IndentationConsistency:
   Enabled: true
+
+Layout/IndentationWidth:
+  Enabled: true

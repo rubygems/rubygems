@@ -2945,7 +2945,7 @@ Please report a bug if this causes problems.
     EXPECTED
 
     assert_output nil, expected do
-     specification.reset
+      specification.reset
     end
   end
 
@@ -2974,7 +2974,7 @@ Please report a bug if this causes problems.
     EXPECTED
 
     assert_output nil, expected do
-     specification.reset
+      specification.reset
     end
   end
 

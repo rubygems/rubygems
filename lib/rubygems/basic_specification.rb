@@ -282,7 +282,7 @@ class Gem::BasicSpecification
                self.raw_require_paths.first
              end
            else
-            "lib" # default value for require_paths for bundler/inline
+             "lib" # default value for require_paths for bundler/inline
            end
 
     "#{self.full_gem_path}/#{dirs}".dup.untaint

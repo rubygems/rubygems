@@ -2697,16 +2697,6 @@ end
       expected = <<-EXPECTED
 #{w}:  prerelease dependency on b (>= 1.0.rc1) is not recommended
 #{w}:  prerelease dependency on c (>= 2.0.rc2, development) is not recommended
-#{w}:  pessimistic dependency on d (~> 1.2.3) may be overly strict
-  if d is semantically versioned, use:
-    add_runtime_dependency 'd', '~> 1.2', '>= 1.2.3'
-  if d is not semantically versioned, you can bypass this warning with:
-    add_runtime_dependency 'd', '>= 1.2.3', '< 1.3.a'
-#{w}:  pessimistic dependency on e (~> 1.2.3.4) may be overly strict
-  if e is semantically versioned, use:
-    add_runtime_dependency 'e', '~> 1.2', '>= 1.2.3.4'
-  if e is not semantically versioned, you can bypass this warning with:
-    add_runtime_dependency 'e', '>= 1.2.3.4', '< 1.2.4.a'
 #{w}:  open-ended dependency on i (>= 1.2) is not recommended
   if i is semantically versioned, use:
     add_runtime_dependency 'i', '~> 1.2'
@@ -2719,11 +2709,6 @@ end
 #{w}:  open-ended dependency on l (> 1.2.3) is not recommended
   if l is semantically versioned, use:
     add_runtime_dependency 'l', '~> 1.2', '> 1.2.3'
-#{w}:  pessimistic dependency on m (~> 2.1.0) may be overly strict
-  if m is semantically versioned, use:
-    add_runtime_dependency 'm', '~> 2.1', '>= 2.1.0'
-  if m is not semantically versioned, you can bypass this warning with:
-    add_runtime_dependency 'm', '>= 2.1.0', '< 2.2.a'
 #{w}:  See http://guides.rubygems.org/specification-reference/ for help
       EXPECTED
 

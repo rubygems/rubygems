@@ -29,6 +29,8 @@ class Gem::PathSupport
       @home = @home.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
     end
 
+    @home = expand(@home)
+
     @path = split_gem_path env["GEM_PATH"], @home
 
     @spec_cache_dir = env["GEM_SPEC_CACHE"] || Gem.default_spec_cache_dir
@@ -65,7 +67,7 @@ class Gem::PathSupport
       gem_path = default_path
     end
 
-    gem_path.uniq
+    gem_path.map { |path| expand(path) }.uniq
   end
 
   # Return the default Gem path
@@ -76,5 +78,13 @@ class Gem::PathSupport
       gem_path << APPLE_GEM_HOME
     end
     gem_path
+  end
+
+  def expand(path)
+    if File.directory?(path)
+      File.realpath(path)
+    else
+      path
+    end
   end
 end

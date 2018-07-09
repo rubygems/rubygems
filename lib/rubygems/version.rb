@@ -325,7 +325,9 @@ class Gem::Version
     segments.pop    while segments.size > 2
     segments.push 0 while segments.size < 2
 
-    "~> #{segments.join(".")}"
+    recommendation = "~> #{segments.join(".")}"
+    recommendation += ".a" if prerelease?
+    recommendation
   end
 
   ##

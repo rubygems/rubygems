@@ -72,12 +72,12 @@ rescue LoadError
 end
 
 begin
-  gem "rubocop", "~> 0.54.0"
+  gem "rubocop", "~> 0.58.1"
   require "rubocop/rake_task"
 
   RuboCop::RakeTask.new
 rescue LoadError
-  task(:rubocop) { abort "Install the rubocop gem (~> 0.54.0) to run a static analysis" }
+  task(:rubocop) { abort "Install the rubocop gem (~> 0.58.1) to run a static analysis" }
 end
 
 # --------------------------------------------------------------------

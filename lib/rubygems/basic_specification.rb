@@ -152,7 +152,7 @@ class Gem::BasicSpecification
   # The path to the data directory for this gem.
 
   def datadir
-# TODO: drop the extra ", gem_name" which is uselessly redundant
+    # TODO: drop the extra ", gem_name" which is uselessly redundant
     File.expand_path(File.join(gems_dir, full_name, "data", name)).untaint
   end
 

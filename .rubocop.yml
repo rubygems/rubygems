@@ -3,6 +3,9 @@ AllCops:
   Exclude:
     - 'bundler/**/*'
 
+Layout/CommentIndentation:
+  Enabled: true
+
 Layout/IndentationConsistency:
   Enabled: true
 

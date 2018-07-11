@@ -45,7 +45,7 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
   def test_doc
     @cmd.handle_options %w[--doc]
 
-    assert_equal %w[ri], @cmd.options[:document].sort
+    assert_equal %w[], @cmd.options[:document].sort
   end
 
   def test_doc_rdoc
@@ -73,7 +73,7 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
   def test_document
     @cmd.handle_options %w[--document]
 
-    assert_equal %w[ri], @cmd.options[:document].sort
+    assert_equal %w[], @cmd.options[:document].sort
   end
 
   def test_document_no

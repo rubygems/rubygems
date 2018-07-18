@@ -141,30 +141,6 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
       warning_messages << "prerelease dependency on #{dep} is not recommended" if
           prerelease_dep && !version.prerelease?
 
-      overly_strict = dep.requirement.requirements.length == 1 &&
-          dep.requirement.requirements.any? do |op, version|
-            op == '~>' and
-                not version.prerelease? and
-                version.segments.length > 2 and
-                version.segments.first != 0
-          end
-
-      if overly_strict then
-        _, dep_version = dep.requirement.requirements.first
-
-        base = dep_version.segments.first 2
-        upper_bound = dep_version.segments.first(dep_version.segments.length - 1)
-        upper_bound[-1] += 1
-
-        warning_messages << <<-WARNING
-pessimistic dependency on #{dep} may be overly strict
-  if #{dep.name} is semantically versioned, use:
-    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}', '>= #{dep_version}'
-  if #{dep.name} is not semantically versioned, you can bypass this warning with:
-    add_#{dep.type}_dependency '#{dep.name}', '>= #{dep_version}', '< #{upper_bound.join '.'}.a'
-        WARNING
-      end
-
       open_ended = dep.requirement.requirements.all? do |op, version|
         not version.prerelease? and (op == '>' or op == '>=')
       end

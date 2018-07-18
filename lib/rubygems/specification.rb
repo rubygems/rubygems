@@ -2653,19 +2653,14 @@ class Gem::Specification < Gem::BasicSpecification
   # Raises InvalidSpecificationException if the spec does not pass the
   # checks..
 
-  def validate packaging = true
-    @warnings = 0
+  def validate packaging = true, strict = false
     require 'rubygems/user_interaction'
     extend Gem::UserInteraction
     normalize
 
     validation_policy = Gem::SpecificationPolicy.new(self)
     validation_policy.packaging = packaging
-    validation_policy.validate
-  ensure
-    if $! or @warnings > 0 then
-      alert_warning "See http://guides.rubygems.org/specification-reference/ for help"
-    end
+    validation_policy.validate(strict)
   end
 
   def keep_only_files_and_directories
@@ -2750,12 +2745,6 @@ class Gem::Specification < Gem::BasicSpecification
     end
 
     @installed_by_version ||= nil
-  end
-
-  def warning statement # :nodoc:
-    @warnings += 1
-
-    alert_warning statement
   end
 
   def raw_require_paths # :nodoc:

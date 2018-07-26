@@ -49,7 +49,7 @@ class TestGemVersion < Gem::TestCase
 
     expected = "nil versions are discouraged and will be deprecated in Rubygems 4\n"
     assert_output nil, expected do
-      assert_equal false, Gem::Version.correct?(nil)
+      Gem::Version.correct?(nil)
     end
   end
 

@@ -120,6 +120,40 @@ module Gem::GemcutterUtilities
   end
 
   ##
+  # Fetch user's multifactor authentication settings and return if an extra
+  # OTP code is needed.
+
+  def need_otp?
+    return false if options[:suppress_mfa]
+    unless instance_variable_defined? :@mfa_level
+      response = rubygems_api_request(:get, 'api/v1/multifactor_auth') do |request|
+        request.add_field 'Authorization', api_key
+      end
+
+      # For compatibility to Gemcutters without mfa support
+      @mfa_level = case response
+                   when Net::HTTPNotFound
+                     'no_mfa'
+                   else
+                     with_response(response) { |resp| resp.body }
+                   end
+    end
+
+    @mfa_level == 'mfa_login_and_write'
+  end
+
+  ##
+  # Require user for extra OTP code if multifactor authentication is enabled.
+
+  def run_mfa_check
+    return unless need_otp?
+    unless options[:otp]
+      say 'This command needs an extra OTP code for multifactor authentication.'
+      options[:otp] = ask 'Code: '
+    end
+  end
+
+  ##
   # Retrieves the pre-configured API key +key+ or terminates interaction with
   # an error.
 

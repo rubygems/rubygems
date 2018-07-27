@@ -41,6 +41,10 @@ command.  For further discussion see the help for the yank command.
       @user_defined_host = true
     end
 
+    add_option('--otp CODE', 'Digit code for multifactor authentication') do |value, options|
+      options[:otp] = value
+    end
+
     @host = nil
   end
 
@@ -68,6 +72,7 @@ command.  For further discussion see the help for the yank command.
             end
 
     sign_in @host
+    run_mfa_check
 
     send_gem(gem_name)
   end
@@ -118,6 +123,7 @@ You can upgrade or downgrade to the latest release version with:
       request.add_field "Content-Length", request.body.size
       request.add_field "Content-Type",   "application/octet-stream"
       request.add_field "Authorization",  api_key
+      request.add_field "OTP", options[:otp] if need_otp?
     end
 
     with_response response

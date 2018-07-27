@@ -51,6 +51,8 @@ class TestGemCommandsPushCommand < Gem::TestCase
       @cmd.send_gem(@path)
     end
 
+    @cmd.options[:suppress_mfa] = true
+
     assert_match %r{Pushing gem to #{@host}...}, @ui.output
 
     assert_equal Net::HTTP::Post, @fetcher.last_request.class
@@ -67,6 +69,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     @fetcher.data["#{Gem.host}/api/v1/gems"] = [@response, 200, 'OK']
 
     @cmd.options[:args] = [@path]
+    @cmd.options[:suppress_mfa] = true
 
     @cmd.execute
 
@@ -86,6 +89,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
     @cmd.options[:host] = host
     @cmd.options[:args] = [@path]
+    @cmd.options[:suppress_mfa] = true
 
     @cmd.execute
 
@@ -119,6 +123,8 @@ class TestGemCommandsPushCommand < Gem::TestCase
     Gem.configuration.disable_default_gem_server = true
     response = "You must specify a gem server"
 
+    @cmd.options[:suppress_mfa] = true
+
     assert_raises Gem::MockGemUi::TermError do
       use_ui @ui do
         @cmd.send_gem(@path)
@@ -133,6 +139,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     Gem.configuration.disable_default_gem_server = true
     @response = "Successfully registered gem: freewill (1.0.0)"
     @fetcher.data["#{@host}/api/v1/gems"]  = [@response, 200, 'OK']
+    @cmd.options[:suppress_mfa] = true
 
     send_battery
   end
@@ -145,6 +152,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     end
 
     @api_key = "EYKEY"
+    @cmd.options[:suppress_mfa] = true
 
     keys = {
       :rubygems_api_key => 'KEY',
@@ -168,6 +176,8 @@ class TestGemCommandsPushCommand < Gem::TestCase
     @response = "Successfully registered gem: freewill (1.0.0)"
     @fetcher.data["#{@host}/api/v1/gems"]  = [@response, 200, 'OK']
 
+    @cmd.options[:suppress_mfa] = true
+
     send_battery
   end
 
@@ -179,6 +189,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     end
 
     @api_key = "PRIVKEY"
+    @cmd.options[:suppress_mfa] = true
 
     keys = {
       :rubygems_api_key => 'KEY',
@@ -207,6 +218,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     end
 
     @api_key = "DOESNTMATTER"
+    @cmd.options[:suppress_mfa] = true
 
     keys = {
       :rubygems_api_key => @api_key,
@@ -230,6 +242,8 @@ class TestGemCommandsPushCommand < Gem::TestCase
       spec.metadata['allowed_push_host'] = "https://privategemserver.example"
     end
 
+    @cmd.options[:suppress_mfa] = true
+
     response = %{ERROR:  "#{@host}" is not allowed by the gemspec, which only allows "https://privategemserver.example"}
 
     assert_raises Gem::MockGemUi::TermError do
@@ -248,6 +262,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     end
 
     @api_key = "PRIVKEY"
+    @cmd.options[:suppress_mfa] = true
 
     keys = {
       :rubygems_api_key => 'KEY',
@@ -280,6 +295,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     end
 
     api_key = "PRIVKEY"
+    @cmd.options[:suppress_mfa] = true
 
     keys = {
       host => api_key
@@ -312,6 +328,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
   def test_raises_error_with_no_arguments
     def @cmd.sign_in(*); end
+    @cmd.options[:suppress_mfa] = true
     assert_raises Gem::CommandLineError do
       @cmd.execute
     end
@@ -321,6 +338,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     response = "You don't have permission to push to this gem"
     @fetcher.data["#{@host}/api/v1/gems"] = [response, 403, 'Forbidden']
     @cmd.instance_variable_set :@host, @host
+    @cmd.options[:suppress_mfa] = true
 
     assert_raises Gem::MockGemUi::TermError do
       use_ui @ui do
@@ -340,6 +358,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     Gem.configuration.load_api_keys
 
     @cmd.handle_options %w(-k other)
+    @cmd.options[:suppress_mfa] = true
     @cmd.instance_variable_set :@host, @host
     @cmd.send_gem(@path)
 

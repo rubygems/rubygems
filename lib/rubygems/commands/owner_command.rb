@@ -45,12 +45,18 @@ permission to.
                '  (e.g. https://rubygems.org)' do |value, options|
       options[:host] = value
     end
+
+    add_option '--otp CODE',
+               'Digit code for multifactor authentication' do |value, options|
+      options[:otp] = value
+    end
   end
 
   def execute
     @host = options[:host]
 
     sign_in
+    run_mfa_check
     name = get_one_gem_name
 
     add_owners    name, options[:add]
@@ -87,6 +93,7 @@ permission to.
         response = rubygems_api_request method, "api/v1/gems/#{name}/owners" do |request|
           request.set_form_data 'email' => owner
           request.add_field "Authorization", api_key
+          request.add_field "OTP", options[:otp] if need_otp?
         end
 
         action = method == :delete ? "Removing" : "Adding"

@@ -187,6 +187,8 @@ class Gem::Installer
     @package.prog_mode = options[:prog_mode]
     @package.data_mode = options[:data_mode]
 
+    @bin_dir = options[:bin_dir] if options[:bin_dir]
+
     if options[:user_install] and not options[:unpack] then
       @gem_home = Gem.user_dir
       @bin_dir = Gem.bindir gem_home unless options[:bin_dir]

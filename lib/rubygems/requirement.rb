@@ -21,7 +21,8 @@ class Gem::Requirement
     "<"  =>  lambda { |v, r| v <  r },
     ">=" =>  lambda { |v, r| v >= r },
     "<=" =>  lambda { |v, r| v <= r },
-    "~>" =>  lambda { |v, r| v >= r && v.release < r.bump }
+    "~>" =>  lambda { |v, r| v >= r && v.release < r.bump },
+    "^"  =>  lambda { |v, r| v >= r && v.release < r.semver_major_bump },
   }
 
   SOURCE_SET_REQUIREMENT = Struct.new(:for_lockfile).new "!" # :nodoc:

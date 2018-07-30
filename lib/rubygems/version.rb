@@ -233,6 +233,18 @@ class Gem::Version
               end
   end
 
+  def semver_major_bump
+    @semver_major_bump ||= begin
+                             segments = self.segments
+                             segments.pop while segments.any? { |s| String === s }
+                             first_non_zero_index = segments.index(&:nonzero?) || 0
+                             segments.slice!(first_non_zero_index.succ..-1)
+
+                             segments[-1] = segments[-1].succ
+                             self.class.new segments.join(".")
+                           end
+  end
+
   ##
   # A Version is only eql? to another version if it's specified to the
   # same precision. Version "1.0" is not the same as version "1".

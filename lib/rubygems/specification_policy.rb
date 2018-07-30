@@ -141,6 +141,8 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
       warning_messages << "prerelease dependency on #{dep} is not recommended" if
           prerelease_dep && !version.prerelease?
 
+      error_messages << "caret (^) dependency on #{dep} is not yet allowed in the gemspec" if dep.requirement.requirements.any? { |r| r.first == "^" }
+
       open_ended = dep.requirement.requirements.all? do |op, version|
         not version.prerelease? and (op == '>' or op == '>=')
       end

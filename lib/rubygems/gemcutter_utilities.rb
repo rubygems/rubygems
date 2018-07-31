@@ -130,7 +130,7 @@ module Gem::GemcutterUtilities
         request.add_field 'Authorization', api_key
       end
 
-      # For compatibility to Gemcutters without mfa support
+      # For compatibility to servers without mfa support
       @mfa_level = case response
                    when Net::HTTPNotFound
                      'no_mfa'

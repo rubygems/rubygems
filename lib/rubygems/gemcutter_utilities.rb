@@ -120,10 +120,10 @@ module Gem::GemcutterUtilities
   end
 
   ##
-  # Fetch user's multifactor authentication settings and return if an extra
-  # OTP code is needed.
+  # Fetch user's multifactor authentication settings and return if extra digit
+  # code is needed.
 
-  def need_otp?
+  def need_mfa?
     return false if options[:suppress_mfa]
     unless instance_variable_defined? :@mfa_level
       response = rubygems_api_request(:get, 'api/v1/multifactor_auth') do |request|
@@ -143,13 +143,13 @@ module Gem::GemcutterUtilities
   end
 
   ##
-  # Require user for extra OTP code if multifactor authentication is enabled.
+  # Require user for digit code if multifactor authentication is enabled.
 
   def check_mfa
-    return unless need_otp?
-    unless options[:otp]
-      say 'This command needs an extra OTP code for multifactor authentication.'
-      options[:otp] = ask 'Code: '
+    return unless need_mfa?
+    unless options[:mfa]
+      say 'This command needs digit code for multifactor authentication.'
+      options[:mfa] = ask 'Code: '
     end
   end
 

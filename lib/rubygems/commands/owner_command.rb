@@ -46,9 +46,9 @@ permission to.
       options[:host] = value
     end
 
-    add_option '--otp CODE',
+    add_option '--mfa CODE',
                'Digit code for multifactor authentication' do |value, options|
-      options[:otp] = value
+      options[:mfa] = value
     end
   end
 
@@ -93,7 +93,7 @@ permission to.
         response = rubygems_api_request method, "api/v1/gems/#{name}/owners" do |request|
           request.set_form_data 'email' => owner
           request.add_field "Authorization", api_key
-          request.add_field "OTP", options[:otp] if need_otp?
+          request.add_field "OTP", options[:mfa] if need_mfa?
         end
 
         action = method == :delete ? "Removing" : "Adding"

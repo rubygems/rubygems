@@ -56,7 +56,7 @@ permission to.
     @host = options[:host]
 
     sign_in
-    run_mfa_check
+    check_mfa
     name = get_one_gem_name
 
     add_owners    name, options[:add]

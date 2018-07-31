@@ -72,7 +72,7 @@ command.  For further discussion see the help for the yank command.
             end
 
     sign_in @host
-    run_mfa_check
+    check_mfa
 
     send_gem(gem_name)
   end

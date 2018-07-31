@@ -145,7 +145,7 @@ module Gem::GemcutterUtilities
   ##
   # Require user for extra OTP code if multifactor authentication is enabled.
 
-  def run_mfa_check
+  def check_mfa
     return unless need_otp?
     unless options[:otp]
       say 'This command needs an extra OTP code for multifactor authentication.'

@@ -170,7 +170,9 @@ class Gem::Version
   # True if the +version+ string matches RubyGems' requirements.
 
   def self.correct? version
-    warn "nil versions are discouraged and will be deprecated in Rubygems 4" if version.nil?
+    unless Gem::Deprecate.skip
+      warn "nil versions are discouraged and will be deprecated in Rubygems 4" if version.nil?
+    end
 
     !!(version.to_s =~ ANCHORED_VERSION_PATTERN)
   end

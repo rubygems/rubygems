@@ -33,16 +33,13 @@ command.  For further discussion see the help for the yank command.
 
     add_proxy_option
     add_key_option
+    add_mfa_option
 
     add_option('--host HOST',
                'Push to another gemcutter-compatible host',
                '  (e.g. https://rubygems.org)') do |value, options|
       options[:host] = value
       @user_defined_host = true
-    end
-
-    add_option('--mfa CODE', 'Digit code for multifactor authentication') do |value, options|
-      options[:mfa] = value
     end
 
     @host = nil

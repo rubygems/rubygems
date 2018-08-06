@@ -30,6 +30,7 @@ permission to.
     super 'owner', 'Manage gem owners of a gem on the push server'
     add_proxy_option
     add_key_option
+    add_mfa_option
     defaults.merge! :add => [], :remove => []
 
     add_option '-a', '--add EMAIL', 'Add an owner' do |value, options|
@@ -44,11 +45,6 @@ permission to.
                'Use another gemcutter-compatible host',
                '  (e.g. https://rubygems.org)' do |value, options|
       options[:host] = value
-    end
-
-    add_option '--mfa CODE',
-               'Digit code for multifactor authentication' do |value, options|
-      options[:mfa] = value
     end
   end
 

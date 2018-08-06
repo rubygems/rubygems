@@ -25,6 +25,16 @@ module Gem::GemcutterUtilities
   end
 
   ##
+  # Add the --mfa option
+
+  def add_mfa_option
+    add_option('--mfa CODE',
+               'Digit code for multifactor authentication') do |value, options|
+      options[:mfa] = value
+    end
+  end
+
+  ##
   # The API key from the command options or from the user's configuration.
 
   def api_key

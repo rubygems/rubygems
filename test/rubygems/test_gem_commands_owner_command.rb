@@ -129,7 +129,7 @@ EOF
   def test_add_owners
     response = "Owner added successfully."
     @stub_fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners"] = [response, 200, 'OK']
-    @cmd.options[:suppress_mfa] = true
+    @cmd.instance_variable_set :@mfa_level, 'no_mfa'
 
     use_ui @stub_ui do
       @cmd.add_owners("freewill", ["user-new1@example.com"])
@@ -145,7 +145,7 @@ EOF
   def test_add_owners_denied
     response = "You don't have permission to push to this gem"
     @stub_fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners"] = [response, 403, 'Forbidden']
-    @cmd.options[:suppress_mfa] = true
+    @cmd.instance_variable_set :@mfa_level, 'no_mfa'
 
     use_ui @stub_ui do
       @cmd.add_owners("freewill", ["user-new1@example.com"])
@@ -162,7 +162,7 @@ EOF
     @stub_fetcher.data["#{host}/api/v1/gems/freewill/owners.yaml"] = [show_owners_response, 200, 'OK']
 
     @cmd.handle_options %W[--host #{host} --add user-new1@example.com freewill]
-    @cmd.options[:suppress_mfa] = true
+    @cmd.instance_variable_set :@mfa_level, 'no_mfa'
 
     use_ui @stub_ui do
       @cmd.execute
@@ -183,7 +183,7 @@ EOF
 
     @cmd.handle_options %w(-k other)
     @cmd.add_owners('freewill', ['user-new1@example.com'])
-    @cmd.options[:suppress_mfa] = true
+    @cmd.instance_variable_set :@mfa_level, 'no_mfa'
 
     assert_equal '701229f217cdf23b1344c7b4b54ca97', @stub_fetcher.last_request['Authorization']
   end
@@ -191,7 +191,7 @@ EOF
   def test_remove_owners
     response = "Owner removed successfully."
     @stub_fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners"] = [response, 200, 'OK']
-    @cmd.options[:suppress_mfa] = true
+    @cmd.instance_variable_set :@mfa_level, 'no_mfa'
 
     use_ui @stub_ui do
       @cmd.remove_owners("freewill", ["user-remove1@example.com"])
@@ -207,7 +207,7 @@ EOF
   def test_remove_owners_denied
     response = "You don't have permission to push to this gem"
     @stub_fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners"] = [response, 403, 'Forbidden']
-    @cmd.options[:suppress_mfa] = true
+    @cmd.instance_variable_set :@mfa_level, 'no_mfa'
 
     use_ui @stub_ui do
       @cmd.remove_owners("freewill", ["user-remove1@example.com"])
@@ -226,7 +226,7 @@ EOF
 
     @cmd.handle_options %w(-k other)
     @cmd.remove_owners('freewill', ['user-remove1@example.com'])
-    @cmd.options[:suppress_mfa] = true
+    @cmd.instance_variable_set :@mfa_level, 'no_mfa'
 
     assert_equal '701229f217cdf23b1344c7b4b54ca97', @stub_fetcher.last_request['Authorization']
   end
@@ -234,7 +234,7 @@ EOF
   def test_remove_owners_missing
     response = 'Owner could not be found.'
     @stub_fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners"] = [response, 404, 'Not Found']
-    @cmd.options[:suppress_mfa] = true
+    @cmd.instance_variable_set :@mfa_level, 'no_mfa'
 
     use_ui @stub_ui do
       @cmd.remove_owners("freewill", ["missing@example"])

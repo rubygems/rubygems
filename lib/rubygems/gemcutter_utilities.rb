@@ -134,7 +134,6 @@ module Gem::GemcutterUtilities
   # code is needed.
 
   def need_mfa?
-    return false if options[:suppress_mfa]
     unless instance_variable_defined? :@mfa_level
       response = rubygems_api_request(:get, 'api/v1/multifactor_auth') do |request|
         request.add_field 'Authorization', api_key

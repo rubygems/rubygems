@@ -46,6 +46,11 @@ class TestGemVersion < Gem::TestCase
   def test_class_correct
     assert_equal true,  Gem::Version.correct?("5.1")
     assert_equal false, Gem::Version.correct?("an incorrect version")
+
+    expected = "nil versions are discouraged and will be deprecated in Rubygems 4\n"
+    assert_output nil, expected do
+      Gem::Version.correct?(nil)
+    end
   end
 
   def test_class_new_subclass

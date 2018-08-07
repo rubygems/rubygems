@@ -72,5 +72,6 @@ module Gem::VersionOption
         options[:explicit_prerelease]
     end
   end
+
 end
 

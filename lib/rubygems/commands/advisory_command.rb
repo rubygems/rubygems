@@ -7,6 +7,7 @@ require 'rubygems/gemcutter_utilities'
 
 class Gem::Commands::AdvisoryCommand < Gem::Command
   include Gem::VersionOption
+  include Gem::GemcutterUtilities
 
   def initialize
     super 'advisory', 'add advisories to gem versions'
@@ -30,7 +31,7 @@ either unusable or risky to use. The risk can or cannot be a security issue.
   end
 
   def usage # :nodoc:
-    "gem advisory GEM [options]"
+    "#{program_name} advisory GEM -v VERSION [-p PLATFORM]"
   end
 
   def execute
@@ -53,16 +54,29 @@ either unusable or risky to use. The risk can or cannot be a security issue.
     title = ask "Title:"
     description = ask "Description:"
     url = ask "Url:"
+    cve = ask "Cve:"
     ask_yes_no("Are you sure you want to proceed adding the vulnerablility for #{gem_name}-#{version}?",true)
-    say "Recording advisory for #{gem_name}-#{version} ..."
-    response = {} # replace with the request to rubygems.org API
-    say = response
+    say "Recording advisory for #{gem_name}-#{version} ..."    
+    response = rubygems_api_request(:post, 'api/v1/gems/advisory', host) do |request|
+      request.add_field("Authorization",   api_key)
+
+      data = {
+        'gem_name' => gem_name,
+        'version' => version,
+        'url' => url,
+        'title' => title,
+        'description' => description,
+        'cve' => cve,
+      }
+      data['platform'] = platform if platform
+
+      request.set_form_data data
+    end
+    say response.body
   end
 
   def get_version_from_requirements(requirements)
-    requirements.requirements.first[1].version
-  rescue
-    nil
+    requirements ? requirements.requirements.first[1].version : nil
   end
 
   def get_platform_from_requirements(requirements)

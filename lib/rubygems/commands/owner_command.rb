@@ -52,7 +52,6 @@ permission to.
     @host = options[:host]
 
     sign_in
-    check_mfa
     name = get_one_gem_name
 
     add_owners    name, options[:add]
@@ -89,7 +88,16 @@ permission to.
         response = rubygems_api_request method, "api/v1/gems/#{name}/owners" do |request|
           request.set_form_data 'email' => owner
           request.add_field "Authorization", api_key
-          request.add_field "OTP", options[:mfa] if need_mfa?
+          request.add_field "OTP", options[:mfa] if options[:mfa]
+        end
+
+        if need_mfa? response
+          check_mfa
+          response = rubygems_api_request method, "api/v1/gems/#{name}/owners" do |request|
+            request.set_form_data 'email' => owner
+            request.add_field "Authorization", api_key
+            request.add_field "OTP", options[:mfa]
+          end
         end
 
         action = method == :delete ? "Removing" : "Adding"

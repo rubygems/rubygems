@@ -69,7 +69,6 @@ command.  For further discussion see the help for the yank command.
             end
 
     sign_in @host
-    check_mfa
 
     send_gem(gem_name)
   end
@@ -120,7 +119,18 @@ You can upgrade or downgrade to the latest release version with:
       request.add_field "Content-Length", request.body.size
       request.add_field "Content-Type",   "application/octet-stream"
       request.add_field "Authorization",  api_key
-      request.add_field "OTP", options[:mfa] if need_mfa?
+      request.add_field "OTP", options[:mfa] if options[:mfa]
+    end
+
+    if need_mfa? response
+      check_mfa
+      response = rubygems_api_request(*args) do |request|
+        request.body = Gem.read_binary name
+        request.add_field "Content-Length", request.body.size
+        request.add_field "Content-Type",   "application/octet-stream"
+        request.add_field "Authorization",  api_key
+        request.add_field "OTP", options[:mfa]
+      end
     end
 
     with_response response

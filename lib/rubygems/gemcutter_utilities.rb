@@ -123,39 +123,25 @@ module Gem::GemcutterUtilities
       request.basic_auth email, password
     end
 
+    if need_mfa? response
+      check_mfa
+      response = rubygems_api_request(:get, "api/v1/api_key", sign_in_host) do |request|
+        request.basic_auth email, password
+        request.add_field "OTP", options[:mfa]
+      end
+    end
+
     with_response response do |resp|
       say "Signed in."
+      options.delete :mfa
       set_api_key host, resp.body
     end
-  end
-
-  ##
-  # Fetch user's multifactor authentication settings and return if extra digit
-  # code is needed.
-
-  def need_mfa?
-    unless instance_variable_defined? :@mfa_level
-      response = rubygems_api_request(:get, 'api/v1/multifactor_auth') do |request|
-        request.add_field 'Authorization', api_key
-      end
-
-      # For compatibility to servers without mfa support
-      @mfa_level = case response
-                   when Net::HTTPNotFound
-                     'no_mfa'
-                   else
-                     with_response(response) { |resp| resp.body }
-                   end
-    end
-
-    @mfa_level == 'mfa_login_and_write'
   end
 
   ##
   # Require user for digit code if multifactor authentication is enabled.
 
   def check_mfa
-    return unless need_mfa?
     unless options[:mfa]
       say 'This command needs digit code for multifactor authentication.'
       options[:mfa] = ask 'Code: '
@@ -197,6 +183,14 @@ module Gem::GemcutterUtilities
       say message
       terminate_interaction 1 # TODO: question this
     end
+  end
+
+  ##
+  # Returns whether the user has enabled multifactor authentication from
+  # +response+ text.
+
+  def need_mfa? response
+    response.kind_of?(Net::HTTPUnauthorized) && response.body.start_with?('You have enabled multifactor authentication')
   end
 
   def set_api_key host, key

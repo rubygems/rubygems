@@ -85,19 +85,11 @@ permission to.
   def manage_owners method, name, owners
     owners.each do |owner|
       begin
-        response = rubygems_api_request method, "api/v1/gems/#{name}/owners" do |request|
-          request.set_form_data 'email' => owner
-          request.add_field "Authorization", api_key
-          request.add_field "OTP", options[:mfa] if options[:mfa]
-        end
+        response = send_owner_request(method, name, owner)
 
         if need_mfa? response
           check_mfa
-          response = rubygems_api_request method, "api/v1/gems/#{name}/owners" do |request|
-            request.set_form_data 'email' => owner
-            request.add_field "Authorization", api_key
-            request.add_field "OTP", options[:mfa]
-          end
+          response = send_owner_request(method, name, owner, true)
         end
 
         action = method == :delete ? "Removing" : "Adding"
@@ -106,6 +98,16 @@ permission to.
       rescue
         # ignore
       end
+    end
+  end
+
+  private
+
+  def send_owner_request(method, name, owner, use_mfa = false)
+    rubygems_api_request method, "api/v1/gems/#{name}/owners" do |request|
+      request.set_form_data 'email' => owner
+      request.add_field "Authorization", api_key
+      request.add_field "OTP", options[:mfa] if use_mfa
     end
   end
 

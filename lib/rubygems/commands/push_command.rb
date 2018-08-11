@@ -114,29 +114,27 @@ You can upgrade or downgrade to the latest release version with:
 
     say "Pushing gem to #{@host || Gem.host}..."
 
-    response = rubygems_api_request(*args) do |request|
-      request.body = Gem.read_binary name
-      request.add_field "Content-Length", request.body.size
-      request.add_field "Content-Type",   "application/octet-stream"
-      request.add_field "Authorization",  api_key
-      request.add_field "OTP", options[:mfa] if options[:mfa]
-    end
+    response = send_push_request(name, args)
 
     if need_mfa? response
       check_mfa
-      response = rubygems_api_request(*args) do |request|
-        request.body = Gem.read_binary name
-        request.add_field "Content-Length", request.body.size
-        request.add_field "Content-Type",   "application/octet-stream"
-        request.add_field "Authorization",  api_key
-        request.add_field "OTP", options[:mfa]
-      end
+      response = send_push_request(name, args, true)
     end
 
     with_response response
   end
 
   private
+
+  def send_push_request(name, args, use_mfa = false)
+    rubygems_api_request(*args) do |request|
+      request.body = Gem.read_binary name
+      request.add_field "Content-Length", request.body.size
+      request.add_field "Content-Type",   "application/octet-stream"
+      request.add_field "Authorization",  api_key
+      request.add_field "OTP", options[:mfa] if use_mfa
+    end
+  end
 
   def get_hosts_for(name)
     gem_metadata = Gem::Package.new(name).spec.metadata

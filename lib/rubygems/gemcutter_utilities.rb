@@ -25,12 +25,12 @@ module Gem::GemcutterUtilities
   end
 
   ##
-  # Add the --mfa option
+  # Add the --otp option
 
-  def add_mfa_option
-    add_option('--mfa CODE',
+  def add_otp_option
+    add_option('--otp CODE',
                'Digit code for multifactor authentication') do |value, options|
-      options[:mfa] = value
+      options[:otp] = value
     end
   end
 
@@ -123,17 +123,17 @@ module Gem::GemcutterUtilities
       request.basic_auth email, password
     end
 
-    if need_mfa? response
-      check_mfa
+    if need_otp? response
+      check_otp
       response = rubygems_api_request(:get, "api/v1/api_key", sign_in_host) do |request|
         request.basic_auth email, password
-        request.add_field "OTP", options[:mfa]
+        request.add_field "OTP", options[:otp]
       end
     end
 
     with_response response do |resp|
       say "Signed in."
-      options.delete :mfa
+      options.delete :otp
       set_api_key host, resp.body
     end
   end
@@ -141,10 +141,10 @@ module Gem::GemcutterUtilities
   ##
   # Require user for digit code if multifactor authentication is enabled.
 
-  def check_mfa
-    unless options[:mfa]
+  def check_otp
+    unless options[:otp]
       say 'This command needs digit code for multifactor authentication.'
-      options[:mfa] = ask 'Code: '
+      options[:otp] = ask 'Code: '
     end
   end
 
@@ -189,7 +189,7 @@ module Gem::GemcutterUtilities
   # Returns whether the user has enabled multifactor authentication from
   # +response+ text.
 
-  def need_mfa? response
+  def need_otp? response
     response.kind_of?(Net::HTTPUnauthorized) && response.body.start_with?('You have enabled multifactor authentication')
   end
 

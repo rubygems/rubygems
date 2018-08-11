@@ -30,7 +30,7 @@ permission to.
     super 'owner', 'Manage gem owners of a gem on the push server'
     add_proxy_option
     add_key_option
-    add_mfa_option
+    add_otp_option
     defaults.merge! :add => [], :remove => []
 
     add_option '-a', '--add EMAIL', 'Add an owner' do |value, options|
@@ -87,8 +87,8 @@ permission to.
       begin
         response = send_owner_request(method, name, owner)
 
-        if need_mfa? response
-          check_mfa
+        if need_otp? response
+          check_otp
           response = send_owner_request(method, name, owner, true)
         end
 
@@ -103,11 +103,11 @@ permission to.
 
   private
 
-  def send_owner_request(method, name, owner, use_mfa = false)
+  def send_owner_request(method, name, owner, use_otp = false)
     rubygems_api_request method, "api/v1/gems/#{name}/owners" do |request|
       request.set_form_data 'email' => owner
       request.add_field "Authorization", api_key
-      request.add_field "OTP", options[:mfa] if use_mfa
+      request.add_field "OTP", options[:otp] if use_otp
     end
   end
 

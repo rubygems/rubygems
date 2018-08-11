@@ -13,7 +13,7 @@ class Gem::Commands::SigninCommand < Gem::Command
       options[:host] = value
     end
 
-    add_mfa_option
+    add_otp_option
 
   end
 

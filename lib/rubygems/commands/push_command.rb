@@ -33,7 +33,7 @@ command.  For further discussion see the help for the yank command.
 
     add_proxy_option
     add_key_option
-    add_mfa_option
+    add_otp_option
 
     add_option('--host HOST',
                'Push to another gemcutter-compatible host',
@@ -116,8 +116,8 @@ You can upgrade or downgrade to the latest release version with:
 
     response = send_push_request(name, args)
 
-    if need_mfa? response
-      check_mfa
+    if need_otp? response
+      check_otp
       response = send_push_request(name, args, true)
     end
 
@@ -126,13 +126,13 @@ You can upgrade or downgrade to the latest release version with:
 
   private
 
-  def send_push_request(name, args, use_mfa = false)
+  def send_push_request(name, args, use_otp = false)
     rubygems_api_request(*args) do |request|
       request.body = Gem.read_binary name
       request.add_field "Content-Length", request.body.size
       request.add_field "Content-Type",   "application/octet-stream"
       request.add_field "Authorization",  api_key
-      request.add_field "OTP", options[:mfa] if use_mfa
+      request.add_field "OTP", options[:otp] if use_otp
     end
   end
 

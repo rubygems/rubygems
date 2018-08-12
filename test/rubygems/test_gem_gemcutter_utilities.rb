@@ -199,6 +199,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
     assert_match 'This command needs digit code for multifactor authentication.', @sign_in_ui.output
     assert_match 'Code: ', @sign_in_ui.output
     assert_match 'Signed in.', @sign_in_ui.output
+    assert_equal '111111', @fetcher.last_request['OTP']
   end
 
   def test_sign_in_with_incorrect_otp_code
@@ -211,6 +212,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
     assert_match 'This command needs digit code for multifactor authentication.', @sign_in_ui.output
     assert_match 'Code: ', @sign_in_ui.output
     assert_match response, @sign_in_ui.output
+    assert_equal '111111', @fetcher.last_request['OTP']
   end
 
   def util_sign_in response, host = nil, args = [], extra_input = ''

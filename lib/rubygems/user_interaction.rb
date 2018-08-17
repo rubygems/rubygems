@@ -516,7 +516,7 @@ class Gem::StreamUI
     when nil, false
       SilentDownloadReporter.new(@outs, *args)
     else
-      VerboseDownloadReporter.new(@outs, *args)
+      ThreadedDownloadReporter.new(@outs, *args)
     end
   end
 

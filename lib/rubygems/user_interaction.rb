@@ -576,7 +576,10 @@ class Gem::StreamUI
     # The other arguments are ignored.
 
     def fetch(file_name, *args)
-      locked_puts "Fetching #{file_name}"
+      if @file_name.nil?
+        @file_name = file_name
+        locked_puts "Fetching #{@file_name}"
+      end
     end
 
     ##

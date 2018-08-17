@@ -34,7 +34,7 @@ either unusable or risky to use. The risk can or cannot be a security issue.
   end
 
   def usage # :nodoc:
-    "#{program_name} audit GEM -v VERSION [-p PLATFORM]"
+    "#{program_name} GEM -v VERSION [-p PLATFORM]"
   end
 
   def execute
@@ -57,7 +57,6 @@ either unusable or risky to use. The risk can or cannot be a security issue.
     gem_name = get_one_gem_name
 
     response = rubygems_api_request(:get, 'api/v1/gems/audit', host) do |request|
-      request.add_field("Authorization",   api_key)
 
       data = {
         'gem_name' => gem_name

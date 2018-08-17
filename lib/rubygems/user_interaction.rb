@@ -512,7 +512,7 @@ class Gem::StreamUI
   # Return a download reporter object chosen from the current verbosity
 
   def download_reporter(*args)
-    if [nil, false].include?(Gem.configuration.verbose) || @outs.tty == false
+    if [nil, false].include?(Gem.configuration.verbose) || !@outs.tty?
       SilentDownloadReporter.new(@outs, *args)
     else
       ThreadedDownloadReporter.new(@outs, *args)

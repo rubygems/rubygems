@@ -26,8 +26,8 @@ class Gem::Ext::RakeBuilder < Gem::Ext::Builder
 
     rake ||= Gem.default_exec_format % 'rake'
 
-    cmd = "#{rake} RUBYARCHDIR=#{dest_path} RUBYLIBDIR=#{dest_path}" # ENV is frozen
-
+    cmd = "#{rake} RUBYARCHDIR=#{dest_path} RUBYLIBDIR=#{dest_path}".dup # ENV is frozen
+    cmd << " #{args.join " "}" unless args.empty?
     run cmd, results
 
     results

@@ -47,7 +47,7 @@ class Gem::Commands::PristineCommand < Gem::Command
     end
 
     add_option('-n', '--bindir DIR',
-               'Directory where binary files are',
+               'Directory where executables are',
                'located') do |value, options|
       options[:bin_dir] = File.expand_path(value)
     end

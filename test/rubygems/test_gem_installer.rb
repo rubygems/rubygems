@@ -336,6 +336,9 @@ gem 'other', version
     bin_dir = Gem.win_platform? ? File.expand_path(ENV["WINDIR"]).upcase :
                                   "/usr/bin"
 
+    old_path = ENV["PATH"]
+    ENV["PATH"] = [ENV["PATH"], bin_dir].compact.join(File::PATH_SEPARATOR)
+
     options = {
       :bin_dir => bin_dir,
       :install_dir => "/non/existent"
@@ -350,6 +353,9 @@ gem 'other', version
     end
 
     assert_equal "", @ui.error
+
+  ensure
+    ENV["PATH"] = old_path
   end
 
   def test_generate_bin_script

@@ -779,7 +779,7 @@ TEXT
 @ECHO OFF
 @"%~dp0ruby.exe" "%~dpn0" %*
       TEXT
-    elsif bindir.downcase.start_with? (RbConfig::TOPDIR || File.dirname(rb_bindir)).downcase
+    elsif bindir.downcase.start_with?((RbConfig::TOPDIR || File.dirname(rb_bindir)).downcase)
       # stub within ruby folder, but not standard bin.  Not portable
       require 'pathname'
       from = Pathname.new bindir

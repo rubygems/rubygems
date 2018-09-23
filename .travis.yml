@@ -4,7 +4,8 @@ sudo: required
 branches:
   only:
     - master
-    - auto
+    - staging
+    - trying
     - /^[\d.]+$/
     - /.+-stable$/
 rvm:

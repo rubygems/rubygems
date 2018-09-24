@@ -90,7 +90,7 @@ class Gem::Specification < Gem::BasicSpecification
       'Now forward-compatible with future versions',
     ],
     3 => [
-       'Added Fixnum validation to the specification_version'
+      'Added Fixnum validation to the specification_version'
     ],
     4 => [
       'Added sandboxed freeform metadata to the specification version.'

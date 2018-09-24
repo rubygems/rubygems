@@ -272,10 +272,10 @@ open-ended dependency on #{dep} is not recommended
   def validate_array_attribute(field)
     val = self.send(field)
     klass = case field
-              when :dependencies then
-                Gem::Dependency
-              else
-                String
+            when :dependencies then
+              Gem::Dependency
+            else
+              String
             end
 
     unless Array === val and val.all? {|x| x.kind_of?(klass)} then

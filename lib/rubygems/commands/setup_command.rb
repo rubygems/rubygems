@@ -84,8 +84,8 @@ class Gem::Commands::SetupCommand < Gem::Command
 
     add_option '--[no-]regenerate-binstubs',
                'Regenerate gem binstubs' do |value, options|
-     options[:regenerate_binstubs] = value
-   end
+      options[:regenerate_binstubs] = value
+    end
 
     add_option('-E', '--[no-]env-shebang',
                'Rewrite executables with a shebang',

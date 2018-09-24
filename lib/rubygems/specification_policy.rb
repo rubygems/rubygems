@@ -257,9 +257,9 @@ open-ended dependency on #{dep} is not recommended
 
   def validate_platform
     case platform
-      when Gem::Platform, Gem::Platform::RUBY then # ok
-      else
-        error "invalid platform #{platform.inspect}, see Gem::Platform"
+    when Gem::Platform, Gem::Platform::RUBY then # ok
+    else
+      error "invalid platform #{platform.inspect}, see Gem::Platform"
     end
   end
 

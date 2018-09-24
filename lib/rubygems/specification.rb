@@ -260,22 +260,11 @@ class Gem::Specification < Gem::BasicSpecification
              ].flatten.compact.uniq.sort
   end
 
-  ######################################################################
-  # :section: Recommended gemspec attributes
-
   ##
-  # Singular writer for #authors
+  # A list of authors for this gem.
   #
-  # Usage:
-  #
-  #   spec.author = 'John Jones'
-
-  def author= o
-    self.authors = [o]
-  end
-
-  ##
-  # Sets the list of authors, ensuring it is an array.
+  # Alternatively, a single author can be specified by assigning a string to
+  # `spec.author`
   #
   # Usage:
   #
@@ -284,6 +273,9 @@ class Gem::Specification < Gem::BasicSpecification
   def authors= value
     @authors = Array(value).flatten.grep(String)
   end
+
+  ######################################################################
+  # :section: Recommended gemspec attributes
 
   ##
   # A long description of this gem
@@ -402,6 +394,17 @@ class Gem::Specification < Gem::BasicSpecification
 
   ######################################################################
   # :section: Optional gemspec attributes
+
+  ##
+  # Singular (alternative) writer for #authors
+  #
+  # Usage:
+  #
+  #   spec.author = 'John Jones'
+
+  def author= o
+    self.authors = [o]
+  end
 
   ##
   # The path in the gem for executable scripts.  Usually 'bin'

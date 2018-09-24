@@ -150,7 +150,7 @@ EOF
 
     extension ||= '' # I wish I knew why this line existed
     extension_dir =
-      File.expand_path File.join @gem_dir, File.dirname(extension)
+      File.expand_path File.join(@gem_dir, File.dirname(extension))
     lib_dir = File.join @spec.full_gem_path, @spec.raw_require_paths.first
 
     builder = builder_for extension

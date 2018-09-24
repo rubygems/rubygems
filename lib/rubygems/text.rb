@@ -70,9 +70,9 @@ module Gem::Text
       str2.each_char.each_with_index do |char2,j|
         cost = (char1 == char2) ? 0 : 1
         x = min3(
-             d[j+1] + 1, # insertion
-             e + 1,      # deletion
-             d[j] + cost # substitution
+              d[j+1] + 1, # insertion
+              e + 1,      # deletion
+              d[j] + cost # substitution
             )
         d[j] = e
         e = x

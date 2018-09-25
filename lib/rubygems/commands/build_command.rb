@@ -55,7 +55,16 @@ with gem spec:
         spec = Gem::Specification.load File.basename(gemspec)
 
         if spec then
-          Gem::Package.build spec, options[:force], options[:strict]
+          signer_options = {
+            expiration_length_days: Gem.configuration.cert_expiration_length_days
+          }
+
+          Gem::Package.build(
+            spec,
+            options[:force],
+            options[:strict],
+            signer_options
+          )
         else
           alert_error "Error loading gemspec. Aborting."
           terminate_interaction 1

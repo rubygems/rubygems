@@ -30,6 +30,15 @@ class Gem::Security::Signer
   attr_reader :digest_name # :nodoc:
 
   ##
+  # Gem::Security::Signer options
+
+  attr_reader :options
+
+  DEFAULT_OPTIONS = {
+    expiration_length_days: 365
+  }
+
+  ##
   # Attemps to re-sign an expired cert with a given private key
   def self.re_sign_cert(expired_cert, expired_cert_path, private_key)
     return unless expired_cert.not_after < Time.now
@@ -52,10 +61,12 @@ class Gem::Security::Signer
   # +chain+ containing X509 certificates, encoding certificates or paths to
   # certificates.
 
-  def initialize key, cert_chain, passphrase = nil
+  def initialize key, cert_chain, passphrase = nil, options = {}
     @cert_chain = cert_chain
     @key        = key
     @passphrase = passphrase
+    @options = options
+    @options.merge!(DEFAULT_OPTIONS)
 
     unless @key then
       default_key  = File.join Gem.default_key_path
@@ -130,7 +141,9 @@ class Gem::Security::Signer
     raise Gem::Security::Exception, 'no certs provided' if @cert_chain.empty?
 
     if @cert_chain.length == 1 and @cert_chain.last.not_after < Time.now then
-      re_sign_key
+      re_sign_key(
+        expiration_length: (Gem::Security::ONE_DAY * options[:expiration_length_days])
+      )
     end
 
     full_name = extract_name @cert_chain.last
@@ -154,7 +167,7 @@ class Gem::Security::Signer
   # be saved as ~/.gem/gem-public_cert.pem.expired.%Y%m%d%H%M%S where the
   # expiry time (not after) is used for the timestamp.
 
-  def re_sign_key # :nodoc:
+  def re_sign_key(expiration_length: Gem::Security::ONE_YEAR) # :nodoc:
     old_cert = @cert_chain.last
 
     disk_cert_path = File.join(Gem.default_cert_path)
@@ -174,7 +187,7 @@ class Gem::Security::Signer
       unless File.exist?(old_cert_path)
         Gem::Security.write(old_cert, old_cert_path)
 
-        cert = Gem::Security.re_sign(old_cert, @key)
+        cert = Gem::Security.re_sign(old_cert, @key, expiration_length)
 
         Gem::Security.write(cert, disk_cert_path)
 

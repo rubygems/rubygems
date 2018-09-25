@@ -45,6 +45,7 @@ class Gem::ConfigFile
   DEFAULT_VERBOSITY = true
   DEFAULT_UPDATE_SOURCES = true
   DEFAULT_CONCURRENT_DOWNLOADS = 8
+  DEFAULT_CERT_EXPIRATION_LENGTH_DAYS = 365
 
   ##
   # For Ruby packagers to set configuration defaults.  Set in
@@ -136,6 +137,11 @@ class Gem::ConfigFile
   attr_accessor :sources
 
   ##
+  # Expiration length to sign a certificate
+
+  attr_accessor :cert_expiration_length_days
+
+  ##
   # Path name of directory or file of openssl client certificate, used for remote https connection with client authentication
 
   attr_reader :ssl_client_cert
@@ -185,6 +191,7 @@ class Gem::ConfigFile
     @verbose = DEFAULT_VERBOSITY
     @update_sources = DEFAULT_UPDATE_SOURCES
     @concurrent_downloads = DEFAULT_CONCURRENT_DOWNLOADS
+    @cert_expiration_length_days = CERT_EXPIRATION_LENGTH_DAYS
 
     operating_system_config = Marshal.load Marshal.dump(OPERATING_SYSTEM_DEFAULTS)
     platform_config = Marshal.load Marshal.dump(PLATFORM_DEFAULTS)

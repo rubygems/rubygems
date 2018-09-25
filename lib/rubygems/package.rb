@@ -254,7 +254,7 @@ class Gem::Package
   ##
   # Builds this package based on the specification set by #spec=
 
-  def build skip_validation = false, strict_validation = false
+  def build skip_validation = false, strict_validation = false, signer_options
     raise ArgumentError, "skip_validation = true and strict_validation = true are incompatible" if skip_validation && strict_validation
 
     Gem.load_yaml
@@ -263,7 +263,7 @@ class Gem::Package
     @spec.mark_version
     @spec.validate true, strict_validation unless skip_validation
 
-    setup_signer
+    setup_signer(signer_options)
 
     @gem.with_write_io do |gem_io|
       Gem::Package::TarWriter.new gem_io do |gem|
@@ -521,10 +521,17 @@ EOM
   # Prepares the gem for signing and checksum generation.  If a signing
   # certificate and key are not present only checksum generation is set up.
 
-  def setup_signer
+  def setup_signer(signer_options)
     passphrase = ENV['GEM_PRIVATE_KEY_PASSPHRASE']
     if @spec.signing_key then
-      @signer = Gem::Security::Signer.new @spec.signing_key, @spec.cert_chain, passphrase
+      @signer =
+        Gem::Security::Signer.new(
+          @spec.signing_key,
+          @spec.cert_chain,
+          passphrase,
+          signer_options
+      )
+
       @spec.signing_key = nil
       @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_s }
     else

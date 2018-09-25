@@ -10,12 +10,6 @@ require_relative "current_ruby"
 
 module Bundler
   module SharedHelpers
-    def root
-      gemfile = find_gemfile
-      raise GemfileNotFound, "Could not locate Gemfile" unless gemfile
-      gemfile.parent
-    end
-
     def default_gemfile
       gemfile = find_gemfile
       raise GemfileNotFound, "Could not locate Gemfile" unless gemfile
@@ -31,16 +25,6 @@ module Bundler
       end
     end
 
-    def default_bundle_dir
-      bundle_dir = find_directory(".bundle")
-      return nil unless bundle_dir
-
-      global_bundle_dir = Bundler.user_home.join(".bundle")
-      return nil if bundle_dir == global_bundle_dir
-
-      bundle_dir
-    end
-
     def in_bundle?
       find_gemfile
     end
@@ -48,6 +32,18 @@ module Bundler
     def chdir(dir, &blk)
       Bundler.rubygems.ext_lock.synchronize do
         Dir.chdir dir, &blk
+      end
+    end
+
+    def find_gemfile
+      given = ENV["BUNDLE_GEMFILE"]
+      return expand(given) if given && !given.empty?
+      find_file(*gemfile_names)
+    end
+
+    def find_directory(*names, base: pwd)
+      search_up(*names, :base => base) do |dirname|
+        return dirname if dirname.directory?
       end
     end
 
@@ -214,12 +210,6 @@ module Bundler
       raise Bundler::PathError, message
     end
 
-    def find_gemfile
-      given = ENV["BUNDLE_GEMFILE"]
-      return expand(given) if given && !given.empty?
-      find_file(*gemfile_names)
-    end
-
     def gemfile_names
       ["gems.rb", "Gemfile"]
     end
@@ -230,15 +220,9 @@ module Bundler
       end
     end
 
-    def find_directory(*names)
-      search_up(*names) do |dirname|
-        return dirname if dirname.directory?
-      end
-    end
-
-    def search_up(*names)
+    def search_up(*names, base: pwd)
       previous = nil
-      current  = pwd.tap{|x| x.untaint if RUBY_VERSION < "2.7" }
+      current  = base.tap{|x| x.untaint if RUBY_VERSION < "2.7" }
 
       until !current.directory? || current == previous
         if ENV["BUNDLER_SPEC_RUN"]

@@ -281,13 +281,7 @@ module Bundler
     end
 
     def root
-      @root ||= begin
-                  SharedHelpers.root
-                rescue GemfileNotFound
-                  bundle_dir = default_bundle_dir
-                  raise GemfileNotFound, "Could not locate Gemfile or .bundle/ directory" unless bundle_dir
-                  bundle_dir.parent
-                end
+      @root ||= resolve_root
     end
 
     def app_config_path
@@ -450,8 +444,14 @@ EOF
       SharedHelpers.default_lockfile
     end
 
-    def default_bundle_dir
-      SharedHelpers.default_bundle_dir
+    def default_bundle_dir(base = Pathname.pwd)
+      bundle_dir = SharedHelpers.find_directory(".bundle", :base => base)
+      return nil unless bundle_dir
+
+      global_bundle_dir = Bundler.rubygems.user_home.join(".bundle")
+      return nil if bundle_dir == global_bundle_dir
+
+      bundle_dir
     end
 
     def system_bindir
@@ -605,7 +605,8 @@ EOF
       reset_rubygems!
     end
 
-    def reset_settings_and_root!
+    def reset_settings_and_root!(base)
+      @app_config_root = resolve_config_root(base)
       @settings = nil
       @root = nil
     end
@@ -619,6 +620,7 @@ EOF
       @definition = nil
       @load = nil
       @locked_gems = nil
+      @app_config_root = nil
       @root = nil
       @settings = nil
       @setup = nil
@@ -695,9 +697,20 @@ EOF
     end
 
     def app_config_root
-      root
-    rescue GemfileNotFound
-      Pathname.pwd
+      @app_config_root ||= resolve_config_root
+    end
+
+    def resolve_config_root(base = Pathname.pwd)
+      bundle_dir = default_bundle_dir(base) || SharedHelpers.find_gemfile
+
+      bundle_dir ? bundle_dir.parent : base
+    end
+
+    def resolve_root
+      bundle_dir = SharedHelpers.find_gemfile || default_bundle_dir
+      raise GemfileNotFound, "Could not locate Gemfile or .bundle/ directory" unless bundle_dir
+
+      bundle_dir.parent
     end
   end
 end

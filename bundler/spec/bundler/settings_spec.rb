@@ -127,7 +127,7 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
 
   describe "#temporary" do
     it "reset after used" do
-      allow(Bundler::SharedHelpers).to receive(:find_gemfile).and_return(bundled_app_gemfile)
+      allow(Pathname).to receive(:pwd).and_return(bundled_app)
 
       Bundler.settings.set_command_option :no_install, true
 

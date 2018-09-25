@@ -69,41 +69,6 @@ RSpec.describe Bundler::SharedHelpers do
     end
   end
 
-  describe "#default_bundle_dir" do
-    context ".bundle does not exist" do
-      it "returns nil" do
-        expect(subject.default_bundle_dir).to be_nil
-      end
-    end
-
-    context ".bundle is global .bundle" do
-      let(:global_rubygems_dir) { Pathname.new(bundled_app) }
-
-      before do
-        Dir.mkdir bundled_app(".bundle")
-        allow(Bundler.rubygems).to receive(:user_home).and_return(global_rubygems_dir)
-      end
-
-      it "returns nil" do
-        expect(subject.default_bundle_dir).to be_nil
-      end
-    end
-
-    context ".bundle is not global .bundle" do
-      let(:global_rubygems_dir)      { Pathname.new("/path/rubygems") }
-      let(:expected_bundle_dir_path) { Pathname.new("#{bundled_app}/.bundle") }
-
-      before do
-        Dir.mkdir bundled_app(".bundle")
-        allow(Bundler.rubygems).to receive(:user_home).and_return(global_rubygems_dir)
-      end
-
-      it "returns the .bundle path" do
-        expect(subject.default_bundle_dir).to eq(expected_bundle_dir_path)
-      end
-    end
-  end
-
   describe "#in_bundle?" do
     it "calls the find_gemfile method" do
       expect(subject).to receive(:find_gemfile)

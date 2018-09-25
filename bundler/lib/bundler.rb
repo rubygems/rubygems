@@ -301,7 +301,7 @@ module Bundler
         end
       end
 
-      root.join(app_config || ".bundle")
+      app_config_root.join(app_config || ".bundle")
     end
 
     def app_cache(custom_path = nil)
@@ -328,8 +328,6 @@ EOF
 
     def settings
       @settings ||= Settings.new(app_config_path)
-    rescue GemfileNotFound
-      @settings = Settings.new(Pathname.new(".bundle").expand_path)
     end
 
     # @return [Hash] Environment present before Bundler was activated
@@ -696,6 +694,12 @@ EOF
       yield
     ensure
       ENV.replace(backup)
+    end
+
+    def app_config_root
+      root
+    rescue GemfileNotFound
+      Pathname.pwd
     end
   end
 end

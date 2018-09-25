@@ -6,6 +6,12 @@ require 'rubygems/package'
 
 class TestGemCommandsBuildCommand < Gem::TestCase
 
+  CERT_FILE = cert_path 'public3072'
+  SIGNING_KEY = key_path 'private3072'
+
+  EXPIRED_CERT_FILE = cert_path 'expired'
+  PRIVATE_KEY_FILE  = key_path 'private'
+
   def setup
     super
 
@@ -221,9 +227,6 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     util_test_build_gem @gem
   end
 
-  CERT_FILE = cert_path 'public3072'
-  SIGNING_KEY = key_path 'private3072'
-
   def test_build_signed_gem
     skip 'openssl is missing' unless defined?(OpenSSL::SSL)
 
@@ -249,6 +252,50 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     gem = Gem::Package.new(File.join(@tempdir, spec.file_name),
                            Gem::Security::HighSecurity)
     assert gem.verify
+  end
+
+  def test_build_signed_gem_with_cert_expiration_length_days
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+
+    gem_path = File.join Gem.user_home, ".gem"
+    Dir.mkdir gem_path
+
+    trust_dir = Gem::Security.trust_dir
+
+    tmp_expired_cert_file = File.join gem_path, "gem-public_cert.pem"
+    File.write(tmp_expired_cert_file, File.read(EXPIRED_CERT_FILE))
+
+    tmp_private_key_file = File.join gem_path, "gem-private_key.pem"
+    File.write(tmp_private_key_file, File.read(PRIVATE_KEY_FILE))
+
+    spec = util_spec 'some_gem' do |s|
+      s.signing_key = tmp_private_key_file
+      s.cert_chain  = [tmp_expired_cert_file]
+    end
+
+    gemspec_file = File.join(@tempdir, spec.spec_name)
+
+    File.open gemspec_file, 'w' do |gs|
+      gs.write spec.to_ruby
+    end
+
+    @cmd.options[:args] = [gemspec_file]
+
+    Gem.configuration.cert_expiration_length_days = 28
+
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        @cmd.execute
+      end
+    end
+
+    re_signed_cert = OpenSSL::X509::Certificate.new(File.read(tmp_expired_cert_file))
+    cert_days_to_expire = (re_signed_cert.not_after - re_signed_cert.not_before).to_i / (24 * 60 * 60)
+
+    gem_file = File.join @tempdir, File.basename(spec.cache_file)
+
+    assert File.exist?(gem_file)
+    assert_equal(28, cert_days_to_expire)
   end
 
 end

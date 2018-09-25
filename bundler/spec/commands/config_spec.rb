@@ -71,6 +71,21 @@ RSpec.describe ".bundle/config" do
       expect(the_bundle).to include_gems "rack 1.0.0", :dir => bundled_app("omg")
     end
 
+    it "allows configuring Gemfile" do
+      FileUtils.mkdir_p bundled_app("omg/gmo")
+
+      gemfile bundled_app("omg/gmo/AnotherGemfile"), <<-G
+        source "#{file_uri_for(gem_repo1)}"
+      G
+
+      bundle "config set --local gemfile omg/gmo/AnotherGemfile"
+
+      bundle "install"
+
+      expect(out).to include("0 Gemfile dependencies")
+      expect(the_bundle).not_to include_gems "rack 1.0.0"
+    end
+
     it "is relative to the Gemfile if there's no previous configuration" do
       FileUtils.mkdir_p bundled_app("omg/gmo")
 
@@ -570,17 +585,33 @@ end
 
 RSpec.describe "setting gemfile via config" do
   context "when only the non-default Gemfile exists" do
-    it "persists the gemfile location to .bundle/config" do
+    before do
       gemfile bundled_app("NotGemfile"), <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem 'rack'
       G
 
       bundle "config set --local gemfile #{bundled_app("NotGemfile")}"
+    end
+
+    it "persists the gemfile location to .bundle/config" do
       expect(File.exist?(bundled_app(".bundle/config"))).to eq(true)
 
       bundle "config list"
       expect(out).to include("NotGemfile")
+    end
+
+    it "gets used when requiring bundler/setup" do
+      bundle :install
+      code = "puts $LOAD_PATH.count {|path| path =~ /rack/} == 1"
+
+      gemfile <<-G
+        source "#{file_uri_for(gem_repo1)}"
+      G
+
+      ruby code, :env => { "RUBYOPT" => "-r#{lib_dir}/bundler/setup" }
+
+      expect(out).to eq("true")
     end
   end
 end

@@ -55,7 +55,7 @@ module Bundler
     def initialize(*args)
       super
 
-      custom_gemfile = options[:gemfile] || Bundler.settings[:gemfile]
+      custom_gemfile = options[:gemfile]
       if custom_gemfile && !custom_gemfile.empty?
         expanded_custom_gemfile = Pathname.new(custom_gemfile).expand_path
         Bundler::SharedHelpers.set_env "BUNDLE_GEMFILE", expanded_custom_gemfile.to_s

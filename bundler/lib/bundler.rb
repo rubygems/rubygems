@@ -701,7 +701,7 @@ EOF
     end
 
     def resolve_config_root(base = Pathname.pwd)
-      bundle_dir = default_bundle_dir(base) || SharedHelpers.find_gemfile
+      bundle_dir = default_bundle_dir(base) || SharedHelpers.find_gemfile_if_empty(ENV["BUNDLE_GEMFILE"])
 
       bundle_dir ? bundle_dir.parent : base
     end

@@ -191,7 +191,7 @@ class Gem::ConfigFile
     @verbose = DEFAULT_VERBOSITY
     @update_sources = DEFAULT_UPDATE_SOURCES
     @concurrent_downloads = DEFAULT_CONCURRENT_DOWNLOADS
-    @cert_expiration_length_days = CERT_EXPIRATION_LENGTH_DAYS
+    @cert_expiration_length_days = DEFAULT_CERT_EXPIRATION_LENGTH_DAYS
 
     operating_system_config = Marshal.load Marshal.dump(OPERATING_SYSTEM_DEFAULTS)
     platform_config = Marshal.load Marshal.dump(PLATFORM_DEFAULTS)

@@ -119,12 +119,12 @@ class Gem::Package
   # Permission for other files
   attr_accessor :data_mode
 
-  def self.build spec, skip_validation = false, strict_validation = false, signer_options = {}
+  def self.build spec, skip_validation = false, strict_validation = false
     gem_file = spec.file_name
 
     package = new gem_file
     package.spec = spec
-    package.build skip_validation, strict_validation, signer_options
+    package.build skip_validation, strict_validation
 
     gem_file
   end
@@ -254,7 +254,7 @@ class Gem::Package
   ##
   # Builds this package based on the specification set by #spec=
 
-  def build skip_validation = false, strict_validation = false, signer_options = {}
+  def build skip_validation = false, strict_validation = false
     raise ArgumentError, "skip_validation = true and strict_validation = true are incompatible" if skip_validation && strict_validation
 
     Gem.load_yaml
@@ -263,7 +263,11 @@ class Gem::Package
     @spec.mark_version
     @spec.validate true, strict_validation unless skip_validation
 
-    setup_signer(signer_options)
+    setup_signer(
+      signer_options: {
+        expiration_length_days: Gem.configuration.cert_expiration_length_days
+      }
+    )
 
     @gem.with_write_io do |gem_io|
       Gem::Package::TarWriter.new gem_io do |gem|
@@ -521,7 +525,7 @@ EOM
   # Prepares the gem for signing and checksum generation.  If a signing
   # certificate and key are not present only checksum generation is set up.
 
-  def setup_signer(signer_options = {})
+  def setup_signer(signer_options: {})
     passphrase = ENV['GEM_PRIVATE_KEY_PASSPHRASE']
     if @spec.signing_key then
       @signer =

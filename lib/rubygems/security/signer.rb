@@ -49,7 +49,11 @@ class Gem::Security::Signer
 
     Gem::Security.write(expired_cert, new_expired_cert_path)
 
-    re_signed_cert = Gem::Security.re_sign(expired_cert, private_key)
+    re_signed_cert = Gem::Security.re_sign(
+      expired_cert,
+      private_key,
+      (Gem::Security::ONE_DAY * Gem.configuration.cert_expiration_length_days)
+    )
 
     Gem::Security.write(re_signed_cert, expired_cert_path)
 

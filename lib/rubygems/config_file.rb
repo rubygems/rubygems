@@ -209,15 +209,15 @@ class Gem::ConfigFile
     end
 
     # HACK these override command-line args, which is bad
-    @backtrace                  = @hash[:backtrace]                  if @hash.key? :backtrace
-    @bulk_threshold             = @hash[:bulk_threshold]             if @hash.key? :bulk_threshold
-    @home                       = @hash[:gemhome]                    if @hash.key? :gemhome
-    @path                       = @hash[:gempath]                    if @hash.key? :gempath
-    @update_sources             = @hash[:update_sources]             if @hash.key? :update_sources
-    @verbose                    = @hash[:verbose]                    if @hash.key? :verbose
-    @concurrent_downloads       = @hash[:concurrent_downloads]       if @hash.key? :concurrent_downloads
-    @disable_default_gem_server = @hash[:disable_default_gem_server] if @hash.key? :disable_default_gem_server
-    @sources                    = @hash[:sources]                    if @hash.key? :sources
+    @backtrace                   = @hash[:backtrace]                   if @hash.key? :backtrace
+    @bulk_threshold              = @hash[:bulk_threshold]              if @hash.key? :bulk_threshold
+    @home                        = @hash[:gemhome]                     if @hash.key? :gemhome
+    @path                        = @hash[:gempath]                     if @hash.key? :gempath
+    @update_sources              = @hash[:update_sources]              if @hash.key? :update_sources
+    @verbose                     = @hash[:verbose]                     if @hash.key? :verbose
+    @disable_default_gem_server  = @hash[:disable_default_gem_server]  if @hash.key? :disable_default_gem_server
+    @sources                     = @hash[:sources]                     if @hash.key? :sources
+    @cert_expiration_length_days = @hash[:cert_expiration_length_days] if @hash.key? :cert_expiration_length_days
 
     @ssl_verify_mode  = @hash[:ssl_verify_mode]  if @hash.key? :ssl_verify_mode
     @ssl_ca_cert      = @hash[:ssl_ca_cert]      if @hash.key? :ssl_ca_cert

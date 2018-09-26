@@ -69,8 +69,7 @@ class Gem::Security::Signer
     @cert_chain = cert_chain
     @key        = key
     @passphrase = passphrase
-    @options = options
-    @options.merge!(DEFAULT_OPTIONS)
+    @options = DEFAULT_OPTIONS.merge(options)
 
     unless @key then
       default_key  = File.join Gem.default_key_path

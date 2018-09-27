@@ -23,8 +23,8 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = [
     "History.txt", "LICENSE.txt", "MAINTAINERS.txt",
     "MIT.txt", "Manifest.txt", "README.md",
-    "UPGRADING.rdoc", "POLICIES.rdoc", "CODE_OF_CONDUCT.md",
-    "CONTRIBUTING.rdoc", "bundler/CHANGELOG.md", "bundler/CODE_OF_CONDUCT.md",
+    "UPGRADING.md", "POLICIES.md", "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md", "bundler/CHANGELOG.md", "bundler/CODE_OF_CONDUCT.md",
     "bundler/CONTRIBUTING.md", "bundler/LICENSE.md", "bundler/README.md",
     "hide_lib_for_update/note.txt", *Dir["bundler/man/*.1"]
   ]

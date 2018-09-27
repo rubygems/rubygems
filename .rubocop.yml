@@ -7,23 +7,6 @@ AllCops:
     - 'test/**/*'
   TargetRubyVersion: 2.2
 
-Metrics/BlockLength:
-  Enabled: true
-  # Arbitrary value, based on the existing codebase.
-  Max: 60
-  Exclude:
-    - 'Rakefile'
-
-# FIXME: This should ideally be a lot closer to 80-ish.
-Metrics/LineLength:
-  Enabled: true
-  Max: 200
-  AllowHeredoc: true
-
-Metrics/MethodLength:
-  Enabled: true
-  Max: 200
-
 Layout/AccessModifierIndentation:
   Enabled: true
 

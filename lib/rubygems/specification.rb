@@ -2032,6 +2032,28 @@ class Gem::Specification < Gem::BasicSpecification
     name.hash ^ version.hash
   end
 
+  ##
+  # Array of Strings that specifies various directories relative to the
+  # to the gem root. Default /ext directory.
+  def include_dir
+    @include_dir or [gem_dir + "/ext"]
+  end
+
+  ##
+  # Set an Array of Strings that tell the location of any header files
+  # that this gem exposes to other gems as part of a C API. Each path
+  # should be a directory relative to the gem root.
+
+  def include_dir= paths
+    raise TypeError, "paths must be specifed as Array" unless paths.is_a? Array
+
+    paths.each do |path|
+      raise Errno::ENOENT, "path #{path} does not exist" unless Dir.exist? path
+    end
+
+    @include_dir = paths
+  end
+
   def init_with coder # :nodoc:
     @installed_by_version ||= nil
     yaml_initialize coder.tag, coder.map
@@ -2060,6 +2082,7 @@ class Gem::Specification < Gem::BasicSpecification
     super()
     @gems_dir              = nil
     @base_dir              = nil
+    @include_dir           = nil
     @loaded = false
     @activated = false
     @loaded_from = nil

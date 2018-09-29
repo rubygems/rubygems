@@ -1400,6 +1400,20 @@ dependencies: []
     assert_equal 'apps', @a1.bindir
   end
 
+  def test_include_dir
+    assert_equal ["#{@a1.gem_dir}/ext"], @a1.include_dir, "default includedir"
+
+    awesome_header = "ext/awesome_extension/awesome_header"
+    FileUtils.mkdir_p awesome_header
+    
+    @a1.include_dir = [awesome_header]
+    assert_equal [awesome_header], @a1.include_dir, "user-defined includedir"
+
+    assert_raises(TypeError) { @a1.include_dir = awesome_header }
+
+    assert_raises(Errno::ENOENT) { @a1.include_dir = ["ext/random/dir"] }
+  end
+
   def test_bindir_equals_nil
     @a2.bindir = nil
     @a2.executable = 'app'

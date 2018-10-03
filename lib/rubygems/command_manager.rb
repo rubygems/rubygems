@@ -67,6 +67,7 @@ class Gem::CommandManager
     :uninstall,
     :unpack,
     :update,
+    :version,
     :which,
     :yank,
   ]

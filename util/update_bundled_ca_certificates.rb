@@ -9,13 +9,13 @@ URIS = [
   URI('https://staging.rubygems.org'),
   URI('https://fastly.rubygems.org'),
   URI('https://rubygems.global.ssl.fastly.net'),
-]
+].freeze
 
 HOSTNAMES_TO_MAP = [
   'rubygems.global.ssl.fastly.net',
   'rubygems.org',
   'index.rubygems.org'
-]
+].freeze
 
 def connect_to uri, store
   # None of the URIs are IPv6, so URI::Generic#hostname(ruby 1.9.3+) isn't needed

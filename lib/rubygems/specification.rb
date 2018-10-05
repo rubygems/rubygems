@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 # frozen_string_literal: true
+# -*- coding: utf-8 -*-
 #--
 # Copyright 2006 by Chad Fowler, Rich Kilmer, Jim Weirich and others.
 # All rights reserved.
@@ -95,7 +95,7 @@ class Gem::Specification < Gem::BasicSpecification
     4 => [
       'Added sandboxed freeform metadata to the specification version.'
     ]
-  }
+  }.freeze
 
   MARSHAL_FIELDS = { # :nodoc:
     -1 => 16,
@@ -103,12 +103,14 @@ class Gem::Specification < Gem::BasicSpecification
      2 => 16,
      3 => 17,
      4 => 18,
-  }
+  }.freeze
 
   today = Time.now.utc
   TODAY = Time.utc(today.year, today.month, today.day) # :nodoc:
 
+  # rubocop:disable Style/MutableConstant
   LOAD_CACHE = {} # :nodoc:
+  # rubocop:enable Style/MutableConstant
 
   private_constant :LOAD_CACHE if defined? private_constant
 
@@ -163,7 +165,9 @@ class Gem::Specification < Gem::BasicSpecification
     :version                   => nil,
   }.freeze
 
+  # rubocop:disable Style/MutableConstant
   INITIALIZE_CODE_FOR_DEFAULTS = { } # :nodoc:
+  # rubocop:enable Style/MutableConstant
 
   @@default_value.each do |k,v|
     INITIALIZE_CODE_FOR_DEFAULTS[k] = case v

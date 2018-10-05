@@ -14,7 +14,7 @@ class Gem::SpecificationPolicy < SimpleDelegator
     mailing_list_uri
     source_code_uri
     wiki_uri
-  ] # :nodoc:
+  ].freeze # :nodoc:
 
   def initialize(specification)
     @warnings = 0

@@ -14,7 +14,7 @@ end
 
 class TestGem < Gem::TestCase
 
-  PLUGINS_LOADED = []
+  PLUGINS_LOADED = [] # rubocop:disable Style/MutableConstant
 
   def setup
     super
@@ -1494,7 +1494,7 @@ class TestGem < Gem::TestCase
 
   if Gem::USE_BUNDLER_FOR_GEMDEPS
     BUNDLER_LIB_PATH = File.expand_path $LOAD_PATH.find {|lp| File.file?(File.join(lp, "bundler.rb")) }.dup.untaint
-    BUNDLER_FULL_NAME = "bundler-#{Bundler::VERSION}"
+    BUNDLER_FULL_NAME = "bundler-#{Bundler::VERSION}".freeze
   end
 
   def add_bundler_full_name(names)

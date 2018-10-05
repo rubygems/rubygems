@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'rubygems/command'
-require 'rubygems/commands/query_command'
+require_relative '../command'
+require_relative 'query_command'
 
 class Gem::Commands::InfoCommand < Gem::Commands::QueryCommand
   def initialize

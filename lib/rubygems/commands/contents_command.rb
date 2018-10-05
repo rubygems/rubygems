@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'English'
-require 'rubygems/command'
-require 'rubygems/version_option'
+require_relative '../command'
+require_relative '../version_option'
 
 class Gem::Commands::ContentsCommand < Gem::Command
 

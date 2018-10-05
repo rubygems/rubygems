@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/server'
+require_relative '../command'
+require_relative '../server'
 
 class Gem::Commands::ServerCommand < Gem::Command
 

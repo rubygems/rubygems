@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 require 'rubygems'
-require 'rubygems/request'
-require 'rubygems/uri_formatter'
-require 'rubygems/user_interaction'
-require 'rubygems/request/connection_pools'
+require_relative 'request'
+require_relative 'uri_formatter'
+require_relative 'user_interaction'
+require_relative 'request/connection_pools'
 require 'resolv'
 
 ##

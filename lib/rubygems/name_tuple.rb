@@ -4,7 +4,7 @@
 # Represents a gem of name +name+ at +version+ of +platform+. These
 # wrap the data returned from the indexes.
 
-require 'rubygems/platform'
+require_relative 'platform'
 
 class Gem::NameTuple
   def initialize(name, version, platform="ruby")

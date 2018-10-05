@@ -5,7 +5,7 @@ require 'erb'
 require 'uri'
 
 require 'rubygems'
-require 'rubygems/rdoc'
+require_relative 'rdoc'
 
 ##
 # Gem::Server and allows users to serve gems for consumption by

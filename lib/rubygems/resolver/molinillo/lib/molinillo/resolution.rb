@@ -121,11 +121,11 @@ module Gem::Resolver::Molinillo
         debug { 'Activated: ' + Hash[activated.vertices.select { |_n, v| v.payload }].keys.join(', ') } if state
       end
 
-      require 'rubygems/resolver/molinillo/lib/molinillo/state'
-      require 'rubygems/resolver/molinillo/lib/molinillo/modules/specification_provider'
+      require_relative 'state'
+      require_relative 'modules/specification_provider'
 
-      require 'rubygems/resolver/molinillo/lib/molinillo/delegates/resolution_state'
-      require 'rubygems/resolver/molinillo/lib/molinillo/delegates/specification_provider'
+      require_relative 'delegates/resolution_state'
+      require_relative 'delegates/specification_provider'
 
       include Gem::Resolver::Molinillo::Delegates::ResolutionState
       include Gem::Resolver::Molinillo::Delegates::SpecificationProvider

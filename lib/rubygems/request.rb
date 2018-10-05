@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'net/http'
 require 'time'
-require 'rubygems/user_interaction'
+require_relative 'user_interaction'
 
 class Gem::Request
 
@@ -288,6 +288,6 @@ class Gem::Request
 
 end
 
-require 'rubygems/request/http_pool'
-require 'rubygems/request/https_pool'
-require 'rubygems/request/connection_pools'
+require_relative 'request/http_pool'
+require_relative 'request/https_pool'
+require_relative 'request/connection_pools'

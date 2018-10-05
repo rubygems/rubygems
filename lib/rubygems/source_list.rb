@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rubygems/source'
+require_relative 'source'
 
 ##
 # The SourceList represents the sources rubygems has been configured to use.

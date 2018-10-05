@@ -4,7 +4,7 @@
 # Each exception needs a brief description and the scenarios where it is
 # likely to be raised
 
-require 'rubygems/deprecate'
+require_relative 'deprecate'
 
 ##
 # Base exception class for RubyGems.  All exception raised by RubyGems are a

@@ -3,15 +3,6 @@
 require "rubygems/util"
 
 module Gem::BundlerVersionFinder
-  @without_filtering = false
-
-  def self.without_filtering
-    without_filtering, @without_filtering = true, @without_filtering
-    yield
-  ensure
-    @without_filtering = without_filtering
-  end
-
   def self.bundler_version
     version, _ = bundler_version_with_reason
 
@@ -21,8 +12,6 @@ module Gem::BundlerVersionFinder
   end
 
   def self.bundler_version_with_reason
-    return if @without_filtering
-
     if v = ENV["BUNDLER_VERSION"]
       return [v, "`$BUNDLER_VERSION`"]
     end

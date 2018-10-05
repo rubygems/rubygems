@@ -54,7 +54,7 @@ To upgrade to the latest RubyGems, run:
 
 Note: You might need to run the command as an administrator or root user.
 
-See [UPGRADING](UPGRADING.rdoc) for more details and alternative instructions.
+See [UPGRADING](UPGRADING.md) for more details and alternative instructions.
 
 ## Documentation
 

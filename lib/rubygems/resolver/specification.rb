@@ -82,7 +82,7 @@ class Gem::Resolver::Specification
   # specification.
 
   def install options = {}
-    require 'rubygems/installer'
+    require_relative '../installer'
 
     gem = download options
 

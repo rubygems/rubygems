@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/installer'
-require 'rubygems/version_option'
-require 'rubygems/security_option'
-require 'rubygems/remote_fetcher'
+require_relative '../command'
+require_relative '../installer'
+require_relative '../version_option'
+require_relative '../security_option'
+require_relative '../remote_fetcher'
 
 # forward-declare
 

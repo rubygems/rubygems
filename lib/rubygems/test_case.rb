@@ -49,18 +49,18 @@ if Gem::USE_BUNDLER_FOR_GEMDEPS
 end
 require 'minitest/autorun'
 
-require 'rubygems/deprecate'
+require_relative 'deprecate'
 
 require 'fileutils'
 require 'pathname'
 require 'pp'
-require 'rubygems/package'
+require_relative 'package'
 require 'shellwords'
 require 'tmpdir'
 require 'uri'
 require 'zlib'
 require 'benchmark' # stdlib
-require 'rubygems/mock_gem_ui'
+require_relative 'mock_gem_ui'
 
 module Gem
 
@@ -569,7 +569,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   # Builds and installs the Gem::Specification +spec+
 
   def install_gem spec, options = {}
-    require 'rubygems/installer'
+    require_relative 'installer'
 
     gem = File.join @tempdir, "gems", "#{spec.full_name}.gem"
 
@@ -596,7 +596,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   ##
   # Uninstalls the Gem::Specification +spec+
   def uninstall_gem spec
-    require 'rubygems/uninstaller'
+    require_relative 'uninstaller'
 
     Class.new(Gem::Uninstaller) {
       def ask_if_ok spec
@@ -673,7 +673,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   # Use this with #write_file to build an installed gem.
 
   def quick_gem(name, version='2')
-    require 'rubygems/specification'
+    require_relative 'specification'
 
     spec = Gem::Specification.new do |s|
       s.platform    = Gem::Platform::RUBY
@@ -809,7 +809,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   # TODO:  remove in RubyGems 4.0
 
   def new_spec name, version, deps = nil, *files # :nodoc:
-    require 'rubygems/specification'
+    require_relative 'specification'
 
     spec = Gem::Specification.new do |s|
       s.platform    = Gem::Platform::RUBY
@@ -1068,7 +1068,7 @@ Also, a list:
   def util_setup_fake_fetcher(prerelease = false)
     require 'zlib'
     require 'socket'
-    require 'rubygems/remote_fetcher'
+    require_relative 'remote_fetcher'
 
     @fetcher = Gem::FakeFetcher.new
 
@@ -1578,7 +1578,7 @@ begin
   gem 'rdoc'
   require 'rdoc'
 
-  require 'rubygems/rdoc'
+  require_relative 'rdoc'
 rescue LoadError, Gem::LoadError
 end
 
@@ -1588,7 +1588,7 @@ begin
 rescue LoadError, Gem::LoadError
 end
 
-require 'rubygems/test_utilities'
+require_relative 'test_utilities'
 tmpdirs = []
 tmpdirs << (ENV['GEM_HOME'] = Dir.mktmpdir("home"))
 tmpdirs << (ENV['GEM_PATH'] = Dir.mktmpdir("path"))

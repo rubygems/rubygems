@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require "rubygems/version"
-require "rubygems/deprecate"
+require_relative "version"
+require_relative "deprecate"
 
 # If we're being loaded after yaml was already required, then
 # load our yaml + workarounds now.

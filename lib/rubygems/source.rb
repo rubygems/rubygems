@@ -43,7 +43,7 @@ class Gem::Source
   # Use an SRV record on the host to look up the true endpoint for the index.
 
   def api_uri # :nodoc:
-    require 'rubygems/remote_fetcher'
+    require_relative 'remote_fetcher'
     @api_uri ||= Gem::RemoteFetcher.fetcher.api_endpoint uri
   end
 
@@ -230,9 +230,9 @@ class Gem::Source
 
 end
 
-require 'rubygems/source/git'
-require 'rubygems/source/installed'
-require 'rubygems/source/specific_file'
-require 'rubygems/source/local'
-require 'rubygems/source/lock'
-require 'rubygems/source/vendor'
+require_relative 'source/git'
+require_relative 'source/installed'
+require_relative 'source/specific_file'
+require_relative 'source/local'
+require_relative 'source/lock'
+require_relative 'source/vendor'

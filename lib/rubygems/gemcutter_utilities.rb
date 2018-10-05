@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rubygems/remote_fetcher'
+require_relative 'remote_fetcher'
 
 ##
 # Utility methods for using the RubyGems API.

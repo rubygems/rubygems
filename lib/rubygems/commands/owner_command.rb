@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/local_remote_options'
-require 'rubygems/gemcutter_utilities'
+require_relative '../command'
+require_relative '../local_remote_options'
+require_relative '../gemcutter_utilities'
 
 class Gem::Commands::OwnerCommand < Gem::Command
   include Gem::LocalRemoteOptions

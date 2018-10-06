@@ -16,7 +16,7 @@ class Gem::Source
     :released   => 'specs',
     :latest     => 'latest_specs',
     :prerelease => 'prerelease_specs',
-  }
+  }.freeze
 
   ##
   # The URI this source will fetch gems from.

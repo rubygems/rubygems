@@ -36,7 +36,7 @@ class Gem::Security::Signer
 
   DEFAULT_OPTIONS = {
     expiration_length_days: 365
-  }
+  }.freeze
 
   ##
   # Attemps to re-sign an expired cert with a given private key

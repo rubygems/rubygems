@@ -16,3 +16,6 @@ Layout/IndentationWidth:
 
 Layout/TrailingWhitespace:
   Enabled: true
+
+Style/MutableConstant:
+  Enabled: true

@@ -3,10 +3,40 @@ AllCops:
   Exclude:
     - 'bundler/**/*'
     - 'lib/rubygems/resolver/molinillo/**/*'
+    # TODO: Remove all Exclude values after this line.
+    - 'test/**/*'
   TargetRubyVersion: 2.2
+
+Layout/AccessModifierIndentation:
+  Enabled: true
+
+Layout/BlockAlignment:
+  Enabled: true
+
+Layout/CaseIndentation:
+  Enabled: true
+
+Layout/ClosingParenthesisIndentation:
+  Enabled: true
 
 Layout/CommentIndentation:
   Enabled: true
+
+Layout/ElseAlignment:
+  Enabled: true
+
+# Force Unix line endings.
+Layout/EndOfLine:
+  Enabled: true
+  EnforcedStyle: lf
+
+Layout/IndentHash:
+  Enabled: true
+  EnforcedStyle: consistent
+
+Layout/IndentArray:
+  Enabled: true
+  EnforcedStyle: consistent
 
 Layout/IndentationConsistency:
   Enabled: true
@@ -16,3 +46,9 @@ Layout/IndentationWidth:
 
 Layout/TrailingWhitespace:
   Enabled: true
+
+# Mixing hash styles just looks silly.
+# http://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Style/HashSyntax
+Style/HashSyntax:
+  Enabled: true
+  EnforcedStyle: no_mixed_keys

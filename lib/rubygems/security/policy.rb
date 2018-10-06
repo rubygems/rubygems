@@ -195,7 +195,8 @@ class Gem::Security::Policy
 
   def inspect # :nodoc:
     ("[Policy: %s - data: %p signer: %p chain: %p root: %p " +
-     "signed-only: %p trusted-only: %p]") % [
+     "signed-only: %p trusted-only: %p]") %
+    [
       @name, @verify_chain, @verify_data, @verify_root, @verify_signer,
       @only_signed, @only_trusted,
     ]

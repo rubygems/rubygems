@@ -314,9 +314,10 @@ class Gem::Uninstaller
     msg << "\t#{spec.full_name}"
     msg << ''
 
-    siblings = Gem::Specification.select do |s|
-                 s.name == spec.name && s.full_name != spec.full_name
-               end
+    siblings =
+      Gem::Specification.select do |s|
+        s.name == spec.name && s.full_name != spec.full_name
+      end
 
     spec.dependent_gems.each do |dep_spec, dep, satlist|
       unless siblings.any? { |s| s.satisfies_requirement? dep }

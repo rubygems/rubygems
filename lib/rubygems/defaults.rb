@@ -28,26 +28,26 @@ module Gem
   # specified in the environment
 
   def self.default_dir
-    path = if defined? RUBY_FRAMEWORK_VERSION then
-             [
-               File.dirname(RbConfig::CONFIG['sitedir']),
-               'Gems',
-               RbConfig::CONFIG['ruby_version']
-             ]
-           elsif RbConfig::CONFIG['rubylibprefix'] then
-             [
-              RbConfig::CONFIG['rubylibprefix'],
-              'gems',
-              RbConfig::CONFIG['ruby_version']
-             ]
-           else
-             [
-               RbConfig::CONFIG['libdir'],
-               ruby_engine,
-               'gems',
-               RbConfig::CONFIG['ruby_version']
-             ]
-           end
+    path =  if defined? RUBY_FRAMEWORK_VERSION then
+              [
+                File.dirname(RbConfig::CONFIG['sitedir']),
+                'Gems',
+                RbConfig::CONFIG['ruby_version']
+              ]
+            elsif RbConfig::CONFIG['rubylibprefix'] then
+              [
+                RbConfig::CONFIG['rubylibprefix'],
+                'gems',
+                RbConfig::CONFIG['ruby_version']
+              ]
+            else
+              [
+                RbConfig::CONFIG['libdir'],
+                ruby_engine,
+                'gems',
+                RbConfig::CONFIG['ruby_version']
+              ]
+            end
 
     @default_dir ||= File.join(*path)
   end

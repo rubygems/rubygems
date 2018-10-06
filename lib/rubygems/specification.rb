@@ -90,7 +90,7 @@ class Gem::Specification < Gem::BasicSpecification
       'Now forward-compatible with future versions',
     ],
     3 => [
-       'Added Fixnum validation to the specification_version'
+      'Added Fixnum validation to the specification_version'
     ],
     4 => [
       'Added sandboxed freeform metadata to the specification version.'
@@ -166,16 +166,17 @@ class Gem::Specification < Gem::BasicSpecification
   INITIALIZE_CODE_FOR_DEFAULTS = { } # :nodoc:
 
   @@default_value.each do |k,v|
-    INITIALIZE_CODE_FOR_DEFAULTS[k] = case v
-    when [], {}, true, false, nil, Numeric, Symbol
-      v.inspect
-    when String
-      v.dump
-    when Numeric
-      "default_value(:#{k})"
-    else
-      "default_value(:#{k}).dup"
-    end
+    INITIALIZE_CODE_FOR_DEFAULTS[k] =
+      case v
+      when [], {}, true, false, nil, Numeric, Symbol
+        v.inspect
+      when String
+        v.dump
+      when Numeric
+        "default_value(:#{k})"
+      else
+        "default_value(:#{k}).dup"
+      end
   end
 
   @@attributes = @@default_value.keys.sort_by { |s| s.to_s }

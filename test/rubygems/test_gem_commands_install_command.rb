@@ -201,16 +201,6 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     assert_match(/ould not find a valid gem 'nonexistent'/, @ui.error)
   end
 
-  def test_execute_http_proxy
-    use_ui @ui do
-      e = assert_raises ArgumentError, @ui.error do
-        @cmd.handle_options %w[-p=foo.bar.com]
-      end
-
-     assert_match "Invalid uri scheme for =foo.bar.com\nPreface URLs with one of [\"http://\", \"https://\", \"file://\", \"s3://\"]", e.message
-    end
-  end
-
   def test_execute_bad_source
     spec_fetcher
 

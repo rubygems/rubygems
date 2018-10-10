@@ -221,11 +221,11 @@ open-ended dependency on #{dep} is not recommended
   end
 
   def validate_name
-    if !name.is_a?(String) then
+    if !name.is_a?(String)
       error "invalid value for attribute name: \"#{name.inspect}\" must be a string"
-    elsif name !~ /[a-zA-Z]/ then
+    elsif name !~ /[a-zA-Z]/
       error "invalid value for attribute name: #{name.dump} must include at least one letter"
-    elsif name !~ VALID_NAME_PATTERN then
+    elsif name !~ VALID_NAME_PATTERN
       error "invalid value for attribute name: #{name.dump} can only include letters, numbers, dashes, and underscores"
     elsif name =~ SPECIAL_CHARACTERS
       error "invalid value for attribute name: #{name.dump} can not begin with a period, dash, or underscore"

@@ -56,6 +56,32 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     util_test_build_gem @gem
   end
 
+  def test_execute_bad_name
+    [".", "-", "_"].each do |special_char|
+      gem = util_spec 'some_gem_with_bad_name' do |s|
+        s.name = "#{special_char}bad_gem_name"
+        s.license = 'AGPL-3.0'
+        s.files = ['README.md']
+      end
+
+      gemspec_file = File.join(@tempdir, gem.spec_name)
+
+      File.open gemspec_file, 'w' do |gs|
+        gs.write gem.to_ruby
+      end
+
+      @cmd.options[:args] = [gemspec_file]
+
+      use_ui @ui do
+        Dir.chdir @tempdir do
+          assert_raises Gem::InvalidSpecificationException do
+            @cmd.execute
+          end
+        end
+      end
+    end
+  end
+
   def test_execute_strict_without_warnings
     gemspec_file = File.join(@tempdir, @gem.spec_name)
 

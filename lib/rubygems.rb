@@ -7,6 +7,7 @@
 #++
 
 require 'rbconfig'
+require 'thread'
 
 module Gem
   VERSION = "2.7.7"

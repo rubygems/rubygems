@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'net/http'
+require 'thread'
 require 'time'
 require 'rubygems/user_interaction'
 

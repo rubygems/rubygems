@@ -6,6 +6,7 @@
 #++
 
 require 'rubygems/user_interaction'
+require 'thread'
 
 class Gem::Ext::Builder
 

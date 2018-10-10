@@ -82,6 +82,8 @@ module Gem::Util
     end
     return system(*(cmds << opt))
   rescue TypeError
+    require 'thread'
+
     @silent_mutex ||= Mutex.new
 
     null_device = NULL_DEVICE

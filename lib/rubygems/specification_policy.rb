@@ -4,6 +4,8 @@ require 'uri'
 class Gem::SpecificationPolicy < SimpleDelegator
   VALID_NAME_PATTERN = /\A[a-zA-Z0-9\.\-\_]+\z/ # :nodoc:
 
+  SPECIAL_CHARACTERS = /\A[#{Regexp.escape('.-_')}]+/ # :nodoc:
+
   VALID_URI_PATTERN = %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}  # :nodoc:
 
   METADATA_LINK_KEYS = %w[
@@ -225,6 +227,8 @@ open-ended dependency on #{dep} is not recommended
       error "invalid value for attribute name: #{name.dump} must include at least one letter"
     elsif name !~ VALID_NAME_PATTERN then
       error "invalid value for attribute name: #{name.dump} can only include letters, numbers, dashes, and underscores"
+    elsif name =~ SPECIAL_CHARACTERS
+      error "invalid value for attribute name: #{name.dump} can not begin with a period, dash, or underscore"
     end
   end
 

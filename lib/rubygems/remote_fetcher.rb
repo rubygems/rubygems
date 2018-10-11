@@ -109,9 +109,12 @@ class Gem::RemoteFetcher
       uri
     else
       target = res.target.to_s.strip
+      target_host = URI("https://" + target).host
 
-      if URI("http://" + target).host.end_with?(".#{host}")
-        return URI.parse "#{uri.scheme}://#{target}#{uri.path}"
+      if target_host.end_with?(".#{host}")
+        uri = uri.dup
+        uri.host = target_host
+        return uri
       end
 
       uri

@@ -84,7 +84,7 @@ See http://bundler.io/compatibility for known issues.
 
 ### Contributing
 
-If you'd like to contribute to RubyGems, that's awesome, and we <3 you. Check out our [guide to contributing](https://github.com/rubygems/rubygems/blob/master/CONTRIBUTING.rdoc#how-to-contribute) for more information.
+If you'd like to contribute to RubyGems, that's awesome, and we <3 you. Check out our [guide to contributing](CONTRIBUTING.md) for more information.
 
 While some RubyGems contributors are compensated by Ruby Together, the project maintainers make decisions independent of Ruby Together. As a project, we welcome contributions regardless of the author’s affiliation with Ruby Together.
 

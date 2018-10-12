@@ -23,6 +23,11 @@ Layout/CommentIndentation:
 Layout/ElseAlignment:
   Enabled: true
 
+# Force Unix line endings.
+Layout/EndOfLine:
+  Enabled: true
+  EnforcedStyle: lf
+
 Layout/IndentationConsistency:
   Enabled: true
 

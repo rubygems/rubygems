@@ -37,6 +37,9 @@ Layout/IndentHash:
 Layout/IndentArray:
   Enabled: true
   EnforcedStyle: consistent
+  Exclude:
+    # This is a generated file.
+    - lib/rubygems/util/licenses.rb
 
 Layout/IndentationConsistency:
   Enabled: true

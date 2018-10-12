@@ -28,6 +28,10 @@ Layout/EndOfLine:
   Enabled: true
   EnforcedStyle: lf
 
+Layout/IndentHash:
+  Enabled: true
+  EnforcedStyle: consistent
+
 Layout/IndentationConsistency:
   Enabled: true
 

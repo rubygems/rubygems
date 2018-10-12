@@ -20,6 +20,9 @@ Layout/ClosingParenthesisIndentation:
 Layout/CommentIndentation:
   Enabled: true
 
+Layout/ElseAlignment:
+  Enabled: true
+
 Layout/IndentationConsistency:
   Enabled: true
 

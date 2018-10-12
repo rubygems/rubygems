@@ -5,6 +5,9 @@ AllCops:
     - 'lib/rubygems/resolver/molinillo/**/*'
   TargetRubyVersion: 2.2
 
+Layout/AccessModifierIndentation:
+  Enabled: true
+
 Layout/CommentIndentation:
   Enabled: true
 

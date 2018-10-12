@@ -8,6 +8,9 @@ AllCops:
 Layout/AccessModifierIndentation:
   Enabled: true
 
+Layout/BlockAlignment:
+  Enabled: true
+
 Layout/CommentIndentation:
   Enabled: true
 

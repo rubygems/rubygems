@@ -626,7 +626,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
   def test_fetch_http_with_additional_headers
     ENV["http_proxy"] = @proxy_uri
     ENV["no_proxy"] = URI::parse(@server_uri).host
-    fetcher = Gem::RemoteFetcher.new nil, {"X-Captain" => "murphy"}
+    fetcher = Gem::RemoteFetcher.new nil, nil, {"X-Captain" => "murphy"}
     @fetcher = fetcher
     assert_equal "murphy", fetcher.fetch_path(@server_uri)
   end

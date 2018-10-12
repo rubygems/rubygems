@@ -89,10 +89,10 @@ class Gem::Specification < Gem::BasicSpecification
       'Added "required_rubygems_version"',
       'Now forward-compatible with future versions',
     ],
-    3 => [
-       'Added Fixnum validation to the specification_version'
+    3  => [
+      'Added Fixnum validation to the specification_version'
     ],
-    4 => [
+    4  => [
       'Added sandboxed freeform metadata to the specification version.'
     ]
   }.freeze

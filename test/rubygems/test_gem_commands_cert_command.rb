@@ -159,7 +159,7 @@ Added '/CN=alternate/DC=example'
     @cmd.handle_options %W[
       --build nobody@example.com
       --days 26
-      ]
+    ]
 
     @build_ui = Gem::MockGemUi.new "#{passphrase}\n#{passphrase}"
 

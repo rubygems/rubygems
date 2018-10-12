@@ -32,6 +32,12 @@ Layout/IndentHash:
   Enabled: true
   EnforcedStyle: consistent
 
+# NOTE: When used with --auto-correct, this only seems to auto-correct the
+#       first array item for some reason.
+Layout/IndentArray:
+  Enabled: true
+  EnforcedStyle: consistent
+
 Layout/IndentationConsistency:
   Enabled: true
 

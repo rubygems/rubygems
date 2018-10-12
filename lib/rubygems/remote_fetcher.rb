@@ -74,7 +74,7 @@ class Gem::RemoteFetcher
   # +headers+: A set of additional HTTP headers to be sent to the server when
   #            fetching the gem.
 
-  def initialize(proxy=nil, headers={})
+  def initialize(proxy=nil, dns=nil, headers={})
     require 'net/http'
     require 'stringio'
     require 'time'

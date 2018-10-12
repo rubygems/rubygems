@@ -11,6 +11,9 @@ Layout/AccessModifierIndentation:
 Layout/BlockAlignment:
   Enabled: true
 
+Layout/CaseIndentation:
+  Enabled: true
+
 Layout/CommentIndentation:
   Enabled: true
 

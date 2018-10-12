@@ -534,7 +534,7 @@ EOM
           @spec.cert_chain,
           passphrase,
           signer_options
-      )
+        )
 
       @spec.signing_key = nil
       @spec.cert_chain = @signer.cert_chain.map { |cert| cert.to_s }

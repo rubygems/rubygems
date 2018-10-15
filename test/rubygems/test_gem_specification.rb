@@ -48,7 +48,6 @@ end
       s.extensions << 'ext/a/extconf.rb'
       s.test_file = 'test/suite.rb'
       s.requirements << 'A working computer'
-      s.rubyforge_project = 'example'
       s.license = 'MIT'
 
       s.add_dependency 'rake', '> 0.4'
@@ -80,7 +79,6 @@ end
       s.executable = 'exec'
       s.test_file = 'test/suite.rb'
       s.requirements << 'A working computer'
-      s.rubyforge_project = 'example'
       s.license = 'MIT'
 
       s.mark_version
@@ -701,7 +699,6 @@ end
       required_ruby_version
       required_rubygems_version
       requirements
-      rubyforge_project
       rubygems_version
       signing_key
       specification_version
@@ -871,7 +868,6 @@ require_paths:
 author: Austin Ziegler
 email: diff-lcs@halostatue.ca
 homepage: http://rubyforge.org/projects/ruwiki/
-rubyforge_project: ruwiki
 description: "Test"
 bindir: bin
 has_rdoc: true
@@ -1209,14 +1205,6 @@ dependencies: []
   end
 
   DATA_PATH = File.expand_path "../data", __FILE__
-
-  def test_handles_private_null_type
-    path = File.join DATA_PATH, "null-type.gemspec.rz"
-
-    data = Marshal.load Gem::Util.inflate(Gem.read_binary(path))
-
-    assert_nil data.rubyforge_project
-  end
 
   def test_initialize
     spec = Gem::Specification.new do |s|
@@ -2496,7 +2484,6 @@ Gem::Specification.new do |s|
   s.homepage = "http://example.com".freeze
   s.licenses = ["MIT".freeze]
   s.requirements = ["A working computer".freeze]
-  s.rubyforge_project = "example".freeze
   s.rubygems_version = "#{Gem::VERSION}".freeze
   s.summary = "this is a summary".freeze
   s.test_files = ["test/suite.rb".freeze]

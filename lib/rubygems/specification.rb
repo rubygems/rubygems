@@ -735,12 +735,8 @@ class Gem::Specification < Gem::BasicSpecification
   #
   # Formerly used to set rubyforge project.
 
-  def rubyforge_project= ignored # :nodoc:
-  end
-  deprecate :rubyforge_project=,           :none,       2020, 12
-
-  alias :rubyforge_project # :nodoc:
-  deprecate :rubyforge_project,           :none,       2020, 12
+  attr_writer :rubyforge_project
+  deprecate :rubyforge_project=, :none,        2020, 12
 
   ##
   # The Gem::Specification version of this gemspec.

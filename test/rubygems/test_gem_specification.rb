@@ -1206,6 +1206,14 @@ dependencies: []
 
   DATA_PATH = File.expand_path "../data", __FILE__
 
+  def test_handles_private_null_type
+    path = File.join DATA_PATH, "null-type.gemspec.rz"
+
+    data = Marshal.load Gem::Util.inflate(Gem.read_binary(path))
+
+    assert_nil data.description
+  end
+
   def test_initialize
     spec = Gem::Specification.new do |s|
       s.name = "blah"

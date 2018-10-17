@@ -964,7 +964,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
         :DocumentRoot    => nil,
         :Logger          => null_logger,
         :AccessLog       => null_logger
-        )
+      )
       s.mount_proc("/kill") { |req, res| s.shutdown }
       s.mount_proc("/yaml") { |req, res|
         if req["X-Captain"]

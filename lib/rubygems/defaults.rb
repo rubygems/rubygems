@@ -36,9 +36,9 @@ module Gem
              ]
            elsif RbConfig::CONFIG['rubylibprefix'] then
              [
-              RbConfig::CONFIG['rubylibprefix'],
-              'gems',
-              RbConfig::CONFIG['ruby_version']
+               RbConfig::CONFIG['rubylibprefix'],
+               'gems',
+               RbConfig::CONFIG['ruby_version']
              ]
            else
              [

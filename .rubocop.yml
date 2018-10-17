@@ -5,8 +5,41 @@ AllCops:
     - 'lib/rubygems/resolver/molinillo/**/*'
   TargetRubyVersion: 2.2
 
+Layout/AccessModifierIndentation:
+  Enabled: true
+
+Layout/BlockAlignment:
+  Enabled: true
+
+Layout/CaseIndentation:
+  Enabled: true
+
+Layout/ClosingParenthesisIndentation:
+  Enabled: true
+
 Layout/CommentIndentation:
   Enabled: true
+
+Layout/ElseAlignment:
+  Enabled: true
+
+# Force Unix line endings.
+Layout/EndOfLine:
+  Enabled: true
+  EnforcedStyle: lf
+
+Layout/IndentHash:
+  Enabled: true
+  EnforcedStyle: consistent
+
+# NOTE: When used with --auto-correct, this only seems to auto-correct the
+#       first array item for some reason.
+Layout/IndentArray:
+  Enabled: true
+  EnforcedStyle: consistent
+  Exclude:
+    # This is a generated file.
+    - lib/rubygems/util/licenses.rb
 
 Layout/IndentationConsistency:
   Enabled: true

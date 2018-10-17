@@ -728,7 +728,10 @@ class Gem::Specification < Gem::BasicSpecification
   ##
   # Allows deinstallation of gems with legacy platforms.
 
-  attr_writer :original_platform # :nodoc:
+  attr_writer :original_platform # :nodoc
+
+  attr_writer :rubyforge_project # :nodoc
+  deprecate :rubyforge_project, :none, 2020, 4
 
   ##
   # The Gem::Specification version of this gemspec.

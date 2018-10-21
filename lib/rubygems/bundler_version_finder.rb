@@ -29,7 +29,7 @@ module Gem::BundlerVersionFinder
     return unless vr = bundler_version_with_reason
     <<-EOS
 Could not find 'bundler' (#{vr.first}) required by #{vr.last}.
-To update to the lastest version installed on your system, run `bundle update --bundler`.
+To update to the latest version installed on your system, run `bundle update --bundler`.
 To install the missing version, run `gem install bundler:#{vr.first}`
     EOS
   end

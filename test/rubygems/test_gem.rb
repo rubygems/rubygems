@@ -308,7 +308,7 @@ class TestGem < Gem::TestCase
     end
 
     assert_includes e.message, "Could not find 'bundler' (9999) required by your #{File.expand_path("Gemfile.lock")}."
-    assert_includes e.message, "To update to the lastest version installed on your system, run `bundle update --bundler`."
+    assert_includes e.message, "To update to the latest version installed on your system, run `bundle update --bundler`."
     assert_includes e.message, "To install the missing version, run `gem install bundler:9999`"
     refute_includes e.message, "can't find gem bundler (>= 0.a) with executable bundle"
   end

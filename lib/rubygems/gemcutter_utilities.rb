@@ -132,7 +132,6 @@ module Gem::GemcutterUtilities
 
     with_response response do |resp|
       say "Signed in."
-      options.delete :otp
       set_api_key host, resp.body
     end
   end

@@ -1392,6 +1392,7 @@ class Gem::Specification < Gem::BasicSpecification
       @required_rubygems_version,
       @original_platform,
       @dependencies,
+      '', # rubyforge_project
       @email,
       @authors,
       @description,

@@ -728,7 +728,7 @@ class Gem::Specification < Gem::BasicSpecification
   ##
   # Allows deinstallation of gems with legacy platforms.
 
-  attr_writer :original_platform # :nodoc
+  attr_writer :original_platform # :nodoc:
 
   ##
   # Deprecated and ignored.

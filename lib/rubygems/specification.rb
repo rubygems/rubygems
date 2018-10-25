@@ -736,7 +736,6 @@ class Gem::Specification < Gem::BasicSpecification
   # Formerly used to set rubyforge project.
 
   attr_writer :rubyforge_project
-  deprecate :rubyforge_project=, :none,        2020, 12
 
   ##
   # The Gem::Specification version of this gemspec.
@@ -1348,15 +1347,16 @@ class Gem::Specification < Gem::BasicSpecification
     spec.instance_variable_set :@required_rubygems_version, array[7]
     spec.instance_variable_set :@original_platform,         array[8]
     spec.instance_variable_set :@dependencies,              array[9]
-    spec.instance_variable_set :@email,                     array[10]
-    spec.instance_variable_set :@authors,                   array[11]
-    spec.instance_variable_set :@description,               array[12]
-    spec.instance_variable_set :@homepage,                  array[13]
-    spec.instance_variable_set :@has_rdoc,                  array[14]
-    spec.instance_variable_set :@new_platform,              array[15]
-    spec.instance_variable_set :@platform,                  array[15].to_s
-    spec.instance_variable_set :@license,                   array[16]
-    spec.instance_variable_set :@metadata,                  array[17]
+    # offset due to rubyforge_project removal
+    spec.instance_variable_set :@email,                     array[11]
+    spec.instance_variable_set :@authors,                   array[12]
+    spec.instance_variable_set :@description,               array[13]
+    spec.instance_variable_set :@homepage,                  array[14]
+    spec.instance_variable_set :@has_rdoc,                  array[15]
+    spec.instance_variable_set :@new_platform,              array[16]
+    spec.instance_variable_set :@platform,                  array[16].to_s
+    spec.instance_variable_set :@license,                   array[17]
+    spec.instance_variable_set :@metadata,                  array[18]
     spec.instance_variable_set :@loaded,                    false
     spec.instance_variable_set :@activated,                 false
 

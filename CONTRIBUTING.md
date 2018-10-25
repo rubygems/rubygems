@@ -133,7 +133,12 @@ issues have a blue `category: *` label.
 *   **documentation** - related to updating / fixing / clarifying
     documentation or guides
 
+### Code Review / Comments
 
+If you'd like to review/comment on code in commits or pull requests, please make
+sure that your suggestions don't alter the functionality.  Someone has taken the
+time to try to improve RubyGems, reviews/comments require the same.
+    
 ### Platforms
 
 If an issue or pull request pertains to only one platform, then it should have

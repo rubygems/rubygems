@@ -220,13 +220,14 @@ You can use `i` command instead of `install`.
   def install_gem_without_dependencies name, req # :nodoc:
     inst = nil
 
+    require 'rubygems/dependency_installer'
+    dinst = Gem::DependencyInstaller.new options
+
     if local? then
-      inst = install_local_gem_without_dependencies name, req
+      inst = install_local_gem_without_dependencies dinst, name, req
     end
 
     if not inst then
-      require 'rubygems/dependency_installer'
-      dinst = Gem::DependencyInstaller.new options
       inst = dinst.install name, req
     end
 
@@ -237,7 +238,7 @@ You can use `i` command instead of `install`.
     @installed_specs.concat inst
   end
 
-  def install_local_gem_without_dependencies name, req
+  def install_local_gem_without_dependencies dinst, name, req
     if name =~ /\.gem$/ and File.file? name then
       source = Gem::Source::SpecificFile.new name
       spec = source.spec
@@ -252,8 +253,6 @@ You can use `i` command instead of `install`.
     inst = Gem::Installer.at gem, options
     inst.install
 
-    require 'rubygems/dependency_installer'
-    dinst = Gem::DependencyInstaller.new options
     dinst.installed_gems.replace [inst.spec]
 
     [inst.spec]

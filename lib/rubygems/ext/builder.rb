@@ -74,6 +74,8 @@ class Gem::Ext::Builder
         results << (command.respond_to?(:shelljoin) ? command.shelljoin : command)
         results << IO.popen(command, "r", err: [:child, :out], &:read)
       end
+    rescue => error
+      raise Gem::InstallError, "#{command_name || class_name} failed#{error.message}"
     ensure
       ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
     end

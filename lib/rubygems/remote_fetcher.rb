@@ -102,7 +102,19 @@ class Gem::RemoteFetcher
 
     return if found.empty?
 
-    spec, source = found.max_by { |(s,_)| s.version }
+    # platform Ruby spec
+    r_spec, r_source = found.max_by { |(s,_)| s.version }
+
+    # platform local spec
+    p_found = found.select { |(s,_)| s.platform != 'ruby' && Gem::Platform.match(s.platform) }
+    p_spec, p_source = p_found.max_by { |(s,_)| s.version }
+
+    # use platform specific gem if version at least equal to ruby gem
+    if p_spec && p_spec.version >= r_spec.version
+      spec = p_spec ; source = p_source
+    else
+      spec = r_spec ; source = r_source
+    end
 
     download spec, source.uri.to_s
   end

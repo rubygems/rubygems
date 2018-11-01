@@ -3,6 +3,7 @@ status = [
 ]
 
 timeout-sec = 14400
+delete_merged_branches = true
 
 [committer]
 name = "Bundlerbot"

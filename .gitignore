@@ -4,6 +4,7 @@
 /.idea
 /.rdoc
 /.rvmrc
+/.envrc
 /TAGS
 /doc
 /misc

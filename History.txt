@@ -1,5 +1,56 @@
 # coding: UTF-8
 
+=== 2.7.8 / 2018-11-02
+
+Minor enhancements:
+
+* Improve invalid proxy error message. Pull request #2217 by Luis
+  Sagastume.
+* [Requirement] Treat requirements with == versions as equal. Pull
+  request #2230 by Samuel Giddins.
+* Fix exec_name documentation. Pull request #2239 by Luis Sagastume.
+* [TarHeader] Extract the empty header into a constant. Pull request #2247
+  by Samuel Giddins.
+* Simplify the code that lets us call the original, non-monkeypatched
+  Kernel#require. Pull request #2267 by Leon Miller-Out.
+* Support IO.copy_stream. Pull request #2303 by okkez.
+* Add error message when trying to open a default gem. Pull request #2307
+  by Luis Sagastume.
+* Add install alias documentation. Pull request #2320 by ota42y.
+* Removed explicitly declaration of thread library. Pull request #2324 by
+  SHIBATA Hiroshi.
+* [Rakefile] Set bundler build metadata when doing a release. Pull request
+  #2335 by Samuel Giddins.
+* Speed up globbing relative to given directories. Pull request #2336 by
+  Samuel Giddins.
+* Backport commits from ruby core . Pull request #2347 by SHIBATA Hiroshi.
+* Sign in to the correct host before push. Pull request #2366 by Luis
+  Sagastume.
+* Bump bundler-1.16.4. Pull request #2381 by SHIBATA Hiroshi.
+* Improve bindir flag description. Pull request #2383 by Luis Sagastume.
+* Update bundler-1.16.6. Pull request #2423 by SHIBATA Hiroshi.
+
+Bug fixes:
+
+* Frozen string fix - lib/rubygems/bundler_version_finder.rb. Pull request
+  #2115 by MSP-Greg.
+* Fixed no assignment variables about default gems installation. Pull
+  request #2181 by SHIBATA Hiroshi.
+* Fix #1470: generate documentation when --install-dir is present. Pull
+  request #2229 by Elias Hernandis.
+* Validate SPDX license exceptions. Pull request #2257 by Mikit.
+* Keep feature names loaded in the block. Pull request #2261 by Nobuyoshi
+  Nakada.
+* Retry api specification spec with original platform. Pull request #2275
+  by Luis Sagastume.
+* Fix approximate recommendation with prereleases. Pull request #2345 by
+  David Rodríguez.
+* Expand symlinks in gem path. Pull request #2352 by Benoit Daloze.
+* Gem::Version should handle nil like it used to before. Pull request
+  #2363 by Luis Sagastume.
+* Fix auto resign expired certificate. Pull request #2380 by Luis
+  Sagastume.
+
 === 2.7.7 / 2018-05-08
 
 Minor enhancements:

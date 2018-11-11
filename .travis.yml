@@ -24,4 +24,6 @@ script:
 matrix:
   allow_failures:
     - rvm: ruby-head
+      env: "TEST_TOOL=rubygems YAML=psych"
+    - rvm: ruby-head
       env: "TEST_TOOL=bundler RGV=master"

@@ -393,6 +393,23 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal %w[a-2.a], @cmd.installed_specs.map { |spec| spec.full_name }
   end
 
+  def test_execute_with_version_specified_by_colon
+    spec_fetcher do |fetcher|
+      fetcher.download 'a', 1
+      fetcher.download 'a', 2
+    end
+
+    @cmd.options[:args] = %w[a:1]
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+        @cmd.execute
+      end
+    end
+
+    assert_equal %w[a-1], @cmd.installed_specs.map { |spec| spec.full_name }
+  end
+
   def test_execute_prerelease_skipped_when_non_pre_available
     spec_fetcher do |fetcher|
       fetcher.gem 'a', '2.pre'
@@ -653,6 +670,25 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     assert_empty @ui.output
     assert_equal msg, @ui.error.chomp
+  end
+
+  def test_execute_two_version_specified_by_colon
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 1
+      fetcher.gem 'a', 2
+      fetcher.gem 'b', 1
+      fetcher.gem 'b', 2
+    end
+
+    @cmd.options[:args] = %w[a:1 b:1]
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+        @cmd.execute
+      end
+    end
+
+    assert_equal %w[a-1 b-1], @cmd.installed_specs.map { |spec| spec.full_name }
   end
 
   def test_execute_conservative

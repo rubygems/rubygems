@@ -114,7 +114,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   private_constant :LOAD_CACHE if defined? private_constant
 
-  VALID_NAME_PATTERN = /\A[a-zA-Z0-9\.\-\_]+\z/ # :nodoc:
+  VALID_NAME_PATTERN = /\A[a-zA-Z0-9\.\-\_]+\z/.freeze # :nodoc:
 
   # :startdoc:
 
@@ -1749,7 +1749,7 @@ class Gem::Specification < Gem::BasicSpecification
     /\A
      (\d{4})-(\d{2})-(\d{2})
      (\s+ \d{2}:\d{2}:\d{2}\.\d+ \s* (Z | [-+]\d\d:\d\d) )?
-     \Z/x
+     \Z/x.freeze
 
   ##
   # The date this gem was created

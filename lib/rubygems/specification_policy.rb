@@ -2,11 +2,11 @@ require 'delegate'
 require 'uri'
 
 class Gem::SpecificationPolicy < SimpleDelegator
-  VALID_NAME_PATTERN = /\A[a-zA-Z0-9\.\-\_]+\z/ # :nodoc:
+  VALID_NAME_PATTERN = /\A[a-zA-Z0-9\.\-\_]+\z/.freeze # :nodoc:
 
-  SPECIAL_CHARACTERS = /\A[#{Regexp.escape('.-_')}]+/ # :nodoc:
+  SPECIAL_CHARACTERS = /\A[#{Regexp.escape('.-_')}]+/.freeze # :nodoc:
 
-  VALID_URI_PATTERN = %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}  # :nodoc:
+  VALID_URI_PATTERN = %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}.freeze  # :nodoc:
 
   METADATA_LINK_KEYS = %w[
     bug_tracker_uri
@@ -318,8 +318,8 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
   end
 
   LAZY = '"FIxxxXME" or "TOxxxDO"'.gsub(/xxx/, '')
-  LAZY_PATTERN = /FI XME|TO DO/x
-  HOMEPAGE_URI_PATTERN = /\A[a-z][a-z\d+.-]*:/i
+  LAZY_PATTERN = /FI XME|TO DO/x.freeze
+  HOMEPAGE_URI_PATTERN = /\A[a-z][a-z\d+.-]*:/i.freeze
 
   def validate_lazy_metadata
     unless authors.grep(LAZY_PATTERN).empty? then

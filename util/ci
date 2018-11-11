@@ -57,7 +57,7 @@ when %w(before_script)
       run('gem', %w(install bundler -v 1.16.2))
     end
 
-    run('gem', %w(install rubocop -v ~>0.59.0))
+    run('gem', %w(install rubocop -v ~>0.60.0))
 
     run('gem', %w(list --details))
     run('gem', %w(env))

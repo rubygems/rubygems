@@ -286,6 +286,25 @@ WARNING:  Use your OS package manager to uninstall vendor gems
     assert_match expected, @ui.error
   end
 
+  def test_execute_two_version
+    @cmd.options[:args] = %w[a b]
+    @cmd.options[:version] = Gem::Requirement.new("> 1")
+
+    use_ui @ui do
+      e = assert_raises Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+
+      assert_equal 1, e.exit_code
+    end
+
+    msg = "ERROR:  Can't use --version with multiple gems. You can specify multiple gems with" \
+      " version requirments using `gem install 'my_gem:1.0.0' 'my_other_gem:~>2.0.0'`"
+
+    assert_empty @ui.output
+    assert_equal msg, @ui.error.chomp
+  end
+
   def test_handle_options_vendor_missing
     orig_vendordir = RbConfig::CONFIG['vendordir']
     RbConfig::CONFIG.delete 'vendordir'

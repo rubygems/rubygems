@@ -151,11 +151,13 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     assert_match(/Successfully uninstalled/, output)
   end
 
-  def test_execute_with_force_leaves_executable
+  def test_execute_with_version_leaves_non_matching_versions
     ui = Gem::MockGemUi.new
 
     util_make_gems
     util_setup_gem ui
+
+    assert_equal 3, Gem::Specification.find_all_by_name('a').length
 
     @cmd.options[:version] = '1'
     @cmd.options[:force] = true
@@ -165,17 +167,18 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
       @cmd.execute
     end
 
-    assert !Gem::Specification.all_names.include?('a')
+    assert_equal 2, Gem::Specification.find_all_by_name('a').length
+
     assert File.exist? File.join(@gemhome, 'bin', 'executable')
   end
 
-  def test_execute_with_force_uninstalls_all_versions
+  def test_execute_with_force_and_without_version_uninstalls_everything
     ui = Gem::MockGemUi.new "y\n"
 
     util_make_gems
     util_setup_gem ui
 
-    assert Gem::Specification.find_all_by_name('a').length > 1
+    assert_equal 3, Gem::Specification.find_all_by_name('a').length
 
     @cmd.options[:force] = true
     @cmd.options[:args] = ['a']
@@ -184,7 +187,9 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
       @cmd.execute
     end
 
-    refute_includes Gem::Specification.all_names, 'a'
+    assert_equal 0, Gem::Specification.find_all_by_name('a').length
+
+    refute File.exist? File.join(@gemhome, 'bin', 'executable')
   end
 
   def test_execute_with_force_ignores_dependencies

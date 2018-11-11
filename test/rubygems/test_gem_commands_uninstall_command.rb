@@ -172,6 +172,26 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     assert File.exist? File.join(@gemhome, 'bin', 'executable')
   end
 
+  def test_execute_with_version_specified_as_colon
+    ui = Gem::MockGemUi.new "y\n"
+
+    util_make_gems
+    util_setup_gem ui
+
+    assert_equal 3, Gem::Specification.find_all_by_name('a').length
+
+    @cmd.options[:force] = true
+    @cmd.options[:args] = ['a:1']
+
+    use_ui ui do
+      @cmd.execute
+    end
+
+    assert_equal 2, Gem::Specification.find_all_by_name('a').length
+
+    assert File.exist? File.join(@gemhome, 'bin', 'executable')
+  end
+
   def test_execute_with_force_and_without_version_uninstalls_everything
     ui = Gem::MockGemUi.new "y\n"
 

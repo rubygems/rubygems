@@ -32,7 +32,7 @@ class Gem::Requirement
   ##
   # A regular expression that matches a requirement
 
-  PATTERN = /\A#{PATTERN_RAW}\z/
+  PATTERN = /\A#{PATTERN_RAW}\z/.freeze
 
   ##
   # The default requirement matches any version

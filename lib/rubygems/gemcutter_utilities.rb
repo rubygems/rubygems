@@ -174,7 +174,7 @@ module Gem::GemcutterUtilities
   end
 
   ##
-  # Returns whether the user has enabled multifactor authentication from
+  # Returns true when the user has enabled multifactor authentication from
   # +response+ text.
 
   def need_otp? response
@@ -182,7 +182,7 @@ module Gem::GemcutterUtilities
         response.body.start_with?('You have enabled multifactor authentication')
     return true if options[:otp]
 
-    say 'This command needs digit code for multifactor authentication.'
+    say 'You have enabled multi-factor authentication. Please enter OTP code.'
     options[:otp] = ask 'Code: '
     true
   end

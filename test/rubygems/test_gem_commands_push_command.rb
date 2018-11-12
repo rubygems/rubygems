@@ -363,7 +363,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
       @cmd.send_gem(@path)
     end
 
-    assert_match 'This command needs digit code for multifactor authentication.', @otp_ui.output
+    assert_match 'You have enabled multi-factor authentication. Please enter OTP code.', @otp_ui.output
     assert_match 'Code: ', @otp_ui.output
     assert_match response_success, @otp_ui.output
     assert_equal '111111', @fetcher.last_request['OTP']
@@ -381,7 +381,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     end
 
     assert_match response, @otp_ui.output
-    assert_match 'This command needs digit code for multifactor authentication.', @otp_ui.output
+    assert_match 'You have enabled multi-factor authentication. Please enter OTP code.', @otp_ui.output
     assert_match 'Code: ', @otp_ui.output
     assert_equal '111111', @fetcher.last_request['OTP']
   end

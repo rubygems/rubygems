@@ -196,7 +196,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
       (@call_count += 1).odd? ? [response_fail, 401, 'Unauthorized'] : [api_key, 200, 'OK']
     end, nil, [], "111111\n")
 
-    assert_match 'This command needs digit code for multifactor authentication.', @sign_in_ui.output
+    assert_match 'You have enabled multi-factor authentication. Please enter OTP code.', @sign_in_ui.output
     assert_match 'Code: ', @sign_in_ui.output
     assert_match 'Signed in.', @sign_in_ui.output
     assert_equal '111111', @fetcher.last_request['OTP']
@@ -209,7 +209,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
       util_sign_in [response, 401, 'Unauthorized'], nil, [], "111111\n"
     end
 
-    assert_match 'This command needs digit code for multifactor authentication.', @sign_in_ui.output
+    assert_match 'You have enabled multi-factor authentication. Please enter OTP code.', @sign_in_ui.output
     assert_match 'Code: ', @sign_in_ui.output
     assert_match response, @sign_in_ui.output
     assert_equal '111111', @fetcher.last_request['OTP']

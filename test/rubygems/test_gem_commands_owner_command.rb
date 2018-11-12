@@ -249,7 +249,7 @@ EOF
       @cmd.add_owners("freewill", ["user-new1@example.com"])
     end
 
-    assert_match 'This command needs digit code for multifactor authentication.', @otp_ui.output
+    assert_match 'You have enabled multi-factor authentication. Please enter OTP code.', @otp_ui.output
     assert_match 'Code: ', @otp_ui.output
     assert_match response_success, @otp_ui.output
     assert_equal '111111', @stub_fetcher.last_request['OTP']
@@ -265,7 +265,7 @@ EOF
     end
 
     assert_match response, @otp_ui.output
-    assert_match 'This command needs digit code for multifactor authentication.', @otp_ui.output
+    assert_match 'You have enabled multi-factor authentication. Please enter OTP code.', @otp_ui.output
     assert_match 'Code: ', @otp_ui.output
     assert_equal '111111', @stub_fetcher.last_request['OTP']
   end

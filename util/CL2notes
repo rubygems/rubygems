@@ -53,4 +53,3 @@ entries.sort_by { |file, | file }.each do |file, file_entries|
     puts file_entry
   end
 end
-

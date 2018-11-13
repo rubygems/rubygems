@@ -308,4 +308,3 @@ class TestGemSecurity < Gem::TestCase
   end
 
 end if defined?(OpenSSL::SSL)
-

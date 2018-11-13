@@ -117,4 +117,3 @@ class Gem::Security::TrustDir
   end
 
 end
-

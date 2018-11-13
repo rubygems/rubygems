@@ -129,4 +129,3 @@ class Gem::Doctor
   end
 
 end
-

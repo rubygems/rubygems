@@ -42,4 +42,3 @@ begin
 rescue Gem::SystemExitException => e
   exit e.exit_code
 end
-

@@ -189,4 +189,3 @@ module Gem::InstallUpdateOptions
   end
 
 end
-

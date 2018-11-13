@@ -203,4 +203,3 @@ class Gem::Platform
 
   CURRENT = 'current'.freeze
 end
-

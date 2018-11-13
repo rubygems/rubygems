@@ -22,4 +22,3 @@ class Gem::Resolver::VendorSpecification < Gem::Resolver::SpecSpecification
   end
 
 end
-

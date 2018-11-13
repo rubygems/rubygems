@@ -85,4 +85,3 @@ class Gem::Resolver::LockSpecification < Gem::Resolver::Specification
   end
 
 end
-

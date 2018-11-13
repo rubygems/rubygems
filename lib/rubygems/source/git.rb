@@ -239,4 +239,3 @@ class Gem::Source::Git < Gem::Source
   end
 
 end
-

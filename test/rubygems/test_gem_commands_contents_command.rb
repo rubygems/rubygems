@@ -237,4 +237,3 @@ lib/foo.rb
   end
 
 end
-

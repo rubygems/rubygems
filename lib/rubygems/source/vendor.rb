@@ -25,4 +25,3 @@ class Gem::Source::Vendor < Gem::Source::Installed
   end
 
 end
-

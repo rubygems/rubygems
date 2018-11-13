@@ -80,4 +80,3 @@ class Gem::Resolver::LockSet < Gem::Resolver::Set
   end
 
 end
-

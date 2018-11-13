@@ -68,4 +68,3 @@ module Gem::Deprecate
   module_function :deprecate, :skip_during
 
 end
-

@@ -31,4 +31,3 @@ class Gem::Package::FileSource < Gem::Package::Source # :nodoc: all
   end
 
 end
-

@@ -169,4 +169,3 @@ certs.each do |name, (cert, cert_32)|
   dest = File.join base_dir, "#{name}_cert_32.pem"
   File.write dest, cert_32.to_pem
 end
-

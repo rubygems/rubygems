@@ -230,4 +230,3 @@ class Gem::CommandManager
   end
 
 end
-

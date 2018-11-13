@@ -86,4 +86,3 @@ class Gem::MockGemUi < Gem::StreamUI
   end
 
 end
-

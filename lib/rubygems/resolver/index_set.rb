@@ -78,4 +78,3 @@ class Gem::Resolver::IndexSet < Gem::Resolver::Set
   end
 
 end
-

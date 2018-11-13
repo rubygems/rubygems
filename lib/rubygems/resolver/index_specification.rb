@@ -67,4 +67,3 @@ class Gem::Resolver::IndexSpecification < Gem::Resolver::Specification
   end
 
 end
-

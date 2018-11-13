@@ -7,5 +7,3 @@ class Gem::Request::HTTPSPool < Gem::Request::HTTPPool # :nodoc:
     super
   end
 end
-
-

@@ -208,4 +208,3 @@ To remove a source use the --remove argument:
   end
 
 end
-

@@ -38,4 +38,3 @@ class Gem::Source::Installed < Gem::Source
   end
 
 end
-

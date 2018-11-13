@@ -97,4 +97,3 @@ class Gem::Request::ConnectionPools # :nodoc:
   end
 
 end
-

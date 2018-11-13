@@ -112,4 +112,3 @@ class Gem::Resolver::Specification
     false
   end
 end
-

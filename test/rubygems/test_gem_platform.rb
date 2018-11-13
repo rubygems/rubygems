@@ -305,4 +305,3 @@ class TestGemPlatform < Gem::TestCase
     refute_match Gem::Platform.local, name
   end
 end
-

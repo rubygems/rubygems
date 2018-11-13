@@ -203,4 +203,3 @@ class Gem::Security::Signer
   end
 
 end
-

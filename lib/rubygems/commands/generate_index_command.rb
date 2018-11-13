@@ -82,4 +82,3 @@ Marshal::MINOR_VERSION constants.  It is used to ensure compatibility.
   end
 
 end
-

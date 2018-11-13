@@ -363,4 +363,3 @@ class TestGemIndexer < Gem::TestCase
   end
 
 end if defined?(Builder::XChar)
-

@@ -47,4 +47,3 @@ class Gem::UriFormatter
   end
 
 end
-

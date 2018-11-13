@@ -74,4 +74,3 @@ module Gem::VersionOption
   end
 
 end
-

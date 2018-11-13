@@ -84,4 +84,3 @@ You can set up a shortcut to gem server documentation using the URL:
   end
 
 end
-

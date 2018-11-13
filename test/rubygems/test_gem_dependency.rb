@@ -387,4 +387,3 @@ class TestGemDependency < Gem::TestCase
 
 
 end
-

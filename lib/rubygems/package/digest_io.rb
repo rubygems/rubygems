@@ -62,4 +62,3 @@ class Gem::Package::DigestIO
   end
 
 end
-

@@ -120,4 +120,3 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
   end
 
 end
-

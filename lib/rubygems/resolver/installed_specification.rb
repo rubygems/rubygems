@@ -56,4 +56,3 @@ class Gem::Resolver::InstalledSpecification < Gem::Resolver::SpecSpecification
   end
 
 end
-

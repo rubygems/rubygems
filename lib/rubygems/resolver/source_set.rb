@@ -45,4 +45,3 @@ class Gem::Resolver::SourceSet < Gem::Resolver::Set
   end
 
 end
-

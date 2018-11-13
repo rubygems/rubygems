@@ -195,7 +195,12 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   def test_execute_with_force_and_without_version_uninstalls_everything
     ui = Gem::MockGemUi.new "y\n"
 
-    util_make_gems
+    a_1, = util_gem 'a', 1
+    install_gem a_1
+
+    a_3a, = util_gem 'a', '3.a'
+    install_gem a_3a
+
     util_setup_gem ui
 
     assert_equal 3, Gem::Specification.find_all_by_name('a').length
@@ -207,9 +212,9 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
       @cmd.execute
     end
 
-    assert_equal 0, Gem::Specification.find_all_by_name('a').length
-
-    refute File.exist? File.join(@gemhome, 'bin', 'executable')
+    assert_empty Gem::Specification.find_all_by_name('a')
+    assert_match "Removing executable", ui.output
+    refute File.exist? @executable
   end
 
   def test_execute_with_force_ignores_dependencies
@@ -302,7 +307,7 @@ WARNING:  Use your OS package manager to uninstall vendor gems
       " version requirments using `gem install 'my_gem:1.0.0' 'my_other_gem:~>2.0.0'`"
 
     assert_empty @ui.output
-    assert_equal msg, @ui.error.chomp
+    assert_equal msg, @ui.error.lines.last.chomp
   end
 
   def test_handle_options_vendor_missing

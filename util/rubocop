@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+begin
+  load Gem.bin_path("rubocop", "rubocop", "~> 0.60.0")
+rescue Gem::GemNotFoundException
+  abort "Install the rubocop gem (~> 0.60.0) to run a static analysis"
+end

@@ -65,7 +65,7 @@ when %w(before_script)
     with_retries { run('rake', %w(spec:travis:deps)) }
   end
 when %w(script)
-  run('rake rubocop')
+  run('util/rubocop')
   if TOOL.rubygems?
     run('rake test')
   else

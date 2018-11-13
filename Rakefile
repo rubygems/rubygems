@@ -71,6 +71,11 @@ rescue LoadError
   end
 end
 
+desc "Run rubocop"
+task(:rubocop) do
+  sh "util/rubocop"
+end
+
 # --------------------------------------------------------------------
 # Creating a release
 

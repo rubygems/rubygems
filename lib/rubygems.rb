@@ -960,9 +960,9 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
       version << ".#{RUBY_PATCHLEVEL}"
     elsif defined?(RUBY_DESCRIPTION) then
       if RUBY_ENGINE == "ruby" then
-        version << ".#{RUBY_DESCRIPTION.match(/\Aruby #{RUBY_VERSION}([^ ]+) /)[1]}"
+        version << ".#{RUBY_DESCRIPTION[/\Aruby #{RUBY_VERSION}([^ ]+) /, 1]}"
       else
-        version << ".#{RUBY_DESCRIPTION.match(/\A#{RUBY_ENGINE} #{RUBY_ENGINE_VERSION} \(#{RUBY_VERSION}([^ ]+)\) /)[1]}"
+        version << ".#{RUBY_DESCRIPTION[/\A#{RUBY_ENGINE} #{RUBY_ENGINE_VERSION} \(#{RUBY_VERSION}([^ ]+)\) /, 1]}"
       end
     end
 

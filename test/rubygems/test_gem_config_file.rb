@@ -490,4 +490,3 @@ if you believe they were disclosed to a third party.
     assert_equal(true, @cfg.disable_default_gem_server)
   end
 end
-

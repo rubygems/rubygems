@@ -148,4 +148,3 @@ module Gem::LocalRemoteOptions
   end
 
 end
-

@@ -123,4 +123,3 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
   end
 
 end
-

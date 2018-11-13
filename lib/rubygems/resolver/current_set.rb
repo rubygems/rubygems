@@ -11,4 +11,3 @@ class Gem::Resolver::CurrentSet < Gem::Resolver::Set
   end
 
 end
-

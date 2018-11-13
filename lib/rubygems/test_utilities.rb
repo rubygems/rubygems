@@ -367,4 +367,3 @@ class TempIO < Tempfile
     Gem.read_binary path
   end
 end
-

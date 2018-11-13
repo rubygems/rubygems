@@ -62,4 +62,3 @@ class TestGemResolverSpecification < Gem::TestCase
   end
 
 end
-

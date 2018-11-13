@@ -269,4 +269,3 @@ class TestGemRDoc < Gem::TestCase
   end
 
 end
-

@@ -43,4 +43,3 @@ class Gem::Package::IOSource < Gem::Package::Source # :nodoc: all
   end
 
 end
-

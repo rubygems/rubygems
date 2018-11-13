@@ -605,4 +605,3 @@ if defined?(OpenSSL::SSL) then
 end
 
 require 'rubygems/security/signer'
-

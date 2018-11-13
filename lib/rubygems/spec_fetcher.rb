@@ -271,4 +271,3 @@ class Gem::SpecFetcher
   end
 
 end
-

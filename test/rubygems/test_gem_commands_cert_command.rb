@@ -795,4 +795,3 @@ ERROR:  --private-key not specified and ~/.gem/gem-private_key.pem does not exis
   end
 
 end if defined?(OpenSSL::SSL)
-

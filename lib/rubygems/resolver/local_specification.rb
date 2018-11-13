@@ -39,4 +39,3 @@ class Gem::Resolver::LocalSpecification < Gem::Resolver::SpecSpecification
   end
 
 end
-

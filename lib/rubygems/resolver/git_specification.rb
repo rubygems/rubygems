@@ -56,4 +56,3 @@ class Gem::Resolver::GitSpecification < Gem::Resolver::SpecSpecification
   end
 
 end
-

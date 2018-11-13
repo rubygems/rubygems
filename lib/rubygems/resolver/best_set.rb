@@ -76,4 +76,3 @@ class Gem::Resolver::BestSet < Gem::Resolver::ComposedSet
   end
 
 end
-

@@ -166,4 +166,3 @@ This directory does not appear to be a RubyGems repository, skipping
   end
 
 end
-

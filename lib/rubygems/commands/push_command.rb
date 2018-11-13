@@ -134,4 +134,3 @@ You can upgrade or downgrade to the latest release version with:
     ]
   end
 end
-

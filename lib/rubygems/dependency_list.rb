@@ -241,4 +241,3 @@ class Gem::DependencyList
   end
 
 end
-

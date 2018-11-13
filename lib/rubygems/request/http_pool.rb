@@ -45,4 +45,3 @@ class Gem::Request::HTTPPool # :nodoc:
   end
 
 end
-

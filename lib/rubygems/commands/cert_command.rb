@@ -321,4 +321,3 @@ For further reading on signing gems see `ri Gem::Security`.
 
 
 end if defined?(OpenSSL::SSL)
-

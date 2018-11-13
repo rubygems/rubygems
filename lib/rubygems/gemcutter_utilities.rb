@@ -165,4 +165,3 @@ module Gem::GemcutterUtilities
   end
 
 end
-

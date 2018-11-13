@@ -137,4 +137,3 @@ end
 needed = $needed_combinations.flatten.uniq
 
 write_certificates needed
-

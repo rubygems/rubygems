@@ -64,4 +64,3 @@ class Gem::Resolver::ComposedSet < Gem::Resolver::Set
   end
 
 end
-

@@ -88,4 +88,3 @@ requiring to see why it does not behave as you expect.
   end
 
 end
-

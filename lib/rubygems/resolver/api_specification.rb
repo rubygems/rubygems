@@ -88,4 +88,3 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
   end
 
 end
-

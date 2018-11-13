@@ -85,4 +85,3 @@ class Gem::Resolver::VendorSet < Gem::Resolver::Set
   end
 
 end
-

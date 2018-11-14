@@ -2914,6 +2914,8 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
   def test_unresolved_specs
     specification = Gem::Specification.clone
 
+    set_orig specification
+
     specification.define_singleton_method(:unresolved_deps) do
       { b: Gem::Dependency.new("x","1") }
     end
@@ -2936,6 +2938,8 @@ Please report a bug if this causes problems.
 
   def test_unresolved_specs_with_versions
     specification = Gem::Specification.clone
+
+    set_orig specification
 
     specification.define_singleton_method(:unresolved_deps) do
       { b: Gem::Dependency.new("x","1") }
@@ -2961,6 +2965,12 @@ Please report a bug if this causes problems.
     assert_output nil, expected do
       specification.reset
     end
+  end
+
+  def set_orig(cls)
+    s_cls = cls.singleton_class
+    s_cls.send :alias_method, :orig_unresolved_deps , :unresolved_deps
+    s_cls.send :alias_method, :orig_find_all_by_name, :find_all_by_name
   end
 
   def test_validate_files_recursive

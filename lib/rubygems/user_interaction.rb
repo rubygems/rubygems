@@ -568,6 +568,7 @@ class Gem::StreamUI
     # +out_stream+.  The other arguments are ignored.
 
     def initialize(out_stream, *args)
+      @file_name = nil
       @out = out_stream
     end
 

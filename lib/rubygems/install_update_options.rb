@@ -178,7 +178,6 @@ module Gem::InstallUpdateOptions
                'Suggest alternates when gems are not found') do |v,o|
       options[:suggest_alternate] = v
     end
-
   end
 
   ##

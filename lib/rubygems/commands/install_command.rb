@@ -148,7 +148,6 @@ You can use `i` command instead of `install`.
   end
 
   def execute
-
     if options.include? :gemdeps then
       install_from_gemdeps
       return # not reached

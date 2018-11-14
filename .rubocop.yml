@@ -28,6 +28,9 @@ Layout/EndOfLine:
   Enabled: true
   EnforcedStyle: lf
 
+Layout/EmptyLinesAroundMethodBody:
+  Enabled: true
+
 Layout/IndentHash:
   Enabled: true
   EnforcedStyle: consistent

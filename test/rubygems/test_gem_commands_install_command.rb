@@ -666,7 +666,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_empty @cmd.installed_specs
 
     msg = "ERROR:  Can't use --version with multiple gems. You can specify multiple gems with" \
-      " version requirments using `gem install 'my_gem:1.0.0' 'my_other_gem:~>2.0.0'`"
+      " version requirements using `gem install 'my_gem:1.0.0' 'my_other_gem:~>2.0.0'`"
 
     assert_empty @ui.output
     assert_equal msg, @ui.error.chomp

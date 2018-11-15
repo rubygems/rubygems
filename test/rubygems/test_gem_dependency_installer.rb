@@ -1073,7 +1073,6 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     assert_equal 'a-1', remote.spec.full_name, 'remote spec'
     assert_equal Gem::Source.new(@gem_repo), remote.source, 'remote path'
-
   end
 
   def test_find_gems_with_sources_prerelease

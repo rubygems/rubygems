@@ -21,7 +21,6 @@ class TestGemRequestSetLockfile < Gem::TestCase
     @set.instance_variable_set :@vendor_set, @vendor_set
 
     @gem_deps_file = 'gem.deps.rb'
-
   end
 
   def lockfile

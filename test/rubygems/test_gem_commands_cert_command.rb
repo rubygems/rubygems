@@ -192,7 +192,6 @@ Added '/CN=alternate/DC=example'
 
     test = (cert.not_after - cert.not_before).to_i / (24 * 60 * 60)
     assert_equal(test, 26)
-
   end
 
   def test_execute_build_bad_passphrase_confirmation

@@ -240,7 +240,6 @@ end
 
       return stub
     end
-
   end
 
   def stub_with_extension

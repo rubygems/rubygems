@@ -121,7 +121,6 @@ If no gems are named all gems in GEM_HOME are cleaned.
   end
 
   def get_gems_to_cleanup
-
     gems_to_cleanup = @candidate_gems.select { |spec|
       @primary_gems[spec.name].version != spec.version
     }

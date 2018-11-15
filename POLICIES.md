@@ -10,7 +10,7 @@ merge commit passes the tests.
 This process guarantees that our release branches always have passing tests,
 and reduces siloing of information to a single contributor. For a full list of
 possible commands, see [the Bundlerbot
-documentation](https://bundlerbot-homu.herokuapp.com/).
+documentation](https://bors.tech/documentation/).
 
 ## Long-Term Support
 

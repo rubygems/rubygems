@@ -311,14 +311,15 @@ class Gem::Installer
     dir_mode = options[:dir_mode]
     FileUtils.mkdir_p gem_dir, :mode => dir_mode && 0700
 
+    extract_files
+
+    build_extensions
+    write_build_info_file
+
     if @options[:install_as_default] then
       extract_bin
       write_default_spec
     else
-      extract_files
-
-      build_extensions
-      write_build_info_file
       run_post_build_hooks
 
       generate_bin
@@ -730,6 +731,12 @@ class Gem::Installer
     raise Gem::InstallError, "#{spec} has an invalid name"
   end
 
+  def verify_default_gems
+    return unless options[:install_as_default]
+    return if Gem::Specification::DEFAULT_GEMS_LIST.include?(spec.name)
+    raise Gem::InstallError, "#{spec} is not a default gem."
+  end
+
   ##
   # Return the text for an application file.
 
@@ -879,6 +886,8 @@ TEXT
     ensure_loadable_spec
 
     verify_spec_name
+
+    verify_default_gems
 
     if options[:install_as_default]
       Gem.ensure_default_gem_subdirectories gem_home

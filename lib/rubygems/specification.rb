@@ -116,6 +116,31 @@ class Gem::Specification < Gem::BasicSpecification
 
   VALID_NAME_PATTERN = /\A[a-zA-Z0-9\.\-\_]+\z/.freeze # :nodoc:
 
+  DEFAULT_GEMS_LIST = %w[
+    bigdecimal
+    cmath
+    csv
+    date
+    dbm
+    etc
+    fcntl
+    fiddle
+    fileutils
+    gdbm
+    io-console
+    ipaddr
+    json
+    openssl
+    psych
+    rdoc
+    scanf
+    sdbm
+    stringio
+    strscan
+    webrick
+    zlib
+  ] #:nodoc:
+
   # :startdoc:
 
   ##

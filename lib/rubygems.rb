@@ -958,8 +958,12 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
     if defined?(RUBY_PATCHLEVEL) && RUBY_PATCHLEVEL != -1 then
       version << ".#{RUBY_PATCHLEVEL}"
-    elsif defined?(RUBY_REVISION) then
-      version << ".dev.#{RUBY_REVISION}"
+    elsif defined?(RUBY_DESCRIPTION) then
+      if RUBY_ENGINE == "ruby" then
+        version << ".#{RUBY_DESCRIPTION[/\Aruby #{Regexp.quote(RUBY_VERSION)}([^ ]+) /, 1]}"
+      else
+        version << ".#{RUBY_DESCRIPTION[/\A#{RUBY_ENGINE} #{Regexp.quote(RUBY_ENGINE_VERSION)} \(#{RUBY_VERSION}([^ ]+)\) /, 1]}"
+      end
     end
 
     @ruby_version = Gem::Version.new version

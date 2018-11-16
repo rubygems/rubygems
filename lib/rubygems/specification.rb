@@ -650,9 +650,7 @@ class Gem::Specification < Gem::BasicSpecification
   #   ruby 2.0.0p247 (2013-06-27 revision 41674) [x86_64-darwin12.4.0]
   #   #<Gem::Version "2.0.0.247">
   #
-  # Because patch-level is taken into account, be very careful specifying using
-  # `<=`: `<= 2.2.2` will not match any patch-level of 2.2.2 after the `p0`
-  # release. It is much safer to specify `< 2.2.3` instead
+  # Prereleases can also be specified.
   #
   # Usage:
   #
@@ -662,8 +660,8 @@ class Gem::Specification < Gem::BasicSpecification
   #  # Only with ruby 2.0.x
   #  spec.required_ruby_version = '~> 2.0'
   #
-  #  # Only with ruby between 2.2.0 and 2.2.2
-  #  spec.required_ruby_version = ['>= 2.2.0', '< 2.2.3']
+  #  # Only prereleases or final releases after 2.6.0.preview2
+  #  spec.required_ruby_version = '> 2.6.0.preview2'
 
   def required_ruby_version= req
     @required_ruby_version = Gem::Requirement.create req

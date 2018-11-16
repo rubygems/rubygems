@@ -49,9 +49,9 @@ install:
 
     results = results.join "\n"
 
-    assert_match %r{"DESTDIR=#{ENV['DESTDIR']}" clean$},   results
-    assert_match %r{"DESTDIR=#{ENV['DESTDIR']}"$},         results
-    assert_match %r{"DESTDIR=#{ENV['DESTDIR']}" install$}, results
+    assert_match %r{DESTDIR\\=#{ENV['DESTDIR']} clean$},   results
+    assert_match %r{DESTDIR\\=#{ENV['DESTDIR']}$},         results
+    assert_match %r{DESTDIR\\=#{ENV['DESTDIR']} install$}, results
 
     if /nmake/ !~ results
       assert_match %r{^clean: destination$},   results
@@ -80,9 +80,9 @@ install:
 
     results = results.join "\n"
 
-    assert_match %r{"DESTDIR=#{ENV['DESTDIR']}" clean$},   results
-    assert_match %r{"DESTDIR=#{ENV['DESTDIR']}"$},         results
-    assert_match %r{"DESTDIR=#{ENV['DESTDIR']}" install$}, results
+    assert_match %r{DESTDIR\\=#{ENV['DESTDIR']} clean$},   results
+    assert_match %r{DESTDIR\\=#{ENV['DESTDIR']}$},         results
+    assert_match %r{DESTDIR\\=#{ENV['DESTDIR']} install$}, results
   end
 
   def test_build_extensions

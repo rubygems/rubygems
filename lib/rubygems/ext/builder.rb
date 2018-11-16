@@ -33,19 +33,20 @@ class Gem::Ext::Builder
     # try to find make program from Ruby configure arguments first
     RbConfig::CONFIG['configure_args'] =~ /with-make-prog\=(\w+)/
     make_program = ENV['MAKE'] || ENV['make'] || $1
-    unless make_program
-      make_program = (/mswin/ =~ RUBY_PLATFORM) ? 'nmake' : 'make'
+    if make_program
+      make_program = make_program.shellsplit
+    else
+      make_program = [(/mswin/ =~ RUBY_PLATFORM) ? 'nmake' : 'make']
     end
 
-    destdir = '"DESTDIR=%s"' % ENV['DESTDIR']
+    destdir = 'DESTDIR=%s' % ENV['DESTDIR']
 
-    ['clean', '', 'install'].each do |target|
+    ['clean', nil, 'install'].each do |target|
       # Pass DESTDIR via command line to override what's in MAKEFLAGS
-      cmd = [
-        make_program,
+      cmd = make_program + [
         destdir,
-        target
-      ].join(' ').rstrip
+        target,
+      ].compact
       begin
         run(cmd, results, "make #{target}".rstrip)
       rescue Gem::InstallError

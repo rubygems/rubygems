@@ -2,7 +2,7 @@
 require 'rubygems/test_case'
 require 'rubygems/commands/cert_command'
 
-unless defined?(OpenSSL::SSL) then
+unless defined?(OpenSSL::SSL)
   warn 'Skipping `gem cert` tests.  openssl not found.'
 end
 

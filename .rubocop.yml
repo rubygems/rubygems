@@ -23,6 +23,9 @@ Layout/CommentIndentation:
 Layout/ElseAlignment:
   Enabled: true
 
+MultilineIfThen:
+  Enabled: true
+
 # Force Unix line endings.
 Layout/EndOfLine:
   Enabled: true

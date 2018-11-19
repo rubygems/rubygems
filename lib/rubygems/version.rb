@@ -186,9 +186,9 @@ class Gem::Version
   #   ver3 = Version.create(nil)        # -> nil
 
   def self.create(input)
-    if self === input then # check yourself before you wreck yourself
+    if self === input  # check yourself before you wreck yourself
       input
-    elsif input.nil? then
+    elsif input.nil?
       nil
     else
       new input

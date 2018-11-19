@@ -174,12 +174,12 @@ class Gem::ConfigFile
     arg_list = []
 
     args.each do |arg|
-      if need_config_file_name then
+      if need_config_file_name
         @config_file_name = arg
         need_config_file_name = false
-      elsif arg =~ /^--config-file=(.*)/ then
+      elsif arg =~ /^--config-file=(.*)/
         @config_file_name = $1
-      elsif arg =~ /^--config-file$/ then
+      elsif arg =~ /^--config-file$/
         need_config_file_name = true
       else
         arg_list << arg
@@ -281,13 +281,13 @@ if you believe they were disclosed to a third party.
   def load_api_keys
     check_credentials_permissions
 
-    @api_keys = if File.exist? credentials_path then
+    @api_keys = if File.exist? credentials_path
                   load_file(credentials_path)
                 else
                   @hash
                 end
 
-    if @api_keys.key? :rubygems_api_key then
+    if @api_keys.key? :rubygems_api_key
       @rubygems_api_key    = @api_keys[:rubygems_api_key]
       @api_keys[:rubygems] = @api_keys.delete :rubygems_api_key unless
         @api_keys.key? :rubygems

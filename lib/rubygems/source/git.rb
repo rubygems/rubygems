@@ -93,7 +93,7 @@ class Gem::Source::Git < Gem::Source
 
     return false unless File.exist? repo_cache_dir
 
-    unless File.exist? install_dir then
+    unless File.exist? install_dir
       system @git, 'clone', '--quiet', '--no-checkout',
              repo_cache_dir, install_dir
     end
@@ -117,7 +117,7 @@ class Gem::Source::Git < Gem::Source
   def cache # :nodoc:
     return unless @remote
 
-    if File.exist? repo_cache_dir then
+    if File.exist? repo_cache_dir
       Dir.chdir repo_cache_dir do
         system @git, 'fetch', '--quiet', '--force', '--tags',
                @repository, 'refs/heads/*:refs/heads/*'
@@ -206,7 +206,7 @@ class Gem::Source::Git < Gem::Source
 
         Dir.chdir directory do
           spec = Gem::Specification.load file
-          if spec then
+          if spec
             spec.base_dir = base_dir
 
             spec.extension_dir =
@@ -228,7 +228,7 @@ class Gem::Source::Git < Gem::Source
     require 'digest' # required here to avoid deadlocking in Gem.activate_bin_path (because digest is a gem on 2.5+)
 
     normalized =
-      if @repository =~ %r%^\w+://(\w+@)?% then
+      if @repository =~ %r%^\w+://(\w+@)?%
         uri = URI(@repository).normalize.to_s.sub %r%/$%,''
         uri.sub(/\A(\w+)/) { $1.downcase }
       else

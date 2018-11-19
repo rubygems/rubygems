@@ -57,7 +57,7 @@ class Gem::Resolver::Conflict
     requirement = dependency.requirement
     alternates  = dependency.matching_specs.map { |spec| spec.full_name }
 
-    unless alternates.empty? then
+    unless alternates.empty?
       matching = <<-MATCHING.chomp
 
   Gems matching %s:
@@ -109,7 +109,7 @@ class Gem::Resolver::Conflict
       q.pp @dependency
 
       q.breakable
-      if @dependency == @failed_dep then
+      if @dependency == @failed_dep
         q.text ' failed'
       else
         q.text ' failed dependency '

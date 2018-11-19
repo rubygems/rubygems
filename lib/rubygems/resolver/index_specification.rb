@@ -43,7 +43,7 @@ class Gem::Resolver::IndexSpecification < Gem::Resolver::Specification
       q.breakable
       q.text full_name
 
-      unless Gem::Platform::RUBY == @platform then
+      unless Gem::Platform::RUBY == @platform
         q.breakable
         q.text @platform.to_s
       end

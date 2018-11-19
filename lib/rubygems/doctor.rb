@@ -73,7 +73,7 @@ class Gem::Doctor
 
     Gem.use_paths @gem_repository.to_s
 
-    unless gem_repository? then
+    unless gem_repository?
       say 'This directory does not appear to be a RubyGems repository, ' +
           'skipping'
       say
@@ -115,7 +115,7 @@ class Gem::Doctor
 
       type = File.directory?(child) ? 'directory' : 'file'
 
-      action = if @dry_run then
+      action = if @dry_run
                  'Extra'
                else
                  FileUtils.rm_r(child)

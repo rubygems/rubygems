@@ -369,9 +369,9 @@ class Gem::RequestSet::GemDependencyAPI
     duplicate = @dependencies.include? name
 
     @dependencies[name] =
-      if requirements.empty? and not source_set then
+      if requirements.empty? and not source_set
         Gem::Requirement.default
-      elsif source_set then
+      elsif source_set
         Gem::Requirement.source_set
       else
         Gem::Requirement.create requirements
@@ -387,7 +387,7 @@ class Gem::RequestSet::GemDependencyAPI
 
     gem_requires name, options
 
-    if duplicate then
+    if duplicate
       warn <<-WARNING
 Gem dependencies file #{@path} requires #{name} more than once.
       WARNING
@@ -402,7 +402,7 @@ Gem dependencies file #{@path} requires #{name} more than once.
   # Returns +true+ if the gist or git option was handled.
 
   def gem_git(name, options) # :nodoc:
-    if gist = options.delete(:gist) then
+    if gist = options.delete(:gist)
       options[:git] = "https://gist.github.com/#{gist}.git"
     end
 
@@ -543,7 +543,7 @@ Gem dependencies file #{@path} includes git reference for both ref/branch and ta
 
       next false unless Gem::Platform.match platform
 
-      if engines = ENGINE_MAP[platform_name] then
+      if engines = ENGINE_MAP[platform_name]
         next false unless engines.include? Gem.ruby_engine
       end
 
@@ -565,8 +565,8 @@ Gem dependencies file #{@path} includes git reference for both ref/branch and ta
   # default file to the require list for +name+.
 
   def gem_requires(name, options) # :nodoc:
-    if options.include? :require then
-      if requires = options.delete(:require) then
+    if options.include? :require
+      if requires = options.delete(:require)
         @requires[name].concat Array requires
       end
     else
@@ -791,24 +791,24 @@ Gem dependencies file #{@path} includes git reference for both ref/branch and ta
 
     return true if @installing
 
-    unless RUBY_VERSION == version then
+    unless RUBY_VERSION == version
       message = "Your Ruby version is #{RUBY_VERSION}, " +
                 "but your #{gem_deps_file} requires #{version}"
 
       raise Gem::RubyVersionMismatch, message
     end
 
-    if engine and engine != Gem.ruby_engine then
+    if engine and engine != Gem.ruby_engine
       message = "Your Ruby engine is #{Gem.ruby_engine}, " +
                 "but your #{gem_deps_file} requires #{engine}"
 
       raise Gem::RubyVersionMismatch, message
     end
 
-    if engine_version then
+    if engine_version
       my_engine_version = Object.const_get "#{Gem.ruby_engine.upcase}_VERSION"
 
-      if engine_version != my_engine_version then
+      if engine_version != my_engine_version
         message =
           "Your Ruby engine version is #{Gem.ruby_engine} #{my_engine_version}, " +
           "but your #{gem_deps_file} requires #{engine} #{engine_version}"

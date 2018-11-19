@@ -108,7 +108,7 @@ module Gem::LocalRemoteOptions
 
       source << '/' if source !~ /\/\z/
 
-      if options.delete :sources_cleared then
+      if options.delete :sources_cleared
         Gem.sources = [source]
       else
         Gem.sources << source unless Gem.sources.include?(source)

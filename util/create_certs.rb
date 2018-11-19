@@ -59,11 +59,11 @@ class CertificateBuilder
       ef.create_extension('subjectKeyIdentifier', 'hash')
     ]
 
-    if cert != issuer_cert then # not self-signed cert
+    if cert != issuer_cert  # not self-signed cert
       cert.add_extension ef.create_extension('authorityKeyIdentifier', 'keyid:always')
     end
 
-    if is_ca then
+    if is_ca
       cert.add_extension ef.create_extension('basicConstraints', 'CA:TRUE', true)
       cert.add_extension ef.create_extension('keyUsage', 'keyCertSign', true)
     end
@@ -96,7 +96,7 @@ class CertificateBuilder
   end
 
   def validity_for(time)
-    if time == :end_of_time then
+    if time == :end_of_time
       validity    = @end_of_time
       validity_32 = @end_of_time_32
     else

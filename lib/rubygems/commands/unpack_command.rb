@@ -79,15 +79,15 @@ command help for an example.
       dependency = Gem::Dependency.new name, options[:version]
       path = get_path dependency
 
-      unless path then
+      unless path
         alert_error "Gem '#{name}' not installed nor fetchable."
         next
       end
 
-      if @options[:spec] then
+      if @options[:spec]
         spec, metadata = get_metadata path, security_policy
 
-        if metadata.nil? then
+        if metadata.nil?
           alert_error "--spec is unsupported on '#{name}' (old format gem)"
           next
         end

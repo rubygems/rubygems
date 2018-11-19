@@ -64,7 +64,7 @@ class Gem::Requirement
     when '!' then
       source_set
     else
-      if input.respond_to? :to_str then
+      if input.respond_to? :to_str
         new [input.to_str]
       else
         default

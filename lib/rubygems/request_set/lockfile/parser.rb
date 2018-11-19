@@ -44,7 +44,7 @@ class Gem::RequestSet::Lockfile::Parser
   def get(expected_types = nil, expected_value = nil) # :nodoc:
     token = @tokens.shift
 
-    if expected_types and not Array(expected_types).include? token.type then
+    if expected_types and not Array(expected_types).include? token.type
       unget token
 
       message = "unexpected token [#{token.type.inspect}, #{token.value.inspect}], " +
@@ -53,7 +53,7 @@ class Gem::RequestSet::Lockfile::Parser
       raise Gem::RequestSet::Lockfile::ParseError.new message, token.column, token.line, @filename
     end
 
-    if expected_value and expected_value != token.value then
+    if expected_value and expected_value != token.value
       unget token
 
       message = "unexpected token [#{token.type.inspect}, #{token.value.inspect}], " +
@@ -93,7 +93,7 @@ class Gem::RequestSet::Lockfile::Parser
 
         get :r_paren
 
-        if peek[0] == :bang then
+        if peek[0] == :bang
           requirements.clear
           requirements << pinned_requirement(token.value)
 
@@ -144,7 +144,7 @@ class Gem::RequestSet::Lockfile::Parser
         type = token.type
         data = token.value
 
-        if type == :text and column == 4 then
+        if type == :text and column == 4
           version, platform = data.split '-', 2
 
           platform =
@@ -183,7 +183,7 @@ class Gem::RequestSet::Lockfile::Parser
 
     type = peek.type
     value = peek.value
-    if type == :entry and %w[branch ref tag].include? value then
+    if type == :entry and %w[branch ref tag].include? value
       get
       get :text
 
@@ -214,7 +214,7 @@ class Gem::RequestSet::Lockfile::Parser
         type = token.type
         data = token.value
 
-        if type == :text and column == 4 then
+        if type == :text and column == 4
           last_spec = set.add_git_spec name, data, repository, revision, true
         else
           dependency = parse_dependency name, data
@@ -261,7 +261,7 @@ class Gem::RequestSet::Lockfile::Parser
         type = token.type
         data = token.value
 
-        if type == :text and column == 4 then
+        if type == :text and column == 4
           last_spec = set.add_vendor_gem name, directory
         else
           dependency = parse_dependency name, data

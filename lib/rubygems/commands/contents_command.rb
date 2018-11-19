@@ -73,7 +73,7 @@ prefix or only the files that are requireable.
 
     names.each do |name|
       found =
-        if options[:show_install_dir] then
+        if options[:show_install_dir]
           gem_install_dir name
         else
           gem_contents name
@@ -84,7 +84,7 @@ prefix or only the files that are requireable.
   end
 
   def files_in(spec)
-    if spec.default_gem? then
+    if spec.default_gem?
       files_in_default_gem spec
     else
       files_in_gem spec
@@ -138,7 +138,7 @@ prefix or only the files that are requireable.
   end
 
   def gem_names # :nodoc:
-    if options[:all] then
+    if options[:all]
       Gem::Specification.map(&:name)
     else
       get_all_gem_names
@@ -146,7 +146,7 @@ prefix or only the files that are requireable.
   end
 
   def path_description(spec_dirs) # :nodoc:
-    if spec_dirs.empty? then
+    if spec_dirs.empty?
       "default gem paths"
     else
       "specified path"
@@ -158,7 +158,7 @@ prefix or only the files that are requireable.
       absolute_path = File.join(prefix, basename)
       next if File.directory? absolute_path
 
-      if options[:prefix] then
+      if options[:prefix]
         say absolute_path
       else
         say basename
@@ -173,7 +173,7 @@ prefix or only the files that are requireable.
 
     say "Unable to find gem '#{name}' in #{@path_kind}"
 
-    if Gem.configuration.verbose then
+    if Gem.configuration.verbose
       say "\nDirectories searched:"
       @spec_dirs.sort.each { |dir| say dir }
     end

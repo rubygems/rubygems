@@ -79,8 +79,8 @@ class Gem::DependencyList
     seen = {}
 
     sorted.each do |spec|
-      if index = seen[spec.name] then
-        if result[index].version < spec.version then
+      if index = seen[spec.name]
+        if result[index].version < spec.version
           result[index] = spec
         end
       else
@@ -123,7 +123,7 @@ class Gem::DependencyList
             dep.requirement.satisfied_by? installed_spec.version
         }
 
-        unless inst or @specs.find { |s| s.satisfies_requirement? dep } then
+        unless inst or @specs.find { |s| s.satisfies_requirement? dep }
           unsatisfied[spec.name] << dep
           return unsatisfied if quick
         end
@@ -200,7 +200,7 @@ class Gem::DependencyList
         next if spec == other
 
         other.dependencies.each do |dep|
-          if spec.satisfies_requirement? dep then
+          if spec.satisfies_requirement? dep
             result[spec] << other
           end
         end
@@ -222,7 +222,7 @@ class Gem::DependencyList
 
     dependencies.each do |dep|
       specs.each do |spec|
-        if spec.satisfies_requirement? dep then
+        if spec.satisfies_requirement? dep
           yield spec
           break
         end

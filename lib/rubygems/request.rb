@@ -51,7 +51,7 @@ class Gem::Request
       Gem.configuration.ssl_verify_mode || OpenSSL::SSL::VERIFY_PEER
     store = OpenSSL::X509::Store.new
 
-    if Gem.configuration.ssl_client_cert then
+    if Gem.configuration.ssl_client_cert
       pem = File.read Gem.configuration.ssl_client_cert
       connection.cert = OpenSSL::X509::Certificate.new pem
       connection.key = OpenSSL::PKey::RSA.new pem
@@ -139,7 +139,7 @@ class Gem::Request
   def fetch
     request = @request_class.new @uri.request_uri
 
-    unless @uri.nil? || @uri.user.nil? || @uri.user.empty? then
+    unless @uri.nil? || @uri.user.nil? || @uri.user.empty?
       request.basic_auth Gem::UriFormatter.new(@uri.user).unescape,
                          Gem::UriFormatter.new(@uri.password).unescape
     end
@@ -148,7 +148,7 @@ class Gem::Request
     request.add_field 'Connection', 'keep-alive'
     request.add_field 'Keep-Alive', '30'
 
-    if @last_modified then
+    if @last_modified
       request.add_field 'If-Modified-Since', @last_modified.httpdate
     end
 
@@ -173,7 +173,7 @@ class Gem::Request
 
     uri = URI(Gem::UriFormatter.new(env_proxy).normalize)
 
-    if uri and uri.user.nil? and uri.password.nil? then
+    if uri and uri.user.nil? and uri.password.nil?
       user     = ENV["#{_scheme}_proxy_user"] || ENV["#{_SCHEME}_PROXY_USER"]
       password = ENV["#{_scheme}_proxy_pass"] || ENV["#{_SCHEME}_PROXY_PASS"]
 
@@ -276,9 +276,9 @@ class Gem::Request
     ruby_version += 'dev' if RUBY_PATCHLEVEL == -1
 
     ua << " Ruby/#{ruby_version} (#{RUBY_RELEASE_DATE}"
-    if RUBY_PATCHLEVEL >= 0 then
+    if RUBY_PATCHLEVEL >= 0
       ua << " patchlevel #{RUBY_PATCHLEVEL}"
-    elsif defined?(RUBY_REVISION) then
+    elsif defined?(RUBY_REVISION)
       ua << " revision #{RUBY_REVISION}"
     end
     ua << ")"

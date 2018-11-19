@@ -114,9 +114,9 @@ class Gem::RemoteFetcher
 
   def download(spec, source_uri, install_dir = Gem.dir)
     cache_dir =
-      if Dir.pwd == install_dir then # see fetch_command
+      if Dir.pwd == install_dir  # see fetch_command
         install_dir
-      elsif File.writable? install_dir then
+      elsif File.writable? install_dir
         File.join install_dir, "cache"
       else
         File.join Gem.user_dir, "cache"
@@ -149,7 +149,7 @@ class Gem::RemoteFetcher
     # REFACTOR: be sure to clean up fake fetcher when you do this... cleaner
     case scheme
     when 'http', 'https', 's3' then
-      unless File.exist? local_gem_path then
+      unless File.exist? local_gem_path
         begin
           verbose "Downloading gem #{gem_file_name}"
 
@@ -183,7 +183,7 @@ class Gem::RemoteFetcher
       verbose "Using local gem #{local_gem_path}"
     when nil then # TODO test for local overriding cache
       source_path = if Gem.win_platform? && source_uri.scheme &&
-                       !source_uri.path.include?(':') then
+                       !source_uri.path.include?(':')
                       "#{source_uri.scheme}:#{source_uri.path}"
                     else
                       source_uri.path

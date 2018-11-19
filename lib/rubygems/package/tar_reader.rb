@@ -92,7 +92,7 @@ class Gem::Package::TarReader
   # NOTE: Do not call #rewind during #each
 
   def rewind
-    if @init_pos == 0 then
+    if @init_pos == 0
       @io.rewind
     else
       @io.pos = @init_pos

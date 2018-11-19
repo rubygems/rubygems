@@ -120,7 +120,7 @@ class Gem::RequestSet
   # Declare that a gem of name +name+ with +reqs+ requirements is needed.
 
   def gem(name, *reqs)
-    if dep = @dependency_names[name] then
+    if dep = @dependency_names[name]
       dep.requirement.concat reqs
     else
       dep = Gem::Dependency.new name, *reqs
@@ -181,10 +181,10 @@ class Gem::RequestSet
 
     # Install requested gems after they have been downloaded
     sorted_requests.each do |req|
-      if req.installed? then
+      if req.installed?
         req.spec.spec.build_extensions
 
-        if @always_install.none? { |spec| spec == req.spec.spec } then
+        if @always_install.none? { |spec| spec == req.spec.spec }
           yield req, nil if block_given?
           next
         end
@@ -255,7 +255,7 @@ class Gem::RequestSet
     else
       installed = install options, &block
 
-      if options.fetch :lock, true then
+      if options.fetch :lock, true
         lockfile =
           Gem::RequestSet::Lockfile.build self, gemdeps, gem_deps_api.dependencies
         lockfile.write
@@ -283,7 +283,7 @@ class Gem::RequestSet
     sorted_requests.each do |request|
       spec = request.spec
 
-      if existing.find { |s| s.full_name == spec.full_name } then
+      if existing.find { |s| s.full_name == spec.full_name }
         yield request, nil if block_given?
         next
       end
@@ -352,25 +352,25 @@ class Gem::RequestSet
     q.group 2, '[RequestSet:', ']' do
       q.breakable
 
-      if @remote then
+      if @remote
         q.text 'remote'
         q.breakable
       end
 
-      if @prerelease then
+      if @prerelease
         q.text 'prerelease'
         q.breakable
       end
 
-      if @development_shallow then
+      if @development_shallow
         q.text 'shallow development'
         q.breakable
-      elsif @development then
+      elsif @development
         q.text 'development'
         q.breakable
       end
 
-      if @soft_missing then
+      if @soft_missing
         q.text 'soft missing'
       end
 
@@ -461,7 +461,7 @@ class Gem::RequestSet
         dep.match? r.spec.name, r.spec.version, @prerelease
       }
 
-      unless match then
+      unless match
         next if dep.type == :development and @development_shallow
         next if @soft_missing
         raise Gem::DependencyError,

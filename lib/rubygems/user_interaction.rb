@@ -247,8 +247,8 @@ class Gem::StreamUI
   # default.
 
   def ask_yes_no(question, default=nil)
-    unless tty? then
-      if default.nil? then
+    unless tty?
+      if default.nil?
         raise Gem::OperationNotSupportedError,
               "Not connected to a tty and no default specified"
       else

@@ -31,7 +31,7 @@ module Kernel
   # The normal <tt>require</tt> functionality of returning false if
   # that file has already been loaded is preserved.
 
-  def require path
+  def require(path)
     RUBYGEMS_ACTIVATION_MONITOR.enter
 
     path = path.to_path if path.respond_to? :to_path

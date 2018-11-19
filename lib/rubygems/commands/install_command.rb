@@ -188,7 +188,7 @@ You can use `i` command instead of `install`.
     terminate_interaction
   end
 
-  def install_gem name, version # :nodoc:
+  def install_gem(name, version) # :nodoc:
     return if options[:conservative] and
       not Gem::Dependency.new(name, version).matching_specs.empty?
 
@@ -216,7 +216,7 @@ You can use `i` command instead of `install`.
     end
   end
 
-  def install_gem_without_dependencies name, req # :nodoc:
+  def install_gem_without_dependencies(name, req) # :nodoc:
     gem = nil
 
     if local? then
@@ -292,7 +292,7 @@ You can use `i` command instead of `install`.
     require 'rubygems/rdoc'
   end
 
-  def show_install_errors errors # :nodoc:
+  def show_install_errors(errors) # :nodoc:
     return unless errors
 
     errors.each do |x|

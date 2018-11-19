@@ -32,7 +32,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
       'lib' => ['lib'].freeze
     }.freeze
 
-    def initialize data, extensions
+    def initialize(data, extensions)
       parts          = data[PREFIX.length..-1].split(" ".freeze, 4)
       @name          = parts[0].freeze
       @version       = if Gem::Version.correct?(parts[1])
@@ -56,17 +56,17 @@ class Gem::StubSpecification < Gem::BasicSpecification
     end
   end
 
-  def self.default_gemspec_stub filename, base_dir, gems_dir
+  def self.default_gemspec_stub(filename, base_dir, gems_dir)
     new filename, base_dir, gems_dir, true
   end
 
-  def self.gemspec_stub filename, base_dir, gems_dir
+  def self.gemspec_stub(filename, base_dir, gems_dir)
     new filename, base_dir, gems_dir, false
   end
 
   attr_reader :base_dir, :gems_dir
 
-  def initialize filename, base_dir, gems_dir, default_gem
+  def initialize(filename, base_dir, gems_dir, default_gem)
     super()
     filename.untaint
 

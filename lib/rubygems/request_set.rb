@@ -91,7 +91,7 @@ class Gem::RequestSet
   #
   #   set = Gem::RequestSet.new nokogiri, pg
 
-  def initialize *deps
+  def initialize(*deps)
     @dependencies = deps
 
     @always_install      = []
@@ -119,7 +119,7 @@ class Gem::RequestSet
   ##
   # Declare that a gem of name +name+ with +reqs+ requirements is needed.
 
-  def gem name, *reqs
+  def gem(name, *reqs)
     if dep = @dependency_names[name] then
       dep.requirement.concat reqs
     else
@@ -132,7 +132,7 @@ class Gem::RequestSet
   ##
   # Add +deps+ Gem::Dependency objects to the set.
 
-  def import deps
+  def import(deps)
     @dependencies.concat deps
   end
 
@@ -143,7 +143,7 @@ class Gem::RequestSet
   # The +installer+ will be +nil+ if a gem matching the request was already
   # installed.
 
-  def install options, &block # :yields: request, installer
+  def install(options, &block) # :yields: request, installer
     if dir = options[:install_dir]
       requests = install_into dir, false, options, &block
       return requests
@@ -230,7 +230,7 @@ class Gem::RequestSet
   # If +:without_groups+ is given in the +options+, those groups in the gem
   # dependencies file are not used.  See Gem::Installer for other +options+.
 
-  def install_from_gemdeps options, &block
+  def install_from_gemdeps(options, &block)
     gemdeps = options[:gemdeps]
 
     @install_dir = options[:install_dir] || Gem.dir
@@ -265,7 +265,7 @@ class Gem::RequestSet
     end
   end
 
-  def install_into dir, force = true, options = {}
+  def install_into(dir, force = true, options = {})
     gem_home, ENV['GEM_HOME'] = ENV['GEM_HOME'], dir
 
     existing = force ? [] : specs_in(dir)
@@ -305,7 +305,7 @@ class Gem::RequestSet
   ##
   # Call hooks on installed gems
 
-  def install_hooks requests, options
+  def install_hooks(requests, options)
     specs = requests.map do |request|
       case request
       when Gem::Resolver::ActivationRequest then
@@ -327,7 +327,7 @@ class Gem::RequestSet
   ##
   # Load a dependency management file.
 
-  def load_gemdeps path, without_groups = [], installing = false
+  def load_gemdeps(path, without_groups = [], installing = false)
     @git_set    = Gem::Resolver::GitSet.new
     @vendor_set = Gem::Resolver::VendorSet.new
     @source_set = Gem::Resolver::SourceSet.new
@@ -348,7 +348,7 @@ class Gem::RequestSet
     gf.load
   end
 
-  def pretty_print q # :nodoc:
+  def pretty_print(q) # :nodoc:
     q.group 2, '[RequestSet:', ']' do
       q.breakable
 
@@ -394,7 +394,7 @@ class Gem::RequestSet
   # Resolve the requested dependencies and return an Array of Specification
   # objects to be activated.
 
-  def resolve set = Gem::Resolver::BestSet.new
+  def resolve(set = Gem::Resolver::BestSet.new)
     @sets << set
     @sets << @git_set
     @sets << @vendor_set
@@ -443,17 +443,17 @@ class Gem::RequestSet
     @specs ||= @requests.map { |r| r.full_spec }
   end
 
-  def specs_in dir
+  def specs_in(dir)
     Gem::Util.glob_files_in_dir("*.gemspec", File.join(dir, "specifications")).map do |g|
       Gem::Specification.load g
     end
   end
 
-  def tsort_each_node &block # :nodoc:
+  def tsort_each_node(&block) # :nodoc:
     @requests.each(&block)
   end
 
-  def tsort_each_child node # :nodoc:
+  def tsort_each_child(node) # :nodoc:
     node.spec.dependencies.each do |dep|
       next if dep.type == :development and not @development
 

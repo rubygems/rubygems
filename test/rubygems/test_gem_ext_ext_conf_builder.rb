@@ -216,7 +216,7 @@ end
     assert_equal 'Makefile not found', error.message
   end
 
-  def configure_args args = nil
+  def configure_args(args = nil)
     configure_args = RbConfig::CONFIG['configure_args']
     RbConfig::CONFIG['configure_args'] = args if args
 

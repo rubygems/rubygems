@@ -384,13 +384,13 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
     warning "#{executable_path} is missing #! line"
   end
 
-  def warning statement # :nodoc:
+  def warning(statement) # :nodoc:
     @warnings += 1
 
     alert_warning statement
   end
 
-  def error statement # :nodoc:
+  def error(statement) # :nodoc:
     raise Gem::InvalidSpecificationException, statement
   ensure
     alert_warning help_text

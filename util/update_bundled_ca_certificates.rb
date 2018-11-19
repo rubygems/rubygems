@@ -17,7 +17,7 @@ HOSTNAMES_TO_MAP = [
   'index.rubygems.org'
 ].freeze
 
-def connect_to uri, store
+def connect_to(uri, store)
   # None of the URIs are IPv6, so URI::Generic#hostname(ruby 1.9.3+) isn't needed
   http = Net::HTTP.new uri.host, uri.port
 
@@ -33,7 +33,7 @@ rescue OpenSSL::SSL::SSLError
   false
 end
 
-def load_certificates io
+def load_certificates(io)
   cert_texts =
     io.read.scan(/^-{5}BEGIN CERTIFICATE-{5}.*?^-{5}END CERTIFICATE-{5}/m)
 
@@ -42,13 +42,13 @@ def load_certificates io
   end
 end
 
-def show_certificates certificates
+def show_certificates(certificates)
   certificates.each do |certificate|
     p certificate.subject.to_a
   end
 end
 
-def store_for certificates
+def store_for(certificates)
   store = OpenSSL::X509::Store.new
   certificates.each do |certificate|
     store.add_cert certificate
@@ -57,7 +57,7 @@ def store_for certificates
   store
 end
 
-def test_certificates certificates, uri
+def test_certificates(certificates, uri)
   1.upto certificates.length do |n|
     puts "combinations of #{n} certificates"
     certificates.combination(n).each do |combination|
@@ -76,7 +76,7 @@ def test_certificates certificates, uri
   end
 end
 
-def test_uri uri, certificates
+def test_uri(uri, certificates)
   store = store_for certificates
 
   verified = connect_to uri, store
@@ -86,7 +86,7 @@ def test_uri uri, certificates
   nil
 end
 
-def hostname_certificate_mapping certificates
+def hostname_certificate_mapping(certificates)
   mapping = {}
   HOSTNAMES_TO_MAP.each do |hostname|
     uri = URI("https://#{hostname}")
@@ -98,7 +98,7 @@ def hostname_certificate_mapping certificates
   mapping
 end
 
-def write_certificates certificates
+def write_certificates(certificates)
   mapping = hostname_certificate_mapping(certificates)
   mapping.each do |hostname, certificate|
     subject = certificate.subject.to_a

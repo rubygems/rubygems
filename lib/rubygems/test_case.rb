@@ -84,7 +84,7 @@ module Gem
   # Allows setting path to Ruby.  This method is available when requiring
   # 'rubygems/test_case'
 
-  def self.ruby= ruby
+  def self.ruby=(ruby)
     @ruby = ruby
   end
 
@@ -115,7 +115,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
   attr_accessor :uri # :nodoc:
 
-  def assert_activate expected, *specs
+  def assert_activate(expected, *specs)
     specs.each do |spec|
       case spec
       when String then
@@ -133,7 +133,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   end
 
   # TODO: move to minitest
-  def assert_path_exists path, msg = nil
+  def assert_path_exists(path, msg = nil)
     msg = message(msg) { "Expected path '#{path}' to exist" }
     assert File.exist?(path), msg
   end
@@ -142,7 +142,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   # Sets the ENABLE_SHARED entry in RbConfig::CONFIG to +value+ and restores
   # the original value when the block ends
 
-  def enable_shared value
+  def enable_shared(value)
     enable_shared = RbConfig::CONFIG['ENABLE_SHARED']
     RbConfig::CONFIG['ENABLE_SHARED'] = value
 
@@ -156,7 +156,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   end
 
   # TODO: move to minitest
-  def refute_path_exists path, msg = nil
+  def refute_path_exists(path, msg = nil)
     msg = message(msg) { "Expected path '#{path}' to not exist" }
     refute File.exist?(path), msg
   end
@@ -513,7 +513,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   #
   # Yields the +specification+ to the block, if given
 
-  def git_gem name = 'a', version = 1
+  def git_gem(name = 'a', version = 1)
     have_git?
 
     directory = File.join 'git', name
@@ -557,7 +557,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     skip 'cannot find git executable, use GIT environment variable to set'
   end
 
-  def in_path? executable # :nodoc:
+  def in_path?(executable) # :nodoc:
     return true if %r%\A([A-Z]:|/)% =~ executable and File.exist? executable
 
     ENV['PATH'].split(File::PATH_SEPARATOR).any? do |directory|
@@ -568,7 +568,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   ##
   # Builds and installs the Gem::Specification +spec+
 
-  def install_gem spec, options = {}
+  def install_gem(spec, options = {})
     require 'rubygems/installer'
 
     gem = File.join @tempdir, "gems", "#{spec.full_name}.gem"
@@ -589,17 +589,17 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   ##
   # Builds and installs the Gem::Specification +spec+ into the user dir
 
-  def install_gem_user spec
+  def install_gem_user(spec)
     install_gem spec, :user_install => true
   end
 
   ##
   # Uninstalls the Gem::Specification +spec+
-  def uninstall_gem spec
+  def uninstall_gem(spec)
     require 'rubygems/uninstaller'
 
     Class.new(Gem::Uninstaller) {
-      def ask_if_ok spec
+      def ask_if_ok(spec)
         true
       end
     }.new(spec.name, :executables => true, :user_install => true).uninstall
@@ -704,7 +704,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   ##
   # TODO:  remove in RubyGems 4.0
 
-  def quick_spec name, version = '2' # :nodoc:
+  def quick_spec(name, version = '2') # :nodoc:
     util_spec name, version
   end
   deprecate :quick_spec, :util_spec, 2018, 12
@@ -808,7 +808,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   #
   # TODO:  remove in RubyGems 4.0
 
-  def new_spec name, version, deps = nil, *files # :nodoc:
+  def new_spec(name, version, deps = nil, *files) # :nodoc:
     require 'rubygems/specification'
 
     spec = Gem::Specification.new do |s|
@@ -872,7 +872,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   # Creates a spec with +name+, +version+.  +deps+ can specify the dependency
   # or a +block+ can be given for full customization of the specification.
 
-  def util_spec name, version = 2, deps = nil, *files # :yields: specification
+  def util_spec(name, version = 2, deps = nil, *files) # :yields: specification
     raise "deps or block, not both" if deps and block_given?
 
     spec = Gem::Specification.new do |s|
@@ -1359,7 +1359,7 @@ Also, a list:
   ##
   # Construct a new Gem::Dependency.
 
-  def dep name, *requirements
+  def dep(name, *requirements)
     Gem::Dependency.new name, *requirements
   end
 
@@ -1368,7 +1368,7 @@ Also, a list:
   # Gem::Dependency +dep+, a +from_name+ and +from_version+ requesting the
   # dependency and a +parent+ DependencyRequest
 
-  def dependency_request dep, from_name, from_version, parent = nil
+  def dependency_request(dep, from_name, from_version, parent = nil)
     remote = Gem::Source.new @uri
 
     unless parent then
@@ -1386,7 +1386,7 @@ Also, a list:
   ##
   # Constructs a new Gem::Requirement.
 
-  def req *requirements
+  def req(*requirements)
     return requirements.first if Gem::Requirement === requirements.first
     Gem::Requirement.create requirements
   end
@@ -1394,7 +1394,7 @@ Also, a list:
   ##
   # Constructs a new Gem::Specification.
 
-  def spec name, version, &block
+  def spec(name, version, &block)
     Gem::Specification.new name, v(version), &block
   end
 
@@ -1418,7 +1418,7 @@ Also, a list:
   #     end
   #   end
 
-  def spec_fetcher repository = @gem_repo
+  def spec_fetcher(repository = @gem_repo)
     Gem::TestCase::SpecFetcherSetup.declare self, repository do |spec_fetcher_setup|
       yield spec_fetcher_setup if block_given?
     end
@@ -1427,7 +1427,7 @@ Also, a list:
   ##
   # Construct a new Gem::Version.
 
-  def v string
+  def v(string)
     Gem::Version.create string
   end
 
@@ -1437,7 +1437,7 @@ Also, a list:
   #
   # Yields the +specification+ to the block, if given
 
-  def vendor_gem name = 'a', version = 1
+  def vendor_gem(name = 'a', version = 1)
     directory = File.join 'vendor', name
 
     FileUtils.mkdir_p directory
@@ -1451,7 +1451,7 @@ Also, a list:
   #
   # Yields the +specification+ to the block, if given
 
-  def save_gemspec name = 'a', version = 1, directory = '.'
+  def save_gemspec(name = 'a', version = 1, directory = '.')
     vendor_spec = Gem::Specification.new name, version do |specification|
       yield specification if block_given?
     end
@@ -1488,7 +1488,7 @@ Also, a list:
     ##
     # Adds +spec+ to this set.
 
-    def add spec
+    def add(spec)
       @specs << spec
     end
 
@@ -1512,7 +1512,7 @@ Also, a list:
     # Loads a Gem::Specification from this set which has the given +name+,
     # version +ver+, +platform+.  The +source+ is ignored.
 
-    def load_spec name, ver, platform, source
+    def load_spec(name, ver, platform, source)
       dep = Gem::Dependency.new name, ver
       spec = find_spec dep
 
@@ -1521,14 +1521,14 @@ Also, a list:
       end
     end
 
-    def prefetch reqs # :nodoc:
+    def prefetch(reqs) # :nodoc:
     end
   end
 
   ##
   # Loads certificate named +cert_name+ from <tt>test/rubygems/</tt>.
 
-  def self.load_cert cert_name
+  def self.load_cert(cert_name)
     cert_file = cert_path cert_name
 
     cert = File.read cert_file
@@ -1540,7 +1540,7 @@ Also, a list:
   # Returns the path to the certificate named +cert_name+ from
   # <tt>test/rubygems/</tt>.
 
-  def self.cert_path cert_name
+  def self.cert_path(cert_name)
     if 32 == (Time.at(2**32) rescue 32) then
       cert_file =
         File.expand_path "../../../test/rubygems/#{cert_name}_cert_32.pem",
@@ -1555,7 +1555,7 @@ Also, a list:
   ##
   # Loads an RSA private key named +key_name+ with +passphrase+ in <tt>test/rubygems/</tt>
 
-  def self.load_key key_name, passphrase = nil
+  def self.load_key(key_name, passphrase = nil)
     key_file = key_path key_name
 
     key = File.read key_file
@@ -1566,7 +1566,7 @@ Also, a list:
   ##
   # Returns the path to the key named +key_name+ from <tt>test/rubygems</tt>
 
-  def self.key_path key_name
+  def self.key_path(key_name)
     File.expand_path "../../../test/rubygems/#{key_name}_key.pem", __FILE__
   end
 

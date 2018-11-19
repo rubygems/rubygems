@@ -101,7 +101,7 @@ class Gem::Installer
   ##
   # Construct an installer object for the gem file located at +path+
 
-  def self.at path, options = {}
+  def self.at(path, options = {})
     security_policy = options[:security_policy]
     package = Gem::Package.new path, security_policy
     new package, options
@@ -118,7 +118,7 @@ class Gem::Installer
       @spec = spec
     end
 
-    def extract_files destination_dir, pattern = '*'
+    def extract_files(destination_dir, pattern = '*')
       FileUtils.mkdir_p destination_dir
 
       spec.files.each do |file|
@@ -129,7 +129,7 @@ class Gem::Installer
       end
     end
 
-    def copy_to path
+    def copy_to(path)
     end
   end
 
@@ -137,7 +137,7 @@ class Gem::Installer
   # Construct an installer object for an ephemeral gem (one where we don't
   # actually have a .gem file, just a spec)
 
-  def self.for_spec spec, options = {}
+  def self.for_spec(spec, options = {})
     # FIXME: we should have a real Package class for this
     new FakePackage.new(spec), options
   end
@@ -209,7 +209,7 @@ class Gem::Installer
   #
   # Otherwise +filename+ is overwritten.
 
-  def check_executable_overwrite filename # :nodoc:
+  def check_executable_overwrite(filename) # :nodoc:
     return if @force
 
     generated_bin = File.join @bin_dir, formatted_program_filename(filename)

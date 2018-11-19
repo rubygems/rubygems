@@ -90,7 +90,7 @@ module Gem::GemcutterUtilities
   # Signs in with the RubyGems API at +sign_in_host+ and sets the rubygems API
   # key.
 
-  def sign_in sign_in_host = nil
+  def sign_in(sign_in_host = nil)
     sign_in_host ||= self.host
     return if api_key
 
@@ -139,7 +139,7 @@ module Gem::GemcutterUtilities
   # If the response was not successful, shows an error to the user including
   # the +error_prefix+ and the response body.
 
-  def with_response response, error_prefix = nil
+  def with_response(response, error_prefix = nil)
     case response
     when Net::HTTPSuccess then
       if block_given? then
@@ -156,7 +156,7 @@ module Gem::GemcutterUtilities
     end
   end
 
-  def set_api_key host, key
+  def set_api_key(host, key)
     if host == Gem::DEFAULT_HOST
       Gem.configuration.rubygems_api_key = key
     else

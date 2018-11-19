@@ -105,7 +105,7 @@ class Gem::Ext::Builder
   # have build arguments, saved, set +build_args+ which is an ARGV-style
   # array.
 
-  def initialize spec, build_args = spec.build_args
+  def initialize(spec, build_args = spec.build_args)
     @spec       = spec
     @build_args = build_args
     @gem_dir    = spec.full_gem_path
@@ -116,7 +116,7 @@ class Gem::Ext::Builder
   ##
   # Chooses the extension builder class for +extension+
 
-  def builder_for extension # :nodoc:
+  def builder_for(extension) # :nodoc:
     case extension
     when /extconf/ then
       Gem::Ext::ExtConfBuilder
@@ -138,7 +138,7 @@ class Gem::Ext::Builder
   ##
   # Logs the build +output+ in +build_dir+, then raises Gem::Ext::BuildError.
 
-  def build_error build_dir, output, backtrace = nil # :nodoc:
+  def build_error(build_dir, output, backtrace = nil) # :nodoc:
     gem_make_out = write_gem_make_out output
 
     message = <<-EOF
@@ -153,7 +153,7 @@ EOF
     raise Gem::Ext::BuildError, message, backtrace
   end
 
-  def build_extension extension, dest_path # :nodoc:
+  def build_extension(extension, dest_path) # :nodoc:
     results = []
 
     # FIXME: Determine if this line is necessary and, if so, why.
@@ -235,7 +235,7 @@ EOF
   ##
   # Writes +output+ to gem_make.out in the extension install directory.
 
-  def write_gem_make_out output # :nodoc:
+  def write_gem_make_out(output) # :nodoc:
     destination = File.join @spec.extension_dir, 'gem_make.out'
 
     FileUtils.mkdir_p @spec.extension_dir

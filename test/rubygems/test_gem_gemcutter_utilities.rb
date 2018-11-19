@@ -187,7 +187,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
     assert_match %r{Access Denied.}, @sign_in_ui.output
   end
 
-  def util_sign_in response, host = nil, args = []
+  def util_sign_in(response, host = nil, args = [])
     email    = 'you@example.com'
     password = 'secret'
 

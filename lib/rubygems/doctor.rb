@@ -41,7 +41,7 @@ class Gem::Doctor
   #
   # If +dry_run+ is true no files or directories will be removed.
 
-  def initialize gem_repository, dry_run = false
+  def initialize(gem_repository, dry_run = false)
     @gem_repository = gem_repository
     @dry_run        = dry_run
 
@@ -99,7 +99,7 @@ class Gem::Doctor
   ##
   # Removes files in +sub_directory+ with +extension+
 
-  def doctor_child sub_directory, extension # :nodoc:
+  def doctor_child(sub_directory, extension) # :nodoc:
     directory = File.join(@gem_repository, sub_directory)
 
     Dir.entries(directory).sort.each do |ent|

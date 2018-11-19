@@ -151,7 +151,7 @@ If no gems are named all gems in GEM_HOME are cleaned.
     end
   end
 
-  def uninstall_dep spec
+  def uninstall_dep(spec)
     return unless @full.ok_to_remove?(spec.full_name, options[:check_dev])
 
     if options[:dryrun] then

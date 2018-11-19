@@ -65,7 +65,7 @@ class Gem::BasicSpecification
   ##
   # Return true if this spec can require +file+.
 
-  def contains_requirable_file? file
+  def contains_requirable_file?(file)
     if @ignored then
       return false
     elsif missing_extensions? then
@@ -160,7 +160,7 @@ class Gem::BasicSpecification
   # Full path of the target library file.
   # If the file is not in this gem, return nil.
 
-  def to_fullpath path
+  def to_fullpath(path)
     if activated? then
       @paths_map ||= {}
       @paths_map[path] ||=
@@ -263,7 +263,7 @@ class Gem::BasicSpecification
   ##
   # Return all files in this gem that match for +glob+.
 
-  def matches_for_glob glob # TODO: rename?
+  def matches_for_glob(glob) # TODO: rename?
     # TODO: do we need these?? Kill it
     glob = File.join(self.lib_dirs_glob, glob)
 
@@ -316,7 +316,7 @@ class Gem::BasicSpecification
 
   def have_extensions?; !extensions.empty?; end
 
-  def have_file? file, suffixes
+  def have_file?(file, suffixes)
     return true if raw_require_paths.any? do |path|
       base = File.join(gems_dir, full_name, path.untaint, file).untaint
       suffixes.any? { |suf| File.file? base + suf }

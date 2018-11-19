@@ -308,7 +308,7 @@ By default, this RubyGems will install gem as:
     end
   end
 
-  def install_file file, dest_dir
+  def install_file(file, dest_dir)
     dest_file = File.join dest_dir, file
     dest_dir = File.dirname dest_file
     unless File.directory? dest_dir
@@ -484,13 +484,13 @@ By default, this RubyGems will install gem as:
     [lib_dir, bin_dir]
   end
 
-  def pem_files_in dir
+  def pem_files_in(dir)
     Dir.chdir dir do
       Dir[File.join('**', '*pem')]
     end
   end
 
-  def rb_files_in dir
+  def rb_files_in(dir)
     Dir.chdir dir do
       Dir[File.join('**', '*rb')]
     end
@@ -505,7 +505,7 @@ By default, this RubyGems will install gem as:
   end
 
   # for cleanup old bundler files
-  def template_files_in dir
+  def template_files_in(dir)
     Dir.chdir dir do
       (Dir[File.join('templates', '**', '{*,.*}')]).
         select{|f| !File.directory?(f)}
@@ -544,7 +544,7 @@ abort "#{deprecation_message}"
     end
   end
 
-  def remove_old_lib_files lib_dir
+  def remove_old_lib_files(lib_dir)
     lib_dirs = { File.join(lib_dir, 'rubygems') => 'lib/rubygems' }
     lib_dirs[File.join(lib_dir, 'bundler')] = 'bundler/lib/bundler' if Gem::USE_BUNDLER_FOR_GEMDEPS
     lib_dirs.each do |old_lib_dir, new_lib_dir|

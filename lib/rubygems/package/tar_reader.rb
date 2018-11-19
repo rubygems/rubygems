@@ -104,7 +104,7 @@ class Gem::Package::TarReader
   # yields it.  Rewinds the tar file to the beginning when the block
   # terminates.
 
-  def seek name # :yields: entry
+  def seek(name) # :yields: entry
     found = find do |entry|
       entry.full_name == name
     end

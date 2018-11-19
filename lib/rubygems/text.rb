@@ -40,7 +40,7 @@ module Gem::Text
     result.join("\n").gsub(/^/, " " * indent)
   end
 
-  def min3 a, b, c # :nodoc:
+  def min3(a, b, c) # :nodoc:
     if a < b && a < c then
       a
     elsif b < c then
@@ -52,7 +52,7 @@ module Gem::Text
 
   # This code is based directly on the Text gem implementation
   # Returns a value representing the "cost" of transforming str1 into str2
-  def levenshtein_distance str1, str2
+  def levenshtein_distance(str1, str2)
     s = str1
     t = str2
     n = s.length

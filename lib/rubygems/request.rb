@@ -10,7 +10,7 @@ class Gem::Request
 
   ###
   # Legacy.  This is used in tests.
-  def self.create_with_proxy uri, request_class, last_modified, proxy # :nodoc:
+  def self.create_with_proxy(uri, request_class, last_modified, proxy) # :nodoc:
     cert_files = get_cert_files
     proxy ||= get_proxy_from_env(uri.scheme)
     pool       = ConnectionPools.new proxy_uri(proxy), cert_files
@@ -18,7 +18,7 @@ class Gem::Request
     new(uri, request_class, last_modified, pool.pool_for(uri))
   end
 
-  def self.proxy_uri proxy # :nodoc:
+  def self.proxy_uri(proxy) # :nodoc:
     case proxy
     when :no_proxy then nil
     when URI::HTTP then proxy
@@ -85,7 +85,7 @@ class Gem::Request
             'Unable to require openssl, install OpenSSL and rebuild Ruby (preferred) or use non-HTTPS sources')
   end
 
-  def self.verify_certificate store_context
+  def self.verify_certificate(store_context)
     depth  = store_context.error_depth
     error  = store_context.error_string
     number = store_context.error
@@ -98,7 +98,7 @@ class Gem::Request
     ui.alert_error extra_message if extra_message
   end
 
-  def self.verify_certificate_message error_number, cert
+  def self.verify_certificate_message(error_number, cert)
     return unless cert
     case error_number
     when OpenSSL::X509::V_ERR_CERT_HAS_EXPIRED then
@@ -161,7 +161,7 @@ class Gem::Request
   # Returns a proxy URI for the given +scheme+ if one is set in the
   # environment variables.
 
-  def self.get_proxy_from_env scheme = 'http'
+  def self.get_proxy_from_env(scheme = 'http')
     _scheme = scheme.downcase
     _SCHEME = scheme.upcase
     env_proxy = ENV["#{_scheme}_proxy"] || ENV["#{_SCHEME}_PROXY"]
@@ -184,7 +184,7 @@ class Gem::Request
     uri
   end
 
-  def perform_request request # :nodoc:
+  def perform_request(request) # :nodoc:
     connection = connection_for @uri
 
     retried = false

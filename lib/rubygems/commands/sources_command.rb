@@ -38,7 +38,7 @@ class Gem::Commands::SourcesCommand < Gem::Command
     add_proxy_option
   end
 
-  def add_source source_uri # :nodoc:
+  def add_source(source_uri) # :nodoc:
     check_rubygems_https source_uri
 
     source = Gem::Source.new source_uri
@@ -62,7 +62,7 @@ class Gem::Commands::SourcesCommand < Gem::Command
     end
   end
 
-  def check_rubygems_https source_uri # :nodoc:
+  def check_rubygems_https(source_uri) # :nodoc:
     uri = URI source_uri
 
     if uri.scheme and uri.scheme.downcase == 'http' and
@@ -175,7 +175,7 @@ To remove a source use the --remove argument:
     list if list?
   end
 
-  def remove_source source_uri # :nodoc:
+  def remove_source(source_uri) # :nodoc:
     unless Gem.sources.include? source_uri then
       say "source #{source_uri} not present in cache"
     else
@@ -195,7 +195,7 @@ To remove a source use the --remove argument:
     say "source cache successfully updated"
   end
 
-  def remove_cache_file desc, path # :nodoc:
+  def remove_cache_file(desc, path) # :nodoc:
     FileUtils.rm_rf path
 
     if not File.exist?(path) then

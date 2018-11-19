@@ -4,7 +4,7 @@ require 'rubygems/doctor'
 
 class TestGemDoctor < Gem::TestCase
 
-  def gem name
+  def gem(name)
     spec = quick_gem name do |gem|
       gem.files = %W[lib/#{name}.rb Rakefile]
     end

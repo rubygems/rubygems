@@ -2131,7 +2131,7 @@ dependencies: []
       remove_method :default_ext_dir_for
     end
 
-    def Gem.default_ext_dir_for base_dir
+    def Gem.default_ext_dir_for(base_dir)
       '/foo'
     end
 
@@ -2613,7 +2613,7 @@ end
     end
   end
 
-  def x s; s.gsub(/xxx/, ''); end
+  def x(s); s.gsub(/xxx/, ''); end
   def w; x "WARxxxNING"; end
   def t; x "TOxxxDO"; end
   def f; x "FxxxIXME"; end

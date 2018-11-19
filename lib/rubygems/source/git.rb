@@ -50,7 +50,7 @@ class Gem::Source::Git < Gem::Source
   # repository may contain multiple gems.  If +submodules+ is true, submodules
   # will be checked out when the gem is installed.
 
-  def initialize name, repository, reference, submodules = false
+  def initialize(name, repository, reference, submodules = false)
     super repository
 
     @name            = name
@@ -63,7 +63,7 @@ class Gem::Source::Git < Gem::Source
     @git      = ENV['git'] || 'git'
   end
 
-  def <=> other
+  def <=>(other)
     case other
     when Gem::Source::Git then
       0
@@ -77,7 +77,7 @@ class Gem::Source::Git < Gem::Source
     end
   end
 
-  def == other # :nodoc:
+  def ==(other) # :nodoc:
     super and
       @name            == other.name and
       @repository      == other.repository and
@@ -145,7 +145,7 @@ class Gem::Source::Git < Gem::Source
   ##
   # Nothing to download for git gems
 
-  def download full_spec, path # :nodoc:
+  def download(full_spec, path) # :nodoc:
   end
 
   ##
@@ -157,7 +157,7 @@ class Gem::Source::Git < Gem::Source
     File.join base_dir, 'gems', "#{@name}-#{dir_shortref}"
   end
 
-  def pretty_print q # :nodoc:
+  def pretty_print(q) # :nodoc:
     q.group 2, '[Git: ', ']' do
       q.breakable
       q.text @repository

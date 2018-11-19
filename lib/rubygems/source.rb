@@ -68,7 +68,7 @@ class Gem::Source
     end
   end
 
-  def == other # :nodoc:
+  def ==(other) # :nodoc:
     self.class === other and @uri == other.uri
   end
 
@@ -126,7 +126,7 @@ class Gem::Source
   ##
   # Fetches a specification for the given +name_tuple+.
 
-  def fetch_spec name_tuple
+  def fetch_spec(name_tuple)
     fetcher = Gem::RemoteFetcher.fetcher
 
     spec_file_name = name_tuple.spec_name
@@ -206,7 +206,7 @@ class Gem::Source
     fetcher.download spec, uri.to_s, dir
   end
 
-  def pretty_print q # :nodoc:
+  def pretty_print(q) # :nodoc:
     q.group 2, '[Remote:', ']' do
       q.breakable
       q.text @uri.to_s

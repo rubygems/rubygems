@@ -40,7 +40,7 @@ class Gem::DependencyList
   # Creates a new DependencyList.  If +development+ is true, development
   # dependencies will be included.
 
-  def initialize development = false
+  def initialize(development = false)
     @specs = []
 
     @development = development
@@ -114,7 +114,7 @@ class Gem::DependencyList
     why_not_ok?(:quick).empty?
   end
 
-  def why_not_ok? quick = false
+  def why_not_ok?(quick = false)
     unsatisfied = Hash.new { |h,k| h[k] = [] }
     each do |spec|
       spec.runtime_dependencies.each do |dep|
@@ -172,7 +172,7 @@ class Gem::DependencyList
   # satisfy items in +dependencies+ (a hash of gem names to arrays of
   # dependencies).
 
-  def remove_specs_unsatisfied_by dependencies
+  def remove_specs_unsatisfied_by(dependencies)
     specs.reject! { |spec|
       dep = dependencies[spec.name]
       dep and not dep.requirement.satisfied_by? spec.version

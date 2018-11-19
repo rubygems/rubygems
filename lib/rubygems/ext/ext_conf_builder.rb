@@ -52,7 +52,6 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
                 " the mkmf.log which can be found here:\n"
               results << "  " + File.join(dest_path, 'mkmf.log') + "\n"
             end
-            FileUtils.mv 'mkmf.log', dest_path
           end
           siteconf.unlink
         end

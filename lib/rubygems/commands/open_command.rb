@@ -58,7 +58,7 @@ class Gem::Commands::OpenCommand < Gem::Command
     terminate_interaction 1 unless found
   end
 
-  def open_gem name
+  def open_gem(name)
     spec = spec_for name
 
     return false unless spec
@@ -71,13 +71,13 @@ class Gem::Commands::OpenCommand < Gem::Command
     open_editor(spec.full_gem_path)
   end
 
-  def open_editor path
+  def open_editor(path)
     Dir.chdir(path) do
       system(*@editor.split(/\s+/) + [path])
     end
   end
 
-  def spec_for name
+  def spec_for(name)
     spec = Gem::Specification.find_all_by_name(name, @version).first
 
     return spec if spec

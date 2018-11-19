@@ -54,7 +54,7 @@ use with other commands.
     "#{program_name} REGEXP"
   end
 
-  def fetch_remote_specs dependency # :nodoc:
+  def fetch_remote_specs(dependency) # :nodoc:
     fetcher = Gem::SpecFetcher.fetcher
 
     ss, = fetcher.spec_for_dependency dependency
@@ -62,7 +62,7 @@ use with other commands.
     ss.map { |spec, _| spec }
   end
 
-  def fetch_specs name_pattern, dependency # :nodoc:
+  def fetch_specs(name_pattern, dependency) # :nodoc:
     specs = []
 
     if local?
@@ -79,7 +79,7 @@ use with other commands.
     specs.uniq.sort
   end
 
-  def gem_dependency pattern, version, prerelease # :nodoc:
+  def gem_dependency(pattern, version, prerelease) # :nodoc:
     dependency = Gem::Deprecate.skip_during {
       Gem::Dependency.new pattern, version
     }
@@ -89,7 +89,7 @@ use with other commands.
     dependency
   end
 
-  def display_pipe specs # :nodoc:
+  def display_pipe(specs) # :nodoc:
     specs.each do |spec|
       unless spec.dependencies.empty? then
         spec.dependencies.sort_by { |dep| dep.name }.each do |dep|
@@ -99,7 +99,7 @@ use with other commands.
     end
   end
 
-  def display_readable specs, reverse # :nodoc:
+  def display_readable(specs, reverse) # :nodoc:
     response = String.new
 
     specs.each do |spec|
@@ -142,7 +142,7 @@ use with other commands.
     end
   end
 
-  def ensure_specs specs # :nodoc:
+  def ensure_specs(specs) # :nodoc:
     return unless specs.empty?
 
     patterns = options[:args].join ','
@@ -163,7 +163,7 @@ use with other commands.
     response
   end
 
-  def remote_specs dependency # :nodoc:
+  def remote_specs(dependency) # :nodoc:
     fetcher = Gem::SpecFetcher.fetcher
 
     ss, _ = fetcher.spec_for_dependency dependency
@@ -171,7 +171,7 @@ use with other commands.
     ss.map { |s,o| s }
   end
 
-  def reverse_dependencies specs # :nodoc:
+  def reverse_dependencies(specs) # :nodoc:
     reverse = Hash.new { |h, k| h[k] = [] }
 
     return reverse unless options[:reverse_dependencies]
@@ -186,7 +186,7 @@ use with other commands.
   ##
   # Returns an Array of [specification, dep] that are satisfied by +spec+.
 
-  def find_reverse_dependencies spec # :nodoc:
+  def find_reverse_dependencies(spec) # :nodoc:
     result = []
 
     Gem::Specification.each do |sp|
@@ -205,7 +205,7 @@ use with other commands.
 
   private
 
-  def name_pattern args
+  def name_pattern(args)
     args << '' if args.empty?
 
     if args.length == 1 and args.first =~ /\A\/(.*)\/(i)?\z/m then

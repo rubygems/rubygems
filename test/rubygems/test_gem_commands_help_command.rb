@@ -64,7 +64,7 @@ class TestGemCommandsHelpCommand < Gem::TestCase
     end
   end
 
-  def util_gem *args
+  def util_gem(*args)
     @cmd.options[:args] = args
 
     use_ui @ui do

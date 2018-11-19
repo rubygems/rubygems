@@ -450,7 +450,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     @have_rdoc_4_plus = nil
   end
 
-  def add_date res
+  def add_date(res)
     res['date'] = @spec_dirs.map do |spec_dir|
       File.stat(spec_dir).mtime
     end.max
@@ -462,7 +462,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     end
   end
 
-  def doc_root gem_name
+  def doc_root(gem_name)
     if have_rdoc_4_plus? then
       "/doc_root/#{u gem_name}/"
     else
@@ -509,7 +509,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   # Creates server sockets based on the addresses option.  If no addresses
   # were given a server socket for all interfaces is created.
 
-  def listen addresses = @addresses
+  def listen(addresses = @addresses)
     addresses = [nil] unless addresses
 
     listeners = 0
@@ -536,7 +536,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     end
   end
 
-  def prerelease_specs req, res
+  def prerelease_specs(req, res)
     reset_gems
 
     res['content-type'] = 'application/x-gzip'

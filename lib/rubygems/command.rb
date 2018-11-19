@@ -451,7 +451,7 @@ class Gem::Command
   # Adds a section with +title+ and +content+ to the parser help view.  Used
   # for adding command arguments and default arguments.
 
-  def add_parser_run_info title, content
+  def add_parser_run_info(title, content)
     return if content.empty?
 
     @parser.separator nil

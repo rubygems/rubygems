@@ -211,20 +211,20 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     refute_path_exists path
   end
 
-  def util_fuck_with_fetcher data, blow = false
+  def util_fuck_with_fetcher(data, blow = false)
     fetcher = Gem::RemoteFetcher.fetcher
     fetcher.instance_variable_set :@test_data, data
 
     unless blow then
-      def fetcher.fetch_path arg, *rest
+      def fetcher.fetch_path(arg, *rest)
         @test_arg = arg
         @test_data
       end
     else
-      def fetcher.fetch_path arg, *rest
+      def fetcher.fetch_path(arg, *rest)
         # OMG I'm such an ass
         class << self; remove_method :fetch_path; end
-        def self.fetch_path arg, *rest
+        def self.fetch_path(arg, *rest)
           @test_arg = arg
           @test_data
         end
@@ -424,7 +424,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     util_setup_spec_fetcher @a1, @a2
     @fetcher.instance_variable_set :@a1, @a1
     @fetcher.instance_variable_set :@a2, @a2
-    def @fetcher.fetch_path uri, mtime = nil, head = false
+    def @fetcher.fetch_path(uri, mtime = nil, head = false)
       case uri.request_uri
       when /#{@a1.spec_name}/ then
         Gem.deflate Marshal.dump @a1

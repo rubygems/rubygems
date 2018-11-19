@@ -109,7 +109,7 @@ class Gem::Indexer
   ##
   # Builds Marshal quick index gemspecs.
 
-  def build_marshal_gemspecs specs
+  def build_marshal_gemspecs(specs)
     count = specs.count
     progress = ui.progress_reporter count,
                                     "Generating Marshal quick index gemspecs for #{count} gems",
@@ -172,7 +172,7 @@ class Gem::Indexer
   ##
   # Builds indices for RubyGems 1.2 and newer. Handles full, latest, prerelease
 
-  def build_modern_indices specs
+  def build_modern_indices(specs)
     prerelease, released = specs.partition { |s|
       s.version.prerelease?
     }
@@ -192,7 +192,7 @@ class Gem::Indexer
                "#{@prerelease_specs_index}.gz"]
   end
 
-  def map_gems_to_specs gems
+  def map_gems_to_specs(gems)
     gems.map { |gemfile|
       if File.size(gemfile) == 0 then
         alert_warning "Skipping zero-length gem: #{gemfile}"

@@ -43,7 +43,7 @@ class Gem::PathSupport
   ##
   # Split the Gem search path (as reported by Gem.path).
 
-  def split_gem_path gpaths, home
+  def split_gem_path(gpaths, home)
     # FIX: it should be [home, *path], not [*path, home]
 
     gem_path = []

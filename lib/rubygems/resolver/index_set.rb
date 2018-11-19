@@ -5,7 +5,7 @@
 
 class Gem::Resolver::IndexSet < Gem::Resolver::Set
 
-  def initialize source = nil # :nodoc:
+  def initialize(source = nil) # :nodoc:
     super()
 
     @f =
@@ -36,7 +36,7 @@ class Gem::Resolver::IndexSet < Gem::Resolver::Set
   # Return an array of IndexSpecification objects matching
   # DependencyRequest +req+.
 
-  def find_all req
+  def find_all(req)
     res = []
 
     return res unless @remote
@@ -53,7 +53,7 @@ class Gem::Resolver::IndexSet < Gem::Resolver::Set
     res
   end
 
-  def pretty_print q # :nodoc:
+  def pretty_print(q) # :nodoc:
     q.group 2, '[IndexSet', ']' do
       q.breakable
       q.text 'sources:'

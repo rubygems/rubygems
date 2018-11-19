@@ -83,7 +83,7 @@ prefix or only the files that are requireable.
     end
   end
 
-  def files_in spec
+  def files_in(spec)
     if spec.default_gem? then
       files_in_default_gem spec
     else
@@ -91,7 +91,7 @@ prefix or only the files that are requireable.
     end
   end
 
-  def files_in_gem spec
+  def files_in_gem(spec)
     gem_path  = spec.full_gem_path
     extra     = "/{#{spec.require_paths.join ','}}" if options[:lib_only]
     glob      = "#{gem_path}#{extra}/**/*"
@@ -102,7 +102,7 @@ prefix or only the files that are requireable.
     end
   end
 
-  def files_in_default_gem spec
+  def files_in_default_gem(spec)
     spec.files.map do |file|
       case file
       when /\A#{spec.bindir}\//
@@ -115,7 +115,7 @@ prefix or only the files that are requireable.
     end
   end
 
-  def gem_contents name
+  def gem_contents(name)
     spec = spec_for name
 
     return false unless spec
@@ -127,7 +127,7 @@ prefix or only the files that are requireable.
     true
   end
 
-  def gem_install_dir name
+  def gem_install_dir(name)
     spec = spec_for name
 
     return false unless spec
@@ -145,7 +145,7 @@ prefix or only the files that are requireable.
     end
   end
 
-  def path_description spec_dirs # :nodoc:
+  def path_description(spec_dirs) # :nodoc:
     if spec_dirs.empty? then
       "default gem paths"
     else
@@ -153,7 +153,7 @@ prefix or only the files that are requireable.
     end
   end
 
-  def show_files files
+  def show_files(files)
     files.sort.each do |prefix, basename|
       absolute_path = File.join(prefix, basename)
       next if File.directory? absolute_path
@@ -166,7 +166,7 @@ prefix or only the files that are requireable.
     end
   end
 
-  def spec_for name
+  def spec_for(name)
     spec = Gem::Specification.find_all_by_name(name, @version).last
 
     return spec if spec

@@ -1431,7 +1431,7 @@ gem 'other', version
     def spec.full_name # so the spec is buildable
       "malicious-1"
     end
-    def spec.validate packaging, strict; end
+    def spec.validate(packaging, strict); end
 
     util_build_gem spec
 
@@ -1753,7 +1753,7 @@ gem 'other', version
     @installer = util_installer @spec, @gemhome
   end
 
-  def util_conflict_executable wrappers
+  def util_conflict_executable(wrappers)
     conflict = quick_gem 'conflict' do |spec|
       util_make_exec spec
     end

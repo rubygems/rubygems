@@ -24,7 +24,7 @@ class Gem::Security::Policy
   # Create a new Gem::Security::Policy object with the given mode and
   # options.
 
-  def initialize name, policy = {}, opt = {}
+  def initialize(name, policy = {}, opt = {})
     require 'openssl'
 
     @name = name
@@ -55,7 +55,7 @@ class Gem::Security::Policy
   # Verifies each certificate in +chain+ has signed the following certificate
   # and is valid for the given +time+.
 
-  def check_chain chain, time
+  def check_chain(chain, time)
     raise Gem::Security::Exception, 'missing signing chain' unless chain
     raise Gem::Security::Exception, 'empty signing chain' if chain.empty?
 
@@ -74,7 +74,7 @@ class Gem::Security::Policy
   # Verifies that +data+ matches the +signature+ created by +public_key+ and
   # the +digest+ algorithm.
 
-  def check_data public_key, digest, signature, data
+  def check_data(public_key, digest, signature, data)
     raise Gem::Security::Exception, "invalid signature" unless
       public_key.verify digest.new, signature, data.digest
 
@@ -85,7 +85,7 @@ class Gem::Security::Policy
   # Ensures that +signer+ is valid for +time+ and was signed by the +issuer+.
   # If the +issuer+ is +nil+ no verification is performed.
 
-  def check_cert signer, issuer, time
+  def check_cert(signer, issuer, time)
     raise Gem::Security::Exception, 'missing signing certificate' unless
       signer
 
@@ -111,7 +111,7 @@ class Gem::Security::Policy
   ##
   # Ensures the public key of +key+ matches the public key in +signer+
 
-  def check_key signer, key
+  def check_key(signer, key)
     unless signer and key then
       return true unless @only_signed
 
@@ -129,7 +129,7 @@ class Gem::Security::Policy
   # Ensures the root certificate in +chain+ is self-signed and valid for
   # +time+.
 
-  def check_root chain, time
+  def check_root(chain, time)
     raise Gem::Security::Exception, 'missing signing chain' unless chain
 
     root = chain.first
@@ -148,7 +148,7 @@ class Gem::Security::Policy
   # Ensures the root of +chain+ has a trusted certificate in +trust_dir+ and
   # the digests of the two certificates match according to +digester+
 
-  def check_trust chain, digester, trust_dir
+  def check_trust(chain, digester, trust_dir)
     raise Gem::Security::Exception, 'missing signing chain' unless chain
 
     root = chain.first
@@ -183,7 +183,7 @@ class Gem::Security::Policy
   ##
   # Extracts the email or subject from +certificate+
 
-  def subject certificate # :nodoc:
+  def subject(certificate) # :nodoc:
     certificate.extensions.each do |extension|
       next unless extension.oid == 'subjectAltName'
 
@@ -208,8 +208,8 @@ class Gem::Security::Policy
   #
   # If +key+ is given it is used to validate the signing certificate.
 
-  def verify chain, key = nil, digests = {}, signatures = {},
-             full_name = '(unknown)'
+  def verify(chain, key = nil, digests = {}, signatures = {},
+             full_name = '(unknown)')
     if signatures.empty? then
       if @only_signed then
         raise Gem::Security::Exception,
@@ -280,7 +280,7 @@ class Gem::Security::Policy
   # Extracts the certificate chain from the +spec+ and calls #verify to ensure
   # the signatures and certificate chain is valid according to the policy..
 
-  def verify_signatures spec, digests, signatures
+  def verify_signatures(spec, digests, signatures)
     chain = spec.cert_chain.map do |cert_pem|
       OpenSSL::X509::Certificate.new cert_pem
     end

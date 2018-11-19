@@ -19,7 +19,7 @@ class Gem::UriFormatter
   ##
   # Creates a new URI formatter for +uri+.
 
-  def initialize uri
+  def initialize(uri)
     @uri = uri
   end
 

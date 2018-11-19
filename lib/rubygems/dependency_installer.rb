@@ -66,7 +66,7 @@ class Gem::DependencyInstaller
   # :wrappers:: See Gem::Installer::new
   # :build_args:: See Gem::Installer::new
 
-  def initialize options = {}
+  def initialize(options = {})
     @only_install_dir = !!options[:install_dir]
     @install_dir = options[:install_dir] || Gem.dir
     @build_root = options[:build_root]
@@ -110,7 +110,7 @@ class Gem::DependencyInstaller
   #--
   # TODO remove at RubyGems 4, no longer used
 
-  def add_found_dependencies to_do, dependency_list # :nodoc:
+  def add_found_dependencies(to_do, dependency_list) # :nodoc:
     seen = {}
     dependencies = Hash.new { |h, name| h[name] = Gem::Dependency.new name }
 
@@ -164,7 +164,7 @@ class Gem::DependencyInstaller
   # Creates an AvailableSet to install from based on +dep_or_name+ and
   # +version+
 
-  def available_set_for dep_or_name, version # :nodoc:
+  def available_set_for(dep_or_name, version) # :nodoc:
     if String === dep_or_name then
       find_spec_by_name_and_version dep_or_name, version, @prerelease
     else
@@ -198,7 +198,7 @@ class Gem::DependencyInstaller
   # sources.  Gems are sorted with newer gems preferred over older gems, and
   # local gems preferred over remote gems.
 
-  def find_gems_with_sources dep, best_only=false # :nodoc:
+  def find_gems_with_sources(dep, best_only=false) # :nodoc:
     set = Gem::AvailableSet.new
 
     if consider_local?
@@ -272,9 +272,9 @@ class Gem::DependencyInstaller
   # +version+.  Returns an Array of specs and sources required for
   # installation of the gem.
 
-  def find_spec_by_name_and_version gem_name,
+  def find_spec_by_name_and_version(gem_name,
                                     version = Gem::Requirement.default,
-                                    prerelease = false
+                                    prerelease = false)
     set = Gem::AvailableSet.new
 
     if consider_local?
@@ -352,7 +352,7 @@ class Gem::DependencyInstaller
   end
   deprecate :gather_dependencies, :none, 2018, 12
 
-  def in_background what # :nodoc:
+  def in_background(what) # :nodoc:
     fork_happened = false
     if @build_docs_in_background and Process.respond_to?(:fork)
       begin
@@ -381,7 +381,7 @@ class Gem::DependencyInstaller
   # c-1.a, b-1 and a-1.a will be installed.  b-1.a will need to be installed
   # separately.
 
-  def install dep_or_name, version = Gem::Requirement.default
+  def install(dep_or_name, version = Gem::Requirement.default)
     request_set = resolve_dependencies dep_or_name, version
 
     @installed_gems = []
@@ -434,7 +434,7 @@ class Gem::DependencyInstaller
     end
   end
 
-  def resolve_dependencies dep_or_name, version # :nodoc:
+  def resolve_dependencies(dep_or_name, version) # :nodoc:
     request_set = Gem::RequestSet.new
     request_set.development         = @development
     request_set.development_shallow = @dev_shallow

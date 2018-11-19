@@ -27,7 +27,7 @@ class Gem::Resolver::Conflict
     @failed_dep = failed_dep
   end
 
-  def == other # :nodoc:
+  def ==(other) # :nodoc:
     self.class === other and
       @dependency == other.dependency and
       @activated  == other.activated  and
@@ -97,7 +97,7 @@ class Gem::Resolver::Conflict
     @dependency.name == spec.name
   end
 
-  def pretty_print q # :nodoc:
+  def pretty_print(q) # :nodoc:
     q.group 2, '[Dependency conflict: ', ']' do
       q.breakable
 
@@ -121,7 +121,7 @@ class Gem::Resolver::Conflict
   ##
   # Path of activations from the +current+ list.
 
-  def request_path current
+  def request_path(current)
     path = []
 
     while current do

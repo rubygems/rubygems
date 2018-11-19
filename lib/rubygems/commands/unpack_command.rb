@@ -152,7 +152,7 @@ command help for an example.
   # TODO: It just uses Gem.dir for now.  What's an easy way to get the list of
   # source directories?
 
-  def get_path dependency
+  def get_path(dependency)
     return dependency.name if dependency.name =~ /\.gem$/i
 
     specs = dependency.matching_specs
@@ -180,7 +180,7 @@ command help for an example.
   #--
   # TODO move to Gem::Package as #raw_spec or something
 
-  def get_metadata path, security_policy = nil
+  def get_metadata(path, security_policy = nil)
     format = Gem::Package.new path, security_policy
     spec = format.spec
 

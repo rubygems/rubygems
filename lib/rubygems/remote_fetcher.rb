@@ -97,7 +97,7 @@ class Gem::RemoteFetcher
   # Should probably be integrated with #download below, but that will be a
   # larger, more encompassing effort. -erikh
 
-  def download_to_cache dependency
+  def download_to_cache(dependency)
     found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency dependency
 
     return if found.empty?
@@ -209,14 +209,14 @@ class Gem::RemoteFetcher
   ##
   # File Fetcher. Dispatched by +fetch_path+. Use it instead.
 
-  def fetch_file uri, *_
+  def fetch_file(uri, *_)
     Gem.read_binary correct_for_windows_path uri.path
   end
 
   ##
   # HTTP Fetcher. Dispatched by +fetch_path+. Use it instead.
 
-  def fetch_http uri, last_modified = nil, head = false, depth = 0
+  def fetch_http(uri, last_modified = nil, head = false, depth = 0)
     fetch_type = head ? Net::HTTP::Head : Net::HTTP::Get
     response   = request uri, fetch_type, last_modified do |req|
       headers.each { |k,v| req.add_field(k,v) }
@@ -291,7 +291,7 @@ class Gem::RemoteFetcher
   # Downloads +uri+ to +path+ if necessary. If no path is given, it just
   # passes the data.
 
-  def cache_update_path uri, path = nil, update = true
+  def cache_update_path(uri, path = nil, update = true)
     mtime = path && File.stat(path).mtime rescue nil
 
     data = fetch_path(uri, mtime)
@@ -375,11 +375,11 @@ class Gem::RemoteFetcher
 
   private
 
-  def proxy_for proxy, uri
+  def proxy_for(proxy, uri)
     Gem::Request.proxy_uri(proxy || Gem::Request.get_proxy_from_env(uri.scheme))
   end
 
-  def pools_for proxy
+  def pools_for(proxy)
     @pool_lock.synchronize do
       @pools[proxy] ||= Gem::Request::ConnectionPools.new proxy, @cert_files
     end

@@ -297,11 +297,11 @@ class TestGemPlatform < Gem::TestCase
     assert_local_match 'sparc-solaris2.8-mq5.3'
   end
 
-  def assert_local_match name
+  def assert_local_match(name)
     assert_match Gem::Platform.local, name
   end
 
-  def refute_local_match name
+  def refute_local_match(name)
     refute_match Gem::Platform.local, name
   end
 end

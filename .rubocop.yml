@@ -56,5 +56,8 @@ Layout/TrailingBlankLines:
 Layout/TrailingWhitespace:
   Enabled: true
 
+Style/MethodDefParentheses:
+  Enabled: true
+
 Style/MutableConstant:
   Enabled: true

@@ -139,7 +139,7 @@ class Gem::Package::TarWriter
   #
   # The created digest object is returned.
 
-  def add_file_digest name, mode, digest_algorithms # :yields: io
+  def add_file_digest(name, mode, digest_algorithms) # :yields: io
     digests = digest_algorithms.map do |digest_algorithm|
       digest = digest_algorithm.new
       digest_name =
@@ -172,7 +172,7 @@ class Gem::Package::TarWriter
   #
   # Returns the digest.
 
-  def add_file_signed name, mode, signer
+  def add_file_signed(name, mode, signer)
     digest_algorithms = [
       signer.digest_algorithm,
       Digest::SHA512,

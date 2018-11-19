@@ -62,7 +62,7 @@ class Gem::Validator
   # Describes a problem with a file in a gem.
 
   ErrorData = Struct.new :path, :problem do
-    def <=> other # :nodoc:
+    def <=>(other) # :nodoc:
       return nil unless self.class === other
 
       [path, problem] <=> [other.path, other.problem]

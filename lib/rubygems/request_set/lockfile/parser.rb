@@ -3,7 +3,7 @@ class Gem::RequestSet::Lockfile::Parser
   ###
   # Parses lockfiles
 
-  def initialize tokenizer, set, platforms, filename = nil
+  def initialize(tokenizer, set, platforms, filename = nil)
     @tokens    = tokenizer
     @filename  = filename
     @set       = set
@@ -41,7 +41,7 @@ class Gem::RequestSet::Lockfile::Parser
   ##
   # Gets the next token for a Lockfile
 
-  def get expected_types = nil, expected_value = nil # :nodoc:
+  def get(expected_types = nil, expected_value = nil) # :nodoc:
     token = @tokens.shift
 
     if expected_types and not Array(expected_types).include? token.type then
@@ -294,7 +294,7 @@ class Gem::RequestSet::Lockfile::Parser
   # Parses the requirements following the dependency +name+ and the +op+ for
   # the first token of the requirements and returns a Gem::Dependency object.
 
-  def parse_dependency name, op # :nodoc:
+  def parse_dependency(name, op) # :nodoc:
     return Gem::Dependency.new name, op unless peek[0] == :text
 
     version = get(:text).value
@@ -314,7 +314,7 @@ class Gem::RequestSet::Lockfile::Parser
 
   private
 
-  def skip type # :nodoc:
+  def skip(type) # :nodoc:
     @tokens.skip type
   end
 
@@ -325,7 +325,7 @@ class Gem::RequestSet::Lockfile::Parser
     @tokens.peek
   end
 
-  def pinned_requirement name # :nodoc:
+  def pinned_requirement(name) # :nodoc:
     requirement = Gem::Dependency.new name
     specification = @set.sets.flat_map { |set|
       set.find_all(requirement)
@@ -337,7 +337,7 @@ class Gem::RequestSet::Lockfile::Parser
   ##
   # Ungets the last token retrieved by #get
 
-  def unget token # :nodoc:
+  def unget(token) # :nodoc:
     @tokens.unshift token
   end
 end

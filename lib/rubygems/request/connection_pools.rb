@@ -8,14 +8,14 @@ class Gem::Request::ConnectionPools # :nodoc:
     attr_accessor :client
   end
 
-  def initialize proxy_uri, cert_files
+  def initialize(proxy_uri, cert_files)
     @proxy_uri  = proxy_uri
     @cert_files = cert_files
     @pools      = {}
     @pool_mutex = Mutex.new
   end
 
-  def pool_for uri
+  def pool_for(uri)
     http_args = net_http_args(uri, @proxy_uri)
     key       = http_args + [https?(uri)]
     @pool_mutex.synchronize do
@@ -45,11 +45,11 @@ class Gem::Request::ConnectionPools # :nodoc:
     env_no_proxy.split(/\s*,\s*/)
   end
 
-  def https? uri
+  def https?(uri)
     uri.scheme.downcase == 'https'
   end
 
-  def no_proxy? host, env_no_proxy
+  def no_proxy?(host, env_no_proxy)
     host = host.downcase
 
     env_no_proxy.any? do |pattern|
@@ -73,7 +73,7 @@ class Gem::Request::ConnectionPools # :nodoc:
     end
   end
 
-  def net_http_args uri, proxy_uri
+  def net_http_args(uri, proxy_uri)
     # URI::Generic#hostname was added in ruby 1.9.3, use it if exists, otherwise
     # don't support IPv6 literals and use host.
     hostname = uri.respond_to?(:hostname) ? uri.hostname : uri.host

@@ -289,7 +289,7 @@ class Gem::Uninstaller
   # Returns true if it is OK to remove +spec+ or this is a forced
   # uninstallation.
 
-  def dependencies_ok? spec # :nodoc:
+  def dependencies_ok?(spec) # :nodoc:
     return true if @force_ignore
 
     deplist = Gem::DependencyList.from_specs
@@ -308,7 +308,7 @@ class Gem::Uninstaller
   ##
   # Asks if it is OK to remove +spec+.  Returns true if it is OK.
 
-  def ask_if_ok spec # :nodoc:
+  def ask_if_ok(spec) # :nodoc:
     msg = ['']
     msg << 'You have requested to uninstall the gem:'
     msg << "\t#{spec.full_name}"
@@ -332,7 +332,7 @@ class Gem::Uninstaller
   ##
   # Returns the formatted version of the executable +filename+
 
-  def formatted_program_filename filename # :nodoc:
+  def formatted_program_filename(filename) # :nodoc:
     # TODO perhaps the installer should leave a small manifest
     # of what it did for us to find rather than trying to recreate
     # it again.

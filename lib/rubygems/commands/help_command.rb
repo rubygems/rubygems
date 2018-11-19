@@ -356,7 +356,7 @@ platform.
     say out.join("\n")
   end
 
-  def show_command_help command_name # :nodoc:
+  def show_command_help(command_name) # :nodoc:
     command_name = command_name.downcase
 
     possibilities = @command_manager.find_command_possibilities command_name

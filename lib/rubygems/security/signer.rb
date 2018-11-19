@@ -65,7 +65,7 @@ class Gem::Security::Signer
   # +chain+ containing X509 certificates, encoding certificates or paths to
   # certificates.
 
-  def initialize key, cert_chain, passphrase = nil, options = {}
+  def initialize(key, cert_chain, passphrase = nil, options = {})
     @cert_chain = cert_chain
     @key        = key
     @passphrase = passphrase
@@ -106,7 +106,7 @@ class Gem::Security::Signer
   # Extracts the full name of +cert+.  If the certificate has a subjectAltName
   # this value is preferred, otherwise the subject is used.
 
-  def extract_name cert # :nodoc:
+  def extract_name(cert) # :nodoc:
     subject_alt_name = cert.extensions.find { |e| 'subjectAltName' == e.oid }
 
     if subject_alt_name then
@@ -138,7 +138,7 @@ class Gem::Security::Signer
   ##
   # Sign data with given digest algorithm
 
-  def sign data
+  def sign(data)
     return unless @key
 
     raise Gem::Security::Exception, 'no certs provided' if @cert_chain.empty?
